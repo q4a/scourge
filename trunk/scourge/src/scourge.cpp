@@ -1629,13 +1629,18 @@ int Scourge::dropItem(int x, int y) {
   if(map->getSelectedDropTarget()) {
     char message[120];
     Creature *c = map->getSelectedDropTarget()->creature;
-    if(c && c->addInventory(movingItem)) {
-      sprintf(message, "%s picks up %s.", 
-              c->getName(), 
-              movingItem->getItemName());
-      map->addDescription(message);
-      // if the inventory is open, update it
-      if(inventory->isVisible()) inventory->refresh();
+    if(c) {
+      if(c->addInventory(movingItem)) {
+        sprintf(message, "%s picks up %s.", 
+                c->getName(), 
+                movingItem->getItemName());
+        map->addDescription(message);
+        // if the inventory is open, update it
+        if(inventory->isVisible()) inventory->refresh();
+      } else {
+        showMessageDialog("The item won't fit in that container!");
+        replace = true;
+      }
     } else if(map->getSelectedDropTarget()->item && 
               map->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
       if(!map->getSelectedDropTarget()->item->addContainedItem(movingItem)) {
