@@ -35,11 +35,12 @@ class ContainerGui : public DragAndDropHandler {
   Scourge *scourge;
   Item *container;
   Window *win;
-  Button *openButton, *infoButton;
+  Button *openButton, *infoButton, *closeButton;
   ScrollingList *list;
   Label *label;
   char **containedItemNames;
   Color *itemColor;
+  GLuint *itemIcon;
 
  public:
   ContainerGui(Scourge *scourge, Item *container, int x, int y);
