@@ -422,6 +422,11 @@ void Battle::initTurn() {
 	if(item) return;
 	Item *i = creature->getBestWeapon(dist);	
 	if(i) range = i->getRpgItem()->getDistance();
+	// set up distance range for ranged weapons (do it here so it only happens when the action changes)
+	creature->setDistanceRange(0, Constants::MIN_DISTANCE);
+	if(range >= 8) {
+	  creature->setDistanceRange(range * 0.5f, range);
+	}
 	initItem(i);
   } else {
 	// or init action
@@ -431,23 +436,27 @@ void Battle::initTurn() {
 	  speed = creature->getActionSpell()->getSpeed() * 
 		(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
 	  creatureInitiative = creature->getInitiative(NULL, creature->getActionSpell());
+	  // set up distance range for ranged weapons (do it here so it only happens when the action changes)
+	  creature->setDistanceRange(0, Constants::MIN_DISTANCE);
+	  if(range >= 8) {
+		creature->setDistanceRange(range * 0.5f, range);
+	  }
 	  break;
 	case Constants::ACTION_EAT_DRINK:
 	  range = creature->getActionItem()->getRpgItem()->getDistance();
 	  speed = creature->getActionItem()->getRpgItem()->getSpeed() *
 		(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
 	  creatureInitiative = creature->getInitiative(creature->getActionItem(), NULL);
+	  // set up distance range for ranged weapons (do it here so it only happens when the action changes)
+	  creature->setDistanceRange(0, Constants::MIN_DISTANCE);
+	  if(range >= 8) {
+		creature->setDistanceRange(range * 0.5f, range);
+	  }
 	  break;
 	default:
 	  cerr << "*** Error: unhandled action: " << creature->getAction() << endl;
 	}
-  }
-  
-  // set up distance range for ranged weapons
-  creature->setDistanceRange(0, Constants::MIN_DISTANCE);
-  if(range >= 8) {
-	creature->setDistanceRange(range * 0.5f, range);
-  }	
+  }  
 }
 
 void Battle::initItem(Item *item) {
