@@ -49,6 +49,8 @@ class Button : public Widget {
 
   Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label=NULL);
   ~Button();
+
+  inline void setInside( bool b ) { inside = b; }
   /**
 	 Set if this button is a toggle button.
   */
