@@ -437,6 +437,8 @@ void Map::drawShade() {
 	  int yd = (scourge->getSDLHandler()->getScreen()->h / 2 - 30) - yt;
 	  float dist = (float)((xd * xd) + (yd * yd));
 	  float alpha = dist / 100000;
+      if(alpha <= 0) continue;
+
 	  glColor4f( 0, 0, 0, alpha);
 
 	  float zp = 0.0f;

@@ -58,7 +58,7 @@ Scourge::Scourge(int width, int height,
 	party[3] = new Creature(this, shapePal->getCreatureShape(ShapePalette::WIZARD_INDEX));      
 
   // hard code the party for now
-  party[0]->setName("Avatar"); party[0]->setPortraitIndex(0);
+  party[0]->setName("Alamont"); party[0]->setPortraitIndex(0);
   party[0]->setCharacter(Character::knight);
   party[0]->setLevel(1); party[0]->setExp(300);
   party[0]->rollAttributes();
@@ -69,7 +69,7 @@ Scourge::Scourge(int width, int height,
       party[0]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
   
-  party[1]->setName("Iolo"); party[1]->setPortraitIndex(1);
+  party[1]->setName("Barlett"); party[1]->setPortraitIndex(1);
   party[1]->setCharacter(Character::loremaster);
   party[1]->setLevel(1); party[1]->setExp(200);
   party[1]->rollAttributes();
@@ -80,7 +80,7 @@ Scourge::Scourge(int width, int height,
       party[1]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
   
-  party[2]->setName("Dupre"); party[2]->setPortraitIndex(2);
+  party[2]->setName("Corinus"); party[2]->setPortraitIndex(2);
   party[2]->setCharacter(Character::summoner);
   party[2]->setLevel(1); party[2]->setExp(150);
   party[2]->rollAttributes();
@@ -92,7 +92,7 @@ Scourge::Scourge(int width, int height,
       party[2]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
   
-  party[3]->setName("Shamino"); party[3]->setPortraitIndex(3);
+  party[3]->setName("Dialante"); party[3]->setPortraitIndex(3);
   party[3]->setCharacter(Character::naturalist);
   party[3]->setLevel(1); party[3]->setExp(400);
   party[3]->rollAttributes();
