@@ -5,15 +5,15 @@
 // 0 or less is retry forever
 #define RETRY_COUNT 10
 
-Client::Client(char *host, int port, char *username) {
+Client::Client(char *host, int port, char *username, CommandInterpreter *ci) {
   this->host = host;
   this->port = port;
   this->username = username;
   this->connected = false;
   this->readError = false;
   this->gsh = NULL;
-  this->lastGameFrameReceived = 0;
   this->broadcast = new Broadcast();
+  this->commands = new Commands(ci);
 
   if(host && port) {
     // Resolve the argument into an IPaddress type
@@ -50,23 +50,6 @@ bool Client::findServer() {
     return true;
   } 
   return false;
-}
-
-void Client::processGameState(char *str) {
-  if(gsh) {
-    // process game state
-    char *p = strchr(str + 6, ',');
-    int frame = atoi(str + 6);
-    if(p && frame) {
-      //      cout << "Received game state for frame: " << frame << endl;
-      gsh->consumeGameState(frame, p);
-      lastGameFrameReceived = frame;
-    } else {
-      cerr << "Malformed game state: " << str << endl;
-    }
-  } else {
-    cerr << "Ignoring game state: gsp not set." << endl;
-  }
 }
 
 int clientLoop(void *data) {
@@ -124,12 +107,23 @@ int clientLoop(void *data) {
         // next ping will reconnect
         sendPing = true;
       } else {
+        
+        client->getCommands()->interpret(str);
+
+        // respond to this with a ping
+        if(!strncmp(str, "STATE,", 6)) {
+          sendPing = true;
+        }
+
+        /*
         if(!strncmp(str, "STATE,", 6)) {
           client->processGameState(str);        
           sendPing = true;
         } else {
+          // FIXME: call a client interface here
           cout << str << endl;
         }
+        */
       }
     }
 
@@ -217,7 +211,7 @@ int Client::sendChatTCP(char *message) {
 
 int Client::sendPing() {
   char message[80];
-  sprintf(message, "PING,%d", lastGameFrameReceived);
+  sprintf(message, "PING,%d", commands->getLastGameFrameReceived());
   return sendRawTCP(message);
 }
 
@@ -270,7 +264,7 @@ int main(int argc, char **argv) {
     username = argv[3];
   }
   
-  Client *client = new Client(host, port, username);
+  Client *client = new Client(host, port, username, new TestCommandInterpreter());
 
   // find a server
   if(port == 0) {

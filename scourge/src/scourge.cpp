@@ -152,7 +152,7 @@ Scourge::Scourge(int argc, char *argv[]){
           delete client;
           client = NULL;
         }
-        client = new Client((char*)host, port, (char*)username);
+        client = new Client((char*)host, port, (char*)username, this);
         client->setGameStateHandler(this);
         if(!client->login()) {
           cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
@@ -1879,10 +1879,6 @@ char *Scourge::getGameState() {
   return "abc";
 }
 
-void Scourge::consumeGameState(int frame, char *state) {
-  cerr << "got frame: " << frame << " state=" << state << endl;
-}
-
 #ifdef HAVE_SDL_NET
 void Scourge::runServer(int port) {
   server = new Server(port ? port : DEFAULT_SERVER_PORT);
@@ -1894,7 +1890,8 @@ void Scourge::runServer(int port) {
 }
 
 void Scourge::runClient(char *host, int port, char *userName) {
-  client = new Client((char*)host, port, (char*)userName);
+  CommandInterpreter *ci = new TestCommandInterpreter();
+  client = new Client((char*)host, port, (char*)userName, ci);
   client->setGameStateHandler(this);
   if(!client->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
@@ -1911,5 +1908,28 @@ void Scourge::runClient(char *host, int port, char *userName) {
     client->sendChatTCP(message);
     //client->sendRawTCP(message);
   }  
+
+  delete ci;
 }
 #endif
+
+void Scourge::chat(char *message) {
+  cout << message << endl;
+}
+
+void Scourge::logout() {
+  cout << "Logout." << endl;
+}
+
+void Scourge::ping(int frame) {
+  cout << "Ping." << endl;
+}
+
+void Scourge::processGameState(int frame, char *p) {
+  cout << "Game state: frame=" << frame << " state=" << p << endl;
+}
+
+void Scourge::handleUnknownMessage() {
+  cout << "Unknown message received." << endl;
+}
+

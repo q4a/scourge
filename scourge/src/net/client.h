@@ -8,6 +8,7 @@
 #include "gamestatehandler.h"
 #include "testgamestatehandler.h"
 #include "broadcast.h"
+#include "commands.h"
 
 int clientLoop(void *data);
 
@@ -25,11 +26,12 @@ class Client {
   TCPsocket tcpSocket;
   Broadcast *broadcast;
   IPaddress ip;
+  Commands *commands;
 
   static const Uint32 FIND_SERVER_TIMEOUT = 10000;
 
  public:
-  Client(char *host, int port, char *username);
+  Client(char *host, int port, char *username, CommandInterpreter *ci);
   virtual ~Client();
   int connect();
   bool findServer();
@@ -40,6 +42,7 @@ class Client {
 
   inline void setGameStateHandler(GameStateHandler *gsh) { this->gsh = gsh; }
   inline GameStateHandler *getGameStateHandler() { return gsh; }
+  inline Commands *getCommands() { return commands; }
 
   inline bool isConnected() { return connected; }
   inline bool isThreadRunning() { return threadRunning; }
@@ -47,8 +50,6 @@ class Client {
   inline TCPsocket getTCPSocket() { return tcpSocket; }
   inline void setReadError(bool b) { readError = b; }
   inline Broadcast *getBroadcast() { return broadcast; }
-
-  void processGameState(char *str);
 
  protected:
   int openConnection();
