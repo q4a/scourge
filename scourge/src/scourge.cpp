@@ -246,16 +246,16 @@ bool Scourge::handleEvent(SDL_Event *event) {
       gui->setWindowVisible(topWin, isInfoShowing);
       break;
     case SDLK_DOWN:
-				map->setMove(Constants::MOVE_DOWN);
+	  map->setMove(Constants::MOVE_DOWN);
       break;
     case SDLK_UP:
-				map->setMove(Constants::MOVE_UP);
+	  map->setMove(Constants::MOVE_UP);
       break;
     case SDLK_LEFT:
-				map->setMove(Constants::MOVE_LEFT);
+	  map->setMove(Constants::MOVE_LEFT);
       break;
     case SDLK_RIGHT:
-				map->setMove(Constants::MOVE_RIGHT);
+	  map->setMove(Constants::MOVE_RIGHT);
       break;
 
     case SDLK_F5:

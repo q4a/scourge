@@ -787,6 +787,30 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	  }
 	}
   }
+  /*
+  // DEBUG stuff: draws room perimeter; to debug chunking
+  Shape *shape = shapePal->getShape(ShapePalette::LAMP_BASE_INDEX);
+  for(int i = 0; i < roomCount; i++) {
+  	for(int pos = 1; pos < room[i].h * unitSide; pos++) {
+	  // WEST side
+	  x = (room[i].x * unitSide) + offset;
+	  y = (room[i].y * unitSide) + pos + offset;
+	  addItem(map, NULL, shape, x, y);
+	  // EAST side
+	  x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - 1 + offset;
+	  addItem(map, NULL, shape, x, y);
+	}
+  	for(int pos = 0; pos < room[i].w * unitSide; pos++) {
+	  // NORTH side
+	  x = (room[i].x * unitSide) + pos + offset;
+	  y = (room[i].y * unitSide) + 1 + offset;
+	  addItem(map, NULL, shape, x, y);
+	  // SOUTH side
+	  y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide + offset;
+	  addItem(map, NULL, shape, x, y);
+	}
+  }
+  */
   
   // Collapse the free space and put objects in the available spots
   ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );

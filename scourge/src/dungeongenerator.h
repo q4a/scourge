@@ -87,7 +87,7 @@ private:
 
   const static Uint16 EMPTY_ROOM = ROOM + N_PASS + S_PASS + E_PASS + W_PASS;
 
-  const static Sint16 offset = 55;
+  const static Sint16 offset = MAP_OFFSET;
 
   const static Sint16 torches = 25; // % of time there's a torch
 
