@@ -72,7 +72,6 @@ class Creature {
   char *model_name, *skin_name;
   Uint16 dir;
   Session *session;
-  GLUquadric *quadric;
   int motion;
   float minRange, maxRange;
   int failedToMoveWithinRangeAttemptCount;
@@ -149,15 +148,13 @@ class Creature {
   inline Battle *getBattle() { return battle; }
 
   CreatureInfo *save();
-  static Creature *load(CreatureInfo *info);
+  static Creature *load(Session *session, CreatureInfo *info);
 
   inline void setLastTurn(int n) { lastTurn = n; }
   inline int getLastTurn() { return lastTurn; }
 
   inline bool isMonster() { return (monster ? TRUE : FALSE); }
   
-  inline GLUquadric *getQuadric() { return quadric; }
-
   inline int getTargetX() { if(targetCreature) return targetCreature->getX(); else return targetX; }
   inline int getTargetY() { if(targetCreature) return targetCreature->getY(); else return targetY; }
   inline int getTargetZ() { if(targetCreature) return targetCreature->getZ(); else return targetZ; }
@@ -272,7 +269,6 @@ class Creature {
   inline int getMp() { return mp; }
   inline int getStartingMp() { return mp; }
   int getMaxMp();
-  inline int getAc() { return ac; }
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
   inline int getSkill(int index) { return skills[index] + skillBonus[index]; }
@@ -291,7 +287,6 @@ class Creature {
   inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
   inline void setHp() { hp = getLevel() * getCharacter()->getStartingHp(); }
   inline void setMp() { mp = getLevel() * getCharacter()->getStartingMp(); }
-  inline void setAc(int n) { ac = n; }
 
   bool incSkillMod(int index);
   bool decSkillMod(int index);

@@ -258,3 +258,13 @@ const char *Monster::getRandomMonsterType() {
   return monsterTypes[n].c_str();
 }
 
+// this weird function is used on loading to avoid memory leaks...
+const char *Monster::getMonsterType(char *type) {
+  if(!type || !strlen(type)) return NULL;
+  for(int i = 0; i < (int)monsterTypes.size(); i++) {
+    const char *s = monsterTypes[i].c_str();
+    if(!strcpy((char*)s, type)) return s;
+  }
+  return NULL;
+}
+

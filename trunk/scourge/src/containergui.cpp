@@ -31,8 +31,8 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   win->addWidget(label);
 
   // allocate memory for the contained item descriptions
-  this->containedItemNames = (char**)malloc(Item::MAX_CONTAINED_ITEMS * sizeof(char*));
-  for(int i = 0; i < Item::MAX_CONTAINED_ITEMS; i++) {
+  this->containedItemNames = (char**)malloc(MAX_CONTAINED_ITEMS * sizeof(char*));
+  for(int i = 0; i < MAX_CONTAINED_ITEMS; i++) {
 	this->containedItemNames[i] = (char*)malloc(120 * sizeof(char));
   }
 
@@ -42,7 +42,7 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
 }
 
 ContainerGui::~ContainerGui() {
-  for(int i = 0; i < Item::MAX_CONTAINED_ITEMS; i++) {
+  for(int i = 0; i < MAX_CONTAINED_ITEMS; i++) {
 	free(containedItemNames[i]);
   }
   free(containedItemNames);

@@ -19,6 +19,7 @@
 #define ITEM_H
 
 #include "constants.h"
+#include "persist.h"
 #include "glshape.h"
 #include "shapepalette.h"
 #include "rpg/rpgitem.h"
@@ -36,9 +37,6 @@ class Scourge;
   */
 
 class Item {
- public:
-  static const int MAX_CONTAINED_ITEMS = 100;
-
  private:
   RpgItem *rpgItem;
   int shapeIndex;
@@ -56,6 +54,10 @@ class Item {
 public:
   Item(RpgItem *rpgItem);
   ~Item();
+
+  ItemInfo *save();
+  //ContainedItemInfo saveContainedItems();
+  static Item *load(Session *session, ItemInfo *info);
 
   static map<int, vector<string> *> soundMap;
   

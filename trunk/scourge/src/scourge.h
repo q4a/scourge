@@ -109,7 +109,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Map *map;
   MiniMap * miniMap;
   DungeonGenerator *dg;
-  Scourge *scourge;
+//  Scourge *scourge;
   int level;
   MainMenu *mainMenu;
   OptionsMenu *optionsMenu;
@@ -205,6 +205,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
 
   bool willStartDrag;
   int willStartDragX, willStartDragY;
+  GLUquadric *quadric;
 
 protected:
   SDLHandler *sdlHandler;
@@ -590,12 +591,12 @@ public:
 
   void removeBattle(Battle *battle);
 
-  inline bool Scourge::inTurnBasedCombat() {
+  inline bool inTurnBasedCombat() {
     return (battleTurn < (int)battleRound.size() && 
             getUserConfiguration()->isBattleTurnBased());
   }
 
-  bool Scourge::inTurnBasedCombatPlayerTurn();
+  bool inTurnBasedCombatPlayerTurn();
 
   inline InfoGui *getInfoGui() { return infoGui; }
 

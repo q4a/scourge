@@ -47,7 +47,7 @@ private:
   ScrollingList *characterList;
   int value;
   char **charStr;
-  Creature **pc;
+  Creature *pc[MAX_PARTY_SIZE];
   int pcCount;
   
 public:

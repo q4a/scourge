@@ -78,7 +78,6 @@ void Creature::commonInit() {
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
   this->bestPathPos = 0;
-  this->quadric = gluNewQuadric();
   this->inventory_count = 0;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
@@ -126,19 +125,27 @@ void Creature::commonInit() {
   lastEnchantDate.setDate(-1, -1, -1, -1, -1, -1);
 }
 
+Creature::~Creature(){
+  if(this->character) free( name );
+  session->getGameAdapter()->removeBattle(battle);
+  delete battle;
+  delete effect;
+  // do this before deleting the shape
+  session->getShapePalette()->decrementSkinRefCount(skin_name);
+  delete shape;
+}
+
 CreatureInfo *Creature::save() {
   CreatureInfo *info = (CreatureInfo*)malloc(sizeof(CreatureInfo));
   info->version = PERSIST_VERSION;
   strncpy((char*)info->name, getName(), 254);
   info->name[254] = 0;
   if(isMonster()) {
-    info->character_index = 0xff;
-    int mi;
-    Monster::getIndexOrFindByIndex(&monster, &mi);
-    info->monster_index = (Uint32)mi;
+    strcpy((char*)info->character_name, "");
+    strcpy((char*)info->monster_name, monster->getType());
   } else {
-    info->character_index = Character::getCharacterIndexByShortName(character->getShortName());
-    info->monster_index = 0xff;
+    strcpy((char*)info->character_name, character->getName());
+    strcpy((char*)info->monster_name, "");    
   }
   info->hp = hp;
   info->mp = mp;
@@ -167,29 +174,88 @@ CreatureInfo *Creature::save() {
   // inventory
   info->inventory_count = inventory_count;
   for(int i = 0; i < inventory_count; i++) {
-    //info->inventory[i] = inventory[i]->save();
+    info->inventory[i] = inventory[i]->save();
+    //info->containedItems[i] = inventory[i]->saveContainedItems();
   }
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     info->equipped[i] = equipped[i];
   }
 
   // spells
+  int count = 0;
   for(int i = 0; i < MagicSchool::getMagicSchoolCount(); i++) {
     MagicSchool *school = MagicSchool::getMagicSchool(i);
     for(int t = 0; t < school->getSpellCount(); t++) {
       Spell *spell = school->getSpell(t);
       if(isSpellMemorized(spell)) {
-        info->spell_index[i][t] = true;
+        strcpy((char*)info->spell_name[count++], spell->getName());
       }
     }
   }
+  info->spell_count = count;
 
   return info;
 }
 
-Creature *Creature::load(CreatureInfo *info) {
-  cerr << "Implement me!" << endl;
-  return NULL;
+Creature *Creature::load(Session *session, CreatureInfo *info) {
+  Creature *creature;
+  // FIXME: figure out how/when to call session->newCreature, vs. new Creature()
+  // Maybe all creatures should be constructed via session->newCreature() but
+  // not destroyed in session->deleteCreaturesAndItems()?
+  if(!strlen((char*)info->character_name)) {
+    cerr << "FIXME: Creature::load(): Loading monster: maybe call session->newCreature?" << endl;
+    ((Creature*)NULL)->getName(); // cause an error
+    /*
+    creature = new Creature(session, 
+                            Monster::getMonsterByName((char*)info->monster_name),
+                            strdup((char*)info->name));
+    */                            
+  } else {
+    // for now it's ok to call new Creature() for characters. This will change once we save NPC-s.
+    creature = new Creature(session, 
+                            Character::getCharacterByName((char*)info->character_name), 
+                            strdup((char*)info->name));
+  }
+  cerr << "*** LOAD: creature=" << info->name << endl;
+  creature->setHp( info->hp );
+  creature->setMp( info->mp );
+  creature->setExp( info->exp );
+  creature->setLevel( info->level );
+  creature->setMoney( info->money );
+  creature->moveTo( info->x, info->y, info->z );
+  creature->setDir( info->dir );
+  //creature->setSpeed( info->speed );
+  creature->setMotion( info->motion );
+  //creature->setArmor( info->armor );
+  creature->setBonusArmor( info->bonusArmor );
+  creature->setThirst( info->thirst );
+  creature->setHunger( info->hunger );
+  creature->setAvailableSkillPoints( info->availableSkillPoints );
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    creature->setSkill( i, info->skills[i] );
+    creature->skillMod[i] = info->skillMod[i];
+    creature->setSkillBonus( i, info->skillBonus[i] );
+  }
+  creature->stateMod = info->stateMod;
+  creature->protStateMod = info->protStateMod;
+
+  // inventory
+  //creature->inventory_count = info->inventory_count;
+  for(int i = 0; i < (int)info->inventory_count; i++) {
+    Item *item = Item::load( session, info->inventory[i] );
+    if(item) creature->addInventory( item, true );
+  }
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+    creature->equipped[i] = info->equipped[i];
+  }
+
+  // spells
+  for(int i = 0; i < (int)info->spell_count; i++) {
+    Spell *spell = Spell::getSpellByName( (char*)info->spell_name[i] );
+    creature->addSpell( spell );
+  }
+
+  return creature;
 }
 
 void Creature::calculateExpOfNextLevel() {
@@ -198,15 +264,6 @@ void Creature::calculateExpOfNextLevel() {
   for(int i = 0; i < level; i++) {
     expOfNextLevel += ((i + 1) * character->getLevelProgression());
   }
-}
-
-Creature::~Creature(){
-  session->getGameAdapter()->removeBattle(battle);
-  delete battle;
-  delete effect;
-  // do this before deleting the shape
-  session->getShapePalette()->decrementSkinRefCount(skin_name);
-  delete shape;
 }
 
 void Creature::switchDirection(bool force) {

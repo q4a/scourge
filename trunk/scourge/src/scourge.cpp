@@ -108,6 +108,7 @@ void Scourge::initUI() {
 }
 
 void Scourge::start() {
+  this->quadric = gluNewQuadric();
   bool initMainMenu = true;
   while(true) {
 
@@ -122,11 +123,13 @@ void Scourge::start() {
     
     // evaluate results and start a missions
     if(mainMenu->getValue() == NEW_GAME ||
-       mainMenu->getValue() == MULTIPLAYER_START) {
+       mainMenu->getValue() == MULTIPLAYER_START ||
+       mainMenu->getValue() == CONTINUE_GAME ) {
       mainMenu->hide();
       sdlHandler->getSound()->stopMusicMenu();
       
       initMainMenu = true;
+      bool failed = false;
      
 #ifdef HAVE_SDL_NET
       if(mainMenu->getValue() == MULTIPLAYER_START) {
@@ -134,11 +137,28 @@ void Scourge::start() {
       }
 #endif  
 
-      // do this to fix slowness in mainmenu the second time around
-      glPushAttrib(GL_ENABLE_BIT);
-      startMission();
-      glPopAttrib();
+      if(mainMenu->getValue() == CONTINUE_GAME) {
+        if(!Persist::loadGame( session )) {
+          showMessageDialog( "Error loading game!" );
+          failed = true;
+        }
+      } else if(Persist::doesSaveGameExist( session )) {
+        
+        // showConfirmationDialog should be implemented like the main menu;
+        // extends SDLScreenView, SDLEventHandler, etc.
+        cerr << "FIXME: implement Scourge::showConfirmationDialog!";
 
+        //if(!showConfirmationDialog( "A saved game exists. Are you sure you want to erase it?" )) {
+        // failed = true;
+        //}
+      }
+
+      if( !failed ) {
+        // do this to fix slowness in mainmenu the second time around
+        glPushAttrib(GL_ENABLE_BIT);
+        startMission();
+        glPopAttrib();
+      }
     } else if(mainMenu->getValue() == OPTIONS) {
       optionsMenu->show();
     } else if(mainMenu->getValue() == MULTIPLAYER) {
@@ -200,6 +220,13 @@ void Scourge::startMission() {
 
     // ready the party
     party->startPartyOnMission();
+
+    // save the party
+    if(!session->isMultiPlayerGame()) {
+      if(!Persist::saveGame(session)) {
+        showMessageDialog( "Error saving game!" );
+      }
+    }
 
     // position the players
     move = 0;
@@ -524,7 +551,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
-    gluDisk(creature->getQuadric(), w - targetWidth, w, 12, 1);
+    gluDisk(quadric, w - targetWidth, w, 12, 1);
     glPopMatrix();
   }
 
@@ -538,7 +565,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glPushMatrix();
     //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
     glTranslatef( xpos2 + tw, ypos2 - tw, zpos2 + 5);
-    gluDisk(creature->getQuadric(), tw - targetWidth, tw, 12, 1);
+    gluDisk(quadric, tw - targetWidth, tw, 12, 1);
     glPopMatrix();
   }
 
@@ -611,7 +638,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
   glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
   if(groupMode || player || creature->isMonster()) 
-    gluDisk(creature->getQuadric(), w - s, w, 12, 1);
+    gluDisk(quadric, w - s, w, 12, 1);
 
   glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );
@@ -2688,7 +2715,7 @@ void Scourge::resetPartyUI() {
   Event *e;  
   Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < party->getPartySize() ; i++){
-    e = new ThirstHungerEvent(party->getCalendar()->getCurrentDate(), d, party->getParty(i), scourge, Event::INFINITE_EXECUTIONS);
+    e = new ThirstHungerEvent(party->getCalendar()->getCurrentDate(), d, party->getParty(i), this, Event::INFINITE_EXECUTIONS);
     party->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
   }
 }
@@ -2971,4 +2998,6 @@ void Scourge::showItemInfoUI(Item *item, int level) {
   infoGui->setItem( item, level );
   if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );    
 }
+
+
 

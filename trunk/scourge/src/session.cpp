@@ -133,9 +133,9 @@ void Session::runClient(char *host, int port, char *userName) {
 
   // connect as a character
 //  Party *party = new Party(this);  
-  Creature **pc;
+  Creature *pc[MAX_PARTY_SIZE];
   int pcCount;
-  Party::createHardCodedParty(this, &pc, &pcCount);
+  Party::createHardCodedParty(this, pc, &pcCount);
   cerr << "Sending character: " << pc[0]->getName() << endl;
   getParty()->resetMultiplayer(pc[0]);
 

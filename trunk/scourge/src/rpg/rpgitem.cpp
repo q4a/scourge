@@ -398,3 +398,64 @@ void MagicAttrib::debug(char *s, RpgItem *item) {
   }
   cerr << "-----------" << endl;
 }
+
+MagicAttribInfo *MagicAttrib::save() {
+  MagicAttribInfo *info = (MagicAttribInfo*)malloc(sizeof(MagicAttribInfo));
+  info->version = PERSIST_VERSION;
+  info->bonus = bonus;
+  info->damageMultiplier = damageMultiplier;
+  info->cursed = cursed;
+  info->level = level;
+  strcpy((char*)info->monster_type, (this->monsterType ? monsterType : ""));
+  strcpy((char*)info->magic_school_name, (this->school ? school->getName() : ""));
+  info->magicDamage = (school ? magicDamage->save() : Dice::saveEmpty());
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    info->stateMod[i] = this->stateMod[i];
+  }
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    info->skillBonus[i] = this->getSkillBonus(i);
+  }
+  return info;
+}
+
+MagicAttribInfo *MagicAttrib::saveEmpty() {
+  MagicAttribInfo *info = (MagicAttribInfo*)malloc(sizeof(MagicAttribInfo));
+  info->version = PERSIST_VERSION;
+  info->bonus = 0;
+  info->damageMultiplier = 1;
+  info->cursed = 0;
+  info->level = 0;
+  strcpy((char*)info->monster_type, "");
+  strcpy((char*)info->magic_school_name, "");
+  info->magicDamage = Dice::saveEmpty();
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    info->stateMod[i] = 0;
+  }
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    info->skillBonus[i] = 0;
+  }
+  return info;
+}
+
+MagicAttrib *MagicAttrib::load(Session *session, MagicAttribInfo *info) {
+  if( !info->bonus ) return NULL;
+  cerr << "\t\t*** LOAD magic attribute, bonus=" << info->bonus << endl;
+  MagicAttrib *magic = new MagicAttrib();
+  magic->bonus = info->bonus;
+  magic->damageMultiplier = info->damageMultiplier;
+  magic->cursed = (info->cursed == 1);
+  magic->level = info->level;
+  // get a reference to the real string... (yuck)
+  magic->monsterType = (char*)Monster::getMonsterType( (char*)info->monster_type );
+  magic->school = MagicSchool::getMagicSchoolByName( (char*)info->magic_school_name );
+  magic->magicDamage = Dice::load( session, info->magicDamage );
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    magic->stateMod[i] = info->stateMod[i];
+  }
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    if(info->skillBonus[i]) magic->skillBonus[i] = info->skillBonus[i];
+  }
+  return magic;
+}
+
+

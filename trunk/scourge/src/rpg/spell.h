@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include "../constants.h"
+#include "../persist.h"
 
 using namespace std;
 
@@ -43,6 +44,10 @@ public:
     n += mod;
     return(int)n;
   }
+
+  DiceInfo *save();
+  static DiceInfo *saveEmpty();
+  static Dice *load(Session *session, DiceInfo *info);
 };
 
 class MagicSchool;
@@ -112,6 +117,7 @@ class MagicSchool {
 
   static MagicSchool *schools[10];
   static int schoolCount;
+  static map<string, MagicSchool*> schoolMap;
 
  public:
   MagicSchool(char *name, char *deity, int skill, int resistSkill);
@@ -129,6 +135,7 @@ class MagicSchool {
   inline static int getMagicSchoolCount() { return schoolCount; }
   inline static MagicSchool *getMagicSchool( int index ) { return schools[index]; }
   static Spell *getRandomSpell(int level);
+  static MagicSchool *getMagicSchoolByName( char *s ) { string name = s; return (schoolMap.find(name) == schoolMap.end() ? NULL : schoolMap[name]); }
 
  protected:
   inline void addSpell( Spell *spell ) { spells.push_back( spell ); }

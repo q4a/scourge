@@ -93,6 +93,7 @@ public:
   static bool getIndexOrFindByIndex(Monster **monster, int *index);
 
   static const char *getRandomMonsterType();
+  static const char *getMonsterType(char *type);
 };
 
 #endif

@@ -67,23 +67,26 @@ int get_config_dir_name( char *buff, int len )
 #endif /* defined( WIN32 ) */
 }
 
-int get_config_file_name( char *buff, int len )
-{
-    if (get_config_dir_name( buff, len ) != 0) {
-        return 1;
-    }
-    if ( (int)(strlen( buff ) + strlen( CONFIG_FILE ) +2) > len ) {
-        return 1;
-    }
+int get_config_file_name( char *buff, int len ) {
+  return get_file_name( buff, len, CONFIG_FILE );
+}
 
+int get_file_name( char *buff, int len, char *fileName ) {
+  if (get_config_dir_name( buff, len ) != 0) {
+    return 1;
+  }
+  if ( (int)(strlen( buff ) + strlen( fileName ) +2) > len ) {
+    return 1;
+  }
+  
 #if defined( WIN32 )
-    strcat( buff, "\\" );
+  strcat( buff, "\\" );
 #else
-    strcat( buff, "/" );
+  strcat( buff, "/" );
 #endif /* defined( WIN32 ) */
-
-    strcat( buff, CONFIG_FILE);
-    return 0;
+  
+  strcat( buff, fileName );
+  return 0;
 }
 
 //sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
