@@ -41,6 +41,7 @@
 #include "effect.h"
 #include "containergui.h"
 #include "board.h"
+#include "battle.h"
 
 using namespace std;
 
@@ -60,6 +61,7 @@ class DungeonGenerator;
 class Window;
 class ContainerGui;
 class Board;
+class Battle;
 
 /**
   *@author Gabor Torok
@@ -71,9 +73,11 @@ class Board;
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
 
+/*
 typedef struct _Battle {
   Creature *creature;
 } Battle;
+*/
 
 class Scourge : public SDLEventHandler,SDLScreenView {
  private:
@@ -142,7 +146,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
 
   GLint lastTick;
   int battleCount;
-  Battle battle[MAX_BATTLE_COUNT];  
+  Battle *battle[MAX_BATTLE_COUNT];  
   bool partyDead;
 
   // multi-story levels
@@ -162,6 +166,9 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   static const int POSITION_SAMPLE_DELTA = 10; 
 
   bool teleporting;
+  
+  vector<Battle *> battleRound;
+  int battleTurn;
 
 protected:
   SDLHandler *sdlHandler;
@@ -275,7 +282,7 @@ public:
   void showMessageDialog(char *message);
 
  protected:
-  void fightBattle(); 
+  //  void fightBattle(); 
 
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
   void createUI();
