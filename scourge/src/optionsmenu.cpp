@@ -18,10 +18,7 @@
 #include "optionsmenu.h" 
 
 OptionsMenu::OptionsMenu(Scourge *scourge){    
-    int nbModes, i;
-    char ** modes;
- 
-    this->scourge = scourge;
+  this->scourge = scourge;
     this->uc = scourge->getUserConfiguration();
     controlsLoaded = false;
     videoLoaded = false;
@@ -66,11 +63,13 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
    
     // Video settings tabs        
     videoResolutionML = new MultipleLabel(100, 40, 300, 60, "Screen resolution", 100);
-    modes = scourge->getSDLHandler()->getVideoModes(nbModes);     
-    for(i = 0; i < nbModes; i++){
-        videoResolutionML -> addText(modes[i]);        
+    int nbModes, i;
+    char **modes;    
+    modes = scourge->getSDLHandler()->getVideoModes(nbModes);    
+    for(i = 0; i < nbModes; i++) {
+      videoResolutionML -> addText(modes[i]);        
     }    
-    cards->addWidget(videoResolutionML, VIDEO);
+    cards->addWidget(videoResolutionML, VIDEO);    
 
     fullscreenCheckbox = cards->createCheckbox(100, 75, 258, 95, "Fullscreen", VIDEO);    
     resizeableCheckbox = cards->createCheckbox(100, 110, 258, 130, "Window resizeable", VIDEO);
@@ -397,5 +396,7 @@ OptionsMenu::~OptionsMenu(){
     
 }
 
-
+void OptionsMenu::show() {
+  mainWin->setVisible(true);
+}  
 

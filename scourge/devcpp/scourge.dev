@@ -10,8 +10,8 @@ Libs=
 PrivateResource=scourge_private.rc
 ResourceIncludes=
 MakeIncludes=
-Compiler=-g -Wall -Wno-deprecated -fno-inline -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
-CppCompiler=-g -Wall -Wno-deprecated -fno-inline -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
+Compiler=-I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
+CppCompiler=-I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
 Linker=-lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:\GnuWin32\lib -lfreetype_@@_SDL_net-1.2.5/lib/SDL_net.lib_@@_
 IsCpp=1
 Icon=scourge.ico
