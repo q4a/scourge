@@ -25,21 +25,22 @@
 using namespace std;
 
 class Dice {
- private:
+private:
   char *s;
   int count;
   int sides;
   int mod;
 
- public:
+public:
   Dice(char *s);
+  Dice(int count, int sides, int mod);
   ~Dice();
-  inline char *toString() { return s; }
+  inline char *toString() { return s;}
   inline int roll() { 
-	float n = (float)sides * rand()/RAND_MAX;
-	n *= count;
-	n += mod;
-	return (int)n;
+    float n = (float)sides * rand()/RAND_MAX;
+    n *= count;
+    n += mod;
+    return(int)n;
   }
 };
 

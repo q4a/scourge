@@ -51,6 +51,7 @@ class Item {
   float weight;
   Spell *spell;
   char itemName[255];
+  MagicAttrib *magic;
 
 public:
   Item(RpgItem *rpgItem);
@@ -91,6 +92,8 @@ public:
   const char *getRandomSound();
   
   static void initItems(ShapePalette *shapePal);
+
+  void enchant(int level);
 };
 
 #endif

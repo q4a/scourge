@@ -58,7 +58,7 @@ int get_config_dir_name( char *buff, int len )
         return 1;
     }
 
-    if ( strlen( pwent->pw_dir ) + strlen( CONFIG_DIR) + 2 > len ) {
+    if ( (int)(strlen( pwent->pw_dir ) + strlen( CONFIG_DIR) + 2) > len ) {
         return 1;
     }
 
@@ -72,7 +72,7 @@ int get_config_file_name( char *buff, int len )
     if (get_config_dir_name( buff, len ) != 0) {
         return 1;
     }
-    if ( strlen( buff ) + strlen( CONFIG_FILE ) +2 > len ) {
+    if ( (int)(strlen( buff ) + strlen( CONFIG_FILE ) +2) > len ) {
         return 1;
     }
 
@@ -207,9 +207,16 @@ const char *Constants::POTION_SKILL_NAMES[] = {
 
 const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
-  "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "invisible", 
+  "drunk", "poisoned", "cursed", "possessed", "blinded", "paralysed", "invisible", 
   "overloaded", "dead", "leveled"
-}; 
+};
+
+vector<int> Constants::goodStateMod;
+vector<int> Constants::badStateMod;
+
+const char *Constants::MAGIC_ITEM_NAMES[] = {
+  "Lesser", "Greater", "Champion", "Divine"
+};
 
 const char *Constants::EFFECT_NAMES[] = {
   "EFFECT_FLAMES", "EFFECT_GLOW", "	EFFECT_TELEPORT", "EFFECT_GREEN", "EFFECT_EXPLOSION", 
@@ -617,21 +624,45 @@ void Constants::checkTexture(char *message, int w, int h) {
 }
 
 bool Constants::isStateModTransitionWanted(int mod, bool setting) {
-  bool goodEffect = ((!setting && 
-                      (mod == Constants::poisoned ||
-                       mod == Constants::cursed ||
-                       mod == Constants::possessed ||
-                       mod == Constants::blinded ||
-                       mod == Constants::charmed ||
-                       mod == Constants::overloaded ||
-                       mod == Constants::dead)) ||
-                     (setting && 
-                      mod == Constants::blessed ||
-                      mod == Constants::empowered ||
-                      mod == Constants::enraged ||
-                      mod == Constants::ac_protected ||
-                      mod == Constants::magic_protected ||
-                      mod == Constants::invisible ||
-                      mod == Constants::leveled));
-  return goodEffect;
+  bool effectFound = false;
+  for(int i = 0; i < (int)goodStateMod.size(); i++) {
+    if(goodStateMod[i] == mod) {
+      effectFound = true;
+      break;
+    }
+  }
+  if(effectFound && setting) return true;
+
+  effectFound = false;
+  for(int i = 0; i < (int)badStateMod.size(); i++) {
+    if(badStateMod[i] == mod) {
+      effectFound = true;
+      break;
+    }
+  }
+  if((effectFound || mod == Constants::dead) && !setting) return true;
+  return false;
+}
+
+int Constants::getRandomGoodStateMod() {
+  return goodStateMod[(int)((float)goodStateMod.size()*rand()/RAND_MAX)];
+}
+
+int Constants::getRandomBadStateMod() {
+  return badStateMod[(int)((float)badStateMod.size()*rand()/RAND_MAX)];
+}
+
+void Constants::initConstants() {
+  Constants::goodStateMod.push_back( Constants::blessed );
+  Constants::goodStateMod.push_back( Constants::empowered );
+  Constants::goodStateMod.push_back( Constants::enraged );
+  Constants::goodStateMod.push_back( Constants::ac_protected );
+  Constants::goodStateMod.push_back( Constants::magic_protected );
+  Constants::goodStateMod.push_back( Constants::invisible );
+  
+  Constants::badStateMod.push_back( Constants::poisoned );
+  Constants::badStateMod.push_back( Constants::cursed );
+  Constants::badStateMod.push_back( Constants::possessed );
+  Constants::badStateMod.push_back( Constants::blinded );
+  Constants::badStateMod.push_back( Constants::paralysed );
 }

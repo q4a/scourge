@@ -54,7 +54,7 @@ void Calendar::scheduleEvent(Event *e){
 
 // FIXME: O(n)
 void Calendar::cancelEvent(Event *e) {
-  for(int i = 0; i < scheduledEvents.size(); i++) {
+  for(int i = 0; i < (int)scheduledEvents.size(); i++) {
     if(scheduledEvents[i] == e) {
       e->scheduleDeleteEvent();
       break;

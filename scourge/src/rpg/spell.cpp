@@ -28,19 +28,25 @@ Dice::Dice(char *s) {
   char tmp[80];
   strcpy(tmp, s);
   if(strchr(tmp, 'd')) {
-	count = atoi(strtok(tmp, "d"));
-	sides = atoi(strtok(NULL, "+"));
-	char *p = strtok(NULL, "+");
-	if(p) mod = atoi(p);
-	else mod = 0;
+    count = atoi(strtok(tmp, "d"));
+    sides = atoi(strtok(NULL, "+"));
+    char *p = strtok(NULL, "+");
+    if(p) mod = atoi(p);
+    else mod = 0;
   } else {
-	mod = atoi(s);
+    mod = atoi(s);
   }
 
   //  cerr << "DICE: count=" << count << " sides=" << sides << " mod=" << mod << " str=" << this->s << endl;
   //  cerr << "\troll 1:" << roll() << endl;
   //  cerr << "\troll 2:" << roll() << endl;
   //  cerr << "\troll 3:" << roll() << endl;
+}
+
+Dice::Dice(int count, int sides, int mod) {
+  this->count = count;
+  this->sides = sides;
+  this->mod = mod;
 }
 
 Dice::~Dice() {

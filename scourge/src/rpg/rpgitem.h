@@ -25,6 +25,50 @@
 
 using namespace std;
 
+class Monster;
+class Dice;
+class MagicSchool;
+class Spell;
+
+class MagicAttrib {
+private:
+  int bonus; // e.g.: sword +2
+  int damageMultiplier; // 2=double damage, 3=triple, etc.
+  char *monsterType; // if not NULL, damageMultiplier only for this type of monster.
+  MagicSchool *school; // magic damage by a school (or NULL if N/A)
+  Dice *magicDamage; 
+  bool cursed;
+  int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
+  int level;
+  bool stateModSet;
+
+public:
+  MagicAttrib();
+  ~MagicAttrib();
+
+  inline int getLevel() { return level; }
+  inline int getBonus() { return bonus; }
+  inline int getDamageMultiplier() { return damageMultiplier; }
+  inline char *getMonsterType() { return monsterType; }
+  inline MagicSchool *getSchool() { return school; }
+  int rollMagicDamage();
+  inline bool isCursed() { return cursed; }
+  inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
+  inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
+
+  /**
+   * Create a magic attribute obj. depending on the level.
+   * (0=lesser,1=greater,2=champion,3=divine)
+   */
+  void enchant(int level);
+
+  /**
+   * Write the description of this item into buffer s.
+   * S has to be large enough to hold the description. (~255 chars)
+   */
+  void describe(char *s, char *itemName);
+};
+
 class RpgItem {
  private:
 
@@ -110,7 +154,7 @@ class RpgItem {
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs
   inline bool isRangedWeapon() { return type == BOW; }
-  
+
   static RpgItem *getRandomItem(int level);
   static RpgItem *getRandomContainer();
   static RpgItem *getRandomContainerNS();

@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "rpgitem.h"
+#include "spell.h"
+#include "monster.h"
+
 
 /**
    These basic objects are enhanced by adding magical capabilities.
@@ -177,3 +180,110 @@ RpgItem *RpgItem::getItemByName(char *name) {
   //  cerr << "*** Looking for >" << s << "< found=" << item << endl;
   return item;
 }
+
+
+
+MagicAttrib::MagicAttrib() {
+  level = 0;
+  bonus = 0;
+  damageMultiplier = 1;
+  monsterType = NULL;
+  cursed = false;
+  school = NULL;
+  magicDamage = NULL;
+  stateModSet = false;
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++)
+    stateMod[i] = 0;
+}
+
+MagicAttrib::~MagicAttrib() {
+  if(!magicDamage) delete magicDamage;
+}
+
+void MagicAttrib::describe(char *s, char *itemName) {
+  // e.g.: Lesser broadsword + 3 of nature magic
+  char tmp[80];
+  strcpy(s, Constants::MAGIC_ITEM_NAMES[level]);
+  if(stateModSet) {
+    strcat(s, " protective");
+  }
+  strcat(s, " ");
+  strcat(s, itemName);
+  if(bonus > 0) {
+    sprintf(tmp, " (+%d)", bonus);
+    strcat(s, tmp);
+  }
+  if(school) {
+    sprintf(tmp, " of %s magic", school->getName());
+  }
+}
+
+void MagicAttrib::enchant(int level) {
+  if(level < Constants::LESSER_MAGIC_ITEM) level = Constants::LESSER_MAGIC_ITEM;
+  if(level > Constants::DIVINE_MAGIC_ITEM) level = Constants::DIVINE_MAGIC_ITEM;
+
+  /**
+   * lesser (level 0):
+   * bonus, damageMultiplier vs. a monster type
+   * 
+   * greater (level 1):
+   * lesser + higher bonus + magic damage 
+   * 
+   * champion (level 2):
+   * greater + higher magic damage + (1 to 3) good state mods set
+   * 
+   * divine (level 3):
+   * champion + monster_type is NULL + (1 to 3) bad state mods protected
+   */
+  int n;
+  switch(level) {
+  case Constants::LESSER_MAGIC_ITEM:
+    bonus = (int)(3.0f * rand()/RAND_MAX);
+    damageMultiplier = (int)(2.0f * rand()/RAND_MAX);
+    monsterType = (char*)Monster::getRandomMonsterType();
+    break;
+  case Constants::GREATER_MAGIC_ITEM:
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
+    damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+    monsterType = (char*)Monster::getRandomMonsterType();
+    school = MagicSchool::getRandomSpell(1)->getSchool();
+    magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 1, (int)(3.0f * rand()/RAND_MAX));
+    break;
+  case Constants::CHAMPION_MAGIC_ITEM:
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 4;
+    damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+    monsterType = (char*)Monster::getRandomMonsterType();
+    school = MagicSchool::getRandomSpell(1)->getSchool();
+    magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 2, (int)(3.0f * rand()/RAND_MAX) + 1);
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    if(n > 0) stateModSet = true;
+    for(int i = 0; i < n; i++) {
+      stateMod[Constants::getRandomGoodStateMod()] = 1;
+    }
+    break;
+  case Constants::DIVINE_MAGIC_ITEM:
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 6;
+    damageMultiplier = (int)(4.0f * rand()/RAND_MAX);
+    monsterType = NULL;
+    school = MagicSchool::getRandomSpell(1)->getSchool();
+    magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 3, (int)(3.0f * rand()/RAND_MAX) + 2);
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    if(n > 0) stateModSet = true;
+    for(int i = 0; i < n; i++) {
+      stateMod[Constants::getRandomGoodStateMod()] = 1;
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    if(n > 0) stateModSet = true;
+    for(int i = 0; i < n; i++) {
+      stateMod[Constants::getRandomBadStateMod()] = 2;
+    }
+    break;
+  default:
+    cerr << "*** Error: unknown magic attrib level: " << level << endl;
+  }
+}
+
+int MagicAttrib::rollMagicDamage() { 
+  return (magicDamage ? magicDamage->roll() : 0); 
+}
+
