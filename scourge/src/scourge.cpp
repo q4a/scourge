@@ -2660,3 +2660,12 @@ void Scourge::removeBattle(Battle *b) {
     }
   }
 }
+
+void Scourge::colorMiniMapPoint(int x, int y, Shape *shape) { 
+  miniMap->colorMiniMapPoint(x,y,shape); 
+}
+
+void Scourge::eraseMiniMapPoint(int x, int y) { 
+  miniMap->eraseMiniMapPoint(x,y); 
+}
+

@@ -281,6 +281,9 @@ public:
   */
   inline MiniMap *getMiniMap() { return miniMap; }
 
+  void colorMiniMapPoint(int x, int y, Shape *shape);
+  void eraseMiniMapPoint(int x, int y);
+
   /**
     Creat a new item for use on this story. Calling this method instead of new Item()
     directly ensures that the item will be cleaned up properly when the story is
@@ -290,7 +293,7 @@ public:
     @param spell if not NULL, the spell to associate with the created scroll.
     @return the item created.
   */
-  Item *newItem(RpgItem *rpgItem, Spell *spell=NULL);
+  //Item *newItem(RpgItem *rpgItem, Spell *spell=NULL);
   
   /**
     Create a new creature for use on this story. Calling this method instead of new Creature()
@@ -301,7 +304,7 @@ public:
     @param name the name of the new creature
     @return the creature created.
   */
-  Creature *newCreature(Character *character, char *name);
+  //Creature *newCreature(Character *character, char *name);
   
   /**
     Create a new creature for use on this story. Calling this method instead of new Creature()
@@ -311,7 +314,7 @@ public:
     @param monster the character template to use for the new creature.
     @return the creature created.
   */
-  Creature *newCreature(Monster *monster);
+  //Creature *newCreature(Monster *monster);
 
   /** 
     When dropping an item from the inventory this method sets up the parameters so
