@@ -759,8 +759,12 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
 		glPushMatrix();
 		glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
 		//		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
-		glRotatef( count * (360.0f / on), 0, 0, 1 );
-		glTranslatef( w / 2.0f + 5, 0, 0 );
+		//		glRotatef( count * (360.0f / on), 0, 0, 1 );
+		float angle = -(count * 30) - (zrot + 180);
+		glRotatef( angle, 0, 0, 1 );
+		glTranslatef( w / 2.0f + 15, 0, 0 );
+		glRotatef( (count * 30) + 180, 0, 0, 1 );
+		glTranslatef( -7, -7, 0 );
 		//	  drawStateMod(i);
 		//glColor4f( 1, 1, 1, 1 );
 		GLuint icon = scourge->getShapePalette()->getStatModIcon(i);
