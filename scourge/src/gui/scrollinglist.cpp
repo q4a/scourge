@@ -39,6 +39,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   this->list = NULL;
   this->colors = NULL;
   this->icons = NULL;
+  highlightBorders = false;
 }
 
 ScrollingList::~ScrollingList() {
@@ -149,7 +150,10 @@ void ScrollingList::drawWidget(Widget *parent) {
   }
   
   // draw the outline
-  applyBorderColor();
+  if(highlightBorders) {
+    applyHighlightedBorderColor();
+    glLineWidth( 3.0f );
+  } else applyBorderColor();
   glBegin(GL_LINES);
   glVertex2d(0, 0);
   glVertex2d(0, h);
@@ -166,6 +170,7 @@ void ScrollingList::drawWidget(Widget *parent) {
   glVertex2d(0, scrollerY + scrollerHeight);
   glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
   glEnd();
+  glLineWidth( 1.0f );
 }
 
 void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
@@ -213,6 +218,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 			innerDrag = false;
 			dragAndDropHandler->startDrag(this);
 		}
+    highlightBorders = (isInside(x, y) && dragAndDropHandler);
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if(!dragging && isInside(x, y)) {
@@ -245,6 +251,11 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 		scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
 	}
 	return false;
+}
+
+void ScrollingList::removeEffects(Widget *parent) {
+  highlightBorders = false;
+  inside = false;
 }
 
 void ScrollingList::setSelectedLine(int line) { 

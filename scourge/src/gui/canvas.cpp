@@ -28,6 +28,7 @@ Canvas::Canvas(int x, int y, int x2, int y2, WidgetView *view,
 	this->x2 = x2;
 	this->y2 = y2;
   this->dragging = false;
+  highlightBorders = false;
 }
 
 Canvas::~Canvas() {
@@ -40,7 +41,10 @@ void Canvas::drawWidget(Widget *parent) {
     glPopMatrix();
   }
   // draw the border
-  applyBorderColor();
+  if(highlightBorders) {
+    applyHighlightedBorderColor();
+    glLineWidth( 3.0f );
+  } else applyBorderColor();
   glBegin(GL_LINES);
   glVertex2d(0, 0);
   glVertex2d(0, y2 - y);
@@ -51,6 +55,7 @@ void Canvas::drawWidget(Widget *parent) {
   glVertex2d(0, y2 - y);
   glVertex2d(x2 - x, y2 - y);
   glEnd();
+  glLineWidth( 1.0f );
 }
 
 bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
@@ -66,6 +71,7 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
       dragging = false;
     }
   }
+  highlightBorders = (isInside(x, y) && dragAndDropHandler);
   break;
   case SDL_MOUSEBUTTONUP:
   if(inside && dragAndDropHandler) dragAndDropHandler->receive(this);
@@ -80,3 +86,6 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   return false;
 }
 
+void Canvas::removeEffects(Widget *parent) {
+  highlightBorders = false;
+}
