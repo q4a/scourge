@@ -204,4 +204,9 @@ Date::~Date(){
 
 }
 
+bool Date::isADayLater(Date date) {
+  return(date.getYear() < getYear() ||
+         (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
+         (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay()));
+}
 

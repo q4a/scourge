@@ -126,6 +126,8 @@ class Creature {
   int moveCount;
   Uint32 lastMove;
   Battle *battle;
+
+  Date lastEnchantDate;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -139,6 +141,9 @@ class Creature {
   Creature(Session *session, Character *character, char *name);
   Creature(Session *session, Monster *monster);
   ~Creature();
+
+  inline void setLastEnchantDate(Date date) { lastEnchantDate = date; }
+  inline Date getLastEnchantDate() { return lastEnchantDate; }
 
   inline Battle *getBattle() { return battle; }
 

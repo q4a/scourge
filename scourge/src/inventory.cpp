@@ -417,7 +417,28 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       } else if(!item->getRpgItem()->isEnchantable()) {
         scourge->showMessageDialog("This item cannot be enchanted.");
       } else {
-        scourge->showMessageDialog("FIXME: implent enchant item!");
+
+        Date now = scourge->getParty()->getCalendar()->getCurrentDate();
+        if(now.isADayLater(creature->getLastEnchantDate())) {
+          int level = (int)((float)creature->getSkill( Constants::ENCHANT_ITEM_SKILL ) * rand()/RAND_MAX);
+          if(level > 20) {
+            int level = creature->getSkill( Constants::ENCHANT_ITEM_SKILL );
+            item->enchant( (level - 20) / 20 );
+            refresh();
+            scourge->showMessageDialog("You succesfully enchanted an item!");
+            char tmp[255];
+            item->getDetailedDescription(tmp);
+            char msg[255];
+            sprintf(msg, "You created: %s.", tmp);
+            scourge->getMap()->addDescription(msg);
+            creature->startEffect( Constants::EFFECT_SWIRL, Constants::DAMAGE_DURATION * 4 );
+          } else {
+            scourge->showMessageDialog("You failed to enchant the item.");
+          }
+          creature->setLastEnchantDate(now);
+        } else {
+          scourge->showMessageDialog("You can only enchant one item per day.");
+        }
       }
     }
   }

@@ -128,6 +128,7 @@ void Creature::commonInit() {
   this->money = this->level * (int)(10.0f * rand()/RAND_MAX);
   calculateExpOfNextLevel();
   this->battle = new Battle(session, this);
+  lastEnchantDate.setDate(-1, -1, -1, -1, -1, -1);
 }
 
 CreatureInfo *Creature::save() {
