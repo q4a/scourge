@@ -157,11 +157,6 @@ PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
 const char *Constants::SKILL_NAMES[] = {
-  "SWORD_WEAPON",
-  "AXE_WEAPON",
-  "BOW_WEAPON",
-  "HAND_TO_HAND_COMBAT",
-
   "SPEED",
   "COORDINATION",
   "POWER",
@@ -170,6 +165,11 @@ const char *Constants::SKILL_NAMES[] = {
   "LUCK",
   "PIETY",
   "LORE",
+
+  "SWORD_WEAPON",
+  "AXE_WEAPON",
+  "BOW_WEAPON",
+  "HAND_TO_HAND_COMBAT",
 
   "SHIELD_DEFEND",
   "ARMOR_DEFEND",
@@ -247,6 +247,10 @@ int Constants::getSkillByName(char *p) {
 	if(!strcmp(p, SKILL_NAMES[i])) return i;
   }
   return -1;
+}
+
+int Constants::getRandomBasicSkill() {
+  return(int)( (float)Constants::SWORD_WEAPON * rand()/RAND_MAX );
 }
 
 // return -1 on failure, or (-2 - i) on success

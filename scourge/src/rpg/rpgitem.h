@@ -49,11 +49,13 @@ private:
   int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
   int level;
   bool stateModSet;
+  map<int, int> skillBonus;
 
 public:
   MagicAttrib();
   ~MagicAttrib();
 
+  inline map<int,int> *getSkillBonusMap() { return &skillBonus; }
   inline int getLevel() { return level; }
   inline int getBonus() { return bonus; }
   inline int getDamageMultiplier() { return damageMultiplier; }

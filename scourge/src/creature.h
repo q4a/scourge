@@ -24,6 +24,7 @@
 #include <iostream>
 //#include <conio.h>   // for getch
 #include <vector>    // STL for Vector
+#include <map>
 #include <algorithm> // STL for Heap
 #include "glshape.h"
 #include "md2shape.h"
