@@ -39,6 +39,11 @@ public:
 	Shape(Shape *shape);
 	virtual ~Shape();
 
+    /**
+       Call this once before the shape is to be displayed.
+     */
+    virtual inline void intialize() { }
+
   /**
     The widht (x) of the shape-block's base
   */

@@ -759,6 +759,33 @@ void Map::draw() {
     } else {
       // draw the ground  
       setupShapes(true);
+
+      // -------------------------------------------
+      // Only here to debug glshape changes. After that REMOVE this!
+      // -------------------------------------------
+      // shadows
+      glDisable(GL_TEXTURE_2D);
+      glDepthMask(GL_FALSE);
+      glEnable(GL_BLEND);
+      useShadow = true;
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      for(int i = 0; i < otherCount; i++) {
+        doDrawShape(&other[i]);
+      }
+      if(session->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
+        for(int i = 0; i < stencilCount; i++) {
+          doDrawShape(&stencil[i]);
+        }
+      }
+      useShadow = false;
+      glDisable(GL_BLEND);
+      glEnable(GL_TEXTURE_2D);
+      glDepthMask(GL_TRUE);
+      // -------------------------------------------
+      // Only here to debug glshape changes. After that REMOVE this!
+      // -------------------------------------------
+
+
     }
     
     // draw the blended walls

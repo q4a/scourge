@@ -62,7 +62,7 @@ private:
 public:   
   C3DSShape(char *file_name, float div, ShapePalette *shapePal,
 			GLuint texture[], char *name, int descriptionGroup,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
+			Uint32 color, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
   ~C3DSShape();
 
   void draw();

@@ -24,11 +24,12 @@
 C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
 					 GLuint texture[],
 					 char *name, int descriptionGroup,
-					 Uint32 color, GLuint display_list, Uint8 shapePalIndex,
+					 Uint32 color, Uint8 shapePalIndex,
 					 int offsetx, int offsety) :
-	GLShape(0, 1, 1, 1, name, descriptionGroup, color, display_list, shapePalIndex) {
+	GLShape(0, 1, 1, 1, name, descriptionGroup, color, shapePalIndex) {
 	commonInit(file_name, div, shapePal, offsetx, offsety);
-  debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, display_list, shapePalIndex);
+  debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
+  debugShape->initialize();
 }
 
 C3DSShape::~C3DSShape() {

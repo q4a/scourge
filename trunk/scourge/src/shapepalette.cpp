@@ -221,7 +221,6 @@ void ShapePalette::initialize() {
   }
 
   // create shapes
-  GLuint dl = 0;
   for(int i = 0; i < (int)shapeValueVector.size(); i++) {
     cerr << "Creating shape i=" << i << endl;
     ShapeValues *sv = shapeValueVector[i];
@@ -237,7 +236,7 @@ void ShapePalette::initialize() {
                        strdup(sv->name), 
                        sv->descriptionIndex,
                        sv->color,
-                       dl, (i + 1));
+                       (i + 1));
     } else if(strlen(sv->m3ds_name)) {
       shapes[(i + 1)] =
       new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
@@ -245,7 +244,7 @@ void ShapePalette::initialize() {
                     strdup(sv->name), 
                     sv->descriptionIndex,
                     sv->color,
-                    dl,(i + 1));
+                    (i + 1));
     } else if(sv->torch > -1) {
       if(sv->torch == 5) {
         shapes[(i + 1)] =
@@ -254,7 +253,7 @@ void ShapePalette::initialize() {
                     strdup(sv->name),
                     sv->descriptionIndex,
                     sv->color,
-                    dl, (i + 1));
+                    (i + 1));
       } else {
         shapes[(i + 1)] =
         new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
@@ -262,7 +261,7 @@ void ShapePalette::initialize() {
                     strdup(sv->name),
                     sv->descriptionIndex,
                     sv->color,
-                    dl, (i + 1), 
+                    (i + 1), 
                     torchback, sv->torch);
       }
     } else {
@@ -272,12 +271,15 @@ void ShapePalette::initialize() {
                   strdup(sv->name),
                   sv->descriptionIndex,
                   sv->color,
-                  dl, (i + 1));
+                  (i + 1));
     }
     shapes[(i + 1)]->setSkipSide(sv->skipSide);
     shapes[(i + 1)]->setStencil(sv->stencil == 1);
     shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
     shapes[(i + 1)]->setIconRotation(sv->xrot, sv->yrot, sv->zrot);
+
+    // Call this when all other intializations are done.
+    shapes[(i + 1)]->initialize();
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
@@ -298,11 +300,12 @@ void ShapePalette::initialize() {
               strdup("SPELL_FIREBALL"),
               0,
               strtoul("6070ffff", NULL, 16),
-              dl, shapeCount, 
+              shapeCount, 
               torchback, Constants::SOUTH); // Hack: use SOUTH for a spell
   shapes[shapeCount]->setSkipSide(false);
   shapes[shapeCount]->setStencil(false);
   shapes[shapeCount]->setLightBlocking(false);  
+  shapes[shapeCount]->initialize();
   string nameStr = shapes[shapeCount]->getName();
   shapeMap[nameStr] = shapes[shapeCount];
   shapeCount++;

@@ -46,7 +46,7 @@ class GLTeleporter : public GLShape  {
   GLTeleporter(GLuint texture[], GLuint flameTex,
 			   int width, int depth, int height,
 			   char *name, int descriptionGroup,
-			   Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+			   Uint32 color, Uint8 shapePalIndex=0);
   
   ~GLTeleporter();
   
