@@ -20,6 +20,8 @@
 
 #define MOUSE_ROT_DELTA 2
 
+#define BATTLES_ENABLED 1
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 // good for debugging blending
@@ -258,7 +260,8 @@ void Scourge::startMission() {
     setUILayout();
 
     // start the haunting tunes
-    sdlHandler->getSound()->playMusicDungeon();
+    if(inHq) sdlHandler->getSound()->playMusicMenu();
+    else sdlHandler->getSound()->playMusicDungeon();
 
     // run mission
     sdlHandler->mainLoop();
@@ -858,59 +861,33 @@ bool Scourge::handleEvent(SDL_Event *event) {
   }
   switch(event->type) {
   case SDL_KEYDOWN:
+  
+    // DEBUG ------------------------------------
+    
+    if(event->key.keysym.sym == SDLK_l) {
+      cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
+      return false;
+    } else if(event->key.keysym.sym == SDLK_m) {
+      missionCompleted();
+      return false;
+    } else if(event->key.keysym.sym == SDLK_f) {
+      party->startEffect(Constants::EFFECT_FLAMES, (Constants::DAMAGE_DURATION * 4));
+      return false;
+    }
+    // END OF DEBUG ------------------------------------
+
+
   case SDL_KEYUP:
 
-	if(event->key.keysym.sym == SDLK_m) {
-	  missionCompleted();
-	  return false;
-	}
-
-	// this is here to test effects
-	if(event->key.keysym.sym == SDLK_f) {
-	  party->startEffect(Constants::EFFECT_FLAMES, (Constants::DAMAGE_DURATION * 4));
-	  return false;
-	}
-	if(event->key.keysym.sym == SDLK_t) {
-	  party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
-	  return false;
-	}
-	if(event->key.keysym.sym == SDLK_g) {
-	  party->startEffect(Constants::EFFECT_GLOW, (Constants::DAMAGE_DURATION * 4));
-	  return false;
-	}
-	if(event->key.keysym.sym == SDLK_h) {
-	  //party->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
-    map->startEffect(party->getParty(0)->getX(), party->getParty(0)->getY(), 3, 
-                     Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4), 2, 2);
-	  return false;
-	}
-	if(event->key.keysym.sym == SDLK_j) {
-	  party->startEffect(Constants::EFFECT_EXPLOSION, (Constants::DAMAGE_DURATION * 4));
-	  return false;
-	}
-	if(event->key.keysym.sym == SDLK_k) {
-	  party->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
-	  return false;
-	}
-	if(event->key.keysym.sym == SDLK_l) {
-	  party->startEffect(Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
-	  return false;
-	}
-	if(event->key.keysym.sym == SDLK_d) {
-    map->startEffect(party->getParty(0)->getX(), party->getParty(0)->getY(), 3, 
-                     Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4), 6, 6);
-	  return false;
-	}
-
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
-	  if(exitConfirmationDialog->isVisible()) {
-		exitConfirmationDialog->setVisible(false);
-	  } else {
-		party->toggleRound(true);
-		exitConfirmationDialog->setVisible(true);
-	  }	  
-	  return false;
-	}
+      if(exitConfirmationDialog->isVisible()) {
+        exitConfirmationDialog->setVisible(false);
+      } else {
+        party->toggleRound(true);
+        exitConfirmationDialog->setVisible(true);
+      }	  
+      return false;
+    }
     
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
@@ -2032,6 +2009,8 @@ bool Scourge::fightCurrentBattleTurn() {
 }
 
 bool Scourge::createBattleTurns() {
+  if(!BATTLES_ENABLED) return false;
+
   // set up battles
   battleCount = 0;
 

@@ -126,6 +126,8 @@ class Map {
   map<Uint32, Uint32> doorToKey;
   map<Uint32, Uint32> keyToDoor;
 
+  int LIGHTMAP_ENABLED;
+
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
   unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
@@ -142,7 +144,9 @@ class Map {
   void reset();
 
   int debugX, debugY, debugZ;  
-  
+
+  int toggleLightMap();
+
   bool selectMode;
   bool floorOnly;
 

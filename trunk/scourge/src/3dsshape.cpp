@@ -221,20 +221,23 @@ void C3DSShape::draw() {
 
 	// Get the current object that we are displaying
 	t3DObject *pObject = &g_3DModel.pObject[i];
+
+  // in shadow mode when the stencil test is used
+  //useShadow = glIsEnabled(GL_STENCIL_TEST);
 	
 	// Check to see if this object has a texture map, if so bind the texture to it.
-    if(pObject->bHasTexture) {
-		// Bind the texture map to the object by it's materialID
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
-	    if(!useShadow) glColor3ub(255, 255, 255);		
-	  } else {
-		// Turn off texture mapping and turn on color
-		glDisable(GL_TEXTURE_2D);		
-		// Reset the color to normal again
-		if(!useShadow) glColor3ub(255, 255, 255);
-	  }	
-
+  if(pObject->bHasTexture && !useShadow) {
+    // Bind the texture map to the object by it's materialID
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
+    if(!useShadow) glColor3ub(255, 255, 255);		
+  } else {
+    // Turn off texture mapping and turn on color
+    glDisable(GL_TEXTURE_2D);		
+    // Reset the color to normal again
+    if(!useShadow) glColor3ub(255, 255, 255);
+  }	
+  
 	float c[3];
 	
 	// This determines if we are in wireframe or normal mode
