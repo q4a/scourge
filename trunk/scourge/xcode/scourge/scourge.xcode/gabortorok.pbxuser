@@ -148,7 +148,7 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 126146765;
+			PBXPerProjectTemplateStateSaveDate = 128969734;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -323,22 +323,22 @@
 							_percentageOfCollapsedView = 0;
 							isCollapsed = yes;
 							sizes = (
-								"{{0, 0}, {571, 170}}",
-								"{{0, 170}, {571, 519}}",
+								"{{0, 0}, {571, 175}}",
+								"{{0, 175}, {571, 514}}",
 							);
 						};
 						PBXProjectWorkspaceModule_DataSourceSelectionKey_Rev6 = {
-							BoundsStr = "{{0, 0}, {556, 153}}";
+							BoundsStr = "{{0, 0}, {556, 158}}";
 							Rows = (
 								0,
 							);
-							VisibleRectStr = "{{0, 0}, {556, 153}}";
+							VisibleRectStr = "{{0, 0}, {556, 158}}";
 						};
 						PBXProjectWorkspaceModule_EditorOpen = true;
 						PBXProjectWorkspaceModule_EmbeddedNavigatorGroup = {
 							PBXSplitModuleInNavigatorKey = {
 								Split0 = {
-									bookmark = 7619A8A20784DB8800014898;
+									bookmark = 76DACCA707AFF110006B1419;
 									history = (
 										7625AA2405F46D50005D9F4F,
 										7625AA2D05F46D89005D9F4F,
@@ -396,7 +396,7 @@
 										7619A86B0784DB8800014898,
 										7619A8930784DB8800014898,
 										7619A89F0784DB8800014898,
-										7619A89D0784DB8800014898,
+										7619A8A20784DB8800014898,
 									);
 									nextStack = (
 										7619A8A00784DB8800014898,
@@ -470,8 +470,8 @@
 								);
 							};
 						};
-						PBXProjectWorkspaceModule_OldDetailFrame = "{{0, 0}, {571, 170}}";
-						PBXProjectWorkspaceModule_OldEditorFrame = "{{0, 170}, {571, 519}}";
+						PBXProjectWorkspaceModule_OldDetailFrame = "{{0, 0}, {571, 175}}";
+						PBXProjectWorkspaceModule_OldEditorFrame = "{{0, 175}, {571, 514}}";
 						PBXProjectWorkspaceModule_OldSuperviewFrame = "{{244, 0}, {571, 689}}";
 						PBXProjectWorkspaceModule_SGTM = {
 							PBXBottomSmartGroupGIDs = (
@@ -506,16 +506,18 @@
 									1C37FBAC04509CD000000102,
 									1C37FAAC04509CD000000102,
 									1C37FABC05509CD000000102,
-									E2644B35053B69B200211256,
 								);
 								PBXSmartGroupTreeModuleOutlineStateSelectionKey = (
 									(
-										55,
-										50,
+										1,
+										0,
+									),
+									(
+										2,
 										0,
 									),
 								);
-								PBXSmartGroupTreeModuleOutlineStateVisibleRectKey = "{{0, 870}, {227, 671}}";
+								PBXSmartGroupTreeModuleOutlineStateVisibleRectKey = "{{0, 0}, {227, 671}}";
 							};
 							PBXTopSmartGroupGIDs = (
 							);
@@ -776,8 +778,8 @@
 						_percentageOfCollapsedView = 0;
 						isCollapsed = yes;
 						sizes = (
-							"{{0, 0}, {493, 167}}",
-							"{{0, 176}, {493, 267}}",
+							"{{0, 0}, {491, 167}}",
+							"{{0, 176}, {491, 267}}",
 						);
 					};
 					VerticalSplitView = {
@@ -796,15 +798,14 @@
 				{
 					Frame = "{{0, 0}, {815, 689}}";
 					PBXProjectWorkspaceModule_GeometryKey_Rev15 = {
-						PBXProjectWorkspaceModule_RunWindowVisible = true;
 					};
 					RubberWindowFrame = "465 98 815 731 0 0 1280 832 ";
 				},
 			);
 			"PBXWorkspaceGeometries:PBXConfiguration.PBXModule.PBXBuildResultsModule" = {
-				Frame = "{{0, 0}, {459, 638}}";
+				Frame = "{{0, 0}, {753, 391}}";
 				PBXModuleWindowStatusBarHidden = YES;
-				RubberWindowFrame = "4 169 459 659 0 0 1280 832 ";
+				RubberWindowFrame = "4 416 753 412 0 0 1280 832 ";
 			};
 			"PBXWorkspaceGeometries:PBXConfiguration.PBXModule.PBXCVSModule" = {
 				Frame = "{{0, 0}, {482, 297}}";
@@ -869,7 +870,7 @@
 				PBXModuleWindowStatusBarHidden = YES;
 				RubberWindowFrame = "121 70 745 408 0 0 1280 832 ";
 			};
-			PBXWorkspaceStateSaveDate = 126146765;
+			PBXWorkspaceStateSaveDate = 128969734;
 		};
 		perUserProjectItems = {
 			760E807706D5C313006548A8 = 760E807706D5C313006548A8;
@@ -881,7 +882,6 @@
 			7619A86B0784DB8800014898 = 7619A86B0784DB8800014898;
 			7619A86C0784DB8800014898 = 7619A86C0784DB8800014898;
 			7619A8930784DB8800014898 = 7619A8930784DB8800014898;
-			7619A89D0784DB8800014898 = 7619A89D0784DB8800014898;
 			7619A89F0784DB8800014898 = 7619A89F0784DB8800014898;
 			7619A8A00784DB8800014898 = 7619A8A00784DB8800014898;
 			7619A8A20784DB8800014898 = 7619A8A20784DB8800014898;
@@ -964,6 +964,7 @@
 			76908F1207827A0F00D1A3B2 = 76908F1207827A0F00D1A3B2;
 			76BFDE9406D309B700C65A98 = 76BFDE9406D309B700C65A98;
 			76BFDE9606D309B700C65A98 = 76BFDE9606D309B700C65A98;
+			76DACCA707AFF110006B1419 = 76DACCA707AFF110006B1419;
 			76DD342105D709CE0037E6DF = 76DD342105D709CE0037E6DF;
 			76DDD14406CD68A70023850F = 76DDD14406CD68A70023850F;
 			76DDD14606CD68A70023850F = 76DDD14606CD68A70023850F;
@@ -1049,17 +1050,6 @@
 	7619A8670784DB8800014898 = {
 		exec = 7674A5DB05D5F87500A583B9;
 		isa = PBXExecutableBookmark;
-		uiCtxt = {
-			buildSettingsExpandedSubviews = (
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-			);
-			buildSettingsVisRect = "{{0, 0}, {657, 470}}";
-		};
 	};
 	7619A86B0784DB8800014898 = {
 		fRef = 762AF841066D856300B92069;
@@ -1090,16 +1080,6 @@
 		rType = 0;
 		vrLen = 1167;
 		vrLoc = 2173;
-	};
-	7619A89D0784DB8800014898 = {
-		fRef = 762AF852066D856300B92069;
-		isa = PBXTextBookmark;
-		name = "scourge.cpp: 2812";
-		rLen = 0;
-		rLoc = 90277;
-		rType = 0;
-		vrLen = 1133;
-		vrLoc = 8932;
 	};
 	7619A89F0784DB8800014898 = {
 		fRef = 769C1323076973B00080F47F;
@@ -1736,9 +1716,9 @@
 	};
 	762AF852066D856300B92069 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {944, 33719}}";
-			sepNavSelRange = "{10886, 0}";
-			sepNavVisRect = "{{0, 4370}, {532, 487}}";
+			sepNavIntBoundsRect = "{{0, 0}, {944, 36263}}";
+			sepNavSelRange = "{10175, 0}";
+			sepNavVisRect = "{{0, 4453}, {532, 482}}";
 			sepNavWindowFrame = "{{15, 269}, {750, 558}}";
 		};
 	};
@@ -2500,6 +2480,16 @@
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 4097;
+	};
+	76DACCA707AFF110006B1419 = {
+		fRef = 762AF852066D856300B92069;
+		isa = PBXTextBookmark;
+		name = "scourge.cpp: 378";
+		rLen = 0;
+		rLoc = 10175;
+		rType = 0;
+		vrLen = 1370;
+		vrLoc = 10038;
 	};
 	76DD342105D709CE0037E6DF = {
 		fRef = 7674A5F705D5F9B500A583B9;
