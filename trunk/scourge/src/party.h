@@ -85,6 +85,7 @@ class Party {
   inline Creature *getParty(int i) { return party[i]; } 
 
   // move the party
+  void setSelXY( Uint16 mapx, Uint16 mapy );
   void movePlayers();
 
   // returns false if the switch could not be made,
