@@ -516,7 +516,7 @@ void Scourge::drawAfter() {
     turnProgress->updateStatus(msg, false, 
                                c->getBattle()->getAP(), 
                                c->getBattle()->getStartingAP(),
-                               c->getProposedPath()->size());
+                               ( showPath ? c->getProposedPath()->size() : 0 ) );
     glPopMatrix();
     //glPushAttrib(GL_ENABLE_BIT);
   }
@@ -1004,17 +1004,13 @@ bool Scourge::handleEvent(SDL_Event *event) {
       return false;
     } 
 
-    if( event->key.keysym.sym == SDLK_p ) {
-      if( event->type == SDL_KEYUP ) {
-        showPath = getUserConfiguration()->getAlwaysShowPath();
-      } else {
-        showPath = true;
-      }
-    }
-    
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
-    if(ea == SET_MOVE_DOWN){        
+    if(ea == SHOW_PATH) {
+      showPath = true;
+    } else if(ea == SHOW_PATH_STOP) {
+      showPath = getUserConfiguration()->getAlwaysShowPath();
+    } else if(ea == SET_MOVE_DOWN){        
 	  setMove(Constants::MOVE_DOWN);
     }
     else if(ea == SET_MOVE_UP){

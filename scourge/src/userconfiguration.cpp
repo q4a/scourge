@@ -71,6 +71,8 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "LAYOUT_2",
     "LAYOUT_3",
     "LAYOUT_4",
+
+    "SHOW_PATH",
     
     "BLEND_A",
     "BLEND_B",
@@ -82,6 +84,7 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "ADD_Y_POS_MINUS",
     "ADD_Z_POS_PLUS",
     "ADD_Z_POS_MINUS",    
+    "SHOW_PATH"
 };
 
 
@@ -102,6 +105,7 @@ const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
     "SET_ZOOM_IN",     
     "SET_ZOOM_OUT",
     "USE_ITEM", 
+    "SHOW_PATH",
     "SET_NEXT_FORMATION"
     
 };
@@ -972,6 +976,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind f2 layout_2" << endl;
   configFile << "bind f3 layout_3" << endl;
   configFile << "bind f4 layout_4" << endl;
+  configFile << "bind p show_path" << endl;
   configFile << "" << endl;
   configFile << "// Video settings" << endl;
   configFile << "set fullscreen true" << endl;
