@@ -322,7 +322,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
   
   if((int)bestPath.size() > bestPathPos) {
     // take a step on the bestPath
-    Location location = bestPath.at(bestPathPos);
+    Location location = bestPath[bestPathPos];
     // if we can't step there, someone else has moved there ahead of us
     Uint16 oldDir = dir;
     //dir = next->getDir();
