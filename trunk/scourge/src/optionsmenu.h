@@ -75,6 +75,8 @@ private:
   Checkbox * frameOnFullScreen;
   Checkbox * turnBasedBattle;
   Checkbox * alwaysShowPath;
+  Checkbox *tooltipEnabled;
+  Slider *tooltipInterval;
   
   MultipleLabel * videoResolutionML;  
   Checkbox * fullscreenCheckbox;

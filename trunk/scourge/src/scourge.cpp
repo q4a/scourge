@@ -24,6 +24,8 @@
 
 #define DRAG_START_TOLERANCE 5
 
+#define INFO_INTERVAL 3000
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 // good for debugging blending
@@ -44,7 +46,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
-  needToCheckDropLocation = true;
+  needToCheckInfo = needToCheckDropLocation = true;
   nextMission = -1;
   // in HQ map
   inHq = true;
@@ -87,7 +89,7 @@ void Scourge::initVideo(ShapePalette *shapePal) {
 
 void Scourge::initUI() {
 // for now pass map in
-  this->map = session->getMap();
+  this->levelMap = session->getMap();
   miniMap = new MiniMap(this); 
 
   // create the mission board
@@ -196,7 +198,7 @@ void Scourge::startMission() {
     if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
 
     // create the map
-    map->reset();
+    levelMap->reset();
 
     // do this only once
     if(resetParty) {
@@ -253,7 +255,7 @@ void Scourge::startMission() {
       getSession()->setCurrentMission(NULL);
       missionWillAwardExpPoints = false;
       dg = new DungeonGenerator(this, 2, 0, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
-      dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
+      dg->toMap(levelMap, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
     } else {
       // in HQ map
       inHq = false;
@@ -268,11 +270,11 @@ void Scourge::startMission() {
                                 (currentStory < getSession()->getCurrentMission()->getDungeonStoryCount() - 1), 
                                 (currentStory > 0),
                                 getSession()->getCurrentMission());
-      dg->toMap(map, getShapePalette());
+      dg->toMap(levelMap, getShapePalette());
     }
 
     // center map on the player
-    map->center(toint(party->getPlayer()->getX()), 
+    levelMap->center(toint(party->getPlayer()->getX()), 
                 toint(party->getPlayer()->getY()),
                 true);
 
@@ -308,6 +310,7 @@ void Scourge::startMission() {
     sdlHandler->getSound()->stopMusicDungeon();
 
     // clean up after the mission
+    resetInfos();
 
     // remove gui
     mainWin->setVisible(false);
@@ -368,19 +371,20 @@ void Scourge::drawView() {
   updatePartyUI();
 
   checkForDropTarget();
+  checkForInfo();
 
-  map->draw();
+  levelMap->draw();
 
   // cancel mouse-based map movement (middle button)
   if(mouseRot) {
-    map->setXRot(0);
-    map->setYRot(0);
-    map->setZRot(0);
+    levelMap->setXRot(0);
+    levelMap->setYRot(0);
+    levelMap->setZRot(0);
   }
   if(mouseZoom) {
     mouseZoom = false;
-    map->setZoomIn(false);
-    map->setZoomOut(false);
+    levelMap->setZoomIn(false);
+    levelMap->setZoomOut(false);
   }
 
   // the boards outside the map
@@ -390,13 +394,16 @@ void Scourge::drawView() {
   glDisable( GL_TEXTURE_2D );
 
   if(isInfoShowing) {
-    map->initMapView();
+    levelMap->initMapView();
+
+    drawInfos();
+
     // creatures first
     for(int i = 0; i < session->getCreatureCount(); i++) {
       if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-         map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                 toint(session->getCreature(i)->getY())) &&
-         map->isLocationInLight(toint(session->getCreature(i)->getX()), 
+         levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
                                 toint(session->getCreature(i)->getY()))) {
         showCreatureInfo(session->getCreature(i), false, false, false);
       }
@@ -414,8 +421,8 @@ void Scourge::drawView() {
 
         showCreatureInfo(party->getParty(i), 
                          player, 
-                         (map->getSelectedDropTarget() && 
-                          map->getSelectedDropTarget()->creature == party->getParty(i)),
+                         (levelMap->getSelectedDropTarget() && 
+                          levelMap->getSelectedDropTarget()->creature == party->getParty(i)),
                          !party->isPlayerOnly());
       }
     }
@@ -423,7 +430,7 @@ void Scourge::drawView() {
     glDisable( GL_SCISSOR_TEST );
   }
 
-  map->drawDescriptions(messageList);
+  levelMap->drawDescriptions(messageList);
 
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
@@ -446,8 +453,8 @@ void Scourge::drawView() {
 
 void Scourge::drawOutsideMap() {
   // cover the area outside the map
-  if(map->getViewWidth() < sdlHandler->getScreen()->w || 
-     map->getViewHeight() < sdlHandler->getScreen()->h) {
+  if(levelMap->getViewWidth() < sdlHandler->getScreen()->w || 
+     levelMap->getViewHeight() < sdlHandler->getScreen()->h) {
     //glPushAttrib( GL_ENABLE_BIT );
     glDisable( GL_CULL_FACE );
     glDisable( GL_DEPTH_TEST );
@@ -460,29 +467,29 @@ void Scourge::drawOutsideMap() {
     float TILE_H = 270 / 2.0f; 
     
     glLoadIdentity();
-    glTranslatef( map->getViewWidth(), 0, 0 );
+    glTranslatef( levelMap->getViewWidth(), 0, 0 );
     glBegin( GL_QUADS );
     glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
     glTexCoord2f( 0, sdlHandler->getScreen()->h / TILE_H );
     glVertex2i( 0, sdlHandler->getScreen()->h );
     glTexCoord2f( 1, sdlHandler->getScreen()->h / TILE_H );
-    glVertex2i( sdlHandler->getScreen()->w - map->getViewWidth(), sdlHandler->getScreen()->h );
+    glVertex2i( sdlHandler->getScreen()->w - levelMap->getViewWidth(), sdlHandler->getScreen()->h );
     glTexCoord2f( 1, 0 );
-    glVertex2i( sdlHandler->getScreen()->w - map->getViewWidth(), 0 );
+    glVertex2i( sdlHandler->getScreen()->w - levelMap->getViewWidth(), 0 );
     glEnd();
     
     glLoadIdentity();
-    glTranslatef( 0, map->getViewHeight(), 0 );
+    glTranslatef( 0, levelMap->getViewHeight(), 0 );
     glBegin( GL_QUADS );
     glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
-    glTexCoord2f( 0, map->getViewHeight() / TILE_H );
-    glVertex2i( 0, map->getViewHeight() );
-    glTexCoord2f( 1, map->getViewHeight() / TILE_H );
-    glVertex2i( map->getViewWidth(), map->getViewHeight() );
+    glTexCoord2f( 0, levelMap->getViewHeight() / TILE_H );
+    glVertex2i( 0, levelMap->getViewHeight() );
+    glTexCoord2f( 1, levelMap->getViewHeight() / TILE_H );
+    glVertex2i( levelMap->getViewWidth(), levelMap->getViewHeight() );
     glTexCoord2f( 1, 0 );
-    glVertex2i( map->getViewWidth(), 0 );
+    glVertex2i( levelMap->getViewWidth(), 0 );
     glEnd();
     
     glPopMatrix();
@@ -564,8 +571,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
          i <= creature->getBattle()->getAP(); i++) {
       Location pos = (*(creature->getProposedPath()))[i];
       glColor4f(1, 0.4f, 0.0f, 0.5f);
-      xpos2 = ((float)(pos.x - map->getX()) / GLShape::DIV);
-      ypos2 = ((float)(pos.y - map->getY()) / GLShape::DIV);
+      xpos2 = ((float)(pos.x - levelMap->getX()) / GLShape::DIV);
+      ypos2 = ((float)(pos.y - levelMap->getY()) / GLShape::DIV);
       zpos2 = 0.0f / GLShape::DIV;  
       glPushMatrix();
       glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
@@ -581,8 +588,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
        creature->getSelY() == toint(creature->getY())) ) {
     // draw target
     glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
-    xpos2 = ((float)(creature->getSelX() - map->getX()) / GLShape::DIV);
-    ypos2 = ((float)(creature->getSelY() - map->getY()) / GLShape::DIV);
+    xpos2 = ((float)(creature->getSelX() - levelMap->getX()) / GLShape::DIV);
+    ypos2 = ((float)(creature->getSelY() - levelMap->getY()) / GLShape::DIV);
     zpos2 = 0.0f / GLShape::DIV;  
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
@@ -597,8 +604,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / GLShape::DIV;
     //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / GLShape::DIV;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
-    xpos2 = ((float)(creature->getTargetCreature()->getX() - map->getX()) / GLShape::DIV);
-    ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
+    xpos2 = ((float)(creature->getTargetCreature()->getX() - levelMap->getX()) / GLShape::DIV);
+    ypos2 = ((float)(creature->getTargetCreature()->getY() - levelMap->getY()) / GLShape::DIV);
     zpos2 = 0.0f / GLShape::DIV;  
     glPushMatrix();
     //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
@@ -607,8 +614,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glPopMatrix();
   }
 
-  xpos2 = (creature->getX() - (float)(map->getX())) / GLShape::DIV;
-  ypos2 = (creature->getY() - (float)(map->getY())) / GLShape::DIV;
+  xpos2 = (creature->getX() - (float)(levelMap->getX())) / GLShape::DIV;
+  ypos2 = (creature->getY() - (float)(levelMap->getY())) / GLShape::DIV;
   zpos2 = creature->getZ() / GLShape::DIV;  
 
   if(creature->getAction() != Constants::ACTION_NO_ACTION) {
@@ -644,7 +651,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
         glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
         //		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
         //		glRotatef( count * (360.0f / on), 0, 0, 1 );
-        float angle = -(count * 30) - (map->getZRot() + 180);
+        float angle = -(count * 30) - (levelMap->getZRot() + 180);
         glRotatef( angle, 0, 0, 1 );
         glTranslatef( w + 15, 0, 0 );
         glRotatef( (count * 30) + 180, 0, 0, 1 );
@@ -711,7 +718,7 @@ void Scourge::drawDraggedItem() {
     later.name = 0;
     later.pos = NULL;
 
-    map->doDrawShape( &later );
+    levelMap->doDrawShape( &later );
     //map->doDrawShape(0, 0, 0, getMovingItem()->getShape(), 0);
     glPopMatrix();
   }
@@ -759,8 +766,8 @@ void Scourge::drawDraggedItem() {
 }
 
 void Scourge::drawBorder() {
-  if(map->getViewWidth() == getSDLHandler()->getScreen()->w && 
-     map->getViewHeight() == getSDLHandler()->getScreen()->h &&
+  if(levelMap->getViewWidth() == getSDLHandler()->getScreen()->w && 
+     levelMap->getViewHeight() == getSDLHandler()->getScreen()->h &&
      !getUserConfiguration()->getFrameOnFullScreen()) return;
 
   glPushMatrix();
@@ -912,8 +919,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
   if(mouseRot) {
-    map->setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
-    map->setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
+    levelMap->setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
+    levelMap->setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
   } else {
     //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
     mx = event->motion.x;
@@ -935,8 +942,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
         mouseMoveScreen = false;
         removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
         removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
-        map->setYRot(0.0f);
-        map->setZRot(0.0f);
+        levelMap->setYRot(0.0f);
+        levelMap->setZRot(0.0f);
       }
     }
 
@@ -1028,23 +1035,23 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  setMove(Constants::MOVE_LEFT);
     }
     else if(ea == SET_MOVE_DOWN_STOP){        
-	  map->setYRot(0.0f);
-	  map->setYRot(0);
+	  levelMap->setYRot(0.0f);
+	  levelMap->setYRot(0);
 	  removeMove(Constants::MOVE_DOWN);
     }
     else if(ea == SET_MOVE_UP_STOP){
-	  map->setYRot(0.0f);
-	  map->setYRot(0);
+	  levelMap->setYRot(0.0f);
+	  levelMap->setYRot(0);
 	  removeMove(Constants::MOVE_UP);
     }
     else if(ea == SET_MOVE_RIGHT_STOP){
-	  map->setYRot(0.0f);
-	  map->setZRot(0);
+	  levelMap->setYRot(0.0f);
+	  levelMap->setZRot(0);
 	  removeMove(Constants::MOVE_RIGHT);
     }
     else if(ea == SET_MOVE_LEFT_STOP){
-	  map->setYRot(0.0f);
-	  map->setZRot(0);
+	  levelMap->setYRot(0.0f);
+	  levelMap->setZRot(0);
 	  removeMove(Constants::MOVE_LEFT);
     }            
     else if(ea == SET_PLAYER_0){
@@ -1087,58 +1094,58 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
     }   
     else if(ea == SET_X_ROT_PLUS){        
-        map->setXRot(5.0f);
+        levelMap->setXRot(5.0f);
     }
     else if(ea == SET_X_ROT_MINUS){
-        map->setXRot(-5.0f);
+        levelMap->setXRot(-5.0f);
     }
     else if(ea == SET_Y_ROT_PLUS){
-        map->setYRot(5.0f);
+        levelMap->setYRot(5.0f);
     }
     else if(ea == SET_Y_ROT_MINUS){
-        map->setYRot(-5.0f);
+        levelMap->setYRot(-5.0f);
     }
     else if(ea == SET_Z_ROT_PLUS){
-        map->setZRot(5.0f);
+        levelMap->setZRot(5.0f);
     }
     else if(ea == SET_Z_ROT_MINUS){
-        map->setZRot(-5.0f);
+        levelMap->setZRot(-5.0f);
     }    
     else if(ea == SET_X_ROT_PLUS_STOP){
-        map->setXRot(0.0f);
+        levelMap->setXRot(0.0f);
     }
     else if(ea == SET_X_ROT_MINUS_STOP){
-        map->setXRot(0.0f);
+        levelMap->setXRot(0.0f);
     }
     else if(ea == SET_Y_ROT_PLUS_STOP){
-        map->setYRot(0.0f);
+        levelMap->setYRot(0.0f);
     }
     else if(ea == SET_Y_ROT_MINUS_STOP){
-        map->setYRot(0.0f);
+        levelMap->setYRot(0.0f);
     }
     else if(ea == SET_Z_ROT_PLUS_STOP){
-        map->setZRot(0.0f);
+        levelMap->setZRot(0.0f);
     }
     else if(ea == SET_Z_ROT_MINUS_STOP){
-        map->setZRot(0.0f);
+        levelMap->setZRot(0.0f);
     }    
     else if(ea == ADD_X_POS_PLUS){
-        map->addXPos(10.0f);
+        levelMap->addXPos(10.0f);
     }
     else if(ea == ADD_X_POS_MINUS){
-        map->addXPos(-10.0f);
+        levelMap->addXPos(-10.0f);
     }
     else if(ea == ADD_Y_POS_PLUS){
-        map->addYPos(10.0f);
+        levelMap->addYPos(10.0f);
     }
     else if(ea == ADD_Y_POS_MINUS){
-        map->addYPos(-10.0f);
+        levelMap->addYPos(-10.0f);
     }
     else if(ea == ADD_Z_POS_PLUS){
-        map->addZPos(10.0f);
+        levelMap->addZPos(10.0f);
     }
     else if(ea == ADD_Z_POS_MINUS){
-        map->addZPos(-10.0f);
+        levelMap->addZPos(-10.0f);
     }     
     else if(ea == MINIMAP_ZOOM_IN){
         miniMap->zoomIn();
@@ -1150,16 +1157,16 @@ bool Scourge::handleEvent(SDL_Event *event) {
         miniMap->toggle();
     }
     else if(ea == SET_ZOOM_IN){
-        map->setZoomIn(true);
+        levelMap->setZoomIn(true);
     }
     else if(ea == SET_ZOOM_OUT){
-        map->setZoomOut(true);
+        levelMap->setZoomOut(true);
     }
     else if(ea == SET_ZOOM_IN_STOP){
-        map->setZoomIn(false);
+        levelMap->setZoomIn(false);
     }
     else if(ea == SET_ZOOM_OUT_STOP){
-        map->setZoomOut(false);
+        levelMap->setZoomOut(false);
     }
     else if(ea == TOGGLE_MAP_CENTER){
         bool mc;
@@ -1205,7 +1212,7 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
     }
   }
 
-  if(mapx < MAP_WIDTH) map->handleMouseMove(mapx, mapy, 0);
+  if(mapx < MAP_WIDTH) levelMap->handleMouseMove(mapx, mapy, 0);
 }
 
 void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
@@ -1218,12 +1225,12 @@ void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
     mouseRot = true;
   } if(button == SDL_BUTTON_WHEELUP) {
     mouseZoom = true;
-    map->setZoomIn(false);
-    map->setZoomOut(true);
+    levelMap->setZoomIn(false);
+    levelMap->setZoomOut(true);
   } if(button == SDL_BUTTON_WHEELDOWN) {
     mouseZoom = true;
-    map->setZoomIn(true);
-    map->setZoomOut(false);
+    levelMap->setZoomIn(true);
+    levelMap->setZoomOut(false);
   }
 }
 
@@ -1236,9 +1243,9 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   Creature *c = getTargetSelectionFor();
   if(button == SDL_BUTTON_MIDDLE) {
     mouseRot = false;
-    map->setXRot(0);
-    map->setYRot(0);
-    map->setZRot(0);
+    levelMap->setXRot(0);
+    levelMap->setYRot(0);
+    levelMap->setZRot(0);
   } else if(button == SDL_BUTTON_LEFT) {
     getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 
@@ -1246,7 +1253,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     Location *dropTarget = NULL;
     if(movingItem) {
       if(mapx < MAP_WIDTH) {
-        dropTarget = map->getLocation(mapx, mapy, mapz);
+        dropTarget = levelMap->getLocation(mapx, mapy, mapz);
         if(!(dropTarget && 
              (dropTarget->creature || 
               (dropTarget->item && 
@@ -1255,11 +1262,11 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
         }      
       }
     }
-    map->setSelectedDropTarget(dropTarget);
+    levelMap->setSelectedDropTarget(dropTarget);
 
     // clicking on a creature
     if(!movingItem && mapx < MAP_WIDTH) {
-      Location *loc = map->getLocation(mapx, mapy, mapz);
+      Location *loc = levelMap->getLocation(mapx, mapy, mapz);
       if(loc && loc->creature) {
         if(getTargetSelectionFor()) {
 
@@ -1272,10 +1279,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
             c->setTargetCreature(loc->creature);
             char msg[80];
             sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
-            map->addDescription(msg);       
+            levelMap->addDescription(msg);       
           } else {
             sprintf(msg, "%s cancelled a pending action.", c->getName());
-            map->addDescription(msg);
+            levelMap->addDescription(msg);
           }
           // turn off selection mode
           setTargetSelectionFor(NULL);
@@ -1315,7 +1322,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
       }
       */
 
-      Location *pos = map->getLocation(mapx, mapy, mapz);
+      Location *pos = levelMap->getLocation(mapx, mapy, mapz);
       char msg[80];
       if(mapx < MAP_WIDTH && pos && pos->item) {
         if(c->getAction() == Constants::ACTION_CAST_SPELL &&
@@ -1325,10 +1332,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
           // assign this creature
           c->setTargetItem(pos->x, pos->y, pos->z, pos->item);
           sprintf(msg, "%s targeted %s.", c->getName(), pos->item->getRpgItem()->getName());
-          map->addDescription(msg);       
+          levelMap->addDescription(msg);       
         } else {
           sprintf(msg, "%s cancelled a pending action.", c->getName());
-          map->addDescription(msg);
+          levelMap->addDescription(msg);
         }
         // turn off selection mode
         setTargetSelectionFor(NULL);
@@ -1338,7 +1345,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
     if(useItem(mapx, mapy, mapz)) return;
 
-    // click on the map
+    // click on the levelMap
     getMapXYAtScreenXY(x, y, &mapx, &mapy);
 
     // make sure the selected action can target a location
@@ -1351,10 +1358,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
         c->setTargetLocation(mapx, mapy, 0);
         char msg[80];
         sprintf(msg, "%s selected a target", c->getName());
-        map->addDescription(msg);       
+        levelMap->addDescription(msg);       
       } else {
         sprintf(msg, "%s cancelled a pending action.", c->getName());
-        map->addDescription(msg);
+        levelMap->addDescription(msg);
       }
       // turn off selection mode
       setTargetSelectionFor(NULL);
@@ -1381,7 +1388,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
       for(int i = 0; i < party->getPartySize(); i++) {
         if(!party->getParty(i)->getStateMod(Constants::dead)) {
           party->getParty(i)->cancelTarget();
-          if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
+          if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(levelMap);
         }
       }
     }
@@ -1398,7 +1405,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
   char s[300];
   if(mapx < MAP_WIDTH) {
     //fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
-    Location *loc = map->getPosition(mapx, mapy, mapz);
+    Location *loc = levelMap->getPosition(mapx, mapy, mapz);
     if(loc) {
       char *description = NULL;
       Creature *creature = loc->creature;
@@ -1423,7 +1430,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
         }
       }
       if(description) {
-        map->addDescription(description);
+        levelMap->addDescription(description);
       }
     }
   }
@@ -1434,7 +1441,7 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   glPushMatrix();
   
   // Initialize the scene w/o y rotation.
-  map->initMapView(true);
+  levelMap->initMapView(true);
   
   double obj_x, obj_y, obj_z;
   double win_x = (double)x;
@@ -1458,13 +1465,13 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   glDisable( GL_SCISSOR_TEST );
   
   if(res) {
-    *mapx = map->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
-    *mapy = map->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
+    *mapx = levelMap->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
+    *mapy = levelMap->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
     //*mapz = (Uint16)0;
     //*mapz = (Uint16)(obj_z * GLShape::DIV);
-    map->debugX = *mapx;
-    map->debugY = *mapy;
-    map->debugZ = 0;
+    levelMap->debugX = *mapx;
+    levelMap->debugY = *mapy;
+    levelMap->debugZ = 0;
   } else {
     //*mapx = *mapy = *mapz = MAP_WIDTH + 1;
     *mapx = *mapy = MAP_WIDTH + 1;
@@ -1500,9 +1507,9 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
   sdlHandler->setOrthoView();
 
   glMatrixMode(GL_MODELVIEW);
-  map->selectMode = true;
-  map->draw();
-  map->selectMode = false;
+  levelMap->selectMode = true;
+  levelMap->draw();
+  levelMap->selectMode = false;
 
   glFlush();    
   hits = glRenderMode(GL_RENDER);
@@ -1540,9 +1547,9 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
   // Go back to modelview for normal rendering
   glMatrixMode(GL_MODELVIEW);
 
-  map->debugX = *mapx;
-  map->debugY = *mapy;
-  map->debugZ = *mapz;
+  levelMap->debugX = *mapx;
+  levelMap->debugY = *mapy;
+  levelMap->debugZ = *mapz;
   lastMapX = *mapx;
   lastMapY = *mapy;
   lastMapZ = *mapz;
@@ -1559,7 +1566,7 @@ void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
             name %= (MAP_WIDTH * MAP_DEPTH);
         *mapx = name % MAP_WIDTH;
         *mapy = name / MAP_WIDTH;
-        Location *pos = map->getPosition(*mapx, *mapy, 0);
+        Location *pos = levelMap->getPosition(*mapx, *mapy, 0);
         if(pos) {
             if(pos->shape) s = pos->shape->getName();
             else if(pos->item && pos->item->getShape()) {
@@ -1585,7 +1592,7 @@ void Scourge::startItemDragFromGui(Item *item) {
 
 bool Scourge::startItemDrag(int x, int y, int z) {
   if(movingItem) return false;
-  Location *pos = map->getPosition(x, y, z);
+  Location *pos = levelMap->getPosition(x, y, z);
   if(pos) {
 	if(getItem(pos)) {  
 	  dragStartTime = SDL_GetTicks();
@@ -1616,20 +1623,20 @@ bool Scourge::useItem() {
 
 bool Scourge::useItem(int x, int y, int z) {
   if (movingItem) {
-    dropItem(map->getSelX(), map->getSelY());
+    dropItem(levelMap->getSelX(), levelMap->getSelY());
     return true;
   }
 
-  Location *pos = map->getPosition(x, y, z);
+  Location *pos = levelMap->getPosition(x, y, z);
   if (pos) {
     Shape *shape = (pos->item ? pos->item->getShape() : pos->shape);
-    if (map->isWallBetweenShapes(toint(party->getPlayer()->getX()), 
+    if (levelMap->isWallBetweenShapes(toint(party->getPlayer()->getX()), 
                                  toint(party->getPlayer()->getY()), 
                                  toint(party->getPlayer()->getZ()), 
                                  party->getPlayer()->getShape(),
                                  x, y, z,
                                  shape)) {
-      map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+      levelMap->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
       return true;
     } else {
       if (useLever(pos)) {
@@ -1653,11 +1660,11 @@ bool Scourge::useItem(int x, int y, int z) {
 
 bool Scourge::getItem(Location *pos) {
     if(pos->item) {
-      if(map->isWallBetween(pos->x, pos->y, pos->z, 
+      if(levelMap->isWallBetween(pos->x, pos->y, pos->z, 
                             toint(party->getPlayer()->getX()),
                             toint(party->getPlayer()->getY()),
                             0)) {
-		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+		levelMap->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 	  } else {
         movingX = pos->x;
         movingY = pos->y;
@@ -1666,11 +1673,11 @@ bool Scourge::getItem(Location *pos) {
 		int x = pos->x;
 		int y = pos->y;
 		int z = pos->z;
-        map->removeItem(pos->x, pos->y, pos->z);
-		map->dropItemsAbove(x, y, z, movingItem);
+        levelMap->removeItem(pos->x, pos->y, pos->z);
+		levelMap->dropItemsAbove(x, y, z, movingItem);
 		// draw the item as 'selected'
-		map->setSelectedDropTarget(NULL);
-		map->handleMouseMove(movingX, movingY, movingZ);
+		levelMap->setSelectedDropTarget(NULL);
+		levelMap->handleMouseMove(movingX, movingY, movingZ);
 	  }
 	  return true;
     }
@@ -1688,49 +1695,49 @@ void Scourge::setMovingItem(Item *item, int x, int y, int z) {
 int Scourge::dropItem(int x, int y) {
   int z=-1;
   bool replace = false;
-  if(map->getSelectedDropTarget()) {
+  if(levelMap->getSelectedDropTarget()) {
     char message[120];
-    Creature *c = map->getSelectedDropTarget()->creature;
+    Creature *c = levelMap->getSelectedDropTarget()->creature;
     if(c) {
       if(c->addInventory(movingItem)) {
         sprintf(message, "%s picks up %s.", 
                 c->getName(), 
                 movingItem->getItemName());
-        map->addDescription(message);
+        levelMap->addDescription(message);
         // if the inventory is open, update it
         if(inventory->isVisible()) inventory->refresh();
       } else {
         showMessageDialog("The item won't fit in that container!");
         replace = true;
       }
-    } else if(map->getSelectedDropTarget()->item && 
-              map->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-      if(!map->getSelectedDropTarget()->item->addContainedItem(movingItem)) {
+    } else if(levelMap->getSelectedDropTarget()->item && 
+              levelMap->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+      if(!levelMap->getSelectedDropTarget()->item->addContainedItem(movingItem)) {
         showMessageDialog("The item won't fit in that container!");
         replace = true;
       } else {
         sprintf(message, "%s is placed in %s.", 
                 movingItem->getItemName(), 
-                map->getSelectedDropTarget()->item->getItemName());
-        map->addDescription(message);
+                levelMap->getSelectedDropTarget()->item->getItemName());
+        levelMap->addDescription(message);
         // if this container's gui is open, update it
-        refreshContainerGui(map->getSelectedDropTarget()->item);
+        refreshContainerGui(levelMap->getSelectedDropTarget()->item);
       }
     } else {
       replace = true;
     }
-    map->setSelectedDropTarget(NULL);
+    levelMap->setSelectedDropTarget(NULL);
   } else {
     // see if it's blocked and get the value of z (stacking items)
-    Location *pos = map->isBlocked(x, y, 0,
+    Location *pos = levelMap->isBlocked(x, y, 0,
                                    movingX, movingY, movingZ,
                                    movingItem->getShape(), &z);
     if(!pos && 
-       !map->isWallBetween(toint(party->getPlayer()->getX()), 
+       !levelMap->isWallBetween(toint(party->getPlayer()->getX()), 
                            toint(party->getPlayer()->getY()), 
                            toint(party->getPlayer()->getZ()), 
                            x, y, z)) {
-      map->setItem(x, y, z, movingItem);
+      levelMap->setItem(x, y, z, movingItem);
     } else {
       replace = true;
     }
@@ -1743,10 +1750,10 @@ int Scourge::dropItem(int x, int y) {
       // for now don't end the drag
       return z;
     } else {
-      map->isBlocked(movingX, movingY, movingZ,
+      levelMap->isBlocked(movingX, movingY, movingZ,
                      -1, -1, -1,
                      movingItem->getShape(), &z);
-      map->setItem(movingX, movingY, z, movingItem);
+      levelMap->setItem(movingX, movingY, z, movingItem);
     }
   }
   endItemDrag();
@@ -1784,8 +1791,8 @@ bool Scourge::useBoard(Location *pos) {
 bool Scourge::useTeleporter(Location *pos) {
   if(pos->shape == shapePal->findShapeByName("TELEPORTER") ||
      pos->shape == shapePal->findShapeByName("TELEPORTER_BASE")) {
-    if(map->isLocked(pos->x, pos->y, pos->z)) {
-      map->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
+    if(levelMap->isLocked(pos->x, pos->y, pos->z)) {
+      levelMap->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
       return true;
     } else {
       // able to teleport if any party member is alive
@@ -1812,20 +1819,20 @@ bool Scourge::useLever(Location *pos) {
     int keyY = pos->y;
     int keyZ = pos->z;
     int doorX, doorY, doorZ;
-    map->getDoorLocation(keyX, keyY, keyZ,
+    levelMap->getDoorLocation(keyX, keyY, keyZ,
                          &doorX, &doorY, &doorZ);
     // flip the switch
-    map->setPosition(keyX, keyY, keyZ, newShape);
+    levelMap->setPosition(keyX, keyY, keyZ, newShape);
     // unlock the door
-    map->setLocked(doorX, doorY, doorZ, (map->isLocked(doorX, doorY, doorZ) ? false : true));
+    levelMap->setLocked(doorX, doorY, doorZ, (levelMap->isLocked(doorX, doorY, doorZ) ? false : true));
     // show message, depending on distance from key to door
     float d = Constants::distance(keyX,  keyY, 1, 1, doorX, doorY, 1, 1);
     if(d < 20.0f) {
-      map->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
+      levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
     } else if(d >= 20.0f && d < 100.0f) {
-      map->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
+      levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
     } else {
-      map->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
+      levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
     }
     return true;
   }
@@ -1847,7 +1854,7 @@ bool Scourge::useDoor(Location *pos) {
       // see if the door is open or closed. This is done by checking the shape above the
       // door. If there's something there and the orientation (NS vs. EW) matches, the
       // door is closed. I know it's a hack.
-      Location *above = map->getLocation(doorX, 
+      Location *above = levelMap->getLocation(doorX, 
                                          doorY, 
                                          doorZ + pos->shape->getHeight());
       //if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
@@ -1858,8 +1865,8 @@ bool Scourge::useDoor(Location *pos) {
                       above && above->shape == shapePal->findShapeByName("NS_DOOR_TOP")) ?
                      true : false);
       //cerr << "DOOR is closed? " << closed << endl;
-      if(closed && map->isLocked(doorX, doorY, doorZ)) {
-        map->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+      if(closed && levelMap->isLocked(doorX, doorY, doorZ)) {
+        levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
         return true;
       }
 
@@ -1869,19 +1876,19 @@ bool Scourge::useDoor(Location *pos) {
         Sint16 nx = pos->x;
         Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
 
-        Shape *oldDoorShape = map->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
-        if(!map->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
+        Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+        if(!levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
                            ox, oy, toint(party->getPlayer()->getZ()),
                            newDoorShape)) {
-          map->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
-          map->updateLightMap();          
-          map->updateDoorLocation(doorX, doorY, doorZ,
+          levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
+          levelMap->updateLightMap();          
+          levelMap->updateDoorLocation(doorX, doorY, doorZ,
                                   nx, ny, toint(party->getPlayer()->getZ()));
           return true;
         } else {
           // rollback
-          map->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
-          map->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+          levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
+          levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
           return true;
         }
     }
@@ -2027,7 +2034,7 @@ void Scourge::setUILayout(int mode) {
 
 void Scourge::setUILayout() {
 
-  // reshape the map
+  // reshape the levelMap
   int mapX = 0;
   int mapY = 0;
   int mapWidth = getSDLHandler()->getScreen()->w;
@@ -2136,8 +2143,8 @@ void Scourge::setUILayout() {
                          getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
 
 
-  // FIXME: resize map drawing area to remainder of screen.
-  map->setViewArea(mapX, mapY, mapWidth, mapHeight);
+  // FIXME: resize levelMap drawing area to remainder of screen.
+  levelMap->setViewArea(mapX, mapY, mapWidth, mapHeight);
   if(getParty()->getPlayer()) {
     getMap()->center(toint(getParty()->getPlayer()->getX()),
                      toint(getParty()->getPlayer()->getY()), 
@@ -2146,8 +2153,8 @@ void Scourge::setUILayout() {
 }
 
 void Scourge::playRound() {                           
-  // move the map
-  if(move) map->move(move);
+  // move the levelMap
+  if(move) levelMap->move(move);
 
   if(targetSelectionFor) return;
  
@@ -2247,9 +2254,9 @@ bool Scourge::createBattleTurns() {
       }
       bool hasTarget = (party->getParty(i)->hasTarget() || 
                         party->getParty(i)->getAction() > -1);
-      bool visible = ( map->isLocationVisible(toint(party->getParty(i)->getX()), 
+      bool visible = ( levelMap->isLocationVisible(toint(party->getParty(i)->getX()), 
                                               toint(party->getParty(i)->getY())) &&
-                       map->isLocationInLight(toint(party->getParty(i)->getX()), 
+                       levelMap->isLocationInLight(toint(party->getParty(i)->getX()), 
                                               toint(party->getParty(i)->getY())));
       if ( hasTarget && party->getParty(i)->isTargetValid() && visible ) {
         battle[battleCount++] = party->getParty(i)->getBattle();
@@ -2258,9 +2265,9 @@ bool Scourge::createBattleTurns() {
   }
   for (int i = 0; i < session->getCreatureCount(); i++) {
     if (!session->getCreature(i)->getStateMod(Constants::dead) &&
-        map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+        levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                toint(session->getCreature(i)->getY())) &&
-        map->isLocationInLight(toint(session->getCreature(i)->getX()), 
+        levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
                                toint(session->getCreature(i)->getY()))) {
       bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                         session->getCreature(i)->getAction() > -1);
@@ -2276,9 +2283,9 @@ bool Scourge::createBattleTurns() {
 
     // add other movement
     for (int i = 0; i < party->getPartySize(); i++) {
-      bool visible = ( map->isLocationVisible(toint(party->getParty(i)->getX()), 
+      bool visible = ( levelMap->isLocationVisible(toint(party->getParty(i)->getX()), 
                                               toint(party->getParty(i)->getY())) &&
-                       map->isLocationInLight(toint(party->getParty(i)->getX()), 
+                       levelMap->isLocationInLight(toint(party->getParty(i)->getX()), 
                                               toint(party->getParty(i)->getY())));
       if( visible && !party->getParty(i)->getStateMod(Constants::dead) ) {
         bool found = false;
@@ -2293,9 +2300,9 @@ bool Scourge::createBattleTurns() {
     }
     for (int i = 0; i < session->getCreatureCount(); i++) {
       if (!session->getCreature(i)->getStateMod(Constants::dead) &&
-          map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+          levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                  toint(session->getCreature(i)->getY())) &&
-          map->isLocationInLight(toint(session->getCreature(i)->getX()), 
+          levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
                                  toint(session->getCreature(i)->getY()))) {
         bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                           session->getCreature(i)->getAction() > -1);
@@ -2362,7 +2369,7 @@ void Scourge::moveCreatures() {
   // move visible monsters
   for(int i = 0; i < session->getCreatureCount(); i++) {
     if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-       map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+       levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                               toint(session->getCreature(i)->getY()))) {
       moveMonster(session->getCreature(i));
     }
@@ -2373,7 +2380,7 @@ void Scourge::addGameSpeed(int speedFactor){
   char msg[80];
   userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
   sprintf(msg, "Speed set to %d\n", userConfiguration->getGameSpeedTicks());
-  map->addDescription(msg);
+  levelMap->addDescription(msg);
 }
 
 //#define MONSTER_FLEE_IF_LOW_HP
@@ -2396,7 +2403,7 @@ void Scourge::moveMonster(Creature *monster) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement
-      monster->move(monster->getDir(), map);
+      monster->move(monster->getDir(), levelMap);
     }
   } else if(monster->hasTarget()) {
 #ifdef MONSTER_FLEE_IF_LOW_HP
@@ -2407,7 +2414,7 @@ void Scourge::moveMonster(Creature *monster) {
       monster->setMotion(Constants::MOTION_LOITER);
       monster->cancelTarget();
     } else {
-      monster->moveToLocator(map);
+      monster->moveToLocator(levelMap);
     }
 #endif
     // see if there's another target that's closer
@@ -2504,10 +2511,10 @@ void Scourge::missionCompleted() {
     
     // how many points?
     int exp = (getSession()->getCurrentMission()->getLevel() + 1) * 100;
-    map->addDescription("For completing the mission", 0, 1, 1);
+    levelMap->addDescription("For completing the mission", 0, 1, 1);
     char message[200];
     sprintf(message, "The party receives %d points.", exp);
-    map->addDescription(message, 0, 1, 1);
+    levelMap->addDescription(message, 0, 1, 1);
     
     for(int i = 0; i < getParty()->getPartySize(); i++) {
       bool b = getParty()->getParty(i)->getStateMod(Constants::leveled);
@@ -2897,7 +2904,7 @@ void Scourge::updatePartyUI() {
   if(party->getCalendar()->update(getUserConfiguration()->getGameSpeedLevel())){
     calendarButton->getLabel()->setTextCopy(party->getCalendar()->getCurrentDate().getDateString());        
   }
-  // refresh map if any party member's effect is on
+  // refresh levelMap if any party member's effect is on
   bool effectOn = false;
   for(int i = 0; i < party->getPartySize(); i++) {
 	if(!party->getParty(i)->getStateMod(Constants::dead) && party->getParty(i)->isEffectOn()) {
@@ -3086,7 +3093,7 @@ void Scourge::checkForDropTarget() {
         Uint16 mapx, mapy, mapz;
         getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
         if(mapx < MAP_WIDTH) {
-          dropTarget = map->getLocation(mapx, mapy, mapz);
+          dropTarget = levelMap->getLocation(mapx, mapy, mapz);
           if(!(dropTarget && 
                (dropTarget->creature || 
                 (dropTarget->item && 
@@ -3094,7 +3101,7 @@ void Scourge::checkForDropTarget() {
             dropTarget = NULL;
           }      
         }
-        map->setSelectedDropTarget(dropTarget);  
+        levelMap->setSelectedDropTarget(dropTarget);  
       }
     } else {
       needToCheckDropLocation = true;
@@ -3107,5 +3114,88 @@ void Scourge::showItemInfoUI(Item *item, int level) {
   if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );    
 }
 
+void Scourge::checkForInfo() {
+  if( session->getUserConfiguration()->getTooltipEnabled() &&
+      SDL_GetTicks() - getSDLHandler()->lastMouseMoveTime > 
+      (Uint32)(session->getUserConfiguration()->getTooltipInterval() * 10) ) {
+    if(needToCheckInfo) {
+      needToCheckInfo = false;
+      
+      // check location
+      Uint16 mapx, mapy, mapz;
+      getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
+      if(mapx < MAP_WIDTH) {
+        Location *pos = levelMap->getLocation(mapx, mapy, mapz);
+        if( pos ) {
+          char s[300];
+          void *obj = NULL;
+          if( pos->creature ) {
+            obj = pos->creature;
+            pos->creature->getDetailedDescription(s);
+          } else if( pos->item ) {
+            obj = pos->item;
+            pos->item->getDetailedDescription(s);
+          } else if( pos->shape ) {
+            obj = pos->shape;
+            strcpy( s, session->getShapePalette()->getRandomDescription( pos->shape->getDescriptionGroup() ) );
+          }
+          if( obj ) {
+            bool found = false;
+            // Don't show info about the same object twice
+            // FIXME: use lookup table
+            for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
+              InfoMessage *message = i->first;
+              if( message->obj == obj ) {
+                found = true;
+                break;
+              }
+            }
+            if( !found ) {
+              InfoMessage *message = new InfoMessage( s, obj, pos->x, pos->y, pos->z );
+              infos[ message ] = SDL_GetTicks();
+            }
+          }
+        }
+      }
+    } else {
+      needToCheckInfo = true;
+    }
 
+    // timeout descriptions
+    Uint32 now = SDL_GetTicks();
+    for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
+      InfoMessage *message = i->first;
+      Uint32 time = i->second;
+      if( now - time > INFO_INTERVAL ) {
+        delete message;
+        infos.erase( i );
+      }
+    }
+  }
+}
+
+void Scourge::resetInfos() {
+  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
+    InfoMessage *message = i->first;
+    delete message;
+    infos.erase( i );
+  }
+}
+
+void Scourge::drawInfos() {
+  float xpos2, ypos2, zpos2;
+  glColor4f( 1, 1, 1, 1 );
+  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
+    glPushMatrix();
+    InfoMessage *message = i->first;
+    xpos2 = ((float)(message->x - levelMap->getX()) / GLShape::DIV);
+    ypos2 = ((float)(message->y - levelMap->getY()) / GLShape::DIV);
+    zpos2 = 0.0f / GLShape::DIV;
+    glTranslatef( xpos2, ypos2, 100 );
+	  glRotatef( -( levelMap->getZRot() ), 0.0f, 0.0f, 1.0f );
+    glRotatef( -( levelMap->getYRot() ), 1.0f, 0.0f, 0.0f );
+    getSDLHandler()->texPrint( 0, 0, "%s", message->message );
+    glPopMatrix();
+  }
+}
 
