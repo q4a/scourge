@@ -328,7 +328,9 @@ ShapePalette::ShapePalette(){
 
   // set up the cursor
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
+  cursor_texture = loadGLTextureBGRA(cursor, cursorImage);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
+  crosshair_texture = loadGLTextureBGRA(crosshair, crosshairImage);
   setupAlphaBlendedBMP("/paperdoll.bmp", &paperDoll, &paperDollImage);
 
   // set up the logo
@@ -519,6 +521,25 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
   if( TextureImage[0] )
     SDL_FreeSurface( TextureImage[0] );
 
+  return texture[0];
+}
+
+/* function to load in bitmap as a GL texture */
+GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image) {
+  GLuint texture[1];
+
+  /* Create The Texture */
+  glGenTextures( 1, &texture[0] );
+
+  /* Typical Texture Generation Using Data From The Bitmap */
+  glBindTexture( GL_TEXTURE_2D, texture[0] );
+
+  /* Linear Filtering */
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  gluBuild2DMipmaps(GL_TEXTURE_2D, 4,
+                    surface->w, surface->h,
+                    GL_BGRA, GL_UNSIGNED_BYTE, image);
   return texture[0];
 }
 
