@@ -60,6 +60,7 @@ private:
 	// inventory screen
 	//Label *invEquipLabel[Character::INVENTORY_COUNT];
   Canvas *paperDoll;
+  int posX[Character::INVENTORY_COUNT], posY[Character::INVENTORY_COUNT];
 	Label *inventoryWeightLabel, *coinsLabel;
 	char inventoryWeightStr[80], coinsStr[80];
 
