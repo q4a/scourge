@@ -99,11 +99,13 @@ char *Constants::messages[][80] = {
   { "Select a skill first." },
   { "S.C.O.U.R.G.E. dialog" },
   { "Use gate to enter another level?" },
-  { "A dead character cannot perform this action." }
+  { "A dead character cannot perform this action." },
+  { "hp:" },
+  { "ac:" },
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines

@@ -28,10 +28,12 @@
 #include "rpg/monster.h"
 #include "rpg/rpgitem.h"
 #include "events/thirsthungerevent.h"
+#include "gui/canvas.h"
+#include "gui/widgetview.h"
 
 using namespace std;
 
-class Party {
+class Party : public WidgetView {
  private:
   
   // hard-coded for now
@@ -65,6 +67,8 @@ class Party {
   Button *player3Button;
   Button *player4Button;
   Button *groupButton;
+
+  Canvas *playerInfo[PARTY_SIZE];
 
  public:
   Party(Scourge *scourge);
@@ -125,9 +129,12 @@ class Party {
 
   void startEffect(int effect_type, int duration=Constants::DAMAGE_DURATION);
 
+  void drawWidget(Widget *w);
+
  protected:
   Creature **createHardCodedParty();
   void createUI();
+  void drawBar(int x, int y, float barLength, float value, float maxValue);
 };
 
 #endif
