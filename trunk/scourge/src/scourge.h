@@ -260,6 +260,11 @@ public:
   inline void setTargetSelectionFor(Creature *c) { targetSelectionFor = c; }
   inline Creature *getTargetSelectionFor() { return targetSelectionFor; }
 
+  /** 
+	  Return the closest live player within the given radius or null if none can be found.
+  */
+  Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
+
  protected:
   //  void fightBattle(); 
 

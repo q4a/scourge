@@ -53,7 +53,7 @@ class Battle {
   char message[200];
   int creatureInitiative;
   bool initiativeCheck;
-  int itemSpeed;
+  int speed;
   float dist;
   bool empty;
   bool projectileHit;
@@ -86,13 +86,13 @@ class Battle {
   void fightTurn();
 
  protected:
+  void launchProjectile();
+  void initTurn();
   void hitWithItem();
-  void selectBestItem();
   void initItem(Item *item);
-  void initAction();
   void dealDamage(int damage);
   void castSpell();
-
+  void executeEatDrinkAction();
 };
 
 #endif

@@ -17,7 +17,7 @@
 
 #include "battle.h"
 
-#define DEBUG_BATTLE
+//#define DEBUG_BATTLE
 #define GOD_MODE 0
 
 enum {
@@ -41,9 +41,8 @@ Battle::Battle(Scourge *scourge, Creature *creature) {
   this->item = NULL;
   this->creatureInitiative = 0;
   this->initiativeCheck = false;
-  this->itemSpeed = 0;
-  this->dist = 0.0f;
-  this->dist = creature->getDistanceToTargetCreature();
+  this->speed = 0;
+  this->dist = creature->getDistanceToTarget();
 }
 
 Battle::~Battle() {
@@ -81,30 +80,29 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 	  battle[i]->empty = false;
 	  battle[i]->projectileHit = false;
 
-	  if(!battle[i]->creature->getTargetCreature()) {
+	  if(!battle[i]->creature->hasTarget()) {
 		// remove creatures with no target creature from this round
 		action = NO_TARGET;
-	  } else if(battle[i]->creature->getTargetCreature()->getStateMod(Constants::dead)) {
+	  } else if(!battle[i]->creature->isTargetValid()) {
 		// if someone already killed this target, skip it
-		battle[i]->creature->setTargetCreature(NULL);
+		battle[i]->creature->cancelTarget();
 		if(battle[i]->creature->isMonster()) {
-		  battle[i]->creature->setMotion(Constants::MOTION_LOITER);
-		  battle[i]->creature->setDistanceRange(0, 0);
-
+		  battle[i]->creature->setMotion(Constants::MOTION_LOITER);		  
 		  action = LOITER;
 		} else {
-		  // FIXME: should help out another party member
+		  // if party member re-join the battle
+		  Creature *c = battle[i]->creature;
+		  c->setTargetCreature(scourge->getClosestVisibleMonster(c->getX(), 
+																 c->getY(), 
+																 c->getShape()->getWidth(),
+																 c->getShape()->getDepth(),
+																 20));
 		}
 	  } else {
-
 		GLint t = SDL_GetTicks();
 
 		// get the best weapon given the distance from the target
-		if(battle[i]->creature->getAction() > -1) {
-		  battle[i]->initAction();
-		} else {
-		  battle[i]->selectBestItem();
-		}
+		battle[i]->initTurn();
 		
 		// check the creature's initiative
 		if(!battle[i]->initiativeCheck || 
@@ -115,7 +113,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 		  creatureFound = true;
 		  
 		  // this is to slow down battle, depending on your weapon
-		  if(battle[i]->itemSpeed < t - battle[i]->creature->getLastTurn()) {
+		  if(battle[i]->speed < t - battle[i]->creature->getLastTurn()) {
 			
 			// remember the last active turn
 			battle[i]->creature->setLastTurn(t);
@@ -124,9 +122,8 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 			  scourge->getMap()->addDescription("A round of battle begins...", 1, 1, 1);
 			  battleStarted = true;
 			}
-			
-			// fight a turn of battle
-			//			  battle[i]->fight();
+
+			// save this turn
 			turns->push_back(battle[i]);
 			
 			action = ATTACK;
@@ -143,7 +140,9 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 #ifdef DEBUG_BATTLE
 		cerr << "Turn: " << turn << " " << actionName[action] << ", " <<
 		  battle[i]->creature->getName() << "(" << battle[i]->creatureInitiative << ")" <<
-		  "->" << (battle[i]->creature->getTargetCreature() ? battle[i]->creature->getTargetCreature()->getName() : "<no target>") <<
+		  "->" << (battle[i]->creature->getTargetCreature() ? 
+				   battle[i]->creature->getTargetCreature()->getName() : 
+				   "<no target>") <<
 		  endl;
 #endif
 
@@ -165,7 +164,81 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
   }
 }
 
+void Battle::fightTurn() {
+
+  // waiting to attack?
+  if(isEmpty()) return;
+
+  // target killed?
+  if(!creature->hasTarget()) return;
+  //  if(!creature->getTargetCreature()) return;
+
+  // if there was no 'item' selected it's because we're too far from the target
+  // (getBestWeapon returned NULL) and we're not casting a spell, follow the target
+  //
+  // If it's an empty-handed attack, follow the target
+  //
+  // If it's a ranged attack and we're not in range, follow the target (will move away from target)
+  //
+  // This sure is confusing code...
+  if((dist > Constants::MIN_DISTANCE && !item && !creature->getActionSpell()) ||  
+	 !creature->isInRange()) { 
+	creature->followTarget();
+	return;
+  }
+
+  // handle action: eat/drink items
+  if(creature->getAction() == Constants::ACTION_EAT_DRINK) {
+	executeEatDrinkAction();
+	return;
+  }
+ 
+  // the attacked target may get upset
+  creature->makeTargetRetaliate();
+   
+  // handle the action
+  if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
+	launchProjectile();
+  } else if(creature->getActionSpell()) {
+	castSpell();
+  } else {
+	hitWithItem();
+  }
+}
+
+void Battle::castSpell() {
+  cerr << "FIXME: implement Battle::castSpell()" << endl;
+  cerr << "\tdynamic effects (flame, explode, etc.), saving throws, multiple targets, projectile hits, mana usage, etc." << endl;
+  cerr << "\tcall Battle::dealDamage() for each target." << endl;
+
+  sprintf(message, "%s casts %s!", 
+		  creature->getName(), 
+		  creature->getActionSpell()->getName());
+  scourge->getMap()->addDescription(message, 1, 0.15f, 1);
+  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
+  
+  
+  // cancel action
+  creature->cancelTarget();
+}
+
+void Battle::launchProjectile() {
+  sprintf(message, "...%s shoots a projectile", creature->getName());
+  scourge->getMap()->addDescription(message);	
+  if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
+								scourge->getShapePalette()->findShapeByName("ARROW"),
+								creature->getMaxProjectileCount(item))) {
+	// max number of projectiles in the air
+	// FIXME: do something... 
+	// (like print message: can't launch projectile due to use of fixed-sized array in code?)
+  }
+}
+
 void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target) {
+
+  // FIXME: get rid of references to get/setTargetCreature in this method.
+  // instead, use creature's target methods (or make new ones)
+
   // configure a turn
   Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
@@ -180,112 +253,25 @@ void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *tar
   proj->getCreature()->setTargetCreature(oldTarget);
 }
 
-void Battle::fightTurn() {
+void Battle::hitWithItem() {
 
-  // waiting to attack?
-  if(isEmpty()) return;
-
-  // target killed?
-  if(!creature->getTargetCreature()) return;
-
-  // too far? then keep following the target
-  // also check if too close when using ranged weapons
-  if((dist > Constants::MIN_DISTANCE && !item && !creature->getActionSpell()) ||  
-	 !creature->isInRange()) { 
-	creature->setSelXY(creature->getTargetCreature()->getX(),
-					   creature->getTargetCreature()->getY(),
-					   true);
-	return;
-  }
-
-  // handle action: eat/drink items
-  if(creature->getAction() == Constants::ACTION_EAT_DRINK) {
-	// is it still in the inventory?
-	int index = creature->findInInventory(creature->getActionItem());
-	if(index > -1) {
-	  if(creature->eatDrink(creature->getActionItem())){
-		creature->removeInventory(index);
-	  }
-	}
-	// cancel action
-	creature->setTargetCreature(NULL);
-	creature->setAction(-1);
-	return;
-  }
- 
-  // print a message and show an effect
-  if(creature->getActionSpell()) {
-	sprintf(message, "%s casts %s!", 
-			creature->getName(), 
-			creature->getActionSpell()->getName());
-	scourge->getMap()->addDescription(message, 1, 0.15f, 1);
-	((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
-  } else if(item) {
+  if(item) {
 	sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
 			creature->getName(), 
 			creature->getTargetCreature()->getName(),
 			item->getRpgItem()->getName(),
-			creatureInitiative, itemSpeed);
+			creatureInitiative, speed);
 	scourge->getMap()->addDescription(message);
 	((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
   } else if(dist <= Constants::MIN_DISTANCE) {
 	sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
 			creature->getName(), 
 			creature->getTargetCreature()->getName(),
-			creatureInitiative, itemSpeed);
+			creatureInitiative, speed);
 	scourge->getMap()->addDescription(message);
 	((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
   }
- 
-  // FIXME: what about multiple targets for area spells?
-  // the target creature gets really upset...
-  // this is also an optimization for fps
-  if(creature->getTargetCreature()->isMonster() && 
-	 !creature->getTargetCreature()->getTargetCreature()) {
-	// try to attack the nearest player
-	Creature *p = scourge->getParty()->getClosestPlayer(creature->getTargetCreature()->getX(), 
-														creature->getTargetCreature()->getY(), 
-														creature->getTargetCreature()->getShape()->getWidth(),
-														creature->getTargetCreature()->getShape()->getDepth(),
-														20);
-	// if that's not possible, go for the attacker
-	if(!p) p = creature;
-	sprintf(message, "...%s is enraged and attacks %s", 
-			creature->getTargetCreature()->getName(), 
-			creature->getName());
-	scourge->getMap()->addDescription(message);	
-	creature->getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
-	creature->getTargetCreature()->setTargetCreature(p);
-  }
-  
-  // if this is a ranged weapon launch a projectile
-  if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
-	sprintf(message, "...%s shoots a projectile", creature->getName());
-	scourge->getMap()->addDescription(message);	
-	if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
-								  scourge->getShapePalette()->findShapeByName("ARROW"),
-								  creature->getMaxProjectileCount(item))) {
-	  // max number of projectiles in the air
-	}
-  } else if(creature->getActionSpell()) {
-	castSpell();
-  } else {
-	hitWithItem();
-  }
-}
 
-void Battle::castSpell() {
-  cerr << "FIXME: implement Battle::castSpell()" << endl;
-  cerr << "\tdynamic effects (flame, explode, etc.), saving throws, multiple targets, projectile hits, mana usage, etc." << endl;
-  cerr << "\tcall Battle::dealDamage() for each target." << endl;
-
-  
-  // cancel action
-  creature->setTargetCreature(NULL);
-  creature->setAction(-1);  
-}
-
-void Battle::hitWithItem() {
   // take a swing
   int tohit = creature->getToHit(item);
   int ac = creature->getTargetCreature()->getSkillModifiedArmor();
@@ -358,55 +344,61 @@ void Battle::dealDamage(int damage) {
   }
 }
 
-void Battle::initAction() {
-  if(creature->getAction() == -1) return;
-  
-  float range = 0;
-  switch(creature->getAction()) {
-  case Constants::ACTION_CAST_SPELL:
-	range = creature->getActionSpell()->getDistance();
-	itemSpeed = creature->getActionSpell()->getLevel() * Constants::HAND_WEAPON_SPEED * 2;
-	creatureInitiative = creature->getInitiative(NULL, creature->getActionSpell());
-	break;
-  case Constants::ACTION_EAT_DRINK:
-	range = creature->getActionItem()->getRpgItem()->getDistance();
-	itemSpeed = creature->getActionItem()->getRpgItem()->getSpeed();
-	creatureInitiative = creature->getInitiative(creature->getActionItem(), NULL);
-	break;
-  default:
-	cerr << "*** Error: unhandled action: " << creature->getAction() << endl;
+void Battle::initTurn() {
+  float range = 0.0f;
+
+  // select a weapon
+  if(creature->getAction() == Constants::ACTION_NO_ACTION) {
+
+	// already selected weapon?
+	if(item) return;
+	Item *i = creature->getBestWeapon(dist);	
+	if(i) range = i->getRpgItem()->getDistance();
+	initItem(i);
+  } else {
+	// or init action
+	switch(creature->getAction()) {
+	case Constants::ACTION_CAST_SPELL:
+	  range = creature->getActionSpell()->getDistance();
+	  speed = creature->getActionSpell()->getLevel() * Constants::HAND_WEAPON_SPEED * 2;
+	  creatureInitiative = creature->getInitiative(NULL, creature->getActionSpell());
+	  break;
+	case Constants::ACTION_EAT_DRINK:
+	  range = creature->getActionItem()->getRpgItem()->getDistance();
+	  speed = creature->getActionItem()->getRpgItem()->getSpeed();
+	  creatureInitiative = creature->getInitiative(creature->getActionItem(), NULL);
+	  break;
+	default:
+	  cerr << "*** Error: unhandled action: " << creature->getAction() << endl;
+	}
   }
-  // set up the range
+  
+  // set up distance range for ranged weapons
   creature->setDistanceRange(0, Constants::MIN_DISTANCE);
   if(range >= 8) {
 	creature->setDistanceRange(range * 0.5f, range);
-  }
-}
-
-void Battle::selectBestItem() {
-  if(item) return;
-  Item *i = creature->getBestWeapon(dist);
-
-  // set up distance range for ranged weapons
-  creature->setDistanceRange(0, Constants::MIN_DISTANCE);
-  if(i) {
-	float range = i->getRpgItem()->getDistance();
-	if(range >= 8) {
-	  creature->setDistanceRange(range * 0.5f, range);
-	}
-  }
-
-  initItem(i);
+  }	
 }
 
 void Battle::initItem(Item *item) {
   this->item = item;
   
   // (!item) is a bare-hands attack		
-  itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED) * 
+  speed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED) * 
 	(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
   //	(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
 
   creatureInitiative = creature->getInitiative(item);
 }
 
+void Battle::executeEatDrinkAction() {
+  // is it still in the inventory?
+  int index = creature->findInInventory(creature->getActionItem());
+  if(index > -1) {
+	if(creature->eatDrink(creature->getActionItem())){
+	  creature->removeInventory(index);
+	}
+  }
+  // cancel action
+  creature->cancelTarget();
+}

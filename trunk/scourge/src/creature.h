@@ -116,6 +116,7 @@ class Creature {
   int action;
   Item *actionItem;
   Spell *actionSpell;
+  Creature *preActionTargetCreature;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -169,15 +170,6 @@ class Creature {
   bool follow(Map *map);
   bool moveToLocator(Map *map);
   void stopMoving();
-
-  inline float getDistanceToTargetCreature() {
-	if(!getTargetCreature()) return 0.0f;
-	return Constants::distance(getX(),  getY(), 
-							   getShape()->getWidth(), getShape()->getDepth(),
-							   getTargetCreature()->getX(), getTargetCreature()->getY(),
-							   getTargetCreature()->getShape()->getWidth(), 
-							   getTargetCreature()->getShape()->getDepth());
-  }
   
   inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
   inline Sint16 getX() { return x; }
@@ -350,6 +342,18 @@ class Creature {
   inline int getAction() { return action; }
   inline Item *getActionItem() { return actionItem; }
   inline Spell *getActionSpell() { return actionSpell; }
+
+
+
+  // handling battle targets (which in the future may be more than targetCreature)
+  bool hasTarget();
+  bool isTargetValid();
+  void cancelTarget();
+  void followTarget();
+  void makeTargetRetaliate();
+  float getDistanceToTarget();
+
+
 
  protected:
 

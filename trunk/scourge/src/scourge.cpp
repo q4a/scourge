@@ -1506,3 +1506,28 @@ void Scourge::missionCompleted() {
     }
   }
 }
+
+/** 
+	Return the closest live player within the given radius or null if none can be found.
+*/
+Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radius) {
+  float minDist = 0;
+  Creature *p = NULL;
+  for(int i = 0; i < creatureCount; i++) {
+	if(!creatures[i]->getStateMod(Constants::dead) && 
+	   map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
+	   creatures[i]->isMonster()) {
+	  float dist = Constants::distance(x, y, w, h,
+									   creatures[i]->getX(),
+									   creatures[i]->getY(),
+									   creatures[i]->getShape()->getWidth(),
+									   creatures[i]->getShape()->getDepth());
+	  if(dist <= (float)radius &&
+		 (!p || dist < minDist)) {
+		p = creatures[i];
+		minDist = dist;
+	  }
+	}
+  }
+  return p;
+}
