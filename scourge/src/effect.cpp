@@ -280,23 +280,30 @@ void Effect::drawRing() {
 
   float r = ringRadius / GLShape::DIV;
 
-  glPushMatrix();
-  glRotatef(ringRotate, 0, 0, 1);
-  glColor4f(1, 1, 1, 0.75f);
-  if(ringTex) glBindTexture( GL_TEXTURE_2D, ringTex );
-  glBegin( GL_QUADS );
-  // front
-  glNormal3f(0.0f, 1.0f, 0.0f);
-  if(ringTex) glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(r, -r, 0);
-  if(ringTex) glTexCoord2f( 0.0f, 1.0f );
-  glVertex3f(-r, -r, 0);
-  if(ringTex) glTexCoord2f( 0.0f, 0.0f );
-  glVertex3f(-r, r, 0);
-  if(ringTex) glTexCoord2f( 1.0f, 0.0f );
-  glVertex3f(r, r, 0);  
-  glEnd();
-  glPopMatrix();
+  float n = (0.05f * rand()/RAND_MAX) + 1.0f;
+  for(int i = 0; i < 2; i++) {
+    glPushMatrix();
+    glRotatef((i == 0 ? ringRotate : -ringRotate), 0, 0, 1);
+    float c = 0.5f;
+    glColor4f((c * rand()/RAND_MAX), 
+              0.7f - (c * rand()/RAND_MAX), 
+              1.0f, 0.35f);
+    if(ringTex) glBindTexture( GL_TEXTURE_2D, ringTex );
+    glScalef( n, n, n );
+    glBegin( GL_QUADS );
+    // front
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    if(ringTex) glTexCoord2f( 1.0f, 1.0f );
+    glVertex3f(r, -r, 0);
+    if(ringTex) glTexCoord2f( 0.0f, 1.0f );
+    glVertex3f(-r, -r, 0);
+    if(ringTex) glTexCoord2f( 0.0f, 0.0f );
+    glVertex3f(-r, r, 0);
+    if(ringTex) glTexCoord2f( 1.0f, 0.0f );
+    glVertex3f(r, r, 0);  
+    glEnd();
+    glPopMatrix();
+  }
 
   if(ringRadius < shape->getWidth()) ringRadius += 0.8f;
   ringRotate += 5.0f;
