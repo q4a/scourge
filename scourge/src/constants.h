@@ -312,20 +312,6 @@ public:
 	SHAPE_INDEX_COUNT
   };
 
-  enum {
-	// creature shape indexes
-	FIGHTER_INDEX=1,
-	ROGUE_INDEX,
-	CLERIC_INDEX,
-	WIZARD_INDEX,
-
-	BUGGERLING_INDEX,
-	SLIME_INDEX,
-
-	// must be last
-	CREATURE_SHAPE_COUNT
-  };
-
   // skills
   enum {
 	SWORD_WEAPON = 0,
