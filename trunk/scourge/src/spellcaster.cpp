@@ -272,19 +272,34 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     // group spells only affect monsters (for now).
     if(spell->getTargetType() == GROUP_TARGET && !creature->isMonster()) continue;
 
-    // roll for resistance
+    Item *protectiveItem = NULL;
     if(!Constants::isStateModTransitionWanted(mod, setting)) {
+
+      // roll for resistance
+      char msg[200];
       if((int)(100.0f * rand()/RAND_MAX) < creature->getSkill(spell->getSchool()->getResistSkill())) {    
-        char msg[200];
         sprintf(msg, "%s resists the spell! [%d]", 
                 creature->getName(), 
                 creature->getSkill(spell->getSchool()->getResistSkill()));
         battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
         continue;
       }
+
+      // check for magic item state mod protections
+      protectiveItem = creature->isProtectedAgainst(mod);
+      if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
+        char tmp[255];
+        protectiveItem->getDetailedDescription(tmp);
+        sprintf(msg, "%s resists the spell with %s!", 
+                creature->getName(),
+                tmp);
+        battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
+        continue;
+      }
     }
 
     int timeInMin = 2 * battle->getCreature()->getLevel();
+    if(protectiveItem) timeInMin /= 2;
     creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));  
 
     // extend expiration event somehow if condition already exists
