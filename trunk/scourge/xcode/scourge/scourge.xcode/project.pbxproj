@@ -25,6 +25,9 @@
 //104
 		1058C7A0FEA54F0111CA2CBB = {
 			children = (
+				76C9735A07389F6300462FAD,
+				76C9735B07389F6300462FAD,
+				76C9735C07389F6300462FAD,
 				7674A65905D5F9EB00A583B9,
 				1058C7A1FEA54F0111CA2CBB,
 			);
@@ -175,9 +178,6 @@
 				762AF861066D856300B92069,
 				762AF862066D856300B92069,
 				762AF863066D856300B92069,
-				764196B70737E4E100CD6008,
-				764196B80737E4E100CD6008,
-				764196B90737E4E100CD6008,
 				080E96DDFE201D6D7F000001,
 				29B97315FDCFA39411CA2CEA,
 				29B97317FDCFA39411CA2CEA,
@@ -1769,48 +1769,6 @@
 			settings = {
 			};
 		};
-		764196B70737E4E100CD6008 = {
-			explicitFileType = wrapper.framework;
-			isa = PBXFileReference;
-			name = freetype.framework;
-			path = ../frameworks/freetype.framework;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		764196B80737E4E100CD6008 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = SDL_mixer.framework;
-			path = ../frameworks/SDL_mixer.framework;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		764196B90737E4E100CD6008 = {
-			explicitFileType = wrapper.framework;
-			isa = PBXFileReference;
-			name = SDL.framework;
-			path = ../frameworks/SDL.framework;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		764196BA0737E4E100CD6008 = {
-			fileRef = 764196B70737E4E100CD6008;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		764196BB0737E4E100CD6008 = {
-			fileRef = 764196B80737E4E100CD6008;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		764196BC0737E4E100CD6008 = {
-			fileRef = 764196B90737E4E100CD6008;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		76419AF5073896FB00CD6008 = {
 			children = (
 				76419AFE0738972000CD6008,
@@ -2103,6 +2061,87 @@
 			settings = {
 			};
 		};
+		76C9735A07389F6300462FAD = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = freetype.framework;
+			path = /Users/gabortorok/Library/Frameworks/freetype.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		76C9735B07389F6300462FAD = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = SDL_mixer.framework;
+			path = /Users/gabortorok/Library/Frameworks/SDL_mixer.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		76C9735C07389F6300462FAD = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = SDL.framework;
+			path = /Users/gabortorok/Library/Frameworks/SDL.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		76C9735D07389F6300462FAD = {
+			fileRef = 76C9735A07389F6300462FAD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76C9735E07389F6300462FAD = {
+			fileRef = 76C9735B07389F6300462FAD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76C9735F07389F6300462FAD = {
+			fileRef = 76C9735C07389F6300462FAD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76C973E30738A1EF00462FAD = {
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			isa = PBXCopyFilesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		76C973E90738A1FD00462FAD = {
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				76C973F70738A22200462FAD,
+				76C973F80738A22200462FAD,
+				76C973F90738A22200462FAD,
+			);
+			isa = PBXCopyFilesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		76C973F70738A22200462FAD = {
+			fileRef = 76C9735A07389F6300462FAD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76C973F80738A22200462FAD = {
+			fileRef = 76C9735B07389F6300462FAD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76C973F90738A22200462FAD = {
+			fileRef = 76C9735C07389F6300462FAD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		76DDD12606CD684C0023850F = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2209,13 +2248,15 @@
 				8D1107290486CEB800E47090,
 				8D11072C0486CEB800E47090,
 				8D11072E0486CEB800E47090,
+				76C973E30738A1EF00462FAD,
+				76C973E90738A1FD00462FAD,
 			);
 			buildRules = (
 			);
 			buildSettings = {
 				DEPLOYMENT_LOCATION = NO;
 				DEPLOYMENT_POSTPROCESSING = NO;
-				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" $(HOME)/Library/Frameworks $(HOME)/sourceforge/scourge/xcode/frameworks";
+				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" \"$(HOME)/Library/Frameworks\"";
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2223,7 +2264,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "/System/Library/Frameworks/OpenGL.framework/Headers $(HOME)/sourceforge/scourge/xcode/frameworks/SDL.framework/Headers $(HOME)/sourceforge/scourge/xcode/frameworks/freetype.framework/Headers";
+				HEADER_SEARCH_PATHS = "/System/Library/Frameworks/OpenGL.framework/Headers $(HOME)/Library/Frameworks/SDL.framework/Headers $(HOME)/Library/Frameworks/freetype.framework/Headers";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/sourceforge/scourge";
 				LIBRARY_SEARCH_PATHS = "";
@@ -2395,9 +2436,9 @@
 			files = (
 				8D11072F0486CEB800E47090,
 				7674A65B05D5F9EB00A583B9,
-				764196BA0737E4E100CD6008,
-				764196BB0737E4E100CD6008,
-				764196BC0737E4E100CD6008,
+				76C9735D07389F6300462FAD,
+				76C9735E07389F6300462FAD,
+				76C9735F07389F6300462FAD,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
