@@ -606,7 +606,7 @@ void Creature::usePotion(Item *item) {
 	  setHp(getHp() + n);
 	  sprintf(msg, "%s heals %d points.", getName(), n);
 	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
-	  startEffect(Constants::EFFECT_HEAL, (Constants::DAMAGE_DURATION * 2));
+	  startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 2));
 	  return;
 	case Constants::AC:
 	  cerr << "Implement me! (AC boost)" << endl;

@@ -421,11 +421,15 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  return false;
 	}
 	if(event->key.keysym.sym == SDLK_h) {
-	  party->startEffect(Constants::EFFECT_HEAL, (Constants::DAMAGE_DURATION * 4));
+	  party->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
 	  return false;
 	}
 	if(event->key.keysym.sym == SDLK_j) {
 	  party->startEffect(Constants::EFFECT_EXPLOSION, (Constants::DAMAGE_DURATION * 4));
+	  return false;
+	}
+	if(event->key.keysym.sym == SDLK_k) {
+	  party->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return false;
 	}
 

@@ -42,10 +42,12 @@ void Effect::draw(GLShape *shape, int effect, int startTime) {
 	drawFlames(shape);
   } else if(effect == Constants::EFFECT_TELEPORT) {
 	drawTeleport(shape);
-  } else if(effect == Constants::EFFECT_HEAL) {
-	drawHeal(shape);
+  } else if(effect == Constants::EFFECT_GREEN) {
+	drawGreen(shape);
   } else if(effect == Constants::EFFECT_EXPLOSION) {
 	drawExplosion(shape);
+  } else if(effect == Constants::EFFECT_SWIRL) {
+	drawSwirl(shape);
   } else {
 	glowShape(shape, startTime);
   }
@@ -110,7 +112,7 @@ void Effect::drawTeleport(GLShape *shape) {
   }
 }
 
-void Effect::drawHeal(GLShape *shape) {
+void Effect::drawGreen(GLShape *shape) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
@@ -178,6 +180,49 @@ void Effect::drawExplosion(GLShape *shape) {
     }
   }
 }
+
+void Effect::drawSwirl(GLShape *shape) {
+  // manage particles
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+	float angle = (float)i * (360.0f / (float)PARTICLE_COUNT);
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(shape, &(particle[i]));
+	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) +
+		(((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) * cos(angle);
+	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) +
+		(((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) * sin(angle);
+	  particle[i]->z = 1;
+	  particle[i]->moveDelta = 0.15f;
+	  particle[i]->rotate = angle;
+	  particle[i]->maxLife = 5000;
+	  //particle[i]->trail = 2;
+    } else {
+	  particle[i]->zoom += 0.01f;
+	  particle[i]->rotate += 5.0f;
+	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) + 
+		(((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) * cos(particle[i]->rotate);
+	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) +
+		(((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) * sin(particle[i]->rotate);
+	  moveParticle(&(particle[i]));
+    }
+
+    // draw it      
+    if(particle[i]) {            
+
+	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  if(c > 1) c = 1;
+      glColor4f(c / 2.0f, c / 4.0f, c, 0.5);
+
+	  drawParticle(shape, particle[i]);
+    }
+  }
+}
+
+
+
 
 void Effect::createParticle(GLShape *shape, ParticleStruct **particle) {
   // create a new particle
