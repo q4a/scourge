@@ -57,8 +57,6 @@ void Effect::glowShape(GLShape *shape, int startTime) {
 }
 
 void Effect::drawFlames(GLShape *shape) {
-  float w, h;
-
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {

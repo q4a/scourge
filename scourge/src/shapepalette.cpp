@@ -40,7 +40,7 @@ ShapePalette::ShapePalette(){
 	cerr << errMessage << endl;
 	exit(1);
   }
-  int sum = 0;
+  //int sum = 0;
   char path[300];
   char line[255];
   int n = fgetc(fp);
@@ -318,7 +318,7 @@ ShapePalette::~ShapePalette(){
 }
 
 char *ShapePalette::getRandomDescription(int descriptionGroup) {
-  if(descriptionGroup >= 0 && descriptionGroup < descriptions.size()) {
+  if(descriptionGroup >= 0 && descriptionGroup < (int)descriptions.size()) {
 	vector<string> *list = descriptions[descriptionGroup];
 	int n = (int)((float)list->size() * rand()/RAND_MAX);
 	return (char*)((*list)[n].c_str());

@@ -1271,7 +1271,7 @@ void Scourge::playRound() {
 	  
 	  // fight a turn of the battle
 	  if(battleRound.size() > 0) {
-		if(battleTurn < battleRound.size()) {
+		if(battleTurn < (int)battleRound.size()) {
 		  Battle *battle = battleRound[battleTurn];
 		  battle->fightTurn();
 		  delete battle;

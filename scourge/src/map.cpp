@@ -647,7 +647,7 @@ void Map::draw() {
 	vector<Projectile*> removedProjectiles;
 	map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
 	for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-	  Creature *creature = i->first;
+	  //Creature *creature = i->first;
 	  vector<Projectile*> *p = i->second;
 	  for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
 		Projectile *proj = *e;
@@ -888,8 +888,8 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
   if(groupMode || player) {
 	glEnable(GL_TEXTURE_2D);
 	int n = 16;
-	float x = 0.0f;
-	float y = 0.0f;
+	//float x = 0.0f;
+	//float y = 0.0f;
 	int on = 0;
 	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
 	  if(creature->getStateMod(i) && i != Constants::dead) {
@@ -996,7 +996,7 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Creature *n
 Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, 
 							Sint16 nx, Sint16 ny, Sint16 nz,
 							Creature *newCreature) {
-  float interX, interY;
+  //float interX, interY;
   Location *position = isBlocked(nx, ny, nz, x, y, z, newCreature->getShape());
   if(position) return position;
 

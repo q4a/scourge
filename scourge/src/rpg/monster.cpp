@@ -48,7 +48,7 @@ void Monster::initMonsters() {
 	exit(1);
   }
 
-  int itemCount = 0;
+  //int itemCount = 0;
   Monster *last_monster = NULL;
   char name[255], model_name[255], skin_name[255];
   char line[255];

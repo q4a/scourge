@@ -497,7 +497,7 @@ bool Party::handleEvent(Widget *widget, SDL_Event *event) {
 	Return the closest live player within the given radius or null if none can be found.
 */
 Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
-  float minDist;
+  float minDist = 0;
   Creature *p = NULL;
   for(int i = 0; i < getPartySize(); i++) {
 	if(!party[i]->getStateMod(Constants::dead)) {

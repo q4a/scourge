@@ -105,8 +105,8 @@ class Creature {
   static const int MAX_MOVE_RETRY = 15;
   int lastTurn;
 
-  int effectDuration;
-  int damageEffectCounter;
+  GLuint effectDuration;
+  GLuint damageEffectCounter;
   Effect *effect;
   int effectType;
   

@@ -56,7 +56,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
   bool battleStarted = false;
   int battleCount = count;  
   int initiative = -10;
-  char message[200];
+  //char message[200];
   int turn = 0;
 
 #ifdef DEBUG_BATTLE

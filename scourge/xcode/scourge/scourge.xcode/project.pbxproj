@@ -100,6 +100,12 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				76DDD12606CD684C0023850F,
+				76DDD12706CD684C0023850F,
+				76DDD12806CD684C0023850F,
+				76DDD12906CD684C0023850F,
+				76DDD12A06CD684C0023850F,
+				76DDD12B06CD684C0023850F,
 				762AF7FE066D856300B92069,
 				762AF7FF066D856300B92069,
 				762AF800066D856300B92069,
@@ -119,8 +125,6 @@
 				762AF80E066D856300B92069,
 				762AF80F066D856300B92069,
 				762AF810066D856300B92069,
-				762AF811066D856300B92069,
-				762AF812066D856300B92069,
 				762AF813066D856300B92069,
 				762AF814066D856300B92069,
 				762AF815066D856300B92069,
@@ -471,24 +475,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = date.h;
 			path = ../../src/date.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		762AF811066D856300B92069 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = debugshape.cpp;
-			path = ../../src/debugshape.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		762AF812066D856300B92069 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = debugshape.h;
-			path = ../../src/debugshape.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1335,18 +1321,6 @@
 			settings = {
 			};
 		};
-		762AF877066D856300B92069 = {
-			fileRef = 762AF811066D856300B92069;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		762AF878066D856300B92069 = {
-			fileRef = 762AF812066D856300B92069;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		762AF879066D856300B92069 = {
 			fileRef = 762AF813066D856300B92069;
 			isa = PBXBuildFile;
@@ -1929,6 +1903,96 @@
 			settings = {
 			};
 		};
+		76DDD12606CD684C0023850F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = battle.cpp;
+			path = ../../src/battle.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DDD12706CD684C0023850F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = battle.h;
+			path = ../../src/battle.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DDD12806CD684C0023850F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = party.cpp;
+			path = ../../src/party.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DDD12906CD684C0023850F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = party.h;
+			path = ../../src/party.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DDD12A06CD684C0023850F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = projectile.cpp;
+			path = ../../src/projectile.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DDD12B06CD684C0023850F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = projectile.h;
+			path = ../../src/projectile.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DDD12C06CD684C0023850F = {
+			fileRef = 76DDD12606CD684C0023850F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DDD12D06CD684C0023850F = {
+			fileRef = 76DDD12706CD684C0023850F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DDD12E06CD684C0023850F = {
+			fileRef = 76DDD12806CD684C0023850F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DDD12F06CD684C0023850F = {
+			fileRef = 76DDD12906CD684C0023850F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DDD13006CD684C0023850F = {
+			fileRef = 76DDD12A06CD684C0023850F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DDD13106CD684C0023850F = {
+			fileRef = 76DDD12B06CD684C0023850F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //760
 //761
 //762
@@ -1993,7 +2057,6 @@
 				762AF872066D856300B92069,
 				762AF874066D856300B92069,
 				762AF876066D856300B92069,
-				762AF878066D856300B92069,
 				762AF87A066D856300B92069,
 				762AF87C066D856300B92069,
 				762AF87E066D856300B92069,
@@ -2033,6 +2096,9 @@
 				762AF8C2066D856300B92069,
 				762AF8C4066D856300B92069,
 				762AF8C6066D856300B92069,
+				76DDD12D06CD684C0023850F,
+				76DDD12F06CD684C0023850F,
+				76DDD13106CD684C0023850F,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2065,7 +2131,6 @@
 				762AF871066D856300B92069,
 				762AF873066D856300B92069,
 				762AF875066D856300B92069,
-				762AF877066D856300B92069,
 				762AF879066D856300B92069,
 				762AF87B066D856300B92069,
 				762AF87D066D856300B92069,
@@ -2105,6 +2170,9 @@
 				762AF8C1066D856300B92069,
 				762AF8C3066D856300B92069,
 				762AF8C5066D856300B92069,
+				76DDD12C06CD684C0023850F,
+				76DDD12E06CD684C0023850F,
+				76DDD13006CD684C0023850F,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
