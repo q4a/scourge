@@ -87,7 +87,6 @@ protected:
   bool useDoor(Location *pos);
 
 public:
-  #define SCOURGE_VERSION 0.01
   #define GUI_HEIGHT 100
   #define TOP_GUI_WIDTH 400
   #define TOP_GUI_HEIGHT 100

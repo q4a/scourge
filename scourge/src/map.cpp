@@ -400,55 +400,62 @@ void Map::draw(SDL_Surface *surface) {
 	  }
 	  doDrawShape(&other[i]);
 	}
-    
-	// create a stencil for the walls
-	glDisable(GL_DEPTH_TEST);
-	glColorMask(0,0,0,0);
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-	for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-	
-	// Use the stencil to draw
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glEnable(GL_DEPTH_TEST);
-	// decr where the floor is (results in a number > 1)
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
-	// draw the ground  
-	setupShapes(true);
 
-	// shadows
-	glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
-	// GL_INCR makes sure to only draw shadow once
-	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
-	glDisable(GL_TEXTURE_2D);
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	useShadow = true;
-	for(int i = 0; i < stencilCount; i++) {
-	  doDrawShape(&stencil[i]);
-	}
-	for(int i = 0; i < otherCount; i++) {
-	  doDrawShape(&other[i]);
-	}
-	useShadow = false;
-	glDisable(GL_BLEND);
-	glEnable(GL_TEXTURE_2D);
-	glDepthMask(GL_TRUE);
-
-	glDisable(GL_STENCIL_TEST); 
+    if(Constants::stencilbuffer) {
+	  // create a stencil for the walls
+	  glDisable(GL_DEPTH_TEST);
+	  glColorMask(0,0,0,0);
+	  glEnable(GL_STENCIL_TEST);
+	  glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	  glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+	  for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+	  
+	  // Use the stencil to draw
+	  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	  glEnable(GL_DEPTH_TEST);
+	  // decr where the floor is (results in a number = 1)
+	  glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	  glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
+	  // draw the ground  
+	  setupShapes(true);
+	  
+	  // shadows
+	  glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
+	  // GL_INCR makes sure to only draw shadow once
+	  glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
+	  glDisable(GL_TEXTURE_2D);
+	  glDepthMask(GL_FALSE);
+	  glEnable(GL_BLEND);
+	  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	  useShadow = true;
+	  for(int i = 0; i < stencilCount; i++) {
+		doDrawShape(&stencil[i]);
+	  }
+	  for(int i = 0; i < otherCount; i++) {
+		doDrawShape(&other[i]);
+	  }
+	  useShadow = false;
+	  glDisable(GL_BLEND);
+	  glEnable(GL_TEXTURE_2D);
+	  glDepthMask(GL_TRUE);
+	  
+	  glDisable(GL_STENCIL_TEST); 
 	
-	// draw the blended walls
-	glEnable(GL_BLEND);  
-	glDepthMask(GL_FALSE);
-	//glDisable(GL_LIGHTING);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-	//glEnable(GL_LIGHTING);
-	glDepthMask(GL_TRUE);    
-	glDisable(GL_BLEND);
+	  // draw the blended walls
+	  glEnable(GL_BLEND);  
+	  glDepthMask(GL_FALSE);
+	  //glDisable(GL_LIGHTING);
+	  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	  for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+	  //glEnable(GL_LIGHTING);
+	  glDepthMask(GL_TRUE);    
+	  glDisable(GL_BLEND);
+	} else {
+	  // draw the walls
+	  for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+	  // draw the ground  
+	  setupShapes(true);
+	}
 	
 	// draw the effects
 	glEnable(GL_BLEND);  
@@ -539,6 +546,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 	glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
 	glMultMatrixf(shadowTransformMatrix);
 	glColor4f( 0, 0, 0, 0.5f );
+
+	// FIXME: this is a nicer shadow color, but it draws outside the walls too.
+	// need to fix the stencil ops to restrict shadow drawing to the floor.
+	//glColor4f( 0.04f, 0, 0.07f, 0.6f );
 	((GLShape*)shape)->useShadow = true;
   } else {
 	glTranslatef( xpos2, ypos2, zpos2);
@@ -746,7 +757,6 @@ void Map::addDescription(char *desc) {
   }
   if(descriptionCount < 200) descriptionCount++;
   descriptions[0] = desc;
-  fprintf(stderr, "Added description. Count=%u\n", descriptionCount);
 }
 
 void Map::drawDescriptions() {
@@ -1027,7 +1037,6 @@ Location *Map::getDropLocation(Shape *shape, int x, int y, int z) {
 
 // the world has changed...
 void Map::configureLightMap() {
-  fprintf(stderr, "configureLightMap\n");
   lightMapChanged = false;
 
   // draw nothing at first

@@ -46,6 +46,8 @@ using namespace std;
 #define SEPARATOR '/'
 #endif
 
+#define SCOURGE_VERSION 0.2
+
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
 extern PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB;
@@ -331,6 +333,9 @@ public:
 	STATE_MOD_COUNT
   };
   static const char *STATE_NAMES[];
+
+  static bool stencilbuffer;
+  static bool multitexture;	
 
   Constants();
   ~Constants();

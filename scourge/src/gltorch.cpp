@@ -135,16 +135,18 @@ void GLTorch::draw() {
   float size = 5.0f/DIV;
 
   glPushMatrix();
+  // a little away from the wall
+  float offset = 0.1f;
   if(torch_dir == Constants::NORTH) {
 	glTranslatef( -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
-				  0.0f, 
+				  0.0f + offset, 
 				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
   } else if(torch_dir == Constants::WEST) {
-	glTranslatef( 0.0f,
+	glTranslatef( 0.0f + offset,
 				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
 				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
   } else if(torch_dir == Constants::EAST) {
-	glTranslatef( 1.0f/DIV,
+	glTranslatef( 1.0f/DIV - offset,
 				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
 				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
   }

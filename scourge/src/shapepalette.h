@@ -83,6 +83,9 @@ public:
   ShapePalette();
   ~ShapePalette();
 
+  GLuint formationTexIndex;
+  inline GLuint getTexture(int index) { return textures[index].id; }
+
   // singleton
   inline static ShapePalette *getInstance() { return instance; }
 

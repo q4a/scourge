@@ -68,6 +68,13 @@ ShapePalette::ShapePalette(){
   strcpy(textures[texture_count++].filename, "chestfront.bmp");
   strcpy(textures[texture_count++].filename, "chestside.bmp");
   strcpy(textures[texture_count++].filename, "chesttop.bmp");
+  formationTexIndex = texture_count;
+  strcpy(textures[texture_count++].filename, "formation1.bmp");
+  strcpy(textures[texture_count++].filename, "formation2.bmp");
+  strcpy(textures[texture_count++].filename, "formation3.bmp");
+  strcpy(textures[texture_count++].filename, "formation4.bmp");
+  strcpy(textures[texture_count++].filename, "formation5.bmp");
+  strcpy(textures[texture_count++].filename, "formation6.bmp");
 
   // set up the cursor
   setupAlphaBlendedBMP("data/cursor.bmp", &cursor, &cursorImage);
@@ -208,12 +215,12 @@ void ShapePalette::initShapes() {
                 "ROOM FLOOR TILE",
                 (debug ? 0xff0000ff : 0xa08040ff),
                 display_list + (count++ * 3), Constants::ROOM_FLOOR_TILE_INDEX);
-  
+	/*  
   ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
   ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
   ((GLShape*)shapes[Constants::ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
   ((GLShape*)shapes[Constants::ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-
+	*/
 	shapes[Constants::LAMP_NORTH_INDEX] =
     new GLTorch(notex, textures[9].id,
                 1, 1, 2,

@@ -140,19 +140,20 @@ int SDLHandler::initGL( GLvoid ) {
     glEnable( GL_COLOR_MATERIAL );
 
     /* initialize opengl extensions */
-    fprintf(stderr, "BEFORE: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
-    glSDLActiveTextureARB = 
-      (PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress ("glActiveTextureARB");
-    fprintf(stderr, "AFTER: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
-    glSDLMultiTexCoord2fARB = 
-      (PFNGLMULTITEXCOORD2FARBPROC)SDL_GL_GetProcAddress ("glMultiTexCoord2fARB");
-    glSDLMultiTexCoord2iARB = 
-      (PFNGLMULTITEXCOORD2IARBPROC)SDL_GL_GetProcAddress ("glMultiTexCoord2iARB");
-
+	if(Constants::multitexture) {
+	  fprintf(stderr, "BEFORE: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
+	  glSDLActiveTextureARB = 
+		(PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress ("glActiveTextureARB");
+	  fprintf(stderr, "AFTER: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
+	  glSDLMultiTexCoord2fARB = 
+		(PFNGLMULTITEXCOORD2FARBPROC)SDL_GL_GetProcAddress ("glMultiTexCoord2fARB");
+	  glSDLMultiTexCoord2iARB = 
+		(PFNGLMULTITEXCOORD2IARBPROC)SDL_GL_GetProcAddress ("glMultiTexCoord2iARB");
+	}
     return( TRUE );
 }
 
-void testModesInFormat(SDL_PixelFormat *format, Uint32 flags) {
+bool testModesInFormat(SDL_PixelFormat *format, Uint32 flags) {
   SDL_Rect **modes;
   int i;
 
@@ -164,35 +165,31 @@ void testModesInFormat(SDL_PixelFormat *format, Uint32 flags) {
   /* Check is there are any modes available */
   if(modes == (SDL_Rect **)0){
 	printf("\tNo modes available!\n");
-	return;
+	return false;
   }
   
   /* Check if our resolution is restricted */
   if(modes == (SDL_Rect **)-1){
 	printf("\tAll resolutions available.\n");
-	return;
+	return true;
   }
 
   /* Print valid modes */
   for(i=0;modes[i];++i)
 	printf("\t%d x %d\n", modes[i]->w, modes[i]->h);
 
-  //free(modes); // crashes; ok to not free since we quit after this
+  //free(modes); // crashes; ok to not free since we only do this a few times
+  return true;
 }
 
-void testModes(Uint32 flags) {
+int testModes(Uint32 flags, bool findMaxBpp=false) {
+  int bpp[] = { 32, 24, 16, 15, 8, 0 };
   SDL_PixelFormat format;
-  
-  format.BitsPerPixel=8;
-  testModesInFormat(&format, flags);
-  format.BitsPerPixel=15;
-  testModesInFormat(&format, flags);
-  format.BitsPerPixel=16;
-  testModesInFormat(&format, flags);
-  format.BitsPerPixel=24;
-  testModesInFormat(&format, flags);
-  format.BitsPerPixel=32;
-  testModesInFormat(&format, flags);
+  for(int i = 0; bpp[i]; i++) {
+	format.BitsPerPixel=bpp[i];
+	if(testModesInFormat(&format, flags) && findMaxBpp) return bpp[i];
+  }
+  return -1;
 }
 
 void SDLHandler::setVideoMode(int argc, char *argv[]) {
@@ -205,7 +202,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
   bool hwaccel = true;
   bool test = false;
   bool printusage = false;
-  int bpp = 32;
+  int bpp = -1;
   int w = 800;
   int h = 600;
 
@@ -217,6 +214,9 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 		printf("Error: bad bpp=%d\n", bpp);
 		printusage = true;
 	  }
+	} else if(!strcmp(argv[i], "--version")) {
+	  printf("Scourge, version %.2f\n", SCOURGE_VERSION);
+	  quit(0);
 	} else if(!strcmp(argv[i], "--test")) {
 	  test = true;
 	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
@@ -230,6 +230,8 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 		case 'H': force_hwsurf = true; break;
 		case 'S': force_swsurf = true; break;
 		case 'a': hwaccel = false; break;
+		case 's': Constants::stencilbuffer = false; break;
+		case 'm': Constants::multitexture = false; break;
 		}
 	  }
 	} else {
@@ -238,7 +240,11 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
   }
 
   if(printusage) {
-	printf("scourge [-fdprHSa?h] [--test] [--bppXX] [--help]\n");
+	printf("S.C.O.U.R.G.E.: Heroes of Lesser Renown\n");
+	printf("A 3D, roguelike game of not quite epic proportions.\n\n");
+	printf("Usage:\n");
+	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version]\n");
+	printf("version: %.2f\n", SCOURGE_VERSION);
 	printf("\nOptions:\n");
 	printf("\tf - fullscreen mode\n");
 	printf("\td - disable double buffering\n");
@@ -248,9 +254,12 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	printf("\tS - force software surface\n");
 	printf("\ta - disable hardware acceleration\n");
 	printf("\th,?,--help - show this info\n");
+	printf("\ts - disable stencil buffer\n");
+	printf("\tm - disable multitexturing\n");
 	printf("\t--test - list card's supported video modes\n");
+	printf("\t--version - print the build version\n");
 	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
-	printf("\nBy default (with no options):\n\tfullscreen mode is off\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available.\n\n");
+	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is off\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available.\n\n");
 	exit(0);
   }
 
@@ -297,11 +306,19 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	testModes(videoFlags);
 	quit(0);
   }
+
+  // try to find the highest bpp for this mode
+  if(bpp == -1) bpp = testModes(videoFlags, true);
+  if(bpp == -1) {
+	fprintf(stderr, "Could not detect suitable opengl video mode.\n");
+	fprintf(stderr, "You can manually select one with the -bpp option\n");
+	quit(0);
+  }
   
   /* Sets up OpenGL double buffering */
   if(doublebuf)
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-  SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+  if(Constants::stencilbuffer) SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 
   cout << "Setting video mode: " << w << "x" << h << "x" << bpp << endl;
   
