@@ -248,6 +248,7 @@ protected:
   int dropItem(int x, int y);
   bool useLever(Location *pos);
   bool useDoor(Location *pos);
+  void destroyDoor( Sint16 ox, Sint16 oy, Shape *shape );
   bool useBoard(Location *pos);
   bool useTeleporter(Location *pos);
   bool useGate(Location *pos);

@@ -1819,59 +1819,86 @@ bool Scourge::useLever(Location *pos) {
 }
 
 bool Scourge::useDoor(Location *pos) {
-    Shape *newDoorShape = NULL;
-    if(pos->shape == shapePal->findShapeByName("EW_DOOR")) {
-        newDoorShape = shapePal->findShapeByName("NS_DOOR");
-    } else if(pos->shape == shapePal->findShapeByName("NS_DOOR")) {
-        newDoorShape = shapePal->findShapeByName("EW_DOOR");
-    }
-    if(newDoorShape) {
-      int doorX = pos->x;
-      int doorY = pos->y;
-      int doorZ = pos->z;
-      
-      // see if the door is open or closed. This is done by checking the shape above the
-      // door. If there's something there and the orientation (NS vs. EW) matches, the
-      // door is closed. I know it's a hack.
-      Location *above = levelMap->getLocation(doorX, 
-                                         doorY, 
-                                         doorZ + pos->shape->getHeight());
-      //if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
-      //else cerr << "Nothing above!" << endl;
-      bool closed = ((pos->shape == shapePal->findShapeByName("EW_DOOR") &&
-                      above && above->shape == shapePal->findShapeByName("EW_DOOR_TOP")) ||
-                     (pos->shape == shapePal->findShapeByName("NS_DOOR") &&
-                      above && above->shape == shapePal->findShapeByName("NS_DOOR_TOP")) ?
-                     true : false);
-      //cerr << "DOOR is closed? " << closed << endl;
-      if(closed && levelMap->isLocked(doorX, doorY, doorZ)) {
-        levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
-        return true;
-      }
+  Shape *newDoorShape = NULL;
+  Shape *oldDoorShape = pos->shape;
+  if(oldDoorShape == shapePal->findShapeByName("EW_DOOR")) {
+	newDoorShape = shapePal->findShapeByName("NS_DOOR");
+  } else if(oldDoorShape == shapePal->findShapeByName("NS_DOOR")) {
+	newDoorShape = shapePal->findShapeByName("EW_DOOR");
+  }
+  if(newDoorShape) {
+	int doorX = pos->x;
+	int doorY = pos->y;
+	int doorZ = pos->z;
+    
+	// see if the door is open or closed. This is done by checking the shape above the
+	// door. If there's something there and the orientation (NS vs. EW) matches, the
+	// door is closed. I know it's a hack.
+	Location *above = levelMap->getLocation(doorX, 
+											doorY, 
+											doorZ + pos->shape->getHeight());
+	//if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
+	//else cerr << "Nothing above!" << endl;
+	bool closed = ((pos->shape == shapePal->findShapeByName("EW_DOOR") &&
+					above && above->shape == shapePal->findShapeByName("EW_DOOR_TOP")) ||
+				   (pos->shape == shapePal->findShapeByName("NS_DOOR") &&
+					above && above->shape == shapePal->findShapeByName("NS_DOOR_TOP")) ?
+				   true : false);
+	//cerr << "DOOR is closed? " << closed << endl;
+	if(closed && levelMap->isLocked(doorX, doorY, doorZ)) {
+	  levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+	  return true;
+	}
+	
+	// switch door
+	Sint16 ox = pos->x;
+	Sint16 oy = pos->y;
+	Sint16 nx = pos->x;
+	Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
+	
+	Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+	Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
+											ox, oy, toint(party->getPlayer()->getZ()),
+											newDoorShape);
+	if( !blocker ) {
 
-        // switch door
-        Sint16 ox = pos->x;
-        Sint16 oy = pos->y;
-        Sint16 nx = pos->x;
-        Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
+	  // there is a chance that the door will be destroyed
+	  if( 0 == (int)( 10.0f * rand()/RAND_MAX ) ) {
+		destroyDoor( ox, oy, oldDoorShape );
+		levelMap->updateLightMap();
+	  } else {
+		levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
+		levelMap->updateLightMap();          
+		levelMap->updateDoorLocation(doorX, doorY, doorZ,
+									 nx, ny, toint(party->getPlayer()->getZ()));
+	  }
+	  return true;
+	} else if( blocker->creature && blocker->creature->isMonster() ) {
+	  // rollback if blocked by a player
+	  levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
+	  levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+	  return true;
+	} else {
+	  // Deeestroy!
+	  destroyDoor( ox, oy, oldDoorShape );
+	  levelMap->updateLightMap();
+	  return true;
+	}
+  }
+  return false;
+}
 
-        Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
-        if(!levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
-                           ox, oy, toint(party->getPlayer()->getZ()),
-                           newDoorShape)) {
-          levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
-          levelMap->updateLightMap();          
-          levelMap->updateDoorLocation(doorX, doorY, doorZ,
-                                  nx, ny, toint(party->getPlayer()->getZ()));
-          return true;
-        } else {
-          // rollback
-          levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
-          levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
-          return true;
-        }
-    }
-    return false;
+void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
+  levelMap->addDescription( "The door splinters into many, tiny pieces!", 0, 1, 1 );
+  for( int i = 0; i < 8; i++ ) {
+	int x = ox + (int)( (float)( shape->getWidth() ) * rand() / RAND_MAX );
+	int y = oy - (int)( (float)( shape->getDepth() ) * rand() / RAND_MAX );
+	int z = 2 + (int)(( ( (float)( shape->getHeight() ) / 2.0f ) - 2.0f ) * rand() / RAND_MAX );
+	cerr << "starting effects at: " << x << "," << y << "," << z << endl;
+	levelMap->startEffect( x, y, z, Constants::EFFECT_DUST, 
+						   (GLuint)( (float)Constants::DAMAGE_DURATION / 2.0f ), 2, 2,
+						   (GLuint)((float)(i) / 4.0f * (float)Constants::DAMAGE_DURATION) );
+  }
 }
 
 void Scourge::toggleInventoryWindow() {

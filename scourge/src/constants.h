@@ -503,6 +503,7 @@ public:
     EFFECT_CAST_SPELL,
     EFFECT_RING,
     EFFECT_RIPPLE,
+	EFFECT_DUST,
     
     // must be last
     EFFECT_COUNT
