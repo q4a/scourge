@@ -20,8 +20,9 @@
 
 map<int, vector<string> *> Item::soundMap;
 
-Item::Item(RpgItem *rpgItem) {
+Item::Item(RpgItem *rpgItem, int level) {
   this->rpgItem = rpgItem;
+  this->level = level;
   this->shapeIndex = this->rpgItem->getShapeIndex();
   this->color = NULL;
   this->shape = ShapePalette::getInstance()->getShape(shapeIndex);
@@ -36,6 +37,8 @@ Item::Item(RpgItem *rpgItem) {
   this->spell = NULL;
   this->magic = NULL;
   sprintf(this->itemName, "%s", rpgItem->getName());
+
+  commonInit();
 }
 
 Item::~Item(){
@@ -48,6 +51,7 @@ Item::~Item(){
 ItemInfo *Item::save() {
   ItemInfo *info = (ItemInfo*)malloc(sizeof(ItemInfo));
   info->version = PERSIST_VERSION;
+  info->level = getLevel();
   strcpy((char*)info->rpgItem_name, getRpgItem()->getName());
   strcpy((char*)info->shape_name, getShape()->getName());
   info->blocking = blocking;
@@ -78,7 +82,9 @@ Item *Item::load(Session *session, ItemInfo *info) {
   if( !strlen( (char*)info->rpgItem_name )) return NULL;
   Spell *spell = NULL;
   if( strlen((char*)info->spell_name) ) spell = Spell::getSpellByName( (char*)info->spell_name );
-  Item *item = session->newItem( RpgItem::getItemByName( (char*)info->rpgItem_name ), spell);
+  Item *item = session->newItem( RpgItem::getItemByName( (char*)info->rpgItem_name ), 
+                                 info->level, 
+                                 spell);
   item->blocking = (info->blocking == 1);
   item->currentCharges = info->currentCharges;
   item->weight = (float)(info->weight) / 100.0f;
@@ -344,3 +350,144 @@ void Item::enchant(int level) {
   return;
 }
 
+
+
+void Item::commonInit() {
+
+  // --------------
+  // regular attribs
+
+  //  weight = rpgItem->getWeight() - ( level * ( rpgItem->getWeight() / (float)MAX_LEVEL ) );
+  weight = rpgItem->getWeight();
+  price = rpgItem->getPrice() + (int)((float)( rpgItem->getPrice() * ( level / 2 ) ) * 
+                                      rand() / RAND_MAX );
+  action = rpgItem->getAction() + (int)((float)( rpgItem->getAction() * ( level / 2 ) ) * 
+                                        rand() / RAND_MAX );
+  speed = rpgItem->getSpeed() - (int)((float)( rpgItem->getSpeed() * ( level / 10 ) ) * 
+                                      rand() / RAND_MAX );
+  if( speed < 3 ) speed = 3;
+  distance = rpgItem->getDistance() + (int)((float)( rpgItem->getDistance() * ( level / 2 ) ) * 
+                                            rand() / RAND_MAX );
+  maxCharges = rpgItem->getMaxCharges() + (int)((float)( rpgItem->getMaxCharges() * ( level / 2 ) ) * 
+                                                rand() / RAND_MAX );
+  duration = rpgItem->getDuration() + (int)((float)( rpgItem->getDuration() * ( level / 2 ) ) * 
+                                            rand() / RAND_MAX );
+
+
+  // --------------
+  // magic attribs
+
+  // init to no-magic
+  magicLevel = -1;
+  bonus = 0;
+  damageMultiplier = 1;
+  monsterType = NULL;
+  cursed = false;
+  school = NULL;
+  magicDamage = NULL;
+  stateModSet = false;
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) stateMod[i] = 0;
+
+  // roll for magic
+  int n = (int)( 100.0f * rand()/RAND_MAX );
+  if( n < 5 ) magicLevel = Constants::DIVINE_MAGIC_ITEM;
+  else if( n < 15 ) magicLevel = Constants::CHAMPION_MAGIC_ITEM;
+  else if( n < 30 ) magicLevel = Constants::GREATER_MAGIC_ITEM;
+  else if( n < 50 ) magicLevel = Constants::LESSER_MAGIC_ITEM;
+
+  if( magicLevel == -1 ) return;
+
+
+  Spell *spell;
+  switch(magicLevel) {
+  case Constants::LESSER_MAGIC_ITEM:
+    bonus = (int)(1.0f * rand()/RAND_MAX) + 1;
+    if(rpgItem->isWeapon()) {
+      damageMultiplier = (int)(2.0f * rand()/RAND_MAX);
+      monsterType = (char*)Monster::getRandomMonsterType();
+    }
+    break;
+  case Constants::GREATER_MAGIC_ITEM:
+    bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
+    if(rpgItem->isWeapon()) {
+      damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+      monsterType = (char*)Monster::getRandomMonsterType();
+    }
+    spell = MagicSchool::getRandomSpell(1);
+    if(spell) {
+      school = spell->getSchool();
+      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 1, (int)(3.0f * rand()/RAND_MAX));
+    }
+    n = (int)(3.0f * rand()/RAND_MAX);
+    for(int i = 0; i < n; i++) {
+      int skill = Constants::getRandomBasicSkill();
+      if(skillBonus.find(skill) == skillBonus.end()) {
+        skillBonus[skill] = (int)(8.0f * rand()/RAND_MAX);
+      }
+    }
+    break;
+  case Constants::CHAMPION_MAGIC_ITEM:
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
+    if(rpgItem->isWeapon()) {
+      damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+      monsterType = (char*)Monster::getRandomMonsterType();
+    }
+    spell = MagicSchool::getRandomSpell(1);
+    if(spell) {
+      school = spell->getSchool();
+      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 2, (int)(3.0f * rand()/RAND_MAX));
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    if(n > 0) stateModSet = true;
+    for(int i = 0; i < n; i++) {
+      stateMod[Constants::getRandomGoodStateMod()] = 1;
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    for(int i = 0; i < n; i++) {
+      int skill = Constants::getRandomBasicSkill();
+      if(skillBonus.find(skill) == skillBonus.end()) {
+        skillBonus[skill] = (int)(10.0f * rand()/RAND_MAX);
+      }
+    }
+    break;
+  case Constants::DIVINE_MAGIC_ITEM:
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
+    if(rpgItem->isWeapon()) {
+      damageMultiplier = (int)(4.0f * rand()/RAND_MAX);
+      monsterType = NULL;
+    }
+    spell = MagicSchool::getRandomSpell(1);
+    if(spell) {
+      school = spell->getSchool();
+      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 3, (int)(3.0f * rand()/RAND_MAX));
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    if(n > 0) stateModSet = true;
+    for(int i = 0; i < n; i++) {
+      stateMod[Constants::getRandomGoodStateMod()] = 1;
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    if(n > 0) stateModSet = true;
+    for(int i = 0; i < n; i++) {
+      stateMod[Constants::getRandomBadStateMod()] = 2;
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 2;
+    for(int i = 0; i < n; i++) {
+      int skill = Constants::getRandomBasicSkill();
+      if(skillBonus.find(skill) == skillBonus.end()) {
+        skillBonus[skill] = (int)(12.0f * rand()/RAND_MAX);
+      }
+    }
+    break;
+  default:
+    cerr << "*** Error: unknown magic level: " << magicLevel << endl;
+  }
+}
+
+int Item::rollMagicDamage() { 
+  return (magicDamage ? magicDamage->roll() : 0); 
+}
+
+char *Item::describeMagicDamage() { 
+  return (magicDamage ? magicDamage->toString() : NULL);
+}

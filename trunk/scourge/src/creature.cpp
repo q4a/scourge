@@ -821,7 +821,7 @@ void Creature::usePotion(Item *item) {
 
         // add calendar event to remove armor bonus
         // (format : sec, min, hours, days, months, years)
-        Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
+        Date d(0, item->getRpgItem()->getDuration(), 0, 0, 0, 0); 
         Event *e = 
         new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
                                   d, this, item->getRpgItem(), session, 1);
@@ -841,7 +841,7 @@ void Creature::usePotion(Item *item) {
 
     // add calendar event to remove armor bonus
     // (format : sec, min, hours, days, months, years)
-    Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
+    Date d(0, item->getRpgItem()->getDuration(), 0, 0, 0, 0); 
     Event *e = 
     new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
                               d, this, item->getRpgItem(), session, 1);

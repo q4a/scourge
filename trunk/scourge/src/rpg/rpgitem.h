@@ -154,7 +154,8 @@ class RpgItem {
 		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0,
 		  int potionSkill=-1, int potionTime=0);
   ~RpgItem();
-
+  
+  inline int getPrice() { return price; }
   inline int getIndex() { return index; }
   inline char *getName() { return name; }
   inline int getAction() { return action; }
@@ -172,7 +173,7 @@ class RpgItem {
   inline int getType() { return type; }
   inline int getMaxCharges() { return maxCharges; }
   inline int getPotionSkill() { return potionSkill; }
-  inline int getPotionTime() { return potionTime; }
+  inline int getDuration() { return potionTime; }
   inline bool getAcl(int index) { return (acl & (1 << index) ? true : false); }
   inline void setAcl(int index, bool value) { if(value) acl |= (1 << index); else acl &= ((GLuint)0xffff - (GLuint)(1 << index)); }
   inline void setAllAcl(bool value) { if(value) acl = (GLuint)0xffff; else acl = (GLuint)0; }

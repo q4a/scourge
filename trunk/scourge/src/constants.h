@@ -232,6 +232,8 @@ typedef struct _ParticleStruct {
 #define MAX_INVENTORY_SIZE 200
 #define MAX_CONTAINED_ITEMS 100
 
+#define MAX_LEVEL 100
+
 class Constants {
 public:
 

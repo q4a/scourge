@@ -180,8 +180,8 @@ void Session::stopClientServer() {
 
 #endif
 
-Item *Session::newItem(RpgItem *rpgItem, Spell *spell) {
-  newItems[itemCount] = new Item(rpgItem);
+Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell) {
+  newItems[itemCount] = new Item(rpgItem, level);
   if(spell) newItems[itemCount]->setSpell(spell);
   itemCount++;
   return newItems[itemCount - 1];
