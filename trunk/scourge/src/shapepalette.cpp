@@ -316,11 +316,20 @@ void ShapePalette::initShapes() {
   creature_shapes[Constants::BUGGERLING_INDEX] =
     new MD2Shape("data/models/m5.md2", "data/models/m5.bmp", 1.2f,
                  notex,
-                 3, 3, 6,
+                 3, 3, 4,
                  "BUGGERLING",
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
                  Constants::BUGGERLING_INDEX);  
+  creature_shapes[Constants::SLIME_INDEX] =
+    new MD2Shape("data/models/m6.md2", "data/models/m6.bmp", 1.2f,
+                 notex,
+                 3, 3, 4,
+                 "SLIME",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),
+                 display_list + (count++ * 3),
+                 Constants::SLIME_INDEX);  
+
 
   
   // items
