@@ -738,16 +738,17 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   }
 
   // add some items
-  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Bastard sword"))); // items[RpgItem::BASTARD_SWORD]));
-  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger"))); // items[RpgItem::DAGGER]));
-  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple"))); // items[RpgItem::APPLE]));
-  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple"))); // items[RpgItem::APPLE]));
-  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword"))); // items[RpgItem::LONG_SWORD]));
-  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Wine barrel"))); // items[RpgItem::WINE_BARREL]));
-  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat"))); // items[RpgItem::MUTTON_MEAT]));
-  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword"))); // items[RpgItem::GREAT_SWORD]));
-  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe"))); // items[RpgItem::BATTLE_AXE]));
-  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe"))); // items[RpgItem::THROWING_AXE]));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Bastard sword")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger")));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword")));
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Wine barrel")));
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));
   
 
   return pc;

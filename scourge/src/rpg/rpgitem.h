@@ -28,14 +28,6 @@ using namespace std;
 class RpgItem {
  private:
 
-  // used for containers...
-  enum {
-	CHEST=8,
-	BOOKSHELF,
-	CHEST2,
-	BOOKSHELF2
-  };
-
   int index;
   char *name, *desc, *shortDesc;
   int level;

@@ -46,7 +46,7 @@ using namespace std;
 #define SEPARATOR '/'
 #endif
 
-#define SCOURGE_VERSION 0.4
+#define SCOURGE_VERSION 0.5
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
@@ -306,6 +306,7 @@ public:
 	CORPSE_INDEX,
 	TABLE_INDEX,
 	CHAIR_INDEX,
+	BOW_INDEX,
 
 	// must be the last one
 	SHAPE_INDEX_COUNT

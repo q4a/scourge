@@ -262,7 +262,7 @@ ShapePalette::ShapePalette(){
 	shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
   }
   // remember the number of shapes
-  shapeCount = shapeValueVector.size();
+  shapeCount = (int)shapeValueVector.size() + 1;
 
   // clean up temp. shape objects 
   // FIXME: do we need to free the vector's elements?
@@ -405,7 +405,9 @@ GLShape *ShapePalette::findShapeByName(const char *name) {
 int ShapePalette::findShapeIndexByName(const char *name) {
   if(!name || !strlen(name)) return Constants::SWORD_INDEX;
   for(int i = 1; i < shapeCount; i++) {
-	if(!strcmp(shapes[i]->getName(), name)) return i;
+	if(!strcmp(shapes[i]->getName(), name)) {
+	  return i;
+	}
   }
   return Constants::SWORD_INDEX;
 }
