@@ -417,7 +417,7 @@ class Map {
      return key;
    }
 
-   inline void decodePairKey(Uint32 key, int *x, int *y, int *z) {
+   inline void decodePairKey(Uint32 key, int *x, int *y) {
      *x = (int)(key / ((Uint32)MAP_WIDTH));
      *y = (int)(key % ((Uint32)MAP_WIDTH));
    }
@@ -425,9 +425,9 @@ class Map {
    CFrustum *frustum;
    CVector3 chunks[100];
    int chunkCount;
-   int effectCount;
    DrawLater later[100], stencil[1000], other[1000], damage[1000];
    int laterCount, stencilCount, otherCount, damageCount;
+   map<Uint32, EffectLocation*> currentEffectsMap;
   
   /**
 	 If 'ground' is true, it draws the ground layer.
