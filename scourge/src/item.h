@@ -39,6 +39,7 @@ private:
   int shapeIndex;
   Color *color;
   GLShape *shape;
+  bool blocking;
   
 public:
   Item(RpgItem *rpgItem);
@@ -49,6 +50,7 @@ public:
   inline void setShape(GLShape *s) { shape = s; }
   inline GLShape *getShape() { return shape; }
   inline RpgItem *getRpgItem() { return rpgItem; }
+  inline bool isBlocking() { return blocking; }
 
 	inline void getDetailedDescription(char *s, bool precise=true) {
 		sprintf(s, "(A:%d,S:%d,Q:%d,W:%d) %s", 

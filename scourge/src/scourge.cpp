@@ -1014,7 +1014,7 @@ void Scourge::playRound() {
 	for(int i = 0; i < creatureCount; i++) {
 	  if(!creatures[i]->getStateMod(Constants::dead) && 
 		 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
-		moveMonster(creatures[i]);
+		//moveMonster(creatures[i]);
 	  }
 	}
 
