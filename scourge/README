@@ -28,4 +28,6 @@ The A* alg. was described on some message board that I can no longer find.
 The Text class was adopted from code originally written by 
 Mark Kilgard (mjk@nvidia.com) (c) 1997
 see: http://www.opengl.org/developers/code/mjktips/TexFont/TexFont.html
+(used with his permission!)
 
+The glut for Mingw32 package is from http://mywebpage.netscape.com/PtrPck/glut.htm
