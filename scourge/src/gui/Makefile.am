@@ -5,6 +5,8 @@ noinst_LIBRARIES = libScourgeGui.a
 libScourgeGui_a_SOURCES = \
 	widget.cpp\
 	widget.h\
+	textfield.cpp\
+	textfield.h\
 	widgetview.cpp\
 	widgetview.h\
 	canvas.cpp\
