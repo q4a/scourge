@@ -50,12 +50,14 @@ Battle::Battle(Session *session, Creature *creature) {
   this->needsReset = true;
   this->nextTurn = 0;
   this->weaponWait = 0;
+  cerr << "*** constructor, creature=" << creature->getName() << endl;
 }
 
 Battle::~Battle() {
 }
 
 void Battle::reset() {
+  cerr << "*** reset: creature=" << creature->getName() << endl;
   this->steps = 0;
   this->startingAp = this->ap = 10 + (creature->getSkill(Constants::COORDINATION) / 10);
   this->projectileHit = false;
@@ -215,7 +217,10 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
 
 bool Battle::fightTurn() {
 
-  cerr << "TURN: creature=" << creature->getName() << " ap=" << ap << " coordination=" << creature->getSkill(Constants::COORDINATION) << endl;
+  cerr << "TURN: creature=" << creature->getName() << 
+    " ap=" << ap << 
+    " wait=" << weaponWait << 
+    " nextTurn=" << nextTurn << endl;
 
   // are we alive?
   if(!creature || creature->getStateMod(Constants::dead)) return true;
@@ -240,7 +245,11 @@ bool Battle::fightTurn() {
 
   initTurnStep();
 
-  if(creature->getTargetCreature()) {
+  if(creature->getAction() == Constants::ACTION_EAT_DRINK) {
+    executeEatDrinkAction();
+  }
+
+  if(creature->hasTarget()) {
     if(creature->isTargetValid()) {
       if(dist < range) {
         executeAction();
@@ -328,27 +337,32 @@ bool Battle::pauseBeforePlayerTurn() {
   }
 
   // pause if this is a player's first step
-  if (!creature->isMonster() &&
-      !steps && 
+  if (!steps && 
       !paused &&
       session->getUserConfiguration()->isBattleTurnBased()) {
-    cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
+    if(!creature->isMonster()) {
+      cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
 
-    // center on player
-    for (int i = 0; i < session->getParty()->getPartySize(); i++) {
-      if (session->getParty()->getParty(i) == creature) {
-        session->getParty()->setPlayer(i);
-        break;
+      // center on player
+      for (int i = 0; i < session->getParty()->getPartySize(); i++) {
+        if (session->getParty()->getParty(i) == creature) {
+          session->getParty()->setPlayer(i);
+          break;
+        }
       }
-    }
-    // FIXME: only center if not on-screen
-    session->getMap()->refresh();
-    session->getMap()->center(creature->getX(), creature->getY(), true);
+      // FIXME: only center if not on-screen
+      session->getMap()->refresh();
+      session->getMap()->center(creature->getX(), creature->getY(), true);
 
-    // pause the game
-    session->getParty()->toggleRound(true);
-    paused = true;
-    return true;
+      // pause the game
+      session->getParty()->toggleRound(true);
+      paused = true;
+      return true;
+    } else {
+      // FIXME: only center if not on-screen
+      session->getMap()->refresh();
+      session->getMap()->center(creature->getX(), creature->getY(), true);
+    }
   }
   steps++;
   paused = false;
@@ -360,6 +374,7 @@ void Battle::initTurnStep() {
 
   // select the best weapon only once
   if(weaponWait <= 0) {
+    cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
     if(creature->getActionSpell()) {
       range = Constants::MIN_DISTANCE;
       range = creature->getActionSpell()->getDistance();
@@ -400,16 +415,14 @@ void Battle::initTurnStep() {
 }
 
 void Battle::executeAction() {
-  if(!projectileHit) {
-    ap--;
-    if(weaponWait > 0) {
-      weaponWait--;
-      if(weaponWait > 0) return;
-    }
+  ap--;
+  if(weaponWait > 0) {
+    weaponWait--;
+    if(weaponWait > 0) return;
   }
 
   // attack
-  cerr << "\t\tAttacking." << endl;
+  cerr << "\t\t *** Attacking." << endl;
 //  } else if(spell) {
 //    // a spell projectile hit
 //    SpellCaster *sc = new SpellCaster(this, spell, true); 
@@ -432,11 +445,20 @@ void Battle::stepCloserToTarget() {
   // out of range: take 1 step closer
   creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
   cerr << "\t\tTaking a step." << endl;
-  if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
-       creature->getSelY() == creature->getTargetCreature()->getY())) {
-    creature->setSelXY(creature->getTargetCreature()->getX(),
-                       creature->getTargetCreature()->getY(),
-                       true);
+  if(creature->getTargetCreature()) {
+    if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
+         creature->getSelY() == creature->getTargetCreature()->getY())) {
+      creature->setSelXY(creature->getTargetCreature()->getX(),
+                         creature->getTargetCreature()->getY(),
+                         true);
+    }
+  } else {
+    if(!(creature->getSelX() == creature->getTargetX() &&
+         creature->getSelY() == creature->getTargetY())) {
+      creature->setSelXY(creature->getTargetX(),
+                         creature->getTargetY(),
+                         true);
+    }
   }
   creature->moveToLocator(session->getMap());
   ap--;
@@ -561,14 +583,14 @@ void Battle::launchProjectile() {
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
-  
+  cerr << "*** Projectile hit (target): creature=" << proj->getCreature()->getName() << endl;  
   Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
   Battle *battle = proj->getCreature()->getBattle();
+  battle->projectileHit = true;
   if(proj->getItem()) {
     //battle->initItem(proj->getItem());
     battle->item = proj->getItem();
-    battle->projectileHit = true;
     battle->hitWithItem();
   } else if(proj->getSpell()) {
 //    battle->spell = proj->getSpell();
@@ -581,48 +603,30 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   battle->spell = NULL;
   proj->getCreature()->cancelTarget();
   proj->getCreature()->setTargetCreature(oldTarget);
-
-
-
-
-  /*
-  // configure a turn
-  Creature *oldTarget = proj->getCreature()->getTargetCreature();
-  proj->getCreature()->setTargetCreature(target);
-  Battle *battle = new Battle(session, proj->getCreature());
-  battle->projectileHit = true;
-
-  if(proj->getItem()) {
-    battle->initItem(proj->getItem());
-  } else if(proj->getSpell()) {
-    battle->spell = proj->getSpell();
-  }
-  // play it
-  battle->fightTurn();
-
-  delete battle;
-  proj->getCreature()->cancelTarget();
-  proj->getCreature()->setTargetCreature(oldTarget);
-  */
+  cerr << "*** Projectile hit ends." << endl;
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y) {
+  cerr << "*** Projectile hit (x,y): creature=" << proj->getCreature()->getName() << endl;
   // configure a turn
   proj->getCreature()->setTargetLocation(x, y, 0);
-  Battle *battle = new Battle(session, proj->getCreature());
+  Battle *battle = proj->getCreature()->getBattle();
   battle->projectileHit = true;
-
   if(proj->getItem()) {
     //battle->initItem(proj->getItem());
     battle->item = proj->getItem();
+    battle->hitWithItem();
   } else if(proj->getSpell()) {
-    battle->spell = proj->getSpell();
+//    battle->spell = proj->getSpell();
+//    battle->castSpell();
+    SpellCaster *sc = new SpellCaster(battle, proj->getSpell(), true); 
+    sc->spellSucceeded();
+    delete sc;
   }
-  // play it
-  battle->fightTurn();
-  
-  delete battle;
+  battle->projectileHit = false;
+  battle->spell = NULL;
   proj->getCreature()->cancelTarget();
+  cerr << "*** Projectile hit ends." << endl;
 }
 
 void Battle::hitWithItem() {
@@ -792,3 +796,9 @@ void Battle::executeEatDrinkAction() {
   // cancel action
   creature->cancelTarget();
 }
+
+void Battle::invalidate() {
+  cerr << "*** invalidate: creature=" << getCreature()->getName() << endl;
+  nextTurn = weaponWait = 0;
+}
+

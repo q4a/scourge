@@ -108,6 +108,8 @@ class Battle {
   inline Creature *getCreature() { return creature; }
   inline Session *getSession() { return session; }
 
+  void invalidate();
+
  protected:
   void launchProjectile();
   void initTurn();
