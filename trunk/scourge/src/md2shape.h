@@ -61,7 +61,12 @@ private:
   float lastTime;  
   bool pauseAnimation;
   int currentAnim;
-  int currentFrame;   
+  int currentFrame; 
+  int animationWaiting; // memorizes one animation waiting to be played
+  
+  // To ensure that animations with few frames are played at least once entirely
+  bool playedOnce; 
+      
    
   // This draws and animates the .md2 model by interpoloated key frame animation
   void AnimateMD2Model();
