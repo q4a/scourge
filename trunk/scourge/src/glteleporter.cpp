@@ -59,6 +59,7 @@ void GLTeleporter::draw() {
 	// reposition
 	if(star[i][0] == -1) {
 	  starAngle[i] = (360.0f * rand()/RAND_MAX);
+	  starSpeed[i] = (8.0f * rand()/RAND_MAX) + 2.0f;
 	}
 	star[i][0] = r + (r * cos(3.14159 / (180.0f / starAngle[i])));
 	star[i][1] = r + (r * sin(3.14159 / (180.0f / starAngle[i])));
@@ -98,7 +99,7 @@ void GLTeleporter::draw() {
 	glEnable( GL_CULL_FACE );
 	
 	// move
-	starAngle[i]++; 
+	starAngle[i] += starSpeed[i];
 	if(starAngle[i] >= 360.0f) starAngle[i] -= 360.0f;
   }
 
