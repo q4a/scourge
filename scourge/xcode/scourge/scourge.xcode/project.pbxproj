@@ -102,6 +102,8 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				76B5F01A07F9133F00E1A8FA,
+				76B5F01B07F9133F00E1A8FA,
 				76DACCA007AFEE6E006B1419,
 				76DACCA107AFEE6E006B1419,
 				76DACC9A07AFEC70006B1419,
@@ -2606,6 +2608,36 @@
 			settings = {
 			};
 		};
+		76B5F01A07F9133F00E1A8FA = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = frustum.cpp;
+			path = ../../src/frustum.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76B5F01B07F9133F00E1A8FA = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = frustum.h;
+			path = ../../src/frustum.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76B5F01C07F9133F00E1A8FA = {
+			fileRef = 76B5F01A07F9133F00E1A8FA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76B5F01D07F9133F00E1A8FA = {
+			fileRef = 76B5F01B07F9133F00E1A8FA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		76C9735A07389F6300462FAD = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -2955,6 +2987,7 @@
 				76908E5107825EF900D1A3B2,
 				76908E5A07825F1400D1A3B2,
 				76DACCA307AFEE6E006B1419,
+				76B5F01D07F9133F00E1A8FA,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3054,6 +3087,7 @@
 				76908E5907825F1400D1A3B2,
 				76DACC9B07AFEC70006B1419,
 				76DACCA207AFEE6E006B1419,
+				76B5F01C07F9133F00E1A8FA,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
