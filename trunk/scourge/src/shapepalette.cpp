@@ -362,7 +362,8 @@ t3DModel * ShapePalette::LoadMd2Model(char *file_name){
   return t3d;   
 }    
 
-GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
+GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, 
+                                        float scale, int w, int d, int h) {
 
   // find the model
   string model = model_name;
@@ -399,11 +400,20 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
 
   // create the shape.
   // FIXME: shapeindex is always FIGHTER. Does it matter?
-  MD2Shape *shape = new MD2Shape(model_info->model, skin_texture, model_info->scale,
-                                 textureGroup[14], 
-                                 model_info->width, model_info->depth, model_info->height,
-                                 model_info->name, -1,
-                                 0xf0f0ffff, 0); //Constants::FIGHTER);  
+  MD2Shape *shape;
+  if(scale == 0.0f) {
+    shape = new MD2Shape(model_info->model, skin_texture, model_info->scale,
+                         textureGroup[14], 
+                         model_info->width, model_info->depth, model_info->height,
+                         model_info->name, -1,
+                         0xf0f0ffff, 0); //Constants::FIGHTER);  
+  } else {
+    shape = new MD2Shape(model_info->model, skin_texture, scale,
+                         textureGroup[14], 
+                         w, d, h,
+                         model_info->name, -1,
+                         0xf0f0ffff, 0); //Constants::FIGHTER);  
+  }
   shape->setSkinName(skin_name);
   return shape;
 }

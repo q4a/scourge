@@ -694,6 +694,7 @@ void Map::draw() {
     // draw the projectiles
     DrawLater dl;
     vector<Projectile*> removedProjectiles;
+    map<Projectile*, Creature*> battleProjectiles;
     map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
     for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
       //Creature *creature = i->first;
@@ -731,7 +732,8 @@ void Map::draw() {
           if(loc->creature && 
              proj->getCreature()->isMonster() != loc->creature->isMonster()) {
             // attack monster
-            Battle::projectileHitTurn(scourge, proj, loc->creature);
+            //Battle::projectileHitTurn(scourge, proj, loc->creature);
+            battleProjectiles[proj] = loc->creature;
             blocked = true;
           } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
                     (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
@@ -743,6 +745,12 @@ void Map::draw() {
           }
         }
       }
+    }
+    // fight battles
+    for(map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
+      Projectile *proj = i->first;
+      Creature *creature = i->second;
+      Battle::projectileHitTurn(scourge, proj, creature);
     }
     // remove projectiles
     for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {

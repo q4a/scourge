@@ -43,15 +43,23 @@ class Monster  {
   int speed;
   int baseArmor;
   int rareness;
+  float scale;
+  int w;
+  int d;
+  int h;
   vector<RpgItem*> items;
 
   static map<int, vector<Monster*>* > monsters;
   static map<string, Monster*> monstersByName;
 
 public:
-  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int baseArmor=0);
+  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int baseArmor, float scale, int w, int d, int h);
   ~Monster();
 
+  inline float getScale() { return scale; }
+  inline int getWidth() { return w; }
+  inline int getDepth() { return d; }
+  inline int getHeight() { return h; }
   inline int getBaseArmor() { return baseArmor; }
   inline int getRareness() { return rareness; }
   inline char *getType() { return type; };

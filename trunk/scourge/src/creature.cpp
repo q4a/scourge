@@ -44,6 +44,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
+  this->shape = scourge->getShapePalette()->getCreatureShape(model_name, skin_name);
   commonInit();  
 }
 
@@ -59,12 +60,17 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
   this->bonusArmor=0;
+  this->shape = scourge->getShapePalette()->getCreatureShape(model_name, 
+                                                             skin_name, 
+                                                             monster->getScale(),
+                                                             monster->getWidth(),
+                                                             monster->getDepth(),
+                                                             monster->getHeight());
   commonInit();
   monsterInit();
 }
 
 void Creature::commonInit() {
-  this->shape = scourge->getShapePalette()->getCreatureShape(model_name, skin_name);
   this->x = this->y = this->z = 0;
   this->dir = Constants::MOVE_UP;
   this->next = NULL;
