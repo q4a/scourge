@@ -295,6 +295,7 @@ public:
 
   void refreshContainerGui(Item *container);
 
+  void initItems();
 };
 
 #endif

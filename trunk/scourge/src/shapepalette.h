@@ -31,20 +31,34 @@
 #include "3dsshape.h"
 #include "Md2.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */
 
 class GLShape;
 class GLTorch;
+
+// temporary information when constructing shapes from a file
+typedef struct _ShapeValues {
+  int textureGroupIndex;
+  int width, height, depth;
+  char name[100];
+  int descriptionIndex;
+  long color;
+  int skipSide, stencil, blocksLight;
+  int torch;
+  char m3ds_name[100];
+  float m3ds_scale;
+  int teleporter;
+} ShapeValues;
   
 class ShapePalette {
 private:
   GLShape *shapes[256];
-  GLShape *creature_shapes[256];
-  GLShape *item_shapes[256];  
-  GLuint display_list, item_display_list_start, max_display_list;
-  //GLuint creature_display_list_start;
+  int shapeCount;
+  GLuint display_list;
   GLuint gui_texture;
   
   typedef struct _Texture {
@@ -56,19 +70,10 @@ private:
   int texture_count;
   GLShape *shapeNameArray[256];
 
-  GLuint ns_tex[3];
-  GLuint ew_tex[3];
-  GLuint wood_tex[3];
-  GLuint marble_tex[3];
-  GLuint floor_tex[3], floor2_tex[3], floor3_tex[3];
-  GLuint notex[3];
-  GLuint lamptex[3];
-  GLuint doorNStex[3];
-  GLuint doorEWtex[3];      
-  GLuint shelftex[3];
-  GLuint chesttex[3];
-  GLuint shelftex2[3];
-  GLuint chesttex2[3];
+  // native texture groups
+  GLuint textureGroup[100][3];
+  int textureGroupCount;
+
   GLuint md2_tex[6];
 
   // how big to make the walls
@@ -76,17 +81,15 @@ private:
   const static Sint16 unitOffset = MAP_UNIT_OFFSET;
   const static Sint16 wallHeight = MAP_WALL_HEIGHT;
 
-  void initShapes();
   void loadTextures();
 
   // shape descriptions
-  static char *wallDescription[], *doorDescription[], *doorFrameDescription[], *torchDescription[];
-  static char *boardDescription[], *brazierDescription[], *columnDescription[], *teleporterDescription[];
-  static char *stairsDescription[];
-  static int wallDescriptionCount, doorDescriptionCount, doorFrameDescriptionCount, torchDescriptionCount;
-  static int boardDescriptionCount, brazierDescriptionCount, columnDescriptionCount, teleporterDescriptionCount;
-  static int stairsDescriptionCount;
-  
+  char description[100][200];
+  int descriptionIndex[100], descriptionLength[100];
+  int descriptionCount, descriptionIndexCount;
+
+  // temp. shape data
+  vector<ShapeValues*> shapeValueVector;
 
   static ShapePalette *instance;
   
@@ -110,6 +113,7 @@ public:
 
   SDL_Surface *logo;
   GLubyte *logoImage;   
+  GLuint logo_texture;
 
   SDL_Surface *scourge;
   GLubyte *scourgeImage;
@@ -117,17 +121,17 @@ public:
   GLuint cloud, candle, torchback;
        
   inline GLShape *getShape(int index) { return shapes[index]; }  
-  inline GLShape *getItemShape(int index) { return item_shapes[index]; }
 
-  inline bool isItem(GLShape *shape) { return shape->getDisplayList() >= item_display_list_start; }
-  
   inline Sint16 getUnitSide() { return unitSide; }
   inline Sint16 getUnitOffset() { return unitOffset; }
   inline Sint16 getWallHeight() { return wallHeight; }
 
   inline GLuint getGuiTexture() { return gui_texture; }
 
+  // the next two methods are slow, only use during initialization
   GLuint findTextureByName(const char *filename);
+  GLShape *findShapeByName(const char *name);
+  int findShapeIndexByName(const char *name);
   
   // Md2 shapes
   GLShape *getCreatureShape(int index);                    

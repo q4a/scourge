@@ -65,11 +65,13 @@ Scourge::Scourge(int argc, char *argv[]){
   shapePal = sdlHandler->getShapePalette();  
   calendar = Calendar::getInstance();  
 
-  // initialize the monsters
+  // initialize the items
+  initItems();
+  // initialize the monsters (they use items)
   Monster::initMonsters();
 
-	// create the mission board
-	board = new Board(this);
+  // create the mission board
+  board = new Board(this);
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
   createUI();
@@ -125,6 +127,86 @@ Scourge::Scourge(int argc, char *argv[]){
       sdlHandler->quit(0);
     }
   }
+}
+
+void Scourge::initItems() {
+  char errMessage[500];
+  char s[200];
+  sprintf(s, "data/world/items.txt");
+  FILE *fp = fopen(s, "r");
+  if(!fp) {        
+	sprintf(errMessage, "Unable to find the file: %s!", s);
+	cerr << errMessage << endl;
+	exit(1);
+  }
+
+  int itemCount = 0;
+  char name[255], type[255], shape[255], skill[255];
+  char long_description[500], short_description[120];
+  char line[255];
+  int n = fgetc(fp);
+  while(n != EOF) {
+	if(n == 'I') {
+	  // skip ':'
+	  fgetc(fp);
+	  // read the rest of the line
+	  n = Constants::readLine(name, fp);
+	  n = Constants::readLine(line, fp);
+	  int level = atoi(strtok(line + 1, ","));
+	  char *p = strtok(NULL, ",");
+	  int action = 0;
+	  int speed = 0;
+	  int distance = 0;
+	  int currentCharges = 0;
+	  int maxCharges = 0;
+	  if(p) {
+		action = atoi(p);
+		speed = atoi(strtok(NULL, ","));
+		distance = atoi(strtok(NULL, ","));
+		currentCharges = atoi(strtok(NULL, ","));
+		maxCharges = atoi(strtok(NULL, ","));
+	  }
+	  n = Constants::readLine(line, fp);
+	  strcpy(type, strtok(line + 1, ","));
+	  float weight = strtof(strtok(NULL, ","), NULL);
+	  int price = atoi(strtok(NULL, ","));
+
+	  int inventory_location = 0;
+	  int twohanded = 0;
+	  p = strtok(NULL, ",");
+	  if(p) {
+		strcpy(shape, p);
+		p = strtok(NULL, ",");
+		if(p) {
+		  inventory_location = atoi(p);
+		  twohanded = atoi(strtok(NULL, ","));
+		  strcpy(skill, strtok(NULL, ","));
+		}
+	  }
+	  
+	  n = Constants::readLine(line, fp);
+	  strcpy(long_description, line + 1);
+	  
+	  n = Constants::readLine(line, fp);
+	  strcpy(short_description, line + 1);
+	  
+	  // resolve strings
+	  int type_index = RpgItem::getTypeByName(type);	  
+	  int shape_index = shapePal->findShapeIndexByName(shape);
+	  int skill_index = Constants::getSkillByName(skill);
+	
+	  RpgItem::addItem(new RpgItem(itemCount++, strdup(name), level, type_index, 
+								   weight, price, 100, 
+								   action, speed, strdup(long_description), 
+								   strdup(short_description), 
+								   inventory_location, shape_index, 
+								   twohanded, distance, skill_index, currentCharges, 
+								   maxCharges));
+	} else {
+	  n = Constants::readLine(line, fp);
+	}
+  }
+  fclose(fp);
 }
 
 Scourge::~Scourge(){
@@ -1528,7 +1610,7 @@ void Scourge::creatureDeath(Creature *creature) {
   map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
   // add a container object instead
   //creature->getShape()->setCurrentAnimation(MD2_DEATH1);
-  Item *item = newItem(RpgItem::items[RpgItem::CORPSE]);
+  Item *item = newItem(RpgItem::getItemByName("Corpse"));
   // add creature's inventory to container
   map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
   int n = creature->getInventoryCount();

@@ -19,90 +19,256 @@
 
 ShapePalette *ShapePalette::instance = NULL;
 
-char *ShapePalette::wallDescription[] = {
-  "Pale weeds grow over these ancient walls",
-  "The walls crumble with age, yet appear sturdy",
-  "Dark limestone walls mark these corridors"
-};
-int ShapePalette::wallDescriptionCount = 3;
-
-char *ShapePalette::doorDescription[] = {
-  "It appears to be a thick wooden door",
-  "A dungeon door made of wood",
-  "The aged oak door is scarred by knife points and torch flame"
-};
-int ShapePalette::doorDescriptionCount = 3;
-
-char *ShapePalette::doorFrameDescription[] = {
-  "The door frames seem to be made of some hard wood",
-  "The wood around the doors is reinforced by metal nails"
-};
-int ShapePalette::doorFrameDescriptionCount = 2;
-
-char *ShapePalette::torchDescription[] = {
-  "A torch blazes nearby",
-  "The light is firmly attached to the wall, you cannot get it",
-  "It is a burning torch"
-};
-int ShapePalette::torchDescriptionCount = 3;
-
-char *ShapePalette::boardDescription[] = {
-  "A large wooden board that describes available missions",
-  "Click on the board to learn about your missions",
-  "The corporate 'brains' of S.C.O.U.R.G.E. inc."
-};
-int ShapePalette::boardDescriptionCount = 3;
-
-char *ShapePalette::brazierDescription[] = {
-  "A burning brazier",
-  "A brazier radiates heat nearby"
-};
-int ShapePalette::brazierDescriptionCount = 2;
-
-char *ShapePalette::columnDescription[] = {
-  "You see a shining marble column",
-  "The column supports the ceiling"
-};
-int ShapePalette::columnDescriptionCount = 2;
-
-char *ShapePalette::teleporterDescription[] = {
-  "This teleporter appears to be functional (courtesy of the management)",
-  "This teleporter can take you back to headquarters",
-  "It is a teleporter"
-};
-int ShapePalette::teleporterDescriptionCount = 3;
-
-char *ShapePalette::stairsDescription[] = {
-  "These stairs lead to another level",
-  "Stairs leading into darkness",
-  "You see a flight of stairs"
-};
-int ShapePalette::stairsDescriptionCount = 3;
-
-
-
 ShapePalette::ShapePalette(){
-
-  // FIXME: cleaner notation for this
   texture_count = 0;
-  strcpy(textures[texture_count++].filename, "front.bmp");
-  strcpy(textures[texture_count++].filename, "top.bmp");
-  strcpy(textures[texture_count++].filename, "side.bmp");
-  strcpy(textures[texture_count++].filename, "wood.bmp");
-  strcpy(textures[texture_count++].filename, "floor.bmp");
-  strcpy(textures[texture_count++].filename, "floor2.bmp");
-  strcpy(textures[texture_count++].filename, "woodtop.bmp");
-  strcpy(textures[texture_count++].filename, "fronttop.bmp");
-  strcpy(textures[texture_count++].filename, "light.bmp");
-  strcpy(textures[texture_count++].filename, "flame.bmp");
-  strcpy(textures[texture_count++].filename, "doorNS.bmp");
-  strcpy(textures[texture_count++].filename, "doorEW.bmp");
-  strcpy(textures[texture_count++].filename, "bookshelf.bmp");
-  strcpy(textures[texture_count++].filename, "chestfront.bmp");
-  strcpy(textures[texture_count++].filename, "chestside.bmp");
-  strcpy(textures[texture_count++].filename, "chesttop.bmp");
-  strcpy(textures[texture_count++].filename, "marble.bmp");
-  strcpy(textures[texture_count++].filename, "floor3.bmp");
+  textureGroupCount = 0;
+  descriptionCount = 0;
+  descriptionIndexCount = 0;
+
+  // load textures
+  loadTextures();
+
+  // load the texture info
+  char errMessage[500];
+  char s[200];
+  sprintf(s, "data/world/shapes.txt");
+  FILE *fp = fopen(s, "r");
+  if(!fp) {        
+	sprintf(errMessage, "Unable to find the file: %s!", s);
+	cerr << errMessage << endl;
+	exit(1);
+  }
+  int sum = 0;
+  char path[300];
+  char line[255];
+  int n = fgetc(fp);
+  while(n != EOF) {
+	if(n == 'T') {
+	  // skip ':'
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+
+	  // texture declaration
+	  strcpy(textures[texture_count].filename, line);
+	  sprintf(path, "data/%s", textures[texture_count].filename);
+	  // load the texture
+	  textures[texture_count].id = loadGLTextures(path);
+	  texture_count++;
+	} else if(n == 'G') {
+	  // skip ':'
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+
+	  // parse native texture group
+	  int c = 0;
+	  char *token = strtok(line, ",");
+	  while(token && c < 3) {
+		// store the index only, resolve after all textures loaded
+		textureGroup[textureGroupCount][c++] = atoi(token);
+		token = strtok(NULL, ",");
+	  }
+	  // resolve the indexes
+	  if(c == 3) {
+		textureGroupCount++;
+	  }
+	} else if(n == 'D') {
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+	  
+	  // read description lines
+	  int count = atoi(line);
+	  if(count > 0) {
+		descriptionLength[descriptionIndexCount] = count;
+		descriptionIndex[descriptionIndexCount++] = sum;
+		sum += count;
+		for(int i = 0; i < count; i++) {
+		  n = Constants::readLine(line, fp);
+		  strcpy(description[descriptionCount++], line + 2);
+		}
+	  }
+
+	} else if(n == 'N') {
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+
+	  // texture group
+	  ShapeValues *sv = new ShapeValues();
+	  sv->textureGroupIndex = atoi(line);
+
+	  // dimensions
+	  n = Constants::readLine(line, fp);
+	  sv->width = atoi(strtok(line + 1, ","));
+	  sv->depth = atoi(strtok(NULL, ","));
+	  sv->height = atoi(strtok(NULL, ","));
+
+	  // name
+	  n = Constants::readLine(line, fp);
+	  strcpy(sv->name, line + 1);
+
+	  // description
+	  n = Constants::readLine(line, fp);
+	  sv->descriptionIndex = atoi(line + 2);
+
+	  // color
+	  n = Constants::readLine(line, fp);
+	  sv->color = strtoul(line + 1, NULL, 16);
+
+	  // extra for torches:
+	  sv->torch = -1;
+	  sv->m3ds_name[0] = '\0';
+	  sv->teleporter = 0;
+	  if(n == 'T') {
+		n = Constants::readLine(line, fp);
+		sv->torch = atoi(line + 1);
+	  } else if(n == '3') {
+		n = Constants::readLine(line, fp);
+		strcpy(sv->m3ds_name, line + 1);
+		n = Constants::readLine(line, fp);
+		sv->m3ds_scale = strtof(line + 1, NULL);
+	  } else if(n == 'L') {
+		n = Constants::readLine(line, fp);
+		sv->teleporter = 1;
+	  }
+
+	  // store it for now
+	  shapeValueVector.push_back(sv);
+	} else if(n == 'P') {
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+
+	  int index = atoi(strtok(line, ","));
+	  cerr << "options for shape, index=" << index << " size=" << shapeValueVector.size() << endl;
+
+	  ShapeValues *sv = shapeValueVector[index];
+	  sv->skipSide = atoi(strtok(NULL, ","));
+	  sv->stencil = atoi(strtok(NULL, ","));
+	  sv->blocksLight = atoi(strtok(NULL, ","));
+
+	} else {
+	  // skip this line
+	  n = Constants::readLine(line, fp);
+	}
+  }
+  fclose(fp);
+
+  // resolve texture groups
+  for(int i = 0; i < textureGroupCount; i++) {
+	for(int c = 0; c < 3; c++) {
+	  textureGroup[i][c] = textures[textureGroup[i][c]].id;
+	}
+  }
+
+  // Create the display lists
+  // FIXME: this should use shapeValueVector.size() instead once all the shapes come from shapes.txt
+  //  display_list = glGenLists((Constants::SHAPE_INDEX_COUNT) * 3);
+
+  // create shapes
+  for(int i = 0; i < (int)shapeValueVector.size(); i++) {
+	cerr << "Creating shape i=" << i << endl;
+	ShapeValues *sv = shapeValueVector[i];
+	cerr << "\t" <<
+	  " width=" << sv->width << 
+	  " depth=" << sv->depth << 
+	  " height=" << sv->height << endl;
+
+	/*
+	int len = descriptionLength[sv->descriptionIndex];
+    char **d = (char**)malloc(len * sizeof(char*));
+    for(int t = 0; t < len; t++) {
+	  d[t] = (char*)malloc(200 * sizeof(char));
+	  strcpy(d[t], description[descriptionIndex[sv->descriptionIndex]]);
+    }
+	*/
+
+	//	GLuint dl = display_list + (i * 3);
+	GLuint dl = 0;
+	if(sv->teleporter) {
+	  shapes[(i + 1)] =
+		new GLTeleporter(textureGroup[sv->textureGroupIndex], textures[9].id,
+						 sv->width, sv->depth, sv->height,
+						 strdup(sv->name), 
+						 //d, len,
+						 (sv->descriptionIndex ? 
+						  (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
+						  NULL),
+						 (sv->descriptionIndex ?
+						  descriptionLength[sv->descriptionIndex] :
+						  0),
+						 sv->color,
+						 dl, (i + 1));
+	} else if(strlen(sv->m3ds_name)) {
+	  shapes[(i + 1)] =
+		new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
+					  textureGroup[sv->textureGroupIndex], 
+					  sv->width, sv->depth, sv->height,
+					  strdup(sv->name), 
+					  //d, len,
+					  (sv->descriptionIndex ? 
+					   (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
+					   NULL),
+					  (sv->descriptionIndex ?
+					   descriptionLength[sv->descriptionIndex] :
+					   0),
+					  sv->color,
+					  dl,(i + 1));
+	} else if(sv->torch > -1) {
+	  if(sv->torch == 5) {
+		shapes[(i + 1)] =
+		  new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
+					  sv->width, sv->depth, sv->height,
+					  strdup(sv->name),
+					  //d, len,
+					  (sv->descriptionIndex ? 
+					   (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
+					   NULL),
+					  (sv->descriptionIndex ?
+					   descriptionLength[sv->descriptionIndex] :
+					   0),
+					  sv->color,
+					  dl, (i + 1));
+	  } else {
+		shapes[(i + 1)] =
+		  new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
+					  sv->width, sv->depth, sv->height,
+					  strdup(sv->name),
+					  //d, len,
+					  (sv->descriptionIndex ? 
+					   (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
+					   NULL),
+					  (sv->descriptionIndex ?
+					   descriptionLength[sv->descriptionIndex] :
+					   0),
+					  sv->color,
+					  dl, (i + 1), 
+					  torchback, sv->torch);
+	  }
+	} else {
+	  shapes[(i + 1)] =
+		new GLShape(textureGroup[sv->textureGroupIndex],
+					sv->width, sv->depth, sv->height,
+					strdup(sv->name),
+					//d, len,
+					(sv->descriptionIndex ? 
+					 (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
+					 NULL),
+					(sv->descriptionIndex ?
+					 descriptionLength[sv->descriptionIndex] :
+					 0),
+					sv->color,
+					dl, (i + 1));
+	}
+	shapes[(i + 1)]->setSkipSide(sv->skipSide);
+	shapes[(i + 1)]->setStencil(sv->stencil == 1);
+	shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
+  }
+  // remember the number of shapes
+  shapeCount = shapeValueVector.size();
+
+  // clean up temp. shape objects 
+  // FIXME: do we need to free the vector's elements?
+  shapeValueVector.clear();
+
+  // FIXME: do something with these...
   formationTexIndex = texture_count;
   strcpy(textures[texture_count++].filename, "formation1.bmp");
   strcpy(textures[texture_count++].filename, "formation2.bmp");
@@ -116,300 +282,12 @@ ShapePalette::ShapePalette(){
 
   // set up the logo
   setupAlphaBlendedBMP("data/logo.bmp", &logo, &logoImage);
+  logo_texture = loadGLTextures("data/logo.bmp");
 
   // set up the scourge
   setupAlphaBlendedBMP("data/scourge.bmp", &scourge, &scourgeImage);
-    
-  // load textures
-  loadTextures();
-
-  // Create the display lists
-  display_list = glGenLists((Constants::SHAPE_INDEX_COUNT) * 3);
- 
- 	// init the shapes
-  initShapes();
-
-  if(!instance) instance = this;
-}
-
-ShapePalette::~ShapePalette(){
-    for(int i =0; i < (int)creature_models.size(); i++){
-        delete creature_models[i];    
-    }
-}
-
-void ShapePalette::initShapes() {
-	Uint32 color = 0xac8060ff;
-  bool debug = false;
-  int count = 0; 
-  shapes[Constants::EW_WALL_INDEX] =
-    new GLShape(ew_tex,
-                unitOffset, unitSide - (unitOffset * 2), wallHeight,
-                "EAST WALL", wallDescription, wallDescriptionCount,
-                (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), Constants::EW_WALL_INDEX);
-  shapes[Constants::EW_WALL_EXTRA_INDEX] =
-		new GLShape(ew_tex,
-				  unitOffset, unitSide - unitOffset, wallHeight,
-				  "EAST WALL EXTRA", wallDescription, wallDescriptionCount,
-				  (debug ? 0xff0000ff : color),
-				  display_list + (count++ * 3), Constants::EW_WALL_EXTRA_INDEX);
-  shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX] =
-		new GLShape(ew_tex,
-				  unitOffset, unitSide, wallHeight,
-				  "EAST WALL TWO EXTRAS", wallDescription, wallDescriptionCount,
-				  (debug ? 0xff0000ff : color),
-				  display_list + (count++ * 3), Constants::EW_WALL_TWO_EXTRAS_INDEX);
-  
-  shapes[Constants::NS_WALL_INDEX] =
-		new GLShape(ns_tex,
-				  unitSide - (unitOffset * 2), unitOffset, wallHeight,
-				  "SOUTH WALL", wallDescription, wallDescriptionCount,
-				  (debug ? 0xff0000ff : color),
-				  display_list + (count++ * 3), Constants::NS_WALL_INDEX);  
-  shapes[Constants::NS_WALL_EXTRA_INDEX] =
-    new GLShape(ns_tex,
-                unitSide - unitOffset, unitOffset, wallHeight,
-                "SOUTH WALL EXTRA", wallDescription, wallDescriptionCount,
-                (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), Constants::NS_WALL_EXTRA_INDEX);
-  shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX] =
-    new GLShape(ns_tex,
-                unitSide, unitOffset, wallHeight,
-                "SOUTH WALL TWO EXTRAS", wallDescription, wallDescriptionCount,
-                (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), Constants::NS_WALL_TWO_EXTRAS_INDEX);
-
-  // make the walls seethru
-  ((GLShape*)shapes[Constants::EW_WALL_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );
-  ((GLShape*)shapes[Constants::EW_WALL_EXTRA_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[Constants::NS_WALL_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-  ((GLShape*)shapes[Constants::NS_WALL_EXTRA_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-  ((GLShape*)shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-
-  shapes[Constants::EW_WALL_INDEX]->setStencil(true);
-  shapes[Constants::EW_WALL_EXTRA_INDEX]->setStencil(true);
-  shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX]->setStencil(true);
-  shapes[Constants::NS_WALL_INDEX]->setStencil(true);
-  shapes[Constants::NS_WALL_EXTRA_INDEX]->setStencil(true);
-  shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX]->setStencil(true);
-
-  // corners
-  shapes[Constants::CORNER_INDEX] =
-    new GLShape(wood_tex,
-                unitOffset, unitOffset, wallHeight,
-                "CORNER",
-                (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), Constants::CORNER_INDEX);
-
-	// ew door
-  Uint32 doorColor = 0xaa6633ff;
-	int doorSize = unitSide - unitOffset * 3 - 4;
-  shapes[Constants::EW_DOOR_INDEX] =
-    new GLShape(doorEWtex,
-                1, doorSize, wallHeight - 2,
-                "EW DOOR", doorDescription, doorDescriptionCount,
-                (debug ? 0xff0000ff : doorColor),
-                display_list + (count++ * 3), Constants::EW_DOOR_INDEX);
-	shapes[Constants::DOOR_SIDE_INDEX] =
-    new GLShape(wood_tex,
-                unitOffset, 2, wallHeight - 2,
-                "CORNER SIDE", doorFrameDescription, doorFrameDescriptionCount,
-                (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), Constants::DOOR_SIDE_INDEX);
-	shapes[Constants::EW_DOOR_TOP_INDEX] =
-    new GLShape(wood_tex,
-                2, unitSide - unitOffset * 2, 2,
-                "EW DOOR TOP", doorFrameDescription, doorFrameDescriptionCount,
-                (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), Constants::EW_DOOR_TOP_INDEX);
-
-	// ns door
-  shapes[Constants::NS_DOOR_INDEX] =
-    new GLShape(doorNStex,
-                doorSize, 1, wallHeight - 2,
-                "NS DOOR", doorDescription, doorDescriptionCount,
-                (debug ? 0xff0000ff : doorColor),
-                display_list + (count++ * 3), Constants::NS_DOOR_INDEX);
-	shapes[Constants::NS_DOOR_TOP_INDEX] =
-    new GLShape(wood_tex,
-                unitSide - unitOffset * 2, 2, 2,
-                "NS DOOR TOP", doorFrameDescription, doorFrameDescriptionCount,
-                (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), Constants::NS_DOOR_TOP_INDEX);
-
-	// these shapes block the light
-	((GLShape*)shapes[Constants::EW_WALL_INDEX])->setLightBlocking(true);
-  ((GLShape*)shapes[Constants::EW_WALL_EXTRA_INDEX])->setLightBlocking(true);
-  ((GLShape*)shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX])->setLightBlocking(true);
-  ((GLShape*)shapes[Constants::NS_WALL_INDEX])->setLightBlocking(true);
-  ((GLShape*)shapes[Constants::NS_WALL_EXTRA_INDEX])->setLightBlocking(true);
-  ((GLShape*)shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX])->setLightBlocking(true);
-	((GLShape*)shapes[Constants::NS_DOOR_INDEX])->setLightBlocking(true);
-	((GLShape*)shapes[Constants::EW_DOOR_INDEX])->setLightBlocking(true);
-
-  // floor tile 1
-	shapes[Constants::FLOOR_TILE_INDEX] =
-    new GLShape(floor2_tex,
-                unitSide, unitSide, 0,
-                "FLOOR TILE",
-                (debug ? 0xff0000ff : 0x806040ff),
-                display_list + (count++ * 3), Constants::FLOOR_TILE_INDEX);
-	shapes[Constants::ROOM_FLOOR_TILE_INDEX] =
-    new GLShape(floor_tex,
-                unitSide, unitSide, 0,
-                "ROOM FLOOR TILE",
-                (debug ? 0xff0000ff : 0xa08040ff),
-                display_list + (count++ * 3), Constants::ROOM_FLOOR_TILE_INDEX);
-	shapes[Constants::ROOM2_FLOOR_TILE_INDEX] =
-    new GLShape(floor3_tex,
-                unitSide, unitSide, 0,
-                "ROOM2 FLOOR TILE",
-                (debug ? 0xff0000ff : 0xa08040ff),
-                display_list + (count++ * 3), Constants::ROOM2_FLOOR_TILE_INDEX);
-	/*  
-  ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-  ((GLShape*)shapes[Constants::ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[Constants::ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-	*/
-	shapes[Constants::LAMP_NORTH_INDEX] =
-    new GLTorch(notex, textures[9].id,
-                1, 1, 2,
-                "LAMP", torchDescription, torchDescriptionCount,
-                0xffffffff,
-                display_list + (count++ * 3),
-                Constants::LAMP_NORTH_INDEX, torchback, Constants::NORTH);
-	shapes[Constants::LAMP_SOUTH_INDEX] =
-    new GLTorch(notex, textures[9].id,
-                1, 1, 2,
-                "LAMP", torchDescription, torchDescriptionCount,
-                0xffffffff,
-                display_list + (count++ * 3),
-                Constants::LAMP_SOUTH_INDEX, torchback, Constants::SOUTH);
-	shapes[Constants::LAMP_WEST_INDEX] =
-    new GLTorch(notex, textures[9].id,
-                1, 1, 2,
-                "LAMP", torchDescription, torchDescriptionCount,
-                0xffffffff,
-                display_list + (count++ * 3),
-                Constants::LAMP_WEST_INDEX, torchback, Constants::WEST);
-	shapes[Constants::LAMP_EAST_INDEX] =
-    new GLTorch(notex, textures[9].id,
-                1, 1, 2,
-                "LAMP", torchDescription, torchDescriptionCount,
-                0xffffffff,
-                display_list + (count++ * 3),
-                Constants::LAMP_EAST_INDEX, torchback, Constants::EAST);
-
-
-	shapes[Constants::LAMP_BASE_INDEX] =
-    new GLShape(wood_tex, 
-                1, 1, 2,
-                "LAMP", torchDescription, torchDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
-                display_list + (count++ * 3),
-                Constants::LAMP_BASE_INDEX);                
-
-	shapes[Constants::DEBUG_INDEX] =
-    new DebugShape(wood_tex, 
-                2, 1, 2,
-                "DEBUG", torchDescription, torchDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
-                display_list + (count++ * 3),
-                Constants::DEBUG_INDEX);                
-
-	shapes[Constants::LOCATOR_INDEX] =
-	  new GLLocator(notex, 
-					3, 3, 1,
-					"LOCATOR", torchDescription, torchDescriptionCount,
-					(debug ? 0xff0000ff : 0xf0f0ffff),
-					display_list + (count++ * 3),
-					Constants::LOCATOR_INDEX);
-	
-	shapes[Constants::BOARD_INDEX] =
-	  new C3DSShape("data/objects/board.3ds", 1.2f, this,
-									notex, 12, 4, 10,
-									"BOARD", boardDescription, boardDescriptionCount,
-									0xffffffff,
-									display_list + (count++ * 3), Constants::BOARD_INDEX);
-
-/*
-	  new GLShape(wood_tex, 
-				  20, 1, 10,
-				  "BOARD", boardDescription, boardDescriptionCount,
-				  (debug ? 0xff0000ff : 0xf0f0ffff),
-				  display_list + (count++ * 3),
-				  Constants::BOARD_INDEX);
-					*/
-
-	shapes[Constants::BRAZIER_INDEX] =
-    new GLTorch(notex, textures[9].id,
-                3, 3, 3,
-                "BRAZIER", brazierDescription, brazierDescriptionCount,
-                0xe820ffff,
-                display_list + (count++ * 3),
-                Constants::BRAZIER_INDEX);
-
-	shapes[Constants::BRAZIER_BASE_INDEX] =
-    new GLShape(wood_tex, 
-                3, 3, 1,
-                "BRAZIER", brazierDescription, brazierDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
-                display_list + (count++ * 3),
-                Constants::BRAZIER_BASE_INDEX);
-
-	shapes[Constants::COLUMN_INDEX] =
-	  new C3DSShape("data/objects/column.3ds", 1.7f, this,
-					notex, 4, 4, 10,
-					"COLUMN", columnDescription, columnDescriptionCount,
-					0xffffffff,
-					display_list + (count++ * 3), Constants::COLUMN_INDEX);
-
-	shapes[Constants::TELEPORTER_INDEX] =
-    new GLTeleporter(wood_tex, textures[9].id,
-					 3, 3, 14,
-					 "TELEPORTER", teleporterDescription, teleporterDescriptionCount,
-					 //(debug ? 0xff0000ff : 0xf0f0ffff),
-					 0x0020ffff,
-					 display_list + (count++ * 3),
-					 Constants::TELEPORTER_INDEX);
-
-	shapes[Constants::TELEPORTER_BASE_INDEX] =
-    new GLShape(marble_tex, 
-                3, 3, 1,
-                "TELEPORTER", teleporterDescription, teleporterDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
-                display_list + (count++ * 3),
-                Constants::TELEPORTER_BASE_INDEX);
-	/*
-	shapes[Constants::STAIRS_UP_INDEX] =
-	  new C3DSShape("data/objects/stairs.3ds", 2.0f, this,
-					notex, 7, 7, 10,
-					"STAIRS", stairsDescription, stairsDescriptionCount,
-					0xffffffff,
-					display_list + (count++ * 3), Constants::STAIRS_UP_INDEX, 
-					3, 0);
-	*/
-
-
-
-	// gates to other stories
-	shapes[Constants::STAIRS_UP_INDEX] = new C3DSShape("data/objects/gate-up.3ds", 2.0f, this,
-													   notex, 7, 2, 10,
-													   "STAIRS", stairsDescription, stairsDescriptionCount,
-													   0xffffffff,
-													   display_list + (count++ * 3), Constants::STAIRS_UP_INDEX);	
-	shapes[Constants::STAIRS_DOWN_INDEX] = new C3DSShape("data/objects/gate-down.3ds", 2.0f, this,
-														 notex, 7, 2, 10,
-														 "STAIRS", stairsDescription, stairsDescriptionCount,
-														 0xffffffff,
-														 display_list + (count++ * 3), Constants::STAIRS_DOWN_INDEX);	
-
-	
-	
-	// creatures              
+     
+  // creatures              
   // The order at which we "push back" models is important                 
   creature_models.push_back(LoadMd2Model("data/models/m2.md2"));  
   creature_models.push_back(LoadMd2Model("data/models/m1.md2"));
@@ -418,70 +296,14 @@ void ShapePalette::initShapes() {
   creature_models.push_back(LoadMd2Model("data/models/m5.md2"));
   creature_models.push_back(LoadMd2Model("data/models/m6.md2"));
   cout<<"MD2 Models loaded" << endl;
-   
-  
-  // items
-  item_display_list_start = display_list + (count * 3);                                
 
-	item_shapes[Constants::SWORD_INDEX] =
-	  new C3DSShape("data/objects/sword.3ds", 0.25f, this,
-					notex, 1, 3, 1,
-					"SWORD",
-					0xffffffff,
-					display_list + (count++ * 3), Constants::SWORD_INDEX);
-	item_shapes[Constants::AXE_INDEX] =
-	  new C3DSShape("data/objects/axe.3ds", 0.1f, this,
-					notex, 2, 3, 1,
-					"AXE",
-					0xffffffff,
-					display_list + (count++ * 3), Constants::AXE_INDEX);
-	item_shapes[Constants::BOOKSHELF_INDEX] =
-    new GLShape(shelftex,
-                2, 5, 7,
-                "BOOKSHELF", 
-                0x0000ffff,
-                display_list + (count++ * 3), Constants::BOOKSHELF_INDEX);
-	item_shapes[Constants::CHEST_INDEX] =
-	  new GLShape(chesttex,
-				  2, 3, 2,
-				  "CHEST", 
-				  0xffaa80ff,
-				  display_list + (count++ * 3), Constants::CHEST_INDEX);
-	item_shapes[Constants::BOOKSHELF2_INDEX] =
-    new GLShape(shelftex2,
-                5, 2, 7,
-                "BOOKSHELF", 
-                0x0000ffff,
-                display_list + (count++ * 3), Constants::BOOKSHELF2_INDEX);
-	item_shapes[Constants::CHEST2_INDEX] =
-    new GLShape(chesttex2,
-                3, 2, 2,
-                "CHEST", 
-                0xffaa80ff,
-                display_list + (count++ * 3), Constants::CHEST2_INDEX);
-	item_shapes[Constants::CORPSE_INDEX] =
-	  new C3DSShape("data/objects/corpse.3ds", 0.65f, this,
-			notex, 1, 3, 2,
-			"CORPSE",
-			0xffffffff,
-			display_list + (count++ * 3), Constants::CORPSE_INDEX);
-	item_shapes[Constants::TABLE_INDEX] =
-		new C3DSShape("data/objects/table.3ds", 1.3f, this,
-									notex, 4, 5, 3,
-									"TABLE",
-									0xffffffff,
-									display_list + (count++ * 3), Constants::TABLE_INDEX);
-	item_shapes[Constants::CHAIR_INDEX] =
-		new C3DSShape("data/objects/chair.3ds", 0.8f, this,
-									notex, 2, 3, 4,
-									"CHAIR",
-									0xffffffff,
-									display_list + (count++ * 3), Constants::CHAIR_INDEX);
+  if(!instance) instance = this;
+}
 
-	
-
-  
-  max_display_list = display_list + (count * 3);
+ShapePalette::~ShapePalette(){
+    for(int i =0; i < (int)creature_models.size(); i++){
+        delete creature_models[i];    
+    }
 }
 
 t3DModel * ShapePalette::LoadMd2Model(char *file_name){
@@ -505,7 +327,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
         case Constants::FIGHTER_INDEX :
         //cout << "Creating FIGHTER instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[0], 2.0f,
-                 notex,
+                 textureGroup[14], /*notex*/
                  3, 3, 6,
                  "FIGHTER",
                  (debug ? 0xff0000ff : 0xf0f0ffff),                  
@@ -514,7 +336,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
         case Constants::ROGUE_INDEX : 
         //cout << "Creating ROGUE instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[1], 2.0f,
-                 notex,
+                 textureGroup[14], /*notex*/
                  3, 3, 6,
                  "ROGUE",
                  (debug ? 0xff0000ff : 0xf0f0ffff),                 
@@ -523,7 +345,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
         case Constants::CLERIC_INDEX :
         //cout << "Creating CLERIC instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[2], 2.5f,
-                 notex,
+                 textureGroup[14], /*notex*/
                  3, 3, 6,
                  "CLERIC",
                  (debug ? 0xff0000ff : 0xf0f0ffff),                 
@@ -532,7 +354,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
         case Constants::WIZARD_INDEX :
         //cout << "Creating WIZARD instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[3],  2.5f,
-                 notex,
+                 textureGroup[14], /*notex*/
                  3, 3, 6,
                  "WIZARD",
                  (debug ? 0xff0000ff : 0xf0f0ffff),                 
@@ -541,7 +363,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
         case Constants::BUGGERLING_INDEX :
         //cout << "Creating BUGGERLING instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[4], 1.2f,
-                 notex,
+                 textureGroup[14], /*notex*/
                  3, 3, 4,
                  "BUGGERLING",
                  (debug ? 0xff0000ff : 0xf0f0ffff),                 
@@ -550,7 +372,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
         case Constants::SLIME_INDEX : 
         //cout << "Creating SLIME instance" << endl;   
         sh = new MD2Shape(creature_models[index2], md2_tex[5], 1.2f,
-                 notex,
+                 textureGroup[14], /*notex*/
                  3, 3, 4,
                  "SLIME",
                  (debug ? 0xff0000ff : 0xf0f0ffff),                 
@@ -563,6 +385,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
     return sh;
 }
 
+// the next two methods are slow, only use during initialization
 GLuint ShapePalette::findTextureByName(const char *filename) {
   for(int i = 0; i < texture_count; i++) {
 	if(!strcmp(textures[i].filename, filename)) return textures[i].id;
@@ -570,77 +393,30 @@ GLuint ShapePalette::findTextureByName(const char *filename) {
   return 0;
 }
 
+GLShape *ShapePalette::findShapeByName(const char *name) {
+  if(!name || !strlen(name)) return NULL;
+  for(int i = 1; i < shapeCount; i++) {
+	if(!strcmp(shapes[i]->getName(), name)) return shapes[i];
+  }
+  return NULL;
+}
+
+// defaults to SWORD_INDEX for unknown shapes
+int ShapePalette::findShapeIndexByName(const char *name) {
+  if(!name || !strlen(name)) return Constants::SWORD_INDEX;
+  for(int i = 1; i < shapeCount; i++) {
+	if(!strcmp(shapes[i]->getName(), name)) return i;
+  }
+  return Constants::SWORD_INDEX;
+}
+
 void ShapePalette::loadTextures() {
   gui_texture = loadGLTextures("data/gui.bmp");
-
-  char name[120];
-  for(int i = 0; i < texture_count; i++) {
-	strcpy(name, "data/");
-	strcat(name, textures[i].filename);
-	textures[i].id = loadGLTextures(name);
-  }  
 
   // set up the scourge
   cloud = loadGLTextures("data/cloud.bmp");
   candle = loadGLTextures("data/candle.bmp");
   torchback = loadGLTextures("data/torchback.bmp");
-
-
-  ns_tex[GLShape::FRONT_SIDE] = textures[0].id;
-  ns_tex[GLShape::TOP_SIDE] = textures[7].id;
-  ns_tex[GLShape::LEFT_RIGHT_SIDE] = textures[2].id;
-
-  ew_tex[GLShape::FRONT_SIDE] = textures[2].id;
-  ew_tex[GLShape::TOP_SIDE] = textures[7].id;
-  ew_tex[GLShape::LEFT_RIGHT_SIDE] = textures[0].id;
-
-  wood_tex[GLShape::FRONT_SIDE] = textures[3].id;
-  wood_tex[GLShape::TOP_SIDE] = textures[6].id;
-  wood_tex[GLShape::LEFT_RIGHT_SIDE] = textures[3].id;
-
-  marble_tex[GLShape::FRONT_SIDE] = textures[3].id;
-  marble_tex[GLShape::TOP_SIDE] = textures[16].id;
-  marble_tex[GLShape::LEFT_RIGHT_SIDE] = textures[3].id;
-
-  floor_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
-  floor_tex[GLShape::TOP_SIDE] = textures[4].id;
-  floor_tex[GLShape::LEFT_RIGHT_SIDE] = 0; //textures[4];
-
-  floor3_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
-  floor3_tex[GLShape::TOP_SIDE] = textures[17].id;
-  floor3_tex[GLShape::LEFT_RIGHT_SIDE] = 0; //textures[4];
-
-  floor2_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
-  floor2_tex[GLShape::TOP_SIDE] = textures[5].id;
-  floor2_tex[GLShape::LEFT_RIGHT_SIDE] = 0; //textures[4];
-
-  lamptex[GLShape::FRONT_SIDE] = textures[8].id;
-  lamptex[GLShape::TOP_SIDE] = 0;
-  lamptex[GLShape::LEFT_RIGHT_SIDE] = 0;
-
-  doorNStex[GLShape::FRONT_SIDE] = textures[10].id;
-  doorNStex[GLShape::TOP_SIDE] = textures[6].id;
-  doorNStex[GLShape::LEFT_RIGHT_SIDE] = textures[6].id;
-
-  doorEWtex[GLShape::FRONT_SIDE] = textures[6].id;
-  doorEWtex[GLShape::TOP_SIDE] = textures[6].id;
-  doorEWtex[GLShape::LEFT_RIGHT_SIDE] = textures[11].id;
-
-  shelftex[GLShape::FRONT_SIDE] = textures[6].id;
-  shelftex[GLShape::TOP_SIDE] = textures[6].id;
-  shelftex[GLShape::LEFT_RIGHT_SIDE] = textures[12].id;
-
-  chesttex[GLShape::FRONT_SIDE] = textures[14].id;
-  chesttex[GLShape::TOP_SIDE] = textures[15].id;
-  chesttex[GLShape::LEFT_RIGHT_SIDE] = textures[13].id;
-
-  shelftex2[GLShape::FRONT_SIDE] = textures[12].id;
-  shelftex2[GLShape::TOP_SIDE] = textures[6].id;
-  shelftex2[GLShape::LEFT_RIGHT_SIDE] = textures[6].id;
-
-  chesttex2[GLShape::FRONT_SIDE] = textures[13].id;
-  chesttex2[GLShape::TOP_SIDE] = textures[15].id;
-  chesttex2[GLShape::LEFT_RIGHT_SIDE] = textures[14].id;
   
   // FIXME : With loadGLTextures => crash!
   // Why is Constants::CreateTexture different from ShapePal::loadGLTextures ????
@@ -665,10 +441,6 @@ void ShapePalette::loadTextures() {
   md2_tex[3] = loadGLTextures("data/models/m4.bmp");
   md2_tex[4] = loadGLTextures("data/models/m5.bmp");
   md2_tex[5] = loadGLTextures("data/models/m6.bmp");*/
-  
-  notex[0] = 0;
-  notex[1] = 0;
-  notex[2] = 0;  
 }
 
 /* function to load in bitmap as a GL texture */

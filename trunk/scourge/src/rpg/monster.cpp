@@ -46,17 +46,17 @@ void Monster::initMonsters() {
   monsterCount[level] = 0;
   m = monsters[level][monsterCount[0]++] = 
 	new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX, 4);
-  m->item[0] = RpgItem::items[RpgItem::SHORT_SWORD];
-  m->item[1] = RpgItem::items[RpgItem::DAGGER];
-  m->item[2] = RpgItem::items[RpgItem::HORNED_HELMET];
+  m->item[0] = RpgItem::getItemByName("Short sword"); // items[RpgItem::SHORT_SWORD];
+  m->item[1] = RpgItem::getItemByName("Dagger"); //items[RpgItem::DAGGER];
+  m->item[2] = RpgItem::getItemByName("Horned helmet"); //items[RpgItem::HORNED_HELMET];
 
   m = monsters[level][monsterCount[0]++] = 
 	new Monster("An Oozing Green Waddler", 0, 3, Constants::SLIME_INDEX, 8);
-  m->item[0] = RpgItem::items[RpgItem::DAGGER];
+  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
 
   m = monsters[level][monsterCount[0]++] = 
 	new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX, 6);
-  m->item[0] = RpgItem::items[RpgItem::SHORT_SWORD];
+  m->item[0] = RpgItem::getItemByName("Short sword"); //items[RpgItem::SHORT_SWORD];
 
 
   // ###########################################
@@ -64,15 +64,15 @@ void Monster::initMonsters() {
   monsterCount[level] = 0;
   m = monsters[level][monsterCount[1]++] =
 	new Monster("A Rabbid Rodent", 1, 4, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::items[RpgItem::DAGGER];
+  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
 
   m = monsters[level][monsterCount[1]++] =
 	new Monster("A Gray Slimy Waddler", 1, 5, Constants::SLIME_INDEX);
-  m->item[0] = RpgItem::items[RpgItem::DAGGER];
+  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
 
   m = monsters[level][monsterCount[1]++] =
 	new Monster("A Fleshworm", 1, 3, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::items[RpgItem::DAGGER];
+  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
 
 
   // ###########################################
@@ -80,15 +80,15 @@ void Monster::initMonsters() {
   monsterCount[level] = 0;
   m = monsters[level][monsterCount[1]++] =
 	new Monster("A Kobold", 2, 6, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::items[RpgItem::DAGGER];
+  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
 
   m = monsters[level][monsterCount[1]++] =
 	new Monster("A Dire Stench-Waddler", 2, 6, Constants::SLIME_INDEX);
-  m->item[0] = RpgItem::items[RpgItem::DAGGER];
+  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
 
   m = monsters[level][monsterCount[1]++] =
 	new Monster("A Minor Spectre", 2, 4, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::items[RpgItem::DAGGER];
+  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
 }
 
 Monster *Monster::getRandomMonster(int level) {

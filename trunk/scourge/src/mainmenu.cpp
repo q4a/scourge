@@ -146,14 +146,42 @@ void MainMenu::drawView() {
   glDisable( GL_BLEND );
 
   // draw the logo
-  glEnable(GL_ALPHA_TEST);
-  glAlphaFunc(GL_NOTEQUAL, 0);        
-  glPixelZoom( 1.0, -1.0 );
-  glRasterPos2f( 250, 30 );
-  glDrawPixels(scourge->getShapePalette()->logo->w, 
-			   scourge->getShapePalette()->logo->h,
-			   GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->logoImage);
-  glDisable(GL_ALPHA_TEST);
+  //glEnable(GL_ALPHA_TEST);
+  //glAlphaFunc(GL_NOTEQUAL, 0);        
+  //  glPixelZoom( 1.0, -1.0 );
+  //  glRasterPos2f( 250, 30 );
+  //  glDrawPixels(scourge->getShapePalette()->logo->w, 
+  //			   scourge->getShapePalette()->logo->h,
+  //			   GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->logoImage);
+  //glDisable(GL_ALPHA_TEST);
+
+  glDisable( GL_DEPTH_TEST );
+  glEnable( GL_TEXTURE_2D );
+  glEnable(GL_BLEND);  
+  //  glBlendFunc(GL_SRC_COLOR, GL_ONE);
+  scourge->setBlendFunc();
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( 250, 30, 500 );
+  w = scourge->getShapePalette()->logo->w;
+  h = scourge->getShapePalette()->logo->h;
+  glColor4f( 1, 1, 1, 1 );
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
+  glBegin( GL_QUADS );
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(w, h, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(w, 0, 0);
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, 0, 0);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, h, 0);
+  glEnd();
+  glPopMatrix();
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_BLEND );
+  glEnable( GL_DEPTH_TEST );
 
   glPopMatrix();
   glEnable( GL_TEXTURE_2D );
@@ -281,6 +309,17 @@ bool MainMenu::handleEvent(SDL_Event *event) {
     case SDLK_SPACE: mainWin->setVisible(false); mainWin->setVisible(true); break;
     default: break;
     }
+	break;
+  case SDL_KEYUP:
+	if(event->key.keysym.sym == '8'){
+	  Scourge::blendA++; if(Scourge::blendA >= 11) Scourge::blendA = 0;
+	  fprintf(stderr, "blend: a=%d b=%d\n", Scourge::blendA, Scourge::blendB);
+    }
+    else if(event->key.keysym.sym == '9'){    
+	  Scourge::blendB++; if(Scourge::blendB >= 11) Scourge::blendB = 0;
+	  fprintf(stderr, "blend: a=%d b=%d\n", Scourge::blendA, Scourge::blendB);
+	}
+	break;
   default: break;  
   }  
   return false;

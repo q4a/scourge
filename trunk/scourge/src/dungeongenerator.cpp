@@ -962,7 +962,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				// WEST side
 				x = (room[i].x * unitSide) + unitOffset + offset;
 				y = (room[i].y * unitSide) + pos + offset;
-				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
 					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
@@ -972,7 +972,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			if(rpgItem) {
 				// EAST side
 				x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
 					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
@@ -985,7 +985,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				// NORTH side
 				x = (room[i].x * unitSide) + pos + offset;
 				y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
-				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
 					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
@@ -995,7 +995,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			if(rpgItem) {
 				// SOUTH side
 				y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
-				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
 					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
@@ -1145,8 +1145,8 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	}
 
 	// add tables, chairs, etc.
-	addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1, preGenerated, locationIndex);
-	addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2, preGenerated, locationIndex);	
+	addItemsInRoom(RpgItem::getItemByName("Table"), 1, preGenerated, locationIndex);
+	addItemsInRoom(RpgItem::getItemByName("Chair"), 2, preGenerated, locationIndex);	
 
 	// add a teleporters
 	if(!preGenerated) {
@@ -1305,7 +1305,7 @@ void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n,
 		if(preGenerated && !location[locationIndex].roomDimension[i][4]) continue;
 		for(int r = 0; r < n; r++) {
 			for(int t = 0; t < 5; t++) { // 5 tries
-				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
 				if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
 					Item *item = scourge->newItem(rpgItem);
@@ -1424,7 +1424,8 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
   if(item && item->getRpgItem()->getType() == RpgItem::CONTAINER) {
 	int n = (int)(3.0f * rand() / RAND_MAX);
 	for(int i = 0; i < n; i++) {
-	  item->addContainedItem(scourge->newItem(RpgItem::getRandomItem(level)));
+	  RpgItem *containedItem = RpgItem::getRandomItem(level);
+	  if(containedItem) item->addContainedItem(scourge->newItem(containedItem));
 	}
   }
 }
