@@ -21,7 +21,7 @@
   *@author Gabor Torok
   */
 
-#define BUTTON_SIZE 15
+#define BUTTON_SIZE 20
 
 Slider::Slider(int x1, int y1, int x2, GLuint highlight, int minValue, int maxValue, char *label) : 
   Widget(x1, y1, x2 - x1, 30) {
@@ -42,6 +42,7 @@ Slider::~Slider() {
 }
 
 void Slider::drawWidget(Widget *parent) {
+  GuiTheme *theme = ((Window*)parent)->getTheme();
 
   GLint t = SDL_GetTicks();
   if(lastTick == 0 || t - lastTick > 50) {
@@ -56,7 +57,14 @@ void Slider::drawWidget(Widget *parent) {
   glPopMatrix();
 
   // draw the drag-button
-  applyBorderColor();
+  if( theme->getButtonBorder() ) {
+    glColor4f( theme->getButtonBorder()->color.r,
+               theme->getButtonBorder()->color.g,
+               theme->getButtonBorder()->color.b,
+               theme->getButtonBorder()->color.a );
+  } else {
+    applyBorderColor();
+  }
   glPushMatrix();
   
   glBegin(GL_LINES);
@@ -64,6 +72,12 @@ void Slider::drawWidget(Widget *parent) {
   glVertex2d( x2 - x, 20 );
   glEnd();
 
+
+
+  drawButton( parent, pos, 12, pos + BUTTON_SIZE / 2, 12 + BUTTON_SIZE,
+              false, false, false, false, inside );
+
+  /*
   glTranslatef( pos, 12, 0 );
 
   applyBackgroundColor();
@@ -95,7 +109,6 @@ void Slider::drawWidget(Widget *parent) {
     glDisable( GL_TEXTURE_2D );
     glEnable( GL_CULL_FACE );
   }
-
   applyBorderColor();
   glBegin( GL_LINES );
   glVertex2d( 0, 0 );
@@ -106,6 +119,7 @@ void Slider::drawWidget(Widget *parent) {
   glVertex2d( BUTTON_SIZE / 2, 0 );
   glVertex2d( BUTTON_SIZE / 2, 0 );
   glVertex2d( 0, 0 );
+  */
 
   glEnd();
   glPopMatrix();

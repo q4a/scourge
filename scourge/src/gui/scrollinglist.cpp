@@ -68,77 +68,6 @@ void ScrollingList::setLines(int count, const char *s[], const Color *colors, co
 void ScrollingList::drawWidget(Widget *parent) {
   GuiTheme *theme = ((Window*)parent)->getTheme();
 
-
-
-  // FIXME: use button->drawWidget() instead of code dup.
-  // draw the button
-  applyBackgroundColor(true);
-  if(isTranslucent()) {
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	glEnable( GL_BLEND );
-  }
-  glBegin(GL_QUADS);
-  glVertex2d(0, scrollerY);
-  glVertex2d(0, scrollerY + scrollerHeight);
-  glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
-  glVertex2d(scrollerWidth, scrollerY);
-  glEnd();
-  if(isTranslucent()) {
-	glDisable( GL_BLEND );
-  }
-
-  if(inside) {
-    /*
-    GLint t = SDL_GetTicks();
-    if(lastTick == 0 || t - lastTick > 50) {
-      lastTick = t;
-      alpha += alphaInc;
-      if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
-    }
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-    glEnable( GL_BLEND );
-    glBegin( GL_QUADS );
-    glColor4f( 1, 0, 0, alpha );
-    glVertex2d(0, scrollerY);
-    glColor4f( 0, 1, 0, alpha );
-    glVertex2d(0, scrollerY + scrollerHeight);
-    glColor4f( 0, 0, 1, alpha );
-    glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
-    glColor4f( 1, 0, 1, alpha );
-    glVertex2d(scrollerWidth, scrollerY);
-    glEnd();
-    glDisable( GL_BLEND );
-    */
-    GLint t = SDL_GetTicks();
-    if(lastTick == 0 || t - lastTick > 50) {
-      lastTick = t;
-      alpha += alphaInc;
-      if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
-    }
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 0.75, 0.75, 1, alpha );
-    glBindTexture( GL_TEXTURE_2D, highlight );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable( GL_BLEND );
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0, 0 );
-    glVertex2d(0, scrollerY);
-    glTexCoord2f( 0, 1 );
-    glVertex2d(0, scrollerY + scrollerHeight);
-    glTexCoord2f( 1, 1 );
-    glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
-    glTexCoord2f( 1, 0 );
-    glVertex2d(scrollerWidth, scrollerY);
-    glEnd();
-    glDisable( GL_BLEND );
-    glDisable( GL_TEXTURE_2D );
-  }
-  // end of FIXME
-
-
-
-
-
   // draw the text
   if(debug) {
     cerr << "**********************************************" << endl;
@@ -247,6 +176,11 @@ void ScrollingList::drawWidget(Widget *parent) {
       applyBorderColor();
     }
   }
+
+
+  drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
+              false, false, false, false, inside );
+
   glBegin(GL_LINES);
   glVertex2d(0, 0);
   glVertex2d(0, h);
