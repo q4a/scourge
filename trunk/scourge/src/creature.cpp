@@ -358,6 +358,12 @@ bool Creature::follow(Map *map) {
   return true; 
 }
 
+void Creature::findPath( int x, int y ) {
+  Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
+                 x, y, 0, 
+                 &proposedPath, session->getMap(), getShape());
+}
+
 void Creature::setSelXY(int x, int y, bool force) { 
   selX = x; 
   selY = y; 

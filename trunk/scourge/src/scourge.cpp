@@ -44,7 +44,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
-  needToCheckDropLocation = true;
+  needToCheckPath = needToCheckDropLocation = true;
   nextMission = -1;
   // in HQ map
   inHq = true;
@@ -368,6 +368,8 @@ void Scourge::drawView() {
 
   checkForDropTarget();
 
+  checkPath();
+
   map->draw();
 
   // cancel mouse-based map movement (middle button)
@@ -557,9 +559,10 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
      !(creature->getSelX() == toint(creature->getX()) && 
        creature->getSelY() == toint(creature->getY())) &&
      session->getUserConfiguration()->isBattleTurnBased() ) {
-    for( int i = creature->getPathIndex(); i < (int)creature->getPath()->size(); i++) {
-      Location pos = (*(creature->getPath()))[i];
-      glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
+    for( int i = creature->getProposedPathIndex(); 
+         i < (int)creature->getProposedPath()->size(); i++) {
+      Location pos = (*(creature->getProposedPath()))[i];
+      glColor4f(0.75f, 1.0f, 0.0f, 0.5f);
       xpos2 = ((float)(pos.x - map->getX()) / GLShape::DIV);
       ypos2 = ((float)(pos.y - map->getY()) / GLShape::DIV);
       zpos2 = 0.0f / GLShape::DIV;  
@@ -927,7 +930,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     // start the item drag
     if(willStartDrag && 
        (abs(mx - willStartDragX) > DRAG_START_TOLERANCE ||
-       abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
+        abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
       // click on an item
       Uint16 mapx, mapy, mapz;
       getMapXYZAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy, &mapz);
@@ -3020,6 +3023,25 @@ void Scourge::resetBattles() {
   battleTurn = 0;
   inBattle = false;  
 }  
+
+void Scourge::checkPath() {
+  // find path
+  if( !getSDLHandler()->mouseIsMovingOverMap ) {
+    if( needToCheckPath ) {
+      needToCheckPath = false;
+      if( session->getUserConfiguration()->isBattleTurnBased() &&
+          battleTurn < (int)battleRound.size() &&
+          !battleRound[battleTurn]->getCreature()->isMonster() ) {
+        Uint16 mapx, mapy;
+        getMapXYAtScreenXY( getSDLHandler()->mouseX, getSDLHandler()->mouseY, 
+                            &mapx, &mapy);
+        battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
+      }
+    }
+  } else {
+    needToCheckPath = true;
+  }
+}
 
 void Scourge::checkForDropTarget() {
   // find the drop target
