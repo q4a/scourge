@@ -524,6 +524,7 @@ void Window::drawWidget(Widget *parent) {
     } else {
       applyHighlightedBorderColor();
     }
+  } else {
 //  } else if(isLocked()) {
 //    glColor3f(0.5f, 0.3f, 0.2f);
 //  } else 
