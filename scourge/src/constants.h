@@ -510,11 +510,12 @@ struct t3DModel
 {
     int numOfObjects;                   // The number of objects in the model
     int numOfMaterials;                 // The number of materials for the model
-    int numOfAnimations;                // The number of animations in this model 
-    int currentAnim;                    // The current index into pAnimations list 
-    int currentFrame;                   // The current frame of the current animation 
+    int numOfAnimations;                // The number of animations in this model     
+    float movex;                        // Needed to draw the model
+    float movey;
+    float movez;
     vector<tAnimationInfo> pAnimations; // The list of animations 
-    vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)
+    vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)    
     vector<t3DObject> pObject;          // The object list for our model (frames)
     vect3d *vertices;                   // All vertices for every frame of the model
     int numVertices;                    // The number of vertices (constant for each frame)

@@ -23,7 +23,7 @@ CLoadMD2::CLoadMD2()
 }
 
 //   Called by the client to open the .Md2 file, read it, then clean up
-bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture)
+bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName)
 {
     char strMessage[255] = {0};
 
@@ -59,22 +59,10 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture)
     ReadMD2Data(pModel);
     
     // Stores animation info    
-    ParseAnimations(pModel);        
+    ParseAnimations(pModel);  
     
-    // If there is a valid texture name passed in, we want to set the texture data
-    if(strTexture)
-    {        
-        tMaterialInfo texture;       
-        strcpy(texture.strFile, strTexture);       
-        texture.texureId = 0;   // Only one texture for a .Md2 file
-
-        // The tile or scale for the UV's is 1 to 1 (but Quake saves off a 0-256 ratio)
-        texture.uTile = texture.uTile = 1;
-
-        // We only have 1 material for a model
-        pModel->numOfMaterials = 1;        
-        pModel->pMaterials.push_back(texture);
-    }
+    // Computes min/max vertices values      
+    ComputeMinMaxValues(pModel);
     
     CleanUp();
     return true;
@@ -246,6 +234,26 @@ void CLoadMD2::ParseAnimations(t3DModel *pModel)
         pModel->pAnimations.push_back(deathAnimation); 
         pModel->numOfAnimations+= 2;                           
     }         
+}
+
+void CLoadMD2::ComputeMinMaxValues(t3DModel *pModel){
+    
+    // Find the lowest point
+    float minx, miny, minz;  
+    float maxx, maxy, maxz;
+    minx = miny = minz = maxx = maxy = maxz = 0;
+    for(int i = 0; i < pModel->numVertices ; i++){
+        if(pModel->vertices[i][0] > maxx) maxx = pModel->vertices[i][0];
+        if(pModel->vertices[i][1] > maxy) maxy = pModel->vertices[i][1];
+        if(pModel->vertices[i][2] > maxz) maxz = pModel->vertices[i][2];
+        if(pModel->vertices[i][0] < minx) minx = pModel->vertices[i][0];
+        if(pModel->vertices[i][1] < miny) miny = pModel->vertices[i][1];
+        if(pModel->vertices[i][2] < minz) minz = pModel->vertices[i][2];     
+    }
+    pModel->movex = maxx - minx;
+    pModel->movey = maxy;
+    pModel->movez = maxz - minz; 
+
 }
 
 // Cleans up our allocated memory and closes the file

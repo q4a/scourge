@@ -110,7 +110,7 @@ ShapePalette::ShapePalette(){
   loadTextures();
 
   // Create the display lists
-  display_list = glGenLists((Constants::SHAPE_INDEX_COUNT + Constants::CREATURE_INDEX_COUNT) * 3);
+  display_list = glGenLists((Constants::SHAPE_INDEX_COUNT) * 3);
  
  	// init the shapes
   initShapes();
@@ -119,12 +119,16 @@ ShapePalette::ShapePalette(){
 }
 
 ShapePalette::~ShapePalette(){
+    for(int i =0; i < creature_models.size(); i++){
+        delete creature_models[i];    
+    }
 }
 
 void ShapePalette::initShapes() {
 	Uint32 color = 0xac8060ff;
   bool debug = false;
-  int count = 0;
+  //int count = 0;
+  count = 0;
   shapes[Constants::EW_WALL_INDEX] =
     new GLShape(ew_tex,
                 unitOffset, unitSide - (unitOffset * 2), wallHeight,
@@ -350,58 +354,15 @@ void ShapePalette::initShapes() {
 					0xffffffff,
 					display_list + (count++ * 3), Constants::COLUMN_INDEX);
 	
-	// creatures
-	creature_display_list_start = display_list + (count * 3);                
-
-  // creatures
-  creature_shapes[Constants::FIGHTER_INDEX] =
-    new MD2Shape("data/models/m2.md2", "data/models/m2.bmp", 2.0f,
-                 notex,
-                 3, 3, 6,
-                 "FIGHTER",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),
-                 display_list + (count++ * 3),
-                 Constants::FIGHTER_INDEX);
-  creature_shapes[Constants::ROGUE_INDEX] =
-    new MD2Shape("data/models/m1.md2", "data/models/m1.bmp", 2.0f,
-                 notex,
-                 3, 3, 6,
-                 "ROGUE",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),
-                 display_list + (count++ * 3),
-                 Constants::ROGUE_INDEX);
-  creature_shapes[Constants::CLERIC_INDEX] =
-    new MD2Shape("data/models/m3.md2", "data/models/m3.bmp", 2.5f,
-                 notex,
-                 3, 3, 6,
-                 "CLERIC",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),
-                 display_list + (count++ * 3),
-                 Constants::CLERIC_INDEX);  
-  creature_shapes[Constants::WIZARD_INDEX] =
-    new MD2Shape("data/models/m4.md2", "data/models/m4.bmp", 2.5f,
-                 notex,
-                 3, 3, 6,
-                 "WIZARD",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),
-                 display_list + (count++ * 3),
-                 Constants::WIZARD_INDEX);  
-  creature_shapes[Constants::BUGGERLING_INDEX] =
-    new MD2Shape("data/models/m5.md2", "data/models/m5.bmp", 1.2f,
-                 notex,
-                 3, 3, 4,
-                 "BUGGERLING",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),
-                 display_list + (count++ * 3),
-                 Constants::BUGGERLING_INDEX);  
-  creature_shapes[Constants::SLIME_INDEX] =
-    new MD2Shape("data/models/m6.md2", "data/models/m6.bmp", 1.2f,
-                 notex,
-                 3, 3, 4,
-                 "SLIME",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),
-                 display_list + (count++ * 3),
-                 Constants::SLIME_INDEX);  
+	// creatures              
+  // The order at which we "push back" models is important                 
+  creature_models.push_back(LoadMd2Model("data/models/m2.md2"));
+  creature_models.push_back(LoadMd2Model("data/models/m1.md2"));
+  creature_models.push_back(LoadMd2Model("data/models/m3.md2"));
+  creature_models.push_back(LoadMd2Model("data/models/m4.md2"));
+  creature_models.push_back(LoadMd2Model("data/models/m5.md2"));
+  creature_models.push_back(LoadMd2Model("data/models/m6.md2"));
+   
   
   // items
   item_display_list_start = display_list + (count * 3);                                
@@ -465,6 +426,85 @@ void ShapePalette::initShapes() {
 
   
   max_display_list = display_list + (count * 3);
+}
+
+t3DModel * ShapePalette::LoadMd2Model(char *file_name){
+    t3DModel * t3d;
+    char fn[300];
+    t3d = new t3DModel; 
+    strcpy(fn, rootDir);
+    strcat(fn, file_name);
+   
+    g_LoadMd2.ImportMD2(t3d, fn); 
+    return t3d;   
+}    
+
+GLShape *ShapePalette::getCreatureShape(int index){    
+    
+    GLShape * sh;
+    int index2 = index - Constants::FIGHTER_INDEX;
+    bool debug = false;
+    
+    switch(index) {
+        case Constants::FIGHTER_INDEX :
+        cout << "Creating FIGHTER instance" << endl;
+        sh = new MD2Shape(creature_models[index2], md2_tex[0], 2.0f,
+                 notex,
+                 3, 3, 6,
+                 "FIGHTER",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),                  
+                 Constants::FIGHTER_INDEX);
+        break;
+        case Constants::ROGUE_INDEX : 
+        cout << "Creating ROGUE instance" << endl;
+        sh = new MD2Shape(creature_models[index2], md2_tex[1], 2.0f,
+                 notex,
+                 3, 3, 6,
+                 "ROGUE",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
+                 Constants::ROGUE_INDEX);
+        break;
+        case Constants::CLERIC_INDEX :
+        cout << "Creating CLERIC instance" << endl;
+        sh = new MD2Shape(creature_models[index2], md2_tex[2], 2.5f,
+                 notex,
+                 3, 3, 6,
+                 "CLERIC",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
+                 Constants::CLERIC_INDEX);  
+        break;
+        case Constants::WIZARD_INDEX :
+        cout << "Creating WIZARD instance" << endl;
+        sh = new MD2Shape(creature_models[index2], md2_tex[3],  2.5f,
+                 notex,
+                 3, 3, 6,
+                 "WIZARD",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
+                 Constants::WIZARD_INDEX);  
+        break;           
+        case Constants::BUGGERLING_INDEX :
+        cout << "Creating BUGGERLING instance" << endl;
+        sh = new MD2Shape(creature_models[index2], md2_tex[4], 1.2f,
+                 notex,
+                 3, 3, 4,
+                 "BUGGERLING",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
+                 Constants::BUGGERLING_INDEX);
+        break;  
+        case Constants::SLIME_INDEX : 
+        cout << "Creating SLIME instance" << endl;   
+        sh = new MD2Shape(creature_models[index2], md2_tex[5], 1.2f,
+                 notex,
+                 3, 3, 4,
+                 "SLIME",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
+                 Constants::SLIME_INDEX);
+        break;  
+        default : cerr << "getCreatureShape : unknown creature shape index : " << index << endl;                  
+                  sh = NULL;
+    }
+    
+    return sh;
 }
 
 GLuint ShapePalette::findTextureByName(const char *filename) {
@@ -541,7 +581,30 @@ void ShapePalette::loadTextures() {
   chesttex2[GLShape::FRONT_SIDE] = textures[13].id;
   chesttex2[GLShape::TOP_SIDE] = textures[15].id;
   chesttex2[GLShape::LEFT_RIGHT_SIDE] = textures[14].id;
-
+  
+  // FIXME : With loadGLTextures => crash!
+  // Why is Constants::CreateTexture different from ShapePal::loadGLTextures ????
+  // We should need only one texture loading function...
+  GLuint mdtext[1];  
+  CreateTexture(mdtext, "data/models/m2.bmp", 0);
+  md2_tex[0] = mdtext[0];
+  CreateTexture(mdtext, "data/models/m1.bmp", 0);
+  md2_tex[1] = mdtext[0];
+  CreateTexture(mdtext, "data/models/m3.bmp", 0);
+  md2_tex[2] = mdtext[0];
+  CreateTexture(mdtext, "data/models/m4.bmp", 0);
+  md2_tex[3] = mdtext[0];
+  CreateTexture(mdtext, "data/models/m5.bmp", 0);
+  md2_tex[4] = mdtext[0];
+  CreateTexture(mdtext, "data/models/m6.bmp", 0);
+  md2_tex[5] = mdtext[0];
+  
+  /*md2_tex[0] = loadGLTextures("data/models/m2.bmp");
+  md2_tex[1] = loadGLTextures("data/models/m1.bmp");
+  md2_tex[2] = loadGLTextures("data/models/m3.bmp");
+  md2_tex[3] = loadGLTextures("data/models/m4.bmp");
+  md2_tex[4] = loadGLTextures("data/models/m5.bmp");
+  md2_tex[5] = loadGLTextures("data/models/m6.bmp");*/
   
   notex[0] = 0;
   notex[1] = 0;

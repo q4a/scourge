@@ -36,10 +36,10 @@
 
 # include <string>
 # include <vector>
+# include <map>
 
 #include "constants.h"
 #include "glshape.h"
-#include "Md2.h"
 
 class MD2Shape : public GLShape  {
 
@@ -49,35 +49,36 @@ class MD2Shape : public GLShape  {
 private:
   bool attackEffect;
   float div;
-  float movex, movey, movez;
-  unsigned int g_Texture[MAX_TEXTURES]; // This holds the texture info, referenced by an ID
-  CLoadMD2 g_LoadMd2;                   // This is MD2 class.  This should go in a good model class.
-  t3DModel g_3DModel;                   // This holds the 3D Model info that we load in
+  GLuint textureId;
+  //float movex, movey, movez;  
+  t3DModel * g_3DModel;                 // This holds the 3D Model info that we load in
   int g_ViewMode;                       // make this GL_LINE_STRIP for outline
   int dir;      
-  vect3d *vect;
-  bool pauseAnimation;
-  
+  vect3d *vect;     
+      
   // Animation stuff
   float elapsedTime;
   float lastTime;  
+  bool pauseAnimation;
+  int currentAnim;
+  int currentFrame;   
    
   // This draws and animates the .md2 model by interpoloated key frame animation
-  void AnimateMD2Model(t3DModel *pModel);
+  void AnimateMD2Model();
   
   // This returns time t for the interpolation between the current and next key frame
-  float ReturnCurrentTime(t3DModel *pModel, int nextFrame);
+  float ReturnCurrentTime(int nextFrame);
 
 public: 
-	MD2Shape(char *file_name, char *texture_name, float div,
+	MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
           GLuint texture[], int width, int depth, int height,
           char *name,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
-
-	MD2Shape(char *file_name, char *texture_name, float div,
+          Uint32 color, Uint8 shapePalIndex=0);
+          
+    MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
           GLuint texture[], int width, int depth, int height,
           char *name, char **description, int descriptionCount,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+          Uint32 color, Uint8 shapePalIndex=0);
           
 	inline bool getAttackEffect() { return attackEffect; }
 	inline void setAttackEffect(bool b) { attackEffect = b; }
@@ -98,7 +99,7 @@ public:
   inline void setPauseAnimation(bool pause) { pauseAnimation = pause; }
 
 protected:
-  void commonInit(char *file_name, char *texture_name, float div);
+  void commonInit(t3DModel * g_3DModel, GLuint textureId, float div);
 };
 
 #endif
