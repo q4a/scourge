@@ -49,7 +49,7 @@ PartyEditor::PartyEditor(Scourge *scourge) {
   cards->setActiveCard( INTRO_TEXT );
 
   intro = new Label( 30, 100, 
-                     "You have arrived... as we knew you would. The sand swirls gently in the hourglass of time and reveals all. Sooner or later even the proudest realize that there is no more adventure to be had in the city of Horghh. But fear not! The S.C.O.U.R.G.E. Vermin Extermination Services Company takes good care of its employees. You will be payed in gold, fed nourishing gruel on most days and have access to the company training grounds and shops. Should you sustain injuries or a debilitating predicament (including but not limited to: poison, curses, possession or death ) our clerics will provide healing at a reduced cost. Positions fill up fast, but there are always some available (...) so sign up with a cheerful heart and a song in your step. Your past glories cannot possible compare to the wonder and excitement that lies ahead in the ...uh.. sewers of your new vocation!", 94, SDLHandler::LARGE_FONT, 24 );
+                     "You have arrived... as we knew you would. The sand swirls gently in the hourglass of time and reveals all. Sooner or later even the proudest realize that there is no more adventure to be had in the city of Horghh. But fear not! The S.C.O.U.R.G.E. Vermin Extermination Services Company takes good care of its employees. You will be payed in gold, fed nourishing gruel on most days and have access to the company training grounds and shops. Should you sustain injuries or a debilitating predicament (including but not limited to: poison, curses, possession or death ) our clerics will provide healing at a reduced cost. Positions fill up fast, but there are always some available (...) so sign up with a cheerful heart and a song in your step. Your past glories cannot possibly compare to the wonder and excitement that lies ahead in the ...uh.. sewers of your new vocation!", 94, SDLHandler::LARGE_FONT, 24 );
   cards->addWidget( intro, INTRO_TEXT );
   
 
@@ -165,7 +165,8 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
         int newValue = info[ i ].skill[ n ] + info[ i ].skillMod[ n ] - 1;
         if( newValue >= c->getMinSkillLevel( n ) && 
             newValue <= c->getMaxSkillLevel( n ) &&
-            newValue <= 99 ) {
+            newValue <= 99 &&
+            info[ i ].skillMod[ n ] ) {
           info[ i ].availableSkillMod++;
           info[ i ].skillMod[ n ]--;
           updateUI( &( info[ i ] ) );
