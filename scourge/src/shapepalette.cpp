@@ -127,8 +127,7 @@ ShapePalette::~ShapePalette(){
 void ShapePalette::initShapes() {
 	Uint32 color = 0xac8060ff;
   bool debug = false;
-  //int count = 0;
-  count = 0;
+  int count = 0; 
   shapes[Constants::EW_WALL_INDEX] =
     new GLShape(ew_tex,
                 unitOffset, unitSide - (unitOffset * 2), wallHeight,
@@ -356,12 +355,13 @@ void ShapePalette::initShapes() {
 	
 	// creatures              
   // The order at which we "push back" models is important                 
-  creature_models.push_back(LoadMd2Model("data/models/m2.md2"));
+  creature_models.push_back(LoadMd2Model("data/models/m2.md2"));  
   creature_models.push_back(LoadMd2Model("data/models/m1.md2"));
   creature_models.push_back(LoadMd2Model("data/models/m3.md2"));
   creature_models.push_back(LoadMd2Model("data/models/m4.md2"));
   creature_models.push_back(LoadMd2Model("data/models/m5.md2"));
   creature_models.push_back(LoadMd2Model("data/models/m6.md2"));
+  cout<<"MD2 Models loaded" << endl;
    
   
   // items
@@ -447,7 +447,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
     
     switch(index) {
         case Constants::FIGHTER_INDEX :
-        cout << "Creating FIGHTER instance" << endl;
+        //cout << "Creating FIGHTER instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[0], 2.0f,
                  notex,
                  3, 3, 6,
@@ -456,7 +456,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
                  Constants::FIGHTER_INDEX);
         break;
         case Constants::ROGUE_INDEX : 
-        cout << "Creating ROGUE instance" << endl;
+        //cout << "Creating ROGUE instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[1], 2.0f,
                  notex,
                  3, 3, 6,
@@ -465,7 +465,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
                  Constants::ROGUE_INDEX);
         break;
         case Constants::CLERIC_INDEX :
-        cout << "Creating CLERIC instance" << endl;
+        //cout << "Creating CLERIC instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[2], 2.5f,
                  notex,
                  3, 3, 6,
@@ -474,7 +474,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
                  Constants::CLERIC_INDEX);  
         break;
         case Constants::WIZARD_INDEX :
-        cout << "Creating WIZARD instance" << endl;
+        //cout << "Creating WIZARD instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[3],  2.5f,
                  notex,
                  3, 3, 6,
@@ -483,7 +483,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
                  Constants::WIZARD_INDEX);  
         break;           
         case Constants::BUGGERLING_INDEX :
-        cout << "Creating BUGGERLING instance" << endl;
+        //cout << "Creating BUGGERLING instance" << endl;
         sh = new MD2Shape(creature_models[index2], md2_tex[4], 1.2f,
                  notex,
                  3, 3, 4,
@@ -492,7 +492,7 @@ GLShape *ShapePalette::getCreatureShape(int index){
                  Constants::BUGGERLING_INDEX);
         break;  
         case Constants::SLIME_INDEX : 
-        cout << "Creating SLIME instance" << endl;   
+        //cout << "Creating SLIME instance" << endl;   
         sh = new MD2Shape(creature_models[index2], md2_tex[5], 1.2f,
                  notex,
                  3, 3, 4,

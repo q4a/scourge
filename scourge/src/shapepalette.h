@@ -45,7 +45,6 @@ private:
   GLuint display_list, item_display_list_start, max_display_list;
   //GLuint creature_display_list_start;
   GLuint gui_texture;
-  int count;
   
   typedef struct _Texture {
 	GLuint id;
