@@ -298,13 +298,15 @@ int Party::getTotalLevel() {
 Creature **Party::createHardCodedParty() {
   Creature **pc = (Creature**)malloc(sizeof(Creature*) * 4);
 
+  int level = 6;
+
   // FIXME: consider using newCreature here
   // the end of startMission would have to be modified to not delete the party
   // also in scourge, where-ever creatureCount is used to mean all monsters would have
   // to change (maybe that's a good thing too... same logic for party and monsters)
   pc[0] = new Creature(scourge, Character::getCharacterByName("Assassin"), "Alamont");
-  pc[0]->setLevel(1); 
-  pc[0]->setExp(300);
+  pc[0]->setLevel(level); 
+  pc[0]->setExp();
   pc[0]->setHp();
   pc[0]->setMp();
   pc[0]->setHunger(8);
@@ -313,8 +315,8 @@ Creature **Party::createHardCodedParty() {
   pc[0]->setStateMod(Constants::poisoned, true);
 
   pc[1] = new Creature(scourge, Character::getCharacterByName("Knight"), "Barlett");
-  pc[1]->setLevel(1); 
-  pc[1]->setExp(200);
+  pc[1]->setLevel(level); 
+  pc[1]->setExp();
   pc[1]->setHp();
   pc[1]->setMp();
   pc[1]->setHunger(10);
@@ -323,8 +325,8 @@ Creature **Party::createHardCodedParty() {
   pc[1]->setStateMod(Constants::cursed, true);      
 
   pc[2] = new Creature(scourge, Character::getCharacterByName("Summoner"), "Corinus");
-  pc[2]->setLevel(3); 
-  pc[2]->setExp(150);
+  pc[2]->setLevel(level); 
+  pc[2]->setExp();
   pc[2]->setHp();
   pc[2]->setMp();
   pc[2]->setHunger(3);
@@ -336,8 +338,8 @@ Creature **Party::createHardCodedParty() {
   //  	if(i != Constants::dead) pc[2]->setStateMod(i, true);
 
   pc[3] = new Creature(scourge, Character::getCharacterByName("Naturalist"), "Dialante");    
-  pc[3]->setLevel(1); 
-  pc[3]->setExp(400);
+  pc[3]->setLevel(level); 
+  pc[3]->setExp();
   pc[3]->setHp();
   pc[3]->setMp();
   pc[3]->setHunger(10);
@@ -347,9 +349,10 @@ Creature **Party::createHardCodedParty() {
   // compute starting skill levels
   for(int i = 0; i < 4; i++) {
 	for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
-	  int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + (int)(20.0 * rand()/RAND_MAX);
-	  if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
-		n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
+	  int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
+    if(n > 99) n = 99;
+    if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
+      n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
 	  pc[i]->setSkill(skill, n);
 	}
   }

@@ -1211,7 +1211,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		for(int i = 0; i < roomCount; i++) {
 			int levelSum = 0;
 			while(levelSum < totalLevel) {
-				Monster *monster = Monster::getRandomMonster(level - 1);
+				Monster *monster = Monster::getRandomMonster(level);
 				//fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
 				if(!monster) {
 					cerr << "Warning: no monsters defined for level: " << level << endl;
@@ -1239,7 +1239,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	
 		// add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
 		for(int i = 0; i < objectCount * 2; i++) {
-			Monster *monster = Monster::getRandomMonster(level - 1);
+			Monster *monster = Monster::getRandomMonster(level);
 			if(!monster) {
 				cerr << "Warning: no monsters defined for level: " << level << endl;
 				break;
