@@ -64,6 +64,7 @@ class SpellCaster {
 
  protected:
   float getPower();
+  void viewInfo();
   void increaseHP();
   void increaseAC();
   // count==0 means that count depends on level

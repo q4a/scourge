@@ -79,17 +79,17 @@ void SpellCaster::spellSucceeded() {
       launchProjectile(0);
     }
   } else if(!strcasecmp(spell->getName(), "Invisibility")) {
-      setStateMod(Constants::invisible);
+    setStateMod(Constants::invisible);
   } else if(!strcasecmp(spell->getName(), "Art of protection")) {
-      setStateMod(Constants::magic_protected);
+    setStateMod(Constants::magic_protected);
   } else if(!strcasecmp(spell->getName(), "Divine Aggressor")) {
-      setStateMod(Constants::enraged);
+    setStateMod(Constants::enraged);
   } else if(!strcasecmp(spell->getName(), "Protective clay")) {
-      setStateMod(Constants::ac_protected);
+    setStateMod(Constants::ac_protected);
   } else if(!strcasecmp(spell->getName(), "Empower friend")) {
-      setStateMod(Constants::empowered);
+    setStateMod(Constants::empowered);
   } else if(!strcasecmp(spell->getName(), "Bless group")) {
-      setStateMod(Constants::blessed);
+    setStateMod(Constants::blessed);
   } else if(!strcasecmp(spell->getName(), "Flame of Azun")) {
     if(projectileHit) {
       setStateMod(Constants::blinded);
@@ -111,11 +111,13 @@ void SpellCaster::spellSucceeded() {
       launchProjectile(1, false);
     }
   } else if(!strcasecmp(spell->getName(), "Remove curse")) {
-      setStateMod(Constants::cursed, false);
+    setStateMod(Constants::cursed, false);
   } else if(!strcasecmp(spell->getName(), "Enthrall fiend")) {
-      setStateMod(Constants::possessed);
+    setStateMod(Constants::possessed);
   } else if(!strcasecmp(spell->getName(), "Break from possession")) {
-      setStateMod(Constants::possessed, false);
+    setStateMod(Constants::possessed, false);
+  } else if(!strcasecmp(spell->getName(), "Ole Taffy's purty colors")) {
+    viewInfo();
   } else {
     // default
     cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
@@ -124,7 +126,18 @@ void SpellCaster::spellSucceeded() {
 
 
 
-
+void SpellCaster::viewInfo() {
+  Creature *creature = battle->getCreature();
+  Item *item = creature->getTargetItem();
+  creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));
+  if(item) {
+    battle->getSession()->getGameAdapter()->showItemInfoUI( item, 
+                                                            creature->getSkill(Constants::IDENTIFY_ITEM_SKILL) +
+                                                            creature->getSkill(spell->getSchool()->getSkill()) );
+  } else {
+    cerr << "*** Warning: implement ole' taffy for non-item targets!" << endl;
+  }
+}
 
 void SpellCaster::increaseHP() {
   Creature *creature = battle->getCreature();

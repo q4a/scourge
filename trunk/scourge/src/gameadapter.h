@@ -32,6 +32,7 @@ class Mission;
 class Battle;
 class Shape;
 class Location;
+class Item;
 
 class GameAdapter {
 protected:
@@ -71,6 +72,7 @@ public:
   virtual inline void eraseMiniMapPoint(int x, int y) {}
   virtual inline void playSound(const char *sound) {}
   virtual inline void setDebugStr(char *s) {}
+  virtual inline void showItemInfoUI(Item *item, int level) {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

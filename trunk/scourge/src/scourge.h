@@ -216,7 +216,8 @@ protected:
 
 
   bool getItem(Location *pos);
-  void dropItem(int x, int y);
+  // returns new z coordinate
+  int dropItem(int x, int y);
   bool useLever(Location *pos);
   bool useDoor(Location *pos);
   bool useBoard(Location *pos);
@@ -594,6 +595,8 @@ public:
   bool Scourge::inTurnBasedCombatPlayerTurn();
 
   inline InfoGui *getInfoGui() { return infoGui; }
+
+  void showItemInfoUI(Item *item, int level);
 
  protected:
 
