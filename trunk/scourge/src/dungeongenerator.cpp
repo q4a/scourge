@@ -1310,12 +1310,9 @@ void DungeonGenerator::lockDoors(Map *map, ShapePalette *shapePal,
     Sint16 mapy = door[i][1];
     lockLocation(map, mapx, mapy);
   }
-  // lock some chests
-  for(int i = 0; i < (int)containers.size(); i++) {
-    if(containers[i]->getShape() == scourge->getSession()->getShapePalette()->findShapeByName("CHEST") ||
-       containers[i]->getShape() == scourge->getSession()->getShapePalette()->findShapeByName("CHEST2")) {
-      lockLocation(map, containerX[i], containerY[i]);
-    }
+  // lock some teleporters
+  for(int i = 0; i < (int)teleporterX.size(); i++) {
+    lockLocation(map, teleporterX[i], teleporterY[i]);
   }
 
 }
@@ -1422,6 +1419,12 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
   progress->updateStatus("Adding party");
   addParty(map, shapePal, preGenerated, locationIndex);
 
+  // add a teleporters
+  progress->updateStatus("Adding teleporters");
+  if(!preGenerated) {
+    addTeleporters(map, shapePal, preGenerated, locationIndex);
+  }
+
   progress->updateStatus("Locking doors and chests");
   lockDoors(map, shapePal, preGenerated, locationIndex);
 
@@ -1429,8 +1432,8 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
   calculateRoomValues(map, shapePal, preGenerated, locationIndex);
 
   progress->updateStatus("Adding items and mission objectives");
+  addItems(map, shapePal, preGenerated, locationIndex);
   if(!preGenerated) {
-    addItems(map, shapePal, preGenerated, locationIndex);
     addMissionObjectives(map, shapePal, preGenerated, locationIndex);
   }
 
@@ -1439,12 +1442,6 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 
   progress->updateStatus("Adding furniture");
   addFurniture(map, shapePal, preGenerated, locationIndex);
-
-  // add a teleporters
-  progress->updateStatus("Adding teleporters");
-  if(!preGenerated) {
-    addTeleporters(map, shapePal, preGenerated, locationIndex);
-  }
 
   progress->updateStatus("Cleaning up");
   deleteFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
@@ -1754,6 +1751,11 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
     containerX.push_back(x);
     containerY.push_back(y);
   }  
+  // remember the teleporters
+  if(shape == scourge->getShapePalette()->findShapeByName("TELEPORTER_BASE")) {
+    teleporterX.push_back(x);
+    teleporterY.push_back(y);
+  }
 }
 
 int DungeonGenerator::getRoomIndex(int x, int y) {

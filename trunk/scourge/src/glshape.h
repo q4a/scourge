@@ -104,6 +104,7 @@ public:
 
   inline void setCameraRot(GLfloat xrot, GLfloat yrot, GLfloat zrot) { this->xrot = xrot; this->yrot = yrot; this->zrot = zrot; }
   inline void setCameraPos(GLfloat xpos, GLfloat ypos, GLfloat zpos, GLfloat xpos2, GLfloat ypos2, GLfloat zpos2) { this->xpos = xpos; this->ypos = ypos; this->zpos = zpos; this->xpos2 = xpos2; this->ypos2 = ypos2; this->zpos2 = zpos2;}
+  inline void setLocked(bool locked) { this->locked = locked; }
   inline GLfloat getYRot() { return yrot; }
   inline GLfloat getZRot() { return zrot; }
 
@@ -117,6 +118,7 @@ public:
   inline void applyIconRotation() { glRotatef(xIconRot, 1, 0, 0); glRotatef(yIconRot, 0, 1, 0); glRotatef(zIconRot, 0, 0, 1); }
 
 protected:
+  bool locked;
   GLfloat xrot, yrot, zrot;
   GLfloat xpos, ypos, zpos, xpos2, ypos2, zpos2;
   void commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 shapePalIndex);

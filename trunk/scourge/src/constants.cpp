@@ -137,15 +137,18 @@ char *Constants::messages[][80] = {
     "You've done something... you're not sure what but you hope it's had dinner." },
   { "You feel the resonance of an almost sub-tonal bass note.",
     "An omnious sound floats from a distant corner." },
-  { "Suck! This door is locked shut!",
+  { "Suck! It is locked shut!",
     "Try as you might, you can't open it.",
-    "Perhaps it's locked." }
+    "Perhaps it's locked." },
+  { "This teleporter is off-line.",
+    "Nothing happens.",
+    "The teleporter blinks unimpressively." }
 
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3
+  3, 2, 2, 3, 3
 };
 
 // opengl extension routines

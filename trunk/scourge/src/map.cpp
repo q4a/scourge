@@ -952,6 +952,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   if(shape) {
     ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
     ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
+    if(later && later->pos) ((GLShape*)shape)->setLocked(isLocked(later->pos->x, later->pos->y, 0));
+    else ((GLShape*)shape)->setLocked(false);
   }
   if(effect && later) {
     if(later->creature) {

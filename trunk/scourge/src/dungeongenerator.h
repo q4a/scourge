@@ -152,6 +152,8 @@ private:
   vector<Item*> containers;
   vector<int> containerX;
   vector<int> containerY;
+  vector<int> teleporterX;
+  vector<int> teleporterY;
 
 public: 
 
