@@ -95,7 +95,7 @@ private:
    */
   void setHandlers(SDLEventHandler *eventHandler, SDLScreenView *screenView);
   
-  void setVideoMode(int w, int h, int bpp, bool fullscreen=false);
+  void setVideoMode(int argc, char *argv[]);
   void mainLoop();
 
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);

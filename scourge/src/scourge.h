@@ -86,14 +86,14 @@ public:
   #define GUI_PLAYER_INFO_W 250
   #define GUI_PLAYER_INFO_H 350
   
-    static int blendA, blendB;
-    static int blend[];
-    static void setBlendFunc();
+  static int blendA, blendB;
+  static int blend[];
+  static void setBlendFunc();
+  
+  Scourge(int argc, char *argv[]);
+  ~Scourge();
 
-	Scourge(int width=800, int height=600, int bpp=16, bool fullscreen=false);
-	~Scourge();
-
-    inline Item *getMovingItem() { return movingItem; }
+  inline Item *getMovingItem() { return movingItem; }
 
   inline MainMenu *getMainMenu() { return mainMenu; }
 

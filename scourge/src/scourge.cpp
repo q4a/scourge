@@ -35,18 +35,15 @@ void Scourge::setBlendFunc() {
     glBlendFunc(blend[blendA], blend[blendB]);
 }
 
-Scourge::Scourge(int width, int height,
-                 int bpp, bool fullscreen){
-
+Scourge::Scourge(int argc, char *argv[]){
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
 
   isInfoShowing = true;
 
-	// Initialize the video mode
-  cout << "Setting video mode: " << width << "x" << height << "," << bpp << endl;
+  // Initialize the video mode
   sdlHandler = new SDLHandler();
-  sdlHandler->setVideoMode(width, height, bpp, fullscreen);
+  sdlHandler->setVideoMode(argc, argv);
 
   shapePal = sdlHandler->getShapePalette();
   gui = new Gui(this);
