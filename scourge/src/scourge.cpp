@@ -897,16 +897,24 @@ bool Scourge::useItem(int x, int y, int z) {
 	
 	Location *pos = map->getPosition(x, y, z);
 	if(pos) {
+	  if(map->isWallBetween(party->getPlayer()->getX(), 
+							party->getPlayer()->getY(), 
+							party->getPlayer()->getZ(), 
+							x, y, z)) {
+		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+		return true;
+	  } else {
 		if(useDoor(pos)) {
-			map->updateLightMap();
-			return true;
+		  map->updateLightMap();
+		  return true;
 		} else if(useGate(pos)) {
-			return true;
+		  return true;
 		} else if(useBoard(pos)) {
-			return true;
+		  return true;
 		} else if(useTeleporter(pos)) {
 		  return true;
 		}
+	  }
 	}
 	return false;
 }
