@@ -75,22 +75,32 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
 }
 
 Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
+  if(dragging) {
+	handleEvent(NULL, event, x, y);
+	return this;
+  }
+
   // handled by a component?
-  Widget *widget = NULL;
+  bool insideWidget = false;
+  Widget *w = NULL;
   for(int t = 0; t < widgetCount; t++) {
-	if(this->widget[t]->isVisible() && 
-	   this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT))) {
-	  widget = this->widget[t];
+	if(this->widget[t]->isVisible()) {
+	  if(!insideWidget) 
+		insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT));
+	  if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
+		w = this->widget[t];
 	}
   }
-  // see if the window wants it
-  if(!widget && handleEvent(NULL, event, x, y)) {
-	  widget = this;
-  } else {
-	// cancel any pending window events
-	dragging = false;
+  if(w) return w;
+  if(insideWidget) {
+	return this;
   }
-  return widget;
+
+  // see if the window wants it
+  if(handleEvent(NULL, event, x, y)) {
+	  return this;
+  }
+  return NULL;
 }
 
 bool Window::isInside(int x, int y) {
@@ -204,7 +214,7 @@ void Window::drawWidget(Widget *parent) {
   glPushMatrix();
   glTranslated( 0, 0, 5 );
   glColor3f( 1, 1, 1 );
-  sdlHandler->texPrint(10, topY + 13, "%s z=%d", title, getZ());
+  sdlHandler->texPrint(10, topY + 13, "%s", title);
   glPopMatrix();
 
   // draw widgets

@@ -30,6 +30,7 @@
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/cardcontainer.h"
+#include "gui/scrollinglist.h"
 
 /**
   *@author Gabor Torok
@@ -56,6 +57,7 @@ private:
 	Button *invToButton[4];
 	Button *equipButton, *dropButton, *fixButton, *removeCurseButton;
 	Button *combineButton, *enchantButton, *identifyButton;
+	ScrollingList *invList;
 
 protected:
 
