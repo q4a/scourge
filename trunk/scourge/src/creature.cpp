@@ -82,6 +82,7 @@ void Creature::commonInit() {
   this->level = 1;
   this->exp = 0;
   this->hp = 0;
+  this->startingHp = 0;
   this->ac = 0;
   this->targetCreature = NULL;
   this->lastTick = 0;
@@ -197,39 +198,59 @@ void Creature::setSelXY(int x, int y, bool force) {
 	tx = ty = -1;
   }
   // if we're trying to move within a range, try a number of times
-  isWithinDistanceRange();
+  adjustMovementToRange();
+}
+
+/**
+   Return true only if a range is specified and we're within it.
+ */
+bool Creature::isInRange() {
+  if(maxRange > 0) {
+	float d = getDistanceToTargetCreature();
+	return (d >= minRange && d < maxRange);
+  }
+  return false;
 }
 
 /**
    Check that we're within range (if range specified).
    If not, try n times, then wait n times before trying again.
 */
-bool Creature::isWithinDistanceRange() {
-  if(maxRange <= 0 || !getTargetCreature()) return true;
+void Creature::adjustMovementToRange() {
+  if(maxRange <= 0 || !getTargetCreature()) return;
   float d = getDistanceToTargetCreature();
-  bool ret = (d >= minRange && d < maxRange);
-  if(ret) {
+  bool inRange = (d >= minRange && d < maxRange);
+  if(inRange) {
+	// we're in range: stop moving
 	failedToMoveWithinRangeAttemptCount = 0;
 	stopMoving();
-	return true;
+	return;
   } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS) {
+	// we're not in range: move away if too close
 	failedToMoveWithinRangeAttemptCount++;
 
 	// if too close, move away
 	if(d < minRange) {
 	  Sint16 nz;
 	  findCorner(&cornerX, &cornerY, &nz);
-	  setMotion(Constants::MOTION_MOVE_AWAY);   
+	  setMotion(Constants::MOTION_MOVE_AWAY);
 	}
 
-	return false;
+	return;
   } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS * 2) {
+	// we're still not in range: return true to continue attacks and not try to position forever
 	failedToMoveWithinRangeAttemptCount++;
-	return true;
+	return;
   } else {
+	// we're still not in range but continue to try to position creature
 	failedToMoveWithinRangeAttemptCount = 0;
-	return true;
+	return;
   }
+}
+
+void Creature::setTargetCreature(Creature *c) { 
+  targetCreature = c; 
+  if(!c) setDistanceRange(0, 0);
 }
 
 void Creature::stopMoving() {
@@ -244,6 +265,9 @@ bool Creature::moveToLocator(Map *map) {
   // case, but the code is simpler this way. (Returning false is 
   // is incorrect.)
   if(((MD2Shape*)getShape())->getAttackEffect()) return false;
+
+  // don't move when in range
+  if(isInRange()) return false;
 
   bool moved = false;
   if(selX > -1) {
@@ -808,7 +832,7 @@ void Creature::monsterInit() {
     setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
   }
   // add some hp
-  hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
+  startingHp = hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
 }
 
 // only for characters: leveling up

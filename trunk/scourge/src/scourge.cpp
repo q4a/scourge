@@ -1312,6 +1312,7 @@ void Scourge::moveMonster(Creature *monster) {
   }
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
+	// FIXME: pick closest target
 	// attack a player
 	if((int)(20.0f * rand()/RAND_MAX) == 0) {
 	  int n = (int)((float)party->getPartySize() * rand()/RAND_MAX);
@@ -1323,13 +1324,14 @@ void Scourge::moveMonster(Creature *monster) {
 									   party->getParty(n)->getY(),
 									   party->getParty(n)->getShape()->getWidth(),
 									   party->getParty(n)->getShape()->getDepth());
-	  if(dist < 20.0) {
+	  if(dist < 20.0 && !party->getParty(n)->getStateMod(Constants::dead)) {
 		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
 		monster->setTargetCreature(party->getParty(n));
 		monster->setDistanceRange(0, Constants::MIN_DISTANCE);
 	  }
 	} else {
 	  // random (non-attack) monster movement
+	  monster->setDistanceRange(0, Constants::MIN_DISTANCE);
 	  for(int i = 0; i < 4; i++) {
 		int n = (int)(10.0f * rand()/RAND_MAX);
 		if(n == 0 || !monster->move(monster->getDir(), map)) {
@@ -1346,21 +1348,14 @@ void Scourge::moveMonster(Creature *monster) {
 	  }
 	}
   } else if(monster->getTargetCreature()) {
-	// monster gives up
-	if((int)(20.0f * rand()/RAND_MAX) == 0) {
+	// monster gives up when low on hp or bored
+	// FIXME: when low on hp, it should run away not loiter
+	if(monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f) ||
+	   (int)(20.0f * rand()/RAND_MAX) == 0) {
 	  monster->setMotion(Constants::MOTION_LOITER);
 	  monster->setTargetCreature(NULL);
-	} else {	
-	  // creature won't fight if too far from the action 
-	  float dist = monster->getDistanceToTargetCreature();
-	  Item *item = monster->getBestWeapon(dist);
-	  if(item || dist <= Constants::MIN_DISTANCE) {
-		monster->stopMoving(); // fps optimization
-	  } else {
-		monster->moveToLocator(map);
-		// FIXME: should be different for ranged weapons
-		monster->setDistanceRange(0, Constants::MIN_DISTANCE);
-	  }
+	} else {
+	  monster->moveToLocator(map);
 	}
   }
 }
