@@ -805,7 +805,6 @@ void Map::drawProjectiles() {
       if(proj->atTargetLocation() &&
          proj->getSpell() &&
          proj->getSpell()->isLocationTargetAllowed()) {
-        cerr << "PROJECTILE ATTACK: from map: target location based." << endl;
         session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());
         blocked = true;
       }
@@ -834,7 +833,6 @@ void Map::drawProjectiles() {
   for (map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
     Projectile *proj = i->first;
     Creature *creature = i->second;
-    cerr << "PROJECTILE ATTACK: from map: target creature based." << endl;
     session->getGameAdapter()->fightProjectileHitTurn(proj, creature);
   }
 
