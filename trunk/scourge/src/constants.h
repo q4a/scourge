@@ -31,9 +31,9 @@
 #include <SDL_opengl.h>
 #include <SDL_endian.h>
 #if defined(__APPLE__) || defined(__MACH_O__)
-#include <GLUT/glut.h>
+// *** #include <GLUT/glut.h>
 #else
-#include <GL/glut.h>
+// *** #include <GL/glut.h>
 #ifndef WIN32
 // Could not get these to include on my Mandrake9 box...
 #ifndef APIENTRY
