@@ -63,22 +63,26 @@ Scourge::Scourge(int argc, char *argv[]){
   userConfiguration->loadConfiguration();    
   userConfiguration->parseCommandLine(argc, argv); 
 
+  headless = false;
 #ifdef HAVE_SDL_NET
   // standalone mode?
   if(userConfiguration->getStandAloneMode() == UserConfiguration::SERVER) {
+    headless = true;
     runServer(userConfiguration->getPort());
     sdlHandler->quit(0);
   } else if(userConfiguration->getStandAloneMode() == UserConfiguration::CLIENT) {
+    headless = true;
     runClient(userConfiguration->getHost(), 
               userConfiguration->getPort(), 
               userConfiguration->getUserName());
     sdlHandler->quit(0);
   }
 #endif
-   
+
+  
   // Initialize the video mode
   sdlHandler = new SDLHandler(); 
-  sdlHandler->setVideoMode(userConfiguration); 
+  if(!headless) sdlHandler->setVideoMode(userConfiguration); 
   
   shapePal = sdlHandler->getShapePalette();  
 
@@ -1907,6 +1911,14 @@ void Scourge::runClient(char *host, int port, char *userName) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
     return;
   }
+
+  // connect as a character
+  Party *party = new Party(this);  
+  Creature **pc;
+  int pcCount;
+  Party::createHardCodedParty(this, &pc, &pcCount);
+  cerr << "Sending character: " << pc[0]->getName() << endl;
+  party->resetMultiplayer(pc[0]);
 
   char message[80];
   while(true) {
