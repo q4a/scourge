@@ -22,7 +22,7 @@
 
 class Session;
 
-#define PERSIST_VERSION 4
+#define PERSIST_VERSION 5
 
 typedef struct _DiceInfo {
   Uint32 version;
@@ -73,6 +73,7 @@ typedef struct _CreatureInfo {
   Uint32 skills[Constants::SKILL_COUNT];
   Uint32 skillMod[Constants::SKILL_COUNT];
   Uint32 skillBonus[Constants::SKILL_COUNT];
+  Uint32 portraitTextureIndex;
 
   // inventory
   Uint32 inventory_count;

@@ -123,6 +123,7 @@ void Creature::commonInit() {
   this->actionSpell = NULL;
   this->preActionTargetCreature = NULL;
   this->angle = this->wantedAngle = this->angleStep = 0;
+  this->portraitTextureIndex = 0;
 
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -181,6 +182,7 @@ CreatureInfo *Creature::save() {
     info->skillMod[i] = skillMod[i];
     info->skillBonus[i] = skillBonus[i];
   }
+  info->portraitTextureIndex = portraitTextureIndex;
 
   // inventory
   info->inventory_count = inventory_count;
@@ -272,6 +274,9 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
       creature->equipped[i] = info->equipped[i];
     }
   }
+  creature->portraitTextureIndex = info->portraitTextureIndex;
+  if( creature->portraitTextureIndex >= session->getShapePalette()->getPortraitCount() ) 
+    creature->portraitTextureIndex = session->getShapePalette()->getPortraitCount() - 1;
 
   // spells
   for(int i = 0; i < (int)info->spell_count; i++) {

@@ -90,6 +90,7 @@ class Creature {
   bool arrived; // true if no particular destination set for this creature
   map<int, Event*> stateModEventMap;
   GLfloat angle, wantedAngle, angleStep;
+  int portraitTextureIndex;
   
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
@@ -143,6 +144,9 @@ class Creature {
   Creature(Session *session, Character *character, char *name);
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
+
+  inline void setPortraitTextureIndex( int n ) { this->portraitTextureIndex = n; }
+  inline int getPortraitTextureIndex() { return portraitTextureIndex; }
 
   inline vector<Location> *getPath() { return &bestPath; }
   inline int getPathIndex() { return bestPathPos; }
