@@ -174,7 +174,7 @@ public:
 
   void initialize();
 
-  void loadTheme( const WallTheme *theme );
+  void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );
   void loadRandomTheme();
 

@@ -413,6 +413,17 @@ void GLShape::createTopList( GLuint listName ) {
   if(tex && tex[TOP_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[TOP_SIDE] );
   glBegin( GL_QUADS );
   glNormal3f(0.0f, 0.0f, 1.0f);
+
+  glTexCoord2f( 0, 0 );
+  glVertex3fv(surfaces[TOP_SURFACE]->vertices[0]);
+  glTexCoord2f( 0, 1 );
+  glVertex3fv(surfaces[TOP_SURFACE]->vertices[1]);
+  glTexCoord2f( 1, 1 );
+  glVertex3fv(surfaces[TOP_SURFACE]->vertices[2]);
+  glTexCoord2f( 1, 0 );
+  glVertex3fv(surfaces[TOP_SURFACE]->vertices[3]);
+
+/*
   glTexCoord2f( 1.0f, 1.0f );
   glVertex3fv(surfaces[TOP_SURFACE]->vertices[0]);
   glTexCoord2f( 1.0f, 0.0f );
@@ -421,6 +432,7 @@ void GLShape::createTopList( GLuint listName ) {
   glVertex3fv(surfaces[TOP_SURFACE]->vertices[2]);
   glTexCoord2f( 0.0f, 1.0f );
   glVertex3fv(surfaces[TOP_SURFACE]->vertices[3]);
+*/
   glEnd();  
 
   glEndList();
