@@ -1162,12 +1162,18 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		// add mission objects 
 		if(mission && mission->getObjective() && !stairsDown) {
 
-		  // FIXME: mission objects should be on a pedestal:
-		  // easy to see and creatures can't get them)
+		  // mission objects are on a pedestal
+		  // and make them blocking so creatures can't get them
 		  for(int i = 0; i < mission->getObjective()->itemCount; i++) {
 			Item *item = scourge->newItem(mission->getObjective()->item[i]);
-			getRandomLocation(map, item->getShape(), &x, &y);
-			addItem(map, NULL, item, NULL, x, y);
+			item->setBlocking(true); // don't let monsters pick this up
+			Item *pedestal = scourge->newItem(RpgItem::getItemByName("Pedestal"));
+			getRandomLocation(map, pedestal->getShape(), &x, &y);
+			addItem(map, NULL, pedestal, NULL, x, y);
+			addItem(map, NULL, item, NULL, 
+					x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
+					y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
+					pedestal->getShape()->getHeight());
 			cerr << "*** Added mission item: " << item->getRpgItem()->getName() << endl;
 		  }
 
