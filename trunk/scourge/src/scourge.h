@@ -640,6 +640,8 @@ public:
 
   void resetInfos();
 
+  void createParty( Creature **pc, int *partySize );
+
  protected:
 
   void resetBattles();

@@ -111,7 +111,7 @@ public:
     @param name the name of the new creature
     @return the creature created.
   */
-  virtual Creature *newCreature(Character *character, char *name);
+  //virtual Creature *newCreature(Character *character, char *name);
 
   /**
     Create a new creature for use on this story. Calling this method instead of new Creature()

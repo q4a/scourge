@@ -3309,3 +3309,7 @@ void Scourge::drawInfos() {
   }
 }
 
+void Scourge::createParty( Creature **pc, int *partySize ) { 
+  mainMenu->createParty( pc, partySize ); 
+}
+

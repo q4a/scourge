@@ -193,12 +193,6 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
 }
 
 // creatures created for the mission
-Creature *Session::newCreature(Character *character, char *name) {
-  creatures[creatureCount++] = new Creature(this, character, name);
-  return creatures[creatureCount - 1];
-}
-
-// creatures created for the mission
 Creature *Session::newCreature(Monster *monster, GLShape *shape) {
   creatures[creatureCount++] = new Creature(this, monster, shape);
   return creatures[creatureCount - 1];

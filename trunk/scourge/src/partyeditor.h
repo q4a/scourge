@@ -102,9 +102,11 @@ public:
   inline Widget *getCancelButton() { return cancel; }
   void reset();
   void handleEvent( Widget *widget, SDL_Event *event );
+  void createParty( Creature **pc, int *partySize );
 
  protected:
   void createCharUI( int step, CharacterInfo *info );
+  void deleteLoadedShapes();
 };
 
 #endif

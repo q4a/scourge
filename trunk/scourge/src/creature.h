@@ -141,7 +141,7 @@ class Creature {
   static const int CROSS_FORMATION = 5;
   static const int FORMATION_COUNT = 6;
   
-  Creature(Session *session, Character *character, char *name);
+  Creature(Session *session, Character *character, char *name, char *model_name, char *skin_name, float scale);
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
 
