@@ -24,6 +24,8 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
   openButton = new Button( 5, 5, 105, 35, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
+  infoButton = new Button( 110, 5, 210, 35, scourge->getShapePalette()->getHighlightTexture(), strdup("Info") );
+  win->addWidget((Widget*)infoButton);
 
   list = new ScrollingList(5, 40, 310, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), scourge->getShapePalette()->getHighlightTexture(), this);
   win->addWidget((Widget*)list);
@@ -82,7 +84,8 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
 	if(widget == win->closeButton) {
 		win->setVisible(false);
 		return true;
-  } else if(widget == list && scourge->getSDLHandler()->isDoubleClick) {
+  } else if(widget == infoButton || 
+            (widget == list && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT)) {
       int itemIndex = list->getSelectedLine();  
       if(itemIndex > -1) {
         Item *item = container->getContainedItem(itemIndex);

@@ -100,7 +100,7 @@ Inventory::Inventory(Scourge *scourge) {
   cards->addWidget(invList, INVENTORY);
   cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 
-  yy = 160;
+  yy = 130;
   equipButton    = cards->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
   yy+=30;
   openButton     = cards->createButton( 0, yy, 105, yy + 30, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY ); 
@@ -112,6 +112,8 @@ Inventory::Inventory(Scourge *scourge) {
   transcribeButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Transcribe"), INVENTORY );
   yy+=30;
   enchantButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Enchant"), INVENTORY );
+  yy+=30;
+  infoButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Info"), INVENTORY );
 
   // character info
   nameAndClassLabel = cards->createLabel(115, 45, NULL, CHARACTER, Constants::RED_COLOR);
@@ -253,7 +255,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
   else if(widget == missionButton)  setSelectedPlayerAndMode(selected, MISSION);
-  else if(widget == invList && scourge->getSDLHandler()->isDoubleClick) {
+  else if(widget == infoButton || 
+          (widget == invList && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT)) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1) {
       Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);

@@ -416,7 +416,7 @@ void SDLHandler::mainLoop() {
         mouseEvent = SDL_MOUSEBUTTONUP;
         mouseButton = event.button.button;
         mouseDragging = false;
-        if(event.button.button == SDL_BUTTON_LEFT) {
+        if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
           Uint32 now = SDL_GetTicks();
           isDoubleClick = (now - lastLeftClick < DOUBLE_CLICK_INTERVAL && 
                            abs(lastMouseX - event.button.x) < DOUBLE_CLICK_TOLERANCE &&
@@ -433,7 +433,7 @@ void SDLHandler::mainLoop() {
         mouseEvent = SDL_MOUSEBUTTONDOWN;
         mouseButton = event.button.button;
         mouseDragging = true;
-        if(event.button.button == SDL_BUTTON_LEFT) {
+        if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
           widget = Window::delegateEvent( &event, mx, my );
         }
         break;
