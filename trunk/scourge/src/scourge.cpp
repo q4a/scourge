@@ -170,9 +170,12 @@ void Scourge::startMission() {
   
 
 
+  // Still working on pre-rendered maps (like HQ)
   // Initialize the map with a random dunegeon	
+  //dg = new DungeonGenerator(this, 2); // level 2 is a big enough map for HQ_LOCATION... this is hacky
+  //dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
+
   dg = new DungeonGenerator(this, level);
-  //  dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
   dg->toMap(map, getShapePalette());
  
   // center map on the player

@@ -19,6 +19,9 @@
 
 #define DEBUG_MOUSE_POS
 
+// only use 1 (disabled) or 0 (enabled)
+#define LIGHTMAP_ENABLED 1
+
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -1279,9 +1282,10 @@ void Map::configureLightMap() {
   // draw nothing at first
   for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
 	for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
-	  lightMap[x][y] = 0;
+	  lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
 	}
   }
+  if(!LIGHTMAP_ENABLED) return;
 
   int chunkX = (scourge->getPlayer()->getX() + 
 				(scourge->getPlayer()->getShape()->getWidth() / 2) - 

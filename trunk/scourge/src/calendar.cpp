@@ -17,6 +17,8 @@
 
 #include "calendar.h"
 
+#define DEBUG_EVENTS 0
+
 Calendar *Calendar::instance = NULL;
 
 
@@ -64,15 +66,15 @@ bool Calendar::update(){
     }        
     
     // look for scheduled events
-    cout << "nbScheduled events: " <<  scheduledEvents.size() << endl;
+    if(DEBUG_EVENTS) cout << "nbScheduled events: " <<  scheduledEvents.size() << endl;
     for(int i = 0 ; i < scheduledEvents.size(); i++){
-        cout << "test event: " <<  i  << endl;
-        scheduledEvents[i]->getEventDate().print();
-        cout << " < ";
-         currentDate.print();
-         cout << " ?" << endl;        
+        if(DEBUG_EVENTS) cout << "test event: " <<  i  << endl;
+        if(DEBUG_EVENTS) scheduledEvents[i]->getEventDate().print();
+        if(DEBUG_EVENTS) cout << " < ";
+		if(DEBUG_EVENTS) currentDate.print();
+		if(DEBUG_EVENTS) cout << " ?" << endl;        
         if( (scheduledEvents[i]->getEventDate()).isInferiorTo(currentDate) ){
-            cout<< "Oui : event " << i << " execution."<< endl;
+            if(DEBUG_EVENTS) cout<< "Oui : event " << i << " execution."<< endl;
             scheduledEvents[i]->execute();                                   
             
             // remove this event as it has been executed
@@ -93,9 +95,9 @@ bool Calendar::update(){
             }
             else{
                 // Don't need this event anymore
-                cout << "before Delete!!!" << endl;
+                if(DEBUG_EVENTS) cout << "before Delete!!!" << endl;
                 delete e;                 
-                cout << "after Delete!!!" << endl;
+                if(DEBUG_EVENTS) cout << "after Delete!!!" << endl;
             }
             
         }     
