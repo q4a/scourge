@@ -30,7 +30,7 @@ SDLHandler::SDLHandler(){
   handlerCount = 0;
   invertMouse = false; 
   cursorMode = CURSOR_NORMAL;
-  our_font_initialized = false;
+  font_initialized = false;
 }
 
 SDLHandler::~SDLHandler(){
@@ -550,7 +550,29 @@ void SDLHandler::mainLoop() {
 }
 
 void SDLHandler::texPrint(GLfloat x, GLfloat y, 
-						  const char *fmt, ...) {
+                          const char *fmt, ...) {
+  if(!text) text = new TexturedText();
+
+  char str[256]; // Holds our string
+  va_list ap;     // Pointer to our list of elements
+
+  // If there's no text, do nothing
+  if ( fmt == NULL ) return;
+
+  // Parses The String For Variables
+  va_start( ap, fmt );
+
+  // Converts Symbols To Actual Numbers
+  vsprintf( str, fmt, ap );
+  va_end( ap );
+
+  initFonts();
+  
+  freetype_print_simple(font, x, y, str);
+}
+
+void SDLHandler::texPrintMono(GLfloat x, GLfloat y, 
+                              const char *fmt, ...) {
   
   if(!text) text = new TexturedText();
 
@@ -567,15 +589,20 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
   vsprintf( str, fmt, ap );
   va_end( ap );
 
+  initFonts();
+  
+  freetype_print_simple(monoFont, x, y, str);
+}
 
-  if(!our_font_initialized) {
+void SDLHandler::initFonts() {
+  if(!font_initialized) {
     char s[200];
     sprintf(s, "%s/Vera.ttf", rootDir);
-    our_font.init(s, 8);
-    our_font_initialized = true;
+    font.init(s, 8);
+    sprintf(s, "%s/VeraMono.ttf", rootDir);
+    monoFont.init(s, 8);
+    font_initialized = true;
   }
-  
-  freetype_print_simple(our_font, x, y, str);
 }
 
 bool SDLHandler::sectionIntersects(int a1, int a2, int b1, int b2) {
