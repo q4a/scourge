@@ -23,10 +23,11 @@
 map<int, vector<Monster*>* > Monster::monsters;
 map<string, Monster*> Monster::monstersByName;
 
-Monster::Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor) {
+Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int baseArmor) {
   this->type = type;
   this->level = level;
   this->hp = hp;
+  this->mp = mp;
   this->model_name = model;
   this->skin_name = skin;
   speed = 50;
@@ -65,10 +66,11 @@ void Monster::initMonsters() {
 	  strcpy(skin_name, strtok(NULL, ","));
 	  int level = atoi(strtok(NULL, ","));
 	  int hp =  atoi(strtok(NULL, ","));
+	  int mp =  atoi(strtok(NULL, ","));
 	  int armor =  atoi(strtok(NULL, ","));
 
 	  cerr << "adding monster: " << name << " level: " << level << 
-		" hp: " << hp << " armor: " << armor << endl;
+		" hp: " << hp << " mp: " << mp << " armor: " << armor << endl;
 
 	  vector<Monster*> *list = NULL;
 	  if(monsters.find(level) == monsters.end()) {
@@ -77,7 +79,7 @@ void Monster::initMonsters() {
 	  } else {
 		list = monsters[level];
 	  }
-	  Monster *m = new Monster( strdup(name), level, hp, strdup(model_name), strdup(skin_name), armor );
+	  Monster *m = new Monster( strdup(name), level, hp, mp, strdup(model_name), strdup(skin_name), armor );
 	  last_monster = m;
 	  list->push_back(last_monster);
 	  string s = name;

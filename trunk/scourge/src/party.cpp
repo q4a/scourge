@@ -309,6 +309,7 @@ Creature **Party::createHardCodedParty() {
   pc[0]->setLevel(1); 
   pc[0]->setExp(300);
   pc[0]->setHp();
+  pc[0]->setMp();
   pc[0]->setHunger(8);
   pc[0]->setThirst(7); 
   pc[0]->setStateMod(Constants::blessed, true);
@@ -318,6 +319,7 @@ Creature **Party::createHardCodedParty() {
   pc[1]->setLevel(1); 
   pc[1]->setExp(200);
   pc[1]->setHp();
+  pc[1]->setMp();
   pc[1]->setHunger(10);
   pc[1]->setThirst(9);
   pc[1]->setStateMod(Constants::drunk, true);
@@ -327,6 +329,7 @@ Creature **Party::createHardCodedParty() {
   pc[2]->setLevel(3); 
   pc[2]->setExp(150);
   pc[2]->setHp();
+  pc[2]->setMp();
   pc[2]->setHunger(3);
   pc[2]->setThirst(2);
   pc[2]->setStateMod(Constants::ac_protected, true);
@@ -339,6 +342,7 @@ Creature **Party::createHardCodedParty() {
   pc[3]->setLevel(1); 
   pc[3]->setExp(400);
   pc[3]->setHp();
+  pc[3]->setMp();
   pc[3]->setHunger(10);
   pc[3]->setThirst(10);
   pc[3]->setStateMod(Constants::possessed, true);          
@@ -368,6 +372,8 @@ Creature **Party::createHardCodedParty() {
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Luck")));
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Piety")));
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Lore")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
 
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
@@ -376,6 +382,7 @@ Creature **Party::createHardCodedParty() {
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Big egg")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword")));
@@ -383,6 +390,8 @@ Creature **Party::createHardCodedParty() {
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
@@ -391,6 +400,8 @@ Creature **Party::createHardCodedParty() {
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   // equip weapons
@@ -481,19 +492,21 @@ void Party::drawWidget(Widget *w) {
 	  if(getParty(i) == getPlayer()) {
 		w->applyBorderColor();
 		glBegin( GL_QUADS );
-		glVertex3f( MIN_GUI_WIDTH, (i * 15), 0 );
-		glVertex3f( 0, (i * 15), 0 );
-		glVertex3f( 0, 15 + (i * 15), 0 );
-		glVertex3f( MIN_GUI_WIDTH, 15 + (i * 15), 0 );
+		glVertex3f( MIN_GUI_WIDTH, (i * 20), 0 );
+		glVertex3f( 0, (i * 20), 0 );
+		glVertex3f( 0, 20 + (i * 20), 0 );
+		glVertex3f( MIN_GUI_WIDTH, 20 + (i * 20), 0 );
 		glEnd();
 	  }
 	  //	  w->applyColor();
 	  glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	  sprintf(msg, "%c:", getParty(i)->getName()[0]);
-	  scourge->getSDLHandler()->texPrint(0, 10 + (i * 15), msg);
-	  drawBar(15, 7 + (i * 15), MIN_GUI_WIDTH - 20,  
-			  (float)getParty(i)->getHp(), 
-			  (float)(getParty(i)->getCharacter()->getStartingHp() * getParty(i)->getLevel()));
+	  scourge->getSDLHandler()->texPrint(0, 13 + (i * 20), msg);
+	  Util::drawBar(15, 8 + (i * 20), MIN_GUI_WIDTH - 20,  
+					(float)getParty(i)->getHp(), (float)getParty(i)->getMaxHp());
+	  Util::drawBar(15, 14 + (i * 20), MIN_GUI_WIDTH - 20,  
+					(float)getParty(i)->getMp(), (float)getParty(i)->getMaxMp(),
+					0.45f, 0.65f, 1.0f, false);
 	}
   } else {
 	int selectedPlayerIndex = -1;
@@ -511,15 +524,26 @@ void Party::drawWidget(Widget *w) {
 	
 	// hp
 	w->applyColor();
-	sprintf(msg, "%d/%d", p->getHp(), (p->getCharacter()->getStartingHp() * p->getLevel()));
+	sprintf(msg, "%d/%d", p->getHp(), p->getMaxHp());
 	scourge->getSDLHandler()->texPrint(3, 10, msg);
 	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	sprintf(msg, "hp:");
 	scourge->getSDLHandler()->texPrint(3, 20, msg);
-	drawBar(22, 18, ((GUI_WIDTH - 120) / 4) - 24,  
-			(float)p->getHp(), (float)(p->getCharacter()->getStartingHp() * p->getLevel()));
+	Util::drawBar(22, 18, ((GUI_WIDTH - 120) / 4) - 24,  
+				  (float)p->getHp(), (float)p->getMaxHp());
 	
-	// FIXME: instead of ac, show magic pts.?
+	// mp
+	w->applyColor();
+	sprintf(msg, "%d/%d", p->getMp(), p->getMaxMp());
+	scourge->getSDLHandler()->texPrint(3, 35, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "mp:");
+	scourge->getSDLHandler()->texPrint(3, 45, msg);
+	Util::drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
+				  (float)p->getMp(), (float)p->getMaxMp(),
+				  0.45f, 0.65f, 1.0f, false);
+
+	/*
 	// ac
 	w->applyColor();
 	sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
@@ -527,8 +551,9 @@ void Party::drawWidget(Widget *w) {
 	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	sprintf(msg, "ac:");
 	scourge->getSDLHandler()->texPrint(3, 45, msg);
-	drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
-			(float)p->getSkillModifiedArmor(), (float)p->getArmor());
+	Util::drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
+	(float)p->getSkillModifiedArmor(), (float)p->getArmor());
+	*/
 	
 	// exp
 	w->applyColor();
@@ -537,9 +562,9 @@ void Party::drawWidget(Widget *w) {
 	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	sprintf(msg, "ex:");
 	scourge->getSDLHandler()->texPrint(3, 70, msg);
-	drawBar(22, 68, ((GUI_WIDTH - 120) / 4) - 24,  
-			(float)p->getExp(), (float)p->getExpOfNextLevel(),
-			0.45f, 0.65f, 1.0f, false);
+	Util::drawBar(22, 68, ((GUI_WIDTH - 120) / 4) - 24,  
+				  (float)p->getExp(), (float)p->getExpOfNextLevel(),
+				  1.0f, 0.65f, 1.0f, false);
 	
 	// show stat mods
 	glEnable(GL_TEXTURE_2D);
@@ -584,45 +609,6 @@ void Party::drawWidget(Widget *w) {
 	}
 	glDisable(GL_TEXTURE_2D);
   }
-}
-
-void Party::drawBar(int x, int y, float barLength, float value, float maxValue,
-					float red, float green, float blue, float gradient) {
-  float percent = (maxValue == 0 ? 0 : (value >= maxValue ? 100.0f : value / (maxValue / 100.0f)));
-  float length = barLength * (percent / 100.0f);
-  
-  glPushMatrix();
-  glTranslatef( x, y, 0 );
-  glLineWidth(6.0f);
-  
-  //  glColor3f( 0.2f, 0.2f, 0.2f );
-  glColor3f( 1, 0.75f, 0.45f );
-  glBegin( GL_LINES );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( barLength, 0, 0 );
-  glEnd();
-  
-  // default args so I don't have to recompile party.h
-  if(red == -1) {
-	red = 0.5f;
-	green = 1.0f;
-	blue = 0.5f;
-  }
-  if(!gradient || percent > 40.0f) {	
-	glColor3f( red, green, blue );
-  } else if(percent > 25.0f) {
-	glColor3f( 1.0f, 1.0f, 0.5f );
-  } else {
-	glColor3f( 1.0f, 0.5f, 0.5f );
-  }
-  glBegin( GL_LINES );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( length, 0, 0 );
-  glEnd();
-  
-  glLineWidth(1.0f);
-  
-  glPopMatrix();
 }
 
 void Party::drawView() {

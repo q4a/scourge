@@ -32,7 +32,7 @@ using namespace std;
 class Character  {
 private:
   char *name;
-  int startingHp, skill_bonus, level_progression;
+  int startingHp, startingMp, skill_bonus, level_progression;
   char *model_name, *skin_name;
   char description[3000];
   map<int, int> maxSkill;
@@ -57,11 +57,12 @@ public:
   static const int INVENTORY_COUNT = 14;
   static char inventory_location[][80];
 
-  Character(char *name, int startingHp, char *model, char *skin, int skill_bonus, int level_progression);
+  Character(char *name, int startingHp, int startingMp, char *model, char *skin, int skill_bonus, int level_progression);
   ~Character();
 
   inline char *getName() { return name; };
   inline int getStartingHp() { return startingHp; }  
+  inline int getStartingMp() { return startingMp; }  
   inline int getSkillBonus() { return skill_bonus; }  
   inline int getLevelProgression() { return level_progression; }  
   inline char *getModelName() { return model_name; }

@@ -101,22 +101,17 @@ Inventory::Inventory(Scourge *scourge) {
 	eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
 
 	// character info
-	cards->createLabel(115, 45, strdup("Character Information"), CHARACTER, Constants::RED_COLOR);	
-	nameAndClassLabel = cards->createLabel(115, 60, NULL, CHARACTER);
-	levelLabel     = cards->createLabel(115, 75, NULL, CHARACTER);
-	expLabel       = cards->createLabel(115, 90, NULL, CHARACTER);
-	hpLabel        = cards->createLabel(115, 105, NULL, CHARACTER);
-	thirstLabel    = cards->createLabel(115, 120, NULL, CHARACTER);
-	hungerLabel    = cards->createLabel(220, 120, NULL, CHARACTER);
-	armorLabel     = cards->createLabel(220, 105, NULL, CHARACTER);
+	nameAndClassLabel = cards->createLabel(115, 45, NULL, CHARACTER, Constants::RED_COLOR);
+	attrCanvas     = new Canvas( 115, 50, 405, 150, this );
+	cards->addWidget( attrCanvas, CHARACTER );
 
-	cards->createLabel(115, 135, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
-	stateList = new ScrollingList(115, 140, 290, 70);
+	cards->createLabel(115, 165, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
+	stateList = new ScrollingList(115, 170, 290, 70);
 	cards->addWidget(stateList, CHARACTER);
 
-	cards->createLabel(115, 225, strdup("Skills:"), CHARACTER, Constants::RED_COLOR);
-	skillModLabel = cards->createLabel(220, 225, NULL, CHARACTER);
-	skillList = new ScrollingList(115, 230, 290, 210);
+	cards->createLabel(115, 255, strdup("Skills:"), CHARACTER, Constants::RED_COLOR);
+	skillModLabel = cards->createLabel(220, 255, NULL, CHARACTER);
+	skillList = new ScrollingList(115, 260, 290, 180);
 	cards->addWidget(skillList, CHARACTER);
 	skillAddButton = cards->createButton( 115, 445, 200, 475, strdup(" + "), CHARACTER);
 	skillSubButton = cards->createButton( 320, 445, 405, 475, strdup(" - "), CHARACTER);
@@ -137,6 +132,38 @@ Inventory::Inventory(Scourge *scourge) {
 }
 
 Inventory::~Inventory() {
+}
+
+void Inventory::drawWidget(Widget *w) {
+  Creature *p = scourge->getParty()->getParty(selected);
+
+  int y = 15;
+  char s[80];
+  sprintf(s, "Exp: %u(%u)", p->getExp(), p->getExpOfNextLevel());
+  if(p->getStateMod(Constants::leveled)) {
+	expLabel->setColor( 1.0f, 0.2f, 0.0f, 1.0f );
+  } else {
+	w->applyColor();
+  }
+  scourge->getSDLHandler()->texPrint(5, y, s);
+  w->applyColor();
+  sprintf(s, "HP: %d (%d)", p->getHp(), p->getMaxHp());
+  scourge->getSDLHandler()->texPrint(5, y + 15, s);
+  sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
+  scourge->getSDLHandler()->texPrint(5, y + 30, s);
+  sprintf(s, "AC: %d (%d)", p->getSkillModifiedArmor(), p->getArmor());
+  scourge->getSDLHandler()->texPrint(5, y + 45, s);
+  sprintf(s, "Thirst: %d (10)", p->getThirst());
+  scourge->getSDLHandler()->texPrint(5, y + 60, s);
+  sprintf(s, "Hunger: %d (10)", p->getHunger());
+  scourge->getSDLHandler()->texPrint(5, y + 75, s);
+
+  Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false );
+  Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp() );
+  Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false );
+  Util::drawBar( 160, y + 42, 120, (float)p->getSkillModifiedArmor(), (float)p->getArmor(), 0.45f, 0.65f, 1.0f, false );
+  Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false );
+  Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false );
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
@@ -295,28 +322,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	Creature * selectedP = scourge->getParty()->getParty(selected);
 	switch(selectedMode) {
 	case CHARACTER:       	
-	sprintf(nameAndClassStr, "%s, %s", selectedP->getName(), selectedP->getCharacter()->getName());
+	  sprintf(nameAndClassStr, "%s, %s (level %d)", selectedP->getName(), 
+			  selectedP->getCharacter()->getName(), selectedP->getLevel());
 	nameAndClassLabel->setText(nameAndClassStr);	
-	sprintf(levelStr, "Level: %d", selectedP->getLevel());
-	levelLabel->setText(levelStr);
-	sprintf(expStr, "Exp: %u (next level at %u)", selectedP->getExp(), selectedP->getExpOfNextLevel());
-	expLabel->setText(expStr);
-	if(selectedP->getStateMod(Constants::leveled)) {
-	  expLabel->setColor( 1.0f, 0.2f, 0.0f, 1.0f );
-	} else {
-	  expLabel->setColor( 0.0f, 0.0f, 0.0f, 1.0f );
-	}
-	sprintf(hpStr, "HP: %d / %d", selectedP->getHp(), 
-			(selectedP->getCharacter()->getStartingHp() * selectedP->getLevel()));
-	hpLabel->setText(hpStr);
-	sprintf(thirstStr, "Thirst : %d / 10", selectedP->getThirst());
-	thirstLabel->setText(thirstStr);
-	sprintf(hungerStr, "Hunger : %d / 10", selectedP->getHunger());
-	hungerLabel->setText(hungerStr);
-	sprintf(skillModStr, "Available: %d", selectedP->getAvailableSkillPoints());
-	skillModLabel->setText(skillModStr);
-	sprintf(armorStr, "Armor: %d / %d", selectedP->getSkillModifiedArmor(), selectedP->getArmor());
-	armorLabel->setText(armorStr);
+
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
       if(selectedP->getStateMod(t)) {

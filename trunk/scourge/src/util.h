@@ -93,6 +93,10 @@ public:
   // get the angle between two shapes (x,y,width,depth)
   static float getAngle(float sx, float sy, float sw, float sd,
 						float tx, float ty, float tw, float td);
+
+  // draw a percentage bar
+  static void drawBar(int x, int y, float barLength, float value, float maxValue,
+					  float red=-1, float green=-1, float blue=-1, float gradient=true);
   
 };
 

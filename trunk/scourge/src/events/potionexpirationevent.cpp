@@ -41,6 +41,7 @@ void PotionExpirationEvent::execute() {
   if(skill < 0) {
 	switch(-skill - 2) {
 	case Constants::HP:
+	case Constants::MP:
 	  // no-op
 	  return;
 	case Constants::AC:
