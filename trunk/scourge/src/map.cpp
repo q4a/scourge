@@ -1255,11 +1255,17 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       glColor4f(1.0, 0.3f, 0.8f, 1.0f);    
     }
     shape->draw();
-  } else if( later && later->item && later->item->isMagicItem() && !useShadow ) {
+  } else if( later && later->item && !useShadow ) {
     
-    shape->outline( &(Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ]) );
+    if( later->item->isMagicItem() ) {
+      shape->outline( &(Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ]) );
+    } else if( later->item->getContainsMagicItem() ) {
+      shape->outline( 0.8f, 0.8f, 0.3f );
+    }
 
     shape->draw();
+
+    
 
   } else {
     shape->draw();

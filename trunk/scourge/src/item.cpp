@@ -33,6 +33,7 @@ Item::Item(RpgItem *rpgItem, int level) {
                     rpgItem->getType() == RpgItem::MISSION);
   this->containedItemCount = 0;
   this->spell = NULL;
+  this->containsMagicItem = false;
   sprintf(this->itemName, "%s", rpgItem->getName());
 
   commonInit();
@@ -125,6 +126,7 @@ bool Item::addContainedItem(Item *item, bool force) {
   if(containedItemCount < MAX_CONTAINED_ITEMS && 
      (force || !item->isBlocking() || getShape()->fitsInside(item->getShape()))) {
     containedItems[containedItemCount++] = item; 
+    if( item->isMagicItem() ) containsMagicItem = true;
     return true;
   } else {
     cerr << "Warning: unable to add to container. Container=" << getRpgItem()->getName() << " item=" << item->getRpgItem()->getName() << endl;
@@ -139,6 +141,10 @@ Item *Item::removeContainedItem(int index) {
     containedItemCount--;
     for(int i = index; i < containedItemCount; i++) {
       containedItems[i] = containedItems[i + 1];
+    }
+    containsMagicItem = false;
+    for( int i = 0; i < containedItemCount; i++ ) {
+      if( containedItems[i]->isMagicItem() ) containsMagicItem = true;
     }
   }
   return item;
@@ -437,7 +443,17 @@ void Item::commonInit() {
 
 void Item::enchant( int newMagicLevel ) {
   if( magicLevel != -1 ) return;
+
   magicLevel = newMagicLevel;
+
+  // item level caps the magic level:
+  // 0-15: lesser
+  // 16-30: greater
+  // 31-45: champion
+  // 45+ : divine
+  // This is so low level items won't be too powerful.
+  int maxMagicLevel = level / 15;
+  if( magicLevel > maxMagicLevel ) magicLevel = maxMagicLevel;
 
   int n;
   Spell *spell;

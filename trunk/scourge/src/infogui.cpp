@@ -119,49 +119,52 @@ void InfoGui::describe() {
   // DEBUG
 
 
+  bool missedSomething = false;
   if(item->isMagicItem()) {
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       sprintf(tmp, "|%d bonus to %s.", 
               item->getBonus(),
               (item->getRpgItem()->isWeapon() ? "attack and damage" : "armor points"));
       strcat(description, tmp);
-    } 
-    if(item->getDamageMultiplier() > 1 && 
-       infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
-      if( item->getDamageMultiplier() == 2 ) {
-        sprintf( tmp, "|Double damage");
-        strcat( description, tmp );
-      } else if( item->getDamageMultiplier() == 3 ) {
-        sprintf( tmp, "|Tripple damage");
-        strcat( description, tmp );
-      } else if( item->getDamageMultiplier() == 4 ) {
-        sprintf( tmp, "|Quad damage");
-        strcat( description, tmp );
-      } else if( item->getDamageMultiplier() > 4 ) {
-        sprintf( tmp, "|%dX damage", item->getDamageMultiplier());
-        strcat( description, tmp );
-      }
-      if( item->getMonsterType() ) {
-        sprintf( tmp, " vs. %s.", item->getMonsterType());
-        strcat( description, tmp );
-      } else {
-        sprintf( tmp, " vs. any creature.");
-        strcat( description, tmp );
-      }
+    } else missedSomething = true;
+    if( item->getDamageMultiplier() > 1 ) {
+      if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+        if( item->getDamageMultiplier() == 2 ) {
+          sprintf( tmp, "|Double damage");
+          strcat( description, tmp );
+        } else if( item->getDamageMultiplier() == 3 ) {
+          sprintf( tmp, "|Tripple damage");
+          strcat( description, tmp );
+        } else if( item->getDamageMultiplier() == 4 ) {
+          sprintf( tmp, "|Quad damage");
+          strcat( description, tmp );
+        } else if( item->getDamageMultiplier() > 4 ) {
+          sprintf( tmp, "|%dX damage", item->getDamageMultiplier());
+          strcat( description, tmp );
+        }
+        if( item->getMonsterType() ) {
+          sprintf( tmp, " vs. %s.", item->getMonsterType());
+          strcat( description, tmp );
+        } else {
+          sprintf( tmp, " vs. any creature.");
+          strcat( description, tmp );
+        }
+      } else missedSomething = true;
     }
-    if(item->getSchool() && 
-       infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
-      if(item->getRpgItem()->isWeapon()) {
-        sprintf(tmp, "|Extra damage of %s %s magic.", 
-                item->describeMagicDamage(),
-                item->getSchool()->getName());
-      } else {
-        sprintf(tmp, "|Extra %d pts of %s magic resistance.", 
-                item->getMagicResistance(),
-                item->getSchool()->getName());
-      }
-      strcat(description, tmp);
-    } 
+    if(item->getSchool() ) {
+      if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+        if(item->getRpgItem()->isWeapon()) {
+          sprintf(tmp, "|Extra damage of %s %s magic.", 
+                  item->describeMagicDamage(),
+                  item->getSchool()->getName());
+        } else {
+          sprintf(tmp, "|Extra %d pts of %s magic resistance.", 
+                  item->getMagicResistance(),
+                  item->getSchool()->getName());
+        }
+        strcat(description, tmp);
+      } else missedSomething = true;
+    }
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       strcpy(tmp, "|Sets state mods:");
       bool found = false;
@@ -173,7 +176,7 @@ void InfoGui::describe() {
         }
       }
       if(found) strcat(description, tmp);
-    } 
+    } else missedSomething = true;
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       strcpy(tmp, "|Protects from state mods:");
       bool found = false;
@@ -185,7 +188,7 @@ void InfoGui::describe() {
         }
       }
       if(found) strcat(description, tmp);
-    } 
+    } else missedSomething = true;
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       bool found = false;
       map<int,int> *skillBonusMap = item->getSkillBonusMap();
@@ -199,10 +202,14 @@ void InfoGui::describe() {
         strcat(description, "|Bonuses to skills:");
         strcat(description, tmp);
       }
-    } 
+    } else missedSomething = true;
   } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
     strcat(description, "|");
     strcat(description, item->getSpell()->getNotes());
+  }
+
+  if( missedSomething ) {
+    strcat( description, "|You have a feeling there is more to this item than what you've been able to glean..." );
   }
 
   label->setText(description);

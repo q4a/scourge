@@ -97,6 +97,7 @@ public:
   bool isLightBlocking();
   void setLightBlocking(bool b);
   void draw();   
+  void outline( float r, float g, float b );
   inline void setupToDraw() {};
   
   inline Uint8 getShapePalIndex() { return shapePalIndex; }
