@@ -48,7 +48,7 @@ class Item {
   int currentCharges;
   Spell *spell;
   char itemName[255];
-
+  bool containsMagicItem;
 
 
 
@@ -111,6 +111,7 @@ public:
   Item *removeContainedItem(int index);
   Item *getContainedItem(int index);
   bool isContainedItem(Item *item);
+  inline bool getContainsMagicItem() { return containsMagicItem; }
 
   // return true if the item is used up
   // this method also adjusts weight
