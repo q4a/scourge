@@ -17,7 +17,7 @@
 
 #include "party.h"
 
-#define GUI_WIDTH 220
+#define GUI_WIDTH 400
 #define GUI_HEIGHT 125
 
 Party::Party(Scourge *scourge) {
@@ -32,9 +32,8 @@ Party::Party(Scourge *scourge) {
   for(int i = 0; i < getPartySize(); i++) {
 	party[i] = NULL;
   }
-  reset();
-
   createUI();
+  reset();
 }
 
 Party::~Party() {
@@ -59,7 +58,12 @@ void Party::reset() {
   party[0] = player = pc[0];
   party[1] = pc[1];
   party[2] = pc[2];
-  party[3] = pc[3];	  	  
+  party[3] = pc[3];
+  
+  player1Button->getLabel()->setText(party[0]->getName());
+  player2Button->getLabel()->setText(party[1]->getName());
+  player3Button->getLabel()->setText(party[2]->getName());
+  player4Button->getLabel()->setText(party[3]->getName());
 
   Event *e;  
   Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
@@ -413,48 +417,51 @@ void Party::createUI() {
   roundButton = new Button( 0, 75,  100, 100, strdup("Real-Time") );
   roundButton->setToggle(true);
   roundButton->setSelected(true);
-  mainWin->addWidget((Widget*)roundButton);    
+  mainWin->addWidget((Widget*)roundButton);
   
-  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT - 25, strdup(calendar->getCurrentDate().getDateString()));      
-  //calendarButton->setLabelPosition(Button::CENTER);
-  mainWin->addWidget((Widget*)calendarButton);    
- 
-
-  diamondButton = new Button( 100, 0,  120, 20 );
+  int lowerRowHeight = 20;
+  diamondButton = new Button( 100, GUI_HEIGHT - (lowerRowHeight + 25),  120, GUI_HEIGHT - 25, strdup("f1") );
   diamondButton->setToggle(true);
   mainWin->addWidget((Widget*)diamondButton);  
-  staggeredButton = new Button( 120, 0,  140, 20 );
+  staggeredButton = new Button( 120, GUI_HEIGHT - (lowerRowHeight + 25),  140, GUI_HEIGHT - 25, strdup("f2") );
   staggeredButton->setToggle(true);
   mainWin->addWidget((Widget*)staggeredButton);
-  squareButton = new Button( 140, 0,  160, 20 );
+  squareButton = new Button( 140, GUI_HEIGHT - (lowerRowHeight + 25),  160, GUI_HEIGHT - 25, strdup("f3") );
   squareButton->setToggle(true);
   mainWin->addWidget((Widget*)squareButton);
-  rowButton = new Button( 160, 0,  180, 20 );
+  rowButton = new Button( 160, GUI_HEIGHT - (lowerRowHeight + 25),  180, GUI_HEIGHT - 25, strdup("f4") );
   rowButton->setToggle(true);
   mainWin->addWidget((Widget*)rowButton);
-  scoutButton = new Button( 180, 0,  200, 20 );
+  scoutButton = new Button( 180, GUI_HEIGHT - (lowerRowHeight + 25),  200, GUI_HEIGHT - 25, strdup("f5") );
   scoutButton->setToggle(true);
   mainWin->addWidget((Widget*)scoutButton);
-  crossButton = new Button( 200, 0,  220, 20 );
+  crossButton = new Button( 200, GUI_HEIGHT - (lowerRowHeight + 25),  220, GUI_HEIGHT - 25, strdup("f6") );
   crossButton->setToggle(true);
   mainWin->addWidget((Widget*)crossButton);
-
-  player1Button = new Button( 100, 20,  124, 40, strdup("1") );
-  player1Button->setToggle(true);
-  mainWin->addWidget((Widget*)player1Button);
-  player2Button = new Button( 124, 20,  148, 40, strdup("2") );
-  player2Button->setToggle(true);
-  mainWin->addWidget((Widget*)player2Button);
-  player3Button = new Button( 148, 20,  172, 40, strdup("3") );
-  player3Button->setToggle(true);
-  mainWin->addWidget((Widget*)player3Button);
-  player4Button = new Button( 172, 20,  196, 40, strdup("4") );
-  player4Button->setToggle(true);
-  mainWin->addWidget((Widget*)player4Button);
-  groupButton = new Button( 196, 20,  220, 40, strdup("G") );
+  groupButton = new Button( 220, GUI_HEIGHT - (lowerRowHeight + 25),  240, GUI_HEIGHT - 25, strdup("G") );
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   mainWin->addWidget((Widget*)groupButton);
+  calendarButton = new Button( 240, GUI_HEIGHT - (lowerRowHeight + 25), GUI_WIDTH, GUI_HEIGHT - 25, 
+							   strdup(calendar->getCurrentDate().getDateString()));      
+  //calendarButton->setLabelPosition(Button::CENTER);
+  mainWin->addWidget((Widget*)calendarButton);    
+
+
+  int playerButtonWidth = (GUI_WIDTH - 100) / 4;
+  int playerButtonHeight = 20;  
+  player1Button = new Button( 100 + playerButtonWidth * 0, 0,  100 + playerButtonWidth * 1, playerButtonHeight );
+  player1Button->setToggle(true);
+  mainWin->addWidget((Widget*)player1Button);
+  player2Button = new Button( 100 + playerButtonWidth * 1, 0,  100 + playerButtonWidth * 2, playerButtonHeight );
+  player2Button->setToggle(true);
+  mainWin->addWidget((Widget*)player2Button);
+  player3Button = new Button( 100 + playerButtonWidth * 2, 0,  100 + playerButtonWidth * 3, playerButtonHeight );
+  player3Button->setToggle(true);
+  mainWin->addWidget((Widget*)player3Button);
+  player4Button = new Button( 100 + playerButtonWidth * 3, 0,  100 + playerButtonWidth * 4, playerButtonHeight );
+  player4Button->setToggle(true);
+  mainWin->addWidget((Widget*)player4Button);
 }
 
 void Party::drawView() {

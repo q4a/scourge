@@ -881,6 +881,57 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
 	glPopMatrix();
   }
 
+  xpos2 = ((float)(creature->getX() - getX()) / GLShape::DIV);
+  ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
+  zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
+
+  /*
+  // draw health bar
+  if(groupMode || player) {
+	float barLength = 30.0f;
+	//  float height = 1.0f;
+	float percent = creature->getHp() / 
+	  ((creature->getCharacter()->getStartingHp() * creature->getLevel()) / 
+	   100.0f);
+	float length = barLength * (percent / 100.0f);
+	
+	glPushMatrix();
+	//	glTranslatef( 0, 2.0f, 0 );
+	//	glRotatef(-zrot, 0.0f, 0.0f, 1.0f);	
+
+	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+	float angle = -(0 * 30) - (zrot + 180);
+	glRotatef( angle, 0, 0, 1 );
+	glTranslatef( (w / 2.0f + 15), -(w / 2.0f + 15), 0 );
+	//	glRotatef( (count * 30) + 180, 0, 0, 1 );
+	//	glTranslatef( -7, -7, 0 );	
+	
+	glLineWidth(2.0f);
+	
+	glColor3f( 0.5f, 0.5f, 0.5f );
+	glBegin( GL_LINES );
+	glVertex3f( 0, 0, 0 );
+	glVertex3f( barLength, 0, 0 );
+	glEnd();
+	
+	if(percent > 40.0f) {	
+	  glColor3f( 0.5f, 1, 0.5f );
+	} else if(percent > 20.0f) {
+	  glColor3f( 1, 1, 0.5f );
+	} else {
+	  glColor3f( 1, 0.5f, 0.5f );
+	}
+	glBegin( GL_LINES );
+	glVertex3f( 0, 0, 0 );
+	glVertex3f( length, 0, 0 );
+	glEnd();
+	
+	glLineWidth(1.0f);
+
+	glPopMatrix();
+  }
+  */
+
   if(selected) {
 	glColor4f(0, 1, 1, 0.5f);
   } else if(player) {
@@ -888,10 +939,6 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
   } else {
 	glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
   }
-
-  xpos2 = ((float)(creature->getX() - getX()) / GLShape::DIV);
-  ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
-  zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
 
   // draw state mods
   if(groupMode || player) {
@@ -953,7 +1000,6 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
   glTranslatef( 0, 0, 100);
   scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
 
-  //glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
   glPopMatrix();
 }
 
