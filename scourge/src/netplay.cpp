@@ -17,14 +17,31 @@
 
 #include "netplay.h"
   
-NetPlay::NetPlay() {
+NetPlay::NetPlay(Scourge *scourge) {
+  this->scourge = scourge;
+
+  int width = 
+    scourge->getSDLHandler()->getScreen()->w - 
+    (Scourge::PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
+  mainWin = new Window( scourge->getSDLHandler(),
+                        0, scourge->getSDLHandler()->getScreen()->w - width, 
+                        width, Scourge::PARTY_GUI_HEIGHT, 
+                        strdup("Chat"), 
+                        scourge->getShapePalette()->getGuiTexture(), false );
+  mainWin->setBackground(0, 0, 0);
+  messageList = new ScrollingList(0, 0, width, Scourge::PARTY_GUI_HEIGHT - 25, 
+                                  scourge->getShapePalette()->getHighlightTexture());
+  messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
+  mainWin->addWidget(messageList);
+  // this has to be after addWidget
+  messageList->setBackground( 1, 0.75f, 0.45f );
+  messageList->setSelectionColor( 0.25f, 0.25f, 0.25f );
+
 }
 
 NetPlay::~NetPlay() {
-}
-
-void NetPlay::setScourge(Scourge *scourge) {
-  this->scourge = scourge;
+  // deleting the window deletes its controls (messageList, etc.)
+  delete mainWin;
 }
 
 char *NetPlay::getGameState() {

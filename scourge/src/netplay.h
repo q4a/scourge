@@ -33,13 +33,12 @@ using namespace std;
 class NetPlay : public GameStateHandler,CommandInterpreter {
 private:
   Scourge *scourge;
-  Window *netWin;
+  Window *mainWin;
+  ScrollingList *messageList;
 
 public:
-  NetPlay();
+  NetPlay(Scourge *scourge);
   virtual ~NetPlay();
-
-  void setScourge(Scourge *scourge);
 
   char *getGameState();
   
@@ -48,6 +47,8 @@ public:
   void ping(int frame);
   void processGameState(int frame, char *p);
   void handleUnknownMessage();
+
+  inline Window *getWindow() { return mainWin; }
 };
 
 #endif
