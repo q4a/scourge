@@ -69,6 +69,7 @@ Scourge::Scourge(int argc, char *argv[]){
   initItems();
   // initialize the monsters (they use items)
   Monster::initMonsters();
+  Character::initCharacters();
 
   // create the mission board
   board = new Board(this);
@@ -198,14 +199,17 @@ void Scourge::initItems() {
 	  int type_index = RpgItem::getTypeByName(type);	  
 	  int shape_index = shapePal->findShapeIndexByName(shape);
 	  int skill_index = Constants::getSkillByName(skill);
-	
+	  if(skill_index < 0) {
+		if(strlen(skill)) cerr << "*** WARNING: cannot find skill: " << skill << endl;
+		skill_index = 0;
+	  }
 	  RpgItem::addItem(new RpgItem(itemCount++, strdup(name), level, type_index, 
 								   weight, price, 100, 
 								   action, speed, strdup(long_description), 
 								   strdup(short_description), 
 								   inventory_location, shape_index, 
 								   twohanded, distance, skill_index, currentCharges, 
-								   maxCharges));
+								   maxCharges));	  
 	} else {
 	  n = Constants::readLine(line, fp);
 	}

@@ -19,6 +19,11 @@
 #define CHARACTER_H
 
 #include "../constants.h"
+#include <map>
+#include <vector>
+#include <string>
+
+using namespace std;
 
 /**
   *@author Gabor Torok
@@ -27,9 +32,11 @@
 class Character  {
 private:
   char *name;
-  int startingHp;
+  int startingHp, skill_bonus, level_progression;
   char *model_name, *skin_name;
-  char description[300];
+  char description[3000];
+  map<int, int> maxSkill;
+  map<int, int> minSkill;
 
 public:
   // inventory locations
@@ -50,34 +57,25 @@ public:
   static const int INVENTORY_COUNT = 14;
   static char inventory_location[][80];
 
-  Character(char *name, int startingHp, char *model, char *skin);
+  Character(char *name, int startingHp, char *model, char *skin, int skill_bonus, int level_progression);
   ~Character();
 
   inline char *getName() { return name; };
   inline int getStartingHp() { return startingHp; }  
+  inline int getSkillBonus() { return skill_bonus; }  
+  inline int getLevelProgression() { return level_progression; }  
   inline char *getModelName() { return model_name; }
   inline char *getSkinName() { return skin_name; }
   inline char *getDescription() { return description; }
+  inline int getMaxSkillLevel(int skill) { if(maxSkill.find(skill) == maxSkill.end()) return 100; else return maxSkill[skill]; }
+  inline int getMinSkillLevel(int skill) { if(minSkill.find(skill) == minSkill.end()) return 0; else return minSkill[skill]; }
   
-public:  
+  static map<string, Character*> character_class;
+  static void initCharacters();
+  static Character *getCharacterByName(char *p) { string s = p; return character_class[s]; }
 
-  enum {
-	ranger = 0,
-	knight,
-	tinkerer,
-	assassin,
-	arcanist,
-	loremaster,
-	constants,
-	summoner,
-	naturalist,
-	monk,
-	
-	// should be last one
-	character_count
-  };
-
-  static Character *character_class[character_count];
+ protected:
+  inline void setMinMaxSkill(int skill, int min, int max) { minSkill[skill] = min; maxSkill[skill] = max; }
 
 };
 

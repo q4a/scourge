@@ -683,15 +683,11 @@ bool Creature::takeDamage(int damage) {
 Creature **Creature::createHardCodedParty(Scourge *scourge) {
   Creature **pc = (Creature**)malloc(sizeof(Creature*) * 4);
 
-	// FIXME: consider using newCreature here
-	// the end of startMission would have to be modified to not delete the party
-	// also in scourge, where-ever creatureCount is used to mean all monsters would have
-	// to change (maybe that's a good thing too... same logic for party and monsters)
-  pc[0] = new Creature(scourge, Character::character_class[Character::assassin], "Alamont");
-  pc[1] = new Creature(scourge, Character::character_class[Character::knight], "Barlett");
-  pc[2] = new Creature(scourge, Character::character_class[Character::summoner], "Corinus");
-  pc[3] = new Creature(scourge, Character::character_class[Character::naturalist], "Dialante");
-
+  // FIXME: consider using newCreature here
+  // the end of startMission would have to be modified to not delete the party
+  // also in scourge, where-ever creatureCount is used to mean all monsters would have
+  // to change (maybe that's a good thing too... same logic for party and monsters)
+  pc[0] = new Creature(scourge, Character::getCharacterByName("Assassin"), "Alamont");
   pc[0]->setLevel(1); 
   pc[0]->setExp(300);
   pc[0]->setHp();
@@ -699,10 +695,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[0]->setThirst(7); 
   pc[0]->setStateMod(Constants::blessed, true);
   pc[0]->setStateMod(Constants::poisoned, true);
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[0]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
-  }
-  
+
+  pc[1] = new Creature(scourge, Character::getCharacterByName("Knight"), "Barlett");
   pc[1]->setLevel(1); 
   pc[1]->setExp(200);
   pc[1]->setHp();
@@ -710,10 +704,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[1]->setThirst(9);
   pc[1]->setStateMod(Constants::drunk, true);
   pc[1]->setStateMod(Constants::cursed, true);      
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[1]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
-  }
-  
+
+  pc[2] = new Creature(scourge, Character::getCharacterByName("Summoner"), "Corinus");
   pc[2]->setLevel(1); 
   pc[2]->setExp(150);
   pc[2]->setHp();
@@ -722,23 +714,28 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[2]->setStateMod(Constants::ac_protected, true);
   pc[2]->setStateMod(Constants::magic_protected, true);
   pc[2]->setStateMod(Constants::cursed, true);        
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[2]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
-  }
-  
+
+  pc[3] = new Creature(scourge, Character::getCharacterByName("Naturalist"), "Dialante");    
   pc[3]->setLevel(1); 
   pc[3]->setExp(400);
   pc[3]->setHp();
   pc[3]->setHunger(10);
   pc[3]->setThirst(10);
   pc[3]->setStateMod(Constants::possessed, true);          
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[3]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
-  }
   
+  // compute starting skill levels
+  for(int i = 0; i < 4; i++) {
+	for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
+	  int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + (int)(20.0 * rand()/RAND_MAX);
+	  if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
+		n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
+	  pc[i]->setSkill(skill, n);
+	}
+  }
+
   // Compute the new maxInventoryWeight for each pc, according to its POWER skill
   for(int i = 0; i < 4; i++) {
-      pc[i]->setMaxInventoryWeight(pc[i]->computeMaxInventoryWeight());
+	pc[i]->setMaxInventoryWeight(pc[i]->computeMaxInventoryWeight());
   }
 
   // add some items
@@ -752,8 +749,7 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));
-  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));
-  
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));  
 
   return pc;
 }

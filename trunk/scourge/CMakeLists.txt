@@ -8,7 +8,7 @@ INCLUDE_DIRECTORIES(${SDL_INCLUDE_DIR}/SDL ${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_
 
 #SET(CMAKE_VERBOSE_MAKEFILE "ON")
 
-SET(CMAKE_CXX_FLAGS "-Wno-deprecated" )
+SET(CMAKE_CXX_FLAGS "-Wno-deprecated -g" )
 
 ADD_EXECUTABLE (scourge WIN32 src/constants.cpp \
  src/gui/window.cpp src/gui/widget.cpp src/gui/label.cpp src/gui/button.cpp\
