@@ -43,7 +43,7 @@ private:
     int selectedMode; // which mode is selected?
     enum mode {
         INVENTORY = 0, CHARACTER, SPELL, LOG
-    };
+    };    
 
 	// UI
 	Window *mainWin;
@@ -59,13 +59,17 @@ private:
 	char **pcInvText;
 
 	// character info screen
-	Label *nameLabel, *classLabel, *levelLabel, *expLabel, *hpLabel;
+	Label *nameAndClassLabel, *levelLabel, *expLabel, *hpLabel;
+	Label *thirstLabel, *hungerLabel;	
 	int stateCount;
 	char **stateLine, **skillLine;
 	ScrollingList *stateList, *skillList;
+	char nameAndClassStr[80];
 	char levelStr[80];
 	char expStr[80];
 	char hpStr[80];
+	char thirstStr[80];
+	char hungerStr[80];
 
 public:
     Inventory(Scourge *scourge);

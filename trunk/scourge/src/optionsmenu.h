@@ -64,6 +64,7 @@ private:
   Window *mainWin;  
   Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton;
   Button *changeControlButton, *saveButton;
+  Label * keyBindingsLabel; 
   Label * waitingLabel;  
   Label * changeTakeEffectLabel;
   
@@ -81,13 +82,10 @@ private:
   Checkbox * stencilbufCheckbox;
   Checkbox * multitexturingCheckbox;
   MultipleLabel * shadowsML;
-  
-  
+     
   CardContainer *cards;
   ScrollingList *controlBindingsList;
-  
-  void createButton(int x1, int y1, int x2, int y2, char *label, bool toggle, Button * &theButton);
-  void createCheckbox(int x1, int y1, int x2, int y2, char *label, int where, Checkbox *&theCheckbox);
+
   void setSelectedMode();
   void loadControls(); 
   void loadVideo();

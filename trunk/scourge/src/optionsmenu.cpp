@@ -17,18 +17,6 @@
 
 #include "optionsmenu.h" 
 
-void OptionsMenu::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle, Button * &theButton){
-    theButton = new Button(x1, y1, x2, y2, strdup(label));
-	theButton->setToggle(toggle);	
-	mainWin->addWidget((Widget*)theButton);            	
-}
-
-void OptionsMenu::createCheckbox(int x1, int y1, int x2, int y2, char *label, int where, Checkbox *&theCheckbox){
-    theCheckbox = new Checkbox(x1, y1, x2, y2, strdup(label));    
-    cards->addWidget(theCheckbox, where);    
-}
- 
-
 OptionsMenu::OptionsMenu(Scourge *scourge){    
     int nbModes, i;
     char ** modes;
@@ -47,28 +35,21 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 						100, 50, 525, 505, 
 						strdup("Options"), 
 						scourge->getShapePalette()->getGuiTexture() );
-	
-    createButton (105, 0, 210, 30, "Game settings", true, gameSettingsButton);  					
-	createButton (210, 0, 315, 30, "Video", true, videoButton);
- 	createButton (315, 0, 420, 30, "Audio", true, audioButton);
-    createButton (420, 0, 525, 30, "Controls", true, controlsButton);       
-    createButton (65, 440, 170, 470, "Save to file", false, saveButton);        		          
-    //saveControlButton->setVisible(false);    
+	 
+    gameSettingsButton = mainWin->createButton(105, 0, 210, 30, "Game settings", true);
+	videoButton = mainWin->createButton (210, 0, 315, 30, "Video", true);
+ 	audioButton = mainWin->createButton (315, 0, 420, 30, "Audio", true);
+    controlsButton = mainWin->createButton (420, 0, 525, 30, "Controls", true);           
+    saveButton = mainWin->createButton(205, 440, 310, 470, "Save to file", false);      
                       
     cards = new CardContainer(mainWin);
     
     // Controls tab
-    Label *label = new Label(220, 50, strdup("Key bindings"));
-	label->setColor( 0.8f, 0.2f, 0, 1 );
-	cards->addWidget(label, CONTROLS);	    
+    keyBindingsLabel = cards->createLabel(220, 50, strdup("Key bindings"), CONTROLS, Constants::RED_COLOR);
     controlBindingsList = new ScrollingList(30, 100, 450, 300);
-    cards->addWidget(controlBindingsList, CONTROLS);
-    createButton (205, 440, 310, 470, "Change", false, changeControlButton); 
-    changeControlButton->setLabelPosition(Button::CENTER); 
-    cards->addWidget(changeControlButton, CONTROLS);   		          
-    waitingLabel = new Label(35, 80, strdup(" ")); 	
-    waitingLabel->setColor( 0.0f, 0.3f, 0.9f, 1 );  
-    cards->addWidget(waitingLabel, CONTROLS);            
+    cards->addWidget(controlBindingsList, CONTROLS);        
+    changeControlButton = cards->createButton (65, 440, 170, 470, "Change", CONTROLS, false);
+    waitingLabel = cards->createLabel(35, 80, strdup(" "), CONTROLS, Constants::BLUE_COLOR);         
 
     // Game settings tab
     gameSpeedML = new MultipleLabel(100, 80, 300, 100, "Game speed", 100);
@@ -78,7 +59,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     gameSpeedML -> addText(strdup("Fast"));
     gameSpeedML -> addText(strdup("Fastest"));    
     cards->addWidget(gameSpeedML, GAME_SETTINGS);
-    createCheckbox(100, 120, 258, 140, "Always center map", GAME_SETTINGS, alwaysCenterMapCheckbox);
+    alwaysCenterMapCheckbox = cards->createCheckbox(100, 120, 258, 140, "Always center map", GAME_SETTINGS);
    
     // Video settings tabs        
     videoResolutionML = new MultipleLabel(100, 40, 300, 60, "Screen resolution", 100);
@@ -88,23 +69,21 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     }    
     cards->addWidget(videoResolutionML, VIDEO);
 
-    createCheckbox(100, 75, 258, 95, "Fullscreen", VIDEO, fullscreenCheckbox);    
-    createCheckbox(100, 110, 258, 130, "Window resizeable", VIDEO, resizeableCheckbox);
-    createCheckbox(100, 145, 258, 165, "Use double buffering", VIDEO, doublebufCheckbox);    
-    createCheckbox(100, 180, 258, 200, "Use stencil buffer", VIDEO, stencilbufCheckbox);    
-    createCheckbox(100, 215, 258, 235, "Force hardware surfaces", VIDEO, forceHwsurfCheckbox);
-    createCheckbox(100, 250, 258, 270, "Force software surfaces", VIDEO, forceSwsurfCheckbox);
-    createCheckbox(100, 285, 258, 305, "Use multitexturing", VIDEO, multitexturingCheckbox);    
-    createCheckbox(100, 320, 258, 340, "Use hardware palette", VIDEO, hwpalCheckbox);
-    createCheckbox(100, 360, 258, 380, "Use hardware acceleration", VIDEO, hwaccelCheckbox); 
+    fullscreenCheckbox = cards->createCheckbox(100, 75, 258, 95, "Fullscreen", VIDEO);    
+    resizeableCheckbox = cards->createCheckbox(100, 110, 258, 130, "Window resizeable", VIDEO);
+    doublebufCheckbox  = cards->createCheckbox(100, 145, 258, 165, "Use double buffering", VIDEO);    
+    stencilbufCheckbox = cards->createCheckbox(100, 180, 258, 200, "Use stencil buffer", VIDEO );    
+    forceHwsurfCheckbox = cards->createCheckbox(100, 215, 258, 235, "Force hardware surfaces", VIDEO);
+    forceSwsurfCheckbox = cards->createCheckbox(100, 250, 258, 270, "Force software surfaces", VIDEO);
+    multitexturingCheckbox = cards->createCheckbox(100, 285, 258, 305, "Use multitexturing", VIDEO);    
+    hwpalCheckbox   = cards->createCheckbox(100, 320, 258, 340, "Use hardware palette", VIDEO);
+    hwaccelCheckbox = cards->createCheckbox(100, 360, 258, 380, "Use hardware acceleration", VIDEO); 
     shadowsML = new MultipleLabel(100, 395, 300, 415, "Shadows", 100);
     shadowsML -> addText("None");  
     shadowsML -> addText("Some");
     shadowsML -> addText("All");       
     cards->addWidget(shadowsML, VIDEO);       
-    changeTakeEffectLabel = new Label(113, 432, strdup(" "));
-    changeTakeEffectLabel->setColor( 0.0f, 0.3f, 0.9f, 1 );  
-    cards->addWidget(changeTakeEffectLabel, VIDEO);  
+    changeTakeEffectLabel = cards->createLabel(113, 432, strdup(" "), VIDEO, Constants::BLUE_COLOR);
     
     selectedMode = GAME_SETTINGS;
     				

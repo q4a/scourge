@@ -23,6 +23,7 @@
   *@author Gabor Torok
   */
   
+  
 Inventory::Inventory(Scourge *scourge) {
     this->scourge = scourge;
 
@@ -46,108 +47,72 @@ Inventory::Inventory(Scourge *scourge) {
 						  100, 50, 420, 505, 
 						  strdup("Party Information"), 
 						  scourge->getShapePalette()->getGuiTexture() );
-	player1Button = new Button( 0, 30, 105, 60, scourge->getParty(0)->getName() );
-	player1Button->setToggle(true);
-	mainWin->addWidget((Widget*)player1Button);
-	player2Button = new Button( 0, 60, 105, 90, scourge->getParty(1)->getName() );
-	player2Button->setToggle(true);
-	mainWin->addWidget((Widget*)player2Button);
-	player3Button = new Button( 0, 90, 105, 120, scourge->getParty(2)->getName() );
-	player3Button->setToggle(true);
-	mainWin->addWidget((Widget*)player3Button);
-	player4Button = new Button( 0, 120, 105, 150, scourge->getParty(3)->getName() );
-	player4Button->setToggle(true);
-	mainWin->addWidget((Widget*)player4Button);
-	inventoryButton = new Button( 105,0, 210, 30, strdup("Inventory") );
-	inventoryButton->setToggle(true);
-	mainWin->addWidget((Widget*)inventoryButton);
-	skillsButton = new Button( 210,0, 315, 30, strdup("Skills") );
-	skillsButton->setToggle(true);
-	mainWin->addWidget((Widget*)skillsButton);
-	spellsButton = new Button( 315,0, 420, 30, strdup("Spells") );
-	spellsButton->setToggle(true);
-	mainWin->addWidget((Widget*)spellsButton);
-
+	player1Button  = mainWin->createButton( 0, 30, 105, 60, scourge->getParty(0)->getName(), true);
+	player2Button  = mainWin->createButton( 0, 60, 105, 90, scourge->getParty(1)->getName(), true);
+	player3Button  = mainWin->createButton( 0, 90, 105, 120, scourge->getParty(2)->getName(), true );
+	player4Button  = mainWin->createButton( 0, 120, 105, 150, scourge->getParty(3)->getName(), true );
+	inventoryButton = mainWin->createButton( 105,0, 210, 30, strdup("Inventory"), true);
+	skillsButton   = mainWin->createButton( 210,0, 315, 30, strdup("Skills"), true);
+	spellsButton   = mainWin->createButton( 315,0, 420, 30, strdup("Spells"), true);
 	cards = new CardContainer(mainWin);
 
 	// inventory page
-	Label *label = new Label(115, 280, strdup("Inventory:"));
-	label->setColor( 0.8f, 0.2f, 0, 1 );
-	cards->addWidget(label, INVENTORY);
-	label = new Label(115, 45, strdup("Equipped Items:"));
-	label->setColor( 0.8f, 0.2f, 0, 1 );
-	cards->addWidget(label, INVENTORY);
+	/*Label *label = createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);
+	label = createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);*/
+	cards->createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);
+	cards->createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
+
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	  Item *item = scourge->getParty(selected)->getEquippedInventory(i);
-	  invEquipLabel[i] = new Label(300, 60 + (i * 15), 
+	  invEquipLabel[i] = cards->createLabel(300, 60 + (i * 15), 
+                               (char *) item ? item->getRpgItem()->getName() : (char*)NULL, 
+                               INVENTORY);
+/*	  invEquipLabel[i] = new Label(300, 60 + (i * 15), 
 								   (char *)(item ? item->getRpgItem()->getName() : (char*)NULL));
-	  cards->addWidget(invEquipLabel[i], INVENTORY);
+	  cards->addWidget(invEquipLabel[i], INVENTORY);*/
 	}
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	  label = new Label(115, 60 + (i * 15), Character::inventory_location[i]);
-	  cards->addWidget(label, INVENTORY);
+	  cards->createLabel(115, 60 + (i *15), Character::inventory_location[i], INVENTORY);
 	}
 	invList = new ScrollingList(115, 285, 295, 175, this);
 	cards->addWidget(invList, INVENTORY);
-	cards->addWidget(new Label(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP)),
-					 INVENTORY);
+    cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
+	  
+    int yy = 160;
+	equipButton    = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
+	yy+=30;
+	fixButton      = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Fix Item"), INVENTORY);
+	yy+=30;
+	removeCurseButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Remove Curse"), INVENTORY );
+	yy+=30;
+	combineButton  = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Combine Item"), INVENTORY );
+	yy+=30;
+	enchantButton  = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Enchant Item"), INVENTORY );
+	yy+=30;
+	identifyButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
+	yy+=30;
+	openButton     = mainWin->createButton( 0, yy, 105, yy + 30, 
+							 Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY );	
 	
-	//char s[80];
-	int yy = 160;
-	equipButton = new Button( 0, yy, 105, yy + 30, strdup("Don/Doff") );
-	cards->addWidget(equipButton, INVENTORY);
-	yy+=30;
-	fixButton = new Button( 0, yy, 105, yy + 30, strdup("Fix Item") );
-	cards->addWidget(fixButton, INVENTORY);
-	yy+=30;
-	removeCurseButton = new Button( 0, yy, 105, yy + 30, strdup("Remove Curse") );
-	cards->addWidget(removeCurseButton, INVENTORY);
-	yy+=30;
-	combineButton = new Button( 0, yy, 105, yy + 30, strdup("Combine Item") );
-	cards->addWidget(combineButton, INVENTORY);
-	yy+=30;
-	enchantButton = new Button( 0, yy, 105, yy + 30, strdup("Enchant Item") );
-	cards->addWidget(enchantButton, INVENTORY);
-	yy+=30;
-	identifyButton = new Button( 0, yy, 105, yy + 30, strdup("Identify Item") );
-	cards->addWidget(identifyButton, INVENTORY);
-	yy+=30;
-	openButton = new Button( 0, yy, 105, yy + 30, 
-							 Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
-	cards->addWidget(openButton, INVENTORY);
-	yy+=30;
-
-	// character info
-	label = new Label(115, 45, strdup("Character Information"));
-	label->setColor( 0.8f, 0.2f, 0, 1 );
-	cards->addWidget(label, CHARACTER);
-	nameLabel = new Label(115, 60);
-	cards->addWidget(nameLabel, CHARACTER);
-	classLabel = new Label(115, 75);
-	cards->addWidget(classLabel, CHARACTER);
-	levelLabel = new Label(115, 90);
-	cards->addWidget(levelLabel, CHARACTER);
-	expLabel = new Label(115, 105);
-	cards->addWidget(expLabel, CHARACTER);
-	hpLabel = new Label(115, 120);
-	cards->addWidget(hpLabel, CHARACTER);
+    // character info
+	cards->createLabel(115, 45, strdup("Character Information"), CHARACTER, Constants::RED_COLOR);	
+	nameAndClassLabel = cards->createLabel(115, 60, NULL, CHARACTER);
+	levelLabel     = cards->createLabel(115, 75, NULL, CHARACTER);
+	expLabel       = cards->createLabel(115, 90, NULL, CHARACTER);
+	hpLabel        = cards->createLabel(115, 105, NULL, CHARACTER);
+	thirstLabel    = cards->createLabel(115, 120, NULL, CHARACTER);
+	hungerLabel    = cards->createLabel(220, 120, NULL, CHARACTER);
 	
-	label = new Label(115, 135, strdup("Current State:"));
-	label->setColor( 0.8f, 0.2f, 0, 1 );
-	cards->addWidget(label, CHARACTER);
+	cards->createLabel(115, 135, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
 	stateList = new ScrollingList(115, 140, 290, 70);
 	cards->addWidget(stateList, CHARACTER);
 
-	label = new Label(115, 225, strdup("Skills:"));
-	label->setColor( 0.8f, 0.2f, 0, 1 );
-	cards->addWidget(label, CHARACTER);
+	cards->createLabel(115, 225, strdup("Skills:"), CHARACTER, Constants::RED_COLOR);
 	skillList = new ScrollingList(115, 230, 290, 220);
 	cards->addWidget(skillList, CHARACTER);
 
 	// spellbook
-	label = new Label(115, 45, strdup("Spellbook"));
-	label->setColor( 0.8f, 0.2f, 0, 1 );
-	cards->addWidget(label, SPELL);
+	cards->createLabel(115, 45, strdup("Spellbook"), SPELL, Constants::RED_COLOR);
 
 	setSelectedPlayerAndMode(0, INVENTORY);
 }
@@ -228,52 +193,59 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   spellsButton->setSelected(selectedMode == SPELL);
   
   // show only the ui elements belonging to the current mode
-  cards->setActiveCard(selectedMode);
+  cards->setActiveCard(selectedMode);   
 
   // arrange the gui
+  Creature * selectedP = scourge->getParty(selected);
   switch(selectedMode) {
-  case CHARACTER:
-	nameLabel->setText(scourge->getParty(selected)->getName());
-	classLabel->setText(scourge->getParty(selected)->getCharacter()->getName());
-	sprintf(levelStr, "Level: %d", scourge->getParty(selected)->getLevel());
+  case CHARACTER:       	
+    sprintf(nameAndClassStr, "%s, %s", selectedP->getName(), selectedP->getCharacter()->getName());
+	nameAndClassLabel->setText(nameAndClassStr);	
+	sprintf(levelStr, "Level: %d", selectedP->getLevel());
 	levelLabel->setText(levelStr);
-	sprintf(expStr, "Exp: %u", scourge->getParty(selected)->getExp());
+	sprintf(expStr, "Exp: %u", selectedP->getExp());
 	expLabel->setText(expStr);
-	sprintf(hpStr, "HP: %d", scourge->getParty(selected)->getHp());
+	sprintf(hpStr, "HP: %d / %d", selectedP->getHp(), selectedP->getCharacter()->getStartingHp());
 	hpLabel->setText(hpStr);
+	sprintf(thirstStr, "Thirst : %d", selectedP->getThirst());
+	thirstLabel->setText(thirstStr);
+	sprintf(hungerStr, "Hunger : %d", selectedP->getHunger());
+	hungerLabel->setText(hungerStr);
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
-      if(scourge->getParty(selected)->getStateMod(t)) {
+      if(selectedP->getStateMod(t)) {
         sprintf(stateLine[stateCount++], "%s", Constants::STATE_NAMES[t]);
       }
     }
 	stateList->setLines(stateCount, (const char**)stateLine);
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
 	  sprintf(skillLine[t], "%d - %s", 
-			  scourge->getParty(selected)->getSkill(t), 
+			  selectedP->getSkill(t), 
 			  Constants::SKILL_NAMES[t]);
     }
 	skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
 	break;
+	
   case INVENTORY:
-    for(int t = 0; t < scourge->getParty(selected)->getInventoryCount(); t++) {
-	  Item *item = scourge->getParty(selected)->getInventory(t);
-	  int location = scourge->getParty(selected)->getEquippedIndex(t);
-		char s[100];
+	for(int t = 0; t < selectedP->getInventoryCount(); t++) {
+	  Item *item = selectedP->getInventory(t);
+	  int location = selectedP->getEquippedIndex(t);
+        char s[100];
 		item->getDetailedDescription(s);
 	  sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
     }
-	for(int t = scourge->getParty(selected)->getInventoryCount(); 
+	for(int t = selectedP->getInventoryCount(); 
 		t < MAX_INVENTORY_SIZE; t++) {
 	  strcpy(pcInvText[t], "");
 	}
-	invList->setLines(scourge->getParty(selected)->getInventoryCount(), 
+	invList->setLines(selectedP->getInventoryCount(), 
 					  (const char **)pcInvText);
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	  Item *item = scourge->getParty(selected)->getEquippedInventory(i);
+	  Item *item = selectedP->getEquippedInventory(i);
 	  invEquipLabel[i]->setText((char *)(item ? item->getRpgItem()->getName() : NULL));
 	}
 	break;
+	
   case SPELL:
 	break;
   case LOG:
