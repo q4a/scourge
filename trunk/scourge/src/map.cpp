@@ -351,7 +351,7 @@ void Map::setupShapes(bool ground) {
           
           setupPosition(posX, posY, zp,
                         xpos2, ypos2, zpos2,
-                        scourge->getShapePalette()->getEmptyShape(), NULL, NULL,
+                        effect[posX][posY][zp]->effect->getShape(), NULL, NULL,
                         effect[posX][posY][zp]);
         } 
         
@@ -857,16 +857,16 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   // encode this shape's map location in its name
   glPushName( name );
   //glPushName( (GLuint)((GLShape*)shape)->getShapePalIndex() );
-  ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
-  ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
+  if(shape) {
+    ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
+    ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
+  }
   if(effect && later) {
     if(later->creature) {
-      later->creature->getEffect()->draw((GLShape*)shape, 
-                                         later->creature->getEffectType(),
+      later->creature->getEffect()->draw(later->creature->getEffectType(),
                                          later->creature->getDamageEffect());
     } else if(later->effect) {
-      later->effect->getEffect()->draw((GLShape*)shape, 
-                                       later->effect->getEffectType(),
+      later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
     }
   } else if(later && later->projectile) {
@@ -1284,7 +1284,8 @@ void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
 }     
 
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
-                      int effect_type, int duration) {
+                      int effect_type, int duration, 
+                      int width, int height) {
 
   // show an effect
   if(effect[x][y][z]) {
@@ -1299,7 +1300,8 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   if(!effect[x][y][z]) {
     effect[x][y][z] = new EffectLocation();
   }
-  effect[x][y][z]->effect = new Effect(scourge->getShapePalette()->getTexture(9));
+  effect[x][y][z]->effect = new Effect(scourge->getShapePalette(), 
+                                       width, height);
   effect[x][y][z]->effect->deleteParticles();
   effect[x][y][z]->resetDamageEffect();
   effect[x][y][z]->effectType = effect_type;

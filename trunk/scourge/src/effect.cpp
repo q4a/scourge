@@ -17,14 +17,32 @@
 
 #include "effect.h"
 
-Effect::Effect(GLuint flameTex) {
-  this->flameTex = flameTex;
+Effect::Effect(ShapePalette *shapePal, int width, int height) {
+  this->shapePal = shapePal;
+  this->shape = new GLShape(0, width, height, 1, NULL,0, 0, 0, 2000);
+  this->deleteShape = true;
+  commonInit();
+}
+
+Effect::Effect(ShapePalette *shapePal, GLShape *shape) {
+  this->shapePal = shapePal;
+  this->shape = shape;
+  this->deleteShape = false;
+  commonInit();
+}
+
+void Effect::commonInit() {
+  flameTex = shapePal->getTexture(9);
+  ringTex = shapePal->getTexture(18);
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     particle[i] = NULL;
   }
+  ringRadius = 0.25f;
+  ringRotate = 0.0f;
 }
 
 Effect::~Effect() {
+  if(deleteShape) delete shape;
   deleteParticles();
 }
 
@@ -37,25 +55,27 @@ void Effect::deleteParticles() {
   }
 }
 
-void Effect::draw(GLShape *shape, int effect, int startTime) {
+void Effect::draw(int effect, int startTime) {
   if(effect == Constants::EFFECT_FLAMES) {
-	drawFlames(shape);
+    drawFlames();
   } else if(effect == Constants::EFFECT_TELEPORT) {
-	drawTeleport(shape);
+    drawTeleport();
   } else if(effect == Constants::EFFECT_GREEN) {
-	drawGreen(shape);
+    drawGreen();
   } else if(effect == Constants::EFFECT_EXPLOSION) {
-	drawExplosion(shape);
+    drawExplosion();
   } else if(effect == Constants::EFFECT_SWIRL) {
-	drawSwirl(shape);
+    drawSwirl();
   } else if(effect == Constants::EFFECT_CAST_SPELL) {
-	drawCastSpell(shape);
+    drawCastSpell();
+  } else if(effect == Constants::EFFECT_RING) {
+    drawRing();
   } else {
-	glowShape(shape, startTime);
+    glowShape(startTime);
   }
 }
 
-void Effect::glowShape(GLShape *shape, int startTime) {
+void Effect::glowShape(int startTime) {
   glColor4f( 1, 0, 0, 1 );
   int t = SDL_GetTicks();
   float scale = 1.0f + (float)(t - startTime) / Constants::DAMAGE_DURATION;
@@ -64,11 +84,11 @@ void Effect::glowShape(GLShape *shape, int startTime) {
   shape->draw();
 }
 
-void Effect::drawFlames(GLShape *shape) {
+void Effect::drawFlames() {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
-	  createParticle(shape, &(particle[i]));
+	  createParticle(&(particle[i]));
     } else {
 	  moveParticle(&(particle[i]));
     }
@@ -80,17 +100,17 @@ void Effect::drawFlames(GLShape *shape) {
 	  if(gg < 0) gg = 0;
       glColor4f(1, gg, 1, 0.5);
 	  
-	  drawParticle(shape, particle[i]);
+	  drawParticle(particle[i]);
     }
   }
 }
 
-void Effect::drawTeleport(GLShape *shape) {
+void Effect::drawTeleport() {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
       // create a new particle
-      createParticle(shape, &(particle[i]));
+      createParticle(&(particle[i]));
 	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 7.0f;
 	  particle[i]->moveDelta = 0.3f + (0.3f * rand()/RAND_MAX);
 	  if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
@@ -109,17 +129,17 @@ void Effect::drawTeleport(GLShape *shape) {
 	  if(c > 1) c = 1;
       glColor4f(c / 2.0f, c, 1.0f, 0.5);
 
-	  drawParticle(shape, particle[i]);
+	  drawParticle(particle[i]);
     }
   }
 }
 
-void Effect::drawGreen(GLShape *shape) {
+void Effect::drawGreen() {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
       // create a new particle
-      createParticle(shape, &(particle[i]));
+      createParticle(&(particle[i]));
 	  particle[i]->z = (int)(1.0f * rand()/RAND_MAX);
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0.15f;
@@ -144,17 +164,17 @@ void Effect::drawGreen(GLShape *shape) {
 	  if(c > 1) c = 1;
       glColor4f(c / 4.0f, c, c / 4.0f, 0.15);
 
-	  drawParticle(shape, particle[i]);
+	  drawParticle(particle[i]);
     }
   }
 }
 
-void Effect::drawExplosion(GLShape *shape) {
+void Effect::drawExplosion() {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
       // create a new particle
-      createParticle(shape, &(particle[i]));
+      createParticle(&(particle[i]));
 	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
@@ -178,18 +198,18 @@ void Effect::drawExplosion(GLShape *shape) {
 	  if(c > 1) c = 1;
       glColor4f(c, c / 2.0f, c / 2.0f, 0.5);
 
-	  drawParticle(shape, particle[i]);
+	  drawParticle(particle[i]);
     }
   }
 }
 
-void Effect::drawSwirl(GLShape *shape) {
+void Effect::drawSwirl() {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
 	float angle = (float)i * (360.0f / (float)PARTICLE_COUNT);
     if(!particle[i]) {
       // create a new particle
-      createParticle(shape, &(particle[i]));
+      createParticle(&(particle[i]));
 	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) +
 		(((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) * cos(angle);
 	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) +
@@ -218,17 +238,17 @@ void Effect::drawSwirl(GLShape *shape) {
 	  if(c > 1) c = 1;
       glColor4f(c / 2.0f, c / 4.0f, c, 0.5);
 
-	  drawParticle(shape, particle[i]);
+	  drawParticle(particle[i]);
     }
   }
 }
 
-void Effect::drawCastSpell(GLShape *shape) {
+void Effect::drawCastSpell() {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
       // create a new particle
-      createParticle(shape, &(particle[i]));
+      createParticle(&(particle[i]));
 	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
 	  //	  particle[i]->moveDelta = 0.15f + (0.2f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
@@ -251,17 +271,41 @@ void Effect::drawCastSpell(GLShape *shape) {
 
       glColor4f(c / 2.0f, c / 4.0f, 1.0f, 0.25);
 
-	  drawParticle(shape, particle[i]);
+	  drawParticle(particle[i]);
     }
   }
+}
+
+void Effect::drawRing() {
+
+  float r = ringRadius / GLShape::DIV;
+
+  glPushMatrix();
+  glRotatef(ringRotate, 0, 0, 1);
+  glColor4f(1, 1, 1, 0.75f);
+  if(ringTex) glBindTexture( GL_TEXTURE_2D, ringTex );
+  glBegin( GL_QUADS );
+  // front
+  glNormal3f(0.0f, 1.0f, 0.0f);
+  if(ringTex) glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(r, -r, 0);
+  if(ringTex) glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(-r, -r, 0);
+  if(ringTex) glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(-r, r, 0);
+  if(ringTex) glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(r, r, 0);  
+  glEnd();
+  glPopMatrix();
+
+  if(ringRadius < shape->getWidth()) ringRadius += 0.8f;
+  ringRotate += 5.0f;
 }
 
 
 
 
-
-
-void Effect::createParticle(GLShape *shape, ParticleStruct **particle) {
+void Effect::createParticle(ParticleStruct **particle) {
   // create a new particle
   *particle = new ParticleStruct();
   (*particle)->x = ((float)(shape->getWidth() / GLShape::DIV) * rand()/RAND_MAX);
@@ -288,7 +332,7 @@ void Effect::moveParticle(ParticleStruct **particle) {
   }
 }
 
-void Effect::drawParticle(GLShape *shape, ParticleStruct *particle) {
+void Effect::drawParticle(ParticleStruct *particle) {
   float w, h;
 
   w = (float)(shape->getWidth() / GLShape::DIV) / 4.0f;

@@ -108,8 +108,6 @@ private:
   CLoadMD2 g_LoadMd2; 
   t3DModel * LoadMd2Model(char *file_name);
 
-  Shape *emptyShape;
-
 public: 
   ShapePalette();
   ~ShapePalette();
@@ -155,8 +153,6 @@ public:
   inline GLShape *getCreatureBlockShape(char *name) { string s = name; return creature_block_shapes[s]; }
 
   char *getRandomDescription(int descriptionGroup);
-
-  Shape *getEmptyShape() { return emptyShape; }
 
 protected:
   GLuint loadGLTextures(char *fileName);

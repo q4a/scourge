@@ -97,7 +97,7 @@ void Creature::commonInit() {
   this->lastTurn = 0;
   this->damageEffectCounter = 0;
   this->effectDuration = Constants::DAMAGE_DURATION;
-  this->effect = new Effect(scourge->getShapePalette()->getTexture(9));
+  this->effect = new Effect(scourge->getShapePalette(), shape);
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
   this->availableSkillPoints = 0;

@@ -92,8 +92,8 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
   v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = h;
   surfaces[TOP_SURFACE] = new_surface(v);
 
-  if(lightmap_tex_num == 0 && Constants::multitexture) 
-	createDarkTexture();
+  if(tex && lightmap_tex_num == 0 && Constants::multitexture) 
+  	createDarkTexture();
 }
 
 void GLShape::setCurrentAnimation (int numAnim){
@@ -143,6 +143,11 @@ struct surface *GLShape::new_surface(float vertices[4][3]) {
 
 
 GLShape::~GLShape(){
+  free(surfaces[LEFT_SURFACE]);
+  free(surfaces[BOTTOM_SURFACE]);
+  free(surfaces[RIGHT_SURFACE]);
+  free(surfaces[FRONT_SURFACE]);
+  free(surfaces[TOP_SURFACE]);
 }
 
 void GLShape::draw() {

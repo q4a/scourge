@@ -20,39 +20,49 @@
 
 #include "constants.h"
 #include "glshape.h"
+#include "shapepalette.h"
 
 /**
   *@author Gabor Torok
   */
 
 class Effect {
- private:  
-  GLuint flameTex;
+private:  
+  ShapePalette *shapePal;
+  GLuint flameTex, ringTex;
+  GLShape *shape;
+  bool deleteShape;
+  float ringRadius, ringRotate;
   
   static const int PARTICLE_COUNT = 30;
   ParticleStruct *particle[PARTICLE_COUNT];
-
- public:
-  Effect(GLuint flameTex);
+  
+public:
+  Effect(ShapePalette *shapePal, GLShape *shape);
+  Effect(ShapePalette *shapePal, int width, int height);
   ~Effect();
-
+  
   void deleteParticles();
-  void draw(GLShape *shape, int effect, int startTime);
+  void draw(int effect, int startTime);
 
- protected:
-  void glowShape(GLShape *shape, int startTime);
-  void drawFlames(GLShape *shape);
-  void drawTeleport(GLShape *shape);
-  void drawGreen(GLShape *shape);
-  void drawExplosion(GLShape *shape);
-  void drawSwirl(GLShape *shape);
-  void drawCastSpell(GLShape *shape);
-
+  inline GLShape *getShape() { return shape; }
+   
+protected:
+  void commonInit();
+  void glowShape(int startTime);
+  void drawFlames();
+  void drawTeleport();
+  void drawGreen();
+  void drawExplosion();
+  void drawSwirl();
+  void drawCastSpell();
+  void drawRing();
+  
   // particle management
-  void createParticle(GLShape *shape, ParticleStruct **particle);
+  void createParticle(ParticleStruct **particle);
   void moveParticle(ParticleStruct **particle);
-  void drawParticle(GLShape *shape, ParticleStruct *particle);
-
+  void drawParticle(ParticleStruct *particle);
+   
 };
 
 #endif

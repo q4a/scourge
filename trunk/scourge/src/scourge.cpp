@@ -438,7 +438,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	if(event->key.keysym.sym == SDLK_h) {
 	  //party->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
     map->startEffect(party->getParty(0)->getX(), party->getParty(0)->getY(), 3, 
-                     Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
+                     Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4), 2, 2);
 	  return false;
 	}
 	if(event->key.keysym.sym == SDLK_j) {
@@ -451,6 +451,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	}
 	if(event->key.keysym.sym == SDLK_l) {
 	  party->startEffect(Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
+	  return false;
+	}
+	if(event->key.keysym.sym == SDLK_d) {
+    map->startEffect(party->getParty(0)->getX(), party->getParty(0)->getY(), 3, 
+                     Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4), 6, 6);
 	  return false;
 	}
 
