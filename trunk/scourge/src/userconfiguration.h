@@ -196,21 +196,21 @@ private:
   inline int getGameSpeedLevel()  { return gamespeed;  } // [0, 1, 2, 3, 4] 
   inline bool getAlwaysCenterMap(){ return centermap;  }  
   
-  inline bool setFullscreen(bool t){ fullscreen=t; }
-  inline bool setDoublebuf(bool t) { doublebuf=t;  }
-  inline bool setHwpal(bool t)     { hwpal=t;      }
-  inline bool setResizeable(bool t){ resizeable=t; }
-  inline bool setForce_hwsurf(bool t) { force_hwsurf=t; }
-  inline bool setForce_swsurf(bool t) { force_swsurf=t; }
-  inline bool setHwaccel(bool t)   { hwaccel=t;    }   
-  inline bool setStencilbuf(bool t){ stencilbuf=t; }
-  inline bool setMultitexturing(bool t){ Constants::multitexture=t; }
-  inline int setBpp(int t)         { bpp=t;        }
-  inline int setW(int t)           { w=t;          }
-  inline int setH(int t)           { h=t;          }
-  inline int setShadows(int t)     { shadows=t; }
-  inline int setGameSpeedLevel(int t)   { if(t >= 0 && t <= 4) gamespeed=t; } // [0, 1, 2, 3, 4]
-  inline bool setAlwaysCenterMap(int t) { centermap=t; }
+  inline void setFullscreen(bool t){ fullscreen=t; }
+  inline void setDoublebuf(bool t) { doublebuf=t;  }
+  inline void setHwpal(bool t)     { hwpal=t;      }
+  inline void setResizeable(bool t){ resizeable=t; }
+  inline void setForce_hwsurf(bool t) { force_hwsurf=t; }
+  inline void setForce_swsurf(bool t) { force_swsurf=t; }
+  inline void setHwaccel(bool t)   { hwaccel=t;    }   
+  inline void setStencilbuf(bool t){ stencilbuf=t; }
+  inline void setMultitexturing(bool t){ Constants::multitexture=t; }
+  inline void setBpp(int t)         { bpp=t;        }
+  inline void setW(int t)           { w=t;          }
+  inline void setH(int t)           { h=t;          }
+  inline void setShadows(int t)     { shadows=t; }
+  inline void setGameSpeedLevel(int t)   { if(t >= 0 && t <= 4) gamespeed=t; } // [0, 1, 2, 3, 4]
+  inline void setAlwaysCenterMap(int t) { centermap=t; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           
