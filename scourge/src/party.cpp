@@ -77,20 +77,26 @@ void Party::resetPartyUI() {
   if(getPartySize() > 1) {
     player2Button->getLabel()->setText(party[1]->getName());
     player2Button->setVisible(true);
+    playerInfo[1]->setVisible(true);
   } else {
     player2Button->setVisible(false);
+    playerInfo[1]->setVisible(false);
   }
   if(getPartySize() > 2) {
     player3Button->getLabel()->setText(party[2]->getName());
     player3Button->setVisible(true);
+    playerInfo[2]->setVisible(true);
   } else {
     player3Button->setVisible(false);
+    playerInfo[2]->setVisible(false);
   }
   if(getPartySize() > 3) {
     player4Button->getLabel()->setText(party[3]->getName());
     player4Button->setVisible(true);
+    playerInfo[3]->setVisible(true);
   } else {
     player4Button->setVisible(false);
+    playerInfo[3]->setVisible(false);
   }
 
   Event *e;  
