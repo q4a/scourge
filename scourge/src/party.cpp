@@ -20,7 +20,9 @@
 
 Creature *Party::lastPlayer = NULL;
 
-#define RANDOM_PARTY 1
+//#define RANDOM_PARTY 1
+
+#define PARTY_FOLLOW_INTERVAL 1500
 
 Party::Party(Session *session) {
   this->session = session;
@@ -101,6 +103,7 @@ void Party::startPartyOnMission() {
   calendar->reset(false);
 
   player_only = false;
+  playerMoved = 0;
   partyDead = false;
   
   setFirstLivePlayer();
@@ -210,6 +213,9 @@ void Party::toggleRound() {
     session->getCreature(i)->getShape()->setPauseAnimation(!startRound);
   } 
 
+  // restart player stopping on un-pause
+  if( startRound && playerMoved > 0 ) setPlayerMoved();
+
   session->getGameAdapter()->toggleRoundUI(startRound);  
 }
 
@@ -241,13 +247,16 @@ void Party::movePlayers() {
 	  player->moveToLocator(session->getMap());
 	  session->getMap()->center(toint(player->getX()), toint(player->getY()));
 	}
-	
+
 	// others follow the player
-	for(int t = 0; t < getPartySize(); t++) {
-	  if(!party[t]->getStateMod(Constants::dead) && party[t] != player) {
-		party[t]->moveToLocator(session->getMap());
+	if( playerMoved == 0 || SDL_GetTicks() - playerMoved > PARTY_FOLLOW_INTERVAL ) {
+	  playerMoved = 0;
+	  for(int t = 0; t < getPartySize(); t++) {
+		if(!party[t]->getStateMod(Constants::dead) && party[t] != player) {
+		  party[t]->moveToLocator(session->getMap());
+		}
 	  }
-	}	
+	}
   }
 }
 
@@ -574,12 +583,14 @@ void Party::setFormation(int formation) {
     getParty(i)->setFormation(formation);
   }
   player_only = false;
+  playerMoved = 0;
   startRound = true;
   session->getGameAdapter()->setFormationUI(formation, !isPlayerOnly());
 }
 
 void Party::togglePlayerOnly(bool keepTargets) {
   player_only = (player_only ? false : true);
+  if( !player_only ) playerMoved = 0;
   // in group mode everyone hunts the same creature
   if(!player_only && !keepTargets) {
     for(int i = 0; i < getPartySize(); i++) {
