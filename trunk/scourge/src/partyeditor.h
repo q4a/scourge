@@ -61,6 +61,13 @@ typedef struct _CharacterInfo {
   Button *prevModel;
   int modelIndex;
 
+  Label *skillLabel;
+  ScrollingList *skills;
+  Button *skillAddButton, *skillRerollButton, *skillSubButton;
+  int availableSkillMod;
+  char **skillLine;
+  int skill[ Constants::SKILL_COUNT ], skillMod[ Constants::SKILL_COUNT ];
+
   Button *back, *next;
   
 } CharacterInfo;
