@@ -29,7 +29,8 @@ Widget::Widget(int x, int y, int w, int h) {
   setBackground( 1, 0.75f, 0.45f );
   //  setSelectionColor( 1, 0.5f, 0.45f );
   setSelectionColor( 0.75f, 0.75f, 0.8f );
-  setBorderColor( 0.8f, 0.5f, 0.2f );
+  //setBorderColor( 0.8f, 0.5f, 0.2f );
+  setBorderColor( 0.6f, 0.3f, 0.1f );
   setHighlightedBorderColor( 1.0f, 0.8f, 0.4f );
   setFocusColor( 0.8f, 0.5f, 0.2f, 1 );
   visible = true;

@@ -34,7 +34,9 @@ NetPlay::NetPlay(Scourge *scourge) {
                         0, scourge->getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
                         width, Scourge::PARTY_GUI_HEIGHT, 
                         strdup("Chat"), 
-                        scourge->getShapePalette()->getGuiTexture(), false );
+                        scourge->getShapePalette()->getGuiTexture(), false,
+                        Window::BASIC_WINDOW,
+                        scourge->getShapePalette()->getGuiTexture2() );
   mainWin->setBackground(0, 0, 0);
   messageList = new ScrollingList(10, 35, width - 20, Scourge::PARTY_GUI_HEIGHT - 65, 
                                   scourge->getShapePalette()->getHighlightTexture());

@@ -43,7 +43,8 @@ bool Window::windowWasClosed = false;
 Window::Window(SDLHandler *sdlHandler, 
                int x, int y, int w, int h, 
                char *title, GLuint texture,
-               bool hasCloseButton, int type) :
+               bool hasCloseButton, int type, 
+               GLuint texture2) :
 Widget(x, y, w, h) {
   this->lastWidget = NULL;
   this->sdlHandler = sdlHandler;
@@ -59,7 +60,12 @@ Widget(x, y, w, h) {
   } else closeButton = NULL;
   openHeight = 0;
   this->type = type;
+  this->texture2 = texture2;
   this->locked = false;
+  //1, 0.75f, 0.45f
+  background.r = 1.0f;
+  background.g = 0.85f;
+  background.b = 0.5f;
   setBackgroundTileWidth(TILE_W);
   setBackgroundTileHeight(TILE_H);
   // make windows stay on screen
@@ -340,6 +346,19 @@ void Window::removeWidget(Widget *widget) {
 
 void Window::drawWidget(Widget *parent) {
 
+  /*
+  // this needs to be smarter...
+  if( currentWin == this ) {
+    background.r = 1.0f;
+    background.g = 0.85f;
+    background.b = 0.5f;
+  } else {
+    background.r = 0.9f;
+    background.g = 0.7f;
+    background.b = 0.3f;
+  }
+  */
+
   GLint t = SDL_GetTicks();
   //if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
   if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
@@ -385,6 +404,7 @@ void Window::drawWidget(Widget *parent) {
     glTexCoord2f (w/(float)tileWidth, 0.0f);      
     glVertex2i (w, topY + TOP_HEIGHT + openHeight);
     glEnd ();
+
   } else {
     glBegin (GL_QUADS);
     /*
@@ -409,24 +429,34 @@ void Window::drawWidget(Widget *parent) {
 
     glEnd ();
   }
-  glDisable( GL_TEXTURE_2D );
 
   if(type == BASIC_WINDOW) {
     if(!isModal()) {
       glEnable( GL_BLEND );
       glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     }
+    if(texture2) {
+      glBindTexture( GL_TEXTURE_2D, texture2 );
+    } else {
+      glDisable( GL_TEXTURE_2D );
+    }
     applyBackgroundColor();
     glBegin (GL_QUADS);
+    glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY + TOP_HEIGHT);
+    glTexCoord2f (0.0f, ( openHeight )/(float)tileHeight);
     glVertex2i (0, topY + TOP_HEIGHT + openHeight);
+    glTexCoord2f (w/(float)tileWidth, ( openHeight ) /(float)tileHeight);
     glVertex2i (w, topY + TOP_HEIGHT + openHeight);
+    glTexCoord2f (w/(float)tileWidth, 0.0f);      
     glVertex2i (w, topY + TOP_HEIGHT);
     glEnd();
     if(!isModal()) {
       glDisable( GL_BLEND );
     }
   }
+
+  glDisable( GL_TEXTURE_2D );
 
   // draw drop-shadow
   if(!isLocked()) {
