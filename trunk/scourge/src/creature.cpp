@@ -876,7 +876,7 @@ void Creature::equipInventory(int index) {
         if(!item->getRpgItem()->isWeapon() && 
            item->getMagicAttrib()->getSchool()) {
           int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
-          setSkillBonus(skill, getSkillBonus(skill) + (7 * item->getMagicAttrib()->getLevel()));
+          setSkillBonus(skill, getSkillBonus(skill) + item->getMagicAttrib()->getMagicResistance());
         }
         // refresh map for invisibility, etc.
         session->getMap()->refresh();
@@ -922,7 +922,7 @@ int Creature::doff(int index) {
         if(!item->getRpgItem()->isWeapon() && 
            item->getMagicAttrib()->getSchool()) {
           int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
-          setSkillBonus(skill, getSkillBonus(skill) - (7 * item->getMagicAttrib()->getLevel()));
+          setSkillBonus(skill, getSkillBonus(skill) - item->getMagicAttrib()->getMagicResistance());
         }
 
         // refresh map for invisibility, etc.

@@ -151,6 +151,7 @@ Scourge::~Scourge(){
   delete multiplayer;
   delete miniMap;
   delete netPlay;
+  delete infoGui;
 }
 
 void Scourge::startMission() {
@@ -284,6 +285,7 @@ void Scourge::startMission() {
     if(boardWin->isVisible()) boardWin->setVisible(false);
     miniMap->hide();
     netPlay->getWindow()->setVisible(false);
+    infoGui->getWindow()->setVisible(false);
 
     resetBattles();
     
@@ -823,7 +825,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
     //return false;
   //}
 
-
   int mx, my;
   switch(event->type) {
   case SDL_MOUSEMOTION:
@@ -1271,9 +1272,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   }
 }        
 
-/*
- * Here use a pop-up dialog instead, eventually.
- */
 void Scourge::describeLocation(int mapx, int mapy, int mapz) {
   char s[300];
   if(mapx < MAP_WIDTH) {
@@ -1290,8 +1288,10 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
         Item *item = loc->item;
         //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
         if( item ) {
-          item->getDetailedDescription(s, false);
-          description = s;
+          //item->getDetailedDescription(s, false);
+          //description = s;
+          infoGui->setItem( item, getParty()->getPlayer()->getSkill(Constants::IDENTIFY_ITEM_SKILL) );
+          if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
         } else {
           Shape *shape = loc->shape;
           //fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
@@ -1840,6 +1840,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     //return false;
   //}
 
+  if(infoGui->getWindow()->isVisible()) {
+    infoGui->handleEvent(widget, event);
+  }
+
   // FIXME: this is hacky...
   if(handlePartyEvent(widget, event)) return true;
   int n = handleBoardEvent(widget, event);
@@ -1872,6 +1876,9 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
 // create the ui
 void Scourge::createUI() {
+
+  infoGui = new InfoGui( this );
+
   int width = 
     getSDLHandler()->getScreen()->w - 
     (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
@@ -2334,6 +2341,12 @@ Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
   win->setColor( 0.8f, 0.8f, 0.7f, 1 );
   win->setBackground( 0.65, 0.30f, 0.20f, 0.15f );
   win->setSelectionColor(  0.25f, 0.35f, 0.6f );
+  return win;
+}
+
+Window *Scourge::createWindow(int x, int y, int w, int h, char *title) {
+  Window *win = new Window( getSDLHandler(), x, y, w, h, title, 
+                            getShapePalette()->getGuiTexture() );
   return win;
 }
 

@@ -62,6 +62,8 @@ public:
   inline char *getMonsterType() { return monsterType; }
   inline MagicSchool *getSchool() { return school; }
   int rollMagicDamage();
+  inline int getMagicResistance() { return (7 * getLevel()); }
+  char *describeMagicDamage();
   inline bool isCursed() { return cursed; }
   inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
   inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
@@ -157,6 +159,7 @@ class RpgItem {
   inline float getWeight() { return weight; }
   inline int getShapeIndex() { return shape_index; }
   inline char *getShortDesc() { return shortDesc; }  
+  inline char *getLongDesc() { return desc; }  
   inline int getEquip() { return equip; }
   inline int getDistance() { return distance; }
   inline int getSkill() { return skill; } 

@@ -55,12 +55,21 @@ void Label::drawWidget(Widget *parent) {
 					if(n > start) end = n + 1;
 				}
 
+        // search for hard breaks
+        int n = start;
+        while(n < end && *(text + n) != '|') n++;
+        bool hardbreak = false;
+        if( n < end) {
+          end = n + 1;
+          hardbreak = true;
+        }
+
 				//cerr << "\tstart=" << start << endl;
 				//cerr << "\tend=" << end << endl;
 				//cerr << "\tend-start=" << (end-start) << endl;
 
 				strncpy(p, text + start, end - start);
-				*(p + end - start) = 0;
+				*(p + end - (hardbreak ? 1 : 0) - start) = 0;
 				//cerr << "p=" << p << endl;
 
 				((Window*)parent)->getSDLHandler()->texPrint(0, y, p);

@@ -376,6 +376,10 @@ int MagicAttrib::rollMagicDamage() {
   return (magicDamage ? magicDamage->roll() : 0); 
 }
 
+char *MagicAttrib::describeMagicDamage() { 
+  return (magicDamage ? magicDamage->toString() : NULL);
+}
+
 void MagicAttrib::debug(char *s, RpgItem *item) {
   cerr << s << endl;
   cerr << "Magic item: " << item->getName() << "(+" << bonus << ")" << endl;

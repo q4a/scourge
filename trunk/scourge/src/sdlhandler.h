@@ -107,10 +107,12 @@ private:
 
   inline void setDebugStr(char *s) { debugStr = s; }
   
-  Uint16 mouseX, mouseY;
+  Uint16 mouseX, mouseY, lastMouseX, lastMouseY;
   Uint8 mouseButton, mouseEvent;
   bool mouseDragging;
   bool mouseIsMovingOverMap;
+  Uint32 lastLeftClick;
+  bool isDoubleClick;
 
   void setOrthoView();
 
