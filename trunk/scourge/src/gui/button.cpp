@@ -35,6 +35,7 @@ Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) :
   toggle = selected = false;
   inside = false;
   this->highlight = highlight;
+  this->glowing = false;
 }
 
 Button::~Button() {
@@ -61,13 +62,32 @@ void Button::drawWidget(Widget *parent) {
     glDisable( GL_BLEND );
   }
 
+  GLint t = SDL_GetTicks();
+  if(lastTick == 0 || t - lastTick > 50) {
+    lastTick = t;
+    alpha += alphaInc;
+    if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
+  }
+  if(glowing) {
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 1, 0.15, 0.15, alpha );
+    glBindTexture( GL_TEXTURE_2D, highlight );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, 0 );
+    glVertex2d(0, 0);
+    glTexCoord2f( 0, 1 );
+    glVertex2d(0, y2 - y);
+    glTexCoord2f( 1, 1 );
+    glVertex2d(x2 - x, y2 - y);
+    glTexCoord2f( 1, 0 );
+    glVertex2d(x2 - x, 0);
+    glEnd();
+    glDisable( GL_BLEND );
+    glDisable( GL_TEXTURE_2D );
+  }
   if(inside) {
-    GLint t = SDL_GetTicks();
-    if(lastTick == 0 || t - lastTick > 50) {
-      lastTick = t;
-      alpha += alphaInc;
-      if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
-    }
     glEnable( GL_TEXTURE_2D );
     glColor4f( 0.75, 0.75, 1, alpha );
     glBindTexture( GL_TEXTURE_2D, highlight );
