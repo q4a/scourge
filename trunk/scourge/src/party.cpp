@@ -31,6 +31,7 @@ Party::Party(Session *session) {
   partySize = 0;
 
   loadedCount = 0;
+  storylineIndex = 0;
 }
 
 Party::~Party() {
@@ -60,6 +61,8 @@ void Party::reset() {
     }
     partySize = loadedCount;
     loadedCount = 0;
+    session->getBoard()->setStorylineIndex( storylineIndex );
+    storylineIndex = 0;
   } else {
     cerr << "*** Creating new party!" << endl;
 //    Creature *pc[MAX_PARTY_SIZE];
@@ -527,9 +530,10 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   *partySize = pcCount;  
 }
 
-void Party::setParty(int count, Creature **creatures) {
+void Party::setParty(int count, Creature **creatures, int storylineIndex) {
   loadedCount = count;
   for(int i = 0; i < count; i++) loadedParty[i] = creatures[i];
+  this->storylineIndex = storylineIndex;
 }
 
 /** 

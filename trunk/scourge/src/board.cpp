@@ -160,6 +160,16 @@ void Board::initMissions() {
   }
   float ave = ((float)sum / (float)session->getParty()->getPartySize() / 1.0f);
 
+  // remove the storyline missions
+  for(vector<Mission*>::iterator e = availableMissions.begin(); e != availableMissions.end(); ++e) {
+    Mission *mission = *e;
+    if( mission->isStoryLine() ) {
+      availableMissions.erase( e );
+    }
+  }
+  // add the current storyline mission
+  availableMissions.push_back( storylineMissions[ storylineIndex ] );
+
   // maintain a set of missions
   while( availableMissions.size() < 5 ) {
     int level = (int)( ( ave + 2.0f ) * rand()/RAND_MAX ) - 4;
@@ -169,30 +179,7 @@ void Board::initMissions() {
     int templateIndex = (int)( (float)( templates.size() ) * rand()/RAND_MAX );
     Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
     availableMissions.push_back( mission );
-  }
-
-  // add the lowest level, un-completed storyline mission
-  int index = -1;
-  for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
-    Mission *mission = storylineMissions[i];
-    if( !mission->isCompleted() && 
-        mission->getLevel() < highest && 
-        ( index == -1 || mission->getLevel() < storylineMissions[ index ]->getLevel() ) ) {
-      index = i;
-    }
-  }
-  if( index != -1 ) {
-    bool found = false;
-    for( int i = 0; i < (int)availableMissions.size(); i++ ) {
-      if( availableMissions[ i ] == storylineMissions[ index ] ) {
-        found = true;
-        break;
-      }
-    }
-    if( !found ) {
-      availableMissions.push_back( storylineMissions[ index ] );
-    }
-  }
+  }  
 
   // init ui
   if(availableMissions.size()) {
@@ -237,27 +224,21 @@ void Board::initMissions() {
 }
 
 void Board::setStorylineIndex( int n ) {
-  cerr << "*** setting storyline index: " << n << " size=" << storylineMissions.size() << endl;
   storylineIndex = n;
   for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
-	if( i < storylineIndex ) storylineMissions[i]->setCompleted( true );
-	else break;
+    storylineMissions[i]->setCompleted( i < storylineIndex ? true : false );
   }
 }
 
 void Board::storylineMissionCompleted( Mission *mission ) {
-  cerr << "*** storyline mission completed ";
   for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
-	if( storylineMissions[i] == mission &&
-		storylineIndex < ( i + 1 )) {
-	  storylineIndex = i + 1;
-	  break;
-	}
+    if( storylineMissions[i] == mission &&
+        storylineIndex < ( i + 1 )) {
+      storylineIndex = i + 1;
+      break;
+    }
   }
-  cerr << "index=" << storylineIndex << endl;
 }
-
-
 
 
 
