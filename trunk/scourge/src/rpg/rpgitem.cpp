@@ -131,7 +131,7 @@ RpgItem *RpgItem::items[] =  {
   new RpgItem(MUTTON_MEAT, "Mutton meat", 3, FOOD, 1.0f, 80, 100, 0, 0,
 			  "A big slice of mutton meat",
 			  "A slice of mutton meat", 0,
-			  Constants::SWORD_INDEX, 0,0,0, 1, 1),   
+			  Constants::SWORD_INDEX, 0,0,0, 2, 2),   
   new RpgItem(WATER_POTION, "Water_potion", 1, DRINK, 0.2f, 5, 100, 0, 0,
 			  "A potion full of water",
 			  "Water", 0,
