@@ -72,10 +72,12 @@ const char *Constants::SKILL_NAMES[] = {
   "SHIELD_DEFEND",
   "ARMOR_DEFEND",
   "WEAPON_DEFEND",
+  "HAND_DEFEND",
 
   "MATERIAL_SPELL",
   "ILLUSION_SPELL",
-  "PSYCHIC_SPELL",
+  "NATURE_SPELL",
+  "DIVINE_SPELL",
 
   "OPEN_LOCK",
   "FIND_TRAP",
@@ -108,11 +110,11 @@ char *Constants::getMessage(int index) {
 }
 
 int Constants::getSkillByName(char *p) {
-  if(!p || !strlen(p)) return 0;
+  if(!p || !strlen(p)) return -1;
   for(int i = 0; i < SKILL_COUNT; i++) {
 	if(!strcmp(p, SKILL_NAMES[i])) return i;
   }
-  return 0;
+  return -1;
 }
 
 /*
