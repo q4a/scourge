@@ -156,6 +156,8 @@ private:
   vector<int> teleporterX;
   vector<int> teleporterY;
 
+  Uint32 start;
+
 public: 
 
   // pre-rendered location index
@@ -247,6 +249,8 @@ protected:
   void getRandomDeadEndLocation(int *x, int *y, GLShape *shape, Map *map);
 
   int getRoomIndex(int x, int y);
+
+  void updateStatus(const char *statusMessage);
 };
 
 #endif
