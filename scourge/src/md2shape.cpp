@@ -278,6 +278,22 @@ bool MD2Shape::drawLater() {
 MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div,
                                 GLuint texture[], char *name, int descriptionGroup,
                                 Uint32 color, Uint8 shapePalIndex) {
+
+  /**
+   * Notes on calculating min/max points and normalizing model:
+   * 1. if min/max is calculated per animation (but stored only for MD2_STAND) and each animation is
+   * normalized with this "local" value, the model will sink into the floor or jump up. This is b/c
+   * the MD2_STAND min/max values are used to draw it.
+   * 2. if min/max is calculated for MD2_STAND and all animations are normalized with these values
+   * the models will perform some animations slightly outside their circles but will remain on the 
+   * floor. (This is what is currently used.)
+   * 
+   * The ideal solution is to do 1. with a min values stored per animation. Then each animation can
+   * be drawn correctly.
+   * 
+   * I hope this note will still make sense in a few weeks...
+   */
+
   vect3d min;
   vect3d max;
   int width, depth, height;
@@ -285,41 +301,41 @@ MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div
   // bogus initial value
   width = depth = height = 1;
 
-  // normalize and center
+  // mins/max-s
+  vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[MD2_STAND].startFrame ];
+  min[0] = min[1] = min[2] = 100000.0f; // BAD!!
+  max[0] = max[1] = max[2] = 0.0f;
+  for(int i = 0; i < g_3DModel->numVertices; i++) {
+    for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
+    for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
+  }  
+  for(int t = 0; t < 3; t++) max[t] -= min[t];
+  
+  // set the dimensions
+  float fw = max[2] * div * DIV;
+  float fd = max[0] * div * DIV;
+  float fh = max[1] * div * DIV;
+  
+  // make it a square
+  if(fw > fd) fd = fw;
+  else fw = fd;
+    
+  // set the shape's dimensions
+  width = (int)(fw + 0.5f);
+  depth = (int)(fd + 0.5f);
+  height = (int)(fh + 0.5f);
+  
+  // normalize and center points
+  map<int, int> seenFrames;
   for(int r = 0; r < MD2_CREATURE_ACTION_COUNT; r++) {
-
-    // mins/max-s
-    vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[r].startFrame ];
-    min[0] = min[1] = min[2] = 100000.0f; // BAD!!
-    max[0] = max[1] = max[2] = 0.0f;
-    for(int i = 0; i < g_3DModel->numVertices; i++) {
-      for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
-      for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
-    }  
-    for(int t = 0; t < 3; t++) max[t] -= min[t];
-
-    if( r == MD2_STAND ) {
-      // set the dimensions
-      float fw = max[2] * div * DIV;
-      float fd = max[0] * div * DIV;
-      float fh = max[1] * div * DIV;
-
-      // make it a square
-      if(fw > fd) fd = fw;
-      else fw = fd;
-
-      // set the shape's dimensions
-      width = (int)(fw + 0.5f);
-      depth = (int)(fd + 0.5f);
-      height = (int)(fh + 0.5f);
-    }
-
-    // normalize and center points
     for(int a = g_3DModel->pAnimations[r].startFrame; a < g_3DModel->pAnimations[r].endFrame; a++) {
-      point = &g_3DModel->vertices[ g_3DModel->numVertices * a ];
-      for(int i = 0; i < g_3DModel->numVertices; i++) {
-        for(int t = 0; t < 3; t++) point[i][t] -= min[t];
-        for(int t = 0; t < 3; t++) if(t != 1) point[i][t] -= (max[t] / 2.0f);
+      if(seenFrames.find(a) == seenFrames.end()) {
+        point = &g_3DModel->vertices[ g_3DModel->numVertices * a ];
+        for(int i = 0; i < g_3DModel->numVertices; i++) {
+          for(int t = 0; t < 3; t++) point[i][t] -= min[t];
+          for(int t = 0; t < 3; t++) if(t != 1) point[i][t] -= (max[t] / 2.0f);
+        }
+        seenFrames[a] = 1;
       }
     }
   }
