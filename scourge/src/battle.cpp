@@ -218,7 +218,8 @@ bool Battle::fightTurn() {
 
   // ---------------------------------------------
   // go to single-player mode
-  if(!session->getParty()->isPlayerOnly()) 
+  if(session->getUserConfiguration()->isBattleTurnBased() &&
+     !session->getParty()->isPlayerOnly()) 
     session->getParty()->togglePlayerOnly(true);
 
   // pause if this is a player's first step

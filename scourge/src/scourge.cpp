@@ -939,8 +939,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
     else if(ea == SET_PLAYER_3){
 	  party->setPlayer(3);
     }
-    else if(ea == SET_PLAYER_ONLY){
-	  party->togglePlayerOnly();
+    else if(ea == SET_PLAYER_ONLY && 
+            !session->getUserConfiguration()->isBattleTurnBased()) { 
+        party->togglePlayerOnly();
     }    
 	//    else if(ea == BLEND_A){
     else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_6){
@@ -1893,6 +1894,7 @@ void Scourge::playRound() {
 
         // fight a turn of the battle
         if(battleRound.size() > 0) {
+          // don't fight if no more monsters and party members
           if(battleTurn < (int)battleRound.size()) {
             Battle *battle = battleRound[battleTurn];
             if(battle->fightTurn()) {
@@ -1901,6 +1903,7 @@ void Scourge::playRound() {
           } else {
             battleTurn = 0;
             battleRound.clear();
+
             cerr << "ROUND ENDS" << endl;
             cerr << "----------------------------------" << endl;
             fromBattle = true;
@@ -1914,21 +1917,25 @@ void Scourge::playRound() {
       // set up battles
       battleCount = 0;
       
-      // attack targeted monster if close enough
+      // anybody doing anything?
       for(int i = 0; i < party->getPartySize(); i++) {
-        if(!party->getParty(i)->getStateMod(Constants::dead) && 
-           (party->getParty(i)->hasTarget() || 
-            party->getParty(i)->getAction() > -1)) {								
-          battle[battleCount++] = party->getParty(i)->getBattle();
+        if(!party->getParty(i)->getStateMod(Constants::dead)) {
+          bool hasTarget = (party->getParty(i)->hasTarget() || 
+                            party->getParty(i)->getAction() > -1);
+          if(hasTarget && party->getParty(i)->isTargetValid()) {
+            battle[battleCount++] = party->getParty(i)->getBattle();
+          }
         }
       }
       for(int i = 0; i < session->getCreatureCount(); i++) {
-        if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+        if(!session->getCreature(i)->getStateMod(Constants::dead) &&
            map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-           map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-           (session->getCreature(i)->hasTarget() || 
-            session->getCreature(i)->getAction() > -1)) {
-          battle[battleCount++] = session->getCreature(i)->getBattle();
+           map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+          bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
+                            session->getCreature(i)->getAction() > -1);
+          if(hasTarget && session->getCreature(i)->isTargetValid()) {
+            battle[battleCount++] = session->getCreature(i)->getBattle();
+          }
         }
       }
 
@@ -1936,18 +1943,23 @@ void Scourge::playRound() {
 
         // add other movement
         for(int i = 0; i < party->getPartySize(); i++) {
-          if(!party->getParty(i)->getStateMod(Constants::dead) && 
-             !(party->getParty(i)->hasTarget() || 
-               party->getParty(i)->getAction() > -1)) {
-            battle[battleCount++] = party->getParty(i)->getBattle();
+          if(!party->getParty(i)->getStateMod(Constants::dead)) {
+            bool hasTarget = (party->getParty(i)->hasTarget() || 
+                              party->getParty(i)->getAction() > -1);
+            if(!hasTarget || (hasTarget && !party->getParty(i)->isTargetValid())) {
+              battle[battleCount++] = party->getParty(i)->getBattle();
+            }
           }
         }
         for(int i = 0; i < session->getCreatureCount(); i++) {
-          if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-             !session->getCreature(i)->getTargetCreature() &&
+          if(!session->getCreature(i)->getStateMod(Constants::dead) &&
              map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
              map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
-            battle[battleCount++] = session->getCreature(i)->getBattle();
+            bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
+                              session->getCreature(i)->getAction() > -1);
+            if(!hasTarget || (hasTarget && !session->getCreature(i)->isTargetValid())) {
+              battle[battleCount++] = session->getCreature(i)->getBattle();
+            }
           }
         }
       
@@ -2461,7 +2473,7 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
     party->setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
   } else if(widget == player4Button) {
     party->setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
-  } else if(widget == groupButton) {
+  } else if(widget == groupButton && !session->getUserConfiguration()->isBattleTurnBased()) {
     party->togglePlayerOnly();
   } else if(widget == roundButton) {
     party->toggleRound();
