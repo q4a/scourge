@@ -25,11 +25,13 @@
 #include "creature.h"
 #include "shapepalette.h"
 #include "board.h"
+#include "gui/progress.h"
 
 // forward decl.
 class Map;
 class Creature;
 class Mission;
+class Progress;
 
 #define DRAW_UNVISITED 0
 
@@ -56,6 +58,9 @@ typedef struct _MapLocation {
 
 class DungeonGenerator {
 private:
+
+  static const char MESSAGE[];
+
   typedef struct _Room {
 	int x, y, w, h;
   } Room;
@@ -82,10 +87,10 @@ private:
   int monsters;
   bool stairsDown, stairsUp;
   Mission *mission;
+  Progress *progress;
 
   Sint16 *ff;
   int ffCount;
-  int status;
 
   // directions
   const static int DIR_N = 0;
@@ -155,8 +160,6 @@ public:
   void toMap(Map *map, ShapePalette *shapePal, int location=0);
 
 protected:
-
-  void updateStatus();
 
   void initByLevel();
   void generateMaze();

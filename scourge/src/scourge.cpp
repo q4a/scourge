@@ -1935,11 +1935,19 @@ int Scourge::initMultiplayer() {
   }
   client = new Client((char*)host, port, (char*)username, (CommandInterpreter*)netPlay);
   client->setGameStateHandler(netPlay);
+
+  Progress *progress = new Progress(this, 10);
+  progress->updateStatus("Connecting to server");
   if(!client->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
     showMessageDialog(Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR));
+    delete progress;
     return 0;
   }
+  progress->updateStatus("Connected!");
+  SDL_Delay(3000);
+
+  delete progress;
 
   // upload your character
 
