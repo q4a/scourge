@@ -474,15 +474,16 @@ void Window::drawWidget(Widget *parent) {
 				 theme->getWindowBackground()->color.a );
 	}
 
-    glBegin (GL_QUADS);
-    glTexCoord2f (0.0f, 0.0f);
-    glVertex2i (0, topY + TOP_HEIGHT);
-    glTexCoord2f (0.0f, ( openHeight )/(float)tileHeight);
-    glVertex2i (0, topY + TOP_HEIGHT + openHeight);
-    glTexCoord2f (w/(float)tileWidth, ( openHeight ) /(float)tileHeight);
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight);
-    glTexCoord2f (w/(float)tileWidth, 0.0f);      
-    glVertex2i (w, topY + TOP_HEIGHT);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2i(0, topY + TOP_HEIGHT);
+    glTexCoord2f(0.0f, ( openHeight )/(float)tileHeight);
+    glVertex2i(0, topY + TOP_HEIGHT + openHeight);
+    //    glTexCoord2f (w/(float)tileWidth, ( openHeight ) /(float)tileHeight);
+    glTexCoord2f( 1, ( openHeight ) /(float)tileHeight);
+    glVertex2i(w, topY + TOP_HEIGHT + openHeight);
+    glTexCoord2f( 1, 0.0f);      
+    glVertex2i(w, topY + TOP_HEIGHT);
     glEnd();
     if(!isModal()) {
       glDisable( GL_BLEND );

@@ -288,11 +288,11 @@ void Button::drawWidget(Widget *parent) {
     default: ypos = (y2 - y) / 2 + 5;
     }
     glTranslated( 5, ypos, 0);
-    if( selected && theme->getSelectionText() ) {
-      glColor4f( theme->getSelectionText()->r,
-                 theme->getSelectionText()->g,
-                 theme->getSelectionText()->b,
-                 theme->getSelectionText()->a );
+    if( selected && theme->getButtonSelectionText() ) {
+      glColor4f( theme->getButtonSelectionText()->r,
+                 theme->getButtonSelectionText()->g,
+                 theme->getButtonSelectionText()->b,
+                 theme->getButtonSelectionText()->a );
     } else if( theme->getButtonText() ) {
       glColor4f( theme->getButtonText()->r,
                  theme->getButtonText()->g,

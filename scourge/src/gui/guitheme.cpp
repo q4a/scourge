@@ -37,6 +37,7 @@ GuiTheme::GuiTheme( char *name ) {
   buttonHighlight = NULL;
   buttonBorder = NULL;
   buttonText = NULL;
+  buttonSelectionText = NULL;
   listBackground = NULL;
   inputBackground = NULL;
   inputText = NULL;
@@ -56,6 +57,7 @@ GuiTheme::~GuiTheme() {
   if( buttonHighlight ) delete buttonHighlight;
   if( buttonBorder ) delete buttonBorder;
   if( buttonText ) delete buttonText;
+  if( buttonSelectionText ) delete buttonSelectionText;
   if( listBackground ) delete listBackground;
   if( inputBackground ) delete inputBackground;
   if( inputText ) delete inputText;
@@ -138,6 +140,11 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
       color = parseColor( line + 1 );
       if( color ) theme->setButtonText( color );
       else cerr << "Gui theme: " << name << " skipping button text" << endl;
+
+      n = Constants::readLine( line, fp );
+      color = parseColor( line + 1 );
+      if( color ) theme->setButtonSelectionText( color );
+      else cerr << "Gui theme: " << name << " skipping button selection text" << endl;
       
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
