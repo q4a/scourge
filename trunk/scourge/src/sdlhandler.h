@@ -110,6 +110,7 @@ private:
   Uint16 mouseX, mouseY;
   Uint8 mouseButton, mouseEvent;
   bool mouseDragging;
+  bool mouseIsMovingOverMap;
 
   void setOrthoView();
 

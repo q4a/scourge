@@ -29,6 +29,7 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   screen = NULL;
   mouseX = mouseY = mouseButton = mouseEvent = 0;
   mouseDragging = false;
+  mouseIsMovingOverMap = false;
   text = NULL;
   handlerCount = 0;
   invertMouse = false; 
@@ -386,6 +387,7 @@ void SDLHandler::mainLoop() {
   int mx, my;
   while(true) {    
     int eventCount = 0;  
+    mouseIsMovingOverMap = false;
     while(SDL_PollEvent(&event) && (eventCount++) < 10) {
       mouseEvent = mouseButton = 0;
       Widget *widget = NULL;
@@ -398,6 +400,7 @@ void SDLHandler::mainLoop() {
         mouseButton = event.button.button;
         mouseEvent = SDL_MOUSEMOTION;
         widget = Window::delegateEvent( &event, event.button.x, event.button.y );
+        if(!widget) mouseIsMovingOverMap = true;
         break;
       case SDL_MOUSEBUTTONUP:
         if(invertMouse) event.button.y = screen->h - event.button.y;

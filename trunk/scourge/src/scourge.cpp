@@ -42,6 +42,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
+  needToCheckDropLocation = true;
   nextMission = -1;
   // in HQ map
   inHq = true;
@@ -331,6 +332,8 @@ void Scourge::drawView() {
   playRound();
 
   updatePartyUI();
+
+  checkForDropTarget();
 
   map->draw();
 
@@ -2911,4 +2914,34 @@ void Scourge::resetBattles() {
   battleTurn = 0;
   inBattle = false;  
 }  
+
+void Scourge::checkForDropTarget() {
+  // find the drop target
+  if(movingItem) {
+
+    // is the mouse moving?
+    if(!getSDLHandler()->mouseIsMovingOverMap) {
+      if(needToCheckDropLocation) {
+        needToCheckDropLocation = false;
+
+        // check location
+        Location *dropTarget = NULL;
+        Uint16 mapx, mapy, mapz;
+        getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
+        if(mapx < MAP_WIDTH) {
+          dropTarget = map->getLocation(mapx, mapy, mapz);
+          if(!(dropTarget && 
+               (dropTarget->creature || 
+                (dropTarget->item && 
+                 dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
+            dropTarget = NULL;
+          }      
+        }
+        map->setSelectedDropTarget(dropTarget);  
+      }
+    } else {
+      needToCheckDropLocation = true;
+    }
+  }  
+}
 
