@@ -18,11 +18,11 @@
 #include "potionexpirationevent.h"
 
 PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, 
-											 Creature *c, RpgItem *item, 
+											 Creature *c, Item *item, 
 											 Session *session, int nbExecutionsToDo) : 
   Event(currentDate, timeOut, nbExecutionsToDo) {
     this->creature = c;
-	this->potionSkill = item->getPotionSkill();
+	this->potionSkill = item->getRpgItem()->getPotionSkill();
 	this->amount = item->getAction();
     this->session = session;
   }

@@ -127,7 +127,7 @@ void Creature::commonInit() {
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
   for(int i = 0; i < inventory_count; i++) {
-    inventoryWeight += inventory[i]->getRpgItem()->getWeight();
+    inventoryWeight += inventory[i]->getWeight();
   }  
   this->money = this->level * (int)(10.0f * rand()/RAND_MAX);
   calculateExpOfNextLevel();
@@ -650,9 +650,9 @@ bool Creature::addInventory(Item *item, bool force) {
   if(inventory_count < MAX_INVENTORY_SIZE &&
      (force || !item->isBlocking() || getShape()->fitsInside(item->getShape()))) {
     inventory[inventory_count++] = item;
-    inventoryWeight += item->getRpgItem()->getWeight(); 
+    inventoryWeight += item->getWeight(); 
 
-    if(item->getRpgItem()->getWeight() + inventoryWeight > 
+    if(item->getWeight() + inventoryWeight > 
        getMaxInventoryWeight()) {
       char msg[80];
       sprintf(msg, "%s is overloaded.", getName());
@@ -688,7 +688,7 @@ Item *Creature::removeInventory(int index) {
     doff(index);
     // drop from inventory
     item = inventory[index];
-    inventoryWeight -= item->getRpgItem()->getWeight();
+    inventoryWeight -= item->getWeight();
     if(getStateMod(Constants::overloaded) && inventoryWeight < getMaxInventoryWeight())
     {
       char msg[80];
@@ -721,8 +721,8 @@ bool Creature::eatDrink(Item *item) {
   RpgItem * rpgItem = item->getRpgItem();
 
   int type = rpgItem->getType();    
-  //weight = item->getRpgItem()->getWeight();
-  int level = rpgItem->getLevel();
+  //weight = item->getWeight();
+  int level = item->getLevel();
   if(type == RpgItem::FOOD){
     if(getHunger() == 10){                
       sprintf(msg, "%s is not hungry at the moment.", getName()); 
@@ -794,7 +794,7 @@ void Creature::usePotion(Item *item) {
   if(skill < 0) {
     switch(-skill - 2) {
     case Constants::HP:
-      n = item->getRpgItem()->getAction();
+      n = item->getAction();
       if(n + getHp() > getMaxHp())
         n = getMaxHp() - getHp();
       setHp(getHp() + n);
@@ -803,7 +803,7 @@ void Creature::usePotion(Item *item) {
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::MP:
-      n = item->getRpgItem()->getAction();
+      n = item->getAction();
       if(n + getMp() > getMaxMp())
         n = getMaxMp() - getMp();
       setMp(getMp() + n);
@@ -813,7 +813,7 @@ void Creature::usePotion(Item *item) {
       return;
     case Constants::AC:
       {
-        bonusArmor += item->getRpgItem()->getAction();
+        bonusArmor += item->getAction();
         recalcAggregateValues();
         sprintf(msg, "%s feels impervious to damage!", getName());
         session->getMap()->addDescription(msg, 0.2f, 1, 1);
@@ -821,10 +821,10 @@ void Creature::usePotion(Item *item) {
 
         // add calendar event to remove armor bonus
         // (format : sec, min, hours, days, months, years)
-        Date d(0, item->getRpgItem()->getDuration(), 0, 0, 0, 0); 
+        Date d(0, item->getDuration(), 0, 0, 0, 0); 
         Event *e = 
         new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
-                                  d, this, item->getRpgItem(), session, 1);
+                                  d, this, item, session, 1);
         session->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
       }
       return;
@@ -833,7 +833,7 @@ void Creature::usePotion(Item *item) {
       return;
     }
   } else {
-    skillBonus[skill] += item->getRpgItem()->getAction();
+    skillBonus[skill] += item->getAction();
     //	recalcAggregateValues();
     sprintf(msg, "%s feels at peace.", getName());
     session->getMap()->addDescription(msg, 0.2f, 1, 1);
@@ -841,10 +841,10 @@ void Creature::usePotion(Item *item) {
 
     // add calendar event to remove armor bonus
     // (format : sec, min, hours, days, months, years)
-    Date d(0, item->getRpgItem()->getDuration(), 0, 0, 0, 0); 
+    Date d(0, item->getDuration(), 0, 0, 0, 0); 
     Event *e = 
     new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
-                              d, this, item->getRpgItem(), session, 1);
+                              d, this, item, session, 1);
     session->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
   }
 }
@@ -895,24 +895,24 @@ void Creature::equipInventory(int index) {
       equipped[i] = index;
 
       // handle magic attrib settings
-      if(item->getMagicAttrib()) {
+      if(item->isMagicItem()) {
 
-        item->getMagicAttrib()->debug("Equip: ", item->getRpgItem());
+        item->debugMagic("Equip: ");
 
         // set the good attributes
         for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-          if(item->getMagicAttrib()->isStateModSet(i)) {
+          if(item->isStateModSet(i)) {
             this->setStateMod(i, true);
           }
         }
         // set the protected attributes
         for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-          if(item->getMagicAttrib()->isStateModProtected(i)) {
+          if(item->isStateModProtected(i)) {
             this->setProtectedStateMod(i, true);
           }
         }
         // skill bonuses
-        map<int,int> *m = item->getMagicAttrib()->getSkillBonusMap();
+        map<int,int> *m = item->getSkillBonusMap();
         for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
           int skill = e->first;
           int bonus = e->second;
@@ -920,9 +920,9 @@ void Creature::equipInventory(int index) {
         }
         // if armor, enhance magic resistance
         if(!item->getRpgItem()->isWeapon() && 
-           item->getMagicAttrib()->getSchool()) {
-          int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
-          setSkillBonus(skill, getSkillBonus(skill) + item->getMagicAttrib()->getMagicResistance());
+           item->getSchool()) {
+          int skill = item->getSchool()->getResistSkill();
+          setSkillBonus(skill, getSkillBonus(skill) + item->getMagicResistance());
         }
         // refresh map for invisibility, etc.
         session->getMap()->refresh();
@@ -941,24 +941,24 @@ int Creature::doff(int index) {
       equipped[i] = MAX_INVENTORY_SIZE;
 
       // handle magic attrib settings
-      if(item->getMagicAttrib()) {
+      if(item->isMagicItem()) {
 
-        item->getMagicAttrib()->debug("Doff: ", item->getRpgItem());
+        item->debugMagic("Doff: ");
 
         // set the good attributes
         for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-          if(item->getMagicAttrib()->isStateModSet(i)) {
+          if(item->isStateModSet(i)) {
             this->setStateMod(i, false);
           }
         }
         // set the protected attributes
         for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-          if(item->getMagicAttrib()->isStateModProtected(i)) {
+          if(item->isStateModProtected(i)) {
             this->setProtectedStateMod(i, false);
           }
         }
         // skill bonus
-        map<int,int> *m = item->getMagicAttrib()->getSkillBonusMap();
+        map<int,int> *m = item->getSkillBonusMap();
         for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
           int skill = e->first;
           int bonus = e->second;
@@ -966,9 +966,9 @@ int Creature::doff(int index) {
         }
         // if armor, enhance magic resistance
         if(!item->getRpgItem()->isWeapon() && 
-           item->getMagicAttrib()->getSchool()) {
-          int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
-          setSkillBonus(skill, getSkillBonus(skill) - item->getMagicAttrib()->getMagicResistance());
+           item->getSchool()) {
+          int skill = item->getSchool()->getResistSkill();
+          setSkillBonus(skill, getSkillBonus(skill) - item->getMagicResistance());
         }
 
         // refresh map for invisibility, etc.
@@ -1035,7 +1035,7 @@ void Creature::recalcAggregateValues() {
     if(equipped[i] != MAX_INVENTORY_SIZE) {
       Item *item = inventory[equipped[i]];
       if(item->getRpgItem()->getType() == RpgItem::ARMOR) {
-        armor += item->getRpgItem()->getAction();
+        armor += item->getAction();
       }
     }
   }
@@ -1044,11 +1044,11 @@ void Creature::recalcAggregateValues() {
 
 Item *Creature::getBestWeapon(float dist) {
   Item *item = getItemAtLocation(Constants::INVENTORY_RIGHT_HAND);
-  if(item && item->getRpgItem()->getDistance() >= dist) return item;
+  if(item && item->getDistance() >= dist) return item;
   item = getItemAtLocation(Constants::INVENTORY_LEFT_HAND);
-  if(item && item->getRpgItem()->getDistance() >= dist) return item;
+  if(item && item->getDistance() >= dist) return item;
   item = getItemAtLocation(Constants::INVENTORY_WEAPON_RANGED);
-  if(item && item->getRpgItem()->getDistance() >= dist) return item;
+  if(item && item->getDistance() >= dist) return item;
   return NULL;
 }
 
@@ -1064,7 +1064,7 @@ int Creature::getInitiative(Item *weapon, Spell *spell) {
     speed += getSkill(spell->getSchool()->getSkill());
   } else if(weapon) {
     // add weapon speed (bare hand attack is the fastest, unless weapon skill is very good)
-    speed -= weapon->getRpgItem()->getSpeed();
+    speed -= weapon->getSpeed();
     if(weapon->getRpgItem()->getSkill() > -1)
       speed += getSkill(weapon->getRpgItem()->getSkill());
   }
@@ -1111,7 +1111,7 @@ int Creature::getToHit(Item *weapon, int *maxToHit, int *rolledToHit) {
 int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
   float damage = 0.0f;
   // get the base damage
-  float baseDamage = (weapon ? weapon->getRpgItem()->getAction() : 
+  float baseDamage = (weapon ? weapon->getAction() : 
                       (getSkill(Constants::POWER) / 10));
   damage = baseDamage;
 
@@ -1184,14 +1184,14 @@ int Creature::getSkillModifiedArmor() {
                            item->getRpgItem()->getSkill() : 
                            Constants::HAND_DEFEND);
         float skill = (float)getSkill(skill_index);
-        int value = item->getRpgItem()->getAction();
+        int value = item->getAction();
 
         // add (value + ((skill-50)% of value)) to armor
         armor += value + (int)( (float)value * ((skill - 50.0f) / 100.0f) );
         
         // magic armor?
-        if(item->getMagicAttrib()) {
-          armor += item->getMagicAttrib()->getBonus();
+        if(item->isMagicItem()) {
+          armor += item->getBonus();
         }
       }
     }

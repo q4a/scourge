@@ -39,6 +39,7 @@ class MagicSchool;
 class Spell;
 class RpgItem;
 
+/*
 class MagicAttrib {
 private:
   int bonus; // e.g.: sword +2
@@ -75,18 +76,15 @@ public:
   inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
   void debug(char *s, RpgItem *item);
 
-  /**
-   * Create a magic attribute obj. depending on the level.
-   * (0=lesser,1=greater,2=champion,3=divine)
-   */
+   //Create a magic attribute obj. depending on the level.
+   //(0=lesser,1=greater,2=champion,3=divine)
   void enchant(int level, bool isWeapon);
 
-  /**
-   * Write the description of this item into buffer s.
-   * S has to be large enough to hold the description. (~255 chars)
-   */
+   //Write the description of this item into buffer s.
+   //S has to be large enough to hold the description. (~255 chars)
   void describe(char *s, char *itemName);
 };
+*/
 
 class RpgItem {
  private:
@@ -154,26 +152,29 @@ class RpgItem {
 		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0,
 		  int potionSkill=-1, int potionTime=0);
   ~RpgItem();
-  
-  inline int getPrice() { return price; }
+
+
+  // -Rpg in the name to not accidentally call it instead of item->getXYZ().
+  inline int getLevelRpg()  { return level; }  
+  inline float getWeightRpg() { return weight; }
+  inline int getPriceRpg() { return price; }
+  inline int getActionRpg() { return action; }
+  inline int getSpeedRpg() { return speed; }
+  inline int getDistanceRpg() { return distance; }
+  inline int getMaxChargesRpg() { return maxCharges; }
+  inline int getDurationRpg() { return potionTime; }
+  inline int getQualityRpg() { return quality; }
+
   inline int getIndex() { return index; }
   inline char *getName() { return name; }
-  inline int getAction() { return action; }
-  inline int getLevel()  { return level; }
   inline int getRareness()  { return rareness; }
-  inline int getSpeed() { return speed; }
-  inline int getQuality() { return quality; }
-  inline float getWeight() { return weight; }
   inline int getShapeIndex() { return shape_index; }
   inline char *getShortDesc() { return shortDesc; }  
   inline char *getLongDesc() { return desc; }  
   inline int getEquip() { return equip; }
-  inline int getDistance() { return distance; }
   inline int getSkill() { return skill; } 
   inline int getType() { return type; }
-  inline int getMaxCharges() { return maxCharges; }
   inline int getPotionSkill() { return potionSkill; }
-  inline int getDuration() { return potionTime; }
   inline bool getAcl(int index) { return (acl & (1 << index) ? true : false); }
   inline void setAcl(int index, bool value) { if(value) acl |= (1 << index); else acl &= ((GLuint)0xffff - (GLuint)(1 << index)); }
   inline void setAllAcl(bool value) { if(value) acl = (GLuint)0xffff; else acl = (GLuint)0; }

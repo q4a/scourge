@@ -227,7 +227,7 @@ RpgItem *RpgItem::getItemByName(char *name) {
 
 
 
-
+/*
 MagicAttrib::MagicAttrib() {
   level = 0;
   bonus = 0;
@@ -269,7 +269,7 @@ void MagicAttrib::enchant(int level, bool isWeapon) {
   if(level > Constants::DIVINE_MAGIC_ITEM) level = Constants::DIVINE_MAGIC_ITEM;
   this->level = level;
 
-  /**
+  **
    * lesser (level 0):
    * bonus, damageMultiplier vs. a monster type
    * 
@@ -281,7 +281,7 @@ void MagicAttrib::enchant(int level, bool isWeapon) {
    * 
    * divine (level 3):
    * champion + monster_type is NULL + (1 to 3) bad state mods protected
-   */
+   *
   int n;
   Spell *spell;
   switch(level) {
@@ -455,4 +455,4 @@ MagicAttrib *MagicAttrib::load(Session *session, MagicAttribInfo *info) {
   return magic;
 }
 
-
+*/

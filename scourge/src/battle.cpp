@@ -219,14 +219,14 @@ void Battle::initTurnStep() {
     } else {
       item = creature->getBestWeapon(dist);
       range = Constants::MIN_DISTANCE;
-      if(item) range = item->getRpgItem()->getDistance();
+      if(item) range = item->getDistance();
       if(item) {
         if(DEBUG_BATTLE) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
       } else {
         if(DEBUG_BATTLE) cerr << "\tUsing bare hands." << endl;
       }
       // How many steps to wait before being able to use the weapon.
-      weaponWait = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED) * WEAPON_WAIT_MUL;
+      weaponWait = (item ? item->getSpeed() : Constants::HAND_WEAPON_SPEED) * WEAPON_WAIT_MUL;
     }
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
@@ -714,7 +714,7 @@ void Battle::hitWithItem() {
     delta += (5.0f * rand()/RAND_MAX) + 5;
   }
   int extra = (int)(((float)tohit / 100.0f) * delta) + 
-    (item && item->getMagicAttrib() ? item->getMagicAttrib()->getBonus() : 0);
+    (item && item->isMagicItem() ? item->getBonus() : 0);
 
   int ac = creature->getTargetCreature()->getSkillModifiedArmor();
   sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
@@ -732,14 +732,14 @@ void Battle::hitWithItem() {
     int damage = creature->getDamage(item, &maxDamage);
 
     // magical weapons
-    if(item && item->getMagicAttrib()) {
-      damage += item->getMagicAttrib()->getBonus();
+    if(item && item->isMagicItem()) {
+      damage += item->getBonus();
       int mul = 1;
-      if(item->getMagicAttrib()->getMonsterType() && creature->getTargetCreature() && 
-         !strcmp(item->getMagicAttrib()->getMonsterType(), creature->getTargetCreature()->getModelName())) {
-        mul = item->getMagicAttrib()->getDamageMultiplier();
-      } else if(!item->getMagicAttrib()->getMonsterType()) {
-        mul = item->getMagicAttrib()->getDamageMultiplier();
+      if(item->getMonsterType() && creature->getTargetCreature() && 
+         !strcmp(item->getMonsterType(), creature->getTargetCreature()->getModelName())) {
+        mul = item->getDamageMultiplier();
+      } else if(!item->getMonsterType()) {
+        mul = item->getDamageMultiplier();
       }
       if(mul < 1) mul = 1;
       if(mul == 2) {
@@ -765,21 +765,21 @@ void Battle::hitWithItem() {
   }
 
   // magical damage
-  if(item && item->getMagicAttrib() && item->getMagicAttrib()->getSchool() &&
+  if(item && item->isMagicItem() && item->getSchool() &&
      creature->getTargetCreature() && creature->isTargetValid()) {
 
     // roll for the spell damage
-    int damage = (int)((float)item->getMagicAttrib()->rollMagicDamage() * rand()/RAND_MAX);
+    int damage = (int)((float)item->rollMagicDamage() * rand()/RAND_MAX);
 
     // check for resistance
-    int resistance = creature->getTargetCreature()->getSkill(item->getMagicAttrib()->getSchool()->getResistSkill());
+    int resistance = creature->getTargetCreature()->getSkill(item->getSchool()->getResistSkill());
     damage -= (int)(((float)damage / 100.0f) * resistance);
 
     char msg[200];
     sprintf(msg, "%s attacks %s with %s magic.", 
             creature->getName(), 
             creature->getTargetCreature()->getName(),
-            item->getMagicAttrib()->getSchool()->getShortName());
+            item->getSchool()->getShortName());
     getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
     if(resistance > 0) {
       sprintf(msg, "%s resists the magic with %d.", 
@@ -790,7 +790,7 @@ void Battle::hitWithItem() {
 
     // cause damage, kill creature, gain levels, etc.
     dealDamage(damage, 
-               item->getMagicAttrib()->rollMagicDamage(), 
+               item->rollMagicDamage(), 
                Constants::EFFECT_GREEN,
                true);
   }
@@ -931,7 +931,7 @@ void Battle::initItem(Item *item) {
   this->item = item;
 
   // (!item) is a bare-hands attack		
-  speed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED) * 
+  speed = (item ? item->getSpeed() : Constants::HAND_WEAPON_SPEED) * 
           (session->getUserConfiguration()->getGameSpeedTicks() + 80);
   //	(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
 

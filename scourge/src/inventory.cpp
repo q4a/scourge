@@ -425,7 +425,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
       Item *item = creature->getInventory(itemIndex);
-      if(item->getMagicAttrib()) {
+      if(item->isMagicItem()) {
         scourge->showMessageDialog("This item is already enchanted.");
       } else if(!item->getRpgItem()->isEnchantable()) {
         scourge->showMessageDialog("This item cannot be enchanted.");

@@ -32,20 +32,16 @@ Item::Item(RpgItem *rpgItem, int level) {
                     rpgItem->getType() == RpgItem::CONTAINER ||
                     rpgItem->getType() == RpgItem::MISSION);
   this->containedItemCount = 0;
-  currentCharges = rpgItem->getMaxCharges();
-  weight = rpgItem->getWeight();
   this->spell = NULL;
-  this->magic = NULL;
   sprintf(this->itemName, "%s", rpgItem->getName());
 
   commonInit();
+
+  currentCharges = rpgItem->getMaxChargesRpg();
+  weight = rpgItem->getWeightRpg();
 }
 
 Item::~Item(){
-  if(magic) {
-    delete magic;
-    magic = NULL;
-  }
 }
 
 ItemInfo *Item::save() {
@@ -62,7 +58,21 @@ ItemInfo *Item::save() {
   for(int i = 0; i < containedItemCount; i++) {
     info->containedItems[i] = containedItems[i]->save();
   }
-  info->magic = (magic ? magic->save() : MagicAttrib::saveEmpty());
+
+  info->bonus = bonus;
+  info->damageMultiplier = damageMultiplier;
+  info->cursed = cursed;
+  info->magicLevel = magicLevel;
+  strcpy((char*)info->monster_type, (this->monsterType ? monsterType : ""));
+  strcpy((char*)info->magic_school_name, (this->school ? school->getName() : ""));
+  info->magicDamage = (school ? magicDamage->save() : Dice::saveEmpty());
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    info->stateMod[i] = this->stateMod[i];
+  }
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    info->skillBonus[i] = this->getSkillBonus(i);
+  }
+
   return info;
 }
 
@@ -92,11 +102,22 @@ Item *Item::load(Session *session, ItemInfo *info) {
   for(int i = 0; i < (int)info->containedItemCount; i++) {
     item->containedItems[i] = Item::load( session, info->containedItems[i] );
   }    
-  MagicAttrib *magic = MagicAttrib::load( session, info->magic );
-  if( magic ) {
-    item->magic = magic;
-    magic->describe(item->itemName, item->getRpgItem()->getName());
+
+  item->bonus = info->bonus;
+  item->damageMultiplier = info->damageMultiplier;
+  item->cursed = (info->cursed == 1);
+  item->magicLevel = info->magicLevel;
+  // get a reference to the real string... (yuck)
+  item->monsterType = (char*)Monster::getMonsterType( (char*)info->monster_type );
+  item->school = MagicSchool::getMagicSchoolByName( (char*)info->magic_school_name );
+  item->magicDamage = Dice::load( session, info->magicDamage );
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    item->stateMod[i] = info->stateMod[i];
   }
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    if(info->skillBonus[i]) item->skillBonus[i] = info->skillBonus[i];
+  }
+
   return item;
 }
 
@@ -144,19 +165,19 @@ void Item::getDetailedDescription(char *s, bool precise){
   type = rpgItem->getType();
   if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
     sprintf(s, "(Q:%d,W:%2.2f, N:%d/%d) %s", 
-            rpgItem->getQuality(), 
-            rpgItem->getWeight(),
+            getQuality(), 
+            getWeight(),
             getCurrentCharges(),
-            rpgItem->getMaxCharges(),
+            getMaxCharges(),
             (precise ? itemName : rpgItem->getShortDesc()));
   } else if(type == RpgItem::SCROLL) {
     sprintf(s, "%s", itemName);
   } else {
     sprintf(s, "(A:%d,S:%d,Q:%d,W:%2.2f) %s", 
-            rpgItem->getAction(), 
-            rpgItem->getSpeed(), 
-            rpgItem->getQuality(), 
-            rpgItem->getWeight(),
+            getAction(), 
+            getSpeed(), 
+            getQuality(), 
+            getWeight(),
             (precise ? itemName : rpgItem->getShortDesc()));
   }
 }
@@ -335,20 +356,13 @@ bool Item::decrementCharges(){
   // (without increasing error each time)
 
   f1 = getWeight();
-  f1 *= (float) (getRpgItem()->getMaxCharges());
+  f1 *= (float) (getMaxCharges());
   f1 /= (float) oldCharges;
-  f1 *= (((float)oldCharges - 1.0f) / (float)(getRpgItem()->getMaxCharges()));            
+  f1 *= (((float)oldCharges - 1.0f) / (float)(getMaxCharges()));            
   setWeight(f1);
   return false;      
 }
 
-void Item::enchant(int level) {
-  if(magic) return;
-  magic = new MagicAttrib();
-  magic->enchant(level, rpgItem->isWeapon());
-  magic->describe(itemName, rpgItem->getName());
-  return;
-}
 
 
 
@@ -366,34 +380,35 @@ void Item::commonInit() {
   // --------------
   // regular attribs
 
-  weight = rpgItem->getWeight();
+  weight = rpgItem->getWeightRpg();
+  quality = rpgItem->getQualityRpg();
 
-  price = rpgItem->getPrice() + 
-    (int)getRandomSum( (float)(rpgItem->getPrice() / 2), level / 2 );
+  price = rpgItem->getPriceRpg() + 
+    (int)getRandomSum( (float)(rpgItem->getPriceRpg() / 2), level / 2 );
 
-  action = (int)getRandomSum( (float)(rpgItem->getAction()), level / 2 );  
+  action = (int)getRandomSum( (float)(rpgItem->getActionRpg()), level / 2 );  
 
-  if( rpgItem->getSpeed() ) {
-    speed = rpgItem->getSpeed() - (int)getRandomSum( 1, level / 7 );
+  if( rpgItem->getSpeedRpg() ) {
+    speed = rpgItem->getSpeedRpg() - (int)getRandomSum( 1, level / 7 );
     if( speed < 3 ) speed = 3;
   } else {
-    speed = rpgItem->getSpeed();
+    speed = rpgItem->getSpeedRpg();
   }
 
-  if( rpgItem->getDistance() > Constants::MIN_DISTANCE ) {
-    distance = rpgItem->getDistance() + 
+  if( rpgItem->getDistanceRpg() > Constants::MIN_DISTANCE ) {
+    distance = rpgItem->getDistanceRpg() + 
       (int)getRandomSum( 2, level / 2 );
-  } else distance = rpgItem->getDistance();
+  } else distance = rpgItem->getDistanceRpg();
 
-  if( rpgItem->getMaxCharges() ) {
-    maxCharges = rpgItem->getMaxCharges() + 
-      (int)getRandomSum( (float)(rpgItem->getMaxCharges() / 2), level / 2 );
-  } else maxCharges = rpgItem->getMaxCharges();
+  if( rpgItem->getMaxChargesRpg() ) {
+    maxCharges = rpgItem->getMaxChargesRpg() + 
+      (int)getRandomSum( (float)(rpgItem->getMaxChargesRpg() / 2), level / 2 );
+  } else maxCharges = rpgItem->getMaxChargesRpg();
 
-  if( rpgItem->getDuration() ) {
-    duration = rpgItem->getDuration() + 
-      (int)getRandomSum( (float)( rpgItem->getDuration() / 2 ), level / 2 );
-  } else duration = rpgItem->getDuration();
+  if( rpgItem->getDurationRpg() ) {
+    duration = rpgItem->getDurationRpg() + 
+      (int)getRandomSum( (float)( rpgItem->getDurationRpg() / 2 ), level / 2 );
+  } else duration = rpgItem->getDurationRpg();
 
 
   // --------------
@@ -414,14 +429,17 @@ void Item::commonInit() {
 
   // roll for magic
   int n = (int)( ( 200.0f - ( level * 1.5f ) ) * rand()/RAND_MAX );
-  if( n < 5 ) magicLevel = Constants::DIVINE_MAGIC_ITEM;
-  else if( n < 15 ) magicLevel = Constants::CHAMPION_MAGIC_ITEM;
-  else if( n < 30 ) magicLevel = Constants::GREATER_MAGIC_ITEM;
-  else if( n < 50 ) magicLevel = Constants::LESSER_MAGIC_ITEM;
+  if( n < 5 ) enchant( Constants::DIVINE_MAGIC_ITEM );
+  else if( n < 15 ) enchant( Constants::CHAMPION_MAGIC_ITEM );
+  else if( n < 30 ) enchant( Constants::GREATER_MAGIC_ITEM );
+  else if( n < 50 ) enchant( Constants::LESSER_MAGIC_ITEM );
+}
 
-  if( magicLevel == -1 ) return;
+void Item::enchant( int newMagicLevel ) {
+  if( magicLevel != -1 ) return;
+  magicLevel = newMagicLevel;
 
-
+  int n;
   Spell *spell;
   switch(magicLevel) {
   case Constants::LESSER_MAGIC_ITEM:
@@ -506,6 +524,27 @@ void Item::commonInit() {
   default:
     cerr << "*** Error: unknown magic level: " << magicLevel << endl;
   }
+
+  describeMagic(itemName, rpgItem->getName());
+}
+
+void Item::describeMagic(char *s, char *itemName) {
+  // e.g.: Lesser broadsword + 3 of nature magic
+  char tmp[80];
+  strcpy(s, Constants::MAGIC_ITEM_NAMES[magicLevel]);
+  if(stateModSet) {
+    strcat(s, " protective");
+  }
+  strcat(s, " ");
+  strcat(s, itemName);
+  if(bonus > 0) {
+    sprintf(tmp, " (+%d)", bonus);
+    strcat(s, tmp);
+  }
+  if(school) {
+    sprintf(tmp, " of %s magic", school->getShortName());
+    strcat(s, tmp);
+  }
 }
 
 int Item::rollMagicDamage() { 
@@ -514,4 +553,24 @@ int Item::rollMagicDamage() {
 
 char *Item::describeMagicDamage() { 
   return (magicDamage ? magicDamage->toString() : NULL);
+}
+
+void Item::debugMagic(char *s) {
+  RpgItem *item = getRpgItem();
+  cerr << s << endl;
+  cerr << "Magic item: " << item->getName() << "(+" << bonus << ")" << endl;
+  cerr << "\tdamageMultiplier=" << damageMultiplier << " vs. monsterType=" << (monsterType ? monsterType : "null") << endl;
+  cerr << "\tSchool: " << (school ? school->getName() : "null") << endl;
+  cerr << "\tstate mods:" << endl;
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    if(this->isStateModSet(i)) cerr << "set: " << Constants::STATE_NAMES[i] << endl;
+    if(this->isStateModProtected(i)) cerr << "protected: " << Constants::STATE_NAMES[i] << endl;
+  }
+  cerr << "\tskill bonuses:" << endl;
+  for(map<int, int>::iterator i=skillBonus.begin(); i!=skillBonus.end(); ++i) {
+    int skill = i->first;
+    int bonus = i->second;
+    cerr << "\t\t" << Constants::SKILL_NAMES[skill] << " +" << bonus << endl;
+  }
+  cerr << "-----------" << endl;
 }

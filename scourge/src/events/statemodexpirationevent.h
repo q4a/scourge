@@ -20,7 +20,6 @@
 #define STATE_MOD_EXPIRATION_EVENT_H
 
 #include "../constants.h"
-#include "../rpg/rpgitem.h"
 #include "../creature.h"
 #include "event.h"
 
@@ -31,7 +30,6 @@
   
 class Creature;
 class Session;
-class RpgItem;
   
 class StateModExpirationEvent : public Event  {
 

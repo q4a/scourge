@@ -48,7 +48,6 @@ class Item {
   int currentCharges;
   Spell *spell;
   char itemName[255];
-  MagicAttrib *magic;
 
 
 
@@ -63,6 +62,7 @@ class Item {
   int distance; // how far can it reach?
   int maxCharges;
   int duration;
+  int quality;
 
   // former magic attrib stuff
   int magicLevel;
@@ -95,7 +95,7 @@ public:
   inline bool isBlocking() { return blocking; }
   inline void setBlocking(bool b) { blocking = b; }
   inline int getCurrentCharges() { return currentCharges; }
-  inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>rpgItem->getMaxCharges())n=rpgItem->getMaxCharges(); currentCharges = n; } 
+  inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>rpgItem->getMaxChargesRpg())n=rpgItem->getMaxChargesRpg(); currentCharges = n; } 
   inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
   inline void setSpell(Spell *spell) { this->spell = spell; sprintf(this->itemName, "Scroll of %s", spell->getName()); }
   inline Spell *getSpell() { return spell; }
@@ -122,8 +122,6 @@ public:
 
   void enchant(int level);
 
-  inline MagicAttrib *getMagicAttrib() { return magic; }
-
 
   // level-based attributes
   inline int getLevel() { return level; }
@@ -134,6 +132,7 @@ public:
   inline int getDistance() { return distance; }
   inline int getMaxCharges() { return maxCharges; }
   inline int getDuration() { return duration; }
+  inline int getQuality() { return quality; }
 
   inline bool isMagicItem() { return ( magicLevel > -1 ); }
   inline map<int,int> *getSkillBonusMap() { return &skillBonus; }
@@ -150,10 +149,12 @@ public:
   inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
   inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
 
+  void debugMagic(char *s);
+
  protected:
   void commonInit();
   float getRandomSum( float base, int count );
-
+  void describeMagic(char *s, char *itemName);
 };
 
 #endif
