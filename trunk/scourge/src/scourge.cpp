@@ -1505,58 +1505,59 @@ void Scourge::dropItem(int x, int y) {
   int z;
   bool replace = false;
   if(map->getSelectedDropTarget()) {
-	char message[120];
-	Creature *c = map->getSelectedDropTarget()->creature;
-	if(c) {
-	  c->addInventory(movingItem);
-	  sprintf(message, "%s picks up %s.", 
-			  c->getName(), 
-			  movingItem->getItemName());
-	  map->addDescription(message);
-	  // if the inventory is open, update it
-	  if(inventory->isVisible()) inventory->refresh();
-	} else if(map->getSelectedDropTarget()->item && 
-			  map->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-	  map->getSelectedDropTarget()->item->addContainedItem(movingItem);
-	  sprintf(message, "%s is placed in %s.", 
-			  movingItem->getItemName(), 
-			  map->getSelectedDropTarget()->item->getItemName());
-	  map->addDescription(message);
-	  // if this container's gui is open, update it
-	  refreshContainerGui(map->getSelectedDropTarget()->item);
-	} else {
-	  replace = true;
-	}
+    char message[120];
+    Creature *c = map->getSelectedDropTarget()->creature;
+    if(c) {
+      c->addInventory(movingItem);
+      sprintf(message, "%s picks up %s.", 
+              c->getName(), 
+              movingItem->getItemName());
+      map->addDescription(message);
+      // if the inventory is open, update it
+      if(inventory->isVisible()) inventory->refresh();
+    } else if(map->getSelectedDropTarget()->item && 
+              map->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+      map->getSelectedDropTarget()->item->addContainedItem(movingItem);
+      sprintf(message, "%s is placed in %s.", 
+              movingItem->getItemName(), 
+              map->getSelectedDropTarget()->item->getItemName());
+      map->addDescription(message);
+      // if this container's gui is open, update it
+      refreshContainerGui(map->getSelectedDropTarget()->item);
+    } else {
+      replace = true;
+    }
   } else {
-	// see if it's blocked and get the value of z (stacking items)
-	Location *pos = map->isBlocked(x, y, 0,
-								   movingX, movingY, movingZ,
-								   movingItem->getShape(), &z);
-	if(!pos && 
-	   !map->isWallBetween(party->getPlayer()->getX(), 
-						   party->getPlayer()->getY(), 
-						   party->getPlayer()->getZ(), 
-						   x, y, z)) {
-	  map->setItem(x, y, z, movingItem);
-	} else {
-	  replace = true;
-	}
+    // see if it's blocked and get the value of z (stacking items)
+    Location *pos = map->isBlocked(x, y, 0,
+                                   movingX, movingY, movingZ,
+                                   movingItem->getShape(), &z);
+    if(!pos && 
+       !map->isWallBetween(party->getPlayer()->getX(), 
+                           party->getPlayer()->getY(), 
+                           party->getPlayer()->getZ(), 
+                           x, y, z)) {
+      map->setItem(x, y, z, movingItem);
+    } else {
+      replace = true;
+    }
   }
 
   // failed to drop item; put it back to where we got it from
   if(replace) {
-	if(movingX <= -1 || movingX >= MAP_WIDTH) {
-	  // the item drag originated from the gui... what to do?
-	  // for now don't end the drag
-	  return;
-	} else {
-	  map->isBlocked(movingX, movingY, movingZ,
-					 -1, -1, -1,
-					 movingItem->getShape(), &z);
-	  map->setItem(movingX, movingY, z, movingItem);
-	}
+    if(movingX <= -1 || movingX >= MAP_WIDTH) {
+      // the item drag originated from the gui... what to do?
+      // for now don't end the drag
+      return;
+    } else {
+      map->isBlocked(movingX, movingY, movingZ,
+                     -1, -1, -1,
+                     movingItem->getShape(), &z);
+      map->setItem(movingX, movingY, z, movingItem);
+    }
   }
   endItemDrag();
+  getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
 }
 
 bool Scourge::useGate(Location *pos) {

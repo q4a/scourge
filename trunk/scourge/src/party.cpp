@@ -18,6 +18,8 @@
 #include "party.h"
 #include "rpg/rpgitem.h"
 
+Creature *Party::lastPlayer = NULL;
+
 Party::Party(Session *session) {
   this->session = session;
 
@@ -157,7 +159,10 @@ void Party::setPlayer(int n) {
   session->getGameAdapter()->setPlayerUI(n);
 
   // play selection sound
-  session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
+  if(lastPlayer != player) {
+    lastPlayer = player;
+    session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
+  }
 }
 
 

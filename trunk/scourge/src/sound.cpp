@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "sound.h"
+#include "battle.h"
 
 Sound::Sound(UserConfiguration *userConfiguration) {
   haveSound = false;
@@ -101,6 +102,13 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
   cerr << "Loading UI sounds..." << endl;
   storeSound(0, Window::ROLL_OVER_SOUND);
   storeSound(0, Window::ACTION_SOUND);
+  storeSound(0, Window::DROP_SUCCESS);
+  storeSound(0, Window::DROP_FAILED);
+
+  cerr << "Loading battle sounds..." << endl;
+  for(int i = 0; i < Battle::getSoundCount(); i++) { 
+    storeSound(0, Battle::getSound(i));
+  }
 
   cerr << "Loading character sounds..." << endl;
   for(map<string, Character*>::iterator i = Character::character_class.begin(); 

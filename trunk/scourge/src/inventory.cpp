@@ -639,9 +639,11 @@ int Inventory::putItem() {
       int index = scourge->getParty()->getParty(selected)->findInInventory(item);
       setSelectedPlayerAndMode(selected, INVENTORY);
       invList->setSelectedLine(index);
+      scourge->getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
       return index;
     } else {
       // message: the player's inventory is full
+      scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
     }
   }
   return -1;
@@ -672,11 +674,13 @@ void Inventory::equipItem() {
 
     if(!item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName()))) {
       scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_ACL_VIOLATION));
+      scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
       return;
     }
     scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
     // recreate list strings
     refresh();
+    scourge->getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
   }
 }
 

@@ -20,6 +20,8 @@
 
 const char Window::ROLL_OVER_SOUND[80] = "sound/ui/roll.wav";
 const char Window::ACTION_SOUND[80] = "sound/ui/press.wav";
+const char Window::DROP_SUCCESS[80] = "sound/equip/equip1.wav";
+const char Window::DROP_FAILED[80] = "sound/equip/cant_equip.wav";
 
 //#define DEBUG_WINDOWS
 

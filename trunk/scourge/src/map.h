@@ -173,10 +173,7 @@ class Map {
   inline float getYPos() { return ypos; }
   inline float getZPos() { return zpos; } 
 
-  inline bool isLocationVisible(int x, int y) { 
-    return (x >= getX() && x < getX() + MAP_VIEW_WIDTH &&
-            y >= getY() && y < getY() + MAP_VIEW_DEPTH);
-  }
+  bool isLocationVisible(int x, int y);
 
   inline bool isLocationInLight(int x, int y) {
     int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
