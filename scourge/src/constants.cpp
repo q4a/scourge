@@ -182,12 +182,23 @@ const char *Constants::SKILL_NAMES[] = {
   "HISTORY_MAGIC",
   "DECEIT_MAGIC",
   "CONFRONTATION_MAGIC",	
+  
+  "RESIST_NATURE_MAGIC",
+  "RESIST_AWARENESS_MAGIC",
+  "RESIST_LIFE_AND_DEATH_MAGIC",
+  "RESIST_HISTORY_MAGIC",
+  "RESIST_DECEIT_MAGIC",
+  "RESIST_CONFRONTATION_MAGIC",	
 
   "OPEN_LOCK",
   "FIND_TRAP",
+  "FIND_SECRET_DOOR",
   "MOVE_UNDETECTED",
 
-  "SKILL_0", "SKILL_1", "SKILL_2", "SKILL_3", "SKILL_4", "SKILL_5", "SKILL_6", "SKILL_7", "SKILL_8", "SKILL_9"
+  "ENCHANT_ITEM",
+  "MEND_ITEM",
+  "IDENTIFY_ITEM",
+  "IDENTIFY_CREATURE"
 };
 
 const char *Constants::POTION_SKILL_NAMES[] = {
@@ -605,3 +616,22 @@ void Constants::checkTexture(char *message, int w, int h) {
   }
 }
 
+bool Constants::isStateModTransitionWanted(int mod, bool setting) {
+  bool goodEffect = ((!setting && 
+                      (mod == Constants::poisoned ||
+                       mod == Constants::cursed ||
+                       mod == Constants::possessed ||
+                       mod == Constants::blinded ||
+                       mod == Constants::charmed ||
+                       mod == Constants::overloaded ||
+                       mod == Constants::dead)) ||
+                     (setting && 
+                      mod == Constants::blessed ||
+                      mod == Constants::empowered ||
+                      mod == Constants::enraged ||
+                      mod == Constants::ac_protected ||
+                      mod == Constants::magic_protected ||
+                      mod == Constants::invisible ||
+                      mod == Constants::leveled));
+  return goodEffect;
+}

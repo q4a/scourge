@@ -1117,7 +1117,8 @@ int Creature::addMoney(Creature *creature_killed) {
 void Creature::monsterInit() {
   // set some skills
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
+    int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
+    setSkill(i, ( n > 0 ? n : (int)((float)(10 * level) * rand()/RAND_MAX)) );
   }
   // equip starting inventory
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {

@@ -47,10 +47,11 @@ Dice::~Dice() {
 }
 
 
-MagicSchool::MagicSchool(char *name, char *deity, int skill) {
+MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill) {
   this->name = name;
   this->deity = deity;
   this->skill = skill;
+  this->resistSkill = resistSkill;
 }
 
 MagicSchool::~MagicSchool() {
@@ -133,11 +134,12 @@ void MagicSchool::initMagic() {
 	  strcpy(name, strtok(line, ","));
 	  strcpy(notes, strtok(NULL, ","));
 	  int skill = Constants::getSkillByName(strtok(NULL, ","));
+	  int resistSkill = Constants::getSkillByName(strtok(NULL, ","));
 
 
-	  cerr << "adding school: " << name << " provider deity: " << notes << endl;
+	  cerr << "adding school: " << name << " provider deity: " << notes << " skill=" << skill << " resist skill=" << resistSkill << endl;
 
-	  current = new MagicSchool( strdup(name), strdup(notes), skill );
+	  current = new MagicSchool( strdup(name), strdup(notes), skill, resistSkill );
 	  schools[schoolCount++] = current;
 	} else {
 	  n = Constants::readLine(line, fp);

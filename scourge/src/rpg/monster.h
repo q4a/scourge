@@ -50,6 +50,7 @@ class Monster  {
   int h;
   vector<RpgItem*> items;
   vector<Spell*> spells;
+  map<string,int> skills;
 
   static map<int, vector<Monster*>* > monsters;
   static map<string, Monster*> monstersByName;
@@ -82,6 +83,7 @@ public:
   inline int getStartingSpellCount() { return spells.size(); }
   inline Spell *getStartingSpell(int index) { return spells[index]; }
   inline void addSpell(Spell *spell) { spells.push_back(spell); }
+  int getSkillLevel(const char *skillName);
   const char *getRandomSound(int type);
 
   static void initMonsters();

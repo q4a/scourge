@@ -207,12 +207,22 @@ void SpellCaster::causeDamage() {
     damage += (int)((float)spell->getAction() * rand()/RAND_MAX);
   }
 
+  // check for resistance
+  int resistance = creature->getTargetCreature()->getSkill(spell->getSchool()->getResistSkill());
+  damage -= (int)(((float)damage / 100.0f) * resistance);
+
   char msg[200];
   sprintf(msg, "%s attacks %s with %s.", 
           creature->getName(), 
           creature->getTargetCreature()->getName(),
           spell->getName());
   battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
+  if(resistance > 0) {
+    sprintf(msg, "%s resists the spell with %d.", 
+            creature->getTargetCreature()->getName(),
+            resistance);
+    battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
+  }
 
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage(damage, 
@@ -261,6 +271,18 @@ void SpellCaster::setStateMod(int mod, bool setting) {
 
     // group spells only affect monsters (for now).
     if(spell->getTargetType() == GROUP_TARGET && !creature->isMonster()) continue;
+
+    // roll for resistance
+    if(!Constants::isStateModTransitionWanted(mod, setting)) {
+      if((int)(100.0f * rand()/RAND_MAX) < creature->getSkill(spell->getSchool()->getResistSkill())) {    
+        char msg[200];
+        sprintf(msg, "%s resists the spell! [%d]", 
+                creature->getName(), 
+                creature->getSkill(spell->getSchool()->getResistSkill()));
+        battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
+        continue;
+      }
+    }
 
     int timeInMin = 2 * battle->getCreature()->getLevel();
     creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));  
