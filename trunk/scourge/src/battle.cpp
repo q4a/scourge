@@ -47,8 +47,7 @@ Battle::Battle(Session *session, Creature *creature) {
   this->spell = NULL;
   this->empty = false;
 
-
-  reset();
+  this->needsReset = true;
 }
 
 Battle::~Battle() {
@@ -56,7 +55,7 @@ Battle::~Battle() {
 
 void Battle::reset() {
   this->steps = 0;
-  this->startingAp = this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
+  this->startingAp = this->ap = 10 + (creature->getSkill(Constants::COORDINATION) / 10);
   this->projectileHit = false;
   this->paused = false;
 }
@@ -64,6 +63,12 @@ void Battle::reset() {
 void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
   // for now put all battles into the vector
   for(int i = 0; i < count; i++) {
+    // reset for the first time
+    // (to avoid whack skill numbers for un-initialized creatures.)
+    if(battle[i]->needsReset) {
+      battle[i]->reset();
+      battle[i]->needsReset = false;
+    }
     battle[i]->initTurn();
     battle[i]->getCreature()->getShape()->setCurrentAnimation((int)MD2_STAND, true);
     turns->push_back(battle[i]);
@@ -204,6 +209,8 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
 
 bool Battle::fightTurn() {
 
+  cerr << "TURN: creature=" << creature->getName() << " ap=" << ap << " coordination=" << creature->getSkill(Constants::COORDINATION) << endl;
+
   // are we alive?
   if(!creature || creature->getStateMod(Constants::dead)) return true;
 
@@ -285,8 +292,11 @@ bool Battle::fightTurn() {
   if(creature->getTargetCreature()) {
     if(creature->isTargetValid()) {
       if(dist < range) {
-        if(ap >= weaponWait) {
+//        if(ap >= weaponWait) {
+        if(!projectileHit) {
           ap -= weaponWait;
+          if(ap < 0) ap = 0;
+        }
           // attack
           cerr << "\t\tAttacking." << endl;
           if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
@@ -296,15 +306,14 @@ bool Battle::fightTurn() {
           }
           creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
           ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
-        } else {
-          cerr << "\t\tNo action." << endl;
-          creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
-          ap--;
-        }
+//        } else {
+//          cerr << "\t\tNo action." << endl;
+//          creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+//          ap--;
+//        }
       } else {
+        // out of range: take 1 step closer
         creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
-        
-        // take 1 step closer
         cerr << "\t\tTaking a step." << endl;
         if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
              creature->getSelY() == creature->getTargetCreature()->getY())) {
@@ -507,7 +516,9 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   } else if(proj->getSpell()) {
     battle->spell = proj->getSpell();
   }
+  battle->projectileHit = true;
   battle->hitWithItem();
+  battle->projectileHit = false;
   proj->getCreature()->cancelTarget();
   proj->getCreature()->setTargetCreature(oldTarget);
 

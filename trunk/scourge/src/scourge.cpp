@@ -1909,133 +1909,143 @@ void Scourge::playRound() {
       Projectile::moveProjectiles(this);
     }
 
+    // fight battle turns
     bool fromBattle = false;
     if(battleRound.size() > 0) {
-      // in battle mode
-
       if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
         lastTick = t;
-
-        // fight a turn of the battle
-        if(battleRound.size() > 0) {
-          // don't fight if no more monsters and party members
-          if(battleTurn < (int)battleRound.size()) {
-            Battle *battle = battleRound[battleTurn];
-            if(battle->fightTurn()) {
-              battleTurn++;
-            }
-          } else {
-            battleTurn = 0;
-            battleRound.clear();
-
-            cerr << "ROUND ENDS" << endl;
-            cerr << "----------------------------------" << endl;
-            fromBattle = true;
-          }
-        }
+        fromBattle = fightCurrentBattleTurn();
       }
     } 
 
-
-    if(battleRound.size() == 0) {
-      // set up battles
-      battleCount = 0;
-      
-      // anybody doing anything?
-      for(int i = 0; i < party->getPartySize(); i++) {
-        if(!party->getParty(i)->getStateMod(Constants::dead)) {
-          bool hasTarget = (party->getParty(i)->hasTarget() || 
-                            party->getParty(i)->getAction() > -1);
-          if(hasTarget && party->getParty(i)->isTargetValid()) {
-            battle[battleCount++] = party->getParty(i)->getBattle();
-          }
-        }
-      }
-      for(int i = 0; i < session->getCreatureCount(); i++) {
-        if(!session->getCreature(i)->getStateMod(Constants::dead) &&
-           map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-           map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
-          bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
-                            session->getCreature(i)->getAction() > -1);
-          if(hasTarget && session->getCreature(i)->isTargetValid()) {
-            battle[battleCount++] = session->getCreature(i)->getBattle();
-          }
-        }
-      }
-
-      if(battleCount > 0) {
-
-        // add other movement
-        for(int i = 0; i < party->getPartySize(); i++) {
-          if(!party->getParty(i)->getStateMod(Constants::dead)) {
-            bool hasTarget = (party->getParty(i)->hasTarget() || 
-                              party->getParty(i)->getAction() > -1);
-            if(!hasTarget || (hasTarget && !party->getParty(i)->isTargetValid())) {
-              battle[battleCount++] = party->getParty(i)->getBattle();
-            }
-          }
-        }
-        for(int i = 0; i < session->getCreatureCount(); i++) {
-          if(!session->getCreature(i)->getStateMod(Constants::dead) &&
-             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-             map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
-            bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
-                              session->getCreature(i)->getAction() > -1);
-            if(!hasTarget || (hasTarget && !session->getCreature(i)->isTargetValid())) {
-              battle[battleCount++] = session->getCreature(i)->getBattle();
-            }
-          }
-        }
-      
-        // order the battle turns by initiative
-        Battle::setupBattles(getSession(), battle, battleCount, &battleRound);
-        battleTurn = 0;
-        cerr << "++++++++++++++++++++++++++++++++++" << endl;
-        cerr << "ROUND STARTS" << endl;
-
-        groupButton->setVisible(false);
-
-      } else {
-
-        // not in battle
-
+    // create a new battle round
+    if(battleRound.size() == 0 && !createBattleTurns()) {
+      // not in battle
+      if(fromBattle) {
         // go back to real-time, group-mode
-        if(fromBattle) {
-          if(party->isPlayerOnly()) party->togglePlayerOnly();
-          toggleRoundUI(party->isRealTimeMode());
-          party->setFirstLivePlayer();
-          groupButton->setVisible(true);
-          for(int i = 0; i < party->getPartySize(); i++) {
-            party->getParty(i)->cancelTarget();
-            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
-          }
-        }
-       
-        // change animation if needed
-        for(int i = 0; i < party->getPartySize(); i++) {                            
-          if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
-            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
-            ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
-          } else if(party->getParty(i)->anyMovesLeft())
-            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
-          else 
-            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
-        }
-        
-        // hound your targets
-        //party->followTargets();
-        
-        // move the party members
-        party->movePlayers();
+        resetUIAfterBattle();
+      }
+      moveCreatures();
+    }
+  }
+}
 
-        // move visible monsters
-        for(int i = 0; i < session->getCreatureCount(); i++) {
-          if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
-            moveMonster(session->getCreature(i));
-          }
+bool Scourge::fightCurrentBattleTurn() {
+  // fight a turn of the battle
+  if(battleRound.size() > 0) {
+    if(battleTurn < (int)battleRound.size()) {
+      Battle *battle = battleRound[battleTurn];
+      if(battle->fightTurn()) {
+        battleTurn++;
+      }
+    } else {
+      battleTurn = 0;
+      battleRound.clear();
+
+      cerr << "ROUND ENDS" << endl;
+      cerr << "----------------------------------" << endl;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Scourge::createBattleTurns() {
+  // set up battles
+  battleCount = 0;
+
+  // anybody doing anything?
+  for (int i = 0; i < party->getPartySize(); i++) {
+    if (!party->getParty(i)->getStateMod(Constants::dead)) {
+      bool hasTarget = (party->getParty(i)->hasTarget() || 
+                        party->getParty(i)->getAction() > -1);
+      if (hasTarget && party->getParty(i)->isTargetValid()) {
+        battle[battleCount++] = party->getParty(i)->getBattle();
+      }
+    }
+  }
+  for (int i = 0; i < session->getCreatureCount(); i++) {
+    if (!session->getCreature(i)->getStateMod(Constants::dead) &&
+        map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+        map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+      bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
+                        session->getCreature(i)->getAction() > -1);
+      if (hasTarget && session->getCreature(i)->isTargetValid()) {
+        battle[battleCount++] = session->getCreature(i)->getBattle();
+      }
+    }
+  }
+
+  // if somebody is attacking (or casting a spell), enter battle mode
+  // and add everyone present to the battle round.
+  if (battleCount > 0) {
+
+    // add other movement
+    for (int i = 0; i < party->getPartySize(); i++) {
+      if (!party->getParty(i)->getStateMod(Constants::dead)) {
+        bool hasTarget = (party->getParty(i)->hasTarget() || 
+                          party->getParty(i)->getAction() > -1);
+        if (!hasTarget || (hasTarget && !party->getParty(i)->isTargetValid())) {
+          battle[battleCount++] = party->getParty(i)->getBattle();
         }
       }
+    }
+    for (int i = 0; i < session->getCreatureCount(); i++) {
+      if (!session->getCreature(i)->getStateMod(Constants::dead) &&
+          map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+          map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+        bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
+                          session->getCreature(i)->getAction() > -1);
+        if (!hasTarget || (hasTarget && !session->getCreature(i)->isTargetValid())) {
+          battle[battleCount++] = session->getCreature(i)->getBattle();
+        }
+      }
+    }
+
+    // order the battle turns by initiative
+    Battle::setupBattles(getSession(), battle, battleCount, &battleRound);
+    battleTurn = 0;
+    cerr << "++++++++++++++++++++++++++++++++++" << endl;
+    cerr << "ROUND STARTS" << endl;
+
+    groupButton->setVisible(false);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void Scourge::resetUIAfterBattle() {
+  if(party->isPlayerOnly()) party->togglePlayerOnly();
+  toggleRoundUI(party->isRealTimeMode());
+  party->setFirstLivePlayer();
+  groupButton->setVisible(true);
+  for(int i = 0; i < party->getPartySize(); i++) {
+    party->getParty(i)->cancelTarget();
+    party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+  }
+}
+
+void Scourge::moveCreatures() {
+  // change animation if needed
+  for(int i = 0; i < party->getPartySize(); i++) {                            
+    if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
+      ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
+    } else if(party->getParty(i)->anyMovesLeft())
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
+    else 
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
+  }
+
+  // move the party members
+  party->movePlayers();
+
+  // move visible monsters
+  for(int i = 0; i < session->getCreatureCount(); i++) {
+    if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+       map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+      moveMonster(session->getCreature(i));
     }
   }
 }
