@@ -27,6 +27,11 @@
 
 class GLTeleporter : public GLShape  {
  private:
+  static const int MAX_STARS = 20;
+  float star[MAX_STARS][2];
+  float starColor[MAX_STARS][3];
+  float starAngle[MAX_STARS];
+
   static const int MAX_RINGS = 20;
   float ring[MAX_RINGS];
   float delta[MAX_RINGS];
