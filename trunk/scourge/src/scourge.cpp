@@ -100,8 +100,7 @@ Scourge::Scourge(int argc, char *argv[]){
   // do this before the inventory and optionsdialog (so Z is less than of those)
   party = new Party(this);  
 
-  netPlay = new NetPlay();
-  netPlay->setScourge(this);
+  netPlay = new NetPlay(this);
 
   createUI();
 
@@ -206,6 +205,9 @@ void Scourge::startMission() {
     // add gui
     party->getWindow()->setVisible(true);
     messageWin->setVisible(true);
+#ifdef HAVE_SDL_NET
+    if(client) netPlay->getWindow()->setVisible(true);
+#endif
 
     // create the map
     map->reset();
@@ -310,6 +312,7 @@ void Scourge::startMission() {
     if(inventory->isVisible()) inventory->hide();
     if(board->boardWin->isVisible()) board->boardWin->setVisible(false);
     miniMap->hide();
+    netPlay->getWindow()->setVisible(false);
 
     // delete battles
     cerr << "DELETING BATTLES: battleCount=" << battleCount << " battleRound.size()=" << battleRound.size() << endl;
@@ -1882,8 +1885,7 @@ Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radi
 
 #ifdef HAVE_SDL_NET
 void Scourge::runServer(int port) {
-  NetPlay *np = new NetPlay();
-  np->setScourge(this);
+  NetPlay *np = new NetPlay(this);
   server = new Server(port ? port : DEFAULT_SERVER_PORT);
   server->setGameStateHandler(np);
   
