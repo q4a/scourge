@@ -367,6 +367,7 @@ void Scourge::startMission() {
 	  }
 	}
 	for(int i = 0; i < creatureCount; i++) {
+	  shapePal->decrementSkinRefCount(((MD2Shape*)(creatures[i]->getShape()))->getSkinName());
 	  delete creatures[i];
 	}
 	creatureCount = 0;

@@ -49,6 +49,7 @@ class MD2Shape : public GLShape  {
 private:
   bool attackEffect;
   float div;
+  char *skin_name;
   GLuint textureId;
   //float movex, movey, movez;  
   t3DModel * g_3DModel;                 // This holds the 3D Model info that we load in
@@ -102,6 +103,9 @@ public:
   void setupBlending();
   void endBlending();  
   inline void setPauseAnimation(bool pause) { pauseAnimation = pause; }
+  inline GLuint getTextureId() { return textureId; }
+  inline void setSkinName(char *s) { skin_name = s; }
+  inline char *getSkinName() { return skin_name; }
 
 protected:
   void commonInit(t3DModel * g_3DModel, GLuint textureId, float div);

@@ -20,18 +20,14 @@
   *@author Gabor Torok
   */
 
-int Monster::monsterCount[MAX_MONSTER_LEVEL];
-Monster *Monster::monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
-  
+map<int, vector<Monster*>* > Monster::monsters;
+
 Monster::Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor) {
   this->type = type;
   this->level = level;
   this->hp = hp;
   this->model_name = model;
   this->skin_name = skin;
-  for(int i = 0; i < ITEM_COUNT; i++) {
-		item[i] = NULL;
-  }
   speed = 50;
   this->baseArmor = baseArmor;
   sprintf(description, "FIXME: need a description");
@@ -41,57 +37,64 @@ Monster::~Monster() {
 }
 
 void Monster::initMonsters() {
-  // ###########################################
-  Monster *m;
-  int level = 0;
-  monsterCount[level] = 0;
-  m = monsters[level][monsterCount[0]++] = 
-	new Monster("An Imp", 0, 4, "BUGGERLING", "models/m5.bmp", 4);
-  m->item[0] = RpgItem::getItemByName("Short sword");
-  m->item[1] = RpgItem::getItemByName("Dagger");
-  m->item[2] = RpgItem::getItemByName("Horned helmet");
+  char errMessage[500];
+  char s[200];
+  sprintf(s, "data/world/creatures.txt");
+  FILE *fp = fopen(s, "r");
+  if(!fp) {        
+	sprintf(errMessage, "Unable to find the file: %s!", s);
+	cerr << errMessage << endl;
+	exit(1);
+  }
 
-  m = monsters[level][monsterCount[0]++] = 
-	new Monster("An Oozing Green Waddler", 0, 3, "SLIME", "models/m6.bmp", 8);
-  m->item[0] = RpgItem::getItemByName("Dagger");
+  int itemCount = 0;
+  Monster *last_monster = NULL;
+  char name[255], model_name[255], skin_name[255];
+  char line[255];
+  int n = fgetc(fp);
+  while(n != EOF) {
+	if(n == 'M') {
+	  // skip ':'
+	  fgetc(fp);
+	  // read the rest of the line
+	  n = Constants::readLine(name, fp);
+	  n = Constants::readLine(line, fp);
 
-  m = monsters[level][monsterCount[0]++] = 
-	new Monster("A Buggerling", 0, 3, "BUGGERLING", "models/m5.bmp", 6);
-  m->item[0] = RpgItem::getItemByName("Short sword");
+	  strcpy(model_name, strtok(line + 1, ","));
+	  strcpy(skin_name, strtok(NULL, ","));
+	  int level = atoi(strtok(NULL, ","));
+	  int hp =  atoi(strtok(NULL, ","));
+	  int armor =  atoi(strtok(NULL, ","));
 
+	  cerr << "Creating new monster: " << name << " level: " << level << 
+		" hp: " << hp << " armor: " << armor << endl;
 
-  // ###########################################
-  level = 1;
-  monsterCount[level] = 0;
-  m = monsters[level][monsterCount[1]++] =
-	new Monster("A Rabbid Rodent", 1, 4, "BUGGERLING", "models/m5.bmp");
-  m->item[0] = RpgItem::getItemByName("Dagger");
-
-  m = monsters[level][monsterCount[1]++] =
-	new Monster("A Gray Slimy Waddler", 1, 5, "SLIME", "models/m6.bmp");
-  m->item[0] = RpgItem::getItemByName("Dagger");
-
-  m = monsters[level][monsterCount[1]++] =
-	new Monster("A Fleshworm", 1, 3, "BUGGERLING", "models/m5.bmp");
-  m->item[0] = RpgItem::getItemByName("Dagger");
-
-
-  // ###########################################
-  level = 2;
-  monsterCount[level] = 0;
-  m = monsters[level][monsterCount[1]++] =
-	new Monster("A Kobold", 2, 6, "BUGGERLING", "models/m5.bmp");
-  m->item[0] = RpgItem::getItemByName("Dagger");
-
-  m = monsters[level][monsterCount[1]++] =
-	new Monster("A Dire Stench-Waddler", 2, 6, "SLIME", "models/m6.bmp");
-  m->item[0] = RpgItem::getItemByName("Dagger");
-
-  m = monsters[level][monsterCount[1]++] =
-	new Monster("A Minor Spectre", 2, 4, "BUGGERLING", "models/m5.bmp");
-  m->item[0] = RpgItem::getItemByName("Dagger");
+	  vector<Monster*> *list = NULL;
+	  if(monsters.find(level) == monsters.end()) {
+		list = new vector<Monster*>();
+		monsters[level] = list;
+	  } else {
+		list = monsters[level];
+	  }
+	  last_monster = new Monster( strdup(name), level, hp, strdup(model_name), strdup(skin_name), armor );
+	  list->push_back(last_monster);
+	} else if(n == 'I' && last_monster) {
+	  // skip ':'
+	  fgetc(fp);
+	  // read the rest of the line
+	  n = Constants::readLine(line, fp);
+	  // add item to monster
+	  last_monster->addItem(RpgItem::getItemByName(line));
+	} else {
+	  n = Constants::readLine(line, fp);
+	}
+  }
+  fclose(fp);
 }
 
 Monster *Monster::getRandomMonster(int level) {
-  return monsters[level][(int) ((float)monsterCount[level] * rand()/RAND_MAX)];
+  if(monsters.find(level) == monsters.end()) return NULL;
+  vector<Monster*> *list = monsters[level];
+  int index = (int) ((float)(list->size()) * rand()/RAND_MAX);
+  return (*list)[index];
 }

@@ -100,7 +100,9 @@ private:
 
   // md2 data
   map<string, Md2ModelInfo *> creature_models; 
+  map<string, GLShape *> creature_block_shapes;
   map<string, GLuint> creature_skins;
+  map<GLuint, int> loaded_skins;
 
   static ShapePalette *instance;
   
@@ -146,6 +148,9 @@ public:
   
   // Md2 shapes
   GLShape *getCreatureShape(char *model_name, char *skin_name);                    
+  void decrementSkinRefCount(char *skin_name);
+  // use this method to get a meta-shape for the creature (good for mearuring 'fit'-s in dungeongenerator
+  inline GLShape *getCreatureBlockShape(char *name) { string s = name; return creature_block_shapes[s]; }
 
 protected:
   GLuint loadGLTextures(char *fileName);
