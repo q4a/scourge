@@ -107,7 +107,7 @@ using namespace std;
 #define SHOW_DEBUG_INFO
 
 
-#define SCOURGE_VERSION "0.9"
+#define SCOURGE_VERSION "0.10"
 #define MAX_PARTY_SIZE 4
 
 

@@ -2615,45 +2615,46 @@ void Scourge::createPartyUI() {
   mainWin = new Window( getSDLHandler(),
                         getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH, 
                         getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
-                        Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT, 
+                        Scourge::PARTY_GUI_WIDTH, 
+                        Scourge::PARTY_GUI_HEIGHT, 
                         version, 
                         getShapePalette()->getGuiTexture(), false,
                         Window::BASIC_WINDOW,
                         getShapePalette()->getGuiTexture2() );
   cards = new CardContainer(mainWin);  
 
-  roundButton = cards->createButton( 5, 5, 90, 25, "Real-Time", MAX_SIZE );
-  endTurnButton = cards->createButton( 5, 30, 90, 50, "End Turn", MAX_SIZE );
-  groupButton = cards->createButton( 5, 55,  90, 75, "Group Mode", MAX_SIZE );
-  inventoryButton = cards->createButton( 5, 80, 90, 100, "Party Info", MAX_SIZE );  
-  optionsButton = cards->createButton( 5, 105,  90, 125, "Options", MAX_SIZE );
-  quitButton = cards->createButton( 5, 130,  90, 150, "Quit", MAX_SIZE );
+  roundButton = cards->createButton( 5, 0, 90, 20, "Real-Time", MAX_SIZE );
+  endTurnButton = cards->createButton( 5, 20, 90, 40, "End Turn", MAX_SIZE );
+  groupButton = cards->createButton( 5, 40,  90, 60, "Group Mode", MAX_SIZE );
+  inventoryButton = cards->createButton( 5, 60, 90, 80, "Party Info", MAX_SIZE );  
+  optionsButton = cards->createButton( 5, 80,  90, 100, "Options", MAX_SIZE );
+  quitButton = cards->createButton( 5, 100,  90, 120, "Quit", MAX_SIZE );
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   roundButton->setToggle(true);
   roundButton->setSelected(true);
 
-  int offsetX = 95;
+  int offsetX = 90;
   int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - offsetX) / 4;
   int playerButtonHeight = 20;  
   int playerInfoHeight = 100;
-  int playerButtonY = playerInfoHeight + 5;
+  int playerButtonY = playerInfoHeight;
   player1Button = cards->createButton( offsetX + playerButtonWidth * 0, playerButtonY,  
-									   offsetX + playerButtonWidth * 1 - 5, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
+									   offsetX + playerButtonWidth * 1, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
   player1Button->setToggle(true);
   player2Button = cards->createButton( offsetX + playerButtonWidth * 1, playerButtonY,  
-									   offsetX + playerButtonWidth * 2 - 5, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
+									   offsetX + playerButtonWidth * 2, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
   player2Button->setToggle(true);
   player3Button = cards->createButton( offsetX + playerButtonWidth * 2, playerButtonY, 
-									   offsetX + playerButtonWidth * 3 - 5, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
+									   offsetX + playerButtonWidth * 3, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
   player3Button->setToggle(true);
   player4Button = cards->createButton( offsetX + playerButtonWidth * 3, playerButtonY,  
-									   offsetX + playerButtonWidth * 4 - 5, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
+									   offsetX + playerButtonWidth * 4, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
   player4Button->setToggle(true);
 
   for(int i = 0; i < 4; i++) {
-    playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 5,  
-                                offsetX + playerButtonWidth * (i + 1) - 5, playerInfoHeight, 
+    playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 0,  
+                                offsetX + playerButtonWidth * (i + 1), playerInfoHeight, 
                                 this );
     cards->addWidget( playerInfo[i], MAX_SIZE );
   }
@@ -2760,7 +2761,7 @@ void Scourge::drawWidget(Widget *w) {
     glEnable( GL_TEXTURE_2D );
     glColor4f( 1, 1, 1, 1 );
     glBindTexture( GL_TEXTURE_2D, getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
-    int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 120) / 4);
+    int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
     //glTranslatef( 5, 5, 0 );
     glBegin( GL_QUADS );
     glNormal3f( 0, 0, 1 );
