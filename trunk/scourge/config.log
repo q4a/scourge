@@ -15,55 +15,170 @@ configure:962: checking whether the C compiler (gcc  ) works
 configure:978: gcc -o conftest    conftest.c  1>&5
 configure:1004: checking whether the C compiler (gcc  ) is a cross-compiler
 configure:1009: checking whether we are using GNU C
+configure:1018: gcc -E conftest.c
 configure:1037: checking whether gcc accepts -g
 configure:1078: checking for c++
 configure:1110: checking whether the C++ compiler (c++  ) works
 configure:1126: c++ -o conftest    conftest.C  1>&5
 configure:1152: checking whether the C++ compiler (c++  ) is a cross-compiler
 configure:1157: checking whether we are using GNU C++
+configure:1166: c++ -E conftest.C
 configure:1185: checking whether c++ accepts -g
 configure:1220: checking for ranlib
 configure:1250: checking whether make sets ${MAKE}
 configure:1278: checking how to run the C preprocessor
+configure:1299: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:1358: checking for ANSI C header files
+configure:1371: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1438: gcc -o conftest    conftest.c  1>&5
 configure:1465: checking for sys/time.h
+configure:1475: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:1465: checking for unistd.h
+configure:1475: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:1503: checking for working const
+configure:1557: gcc -c   conftest.c 1>&5
 configure:1578: checking whether time.h and sys/time.h may both be included
+configure:1592: gcc -c   conftest.c 1>&5
 configure:1616: checking for getcwd
+configure:1644: gcc -o conftest    conftest.c  1>&5
 configure:1616: checking for gettimeofday
+configure:1644: gcc -o conftest    conftest.c  1>&5
 configure:1616: checking for strdup
+configure:1644: gcc -o conftest    conftest.c  1>&5
 configure:1672: checking for finite
+configure:1700: gcc -o conftest    conftest.c  1>&5
 configure:1672: checking for isnan
+configure:1700: gcc -o conftest    conftest.c  1>&5
 configure:1727: checking for _finite
+configure:1755: gcc -o conftest    conftest.c  1>&5
+/home/gabor/tmp/ccQmryIH.o(.text+0x11): In function `main':
+: undefined reference to `_finite'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 1732 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char _finite(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char _finite();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub__finite) || defined (__stub____finite)
+choke me
+#else
+_finite();
+#endif
+
+; return 0; }
 configure:1727: checking for _isnan
+configure:1755: gcc -o conftest    conftest.c  1>&5
+/home/gabor/tmp/cc0SEfwT.o(.text+0x11): In function `main':
+: undefined reference to `_isnan'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 1732 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char _isnan(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char _isnan();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub__isnan) || defined (__stub____isnan)
+choke me
+#else
+_isnan();
+#endif
+
+; return 0; }
 configure:1783: checking for ieeefp.h
+configure:1793: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1789:20: ieeefp.h: No such file or directory
+configure: failed program was:
+#line 1788 "configure"
+#include "confdefs.h"
+#include <ieeefp.h>
 configure:1856: checking for Win32 platform
 configure:1888: checking for X
 configure:2202: checking for dnet_ntoa in -ldnet
+configure:2221: gcc -o conftest    conftest.c -ldnet   1>&5
+/usr//bin/ld: cannot find -ldnet
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 2210 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char dnet_ntoa();
+
+int main() {
+dnet_ntoa()
+; return 0; }
 configure:2243: checking for dnet_ntoa in -ldnet_stub
+configure:2262: gcc -o conftest    conftest.c -ldnet_stub   1>&5
+/usr//bin/ld: cannot find -ldnet_stub
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 2251 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char dnet_ntoa();
+
+int main() {
+dnet_ntoa()
+; return 0; }
 configure:2291: checking for gethostbyname
+configure:2319: gcc -o conftest    conftest.c  1>&5
 configure:2389: checking for connect
+configure:2417: gcc -o conftest    conftest.c  1>&5
 configure:2481: checking for remove
+configure:2509: gcc -o conftest    conftest.c  1>&5
 configure:2573: checking for shmat
+configure:2601: gcc -o conftest    conftest.c  1>&5
 configure:2674: checking for IceConnectionNumber in -lICE
+configure:2693: gcc -o conftest    -L/usr/X11R6/lib conftest.c -lICE   1>&5
 configure:2723: checking for main in -ldl
+configure:2738: gcc -o conftest    conftest.c -ldl   1>&5
 configure:2759: checking for main in -lm
+configure:2774: gcc -o conftest    conftest.c -lm   1>&5
 configure:2846: checking for sdl-config
 configure:2881: checking for SDL - version >= 1.0.1
 configure:2966: gcc -o conftest  -I/usr/include/SDL -D_REENTRANT   conftest.c  -L/usr/lib -lSDL -lpthread 1>&5
 configure:3056: checking for SDL_JoystickOpen
+configure:3084: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread 1>&5
 configure:3116: checking for Mix_OpenAudio in -lSDL_mixer
+configure:3135: gcc -o conftest    conftest.c -lSDL_mixer    -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread 1>&5
 configure:3206: checking for GL library
-configure:3216: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL 1>&5
+configure:3216: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread -lSDL_mixer  -lGL 1>&5
 configure:3488: checking for glXGetProcAddressARB
+configure:3516: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread -lSDL_mixer  -lGL 1>&5
 configure:3564: checking for GLU library
-configure:3574: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL -lGLU 1>&5
+configure:3574: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread -lSDL_mixer  -lGL -lGLU 1>&5
 configure:3657: checking for GL/gl.h
-configure:3664: gcc -E    -DTUXRACER_NO_ASSERT=1 -DHAVE_SDL=1 conftest.c >/dev/null 2>conftest.out
+configure:3664: gcc -E    -DTUXRACER_NO_ASSERT=1 -DHAVE_SDL=1 -DHAVE_SDL_MIXER=1 conftest.c >/dev/null 2>conftest.out
 configure:3723: checking for GL/glx.h
+configure:3733: gcc -E    -DTUXRACER_NO_ASSERT=1 -DHAVE_SDL=1 -DHAVE_SDL_MIXER=1 conftest.c >/dev/null 2>conftest.out
 configure:3772: checking for GL/glext.h
+configure:3782: gcc -E    -DTUXRACER_NO_ASSERT=1 -DHAVE_SDL=1 -DHAVE_SDL_MIXER=1 conftest.c >/dev/null 2>conftest.out
 configure:3821: checking whether glext.h is recent enough
 configure:3881: checking for glut library
-configure:3891: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL -lGLU  -lglut 1>&5
+configure:3891: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread -lSDL_mixer  -lGL -lGLU  -lglut 1>&5
 configure:3938: checking for GL/glut.h
+configure:3948: gcc -E   -DTUXRACER_NO_ASSERT=1 -DHAVE_SDL=1 -DHAVE_SDL_MIXER=1  -DHAVE_GLUT  conftest.c >/dev/null 2>conftest.out

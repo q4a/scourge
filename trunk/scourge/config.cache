@@ -13,8 +13,6 @@
 # --recheck option to rerun configure.
 #
 ac_cv_c_const=${ac_cv_c_const=yes}
-ac_cv_cygwin=${ac_cv_cygwin=no}
-ac_cv_exeext=${ac_cv_exeext=no}
 ac_cv_func_SDL_JoystickOpen=${ac_cv_func_SDL_JoystickOpen=yes}
 ac_cv_func__finite=${ac_cv_func__finite=no}
 ac_cv_func__isnan=${ac_cv_func__isnan=no}
@@ -32,28 +30,23 @@ ac_cv_have_x=${ac_cv_have_x='have_x=yes 		ac_x_includes=/usr/X11R6/include ac_x_
 ac_cv_header_GL_glext_h=${ac_cv_header_GL_glext_h=yes}
 ac_cv_header_GL_glut_h=${ac_cv_header_GL_glut_h=yes}
 ac_cv_header_GL_glx_h=${ac_cv_header_GL_glx_h=yes}
-ac_cv_header_dlfcn_h=${ac_cv_header_dlfcn_h=yes}
 ac_cv_header_ieeefp_h=${ac_cv_header_ieeefp_h=no}
 ac_cv_header_stdc=${ac_cv_header_stdc=yes}
 ac_cv_header_sys_time_h=${ac_cv_header_sys_time_h=yes}
 ac_cv_header_time=${ac_cv_header_time=yes}
 ac_cv_header_unistd_h=${ac_cv_header_unistd_h=yes}
 ac_cv_lib_ICE_IceConnectionNumber=${ac_cv_lib_ICE_IceConnectionNumber=yes}
-ac_cv_lib_SDL_mixer_Mix_OpenAudio=${ac_cv_lib_SDL_mixer_Mix_OpenAudio=no}
+ac_cv_lib_SDL_mixer_Mix_OpenAudio=${ac_cv_lib_SDL_mixer_Mix_OpenAudio=yes}
 ac_cv_lib_dl_main=${ac_cv_lib_dl_main=yes}
 ac_cv_lib_dnet_dnet_ntoa=${ac_cv_lib_dnet_dnet_ntoa=no}
 ac_cv_lib_dnet_stub_dnet_ntoa=${ac_cv_lib_dnet_stub_dnet_ntoa=no}
 ac_cv_lib_m_main=${ac_cv_lib_m_main=yes}
-ac_cv_mingw32=${ac_cv_mingw32=no}
-ac_cv_objext=${ac_cv_objext=o}
-ac_cv_path_SDL_CONFIG=${ac_cv_path_SDL_CONFIG=/usr/bin/sdl-config}
-ac_cv_path_install=${ac_cv_path_install='/usr/bin/install -c'}
+ac_cv_path_SDL_CONFIG=${ac_cv_path_SDL_CONFIG=/usr//bin/sdl-config}
+ac_cv_path_install=${ac_cv_path_install='/usr//bin/install -c'}
 ac_cv_prog_CC=${ac_cv_prog_CC=gcc}
 ac_cv_prog_CPP=${ac_cv_prog_CPP='gcc -E'}
 ac_cv_prog_CXX=${ac_cv_prog_CXX=c++}
-ac_cv_prog_LN_S=${ac_cv_prog_LN_S='ln -s'}
 ac_cv_prog_RANLIB=${ac_cv_prog_RANLIB=ranlib}
-ac_cv_prog_STRIP=${ac_cv_prog_STRIP=strip}
 ac_cv_prog_cc_cross=${ac_cv_prog_cc_cross=no}
 ac_cv_prog_cc_g=${ac_cv_prog_cc_g=yes}
 ac_cv_prog_cc_works=${ac_cv_prog_cc_works=yes}
@@ -63,27 +56,3 @@ ac_cv_prog_cxx_works=${ac_cv_prog_cxx_works=yes}
 ac_cv_prog_gcc=${ac_cv_prog_gcc=yes}
 ac_cv_prog_gxx=${ac_cv_prog_gxx=yes}
 ac_cv_prog_make_make_set=${ac_cv_prog_make_make_set=yes}
-lt_cv_archive_cmds_need_lc=${lt_cv_archive_cmds_need_lc=no}
-lt_cv_cc_64bit_output=${lt_cv_cc_64bit_output=no}
-lt_cv_compiler_c_o=${lt_cv_compiler_c_o=yes}
-lt_cv_compiler_o_lo=${lt_cv_compiler_o_lo=yes}
-lt_cv_deplibs_check_method=${lt_cv_deplibs_check_method=pass_all}
-lt_cv_file_magic_cmd=${lt_cv_file_magic_cmd='$MAGIC_CMD'}
-lt_cv_file_magic_test_file=${lt_cv_file_magic_test_file='/lib/libc.so.6 /lib/libc-2.3.3.so'}
-lt_cv_global_symbol_to_c_name_address=${lt_cv_global_symbol_to_c_name_address='sed -n -e '\''s/^: \([^ ]*\) $/  {\"\1\", (lt_ptr) 0},/p'\'' -e '\''s/^[BCDEGRST] \([^ ]*\) \([^ ]*\)$/  {"\2", (lt_ptr) \&\2},/p'\'''}
-lt_cv_global_symbol_to_cdecl=${lt_cv_global_symbol_to_cdecl='sed -n -e '\''s/^. .* \(.*\)$/extern char \1;/p'\'''}
-lt_cv_ld_reload_flag=${lt_cv_ld_reload_flag=-r}
-lt_cv_path_LD=${lt_cv_path_LD=/usr/bin/ld}
-lt_cv_path_NM=${lt_cv_path_NM='/usr/bin/nm -B'}
-lt_cv_path_SED=${lt_cv_path_SED=/bin/sed}
-lt_cv_prog_cc_can_build_shared=${lt_cv_prog_cc_can_build_shared=yes}
-lt_cv_prog_cc_no_builtin=${lt_cv_prog_cc_no_builtin=}
-lt_cv_prog_cc_pic=${lt_cv_prog_cc_pic='     -fPIC'}
-lt_cv_prog_cc_pic_works=${lt_cv_prog_cc_pic_works=yes}
-lt_cv_prog_cc_shlib=${lt_cv_prog_cc_shlib=}
-lt_cv_prog_cc_static=${lt_cv_prog_cc_static=}
-lt_cv_prog_cc_static_works=${lt_cv_prog_cc_static_works=no}
-lt_cv_prog_cc_wl=${lt_cv_prog_cc_wl=-Wl,}
-lt_cv_prog_gnu_ld=${lt_cv_prog_gnu_ld=yes}
-lt_cv_sys_global_symbol_pipe=${lt_cv_sys_global_symbol_pipe='sed -n -e '\''s/^.*[ 	]\([ABCDGISTW][ABCDGISTW]*\)[ 	][ 	]*\(\)\([_A-Za-z][_A-Za-z0-9]*\)$/\1 \2\3 \3/p'\'''}
-lt_cv_sys_path_separator=${lt_cv_sys_path_separator=:}
