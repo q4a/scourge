@@ -237,6 +237,29 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 	inside = (x >= getX() && x < getX() + scrollerWidth &&
 						y >= getY() + scrollerY && y < getY() + scrollerY + scrollerHeight);
 	switch(event->type) {
+  case SDL_KEYDOWN:
+  if(hasFocus()) {
+    if(event->key.keysym.sym == SDLK_UP || 
+       event->key.keysym.sym == SDLK_DOWN) {
+      return true;
+    }
+  }
+  break;
+  case SDL_KEYUP:
+  if(hasFocus()) {
+    if(event->key.keysym.sym == SDLK_UP) {
+      if(selectedLine) {
+        setSelectedLine(selectedLine - 1);
+      }
+      return true;
+    } else if(event->key.keysym.sym == SDLK_DOWN) {
+      if(selectedLine < count - 1) {
+        setSelectedLine(selectedLine + 1);
+      }
+      return true;
+    }
+  }
+  break;
 	case SDL_MOUSEMOTION:
 		if(innerDrag && 
 			 (abs(innerDragX - x) > DragAndDropHandler::DRAG_START_DISTANCE ||
@@ -289,9 +312,11 @@ void ScrollingList::setSelectedLine(int line) {
   selectedLine = (line < count ? line : count - 1);
 
   // fixme: should check if line is already visible
-  value = (int)(((float)(selectedLine + 1) / (float)count) * 100.0f);
-  if(value < 0)	value = 0;
-  if(value > 100)	value = 100;
-  scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+  if(listHeight > getHeight()) {
+    value = (int)(((float)(selectedLine + 1) / (float)count) * 100.0f);
+    if(value < 0)	value = 0;
+    if(value > 100)	value = 100;
+    scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+  }
 }
 

@@ -22,6 +22,7 @@
 
 int Window::windowCount = 0;
 Window *Window::window[MAX_WINDOW];
+Window *Window::currentWin = NULL;
 
 /**
   *@author Gabor Torok
@@ -106,9 +107,13 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
       if(window[i]->isModal()) {
         win = window[i];
         break;
-      } else if(window[i]->isInside(x, y) || 
-                event->type == SDL_KEYUP || 
+      } else if(event->type == SDL_KEYUP || 
                 event->type == SDL_KEYDOWN) {
+        if(window[i] == currentWin) {
+          win = window[i];
+          break;
+        }
+      } else if(window[i]->isInside(x, y)) {
         if(maxz < window[i]->getZ()) {
           win = window[i];
           maxz = win->getZ();
@@ -148,8 +153,10 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       if(!insideWidget) {
         if(insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT))) {
           if(event->type == SDL_MOUSEBUTTONUP || 
-             event->type == SDL_MOUSEBUTTONDOWN) 
+             event->type == SDL_MOUSEBUTTONDOWN) {
+            currentWin = this;
             setFocus(this->widget[t]);
+          }
         }
       } 
       if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
@@ -201,7 +208,13 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     return false;
   case SDL_KEYUP:
   if(event->key.keysym.sym == SDLK_TAB) {
-    if(SDL_GetModState() & KMOD_SHIFT) {
+    if(SDL_GetModState() & KMOD_CTRL) {
+      if(SDL_GetModState() & KMOD_SHIFT) {
+        prevWindowToTop();
+      } else {
+        nextWindowToTop();
+      }
+    } else if(SDL_GetModState() & KMOD_SHIFT) {
       prevFocus();
     } else {
       nextFocus();
@@ -412,13 +425,15 @@ void Window::drawWidget(Widget *parent) {
   }
 
   // add a border
-  if(isLocked()) {
+  if(currentWin == this) {
+    applyHighlightedBorderColor();
+  } else if(isLocked()) {
     glColor3f(0.5f, 0.3f, 0.2f);
   } else {
     applyBorderColor();
   }
 
-  glLineWidth( isLocked()  || isModal() ? 3.0f : 2.0f );
+  glLineWidth( this == currentWin || isLocked() || isModal() ? 3.0f : 2.0f );
   glBegin(GL_LINES);
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
@@ -570,6 +585,9 @@ void Window::setVisible(bool b, bool animate) {
   toTop();
   Widget::setVisible(b);
   if(b) openHeight = (animate ? 0 : getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT));
+  else {
+    nextWindowToTop();
+  }
 }
 
 void Window::toTop() {
@@ -577,6 +595,7 @@ void Window::toTop() {
 }
 
 void Window::toTop(Window *win) {
+  currentWin = win;
   if(win->isLocked()) return;
   for(int i = 0; i < windowCount; i++) {
     if(window[i] == win) {
@@ -608,6 +627,34 @@ void Window::toBottom(Window *win) {
       break;
     }
   }
+}
+
+void Window::nextWindowToTop() {
+  bool next = false;
+  
+  for(int i = 0; i < windowCount; i++) {
+    if(window[i]->isVisible() && window[i]->isModal()) {
+      currentWin = window[i];
+      currentWin->toTop();
+      return;
+    }
+  }
+  
+  for(int t = 0; t < 2; t++) {
+    for(int i = 0; i < windowCount; i++) {
+      if(window[i]->isVisible() && next) {
+        currentWin = window[i];
+        currentWin->toTop();
+        return;
+      } else if(currentWin == NULL || currentWin == window[i]) {
+        next = true;
+      }
+    }
+  }
+}
+
+void Window::prevWindowToTop() {
+  // FIXME: implement me; harder than nextWindowToTop() b/c toTop reorders windows
 }
 
 void Window::showMessageDialog(SDLHandler *sdlHandler, 
