@@ -39,7 +39,7 @@ map<string, Character*> Character::character_class;
 void Character::initCharacters() {
   char errMessage[500];
   char s[200];
-  sprintf(s, "data/world/characters.txt");
+  sprintf(s, "%s/world/characters.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
 	sprintf(errMessage, "Unable to find the file: %s!", s);

@@ -18,6 +18,14 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+// from tuxracer
+#if defined ( __MWERKS__ ) || defined( _MSC_VER )
+#   define NATIVE_WIN32_COMPILER 1
+#else
+/* Assume UNIX compatible by default */
+#   define COMPILER_IS_UNIX_COMPATIBLE 1
+#endif
+
 // include sdl, opengl and glut
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -40,6 +48,16 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #include <math.h>
 #include <vector.h>
 
+#if defined( COMPILER_IS_UNIX_COMPATIBLE )
+#   include <unistd.h>
+#   include <sys/types.h>
+#   include <pwd.h>
+#   include <dirent.h>
+#   include <sys/time.h>
+#   include <sys/types.h>
+#   include <dirent.h>
+#endif
+
 using namespace std;
 
 #ifdef WIN32
@@ -47,6 +65,30 @@ using namespace std;
 #else
 #define SEPARATOR '/'
 #endif
+
+/*
+  Data and config dirs. Shamelessly borrowed from tuxracer.
+ */
+#if defined( WIN32 )
+#  define CONFIG_DIR "scourge"
+#  define CONFIG_FILE "options.txt"
+#else
+#  define CONFIG_DIR ".scourge"
+#  define CONFIG_FILE "options"
+#endif /* defined( WIN32 ) */
+
+#ifndef DATA_DIR
+#  if defined( WIN32 )
+#    define DATA_DIR "."
+#  else
+#    define DATA_DIR "/usr/local/share/scourge"
+#  endif /* defined( WIN32 ) */
+#endif
+
+extern char rootDir[300];
+extern char configDir[300];
+extern int get_config_dir_name( char *buff, int len );
+extern int get_config_file_name( char *buff, int len );
 
 #define SCOURGE_VERSION 0.5
 
@@ -147,8 +189,6 @@ typedef struct _Color {
 /**
   *@author Gabor Torok
   */
-
-extern char rootDir[300];
 
 typedef struct _ParticleStruct {
   GLfloat x, y, z;

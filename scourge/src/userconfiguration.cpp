@@ -234,8 +234,9 @@ void UserConfiguration::loadConfiguration(){
     unsigned int i;
         
     char path[300];
-    strcpy(path, rootDir);
-    strcat(path, CONFIG_FILE_NAME);
+	//    strcpy(path, rootDir);
+	//    strcat(path, CONFIG_FILE_NAME);
+	get_config_file_name(path, 300);
     configFile = new ifstream(path);
     if(!configFile->is_open()){
         cout << "Error while opening " << path << endl;        
@@ -310,8 +311,9 @@ void UserConfiguration::saveConfiguration(){
     int i;
     
     char path[300];
-    strcpy(path, rootDir);
-    strcat(path, CONFIG_FILE_NAME);
+	//    strcpy(path, rootDir);
+	//    strcat(path, CONFIG_FILE_NAME);
+	get_config_file_name(path, 300);
     configFile = new ofstream(path);
     if(!configFile->is_open()){
         cout << "Error while saving " << path << endl;        
@@ -455,11 +457,11 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
             paramValue = false;
         }
         else{          
-            cerr << "Warning : in file " << CONFIG_FILE_NAME 
+		  cerr << "Warning : in file " << CONFIG_FILE // _NAME 
              << " invalid parameter at line " << lineNumber 
              << ", valid parameter are 'true' or 'false'. Ignoring line" << endl; 
              return;                  
-        }        
+        }
     }
     
     if(s1 == "fullscreen"){
@@ -490,7 +492,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     else if(s1 == "bpp"){        
         bpp = atoi(s2.c_str());
         if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
-		 cerr << "Warning : in file " << CONFIG_FILE_NAME 
+		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
              << " invalid bpp value at line " << lineNumber 
              << ", valid values are 8, 15, 16, 24 or 32 . Ignoring line" << endl;    
              bpp = -1; // To autodetect best bpp value
@@ -507,7 +509,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
         if(!(shadows == 0 || 
            shadows == 1 || 
            shadows == 2)) {
-            cerr << "Warning : in file " << CONFIG_FILE_NAME 
+		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
              << " invalid shadow mode at line " << lineNumber 
              << ", valid modes 0, 1, 2 . Ignoring line" << endl;    
              shadows = 2; // Default value
@@ -525,7 +527,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     else if(s1 == "gamespeed"){        
         gamespeed = atoi(s2.c_str());
         if(gamespeed < 0 || gamespeed > 4){           
-            cerr << "Warning : in file " << CONFIG_FILE_NAME 
+		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
              << " invalid gamespeed level at line " << lineNumber 
              << ", valid values are 0, 1, 2, 3 and 4 . Ignoring line" << endl;    
              gamespeed = 1; // Default value

@@ -91,7 +91,7 @@ void Item::getDetailedDescription(char *s, bool precise){
 void Item::initItems(ShapePalette *shapePal) {
   char errMessage[500];
   char s[200];
-  sprintf(s, "data/world/items.txt");
+  sprintf(s, "%s/world/items.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
 	sprintf(errMessage, "Unable to find the file: %s!", s);

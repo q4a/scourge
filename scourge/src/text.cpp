@@ -31,7 +31,7 @@
 TexturedText::TexturedText() {
     useLuminanceAlpha = 0;
     strcpy(filename, rootDir);
-	strcat(filename, "data/fonts/default.txf");
+	strcat(filename, "/fonts/default.txf");
     txf = txfLoadFont(filename);
     if(txf == NULL) {
         fprintf(stderr, "Problem loading %s\n", filename);

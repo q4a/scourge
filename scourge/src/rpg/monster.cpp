@@ -40,7 +40,7 @@ Monster::~Monster() {
 void Monster::initMonsters() {
   char errMessage[500];
   char s[200];
-  sprintf(s, "data/world/creatures.txt");
+  sprintf(s, "%s/world/creatures.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
 	sprintf(errMessage, "Unable to find the file: %s!", s);
