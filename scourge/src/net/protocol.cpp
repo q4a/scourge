@@ -47,11 +47,11 @@ Protocol::~Protocol() {
 int Protocol::startServer(int port) {
   if(server) {
     cerr << "*** Warning: attempting to start server when it's already running." << endl;
-    return server->getServerPort();
+    return port;
   }
   server = new Server(port);
   SDL_Delay(2000);
-  return server->getServerPort();
+  return port;
 }
 
 void Protocol::stopServer() {

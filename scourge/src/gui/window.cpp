@@ -143,8 +143,11 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
   Widget *w = NULL;
   for(int t = 0; t < widgetCount; t++) {
     if(this->widget[t]->isVisible()) {
-      if(!insideWidget)
-        insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT));
+      if(!insideWidget) {
+        if(insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT))) {
+          setFocus(this->widget[t]);
+        }
+      } 
       if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
         w = this->widget[t];
     }
@@ -189,22 +192,53 @@ bool Window::isInside(int x, int y) {
 
 bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   switch(event->type) {
+  case SDL_KEYDOWN:
+  case SDL_KEYUP:
+  if(event->key.keysym.sym == SDLK_TAB) {
+    nextFocus();
+  }
+  break;
   case SDL_MOUSEMOTION:
-    if(dragging) move(x - dragX, y - dragY);
-    break;
+  if(dragging) move(x - dragX, y - dragY);
+  break;
   case SDL_MOUSEBUTTONUP:
-    dragging = false;
-    break;
+  dragging = false;
+  break;
   case SDL_MOUSEBUTTONDOWN:
-    toTop();
-    if(!isLocked()) {
-      dragging = isInside(x, y);
-      dragX = x - getX();
-      dragY = y - getY();
-    }
-    break;
+  toTop();
+  if(!isLocked()) {
+    dragging = isInside(x, y);
+    dragX = x - getX();
+    dragY = y - getY();
+  }
+  break;
   }
   return isInside(x, y);
+}
+
+void Window::setFocus(Widget *w) {
+  bool focusSet = false;
+  for(int i = 0; i < widgetCount; i++) {
+    bool b = (w->canGetFocus() && widget[i] == w) ||
+      (!w->canGetFocus() && widget[i]->canGetFocus() && !focusSet);
+    if(!focusSet) focusSet = b;
+    widget[i]->setFocus(b);
+  }
+}
+
+void Window::nextFocus() {
+  bool setFocus = false;
+  for(int t = 0; t < 2; t++) {
+    for(int i = 0; i < widgetCount; i++) {
+      if(widget[i]->hasFocus()) {
+        widget[i]->setFocus(false);
+        setFocus = true;
+      } else if(setFocus && widget[i]->canGetFocus()) {
+        widget[i]->setFocus(true);
+        return;
+      }
+    }
+  }
 }
 
 void Window::addWidget(Widget *widget) {
@@ -215,6 +249,7 @@ void Window::addWidget(Widget *widget) {
     widget->setBackground( getBackgroundColor() );
     widget->setSelectionColor( getSelectionColor() );
     widget->setBorderColor( getBorderColor() );
+    setFocus(widget);
   } else{
     cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
   }
@@ -418,7 +453,6 @@ void Window::drawWidget(Widget *parent) {
 
       // if this is modified, also change handleWindowEvent
       glTranslated(x, y + TOP_HEIGHT, z + 5);
-
 
       widget[i]->draw(this);
       glPopMatrix();

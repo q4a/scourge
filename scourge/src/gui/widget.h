@@ -35,6 +35,8 @@ class Widget {
   Color selColor;
   Color borderColor;
   Color borderColor2;
+  Color focusColor;
+  bool focus;
 
  public: 
   Widget(int x, int y, int w, int h);
@@ -54,29 +56,30 @@ class Widget {
 
   virtual void drawWidget(Widget *parent) = 0;
 
+  virtual inline bool hasFocus() { return focus; }
+  virtual inline void setFocus(bool b) { focus = b; }
+  virtual inline bool canGetFocus() { return true; }
+
 
   // color
   inline void setColor( float r, float g, float b, float a=1.0f ) { this->color.r = r; this->color.g = g; this->color.b = b; this->color.a = a; }
-
   inline void setBorderColor( float r, float g, float b, float a=1.0f ) { this->borderColor.r = r; this->borderColor.g = g; this->borderColor.b = b; this->borderColor.a = a; }
   inline void setHighlightedBorderColor( float r, float g, float b, float a=1.0f ) { this->borderColor2.r = r; this->borderColor2.g = g; this->borderColor2.b = b; this->borderColor2.a = a; }
-
   inline void setBackground(float r, float g, float b, float a=1.0f) { background.r = r; background.g = g; background.b = b; background.a = a; }
   inline void setSelectionColor(float r, float g, float b, float a=1.0f) { selColor.r = r; selColor.g = g; selColor.b = b; selColor.a=a; }
-
   inline void setColor( Color *c ) { this->color.r = c->r; this->color.g = c->g; this->color.b = c->b; this->color.a = c->a; }
-
   inline void setBorderColor( Color *c ) { this->borderColor.r = c->r; this->borderColor.g = c->g; this->borderColor.b = c->b; this->borderColor.a = c->a; }
-
   inline void setBackground( Color *c) { background.r = c->r; background.g = c->g; background.b = c->b; background.a = c->a; }
   inline void setSelectionColor( Color *c ) { selColor.r = c->r; selColor.g = c->g; selColor.b = c->b; selColor.a=c->a; }
-
+  inline void setFocusColor( float r, float g, float b, float a=1.0f ) { this->focusColor.r = r; this->focusColor.g = g; this->focusColor.b = b; this->focusColor.a = a; }
+  inline void setFocusColor( Color *c ) { focusColor.r = c->r; focusColor.g = c->g; focusColor.b = c->b; focusColor.a=c->a; }
 
   inline void applyColor() { glColor4f( color.r, color.g, color.b, color.a ); }
   inline void applyBorderColor() { glColor4f(borderColor.r, borderColor.g, borderColor.b, borderColor.a); }
   inline void applyHighlightedBorderColor() { glColor4f(borderColor2.r, borderColor2.g, borderColor2.b, borderColor2.a); }
   inline void applyBackgroundColor(bool opaque=false) { glColor4f( background.r, background.g, background.b, (opaque ? 1.0f : 0.85f) ); }
   inline void applySelectionColor() { glColor4f( selColor.r, selColor.g, selColor.b, selColor.a ); }
+  inline void applyFocusColor() { glColor4f( focusColor.r, focusColor.g, focusColor.b, focusColor.a ); }
 
   inline Color *getColor() { return &color; }
   inline Color *getBorderColor() { return &borderColor; }

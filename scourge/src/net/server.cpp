@@ -21,52 +21,52 @@
 Server::Server(int port) {
   cerr << "Starting server..." << endl;
 
-  serverPort = port;
+  this->port = port;
 
   // open udp server socket
-  if(!(serverSocket = SDLNet_UDP_Open( serverPort ))) {
+  if(!(socket = SDLNet_UDP_Open( port ))) {
     cerr << "SDLNet_UDP_Open: " << SDLNet_GetError() << endl;
     exit(4);
   }
 
   // allocate max packet
-  if(!(serverOut = SDLNet_AllocPacket(PACKET_LENGTH))) {
+  if(!(out = SDLNet_AllocPacket(PACKET_LENGTH))) {
     cerr << "SDLNet_AllocPacket: (out) %s\n" << SDLNet_GetError() << endl;
     exit(5);
   }
-  if(!(serverIn = SDLNet_AllocPacket(PACKET_LENGTH))) {
+  if(!(in = SDLNet_AllocPacket(PACKET_LENGTH))) {
     cerr << "SDLNet_AllocPacket: (in) %s\n" << SDLNet_GetError() << endl;
     exit(5);
   }
   
   // start server thread
   stopServerThread = false;
-  serverThread = SDL_CreateThread(serverLoop, this);
+  thread = SDL_CreateThread(serverLoop, this);
 }
 
 Server::~Server() {
   cerr << "Stopping server..." << endl;
   
   // close the socket
-  SDLNet_UDP_Close(serverSocket);
+  SDLNet_UDP_Close(socket);
   
   // free packet
-  SDLNet_FreePacket(serverOut);
-  SDLNet_FreePacket(serverIn);
+  SDLNet_FreePacket(out);
+  SDLNet_FreePacket(in);
 
   // kill the server thread
-  if(serverThread) {
+  if(thread) {
     cerr << "Waiting for server thread to stop..." << endl;
     int status;
     stopServerThread = true; // should this be synchronized?
-    SDL_WaitThread(serverThread, &status);
-    serverThread = NULL;
+    SDL_WaitThread(thread, &status);
+    thread = NULL;
     stopServerThread = false;
     cerr << "Server thread to stopped." << endl;
   }
 
   // mark server stopped
-  serverPort = -1;
+  port = -1;
   cerr << "Server stopped." << endl;
 }
 
@@ -84,28 +84,29 @@ int serverLoop(void *data) {
   Server *server = (Server*)data;
   char text[PACKET_LENGTH];
 
-  cerr << "Server listening on port " << server->getServerPort() << endl;
+  cerr << "Server listening on port " << server->getPort() << endl;
   while(!server->getStopServerThread()) {
 
     // unbind so requests can come from any address
-    SDLNet_UDP_Unbind(server->getServerSocket(), 0);
-    server->getServerInPacket()->data[0] = 0;
+    SDLNet_UDP_Unbind(server->getSocket(), 0);
+    server->getInPacket()->data[0] = 0;
     cerr << "Waiting..." << endl;
 
     // wait until we get a request
-    while(!SDLNet_UDP_Recv(server->getServerSocket(), 
-                           server->getServerInPacket())) SDL_Delay(100); //1/10th of a second
+    while(!SDLNet_UDP_Recv(server->getSocket(), 
+                           server->getInPacket())) SDL_Delay(100); //1/10th of a second
 
     // check that first byte is for us
-    if(server->getServerInPacket()->data[0] != 1<<4) {
-      server->getServerInPacket()->data[0] = ERROR;
-      server->getServerInPacket()->len = 1;
-      SDLNet_UDP_Send(server->getServerSocket(), -1, server->getServerInPacket());
+    if(server->getInPacket()->data[0] != 1<<4) {
+      server->getInPacket()->data[0] = ERROR;
+      server->getInPacket()->len = 1;
+      SDLNet_UDP_Send(server->getSocket(), -1, server->getInPacket());
       continue; // not a request...
     }
 
+    // create a thread to deal with this request
     IPaddress ip;
-    memcpy(&ip, &(server->getServerInPacket()->address), sizeof(IPaddress));
+    memcpy(&ip, &(server->getInPacket()->address), sizeof(IPaddress));
     const char *host = SDLNet_ResolveIP(&ip);
     Uint32 ipnum = SDL_SwapBE32(ip.host);
     Uint16 port=SDL_SwapBE16(ip.port);
@@ -116,28 +117,28 @@ int serverLoop(void *data) {
         ((ipnum>>8)&0xff) << "." << (ipnum&0xff) << " port=" << port << endl;
 
     // bind client to channel (cbannel used by SDLNet_UDP_Send)
-    if(SDLNet_UDP_Bind(server->getServerSocket(), 0, &ip)==-1) {
+    if(SDLNet_UDP_Bind(server->getSocket(), 0, &ip)==-1) {
       cerr << "SDLNet_UDP_Bind: " << SDLNet_GetError() << endl;
       exit(7);
     }
     
     // get text
-    strcpy(text, (const char*)(server->getServerInPacket()->data + 1));
+    strcpy(text, (const char*)(server->getInPacket()->data + 1));
     cerr << "text=" << text << endl;
 
     // FIXME: encapsulate command processing in command factory (shared with client)
 		
     // send some bogus data for now
-    server->getServerOutPacket()->data[0] = 1; // response code checked in UDPUtil
-    SDLNet_Write32(12, server->getServerOutPacket()->data + 1); // actual data
-    server->getServerOutPacket()->len = 5;
+    server->getOutPacket()->data[0] = 1; // response code checked in UDPUtil
+    SDLNet_Write32(12, server->getOutPacket()->data + 1); // actual data
+    server->getOutPacket()->len = 5;
 
     // send response to all addresses on channel 0
     // FIXME: this will need to change... login should only respond to new user 
     // (maybe not, it's ok to broadcast new user id.)
-    if(UDPUtil::udpsend(server->getServerSocket(), 0, 
-                        server->getServerOutPacket(), 
-                        server->getServerInPacket(), 10, 
+    if(UDPUtil::udpsend(server->getSocket(), 0, 
+                        server->getOutPacket(), 
+                        server->getInPacket(), 10, 
                         0, // 0=no response wanted
                         TIMEOUT) < 1)
       continue;

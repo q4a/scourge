@@ -115,6 +115,8 @@ class Window : public Widget {
   void addWidget(Widget *widget);
   void removeWidget(Widget *widget);
   Widget *handleWindowEvent(SDL_Event *event, int x, int y);
+  void setFocus(Widget *w);
+  void nextFocus();
 
   // from Widget
   void drawWidget(Widget *parent);

@@ -33,20 +33,20 @@ int serverLoop(void *data);
 
 class Server {
 private:
-  int serverPort;
-  UDPsocket serverSocket;
-  UDPpacket *serverOut, *serverIn;
-  SDL_Thread *serverThread;
+  int port;
+  UDPsocket socket;
+  UDPpacket *out, *in;
+  SDL_Thread *thread;
   bool stopServerThread;
 
 public:
   Server(int port);
   ~Server();
 
-  inline int getServerPort() { return serverPort;}
-  inline UDPpacket *getServerOutPacket() { return serverOut;}
-  inline UDPpacket *getServerInPacket() { return serverIn;}
-  inline UDPsocket getServerSocket() { return serverSocket;}
+  inline int getPort() { return port;}
+  inline UDPpacket *getOutPacket() { return out;}
+  inline UDPpacket *getInPacket() { return in;}
+  inline UDPsocket getSocket() { return socket;}
   inline bool getStopServerThread() { return stopServerThread;}
 
 };
