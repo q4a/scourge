@@ -18,6 +18,8 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#ifdef HAVE_SDL_NET
+
 #include "../constants.h"
 #include "../scourge.h"
 #include <SDL_net.h>
@@ -57,5 +59,7 @@ class Protocol {
   inline UDPsocket getServerSocket() { return serverSocket; }
   inline bool getStopServerThread() { return stopServerThread; }
 };
+
+#endif
 
 #endif

@@ -115,7 +115,7 @@ Inventory::Inventory(Scourge *scourge) {
   paperDoll = new Canvas(115, 220, 411, 251 + (Character::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
 
-  invList = new ScrollingList(115, 20, 295, 175, this);
+  invList = new ScrollingList(115, 20, 295, 175, scourge->getShapePalette()->getHighlightTexture(), this);
   cards->addWidget(invList, INVENTORY);
   cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 
@@ -136,13 +136,13 @@ Inventory::Inventory(Scourge *scourge) {
   cards->addWidget( attrCanvas, CHARACTER );
 
   cards->createLabel(115, 165, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
-  stateList = new ScrollingList(115, 170, 290, 70);
+  stateList = new ScrollingList(115, 170, 290, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(stateList, CHARACTER);
 
   strcpy(skillsStr, "Skills:");
   cards->createLabel(115, 255, skillsStr, CHARACTER, Constants::RED_COLOR);
   skillModLabel = cards->createLabel(220, 255, NULL, CHARACTER);
-  skillList = new ScrollingList(115, 260, 290, 180);
+  skillList = new ScrollingList(115, 260, 290, 180, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(skillList, CHARACTER);
   skillAddButton = cards->createButton( 115, 445, 200, 475, strdup(" + "), CHARACTER);
   skillSubButton = cards->createButton( 320, 445, 405, 475, strdup(" - "), CHARACTER);
@@ -151,10 +151,10 @@ Inventory::Inventory(Scourge *scourge) {
   // spellbook
   cards->createLabel(115, 45, strdup("School of magic: (with provider deity)"), 
                      SPELL, Constants::RED_COLOR);
-  schoolList = new ScrollingList(115, 50, 290, 100);
+  schoolList = new ScrollingList(115, 50, 290, 100, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(schoolList, SPELL);
   cards->createLabel(115, 170, strdup("Spells memorized:"), SPELL, Constants::RED_COLOR);
-  spellList = new ScrollingList(115, 175, 290, 150);
+  spellList = new ScrollingList(115, 175, 290, 150, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(spellList, SPELL);
   cards->createLabel(115, 345, strdup("Spell notes:"), SPELL, Constants::RED_COLOR);
   spellDescriptionLabel = new Label(115, 360, strdup(""), 58);
@@ -167,7 +167,7 @@ Inventory::Inventory(Scourge *scourge) {
   missionDescriptionLabel = new Label(115, 60, strdup(""), 50);
   cards->addWidget(missionDescriptionLabel, MISSION);
   cards->createLabel(115, 280, strdup("Mission Objectives"), MISSION, Constants::RED_COLOR);
-  objectiveList = new ScrollingList(115, 285, 295, 175);
+  objectiveList = new ScrollingList(115, 285, 295, 175, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(objectiveList, MISSION);
 
   setSelectedPlayerAndMode(0, INVENTORY);

@@ -22,10 +22,10 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->container = container;
 
   win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
-  openButton = new Button( 5, 5, 105, 35, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
+  openButton = new Button( 5, 5, 105, 35, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
 
-  list = new ScrollingList(5, 40, 310, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), this);
+  list = new ScrollingList(5, 40, 310, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), scourge->getShapePalette()->getHighlightTexture(), this);
   win->addWidget((Widget*)list);
   label = new Label(5, 270, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP));
   win->addWidget(label);

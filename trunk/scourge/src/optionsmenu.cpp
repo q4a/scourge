@@ -46,7 +46,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     
     // Controls tab
     keyBindingsLabel = cards->createLabel(220, 50, strdup("Key bindings"), CONTROLS, Constants::RED_COLOR);
-    controlBindingsList = new ScrollingList(30, 100, 450, 300);
+    controlBindingsList = new ScrollingList(30, 100, 450, 300, scourge->getShapePalette()->getHighlightTexture());
     cards->addWidget(controlBindingsList, CONTROLS);        
     changeControlButton = cards->createButton (65, 440, 170, 470, strdup("Change"), CONTROLS, false);
     waitingLabel = cards->createLabel(35, 80, strdup(" "), CONTROLS, Constants::BLUE_COLOR);         

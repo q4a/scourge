@@ -122,11 +122,11 @@ Board::Board(Scourge *scourge) {
 									   (scourge->getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
 									   BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
 									   strdup("Available Missions"));
-  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
+  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150, scourge->getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
   missionDescriptionLabel = new Label(5, 210, strdup(""), 67);
   boardWin->addWidget(missionDescriptionLabel);
-  playMission = new Button(5, 5, 105, 35, Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+  playMission = new Button(5, 5, 105, 35, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);
 }
 

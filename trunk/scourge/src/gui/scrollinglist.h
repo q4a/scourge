@@ -48,9 +48,10 @@ class ScrollingList : public Widget {
   bool innerDrag;
   int innerDragX, innerDragY;
   bool highlightBorders;
+  GLuint highlight;
 
  public: 
-  ScrollingList(int x, int y, int w, int h, DragAndDropHandler *dragAndDropHandler = NULL);
+  ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL);
   virtual ~ScrollingList();
 
   inline int getLineCount() { return count; }

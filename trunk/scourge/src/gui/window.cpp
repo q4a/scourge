@@ -47,7 +47,7 @@ Widget(x, y, w, h) {
   this->dragging = false;
   this->dragX = this->dragY = 0;
   if(hasCloseButton) {
-    this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6);
+    this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, sdlHandler->getShapePalette()->getHighlightTexture());
   } else closeButton = NULL;
   openHeight = 0;
   this->type = type;
@@ -438,7 +438,7 @@ void Window::drawWidget(Widget *parent) {
 Button *Window::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle){
   if(widgetCount < MAX_WIDGET){
     Button * theButton;
-    theButton = new Button(x1, y1, x2, y2, label);
+    theButton = new Button(x1, y1, x2, y2, sdlHandler->getShapePalette()->getHighlightTexture(), label);
     theButton->setToggle(toggle);     
     addWidget((Widget *)theButton);
     return theButton;
@@ -472,7 +472,7 @@ Label * Window::createLabel(int x1, int x2, char * label, int color){
 Checkbox * Window::createCheckbox(int x1, int y1, int x2, int y2, char *label){
   if(widgetCount < MAX_WIDGET){
     Checkbox * theCheckbox;
-    theCheckbox = new Checkbox(x1, y1, x2, y2, strdup(label));    
+    theCheckbox = new Checkbox(x1, y1, x2, y2, sdlHandler->getShapePalette()->getHighlightTexture(), strdup(label));    
     addWidget((Widget *)theCheckbox);      
     return theCheckbox;
   } else{

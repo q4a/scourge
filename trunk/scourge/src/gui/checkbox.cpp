@@ -21,13 +21,13 @@
   *@author Daroth-U
   */
 
-Checkbox::Checkbox(int x1, int y1, int x2, int y2, char *staticText) : 
+Checkbox::Checkbox(int x1, int y1, int x2, int y2, GLuint highlight, char *staticText) : 
   Widget(x1, y1, x2 - x1, y2 - y1) {
   
   this->x2 = x2;
   this->y2 = y2; 
   this->staticLabel  = new Label(0, 0, staticText);
-  this->checkButton = new Button(x2 - CHECKBOX_SIZE, y1, x2, y2, strdup(" ")); 
+  this->checkButton = new Button(x2 - CHECKBOX_SIZE, y1, x2, y2, highlight, strdup(" ")); 
   this->checkButton -> setLabelPosition(Button::CENTER);  
   this->checked = false;   
 }

@@ -19,8 +19,9 @@
 /**
   *@author Gabor Torok
   */
-ScrollingList::ScrollingList(int x, int y, int w, int h, 
-							 DragAndDropHandler *dragAndDropHandler) : Widget(x, y, w, h) {
+ScrollingList::ScrollingList(int x, int y, int w, int h,
+                             GLuint highlight, 
+                             DragAndDropHandler *dragAndDropHandler) : Widget(x, y, w, h) {
   value = 0;
   count = 0;
   scrollerWidth = 20;
@@ -39,6 +40,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   this->list = NULL;
   this->colors = NULL;
   this->icons = NULL;
+  this->highlight = highlight;
   highlightBorders = false;
 }
 
@@ -79,6 +81,7 @@ void ScrollingList::drawWidget(Widget *parent) {
   }
 
   if(inside) {
+    /*
     GLint t = SDL_GetTicks();
     if(lastTick == 0 || t - lastTick > 50) {
       lastTick = t;
@@ -98,6 +101,30 @@ void ScrollingList::drawWidget(Widget *parent) {
     glVertex2d(scrollerWidth, scrollerY);
     glEnd();
     glDisable( GL_BLEND );
+    */
+    GLint t = SDL_GetTicks();
+    if(lastTick == 0 || t - lastTick > 50) {
+      lastTick = t;
+      alpha += alphaInc;
+      if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
+    }
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 0.75, 0.75, 1, alpha );
+    glBindTexture( GL_TEXTURE_2D, highlight );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, 0 );
+    glVertex2d(0, scrollerY);
+    glTexCoord2f( 0, 1 );
+    glVertex2d(0, scrollerY + scrollerHeight);
+    glTexCoord2f( 1, 1 );
+    glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
+    glTexCoord2f( 1, 0 );
+    glVertex2d(scrollerWidth, scrollerY);
+    glEnd();
+    glDisable( GL_BLEND );
+    glDisable( GL_TEXTURE_2D );
   }
 
   // draw the text
