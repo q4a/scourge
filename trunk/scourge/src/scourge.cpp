@@ -328,6 +328,10 @@ void Scourge::startMission() {
       inventory->hide();
       inventoryButton->setSelected( false );
     }
+    if(optionsMenu->isVisible()) {
+      optionsMenu->hide();
+      optionsButton->setSelected( false );
+    }
     if(boardWin->isVisible()) boardWin->setVisible(false);
     miniMap->hide();
     netPlay->getWindow()->setVisible(false);
@@ -2151,6 +2155,7 @@ void Scourge::setUILayout() {
   }
 
   inventoryButton->setSelected( inventory->isVisible() );
+  optionsButton->setSelected( optionsMenu->isVisible() );
 
   messageWin->setVisible(true, false);
   miniMap->getWindow()->setVisible(true, false);

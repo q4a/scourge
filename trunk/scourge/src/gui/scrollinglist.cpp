@@ -80,11 +80,10 @@ void ScrollingList::drawWidget(Widget *parent) {
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
-	      ((Window*)parent)->getSDLHandler()->getScreen()->h - 
-	      (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
-	      w, getHeight());  
+              ((Window*)parent)->getSDLHandler()->getScreen()->h - 
+              (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
+              w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
-   
 
     // highlight the selected line
     if(selectedLine > -1) {
@@ -161,7 +160,6 @@ void ScrollingList::drawWidget(Widget *parent) {
     
     glDisable( GL_SCISSOR_TEST );
   }
-  
   drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
               false, false, false, false, inside );
 
