@@ -49,6 +49,7 @@
 #include "net/server.h"
 #include "net/client.h"
 #include "net/gamestatehandler.h"
+#include "netplay.h"
 
 using namespace std;
 
@@ -78,6 +79,7 @@ class Server;
 class Client;
 #endif
 class GameStateHandler;
+class NetPlay;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -91,7 +93,7 @@ class GameStateHandler;
   
   @author Gabor Torok
 */ 
-class Scourge : public SDLEventHandler,SDLScreenView,GameStateHandler,CommandInterpreter {
+class Scourge : public SDLEventHandler,SDLScreenView {
  private:
   Party *party;
   Map *map;
@@ -164,6 +166,7 @@ class Scourge : public SDLEventHandler,SDLScreenView,GameStateHandler,CommandInt
   Server *server;
   Client *client;
 #endif
+  NetPlay *netPlay;
 
 protected:
   SDLHandler *sdlHandler;
@@ -522,17 +525,6 @@ public:
     @return the current UI layout mode.
   */
   int getLayoutMode() { return layoutMode; }
-
-  /**
-     the producer
-  */
-  char *getGameState();
-  
-  void chat(char *message);
-  void logout();
-  void ping(int frame);
-  void processGameState(int frame, char *p);
-  void handleUnknownMessage();
 
 #ifdef HAVE_SDL_NET
   void runClient(char *host, int port, char *userName);

@@ -38,6 +38,8 @@ scourge_SOURCES = \
 	Md2.h\
 	md2shape.cpp\
 	md2shape.h\
+	netplay.cpp\
+	netplay.h\
 	containergui.cpp\
 	containergui.h\
 	scourge.cpp\
