@@ -697,88 +697,61 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
 
 void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
                                   Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
-    GLuint buffer[512];
-    GLint  hits, viewport[4];
+  GLuint buffer[512];
+  GLint  hits, viewport[4];
 
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    glSelectBuffer(512, buffer);
-    glRenderMode(GL_SELECT);
-    glInitNames();
-    glPushName(0);
+  glGetIntegerv(GL_VIEWPORT, viewport);
+  glSelectBuffer(512, buffer);
+  glRenderMode(GL_SELECT);
+  glInitNames();
+  glPushName(0);
 
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluPickMatrix(x, viewport[3]-y, 1, 1, viewport);
-    sdlHandler->setOrthoView();
-    
-    glMatrixMode(GL_MODELVIEW);
-    map->selectMode = true;
-    map->draw(sdlHandler->getScreen());
-    map->selectMode = false;
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glLoadIdentity();
+  gluPickMatrix(x, viewport[3]-y, 1, 1, viewport);
+  sdlHandler->setOrthoView();
 
-    glFlush();    
-    hits = glRenderMode(GL_RENDER);
-	//    fprintf(stderr, "hits=%d\n", hits);
-    if (hits > 0)												// If There Were More Than 0 Hits
-	{
-		int	choose = buffer[4];									// Make Our Selection The First Object
-		int depth = buffer[1];									// Store How Far Away It Is
-        char *s;
+  glMatrixMode(GL_MODELVIEW);
+  map->selectMode = true;
+  map->draw(sdlHandler->getScreen());
+  map->selectMode = false;
 
-		for (int loop = 0; loop < hits; loop++)					// Loop Through All The Detected Hits
-		{
-            
-            s = NULL;
-			//            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
-			//                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
-			//                    buffer[loop*5+3],  buffer[loop*5+4]);
-            if(buffer[loop*5+4] > 0) {
-                decodeName(buffer[loop*5+4], mapx, mapy, mapz);
-                if(*mapx < MAP_WIDTH) {
-                    Location *pos = map->getPosition(*mapx, *mapy, *mapz);
-                    if(pos) {
-                        if(pos->shape && pos->shape->getName()) {
-						  //                            fprintf(stderr, "\tname=%s\n", pos->shape->getName());
-                        } else if(pos->item && pos->item->getShape() && pos->item->getShape()->getName()) {
-						  //                            fprintf(stderr, "\tname=ITEM:%s\n", pos->item->getShape()->getName());
-                        }
-                    }
-                }
-            }
-            
-			// If This Object Is Closer To Us Than The One We Have Selected
-			if (buffer[loop*5+1] < GLuint(depth))
-			{
-				choose = buffer[loop*5+4];						// Select The Closer Object
-				depth = buffer[loop*5+1];						// Store How Far Away It Is
-			}
-		}
-        
-		//        fprintf(stderr, "\n\n*** choose=%u\n", choose);
-        //if(choose > 0) {
-            decodeName(choose, mapx, mapy, mapz);
-            if(*mapx < MAP_WIDTH) {
-                Location *pos = map->getPosition(*mapx, *mapy, *mapz);
-                if(pos) {
-                    if(pos->shape && pos->shape->getName()) {
-					  //                        fprintf(stderr, "\tname=%s\n", pos->shape->getName());
-                    } else if(pos->item && pos->item->getShape() && pos->item->getShape()->getName()) {
-					  //                        fprintf(stderr, "\tname=ITEM:%s\n", pos->item->getShape()->getName());
-                    }
-                }
-            }
-        //}
-    } else {
-	  *mapx = *mapy = MAP_WIDTH + 1;
+  glFlush();    
+  hits = glRenderMode(GL_RENDER);
+  //cerr << "hits=" << hits << endl;
+  if (hits > 0)	{					  // If There Were More Than 0 Hits
+	int choose = buffer[4];					// Make Our Selection The First Object
+	int depth = buffer[1];					// Store How Far Away It Is
+
+	for (int loop = 0; loop < hits; loop++)	{		// Loop Through All The Detected Hits
+
+	  //            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
+	  //                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
+	  //                    buffer[loop*5+3],  buffer[loop*5+4]);
+	  if (buffer[loop*5+4] > 0) {
+		decodeName(buffer[loop*5+4], mapx, mapy, mapz);
+	  }
+
+	  // If This Object Is Closer To Us Than The One We Have Selected
+	  if (buffer[loop*5+1] < GLuint(depth))	{
+		choose = buffer[loop*5+4];			  // Select The Closer Object
+		depth = buffer[loop*5+1];			// Store How Far Away It Is
+	  }
 	}
 
- // Restore the projection matrix
- glMatrixMode(GL_PROJECTION);
- glPopMatrix();
+	//cerr << "choose=" << choose << endl;
+	decodeName(choose, mapx, mapy, mapz);
+  } else {
+	*mapx = *mapy = MAP_WIDTH + 1;
+  }
 
- // Go back to modelview for normal rendering
- glMatrixMode(GL_MODELVIEW);
+  // Restore the projection matrix
+  glMatrixMode(GL_PROJECTION);
+  glPopMatrix();
+
+  // Go back to modelview for normal rendering
+  glMatrixMode(GL_MODELVIEW);
 }
 
 void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
