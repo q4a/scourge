@@ -146,7 +146,7 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
 }
 
 void MiniMap :: draw(int xCoord, int yCoord){
-
+  //	glDisable(GL_CULL_FACE);
     int xPartyPos, yPartyPos;     
     float distX, distY; 
     int k;

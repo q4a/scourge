@@ -58,10 +58,15 @@ private:
   enum { LEFT_SURFACE=0, RIGHT_SURFACE, FRONT_SURFACE, TOP_SURFACE, BOTTOM_SURFACE };
 #define LIGHTMAP_SIZE 16
 
+  bool useTexture;
+
 public:
   static const int FRONT_SIDE = 0;
   static const int TOP_SIDE = 1;
   static const int LEFT_RIGHT_SIDE = 2;  
+
+  inline void setUseTexture(bool b) { useTexture = b; }
+  inline bool getUseTexture() { return useTexture; }
 
   inline void setSkipSide(int n) { skipside = n; }
 
@@ -93,6 +98,8 @@ public:
 
   inline void setCameraRot(GLfloat xrot, GLfloat yrot, GLfloat zrot) { this->xrot = xrot; this->yrot = yrot; this->zrot = zrot; }
   inline void setCameraPos(GLfloat xpos, GLfloat ypos, GLfloat zpos, GLfloat xpos2, GLfloat ypos2, GLfloat zpos2) { this->xpos = xpos; this->ypos = ypos; this->zpos = zpos; this->xpos2 = xpos2; this->ypos2 = ypos2; this->zpos2 = zpos2;}
+  inline GLfloat getYRot() { return yrot; }
+  inline GLfloat getZRot() { return zrot; }
 
   inline bool drawFirst() { return true; }
   // if true, the next two functions are called

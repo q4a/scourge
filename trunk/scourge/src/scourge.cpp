@@ -216,10 +216,10 @@ void Scourge::drawView(SDL_Surface *screen) {
   playRound();
   
   map->draw(screen);
-  
+
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
-
+  
   if(isInfoShowing) {
     map->initMapView();  
     for(int i = 0; i < 4; i++) {
@@ -228,6 +228,7 @@ void Scourge::drawView(SDL_Surface *screen) {
 							 map->getSelectedDropTarget()->creature == party[i]),
 							!player_only);
     }
+	glDisable( GL_CULL_FACE );
   }
 
   map->drawDescriptions(messageList);
@@ -235,7 +236,7 @@ void Scourge::drawView(SDL_Surface *screen) {
   miniMap->draw(0, 400);
 
   if(inventory->isVisible()) inventory->drawInventory();
-
+  
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );      
 }
@@ -996,7 +997,7 @@ void Scourge::fightBattle() {
 	  GLint t = SDL_GetTicks();
 	  int itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
 	  if(item || dist <= 1.0f) {
-		if((itemSpeed * 100) < t - creature->getLastTurn()) {
+		if((itemSpeed * 150) < t - creature->getLastTurn()) {
 		  // not time for this creature's turn yet
 		  int creatureInitiative = creature->getInitiative(item);
 		  if(creatureInitiative > initiative) continue;
@@ -1045,8 +1046,7 @@ void Scourge::fightBattle() {
 					  tohit, ac, damage);
 			  map->addDescription(message, 1.0f, 0.5f, 0.5f);
 			  
-			  //creature->getTargetCreature()->takeDamage(damage);
-			  creature->resetDamageEffect();
+			  creature->getTargetCreature()->takeDamage(damage);
 			  
 			} else {
 			  sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 
@@ -1266,35 +1266,59 @@ void Scourge::togglePlayerOnly() {
   
 void Scourge::moveMonster(Creature *monster) {	
   if(monster->getMotion() == Constants::MOTION_LOITER) {
-	for(int i = 0; i < 4; i++) {
-	  int n = (int)(10.0f * rand()/RAND_MAX);
-	  if(n == 0 || !monster->move(monster->getDir(), map)) {
-		int dir = (int)(4.0f * rand()/RAND_MAX);
-		switch(dir) {
-		case 0: monster->setDir(Constants::MOVE_UP); break;
-		case 1: monster->setDir(Constants::MOVE_DOWN); break;
-		case 2: monster->setDir(Constants::MOVE_LEFT); break;
-		case 3: monster->setDir(Constants::MOVE_RIGHT); break;
+	// attack a player
+	if((int)(20.0f * rand()/RAND_MAX) == 0) {
+	  int n = (int)(4.0f * rand()/RAND_MAX);
+	  float dist = Util::distance(monster->getX(), 
+								  monster->getY(), 
+								  monster->getShape()->getWidth(),
+								  monster->getShape()->getDepth(),
+								  party[n]->getX(),
+								  party[n]->getY(),
+								  party[n]->getShape()->getWidth(),
+								  party[n]->getShape()->getDepth());
+	  if(dist < 20.0) {
+		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
+		monster->setTargetCreature(party[n]);
+	  }
+	} else {
+	  // random (non-attack) monster movement
+	  for(int i = 0; i < 4; i++) {
+		int n = (int)(10.0f * rand()/RAND_MAX);
+		if(n == 0 || !monster->move(monster->getDir(), map)) {
+		  int dir = (int)(4.0f * rand()/RAND_MAX);
+		  switch(dir) {
+		  case 0: monster->setDir(Constants::MOVE_UP); break;
+		  case 1: monster->setDir(Constants::MOVE_DOWN); break;
+		  case 2: monster->setDir(Constants::MOVE_LEFT); break;
+		  case 3: monster->setDir(Constants::MOVE_RIGHT); break;
+		  }
+		} else {
+		  break;
 		}
-	  } else {
-		break;
 	  }
 	}
   } else if(monster->getTargetCreature()) {
-	// creature won't fight if too far from the action 
-	float dist = Util::distance(monster->getX(), 
-								monster->getY(), 
-								monster->getShape()->getWidth(),
-								monster->getShape()->getDepth(),
-								monster->getTargetCreature()->getX(),
-								monster->getTargetCreature()->getY(),
-								monster->getTargetCreature()->getShape()->getWidth(),
-								monster->getTargetCreature()->getShape()->getDepth());
-	Item *item = monster->getBestWeapon(dist);
-	if(item || dist <= 1.0) {
-	  monster->stopMoving(); // fps optimization
+	// monster gives up
+	if((int)(20.0f * rand()/RAND_MAX) == 0) {
+	  monster->setMotion(Constants::MOTION_LOITER);
+	  monster->setTargetCreature(NULL);
 	} else {
-	  monster->moveToLocator(map, false);
+	  // creature won't fight if too far from the action 
+	  float dist = Util::distance(monster->getX(), 
+								  monster->getY(), 
+								  monster->getShape()->getWidth(),
+								  monster->getShape()->getDepth(),
+								  monster->getTargetCreature()->getX(),
+								  monster->getTargetCreature()->getY(),
+								  monster->getTargetCreature()->getShape()->getWidth(),
+								  monster->getTargetCreature()->getShape()->getDepth());
+	  Item *item = monster->getBestWeapon(dist);
+	  if(item || dist <= 1.0) {
+		monster->stopMoving(); // fps optimization
+	  } else {
+		monster->moveToLocator(map, false);
+	  }
 	}
   }
 }

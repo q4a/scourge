@@ -80,10 +80,13 @@ void Creature::commonInit() {
   this->cornerX = this->cornerY = -1;
   this->lastTurn = 0;
   this->damageEffectCounter = 0;
+  this->effect = new Effect(scourge->getShapePalette()->getTexture(9));
+  this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
 }
 
 Creature::~Creature(){
+  delete effect;
 }
 
 // moving monsters only
@@ -488,6 +491,13 @@ int Creature::getDamage(Item *weapon) {
 				 skills[Constants::HAND_TO_HAND_COMBAT]);
   damage = damage + (damage * ((skill - 50) / 100.0f) );
   return (int)(damage * rand()/RAND_MAX);
+}
+
+// take some damage
+void Creature::takeDamage(int damage) {
+  resetDamageEffect();
+  setEffectType(Constants::EFFECT_GLOW);
+  //setEffectType(Constants::EFFECT_FLAMES);
 }
 
 /**

@@ -52,6 +52,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
   this->shapePalIndex = shapePalIndex; 
   this->skipside = 0;
   this->useShadow = false;
+  this->useTexture = true;
 
   // initialize the surfaces
   float w = (float)width / DIV;

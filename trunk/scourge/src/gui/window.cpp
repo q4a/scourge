@@ -57,6 +57,7 @@ void Window::removeWindow(Window *win) {
 }
 
 void Window::drawVisibleWindows() {
+  //  glDisable(GL_CULL_FACE);
   for(int i = 0; i < windowCount; i++) {
 	if(window[i]->isVisible()) window[i]->drawWidget(NULL);
   }

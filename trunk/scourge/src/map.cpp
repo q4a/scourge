@@ -112,7 +112,7 @@ void Map::center(Sint16 x, Sint16 y) {
 */
 void Map::setupShapes(bool ground) {
   if(!ground) {
-	laterCount = stencilCount = otherCount = 0;
+	laterCount = stencilCount = otherCount = damageCount = 0;
 	mapChanged = false;
   }
 
@@ -287,6 +287,20 @@ void Map::setupPosition(int posX, int posY, int posZ,
 						Shape *shape, Item *item, Creature *creature) {
   GLuint name;
   name = posX + (MAP_WIDTH * (posY)) + (MAP_WIDTH * MAP_DEPTH * posZ);		
+  
+  // special effects
+  GLint t = SDL_GetTicks();
+  if(creature && t - creature->getDamageEffect() < Constants::DAMAGE_DURATION) {
+	damage[damageCount].xpos = xpos2;
+	damage[damageCount].ypos = ypos2;
+	damage[damageCount].zpos = zpos2;
+	damage[damageCount].shape = shape;
+	damage[damageCount].item = item;
+	damage[damageCount].creature = creature;
+	damage[damageCount].name = name;
+	damageCount++;
+  }
+
   if(shape->isStencil()) {
 	stencil[stencilCount].xpos = xpos2;
 	stencil[stencilCount].ypos = ypos2;
@@ -480,6 +494,10 @@ void Map::draw(SDL_Surface *surface) {
 	  doDrawShape(&later[i]);
 	  later[i].shape->endBlending();
 	}
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	for(int i = 0; i < damageCount; i++) {
+	  doDrawShape(&damage[i], 1);
+	}
 	drawShade();
 
 	//      glEnable(GL_LIGHTING);
@@ -517,7 +535,7 @@ void Map::drawShade() {
   glTexCoord2f( 1.0f, 0.0f );
   glVertex3f(scourge->getSDLHandler()->getScreen()->w, 0, 0);
   glEnd();
-  glEnable( GL_TEXTURE_2D );
+  //glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
   glPopMatrix();
 }
@@ -552,11 +570,12 @@ void Map::createOverlayTexture() {
 			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
 }
 
-void Map::doDrawShape(DrawLater *later) {
-    doDrawShape(later->xpos, later->ypos, later->zpos, later->shape, later->name);
+void Map::doDrawShape(DrawLater *later, int effect) {
+    doDrawShape(later->xpos, later->ypos, later->zpos, later->shape, later->name, effect, later);
 }
 
-void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuint name) {
+void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, 
+					  GLuint name, int effect, DrawLater *later) {
   glPushMatrix();
   if(useShadow) {
 	// put shadow above the floor a little
@@ -576,15 +595,20 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 	  glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
 	}
   }
-  
+
   // encode this shape's map location in its name
   glPushName( name );
   //glPushName( (GLuint)((GLShape*)shape)->getShapePalIndex() );
   ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
   ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
-  shape->draw();
+  if(effect && later && later->creature) {
+	later->creature->getEffect()->draw((GLShape*)shape, 
+									   later->creature->getEffectType(),
+									   later->creature->getDamageEffect());
+  } else {
+	shape->draw();
+  }
   ((GLShape*)shape)->useShadow = false;
-
   glPopName();
   glPopMatrix();
 }
