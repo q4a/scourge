@@ -29,6 +29,7 @@
 #include "gui/button.h"
 #include "gui/scrollinglist.h"
 #include "gui/cardcontainer.h"
+#include "gui/multiplelabel.h"
 
 /**
   *@author Gabor Torok
@@ -58,7 +59,10 @@ private:
   Window *mainWin;  
   Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton, *closeButton;  
   Button *changeControlButton, *saveControlButton;
-  Label * waitingLabel;
+  Label * waitingLabel;  
+  
+  MultipleLabel * gameSpeedML;  
+
   
   CardContainer *cards;
   ScrollingList *controlBindingsList;
