@@ -210,7 +210,7 @@ void Battle::fightTurn() {
 	sprintf(message, "...%s shoots a projectile", creature->getName());
 	scourge->getMap()->addDescription(message);	
 	if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
-								  scourge->getShapePalette()->getShape(Constants::BOTTLE_INDEX),
+								  scourge->getShapePalette()->getShape(Constants::ARROW_INDEX),
 								  creature->getMaxProjectileCount(item))) {
 	  // max number of projectiles in the air
 	}

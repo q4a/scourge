@@ -19,16 +19,16 @@
 
 map<Creature*, vector<Projectile*>*> Projectile::projectiles;
 
-#define DELTA 0.5f
+#define DELTA 0.75f
 
 Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape) {
   this->creature = creature;
   this->target = target;
   this->item = item;
-  this->sx = creature->getX();
-  this->sy = creature->getY();
-  this->ex = target->getX();
-  this->ey = target->getY();
+  this->sx = creature->getX() + (creature->getShape()->getWidth() / 2);
+  this->sy = creature->getY() - (creature->getShape()->getDepth() / 2);
+  this->ex = target->getX() + (target->getShape()->getWidth() / 2);
+  this->ey = target->getY() - (target->getShape()->getDepth() / 2);
   this->shape = shape;
 
   int x = (int)(ex - sx);

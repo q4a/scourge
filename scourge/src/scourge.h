@@ -119,7 +119,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
 
   Uint16 move;
 
-  GLint lastTick;
+  GLint lastTick, lastProjectileTick;
   int battleCount;
   Battle *battle[MAX_BATTLE_COUNT];  
 
