@@ -17,6 +17,8 @@
 
 #include "mainmenu.h"
 
+//#define AT_WORK
+
 #define LOGO_DELTA 0.05f
 #define LOGO_ROT_POS 30.0f
 #define LOGO_ROT_NEG 0
@@ -44,6 +46,7 @@ MainMenu::MainMenu(Scourge *scourge){
   logoSpriteCount = 0;
 
   // The new style gui
+#ifndef AT_WORK
   mainWin = new Window( scourge->getSDLHandler(),
 												50, 230, 270, 220, 
 												strdup("Main Menu"), 
@@ -66,6 +69,13 @@ MainMenu::MainMenu(Scourge *scourge){
   mainWin->addWidget((Widget*)aboutButton);
   quitButton = new Button( 10, 160, 260, 180, strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
+#else
+  mainWin = new Window( scourge->getSDLHandler(),
+												50, 230, 5, 5, 
+												strdup(""), 
+												scourge->getShapePalette()->getGuiTexture(),
+												false );
+#endif
 }
 MainMenu::~MainMenu(){
 }
@@ -74,8 +84,7 @@ void MainMenu::drawView() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
   glClearDepth( 1.0f );
-
-
+#ifndef AT_WORK
   // create a stencil for the water
   glDisable(GL_DEPTH_TEST);
   glColorMask(0,0,0,0);
@@ -111,7 +120,6 @@ void MainMenu::drawView() {
 
 
   glDisable(GL_DEPTH_TEST);
-
   drawClouds(true, false);
 
   // drawWater();
@@ -173,6 +181,19 @@ void MainMenu::drawView() {
   drawLogo();
 
   glPopMatrix();
+#else
+  glLoadIdentity();
+  glTranslatef(0.0f,0.0f,-1.0f);
+  glDisable(GL_CULL_FACE);
+  glColor4f(1, 1, 1, 1);
+  glBegin(GL_QUADS);
+  glVertex3f( 100, 100, 0 );
+  glVertex3f( 200, 100, 0 );
+  glVertex3f( 200, 200, 0 );
+  glVertex3f( 100, 200, 0 );
+  glEnd();
+  scourge->getSDLHandler()->texPrint(300, 300, "Hello world");
+#endif
   glEnable( GL_TEXTURE_2D );
   //  glEnable( GL_LIGHTING );
   glEnable(GL_DEPTH_TEST);

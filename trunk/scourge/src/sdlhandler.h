@@ -29,6 +29,7 @@
 #include "gui/window.h"
 #include "userconfiguration.h"
 #include "glut/glutpart.h"
+#include "freetype/FreeType.h"
 
 class TexturedText;
 
@@ -81,6 +82,10 @@ private:
   // the last event fired by a widget
   Widget *storedWidget;
   SDL_Event *storedEvent; 
+  
+  // truetype font
+  freetype_font_data our_font;
+  bool our_font_initialized;
 
  public: 
 
