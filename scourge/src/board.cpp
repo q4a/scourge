@@ -26,8 +26,8 @@ char Board::objectiveName[OBJECTIVE_COUNT][80] = {
   "KILL_MONSTER"
 };
 
-Board::Board(Scourge *scourge) {
-  this->scourge = scourge;
+Board::Board(Session *session) {
+  this->session = session;
   
   char errMessage[500];
   char s[200];
@@ -116,18 +116,6 @@ Board::Board(Scourge *scourge) {
 	}
   }
   fclose(fp);
-
-  // init gui
-  boardWin = scourge->createWoodWindow((scourge->getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
-									   (scourge->getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
-									   BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
-									   strdup("Available Missions"));
-  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150, scourge->getShapePalette()->getHighlightTexture());
-  boardWin->addWidget(missionList);
-  missionDescriptionLabel = new Label(5, 210, strdup(""), 67);
-  boardWin->addWidget(missionDescriptionLabel);
-  playMission = new Button(5, 5, 105, 35, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
-  boardWin->addWidget(playMission);
 }
 
 Board::~Board() {
@@ -164,8 +152,8 @@ void Board::initMissions() {
   int highest = 0;
   int lowest = -1;
   int sum = 0;
-  for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
-    int n = scourge->getParty()->getParty(i)->getLevel();
+  for(int i = 0; i < session->getParty()->getPartySize(); i++) {
+    int n = session->getParty()->getParty(i)->getLevel();
     if(n < 1) n = 1;
     if(highest < n) {
       highest = n;
@@ -175,7 +163,7 @@ void Board::initMissions() {
     sum += n;
   }
   // a mission level is about 1.5 times the equivalent player level
-  int ave = (int)((float)sum / (float)scourge->getParty()->getPartySize() / 1.5f);
+  int ave = (int)((float)sum / (float)session->getParty()->getPartySize() / 1.5f);
 
   // find missions
   availableMissions.clear();  
@@ -215,33 +203,15 @@ void Board::initMissions() {
         missionColor[i].b = 0.0f;
       }
       if(i == 0) {
-        missionDescriptionLabel->setText((char*)availableMissions[i]->getStory());
+        session->getGameAdapter()->setMissionDescriptionUI((char*)availableMissions[i]->getStory());
       }
     }
-    missionList->setLines(availableMissions.size(), (const char**)missionText, missionColor);
+
+    session->getGameAdapter()->updateBoardUI(availableMissions.size(), 
+                                             (const char**)missionText, 
+                                             missionColor);
   }
 }
-
-int Board::handleEvent(Widget *widget, SDL_Event *event) {
-  if(widget == boardWin->closeButton) {
-	boardWin->setVisible(false);
-	return EVENT_HANDLED;
-  } else if(widget == missionList) {
-	int selected = missionList->getSelectedLine();
-	if(selected != -1 && selected < getMissionCount()) {
-	  missionDescriptionLabel->setText((char*)(getMission(selected)->getStory()));
-	}
-	return EVENT_HANDLED;
-  } else if(widget == playMission) {
-	int selected = missionList->getSelectedLine();
-	if(selected != -1 && selected < getMissionCount()) {
-	  return EVENT_PLAY_MISSION;
-	}
-	return EVENT_HANDLED;
-  }
-  return -1;
-}
-
 
 // ------------------------------
 // Mission stuff

@@ -17,9 +17,11 @@
 
 #include "progress.h"
 
-Progress::Progress(Scourge *scourge, int maxStatus) {
+Progress::Progress(Scourge *scourge, int maxStatus, bool clearScreen, bool center) {
   this->scourge = scourge;
   this->maxStatus = maxStatus;
+  this->clearScreen = clearScreen;
+  this->center = center;
   this->status = 0;
 }
 
@@ -28,8 +30,11 @@ Progress::~Progress() {
 
 void Progress::updateStatus(const char *message) {
   glLoadIdentity();
-  //  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-  //  glClearColor( 0, 0, 0, 0 );
+
+  if(clearScreen) {
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+    glClearColor( 0, 0, 0, 0 );
+  }
 
   glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_FALSE);
@@ -39,6 +44,10 @@ void Progress::updateStatus(const char *message) {
 
   int w = 10;  
   int h = 20;
+
+  int x = (center ? scourge->getScreenWidth() / 2 - (maxStatus * w + 20) : 0);
+  int y = (center ? scourge->getScreenHeight() / 2 - (35 + h + 10) / 2 : 0);
+  glTranslatef( x, y, 0 );
 
   glColor4f( 0.25f, 0.20f, 0.15f, 0.15f );
   glBegin( GL_QUADS );
@@ -55,7 +64,7 @@ void Progress::updateStatus(const char *message) {
     else glColor4f(0.5f, 0.5f, 0.5f, 1);
     glPushMatrix();
     glLoadIdentity();
-    glTranslatef( i * 2 * w + 20, 35, 0 );
+    glTranslatef( x + i * 2 * w + 20, y + 35, 0 );
     glBegin( GL_QUADS );
     glVertex3f( 0, 0, 0 );
     glVertex3f( 0, h, 0 );

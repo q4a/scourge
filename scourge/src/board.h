@@ -19,17 +19,13 @@
 #define BOARD_H
 
 #include "constants.h"
-#include "scourge.h"
-#include "gui/window.h"
-#include "gui/button.h"
-#include "gui/scrollinglist.h"
-#include "gui/label.h"
+#include "session.h"
 #include "rpg/rpgitem.h"
 #include "rpg/monster.h"
 #include <map>
 
 using namespace std;
-	
+
 /**
   *@author Gabor Torok
   */
@@ -93,26 +89,21 @@ class Mission {
 
 class Board	{								
  private:
-  Scourge *scourge;
+  Session *session;
   vector<Mission*> availableMissions;
   map<int, vector<Mission*>* > missions;
 
   static char objectiveName[OBJECTIVE_COUNT][80];
 
-  // gui
-  ScrollingList *missionList;
-  Label *missionDescriptionLabel;
-  Button *playMission;
   char **missionText;
   Color *missionColor;
- 
- public:
 
-  Window *boardWin;
+public:
+
   static const int EVENT_HANDLED = 0;
   static const int EVENT_PLAY_MISSION = 1;
 
-  Board(Scourge *scourge);
+  Board(Session *session);
   virtual ~Board();
   
   void initMissions();
@@ -120,9 +111,6 @@ class Board	{
   
   inline int getMissionCount() { return availableMissions.size(); }
   inline Mission *getMission(int index) { return availableMissions[index]; }
-
-  int handleEvent(Widget *widget, SDL_Event *event);
-  inline int getSelectedLine() { return missionList->getSelectedLine(); }
 
  private:
   void freeListText();

@@ -109,37 +109,25 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   DungeonGenerator *dg;
   Scourge *scourge;
   int level;
-  Item *items[500];
-  Creature *creatures[500];
-  int itemCount;
-  int creatureCount;
   MainMenu *mainMenu;
   OptionsMenu *optionsMenu;
   MultiplayerDialog *multiplayer;
   bool isInfoShowing;
   bool info_dialog_showing;
-
   Board *board;
   int nextMission;
   bool inHq;
   Mission *currentMission;
   bool missionWillAwardExpPoints;
-
   char infoMessage[200];
-
   Inventory *inventory;
-
   Window *messageWin, *exitConfirmationDialog;
   Label *exitLabel;
   ScrollingList *messageList;
-
   Button *yesExitConfirm, *noExitConfirm;
-
   int movingX, movingY, movingZ;
   Item *movingItem;
-
   Uint16 move;
-
   GLint lastTick, lastProjectileTick;
   int battleCount;
   Battle *battle[MAX_BATTLE_COUNT];  
@@ -206,7 +194,14 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Canvas *playerInfo[MAX_PARTY_SIZE];
   Button *layoutButton1, *layoutButton2, *layoutButton3, *layoutButton4;
 
+  // board gui
+  ScrollingList *missionList;
+  Label *missionDescriptionLabel;
+  Button *playMission;
+  Window *boardWin;
+
   Session *session;
+  Progress *progress;
 
 protected:
   SDLHandler *sdlHandler;
@@ -272,16 +267,6 @@ public:
     @param n is a bitfield. See constants for directions values.
   */
   inline void removeMove(Uint16 n) { move &= (0xffff - n); }
-
-  /**
-    @return the number of creatures on this story.
-  */
-  inline int getCreatureCount() { return creatureCount; }
-  
-  /**
-    @return the creature a creature on this story.
-  */
-  inline Creature *getCreature(int index) { return creatures[index]; }
 
   /**
 	  This method is called by the main loop to play a round. A round may consist of 
@@ -574,6 +559,11 @@ public:
   */
   int getLayoutMode() { return layoutMode; }
 
+  // initialization events
+  void initStart(int statusCount, char *message);
+  void initUpdate(char *message);
+  void initEnd();
+
 #ifdef HAVE_SDL_NET
   void runClient(char *host, int port, char *userName);
   void runServer(int port);
@@ -607,6 +597,14 @@ public:
   void togglePlayerOnlyUI(bool playerOnly);
 
   void setPlayerUI(int index);
+
+  void createBoardUI();
+
+  void updateBoardUI(int count, const char **missionText, Color *missionColor);
+
+  int handleBoardEvent(Widget *widget, SDL_Event *event);
+
+  void setMissionDescriptionUI(char *s);
 
  protected:
   //  void fightBattle(); 

@@ -21,7 +21,7 @@
 #include "constants.h"
 #include "userconfiguration.h"
 #include "map.h"
-#include "board.h"
+//#include "board.h"
 #include "party.h"
 #include "item.h"
 #include "creature.h"

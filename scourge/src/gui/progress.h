@@ -31,9 +31,11 @@ class Progress	{
   Scourge *scourge;
   int maxStatus;
   int status;
+  bool clearScreen;
+  bool center;
  
  public:
-  Progress(Scourge *scourge, int maxStatus);
+  Progress(Scourge *scourge, int maxStatus, bool clearScreen=false, bool center=false);
   virtual ~Progress();  
   void updateStatus(const char *message);
 };
