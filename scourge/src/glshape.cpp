@@ -147,7 +147,7 @@ void GLShape::createBodyList( GLuint listName ) {
 
   // left
   int textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth > width ? this->getVariationTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
-  cerr << "LEFT_RIGHT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
+ // cerr << "LEFT_RIGHT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {    
     if(tex && tex[textureIndex]) 
       glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
@@ -165,7 +165,7 @@ void GLShape::createBodyList( GLuint listName ) {
   }
 
   textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth < width ? this->getVariationTextureIndex() : GLShape::FRONT_SIDE );
-  cerr << "FRONT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
+//  cerr << "FRONT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
     if(tex && tex[textureIndex]) {
       if(Constants::multitexture) {
@@ -217,7 +217,7 @@ void GLShape::createBodyList( GLuint listName ) {
   }
 
   textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth > width ? this->getVariationTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
-  cerr << "LEFT_RIGHT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
+//  cerr << "LEFT_RIGHT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {
     if(tex && tex[textureIndex]) {
       if(Constants::multitexture) {
@@ -269,7 +269,7 @@ void GLShape::createBodyList( GLuint listName ) {
   }
 
   textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth < width ? this->getVariationTextureIndex() : GLShape::FRONT_SIDE );
-  cerr << "FRONT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
+//  cerr << "FRONT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
     if(tex && tex[textureIndex]) {
       if(Constants::multitexture) {
@@ -330,9 +330,9 @@ void GLShape::createTopList( GLuint listName ) {
   // hack...
   bool isFloorShape = ( height < 1 );
 
-  int textureIndex = ( isFloorShape && this->getVariationTextureIndex() > 0 ? this->getVariationTextureIndex() : GLShape::TOP_SIDE );
+  int textureIndex = (  isFloorShape && this->getVariationTextureIndex() > 0 ? this->getVariationTextureIndex() : GLShape::TOP_SIDE );
 
-  cerr << "TOP: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
+  //cerr << "TOP: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
 
   if(tex && tex[textureIndex]) glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
   glBegin( GL_QUADS );

@@ -657,7 +657,7 @@ GLShape *ShapePalette::findShapeByName(const char *name, bool variation) {
   if( !variation || shape->getVariationShapesCount() == 0 ) return shape;
   int n = (int)( ( VARIATION_BASE + (float)( shape->getVariationShapesCount() )) * rand()/RAND_MAX );
   if( n >= (int)(VARIATION_BASE) ) {
-    cerr << "SHAPEPALETTE: Using variation for: " << name << endl;
+    //cerr << "SHAPEPALETTE: Using variation for: " << name << endl;
     return shape->getVariationShape( n - (int)(VARIATION_BASE) );
   }
   return shape;
