@@ -1026,8 +1026,11 @@ int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
 bool Creature::takeDamage(int damage, int effect_type) {
   hp -= damage;
   // if creature dies start effect at its location
-  if(hp > 0) startEffect(effect_type);
-  else if(effect_type != Constants::EFFECT_GLOW) {
+  if(hp > 0) {
+    startEffect(effect_type);
+    int pain = (int)(3.0f * rand()/RAND_MAX);
+    getShape()->setCurrentAnimation(pain == 0 ? (int)MD2_PAIN1 : (pain == 1 ? (int)MD2_PAIN2 : (int)MD2_PAIN3));
+  } else if(effect_type != Constants::EFFECT_GLOW) {
     session->getMap()->startEffect(getX(), getY(), getZ(), 
                                    effect_type, (Constants::DAMAGE_DURATION * 4), 
                                    getShape()->getWidth(), getShape()->getDepth());
@@ -1224,7 +1227,7 @@ bool Creature::isTargetValid() {
 bool Creature::canAttack(Creature *creature) {
   // when attacking, attack the opposite kind (unless possessed)
   return (getStateMod(Constants::possessed) != 
-          (isMonster() == getTargetCreature()->isMonster()));
+          (isMonster() == creature->isMonster()));
 }
 
 void Creature::cancelTarget() {

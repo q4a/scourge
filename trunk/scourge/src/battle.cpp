@@ -322,7 +322,11 @@ bool Battle::selectNewTarget() {
 }
 
 void Battle::moveCreature() {
-  creature->getShape()->setCurrentAnimation((int)MD2_RUN);
+  if(creature->anyMovesLeft()) {
+    creature->getShape()->setCurrentAnimation((int)MD2_RUN);
+  } else {
+    creature->getShape()->setCurrentAnimation((int)MD2_STAND);
+  }
 
   // take 1 step closer
   if(DEBUG_BATTLE) cerr << "\t\tTaking a non-battle step." << endl;
@@ -683,7 +687,7 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
     }
 
     // target creature death
-    if(creature->getTargetCreature()->takeDamage(damage, effect)) {         
+    if(creature->getTargetCreature()->takeDamage(damage, effect)) {
       creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
       sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
