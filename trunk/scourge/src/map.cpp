@@ -1278,10 +1278,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   if(effect && later) {
     if(later->creature) {
       // translate hack for md2 models... see: md2shape::draw()
-      glTranslatef( 0, -1 / GLShape::DIV, 0 );
+      //glTranslatef( 0, -1 / GLShape::DIV, 0 );
       later->creature->getEffect()->draw(later->creature->getEffectType(),
                                          later->creature->getDamageEffect());
-      glTranslatef( 0, 1 / GLShape::DIV, 0 );
+      //glTranslatef( 0, 1 / GLShape::DIV, 0 );
     } else if(later->effect) {
       later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
