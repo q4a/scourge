@@ -278,7 +278,6 @@ bool MD2Shape::drawLater() {
 MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div,
                                 GLuint texture[], char *name, int descriptionGroup,
                                 Uint32 color, Uint8 shapePalIndex) {
-
   vect3d min;
   vect3d max;
   int width, depth, height;
@@ -344,9 +343,12 @@ MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div
     }
   }
 
+#ifdef DEBUG_MD2
   cerr << "Creating MD2 shape for model=" << name << 
     " width=" << width << " depth=" << depth << " height=" << height << endl;
+#endif
 
   return new MD2Shape(g_3DModel,textureId,div,texture,width,depth,height,
                       name,descriptionGroup,color,shapePalIndex);
 }
+

@@ -203,6 +203,9 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Progress *turnProgress;
   bool mouseRot, mouseZoom;
 
+  bool willStartDrag;
+  int willStartDragX, willStartDragY;
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;

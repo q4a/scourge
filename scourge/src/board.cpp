@@ -163,7 +163,7 @@ void Board::initMissions() {
     sum += n;
   }
   // a mission level is about 1.5 times the equivalent player level
-  int ave = (int)((float)sum / (float)session->getParty()->getPartySize() / 1.5f);
+  int ave = (int)((float)sum / (float)session->getParty()->getPartySize() / 1.0f);
 
   // find missions
   if(availableMissions.size()) availableMissions.erase(availableMissions.begin(), 

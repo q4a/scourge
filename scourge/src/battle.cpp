@@ -204,15 +204,6 @@ void Battle::initTurnStep() {
     if(creature->getActionSpell()) {
       range = Constants::MIN_DISTANCE;
       range = creature->getActionSpell()->getDistance();
-      if(creature->getTargetCreature()) {
-        range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
-                  creature->getTargetCreature()->getShape()->getWidth() / 2 :
-                  creature->getTargetCreature()->getShape()->getDepth() / 2);
-      } else if(creature->getTargetItem()) {
-        range += (creature->getTargetItem()->getShape()->getWidth() > creature->getTargetItem()->getShape()->getDepth() ? 
-                  creature->getTargetItem()->getShape()->getWidth() / 2 :
-                  creature->getTargetItem()->getShape()->getDepth() / 2);
-      }
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = creature->getActionSpell()->getSpeed();
       nextTurn = 0;
@@ -221,11 +212,6 @@ void Battle::initTurnStep() {
       item = creature->getBestWeapon(dist);
       range = Constants::MIN_DISTANCE;
       if(item) range = item->getRpgItem()->getDistance();
-      if(creature->getTargetCreature()) {
-        range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
-                  creature->getTargetCreature()->getShape()->getWidth() / 2 :
-                  creature->getTargetCreature()->getShape()->getDepth() / 2);
-      }
       if(item) {
         if(DEBUG_BATTLE) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
       } else {
@@ -530,7 +516,7 @@ void Battle::hitWithItem() {
     }
     session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
 
-  } else if(dist <= Constants::MIN_DISTANCE) {
+  } else {
     sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
             creature->getName(), 
             creature->getTargetCreature()->getName(),

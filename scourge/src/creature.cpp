@@ -329,6 +329,7 @@ void Creature::setSelXY(int x, int y, bool force) {
 /**
    Return true only if a range is specified and we're within it.
  */
+/*
 bool Creature::isInRange() {
   if(maxRange > 0) {
     float d = getDistanceToTarget();
@@ -337,6 +338,7 @@ bool Creature::isInRange() {
   }
   return false;
 }
+ */
 
 /**
    Check that we're within range (if range specified).

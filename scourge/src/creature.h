@@ -176,7 +176,7 @@ class Creature {
   /**
 	 Return true only if a range is specified and we're within it.
   */
-  bool Creature::isInRange();
+//  bool Creature::isInRange();
     
   inline void setFacingDirection(int direction) { this->facingDirection = direction;}
   inline int getFacingDirection() { return this->facingDirection; }
