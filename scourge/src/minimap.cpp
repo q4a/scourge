@@ -42,10 +42,10 @@ MiniMap :: MiniMap(Scourge *scourge){
     showMiniMap = true;            
 
     win = new Window( scourge->getSDLHandler(),
-                      0, 400, 200, 150, 
+                      0, 400, MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT, 
                       strdup("Minimap"), 
                       scourge->getShapePalette()->getGuiTexture() );
-    canvas = new Canvas( 0, 0, 200, 150 - 25, this );
+    canvas = new Canvas( 0, 0, MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT - 25, this );
     win->addWidget(canvas);
 
     if(DEBUG_MINIMAP) fprintf(stderr, "mini map =( %d x %d )\n", MINI_MAP_WIDTH, MINI_MAP_DEPTH);
@@ -140,11 +140,13 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
     for(int y = minY; y < MINI_MAP_DEPTH; y++){
       if((pos[x][y].visible == true) && (pos[x][y].r != 0.0f)){
         glColor4f(pos[x][y].r, pos[x][y].g, pos[x][y].b, 1);
-        glVertex2d (x - 1.0f , y - 1.0f);
-        glVertex2d (x - 1.0f , y);
-        glVertex2d (x , y);
-        glVertex2d (x , y - 1.0f);                
+      } else {
+        glColor4f(0, 0, 0, 0);
       }
+      glVertex2d (x - 1.0f , y - 1.0f);
+      glVertex2d (x - 1.0f , y);
+      glVertex2d (x , y);
+      glVertex2d (x , y - 1.0f);                
     }       
   }    
   glEnd();      
@@ -192,25 +194,13 @@ void MiniMap::drawWidget(Widget *w) {
   yPartyPos -= minY; 
 
   //updateFog(xPartyPos, yPartyPos);  
-  glPushMatrix();   
+  glPushAttrib(GL_ENABLE_BIT);
 
-  /*
-  glLoadIdentity(); 
-  if(DEBUG_MINIMAP){
-      // Show scissor 
-      glBegin(GL_LINE_LOOP);
-      glColor3f(1.0f, 1.0f, 1.0f);
-      glVertex2d(xCoord, yCoord);
-      glVertex2d(xCoord + textureSizeW +15, yCoord);
-      glVertex2d(xCoord + textureSizeW +15, yCoord + textureSizeH + 15);
-      glVertex2d(xCoord, yCoord + textureSizeH + 15);
-      glEnd();  
-  }
-  */
-  // glScissor(x, y, width, height). (x, y) is the lower-left pixel. And y axis
-  // is reversed.       
-  //glScissor(win->getX(), screenHeight - win->getY(), w->getWidth(), w->getHeight()); 
-  //glEnable(GL_SCISSOR_TEST);
+  win->scissorToWindow();
+
+  glPushMatrix();   
+  glLoadIdentity();
+  glTranslatef(win->getX(), win->getY(), 0);
 
   // Set origin to top-left pixel of minimap
   glTranslatef(xCoord, yCoord, 100);                                                                                                                          
@@ -242,11 +232,12 @@ void MiniMap::drawWidget(Widget *w) {
     }
   }
 
-  /*else
-    glTranslatef(-5.0f, -5.0f, 0.0f);*/
+
   glScalef(zoomFactor, zoomFactor, 1.0f); 
 
   // Draw the minimap using a texture
+  glEnable(GL_ALPHA_TEST);
+  glAlphaFunc( GL_NOTEQUAL, 0 );
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, texture[0]);
   glBegin(GL_QUADS); 
@@ -292,7 +283,7 @@ void MiniMap::drawWidget(Widget *w) {
 
 
   glPopMatrix();   
-  //glDisable(GL_SCISSOR_TEST);        
+  glPopAttrib();
 
 }
 

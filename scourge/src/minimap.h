@@ -93,8 +93,10 @@ class MiniMap : public WidgetView {
   MiniMap::~MiniMap();
   MiniMap(Scourge *scourge);
 
-  void show() { win->setVisible(true); }
-  void hide() { win->setVisible(false); }
+  inline void show() { win->setVisible(true); }
+  inline void hide() { win->setVisible(false); }
+  inline Window *getWindow() { return win; }
+  inline void resize(int w, int h) { win->resize(w, h); canvas->resize(w, h - 25); }
   
   // x, y are in *global Map* coordinates (see Map.h to know its size) 
   void colorMiniMapPoint(int x, int y, Shape *shape);
