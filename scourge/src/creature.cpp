@@ -689,8 +689,7 @@ Item *Creature::removeInventory(int index) {
     // drop from inventory
     item = inventory[index];
     inventoryWeight -= item->getWeight();
-    if(getStateMod(Constants::overloaded) && inventoryWeight < getMaxInventoryWeight())
-    {
+    if(getStateMod(Constants::overloaded) && inventoryWeight < getMaxInventoryWeight()) {
       char msg[80];
       sprintf(msg, "%s is not overloaded anymore.", getName());
       session->getMap()->addDescription(msg);            
@@ -886,7 +885,7 @@ void Creature::equipInventory(int index) {
   // doff
   if(doff(index)) return;
   // don
-  // FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
+  // FIXME: take into account: two-handed weapons, min skill req-s., etc.
   Item *item = getInventory(index);
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     // if the slot is empty and the item can be worn here

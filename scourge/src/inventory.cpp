@@ -774,6 +774,11 @@ void Inventory::equipItem() {
       scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
       return;
     }
+    if( item->getLevel() > scourge->getParty()->getParty(selected)->getLevel() ) {
+      scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_LEVEL_VIOLATION));
+      scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+      return;
+    }
     scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
     // recreate list strings
     refresh();
