@@ -673,6 +673,9 @@ void GLShape::createVariationShape( int textureIndex, GLuint *textureGroup ) {
   GLShape *dup = new GLShape( tex, width, depth, height,
                               getName(), getDescriptionGroup(),
                               color, shapePalIndex );
+  dup->setSkipSide( skipside );
+  dup->setStencil( isStencil() );
+  dup->setLightBlocking( lightBlocking );
   dup->setVariationTextureIndex( textureIndex );
   dup->setTexture( textureGroup );
   variationShape.push_back( dup );

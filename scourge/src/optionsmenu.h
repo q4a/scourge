@@ -64,7 +64,7 @@ private:
   
   Window *mainWin;  
   Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton;
-  Button *changeControlButton, *saveButton;
+  Button *changeControlButton, *saveButton, *closeButton;
   Label * keyBindingsLabel; 
   Label * waitingLabel;  
   Label * changeTakeEffectLabel;
