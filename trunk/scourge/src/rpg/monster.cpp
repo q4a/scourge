@@ -185,6 +185,17 @@ void Monster::initMonsters() {
         list->push_back(sound_str);
         p = strtok(NULL, ",");
       }
+    } else if(n == 'P' && last_monster) {
+      // skip ':'
+      fgetc(fp);
+      // read the rest of the line
+      n = Constants::readLine(line, fp);
+      // add item to monster
+      char *p = strtok(line, ",");
+      string skillStr = strdup(p);
+      int n = atoi(strtok(NULL, ","));
+      last_monster->skills[skillStr] = n;
+      cerr << "\tsetting skill level: " << skillStr << "=" << n << endl;
     } else {
       n = Constants::readLine(line, fp);
     }
@@ -233,4 +244,10 @@ const char *Monster::getRandomSound(int type) {
   } else {
     return NULL;
   }
+}
+
+int Monster::getSkillLevel(const char *skillName) {
+  string skillStr = skillName;
+  if(skills.find(skillStr) == skills.end()) return 0;
+  else return skills[skillStr];
 }

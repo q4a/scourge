@@ -104,19 +104,20 @@ class MagicSchool {
  private:
   char *name;
   char *deity;
-  int skill;
+  int skill, resistSkill;
   vector<Spell*> spells;
 
   static MagicSchool *schools[10];
   static int schoolCount;
 
  public:
-  MagicSchool(char *name, char *deity, int skill);
+  MagicSchool(char *name, char *deity, int skill, int resistSkill);
   ~MagicSchool();
 
   inline char *getName() { return name; }
   inline char *getDeity() { return deity; }
   inline int getSkill() { return skill; }
+  inline int getResistSkill() { return resistSkill; }
   inline int getSpellCount() { return spells.size(); }
   inline Spell *getSpell(int index) { return spells[index]; }
 

@@ -411,11 +411,22 @@ public:
 	DECEIT_MAGIC,
 	CONFRONTATION_MAGIC,	
 
+	RESIST_NATURE_MAGIC,
+	RESIST_AWARENESS_MAGIC,
+	RESIST_LIFE_AND_DEATH_MAGIC,
+	RESIST_HISTORY_MAGIC,
+	RESIST_DECEIT_MAGIC,
+	RESIST_CONFRONTATION_MAGIC,	
+
 	OPEN_LOCK,
 	FIND_TRAP,
+    FIND_SECRET_DOOR,
 	MOVE_UNDETECTED,
 
-	SKILL_0, SKILL_1, SKILL_2, SKILL_3, SKILL_4, SKILL_5, SKILL_6, SKILL_7, SKILL_8, SKILL_9,
+    ENCHANT_ITEM_SKILL,
+    MEND_ITEM,
+    IDENTIFY_ITEM_SKILL,
+    IDENTIFY_CREATURE,
 	
 	SKILL_COUNT
   };
@@ -541,6 +552,8 @@ public:
 						float x2, float y2, float w2, float h2);
 
   static void checkTexture(char *message, int w, int h);
+
+  static bool isStateModTransitionWanted(int mod, bool setting);
 
   // read until EOL into line. Exclude EOL from LINE.
   // returns the next char after the EOL.
