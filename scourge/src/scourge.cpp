@@ -2156,7 +2156,11 @@ void Scourge::resetUIAfterBattle() {
   groupButton->setVisible(true);
   for(int i = 0; i < party->getPartySize(); i++) {
     party->getParty(i)->cancelTarget();
-    party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+    if(party->getParty(i)->anyMovesLeft()) {
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+    } else {
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+    }
   }
 }
 
