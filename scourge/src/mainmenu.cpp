@@ -168,12 +168,12 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
   else
 	glColor4f( 1, 1, 1, 1 );
   for(int i = 0; i < cloudCount; i++) {
+    w = cloud[i].w;
+    h = cloud[i].h;
 	glPushMatrix();
 	glTranslatef( cloud[i].x, 
 				  (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y), 
 				  0 );
-	w = cloud[i].w;
-	h = cloud[i].h;
     glBegin( GL_QUADS );
     glNormal3f(0.0f, 0.0f, 1.0f);
     glTexCoord2f( 1.0f, (flipped ? 0.0f : 1.0f) );

@@ -295,7 +295,7 @@ void Inventory::drawInventory() {
   // draw the characters on top of the UI
   glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
   int h = 120;
-  int y;  
+//  int y;  
   for(int i = 0; i < 4; i++) {
 
 	// why do I need these 2 lines? Otherwise the models go behind the window

@@ -1022,6 +1022,7 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
       }
     }
   }
+  return item;
 }
 
 void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {

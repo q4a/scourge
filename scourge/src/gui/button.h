@@ -62,6 +62,7 @@ class Button : public Widget {
   inline Label *getLabel() { return label; }
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void drawWidget(Widget *parent);
+
 };
 
 #endif

@@ -63,7 +63,7 @@ public:
   static Monster *getRandomMonster(int level);
 
  protected:
-  inline int setSpeed(int speed) { this->speed = speed; }
+  inline void setSpeed(int speed) { this->speed = speed; }
 };
 
 #endif
