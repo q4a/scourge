@@ -101,7 +101,7 @@ void Item::initItems(ShapePalette *shapePal) {
 	exit(1);
   }
 
-  int itemCount = 0, potionTime;
+  int itemCount = 0, potionTime = 0;
   char name[255], type[255], shape[255], skill[255], potionSkill[255];
   char long_description[500], short_description[120];
   char line[255];
