@@ -107,6 +107,11 @@ public:
   inline Creature *getCreature(int index) { return creatures[index]; }
   inline int getItemCount() { return itemCount; }
   inline Item *getItem(int index) { return items[index]; }
+  inline Mission *getCurrentMission() { return currentMission; }
+  inline void setCurrentMission(Mission *mission) { currentMission = mission; }
+
+  virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
+  virtual void creatureDeath(Creature *creature);
 
 protected:
   virtual void initData();

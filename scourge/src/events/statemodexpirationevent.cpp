@@ -19,12 +19,12 @@
 #include "statemodexpirationevent.h"
 
 StateModExpirationEvent::StateModExpirationEvent(Date currentDate, Date timeOut, Creature *c, 
-                                                 int stateMod, Scourge *scourge, int nbExecutionsToDo) :
+                                                 int stateMod, Session *session, int nbExecutionsToDo) :
     Event(currentDate, timeOut, nbExecutionsToDo) 
 {
   this->creature = c;
   this->stateMod = stateMod;
-  this->scourge = scourge;
+  this->session = session;
   }
 
 StateModExpirationEvent::~StateModExpirationEvent(){
@@ -43,7 +43,7 @@ void StateModExpirationEvent::execute() {
   sprintf(msg, "%s is not %s any more.", 
           creature->getName(), 
           Constants::STATE_NAMES[stateMod]);
-  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+  session->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
 }
 

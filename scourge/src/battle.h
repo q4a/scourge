@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 #include "constants.h"
-#include "scourge.h"
+#include "session.h"
 #include "map.h"
 #include "creature.h"
 #include "item.h"
@@ -39,7 +39,7 @@ using namespace std;
   *@author Gabor Torok
   */
 
-class Scourge;
+class Session;
 class Creature;
 class Item;
 class Projectile;
@@ -50,7 +50,7 @@ class Spell;
  */
 class Battle {
  private:
-  Scourge *scourge;
+  Session *session;
   Creature *creature;
   Item* item;
   char message[200];
@@ -73,14 +73,14 @@ class Battle {
   /**
 	 This method sets up and creates battle turns (Battle objects) in order of initiative.
    */
-  static void setupBattles(Scourge *scourge, Battle *battle[], int count, vector<Battle *> *turns);
+  static void setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns);
 
   /**
 	 Call these when a projectile weapon finally hits.
 	 It sets up a turn and plays it.
   */
-  static void projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target);
-  static void projectileHitTurn(Scourge *scourge, Projectile *proj, int x, int y);
+  static void projectileHitTurn(Session *session, Projectile *proj, Creature *target);
+  static void projectileHitTurn(Session *session, Projectile *proj, int x, int y);
 
   /**
 	 A no-op turn of battle.
@@ -90,7 +90,7 @@ class Battle {
   /**
 	 A Battle is a round of battle between 'creature' and 'creature->getTargetCreature()'
    */
-  Battle(Scourge *scourge, Creature *creature);
+  Battle(Session *session, Creature *creature);
   ~Battle();
 
   inline bool isEmpty() { return empty; }
@@ -99,7 +99,7 @@ class Battle {
   void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW);
 
   inline Creature *getCreature() { return creature; }
-  inline Scourge *getScourge() { return scourge; }
+  inline Session *getSession() { return session; }
 
  protected:
   void launchProjectile();

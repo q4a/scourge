@@ -48,6 +48,7 @@ public:
   virtual inline void fightProjectileHitTurn(Projectile *proj, Creature *creature) {}
   virtual inline void resetPartyUI() {}
   virtual inline void refreshInventoryUI(int playerIndex) {}
+  virtual inline void refreshInventoryUI() {}
   virtual inline void toggleRoundUI(bool startRound) {}
   virtual inline void setFormationUI(int formation, bool playerOnly) {}
   virtual inline void togglePlayerOnlyUI(bool playerOnly) {}
@@ -57,6 +58,7 @@ public:
   virtual inline Mission *getCurrentMission() { return NULL; }
   virtual inline void missionCompleted() {}
   virtual inline void cancelBattle(Creature *creature) {}
+  virtual inline void moveMonster(Creature *monster) {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

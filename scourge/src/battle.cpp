@@ -36,8 +36,8 @@ Battle::Battle() {
   this->creature = NULL;
 }
 
-Battle::Battle(Scourge *scourge, Creature *creature) {
-  this->scourge = scourge;
+Battle::Battle(Session *session, Creature *creature) {
+  this->session = session;
   this->creature = creature;
   this->item = NULL;
   this->creatureInitiative = 0;
@@ -51,12 +51,13 @@ Battle::Battle(Scourge *scourge, Creature *creature) {
 
   this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
   this->ignore = false;
+  this->projectileHit = false;
 }
 
 Battle::~Battle() {
 }
 
-void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<Battle *> *turns) {
+void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
   // for now put all battles into the vector
   for(int i = 0; i < count; i++) {
     battle[i]->initTurn();
@@ -207,6 +208,15 @@ bool Battle::fightTurn() {
 
   cerr << "TURN:" << getCreature()->getName() << endl;
 
+  dist = creature->getDistanceToTarget();
+  item = creature->getBestWeapon(dist);
+
+  if(item) {
+    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
+  } else {
+    cerr << "\tUsing bare hands." << endl;
+  }
+
   float range = Constants::MIN_DISTANCE;
   if(item) range = item->getRpgItem()->getDistance();
   if(creature->getTargetCreature()) {
@@ -253,7 +263,7 @@ bool Battle::fightTurn() {
                              creature->getTargetCreature()->getY(),
                              true);
         }
-        creature->moveToLocator(scourge->getMap());
+        creature->moveToLocator(session->getMap());
         dist = creature->getDistanceToTarget();
         ap--;
       }
@@ -262,13 +272,13 @@ bool Battle::fightTurn() {
       // FIXME: this code should move to Creature
       Creature *target = NULL;
       if(creature->isMonster()) {
-        target = scourge->getParty()->getClosestPlayer(creature->getX(), 
+        target = session->getParty()->getClosestPlayer(creature->getX(), 
                                                        creature->getY(), 
                                                        creature->getShape()->getWidth(),
                                                        creature->getShape()->getDepth(),
                                                        20);
       } else {
-        target = scourge->getClosestVisibleMonster(creature->getX(), 
+        target = session->getClosestVisibleMonster(creature->getX(), 
                                                    creature->getY(), 
                                                    creature->getShape()->getWidth(),
                                                    creature->getShape()->getDepth(),
@@ -289,9 +299,9 @@ bool Battle::fightTurn() {
     // take 1 step closer
     cerr << "\t\tTaking a non-battle step." << endl;
     if(creature->isMonster()) {
-      scourge->moveMonster(creature);
+      session->getGameAdapter()->moveMonster(creature);
     } else {
-      creature->moveToLocator(scourge->getMap());
+      creature->moveToLocator(session->getMap());
     }
     ap--;
   }
@@ -374,12 +384,12 @@ void Battle::castSpell() {
     if(itemIndex > -1) {
       creature->removeInventory(itemIndex);
       sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
-      scourge->getMap()->addDescription(message);
-      scourge->getInventory()->refresh();
+      session->getMap()->addDescription(message);
+      session->getGameAdapter()->refreshInventoryUI();
     } else {
       // scroll was removed from inventory before casting
       sprintf(message, "Couldn't find scroll, cancelled spell.");
-      scourge->getMap()->addDescription(message);
+      session->getMap()->addDescription(message);
       creature->cancelTarget();
       return;
     }
@@ -388,7 +398,7 @@ void Battle::castSpell() {
   sprintf(message, "%s casts %s!", 
           creature->getName(), 
           creature->getActionSpell()->getName());
-  scourge->getMap()->addDescription(message, 1, 0.15f, 1);
+  session->getMap()->addDescription(message, 1, 0.15f, 1);
   ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 
   // spell succeeds?
@@ -406,10 +416,10 @@ void Battle::castSpell() {
         int n = creature->addExperience(creature->getActionSpell()->getExp());
         if(n > 0) {
           sprintf(message, "%s gains %d experience points.", creature->getName(), n);
-          scourge->getMap()->addDescription(message);
+          session->getMap()->addDescription(message);
           if(!b && creature->getStateMod(Constants::leveled)) {
             sprintf(message, "%s gains a level!", creature->getName());
-            scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+            session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
           }
         }
       }
@@ -425,9 +435,9 @@ void Battle::castSpell() {
 
 void Battle::launchProjectile() {
   sprintf(message, "...%s shoots a projectile", creature->getName());
-  scourge->getMap()->addDescription(message); 
+  session->getMap()->addDescription(message); 
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
-                                scourge->getShapePalette()->findShapeByName("ARROW"),
+                                session->getShapePalette()->findShapeByName("ARROW"),
                                 creature->getMaxProjectileCount(item))) {
     // max number of projectiles in the air
     // FIXME: do something... 
@@ -435,11 +445,11 @@ void Battle::launchProjectile() {
   }
 }
 
-void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target) {
+void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
   // configure a turn
   Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
-  Battle *battle = new Battle(scourge, proj->getCreature());
+  Battle *battle = new Battle(session, proj->getCreature());
   battle->projectileHit = true;
 
   if(proj->getItem()) {
@@ -455,10 +465,10 @@ void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *tar
   proj->getCreature()->setTargetCreature(oldTarget);
 }
 
-void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, int x, int y) {
+void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y) {
   // configure a turn
   proj->getCreature()->setTargetLocation(x, y, 0);
-  Battle *battle = new Battle(scourge, proj->getCreature());
+  Battle *battle = new Battle(session, proj->getCreature());
   battle->projectileHit = true;
 
   if(proj->getItem()) {
@@ -481,14 +491,14 @@ void Battle::hitWithItem() {
             creature->getTargetCreature()->getName(),
             item->getItemName(),
             creatureInitiative, speed);
-    scourge->getMap()->addDescription(message);
+    session->getMap()->addDescription(message);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
   } else if(dist <= Constants::MIN_DISTANCE) {
     sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
             creature->getName(), 
             creature->getTargetCreature()->getName(),
             creatureInitiative, speed);
-    scourge->getMap()->addDescription(message);
+    session->getMap()->addDescription(message);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
   }
 
@@ -497,9 +507,9 @@ void Battle::hitWithItem() {
   int tohit = creature->getToHit(item, &maxToHit);
   int ac = creature->getTargetCreature()->getSkillModifiedArmor();
   sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
-  scourge->getMap()->addDescription(message);
+  session->getMap()->addDescription(message);
   sprintf(message, "...toHit=%d (max=%d) vs. AC=%d", tohit, maxToHit, ac);
-  scourge->getMap()->addDescription(message);
+  session->getMap()->addDescription(message);
   if(tohit > ac) {
     // deal out the damage
     int maxDamage;
@@ -508,83 +518,67 @@ void Battle::hitWithItem() {
   } else {
     // missed
     sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
-    scourge->getMap()->addDescription(message);
+    session->getMap()->addDescription(message);
   }
 }
 
 void Battle::dealDamage(int damage, int maxDamage, int effect) {
   if(damage) {  
     sprintf(message, "...and hits! for %d (max=%d) points of damage", damage, maxDamage);
-    scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+    session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
     // target creature death
     if(creature->getTargetCreature()->takeDamage(damage, effect)) {         
       creature->getShape()->setCurrentAnimation((int)MD2_TAUNT, true);  
       sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
-      scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+      session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
       if((creature->getTargetCreature()->isMonster() && !MONSTER_IMORTALITY) || 
          !GOD_MODE)
-        scourge->creatureDeath(creature->getTargetCreature());
+        session->creatureDeath(creature->getTargetCreature());
 
       // add exp. points and money
       if(!creature->isMonster()) {
 
 
         // FIXME: try to move to party.cpp
-        for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
-          bool b = scourge->getParty()->getParty(i)->getStateMod(Constants::leveled);
-          if(!scourge->getParty()->getParty(i)->getStateMod(Constants::dead)) {
-            int n = scourge->getParty()->getParty(i)->addExperience(creature->getTargetCreature());
+        for(int i = 0; i < session->getParty()->getPartySize(); i++) {
+          bool b = session->getParty()->getParty(i)->getStateMod(Constants::leveled);
+          if(!session->getParty()->getParty(i)->getStateMod(Constants::dead)) {
+            int n = session->getParty()->getParty(i)->addExperience(creature->getTargetCreature());
             if(n > 0) {
-              sprintf(message, "%s gains %d experience points.", scourge->getParty()->getParty(i)->getName(), n);
-              scourge->getMap()->addDescription(message);
-              if(!b && scourge->getParty()->getParty(i)->getStateMod(Constants::leveled)) {
-                sprintf(message, "%s gains a level!", scourge->getParty()->getParty(i)->getName());
-                scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+              sprintf(message, "%s gains %d experience points.", session->getParty()->getParty(i)->getName(), n);
+              session->getMap()->addDescription(message);
+              if(!b && session->getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+                sprintf(message, "%s gains a level!", session->getParty()->getParty(i)->getName());
+                session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
               }
             }
 
-            n = scourge->getParty()->getParty(i)->addMoney(creature->getTargetCreature());
+            n = session->getParty()->getParty(i)->addMoney(creature->getTargetCreature());
             if(n > 0) {
-              sprintf(message, "%s finds %d coins!", scourge->getParty()->getParty(i)->getName(), n);
-              scourge->getMap()->addDescription(message);
+              sprintf(message, "%s finds %d coins!", session->getParty()->getParty(i)->getName(), n);
+              session->getMap()->addDescription(message);
             }
           }
         }
         // end of FIXME
 
         // see if this is a mission objective
-        if(scourge->getCurrentMission() && 
+        if(session->getCurrentMission() && 
            creature->getTargetCreature()->getMonster() &&
-           scourge->getCurrentMission()->monsterSlain(creature->getTargetCreature()->getMonster())) {
-          scourge->missionCompleted();
+           session->getCurrentMission()->monsterSlain(creature->getTargetCreature()->getMonster())) {
+          session->getGameAdapter()->missionCompleted();
         }
       }
     }
   } else {
     sprintf(message, "...and hits! but causes no damage");
-    scourge->getMap()->addDescription(message);
+    session->getMap()->addDescription(message);
   }
 }
 
 void Battle::initTurn() {
-
-  projectileHit = false;
-  dist = creature->getDistanceToTarget();
-  item = creature->getBestWeapon(dist);
-
-  if(item) {
-    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
-  } else {
-    cerr << "\tUsing bare hands." << endl;
-  }
-
-
-
-
-
-
 /*
   float range = 0.0f;
 
@@ -638,7 +632,7 @@ void Battle::initItem(Item *item) {
 
   // (!item) is a bare-hands attack		
   speed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED) * 
-          (scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
+          (session->getUserConfiguration()->getGameSpeedTicks() + 80);
   //	(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
 
   creatureInitiative = creature->getInitiative(item);
@@ -650,7 +644,7 @@ void Battle::executeEatDrinkAction() {
   if(index > -1) {
     if(creature->eatDrink(creature->getActionItem())){
       creature->removeInventory(index);
-      scourge->getInventory()->refresh();
+      session->getGameAdapter()->refreshInventoryUI();
     }
   }
   // cancel action

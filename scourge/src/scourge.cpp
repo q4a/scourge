@@ -41,7 +41,6 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   nextMission = -1;
   // in HQ map
   inHq = true;
-  currentMission = NULL;
 
   layoutMode = Constants::GUI_LAYOUT_ORIGINAL;
   
@@ -221,7 +220,6 @@ void Scourge::startMission() {
 
     if(nextMission == -1) {
 
-      currentMission = NULL;
       missionWillAwardExpPoints = false;
 
       // in HQ map
@@ -238,15 +236,15 @@ void Scourge::startMission() {
       inHq = false;
 
       // Initialize the map with a random dunegeon	
-      currentMission = board->getMission(nextMission);
-      missionWillAwardExpPoints = (!currentMission->isCompleted());
-      cerr << "Starting mission: level="  << currentMission->getLevel() << 
-      " stories=" << currentMission->getDungeonStoryCount() << 
+      getSession()->setCurrentMission(board->getMission(nextMission));
+      missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
+      cerr << "Starting mission: level="  << getSession()->getCurrentMission()->getLevel() << 
+      " stories=" << getSession()->getCurrentMission()->getDungeonStoryCount() << 
       " current story=" << currentStory << endl;
-      dg = new DungeonGenerator(this, currentMission->getLevel(), 
-                                (currentStory < currentMission->getDungeonStoryCount() - 1), 
+      dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), 
+                                (currentStory < getSession()->getCurrentMission()->getDungeonStoryCount() - 1), 
                                 (currentStory > 0),
-                                currentMission);
+                                getSession()->getCurrentMission());
       dg->toMap(map, getShapePalette());
     }
 
@@ -1202,12 +1200,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	// FIXME: try to move to party.cpp
   party->getPlayer()->setSelXY(mapx, mapy);
   if(party->isPlayerOnly()) {
-    cancelBattle(party->getPlayer());
     party->getPlayer()->cancelTarget();
   } else {
     for(int i = 0; i < party->getPartySize(); i++) {
       if(!party->getParty(i)->getStateMod(Constants::dead)) {
-        cancelBattle(party->getParty(i));
         party->getParty(i)->cancelTarget();
         if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
       }
@@ -1880,15 +1876,6 @@ void Scourge::setUILayout() {
   }
 }
 
-void Scourge::cancelBattle(Creature *creature) {
-  for(int i = 0; i < (int)battleRound.size(); i++) {
-    if(battleRound[i]->getCreature() == creature) {
-      battleRound[i]->setIgnore();
-      return;
-    }
-  }
-}
-
 void Scourge::playRound() {                           
   // move the map
   if(move) map->move(move);
@@ -1942,7 +1929,7 @@ void Scourge::playRound() {
         if(!party->getParty(i)->getStateMod(Constants::dead) && 
            (party->getParty(i)->hasTarget() || 
             party->getParty(i)->getAction() > -1)) {								
-          battle[battleCount++] = new Battle(this, party->getParty(i));
+          battle[battleCount++] = new Battle(getSession(), party->getParty(i));
         }
       }
       for(int i = 0; i < session->getCreatureCount(); i++) {
@@ -1950,7 +1937,7 @@ void Scourge::playRound() {
            map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
            (session->getCreature(i)->hasTarget() || 
             session->getCreature(i)->getAction() > -1)) {
-          battle[battleCount++] = new Battle(this, session->getCreature(i));
+          battle[battleCount++] = new Battle(getSession(), session->getCreature(i));
         }
       }
 
@@ -1962,19 +1949,19 @@ void Scourge::playRound() {
              !(party->getParty(i)->hasTarget() || 
                party->getParty(i)->getAction() > -1) &&
              party->getParty(i)->getSelX() > -1) {
-            battle[battleCount++] = new Battle(this, party->getParty(i));
+            battle[battleCount++] = new Battle(getSession(), party->getParty(i));
           }
         }
         for(int i = 0; i < session->getCreatureCount(); i++) {
           if(!session->getCreature(i)->getStateMod(Constants::dead) && 
              !session->getCreature(i)->getTargetCreature() &&
              map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
-            battle[battleCount++] = new Battle(this, session->getCreature(i));
+            battle[battleCount++] = new Battle(getSession(), session->getCreature(i));
           }
         }
       
         // order the battle turns by initiative
-        Battle::setupBattles(this, battle, battleCount, &battleRound);
+        Battle::setupBattles(getSession(), battle, battleCount, &battleRound);
         battleTurn = 0;
         cerr << "++++++++++++++++++++++++++++++++++" << endl;
         cerr << "TURN STARTS" << endl;
@@ -2011,24 +1998,6 @@ void Scourge::playRound() {
       }
     }
   }
-}
-
-void Scourge::creatureDeath(Creature *creature) {
-  if(creature == party->getPlayer()) {
-	party->switchToNextLivePartyMember();
-  }
-  // remove from the map; the object will be cleaned up at the end of the mission
-  map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
-  // add a container object instead
-  if(battleRound.size() > 0) creature->getShape()->setCurrentAnimation(MD2_DEATH1);
-  Item *item = getSession()->newItem(RpgItem::getItemByName("Corpse"));
-  // add creature's inventory to container
-  map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
-  int n = creature->getInventoryCount();
-  for(int i = 0; i < n; i++) {
-	item->addContainedItem(creature->removeInventory(0));
-  }
-  creature->setStateMod(Constants::dead, true);
 }
 
 void Scourge::addGameSpeed(int speedFactor){
@@ -2150,14 +2119,14 @@ void Scourge::missionCompleted() {
   showMessageDialog("Congratulations, mission accomplished!");
   
   // Award exp. points for completing the mission
-  if(currentMission && missionWillAwardExpPoints && 
-     currentMission->isCompleted()) {
+  if(getSession()->getCurrentMission() && missionWillAwardExpPoints && 
+     getSession()->getCurrentMission()->isCompleted()) {
     
     // only do this once
     missionWillAwardExpPoints = false;
     
     // how many points?
-    int exp = (currentMission->getLevel() + 1) * 100;
+    int exp = (getSession()->getCurrentMission()->getLevel() + 1) * 100;
     map->addDescription("For completing the mission", 0, 1, 1);
     char message[200];
     sprintf(message, "The party receives %d points.", exp);
@@ -2178,31 +2147,6 @@ void Scourge::missionCompleted() {
       }
     }
   }
-}
-
-/** 
-	Return the closest live player within the given radius or null if none can be found.
-*/
-Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radius) {
-  float minDist = 0;
-  Creature *p = NULL;
-  for(int i = 0; i < session->getCreatureCount(); i++) {
-	if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-	   map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-	   session->getCreature(i)->isMonster()) {
-	  float dist = Constants::distance(x, y, w, h,
-									   session->getCreature(i)->getX(),
-									   session->getCreature(i)->getY(),
-									   session->getCreature(i)->getShape()->getWidth(),
-									   session->getCreature(i)->getShape()->getDepth());
-	  if(dist <= (float)radius &&
-		 (!p || dist < minDist)) {
-		p = session->getCreature(i);
-		minDist = dist;
-	  }
-	}
-  }
-  return p;
 }
 
 #ifdef HAVE_SDL_NET
@@ -2248,7 +2192,7 @@ int Scourge::getScreenHeight() {
 }
 
 void Scourge::fightProjectileHitTurn(Projectile *proj, Creature *creature) {
-  Battle::projectileHitTurn(this, proj, creature);
+  Battle::projectileHitTurn(getSession(), proj, creature);
 }
 
 void Scourge::createPartyUI() {
@@ -2548,6 +2492,10 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
 
 void Scourge::refreshInventoryUI(int playerIndex) {
   getInventory()->refresh(playerIndex);
+}
+
+void Scourge::refreshInventoryUI() {
+  getInventory()->refresh();
 }
 
 void Scourge::updatePartyUI() {

@@ -117,7 +117,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Board *board;
   int nextMission;
   bool inHq;
-  Mission *currentMission;
   bool missionWillAwardExpPoints;
   char infoMessage[200];
   Inventory *inventory;
@@ -248,11 +247,6 @@ public:
   inline Board *getBoard() { return board; }
   
   /**
-    @return the current mission.
-  */
-  inline Mission *getCurrentMission() { return currentMission; }
-
-  /**
     Set which direction to move in.
     @param n is a bitfield. See constants for direction values.
   */
@@ -270,7 +264,7 @@ public:
   */
   void playRound();
 
-  void cancelBattle(Creature *creature);
+  Battle *getBattle(Creature *creature);
  
   /**
     @return the party object.
@@ -536,12 +530,6 @@ public:
   */
   inline Creature *getTargetSelectionFor() { return targetSelectionFor; }
 
-  /** 
-	  @return the closest live monster within the given radius or NULL if none can be found.
-  */
-  Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
-
-  
   /**
     Refresh (redraw) the current UI layout.
   */
@@ -576,6 +564,8 @@ public:
   void resetPartyUI();
 
   void refreshInventoryUI(int playerIndex);
+
+  void refreshInventoryUI();
 
   void toggleRoundUI(bool startRound);
 

@@ -30,7 +30,7 @@
   */
   
 class Creature;
-class Scourge;
+class Session;
 class RpgItem;
   
 class StateModExpirationEvent : public Event  {
@@ -38,13 +38,13 @@ class StateModExpirationEvent : public Event  {
 private:
   Creature *creature;
   int stateMod;
-  Scourge *scourge;
+  Session *session;
 
 public:
 
   void execute();    
   
-  StateModExpirationEvent(Date currentDate, Date timeOut, Creature *c, int stateMod, Scourge *scourge, int nbExecutionsToDo);
+  StateModExpirationEvent(Date currentDate, Date timeOut, Creature *c, int stateMod, Session *session, int nbExecutionsToDo);
   StateModExpirationEvent();
   virtual ~StateModExpirationEvent();  
   
