@@ -24,11 +24,13 @@
 #include "item.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
+#include "rpg/spell.h"
 #include "effect.h"
 #include "shape.h"
 
 class Creature;
 class Item;
+class Spell;
 
 using namespace std;
 
@@ -41,6 +43,7 @@ class Projectile {
   Creature *creature;
   Creature *target;
   Item *item;
+  Spell *spell;
   float sx, sy, ex, ey; 
   float angle;
   int q;
@@ -52,6 +55,7 @@ class Projectile {
   
  public:
   Projectile(Creature *creature, Creature *target, Item *item, Shape *shape);
+  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape);
   virtual ~Projectile();
 
   // return true when out of moves
@@ -63,14 +67,20 @@ class Projectile {
   inline Shape *getShape() { return shape; }
   inline Creature *getCreature() { return creature; }
   inline Item *getItem() { return item; }
+  inline Spell *getSpell() { return spell; }
 
   static Projectile *addProjectile(Creature *creature, Creature *target, 
 								   Item *item, Shape *shape, 
+								   int maxProjectiles);
+  static Projectile *addProjectile(Creature *creature, Creature *target, 
+								   Spell *spell, Shape *shape, 
 								   int maxProjectiles);
   static void removeProjectile(Projectile *p);
   static void moveProjectiles();
   inline static map<Creature *, vector<Projectile*>*> *getProjectileMap() { return &projectiles; }
 
+ protected:
+  void commonInit();
 };
 
 #endif

@@ -44,6 +44,8 @@ Battle::Battle(Scourge *scourge, Creature *creature) {
   this->initiativeCheck = false;
   this->speed = 0;
   this->dist = creature->getDistanceToTarget();
+  this->spell = NULL;
+  this->empty = false;
 }
 
 Battle::~Battle() {
@@ -203,8 +205,9 @@ void Battle::fightTurn() {
   // If it's a ranged attack and we're not in range, follow the target (will move away from target)
   //
   // This sure is confusing code...
-  if((dist > Constants::MIN_DISTANCE && !item && !creature->getActionSpell()) ||  
-	 !creature->isInRange()) { 
+  if(!projectileHit &&
+	 ((dist > Constants::MIN_DISTANCE && !item && !creature->getActionSpell() && !spell) ||  
+	  !creature->isInRange())) { 
 	creature->followTarget();
 	return;
   }
@@ -214,14 +217,18 @@ void Battle::fightTurn() {
 	executeEatDrinkAction();
 	return;
   }
- 
+
   // the attacked target may get upset
   creature->makeTargetRetaliate();
-   
+
   // handle the action
   if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
 	launchProjectile();
+  } else if(spell) {
+	// a spell projectile hit
+	SpellCaster::spellSucceeded(scourge, creature, spell, true);	
   } else if(creature->getActionSpell()) {
+	// casting a spell for the first time
 	castSpell();
   } else {
 	hitWithItem();
@@ -244,20 +251,11 @@ void Battle::castSpell() {
   if(n < 0) n = 0;
   creature->setMp( n );
 
-  // calculate spell's power
-  // power=[0-25]
-  float power = (float)creature->getSkill(creature->getActionSpell()->getSchool()->getSkill()) / 4.0f;
-  // power=[0-45]
-  power += (float)creature->getSkill(Constants::IQ) / 5.0f;
-  // power=[0-450]
-  power *= creature->getLevel();
-  // power=[0-500]
-  power += ((float)creature->getSkill(Constants::LUCK) / 2.0f);
-
   // spell succeeds?
-  // FIXME: use stats like IQ here... Maybe calculate 'power' based on skill, IQ, luck, etc.
-  if((int)(100.0f * rand() / RAND_MAX) < creature->getActionSpell()->getFailureRate()) {
-	SpellCaster::spellFailed(scourge, creature, (int)power);
+  // FIXME: use stats like IQ here to modify spell success rate...
+  if(!projectileHit && 
+	 (int)(100.0f * rand() / RAND_MAX) < creature->getActionSpell()->getFailureRate()) {
+	SpellCaster::spellFailed(scourge, creature, creature->getActionSpell(), false);
   } else {
 	
 	// get exp for casting the spell
@@ -274,7 +272,7 @@ void Battle::castSpell() {
 	  }
 	}
 
-	SpellCaster::spellSucceeded(scourge, creature, (int)power);
+	SpellCaster::spellSucceeded(scourge, creature, creature->getActionSpell(), false);
   }
   
   // cancel action
@@ -303,8 +301,12 @@ void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *tar
   proj->getCreature()->setTargetCreature(target);
   Battle *battle = new Battle(scourge, proj->getCreature());
   battle->projectileHit = true;
-  battle->initItem(proj->getItem());
 
+  if(proj->getItem()) {
+	battle->initItem(proj->getItem());
+  } else if(proj->getSpell()) {
+	battle->spell = proj->getSpell();
+  }
   // play it
   battle->fightTurn();
   

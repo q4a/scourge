@@ -25,11 +25,27 @@ Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *
   this->creature = creature;
   this->target = target;
   this->item = item;
+  this->spell = NULL;
+  this->shape = shape;
+
+  commonInit();
+}
+
+Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape) {
+  this->creature = creature;
+  this->target = target;
+  this->item = NULL;
+  this->spell = spell;
+  this->shape = shape;
+
+  commonInit();
+}
+
+void Projectile::commonInit() {
   this->sx = creature->getX() + (creature->getShape()->getWidth() / 2);
   this->sy = creature->getY() - (creature->getShape()->getDepth() / 2);
   this->ex = target->getX() + (target->getShape()->getWidth() / 2);
   this->ey = target->getY() - (target->getShape()->getDepth() / 2);
-  this->shape = shape;
 
   int x = (int)(ex - sx);
   int y = (int)(ey - sy);
@@ -55,8 +71,10 @@ Projectile::~Projectile() {
 
 bool Projectile::move() {
   // are we at the target location?
-  if(steps++ >= item->getRpgItem()->getDistance() + target->getShape()->getWidth() || 
+  if((item && steps >= item->getRpgItem()->getDistance() + target->getShape()->getWidth()) || 
+	 (spell && steps >= spell->getDistance() + target->getShape()->getWidth()) ||
 	 (sx == ex && sy == ey)) return true;
+  steps++;
 
   // angle-based floating pt. movement
   if(sx == ex) {
@@ -71,42 +89,6 @@ bool Projectile::move() {
 	sx += (cos(Constants::toRadians(angle)) * DELTA);
 	sy += (sin(Constants::toRadians(angle)) * DELTA);
   }
-
-
-  /*
-
-  // TILE-based movement
-
-  if(sx == ex) {
-	// horizontal movement
-	if(sy < ey) sy++;
-	else sy--;
-  } else if(sy == ey) {
-	// vertical movement
-	if(sx < ex) sx++;
-	else sx--;
-  } else {
-	// get the slope
-	int my = ey - sy;
-	int mx = ex - sx;
-	// take steps along the x axxis
-	if(cx < abs(mx)) {
-	  sx+=(mx > 0 ? 1 : -1);
-	  cx++;	
-	} 
-	// take steps along the y axxis
-	else if(cy < abs(my)) {
-	  sy+=(my > 0 ? 1 : -1);
-	  cy++;
-	} 
-	// reset slope counters
-	else {
-	  cx = cy = 0;
-	}
-  }
-  */
-
-
   // we're not at the target yet
   return false;
 }
@@ -128,6 +110,23 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
   return p;
 }
 
+Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
+									  Spell *spell, Shape *shape, 
+									  int maxProjectiles) {
+  vector<Projectile*> *v;
+  if(projectiles.find(creature) == projectiles.end()) {
+	v = new vector<Projectile*>();
+	projectiles[creature] = v;
+  } else {
+	v = projectiles[creature];
+  }
+  if((int)v->size() > maxProjectiles) return NULL;
+  Projectile *p = new Projectile(creature, target, spell, shape);
+  v->push_back(p);
+  return p;
+}
+
+
 void Projectile::removeProjectile(Projectile *p) {
   if(projectiles.find(p->creature) != projectiles.end()) {
 	vector<Projectile*> *v = projectiles[p->creature];
@@ -147,15 +146,15 @@ void Projectile::removeProjectile(Projectile *p) {
 void Projectile::moveProjectiles() {
   // draw the projectiles
   vector<Projectile*> removedProjectiles;
-  //cerr << "Projectiles:" << endl;
+  //    cerr << "Projectiles:" << endl;
   map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
   for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-	//Creature *creature = i->first;
-	//cerr << "\tcreature: " << creature->getName() << endl;
+	//	  Creature *creature = i->first;
+	//	  cerr << "\tcreature: " << creature->getName() << endl;
 	vector<Projectile*> *p = i->second;
 	for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
 	  Projectile *proj = *e;
-	  //cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+	  //	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
 	  if(proj->move()) {
 		removedProjectiles.push_back(proj);
 	  }

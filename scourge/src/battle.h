@@ -28,6 +28,7 @@
 #include "item.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
+#include "rpg/spell.h"
 #include "effect.h"
 #include "projectile.h"
 #include "spellcaster.h"
@@ -42,6 +43,7 @@ class Scourge;
 class Creature;
 class Item;
 class Projectile;
+class Spell;
 
 /**
    This class represents a single battle turn.
@@ -58,6 +60,7 @@ class Battle {
   float dist;
   bool empty;
   bool projectileHit;
+  Spell *spell;
 
  public:
   
