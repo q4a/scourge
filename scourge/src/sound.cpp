@@ -34,6 +34,16 @@ Sound::Sound() {
       cerr << "*** Error: couldn't load music: " << fn << endl;
       cerr << "\t" << Mix_GetError() << endl;
     }
+
+    sprintf(fn, "%s/sound/dungeon.ogg", rootDir);
+    dungeonMusic = Mix_LoadMUS(fn);
+    if(!dungeonMusic) {
+      cerr << "*** Error: couldn't load music: " << fn << endl;
+      cerr << "\t" << Mix_GetError() << endl;
+    }
+
+    // FIXME: this should come from userconfig: set the music volume
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
   }
 
 #endif
@@ -127,6 +137,8 @@ void Sound::storeSound(int type, const char *file) {
   } else {
     string fileStr = file;
     soundMap[fileStr] = sample;
+    // FIXME: this should come from userconfig: set the volume
+    Mix_VolumeChunk(sample, MIX_MAX_VOLUME);
   }
 #endif
 }
