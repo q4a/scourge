@@ -2255,3 +2255,9 @@ bool Map::isLocationVisible(int x, int y) {
           y >= getY() && y < getY() + mapViewDepth);
 }
 
+bool Map::isLocationInLight(int x, int y) {
+  int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
+  int chunkY = (y - (MAP_OFFSET + 1)) / MAP_UNIT;
+  return lightMap[chunkX][chunkY];
+}
+

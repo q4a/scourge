@@ -197,11 +197,7 @@ class Map {
 
   bool isLocationVisible(int x, int y);
 
-  inline bool isLocationInLight(int x, int y) {
-    int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
-    int chunkY = (y - (MAP_OFFSET + 1)) / MAP_UNIT;
-    return lightMap[chunkX][chunkY];
-  }
+  bool isLocationInLight(int x, int y);
     
   void draw();
 
