@@ -350,7 +350,9 @@ void Scourge::drawView() {
   map->drawDescriptions(messageList);
 
   glEnable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );      
+  glEnable( GL_TEXTURE_2D );
+
+  miniMap->buildTexture(0, 0);
 }
 
 void Scourge::drawAfter() {
