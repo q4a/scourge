@@ -114,9 +114,6 @@
 				762AF803066D856300B92069,
 				762AF804066D856300B92069,
 				762AF805066D856300B92069,
-				762AF806066D856300B92069,
-				762AF807066D856300B92069,
-				762AF808066D856300B92069,
 				762AF809066D856300B92069,
 				762AF80A066D856300B92069,
 				762AF80B066D856300B92069,
@@ -376,33 +373,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = calendar.h;
 			path = ../../src/calendar.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		762AF806066D856300B92069 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = config.h;
-			path = ../../src/config.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		762AF807066D856300B92069 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = configDefault.h;
-			path = ../../src/configDefault.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		762AF808066D856300B92069 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = configOSX.h;
-			path = ../../src/configOSX.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1255,24 +1225,6 @@
 			settings = {
 			};
 		};
-		762AF86C066D856300B92069 = {
-			fileRef = 762AF806066D856300B92069;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		762AF86D066D856300B92069 = {
-			fileRef = 762AF807066D856300B92069;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		762AF86E066D856300B92069 = {
-			fileRef = 762AF808066D856300B92069;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		762AF86F066D856300B92069 = {
 			fileRef = 762AF809066D856300B92069;
 			isa = PBXBuildFile;
@@ -2050,9 +2002,6 @@
 				762AF867066D856300B92069,
 				762AF869066D856300B92069,
 				762AF86B066D856300B92069,
-				762AF86C066D856300B92069,
-				762AF86D066D856300B92069,
-				762AF86E066D856300B92069,
 				762AF870066D856300B92069,
 				762AF872066D856300B92069,
 				762AF874066D856300B92069,
