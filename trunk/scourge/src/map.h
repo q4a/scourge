@@ -67,7 +67,7 @@ class Map {
   float xRotating, yRotating, zRotating;
   Uint16 selX, selY, selZ, oldLocatorSelX, oldLocatorSelY, oldLocatorSelZ;
   float fShadowMatrix[16];
-  bool alwaysCenter;
+  //bool alwaysCenter;
   static const int X_CENTER_TOLERANCE = 8;
   static const int Y_CENTER_TOLERANCE = 8;
 
@@ -109,9 +109,6 @@ class Map {
   
   bool selectMode;
   bool floorOnly;
-
-  inline void setAlwaysCenter(bool b) { alwaysCenter = b; }
-  inline bool getAlwaysCenter() { return alwaysCenter; }
 
   inline void setSelectedDropTarget(Location *loc) { selectedDropTarget = loc; }
   inline Location *getSelectedDropTarget() { return selectedDropTarget; }

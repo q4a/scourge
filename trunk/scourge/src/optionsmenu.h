@@ -51,6 +51,7 @@ private:
   bool showDebug;
   bool controlsLoaded;
   bool videoLoaded; 
+  bool gameSettingsLoaded;
   int nbControlLines;
   bool waitingForNewKey;
   bool ignoreKeyUp;
@@ -62,10 +63,13 @@ private:
   
   Window *mainWin;  
   Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton, *closeButton;  
-  Button *changeControlButton, *saveControlButton;
-  Label * waitingLabel;    
+  Button *changeControlButton, *saveButton;
+  Label * waitingLabel;  
+  Label * changeTakeEffectLabel;
   
   MultipleLabel * gameSpeedML; 
+  Checkbox * alwaysCenterMapCheckbox;
+  
   MultipleLabel * videoResolutionML;  
   Checkbox * fullscreenCheckbox;
   Checkbox * doublebufCheckbox;   
@@ -74,7 +78,10 @@ private:
   Checkbox * forceHwsurfCheckbox;
   Checkbox * forceSwsurfCheckbox;
   Checkbox * hwaccelCheckbox;
+  Checkbox * stencilbufCheckbox;
+  Checkbox * multitexturingCheckbox;
   MultipleLabel * shadowsML;
+  
   
   CardContainer *cards;
   ScrollingList *controlBindingsList;
@@ -84,6 +91,7 @@ private:
   void setSelectedMode();
   void loadControls(); 
   void loadVideo();
+  void loadGameSettings();
   
 public:
   OptionsMenu(Scourge *scourge);
@@ -93,8 +101,7 @@ public:
   bool handleEvent(Widget *widget, SDL_Event *event);
   inline void show() { mainWin->setVisible(true); }
   inline void hide() { mainWin->setVisible(false); }
-  inline bool isVisible() { return mainWin->isVisible(); }  
-  //string getNextWord(const string theInput, int fromPos, int &endWord);
+  inline bool isVisible() { return mainWin->isVisible(); }    
 
  protected:
 };

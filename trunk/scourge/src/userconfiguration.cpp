@@ -163,11 +163,17 @@ UserConfiguration::UserConfiguration(){
     force_hwsurf = false;
     force_swsurf = false;
     hwaccel = true;
-    test = false;      
+    test = false; 
+    multitexturing = true; 
+    stencilbuf = true;     
     bpp = -1;
     w = 800;
     h = 600;
-    shadows = 0;               
+    shadows = 0;
+    
+    // game settings
+    gamespeed = 1;  // fast speed
+    centermap = true;
     
     // Build (string engineAction -> int engineAction ) lookup table
     // and   (int ea -> string ea) lookup table    
@@ -269,7 +275,7 @@ void UserConfiguration::loadConfiguration(){
         
         if (sFirstParam.empty() || sSecondParam.empty() || foo == endWord){            
             if( pos >= 0 && sInstruction.length()!=0){                
-                cerr  << "Warning : in file " << CONFIG_FILE_NAME 
+                cerr  << "Warning : in file " << path 
                 << " missing parameter at line " << lineNumber 
                 << ", ignoring line." << endl;                
             }            
@@ -336,11 +342,13 @@ void UserConfiguration::saveConfiguration(){
         }            
     }       
     
-    // save variables
+    // save video variables
     writeFile(configFile, "\n// Video settings\n");
     sprintf(textLine, "set fullscreen %s\n", fullscreen ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set doublebuf %s\n", doublebuf ? "true":"false");
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set stencilbuf %s\n", stencilbuf ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set hwpal %s\n", hwpal ? "true":"false");
     writeFile(configFile, textLine);
@@ -349,6 +357,8 @@ void UserConfiguration::saveConfiguration(){
     sprintf(textLine, "set force_hwsurf %s\n", force_hwsurf ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set force_swsurf %s\n", force_swsurf ? "true":"false");
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set multitexturing %s\n", Constants::multitexture ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set hwaccel %s\n", hwaccel ? "true":"false");
     writeFile(configFile, textLine);
@@ -360,7 +370,13 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set bpp %d\n", bpp);
     writeFile(configFile, textLine);
-    
+    sprintf(textLine, "\n// Game settings\n");
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set gamespeed %d  // 0 : fastest, 4 : slowest\n", gamespeed);
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set centermap %s\n", centermap ? "true":"false");
+    writeFile(configFile, textLine);
+        
     delete configFile;
 }
 
@@ -424,7 +440,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     // Check if s2 is a valid value
     
     if(s1 == "fullscreen"||s1 == "doublebuf" || s1 == "hwpal" || s1 == "resizeable" ||
-       s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel"){
+       s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
+       s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap"){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -488,10 +505,57 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
              << " invalid shadow mode at line " << lineNumber 
              << ", valid modes 0, 1, 2 . Ignoring line" << endl;    
              shadows = 2; // Default value
-        }      
-          
+        }                
+    }
+    else if(s1 == "stencilbuf"){
+        stencilbuf = paramValue;
     }  
+    else if(s1 == "multitexturing"){
+        Constants::multitexture = paramValue;
+    }
+    else if(s1 == "centermap"){
+        centermap = paramValue;
+    }
+    else if(s1 == "gamespeed"){        
+        gamespeed = atoi(s2.c_str());
+        if(gamespeed < 0 || gamespeed > 4){           
+            cerr << "Warning : in file " << CONFIG_FILE_NAME 
+             << " invalid gamespeed level at line " << lineNumber 
+             << ", valid values are 0, 1, 2, 3 and 4 . Ignoring line" << endl;    
+             gamespeed = 1; // Default value
+        }                
+    }    
 }
+
+int UserConfiguration::setGameSpeedTicks(int ticks){
+    if(ticks <= 0){
+        gamespeed = 0;
+    }else if(ticks <= 130){
+        gamespeed = 1;
+    }else if(ticks <= 210){
+        gamespeed = 2;
+    }else if(ticks <= 450){
+        gamespeed = 3;
+    }else if(ticks <= 1000){
+        gamespeed = 4;
+    } 
+}
+
+
+int UserConfiguration::getGameSpeedTicks(){
+    if(gamespeed == 0){
+        return 0;
+    }else if(gamespeed == 1){
+        return 130;
+    }else if(gamespeed == 2){
+        return 210;
+    }else if(gamespeed == 3){
+        return 450;
+    }else if(gamespeed == 4){
+        return 1000;
+    }
+}
+
 
 void UserConfiguration::parseCommandLine(int argc, char *argv[]){
   bool printusage;
@@ -520,11 +584,9 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 		printusage = true;
 	  }	   
 	} else if(strstr(argv[i], "--shadow") == argv[i]) {	  
-	  Constants::shadowMode = atoi(argv[i] + 8);	  
-      if(!(Constants::shadowMode == 0 || 
-           Constants::shadowMode == 1 || 
-           Constants::shadowMode == 2)) {
-          printf("Error: bad shadow mode: %d\n", Constants::shadowMode);
+	  shadows = atoi(argv[i] + 8);	  
+      if(!(shadows == 0 || shadows == 1 || shadows == 2)) {
+          printf("Error: bad shadow mode: %d\n", shadows);
           printusage = true;
       }       
 	} else if(!strcmp(argv[i], "--version")) {
@@ -543,7 +605,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 		case 'H': force_hwsurf = true; break;
 		case 'S': force_swsurf = true; break;
 		case 'a': hwaccel = false; break;
-		case 's': Constants::stencilbuffer = false; break;
+		case 's': stencilbuf = false; break;
 		case 'm': Constants::multitexture = false; break;
 		}
 	  }
@@ -589,8 +651,7 @@ void UserConfiguration::writeFile(ofstream *fileOut, char *text){
 
 // returns the action to do for this event
 int UserConfiguration::getEngineAction(SDL_Event *event){    
-    string s;    
-    //int i, j; 
+    string s;         
     int res;         
     
     s.clear();
@@ -676,15 +737,7 @@ bool UserConfiguration::isDebugEa(int j){
     else{
         return false;
     }
-}
-
-/*bool UserConfiguration::getConfigurationChanged(){ 
-    bool temp;
-    temp = configurationChanged; 
-    configurationChanged = false; 
-    return temp;
-}*/
-   
+}   
 
 // Returns next word from the given position. If there is not a space at the given
 // position, the function suppose it is the first letter of the word wanted. 

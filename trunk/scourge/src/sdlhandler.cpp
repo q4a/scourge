@@ -28,7 +28,7 @@ SDLHandler::SDLHandler(){
   mouseDragging = false;
   text = NULL;
   handlerCount = 0;
-  invertMouse = false;
+  invertMouse = false; 
 }
 
 SDLHandler::~SDLHandler(){
@@ -107,7 +107,7 @@ void SDLHandler::setOrthoView() {
 
 /* general OpenGL initialization function */
 int SDLHandler::initGL( GLvoid ) {
-    shapePal = new ShapePalette();
+    shapePal = new ShapePalette( );
 
     /* Enable Texture Mapping */
     glEnable( GL_TEXTURE_2D );
@@ -216,23 +216,32 @@ char ** SDLHandler::getVideoModes(int &nbModes){
         nbModes = 0;            
         if(modes == (SDL_Rect **)-1) {
             // All modes are available, so let's go..
-            nbModes = 7;
+            nbModes = 16;
             modesDescription = (char **) malloc (nbModes * sizeof(char *));
             modesDescription[0] = strdup("  320 x 200");
-            modesDescription[1] = strdup("  640 x 480");
-            modesDescription[2] = strdup("  800 x 600");
-            modesDescription[3] = strdup(" 1024 x 768");
-            modesDescription[4] = strdup(" 1152 x 864");
-            modesDescription[5] = strdup("1280 x 1024");
-            modesDescription[6] = strdup("1600 x 1200");        
+            modesDescription[1] = strdup("  320 x 240");
+            modesDescription[2] = strdup("  400 x 300");
+            modesDescription[3] = strdup("  512 x 384");
+            modesDescription[4] = strdup("  640 x 480");
+            modesDescription[5] = strdup("  800 x 600");
+            modesDescription[6] = strdup("  848 x 480");
+            modesDescription[7] = strdup(" 1024 x 768");
+            modesDescription[8] = strdup(" 1152 x 864");
+            modesDescription[9] = strdup(" 1280 x 720");
+            modesDescription[10] = strdup(" 1280 x 768");
+            modesDescription[11] = strdup(" 1280 x 960");
+            modesDescription[12] = strdup("1280 x 1024");
+            modesDescription[13] = strdup(" 1360 x 768");
+            modesDescription[14] = strdup("1600 x 1024");
+            modesDescription[15] = strdup("1600 x 1200");        
         }
         else{
-            // Only a few modes available which ones ?        
+            // Only a few modes available, which ones ?            
             for(i=0;modes[i];++i){}
-            nbModes = i - 1;            
+            nbModes = i - 1;                        
             modesDescription = (char **) malloc (nbModes * sizeof(char *));
             for(i=0;modes[i];++i){
-                sprintf(temp, "%d x %d", modes[i]->w, modes[i]->x);
+                sprintf(temp, "%d x %d", modes[i]->w, modes[i]->h);                
                 modesDescription[i] = strdup(temp);
             }
         } 
@@ -246,7 +255,7 @@ char ** SDLHandler::getVideoModes(int &nbModes){
     return modesDescription;
 }
 
-void SDLHandler::setVideoMode(UserConfiguration *uc) {  
+void SDLHandler::setVideoMode( UserConfiguration * uc ) {  
   
   /* this holds some info about our display */
   const SDL_VideoInfo *videoInfo;
@@ -309,7 +318,7 @@ void SDLHandler::setVideoMode(UserConfiguration *uc) {
   /* Sets up OpenGL double buffering */
   if(uc->getDoublebuf()) 
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-  if(Constants::stencilbuffer) SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+  if(uc->getStencilbuf()) SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 
   cout << "Setting video mode: " << uc->getW() << "x" << uc->getH() << "x" << uc->getBpp() << endl;
   

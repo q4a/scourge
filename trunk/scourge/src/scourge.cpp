@@ -69,8 +69,7 @@ Scourge::Scourge(int argc, char *argv[]){
   player_only = false;
   move = 0;
   startRound = true;
-  battleCount = 0;
-  gameSpeed = 70; // the greater the slower the game (in ticks) 
+  battleCount = 0;  
   inventory = NULL;
   
   for(int i = 0; i < 4; i++) party[i] = NULL;
@@ -318,7 +317,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  return false;
     }
     
-    // xxx_yyy_stop means : "do this action when the corresponding key is up"
+    // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
     if(ea == SET_MOVE_DOWN){        
         setMove(Constants::MOVE_DOWN);
@@ -459,8 +458,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     else if(ea == TOGGLE_MAP_CENTER){
         bool mc;
-        mc = map->getAlwaysCenter();
-        map->setAlwaysCenter(!mc);
+        mc = userConfiguration->getAlwaysCenterMap();
+        userConfiguration->setAlwaysCenterMap(!mc);
     }
     else if(ea == INCREASE_GAME_SPEED){
         addGameSpeed(-15);        
@@ -996,7 +995,7 @@ void Scourge::playRound() {
   // -(or) the round was manually started
   GLint t = SDL_GetTicks();
   if(startRound && 
-	 (lastTick == 0 || t - lastTick > gameSpeed)) {
+	 (lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks())) {
 	lastTick = t;
 		
 	// move the party members
@@ -1071,7 +1070,7 @@ void Scourge::fightBattle() {
 		GLint t = SDL_GetTicks();
 		int itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
 		if(item || dist <= 1.0f) {
-		  if((itemSpeed * (gameSpeed + 80)) < t - creature->getLastTurn()) {
+		  if((itemSpeed * (userConfiguration->getGameSpeedTicks() + 80)) < t - creature->getLastTurn()) {
 			// not time for this creature's turn yet
 			int creatureInitiative = creature->getInitiative(item);
 			if(creatureInitiative > initiative) continue;
@@ -1342,7 +1341,9 @@ void Scourge::setFormation(int formation) {
 
 void Scourge::addGameSpeed(int speedFactor){
     char msg[80];
+    int gameSpeed;
     
+    gameSpeed = userConfiguration->getGameSpeedTicks();
     gameSpeed +=speedFactor;
     if(gameSpeed > 300){
         gameSpeed = 300;
@@ -1354,6 +1355,7 @@ void Scourge::addGameSpeed(int speedFactor){
     }
     sprintf(msg, "Speed set to %d\n", gameSpeed);
     map->addDescription(msg);
+    userConfiguration->setGameSpeedTicks(gameSpeed);
 }
 
 /**
