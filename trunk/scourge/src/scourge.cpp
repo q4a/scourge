@@ -1594,8 +1594,7 @@ void Scourge::dropItem(int x, int y) {
   if(map->getSelectedDropTarget()) {
     char message[120];
     Creature *c = map->getSelectedDropTarget()->creature;
-    if(c) {
-      c->addInventory(movingItem);
+    if(c && c->addInventory(movingItem)) {
       sprintf(message, "%s picks up %s.", 
               c->getName(), 
               movingItem->getItemName());

@@ -451,7 +451,7 @@ void Inventory::moveItemTo(int playerIndex) {
      scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
     if(playerIndex != selected) {
       scourge->getParty()->getParty(playerIndex)->
-      addInventory(scourge->getParty()->getParty(selected)->removeInventory(itemIndex));
+      addInventory(scourge->getParty()->getParty(selected)->removeInventory(itemIndex), true);
       // recreate strings in list
       refresh();
     }
@@ -715,6 +715,7 @@ int Inventory::putItem() {
     } else {
       // message: the player's inventory is full
       scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+      scourge->showMessageDialog("You can't fit the item!");
     }
   }
   return -1;

@@ -240,6 +240,9 @@ void C3DSShape::draw() {
   }
 #endif
 
+  GLfloat currentColor[4];
+  glGetFloatv( GL_CURRENT_COLOR, currentColor );
+
   glPushMatrix();
 
   glDisable( GL_CULL_FACE );
@@ -289,12 +292,12 @@ void C3DSShape::draw() {
       // Bind the texture map to the object by it's materialID
       glEnable(GL_TEXTURE_2D);
       glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
-      if (!useShadow) glColor3ub(255, 255, 255);
+      //if (!useShadow) glColor3ub(255, 255, 255);
     } else {
       // Turn off texture mapping and turn on color
       glDisable(GL_TEXTURE_2D);   
       // Reset the color to normal again
-      if (!useShadow) glColor3ub(255, 255, 255);
+      //if (!useShadow) glColor3ub(255, 255, 255);
     } 
 
     float c[3];
@@ -341,6 +344,11 @@ void C3DSShape::draw() {
               c[2] = (float)pColor[2] / 255.0f;
             }
           }
+
+          // apply the current color
+          c[0] *= currentColor[0];
+          c[1] *= currentColor[1];
+          c[2] *= currentColor[2];
 
           // apply the precomputed shading to the current color
           c[0] *= pObject->shadingColorDelta[ index ];
