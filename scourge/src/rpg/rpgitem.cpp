@@ -89,7 +89,7 @@ RpgItem *RpgItem::items[] =  {
   new RpgItem(CORPSE, "Corpse", 1, CONTAINER, 200, CONTAINER, 100, 0, 0,
 			  "The decomposing corpse of one once strong and able",
 			  "A decomposing corpse", 0,
-			  Constants::CHEST_INDEX)
+			  Constants::CORPSE_INDEX)
 
 };
 

@@ -485,7 +485,7 @@ int Creature::getDamage(Item *weapon) {
   float baseDamage = (weapon ? weapon->getRpgItem()->getAction() : 
 					  (skills[Constants::POWER] / 10));
   damage = baseDamage;
-  damage += skills[Constants::POWER];
+  damage += (float)skills[Constants::POWER] / 10.0f;
   
   float skill = (weapon && weapon->getRpgItem()->getSkill() > -1 ?
 				 skills[weapon->getRpgItem()->getSkill()] :
@@ -572,8 +572,8 @@ void Creature::monsterInit() {
   }
   // set some skills
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
+    setSkill(i, (int)((float)(10 * (level + 1)) * rand()/RAND_MAX));
   }
   // add some hp
-  hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
+  hp = 8 + (int)((float)(15.0f * (level + 1)) * rand()/RAND_MAX);
 }
