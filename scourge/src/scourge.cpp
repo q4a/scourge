@@ -186,12 +186,14 @@ void Scourge::startMission() {
 	need to figure out how to start game with this, 
 	implement "the board", and saving levels (need to save HQ)
   */
+	/*
   // Initialize the map with a random dunegeon	
   dg = new DungeonGenerator(this, 2); // level 2 is a big enough map for HQ_LOCATION... this is hacky
   dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
+	*/
 
-//  dg = new DungeonGenerator(this, level);
-//  dg->toMap(map, getShapePalette());
+  dg = new DungeonGenerator(this, level);
+  dg->toMap(map, getShapePalette());
  
   // center map on the player
   map->center(player->getX(), player->getY());
