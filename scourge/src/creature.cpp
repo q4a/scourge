@@ -74,82 +74,81 @@ void Creature::commonInit() {
   this->targetCreature = NULL;
   this->lastTick = 0;
   this->armor = 0;
+  this->moveRetrycount = 0;
 }
 
 Creature::~Creature(){
 }
 
+// moving monsters only
 bool Creature::move(Uint16 dir, Map *map) {
-
+  if(character) return false;
+  
   // a hack for runaway creatures
   if(!(x > 10 && x < MAP_WIDTH - 10 &&
-	   y > 10 && y < MAP_DEPTH - 10)) {
-	if(monster) cerr << "hack for " << getName() << endl;
-	return false;
+       y > 10 && y < MAP_DEPTH - 10)) {
+    if(monster) cerr << "hack for " << getName() << endl;
+    return false;
   }
-
-  scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+  
   int nx = x;
   int ny = y;
   int nz = z;
   switch(dir) {
   case Constants::MOVE_UP:
-	ny = y - 1;
-	break;
+    ny = y - 1;
+    break;
   case Constants::MOVE_DOWN:
-	ny = y + 1;
-	break;
+    ny = y + 1;
+    break;
   case Constants::MOVE_LEFT:
-	nx = x - 1;
-	break;
+    nx = x - 1;
+    break;
   case Constants::MOVE_RIGHT:
-	nx = x + 1;
-	break;
+    nx = x + 1;
+    break;
   }
   map->removeCreature(x, y, z);
-  //	if(monster) cerr << "trying to move " << getName() << endl;
-  if(map->shapeFits(getShape(), nx, ny, nz)) {
-	//if(monster) cerr << "\tshapeFits" << endl;
-	map->setCreature(nx, ny, nz, this);
-	((MD2Shape*)shape)->setDir(dir);
-	moveTo(nx, ny, nz);
-	setDir(dir);
-	
-	return true;
+  Location *loc = map->getBlockingLocation(getShape(), nx, ny, nz);
+  if(!loc) {
+    map->setCreature(nx, ny, nz, this);
+    ((MD2Shape*)shape)->setDir(dir);
+    moveTo(nx, ny, nz);
+    setDir(dir);
+        
+    return true;
   } else {
-	//if(monster) cerr << "\tdoesn't fit" << endl;
-	map->setCreature(x, y, z, this);
-	
-	if(character) {
-	  // Out of my way!
-	  setMotion(Constants::MOTION_MOVE_AWAY);
-	  move(dir, map);
-	}
-	
-	return false;
+    // move back
+    map->setCreature(x, y, z, this);    
+    return false;
   }
 }
 
 bool Creature::follow(Map *map) {
-  // find out where the creature should be
+  // find out where the creature should be relative to the formation
   Sint16 px, py, pz;
-  
-  if(getMotion() == Constants::MOTION_MOVE_AWAY) {
-    findCorner(&px, &py, &pz);
-  } else {
-	// optimization, only move when the followed creature is moving
-  	getFormationPosition(&px, &py, &pz);
-  }
-  
-  return gotoPosition(map, px, py, pz);
+  getFormationPosition(&px, &py, &pz);
+  setSelXY(px, py);
+  return true;
 }
 
 bool Creature::moveToLocator(Map *map, bool single_step) {
   bool moved = false;
   if(selX > -1) {
-	moved = gotoPosition(map, selX, selY, 0);
-	// in single step mode, ignore the rest of the path
-	//	if(single_step) selX = selY = -1;
+    // take a step
+    moved = gotoPosition(map, selX, selY, 0, "selXY");
+    
+    // if we've no more steps, but we're not there yet, recalc steps
+    if((int)bestPath.size() <=  bestPathPos && selX > -1 && 
+       !(selX == getX() && selY == getY()) &&
+       map->shapeFits(getShape(), selX, selY, -1)) {
+
+      // don't keep trying forever
+      moveRetrycount++;
+      if(moveRetrycount < 5) {
+	tx = ty = -1;
+      }
+    }
   }
   return moved;
 }
@@ -158,37 +157,55 @@ bool Creature::anyMovesLeft() {
   return(selX > -1 && (int)bestPath.size() > bestPathPos); 
 }
 
-bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz) {
+bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
   // If the target moved, get the best path to the location
   if(!(tx == px && ty == py)) {
-	tx = px;
-	ty = py;
-	bestPathPos = 1; // skip 0th position; it's the starting location
-	Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, scourge->getMap(), getShape());
+    //    cerr << getName() << " - " << debug << " steps left: " << 
+    //      ((int)bestPath.size() - bestPathPos) << " out of " << (int)bestPath.size() << endl;
+    tx = px;
+    ty = py;
+    bestPathPos = 1; // skip 0th position; it's the starting location
+    Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, scourge->getMap(), getShape());
   }
   
   if((int)bestPath.size() > bestPathPos) {
-	// take a step on the bestPath
-	Location location = bestPath.at(bestPathPos);
-	// if we can't step there, someone else has moved there ahead of us
-	Uint16 oldDir = dir;
-	//dir = next->getDir();
-	if(getX() < location.x) dir = Constants::MOVE_RIGHT;
-	else if(getX() > location.x) dir = Constants::MOVE_LEFT;
-	else if(getY() < location.y) dir = Constants::MOVE_DOWN;
-	else if(getY() > location.y) dir = Constants::MOVE_UP;
-	Location *position = map->moveCreature(getX(), getY(), getZ(),
-										   location.x, location.y, getZ(),
-										   this);
-	if(!position) {
-	  bestPathPos++;
-	  moveTo(location.x, location.y, getZ());
-	  ((MD2Shape*)shape)->setDir(dir);
-	  return true;
-	} else {
-	  dir = oldDir;
-	  return false;
+    // take a step on the bestPath
+    Location location = bestPath.at(bestPathPos);
+    // if we can't step there, someone else has moved there ahead of us
+    Uint16 oldDir = dir;
+    //dir = next->getDir();
+    if(getX() < location.x) dir = Constants::MOVE_RIGHT;
+    else if(getX() > location.x) dir = Constants::MOVE_LEFT;
+    else if(getY() < location.y) dir = Constants::MOVE_DOWN;
+    else if(getY() > location.y) dir = Constants::MOVE_UP;
+    Location *position = map->moveCreature(getX(), getY(), getZ(),
+					   location.x, location.y, getZ(),
+					   this);
+    if(!position) {
+      bestPathPos++;
+      moveTo(location.x, location.y, getZ());
+      ((MD2Shape*)shape)->setDir(dir);
+      return true;
+    } else {
+      dir = oldDir;
+      
+      // if it's another party member blocking us, make them move out of the way
+      // does this work? Need to test...
+      if(!monster && this == scourge->getPlayer()) {
+	Creature *creature = position->creature;
+	if(creature && creature->character && scourge->getPlayer() != creature) {
+
+	  creature->moveRetrycount++;
+	  if(creature->moveRetrycount < 5) {
+	    Sint16 nx, ny, nz;
+	    creature->findCorner(&nx, &ny, &nz);
+	    creature->gotoPosition(map, nx, ny, nz, "corner");
+	  }    
 	}
+      }
+      
+      return false;
+    }
   }
   return false;
 }

@@ -216,6 +216,10 @@ class Map {
 					 int x2, int y2, int z2);
   
   bool shapeFits(Shape *shape, int x, int y, int z);
+
+  // like shapefits, but returns the blocking location or, NULL if there's nothing there
+  Location *getBlockingLocation(Shape *shape, int x, int y, int z);
+
   Location *Map::getDropLocation(Shape *shape, int x, int y, int z);
 
   inline void updateLightMap() { lightMapChanged = true; }

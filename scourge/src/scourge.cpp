@@ -72,7 +72,7 @@ Scourge::Scourge(int argc, char *argv[]){
   move = 0;
   startRound = true;
   battleCount = 0;
-  gameSpeed = 100; // the greater the slower the game (in ticks) 
+  gameSpeed = 70; // the greater the slower the game (in ticks) 
 
   createUI();
   
@@ -257,16 +257,16 @@ bool Scourge::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
     if(event->motion.x < 10) {
-      map->setZRot(2.0f);
+      map->setZRot(5.0f);
     } else if(event->motion.x >= sdlHandler->getScreen()->w - 10) {
-      map->setZRot(-2.0f);
+      map->setZRot(-5.0f);
     } else {
       map->setZRot(0.0f);
     }
     if(event->motion.y < 10) {
-      map->setYRot(2.0f);
+      map->setYRot(5.0f);
     } else if(event->motion.y >= sdlHandler->getScreen()->h - 10) {
-      map->setYRot(-2.0f);
+      map->setYRot(-5.0f);
     } else {
       map->setYRot(0.0f);
     }
@@ -512,7 +512,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	if(player_only) {
 	  player->setTargetCreature(NULL);
 	} else {
-	  for(int i = 0; i < 4; i++) party[i]->setTargetCreature(NULL);
+	  for(int i = 0; i < 4; i++) {
+	    party[i]->setTargetCreature(NULL);
+	    if(party[i] != player) party[i]->follow(map);
+	  }
 	}
 
 
@@ -1074,6 +1077,13 @@ void Scourge::handleKeyboardMovement() {
 	else
 	  getPlayer()->setSelXY(getPlayer()->getSelX() + 1, getPlayer()->getSelY());
   }
+
+  if(!player_only) {
+    for(int i = 0; i < 4; i++) {
+      party[i]->setTargetCreature(NULL);
+      if(party[i] != player) party[i]->follow(map);
+    }
+  }
 }
 
 void Scourge::movePlayers() {   
@@ -1109,7 +1119,8 @@ void Scourge::movePlayers() {
 		if(party[t]->getTargetCreature()) {
 		  party[t]->moveToLocator(map, player_only);
 		} else {
-		  party[t]->follow(map);
+		  //party[t]->follow(map);
+		  party[t]->moveToLocator(map, player_only);
 		}
 	  }
 	}	
