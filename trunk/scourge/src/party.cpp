@@ -263,7 +263,6 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[0]->setHunger(8);
   pc[0]->setThirst(7); 
   pc[0]->setStateMod(Constants::blessed, true);
-  pc[0]->setStateMod(Constants::poisoned, true);
 
   pc[1] = new Creature(session, Character::getCharacterByName("Knight"), "Barlett");
   pc[1]->setLevel(level); 
@@ -368,6 +367,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
+  pc[3]->setMp(500);
  
   // equip weapons
   pc[0]->equipInventory(0);
@@ -386,6 +386,15 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
 
   pc[3]->addSpell(Spell::getSpellByName("Lesser healing touch"));
   pc[3]->addSpell(Spell::getSpellByName("Body of stone"));
+  pc[3]->addSpell(Spell::getSpellByName("Bless group"));
+  pc[3]->addSpell(Spell::getSpellByName("Invisibility"));
+  pc[3]->addSpell(Spell::getSpellByName("Poison of ignorance"));
+  pc[3]->addSpell(Spell::getSpellByName("Transmute poison"));
+  pc[3]->addSpell(Spell::getSpellByName("Cursed ways"));
+  pc[3]->addSpell(Spell::getSpellByName("Remove curse"));
+  pc[3]->addSpell(Spell::getSpellByName("Enthrall fiend"));
+  pc[3]->addSpell(Spell::getSpellByName("Break from possession"));
+
   *party = pc;
   *partySize = pcCount;  
 }
@@ -397,7 +406,8 @@ Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
   float minDist = 0;
   Creature *p = NULL;
   for(int i = 0; i < getPartySize(); i++) {
-	if(!party[i]->getStateMod(Constants::dead)) {
+	if(!party[i]->getStateMod(Constants::dead) &&
+       !party[i]->getStateMod(Constants::possessed)) {
 	  float dist = Constants::distance(x, y, w, h,
 									   party[i]->getX(),
 									   party[i]->getY(),

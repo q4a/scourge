@@ -339,7 +339,11 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         creature->setAction(Constants::ACTION_CAST_SPELL, 
                             NULL,
                             spell);
-        scourge->setTargetSelectionFor(creature);
+        if(!spell->isPartyTargetAllowed()) {
+          scourge->setTargetSelectionFor(creature);
+        } else {
+          creature->setTargetCreature(creature);
+        }
         if(!mainWin->isLocked()) mainWin->setVisible(false);
       }
     }
@@ -352,7 +356,11 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         creature->setAction(Constants::ACTION_CAST_SPELL, 
                             item,
                             item->getSpell());
-        scourge->setTargetSelectionFor(creature);
+        if(!item->getSpell()->isPartyTargetAllowed()) {
+          scourge->setTargetSelectionFor(creature);
+        } else {
+          creature->setTargetCreature(creature);
+        }
         if(!mainWin->isLocked()) mainWin->setVisible(false);
       } else {
         scourge->showMessageDialog("You can only cast objects of magical nature!");

@@ -32,7 +32,7 @@ using namespace std;
 #define CONFIG_FILE_NAME "/saved/scourge.cfg"
 
 // Indice for the first debug engine action defined in engine_action_int
-#define ENGINE_ACTION_DEBUG_IND 26
+#define ENGINE_ACTION_DEBUG_IND 30
 
 // set to non-zero for debugging
 #define DEBUG_USER_CONFIG 0  
@@ -76,6 +76,11 @@ enum engine_action_int{
     DECREASE_GAME_SPEED, 
     
     START_ROUND, 
+
+    LAYOUT_1,
+    LAYOUT_2,
+    LAYOUT_3,
+    LAYOUT_4,
         
     // Debug engine actions invisible for user (not saved or loaded)
     BLEND_A,        

@@ -42,7 +42,8 @@ private:
 
 public:
 
-  void execute();    
+  void execute();
+  void executeBeforeDelete();
   
   StateModExpirationEvent(Date currentDate, Date timeOut, Creature *c, int stateMod, Session *session, int nbExecutionsToDo);
   StateModExpirationEvent();

@@ -186,7 +186,11 @@ void C3DSShape::draw() {
 #endif
 
   glPushMatrix();
+  
   glDisable( GL_CULL_FACE );
+  //  glEnable( GL_CULL_FACE );
+  // glCullFace( GL_FRONT );
+
   //  glScalef( div, div, div );
   //  glTranslatef( -movex, -movey, -movez );
   glTranslatef(-movex * div, 0.0f, 0.0f);

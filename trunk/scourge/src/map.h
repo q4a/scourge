@@ -137,6 +137,9 @@ class Map {
   void drawGrid(SDL_Surface *surface);
   void debugGrid(SDL_Surface *surface);
 
+  int mapViewWidth, mapViewDepth;
+  char mapDebugStr[200];
+
  public:
   Map(Session *session);
   ~Map();
@@ -254,7 +257,6 @@ class Map {
   
   void drawDescriptions(ScrollingList *list);
   
-  void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);
   void handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz);
   
   inline Uint16 getSelX() { return selX; }
@@ -402,7 +404,7 @@ class Map {
 	 If 'ground' is true, it draws the ground layer.
 	 Otherwise the shape arrays (other, stencil, later) are populated.
    */
-  void setupShapes(bool ground);
+  void setupShapes(bool ground, int *csx=NULL, int *cex=NULL, int *csy=NULL, int *cey=NULL);
   void setupPosition(int posX, int posY, int posZ,
                      float xpos2, float ypos2, float zpos2,
                      Shape *shape, Item *item, Creature *creature, 

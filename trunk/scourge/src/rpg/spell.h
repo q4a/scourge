@@ -48,6 +48,7 @@ class MagicSchool;
 class Spell {
  private:
   char *name;
+  char *sound;
   int level;
   int mp;
   int exp;
@@ -59,7 +60,7 @@ class Spell {
   int speed;
   int effect;
   MagicSchool *school;  
-  bool creatureTarget, locationTarget, itemTarget;
+  bool creatureTarget, locationTarget, itemTarget, partyTarget;
 
   static map<string, Spell*> spellMap;
 
@@ -67,7 +68,7 @@ class Spell {
 
   Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
 		int distance, int targetType, int speed, int effect, bool creatureTarget, 
-		bool locationTarget, bool itemTarget, MagicSchool *school);
+		bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school);
   ~Spell();
 
   inline char *getName() { return name; }
@@ -85,11 +86,14 @@ class Spell {
   inline bool isRangedSpell() { return distance > 1; }  
   inline void describe(char *s) { sprintf(s, "%s (L:%d)(M:%d)", name, level, mp); }
   inline void addNotes(char *s) { strcat(notes, s); }
+  inline void setSound(char *s) { sound = s; }
+  inline char *getSound() { return sound; }
 
   // what kind of target is allowed for this spell
   inline bool isCreatureTargetAllowed() { return creatureTarget; }
   inline bool isLocationTargetAllowed() { return locationTarget; }
   inline bool isItemTargetAllowed() { return itemTarget; }
+  inline bool isPartyTargetAllowed() { return partyTarget; }
 
   static Spell *getSpellByName(char *name);
 };

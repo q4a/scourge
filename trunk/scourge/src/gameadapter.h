@@ -69,6 +69,7 @@ public:
   virtual inline void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL) {}
   virtual inline void eraseMiniMapPoint(int x, int y) {}
   virtual inline void playSound(const char *sound) {}
+  virtual inline void setDebugStr(char *s) {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

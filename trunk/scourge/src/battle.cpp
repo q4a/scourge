@@ -82,7 +82,7 @@ void Battle::reset() {
   this->paused = false;
   this->weaponWait = 0;
   this->range = 0.0f;
-  creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+  creature->getShape()->setCurrentAnimation((int)MD2_STAND);
   ((MD2Shape*)(creature->getShape()))->setAttackEffect(false);
 }
 
@@ -97,7 +97,7 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
       battle[i]->needsReset = false;
     }
     //battle[i]->initTurn();
-    battle[i]->getCreature()->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+    //battle[i]->getCreature()->getShape()->setCurrentAnimation((int)MD2_STAND);
     turns->push_back(battle[i]);
   }
 }                 
@@ -256,13 +256,13 @@ void Battle::executeAction() {
   } else {
     hitWithItem();
   }
-  creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
+  creature->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
   ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
 }
 
 void Battle::stepCloserToTarget() {
   // out of range: take 1 step closer
-  creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+  creature->getShape()->setCurrentAnimation((int)MD2_RUN);
   if(DEBUG_BATTLE) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
     if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
@@ -284,39 +284,44 @@ void Battle::stepCloserToTarget() {
 }
 
 bool Battle::selectNewTarget() {
-// select a new target
-  // FIXME: this code should move to Creature
-  Creature *target = NULL;
+  // select a new target
   if (creature->isMonster()) {
-    target = session->getParty()->getClosestPlayer(creature->getX(), 
-                                                   creature->getY(), 
-                                                   creature->getShape()->getWidth(),
-                                                   creature->getShape()->getDepth(),
-                                                   20);
-  } else {
-    target = session->getClosestVisibleMonster(creature->getX(), 
-                                               creature->getY(), 
-                                               creature->getShape()->getWidth(),
-                                               creature->getShape()->getDepth(),
-                                               20);
-  }
-  if (target) {
-    if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
-    creature->setTargetCreature(target);
-    creature->setSelXY(creature->getTargetCreature()->getX(),
-                       creature->getTargetCreature()->getY(),
-                       true);
-    //initTurn();
-    return true;
-  } else {
     creature->setTargetCreature(NULL);
-    if(DEBUG_BATTLE) cerr << "\t\tCan't find new target." << endl;
-    return false;
+    creature->decideMonsterAction();
+    return(creature->hasTarget());
+  } else {
+    Creature *target;
+    if(creature->getStateMod(Constants::possessed)) {
+      target = session->getParty()->getClosestPlayer(creature->getX(), 
+                                                     creature->getY(), 
+                                                     creature->getShape()->getWidth(),
+                                                     creature->getShape()->getDepth(),
+                                                     20);
+    } else {
+      target = session->getClosestVisibleMonster(creature->getX(), 
+                                                 creature->getY(), 
+                                                 creature->getShape()->getWidth(),
+                                                 creature->getShape()->getDepth(),
+                                                 20);
+    }
+    if (target) {
+      if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
+      creature->setTargetCreature(target);
+      creature->setSelXY(creature->getTargetCreature()->getX(),
+                         creature->getTargetCreature()->getY(),
+                         true);
+      //initTurn();
+      return true;
+    } else {
+      creature->setTargetCreature(NULL);
+      if(DEBUG_BATTLE) cerr << "\t\tCan't find new target." << endl;
+      return false;
+    }
   }
 }
 
 void Battle::moveCreature() {
-  creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+  creature->getShape()->setCurrentAnimation((int)MD2_RUN);
 
   // take 1 step closer
   if(DEBUG_BATTLE) cerr << "\t\tTaking a non-battle step." << endl;
@@ -326,7 +331,7 @@ void Battle::moveCreature() {
     if(creature->getSelX() != -1) {
       creature->moveToLocator(session->getMap());
     } else {
-      creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+      //creature->getShape()->setCurrentAnimation((int)MD2_STAND);
       // try to kill something
       selectNewTarget();
     }
@@ -407,6 +412,10 @@ void Battle::castSpell() {
   if(creature->getStateMod(Constants::overloaded)) {
     delta -= (8.0f * rand()/RAND_MAX);
   }
+  if(creature->getStateMod(Constants::invisible)) {
+    delta += (5.0f * rand()/RAND_MAX) + 5;
+  }
+
 
   if(!projectileHit && 
      (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate()) {
@@ -446,6 +455,10 @@ void Battle::launchProjectile() {
     // max number of projectiles in the air
     // FIXME: do something... 
     // (like print message: can't launch projectile due to use of fixed-sized array in code?)
+  }
+  if(creature->isMonster() && 
+     0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX)) {
+    session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
   }
   session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount) );
 }
@@ -508,6 +521,10 @@ void Battle::hitWithItem() {
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 
     // play item sound
+    if(creature->isMonster() && 
+       0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX)) {
+      session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
+    }
     session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
 
   } else if(dist <= Constants::MIN_DISTANCE) {
@@ -562,6 +579,9 @@ void Battle::hitWithItem() {
   }
   if(creature->getStateMod(Constants::overloaded)) {
     delta -= (10.0f * rand()/RAND_MAX);
+  }
+  if(creature->getStateMod(Constants::invisible)) {
+    delta += (5.0f * rand()/RAND_MAX) + 5;
   }
   int extra = (int)(((float)tohit / 100.0f) * delta);
 
@@ -655,13 +675,17 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
     damage += extra;
 
     // play hit sound
-    if(!creature->getTargetCreature()->isMonster() && damage > 0) {
-      session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
+    if(damage > 0) {
+      if(creature->getTargetCreature()->isMonster()) {
+        session->playSound(creature->getTargetCreature()->getMonster()->getRandomSound(Constants::SOUND_TYPE_HIT));
+      } else {
+        session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
+      }
     }
 
     // target creature death
     if(creature->getTargetCreature()->takeDamage(damage, effect)) {         
-      creature->getShape()->setCurrentAnimation((int)MD2_TAUNT, true);  
+      creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
       sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 

@@ -34,6 +34,7 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   invertMouse = false; 
   cursorMode = CURSOR_NORMAL;
   font_initialized = false;
+  debugStr = NULL;
 }
 
 SDLHandler::~SDLHandler(){
@@ -73,15 +74,13 @@ void SDLHandler::quit( int returnCode ) {
   SDLNet_Quit();
 #endif
 
-#ifdef HAVE_SDL_MIXER
   if(sound) delete sound;
-#endif
 
-    /* clean up the window */
-    SDL_Quit( );
-
-    /* and exit appropriately */
-    exit( returnCode );
+  /* clean up the window */
+  SDL_Quit( );
+  
+  /* and exit appropriately */
+  exit( returnCode );
 }
 
 /* function to reset our viewport after a window resize */
@@ -336,10 +335,10 @@ void SDLHandler::setVideoMode( UserConfiguration * uc ) {
   if(uc->getDoublebuf()) 
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   if(uc->getStencilbuf()) {
-		uc->setStencilBufInitialized(true);
+    uc->setStencilBufInitialized(true);
     stencilBufferUsed = true;
-		SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
-	}
+    SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+  }
 
   cout << "Setting video mode: " << uc->getW() << "x" << uc->getH() << "x" << uc->getBpp() << endl;
   
@@ -497,29 +496,6 @@ void SDLHandler::drawScreen() {
 
   if(shapePal->cursorImage) {
     // for cursor: do alpha bit testing
-    glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
-    //glMatrixMode(GL_MODELVIEW);
-
-    /*
-    glDisable(GL_TEXTURE_2D);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_NOTEQUAL, 0);        
-    glPushMatrix();
-    glLoadIdentity( );                         
-    glPixelZoom( 1.0, -1.0 );
-    glRasterPos2f( (float)mouseX, (float)mouseY );
-    if(cursorMode == CURSOR_NORMAL) {
-      glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
-                   GL_BGRA, GL_UNSIGNED_BYTE, shapePal->cursorImage);
-    } else if(cursorMode == CURSOR_CROSSHAIR) {
-      glDrawPixels(shapePal->crosshair->w, shapePal->crosshair->h,
-                   GL_BGRA, GL_UNSIGNED_BYTE, shapePal->crosshairImage);
-    }
-    */
-
-    ///*
     glEnable( GL_ALPHA_TEST );
     glAlphaFunc( GL_EQUAL, 0xff );
     glEnable(GL_TEXTURE_2D);
@@ -544,18 +520,30 @@ void SDLHandler::drawScreen() {
     glTexCoord2f( 1, 0 );
     glVertex2f( shapePal->cursor->w, 0 );
     glEnd();
-    //*/
 
     glPopMatrix();
-    glPopAttrib();		
+
+    glDisable( GL_ALPHA_TEST );
+    glDisable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
   }
 
 
 #ifdef SHOW_DEBUG_INFO
   glPushMatrix();
+  glDisable( GL_DEPTH_TEST );
   glLoadIdentity();
+  glColor3f( 0, 0, 0 );
+  glBegin( GL_QUADS );
+  glVertex2f( 400, 0 );
+  glVertex2f( 400, 12 );
+  glVertex2f( screen->w, 12 );
+  glVertex2f( screen->w, 0 );
+  glEnd();
   glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
-  texPrint(700, 10, "FPS: %g", getFPS());
+  texPrint(400, 10, "FPS: %g %s", getFPS(), (debugStr ? debugStr : ""));
+  glEnable( GL_DEPTH_TEST );
   glPopMatrix();
 #endif
 

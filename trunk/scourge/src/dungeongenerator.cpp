@@ -123,10 +123,11 @@ const MapLocation DungeonGenerator::location[] = {
   }
 };
 
-DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown, 
-								   bool stairsUp, Mission *mission){
+DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth, 
+                                   bool stairsDown, bool stairsUp, Mission *mission){
   this->scourge = scourge;
   this->level = level;
+  this->depth = depth;
   this->stairsUp = stairsUp;
   this->stairsDown = stairsDown;
   this->mission = mission;
@@ -154,7 +155,7 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown,
 
   doorCount = 0;
 
-  progress = new Progress(scourge, 16);
+  progress = new Progress(scourge, 17);
 }
 
 DungeonGenerator::~DungeonGenerator(){
@@ -225,7 +226,7 @@ void DungeonGenerator::makeRooms() {
 	  room[i].y = py;
 	  room[i].w = rw;
 	  room[i].h = rh;
-    room[i].valueBonus = 0;
+      room[i].valueBonus = depth / 2;
 
       for(int x = px; x < px + rw; x++) {
         for(int y = py; y < py + rh; y++) {
@@ -1195,14 +1196,19 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
                                    bool preGenerated, int locationIndex) {
   // add monsters in every room
   if(monsters) {
-    //int totalLevel = scourge->getParty()->getTotalLevel();
+    int totalLevel = scourge->getParty()->getTotalLevel();
     //fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
     for(int i = 0; i < roomCount; i++) {
       int areaCovered = 0;
       // don't crowd the rooms
       int roomAreaUsed = (int)(room[i].w * room[i].h * unitSide * 0.33f);
-      while(areaCovered < roomAreaUsed) {
-        Monster *monster = Monster::getRandomMonster(level);
+      int monsterLevelTotal = 0;
+      bool badAssMonsters = ((int)((float)(10 - depth) * rand()/RAND_MAX) == 0);
+      while(areaCovered < roomAreaUsed && (badAssMonsters || monsterLevelTotal < totalLevel)) {
+        int monsterLevel = level;
+        if(badAssMonsters && 0 == (int)(5.0f * rand()/RAND_MAX))
+          monsterLevel++;
+        Monster *monster = Monster::getRandomMonster(monsterLevel);
         //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
         if(!monster) {
           cerr << "Warning: no monsters defined for level: " << level << endl;
@@ -1223,10 +1229,17 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
           creature->moveTo(x, y, 0);
           areaCovered += (creature->getShape()->getWidth() * 
                           creature->getShape()->getDepth());
+          monsterLevelTotal += creature->getMonster()->getLevel();
         } else {
           //fprintf(stderr, "\tmonster DOESN'T fit.\n");
           break;
         }
+      }
+
+      if(monsterLevelTotal > totalLevel) {
+        room[i].valueBonus++;
+        cerr << "Room " << i << " is guarded by badass monsters(tm). " << 
+          "Room's valueBonus=" << room[i].valueBonus << endl;
       }
     }
 
@@ -1433,14 +1446,16 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
   progress->updateStatus("Calculating room values");
   calculateRoomValues(map, shapePal, preGenerated, locationIndex);
 
-  progress->updateStatus("Adding items and mission objectives");
-  addItems(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus("Adding mission objectives");
   if(!preGenerated) {
     addMissionObjectives(map, shapePal, preGenerated, locationIndex);
   }
 
   progress->updateStatus("Adding monsters");
   addMonsters(map, shapePal, preGenerated, locationIndex);
+
+  progress->updateStatus("Adding items");
+  addItems(map, shapePal, preGenerated, locationIndex);
 
   progress->updateStatus("Adding furniture");
   addFurniture(map, shapePal, preGenerated, locationIndex);
@@ -1595,22 +1610,22 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape,
 }
 
 void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n, 
-																			bool preGenerated, int locationIndex) {
-	int x, y;
-	for(int i = 0; i < roomCount; i++) {
-		if(preGenerated && !location[locationIndex].roomDimension[i][4]) continue;
-		for(int r = 0; r < n; r++) {
-			for(int t = 0; t < 5; t++) { // 5 tries
-				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-				bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
-				if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
-					Item *item = scourge->getSession()->newItem(rpgItem);
-					addItem(scourge->getMap(), NULL, item, NULL, x, y);
-					break;
-				}
-			}
-		}
-	}
+                                      bool preGenerated, int locationIndex) {
+  int x, y;
+  for(int i = 0; i < roomCount; i++) {
+    if(preGenerated && !location[locationIndex].roomDimension[i][4]) continue;
+    for(int r = 0; r < n; r++) {
+      for(int t = 0; t < 5; t++) { // 5 tries
+        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+        bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
+        if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+          Item *item = scourge->getSession()->newItem(rpgItem);
+          addItem(scourge->getMap(), NULL, item, NULL, x, y);
+          break;
+        }
+      }
+    }
+  }
 }
 
 bool DungeonGenerator::addShapeInARoom(int shapeIndex) {

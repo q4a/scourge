@@ -54,9 +54,13 @@ class Monster  {
   static map<int, vector<Monster*>* > monsters;
   static map<string, Monster*> monstersByName;
 
+  static map<int, vector<string>*>* currentSoundMap;
+
 public:
   Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, int w, int d, int h);
   ~Monster();
+
+  static map<string, map<int, vector<string>*>*> soundMap;
 
   inline float getScale() { return scale; }
   inline int getWidth() { return w; }
@@ -78,6 +82,7 @@ public:
   inline int getStartingSpellCount() { return spells.size(); }
   inline Spell *getStartingSpell(int index) { return spells[index]; }
   inline void addSpell(Spell *spell) { spells.push_back(spell); }
+  const char *getRandomSound(int type);
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);

@@ -87,6 +87,7 @@ class Creature {
   Item *targetItem;
   Sint16 cornerX, cornerY;
   bool arrived; // true if no particular destination set for this creature
+  map<int, Event*> stateModEventMap;
   
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
@@ -384,6 +385,8 @@ class Creature {
   float getDistanceToTarget();
 
 
+  inline void setStateModEvent(int mod, Event *event) { stateModEventMap[mod] = event; }
+  inline Event *getStateModEvent(int mod) { return(stateModEventMap.find(mod) == stateModEventMap.end() ? NULL : stateModEventMap[mod]); }
 
  protected:
 

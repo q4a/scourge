@@ -196,7 +196,7 @@ const char *Constants::POTION_SKILL_NAMES[] = {
 
 const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
-  "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed", 
+  "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "invisible", 
   "overloaded", "dead", "leveled"
 }; 
 

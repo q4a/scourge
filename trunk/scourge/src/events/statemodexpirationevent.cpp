@@ -31,14 +31,30 @@ StateModExpirationEvent::~StateModExpirationEvent(){
 }
 
 void StateModExpirationEvent::execute() {
+  if(creature->getStateMod(Constants::dead)) return;
+  if(stateMod == Constants::poisoned) {
+    // apply poison damage
+    if(creature->getStateMod(Constants::poisoned)) {
+      Creature *tmp = creature->getTargetCreature();
+      creature->setTargetCreature(creature);
+      char message[80];
+      sprintf(message, "%s suffers poison damage!", creature->getName());
+      session->getMap()->addDescription(message, 0.05f, 1.0f, 0.05f);
+      creature->getBattle()->dealDamage((int)(4.0f*rand()/RAND_MAX), 4, 
+                                        Constants::EFFECT_GREEN, true);
+      creature->setTargetCreature(tmp);
+    }
+  }
+}
 
+void StateModExpirationEvent::executeBeforeDelete() {
   // Don't need this event anymore    
   scheduleDeleteEvent();        
-
+  
   if(creature->getStateMod(Constants::dead)) return;
-
+  
   creature->setStateMod(stateMod, false);
-
+  
   char msg[255];
   sprintf(msg, "%s is not %s any more.", 
           creature->getName(), 

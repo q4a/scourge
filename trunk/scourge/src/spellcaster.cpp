@@ -56,6 +56,8 @@ void SpellCaster::spellFailed() {
 void SpellCaster::spellSucceeded() {
   if(!spell) return;
 
+  battle->getSession()->playSound(spell->getSound());
+
 //  cerr << "SUCCEEDED: " << spell->getName() << " power=" << power << endl;
   if(!strcasecmp(spell->getName(), "Lesser healing touch") ||
      !strcasecmp(spell->getName(), "Greater healing touch") ||
@@ -76,12 +78,48 @@ void SpellCaster::spellSucceeded() {
     } else {
       launchProjectile(0);
     }
+  } else if(!strcasecmp(spell->getName(), "Invisibility")) {
+      setStateMod(Constants::invisible);
+  } else if(!strcasecmp(spell->getName(), "Art of protection")) {
+      setStateMod(Constants::magic_protected);
+  } else if(!strcasecmp(spell->getName(), "Divine Aggressor")) {
+      setStateMod(Constants::enraged);
+  } else if(!strcasecmp(spell->getName(), "Protective clay")) {
+      setStateMod(Constants::ac_protected);
+  } else if(!strcasecmp(spell->getName(), "Empower friend")) {
+      setStateMod(Constants::empowered);
+  } else if(!strcasecmp(spell->getName(), "Bless group")) {
+      setStateMod(Constants::blessed);
   } else if(!strcasecmp(spell->getName(), "Flame of Azun")) {
     if(projectileHit) {
       setStateMod(Constants::blinded);
     } else {
       launchProjectile(1, false);
     }
+  } else if(!strcasecmp(spell->getName(), "Poison of ignorance")) {
+    if(projectileHit) {
+      setStateMod(Constants::poisoned);
+    } else {
+      launchProjectile(1, false);
+    }
+  } else if(!strcasecmp(spell->getName(), "Transmute poison")) {
+      setStateMod(Constants::poisoned, false);
+  } else if(!strcasecmp(spell->getName(), "Cursed ways")) {
+    if(projectileHit) {
+      setStateMod(Constants::cursed);
+    } else {
+      launchProjectile(1, false);
+    }
+  } else if(!strcasecmp(spell->getName(), "Remove curse")) {
+      setStateMod(Constants::cursed, false);
+  } else if(!strcasecmp(spell->getName(), "Enthrall fiend")) {
+    if(projectileHit) {
+      setStateMod(Constants::possessed);
+    } else {
+      launchProjectile(1, false);
+    }
+  } else if(!strcasecmp(spell->getName(), "Break from possession")) {
+      setStateMod(Constants::possessed, false);
   } else {
     // default
     cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
@@ -187,42 +225,91 @@ void SpellCaster::causeDamage() {
                      true);
 }
 
-void SpellCaster::setStateMod(int mod) {
+void SpellCaster::setStateMod(int mod, bool setting) {
   Creature *targets[100];
-  int radius = battle->getCreature()->getLevel() * 2;
-  if(radius > 15) radius = 15;
+  int targetCount = 0;
 
-  // show radius effect
-  battle->getSession()->getMap()->startEffect(battle->getCreature()->getTargetX(),
-                                              battle->getCreature()->getTargetY(),
-                                              1, Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
-                                              radius, radius);
+  if(spell->isPartyTargetAllowed()) {
+    for(int i = 0; i < battle->getSession()->getParty()->getPartySize(); i++) {
+      if(spell->isPartyTargetAllowed()) {
+        targets[targetCount++] = battle->getSession()->getParty()->getParty(i);
+      }
+    }
+  } else if(spell->getTargetType() == GROUP_TARGET) {
+    int radius = battle->getCreature()->getLevel() * 2;
+    if(radius > 15) radius = 15;    
+    // show radius effect
+    battle->getSession()->getMap()->startEffect(battle->getCreature()->getTargetX(),
+                                                battle->getCreature()->getTargetY(),
+                                                1, 
+                                                Constants::EFFECT_RING, 
+                                                (Constants::DAMAGE_DURATION * 4),
+                                                radius, radius);
 
-  int targetCount = battle->getSession()->getMap()->getCreaturesInArea(battle->getCreature()->getTargetX(),
-                                                                       battle->getCreature()->getTargetY(),
-                                                                       radius,
-                                                                       targets);
+    targetCount = 
+      battle->getSession()->getMap()->
+      getCreaturesInArea(battle->getCreature()->getTargetX(),
+                         battle->getCreature()->getTargetY(),
+                         radius,
+                         targets);
+  } else {
+    targets[targetCount++] = battle->getCreature()->getTargetCreature();
+  }
+
+
+
+
+
   for(int i = 0; i < targetCount; i++) {
     Creature *creature = targets[i];
-    if(battle->getCreature()->isMonster() == creature->isMonster()) continue;
-    creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));  
-    // FIXME: should extend expiration event somehow if condition already exists
-    if(creature->getStateMod(mod)) continue;    
-    creature->setStateMod(mod, true);
 
+    // group spells only affect monsters (for now).
+    if(spell->getTargetType() == GROUP_TARGET && !creature->isMonster()) continue;
+
+    int timeInMin = 2 * battle->getCreature()->getLevel();
+    creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));  
+
+    // extend expiration event somehow if condition already exists
+    Event *e = creature->getStateModEvent(mod);
+    if(creature->getStateMod(mod) == setting) {
+      if(e) {
+        cerr << "Extending existing event." << endl;
+        e->setNbExecutionsToDo(timeInMin);
+      }
+      continue;    
+    }
+    creature->setStateMod(mod, setting);
+    
     char msg[200];
-    sprintf(msg, "%s is %s.", creature->getName(), Constants::STATE_NAMES[mod]);
+    if(setting) {
+      sprintf(msg, "%s is %s.", 
+              creature->getName(), 
+              Constants::STATE_NAMES[mod]);
+    } else {
+      sprintf(msg, "%s is not %s any more.", 
+              creature->getName(), 
+              Constants::STATE_NAMES[mod]);
+    }
     battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
     
-    // add calendar event to remove condition            
-    // (format : sec, min, hours, days, months, years)
-    Calendar *cal = battle->getSession()->getParty()->getCalendar();
-    int timeInMin = 2 * battle->getCreature()->getLevel();
-//    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
-    Date d(0, timeInMin, 0, 0, 0, 0); 
-    Event *e = new StateModExpirationEvent(cal->getCurrentDate(), 
-                                           d, creature, mod, battle->getSession(), 1);
-    cal->scheduleEvent((Event*)e);   // It's important to cast!!		
-  }
-}                                     
+    // cancel existing event if any
+    if(e) {
+      cerr << "Cancelling existing event." << endl;
+      battle->getSession()->getParty()->getCalendar()->cancelEvent(e);
+    }
 
+    if(setting) {
+      // add calendar event to remove condition            
+      // (format : sec, min, hours, days, months, years)
+      Calendar *cal = battle->getSession()->getParty()->getCalendar();
+      //    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
+      Date d(0, 1, 0, 0, 0, 0); 
+      cerr << "Creating new event." << endl;
+      e = new StateModExpirationEvent(cal->getCurrentDate(), 
+                                             d, creature, mod, battle->getSession(), 
+                                             timeInMin);
+      cal->scheduleEvent((Event*)e);   // It's important to cast!!
+      creature->setStateModEvent(mod, e);
+    }
+  }
+}
