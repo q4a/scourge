@@ -185,7 +185,7 @@ void Battle::fightTurn() {
 
   // waiting to cast a spell?
   if(creature->getAction() == Constants::ACTION_CAST_SPELL) {
-	creature->startEffect(Constants::EFFECT_GREEN, 
+	creature->startEffect(Constants::EFFECT_CAST_SPELL, 
 						  Constants::DAMAGE_DURATION * 4);
   }  
 

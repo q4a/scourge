@@ -29,6 +29,7 @@ SDLHandler::SDLHandler(){
   text = NULL;
   handlerCount = 0;
   invertMouse = false; 
+  cursorMode = CURSOR_NORMAL;
 }
 
 SDLHandler::~SDLHandler(){
@@ -363,6 +364,7 @@ void SDLHandler::mainLoop() {
   /* whether or not the window is active */
   int isActive = TRUE;  
   SDL_Event event;
+  int mx, my;
   while(true) {    
 	int eventCount = 0;  
     while(SDL_PollEvent(&event) && (eventCount++) < 10) {
@@ -371,25 +373,28 @@ void SDLHandler::mainLoop() {
       switch( event.type ) {
 	  case SDL_MOUSEMOTION:
 		if(invertMouse) event.motion.y = screen->h - event.motion.y;
+		//		applyMouseOffset(event.button.x, event.button.y, &mx, &my);
 		mouseX = event.motion.x;
 		mouseY = event.motion.y;          
 		mouseButton = event.button.button;
 		mouseEvent = SDL_MOUSEMOTION;
-		widget = Window::delegateEvent( &event, mouseX, mouseY );
+		widget = Window::delegateEvent( &event, event.button.x, event.button.y );
 		break;
       case SDL_MOUSEBUTTONUP:
 		if(invertMouse) event.button.y = screen->h - event.button.y;
+		applyMouseOffset(event.button.x, event.button.y, &mx, &my);
 		mouseEvent = SDL_MOUSEBUTTONUP;
 		mouseButton = event.button.button;
 		mouseDragging = false;
-		widget = Window::delegateEvent( &event, event.button.x, event.button.y );
+		widget = Window::delegateEvent( &event, mx, my );
 		break;
       case SDL_MOUSEBUTTONDOWN:
 		if(invertMouse) event.button.y = screen->h - event.button.y;			 
+		applyMouseOffset(event.button.x, event.button.y, &mx, &my);
 		mouseEvent = SDL_MOUSEBUTTONDOWN;
 		mouseButton = event.button.button;
 		mouseDragging = true;
-		widget = Window::delegateEvent( &event, event.button.x, event.button.y );
+		widget = Window::delegateEvent( &event, mx, my );
 		break;
       case SDL_ACTIVEEVENT:
 		/* Something's happend with our focus
@@ -462,8 +467,13 @@ void SDLHandler::mainLoop() {
         glLoadIdentity( );                         
         glPixelZoom( 1.0, -1.0 );
         glRasterPos2f( (float)mouseX, (float)mouseY );
-		glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
-					 GL_BGRA, GL_UNSIGNED_BYTE, shapePal->cursorImage);
+		if(cursorMode == CURSOR_NORMAL) {
+		  glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
+					   GL_BGRA, GL_UNSIGNED_BYTE, shapePal->cursorImage);
+		} else if(cursorMode == CURSOR_CROSSHAIR) {
+		  glDrawPixels(shapePal->crosshair->w, shapePal->crosshair->h,
+					   GL_BGRA, GL_UNSIGNED_BYTE, shapePal->crosshairImage);
+		}
 		
         //glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
         //             GL_BGR, GL_UNSIGNED_BYTE, shapePal->cursor->pixels);

@@ -48,6 +48,8 @@ void Effect::draw(GLShape *shape, int effect, int startTime) {
 	drawExplosion(shape);
   } else if(effect == Constants::EFFECT_SWIRL) {
 	drawSwirl(shape);
+  } else if(effect == Constants::EFFECT_CAST_SPELL) {
+	drawCastSpell(shape);
   } else {
 	glowShape(shape, startTime);
   }
@@ -220,6 +222,41 @@ void Effect::drawSwirl(GLShape *shape) {
     }
   }
 }
+
+void Effect::drawCastSpell(GLShape *shape) {
+  // manage particles
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(shape, &(particle[i]));
+	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
+	  //	  particle[i]->moveDelta = 0.15f + (0.2f * rand()/RAND_MAX);
+	  particle[i]->moveDelta = 0;
+	  particle[i]->maxLife = 10000;
+	  particle[i]->trail = 1;
+	  particle[i]->zoom = 0.5f;
+    } else {
+	  moveParticle(&(particle[i]));
+    }
+
+    // draw it      
+    if(particle[i]) {            
+	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  if(c > 1) c = 1;
+
+	  //	  particle[i]->rotate += 5.0f;
+	  particle[i]->zoom = ((particle[i]->life % 200) / 60.0f + 1) * 1.5f;
+
+      glColor4f(c / 2.0f, c / 4.0f, 1.0f, 0.25);
+
+	  drawParticle(shape, particle[i]);
+    }
+  }
+}
+
+
 
 
 
