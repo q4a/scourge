@@ -368,19 +368,25 @@ Mission::~Mission() {
 }
 
 bool Mission::itemFound(Item *item) {
-  if( items.find( item ) != items.end() ) {
-    items[ item ] = true;
-    checkMissionCompleted();
+  if( !completed ) {
+    if( items.find( item ) != items.end() ) {
+      items[ item ] = true;
+      checkMissionCompleted();
+    }
+    return isCompleted();
   }
-  return isCompleted();
+  return false;
 }
 
 bool Mission::creatureSlain(Creature *creature) {
-  if( creatures.find( creature ) != creatures.end() ) {
-    creatures[ creature ] = true;
-    checkMissionCompleted();
+  if( !completed ) {
+    if( creatures.find( creature ) != creatures.end() ) {
+      creatures[ creature ] = true;
+      checkMissionCompleted();
+    }
+    return isCompleted();
   }
-  return isCompleted();
+  return false;
 }
 
 void Mission::checkMissionCompleted() {
