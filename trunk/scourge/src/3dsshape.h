@@ -1,13 +1,11 @@
 /**
  * Credit for this code is mainly due to:
- * DigiBen     digiben@gametutorials.com
- * Look up his other great tutorials at:
- * http://www.gametutorials.com
+ * http://nehe.gamedev.net
  */
 
 
 /***************************************************************************
-                          md2shape.h  -  description
+                          3dsshape.h  -  description
                              -------------------
     begin                : Fri Oct 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -23,8 +21,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MD2SHAPE_H
-#define MD2SHAPE_H
+#ifndef C3DSSHAPE_H
+#define C3DSSHAPE_H
 
 #include <iostream>
 #include <stdio.h>
@@ -35,38 +33,39 @@
 
 #include "constants.h"
 #include "glshape.h"
-#include "Md2.h"
+#include "3ds.h"
 
-class MD2Shape : public GLShape  {
+using namespace std;
 
-// uncomment to show debug shapes
-//#define DEBUG_MD2 1
+typedef unsigned char BYTE;
+
+class C3DSShape : public GLShape  {
 
 private:
   float div;
+  // This holds the texture info, referenced by an ID
+  unsigned int g_Texture[MAX_TEXTURES];
+  // This is 3DS class.  This should go in a good model class.
+  CLoad3DS g_Load3ds;
+  // This holds the 3D Model info that we load in
+  t3DModel g_3DModel;
+  // We want the default drawing mode to be normal
+  int g_ViewMode;
   float movex, movey, movez;
-  unsigned int g_Texture[MAX_TEXTURES]; // This holds the texture info, referenced by an ID
-  CLoadMD2 g_LoadMd2;                         // This is MD2 class.  This should go in a good model class.
-  t3DModel g_3DModel;                         // This holds the 3D Model info that we load in
-  int g_ViewMode;              // make this GL_LINE_STRIP for outline
-  int dir;
-
 
 public: 
-	MD2Shape(char *file_name, char *texture_name, float div,
+	C3DSShape(char *file_name, float div,
           GLuint texture[], int width, int depth, int height,
           char *name,
           Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
 
-	MD2Shape(char *file_name, char *texture_name, float div,
+	C3DSShape(char *file_name, float div,
           GLuint texture[], int width, int depth, int height,
           char *name, char **description, int descriptionCount,
           Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
-	~MD2Shape();
+	~C3DSShape();
 
   void draw();
-
-  inline void setDir(int dir) { this->dir = dir; }
   
   bool drawFirst();
   // if true, the next two functions are called
@@ -75,7 +74,7 @@ public:
   void endBlending();
 
 protected:
-  void commonInit(char *file_name, char *texture_name, float div);
+  void commonInit(char *file_name, float div);
 };
 
 #endif

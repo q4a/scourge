@@ -292,12 +292,11 @@ void ShapePalette::initShapes() {
   item_display_list_start = display_list + (count * 3);                                
 
 	item_shapes[Constants::SWORD_INDEX] =
-    new GLShape(wood_tex,
-                2, 2, 1,
-                "SWORD",
-                (debug ? 0xff0000ff : 0xf0f0ffff),
-                display_list + (count++ * 3),
-                Constants::SWORD_INDEX);
+	  new C3DSShape("data/objects/sword.3ds", 0.3f,
+					notex, 2, 4, 1,
+					"SWORD",
+					0xffffffff,
+					display_list + (count++ * 3), Constants::SWORD_INDEX);
 	item_shapes[Constants::BOOKSHELF_INDEX] =
     new GLShape(shelftex,
                 2, 5, 7,
@@ -305,11 +304,11 @@ void ShapePalette::initShapes() {
                 0x0000ffff,
                 display_list + (count++ * 3), Constants::BOOKSHELF_INDEX);
 	item_shapes[Constants::CHEST_INDEX] =
-    new GLShape(chesttex,
-                2, 3, 2,
-                "CHEST", 
-                0xffaa80ff,
-                display_list + (count++ * 3), Constants::CHEST_INDEX);
+	  new GLShape(chesttex,
+				  2, 3, 2,
+				  "CHEST", 
+				  0xffaa80ff,
+				  display_list + (count++ * 3), Constants::CHEST_INDEX);
 	item_shapes[Constants::BOOKSHELF2_INDEX] =
     new GLShape(shelftex2,
                 5, 2, 7,

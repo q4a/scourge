@@ -26,6 +26,7 @@
 #include "gllocator.h"
 #include "debugshape.h"
 #include "md2shape.h"
+#include "3dsshape.h"
 
 /**
   *@author Gabor Torok

@@ -354,21 +354,21 @@ void Map::draw(SDL_Surface *surface) {
   }
   
   if(zoomIn) {
-	if(zoom <= 0.5f) {
-	  zoomOut = false;
-	} else {
+	//	if(zoom <= 0.5f) {
+	//	  zoomOut = false;
+	//	} else {
 	  zoom /= ZOOM_DELTA; 
 	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
 	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
-	}
+	  //	}
   } else if(zoomOut) {
-	if(zoom >= 2.8f) {
-	  zoomOut = false;
-	} else {
+	//	if(zoom >= 2.8f) {
+	//	  zoomOut = false;
+	//	} else {
 	  zoom *= ZOOM_DELTA; 
 	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
 	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
-	}
+	  //	}
   }
 
   scourge->moveParty();
