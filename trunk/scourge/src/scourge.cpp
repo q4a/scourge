@@ -310,25 +310,14 @@ void Scourge::endMission() {
 
 void Scourge::drawView() {
 
-  /*
-  glPushMatrix();
-  glLoadIdentity();
-  glColor4f( 1, 0, 0, 1 );
-  glBegin( GL_QUADS );
-  glVertex2f( getSDLHandler()->getScreen()->w, 0 );
-  glVertex2f( 0, 0 );
-  glVertex2f( 0, getSDLHandler()->getScreen()->h );
-  glVertex2f( getSDLHandler()->getScreen()->w, getSDLHandler()->getScreen()->h );
-  glEnd();
-  glPopMatrix();
-  */
-
   // make a move (player, monsters, etc.)
   playRound();
 
   updatePartyUI();
 
   map->draw();
+
+  // cancel mouse-based map movement (middle button)
   if(mouseRot) {
     map->setXRot(0);
     map->setYRot(0);
@@ -389,6 +378,15 @@ void Scourge::drawView() {
 
   if(isInfoShowing) {
     map->initMapView();  
+    // creatures first
+    for(int i = 0; i < session->getCreatureCount(); i++) {
+      if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+         map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+         map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+        showCreatureInfo(session->getCreature(i), false, false, false);
+      }
+    }
+    // party next so red target circle shows over gray
     for(int i = 0; i < party->getPartySize(); i++) {
       if(!party->getParty(i)->getStateMod(Constants::dead)) {
 
@@ -495,13 +493,14 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
   // red for attack target
   if(player && creature->getTargetCreature()) {
+    double tw = (double)creature->getTargetCreature()->getShape()->getWidth() / GLShape::DIV;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getTargetCreature()->getX() - map->getX()) / GLShape::DIV);
     ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
     zpos2 = 0.0f / GLShape::DIV;  
     glPushMatrix();
-    glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-    gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
+    glTranslatef( xpos2 + tw / 2.0f, ypos2 - tw, zpos2 + 5);
+    gluDisk(creature->getQuadric(), tw / 1.8f - targetWidth, tw / 1.8f, 12, 1);
     glPopMatrix();
   }
 
@@ -520,7 +519,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   // draw state mods
-  if(groupMode || player) {
+  if(groupMode || player || creature->isMonster()) {
     glEnable(GL_TEXTURE_2D);
     int n = 16;
     //float x = 0.0f;
@@ -568,7 +567,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-  if(groupMode || player) gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
+  if(groupMode || player || creature->isMonster()) gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
 
   glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );
@@ -576,8 +575,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   glDepthMask(GL_TRUE);
 
   // draw name
-  glTranslatef( 0, 0, 100);
-  getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
+  //glTranslatef( 0, 0, 100);
+  //getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
 
   glPopMatrix();
 }
@@ -1240,70 +1239,55 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
 void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                                  Uint16 *mapx, Uint16 *mapy) {
-    glPushMatrix();
-
-    // Initialize the scene w/o y rotation.
-    //map->initMapView(false, true);
-    map->initMapView(true);
-
-    double obj_x, obj_y, obj_z;
-    double win_x = (double)x;
-    double win_y = (double)sdlHandler->getScreen()->h - y - 1;
-    double win_z = 0.0;
-
-    double projection[16];
-    double modelview[16];
-    GLint viewport[4];
-
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-
-    int res = gluUnProject(win_x, win_y, win_z,
-                           modelview,
-                           projection,
-                           viewport,
-                           &obj_x, &obj_y, &obj_z);
-
-    glDisable( GL_SCISSOR_TEST );
-   
-    if(res) {
-        /*char buff[255];
-        sprintf(buff, "avant: x %2.2f, y %2.2f, z %2.2f, getX %d, getY %d", obj_x, obj_y, obj_z, map->getX(), map->getY());
-        map->addDescription(buff, 1.0f, 1.0f, 0.5f);  
-        sprintf(buff, "avant op : yrot = %2.2f, sin(yrot) = %2.2f, obj_x * sin(yrot) = %2.2f", map->getYRot(), sin(map->getYRot()), obj_x * sin(map->getYRot()));
-        map->addDescription(buff, 1.0f, 1.0f, 0.5f);
-        float radians;
-        radians = map->getYRot() * 3.1415926 / 180.0f;
-        obj_x += (obj_x * sin(radians));
-        obj_y += (obj_y * sin(radians));
-        sprintf(buff, "avant 2: x %2.2f, y %2.2f, z %2.2f", obj_x, obj_y, obj_z);
-        map->addDescription(buff, 1.0f, 1.0f, 0.5f);*/
-        *mapx = map->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
-        *mapy = map->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
-        //*mapz = (Uint16)0;
-        //*mapz = (Uint16)(obj_z * GLShape::DIV);
-		map->debugX = *mapx;
-		map->debugY = *mapy;
-		map->debugZ = 0;
-		//map->debgTextMouse= true;
-		//map->debugZ = obj_z;
-    } else {
-        //*mapx = *mapy = *mapz = MAP_WIDTH + 1;
-        *mapx = *mapy = MAP_WIDTH + 1;
-    }
-    glPopMatrix();
-}
+  glPushMatrix();
+  
+  // Initialize the scene w/o y rotation.
+  map->initMapView(true);
+  
+  double obj_x, obj_y, obj_z;
+  double win_x = (double)x;
+  double win_y = (double)sdlHandler->getScreen()->h - y - 1;
+  double win_z = 0.0;
+  
+  double projection[16];
+  double modelview[16];
+  GLint viewport[4];
+  
+  glGetDoublev(GL_PROJECTION_MATRIX, projection);
+  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+  glGetIntegerv(GL_VIEWPORT, viewport);
+  
+  int res = gluUnProject(win_x, win_y, win_z,
+                         modelview,
+                         projection,
+                         viewport,
+                         &obj_x, &obj_y, &obj_z);
+  
+  glDisable( GL_SCISSOR_TEST );
+  
+  if(res) {
+    *mapx = map->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
+    *mapy = map->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
+    //*mapz = (Uint16)0;
+    //*mapz = (Uint16)(obj_z * GLShape::DIV);
+    map->debugX = *mapx;
+    map->debugY = *mapy;
+    map->debugZ = 0;
+  } else {
+    //*mapx = *mapy = *mapz = MAP_WIDTH + 1;
+    *mapx = *mapy = MAP_WIDTH + 1;
+  }
+  glPopMatrix();
+}   
 
 void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
                                   Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
-
   // only do this if the mouse has moved some (optimization)
   if(abs(lastX - x) < POSITION_SAMPLE_DELTA && abs(lastY - y) < POSITION_SAMPLE_DELTA) {
-	*mapx = lastMapX;
-	*mapy = lastMapY;
-	*mapz = lastMapZ;
-	return;
+    *mapx = lastMapX;
+    *mapy = lastMapY;
+    *mapz = lastMapZ;
+    return;
   }
 
   GLuint buffer[512];
@@ -1329,30 +1313,30 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
   glFlush();    
   hits = glRenderMode(GL_RENDER);
   //cerr << "hits=" << hits << endl;
-  if (hits > 0)	{					  // If There Were More Than 0 Hits
-	int choose = buffer[4];					// Make Our Selection The First Object
-	int depth = buffer[1];					// Store How Far Away It Is
+  if(hits > 0) {           // If There Were More Than 0 Hits
+    int choose = buffer[4];         // Make Our Selection The First Object
+    int depth = buffer[1];          // Store How Far Away It Is
 
-	for (int loop = 0; loop < hits; loop++)	{		// Loop Through All The Detected Hits
+    for(int loop = 0; loop < hits; loop++) {   // Loop Through All The Detected Hits
 
-	  //            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
-	  //                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
-	  //                    buffer[loop*5+3],  buffer[loop*5+4]);
-	  if (buffer[loop*5+4] > 0) {
-		decodeName(buffer[loop*5+4], mapx, mapy, mapz);
-	  }
+      //            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
+      //                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
+      //                    buffer[loop*5+3],  buffer[loop*5+4]);
+      if(buffer[loop*5+4] > 0) {
+        decodeName(buffer[loop*5+4], mapx, mapy, mapz);
+      }
 
-	  // If This Object Is Closer To Us Than The One We Have Selected
-	  if (buffer[loop*5+1] < GLuint(depth))	{
-		choose = buffer[loop*5+4];			  // Select The Closer Object
-		depth = buffer[loop*5+1];			// Store How Far Away It Is
-	  }
-	}
+      // If This Object Is Closer To Us Than The One We Have Selected
+      if(buffer[loop*5+1] < GLuint(depth)) {
+        choose = buffer[loop*5+4];        // Select The Closer Object
+        depth = buffer[loop*5+1];     // Store How Far Away It Is
+      }
+    }
 
-	//cerr << "choose=" << choose << endl;
-	decodeName(choose, mapx, mapy, mapz);
+    //cerr << "choose=" << choose << endl;
+    decodeName(choose, mapx, mapy, mapz);
   } else {
-	*mapx = *mapy = MAP_WIDTH + 1;
+    *mapx = *mapy = MAP_WIDTH + 1;
   }
 
   // Restore the projection matrix
@@ -1362,6 +1346,9 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
   // Go back to modelview for normal rendering
   glMatrixMode(GL_MODELVIEW);
 
+  map->debugX = *mapx;
+  map->debugY = *mapy;
+  map->debugZ = *mapz;
   lastMapX = *mapx;
   lastMapY = *mapy;
   lastMapZ = *mapz;

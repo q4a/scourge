@@ -295,6 +295,7 @@ class Map {
   */
   int getCreaturesInArea(int x, int y, int radius, Creature *targets[]);
 
+  bool isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz);
   void doDrawShape(DrawLater *later, int effect=0);
   void doDrawShape(float xpos2, float ypos2, float zpos2, 
            Shape *shape, GLuint name, int effect=0,
