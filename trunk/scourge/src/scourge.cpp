@@ -2303,7 +2303,7 @@ void Scourge::moveMonster(Creature *monster) {
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
     // attack the closest player
-    if((int)(20.0f * rand()/RAND_MAX) == 0) {
+    if( BATTLES_ENABLED && (int)(20.0f * rand()/RAND_MAX) == 0) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement

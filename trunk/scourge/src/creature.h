@@ -197,7 +197,7 @@ class Creature {
   bool moveToLocator(Map *map);
   void stopMoving();
   
-  inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
+  inline void moveTo(GLfloat x, GLfloat y, GLfloat z) { this->x = x; this->y = y; this->z = z; }
   inline GLfloat getX() { return x; }
   inline GLfloat getY() { return y; }
   inline GLfloat getZ() { return z; }

@@ -297,21 +297,13 @@ void Creature::switchDirection(bool force) {
 bool Creature::move(Uint16 dir, Map *map) {
   if(character) return false;
 
-  Uint32 t = SDL_GetTicks();
+  //Uint32 t = SDL_GetTicks();
   //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
-  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
+  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
   //cerr << "*** move(): creature=" << getName() << 
   //  " speed=" << (t - lastMove) << 
   //  " vs. " << (getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1)) << endl;
-  lastMove = t;
-
-  /*
-  // creature speed
-  moveCount++;
-  if(moveCount >= getSpeed()) {
-    moveCount = 0;
-  } else return true;
-  */
+  //lastMove = t;
 
   switchDirection(false);
 
@@ -323,27 +315,30 @@ bool Creature::move(Uint16 dir, Map *map) {
     return false;
   }
 
-  int nx = x;
-  int ny = y;
-  int nz = z;
+  GLfloat nx = x;
+  GLfloat ny = y;
+  GLfloat nz = z;
+  GLfloat step = 1.0f / ( session->getGameAdapter()->getFps() / ( 10.0f ) );
+  step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ) );
   switch(dir) {
   case Constants::MOVE_UP:    
-    ny = y - 1;
+    ny = y - step;
     break;
   case Constants::MOVE_DOWN:    
-    ny = y + 1;
+    ny = y + step;
     break;
   case Constants::MOVE_LEFT:
-    nx = x - 1;
+    nx = x - step;
     break;
   case Constants::MOVE_RIGHT:    
-    nx = x + 1;
+    nx = x + step;
     break;
   }
   setFacingDirection(dir);
   
 
-  if(!map->moveCreature(x, y, z, nx, ny, nz, this)) {
+  if(!map->moveCreature(round(x), round(y), round(z), 
+                        round(nx), round(ny), round(nz), this)) {
     ((MD2Shape*)shape)->setDir(dir);
     moveTo(nx, ny, nz);
     setDir(dir);        
@@ -352,38 +347,6 @@ bool Creature::move(Uint16 dir, Map *map) {
     switchDirection(true);
     return false;
   }
-
-  
-  /*
-  map->removeCreature(x, y, z);
-  Location *loc = map->getBlockingLocation(getShape(), nx, ny, nz);
-  Item *item = NULL;
-  if(loc) item = loc->item;
-  if(!loc || (item && !item->isBlocking() && addInventory(item))) {
-
-    // pick up item
-    if(item) {
-      char message[100];
-      sprintf(message, "%s picks up %s.", 
-              getName(), 
-              item->getItemName());
-      session->getMap()->addDescription(message);
-    }
-
-    map->setCreature(nx, ny, nz, this);
-    ((MD2Shape*)shape)->setDir(dir);
-
-    moveTo(nx, ny, nz);
-    setDir(dir);        
-
-    return true;
-  } else {
-    // move back
-    map->setCreature(x, y, z, this);    
-    switchDirection(true);
-    return false;
-  }
-  */
 }
 
 bool Creature::follow(Map *map) {
@@ -498,8 +461,10 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
   // creature speed
   Uint32 t = SDL_GetTicks();
   //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
-  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
-  lastMove = t;
+  
+  
+  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
+  //lastMove = t;
 
   // If the target moved, get the best path to the location
   if(!(tx == px && ty == py)) {
@@ -518,7 +483,8 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
     GLfloat newX = getX();
     GLfloat newY = getY();
-    GLfloat step = 0.4f;
+    GLfloat step = 1.0f / ( session->getGameAdapter()->getFps() / ( 10.0f ) ); 
+    step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ));
     float lx = (float)(location.x);
     float ly = (float)(location.y);
     float mx = lx - getX();
@@ -547,9 +513,9 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
 
     /**
-     * FIXME: sending newX,newY as new coordinates could be a wall.
+     * Sending newX,newY as new coordinates could be a wall.
      * location.x,location.y are the only known non-wall coordinates.
-     * This is probably what's causing the creatures to "hang" not
+     * This is what's causing the creatures to "hang" not
      * want to move around obsticles.
      * To fix this, we need to test for walls and undo one of the
      * directional steps (newX change or newY change) and try again.
@@ -582,8 +548,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     if(!position) {
       angle = Util::getAngle( newX, newY, 1, 1,
                               getX(), getY(), 1, 1 );
-      this->x = newX;
-      this->y = newY;
+      moveTo( newX, newY, getZ() );
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
       if( round(newX) == round(lx) && round(newY) == round(ly) ) {
         bestPathPos++;
@@ -605,34 +570,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
         stopMoving();
       }
     }
-    
-    /*
-    Location *position = map->moveCreature(getX(), getY(), getZ(),
-                                           location.x, location.y, getZ(),
-                                           this);
-    if(!position) {
-      bestPathPos++;
-      moveTo(location.x, location.y, getZ());
-      ((MD2Shape*)shape)->setDir(dir);
-      return true;
-    } else {    
-      dir = oldDir;
-      // if we're not at the destination, but it's possible to stand there
-      // try again
-      if(!(selX == getX() && selY == getY()) && 
-         map->shapeFits(getShape(), selX, selY, -1) &&
-         moveRetrycount < MAX_MOVE_RETRY) {
-
-        // don't keep trying forever
-        moveRetrycount++;
-        tx = ty = -1;
-      } else {
-        // if we can't get to the destination, stop trying
-        // do this so the animation switches to "stand"
-        stopMoving();
-      }
-    }
-    */
   }
   return false;
 }
