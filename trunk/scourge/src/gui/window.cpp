@@ -408,7 +408,7 @@ void Window::drawWidget(Widget *parent) {
 Button *Window::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle){
     if(widgetCount < MAX_WIDGET){
         Button * theButton;
-        theButton = new Button(x1, y1, x2, y2, strdup(label));
+        theButton = new Button(x1, y1, x2, y2, label);
     	theButton->setToggle(toggle);	   	
     	addWidget((Widget *)theButton);
     	return theButton;

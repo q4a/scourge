@@ -48,6 +48,8 @@ class Party : public WidgetView {
   Calendar * calendar;
   bool startRound;
   bool lastEffectOn;
+  int oldX;
+  char version[100], min_version[20];
 
   Window *mainWin;
   Button *inventoryButton;
@@ -67,7 +69,9 @@ class Party : public WidgetView {
   Button *player3Button;
   Button *player4Button;
   Button *groupButton;
-
+  Button *minButton, *maxButton;
+  CardContainer *cards;
+  Canvas *minPartyInfo;
   Canvas *playerInfo[PARTY_SIZE];
 
  public:
