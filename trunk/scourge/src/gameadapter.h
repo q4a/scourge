@@ -29,6 +29,7 @@ class Projectile;
 class Creature;
 class Session;
 class Mission;
+class Battle;
 
 class GameAdapter {
 protected:
@@ -59,6 +60,7 @@ public:
   virtual inline void missionCompleted() {}
   virtual inline void cancelBattle(Creature *creature) {}
   virtual inline void moveMonster(Creature *monster) {}
+  virtual inline void removeBattle(Battle *battle) {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

@@ -125,7 +125,7 @@ void Creature::commonInit() {
   }  
   this->money = this->level * (int)(10.0f * rand()/RAND_MAX);
   calculateExpOfNextLevel();
-  //this->battle = new Battle(this);
+  this->battle = new Battle(session, this);
 }
 
 CreatureInfo *Creature::save() {
@@ -202,6 +202,8 @@ void Creature::calculateExpOfNextLevel() {
 }
 
 Creature::~Creature(){
+  session->getGameAdapter()->removeBattle(battle);
+  delete battle;
   delete effect;
   // do this before deleting the shape
   session->getShapePalette()->decrementSkinRefCount(skin_name);
