@@ -52,6 +52,8 @@ class RpgItem {
 	BOOKSHELF,
 	CHEST2,
 	BOOKSHELF2,
+
+	CORPSE,
 	
 	// must be the last ones
 	ITEM_COUNT

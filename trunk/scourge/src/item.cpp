@@ -19,6 +19,9 @@
 
 Item::Item(RpgItem *rpgItem) {
   this->rpgItem = rpgItem;
+  this->shapeIndex = this->rpgItem->getShapeIndex();
+  this->color = NULL;
+  this->shape = ShapePalette::getInstance()->getItemShape(shapeIndex);
 }
 
 Item::~Item(){

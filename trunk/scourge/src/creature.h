@@ -42,6 +42,7 @@ using namespace std;
 class Map;
 class Scourge;
 class Effect;
+class Item;
 
 /**
   *@author Gabor Torok
@@ -60,6 +61,7 @@ class Creature {
   Sint16 x, y, z;
   Creature *next;
   GLShape *shape;
+  int shapeIndex;
   Uint16 dir;
   Scourge *scourge;
   GLUquadric *quadric;
@@ -155,6 +157,7 @@ class Creature {
   inline Sint16 getX() { return x; }
   inline Sint16 getY() { return y; }
   inline Sint16 getZ() { return z; }
+  inline int getShapeIndex() { return shapeIndex; }
   inline GLShape *getShape() { return shape; }
   inline void setFormation(int formation) { this->formation = formation; }
   inline int getFormation() { return formation; }
@@ -240,7 +243,9 @@ class Creature {
   // rand(weapon + power + (skill - 50 % weapon))
   int getDamage(Item *weapon);
 
-  void takeDamage(int damage);
+  // take damage
+  // return true if the creature dies
+  bool takeDamage(int damage);
 
   inline int getDamageEffect() { return damageEffectCounter; }
 

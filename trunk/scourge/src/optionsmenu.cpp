@@ -31,6 +31,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     controlLines = NULL;
     nbControlLines = 0;
     waitingForNewKey = false;
+	ignoreKeyUp = false;
      
     mainWin = new Window( scourge->getSDLHandler(),
 						100, 50, 525, 505, 
@@ -182,6 +183,17 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEBUTTONUP:
     break;
+  case SDL_KEYUP:
+	switch(event->key.keysym.sym) {
+	case SDLK_ESCAPE:
+	  if(!ignoreKeyUp){
+		hide();
+		return true;
+	  } else ignoreKeyUp = false;
+	default:
+	  break;
+	}
+	break;
   case SDL_KEYDOWN:    
     if(waitingForNewKey){
         if(event->key.keysym.sym != SDLK_ESCAPE){
@@ -199,14 +211,12 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
             strcpy(controlLines[ind], s1.c_str());
             controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
             controlBindingsList->setSelectedLine(ind);                                                          
-        }          
+        } else ignoreKeyUp = true;
         waitingLabel->setText(strdup(" "));
         waitingForNewKey = false;
     }
     else{
         switch(event->key.keysym.sym) {
-    	case SDLK_ESCAPE:
-    	  hide();
         case SDLK_RETURN:
             if(selectedMode == CONTROLS){
                 waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        

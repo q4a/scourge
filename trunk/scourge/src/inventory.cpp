@@ -46,20 +46,16 @@ Inventory::Inventory(Scourge *scourge) {
 						  100, 50, 525, 505, 
 						  strdup("Party Information"), 
 						  scourge->getShapePalette()->getGuiTexture() );
-	player1Button = new Button( 0, 0, 105, 120, scourge->getParty(0)->getName() );
-	player1Button->setLabelPosition(Button::BOTTOM);	
+	player1Button = new Button( 0, 30, 105, 60, scourge->getParty(0)->getName() );
 	player1Button->setToggle(true);
 	mainWin->addWidget((Widget*)player1Button);
-	player2Button = new Button( 0, 120, 105, 240, scourge->getParty(1)->getName() );
-	player2Button->setLabelPosition(Button::BOTTOM);
+	player2Button = new Button( 0, 60, 105, 90, scourge->getParty(1)->getName() );
 	player2Button->setToggle(true);
 	mainWin->addWidget((Widget*)player2Button);
-	player3Button = new Button( 0, 240, 105, 360, scourge->getParty(2)->getName() );
-	player3Button->setLabelPosition(Button::BOTTOM);
+	player3Button = new Button( 0, 90, 105, 120, scourge->getParty(2)->getName() );
 	player3Button->setToggle(true);
 	mainWin->addWidget((Widget*)player3Button);
-	player4Button = new Button( 0,360, 105, 480, scourge->getParty(3)->getName() );
-	player4Button->setLabelPosition(Button::BOTTOM);
+	player4Button = new Button( 0, 120, 105, 150, scourge->getParty(3)->getName() );
 	player4Button->setToggle(true);
 	mainWin->addWidget((Widget*)player4Button);
 	inventoryButton = new Button( 105,0, 210, 30, strdup("Inventory") );
@@ -215,7 +211,7 @@ bool Inventory::handleEvent(SDL_Event *event) {
     switch(event->type) {
     case SDL_MOUSEBUTTONUP:
         break;     
-    case SDL_KEYDOWN:
+    case SDL_KEYUP:
         switch(event->key.keysym.sym) {
         case SDLK_ESCAPE: 
 		  hide();
@@ -294,6 +290,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   }
 }
 
+// FIXME: this doesn't work: I can't get it to draw above the window
 void Inventory::drawInventory() {
   // draw the characters on top of the UI
   glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
@@ -302,13 +299,14 @@ void Inventory::drawInventory() {
   for(int i = 0; i < 4; i++) {
 
 	// why do I need these 2 lines? Otherwise the models go behind the window
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_DEPTH_TEST);
+	//	glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 
 	glPushMatrix();
 	glLoadIdentity();
 
-	glTranslatef( mainWin->getX(), mainWin->getY() + Window::TOP_HEIGHT, mainWin->getZ() + 5 );
+	cerr << "z=" << mainWin->getZ() << endl;
+	glTranslatef( mainWin->getX(), mainWin->getY() + Window::TOP_HEIGHT, mainWin->getZ() + 200 );
 	glTranslatef( 20, 10 + i * h + 90, 300);
 
 	glRotatef(90, 1, 0, 0);

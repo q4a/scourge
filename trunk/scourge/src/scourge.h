@@ -216,6 +216,8 @@ public:
  protected:
   void fightBattle();
 
+  void creatureDeath(Creature *creature);
+
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
   void createUI();
   // change the player's selX,selY values as specified by keyboard movement
