@@ -485,6 +485,9 @@ void Item::enchant( int newMagicLevel ) {
   int maxMagicLevel = level / 15;
   if( magicLevel > maxMagicLevel ) magicLevel = maxMagicLevel;
 
+  // adjust the price
+  price *= ( magicLevel + 2 );
+
   int n;
   Spell *spell;
   switch(magicLevel) {
