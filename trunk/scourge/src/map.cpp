@@ -610,17 +610,15 @@ void Map::draw() {
 
 	// draw the projectiles
 	DrawLater dl;
-	//	cerr << "Projectiles:" << endl;
+	vector<Projectile*> removedProjectiles;
 	map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
 	for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
 	  Creature *creature = i->first;
-	  //	  cerr << "\tcreature: " << creature->getName() << endl;
 	  vector<Projectile*> *p = i->second;
 	  for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
 		Projectile *proj = *e;
-		//		cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
 
-		// FIXME: optimize this
+		// draw it
 		dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
 		//		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
 		dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
@@ -631,8 +629,32 @@ void Map::draw() {
 		dl.projectile = proj;
 		dl.name = 0;
 		doDrawShape(&dl);
+		
+		// collision detection
+		bool blocked = false;
+		Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
+		if(loc) {
+		  if(loc->creature && loc->creature->isMonster()) {
+			// attack monster
+			Battle::projectileHitTurn(scourge, proj, loc->creature);
+			blocked = true;
+		  } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
+					(loc->creature && loc->creature != proj->getCreature()) || 
+					(!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 4)) {
+			// hit something
+			blocked = true;
+		  }		  
+		  if(blocked) {
+			removedProjectiles.push_back(proj);
+		  }
+		}
 	  }
 	}
+	// remove projectiles
+	for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
+	  Projectile::removeProjectile(*e);
+	}
+
 
 	//drawDraggedItem();
   }

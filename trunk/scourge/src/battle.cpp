@@ -79,6 +79,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 	  int action = NO_ACTION;
 
 	  battle[i]->empty = false;
+	  battle[i]->projectileHit = false;
 
 	  if(!battle[i]->creature->getTargetCreature()) {
 		// remove creatures with no target creature from this round
@@ -164,6 +165,19 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
   }
 }
 
+void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target) {
+  // configure a turn
+  proj->getCreature()->setTargetCreature(target);
+  Battle *battle = new Battle(scourge, proj->getCreature());
+  battle->projectileHit = true;
+  battle->initItem(proj->getItem());
+
+  // play it
+  battle->fightTurn();
+  
+  delete battle;
+}
+
 void Battle::fightTurn() {
 
   // waiting to attack?
@@ -206,7 +220,7 @@ void Battle::fightTurn() {
   }
   
   // if this is a ranged weapon launch a projectile
-  if(item && item->getRpgItem()->isRangedWeapon()) {
+  if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
 	sprintf(message, "...%s shoots a projectile", creature->getName());
 	scourge->getMap()->addDescription(message);	
 	if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
@@ -284,8 +298,11 @@ void Battle::hitWithItem() {
 
 void Battle::selectBestItem() {
   if(item) return;
+  initItem(creature->getBestWeapon(dist));
+}
 
-  item = creature->getBestWeapon(dist);  
+void Battle::initItem(Item *item) {
+  this->item = item;
   
   // (!item) is a bare-hands attack		
   itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED) * 
