@@ -142,6 +142,10 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Battle battle[MAX_BATTLE_COUNT];  
   bool partyDead;
 
+  // multi-story levels
+  int currentStory;
+  bool changingStory;
+
   static const int MAX_CONTAINER_GUI = 100;
   int containerGuiCount;
   ContainerGui *containerGui[MAX_CONTAINER_GUI];
@@ -171,14 +175,15 @@ protected:
   bool useDoor(Location *pos);
   bool useBoard(Location *pos);
   bool useTeleporter(Location *pos);
+  bool useGate(Location *pos);
 
 public:
-  #define TOP_GUI_WIDTH 400
-  #define TOP_GUI_HEIGHT 100
-  #define GUI_PLAYER_INFO_W 250
-  #define GUI_PLAYER_INFO_H 350
-	#define BOARD_GUI_WIDTH 400
-	#define BOARD_GUI_HEIGHT 400
+#define TOP_GUI_WIDTH 400
+#define TOP_GUI_HEIGHT 100
+#define GUI_PLAYER_INFO_W 250
+#define GUI_PLAYER_INFO_H 350
+#define BOARD_GUI_WIDTH 400
+#define BOARD_GUI_HEIGHT 400
   
   static int blendA, blendB;
   static int blend[];

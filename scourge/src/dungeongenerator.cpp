@@ -119,9 +119,11 @@ const MapLocation DungeonGenerator::location[] = {
   }
 };
 
-DungeonGenerator::DungeonGenerator(Scourge *scourge, int level){
+DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown, bool stairsUp){
   this->scourge = scourge;
   this->level = level;
+  this->stairsUp = stairsUp;
+  this->stairsDown = stairsDown;
 
   initByLevel();  
   
@@ -1025,20 +1027,43 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		}
 	} 
 
-	/*
-	// add some stairs just for demo
-	// this will be used when multi-level missions are ready
-	for(int i = 0; i < 10; i++) {
-	  bool fits = 
-		getLocationInRoom(map, i,
-						  scourge->getShapePalette()->getShape(Constants::STAIRS_UP_INDEX), 
-						  &x, &y);
-	  if(fits) {
-		addItem(map, NULL, NULL, scourge->getShapePalette()->getShape(Constants::STAIRS_UP_INDEX), x, y);
-		break;
+
+	// add stairs for multi-level missions
+	if(!preGenerated) {
+	  if(stairsUp) {
+		bool done = false;
+		for(int i = 0; i < 10; i++) {
+		  Shape *shape = scourge->getShapePalette()->getShape(Constants::STAIRS_UP_INDEX);
+		  bool fits = getLocationInRoom(map, i, shape, &x, &y);
+		  if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+			addItem(map, NULL, NULL, shape, x, y);
+			done = true;
+			break;
+		  }
+		}
+		if(!done) {
+		  cerr << "Error: couldn't add up stairs." << endl;
+		  exit(1);
+		}
+	  }
+	  if(stairsDown) {
+		bool done = false;
+		for(int i = 0; i < 10; i++) {
+		  Shape *shape = scourge->getShapePalette()->getShape(Constants::STAIRS_DOWN_INDEX);
+		  bool fits = getLocationInRoom(map, i, shape, &x, &y);
+		  if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+			addItem(map, NULL, NULL, shape, x, y);
+			done = true;
+			break;
+		  }
+		}
+		if(!done) {
+		  cerr << "Error: couldn't add down stairs." << endl;
+		  exit(1);
+		}
 	  }
 	}
-	*/
+
 
 	// add pre-generated shapes first
 	if(preGenerated) {

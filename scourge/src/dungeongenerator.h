@@ -73,6 +73,7 @@ private:
   int roomMaxHeight;
   int objectCount;
   int monsters;
+  bool stairsDown, stairsUp;
 
   Sint16 *ff;
   int ffCount;
@@ -139,7 +140,7 @@ public:
 	LOCATION_COUNT
   };
   
-  DungeonGenerator(Scourge *scourge, int level);
+  DungeonGenerator(Scourge *scourge, int level, bool stairsDown, bool stairsUp);
   ~DungeonGenerator();
 
   void toMap(Map *map, ShapePalette *shapePal, int location=0);
