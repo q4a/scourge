@@ -17,7 +17,9 @@
 
 #include "scourge.h"
 
-#define GUI_TOP 475
+#define GUI_WIDTH 300
+#define GUI_HEIGHT 125
+
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -96,23 +98,27 @@ Scourge::~Scourge(){
 
 void Scourge::startMission() {
   // add gui
-  topWin = gui->addWindow(500, GUI_TOP, 300, sdlHandler->getScreen()->h - GUI_TOP, 
+  topWin = gui->addWindow(sdlHandler->getScreen()->w - GUI_WIDTH, 
+						  sdlHandler->getScreen()->h - GUI_HEIGHT, 
+						  GUI_WIDTH, GUI_HEIGHT, 
 						  &Gui::drawDescriptions);
-  gui->addActiveRegion(680, GUI_TOP,  800, GUI_TOP + 25, Constants::SHOW_INVENTORY, this);
-  gui->addActiveRegion(680, GUI_TOP + 25, 800, GUI_TOP + 50, Constants::SHOW_OPTIONS, this);
-  gui->addActiveRegion(680, GUI_TOP + 50, 800, GUI_TOP + 75, Constants::ESCAPE, this);
-  gui->addActiveRegion(680, GUI_TOP + 75, 700, GUI_TOP + 100, Constants::DIAMOND_FORMATION, this);
-  gui->addActiveRegion(700, GUI_TOP + 75, 720, GUI_TOP + 100, Constants::STAGGERED_FORMATION, this);
-  gui->addActiveRegion(720, GUI_TOP + 75, 740, GUI_TOP + 100, Constants::SQUARE_FORMATION, this);
-  gui->addActiveRegion(740, GUI_TOP + 75, 760, GUI_TOP + 100, Constants::ROW_FORMATION, this);
-  gui->addActiveRegion(760, GUI_TOP + 75, 780, GUI_TOP + 100, Constants::SCOUT_FORMATION, this);
-  gui->addActiveRegion(780, GUI_TOP + 75, 800, GUI_TOP + 100, Constants::CROSS_FORMATION, this);
+  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
+  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
+  gui->addActiveRegion(gx + 180, gy,  gx + 300, gy + 25, Constants::SHOW_INVENTORY, this);
+  gui->addActiveRegion(gx + 180, gy + 25, gx + 300, gy + 50, Constants::SHOW_OPTIONS, this);
+  gui->addActiveRegion(gx + 180, gy + 50, gx + 300, gy + 75, Constants::ESCAPE, this);
+  gui->addActiveRegion(gx + 180, gy + 75, gx + 200, gy + 100, Constants::DIAMOND_FORMATION, this);
+  gui->addActiveRegion(gx + 200, gy + 75, gx + 220, gy + 100, Constants::STAGGERED_FORMATION, this);
+  gui->addActiveRegion(gx + 220, gy + 75, gx + 240, gy + 100, Constants::SQUARE_FORMATION, this);
+  gui->addActiveRegion(gx + 240, gy + 75, gx + 260, gy + 100, Constants::ROW_FORMATION, this);
+  gui->addActiveRegion(gx + 260, gy + 75, gx + 280, gy + 100, Constants::SCOUT_FORMATION, this);
+  gui->addActiveRegion(gx + 280, gy + 75, gx + 300, gy + 100, Constants::CROSS_FORMATION, this);
 
-  gui->addActiveRegion(680, GUI_TOP + 100, 704, GUI_TOP + 125, Constants::PLAYER_1, this);
-  gui->addActiveRegion(704, GUI_TOP + 100, 728, GUI_TOP + 125, Constants::PLAYER_2, this);
-  gui->addActiveRegion(728, GUI_TOP + 100, 752, GUI_TOP + 125, Constants::PLAYER_3, this);
-  gui->addActiveRegion(752, GUI_TOP + 100, 776, GUI_TOP + 125, Constants::PLAYER_4, this);
-  gui->addActiveRegion(776, GUI_TOP + 100, 800, GUI_TOP + 125, Constants::PLAYER_ONLY, this);
+  gui->addActiveRegion(gx + 180, gy + 100, gx + 204, gy + 125, Constants::PLAYER_1, this);
+  gui->addActiveRegion(gx + 204, gy + 100, gx + 228, gy + 125, Constants::PLAYER_2, this);
+  gui->addActiveRegion(gx + 228, gy + 100, gx + 252, gy + 125, Constants::PLAYER_3, this);
+  gui->addActiveRegion(gx + 252, gy + 100, gx + 276, gy + 125, Constants::PLAYER_4, this);
+  gui->addActiveRegion(gx + 276, gy + 100, gx + 300, gy + 125, Constants::PLAYER_ONLY, this);
 
   // create the map
   map = new Map(this);
@@ -733,76 +739,57 @@ void Scourge::drawTopWindow() {
   glPushMatrix();
   glLoadIdentity();
 
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    sdlHandler->texPrint(705, GUI_TOP + 15, "Party Info");
-    sdlHandler->texPrint(705, GUI_TOP + 40, "Options");
-    sdlHandler->texPrint(705, GUI_TOP + 65, "Quit");
+  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
+  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
 
-	glEnable( GL_TEXTURE_2D );
-	glColor3f( 0.75f, 0.5f, 0.05f );
-	for(int i = 0; i < Creature::FORMATION_COUNT; i++) {
-	  glBindTexture( GL_TEXTURE_2D, 
-					 getShapePalette()->getTexture(getShapePalette()->formationTexIndex + i) );
-	  glBegin(GL_QUADS);
-	  glTexCoord2f(1, 0);
-	  glVertex3d(700 + (i * 20), GUI_TOP + 75, 200);
-	  glTexCoord2f(0, 0);
-	  glVertex3d(680 + (i * 20), GUI_TOP + 75, 200);
-	  glTexCoord2f(0, 1);
-	  glVertex3d(680 + (i * 20), GUI_TOP + 100, 200);
-	  glTexCoord2f(1, 1);
-	  glVertex3d(700 + (i * 20), GUI_TOP + 100, 200);
-	  glEnd();
-	}
-	glDisable( GL_TEXTURE_2D );
-	
-	glColor3f(1.0f, 0.6f, 0.3f);
-    glBegin(GL_LINES);
-        glVertex2d(680, GUI_TOP);
-        glVertex2d(680, 600);
-		glVertex2d(680, GUI_TOP + 25);
-        glVertex2d(800, GUI_TOP + 25);
-        glVertex2d(680, GUI_TOP + 50);
-        glVertex2d(800, GUI_TOP + 50);
-        glVertex2d(680, GUI_TOP + 75);
-        glVertex2d(800, GUI_TOP + 75);
-		glVertex2d(680, GUI_TOP + 100);
-        glVertex2d(800, GUI_TOP + 100);
-        glVertex2d(700, GUI_TOP + 100);
-        
-		glVertex2d(700, GUI_TOP + 75);
-        glVertex2d(720, GUI_TOP + 100);
-        glVertex2d(720, GUI_TOP + 75);
-        glVertex2d(740, GUI_TOP + 100);
-        glVertex2d(740, GUI_TOP + 75);
-        glVertex2d(760, GUI_TOP + 100);
-        glVertex2d(760, GUI_TOP + 75);
-        glVertex2d(780, GUI_TOP + 100);
-        glVertex2d(780, GUI_TOP + 75);
+  glEnable( GL_TEXTURE_2D );
+  glColor3f( 0.75f, 0.5f, 0.05f );
+  for(int i = 0; i < Creature::FORMATION_COUNT; i++) {
+	glBindTexture( GL_TEXTURE_2D, 
+				   getShapePalette()->getTexture(getShapePalette()->formationTexIndex + i) );
+	glBegin(GL_QUADS);
+	glTexCoord2f(1, 0);
+	glVertex3d(gx + 200 + (i * 20), gy + 75, 200);
+	glTexCoord2f(0, 0);
+	glVertex3d(gx + 180 + (i * 20), gy + 75, 200);
+	glTexCoord2f(0, 1);
+	glVertex3d(gx + 180 + (i * 20), gy + 100, 200);
+	glTexCoord2f(1, 1);
+	glVertex3d(gx + 200 + (i * 20), gy + 100, 200);
+	glEnd();
+  }
+  glDisable( GL_TEXTURE_2D );
 
-        glVertex2d(704, GUI_TOP + 100);
-        glVertex2d(704, GUI_TOP + 125);
-        glVertex2d(728, GUI_TOP + 100);
-        glVertex2d(728, GUI_TOP + 125);
-        glVertex2d(752, GUI_TOP + 100);
-        glVertex2d(752, GUI_TOP + 125);
-        glVertex2d(776, GUI_TOP + 100);
-        glVertex2d(776, GUI_TOP + 125);
+  glColor3f(1.0f, 0.6f, 0.3f);
+  gui->outlineActiveRegion(Constants::SHOW_INVENTORY, "Party Info");
+  gui->outlineActiveRegion(Constants::SHOW_OPTIONS, "Options");
+  gui->outlineActiveRegion(Constants::ESCAPE, "Quit");
+  gui->outlineActiveRegion(Constants::DIAMOND_FORMATION);
+  gui->outlineActiveRegion(Constants::STAGGERED_FORMATION);
+  gui->outlineActiveRegion(Constants::SQUARE_FORMATION);
+  gui->outlineActiveRegion(Constants::ROW_FORMATION);
+  gui->outlineActiveRegion(Constants::SCOUT_FORMATION);
+  gui->outlineActiveRegion(Constants::CROSS_FORMATION);
 
-    glEnd();
+  gui->outlineActiveRegion(Constants::PLAYER_1);
+  gui->outlineActiveRegion(Constants::PLAYER_2);
+  gui->outlineActiveRegion(Constants::PLAYER_3);
+  gui->outlineActiveRegion(Constants::PLAYER_4);
+  gui->outlineActiveRegion(Constants::PLAYER_ONLY);
 
-	/*
-    // debug info
-    sdlHandler->texPrint(450, 10, "rot: %f, %f, %f", map->getXRot(), map->getYRot(), map->getZRot());
-    sdlHandler->texPrint(450, 30, "FPS: %g", sdlHandler->getFPS());
-    sdlHandler->texPrint(450, 50, "map: (%d, %d)-(%d, %d)", map->getX(), map->getY(), 
-                         (map->getX() + MAP_VIEW_WIDTH), (map->getY() + MAP_VIEW_DEPTH));
-    sdlHandler->texPrint(450, 70, "sel: (%u, %u, %u)", 
-                         map->getSelX(), map->getSelY(), map->getSelZ());
-    sdlHandler->texPrint(450, 90, "zoom: %f", map->getZoom());
-	*/
-    map->drawDescriptions();
 
-	glPopMatrix();
+  /*
+  // debug info
+  sdlHandler->texPrint(450, 10, "rot: %f, %f, %f", map->getXRot(), map->getYRot(), map->getZRot());
+  sdlHandler->texPrint(450, 30, "FPS: %g", sdlHandler->getFPS());
+  sdlHandler->texPrint(450, 50, "map: (%d, %d)-(%d, %d)", map->getX(), map->getY(), 
+  (map->getX() + MAP_VIEW_WIDTH), (map->getY() + MAP_VIEW_DEPTH));
+  sdlHandler->texPrint(450, 70, "sel: (%u, %u, %u)", 
+  map->getSelX(), map->getSelY(), map->getSelZ());
+  sdlHandler->texPrint(450, 90, "zoom: %f", map->getZoom());
+  */
+  map->drawDescriptions();
+  
+  glPopMatrix();
 }
 

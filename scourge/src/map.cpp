@@ -630,6 +630,9 @@ void Map::initMapView(bool ignoreRot) {
   glLoadIdentity();
 
   glScalef(zoom, zoom, zoom);
+  // adjust for screen size
+  float adjust = (float)scourge->getSDLHandler()->getScreen()->w / 800.0f;
+  glScalef(adjust, adjust, adjust);
   
   // translate the camera and rotate
   // the offsets ensure that the center of rotation is under the player

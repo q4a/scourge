@@ -26,6 +26,7 @@
 #include "sdlscreenview.h"
 #include "shapepalette.h"
 #include "text.h"
+#include "gui/window.h"
 
 class TexturedText;
 

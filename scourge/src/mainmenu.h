@@ -25,6 +25,9 @@
 #include "scourge.h"
 #include "text.h"
 
+#include "gui/window.h"
+#include "gui/label.h"
+
 /**
   *@author Gabor Torok
   */
@@ -44,9 +47,11 @@ private:
   Cloud cloud[100];
   int cloudCount;
 
-    static int blendA, blendB;
-    static int blend[];
-    static void setBlendFunc();
+  static int blendA, blendB;
+  static int blend[];
+  static void setBlendFunc();
+
+  Window *mainWin;
   
 public:
 #define NEW_GAME 1

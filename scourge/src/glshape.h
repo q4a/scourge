@@ -83,8 +83,8 @@ public:
           Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
          
 	~GLShape();
-
-  static const float DIV = 0.06f;
+	
+	static const float DIV = 0.06f;
   
   void draw();   
 
