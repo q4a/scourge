@@ -386,8 +386,8 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
 					  textureGroup[14], 
 					  model_info->width, model_info->depth, model_info->height,
 					  model_info->name,
-					  0xf0f0ffff,
-					  Constants::FIGHTER_INDEX);  
+					  0xf0f0ffff, 0);
+					  //Constants::FIGHTER_INDEX);  
 }
 
 // the next two methods are slow, only use during initialization
