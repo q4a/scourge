@@ -52,6 +52,7 @@ typedef struct _ShapeValues {
   char m3ds_name[100];
   float m3ds_scale;
   int teleporter;
+  float xrot, yrot, zrot;
 } ShapeValues;
 
 typedef struct _Md2ModelInfo {
@@ -157,7 +158,7 @@ public:
 
 protected:
   GLuint loadGLTextures(char *fileName);
-  void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image);
+  void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0);
   void swap(unsigned char & a, unsigned char & b);
 };
 

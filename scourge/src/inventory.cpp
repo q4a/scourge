@@ -90,101 +90,15 @@ Inventory::Inventory(Scourge *scourge) {
 	cards = new CardContainer(mainWin);
 
 	// inventory page	
-	cards->createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
-	inventoryWeightLabel = cards->createLabel(190, 280, NULL, INVENTORY);
+	cards->createLabel(115, 212, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
+	inventoryWeightLabel = cards->createLabel(190, 212, NULL, INVENTORY);
 	coinsLabel = cards->createLabel(300, 15, NULL, INVENTORY);
 	cards->createLabel(115, 15, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
-    
-  /*
-	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	  Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
-	  invEquipLabel[i] = cards->createLabel(300, 60 + (i * 15), 
-                               (char *) item ? item->getItemName() : (char*)NULL, 
-                               INVENTORY);
-	}
-	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	  cards->createLabel(115, 60 + (i *15), Character::inventory_location[i], INVENTORY);
-	}
-  */
-
-  // about 5x7 tiles, side=48
-  int side = 48;
-  int n = 0;
   
-  // INVENTORY_HEAD
-  posX[n] = 2 * side;
-  posY[n] = 0 * side;
-  n++;
-
-  // INVENTORY_NECK
-  posX[n] = 3 * side;
-  posY[n] = 0 * side;
-  n++;
-
-  // INVENTORY_BACK = 4;
-  posX[n] = 1 * side;
-  posY[n] = 0 * side;
-  n++;
-
-  // INVENTORY_CHEST = 8;
-  posX[n] = 2 * side;
-  posY[n] = 1 * side;
-  n++;
-
-  // INVENTORY_LEFT_HAND = 16;
-  posX[n] = 1 * side;
-  posY[n] = 3 * side;
-  n++;
-
-  // INVENTORY_RIGHT_HAND = 32;
-  posX[n] = 3 * side;
-  posY[n] = 3 * side;
-  n++;
-
-  // INVENTORY_BELT = 64;
-  posX[n] = 2 * side;
-  posY[n] = 2 * side;
-  n++;
-
-  // INVENTORY_LEGS = 128;
-  posX[n] = 2 * side;
-  posY[n] = 3 * side;
-  n++;
-
-  // INVENTORY_FEET = 256;
-  posX[n] = 3 * side;
-  posY[n] = 6 * side;
-  n++;
-
-  // INVENTORY_RING1 = 512;
-  posX[n] = 0 * side;
-  posY[n] = 4 * side;
-  n++;
-
-  // INVENTORY_RING2 = 1024;
-  posX[n] = 1 * side;
-  posY[n] = 4 * side;
-  n++;
-
-  // INVENTORY_RING3 = 2048;
-  posX[n] = 3 * side;
-  posY[n] = 4 * side;
-  n++;
-
-  // INVENTORY_RING4 = 4096;
-  posX[n] = 4 * side;
-  posY[n] = 4 * side;
-  n++;
-
-  // INVENTORY_WEAPON_RANGED
-  posX[n] = 0 * side;
-  posY[n] = 1 * side;
-  n++;
-
-  paperDoll = new Canvas(115, 20, 410, 50 + (Character::INVENTORY_COUNT * 15), this);
+  paperDoll = new Canvas(115, 220, 411, 251 + (Character::INVENTORY_COUNT * 15), this);
   cards->addWidget(paperDoll, INVENTORY);
 
-	invList = new ScrollingList(115, 285, 295, 175, this);
+	invList = new ScrollingList(115, 20, 295, 175, this);
 	cards->addWidget(invList, INVENTORY);
 	cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 	
@@ -259,54 +173,49 @@ void Inventory::drawWidget(Widget *w) {
   Creature *p = scourge->getParty()->getParty(selected);
 
   if(w == paperDoll) {
-
+    float x = 125;
+    for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+      Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
+      if(item) {
+        w->applySelectionColor();
+        glBegin( GL_QUADS );
+        glVertex2f( x, i * 16 );
+        glVertex2f( x, (i + 1) * 16 );
+        glVertex2f( w->getWidth(), (i + 1) * 16 );
+        glVertex2f( w->getWidth(), i * 16 );
+        glEnd();
+      }
+    }
+    
     ShapePalette *shapePal = scourge->getShapePalette();
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_NOTEQUAL, 0);        
+//    glEnable(GL_ALPHA_TEST);
+    //glAlphaFunc(GL_NOTEQUAL, 0);        
     glPixelZoom( 1.0, -1.0 );
-    glRasterPos2f( 0, 0 );
+    glRasterPos2f( 1, 1 );
     glDrawPixels(shapePal->paperDoll->w, shapePal->paperDoll->h,
                  GL_BGRA, GL_UNSIGNED_BYTE, shapePal->paperDollImage);
-    glDisable(GL_ALPHA_TEST);
+    //glDisable(GL_ALPHA_TEST);
+
+    w->applyBorderColor();
+    glBegin( GL_LINES );
+    glVertex2f( x, 0 );
+    glVertex2f( x, w->getHeight() );
+    glEnd();
 
     for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
+      
+      w->applyBorderColor();
+      glBegin( GL_LINES );
+      glVertex2f( x, (i + 1) * 16 );
+      glVertex2f( w->getWidth(), (i + 1) * 16 );
+      glEnd();
+
+      glColor3f( 0, 0, 0 );
       if(!item) continue;
-      glPushMatrix();
-      glTranslatef( posX[i], posY[i], 0 );
-      item->getShape()->draw();
-      glPopMatrix();
+      scourge->getSDLHandler()->texPrint( x + 5, (i + 1) * 16 - 4, item->getItemName());
     }
 
-    glDisable(GL_TEXTURE_2D);
-    glDisable( GL_CULL_FACE );
-    
-    /*
-    glDisable( GL_CULL_FACE );
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getPaperDollTexture() );
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_NOTEQUAL, 0);
-    glBegin( GL_QUADS );
-    // top
-    glNormal3f(0.0f, 0.0f, 1.0f);    
-    glTexCoord2f( 1.0f, 0.0f );
-    glVertex3f(200, 0, 0);
-    glTexCoord2f( 0.0f, 0.0f );
-    glVertex3f(0, 0, 0);
-    glTexCoord2f( 0.0f, 1.0f );
-    glVertex3f(0, w->getHeight(), 0);
-    glTexCoord2f( 1.0f, 1.0f );
-    glVertex3f(200, w->getHeight(), 0);
-    glEnd();
-    glEnable( GL_CULL_FACE );
-    glCullFace( GL_BACK );
-    glDisable(GL_TEXTURE_2D);
-    //glDisable(GL_BLEND);
-    glDisable(GL_ALPHA_TEST);
-    */
   } else {
     int y = 15;
     char s[80];

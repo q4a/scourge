@@ -37,243 +37,253 @@ ShapePalette::ShapePalette(){
   sprintf(s, "%s/world/shapes.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
-	sprintf(errMessage, "Unable to find the file: %s!", s);
-	cerr << errMessage << endl;
-	exit(1);
+    sprintf(errMessage, "Unable to find the file: %s!", s);
+    cerr << errMessage << endl;
+    exit(1);
   }
   //int sum = 0;
   char path[300];
   char line[255];
   int n = fgetc(fp);
   while(n != EOF) {
-	if(n == 'T') {
-	  // skip ':'
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
+    if(n == 'T') {
+      // skip ':'
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
 
-	  // texture declaration
-	  strcpy(textures[texture_count].filename, line);
-	  sprintf(path, "/%s", textures[texture_count].filename);
-	  // load the texture
-	  textures[texture_count].id = loadGLTextures(path);
-	  texture_count++;
-	  /*
-	} else if(n == 'S') {
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
-	  // load md2 skin 
-	  GLuint skin;
-	  sprintf(path, "%s", line);
-	  cerr << "Loading md2 skin: " << line << endl;
-	  CreateTexture(&skin, path, 0);
-	  string name = line;
-	  creature_skins[name] = skin;
-	  */
-	} else if(n == 'G') {
-	  // skip ':'
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
+      // texture declaration
+      strcpy(textures[texture_count].filename, line);
+      sprintf(path, "/%s", textures[texture_count].filename);
+      // load the texture
+      textures[texture_count].id = loadGLTextures(path);
+      texture_count++;
+      /*
+    } else if(n == 'S') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      // load md2 skin 
+      GLuint skin;
+      sprintf(path, "%s", line);
+      cerr << "Loading md2 skin: " << line << endl;
+      CreateTexture(&skin, path, 0);
+      string name = line;
+      creature_skins[name] = skin;
+      */
+    } else if(n == 'G') {
+      // skip ':'
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
 
-	  // parse native texture group
-	  int c = 0;
-	  char *token = strtok(line, ",");
-	  while(token && c < 3) {
-		// store the index only, resolve after all textures loaded
-		textureGroup[textureGroupCount][c++] = atoi(token);
-		token = strtok(NULL, ",");
-	  }
-	  // resolve the indexes
-	  if(c == 3) {
-		textureGroupCount++;
-	  }
-	} else if(n == 'D') {
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
-	  
-	  // read description lines
-	  int count = atoi(line);
-	  if(count > 0) {
-		vector<string> *list = new vector<string>();
-		descriptions.push_back(list);
-		for(int i = 0; i < count; i++) {
-		  n = Constants::readLine(line, fp);
-		  string s = line + 1;
-		  list->push_back(s);
-		}
-		cerr << "added " << count << " lines of description. # of description groups=" << descriptions.size() << endl;
-	  }
+      // parse native texture group
+      int c = 0;
+      char *token = strtok(line, ",");
+      while(token && c < 3) {
+        // store the index only, resolve after all textures loaded
+        textureGroup[textureGroupCount][c++] = atoi(token);
+        token = strtok(NULL, ",");
+      }
+      // resolve the indexes
+      if(c == 3) {
+        textureGroupCount++;
+      }
+    } else if(n == 'D') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
 
-	} else if(n == 'N') {
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
+      // read description lines
+      int count = atoi(line);
+      if(count > 0) {
+        vector<string> *list = new vector<string>();
+        descriptions.push_back(list);
+        for(int i = 0; i < count; i++) {
+          n = Constants::readLine(line, fp);
+          string s = line + 1;
+          list->push_back(s);
+        }
+        cerr << "added " << count << " lines of description. # of description groups=" << descriptions.size() << endl;
+      }
 
-	  // texture group
-	  ShapeValues *sv = new ShapeValues();
-	  sv->textureGroupIndex = atoi(line);
+    } else if(n == 'N') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
 
-	  // dimensions
-	  n = Constants::readLine(line, fp);
-	  sv->width = atoi(strtok(line + 1, ","));
-	  sv->depth = atoi(strtok(NULL, ","));
-	  sv->height = atoi(strtok(NULL, ","));
+      // texture group
+      ShapeValues *sv = new ShapeValues();
+      sv->textureGroupIndex = atoi(line);
 
-	  // name
-	  n = Constants::readLine(line, fp);
-	  strcpy(sv->name, line + 1);
+      sv->xrot = sv->yrot = sv->zrot = 0.0f;
 
-	  // description
-	  n = Constants::readLine(line, fp);
-	  //	  cerr << "*** shape description group (string): " << line << endl;
-	  sv->descriptionIndex = atoi(line + 1);
+      // dimensions
+      n = Constants::readLine(line, fp);
+      sv->width = atoi(strtok(line + 1, ","));
+      sv->depth = atoi(strtok(NULL, ","));
+      sv->height = atoi(strtok(NULL, ","));
 
-	  // color
-	  n = Constants::readLine(line, fp);
-	  sv->color = strtoul(line + 1, NULL, 16);
+      // name
+      n = Constants::readLine(line, fp);
+      strcpy(sv->name, line + 1);
 
-	  // extra for torches:
-	  sv->torch = -1;
-	  sv->m3ds_name[0] = '\0';
-	  sv->teleporter = 0;
-	  if(n == 'T') {
-		n = Constants::readLine(line, fp);
-		sv->torch = atoi(line + 1);
-	  } else if(n == '3') {
-		n = Constants::readLine(line, fp);
-		strcpy(sv->m3ds_name, line + 1);
-		n = Constants::readLine(line, fp);
-		sv->m3ds_scale = strtod(line + 1, NULL);
-	  } else if(n == 'L') {
-		n = Constants::readLine(line, fp);
-		sv->teleporter = 1;
-	  }
+      // description
+      n = Constants::readLine(line, fp);
+      //	  cerr << "*** shape description group (string): " << line << endl;
+      sv->descriptionIndex = atoi(line + 1);
 
-	  // store it for now
-	  shapeValueVector.push_back(sv);
-	
-	} else if(n == '2') {	  
-	  Md2ModelInfo *info = new Md2ModelInfo();
-	  // name
-	  n = Constants::readLine(line, fp);
-	  strcpy(info->name, line + 1);
-	  
-	  // file
-	  n = Constants::readLine(line, fp);
-	  strcpy(info->filename, line + 1);
-	  
-	  n = Constants::readLine(line, fp);
-	  // scale
-	  info->scale = strtod(strtok(line + 1, ","), NULL);
-	  // dimensions
-	  info->width = atoi(strtok(NULL, ","));
-	  info->depth = atoi(strtok(NULL, ","));
-	  info->height = atoi(strtok(NULL, ","));
-	  	  
-	  // store the md2 model and info
-	  sprintf(path, "%s%s", rootDir, info->filename);
-	  cerr << "Loading md2 model: " << path << " scale: " << info->scale << 
-		" dim: " << info->width << ", " << info->depth << "," << info->height << endl;
-	  info->model = LoadMd2Model(path);
-	  
-	  // store it
-	  string s = info->name;
-	  creature_models[s] = info;
+      // color
+      n = Constants::readLine(line, fp);
+      sv->color = strtoul(line + 1, NULL, 16);
 
-	  // create a block shape for this model
-	  // (used to measure space w/o creating a creature shape)
-	  creature_block_shapes[s] = 
-		new GLShape(textureGroup[14],
-					info->width, info->depth, info->height,
-					strdup(info->name),
-					0xffffffff, 0, 0);
-	  
+      // extra for torches:
+      sv->torch = -1;
+      sv->m3ds_name[0] = '\0';
+      sv->teleporter = 0;
+      if(n == 'T') {
+        n = Constants::readLine(line, fp);
+        sv->torch = atoi(line + 1);
+      } else if(n == '3') {
+        n = Constants::readLine(line, fp);
+        strcpy(sv->m3ds_name, line + 1);
+        n = Constants::readLine(line, fp);
+        sv->m3ds_scale = strtod(line + 1, NULL);
+      } else if(n == 'L') {
+        n = Constants::readLine(line, fp);
+        sv->teleporter = 1;
+      } 
+      
+      // icon rotation
+      if(n == 'R') {
+        n = Constants::readLine(line, fp);
+        sv->xrot = atof(strtok(line + 1, ","));
+        sv->yrot = atof(strtok(NULL, ","));
+        sv->zrot = atof(strtok(NULL, ","));
+      }
 
-	} else if(n == 'P') {
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
+      // store it for now
+      shapeValueVector.push_back(sv);
 
-	  int index = atoi(strtok(line, ","));
-	  cerr << "options for shape, index=" << index << " size=" << shapeValueVector.size() << endl;
+    } else if(n == '2') {   
+      Md2ModelInfo *info = new Md2ModelInfo();
+      // name
+      n = Constants::readLine(line, fp);
+      strcpy(info->name, line + 1);
 
-	  ShapeValues *sv = shapeValueVector[index];
-	  sv->skipSide = atoi(strtok(NULL, ","));
-	  sv->stencil = atoi(strtok(NULL, ","));
-	  sv->blocksLight = atoi(strtok(NULL, ","));
+      // file
+      n = Constants::readLine(line, fp);
+      strcpy(info->filename, line + 1);
 
-	} else {
-	  // skip this line
-	  n = Constants::readLine(line, fp);
-	}
+      n = Constants::readLine(line, fp);
+      // scale
+      info->scale = strtod(strtok(line + 1, ","), NULL);
+      // dimensions
+      info->width = atoi(strtok(NULL, ","));
+      info->depth = atoi(strtok(NULL, ","));
+      info->height = atoi(strtok(NULL, ","));
+
+      // store the md2 model and info
+      sprintf(path, "%s%s", rootDir, info->filename);
+      cerr << "Loading md2 model: " << path << " scale: " << info->scale << 
+      " dim: " << info->width << ", " << info->depth << "," << info->height << endl;
+      info->model = LoadMd2Model(path);
+
+      // store it
+      string s = info->name;
+      creature_models[s] = info;
+
+      // create a block shape for this model
+      // (used to measure space w/o creating a creature shape)
+      creature_block_shapes[s] = 
+      new GLShape(textureGroup[14],
+                  info->width, info->depth, info->height,
+                  strdup(info->name),
+                  0xffffffff, 0, 0);
+
+
+    } else if(n == 'P') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+
+      int index = atoi(strtok(line, ","));
+      cerr << "options for shape, index=" << index << " size=" << shapeValueVector.size() << endl;
+
+      ShapeValues *sv = shapeValueVector[index];
+      sv->skipSide = atoi(strtok(NULL, ","));
+      sv->stencil = atoi(strtok(NULL, ","));
+      sv->blocksLight = atoi(strtok(NULL, ","));
+    } else {
+      // skip this line
+      n = Constants::readLine(line, fp);
+    }
   }
   fclose(fp);
 
   // resolve texture groups
   for(int i = 0; i < textureGroupCount; i++) {
-	for(int c = 0; c < 3; c++) {
-	  textureGroup[i][c] = textures[textureGroup[i][c]].id;
-	}
+    for(int c = 0; c < 3; c++) {
+      textureGroup[i][c] = textures[textureGroup[i][c]].id;
+    }
   }
 
   // create shapes
   GLuint dl = 0;
   for(int i = 0; i < (int)shapeValueVector.size(); i++) {
-	cerr << "Creating shape i=" << i << endl;
-	ShapeValues *sv = shapeValueVector[i];
-	cerr << "\t" <<
-	  " width=" << sv->width << 
-	  " depth=" << sv->depth << 
-	  " height=" << sv->height << endl;
+    cerr << "Creating shape i=" << i << endl;
+    ShapeValues *sv = shapeValueVector[i];
+    cerr << "\t" <<
+    " width=" << sv->width << 
+    " depth=" << sv->depth << 
+    " height=" << sv->height << endl;
 
-	if(sv->teleporter) {
-	  shapes[(i + 1)] =
-		new GLTeleporter(textureGroup[sv->textureGroupIndex], textures[9].id,
-						 sv->width, sv->depth, sv->height,
-						 strdup(sv->name), 
-						 sv->descriptionIndex,
-						 sv->color,
-						 dl, (i + 1));
-	} else if(strlen(sv->m3ds_name)) {
-	  shapes[(i + 1)] =
-		new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
-					  textureGroup[sv->textureGroupIndex], 
-					  sv->width, sv->depth, sv->height,
-					  strdup(sv->name), 
-					  sv->descriptionIndex,
-					  sv->color,
-					  dl,(i + 1));
-	} else if(sv->torch > -1) {
-	  if(sv->torch == 5) {
-		shapes[(i + 1)] =
-		  new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
-					  sv->width, sv->depth, sv->height,
-					  strdup(sv->name),
-					  sv->descriptionIndex,
-					  sv->color,
-					  dl, (i + 1));
-	  } else {
-		shapes[(i + 1)] =
-		  new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
-					  sv->width, sv->depth, sv->height,
-					  strdup(sv->name),
-					  sv->descriptionIndex,
-					  sv->color,
-					  dl, (i + 1), 
-					  torchback, sv->torch);
-	  }
-	} else {
-	  shapes[(i + 1)] =
-		new GLShape(textureGroup[sv->textureGroupIndex],
-					sv->width, sv->depth, sv->height,
-					strdup(sv->name),
-					sv->descriptionIndex,
-					sv->color,
-					dl, (i + 1));
-	}
-	shapes[(i + 1)]->setSkipSide(sv->skipSide);
-	shapes[(i + 1)]->setStencil(sv->stencil == 1);
-	shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
+    if(sv->teleporter) {
+      shapes[(i + 1)] =
+      new GLTeleporter(textureGroup[sv->textureGroupIndex], textures[9].id,
+                       sv->width, sv->depth, sv->height,
+                       strdup(sv->name), 
+                       sv->descriptionIndex,
+                       sv->color,
+                       dl, (i + 1));
+    } else if(strlen(sv->m3ds_name)) {
+      shapes[(i + 1)] =
+      new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
+                    textureGroup[sv->textureGroupIndex], 
+                    sv->width, sv->depth, sv->height,
+                    strdup(sv->name), 
+                    sv->descriptionIndex,
+                    sv->color,
+                    dl,(i + 1));
+    } else if(sv->torch > -1) {
+      if(sv->torch == 5) {
+        shapes[(i + 1)] =
+        new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
+                    sv->width, sv->depth, sv->height,
+                    strdup(sv->name),
+                    sv->descriptionIndex,
+                    sv->color,
+                    dl, (i + 1));
+      } else {
+        shapes[(i + 1)] =
+        new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
+                    sv->width, sv->depth, sv->height,
+                    strdup(sv->name),
+                    sv->descriptionIndex,
+                    sv->color,
+                    dl, (i + 1), 
+                    torchback, sv->torch);
+      }
+    } else {
+      shapes[(i + 1)] =
+      new GLShape(textureGroup[sv->textureGroupIndex],
+                  sv->width, sv->depth, sv->height,
+                  strdup(sv->name),
+                  sv->descriptionIndex,
+                  sv->color,
+                  dl, (i + 1));
+    }
+    shapes[(i + 1)]->setSkipSide(sv->skipSide);
+    shapes[(i + 1)]->setStencil(sv->stencil == 1);
+    shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
+    shapes[(i + 1)]->setIconRotation(sv->xrot, sv->yrot, sv->zrot);
 
-	string s = sv->name;
-	shapeMap[s] = shapes[(i + 1)];
+    string s = sv->name;
+    shapeMap[s] = shapes[(i + 1)];
   }
 
   // remember the number of shapes
@@ -285,13 +295,13 @@ ShapePalette::ShapePalette(){
 
   // add some special, "internal" shapes
   shapes[shapeCount] = 
-	new GLTorch(textureGroup[14], textures[9].id,
-				1, 1, 2,
-				strdup("SPELL_FIREBALL"),
-				0,
-				strtoul("6070ffff", NULL, 16),
-				dl, shapeCount, 
-				torchback, Constants::SOUTH); // Hack: use SOUTH for a spell
+  new GLTorch(textureGroup[14], textures[9].id,
+              1, 1, 2,
+              strdup("SPELL_FIREBALL"),
+              0,
+              strtoul("6070ffff", NULL, 16),
+              dl, shapeCount, 
+              torchback, Constants::SOUTH); // Hack: use SOUTH for a spell
   shapes[shapeCount]->setSkipSide(false);
   shapes[shapeCount]->setStencil(false);
   shapes[shapeCount]->setLightBlocking(false);  
@@ -310,10 +320,10 @@ ShapePalette::ShapePalette(){
 
   // load the status modifier icons
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	sprintf(path, "/icons/i%d.bmp", i);
-	GLuint icon = loadGLTextures(path);
-	cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
-	if(icon) statModIcons[i] = icon;
+    sprintf(path, "/icons/i%d.bmp", i);
+    GLuint icon = loadGLTextures(path);
+    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
+    if(icon) statModIcons[i] = icon;
   }
 
   // set up the cursor
@@ -339,17 +349,17 @@ ShapePalette::~ShapePalette(){
 
 char *ShapePalette::getRandomDescription(int descriptionGroup) {
   if(descriptionGroup >= 0 && descriptionGroup < (int)descriptions.size()) {
-	vector<string> *list = descriptions[descriptionGroup];
-	int n = (int)((float)list->size() * rand()/RAND_MAX);
-	return (char*)((*list)[n].c_str());
+    vector<string> *list = descriptions[descriptionGroup];
+    int n = (int)((float)list->size() * rand()/RAND_MAX);
+    return(char*)((*list)[n].c_str());
   }
   return NULL;
 }
 
 t3DModel * ShapePalette::LoadMd2Model(char *file_name){
-    t3DModel *t3d = new t3DModel;    
-    g_LoadMd2.ImportMD2(t3d, file_name); 
-    return t3d;   
+  t3DModel *t3d = new t3DModel;    
+  g_LoadMd2.ImportMD2(t3d, file_name); 
+  return t3d;   
 }    
 
 GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
@@ -357,8 +367,8 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   // find the model
   string model = model_name;
   if(creature_models.find(model) == creature_models.end()){
-	cerr << "Can't find md2 model named " << model << endl;
-	exit(1);
+    cerr << "Can't find md2 model named " << model << endl;
+    exit(1);
   }
   Md2ModelInfo *model_info = creature_models[model];
 
@@ -367,20 +377,20 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   GLuint skin_texture;
   char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
-	sprintf(path, "%s%s", rootDir, skin_name);
-	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
-	CreateTexture(&skin_texture, path, 0);
-	cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
-	creature_skins[skin] = skin_texture;
+    sprintf(path, "%s%s", rootDir, skin_name);
+    cerr << "&&&&&&&&&& Loading texture: " << path << endl;
+    CreateTexture(&skin_texture, path, 0);
+    cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
+    creature_skins[skin] = skin_texture;
   } else {
-	skin_texture = creature_skins[skin];
+    skin_texture = creature_skins[skin];
   }
 
   // increment its ref. count
   if(loaded_skins.find(skin_texture) == loaded_skins.end()) {
-	loaded_skins[skin_texture] = 1;
+    loaded_skins[skin_texture] = 1;
   } else {
-	loaded_skins[skin_texture] = loaded_skins[skin_texture] + 1;
+    loaded_skins[skin_texture] = loaded_skins[skin_texture] + 1;
   }
   //  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
   //	" count: " << loaded_skins[skin_texture] << endl;
@@ -390,10 +400,10 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   // create the shape.
   // FIXME: shapeindex is always FIGHTER. Does it matter?
   MD2Shape *shape = new MD2Shape(model_info->model, skin_texture, model_info->scale,
-								 textureGroup[14], 
-								 model_info->width, model_info->depth, model_info->height,
-								 model_info->name, -1,
-								 0xf0f0ffff, 0); //Constants::FIGHTER);  
+                                 textureGroup[14], 
+                                 model_info->width, model_info->depth, model_info->height,
+                                 model_info->name, -1,
+                                 0xf0f0ffff, 0); //Constants::FIGHTER);  
   shape->setSkinName(skin_name);
   return shape;
 }
@@ -402,15 +412,15 @@ void ShapePalette::decrementSkinRefCount(char *skin_name) {
   string skin = skin_name;
   GLuint skin_texture;
   if(creature_skins.find(skin) == creature_skins.end()){
-	cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin_name << endl;
-	return;
+    cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin_name << endl;
+    return;
   } else {
-	skin_texture = creature_skins[skin];
+    skin_texture = creature_skins[skin];
   }
 
   if(loaded_skins.find(skin_texture) == loaded_skins.end()) {
-	cerr << "&&&&&&&&&& WARNING: could not find skin id=" << skin_texture << endl;
-	return;
+    cerr << "&&&&&&&&&& WARNING: could not find skin id=" << skin_texture << endl;
+    return;
   }
 
   loaded_skins[skin_texture] = loaded_skins[skin_texture] - 1;
@@ -418,17 +428,17 @@ void ShapePalette::decrementSkinRefCount(char *skin_name) {
   //	" count: " << loaded_skins[skin_texture] << endl;
   // unload texture if no more references
   if(loaded_skins[skin_texture] == 0) {
-	cerr << "&&&&&&&&&& Deleting texture: " << skin_texture << endl;
-	loaded_skins.erase(skin_texture);
-	creature_skins.erase(skin);
-	glDeleteTextures(1, &skin_texture);
+    cerr << "&&&&&&&&&& Deleting texture: " << skin_texture << endl;
+    loaded_skins.erase(skin_texture);
+    creature_skins.erase(skin);
+    glDeleteTextures(1, &skin_texture);
   }
 }
 
 // the next two methods are slow, only use during initialization
 GLuint ShapePalette::findTextureByName(const char *filename) {
   for(int i = 0; i < texture_count; i++) {
-	if(!strcmp(textures[i].filename, filename)) return textures[i].id;
+    if(!strcmp(textures[i].filename, filename)) return textures[i].id;
   }
   return 0;
 }
@@ -437,8 +447,8 @@ GLShape *ShapePalette::findShapeByName(const char *name) {
   if(!name || !strlen(name)) return NULL;
   string s = name;
   if(shapeMap.find(s) == shapeMap.end()) {
-	cerr << "&&& warning: could not find shape by name " << s << endl;
-	return NULL;
+    cerr << "&&& warning: could not find shape by name " << s << endl;
+    return NULL;
   }
   return shapeMap[s];
 }
@@ -449,8 +459,8 @@ int ShapePalette::findShapeIndexByName(const char *name) {
   if(!name || !strlen(name)) s = "SWORD";
   else s = name;
   if(shapeMap.find(s) == shapeMap.end()) {
-	cerr << "&&& warning: could not find shape INDEX by name " << s << endl;
-	return 0;
+    cerr << "&&& warning: could not find shape INDEX by name " << s << endl;
+    return 0;
   }
   return shapeMap[s]->getShapePalIndex();
 }
@@ -512,7 +522,11 @@ void ShapePalette::swap(unsigned char & a, unsigned char & b) {
   return;
 }
 
-void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image) {
+void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, 
+                                        GLubyte **image, int red, int green, int blue) {
+
+  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
+
   *image = NULL;
   char fn[300];
   fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
@@ -524,29 +538,30 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, G
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-	fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d scanline=%d\n", 
-			fn, width, height, (*surface)->format->BitsPerPixel,
-			(*surface)->format->BytesPerPixel, (*surface)->pitch);
+    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d scanline=%d\n", 
+            fn, width, height, (*surface)->format->BitsPerPixel,
+            (*surface)->format->BytesPerPixel, (*surface)->pitch);
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
 
-	(*image) = (unsigned char*)malloc(width * height * 4);
+    (*image) = (unsigned char*)malloc(width * height * 4);
     int count = 0;
-	int c = 0;
-	unsigned char r,g,b;
+    int c = 0;
+    unsigned char r,g,b;
     // the following lines extract R,G and B values from any bitmap
     for(int i = 0; i < width * height; ++i) {
-	  if(i > 0 && i % width == 0) 
-		c += (	(*surface)->pitch - (width * (*surface)->format->BytesPerPixel) );
-	  r = data[c++];
-	  g = data[c++];
-	  b = data[c++];
-	  
-	  (*image)[count++] = r;
-	  (*image)[count++] = g;
-	  (*image)[count++] = b;
-	  //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
-	  (*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
+      if(i > 0 && i % width == 0)
+        c += (  (*surface)->pitch - (width * (*surface)->format->BytesPerPixel) );
+      r = data[c++];
+      g = data[c++];
+      b = data[c++];
+
+      (*image)[count++] = r;
+      (*image)[count++] = g;
+      (*image)[count++] = b;
+      //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
+      //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
+      (*image)[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
     }
   }
 }

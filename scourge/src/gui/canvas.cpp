@@ -31,6 +31,11 @@ Canvas::~Canvas() {
 }
 
 void Canvas::drawWidget(Widget *parent) {
+  if(view) {
+    glPushMatrix();
+    view->drawWidget(this);
+    glPopMatrix();
+  }
   // draw the border
   applyBorderColor();
   glBegin(GL_LINES);
@@ -44,9 +49,4 @@ void Canvas::drawWidget(Widget *parent) {
   glVertex2d(x2 - x, y2 - y);
   glEnd();
 
-  if(view) {
-	glPushMatrix();
-	view->drawWidget(this);
-	glPopMatrix();
-  }
 }
