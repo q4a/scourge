@@ -41,7 +41,6 @@ class RpgItem {
   int distance; // how far can it reach?
   int equip; // where can it be worn?
   int skill; // which skill to check when using the item
-  int currentCharges;   // useful for wands for example
   int maxCharges;
 
   static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
@@ -77,7 +76,7 @@ class RpgItem {
   
   RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1,  int currentCharges=0, int maxCharges=0);
+		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0);
   ~RpgItem();
 
   inline int getIndex() { return index; }
@@ -93,10 +92,7 @@ class RpgItem {
   inline int getDistance() { return distance; }
   inline int getSkill() { return skill; } 
   inline int getType() { return type; }
-  inline int getCurrentCharges() { return currentCharges; }
   inline int getMaxCharges() { return maxCharges; }
-  inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
-  inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>maxCharges)n=maxCharges; currentCharges = n; } 
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs

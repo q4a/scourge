@@ -518,88 +518,80 @@ Item *Creature::removeInventory(int index) {
 }
 
 bool Creature::eatDrink(int index){
-    char msg[80];
-    char buff[80];
-    //Item * item = getInventory(index);
-    RpgItem * rpgItem = getInventory(index)->getRpgItem();
-    int type;
-    //float weight;
+  char msg[80];
+  char buff[80];
+  //Item * item = getInventory(index);
+  Item *item = getInventory(index);
+  RpgItem * rpgItem = item->getRpgItem();
+  int type;
+  //float weight;
+  
+  type = rpgItem->getType();    
+  //weight = item->getRpgItem()->getWeight();
+  level = rpgItem->getLevel();
+  if(type == RpgItem::FOOD){
+	if(getHunger() == 10){                
+	  sprintf(msg, "%s is not hungry at the moment.", getName()); 
+	  scourge->getMap()->addDescription(msg); 
+	  return false;
+	}            
     
-    type = rpgItem->getType();    
-    if(type!=RpgItem::FOOD && type!=RpgItem::DRINK && type!=RpgItem::POTION){              
-        scourge->getMap()->addDescription("You cannot eat or drink that!");   
-        return false;       
-    }
-    else{
-        //weight = item->getRpgItem()->getWeight();
-        level = rpgItem->getLevel();
-        if(type == RpgItem::FOOD){
-            if(getHunger() == 10){                
-                sprintf(msg, "%s is not hungry at the moment.", getName()); 
-                scourge->getMap()->addDescription(msg); 
-                return false;
-            }            
-            
-            // TODO : the quality member of rpgItem should indicate if the
-            // food is totally healthy or roten or partially roten etc...
-            // We eat the item and it gives us "level" hunger points back
-            setHunger(getHunger() + level);            
-            strcpy(buff, rpgItem->getShortDesc());
-            buff[0] = tolower(buff[0]);
-            sprintf(msg, "%s eats %s.", getName(), buff);
-            scourge->getMap()->addDescription(msg);
-            return(computeNewItemWeight(rpgItem));                              
-        }
-        else if(type == RpgItem::DRINK){
-            if(getThirst() == 10){                
-                sprintf(msg, "%s is not thirsty at the moment.", getName()); 
-                scourge->getMap()->addDescription(msg); 
-                return false;
-            }
-            setThirst(getThirst() + level);
-            strcpy(buff, rpgItem->getShortDesc());
-            buff[0] = tolower(buff[0]);
-            sprintf(msg, "%s drinks %s.", getName(), buff);
-            scourge->getMap()->addDescription(msg); 
-            // TODO : according to the alcool rate set drunk state or not            
-            return(computeNewItemWeight(rpgItem));  
-            
-        }
-        else{   
-            // It's a potion            
-            // Even if not thirsty, character will always drink a potion
-            strcpy(buff, rpgItem->getShortDesc());
-            buff[0] = tolower(buff[0]);
-            setThirst(getThirst() + level);
-            sprintf(msg, "%s drinks %s.", getName(), buff);
-            scourge->getMap()->addDescription(msg); 
-            // TODO : add potion effect
-            return(computeNewItemWeight(rpgItem));                                   
-        }        
-    }
+	// TODO : the quality member of rpgItem should indicate if the
+	// food is totally healthy or roten or partially roten etc...
+	// We eat the item and it gives us "level" hunger points back
+	setHunger(getHunger() + level);            
+	strcpy(buff, rpgItem->getShortDesc());
+	buff[0] = tolower(buff[0]);
+	sprintf(msg, "%s eats %s.", getName(), buff);
+	scourge->getMap()->addDescription(msg);
+	bool b = item->decrementCharges();
+	if(b) {
+	  sprintf(msg, "%s is used up.", rpgItem->getName());
+	  scourge->getMap()->addDescription(msg);
+	}
+	return b;
+  } else if(type == RpgItem::DRINK){
+	if(getThirst() == 10){                
+	  sprintf(msg, "%s is not thirsty at the moment.", getName()); 
+	  scourge->getMap()->addDescription(msg); 
+	  return false;
+	}
+	setThirst(getThirst() + level);
+	strcpy(buff, rpgItem->getShortDesc());
+	buff[0] = tolower(buff[0]);
+	sprintf(msg, "%s drinks %s.", getName(), buff);
+	scourge->getMap()->addDescription(msg); 
+	// TODO : according to the alcool rate set drunk state or not            
+	bool b = item->decrementCharges();
+	if(b) {
+	  sprintf(msg, "%s is used up.", rpgItem->getName());
+	  scourge->getMap()->addDescription(msg);
+	}
+	return b;
+  } else if(type == RpgItem::POTION) {
+	// It's a potion            
+	// Even if not thirsty, character will always drink a potion
+	strcpy(buff, rpgItem->getShortDesc());
+	buff[0] = tolower(buff[0]);
+	setThirst(getThirst() + level);
+	sprintf(msg, "%s drinks %s.", getName(), buff);
+	scourge->getMap()->addDescription(msg); 
+	// TODO : add potion effect
+	usePotion(item);
+	bool b = item->decrementCharges();
+	if(b) {
+	  sprintf(msg, "%s is used up.", rpgItem->getName());
+	  scourge->getMap()->addDescription(msg);
+	}
+	return b;
+  } else {
+	scourge->getMap()->addDescription("You cannot eat or drink that!", 1, 0.2f, 0.2f);
+	return false;
+  }
 }
 
-// FIXME: rpgItem should not change (same rpgItem reused in many Item-s)
-bool Creature::computeNewItemWeight(RpgItem * rpgItem){
-    float f1;
-    int oldCharges;
-    
-    oldCharges = rpgItem->getCurrentCharges();            
-    if(oldCharges <= 1){
-        // The object is totally consummed
-        return true;    
-    }            
-    rpgItem->setCurrentCharges(oldCharges - 1);
-            
-    // Compute initial weight to be able to compute new weight
-    // (without increasing error each time)
-    
-    f1 = rpgItem->getWeight();
-    f1 *= (float) rpgItem->getMaxCharges();
-    f1 /= (float) oldCharges;
-    f1 *= (((float)oldCharges - 1.0f) / (float)rpgItem->getMaxCharges());            
-    rpgItem->setWeight(f1);
-    return false;      
+void Creature::usePotion(Item *item) {
+  cerr << "Implement me!" << endl;
 }
 
 void Creature::equipInventory(int index) {

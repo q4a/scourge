@@ -321,6 +321,8 @@ class Creature {
   
   int getMaxProjectileCount(Item *item);
 
+  void usePotion(Item *item);
+
  protected:
 
   /**
