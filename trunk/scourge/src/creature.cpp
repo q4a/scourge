@@ -38,7 +38,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->shape = scourge->getShapePalette()->getCreatureShape(character->getShapeIndex());
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
-  this->motion = Constants::MOTION_MOVE_TOWARDS;
+  this->motion = Constants::MOTION_MOVE_TOWARDS;  
   commonInit();
 }
 
@@ -80,6 +80,7 @@ void Creature::commonInit() {
   this->cornerX = this->cornerY = -1;
   this->lastTurn = 0;
   this->damageEffectCounter = 0;
+  this->facingDirection = Constants::MOVE_UP; // good init ?
 }
 
 Creature::~Creature(){
@@ -100,19 +101,20 @@ bool Creature::move(Uint16 dir, Map *map) {
   int ny = y;
   int nz = z;
   switch(dir) {
-  case Constants::MOVE_UP:
+  case Constants::MOVE_UP:    
     ny = y - 1;
     break;
-  case Constants::MOVE_DOWN:
+  case Constants::MOVE_DOWN:    
     ny = y + 1;
     break;
   case Constants::MOVE_LEFT:
     nx = x - 1;
     break;
-  case Constants::MOVE_RIGHT:
+  case Constants::MOVE_RIGHT:    
     nx = x + 1;
     break;
   }
+  setFacingDirection(dir);
   map->removeCreature(x, y, z);
   Location *loc = map->getBlockingLocation(getShape(), nx, ny, nz);
   if(!loc) {
@@ -206,6 +208,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     else if(getX() > location.x) dir = Constants::MOVE_LEFT;
     else if(getY() < location.y) dir = Constants::MOVE_DOWN;
     else if(getY() > location.y) dir = Constants::MOVE_UP;
+    setFacingDirection(dir);
     Location *position = map->moveCreature(getX(), getY(), getZ(),
 					   location.x, location.y, getZ(),
 					   this);

@@ -41,10 +41,8 @@
 using namespace std;
 
 // forward decl.
-class Location;
 class Shape;
-class DungeonGenerator;
-class Map;
+//class Map;
 class Scourge;
 class Util;
 
@@ -72,7 +70,7 @@ class MiniMap {
   int screenHeight;     // Needed for glScissor used in MiniMap::Draw()
   
   // Texture that will hold the minimap
-  int textureSize;   
+  int textureSizeH, textureSizeW;   
   GLuint texture[1];
   unsigned char * textureInMemory;
   bool mustBuildTexture;   
@@ -81,9 +79,8 @@ class MiniMap {
   // pixels at the bottom or at the right side) including a little marge.
   int effectiveWidth, effectiveHeight; 
   int maxX, maxY;
-  float midX, midY;
-  float errorMargin; 
-  
+  int minX, minY;
+  float midX, midY;  
   
   // Transform Map coordinates to MiniMap coordinates
   void toMiniMapCoord(int &x, int &y);       
