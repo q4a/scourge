@@ -762,12 +762,13 @@ void DungeonGenerator::updateStatus(const char *statusMessage) {
 
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
   start = SDL_GetTicks();
+
   updateStatus(MESSAGE);
   //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
-
+  
   bool preGenerated = (locationIndex);
   locationIndex--;
-
+  
   // generate the maze
   if(!preGenerated) {
     generateMaze();
@@ -786,9 +787,13 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
     constructMaze(locationIndex);
   }
   updateStatus(MESSAGE);
-  
-  // draw the nodes on the map
-  drawNodesOnMap(map, shapePal, preGenerated, locationIndex);  
+    
+  // loop until successfully drawn nodes onto map
+  int status = progress->getStatus();
+  while( !drawNodesOnMap(map, shapePal, preGenerated, locationIndex) ) {
+    // reset the progress
+    progress->setStatus( status );
+  }
 }
 
 void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal, 
@@ -1040,7 +1045,7 @@ void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal, 
+bool DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal, 
                                  bool preGenerated, int locationIndex) {
   // add stairs for multi-level missions
   if(stairsUp) {
@@ -1057,7 +1062,7 @@ void DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal,
     }
     if(!done) {
       cerr << "Error: couldn't add up stairs." << endl;
-      exit(1);
+      return false;
     }
   }
   if(stairsDown) {
@@ -1074,9 +1079,11 @@ void DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal,
     }
     if(!done) {
       cerr << "Error: couldn't add down stairs." << endl;
-      exit(1);
+      return false;
     }
   }
+
+  return true;
 }
 
 void DungeonGenerator::addPregeneratedShapes(Map *map, ShapePalette *shapePal, 
@@ -1284,7 +1291,7 @@ void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal,
   addItemsInRoom(RpgItem::getItemByName("Chair"), 2, preGenerated, locationIndex);  
 }
 
-void DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal, 
+bool DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal, 
                                       bool preGenerated, int locationIndex) {
   int teleportersAdded = 0;
   for(int teleporterCount = 0; teleporterCount < 3; teleporterCount++) {
@@ -1303,7 +1310,7 @@ void DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal,
       cerr << "ERROR: couldn't add teleporter!!! #" << teleporterCount << endl;
     }
   }
-  if(teleportersAdded == 0) exit(0);
+  return (teleportersAdded > 0);
 }
 
 void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal, 
@@ -1425,8 +1432,10 @@ void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal,
   free(ff);  
 }
 
-void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
+bool DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
                                       bool preGenerated, int locationIndex) {
+
+  bool ret = true;
 
   // flooded map?
   map->setHasWater( FORCE_WATER || 
@@ -1459,7 +1468,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 
   updateStatus("Adding gates");
   if(!preGenerated) {
-    addStairs(map, shapePal, preGenerated, locationIndex);
+    if( !addStairs(map, shapePal, preGenerated, locationIndex) ) {
+      ret = false;
+      goto cleanup;
+    }
   }
 
   updateStatus("Adding party");
@@ -1468,7 +1480,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
   // add a teleporters
   updateStatus("Adding teleporters");
   if(!preGenerated) {
-    addTeleporters(map, shapePal, preGenerated, locationIndex);
+    if( !addTeleporters(map, shapePal, preGenerated, locationIndex) ) {
+      ret = false;
+      goto cleanup;
+    }
   }
 
   updateStatus("Locking doors and chests");
@@ -1491,8 +1506,11 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
   updateStatus("Adding furniture");
   addFurniture(map, shapePal, preGenerated, locationIndex);
 
+cleanup:
   updateStatus("Cleaning up");
   deleteFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
+
+  return ret;
 }
 
 void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal, 
