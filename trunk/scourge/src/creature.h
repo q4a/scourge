@@ -191,7 +191,9 @@ class Creature {
   }
   // returns the index of the last item added
   bool addInventory(Item *item);
-  Item *removeInventory(int index);
+  Item *removeInventory(int index);  
+  // returns true if ate/drank item completely and false else
+  bool eatDrink(int index);  
   // equip or doff if already equipped
   void equipInventory(int index);
   int doff(int index);
@@ -223,8 +225,8 @@ class Creature {
   inline void setLevel(int n) { level = n; }
   inline void setExp(int n) { exp = n; }
   inline void setHp(int n) { hp = n; }
-  inline void setThirst(int n)  { thirst = n; }
-  inline void setHunger(int n)  { hunger = n; }
+  inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; }
+  inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
   inline void setHp() { hp = getCharacter()->getStartingHp(); }
   inline void setAc(int n) { ac = n; }
 

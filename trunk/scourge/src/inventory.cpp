@@ -56,9 +56,7 @@ Inventory::Inventory(Scourge *scourge) {
 	spellsButton   = mainWin->createButton( 315,0, 420, 30, strdup("Spells"), true);
 	cards = new CardContainer(mainWin);
 
-	// inventory page
-	/*Label *label = createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);
-	label = createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);*/
+	// inventory page	
 	cards->createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);
 	cards->createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
 
@@ -67,9 +65,6 @@ Inventory::Inventory(Scourge *scourge) {
 	  invEquipLabel[i] = cards->createLabel(300, 60 + (i * 15), 
                                (char *) item ? item->getRpgItem()->getName() : (char*)NULL, 
                                INVENTORY);
-/*	  invEquipLabel[i] = new Label(300, 60 + (i * 15), 
-								   (char *)(item ? item->getRpgItem()->getName() : (char*)NULL));
-	  cards->addWidget(invEquipLabel[i], INVENTORY);*/
 	}
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	  cards->createLabel(115, 60 + (i *15), Character::inventory_location[i], INVENTORY);
@@ -93,6 +88,8 @@ Inventory::Inventory(Scourge *scourge) {
 	yy+=30;
 	openButton     = mainWin->createButton( 0, yy, 105, yy + 30, 
 							 Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY );	
+    yy+=30;
+    eatDrinkButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
 	
     // character info
 	cards->createLabel(115, 45, strdup("Character Information"), CHARACTER, Constants::RED_COLOR);	
@@ -147,6 +144,17 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 			setSelectedPlayerAndMode(selected, selectedMode);
 			invList->setSelectedLine(oldLine);
 		}
+	} else if(widget == eatDrinkButton) {
+	   int itemIndex = invList->getSelectedLine();  
+	   if(itemIndex > -1 && 
+			 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+			if(scourge->getParty(selected)->eatDrink(itemIndex)){
+                scourge->getParty(selected)->removeInventory(itemIndex);                
+			}
+			// refresh screen
+            setSelectedPlayerAndMode(selected, INVENTORY);
+		}					   	   	   	      	
+  
 	}
 	return false;
 }
@@ -207,9 +215,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	expLabel->setText(expStr);
 	sprintf(hpStr, "HP: %d / %d", selectedP->getHp(), selectedP->getCharacter()->getStartingHp());
 	hpLabel->setText(hpStr);
-	sprintf(thirstStr, "Thirst : %d", selectedP->getThirst());
+	sprintf(thirstStr, "Thirst : %d / 10", selectedP->getThirst());
 	thirstLabel->setText(thirstStr);
-	sprintf(hungerStr, "Hunger : %d", selectedP->getHunger());
+	sprintf(hungerStr, "Hunger : %d / 10", selectedP->getHunger());
 	hungerLabel->setText(hungerStr);
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {

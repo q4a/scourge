@@ -57,14 +57,7 @@ public:
   inline RpgItem *getRpgItem() { return rpgItem; }
   inline bool isBlocking() { return blocking; }
 
-  inline void getDetailedDescription(char *s, bool precise=true) {
-	sprintf(s, "(A:%d,S:%d,Q:%d,W:%d) %s", 
-			getRpgItem()->getAction(), 
-			getRpgItem()->getSpeed(), 
-			getRpgItem()->getQuality(), 
-			getRpgItem()->getWeight(),
-			(precise ? getRpgItem()->getName() : getRpgItem()->getShortDesc()));
-  }
+  void getDetailedDescription(char *s, bool precise=true);
 
   inline int getContainedItemCount() { return containedItemCount; }
   // return true if successful
