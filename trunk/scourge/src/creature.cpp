@@ -75,6 +75,7 @@ void Creature::commonInit() {
   this->lastTick = 0;
   this->armor = 0;
   this->moveRetrycount = 0;
+  this->cornerX = this->cornerY = -1;
 }
 
 Creature::~Creature(){
@@ -132,21 +133,37 @@ bool Creature::follow(Map *map) {
   return true;
 }
 
+void Creature::setSelXY(int x, int y) { 
+  selX = x; 
+  selY = y; 
+  moveRetrycount = 0; 
+  setMotion(Constants::MOTION_MOVE_TOWARDS); 
+}
+
 bool Creature::moveToLocator(Map *map, bool single_step) {
   bool moved = false;
   if(selX > -1) {
     // take a step
-    moved = gotoPosition(map, selX, selY, 0, "selXY");
-    
-    // if we've no more steps, but we're not there yet, recalc steps
-    if((int)bestPath.size() <=  bestPathPos && selX > -1 && 
-       !(selX == getX() && selY == getY()) &&
-       map->shapeFits(getShape(), selX, selY, -1)) {
+    if(getMotion() == Constants::MOTION_MOVE_AWAY) {
+      moved = gotoPosition(map, cornerX, cornerY, 0, "cornerXY");
+    } else {
+      moved = gotoPosition(map, selX, selY, 0, "selXY");
+    }
 
-      // don't keep trying forever
-      moveRetrycount++;
-      if(moveRetrycount < 5) {
-	tx = ty = -1;
+    if((int)bestPath.size() <=  bestPathPos && selX > -1) {
+      // if we've no more steps, but we're not there yet, recalc steps
+      if(!(selX == getX() && selY == getY()) &&
+	 map->shapeFits(getShape(), selX, selY, -1)) {
+	
+	// don't keep trying forever
+	moveRetrycount++;
+	if(moveRetrycount < MAX_MOVE_RETRY) {
+	  tx = ty = -1;
+	} else {
+	  //cerr << getName() << " would move but ran out of retries" << endl;
+	}
+      } else if(this == scourge->getPlayer()) {
+	scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
       }
     }
   }
@@ -196,10 +213,13 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 	if(creature && creature->character && scourge->getPlayer() != creature) {
 
 	  creature->moveRetrycount++;
-	  if(creature->moveRetrycount < 5) {
-	    Sint16 nx, ny, nz;
-	    creature->findCorner(&nx, &ny, &nz);
-	    creature->gotoPosition(map, nx, ny, nz, "corner");
+	  if(creature->moveRetrycount < MAX_MOVE_RETRY) {
+	    Sint16 nz;
+	    creature->findCorner(&creature->cornerX, &creature->cornerY, &nz);
+	    //	    creature->gotoPosition(map, nx, ny, nz, "corner");
+	    creature->setMotion(Constants::MOTION_MOVE_AWAY);
+	  } else {
+	    //cerr << creature->getName() << " would move but ran out of retries" << endl;
 	  }    
 	}
       }

@@ -69,6 +69,7 @@ class Creature {
   int bestPathPos;
   vector<Location> bestPath;
   Creature *targetCreature;
+  Sint16 cornerX, cornerY;
   
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
@@ -88,6 +89,8 @@ class Creature {
   int speed;
   int armor;
   int moveRetrycount;
+  
+  static const int MAX_MOVE_RETRY = 15;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -145,7 +148,7 @@ class Creature {
   */
   void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
   
-  inline void setSelXY(int x, int y) { selX = x; selY = y; moveRetrycount = 0; }
+  void setSelXY(int x, int y);
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
   
