@@ -68,7 +68,7 @@ Scourge::Scourge(int argc, char *argv[]){
   player_only = false;
   inventory = new Inventory(this);
   move = 0;
-  movedCount = 0;
+  startRound = false;
 
   createUI();
   
@@ -120,7 +120,7 @@ void Scourge::startMission() {
   // position the players
   player_only = false;
   move = 0;
-  movedCount = 0;
+  startRound = false;
   setPlayer(getParty(0));
   getPlayer()->moveTo(startx, starty, 0);
   map->setCreature(startx, starty, 0, getPlayer()); 
@@ -211,15 +211,9 @@ void Scourge::drawView(SDL_Surface *screen) {
   if(isInfoShowing) {
     map->initMapView();  
     for(int i = 0; i < 4; i++) {
-	  if(map->getSelectedDropTarget() && 
-		 map->getSelectedDropTarget()->creature == party[i]) {
-		glColor4f(0, 1, 1, 0.5f);
-	  } else if(player == party[i]) {
-		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-	  } else {
-		glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
-	  }
-	  map->showCreatureInfo(party[i]);
+	  map->showCreatureInfo(party[i], (player == party[i]), 
+							(map->getSelectedDropTarget() && 
+							 map->getSelectedDropTarget()->creature == party[i]) );
     }
   }
 
@@ -237,14 +231,14 @@ void Scourge::setPlayer(int n) {
   player = party[n];
   player->setNextDontMove(NULL, 0);
   move = 0;
-  movedCount = 0;
-  player->setSelXY(-1, -1); // don't move
+  //  player->setSelXY(-1, -1); // don't move
   // init the rest of the party
   int count = 1;
   for(int i = 0; i < 4; i++) {
 	if(i != n) party[i]->setNextDontMove(player, count++);
   }
   map->refresh();
+  map->center(player->getX(), player->getY());
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
@@ -335,8 +329,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
     else if(ea == "set_player_only"){
         player_only = (player_only ? false : true);
 		move = 0;
-		movedCount = 0;
-    }    
+		for(int i = 0; i < 4; i++) party[i]->setSelXY(-1, -1);
+    }
     else if(ea == "blend_a"){
         blendA++; if(blendA >= 11) blendA = 0;
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
@@ -434,6 +428,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
     else if(ea == "set_zoom_out_stop"){
         map->setZoomOut(false);
     }
+	else if(ea == "start_round") {
+	  startRound = true;
+	}
       /*case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {
     case SDLK_ESCAPE: 
@@ -632,6 +629,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	if(useItem(mapx, mapy)) return;
 	getMapXYAtScreenXY(x, y, &mapx, &mapy);
 	player->setSelXY(mapx, mapy);
+	if(!player_only) startRound = true;
   } else if(button == SDL_BUTTON_RIGHT) {
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	if(mapx < MAP_WIDTH) {    
@@ -965,6 +963,9 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
   } else if(widget == groupButton) {
 	player_only = (player_only ? false : true);
+	for(int i = 0; i < 4; i++) party[i]->setSelXY(-1, -1);
+  } else if(widget == roundButton) {
+	startRound = true;
   }
   return false;
 }
@@ -987,6 +988,9 @@ void Scourge::createUI() {
   mainWin->addWidget((Widget*)optionsButton);
   quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
+  roundButton = new Button( 0, 75,  100, 100, strdup("Start Round") );
+  mainWin->addWidget((Widget*)roundButton);
+
 
   diamondButton = new Button( 100, 0,  120, 20 );
   mainWin->addWidget((Widget*)diamondButton);
@@ -1013,115 +1017,112 @@ void Scourge::createUI() {
   mainWin->addWidget((Widget*)groupButton);
 }
 
+
 void Scourge::playRound() {
+  // move the player's selX,selY in a direction as specified by keystroke
+  handleKeyboardMovement();
 
-  /*
-    ######################################
-	Turn-based movement.
+  // round starts if:
+  // -in group mode a move was made
+  // -(or) the round was manually started
+  if((!player_only && move) || startRound) {
 
-	FIXME:
-	The current algorithm is an approximation of a real turn-based system.
-	Currently monsters get more steps in single-step mode, and the party gets
-	more steps in party-movement mode.
-	The real solution is to count steps and limit how far creatures (monsters, players)
-	move based on their 'speed'.
-	The 'speed' (or steps per turn) should be displayed as a bar on screen so players can
-	judge how when to step, fight, etc. The bar only shows in single-step mode.
-   */
-
-
-  // ######################################
-  // Move players. Both group-movement, and single step (player_only) modes.
-  bool moved = false;
-  bool b;
-
-  // move the player in a direction as specified by keystroke
-  if(move & Constants::MOVE_UP) {
-    b = getPlayer()->move(Constants::MOVE_UP, map);
-	if(!moved) moved = b;
-  }
-  if(move & Constants::MOVE_DOWN) {
-    b = getPlayer()->move(Constants::MOVE_DOWN, map);
-	if(!moved) moved = b;
-  }
-  if(move & Constants::MOVE_LEFT) {
-    b = getPlayer()->move(Constants::MOVE_LEFT, map);
-	if(!moved) moved = b;
-  }
-  if(move & Constants::MOVE_RIGHT) {
-    b = getPlayer()->move(Constants::MOVE_RIGHT, map);
-	if(!moved) moved = b;
-  }
-  // if not using keys, move via locator
-  if(!move) {
-	b = player->moveToLocator(map, player_only);
-  }
-
-  // this person's move is done
-  if(b) movedCount++;
-
-  if(!player_only) {
-
-
-	// In group mode:
-	// others follow player
+	// remember the players' positions
+	int oldX[4];
+	int oldY[4];
 	for(int i = 0; i < 4; i++) {
-	  if(party[i] != player) {
-		b = party[i]->follow(map);
+	  oldX[i] = party[i]->getX();
+	  oldY[i] = party[i]->getY();
+	}
+
+	// move the party members
+	movePlayers();
+
+	// if any players moved, onto the next round
+	startRound = false;
+	for(int i = 0; i < 4; i++) {
+	  if(oldX[i] != party[i]->getX() ||
+		 oldY[i] != party[i]->getY()) {
+		startRound = true;
+		break;
 	  }
 	}
-	// if the player moved, everyone moved
-	if(movedCount > 0) movedCount = 4;
 
+	// move the monsters
+	fprintf(stderr, "FIXME: only move visible creatures!\n");
+	fprintf(stderr, "FIXME: cleanup Creature::move()!\n");
+	for(int i = 0; i < creatureCount; i++) {
+	  moveMonster(creatures[i]);
+	}
+	
+  }
+}
 
-  } else if(b) {
+// move the player in a direction as specified by keystroke
+void Scourge::handleKeyboardMovement() {
+  if(move & Constants::MOVE_UP) {
+	if(getPlayer()->getSelX() == -1) 
+	  getPlayer()->setSelXY(getPlayer()->getX(), getPlayer()->getY() - 1);
+	else
+	  getPlayer()->setSelXY(getPlayer()->getSelX(), getPlayer()->getSelY() - 1);
+  }
+  if(move & Constants::MOVE_DOWN) {
+	if(getPlayer()->getSelX() == -1) 
+	  getPlayer()->setSelXY(getPlayer()->getX(), getPlayer()->getY() + 1);
+	else
+	  getPlayer()->setSelXY(getPlayer()->getSelX(), getPlayer()->getSelY() + 1);
+  }
+  if(move & Constants::MOVE_LEFT) {
+	if(getPlayer()->getSelX() == -1) 
+	  getPlayer()->setSelXY(getPlayer()->getX() - 1, getPlayer()->getY());
+	else
+	  getPlayer()->setSelXY(getPlayer()->getSelX() - 1, getPlayer()->getSelY());
+  }
+  if(move & Constants::MOVE_RIGHT) {
+	if(getPlayer()->getSelX() == -1) 
+	  getPlayer()->setSelXY(getPlayer()->getX() + 1, getPlayer()->getY());
+	else
+	  getPlayer()->setSelXY(getPlayer()->getSelX() + 1, getPlayer()->getSelY());
+  }
+}
 
-
+void Scourge::movePlayers() {
+  if(player_only) {	
 	// in single-step mode:
-	// if the last person moved and he has no more steps left, 
-	// switch to the next party member
-	if(!player->anyMovesLeft()) {
-	  // stop moving
-	  move = 0;
-	  for(int i = 0; i < 4; i++) {
-		if(party[i] == player) {
-		  setPlayer(i < 3 ? i + 1 : 0);
+
+	for(int i = 0; i < 4; i++) {
+	  // move the current player
+	  player->moveToLocator(map, player_only);
+	  map->center(player->getX(), player->getY());
+	  
+	  // switch to next player
+	  for(int t = 0; t < 4; t++) {
+		if(party[t] == player) {
+		  setPlayer(t < 3 ? t + 1 : 0);
 		  break;
 		}
 	  }
 	}
-	// move monsters for every step
-	// problem with this: monsters get too many moves
-	movedCount = 4;
-	// move monsters after everyone had a turn
-	// problem with this: monsters only move 1 step for n player steps
-	// movedCount = (player == party[0] ? 4 : 0);
-
-
-  }
-  // move the map
-  map->center(player->getX(), player->getY());
-
-
-
-  // if anyone moved, start a round
-  if(movedCount < 4) return;
-  movedCount = 0;
-
-
-  // ######################################
-  // The round starts here
-
 	
-  // move the monsters
-  fprintf(stderr, "FIXME: only move visible creatures!\n");
-  fprintf(stderr, "FIXME: cleanup Creature::move()!\n");
-  for(int i = 0; i < creatureCount; i++) {
-	moveMonster(creatures[i]);
+  } else {
+	// In group mode:
+	
+	// move the leader
+	player->moveToLocator(map, player_only);
+	map->center(player->getX(), player->getY());
+	
+	// in keyboard mode, don't move the selection
+	if(move) player->setSelXY(-1, -1);
+	
+	// others follow the player
+	for(int t = 0; t < 4; t++) {
+	  if(party[t] != player) {
+		party[t]->follow(map);
+	  }
+	}	
   }
 }
 
-// map calls this for every monster visible
 void Scourge::moveMonster(Creature *monster) {
   // for now just twitch around
   // FIXME: this needs to be a lot more intelligent!

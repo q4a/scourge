@@ -82,6 +82,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Button *inventoryButton;
   Button *optionsButton;
   Button *quitButton;
+  Button *roundButton;
 
   Button *diamondButton;
   Button *staggeredButton;
@@ -102,7 +103,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
 
   bool player_only;
   Uint16 move;
-  int movedCount;
+  bool startRound;
 
 protected:
   SDLHandler *sdlHandler;
@@ -138,7 +139,6 @@ public:
 	 This method will move monsters, cast spells, organize the battle, etc.
    */
   void playRound();
-  void moveMonster(Creature *monster);
 
   inline Map *getMap() { return map; }
   inline MiniMap *getMiniMap() { return miniMap; }
@@ -188,9 +188,15 @@ public:
 
   void drawTopWindow();
 
-protected:
-    void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
-	void createUI();
+ protected:
+  void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
+  void createUI();
+  // change the player's selX,selY values as specified by keyboard movement
+  void handleKeyboardMovement();
+  // move the party
+  void movePlayers();
+  // move a creature
+  void moveMonster(Creature *monster);
 };
 
 #endif

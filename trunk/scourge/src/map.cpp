@@ -27,7 +27,6 @@ Map::Map(Scourge *scourge){
   zoom = 1.0f;
   zoomIn = zoomOut = false;
   x = y = 0;
-  move = 0;
   selectMode = false;
   floorOnly = false;
   selX = selY = selZ = MAP_WIDTH + 1;
@@ -469,7 +468,10 @@ void Map::draw(SDL_Surface *surface) {
 	//      glEnable(GL_LIGHTING);
 	glDepthMask(GL_TRUE);    
 	glDisable(GL_BLEND);
-	drawLocator();
+
+	// now that we're drawing target circles we don't need the locator
+	// (except when moving an item)
+	if(scourge->getMovingItem()) drawLocator();
   }
 }
 
@@ -583,29 +585,47 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
   glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
 }
 
-void Map::showCreatureInfo(Creature *creature) {
+void Map::showCreatureInfo(Creature *creature, bool player, bool selected) {
   glPushMatrix();
   //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
-
-  float xpos2 = ((float)(creature->getX() - getX()) / GLShape::DIV);
-  float ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
-  float zpos2 = (float)(creature->getZ()) / GLShape::DIV;
-  
-  // draw circle
-  double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
-  //double d = (double)creature->getShape()->getDepth() / GLShape::DIV;
-  double s = 0.35f / GLShape::DIV;
 
   glEnable( GL_DEPTH_TEST );
   glDepthMask(GL_FALSE);
   glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
   glDisable( GL_CULL_FACE );
+
+  // draw circle
+  double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
+  double s = 0.35f / GLShape::DIV;
+  
+  float xpos2, ypos2, zpos2;
+  if(player && creature->getSelX() > -1) {
+	glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
+	xpos2 = ((float)(creature->getSelX() - getX()) / GLShape::DIV);
+	ypos2 = ((float)(creature->getSelY() - getY()) / GLShape::DIV);
+	zpos2 = 0.0f / GLShape::DIV;  
+	glPushMatrix();
+	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+	gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
+	glPopMatrix();
+  }
+
+  if(selected) {
+	glColor4f(0, 1, 1, 0.5f);
+  } else if(player) {
+	glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+  } else {
+	glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
+  }
+  
+  xpos2 = ((float)(creature->getX() - getX()) / GLShape::DIV);
+  ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
+  zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
   glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
   gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
-  glEnable( GL_CULL_FACE );
 
+  glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );
   glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_TRUE);

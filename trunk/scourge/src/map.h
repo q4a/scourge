@@ -58,7 +58,6 @@ class Map {
   Sint16 y;
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
-  Uint16 move;
   Scourge *scourge;
   bool debugGridFlag;
   bool drawGridFlag;
@@ -139,13 +138,7 @@ class Map {
   inline void setXY(int x, int y) { this->x = x; this->y = y; }
   
   void center(Sint16 x, Sint16 y);
-  
-  inline void setMove(Uint16 n) { move |= n; };
-  
-  inline void removeMove(Uint16 n) { move &= (0xffff - n); }
-  
-  inline Uint16 getMove() { return move; }
-  
+    
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
   
@@ -186,7 +179,7 @@ class Map {
   inline Shape *getFloorPosition(Sint16 x, Sint16 y) { if(x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH) return NULL; else return floorPositions[x][y]; }
   
   void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);
-  void showCreatureInfo(Creature *creature);
+  void showCreatureInfo(Creature *creature, bool player, bool selected);
   
   void initMapView(bool ignoreRot = false);
   

@@ -63,7 +63,9 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "MINIMAP_TOGGLE",
     
     "SET_ZOOM_IN",     
-    "SET_ZOOM_OUT"               
+    "SET_ZOOM_OUT",
+	
+	"START_ROUND"
 };
 
 
