@@ -504,8 +504,11 @@ void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
   if(button == SDL_BUTTON_LEFT) {
 	// click on an item
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	if(startItemDrag(mapx, mapy)) return;
+	if(mapx > MAP_WIDTH) {
+	  getMapXYAtScreenXY(x, y, &mapx, &mapy);
+	  mapz = 0;
+	}
+	if(startItemDrag(mapx, mapy, mapz)) return;
   }
 }
 
@@ -539,8 +542,11 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	}	
 
 	// click on an item
-	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	if(useItem(mapx, mapy)) return;
+	if(mapx > MAP_WIDTH) {
+	  getMapXYAtScreenXY(x, y, &mapx, &mapy);
+	  mapz = 0;
+	}
+	if(useItem(mapx, mapy, mapz)) return;
 
 	// click on the map
 	getMapXYAtScreenXY(x, y, &mapx, &mapy);
@@ -694,9 +700,9 @@ void Scourge::setPartyMotion(int motion) {
   }
 }
 
-bool Scourge::startItemDrag(int x, int y) {
+bool Scourge::startItemDrag(int x, int y, int z) {
   if(movingItem) return false;
-  Location *pos = map->getPosition(x, y, player->getZ());
+  Location *pos = map->getPosition(x, y, z);
   if(pos) {
 	if(getItem(pos)) {  
 	  return true;
@@ -712,20 +718,20 @@ bool Scourge::useItem() {
 	for(int y = player->getY() + 2; 
 		y > player->getY() - player->getShape()->getDepth() - 2; 
 		y--) {
-	  if(useItem(x, y)) return true;
+	  if(useItem(x, y, 0)) return true;
 	}
   }
   return false;
 }
 
-bool Scourge::useItem(int x, int y) {
+bool Scourge::useItem(int x, int y, int z) {
   if(movingItem) {
 	//	dropItem(x, y);
 	dropItem(map->getSelX(), map->getSelY());
 	return true;
   }
   
-  Location *pos = map->getPosition(x, y, player->getZ());
+  Location *pos = map->getPosition(x, y, z);
   if(pos) {
 	if(useDoor(pos)) {
 	  map->updateLightMap();
@@ -778,13 +784,16 @@ void Scourge::dropItem(int x, int y) {
 	  movingItem = NULL;
 	  movingX = movingY = movingZ = MAP_WIDTH + 1;
 	}
-  } else if(!map->isBlocked(x, y, 0,
-					 movingX, movingY, movingZ,
-					 movingItem->getShape())) {
-	map->setItem(x, y, 0, movingItem);
-	//	movingItem->moveTo(x, y, 0);
-	movingItem = NULL;
-	movingX = movingY = movingZ = MAP_WIDTH + 1;
+  } else {
+	int z;
+	Location *pos = map->isBlocked(x, y, 0,
+								   movingX, movingY, movingZ,
+								   movingItem->getShape(), &z);
+	if(!pos) {
+	  map->setItem(x, y, z, movingItem);
+	  movingItem = NULL;
+	  movingX = movingY = movingZ = MAP_WIDTH + 1;
+	}
   }
 }
 

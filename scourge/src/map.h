@@ -182,10 +182,13 @@ class Map {
   /**
    * Can shape at shapeX, shapeY, shapeZ move to location x, y, z?
    * returns NULL if ok, or the blocking Shape* otherwise.
+   * if newz is not null, it will ignore blocking "item"-s and instead stack the new
+   * shape on top, returning the new z position in newz.
    */
   Location *isBlocked(Sint16 x, Sint16 y, Sint16 z, 
 					  Sint16 shapex, Sint16 shapey, Sint16 shapez,
-					  Shape *shape);
+					  Shape *shape,
+					  int *newz = NULL);
   
   /** This one only returns if the shape originates at xyz. */
   Location *getPosition(Sint16 x, Sint16 y, Sint16 z);
