@@ -76,7 +76,7 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level){
 //  printMaze();
 
   makeRooms();
-  printMaze();
+  //  printMaze();
 }
 
 DungeonGenerator::~DungeonGenerator(){
@@ -813,25 +813,25 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
   // add monsters in every room
   int totalLevel = 0;
   for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
-  fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
+  //fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
   for(int i = 0; i < roomCount; i++) {
 	int levelSum = 0;
 	while(levelSum < totalLevel) {
 	  Monster *monster = Monster::getRandomMonster(level - 1);
-	  fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
+	  //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
 	  bool fits = 
 		getLocationInRoom(map, 
 						  i,
 						  scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
 						  &x, &y);
 	  if(fits) {
-		fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
+		//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
 		Creature *creature = scourge->newCreature(monster);
 		addItem(map, creature, NULL, NULL, x, y);
 		creature->moveTo(x, y, 0);
 		levelSum += level;
 	  } else {
-		fprintf(stderr, "\tmonster DOESN'T fit.\n");
+		//fprintf(stderr, "\tmonster DOESN'T fit.\n");
 		break;
 	  }
 	}

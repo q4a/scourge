@@ -51,6 +51,7 @@ const char *Constants::SKILL_NAMES[] = {
   "SWORD_WEAPON",
   "AXE_WEAPON",
   "BOW_WEAPON",
+  "HAND_TO_HAND_COMBAT",
 
   "SPEED",
   "COORDINATION",

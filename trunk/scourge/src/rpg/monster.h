@@ -29,13 +29,16 @@
 #define MAX_MONSTER_COUNT 50
   
 class Monster  {
+ public:
+  static const int ITEM_COUNT = 50;
+
 private:
   char *type;
   int hp;
   int level;
   Uint8 shapeIndex;
   char description[300];
-  RpgItem *weapon[10], *armor[10], *item[10]; // starting equipment
+  RpgItem *item[ITEM_COUNT]; // starting equipment
   int money;
   int speed;
 
@@ -52,6 +55,7 @@ public:
   inline Uint8 getShapeIndex() { return shapeIndex; }
   inline char *getDescription() { return description; }
   inline int getSpeed() { return speed; }
+  inline RpgItem *getStartingItem(int index) { return item[index]; }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);

@@ -59,6 +59,11 @@ class UserConfiguration;
 #define RESOURCES_DIR "resources/"
 #define DEFAULT_IMAGES_DIR "default/"
 #define CREATURES_DIR "creatures/"
+#define MAX_BATTLE_COUNT 200
+
+typedef struct _Battle {
+  Creature *creature;
+} Battle;
 
 class Scourge : public SDLEventHandler,SDLScreenView {
  private:
@@ -106,6 +111,9 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   bool startRound;
 
   GLint lastTick;
+  int battleCount;
+  Battle battle[MAX_BATTLE_COUNT];
+  int gameSpeed;
 
 protected:
   SDLHandler *sdlHandler;
@@ -194,6 +202,8 @@ public:
   void drawTopWindow();
 
  protected:
+  void fightBattle();
+
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
   void createUI();
   // change the player's selX,selY values as specified by keyboard movement

@@ -22,45 +22,52 @@
 RpgItem *RpgItem::items[] =  {
 
   // SWORDS:
-  new RpgItem(SHORT_SWORD, "Short sword", 1, SWORD, 2, 150, 100, 4, 8, 
+  new RpgItem(SHORT_SWORD, "Short sword", 1, SWORD, 2, 150, 100, 4, 25, 
 			  "A dwarven shortsword of average workmanship",
 			  "A stubby short sword", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX),
-  new RpgItem(DAGGER, "Dagger", 1, SWORD, 1, 80, 100, 3, 5, 
+			  Constants::SWORD_INDEX, NOT_TWO_HANDED, 1, Constants::SWORD_WEAPON),
+  new RpgItem(DAGGER, "Dagger", 1, SWORD, 1, 80, 100, 3, 15, 
 			  "There's nothing special about this dagger",
 			  "A small dagger", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX),
-  new RpgItem(BASTARD_SWORD, "Bastard sword", 1, SWORD, 4, 200, 100, 8, 11,
+			  Constants::SWORD_INDEX, NOT_TWO_HANDED, 1, Constants::SWORD_WEAPON),
+  new RpgItem(BASTARD_SWORD, "Bastard sword", 1, SWORD, 4, 200, 100, 8, 25,
 			  "A bastard sword can be wielded either by one or both hands... (If you still have both hands)",
 			  "A rusty bastard sword", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX, OPTIONAL_TWO_HANDED),
-  new RpgItem(LONG_SWORD, "Long sword", 2, SWORD, 6, 250, 100, 10, 12,
+			  Constants::SWORD_INDEX, OPTIONAL_TWO_HANDED, 1, Constants::SWORD_WEAPON),
+  new RpgItem(LONG_SWORD, "Long sword", 2, SWORD, 6, 250, 100, 10, 40,
 			  "The longsword is a knight's standard weapon",
 			  "A shiny, sharp longsword", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX, 2),
-  new RpgItem(GREAT_SWORD, "Great sword", 2, SWORD, 10, 350, 100, 16, 14,
+			  Constants::SWORD_INDEX, NOT_TWO_HANDED, 2, Constants::SWORD_WEAPON),
+  new RpgItem(GREAT_SWORD, "Great sword", 2, SWORD, 10, 350, 100, 16, 60,
 			  "The two handed great sword can deliver a lot of damage",
 			  "A two-handed greatsword", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX, ONLY_TWO_HANDED, 3),
+			  Constants::SWORD_INDEX, ONLY_TWO_HANDED, 3, Constants::SWORD_WEAPON),
   
   
   // AXES
-  new RpgItem(BATTLE_AXE, "Battleaxe", 1, AXE, 4, 150, 100, 6, 10,
+  new RpgItem(BATTLE_AXE, "Battleaxe", 1, AXE, 4, 150, 100, 6, 20,
 			  "A battle axe of average workmanship",
 			  "A well made battle axe", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::AXE_INDEX, 2),
-  new RpgItem(THROWING_AXE, "Throwing axe", 1, AXE, 2, 100, 100, 4, 6,
+			  Constants::AXE_INDEX, NOT_TWO_HANDED, 2, Constants::AXE_WEAPON),
+  new RpgItem(THROWING_AXE, "Throwing axe", 1, AXE, 2, 100, 100, 4, 12,
 			  "A dull-looking axe for chucking",
 			  "A quick throwing axe", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::AXE_INDEX, 12),
-  
+			  Constants::AXE_INDEX, NOT_TWO_HANDED, 12, Constants::AXE_WEAPON),
+
+  // ARMOR
+  new RpgItem(HORNED_HELMET, "Horned helmet", 1, ARMOR, 20, 100, 100, 4, 0,
+			  "Your basic head-gear; protects against damage by dull, bludgeoning objects",
+			  "Your basic head-gear, adorned with horns for increased potency", 
+			  Character::INVENTORY_HEAD,
+			  Constants::AXE_INDEX, NOT_TWO_HANDED, 0, Constants::ARMOR_DEFEND),
+
   
   // CONTAINERS:
   new RpgItem(CHEST, "Chest", 1, CONTAINER, 100, 0, 100, 0, 0,
@@ -83,7 +90,7 @@ RpgItem *RpgItem::items[] =  {
 
 RpgItem::RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-				 int twohanded, int distance) {
+				 int twohanded, int distance, int skill) {
   this->index = index;
   this->name = name;
   this->level = level;
@@ -99,6 +106,7 @@ RpgItem::RpgItem(int index, char *name, int level, int type, int weight, int pri
   this->equip = equip;
   this->twohanded = twohanded;
   this->distance = distance;
+  this->skill = skill;
 }
 
 RpgItem::~RpgItem() {
