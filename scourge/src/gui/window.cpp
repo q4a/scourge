@@ -47,7 +47,7 @@ Window::~Window() {
 
 void Window::addWindow(Window *win) {
   if(windowCount < MAX_WINDOW) {
-	win->setZ(500 + windowCount * 50);
+	win->setZ(50 + windowCount * 10);
 	window[windowCount++] = win;
   }
 }
@@ -135,6 +135,7 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 	dragging = false;
 	break;
   case SDL_MOUSEBUTTONDOWN:
+	toTop();
 	dragging = isInside(x, y);
 	dragX = x - getX();
 	dragY = y - getY();
@@ -279,6 +280,25 @@ void Window::scissorToWindow() {
 }
 
 void Window::setVisible(bool b) {
+  toTop();
   Widget::setVisible(b);
   if(b) openHeight = 0;
+}
+
+void Window::toTop() {
+  toTop(this);
+}
+
+void Window::toTop(Window *win) {
+  for(int i = 0; i < windowCount; i++) {
+	if(window[i] == win) {
+	  for(int t = i; t < windowCount - 1; t++) {
+		window[t] = window[t + 1];		
+		window[t]->setZ(window[t]->getZ() - 10);
+	  }
+	  window[windowCount - 1] = win;
+	  win->setZ(50 + (windowCount * 10));
+	  break;
+	}
+  }
 }

@@ -176,6 +176,7 @@ void Scourge::startMission() {
   // remove gui
   mainWin->setVisible(false);
   messageWin->setVisible(false);
+  closeAllContainerGuis();
 
   // clean up after the mission
   delete map;
@@ -268,10 +269,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
   int ea;  
 
   if(containerGuiCount > 0) {
-	if(containerGui[containerGuiCount - 1]->handleEvent(event)) {
-	  closeContainerGui(containerGui[containerGuiCount - 1]);
+	for(int i = 0; i < containerGuiCount; i++) {
+	  if(containerGui[i]->handleEvent(event)) {
+		closeContainerGui(containerGui[i]);
+	  }
 	}
-	return false;
   }
 
   if(inventory->isVisible()) {
@@ -857,10 +859,12 @@ Creature *Scourge::isPartyMember(Location *pos) {
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(containerGuiCount > 0) {
-	if(containerGui[containerGuiCount - 1]->handleEvent(widget, event)) {
-	  closeContainerGui(containerGui[containerGuiCount - 1]);
+	for(int i = 0; i < containerGuiCount; i++) {
+	  if(containerGui[i]->handleEvent(widget, event)) {
+		closeContainerGui(containerGui[i]);
+	  }
 	}
-	return false;
+	//	return false;
   }
 
   if(inventory->isVisible()) {
@@ -1503,10 +1507,17 @@ void Scourge::moveMonster(Creature *monster) {
 }
 
 void Scourge::openContainerGui(Item *container) {
+  // is it already open?
+  for(int i = 0; i < containerGuiCount; i++) {
+	if(containerGui[i]->getContainer() == container) {
+	  containerGui[i]->getWindow()->toTop();
+	  return;
+	}
+  }
+  // open new window
   if(containerGuiCount < MAX_CONTAINER_GUI) {
 	if(startRound) toggleRound();
 	containerGui[containerGuiCount++] = new ContainerGui(this, container, 
-														 containerGuiCount,
 														 10 + containerGuiCount * 15, 
 														 10 + containerGuiCount * 15);
   }
@@ -1514,10 +1525,21 @@ void Scourge::openContainerGui(Item *container) {
 
 void Scourge::closeContainerGui(ContainerGui *gui) {
   if(containerGuiCount <= 0) return;
-  for(int i = gui->getId(); i < containerGuiCount - 1; i++) {
-	containerGui[i] = containerGui[i + 1];
-	containerGui[i]->setId(containerGui[i]->getId() - 1);
+  for(int i = 0; i < containerGuiCount; i++) {
+	if(containerGui[i] == gui) {
+	  for(int t = i; t < containerGuiCount - 1; t++) {
+		containerGui[t] = containerGui[t + 1];
+	  }
+	  containerGuiCount--;
+	  delete gui;
+	  return;
+	}
   }
-  containerGuiCount--;
-  delete gui;
+}
+
+void Scourge::closeAllContainerGuis() {
+  for(int i = 0; i < containerGuiCount; i++) {
+	delete containerGui[i];
+  }
+  containerGuiCount = 0;
 }

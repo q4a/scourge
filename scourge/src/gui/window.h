@@ -67,6 +67,7 @@ class Window : public Widget {
 
   void setVisible(bool b);
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
+  void toTop();
 
   // crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
   void scissorToWindow();
@@ -85,7 +86,7 @@ class Window : public Widget {
   static void addWindow(Window *win);
   static void removeWindow(Window *win);
   static Widget *delegateEvent(SDL_Event *event, int x, int y);
-  
+  static void toTop(Window *win);
 	
  protected:
 };

@@ -33,19 +33,18 @@ class ContainerGui {
   Scourge *scourge;
   Item *container;
   Window *win;
-  Button *closeButton;
-  int id;
+  Button *closeButton, *dropButton, *openButton, *player1Button, *player2Button, *player3Button, *player4Button;
+  ScrollingList *list;
 
  public:
-  ContainerGui(Scourge *scourge, Item *container, int id, int x, int y);
+  ContainerGui(Scourge *scourge, Item *container, int x, int y);
   ~ContainerGui();
-
-  inline void setId(int n) { this->id = n; }
-  inline int getId() { return id; }
 
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
 
+  inline Item *getContainer() { return container; }
+  inline Window *getWindow() { return win; }
   
 };
 
