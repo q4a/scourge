@@ -157,9 +157,13 @@ class Map {
   }
 
   inline bool isLocationInLight(int x, int y) {
+    cerr << "FIXME: Map::isLocationInLight()" << endl;
+    return true;
+    /*
     int chunkX = ((x - MAP_OFFSET) / MAP_UNIT) + 1;
     int chunkY = (y - (MAP_OFFSET + 1)) / MAP_UNIT;
     return lightMap[chunkX][chunkY];
+    */
   }
     
   void draw();
