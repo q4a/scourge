@@ -586,11 +586,11 @@ bool Scourge::useItem(int x, int y) {
 
 bool Scourge::getItem(Location *pos) {
     if(pos->item) {
-        movingX = pos->ix;
-        movingY = pos->iy;
-        movingZ = pos->iz;
+        movingX = pos->x;
+        movingY = pos->y;
+        movingZ = pos->z;
         movingItem = pos->item;
-        map->removeItem(pos->ix, pos->iy, pos->iz);
+        map->removeItem(pos->x, pos->y, pos->z);
         return true;
     }
     return false;

@@ -160,74 +160,63 @@ void Map::drawLocator() {
 
 void Map::setupShapes() {
   float xpos2, ypos2, zpos2;
-
+  
   Shape *shape = NULL;  
   GLuint name;
   laterCount = stencilCount = otherCount = 0;
   mapChanged = false;
-
-    for(int yp = 0; yp < MAP_VIEW_DEPTH; yp++) {
-      for(int xp = 0; xp < MAP_VIEW_WIDTH; xp++) {
-        for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-          // draw the walls
-          if(pos[getX() + xp][getY() + yp][zp]) {
-
-              // draw the shape and item
-              for(int i = 0; i < 2; i++) {                  
-                  shape = NULL;
-                  if(i == 0 && 
-                     pos[getX() + xp][getY() + yp][zp]->x == getX() + xp &&
-                     pos[getX() + xp][getY() + yp][zp]->y == getY() + yp &&
-                     pos[getX() + xp][getY() + yp][zp]->z == zp &&
-                     pos[getX() + xp][getY() + yp][zp]->shape) {                  
-                      shape = pos[getX() + xp][getY() + yp][zp]->shape;
-                  } else if(i == 1 && 
-                            pos[getX() + xp][getY() + yp][zp]->ix == getX() + xp &&
-                            pos[getX() + xp][getY() + yp][zp]->iy == getY() + yp &&
-                            pos[getX() + xp][getY() + yp][zp]->iz == zp &&
-                            pos[getX() + xp][getY() + yp][zp]->item) {
-                      shape = pos[getX() + xp][getY() + yp][zp]->item->getShape();
-                  }
-
-                  if(shape) {
-                      xpos2 = ((float)(xp) / GLShape::DIV);
-                      ypos2 = (((float)(yp) - (float)shape->getDepth()) / GLShape::DIV);
-                      zpos2 = (float)(zp) / GLShape::DIV;
-                      name = getX() + xp + (MAP_WIDTH * (getY() + yp)) + (MAP_WIDTH * MAP_DEPTH * zp);
-
-                      if(shape->isStencil()) {
-                        //doDrawShape(xpos2, ypos2, zpos2, shape, name);
-                        stencil[stencilCount].xpos = xpos2;
-                        stencil[stencilCount].ypos = ypos2;
-                        stencil[stencilCount].zpos = zpos2;
-                        stencil[stencilCount].shape = shape;
-                        stencil[stencilCount].name = name;
-                        stencilCount++;
-                      } else if(!shape->isStencil()) {
-                          if(shape->drawFirst()) {
-                              //doDrawShape(xpos2, ypos2, zpos2, shape, name);
-                              other[otherCount].xpos = xpos2;
-                              other[otherCount].ypos = ypos2;
-                              other[otherCount].zpos = zpos2;
-                              other[otherCount].shape = shape;
-                              other[otherCount].name = name;
-                              otherCount++;
-                          }
-                          if(shape->drawLater()) {
-                              later[laterCount].xpos = xpos2;
-                              later[laterCount].ypos = ypos2;
-                              later[laterCount].zpos = zpos2;
-                              later[laterCount].shape = shape;
-                              later[laterCount].name = name;
-                              laterCount++;
-                          }
-                      }
-                  }
-              }
-          }
-        }
-      }
-    }
+  
+  for(int yp = 0; yp < MAP_VIEW_DEPTH; yp++) {
+	for(int xp = 0; xp < MAP_VIEW_WIDTH; xp++) {
+	  for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
+		// draw the walls
+		if(pos[getX() + xp][getY() + yp][zp]) {
+		  
+		  // draw the shape and item
+		  shape = NULL;
+		  if(pos[getX() + xp][getY() + yp][zp]->x == getX() + xp &&
+			 pos[getX() + xp][getY() + yp][zp]->y == getY() + yp &&
+			 pos[getX() + xp][getY() + yp][zp]->z == zp) {
+			shape = pos[getX() + xp][getY() + yp][zp]->shape;
+			if(shape) {
+			  xpos2 = ((float)(xp) / GLShape::DIV);
+			  ypos2 = (((float)(yp) - (float)shape->getDepth()) / GLShape::DIV);
+			  zpos2 = (float)(zp) / GLShape::DIV;
+			  name = getX() + xp + (MAP_WIDTH * (getY() + yp)) + (MAP_WIDTH * MAP_DEPTH * zp);
+			  
+			  if(shape->isStencil()) {
+				//doDrawShape(xpos2, ypos2, zpos2, shape, name);
+				stencil[stencilCount].xpos = xpos2;
+				stencil[stencilCount].ypos = ypos2;
+				stencil[stencilCount].zpos = zpos2;
+				stencil[stencilCount].shape = shape;
+				stencil[stencilCount].name = name;
+				stencilCount++;
+			  } else if(!shape->isStencil()) {
+				if(shape->drawFirst()) {
+				  //doDrawShape(xpos2, ypos2, zpos2, shape, name);
+				  other[otherCount].xpos = xpos2;
+				  other[otherCount].ypos = ypos2;
+				  other[otherCount].zpos = zpos2;
+				  other[otherCount].shape = shape;
+				  other[otherCount].name = name;
+				  otherCount++;
+				}
+				if(shape->drawLater()) {
+				  later[laterCount].xpos = xpos2;
+				  later[laterCount].ypos = ypos2;
+				  later[laterCount].zpos = zpos2;
+				  later[laterCount].shape = shape;
+				  later[laterCount].name = name;
+				  laterCount++;
+				}
+			  }
+			}
+		  }
+		}
+	  }
+	}
+  }
 }
 
 void Map::draw(SDL_Surface *surface) {
@@ -478,11 +467,7 @@ Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
      ((pos[x][y][z]->shape &&
       pos[x][y][z]->x == x &&
       pos[x][y][z]->y == y &&
-      pos[x][y][z]->z == z) ||
-     (pos[x][y][z]->item &&
-      pos[x][y][z]->ix == x &&
-      pos[x][y][z]->iy == y &&
-      pos[x][y][z]->iz == z))) return pos[x][y][z];
+      pos[x][y][z]->z == z))) return pos[x][y][z];
   return NULL;
 }
 
@@ -580,10 +565,10 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
 
           if(!pos[x + xp][y - yp][z + zp]) {
             pos[x + xp][y - yp][z + zp] = new Location();
-            pos[x + xp][y - yp][z + zp]->item = NULL;
           }
 
           pos[x + xp][y - yp][z + zp]->shape = shape;
+		  pos[x + xp][y - yp][z + zp]->item = NULL;
           pos[x + xp][y - yp][z + zp]->x = x;
           pos[x + xp][y - yp][z + zp]->y = y;
           pos[x + xp][y - yp][z + zp]->z = z;
@@ -595,28 +580,23 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
 
 Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
   Shape *shape = NULL;
-	if(pos[x][y][z] &&
+  if(pos[x][y][z] &&
      pos[x][y][z]->shape &&
      pos[x][y][z]->x == x &&
      pos[x][y][z]->y == y &&
      pos[x][y][z]->z == z) {
-        mapChanged = true;
+	mapChanged = true;
     shape = pos[x][y][z]->shape;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         for(int zp = 0; zp < shape->getHeight(); zp++) {
-
-          if(pos[x + xp][y - yp][z + zp]->item) {
-            pos[x + xp][y - yp][z + zp]->shape = NULL;
-          } else {
-            delete pos[x + xp][y - yp][z + zp];
-            pos[x + xp][y - yp][z + zp] = NULL;
-          }
+		  delete pos[x + xp][y - yp][z + zp];
+		  pos[x + xp][y - yp][z + zp] = NULL;          
         }
       }
     }
-	}
-	return shape;
+  }
+  return shape;
 }
 
 void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
@@ -629,13 +609,13 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
 
             if(!pos[x + xp][y - yp][z + zp]) {
               pos[x + xp][y - yp][z + zp] = new Location();
-              pos[x + xp][y - yp][z + zp]->shape = NULL;
             }
 
             pos[x + xp][y - yp][z + zp]->item = item;
-            pos[x + xp][y - yp][z + zp]->ix = x;
-            pos[x + xp][y - yp][z + zp]->iy = y;
-            pos[x + xp][y - yp][z + zp]->iz = z;
+			pos[x + xp][y - yp][z + zp]->shape = item->getShape();
+            pos[x + xp][y - yp][z + zp]->x = x;
+            pos[x + xp][y - yp][z + zp]->y = y;
+            pos[x + xp][y - yp][z + zp]->z = z;
           }
         }
       }
@@ -645,27 +625,23 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
 
 Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
   Item *item = NULL;
-	if(pos[x][y][z] &&
+  if(pos[x][y][z] &&
      pos[x][y][z]->item &&
-     pos[x][y][z]->ix == x &&
-     pos[x][y][z]->iy == y &&
-     pos[x][y][z]->iz == z) {
-        mapChanged = true;
+     pos[x][y][z]->x == x &&
+     pos[x][y][z]->y == y &&
+     pos[x][y][z]->z == z) {
+	mapChanged = true;
     item = pos[x][y][z]->item;
     for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
       for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {
         for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
-
-          if(pos[x + xp][y - yp][z + zp]->shape) {
-            pos[x + xp][y - yp][z + zp]->item = NULL;
-          } else {
-            delete pos[x + xp][y - yp][z + zp];
-            pos[x + xp][y - yp][z + zp] = NULL;
-          }
+		  
+		  delete pos[x + xp][y - yp][z + zp];
+		  pos[x + xp][y - yp][z + zp] = NULL;		
         }
       }
     }
-	}
-	return item;
+  }
+  return item;
 }
 

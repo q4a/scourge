@@ -33,9 +33,6 @@ public:
   // shapes
   Uint16 x, y, z;
   Shape *shape;
-
-  // items
-  Uint16 ix, iy, iz;  
   Item *item;
 };
 
