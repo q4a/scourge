@@ -51,21 +51,21 @@ configure:2723: checking for main in -ldl
 configure:2759: checking for main in -lm
 configure:2846: checking for sdl-config
 configure:2881: checking for SDL - version >= 1.0.1
-configure:2966: gcc -o conftest  -I/usr/include/SDL -D_REENTRANT   conftest.c  -L/usr/lib -lSDL -lpthread 1>&5
+configure:2966: gcc -o conftest  -I/usr/include/SDL -D_REENTRANT   conftest.c  -L/usr/lib -Wl,-rpath,/usr/lib -lSDL -lpthread 1>&5
 configure:3056: checking for SDL_JoystickOpen
 configure:3116: checking for Mix_OpenAudio in -lSDL_mixer
 configure:3206: checking for GL library
-configure:3216: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL 1>&5
+configure:3216: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -Wl,-rpath,/usr/lib -lSDL -lpthread  -lGL 1>&5
 configure:3488: checking for glXGetProcAddressARB
 configure:3564: checking for GLU library
-configure:3574: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL -lGLU 1>&5
+configure:3574: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -Wl,-rpath,/usr/lib -lSDL -lpthread  -lGL -lGLU 1>&5
 configure:3657: checking for GL/gl.h
 configure:3664: gcc -E    -DHAVE_SDL=1 conftest.c >/dev/null 2>conftest.out
 configure:3723: checking for GL/glx.h
 configure:3772: checking for GL/glext.h
 configure:3821: checking whether glext.h is recent enough
 configure:3884: checking for glut32 library
-configure:3894: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL -lGLU  -lglut32 1>&5
+configure:3894: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -Wl,-rpath,/usr/lib -lSDL -lpthread  -lGL -lGLU  -lglut32 1>&5
 /usr/bin/ld: cannot find -lglut32
 collect2: ld returned 1 exit status
 configure: failed program was:
@@ -76,5 +76,5 @@ int main() {
 
 ; return 0; }
 configure:3884: checking for glut library
-configure:3894: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL -lGLU  -lglut 1>&5
+configure:3894: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -Wl,-rpath,/usr/lib -lSDL -lpthread  -lGL -lGLU  -lglut 1>&5
 configure:3943: checking for GL/glut.h

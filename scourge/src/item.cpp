@@ -26,6 +26,8 @@ Item::Item(RpgItem *rpgItem) {
   // this is so the player is not blocked by swords and axes on the ground
   this->blocking = (shape->getHeight() > 1);
   this->containedItemCount = 0;
+  currentCharges = rpgItem->getMaxCharges();
+  weight = rpgItem->getWeight();
 }
 
 Item::~Item(){
@@ -73,7 +75,7 @@ void Item::getDetailedDescription(char *s, bool precise){
         sprintf(s, "(Q:%d,W:%2.2f, N:%d/%d) %s", 
             rpgItem->getQuality(), 
 			rpgItem->getWeight(),
-			rpgItem->getCurrentCharges(),
+			getCurrentCharges(),
 			rpgItem->getMaxCharges(),
 			(precise ? rpgItem->getName() : rpgItem->getShortDesc()));
     }
@@ -116,13 +118,11 @@ void Item::initItems(ShapePalette *shapePal) {
 	  int action = 0;
 	  int speed = 0;
 	  int distance = 0;
-	  int currentCharges = 0;
 	  int maxCharges = 0;
 	  if(p) {
 		action = atoi(p);
 		speed = atoi(strtok(NULL, ","));
 		distance = atoi(strtok(NULL, ","));
-		currentCharges = atoi(strtok(NULL, ","));
 		maxCharges = atoi(strtok(NULL, ","));
 	  }
 	  n = Constants::readLine(line, fp);
@@ -169,11 +169,33 @@ void Item::initItems(ShapePalette *shapePal) {
 								   twohanded, 
 								   (distance < (int)Constants::MIN_DISTANCE ? 
 									(int)Constants::MIN_DISTANCE : distance), 
-								   skill_index, currentCharges, 
-								   maxCharges));	  
+								   skill_index, maxCharges));	  
 	} else {
 	  n = Constants::readLine(line, fp);
 	}
   }
   fclose(fp);
+}
+
+// return true if the item is used up
+bool Item::decrementCharges(){
+    float f1;
+    int oldCharges;
+    
+    oldCharges = getCurrentCharges();            
+    if(oldCharges <= 1){
+        // The object is totally consummed
+        return true;    
+    }            
+    setCurrentCharges(oldCharges - 1);
+            
+    // Compute initial weight to be able to compute new weight
+    // (without increasing error each time)
+    
+    f1 = getWeight();
+    f1 *= (float) (getRpgItem()->getMaxCharges());
+    f1 /= (float) oldCharges;
+    f1 *= (((float)oldCharges - 1.0f) / (float)(getRpgItem()->getMaxCharges()));            
+    setWeight(f1);
+    return false;      
 }

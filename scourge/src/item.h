@@ -45,6 +45,8 @@ class Item {
   bool blocking;
   Item *containedItems[MAX_CONTAINED_ITEMS];
   int containedItemCount;
+  int currentCharges;
+  float weight;
   
 public:
   Item(RpgItem *rpgItem);
@@ -57,6 +59,11 @@ public:
   inline RpgItem *getRpgItem() { return rpgItem; }
   inline bool isBlocking() { return blocking; }
   inline void setBlocking(bool b) { blocking = b; }
+  inline int getCurrentCharges() { return currentCharges; }
+  inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>rpgItem->getMaxCharges())n=rpgItem->getMaxCharges(); currentCharges = n; } 
+  inline float getWeight() { return weight; }
+  inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
+
 
   void getDetailedDescription(char *s, bool precise=true);
 
@@ -67,6 +74,10 @@ public:
   Item *removeContainedItem(int index);
   Item *getContainedItem(int index);
   bool isContainedItem(Item *item);
+
+  // return true if the item is used up
+  // this method also adjusts weight
+  bool decrementCharges();
   
   static void initItems(ShapePalette *shapePal);
 };

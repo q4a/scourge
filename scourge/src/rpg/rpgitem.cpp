@@ -42,7 +42,7 @@ char RpgItem::itemTypeStr[ITEM_TYPE_COUNT][40] = {
 
 RpgItem::RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-				 int twohanded, int distance, int skill, int currentCharges, int maxCharges) {
+				 int twohanded, int distance, int skill, int maxCharges) {
   this->index = index;
   this->name = name;
   this->level = level;
@@ -59,7 +59,6 @@ RpgItem::RpgItem(int index, char *name, int level, int type, float weight, int p
   this->twohanded = twohanded;
   this->distance = distance;
   this->skill = skill;
-  this->currentCharges = currentCharges;
   this->maxCharges = maxCharges;
 }
 
