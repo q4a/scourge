@@ -26,6 +26,8 @@
 
 #define INFO_INTERVAL 3000
 
+#define DEBUG_BATTLE_ROUND 0
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 // good for debugging blending
@@ -2198,6 +2200,7 @@ bool Scourge::fightCurrentBattleTurn() {
     }
     if( c == party->getPartySize() ) {
       for( int i = 0; i < party->getPartySize(); i++ ) {
+		if( DEBUG_BATTLE_ROUND ) cerr << "*** Reset in scourge!" << endl;
         party->getParty(i)->getBattle()->reset();
       }
       roundOver = true;
@@ -2225,8 +2228,8 @@ bool Scourge::fightCurrentBattleTurn() {
       rtStartTurn = battleTurn = 0;
       if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
       
-      if(DEBUG_BATTLE) cerr << "ROUND ENDS" << endl;
-      if(DEBUG_BATTLE) cerr << "----------------------------------" << endl;
+      if(DEBUG_BATTLE_ROUND) cerr << "ROUND ENDS" << endl;
+      if(DEBUG_BATTLE_ROUND) cerr << "----------------------------------" << endl;
       return true;
     }
   }
@@ -2240,8 +2243,8 @@ bool Scourge::createBattleTurns() {
   battleCount = 0;
 
   // anybody doing anything?
-  for (int i = 0; i < party->getPartySize(); i++) {
-    if (!party->getParty(i)->getStateMod(Constants::dead)) {
+  for( int i = 0; i < party->getPartySize(); i++ ) {
+    if( !party->getParty(i)->getStateMod(Constants::dead) ) {
       // possessed creature attacks fellows...
       if(party->getParty(i)->getTargetCreature() && 
          party->getParty(i)->getStateMod(Constants::possessed)) {
@@ -2251,7 +2254,7 @@ bool Scourge::createBattleTurns() {
                                                                  party->getParty(i)->getShape()->getDepth(),
                                                                  20);
         if (target) {
-          party->getParty(i)->setTargetCreature(target);
+		  party->getParty(i)->setTargetCreature(target);
         }
       }
       bool hasTarget = (party->getParty(i)->hasTarget() || 
@@ -2261,6 +2264,7 @@ bool Scourge::createBattleTurns() {
                        levelMap->isLocationInLight(toint(party->getParty(i)->getX()), 
                                               toint(party->getParty(i)->getY())));
       if ( hasTarget && party->getParty(i)->isTargetValid() && visible ) {
+		if( DEBUG_BATTLE_ROUND ) cerr << "*** init party target" << endl;
         battle[battleCount++] = party->getParty(i)->getBattle();
       }
     }
@@ -2268,13 +2272,16 @@ bool Scourge::createBattleTurns() {
   for (int i = 0; i < session->getCreatureCount(); i++) {
     if (!session->getCreature(i)->getStateMod(Constants::dead) &&
         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
-                               toint(session->getCreature(i)->getY())) &&
+									toint(session->getCreature(i)->getY())) &&
         levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
-                               toint(session->getCreature(i)->getY()))) {
-      bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
-                        session->getCreature(i)->getAction() > -1);
-      if (hasTarget && session->getCreature(i)->isTargetValid()) {
-        battle[battleCount++] = session->getCreature(i)->getBattle();
+									toint(session->getCreature(i)->getY()))) {
+	  bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
+						session->getCreature(i)->getAction() > -1);
+	  bool possible = ( session->getCreature(i)->getBattle()->getAvailablePartyTarget() != NULL );
+      if(hasTarget && session->getCreature(i)->isTargetValid()) {
+		if( !possible ) {
+		  if( DEBUG_BATTLE_ROUND ) cerr << "*** not starting combat: possible is false." << endl;
+		} else battle[battleCount++] = session->getCreature(i)->getBattle();
       }
     }
   }
@@ -2326,8 +2333,8 @@ bool Scourge::createBattleTurns() {
     // order the battle turns by initiative
     Battle::setupBattles(getSession(), battle, battleCount, &battleRound);
     rtStartTurn = battleTurn = 0;
-    if(DEBUG_BATTLE) cerr << "++++++++++++++++++++++++++++++++++" << endl;
-    if(DEBUG_BATTLE) cerr << "ROUND STARTS" << endl;
+    if(DEBUG_BATTLE_ROUND) cerr << "++++++++++++++++++++++++++++++++++" << endl;
+    if(DEBUG_BATTLE_ROUND) cerr << "ROUND STARTS" << endl;
 
     if(getUserConfiguration()->isBattleTurnBased()) groupButton->setVisible(false);
     return true;
