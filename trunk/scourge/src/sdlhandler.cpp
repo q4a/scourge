@@ -214,6 +214,18 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 		printf("Error: bad bpp=%d\n", bpp);
 		printusage = true;
 	  }
+	} else if(strstr(argv[i], "--width") == argv[i]) {	  
+	  w = atoi(argv[i] + 7);
+	  if(!w) {
+		printf("Error: bad width=%s\n", argv[i] + 7);
+		printusage = true;
+	  }
+	} else if(strstr(argv[i], "--height") == argv[i]) {	  
+	  h = atoi(argv[i] + 8);
+	  if(!h) {
+		printf("Error: bad height=%s\n", argv[i] + 8);
+		printusage = true;
+	  }
 	} else if(strstr(argv[i], "--shadow") == argv[i]) {	  
 	  Constants::shadowMode = atoi(argv[i] + 8);
       if(!(Constants::shadowMode == 0 || 
@@ -267,6 +279,8 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	printf("\t--test - list card's supported video modes\n");
 	printf("\t--version - print the build version\n");
 	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
+	printf("\t--widthXX - use XX pixels for the screen width\n");
+	printf("\t--heightXX - use XX pixels for the screen height\n");
     printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
 	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
 	exit(0);
@@ -333,16 +347,15 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
   
   /* get a SDL surface */
   screen = SDL_SetVideoMode( w, h, bpp, videoFlags );
-    
-  /* hide the mouse cursor; we have our own */
-  SDL_ShowCursor(SDL_DISABLE);
-  SDL_WM_SetCaption("Scourge", NULL);
-  
   /* Verify there is a surface */
   if ( !screen ) {
 	fprintf( stderr,  "Video mode set failed: %s\n", SDL_GetError( ) );
 	quit( 1 );
   }
+
+  /* hide the mouse cursor; we have our own */
+  SDL_ShowCursor(SDL_DISABLE);
+  SDL_WM_SetCaption("Scourge", NULL);
   
   /* for Mac OS X in windowed mode, invert the mouse. SDL bug. */
 #ifdef __APPLE__
@@ -429,40 +442,9 @@ void SDLHandler::mainLoop() {
 
     if(isActive) {
 	  screenView->drawView(screen);
-	  /*
-      // if cursor doesn't display, disable depth testing, lights, etc.
-      glPushMatrix();
-	  glLoadIdentity();
 
-      float w = 48.0f;
-      float h = 48.0f;
-	  glDisable(GL_LIGHTING);
-	  glDisable(GL_DEPTH_TEST);
-	  glTranslatef((float)mouseX, (float)mouseY, 0.0f);
-
-	  glEnable( GL_BLEND );
-	  glBlendFunc( GL_SRC_COLOR, GL_SRC_ALPHA );
-
-      glBindTexture( GL_TEXTURE_2D, shapePal->getCursorTex() );
-      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);      
-      glBegin( GL_QUADS );
-        // front
-        //glNormal3f(0.0f, 1.0f, 0.0f);
-        glTexCoord2f( 0, 0 );
-        glVertex2f(0, 0);
-        glTexCoord2f( 1, 0 );
-        glVertex2f(w, 0);
-        glTexCoord2f( 1, 1 );
-        glVertex2f(w, h);
-        glTexCoord2f( 0, 1 );
-        glVertex2f(0, h);
-      glEnd();
-	  glDisable(GL_BLEND);
-	  glEnable(GL_DEPTH_TEST);
-	  glEnable( GL_LIGHTING );
-      // reset the model_view matrix
-      glPopMatrix();
-	  */
+	  // redraw the gui
+	  Window::drawVisibleWindows();
 
       if(shapePal->cursorImage) {
         // for cursor: do alpha bit testing

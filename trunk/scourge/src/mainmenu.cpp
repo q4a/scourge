@@ -57,13 +57,26 @@ void MainMenu::init() {
 	  scourge->getGui()->addActiveRegion(60, 285, 310, 305, Constants::MENU_2, this);
 	  scourge->getGui()->addActiveRegion(60, 305, 310, 325, Constants::MENU_3, this);
 	  scourge->getGui()->addActiveRegion(60, 325, 310, 345, Constants::MENU_4, this);
+
+	  // The new style gui (testing for now)
+	  mainWin = new Window( scourge->getSDLHandler(),
+							350, 230, 270, 250, 
+							"Main Menu (Testing new UI)", 
+							scourge->getShapePalette()->getGuiTexture() );
+	  char version[100];
+	  sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
+	  Label *label = new Label( 10, 20, version);
+	  label->setColor( 0.6f, 0.75f, 0.95f, 1.0f );
+	  mainWin->addWidget((Widget*)label);
     } else {
 	  scourge->getGui()->popWindows();
     }
+	mainWin->setVisible(true);
 }
 
 void MainMenu::destroy() {
   scourge->getGui()->pushWindows();
+	mainWin->setVisible(false);
 }
 
 void MainMenu::drawView(SDL_Surface *screen) {
@@ -131,7 +144,7 @@ void MainMenu::drawView(SDL_Surface *screen) {
   glColor4f( 0.7, 0.7, 0.3, 0.5 );
   glPushMatrix();
   glLoadIdentity();
-  glTranslatef( 585 + (int)(8.0 * rand()/RAND_MAX) - 4, 
+  glTranslatef( scourge->getSDLHandler()->getScreen()->w - 215 + (int)(8.0 * rand()/RAND_MAX) - 4, 
 				385 + (int)(8.0 * rand()/RAND_MAX) - 4, 
 				0 ); 
   float w = 64;
@@ -186,7 +199,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
   for(int i = 0; i < cloudCount; i++) {
 	glPushMatrix();
 	glTranslatef( cloud[i].x, 
-				  (flipped ? scourge->getSDLHandler()->getScreen()->h - (cloud[i].y + h / 2.0) : cloud[i].y), 
+				  (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y), 
 				  0 );
 	w = cloud[i].w;
 	h = cloud[i].h;
@@ -223,7 +236,7 @@ void MainMenu::drawWater() {
   w = scourge->getSDLHandler()->getScreen()->w;
   h = 130;
   glLoadIdentity();
-  glTranslatef( 0, scourge->getSDLHandler()->getScreen()->h - h, 0);
+  glTranslatef( 0, 600 - h, 0);
   glDisable( GL_TEXTURE_2D );
   //  glDisable( GL_LIGHTING );
   //glEnable( GL_BLEND );

@@ -90,7 +90,6 @@ protected:
   bool useDoor(Location *pos);
 
 public:
-  #define GUI_HEIGHT 100
   #define TOP_GUI_WIDTH 400
   #define TOP_GUI_HEIGHT 100
   #define GUI_PLAYER_INFO_W 250

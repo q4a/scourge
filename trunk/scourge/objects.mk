@@ -1,5 +1,6 @@
 OBJS = \
 	src/constants.o\
+	src/gui/window.o src/gui/widget.o src/gui/label.o\
 	src/rpg/rpgitem.o src/rpg/character.o src/rpg/pc.o\
 	src/creature.o src/debugshape.o\
 	src/dungeongenerator.o src/glshape.o src/gltorch.o src/gui.o\

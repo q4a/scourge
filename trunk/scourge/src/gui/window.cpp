@@ -1,0 +1,153 @@
+/***************************************************************************
+                          window.cpp  -  description
+                             -------------------
+    begin                : Thu Aug 28 2003
+    copyright            : (C) 2003 by Gabor Torok
+    email                : cctorok@yahoo.com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#include "window.h"
+
+int Window::windowCount = 0;
+Window *Window::window[MAX_WINDOW];
+
+/**
+  *@author Gabor Torok
+  */
+  
+Window::Window(SDLHandler *sdlHandler, 
+			   int x, int y, int w, int h, 
+			   const char *title, GLuint texture) {
+  this->sdlHandler = sdlHandler;
+  this->x = x;
+  this->y = y;
+  this->h = h;
+  this->w = w;
+  this->title = strdup(title);
+  this->texture = texture;
+  this->visible = false;
+  this->widgetCount = 0;
+  addWindow(this);
+}
+
+Window::~Window() {
+  free(title);
+  removeWindow(this);
+}
+
+void Window::addWindow(Window *win) {
+  if(windowCount < MAX_WINDOW) window[windowCount++] = win;
+}
+
+void Window::removeWindow(Window *win) {
+  if(windowCount) --windowCount;
+}
+
+void Window::drawVisibleWindows() {
+  for(int i = 0; i < windowCount; i++) {
+	if(window[i]->isVisible()) window[i]->draw();
+  }
+}
+
+void Window::addWidget(Widget *widget) {
+  if(widgetCount < MAX_WIDGET) this->widget[widgetCount++] = widget;
+}
+
+/*
+void Window::removeWidget(Widget *widget) {
+  for(int i = 0; i < widgetCount; i++) {
+	if(widget[i] == widget) {
+	  for(int t = i; t < widgetCount - 1; t++) {
+		widget[t] = widget[t + 1];
+	  }
+	  widgetCount--;
+	  return;
+	}
+  }
+}
+*/
+
+void Window::draw() {
+  glPushMatrix();
+  glLoadIdentity( );
+  glEnable( GL_TEXTURE_2D );
+  // tile the background
+  glColor3f(1.0f, 0.6f, 0.3f);
+  glTranslated(x, y, 0);
+  glBindTexture( GL_TEXTURE_2D, texture );
+  glBegin (GL_QUADS);
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (0, 0);
+  glTexCoord2f (0.0f, TOP_HEIGHT/(float)TILE_H);
+  glVertex2i (0, TOP_HEIGHT);
+  glTexCoord2f (w/(float)TILE_W, TOP_HEIGHT/(float)TILE_H);
+  glVertex2i (w, TOP_HEIGHT);
+  glTexCoord2f (w/(float)TILE_W, 0.0f);      
+  glVertex2i (w, 0);
+  glEnd ();
+
+  glBegin (GL_QUADS);
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (0, h - BOTTOM_HEIGHT);
+  glTexCoord2f (0.0f, BOTTOM_HEIGHT/(float)TILE_H);
+  glVertex2i (0, h);
+  glTexCoord2f (w/(float)TILE_W, BOTTOM_HEIGHT/(float)TILE_H);
+  glVertex2i (w, h);
+  glTexCoord2f (w/(float)TILE_W, 0.0f);      
+  glVertex2i (w, h - BOTTOM_HEIGHT);
+  glEnd ();
+
+  glDisable( GL_TEXTURE_2D );
+
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glColor4f( 0.7f, 0.65f, 0.2f, 0.5f );
+  glBegin (GL_QUADS);
+  glVertex2i (0, TOP_HEIGHT);
+  glVertex2i (0, h - BOTTOM_HEIGHT);
+  glVertex2i (w, h - BOTTOM_HEIGHT);
+  glVertex2i (w, TOP_HEIGHT);
+  glEnd();
+  glDisable( GL_BLEND );
+
+  // add a border
+  glColor3f(1.0f, 0.6f, 0.3f);
+  glBegin(GL_LINES);
+  glVertex2d(w, h);
+  glVertex2d(0, h);
+  glVertex2d(0, 0);
+  glVertex2d(w, 0);
+  glVertex2d(0, 0);
+  glVertex2d(0, h);
+  glVertex2d(w, 0);
+  glVertex2d(w, h);		            
+  glVertex2i (0, TOP_HEIGHT);
+  glVertex2i (w, TOP_HEIGHT);
+  glVertex2i (0, h - BOTTOM_HEIGHT);
+  glVertex2i (w, h - BOTTOM_HEIGHT);
+  glEnd();
+
+  // print title
+  glColor3f( 1, 1, 1 );
+  sdlHandler->texPrint(10, 13, "%s", title);
+
+  // draw widgets
+  for(int i = 0; i < widgetCount; i++) {
+  	glPushMatrix();
+  	glLoadIdentity();
+  	glTranslated(x, y + TOP_HEIGHT, 0);
+	widget[i]->draw(sdlHandler);
+  	glPopMatrix();
+  }
+
+  glEnable( GL_TEXTURE_2D );
+  glPopMatrix();
+}
