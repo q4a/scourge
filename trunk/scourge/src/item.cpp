@@ -17,6 +17,8 @@
 
 #include "item.h"
 
+map<int, vector<string> *> Item::soundMap;
+
 Item::Item(RpgItem *rpgItem) {
   this->rpgItem = rpgItem;
   this->shapeIndex = this->rpgItem->getShapeIndex();
@@ -213,11 +215,39 @@ void Item::initItems(ShapePalette *shapePal) {
         }
         p = strtok(NULL, ",");
       }
+    } else if(n == 'S') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      char *p = strtok(line, ",");
+      int type_index = RpgItem::getTypeByName(p);
+      vector<string> *sounds = NULL;
+      if(Item::soundMap.find(type_index) != Item::soundMap.end()) {
+        sounds = Item::soundMap[type_index];
+      } else {
+        sounds = new vector<string>;
+        Item::soundMap[type_index] = sounds;
+      }
+      p = strtok(NULL, ",");
+      while(p) {
+        string f = p;
+        sounds->push_back(f);
+        p = strtok(NULL, ",");
+      }
     } else {
       n = Constants::readLine(line, fp);
     }
   }
   fclose(fp);
+}
+
+const char *Item::getRandomSound() {
+  vector<string> *sounds = NULL;
+  if(Item::soundMap.find(this->getRpgItem()->getType()) != Item::soundMap.end()) {
+    sounds = Item::soundMap[this->getRpgItem()->getType()];
+  }
+  if(!sounds || !(sounds->size())) return NULL;
+  string s = (*sounds)[(int)((float)(sounds->size()) * rand()/RAND_MAX)];
+  return s.c_str();
 }
 
 // return true if the item is used up

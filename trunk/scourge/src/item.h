@@ -23,6 +23,7 @@
 #include "shapepalette.h"
 #include "rpg/rpgitem.h"
 #include "rpg/spell.h"
+#include <vector>
 
 class Scourge;
 
@@ -50,10 +51,12 @@ class Item {
   float weight;
   Spell *spell;
   char itemName[255];
-  
+
 public:
   Item(RpgItem *rpgItem);
   ~Item();
+
+  static map<int, vector<string> *> soundMap;
   
   inline Color *getColor() { return color; }
   inline void setColor(Color *c) { color = c; }
@@ -84,6 +87,8 @@ public:
   // return true if the item is used up
   // this method also adjusts weight
   bool decrementCharges();
+
+  const char *getRandomSound();
   
   static void initItems(ShapePalette *shapePal);
 };

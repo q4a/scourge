@@ -322,8 +322,9 @@ void Creature::setSelXY(int x, int y, bool force) {
   adjustMovementToRange();
   
   // play command sound
-  if(!isMonster() && x > -1 && 
-     0 == (int)(session->getUserConfiguration()->getSoundFreq() * rand()/RAND_MAX)) {
+  if(x > -1 && 
+     session->getParty()->getPlayer() == this && 
+     0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX)) {
     session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
   }
 }

@@ -103,6 +103,17 @@ void Sound::loadSounds() {
       }
     }
   }
+
+  cerr << "Loading item sounds..." << endl;
+  for(map<int, vector<string>*>::iterator i = Item::soundMap.begin(); 
+       i != Item::soundMap.end(); ++i) {
+    //Creature *creature = i->first;
+    vector<string> *v = i->second;
+    for(int r = 0; r < (int)v->size(); r++) {
+      string file = (*v)[r];
+      storeSound(0, file.c_str());
+    }
+  }
 }
 
 void Sound::storeSound(int type, const char *file) {
@@ -123,10 +134,10 @@ void Sound::storeSound(int type, const char *file) {
 void Sound::playSound(const char *file) {
 #ifdef HAVE_SDL_MIXER
   if(file) {
-    cerr << "*** Playing WAV: " << file << endl;
+    //cerr << "*** Playing WAV: " << file << endl;
     string fileStr = file;
     if(soundMap.find(fileStr) != soundMap.end()) {
-      if(Mix_PlayChannel(-1, soundMap[fileStr], 0)) {
+      if(Mix_PlayChannel(-1, soundMap[fileStr], 0) == -1) {
         cerr << "*** Error playing WAV file: " << fileStr << endl;
         cerr << "\t" << Mix_GetError() << endl;
       }
