@@ -62,6 +62,11 @@ class Battle {
   bool projectileHit;
   Spell *spell;
 
+  int wait;
+  int ap;
+  int lastX, lastY;
+
+
  public:
   
   /**
@@ -88,7 +93,7 @@ class Battle {
   ~Battle();
 
   inline bool isEmpty() { return empty; }
-  void fightTurn();
+  bool fightTurn();
 
   void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW);
 

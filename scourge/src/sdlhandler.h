@@ -135,6 +135,7 @@ private:
   void setVideoMode(UserConfiguration *uc);
   char ** getVideoModes(int &nbModes);
   void mainLoop();
+  void drawScreen();
   void fireEvent(Widget *widget, SDL_Event *event);
   bool firedEventWaiting();
 

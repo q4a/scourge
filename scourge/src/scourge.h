@@ -160,7 +160,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   NetPlay *netPlay;
 
   float targetWidth, targetWidthDelta;
-  GLint lastTargetTick;
+  Uint32 lastTargetTick;
 
   // party ui
   bool lastEffectOn;
@@ -197,6 +197,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
 
   Session *session;
   Progress *progress;
+  bool inBattle;
 
 protected:
   SDLHandler *sdlHandler;
@@ -360,6 +361,9 @@ public:
     (like the minimap, message ui, etc.) occur.    
   */
   void drawView();
+
+  // refresh the screen in battle
+  void drawInBattle();
   
   /**
     The main app loop calls this after the drawView and the UI (windows) have been drawn.

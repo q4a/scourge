@@ -459,96 +459,101 @@ void SDLHandler::mainLoop() {
     }
 
     if(isActive) {
-      glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-      glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
-      glClearDepth( 1.0f );
-
-      screenView->drawView();
-
-      // redraw the gui
-      Window::drawVisibleWindows();
-
-      screenView->drawAfter();
-
-      if(shapePal->cursorImage) {
-        // for cursor: do alpha bit testing
-        glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
-        //glMatrixMode(GL_MODELVIEW);
-
-        /*
-        glDisable(GL_TEXTURE_2D);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        glDisable(GL_DEPTH_TEST);
-        glEnable(GL_ALPHA_TEST);
-        glAlphaFunc(GL_NOTEQUAL, 0);        
-        glPushMatrix();
-        glLoadIdentity( );                         
-        glPixelZoom( 1.0, -1.0 );
-        glRasterPos2f( (float)mouseX, (float)mouseY );
-        if(cursorMode == CURSOR_NORMAL) {
-          glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
-                       GL_BGRA, GL_UNSIGNED_BYTE, shapePal->cursorImage);
-        } else if(cursorMode == CURSOR_CROSSHAIR) {
-          glDrawPixels(shapePal->crosshair->w, shapePal->crosshair->h,
-                       GL_BGRA, GL_UNSIGNED_BYTE, shapePal->crosshairImage);
-        }
-        */
-
-        ///*
-        glEnable( GL_ALPHA_TEST );
-        glAlphaFunc( GL_NOTEQUAL, 0 );
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glPushMatrix();
-        glLoadIdentity();
-        glTranslatef( mouseX, mouseY, 0 );
-        glBindTexture( GL_TEXTURE_2D, 
-                       cursorMode == CURSOR_NORMAL ? 
-                       shapePal->cursor_texture :
-                       shapePal->crosshair_texture );
-        glColor4f(1, 1, 1, 1);
-        glBegin( GL_QUADS );
-        glNormal3f( 0, 0, 1 );
-        glTexCoord2f( 1, 1 );
-        glVertex2f( shapePal->cursor->w, shapePal->cursor->h );
-        glTexCoord2f( 0, 1 );
-        glVertex2f( 0, shapePal->cursor->h );
-        glTexCoord2f( 0, 0 );
-        glVertex2f( 0, 0 );
-        glTexCoord2f( 1, 0 );
-        glVertex2f( shapePal->cursor->w, 0 );
-        glEnd();
-        //*/
-
-        glPopMatrix();
-        glPopAttrib();		
-      }
+      drawScreen();
     }
+  }
+}
 
-#ifdef SHOW_DEBUG_INFO
+void SDLHandler::drawScreen() {
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
+  glClearDepth( 1.0f );
+
+  screenView->drawView();
+
+  // redraw the gui
+  Window::drawVisibleWindows();
+
+  screenView->drawAfter();
+
+  if(shapePal->cursorImage) {
+    // for cursor: do alpha bit testing
+    glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
+    //glMatrixMode(GL_MODELVIEW);
+
+    /*
+    glDisable(GL_TEXTURE_2D);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_NOTEQUAL, 0);        
+    glPushMatrix();
+    glLoadIdentity( );                         
+    glPixelZoom( 1.0, -1.0 );
+    glRasterPos2f( (float)mouseX, (float)mouseY );
+    if(cursorMode == CURSOR_NORMAL) {
+      glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
+                   GL_BGRA, GL_UNSIGNED_BYTE, shapePal->cursorImage);
+    } else if(cursorMode == CURSOR_CROSSHAIR) {
+      glDrawPixels(shapePal->crosshair->w, shapePal->crosshair->h,
+                   GL_BGRA, GL_UNSIGNED_BYTE, shapePal->crosshairImage);
+    }
+    */
+
+    ///*
+    glEnable( GL_ALPHA_TEST );
+    glAlphaFunc( GL_NOTEQUAL, 0 );
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     glPushMatrix();
     glLoadIdentity();
-    glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
-    texPrint(700, 10, "FPS: %g", getFPS());
+    glTranslatef( mouseX, mouseY, 0 );
+    glBindTexture( GL_TEXTURE_2D, 
+                   cursorMode == CURSOR_NORMAL ? 
+                   shapePal->cursor_texture :
+                   shapePal->crosshair_texture );
+    glColor4f(1, 1, 1, 1);
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 1, 1 );
+    glVertex2f( shapePal->cursor->w, shapePal->cursor->h );
+    glTexCoord2f( 0, 1 );
+    glVertex2f( 0, shapePal->cursor->h );
+    glTexCoord2f( 0, 0 );
+    glVertex2f( 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2f( shapePal->cursor->w, 0 );
+    glEnd();
+    //*/
+
     glPopMatrix();
+    glPopAttrib();		
+  }
+
+
+#ifdef SHOW_DEBUG_INFO
+  glPushMatrix();
+  glLoadIdentity();
+  glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
+  texPrint(700, 10, "FPS: %g", getFPS());
+  glPopMatrix();
 #endif
 
-    /* Draw it to the screen */
-    SDL_GL_SwapBuffers( );
-
-
-    /* Gather our frames per second */
-    Frames++;
-    {
-      GLint t = SDL_GetTicks();
-      if(t - T0 >= 5000) {
-        GLfloat seconds = (t - T0) / 1000.0;
-        fps = Frames / seconds;
-        //printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);
-        T0 = t;
-        Frames = 0;
-      }
+  /* Draw it to the screen */
+  SDL_GL_SwapBuffers( );
+  
+  
+  /* Gather our frames per second */
+  Frames++;
+  {
+    GLint t = SDL_GetTicks();
+    if(t - T0 >= 5000) {
+      GLfloat seconds = (t - T0) / 1000.0;
+      fps = Frames / seconds;
+      //printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);
+      T0 = t;
+      Frames = 0;
     }
   }
 }

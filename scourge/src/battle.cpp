@@ -17,9 +17,9 @@
 
 #include "battle.h"
 
-//#define DEBUG_BATTLE
-#define GOD_MODE 0
-#define MONSTER_IMORTALITY 0
+#define DEBUG_BATTLE
+#define GOD_MODE 1
+#define MONSTER_IMORTALITY 1
 
 enum {
   NO_ACTION = 0,
@@ -46,15 +46,29 @@ Battle::Battle(Scourge *scourge, Creature *creature) {
   this->dist = creature->getDistanceToTarget();
   this->spell = NULL;
   this->empty = false;
+
+
+
+  this->wait = 0;
+  this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
+  lastX = lastY = -1;
 }
 
 Battle::~Battle() {
 }
 
 void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<Battle *> *turns) {
+  // for now put all battles into the vector
+  for(int i = 0; i < count; i++) {
+    battle[i]->initTurn();
+    battle[i]->getCreature()->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+    turns->push_back(battle[i]);
+  }
 
+
+
+/*
   if(count == 0) return;
-
   bool battleStarted = false;
   int battleCount = count;  
   int initiative = -10;
@@ -181,9 +195,102 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
     // if there are no creatures for this initiative slot, go to the next one
     if(!creatureFound) initiative++;
   }
+  */
 }                 
 
-void Battle::fightTurn() {
+bool Battle::fightTurn() {
+
+  // done with this creature's turn
+  if(!ap) {
+    creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+    return true;
+  }
+
+  cerr << "TURN:" << getCreature()->getName() << endl;
+
+  float range = Constants::MIN_DISTANCE;
+  if(item) range = item->getRpgItem()->getDistance();
+  if(creature->getTargetCreature()) {
+    range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
+              creature->getTargetCreature()->getShape()->getWidth() / 2 :
+              creature->getTargetCreature()->getShape()->getDepth() / 2);
+  }
+  cerr << "\tDistance=" << dist << " range=" << range << endl;
+
+  /**                 
+    * How many steps to wait before being able to use the weapon.
+    * 
+    *   FIXME: When implementing for real, this depends on item/spell,etc. 
+    * and skills like speed/proficency. Hard-coded for now.
+  */
+  int weaponWait = 3;
+
+  if(creature->getTargetCreature() && creature->isTargetValid()) {
+    
+    if(dist < range) {
+      if(wait >= weaponWait) {
+        wait = 0;
+        // attack
+        cerr << "\t\tAttacking." << endl;
+        if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
+          launchProjectile();
+        } else {
+          hitWithItem();
+        }
+        creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
+        ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
+      } else {
+        cerr << "\t\tWaiting." << endl;
+        creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+        wait++;
+      }
+    } else {
+      creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+
+      // take 1 step closer
+      cerr << "\t\tTaking a step." << endl;
+      wait++;
+      if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
+           creature->getSelY() == creature->getTargetCreature()->getY())) {
+        creature->setSelXY(creature->getTargetCreature()->getX(),
+                           creature->getTargetCreature()->getY(),
+                           true);
+      }
+      creature->moveToLocator(scourge->getMap());
+      dist = creature->getDistanceToTarget();
+    }
+    ap--;    
+  } else {
+    // select a new target
+    // FIXME: this code should move to Creature
+    Creature *target = NULL;
+    if(creature->isMonster()) {
+      target = scourge->getParty()->getClosestPlayer(creature->getX(), 
+                                                     creature->getY(), 
+                                                     creature->getShape()->getWidth(),
+                                                     creature->getShape()->getDepth(),
+                                                     20);
+    } else {
+      target = scourge->getClosestVisibleMonster(creature->getX(), 
+                                                 creature->getY(), 
+                                                 creature->getShape()->getWidth(),
+                                                 creature->getShape()->getDepth(),
+                                                 20);
+    }
+    if(target) {
+      cerr << "\tSelected new target: " << target->getName() << endl;
+      creature->setTargetCreature(target);
+      creature->setSelXY(creature->getTargetCreature()->getX(),
+                         creature->getTargetCreature()->getY(),
+                         true);
+      initTurn();
+    }
+  }
+
+  // not done yet with creature's turn
+  return false;
+
+  /*
 
   // waiting to cast a spell?
   if(creature->getAction() == Constants::ACTION_CAST_SPELL) {
@@ -205,14 +312,12 @@ void Battle::fightTurn() {
   // If it's a ranged attack and we're not in range, follow the target (will move away from target)
   //
   // This sure is confusing code...
-  /*
-  cerr << "projectileHit=" << projectileHit <<
-        " dist=" << dist <<
-        " creature->isInRange()=" << creature->isInRange() <<
-        " item=" << item <<
-        " creature->getActionSpell()=" << creature->getActionSpell() <<
-        " spell=" << spell << endl;
-        */
+//  cerr << "projectileHit=" << projectileHit <<
+//        " dist=" << dist <<
+//        " creature->isInRange()=" << creature->isInRange() <<
+//        " item=" << item <<
+//        " creature->getActionSpell()=" << creature->getActionSpell() <<
+//        " spell=" << spell << endl;
   if(!projectileHit &&
      ((dist > Constants::MIN_DISTANCE && !item && !creature->getActionSpell() && !spell) ||  
       !creature->isInRange())) { 
@@ -245,6 +350,7 @@ void Battle::fightTurn() {
   } else {
     hitWithItem();
   }
+*/  
 }
 
 void Battle::castSpell() {
@@ -404,7 +510,7 @@ void Battle::dealDamage(int damage, int maxDamage, int effect) {
 
     // target creature death
     if(creature->getTargetCreature()->takeDamage(damage, effect)) {         
-      creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
+      creature->getShape()->setCurrentAnimation((int)MD2_TAUNT, true);  
       sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
       scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
@@ -454,6 +560,23 @@ void Battle::dealDamage(int damage, int maxDamage, int effect) {
 }
 
 void Battle::initTurn() {
+
+  projectileHit = false;
+  dist = creature->getDistanceToTarget();
+  item = creature->getBestWeapon(dist);
+
+  if(item) {
+    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << " wait=" << wait << endl;
+  } else {
+    cerr << "\tUsing bare hands." << endl;
+  }
+
+
+
+
+
+
+/*
   float range = 0.0f;
 
   // select a weapon
@@ -498,6 +621,7 @@ void Battle::initTurn() {
       cerr << "*** Error: unhandled action: " << creature->getAction() << endl;
     }
   }  
+  */
 }
 
 void Battle::initItem(Item *item) {
