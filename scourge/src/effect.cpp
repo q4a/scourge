@@ -86,9 +86,10 @@ void Effect::drawTeleport(GLShape *shape) {
       // create a new particle
       createParticle(shape, &(particle[i]));
 	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 7.0f;
-	  particle[i]->moveDelta = 0.5f;
+	  particle[i]->moveDelta = 0.3f + (0.3f * rand()/RAND_MAX);
 	  if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
 	  particle[i]->maxLife = 10000;
+	  particle[i]->trail = 3;
     } else {
 	  moveParticle(&(particle[i]));
     }
@@ -115,8 +116,9 @@ void Effect::createParticle(GLShape *shape, ParticleStruct **particle) {
   (*particle)->z = (int)(0.8 * rand()/RAND_MAX);
   (*particle)->height = (int)(15.0 * rand()/RAND_MAX) + 10;
   (*particle)->life = 0;
-  (*particle)->moveDelta = 0.3f;
+  (*particle)->moveDelta = (0.3f * rand()/RAND_MAX) + 0.2f;
   (*particle)->maxLife = 10;
+  (*particle)->trail = 1;
 }
 
 void Effect::moveParticle(ParticleStruct **particle) {
@@ -133,38 +135,39 @@ void Effect::moveParticle(ParticleStruct **particle) {
 void Effect::drawParticle(GLShape *shape, ParticleStruct *particle) {
   float w, h;
 
-  // save the model_view matrix
-  glPushMatrix();
-
   w = (float)(shape->getWidth() / GLShape::DIV) / 4.0f;
   //float d = (float)(shape->getDepth() / GLShape::DIV) / 2.0;
   h = (float)(shape->getHeight() / GLShape::DIV) / 3.0f;
   if(h == 0) h = 0.25 / GLShape::DIV;
-  
-  // position the particle
-  //  GLfloat z = (float)(particle->z * h) / 10.0;
-  GLfloat z = particle->z / GLShape::DIV;
-  glTranslatef( particle->x, particle->y, z );  
 
-  // rotate each particle to face viewer
-  glRotatef(-shape->getZRot(), 0.0f, 0.0f, 1.0f);
-  glRotatef(-(90.0 + shape->getYRot()), 1.0f, 0.0f, 0.0f);      
-
-  if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
-
-  glBegin( GL_QUADS );
-  // front
-  glNormal3f(0.0f, 1.0f, 0.0f);
-  if(flameTex) glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(w/2.0f, 0, -h/2.0f);
-  if(flameTex) glTexCoord2f( 0.0f, 1.0f );
-  glVertex3f(-w/2.0f, 0, -h/2.0f);
-  if(flameTex) glTexCoord2f( 0.0f, 0.0f );
-  glVertex3f(-w/2.0f, 0, h/2.0f);
-  if(flameTex) glTexCoord2f( 1.0f, 0.0f );
-  glVertex3f(w/2.0f, 0, h/2.0f);  
-  glEnd();
-
-  // reset the model_view matrix
-  glPopMatrix();
+  for(int i = 0; i < particle->trail; i++) {
+	glPushMatrix();
+		
+	// position the particle
+	//  GLfloat z = (float)(particle->z * h) / 10.0;
+	GLfloat z = (particle->z + i) / GLShape::DIV;
+	glTranslatef( particle->x, particle->y, z );  
+	
+	// rotate each particle to face viewer
+	glRotatef(-shape->getZRot(), 0.0f, 0.0f, 1.0f);
+	glRotatef(-(90.0 + shape->getYRot()), 1.0f, 0.0f, 0.0f);      
+	
+	if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
+	
+	glBegin( GL_QUADS );
+	// front
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	if(flameTex) glTexCoord2f( 1.0f, 1.0f );
+	glVertex3f(w/2.0f, 0, -h/2.0f);
+	if(flameTex) glTexCoord2f( 0.0f, 1.0f );
+	glVertex3f(-w/2.0f, 0, -h/2.0f);
+	if(flameTex) glTexCoord2f( 0.0f, 0.0f );
+	glVertex3f(-w/2.0f, 0, h/2.0f);
+	if(flameTex) glTexCoord2f( 1.0f, 0.0f );
+	glVertex3f(w/2.0f, 0, h/2.0f);  
+	glEnd();
+	
+	// reset the model_view matrix
+	glPopMatrix();
+  }
 }

@@ -156,6 +156,7 @@ typedef struct _ParticleStruct {
   int life;
   GLfloat moveDelta;
   int maxLife;
+  int trail;
 } ParticleStruct;
 
 class Constants {
