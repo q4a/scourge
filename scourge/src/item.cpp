@@ -28,6 +28,8 @@ Item::Item(RpgItem *rpgItem) {
   this->containedItemCount = 0;
   currentCharges = rpgItem->getMaxCharges();
   weight = rpgItem->getWeight();
+  this->spell = NULL;
+  sprintf(this->itemName, "%s", rpgItem->getName());
 }
 
 Item::~Item(){
@@ -77,15 +79,16 @@ void Item::getDetailedDescription(char *s, bool precise){
 			rpgItem->getWeight(),
 			getCurrentCharges(),
 			rpgItem->getMaxCharges(),
-			(precise ? rpgItem->getName() : rpgItem->getShortDesc()));
-    }
-    else{   
+			(precise ? itemName : rpgItem->getShortDesc()));
+    } else if(type == RpgItem::SCROLL) {
+      sprintf(s, "%s", itemName);
+    } else {
 	   sprintf(s, "(A:%d,S:%d,Q:%d,W:%2.2f) %s", 
 			rpgItem->getAction(), 
 			rpgItem->getSpeed(), 
 			rpgItem->getQuality(), 
 			rpgItem->getWeight(),
-			(precise ? rpgItem->getName() : rpgItem->getShortDesc()));
+			(precise ? itemName : rpgItem->getShortDesc()));
     }
 }
 

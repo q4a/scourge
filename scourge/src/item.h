@@ -22,6 +22,7 @@
 #include "glshape.h"
 #include "shapepalette.h"
 #include "rpg/rpgitem.h"
+#include "rpg/spell.h"
 
 class Scourge;
 
@@ -47,6 +48,8 @@ class Item {
   int containedItemCount;
   int currentCharges;
   float weight;
+  Spell *spell;
+  char itemName[255];
   
 public:
   Item(RpgItem *rpgItem);
@@ -63,9 +66,12 @@ public:
   inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>rpgItem->getMaxCharges())n=rpgItem->getMaxCharges(); currentCharges = n; } 
   inline float getWeight() { return weight; }
   inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
+  inline void setSpell(Spell *spell) { this->spell = spell; sprintf(this->itemName, "Scroll of %s", spell->getName()); }
+  inline Spell *getSpell() { return spell; }
 
 
   void getDetailedDescription(char *s, bool precise=true);
+  inline char *getItemName() { return itemName; }
 
   inline int getContainedItemCount() { return containedItemCount; }
   // return true if successful

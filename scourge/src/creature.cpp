@@ -173,7 +173,7 @@ bool Creature::move(Uint16 dir, Map *map) {
       char message[100];
       sprintf(message, "%s picks up %s.", 
               getName(), 
-              item->getRpgItem()->getName());
+              item->getItemName());
       scourge->getMap()->addDescription(message);
     }
 
@@ -565,7 +565,7 @@ bool Creature::eatDrink(Item *item) {
     scourge->getMap()->addDescription(msg);
     bool b = item->decrementCharges();
     if(b) {
-      sprintf(msg, "%s is used up.", rpgItem->getName());
+      sprintf(msg, "%s is used up.", item->getItemName());
       scourge->getMap()->addDescription(msg);
     }
     return b;
@@ -583,7 +583,7 @@ bool Creature::eatDrink(Item *item) {
     // TODO : according to the alcool rate set drunk state or not            
     bool b = item->decrementCharges();
     if(b) {
-      sprintf(msg, "%s is used up.", rpgItem->getName());
+      sprintf(msg, "%s is used up.", item->getItemName());
       scourge->getMap()->addDescription(msg);
     }
     return b;
@@ -598,7 +598,7 @@ bool Creature::eatDrink(Item *item) {
     usePotion(item);
     bool b = item->decrementCharges();
     if(b) {
-      sprintf(msg, "%s is used up.", rpgItem->getName());
+      sprintf(msg, "%s is used up.", item->getItemName());
       scourge->getMap()->addDescription(msg);
     }
     return b;
@@ -687,7 +687,7 @@ void Creature::setAction(int action,
   char msg[80];
   switch(action) {
   case Constants::ACTION_EAT_DRINK:
-    sprintf(msg, "%s will consume %s.", getName(), item->getRpgItem()->getName());
+    sprintf(msg, "%s will consume %s.", getName(), item->getItemName());
     break;
   case Constants::ACTION_CAST_SPELL:
     sprintf(msg, "%s will cast %s.", getName(), spell->getName());

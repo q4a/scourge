@@ -1174,7 +1174,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 					x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
 					y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
 					pedestal->getShape()->getHeight());
-			cerr << "*** Added mission item: " << item->getRpgItem()->getName() << endl;
+			cerr << "*** Added mission item: " << item->getItemName() << endl;
 		  }
 
 		  // add mission creatures
@@ -1188,6 +1188,19 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			creature->moveTo(x, y, 0);
 			cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
 		  }
+		}
+
+    // add some scrolls with spells
+    for(int i = 0; i < objectCount / 4; i++) {
+			Spell *spell = MagicSchool::getRandomSpell(level);
+			if(!spell) {
+				cerr << "Warning: no spells defined for level: " << level << endl;
+				break;
+			}
+			Item *item = scourge->newItem(RpgItem::getItemByName("Scroll"));
+      item->setSpell(spell);
+			getRandomLocation(map, item->getShape(), &x, &y);
+			addItem(map, NULL, item, NULL, x, y);
 		}
 	}
 	updateStatus();
@@ -1521,10 +1534,24 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
   else map->setPosition(x, y, z, shape);
   // populate containers
   if(item && item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-	int n = (int)(3.0f * rand() / RAND_MAX);
-	for(int i = 0; i < n; i++) {
-	  RpgItem *containedItem = RpgItem::getRandomItem(level);
-	  if(containedItem) item->addContainedItem(scourge->newItem(containedItem));
-	}
+    // some items
+    int n = (int)(3.0f * rand() / RAND_MAX);
+    for(int i = 0; i < n; i++) {
+      RpgItem *containedItem = RpgItem::getRandomItem(level);
+      if(containedItem) item->addContainedItem(scourge->newItem(containedItem));
+    }
+    // some spells
+    if(!((int)(25.0f * rand() / RAND_MAX))) {
+      int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+      for(int i = 0; i < n; i++) {
+        Spell *spell = MagicSchool::getRandomSpell(level);
+        if(spell) {
+          Item *scroll = scourge->newItem(RpgItem::getItemByName("Scroll"));
+          scroll->setSpell(spell);
+          item->addContainedItem(scroll);
+        }
+      }
+    }
   }
 }
+

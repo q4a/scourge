@@ -1084,7 +1084,7 @@ void Scourge::dropItem(int x, int y) {
 	  c->addInventory(movingItem);
 	  sprintf(message, "%s picks up %s.", 
 			  c->getName(), 
-			  movingItem->getRpgItem()->getName());
+			  movingItem->getItemName());
 	  map->addDescription(message);
 	  // if the inventory is open, update it
 	  if(inventory->isVisible()) inventory->refresh();
@@ -1092,8 +1092,8 @@ void Scourge::dropItem(int x, int y) {
 			  map->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
 	  map->getSelectedDropTarget()->item->addContainedItem(movingItem);
 	  sprintf(message, "%s is placed in %s.", 
-			  movingItem->getRpgItem()->getName(), 
-			  map->getSelectedDropTarget()->item->getRpgItem()->getName());
+			  movingItem->getItemName(), 
+			  map->getSelectedDropTarget()->item->getItemName());
 	  map->addDescription(message);
 	  // if this container's gui is open, update it
 	  refreshContainerGui(map->getSelectedDropTarget()->item);

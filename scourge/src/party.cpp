@@ -394,6 +394,16 @@ Creature **Party::createHardCodedParty() {
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
+  // add some scrolls
+  for(int i = 0; i < 10; i++) {
+    Spell *spell = MagicSchool::getRandomSpell(1);
+    if(spell) {
+      Item *scroll = scourge->newItem(RpgItem::getItemByName("Scroll"));
+      scroll->setSpell(spell);
+      pc[2]->addInventory(scroll);  
+    }
+  }
+
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));  

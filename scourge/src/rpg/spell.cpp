@@ -141,6 +141,16 @@ void MagicSchool::initMagic() {
   fclose(fp);
 }
 
+Spell *MagicSchool::getRandomSpell(int level) {
+  int n = (int)((float)getMagicSchoolCount() * rand()/RAND_MAX);
+  int c = getMagicSchool(n)->getSpellCount();
+  if(c > 0) {
+    return getMagicSchool(n)->getSpell((int)((float)c * rand()/RAND_MAX));
+  } else {
+    return NULL;
+  }
+}
+
 
 
 Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
@@ -178,3 +188,5 @@ Spell *Spell::getSpellByName(char *name) {
   }
   return spellMap[s];
 }
+
+
