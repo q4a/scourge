@@ -757,23 +757,23 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 
   // generate the maze
   if(!preGenerated) {
-	generateMaze();
-	//  printMaze();  
-	
-	makeSparse();
-	//  printMaze();
-	
-	makeLoops();
-	//  printMaze();
-	
-	makeRooms();
-	//  printMaze();
-
+    generateMaze();
+    //  printMaze();  
+    
+    makeSparse();
+    //  printMaze();
+    
+    makeLoops();
+    //  printMaze();
+    
+    makeRooms();
+    //  printMaze();
+    
   } else {
-	constructMaze(locationIndex);
+    constructMaze(locationIndex);
   }
   updateStatus(MESSAGE);
-    
+  
   // draw the nodes on the map
   drawNodesOnMap(map, shapePal, preGenerated, locationIndex);  
 }
@@ -1432,12 +1432,16 @@ void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal,
 void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
                                       bool preGenerated, int locationIndex) {
 
+  // flooded map?
+  map->setHasWater( !preGenerated && 
+                    0 == (int)(5.0f * rand()/RAND_MAX) );
+
   updateStatus("Loading theme");
   if(preGenerated) {
     shapePal->loadTheme( "HQ" );
   } else {
     shapePal->loadRandomTheme();
-}
+  }
 
   updateStatus("Drawing walls");
   drawBasics(map, shapePal, preGenerated, locationIndex);
