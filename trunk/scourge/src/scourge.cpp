@@ -2008,7 +2008,7 @@ bool Scourge::createBattleTurns() {
     cerr << "++++++++++++++++++++++++++++++++++" << endl;
     cerr << "ROUND STARTS" << endl;
 
-    groupButton->setVisible(false);
+    if(getUserConfiguration()->isBattleTurnBased()) groupButton->setVisible(false);
     return true;
   } else {
     return false;
