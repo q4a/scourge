@@ -24,8 +24,10 @@
 #include "rpg/character.h"
 #include "gui/window.h"
 #include "item.h"
+#include "userconfiguration.h"
 
 using namespace std;
+
 
 class Sound {
 private:
@@ -37,7 +39,7 @@ private:
 #endif
 
 public:
-  Sound();
+  Sound(UserConfiguration *userConfiguration);
   virtual ~Sound();
   
   inline void playMusicMenu() {
@@ -64,9 +66,12 @@ public:
 #endif
   }
 
-  void loadSounds();
+  void loadSounds(UserConfiguration *userConfiguration);
   void storeSound(int type, const char *file);
   void playSound(const char *file);
+
+  void setMusicVolume(int volume);
+  void Sound::setEffectsVolume(int volume);
 
 protected:
 #ifdef HAVE_SDL_MIXER

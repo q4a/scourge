@@ -173,7 +173,10 @@ private:
   bool stencilBufInitialized;
 
   // audio settings
+  bool soundEnabled;
   int soundFreq;
+  int musicVolume;
+  int effectsVolume;
 
   int standAloneMode;
   char *host, *userName;
@@ -215,6 +218,9 @@ private:
   inline bool getFrameOnFullScreen() { return frameOnFullScreen; }
   inline bool isBattleTurnBased() { return turnBasedBattle; }
   inline int getSoundFreq() { return soundFreq; }
+  inline bool isSoundEnabled() { return soundEnabled; }
+  inline int getMusicVolume() { return musicVolume; }
+  inline int getEffectsVolume() { return effectsVolume; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
@@ -234,7 +240,10 @@ private:
   inline void setKeepMapSize(int t) { keepMapSize = t; }
   inline void setFrameOnFullScreen(int t) { frameOnFullScreen = t; }
   inline void setBattleTurnBased(bool b) { turnBasedBattle = b; }
-  inline void getSoundFreq(int n) { soundFreq = n; }
+  inline void setSoundFreq(int n) { soundFreq = n; }
+  inline void setSoundEnabled(bool b) { soundEnabled = b; }
+  inline void setMusicVolume(int n) { musicVolume = n; }
+  inline void setEffectsVolume(int n) { effectsVolume = n; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           

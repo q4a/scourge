@@ -32,6 +32,7 @@
 #include "gui/cardcontainer.h"
 #include "gui/multiplelabel.h"
 #include "gui/checkbox.h"
+#include "gui/slider.h"
 
 /**
   *@author Gabor Torok
@@ -88,6 +89,9 @@ private:
      
   CardContainer *cards;
   ScrollingList *controlBindingsList;
+
+  Slider *musicVolume;
+  Slider *effectsVolume;
 
   void setSelectedMode();
   void loadControls(); 
