@@ -83,8 +83,9 @@ private:
   SDL_Event *storedEvent; 
   
   // truetype font
-  freetype_font_data our_font;
-  bool our_font_initialized;
+  freetype_font_data font;
+  freetype_font_data monoFont;
+  bool font_initialized;
 
  public: 
 
@@ -138,6 +139,8 @@ private:
   bool firedEventWaiting();
 
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
+  void texPrintMono(GLfloat x, GLfloat y, const char *fmt, ...);
+  void initFonts();
 
   GLvoid glPrint( const char *fmt, ... );
 

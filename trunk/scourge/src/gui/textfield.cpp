@@ -21,8 +21,7 @@
   *@author Gabor Torok
   */
   
-// FIXME: should use a monotype font                         
-#define AVG_CHAR_WIDTH 7  
+#define AVG_CHAR_WIDTH 6  
 #define OFFSET 5
 
 TextField::TextField(int x, int y, int numChars):
@@ -92,13 +91,15 @@ void TextField::drawWidget(Widget *parent) {
   glPopMatrix();
 
   applyColor();
+//  ((Window*)parent)->getSDLHandler()->texPrintMono(OFFSET, 12, getText());
+  
   char letter[2];
   for(int i = 0; i < maxPos; i++) {
     glPushMatrix();
     glTranslatef( OFFSET + i * AVG_CHAR_WIDTH, 0, 0 );
     letter[0] = text[i];
     letter[1] = '\0';
-    ((Window*)parent)->getSDLHandler()->texPrint(0, 12, letter);
+    ((Window*)parent)->getSDLHandler()->texPrintMono(0, 12, letter);
     glPopMatrix();
   }
 
@@ -121,8 +122,9 @@ void TextField::drawWidget(Widget *parent) {
   glPopMatrix();
   if(inside) {
     // cursor
+    glLineWidth( 2.0f );
     glPushMatrix();
-    glTranslatef( OFFSET + pos * AVG_CHAR_WIDTH, 0, 0 );    
+    glTranslatef( OFFSET + pos * AVG_CHAR_WIDTH + 1, 0, 0 );    
     glBegin(GL_LINES);
     glVertex2d(0, 0);
     glVertex2d(0, getHeight());
