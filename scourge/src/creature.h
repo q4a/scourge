@@ -295,6 +295,8 @@ class Creature {
   // returns exp gained
   int addExperience(Creature *creature_killed);
 
+  int addExperience(int exp);
+
   // returns coins gained
   int addMoney(Creature *creature_killed);
 
