@@ -9,5 +9,6 @@ OBJS = \
 	src/Md2.o src/md2shape.o src/scourge.o src/sdleventhandler.o\
 	src/sdlhandler.o src/sdlscreenview.o src/shape.o src/inventory.o\
 	src/shapepalette.o src/util.o src/text.o src/gllocator.o\
-	src/minimap.o src/3ds.o src/3dsshape.o src/optionsmenu.o
+	src/minimap.o src/3ds.o src/3dsshape.o src/optionsmenu.o\
+	src/userconfiguration.o
 
