@@ -22,61 +22,62 @@
 RpgItem *RpgItem::items[] =  {
 
   // SWORDS:
-  new RpgItem("Short sword", 1, SWORD, 2, 150, 100, 4, 8, 
+  new RpgItem(SHORT_SWORD, "Short sword", 1, SWORD, 2, 150, 100, 4, 8, 
            "A dwarven shortsword of average workmanship",
            "A stubby short sword",
            Constants::SWORD_INDEX),
-  new RpgItem("Dagger", 1, SWORD, 1, 80, 100, 3, 5, 
+  new RpgItem(DAGGER, "Dagger", 1, SWORD, 1, 80, 100, 3, 5, 
            "There's nothing special about this dagger",
            "A small dagger",
            Constants::SWORD_INDEX),
-  new RpgItem("Bastard sword", 1, SWORD, 4, 200, 100, 8, 11,
+  new RpgItem(BASTARD_SWORD, "Bastard sword", 1, SWORD, 4, 200, 100, 8, 11,
            "A bastard sword can be wielded either by one or both hands... (If you still have both hands)",
            "A rusty bastard sword",
            Constants::SWORD_INDEX, OPTIONAL_TWO_HANDED),
-  new RpgItem("Long sword", 2, SWORD, 6, 250, 100, 10, 12,
+  new RpgItem(LONG_SWORD, "Long sword", 2, SWORD, 6, 250, 100, 10, 12,
            "The longsword is a knight's standard weapon",
            "A shiny, sharp longsword",
            Constants::SWORD_INDEX),
-  new RpgItem("Great sword", 2, SWORD, 10, 350, 100, 16, 14,
+  new RpgItem(GREAT_SWORD, "Great sword", 2, SWORD, 10, 350, 100, 16, 14,
            "The two handed great sword can deliver a lot of damage",
            "A two-handed greatsword",
            Constants::SWORD_INDEX, ONLY_TWO_HANDED),
 
 
   // AXES
-  new RpgItem("Battleaxe", 1, AXE, 4, 150, 100, 6, 10,
+  new RpgItem(BATTLE_AXE, "Battleaxe", 1, AXE, 4, 150, 100, 6, 10,
            "A battle axe of average workmanship",
            "A well made battle axe",
            Constants::SWORD_INDEX),
-  new RpgItem("Throwing axe", 1, AXE, 2, 100, 100, 4, 6,
+  new RpgItem(THROWING_AXE, "Throwing axe", 1, AXE, 2, 100, 100, 4, 6,
            "A dull-looking axe for chucking",
            "A quick throwing axe",
            Constants::SWORD_INDEX),
 
 
   // CONTAINERS:
-  new RpgItem("Chest", 1, CONTAINER, 100, 0, 100, 0, 0,
+  new RpgItem(CHEST, "Chest", 1, CONTAINER, 100, 0, 100, 0, 0,
            "A wooden chest with metal re-inforced edges",
            "An ancient chest",
            Constants::CHEST_INDEX),
-  new RpgItem("Bookshelf", 1, CONTAINER, 200, 0, 100, 0, 0,
+  new RpgItem(BOOKSHELF, "Bookshelf", 1, CONTAINER, 200, 0, 100, 0, 0,
            "A bookshelf containing tomes of old",
            "A large bookself",
            Constants::BOOKSHELF_INDEX),
-  new RpgItem("Chest", 1, CONTAINER, 100, 0, 100, 0, 0,
+  new RpgItem(CHEST2, "Chest", 1, CONTAINER, 100, 0, 100, 0, 0,
            "A wooden chest with metal re-inforced edges",
            "An ancient chest",
            Constants::CHEST2_INDEX),
-  new RpgItem("Bookshelf", 1, CONTAINER, 200, 0, 100, 0, 0,
+  new RpgItem(BOOKSHELF2, "Bookshelf", 1, CONTAINER, 200, 0, 100, 0, 0,
            "A bookshelf containing tomes of old",
            "A large bookself",
            Constants::BOOKSHELF2_INDEX)
 };
 
-RpgItem::RpgItem(char *name, int level, int type, int weight, int price, int quality, 
+RpgItem::RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int shape_index,
 				 int twohanded) {
+  this->index = index;
   this->name = name;
   this->level = level;
   this->type = type;

@@ -21,6 +21,7 @@
 
 class RpgItem {
  private:
+  int index;
   char *name, *desc, *shortDesc;
   int level;
   int type;
@@ -68,10 +69,11 @@ class RpgItem {
 
   static RpgItem *items[];
   
-  RpgItem(char *name, int level, int type, int weight, int price, int quality, 
+  RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int shape_index, int twohanded=NOT_TWO_HANDED);
   ~RpgItem();
 
+  inline int getIndex() { return index; }
   inline char *getName() { return name; }
   inline int getAction() { return action; }
   inline int getSpeed() { return speed; }

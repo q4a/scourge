@@ -50,6 +50,7 @@ public:
   inline Sint16 getY() { return y; }
   inline Sint16 getZ() { return z; }
   inline char *getShortDescription() { return rpgItem->getShortDesc(); }
+  inline RpgItem *getRpgItem() { return rpgItem; }
 };
 
 #endif

@@ -626,10 +626,27 @@ bool Scourge::getItem(Location *pos) {
     return false;
 }
 
+// drop an item from the inventory
+void Scourge::setMovingItem(int item_index, int x, int y, int z) {
+  movingX = x;
+  movingY = y;
+  movingZ = z;
+  movingItem = Item::getItem(item_index);
+}
+
 void Scourge::dropItem(int x, int y) {
   if(map->getSelectedDropTarget()) {
-	fprintf(stderr, "dropped on shape: %s\n", 
-			map->getSelectedDropTarget()->shape->getName());	
+	char message[120];
+	Creature *c = map->getSelectedDropTarget()->creature;
+	if(c) {
+	  c->getPC()->addInventory(movingItem->getRpgItem());
+	  sprintf(message, "%s picks up %s.", 
+			  c->getPC()->getName(), 
+			  movingItem->getRpgItem()->getName());
+	  map->addDescription(strdup(message));
+	  movingItem = NULL;
+	  movingX = movingY = movingZ = MAP_WIDTH + 1;
+	}
   } else if(!map->isBlocked(x, y, 0,
 					 movingX, movingY, movingZ,
 					 movingItem->getShape())) {

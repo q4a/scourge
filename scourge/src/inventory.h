@@ -38,9 +38,8 @@ private:
     int win;
     int selected; // which player is selected?
     int selectedMode; // which mode is selected?
-    char *modeName[4];
     enum mode {
-        CHARACTER = 0, INVENTORY, SPELL, LOG
+        INVENTORY = 0, CHARACTER, SPELL, LOG
     };
     int skillList, itemList;
     char **invText, **pcInvText;
