@@ -26,7 +26,8 @@ class RpgItem {
   char *name, *desc, *shortDesc;
   int level;
   int type;
-  int weight, price, quality;
+  float weight; 
+  int price, quality;
   int action; // damage, defence, potion str.
   int speed; // 0-100, 100-slowest, 0-fastest
   int shape_index;
@@ -34,6 +35,8 @@ class RpgItem {
   int distance; // how far can it reach?
   int equip; // where can it be worn?
   int skill; // which skill to check when using the item
+  int currentCharges;   // useful for wands for example
+  int maxCharges;
 
  public:
   enum itemNames {
@@ -53,10 +56,27 @@ class RpgItem {
 	CHEST2,
 	BOOKSHELF2,
 
-	CORPSE,
+	CORPSE,			
 
 	TABLE,
 	CHAIR,
+	
+	APPLE, 
+	BANANA,
+	BREAD,
+	CHOCOLATE_BAR,
+	MUSHROOM,
+	TINY_EGG,
+	BIG_EGG,
+	MUTTON_MEAT,	
+	WATER_POTION,
+	WATER_BOTTLE,
+	MILK_BOTTLE,
+	WINE_BOTTLE,
+	FINE_WINE_BOTTLE,
+	WATER_BARREL,
+	WINE_BARREL,
+	BEER_BARREL,
 	
 	// must be the last ones
 	ITEM_COUNT
@@ -68,6 +88,9 @@ class RpgItem {
 	BOW,
 	CONTAINER,
 	ARMOR,
+	FOOD,
+	DRINK,
+	POTION,
 	OTHER,
 	
 	// must be last
@@ -82,23 +105,28 @@ class RpgItem {
 
   static RpgItem *items[];
   
-  RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 
+  RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1);
+		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1,  int currentCharges=0, int maxCharges=0);
   ~RpgItem();
 
   inline int getIndex() { return index; }
   inline char *getName() { return name; }
   inline int getAction() { return action; }
+  inline int getLevel()  { return level; }
   inline int getSpeed() { return speed; }
   inline int getQuality() { return quality; }
-  inline int getWeight() { return weight; }
+  inline float getWeight() { return weight; }
   inline int getShapeIndex() { return shape_index; }
   inline char *getShortDesc() { return shortDesc; }  
   inline int getEquip() { return equip; }
   inline int getDistance() { return distance; }
   inline int getSkill() { return skill; } 
   inline int getType() { return type; }
+  inline int getCurrentCharges() { return currentCharges; }
+  inline int getMaxCharges() { return maxCharges; }
+  inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
+  inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>maxCharges)n=maxCharges; currentCharges = n; } 
 
   static RpgItem *getRandomItem(int level);
   static RpgItem *getRandomContainer();

@@ -55,6 +55,7 @@ private:
 	Label *invEquipLabel[Character::INVENTORY_COUNT];
 	Button *equipButton, *fixButton, *removeCurseButton;
 	Button *combineButton, *enchantButton, *identifyButton, *openButton;
+	Button *eatDrinkButton;
 	ScrollingList *invList;
 	char **pcInvText;
 

@@ -399,6 +399,97 @@ Item *Creature::removeInventory(int index) {
   return item;
 }
 
+bool Creature::eatDrink(int index){
+    char msg[80];
+    char buff[80];
+    //Item * item = getInventory(index);
+    RpgItem * rpgItem = getInventory(index)->getRpgItem();
+    int type;
+    float weight;
+    
+    type = rpgItem->getType();    
+    if(type!=RpgItem::FOOD && type!=RpgItem::DRINK && type!=RpgItem::POTION){              
+        scourge->getMap()->addDescription("You cannot eat or drink that!");   
+        return false;       
+    }
+    else{
+        //weight = item->getRpgItem()->getWeight();
+        level = rpgItem->getLevel();
+        if(type == RpgItem::FOOD){
+            if(getHunger() == 10){                
+                sprintf(msg, "%s is not hungry at the moment.", getName()); 
+                scourge->getMap()->addDescription(msg); 
+                return false;
+            }            
+            
+            // TODO : the quality member of rpgItem should indicate if the
+            // food is totally healthy or roten or partially roten etc...
+            // We eat the item and it gives us "level" hunger points back
+            setHunger(getHunger() + level);            
+            strcpy(buff, rpgItem->getShortDesc());
+            buff[0] = tolower(buff[0]);
+            sprintf(msg, "%s eats %s.", getName(), buff);            
+            
+        }
+        else if(type == RpgItem::DRINK){
+            if(getThirst() == 10){                
+                sprintf(msg, "%s is not thirsty at the moment.", getName()); 
+                scourge->getMap()->addDescription(msg); 
+                return false;
+            }
+            setThirst(getThirst() + level);
+            strcpy(buff, rpgItem->getShortDesc());
+            buff[0] = tolower(buff[0]);
+            sprintf(msg, "%s drinks %s.", getName(), buff);
+            scourge->getMap()->addDescription(msg); 
+            // TODO : according to the alcool rate set drunk state or not            
+            int oldCharges = rpgItem->getCurrentCharges();            
+            if(oldCharges <= 1){
+                // The object is entirely drunk                
+                return true;    
+            }            
+            rpgItem->setCurrentCharges(oldCharges - 1);
+            
+            // Compute initial weight to be able to compute new weight
+            // (without increasing error each time)
+            float f1;
+            f1 = rpgItem->getWeight();
+            f1 *= (float) rpgItem->getMaxCharges();
+            f1 /= (float) oldCharges;
+            f1 *= (((float)oldCharges - 1.0f) / (float)rpgItem->getMaxCharges());            
+            rpgItem->setWeight(f1);
+            return false;
+            
+        }
+        else{   
+            // It's a potion            
+            // Even if not thirsty, character will always drink a potion
+            strcpy(buff, rpgItem->getShortDesc());
+            buff[0] = tolower(buff[0]);
+            setThirst(getThirst() + level);
+            sprintf(msg, "%s drinks %s.", getName(), buff);
+            scourge->getMap()->addDescription(msg); 
+            int oldCharges = rpgItem->getCurrentCharges();            
+            if(oldCharges <= 1){
+                // The object is entirely drunk                
+                return true;    
+            }            
+            rpgItem->setCurrentCharges(oldCharges - 1);
+            
+            // Compute initial weight to be able to compute new weight
+            // (without increasing error each time)
+            float f1;
+            f1 = rpgItem->getWeight();
+            f1 *= (float) rpgItem->getMaxCharges();
+            f1 /= (float) oldCharges;
+            f1 *= (((float)oldCharges - 1.0f) / (float)rpgItem->getMaxCharges());            
+            rpgItem->setWeight(f1);            
+            // TODO : execute special potion actions
+            return false;                                   
+        }        
+    }
+}
+
 void Creature::equipInventory(int index) {
   // doff
   if(doff(index)) return;
@@ -619,7 +710,10 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   // add some items
   pc[0]->addInventory(scourge->newItem(RpgItem::items[RpgItem::BASTARD_SWORD]));
   pc[0]->addInventory(scourge->newItem(RpgItem::items[RpgItem::DAGGER]));
+  pc[1]->addInventory(scourge->newItem(RpgItem::items[RpgItem::APPLE]));
+  pc[1]->addInventory(scourge->newItem(RpgItem::items[RpgItem::APPLE]));
   pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::LONG_SWORD]));
+  pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::WINE_BARREL]));
   pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::GREAT_SWORD]));
   pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::BATTLE_AXE]));
   pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::THROWING_AXE]));

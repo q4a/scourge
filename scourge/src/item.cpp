@@ -37,7 +37,7 @@ bool Item::addContainedItem(Item *item) {
 	return true;
   } else return false;
 }
-
+ 
 Item *Item::removeContainedItem(int index) {
   Item *item = NULL;
   if(index >= 0 && index < containedItemCount) {
@@ -53,3 +53,28 @@ Item *Item::removeContainedItem(int index) {
 Item *Item::getContainedItem(int index) {
   return ((index >= 0 && index < containedItemCount) ? containedItems[index] : NULL);
 }
+
+void Item::getDetailedDescription(char *s, bool precise){
+    int type;
+    RpgItem * rpgItem;
+    
+    rpgItem  = getRpgItem();
+    type = rpgItem->getType();
+    if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
+        sprintf(s, "(Q:%d,W:%2.2f, N:%d/%d) %s", 
+            rpgItem->getQuality(), 
+			rpgItem->getWeight(),
+			rpgItem->getCurrentCharges(),
+			rpgItem->getMaxCharges(),
+			(precise ? rpgItem->getName() : rpgItem->getShortDesc()));
+    }
+    else{   
+	   sprintf(s, "(A:%d,S:%d,Q:%d,W:%2.2f) %s", 
+			rpgItem->getAction(), 
+			rpgItem->getSpeed(), 
+			rpgItem->getQuality(), 
+			rpgItem->getWeight(),
+			(precise ? rpgItem->getName() : rpgItem->getShortDesc()));
+    }
+}
+

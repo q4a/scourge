@@ -19,7 +19,7 @@
 #define DATE_H
 
 //uncomment to debug
-#define DEBUG_DATE
+//#define DEBUG_DATE
 
 #include "constants.h"
 

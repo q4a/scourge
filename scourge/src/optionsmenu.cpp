@@ -373,16 +373,13 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 }
 
 OptionsMenu::~OptionsMenu(){
-
-    // really needed ? OS do this normally
-    
-    if(controlsButton) delete controlsButton;
-    if(videoButton) delete videoButton;
-    if(audioButton) delete audioButton;
-    if(gameSettingsButton) delete gameSettingsButton;
-    if(changeControlButton) delete changeControlButton;
+       
+    // Only delete ML, scrollingLists and cardContainers. 
+    // Other widgets are deleted by window.cpp       
     if(gameSpeedML) delete gameSpeedML;
     if(videoResolutionML) delete videoResolutionML;
+    if(controlBindingsList) delete controlBindingsList;
+    if(cards) delete cards;
     
 }
 
