@@ -81,10 +81,16 @@ Map::Map(Scourge *scourge){
       }      
     }
   }
+  // Init the pos cache
+  for(int x = 0; x < MAX_POS_CACHE; x++) {
+    posCache[x] = NULL;
+  }
+  nbPosCache = -1;
 
   lightMapChanged = true;  
   colorAlreadySet = false;
   selectedDropTarget = NULL;
+  
 
   createOverlayTexture();
 
@@ -979,10 +985,16 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Creature *n
 Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, 
 							Sint16 nx, Sint16 ny, Sint16 nz,
 							Creature *newCreature) {
+  float interX, interY;
   Location *position = isBlocked(nx, ny, nz, x, y, z, newCreature->getShape());
   if(position) return position;
+
   // move position
   removeCreature(x, y, z);
+  interX = (x + nx) / 2.0f;
+  interY = (y + ny) / 2.0f;
+  cout << "old : " << x << ", " << y << ", " << z << endl;
+  cout << "new : " << nx << ", " << ny << ", " << nz << endl;
   setCreature(nx, ny, nz, newCreature);
   return NULL;
 }
@@ -1302,8 +1314,18 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
 		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
 			for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+                //cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
 			  if(!pos[x + xp][y - yp][z + zp]) {
-				pos[x + xp][y - yp][z + zp] = new Location();
+                if(nbPosCache < 0){
+                    //cerr << " no cache available!" << endl;
+				    pos[x + xp][y - yp][z + zp] = new Location();
+                }
+                else{
+                    //cerr << " cache number : " << nbPosCache << endl;
+                    pos[x + xp][y - yp][z + zp] = posCache[nbPosCache];
+                    posCache[nbPosCache] = NULL;
+                    nbPosCache--;
+                }
 			  } else if(pos[x + xp][y - yp][z + zp]->item) {
 				// creature picks up non-blocking item (this is the only way to handle 
 				// non-blocking items. It's also very 'roguelike'.
@@ -1344,11 +1366,25 @@ Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	mapChanged = true;
     creature = pos[x][y][z]->creature;
+    //cout<<"width : "<< creature->getShape()->getWidth()<<endl;
+    //cout<<"depth: "<< creature->getShape()->getDepth()<<endl;
+    //cout<<"height: "<< creature->getShape()->getHeight()<<endl;
     for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
       for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
-        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {	  
-		  delete pos[x + xp][y - yp][z + zp];
-		  pos[x + xp][y - yp][z + zp] = NULL;	
+        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+            //cerr <<"deleting pos " << x + xp << "," << y - yp << "," << z + zp;
+            if(nbPosCache >= MAX_POS_CACHE - 1){
+                //cerr << " no cache available!" << endl;
+                delete pos[x + xp][y - yp][z + zp];
+                pos[x + xp][y - yp][z + zp] = NULL;
+            }
+            else{
+                nbPosCache++;
+                //cerr << " cache number : " << nbPosCache << endl;
+                posCache[nbPosCache] = pos[x + xp][y - yp][z + zp];
+                pos[x + xp][y - yp][z + zp] = NULL;
+                
+            }
         }
       }
     }
