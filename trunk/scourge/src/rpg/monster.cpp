@@ -66,7 +66,7 @@ void Monster::initMonsters() {
 	  int hp =  atoi(strtok(NULL, ","));
 	  int armor =  atoi(strtok(NULL, ","));
 
-	  cerr << "Creating new monster: " << name << " level: " << level << 
+	  cerr << "adding monster: " << name << " level: " << level << 
 		" hp: " << hp << " armor: " << armor << endl;
 
 	  vector<Monster*> *list = NULL;
