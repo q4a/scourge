@@ -109,7 +109,9 @@ bool Battle::fightTurn() {
     " nextTurn=" << nextTurn << endl;
 
   // are we alive?
-  if(!creature || creature->getStateMod(Constants::dead)) {
+  if(!creature || creature->getStateMod(Constants::dead) ||
+     (creature->getAction() == Constants::ACTION_NO_ACTION &&
+      !creature->isMonster() && !getAvailablePartyTarget()) ) {
     reset();
     return true;
   }
@@ -185,9 +187,11 @@ bool Battle::pauseBeforePlayerTurn() {
       session->getMap()->center( toint(creature->getX()), toint(creature->getY()), true);
 
       // pause the game
-      session->getParty()->toggleRound(true);
-      paused = true;
-      return true;
+      if( getAvailablePartyTarget() ) {
+        session->getParty()->toggleRound(true);
+        paused = true;
+        return true;
+      }
     } else {
       // FIXME: only center if not on-screen
       session->getMap()->refresh();
@@ -315,7 +319,7 @@ void Battle::stepCloserToTarget() {
       ap--;  
     } else {
       if( session->getUserConfiguration()->isBattleTurnBased() ) {
-        session->getParty()->toggleRound(true);
+        if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
       } else {
         ap--;
       }
@@ -390,7 +394,7 @@ bool Battle::moveCreature() {
         // guess a new path
         creature->setSelXY( creature->getSelX(), creature->getSelY() );
         if( session->getUserConfiguration()->isBattleTurnBased() ) {          
-          session->getParty()->toggleRound(true);
+          if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
         } else {
           // is the below line needed?
           ap--;
@@ -402,6 +406,16 @@ bool Battle::moveCreature() {
     }
   }
   return false;
+}
+
+Creature *Battle::getAvailablePartyTarget() {
+  for( int i = 0; i < session->getParty()->getPartySize(); i++) {
+    if( !session->getParty()->getParty(i)->getStateMod(Constants::dead) ) {
+      Creature *c = session->getParty()->getParty(i)->getBattle()->getAvailableTarget();
+      if( c ) return c;
+    }
+  }
+  return NULL;
 }
 
 Creature *Battle::getAvailableTarget() {
@@ -450,7 +464,7 @@ bool Battle::selectNewTarget() {
 
     // let the player override in TB mode
     if( target && session->getUserConfiguration()->isBattleTurnBased() ) {
-      session->getParty()->toggleRound(true);
+      if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
     }
 
     return ( target ? true : false );

@@ -19,6 +19,8 @@
 
 #define LOCKED_DOOR_RAND 8.0f
 
+#define FORCE_WATER 0
+
 // raise the magic item level by 1 for every 3 levels (magic item level [0,1,2,3])
 #define MAGIC_ITEM_MUL 3
 
@@ -1433,8 +1435,9 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
                                       bool preGenerated, int locationIndex) {
 
   // flooded map?
-  map->setHasWater( !preGenerated && 
-                    0 == (int)(5.0f * rand()/RAND_MAX) );
+  map->setHasWater( FORCE_WATER || 
+                    ( !preGenerated && 
+                      0 == (int)(5.0f * rand()/RAND_MAX) ) );
 
   updateStatus("Loading theme");
   if(preGenerated) {

@@ -107,6 +107,7 @@ class Battle {
 
   void reset();
   Creature *getAvailableTarget();
+  Creature *getAvailablePartyTarget();
 
   inline bool isEmpty() { return empty; }
   bool fightTurn();
