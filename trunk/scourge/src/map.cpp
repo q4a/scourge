@@ -1246,8 +1246,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   }
   if(effect && later) {
     if(later->creature) {
+      glTranslatef( 0, -1 / GLShape::DIV, 0 );
       later->creature->getEffect()->draw(later->creature->getEffectType(),
                                          later->creature->getDamageEffect());
+      glTranslatef( 0, 1 / GLShape::DIV, 0 );
     } else if(later->effect) {
       later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
@@ -1399,8 +1401,8 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Creature *n
 }
 
 Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, 
-							Sint16 nx, Sint16 ny, Sint16 nz,
-							Creature *newCreature) {
+                            Sint16 nx, Sint16 ny, Sint16 nz,
+                            Creature *newCreature) {
 
   // no need to actually move data
   if( x == nx && y == ny && z == nz ) {
@@ -1415,8 +1417,6 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
   // move position
   moveCreaturePos(nx, ny, nz, x, y, z, newCreature);
 
-  //  removeCreature(x, y, z);
-  //  setCreature(nx, ny, nz, newCreature);
   return NULL;
 }
 

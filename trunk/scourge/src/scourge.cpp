@@ -533,7 +533,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   glDisable( GL_CULL_FACE );
 
   // draw circle
-  double w = ((double)creature->getShape()->getWidth() / GLShape::DIV) / 2.0f;
+  double w = ((double)(creature->getShape()->getWidth()) / 2.0f) / GLShape::DIV;
+  double d = (((double)(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / GLShape::DIV;
   double s = 0.35f / GLShape::DIV;
 
   float xpos2, ypos2, zpos2;
@@ -592,14 +593,16 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
   // red for attack target
   if(player && creature->getTargetCreature()) {
-    double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / GLShape::DIV) / 2.0f;
+    double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / GLShape::DIV;
+    double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / GLShape::DIV;
+    //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / GLShape::DIV;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getTargetCreature()->getX() - map->getX()) / GLShape::DIV);
     ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
     zpos2 = 0.0f / GLShape::DIV;  
     glPushMatrix();
     //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
-    glTranslatef( xpos2 + tw, ypos2 - tw, zpos2 + 5);
+    glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
     gluDisk(quadric, tw - targetWidth, tw, 12, 1);
     glPopMatrix();
   }
@@ -671,7 +674,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-  glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
+  glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
   if(groupMode || player || creature->isMonster()) 
     gluDisk(quadric, w - s, w, 12, 1);
 
@@ -988,6 +991,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
       getMap()->refresh();
+    } else if(event->key.keysym.sym == SDLK_g) {
+      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
     }
 
     // END OF DEBUG ------------------------------------
