@@ -512,16 +512,6 @@ void SDLHandler::mainLoop() {
   }
 }
 
-
-void print_bitmap_string(void* font, char* s) {
-   if (s && strlen(s)) {
-      while (*s) {
-         glutBitmapCharacter(font, *s);
-         s++;
-      }
-   }
-}
-
 void SDLHandler::texPrint(GLfloat x, GLfloat y, 
 						  const char *fmt, ...) {
   
@@ -549,39 +539,6 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
   }
   
   freetype_print(our_font, x, y, str);
-
-  /*	
-  glPushMatrix();
-
-
-  // print using glut
-  glRasterPos2f(x, y);
-  print_bitmap_string(GLUT_BITMAP_HELVETICA_12, str);
-  */
-
-
-/*
-  glLoadIdentity();
-  glTranslatef(x, y, 0);
-  glScalef(1 / 3.0, 1 / 3.0, 1);
-
-  glEnable( GL_TEXTURE_2D );
-  glEnable( GL_LIGHTING );
-  glEnable( GL_LIGHT2 );
-  glEnable(GL_ALPHA_TEST);
-  //  glAlphaFunc(GL_NOTEQUAL, 0);
-  glAlphaFunc(GL_GEQUAL, 0.1);
-
-  text->txfEstablishTexture(0, GL_TRUE);
-  text->txfRenderString(str, strlen(str));
-
-  glDisable(GL_ALPHA_TEST);
-  glDisable( GL_LIGHT2 );
-*/
-
-/*
-  glPopMatrix();
- */
 }
 
 bool SDLHandler::sectionIntersects(int a1, int a2, int b1, int b2) {

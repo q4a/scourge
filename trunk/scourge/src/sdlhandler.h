@@ -28,7 +28,6 @@
 #include "text.h"
 #include "gui/window.h"
 #include "userconfiguration.h"
-#include "glut/glutpart.h"
 #include "freetype/FreeType.h"
 
 class TexturedText;
