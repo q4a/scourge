@@ -19,6 +19,7 @@
 #define CONSTANTS_H
 
 #include <SDL.h>
+#include <SDL_opengl.h>
 #include <SDL_endian.h>
 #if defined(__APPLE__) || defined(__MACH_O__)
 // OS X framework style notation
