@@ -272,10 +272,14 @@ void Battle::stepCloserToTarget() {
 
 bool Battle::selectNewTarget() {
   // select a new target
-  if (creature->isMonster()) {
-    creature->setTargetCreature(NULL);
-    creature->decideMonsterAction();
-    return(creature->hasTarget());
+  if (creature->isMonster()) {    
+    //creature->setTargetCreature(NULL);
+    //creature->decideMonsterAction();
+    //return(creature->hasTarget());
+
+    creature->cancelTarget();
+    moveCreature();
+
   } else {
     Creature *target;
     if(creature->getStateMod(Constants::possessed)) {

@@ -652,6 +652,16 @@ bool MainMenu::handleEvent(SDL_Event *event) {
     return false;
   }
 
+  /*
+  // esc to close new game confirmation (doesn't work)
+  if((event->type == SDL_KEYDOWN || event->type == SDL_KEYUP) && 
+     newGameConfirm->isVisible() && 
+     event->key.keysym.sym == SDLK_ESCAPE) {
+    newGameConfirm->setVisible( false );
+    return false;
+  }
+  */
+
   switch(event->type) {
   case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {

@@ -171,7 +171,8 @@ void Party::setPlayer(int n) {
   // play selection sound
   if(lastPlayer != player) {
     lastPlayer = player;
-    session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
+    if(!player->getStateMod(Constants::dead))
+      session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
   }
 }
 

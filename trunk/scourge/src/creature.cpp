@@ -378,7 +378,8 @@ void Creature::setSelXY(int x, int y, bool force) {
   // play command sound
   if(x > -1 && 
      session->getParty()->getPlayer() == this && 
-     0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX)) {
+     0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX) &&
+     !getStateMod(Constants::dead)) {
     session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
   }
 }
@@ -1348,7 +1349,9 @@ bool Creature::addSpell(Spell *spell) {
   return true;
 }
 
+// this assumes that hasTarget() was called first.
 bool Creature::isTargetValid() {
+  // is it a non-creature target? (item or location)
   if(!getTargetCreature()) return true;
   if(getTargetCreature()->getStateMod(Constants::dead)) return false;
   // when attacking, attack the opposite kind (unless possessed)
