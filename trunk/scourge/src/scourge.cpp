@@ -1596,26 +1596,26 @@ void Scourge::playRound() {
   // -(or) the round was manually started
   GLint t = SDL_GetTicks();
   if(party->isRealTimeMode()) {
-    if(lastProjectileTick == 0 || t - lastProjectileTick > userConfiguration->getGameSpeedTicks() / 10) {
+    if(lastProjectileTick == 0 || t - lastProjectileTick > userConfiguration->getGameSpeedTicks() / 50) {
       lastProjectileTick = t;
       
       // move projectiles
       Projectile::moveProjectiles(this);
     }
+
+    // move the party members
+    party->movePlayers();
+    
+    // move visible monsters
+    for(int i = 0; i < creatureCount; i++) {
+      if(!creatures[i]->getStateMod(Constants::dead) && 
+         map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
+        moveMonster(creatures[i]);
+      }
+    }
     
     if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
       lastTick = t;
-      
-      // move the party members
-      party->movePlayers();
-      
-      // move visible monsters
-      for(int i = 0; i < creatureCount; i++) {
-        if(!creatures[i]->getStateMod(Constants::dead) && 
-           map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
-          moveMonster(creatures[i]);
-        }
-      }
       
       // setup the current battle round
       if(battleRound.size() == 0) {
@@ -1640,7 +1640,7 @@ void Scourge::playRound() {
           }
         }
         
-        // fight one round of the epic battle
+        // order the battle turns by initiative
         if(battleCount > 0) {
           Battle::setupBattles(this, battle, battleCount, &battleRound);
           battleTurn = 0;
@@ -1705,20 +1705,7 @@ void Scourge::moveMonster(Creature *monster) {
     } else {
       // random (non-attack) monster movement
       monster->setDistanceRange(0, Constants::MIN_DISTANCE);
-      for(int i = 0; i < 4; i++) {
-        int n = (int)(10.0f * rand()/RAND_MAX);
-        if(n == 0 || !monster->move(monster->getDir(), map)) {
-          int dir = (int)(4.0f * rand()/RAND_MAX);
-          switch(dir) {
-          case 0: monster->setDir(Constants::MOVE_UP); break;
-          case 1: monster->setDir(Constants::MOVE_DOWN); break;
-          case 2: monster->setDir(Constants::MOVE_LEFT); break;
-          case 3: monster->setDir(Constants::MOVE_RIGHT); break;
-          }
-        } else {
-          break;
-        }
-      }
+      monster->move(monster->getDir(), map);
     }
   } else if(monster->hasTarget()) {
     // monster gives up when low on hp or bored

@@ -17,6 +17,8 @@
 
 #include "creature.h"
 
+#define MOVE_DELAY 7
+
 /**
  * Formations are defined by 4 set of coordinates in 2d space.
  * These starting positions assume dir=Constants::MOVE_UP
@@ -38,7 +40,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->model_name = character->getModelName();
   this->skin_name = character->getSkinName();
   sprintf(description, "%s the %s", name, character->getName());
-  this->speed = 50;
+  this->speed = 5; // start neutral speed
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
   this->armor=0;
   this->bonusArmor=0;
@@ -71,6 +73,8 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
 }
 
 void Creature::commonInit() {
+  this->lastMove = 0;
+  this->moveCount = 0;
   this->x = this->y = this->z = 0;
   this->dir = Constants::MOVE_UP;
   this->next = NULL;
@@ -138,14 +142,42 @@ Creature::~Creature(){
   delete shape;
 }
 
+void Creature::switchDirection(bool force) {
+  int n = (int)(10.0f * rand()/RAND_MAX);
+  if(n == 0 || force) {
+    int dir = (int)(4.0f * rand()/RAND_MAX);
+    switch(dir) {
+    case 0: setDir(Constants::MOVE_UP); break;
+    case 1: setDir(Constants::MOVE_DOWN); break;
+    case 2: setDir(Constants::MOVE_LEFT); break;
+    case 3: setDir(Constants::MOVE_RIGHT); break;
+    }
+  }
+}
+
 // moving monsters only
 bool Creature::move(Uint16 dir, Map *map) {
   if(character) return false;
+
+  Uint32 t = SDL_GetTicks();
+  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (scourge->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  lastMove = t;
+
+  /*
+  // creature speed
+  moveCount++;
+  if(moveCount >= getSpeed()) {
+    moveCount = 0;
+  } else return true;
+  */
+
+  switchDirection(false);
 
   // a hack for runaway creatures
   if(!(x > 10 && x < MAP_WIDTH - 10 &&
        y > 10 && y < MAP_DEPTH - 10)) {
     if(monster) cerr << "hack for " << getName() << endl;
+    switchDirection(true);
     return false;
   }
 
@@ -193,6 +225,7 @@ bool Creature::move(Uint16 dir, Map *map) {
   } else {
     // move back
     map->setCreature(x, y, z, this);    
+    switchDirection(true);
     return false;
   }
 }
@@ -329,6 +362,18 @@ bool Creature::anyMovesLeft() {
 }
 
 bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
+  /*
+  // creature speed
+  moveCount++;
+  if(moveCount >= getSpeed()) {
+    moveCount = 0;
+  } else return true;
+  */
+
+  Uint32 t = SDL_GetTicks();
+  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (scourge->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  lastMove = t;
+
   // If the target moved, get the best path to the location
   if(!(tx == px && ty == py)) {
     //    cerr << getName() << " - " << debug << " steps left: " << 
