@@ -462,6 +462,78 @@ void Party::createUI() {
   player4Button = new Button( 100 + playerButtonWidth * 3, 0,  100 + playerButtonWidth * 4, playerButtonHeight );
   player4Button->setToggle(true);
   mainWin->addWidget((Widget*)player4Button);
+
+  for(int i = 0; i < getPartySize(); i++) {
+	playerInfo[i] = new Canvas( 100 + playerButtonWidth * i, playerButtonHeight,  
+								100 + playerButtonWidth * (i + 1), GUI_HEIGHT - (lowerRowHeight + 25), 
+								this );
+	mainWin->addWidget(playerInfo[i]);
+  }
+}
+
+void Party::drawWidget(Widget *w) {
+  int selectedPlayerIndex = -1;
+  for(int i = 0; i < getPartySize(); i++) {
+	if(playerInfo[i] == w) {
+	  selectedPlayerIndex = i;
+	  break;
+	}
+  }
+  if(selectedPlayerIndex == -1) {
+	cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
+	return;
+  }
+  Creature *p = getParty(selectedPlayerIndex);
+
+  // hp
+  char msg[80];
+  w->applyColor();
+  sprintf(msg, "%d/%d", p->getHp(), (p->getCharacter()->getStartingHp() * p->getLevel()));
+  scourge->getSDLHandler()->texPrint(3, 10, msg);
+  sprintf(msg, "hp:");
+  scourge->getSDLHandler()->texPrint(3, 20, msg);
+  drawBar(22, 18, ((GUI_WIDTH - 100) / 4) - 24,  
+		  (float)p->getHp(), (float)(p->getCharacter()->getStartingHp() * p->getLevel()));
+
+  // ac
+  w->applyColor();
+  sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
+  scourge->getSDLHandler()->texPrint(3, 35, msg);
+  sprintf(msg, "ac:");
+  scourge->getSDLHandler()->texPrint(3, 45, msg);
+  drawBar(22, 43, ((GUI_WIDTH - 100) / 4) - 24,  
+		  (float)p->getSkillModifiedArmor(), (float)p->getArmor());
+}
+
+void Party::drawBar(int x, int y, float barLength, float value, float maxValue) {
+  float percent = (maxValue == 0 ? 0 : value / (maxValue / 100.0f));
+  float length = barLength * (percent / 100.0f);
+  
+  glPushMatrix();
+  glTranslatef( x, y, 0 );
+  glLineWidth(6.0f);
+  
+  glColor3f( 0.5f, 0.5f, 0.5f );
+  glBegin( GL_LINES );
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( barLength, 0, 0 );
+  glEnd();
+  
+  if(percent > 40.0f) {	
+	glColor3f( 0.5f, 1, 0.5f );
+  } else if(percent > 25.0f) {
+	glColor3f( 1, 1, 0.5f );
+  } else {
+	glColor3f( 1, 0.5f, 0.5f );
+  }
+  glBegin( GL_LINES );
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( length, 0, 0 );
+  glEnd();
+  
+  glLineWidth(1.0f);
+  
+  glPopMatrix();
 }
 
 void Party::drawView() {

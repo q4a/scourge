@@ -80,7 +80,7 @@ INCLUDES = -I$./..
 
 noinst_LIBRARIES = libScourgeGui.a
 
-libScourgeGui_a_SOURCES =  	widget.cpp 	widget.h 	button.cpp 	button.h 	label.cpp 	label.h 	checkbox.cpp 	checkbox.h 	cardcontainer.cpp 	cardcontainer.h 	draganddrop.cpp 	draganddrop.h 	multiplelabel.cpp 	multiplelabel.h 	scrollinglist.cpp 	scrollinglist.h 	window.cpp 	window.h
+libScourgeGui_a_SOURCES =  	widget.cpp 	widget.h 	widgetview.cpp 	widgetview.h 	canvas.cpp         canvas.h 	button.cpp 	button.h 	label.cpp 	label.h 	checkbox.cpp 	checkbox.h 	cardcontainer.cpp 	cardcontainer.h 	draganddrop.cpp 	draganddrop.h 	multiplelabel.cpp 	multiplelabel.h 	scrollinglist.cpp 	scrollinglist.h 	window.cpp 	window.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -97,8 +97,9 @@ X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libScourgeGui_a_LIBADD = 
-libScourgeGui_a_OBJECTS =  widget.o button.o label.o checkbox.o \
-cardcontainer.o draganddrop.o multiplelabel.o scrollinglist.o window.o
+libScourgeGui_a_OBJECTS =  widget.o widgetview.o canvas.o button.o \
+label.o checkbox.o cardcontainer.o draganddrop.o multiplelabel.o \
+scrollinglist.o window.o
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -115,9 +116,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/button.P .deps/cardcontainer.P .deps/checkbox.P \
-.deps/draganddrop.P .deps/label.P .deps/multiplelabel.P \
-.deps/scrollinglist.P .deps/widget.P .deps/window.P
+DEP_FILES =  .deps/button.P .deps/canvas.P .deps/cardcontainer.P \
+.deps/checkbox.P .deps/draganddrop.P .deps/label.P \
+.deps/multiplelabel.P .deps/scrollinglist.P .deps/widget.P \
+.deps/widgetview.P .deps/window.P
 SOURCES = $(libScourgeGui_a_SOURCES)
 OBJECTS = $(libScourgeGui_a_OBJECTS)
 
