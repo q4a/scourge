@@ -18,7 +18,7 @@
 #define RPG_ITEM_H
 
 #include "../constants.h"
-#include "pc.h"
+#include "character.h"
 
 class RpgItem {
  private:
@@ -85,6 +85,11 @@ class RpgItem {
   inline int getShapeIndex() { return shape_index; }
   inline char *getShortDesc() { return shortDesc; }  
   inline int getEquip() { return equip; }
+
+  static RpgItem *getRandomItem(int level);
+  static RpgItem *getRandomContainer();
+  static RpgItem *getRandomContainerNS();
+  inline static RpgItem *getItem(int index) { return items[index]; }
 };
 
 #endif

@@ -30,7 +30,8 @@
 #include "map.h"
 #include "scourge.h"
 #include "util.h"
-#include "rpg/pc.h"
+#include "rpg/character.h"
+#include "rpg/monster.h"
 #include "constants.h"
 
 using namespace std;
@@ -47,80 +48,147 @@ class Scourge;
 
 /**
   *@author Gabor Torok
+
+  This class is both the UI representation (shape) and state (inventory, etc.) of a character or monster.
+  All creatures of the same type (character or monster) share the same instance of the prototype class (Character of Monster)
+
   */
 
+#define MAX_INVENTORY_SIZE 200
+
 class Creature {
-
-private:
-    Sint16 x, y, z;
-	Creature *next;
-	GLShape *shape;
-	Uint16 dir;
-	Scourge *scourge;
-    PlayerChar *pc;
-	GLUquadric *quadric;
-    int motion;
-
-	int formation;
-	int index;
-
-    int tx, ty;
-    int selX, selY;
-    int bestPathPos;
-    vector<Location> bestPath;
-
-	
   
-public:
-	static const int DIAMOND_FORMATION = 0;
-    static const int STAGGERED_FORMATION = 1;
-	static const int SQUARE_FORMATION = 2;
-	static const int ROW_FORMATION = 3;
-	static const int SCOUT_FORMATION = 4;
-	static const int CROSS_FORMATION = 5;
-	static const int FORMATION_COUNT = 6;
-    
-	Creature(Scourge *scourge, GLShape *shape, PlayerChar *pc);
-	~Creature();
-
-	inline PlayerChar *getPC() { return pc; }
-
-	inline GLUquadric *getQuadric() { return quadric; }
-
-    inline void setMotion(int motion) { this->motion = motion; }
-    inline int getMotion() { return this->motion; }
-										
-	//inline void setShapeIndex(Uint8 shapePosition) { this->shapePosition = shapePosition; }
-	//inline Uint8 getShapeIndex() { return shapePosition; }
-	bool move(Uint16 dir, Map *map);
-	void follow(Map *map);
-    void gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz);
-    void moveToLocator(Map *map);
+ private:
+  // gui information
+  Sint16 x, y, z;
+  Creature *next;
+  GLShape *shape;
+  Uint16 dir;
+  Scourge *scourge;
+  GLUquadric *quadric;
+  int motion;  
+  int formation;
+  int index;
+  int tx, ty;
+  int selX, selY;
+  int bestPathPos;
+  vector<Location> bestPath;
   
-	inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
-	inline Sint16 getX() { return x; }
-	inline Sint16 getY() { return y; }
-	inline Sint16 getZ() { return z; }
-	inline GLShape *getShape() { return shape; }
-	inline void setFormation(int formation) { this->formation = formation; }
-	inline int getFormation() { return formation; }
-	void setNext(Creature *next, int index);
-	void setNextDontMove(Creature *next, int index);
-    inline Uint16 getDir() { return dir; }
+  // inventory
+  Item *inventory[MAX_INVENTORY_SIZE];
+  int inventory_count;
+  int equipped[Character::INVENTORY_COUNT];
 
-	inline void draw() { getShape()->draw(); }  
-
-	/**
-	 * Get the position of this creature in the formation.
-	 */
-	void getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz);
-
-    /**
-        Used to move away from the player. Find the nearest corner of the map.
-    */
-    void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
+  // character information
+  char *name;
+  int level, exp, hp, ac;
+  Character *character;
+  int skills[Constants::SKILL_COUNT];
+  GLuint stateMod;
+  Monster *monster;
   
-    inline void setSelXY(int x, int y) { selX = x; selY = y; }
+ public:
+  static const int DIAMOND_FORMATION = 0;
+  static const int STAGGERED_FORMATION = 1;
+  static const int SQUARE_FORMATION = 2;
+  static const int ROW_FORMATION = 3;
+  static const int SCOUT_FORMATION = 4;
+  static const int CROSS_FORMATION = 5;
+  static const int FORMATION_COUNT = 6;
+  
+  Creature(Scourge *scourge, Character *character, char *name);
+  Creature(Scourge *scourge, Monster *monster);
+  ~Creature();
+  
+  inline GLUquadric *getQuadric() { return quadric; }
+  
+  inline void setMotion(int motion) { this->motion = motion; }
+  inline int getMotion() { return this->motion; }
+  
+  bool move(Uint16 dir, Map *map);
+  void follow(Map *map);
+  void gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz);
+  void moveToLocator(Map *map);
+  
+  inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
+  inline Sint16 getX() { return x; }
+  inline Sint16 getY() { return y; }
+  inline Sint16 getZ() { return z; }
+  inline GLShape *getShape() { return shape; }
+  inline void setFormation(int formation) { this->formation = formation; }
+  inline int getFormation() { return formation; }
+  void setNext(Creature *next, int index);
+  void setNextDontMove(Creature *next, int index);
+  inline Uint16 getDir() { return dir; }
+  
+  inline void draw() { getShape()->draw(); }  
+  
+  /**
+   * Get the position of this creature in the formation.
+   */
+  void getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz);
+  
+  /**
+	 Used to move away from the player. Find the nearest corner of the map.
+  */
+  void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
+  
+  inline void setSelXY(int x, int y) { selX = x; selY = y; }
+  
+  
+  
+  // inventory
+  // get the item at the given equip-index (inventory location)
+  Item *getEquippedInventory(int index);
+  
+  inline Item *getInventory(int index) { return inventory[index]; }
+  inline int getInventoryCount() { return inventory_count; }
+  inline void setInventory(int index, Item *item) { 
+	if(index < inventory_count) inventory[index] = item; 
+  }
+  inline void addInventory(Item *item) { inventory[inventory_count++] = item; }
+  Item *removeInventory(int index);
+  // equip or doff if already equipped
+  void equipInventory(int index);
+  int doff(int index);
+  // return the equip index (inventory location) for an inventory index
+  int getEquippedIndex(int index);
+  bool isItemInInventory(Item *item);
+
+
+  inline char *getName() { return name; }
+  inline Character *getCharacter() { return character; }  
+  inline Monster *getMonster() { return monster; }  
+  inline int getLevel() { return level; }
+  inline int getExp() { return exp; }
+  inline int getHp() { return hp; }
+  inline int getAc() { return ac; }
+  inline int getSkill(int index) { return skills[index]; }
+  inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }
+
+
+  inline void setName(char *s) { name = s; }
+  inline void setCharacter(Character *c) { character = c; }  
+  inline void setLevel(int n) { level = n; }
+  inline void setExp(int n) { exp = n; }
+  inline void setHp(int n) { hp = n; }
+  inline void setHp() { hp = getCharacter()->getStartingHp(); }
+  inline void setAc(int n) { ac = n; }
+
+  inline void setSkill(int index, int value) { skills[index] = value; }
+  inline void setStateMod(int mod, bool setting) { 
+	if(setting) stateMod |= (1 << mod); 
+	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
+  }
+  
+  
+
+  // until *someone* writes a pc editor
+  static Creature **createHardCodedParty(Scourge *scourge);
+
+ protected:
+  void commonInit();
+
 };
 
 

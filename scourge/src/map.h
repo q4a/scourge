@@ -121,10 +121,7 @@ class Map {
   inline float getXPos() { return xpos; }
   inline float getYPos() { return ypos; }
   inline float getZPos() { return zpos; } 
-  
-  void addItem(Item *item, int x, int y, int z);
-  Item *getItem(Sint16 mapx, Sint16 mapy, Sint16 mapz); 
-  
+    
   void draw(SDL_Surface *surface);
   
   /**

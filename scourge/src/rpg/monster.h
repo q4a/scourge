@@ -1,7 +1,7 @@
 /***************************************************************************
-                          item.h  -  description
+                          monster.h  -  description
                              -------------------
-    begin                : Sun Sep 28 2003
+    begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
  ***************************************************************************/
@@ -15,34 +15,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ITEM_H
-#define ITEM_H
+#ifndef MONSTER_H
+#define MONSTER_H
 
-#include "constants.h"
-#include "glshape.h"
-#include "shapepalette.h"
-#include "rpg/rpgitem.h"
-
-class Scourge;
+#include "../constants.h"
 
 /**
   *@author Gabor Torok
-
-  This class is both the UI representation (shape) of the rpgItem and it's state (for example, wear).
-  All instances of the RpgItem point to the same RpgItem, but a new Item is created for each.
-
   */
 
-class Item {
+#define MAX_MONSTER_LEVEL 10
+#define MAX_MONSTER_COUNT 50
+  
+class Monster  {
 private:
-  RpgItem *rpgItem;
-  
+  char *type;
+  int hp;
+  int level;
+  Uint8 shapeIndex;
+
+  static Monster *monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
+  static int monsterCount[MAX_MONSTER_LEVEL];
+
 public:
-  Item(RpgItem *rpgItem);
-  ~Item();
-  
-  inline GLShape *getShape() { return ShapePalette::getInstance()->getItemShape(this->rpgItem->getShapeIndex()); }
-  inline RpgItem *getRpgItem() { return rpgItem; }
+  Monster(char *type, int level, int hp, Uint8 shapeIndex=Constants::BUGGERLING_INDEX);
+  ~Monster();
+
+  inline char *getType() { return type; };
+  inline int getHp() { return hp; }  
+  inline int getLevel() { return level; }  
+  inline Uint8 getShapeIndex() { return shapeIndex; }
+
+  static void initMonsters();
+  static Monster *getRandomMonster(int level);
 };
 
 #endif

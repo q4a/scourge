@@ -193,7 +193,7 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
 }
 
 void SDLHandler::setVideoMode(int argc, char *argv[]) {
-  bool fullscreen = true;
+  bool fullscreen = false;
   bool doublebuf = true;
   bool hwpal = true;
   bool resizeable = true;

@@ -30,10 +30,25 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3} }   // CROSS_FORMATION
 };
 
-Creature::Creature(Scourge *scourge, GLShape *shape, PlayerChar *pc) {
-  this->shape = shape;
+Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->scourge = scourge;
-  this->pc = pc;
+  this->character = character;
+  this->monster = NULL;
+  this->name = name;
+  this->shape = scourge->getShapePalette()->getCreatureShape(character->getShapeIndex());
+  commonInit();
+}
+
+Creature::Creature(Scourge *scourge, Monster *monster) {
+  this->scourge = scourge;
+  this->character = NULL;
+  this->monster = monster;
+  this->name = monster->getType();
+  this->shape = scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex());
+  commonInit();
+}
+
+void Creature::commonInit() {
   this->x = this->y = this->z = 0;
   this->dir = Constants::MOVE_UP;
   this->next = NULL;
@@ -42,6 +57,15 @@ Creature::Creature(Scourge *scourge, GLShape *shape, PlayerChar *pc) {
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
   this->quadric = gluNewQuadric();
+  this->inventory_count = 0;
+  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	equipped[i] = MAX_INVENTORY_SIZE;
+  }
+  this->stateMod = 0;
+  this->level = 1;
+  this->exp = 0;
+  this->hp = 0;
+  this->ac = 0;
 }
 
 Creature::~Creature(){
@@ -228,3 +252,139 @@ void Creature::setNextDontMove(Creature *next, int index) {
   this->index = index;
 }
 
+
+
+Item *Creature::removeInventory(int index) { 
+  Item *item = NULL;
+  if(index < inventory_count) {
+	// drop item if carrying it
+	doff(index);
+	// drop from inventory
+	item = inventory[index];
+	for(int i = index; i < inventory_count - 1; i++) {
+	  inventory[i] = inventory[i + 1];
+	}
+	inventory_count--;
+	// adjust equipped indexes too
+	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	  if(equipped[i] > index && equipped[i] < MAX_INVENTORY_SIZE) {
+		equipped[i]--;
+	  }
+	}
+  }
+  return item;
+}
+
+void Creature::equipInventory(int index) {
+  // doff
+  if(doff(index)) return;
+  // don
+  // FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
+  Item *item = getInventory(index);
+  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	// if the slot is empty and the item can be worn here
+	if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
+	   equipped[i] == MAX_INVENTORY_SIZE) {
+		equipped[i] = index;
+		return;
+	}
+  }
+}
+
+int Creature::doff(int index) {
+  // doff
+  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	if(equipped[i] == index) {
+	  equipped[i] = MAX_INVENTORY_SIZE;
+	  return 1;
+	}
+  }
+  return 0;
+}
+
+/**
+   Get item at equipped index. (What is at equipped location?)
+ */
+Item *Creature::getEquippedInventory(int index) {
+  int n = equipped[index];
+  if(n < MAX_INVENTORY_SIZE) {
+	return getInventory(n);
+  }
+  return NULL;
+}
+
+/**
+   Get equipped index of inventory index. (Where is the item worn?)
+*/
+int Creature::getEquippedIndex(int index) {
+  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	if(equipped[i] == index) return i;
+  }
+  return -1;
+}
+
+bool Creature::isItemInInventory(Item *item) {
+  for(int i = 0; i < inventory_count; i++) {
+	if(inventory[i] == item) return true;
+  }
+  return false;
+}
+
+
+/**
+   Create a party programmatically until the party editor is made.
+ */
+Creature **Creature::createHardCodedParty(Scourge *scourge) {
+  Creature **pc = (Creature**)malloc(sizeof(Creature*) * 4);
+
+  pc[0] = new Creature(scourge, Character::character_class[Character::assassin], "Alamont");
+  pc[1] = new Creature(scourge, Character::character_class[Character::knight], "Barlett");
+  pc[2] = new Creature(scourge, Character::character_class[Character::summoner], "Corinus");
+  pc[3] = new Creature(scourge, Character::character_class[Character::naturalist], "Dialante");
+
+  pc[0]->setLevel(1); 
+  pc[0]->setExp(300);
+  pc[0]->setHp();
+  pc[0]->setStateMod(Constants::blessed, true);
+  pc[0]->setStateMod(Constants::poisoned, true);
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      pc[0]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  }
+  
+  pc[1]->setLevel(1); 
+  pc[1]->setExp(200);
+  pc[1]->setHp();
+  pc[1]->setStateMod(Constants::drunk, true);
+  pc[1]->setStateMod(Constants::cursed, true);      
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      pc[1]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  }
+  
+  pc[2]->setLevel(1); 
+  pc[2]->setExp(150);
+  pc[2]->setHp();
+  pc[2]->setStateMod(Constants::ac_protected, true);
+  pc[2]->setStateMod(Constants::magic_protected, true);
+  pc[2]->setStateMod(Constants::cursed, true);        
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      pc[2]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  }
+  
+  pc[3]->setLevel(1); 
+  pc[3]->setExp(400);
+  pc[3]->setHp();
+  pc[3]->setStateMod(Constants::possessed, true);          
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      pc[3]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  }
+
+  // add some items
+  pc[0]->addInventory(new Item(RpgItem::items[RpgItem::BASTARD_SWORD]));
+  pc[0]->addInventory(new Item(RpgItem::items[RpgItem::DAGGER]));
+  pc[2]->addInventory(new Item(RpgItem::items[RpgItem::LONG_SWORD]));
+  pc[3]->addInventory(new Item(RpgItem::items[RpgItem::GREAT_SWORD]));
+  pc[3]->addInventory(new Item(RpgItem::items[RpgItem::BATTLE_AXE]));
+  pc[3]->addInventory(new Item(RpgItem::items[RpgItem::THROWING_AXE]));
+
+  return pc;
+}

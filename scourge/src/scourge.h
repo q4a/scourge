@@ -31,8 +31,8 @@
 #include "optionsmenu.h"
 #include "inventory.h"
 #include "item.h"
-#include "rpg/pc.h"
 #include "rpg/character.h"
+#include "rpg/monster.h"
 #include "gui/window.h"
 #include "gui/button.h"
 
@@ -59,6 +59,15 @@ class Inventory;
 
 class Scourge : public SDLEventHandler,SDLScreenView {
  private:
+  Map *map;
+  MiniMap * miniMap;
+  DungeonGenerator *dg;
+  Scourge *scourge;
+  int level;
+  Item *items[500];
+  Creature *creatures[500];
+  int itemCount;
+  int creatureCount;
   Creature *player;
   Creature *party[4];
   int formation;
@@ -88,11 +97,9 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Item *movingItem;
 
   bool player_only;
-  
+
 protected:
   SDLHandler *sdlHandler;
-  Map *map;
-  MiniMap * miniMap;
   ShapePalette *shapePal;
 
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
@@ -117,8 +124,15 @@ public:
   Scourge(int argc, char *argv[]);
   ~Scourge();
 
+  inline Map *getMap() { return map; }
+  inline MiniMap *getMiniMap() { return miniMap; }
+
+  Item *newItem(RpgItem *rpgItem);
+  Creature *newCreature(Character *character, char *name);
+  Creature *newCreature(Monster *monster);
+
   // drop an item from inventory
-  void setMovingItem(int item_index, int x, int y, int z); 
+  void setMovingItem(Item *item, int x, int y, int z); 
 
   inline Item *getMovingItem() { return movingItem; }
 
@@ -135,6 +149,7 @@ public:
   bool handleEvent(Widget *widget, SDL_Event *event);
 
   void setPlayer(int n);
+  inline void setPlayer(Creature *c) { player = c; }
 
   void moveParty();
   
@@ -151,10 +166,6 @@ public:
   
   void startMission();  
 
-  inline Map *getMap() { return map; }
-  
-  inline MiniMap *getMiniMap() { return miniMap; } 
-
   inline ShapePalette *getShapePalette() { return shapePal; }  
 
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
@@ -165,6 +176,7 @@ public:
 
 protected:
     void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
+	void createUI();
 };
 
 #endif

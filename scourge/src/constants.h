@@ -268,6 +268,8 @@ public:
 	CLERIC_INDEX,
 	WIZARD_INDEX,
 
+	BUGGERLING_INDEX,
+
 	// last one
 	CREATURE_INDEX_COUNT
   };

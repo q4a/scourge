@@ -110,9 +110,10 @@ private:
   const static Sint16 unitSide = MAP_UNIT;
   const static Sint16 wallHeight = MAP_WALL_HEIGHT;   
 
+  Scourge *scourge;
 
 public: 
-	DungeonGenerator(int level);
+	DungeonGenerator(Scourge *scourge, int level);
 	~DungeonGenerator();
 
   void toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePalette *shapePal);
@@ -148,12 +149,14 @@ protected:
   int getScore(int x, int y, int rw, int rh);                        
 
   void getRandomLocation(Map *map, Shape *shape, int *x, int *y);
+
+  bool getLocationInRoom(Map *map, int roomIndex, Shape *shape, int *xpos, int *ypos);
   
   bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y);
 
   bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
 
-  void addItem(Map *map, Item *item, Shape *shape, int x, int y);
+  void addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y);
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
