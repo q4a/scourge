@@ -53,9 +53,13 @@ private:
   map<Item*,RpgItem*> itemInstanceMap;
   map<Creature*,Monster*> monsterInstanceMap;
   bool completed;
+  bool storyLine;
 public:
   Mission( int level, int depth, char *name, char *description, char *success, char *failure );
   ~Mission();
+
+  inline void setStoryLine( bool b ) { storyLine = b; }
+  inline bool isStoryLine() { return storyLine; }
 
   inline void addCreature( Monster *monster ) {
     creatures[monster] = false;

@@ -88,6 +88,7 @@ Board::Board(Session *session) {
       }
 
       current_mission = new Mission( level, depth, name, description, success, failure );
+      current_mission->setStoryLine( true );
       storylineMissions.push_back( current_mission );
 
     } else if(n == 'I' && current_mission) {
@@ -166,6 +167,29 @@ void Board::initMissions() {
     availableMissions.push_back( mission );
   }
 
+  // add the lowest level, un-completed storyline mission
+  int index = -1;
+  for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
+    Mission *mission = storylineMissions[i];
+    if( !mission->isCompleted() && 
+        mission->getLevel() < highest && 
+        ( index == -1 || mission->getLevel() < storylineMissions[ index ]->getLevel() ) ) {
+      index = i;
+    }
+  }
+  if( index != -1 ) {
+    bool found = false;
+    for( int i = 0; i < (int)availableMissions.size(); i++ ) {
+      if( availableMissions[ i ] == storylineMissions[ index ] ) {
+        found = true;
+        break;
+      }
+    }
+    if( !found ) {
+      availableMissions.push_back( storylineMissions[ index ] );
+    }
+  }
+
   // init ui
   if(availableMissions.size()) {
     missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
@@ -184,6 +208,10 @@ void Board::initMissions() {
         missionColor[i].r = 0.5f;
         missionColor[i].g = 0.5f;
         missionColor[i].b = 0.5f;
+      } else if( availableMissions[i]->isStoryLine() ) {
+        missionColor[i].r = 1.0f;
+        missionColor[i].g = 0.0f;
+        missionColor[i].b = 1.0f;
       } else if(availableMissions[i]->getLevel() < ave) {
         missionColor[i].r = 1.0f;
         missionColor[i].g = 1.0f;
