@@ -70,10 +70,11 @@ class Battle {
   static void setupBattles(Scourge *scourge, Battle *battle[], int count, vector<Battle *> *turns);
 
   /**
-	 Call this when a projectile weapon finally hits.
+	 Call these when a projectile weapon finally hits.
 	 It sets up a turn and plays it.
   */
   static void projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target);
+  static void projectileHitTurn(Scourge *scourge, Projectile *proj, int x, int y);
 
   /**
 	 A no-op turn of battle.

@@ -308,10 +308,6 @@ void Battle::launchProjectile() {
 }
 
 void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target) {
-
-  // FIXME: get rid of references to get/setTargetCreature in this method.
-  // instead, use creature's target methods (or make new ones)
-
   // configure a turn
   Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
@@ -327,7 +323,26 @@ void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *tar
   battle->fightTurn();
 
   delete battle;
+  proj->getCreature()->cancelTarget();
   proj->getCreature()->setTargetCreature(oldTarget);
+}
+
+void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, int x, int y) {
+  // configure a turn
+  proj->getCreature()->setTargetLocation(x, y, 0);
+  Battle *battle = new Battle(scourge, proj->getCreature());
+  battle->projectileHit = true;
+
+  if(proj->getItem()) {
+    battle->initItem(proj->getItem());
+  } else if(proj->getSpell()) {
+    battle->spell = proj->getSpell();
+  }
+  // play it
+  battle->fightTurn();
+  
+  delete battle;
+  proj->getCreature()->cancelTarget();
 }
 
 void Battle::hitWithItem() {

@@ -31,6 +31,8 @@
 #include "effect.h"
 #include "projectile.h"
 #include "battle.h"
+#include "calendar.h"
+#include "events/statemodexpirationevent.h"
 
 using namespace std;
 
@@ -65,8 +67,9 @@ class SpellCaster {
   void increaseHP();
   void increaseAC();
   // count==0 means that count depends on level
-  void launchProjectile(int count);
+  void launchProjectile(int count, bool stopOnImpact=true);
   void causeDamage();
+  void setStateMod(int mod);
 };
 
 #endif

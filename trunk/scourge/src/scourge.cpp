@@ -97,22 +97,22 @@ Scourge::Scourge(int argc, char *argv[]){
     // evaluate results and start a missions
     if(mainMenu->getValue() == NEW_GAME) {
       
-	  party->reset();
-	  party->getCalendar()->reset(true); // reset the time
-	  board->reset();
-
-	  // inventory needs the party
-	  if(!inventory) {
-		inventory = new Inventory(this);
-	  }
-
-	  // always start in hq
-	  nextMission = -1;
-	  inHq = true;
-
-    delete map;
-
-    startMission();
+      party->reset();
+      party->getCalendar()->reset(true); // reset the time
+      board->reset();
+      
+      // inventory needs the party
+      if(!inventory) {
+        inventory = new Inventory(this);
+      }
+      
+      // always start in hq
+      nextMission = -1;
+      inHq = true;
+      
+      delete map;
+      
+      startMission();
     } else if(mainMenu->getValue() == OPTIONS) {
       optionsMenu->show();
     } else if(mainMenu->getValue() == QUIT) {
@@ -137,7 +137,7 @@ void Scourge::startMission() {
 	messageWin->setVisible(true);
 	
 	// create the map
-	map = new Map(this);
+  map = new Map(this);
 	miniMap = new MiniMap(this); 
 	
 	// ready the party
@@ -1329,7 +1329,7 @@ void Scourge::playRound() {
       lastProjectileTick = t;
       
       // move projectiles
-      Projectile::moveProjectiles();
+      Projectile::moveProjectiles(this);
     }
     
     if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
