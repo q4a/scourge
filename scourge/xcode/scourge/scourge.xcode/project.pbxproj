@@ -140,8 +140,8 @@
 				762AF810066D856300B92069,
 				762AF813066D856300B92069,
 				762AF814066D856300B92069,
-				762AF815066D856300B92069,
 				762AF816066D856300B92069,
+				762AF815066D856300B92069,
 				762AF817066D856300B92069,
 				762AF81C066D856300B92069,
 				762AF81D066D856300B92069,
@@ -1048,9 +1048,9 @@
 			sourceTree = "<group>";
 		};
 		762AF852066D856300B92069 = {
+			explicitFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
 			name = scourge.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/scourge.cpp;
 			refType = 0;

@@ -90,6 +90,8 @@ private:
   freetype_font_data monoFont;
   bool font_initialized;
 
+  char *debugStr;
+
   // only do stencil buffer ops if this is true
   static bool stencilBufferUsed;
 
@@ -102,6 +104,8 @@ private:
 
   SDLHandler(ShapePalette *shapePal);
   ~SDLHandler();
+
+  inline void setDebugStr(char *s) { debugStr = s; }
   
   Uint16 mouseX, mouseY;
   Uint8 mouseButton, mouseEvent;

@@ -25,6 +25,7 @@
 #include "gui/window.h"
 #include "item.h"
 #include "userconfiguration.h"
+#include "rpg/spell.h"
 
 using namespace std;
 

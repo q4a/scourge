@@ -208,6 +208,8 @@ protected:
   void getMapXYZAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
   void processGameMouseMove(Uint16 x, Uint16 y);
+  void describeLocation(int mapx, int mapy, int mapz);
+
 
   bool getItem(Location *pos);
   void dropItem(int x, int y);
@@ -531,7 +533,9 @@ public:
   void initUI();
   void start();
 
-  void playSound(const char *sound) { sdlHandler->getSound()->playSound(sound); }
+  inline void playSound(const char *sound) { sdlHandler->getSound()->playSound(sound); }
+
+  inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 
   void fightProjectileHitTurn(Projectile *proj, Creature *creature);
 

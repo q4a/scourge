@@ -42,6 +42,10 @@ const float Map::shadowTransformMatrix[16] = {
 	0, 0, 0, 1 };
 
 Map::Map(Session *session) {
+
+  mapViewWidth = MVW;
+  mapViewDepth = MVD;
+
   this->session = session;  
   // only use 1 (disabled) or 0 (enabled)
   LIGHTMAP_ENABLED=1;
@@ -232,13 +236,13 @@ void Map::setViewArea(int x, int y, int w, int h) {
 }
 
 void Map::center(Sint16 x, Sint16 y, bool force) { 
-  Sint16 nx = x - MVW / 2; 
-  Sint16 ny = y - MVD / 2;
+  Sint16 nx = x - mapViewWidth / 2; 
+  Sint16 ny = y - mapViewDepth / 2;
   /*
-  Sint16 nx = x - (int)(((float)MVW * 
+  Sint16 nx = x - (int)(((float)mapViewWidth * 
                          ((float)viewWidth / 
                           (float)scourge->getSDLHandler()->getScreen()->w)) / 2.0f); 
-  Sint16 ny = y - (int)(((float)MVD * 
+  Sint16 ny = y - (int)(((float)mapViewDepth * 
                          ((float)viewHeight / 
                           (float)scourge->getSDLHandler()->getScreen()->h)) / 2.0f);
   */
@@ -311,9 +315,9 @@ void Map::move(int dir) {
 
 	//	cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
 
-	if(mapy > MAP_DEPTH - MVD) mapy = MAP_DEPTH - MVD;
+	if(mapy > MAP_DEPTH - mapViewDepth) mapy = MAP_DEPTH - mapViewDepth;
 	if(mapy < 0) mapy = 0;
-	if(mapx > MAP_WIDTH - MVW) mapx = MAP_WIDTH - MVW;
+	if(mapx > MAP_WIDTH - mapViewWidth) mapx = MAP_WIDTH - mapViewWidth;
 	if(mapx < 0) mapx = 0;
 	//	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
 
@@ -327,7 +331,7 @@ void Map::move(int dir) {
    If 'ground' is true, it draws the ground layer.
    Otherwise the shape arrays (other, stencil, later) are populated.
 */
-void Map::setupShapes(bool ground) {
+void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
   if(!ground) {
     laterCount = stencilCount = otherCount = damageCount = 0;
     mapChanged = false;
@@ -339,7 +343,7 @@ void Map::setupShapes(bool ground) {
   if(mod) {
     chunkOffsetX = -mod;
   }
-  int chunkEndX = MVW / MAP_UNIT + chunkStartX;
+  int chunkEndX = mapViewWidth / MAP_UNIT + chunkStartX;
 
   int chunkOffsetY = 0;
   int chunkStartY = (getY() - MAP_OFFSET) / MAP_UNIT;
@@ -347,7 +351,14 @@ void Map::setupShapes(bool ground) {
   if(mod) {
     chunkOffsetY = -mod;
   }
-  int chunkEndY = MVD / MAP_UNIT + chunkStartY;
+  int chunkEndY = mapViewDepth / MAP_UNIT + chunkStartY;
+
+  if(csx) {
+    *csx = chunkStartX;
+    *cex = chunkEndX;
+    *csy = chunkStartY;
+    *cey = chunkEndY;
+  }
 
   Shape *shape;
   int posX, posY;
@@ -356,74 +367,51 @@ void Map::setupShapes(bool ground) {
     if(chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT) continue;
     for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
       if(chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT) continue;
-
-      int doorValue = 0;
-
+      
+      // FIXME: this works except it draws other doors on the same
+      // chunk that should be hidden. To really fix it, we need to
+      // keep track of which side of the chunk to draw.
       if(!lightMap[chunkX][chunkY]) {
         if(ground) continue;
         else {
-          // see if a door has to be drawn
-          for(int yp = MAP_UNIT_OFFSET + 1; yp < MAP_UNIT; yp++) {
-            bool found = false;
-            if(chunkX - 1 >= 0 && lightMap[chunkX - 1][chunkY]) {
-              for(int xp = MAP_UNIT - MAP_UNIT_OFFSET; xp < MAP_UNIT; xp++) {
-                posX = (chunkX - 1) * MAP_UNIT + xp + MAP_OFFSET;
-                posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
-                if(posX >= 0 && posX < MAP_WIDTH && 
-                   posY >= 0 && posY < MAP_DEPTH &&
-                   pos[posX][posY][0]) {
-                  found = true;
-                  break;
-                }
-              }
-            }
-            if(!found) doorValue |= Constants::MOVE_LEFT;
-            found = false;
-            if(chunkX + 1 < MAP_WIDTH / MAP_UNIT && lightMap[chunkX + 1][chunkY]) {
-              for(int xp = 0; xp < MAP_UNIT_OFFSET; xp++) {
-                posX = (chunkX + 1) * MAP_UNIT + xp + MAP_OFFSET;
-                posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
-                if(posX >= 0 && posX < MAP_WIDTH && 
-                   posY >= 0 && posY < MAP_DEPTH &&
-                   pos[posX][posY][0]) {
-                  found = true;
-                  break;
-                }
-              }
-            }
-            if(!found) doorValue |= Constants::MOVE_RIGHT;
+          // see if the door is next to a chunk in the light
+          bool found = false;
+          
+          // look to the left
+          if(chunkX >= 1 && 
+             lightMap[chunkX - 1][chunkY]) {
+            posX = chunkX * MAP_UNIT + 1 + MAP_OFFSET;
+            posY = chunkY * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET + 1;
+            if(isDoor(posX, posY)) found = true;
           }
-          for(int xp = MAP_UNIT_OFFSET; xp < MAP_UNIT - MAP_UNIT_OFFSET; xp++) {
-            bool found = false;
-            if(chunkY - 1 >= 0 && lightMap[chunkX][chunkY - 1]) {
-              for(int yp = MAP_UNIT - MAP_UNIT_OFFSET; yp < MAP_UNIT; yp++) {
-                posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
-                posY = (chunkY - 1) * MAP_UNIT + yp + MAP_OFFSET + 1;
-                if(posX >= 0 && posX < MAP_WIDTH && 
-                   posY >= 0 && posY < MAP_DEPTH &&
-                   pos[posX][posY][0]) {
-                  found = true;
-                  break;
-                }
-              }
-            }
-            if(!found) doorValue |= Constants::MOVE_UP;
-            found = false;
-            if(chunkY + 1 >= 0 && lightMap[chunkX][chunkY + 1]) {
-              for(int yp = 0; yp < MAP_UNIT_OFFSET; yp++) {
-                posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
-                posY = (chunkY + 1) * MAP_UNIT + yp + MAP_OFFSET + 1;
-                if(posX >= 0 && posX < MAP_WIDTH && 
-                   posY >= 0 && posY < MAP_DEPTH &&
-                   pos[posX][posY][0]) {
-                  found = true;
-                  break;
-                }
-              }
-            }
-            if(!found) doorValue |= Constants::MOVE_DOWN;
+          // look to the right
+          if(!found && 
+             chunkX + 1 < MAP_WIDTH / MAP_UNIT && 
+             lightMap[chunkX + 1][chunkY]) {
+            posX = (chunkX + 1) * MAP_UNIT - 1 + MAP_OFFSET;
+            posY = chunkY * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET + 1;
+            if(isDoor(posX, posY)) found = true;
           }
-          if(doorValue == 0) continue;
+          // look above
+          if(!found &&
+             chunkY - 1 >= 0 && 
+             lightMap[chunkX][chunkY - 1]) {
+            posX = chunkX * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET;
+            posY = chunkY * MAP_UNIT + MAP_OFFSET + 1;
+            if(isDoor(posX, posY)) found = true;
+
+          }
+          // look below
+          if(!found &&
+             chunkY + 1< MAP_DEPTH / MAP_UNIT &&
+             lightMap[chunkX][chunkY + 1]) {
+            posX = chunkX * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET;
+            posY = (chunkY + 1) * MAP_UNIT - 2 + MAP_OFFSET + 1;
+            if(isDoor(posX, posY)) found = true;
+          }
+
+          // if not, skip this chunk
+          if(!found) continue;
         }
       }
 
@@ -456,7 +444,6 @@ void Map::setupShapes(bool ground) {
 
               if(lightMap[chunkX][chunkY] &&
                  effect[posX][posY][zp]) {
-
                 xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                 xp + chunkOffsetX) / GLShape::DIV;
                 ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
@@ -479,7 +466,8 @@ void Map::setupShapes(bool ground) {
                 // FIXME: this draws more doors than needed... 
                 // it should use doorValue to figure out what needs to be drawn
                 if((!lightMap[chunkX][chunkY] && 
-                    (shape == session->getShapePalette()->findShapeByName("NS_DOOR") ||
+                    (shape == session->getShapePalette()->findShapeByName("CORNER") ||
+                     shape == session->getShapePalette()->findShapeByName("NS_DOOR") ||
                      shape == session->getShapePalette()->findShapeByName("EW_DOOR") ||
                      shape == session->getShapePalette()->findShapeByName("NS_DOOR_TOP") ||
                      shape == session->getShapePalette()->findShapeByName("EW_DOOR_TOP") ||
@@ -562,7 +550,8 @@ void Map::setupPosition(int posX, int posY, int posZ,
     stencil[stencilCount].pos = getLocation(posX, posY, posZ);
     stencilCount++;
   } else if(!shape->isStencil()) {
-    if(shape->drawFirst()) {
+    bool invisible = (creature && creature->getStateMod(Constants::invisible));
+    if(!invisible && shape->drawFirst()) {
       other[otherCount].xpos = xpos2;
       other[otherCount].ypos = ypos2;
       other[otherCount].zpos = zpos2;
@@ -575,7 +564,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
       other[otherCount].pos = getLocation(posX, posY, posZ);
       otherCount++;
     }
-    if(shape->drawLater()) {
+    if(shape->drawLater() || invisible) {
       later[laterCount].xpos = xpos2;
       later[laterCount].ypos = ypos2;
       later[laterCount].zpos = zpos2;
@@ -596,22 +585,34 @@ void Map::draw() {
     if(zoom <= 0.5f) {
       zoomOut = false;
     } else {
-      zoom /= ZOOM_DELTA; 
-      float adjust = (float)viewWidth / 800.0f;
-      xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
-      ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
+      zoom /= ZOOM_DELTA;
+      //      // FIXME:
+      //mapViewWidth = mapViewDepth = (int)(100.0f / zoom);
+      //center(x + mapViewWidth / 2,
+      //       y + mapViewDepth / 2, 
+      //       true);
 
+      //mapChanged = true;
     }
   } else if(zoomOut) {
     if(zoom >= 2.8f) {
       zoomOut = false;
     } else {
       zoom *= ZOOM_DELTA; 
-      float adjust = (float)viewWidth / 800.0f;
-      xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
-      ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
+      
+      // FIXME:
+      //mapViewWidth = mapViewDepth = (int)(100.0f / zoom);
+      //center(x + mapViewWidth / 2,
+      //       y + mapViewDepth / 2, 
+      //       true);
+
+      //mapChanged = true;
     }
   }
+
+  float adjust = (float)viewWidth / 800.0f;
+  xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
+  ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
 
   // remove area effects
   vector<EffectLocation*>::iterator e=currentEffects.begin();
@@ -641,7 +642,18 @@ void Map::draw() {
   initMapView();
   if(lightMapChanged) configureLightMap();
   // populate the shape arrays
-  if(mapChanged) setupShapes(false);
+  if(mapChanged) {
+    sprintf(mapDebugStr, "z=%.2f w=%d ", zoom, mapViewWidth);
+    int csx, cex, csy, cey;
+    setupShapes(false, &csx, &cex, &csy, &cey);
+    int shapeCount = laterCount + otherCount + damageCount + stencilCount;
+    char tmp[80];
+    sprintf(tmp, "cx=[%d %d][%d %d] sc=%d [l=%d o=%d d=%d s=%d]", 
+            csx, cex, csy, cey,
+            shapeCount, laterCount, otherCount, damageCount, stencilCount);
+    strcat(mapDebugStr, tmp);
+    session->getGameAdapter()->setDebugStr(mapDebugStr);
+  }
   if(selectMode) {
     for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
   } else {  
@@ -892,17 +904,23 @@ void Map::doDrawShape(DrawLater *later, int effect) {
 void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, 
 					  GLuint name, int effect, DrawLater *later) {
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
-  glPushAttrib(GL_ENABLE_BIT);
+
+  // slow on mac os X:
+  // glPushAttrib(GL_ENABLE_BIT);
+
   glPushMatrix();
   if(useShadow) {
     // put shadow above the floor a little
     glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
     glMultMatrixf(shadowTransformMatrix);
+
+    // gray shadows
     //glColor4f( 0, 0, 0, 0.5f );
-    
-    // FIXME: this is a nicer shadow color, but it draws outside the walls too.
-    // need to fix the stencil ops to restrict shadow drawing to the floor.
+
+    // purple shadows
     glColor4f( 0.04f, 0, 0.07f, 0.6f );    
+
+    // debugging red
     //glColor4f(1, 0, 0, 0.5f);
   } else {
     glTranslatef( xpos2, ypos2, zpos2);
@@ -951,12 +969,22 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
     }
     later->projectile->getShape()->draw();
+  } else if(later && later->creature && !useShadow) {
+    if(later->creature->getStateMod(Constants::invisible)) {
+      glColor4f(0.3, 0.8f, 1.0f, 1.0f);    
+    } else if(later->creature->getStateMod(Constants::possessed)) {
+      glColor4f(1.0, 0.3f, 0.8f, 1.0f);    
+    }
+    shape->draw();
   } else {
     shape->draw();
   }
   glPopName();
   glPopMatrix();
-  glPopAttrib();
+  
+  // slow on mac os X
+  // glPopAttrib();
+
   if(shape) ((GLShape*)shape)->useShadow = false;
 }                                                                     
 
@@ -1039,10 +1067,10 @@ void Map::initMapView(bool ignoreRot) {
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   glTranslatef( 0, 0, this->zpos);  
 
-  //  float startx = -(((float)MVW + (mapx - (float)x)) / 2.0) / GLShape::DIV;
-  //  float starty = -(((float)MVD + (mapy - (float)y)) / 2.0) / GLShape::DIV;
-  float startx = -((float)MVW / 2.0 + (mapx - (float)x)) / GLShape::DIV;
-  float starty = -((float)MVD / 2.0 + (mapy - (float)y)) / GLShape::DIV;
+  //  float startx = -(((float)mapViewWidth + (mapx - (float)x)) / 2.0) / GLShape::DIV;
+  //  float starty = -(((float)mapViewDepth + (mapy - (float)y)) / 2.0) / GLShape::DIV;
+  float startx = -((float)mapViewWidth / 2.0 + (mapx - (float)x)) / GLShape::DIV;
+  float starty = -((float)mapViewDepth / 2.0 + (mapy - (float)y)) / GLShape::DIV;
   //float startz = -(float)(MAP_VIEW_HEIGHT) / GLShape::DIV;
   float startz = 0.0;
 
@@ -1225,41 +1253,6 @@ void Map::drawDescriptions(ScrollingList *list) {
   }
   glPopMatrix();
   */
-}
-
-void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) {
-	char s[300];
-  if(mapx < MAP_WIDTH) {
-	if(button == SDL_BUTTON_RIGHT) {
-	  //fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
-	  Location *loc = getPosition(mapx, mapy, mapz);
-	  if(loc) {
-		char *description = NULL;
-		Creature *creature = loc->creature;
-		//fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
-		if(creature) {
-			creature->getDetailedDescription(s);
-		  description = s;
-		} else {
-		  Item *item = loc->item;
-		  //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
-		  if( item ) {
-				item->getDetailedDescription(s, false);
-				description = s;
-		  } else {
-			Shape *shape = loc->shape;
-			//fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
-			if(shape) {
-			  description = session->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
-			}        
-		  }
-		}
-		if(description) {
-		  addDescription(description);
-		}
-	  }
-    }
-  }
 }
 
 void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
@@ -1868,7 +1861,7 @@ int Map::toggleLightMap() {
 } 
 
 bool Map::isLocationVisible(int x, int y) { 
-  return (x >= getX() && x < getX() + MVW &&
-          y >= getY() && y < getY() + MVD);
+  return (x >= getX() && x < getX() + mapViewWidth &&
+          y >= getY() && y < getY() + mapViewDepth);
 }
 

@@ -83,6 +83,15 @@ AC_EGREP_CPP(yes,
 ], is_win32=yes, is_win32=no )
 AC_MSG_RESULT([$is_win32])
 
+AC_MSG_CHECKING([for Mac OSX platform])
+AC_EGREP_CPP(yes,
+[
+#if defined(__APPLE__) || defined(__MACH_O__)
+  yes
+#endif
+], is_macosx=yes, is_macosx=no )
+AC_MSG_RESULT([$is_macosx])
+
 dnl Add libs required for Windows
 dnl I don't use -mwindows since I like having the console around
 dnl If the console annoys you then remove "-luser32 -lgdi32" and replace
@@ -307,7 +316,16 @@ dnl AC_ARG_WITH(freetype-config, [  --with-freetype-config=NAME path to freetype
 saved_LIBS="$LIBS"
 saved_CPPFLAGS="$CPPFLAGS"
 
+if test "x$is_macosx" = "xyes" ; then
+
+  dnl FIXME later: hardcoded mac path using freetype2-dev
+
+  FREETYPE_CFLAGS=`/sw/lib/freetype2/bin/freetype-config --cflags`
+  FREETYPE_LIBS=`/sw/lib/freetype2/bin/freetype-config --libs`
+  have_FREETYPE=yes
+else
 AC_MSG_CHECKING([for freetype-config library])
+
 AC_PATH_PROG(FREETYPE, freetype-config, no)
 
 if test "$FREETYPE" = "no"; then
@@ -317,6 +335,7 @@ else
   FREETYPE_CFLAGS=`freetype-config --cflags`
   FREETYPE_LIBS=`freetype-config --libs`
   have_FREETYPE=yes
+fi
 fi
 
 LIBS="$saved_LIBS"

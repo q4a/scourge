@@ -247,20 +247,14 @@ void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, 
 
   GLuint font=ft_font.list_base;
 
-	glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
-  //glPushAttrib(GL_ENABLE_BIT);	
+  // slow on mac os X
+  //	glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
 	glMatrixMode(GL_MODELVIEW);
-  //glDisable(GL_CULL_FACE);
-	//glDisable(GL_LIGHTING);
+    bool textureOn = glIsEnabled(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
-
 	glListBase(font);
-
-	//float modelview_matrix[16];	
-	//glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
 
 	//This is where the text display actually happens.
 	//For each line of text we reset the modelview matrix
@@ -270,10 +264,7 @@ void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, 
 	//draw it modifies the current matrix so that the next character
 	//will be drawn immediatly after it.  
   glPushMatrix();
-  //glLoadIdentity();
-  //glTranslatef(x,y-h*i,0);
   glTranslatef(x, y, 0);
-  //glMultMatrixf(modelview_matrix);
   glRotatef(180, 1, 0, 0);
 
 	//  The commented out raster position stuff can be useful if you need to
@@ -281,17 +272,10 @@ void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, 
 	//  If you decide to use it make sure to also uncomment the glBitmap command
 	//  in make_dlist().
 	//	glRasterPos2f(0,0);
-
   glCallLists(strlen(str), GL_UNSIGNED_BYTE, str);
 
-	//	float rpos[4];
-	//	glGetFloatv(GL_CURRENT_RASTER_POSITION ,rpos);
-	//	float len=x-rpos[0];
-
   glPopMatrix();
-  
-  glPopAttrib();		
-
-	//pop_projection_matrix();
+  if(!textureOn) glDisable(GL_TEXTURE_2D);
+  glDisable(GL_BLEND);
 }
 

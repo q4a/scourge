@@ -51,6 +51,16 @@ void Calendar::scheduleEvent(Event *e){
     }
 }
 
+// FIXME: O(n)
+void Calendar::cancelEvent(Event *e) {
+  for(int i = 0; i < scheduledEvents.size(); i++) {
+    if(scheduledEvents[i] == e) {
+      e->scheduleDeleteEvent();
+      break;
+    }
+  }
+}
+
 void Calendar::setPause(bool mustPause){
     if(!mustPause){        
         // game is unfreezed, so starting time has changed
@@ -91,7 +101,8 @@ bool Calendar::update(int gameSpeed){
         // eventDate >= currentDate ?
         if( !(currentDate.isInferiorTo(scheduledEvents[i]->getEventDate())) ){
             if(CALENDAR_DEBUG) cout<< " Yes " << endl;            
-            scheduledEvents[i]->execute();                                                           
+            if(!scheduledEvents[i]->isCancelEventSet())
+              scheduledEvents[i]->execute();
             
             // remove this event as it has been executed
             e = scheduledEvents[i];                                    
@@ -115,6 +126,9 @@ bool Calendar::update(int gameSpeed){
             else{
                 // Don't need this event anymore
                 if(CALENDAR_DEBUG) cout << " No, deleting this event." << endl;
+                // call the last execution to do cleanup in event if any
+                if(!scheduledEvents[i]->isCancelEventSet())
+                  e->executeBeforeDelete();
                 delete e;                                 
                 if(CALENDAR_DEBUG) cout << " Ok, event deleted." << endl;
             }            

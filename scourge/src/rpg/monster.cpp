@@ -22,6 +22,8 @@
 
 map<int, vector<Monster*>* > Monster::monsters;
 map<string, Monster*> Monster::monstersByName;
+map<string, map<int, vector<string>*>*> Monster::soundMap;
+map<int, vector<string>*>* Monster::currentSoundMap;
 
 Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, int w, int d, int h) {
   this->type = type;
@@ -145,6 +147,44 @@ void Monster::initMonsters() {
       n = Constants::readLine(line, fp);
       // add spell to monster
       last_monster->addSpell(Spell::getSpellByName(line));
+    } else if(n == 'W') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      currentSoundMap = new map<int, vector<string>*>();
+      string monsterType_str = line;
+      soundMap[monsterType_str] = currentSoundMap;
+    } else if(n == 'a' && currentSoundMap) {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      vector<string> *list;
+      if(currentSoundMap->find(Constants::SOUND_TYPE_ATTACK) == currentSoundMap->end()) {
+        list = new vector<string>();
+        (*currentSoundMap)[Constants::SOUND_TYPE_ATTACK] = list;
+      } else {
+        list = (*currentSoundMap)[Constants::SOUND_TYPE_ATTACK];
+      }
+      char *p = strtok(line, ",");
+      while(p) {
+        string sound_str = p;
+        list->push_back(sound_str);
+        p = strtok(NULL, ",");
+      }
+    } else if(n == 'h' && currentSoundMap) {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      vector<string> *list;
+      if(currentSoundMap->find(Constants::SOUND_TYPE_HIT) == currentSoundMap->end()) {
+        list = new vector<string>();
+        (*currentSoundMap)[Constants::SOUND_TYPE_HIT] = list;
+      } else {
+        list = (*currentSoundMap)[Constants::SOUND_TYPE_HIT];
+      }
+      char *p = strtok(line, ",");
+      while(p) {
+        string sound_str = p;
+        list->push_back(sound_str);
+        p = strtok(NULL, ",");
+      }
     } else {
       n = Constants::readLine(line, fp);
     }
@@ -177,4 +217,20 @@ Monster *Monster::getMonsterByName(char *name) {
     return NULL;
   }
   return monstersByName[s];
+}
+
+const char *Monster::getRandomSound(int type) {
+  string type_str = this->getModelName();
+  if(soundMap.find(type_str) != soundMap.end()) {
+    map<int, vector<string>*> *innerMap = soundMap[type_str];
+    vector<string> *sounds = NULL;
+    if(innerMap->find(type) != innerMap->end()) {
+      sounds = (*innerMap)[type];
+    }
+    if(!sounds || !(sounds->size())) return NULL;
+    string s = (*sounds)[(int)((float)(sounds->size()) * rand()/RAND_MAX)];
+    return s.c_str();
+  } else {
+    return NULL;
+  }
 }

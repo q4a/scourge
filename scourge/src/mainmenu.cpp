@@ -45,30 +45,28 @@ MainMenu::MainMenu(Scourge *scourge){
   logoTicksDelta = 50;
   logoSpriteCount = 0;
 
+  top = (scourge->getSDLHandler()->getScreen()->h - 600) / 2;
+  openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
+  lastTick = 0;
+
   // The new style gui
 #ifndef AT_WORK
 
 #ifdef HAVE_SDL_NET
   mainWin = new Window( scourge->getSDLHandler(),
-												50, 230, 270, 250, 
+												50, top + 230, 270, 250, 
 												strdup("Main Menu"), 
 												scourge->getShapePalette()->getGuiTexture(),
 												false );
 #else
   mainWin = new Window( scourge->getSDLHandler(),
-												50, 230, 270, 220, 
+												50, top + 230, 270, 220, 
 												strdup("Main Menu"), 
 												scourge->getShapePalette()->getGuiTexture(),
 												false );
 #endif
-  
-  char version[100];
-  sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
-  Label *label = new Label( 10, 20, strdup(version));
-  label->setColor( 0, 0, 0, 1.0f );
-  mainWin->addWidget((Widget*)label);
-  
-  int y = 40;
+    
+  int y = 30;
   newGameButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("New Game") );
   mainWin->addWidget((Widget*)newGameButton);
   y += 30;
@@ -102,6 +100,7 @@ MainMenu::~MainMenu(){
 
 void MainMenu::drawView() {
 #ifndef AT_WORK
+
   // create a stencil for the water
   glDisable(GL_DEPTH_TEST);
   glColorMask(0,0,0,0);
@@ -150,7 +149,7 @@ void MainMenu::drawView() {
   glPushMatrix();
   glLoadIdentity( );                         
   glPixelZoom( 1.0, -1.0 );
-  glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, 0 );
+  glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, top );
   glDrawPixels(scourge->getShapePalette()->scourge->w, 
 			   scourge->getShapePalette()->scourge->h,
 			   GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImage);
@@ -167,7 +166,7 @@ void MainMenu::drawView() {
   glPushMatrix();
   glLoadIdentity();
   glTranslatef( scourge->getSDLHandler()->getScreen()->w - 215 + (int)(8.0 * rand()/RAND_MAX) - 4, 
-				385 + (int)(8.0 * rand()/RAND_MAX) - 4, 
+				top + 385 + (int)(8.0 * rand()/RAND_MAX) - 4, 
 				0 ); 
   float w = 64;
   float h = 64;
@@ -213,11 +212,94 @@ void MainMenu::drawView() {
   scourge->getSDLHandler()->texPrint(300, 300, "Hello world");
 #endif
   glEnable( GL_TEXTURE_2D );
-  //  glEnable( GL_LIGHTING );
   glEnable(GL_DEPTH_TEST);
 }
 
 void MainMenu::drawAfter() {
+  // draw the boards
+  if(openingTop > 0) {
+    glPushMatrix();
+    glColor3f( 1, 1, 1 );
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getGuiWoodTexture() );
+    //    float TILE_W = 510 / 2.0f;
+    float TILE_H = 270 / 3.0f; 
+    glEnable( GL_TEXTURE_2D );
+
+    glLoadIdentity();
+    glTranslatef( 0, 0, 0 );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, openingTop / TILE_H );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 0, openingTop );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( scourge->getSDLHandler()->getScreen()->w, openingTop );
+    glTexCoord2f( 1, openingTop / TILE_H );
+    glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
+    glEnd();
+
+    glLoadIdentity();
+    glTranslatef( 0, scourge->getSDLHandler()->getScreen()->h - openingTop, 0 );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( 0, openingTop / TILE_H );
+    glVertex2i( 0, openingTop );
+    glTexCoord2f( 1, openingTop / TILE_H );
+    glVertex2i( scourge->getSDLHandler()->getScreen()->w, openingTop );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+
+    for(int i = 0; i < 2; i++) {
+      glLoadIdentity();
+      glTranslatef( 0, (i == 0 ? openingTop : scourge->getSDLHandler()->getScreen()->h - openingTop), 0 );
+      glColor4f( 1, 0.7f, 0, 1 );
+      glBegin( GL_LINES );
+      glVertex2i( 0, 0 );
+      glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
+      glEnd();
+    }
+
+    glLoadIdentity();
+    glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+    char version[100];
+    sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
+    scourge->getSDLHandler()->texPrint( 0, 0, version );
+    glColor3f( 0.8, 0.75, 0.65 );
+    int y = 14;
+    scourge->getSDLHandler()->texPrint( 0, y, "Optionally compiled modules:" );
+    y += 14;
+#ifdef HAVE_SDL_NET
+    scourge->getSDLHandler()->texPrint( 0, y, "[Network]" );
+    y += 14;
+#endif
+#ifdef HAVE_SDL_MIXER
+    scourge->getSDLHandler()->texPrint( 0, y, "[Sound]" );
+    y += 14;
+#endif
+    glPopMatrix();
+
+    if(openingTop > top) {
+      Uint32 t = SDL_GetTicks();
+      if( t - lastTick > 40 ) {
+        int d = (scourge->getSDLHandler()->getScreen()->h - openingTop) / 20;
+        openingTop -= (10 + (int)(d * 1.2));
+        if(openingTop < top) openingTop = top;
+        lastTick = t;
+      }
+    }
+  }
+}
+
+void MainMenu::show() { 
+  mainWin->setVisible(true); 
+}
+
+void MainMenu::hide() { 
+  mainWin->setVisible(false); 
+  openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
 }
 
 void MainMenu::drawLogo() {
@@ -237,7 +319,7 @@ void MainMenu::drawLogo() {
   glPushMatrix();
   glLoadIdentity();
   glRotatef(logoRot, 0, 0, 1 );
-  glTranslatef( 70, 10 - abs((int)(logoRot / 0.25f)), 500 );
+  glTranslatef( 70, top + 10 - abs((int)(logoRot / 0.25f)), 500 );
   float zoom = (logoRot / (LOGO_ROT_POS / LOGO_ZOOM)) + 1.0f;
   glScalef( zoom, zoom, 1 );
   float w = scourge->getShapePalette()->logo->w;
@@ -300,7 +382,7 @@ void MainMenu::drawLogoSprites() {
 	glPushMatrix();
 	glLoadIdentity();
 	glRotatef(logoSprite[i].rot, 0, 0, 1 );
-	glTranslatef( logoSprite[i].x, logoSprite[i].y, 500 );
+	glTranslatef( logoSprite[i].x, top + logoSprite[i].y, 500 );
 	float zoom = 1.2f;
 	glScalef( zoom, zoom, 1 );
 	float w = scourge->getShapePalette()->logo->w;
@@ -398,7 +480,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
     h = cloud[i].h;
 	glPushMatrix();
 	glTranslatef( cloud[i].x, 
-				  (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y + 130), 
+				  top + (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y + 130), 
 				  0 );
     glBegin( GL_QUADS );
     glNormal3f(0.0f, 0.0f, 1.0f);
@@ -433,7 +515,7 @@ void MainMenu::drawWater() {
   w = scourge->getSDLHandler()->getScreen()->w;
   h = 130;
   glLoadIdentity();
-  glTranslatef( 0, 600 - h, 0);
+  glTranslatef( 0, top + (600 - h), 0);
   glDisable( GL_TEXTURE_2D );
   //  glDisable( GL_LIGHTING );
   //glEnable( GL_BLEND );

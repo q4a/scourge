@@ -129,7 +129,11 @@ void Scourge::start() {
       }
 #endif  
 
+      // do this to fix slowness in mainmenu the second time around
+      glPushAttrib(GL_ENABLE_BIT);
       startMission();
+      glPopAttrib();
+
     } else if(mainMenu->getValue() == OPTIONS) {
       optionsMenu->show();
     } else if(mainMenu->getValue() == MULTIPLAYER) {
@@ -214,7 +218,7 @@ void Scourge::startMission() {
       // display the HQ map
       getSession()->setCurrentMission(NULL);
       missionWillAwardExpPoints = false;
-      dg = new DungeonGenerator(this, 2, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
+      dg = new DungeonGenerator(this, 2, 0, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
       dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
     } else {
       // in HQ map
@@ -226,7 +230,7 @@ void Scourge::startMission() {
       cerr << "Starting mission: level="  << getSession()->getCurrentMission()->getLevel() << 
       " stories=" << getSession()->getCurrentMission()->getDungeonStoryCount() << 
       " current story=" << currentStory << endl;
-      dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), 
+      dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
                                 (currentStory < getSession()->getCurrentMission()->getDungeonStoryCount() - 1), 
                                 (currentStory > 0),
                                 getSession()->getCurrentMission());
@@ -394,7 +398,7 @@ void Scourge::drawOutsideMap() {
   // cover the area outside the map
   if(map->getViewWidth() < sdlHandler->getScreen()->w || 
      map->getViewHeight() < sdlHandler->getScreen()->h) {
-    glPushAttrib( GL_ENABLE_BIT );
+    //glPushAttrib( GL_ENABLE_BIT );
     glDisable( GL_CULL_FACE );
     glDisable( GL_DEPTH_TEST );
     glEnable( GL_TEXTURE_2D );
@@ -432,7 +436,10 @@ void Scourge::drawOutsideMap() {
     glEnd();
     
     glPopMatrix();
-    glPopAttrib();
+    //    glPopAttrib();
+    glEnable( GL_CULL_FACE );
+    glEnable( GL_DEPTH_TEST );
+    glDisable( GL_TEXTURE_2D );
   }  
 }
 
@@ -446,7 +453,7 @@ void Scourge::drawAfter() {
 
   // draw turn info
   if(inTurnBasedCombat()) {
-    glPushAttrib(GL_ENABLE_BIT);
+    //glPushAttrib(GL_ENABLE_BIT);
     glPushMatrix();
     glLoadIdentity();
     glTranslatef( 20, 20, 0 );
@@ -460,7 +467,7 @@ void Scourge::drawAfter() {
                                c->getBattle()->getAP(), 
                                c->getBattle()->getStartingAP());
     glPopMatrix();
-    glPushAttrib(GL_ENABLE_BIT);
+    //glPushAttrib(GL_ENABLE_BIT);
   }
 }
 
@@ -877,9 +884,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(event->key.keysym.sym == SDLK_m) {
       missionCompleted();
       return false;
-    } else if(event->key.keysym.sym == SDLK_f) {
-      party->startEffect(Constants::EFFECT_FLAMES, (Constants::DAMAGE_DURATION * 4));
-      return false;
+      //    } else if(event->key.keysym.sym == SDLK_f) {
+      //party->startEffect(Constants::EFFECT_FLAMES, (Constants::DAMAGE_DURATION * 4));
+      //return false;
     }
     // END OF DEBUG ------------------------------------
 
@@ -1058,6 +1065,15 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	else if(ea == START_ROUND) {
 	  party->toggleRound();
 	}
+    else if(ea == LAYOUT_1) {
+      setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
+    } else if(ea == LAYOUT_2) {
+      setUILayout(Constants::GUI_LAYOUT_BOTTOM);
+    } else if(ea == LAYOUT_3) {
+      setUILayout(Constants::GUI_LAYOUT_SIDE);
+    } else if(ea == LAYOUT_4) {
+      setUILayout(Constants::GUI_LAYOUT_INVENTORY);
+    }
     break;
   default: break;
   }
@@ -1224,10 +1240,45 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   
   } else if(button == SDL_BUTTON_RIGHT) {
     getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-    // default click handling
-    map->handleMouseClick(mapx, mapy, mapz, button);		
+    describeLocation(mapx, mapy, mapz);
   }
-}         
+}        
+
+/*
+ * Here use a pop-up dialog instead, eventually.
+ */
+void Scourge::describeLocation(int mapx, int mapy, int mapz) {
+  char s[300];
+  if(mapx < MAP_WIDTH) {
+    //fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
+    Location *loc = map->getPosition(mapx, mapy, mapz);
+    if(loc) {
+      char *description = NULL;
+      Creature *creature = loc->creature;
+      //fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
+      if(creature) {
+        creature->getDetailedDescription(s);
+        description = s;
+      } else {
+        Item *item = loc->item;
+        //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
+        if( item ) {
+          item->getDetailedDescription(s, false);
+          description = s;
+        } else {
+          Shape *shape = loc->shape;
+          //fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
+          if(shape) {
+            description = session->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
+          }        
+        }
+      }
+      if(description) {
+        map->addDescription(description);
+      }
+    }
+  }
+} 
 
 void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                                  Uint16 *mapx, Uint16 *mapy) {
@@ -1954,7 +2005,7 @@ void Scourge::playRound() {
  
   // is the game not paused?
   if(party->isRealTimeMode()) {
-
+    
     Projectile::moveProjectiles(this);
 
     // fight battle turns

@@ -39,6 +39,7 @@ private:
   // For debug purpose
   static int globalId;  
   int eventId;  // unique  
+  bool cancelEvent;
 
 public:
   
@@ -58,11 +59,16 @@ public:
   
   //virtual void execute()=0;
   virtual void execute() { cout << "Event.cpp : execute function should'nt be called by event base class!" << endl; }
+  
+  // this is called before the event is deleted (It's only called once.)
+  virtual void executeBeforeDelete() { }
+
   inline long getNbExecutionsToDo() { return nbExecutionsToDo; }
   inline long getNbExecutions()     { return nbExecutions; }
   inline int getEventId()           { return eventId;   }
   inline void increaseNbExecutions(){ nbExecutions ++ ; }
   inline void setNbExecutionsToDo(int nb){ if(nb >= -1) nbExecutionsToDo = nb; else nbExecutions = 0; }
+  inline bool isCancelEventSet() { return cancelEvent; }
   
     
   Date getEventDate() { return eventDate; }

@@ -827,7 +827,7 @@ void Creature::setAction(int action,
   case Constants::ACTION_NO_ACTION:
     // no-op
     preActionTargetCreature = NULL;
-    sprintf(msg, "");
+    strcpy(msg, "");
     break;
   default:
     cerr << "*** Error: unknown action " << action << endl;
@@ -1228,13 +1228,19 @@ void Creature::decideMonsterAction() {
   // does monster need to be healed?
 
   // increase MP, AC or skill (via potion)?
-
-  Creature *p = session->getParty()->getClosestPlayer(getX(), getY(), 
-                                                      getShape()->getWidth(),
-                                                      getShape()->getDepth(),
-                                                      20);
+  Creature *p;
+  if(getStateMod(Constants::possessed)) {
+    p = session->getClosestVisibleMonster(getX(), getY(), 
+                                          getShape()->getWidth(),
+                                          getShape()->getDepth(),
+                                          20);
+  } else {
+    p = session->getParty()->getClosestPlayer(getX(), getY(), 
+                                              getShape()->getWidth(),
+                                              getShape()->getDepth(),
+                                              20);
+  }
   if(p) {
-
     float dist = Constants::distance(getX(),  getY(), 
                                      getShape()->getWidth(), getShape()->getDepth(),
                                      p->getX(), p->getY(),

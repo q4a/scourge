@@ -66,6 +66,11 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "DECREASE_GAME_SPEED", 
     
     "START_ROUND",
+
+    "LAYOUT_1",
+    "LAYOUT_2",
+    "LAYOUT_3",
+    "LAYOUT_4",
     
     "BLEND_A",
     "BLEND_B",
@@ -76,8 +81,7 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "ADD_Y_POS_PLUS",
     "ADD_Y_POS_MINUS",
     "ADD_Z_POS_PLUS",
-    "ADD_Z_POS_MINUS"     
-    
+    "ADD_Z_POS_MINUS",    
 };
 
 
@@ -139,6 +143,11 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     "Decrease game speed",
     
     "Start next round",
+
+    "Floating UI layout",
+    "Bottom UI layout",
+    "Side UI layout",
+    "Inventory UI layout",
     
     // Not visible to the user
     "BLEND_A",    
@@ -150,7 +159,7 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     "ADD_Y_POS_PLUS",
     "ADD_Y_POS_MINUS",
     "ADD_Z_POS_PLUS",
-    "ADD_Z_POS_MINUS"
+    "ADD_Z_POS_MINUS",
 };
 
 
@@ -930,6 +939,10 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind j increase_game_speed" << endl;
   configFile << "bind k decrease_game_speed" << endl;
   configFile << "bind space start_round" << endl;
+  configFile << "bind f1 layout_1" << endl;
+  configFile << "bind f2 layout_2" << endl;
+  configFile << "bind f3 layout_3" << endl;
+  configFile << "bind f4 layout_4" << endl;
   configFile << "" << endl;
   configFile << "// Video settings" << endl;
   configFile << "set fullscreen true" << endl;

@@ -30,6 +30,7 @@ Event::Event(Date currentDate, Date tmOut, long nbExecutionsToDo){
     this->timeOut = tmOut;   
     this->eventDate = tmOut;    
     this->eventDate.addDate(currentDate); 
+    this->cancelEvent = false;
     eventId = globalId; 
     globalId++;      
 }       
@@ -40,6 +41,7 @@ Event::Event(Date eventDate){
     this->nbExecutionsToDo = 1;
     this->timeOut.setDate(0,0,0,0,0,0);   
     this->eventDate = eventDate; 
+    this->cancelEvent = false;
     eventId = globalId;
     globalId++;             
 }
@@ -51,6 +53,7 @@ Event::Event(Date eventDate){
 void Event::scheduleDeleteEvent(){
     nbExecutionsToDo = 1;
     nbExecutions = 2;
+    cancelEvent = true;
     //cout << eventId << " will be deleted next time." << endl; 
 }
 

@@ -244,6 +244,7 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   Creature *p = NULL;
   for(int i = 0; i < getCreatureCount(); i++) {
     if(!getCreature(i)->getStateMod(Constants::dead) && 
+       !getCreature(i)->getStateMod(Constants::possessed) && 
        map->isLocationVisible(getCreature(i)->getX(), getCreature(i)->getY()) &&
        getCreature(i)->isMonster()) {
       float dist = Constants::distance(x, y, w, h,

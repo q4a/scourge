@@ -73,6 +73,7 @@ private:
   static const int levels[][9];
 
   int level;
+  int depth;
   int width;
   int height;
   int curvyness; // the lower this number the more random the maze
@@ -165,7 +166,7 @@ public:
 	LOCATION_COUNT
   };
   
-  DungeonGenerator(Scourge *scourge, int level, bool stairsDown, bool stairsUp, Mission *mission = NULL);
+  DungeonGenerator(Scourge *scourge, int level, int depth, bool stairsDown, bool stairsUp, Mission *mission = NULL);
   ~DungeonGenerator();
 
   void toMap(Map *map, ShapePalette *shapePal, int location=0);

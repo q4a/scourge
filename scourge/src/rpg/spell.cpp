@@ -87,15 +87,16 @@ void MagicSchool::initMagic() {
 	  int failureRate = atoi(strtok(NULL, ","));
 	  strcpy(dice, strtok(NULL, ","));
 	  int distance = atoi(strtok(NULL, ","));
-	  int targetType = (strcmp(strtok(NULL, ","), "single") ? 
+	  int targetType = (!strcmp(strtok(NULL, ","), "single") ? 
 						SINGLE_TARGET : GROUP_TARGET);
 	  int speed = atoi(strtok(NULL, ","));
 	  int effect = Constants::getEffectByName(strtok(NULL, ","));
-	  cerr << "*** looking up: " << s << " effect=" << effect << endl;
+      cerr << "*** looking up: " << s << " effect=" << effect << endl;
 	  char *s = strtok(NULL, ",");
 	  bool creatureTarget = (strchr(s, 'C') != NULL);
 	  bool locationTarget = (strchr(s, 'L') != NULL);
 	  bool itemTarget = (strchr(s, 'I') != NULL);
+      bool partyTarget = (strchr(s, 'P') != NULL);
 
 
 	  if(!current) {
@@ -113,9 +114,13 @@ void MagicSchool::initMagic() {
 	  
 	  currentSpell = new Spell( strdup(name), level, mp, exp, failureRate, 
 								action, distance, targetType, speed, effect, 
-								creatureTarget, locationTarget, itemTarget,
+								creatureTarget, locationTarget, itemTarget, partyTarget,
 								current );
 	  current->addSpell( currentSpell );
+	} else if( n == 'W' && currentSpell ) {
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+	  currentSpell->setSound( strdup(line) );
 	} else if( n == 'D' && currentSpell ) {
 	  fgetc(fp);
 	  n = Constants::readLine(line, fp);
@@ -155,8 +160,9 @@ Spell *MagicSchool::getRandomSpell(int level) {
 
 Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
 			 int distance, int targetType, int speed, int effect, bool creatureTarget, 
-			 bool locationTarget, bool itemTarget, MagicSchool *school) {
+			 bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school) {
   this->name = name;
+  this->sound = NULL;
   this->level = level;
   this->mp = mp;
   this->exp = exp;
@@ -169,6 +175,7 @@ Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *acti
   this->creatureTarget = creatureTarget; 
   this->locationTarget = locationTarget;
   this->itemTarget = itemTarget;
+  this->partyTarget = partyTarget;
   this->school = school;
 
   strcpy(this->notes, "");

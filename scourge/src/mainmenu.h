@@ -42,6 +42,8 @@ private:
   float logoRot, logoRotDelta;
   GLint logoTicks;
   GLint logoTicksDelta;
+  int top, openingTop;
+  Uint32 lastTick;
 
 #define MAX_LOGOS 100
   typedef struct _LogoSprite {
@@ -84,8 +86,8 @@ public:
   bool handleEvent(Widget *widget, SDL_Event *event);
   int getValue();
 
-  inline void show() { mainWin->setVisible(true); }
-  inline void hide() { mainWin->setVisible(false); }
+  void show();
+  void hide();
   inline bool isVisible() { return mainWin->isVisible(); }
 
  protected:

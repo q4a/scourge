@@ -446,7 +446,7 @@ public:
 	possessed, 
 	blinded, 
 	charmed, 
-	changed,
+	invisible,
 	overloaded,
 	dead,
 	leveled,

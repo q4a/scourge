@@ -133,7 +133,7 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
 
   computeDrawValues();
 
-  glPushAttrib(GL_ENABLE_BIT);
+  //glPushAttrib(GL_ENABLE_BIT);
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_SCISSOR_TEST );
@@ -207,7 +207,12 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
     fprintf(stderr, "OpenGl result for minimap texture building : %s\n", Util::getOpenGLError());          
   }
   glPopMatrix();
-  glPopAttrib();
+  //  glPopAttrib();
+
+  glEnable( GL_TEXTURE_2D );
+  glEnable( GL_DEPTH_TEST );
+  glEnable( GL_CULL_FACE );
+
 }
 
 void MiniMap::drawWidget(Widget *w) {
@@ -228,7 +233,7 @@ void MiniMap::drawWidget(Widget *w) {
   yPartyPos -= minY; 
 
   //updateFog(xPartyPos, yPartyPos);  
-  glPushAttrib(GL_ENABLE_BIT);
+  //glPushAttrib(GL_ENABLE_BIT);
 
   win->scissorToWindow();
 
@@ -317,7 +322,11 @@ void MiniMap::drawWidget(Widget *w) {
 
 
   glPopMatrix();   
-  glPopAttrib();
+  //  glPopAttrib();
+
+  glEnable( GL_TEXTURE_2D );
+  glDisable(GL_ALPHA_TEST);
+  glDisable(GL_SCISSOR_TEST);
 
 }
 

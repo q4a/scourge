@@ -136,21 +136,45 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
     }
   }
 
+  cerr << "Loading spell sounds..." << endl;
+  for(int i = 0; i < (int)MagicSchool::getMagicSchoolCount(); i++) {
+    for(int t = 0; t < (int)MagicSchool::getMagicSchool(i)->getSpellCount(); t++) {
+      storeSound(0, MagicSchool::getMagicSchool(i)->getSpell(t)->getSound());
+    }
+  }
+
+  cerr << "Loading monster sounds..." << endl;
+  for(map<string, map<int, vector<string>*>*>::iterator i = Monster::soundMap.begin(); 
+      i != Monster::soundMap.end(); ++i) {
+    map<int, vector<string>*> *m = i->second;
+    for(map<int, vector<string>*>::iterator i2 = m->begin(); 
+        i2 != m->end(); ++i2) {
+      vector<string> *v = i2->second;
+      for(int i = 0; i < (int)v->size(); i++) {
+        string file = (*v)[i];
+        storeSound(0, file.c_str());
+      }
+    }
+  }
+  
+
   setEffectsVolume(userConfiguration->getEffectsVolume());
 }
 
 void Sound::storeSound(int type, const char *file) {
 #ifdef HAVE_SDL_MIXER
   if(haveSound) {
-    char fn[300];
-    sprintf(fn, "%s/%s", rootDir, file);
-    cerr << "*** Loading sound file: " << fn << endl;
-    Mix_Chunk *sample = Mix_LoadWAV(fn);
-    if(!sample) {
-      cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
-    } else {
-      string fileStr = file;
-      soundMap[fileStr] = sample;
+    string fileStr = file;
+    if(soundMap.find(fileStr) == soundMap.end()) {
+      char fn[300];
+      sprintf(fn, "%s/%s", rootDir, file);
+      cerr << "*** Loading sound file: " << fn << endl;
+      Mix_Chunk *sample = Mix_LoadWAV(fn);
+      if(!sample) {
+        cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
+      } else {
+        soundMap[fileStr] = sample;
+      }
     }
   }
 #endif
