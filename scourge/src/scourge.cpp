@@ -103,7 +103,9 @@ Scourge::Scourge(int argc, char *argv[]){
 	  // This will be replaced by a call to the character builder which either
 	  // loads or creates the party.
 	  for(int i = 0; i < 4; i++) {
-		if(party[i]) delete party[i];
+		if(party[i]) {
+		  delete party[i];
+		}
 	  }
 	  Creature **pc = Creature::createHardCodedParty(this);
 	  party[0] = player = pc[0];
@@ -367,7 +369,6 @@ void Scourge::startMission() {
 	  }
 	}
 	for(int i = 0; i < creatureCount; i++) {
-	  shapePal->decrementSkinRefCount(((MD2Shape*)(creatures[i]->getShape()))->getSkinName());
 	  delete creatures[i];
 	}
 	creatureCount = 0;

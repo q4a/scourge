@@ -100,6 +100,8 @@ void Creature::commonInit() {
 
 Creature::~Creature(){
   delete effect;
+  // do this before deleting the shape
+  scourge->getShapePalette()->decrementSkinRefCount(skin_name);
   delete shape;
 }
 

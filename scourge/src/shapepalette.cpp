@@ -388,9 +388,9 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
 	sprintf(path, "data/%s", skin_name);
-	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
+	//	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
 	CreateTexture(&skin_texture, path, 0);
-	cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
+	cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
 	creature_skins[skin] = skin_texture;
   } else {
 	skin_texture = creature_skins[skin];
@@ -402,10 +402,10 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   } else {
 	loaded_skins[skin_texture] = loaded_skins[skin_texture] + 1;
   }
-  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
-	" count: " << loaded_skins[skin_texture] << endl;
+  //  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
+  //	" count: " << loaded_skins[skin_texture] << endl;
 
-  cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
+  //  cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
 
   // create the shape.
   // FIXME: shapeindex is always FIGHTER_INDEX. Does it matter?
@@ -434,11 +434,11 @@ void ShapePalette::decrementSkinRefCount(char *skin_name) {
   }
 
   loaded_skins[skin_texture] = loaded_skins[skin_texture] - 1;
-  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
-	" count: " << loaded_skins[skin_texture] << endl;
+  //  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
+  //	" count: " << loaded_skins[skin_texture] << endl;
   // unload texture if no more references
   if(loaded_skins[skin_texture] == 0) {
-	cerr << "\t&&&&&&&&&& Deleting texture: " << skin_texture << endl;
+	cerr << "&&&&&&&&&& Deleting texture: " << skin_texture << endl;
 	loaded_skins.erase(skin_texture);
 	creature_skins.erase(skin);
 	glDeleteTextures(1, &skin_texture);
