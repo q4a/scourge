@@ -109,7 +109,8 @@ class Map {
   Location *selectedDropTarget;
 
   int accessMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
-  map<Location*, Location*> locked;
+  map<Location*, bool> locked;
+  map<Location*, Location*> lockedKey;
 
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
@@ -289,9 +290,11 @@ class Map {
 
   // =================
   // Locked doors/chests code
-  inline void setLocked(Location *pos) { locked[pos] = NULL; }
-  inline bool isLocked(Location *pos) { return(locked.find(pos) != locked.end()); }
-  inline void connectLocked(Location *pos, Location *key) { if(isLocked(pos)) locked[pos] = key; }
+  inline void setLocked(Location *pos, bool value) { locked[pos] = value; }
+  inline void removeLocked(Location *pos) { locked.erase(pos); }
+  inline bool isLocked(Location *pos) { return(locked.find(pos) != locked.end() ? locked[pos] : false); }
+  inline void connectLocked(Location *pos, Location *key) { lockedKey[key] = pos; }
+  inline Location *getLockedByKey(Location *key) { if(lockedKey.find(key) == lockedKey.end()) return NULL; else return lockedKey[key]; }
   
   // access map methods for locked doors/chests
   void configureAccessMap(int fromX, int fromY);
