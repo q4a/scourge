@@ -907,6 +907,21 @@ int Creature::doff(int index) {
 }
 
 /**
+ * Returns the first magic item which protects against this mod.
+ * If there are no such items, NULL is returned.
+ */
+Item *Creature::isProtectedAgainst(int mod) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+    if(equipped[i] != MAX_INVENTORY_SIZE) {
+      Item *item = getInventory(equipped[i]);
+      if(item->getMagicAttrib() && 
+         item->getMagicAttrib()->isStateModProtected(mod)) return item;
+    }
+  }
+  return NULL;
+}
+
+/**
    Get item at equipped index. (What is at equipped location?)
  */
 Item *Creature::getEquippedInventory(int index) {

@@ -226,6 +226,13 @@ class Creature {
   inline float getInventoryWeight() { return inventoryWeight;  }
   inline float getMaxInventoryWeight() { return (float) getSkill(Constants::POWER) + 25.0f; }  
   Item *getEquippedInventory(int index);
+
+  /**
+   * Returns the first magic item which protects against this mod.
+   * If there are no such items, NULL is returned.
+   */
+  Item *isProtectedAgainst(int mod);
+
   
   inline Item *getInventory(int index) { return inventory[index]; }
   inline int getInventoryCount() { return inventory_count; }
