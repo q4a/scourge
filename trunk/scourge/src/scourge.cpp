@@ -428,6 +428,17 @@ void Scourge::drawView() {
   miniMap->buildTexture(0, 0);
 
   drawBorder();
+
+  // Hack: A container window may have been closed by hitting the Esc. button.
+  if(Window::windowWasClosed) {
+    if(containerGuiCount > 0) {
+      for(int i = 0; i < containerGuiCount; i++) {
+        if(!containerGui[i]->getWindow()->isVisible()) {
+          closeContainerGui(containerGui[i]);
+        }
+      }
+    }
+  }
 }
 
 void Scourge::drawOutsideMap() {
