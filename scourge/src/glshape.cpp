@@ -53,6 +53,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
   this->skipside = 0;
   this->useShadow = false;
   this->useTexture = true;
+	this->lightBlocking = false;
 
   // initialize the surfaces
   float w = (float)width / DIV;
@@ -397,3 +398,12 @@ void GLShape::createDarkTexture() {
 			   GL_RGB, GL_UNSIGNED_BYTE, data2);
 
 }
+
+bool GLShape::isLightBlocking() { 
+	return lightBlocking; 
+}
+
+void GLShape::setLightBlocking(bool b) { 
+	lightBlocking = b; 
+}
+

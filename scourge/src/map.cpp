@@ -1363,15 +1363,16 @@ void Map::traceLight(int chunkX, int chunkY) {
 }
 
 bool Map::isLocationBlocked(int x, int y, int z) {
-  if(x >= 0 && x < MAP_WIDTH && 
-	 y >= 0 && y < MAP_DEPTH && 
-	 z >= 0 && z < MAP_VIEW_HEIGHT) {
-	Location *pos = getLocation(x, y, z);
-	if(pos == NULL || pos->item || pos->creature) { 
-	  return false;
+	if(x >= 0 && x < MAP_WIDTH && 
+		 y >= 0 && y < MAP_DEPTH && 
+		 z >= 0 && z < MAP_VIEW_HEIGHT) {
+		Location *pos = getLocation(x, y, z);
+		if(pos == NULL || pos->item || pos->creature || 
+			 !( ((GLShape*)(pos->shape))->isLightBlocking()) ) {
+			return false;
+		}
 	}
-  }
-  return true;
+	return true;
 }
 
 void Map::drawCube(float x, float y, float z, float r) {

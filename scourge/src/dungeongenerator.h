@@ -154,7 +154,8 @@ protected:
   // construct a pre-rendered location
   void constructMaze(int location);
 
-  void drawNodesOnMap(Map *map, ShapePalette *shapePal);
+  void drawNodesOnMap(Map *map, ShapePalette *shapePal, 
+											bool preGenerated, int locationIndex);
 
   /**
     Return a random location in the maze that has not been visited yet.
@@ -192,7 +193,7 @@ protected:
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
 
-	void addItemsInRoom(RpgItem *rpgItem, int n);
+	void addItemsInRoom(RpgItem *rpgItem, int n, bool preGenerated, int locationIndex);
 };
 
 #endif

@@ -75,9 +75,9 @@ private:
 
   // shape descriptions
   static char *wallDescription[], *doorDescription[], *doorFrameDescription[], *torchDescription[];
-  static char *boardDescription[], *brazierDescription[];
+  static char *boardDescription[], *brazierDescription[], *columnDescription[];
   static int wallDescriptionCount, doorDescriptionCount, doorFrameDescriptionCount, torchDescriptionCount;
-  static int boardDescriptionCount, brazierDescriptionCount;
+  static int boardDescriptionCount, brazierDescriptionCount, columnDescriptionCount;
   
 
   static ShapePalette *instance;

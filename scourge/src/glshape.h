@@ -59,6 +59,8 @@ private:
 
   bool useTexture;
 
+	bool lightBlocking;
+
  protected:
   Uint32 color;
 
@@ -92,6 +94,9 @@ public:
           Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
          
 	~GLShape();
+	            
+	bool isLightBlocking();
+	void setLightBlocking(bool b);
 	
 	static const float DIV = 0.06f;
   
