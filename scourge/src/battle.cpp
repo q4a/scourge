@@ -120,6 +120,12 @@ bool Battle::fightTurn() {
       nextTurn = weaponWait;
       if(DEBUG_BATTLE) cerr << "Carries over into next turn." << endl;
     }
+    if( session->getUserConfiguration()->isBattleTurnBased()) {
+      int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+      if( !( a == MD2_STAND || a == MD2_RUN )) {
+        return false;
+      }
+    }
     reset();
     return true;
   }
@@ -271,6 +277,11 @@ void Battle::stepCloserToTarget() {
                          true);
     }
   }
+
+  // wait for animation to end
+  int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+  if( !( a == MD2_STAND || a == MD2_RUN )) return;
+
   GLfloat oldX = creature->getX();
   GLfloat oldY = creature->getY();
   bool moved = creature->moveToLocator(session->getMap());
@@ -347,6 +358,9 @@ bool Battle::moveCreature() {
       if( selectNewTarget() ) return true;
     }
 
+    // wait for animation to end
+    int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+    if( !( a == MD2_STAND || a == MD2_RUN )) return false;
 
     if(creature->getSelX() != -1) {
       bool moved = creature->moveToLocator(session->getMap());
