@@ -33,15 +33,14 @@
 
 using namespace std;
 
+#define MAX_PARTY_SIZE 4
+
 class Party : public WidgetView {
  private:
-  
-  // hard-coded for now
-  static const int PARTY_SIZE = 4;
-  
+    
   Scourge *scourge;
   Creature *player;
-  Creature *party[4];
+  Creature *party[MAX_PARTY_SIZE];
   bool partyDead;
   bool player_only;
   int formation;
@@ -72,15 +71,22 @@ class Party : public WidgetView {
   Button *minButton, *maxButton;
   CardContainer *cards;
   Canvas *minPartyInfo;
-  Canvas *playerInfo[PARTY_SIZE];
+  Canvas *playerInfo[MAX_PARTY_SIZE];
 
   Button *layoutButton1, *layoutButton2, *layoutButton3, *layoutButton4;
 
+  int partySize;
+
  public:
+   // the hard coded party
+   static Creature **pc;
+   static int pcCount;
+
   Party(Scourge *scourge);
   virtual ~Party();
 
   void reset();
+  void resetMultiplayer(Creature *c);
 
   void deleteParty();
 
@@ -126,7 +132,7 @@ class Party : public WidgetView {
   void setTargetCreature(Creature *creature);
   inline bool isPartyDead() { return partyDead; }
   inline bool isPlayerOnly() { return player_only; }
-  inline int getPartySize() { return PARTY_SIZE; }
+  inline int getPartySize() { return partySize; }
   
   int getTotalLevel();
 
@@ -139,9 +145,11 @@ class Party : public WidgetView {
 
   void drawWidget(Widget *w);
 
- protected:
-  Creature **createHardCodedParty();
+  static Creature **createHardCodedParty(Scourge *scourge);
+
+protected:
   void createUI();
+  void resetPartyUI();
 };
 
 #endif

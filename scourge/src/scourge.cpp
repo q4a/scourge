@@ -61,7 +61,9 @@ Scourge::Scourge(int argc, char *argv[]){
   // Reads the user configuration from a file      
   userConfiguration = new UserConfiguration();  
   userConfiguration->loadConfiguration();    
-  userConfiguration->parseCommandLine(argc, argv);  
+  userConfiguration->parseCommandLine(argc, argv); 
+
+  Party::createHardCodedParty(this);
 
 #ifdef HAVE_SDL_NET
   // standalone mode?
