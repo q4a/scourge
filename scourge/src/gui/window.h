@@ -55,7 +55,7 @@ class Window : public Widget {
   int widgetCount;
   bool dragging;
   int dragX, dragY;
-  int openHeight;
+  int openHeight, currentY;
   GLint lastTick;
   int z;  
   bool modal;
@@ -71,8 +71,14 @@ class Window : public Widget {
   static Window *currentWin;
 
   Widget *lastWidget;
+  int animation;
 
  public: 
+
+  enum {
+    DEFAULT_ANIMATION=0,
+    SLIDE_UP
+  };
    
    static const char ROLL_OVER_SOUND[80];
    static const char ACTION_SOUND[80];
@@ -101,11 +107,17 @@ class Window : public Widget {
 
   ~Window();
 
+  inline void setAnimation( int a ) { animation = a; }
+  inline int getAnimation() { return animation; }
+
   inline GuiTheme *getTheme() { return theme; }
 
   inline void setTitle(char *s) { strncpy(title, ( s ? s : "" ), 255); title[254] = '\0'; }
 
-  inline bool isOpening() { return openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)); }
+  inline bool isOpening() { 
+    return ( openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) ||
+             currentY != y ); 
+  }
 
   inline void setBackgroundTileWidth(int n) { tileWidth = n; }
   inline void setBackgroundTileHeight(int n) { tileHeight = n; }

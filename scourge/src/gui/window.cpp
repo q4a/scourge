@@ -58,6 +58,7 @@ Window::Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, 
 }
 
 void Window::commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type) {
+  this->animation = DEFAULT_ANIMATION;
   this->lastWidget = NULL;
   this->sdlHandler = sdlHandler;
   //  this->title = title;
@@ -82,6 +83,7 @@ void Window::commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char
   setBackgroundTileHeight(TILE_H);
   // make windows stay on screen
   this->move(x, y);
+  currentY = y;
   addWindow(this);
 }
 
@@ -361,27 +363,34 @@ void Window::removeWidget(Widget *widget) {
 
 void Window::drawWidget(Widget *parent) {
   GLint t = SDL_GetTicks();
-  //if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
-  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
-    lastTick = t;
-    openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
-    if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT)))
-      openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+
+  GLint topY;
+  if( animation == SLIDE_UP ) {
+    if( y > currentY ) {
+      lastTick = t;
+      y -= ( h / OPEN_STEPS );
+      if( y < currentY ) y = currentY;
+    }
+    openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+    topY = y - currentY;
+
+    // slide-up scissor
+    glScissor(x, sdlHandler->getScreen()->h - (currentY + h), w, h);  
+    glEnable( GL_SCISSOR_TEST );
+  } else {
+    if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
+      lastTick = t;
+      openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
+      if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT)))
+        openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+    }
+    topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
   }
-  GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);  
 
   glPushMatrix();
   glLoadIdentity( );
   glEnable( GL_TEXTURE_2D );
   // tile the background
-
-  /*
-  if(isLocked()) {
-    glColor3f(0.65f, 0.6f, 0.55f);
-  } else {
-    glColor3f(1.0f, 0.6f, 0.3f);
-  }
-  */
 
 //  if(isLocked()) {
 //    glColor3f(0.65f, 0.6f, 0.55f);
@@ -400,10 +409,10 @@ void Window::drawWidget(Widget *parent) {
   if(texture)
     glBindTexture( GL_TEXTURE_2D, texture );
   */
-  if( theme->getWindowTop() && theme->getWindowTop()->texture ) 
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowTop()->texture );
-
   if(type == BASIC_WINDOW) {
+    if( theme->getWindowTop() && theme->getWindowTop()->texture ) 
+      glBindTexture( GL_TEXTURE_2D, theme->getWindowTop()->texture );
+
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
@@ -433,17 +442,11 @@ void Window::drawWidget(Widget *parent) {
     glEnd ();
 
   } else {
+    if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
+      glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
+    }
+
     glBegin (GL_QUADS);
-    /*
-    glTexCoord2f (0.0f, 0.0f);
-    glVertex2i (0, topY);
-    glTexCoord2f (0.0f, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) /(float)tileHeight);
-    glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glTexCoord2f (w/(float)tileWidth, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight)/(float)tileHeight);
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glTexCoord2f (w/(float)tileWidth, 0.0f);      
-    glVertex2i (w, topY);
-    */
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
     glTexCoord2f (0, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
@@ -452,7 +455,6 @@ void Window::drawWidget(Widget *parent) {
     glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
     glTexCoord2f (1, 0);      
     glVertex2i (w, topY);
-
     glEnd ();
   }
 
@@ -610,6 +612,8 @@ void Window::drawWidget(Widget *parent) {
     glPopMatrix();
   }
 
+  glDisable( GL_SCISSOR_TEST );
+
   // draw widgets
   bool tmp = isOpening();
   if(tmp) {  
@@ -699,19 +703,34 @@ TextField *Window::createTextField(int x, int y, int numChars) {
 }
 
 void Window::scissorToWindow() {
-  GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
-  // scissor test: y screen coordinate is reversed, rectangle is 
-  // specified by lower-left corner. sheesh!
-  glScissor(x, sdlHandler->getScreen()->h - (y + topY + TOP_HEIGHT + openHeight), 
-            w, openHeight);  
+  if( animation == SLIDE_UP && currentY < y ) {
+    glScissor(x, sdlHandler->getScreen()->h - (currentY + h), w, h);  
+  } else {
+    GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
+    // scissor test: y screen coordinate is reversed, rectangle is 
+    // specified by lower-left corner. sheesh!
+    glScissor(x, sdlHandler->getScreen()->h - (y + topY + TOP_HEIGHT + openHeight), 
+              w, openHeight);  
+  }
   glEnable( GL_SCISSOR_TEST );
 }
 
 void Window::setVisible(bool b, bool animate) {
   toTop();
   Widget::setVisible(b);
-  if(b) openHeight = (animate ? 0 : getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT));
-  else {
+  if(b) {
+    currentY = y;
+    if( animate ) {
+      if( animation == SLIDE_UP ) {
+        openHeight = getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT);
+        y = getHeight();
+      } else {
+        openHeight = 0;
+      }
+    } else {
+      openHeight = getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT);
+    }
+  } else {
     windowWasClosed = true;
     nextWindowToTop();
   }
