@@ -48,13 +48,12 @@ private:
     int selected; // which player is selected?
     int selectedMode; // which mode is selected?
     enum mode {
-	  INVENTORY = 0, CHARACTER, SPELL, LOG, MISSION
+	  INVENTORY = 0, CHARACTER, SPELL, LOG, MISSION, PARTY
     };    
 
 	// UI
 	Window *mainWin;
-	Button *playerButton[4];
-	Button *inventoryButton, *skillsButton, *spellsButton;
+	Button *inventoryButton, *skillsButton, *spellsButton, *partyButton;
 	CardContainer *cards;
 
 	// inventory screen
