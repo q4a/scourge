@@ -25,9 +25,7 @@
 //104
 		1058C7A0FEA54F0111CA2CBB = {
 			children = (
-				7674A65805D5F9EB00A583B9,
 				7674A65905D5F9EB00A583B9,
-				7674A68405D5FA1600A583B9,
 				1058C7A1FEA54F0111CA2CBB,
 			);
 			isa = PBXGroup;
@@ -100,6 +98,9 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				76419B300738979100CD6008,
+				76419B310738979100CD6008,
+				76419AF5073896FB00CD6008,
 				76DDD12606CD684C0023850F,
 				76DDD12706CD684C0023850F,
 				76DDD12806CD684C0023850F,
@@ -174,6 +175,9 @@
 				762AF861066D856300B92069,
 				762AF862066D856300B92069,
 				762AF863066D856300B92069,
+				764196B70737E4E100CD6008,
+				764196B80737E4E100CD6008,
+				764196B90737E4E100CD6008,
 				080E96DDFE201D6D7F000001,
 				29B97315FDCFA39411CA2CEA,
 				29B97317FDCFA39411CA2CEA,
@@ -486,6 +490,10 @@
 		};
 		762AF817066D856300B92069 = {
 			children = (
+				76419B070738973300CD6008,
+				76419B080738973300CD6008,
+				76419B090738973300CD6008,
+				76419B0A0738973300CD6008,
 				762AF818066D856300B92069,
 				762AF819066D856300B92069,
 				762AF81A066D856300B92069,
@@ -603,6 +611,10 @@
 		};
 		762AF824066D856300B92069 = {
 			children = (
+				76419B190738974F00CD6008,
+				76419B1A0738974F00CD6008,
+				76419B1B0738974F00CD6008,
+				76419B1C0738974F00CD6008,
 				762AF825066D856300B92069,
 				762AF826066D856300B92069,
 				762AF827066D856300B92069,
@@ -954,6 +966,8 @@
 		};
 		762AF84B066D856300B92069 = {
 			children = (
+				76419B280738975E00CD6008,
+				76419B290738975E00CD6008,
 				762AF84C066D856300B92069,
 				762AF84D066D856300B92069,
 				762AF84E066D856300B92069,
@@ -1755,13 +1769,267 @@
 			settings = {
 			};
 		};
-		7674A65805D5F9EB00A583B9 = {
+		764196B70737E4E100CD6008 = {
+			explicitFileType = wrapper.framework;
+			isa = PBXFileReference;
+			name = freetype.framework;
+			path = ../frameworks/freetype.framework;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		764196B80737E4E100CD6008 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
-			name = GLUT.framework;
-			path = /System/Library/Frameworks/GLUT.framework;
-			refType = 0;
-			sourceTree = "<absolute>";
+			name = SDL_mixer.framework;
+			path = ../frameworks/SDL_mixer.framework;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		764196B90737E4E100CD6008 = {
+			explicitFileType = wrapper.framework;
+			isa = PBXFileReference;
+			name = SDL.framework;
+			path = ../frameworks/SDL.framework;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		764196BA0737E4E100CD6008 = {
+			fileRef = 764196B70737E4E100CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		764196BB0737E4E100CD6008 = {
+			fileRef = 764196B80737E4E100CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		764196BC0737E4E100CD6008 = {
+			fileRef = 764196B90737E4E100CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419AF5073896FB00CD6008 = {
+			children = (
+				76419AFE0738972000CD6008,
+				76419AFF0738972000CD6008,
+			);
+			isa = PBXGroup;
+			name = freetype;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76419AFE0738972000CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FreeType.cpp;
+			path = ../../src/freetype/FreeType.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419AFF0738972000CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FreeType.h;
+			path = ../../src/freetype/FreeType.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B000738972000CD6008 = {
+			fileRef = 76419AFE0738972000CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B010738972000CD6008 = {
+			fileRef = 76419AFF0738972000CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B070738973300CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = potionexpirationevent.cpp;
+			path = ../../src/events/potionexpirationevent.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B080738973300CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = potionexpirationevent.h;
+			path = ../../src/events/potionexpirationevent.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B090738973300CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = statemodexpirationevent.cpp;
+			path = ../../src/events/statemodexpirationevent.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B0A0738973300CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = statemodexpirationevent.h;
+			path = ../../src/events/statemodexpirationevent.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B0B0738973300CD6008 = {
+			fileRef = 76419B070738973300CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B0C0738973300CD6008 = {
+			fileRef = 76419B080738973300CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B0D0738973300CD6008 = {
+			fileRef = 76419B090738973300CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B0E0738973300CD6008 = {
+			fileRef = 76419B0A0738973300CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B190738974F00CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = canvas.cpp;
+			path = ../../src/gui/canvas.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B1A0738974F00CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = canvas.h;
+			path = ../../src/gui/canvas.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B1B0738974F00CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = widgetview.cpp;
+			path = ../../src/gui/widgetview.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B1C0738974F00CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = widgetview.h;
+			path = ../../src/gui/widgetview.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B1D0738974F00CD6008 = {
+			fileRef = 76419B190738974F00CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B1E0738974F00CD6008 = {
+			fileRef = 76419B1A0738974F00CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B1F0738974F00CD6008 = {
+			fileRef = 76419B1B0738974F00CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B200738974F00CD6008 = {
+			fileRef = 76419B1C0738974F00CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B280738975E00CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = spell.cpp;
+			path = ../../src/rpg/spell.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B290738975E00CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = spell.h;
+			path = ../../src/rpg/spell.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B2A0738975E00CD6008 = {
+			fileRef = 76419B280738975E00CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B2B0738975E00CD6008 = {
+			fileRef = 76419B290738975E00CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B300738979100CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = spellcaster.cpp;
+			path = ../../src/spellcaster.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B310738979100CD6008 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = spellcaster.h;
+			path = ../../src/spellcaster.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76419B320738979100CD6008 = {
+			fileRef = 76419B300738979100CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76419B330738979100CD6008 = {
+			fileRef = 76419B310738979100CD6008;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		7674A65905D5F9EB00A583B9 = {
 			isa = PBXFileReference;
@@ -1771,28 +2039,8 @@
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
-		7674A65A05D5F9EB00A583B9 = {
-			fileRef = 7674A65805D5F9EB00A583B9;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		7674A65B05D5F9EB00A583B9 = {
 			fileRef = 7674A65905D5F9EB00A583B9;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		7674A68405D5FA1600A583B9 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = SDL.framework;
-			path = /Users/gabortorok/Library/Frameworks/SDL.framework;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		7674A68505D5FA1600A583B9 = {
-			fileRef = 7674A68405D5FA1600A583B9;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1966,7 +2214,8 @@
 			);
 			buildSettings = {
 				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" /Users/gabortorok/Library/Frameworks";
+				DEPLOYMENT_POSTPROCESSING = NO;
+				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" $(HOME)/Library/Frameworks $(HOME)/sourceforge/scourge/xcode/frameworks";
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1974,12 +2223,12 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers";
+				HEADER_SEARCH_PATHS = "/System/Library/Frameworks/OpenGL.framework/Headers $(HOME)/sourceforge/scourge/xcode/frameworks/SDL.framework/Headers $(HOME)/sourceforge/scourge/xcode/frameworks/freetype.framework/Headers";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/sourceforge/scourge";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-framework SDL -framework Foundation -framework AppKit -framework OpenGL -framework GLUT";
+				OTHER_LDFLAGS = "-framework SDL -framework Foundation -framework AppKit -framework OpenGL -framework freetype";
 				PRODUCT_NAME = scourge;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -2049,6 +2298,13 @@
 				76DDD12D06CD684C0023850F,
 				76DDD12F06CD684C0023850F,
 				76DDD13106CD684C0023850F,
+				76419B010738972000CD6008,
+				76419B0C0738973300CD6008,
+				76419B0E0738973300CD6008,
+				76419B1E0738974F00CD6008,
+				76419B200738974F00CD6008,
+				76419B2B0738975E00CD6008,
+				76419B330738979100CD6008,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2123,6 +2379,13 @@
 				76DDD12C06CD684C0023850F,
 				76DDD12E06CD684C0023850F,
 				76DDD13006CD684C0023850F,
+				76419B000738972000CD6008,
+				76419B0B0738973300CD6008,
+				76419B0D0738973300CD6008,
+				76419B1D0738974F00CD6008,
+				76419B1F0738974F00CD6008,
+				76419B2A0738975E00CD6008,
+				76419B320738979100CD6008,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2131,9 +2394,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090,
-				7674A65A05D5F9EB00A583B9,
 				7674A65B05D5F9EB00A583B9,
-				7674A68505D5FA1600A583B9,
+				764196BA0737E4E100CD6008,
+				764196BB0737E4E100CD6008,
+				764196BC0737E4E100CD6008,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

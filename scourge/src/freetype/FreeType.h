@@ -9,25 +9,14 @@
 #include <freetype/fttrigon.h>
 
 //OpenGL Headers 
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include "../constants.h"
 
 //Some STL headers
 #include <vector>
 #include <string>
-
-//Using the STL exception library increases the
-//chances that someone else using our code will corretly
-//catch any exceptions that we throw.
-#include <stdexcept>
-
-
 #include <iostream>
 
-//Inside of this namespace, give ourselves the ability
-//to write just "vector" instead of "std::vector"
 using namespace std;
-
 
 //This holds all of the information related to any
 //freetype font that we want to create.  
