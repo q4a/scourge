@@ -47,7 +47,7 @@ Window::~Window() {
 
 void Window::addWindow(Window *win) {
   if(windowCount < MAX_WINDOW) {
-	win->setZ(500 + windowCount * 100);
+	win->setZ(500 + windowCount * 50);
 	window[windowCount++] = win;
   }
 }
@@ -58,9 +58,11 @@ void Window::removeWindow(Window *win) {
 
 void Window::drawVisibleWindows() {
   //  glDisable(GL_CULL_FACE);
+  glDisable(GL_DEPTH_TEST);
   for(int i = 0; i < windowCount; i++) {
 	if(window[i]->isVisible()) window[i]->drawWidget(NULL);
   }
+  glEnable(GL_DEPTH_TEST);
 }
 
 Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
@@ -150,7 +152,7 @@ void Window::removeWidget(Widget *widget) {
 }
 
 void Window::drawWidget(Widget *parent) {
-  
+
   GLint t = SDL_GetTicks();
   //if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
   if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
@@ -236,6 +238,7 @@ void Window::drawWidget(Widget *parent) {
   }
   for(int i = 0; i < widgetCount; i++) {                  
 	if(widget[i]->isVisible()) {
+
 	  glPushMatrix();
 	  glLoadIdentity();
 	

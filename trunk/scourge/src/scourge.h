@@ -106,10 +106,12 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Button *player4Button;
   Button *groupButton;
 
-  Window *messageWin;
+  Inventory *inventory;
+
+  Window *messageWin, *exitConfirmationDialog;
   ScrollingList *messageList;
 
-  Inventory *inventory;
+  Button *yesExitConfirm, *noExitConfirm;
 
   int movingX, movingY, movingZ;
   Item *movingItem;
@@ -122,7 +124,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int battleCount;
   Battle battle[MAX_BATTLE_COUNT];
   int gameSpeed;
-	bool partyDead;
+  bool partyDead;
 
 protected:
   SDLHandler *sdlHandler;
