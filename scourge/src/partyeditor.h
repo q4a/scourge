@@ -83,10 +83,10 @@ private:
   Label *intro;
   Button *cancel, *done;
   Button *toIntro, *toChar0, *toLastChar;
-
   CharacterInfo info[ MAX_PARTY_SIZE ];
-
   int step;
+  Uint32 lastTick;
+  float zrot;
   
 public:
   PartyEditor(Scourge *scourge);

@@ -346,6 +346,15 @@ void ShapePalette::initialize() {
       cerr << "*** Loading portrait: " << line << endl;
       if( strstr( line, "death" ) ) deathPortraitTexture = loadGLTextures( line );
       else portraitTextures.push_back( loadGLTextures( line ) );
+    } else if( n == 'M' ) {
+      // load the character models
+      fgetc( fp );
+      n = Constants::readLine(line, fp);
+      CharacterModelInfo *cmi = (CharacterModelInfo*)malloc( sizeof( CharacterModelInfo ) );
+      strcpy( cmi->model_name, strtok( line, "," ) );
+      strcpy( cmi->skin_name, strtok( NULL, "," ) );
+      cmi->scale = atof( strtok( NULL, "," ) );
+      character_models.push_back( cmi );
     } else {
       // skip this line
       n = Constants::readLine(line, fp);
