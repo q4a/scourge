@@ -17,6 +17,12 @@
 
 #include "map.h"
 
+const float Map::shadowTransformMatrix[16] = { 
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0.5f, -0.5f, 0, 0,
+	0, 0, 0, 1 };
+
 Map::Map(Scourge *scourge){
   zoom = 1.0f;
   zoomIn = zoomOut = false;
@@ -26,7 +32,7 @@ Map::Map(Scourge *scourge){
   floorOnly = false;
   selX = selY = selZ = MAP_WIDTH + 1;
   oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
-  
+  useShadow = false;
   
   mapChanged = true;
   
@@ -55,7 +61,7 @@ Map::Map(Scourge *scourge){
     }
   }
 
-  lightMapChanged = true;
+  lightMapChanged = true;  
 }
 
 Map::~Map(){
@@ -376,51 +382,72 @@ void Map::draw(SDL_Surface *surface) {
   if(selectMode) {
       for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
   } else {  
-      // draw the creatures/objects/doors/etc.
-      for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
+	// draw the creatures/objects/doors/etc.
+	for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
+    
+	// create a stencil for the walls
+	glDisable(GL_DEPTH_TEST);
+	glColorMask(0,0,0,0);
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+	for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+	
+	// Use the stencil to draw
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+	// decr where the floor is (results in a number > 1)
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
+	// draw the ground  
+	setupShapes(true);
 
-      // create a stencil for the walls
-      glDisable(GL_DEPTH_TEST);
-      glColorMask(0,0,0,0);
-      glEnable(GL_STENCIL_TEST);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-      glStencilFunc(GL_ALWAYS, 1, 1);
-      for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-  
-      // Use the stencil to draw
-      glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-      glEnable(GL_DEPTH_TEST);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-      glStencilFunc(GL_NOTEQUAL, 1, 0xffffffff);  // draw if stencil!=1
-      // draw the ground
-	  setupShapes(true);
-      glDisable(GL_STENCIL_TEST);
-      
-      // draw the blended walls
-      glEnable(GL_BLEND);  
-      glDepthMask(GL_FALSE);
-      //glDisable(GL_LIGHTING);
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-      //glEnable(GL_LIGHTING);
-      glDepthMask(GL_TRUE);    
-      glDisable(GL_BLEND);
+	// shadows
+	glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
+	// GL_INCR makes sure to only draw shadow once
+	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
+	glDisable(GL_TEXTURE_2D);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	useShadow = true;
+	for(int i = 0; i < stencilCount; i++) {
+	  doDrawShape(&stencil[i]);
+	}
+	for(int i = 0; i < otherCount; i++) {
+	  doDrawShape(&other[i]);
+	}
+	useShadow = false;
+	glDisable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
+	glDepthMask(GL_TRUE);
 
-      // draw the effects
-      glEnable(GL_BLEND);  
-      glDepthMask(GL_FALSE);
-	  //      glDisable(GL_LIGHTING);
-      for(int i = 0; i < laterCount; i++) {
-          later[i].shape->setupBlending();
-          doDrawShape(&later[i]);
-          later[i].shape->endBlending();
-      }
-	  drawShade();
-	  //      glEnable(GL_LIGHTING);
-      glDepthMask(GL_TRUE);    
-      glDisable(GL_BLEND);
-
-      drawLocator();
+	glDisable(GL_STENCIL_TEST); 
+	
+	// draw the blended walls
+	glEnable(GL_BLEND);  
+	glDepthMask(GL_FALSE);
+	//glDisable(GL_LIGHTING);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+	//glEnable(GL_LIGHTING);
+	glDepthMask(GL_TRUE);    
+	glDisable(GL_BLEND);
+	
+	// draw the effects
+	glEnable(GL_BLEND);  
+	glDepthMask(GL_FALSE);
+	//      glDisable(GL_LIGHTING);
+	for(int i = 0; i < laterCount; i++) {
+	  later[i].shape->setupBlending();
+	  doDrawShape(&later[i]);
+	  later[i].shape->endBlending();
+	}
+	drawShade();
+	//      glEnable(GL_LIGHTING);
+	glDepthMask(GL_TRUE);    
+	glDisable(GL_BLEND);
+	drawLocator();
   }
 }
 
@@ -464,8 +491,18 @@ void Map::doDrawShape(DrawLater *later) {
 }
 
 void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuint name) {
-  glTranslatef( xpos2, ypos2, zpos2);
-
+  glPushMatrix();
+  if(useShadow) {
+	// put shadow above the floor a little
+	glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
+	glMultMatrixf(shadowTransformMatrix);
+	glColor4f( 0, 0, 0, 0.5f );
+	((GLShape*)shape)->useShadow = true;
+  } else {
+	glTranslatef( xpos2, ypos2, zpos2);
+	glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+  }
+  
   // encode this shape's map location in its name
   glPushName( name );
   //glPushName( (GLuint)((GLShape*)shape)->getShapePalIndex() );
@@ -474,8 +511,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   shape->draw();
 
   glPopName();
-
-  glTranslatef( -xpos2, -ypos2, -zpos2);
+  glPopMatrix();
 }
 
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
@@ -977,4 +1013,52 @@ bool Map::isLocationBlocked(int x, int y, int z) {
 	}
   }
   return true;
+}
+
+void Map::drawCube(float x, float y, float z, float r) {
+  glBegin(GL_QUADS);
+  // front
+  glNormal3f(0.0, 0.0, 1.0);
+  glVertex3f(-r+x, -r+y, r+z);
+  glVertex3f(r+x, -r+y, r+z);
+  glVertex3f(r+x, r+y, r+z);
+  glVertex3f(-r+x, r+y, r+z);
+  
+  // back
+  glNormal3f(0.0, 0.0, -1.0);
+  glVertex3f(r+x, -r+y, -r+z);
+  glVertex3f(-r+x, -r+y, -r+z);
+  glVertex3f(-r+x, r+y, -r+z);
+  glVertex3f(r+x, r+y, -r+z);
+  
+  // top
+  glNormal3f(0.0, 1.0, 0.0);
+  glVertex3f(-r+x, r+y, r+z);
+  glVertex3f(r+x, r+y, r+z);
+  glVertex3f(r+x, r+y, -r+z);
+  glVertex3f(-r+x, r+y, -r+z);
+  
+  // bottom
+  glNormal3f(0.0, -1.0, 0.0);
+  glVertex3f(-r+x, -r+y, -r+z);
+  glVertex3f(r+x, -r+y, -r+z);
+  glVertex3f(r+x, -r+y, r+z);
+  glVertex3f(-r+x, -r+y, r+z);
+  
+  // left
+  glNormal3f(-1.0, 0.0, 0.0);
+  glVertex3f(-r+x, -r+y, -r+z);
+  glVertex3f(-r+x, -r+y, r+z);
+  glVertex3f(-r+x, r+y, r+z);
+  glVertex3f(-r+x, r+y, -r+z);
+  
+  // right
+  glNormal3f(1.0, 0.0, 0.0);
+  glVertex3f(r+x, -r+y, r+z);
+  glVertex3f(r+x, -r+y, -r+z);
+  glVertex3f(r+x, r+y, -r+z);
+  glVertex3f(r+x, r+y, r+z);
+  
+  glEnd();
+  
 }

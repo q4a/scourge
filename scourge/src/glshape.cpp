@@ -31,7 +31,7 @@ GLShape::GLShape(GLuint tex[],
                  char *name,
                  Uint32 color, GLuint display_list,
                  Uint8 shapePalIndex) :
-    Shape(width, depth, height, name, NULL, 0) {
+  Shape(width, depth, height, name, NULL, 0) {
   commonInit(tex, color, display_list, shapePalIndex);
 }
 
@@ -41,7 +41,7 @@ GLShape::GLShape(GLuint tex[],
                  Uint32 color,
                  GLuint display_list,
                  Uint8 shapePalIndex) :
-    Shape(width, depth, height, name, description, descriptionCount) {
+  Shape(width, depth, height, name, description, descriptionCount) {
   commonInit(tex, color, display_list, shapePalIndex);
 }
 
@@ -51,6 +51,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
   this->display_list = display_list;
   this->shapePalIndex = shapePalIndex; 
   this->skipside = 0;
+  this->useShadow = false;
 
   // initialize the surfaces
   float w = (float)width / DIV;
@@ -144,6 +145,10 @@ GLShape::~GLShape(){
 
 void GLShape::draw() {
 
+	// don't blend the top, but if in shadow mode, don't mess with blending
+    GLboolean blending = (glIsEnabled(GL_BLEND) && !useShadow);
+
+	// cull back faces
     glEnable( GL_CULL_FACE );
     glCullFace( GL_BACK );
 
@@ -152,7 +157,7 @@ void GLShape::draw() {
     float blue = 0.55f;
     float alpha = 0.5f;
 
-    glColor4f(red, green, blue, alpha);
+	//	glColor4f(red, green, blue, alpha);
     if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {    
 	  if (tex[LEFT_RIGHT_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE] );
 	  glBegin( GL_QUADS );
@@ -173,10 +178,10 @@ void GLShape::draw() {
     if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
 	  if(tex[FRONT_SIDE]) {
 		glSDLActiveTextureARB(GL_TEXTURE0_ARB);
-		glEnable(GL_TEXTURE_2D);
+		if(!useShadow) glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, tex[FRONT_SIDE]);
 		glSDLActiveTextureARB(GL_TEXTURE1_ARB);
-		glEnable(GL_TEXTURE_2D);		
+		if(!useShadow) glEnable(GL_TEXTURE_2D);		
 		glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);
 	  }
 
@@ -203,19 +208,19 @@ void GLShape::draw() {
 	  glEnd();
 
 	  glSDLActiveTextureARB(GL_TEXTURE1_ARB);
-	  glEnable(GL_TEXTURE_2D);		
+	  if(!useShadow) glEnable(GL_TEXTURE_2D);		
 	  glBindTexture(GL_TEXTURE_2D, 0);
 	  glSDLActiveTextureARB(GL_TEXTURE0_ARB);
-	  glEnable(GL_TEXTURE_2D);
+	  if(!useShadow) glEnable(GL_TEXTURE_2D);
     }
 
     if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {
 	  if(tex[LEFT_RIGHT_SIDE]) {
 		glSDLActiveTextureARB(GL_TEXTURE0_ARB);
-		glEnable(GL_TEXTURE_2D);
+		if(!useShadow) glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE]);
 		glSDLActiveTextureARB(GL_TEXTURE1_ARB);
-		glEnable(GL_TEXTURE_2D);		
+		if(!useShadow) glEnable(GL_TEXTURE_2D);		
 		glBindTexture(GL_TEXTURE_2D, lightmap_tex_num2);
 	  }
 
@@ -242,19 +247,19 @@ void GLShape::draw() {
 	  glEnd( );
 
 	  glSDLActiveTextureARB(GL_TEXTURE1_ARB);
-	  glEnable(GL_TEXTURE_2D);		
+	  if(!useShadow) glEnable(GL_TEXTURE_2D);		
 	  glBindTexture(GL_TEXTURE_2D, 0);
 	  glSDLActiveTextureARB(GL_TEXTURE0_ARB);
-	  glEnable(GL_TEXTURE_2D);		
+	  if(!useShadow) glEnable(GL_TEXTURE_2D);		
     }
 
     if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
 	  if(tex[FRONT_SIDE]) {
 		glSDLActiveTextureARB(GL_TEXTURE0_ARB);
-		glEnable(GL_TEXTURE_2D);
+		if(!useShadow) glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, tex[FRONT_SIDE]);
 		glSDLActiveTextureARB(GL_TEXTURE1_ARB);
-		glEnable(GL_TEXTURE_2D);		
+		if(!useShadow) glEnable(GL_TEXTURE_2D);		
 		glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);
 	  }
 	  
@@ -281,13 +286,12 @@ void GLShape::draw() {
 	  glEnd();
 
 	  glSDLActiveTextureARB(GL_TEXTURE1_ARB);
-	  glEnable(GL_TEXTURE_2D);		
+	  if(!useShadow) glEnable(GL_TEXTURE_2D);		
 	  glBindTexture(GL_TEXTURE_2D, 0);
 	  glSDLActiveTextureARB(GL_TEXTURE0_ARB);
-	  glEnable(GL_TEXTURE_2D);		
+	  if(!useShadow) glEnable(GL_TEXTURE_2D);		
 	}
 
-    GLboolean blending = glIsEnabled(GL_BLEND);
     if(blending) {
 	  glDisable(GL_BLEND);
 	  glDepthMask(GL_TRUE);
@@ -309,6 +313,7 @@ void GLShape::draw() {
 	  glEnable(GL_BLEND);
 	  glDepthMask(GL_FALSE);
     }
+	useShadow = false;
 }
 
 void GLShape::setupBlending() { 
@@ -322,17 +327,17 @@ void GLShape::createDarkTexture() {
   unsigned int i, j;
   glGenTextures(1, (GLuint*)&lightmap_tex_num);
   glGenTextures(1, (GLuint*)&lightmap_tex_num2);
-  float tmp = 1.0f;
-  float tmp2 = 0.35f;
+  float tmp = 0.7f;
+  float tmp2 = 0.5f;
   for(i = 0; i < LIGHTMAP_SIZE; i++) {
 	for(j = 0; j < LIGHTMAP_SIZE; j++) {
-	  data[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = (unsigned char)(255.0f * tmp * 0.7f);
-	  data[i * LIGHTMAP_SIZE * 3 + j * 3 + 1] = (unsigned char)(255.0f * tmp * 0.7f);
+	  data[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = (unsigned char)(255.0f * tmp * 0.8f);
+	  data[i * LIGHTMAP_SIZE * 3 + j * 3 + 1] = (unsigned char)(255.0f * tmp * 0.4f);
 	  data[i * LIGHTMAP_SIZE * 3 + j * 3 + 2] = (unsigned char)(255.0f * tmp * 1.0f);
 
-	  data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = (unsigned char)(255.0f * tmp2 * 1.0f);
-	  data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 1] = (unsigned char)(255.0f * tmp2 * 1.0f);
-	  data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 2] = (unsigned char)(255.0f * tmp2 * 1.0f);
+	  data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = (unsigned char)(255.0f * tmp2 * 0.5f);
+	  data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 1] = (unsigned char)(255.0f * tmp2 * 0.6f);
+	  data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 2] = (unsigned char)(255.0f * tmp2 * 0.8f);
 	}
   }
   glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);

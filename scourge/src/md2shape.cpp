@@ -167,7 +167,7 @@ void MD2Shape::draw() {
     // Bind the texture
     glBindTexture(GL_TEXTURE_2D, g_Texture[0]);
     // set the color so it's not random...
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Render lines or normal triangles mode, depending on the global variable
     glBegin(g_ViewMode);    

@@ -193,6 +193,11 @@ void ShapePalette::initShapes() {
                 "ROOM FLOOR TILE",
                 (debug ? 0xff0000ff : 0xa08040ff),
                 display_list + (count++ * 3), ROOM_FLOOR_TILE_INDEX);
+  
+  ((GLShape*)shapes[FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
+  ((GLShape*)shapes[FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
+  ((GLShape*)shapes[ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
+  ((GLShape*)shapes[ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
 
 	shapes[LAMP_NORTH_INDEX] =
     new GLTorch(notex, textures[9],
