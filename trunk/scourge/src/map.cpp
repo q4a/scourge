@@ -933,6 +933,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     // debugging red
     //glColor4f(1, 0, 0, 0.5f);
   } else {
+
+    if(shape) shape->setupToDraw();
+
     glTranslatef( xpos2, ypos2, zpos2);
     if(colorAlreadySet) {
       colorAlreadySet = false;

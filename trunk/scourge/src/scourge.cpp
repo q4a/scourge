@@ -482,7 +482,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   glDisable( GL_CULL_FACE );
 
   // draw circle
-  double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
+  double w = ((double)creature->getShape()->getWidth() / GLShape::DIV) / 2.0f;
   double s = 0.35f / GLShape::DIV;
 
   float xpos2, ypos2, zpos2;
@@ -513,8 +513,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     ypos2 = ((float)(creature->getSelY() - map->getY()) / GLShape::DIV);
     zpos2 = 0.0f / GLShape::DIV;  
     glPushMatrix();
-    glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-    gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
+    //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
+    glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
+    gluDisk(creature->getQuadric(), w - targetWidth, w, 12, 1);
     glPopMatrix();
   }
 
@@ -526,8 +527,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
     zpos2 = 0.0f / GLShape::DIV;  
     glPushMatrix();
-    glTranslatef( xpos2 + tw / 2.0f, ypos2 - tw, zpos2 + 5);
-    gluDisk(creature->getQuadric(), tw / 1.8f - targetWidth, tw / 1.8f, 12, 1);
+    //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
+    glTranslatef( xpos2 + tw, ypos2 - tw, zpos2 + 5);
+    gluDisk(creature->getQuadric(), tw - targetWidth, tw, 12, 1);
     glPopMatrix();
   }
 
@@ -593,8 +595,10 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glDisable(GL_TEXTURE_2D);
   }
 
-  glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-  if(groupMode || player || creature->isMonster()) gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
+  //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
+  glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
+  if(groupMode || player || creature->isMonster()) 
+    gluDisk(creature->getQuadric(), w - s, w, 12, 1);
 
   glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );

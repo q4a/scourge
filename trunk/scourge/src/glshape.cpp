@@ -36,16 +36,14 @@ GLShape::GLShape(GLuint tex[],
   commonInit(tex, color, display_list, shapePalIndex);
 }
 
-void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 shapePalIndex) {
-  this->tex = tex;
-  this->color = color;
-  this->display_list = display_list;
-  this->shapePalIndex = shapePalIndex; 
-  this->skipside = 0;
-  this->useShadow = false;
-  this->useTexture = true;
-	this->lightBlocking = false;
+void GLShape::setDimensions(int w, int d, int h) {
+  this->width = w;
+  this->depth = d;
+  this->height = h;
+  initSurfaces();
+}
 
+void GLShape::initSurfaces() {
   // initialize the surfaces
   float w = (float)width / DIV;
   float d = (float)depth / DIV;
@@ -66,31 +64,54 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
   v[1][0] = 0.0f; v[1][1] = d;    v[1][2] = h;
   v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
   v[3][0] = 0.0f; v[3][1] = 0.0f; v[3][2] = 0.0f;
+  if(surfaces[LEFT_SURFACE]) free(surfaces[LEFT_SURFACE]);
   surfaces[LEFT_SURFACE] = new_surface(v);
 
   v[0][0] = 0.0f; v[0][1] = 0.0f; v[0][2] = 0.0f;
   v[1][0] = 0.0f; v[1][1] = 0.0f; v[1][2] = h;
   v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = h;
   v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = 0.0f;
+  if(surfaces[BOTTOM_SURFACE]) free(surfaces[BOTTOM_SURFACE]);
   surfaces[BOTTOM_SURFACE] = new_surface(v);
 
   v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
   v[1][0] = w;    v[1][1] = d;    v[1][2] = 0.0f;
   v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = 0.0f;
   v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = h;
+  if(surfaces[RIGHT_SURFACE]) free(surfaces[RIGHT_SURFACE]);
   surfaces[RIGHT_SURFACE] = new_surface(v);
 
   v[0][0] = w;    v[0][1] = d;    v[0][2] = 0.0f;
   v[1][0] = w;    v[1][1] = d;    v[1][2] = h;
   v[2][0] = 0.0f; v[2][1] = d;    v[2][2] = h;
   v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = 0.0f;
+  if(surfaces[FRONT_SURFACE]) free(surfaces[FRONT_SURFACE]);
   surfaces[FRONT_SURFACE] = new_surface(v);
 
   v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
   v[1][0] = w;    v[1][1] = 0.0f; v[1][2] = h;
   v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
   v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = h;
+  if(surfaces[TOP_SURFACE]) free(surfaces[TOP_SURFACE]);
   surfaces[TOP_SURFACE] = new_surface(v);
+}
+
+void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 shapePalIndex) {
+  this->tex = tex;
+  this->color = color;
+  this->display_list = display_list;
+  this->shapePalIndex = shapePalIndex; 
+  this->skipside = 0;
+  this->useShadow = false;
+  this->useTexture = true;
+	this->lightBlocking = false;
+
+  surfaces[LEFT_SURFACE] = NULL;
+  surfaces[BOTTOM_SURFACE] = NULL;
+  surfaces[RIGHT_SURFACE] = NULL;
+  surfaces[FRONT_SURFACE] = NULL;
+  surfaces[TOP_SURFACE] = NULL;
+  initSurfaces();
 
   if(tex && lightmap_tex_num == 0 && Constants::multitexture) 
   	createDarkTexture();
