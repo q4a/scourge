@@ -143,6 +143,7 @@ void Scourge::startMission() {
 	// create the map
   map = new Map(this);
 	miniMap = new MiniMap(this); 
+  miniMap->show();
 	
 	// ready the party
 	party->startPartyOnMission();
@@ -347,8 +348,6 @@ void Scourge::drawView() {
   }
 
   map->drawDescriptions(messageList);
-
-  miniMap->draw(0, 400);
 
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );      

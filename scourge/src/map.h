@@ -298,6 +298,8 @@ class Map {
   bool isLocationBlocked(int x, int y, int z);
 
   void drawShade();
+
+  void drawBorder();
   
   void drawCube(float x, float y, float z, float r);
 

@@ -107,7 +107,6 @@ class MiniMap : public WidgetView {
   void computeDrawValues(); // needed before drawing the minimap
   void updateFog(int a, int b); // gradually set the minimap visible for the player
   void buildTexture(int xCoord, int yCoord);
-  void draw(int xCoord, int yCoord); 
 
   void drawWidget(Widget *w);
   

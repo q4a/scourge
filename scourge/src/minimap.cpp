@@ -45,8 +45,9 @@ MiniMap :: MiniMap(Scourge *scourge){
                       0, 400, 200, 150, 
                       strdup("Minimap"), 
                       scourge->getShapePalette()->getGuiTexture() );
-    canvas = new Canvas( 0, 0, 200, 150, this );
-      
+    canvas = new Canvas( 0, 0, 200, 150 - 25, this );
+    win->addWidget(canvas);
+
     if(DEBUG_MINIMAP) fprintf(stderr, "mini map =( %d x %d )\n", MINI_MAP_WIDTH, MINI_MAP_DEPTH);
     for (int x = 0 ; x < MINI_MAP_WIDTH ; x++){
         for(int y = 0; y < MINI_MAP_DEPTH ; y++){
@@ -153,14 +154,12 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
 }
 
 void MiniMap::drawWidget(Widget *w) {
-  draw(0, 0);
-}
-
-void MiniMap :: draw(int xCoord, int yCoord){
   //	glDisable(GL_CULL_FACE);
     int xPartyPos, yPartyPos;     
     float distX, distY; 
     int k;
+    int xCoord=0;
+    int yCoord=0;
   
     if (!showMiniMap) return;    
   
@@ -179,8 +178,9 @@ void MiniMap :: draw(int xCoord, int yCoord){
     
     //updateFog(xPartyPos, yPartyPos);  
     glPushMatrix();   
-    glLoadIdentity(); 
     
+    /*
+    glLoadIdentity(); 
     if(DEBUG_MINIMAP){
         // Show scissor 
         glBegin(GL_LINE_LOOP);
@@ -191,10 +191,11 @@ void MiniMap :: draw(int xCoord, int yCoord){
         glVertex2d(xCoord, yCoord + textureSizeH + 15);
         glEnd();  
     }
+    */
     // glScissor(x, y, width, height). (x, y) is the lower-left pixel. And y axis
     // is reversed.       
-    glScissor(xCoord, screenHeight - (yCoord + textureSizeH), textureSizeW + 15, textureSizeH + 15); 
-    glEnable(GL_SCISSOR_TEST); 
+    //glScissor(win->getX(), screenHeight - win->getY(), w->getWidth(), w->getHeight()); 
+    //glEnable(GL_SCISSOR_TEST);
                  
     // Set origin to top-left pixel of minimap
     glTranslatef(xCoord, yCoord, 100);                                                                                                                          
@@ -276,7 +277,7 @@ void MiniMap :: draw(int xCoord, int yCoord){
     
   
     glPopMatrix();   
-    glDisable(GL_SCISSOR_TEST);        
+    //glDisable(GL_SCISSOR_TEST);        
   
 }
 

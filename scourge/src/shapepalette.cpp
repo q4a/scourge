@@ -29,7 +29,8 @@ ShapePalette::ShapePalette(){
   paper_doll_texture = loadGLTextures("/paperdoll.bmp");
   cloud = loadGLTextures("/cloud.bmp");
   candle = loadGLTextures("/candle.bmp");
-  torchback = loadGLTextures("/torchback.bmp");  
+  torchback = loadGLTextures("/torchback.bmp");
+  border = loadGLTextures("/border.bmp");
 
   // load the texture info
   char errMessage[500];
