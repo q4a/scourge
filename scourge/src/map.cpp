@@ -32,7 +32,7 @@ Map::Map(Scourge *scourge){
   selX = selY = selZ = MAP_WIDTH + 1;
   oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
   useShadow = false;
-  alwaysCenter = true;
+  //alwaysCenter = true;
   
   mapChanged = true;
   
@@ -97,7 +97,7 @@ void Map::center(Sint16 x, Sint16 y) {
   Sint16 nx = x - MAP_VIEW_WIDTH / 2; 
   Sint16 ny = y - MAP_VIEW_DEPTH / 2; 
 
-  if(alwaysCenter ||
+  if(scourge->getUserConfiguration()->getAlwaysCenterMap() ||
      abs(this->x - nx) > X_CENTER_TOLERANCE ||
      abs(this->y - ny) > Y_CENTER_TOLERANCE) {
     // relocate
@@ -426,7 +426,7 @@ void Map::draw(SDL_Surface *surface) {
 	  doDrawShape(&other[i]);
 	}
 
-    if(Constants::stencilbuffer) {
+    if(scourge->getUserConfiguration()->getStencilbuf()) {
 	  // create a stencil for the walls
 	  glDisable(GL_DEPTH_TEST);
 	  glColorMask(0,0,0,0);
@@ -445,7 +445,7 @@ void Map::draw(SDL_Surface *surface) {
 	  setupShapes(true);
 	  
 	  // shadows
-      if(Constants::shadowMode >= Constants::OBJECT_SHADOWS) {
+      if(scourge->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
 	    glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
 	    // GL_INCR makes sure to only draw shadow once
 	    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
@@ -454,7 +454,7 @@ void Map::draw(SDL_Surface *surface) {
 	    glEnable(GL_BLEND);
 	    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    useShadow = true;
-        if(Constants::shadowMode == Constants::ALL_SHADOWS) {
+        if(scourge->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
 	      for(int i = 0; i < stencilCount; i++) {
 		    doDrawShape(&stencil[i]);
 	      }

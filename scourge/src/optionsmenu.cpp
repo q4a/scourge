@@ -37,6 +37,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     this->uc = scourge->getUserConfiguration();
     controlsLoaded = false;
     videoLoaded = false;
+    gameSettingsLoaded = false;
     controlLines = NULL;
     nbControlLines = 0;
     waitingForNewKey = false;
@@ -52,7 +53,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
  	createButton (315, 0, 420, 30, "Audio", true, audioButton);
     createButton (420, 0, 525, 30, "Controls", true, controlsButton);       
     createButton (350, 440, 455, 470, "Close", false, closeButton);           
-    createButton (65, 440, 170, 470, "Save changes", false, saveControlButton);    		          
+    createButton (65, 440, 170, 470, "Save to file", false, saveButton);        		          
     //saveControlButton->setVisible(false);    
                       
     cards = new CardContainer(mainWin);
@@ -68,7 +69,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     cards->addWidget(changeControlButton, CONTROLS);   		          
     waitingLabel = new Label(35, 80, strdup(" ")); 	
     waitingLabel->setColor( 0.0f, 0.3f, 0.9f, 1 );  
-    cards->addWidget(waitingLabel, CONTROLS);          
+    cards->addWidget(waitingLabel, CONTROLS);            
 
     // Game settings tab
     gameSpeedML = new MultipleLabel(100, 80, 300, 100, "Game speed", 100);
@@ -76,40 +77,50 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     gameSpeedML -> addText(strdup("Slow"));
     gameSpeedML -> addText(strdup("Normal"));
     gameSpeedML -> addText(strdup("Fast"));
-    gameSpeedML -> addText(strdup("Very fast"));
-    gameSpeedML -> setText(0);
+    gameSpeedML -> addText(strdup("Fastest"));    
     cards->addWidget(gameSpeedML, GAME_SETTINGS);
+    createCheckbox(100, 120, 258, 140, "Always center map", GAME_SETTINGS, alwaysCenterMapCheckbox);
    
     // Video settings tabs        
-    videoResolutionML = new MultipleLabel(100, 80, 300, 100, "Screen resolution", 100);
+    videoResolutionML = new MultipleLabel(100, 40, 300, 60, "Screen resolution", 100);
     modes = scourge->getSDLHandler()->getVideoModes(nbModes);     
     for(i = 0; i < nbModes; i++){
         videoResolutionML -> addText(modes[i]);        
     }    
     cards->addWidget(videoResolutionML, VIDEO);
 
-    createCheckbox(100, 120, 258, 140, "Fullscreen", VIDEO, fullscreenCheckbox);    
-    createCheckbox(100, 160, 258, 180, "Window resizeable", VIDEO, resizeableCheckbox);
-    createCheckbox(100, 200, 258, 220, "Double buffering", VIDEO, doublebufCheckbox);    
-    createCheckbox(100, 240, 258, 260, "Force hardware surfaces", VIDEO, forceHwsurfCheckbox);
-    createCheckbox(100, 280, 258, 300, "Force software surfaces", VIDEO, forceSwsurfCheckbox);
-    createCheckbox(100, 320, 258, 340, "Hardware palette", VIDEO, hwpalCheckbox);
-    createCheckbox(100, 360, 258, 380, "Hardware acceleration", VIDEO, hwaccelCheckbox); 
-
+    createCheckbox(100, 75, 258, 95, "Fullscreen", VIDEO, fullscreenCheckbox);    
+    createCheckbox(100, 110, 258, 130, "Window resizeable", VIDEO, resizeableCheckbox);
+    createCheckbox(100, 145, 258, 165, "Use double buffering", VIDEO, doublebufCheckbox);    
+    createCheckbox(100, 180, 258, 200, "Use stencil buffer", VIDEO, stencilbufCheckbox);    
+    createCheckbox(100, 215, 258, 235, "Force hardware surfaces", VIDEO, forceHwsurfCheckbox);
+    createCheckbox(100, 250, 258, 270, "Force software surfaces", VIDEO, forceSwsurfCheckbox);
+    createCheckbox(100, 285, 258, 305, "Use multitexturing", VIDEO, multitexturingCheckbox);    
+    createCheckbox(100, 320, 258, 340, "Use hardware palette", VIDEO, hwpalCheckbox);
+    createCheckbox(100, 360, 258, 380, "Use hardware acceleration", VIDEO, hwaccelCheckbox); 
     shadowsML = new MultipleLabel(100, 395, 300, 415, "Shadows", 100);
     shadowsML -> addText("None");  
     shadowsML -> addText("Some");
     shadowsML -> addText("All");       
     cards->addWidget(shadowsML, VIDEO);       
+    changeTakeEffectLabel = new Label(113, 432, strdup(" "));
+    changeTakeEffectLabel->setColor( 0.0f, 0.3f, 0.9f, 1 );  
+    cards->addWidget(changeTakeEffectLabel, VIDEO);  
     
-    selectedMode = CONTROLS;
+    selectedMode = GAME_SETTINGS;
     				
+}
+
+void OptionsMenu::loadGameSettings(){
+        cout<<"sqdf gamespeed "<<gameSpeedML->getNbText()<< endl;
+    gameSpeedML->setText(gameSpeedML->getNbText() - uc->getGameSpeedLevel() - 1);
+    alwaysCenterMapCheckbox->setCheck(uc->getAlwaysCenterMap());
+
 }
 
 // line i must correspond to engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
-    string line, s1, s2, s3;
-    //int j;
+    string line, s1, s2, s3; 
     int i;
     char spaces[MAX_CONTROLS_LINE_SIZE];
     for(i = 0; i < MAX_CONTROLS_LINE_SIZE ; i++){
@@ -186,11 +197,13 @@ void OptionsMenu::loadVideo(){
     
     // Checkboxes
     fullscreenCheckbox->setCheck(uc -> getFullscreen());
-    doublebufCheckbox->setCheck(uc->getDoublebuf());   
+    doublebufCheckbox->setCheck(uc->getDoublebuf());
+    stencilbufCheckbox->setCheck(uc->getStencilbuf());
     hwpalCheckbox->setCheck(uc->getHwpal());
     resizeableCheckbox->setCheck(uc->getResizeable());
     forceHwsurfCheckbox->setCheck(uc->getForce_hwsurf());
     forceSwsurfCheckbox->setCheck(uc->getForce_swsurf());
+    multitexturingCheckbox->setCheck(uc->getMultitexturing());
     hwaccelCheckbox->setCheck(uc->getHwaccel());    
     
     
@@ -210,7 +223,7 @@ void OptionsMenu::setSelectedMode(){
                 videoLoaded = true;                
             } 
             break;
-        case AUDIO : 
+        case AUDIO :
             break;
         case CONTROLS :
             if(!controlsLoaded){                
@@ -219,6 +232,10 @@ void OptionsMenu::setSelectedMode(){
             }            
             break;
         case GAME_SETTINGS :
+            if(!gameSettingsLoaded){
+                loadGameSettings();
+                gameSettingsLoaded = true;
+            }
             break;
         default : 
             break;       
@@ -246,6 +263,12 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
         waitingForNewKey = true;               
     }
+    else if(widget == gameSpeedML){
+        uc -> setGameSpeedLevel(gameSpeedML->getNbText() - gameSpeedML->getCurrentTextInd() - 1);
+    }
+    else if(widget == alwaysCenterMapCheckbox){
+        uc -> setAlwaysCenterMap(alwaysCenterMapCheckbox->isChecked());
+    }
     else if(widget == videoResolutionML){
         string line, s1, s2;
         int end;
@@ -257,7 +280,12 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         uc-> setH(atoi(s2.c_str()));        
     }
     else if(widget == fullscreenCheckbox){
-        uc->setFullscreen(fullscreenCheckbox->isChecked());
+        // if fullscreen checked -> not resizeable
+        if(fullscreenCheckbox->isChecked()){
+            resizeableCheckbox->setCheck(false);
+            uc->setResizeable(false);                
+        }
+        uc->setFullscreen(fullscreenCheckbox->isChecked());        
     } 
     else if(widget == resizeableCheckbox){
         uc->setResizeable(resizeableCheckbox->isChecked());
@@ -269,19 +297,39 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         uc->setHwpal(hwpalCheckbox->isChecked());
     }
     else if(widget == forceSwsurfCheckbox){
+        // Hardware or software surfaces but not both
+        if(forceSwsurfCheckbox->isChecked()){
+            forceHwsurfCheckbox->setCheck(false);
+            uc->setForce_hwsurf(false); 
+        }
         uc->setForce_swsurf(forceSwsurfCheckbox->isChecked());
     }
     else if(widget == forceHwsurfCheckbox){
+        // Hardware or software surfaces but not both
+        if(forceHwsurfCheckbox->isChecked()){
+            forceSwsurfCheckbox->setCheck(false);
+            uc->setForce_swsurf(false); 
+        }
         uc->setForce_hwsurf(forceHwsurfCheckbox->isChecked());
     }
     else if(widget == hwaccelCheckbox){
         uc->setHwaccel(hwaccelCheckbox->isChecked());
     }
-    else if(widget == saveControlButton){
-        uc->saveConfiguration();        
+    else if(widget == stencilbufCheckbox){
+        uc->setStencilbuf(stencilbufCheckbox->isChecked());
     }
-    
-               
+    else if(widget == multitexturingCheckbox){
+        uc->setMultitexturing(multitexturingCheckbox->isChecked());
+    }
+    else if(widget == shadowsML){
+        uc->setShadows(shadowsML->getCurrentTextInd());    
+    }
+    else if(widget == saveButton){
+        uc->saveConfiguration();
+        if(selectedMode == VIDEO){
+            changeTakeEffectLabel -> setText("Some changes will only take effect upon restart");            
+        }       
+    }    
     setSelectedMode(); 
       
     return false;

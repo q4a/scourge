@@ -80,12 +80,9 @@ const char *Constants::SKILL_NAMES[] = {
 const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
   "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed", "dead"
-};
+}; 
 
-bool Constants::stencilbuffer = true;
 bool Constants::multitexture = true;	
-
-int Constants::shadowMode = Constants::ALL_SHADOWS;
 
 Constants::Constants(){
 }

@@ -364,8 +364,7 @@ public:
   };
 
   static const int DAMAGE_DURATION = 500;
-
-  static bool stencilbuffer;
+  
   static bool multitexture;	
 
   enum {
@@ -373,7 +372,6 @@ public:
     OBJECT_SHADOWS,
     ALL_SHADOWS
   };
-  static int shadowMode;  
 
   // the speed when hand fighting is used instead of a weapon
   static const int HAND_WEAPON_SPEED = 10;

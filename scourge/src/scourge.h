@@ -122,8 +122,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
 
   GLint lastTick;
   int battleCount;
-  Battle battle[MAX_BATTLE_COUNT];
-  int gameSpeed;
+  Battle battle[MAX_BATTLE_COUNT];  
   bool partyDead;
 
 protected:
@@ -152,9 +151,6 @@ public:
   
   Scourge(int argc, char *argv[]);
   ~Scourge();
-
-  inline void setGameSpeed(int n) { gameSpeed = n; }
-  inline int getGameSpeed() { return gameSpeed; }
 
   inline void setMove(Uint16 n) { move |= n; };  
   inline void removeMove(Uint16 n) { move &= (0xffff - n); }

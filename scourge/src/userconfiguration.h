@@ -117,7 +117,6 @@ enum engine_action_up_int{
     ENGINE_ACTION_UP_COUNT
 };
 
-
 class UserConfiguration{
 
 private:
@@ -155,17 +154,27 @@ private:
   bool force_hwsurf;
   bool force_swsurf;
   bool hwaccel; 
-  bool test;   
+  bool test;  
+  bool multitexturing; 
+  bool stencilbuf;
   int bpp;
   int w;
   int h;  
   int shadows;
+  
+  // game settings
+  int gamespeed;
+  bool centermap;
    
  public:
  
   UserConfiguration::UserConfiguration();
   UserConfiguration::~UserConfiguration();
-      
+  
+  inline int getEngineActionCount() { return ENGINE_ACTION_DEBUG_IND; }
+  const char * getEngineActionDescription(int i);  
+  const char * getEngineActionKeyName(int i);      
+              
   // engine variables
   inline bool getFullscreen(){ return fullscreen; }
   inline bool getDoublebuf() { return doublebuf;  }
@@ -174,26 +183,36 @@ private:
   inline bool getForce_hwsurf() { return force_hwsurf; }
   inline bool getForce_swsurf() { return force_swsurf; }
   inline bool getHwaccel()   { return hwaccel;    }
-  inline bool getTest()      { return test;       }   
+  inline bool getTest()      { return test;       }
+  inline bool getStencilbuf(){ return stencilbuf; }  
+  inline bool getMultitexturing() { return Constants::multitexture; }     
   inline int getBpp()        { return bpp;        }
   inline int getW()          { return w;          }
   inline int getH()          { return h;          }
-  inline int getShadows()    { return shadows;    }   
-  inline int getEngineActionCount() { return ENGINE_ACTION_DEBUG_IND; }
-  const char * getEngineActionDescription(int i);  
-  const char * getEngineActionKeyName(int i);  
+  inline int getShadows()    { return shadows;    }  
+  inline int getGameSpeedLevel()  { return gamespeed;  } // [0, 1, 2, 3, 4] 
+  inline bool getAlwaysCenterMap(){ return centermap;  }  
   
-  inline void setFullscreen(bool t){ fullscreen=t; }
-  inline void setDoublebuf(bool t) { doublebuf=t;  }
-  inline void setHwpal(bool t)     { hwpal=t;      }
-  inline void setResizeable(bool t){ resizeable=t; }
-  inline void setForce_hwsurf(bool t) { force_hwsurf=t; }
-  inline void setForce_swsurf(bool t) { force_swsurf=t; }
-  inline void setHwaccel(bool t)   { hwaccel=t;    }   
-  inline void setBpp(int t)         { bpp=t;        }
-  inline void setW(int t)           { w=t;          }
-  inline void setH(int t)           { h=t;          }
-  inline void setShadows(int t)     { shadows=t;    }
+  inline bool setFullscreen(bool t){ fullscreen=t; }
+  inline bool setDoublebuf(bool t) { doublebuf=t;  }
+  inline bool setHwpal(bool t)     { hwpal=t;      }
+  inline bool setResizeable(bool t){ resizeable=t; }
+  inline bool setForce_hwsurf(bool t) { force_hwsurf=t; }
+  inline bool setForce_swsurf(bool t) { force_swsurf=t; }
+  inline bool setHwaccel(bool t)   { hwaccel=t;    }   
+  inline bool setStencilbuf(bool t){ stencilbuf=t; }
+  inline bool setMultitexturing(bool t){ Constants::multitexture=t; }
+  inline int setBpp(int t)         { bpp=t;        }
+  inline int setW(int t)           { w=t;          }
+  inline int setH(int t)           { h=t;          }
+  inline int setShadows(int t)     { shadows=t; }
+  inline int setGameSpeedLevel(int t)   { gamespeed=t; } // [0, 1, 2, 3, 4]
+  inline bool setAlwaysCenterMap(int t) { centermap=t; }
+  
+  // return/set gameSpeed in ticks
+  int setGameSpeedTicks(int ticks);
+  int getGameSpeedTicks();           
+  
   
   bool isDebugEa(int j);
    
