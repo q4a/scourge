@@ -67,8 +67,6 @@ Inventory::Inventory(Scourge *scourge) {
 	spellsButton = new Button( 315,0, 420, 30, strdup("Spells") );
 	spellsButton->setToggle(true);
 	mainWin->addWidget((Widget*)spellsButton);
-	closeButton = new Button( 420,0, 525, 30, strdup("Close") );
-	mainWin->addWidget((Widget*)closeButton);
 
 	cards = new CardContainer(mainWin);
 
@@ -154,44 +152,44 @@ Inventory::~Inventory() {
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
-  if(widget == closeButton) mainWin->setVisible(false);
-  else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
-  else if(widget == player2Button) setSelectedPlayerAndMode(1, selectedMode);
-  else if(widget == player3Button) setSelectedPlayerAndMode(2, selectedMode);
-  else if(widget == player4Button) setSelectedPlayerAndMode(3, selectedMode);
-  else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
-  else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
-  else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
-  else if(widget == openButton) {
-	int itemIndex = invList->getSelectedLine();  
-	if(itemIndex > -1) {
-	  Item *item = scourge->getParty(selected)->getInventory(itemIndex);
-	  if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-		scourge->openContainerGui(item);
-	  }
+	if(widget == mainWin->closeButton) mainWin->setVisible(false);
+	else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
+	else if(widget == player2Button) setSelectedPlayerAndMode(1, selectedMode);
+	else if(widget == player3Button) setSelectedPlayerAndMode(2, selectedMode);
+	else if(widget == player4Button) setSelectedPlayerAndMode(3, selectedMode);
+	else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
+	else if(widget == skillsButton)	setSelectedPlayerAndMode(selected, CHARACTER);
+	else if(widget == spellsButton)	setSelectedPlayerAndMode(selected, SPELL);
+	else if(widget == openButton) {
+		int itemIndex = invList->getSelectedLine();  
+		if(itemIndex > -1) {
+			Item *item = scourge->getParty(selected)->getInventory(itemIndex);
+			if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+				scourge->openContainerGui(item);
+			}
+		}
+	} else if(widget == dropButton) {
+		dropItem();
+	} else if(widget == equipButton) {
+		int itemIndex = invList->getSelectedLine();  
+		if(itemIndex > -1 && 
+			 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+			scourge->getParty(selected)->equipInventory(itemIndex);
+			// recreate list strings
+			int oldLine = invList->getSelectedLine();
+			setSelectedPlayerAndMode(selected, selectedMode);
+			invList->setSelectedLine(oldLine);
+		}
+	} else if(widget == invToButton[0]) {
+		moveItemTo(0);
+	} else if(widget == invToButton[1]) {
+		moveItemTo(1);
+	} else if(widget == invToButton[2]) {
+		moveItemTo(2);
+	} else if(widget == invToButton[3]) {
+		moveItemTo(3);
 	}
- } else if(widget == dropButton) {
-	dropItem();
-  } else if(widget == equipButton) {
-	int itemIndex = invList->getSelectedLine();  
-	if(itemIndex > -1 && 
-	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
-	  scourge->getParty(selected)->equipInventory(itemIndex);
-	  // recreate list strings
-	  int oldLine = invList->getSelectedLine();
-	  setSelectedPlayerAndMode(selected, selectedMode);
-	  invList->setSelectedLine(oldLine);
-	}
-  } else if(widget == invToButton[0]) {
-	moveItemTo(0);
-  } else if(widget == invToButton[1]) {
-	moveItemTo(1);
-  } else if(widget == invToButton[2]) {
-	moveItemTo(2);
-  } else if(widget == invToButton[3]) {
-	moveItemTo(3);
-  }
-  return false;
+	return false;
 }
 
 void Inventory::moveItemTo(int playerIndex) {

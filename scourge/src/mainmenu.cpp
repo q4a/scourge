@@ -30,9 +30,10 @@ MainMenu::MainMenu(Scourge *scourge){
   }
   // The new style gui
   mainWin = new Window( scourge->getSDLHandler(),
-						50, 230, 270, 220, 
-						strdup("Main Menu"), 
-						scourge->getShapePalette()->getGuiTexture() );
+												50, 230, 270, 220, 
+												strdup("Main Menu"), 
+												scourge->getShapePalette()->getGuiTexture(),
+												false );
   
   char version[100];
   sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);

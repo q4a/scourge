@@ -71,8 +71,11 @@ class Widget {
   virtual bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   virtual bool isInside(int x, int y);
 
+	inline void setDebug(bool d) { debug = d; }
+
  protected:
-  inline void applyColor() { glColor4f( red, green, blue, alpha ); }
+	 bool debug;
+	 inline void applyColor() { glColor4f( red, green, blue, alpha ); }
 };
 
 #endif

@@ -25,11 +25,7 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
 						x, y, 320, 300, 
 						container->getRpgItem()->getName(), 
 						scourge->getShapePalette()->getGuiTexture() );
-  closeButton = new Button( 5, 5, 105, 35, Constants::getMessage(Constants::CLOSE_LABEL) );
-  win->addWidget((Widget*)closeButton);
-  dropButton = new Button( 110, 5, 210, 35, Constants::getMessage(Constants::DROP_ITEM_LABEL) );
-  win->addWidget((Widget*)dropButton);
-  openButton = new Button( 215, 5, 315, 35, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
+  openButton = new Button( 5, 5, 105, 35, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
 
   list = new ScrollingList(5, 40, 310, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), this);
@@ -56,8 +52,6 @@ ContainerGui::~ContainerGui() {
 
   delete label;
   delete list;
-  delete closeButton;
-  delete dropButton;
   delete openButton;
   delete win;
 }
@@ -88,19 +82,17 @@ bool ContainerGui::handleEvent(SDL_Event *event) {
 }
 
 bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
-  if(widget == closeButton) {
-	win->setVisible(false);
-	return true;
-  } else if(widget == dropButton) {
-	dropItem();
-  } else if(widget == openButton) {
-	int n = list->getSelectedLine();
-	if(n > -1 && 
-	   container->getContainedItem(n)->getRpgItem()->getType() == RpgItem::CONTAINER) {	
-	  scourge->openContainerGui(container->getContainedItem(n));
+	if(widget == win->closeButton) {
+		win->setVisible(false);
+		return true;
+	} else if(widget == openButton) {
+		int n = list->getSelectedLine();
+		if(n > -1 && 
+			 container->getContainedItem(n)->getRpgItem()->getType() == RpgItem::CONTAINER) { 
+			scourge->openContainerGui(container->getContainedItem(n));
+		}
 	}
-  }
-  return false;
+	return false;
 }
 
 void ContainerGui::receive(Widget *widget) {

@@ -48,7 +48,7 @@ private:
 	// UI
 	Window *mainWin;
 	Button *player1Button, *player2Button, *player3Button, *player4Button;
-	Button *inventoryButton, *skillsButton, *spellsButton, *closeButton;
+	Button *inventoryButton, *skillsButton, *spellsButton;
 	CardContainer *cards;
 
 	// inventory screen

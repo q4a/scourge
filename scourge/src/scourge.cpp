@@ -1017,7 +1017,7 @@ void Scourge::createUI() {
 						sdlHandler->getScreen()->h - GUI_HEIGHT, 
 						GUI_WIDTH, GUI_HEIGHT, 
 						strdup(version), 
-						getShapePalette()->getGuiTexture() );
+						getShapePalette()->getGuiTexture(), false );
 //  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
 //  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
   inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
@@ -1071,7 +1071,7 @@ void Scourge::createUI() {
   messageWin = new Window( getSDLHandler(),
 						   0, 0, 400, 120, 
 						   strdup("Messages"), 
-						   getShapePalette()->getGuiTexture() );
+						   getShapePalette()->getGuiTexture(), false );
   messageWin->setBackground(0, 0, 0);
   messageList = new ScrollingList(0, 0, 400, 95);
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
@@ -1082,11 +1082,11 @@ void Scourge::createUI() {
   int w = 250;
   int h = 120;
   exitConfirmationDialog = new Window(getSDLHandler(),
-									  (getSDLHandler()->getScreen()->w/2) - (w/2), 
-									  (getSDLHandler()->getScreen()->h/2) - (h/2), 
-									  w, h,
-									  strdup("Exit mission?"), 
-									  getShapePalette()->getGuiTexture());
+																			(getSDLHandler()->getScreen()->w/2) - (w/2), 
+																			(getSDLHandler()->getScreen()->h/2) - (h/2), 
+																			w, h,
+																			strdup("Exit mission?"), 
+																			getShapePalette()->getGuiTexture(), false);
   yesExitConfirm = new Button( 40, 50, 110, 80, strdup("Yes") );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
   noExitConfirm = new Button( 140, 50, 210, 80, strdup("No") );

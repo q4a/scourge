@@ -30,6 +30,7 @@ Widget::Widget(int x, int y, int w, int h) {
   setBackground( 1, 0.75f, 0.45f );
   setSelectionColor( 1, 0.5f, 0.45f );
   visible = true;
+	debug = false;
 }
 Widget::~Widget() {
 }
