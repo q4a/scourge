@@ -30,6 +30,7 @@ Widget::Widget(int x, int y, int w, int h) {
   //  setSelectionColor( 1, 0.5f, 0.45f );
   setSelectionColor( 0.75f, 0.75f, 0.8f );
   setBorderColor( 0.8f, 0.5f, 0.2f );
+  setHighlightedBorderColor( 1.0f, 0.8f, 0.4f );
   visible = true;
   debug = false;
 }
@@ -45,6 +46,9 @@ void Widget::draw(Widget *parent) {
 bool Widget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   // do nothing by default
   return false;
+}
+
+void Widget::removeEffects(Widget *parent) {
 }
 
 bool Widget::isInside(int x, int y) {

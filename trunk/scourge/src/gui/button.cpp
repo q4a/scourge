@@ -121,3 +121,7 @@ bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   return false;
 }
 
+void Button::removeEffects(Widget *parent) {
+  inside = false;
+}
+

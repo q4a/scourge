@@ -34,6 +34,7 @@ class Canvas : public Widget {
   DragAndDropHandler *dragAndDropHandler;
   int dragX, dragY;
   bool dragging;
+  bool highlightBorders;
 
  public: 
   Canvas(int x, int y, int x2, int y2, WidgetView *view, 
@@ -48,6 +49,7 @@ class Canvas : public Widget {
 	 to the outside world.
    */
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+  void removeEffects(Widget *parent);
 };
 
 #endif

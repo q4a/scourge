@@ -34,6 +34,7 @@ class Widget {
   Color background;
   Color selColor;
   Color borderColor;
+  Color borderColor2;
 
  public: 
   Widget(int x, int y, int w, int h);
@@ -58,6 +59,7 @@ class Widget {
   inline void setColor( float r, float g, float b, float a=1.0f ) { this->color.r = r; this->color.g = g; this->color.b = b; this->color.a = a; }
 
   inline void setBorderColor( float r, float g, float b, float a=1.0f ) { this->borderColor.r = r; this->borderColor.g = g; this->borderColor.b = b; this->borderColor.a = a; }
+  inline void setHighlightedBorderColor( float r, float g, float b, float a=1.0f ) { this->borderColor2.r = r; this->borderColor2.g = g; this->borderColor2.b = b; this->borderColor2.a = a; }
 
   inline void setBackground(float r, float g, float b, float a=1.0f) { background.r = r; background.g = g; background.b = b; background.a = a; }
   inline void setSelectionColor(float r, float g, float b, float a=1.0f) { selColor.r = r; selColor.g = g; selColor.b = b; selColor.a=a; }
@@ -72,11 +74,13 @@ class Widget {
 
   inline void applyColor() { glColor4f( color.r, color.g, color.b, color.a ); }
   inline void applyBorderColor() { glColor4f(borderColor.r, borderColor.g, borderColor.b, borderColor.a); }
+  inline void applyHighlightedBorderColor() { glColor4f(borderColor2.r, borderColor2.g, borderColor2.b, borderColor2.a); }
   inline void applyBackgroundColor(bool opaque=false) { glColor4f( background.r, background.g, background.b, (opaque ? 1.0f : 0.85f) ); }
   inline void applySelectionColor() { glColor4f( selColor.r, selColor.g, selColor.b, selColor.a ); }
 
   inline Color *getColor() { return &color; }
   inline Color *getBorderColor() { return &borderColor; }
+  inline Color *getHighlightedBorderColor() { return &borderColor2; }
   inline Color *getBackgroundColor() { return &background; }
   inline Color * getSelectionColor() { return &selColor; }
 
@@ -88,6 +92,11 @@ class Widget {
 	 to the outside world.
    */
   virtual bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+
+  /**
+   * Called when no events are sent to this widget. (ie. the mouse is elsewhere.)
+   */
+  virtual void removeEffects(Widget *parent);
   virtual bool isInside(int x, int y);
 
 	inline void setDebug(bool d) { debug = d; }
