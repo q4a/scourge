@@ -101,6 +101,8 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Item *movingItem;
 
   bool player_only;
+  Uint16 move;
+  int movedCount;
 
 protected:
   SDLHandler *sdlHandler;
@@ -128,7 +130,14 @@ public:
   Scourge(int argc, char *argv[]);
   ~Scourge();
 
-  void moveMonsters();
+  inline void setMove(Uint16 n) { move |= n; };  
+  inline void removeMove(Uint16 n) { move &= (0xffff - n); }
+
+  /**
+	 This method is called after the player decides what to do this round.
+	 This method will move monsters, cast spells, organize the battle, etc.
+   */
+  void playRound();
   void moveMonster(Creature *monster);
 
   inline Map *getMap() { return map; }
@@ -157,8 +166,6 @@ public:
 
   void setPlayer(int n);
   inline void setPlayer(Creature *c) { player = c; }
-
-  void moveParty();
   
   void setPartyMotion(int motion);
   

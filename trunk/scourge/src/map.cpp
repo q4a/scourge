@@ -350,21 +350,6 @@ void Map::drawLocator() {
 }
 
 void Map::draw(SDL_Surface *surface) {
-  // move the map
-  if(move & Constants::MOVE_UP) {
-    if(scourge->getPlayer()->move(Constants::MOVE_UP, this)) this->y--;
-  }
-  if(move & Constants::MOVE_DOWN) {
-    if(scourge->getPlayer()->move(Constants::MOVE_DOWN, this)) this->y++;
-  }
-  if(move & Constants::MOVE_LEFT) {
-    if(scourge->getPlayer()->move(Constants::MOVE_LEFT, this)) this->x--;
-  }
-  if(move & Constants::MOVE_RIGHT) {
-    if(scourge->getPlayer()->move(Constants::MOVE_RIGHT, this)) this->x++;
-  }
-  if(move) scourge->moveMonsters();
-  
   if(zoomIn) {
 	if(zoom <= 0.5f) {
 	  zoomOut = false;
@@ -382,8 +367,6 @@ void Map::draw(SDL_Surface *surface) {
 	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
     }
   }
-
-  scourge->moveParty();
 
   float oldrot;
 

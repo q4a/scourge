@@ -95,7 +95,9 @@ bool Creature::move(Uint16 dir, Map *map) {
 	  break;
 	}
 	map->removeCreature(x, y, z);
-	if(map->shapeFits(getShape(), nx, ny, nz)) {
+	if(nx > 0 && nx < MAP_WIDTH &&
+	   ny > 0 && ny < MAP_DEPTH &&
+	   map->shapeFits(getShape(), nx, ny, nz)) {
 	  map->setCreature(nx, ny, nz, this);
       ((MD2Shape*)shape)->setDir(dir);
 	  moveTo(nx, ny, nz);
@@ -157,7 +159,7 @@ bool Creature::move(Uint16 dir, Map *map) {
 #else
         // Out of my way!
         partyMember->setMotion(Constants::MOTION_MOVE_AWAY);
-        scourge->moveParty();
+		partyMember->move(dir, map);
         return false;
 #endif        
 	  } else {
@@ -169,59 +171,66 @@ bool Creature::move(Uint16 dir, Map *map) {
   }
 }
 
-void Creature::follow(Map *map) {
+bool Creature::follow(Map *map) {
   // find out where the creature should be
-	Sint16 px, py, pz;
-
+  Sint16 px, py, pz;
+  
   if(getMotion() == Constants::MOTION_MOVE_AWAY) {
     findCorner(&px, &py, &pz);
   } else {
   	getFormationPosition(&px, &py, &pz);   
   }
-
-  gotoPosition(map, px, py, pz);
   
+  return gotoPosition(map, px, py, pz);
 }
 
-void Creature::moveToLocator(Map *map) {
+bool Creature::moveToLocator(Map *map, bool single_step) {
+  bool moved = false;
   if(selX > -1) {
-	gotoPosition(map, selX, selY, 0);
+	moved = gotoPosition(map, selX, selY, 0);
+	// in single step mode, ignore the rest of the path
+	//	if(single_step) selX = selY = -1;
   }
+  return moved;
 }
 
-void Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz) {
-    // If the target moved, get the best path to the location
-    if(!(tx == px && ty == py)) {
-        tx = px;
-      ty = py;
-      bestPathPos = 1; // skip 0th position; it's the starting location
-      Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, scourge->getMap(), getShape());
-    }
+bool Creature::anyMovesLeft() {
+  return(selX > -1 && (int)bestPath.size() > bestPathPos); 
+}
 
-    if((int)bestPath.size() > bestPathPos) {
-      // take a step on the bestPath
-      Location location = bestPath.at(bestPathPos);
-      // if we can't step there, someone else has moved there ahead of us
-      Uint16 oldDir = dir;
-      //dir = next->getDir();
-      if(getX() < location.x) dir = Constants::MOVE_RIGHT;
-      else if(getX() > location.x) dir = Constants::MOVE_LEFT;
-      else if(getY() < location.y) dir = Constants::MOVE_DOWN;
-      else if(getY() > location.y) dir = Constants::MOVE_UP;
-      Location *position = map->moveCreature(getX(), getY(), getZ(),
-                                             location.x, location.y, getZ(),
-                                             this);
-      if(!position) {
-        bestPathPos++;
-        moveTo(location.x, location.y, getZ());
-        ((MD2Shape*)shape)->setDir(dir);      
-      } else {
-        dir = oldDir;
-      }
-
-	  // move the others
-	  if(this == scourge->getPlayer()) scourge->moveMonsters();
-    }
+bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz) {
+  // If the target moved, get the best path to the location
+  if(!(tx == px && ty == py)) {
+	tx = px;
+	ty = py;
+	bestPathPos = 1; // skip 0th position; it's the starting location
+	Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, scourge->getMap(), getShape());
+  }
+  
+  if((int)bestPath.size() > bestPathPos) {
+	// take a step on the bestPath
+	Location location = bestPath.at(bestPathPos);
+	// if we can't step there, someone else has moved there ahead of us
+	Uint16 oldDir = dir;
+	//dir = next->getDir();
+	if(getX() < location.x) dir = Constants::MOVE_RIGHT;
+	else if(getX() > location.x) dir = Constants::MOVE_LEFT;
+	else if(getY() < location.y) dir = Constants::MOVE_DOWN;
+	else if(getY() > location.y) dir = Constants::MOVE_UP;
+	Location *position = map->moveCreature(getX(), getY(), getZ(),
+										   location.x, location.y, getZ(),
+										   this);
+	if(!position) {
+	  bestPathPos++;
+	  moveTo(location.x, location.y, getZ());
+	  ((MD2Shape*)shape)->setDir(dir);
+	  return true;
+	} else {
+	  dir = oldDir;
+	  return false;
+	}
+  }
+  return false;
 }
 
 void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {

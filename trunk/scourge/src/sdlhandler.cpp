@@ -292,6 +292,8 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	exit(0);
   }
 
+  fullscreen = false;
+
   /* this holds some info about our display */
   const SDL_VideoInfo *videoInfo;
   

@@ -67,6 +67,8 @@ Scourge::Scourge(int argc, char *argv[]){
 
   player_only = false;
   inventory = new Inventory(this);
+  move = 0;
+  movedCount = 0;
 
   createUI();
   
@@ -117,6 +119,8 @@ void Scourge::startMission() {
 
   // position the players
   player_only = false;
+  move = 0;
+  movedCount = 0;
   setPlayer(getParty(0));
   getPlayer()->moveTo(startx, starty, 0);
   map->setCreature(startx, starty, 0, getPlayer()); 
@@ -195,6 +199,9 @@ Creature *Scourge::newCreature(Monster *monster) {
 
 void Scourge::drawView(SDL_Surface *screen) {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+  // make a move (player, monsters, etc.)
+  playRound();
   
   map->draw(screen);
   
@@ -229,6 +236,9 @@ void Scourge::drawView(SDL_Surface *screen) {
 void Scourge::setPlayer(int n) {
   player = party[n];
   player->setNextDontMove(NULL, 0);
+  move = 0;
+  movedCount = 0;
+  player->setSelXY(-1, -1); // don't move
   // init the rest of the party
   int count = 1;
   for(int i = 0; i < 4; i++) {
@@ -287,43 +297,45 @@ bool Scourge::handleEvent(SDL_Event *event) {
     ea = userConfiguration->getEngineAction(event);
     //cout << "scourge EA reçue : '" << ea << "'" << endl;
     if(ea == "set_move_down"){        
-        map->setMove(Constants::MOVE_DOWN);
+        setMove(Constants::MOVE_DOWN);
     }
     else if(ea == "set_move_up"){
-        map->setMove(Constants::MOVE_UP);
+        setMove(Constants::MOVE_UP);
     }
     else if(ea == "set_move_right"){
-        map->setMove(Constants::MOVE_RIGHT);
+        setMove(Constants::MOVE_RIGHT);
     }
     else if(ea == "set_move_left"){
-        map->setMove(Constants::MOVE_LEFT);
+        setMove(Constants::MOVE_LEFT);
     }
     else if(ea == "set_move_down_stop"){        
-        map->removeMove(Constants::MOVE_DOWN);
+        removeMove(Constants::MOVE_DOWN);
     }
     else if(ea == "set_move_up_stop"){
-        map->removeMove(Constants::MOVE_UP);
+        removeMove(Constants::MOVE_UP);
     }
     else if(ea == "set_move_right_stop"){
-        map->removeMove(Constants::MOVE_RIGHT);
+        removeMove(Constants::MOVE_RIGHT);
     }
     else if(ea == "set_move_left_stop"){
-        map->removeMove(Constants::MOVE_LEFT);
+        removeMove(Constants::MOVE_LEFT);
     }            
     else if(ea == "set_player_0"){
-        setPlayer(0);
+	  setPlayer(0);
     }
     else if(ea == "set_player_1"){
-        setPlayer(1);
+	  setPlayer(1);
     }
     else if(ea == "set_player_2"){
-        setPlayer(2);
+	  setPlayer(2);
     }
     else if(ea == "set_player_3"){
-        setPlayer(3);
+	  setPlayer(3);
     }
     else if(ea == "set_player_only"){
         player_only = (player_only ? false : true);
+		move = 0;
+		movedCount = 0;
     }    
     else if(ea == "blend_a"){
         blendA++; if(blendA >= 11) blendA = 0;
@@ -778,16 +790,6 @@ void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
     }
 }
 
-void Scourge::moveParty() {
-  player->moveToLocator(map);
-  map->center(player->getX(), player->getY());
-  if(!player_only) {
-	for(int i = 0; i < 4; i++) {
-	  if(party[i] != player) party[i]->follow(map);
-	}
-  }
-}
-
 void Scourge::setPartyMotion(int motion) {
   for(int i = 0; i < 4; i++) {
 	if(party[i] != player) party[i]->setMotion(motion);
@@ -1011,7 +1013,107 @@ void Scourge::createUI() {
   mainWin->addWidget((Widget*)groupButton);
 }
 
-void Scourge::moveMonsters() {
+void Scourge::playRound() {
+
+  /*
+    ######################################
+	Turn-based movement.
+
+	FIXME:
+	The current algorithm is an approximation of a real turn-based system.
+	Currently monsters get more steps in single-step mode, and the party gets
+	more steps in party-movement mode.
+	The real solution is to count steps and limit how far creatures (monsters, players)
+	move based on their 'speed'.
+	The 'speed' (or steps per turn) should be displayed as a bar on screen so players can
+	judge how when to step, fight, etc. The bar only shows in single-step mode.
+   */
+
+
+  // ######################################
+  // Move players. Both group-movement, and single step (player_only) modes.
+  bool moved = false;
+  bool b;
+
+  // move the player in a direction as specified by keystroke
+  if(move & Constants::MOVE_UP) {
+    b = getPlayer()->move(Constants::MOVE_UP, map);
+	if(!moved) moved = b;
+  }
+  if(move & Constants::MOVE_DOWN) {
+    b = getPlayer()->move(Constants::MOVE_DOWN, map);
+	if(!moved) moved = b;
+  }
+  if(move & Constants::MOVE_LEFT) {
+    b = getPlayer()->move(Constants::MOVE_LEFT, map);
+	if(!moved) moved = b;
+  }
+  if(move & Constants::MOVE_RIGHT) {
+    b = getPlayer()->move(Constants::MOVE_RIGHT, map);
+	if(!moved) moved = b;
+  }
+  // if not using keys, move via locator
+  if(!move) {
+	b = player->moveToLocator(map, player_only);
+  }
+
+  // this person's move is done
+  if(b) movedCount++;
+
+  if(!player_only) {
+
+
+	// In group mode:
+	// others follow player
+	for(int i = 0; i < 4; i++) {
+	  if(party[i] != player) {
+		b = party[i]->follow(map);
+	  }
+	}
+	// if the player moved, everyone moved
+	if(movedCount > 0) movedCount = 4;
+
+
+  } else if(b) {
+
+
+	// in single-step mode:
+	// if the last person moved and he has no more steps left, 
+	// switch to the next party member
+	if(!player->anyMovesLeft()) {
+	  // stop moving
+	  move = 0;
+	  for(int i = 0; i < 4; i++) {
+		if(party[i] == player) {
+		  setPlayer(i < 3 ? i + 1 : 0);
+		  break;
+		}
+	  }
+	}
+	// move monsters for every step
+	// problem with this: monsters get too many moves
+	movedCount = 4;
+	// move monsters after everyone had a turn
+	// problem with this: monsters only move 1 step for n player steps
+	// movedCount = (player == party[0] ? 4 : 0);
+
+
+  }
+  // move the map
+  map->center(player->getX(), player->getY());
+
+
+
+  // if anyone moved, start a round
+  if(movedCount < 4) return;
+  movedCount = 0;
+
+
+  // ######################################
+  // The round starts here
+
+	
+  // move the monsters
   fprintf(stderr, "FIXME: only move visible creatures!\n");
   fprintf(stderr, "FIXME: cleanup Creature::move()!\n");
   for(int i = 0; i < creatureCount; i++) {

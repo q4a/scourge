@@ -110,10 +110,13 @@ class Creature {
   inline int getMotion() { return this->motion; }
   inline char *getDescription() { return description; }
   
+  /**
+	 The movement functions return true if movement has occured, false if it has not.
+   */
   bool move(Uint16 dir, Map *map);
-  void follow(Map *map);
-  void gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz);
-  void moveToLocator(Map *map);
+  bool follow(Map *map);
+  bool gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz);
+  bool moveToLocator(Map *map, bool single_step);
   
   inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
   inline Sint16 getX() { return x; }
@@ -141,7 +144,7 @@ class Creature {
   
   inline void setSelXY(int x, int y) { selX = x; selY = y; }
   
-  
+  bool anyMovesLeft();
   
   // inventory
   // get the item at the given equip-index (inventory location)
