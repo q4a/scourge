@@ -28,15 +28,18 @@
 using namespace std;
 
 // Max number of event binding for each engine action
-//#define MAX_BINDING 3
 #define CONFIG_FILE_NAME "saved/scourge.cfg"
-#define CONFIG_FILE_NAME_2 "saved/scourge_haha.cfg"
+
+// Indice for the first debug engine action defined in engine_action_int
+#define ENGINE_ACTION_DEBUG_IND 26
 
 // set to non-zero for debugging
-#define DEBUG_USER_CONFIG 0   
+#define DEBUG_USER_CONFIG 0  
 
 // All engine action that can be binded
 // If you change this, ALSO change ENGINE_ACTION_NAMES in userconfiguration.cpp
+// AND update ENGINE_ACTION_DEBUG_IND (first indice of invisible engine actions)
+// AND add a corresponding bind line in config file (to have a default value)
 enum engine_action_int{
     
     SET_MOVE_DOWN = 0,
@@ -48,28 +51,17 @@ enum engine_action_int{
     SET_PLAYER_1,
     SET_PLAYER_2,
     SET_PLAYER_3,
-    SET_PLAYER_ONLY,
-    BLEND_A,
-    BLEND_B,    
+    SET_PLAYER_ONLY,      
     
     SHOW_INVENTORY, 
     SHOW_OPTIONS_MENU,
     USE_ITEM,
     SET_NEXT_FORMATION,
-    
-    SET_X_ROT_PLUS,   
-    SET_X_ROT_MINUS,    
+        
     SET_Y_ROT_PLUS,
     SET_Y_ROT_MINUS,    
     SET_Z_ROT_PLUS,        
-    SET_Z_ROT_MINUS,
-     
-    ADD_X_POS_PLUS,
-    ADD_X_POS_MINUS,
-    ADD_Y_POS_PLUS,
-    ADD_Y_POS_MINUS,
-    ADD_Z_POS_PLUS,
-    ADD_Z_POS_MINUS,
+    SET_Z_ROT_MINUS,         
     
     MINIMAP_ZOOM_IN,
     MINIMAP_ZOOM_OUT,
@@ -77,8 +69,24 @@ enum engine_action_int{
     
     SET_ZOOM_IN,     
     SET_ZOOM_OUT,
-         
+    
+    TOGGLE_MAP_CENTER, 
+    INCREASE_GAME_SPEED, 
+    DECREASE_GAME_SPEED, 
+    
     START_ROUND, 
+        
+    // Debug engine actions invisible for user (not saved or loaded)
+    BLEND_A,        
+    BLEND_B,  
+    SET_X_ROT_PLUS,   
+    SET_X_ROT_MINUS,
+    ADD_X_POS_PLUS,
+    ADD_X_POS_MINUS,
+    ADD_Y_POS_PLUS,
+    ADD_Y_POS_MINUS,
+    ADD_Z_POS_PLUS,
+    ADD_Z_POS_MINUS,                 
     
     // must be last
     ENGINE_ACTION_COUNT
@@ -108,12 +116,13 @@ enum engine_action_up_int{
     ENGINE_ACTION_UP_COUNT
 };
 
+
 class UserConfiguration{
 
 private:
   static const char * ENGINE_ACTION_NAMES[];     
   static const char * ENGINE_ACTION_UP_NAMES[];
-  static const char * ENGINE_ACTION_DESCRIPTION[]; 
+  static const char * ENGINE_ACTION_DESCRIPTION[];   
   
   // becomes true every time loadConfiguration is called  
   // and false every time getConfigurationChanged is called
@@ -169,10 +178,10 @@ private:
   inline int getW()          { return w;          }
   inline int getH()          { return h;          }
   inline int getShadows()    { return shadows;    }   
-  inline int getEngineActionCount() { return ENGINE_ACTION_COUNT; }
+  inline int getEngineActionCount() { return ENGINE_ACTION_DEBUG_IND; }
   const char * getEngineActionDescription(int i);  
   const char * getEngineActionKeyName(int i);
-  bool getConfigurationChanged();
+  //bool getConfigurationChanged();
   
   inline bool setFullscreen(bool t){ fullscreen=t; }
   inline bool setDoublebuf(bool t) { doublebuf=t;  }
@@ -186,8 +195,8 @@ private:
   inline int setH(int t)           { h=t;          }
   inline int setShadows(int t)     { shadows=t;    }
   
-  
-  
+  bool isDebugEa(int j);
+   
      
   // reads the configuration file where keys are binded
   void loadConfiguration();

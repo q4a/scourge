@@ -190,6 +190,8 @@ public:
   
   inline int getFormation() { return formation; }
   
+  void addGameSpeed(int speedFactor);
+  
   Creature *isPartyMember(Location *pos);
   
   bool startItemDrag(int x, int y);

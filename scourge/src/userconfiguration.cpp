@@ -20,8 +20,8 @@
 
 // TODO : - warn if there is an unknown parameter in the config file ?
 //        - manage doubled keynames -> must be impossible in optionsmenu
-//        - complete engine action description
 //        - make an array for variables too (they are all hard coded for now)
+//        - default config if config file not there ??
 
 
 // Must be exact copy of enums defined in userconfiguration.h
@@ -38,27 +38,16 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "SET_PLAYER_2",
     "SET_PLAYER_3",
     "SET_PLAYER_ONLY",
-    "BLEND_A",
-    "BLEND_B",    
-    
+     
     "SHOW_INVENTORY", 
     "SHOW_OPTIONS_MENU",
     "USE_ITEM",
     "SET_NEXT_FORMATION",
-    
-    "SET_X_ROT_PLUS",   
-    "SET_X_ROT_MINUS",    
+         
     "SET_Y_ROT_PLUS",
     "SET_Y_ROT_MINUS",    
     "SET_Z_ROT_PLUS",        
-    "SET_Z_ROT_MINUS",
-     
-    "ADD_X_POS_PLUS",
-    "ADD_X_POS_MINUS",
-    "ADD_Y_POS_PLUS",
-    "ADD_Y_POS_MINUS",
-    "ADD_Z_POS_PLUS",
-    "ADD_Z_POS_MINUS",
+    "SET_Z_ROT_MINUS",         
     
     "MINIMAP_ZOOM_IN",
     "MINIMAP_ZOOM_OUT",
@@ -67,7 +56,23 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "SET_ZOOM_IN",     
     "SET_ZOOM_OUT",
     
-    "START_ROUND"               
+    "TOGGLE_MAP_CENTER",    
+    "INCREASE_GAME_SPEED", 
+    "DECREASE_GAME_SPEED", 
+    
+    "START_ROUND",
+    
+    "BLEND_A",
+    "BLEND_B",
+    "SET_X_ROT_PLUS",   
+    "SET_X_ROT_MINUS",
+    "ADD_X_POS_PLUS",
+    "ADD_X_POS_MINUS",
+    "ADD_Y_POS_PLUS",
+    "ADD_Y_POS_MINUS",
+    "ADD_Z_POS_PLUS",
+    "ADD_Z_POS_MINUS"     
+    
 };
 
 
@@ -105,28 +110,17 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     "Select player 1",
     "Select player 2",
     "Select player 3",
-    "Move only selected player",
-    "Change blend source factor", // For now, we leave it like this even if 
-    "Change blend dest factor",   // end user does not necessarily know what blending is 
+    "Move only selected player",    
     
     "Show inventory", 
     "Show options",
     "Use item",
     "Choose next formation",
-    
-    "SET_X_ROT_PLUS",   
-    "SET_X_ROT_MINUS",    
+            
     "Rotate map up",
     "Rotate map down",    
     "Rotate map right",        
-    "Rotate map left",
-     
-    "Move camera left",
-    "Move camera right",
-    "Move camera up",
-    "Move camera down",
-    "ADD_Z_POS_PLUS",
-    "ADD_Z_POS_MINUS",
+    "Rotate map left",       
     
     "Zoom in minimap",
     "Zoom out minimap",
@@ -135,12 +129,27 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     "Zoom in map",     
     "Zoom out map",
     
-    "Start next round"               
+    "Always center map",
+    "Increase game speed", 
+    "Decrease game speed",
+    
+    "Start next round",
+    
+    // Not visible to the user
+    "BLEND_A",    
+    "BLEND_B",  
+    "SET_X_ROT_PLUS",   
+    "SET_X_ROT_MINUS",
+    "ADD_X_POS_PLUS",       
+    "ADD_X_POS_MINUS",
+    "ADD_Y_POS_PLUS",
+    "ADD_Y_POS_MINUS",
+    "ADD_Z_POS_PLUS",
+    "ADD_Z_POS_MINUS"
 };
 
 
-
-UserConfiguration::UserConfiguration(){
+UserConfiguration::UserConfiguration(){    
     int i, j;
     string temp;
     
@@ -158,10 +167,10 @@ UserConfiguration::UserConfiguration(){
     bpp = -1;
     w = 800;
     h = 600;
-    shadows = 0;       
+    shadows = 0;               
     
     // Build (string engineAction -> int engineAction ) lookup table
-    // and   (int ea -> string ea) lookup table
+    // and   (int ea -> string ea) lookup table    
     for (i = 0; i < ENGINE_ACTION_COUNT ; i++){
         temp = ENGINE_ACTION_NAMES[i];
         for(j = 0; j < temp.length(); j++){
@@ -178,7 +187,8 @@ UserConfiguration::UserConfiguration(){
             temp[j] = tolower(temp[j]);                                 
         } 
         engineActionUpNumber[temp] = i;
-    }
+    }        
+                                 
     if(DEBUG_USER_CONFIG){
         map<string, int>::iterator p;
                 
@@ -195,6 +205,13 @@ UserConfiguration::UserConfiguration(){
         while(p != engineActionNumber.end()){
             cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
             p++;     
+        }
+        
+        cout << "debug ea (ie invisible): " << endl;
+        for (i = ENGINE_ACTION_DEBUG_IND; i < ENGINE_ACTION_COUNT ; i++){                
+            if (engineActionName.find(i) != engineActionName.end()){
+                cout << engineActionName[i] << endl; 
+            }                
         }
     }
 
@@ -277,9 +294,9 @@ void UserConfiguration::saveConfiguration(char **controlLine){
     char textLine[255];    
     int i;
     
-    configFile = new ofstream(CONFIG_FILE_NAME_2);
+    configFile = new ofstream(CONFIG_FILE_NAME);
     if(!configFile->is_open()){
-        cout << "Error while saving " << CONFIG_FILE_NAME_2 << endl;        
+        cout << "Error while saving " << CONFIG_FILE_NAME << endl;        
         return;
     }    
     
@@ -303,14 +320,14 @@ void UserConfiguration::saveConfiguration(char **controlLine){
     writeFile(configFile, "// Bindings\n");
     
     // save bindings
-    for (i = 0; i < ENGINE_ACTION_COUNT ; i++){
-        if(keyForEngineAction.find(i)!=keyForEngineAction.end()){
+    for (i = 0; i < ENGINE_ACTION_DEBUG_IND ; i++){        
+        if(keyForEngineAction.find(i)!=keyForEngineAction.end()){            
             sLine = "bind " + keyForEngineAction[i];
             if(engineActionName.find(i)!=engineActionName.end()){
                 sLine = sLine + " " + engineActionName[i] + "\n";
                 writeFile(configFile, (char *) sLine.c_str());
             }
-        }           
+        }            
     }       
     
     // save variables
@@ -348,10 +365,10 @@ void UserConfiguration::setKeyForEngineAction(string keyName, int ea){
     
     if(keyForEngineAction.find(ea)!=keyForEngineAction.end()){
         oldKeyName = keyForEngineAction[ea];
-        if(keyDownBindings.find(keyName)!=keyDownBindings.end()){
-            keyDownBindings.erase(keyName);
-            if(keyUpBindings.find(keyName)!=keyUpBindings.end()){
-                keyUpBindings.erase(keyName);
+        if(keyDownBindings.find(oldKeyName)!=keyDownBindings.end()){
+            keyDownBindings.erase(oldKeyName);
+            if(keyUpBindings.find(oldKeyName)!=keyUpBindings.end()){
+                keyUpBindings.erase(oldKeyName);
             }            
         }
         keyForEngineAction[ea] = keyName;
@@ -376,12 +393,15 @@ void UserConfiguration::bind(string s1, string s2, int lineNumber){
         cout << "bind '" << s1 << "' '" << s2 << "'" << endl;   
     }
           
-    // for now, we trust what is written in configuration file    
+    // for now, we trust what is written in configuration file        
     if(engineActionNumber.find(s2) != engineActionNumber.end()){                   
-        keyDownBindings[s1] = engineActionNumber[s2];
-        keyForEngineAction[engineActionNumber[s2]] = s1;
-        if(engineActionUpNumber.find(s2) != engineActionUpNumber.end()){                                      
-            keyUpBindings[s1] = engineActionUpNumber[s2];
+        // Ignore debug ea 
+        if(!isDebugEa(engineActionNumber[s2])){                        
+            keyDownBindings[s1] = engineActionNumber[s2];
+            keyForEngineAction[engineActionNumber[s2]] = s1;
+            if(engineActionUpNumber.find(s2) != engineActionUpNumber.end()){                                      
+                keyUpBindings[s1] = engineActionUpNumber[s2];
+            }
         }
     }        
 }  
@@ -564,36 +584,39 @@ void UserConfiguration::writeFile(ofstream *fileOut, char *text){
 // returns the action to do for this event
 int UserConfiguration::getEngineAction(SDL_Event *event){    
     string s;    
-    int i, j;         
+    int i, j, res;         
     
     s.clear();
+    res = -1;
     if(event->type == SDL_KEYDOWN){                
         s = SDL_GetKeyName(event->key.keysym.sym);        
         s = replaceSpaces(s);         
         if(keyDownBindings.find(s) != keyDownBindings.end()){             
-            return keyDownBindings[s];               
+            res = keyDownBindings[s];               
 				}
     }
     else if(event->type == SDL_KEYUP){
         s = SDL_GetKeyName(event->key.keysym.sym);
         s = replaceSpaces(s);   
         if(keyUpBindings.find(s) != keyUpBindings.end()){ 
-            return keyUpBindings[s]; 
+            res = keyUpBindings[s]; 
 				}
     }
     else if(event->type == SDL_MOUSEBUTTONDOWN){
         if(mouseDownBindings.find(event->button.button) != mouseDownBindings.end()){
-            return mouseDownBindings[event->button.button];            
+            res = mouseDownBindings[event->button.button];            
         }        
     }
     else if(event->type == SDL_MOUSEBUTTONUP){
         if(mouseUpBindings.find(event->button.button) != mouseUpBindings.end()){
-            return mouseUpBindings[event->button.button];            
+            res = mouseUpBindings[event->button.button];            
         }        
     }
     
-    // Should never reach this code
-    return -1;
+    if(DEBUG_USER_CONFIG){
+        cout << "engine action returned : " << res << endl;
+    }        
+    return res;
     
     
  /* case SDL_MOUSEBUTTONUP:
@@ -639,12 +662,21 @@ const char * UserConfiguration::getEngineActionKeyName(int i){
     }
 }
 
-bool UserConfiguration::getConfigurationChanged(){ 
+bool UserConfiguration::isDebugEa(int j){
+    if (j >= ENGINE_ACTION_DEBUG_IND && j <= ENGINE_ACTION_COUNT){        
+            return true;        
+    }
+    else{
+        return false;
+    }
+}
+
+/*bool UserConfiguration::getConfigurationChanged(){ 
     bool temp;
     temp = configurationChanged; 
     configurationChanged = false; 
     return temp;
-}
+}*/
    
 
 string UserConfiguration::getNextWord(const string theInput, int fromPos, int &endWord){

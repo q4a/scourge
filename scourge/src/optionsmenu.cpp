@@ -46,6 +46,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
             
     cards = new CardContainer(mainWin);
     
+    // Controls tab
     Label *label = new Label(220, 50, strdup("Key bindings"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, CONTROLS);	    
@@ -56,16 +57,28 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     cards->addWidget(changeControlButton, CONTROLS);    
     createButton (205, 440, 310, 470, "Save changes", false, saveControlButton);    		          
     saveControlButton->setVisible(false);
-    cards->addWidget(saveControlButton, CONTROLS);		      
-    
+    cards->addWidget(saveControlButton, CONTROLS);		          
     waitingLabel = new Label(35, 80, strdup(" ")); 	
     waitingLabel->setColor( 0.0f, 0.3f, 0.9f, 1 );  
     cards->addWidget(waitingLabel, CONTROLS);          
-
+    
+    // Game settings tab
+    /*gameSpeedML = new MultipleLabel(100, 80, 300, 100, "Game speed", 100);
+    gameSpeedML -> addText(strdup("Very slow"));
+    gameSpeedML -> addText(strdup("Slow"));
+    gameSpeedML -> addText(strdup("Normal"));
+    gameSpeedML -> addText(strdup("Fast"));
+    gameSpeedML -> addText(strdup("Very fast"));
+    gameSpeedML -> setText(0);
+    cards->addWidget(gameSpeedML, GAME_SETTINGS);*/
+        
+    
+    
     selectedMode = CONTROLS;
     				
 }
 
+// line i must be for engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
     string line, s1, s2, s3;
     
@@ -121,7 +134,7 @@ void OptionsMenu::setSelectedMode(){
         case AUDIO : 
             break;
         case CONTROLS :
-            if((!controlsLoaded)||(uc->getConfigurationChanged())){                
+            if(!controlsLoaded){                
                 loadControls();
                 if(!controlsLoaded){
                     controlsLoaded = true;
@@ -169,7 +182,7 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEBUTTONUP:
     break;
-  case SDL_KEYDOWN:
+  case SDL_KEYDOWN:    
     if(waitingForNewKey){
         if(event->key.keysym.sym != SDLK_ESCAPE){
             int ind;

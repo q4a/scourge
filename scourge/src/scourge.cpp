@@ -389,8 +389,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     else if(ea == SET_Z_ROT_MINUS_STOP){
         map->setZRot(0.0f);
-    }
-    
+    }    
     else if(ea == ADD_X_POS_PLUS){
         map->addXPos(10.0f);
     }
@@ -408,8 +407,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     else if(ea == ADD_Z_POS_MINUS){
         map->addZPos(-10.0f);
-    } 
-    
+    }     
     else if(ea == MINIMAP_ZOOM_IN){
         miniMap->zoomIn();
     }
@@ -431,6 +429,17 @@ bool Scourge::handleEvent(SDL_Event *event) {
     else if(ea == SET_ZOOM_OUT_STOP){
         map->setZoomOut(false);
     }
+    else if(ea == TOGGLE_MAP_CENTER){
+        bool mc;
+        mc = map->getAlwaysCenter();
+        map->setAlwaysCenter(!mc);
+    }
+    else if(ea == INCREASE_GAME_SPEED){
+        addGameSpeed(-15);        
+    }
+    else if(ea == DECREASE_GAME_SPEED){
+        addGameSpeed(15);        
+    }    
 	else if(ea == START_ROUND) {
 	  toggleRound();
 	}
@@ -1209,6 +1218,22 @@ void Scourge::setFormation(int formation) {
     crossButton->setSelected(true); break;
   }
 
+}
+
+void Scourge::addGameSpeed(int speedFactor){
+    char msg[80];
+    
+    gameSpeed +=speedFactor;
+    if(gameSpeed > 300){
+        gameSpeed = 300;
+    }
+    else{
+        if(gameSpeed < 0){
+            gameSpeed = 0;
+        }        
+    }
+    sprintf(msg, "Speed set to %d\n", gameSpeed);
+    map->addDescription(msg);
 }
 
 /**
