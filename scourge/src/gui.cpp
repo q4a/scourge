@@ -203,7 +203,9 @@ void Gui::drawGui(GUIWindow win) {
               initScroller(currentRegion);
           }
       } else {
-          if(scourge->getSDLHandler()->mouseEvent == SDL_MOUSEBUTTONDOWN) {
+          if(scourge->getSDLHandler()->mouseEvent == SDL_MOUSEBUTTONDOWN ||
+             (scourge->getSDLHandler()->mouseEvent == SDL_MOUSEMOTION && 
+              scourge->getSDLHandler()->mouseButton)) {
               selectScrollingItem(scourge->getSDLHandler()->mouseX, 
                                   scourge->getSDLHandler()->mouseY);
           }

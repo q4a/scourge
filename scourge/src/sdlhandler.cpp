@@ -369,7 +369,8 @@ void SDLHandler::mainLoop() {
         case SDL_MOUSEMOTION:
 				if(invertMouse) event.motion.y = screen->h - event.motion.y;
           mouseX = event.motion.x;
-				mouseY = event.motion.y;          
+		  mouseY = event.motion.y;          
+          mouseButton = event.button.button;
           mouseEvent = SDL_MOUSEMOTION;
           break;
       case SDL_MOUSEBUTTONUP:
