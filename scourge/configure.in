@@ -149,13 +149,13 @@ if test "x$enable_sdl" != "xno" ; then
 
 	dnl Check for SDL_net
 	AC_CHECK_LIB( SDL_net, SDLNet_Init, 
-		      have_SDL_net=yes, have_SDL_net=no )
+	      have_SDL_net=yes, have_SDL_net=no )
 
 	if test "x$have_SDL_net" = "xyes" ; then 
-	    TR_CPPFLAGS="$TR_CPPFLAGS -DHAVE_SDL_NET=1" 
-	    TR_LIBS="$TR_LIBS -lSDL_net"
+	   TR_CPPFLAGS="$TR_CPPFLAGS -DHAVE_SDL_NET=1" 
+	   TR_LIBS="$TR_LIBS -lSDL_net"
 	else
-	    echo "*** SDL_net not found.  Configuring without network support."
+	   echo "*** SDL_net not found.  Configuring without network support."
 	fi
 
 	LIBS="$saved_LIBS"

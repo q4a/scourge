@@ -73,8 +73,10 @@ class Party;
 class Projectile;
 class Mission;
 class MultiplayerDialog;
+#ifdef HAVE_SDL_NET
 class Server;
 class Client;
+#endif
 class GameStateHandler;
 
 #define IMAGES_DIR "images/"
@@ -158,8 +160,10 @@ class Scourge : public SDLEventHandler,SDLScreenView,GameStateHandler {
   Creature *targetSelectionFor;
 
   int layoutMode;
+#ifdef HAVE_SDL_NET
   Server *server;
   Client *client;
+#endif
 
 protected:
   SDLHandler *sdlHandler;
@@ -198,16 +202,6 @@ public:
   
   Scourge(int argc, char *argv[]);
   ~Scourge();
-
-  /**
-    @return the server.
-  */
-  inline Server *getServer() { return server; }
-
-  /**
-    @return the client.
-  */
-  inline Client *getClient() { return client; }
 
   /**
     @return the Board containing the available missions.
@@ -539,8 +533,19 @@ public:
   */
   void consumeGameState(int frame, char *state);
 
+#ifdef HAVE_SDL_NET
   void runClient(char *host, int port, char *userName);
   void runServer(int port);
+  /**
+    @return the server.
+  */
+  inline Server *getServer() { return server; }
+
+  /**
+    @return the client.
+  */
+  inline Client *getClient() { return client; }
+#endif
 
  protected:
   //  void fightBattle(); 

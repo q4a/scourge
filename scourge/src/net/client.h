@@ -1,3 +1,5 @@
+#ifdef HAVE_SDL_NET
+
 #ifndef CLIENT_H
 #define CLIENT_H
 
@@ -53,5 +55,7 @@ class Client {
   void closeConnection();
   int initTCPSocket();
 };
+
+#endif
 
 #endif

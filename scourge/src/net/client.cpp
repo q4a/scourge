@@ -1,3 +1,5 @@
+#ifdef HAVE_SDL_NET
+
 #include "client.h"
 
 // 0 or less is retry forever
@@ -309,4 +311,5 @@ int main(int argc, char **argv) {
   
   return(0);  
 }
+#endif
 #endif

@@ -1,3 +1,5 @@
+#ifdef HAVE_SDL_NET
+
 #include "server.h"
 
 Server::Server(int port) {
@@ -221,4 +223,5 @@ int main(int argc, char **argv) {
   
   return(0);  
 }
+#endif
 #endif
