@@ -34,8 +34,14 @@ private:
   bool inside; // was the last event inside the button?
   char *text;
   int pos, maxPos;
+  int eventType;
 
 public: 
+
+  enum {
+    EVENT_KEYPRESS=0,
+    EVENT_ACTION
+  };
 
   TextField(int x, int y, int numChars);
   ~TextField();
@@ -44,6 +50,7 @@ public:
   inline char *getText() { text[maxPos] = '\0'; return text; }
   inline void setFocus(bool b) { Widget::setFocus(b); inside = b; }
   inline void clearText() { pos = maxPos = 0; }
+  inline int getEventType() { return eventType; }
 };
 
 #endif

@@ -1,16 +1,11 @@
 #ifdef HAVE_SDL_NET
 #include "tcputil.h"
 
-char *TCPUtil::buffer = NULL;
-
 // receive a buffer from a TCP socket with error checking
 // this function handles the memory, so it can't use any [] arrays
 // returns 0 on any errors, or a valid char* on success
 char *TCPUtil::receive(TCPsocket sock, char **buf) {
   Uint32 len,result;
-  
-  // allow for a NULL buf, use a static internal one...
-  if(!buf) buf=&buffer;
   
   // free the old buffer
   if(*buf) free(*buf);
@@ -42,7 +37,6 @@ char *TCPUtil::receive(TCPsocket sock, char **buf) {
     free(*buf);
     buf=NULL;
   }
-
   // return the new buffer
   return(*buf);
 }
@@ -53,6 +47,7 @@ int TCPUtil::send(TCPsocket sock, char *buf) {
   Uint32 len,result;
   
   if(!buf || !strlen(buf)) return(1);
+
 
   // determine the length of the string
   len=strlen(buf)+1; // add one for the terminating NULL
@@ -78,7 +73,7 @@ int TCPUtil::send(TCPsocket sock, char *buf) {
       printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
     return(0);
   }
-  
+
   // return the length sent
   return(result);
 }

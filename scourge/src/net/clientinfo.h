@@ -37,7 +37,6 @@ class ClientInfo : public CommandInterpreter {
   bool threadRunning;
   SDL_Thread *thread;
   SDL_mutex *mutex;
-  SDL_cond *cond;
   queue<Message*> messageQueue;
   map<int,Uint32> lagMap;
   Commands *commands;
@@ -54,7 +53,6 @@ class ClientInfo : public CommandInterpreter {
   inline void setId(int id) { this->id = id; }
   inline char *getUsername() { return username; }
   char *describe();
-  void handleRequestAsync();
   void sendMessageAsync(char *s);
   void setLagTimer(int frame, Uint32 n);
   Uint32 updateLag(int frame);
@@ -68,9 +66,8 @@ class ClientInfo : public CommandInterpreter {
 
   // protected
   void receiveTCP();
-  void sendTCP(Message *message);
+  void sendTCP(char *message);
   inline SDL_mutex *getMutex() { return mutex; }
-  inline SDL_cond *getCond() { return cond; }
   inline TCPsocket getSocket() { return socket; }
   inline bool isThreadRunning() { return threadRunning; }
   inline queue<Message*> *getMessageQueue() { return &messageQueue; }

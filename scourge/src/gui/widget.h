@@ -104,6 +104,11 @@ class Widget {
 
 	inline void setDebug(bool d) { debug = d; }
 
+  /**
+   * Ability to distinguish between different types of events.
+   */
+  virtual inline int getEventType() { return 0; }
+
  protected:
 	 bool debug;
 };

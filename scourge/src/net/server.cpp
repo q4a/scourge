@@ -2,6 +2,8 @@
 
 #include "server.h"
 
+#define DEBUG_SERVER 0
+
 Server::Server(int port) {
   this->port = port;
   this->clientCount = 0;
@@ -12,7 +14,7 @@ Server::Server(int port) {
   broadcast = new Broadcast(port);
   
   // create a socket set
-  set = SDLNet_AllocSocketSet(5);
+  set = SDLNet_AllocSocketSet(1);
   if(!set) {
     cerr << "*** error: SDLNet_AllocSocketSet: " << SDLNet_GetError() << endl;
     exit(1); //most of the time this is a major error, but do what you want.
@@ -59,10 +61,26 @@ void Server::initTCPSocket() {
 }
 
 Server::~Server() {
+  stopThread = true;
+
+  // stop the client threads
+  for(int i = 0; i < clientCount; i++) {
+    if(clients[i]) {
+      delete clients[i];
+    }
+  }
+
+  // stop the server thread
+  cerr << "* Stopping server thread." << endl;
+  int status;
+  SDL_WaitThread(thread, &status);
+
+  cerr << "* Closing server socket." << endl;
   SDLNet_FreeSocketSet(set);
   // close the socket
   SDLNet_TCP_Close(tcpSocket);
   delete broadcast;
+  cerr << "* Server stopped." << endl;
 }
 
 void Server::initTCPConnection(TCPsocket socket) {
@@ -74,11 +92,11 @@ void Server::initTCPConnection(TCPsocket socket) {
     // via the Commands class.
 
     // add a new client if space is available
-    if(strstr(text, "LOGIN,") == text && clientCount < MAX_CLIENT_COUNT) {
+    if(!stopThread && 
+       strstr(text, "LOGIN,") == text && clientCount < MAX_CLIENT_COUNT) {
       char *username = strdup(text + 6);
       int id = clientCount;
       clients[clientCount] = new ClientInfo(this, socket, id, username);
-      SDLNet_TCP_AddSocket(set, socket);
       cerr << "* New user logged in: id=" << clients[clientCount]->describe() << endl;
       clientCount++;
     } else {
@@ -96,7 +114,6 @@ void Server::initTCPConnection(TCPsocket socket) {
 void Server::removeDeadClients() {
   for(int i = 0; i < clientCount; i++) {
     if(clients[i]->dead) {
-      SDLNet_TCP_DelSocket(set, clients[i]->socket);
       cerr << "* Removing dead client: id=" << clients[i]->describe() << endl;
       for(int t = i; t < clientCount - 1; t++) {
         clients[t] = clients[t + 1];
@@ -125,6 +142,11 @@ void Server::sendGameState() {
     if(!clients[i]->dead)
       clients[i]->setLagTimer(currentFrame, now);
   }
+
+#if DEBUG_SERVER
+    cerr << "Net: Server: sending game state. frame=" << currentFrame << endl;
+#endif
+
   char message[1024];
   sprintf(message, "STATE,%d,%s", currentFrame, gsh->getGameState());
   sendToAllTCP(message);
@@ -136,37 +158,32 @@ int serverLoop(void *data) {
   Uint32 lastTick = 0;
   while(!server->getStopThread()) {
 
+    cerr << "$";
+
     // wait for a real long time, if there's no activity
+#if DEBUG_SERVER
+    cerr << "Net: Server: waiting for socket activity." << endl;
+#endif
     int numReady = SDLNet_CheckSockets(server->getSocketSet(), Server::SERVER_LOOP_DELAY);
+    if(server->getStopThread()) break;
     if(numReady == -1) {
       cerr << "*** error: SDLNet_CheckSockets: " << SDLNet_GetError() << endl;
       break;
     }
-    // 49+ days passed and nothing to do.
     if(numReady) {
 
       // activity on the tcp server socket
       if(numReady > 0 && SDLNet_SocketReady(server->getTCPSocket())) {
         numReady--;
+#if DEBUG_SERVER
+        cerr << "Net: Server: activity on server socket." << endl;
+#endif
         
         // accept a client connection
         TCPsocket socket = SDLNet_TCP_Accept(server->getTCPSocket());
         if(socket) {
+          if(server->getStopThread()) break;
           server->initTCPConnection(socket);
-        }
-      }
-      
-      //    // activity on the udp server socket
-      //    // UDP socket is part of "set"
-      //    if(numReady > 0 && SDLNet_SocketReady(server->getUDPSocket())) {
-      //      numReady--;
-      //      server->handleUDPConnection();
-      //    }
-      
-      // check client tcp sockets
-      for(int i = 0; numReady > 0 && i < server->getClientCount(); i++) {
-        if(!server->getClient(i)->dead) {
-          server->getClient(i)->handleRequestAsync();
         }
       }
     }
@@ -175,13 +192,16 @@ int serverLoop(void *data) {
     Uint32 t = SDL_GetTicks();
     if(t - lastTick >= Server::SERVER_LOOP_DELAY) {
       lastTick = t;
+      if(server->getStopThread()) break;
       server->sendGameState();
     }
 
     // remove dead clients
+    if(server->getStopThread()) break;
     server->removeDeadClients();
 
     // broadcast UDP signal
+    if(server->getStopThread()) break;
     server->getBroadcast()->broadcast();
   }
 

@@ -6,8 +6,6 @@
 #include "../constants.h"
 
 class TCPUtil {
- private:
-  static char *buffer;
 
  public:
   // receive a buffer from a TCP socket with error checking

@@ -425,14 +425,11 @@ void SDLHandler::mainLoop() {
         resizeWindow( event.resize.w, event.resize.h );
         break;
       case SDL_KEYUP:
-      switch(event.key.keysym.sym) {
-      case SDLK_F1:
-      SDL_WM_ToggleFullScreen(screen);
-      break;
-      default:
-      break;
+      // only process F1 once (on keyup)
+      if(event.key.keysym.sym == SDLK_F1) {
+        SDL_WM_ToggleFullScreen(screen);
+        break;
       }
-      // no break here!!!
       case SDL_KEYDOWN:
       applyMouseOffset(mouseX, mouseY, &mx, &my);
       widget = Window::delegateEvent( &event, mx, my );
