@@ -314,7 +314,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  creature->setAction(Constants::ACTION_CAST_SPELL, 
 						  NULL,
 						  spell);
-	  if(!creature->getTargetCreature()) scourge->setTargetSelectionFor(creature);
+	  if(!creature->getTargetCreature() ||
+		 !spell->useDefaultTarget()) scourge->setTargetSelectionFor(creature);
 	  mainWin->setVisible(false);
 
 	  //scourge->getParty()->getParty(selected)->castSpell(spell);
