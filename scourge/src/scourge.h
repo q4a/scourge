@@ -275,6 +275,8 @@ public:
   // move a creature
   void moveMonster(Creature *monster);
 
+  void decideMonsterAction(Creature *monster);
+
   void refreshContainerGui(Item *container);
 
 };

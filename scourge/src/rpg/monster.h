@@ -22,6 +22,7 @@
 #include <map>
 #include "../constants.h"
 #include "rpgitem.h"
+#include "spell.h"
 
 /**
   *@author Gabor Torok
@@ -48,6 +49,7 @@ class Monster  {
   int d;
   int h;
   vector<RpgItem*> items;
+  vector<Spell*> spells;
 
   static map<int, vector<Monster*>* > monsters;
   static map<string, Monster*> monstersByName;
@@ -73,6 +75,9 @@ public:
   inline int getStartingItemCount() { return items.size(); }
   inline RpgItem *getStartingItem(int index) { return items[index]; }
   inline void addItem(RpgItem *item) { items.push_back(item); }
+  inline int getStartingSpellCount() { return spells.size(); }
+  inline Spell *getStartingSpell(int index) { return spells[index]; }
+  inline void addSpell(Spell *spell) { spells.push_back(spell); }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);

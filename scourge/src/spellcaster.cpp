@@ -198,7 +198,7 @@ void SpellCaster::setStateMod(int mod) {
                                                                        targets);
   for(int i = 0; i < targetCount; i++) {
     Creature *creature = targets[i];
-    if(!creature->isMonster()) continue;
+    if(battle->getCreature()->isMonster() == creature->isMonster()) continue;
     creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));  
     // FIXME: should extend expiration event somehow if condition already exists
     if(creature->getStateMod(mod)) continue;    

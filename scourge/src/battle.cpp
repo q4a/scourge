@@ -90,7 +90,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
         // if someone already killed this target, skip it
         battle[i]->creature->cancelTarget();
         if(battle[i]->creature->isMonster()) {
-          battle[i]->creature->setMotion(Constants::MOTION_LOITER);     
+          //battle[i]->creature->setMotion(Constants::MOTION_LOITER);     
           action = LOITER;
         } else {
           // if party member re-join the battle
@@ -229,7 +229,7 @@ void Battle::fightTurn() {
   }
 
   // the attacked target may get upset
-  creature->makeTargetRetaliate();
+  creature->decideMonsterAction();
 
   // handle the action
   if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
@@ -277,31 +277,31 @@ void Battle::castSpell() {
 
   // spell succeeds?
   // FIXME: use stats like IQ here to modify spell success rate...
+  SpellCaster *sc = new SpellCaster(this, creature->getActionSpell(), false);
   if(!projectileHit && 
      (int)(100.0f * rand() / RAND_MAX) < creature->getActionSpell()->getFailureRate()) {
-    SpellCaster *sc = new SpellCaster(this, creature->getActionSpell(), false);
     sc->spellFailed();
-    delete sc;
   } else {
 
     // get exp for casting the spell
-    bool b = creature->getStateMod(Constants::leveled);
-    if(!creature->getStateMod(Constants::dead)) {
-      int n = creature->addExperience(creature->getActionSpell()->getExp());
-      if(n > 0) {
-        sprintf(message, "%s gains %d experience points.", creature->getName(), n);
-        scourge->getMap()->addDescription(message);
-        if(!b && creature->getStateMod(Constants::leveled)) {
-          sprintf(message, "%s gains a level!", creature->getName());
-          scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+    if(!creature->isMonster()) {
+      bool b = creature->getStateMod(Constants::leveled);
+      if(!creature->getStateMod(Constants::dead)) {
+        int n = creature->addExperience(creature->getActionSpell()->getExp());
+        if(n > 0) {
+          sprintf(message, "%s gains %d experience points.", creature->getName(), n);
+          scourge->getMap()->addDescription(message);
+          if(!b && creature->getStateMod(Constants::leveled)) {
+            sprintf(message, "%s gains a level!", creature->getName());
+            scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+          }
         }
       }
     }
 
-    SpellCaster *sc = new SpellCaster(this, creature->getActionSpell(), false);
     sc->spellSucceeded();
-    delete sc;
   }
+  delete sc;
 
   // cancel action
   creature->cancelTarget();
