@@ -279,21 +279,6 @@ MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div
                                 GLuint texture[], char *name, int descriptionGroup,
                                 Uint32 color, Uint8 shapePalIndex) {
 
-  /**
-   * Notes on calculating min/max points and normalizing model:
-   * 1. if min/max is calculated per animation (but stored only for MD2_STAND) and each animation is
-   * normalized with this "local" value, the model will sink into the floor or jump up. This is b/c
-   * the MD2_STAND min/max values are used to draw it.
-   * 2. if min/max is calculated for MD2_STAND and all animations are normalized with these values
-   * the models will perform some animations slightly outside their circles but will remain on the 
-   * floor. (This is what is currently used.)
-   * 
-   * The ideal solution is to do 1. with a min values stored per animation. Then each animation can
-   * be drawn correctly.
-   * 
-   * I hope this note will still make sense in a few weeks...
-   */
-
   vect3d min;
   vect3d max;
   int width, depth, height;
@@ -328,6 +313,25 @@ MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div
   // normalize and center points
   map<int, int> seenFrames;
   for(int r = 0; r < MD2_CREATURE_ACTION_COUNT; r++) {
+
+    /*
+    // An attempt to keep creatures inside their cirlces.
+    // not sure it does anything...
+    // (Be sure to not set min/max for z.)
+    // local min/max for x,y (not z!)
+    vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[r].startFrame ];
+    min[0] = min[2] = 100000.0f; // BAD!!
+    max[0] = max[2] = 0.0f;
+    for(int i = 0; i < g_3DModel->numVertices; i++) {
+      if(point[i][0] < min[0]) min[0] = point[i][0];
+      if(point[i][2] < min[2]) min[2] = point[i][2];
+      if(point[i][0] >= max[0]) max[0] = point[i][0];
+      if(point[i][2] >= max[2]) max[2] = point[i][2];
+    }  
+    max[0] -= min[0];
+    max[2] -= min[2];
+    */
+    
     for(int a = g_3DModel->pAnimations[r].startFrame; a < g_3DModel->pAnimations[r].endFrame; a++) {
       if(seenFrames.find(a) == seenFrames.end()) {
         point = &g_3DModel->vertices[ g_3DModel->numVertices * a ];

@@ -239,7 +239,7 @@ class Creature {
 	if(index < inventory_count) inventory[index] = item; 
   }
   // returns the index of the last item added
-  bool addInventory(Item *item);
+  bool addInventory(Item *item, bool force=false);
   Item *removeInventory(int index);  
   int findInInventory(Item *item);
   // returns true if ate/drank item completely and false else

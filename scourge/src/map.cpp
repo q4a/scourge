@@ -1473,7 +1473,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 				removeItem(pos[x + xp][y - yp][z + zp]->x,
 						   pos[x + xp][y - yp][z + zp]->y,
 						   pos[x + xp][y - yp][z + zp]->z);
-				creature->addInventory(item);
+				creature->addInventory(item, true);
 				sprintf(message, "%s picks up %s.", 
 						creature->getName(), 
 						item->getItemName());

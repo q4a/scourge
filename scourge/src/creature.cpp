@@ -273,11 +273,10 @@ bool Creature::move(Uint16 dir, Map *map) {
   Location *loc = map->getBlockingLocation(getShape(), nx, ny, nz);
   Item *item = NULL;
   if(loc) item = loc->item;
-  if(!loc || (item && !item->isBlocking())) {
+  if(!loc || (item && !item->isBlocking() && addInventory(item))) {
 
     // pick up item
     if(item) {
-      addInventory(item);
       char message[100];
       sprintf(message, "%s picks up %s.", 
               getName(), 
@@ -600,8 +599,9 @@ void Creature::setNextDontMove(Creature *next, int index) {
   this->index = index;
 }
 
-bool Creature::addInventory(Item *item) { 
-  if(inventory_count < MAX_INVENTORY_SIZE) {    
+bool Creature::addInventory(Item *item, bool force) { 
+  if(inventory_count < MAX_INVENTORY_SIZE &&
+     (force || !item->isBlocking() || getShape()->fitsInside(item->getShape()))) {
     inventory[inventory_count++] = item;
     inventoryWeight += item->getRpgItem()->getWeight(); 
 
@@ -1199,7 +1199,7 @@ void Creature::monsterInit() {
   }
   // equip starting inventory
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {
-    addInventory(session->newItem(getMonster()->getStartingItem(i)));
+    addInventory(session->newItem(getMonster()->getStartingItem(i)), true);
     equipInventory(inventory_count - 1);
   }
   // add spells
