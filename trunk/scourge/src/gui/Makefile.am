@@ -26,4 +26,6 @@ libScourgeGui_a_SOURCES = \
 	scrollinglist.cpp\
 	scrollinglist.h\
 	window.cpp\
-	window.h
+	window.h\
+	progress.cpp\
+	progress.h

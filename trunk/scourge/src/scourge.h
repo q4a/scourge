@@ -50,6 +50,7 @@
 #include "net/client.h"
 #include "net/gamestatehandler.h"
 #include "netplay.h"
+#include "gui/progress.h"
 
 using namespace std;
 
@@ -80,6 +81,7 @@ class Client;
 #endif
 class GameStateHandler;
 class NetPlay;
+class Progress;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"

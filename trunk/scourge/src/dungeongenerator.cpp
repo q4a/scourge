@@ -17,6 +17,8 @@
 
 #include "dungeongenerator.h"
 
+const char DungeonGenerator::MESSAGE[] = "Assembling Dungeon Level";
+
 /*
 width - max 31
 height - max 31
@@ -126,7 +128,6 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown,
   this->stairsUp = stairsUp;
   this->stairsDown = stairsDown;
   this->mission = mission;
-  this->status = 0;
 
   initByLevel();  
   
@@ -148,9 +149,13 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown,
   }
   visitedCount = 0;
   visited = (int*)new int[notVisitedCount];
+
+  progress = new Progress(scourge, 12);
 }
 
 DungeonGenerator::~DungeonGenerator(){
+  delete progress;
+
   for(int i = 0; i < width; i++) {
     free(nodes[i]);
   }
@@ -725,56 +730,6 @@ void DungeonGenerator::constructMaze(int locationIndex) {
   monsters = location[locationIndex].monsters;
 }
 
-void DungeonGenerator::updateStatus() {
-  glLoadIdentity();
-  //  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-  //  glClearColor( 0, 0, 0, 0 );
-
-  glDisable( GL_DEPTH_TEST );
-  glDepthMask(GL_FALSE);
-  glDisable( GL_BLEND );
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_TEXTURE_2D );
-
-  int MAX_STATUS = 12;
-  int w = 10;  
-  int h = 20;
-
-  glColor4f( 0.25f, 0.20f, 0.15f, 0.15f );
-  glBegin( GL_QUADS );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( 0, 35 + h + 10, 0);
-  glVertex3f( MAX_STATUS * 2 * w + 20, 35 + h + 10, 0 );
-  glVertex3f( MAX_STATUS * 2 * w + 20, 0, 0 );
-  glEnd();
-
-  glColor4f(1, 1, 1, 1);
-  scourge->getSDLHandler()->texPrint(20, 25, "Assembling Dungeon Level...");
-  for(int i = 0; i < MAX_STATUS; i++) {
-	if(i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
-	else glColor4f(0.5f, 0.5f, 0.5f, 1);
-	glPushMatrix();
-	glLoadIdentity();
-	glTranslatef( i * 2 * w + 20, 35, 0 );
-	glBegin( GL_QUADS );
-	glVertex3f( 0, 0, 0 );
-	glVertex3f( 0, h, 0 );
-	glVertex3f( w, h, 0 );
-	glVertex3f( w, 0, 0 );
-	glEnd();
-	glPopMatrix();
-  }
-
-  /* Draw it to the screen */
-  SDL_GL_SwapBuffers( );
-  status++;
-  //sleep(1);
-
-  glEnable( GL_DEPTH_TEST );
-  glDepthMask(GL_TRUE);
-
-}
-
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
 
   scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
@@ -799,7 +754,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
   } else {
 	constructMaze(locationIndex);
   }
-  updateStatus();
+  progress->updateStatus(MESSAGE);
     
   // draw the nodes on the map
   drawNodesOnMap(map, shapePal, preGenerated, locationIndex);
@@ -814,7 +769,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 	  }
 	}
   }
-  updateStatus();
+  progress->updateStatus(MESSAGE);
 }
 
 void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
@@ -987,7 +942,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	  }
 	}
   }
-  updateStatus();
+  progress->updateStatus(MESSAGE);
 	 
   // Remove 'columns' from rooms
   for(int x = 0; x < MAP_WIDTH - unitSide; x++) {
@@ -1010,7 +965,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	  }
 	}
   }
-  updateStatus();
+  progress->updateStatus(MESSAGE);
 
 	int x, y;
 	RpgItem *rpgItem;
@@ -1064,7 +1019,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			}
 		}
 	}
-	updateStatus();
+	progress->updateStatus(MESSAGE);
   
 	// Collapse the free space and put objects in the available spots
 	ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
@@ -1088,7 +1043,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			}
 		}
 	} 
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 
 	// add stairs for multi-level missions
 	if(!preGenerated) {
@@ -1125,7 +1080,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		}
 	  }
 	}
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 
 	// add pre-generated shapes first
 	if(preGenerated) {
@@ -1145,7 +1100,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			}
 		}
 	}
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 
 	if(!preGenerated) {
 		// add the items
@@ -1202,7 +1157,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			addItem(map, NULL, item, NULL, x, y);
 		}
 	}
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 
   // add monsters in every room
 	if(monsters) {
@@ -1253,12 +1208,12 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			creature->moveTo(x, y, 0);
 		}
 	}
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 
 	// add tables, chairs, etc.
 	addItemsInRoom(RpgItem::getItemByName("Table"), 1, preGenerated, locationIndex);
 	addItemsInRoom(RpgItem::getItemByName("Chair"), 2, preGenerated, locationIndex);	
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 
 	// add a teleporters
 	if(!preGenerated) {
@@ -1280,7 +1235,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	  }
 	  if(teleportersAdded == 0) exit(0);
 	}
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 		
 	// add the party in the first room
 	// FIXME: what happens if the party doesn't fit in the room?
@@ -1306,7 +1261,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			scourge->getParty()->getParty(t)->setSelXY(-1,-1);
 		}
 	}
-	updateStatus();
+	progress->updateStatus(MESSAGE);
 	//}
 	
   // free empty space container
