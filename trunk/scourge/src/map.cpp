@@ -1036,11 +1036,11 @@ void Map::configureLightMap() {
 	}
   }
 
-  int chunkX = (scourge->getParty(0)->getX() + 
-				(scourge->getParty(0)->getShape()->getWidth() / 2) - 
+  int chunkX = (scourge->getPlayer()->getX() + 
+				(scourge->getPlayer()->getShape()->getWidth() / 2) - 
 				MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (scourge->getParty(0)->getY() - 
-				(scourge->getParty(0)->getShape()->getDepth() / 2) - 
+  int chunkY = (scourge->getPlayer()->getY() - 
+				(scourge->getPlayer()->getShape()->getDepth() / 2) - 
 				MAP_OFFSET) / MAP_UNIT;
 
   traceLight(chunkX, chunkY);

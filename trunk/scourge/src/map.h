@@ -210,7 +210,7 @@ class Map {
 
   inline void updateLightMap() { lightMapChanged = true; }
 
-  inline void refresh() { mapChanged = true; }
+  inline void refresh() { mapChanged = lightMapChanged = true; }
   
  protected:
   DrawLater later[100], stencil[1000], other[1000];

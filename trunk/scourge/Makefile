@@ -65,6 +65,7 @@ scourge_SRC_OBJS = \
 constants.o \
 rpgitem.o \
 character.o \
+pc.o \
 creature.o \
 debugshape.o \
 dungeongenerator.o \
@@ -93,6 +94,7 @@ scourge_SRC_OBJS_QUOTED = \
 "constants.o" \
 "rpgitem.o" \
 "character.o" \
+"pc.o" \
 "creature.o" \
 "debugshape.o" \
 "dungeongenerator.o" \
@@ -164,6 +166,7 @@ cmake.depends: $(CMAKE_MAKEFILE_SOURCES)
 cmake.check_depends: /home/gabor/sourceforge/scourge/src/constants.cpp
 cmake.check_depends: /home/gabor/sourceforge/scourge/src/rpg/rpgitem.cpp
 cmake.check_depends: /home/gabor/sourceforge/scourge/src/rpg/character.cpp
+cmake.check_depends: /home/gabor/sourceforge/scourge/src/rpg/pc.cpp
 cmake.check_depends: /home/gabor/sourceforge/scourge/src/creature.cpp
 cmake.check_depends: /home/gabor/sourceforge/scourge/src/debugshape.cpp
 cmake.check_depends: /home/gabor/sourceforge/scourge/src/dungeongenerator.cpp
@@ -269,6 +272,14 @@ rpgitem.o: /home/gabor/sourceforge/scourge/src/rpg/rpgitem.cpp
 character.o: /home/gabor/sourceforge/scourge/src/rpg/character.cpp
 	@echo "Building object file character.o..."
 	c++ -o character.o  -Wno-deprecated $(INCLUDE_FLAGS)  -c /home/gabor/sourceforge/scourge/src/rpg/character.cpp
+
+#---------------------------------------------------------
+# object file
+#
+
+pc.o: /home/gabor/sourceforge/scourge/src/rpg/pc.cpp
+	@echo "Building object file pc.o..."
+	c++ -o pc.o  -Wno-deprecated $(INCLUDE_FLAGS)  -c /home/gabor/sourceforge/scourge/src/rpg/pc.cpp
 
 #---------------------------------------------------------
 # object file
