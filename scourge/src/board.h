@@ -24,8 +24,10 @@
 
 using namespace std;
 
-class Item;
+class RpgItem;
+class Monster;
 class Creature;
+class Item;
 class Session;
 
 /**
@@ -44,23 +46,33 @@ private:
   char description[2000];
   char success[2000];
   char failure[2000];
-  map<Item*, bool> items;
-  vector<Item*> itemList;
-  map<Creature*, bool> creatures;
-  vector<Creature*> creatureList;
+  map<RpgItem*, bool> items;
+  vector<RpgItem*> itemList;
+  map<Monster*, bool> creatures;
+  vector<Monster*> creatureList;
+  map<Item*,RpgItem*> itemInstanceMap;
+  map<Creature*,Monster*> monsterInstanceMap;
   bool completed;
 public:
   Mission( int level, int depth, char *name, char *description, char *success, char *failure );
   ~Mission();
 
-  inline void addCreature( Creature *creature ) {
-    creatures[creature] = false;
-    creatureList.push_back( creature );
+  inline void addCreature( Monster *monster ) {
+    creatures[monster] = false;
+    creatureList.push_back( monster );
   }
 
-  inline void addItem( Item *item ) {
+  inline void addItem( RpgItem *item ) {
     items[item] = false;
     itemList.push_back( item );
+  }
+
+  inline void addItemInstance( Item *item, RpgItem *rpgItem ) {
+    itemInstanceMap[ item ] = rpgItem;
+  }
+
+  inline void addCreatureInstanceMap( Creature *creature, Monster *monster ) {
+    monsterInstanceMap[ creature ] = monster;
   }
 
   inline bool isCompleted() { return completed; }
@@ -77,10 +89,10 @@ public:
   bool creatureSlain(Creature *creature);
 
   int getItemCount() { return (int)itemList.size(); }
-  Item *getItem( int index ) { return itemList[ index ]; }
+  RpgItem *getItem( int index ) { return itemList[ index ]; }
   bool getItemHandled( int index ) { return items[ itemList[ index ] ]; }
   int getCreatureCount() { return (int)creatureList.size(); }
-  Creature *getCreature( int index ) { return creatureList[ index ]; }
+  Monster *getCreature( int index ) { return creatureList[ index ]; }
   bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
  private:
   void checkMissionCompleted();
@@ -99,79 +111,9 @@ public:
 private:
   void parseText( Session *session, int level, 
                   char *text, char *parsedText,
-                  map<string, Item*> *items, 
-                  map<string, Creature*> *creatures );
+                  map<string, RpgItem*> *items, 
+                  map<string, Monster*> *creatures );
 };
-
-
-
-
-
-
-
-
-
-/*
-// mission objectives
-enum {
-  FIND_OBJECT = 0,
-  KILL_MONSTER,
-  
-  // must be last
-  OBJECTIVE_COUNT
-};
-
-#define MAX_OBJECTIVE_PARAM_COUNT 10
-typedef struct _MissionObjective {
-  int index;
-  char name[80];
-  int paramCount;
-  char param[MAX_OBJECTIVE_PARAM_COUNT][80];
-  int itemCount;
-  RpgItem *item[MAX_OBJECTIVE_PARAM_COUNT];
-  bool itemHandled[MAX_OBJECTIVE_PARAM_COUNT];
-  int monsterCount;  
-  Monster *monster[MAX_OBJECTIVE_PARAM_COUNT];
-  bool monsterHandled[MAX_OBJECTIVE_PARAM_COUNT];
-} MissionObjective;
-
-class Mission {
- private:
-  char name[80]; // name of mission
-  int level; // what level dungeon
-  int dungeonStoryCount; // how many stories
-  bool completed;
-  char story[2000]; // the background story of the level
-  MissionObjective *objective;
-
- public:
-  Mission(char *name, int level, int dungeonStoryCount);
-  virtual ~Mission();
-
-  void reset();
-
-  inline bool isCompleted() { return completed; }
-  inline char *getName() { return name; }
-  inline char *getStory() { return story; }
-  inline int getLevel() { return level; }
-  inline int getDungeonStoryCount() { return dungeonStoryCount; }
-  inline MissionObjective *getObjective() { return objective; }
-  inline void addToStory(char *s) { if(strlen(story)) strcat(story, " "); strcat(story, s); }  
-  void setObjective(MissionObjective *o) { objective = o; }
-
-  // these return true if the mission has been completed
-  bool itemFound(RpgItem *item);
-  bool monsterSlain(Monster *monster);
- private:
-  void checkMissionCompleted();
-};
-*/
-
-
-
-
-
-
 
 
 

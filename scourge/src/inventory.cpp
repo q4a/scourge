@@ -611,7 +611,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       scourge->getSession()->getCurrentMission()->getCreatureCount();   
       for(int t = 0; t < scourge->getSession()->getCurrentMission()->getItemCount(); t++) {
         sprintf(objectiveText[t], "Find %s. %s", 
-                scourge->getSession()->getCurrentMission()->getItem(t)->getRpgItem()->getName(),
+                scourge->getSession()->getCurrentMission()->getItem(t)->getName(),
                 (scourge->getSession()->getCurrentMission()->getItemHandled(t) ? 
                  "(completed)" : "(not yet found)"));
         if(scourge->getSession()->getCurrentMission()->getItemHandled(t)) {
@@ -627,7 +627,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       int start = scourge->getSession()->getCurrentMission()->getItemCount();
       for(int t = 0; t < scourge->getSession()->getCurrentMission()->getCreatureCount(); t++) {
         sprintf(objectiveText[start + t], "Vanquish %s. %s", 
-                scourge->getSession()->getCurrentMission()->getCreature(t)->getMonster()->getType(),
+                scourge->getSession()->getCurrentMission()->getCreature(t)->getType(),
                 (scourge->getSession()->getCurrentMission()->getCreatureHandled(t) ? 
                  "(completed)" : "(not yet done)"));
         if(scourge->getSession()->getCurrentMission()->getCreatureHandled(t)) {
