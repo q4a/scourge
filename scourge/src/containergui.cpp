@@ -22,9 +22,15 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->container = container;
 
   win = new Window( scourge->getSDLHandler(),
-						x, y, 320, 300, 
-						container->getRpgItem()->getName(), 
-						scourge->getShapePalette()->getGuiTexture() );
+					x, y, 320, 300, 
+					container->getRpgItem()->getName(), 
+					scourge->getShapePalette()->getGuiWoodTexture(), 
+					true, Window::SIMPLE_WINDOW );
+  win->setBackgroundTileHeight(96);
+  win->setBorderColor( 0.5f, 0.2f, 0.1f );
+  win->setColor( 0.8f, 0.8f, 0.7f, 1 );
+  win->setBackground( 0.65, 0.30f, 0.20f, 0.15f );
+  win->setSelectionColor(  0.25f, 0.35f, 0.6f );
   openButton = new Button( 5, 5, 105, 35, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
 

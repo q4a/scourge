@@ -26,12 +26,15 @@ Widget::Widget(int x, int y, int w, int h) {
   this->y = y;
   this->w = w;
   this->h = h;
-  red = green = blue = alpha = 0;
+  setColor( 0, 0, 0, 0 );
   setBackground( 1, 0.75f, 0.45f );
-  setSelectionColor( 1, 0.5f, 0.45f );
+  //  setSelectionColor( 1, 0.5f, 0.45f );
+  setSelectionColor( 0.75f, 0.75f, 0.8f );
+  setBorderColor( 0.8f, 0.5f, 0.2f );
   visible = true;
-	debug = false;
+  debug = false;
 }
+
 Widget::~Widget() {
 }
 

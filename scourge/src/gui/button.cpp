@@ -44,12 +44,19 @@ void Button::drawWidget(Widget *parent) {
   } else {
 	applyBackgroundColor(true);
   }
+  if(isTranslucent()) {
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	glEnable( GL_BLEND );
+  }
   glBegin(GL_QUADS);
   glVertex2d(0, 0);
   glVertex2d(0, y2 - y);
   glVertex2d(x2 - x, y2 - y);
   glVertex2d(x2 - x, 0);
   glEnd();
+  if(isTranslucent()) {
+	glDisable( GL_BLEND );
+  }
 
   if(inside) {
 	GLint t = SDL_GetTicks();

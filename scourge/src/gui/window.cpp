@@ -30,11 +30,11 @@ Window *Window::window[MAX_WINDOW];
 Window *Window::message_dialog = NULL;
 Label *Window::message_label = NULL;
 Button *Window::message_button = NULL;
-  
+
 Window::Window(SDLHandler *sdlHandler, 
 			   int x, int y, int w, int h, 
 			   char *title, GLuint texture,
-			   bool hasCloseButton) :
+			   bool hasCloseButton, int type) :
 Widget(x, y, w, h) {
   this->sdlHandler = sdlHandler;
   this->title = title;
@@ -44,9 +44,14 @@ Widget(x, y, w, h) {
   this->widgetCount = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
-	if(hasCloseButton) this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6);
-	else closeButton = NULL;
+  if(hasCloseButton) {
+	this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6);
+  }
+  else closeButton = NULL;
   openHeight = 0;
+  this->type = type;
+  setBackgroundTileWidth(TILE_W);
+  setBackgroundTileHeight(TILE_H);
   addWindow(this);
 }
 
@@ -190,6 +195,11 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 void Window::addWidget(Widget *widget) {
   if(widgetCount < MAX_WIDGET){
     this->widget[widgetCount++] = widget;
+	// apply the window's color scheme
+	widget->setColor( getColor() );
+	widget->setBackground( getBackgroundColor() );
+	widget->setSelectionColor( getSelectionColor() );
+	widget->setBorderColor( getBorderColor() );
   }
   else{
     cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
@@ -228,42 +238,70 @@ void Window::drawWidget(Widget *parent) {
   glTranslated(x, y, z);
   if(texture)
 	glBindTexture( GL_TEXTURE_2D, texture );
-  glBegin (GL_QUADS);
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, topY);
-  glTexCoord2f (0.0f, TOP_HEIGHT/(float)TILE_H);
-  glVertex2i (0, topY + TOP_HEIGHT);
-  glTexCoord2f (w/(float)TILE_W, TOP_HEIGHT/(float)TILE_H);
-  glVertex2i (w, topY + TOP_HEIGHT);
-  glTexCoord2f (w/(float)TILE_W, 0.0f);      
-  glVertex2i (w, topY);
-  glEnd ();
+  
+  if(type == BASIC_WINDOW) {
+	glBegin (GL_QUADS);
+	glTexCoord2f (0.0f, 0.0f);
+	glVertex2i (0, topY);
+	glTexCoord2f (0.0f, TOP_HEIGHT/(float)tileHeight);
+	glVertex2i (0, topY + TOP_HEIGHT);
+	glTexCoord2f (w/(float)tileWidth, TOP_HEIGHT/(float)tileHeight);
+	glVertex2i (w, topY + TOP_HEIGHT);
+	glTexCoord2f (w/(float)tileWidth, 0.0f);      
+	glVertex2i (w, topY);
+	glEnd ();
 
-  glBegin (GL_QUADS);
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, topY + TOP_HEIGHT + openHeight);
-  glTexCoord2f (0.0f, BOTTOM_HEIGHT/(float)TILE_H);
-  glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glTexCoord2f (w/(float)TILE_W, BOTTOM_HEIGHT/(float)TILE_H);
-  glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glTexCoord2f (w/(float)TILE_W, 0.0f);      
-  glVertex2i (w, topY + TOP_HEIGHT + openHeight);
-  glEnd ();
+	glBegin (GL_QUADS);
+	glTexCoord2f (0.0f, 0.0f);
+	glVertex2i (0, topY + TOP_HEIGHT + openHeight);
+	glTexCoord2f (0.0f, BOTTOM_HEIGHT/(float)tileHeight);
+	glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glTexCoord2f (w/(float)tileWidth, BOTTOM_HEIGHT/(float)tileHeight);
+	glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glTexCoord2f (w/(float)tileWidth, 0.0f);      
+	glVertex2i (w, topY + TOP_HEIGHT + openHeight);
+	glEnd ();
+  } else {
+	glBegin (GL_QUADS);
+	/*
+	glTexCoord2f (0.0f, 0.0f);
+	glVertex2i (0, topY);
+	glTexCoord2f (0.0f, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) /(float)tileHeight);
+	glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glTexCoord2f (w/(float)tileWidth, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight)/(float)tileHeight);
+	glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glTexCoord2f (w/(float)tileWidth, 0.0f);      
+	glVertex2i (w, topY);
+	*/
+	glTexCoord2f (0.0f, 0.0f);
+	glVertex2i (0, topY);
+	glTexCoord2f (0, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
+	glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glTexCoord2f (1, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
+	glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glTexCoord2f (1, 0);      
+	glVertex2i (w, topY);
+
+
+	glEnd ();
+  }
   glDisable( GL_TEXTURE_2D );
 
-  if(!isModal()) {
-	glEnable( GL_BLEND );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  }
-  applyBackgroundColor();
-  glBegin (GL_QUADS);
-  glVertex2i (0, topY + TOP_HEIGHT);
-  glVertex2i (0, topY + TOP_HEIGHT + openHeight);
-  glVertex2i (w, topY + TOP_HEIGHT + openHeight);
-  glVertex2i (w, topY + TOP_HEIGHT);
-  glEnd();
-  if(!isModal()) {
-	glDisable( GL_BLEND );
+  if(type == BASIC_WINDOW) {
+	if(!isModal()) {
+	  glEnable( GL_BLEND );
+	  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	}
+	applyBackgroundColor();
+	glBegin (GL_QUADS);
+	glVertex2i (0, topY + TOP_HEIGHT);
+	glVertex2i (0, topY + TOP_HEIGHT + openHeight);
+	glVertex2i (w, topY + TOP_HEIGHT + openHeight);
+	glVertex2i (w, topY + TOP_HEIGHT);
+	glEnd();
+	if(!isModal()) {
+	  glDisable( GL_BLEND );
+	}
   }
   
   // draw drop-shadow
@@ -288,7 +326,7 @@ void Window::drawWidget(Widget *parent) {
   // add a border
   applyBorderColor();
 
-  glLineWidth( isModal() ? 3.0f : 1.0f );
+  glLineWidth( isModal() ? 3.0f : 2.0f );
   glBegin(GL_LINES);
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
@@ -300,13 +338,15 @@ void Window::drawWidget(Widget *parent) {
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glEnd();
   glLineWidth( 1.0f );
-
-  glBegin(GL_LINES);
-  glVertex2i (0, topY + TOP_HEIGHT);
-  glVertex2i (w, topY + TOP_HEIGHT);
-  glVertex2i (0, topY + TOP_HEIGHT + openHeight);
-  glVertex2i (w, topY + TOP_HEIGHT + openHeight);
-  glEnd();
+	
+  if(type == BASIC_WINDOW) {
+	glBegin(GL_LINES);
+	glVertex2i (0, topY + TOP_HEIGHT);
+	glVertex2i (w, topY + TOP_HEIGHT);
+	glVertex2i (0, topY + TOP_HEIGHT + openHeight);
+	glVertex2i (w, topY + TOP_HEIGHT + openHeight);
+	glEnd();
+  }
 
   // print title
 	if(title) {
@@ -319,11 +359,18 @@ void Window::drawWidget(Widget *parent) {
 
 	// draw the close button
 	if(closeButton) {
-		glPushMatrix();	
-		//glLoadIdentity();
-		glTranslated(w - (closeButton->getWidth() + 3), topY + 3, z + 5);
-		closeButton->draw(this);
-		glPopMatrix();
+
+	  // apply the window's color scheme
+	  closeButton->setColor( getColor() );
+	  closeButton->setBackground( getBackgroundColor() );
+	  closeButton->setSelectionColor( getSelectionColor() );
+	  closeButton->setBorderColor( getBorderColor() );
+
+	  glPushMatrix();	
+	  //glLoadIdentity();
+	  glTranslated(w - (closeButton->getWidth() + 3), topY + 3, z + 5);
+	  closeButton->draw(this);
+	  glPopMatrix();
 	}
 
   // draw widgets

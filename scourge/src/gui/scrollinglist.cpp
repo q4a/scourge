@@ -59,12 +59,19 @@ void ScrollingList::setLines(int count, const char *s[], const Color *colors) {
 void ScrollingList::drawWidget(Widget *parent) {
   // draw the button
   applyBackgroundColor(true);
+  if(isTranslucent()) {
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	glEnable( GL_BLEND );
+  }
   glBegin(GL_QUADS);
   glVertex2d(0, scrollerY);
   glVertex2d(0, scrollerY + scrollerHeight);
   glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
   glVertex2d(scrollerWidth, scrollerY);
   glEnd();
+  if(isTranslucent()) {
+	glDisable( GL_BLEND );
+  }
 
   if(inside) {
     GLint t = SDL_GetTicks();
@@ -109,7 +116,9 @@ void ScrollingList::drawWidget(Widget *parent) {
     }
     
     // draw the contents
-    if(!colors) glColor4f( 0, 0, 0, 1 );
+    if(!colors) {
+	  applyColor();
+	}
     int ypos;
     for(int i = 0; i < count; i++) {
       ypos = textPos + (i + 1) * 15;
