@@ -102,17 +102,26 @@ Map::~Map(){
 	free(descriptions[i]);
 }
 
-void Map::center(Sint16 x, Sint16 y) { 
+void Map::center(Sint16 x, Sint16 y, bool force) { 
   Sint16 nx = x - MAP_VIEW_WIDTH / 2; 
   Sint16 ny = y - MAP_VIEW_DEPTH / 2; 
 
-  if(scourge->getUserConfiguration()->getAlwaysCenterMap() ||
-     abs(this->x - nx) > X_CENTER_TOLERANCE ||
-     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
+  if(scourge->getUserConfiguration()->getAlwaysCenterMap() || force) {
+	//  if(scourge->getUserConfiguration()->getAlwaysCenterMap() ||
+	//     abs(this->x - nx) > X_CENTER_TOLERANCE ||
+	//     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
     // relocate
     this->x = nx;
     this->y = ny;
   }
+}
+
+void Map::move(int dir) {
+  mapChanged = true;
+  if((dir & Constants::MOVE_DOWN) && y < MAP_DEPTH) y++;
+  if((dir & Constants::MOVE_UP) && y > 0) y--;
+  if((dir & Constants::MOVE_RIGHT) && x < MAP_WIDTH) x++;
+  if((dir & Constants::MOVE_LEFT) && x > 0) x--;  
 }
 
 /**

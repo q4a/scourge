@@ -262,6 +262,8 @@ public:
 
   void refreshContainerGui(Item *container);
 
+  void moveMap(int dir, bool set=true);
+
 };
 
 #endif
