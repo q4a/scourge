@@ -85,7 +85,7 @@ public:
   
   ~GLShape();  
 
-  void initialize();
+  virtual void initialize();
 
   inline void setSkipSide(int n) { skipside = n; }
   bool fitsInside(GLShape *smaller);  
