@@ -156,6 +156,7 @@ class RpgItem {
   inline bool isRangedWeapon() { return type == BOW; }
 
   static RpgItem *getRandomItem(int level);
+  static RpgItem *getRandomEnchantableItem(int level);
   static RpgItem *getRandomContainer();
   static RpgItem *getRandomContainerNS();
   inline static RpgItem *getItem(int index) { return items[index]; }
@@ -163,6 +164,9 @@ class RpgItem {
   static int getTypeByName(char *name);
   static void addItem(RpgItem *item);
   static RpgItem *getItemByName(char *name);
+
+protected:
+  static RpgItem *getRandomItemFromTypes(int level, int types[], int typeCount);
 };
 
 #endif

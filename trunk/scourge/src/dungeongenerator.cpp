@@ -19,6 +19,9 @@
 
 #define LOCKED_DOOR_RAND 8.0f
 
+// raise the magic item level by 1 for every 3 levels (magic item level [0,1,2,3])
+#define MAGIC_ITEM_MUL 3
+
 const char DungeonGenerator::MESSAGE[] = "Assembling Dungeon Level";
 
 /*
@@ -1151,6 +1154,31 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
           Item *scroll = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
           item->addContainedItem(scroll);
         }
+      }
+    }
+  }
+
+  // add some magic items on the bottom level
+  if(stairsUp && !stairsDown) {
+    int n = (int)(3.0f * rand() / RAND_MAX) + 1;
+    for(int i = 0; i < n; i++) {
+      int i = (int)((float)containers.size() * rand()/RAND_MAX);
+      Item *item = containers[i];
+      int cx = containerX[i];
+      int cy = containerY[i];
+      int roomIndex = getRoomIndex(cx, cy);
+      int valueBonus = 0;
+      if(roomIndex > -1) valueBonus = room[roomIndex].valueBonus;
+
+      RpgItem *containedItem = RpgItem::getRandomEnchantableItem(level + valueBonus);
+      if(containedItem) {
+        Item *magicItem = scourge->getSession()->newItem(containedItem);
+        magicItem->enchant( level / MAGIC_ITEM_MUL );
+        item->addContainedItem(magicItem);
+        
+        char tmp[255];
+        magicItem->getDetailedDescription(tmp);
+        cerr << "&&& Added magic item: " << tmp << endl;
       }
     }
   }
