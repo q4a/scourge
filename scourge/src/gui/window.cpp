@@ -41,6 +41,7 @@ Widget(x, y, w, h) {
 }
 
 Window::~Window() {
+  // the window doesn't delete its widgets in case they're used in multiple windows
   removeWindow(this);
 }
 
