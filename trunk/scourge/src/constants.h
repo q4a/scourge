@@ -299,6 +299,8 @@ public:
 	BOOKSHELF2_INDEX,
 	CHEST2_INDEX,
 	CORPSE_INDEX,
+	TABLE_INDEX,
+	CHAIR_INDEX,
 
 	// should be the last one
 	ITEM_INDEX_COUNT

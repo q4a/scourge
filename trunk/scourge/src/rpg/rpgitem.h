@@ -54,6 +54,9 @@ class RpgItem {
 	BOOKSHELF2,
 
 	CORPSE,
+
+	TABLE,
+	CHAIR,
 	
 	// must be the last ones
 	ITEM_COUNT
@@ -65,6 +68,7 @@ class RpgItem {
 	BOW,
 	CONTAINER,
 	ARMOR,
+	OTHER,
 	
 	// must be last
 	ITEM_TYPE_COUNT

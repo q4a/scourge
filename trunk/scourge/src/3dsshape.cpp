@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ 
+//#define DEBUG_3DS 
   
 #include "3dsshape.h"
 
