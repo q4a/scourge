@@ -888,8 +888,8 @@ void Scourge::createUI() {
 						GUI_WIDTH, GUI_HEIGHT, 
 						strdup(version), 
 						getShapePalette()->getGuiTexture() );
-  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
-  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
+//  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
+//  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
   inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
   mainWin->addWidget((Widget*)inventoryButton);
   optionsButton = new Button( 0, 25,  100, 50, strdup("Options") );

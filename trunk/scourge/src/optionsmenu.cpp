@@ -109,8 +109,8 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 // line i must correspond to engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
     string line, s1, s2, s3;
-    
-    int i, j;
+    //int j;
+    int i;
     char spaces[MAX_CONTROLS_LINE_SIZE];
     for(i = 0; i < MAX_CONTROLS_LINE_SIZE ; i++){
         spaces[i] = ' ';
@@ -309,7 +309,7 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
             ind = controlBindingsList->getSelectedLine();                     
             string s1 = uc->getEngineActionDescription(ind);                      
             string s2 = SDL_GetKeyName(event->key.keysym.sym);  
-            for (int i = 0; i < s2.length(); i++){
+            for (unsigned int i = 0; i < s2.length(); i++){
                 if(s2[i] == ' '){
                     s2[i] = '_';
                 }            

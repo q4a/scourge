@@ -150,7 +150,7 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
 
 
 UserConfiguration::UserConfiguration(){    
-    int i, j;
+    unsigned int i, j;
     string temp;
     
     configurationChanged = false;
@@ -224,7 +224,7 @@ void UserConfiguration::loadConfiguration(){
     char textLine[255];
     int pos, firstChar, endWord, foo;
     int lineNumber;
-    int i;
+    unsigned int i;
         
     char path[300];
     strcpy(path, rootDir);
@@ -392,7 +392,7 @@ void UserConfiguration::setKeyForEngineAction(string keyName, int ea){
 //    Bind   sdl_name_of_key    engineAction
 // OR Bind   sdl_mouse_button   engineAction
 void UserConfiguration::bind(string s1, string s2, int lineNumber){        
-    int i;  
+    //int i;  
     
     if(DEBUG_USER_CONFIG){
         cout << "line : " << lineNumber << " ";        
@@ -413,7 +413,7 @@ void UserConfiguration::bind(string s1, string s2, int lineNumber){
 }  
   
 void UserConfiguration::set(string s1, string s2, int lineNumber){
-    bool paramValue;
+    bool paramValue = false;
     
     if(DEBUG_USER_CONFIG){
         cout << "line : " << lineNumber << " ";              
@@ -590,7 +590,8 @@ void UserConfiguration::writeFile(ofstream *fileOut, char *text){
 // returns the action to do for this event
 int UserConfiguration::getEngineAction(SDL_Event *event){    
     string s;    
-    int i, j, res;         
+    //int i, j; 
+    int res;         
     
     s.clear();
     res = -1;
@@ -717,7 +718,7 @@ string UserConfiguration::getNextWord(const string theInput, int fromPos, int &e
 }
 
 string UserConfiguration::replaceSpaces(string s){
-    int i;
+    unsigned int i;
     for (i = 0; i < s.length(); i++){
         if(s[i] == ' '){
             s[i] = '_';

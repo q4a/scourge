@@ -62,7 +62,7 @@ void MultipleLabel::addText(char * s){
 }
 
 void MultipleLabel::setText(int i){
-    if(i >= 0 && i < vText.size()){
+    if(i >= 0 && i < (int)vText.size()){
         dynamicLabel->setText(vText[i]);
         currentTextInd = i;
     }   
@@ -70,7 +70,7 @@ void MultipleLabel::setText(int i){
 
 void MultipleLabel::setNextText(){
     currentTextInd++;
-    if(currentTextInd >= vText.size()){
+    if(currentTextInd >= (int)vText.size()){
         currentTextInd = 0;
     }
     setText(currentTextInd);

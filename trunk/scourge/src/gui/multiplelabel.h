@@ -48,7 +48,7 @@ class MultipleLabel : public Widget {
   void addText(char *s);
   void setText(int i);  
   void setNextText();
-  inline char * getText(int i){if(i >= 0 && i < vText.size()){return vText[i];}}
+  inline char * getText(int i){if(i >= 0 && i < (int)vText.size()){return vText[i];}}
   inline int getCurrentTextInd(){ return currentTextInd; }
   inline char * getCurrentText() { return vText[currentTextInd]; }
   inline int getNbText(){ return vText.size();}
