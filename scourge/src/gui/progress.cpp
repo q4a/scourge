@@ -33,6 +33,8 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   if(n != -1) status = n;
   if(max != -1) maxStatus = max;
 
+  glPushAttrib( GL_ENABLE_BIT );
+  
   if(updateScreen) glLoadIdentity();
 
   if(clearScreen) {
@@ -90,5 +92,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
 
   glEnable( GL_DEPTH_TEST );
   glDepthMask(GL_TRUE);
+  
+  glPopAttrib();
 }
 
