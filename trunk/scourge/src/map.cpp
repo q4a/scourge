@@ -1404,6 +1404,23 @@ Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
   return creature;
 }
 
+// FIXME: only uses x,y for now
+// return false if there is any hole in the walls
+bool Map::isWallBetweenShapes(int x1, int y1, int z1,
+							  Shape *shape1,
+							  int x2, int y2, int z2,
+							  Shape *shape2) {
+  for(int x = x1; x < x1 + shape1->getWidth(); x++) {
+	for(int y = y1; y < y1 + shape1->getDepth(); y++) {
+	  for(int xx = x2; xx < x2 + shape2->getWidth(); xx++) {
+		for(int yy = y2; yy < y2 + shape2->getDepth(); yy++) {
+		  if(!isWallBetween(x, y, z1, xx, yy, z2)) return false;
+		}
+	  }
+	}
+  }
+  return true;	  
+}
 
 // FIXME: only uses x,y for now
 bool Map::isWallBetween(int x1, int y1, int z1,

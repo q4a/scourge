@@ -227,6 +227,11 @@ class Map {
   inline Uint16 getSelZ() { return selZ; }
 
   void move(int dir);
+
+  bool isWallBetweenShapes(int x1, int y1, int z1,
+						   Shape *shape1,
+						   int x2, int y2, int z2,
+						   Shape *shape2);
   
   bool isWallBetween(int x1, int y1, int z1,
 					 int x2, int y2, int z2);
