@@ -319,14 +319,25 @@ void GLShape::createTopList( GLuint listName ) {
   glBegin( GL_QUADS );
   glNormal3f(0.0f, 0.0f, 1.0f);
 
-  glTexCoord2f( 0, 0 );
-  glVertex3fv(surfaces[TOP_SURFACE]->vertices[0]);
-  glTexCoord2f( 0, 1 );
-  glVertex3fv(surfaces[TOP_SURFACE]->vertices[1]);
-  glTexCoord2f( 1, 1 );
-  glVertex3fv(surfaces[TOP_SURFACE]->vertices[2]);
-  glTexCoord2f( 1, 0 );
-  glVertex3fv(surfaces[TOP_SURFACE]->vertices[3]);
+  if( getWidth() > getHeight() ) {
+    glTexCoord2f( 1, 0 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[0]);
+    glTexCoord2f( 1, 1 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[1]);
+    glTexCoord2f( 0, 1 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[2]);
+    glTexCoord2f( 0, 0 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[3]);
+  } else {
+    glTexCoord2f( 0, 0 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[0]);
+    glTexCoord2f( 1, 0 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[1]);
+    glTexCoord2f( 1, 1 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[2]);
+    glTexCoord2f( 0, 1 );
+    glVertex3fv(surfaces[TOP_SURFACE]->vertices[3]);
+  }
 
 /*
   glTexCoord2f( 1.0f, 1.0f );
