@@ -91,6 +91,10 @@ class Creature {
   int moveRetrycount;
   
   static const int MAX_MOVE_RETRY = 15;
+  int lastTurn;
+
+  int damageEffectCounter;
+  static const int DAMAGE_EFFECT_TIME = 1500;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -104,6 +108,9 @@ class Creature {
   Creature(Scourge *scourge, Character *character, char *name);
   Creature(Scourge *scourge, Monster *monster);
   ~Creature();
+
+  inline void setLastTurn(int n) { lastTurn = n; }
+  inline int getLastTurn() { return lastTurn; }
 
   inline bool isMonster() { return (monster ? TRUE : FALSE); }
   
@@ -128,6 +135,7 @@ class Creature {
   bool move(Uint16 dir, Map *map);
   bool follow(Map *map);
   bool moveToLocator(Map *map, bool single_step);
+  void stopMoving();
   
   inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
   inline Sint16 getX() { return x; }
@@ -148,7 +156,7 @@ class Creature {
   */
   void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
   
-  void setSelXY(int x, int y);
+  void setSelXY(int x, int y, bool force=false);
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
   
@@ -217,7 +225,9 @@ class Creature {
   // return the damage as:
   // rand(weapon + power + (skill - 50 % weapon))
   int getDamage(Item *weapon);
-  
+
+  inline void resetDamageEffect() { damageEffectCounter = DAMAGE_EFFECT_TIME; }
+  inline int getDamageEffect() { damageEffectCounter = SDL_GetTicks(); return damageEffectCounter; }
 
   // until *someone* writes a pc editor
   static Creature **createHardCodedParty(Scourge *scourge);

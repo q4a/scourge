@@ -154,8 +154,9 @@ public:
   // creature movement
   enum motion {
     MOTION_MOVE_TOWARDS=0,
-    MOTION_MOVE_AWAY,
-    MOTION_LOITER };
+    MOTION_MOVE_AWAY, // flee
+    MOTION_LOITER
+  };
 
 // The map's dimensions
 #define MAP_WIDTH 600
@@ -357,6 +358,9 @@ public:
     ALL_SHADOWS
   };
   static int shadowMode;  
+
+  // the speed when hand fighting is used instead of a weapon
+  static const int HAND_WEAPON_SPEED = 10;
 
   Constants();
   ~Constants();

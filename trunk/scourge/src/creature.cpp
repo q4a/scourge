@@ -38,6 +38,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->shape = scourge->getShapePalette()->getCreatureShape(character->getShapeIndex());
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
+  this->motion = Constants::MOTION_MOVE_TOWARDS;
   commonInit();
 }
 
@@ -49,6 +50,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->shape = scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex());
   sprintf(description, "You see %s", monster->getType());
   this->speed = monster->getSpeed();
+  this->motion = Constants::MOTION_LOITER;
   commonInit();
   monsterInit();
 }
@@ -76,6 +78,8 @@ void Creature::commonInit() {
   this->armor = 0;
   this->moveRetrycount = 0;
   this->cornerX = this->cornerY = -1;
+  this->lastTurn = 0;
+  this->damageEffectCounter = 0;
 }
 
 Creature::~Creature(){
@@ -133,11 +137,18 @@ bool Creature::follow(Map *map) {
   return true;
 }
 
-void Creature::setSelXY(int x, int y) { 
+void Creature::setSelXY(int x, int y, bool force) { 
   selX = x; 
   selY = y; 
   moveRetrycount = 0; 
   setMotion(Constants::MOTION_MOVE_TOWARDS); 
+  if(force) {
+	tx = ty = -1;
+  }
+}
+
+void Creature::stopMoving() {
+  bestPathPos = (int)bestPath.size();
 }
 
 bool Creature::moveToLocator(Map *map, bool single_step) {
@@ -149,21 +160,21 @@ bool Creature::moveToLocator(Map *map, bool single_step) {
     } else {
       moved = gotoPosition(map, selX, selY, 0, "selXY");
     }
-
+	
     if((int)bestPath.size() <=  bestPathPos && selX > -1) {
       // if we've no more steps, but we're not there yet, recalc steps
       if(!(selX == getX() && selY == getY()) &&
-	 map->shapeFits(getShape(), selX, selY, -1)) {
-	
-	// don't keep trying forever
-	moveRetrycount++;
-	if(moveRetrycount < MAX_MOVE_RETRY) {
-	  tx = ty = -1;
-	} else {
-	  //cerr << getName() << " would move but ran out of retries" << endl;
-	}
+		 map->shapeFits(getShape(), selX, selY, -1)) {
+		
+		// don't keep trying forever
+		moveRetrycount++;
+		if(moveRetrycount < MAX_MOVE_RETRY) {
+		  tx = ty = -1;
+		} else {
+		  //cerr << getName() << " would move but ran out of retries" << endl;
+		}
       } else if(this == scourge->getPlayer()) {
-	scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+		scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
       }
     }
   }
@@ -540,5 +551,9 @@ void Creature::monsterInit() {
 	if(getMonster()->getStartingItem(i)) {
 	  equipInventory(addInventory(scourge->newItem(getMonster()->getStartingItem(i))));
 	}
+  }
+  // set some skills
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
   }
 }
