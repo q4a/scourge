@@ -347,7 +347,11 @@ void Window::drawWidget(Widget *parent) {
   }
 
   // add a border
-  applyBorderColor();
+  if(isLocked()) {
+    glColor3f(0.5f, 0.3f, 0.2f);
+  } else {
+    applyBorderColor();
+  }
 
   glLineWidth( isLocked()  || isModal() ? 3.0f : 2.0f );
   glBegin(GL_LINES);

@@ -31,6 +31,13 @@ ShapePalette::ShapePalette(){
   candle = loadGLTextures("/candle.bmp");
   torchback = loadGLTextures("/torchback.bmp");
   border = loadGLTextures("/border.bmp");
+  border2 = loadGLTextures("/border2.bmp");
+  SDL_Surface *tmpSurface;
+  GLubyte *tmpImage;
+  setupAlphaBlendedBMP("/gargoyle.bmp", &tmpSurface, &tmpImage);
+  gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
+  free(tmpImage);
+  SDL_FreeSurface( tmpSurface );
 
   // load the texture info
   char errMessage[500];
@@ -526,7 +533,7 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
 }
 
 /* function to load in bitmap as a GL texture */
-GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image) {
+GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
   GLuint texture[1];
 
   /* Create The Texture */
@@ -536,8 +543,8 @@ GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image) {
   glBindTexture( GL_TEXTURE_2D, texture[0] );
 
   /* Use faster filtering here */
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glscale );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glscale );
 //  glTexImage2D( GL_TEXTURE_2D, 0, 4,
 //                surface->w, surface->h, 0, 
 //                GL_BGRA, GL_UNSIGNED_BYTE, image );

@@ -135,7 +135,7 @@ public:
 
   GLuint cloud, candle, torchback;
 
-  GLuint border;
+  GLuint border, border2, gargoyle;
        
   inline GLShape *getShape(int index) { return shapes[index]; }  
 
@@ -147,6 +147,8 @@ public:
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
   inline GLuint getPaperDollTexture() { return paper_doll_texture; }
   inline GLuint getBorderTexture() { return border; }
+  inline GLuint getBorder2Texture() { return border2; }
+  inline GLuint getGargoyleTexture() { return gargoyle; }
 
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name);
@@ -162,7 +164,7 @@ public:
 
 protected:
   GLuint loadGLTextures(char *fileName);
-  GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image);
+  GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
   void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0);
   void swap(unsigned char & a, unsigned char & b);
 };
