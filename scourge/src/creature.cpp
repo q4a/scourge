@@ -130,14 +130,16 @@ void Creature::commonInit() {
 CreatureInfo *Creature::save() {
   CreatureInfo *info = (CreatureInfo*)malloc(sizeof(CreatureInfo));
   info->version = PERSIST_VERSION;
-  strncpy(info->name, getName(), 254);
+  strncpy((char*)info->name, getName(), 254);
   info->name[254] = 0;
   if(isMonster()) {
-    info->character_index = -1;
-    Monster::getIndexOrFindByIndex(&monster, &info->monster_index);
+    info->character_index = 0xff;
+    int mi;
+    Monster::getIndexOrFindByIndex(&monster, &mi);
+    info->monster_index = (Uint32)mi;
   } else {
     info->character_index = Character::getCharacterIndexByShortName(character->getShortName());
-    info->monster_index = -1;
+    info->monster_index = 0xff;
   }
   info->hp = hp;
   info->mp = mp;

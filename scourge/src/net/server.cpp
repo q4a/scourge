@@ -125,11 +125,9 @@ void Server::removeDeadClients() {
   }
 }
 
-void Server::sendToAllTCP(char *message) {
-  //  cerr << "* Sending message: " << message << endl;
+void Server::sendToAllTCP(char *message, int length, ClientInfo *exclude) {
   for(int i = 0; i < clientCount; i++) {
-    //    cerr << "\tto: " << clients[i]->describe() << endl;
-    if(!clients[i]->dead)
+    if(!clients[i]->dead && clients[i] != exclude)
       clients[i]->sendMessageAsync(message);
   }
 }

@@ -54,7 +54,7 @@ class Server {
   void handleTCPConnection(int clientIndex);
   void removeDeadClients();
 
-  void sendToAllTCP(char *message);
+  void sendToAllTCP(char *message, int length=0, ClientInfo *exclude=NULL);
   inline Broadcast *getBroadcast() { return broadcast; }
 
  protected:

@@ -10,6 +10,7 @@ ClientInfo::ClientInfo(Server *server, TCPsocket socket, int id, char *username)
   this->id = id;
   this->username = username;
   this->commands = new Commands(this);
+  this->characterInfo = NULL;
 
   // init the lag
   aveLag = 0.0f;
@@ -55,6 +56,7 @@ ClientInfo::~ClientInfo() {
   // misc. other stuff
   free(username);
   delete commands;
+  if(characterInfo) free(characterInfo);
   cerr << "* Client stopped: " << describe() << endl;
 }
 
@@ -93,10 +95,31 @@ void ClientInfo::serverClosing() {
 }
 
 void ClientInfo::character(char *bytes, int length) {
-  cerr << "Received character info: length=" << length << endl;
+  if(length != sizeof(CreatureInfo)) {
+    cerr << "* Server: Received bad size for character info! length=" << 
+      length << " size=" << sizeof(CreatureInfo) << endl;
+    return;
+  }
+  characterInfo = (CreatureInfo*)malloc(sizeof(CreatureInfo));
+  memcpy(characterInfo, bytes, length);
+
+  // FIXME: do some byte ordering for PPC, etc. here.
+
+  cerr << "* Server: received character info for: " << describe() << endl;
+
+  // send an addplayer to everyone but us
+  int size = sizeof(CreatureInfo);
+  char *message = (char*)malloc(size + 20);
+  int messageSize;
+  Commands::buildBytesAddPlayer(message, size, bytes, getId(), &messageSize);
+  server->sendToAllTCP(message, messageSize, this);
 }
 
-void ClientInfo::sendMessageAsync(char *message) {
+void ClientInfo::addPlayer(Uint32 id, char *bytes, int length) {
+  // do nothing
+}
+
+void ClientInfo::sendMessageAsync(char *message, int length) {
   // wake up the thread
   if(message && !dead) {
 
@@ -107,7 +130,15 @@ void ClientInfo::sendMessageAsync(char *message) {
     }
 
     // put the message on the queue
-    messageQueue.push(new Message(strdup(message)));
+    Message *m;
+    if(!length) {
+      m = new Message(strdup(message), strlen(message) + 1);
+    } else {
+      char *s = (char*)malloc(length);
+      memcpy(s, message, length);
+      m = new Message(s, length);
+    }
+    messageQueue.push(m);
 
     // unlock the mutex
     if(SDL_mutexV(mutex) == -1) {
@@ -127,9 +158,9 @@ void ClientInfo::receiveTCP() {
   free(text);
 }
 
-void ClientInfo::sendTCP(char *message) {
+void ClientInfo::sendTCP(char *message, int length) {
   if(message) {
-    if(!TCPUtil::send(socket, message)) {
+    if(!TCPUtil::send(socket, message, length)) {
       cerr << "* Can't send TCP to client: " << describe() << endl;
       dead = true;
     }
@@ -156,6 +187,7 @@ int clientInfoLoop(void *data) {
 
   // copy the message  into this, so Message can be deleted in mutex
   char *messageStr = NULL;
+  int messageLength;
 
   while(clientInfo->isThreadRunning()) {
 
@@ -188,7 +220,10 @@ int clientInfoLoop(void *data) {
 
       // do I need to copy the message?
       message = clientInfo->getMessageQueue()->front();
-      messageStr = strdup(message->message);
+      messageLength = message->length;
+      messageStr = (char*)malloc(messageLength);
+      memcpy(messageStr, message->message, messageLength);
+
       clientInfo->getMessageQueue()->pop();
       delete message;
       runAgain = true;
@@ -202,7 +237,7 @@ int clientInfoLoop(void *data) {
 
     // send message if any
     if(messageStr) {
-      clientInfo->sendTCP(messageStr);
+      clientInfo->sendTCP(messageStr, messageLength);
       delete messageStr;
       messageStr = NULL;
     }
@@ -266,8 +301,9 @@ Uint32 ClientInfo::updateLag(int frame) {
   return (Uint32)0;
 }
 
-Message::Message(char *message) {
+Message::Message(char *message, int length) {
   this->message = message;
+  this->length = length;
 }
 
 Message::~Message() {

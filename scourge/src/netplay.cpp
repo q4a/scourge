@@ -109,3 +109,15 @@ void NetPlay::serverClosing() {
 void NetPlay::character(char *bytes, int length) {
   // do nothing
 }
+
+void NetPlay::addPlayer(Uint32 id, char *bytes, int length) {
+  cerr << "* Received character data for player. Server id=" << 
+    id << " data length=" << length << endl;
+  if(length != sizeof(CreatureInfo)) {
+    cerr << "* Bad length for addPlayer!. length=" << 
+      length << " size=" << sizeof(CreatureInfo) << endl;
+    return;
+  }
+
+  // do something with the data
+}

@@ -15,6 +15,7 @@ class CommandInterpreter {
   virtual void handleUnknownMessage() = 0;
   virtual void serverClosing() = 0;
   virtual void character(char *bytes, int length) = 0;
+  virtual void addPlayer(Uint32 id, char *bytes, int length) = 0;
 };
 
 class TestCommandInterpreter : public CommandInterpreter {
@@ -28,6 +29,7 @@ public:
   void handleUnknownMessage();
   void serverClosing();
   void character(char *bytes, int length);
+  void addPlayer(Uint32 id, char *bytes, int length);
 };
 
 class Commands {
@@ -44,6 +46,7 @@ class Commands {
      STATE,
      CLOSING,
      CHARACTER,
+     ADD_PLAYER,
 
      // must be last entry
      COMMAND_COUNT
@@ -62,6 +65,7 @@ class Commands {
   // not static!
   void buildPing(char *buff);
   static void buildBytesCharacter(char *buff, int size, char *info, int *messageSize);
+  static void buildBytesAddPlayer(char *buff, int size, char *info, int id, int *messageSize);
 };
 
 #endif
