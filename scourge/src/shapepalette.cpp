@@ -304,12 +304,20 @@ void ShapePalette::initShapes() {
 					Constants::LOCATOR_INDEX);
 	
 	shapes[Constants::BOARD_INDEX] =
+	  new C3DSShape("data/objects/board.3ds", 1.2f, this,
+									notex, 12, 4, 10,
+									"BOARD", boardDescription, boardDescriptionCount,
+									0xffffffff,
+									display_list + (count++ * 3), Constants::BOARD_INDEX);
+
+/*
 	  new GLShape(wood_tex, 
 				  20, 1, 10,
 				  "BOARD", boardDescription, boardDescriptionCount,
 				  (debug ? 0xff0000ff : 0xf0f0ffff),
 				  display_list + (count++ * 3),
 				  Constants::BOARD_INDEX);
+					*/
 
 	shapes[Constants::BRAZIER_INDEX] =
     new GLTorch(notex, textures[9].id,
