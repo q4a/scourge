@@ -100,14 +100,7 @@ Scourge::Scourge(int argc, char *argv[]){
 	  party[0] = player = pc[0];
 	  party[1] = pc[1];
 	  party[2] = pc[2];
-	  party[3] = pc[3];
-	  
-	  Event *e;
-	  Date d(0, 0, 6, 0, 0, 0); // 6 hours	  
-	  for(int i = 0; i < 4 ; i++){
-    	  e = new ThirstHungerEvent(calendar->getCurrentDate(), d, pc[i], this, Event::INFINITE_EXECUTIONS);
-    	  calendar->scheduleEvent(e);
-	  }
+	  party[3] = pc[3];	  	  
 
 	  // inventory needs the party
 	  if(!inventory) {
@@ -144,6 +137,15 @@ void Scourge::startMission() {
 	" creatureCount=" << creatureCount << 
 	" itemCount=" << itemCount << endl;
   */
+
+  // Start calendar and add thirst & hunger event scheduling
+  calendar->reset();
+  Event *e;  
+  Date d(0, 1, 0, 0, 0, 0); // 1 min for now to test
+  for(int i = 0; i < 4 ; i++){
+   	  e = new ThirstHungerEvent(calendar->getCurrentDate(), d, party[i], this, Event::INFINITE_EXECUTIONS);
+   	  calendar->scheduleEvent((Event*)e);   // It's important to cast!!
+  }
 
   // position the players
   player_only = false;
@@ -267,9 +269,9 @@ void Scourge::drawView() {
   // make a move (player, monsters, etc.)
   playRound();
   
-  // update current date variables and see if scheduled events have occured
-  if(calendar->update()){
-    calendarButton->getLabel()->setTextCopy(calendar->getCurrentDate().getDateString());
+  // update current date variables and see if scheduled events have occured  
+  if(calendar->update(userConfiguration->getGameSpeedLevel())){
+    calendarButton->getLabel()->setTextCopy(calendar->getCurrentDate().getDateString());        
   }
   
   map->draw();
@@ -1071,7 +1073,7 @@ void Scourge::createUI() {
   roundButton->setSelected(true);
   mainWin->addWidget((Widget*)roundButton);    
   
-  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT - 25, strdup(calendar->getCurrentDate().getDateString()));  
+  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT - 25, strdup(calendar->getCurrentDate().getDateString()));      
   //calendarButton->setLabelPosition(Button::CENTER);
   mainWin->addWidget((Widget*)calendarButton);    
  
@@ -1520,7 +1522,7 @@ void Scourge::setFormation(int formation) {
 
 void Scourge::addGameSpeed(int speedFactor){
     char msg[80];
-		userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
+    userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
     sprintf(msg, "Speed set to %d\n", userConfiguration->getGameSpeedTicks());
     map->addDescription(msg);
 }

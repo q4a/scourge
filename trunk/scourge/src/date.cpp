@@ -35,9 +35,9 @@ const char * Date::dayName[8] = {
     NULL, "Monday", "Tuesday", "Wednesday", "Thursday", 
     "Friday", "Saturday", "Sunday"
 };
-
+ 
 Date::Date(){    
-    setDate(0, 0, 0, 1, 1, 1128);    
+    reset();
 }
 
 Date::Date(int sec, int min, int hour, int day, int month, int year){           
@@ -53,13 +53,20 @@ void Date::setDate(int s, int m, int h, int day, int month, int year){
     this->year = year;   
 }
 
+void Date::reset(){
+    setDate(0, 0, 0, 1, 1, 1128);   // 01/01/1128, 00:00:00
+}
+
 void Date::addSeconds(int nbSec){
     
 #ifdef DEBUG_DATE
-    cout << " add " << nbSec << " TO " << ;    
+    cout << " add " << nbSec << " TO ";    
     print();    
 #endif              
-
+    // This algo suppose that nbSec <= 60, otherwise, it doesn't work properly
+    if(nbSec > 60) {
+        nbSec = 60;
+    }
     sec += nbSec;
                 
     if(sec > 59){            
@@ -87,7 +94,7 @@ void Date::addSeconds(int nbSec){
         }  
     } 
 #ifdef DEBUG_DATE
-    cout << " result : " 
+    cout << " result : "; 
     print();
     cout << endl;
 #endif
@@ -100,7 +107,7 @@ void Date::addDate(Date d){
 #ifdef DEBUG_DATE
     cout << "addDate :";
     d.print();
-    cout << " TO " << endl;
+    cout << " TO ";
     this->print(); cout << endl;
 #endif
     
@@ -187,7 +194,7 @@ void Date::buildDateString(){
     buff[3] = ' ';
     buff[4] = '\0';    
     
-    sprintf(dateString, "%s %.2d %.2dh%.2d :%.2d", 
+    sprintf(dateString, "%s %.2d %.2d:%.2d:%.2d", 
             buff, (int)day, (int)hour, (int)min, (int)sec); 
              
 }
