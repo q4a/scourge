@@ -147,6 +147,7 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
     }
   }
 
+  /*
   cerr << "Loading monster sounds..." << endl;
   for(map<string, map<int, vector<string>*>*>::iterator i = Monster::soundMap.begin(); 
       i != Monster::soundMap.end(); ++i) {
@@ -160,9 +161,37 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
       }
     }
   }
-  
+  */  
 
   setEffectsVolume(userConfiguration->getEffectsVolume());
+}
+
+void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
+							   UserConfiguration *userConfiguration ) {
+  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
+  if( m ) {
+	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
+	  vector<string> *v = i2->second;
+	  for(int i = 0; i < (int)v->size(); i++) {
+		string file = (*v)[i];
+		storeSound(0, file.c_str());
+	  }
+	}
+  }
+  setEffectsVolume(userConfiguration->getEffectsVolume());
+}
+
+void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m ) {  
+  cerr << "Unloading monster sounds for " << monsterType << "..." << endl;
+  if( m ) {
+	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
+	  vector<string> *v = i2->second;
+	  for(int i = 0; i < (int)v->size(); i++) {
+		string file = (*v)[i];
+		unloadSound(0, file.c_str());
+	  }
+	}
+  }
 }
 
 void Sound::storeSound(int type, const char *file) {
@@ -182,6 +211,20 @@ void Sound::storeSound(int type, const char *file) {
     }
   }
 #endif
+}
+
+void Sound::unloadSound( int type, const char *file ) {
+#ifdef HAVE_SDL_MIXER
+  if(haveSound) {
+    string fileStr = file;
+    if(soundMap.find(fileStr) != soundMap.end()) {
+	  cerr << "*** Freeing sound: " << fileStr << endl;
+	  Mix_Chunk *sample = soundMap[ fileStr ];
+	  Mix_FreeChunk( sample );
+	  soundMap.erase( fileStr );
+	}
+  }
+#endif 
 }
 
 void Sound::playSound(const char *file) {

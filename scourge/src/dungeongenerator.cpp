@@ -1202,7 +1202,8 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
       GLShape *shape = scourge->getSession()->getShapePalette()->
         getCreatureShape(monster->getModelName(), 
                          monster->getSkinName(), 
-                         monster->getScale());
+                         monster->getScale(),
+						 monster);
       Creature *creature = scourge->getSession()->newCreature( monster, shape );
       mission->addCreatureInstanceMap( creature, monster );
       getRandomLocation(map, creature->getShape(), &x, &y);    
@@ -1238,7 +1239,8 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
         GLShape *shape = 
           scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
                                                        monster->getSkinName(), 
-                                                       monster->getScale());
+                                                       monster->getScale(),
+													   monster);
         int x, y;
         bool fits = getLocationInRoom(map, i, shape, &x, &y);
 
@@ -1274,7 +1276,8 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
       GLShape *shape = 
         scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
                                                      monster->getSkinName(), 
-                                                     monster->getScale());
+                                                     monster->getScale(),
+													 monster);
       Creature *creature = scourge->getSession()->newCreature(monster, shape);
       int x, y;
       getRandomLocation(map, creature->getShape(), &x, &y);
