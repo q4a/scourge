@@ -107,6 +107,80 @@ Inventory::Inventory(Scourge *scourge) {
 	}
   */
 
+  // about 5x7 tiles, side=48
+  int side = 48;
+  int n = 0;
+  
+  // INVENTORY_HEAD
+  posX[n] = 2 * side;
+  posY[n] = 0 * side;
+  n++;
+
+  // INVENTORY_NECK
+  posX[n] = 3 * side;
+  posY[n] = 0 * side;
+  n++;
+
+  // INVENTORY_BACK = 4;
+  posX[n] = 1 * side;
+  posY[n] = 0 * side;
+  n++;
+
+  // INVENTORY_CHEST = 8;
+  posX[n] = 2 * side;
+  posY[n] = 1 * side;
+  n++;
+
+  // INVENTORY_LEFT_HAND = 16;
+  posX[n] = 1 * side;
+  posY[n] = 3 * side;
+  n++;
+
+  // INVENTORY_RIGHT_HAND = 32;
+  posX[n] = 3 * side;
+  posY[n] = 3 * side;
+  n++;
+
+  // INVENTORY_BELT = 64;
+  posX[n] = 2 * side;
+  posY[n] = 2 * side;
+  n++;
+
+  // INVENTORY_LEGS = 128;
+  posX[n] = 2 * side;
+  posY[n] = 3 * side;
+  n++;
+
+  // INVENTORY_FEET = 256;
+  posX[n] = 3 * side;
+  posY[n] = 6 * side;
+  n++;
+
+  // INVENTORY_RING1 = 512;
+  posX[n] = 0 * side;
+  posY[n] = 4 * side;
+  n++;
+
+  // INVENTORY_RING2 = 1024;
+  posX[n] = 1 * side;
+  posY[n] = 4 * side;
+  n++;
+
+  // INVENTORY_RING3 = 2048;
+  posX[n] = 3 * side;
+  posY[n] = 4 * side;
+  n++;
+
+  // INVENTORY_RING4 = 4096;
+  posX[n] = 4 * side;
+  posY[n] = 4 * side;
+  n++;
+
+  // INVENTORY_WEAPON_RANGED
+  posX[n] = 0 * side;
+  posY[n] = 1 * side;
+  n++;
+
   paperDoll = new Canvas(115, 20, 410, 50 + (Character::INVENTORY_COUNT * 15), this);
   cards->addWidget(paperDoll, INVENTORY);
 
@@ -195,6 +269,18 @@ void Inventory::drawWidget(Widget *w) {
                  GL_BGRA, GL_UNSIGNED_BYTE, shapePal->paperDollImage);
     glDisable(GL_ALPHA_TEST);
 
+    for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+      Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
+      if(!item) continue;
+      glPushMatrix();
+      glTranslatef( posX[i], posY[i], 0 );
+      item->getShape()->draw();
+      glPopMatrix();
+    }
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable( GL_CULL_FACE );
+    
     /*
     glDisable( GL_CULL_FACE );
     glEnable(GL_TEXTURE_2D);
