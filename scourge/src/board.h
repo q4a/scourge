@@ -79,7 +79,7 @@ class Mission {
   inline int getLevel() { return level; }
   inline int getDungeonStoryCount() { return dungeonStoryCount; }
   inline MissionObjective *getObjective() { return objective; }
-  inline void addToStory(char *s) { if(!strlen(story)) strcat(story, " "); strcat(story, s); }  
+  inline void addToStory(char *s) { if(strlen(story)) strcat(story, " "); strcat(story, s); }  
   void setObjective(MissionObjective *o) { objective = o; }
 
   // these return true if the mission has been completed
