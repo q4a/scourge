@@ -1978,6 +1978,7 @@ void Scourge::playRound() {
         // go back to real-time, group-mode
         if(fromBattle) {
           if(party->isPlayerOnly()) party->togglePlayerOnly();
+          toggleRoundUI(party->isRealTimeMode());
           party->setPlayer(0);
           groupButton->setVisible(true);
           party->setTargetCreature(NULL);
@@ -2543,6 +2544,21 @@ void Scourge::setPlayerUI(int index) {
 }
 
 void Scourge::toggleRoundUI(bool startRound) {
+  if(battleTurn < (int)battleRound.size() &&
+     getUserConfiguration()->isBattleTurnBased()) {
+    if(!startRound && 
+       !battleRound[battleTurn]->getCreature()->isMonster()) {
+      roundButton->getLabel()->setTextCopy("Begin Turn");
+      roundButton->setGlowing(true);
+    } else {
+      roundButton->getLabel()->setTextCopy("...in Turn...");
+      roundButton->setGlowing(false);
+    }
+  } else {
+    if(startRound) roundButton->getLabel()->setTextCopy("Real-Time");
+    else roundButton->getLabel()->setTextCopy("Paused");
+    roundButton->setGlowing(false);
+  }
   roundButton->setSelected(startRound);
 }
 

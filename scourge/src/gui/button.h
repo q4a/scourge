@@ -37,6 +37,7 @@ class Button : public Widget {
   bool toggle;
   bool selected;
   GLuint highlight;
+  bool glowing;
 
  public: 
 
@@ -53,6 +54,9 @@ class Button : public Widget {
   */
   inline void setToggle(bool b) { toggle = b; }
   inline bool isToggle() { return toggle; }
+
+  inline void setGlowing(bool b) { glowing = b; }
+  inline bool isGlowing() { return glowing; }
   /**
 	 For toggle buttons, this returns true if the button has been toggled.
   */
