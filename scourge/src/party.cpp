@@ -362,6 +362,16 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
       else
         pc[i]->addSpell(Spell::getSpellByName("Body of stone"));
     }
+
+    /*
+    // magic items (only for testing)
+    Item *item = session->newItem(RpgItem::getItemByName("Long sword"));
+    item->enchant(Constants::DIVINE_MAGIC_ITEM);
+    pc[i]->addInventory(item);
+    item = session->newItem(RpgItem::getItemByName("Horned helmet"));
+    item->enchant(Constants::DIVINE_MAGIC_ITEM);
+    pc[i]->addInventory(item);
+    */
   }
   
 #else

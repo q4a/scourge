@@ -246,6 +246,7 @@ void Item::initItems(ShapePalette *shapePal) {
         }
         cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
       }
+      if(distance < (int)Constants::MIN_DISTANCE) distance = (int)Constants::MIN_DISTANCE;
       last = new RpgItem(itemCount++, strdup(name), level, rareness, type_index, 
                          weight, price, 100, 
                          action, speed, strdup(long_description), 
