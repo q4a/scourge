@@ -215,19 +215,19 @@ int Client::initTCPSocket() {
 
 int Client::login() {
   char msg[80];
-  sprintf(msg, "LOGIN,%s", username);
+  Commands::buildLogin(msg, username);
   return sendRawTCP(msg);
 }
 
 int Client::sendChatTCP(char *message) {
   char msg[80];
-  sprintf(msg, "CHAT,%s", message);
+  Commands::buildChat(msg, username, message);
   return sendRawTCP(msg);
 }
 
 int Client::sendPing() {
   char message[80];
-  sprintf(message, "PING,%d", commands->getLastGameFrameReceived());
+  commands->buildPing(message);
   return sendRawTCP(message);
 }
 

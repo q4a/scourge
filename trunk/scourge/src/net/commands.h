@@ -51,6 +51,12 @@ class Commands {
   inline int getLastGameFrameReceived() { return lastGameFrameReceived; }
   void interpret(char *rawMessage);
   inline int getLastCommand() { return lastCommand; }
+
+  static void buildGameState(char *buff, int frame, char *state);
+  static void buildChat(char *buff, char *username, char *message);
+  static void buildLogin(char *buff, char *username);
+  // not static!
+  void buildPing(char *buff);
 };
 
 #endif

@@ -34,6 +34,22 @@ void Commands::interpret(char *rawMessage) {
   }
 }
 
+void Commands::buildGameState(char *buff, int frame, char *state) {
+  sprintf(buff, "STATE,%d,%s", frame, state);
+}
+
+void Commands::buildChat(char *buff, char *username, char *message) {
+  sprintf(buff, "CHAT,%s> %s", username, message);
+}
+
+void Commands::buildLogin(char *buff, char *username) {
+  sprintf(buff, "LOGIN,%s", username);
+}
+
+void Commands::buildPing(char *buff) {
+  sprintf(buff, "PING,%d", getLastGameFrameReceived());
+}
+
 TestCommandInterpreter::TestCommandInterpreter() {
 }
 
@@ -63,3 +79,5 @@ void TestCommandInterpreter::handleUnknownMessage() {
 void TestCommandInterpreter::serverClosing() {
   cout << "Server closing." << endl;
 }
+
+

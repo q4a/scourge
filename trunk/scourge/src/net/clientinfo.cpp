@@ -65,7 +65,7 @@ char *ClientInfo::describe() {
 
 void ClientInfo::chat(char *message) {
   char s[1024];
-  sprintf(s, "CHAT,%s> %s", username, message);
+  Commands::buildChat(s, username, message);
   server->sendToAllTCP(s);
 }
 
