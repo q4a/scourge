@@ -279,6 +279,7 @@ bool Battle::selectNewTarget() {
 
     creature->cancelTarget();
     moveCreature();
+    return false;
 
   } else {
     Creature *target;

@@ -39,6 +39,7 @@ NetPlay::NetPlay(Scourge *scourge) {
   messageList = new ScrollingList(10, 35, width - 20, Scourge::PARTY_GUI_HEIGHT - 65, 
                                   scourge->getShapePalette()->getHighlightTexture());
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
+  messageList->setCanGetFocus( false );
   mainWin->addWidget(messageList);
   // this has to be after addWidget
   messageList->setBackground( 1, 0.75f, 0.45f );
