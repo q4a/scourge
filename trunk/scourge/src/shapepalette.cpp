@@ -365,7 +365,7 @@ void ShapePalette::initShapes() {
 					 4, 4, 14,
 					 "TELEPORTER", teleporterDescription, teleporterDescriptionCount,
 					 //(debug ? 0xff0000ff : 0xf0f0ffff),
-					 0x0040ffff,
+					 0x0020ffff,
 					 display_list + (count++ * 3),
 					 Constants::TELEPORTER_INDEX);
 

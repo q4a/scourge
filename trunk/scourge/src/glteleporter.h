@@ -27,7 +27,7 @@
 
 class GLTeleporter : public GLShape  {
  private:
-  static const int MAX_RINGS = 10;
+  static const int MAX_RINGS = 20;
   float ring[MAX_RINGS];
   float delta[MAX_RINGS];
   GLuint flameTex;

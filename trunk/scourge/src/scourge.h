@@ -125,6 +125,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Inventory *inventory;
 
   Window *messageWin, *exitConfirmationDialog;
+  Label *exitLabel;
   ScrollingList *messageList;
 
   Button *yesExitConfirm, *noExitConfirm;
@@ -153,6 +154,8 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   // when dragging items (the more the faster)
   static const int POSITION_SAMPLE_DELTA = 10; 
 
+  bool teleporting;
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;
@@ -166,7 +169,8 @@ protected:
   bool getItem(Location *pos);
   void dropItem(int x, int y);
   bool useDoor(Location *pos);
-	bool useBoard(Location *pos);
+  bool useBoard(Location *pos);
+  bool useTeleporter(Location *pos);
 
 public:
   #define TOP_GUI_WIDTH 400
