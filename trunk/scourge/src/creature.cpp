@@ -245,6 +245,9 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   // stateMod and protStateMod not useful until calendar is also persisted
   //creature->stateMod = info->stateMod;
   //creature->protStateMod = info->protStateMod;
+  // these two don't req. events:
+  if(info->stateMod & (1 << Constants::dead)) creature->setStateMod(Constants::dead, true);
+  if(info->stateMod & (1 << Constants::leveled)) creature->setStateMod(Constants::leveled, true);
 
   // inventory
   //creature->inventory_count = info->inventory_count;

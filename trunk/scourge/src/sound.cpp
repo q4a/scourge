@@ -85,6 +85,8 @@ void Sound::stopMusic(Mix_Music *music) {
   if(haveSound && music) {
     if(!Mix_FadeOutMusic(3000)) {
       cerr << "*** Error stopping music: " << Mix_GetError() << endl;
+      // force stop music
+      Mix_HaltMusic();      
     } else {
       /*
       while(Mix_PlayingMusic()) {
