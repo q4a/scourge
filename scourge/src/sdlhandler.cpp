@@ -392,6 +392,7 @@ void SDLHandler::mainLoop() {
   int isActive = TRUE;  
   SDL_Event event;
   int mx, my;
+  Window::windowWasClosed = false;
   while(true) {    
     int eventCount = 0;  
     mouseIsMovingOverMap = false;

@@ -71,18 +71,20 @@ class Window : public Widget {
   Widget *lastWidget;
 
  public: 
-
+   
    static const char ROLL_OVER_SOUND[80];
    static const char ACTION_SOUND[80];
    static const char DROP_SUCCESS[80];
    static const char DROP_FAILED[80];
-
-  Button *closeButton;
-
-  enum {
-	BASIC_WINDOW=0,
-	SIMPLE_WINDOW
-  };
+   
+   static bool windowWasClosed;
+   
+   Button *closeButton;
+   
+   enum {
+     BASIC_WINDOW=0,
+     SIMPLE_WINDOW
+   };
 
   static const int TOP_HEIGHT = 20;
   static const int BOTTOM_HEIGHT = 5;

@@ -38,6 +38,7 @@ Window *Window::currentWin = NULL;
 Window *Window::message_dialog = NULL;
 Label *Window::message_label = NULL;
 Button *Window::message_button = NULL;
+bool Window::windowWasClosed = false;
 
 Window::Window(SDLHandler *sdlHandler, 
                int x, int y, int w, int h, 
@@ -610,6 +611,7 @@ void Window::setVisible(bool b, bool animate) {
   Widget::setVisible(b);
   if(b) openHeight = (animate ? 0 : getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT));
   else {
+    windowWasClosed = true;
     nextWindowToTop();
   }
 }
