@@ -44,6 +44,8 @@ class Party {
   Calendar * calendar;
   bool startRound;
   int partySize;
+  Creature *savedPlayer;
+  bool savedPlayerOnly;
 
   static Creature *lastPlayer;
 
@@ -106,6 +108,9 @@ class Party {
   void startEffect(int effect_type, int duration=Constants::DAMAGE_DURATION);
 
   static void createHardCodedParty(Session *session, Creature ***party, int *partySize);
+
+  void savePlayerSettings();
+  void restorePlayerSettings();
 
 protected:
   void resetPartyUI();

@@ -457,3 +457,21 @@ void Party::togglePlayerOnly(bool keepTargets) {
   session->getGameAdapter()->togglePlayerOnlyUI(!isPlayerOnly());
 }
 
+void Party::savePlayerSettings() {
+  savedPlayer = player;
+  savedPlayerOnly = player_only;
+}
+
+void Party::restorePlayerSettings() {
+  if(savedPlayer->getStateMod(Constants::dead)) setFirstLivePlayer();
+  else if(player != savedPlayer) {
+    for(int i = 0; i < getPartySize(); i++) {
+      if(party[i] == savedPlayer) {
+        setPlayer(i);
+        break;
+      }
+    }
+  }
+  if(savedPlayerOnly != player_only) togglePlayerOnly();
+}
+
