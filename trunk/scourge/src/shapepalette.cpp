@@ -18,11 +18,85 @@
 #include "shapepalette.h"
 #include "session.h"
 
+char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
+  "wall",
+  "corner",
+  "door_ew",
+  "door_ns",
+  "passage_floor",
+  "room_floor"  
+};
+
+WallTheme::WallTheme( char *name ) {
+  this->name = name;
+  for(int i = 0; i < THEME_REF_COUNT; i++)
+    themeRefMap[ themeRefName[i] ] = i;
+}
+
+WallTheme::~WallTheme() {
+  unload();
+}
+
+void WallTheme::load( ShapePalette *shapePal ) {
+  cerr << "*** Loading theme: " << getName() << endl;
+  debug();
+  for(int ref = 0; ref < THEME_REF_COUNT; ref++) {
+    for(int face = 0; face < 3; face++) {
+      loadTextureGroup( ref, face, textures[ ref ][ face ], shapePal );
+    }
+  }
+}
+
+void WallTheme::loadTextureGroup( int ref, int face, char *texture, ShapePalette *shapePal ) {
+  char path[300];  
+  if( texture ) {
+    string s = texture;
+    GLuint id;
+    if( loadedTextures.find(s) == loadedTextures.end() ) {
+      sprintf(path, "/%s.bmp", texture);
+      id = shapePal->loadGLTextures(path);
+      loadedTextures[s] = id;
+    } else {
+      id = loadedTextures[s];
+    }
+    textureGroup[ref][face] = id;  
+  } else {
+    textureGroup[ref][face] = 0;
+  }
+}
+
+void WallTheme::unload() {
+  cerr << "*** Dumping theme: " << getName() << endl;
+  for(map<string,GLuint>::iterator i=loadedTextures.begin(); i!=loadedTextures.end(); ++i) {
+    GLuint id = i->second;
+    glDeleteTextures( 1, &id );
+  }
+  loadedTextures.clear();
+}
+
+GLuint *WallTheme::getTextureGroup( string themeRefName ) {
+  int ref = themeRefMap[ themeRefName ];
+  return textureGroup[ ref ];
+}
+    
+void WallTheme::debug() {
+  cerr << "THEME=" << getName() << endl;
+  for(int ref = 0; ref < THEME_REF_COUNT; ref++) {
+    cerr << "\tref=" << themeRefName[ref] << endl;
+    for(int face = 0; face < 3; face++) {
+      cerr << "\t\t" << textures[ref][face] << endl;
+    }
+  }
+}
+
+
 ShapePalette *ShapePalette::instance = NULL;
 
 ShapePalette::ShapePalette(Session *session){
   texture_count = 0;
   textureGroupCount = 0;
+  themeCount = 0;
+  currentTheme = NULL;
   this->session = session;
 }
 
@@ -121,7 +195,7 @@ void ShapePalette::initialize() {
 
       // texture group
       ShapeValues *sv = new ShapeValues();
-      sv->textureGroupIndex = atoi(line);
+      strcpy( sv->textureGroupIndex, line );
 
       sv->xrot = sv->yrot = sv->zrot = 0.0f;
 
@@ -206,6 +280,24 @@ void ShapePalette::initialize() {
       sv->skipSide = atoi(strtok(NULL, ","));
       sv->stencil = atoi(strtok(NULL, ","));
       sv->blocksLight = atoi(strtok(NULL, ","));
+    } else if( n == 'H' ) {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      WallTheme *theme = new WallTheme( strdup(line) );
+      for(int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++) {
+        n = Constants::readLine(line, fp);
+        char *p = strtok( line + 1, "," );
+        int i = 0;
+        while( p && i < 3 ) {
+          theme->addTextureName( ref, i, (const char *)p );
+          p = strtok( NULL, "," );
+          i++;
+        }
+        if( i != 3 ) {
+          cerr << "*** Error: theme=" << theme->getName() << " has wrong number of textures for line=" << (ref + 1) << endl;
+        }
+      }
+      themes[themeCount++] = theme;
     } else {
       // skip this line
       n = Constants::readLine(line, fp);
@@ -229,9 +321,20 @@ void ShapePalette::initialize() {
     " depth=" << sv->depth << 
     " height=" << sv->height << endl;
 
+    // Resolve the texture group.
+    // For theme-based shapes, leave texture NULL, they will be resolved later.
+    bool themeBasedShape = false;
+    GLuint *texture = NULL;
+    if( strlen(sv->textureGroupIndex) < 5 ) {
+      texture = textureGroup[ atoi( sv->textureGroupIndex) ];
+    } else {
+      texture = textureGroup[ 0 ];
+      themeBasedShape = true;
+    }
+
     if(sv->teleporter) {
       shapes[(i + 1)] =
-      new GLTeleporter(textureGroup[sv->textureGroupIndex], textures[9].id,
+      new GLTeleporter(texture, textures[9].id,
                        sv->width, sv->depth, sv->height,
                        strdup(sv->name), 
                        sv->descriptionIndex,
@@ -240,7 +343,7 @@ void ShapePalette::initialize() {
     } else if(strlen(sv->m3ds_name)) {
       shapes[(i + 1)] =
       new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
-                    textureGroup[sv->textureGroupIndex],                     
+                    texture,                     
                     strdup(sv->name), 
                     sv->descriptionIndex,
                     sv->color,
@@ -248,7 +351,7 @@ void ShapePalette::initialize() {
     } else if(sv->torch > -1) {
       if(sv->torch == 5) {
         shapes[(i + 1)] =
-        new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
+        new GLTorch(texture, textures[9].id,
                     sv->width, sv->depth, sv->height,
                     strdup(sv->name),
                     sv->descriptionIndex,
@@ -256,7 +359,7 @@ void ShapePalette::initialize() {
                     (i + 1));
       } else {
         shapes[(i + 1)] =
-        new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
+        new GLTorch(texture, textures[9].id,
                     sv->width, sv->depth, sv->height,
                     strdup(sv->name),
                     sv->descriptionIndex,
@@ -266,7 +369,7 @@ void ShapePalette::initialize() {
       }
     } else {
       shapes[(i + 1)] =
-      new GLShape(textureGroup[sv->textureGroupIndex],
+      new GLShape(texture,
                   sv->width, sv->depth, sv->height,
                   strdup(sv->name),
                   sv->descriptionIndex,
@@ -279,7 +382,13 @@ void ShapePalette::initialize() {
     shapes[(i + 1)]->setIconRotation(sv->xrot, sv->yrot, sv->zrot);
 
     // Call this when all other intializations are done.
-    shapes[(i + 1)]->initialize();
+    if(themeBasedShape) {
+      themeShapes.push_back( shapes[(i + 1)] );
+      string s = ( sv->textureGroupIndex + 6 );
+      themeShapeRef.push_back( s );
+    } else {
+      shapes[(i + 1)]->initialize();
+    }
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
@@ -350,6 +459,54 @@ ShapePalette::~ShapePalette(){
   //    for(int i =0; i < (int)creature_models.size(); i++){
   //        delete creature_models[i];    
   //    }
+}
+
+void ShapePalette::loadRandomTheme() {
+  loadTheme( themes[ (int)( (long)themeCount * rand()/RAND_MAX ) ] );
+}
+
+void ShapePalette::loadTheme(const char *themeName) {
+  cerr << "*** Using theme: " << themeName << endl;
+
+  // find that theme!
+  WallTheme *theme = NULL;
+  for(int i = 0; i < themeCount; i++) {
+    if( !strcmp( themes[i]->getName(), themeName ) ) {
+      theme = themes[i];
+      break;
+    }
+  }
+  if( !theme ) {
+    cerr << "*** Error: Can't find theme: " << themeName << endl;
+    exit(1);
+  }
+
+  loadTheme( (const WallTheme *)theme );
+}
+
+void ShapePalette::loadTheme( const WallTheme *theme ) {
+  if(currentTheme != theme) {
+
+    // unload the previous theme
+    // FIXME: This could be optimized to not unload shared textures.
+    if( currentTheme ) currentTheme->unload();
+    
+    // load new theme
+    currentTheme = (WallTheme*)theme;
+    currentTheme->load( this );
+
+    // create new shapes
+    cerr << "*** Applying theme to shapes: ***" << endl;
+    for(int i = 0; i < (int)themeShapes.size(); i++) {
+      GLShape *shape = themeShapes[i];
+      GLuint *textureGroup = currentTheme->getTextureGroup( themeShapeRef[i] );
+      cerr << "\tshape=" << shape->getName() << 
+        " ref=" << themeShapeRef[i] << 
+        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;
+      shape->setTexture( textureGroup );
+    }
+    cerr << "**********************************" << endl;
+  }
 }
 
 char *ShapePalette::getRandomDescription(int descriptionGroup) {

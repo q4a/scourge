@@ -87,6 +87,8 @@ public:
 
   virtual void initialize();
 
+  void setTexture( GLuint* texture );
+
   inline void setSkipSide(int n) { skipside = n; }
   bool fitsInside(GLShape *smaller);  
   bool isLightBlocking();
