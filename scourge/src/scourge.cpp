@@ -1140,104 +1140,104 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     map->setYRot(0);
     map->setZRot(0);
   } else if(button == SDL_BUTTON_LEFT) {
-	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-	
-	// clicking on a creature
-	if(!movingItem && mapx < MAP_WIDTH) {
-	  Location *loc = map->getLocation(mapx, mapy, mapz);
-	  if(loc && loc->creature) {
-		if(getTargetSelectionFor()) {
-		  
-		  // make sure the selected action can target a creature
-		  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-			 c->getActionSpell() &&
-			 c->getActionSpell()->isCreatureTargetAllowed()) {
-			
-			// assign this creature
-			c->setTargetCreature(loc->creature);
-			char msg[80];
-			sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
-			map->addDescription(msg);				
-		  } else {
-			sprintf(msg, "%s cancelled a pending action.", c->getName());
-			map->addDescription(msg);
-		  }
-		  // turn off selection mode
-		  setTargetSelectionFor(NULL);
-		  return;
-		} else if(loc->creature->isMonster()) {
-		  // follow this creature
-		  party->setTargetCreature(loc->creature);
-		  return;
-		} else {
-		  // select player
-		  for(int i = 0; i < party->getPartySize(); i++) {
-			if(party->getParty(i) == loc->creature) {
-			  setPlayer(i);
-			  return;
-			}
-		  }
-		}
-	  }
-	}
-	
-	// click on an item
-	if(mapx > MAP_WIDTH) {
-	  getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	  mapz = 0;
-	}
-	if(useItem(mapx, mapy, mapz)) return;
-	
-	// click on the map
-	getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	
-	// make sure the selected action can target a location
-	if(c) {
-    if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-       c->getActionSpell() &&
-       c->getActionSpell()->isLocationTargetAllowed()) {
-      
-      // assign this creature
-      c->setTargetLocation(mapx, mapy, 0);
-      char msg[80];
-      sprintf(msg, "%s selected a target", c->getName());
-      map->addDescription(msg);				
-    } else {
-      sprintf(msg, "%s cancelled a pending action.", c->getName());
-      map->addDescription(msg);
-    }
-    // turn off selection mode
-    setTargetSelectionFor(NULL);
-	  return;
-	}
-	
-	/*
-	// cancel target selection mode
-	// FIXME: handle item selection. e.g.: open door from afar, etc.
-	if(getTargetSelectionFor()) {
-	Creature *c = getTargetSelectionFor();
-	c->setAction(-1);
-	setTargetSelectionFor(NULL);
-	sprintf(msg, "%s cancelled a pending action.", c->getName());
-	map->addDescription(msg);
-	}
-	*/
-	
-	// FIXME: try to move to party.cpp
-  party->getPlayer()->setSelXY(mapx, mapy);
-  if(party->isPlayerOnly()) {
-    party->getPlayer()->cancelTarget();
-  } else {
-    for(int i = 0; i < party->getPartySize(); i++) {
-      if(!party->getParty(i)->getStateMod(Constants::dead)) {
-        party->getParty(i)->cancelTarget();
-        if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
+    getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+
+    // clicking on a creature
+    if(!movingItem && mapx < MAP_WIDTH) {
+      Location *loc = map->getLocation(mapx, mapy, mapz);
+      if(loc && loc->creature) {
+        if(getTargetSelectionFor()) {
+
+          // make sure the selected action can target a creature
+          if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+             c->getActionSpell() &&
+             c->getActionSpell()->isCreatureTargetAllowed()) {
+
+            // assign this creature
+            c->setTargetCreature(loc->creature);
+            char msg[80];
+            sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
+            map->addDescription(msg);       
+          } else {
+            sprintf(msg, "%s cancelled a pending action.", c->getName());
+            map->addDescription(msg);
+          }
+          // turn off selection mode
+          setTargetSelectionFor(NULL);
+          return;
+        } else if(loc->creature->isMonster()) {
+          // follow this creature
+          party->setTargetCreature(loc->creature);
+          return;
+        } else {
+          // select player
+          for(int i = 0; i < party->getPartySize(); i++) {
+            if(party->getParty(i) == loc->creature) {
+              setPlayer(i);
+              return;
+            }
+          }
+        }
       }
     }
-  }
-  // end of FIXME
-  
-  
+
+    // click on an item
+    if(mapx > MAP_WIDTH) {
+      getMapXYAtScreenXY(x, y, &mapx, &mapy);
+      mapz = 0;
+    }
+    if(useItem(mapx, mapy, mapz)) return;
+
+    // click on the map
+    getMapXYAtScreenXY(x, y, &mapx, &mapy);
+
+    // make sure the selected action can target a location
+    if(c) {
+      if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+         c->getActionSpell() &&
+         c->getActionSpell()->isLocationTargetAllowed()) {
+
+        // assign this creature
+        c->setTargetLocation(mapx, mapy, 0);
+        char msg[80];
+        sprintf(msg, "%s selected a target", c->getName());
+        map->addDescription(msg);       
+      } else {
+        sprintf(msg, "%s cancelled a pending action.", c->getName());
+        map->addDescription(msg);
+      }
+      // turn off selection mode
+      setTargetSelectionFor(NULL);
+      return;
+    }
+
+    /*
+    // cancel target selection mode
+    // FIXME: handle item selection. e.g.: open door from afar, etc.
+    if(getTargetSelectionFor()) {
+    Creature *c = getTargetSelectionFor();
+    c->setAction(-1);
+    setTargetSelectionFor(NULL);
+    sprintf(msg, "%s cancelled a pending action.", c->getName());
+    map->addDescription(msg);
+    }
+    */
+
+    // FIXME: try to move to party.cpp
+    party->getPlayer()->setSelXY(mapx, mapy);
+    if(party->isPlayerOnly()) {
+      party->getPlayer()->cancelTarget();
+    } else {
+      for(int i = 0; i < party->getPartySize(); i++) {
+        if(!party->getParty(i)->getStateMod(Constants::dead)) {
+          party->getParty(i)->cancelTarget();
+          if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
+        }
+      }
+    }
+    // end of FIXME
+
+
   } else if(button == SDL_BUTTON_RIGHT) {
     getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
     describeLocation(mapx, mapy, mapz);
@@ -2378,6 +2378,10 @@ int Scourge::getScreenHeight() {
 
 void Scourge::fightProjectileHitTurn(Projectile *proj, Creature *creature) {
   Battle::projectileHitTurn(getSession(), proj, creature);
+}
+
+void Scourge::fightProjectileHitTurn(Projectile *proj, int x, int y) {
+  Battle::projectileHitTurn(getSession(), proj, x, y);
 }
 
 void Scourge::createPartyUI() {

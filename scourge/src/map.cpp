@@ -802,10 +802,15 @@ void Map::drawProjectiles() {
       bool blocked = false;
       Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
       if(loc && proj->doesStopOnImpact()) {
-        if(loc->creature && 
-           proj->getCreature()->canAttack(loc->creature)) {
-          battleProjectiles[proj] = loc->creature;
+        if(proj->atTargetLocation() &&
+                  proj->getSpell() &&
+                  proj->getSpell()->isLocationTargetAllowed()) {
+          session->getGameAdapter()->fightProjectileHitTurn(proj, loc->x, loc->y);
           blocked = true;
+        } else if(loc->creature && 
+             proj->getCreature()->canAttack(loc->creature)) {
+            battleProjectiles[proj] = loc->creature;
+            blocked = true;
         } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
                   (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
           // hit something
