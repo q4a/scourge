@@ -149,11 +149,22 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
       if ((Node.x >= 0) && (Node.x < MAP_WIDTH) &&
           (Node.y >= 0) && (Node.y < MAP_DEPTH)) {
         // Determine cost of distance travelled
+
+        // If location is obstruction
         if(map->isBlocked(Node.x, Node.y, sz,
-                          sx, sy, sz, shape)) // If location is obstruction
-          Node.gone = 1000;
-        else
+                          sx, sy, sz, shape)) { 
+          Location *pos = map->getLocation( Node.x, Node.y, sz );
+          if( pos && pos->shape && 
+              pos->x <= dx && pos->x + pos->shape->getWidth() >= dx &&
+              pos->y > dy && pos->y - pos->shape->getDepth() <= dy ) {
+            cerr << "&&&& !!! " << endl;
+            Node.gone = BestNode.gone + 1;
+          } else {          
+            Node.gone = 1000;
+          }
+        } else {
           Node.gone = BestNode.gone + 1;
+        }
 
         // Determine the Heuristic.  Probably the most crucial aspect
         // Heuristic by Simple Euclidian method

@@ -552,6 +552,24 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     lastTargetTick = t;
   }
 
+  // show path
+  if(player && creature->getSelX() > -1 && 
+     !(creature->getSelX() == toint(creature->getX()) && 
+       creature->getSelY() == toint(creature->getY())) &&
+     session->getUserConfiguration()->isBattleTurnBased() ) {
+    for( int i = 0; i < (int)creature->getPath()->size(); i++) {
+      Location pos = (*(creature->getPath()))[i];
+      glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
+      xpos2 = ((float)(pos.x - map->getX()) / GLShape::DIV);
+      ypos2 = ((float)(pos.y - map->getY()) / GLShape::DIV);
+      zpos2 = 0.0f / GLShape::DIV;  
+      glPushMatrix();
+      glTranslatef( xpos2, ypos2, zpos2 + 5);
+      gluDisk(quadric, 0, 4, 12, 1);
+      glPopMatrix();
+    }
+  }
+
   // Yellow for move creature target
   if(player && creature->getSelX() > -1 && 
      !creature->getTargetCreature() &&

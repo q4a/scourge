@@ -137,20 +137,16 @@ bool Battle::fightTurn() {
     executeEatDrinkAction();
   }
 
-  if(creature->hasTarget()) {
-    if(creature->isTargetValid()) {
-      if(dist < range) {
-        executeAction();
-      } else {
-        stepCloserToTarget();
-      }
+  if(creature->hasTarget() && 
+     creature->isTargetValid()) {
+    if(dist < range) {
+      executeAction();
     } else {
-      if(!selectNewTarget()) return true;
+      stepCloserToTarget();
     }
   } else {
     moveCreature();
   }
-
   // not done yet with creature's turn
   return false;
 }
@@ -250,14 +246,21 @@ void Battle::executeAction() {
 
 void Battle::stepCloserToTarget() {
   // out of range: take 1 step closer
+
+  // re-select the best weapon
+  weaponWait = 0;
+
+  // Set the movement mode; otherwise character won't move
   creature->getShape()->setCurrentAnimation((int)MD2_RUN);
+
   if(DEBUG_BATTLE) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
-    if(!(creature->getSelX() == toint(creature->getTargetCreature()->getX()) &&
-         creature->getSelY() == toint(creature->getTargetCreature()->getY()))) {
-      creature->setSelXY(toint(creature->getTargetCreature()->getX()),
-                         toint(creature->getTargetCreature()->getY()),
-                         true);
+    int tx = toint(creature->getTargetCreature()->getX() + 
+                   creature->getTargetCreature()->getShape()->getWidth() / 2);
+    int ty = toint(creature->getTargetCreature()->getY() - 
+                   creature->getTargetCreature()->getShape()->getDepth() / 2);
+    if(!(creature->getSelX() == tx && creature->getSelY() == ty)) {
+      creature->setSelXY(tx, ty, true);
     }
   } else {
     if(!(creature->getSelX() == creature->getTargetX() &&
@@ -267,22 +270,130 @@ void Battle::stepCloserToTarget() {
                          true);
     }
   }
-  creature->moveToLocator(session->getMap());
-  ap--;
+  GLfloat oldX = creature->getX();
+  GLfloat oldY = creature->getY();
+  bool moved = creature->moveToLocator(session->getMap());
+  if( !( toint(oldX) == toint(creature->getX()) &&
+         toint(oldY) == toint(creature->getY()) ) ) {
+    ap--;
+  }
+  //if( !moved ) moveCreature();
+  if( !moved ) {
+    cerr << "*** Warning: not moving closer to target and not in range. " <<
+      " x,y=" << creature->getX() << "," << creature->getY() <<
+      " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
+      " dist=" << dist << " range=" << range << 
+      " item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
+      " creature=" << creature->getName() << 
+      " target=" << ( creature->getTargetCreature() ? 
+                      creature->getTargetCreature()->getName() : 
+                      ( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
+                        ( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
+    if( creature->getTargetCreature() ) {
+      cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
+        "," << creature->getTargetCreature()->getY() << endl;
+    }
+    if( creature->isMonster() ) {
+      ap--;  
+    } else {
+
+      // guess a new path
+      creature->setSelXY( creature->getSelX(), creature->getSelY() );
+
+      if( session->getUserConfiguration()->isBattleTurnBased() ) {
+        session->getParty()->toggleRound(true);
+      } else {
+        ap--;
+      }
+    }
+  }
 }
+
+bool Battle::moveCreature() {
+
+  // Set the movement mode; otherwise character won't move
+  if(creature->anyMovesLeft()) {
+    creature->getShape()->setCurrentAnimation((int)MD2_RUN);
+  } else {
+    creature->getShape()->setCurrentAnimation((int)MD2_STAND);
+  }
+
+  // take 1 step closer
+  if(DEBUG_BATTLE) cerr << "\t\tTaking a non-battle step." << endl;
+
+  GLfloat oldX = creature->getX();
+  GLfloat oldY = creature->getY();
+  if(creature->isMonster()) {
+    session->getGameAdapter()->moveMonster(creature);
+    if( !( toint(oldX) == toint(creature->getX()) &&
+           toint(oldY) == toint(creature->getY()) ) ) {
+      ap--;
+    } 
+    
+    if( oldX == creature->getX() &&
+        oldY == creature->getY() ) {
+      cerr << "*** WARNING: monster not moving." << endl;
+      ap--;
+    }
+    return false;
+  } else {
+
+    // someone killed our target, try to pick another one
+    if(creature->hasTarget() && !creature->isTargetValid()) {
+      cerr << "*** Character has invalid target, selecting new one." << endl;
+      if( selectNewTarget() ) return true;
+    }
+
+
+    if(creature->getSelX() != -1) {
+      bool moved = creature->moveToLocator(session->getMap());
+      if( !( toint(oldX) == toint(creature->getX()) &&
+             toint(oldY) == toint(creature->getY()) ) ) {
+        ap--;
+      }
+      
+      if( !moved ) {
+        cerr << "*** WARNING: character not moving." << 
+          " x,y=" << creature->getX() << "," << creature->getY() <<
+          " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
+          " dist=" << dist << " range=" << range << 
+          " item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
+          " creature=" << creature->getName() << 
+          " target=" << ( creature->getTargetCreature() ? 
+                          creature->getTargetCreature()->getName() : 
+                          ( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
+                            ( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
+        if( creature->getTargetCreature() ) {
+          cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
+            "," << creature->getTargetCreature()->getY() << endl;
+        }
+
+        // guess a new path
+        creature->setSelXY( creature->getSelX(), creature->getSelY() );
+        if( session->getUserConfiguration()->isBattleTurnBased() ) {          
+          session->getParty()->toggleRound(true);
+        }
+      }
+    } else {
+      //creature->getShape()->setCurrentAnimation((int)MD2_STAND);
+      // try to kill something
+      cerr << "*** Character has no location, selecting new target." << endl;
+      return selectNewTarget();
+    }
+  }
+  return false;
+}
+
 
 bool Battle::selectNewTarget() {
   // select a new target
   if (creature->isMonster()) {    
-    //creature->setTargetCreature(NULL);
-    //creature->decideMonsterAction();
-    //return(creature->hasTarget());
-
-    creature->cancelTarget();
-    moveCreature();
+    cerr << "*** Error should not Battle::selectNewTarget should not be called for monsters." << endl;
+//    creature->cancelTarget();
+//    moveCreature();
     return false;
-
   } else {
+    // select a new target
     Creature *target;
     if(creature->getStateMod(Constants::possessed)) {
       target = session->getParty()->getClosestPlayer(toint(creature->getX()), 
@@ -299,41 +410,24 @@ bool Battle::selectNewTarget() {
     }
     if (target) {
       if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
+      if(creature->getTargetCreature()) cerr << "*** Warning: setting target when one already exists!"<< endl;
       creature->setTargetCreature(target);
       creature->setSelXY(toint(creature->getTargetCreature()->getX()),
                          toint(creature->getTargetCreature()->getY()),
                          true);
       //initTurn();
-      return true;
     } else {
       creature->setTargetCreature(NULL);
       if(DEBUG_BATTLE) cerr << "\t\tCan't find new target." << endl;
-      return false;
     }
-  }
-}
 
-void Battle::moveCreature() {
-  if(creature->anyMovesLeft()) {
-    creature->getShape()->setCurrentAnimation((int)MD2_RUN);
-  } else {
-    creature->getShape()->setCurrentAnimation((int)MD2_STAND);
-  }
-
-  // take 1 step closer
-  if(DEBUG_BATTLE) cerr << "\t\tTaking a non-battle step." << endl;
-  if(creature->isMonster()) {
-    session->getGameAdapter()->moveMonster(creature);
-  } else {
-    if(creature->getSelX() != -1) {
-      creature->moveToLocator(session->getMap());
-    } else {
-      //creature->getShape()->setCurrentAnimation((int)MD2_STAND);
-      // try to kill something
-      selectNewTarget();
+    // let the player override in TB mode
+    if( target && session->getUserConfiguration()->isBattleTurnBased() ) {
+      session->getParty()->toggleRound(true);
     }
+
+    return ( target ? true : false );
   }
-  ap--;
 }
 
 void Battle::castSpell() {
@@ -739,7 +833,11 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
 
     // target creature death
     if(creature->getTargetCreature()->takeDamage(damage, effect)) {
-      creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
+      
+      // only in RT mode... otherwise in TB mode character won't move
+      if( !session->getUserConfiguration()->isBattleTurnBased() )
+        creature->getShape()->setCurrentAnimation((int)MD2_TAUNT); 
+
       sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 

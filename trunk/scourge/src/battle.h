@@ -133,7 +133,7 @@ class Battle {
   void executeAction();
   void stepCloserToTarget();
   bool selectNewTarget();
-  void moveCreature();
+  bool moveCreature();
 
   static char *getRandomSound(int start, int count);
 };
