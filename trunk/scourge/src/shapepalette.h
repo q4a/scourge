@@ -55,7 +55,7 @@ private:
   GLuint ns_tex[3];
   GLuint ew_tex[3];
   GLuint wood_tex[3];
-  GLuint floor_tex[3], floor2_tex[3];;
+  GLuint floor_tex[3], floor2_tex[3], floor3_tex[3];
   GLuint notex[3];
   GLuint lamptex[3];
   GLuint doorNStex[3];

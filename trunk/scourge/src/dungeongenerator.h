@@ -37,7 +37,7 @@ typedef struct _MapLocation {
 	int start[4][2]; // party starting coordinates
   bool monsters;
   int roomCount;
-  int roomDimension[20][5];
+  Uint16 roomDimension[20][5];
   char *map[MAP_WIDTH];
   int shapeCount;            // how many shapes
   int shapePosition[100][4]; // shapes: shape_index, x, y, z (x,y,z in map coordinates)
@@ -98,6 +98,7 @@ private:
   
   const static Uint16 PASSAGE = 0x0100;
   const static Uint16 ROOM = 0x0200;
+	const static Uint16 ROOM2 = 0x0400;
 
   const static Uint16 EMPTY_ROOM = ROOM + N_PASS + S_PASS + E_PASS + W_PASS;
 

@@ -76,10 +76,13 @@ const MapLocation DungeonGenerator::location[] = {
 	  "#e+w#",
 	  "## ##" 
 	},
-	21, 
+	25, 
 	{
 	  { Constants::BOARD_INDEX, 2*unitSide+11, unitSide + 1, 0 },
 
+
+		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+8, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+8, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+16, 0 },
@@ -88,6 +91,8 @@ const MapLocation DungeonGenerator::location[] = {
 		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+24, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+32, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+32, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+40, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+40, 0 },
 
 	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+8, 2 },
 	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+8, 0 },		
@@ -725,6 +730,17 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 	
 	// draw the nodes on the map
 	drawNodesOnMap(map, shapePal, preGenerated, locationIndex);
+
+	// hack: draw diff. floor tiles in HQ
+	if(preGenerated) {
+		for(Sint16 x = 0; x < MAP_WIDTH; x++) {
+			for(Sint16 y = 0; y < MAP_DEPTH; y++) {
+				if(map->getFloorPosition(x,y) == shapePal->getShape(Constants::ROOM_FLOOR_TILE_INDEX)) {
+					map->setFloorPosition(x,y,shapePal->getShape(Constants::ROOM2_FLOOR_TILE_INDEX));
+				}
+			}
+		}
+	}
 }
 
 void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 

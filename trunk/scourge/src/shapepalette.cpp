@@ -87,6 +87,8 @@ ShapePalette::ShapePalette(){
   strcpy(textures[texture_count++].filename, "chestfront.bmp");
   strcpy(textures[texture_count++].filename, "chestside.bmp");
   strcpy(textures[texture_count++].filename, "chesttop.bmp");
+  strcpy(textures[texture_count++].filename, "marble.bmp");
+	strcpy(textures[texture_count++].filename, "floor3.bmp");
   formationTexIndex = texture_count;
   strcpy(textures[texture_count++].filename, "formation1.bmp");
   strcpy(textures[texture_count++].filename, "formation2.bmp");
@@ -243,6 +245,12 @@ void ShapePalette::initShapes() {
                 "ROOM FLOOR TILE",
                 (debug ? 0xff0000ff : 0xa08040ff),
                 display_list + (count++ * 3), Constants::ROOM_FLOOR_TILE_INDEX);
+	shapes[Constants::ROOM2_FLOOR_TILE_INDEX] =
+    new GLShape(floor3_tex,
+                unitSide, unitSide, 0,
+                "ROOM2 FLOOR TILE",
+                (debug ? 0xff0000ff : 0xa08040ff),
+                display_list + (count++ * 3), Constants::ROOM2_FLOOR_TILE_INDEX);
 	/*  
   ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
   ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
@@ -497,6 +505,10 @@ void ShapePalette::loadTextures() {
   floor_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
   floor_tex[GLShape::TOP_SIDE] = textures[4].id;
   floor_tex[GLShape::LEFT_RIGHT_SIDE] = 0; //textures[4];
+
+  floor3_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
+  floor3_tex[GLShape::TOP_SIDE] = textures[17].id;
+  floor3_tex[GLShape::LEFT_RIGHT_SIDE] = 0; //textures[4];
 
   floor2_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
   floor2_tex[GLShape::TOP_SIDE] = textures[5].id;
