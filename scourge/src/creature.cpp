@@ -40,7 +40,8 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
-  this->armor=0;  
+  this->armor=0;
+  this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
   commonInit();  
@@ -57,6 +58,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
+  this->bonusArmor=0;
   commonInit();
   monsterInit();
 }
@@ -574,7 +576,7 @@ bool Creature::eatDrink(int index){
 	strcpy(buff, rpgItem->getShortDesc());
 	buff[0] = tolower(buff[0]);
 	setThirst(getThirst() + level);
-	sprintf(msg, "%s drinks %s.", getName(), buff);
+	sprintf(msg, "%s drinks from %s.", getName(), buff);
 	scourge->getMap()->addDescription(msg); 
 	usePotion(item);
 	bool b = item->decrementCharges();
@@ -609,7 +611,22 @@ void Creature::usePotion(Item *item) {
 	  startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 2));
 	  return;
 	case Constants::AC:
-	  cerr << "Implement me! (AC boost)" << endl;
+	  {
+		bonusArmor += item->getRpgItem()->getAction();
+		recalcAggregateValues();
+		sprintf(msg, "%s feels impervious to damage!", getName(), item->getRpgItem()->getAction());
+		scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+		startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 2));
+		
+		// add calendar event to remove armor bonus
+		// (format : sec, min, hours, days, months, years)
+		Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
+		Event *e = 
+		  new PotionExpirationEvent(scourge->getParty()->getCalendar()->getCurrentDate(), 
+									d, this, item->getRpgItem(), scourge, 1);
+		scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
+		
+	  }
 	  return;
 	default:
 	  cerr << "Implement me! (other potion skill boost)" << endl;
@@ -710,6 +727,7 @@ void Creature::recalcAggregateValues() {
 	  }
 	}
   }
+  armor += bonusArmor;
 }
 
 Item *Creature::getBestWeapon(float dist) {
@@ -811,6 +829,7 @@ void Creature::startEffect(int effect_type, int duration) {
 int Creature::getSkillModifiedArmor() {
   // calculate the armor (0-100, 100-total protection)
   int armor = (monster ? monster->getBaseArmor() : 0);
+  armor += bonusArmor;
   for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	if(equipped[i] != MAX_INVENTORY_SIZE) {
 	  Item *item = inventory[equipped[i]];
