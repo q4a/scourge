@@ -575,6 +575,8 @@ public:
 
   void setPlayerUI(int index);
 
+  void setPlayer(int n);
+
   void createBoardUI();
 
   void updateBoardUI(int count, const char **missionText, Color *missionColor);

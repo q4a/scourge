@@ -928,16 +928,16 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  removeMove(Constants::MOVE_LEFT);
     }            
     else if(ea == SET_PLAYER_0){
-	  party->setPlayer(0);
+	  setPlayer(0);
     }
     else if(ea == SET_PLAYER_1){
-	  party->setPlayer(1);
+	  setPlayer(1);
     }
     else if(ea == SET_PLAYER_2){
-	  party->setPlayer(2);
+	  setPlayer(2);
     }
     else if(ea == SET_PLAYER_3){
-	  party->setPlayer(3);
+	  setPlayer(3);
     }
     else if(ea == SET_PLAYER_ONLY && 
             !session->getUserConfiguration()->isBattleTurnBased()) { 
@@ -1138,7 +1138,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 		  // select player
 		  for(int i = 0; i < party->getPartySize(); i++) {
 			if(party->getParty(i) == loc->creature) {
-			  party->setPlayer(i);
+			  setPlayer(i);
 			  return;
 			}
 		  }
@@ -2343,6 +2343,14 @@ void Scourge::drawWidget(Widget *w) {
 				  (float)p->getMp(), (float)p->getMaxMp(),
 				  0.45f, 0.65f, 1.0f, false);
 
+  // ap
+  w->applyColor();
+  getSDLHandler()->texPrint(72, 85, "AP:");
+  sprintf(msg, "%d", p->getBattle()->getAP());
+  getSDLHandler()->texPrint(72, 95, msg);
+  sprintf(msg, "%d", p->getBattle()->getStartingAP());
+  getSDLHandler()->texPrint(72, 105, msg);
+
 	/*
 	// ac
 	w->applyColor();
@@ -2467,13 +2475,13 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == crossButton) {
     party->setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == player1Button) {
-    party->setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
   } else if(widget == player2Button) {
-    party->setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
   } else if(widget == player3Button) {
-    party->setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
   } else if(widget == player4Button) {
-    party->setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
   } else if(widget == groupButton && !session->getUserConfiguration()->isBattleTurnBased()) {
     party->togglePlayerOnly();
   } else if(widget == roundButton) {
@@ -2528,6 +2536,13 @@ void Scourge::updatePartyUI() {
 	lastEffectOn = effectOn;
 	getMap()->refresh();
   }
+}
+
+void Scourge::setPlayer(int n) {
+  // don't change player in TB combat
+  if(battleTurn < (int)battleRound.size() &&
+     getUserConfiguration()->isBattleTurnBased()) return;
+  party->setPlayer(n);
 }
 
 void Scourge::setPlayerUI(int index) {
