@@ -369,6 +369,7 @@ public:
 	blinded, 
 	charmed, 
 	changed,
+	overloaded,
 	dead,
 	
 	// must be last

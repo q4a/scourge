@@ -41,7 +41,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
   this->armor=0;  
   this->thirst=10;
-  this->hunger=10;
+  this->hunger=10;  
   commonInit();  
 }
 
@@ -87,6 +87,13 @@ void Creature::commonInit() {
   this->effect = new Effect(scourge->getShapePalette()->getTexture(9));
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
+  
+  // Yes, monsters have inventory weight issues too
+  inventoryWeight =  0.0f;  
+  for(int i = 0; i < inventory_count; i++) {
+    inventoryWeight += inventory[i]->getRpgItem()->getWeight();
+  }  
+  maxInventoryWeight = computeMaxInventoryWeight();
 }
 
 Creature::~Creature(){
@@ -371,10 +378,23 @@ void Creature::setNextDontMove(Creature *next, int index) {
 }
 
 bool Creature::addInventory(Item *item) { 
-  if(inventory_count < MAX_INVENTORY_SIZE) {
-	inventory[inventory_count++] = item; 
-	return true;
-  } else return false;
+  if(inventory_count < MAX_INVENTORY_SIZE) {    
+        inventory[inventory_count++] = item;
+        inventoryWeight += item->getRpgItem()->getWeight(); 
+         
+        if(item->getRpgItem()->getWeight() + inventoryWeight > 
+            maxInventoryWeight)
+        {
+    	    char msg[80];
+            sprintf(msg, "%s is overloaded.", getName());
+            scourge->getMap()->addDescription(msg);            
+            setStateMod(Constants::overloaded, true);
+        }
+        return true;
+  } 
+  else{
+    return false;
+  }
 }
 
 Item *Creature::removeInventory(int index) { 
@@ -384,6 +404,14 @@ Item *Creature::removeInventory(int index) {
 	doff(index);
 	// drop from inventory
 	item = inventory[index];
+	inventoryWeight -= item->getRpgItem()->getWeight();
+	if(getStateMod(Constants::overloaded) && inventoryWeight < maxInventoryWeight)
+    {
+    	    char msg[80];
+            sprintf(msg, "%s is no more overloaded.", getName());
+            scourge->getMap()->addDescription(msg);            
+            setStateMod(Constants::overloaded, false);
+    }
 	for(int i = index; i < inventory_count - 1; i++) {
 	  inventory[i] = inventory[i + 1];
 	}
@@ -430,7 +458,7 @@ bool Creature::eatDrink(int index){
             buff[0] = tolower(buff[0]);
             sprintf(msg, "%s eats %s.", getName(), buff);
             scourge->getMap()->addDescription(msg);
-            return(computeNewWeight(rpgItem));                              
+            return(computeNewItemWeight(rpgItem));                              
         }
         else if(type == RpgItem::DRINK){
             if(getThirst() == 10){                
@@ -444,7 +472,7 @@ bool Creature::eatDrink(int index){
             sprintf(msg, "%s drinks %s.", getName(), buff);
             scourge->getMap()->addDescription(msg); 
             // TODO : according to the alcool rate set drunk state or not            
-            return(computeNewWeight(rpgItem));  
+            return(computeNewItemWeight(rpgItem));  
             
         }
         else{   
@@ -456,12 +484,12 @@ bool Creature::eatDrink(int index){
             sprintf(msg, "%s drinks %s.", getName(), buff);
             scourge->getMap()->addDescription(msg); 
             // TODO : add potion effect
-            return(computeNewWeight(rpgItem));                                   
+            return(computeNewItemWeight(rpgItem));                                   
         }        
     }
 }
 
-bool Creature::computeNewWeight(RpgItem * rpgItem){
+bool Creature::computeNewItemWeight(RpgItem * rpgItem){
     float f1;
     int oldCharges;
     
@@ -698,6 +726,11 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[3]->setStateMod(Constants::possessed, true);          
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
       pc[3]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
+  }
+  
+  // Compute the new maxInventoryWeight for each pc, according to its POWER skill
+  for(int i = 0; i < 4; i++) {
+      pc[i]->setMaxInventoryWeight(pc[i]->computeMaxInventoryWeight());
   }
 
   // add some items

@@ -155,7 +155,7 @@ void Scourge::startMission() {
   // Start calendar and add thirst & hunger event scheduling
   calendar->reset();
   Event *e;  
-  Date d(0, 1, 0, 0, 0, 0); // 1 min for now to test
+  Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < 4 ; i++){
    	  e = new ThirstHungerEvent(calendar->getCurrentDate(), d, party[i], this, Event::INFINITE_EXECUTIONS);
    	  calendar->scheduleEvent((Event*)e);   // It's important to cast!!
