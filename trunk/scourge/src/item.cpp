@@ -34,11 +34,13 @@ void Item::initItems() {
 }
 
 Item *Item::getRandomItem(int level) {
-  int n = (int) (3.0 * rand()/RAND_MAX);
+  int n = (int) (5.0 * rand()/RAND_MAX);
   switch(n) {
   case 0: return items[RpgItem::SHORT_SWORD];
   case 1: return items[RpgItem::DAGGER];
   case 2: return items[RpgItem::BASTARD_SWORD];
+  case 3: return items[RpgItem::BATTLE_AXE];
+  case 4: return items[RpgItem::THROWING_AXE];
   }
 }
 

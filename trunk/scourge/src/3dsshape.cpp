@@ -117,7 +117,7 @@ void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal) {
   fprintf(stderr, "x=(%f,%f) y=(%f,%f) z=(%f,%f)\n",
 		  minx, maxx, miny, maxy, minz, maxz);
   movex = minx;
-  movey = miny;
+  movey = maxy;
   movez = minz;
 }
 
@@ -128,11 +128,13 @@ void C3DSShape::draw() {
 #endif
 
   glPushMatrix();
+  glDisable( GL_CULL_FACE );
   //  glScalef( div, div, div );
   //  glTranslatef( -movex, -movey, -movez );
-  glTranslatef(-movex / 2.0f * div, 0.0f, 0.0f);
-  glTranslatef(0.0f, movey * div + (getDepth() / DIV), 0.0f);
-  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
+  glTranslatef(-movex * div, 0.0f, 0.0f);
+  glTranslatef(0.0f, (getDepth() / DIV) - (movey * div), 0.0f);
+//  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
+  glTranslatef(0.0f, 0.0f, -movez);
 
   // I am going to attempt to explain what is going on below up here as not to clutter the 
   // code below.  We have a model that has a certain amount of objects and textures.  We want 
@@ -162,19 +164,17 @@ void C3DSShape::draw() {
 	t3DObject *pObject = &g_3DModel.pObject[i];
 	
 	// Check to see if this object has a texture map, if so bind the texture to it.
-	if(!useShadow) {
-	  if(pObject->bHasTexture) {
+    if(pObject->bHasTexture) {
 		// Bind the texture map to the object by it's materialID
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
-		glColor3ub(255, 255, 255);		
+	    if(!useShadow) glColor3ub(255, 255, 255);		
 	  } else {
 		// Turn off texture mapping and turn on color
 		glDisable(GL_TEXTURE_2D);		
 		// Reset the color to normal again
-		glColor3ub(255, 255, 255);
-	  }
-	}
+		if(!useShadow) glColor3ub(255, 255, 255);
+	  }	
 	
 	// This determines if we are in wireframe or normal mode
 	glBegin(g_ViewMode);                    // Begin drawing with our selected mode (triangles or lines)
@@ -224,6 +224,8 @@ void C3DSShape::draw() {
 	glEnd();                                // End the drawing
   }
   glPopMatrix();
+  if(!useShadow) glEnable(GL_TEXTURE_2D);
+  glEnable( GL_CULL_FACE );
 }
 
 void C3DSShape::setupBlending() { 

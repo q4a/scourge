@@ -214,6 +214,14 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 		printf("Error: bad bpp=%d\n", bpp);
 		printusage = true;
 	  }
+	} else if(strstr(argv[i], "--shadow") == argv[i]) {	  
+	  Constants::shadowMode = atoi(argv[i] + 8);
+      if(!(Constants::shadowMode == 0 || 
+           Constants::shadowMode == 1 || 
+           Constants::shadowMode == 2)) {
+          printf("Error: bad shadow mode: %d\n", Constants::shadowMode);
+          printusage = true;
+      }
 	} else if(!strcmp(argv[i], "--version")) {
 	  printf("Scourge, version %.2f\n", SCOURGE_VERSION);
 	  quit(0);
@@ -243,7 +251,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	printf("S.C.O.U.R.G.E.: Heroes of Lesser Renown\n");
 	printf("A 3D, roguelike game of not quite epic proportions.\n\n");
 	printf("Usage:\n");
-	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version]\n");
+	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
 	printf("version: %.2f\n", SCOURGE_VERSION);
 	printf("\nOptions:\n");
 	printf("\tf - fullscreen mode\n");
@@ -259,7 +267,8 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	printf("\t--test - list card's supported video modes\n");
 	printf("\t--version - print the build version\n");
 	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
-	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is off\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available.\n\n");
+    printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
+	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is off\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
 	exit(0);
   }
 
