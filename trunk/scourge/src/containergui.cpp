@@ -108,6 +108,7 @@ void ContainerGui::receive(Widget *widget) {
 	} else {
 	  // message: the container is full
     scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+    scourge->showMessageDialog("The item won't fit in that container!");
 	}
   }
 }

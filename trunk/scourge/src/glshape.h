@@ -92,7 +92,8 @@ public:
          
 	~GLShape();
 
-  void setDimensions(int w, int d, int h);
+
+  bool fitsInside(GLShape *smaller);
 	            
 	bool isLightBlocking();
 	void setLightBlocking(bool b);

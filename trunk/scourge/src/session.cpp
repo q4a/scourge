@@ -275,7 +275,8 @@ void Session::creatureDeath(Creature *creature) {
   map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
   int n = creature->getInventoryCount();
   for(int i = 0; i < n; i++) {
-    item->addContainedItem(creature->removeInventory(0));
+    // make it contain all items, no matter what size
+    item->addContainedItem(creature->removeInventory(0), true);
   }
   creature->setStateMod(Constants::dead, true);
 }                 
