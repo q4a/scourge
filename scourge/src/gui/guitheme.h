@@ -58,6 +58,8 @@ private:
   ThemeElement *listBackground;
   ThemeElement *inputBackground;
   Color *inputText;
+  ThemeElement *selectionBackground;
+  Color *selectionText;
 
   static map<string, GuiTheme*> themes;
 
@@ -89,6 +91,8 @@ public:
   inline ThemeElement *getListBackground() { return listBackground; }
   inline ThemeElement *getInputBackground() { return inputBackground; }
   inline Color *getInputText() { return inputText; }
+  inline ThemeElement *getSelectionBackground() { return selectionBackground; }
+  inline Color *getSelectionText() { return selectionText; }
 
 
  protected:
@@ -109,7 +113,8 @@ public:
   inline void setListBackground( ThemeElement *element ) { this->listBackground = element; }
   inline void setInputBackground( ThemeElement *element ) { this->inputBackground = element; }
   inline void setInputText( Color *color ) { this->inputText = color; }
-
+  inline void setSelectionBackground( ThemeElement *element ) { selectionBackground = element; }
+  inline void setSelectionText( Color *color ) { this->selectionText = color; }
 };
 
 #endif

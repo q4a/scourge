@@ -20,7 +20,6 @@
 
 #include "../constants.h"
 #include "widget.h"
-#include "label.h"
 
 /**
   *@author Gabor Torok
@@ -29,7 +28,7 @@
 class Button : public Widget {
  private:
   int x2, y2;
-  Label *label;
+  char label[255];
   bool inside; // was the last event inside the button?
   float alpha, alphaInc;
   GLint lastTick;
@@ -65,7 +64,8 @@ class Button : public Widget {
   inline void setSelected(bool b) { selected = b; }
   inline void setLabelPosition(int p) { labelPos = p; }
   inline int getLabelPosition() { return labelPos; }
-  inline Label *getLabel() { return label; }
+  inline char *getLabel() { return label; }
+  inline void setLabel( char *s ) { strncpy(label, ( s ? s : "" ), 255); label[254] = '\0'; }
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void removeEffects(Widget *parent);
   void drawWidget(Widget *parent);

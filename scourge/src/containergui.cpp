@@ -24,7 +24,7 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
   openButton = new Button( 5, 5, 105, 35, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
-  infoButton = new Button( 110, 5, 210, 35, scourge->getShapePalette()->getHighlightTexture(), strdup("Info") );
+  infoButton = new Button( 110, 5, 210, 35, scourge->getShapePalette()->getHighlightTexture(), "Info" );
   win->addWidget((Widget*)infoButton);
 
   list = new ScrollingList(5, 40, 310, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), scourge->getShapePalette()->getHighlightTexture(), this);

@@ -26,7 +26,7 @@ Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) :
   Widget(x1, y1, x2 - x1, y2 - y1) {
   this->x2 = x2;
   this->y2 = y2;
-  this->label = new Label(0, 0, label);
+  setLabel( label );
   labelPos = CENTER;
   alpha = 0.5f;
   alphaInc = 0.05f;
@@ -39,7 +39,6 @@ Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) :
 }
 
 Button::~Button() {
-  delete label;
 }
 
 void Button::drawWidget(Widget *parent) {
@@ -51,8 +50,14 @@ void Button::drawWidget(Widget *parent) {
   }
 
   if(toggle && selected) {
-    // FIXME: use theme
-    applySelectionColor();
+    if( theme->getSelectionBackground() ) {
+      glColor4f( theme->getSelectionBackground()->color.r,
+                 theme->getSelectionBackground()->color.g,
+                 theme->getSelectionBackground()->color.b,
+                 theme->getSelectionBackground()->color.a );
+    } else {
+      applySelectionColor();
+    }
   } else if( theme->getButtonBackground() ) {
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->texture );
@@ -91,7 +96,9 @@ void Button::drawWidget(Widget *parent) {
 
   if( n ) {
     glPushMatrix();
-    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_north );
+    glBindTexture( GL_TEXTURE_2D, 
+                   ( inverse ? theme->getButtonBackground()->tex_south :
+                     theme->getButtonBackground()->tex_north ) );
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -106,7 +113,9 @@ void Button::drawWidget(Widget *parent) {
 
     glPushMatrix();
     glTranslatef( 0, y2 - y - n, 0 );
-    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_south );
+    glBindTexture( GL_TEXTURE_2D, 
+                   ( inverse ? theme->getButtonBackground()->tex_north : 
+                     theme->getButtonBackground()->tex_south ) );
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -121,7 +130,9 @@ void Button::drawWidget(Widget *parent) {
 
     glPushMatrix();
     glTranslatef( 0, n, 0 );
-    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_west );
+    glBindTexture( GL_TEXTURE_2D, 
+                   ( inverse ? theme->getButtonBackground()->tex_east : 
+                     theme->getButtonBackground()->tex_west ) );
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -136,7 +147,9 @@ void Button::drawWidget(Widget *parent) {
 
     glPushMatrix();
     glTranslatef( x2 - x - n, n, 0 );
-    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_east );
+    glBindTexture( GL_TEXTURE_2D, 
+                   ( inverse ? theme->getButtonBackground()->tex_west :
+                     theme->getButtonBackground()->tex_east ) );
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -235,20 +248,31 @@ void Button::drawWidget(Widget *parent) {
 
   glEnd();
 
-  glPushMatrix();
-  int ypos;
-  switch(getLabelPosition()) {
-  case TOP: ypos = 13; break;
-  case BOTTOM: ypos = (y2 - y) - 2; break;
-  default: ypos = (y2 - y) / 2 + 5;
+  if( strlen( label ) ) {
+    glPushMatrix();
+    int ypos;
+    switch(getLabelPosition()) {
+    case TOP: ypos = 13; break;
+    case BOTTOM: ypos = (y2 - y) - 2; break;
+    default: ypos = (y2 - y) / 2 + 5;
+    }
+    glTranslated( 5, ypos, 0);
+    if( selected && theme->getSelectionText() ) {
+      glColor4f( theme->getSelectionText()->r,
+                 theme->getSelectionText()->g,
+                 theme->getSelectionText()->b,
+                 theme->getSelectionText()->a );
+    } else if( theme->getButtonText() ) {
+      glColor4f( theme->getButtonText()->r,
+                 theme->getButtonText()->g,
+                 theme->getButtonText()->b,
+                 theme->getButtonText()->a );
+    } else {
+      applyColor();      
+    }
+    ((Window*)parent)->getSDLHandler()->texPrint(0, 0, label);
+    glPopMatrix();
   }
-  glTranslated( 5, ypos, 0);
-  if( theme->getButtonText() ) label->setColor( theme->getButtonText()->r,
-                                                theme->getButtonText()->g,
-                                                theme->getButtonText()->b,
-                                                theme->getButtonText()->a );
-  label->drawWidget(parent);
-  glPopMatrix();
 }
 
 bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {

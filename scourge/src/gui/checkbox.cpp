@@ -27,7 +27,7 @@ Checkbox::Checkbox(int x1, int y1, int x2, int y2, GLuint highlight, char *stati
   this->x2 = x2;
   this->y2 = y2; 
   this->staticLabel  = new Label(0, 0, staticText);
-  this->checkButton = new Button(x2 - CHECKBOX_SIZE, y1, x2, y2, highlight, strdup(" ")); 
+  this->checkButton = new Button(x2 - CHECKBOX_SIZE, y1, x2, y2, highlight); 
   this->checkButton -> setLabelPosition(Button::CENTER);  
   this->checked = false;   
 }
@@ -65,10 +65,10 @@ void Checkbox::setCheck(bool val){
 
 void Checkbox::applyCheck(){
     if(checked){
-        checkButton->getLabel()->setText("x");   
+        checkButton->setLabel("x");   
     }
     else{
-        checkButton->getLabel()->setText(" ");   
+        checkButton->setLabel(" ");   
     }  
 }
 

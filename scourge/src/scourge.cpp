@@ -2003,7 +2003,7 @@ void Scourge::createUI() {
     (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
   messageWin = new Window( getSDLHandler(),
                            0, 0, width, PARTY_GUI_HEIGHT, 
-                           strdup("Messages"), 
+                           "Messages", 
                            getShapePalette()->getGuiTexture(), false,
                            Window::BASIC_WINDOW,
                            getShapePalette()->getGuiTexture2() );
@@ -2024,13 +2024,13 @@ void Scourge::createUI() {
                                       (getSDLHandler()->getScreen()->w/2) - (w/2), 
                                       (getSDLHandler()->getScreen()->h/2) - (h/2), 
                                       w, h,
-                                      strdup("Leave level?"), 
+                                      "Leave level?", 
                                       getShapePalette()->getGuiTexture(), false,
                                       Window::BASIC_WINDOW,
                                       getShapePalette()->getGuiTexture2());
-  yesExitConfirm = new Button( 40, 50, 110, 80, getShapePalette()->getHighlightTexture(), strdup("Yes") );
+  yesExitConfirm = new Button( 40, 50, 110, 80, getShapePalette()->getHighlightTexture(), "Yes" );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
-  noExitConfirm = new Button( 140, 50, 210, 80, getShapePalette()->getHighlightTexture(), strdup("No") );
+  noExitConfirm = new Button( 140, 50, 210, 80, getShapePalette()->getHighlightTexture(), "No" );
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
@@ -2622,43 +2622,42 @@ void Scourge::createPartyUI() {
                         getShapePalette()->getGuiTexture2() );
   cards = new CardContainer(mainWin);  
 
-  inventoryButton = cards->createButton( 0, 0, 60, 25, strdup("Party Info"), MAX_SIZE );
-  endTurnButton = cards->createButton( 60, 0, 120, 25, strdup("End Turn"), MAX_SIZE );
-  optionsButton = cards->createButton( 0, 25,  60, 50, strdup("Options"), MAX_SIZE );
-  quitButton = cards->createButton( 60, 25,  120, 50, strdup("Quit"), MAX_SIZE );
-  // string label must be big enough for string changes in toggleRoundUI().
-  roundButton = cards->createButton( 0, 50,  120, 75, strdup("Real-Time      "), MAX_SIZE );
+  inventoryButton = cards->createButton( 0, 0, 60, 25, "Party Info", MAX_SIZE );
+  endTurnButton = cards->createButton( 60, 0, 120, 25, "End Turn", MAX_SIZE );
+  optionsButton = cards->createButton( 0, 25,  60, 50, "Options", MAX_SIZE );
+  quitButton = cards->createButton( 60, 25,  120, 50, "Quit", MAX_SIZE );
+  roundButton = cards->createButton( 0, 50,  120, 75, "Real-Time", MAX_SIZE );
   roundButton->setToggle(true);
   roundButton->setSelected(true);
   
   int lowerRowHeight = 20;
-  diamondButton = cards->createButton( 0, 75,  20, 75 + lowerRowHeight, strdup("f1"), MAX_SIZE );
+  diamondButton = cards->createButton( 0, 75,  20, 75 + lowerRowHeight, "f1", MAX_SIZE );
   diamondButton->setToggle(true);
-  staggeredButton = cards->createButton( 20, 75,  40, 75 + lowerRowHeight, strdup("f2"), MAX_SIZE );
+  staggeredButton = cards->createButton( 20, 75,  40, 75 + lowerRowHeight, "f2", MAX_SIZE );
   staggeredButton->setToggle(true);
-  squareButton = cards->createButton( 40, 75,  60, 75 + lowerRowHeight, strdup("f3"), MAX_SIZE );
+  squareButton = cards->createButton( 40, 75,  60, 75 + lowerRowHeight, "f3", MAX_SIZE );
   squareButton->setToggle(true);
-  rowButton = cards->createButton( 60, 75,  80, 75 + lowerRowHeight, strdup("f4"), MAX_SIZE );
+  rowButton = cards->createButton( 60, 75,  80, 75 + lowerRowHeight, "f4", MAX_SIZE );
   rowButton->setToggle(true);
-  scoutButton = cards->createButton( 80, 75, 100, 75 + lowerRowHeight, strdup("f5"), MAX_SIZE );
+  scoutButton = cards->createButton( 80, 75, 100, 75 + lowerRowHeight, "f5", MAX_SIZE );
   scoutButton->setToggle(true);
-  crossButton = cards->createButton( 100, 75,  120, 75 + lowerRowHeight, strdup("f6"), MAX_SIZE );
+  crossButton = cards->createButton( 100, 75,  120, 75 + lowerRowHeight, "f6", MAX_SIZE );
   crossButton->setToggle(true);
 
-  groupButton = cards->createButton( 0, 75 + lowerRowHeight,  20, 75 + (lowerRowHeight * 2), strdup("G"), MAX_SIZE );
+  groupButton = cards->createButton( 0, 75 + lowerRowHeight,  20, 75 + (lowerRowHeight * 2), "G", MAX_SIZE );
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   calendarButton = cards->createButton( 20, 75 + lowerRowHeight, 120, 75 + (lowerRowHeight * 2), 
-							   strdup(party->getCalendar()->getCurrentDate().getDateString()), MAX_SIZE);      
+							   party->getCalendar()->getCurrentDate().getDateString(), MAX_SIZE);      
   //calendarButton->setLabelPosition(Button::CENTER);
 
-  minButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("-"), MAX_SIZE );
-  maxButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("+"), MIN_SIZE );
+  minButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), "-", MAX_SIZE );
+  maxButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), "+", MIN_SIZE );
 
-  layoutButton1 = cards->createButton( 20, 75 + (lowerRowHeight * 2), 40, 75 + (lowerRowHeight * 3), strdup("L1"), MAX_SIZE );
-  layoutButton2 = cards->createButton( 40, 75 + (lowerRowHeight * 2), 60, 75 + (lowerRowHeight * 3), strdup("L2"), MAX_SIZE );
-  layoutButton3 = cards->createButton( 60, 75 + (lowerRowHeight * 2), 80, 75 + (lowerRowHeight * 3), strdup("L3"), MAX_SIZE );
-  layoutButton4 = cards->createButton( 80, 75 + (lowerRowHeight * 2), 100, 75 + (lowerRowHeight * 3), strdup("L4"), MAX_SIZE );
+  layoutButton1 = cards->createButton( 20, 75 + (lowerRowHeight * 2), 40, 75 + (lowerRowHeight * 3), "L1", MAX_SIZE );
+  layoutButton2 = cards->createButton( 40, 75 + (lowerRowHeight * 2), 60, 75 + (lowerRowHeight * 3), "L2", MAX_SIZE );
+  layoutButton3 = cards->createButton( 60, 75 + (lowerRowHeight * 2), 80, 75 + (lowerRowHeight * 3), "L3", MAX_SIZE );
+  layoutButton4 = cards->createButton( 80, 75 + (lowerRowHeight * 2), 100, 75 + (lowerRowHeight * 3), "L4", MAX_SIZE );
 
 
   int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - 120) / 4;
@@ -2827,10 +2826,10 @@ void Scourge::drawWidget(Widget *w) {
 }
 
 void Scourge::resetPartyUI() {
-  player1Button->getLabel()->setText(party->getParty(0)->getName());
+  player1Button->setLabel(party->getParty(0)->getName());
   player1Button->setSelected(true);
   if(party->getPartySize() > 1) {
-    player2Button->getLabel()->setText(party->getParty(1)->getName());
+    player2Button->setLabel(party->getParty(1)->getName());
     player2Button->setVisible(true);
     playerInfo[1]->setVisible(true);
   } else {
@@ -2838,7 +2837,7 @@ void Scourge::resetPartyUI() {
     playerInfo[1]->setVisible(false);
   }
   if(party->getPartySize() > 2) {
-    player3Button->getLabel()->setText(party->getParty(2)->getName());
+    player3Button->setLabel(party->getParty(2)->getName());
     player3Button->setVisible(true);
     playerInfo[2]->setVisible(true);
   } else {
@@ -2846,7 +2845,7 @@ void Scourge::resetPartyUI() {
     playerInfo[2]->setVisible(false);
   }
   if(party->getPartySize() > 3) {
-    player4Button->getLabel()->setText(party->getParty(3)->getName());
+    player4Button->setLabel(party->getParty(3)->getName());
     player4Button->setVisible(true);
     playerInfo[3]->setVisible(true);
   } else {
@@ -2932,7 +2931,7 @@ void Scourge::refreshInventoryUI() {
 void Scourge::updatePartyUI() {
   // update current date variables and see if scheduled events have occured  
   if(party->getCalendar()->update(getUserConfiguration()->getGameSpeedLevel())){
-    calendarButton->getLabel()->setTextCopy(party->getCalendar()->getCurrentDate().getDateString());        
+    calendarButton->setLabel(party->getCalendar()->getCurrentDate().getDateString());        
   }
   // refresh levelMap if any party member's effect is on
   bool effectOn = false;
@@ -2973,15 +2972,15 @@ void Scourge::toggleRoundUI(bool startRound) {
      getUserConfiguration()->isBattleTurnBased()) {
     if(!startRound && 
        !battleRound[battleTurn]->getCreature()->isMonster()) {
-      roundButton->getLabel()->setTextCopy("Begin Turn");
+      roundButton->setLabel("Begin Turn");
       roundButton->setGlowing(true);
     } else {
-      roundButton->getLabel()->setTextCopy("...in Turn...");
+      roundButton->setLabel("...in Turn...");
       roundButton->setGlowing(false);
     }
   } else {
-    if(startRound) roundButton->getLabel()->setTextCopy("Real-Time      ");
-    else roundButton->getLabel()->setTextCopy("Paused");
+    if(startRound) roundButton->setLabel("Real-Time      ");
+    else roundButton->setLabel("Paused");
     roundButton->setGlowing(false);
   }
   roundButton->setSelected(startRound);
@@ -3039,10 +3038,10 @@ void Scourge::createBoardUI() {
   boardWin = createWoodWindow((getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
 									   (getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
 									   BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
-									   strdup("Available Missions"));
+									   "Available Missions");
   missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150, getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
-  missionDescriptionLabel = new Label(5, 210, strdup(""), 67);
+  missionDescriptionLabel = new Label(5, 210, "", 67);
   boardWin->addWidget(missionDescriptionLabel);
   playMission = new Button(5, 5, 105, 35, getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);

@@ -66,6 +66,11 @@ void ScrollingList::setLines(int count, const char *s[], const Color *colors, co
 }
 
 void ScrollingList::drawWidget(Widget *parent) {
+  GuiTheme *theme = ((Window*)parent)->getTheme();
+
+
+
+  // FIXME: use button->drawWidget() instead of code dup.
   // draw the button
   applyBackgroundColor(true);
   if(isTranslucent()) {
@@ -128,6 +133,11 @@ void ScrollingList::drawWidget(Widget *parent) {
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
   }
+  // end of FIXME
+
+
+
+
 
   // draw the text
   if(debug) {
@@ -146,9 +156,17 @@ void ScrollingList::drawWidget(Widget *parent) {
 	      w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
    
+
     // highlight the selected line
     if(selectedLine > -1) {
-      applySelectionColor();
+      if( theme->getSelectionBackground() ) {
+        glColor4f( theme->getSelectionBackground()->color.r,
+                   theme->getSelectionBackground()->color.g,
+                   theme->getSelectionBackground()->color.b,
+                   theme->getSelectionBackground()->color.a );
+      } else {
+        applySelectionColor();
+      }
       glBegin( GL_QUADS );
       glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
       glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * 15 + 5));
@@ -159,7 +177,15 @@ void ScrollingList::drawWidget(Widget *parent) {
     
     // draw the contents
     if(!colors) {
-	  applyColor();
+      
+      if( theme->getWindowText() ) {
+        glColor4f( theme->getWindowText()->r,
+                   theme->getWindowText()->g,
+                   theme->getWindowText()->b,
+                   theme->getWindowText()->a );
+      } else {
+        applyColor();
+      }
 	}
     int ypos;
     for(int i = 0; i < count; i++) {
@@ -168,13 +194,34 @@ void ScrollingList::drawWidget(Widget *parent) {
       if(ypos >= 0 && ypos < getHeight()) {
 		if(icons) drawIcon( scrollerWidth + 5, ypos - 10, icons[i] );
 		if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
-		else applyColor();
+        else if( i == selectedLine && theme->getSelectionText() ) {
+          glColor4f( theme->getSelectionText()->r,
+                     theme->getSelectionText()->g,
+                     theme->getSelectionText()->b,
+                     theme->getSelectionText()->a );
+        } else {
+          if( theme->getWindowText() ) {
+            glColor4f( theme->getWindowText()->r,
+                       theme->getWindowText()->g,
+                       theme->getWindowText()->b,
+                       theme->getWindowText()->a );
+          } else {
+            applyColor();
+          }
+        }
 		((Window*)parent)->getSDLHandler()->texPrint(scrollerWidth + (icons ? 20 : 5), ypos, list[i]);
       }
     }
     
     if(selectedLine > -1) {
-      applyBorderColor();
+      if( theme->getButtonBorder() ) {
+        glColor4f( theme->getButtonBorder()->color.r,
+                   theme->getButtonBorder()->color.g,
+                   theme->getButtonBorder()->color.b,
+                   theme->getButtonBorder()->color.a );
+      } else {
+        applyBorderColor();
+      }
       glBegin(GL_LINES);
       glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
       glVertex2d(w, textPos + (selectedLine * 15) + 3);
@@ -190,7 +237,16 @@ void ScrollingList::drawWidget(Widget *parent) {
   if(highlightBorders) {
     applyHighlightedBorderColor();
     glLineWidth( 3.0f );
-  } else applyBorderColor();
+  } else {
+    if( theme->getButtonBorder() ) {
+      glColor4f( theme->getButtonBorder()->color.r,
+                 theme->getButtonBorder()->color.g,
+                 theme->getButtonBorder()->color.b,
+                 theme->getButtonBorder()->color.a );
+    } else {
+      applyBorderColor();
+    }
+  }
   glBegin(GL_LINES);
   glVertex2d(0, 0);
   glVertex2d(0, h);

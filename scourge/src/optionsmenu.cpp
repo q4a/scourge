@@ -37,30 +37,30 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   
   mainWin = new Window( scourge->getSDLHandler(),
                         100, 170, 280, 320, 
-                        strdup("Options"), 
+                        "Options", 
                         scourge->getShapePalette()->getGuiTexture(),
                         false, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2());
     
   int x = 0;
-  gameSettingsButton = mainWin->createButton(x, 0, x + BUTTON_WIDTH, SPACING, strdup("Gameplay"), true);
+  gameSettingsButton = mainWin->createButton(x, 0, x + BUTTON_WIDTH, SPACING, "Gameplay", true);
   x += BUTTON_WIDTH;
-  videoButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, strdup("Video"), true);
+  videoButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Video", true);
   x += BUTTON_WIDTH;
-  audioButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, strdup("Audio"), true);
+  audioButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Audio", true);
   x += BUTTON_WIDTH;
-  controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, strdup("Controls"), true);           
+  controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Controls", true);           
 
   x = 10;
-  saveButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, strdup("Save to file"), false);      
+  saveButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, "Save to file", false);      
   x += BUTTON_WIDTH + MINOR_SPACING;
-  closeButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, strdup("Close"), false);      
+  closeButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, "Close", false);      
   
   cards = new CardContainer(mainWin);
   
   // Controls tab
   int y = YPOS;
-  keyBindingsLabel = cards->createLabel(XPOS, y + 10, strdup("Key bindings"), CONTROLS, Constants::RED_COLOR);
+  keyBindingsLabel = cards->createLabel(XPOS, y + 10, "Key bindings", CONTROLS, Constants::RED_COLOR);
   y += SPACING + MINOR_SPACING;
   controlBindingsList = new ScrollingList(XPOS, y, X_SIZE, 200, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(controlBindingsList, CONTROLS);
@@ -69,7 +69,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 											Constants::getMessage( Constants::CHANGE_KEY ), 
 											CONTROLS, false);
   y += SPACING + MINOR_SPACING;
-  waitingLabel = cards->createLabel(35, 80, strdup(" "), CONTROLS, Constants::BLUE_COLOR);         
+  waitingLabel = cards->createLabel(35, 80, " ", CONTROLS, Constants::BLUE_COLOR);         
 
   // Game settings tab
   y = YPOS;
@@ -93,7 +93,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   y += SPACING + MINOR_SPACING;
   tooltipEnabled = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show tooltips", GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 200, strdup("Tooltip Delay:"));
+  tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 200, "Tooltip Delay:");
   cards->addWidget(tooltipInterval, GAME_SETTINGS);
    
   // Video settings tabs        
@@ -132,14 +132,14 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   shadowsML -> addText("All");       
   cards->addWidget(shadowsML, VIDEO);       
   y += SPACING + MINOR_SPACING;
-  changeTakeEffectLabel = cards->createLabel(XPOS, y, strdup(" "), VIDEO, Constants::BLUE_COLOR);
+  changeTakeEffectLabel = cards->createLabel(XPOS, y, " ", VIDEO, Constants::BLUE_COLOR);
   
   // audio
   y = YPOS;
-  musicVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, strdup("Music Volume:"));
+  musicVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, "Music Volume:");
   cards->addWidget(musicVolume, AUDIO);
   y += SPACING + MINOR_SPACING + 15;
-  effectsVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, strdup("Effects Volume:"));
+  effectsVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, "Effects Volume:");
   cards->addWidget(effectsVolume, AUDIO);
   
   selectedMode = GAME_SETTINGS;
@@ -302,8 +302,8 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         selectedMode = CONTROLS;        
     }       
     else if(widget == changeControlButton) { // && selectedMode== Controls?       
-	  //	  waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
-	  changeControlButton->getLabel()->setText( Constants::getMessage( Constants::WAITING_FOR_KEY ) );
+	  //	  waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");        
+	  changeControlButton->setLabel( Constants::getMessage( Constants::WAITING_FOR_KEY ) );
 	  waitingForNewKey = true;               
     }
     else if(widget == gameSpeedML){
@@ -438,15 +438,15 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 		controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
 		controlBindingsList->setSelectedLine(ind);                                                          
 	  } else ignoreKeyUp = true;
-	  //waitingLabel->setText(strdup(" "));
-	  changeControlButton->getLabel()->setText( Constants::getMessage( Constants::CHANGE_KEY ) );
+	  //waitingLabel->setText(" ");
+	  changeControlButton->setLabel( Constants::getMessage( Constants::CHANGE_KEY ) );
 	  waitingForNewKey = false;
     } else{
 	  switch(event->key.keysym.sym) {
 	  case SDLK_RETURN:
 		if(selectedMode == CONTROLS){
-		  //waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
-		  changeControlButton->getLabel()->setText( Constants::getMessage( Constants::WAITING_FOR_KEY) );
+		  //waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");        
+		  changeControlButton->setLabel( Constants::getMessage( Constants::WAITING_FOR_KEY) );
 		  waitingForNewKey = true;  
 		}
         /*case SDLK_DOWN:
