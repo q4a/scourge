@@ -448,8 +448,9 @@ void GLShape::setLightBlocking(bool b) {
 
 // loosely interpreted...
 bool GLShape::fitsInside(GLShape *smaller) {
-  return (width + 1 > smaller->getWidth() && 
-          depth + 1 > smaller->getDepth() &&
-          height + 1 > smaller->getHeight());
+  return (smaller->getHeight() < 2 ||
+          (width + 1 > smaller->getWidth() && 
+           depth + 1 > smaller->getDepth() &&
+           height + 1 > smaller->getHeight()));
 }
 
