@@ -1018,7 +1018,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
       party->toggleRound(true);
       exitConfirmationDialog->setVisible(true);
     } else if(event->key.keysym.sym == SDLK_g) {
-      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
+//      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
+      party->startEffect( Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
     } else if(event->key.keysym.sym == SDLK_m) {
       Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
       return false;
