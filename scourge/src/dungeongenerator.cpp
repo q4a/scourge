@@ -81,7 +81,7 @@ const MapLocation DungeonGenerator::location[] = {
 	  "#e+w#",
 	  "## ##" 
 	},
-	26, 
+	25, 
 	{
 	  { Constants::BOARD_INDEX, 2*unitSide+11, unitSide + 1, 0 },
 
@@ -98,8 +98,6 @@ const MapLocation DungeonGenerator::location[] = {
 		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+32, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+40, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+40, 0 },
-
-	  { Constants::COLUMN_INDEX, 2*unitSide+14, unitSide+40, 0 },
 
 	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+8, 2 },
 	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+8, 0 },		
@@ -727,21 +725,30 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 
 void DungeonGenerator::updateStatus() {
   glLoadIdentity();
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-  glClearColor( 0, 0, 0, 0 );
-  //  glClearDepth( 1.0f );
+  //  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+  //  glClearColor( 0, 0, 0, 0 );
 
-  glEnable( GL_DEPTH_TEST );
+  glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_FALSE);
   glDisable( GL_BLEND );
   glDisable( GL_CULL_FACE );
   glDisable( GL_TEXTURE_2D );
 
-  glColor4f(1, 1, 1, 1);
-  scourge->getSDLHandler()->texPrint(20, 25, "Assembling Dungeon Level...");
+  int MAX_STATUS = 12;
   int w = 10;  
   int h = 20;
-  for(int i = 0; i < 12; i++) {
+
+  glColor4f( 0.25f, 0.20f, 0.15f, 0.15f );
+  glBegin( GL_QUADS );
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( 0, 35 + h + 10, 0);
+  glVertex3f( MAX_STATUS * 2 * w + 20, 35 + h + 10, 0 );
+  glVertex3f( MAX_STATUS * 2 * w + 20, 0, 0 );
+  glEnd();
+
+  glColor4f(1, 1, 1, 1);
+  scourge->getSDLHandler()->texPrint(20, 25, "Assembling Dungeon Level...");
+  for(int i = 0; i < MAX_STATUS; i++) {
 	if(i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
 	else glColor4f(0.5f, 0.5f, 0.5f, 1);
 	glPushMatrix();
@@ -759,7 +766,11 @@ void DungeonGenerator::updateStatus() {
   /* Draw it to the screen */
   SDL_GL_SwapBuffers( );
   status++;
-  //  usleep(5000);
+  //sleep(1);
+
+  glEnable( GL_DEPTH_TEST );
+  glDepthMask(GL_TRUE);
+
 }
 
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 

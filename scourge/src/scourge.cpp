@@ -472,11 +472,6 @@ void Scourge::drawAfter() {
 bool Scourge::handleEvent(SDL_Event *event) {
   int ea;  
 
-  if(changingStory) {
-	endMission();
-	return true;
-  }
-
   if(containerGuiCount > 0) {
 	for(int i = 0; i < containerGuiCount; i++) {
 	  if(containerGui[i]->handleEvent(event)) {
@@ -525,7 +520,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  if(teleporting && !exitConfirmationDialog->isVisible()) {
 		exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
 		if(startRound) toggleRound();
-
+		exitConfirmationDialog->setVisible(true);
+	  } else if(changingStory && !exitConfirmationDialog->isVisible()) {
+		exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
+		if(startRound) toggleRound();
 		exitConfirmationDialog->setVisible(true);
 	  }
     }
@@ -776,7 +774,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 			getMapXYAtScreenXY(x, y, &mapx, &mapy);
 			mapz = 0;
 		}
-		if(useItem(mapx, mapy, mapz))	return;
+		if(useItem(mapx, mapy, mapz)) return;
 		
 		// click on the map
 		getMapXYAtScreenXY(x, y, &mapx, &mapy);
@@ -1124,10 +1122,12 @@ bool Scourge::useGate(Location *pos) {
   for(int i = 0; i < 4; i++) {
 	if(!party[i]->getStateMod(Constants::dead)) {
 	  if(pos->shape == shapePal->getShape(Constants::STAIRS_UP_INDEX)) {
+		oldStory = currentStory;
 		currentStory--;
 		changingStory = true;
 		return true;
 	  } else if(pos->shape == shapePal->getShape(Constants::STAIRS_DOWN_INDEX)) {
+		oldStory = currentStory;
 		currentStory++;
 		changingStory = true;
 		return true;
@@ -1249,6 +1249,8 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	return true;
   } else if(widget == noExitConfirm) {
 	teleporting = false;
+	changingStory = false;
+	currentStory = oldStory;
 	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
 	exitConfirmationDialog->setVisible(false);
 	return false;
@@ -1290,7 +1292,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 		int selected = missionList->getSelectedLine();
 		if(selected != -1 && selected < board->getMissionCount()) {
 			nextMission = selected;
-			currentStory = 0;
+			oldStory = currentStory = 0;
 			endMission();
 			return true;
 		}
@@ -1379,7 +1381,7 @@ void Scourge::createUI() {
 	(getSDLHandler()->getScreen()->w/2) - (w/2), 
 	(getSDLHandler()->getScreen()->h/2) - (h/2), 
 	 w, h,
-	 strdup("Exit mission?"), 
+	 strdup("Leave level?"), 
 	 getShapePalette()->getGuiTexture(), false);
   yesExitConfirm = new Button( 40, 50, 110, 80, strdup("Yes") );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);

@@ -50,7 +50,8 @@ char *Constants::messages[][80] = {
   { "Select a character who has leveled up." },
   { "No skill points available." },
   { "Select a skill first." },
-  { "S.C.O.U.R.G.E. dialog" }
+  { "S.C.O.U.R.G.E. dialog" },
+  { "Use gate to enter another level?" }
 };
 
 int Constants::messageCount[] = {
