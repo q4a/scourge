@@ -56,6 +56,7 @@ public:
   inline int getDescriptionGroup() { return descriptionGroup; }
 
   virtual void draw() = 0;
+  virtual void setupToDraw() = 0;
   
   inline void setIndex(Uint8 index) { this->index = index; }
   

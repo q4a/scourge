@@ -91,6 +91,8 @@ public:
 			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
          
 	~GLShape();
+
+  void setDimensions(int w, int d, int h);
 	            
 	bool isLightBlocking();
 	void setLightBlocking(bool b);
@@ -98,6 +100,7 @@ public:
 	static const float DIV = 0.06f;
   
   void draw();   
+  inline void setupToDraw() {};
 
   inline GLuint getDisplayList() { return display_list; }
   inline Uint8 getShapePalIndex() { return shapePalIndex; }
@@ -124,6 +127,7 @@ protected:
   void commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 shapePalIndex);
   static struct surface *new_surface(float vertices[4][3]);
   void createDarkTexture();
+  void initSurfaces();
 };
 
 #endif

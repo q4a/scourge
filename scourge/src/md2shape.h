@@ -76,6 +76,8 @@ private:
   // This returns time t for the interpolation between the current and next key frame
   float ReturnCurrentTime(int nextFrame);
 
+  GLShape *debugShape;
+
 public: 
     MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
           GLuint texture[], int width, int depth, int height,
@@ -90,21 +92,9 @@ public:
 	~MD2Shape();
 
   void draw();
+  void setupToDraw();
 
-  inline void setDir(int dir) { 
-	this->dir = dir; 
-	switch(dir) {
-    case Constants::MOVE_UP:
-      angle = 0.0f; break;
-    case Constants::MOVE_LEFT:
-      angle = -90.0f; break;
-    case Constants::MOVE_RIGHT:
-      angle = 90.0f;break;
-    default:
-      angle = 180.0f;
-	}
-  }
-  
+  void setDir(int dir);  
   bool drawFirst();
   // if true, the next two functions are called
   bool drawLater();
@@ -116,9 +106,9 @@ public:
   inline char *getSkinName() { return skin_name; }
 
   inline void setAngle(float angle) { 
-	float a = angle + 90.0f;
-	if(a >= 360.0f) a -= 360.0f;
-	this->angle = a; 
+    float a = angle + 90.0f;
+    if(a >= 360.0f) a -= 360.0f;
+    this->angle = a; 
   }
 
 protected:

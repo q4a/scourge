@@ -29,20 +29,16 @@
 #include "Md2.h"
 #include "md2shape.h"
 
+//#define DEBUG_MD2 1
+
 MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
                    GLuint texture[],
                    int width, int depth, int height,
                    char *name, int descriptionGroup,
                    Uint32 color, Uint8 shapePalIndex) :
-  // passing 0 for texture causes glshape to not init
-  // 0 for display_list means : no display list available
-#ifdef DEBUG_MD2
-  GLShape(texture, width, depth, height, name, descriptionGroup, color, display_list, shapePalIndex) {
-#else
-  //GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
   GLShape(0, width, depth, height, name, descriptionGroup, color, 0, shapePalIndex) {
-#endif
   commonInit(g_3DModel, textureId, div);    
+  debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, 0, shapePalIndex);
 }
 
 MD2Shape::~MD2Shape() {
@@ -63,70 +59,167 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   currentAnim = MD2_STAND;
   currentFrame = 1;
   playedOnce = true;
-  animationWaiting = -1;                
-  
+  animationWaiting = -1;      
 
+  attackEffect = false;
+  setDir(Constants::MOVE_UP);
+  
   vect = new vect3d [g_3DModel->numVertices]; 
   for(int i = 0; i < g_3DModel->numVertices; i++){
     for(int j = 0; j < 3; j++){
         vect[i][j] = 0.0;
     }
   }         
-}
 
 
 
-void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
-    if(numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){
-        if(force || playedOnce){
-            currentAnim = numAnim;                
-            currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
-                                     
-            // MD2_STAND animation is too long, so we make it "interruptible"
-            if(currentAnim != MD2_STAND){
-                playedOnce = false;                    
-            }                
-        }
-        else{
-            // if animationWaiting != -1 there is already an animation waiting
-            // and we store only one at a time
-            if(animationWaiting == -1){
-                animationWaiting = currentAnim;
-            }
-        }
+  vect3d min;
+  vect3d max;
+
+  /*
+  // find the min/max-s
+  vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[MD2_STAND].startFrame ];
+  min[0] = min[1] = min[2] = 100000.0f; // BAD!!
+  max[0] = max[1] = max[2] = 0.0f;
+  for(int i = 0; i < g_3DModel->numVertices; i++) {
+    for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
+    for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
+  }  
+  for(int t = 0; t < 3; t++) max[t] -= min[t];
+
+  // set the dimensions
+  float fw = max[2] * this->div * DIV;
+  float fd = max[0] * this->div * DIV;
+  float fh = max[1] * this->div * DIV;
+
+  // make it a square
+  if(fw > fd) fd = fw;
+  else fw = fd;
+
+  // set the shape's dimensions
+  // FIXME: instead of setting these here, a factory method
+  this->width = (int)(fw + 0.5f);
+  this->depth = (int)(fd + 0.5f);
+  this->height = (int)(fh + 0.5f);
+  */
+
+  // normalize and center
+  for(int r = 0; r < MD2_CREATURE_ACTION_COUNT; r++) {
+
+    // mins/max-s
+    vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[r].startFrame ];
+    min[0] = min[1] = min[2] = 100000.0f; // BAD!!
+    max[0] = max[1] = max[2] = 0.0f;
+    for(int i = 0; i < g_3DModel->numVertices; i++) {
+      for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
+      for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
+    }  
+    for(int t = 0; t < 3; t++) max[t] -= min[t];
+
+    if( r == MD2_STAND ) {
+      // set the dimensions
+      float fw = max[2] * this->div * DIV;
+      float fd = max[0] * this->div * DIV;
+      float fh = max[1] * this->div * DIV;
+
+      // make it a square
+      if(fw > fd) fd = fw;
+      else fw = fd;
+
+      // set the shape's dimensions
+      // FIXME: instead of setting these here, a factory method
+      this->width = (int)(fw + 0.5f);
+      this->depth = (int)(fd + 0.5f);
+      this->height = (int)(fh + 0.5f);
     }
+
+    // normalize and center points
+    for(int a = g_3DModel->pAnimations[r].startFrame; a < g_3DModel->pAnimations[r].endFrame; a++) {
+      point = &g_3DModel->vertices[ g_3DModel->numVertices * a ];
+      for(int i = 0; i < g_3DModel->numVertices; i++) {
+        for(int t = 0; t < 3; t++) point[i][t] -= min[t];
+        for(int t = 0; t < 3; t++) if(t != 1) point[i][t] -= (max[t] / 2.0f);
+      }
+    }
+  }
+
+  cerr << "model=" << this->getName() << 
+    " width=" << width <<
+    " depth=" << depth <<
+    " height=" << height << endl;
 }
 
 void MD2Shape::draw() {
+
 #ifdef DEBUG_MD2
-  // draw the outline for debugging
-  GLShape::draw();
-#endif  
+  if( glIsEnabled( GL_TEXTURE_2D ) ) {
+    glPushMatrix();
+    debugShape->draw();
+    glPopMatrix();
+  }
+#endif
 
   glPushMatrix();
+
+  // rotate to upright
+  glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+
+  // move to the middle of the space
+  glTranslatef( ((float)width / DIV) / 2.0f, 0, -((float)depth / DIV) / 2.0f );
+
+  // rotate to movement angle
+  glRotatef(angle - 90, 0.0f, 1.0f, 0.0f);
 
   // To make our model render somewhat faster, we do some front back culling.
   // It seems that Quake2 orders their polygons clock-wise.  
   glEnable( GL_CULL_FACE );
   glCullFace( GL_BACK );
-  
-  glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
-  glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-  glTranslatef(-g_3DModel->movex / 2.0f * div, 0.0f, 0.0f);
-  glTranslatef(0.0f, g_3DModel->movey * div, 0.0f);
-  glTranslatef(0.0f, 0.0f, -g_3DModel->movez / 2.0f * div);   
 
-  glRotatef(angle, 0.0f, 1.0f, 0.0f);
-   
   AnimateMD2Model();      
- //cout << textureId << " " << g_3DModel->pAnimations[currentAnim].strName << " frame " << currentFrame <<       
-  //      "/" << g_3DModel->pAnimations[currentAnim].endFrame << endl; 
  
   glDisable(GL_CULL_FACE);
   glPopMatrix();    
 }
 
+void MD2Shape::setDir(int dir) { 
+  this->dir = dir; 
+  switch(dir) {
+  case Constants::MOVE_UP:
+    angle = 0.0f; 
+    break;
+  case Constants::MOVE_LEFT:
+    angle = -90.0f; break;
+  case Constants::MOVE_RIGHT:
+    angle = 90.0f;break;
+  default:
+    angle = 180.0f;
+  }
+}
 
+void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
+  if(numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){
+    if(force || playedOnce){
+      currentAnim = numAnim;                
+      currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
+      
+      // MD2_STAND animation is too long, so we make it "interruptible"
+      if(currentAnim != MD2_STAND){
+        playedOnce = false;                    
+      }                
+    }
+    else{
+      // if animationWaiting != -1 there is already an animation waiting
+      // and we store only one at a time
+      if(animationWaiting == -1){
+        animationWaiting = currentAnim;
+      }
+    }
+  }
+}
+
+void MD2Shape::setupToDraw() {
+
+}
 
 // This returns time t for the interpolation between the current and next key frame
 float MD2Shape::ReturnCurrentTime(int nextFrame)
@@ -159,27 +252,17 @@ void MD2Shape::AnimateMD2Model()
     
     // MD2_STAND and MD2_TAUNT animations must be played only once 
     if(nextFrame == 0){        
-        nextFrame =  pAnim->startFrame;
-        playedOnce = true;        
-		if(currentAnim == MD2_ATTACK) {
-		  if(animationWaiting == - 1){
-    		  setCurrentAnimation(MD2_STAND);
-		  }
-		  else{
-		      setCurrentAnimation(animationWaiting);
-		      animationWaiting = -1;
-          }
-		  setAttackEffect(false);
-		}
-        else if(currentAnim == MD2_TAUNT) {
-          if(animationWaiting == - 1){
-    		  setCurrentAnimation(MD2_STAND);
-		  }
-		  else{
-		      setCurrentAnimation(animationWaiting);
-		      animationWaiting = -1;
-          }
-		}
+      nextFrame =  pAnim->startFrame;
+      playedOnce = true;        
+      if(!(currentAnim == MD2_STAND || currentAnim == MD2_RUN)) {
+        if(animationWaiting == - 1){
+          setCurrentAnimation(MD2_STAND);
+        } else{
+          setCurrentAnimation(animationWaiting);
+          animationWaiting = -1;
+        }
+        setAttackEffect(false);
+      }
     } 
 
     // t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation    
@@ -205,6 +288,23 @@ void MD2Shape::AnimateMD2Model()
             vect[i][2] = currVertices[i][2]  * div;    
         }    
     }
+
+    /*
+    if(currentAnim != MD2_RUN) {
+      bool inAir = true;
+      float min = -1;
+      for(int i = 0; i < g_3DModel->numVertices; i++) {
+        if(min == -1 || vect[i][1] < min) min = vect[i][1];
+        if(vect[i][1] < 1.0f && vect[i][1] > -1.0f) {
+          inAir = false;
+          break;
+        }
+      }
+      if(inAir) {
+        cerr << getName() << " IN AIR. min=" << min << " currentAnim=" << currentAnim << " start=" << pAnim->startFrame << " end=" << pAnim->endFrame << " currentFrame=" << currentFrame << endl;
+      }
+    }
+    */
             
     ptricmds = g_3DModel->pGlCommands;
     nb = *(ptricmds);    
