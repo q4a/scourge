@@ -166,7 +166,10 @@ void Item::initItems(ShapePalette *shapePal) {
 								   action, speed, strdup(long_description), 
 								   strdup(short_description), 
 								   inventory_location, shape_index, 
-								   twohanded, distance, skill_index, currentCharges, 
+								   twohanded, 
+								   (distance < (int)Constants::MIN_DISTANCE ? 
+									(int)Constants::MIN_DISTANCE : distance), 
+								   skill_index, currentCharges, 
 								   maxCharges));	  
 	} else {
 	  n = Constants::readLine(line, fp);
