@@ -22,6 +22,9 @@
 // at this fps, the players step 1 square                     
 #define FPS_ONE 10.0f
 
+// how fast to turn                        
+#define TURN_STEP_COUNT 5
+
 /**
  * Formations are defined by 4 set of coordinates in 2d space.
  * These starting positions assume dir=Constants::MOVE_UP
@@ -117,6 +120,7 @@ void Creature::commonInit() {
   this->actionItem = NULL;
   this->actionSpell = NULL;
   this->preActionTargetCreature = NULL;
+  this->angle = this->wantedAngle = this->angleStep = 0;
 
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -496,6 +500,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     //if( !strcmp(getName(),"Alamont") ) 
 //      cerr << "taking step! step=" << step << " mx=" << mx << " my=" << my << endl;
 
+    // Tolerance is 0.5 because toint will round to nearest int on map from there.
     GLfloat tolerance = 0.5f;
     if( my > tolerance ) {
       newY += step;
@@ -551,10 +556,21 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
     if(!position) {
       //if( !strcmp(getName(),"Alamont") ) cerr << "moved!" << endl;
-      angle = Util::getAngle( newX, newY, 1, 1,
-                              getX(), getY(), 1, 1 );
-      moveTo( newX, newY, getZ() );
+      GLfloat a = Util::getAngle( newX, newY, 1, 1,
+                                  getX(), getY(), 1, 1 );
+      if( bestPathPos == 1 || a != 0.0f ) {
+        wantedAngle = a;
+        angleStep = abs( angle - wantedAngle ) / (float)TURN_STEP_COUNT;
+      }
+      if( angle < wantedAngle ) {
+        GLfloat diff = wantedAngle - angle;
+        angle += ( diff > angleStep ? angleStep : diff );
+      } else if( angle > wantedAngle ) {
+        GLfloat diff = angle - wantedAngle;
+        angle -= ( diff > angleStep ? angleStep : diff );
+      }            
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
+      moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         //if( !strcmp(getName(),"Alamont") ) cerr << "reached path pos!" << endl;
         bestPathPos++;

@@ -363,6 +363,7 @@ float Util::getAngle(float fx, float fy, float fw, float fd,
 
   float x = ex - sx;
   float y = ey - sy;
+  if( x == 0.0f ) x = 0.001f;
   float angle = Constants::toAngle(atan(y / x));
 
   // read about the arctan problem: 
