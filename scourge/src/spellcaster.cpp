@@ -21,22 +21,28 @@
   In the future we can employ something more sophisticated than these if structures...
  */
 
-float SpellCaster::getPower(Creature *creature, Spell *spell) {
+SpellCaster::SpellCaster(Battle *battle, Spell *spell, bool projectileHit) {
+  this->battle = battle;
+  this->spell = spell;
+  this->projectileHit = projectileHit;
+
+  Creature *creature = battle->getCreature();
   // calculate spell's power
   // power=[0-25]
-  float power = (float)creature->getSkill(spell->getSchool()->getSkill()) / 4.0f;
+  power = (float)creature->getSkill(spell->getSchool()->getSkill()) / 4.0f;
   // power=[0-45]
   power += (float)creature->getSkill(Constants::IQ) / 5.0f;
   // power=[0-450]
   power *= creature->getLevel();
   // power=[0-500]
   power += ((float)creature->getSkill(Constants::LUCK) / 2.0f);
-  return power;
 }
 
-void SpellCaster::spellFailed(Scourge *scourge, Creature *creature, Spell *spell, bool projectileHit) {
+SpellCaster::~SpellCaster() {
+}
+
+void SpellCaster::spellFailed() {
   if(!spell) return;
-  float power = getPower(creature, spell);
 
   cerr << "FAILED: " << spell->getName() << " power=" << power << endl;
   
@@ -44,32 +50,31 @@ void SpellCaster::spellFailed(Scourge *scourge, Creature *creature, Spell *spell
   // (fouled fireball decimates party, etc.)
 
   // default is to print patronizing message...
-  scourge->getMap()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
+  battle->getScourge()->getMap()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
 }
 
-void SpellCaster::spellSucceeded(Scourge *scourge, Creature *creature, Spell *spell, bool projectileHit) {
+void SpellCaster::spellSucceeded() {
   if(!spell) return;
-  float power = getPower(creature, spell);
 
   cerr << "SUCCEEDED: " << spell->getName() << " power=" << power << endl;
   if(!strcasecmp(spell->getName(), "Lesser healing touch") ||
 	 !strcasecmp(spell->getName(), "Greater healing touch") ||
 	 !strcasecmp(spell->getName(), "Divine healing touch")) {
-	increaseHP(scourge, creature, spell, power);
+	increaseHP();
   } else if(!strcasecmp(spell->getName(), "Body of stone")) {
-	increaseAC(scourge, creature, spell, power);
+	increaseAC();
   } else if(!strcasecmp(spell->getName(), "Burning stare") ||
 			!strcasecmp(spell->getName(), "Silent knives")) {
 	if(projectileHit) {
-	  causeDamage(scourge, creature, spell, power, spell->getEffect());
+	  causeDamage();
 	} else {
-	  launchProjectile(scourge, creature, spell, power, 1);
+	  launchProjectile(1);
 	}
   } else if(!strcasecmp(spell->getName(), "Stinging light")) {
 	if(projectileHit) {
-	  causeDamage(scourge, creature, spell, power, spell->getEffect());
+	  causeDamage();
 	} else {
-	  launchProjectile(scourge, creature, spell, power, 0);
+	  launchProjectile(0);
 	}
   } else {
 	// default
@@ -81,7 +86,9 @@ void SpellCaster::spellSucceeded(Scourge *scourge, Creature *creature, Spell *sp
 
 
 
-void SpellCaster::increaseHP(Scourge *scourge, Creature *creature, Spell *spell, float power) {
+void SpellCaster::increaseHP() {
+  Creature *creature = battle->getCreature();
+
   int n = spell->getAction();
   n += (int)((((float)n / 100.0f) * power) * rand()/RAND_MAX);
 
@@ -90,11 +97,12 @@ void SpellCaster::increaseHP(Scourge *scourge, Creature *creature, Spell *spell,
   creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + n));
   char msg[200];
   sprintf(msg, "%s heals %d points.", creature->getTargetCreature()->getName(), n);
-  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+  battle->getScourge()->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 }
 
-void SpellCaster::increaseAC(Scourge *scourge, Creature *creature, Spell *spell, float power) {
+void SpellCaster::increaseAC() {
+  Creature *creature = battle->getCreature();
   int n = spell->getAction();
   n += (int)((((float)n / 100.0f) * power) * rand()/RAND_MAX);
 
@@ -105,22 +113,23 @@ void SpellCaster::increaseAC(Scourge *scourge, Creature *creature, Spell *spell,
   creature->getTargetCreature()->setBonusArmor(creature->getTargetCreature()->getBonusArmor() + n);
   char msg[200];
   sprintf(msg, "%s feels impervious to damage!", creature->getTargetCreature()->getName());
-  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+  battle->getScourge()->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
   
   // add calendar event to remove armor bonus
   // (format : sec, min, hours, days, months, years)
   Date d(0, timeInMin, 0, 0, 0, 0); 
-  Event *e = new PotionExpirationEvent(scourge->getParty()->getCalendar()->getCurrentDate(), 
+  Event *e = new PotionExpirationEvent(battle->getScourge()->getParty()->getCalendar()->getCurrentDate(), 
 									   d, creature->getTargetCreature(), 
 									   Constants::getPotionSkillByName("AC"), n, 
-									   scourge, 1);
-  scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
+									   battle->getScourge(), 1);
+  battle->getScourge()->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
 
 }
 
-void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature, 
-								   Spell *spell, float power, int count) {
+void SpellCaster::launchProjectile(int count) {
+  Creature *creature = battle->getCreature();
+
   // maxcount for spells means number of projectiles
   // (for missiles it means how many can be in the air at once.)
   int n = count;
@@ -132,7 +141,7 @@ void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature,
 
   // FIXME: shape should be configurable per spell
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
-								scourge->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
+								battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
 								n)) {
 	// max number of projectiles in the air
 	// FIXME: do something... 
@@ -140,14 +149,19 @@ void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature,
   }
 }
 
-void SpellCaster::causeDamage(Scourge *scourge, Creature *creature, Spell *spell, float power, int effect) {
-  cerr << "SpellCaster::causeDamage: Implement me!" << endl;
+void SpellCaster::causeDamage() {
+  Creature *creature = battle->getCreature();
 
-  int damage = spell->getAction();
-  if(!strcasecmp(spell->getName(), "Burning stare")) {
-	damage *= creature->getLevel();
-  }
+  int damage = spell->getAction() * creature->getLevel();
+  cerr << "causes " << damage << " points of damage" << endl;
 
-  // FIXME: effect should be configurable per spell
-  creature->getTargetCreature()->startEffect(effect, (Constants::DAMAGE_DURATION * 4));
+  char msg[200];
+  sprintf(msg, "%s attacks %s with %s.", 
+		  creature->getName(), 
+		  creature->getTargetCreature()->getName(),
+		  spell->getName());
+  battle->getScourge()->getMap()->addDescription(msg, 1, 0.15f, 1);
+
+  // cause damage, kill creature, gain levels, etc.
+  battle->dealDamage(damage, spell->getEffect());
 }

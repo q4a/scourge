@@ -89,12 +89,16 @@ class Battle {
   inline bool isEmpty() { return empty; }
   void fightTurn();
 
+  void dealDamage(int damage, int effect=Constants::EFFECT_GLOW);
+
+  inline Creature *getCreature() { return creature; }
+  inline Scourge *getScourge() { return scourge; }
+
  protected:
   void launchProjectile();
   void initTurn();
   void hitWithItem();
   void initItem(Item *item);
-  void dealDamage(int damage);
   void castSpell();
   void executeEatDrinkAction();
 };
