@@ -135,27 +135,7 @@ Scourge::Scourge(int argc, char *argv[]){
      
 #ifdef HAVE_SDL_NET
       if(mainMenu->getValue() == MULTIPLAYER_START) {
-        int serverPort = 6666; // FIXME: make this more dynamic
-        int port;
-        const char *host, *username;
-        if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
-          server = new Server(serverPort);
-          server->setGameStateHandler(netPlay);
-          port = serverPort; 
-          host = Constants::localhost;
-          username = Constants::adminUserName;
-        } else {
-          port = atoi(multiplayer->getServerPort());
-          host = multiplayer->getServerName();
-          username = multiplayer->getUserName();
-        }
-        client = new Client((char*)host, port, (char*)username, (CommandInterpreter*)netPlay);
-        client->setGameStateHandler(netPlay);
-        if(!client->login()) {
-          cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
-          showMessageDialog(Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR));
-          continue;
-        }
+        if(!initMultiplayer()) continue;
       }
 #endif  
 
@@ -1937,5 +1917,36 @@ void Scourge::runClient(char *host, int port, char *userName) {
   delete ci;
   delete gsh;
 }
+
+int Scourge::initMultiplayer() {
+  int serverPort = 6666; // FIXME: make this more dynamic
+  int port;
+  const char *host, *username;
+  if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
+    server = new Server(serverPort);
+    server->setGameStateHandler(netPlay);
+    port = serverPort; 
+    host = Constants::localhost;
+    username = Constants::adminUserName;
+  } else {
+    port = atoi(multiplayer->getServerPort());
+    host = multiplayer->getServerName();
+    username = multiplayer->getUserName();
+  }
+  client = new Client((char*)host, port, (char*)username, (CommandInterpreter*)netPlay);
+  client->setGameStateHandler(netPlay);
+  if(!client->login()) {
+    cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
+    showMessageDialog(Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR));
+    return 0;
+  }
+
+  // upload your character
+
+  return 1;
+} 
+
+
 #endif
+
 

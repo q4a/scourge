@@ -23,23 +23,45 @@
 MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
   this->scourge = scourge;
   mainWin = new Window( scourge->getSDLHandler(),
-                        250, 250, 270, 250, 
+                        250, 250, 440, 250, 
                         strdup("Multiplayer Setup"), 
                         scourge->getShapePalette()->getGuiTexture(),
 												true );
   mainWin->setModal( true );
-  startServer = mainWin->createButton( 20, 20, 160, 40, strdup("Host a game"), false );
+  startServer = mainWin->createButton( 10, 10, 160, 30, strdup("Host a game"), true );
+  startServer->setSelected(true);
 
-  mainWin->createLabel( 90, 65, strdup("--- OR ---") );
+  mainWin->createLabel( 90, 55, strdup("--- OR ---") );
 
-  mainWin->createLabel( 20, 90, strdup("Server address:") );
-  serverName = mainWin->createTextField( 20, 95, 30);
-  mainWin->createLabel( 20, 130, strdup("Server port:") );
-  serverPort = mainWin->createTextField( 20, 135, 10 );
-  mainWin->createLabel( 20, 170, strdup("Username:") );
-  userName = mainWin->createTextField( 20, 175, 30 );
+  mainWin->createLabel( 10, 80, strdup("Server address:") );
+  serverName = mainWin->createTextField( 10, 85, 30);
+  mainWin->createLabel( 10, 120, strdup("Server port:") );
+  serverPort = mainWin->createTextField( 10, 125, 10 );
+  mainWin->createLabel( 10, 160, strdup("Username:") );
+  userName = mainWin->createTextField( 10, 165, 30 );
   
-  joinServer = mainWin->createButton( 20, 200, 160, 220, strdup("Join a game"), false );
+  joinServer = mainWin->createButton( 10, 190, 160, 210, strdup("Join a game"), true );
+
+  
+  
+  mainWin->createLabel( 230, 20, strdup("Select a character:") );
+  characterList = new ScrollingList( 230, 30, 200, 130, 
+                                     scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( characterList );
+
+
+  // allocate strings for list
+  // FIXME: use a character set not the party here
+  charStr = (char**)malloc(scourge->getParty()->getPartySize() * sizeof(char*));
+  for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
+    charStr[i] = (char*)malloc(255 * sizeof(char));
+    sprintf(charStr[i], "%s, %s level: %d", scourge->getParty()->getParty(i)->getName(),
+            scourge->getParty()->getParty(i)->getCharacter()->getName(),
+            scourge->getParty()->getParty(i)->getLevel());
+  }
+  characterList->setLines(scourge->getParty()->getPartySize(), (const char**)charStr);
+
+  okButton = mainWin->createButton( 330, 180, 430, 210, strdup("Start Game") );
 }
 
 MultiplayerDialog::~MultiplayerDialog() {
@@ -49,6 +71,8 @@ MultiplayerDialog::~MultiplayerDialog() {
   delete serverName;
   delete serverPort;
   delete mainWin;
+
+  // FIXME: delete charStr
 }
 
 bool MultiplayerDialog::handleEvent(SDL_Event *event) {
@@ -58,10 +82,15 @@ bool MultiplayerDialog::handleEvent(SDL_Event *event) {
 bool MultiplayerDialog::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == mainWin->closeButton) mainWin->setVisible(false);
   if(widget == startServer) {
-    value = START_SERVER;
-    hide();
+    joinServer->setSelected(false);
   } else if(widget == joinServer) {
-    value = JOIN_SERVER;
+    startServer->setSelected(false);
+  } else if(widget == okButton) {
+    if(startServer->isSelected()) {
+      value = START_SERVER;
+    } else if(joinServer->isSelected()) {
+      value = JOIN_SERVER;
+    }
     hide();
   }
   return false;
