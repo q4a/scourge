@@ -93,6 +93,12 @@ void PartyEditor::handleEvent( Widget *widget ) {
       } else if( widget == info[i].next ) {
         if( i == MAX_PARTY_SIZE - 1 ) step = OUTRO_TEXT;
         else step = 1 + ( i + 1 );
+      } else if( widget == info[i].charType ) {
+        int index = info[i].charType->getSelectedLine();  
+        if( index > -1 ) {
+          Character *character = Character::character_list[ index ];
+          if( character ) info[i].charTypeDescription->setText( character->getDescription() );
+        }
       }
     }
   }
@@ -103,30 +109,42 @@ void PartyEditor::handleEvent( Widget *widget ) {
 void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   char msg[80];
   sprintf( msg, "Create character %d out of %d", n - INTRO_TEXT, MAX_PARTY_SIZE );
-  cards->createLabel( 30, 10, msg, n );
-  cards->createLabel( 30, 30, "Name:", n );
-  info->name = new TextField( 100, 30, 40 );
+  Label *title = new Label( 30, 25, msg, 0, SDLHandler::LARGE_FONT );
+  cards->addWidget( title, n );
+
+  cards->createLabel( 30, 50, "Name:", n, Constants::RED_COLOR );
+  info->name = new TextField( 100, 40, 20 );
   cards->addWidget( info->name, n );
   
-  cards->createLabel( 30, 30, "Character Type:", n );
-  info->charType = new ScrollingList( 30, 50, 150, 100, scourge->getShapePalette()->getHighlightTexture() );
+  cards->createLabel( 30, 80, "Character Type:", n, Constants::RED_COLOR );
+  info->charType = new ScrollingList( 30, 90, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
+  cards->addWidget( info->charType, n );
   info->charTypeStr = (char**)malloc( Character::character_list.size() * sizeof(char*));
   for(int i = 0; i < (int)Character::character_list.size(); i++) {
     info->charTypeStr[i] = (char*)malloc(120 * sizeof(char));
     strcpy( info->charTypeStr[i], Character::character_list[i]->getName() );
   }
   info->charType->setLines( (int)Character::character_list.size(), (const char**)info->charTypeStr );
-  info->charTypeDescription = new Label( 30, 160, "", 50 );
+  info->charTypeDescription = new Label( 190, 100, Character::character_list[0]->getDescription(), 60 );
+  cards->addWidget( info->charTypeDescription, n );
 
-  cards->createLabel( 30, 180, "Chosen Deity:", n );
-  info->deityType = new ScrollingList( 30, 200, 150, 100, scourge->getShapePalette()->getHighlightTexture() );
+  cards->createLabel( 30, 260, "Chosen Deity:", n, Constants::RED_COLOR );
+  info->deityType = new ScrollingList( 30, 270, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
+  cards->addWidget( info->deityType, n );
   info->deityTypeStr = (char**)malloc( 1 * sizeof(char*));
   for(int i = 0; i < 1; i++) {
     info->deityTypeStr[i] = (char*)malloc(120 * sizeof(char));
     strcpy( info->deityTypeStr[i], "FIXME: deity list" );
   }
   info->deityType->setLines( 1, (const char**)info->deityTypeStr );
-  info->deityTypeDescription = new Label( 30, 160, "FIXME: deity description", 50 );
+  info->deityTypeDescription = new Label( 200, 280, "FIXME: deity description", 60 );
+  cards->addWidget( info->deityTypeDescription, n );
+
+  info->portrait = new Canvas( 550, 50, 750, 250, this );
+  cards->addWidget( info->portrait, n );
+  info->portraitIndex = (int)( (float)( scourge->getShapePalette()->getPortraitCount() ) * rand()/RAND_MAX );
+  //  info->nextPortrait = cards->createButton( 
+  
 
   // FIXME: copy-paste from constructor
   int w = scourge->getSDLHandler()->getScreen()->w - Window::SCREEN_GUTTER * 2;
@@ -156,4 +174,32 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   Button *prevModel;
   int modelIndex;
   */
+}
+
+void PartyEditor::drawWidget( Widget *w ) {
+  for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
+    if( w == info[i].portrait ) {
+      glPushMatrix();
+      glEnable( GL_TEXTURE_2D );
+      glDisable( GL_CULL_FACE );
+      glColor4f( 1, 1, 1, 1 );
+      //      glColor4f( 1, 0, 0, 1 );
+      glBindTexture( GL_TEXTURE_2D, 
+                     scourge->getShapePalette()->getPortraitTexture( info[i].portraitIndex ) );
+      int portraitSize = 200;
+      glBegin( GL_QUADS );
+      glNormal3f( 0, 0, 1 );
+      glTexCoord2f( 0, 0 );
+      glVertex2i( 0, 0 );
+      glTexCoord2f( 1, 0 );
+      glVertex2i( portraitSize, 0 );
+      glTexCoord2f( 1, 1 );
+      glVertex2i( portraitSize, portraitSize );
+      glTexCoord2f( 0, 1 );
+      glVertex2i( 0, portraitSize );
+      glEnd();
+      glDisable( GL_TEXTURE_2D );
+      glPopMatrix();
+    }
+  }
 }
