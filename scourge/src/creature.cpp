@@ -1481,3 +1481,14 @@ GLfloat Creature::getStep() {
   return step;
 }
 
+void Creature::getDetailedDescription(char *s) {
+  sprintf(s, "%s (Hp:%d M:%d A:%d)%s", 
+          getDescription(), 
+          getHp(),
+          getMp(),
+          getArmor(),
+          (session->getCurrentMission() && 
+           session->getCurrentMission()->isMissionCreature( this ) ? 
+           " *Mission*" : "" ) );
+}
+                                          

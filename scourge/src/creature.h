@@ -345,13 +345,7 @@ class Creature {
   // returns coins gained
   int addMoney(Creature *creature_killed);
 
-  inline void getDetailedDescription(char *s) {
-	sprintf(s, "%s (Hp:%d M:%d A:%d)", 
-			getDescription(), 
-			getHp(),
-			getMp(),
-			getArmor());
-  }
+  void getDetailedDescription(char *s);
 
   // effects
   void startEffect(int effect_type, int duration = Constants::DAMAGE_DURATION);
