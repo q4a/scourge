@@ -1042,7 +1042,7 @@ void Scourge::fightBattle() {
 		GLint t = SDL_GetTicks();
 		int itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
 		if(item || dist <= 1.0f) {
-		  if((itemSpeed * 150) < t - creature->getLastTurn()) {
+		  if((itemSpeed * (gameSpeed + 80)) < t - creature->getLastTurn()) {
 			// not time for this creature's turn yet
 			int creatureInitiative = creature->getInitiative(item);
 			if(creatureInitiative > initiative) continue;
