@@ -17,7 +17,54 @@
 
 #include "constants.h"
  
-char rootDir[300];
+// assign the data dir
+char rootDir[300] = DATA_DIR;
+char configDir[300] = CONFIG_DIR;
+
+int get_config_dir_name( char *buff, int len )
+{
+#if defined( WIN32 )
+    if ( strlen( CONFIG_DIR ) +1 > len ) {
+        return 1;
+    }
+    strcpy( buff, CONFIG_DIR );
+    return 0;
+#else
+    struct passwd *pwent;
+
+    pwent = getpwuid( getuid() );
+    if ( pwent == NULL ) {
+        perror( "getpwuid" );
+        return 1;
+    }
+
+    if ( strlen( pwent->pw_dir ) + strlen( CONFIG_DIR) + 2 > len ) {
+        return 1;
+    }
+
+    sprintf( buff, "%s/%s", pwent->pw_dir, CONFIG_DIR );
+    return 0;
+#endif /* defined( WIN32 ) */
+}
+
+int get_config_file_name( char *buff, int len )
+{
+    if (get_config_dir_name( buff, len ) != 0) {
+        return 1;
+    }
+    if ( strlen( buff ) + strlen( CONFIG_FILE ) +2 > len ) {
+        return 1;
+    }
+
+#if defined( WIN32 )
+    strcat( buff, "\\" );
+#else
+    strcat( buff, "/" );
+#endif /* defined( WIN32 ) */
+
+    strcat( buff, CONFIG_FILE);
+    return 0;
+}
 
 //sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
 char *Constants::messages[][80] = {

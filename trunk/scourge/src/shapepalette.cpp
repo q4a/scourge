@@ -24,16 +24,16 @@ ShapePalette::ShapePalette(){
   textureGroupCount = 0;
 
   // load textures
-  gui_texture = loadGLTextures("data/gui.bmp");
-  gui_wood_texture = loadGLTextures("data/gui-wood.bmp");
-  cloud = loadGLTextures("data/cloud.bmp");
-  candle = loadGLTextures("data/candle.bmp");
-  torchback = loadGLTextures("data/torchback.bmp");
+  gui_texture = loadGLTextures("/gui.bmp");
+  gui_wood_texture = loadGLTextures("/gui-wood.bmp");
+  cloud = loadGLTextures("/cloud.bmp");
+  candle = loadGLTextures("/candle.bmp");
+  torchback = loadGLTextures("/torchback.bmp");
 
   // load the texture info
   char errMessage[500];
   char s[200];
-  sprintf(s, "data/world/shapes.txt");
+  sprintf(s, "%s/world/shapes.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
 	sprintf(errMessage, "Unable to find the file: %s!", s);
@@ -52,7 +52,7 @@ ShapePalette::ShapePalette(){
 
 	  // texture declaration
 	  strcpy(textures[texture_count].filename, line);
-	  sprintf(path, "data/%s", textures[texture_count].filename);
+	  sprintf(path, "/%s", textures[texture_count].filename);
 	  // load the texture
 	  textures[texture_count].id = loadGLTextures(path);
 	  texture_count++;
@@ -62,7 +62,7 @@ ShapePalette::ShapePalette(){
 	  n = Constants::readLine(line, fp);
 	  // load md2 skin 
 	  GLuint skin;
-	  sprintf(path, "data/%s", line);
+	  sprintf(path, "%s", line);
 	  cerr << "Loading md2 skin: " << line << endl;
 	  CreateTexture(&skin, path, 0);
 	  string name = line;
@@ -168,7 +168,7 @@ ShapePalette::ShapePalette(){
 	  info->height = atoi(strtok(NULL, ","));
 	  	  
 	  // store the md2 model and info
-	  sprintf(path, "data/%s", info->filename);
+	  sprintf(path, "/%s", info->filename);
 	  cerr << "Loading md2 model: " << path << " scale: " << info->scale << 
 		" dim: " << info->width << ", " << info->depth << "," << info->height << endl;
 	  info->model = LoadMd2Model(path);
@@ -292,21 +292,21 @@ ShapePalette::ShapePalette(){
 
   // load the status modifier icons
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	sprintf(path, "data/icons/i%d.bmp", i);
+	sprintf(path, "/icons/i%d.bmp", i);
 	GLuint icon = loadGLTextures(path);
 	cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
 	if(icon) statModIcons[i] = icon;
   }
 
   // set up the cursor
-  setupAlphaBlendedBMP("data/cursor.bmp", &cursor, &cursorImage);
+  setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
 
   // set up the logo
-  setupAlphaBlendedBMP("data/logo.bmp", &logo, &logoImage);
-  logo_texture = loadGLTextures("data/logo.bmp");
+  setupAlphaBlendedBMP("/logo.bmp", &logo, &logoImage);
+  logo_texture = loadGLTextures("/logo.bmp");
 
   // set up the scourge
-  setupAlphaBlendedBMP("data/scourge.bmp", &scourge, &scourgeImage);
+  setupAlphaBlendedBMP("/scourge.bmp", &scourge, &scourgeImage);
 
   if(!instance) instance = this;
 }
@@ -352,7 +352,7 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   GLuint skin_texture;
   char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
-	sprintf(path, "data/%s", skin_name);
+	sprintf(path, "%s/%s", rootDir, skin_name);
 	//	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
 	CreateTexture(&skin_texture, path, 0);
 	cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;

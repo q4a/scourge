@@ -31,7 +31,7 @@ Board::Board(Scourge *scourge) {
   
   char errMessage[500];
   char s[200];
-  sprintf(s, "data/world/missions.txt");
+  sprintf(s, "%s/world/missions.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
 	sprintf(errMessage, "Unable to find the file: %s!", s);
