@@ -116,7 +116,7 @@ void Scourge::startMission() {
 
   // create the map
   map = new Map(this);
-  miniMap = new MiniMap(this);
+  miniMap = new MiniMap(this); 
   player_only = false;
 
   map->addDescription(Constants::getMessage(Constants::WELCOME));
@@ -137,9 +137,12 @@ void Scourge::startMission() {
 	party[i]->setNext(player, i);
 	map->setCreature(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]);
   }
-
+ 
   // center on the player
   map->center(startx, starty);
+  
+  // Must be called after MiniMap has been built by dg->toMap() !!! 
+  miniMap->computeDrawValues();
 
   sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
   sdlHandler->mainLoop();

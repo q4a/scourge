@@ -24,17 +24,17 @@ and a texture mask (certainly possible with openGL) to hide the part of the map
 not discovered by the player yet.
 - manage differents display mode of the minimap -> only walls and doors, add creatures...
 - handle mouse click on the minimap
-- zoom
     
  */
 
 
 MiniMap :: MiniMap(Scourge *scourge){
     this->scourge = scourge;
-    zoomFactor = 1.0f; // default we see the entire minimap
+    zoomFactor = 1.2f; // default we see the entire minimap
     effectiveWidth = effectiveHeight = 0;
     maxX = maxY = -1;
-    
+    midX = midY = -1.0f;
+    errorMargin = 1.2f;
     screenHeight = screenHeight = scourge->getSDLHandler()->getScreen()->h; ;
     showMiniMap = true;
     
@@ -55,18 +55,29 @@ MiniMap :: MiniMap(Scourge *scourge){
 MiniMap :: ~MiniMap(){   
 }
 
-/* 
+
 void MiniMap :: computeDrawValues(){
-    effectiveWidth = maxX - minX + 20;
-    ...
-}*/
+
+    effectiveWidth = int(maxX *errorMargin);
+    effectiveHeight = int(maxY*errorMargin);    
+    midX = effectiveWidth/(2*errorMargin);
+    midY = effectiveHeight/(2*errorMargin);
+    if(DEBUG_MINIMAP)
+    { 
+        fprintf(stderr, "effWidth : %d, effHeight : %d, midX : %f, midY : %f, errorMargin : %f\n",
+        effectiveWidth, effectiveHeight, midX, midY, errorMargin);
+    }
+
+    
+}
 
 void MiniMap :: draw(int xCoord, int yCoord){
 
   if (!showMiniMap) return;
-  
+  //computeDrawValues(); 
   int xPartyPos, yPartyPos;     
-       
+  float distX, distY; 
+   
   glDisable(GL_DEPTH_TEST);
   glDisable( GL_TEXTURE_2D );
          
@@ -79,31 +90,46 @@ void MiniMap :: draw(int xCoord, int yCoord){
   glLoadIdentity(); 
   
   // glScissor(x, y, width, height). (x, y) is the lower-left pixel. And y axis
-  // is reversed. 
-  //glScissor(xCoord, screenHeight - (yCoord + MINI_MAP_DEPTH), MINI_MAP_WIDTH, MINI_MAP_DEPTH); 
-  glScissor(xCoord, screenHeight - (yCoord + effectiveHeight), effectiveWidth, effectiveHeight); 
+  // is reversed.   
+  glScissor(xCoord, screenHeight - (yCoord + effectiveHeight), effectiveWidth + 5, effectiveHeight + 5); 
   glEnable(GL_SCISSOR_TEST); 
-  
-  // Debug : show low-left corner and top-right corner of the scissor
-  glPointSize(4.0f);
-  glBegin(GL_POINTS);  
-  glColor3f(1.0f, 1.0f, 0.0f);
-  glVertex2d(xCoord, yCoord + MINI_MAP_DEPTH);
-  glColor3f(0.0f, 0.0f, 1.0f);   	   	  	   	
-  glVertex2d(xCoord + MINI_MAP_WIDTH, yCoord);
-  glEnd ();
-  glPointSize(1.0f);
-
-/* if (zoomFactor > 1.0f)
-        minimap is overlaying : center on player pixel..
-    else
-        display the whole minimap
-*/
-                
+                 
   // Set origin to top-left pixel of minimap
-  glTranslatef(xCoord, yCoord, 100);       
-
+  glTranslatef(xCoord, yCoord, 100);                
+  
+  if (zoomFactor > errorMargin){    
+        // minimap is too big : center it on player location ..       
+        distX = (xPartyPos*zoomFactor-midX);
+        if (distX < 0.0f) distX *=-1.0f;
+        distY = (yPartyPos*zoomFactor-midY);
+        if (distY < 0.0f) distY *=-1.0f;
+               
+        if(xPartyPos > midX){
+            distX *= -1.0f;
+        }
+        if(yPartyPos > midY){
+            distY *= -1.0f;
+        }
+        
+        // smooth center
+        float slowDown;
+        if( zoomFactor > 2.2)
+            slowDown = 1.0f;
+        else
+            slowDown = ((zoomFactor - 0.4)/2.0f)+0.2f;           
+        glTranslatef(distX * slowDown, distY * slowDown, 0);
+        
+        if(DEBUG_MINIMAP) {
+            fprintf(stderr, "zoom : %f    translating : %f, %f   mid (%f, %f),   partyPos (%d, %d)\n", zoomFactor, distX, distY, midX, midY, xPartyPos, yPartyPos); 
+        }       
+  }
+  
+  /*else
+    glTranslatef(-5.0f, -5.0f, 0.0f);*/
   glScalef(zoomFactor, zoomFactor, 1.0f); 
+  
+  
+  // display the whole minimap
 
   // Draw the map 
   glBegin(GL_QUADS);
@@ -140,11 +166,11 @@ void MiniMap :: draw(int xCoord, int yCoord){
 }
 
 void MiniMap :: zoomIn(){
-    this-> zoomFactor += 0.2f;
+    this-> zoomFactor += 0.1f;
 }
 
 void MiniMap :: zoomOut(){
-    this-> zoomFactor -= 0.2f;
+    this-> zoomFactor -= 0.1f;
 }
 
 void MiniMap :: toMiniMapCoord(int &x, int &y){
@@ -158,12 +184,10 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
     
     // Update maximums
     if (x > maxX){
-        maxX = x;
-        effectiveWidth = maxX;
+        maxX = x;   
     }
     if (y > maxY){
-        maxY = y;
-        effectiveHeight = maxY;
+        maxY = y;       
     }
     
     if(DEBUG_MINIMAP) fprintf(stderr, "colorMiniMapPoint : %d, %d : ", x, y);
