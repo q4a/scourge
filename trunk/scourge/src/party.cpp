@@ -257,7 +257,7 @@ void Party::movePlayers() {
 	  
 	  // move the current player
 	  if(!player->getStateMod(Constants::dead)) {
-		player->moveToLocator(scourge->getMap(), player_only);
+		player->moveToLocator(scourge->getMap());
 		scourge->getMap()->center(player->getX(), player->getY());
 		break;
 	  }
@@ -269,21 +269,14 @@ void Party::movePlayers() {
 	
 	// move the leader
 	if(!player->getStateMod(Constants::dead)) {
-	  player->moveToLocator(scourge->getMap(), player_only);
+	  player->moveToLocator(scourge->getMap());
 	  scourge->getMap()->center(player->getX(), player->getY());
 	}
-	
-	// in keyboard mode, don't move the selection
-	//if(move) player->setSelXY(-1, -1);
 	
 	// others follow the player
 	for(int t = 0; t < getPartySize(); t++) {
 	  if(!party[t]->getStateMod(Constants::dead) && party[t] != player) {
-		if(party[t]->getTargetCreature()) {
-		  party[t]->moveToLocator(scourge->getMap(), player_only);
-		} else {
-		  party[t]->moveToLocator(scourge->getMap(), player_only);
-		}
+		party[t]->moveToLocator(scourge->getMap());
 	  }
 	}	
   }
@@ -375,6 +368,12 @@ Creature **Party::createHardCodedParty() {
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));  
+
+  // equip weapons
+  pc[0]->equipInventory(0);
+  pc[1]->equipInventory(0);
+  pc[2]->equipInventory(0);
+  pc[3]->equipInventory(0);
 
   return pc;
 }

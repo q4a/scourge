@@ -42,10 +42,7 @@ Battle::Battle(Scourge *scourge, Creature *creature) {
   this->initiativeCheck = false;
   this->itemSpeed = 0;
   this->dist = 0.0f;
-  this->dist = Util::distance(creature->getX(),  creature->getY(), 
-							  creature->getShape()->getWidth(), creature->getShape()->getDepth(),
-							  creature->getTargetCreature()->getX(), creature->getTargetCreature()->getY(),
-							  creature->getTargetCreature()->getShape()->getWidth(), creature->getTargetCreature()->getShape()->getDepth());
+  this->dist = creature->getDistanceToTargetCreature();
 }
 
 Battle::~Battle() {
@@ -187,12 +184,17 @@ void Battle::fightTurn() {
   if(!creature->getTargetCreature()) return;
 
   // too far? then keep following the target
-  if(!(dist <= 1.0f || item)) {
+  if(!(dist <= 1.0f || item) || 
+	 !creature->isWithinDistanceRange()) {
 	creature->setSelXY(creature->getTargetCreature()->getX(),
 					   creature->getTargetCreature()->getY(),
 					   true);
 	return;
   }
+
+  // when using ranged weapons, try to stay within the distance range
+  // when not in range, don't attack, allowing the character to move into
+  // position. 
 
   if(item) {
 	sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
@@ -253,6 +255,7 @@ void Battle::hitWithItem() {
 		creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
 		sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 		scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+		// UNCOMMENT ME!!!
 		scourge->creatureDeath(creature->getTargetCreature());
 		
 		// add exp. points and money
@@ -298,7 +301,18 @@ void Battle::hitWithItem() {
 
 void Battle::selectBestItem() {
   if(item) return;
-  initItem(creature->getBestWeapon(dist));
+  Item *i = creature->getBestWeapon(dist);
+
+  // set up distance range for ranged weapons
+  creature->setDistanceRange(0, 0);
+  if(i) {
+	float range = i->getRpgItem()->getDistance();
+	if(range >= 8) {
+	  creature->setDistanceRange(range * 0.5f, range);
+	}
+  }
+
+  initItem(i);
 }
 
 void Battle::initItem(Item *item) {

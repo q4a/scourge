@@ -93,6 +93,8 @@ void Creature::commonInit() {
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
   this->availableSkillPoints = 0;
+  this->minRange = this->maxRange = 0;
+  this->failedToMoveWithinRangeAttemptCount = 0;
   
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -194,6 +196,36 @@ void Creature::setSelXY(int x, int y, bool force) {
   if(force) {
 	tx = ty = -1;
   }
+  // if we're trying to move within a range, try a number of times
+  if(!isWithinDistanceRange()) {
+	Sint16 nz;
+	findCorner(&cornerX, &cornerY, &nz);
+	setMotion(Constants::MOTION_MOVE_AWAY);   
+  } else {
+	// give up on attempting to move to range
+	minRange = maxRange = 0;
+	failedToMoveWithinRangeAttemptCount = 0;
+  }
+}
+
+/**
+   Check that we're within range (if range specified).
+   If not, try n times, then wait n times before trying again.
+*/
+bool Creature::isWithinDistanceRange() {
+  if(minRange <= 0 || !getTargetCreature()) return true;
+  float d = getDistanceToTargetCreature();
+  bool ret = (d >= minRange && d < maxRange);
+  if(ret) {
+	failedToMoveWithinRangeAttemptCount = 0;
+	return true;
+  } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS) {
+	failedToMoveWithinRangeAttemptCount++;
+	return false;
+  } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS * 2) {
+	failedToMoveWithinRangeAttemptCount++;
+	return true;
+  }
 }
 
 void Creature::stopMoving() {
@@ -201,7 +233,7 @@ void Creature::stopMoving() {
   selX = selY = -1;
 }
 
-bool Creature::moveToLocator(Map *map, bool single_step) {
+bool Creature::moveToLocator(Map *map) {
 
   // Don't move when attacking...
   // this is actually wrong, the method should not be called in this
@@ -211,10 +243,13 @@ bool Creature::moveToLocator(Map *map, bool single_step) {
 
   bool moved = false;
   if(selX > -1) {
+	
     // take a step
     if(getMotion() == Constants::MOTION_MOVE_AWAY){    
+	  //	  if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving away! attempt=" << failedToMoveWithinRangeAttemptCount << endl;
       moved = gotoPosition(map, cornerX, cornerY, 0, "cornerXY");
     } else {
+	  //if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving towards!" << endl;
       moved = gotoPosition(map, selX, selY, 0, "selXY");
     }
 	// if we've no more steps

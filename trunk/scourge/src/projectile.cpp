@@ -55,7 +55,8 @@ Projectile::~Projectile() {
 
 bool Projectile::move() {
   // are we at the target location?
-  if(steps++ >= 20 || (sx == ex && sy == ey)) return true;
+  if(steps++ >= item->getRpgItem()->getDistance() + target->getShape()->getWidth() || 
+	 (sx == ex && sy == ey)) return true;
 
   // angle-based floating pt. movement
   if(sx == ex) {

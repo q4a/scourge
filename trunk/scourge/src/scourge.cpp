@@ -663,6 +663,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 			}
 		  }
 		}
+		// reset battle motion when not in battle
+		for(int i = 0; i < party->getPartySize(); i++) {
+		  party->getParty(i)->setDistanceRange(0, 0);
+		}
 		// end of FIXME
 		
 		
@@ -1315,14 +1319,14 @@ void Scourge::moveMonster(Creature *monster) {
 	// attack a player
 	if((int)(20.0f * rand()/RAND_MAX) == 0) {
 	  int n = (int)((float)party->getPartySize() * rand()/RAND_MAX);
-	  float dist = Util::distance(monster->getX(), 
-								  monster->getY(), 
-								  monster->getShape()->getWidth(),
-								  monster->getShape()->getDepth(),
-								  party->getParty(n)->getX(),
-								  party->getParty(n)->getY(),
-								  party->getParty(n)->getShape()->getWidth(),
-								  party->getParty(n)->getShape()->getDepth());
+	  float dist = Constants::distance(monster->getX(), 
+									   monster->getY(), 
+									   monster->getShape()->getWidth(),
+									   monster->getShape()->getDepth(),
+									   party->getParty(n)->getX(),
+									   party->getParty(n)->getY(),
+									   party->getParty(n)->getShape()->getWidth(),
+									   party->getParty(n)->getShape()->getDepth());
 	  if(dist < 20.0) {
 		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
 		monster->setTargetCreature(party->getParty(n));
@@ -1351,19 +1355,19 @@ void Scourge::moveMonster(Creature *monster) {
 	  monster->setTargetCreature(NULL);
 	} else {
 	  // creature won't fight if too far from the action 
-	  float dist = Util::distance(monster->getX(), 
-								  monster->getY(), 
-								  monster->getShape()->getWidth(),
-								  monster->getShape()->getDepth(),
-								  monster->getTargetCreature()->getX(),
-								  monster->getTargetCreature()->getY(),
-								  monster->getTargetCreature()->getShape()->getWidth(),
-								  monster->getTargetCreature()->getShape()->getDepth());
+	  float dist = Constants::distance(monster->getX(), 
+									   monster->getY(), 
+									   monster->getShape()->getWidth(),
+									   monster->getShape()->getDepth(),
+									   monster->getTargetCreature()->getX(),
+									   monster->getTargetCreature()->getY(),
+									   monster->getTargetCreature()->getShape()->getWidth(),
+									   monster->getTargetCreature()->getShape()->getDepth());
 	  Item *item = monster->getBestWeapon(dist);
 	  if(item || dist <= 1.0) {
 		monster->stopMoving(); // fps optimization
 	  } else {
-		monster->moveToLocator(map, false);
+		monster->moveToLocator(map);
 	  }
 	}
   }
