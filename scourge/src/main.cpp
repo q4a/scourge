@@ -76,14 +76,21 @@ GameAdapter *createGameAdapter(UserConfiguration *config) {
 
 int main(int argc, char *argv[]) {
 
+  // init the rootdir via binreloc
+  rootDir = (char*)BR_DATADIR( "/data" );
+  cerr << "rootDir=" << rootDir << endl;
+
+  // FIXME: for windows, if this doesn't work, try using DATA_DIR
+  // which is made by autoconf
+
   // Check to see if there's a local version of the data dir
   // (ie. we're running in the build folder and not in a distribution)
   char dir[300];
   cerr << "app path: " << argv[0] << endl;
   findLocalResources(argv[0], dir);
   if(strlen(dir)) {
-	cerr << "*** Using local data dir. Not running a distribution." << endl;
-	sprintf(rootDir, "%sdata", dir);
+    cerr << "*** Using local data dir. Not running a distribution." << endl;
+    sprintf(rootDir, "%sdata", dir);
   }
   
   // config check

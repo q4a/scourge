@@ -18,6 +18,9 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+// autopackage's binary relocation lib
+#include "prefix.h"
+
 // from tuxracer
 #if defined ( __MWERKS__ ) || defined( _MSC_VER ) || defined( WIN32 )
 #   define NATIVE_WIN32_COMPILER 1
@@ -113,7 +116,8 @@ using namespace std;
 
 #define toint(x) (int)(x<0 ? (x - 0.5f) : (x + 0.5f))
 
-extern char rootDir[300];
+//extern char rootDir[300];
+extern char *rootDir;
 extern char configDir[300];
 extern int get_config_dir_name( char *buff, int len );
 extern int get_config_file_name( char *buff, int len );
