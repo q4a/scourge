@@ -54,12 +54,12 @@ RpgItem *RpgItem::items[] =  {
 			  "A battle axe of average workmanship",
 			  "A well made battle axe", 
 			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX),
+			  Constants::AXE_INDEX),
   new RpgItem(THROWING_AXE, "Throwing axe", 1, AXE, 2, 100, 100, 4, 6,
 			  "A dull-looking axe for chucking",
 			  "A quick throwing axe", 
 			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX),
+			  Constants::AXE_INDEX),
   
   
   // CONTAINERS:

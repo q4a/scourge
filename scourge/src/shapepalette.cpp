@@ -323,6 +323,12 @@ void ShapePalette::initShapes() {
 					"SWORD",
 					0xffffffff,
 					display_list + (count++ * 3), Constants::SWORD_INDEX);
+	item_shapes[Constants::AXE_INDEX] =
+	  new C3DSShape("data/objects/axe.3ds", 0.1f, this,
+					notex, 2, 3, 1,
+					"AXE",
+					0xffffffff,
+					display_list + (count++ * 3), Constants::AXE_INDEX);
 	item_shapes[Constants::BOOKSHELF_INDEX] =
     new GLShape(shelftex,
                 2, 5, 7,

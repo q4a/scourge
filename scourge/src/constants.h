@@ -274,6 +274,7 @@ public:
   
   enum {
 	SWORD_INDEX = 0,
+	AXE_INDEX,
 	BOOKSHELF_INDEX,
 	CHEST_INDEX,
 	BOOKSHELF2_INDEX,
@@ -336,6 +337,13 @@ public:
 
   static bool stencilbuffer;
   static bool multitexture;	
+
+  enum {
+    NO_SHADOWS=0,
+    OBJECT_SHADOWS,
+    ALL_SHADOWS
+  };
+  static int shadowMode;
 
   Constants();
   ~Constants();

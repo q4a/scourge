@@ -80,6 +80,8 @@ const char *Constants::STATE_NAMES[] = {
 bool Constants::stencilbuffer = true;
 bool Constants::multitexture = true;	
 
+int Constants::shadowMode = Constants::ALL_SHADOWS;
+
 Constants::Constants(){
 }
 

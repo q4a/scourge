@@ -354,21 +354,21 @@ void Map::draw(SDL_Surface *surface) {
   }
   
   if(zoomIn) {
-	//	if(zoom <= 0.5f) {
-	//	  zoomOut = false;
-	//	} else {
+	if(zoom <= 0.5f) {
+	  zoomOut = false;
+    } else {
 	  zoom /= ZOOM_DELTA; 
 	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
 	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
-	  //	}
+    }
   } else if(zoomOut) {
-	//	if(zoom >= 2.8f) {
-	//	  zoomOut = false;
-	//	} else {
+	if(zoom >= 2.8f) {
+	  zoomOut = false;
+	} else {
 	  zoom *= ZOOM_DELTA; 
 	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
 	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
-	  //	}
+    }
   }
 
   scourge->moveParty();
@@ -420,25 +420,28 @@ void Map::draw(SDL_Surface *surface) {
 	  setupShapes(true);
 	  
 	  // shadows
-	  glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
-	  // GL_INCR makes sure to only draw shadow once
-	  glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
-	  glDisable(GL_TEXTURE_2D);
-	  glDepthMask(GL_FALSE);
-	  glEnable(GL_BLEND);
-	  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	  useShadow = true;
-	  for(int i = 0; i < stencilCount; i++) {
-		doDrawShape(&stencil[i]);
-	  }
-	  for(int i = 0; i < otherCount; i++) {
-		doDrawShape(&other[i]);
-	  }
-	  useShadow = false;
-	  glDisable(GL_BLEND);
-	  glEnable(GL_TEXTURE_2D);
-	  glDepthMask(GL_TRUE);
-	  
+      if(Constants::shadowMode >= Constants::OBJECT_SHADOWS) {
+	    glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
+	    // GL_INCR makes sure to only draw shadow once
+	    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
+	    glDisable(GL_TEXTURE_2D);
+	    glDepthMask(GL_FALSE);
+	    glEnable(GL_BLEND);
+	    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	    useShadow = true;
+        if(Constants::shadowMode == Constants::ALL_SHADOWS) {
+	      for(int i = 0; i < stencilCount; i++) {
+		    doDrawShape(&stencil[i]);
+	      }
+        }
+	    for(int i = 0; i < otherCount; i++) {
+		  doDrawShape(&other[i]);
+	    }
+	    useShadow = false;
+	    glDisable(GL_BLEND);
+	    glEnable(GL_TEXTURE_2D);
+	    glDepthMask(GL_TRUE);
+      }	  
 	  glDisable(GL_STENCIL_TEST); 
 	
 	  // draw the blended walls
