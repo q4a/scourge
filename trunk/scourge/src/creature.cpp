@@ -141,7 +141,7 @@ Creature::~Creature(){
   delete battle;
   delete effect;
   // do this before deleting the shape
-  session->getShapePalette()->decrementSkinRefCount(model_name, skin_name);
+  session->getShapePalette()->decrementSkinRefCount(model_name, skin_name, monster);
   delete shape;
 }
 
@@ -1262,7 +1262,6 @@ void Creature::monsterInit() {
 
   startingHp = hp = monster->getHp() + (int)((float)(10.0f * level) * rand()/RAND_MAX);
   startingMp = mp = monster->getMp() + (int)((float)(4.0f * level) * rand()/RAND_MAX);
-
 }
 
 // only for characters: leveling up

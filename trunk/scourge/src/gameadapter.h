@@ -71,6 +71,8 @@ public:
   virtual inline void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL) {}
   virtual inline void eraseMiniMapPoint(int x, int y) {}
   virtual inline void playSound(const char *sound) {}
+  virtual inline void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {}
+  virtual inline void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {}
   virtual inline void setDebugStr(char *s) {}
   virtual inline void showItemInfoUI(Item *item, int level) {}
   virtual inline double getFps() { return 0.0f; }

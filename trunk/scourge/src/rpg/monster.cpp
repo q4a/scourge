@@ -133,7 +133,18 @@ void Monster::initMonsters() {
           break;
         }
       }
-      if(!found) monsterTypes.push_back(typeStr);
+      if(!found) {
+		monsterTypes.push_back(typeStr);
+
+		string monsterType_str = m->getModelName();
+		if( soundMap.find( monsterType_str ) == soundMap.end() ) {
+		  currentSoundMap = new map<int, vector<string>*>();      
+		  soundMap[monsterType_str] = currentSoundMap;
+		} else {
+		  currentSoundMap = soundMap[monsterType_str];
+		}
+		addMd2Sounds( m->getModelName(), currentSoundMap );
+	  }
     } else if(n == 'I' && last_monster) {
       // skip ':'
       fgetc(fp);
@@ -151,41 +162,22 @@ void Monster::initMonsters() {
     } else if(n == 'W') {
       fgetc(fp);
       n = Constants::readLine(line, fp);
-      currentSoundMap = new map<int, vector<string>*>();
-      string monsterType_str = line;
-      soundMap[monsterType_str] = currentSoundMap;
-    } else if(n == 'a' && currentSoundMap) {
+
+	  string monsterType_str = line;
+	  if( soundMap.find( monsterType_str ) == soundMap.end() ) {
+		currentSoundMap = new map<int, vector<string>*>();      
+		soundMap[monsterType_str] = currentSoundMap;
+	  } else {
+		currentSoundMap = soundMap[monsterType_str];
+	  }      
+    } else if(n == 'a' && currentSoundMap) {	  
       fgetc(fp);
       n = Constants::readLine(line, fp);
-      vector<string> *list;
-      if(currentSoundMap->find(Constants::SOUND_TYPE_ATTACK) == currentSoundMap->end()) {
-        list = new vector<string>();
-        (*currentSoundMap)[Constants::SOUND_TYPE_ATTACK] = list;
-      } else {
-        list = (*currentSoundMap)[Constants::SOUND_TYPE_ATTACK];
-      }
-      char *p = strtok(line, ",");
-      while(p) {
-        string sound_str = p;
-        list->push_back(sound_str);
-        p = strtok(NULL, ",");
-      }
+	  addSound( Constants::SOUND_TYPE_ATTACK, line, currentSoundMap );
     } else if(n == 'h' && currentSoundMap) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
-      vector<string> *list;
-      if(currentSoundMap->find(Constants::SOUND_TYPE_HIT) == currentSoundMap->end()) {
-        list = new vector<string>();
-        (*currentSoundMap)[Constants::SOUND_TYPE_HIT] = list;
-      } else {
-        list = (*currentSoundMap)[Constants::SOUND_TYPE_HIT];
-      }
-      char *p = strtok(line, ",");
-      while(p) {
-        string sound_str = p;
-        list->push_back(sound_str);
-        p = strtok(NULL, ",");
-      }
+	  addSound( Constants::SOUND_TYPE_HIT, line, currentSoundMap );
     } else if(n == 'P' && last_monster) {
       // skip ':'
       fgetc(fp);
@@ -202,6 +194,37 @@ void Monster::initMonsters() {
     }
   }
   fclose(fp);
+}
+
+void Monster::addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap ) {
+  char soundFile[5000];
+
+  sprintf( soundFile, "%s/gurp1.wav,%s/gurp2.wav,%s/jump1.wav,%s/land1.wav", 
+		  model_name, model_name, model_name, model_name );
+  addSound( Constants::SOUND_TYPE_ATTACK, soundFile, currentSoundMap );
+  
+  sprintf( soundFile, "%s/pain25_1.wav,%s/pain25_2.wav,%s/pain50_1.wav,%s/pain50_2.wav,%s/pain75_1.wav,%s/pain75_2.wav,%s/pain100_1.wav,%s/pain100_2.wav", 
+		  model_name, model_name, model_name, model_name, model_name, model_name, model_name, model_name );
+  addSound( Constants::SOUND_TYPE_HIT, soundFile, currentSoundMap );
+}
+
+/**
+ * add a coma-delimited list of sound files
+ */
+void Monster::addSound( int type, char *line, map<int, vector<string>*>* currentSoundMap ) {
+  vector<string> *list;
+  if(currentSoundMap->find( type ) == currentSoundMap->end()) {
+	list = new vector<string>();
+	(*currentSoundMap)[ type ] = list;
+  } else {
+	list = (*currentSoundMap)[ type ];
+  }
+  char *p = strtok(line, ",");
+  while(p) {
+	string sound_str = p;
+	list->push_back(sound_str);
+	p = strtok(NULL, ",");
+  }
 }
 
 Monster *Monster::getRandomMonster(int level) {
@@ -229,6 +252,15 @@ Monster *Monster::getMonsterByName(char *name) {
     return NULL;
   }
   return monstersByName[s];
+}
+
+map<int, vector<string>*>* Monster::getSoundMap( char *monsterType ) {
+  string type_str = monsterType;
+  if(soundMap.find(type_str) != soundMap.end()) {
+	return soundMap[ type_str ];
+  } else {
+	return NULL;
+  }
 }
 
 const char *Monster::getRandomSound(int type) {
@@ -266,39 +298,4 @@ const char *Monster::getMonsterType(char *type) {
     if(!strcmp((char*)ss.c_str(), type)) return ss.c_str();
   }
   return NULL;
-}
-
-void Monster::loadMd2Sounds() {
-  /*
-  char soundFile[300];
-  
-  sprinf( soundFile, "%s/gurp1.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
-  sprinf( soundFile, "%s/gurp2.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
-  sprinf( soundFile, "%s/jump1.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
-  sprinf( soundFile, "%s/land1.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
-  
-  sprinf( soundFile, "%s/pain25_1.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  sprinf( soundFile, "%s/pain25_2.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  sprinf( soundFile, "%s/pain50_1.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  sprinf( soundFile, "%s/pain50_2.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  sprinf( soundFile, "%s/pain75_1.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  sprinf( soundFile, "%s/pain75_2.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  sprinf( soundFile, "%s/pain100_1.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  sprinf( soundFile, "%s/pain100_2.wav", model_name );
-  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
-  */
-}
-
-void Monster::unloadMd2Sounds() {
 }

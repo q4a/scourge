@@ -30,6 +30,7 @@
 #include "md2shape.h"
 #include "3dsshape.h"
 #include "Md2.h"
+#include "rpg/monster.h"
 
 using namespace std;
 
@@ -244,8 +245,10 @@ public:
   int findShapeIndexByName(const char *name);
   
   // Md2 shapes
-  GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f);
-  void decrementSkinRefCount(char *model_name, char *skin_name);
+  GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f, 
+							Monster *monster=NULL);
+  void decrementSkinRefCount(char *model_name, char *skin_name, 
+							 Monster *monster=NULL);
 
   char *getRandomDescription(int descriptionGroup);
 

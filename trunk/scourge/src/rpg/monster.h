@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <map>
+#include <stdio.h>
 #include "../constants.h"
 #include "rpgitem.h"
 #include "spell.h"
@@ -80,12 +81,10 @@ public:
   int getSkillLevel(const char *skillName);
   const char *getRandomSound(int type);
 
-  void loadMd2Sounds();
-  void unloadMd2Sounds();
-
   static void initMonsters();
   static Monster *getRandomMonster(int level);
   static Monster *getMonsterByName(char *name);  
+  static map<int, vector<string>*>* getSoundMap( char *monsterType );
 
   /**
    * Finds the index of a monster or a monster by an index:
@@ -97,6 +96,14 @@ public:
 
   static const char *getRandomMonsterType();
   static const char *getMonsterType(char *type);
+
+ protected:
+  static void addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap );
+  /**
+   * add a coma-delimited list of sound files
+   */
+  static void addSound( int type, char *line, map<int, vector<string>*>* currentSoundMap );
+
 };
 
 #endif

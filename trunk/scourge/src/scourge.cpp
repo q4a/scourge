@@ -109,7 +109,7 @@ void Scourge::initUI() {
   optionsMenu = new OptionsMenu(this);
   multiplayer = new MultiplayerDialog(this);
 
-  // load character, creature, item sounds
+  // load character, item sounds
   sdlHandler->getSound()->loadSounds(session->getUserConfiguration());
 }
 
@@ -277,7 +277,7 @@ void Scourge::startMission() {
                                 getSession()->getCurrentMission());
       dg->toMap(levelMap, getShapePalette());
     }
-
+	
     // center map on the player
     levelMap->center(toint(party->getPlayer()->getX()), 
                 toint(party->getPlayer()->getY()),

@@ -579,6 +579,14 @@ public:
 
   inline void playSound(const char *sound) { sdlHandler->getSound()->playSound(sound); }
 
+  inline void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
+	sdlHandler->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
+  }
+
+  inline void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
+	sdlHandler->getSound()->unloadMonsterSounds( type, soundMap );
+  }
+
   inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 
   void fightProjectileHitTurn(Projectile *proj, Creature *creature);

@@ -564,7 +564,8 @@ t3DModel * ShapePalette::LoadMd2Model(char *file_name){
   return t3d;   
 }    
 
-GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, float scale) {
+GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, 
+										float scale, Monster *monster) {
 
   // find the model the old way
   Md2ModelInfo *model_info;
@@ -601,6 +602,11 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, float
 
 	// expand the skin name location
 	sprintf( realSkinName, "%s/%s", model_name, skin_name );
+
+	// load monster sounds
+	if( monster )
+	  session->getGameAdapter()->loadMonsterSounds( model_name, 
+													monster->getSoundMap( model_name ) );
   }
 
   // find or load the skin
@@ -640,7 +646,8 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, float
   return shape;
 }
 
-void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name) {
+void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name,
+										 Monster *monster) {
   string skin = skin_name;
   GLuint skin_texture;
   // look for old-style skin
@@ -709,6 +716,11 @@ void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name) {
     free(model_info);
   }
   */
+
+  // unload monster sounds
+  if( monster )
+	session->getGameAdapter()->unloadMonsterSounds( model_name, 
+													monster->getSoundMap( model_name ) );
 }
 
 // the next two methods are slow, only use during initialization

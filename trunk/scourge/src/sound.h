@@ -67,7 +67,12 @@ public:
   }
 
   void loadSounds(UserConfiguration *userConfiguration);
+  void loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
+						  UserConfiguration *userConfiguration );
+  void unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m );
+
   void storeSound(int type, const char *file);
+  void unloadSound( int type, const char *file );
   void playSound(const char *file);
 
   void setMusicVolume(int volume);
