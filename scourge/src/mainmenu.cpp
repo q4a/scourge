@@ -81,9 +81,6 @@ MainMenu::~MainMenu(){
 }
 
 void MainMenu::drawView() {
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
-  glClearDepth( 1.0f );
 #ifndef AT_WORK
   // create a stencil for the water
   glDisable(GL_DEPTH_TEST);

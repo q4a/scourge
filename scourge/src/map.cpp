@@ -27,6 +27,8 @@
 
 #define PI 3.14159f
 
+#define KEEP_MAP_SIZE 0
+
 // this is the clockwise order of movements
 int Map::dir_index[] = { Constants::MOVE_UP, Constants::MOVE_LEFT, Constants::MOVE_DOWN, Constants::MOVE_RIGHT };
 
@@ -36,7 +38,8 @@ const float Map::shadowTransformMatrix[16] = {
 	0.5f, -0.5f, 0, 0,
 	0, 0, 0, 1 };
 
-Map::Map(Scourge *scourge){
+Map::Map(Scourge *scourge) {
+  this->scourge = scourge;  
   zoom = 1.0f;
   zoomIn = zoomOut = false;
   x = y = 0;
@@ -65,8 +68,12 @@ Map::Map(Scourge *scourge){
   setViewArea(0, 0, 
               scourge->getSDLHandler()->getScreen()->w, 
               scourge->getSDLHandler()->getScreen()->h);
-  
-  this->scourge = scourge;  
+
+  float adjust = (float)viewWidth / 800.0f;
+  this->xpos = (float)(viewWidth) / 2.0f / adjust;
+  this->ypos = (float)(viewHeight) / 2.0f / adjust;
+  this->zpos = 0.0f;  
+
   this->debugGridFlag = false;
   this->drawGridFlag = false;
 
@@ -128,10 +135,9 @@ void Map::setViewArea(int x, int y, int w, int h) {
   viewWidth = w;
   viewHeight = h;
 
-  float adjust = (float)viewWidth / 800.0f;
-  this->xpos = (float)(viewWidth) / 2.0f / adjust;
-  this->ypos = (float)(viewHeight) / 2.0f / adjust;
-  this->zpos = 0.0f;  
+  zoom = (float)scourge->getSDLHandler()->getScreen()->w / (float)w;
+  xpos = (int)((float)viewWidth / zoom / 2.0f);
+  ypos = (int)((float)viewHeight / zoom / 2.0f);
 
   refresh();
 }
@@ -541,20 +547,21 @@ void Map::drawDraggedItem() {
 
 void Map::draw() {
   if(zoomIn) {
-	if(zoom <= 0.5f) {
-	  zoomOut = false;
+    if(zoom <= 0.5f) {
+      zoomOut = false;
     } else {
-	  zoom /= ZOOM_DELTA; 
-	  xpos = (int)((float)viewWidth / zoom / 2.0f);
-	  ypos = (int)((float)viewHeight / zoom / 2.0f);
+      zoom /= ZOOM_DELTA; 
+      xpos = (int)((float)viewWidth / zoom / 2.0f);
+      ypos = (int)((float)viewHeight / zoom / 2.0f);
+
     }
   } else if(zoomOut) {
-	if(zoom >= 2.8f) {
-	  zoomOut = false;
-	} else {
-	  zoom *= ZOOM_DELTA; 
-	  xpos = (int)((float)viewWidth / zoom / 2.0f);
-	  ypos = (int)((float)viewHeight / zoom / 2.0f);
+    if(zoom >= 2.8f) {
+      zoomOut = false;
+    } else {
+      zoom *= ZOOM_DELTA; 
+      xpos = (int)((float)viewWidth / zoom / 2.0f);
+      ypos = (int)((float)viewHeight / zoom / 2.0f);
     }
   }
 
@@ -581,128 +588,128 @@ void Map::draw() {
   if(zRotating != 0) zrot+=zRotating;
   if(zrot >= 360) zrot -= 360;
   if(zrot < 0) zrot = 360 + zrot;
-  
+
 
   initMapView();
   if(lightMapChanged) configureLightMap();
   // populate the shape arrays
   if(mapChanged) setupShapes(false);
   if(selectMode) {
-      for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
+    for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
   } else {  
 
 
 
 #ifdef DEBUG_MOUSE_POS
-	// debugging mouse position
-	if(debugX < MAP_WIDTH && debugX >= 0) {
-	  DrawLater later2;
-	  
-	  later2.shape = scourge->getShapePalette()->findShapeByName("LAMP_BASE");
+    // debugging mouse position
+    if(debugX < MAP_WIDTH && debugX >= 0) {
+      DrawLater later2;
 
-	  later2.xpos = ((float)(debugX - getX()) / GLShape::DIV);
-	  later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
-	  later2.zpos = (float)(debugZ) / GLShape::DIV;
-	  
-	  later2.item = NULL;
-	  later2.creature = NULL;
-	  later2.projectile = NULL;
-	  later2.name = 0;	 
-	  doDrawShape(&later2);
-	}
+      later2.shape = scourge->getShapePalette()->findShapeByName("LAMP_BASE");
+
+      later2.xpos = ((float)(debugX - getX()) / GLShape::DIV);
+      later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
+      later2.zpos = (float)(debugZ) / GLShape::DIV;
+
+      later2.item = NULL;
+      later2.creature = NULL;
+      later2.projectile = NULL;
+      later2.name = 0;   
+      doDrawShape(&later2);
+    }
 #endif
 
 
 
-	// draw the creatures/objects/doors/etc.
-	for(int i = 0; i < otherCount; i++) {
-	  if(selectedDropTarget && 
-		 ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
-		  (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
-		colorAlreadySet = true;
-		glColor4f(0, 1, 1, 1);
-	  }
-	  doDrawShape(&other[i]);
-	}
+    // draw the creatures/objects/doors/etc.
+    for(int i = 0; i < otherCount; i++) {
+      if(selectedDropTarget && 
+         ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
+          (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
+        colorAlreadySet = true;
+        glColor4f(0, 1, 1, 1);
+      }
+      doDrawShape(&other[i]);
+    }
 
     if(scourge->getUserConfiguration()->getStencilbuf() &&
-			 scourge->getUserConfiguration()->getStencilBufInitialized()) {
-	  // create a stencil for the walls
-	  glDisable(GL_DEPTH_TEST);
-	  glColorMask(0,0,0,0);
-	  glEnable(GL_STENCIL_TEST);
-	  glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	  glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-	  for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-	  
-	  // Use the stencil to draw
-	  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	  glEnable(GL_DEPTH_TEST);
-	  // decr where the floor is (results in a number = 1)
-	  glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	  glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
-	  // draw the ground  
-	  setupShapes(true);
-	  
-	  // shadows
-      if(scourge->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
-	    glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
-	    // GL_INCR makes sure to only draw shadow once
-	    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
-	    glDisable(GL_TEXTURE_2D);
-	    glDepthMask(GL_FALSE);
-	    glEnable(GL_BLEND);
-	    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    useShadow = true;
-        if(scourge->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
-	      for(int i = 0; i < stencilCount; i++) {
-		    doDrawShape(&stencil[i]);
-	      }
-        }
-	    for(int i = 0; i < otherCount; i++) {
-		  doDrawShape(&other[i]);
-	    }
-	    useShadow = false;
-	    glDisable(GL_BLEND);
-	    glEnable(GL_TEXTURE_2D);
-	    glDepthMask(GL_TRUE);
-      }	  
-	  glDisable(GL_STENCIL_TEST); 
-	
-	  // draw the blended walls
-	  glEnable(GL_BLEND);  
-	  glDepthMask(GL_FALSE);
-	  //glDisable(GL_LIGHTING);
-	  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	  for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-	  //glEnable(GL_LIGHTING);
-	  glDepthMask(GL_TRUE);    
-	  glDisable(GL_BLEND);
-	} else {
-	  // draw the walls
-	  for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-	  // draw the ground  
-	  setupShapes(true);
-	}
-	
-	// draw the effects
-	glEnable(GL_BLEND);  
-	glDepthMask(GL_FALSE);
-	//      glDisable(GL_LIGHTING);
-	for(int i = 0; i < laterCount; i++) {
-	  later[i].shape->setupBlending();
-	  doDrawShape(&later[i]);
-	  later[i].shape->endBlending();
-	}
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  for(int i = 0; i < damageCount; i++) {
-    doDrawShape(&damage[i], 1);
-  }
-	drawShade();
+       scourge->getUserConfiguration()->getStencilBufInitialized()) {
+      // create a stencil for the walls
+      glDisable(GL_DEPTH_TEST);
+      glColorMask(0,0,0,0);
+      glEnable(GL_STENCIL_TEST);
+      glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+      glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+      for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
 
-	//      glEnable(GL_LIGHTING);
-	glDepthMask(GL_TRUE);    
-	glDisable(GL_BLEND);
+      // Use the stencil to draw
+      glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+      glEnable(GL_DEPTH_TEST);
+      // decr where the floor is (results in a number = 1)
+      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+      glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
+      // draw the ground  
+      setupShapes(true);
+
+      // shadows
+      if(scourge->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
+        glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
+        // GL_INCR makes sure to only draw shadow once
+        glStencilOp(GL_KEEP, GL_KEEP, GL_INCR); 
+        glDisable(GL_TEXTURE_2D);
+        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        useShadow = true;
+        if(scourge->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
+          for(int i = 0; i < stencilCount; i++) {
+            doDrawShape(&stencil[i]);
+          }
+        }
+        for(int i = 0; i < otherCount; i++) {
+          doDrawShape(&other[i]);
+        }
+        useShadow = false;
+        glDisable(GL_BLEND);
+        glEnable(GL_TEXTURE_2D);
+        glDepthMask(GL_TRUE);
+      }
+      glDisable(GL_STENCIL_TEST); 
+
+      // draw the blended walls
+      glEnable(GL_BLEND);  
+      glDepthMask(GL_FALSE);
+      //glDisable(GL_LIGHTING);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+      //glEnable(GL_LIGHTING);
+      glDepthMask(GL_TRUE);    
+      glDisable(GL_BLEND);
+    } else {
+      // draw the walls
+      for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+      // draw the ground  
+      setupShapes(true);
+    }
+
+    // draw the effects
+    glEnable(GL_BLEND);  
+    glDepthMask(GL_FALSE);
+    //      glDisable(GL_LIGHTING);
+    for(int i = 0; i < laterCount; i++) {
+      later[i].shape->setupBlending();
+      doDrawShape(&later[i]);
+      later[i].shape->endBlending();
+    }
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    for(int i = 0; i < damageCount; i++) {
+      doDrawShape(&damage[i], 1);
+    }
+    drawShade();
+
+    //      glEnable(GL_LIGHTING);
+    glDepthMask(GL_TRUE);    
+    glDisable(GL_BLEND);
 
     // draw the projectiles
     DrawLater dl;
@@ -770,23 +777,23 @@ void Map::draw() {
       Projectile::removeProjectile(*e);
     }
 
-	
-	if(scourge->getTargetSelectionFor()) {
-	  glPushMatrix();
-	  glLoadIdentity();
-	  glDisable(GL_DEPTH_TEST);
-	  //glDepthMask(GL_FALSE);
-	  glColor3f( 1, 1, 0.15f );
-	  scourge->getSDLHandler()->texPrint( 10,
-										  viewHeight - 10,
-										  "Select a target for %s.", 
-										  scourge->getTargetSelectionFor()->getName() );
-	  glEnable(GL_DEPTH_TEST);
-	  //glDepthMask(GL_TRUE);    
-	  glPopMatrix();
-	}
 
-	//drawDraggedItem();
+    if(scourge->getTargetSelectionFor()) {
+      glPushMatrix();
+      glLoadIdentity();
+      glDisable(GL_DEPTH_TEST);
+      //glDepthMask(GL_FALSE);
+      glColor3f( 1, 1, 0.15f );
+      scourge->getSDLHandler()->texPrint( 10,
+                                          viewHeight - 10,
+                                          "Select a target for %s.", 
+                                          scourge->getTargetSelectionFor()->getName() );
+      glEnable(GL_DEPTH_TEST);
+      //glDepthMask(GL_TRUE);    
+      glPopMatrix();
+    }
+
+    //drawDraggedItem();
   }
 
   glDisable( GL_SCISSOR_TEST );
@@ -803,7 +810,7 @@ void Map::drawShade() {
   //glDisable( GL_TEXTURE_2D );
   glBlendFunc(GL_DST_COLOR, GL_ZERO);
   //scourge->setBlendFunc();
-  
+
   glColor4f( 1, 1, 1, 0.5f);
 
   glBindTexture( GL_TEXTURE_2D, overlay_tex );
@@ -813,7 +820,7 @@ void Map::drawShade() {
   glVertex3f(0, 0, 0);
   glTexCoord2f( 0.0f, 1.0f );
   glVertex3f(0, 
-			 viewHeight, 0);
+             viewHeight, 0);
   glTexCoord2f( 1.0f, 1.0f );
   glVertex3f(viewWidth, viewHeight, 0);
   glTexCoord2f( 1.0f, 0.0f );

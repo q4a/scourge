@@ -446,11 +446,17 @@ void SDLHandler::mainLoop() {
         res = eventHandler->handleEvent(&event);
       }
       if(res) {
-        if(popHandlers()) return;
+        if(popHandlers()) {
+          return;
+        }
       }
     }
 
     if(isActive) {
+      glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+      glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
+      glClearDepth( 1.0f );
+
       screenView->drawView();
 
       // redraw the gui

@@ -40,13 +40,13 @@ Button::~Button() {
 
 void Button::drawWidget(Widget *parent) {
   if(toggle && selected) {
-	applySelectionColor();
+    applySelectionColor();
   } else {
-	applyBackgroundColor(true);
+    applyBackgroundColor(true);
   }
   if(isTranslucent()) {
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+    glEnable( GL_BLEND );
   }
   glBegin(GL_QUADS);
   glVertex2d(0, 0);
@@ -55,29 +55,29 @@ void Button::drawWidget(Widget *parent) {
   glVertex2d(x2 - x, 0);
   glEnd();
   if(isTranslucent()) {
-	glDisable( GL_BLEND );
+    glDisable( GL_BLEND );
   }
 
   if(inside) {
-	GLint t = SDL_GetTicks();
-	if(lastTick == 0 || t - lastTick > 50) {
-	  lastTick = t;
-	  alpha += alphaInc;
-	  if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
-	}
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	glEnable( GL_BLEND );
-	glBegin( GL_QUADS );
-	glColor4f( 1, 0, 0, alpha );
-	glVertex2d(0, 0);
-	glColor4f( 0, 1, 0, alpha );
-	glVertex2d(0, y2 - y);
-	glColor4f( 0, 0, 1, alpha );
-	glVertex2d(x2 - x, y2 - y);
-	glColor4f( 1, 0, 1, alpha );
-	glVertex2d(x2 - x, 0);
-	glEnd();
-	glDisable( GL_BLEND );
+    GLint t = SDL_GetTicks();
+    if(lastTick == 0 || t - lastTick > 50) {
+      lastTick = t;
+      alpha += alphaInc;
+      if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
+    }
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+    glEnable( GL_BLEND );
+    glBegin( GL_QUADS );
+    glColor4f( 1, 0, 0, alpha );
+    glVertex2d(0, 0);
+    glColor4f( 0, 1, 0, alpha );
+    glVertex2d(0, y2 - y);
+    glColor4f( 0, 0, 1, alpha );
+    glVertex2d(x2 - x, y2 - y);
+    glColor4f( 1, 0, 1, alpha );
+    glVertex2d(x2 - x, 0);
+    glEnd();
+    glDisable( GL_BLEND );
   }
 
   applyBorderColor();

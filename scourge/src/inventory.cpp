@@ -58,7 +58,7 @@ Inventory::Inventory(Scourge *scourge) {
 
   // construct UI
   mainWin = new Window( scourge->getSDLHandler(),
-                        100, 50, 525, 505, 
+                        100, 50, Scourge::INVENTORY_WIDTH, Scourge::INVENTORY_HEIGHT,
                         strdup("Party Information"), 
                         scourge->getShapePalette()->getGuiTexture() );
 
@@ -99,10 +99,10 @@ Inventory::Inventory(Scourge *scourge) {
                          true );
   //mainWin->createLabel( 0, 138, scourge->getParty()->getParty(3)->getCharacter()->getName());
 
-  inventoryButton = mainWin->createButton( 420,0, 525, 30, strdup("Inventory"), true);
-  skillsButton   = mainWin->createButton( 420,30, 525, 60, strdup("Skills"), true);
-  spellsButton   = mainWin->createButton( 420,60, 525, 90, strdup("Spells"), true);
-  missionButton   = mainWin->createButton( 420, 90, 525, 120, strdup("Mission"), true);
+  inventoryButton = mainWin->createButton( 0, 320, 105, 350, strdup("Inventory"), true);
+  skillsButton   = mainWin->createButton( 0,350, 105, 380, strdup("Skills"), true);
+  spellsButton   = mainWin->createButton( 0, 380, 105, 410, strdup("Spells"), true);
+  missionButton   = mainWin->createButton( 0, 410, 105, 440, strdup("Mission"), true);
   cards = new CardContainer(mainWin);
 
   // inventory page	
@@ -121,16 +121,6 @@ Inventory::Inventory(Scourge *scourge) {
 
   int yy = 160;
   equipButton    = cards->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
-  yy+=30;
-  fixButton      = cards->createButton( 0, yy, 105, yy + 30, strdup("Fix Item"), INVENTORY);
-  yy+=30;
-  removeCurseButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Remove Curse"), INVENTORY );
-  yy+=30;
-  combineButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Combine Item"), INVENTORY );
-  yy+=30;
-  enchantButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Enchant Item"), INVENTORY );
-  yy+=30;
-  identifyButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
   yy+=30;
   openButton     = cards->createButton( 0, yy, 105, yy + 30, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY ); 
   yy+=30;

@@ -394,7 +394,8 @@ void Window::drawWidget(Widget *parent) {
   }
 
   // draw widgets
-  if(isOpening()) {  
+  bool tmp = isOpening();
+  if(tmp) {  
     scissorToWindow();
   }
   for(int i = 0; i < widgetCount; i++) {                  
@@ -412,7 +413,7 @@ void Window::drawWidget(Widget *parent) {
       glPopMatrix();
     }
   }  
-  if(isOpening()) {  
+  if(tmp) {  
     glDisable( GL_SCISSOR_TEST );
   }
 
