@@ -46,16 +46,19 @@ class Projectile {
   Spell *spell;
   float sx, sy, ex, ey; 
   float angle;
+  float parabolic;
   int q;
   int cx, cy;
   int steps;
   Shape *shape;
+  float maxDist;
+  float startX, startY, distToTarget;
 
   static map<Creature*, vector<Projectile*>*> projectiles;
   
  public:
-  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape);
-  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape);
+  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f);
+  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f);
   virtual ~Projectile();
 
   // return true when out of moves

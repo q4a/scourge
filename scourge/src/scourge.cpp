@@ -1372,7 +1372,7 @@ void Scourge::addGameSpeed(int speedFactor){
   map->addDescription(msg);
 }
 
-void Scourge::moveMonster(Creature *monster) {  
+void Scourge::moveMonster(Creature *monster) {
   // set running animation (currently move or attack)
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
 	monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);

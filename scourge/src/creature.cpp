@@ -823,11 +823,11 @@ int Creature::getInitiative(Item *weapon, Spell *spell) {
 }
 
 // return number of projectiles that can be launched simultaniously
-// it is a function of speed, coordination and weapon skill
+// it is a function of speed, level, and weapon skill
 // this method returns a number from 1-10
 int Creature::getMaxProjectileCount(Item *item) {
   int n = (int)((double)(getSkill(Constants::SPEED) + 
-						 getSkill(Constants::COORDINATION) + 
+						 (getLevel() * 10) + 
 						 getSkill(item->getRpgItem()->getSkill())) / 30.0f);
   if(n <= 0) n = 1;
   return n;

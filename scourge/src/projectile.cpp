@@ -21,22 +21,24 @@ map<Creature*, vector<Projectile*>*> Projectile::projectiles;
 
 #define DELTA 1.0f
 
-Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape) {
+Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic) {
   this->creature = creature;
   this->target = target;
   this->item = item;
   this->spell = NULL;
   this->shape = shape;
+  this->parabolic = parabolic;
 
   commonInit();
 }
 
-Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape) {
+Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic) {
   this->creature = creature;
   this->target = target;
   this->item = NULL;
   this->spell = spell;
   this->shape = shape;
+  this->parabolic = parabolic;
 
   commonInit();
 }
@@ -64,6 +66,16 @@ void Projectile::commonInit() {
   //  cerr << "NEW PROJECTILE: (" << sx << "," << sy << ")-(" << ex << "," << ey << ") angle=" << angle << " q=" << q << endl;
   cx = cy = 0;
   steps = 0;
+  
+  maxDist = (spell ? spell->getDistance() : item->getRpgItem()->getDistance()) + 
+	target->getShape()->getWidth();
+  startX = sx;
+  startY = sy;
+  distToTarget = Constants::distance(startX,  startY, 
+									 1, 1,
+									 target->getX(), target->getY(),
+									 target->getShape()->getWidth(), 
+									 target->getShape()->getDepth());
 }
 
 Projectile::~Projectile() {
@@ -71,24 +83,48 @@ Projectile::~Projectile() {
 
 bool Projectile::move() {
   // are we at the target location?
-  if((item && steps >= item->getRpgItem()->getDistance() + target->getShape()->getWidth()) || 
-	 (spell && steps >= spell->getDistance() + target->getShape()->getWidth()) ||
+  if(steps >= maxDist ||
 	 (sx == ex && sy == ey)) return true;
   steps++;
 
   // angle-based floating pt. movement
   if(sx == ex) {
-	// horizontal movement
+	// vertical movement
 	if(sy < ey) sy+=DELTA;
 	else sy-=DELTA;
   } else if(sy == ey) {
-	// vertical movement
+	// horizontal movement
 	if(sx < ex) sx+=DELTA;
 	else sx-=DELTA;
   } else {
+
+	float oldAngle = angle;
+	if(parabolic != 0.0f) {
+	  float a = (179.0f * steps) / distToTarget;
+	  angle = angle + parabolic * 40 * sin(Constants::toRadians(a));
+	  /*
+	  if(parabolic == 0.5f) cerr << "parabolic=" << parabolic << 
+		" steps=" << steps << " out of " << distToTarget <<
+		" a=" << a << 
+		" sin=" << sin(Constants::toRadians(a)) << 
+		" angle=" << angle <<
+		endl;
+	  */
+	}
+
 	sx += (cos(Constants::toRadians(angle)) * DELTA);
 	sy += (sin(Constants::toRadians(angle)) * DELTA);
+	angle = oldAngle;
   }
+
+  // recalculate the distance
+  distToTarget = Constants::distance(startX,  startY, 
+									 1, 1,
+									 target->getX(), target->getY(),
+									 target->getShape()->getWidth(), 
+									 target->getShape()->getDepth());
+
+
   // we're not at the target yet
   return false;
 }
@@ -104,6 +140,7 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
   } else {
 	v = projectiles[creature];
   }
+  // for items this is the max number of proj.-s in the air
   if((int)v->size() > maxProjectiles) return NULL;
   Projectile *p = new Projectile(creature, target, item, shape);
   v->push_back(p);
@@ -120,9 +157,26 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
   } else {
 	v = projectiles[creature];
   }
+  // FIXME: for spells, it's how many to launch at once...
   if((int)v->size() > maxProjectiles) return NULL;
+
+
+  // add a straight-flying projectile
   Projectile *p = new Projectile(creature, target, spell, shape);
   v->push_back(p);
+
+  // add extra projectiles w. parabolic curve
+  float r = 0.5f;
+  for(int i = 0; i < maxProjectiles - 1; i+=2) {
+	if(i < maxProjectiles - 1) {
+	  v->push_back(new Projectile(creature, target, spell, shape, r));
+	}
+	if((i + 1) < maxProjectiles - 1) {
+	  v->push_back(new Projectile(creature, target, spell, shape, -r));
+	}
+	r += (r/2.0f);
+  }
+
   return p;
 }
 
