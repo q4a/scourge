@@ -461,6 +461,7 @@ struct t3DObject
 	int  numOfVerts;			// The number of verts in the model
 	int  numOfFaces;			// The number of faces in the model
 	int  numTexVertex;			// The number of texture coordinates
+	int  numGlCommands;         // The number of glCommands
 	int  materialID;			// The texture ID to use, which is the index into our texture array
 	bool bHasTexture;			// This is TRUE if there is a texture map for this object
 	char strName[255];			// The name of the object
@@ -468,6 +469,7 @@ struct t3DObject
 	CVector3  *pNormals;		// The object's normals
 	CVector2  *pTexVerts;		// The texture's UV coordinates
 	tFace *pFaces;				// The faces information of the object
+	int *pGlCommands;           // The glCommands used to draw the model faster
 };
 
 

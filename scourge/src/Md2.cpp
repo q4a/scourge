@@ -57,6 +57,7 @@ CLoadMD2::CLoadMD2()
     m_pTexCoords=NULL;
     m_pTriangles=NULL; 
     m_pFrames=NULL;
+    m_pGlCommands=NULL;
 }
 
 
@@ -160,6 +161,7 @@ void CLoadMD2::ReadMD2Data()
     m_pTexCoords = new tMd2TexCoord [m_Header.numTexCoords];
     m_pTriangles = new tMd2Face [m_Header.numTriangles];
     m_pFrames    = new tMd2Frame [m_Header.numFrames];
+    m_pGlCommands= new tMd2GlCommands [m_Header.numGlCommands];
 
     // Next, we start reading in the data by seeking to our skin names offset
     fseek(m_FilePointer, m_Header.offsetSkins, SEEK_SET);
@@ -194,6 +196,20 @@ void CLoadMD2::ReadMD2Data()
 		}
 	  }
 	}
+	
+	// Read the glCommands
+    cout<< "m_Header.offsetGlCommands = " <<  m_Header.offsetGlCommands << endl;
+    cout<< "num glCommands = " << m_Header.numGlCommands << endl;
+    fseek(m_FilePointer, m_Header.offsetGlCommands, SEEK_SET);
+    fread(m_pGlCommands, sizeof(tMd2GlCommands), m_Header.numGlCommands, m_FilePointer);    
+    if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {        
+        unsigned int *p = (unsigned int *)&m_pGlCommands;
+        for(unsigned int n = 0; n < sizeof(tMd2GlCommands) / sizeof(unsigned int); n++) {
+            *p = SDL_SwapLE32(*p);
+            p++;
+        }
+	}
+	
             
     // Move the file pointer to the vertices (frames)
     fseek(m_FilePointer, m_Header.offsetFrames, SEEK_SET);
@@ -417,10 +433,8 @@ void CLoadMD2::ConvertDataStructures(t3DModel *pModel)
     // hold the key frames
     pModel->numOfObjects = m_Header.numFrames;
 
-    // Create our animation list and store it in our model 
-    cout<< "parsing animations" << endl;   
+    // Create our animation list and store it in our model     
     ParseAnimations(pModel);
-    cout<< "DONE" << endl;
     
     // Go through every key frame and store it's vertices info in our pObject list.
     for (i=0; i < pModel->numOfObjects; i++)
@@ -432,6 +446,7 @@ void CLoadMD2::ConvertDataStructures(t3DModel *pModel)
         currentFrame.numOfVerts   = m_Header.numVertices;
         currentFrame.numTexVertex = m_Header.numTexCoords;
         currentFrame.numOfFaces   = m_Header.numTriangles;
+        currentFrame.numGlCommands= m_Header.numGlCommands;        
 
         // Allocate memory for the vertices, texture coordinates and face data.
         currentFrame.pVerts    = new CVector3 [currentFrame.numOfVerts];
@@ -496,6 +511,13 @@ void CLoadMD2::ConvertDataStructures(t3DModel *pModel)
             currentFrame.pFaces[j].coordIndex[1] = m_pTriangles[j].textureIndices[1];
             currentFrame.pFaces[j].coordIndex[2] = m_pTriangles[j].textureIndices[2];
         }
+        
+        // Allocate memory for glCommands and stores them
+        currentFrame.pGlCommands = new int [currentFrame.numGlCommands];                
+        for(j=0; j < currentFrame.numGlCommands; j++)
+        {   
+            currentFrame.pGlCommands[j] = m_pGlCommands[j].command;   
+        }        
                 
         // Here we add the current object (or frame) to our list object list
         pModel->pObject.push_back(currentFrame);
@@ -522,6 +544,7 @@ void CLoadMD2::CleanUp()
     if(m_pTexCoords) delete m_pTexCoords;       // Free the texture coord data
     if(m_pTriangles) delete m_pTriangles;       // Free the triangle face data
     if(m_pFrames)    delete m_pFrames;          // Free the frames of animation
+    if(m_pGlCommands)delete m_pGlCommands;      // Free the glCommands data
 }
 
 

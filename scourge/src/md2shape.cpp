@@ -3,6 +3,8 @@
  * DigiBen     digiben@gametutorials.com
  * Look up his other great tutorials at:
  * http://www.gametutorials.com
+ * And to David Henry (http://tfc.duke.free.fr/us/tutorials/models/md2.htm)
+ * for glCommands.
  */
 
 /***************************************************************************
@@ -62,7 +64,12 @@ MD2Shape::~MD2Shape() {
     delete [] g_3DModel.pObject[i].pNormals;
     delete [] g_3DModel.pObject[i].pVerts;
     delete [] g_3DModel.pObject[i].pTexVerts;
-  }  
+  } 
+    
+  for(int i = 0; i < g_3DModel.pObject[0].numOfVerts; i++){
+    if(vect[i]) delete [] vect[i];  
+  } 
+  delete [] vect;
 }
 
 void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {  
@@ -107,8 +114,14 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
     }
     // Set the texture ID for this material
     g_3DModel.pMaterials[i].texureId = i;
-  }
+  }    
 
+  // Allocate memory for interpolated vertices
+  vect = new (float *) [g_3DModel.pObject[0].numOfVerts];
+  for(int i = 0; i < g_3DModel.pObject[0].numOfVerts; i++){
+    vect[i] = new (float) [3];  
+  }
+    
   // Find the lowest point
   float minx, miny, minz;  
   float maxx, maxy, maxz;
@@ -218,9 +231,6 @@ void MD2Shape::draw() {
 
 float MD2Shape::ReturnCurrentTime(t3DModel *pModel, int nextFrame)
 {
-    //static float elapsedTime   = 0.0f;
-    //static float lastTime     = 0.0f;
-
     // This function is very similar to finding the frames per second.
     // Instead of checking when we reach a second, we check if we reach
     // 1 second / our animation speed. (1000 ms / kAnimationSpeed).
@@ -267,6 +277,10 @@ float MD2Shape::ReturnCurrentTime(t3DModel *pModel, int nextFrame)
 
 void MD2Shape::AnimateMD2Model(t3DModel *pModel)
 {
+
+    int *ptricmds ;
+    int nb;     
+    
     // Now comes the juice of our tutorial.  Fear not, this is actually very intuitive
     // if you drool over it for a while (stay away from the keyboard though...).
     // What's going on here is, we are getting our current animation that we are
@@ -329,59 +343,57 @@ void MD2Shape::AnimateMD2Model(t3DModel *pModel)
     // Anyhing from 0 to 1 can be thought of as a percentage from 0 to 100 percent complete.    
     float t = ReturnCurrentTime(pModel, nextFrame);
         
-    // Bind the texture to the texture
+    // Bind the appropriate texture
     if(getUseTexture()) glBindTexture(GL_TEXTURE_2D, g_Texture[0]);           
-
-    // Start rendering lines or triangles, depending on our current rendering mode (Lft Mouse Btn)
-    glBegin(g_ViewMode);
-
-        // Go through all of the faces (polygons) of the current frame and draw them
-        for(int j = 0; j < pFrame->numOfFaces; j++)        
+    
+    // Stores interpolated vertices    
+    for(int j = 0; j < pFrame->numOfFaces; j++)        
+    {
+        // Go through each corner of the triangle and draw it.
+        for(int whichVertex = 0; whichVertex < 3; whichVertex++)
         {
-            // Go through each corner of the triangle and draw it.
-            for(int whichVertex = 0; whichVertex < 3; whichVertex++)
-            {
-                // Get the index for each point of the face
-                int vertIndex = pFirstFrame->pFaces[j].vertIndex[whichVertex];
-
-                // Get the index for each texture coordinate for this face
-                int texIndex  = pFirstFrame->pFaces[j].coordIndex[whichVertex];                
-                        
-                // Give OpenGL the normal for this vertex.  Notice that we put a
-                // - sign in front.  It appears that because of the ordering of Quake2's
-                // polygons, we need to invert the normal
-                //glNormal3f(-pFirstFrame->pNormals[ vertIndex ].x, -pFirstFrame->pNormals[ vertIndex ].y, pFirstFrame->pNormals[ vertIndex ].z);                          
-                                                                 
-                // Make sure there was a UVW map applied to the object.  Notice that
-                // we use the first frame to check if we have texture coordinates because
-                // none of the other frames hold this information, just the first by design.
-                if(pFirstFrame->pTexVerts) 
-                {
-                    // Pass in the texture coordinate for this vertex
-                    glTexCoord2f(pFirstFrame->pTexVerts[ texIndex ].x, 
-                                 pFirstFrame->pTexVerts[ texIndex ].y);
-                }
-
-                // Now we get to the interpolation part! (*Bites his nails*)
-                // Below, we first store the vertex we are working on for the current
-                // frame and the frame we are interpolating too.  Next, we use the
-                // linear interpolation equation to smoothly transition from one
-                // key frame to the next.
+            // Get the index for each point of the face
+            int vertIndex = pFirstFrame->pFaces[j].vertIndex[whichVertex];                                              
                 
-                // Store the current and next frame's vertex
-                CVector3 vPoint1 = pFrame->pVerts[ vertIndex ];                
-                CVector3 vPoint2 = pNextFrame->pVerts[ vertIndex ]; 
+            // Store the current and next frame's vertex
+            CVector3 vPoint1 = pFrame->pVerts[ vertIndex ];                
+            CVector3 vPoint2 = pNextFrame->pVerts[ vertIndex ]; 
 
-                // By using the equation: p(t) = p0 + t(p1 - p0), with a time t
-                // passed in, we create a new vertex that is closer to the next key frame.
-                glVertex3f((vPoint1.x + t * (vPoint2.x - vPoint1.x))* div, // Find the interpolated X
-                           (vPoint1.y + t * (vPoint2.y - vPoint1.y))* div, // Find the interpolated Y
-                           (vPoint1.z + t * (vPoint2.z - vPoint1.z))* div);// Find the interpolated Z                                                        
-            }
+            // By using the equation: p(t) = p0 + t(p1 - p0), with a time t
+            // passed in, we create a new vertex that is closer to the next key frame.
+            vect[vertIndex][0] = (vPoint1.x + t * (vPoint2.x - vPoint1.x))*div;
+            vect[vertIndex][1] = (vPoint1.y + t * (vPoint2.y - vPoint1.y))*div;
+            vect[vertIndex][2] = (vPoint1.z + t * (vPoint2.z - vPoint1.z))*div;                                                                              
         }
-
-    // Stop rendering the triangles
-    glEnd();      
+    }
+    
+    ptricmds = pFirstFrame->pGlCommands;
+    nb = *(ptricmds);    
+    ptricmds++;
+    while(nb != 0){        
+    
+        if( nb < 0 ){
+            glBegin( GL_TRIANGLE_FAN );
+            nb = -nb;
+        }
+        else{
+            glBegin( GL_TRIANGLE_STRIP );
+        }
+        
+        while(nb > 0){
+            // ptricmds[0]  :   s texture coordinate
+            // ptricmds[1]  :   t texture coordinate
+            // ptricmds[2]  :   vertex index to draw            
+            glTexCoord2f(((float *)ptricmds)[0], 1.0f - ((float *)ptricmds)[1]);            
+            glVertex3fv( vect[ ptricmds[2] ] );
+            nb--;
+            ptricmds+=3;            
+        }
+			
+        glEnd();        
+        nb = *(ptricmds);
+        ptricmds++;
+    }  
 }
 
 

@@ -50,7 +50,8 @@ private:
   CLoadMD2 g_LoadMd2;                   // This is MD2 class.  This should go in a good model class.
   t3DModel g_3DModel;                   // This holds the 3D Model info that we load in
   int g_ViewMode;                       // make this GL_LINE_STRIP for outline
-  int dir;
+  int dir;    
+  float **vect;
   
   // Animation stuff
   float elapsedTime;
