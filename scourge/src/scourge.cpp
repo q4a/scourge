@@ -1367,16 +1367,16 @@ void Scourge::moveMonster(Creature *monster) {
 void Scourge::openContainerGui(Item *container) {
   // is it already open?
   for(int i = 0; i < containerGuiCount; i++) {
-	if(containerGui[i]->getContainer() == container) {
-	  containerGui[i]->getWindow()->toTop();
-	  return;
-	}
+    if(containerGui[i]->getContainer() == container) {
+      containerGui[i]->getWindow()->toTop();
+      return;
+    }
   }
   // open new window
   if(containerGuiCount < MAX_CONTAINER_GUI) {
-	containerGui[containerGuiCount++] = new ContainerGui(this, container, 
-														 10 + containerGuiCount * 15, 
-														 10 + containerGuiCount * 15);
+    containerGui[containerGuiCount++] = new ContainerGui(this, container, 
+                                                         10 + containerGuiCount * 15, 
+                                                         10 + containerGuiCount * 15);
   }
 }
 
@@ -1433,34 +1433,34 @@ Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
 
 void Scourge::missionCompleted() {
   showMessageDialog("Congratulations, mission accomplished!");
-
+  
   // Award exp. points for completing the mission
   if(currentMission && missionWillAwardExpPoints && 
-	 currentMission->isCompleted()) {
-
-	// only do this once
-	missionWillAwardExpPoints = false;
-
-	// how many points?
-	int exp = (currentMission->getLevel() + 1) * 100;
-	map->addDescription("For completing the mission", 0, 1, 1);
-	char message[200];
-	sprintf(message, "The party receives %d points.", exp);
-	map->addDescription(message, 0, 1, 1);
-	
-	for(int i = 0; i < getParty()->getPartySize(); i++) {
-	  bool b = getParty()->getParty(i)->getStateMod(Constants::leveled);
-	  if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
-		int n = getParty()->getParty(i)->addExperience(exp);
-		if(n > 0) {
-		  // sprintf(message, "%s gains %d experience points.", getParty()->getParty(i)->getName(), n);
-		  // getMap()->addDescription(message);
-		  if(!b && getParty()->getParty(i)->getStateMod(Constants::leveled)) {
-			sprintf(message, "%s gains a level!", getParty()->getParty(i)->getName());
-			getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-		  }
-		}
-	  }
-	}
+     currentMission->isCompleted()) {
+    
+    // only do this once
+    missionWillAwardExpPoints = false;
+    
+    // how many points?
+    int exp = (currentMission->getLevel() + 1) * 100;
+    map->addDescription("For completing the mission", 0, 1, 1);
+    char message[200];
+    sprintf(message, "The party receives %d points.", exp);
+    map->addDescription(message, 0, 1, 1);
+    
+    for(int i = 0; i < getParty()->getPartySize(); i++) {
+      bool b = getParty()->getParty(i)->getStateMod(Constants::leveled);
+      if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
+        int n = getParty()->getParty(i)->addExperience(exp);
+        if(n > 0) {
+          // sprintf(message, "%s gains %d experience points.", getParty()->getParty(i)->getName(), n);
+          // getMap()->addDescription(message);
+          if(!b && getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+            sprintf(message, "%s gains a level!", getParty()->getParty(i)->getName());
+            getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+          }
+        }
+      }
+    }
   }
 }

@@ -117,7 +117,8 @@ void GLTeleporter::draw() {
 	float green = (float)((this->color & 0x00ff0000) >> (2 * 8)) / (float)(0xff);
 	float blue = (float)((this->color & 0x0000ff00) >> (1 * 8)) / (float)(0xff);
 	float max = ((float)(height - 1) / DIV) / 2.0f;
-	float dist = 1.5f - abs(max - ring[i]) / max;
+	//	float dist = 1.5f - abs(max - ring[i]) / max;
+	float dist = 1.5f - abs((int)(max - ring[i])) / max;
 	glColor4f(red, green, blue, dist);
 	
 	glBegin( GL_QUADS );

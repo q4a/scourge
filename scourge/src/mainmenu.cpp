@@ -198,8 +198,8 @@ void MainMenu::drawLogo() {
   glPushMatrix();
   glLoadIdentity();
   glRotatef(logoRot, 0, 0, 1 );
-  glTranslatef( 70, 10 - (abs(logoRot) / 0.25f), 500 );
-  float zoom = (abs(logoRot) / (LOGO_ROT_POS / LOGO_ZOOM)) + 1.0f;
+  glTranslatef( 70, 10 - abs((int)(logoRot / 0.25f)), 500 );
+  float zoom = (logoRot / (LOGO_ROT_POS / LOGO_ZOOM)) + 1.0f;
   glScalef( zoom, zoom, 1 );
   float w = scourge->getShapePalette()->logo->w;
   float h = scourge->getShapePalette()->logo->h;
@@ -242,7 +242,7 @@ void MainMenu::drawLogo() {
 void MainMenu::addLogoSprite() {
   if(logoSpriteCount >= MAX_LOGOS - 1) return;
   logoSprite[logoSpriteCount].x = 70.0f;
-  logoSprite[logoSpriteCount].y = 10 - (abs(logoRot) / 0.25f);
+  logoSprite[logoSpriteCount].y = 10 - abs((int)(logoRot / 0.25f));
   logoSprite[logoSpriteCount].angle = 1.0f + (88.0f * rand()/RAND_MAX);
   logoSprite[logoSpriteCount].quadrant = (int)(4.0f * rand()/RAND_MAX);
   logoSprite[logoSpriteCount].steps = 0;

@@ -96,7 +96,8 @@ void Effect::drawTeleport(GLShape *shape) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c / 2.0f, c, 1.0f, 0.5);
 
