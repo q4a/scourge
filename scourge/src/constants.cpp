@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "constants.h"
+
+const char *Constants::localhost = "localhost";
+const char *Constants::adminUserName = "admin";
  
 // assign the data dir
 char rootDir[300] = DATA_DIR;
@@ -107,11 +110,12 @@ char *Constants::messages[][80] = {
 	"The silence is broken only by some crickets nearby.",
 	"Bazzoomm! A small cloud of smoke rises to the ceiling." },
   { "Your character cannot equip that item." },
-  { "Fill out the server details, first." }
+  { "Fill out the server details, first." },
+  { "Unable to connect to server." }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1
 };
 
 // opengl extension routines

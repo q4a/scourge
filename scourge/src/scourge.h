@@ -46,7 +46,9 @@
 #include "party.h"
 #include "projectile.h"
 #include "multiplayer.h"
-#include "net/protocol.h"
+#include "net/server.h"
+#include "net/client.h"
+#include "net/gamestatehandler.h"
 
 using namespace std;
 
@@ -71,7 +73,9 @@ class Party;
 class Projectile;
 class Mission;
 class MultiplayerDialog;
-class Protocol;
+class Server;
+class Client;
+class GameStateHandler;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -85,7 +89,7 @@ class Protocol;
   
   @author Gabor Torok
 */ 
-class Scourge : public SDLEventHandler,SDLScreenView {
+class Scourge : public SDLEventHandler,SDLScreenView,GameStateHandler {
  private:
   Party *party;
   Map *map;
@@ -154,7 +158,8 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Creature *targetSelectionFor;
 
   int layoutMode;
-  Protocol *protocol;
+  Server *server;
+  Client *client;
 
 protected:
   SDLHandler *sdlHandler;
@@ -195,9 +200,14 @@ public:
   ~Scourge();
 
   /**
-    @return the network Protocol.
+    @return the server.
   */
-  inline Protocol *getProtocol() { return protocol; }
+  inline Server *getServer() { return server; }
+
+  /**
+    @return the client.
+  */
+  inline Client *getClient() { return client; }
 
   /**
     @return the Board containing the available missions.
@@ -518,6 +528,17 @@ public:
     @return the current UI layout mode.
   */
   int getLayoutMode() { return layoutMode; }
+
+  /**
+     the producer
+  */
+  char *getGameState();
+  
+  /** 
+      the consumer
+  */
+  void consumeGameState(int frame, char *state);
+
 
  protected:
   //  void fightBattle(); 

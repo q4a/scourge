@@ -34,6 +34,8 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(int argc, char *argv[]){
+  server = NULL;
+  client = NULL;
   lastTick = lastProjectileTick = 0;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
@@ -96,8 +98,6 @@ Scourge::Scourge(int argc, char *argv[]){
   multiplayer = new MultiplayerDialog(this);
   bool initMainMenu = true;
 
-  protocol = NULL;
-
   while(true) {
 
     if(initMainMenu) {
@@ -117,23 +117,33 @@ Scourge::Scourge(int argc, char *argv[]){
 
 #ifdef HAVE_SDL_NET
       if(mainMenu->getValue() == MULTIPLAYER_START) {
-        if(protocol) {
-          delete protocol;
-          protocol = NULL;
-        }
-        protocol = new Protocol(this);
+        int serverPort = 6666; // FIXME: make this more dynamic
         int port;
-        char *host, *username;
+        const char *host, *username;
         if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
-          port = protocol->startServer();
-          host = (char*)protocol->localhost;
-          username = (char*)protocol->adminUserName;
+          if(!server) {
+            server = new Server(serverPort);
+            server->setGameStateHandler(this);
+          }
+          port = serverPort; 
+          host = Constants::localhost;
+          username = Constants::adminUserName;
         } else {
           port = atoi(multiplayer->getServerPort());
           host = multiplayer->getServerName();
           username = multiplayer->getUserName();
         }
-        protocol->login(host, port, username);
+        if(client) {
+          delete client;
+          client = NULL;
+        }
+        client = new Client((char*)host, port, (char*)username);
+        client->setGameStateHandler(this);
+        if(!client->login()) {
+          cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
+          showMessageDialog(Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR));
+          continue;
+        }
       }
 #endif
       
@@ -146,9 +156,11 @@ Scourge::Scourge(int argc, char *argv[]){
       sdlHandler->quit(0);
     }
   }
-}                                                 
+}
 
 Scourge::~Scourge(){
+  if(server) delete server;
+  if(client) delete client;
   delete mainMenu;
   delete optionsMenu;
   delete multiplayer;
@@ -1845,3 +1857,12 @@ Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   }
   return p;
 }
+
+char *Scourge::getGameState() {
+  return "abc";
+}
+
+void Scourge::consumeGameState(int frame, char *state) {
+  cerr << "got frame: " << frame << " state=" << state << endl;
+}
+

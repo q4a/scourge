@@ -1,53 +1,61 @@
-/***************************************************************************
-                          client.h  -  description
-                             -------------------
-    begin                : Sun Sep 28 2003
-    copyright            : (C) 2003 by Gabor Torok
-    email                : cctorok@yahoo.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "../constants.h"
+#include <SDL.h>
+#include <SDL_net.h>
+#include <SDL_thread.h>
+#include <iostream.h>
+#include <string>
+#include "tcputil.h"
+#include "gamestatehandler.h"
+#include "testgamestatehandler.h"
+#include "broadcast.h"
 
-#ifdef HAVE_SDL_NET
-  #include <SDL_net.h>
-  #include <SDL_thread.h>
-  #include "udputil.h"
+int clientLoop(void *data);
 
-/**
- *@author Gabor Torok
- */
 class Client {
-private:
-  char *clientServerName;
-  char *clientUserName;
-  int clientPort;
-  UDPsocket clientSocket;
-  UDPpacket *clientOut, *clientIn;
-  IPaddress clientServerIP;
-  Uint32 clientId;
+ private:
+  char *host;
+  int port;
+  char *username;
+  bool connected;
+  bool readError;
+  bool threadRunning;
+  SDL_Thread *thread;
+  GameStateHandler *gsh;
+  int lastGameFrameReceived;
+  TCPsocket tcpSocket;
+  Broadcast *broadcast;
+  IPaddress ip;
 
-public:
-  Client(char *server, int port, char *name);
-  ~Client(); 
-  Uint32 login();
-  void logout();
-  void sendChat(char *message);
+  static const Uint32 FIND_SERVER_TIMEOUT = 10000;
 
-  inline Uint32 getUserId() { return clientId; }
-};              
+ public:
+  Client(char *host, int port, char *username);
+  virtual ~Client();
+  int connect();
+  bool findServer();
+  int login();
+  int sendChatTCP(char *message);
+  int sendPing();
+  int sendRawTCP(char *s);
+
+  inline void setGameStateHandler(GameStateHandler *gsh) { this->gsh = gsh; }
+  inline GameStateHandler *getGameStateHandler() { return gsh; }
+
+  inline bool isConnected() { return connected; }
+  inline bool isThreadRunning() { return threadRunning; }
+  inline void setThreadRunning(bool b) { threadRunning = b; }
+  inline TCPsocket getTCPSocket() { return tcpSocket; }
+  inline void setReadError(bool b) { readError = b; }
+  inline Broadcast *getBroadcast() { return broadcast; }
+
+  void processGameState(char *str);
+
+ protected:
+  int openConnection();
+  void closeConnection();
+  int initTCPSocket();
+};
 
 #endif
-#endif
-

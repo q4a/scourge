@@ -1,57 +1,66 @@
-/***************************************************************************
-                          server.h  -  description
-                             -------------------
-    begin                : Sun Sep 28 2003
-    copyright            : (C) 2003 by Gabor Torok
-    email                : cctorok@yahoo.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
 #ifndef SERVER_H
 #define SERVER_H
 
-#include "../constants.h"
+#include <SDL.h>
+#include <SDL_net.h>
+#include <SDL_thread.h>
+#include <string>
+#include <iostream>
+#include "tcputil.h"
+#include "clientinfo.h"
+#include "gamestatehandler.h"
+#include "testgamestatehandler.h"
+#include "broadcast.h"
 
-#ifdef HAVE_SDL_NET
-  #include <SDL_net.h>
-  #include <SDL_thread.h>
-  #include "udputil.h"
+using namespace std;
 
-/**
-   Main server loop
-   @param data a pointer to a Protocol object.
- */
 int serverLoop(void *data);
 
+class ClientInfo;
+
 class Server {
-private:
+ private:
+  IPaddress ip;
   int port;
-  UDPsocket socket;
-  UDPpacket *out, *in;
+  static const int MAX_CLIENT_COUNT = 4;
+  SDLNet_SocketSet set;
+  bool stopThread;
+  TCPsocket tcpSocket;
   SDL_Thread *thread;
-  bool stopServerThread;
+  ClientInfo *clients[4];
+  int clientCount;
+  GameStateHandler *gsh;
+  int currentFrame;
+  Broadcast *broadcast;
 
-public:
+ public:
+  static const Uint32 SERVER_LOOP_DELAY = 1000;
+
   Server(int port);
-  ~Server();
+  virtual ~Server();
 
-  inline int getPort() { return port;}
-  inline UDPpacket *getOutPacket() { return out;}
-  inline UDPpacket *getInPacket() { return in;}
-  inline UDPsocket getSocket() { return socket;}
-  inline bool getStopServerThread() { return stopServerThread;}
+  inline void setGameStateHandler(GameStateHandler *gsh) { this->gsh = gsh; }
+  inline GameStateHandler *getGameStateHandler() { return gsh; }
+  void sendGameState();
 
+  // server params (called by serverLoop)
+  inline bool getStopThread() { return stopThread; }
+  inline SDL_Thread *getThread() { return thread; }
+  inline TCPsocket getTCPSocket() { return tcpSocket; }
+  inline SDLNet_SocketSet getSocketSet() { return set; }
+  inline int getClientCount() { return clientCount; }
+  inline ClientInfo *getClient(int index) { return clients[index]; }
+
+  // handle clients (called by serverLoop)
+  void initTCPConnection(TCPsocket socket);
+  void handleTCPConnection(int clientIndex);
+  void removeDeadClients();
+
+  void sendToAllTCP(char *message);
+  inline Broadcast *getBroadcast() { return broadcast; }
+
+ protected:
+  void initTCPSocket();
 };
 
 #endif
-
-#endif
-
