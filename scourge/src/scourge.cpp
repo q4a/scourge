@@ -2085,7 +2085,7 @@ bool Scourge::createBattleTurns() {
 
     // order the battle turns by initiative
     Battle::setupBattles(getSession(), battle, battleCount, &battleRound);
-    battleTurn = 0;
+    rtStartTurn = battleTurn = 0;
     if(DEBUG_BATTLE) cerr << "++++++++++++++++++++++++++++++++++" << endl;
     if(DEBUG_BATTLE) cerr << "ROUND STARTS" << endl;
 
