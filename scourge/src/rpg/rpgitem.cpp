@@ -132,6 +132,18 @@ RpgItem *RpgItem::getRandomItem(int maxLevel) {
   map<int, vector<const RpgItem*>*> *levelMap = typesMap[types[typeIndex]];
   if(levelMap && levelMap->size()) {
 	vector<const RpgItem*> *list = (*levelMap)[level];
+
+  /*
+  // create a new list where each item occurs item->rareness times
+  vector<const RpgItem*> rareList;
+  for(int i = 0; i < list->size(); i++) {
+    RpgItem *item = (*list)[i];
+    for(int t = 0; t < item->getRareness(); t++) {
+      rareList.push_back(item);
+    }
+  }
+  */
+
 	if(list && list->size()) {
 	  int n = (int)((float)((*list).size()) * rand()/RAND_MAX);
 	  return (RpgItem*)(*list)[n];

@@ -106,8 +106,19 @@ void Monster::initMonsters() {
 Monster *Monster::getRandomMonster(int level) {
   if(monsters.find(level) == monsters.end()) return NULL;
   vector<Monster*> *list = monsters[level];
-  int index = (int) ((float)(list->size()) * rand()/RAND_MAX);
-  return(*list)[index];
+
+  // create a new list where each monster occurs monster->rareness times
+  vector<Monster*> rareList;
+  for(int i = 0; i < (int)list->size(); i++) {
+    Monster *monster = (*list)[i];
+    for(int t = 0; t < monster->getRareness(); t++) {
+      rareList.push_back(monster);
+    }
+  }
+
+  // select a random entry from the rare list
+  int index = (int) ((float)(rareList.size()) * rand()/RAND_MAX);
+  return rareList[index];
 }
 
 Monster *Monster::getMonsterByName(char *name) {
