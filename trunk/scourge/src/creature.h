@@ -88,7 +88,7 @@ class Creature {
   Sint16 cornerX, cornerY;
   bool arrived; // true if no particular destination set for this creature
   map<int, Event*> stateModEventMap;
-  GLfloat angle;
+  GLfloat angle, wantedAngle, angleStep;
   
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
