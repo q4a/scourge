@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "shapepalette.h"
+#include "session.h"
 
 ShapePalette *ShapePalette::instance = NULL;
 
-ShapePalette::ShapePalette(){
+ShapePalette::ShapePalette(Session *session){
   texture_count = 0;
   textureGroupCount = 0;
+  this->session = session;
 }
 
 void ShapePalette::initialize() {
@@ -35,12 +37,12 @@ void ShapePalette::initialize() {
   border = loadGLTextures("/border.bmp");
   border2 = loadGLTextures("/border2.bmp");
   highlight = loadGLTextures("/highlight.bmp");
-  SDL_Surface *tmpSurface;
-  GLubyte *tmpImage;
+  SDL_Surface *tmpSurface = NULL;
+  GLubyte *tmpImage = NULL;
   setupAlphaBlendedBMP("/gargoyle.bmp", &tmpSurface, &tmpImage);
   gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
-  free(tmpImage);
-  SDL_FreeSurface( tmpSurface );
+  if(tmpImage) free(tmpImage);
+  if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   // load the texture info
   char errMessage[500];
@@ -391,11 +393,13 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name,
   GLuint skin_texture;
   char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
-    sprintf(path, "%s%s", rootDir, skin_name);
-    cerr << "&&&&&&&&&& Loading texture: " << path << endl;
-    CreateTexture(&skin_texture, path, 0);
-    cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
-    creature_skins[skin] = skin_texture;
+    if(!session->getGameAdapter()->isHeadless()) {
+      sprintf(path, "%s%s", rootDir, skin_name);
+      cerr << "&&&&&&&&&& Loading texture: " << path << endl;
+      CreateTexture(&skin_texture, path, 0);
+      cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
+      creature_skins[skin] = skin_texture;
+    }
   } else {
     skin_texture = creature_skins[skin];
   }
@@ -490,6 +494,9 @@ int ShapePalette::findShapeIndexByName(const char *name) {
 
 /* function to load in bitmap as a GL texture */
 GLuint ShapePalette::loadGLTextures(char *filename) {
+
+  if(session->getGameAdapter()->isHeadless()) return 0;
+
   char fn[300];
   strcpy(fn, rootDir);
   strcat(fn, filename);
@@ -539,6 +546,9 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
 
 /* function to load in bitmap as a GL texture */
 GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
+
+  if(session->getGameAdapter()->isHeadless()) return 0;
+
   GLuint texture[1];
 
   Constants::checkTexture("ShapePalette::loadGLTextureBGRA", 
@@ -574,6 +584,8 @@ void ShapePalette::swap(unsigned char & a, unsigned char & b) {
 
 void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, 
                                         GLubyte **image, int red, int green, int blue) {
+
+  if(session->getGameAdapter()->isHeadless()) return;
 
   cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
 

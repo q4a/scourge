@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "gameadapter.h"
+#include "session.h"
 
 GameAdapter::GameAdapter(UserConfiguration *config) {
   this->userConfiguration = config;
@@ -35,8 +36,9 @@ ServerAdapter::~ServerAdapter() {
 }
 
 void ServerAdapter::start() {
-  // will work when we can reference session (can't until ref. to scourge.h is removed from session.h)
-  //session->runServer(userConfiguration->getPort());
+#ifdef HAVE_SDL_NET
+  session->runServer(userConfiguration->getPort());
+#endif
 }
 
 
@@ -48,9 +50,10 @@ ClientAdapter::~ClientAdapter() {
 }
 
 void ClientAdapter::start() {
-  // will work when we can reference session (can't until ref. to scourge.h is removed from session.h)
-  //session->runClient(userConfiguration->getHost(), 
-                     //userConfiguration->getPort(), 
-                     //userConfiguration->getUserName());
+#ifdef HAVE_SDL_NET
+  session->runClient(userConfiguration->getHost(), 
+                     userConfiguration->getPort(), 
+                     userConfiguration->getUserName());
+#endif
 }                               
 

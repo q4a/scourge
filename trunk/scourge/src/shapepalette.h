@@ -39,6 +39,7 @@ using namespace std;
 
 class GLShape;
 class GLTorch;
+class Session;
 
 // temporary information when constructing shapes from a file
 typedef struct _ShapeValues {
@@ -109,8 +110,10 @@ private:
   CLoadMD2 g_LoadMd2; 
   t3DModel * LoadMd2Model(char *file_name);
 
+  Session *session;
+
 public: 
-  ShapePalette();
+  ShapePalette(Session *session);
   ~ShapePalette();
 
   void initialize();

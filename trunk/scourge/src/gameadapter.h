@@ -35,6 +35,7 @@ class Shape;
 class GameAdapter {
 protected:
   UserConfiguration *userConfiguration;
+  Session *session;
 
 public:
   GameAdapter(UserConfiguration *config);
@@ -42,8 +43,11 @@ public:
 
   inline UserConfiguration *getUserConfiguration() { return userConfiguration; }
 
+  inline void setSession(Session *session) { this->session = session; }
+  inline Session *getSession() { return session; }
+
   virtual inline void initVideo(ShapePalette *shapePal) {}
-  virtual inline void initUI(Session *session) {}
+  virtual inline void initUI() {}
   virtual inline void start() {}
   virtual inline int getScreenWidth() { return 0; }
   virtual inline int getScreenHeight() { return 0; }
@@ -69,20 +73,22 @@ public:
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }
   virtual inline void initUpdate(char *message) { cerr << message << endl; }
   virtual inline void initEnd() { }
+
+  virtual inline bool isHeadless() { return true; }
 };
 
 class ServerAdapter : public GameAdapter {
 public:
   ServerAdapter(UserConfiguration *config);
   virtual ~ServerAdapter();
-  virtual void start();
+  void start();
 };
 
 class ClientAdapter : public GameAdapter {
 public:
   ClientAdapter(UserConfiguration *config);
   virtual ~ClientAdapter();
-  virtual void start();
+  void start();
 };
 
 #endif
