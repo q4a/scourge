@@ -125,6 +125,7 @@ void Creature::commonInit() {
   }  
   this->money = this->level * (int)(10.0f * rand()/RAND_MAX);
   calculateExpOfNextLevel();
+  //this->battle = new Battle(this);
 }
 
 CreatureInfo *Creature::save() {

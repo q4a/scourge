@@ -66,7 +66,7 @@ void ThirstHungerEvent::execute(){
     else if( thirst == 0 ){
         sprintf(buff, "%s dies from lack of water.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
-        scourge->creatureDeath(creature);
+        scourge->getSession()->creatureDeath(creature);
         scheduleDeleteEvent();
         return; // no need to go further        
     }        
@@ -95,7 +95,7 @@ void ThirstHungerEvent::execute(){
     else if( hunger == 0 ){
         sprintf(buff, "%s dies from starvation.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
-        scourge->creatureDeath(creature); 
+        scourge->getSession()->creatureDeath(creature); 
         scheduleDeleteEvent();       
     }                  
 }

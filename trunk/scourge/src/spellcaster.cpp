@@ -50,7 +50,7 @@ void SpellCaster::spellFailed() {
   // (fouled fireball decimates party, etc.)
 
   // default is to print patronizing message...
-  battle->getScourge()->getMap()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
+  battle->getSession()->getMap()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
 }
 
 void SpellCaster::spellSucceeded() {
@@ -103,7 +103,7 @@ void SpellCaster::increaseHP() {
   creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + n));
   char msg[200];
   sprintf(msg, "%s heals %d points.", creature->getTargetCreature()->getName(), n);
-  battle->getScourge()->getMap()->addDescription(msg, 0.2f, 1, 1);
+  battle->getSession()->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 }
 
@@ -119,17 +119,17 @@ void SpellCaster::increaseAC() {
   creature->getTargetCreature()->setBonusArmor(creature->getTargetCreature()->getBonusArmor() + n);
   char msg[200];
   sprintf(msg, "%s feels impervious to damage!", creature->getTargetCreature()->getName());
-  battle->getScourge()->getMap()->addDescription(msg, 0.2f, 1, 1);
+  battle->getSession()->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
   // add calendar event to remove armor bonus
   // (format : sec, min, hours, days, months, years)
   Date d(0, timeInMin, 0, 0, 0, 0); 
-  Event *e = new PotionExpirationEvent(battle->getScourge()->getParty()->getCalendar()->getCurrentDate(), 
+  Event *e = new PotionExpirationEvent(battle->getSession()->getParty()->getCalendar()->getCurrentDate(), 
                                        d, creature->getTargetCreature(), 
                                        Constants::getPotionSkillByName("AC"), n, 
-                                       battle->getScourge()->getSession(), 1);
-  battle->getScourge()->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
+                                       battle->getSession(), 1);
+  battle->getSession()->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
 
 }
 
@@ -149,13 +149,13 @@ void SpellCaster::launchProjectile(int count, bool stopOnImpact) {
   Projectile *p;
   if(creature->getTargetCreature()) {
     p = Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
-                                  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
+                                  battle->getSession()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
                                   n, stopOnImpact);
   } else {
     int x, y, z;
     creature->getTargetLocation(&x, &y, &z);
     p = Projectile::addProjectile(creature, x, y, 1, 1, spell, 
-                                  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
+                                  battle->getSession()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
                                   n, stopOnImpact);
   }
   if(!p) {
@@ -178,7 +178,7 @@ void SpellCaster::causeDamage() {
           creature->getName(), 
           creature->getTargetCreature()->getName(),
           spell->getName());
-  battle->getScourge()->getMap()->addDescription(msg, 1, 0.15f, 1);
+  battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
 
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage(damage, 
@@ -192,12 +192,12 @@ void SpellCaster::setStateMod(int mod) {
   if(radius > 15) radius = 15;
 
   // show radius effect
-  battle->getScourge()->getMap()->startEffect(battle->getCreature()->getTargetX(),
+  battle->getSession()->getMap()->startEffect(battle->getCreature()->getTargetX(),
                                               battle->getCreature()->getTargetY(),
                                               1, Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
                                               radius, radius);
 
-  int targetCount = battle->getScourge()->getMap()->getCreaturesInArea(battle->getCreature()->getTargetX(),
+  int targetCount = battle->getSession()->getMap()->getCreaturesInArea(battle->getCreature()->getTargetX(),
                                                                        battle->getCreature()->getTargetY(),
                                                                        radius,
                                                                        targets);
@@ -211,16 +211,16 @@ void SpellCaster::setStateMod(int mod) {
 
     char msg[200];
     sprintf(msg, "%s is %s.", creature->getName(), Constants::STATE_NAMES[mod]);
-    battle->getScourge()->getMap()->addDescription(msg, 1, 0.15f, 1);
+    battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
     
     // add calendar event to remove condition            
     // (format : sec, min, hours, days, months, years)
-    Calendar *cal = battle->getScourge()->getParty()->getCalendar();
+    Calendar *cal = battle->getSession()->getParty()->getCalendar();
     int timeInMin = 2 * battle->getCreature()->getLevel();
 //    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
     Date d(0, timeInMin, 0, 0, 0, 0); 
     Event *e = new StateModExpirationEvent(cal->getCurrentDate(), 
-                                           d, creature, mod, battle->getScourge(), 1);
+                                           d, creature, mod, battle->getSession(), 1);
     cal->scheduleEvent((Event*)e);   // It's important to cast!!		
   }
 }                                     

@@ -235,4 +235,45 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   */
 }
 
+/** 
+	Return the closest live player within the given radius or null if none can be found.
+*/
+Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radius) {
+  float minDist = 0;
+  Creature *p = NULL;
+  for(int i = 0; i < getCreatureCount(); i++) {
+    if(!getCreature(i)->getStateMod(Constants::dead) && 
+       map->isLocationVisible(getCreature(i)->getX(), getCreature(i)->getY()) &&
+       getCreature(i)->isMonster()) {
+      float dist = Constants::distance(x, y, w, h,
+                                       getCreature(i)->getX(),
+                                       getCreature(i)->getY(),
+                                       getCreature(i)->getShape()->getWidth(),
+                                       getCreature(i)->getShape()->getDepth());
+      if(dist <= (float)radius && (!p || dist < minDist)) {
+        p = getCreature(i);
+        minDist = dist;
+      }
+    }
+  }
+  return p;
+}
+
+void Session::creatureDeath(Creature *creature) {
+  if(creature == party->getPlayer()) {
+    party->switchToNextLivePartyMember();
+  }
+  // remove from the map; the object will be cleaned up at the end of the mission
+  map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
+  // add a container object instead
+  //if(battleRound.size() > 0) creature->getShape()->setCurrentAnimation(MD2_DEATH1);
+  Item *item = newItem(RpgItem::getItemByName("Corpse"));
+  // add creature's inventory to container
+  map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
+  int n = creature->getInventoryCount();
+  for(int i = 0; i < n; i++) {
+    item->addContainedItem(creature->removeInventory(0));
+  }
+  creature->setStateMod(Constants::dead, true);
+}                 
 

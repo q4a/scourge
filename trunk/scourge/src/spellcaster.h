@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 #include "constants.h"
-#include "scourge.h"
+#include "session.h"
 #include "map.h"
 #include "creature.h"
 #include "item.h"
@@ -40,7 +40,7 @@ using namespace std;
   *@author Gabor Torok
   */
 
-class Scourge;
+class Session;
 class Creature;
 class Item;
 class Projectile;
