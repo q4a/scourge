@@ -298,6 +298,7 @@ void ShapePalette::initialize() {
         }
       }
       themes[themeCount++] = theme;
+      cerr << "&&& Added theme: " << theme->getName() << " count=" << themeCount << endl;
     } else {
       // skip this line
       n = Constants::readLine(line, fp);
@@ -462,7 +463,7 @@ ShapePalette::~ShapePalette(){
 }
 
 void ShapePalette::loadRandomTheme() {
-  loadTheme( themes[ (int)( (long)themeCount * rand()/RAND_MAX ) ] );
+  loadTheme( themes[ (int)( (float)themeCount * rand()/RAND_MAX ) ] );
 }
 
 void ShapePalette::loadTheme(const char *themeName) {
@@ -481,10 +482,11 @@ void ShapePalette::loadTheme(const char *themeName) {
     exit(1);
   }
 
-  loadTheme( (const WallTheme *)theme );
+  loadTheme( theme );
 }
 
-void ShapePalette::loadTheme( const WallTheme *theme ) {
+void ShapePalette::loadTheme( WallTheme *theme ) {
+  cerr << "*** Using theme: " << theme->getName() << " current=" << (!currentTheme ? "null" : currentTheme->getName()) << endl;
   if(currentTheme != theme) {
 
     // unload the previous theme
@@ -645,7 +647,7 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
   fprintf(stderr, "Loading texture: %s\n", fn);
   if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
-    fprintf(stderr, "\tFound it. width=%d height=%d\n", TextureImage[0]->w, TextureImage[0]->h);
+    fprintf(stderr, "\tFound it. pitch=%d width=%d height=%d\n", (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
 
     Constants::checkTexture("ShapePalette::loadGLTextures", 
                             TextureImage[0]->w, TextureImage[0]->h);
