@@ -4,47 +4,41 @@
  * Look up his other great tutorials at:
  * http://www.gametutorials.com
  */
-
-
-//***********************************************************************//
+ 
+ 
+ //***********************************************************************//
 //                                                                       //
 //      - "Talk to me like I'm a 3 year old!" Programming Lessons -      //
 //                                                                       //
 //      $Author:        DigiBen     digiben@gametutorials.com            //
 //                                                                       //
-//      $Program:       MD2 Loader                                       //
+//      $Program:       MD2 Animation                                    //
 //                                                                       //
-//      $Description:   Demonstrates how to load a Quake2 MD2 Model      //
+//      $Description:   Demonstrates how to animate a Quake2 MD2 Model   //
 //                                                                       //
-//      $Date:          2/6/02                                           //
+//      $Date:          2/10/02                                          //
 //                                                                       //
 //***********************************************************************//
-
 
 #include "md2shape.h"
 #include "Md2.h"
 #include <math.h>
+#include <string>
+ 
 
+//////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
 /////////////////////////////////////////////////////////////////////////
 //
-// This file holds the code to load the Quake2 models from a .Md2 format.
-// The .Md2 file is usually stored in a .zip file (don't let the extension
-// fool you, just rename it to .zip), depending on where you get the models
-// from.  The CLoadMD2 class handles the loading, but we draw the model
-// externally on our own in main.cpp.  I created a converter function
-// to convert to our already used model and object structures.  This way
-// eventually we can create a model library that can load any type of
-// model that we support, as well as use inheritance to create a new class
-// for each file format for the small things that each model format needs differently.
-// Like the other loading tutorials, we calculate our own vertex normals.
-// The .Md2 format is REALLY simple to load.  That is why I chose it.  The
-// next tutorial will show how to load and animate Md2 files.  Next, we
+// This file is the second edition of the .MD2 loader from the last
+// tutorial, which only loaded the first frame of the model and dealt
+// with no animation info.  This version now additionaly loads all the key 
+// frames from the .MD2 model and stores them in the appropriate data structures
+// to be animated.
+//
+//
 
-// will move from key frame animation to skeletal animation with the Quake3
-// .Md3 files.  This is also a wonderfuly easy format to load and use.
-//
-//
+//////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
 
 ///////////////////////////////// CLOAD MD2 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
@@ -61,7 +55,7 @@ CLoadMD2::CLoadMD2()
     // Set the pointers to null
     m_pSkins=NULL;
     m_pTexCoords=NULL;
-    m_pTriangles=NULL;
+    m_pTriangles=NULL; 
     m_pFrames=NULL;
 }
 
@@ -88,25 +82,17 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture)
         exit(1);
     }
     
-    // Just like most file formats, there is a header that needs to be read
-    // from the .Md2 format.  If you look at the tMd2Header structure you will
-    // find all the data that will be read in.  It's nice to know up front about
-    // the data that we will be reading.  This makes it easy to just to large
-    // binary reads using fread, instead of counting and reading chunks.
-
     // Read the header data and store it in our m_Header member variable
     fread(&m_Header, 1, sizeof(tMd2Header), m_FilePointer);
-	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+    if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 	  unsigned int *p = (unsigned int *)&m_Header;
 	  for(unsigned int n = 0; n < sizeof(tMd2Header) / sizeof(unsigned int); n++) {
 		*p = SDL_SwapLE32(*p);
 		p++;
 	  }
 	}
-
-    // For some reason, .Md2 files MUST have a version of 8.  I am not sure why,
-    // but if it doesn't there is something wrong and the header was read in
-    // incorrectly, or perhaps the file format is bad.
+    
+    // Make sure the version is this crazy number '8' or else it's a bad egg
     if(m_Header.version != 8)
     {
         // Display an error message for bad file format, then stop loading
@@ -115,19 +101,19 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture)
         exit(1);
     }
 
-    // Now that we made sure the header had correct data, we want to read in the
-    // rest of the data.  Once the data is read in, we need to convert it to our structures.
-    // Since we are only reading in the first frame of animation, there will only
-    // be ONE object in our t3DObject structure, held within our pModel variable.
+    // Read in the model and animation data
     ReadMD2Data();
     
     // Here we pass in our model structure to it can store the read Quake data
     // in our own model and object structure data
     ConvertDataStructures(pModel);
-
+    
     // After we have read the whole MD2 file, we want to calculate our own vertex normals.
-    ComputeNormals(pModel);
-
+    // If we activate them, the program freezes since only first frame has got the real data
+    // (see ConvertDataStructures for more details). Anyway normals are not really
+    // useful.
+    //ComputeNormals(pModel);
+    
     // If there is a valid texture name passed in, we want to set the texture data
     if(strTexture)
     {
@@ -168,7 +154,6 @@ void CLoadMD2::ReadMD2Data()
 {
     // Create a larger buffer for the frames of animation (not fully used yet)
     unsigned char buffer[MD2_MAX_FRAMESIZE];
-    int j = 0;
 
     // Here we allocate all of our memory from the header's information
     m_pSkins     = new tMd2Skin [m_Header.numSkins];
@@ -181,25 +166,25 @@ void CLoadMD2::ReadMD2Data()
     
     // Depending on the skin count, we read in each skin for this model
     fread(m_pSkins, sizeof(tMd2Skin), m_Header.numSkins, m_FilePointer);
-
+    
     // Move the file pointer to the position in the file for texture coordinates
     fseek(m_FilePointer, m_Header.offsetTexCoords, SEEK_SET);
     
     // Read in all the texture coordinates in one fell swoop
     fread(m_pTexCoords, sizeof(tMd2TexCoord), m_Header.numTexCoords, m_FilePointer);
-	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-	  for(int i = 0; i < m_Header.numTexCoords; i++) {
+    if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+      for(int i = 0; i < m_Header.numTexCoords; i++) {
 		m_pTexCoords[i].u = SDL_SwapLE16(m_pTexCoords[i].u);
 		m_pTexCoords[i].v = SDL_SwapLE16(m_pTexCoords[i].v);
 	  }
 	}
- 
+
     // Move the file pointer to the triangles/face data offset
     fseek(m_FilePointer, m_Header.offsetTriangles, SEEK_SET);
     
     // Read in the face data for each triangle (vertex and texCoord indices)
     fread(m_pTriangles, sizeof(tMd2Face), m_Header.numTriangles, m_FilePointer);
-	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+    if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 	  for(int i = 0; i < m_Header.numTriangles; i++) {
 		for(int t = 0; t < 3; t++) {
 		  m_pTriangles[i].vertexIndices[t] = 
@@ -213,57 +198,196 @@ void CLoadMD2::ReadMD2Data()
     // Move the file pointer to the vertices (frames)
     fseek(m_FilePointer, m_Header.offsetFrames, SEEK_SET);
 
-    // Assign our alias frame to our buffer memory
-    tMd2AliasFrame *pFrame = (tMd2AliasFrame *) buffer;
 
-    // Allocate the memory for the first frame of animation's vertices
-    m_pFrames[0].pVertices = new tMd2Triangle [m_Header.numVertices];
+//////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
-    // Read in the first frame of animation
-    fread(pFrame, 1, m_Header.frameSize, m_FilePointer);
-	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-	  /* Note: byteswapping floats works on my powerbook, but I think
-		 this may cause problems in the future. Floats and doubles aren't
-		 as easy to change from LE to BE as ints.
-	  */
-	  float f;
-	  for(int t = 0; t < 3; t++) {
-		BSWAPF(pFrame->scale[t], f);
-		pFrame->scale[t] = f;
-		BSWAPF(pFrame->translate[t], f);
-		pFrame->translate[t] = f;
-	  }
-	}
-	/*
-	fprintf(stderr, "name=%s\n", pFrame->name);
-	fprintf(stderr, "scale=%f %f %f\n", pFrame->scale[0], pFrame->scale[1], pFrame->scale[2]);
-	fprintf(stderr, "translate=%f %f %f\n", pFrame->translate[0], pFrame->translate[1], pFrame->translate[2]);
-	*/
+    // In the last tutorial we just read in one frame of animation here.  Now we are going
+    // to extract every key frame from the .MD2 model.  These key frames will be used to
+    // interpolate between each other to form the somewhat smooth animation.
+    // The only thing different is that we are putting a for loop in front, then changing
+    // the '0' for the m_pFrames[0] in the last tutorial, to a 'i'.  The loop will
+    // continue until 'i' has reached the number of key frames for this model.
 
-
-    // Copy the name of the animation to our frames array
-    strcpy(m_pFrames[0].strName, pFrame->name);
-            
-    // After we have read in the data for the model, since there is animation,
-    // This means that there are scale and translation values to be dealt with.
-    // To apply the scale and translation values, we simply multiply the scale (x, y, z)
-    // by the current vertex (x, y, z).  Also notice that we switch the Y and Z values
-    // so that Y is faces up, NOT Z.
-    
-    // Store off a vertex array pointer to cut down large lines of code
-    tMd2Triangle *pVertices = m_pFrames[0].pVertices;
-
-    // Go through all of the number of vertices and assign the scale and translations.
-    // Store the vertices in our current frame's vertex list array, while swapping Y and Z.
-    // Notice we also negate the Z axis as well to make the swap correctly.
-    for (j=0; j < m_Header.numVertices; j++)
+    for (int i=0; i < m_Header.numFrames; i++)
     {
-        pVertices[j].vertex[0] = pFrame->aliasVertices[j].vertex[0] * pFrame->scale[0] + pFrame->translate[0];
-        pVertices[j].vertex[2] = -1 * (pFrame->aliasVertices[j].vertex[1] * pFrame->scale[1] + pFrame->translate[1]);
-        pVertices[j].vertex[1] = pFrame->aliasVertices[j].vertex[2] * pFrame->scale[2] + pFrame->translate[2];
+        // Assign our alias frame to our buffer memory
+        tMd2AliasFrame *pFrame = (tMd2AliasFrame *) buffer;
+
+        // Allocate the memory for the first frame of animation's vertices
+        m_pFrames[i].pVertices = new tMd2Triangle [m_Header.numVertices];
+
+        // Read in the first frame of animation
+        fread(pFrame, 1, m_Header.frameSize, m_FilePointer);
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {            
+        // Note: byteswapping floats works on my powerbook, but I think
+        //	 this may cause problems in the future. Floats and doubles aren't
+        //	 as easy to change from LE to BE as ints.
+
+	       float f;
+	       for(int t = 0; t < 3; t++) {
+		      BSWAPF(pFrame->scale[t], f);
+		      pFrame->scale[t] = f;
+    		  BSWAPF(pFrame->translate[t], f);
+    		  pFrame->translate[t] = f;
+    	   }
+	   }
+
+        // Copy the name of the animation to our frames array
+        strcpy(m_pFrames[i].strName, pFrame->name);
+            
+        // Store off a vertex array pointer to cut down large lines of code
+        tMd2Triangle *pVertices = m_pFrames[i].pVertices;
+
+        // Go through all of the number of vertices and assign the scale and translations.
+        // Store the vertices in our current frame's vertex list array, while swapping Y and Z.
+        // Notice we also negate the Z axis as well to make the swap correctly.
+        for (int j=0; j < m_Header.numVertices; j++)
+        {
+            pVertices[j].vertex[0] = pFrame->aliasVertices[j].vertex[0] * pFrame->scale[0] + pFrame->translate[0];
+            pVertices[j].vertex[2] = -1 * (pFrame->aliasVertices[j].vertex[1] * pFrame->scale[1] + pFrame->translate[1]);
+            pVertices[j].vertex[1] = pFrame->aliasVertices[j].vertex[2] * pFrame->scale[2] + pFrame->translate[2];
+        }
     }
 }
 
+
+///////////////////////////////// PARSE ANIMATIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+/////
+/////   This function fills in the animation list for each animation by name and frame
+/////
+///////////////////////////////// PARSE ANIMATIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+
+void CLoadMD2::ParseAnimations(t3DModel *pModel)
+{
+    tAnimationInfo animation;
+    string strLastName = "";
+    
+    // A hack because sometimes there is only 1 pain animation and/or 
+    // 1 death animation.
+    int nbPain = 0;    
+    int nbDeath = 0;
+    bool painDone = false;
+    bool deathDone = false;
+    tAnimationInfo painAnimation;
+    tAnimationInfo deathAnimation;
+    memset(&painAnimation, 0, sizeof(tAnimationInfo)); 
+    memset(&deathAnimation, 0, sizeof(tAnimationInfo)); 
+
+    // This function felt like a hack when I wrote it.  You aren't really given
+    // any good information about the animations, other than the fact that each
+    // key frame has a name assigned to it with a frame number for that animation.
+    // For instance, the first animation is the "stand" animation.  The first frame
+    // would have the name of: "stand01" or perhaps "stand1".  The 40th frame is
+    // usually the last frame for the standing animation, so it would look like:
+    // "stand40".  After this frame, the next animation is the running animation.
+    // The next frame is labeled something like "run01".  You now know that the
+    // standing animation is from frame 1 to frame 40 of the total frames.  The
+    // start of the run animation is 41.  We will know how long the run animation
+    // goes when we run into another animation name besides "run..".  That is how
+    // I went about finding out the animation information.  I just grab each frame
+    // name and check if it's the same animation name as the last name we found.
+    // If it is, I just ignore it and continue to the next frame.  Once I find that
+    // it's not, I then have the last frame saved off from the index 'i', and then
+    // I create a new animation to add to the list, then start from the beginning.
+    // It wasn't until later that I found on www.planetquake.com that there is a
+    // standard frame count for each animation and they are all the same.  I figure
+    // this way makes it modular so you don't have to stick to those standards anyway.
+
+    // Go through all of the frames of animation and parse each animation
+    for(int i = 0; i < pModel->numOfObjects; i++)
+    {
+        // Assign the name of this frame of animation to a string object
+        string strName  = m_pFrames[i].strName;
+        int frameNum = 0;
+        
+        // Go through and extract the frame numbers and erase them from the name
+        for(int j = 0; j < strName.length(); j++)
+        {
+            // If the current index is a number and it's one of the last 2 characters of the name
+            if( isdigit(strName[j]) && j >= strName.length() - 2)
+            {
+                // Use a C function to convert the character to a integer.
+                // Notice we use the address to pass in the current character and on
+                frameNum = atoi(&strName[j]);
+
+                // Erase the frame number from the name so we extract the animation name
+                strName.erase(j, strName.length() - j);
+                break;
+            }
+        }
+
+        // Check if this animation name is not the same as the last frame,
+        // or if we are on the last frame of animation for this model
+        if(strName != strLastName || i == pModel->numOfObjects - 1)
+        {
+            // If this animation frame is NOT the first frame
+            if(strLastName != "")
+            {                
+                // Copy the last animation name into our new animation's name
+                strcpy(animation.strName, strLastName.c_str());             
+
+                // Set the last frame of this animation to i
+                animation.endFrame = i;
+                
+                // ARRG! Sometimes there is only 1 pain/death animation instead of 3
+                if(strLastName.substr(0, 4) == "pain"){                    
+                    painAnimation.startFrame = animation.startFrame;
+                    painAnimation.endFrame = animation.endFrame;
+                    strcpy(painAnimation.strName, animation.strName);
+                    nbPain++;
+                }
+                else if(nbPain >= 1 && nbPain < 3 && !painDone){
+                    // insert 2 pain animation to keep 
+                    // md2 action <-> pModel->pAnimation bijection
+                    //cerr << "Warning only 1 pain animation for this model!" << endl;
+                    pModel->pAnimations.push_back(painAnimation);
+                    pModel->pAnimations.push_back(painAnimation);
+                    pModel->numOfAnimations+= 2;                    
+                    painDone = true;
+                }
+                if(strLastName.substr(0, 5) == "death"){                    
+                    deathAnimation.startFrame = animation.startFrame;
+                    deathAnimation.endFrame = animation.endFrame;
+                    strcpy(deathAnimation.strName, animation.strName);
+                    nbDeath++;
+                }
+                else if(nbDeath >= 1 && nbDeath < 3 && !deathDone){
+                    // insert 2 death animation to keep 
+                    // md2 action <-> pModel->pAnimation bijection 
+                    //cerr << "Warning only 1 death animation for this model!" << endl;                   
+                    pModel->pAnimations.push_back(deathAnimation);
+                    pModel->pAnimations.push_back(deathAnimation); 
+                    pModel->numOfAnimations+= 2;                                       
+                    deathDone = true;
+                }                                                
+
+                // Add the animation to our list and reset the animation object for next time                
+                pModel->pAnimations.push_back(animation);
+                memset(&animation, 0, sizeof(tAnimationInfo));                   
+
+                // Increase the number of animations for this model
+                pModel->numOfAnimations++;
+            }
+
+            // Set the starting frame number to the current frame number we just found,
+            // minus 1 (since 0 is the first frame) and add 'i'.
+            animation.startFrame = frameNum - 1 + i;
+        }
+
+        // Store the current animation name in the strLastName string to check it latter
+        strLastName = strName;
+    }
+    
+    // Death animations are at the end of file
+    if(nbDeath >= 1 && nbDeath < 3 && !deathDone){
+        // insert 2 death animation to keep 
+        // md2 action <-> pModel->pAnimation bijection 
+        //cerr << "Warning only 1 death animation for this model!" << endl;                   
+        pModel->pAnimations.push_back(deathAnimation);
+        pModel->pAnimations.push_back(deathAnimation); 
+        pModel->numOfAnimations+= 2;                           
+    }  
+}
 
 ///////////////////////////////// CONVERT DATA STRUCTURES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
@@ -273,66 +397,112 @@ void CLoadMD2::ReadMD2Data()
 
 void CLoadMD2::ConvertDataStructures(t3DModel *pModel)
 {
-    int j = 0;
+    int j = 0, i = 0;
+
+    // Like the previous function, not a lot was changed her from the last tutorial.
+    // Since we are dealing with multiple key frames, we need to pretty much do the 
+    // same things for each frame.  This entails adding a for loop to go through
+    // every frame.  We use index 'i' into the m_pFrames array to set each key frame.
+    // This is one tricky thing in the middle of this for loop though, since we only
+    // need to save the face and texture information once, this is only calculated
+    // once and stored in the first frame of animation.  We can then reference the 
+    // polygon information for every other frame from the first frame.  That way
+    // we don't copy the same information for every key frame, which would make a huge
+    // memory footprint.
+
+    // Initialize the model structure first before assigning data to it
+    memset(pModel, 0, sizeof(t3DModel));
     
-    // Assign the number of objects, which is 1 since we only want 1 frame
-    // of animation.  In the next tutorial each object will be a key frame
-    // to interpolate between.
-    pModel->numOfObjects = 1;
+    // Set the number of objects to our number of frames since pObjects will
+    // hold the key frames
+    pModel->numOfObjects = m_Header.numFrames;
 
-    // Create a local object to store the first frame of animation's data
-    t3DObject currentFrame = {0};
-
-    // Assign the vertex, texture coord and face count to our new structure
-    currentFrame.numOfVerts   = m_Header.numVertices;
-    currentFrame.numTexVertex = m_Header.numTexCoords;
-    currentFrame.numOfFaces   = m_Header.numTriangles;
-
-    // Allocate memory for the vertices, texture coordinates and face data.
-    currentFrame.pVerts    = new CVector3 [currentFrame.numOfVerts];
-    currentFrame.pTexVerts = new CVector2 [currentFrame.numTexVertex];
-    currentFrame.pFaces    = new tFace [currentFrame.numOfFaces];
-
-    // Go through all of the vertices and assign them over to our structure
-    for (j=0; j < currentFrame.numOfVerts; j++)
+    // Create our animation list and store it in our model 
+    cout<< "parsing animations" << endl;   
+    ParseAnimations(pModel);
+    cout<< "DONE" << endl;
+    
+    // Go through every key frame and store it's vertices info in our pObject list.
+    for (i=0; i < pModel->numOfObjects; i++)
     {
-        currentFrame.pVerts[j].x = m_pFrames[0].pVertices[j].vertex[0];
-        currentFrame.pVerts[j].y = m_pFrames[0].pVertices[j].vertex[1];
-        currentFrame.pVerts[j].z = m_pFrames[0].pVertices[j].vertex[2];
+        // Create a local object to store the first frame of animation's data
+        t3DObject currentFrame = {0};
+
+        // Assign the vertex, texture coord and face count to our new structure
+        currentFrame.numOfVerts   = m_Header.numVertices;
+        currentFrame.numTexVertex = m_Header.numTexCoords;
+        currentFrame.numOfFaces   = m_Header.numTriangles;
+
+        // Allocate memory for the vertices, texture coordinates and face data.
+        currentFrame.pVerts    = new CVector3 [currentFrame.numOfVerts];
+
+        // Go through all of the vertices and assign them over to our structure
+        for (j=0; j < currentFrame.numOfVerts; j++)
+        {
+            currentFrame.pVerts[j].x = m_pFrames[i].pVertices[j].vertex[0];
+            currentFrame.pVerts[j].y = m_pFrames[i].pVertices[j].vertex[1];
+            currentFrame.pVerts[j].z = m_pFrames[i].pVertices[j].vertex[2];
+        }
+
+        // We can now free the old vertices stored in this frame of animation
+        // since we have them stored in the pObject list of our model
+        delete m_pFrames[i].pVertices;
+    
+        // Now comes the tricky part, since we only need to store the UV coordinates
+        // and face indices once, we only do this on the first frame.  If the
+        // current frame is past the first frame, we just add the current frame
+        // as it is to our list, then continue to the next frame.  If we are
+        // on the first frame, we still need to store the UV and face information.
+        // This will only go in the first frame, and will be referenced from the
+        // remaining frames when we animate the model.
+
+        // Check if we are past the first key frame
+        if(i > 0)
+        {
+            // Here we add the current object (or frame) to our list object list
+            pModel->pObject.push_back(currentFrame);
+            continue;   // Go on to the next key frame
+        }
+    
+        // We will only get here ONE because we just need this information
+        // calculated for the first key frame.
+            
+        // Allocate memory for our UV coordinates and face information
+        currentFrame.pTexVerts = new CVector2 [currentFrame.numTexVertex];
+        currentFrame.pFaces    = new tFace [currentFrame.numOfFaces];        
+        
+        // Go through all of the uv coordinates and assign them over to our structure.
+        // The UV coordinates are not normal uv coordinates, they have a pixel ratio of
+        // 0 to 256.  We want it to be a 0 to 1 ratio, so we divide the u value by the
+        // skin width and the v value by the skin height.  This gives us our 0 to 1 ratio.
+        // For some reason also, the v coodinate is flipped upside down.  We just subtract
+        // the v coordinate from 1 to remedy this problem.
+        for(j=0; j < currentFrame.numTexVertex; j++)
+        {
+            currentFrame.pTexVerts[j].x = m_pTexCoords[j].u / float(m_Header.skinWidth);
+            currentFrame.pTexVerts[j].y = 1 - m_pTexCoords[j].v / float(m_Header.skinHeight);
+        }
+
+        // Go through all of the face data and assign it over to OUR structure
+        for(j=0; j < currentFrame.numOfFaces; j++)
+        {
+            // Assign the vertex indices to our face data
+            currentFrame.pFaces[j].vertIndex[0] = m_pTriangles[j].vertexIndices[0];
+            currentFrame.pFaces[j].vertIndex[1] = m_pTriangles[j].vertexIndices[1];
+            currentFrame.pFaces[j].vertIndex[2] = m_pTriangles[j].vertexIndices[2];
+
+            // Assign the texture coord indices to our face data
+            currentFrame.pFaces[j].coordIndex[0] = m_pTriangles[j].textureIndices[0];
+            currentFrame.pFaces[j].coordIndex[1] = m_pTriangles[j].textureIndices[1];
+            currentFrame.pFaces[j].coordIndex[2] = m_pTriangles[j].textureIndices[2];
+        }
+                
+        // Here we add the current object (or frame) to our list object list
+        pModel->pObject.push_back(currentFrame);
     }
-
-    // We can now free the old vertices stored in this frame of animation
-    delete m_pFrames[0].pVertices;
-
-    // Go through all of the uv coordinates and assign them over to our structure.
-    // The UV coordinates are not normal uv coordinates, they have a pixel ratio of
-    // 0 to 256.  We want it to be a 0 to 1 ratio, so we divide the u value by the
-    // skin width and the v value by the skin height.  This gives us our 0 to 1 ratio.
-    // For some reason also, the v coodinate is flipped upside down.  We just subtract
-    // the v coordinate from 1 to remedy this problem.
-    for (j=0; j < currentFrame.numTexVertex; j++)
-    {
-        currentFrame.pTexVerts[j].x = m_pTexCoords[j].u / float(m_Header.skinWidth);
-        currentFrame.pTexVerts[j].y = 1 - m_pTexCoords[j].v / float(m_Header.skinHeight);
-    }
-
-    // Go through all of the face data and assign it over to OUR structure
-    for(j=0; j < currentFrame.numOfFaces; j++)
-    {
-        // Assign the vertex indices to our face data
-        currentFrame.pFaces[j].vertIndex[0] = m_pTriangles[j].vertexIndices[0];
-        currentFrame.pFaces[j].vertIndex[1] = m_pTriangles[j].vertexIndices[1];
-        currentFrame.pFaces[j].vertIndex[2] = m_pTriangles[j].vertexIndices[2];
-
-        // Assign the texture coord indices to our face data
-        currentFrame.pFaces[j].coordIndex[0] = m_pTriangles[j].textureIndices[0];
-        currentFrame.pFaces[j].coordIndex[1] = m_pTriangles[j].textureIndices[1];
-        currentFrame.pFaces[j].coordIndex[2] = m_pTriangles[j].textureIndices[2];
-    }
-
-    // Here we add the current object (or frame) to our list object list
-    pModel->pObject.push_back(currentFrame);
 }
+
+//////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
 
 ///////////////////////////////// CLEAN UP \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
@@ -354,38 +524,37 @@ void CLoadMD2::CleanUp()
     if(m_pFrames)    delete m_pFrames;          // Free the frames of animation
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //
 // * QUICK NOTES * 
 //
-// Pretty simple huh?  This is probably the easiest 3D file format I have ever
-// worked with, so good job Carmack!  Once again, the next Md2 tutorial will cover
-// the key frame animation that is associated with these models.  Then you can 
-// actually say you have worked with real quake characters and know how they did
-// their animation.  Let's go over a brief explanation of this loader:
+// I bet this is a lot simpler than you imagined eh?  That is the beauty of the
+// Quake2 model format, it's so easy to read in.  No crazy chucks to syphon through.
+// The only challenge is to think of a way to efficiently parse the animations out.
+// That is, if you don't use constants for the standards set on www.planetquake.com.
+// You can find that info at:
 //
-// The structures MUST be the same size and data types in order to load the
-// Quake2 data.  First we load the Header information.  This tells us everything
-// about the file and it's contents.
+// http://www.planetquake.com/polycount/resources/quake2/q2frameslist.shtml
 // 
-// After the header is loaded, we need to check if the ID is 8.  This is a must.
-// Don't ask me why it's 8, ask John Carmack!  If the version ID checks out, then
-// we can start loading the data.
-// 
-// For each set of data you want to load is, we use an fseek() to move the file
-// pointer to that location in the file that is given in the header.
+// All that we really changed from the last tutorial was adding a loop to
+// read in the frames, instead of just storing first frame.  The ParseAnimations()
+// function was also added to step through each of the frames and store off the
+// animation names, animation count, and first and last frame for each animation.
 //
-// After you load the data, you can then convert the data structures to your own
-// format, that way you don't have ot be stuck with theirs.  I decided to make it
-// like the other loaders for future purposes.  We also compute our own normals.
+// You might take note that in the last tutorial we calculated the face normals of our
+// model, but on second thought, I decided to not do it in our final MD2 tutorial because
+// the model's texture maps are created for their own lighting and just make it darker
+// than usual.  Quake2 and many other games don't use dynamic lighting because it incredibly
+// slow, unless it's done on a graphics card with a GPU.
 //
-// There is one thing I didn't mention that was NOT loaded in.  There is an array
-// of OpenGL commands that allow you to render the vertices in triangle strips and
-// a triangle fan.  This is the ugliest code I have ever seen to implement it, so
-// I left it out :)
+// If you go to Main.cpp you will see how to actually interpolate between these
+// key frames.  Make sure you understand that these are NOT all the frames of
+// animation, but key frames to be blended together through interpolation.  More
+// on these topics will be discussed in Main.cpp.
 //
-// I would like to thank Daniel E. Schoenblum <dansch@hops.cs.jhu.edu> for help
-// with explaining the file format.
+// I would once again like to thank Daniel E. Schoenblum <dansch@hops.cs.jhu.edu> 
+// for help with explaining the file format.
 //
 // Let me know if this helps you out!
 // 
@@ -400,7 +569,7 @@ void CLoadMD2::CleanUp()
 // not be sold or used under any way for commercial use with out written conset
 // from ID Software.
 //
-// Quake and Quake2 are trademarks of id Software.
+// Quake and Quake2 are trademarks of ID Software.
 // All trademarks used are properties of their respective owners. 
 //
 //

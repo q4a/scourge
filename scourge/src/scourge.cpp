@@ -97,7 +97,7 @@ Scourge::Scourge(int argc, char *argv[]){
 	  party[0] = player = pc[0];
 	  party[1] = pc[1];
 	  party[2] = pc[2];
-	  party[3] = pc[3];
+	  party[3] = pc[3];	  
 
 	  // inventory needs the party
 	  if(!inventory) {
@@ -368,14 +368,14 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     else if(ea == SHOW_INVENTORY){
 	  if(startRound) toggleRound();
-	  inventory->show();        
+	  inventory->show(); 	  
     }
     else if(ea == SHOW_OPTIONS_MENU){
 	  if(startRound) toggleRound();
 	  optionsMenu->show();
     }
     else if(ea == USE_ITEM_STOP){
-        useItem();
+        useItem();        
     }
     else if(ea == SET_NEXT_FORMATION_STOP){
         if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
@@ -1172,6 +1172,7 @@ void Scourge::creatureDeath(Creature *creature) {
   // remove from the map; the object will be cleaned up at the end of the mission
   map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
   // add a container object instead
+  //creature->getShape()->setCurrentAnimation(MD2_DEATH1);
   Item *item = newItem(RpgItem::items[RpgItem::CORPSE]);
   // FIXME: add creature's inventory to container
   map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);

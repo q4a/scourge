@@ -46,7 +46,7 @@ using namespace std;
 #define SEPARATOR '/'
 #endif
 
-#define SCOURGE_VERSION 0.2
+#define SCOURGE_VERSION 0.3
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
@@ -163,6 +163,13 @@ public:
     MOTION_MOVE_AWAY, // flee
     MOTION_LOITER
   };
+
+// This stores the speed of the animation between each key frame for md2 models
+// A higher value means a *faster* animation and NOT a *smoother* animation.
+// The smoothing of the animation is only determined by fps. 
+// So this value should not be modified. Maybe later there will be an
+// animation_speed for each creature, to give the feeling some are faster than others ?
+#define ANIMATION_SPEED         5.0f  
 
 // The map's dimensions
 #define MAP_WIDTH 600
@@ -463,15 +470,31 @@ struct t3DObject
 	tFace *pFaces;				// The faces information of the object
 };
 
-// This holds our model information.  This should also turn into a robust class.
-// We use STL's (Standard Template Library) vector class to ease our link list burdens. :)
-struct t3DModel
+
+// This holds our information for each animation of the Quake model.
+// A STL vector list of this structure is created in our t3DModel structure below.
+struct tAnimationInfo
 {
-	int numOfObjects;					// The number of objects in the model
-	int numOfMaterials;					// The number of materials for the model
-	vector<tMaterialInfo> pMaterials;	// The list of material information (Textures and colors)
-	vector<t3DObject> pObject;			// The object list for our model
+    char strName[255];          // This stores the name of the animation (Jump, Pain, etc..)
+    int startFrame;             // This stores the first frame number for this animation
+    int endFrame;               // This stores the last frame number for this animation
 };
+
+// We added 4 new variables to our model structure.  These will help us handle
+// the current animation.  As of now, the current animation will continue to loop
+// from it's start from to it's end frame until we right click and change animations.
+struct t3DModel 
+{
+    int numOfObjects;                   // The number of objects in the model
+    int numOfMaterials;                 // The number of materials for the model
+    int numOfAnimations;                // The number of animations in this model (NEW)
+    int currentAnim;                    // The current index into pAnimations list (NEW)
+    int currentFrame;                   // The current frame of the current animation (NEW)
+    vector<tAnimationInfo> pAnimations; // The list of animations (NEW)
+    vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)
+    vector<t3DObject> pObject;          // The object list for our model
+};
+
 
 typedef unsigned char byte;
 
