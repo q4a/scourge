@@ -176,10 +176,11 @@ void Session::stopClientServer() {
 #endif
 
 Item *Session::newItem(RpgItem *rpgItem, Spell *spell) {
-  items[itemCount] = new Item(rpgItem);
-  if(spell) items[itemCount]->setSpell(spell);
+  cerr << "newItem 1, itemCount=" << itemCount << " rpgItem=" << rpgItem->getName() << endl;
+  newItems[itemCount] = new Item(rpgItem);
+  if(spell) newItems[itemCount]->setSpell(spell);
   itemCount++;
-  return items[itemCount - 1];
+  return newItems[itemCount - 1];
 }
 
 // creatures created for the mission
@@ -199,23 +200,23 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   // (except items in inventory) 
   if(!missionItemsOnly) {
     for(int i = 0; i < itemCount; i++) {
-      delete items[i];
+      delete newItems[i];
     }
     itemCount = 0;
   } else {
     for(int i = 0; i < itemCount; i++) {
       bool inInventory = false;
       for(int t = 0; t < getParty()->getPartySize(); t++) {
-        if(getParty()->getParty(t)->isItemInInventory(items[i])) {
+        if(getParty()->getParty(t)->isItemInInventory(newItems[i])) {
           inInventory = true;
           break;
         }
       }
       if(!inInventory) {
-        delete items[i];
+        delete newItems[i];
         itemCount--;
         for(int t = i; t < itemCount; t++) {
-          items[t] = items[t + 1];
+          newItems[t] = newItems[t + 1];
         }
         i--;
       }

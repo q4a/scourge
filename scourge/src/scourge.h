@@ -568,7 +568,8 @@ public:
   bool Scourge::inTurnBasedCombatPlayerTurn();
 
  protected:
-  //  void fightBattle(); 
+
+  void resetBattles();
 
    int initMultiplayer();
 

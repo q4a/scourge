@@ -43,17 +43,21 @@ void findLocalResources(const char *appPath, char *dir) {
   // Look in this and the parent dir for a 'data' folder
   // ('i' has to count to at least 4 for OS X)
   for(int i = 0; i < 10; i++) {
-	char *p = strrchr(dir, SEPARATOR);
-	if(!p) {
-	  dir[0] = '\0';
-	  cerr << "*** Can't find local version of data dir. You're running a distribution." << endl;
-	  return;
-	}	
-	*(p + 1) = 0;
-	//	fprintf(stderr, "*** Looking at: dir=%s\n", dir);
-	if(checkFile(dir, "data/cursor.bmp")) return;
-	// remove the last separator
-	*(p) = 0;
+    char *pp = strrchr(dir, '/');
+    char *p = strrchr(dir, SEPARATOR);
+    if(!p && !pp) {
+      dir[0] = '\0';
+      cerr << "*** Can't find local version of data dir. You're running a distribution." << endl;
+      return;
+    }
+    // Take whichever comes first. This is to solve a problem when running in
+    // mingw or cygwin. It may cause problems if the actual path has a \ or / in it.
+    if(pp > p) p = pp;
+    *(p + 1) = 0;
+    //	fprintf(stderr, "*** Looking at: dir=%s\n", dir);
+    if(checkFile(dir, "data/cursor.bmp")) return;
+    // remove the last separator
+    *(p) = 0;
   }
   dir[0] = '\0';
 }
@@ -75,6 +79,7 @@ int main(int argc, char *argv[]) {
   // Check to see if there's a local version of the data dir
   // (ie. we're running in the build folder and not in a distribution)
   char dir[300];
+  cerr << "app path: " << argv[0] << endl;
   findLocalResources(argv[0], dir);
   if(strlen(dir)) {
 	cerr << "*** Using local data dir. Not running a distribution." << endl;

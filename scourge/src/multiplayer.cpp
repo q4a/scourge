@@ -41,14 +41,13 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
   userName = mainWin->createTextField( 10, 165, 30 );
   
   joinServer = mainWin->createButton( 10, 190, 160, 210, strdup("Join a game"), true );
-
+  okButton = mainWin->createButton( 330, 180, 430, 210, strdup("Start Game") );
   
   
   mainWin->createLabel( 230, 20, strdup("Select a character:") );
   characterList = new ScrollingList( 230, 30, 200, 130, 
                                      scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( characterList );
-
 
   // allocate strings for list
   // FIXME: use a character set not the party here
@@ -61,8 +60,6 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
             pc[i]->getLevel());
   }
   characterList->setLines(pcCount, (const char**)charStr);
-
-  okButton = mainWin->createButton( 330, 180, 430, 210, strdup("Start Game") );
 }
 
 MultiplayerDialog::~MultiplayerDialog() {
