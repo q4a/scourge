@@ -377,6 +377,27 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
     for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
       if(chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT) continue;
       
+      
+      
+      // remember the chunk's starting pos.
+      float chunkPosX = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+                                chunkOffsetX) / GLShape::DIV;
+      float chunkPosY = (float)((chunkY - chunkStartY) * MAP_UNIT + 
+                                chunkOffsetY) / GLShape::DIV;
+      
+      // frustum testing
+      frustum->CalculateFrustum();
+      if(useFrustum && 
+         !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / GLShape::DIV)) 
+        continue;
+
+      // store this chunk
+      chunks[chunkCount].x = chunkPosX;
+      chunks[chunkCount].y = chunkPosY;
+      chunkCount++;
+      
+            
+      
       // FIXME: this works except it draws other doors on the same
       // chunk that should be hidden. To really fix it, we need to
       // keep track of which side of the chunk to draw.
@@ -423,24 +444,6 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
           if(!found) continue;
         }
       }
-
-      // remember the chunk's starting pos.
-      float chunkPosX = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                chunkOffsetX) / GLShape::DIV;
-      float chunkPosY = (float)((chunkY - chunkStartY) * MAP_UNIT + 
-                                chunkOffsetY) / GLShape::DIV;
-      
-      // frustum testing
-      frustum->CalculateFrustum();
-      if(useFrustum && 
-         !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / GLShape::DIV)) 
-        continue;
-
-      // store this chunk
-      chunks[chunkCount].x = chunkPosX;
-      chunks[chunkCount].y = chunkPosY;
-      chunkCount++;
-
       
       for(int yp = 0; yp < MAP_UNIT; yp++) {
         for(int xp = 0; xp < MAP_UNIT; xp++) {
