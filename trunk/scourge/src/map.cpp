@@ -875,7 +875,7 @@ void Map::draw() {
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
     sprintf(mapDebugStr, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
-            currentEffectsMap.size(),
+            (int)currentEffectsMap.size(),
             (useFrustum ? "*" : ""),
             chunkCount, ((cex - csx)*(cey - csy)),
             csx, cex, csy, cey, shapeCount);
