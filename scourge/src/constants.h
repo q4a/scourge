@@ -25,14 +25,19 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
-#include <OpenGL/glext.h>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+//#include <GL/glext.h>
 #endif
 
 #include <stdlib.h>
+
+// opengl extension functions                                     
+extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
+extern PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB;
+extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
 
 /*
   Float swapping code by:

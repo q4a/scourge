@@ -165,6 +165,16 @@ int SDLHandler::initGL( GLvoid ) {
     glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;
     glEnable( GL_COLOR_MATERIAL );
 
+    /* initialize opengl extensions */
+    fprintf(stderr, "BEFORE: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
+    glSDLActiveTextureARB = 
+      (PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress ("glActiveTextureARB");
+    fprintf(stderr, "AFTER: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
+    glSDLMultiTexCoord2fARB = 
+      (PFNGLMULTITEXCOORD2FARBPROC)SDL_GL_GetProcAddress ("glMultiTexCoord2fARB");
+    glSDLMultiTexCoord2iARB = 
+      (PFNGLMULTITEXCOORD2IARBPROC)SDL_GL_GetProcAddress ("glMultiTexCoord2iARB");
+
     return( TRUE );
 }
 
@@ -203,7 +213,7 @@ void SDLHandler::setVideoMode(int w, int h, int bpp, bool fullscreen) {
 
     /* Sets up OpenGL double buffering */
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 
     /* get a SDL surface */
     screen = SDL_SetVideoMode( w, h, bpp, videoFlags );
