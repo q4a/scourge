@@ -562,7 +562,13 @@ t3DModel * ShapePalette::LoadMd2Model(char *file_name){
   t3DModel *t3d = new t3DModel;    
   g_LoadMd2.ImportMD2(t3d, file_name); 
   return t3d;   
-}    
+}
+
+void ShapePalette::UnloadMd2Model( t3DModel *model ) {
+  g_LoadMd2.DeleteMD2( model );
+  delete model;
+}
+
 
 GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, 
 										float scale, Monster *monster) {
@@ -683,17 +689,11 @@ void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name,
   }
 
   // ------------------------------------------------------
-
-  // We currently don't have the technology to unload these...
-  // Oh well, at least we have lazy loading.
-  // Freeing model_info->model is verrry complicated! 
-  // (See CLoadMD2::ImportMD2 for how they're created.)
-
-  /*
   string model = model_name;
   Md2ModelInfo *model_info;
   if(creature_models.find(model) == creature_models.end()){
-    //cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin_name << endl;
+	// this is ok. It could be an old-style model (or non-monster)
+    cerr << "&&&&&&&&&& Not unloading model: " << model << endl;
     return;
   } else {
     model_info = creature_models[model];
@@ -705,17 +705,16 @@ void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name,
   }
 
   loaded_models[model_info] = loaded_models[model_info] - 1;
-  //  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
-  //	" count: " << loaded_skins[skin_texture] << endl;
-  // unload texture if no more references  
+  // unload model if no more references  
   if(loaded_models[model_info] == 0) {
     cerr << "&&&&&&&&&& Deleting model: " << model << endl;
     loaded_models.erase(model_info);
     creature_models.erase(model);
-    free(model_info->model);
+
+	UnloadMd2Model( model_info->model );
+
     free(model_info);
   }
-  */
 
   // unload monster sounds
   if( monster )

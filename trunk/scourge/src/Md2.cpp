@@ -22,6 +22,18 @@ CLoadMD2::CLoadMD2()
     m_pFrames=NULL;    
 }
 
+// delete all structures associated with this model
+void CLoadMD2::DeleteMD2( t3DModel *pModel ) {
+  cerr << "Deleting MD2 model: animations: " << pModel->pAnimations.size() << 
+	" materials: " << pModel->pMaterials.size() << 
+	" objects: " << pModel->pObject.size() << endl;
+  pModel->pAnimations.clear();
+  pModel->pMaterials.clear();
+  pModel->pObject.clear();  
+  delete[] pModel->vertices;
+  delete[] pModel->pGlCommands;
+}
+
 //   Called by the client to open the .Md2 file, read it, then clean up
 bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName)
 {

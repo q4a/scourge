@@ -182,6 +182,7 @@ private:
   // Md2 shapes
   CLoadMD2 g_LoadMd2; 
   t3DModel * LoadMd2Model(char *file_name);
+  void UnloadMd2Model( t3DModel *model );
 
   Session *session;
   WallTheme *themes[100];
