@@ -28,6 +28,7 @@ class Map;
 class Projectile;
 class Creature;
 class Session;
+class Mission;
 
 class GameAdapter {
 protected:
@@ -53,6 +54,8 @@ public:
   virtual inline void setPlayerUI(int index) {}
   virtual inline void updateBoardUI(int count, const char **missionText, Color *missionColor) {}
   virtual inline void setMissionDescriptionUI(char *s) {}
+  virtual inline Mission *getCurrentMission() { return NULL; }
+  virtual inline void missionCompleted() {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

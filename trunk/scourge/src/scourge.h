@@ -157,12 +157,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Creature *targetSelectionFor;
 
   int layoutMode;
-#ifdef HAVE_SDL_NET
-  Server *server;
-  Client *client;
-#endif
   NetPlay *netPlay;
-  bool multiplayerGame;
 
   float targetWidth, targetWidthDelta;
   GLint lastTargetTick;
@@ -563,20 +558,6 @@ public:
   void initStart(int statusCount, char *message);
   void initUpdate(char *message);
   void initEnd();
-
-#ifdef HAVE_SDL_NET
-  void runClient(char *host, int port, char *userName);
-  void runServer(int port);
-  /**
-    @return the server.
-  */
-  inline Server *getServer() { return server; }
-
-  /**
-    @return the client.
-  */
-  inline Client *getClient() { return client; }
-#endif
 
   void initVideo(ShapePalette *shapePal);
   void initUI(Session *session);

@@ -602,14 +602,11 @@ bool Creature::addInventory(Item *item) {
     }
 
     // check if the mission is over
-    cerr << "FIXME: Creature::addInventory" << endl;
-    /*
     if(!isMonster() && 
-       scourge->getCurrentMission() &&
-       scourge->getCurrentMission()->itemFound(item->getRpgItem())) {
-      scourge->missionCompleted();
+       session->getGameAdapter()->getCurrentMission() &&
+       session->getGameAdapter()->getCurrentMission()->itemFound(item->getRpgItem())) {
+      session->getGameAdapter()->missionCompleted();
     }
-    */
 
     return true;
   } else{
