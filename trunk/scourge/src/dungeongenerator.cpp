@@ -63,10 +63,10 @@ const MapLocation DungeonGenerator::location[] = {
 	  {3,9,2,3,1}
 	},
 	{ 
-	  "#####",
-	  "#####",
-	  "#####",
-	  "##s##",
+	  "  ## ",
+	  "  ## ",
+	  "  ## ",
+	  "  s# ",
 	  "  +  ",
 	  "##+##",
 	  "#e+w#",
@@ -76,26 +76,33 @@ const MapLocation DungeonGenerator::location[] = {
 	  "#e+w#",
 	  "## ##" 
 	},
-	13, 
-	// something weird with the shapes and the lightmap: 
-	//try putting shapes on x=2*unitSide+6
+	21, 
 	{
 	  { Constants::BOARD_INDEX, 2*unitSide+5, unitSide, 0 },
 
-	  { Constants::BRAZIER_INDEX, 2*unitSide+5, unitSide+8, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+5, unitSide+8, 0 },
-	  { Constants::BRAZIER_INDEX, 2*unitSide+21, unitSide+8, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+21, unitSide+8, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+8, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+8, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+16, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+16, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+24, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+24, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+32, 0 },
+		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+32, 0 },
 
-	  { Constants::BRAZIER_INDEX, 2*unitSide+5, unitSide+16, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+5, unitSide+16, 0 },
-	  { Constants::BRAZIER_INDEX, 2*unitSide+21, unitSide+16, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+21, unitSide+16, 0 },
+	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+8, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+8, 0 },		
+	  { Constants::BRAZIER_INDEX, 2*unitSide+22, unitSide+8, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+22, unitSide+8, 0 },
 
-	  { Constants::BRAZIER_INDEX, 2*unitSide+5, unitSide+24, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+5, unitSide+24, 0 },
-	  { Constants::BRAZIER_INDEX, 2*unitSide+21, unitSide+24, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+21, unitSide+24, 0 }
+	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+16, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+16, 0 },
+	  { Constants::BRAZIER_INDEX, 2*unitSide+22, unitSide+16, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+22, unitSide+16, 0 },
+
+	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+24, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+24, 0 },
+	  { Constants::BRAZIER_INDEX, 2*unitSide+22, unitSide+24, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+22, unitSide+24, 0 }
 
 
 	}
@@ -701,36 +708,27 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 
   // generate the maze
   if(!preGenerated) {
-	generateMaze();
-	//  printMaze();  
-	
-	makeSparse();
-	//  printMaze();
-	
-	makeLoops();
-	//  printMaze();
-	
-	makeRooms();
-	//  printMaze();
-  } else {
-	constructMaze(locationIndex);
-  }
-
-  // draw the nodes on the map
-  drawNodesOnMap(map, shapePal);
-
-  // add shapes
-  if(preGenerated) {
-	for(int i = 0; i < location[locationIndex].shapeCount; i++) {
-	  int mapx = location[locationIndex].shapePosition[i][1] + offset;
-	  int mapy = location[locationIndex].shapePosition[i][2] + offset;
-	  map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i][3], 
-					   shapePal->getShape(location[locationIndex].shapePosition[i][0]));	  
+		generateMaze();
+		//  printMaze();  
+		
+		makeSparse();
+		//  printMaze();
+		
+		makeLoops();
+		//  printMaze();
+		
+		makeRooms();
+		//  printMaze();
+	} else {
+		constructMaze(locationIndex);
 	}
-  }
+	
+	// draw the nodes on the map
+	drawNodesOnMap(map, shapePal, preGenerated, locationIndex);
 }
 
-void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
+void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
+																			bool preGenerated, int locationIndex) {
   // add shapes to map
   Sint16 mapx, mapy;
   for(Sint16 x = 0; x < width; x++) {    
@@ -922,160 +920,183 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
 	}    
   }
 
-  // add the containers
-  int x, y;
-  RpgItem *rpgItem;
-  for(int i = 0; i < roomCount; i++) {
-  	for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
-	  rpgItem = RpgItem::getRandomContainer();
-	  if(rpgItem) {
-		// WEST side
-		x = (room[i].x * unitSide) + unitOffset + offset;
-		y = (room[i].y * unitSide) + pos + offset;
-		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
-		if(map->shapeFits(shape, x, y, 0) && 
-		   !coversDoor(map, shapePal, shape, x, y)) {
-		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+	int x, y;
+	RpgItem *rpgItem;
+	// add the containers
+	for(int i = 0; i < roomCount; i++) {
+		if(preGenerated && location[locationIndex].roomDimension[i][4] == 0) continue;
+		for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
+			rpgItem = RpgItem::getRandomContainer();
+			if(rpgItem) {
+				// WEST side
+				x = (room[i].x * unitSide) + unitOffset + offset;
+				y = (room[i].y * unitSide) + pos + offset;
+				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				if(map->shapeFits(shape, x, y, 0) && 
+					 !coversDoor(map, shapePal, shape, x, y)) {
+					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+				}
+			}
+			rpgItem = RpgItem::getRandomContainer();
+			if(rpgItem) {
+				// EAST side
+				x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
+				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				if(map->shapeFits(shape, x, y, 0) && 
+					 !coversDoor(map, shapePal, shape, x, y)) {
+					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+				}
+			}
 		}
-	  }
-	  rpgItem = RpgItem::getRandomContainer();
-	  if(rpgItem) {
-		// EAST side
-		x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
-		if(map->shapeFits(shape, x, y, 0) && 
-		   !coversDoor(map, shapePal, shape, x, y)) {
-		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+		for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
+			rpgItem = RpgItem::getRandomContainerNS();
+			if(rpgItem) {
+				// NORTH side
+				x = (room[i].x * unitSide) + pos + offset;
+				y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
+				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				if(map->shapeFits(shape, x, y, 0) && 
+					 !coversDoor(map, shapePal, shape, x, y)) {
+					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+				}
+			}
+			rpgItem = RpgItem::getRandomContainerNS();
+			if(rpgItem) {
+				// SOUTH side
+				y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
+				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				if(map->shapeFits(shape, x, y, 0) && 
+					 !coversDoor(map, shapePal, shape, x, y)) {
+					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+				}
+			}
 		}
-	  }
-	}
-  	for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
-	  rpgItem = RpgItem::getRandomContainerNS();
-	  if(rpgItem) {
-		// NORTH side
-		x = (room[i].x * unitSide) + pos + offset;
-		y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
-		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
-		if(map->shapeFits(shape, x, y, 0) && 
-		   !coversDoor(map, shapePal, shape, x, y)) {
-		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
-		}
-	  }
-	  rpgItem = RpgItem::getRandomContainerNS();
-	  if(rpgItem) {
-		// SOUTH side
-		y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
-		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
-		if(map->shapeFits(shape, x, y, 0) && 
-		   !coversDoor(map, shapePal, shape, x, y)) {
-		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
-		}
-	  }
-	}
-  }
+	}	
   
   // Collapse the free space and put objects in the available spots
-  ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
-  if(!ff) {
-	fprintf(stderr, "out of mem\n");
-	exit(0);    
-  }
-  ffCount = 0;
-  for(int fx = offset; fx < MAP_WIDTH; fx+=unitSide) {
-	for(int fy = offset; fy < MAP_DEPTH; fy+=unitSide) {
-	  if(map->getFloorPosition(fx, fy + unitSide)) {
-		for(int ffx = 0; ffx < unitSide; ffx++) {
-		  for(int ffy = unitSide; ffy > 0; ffy--) {
-			if(!map->getLocation(fx + ffx, fy + ffy, 0)) {
-			  *(ff + ffCount * 2) = fx + ffx;
-			  *(ff + ffCount * 2 + 1) = fy + ffy;
-			  ffCount++;
+	ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
+	if(!ff) {
+		fprintf(stderr, "out of mem\n");
+		exit(0);    
+	}
+	ffCount = 0;
+	for(int fx = offset; fx < MAP_WIDTH; fx+=unitSide) {
+		for(int fy = offset; fy < MAP_DEPTH; fy+=unitSide) {
+			if(map->getFloorPosition(fx, fy + unitSide)) {
+				for(int ffx = 0; ffx < unitSide; ffx++) {
+					for(int ffy = unitSide; ffy > 0; ffy--) {
+						if(!map->getLocation(fx + ffx, fy + ffy, 0)) {
+							*(ff + ffCount * 2) = fx + ffx;
+							*(ff + ffCount * 2 + 1) = fy + ffy;
+							ffCount++;
+						}
+					}
+				}
 			}
-		  }
 		}
-	  }
-	}
-  } 
+	} 
 
-  // add the items
-  for(int i = 0; i < objectCount; i++) {
-	RpgItem *rpgItem = RpgItem::getRandomItem(level);
-	if(!rpgItem) {
-	  cerr << "Warning: no items defined for level: " << level << endl;
-	  break;
+  // add pre-generated shapes first
+	if(preGenerated) {
+		for(int i = 0; i < location[locationIndex].shapeCount; i++) {
+			int mapx = location[locationIndex].shapePosition[i][1] + offset;
+			int mapy = location[locationIndex].shapePosition[i][2] + offset;
+			map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i][3], 
+											 shapePal->getShape(location[locationIndex].shapePosition[i][0]));
+			// find and remove this location from ff list (replace w. last entry and decr. counter)
+			for(int n = 0; n < ffCount; n++) {
+				if(mapx == ff[n * 2] && mapy == ff[n * 2 + 1]) {
+					ff[n * 2] = ff[(ffCount - 1) * 2];
+					ff[n * 2 + 1] = ff[(ffCount - 1) * 2 + 1];
+					ffCount--;
+					break;
+				}
+			}
+		}
 	}
-	Item *item = scourge->newItem(rpgItem);
-	getRandomLocation(map, item->getShape(), &x, &y);
-	addItem(map, NULL, item, NULL, x, y);
-  }
+
+	if(!preGenerated) {
+		// add the items
+		for(int i = 0; i < objectCount; i++) {
+			RpgItem *rpgItem = RpgItem::getRandomItem(level);
+			if(!rpgItem) {
+				cerr << "Warning: no items defined for level: " << level << endl;
+				break;
+			}
+			Item *item = scourge->newItem(rpgItem);
+			getRandomLocation(map, item->getShape(), &x, &y);
+			addItem(map, NULL, item, NULL, x, y);
+		}
+	}
 
   // add monsters in every room
-  if(monsters) {
-	int totalLevel = 0;
-	for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
-	//fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
-	for(int i = 0; i < roomCount; i++) {
-	  int levelSum = 0;
-	  while(levelSum < totalLevel) {
-		Monster *monster = Monster::getRandomMonster(level - 1);
-		//fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
-		if(!monster) {
-		  cerr << "Warning: no monsters defined for level: " << level << endl;
-		  break;
+	if(monsters) {
+		int totalLevel = 0;
+		for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
+		//fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
+		for(int i = 0; i < roomCount; i++) {
+			int levelSum = 0;
+			while(levelSum < totalLevel) {
+				Monster *monster = Monster::getRandomMonster(level - 1);
+				//fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
+				if(!monster) {
+					cerr << "Warning: no monsters defined for level: " << level << endl;
+					break;
+				}
+				bool fits = 
+					getLocationInRoom(map, 
+														i,
+														scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
+														&x, &y);
+				if(fits) {
+					//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
+					Creature *creature = scourge->newCreature(monster);
+					addItem(map, creature, NULL, NULL, x, y);
+					creature->moveTo(x, y, 0);
+					levelSum += level;
+				} else {
+					//fprintf(stderr, "\tmonster DOESN'T fit.\n");
+					break;
+				}
+			}
 		}
-		bool fits = 
-		  getLocationInRoom(map, 
-							i,
-							scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
-							&x, &y);
-		if(fits) {
-		  //fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
-		  Creature *creature = scourge->newCreature(monster);
-		  addItem(map, creature, NULL, NULL, x, y);
-		  creature->moveTo(x, y, 0);
-		  levelSum += level;
-		} else {
-		  //fprintf(stderr, "\tmonster DOESN'T fit.\n");
-		  break;
-		}
-	  }
-	}
 	
-	// add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
-	for(int i = 0; i < objectCount * 2; i++) {
-	  Monster *monster = Monster::getRandomMonster(level - 1);
-	  if(!monster) {
-		cerr << "Warning: no monsters defined for level: " << level << endl;
-		break;
-	  }	
-	  Creature *creature = scourge->newCreature(monster);
-	  getRandomLocation(map, creature->getShape(), &x, &y);
-	  addItem(map, creature, NULL, NULL, x, y);
-	  creature->moveTo(x, y, 0);
+		// add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
+		for(int i = 0; i < objectCount * 2; i++) {
+			Monster *monster = Monster::getRandomMonster(level - 1);
+			if(!monster) {
+				cerr << "Warning: no monsters defined for level: " << level << endl;
+				break;
+			}	
+			Creature *creature = scourge->newCreature(monster);
+			getRandomLocation(map, creature->getShape(), &x, &y);
+			addItem(map, creature, NULL, NULL, x, y);
+			creature->moveTo(x, y, 0);
+		}
 	}
-  }
 
-  // add tables, chairs, etc.
-  addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1);
-  addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2);
-
-  // add the party in the first room
-  // FIXME: what happens if the party doesn't fit in the room?
-  //  for(int i = 0; i < roomCount; i++) {
+	// add tables, chairs, etc.
+	addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1, preGenerated, locationIndex);
+	addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2, preGenerated, locationIndex);	
+		
+	// add the party in the first room
+	// FIXME: what happens if the party doesn't fit in the room?
+	//  for(int i = 0; i < roomCount; i++) {
 	for(int t = 0; t < 4; t++) {
-	  bool fits = 
-		getLocationInRoom(map, 
-						  0,
-						  scourge->getParty(t)->getShape(), 
-						  &x, &y,
-						  true);
-	  if(fits) {
-		addItem(map, scourge->getParty(t), NULL, NULL, x, y);
-		scourge->getParty(t)->moveTo(x, y, 0);
-	  }
+		if(scourge->getParty(t)->getStateMod(Constants::dead)) continue;
+		bool fits = 
+			getLocationInRoom(map, 
+												0,
+												scourge->getParty(t)->getShape(), 
+												&x, &y,
+												true);
+		if(fits) {
+			addItem(map, scourge->getParty(t), NULL, NULL, x, y);
+			scourge->getParty(t)->moveTo(x, y, 0);
+		}
 	}
 	//}
-
+	
   // free empty space container
   free(ff);  
 }
@@ -1179,9 +1200,11 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
   }	
 }
 
-void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n) {
+void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n, 
+																			bool preGenerated, int locationIndex) {
 	int x, y;
 	for(int i = 0; i < roomCount; i++) {
+		if(preGenerated && !location[locationIndex].roomDimension[i][4]) continue;
 		for(int r = 0; r < n; r++) {
 			for(int t = 0; t < 5; t++) { // 5 tries
 				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());

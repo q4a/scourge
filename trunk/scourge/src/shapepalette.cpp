@@ -59,6 +59,12 @@ char *ShapePalette::brazierDescription[] = {
 };
 int ShapePalette::brazierDescriptionCount = 2;
 
+char *ShapePalette::columnDescription[] = {
+  "You see a shining marble column",
+  "The column supports the ceiling"
+};
+int ShapePalette::columnDescriptionCount = 2;
+
 
 
 ShapePalette::ShapePalette(){
@@ -170,7 +176,6 @@ void ShapePalette::initShapes() {
   shapes[Constants::NS_WALL_EXTRA_INDEX]->setStencil(true);
   shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX]->setStencil(true);
 
-
   // corners
   shapes[Constants::CORNER_INDEX] =
     new GLShape(wood_tex,
@@ -214,6 +219,16 @@ void ShapePalette::initShapes() {
                 "NS DOOR TOP", doorFrameDescription, doorFrameDescriptionCount,
                 (debug ? 0xff0000ff : color),
                 display_list + (count++ * 3), Constants::NS_DOOR_TOP_INDEX);
+
+	// these shapes block the light
+	((GLShape*)shapes[Constants::EW_WALL_INDEX])->setLightBlocking(true);
+  ((GLShape*)shapes[Constants::EW_WALL_EXTRA_INDEX])->setLightBlocking(true);
+  ((GLShape*)shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX])->setLightBlocking(true);
+  ((GLShape*)shapes[Constants::NS_WALL_INDEX])->setLightBlocking(true);
+  ((GLShape*)shapes[Constants::NS_WALL_EXTRA_INDEX])->setLightBlocking(true);
+  ((GLShape*)shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX])->setLightBlocking(true);
+	((GLShape*)shapes[Constants::NS_DOOR_INDEX])->setLightBlocking(true);
+	((GLShape*)shapes[Constants::EW_DOOR_INDEX])->setLightBlocking(true);
 
   // floor tile 1
 	shapes[Constants::FLOOR_TILE_INDEX] =
@@ -312,7 +327,12 @@ void ShapePalette::initShapes() {
                 display_list + (count++ * 3),
                 Constants::BRAZIER_BASE_INDEX);
 
-
+	shapes[Constants::COLUMN_INDEX] =
+	  new C3DSShape("data/objects/column.3ds", 1.7f, this,
+					notex, 4, 4, 10,
+					"COLUMN", columnDescription, columnDescriptionCount,
+					0xffffffff,
+					display_list + (count++ * 3), Constants::COLUMN_INDEX);
 	
 	// creatures
 	creature_display_list_start = display_list + (count * 3);                

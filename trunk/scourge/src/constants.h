@@ -288,6 +288,7 @@ public:
 	BOARD_INDEX,
 	BRAZIER_INDEX,
 	BRAZIER_BASE_INDEX,
+	COLUMN_INDEX,
 	
 	// must be the last one
 	SHAPE_INDEX_COUNT
