@@ -22,6 +22,9 @@ Devil Hunter Yohko, by Evil Bastard (brian@zono.com)
 Blade, by Mr. Rogers (ryan@sunstorm.net)
 Shinju Murasaki, by sTuPiD fOoL (fool@rochester.rr.com)
 Perelith Knight, by James Green (no email given)
+Hydralisk, by Warlord (warlord@smithco.net)
+Bauul, by Evil Bastard (brian@zono.com)
+Brawn, by Rowan "Sumaleth" Crawford (sumaleth@frag.com)
 
 The A* alg. was described on some message board that I can no longer find.
 
@@ -31,3 +34,5 @@ see: http://www.opengl.org/developers/code/mjktips/TexFont/TexFont.html
 (used with his permission!)
 
 The glut for Mingw32 package is from http://mywebpage.netscape.com/PtrPck/glut.htm
+
+Freetype is available at (http://www.freetype.org)
