@@ -200,7 +200,11 @@ void Sound::storeSound(int type, const char *file) {
     string fileStr = file;
     if(soundMap.find(fileStr) == soundMap.end()) {
       char fn[300];
-      sprintf(fn, "%s/%s", rootDir, file);
+	  if( file[0] == '/' || file[0] == '\\' ) {
+		sprintf(fn, "%s%s", rootDir, file);
+	  } else {
+		sprintf(fn, "%s/%s", rootDir, file);
+	  }
       cerr << "*** Loading sound file: " << fn << endl;
       Mix_Chunk *sample = Mix_LoadWAV(fn);
       if(!sample) {
