@@ -374,9 +374,18 @@ public:
   enum {
 	EFFECT_FLAMES=0,
 	EFFECT_GLOW
-  };
+  };    
 
   static const int DAMAGE_DURATION = 500;
+  
+  // glColor for texts
+  enum {
+    RED_COLOR=0,
+    BLUE_COLOR,
+    YELLOW_COLOR,
+    DEFAULT_COLOR // must be last for textColor[][]
+  };  
+  //static float textColor[][4]; 
   
   static bool multitexture;	
 

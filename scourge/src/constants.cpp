@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "constants.h"
-
+ 
 char rootDir[300];
 
 //sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
@@ -85,6 +85,10 @@ const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
   "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed", "dead"
 }; 
+/*
+float Constants::textColor[][4]={{0.8f, 0.2f, 0.0f, 0.0f},
+                           {0.0f, 0.2f, 0.0f, 0.0f}
+                           };*/
 
 bool Constants::multitexture = true;	
 
