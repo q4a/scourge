@@ -75,6 +75,10 @@ MultiplayerDialog::~MultiplayerDialog() {
   // FIXME: delete charStr
 }
 
+Creature *MultiplayerDialog::getCreature() { 
+  return Party::pc[characterList->getSelectedLine()]; 
+}
+
 bool MultiplayerDialog::handleEvent(SDL_Event *event) {
   return false;
 }

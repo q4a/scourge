@@ -169,6 +169,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Client *client;
 #endif
   NetPlay *netPlay;
+  bool multiplayerGame;
 
 protected:
   SDLHandler *sdlHandler;
