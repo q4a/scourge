@@ -90,6 +90,7 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
   lastTime = 0.0f;
   numAnimationWaiting = -1;
   animationPlayed = false;
+  pauseAnimation = false;
           
   // First we need to actually load the .MD2 file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("tris.md2").
@@ -116,11 +117,16 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
     g_3DModel.pMaterials[i].texureId = i;
   }    
 
-  // Allocate memory for interpolated vertices
+  // Allocate memory for interpolated vertices and initializes it
   vect = new (float *) [g_3DModel.pObject[0].numOfVerts];
   for(int i = 0; i < g_3DModel.pObject[0].numOfVerts; i++){
     vect[i] = new (float) [3];  
-  }
+  }  
+  for(int i = 0; i < g_3DModel.pObject[0].numOfVerts; i++){
+    for(int j = 0; j < 3; j++){
+        vect[i][j] = 0.0;
+    }
+  }  
     
   // Find the lowest point
   float minx, miny, minz;  
@@ -137,13 +143,15 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
         if(pObject->pVerts[ index ].z > maxz) maxz = pObject->pVerts[ index ].z;
         if(pObject->pVerts[ index ].x < minx) minx = pObject->pVerts[ index ].x;
         if(pObject->pVerts[ index ].y < miny) miny = pObject->pVerts[ index ].y;
-        if(pObject->pVerts[ index ].z < minz) minz = pObject->pVerts[ index ].z;        
+        if(pObject->pVerts[ index ].z < minz) minz = pObject->pVerts[ index ].z; 
+                     
       }
     }
   }
   movex = maxx - minx;
   movey = maxy;
-  movez = maxz - minz;
+  movez = maxz - minz;    
+    
 }
 
  void MD2Shape::setCurrentAnimation(int numAnim){
@@ -258,7 +266,9 @@ float MD2Shape::ReturnCurrentTime(t3DModel *pModel, int nextFrame)
     if (elapsedTime >= (1000.0f / ANIMATION_SPEED) )
     {
         // Set our current frame to the next key frame (which could be the start of the anim)
-        pModel->currentFrame = nextFrame;
+        if(!pauseAnimation){
+            pModel->currentFrame = nextFrame;
+        }        
 
         // Set our last time to the current time just like we would when getting our FPS.
         lastTime = time;
@@ -361,9 +371,16 @@ void MD2Shape::AnimateMD2Model(t3DModel *pModel)
 
             // By using the equation: p(t) = p0 + t(p1 - p0), with a time t
             // passed in, we create a new vertex that is closer to the next key frame.
-            vect[vertIndex][0] = (vPoint1.x + t * (vPoint2.x - vPoint1.x))*div;
-            vect[vertIndex][1] = (vPoint1.y + t * (vPoint2.y - vPoint1.y))*div;
-            vect[vertIndex][2] = (vPoint1.z + t * (vPoint2.z - vPoint1.z))*div;                                                                              
+            if(!pauseAnimation){
+                vect[vertIndex][0] = (vPoint1.x + t * (vPoint2.x - vPoint1.x))*div;
+                vect[vertIndex][1] = (vPoint1.y + t * (vPoint2.y - vPoint1.y))*div;
+                vect[vertIndex][2] = (vPoint1.z + t * (vPoint2.z - vPoint1.z))*div;                
+            }
+            else{
+                vect[vertIndex][0] = vPoint1.x  *div;
+                vect[vertIndex][1] = vPoint1.y  *div;
+                vect[vertIndex][2] = vPoint1.z  *div;                            
+            }            
         }
     }
     

@@ -198,8 +198,6 @@ void CLoadMD2::ReadMD2Data()
 	}
 	
 	// Read the glCommands
-    cout<< "m_Header.offsetGlCommands = " <<  m_Header.offsetGlCommands << endl;
-    cout<< "num glCommands = " << m_Header.numGlCommands << endl;
     fseek(m_FilePointer, m_Header.offsetGlCommands, SEEK_SET);
     fread(m_pGlCommands, sizeof(tMd2GlCommands), m_Header.numGlCommands, m_FilePointer);    
     if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {        
