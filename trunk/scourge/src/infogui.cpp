@@ -91,12 +91,18 @@ void InfoGui::describe() {
   strcat( description, tmp );
   sprintf(tmp, "Price: %d|", item->getPrice());
   strcat( description, tmp );
-  sprintf(tmp, "Action: %d|", item->getAction());
-  strcat( description, tmp );
-  sprintf(tmp, "Speed: %d|", item->getSpeed());
-  strcat( description, tmp );
-  sprintf(tmp, "Distance: %d|", item->getDistance());
-  strcat( description, tmp );
+  if( item->getAction() ) {
+    sprintf(tmp, "Action: %d|", item->getAction());
+    strcat( description, tmp );
+  }
+  if( item->getSpeed() > 0 ) {
+    sprintf(tmp, "Speed: %d|", item->getSpeed());
+    strcat( description, tmp );
+  }
+  if( item->getDistance() > Constants::MIN_DISTANCE ) {
+    sprintf(tmp, "Distance: %d|", item->getDistance());
+    strcat( description, tmp );
+  }
   if( item->getMaxCharges() > 0 ) {
     sprintf(tmp, "Max charges: %d|", item->getMaxCharges());
     strcat( description, tmp );
@@ -114,6 +120,8 @@ void InfoGui::describe() {
 
 
   if(item->isMagicItem()) {
+    sprintf( tmp, "|Magic item level: %s|", Constants::MAGIC_ITEM_NAMES[ item->getMagicLevel() ] );
+    strcat( description, tmp );
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       sprintf(tmp, "|%d bonus to %s.", 
               item->getBonus(),

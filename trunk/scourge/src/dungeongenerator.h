@@ -252,7 +252,6 @@ protected:
 
   void updateStatus(const char *statusMessage);
 
-  int getRandomItemLevel();
 };
 
 #endif

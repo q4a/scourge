@@ -152,6 +152,7 @@ public:
 
  protected:
   void commonInit();
+  float getRandomSum( float base, int count );
 
 };
 

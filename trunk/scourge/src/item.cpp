@@ -352,26 +352,48 @@ void Item::enchant(int level) {
 
 
 
+float Item::getRandomSum( float base, int count ) {
+  float sum = 0;
+  float third = base / 3.0f;
+  for( int i = 0; i < count; i++ ) {
+    sum += ( ( third * rand()/RAND_MAX ) + ( base - third ) );
+  }
+  return sum;
+}
+
 void Item::commonInit() {
 
   // --------------
   // regular attribs
 
-  //  weight = rpgItem->getWeight() - ( level * ( rpgItem->getWeight() / (float)MAX_LEVEL ) );
   weight = rpgItem->getWeight();
-  price = rpgItem->getPrice() + (int)((float)( rpgItem->getPrice() * ( level / 2 ) ) * 
-                                      rand() / RAND_MAX );
-  action = rpgItem->getAction() + (int)((float)( rpgItem->getAction() * ( level / 2 ) ) * 
-                                        rand() / RAND_MAX );
-  speed = rpgItem->getSpeed() - (int)((float)( rpgItem->getSpeed() * ( level / 10 ) ) * 
-                                      rand() / RAND_MAX );
-  if( speed < 3 ) speed = 3;
-  distance = rpgItem->getDistance() + (int)((float)( rpgItem->getDistance() * ( level / 2 ) ) * 
-                                            rand() / RAND_MAX );
-  maxCharges = rpgItem->getMaxCharges() + (int)((float)( rpgItem->getMaxCharges() * ( level / 2 ) ) * 
-                                                rand() / RAND_MAX );
-  duration = rpgItem->getDuration() + (int)((float)( rpgItem->getDuration() * ( level / 2 ) ) * 
-                                            rand() / RAND_MAX );
+
+  price = rpgItem->getPrice() + 
+    (int)getRandomSum( (float)(rpgItem->getPrice() / 2), level / 2 );
+
+  action = (int)getRandomSum( (float)(rpgItem->getAction()), level / 2 );  
+
+  if( rpgItem->getSpeed() ) {
+    speed = rpgItem->getSpeed() - (int)getRandomSum( 1, level / 7 );
+    if( speed < 3 ) speed = 3;
+  } else {
+    speed = rpgItem->getSpeed();
+  }
+
+  if( rpgItem->getDistance() > Constants::MIN_DISTANCE ) {
+    distance = rpgItem->getDistance() + 
+      (int)getRandomSum( 2, level / 2 );
+  } else distance = rpgItem->getDistance();
+
+  if( rpgItem->getMaxCharges() ) {
+    maxCharges = rpgItem->getMaxCharges() + 
+      (int)getRandomSum( (float)(rpgItem->getMaxCharges() / 2), level / 2 );
+  } else maxCharges = rpgItem->getMaxCharges();
+
+  if( rpgItem->getDuration() ) {
+    duration = rpgItem->getDuration() + 
+      (int)getRandomSum( (float)( rpgItem->getDuration() / 2 ), level / 2 );
+  } else duration = rpgItem->getDuration();
 
 
   // --------------
@@ -391,7 +413,7 @@ void Item::commonInit() {
   if( !rpgItem->isEnchantable() ) return;
 
   // roll for magic
-  int n = (int)( 100.0f * rand()/RAND_MAX );
+  int n = (int)( ( 200.0f - ( level * 1.5f ) ) * rand()/RAND_MAX );
   if( n < 5 ) magicLevel = Constants::DIVINE_MAGIC_ITEM;
   else if( n < 15 ) magicLevel = Constants::CHAMPION_MAGIC_ITEM;
   else if( n < 30 ) magicLevel = Constants::GREATER_MAGIC_ITEM;
@@ -405,14 +427,14 @@ void Item::commonInit() {
   case Constants::LESSER_MAGIC_ITEM:
     bonus = (int)(1.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(2.0f * rand()/RAND_MAX);
+      damageMultiplier = (int)(2.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType();
     }
     break;
   case Constants::GREATER_MAGIC_ITEM:
     bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+      damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType();
     }
     spell = MagicSchool::getRandomSpell(1);
@@ -420,18 +442,18 @@ void Item::commonInit() {
       school = spell->getSchool();
       magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 1, (int)(3.0f * rand()/RAND_MAX));
     }
-    n = (int)(3.0f * rand()/RAND_MAX);
+    n = (int)(3.0f * rand()/RAND_MAX) + 2;
     for(int i = 0; i < n; i++) {
       int skill = Constants::getRandomBasicSkill();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(8.0f * rand()/RAND_MAX);
+        skillBonus[skill] = (int)(8.0f * rand()/RAND_MAX) + 1;
       }
     }
     break;
   case Constants::CHAMPION_MAGIC_ITEM:
     bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+      damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType();
     }
     spell = MagicSchool::getRandomSpell(1);
@@ -448,14 +470,14 @@ void Item::commonInit() {
     for(int i = 0; i < n; i++) {
       int skill = Constants::getRandomBasicSkill();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(10.0f * rand()/RAND_MAX);
+        skillBonus[skill] = (int)(10.0f * rand()/RAND_MAX) + 1;
       }
     }
     break;
   case Constants::DIVINE_MAGIC_ITEM:
     bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(4.0f * rand()/RAND_MAX);
+      damageMultiplier = (int)(4.0f * rand()/RAND_MAX) + 2;
       monsterType = NULL;
     }
     spell = MagicSchool::getRandomSpell(1);
@@ -477,7 +499,7 @@ void Item::commonInit() {
     for(int i = 0; i < n; i++) {
       int skill = Constants::getRandomBasicSkill();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(12.0f * rand()/RAND_MAX);
+        skillBonus[skill] = (int)(12.0f * rand()/RAND_MAX) + 1;
       }
     }
     break;
