@@ -31,24 +31,24 @@ MainMenu::MainMenu(Scourge *scourge){
   // The new style gui
   mainWin = new Window( scourge->getSDLHandler(),
 						50, 230, 270, 220, 
-						"Main Menu", 
+						strdup("Main Menu"), 
 						scourge->getShapePalette()->getGuiTexture() );
   
   char version[100];
   sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
-  Label *label = new Label( 10, 20, version);
+  Label *label = new Label( 10, 20, strdup(version));
   label->setColor( 0, 0, 0, 1.0f );
   mainWin->addWidget((Widget*)label);
   
-  newGameButton = new Button( 10, 40, 260, 60, "New Game" );
+  newGameButton = new Button( 10, 40, 260, 60, strdup("New Game") );
   mainWin->addWidget((Widget*)newGameButton);
-  continueButton = new Button( 10, 70, 260, 90, "Continue Game" );
+  continueButton = new Button( 10, 70, 260, 90, strdup("Continue Game") );
   mainWin->addWidget((Widget*)continueButton);
-  optionsButton = new Button( 10, 100, 260, 120, "Options" );
+  optionsButton = new Button( 10, 100, 260, 120, strdup("Options") );
   mainWin->addWidget((Widget*)optionsButton);
-  aboutButton = new Button( 10, 130, 260, 150, "About" );
+  aboutButton = new Button( 10, 130, 260, 150, strdup("About") );
   mainWin->addWidget((Widget*)aboutButton);
-  quitButton = new Button( 10, 160, 260, 180, "Quit" );
+  quitButton = new Button( 10, 160, 260, 180, strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
 }
 MainMenu::~MainMenu(){
@@ -228,6 +228,12 @@ void MainMenu::drawWater() {
 }
 
 bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
+
+  if(scourge->getOptionsMenu()->isVisible()) {
+	scourge->getOptionsMenu()->handleEvent(widget, event);
+	return false;
+  }
+
   if(widget == newGameButton) {
 	fprintf(stderr, "new game!!\n");
 	value = NEW_GAME;
@@ -253,6 +259,12 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 bool MainMenu::handleEvent(SDL_Event *event) {
+
+  if(scourge->getOptionsMenu()->isVisible()) {
+	scourge->getOptionsMenu()->handleEvent(event);
+	return false;
+  }
+
   switch(event->type) {
   case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {

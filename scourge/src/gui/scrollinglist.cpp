@@ -40,7 +40,7 @@ ScrollingList::~ScrollingList() {
 void ScrollingList::setLines(int count, const char *s[]) { 
   list = s; 
   this->count = count;
-  listHeight = (count + 1) * 15;
+  listHeight = count * 15 + 5;
   scrollerHeight = (listHeight <= getHeight() ? 
 					getHeight() : 
 					(getHeight() * getHeight()) / listHeight);
@@ -107,7 +107,7 @@ void ScrollingList::drawWidget(Widget *parent) {
 	glColor4f( 0, 0, 0, 1 );
 	for(int i = 0; i < count; i++) {
 	  ((Window*)parent)->getSDLHandler()->
-		texPrint(scrollerWidth, textPos + (i + 1) * 15, list[i]);
+		texPrint(scrollerWidth + 5, textPos + (i + 1) * 15, list[i]);
 	}
 
 	if(selectedLine > -1) {
@@ -172,7 +172,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 	value = (int)((float)((y - dragY) - getY()) / 
 				  ((float)(getHeight() - scrollerHeight) / 100.0f));
 	if(value < 0) value = 0;
-	if(value > 99) value = 99;
+	if(value > 100) value = 100;
 	scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
   }
   return false;

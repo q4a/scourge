@@ -25,19 +25,26 @@
   
 Inventory::Inventory(Scourge *scourge) {
     this->scourge = scourge;
-    this->invText = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
-    for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-        this->invText[i] = (char*)malloc(120 * sizeof(char));
-    }
+
+	// allocate strings for list
     this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
     for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
         this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
     }
+	this->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
+	for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+	  this->skillLine[i] = (char*)malloc(120 * sizeof(char));
+	}
+	this->stateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
+	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	  this->stateLine[i] = (char*)malloc(120 * sizeof(char));
+	}
 	selected = selectedMode = 0;
 
+	// construct UI
 	mainWin = new Window( scourge->getSDLHandler(),
 						  100, 50, 525, 505, 
-						  "Party Information", 
+						  strdup("Party Information"), 
 						  scourge->getShapePalette()->getGuiTexture() );
 	player1Button = new Button( 0, 0, 105, 120, scourge->getParty(0)->getPC()->getName() );
 	player1Button->setLabelPosition(Button::BOTTOM);	
@@ -55,65 +62,85 @@ Inventory::Inventory(Scourge *scourge) {
 	player4Button->setLabelPosition(Button::BOTTOM);
 	player4Button->setToggle(true);
 	mainWin->addWidget((Widget*)player4Button);
-	inventoryButton = new Button( 105,0, 210, 30, "Inventory" );
+	inventoryButton = new Button( 105,0, 210, 30, strdup("Inventory") );
 	inventoryButton->setToggle(true);
 	mainWin->addWidget((Widget*)inventoryButton);
-	skillsButton = new Button( 210,0, 315, 30, "Skills" );
+	skillsButton = new Button( 210,0, 315, 30, strdup("Skills") );
 	skillsButton->setToggle(true);
 	mainWin->addWidget((Widget*)skillsButton);
-	spellsButton = new Button( 315,0, 420, 30, "Spells" );
+	spellsButton = new Button( 315,0, 420, 30, strdup("Spells") );
 	spellsButton->setToggle(true);
 	mainWin->addWidget((Widget*)spellsButton);
-	closeButton = new Button( 420,0, 525, 30, "Close" );
+	closeButton = new Button( 420,0, 525, 30, strdup("Close") );
 	mainWin->addWidget((Widget*)closeButton);
 
 	cards = new CardContainer(mainWin);
 
 	// inventory page
-	Label *label = new Label(115, 280, "Inventory:");
+	Label *label = new Label(115, 280, strdup("Inventory:"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, INVENTORY);
-	label = new Label(115, 45, "Equipped Items:");
+	label = new Label(115, 45, strdup("Equipped Items:"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, INVENTORY);
 	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
 	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
-	  invEquipLabel[i] = new Label(300, 60 + (i * 15), (char *)(item ? item->getName() : ""));
+	  invEquipLabel[i] = new Label(300, 60 + (i * 15), (char *)(item ? item->getName() : (char*)NULL));
 	  cards->addWidget(invEquipLabel[i], INVENTORY);
 	}
 	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
 	  label = new Label(115, 60 + (i * 15), PlayerChar::inventory_location[i]);
 	  cards->addWidget(label, INVENTORY);
 	}
-	invList = new ScrollingList(115, 285, 295, 175);	
+	invList = new ScrollingList(115, 285, 295, 175);
 	cards->addWidget(invList, INVENTORY);
-	char name[80];
 	for(int i = 0; i < 4; i++) {
-	  sprintf(name, "to %s", scourge->getParty(i)->getPC()->getName());
-	  invToButton[i] = new Button( 420, 35 + (i * 30), 520, 35 + (i * 30) + 25, name );
+	  invToButton[i] = new Button( 420, 35 + (i * 30), 520, 35 + (i * 30) + 25, 
+								   scourge->getParty(i)->getPC()->getName() );
 	  cards->addWidget( invToButton[i], INVENTORY );
 	}
-	equipButton = new Button( 420, 155, 520, 180, "Don/Doff" );
+	equipButton = new Button( 420, 155, 520, 180, strdup("Don/Doff") );
 	cards->addWidget(equipButton, INVENTORY);
-	dropButton = new Button( 420, 185, 520, 210, "Drop Item" );
+	dropButton = new Button( 420, 185, 520, 210, strdup("Drop Item") );
 	cards->addWidget(dropButton, INVENTORY);
-	fixButton = new Button( 420, 215, 520, 240, "Fix Item" );
+	fixButton = new Button( 420, 215, 520, 240, strdup("Fix Item") );
 	cards->addWidget(fixButton, INVENTORY);
-	removeCurseButton = new Button( 420, 245, 520, 270, "Remove Curse" );
+	removeCurseButton = new Button( 420, 245, 520, 270, strdup("Remove Curse") );
 	cards->addWidget(removeCurseButton, INVENTORY);
-	combineButton = new Button( 420, 275, 520, 300, "Combine Item" );
+	combineButton = new Button( 420, 275, 520, 300, strdup("Combine Item") );
 	cards->addWidget(combineButton, INVENTORY);
-	enchantButton = new Button( 420, 305, 520, 330, "Enchant Item" );
+	enchantButton = new Button( 420, 305, 520, 330, strdup("Enchant Item") );
 	cards->addWidget(enchantButton, INVENTORY);
-	identifyButton = new Button( 420, 335, 520, 360, "Identify Item" );
+	identifyButton = new Button( 420, 335, 520, 360, strdup("Identify Item") );
 	cards->addWidget(identifyButton, INVENTORY);
 
-
-	label = new Label(115, 45, "Character Information");
+	// character info
+	label = new Label(115, 45, strdup("Character Information"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, CHARACTER);
+	nameLabel = new Label(115, 60);
+	cards->addWidget(nameLabel, CHARACTER);
+	classLabel = new Label(115, 75);
+	cards->addWidget(classLabel, CHARACTER);
+	levelLabel = new Label(115, 90);
+	cards->addWidget(levelLabel, CHARACTER);
+	expLabel = new Label(115, 105);
+	cards->addWidget(expLabel, CHARACTER);
+	hpLabel = new Label(115, 120);
+	cards->addWidget(hpLabel, CHARACTER);
+	label = new Label(115, 135, strdup("Current State:"));
+	label->setColor( 0.8f, 0.2f, 0, 1 );
+	cards->addWidget(label, CHARACTER);
+	label = new Label(320, 45, strdup("Skills:"));
+	label->setColor( 0.8f, 0.2f, 0, 1 );
+	cards->addWidget(label, CHARACTER);
+	stateList = new ScrollingList(115, 140, 150, 70);
+	cards->addWidget(stateList, CHARACTER);
+	skillList = new ScrollingList(320, 50, 190, 290);
+	cards->addWidget(skillList, CHARACTER);
 
-	label = new Label(115, 45, "Spellbook");
+	// spellbook
+	label = new Label(115, 45, strdup("Spellbook"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, SPELL);
 
@@ -121,11 +148,6 @@ Inventory::Inventory(Scourge *scourge) {
 }
 
 Inventory::~Inventory() {
-}
-
-void Inventory::drawView(SDL_Surface *screen) {
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	//    scourge->getGui()->drawWindows();
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
@@ -191,20 +213,11 @@ void Inventory::moveItemTo(int playerIndex) {
 bool Inventory::handleEvent(SDL_Event *event) {
     switch(event->type) {
     case SDL_MOUSEBUTTONUP:
-	  /*
-        if(event->button.button) {
-            if(processMouseClick(event->button.x, event->button.y, event->button.button)) {
-                scourge->getGui()->popWindows();
-                return true;
-            }
-        }
-	  */
         break;     
     case SDL_KEYDOWN:
         switch(event->key.keysym.sym) {
         case SDLK_ESCAPE: 
-		  //scourge->getGui()->popWindows();
-		  mainWin->setVisible(false);
+		  hide();
 		  return true;
         default: break;
         }
@@ -231,6 +244,27 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   // arrange the gui
   switch(selectedMode) {
   case CHARACTER:
+	nameLabel->setText(scourge->getParty(selected)->getPC()->getName());
+	classLabel->setText(scourge->getParty(selected)->getPC()->getCharacter()->getName());
+	sprintf(levelStr, "Level: %d", scourge->getParty(selected)->getPC()->getLevel());
+	levelLabel->setText(levelStr);
+	sprintf(expStr, "Exp: %u", scourge->getParty(selected)->getPC()->getExp());
+	expLabel->setText(expStr);
+	sprintf(hpStr, "HP: %d", scourge->getParty(selected)->getPC()->getHp());
+	hpLabel->setText(hpStr);
+	stateCount = 0;
+    for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
+      if(scourge->getParty(selected)->getPC()->getStateMod(t)) {
+        sprintf(stateLine[stateCount++], "%s", Constants::STATE_NAMES[t]);
+      }
+    }
+	stateList->setLines(stateCount, (const char**)stateLine);
+    for(int t = 0; t < Constants::SKILL_COUNT; t++) {
+	  sprintf(skillLine[t], "%d - %s", 
+			  scourge->getParty(selected)->getPC()->getSkill(t), 
+			  Constants::SKILL_NAMES[t]);
+    }
+	skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
 	break;
   case INVENTORY:
     for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
@@ -249,7 +283,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 					  (const char **)pcInvText);
 	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
 	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
-	  invEquipLabel[i]->setText((char *)(item ? item->getName() : ""));
+	  invEquipLabel[i]->setText((char *)(item ? item->getName() : NULL));
 	}
 	break;
   case SPELL:
@@ -258,92 +292,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	break;
   }
 }
-/*
-bool Inventory::processMouseClick(int x, int y, int button) {
-    int region = scourge->getGui()->testActiveRegions(x, y);
-    if(region == Constants::INV_PLAYER_0 || region == Constants::INV_PLAYER_1 ||
-       region == Constants::INV_PLAYER_2 || region == Constants::INV_PLAYER_3) {
-		setSelectedPlayerAndMode(region, selectedMode);
-    } else if(region == Constants::INV_MODE_PROPERTIES || 
-			  region == Constants::INV_MODE_INVENTORY ||
-              region == Constants::INV_MODE_SPELLS || 
-			  region == Constants::INV_MODE_LOG) {
-		setSelectedPlayerAndMode(selected, region - Constants::INV_MODE_INVENTORY);
-    } else if(region == Constants::DROP_ITEM) {
-	  int itemIndex = scourge->getGui()->getLineSelected(Constants::ITEM_LIST);  
-	  if(itemIndex > -1 && 
-		 scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
-		RpgItem *item = scourge->getParty(selected)->getPC()->removeInventory(itemIndex);
-		scourge->setMovingItem(item->getIndex(), 
-							   scourge->getParty(selected)->getX(), 
-							   scourge->getParty(selected)->getY(), 
-							   scourge->getParty(selected)->getZ());
-		char message[120];
-		sprintf(message, "%s drops %s.", 
-				scourge->getParty(selected)->getPC()->getName(),
-				item->getName());
-		scourge->getMap()->addDescription(strdup(message));
-		return true;
-	  }
-    } else if(region == Constants::EQUIP_ITEM) {
-	  int itemIndex = scourge->getGui()->getLineSelected(Constants::ITEM_LIST);  
-	  if(itemIndex > -1 && 
-		 scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
-		scourge->getParty(selected)->getPC()->equipInventory(itemIndex);
-	  }
-    } else if(region == Constants::ESCAPE) {
-        return true;
-    } else if(region >= Constants::MOVE_ITEM_TO_PLAYER_0 && 
-			  region <= Constants::MOVE_ITEM_TO_PLAYER_3) {
-	  int itemIndex = scourge->getGui()->getLineSelected(Constants::ITEM_LIST);  
-	  if(itemIndex > -1 && 
-		 scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
-		int index = region - Constants::MOVE_ITEM_TO_PLAYER_0;
-		if(index != selected) {
-		  scourge->getParty(index)->getPC()->
-			addInventory(scourge->getParty(selected)->getPC()->removeInventory(itemIndex));
-		}
-	  }
-	}
-    return false;
-}
-*/
+
 void Inventory::drawInventory() {
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    drawParty();
-
-	/*
-	glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-	scourge->getGui()->outlineActiveRegion(Constants::INV_PLAYER_0);
-	scourge->getGui()->outlineActiveRegion(Constants::INV_PLAYER_1);
-	scourge->getGui()->outlineActiveRegion(Constants::INV_PLAYER_2);
-	scourge->getGui()->outlineActiveRegion(Constants::INV_PLAYER_3);
-
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    drawModeButtons();
-
-	glDisable(GL_DEPTH_TEST);
-	scourge->getGui()->outlineActiveRegion(Constants::INV_MODE_PROPERTIES, "Skills");
-	scourge->getGui()->outlineActiveRegion(Constants::INV_MODE_INVENTORY, "Inventory");
-	scourge->getGui()->outlineActiveRegion(Constants::INV_MODE_SPELLS, "Spells");
-	scourge->getGui()->outlineActiveRegion(Constants::INV_MODE_LOG, "Accomplishments");
-	scourge->getGui()->outlineActiveRegion(Constants::ESCAPE, "Back");
-	glEnable(GL_DEPTH_TEST);
-    
-    switch(selectedMode) {
-    case CHARACTER:
-	  drawCharacterInfo(); break;
-    case INVENTORY:
-	  drawInventoryInfo(); break;
-    case SPELL:
-	  drawSpellInfo(); break;
-    case LOG:
-	  drawLogInfo(); break;
-    }
-	*/
-}
-
-void Inventory::drawParty() {
+  // draw the characters on top of the UI
+  glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
   int h = 120;
   int y;  
   for(int i = 0; i < 4; i++) {
@@ -368,137 +320,6 @@ void Inventory::drawParty() {
 	glDisable( GL_TEXTURE_2D );
 	glPopMatrix();
 
-	/*	
-	if(selected == i) {
-	  y = 10 + i * h;
-	  glColor4f(0.6f, 0.4f, 0.2f, 0.5f);
-	  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	  glEnable(GL_BLEND);
-	  glBegin (GL_QUADS);
-	  glVertex3i (0, y - 10, 150);
-	  glVertex3i (0, y + h - 11, 150);      
-	  glVertex3i (105, y + h - 11, 150);
-	  glVertex3i (105, y - 10, 150);
-	  glEnd ();
-	  glDisable(GL_BLEND);
-	  glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-	}
-	*/
   }      
 }
-/*
-void Inventory::drawModeButtons() {
-  for(int i = 0; i < 4; i++) {
-	if(selectedMode == i) {
-	  glColor4f(0.6f, 0.4f, 0.2f, 0.5f);
-	  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	  glEnable(GL_BLEND);
-	  glBegin (GL_QUADS);
-	  glVertex3i ((i + 1) * 160, scourge->getSDLHandler()->getScreen()->h - 30, 10);
-	  glVertex3i ((i + 1) * 160, scourge->getSDLHandler()->getScreen()->h, 10);      
-	  glVertex3i ((i + 2) * 160, scourge->getSDLHandler()->getScreen()->h, 10);
-	  glVertex3i ((i + 2) * 160, scourge->getSDLHandler()->getScreen()->h - 30, 10);
-	  glEnd ();
-	  glDisable(GL_BLEND);
-	  glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-	}
-  }
-}
-
-void Inventory::drawCharacterInfo() {
-    int xx = 110, yy = 0;
-    int x = 10, y = 10;
-    int i = selected;
-
-    x += xx;
-    y += yy;
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 10), "%s", 
-									   scourge->getParty(i)->getPC()->getName());
-    glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 24), "%s", 
-									   scourge->getParty(i)->getPC()->getCharacter()->getName());
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 38), "Level: %d", 
-									   scourge->getParty(i)->getPC()->getLevel());
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 52), "Exp: %u", 
-									   scourge->getParty(i)->getPC()->getExp());
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 66), "HP: %d", 
-									   scourge->getParty(i)->getPC()->getHp());
-
-
-    y = yy + 100;
-	//    x = xx + GUI_PLAYER_INFO_W / 2 + 10;
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y), "Current State:");    
-    glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
-
-    y += 14;
-    for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
-      if(scourge->getParty(i)->getPC()->getStateMod(t)) {
-        scourge->getSDLHandler()->texPrint((float)x, (float)(y), "%s", Constants::STATE_NAMES[t]);
-        y += 14;
-      }
-    }
-
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint(270, 20, "Skills:");    
-    glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
-    for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-        sprintf(invText[t], "%d - %s", scourge->getParty(i)->getPC()->getSkill(t), Constants::SKILL_NAMES[t]);
-    }
-    scourge->getGui()->drawScrollingList(skillList, Constants::SKILL_COUNT, (const char**)invText);
-}
-
-
-void Inventory::drawInventoryInfo() {
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint(120, 260, "Inventory:");    
-    scourge->getSDLHandler()->texPrint(120, 15, "Equipped items:");
-	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
-	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
-	  scourge->getSDLHandler()->
-		texPrint(300, 30 + (i * 15), "%s", 
-				 (item ? item->getName() : ""));
-	}
-
-    glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
-	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
-	  scourge->getSDLHandler()->
-		texPrint(160, 30 + (i * 15), "On %s:", 
-				 PlayerChar::inventory_location[i]);
-	}
-
-    for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
-	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
-	  int location = scourge->getParty(selected)->getPC()->getEquippedIndex(t);
-	  sprintf(pcInvText[t], "%s (A:%d) (S:%d) (Q:%d) (W: %d) %s", 
-			  (location > -1 ? "<equipped> " : "                "),
-			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
-			  item->getName());
-    }
-	for(int t = scourge->getParty(selected)->getPC()->getInventoryCount(); 
-		t < MAX_INVENTORY_SIZE; t++) {
-	  strcpy(pcInvText[t], "");
-	}
-    scourge->getGui()->drawScrollingList(itemList, Constants::SKILL_COUNT, (const char**)pcInvText);
-	char name[80];
-	for(int i = 0; i < 4; i++) {
-	  sprintf(name, "to %s", scourge->getParty(i)->getPC()->getName());
-	  scourge->getGui()->outlineActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_0 + i, name);
-	}
-	scourge->getGui()->outlineActiveRegion(Constants::EQUIP_ITEM, "Don/Doff");
-	scourge->getGui()->outlineActiveRegion(Constants::DROP_ITEM, "Drop Item");
-	scourge->getGui()->outlineActiveRegion(Constants::FIX_ITEM, "Fix Item");
-	scourge->getGui()->outlineActiveRegion(Constants::REMOVE_CURSE_ITEM, "Remove Curse");
-	scourge->getGui()->outlineActiveRegion(Constants::COMBINE_ITEM, "Combine Item");
-	scourge->getGui()->outlineActiveRegion(Constants::ENCHANT_ITEM, "Enchant Item");
-	scourge->getGui()->outlineActiveRegion(Constants::IDENTIFY_ITEM, "Identify Item");
-}
-
-
-void Inventory::drawSpellInfo() {
-}
-void Inventory::drawLogInfo() {
-}
-*/
 

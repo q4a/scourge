@@ -31,10 +31,15 @@ class Label : public Widget {
  private:
   char *text;
  public: 
-  Label(int x, int y, char *text);
+  /**
+	 Create a label with text. The user is responsible for freeing text after label is freed.
+	 With constants, you can create a label by calling:
+	 new Label(x, y, strdup("xyz"));
+   */
+  Label(int x, int y, char *text=NULL);
   ~Label();
   inline char *getText() { return text; }
-  inline void setText(char *s) { free(text); text = strdup(s); }
+  inline void setText(char *s) { text = s; }
   void drawWidget(Widget *parent);
 };
 

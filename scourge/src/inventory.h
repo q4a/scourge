@@ -24,7 +24,6 @@
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
-//#include "gui.h"
 #include "scourge.h"
 #include "rpg/pc.h"
 #include "gui/window.h"
@@ -36,17 +35,16 @@
   *@author Gabor Torok
   */
 
-class Inventory : public SDLEventHandler,SDLScreenView {
+class Inventory {
 private:
     Scourge *scourge;
-	//    int win;
     int selected; // which player is selected?
     int selectedMode; // which mode is selected?
     enum mode {
         INVENTORY = 0, CHARACTER, SPELL, LOG
     };
-    int skillList, itemList;
-    char **invText, **pcInvText;
+
+	// UI
 	Window *mainWin;
 	Button *player1Button, *player2Button, *player3Button, *player4Button;
 	Button *inventoryButton, *skillsButton, *spellsButton, *closeButton;
@@ -58,8 +56,16 @@ private:
 	Button *equipButton, *dropButton, *fixButton, *removeCurseButton;
 	Button *combineButton, *enchantButton, *identifyButton;
 	ScrollingList *invList;
+	char **pcInvText;
 
-protected:
+	// character info screen
+	Label *nameLabel, *classLabel, *levelLabel, *expLabel, *hpLabel;
+	int stateCount;
+	char **stateLine, **skillLine;
+	ScrollingList *stateList, *skillList;
+	char levelStr[80];
+	char expStr[80];
+	char hpStr[80];
 
 public:
     Inventory(Scourge *scourge);
@@ -67,20 +73,11 @@ public:
     inline void show() { mainWin->setVisible(true); }
 	inline void hide() { mainWin->setVisible(false); }
 	inline bool isVisible() { return mainWin->isVisible(); }
-    void drawView(SDL_Surface *screen);
     bool handleEvent(SDL_Event *event);
 	bool handleEvent(Widget *widget, SDL_Event *event);
     void drawInventory();
 
 protected:
-	//    void createGui();
-    void drawParty();
-	//    void drawModeButtons();
-	//    bool processMouseClick(int x, int y, int button);
-	//    void drawCharacterInfo();
-	//    void drawInventoryInfo();
-	//    void drawSpellInfo();
-	//    void drawLogInfo();
 	void setSelectedPlayerAndMode(int player, int mode);
 	void moveItemTo(int playerIndex);
 };
