@@ -586,7 +586,8 @@ void Battle::hitWithItem() {
   if(creature->getStateMod(Constants::invisible)) {
     delta += (5.0f * rand()/RAND_MAX) + 5;
   }
-  int extra = (int)(((float)tohit / 100.0f) * delta);
+  int extra = (int)(((float)tohit / 100.0f) * delta) + 
+    (item && item->getMagicAttrib() ? item->getMagicAttrib()->getBonus() : 0);
 
   int ac = creature->getTargetCreature()->getSkillModifiedArmor();
   sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
@@ -602,7 +603,40 @@ void Battle::hitWithItem() {
     // deal out the damage
     int maxDamage;
     int damage = creature->getDamage(item, &maxDamage);
+
+    // magical weapons
+    if(item && item->getMagicAttrib()) {
+      damage += item->getMagicAttrib()->getBonus();
+      int mul = 1;
+      if(item->getMagicAttrib()->getMonsterType() && creature->getTargetCreature() && 
+         !strcmp(item->getMagicAttrib()->getMonsterType(), creature->getTargetCreature()->getModelName())) {
+        mul = item->getMagicAttrib()->getDamageMultiplier();
+      } else if(!item->getMagicAttrib()->getMonsterType()) {
+        mul = item->getMagicAttrib()->getDamageMultiplier();
+      }
+      if(mul < 1) mul = 1;
+      if(mul == 2) {
+        strcpy(message, "...double damage!");
+        session->getMap()->addDescription(message);
+      } else if(mul == 3) {
+        strcpy(message, "...triple damage!");
+        session->getMap()->addDescription(message);
+      } else if(mul == 4) {
+        strcpy(message, "...quad damage!");
+        session->getMap()->addDescription(message);
+      } else if(mul > 4) {
+        sprintf(message, "...%d-times damage!", mul);
+        session->getMap()->addDescription(message);
+      }
+      damage *= mul;
+    }
     dealDamage(damage, maxDamage);
+
+    // magical damage
+    if(item && item->getMagicAttrib() && item->getMagicAttrib()->getSchool()) {
+      // FIXME: implement magical damage
+      // call SpellCaster::causeDamage() so it uses magical resistance.
+    }
   } else {
     // missed
     sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);

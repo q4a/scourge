@@ -345,6 +345,19 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));   
+
+  Item *item = session->newItem(RpgItem::getItemByName("Long sword"));
+  item->enchant(Constants::LESSER_MAGIC_ITEM);
+  pc[2]->addInventory(item);
+  item = session->newItem(RpgItem::getItemByName("Long sword"));
+  item->enchant(Constants::GREATER_MAGIC_ITEM);
+  pc[2]->addInventory(item);
+  item = session->newItem(RpgItem::getItemByName("Long sword"));
+  item->enchant(Constants::CHAMPION_MAGIC_ITEM);
+  pc[2]->addInventory(item);
+  item = session->newItem(RpgItem::getItemByName("Long sword"));
+  item->enchant(Constants::DIVINE_MAGIC_ITEM);
+  pc[2]->addInventory(item);
   
   // add some scrolls
   for(int i = 0; i < 10; i++) {

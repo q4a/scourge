@@ -94,6 +94,8 @@ public:
   static void initItems(ShapePalette *shapePal);
 
   void enchant(int level);
+
+  inline MagicAttrib *getMagicAttrib() { return magic; }
 };
 
 #endif
