@@ -552,6 +552,8 @@ public:
   void initUI();
   void start();
 
+  inline double getFps() { return getSDLHandler()->getFPS(); }
+
   inline void playSound(const char *sound) { sdlHandler->getSound()->playSound(sound); }
 
   inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
