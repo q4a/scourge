@@ -117,16 +117,21 @@ Map::Map(Scourge *scourge) {
 
 Map::~Map(){
   for(int xp = 0; xp < MAP_WIDTH; xp++) {
-	for(int yp = 0; yp < MAP_DEPTH; yp++) {
-	  for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-		if(pos[xp][yp][zp]) {
-		  delete pos[xp][yp][zp];
-		}
-	  }
-	}
+    for(int yp = 0; yp < MAP_DEPTH; yp++) {
+      for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
+        if(pos[xp][yp][zp]) {
+          delete pos[xp][yp][zp];
+          pos[xp][yp][zp] = NULL;
+        }
+        if(effect[xp][yp][zp]) {
+          delete effect[xp][yp][zp];
+          effect[xp][yp][zp] = NULL;
+        }
+      }
+    }
   }
   for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
-	free(descriptions[i]);
+    free(descriptions[i]);
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {

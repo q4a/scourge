@@ -165,8 +165,7 @@ void Board::initMissions() {
   int lowest = -1;
   int sum = 0;
   for(int i = 0; i < 4; i++) {
-    // a mission level is about 1.5 times the equivalent player level
-    int n = (int)((float)scourge->getParty()->getParty(i)->getLevel() /  1.5f);
+    int n = scourge->getParty()->getParty(i)->getLevel();
     if(n < 1) n = 1;
     if(highest < n) {
       highest = n;
@@ -175,7 +174,8 @@ void Board::initMissions() {
     }
     sum += n;
   }
-  int ave = (int)((float)sum / (float)scourge->getParty()->getPartySize());
+  // a mission level is about 1.5 times the equivalent player level
+  int ave = (int)((float)sum / (float)scourge->getParty()->getPartySize() / 1.5f);
 
   // find missions
   availableMissions.clear();  
