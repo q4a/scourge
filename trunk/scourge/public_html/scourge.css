@@ -18,6 +18,14 @@ BODY {
   padding: 10px;
 }
 
+.command {
+  background: white;
+  padding: 3px;
+  border: rgb(235, 220, 255) 2px solid;
+  font-size: 10pt;
+  FONT-FAMILY: courier;
+}
+
 A {
   text-decoration: none;
   font-weight: bold;
