@@ -33,7 +33,7 @@ void Scourge::setBlendFunc() {
     glBlendFunc(blend[blendA], blend[blendB]);
 }
 
-Scourge::Scourge(int argc, char *argv[]){
+Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
 #ifdef HAVE_SDL_NET
   server = NULL;
   client = NULL;
@@ -58,11 +58,6 @@ Scourge::Scourge(int argc, char *argv[]){
   // we're not in target selection mode
   targetSelectionFor = NULL;
   
-  // Reads the user configuration from a file      
-  userConfiguration = new UserConfiguration();  
-  userConfiguration->loadConfiguration();    
-  userConfiguration->parseCommandLine(argc, argv); 
-
   headless = false;
 #ifdef HAVE_SDL_NET
   // standalone mode?

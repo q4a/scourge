@@ -19,6 +19,9 @@
 #include <stdlib.h>
 #include <strings.h>
 
+#include "userconfiguration.h"
+#include "gameadapter.h"
+#include "session.h"
 #include "scourge.h"
 
 bool checkFile(const char *dir, const char *file) {
@@ -55,6 +58,18 @@ void findLocalResources(const char *appPath, char *dir) {
   dir[0] = '\0';
 }
 
+GameAdapter *createGameAdapter(UserConfiguration *config) {
+  GameAdapter *adapter;
+  if(config->getStandAloneMode() == UserConfiguration::SERVER) {
+    adapter = new ServerAdapter(config);
+  } else if(config->getStandAloneMode() == UserConfiguration::CLIENT) {
+    adapter = new ClientAdapter(config);
+  } else {
+    adapter = new Scourge(config);
+  }
+  return adapter;
+}
+
 int main(int argc, char *argv[]) {
 
   // Check to see if there's a local version of the data dir
@@ -89,6 +104,13 @@ int main(int argc, char *argv[]) {
 	exit(1);
   }
 
-  new Scourge(argc, argv);
+  UserConfiguration *userConfiguration = new UserConfiguration();  
+  userConfiguration->loadConfiguration();    
+  userConfiguration->parseCommandLine(argc, argv); 
+
+  Session *session = new Session(createGameAdapter(userConfiguration));
+  session->initialize();
+  session->start();
+
   return EXIT_SUCCESS;
 }

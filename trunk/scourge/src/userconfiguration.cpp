@@ -921,3 +921,4 @@ void UserConfiguration::createDefaultConfigFile() {
 
   configFile.close();
 }
+

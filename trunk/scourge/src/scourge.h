@@ -51,6 +51,7 @@
 #include "net/gamestatehandler.h"
 #include "netplay.h"
 #include "gui/progress.h"
+#include "gameadapter.h"
 
 using namespace std;
 
@@ -82,6 +83,7 @@ class Client;
 class GameStateHandler;
 class NetPlay;
 class Progress;
+class GameAdapter;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -95,12 +97,11 @@ class Progress;
   
   @author Gabor Torok
 */ 
-class Scourge : public SDLEventHandler,SDLScreenView {
+class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView {
  private:
   Party *party;
   Map *map;
   MiniMap * miniMap;
-  UserConfiguration *userConfiguration;  
   DungeonGenerator *dg;
   Scourge *scourge;
   int level;
@@ -207,7 +208,7 @@ public:
   static int blend[];
   static void setBlendFunc();
   
-  Scourge(int argc, char *argv[]);
+  Scourge(UserConfiguration *config);
   ~Scourge();
 
   inline bool isHeadless() { return headless; }
