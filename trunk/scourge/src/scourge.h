@@ -427,11 +427,6 @@ public:
   void endItemDrag();
   
   /**
-    Use the first item in a 2 tile radius around the current party leader.
-  */
-  bool useItem();
-  
-  /**
     Use the item at the given location. This method also selects targets for pending spells.
     Depending on the type of the item, further methods are called. 
     (e.g.: useDoor, useTeleporter, etc.)

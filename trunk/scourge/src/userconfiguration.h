@@ -32,7 +32,7 @@ using namespace std;
 #define CONFIG_FILE_NAME "/saved/scourge.cfg"
 
 // Indice for the first debug engine action defined in engine_action_int
-#define ENGINE_ACTION_DEBUG_IND 31
+//#define ENGINE_ACTION_DEBUG_IND 32
 
 // set to non-zero for debugging
 #define DEBUG_USER_CONFIG 0  
@@ -56,7 +56,6 @@ enum engine_action_int{
     
     SHOW_INVENTORY, 
     SHOW_OPTIONS_MENU,
-    USE_ITEM,
     SET_NEXT_FORMATION,
         
     SET_Y_ROT_PLUS,
@@ -83,22 +82,10 @@ enum engine_action_int{
     LAYOUT_4,
 
     SHOW_PATH,
+    SWITCH_COMBAT,
         
-    // Debug engine actions invisible for user (not saved or loaded)
-    BLEND_A,        
-    BLEND_B,  
-    SET_X_ROT_PLUS,   
-    SET_X_ROT_MINUS,
-    ADD_X_POS_PLUS,
-    ADD_X_POS_MINUS,
-    ADD_Y_POS_PLUS,
-    ADD_Y_POS_MINUS,
-    ADD_Z_POS_PLUS,
-    ADD_Z_POS_MINUS,                 
-    
     // must be last
-    ENGINE_ACTION_COUNT
-    
+    ENGINE_ACTION_COUNT    
 };
 
 // All engine actions that have a corresponding keyup action
@@ -109,15 +96,12 @@ enum engine_action_up_int{
     SET_MOVE_RIGHT_STOP, 
     SET_MOVE_UP_STOP,
     SET_MOVE_LEFT_STOP,
-    SET_X_ROT_PLUS_STOP,
-    SET_X_ROT_MINUS_STOP,    
     SET_Y_ROT_PLUS_STOP,
     SET_Y_ROT_MINUS_STOP,    
     SET_Z_ROT_PLUS_STOP,        
     SET_Z_ROT_MINUS_STOP,
     SET_ZOOM_IN_STOP,     
     SET_ZOOM_OUT_STOP,
-    USE_ITEM_STOP,
     SHOW_PATH_STOP,
     SET_NEXT_FORMATION_STOP,    
     
@@ -131,6 +115,7 @@ private:
   static const char * ENGINE_ACTION_NAMES[];     
   static const char * ENGINE_ACTION_UP_NAMES[];
   static const char * ENGINE_ACTION_DESCRIPTION[];   
+  static const char default_key[][20];
   
   // becomes true every time loadConfiguration is called  
   // and false every time getConfigurationChanged is called
@@ -204,7 +189,6 @@ private:
   UserConfiguration::UserConfiguration();
   UserConfiguration::~UserConfiguration();
   
-  inline int getEngineActionCount() { return ENGINE_ACTION_DEBUG_IND; }
   const char * getEngineActionDescription(int i);  
   const char * getEngineActionKeyName(int i);      
               
@@ -266,9 +250,6 @@ private:
   int getGameSpeedTicks();           
   
   
-  bool isDebugEa(int j);
-   
-     
   // reads the configuration file where keys are binded
   void loadConfiguration();
   
