@@ -70,6 +70,8 @@ private:
   
   // To ensure that animations with few frames are played at least once entirely
   bool playedOnce; 
+
+  float creatureSpeed;
       
    
   // This draws and animates the .md2 model by interpoloated key frame animation
@@ -87,6 +89,8 @@ private:
 
 public:     
 	~MD2Shape();
+
+  inline void setCreatureSpeed( float n ) { creatureSpeed = n; }
 
   inline void setDebug(bool b) { debug = b; }
 

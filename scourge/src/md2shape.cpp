@@ -151,10 +151,16 @@ float MD2Shape::ReturnCurrentTime(int nextFrame)
 {       
     float time = SDL_GetTicks();   
     elapsedTime = time - lastTime;    
-    float t = elapsedTime / (1000.0f / ANIMATION_SPEED);
+    //float speed = ANIMATION_SPEED;
+    
+    float speed = (7.0f - (7.0f * (creatureSpeed / 10.0f))) + 3.0f;
+    if( speed < 2.0f ) speed = 2.0f;
+    if( speed > 10.0f ) speed = 10.0f;
+
+    float t = elapsedTime / (1000.0f / speed);
     
     // If elapsed time goes over a 5th of a second, we go to the next key frame
-    if (elapsedTime >= (1000.0f / ANIMATION_SPEED) )
+    if (elapsedTime >= (1000.0f / speed) )
     {
         // Set current frame to the next key frame (which could be the start of the anim)
         if(!pauseAnimation){
