@@ -31,12 +31,14 @@
 #include "gui/cardcontainer.h"
 #include "gui/scrollinglist.h"
 #include "gui/draganddrop.h"
+#include "gui/canvas.h"
+#include "gui/widgetview.h"
 
 /**
   *@author Gabor Torok
   */
 
-class Inventory : public DragAndDropHandler {
+class Inventory : public DragAndDropHandler, WidgetView {
 private:
     Scourge *scourge;
     int selected; // which player is selected?
@@ -63,7 +65,7 @@ private:
 	char **pcInvText;
 
 	// character info screen
-	Label *nameAndClassLabel, *levelLabel, *expLabel, *hpLabel;
+	Label *nameAndClassLabel, *levelLabel, *expLabel, *hpLabel, *mpLabel;
 	Label *thirstLabel, *hungerLabel, *skillModLabel, *armorLabel;	
 	int stateCount;
 	char **stateLine, **skillLine;
@@ -72,10 +74,12 @@ private:
 	char levelStr[80];
 	char expStr[80];
 	char hpStr[80];
+	char mpStr[80];
 	char thirstStr[80];
 	char hungerStr[80];
 	char skillModStr[80];
 	char armorStr[80];
+	Canvas *attrCanvas;
 
 	// mission
 	char missionText[3000];
@@ -99,6 +103,8 @@ public:
 	// drag-n-drop
 	void receive(Widget *widget);
 	void startDrag(Widget *widget);
+
+	void drawWidget(Widget *w);
 
 protected:
 	void setSelectedPlayerAndMode(int player, int mode);

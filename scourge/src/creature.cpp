@@ -84,7 +84,9 @@ void Creature::commonInit() {
   this->level = 1;
   this->exp = 0;
   this->hp = 0;
+  this->mp = 0;
   this->startingHp = 0;
+  this->startingMp = 0;
   this->ac = 0;
   this->targetCreature = NULL;
   this->lastTick = 0;
@@ -608,6 +610,15 @@ void Creature::usePotion(Item *item) {
 	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
 	  startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return;
+	case Constants::MP:
+	  n = item->getRpgItem()->getAction();
+	  if(n + getMp() > getMaxMp()) 
+		n = getMaxMp() - getMp();
+	  setMp(getMp() + n);
+	  sprintf(msg, "%s receives %d magic points.", getName(), n);
+	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+	  startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
+	  return;
 	case Constants::AC:
 	  {
 		bonusArmor += item->getRpgItem()->getAction();
@@ -899,6 +910,7 @@ void Creature::monsterInit() {
   }
   // add some hp
   startingHp = hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
+  startingMp = mp = 4 + (int)((float)(4.0f * level) * rand()/RAND_MAX);
 }
 
 // only for characters: leveling up
@@ -924,6 +936,7 @@ void Creature::applySkillMod() {
   }
   level++;
   hp += character->getStartingHp();
+  mp += character->getStartingMp();
   setStateMod(Constants::leveled, false);
   availableSkillPoints = 0;
   calculateExpOfNextLevel();
@@ -934,6 +947,14 @@ int Creature::getMaxHp() {
 	return monster->getHp(); // FIXME: incorrect, see monsterInit()
   } else {
 	return (character->getStartingHp() * getLevel());
+  }
+}
+
+int Creature::getMaxMp() {
+  if(isMonster()) {
+	return monster->getMp(); // FIXME: incorrect, see monsterInit()
+  } else {
+	return (character->getStartingMp() * getLevel());
   }
 }
 

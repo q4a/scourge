@@ -362,6 +362,7 @@ public:
   // other things potions can act on:
   enum {
 	HP=0,
+	MP,
 	AC,
 	
 	POTION_SKILL_COUNT

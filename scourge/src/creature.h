@@ -90,7 +90,7 @@ class Creature {
 
   // character information
   char *name;
-  int level, exp, hp, startingHp, ac, thirst, hunger, money, expOfNextLevel;
+  int level, exp, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
   int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
   GLuint stateMod;
@@ -241,6 +241,9 @@ class Creature {
   inline int getHp() { return hp; }
   inline int getStartingHp() { return hp; }
   int getMaxHp();
+  inline int getMp() { return mp; }
+  inline int getStartingMp() { return mp; }
+  int getMaxMp();
   inline int getAc() { return ac; }
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
@@ -253,9 +256,11 @@ class Creature {
   inline void setExp(int n) { exp = n; }
   inline void setMoney(int n) { money = n; }
   inline void setHp(int n) { hp = n; }
+  inline void setMp(int n) { mp = n; }
   inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; }
   inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
   inline void setHp() { hp = getCharacter()->getStartingHp(); }
+  inline void setMp() { mp = getCharacter()->getStartingMp(); }
   inline void setAc(int n) { ac = n; }
 
   bool incSkillMod(int index);
@@ -303,9 +308,10 @@ class Creature {
   int addMoney(Creature *creature_killed);
 
   inline void getDetailedDescription(char *s) {
-	sprintf(s, "%s (Hp:%d A:%d)", 
+	sprintf(s, "%s (Hp:%d M:%d A:%d)", 
 			getDescription(), 
-			getHp(), 
+			getHp(),
+			getMp(),
 			getArmor());
   }
 

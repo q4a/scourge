@@ -34,6 +34,7 @@ class Monster  {
  private:
   char *type;
   int hp;
+  int mp;
   int level;
   char *model_name;
   char *skin_name;
@@ -47,12 +48,13 @@ class Monster  {
   static map<string, Monster*> monstersByName;
 
 public:
-  Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor=0);
+  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int baseArmor=0);
   ~Monster();
 
   inline int getBaseArmor() { return baseArmor; }
   inline char *getType() { return type; };
   inline int getHp() { return hp; }  
+  inline int getMp() { return mp; }  
   inline int getLevel() { return level; }  
   inline char *getModelName() { return model_name; }
   inline char *getSkinName() { return skin_name; }

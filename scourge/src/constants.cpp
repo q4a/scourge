@@ -146,7 +146,7 @@ const char *Constants::SKILL_NAMES[] = {
 };
 
 const char *Constants::POTION_SKILL_NAMES[] = {
-  "HP", "AC" 
+  "HP", "MP", "AC" 
 };
 
 const char *Constants::STATE_NAMES[] = {

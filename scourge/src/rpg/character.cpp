@@ -62,13 +62,14 @@ void Character::initCharacters() {
 	  strcpy(model, strtok(NULL, ","));
 	  strcpy(skin, strtok(NULL, ","));
 	  int hp =  atoi(strtok(NULL, ","));
+	  int mp =  atoi(strtok(NULL, ","));
 	  int skill_bonus =  atoi(strtok(NULL, ","));
 	  int level_progression = atoi(strtok(NULL, ","));
 
 	  cerr << "adding character class: " << name << " model: " << model << 
-		" skin: " << skin << " hp: " << hp << " skill_bonus: " << skill_bonus << endl;
+		" skin: " << skin << " hp: " << hp << " mp: " << mp << " skill_bonus: " << skill_bonus << endl;
 
-	  last = new Character( strdup(name), hp, strdup(model), strdup(skin), skill_bonus, level_progression );
+	  last = new Character( strdup(name), hp, mp, strdup(model), strdup(skin), skill_bonus, level_progression );
 	  string s = name;
 	  character_class[s] = last;
 	} else if(n == 'D' && last) {
@@ -99,9 +100,11 @@ void Character::initCharacters() {
   fclose(fp);
 }
 
-Character::Character(char *name, int startingHp, char *model, char *skin, int skill_bonus, int level_progression ) {  
+Character::Character(char *name, int startingHp, int startingMp, char *model, 
+					 char *skin, int skill_bonus, int level_progression ) {  
   this->name = name;
   this->startingHp = startingHp;
+  this->startingMp = startingMp;
   this->model_name = model;
   this->skin_name = skin;
   this->skill_bonus = skill_bonus;
