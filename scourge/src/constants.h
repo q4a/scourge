@@ -207,9 +207,27 @@ typedef union NetValue NetValue;
 }
 
 // GL color in float
-typedef struct _Color {
+class Color {
+ public:
   float r, g, b, a;
-} Color;
+
+  Color() {
+  }
+
+  Color( float r, float g, float b, float a=1.0f ) {
+	this->set( r, g, b, a );
+  }
+
+  ~Color() {
+  }
+
+  inline void set( float r, float g, float b, float a=1.0f ) {
+	this->r = r;
+	this->g = g;
+	this->b = b;
+	this->a = a;
+  }
+};
 
 /**
   *@author Gabor Torok
@@ -490,7 +508,7 @@ public:
     DIVINE_MAGIC_ITEM
   };
   static const char *MAGIC_ITEM_NAMES[];
-  static const Color MAGIC_ITEM_COLOR[];
+  static const Color *MAGIC_ITEM_COLOR[];
 
   // special effect names
   enum {

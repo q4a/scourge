@@ -1317,7 +1317,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   } else if( later && later->item && !useShadow ) {
     
     if( later->item->isMagicItem() ) {
-      shape->outline( &(Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ]) );
+      shape->outline( Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ] );
     } else if( later->item->getContainsMagicItem() ) {
       shape->outline( 0.8f, 0.8f, 0.3f );
     }

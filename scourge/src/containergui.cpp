@@ -65,9 +65,9 @@ void ContainerGui::showContents() {
       itemColor[i].g = 1;
       itemColor[i].b = 1;
     } else {
-      itemColor[i].r = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ].r;
-      itemColor[i].g = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ].g;
-      itemColor[i].b = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ].b;
+      itemColor[i].r = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ]->r;
+      itemColor[i].g = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ]->g;
+      itemColor[i].b = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ]->b;
     }
     itemColor[i].a = 1;
   }

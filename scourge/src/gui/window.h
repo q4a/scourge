@@ -25,6 +25,7 @@
 #include "label.h"
 #include "checkbox.h"
 #include "textfield.h"
+#include "guitheme.h"
 
 /**
   *@author Gabor Torok
@@ -60,6 +61,7 @@ class Window : public Widget {
   bool modal;
   int type;
   bool locked;
+  GuiTheme *theme;
 
   static Window *window[];
   static int windowCount;  
@@ -93,6 +95,10 @@ class Window : public Widget {
   Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, 
          GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW, 
          GLuint texture2=0);
+
+  Window( SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, 
+		  bool hasCloseButton=true, int type=BASIC_WINDOW, const char *themeName=NULL );
+
   ~Window();
 
   inline void setTitle(char *s) { title = s; }
@@ -159,6 +165,7 @@ class Window : public Widget {
 
   void setLastWidget(Widget *w);
  protected:
+  void commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type);
 };
 
 #endif

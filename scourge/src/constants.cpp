@@ -225,11 +225,11 @@ const char *Constants::MAGIC_ITEM_NAMES[] = {
   "Lesser", "Greater", "Champion", "Divine"
 };
 
-const Color Constants::MAGIC_ITEM_COLOR[] = {
-  { 0.2f, 0.85f, 0.3f, 1 },
-  { 0.2f, 0.3f, 0.85f, 1 },
-  { 0.85f, 0.2f, 0.3f, 1 },
-  { 0.85f, 0.2f, 0.85f, 1 }
+const Color *Constants::MAGIC_ITEM_COLOR[] = {
+  new Color( 0.2f, 0.85f, 0.3f, 1 ),
+  new Color( 0.2f, 0.3f, 0.85f, 1 ),
+  new Color( 0.85f, 0.2f, 0.3f, 1 ),
+  new Color( 0.85f, 0.2f, 0.85f, 1 )
 };
 
 const char *Constants::EFFECT_NAMES[] = {
@@ -285,20 +285,30 @@ int Constants::readLine(char *line, FILE *fp) {
   bool reachedEOL = false;
   int lc = 0;
   int n;
+  int ret = EOF;
+  // read until the end of line
   while((n = fgetc(fp)) != EOF) {
-	bool isEOLchar = (n == '\n' || n == '\r');
-	if(reachedEOL) {
-	  if(!isEOLchar) {
-		line[lc++] = '\0';
-		return n;
-	  }
-	} else {
-	  if(!isEOLchar) line[lc++] = n;
-	  else reachedEOL = true;
-	}
+    bool isEOLchar = (n == '\n' || n == '\r');
+    if(reachedEOL) {
+      if(!isEOLchar) {
+        //line[lc++] = '\0';
+        ret = n;
+        break;
+      }
+    } else {
+      if(!isEOLchar) line[lc++] = n;
+      else reachedEOL = true;
+    }
   }
   line[lc++] = '\0';
-  return EOF;
+  // exclude same-line comment
+  for( int i = 0; i < lc; i++ ) {
+    if( line[i] == '#' || line[i] == '%' ) {
+	  line[i] = '\0';
+	  break;
+	}
+  }
+  return ret;
 }
 
 // *Note* 
