@@ -54,8 +54,8 @@ class Monster  {
 
   static map<int, vector<Monster*>* > monsters;
   static map<string, Monster*> monstersByName;
-
   static map<int, vector<string>*>* currentSoundMap;
+  static vector<string> monsterTypes;
 
 public:
   Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, int w, int d, int h);
@@ -97,6 +97,8 @@ public:
    * @return true if search was successful, false otherwise.
    */
   static bool getIndexOrFindByIndex(Monster **monster, int *index);
+
+  static const char *getRandomMonsterType();
 };
 
 #endif

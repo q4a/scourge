@@ -24,6 +24,7 @@ map<int, vector<Monster*>* > Monster::monsters;
 map<string, Monster*> Monster::monstersByName;
 map<string, map<int, vector<string>*>*> Monster::soundMap;
 map<int, vector<string>*>* Monster::currentSoundMap;
+vector<string> Monster::monsterTypes;
 
 Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, int w, int d, int h) {
   this->type = type;
@@ -133,6 +134,16 @@ void Monster::initMonsters() {
       list->push_back(last_monster);
       string s = name;
       monstersByName[s] = m;
+
+      string typeStr = m->getModelName();
+      bool found = false;
+      for(int i = 0; i < (int)monsterTypes.size(); i++) {
+        if(!strcmp(monsterTypes[i].c_str(), m->getModelName())) {
+          found = true;
+          break;
+        }
+      }
+      if(!found) monsterTypes.push_back(typeStr);
     } else if(n == 'I' && last_monster) {
       // skip ':'
       fgetc(fp);
@@ -251,3 +262,9 @@ int Monster::getSkillLevel(const char *skillName) {
   if(skills.find(skillStr) == skills.end()) return 0;
   else return skills[skillStr];
 }
+
+const char *Monster::getRandomMonsterType() {
+  int n = (int)((float)monsterTypes.size()*rand()/RAND_MAX);
+  return monsterTypes[n].c_str();
+}
+

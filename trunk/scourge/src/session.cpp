@@ -48,6 +48,7 @@ Session::~Session() {
 }
 
 void Session::initialize() {
+  Constants::initConstants();
   shapePal = new ShapePalette(this);
   adapter->setSession(this);
   adapter->initVideo(shapePal);

@@ -31,10 +31,15 @@ Item::Item(RpgItem *rpgItem) {
   currentCharges = rpgItem->getMaxCharges();
   weight = rpgItem->getWeight();
   this->spell = NULL;
+  this->magic = NULL;
   sprintf(this->itemName, "%s", rpgItem->getName());
 }
 
 Item::~Item(){
+  if(magic) {
+    delete magic;
+    magic = NULL;
+  }
 }
 
 bool Item::addContainedItem(Item *item) { 
@@ -272,3 +277,12 @@ bool Item::decrementCharges(){
   setWeight(f1);
   return false;      
 }
+
+void Item::enchant(int level) {
+  if(magic) return;
+  magic = new MagicAttrib();
+  magic->enchant(level);
+  magic->describe(itemName, rpgItem->getName());
+  return;
+}
+

@@ -456,7 +456,7 @@ public:
 	cursed, 
 	possessed, 
 	blinded, 
-	charmed, 
+	paralysed, 
 	invisible,
 	overloaded,
 	dead,
@@ -466,6 +466,19 @@ public:
 	STATE_MOD_COUNT
   };
   static const char *STATE_NAMES[];
+  static vector<int> goodStateMod, badStateMod;
+  static int getRandomGoodStateMod();
+  static int getRandomBadStateMod();
+  static bool isStateModTransitionWanted(int mod, bool setting);
+  static void initConstants();
+
+  enum {
+    LESSER_MAGIC_ITEM=0,
+    GREATER_MAGIC_ITEM,
+    CHAMPION_MAGIC_ITEM,
+    DIVINE_MAGIC_ITEM
+  };
+  static const char *MAGIC_ITEM_NAMES[];
 
   // special effect names
   enum {
@@ -552,8 +565,6 @@ public:
 						float x2, float y2, float w2, float h2);
 
   static void checkTexture(char *message, int w, int h);
-
-  static bool isStateModTransitionWanted(int mod, bool setting);
 
   // read until EOL into line. Exclude EOL from LINE.
   // returns the next char after the EOL.
