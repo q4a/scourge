@@ -363,7 +363,10 @@ Creature **Party::createHardCodedParty() {
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
-  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Bread")));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Mushroom")));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Big egg")));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Wine barrel")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
