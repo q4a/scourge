@@ -62,6 +62,7 @@ class Window : public Widget {
   int type;
   bool locked;
   GuiTheme *theme;
+  bool opening;
 
   static Window *window[];
   static int windowCount;  
@@ -115,8 +116,7 @@ class Window : public Widget {
   inline void setTitle(char *s) { strncpy(title, ( s ? s : "" ), 255); title[254] = '\0'; }
 
   inline bool isOpening() { 
-    return ( openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) ||
-             currentY != y ); 
+    return ( opening ); 
   }
 
   inline void setBackgroundTileWidth(int n) { tileWidth = n; }
@@ -137,7 +137,7 @@ class Window : public Widget {
   inline bool isLocked() { return locked; }
 
   // crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
-  void scissorToWindow();
+  void scissorToWindow( bool insideOnly=true );
   
   // widget managment functions
   Button    * createButton(int x1, int y1, int x2, int y2, char *label, bool toggle=false);    

@@ -58,6 +58,7 @@ Window::Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, 
 }
 
 void Window::commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type) {
+  this->opening = false;
   this->animation = DEFAULT_ANIMATION;
   this->lastWidget = NULL;
   this->sdlHandler = sdlHandler;
@@ -367,24 +368,31 @@ void Window::drawWidget(Widget *parent) {
   GLint topY;
   if( animation == SLIDE_UP ) {
     if( y > currentY ) {
-      lastTick = t;
-      y -= ( h / OPEN_STEPS );
-      if( y < currentY ) y = currentY;
+      if( t - lastTick > 10 ) {
+        lastTick = t;      
+        y -= ( h / OPEN_STEPS );
+        if( y < currentY ) y = currentY;
+      }
     }
-    openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+    opening = ( y > currentY );
     topY = y - currentY;
+    openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
 
     // slide-up scissor
-    glScissor(x, sdlHandler->getScreen()->h - (currentY + h), w, h);  
-    glEnable( GL_SCISSOR_TEST );
+    //    glScissor(x, sdlHandler->getScreen()->h - (currentY + h), w, h);  
+    //    glEnable( GL_SCISSOR_TEST );
+    scissorToWindow( false );
   } else {
     if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
-      lastTick = t;
-      openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
-      if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT)))
-        openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+      if( t - lastTick > 10 ) {
+        lastTick = t;
+        openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
+        if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT)))
+          openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+      }
     }
     topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
+    opening = ( openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) );
   }
 
   glPushMatrix();
@@ -627,7 +635,7 @@ void Window::drawWidget(Widget *parent) {
 
 
       // if this is modified, also change handleWindowEvent
-      glTranslated(x, y + TOP_HEIGHT, z + 5);
+      glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
 
       widget[i]->draw(this);
       glPopMatrix();
@@ -702,15 +710,17 @@ TextField *Window::createTextField(int x, int y, int numChars) {
   }    
 }
 
-void Window::scissorToWindow() {
-  if( animation == SLIDE_UP && currentY < y ) {
-    glScissor(x, sdlHandler->getScreen()->h - (currentY + h), w, h);  
-  } else {
-    GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
-    // scissor test: y screen coordinate is reversed, rectangle is 
-    // specified by lower-left corner. sheesh!
-    glScissor(x, sdlHandler->getScreen()->h - (y + topY + TOP_HEIGHT + openHeight), 
+// scissor test: y screen coordinate is reversed, rectangle is 
+// specified by lower-left corner. sheesh!
+void Window::scissorToWindow( bool insideOnly ) {
+  GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
+  if( insideOnly ) {
+    glScissor(x, sdlHandler->getScreen()->h - (currentY + topY + openHeight + TOP_HEIGHT), 
               w, openHeight);  
+  } else {
+    glScissor(x, sdlHandler->getScreen()->h - (currentY + topY + openHeight + 
+                                               TOP_HEIGHT + BOTTOM_HEIGHT), 
+              w, openHeight + (TOP_HEIGHT + BOTTOM_HEIGHT));  
   }
   glEnable( GL_SCISSOR_TEST );
 }
@@ -719,10 +729,12 @@ void Window::setVisible(bool b, bool animate) {
   toTop();
   Widget::setVisible(b);
   if(b) {
+    lastTick = 0;
+    opening = true;
     currentY = y;
     if( animate ) {
       if( animation == SLIDE_UP ) {
-        openHeight = getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT);
+        openHeight = getHeight();
         y = getHeight();
       } else {
         openHeight = 0;
@@ -731,6 +743,7 @@ void Window::setVisible(bool b, bool animate) {
       openHeight = getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT);
     }
   } else {
+    y = currentY;
     windowWasClosed = true;
     nextWindowToTop();
   }
