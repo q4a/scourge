@@ -111,7 +111,10 @@ bool Battle::fightTurn() {
     " nextTurn=" << nextTurn << endl;
 
   // are we alive?
-  if(!creature || creature->getStateMod(Constants::dead)) return true;
+  if(!creature || creature->getStateMod(Constants::dead)) {
+    reset();
+    return true;
+  }
 
   // done with this creature's turn
   if(ap <= 0) {
@@ -145,10 +148,6 @@ bool Battle::fightTurn() {
       stepCloserToTarget();
     }
   } else {
-
-    if( !creature->isMonster() && 
-        !getAvailableTarget() ) return true;
-
     moveCreature();
   }
   // not done yet with creature's turn

@@ -481,39 +481,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
 
     if(!position) {
-
-      /*
-      GLfloat a;
-      if( newX > getX() ) {
-        if( newY > getY() ) {
-          a = 135.0f;
-        } else if( newY < getY() ) {
-          a = 45.0f;
-        } else {
-          a = 90.0f;
-        }
-      } else if( newX < getX() ) {
-        if( newY > getY() ) {
-          a = -135.0f;
-        } else if( newY < getY() ) {
-          a = -45.0f;
-        } else {
-          a = -90.0f;
-        }
-      } else {
-        if( newY > getY() ) {
-          a = 180.0f;
-        } else if( newY < getY() ) {
-          a = 0.0f;
-        } else {
-          a = 0.0f;
-        }
-      }
-      a += 90.0f;
-      if( a < 0.0f ) a = 360.0f + a;
-      if( a >= 360.0f ) a -= 360.0f;
-      */
-
       GLfloat a = Util::getAngle( newX, newY, 1, 1,
                                   getX(), getY(), 1, 1 );
 
@@ -525,14 +492,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
       if( abs(angle - wantedAngle) > 2.0f ) {
         GLfloat diff = Util::diffAngle( wantedAngle, angle );
-      
-        /*
-        cerr << "wantedAngle=" << wantedAngle << 
-          " angle=" << angle << 
-          " diff=" << diff << 
-          " step=" << angleStep << endl;
-          */
-
         if( abs( diff ) < angleStep ) {
           angle = wantedAngle;
         } else {
@@ -547,7 +506,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
       moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
-        //if( !strcmp(getName(),"Alamont") ) cerr << "reached path pos!" << endl;
         bestPathPos++;
       }
       return true;

@@ -2141,21 +2141,38 @@ void Scourge::playRound() {
 // fight a turn of the battle
 bool Scourge::fightCurrentBattleTurn() {
   if(battleRound.size() > 0) {
+
+    // end of battle if party has no-one to attack
     bool roundOver = false;
-    if( getUserConfiguration()->isBattleTurnBased() ) {
-      // TB: fight the current battle turn only
-      Battle *battle = battleRound[battleTurn];
-      if(battle->fightTurn()) {
-        battleTurn++;
+    int c = 0;
+    for( int i = 0; i < party->getPartySize(); i++ ) {
+      if( !party->getParty(i)->getBattle()->getAvailableTarget() ) {
+        c++;
       }
-      roundOver = ( battleTurn >= (int)battleRound.size() );
-    } else {
-      // RT: fight every battle turn
-      for( int i = 0; i < (int)battleRound.size(); i++) {
-        Battle *battle = battleRound[i];
-        battle->fightTurn();
+    }
+    if( c == party->getPartySize() ) {
+      for( int i = 0; i < party->getPartySize(); i++ ) {
+        party->getParty(i)->getBattle()->reset();
       }
       roundOver = true;
+    }
+
+    if( !roundOver ) {
+      if( getUserConfiguration()->isBattleTurnBased() ) {
+        // TB: fight the current battle turn only
+        Battle *battle = battleRound[battleTurn];
+        if(battle->fightTurn()) {
+          battleTurn++;
+        }
+        roundOver = ( battleTurn >= (int)battleRound.size() );
+      } else {
+        // RT: fight every battle turn
+        for( int i = 0; i < (int)battleRound.size(); i++) {
+          Battle *battle = battleRound[i];
+          battle->fightTurn();
+        }
+        roundOver = true;
+      }
     }
 
     if( roundOver ) {
@@ -2219,11 +2236,11 @@ bool Scourge::createBattleTurns() {
     // add other movement
     for (int i = 0; i < party->getPartySize(); i++) {
       if (!party->getParty(i)->getStateMod(Constants::dead)) {
-        bool hasTarget = (party->getParty(i)->hasTarget() || 
-                          party->getParty(i)->getAction() > -1);
-        if (!hasTarget || (hasTarget && !party->getParty(i)->isTargetValid())) {
+        //bool hasTarget = (party->getParty(i)->hasTarget() || 
+                          //party->getParty(i)->getAction() > -1);
+        //if (!hasTarget || (hasTarget && !party->getParty(i)->isTargetValid())) {
           battle[battleCount++] = party->getParty(i)->getBattle();
-        }
+        //}
       }
     }
     for (int i = 0; i < session->getCreatureCount(); i++) {
