@@ -168,7 +168,7 @@ ShapePalette::ShapePalette(){
 	  info->height = atoi(strtok(NULL, ","));
 	  	  
 	  // store the md2 model and info
-	  sprintf(path, "/%s", info->filename);
+	  sprintf(path, "%s%s", rootDir, info->filename);
 	  cerr << "Loading md2 model: " << path << " scale: " << info->scale << 
 		" dim: " << info->width << ", " << info->depth << "," << info->height << endl;
 	  info->model = LoadMd2Model(path);
@@ -327,13 +327,8 @@ char *ShapePalette::getRandomDescription(int descriptionGroup) {
 }
 
 t3DModel * ShapePalette::LoadMd2Model(char *file_name){
-    t3DModel * t3d;
-    char fn[300];
-    t3d = new t3DModel; 
-    strcpy(fn, rootDir);
-    strcat(fn, file_name);
-   
-    g_LoadMd2.ImportMD2(t3d, fn); 
+    t3DModel *t3d = new t3DModel;    
+    g_LoadMd2.ImportMD2(t3d, file_name); 
     return t3d;   
 }    
 
@@ -353,7 +348,7 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
 	sprintf(path, "%s/%s", rootDir, skin_name);
-	//	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
+	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
 	CreateTexture(&skin_texture, path, 0);
 	cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
 	creature_skins[skin] = skin_texture;
