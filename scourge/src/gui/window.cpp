@@ -730,7 +730,7 @@ void Window::setVisible(bool b, bool animate) {
   Widget::setVisible(b);
   if(b) {
     lastTick = 0;
-    opening = true;
+    opening = ( !isLocked() );
     currentY = y;
     if( animate ) {
       if( animation == SLIDE_UP ) {
