@@ -60,6 +60,7 @@ class Map {
   bool zoomIn, zoomOut;
   Sint16 x;
   Sint16 y;
+  float mapx, mapy;
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
   Scourge *scourge;

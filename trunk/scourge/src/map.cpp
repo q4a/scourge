@@ -37,6 +37,7 @@ Map::Map(Scourge *scourge){
   zoom = 1.0f;
   zoomIn = zoomOut = false;
   x = y = 0;
+  mapx = mapy = 0.0f;
   selectMode = false;
   floorOnly = false;
   selX = selY = selZ = MAP_WIDTH + 1;
@@ -116,9 +117,18 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
     // relocate
     this->x = nx;
     this->y = ny;
+	this->mapx = nx;
+	this->mapy = ny;
   }
 }
 
+/**
+   Move and rotate map.
+   Modifiers: 
+   -CTRL + arrow keys / mouse at edge of screen: rotate map
+   -arrow keys / mouse at edge of screen: move map fast
+   -SHIFT + arrow keys / mouse at edge of screen: slow move map
+ */
 void Map::move(int dir) {
   if(SDL_GetModState() & KMOD_CTRL) {
 	if(dir & Constants::MOVE_DOWN) setYRot(-5.0f);
@@ -127,41 +137,49 @@ void Map::move(int dir) {
 	if(dir & Constants::MOVE_LEFT) setZRot(5.0f);
   } else if(!scourge->getUserConfiguration()->getAlwaysCenterMap()) {
 	
+	// stop rotating (angle of rotation is kept)
 	setYRot(0);
 	setZRot(0);
 
-	// get "real" direction based on map's z rotation
 	// normalize z rot to 0-359
 	float z = getZRot();
 	if(z < 0) z += 360;
 	if(z >= 360) z -= 360;
-	
-	// get delta to real direction
-	int di;
-	if(z >= 315 || z < 45) di = 0;
-	else if(z >= 45 && z < 135) di = 1;
-	else if(z >= 135 && z < 225) di = 2;
-	else if(z >= 225 && z < 315) di = 3;
-	
-	// get real direction
-	int real_dir = 0;
-	for(int t = 0; t < 4; t++) {
-	  if(dir & dir_index[t]) {
-		for(int i = 0; i < 4; i++) {
-		  if(dir_index[i] == dir_index[t]) {
-			if(i + di < 4) real_dir |= dir_index[i + di];
-			else real_dir |= dir_index[i + di - 4];
-			break;
-		  }
-		}
-	  }
-	}
-	
+	float zrad = Constants::toRadians(z);
+
+	//	cerr << "-------------------" << endl;
+	//	cerr << "x=" << x << " y=" << y << " zrot=" << z << endl;
+
 	mapChanged = true;
-	if((real_dir & Constants::MOVE_DOWN) && y < MAP_DEPTH) y++;
-	if((real_dir & Constants::MOVE_UP) && y > 0) y--;
-	if((real_dir & Constants::MOVE_RIGHT) && x < MAP_WIDTH) x++;
-	if((real_dir & Constants::MOVE_LEFT) && x > 0) x--;  
+	float delta = (SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f);
+	if(dir & Constants::MOVE_DOWN) {
+	  mapx += delta * sin(zrad);
+	  mapy += delta * cos(zrad);
+	}
+	if(dir & Constants::MOVE_UP) {
+	  mapx += delta * -sin(zrad);
+	  mapy += delta * -cos(zrad);
+	}
+	if(dir & Constants::MOVE_LEFT) {
+	  mapx += delta * -cos(zrad);
+	  mapy += delta * sin(zrad);
+	}
+	if(dir & Constants::MOVE_RIGHT) {
+	  mapx += delta * cos(zrad);
+	  mapy += delta * -sin(zrad);
+	}
+
+	//	cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
+
+	if(mapy > MAP_DEPTH - MAP_VIEW_DEPTH) mapy = MAP_DEPTH - MAP_VIEW_DEPTH;
+	if(mapy < 0) mapy = 0;
+	if(mapx > MAP_WIDTH - MAP_VIEW_WIDTH) mapx = MAP_WIDTH - MAP_VIEW_WIDTH;
+	if(mapx < 0) mapx = 0;
+	//	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
+
+	x = (int)rint(mapx);
+	y = (int)rint(mapy);
+	//	cerr << "FINAL: x=" << x << " y=" << y << endl;
   }
 }
 
@@ -935,8 +953,10 @@ void Map::initMapView(bool ignoreRot) {
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   glTranslatef( 0, 0, this->zpos);  
 
-  float startx = -((float)MAP_VIEW_WIDTH / 2.0) / GLShape::DIV;
-  float starty = -((float)MAP_VIEW_DEPTH / 2.0) / GLShape::DIV;
+  //  float startx = -(((float)MAP_VIEW_WIDTH + (mapx - (float)x)) / 2.0) / GLShape::DIV;
+  //  float starty = -(((float)MAP_VIEW_DEPTH + (mapy - (float)y)) / 2.0) / GLShape::DIV;
+  float startx = -((float)MAP_VIEW_WIDTH / 2.0 + (mapx - (float)x)) / GLShape::DIV;
+  float starty = -((float)MAP_VIEW_DEPTH / 2.0 + (mapy - (float)y)) / GLShape::DIV;
   //float startz = -(float)(MAP_VIEW_HEIGHT) / GLShape::DIV;
   float startz = 0.0;
 
