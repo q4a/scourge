@@ -2242,7 +2242,11 @@ bool Scourge::createBattleTurns() {
       }
       bool hasTarget = (party->getParty(i)->hasTarget() || 
                         party->getParty(i)->getAction() > -1);
-      if (hasTarget && party->getParty(i)->isTargetValid()) {
+      bool visible = ( map->isLocationVisible(toint(party->getParty(i)->getX()), 
+                                              toint(party->getParty(i)->getY())) &&
+                       map->isLocationInLight(toint(party->getParty(i)->getX()), 
+                                              toint(party->getParty(i)->getY())));
+      if ( hasTarget && party->getParty(i)->isTargetValid() && visible ) {
         battle[battleCount++] = party->getParty(i)->getBattle();
       }
     }
@@ -2267,7 +2271,11 @@ bool Scourge::createBattleTurns() {
 
     // add other movement
     for (int i = 0; i < party->getPartySize(); i++) {
-      if (!party->getParty(i)->getStateMod(Constants::dead)) {
+      bool visible = ( map->isLocationVisible(toint(party->getParty(i)->getX()), 
+                                              toint(party->getParty(i)->getY())) &&
+                       map->isLocationInLight(toint(party->getParty(i)->getX()), 
+                                              toint(party->getParty(i)->getY())));
+      if( visible && !party->getParty(i)->getStateMod(Constants::dead) ) {
         bool found = false;
         for( int t = 0; t < battleCount; t++ ) {
           if( battle[t] == party->getParty(i)->getBattle() ) {

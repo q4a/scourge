@@ -410,7 +410,11 @@ bool Battle::moveCreature() {
 
 Creature *Battle::getAvailablePartyTarget() {
   for( int i = 0; i < session->getParty()->getPartySize(); i++) {
-    if( !session->getParty()->getParty(i)->getStateMod(Constants::dead) ) {
+    bool visible = ( session->getMap()->isLocationVisible(toint(session->getParty()->getParty(i)->getX()), 
+                                                          toint(session->getParty()->getParty(i)->getY())) &&
+                     session->getMap()->isLocationInLight(toint(session->getParty()->getParty(i)->getX()), 
+                                                          toint(session->getParty()->getParty(i)->getY())));
+    if( visible && !session->getParty()->getParty(i)->getStateMod(Constants::dead) ) {
       Creature *c = session->getParty()->getParty(i)->getBattle()->getAvailableTarget();
       if( c ) return c;
     }
