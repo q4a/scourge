@@ -128,6 +128,7 @@ void Scourge::startMission() {
   startRound = true;
   battleCount = 0;
   setPlayer(getParty(0));
+  setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   getPlayer()->moveTo(startx, starty, 0);
   getPlayer()->setTargetCreature(NULL);
   map->setCreature(startx, starty, 0, getPlayer()); 
@@ -351,6 +352,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     else if(ea == SET_NEXT_FORMATION_STOP){
         if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
+	else setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
     }   
     else if(ea == SET_X_ROT_PLUS){        
         map->setXRot(1.0f);
@@ -856,25 +858,35 @@ void Scourge::createUI() {
 
 
   diamondButton = new Button( 100, 0,  120, 20 );
-  mainWin->addWidget((Widget*)diamondButton);
+  diamondButton->setToggle(true);
+  mainWin->addWidget((Widget*)diamondButton);  
   staggeredButton = new Button( 120, 0,  140, 20 );
+  staggeredButton->setToggle(true);
   mainWin->addWidget((Widget*)staggeredButton);
   squareButton = new Button( 140, 0,  160, 20 );
+  squareButton->setToggle(true);
   mainWin->addWidget((Widget*)squareButton);
   rowButton = new Button( 160, 0,  180, 20 );
+  rowButton->setToggle(true);
   mainWin->addWidget((Widget*)rowButton);
   scoutButton = new Button( 180, 0,  200, 20 );
+  scoutButton->setToggle(true);
   mainWin->addWidget((Widget*)scoutButton);
   crossButton = new Button( 200, 0,  220, 20 );
+  crossButton->setToggle(true);
   mainWin->addWidget((Widget*)crossButton);
 
   player1Button = new Button( 100, 20,  124, 40, strdup("1") );
-  mainWin->addWidget((Widget*)player1Button);
+  player1Button->setToggle(true);
+  mainWin->addWidget((Widget*)player1Button);  
   player2Button = new Button( 124, 20,  148, 40, strdup("2") );
+  player2Button->setToggle(true);
   mainWin->addWidget((Widget*)player2Button);
   player3Button = new Button( 148, 20,  172, 40, strdup("3") );
+  player3Button->setToggle(true);
   mainWin->addWidget((Widget*)player3Button);
   player4Button = new Button( 172, 20,  196, 40, strdup("4") );
+  player4Button->setToggle(true);
   mainWin->addWidget((Widget*)player4Button);
   groupButton = new Button( 196, 20,  220, 40, strdup("G") );
   groupButton->setToggle(true);
@@ -1116,6 +1128,16 @@ void Scourge::setPlayer(int n) {
   }
   map->refresh();
   map->center(player->getX(), player->getY());
+  player1Button->setSelected(false);
+  player2Button->setSelected(false);
+  player3Button->setSelected(false);
+  player4Button->setSelected(false);
+  switch(n) {
+  case 0 : player1Button->setSelected(true); break;
+  case 1 : player2Button->setSelected(true); break;
+  case 2 : player3Button->setSelected(true); break;
+  case 3 : player4Button->setSelected(true); break;
+  }
 }
 
 /**
@@ -1130,6 +1152,29 @@ void Scourge::setFormation(int formation) {
   groupButton->setSelected(!player_only);
   startRound = true;
   roundButton->setSelected(startRound);
+
+
+  diamondButton->setSelected(false);
+  staggeredButton->setSelected(false);
+  squareButton->setSelected(false);
+  rowButton->setSelected(false);
+  scoutButton->setSelected(false);
+  crossButton->setSelected(false);
+  switch(formation + Constants::DIAMOND_FORMATION) {
+  case Constants::DIAMOND_FORMATION:
+    diamondButton->setSelected(true); break;
+  case Constants::STAGGERED_FORMATION:
+    staggeredButton->setSelected(true); break;
+  case Constants::SQUARE_FORMATION:
+    squareButton->setSelected(true); break;
+  case Constants::ROW_FORMATION:
+    rowButton->setSelected(true); break;
+  case Constants::SCOUT_FORMATION:
+    scoutButton->setSelected(true); break;
+  case Constants::CROSS_FORMATION:
+    crossButton->setSelected(true); break;
+  }
+
 }
 
 /**

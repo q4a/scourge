@@ -32,6 +32,7 @@ Map::Map(Scourge *scourge){
   selX = selY = selZ = MAP_WIDTH + 1;
   oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
   useShadow = false;
+  alwaysCenter = true;
   
   mapChanged = true;
   
@@ -93,9 +94,16 @@ Map::~Map(){
 }
 
 void Map::center(Sint16 x, Sint16 y) { 
-	// relocate
-	this->x = x - MAP_VIEW_WIDTH / 2; 
-	this->y = y - MAP_VIEW_DEPTH / 2; 
+  Sint16 nx = x - MAP_VIEW_WIDTH / 2; 
+  Sint16 ny = y - MAP_VIEW_DEPTH / 2; 
+
+  if(alwaysCenter ||
+     abs(this->x - nx) > X_CENTER_TOLERANCE ||
+     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
+    // relocate
+    this->x = nx;
+    this->y = ny;
+  }
 }
 
 /**
