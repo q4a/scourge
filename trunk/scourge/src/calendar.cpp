@@ -37,10 +37,12 @@ Calendar::Calendar(){
 }
 
 void Calendar::reset(bool resetTime){    
-    lastTick = 0;
+  lastTick = 0;
+  if(resetTime) {
+    currentDate.reset();
     scheduledEvents.clear();
-	if(resetTime) currentDate.reset();
-    timeFrozen = false; 
+  }
+  timeFrozen = false; 
 }
 
 void Calendar::scheduleEvent(Event *e){
