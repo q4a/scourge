@@ -864,14 +864,14 @@ int Creature::getDamage(Item *weapon) {
   float damage = 0.0f;
   float baseDamage = (weapon ? weapon->getRpgItem()->getAction() : 
                       (getSkill(Constants::POWER) / 10));
-  damage = baseDamage;
+  damage = getLevel() * baseDamage;
   damage += (float)getSkill(Constants::POWER) / 10.0f;
 
   float skill = (weapon && weapon->getRpgItem()->getSkill() > -1 ?
                  getSkill(weapon->getRpgItem()->getSkill()) :
                  getSkill(Constants::HAND_TO_HAND_COMBAT));
   damage = damage + (damage * ((skill - 50) / 100.0f) );
-  return(int)(damage * rand()/RAND_MAX);
+  return(int)(damage * .7 + ((damage * 0.3) * rand()/RAND_MAX));
 }
 
 /**
@@ -1154,3 +1154,13 @@ float Creature::getDistanceToTarget() {
                                getTargetX(), getTargetY(), 1, 1);
   }
 }
+
+// sets min exp for current level
+void Creature::setExp() {
+  if(isMonster()) return;
+  expOfNextLevel = 0;
+  for(int i = 0; i < level - 1; i++) {
+    expOfNextLevel += ((i + 1) * character->getLevelProgression());
+  }
+}
+
