@@ -39,7 +39,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
                         100, 170, 280, 320, 
                         strdup("Options"), 
                         scourge->getShapePalette()->getGuiTexture(),
-                        true, Window::BASIC_WINDOW,
+                        false, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2());
     
   int x = 0;
@@ -51,7 +51,10 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   x += BUTTON_WIDTH;
   controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, strdup("Controls"), true);           
 
-  saveButton = mainWin->createButton(10, 272, 10 + BUTTON_WIDTH, 272 + SPACING, strdup("Save to file"), false);      
+  x = 10;
+  saveButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, strdup("Save to file"), false);      
+  x += BUTTON_WIDTH + MINOR_SPACING;
+  closeButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, strdup("Close"), false);      
   
   cards = new CardContainer(mainWin);
   
@@ -62,7 +65,9 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   controlBindingsList = new ScrollingList(XPOS, y, X_SIZE, 200, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(controlBindingsList, CONTROLS);
   y += 200 + MINOR_SPACING;
-  changeControlButton = cards->createButton(XPOS, y, XPOS + X_SIZE, y + SPACING, strdup("Change"), CONTROLS, false);
+  changeControlButton = cards->createButton(XPOS, y, XPOS + X_SIZE, y + SPACING, 
+											Constants::getMessage( Constants::CHANGE_KEY ), 
+											CONTROLS, false);
   y += SPACING + MINOR_SPACING;
   waitingLabel = cards->createLabel(35, 80, strdup(" "), CONTROLS, Constants::BLUE_COLOR);         
 
@@ -297,8 +302,9 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         selectedMode = CONTROLS;        
     }       
     else if(widget == changeControlButton) { // && selectedMode== Controls?       
-        waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
-        waitingForNewKey = true;               
+	  //	  waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
+	  changeControlButton->getLabel()->setText( Constants::getMessage( Constants::WAITING_FOR_KEY ) );
+	  waitingForNewKey = true;               
     }
     else if(widget == gameSpeedML){
         uc -> setGameSpeedLevel(gameSpeedML->getNbText() - gameSpeedML->getCurrentTextInd() - 1);
@@ -378,6 +384,10 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     else if(widget == shadowsML){
         uc->setShadows(shadowsML->getCurrentTextInd());    
     }
+	else if(widget == closeButton) {
+		hide();
+		return true;
+	}
     else if(widget == saveButton){
         uc->saveConfiguration();
         if(selectedMode == VIDEO){
@@ -412,43 +422,44 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 	break;
   case SDL_KEYDOWN:    
     if(waitingForNewKey){
-        if(event->key.keysym.sym != SDLK_ESCAPE){
-            int ind;
-            ind = controlBindingsList->getSelectedLine();                     
-            string s1 = uc->getEngineActionDescription(ind);                      
-            string s2 = SDL_GetKeyName(event->key.keysym.sym);  
-            for (unsigned int i = 0; i < s2.length(); i++){
-                if(s2[i] == ' '){
-                    s2[i] = '_';
-                }            
-            }
-            uc->setKeyForEngineAction(s2, ind); // update userConfig too
-            s1 = s1 + "           " + s2;            
-            strcpy(controlLines[ind], s1.c_str());
-            controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
-            controlBindingsList->setSelectedLine(ind);                                                          
-        } else ignoreKeyUp = true;
-        waitingLabel->setText(strdup(" "));
-        waitingForNewKey = false;
-    }
-    else{
-        switch(event->key.keysym.sym) {
-        case SDLK_RETURN:
-            if(selectedMode == CONTROLS){
-                waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
-                waitingForNewKey = true;  
-            }
+	  if(event->key.keysym.sym != SDLK_ESCAPE){
+		int ind;
+		ind = controlBindingsList->getSelectedLine();                     
+		string s1 = uc->getEngineActionDescription(ind);                      
+		string s2 = SDL_GetKeyName(event->key.keysym.sym);  
+		for (unsigned int i = 0; i < s2.length(); i++){
+		  if(s2[i] == ' '){
+			s2[i] = '_';
+		  }            
+		}
+		uc->setKeyForEngineAction(s2, ind); // update userConfig too
+		s1 = s1 + "           " + s2;            
+		strcpy(controlLines[ind], s1.c_str());
+		controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
+		controlBindingsList->setSelectedLine(ind);                                                          
+	  } else ignoreKeyUp = true;
+	  //waitingLabel->setText(strdup(" "));
+	  changeControlButton->getLabel()->setText( Constants::getMessage( Constants::CHANGE_KEY ) );
+	  waitingForNewKey = false;
+    } else{
+	  switch(event->key.keysym.sym) {
+	  case SDLK_RETURN:
+		if(selectedMode == CONTROLS){
+		  //waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
+		  changeControlButton->getLabel()->setText( Constants::getMessage( Constants::WAITING_FOR_KEY) );
+		  waitingForNewKey = true;  
+		}
         /*case SDLK_DOWN:
-            if(selectedMode == CONTROLS){
-                int ind = controlBindingsList->getSelectedLine();
-                ind ++;
-                controlBindingsList->setSelectedLine(ind);                
-            }*/
-            
-    	  return true;
-        default: break;
-        }  
-    }
+		  if(selectedMode == CONTROLS){
+		  int ind = controlBindingsList->getSelectedLine();
+		  ind ++;
+		  controlBindingsList->setSelectedLine(ind);                
+		  }*/
+		
+		return true;
+	  default: break;
+	  }  
+	}
   default: break;  
   }  
   return false;
