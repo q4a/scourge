@@ -27,6 +27,7 @@
 
 Board::Board(Session *session) {
   this->session = session;
+  this->storylineIndex = 0;
 
   char errMessage[500];
   char s[200];
@@ -53,7 +54,7 @@ Board::Board(Session *session) {
         if( strlen( description ) ) strcat( description, " " );
         strcat( description, line + 1 );
       }
-      templates.push_back( new MissionTemplate( name, description ) );
+      templates.push_back( new MissionTemplate( this, name, description ) );
     } else if( n == 'T' ) {
       // skip ':'
       fgetc( fp );
@@ -87,7 +88,7 @@ Board::Board(Session *session) {
         strcat( failure, line + 1 );
       }
 
-      current_mission = new Mission( level, depth, name, description, success, failure );
+      current_mission = new Mission( this, level, depth, name, description, success, failure );
       current_mission->setStoryLine( true );
       storylineMissions.push_back( current_mission );
 
@@ -129,6 +130,7 @@ void Board::reset() {
     Mission *mission = storylineMissions[i];
     mission->reset();
   }
+  storylineIndex = 0;
   for( int i = 0; i < (int)availableMissions.size(); i++ ) {
     Mission *mission = availableMissions[i];
 	if( !mission->isStoryLine() ) {
@@ -234,6 +236,26 @@ void Board::initMissions() {
   }
 }
 
+void Board::setStorylineIndex( int n ) {
+  cerr << "*** setting storyline index: " << n << " size=" << storylineMissions.size() << endl;
+  storylineIndex = n;
+  for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
+	if( i < storylineIndex ) storylineMissions[i]->setCompleted( true );
+	else break;
+  }
+}
+
+void Board::storylineMissionCompleted( Mission *mission ) {
+  cerr << "*** storyline mission completed ";
+  for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
+	if( storylineMissions[i] == mission &&
+		storylineIndex < ( i + 1 )) {
+	  storylineIndex = i + 1;
+	  break;
+	}
+  }
+  cerr << "index=" << storylineIndex << endl;
+}
 
 
 
@@ -242,9 +264,8 @@ void Board::initMissions() {
 
 
 
-
-
-MissionTemplate::MissionTemplate( char *name, char *description ) {
+MissionTemplate::MissionTemplate( Board *board, char *name, char *description ) {
+  this->board = board;
   strcpy( this->name, name );
   strcpy( this->description, description );
 }
@@ -267,7 +288,8 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   strcpy( s, description );
   parseText( session, level, s, parsedDescription, &items, &creatures );
   
-  Mission *mission = new Mission( level, depth, parsedName, parsedDescription, 
+  Mission *mission = new Mission( board, 
+								  level, depth, parsedName, parsedDescription, 
                                   "You have succeeded in your mission!", 
                                   "You have failed to complete your mission" );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
@@ -348,7 +370,10 @@ void MissionTemplate::parseText( Session *session, int level,
 }
 
 
-Mission::Mission( int level, int depth, char *name, char *description, char *success, char *failure ) {
+Mission::Mission( Board *board, int level, int depth, 
+				  char *name, char *description, 
+				  char *success, char *failure ) {
+  this->board = board;
   this->level = level;
   this->depth = depth;
   strcpy( this->name, name );
@@ -416,6 +441,7 @@ void Mission::checkMissionCompleted() {
       return;
     }
   }
+  if( storyLine ) board->storylineMissionCompleted( this );
 }
 
 void Mission::reset() {

@@ -1011,6 +1011,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
 			  getSession()->getCurrentMission() && 
 			  !getSession()->getCurrentMission()->isCompleted()) {
 	  getSession()->getCurrentMission()->setCompleted( true );
+	  if( getSession()->getCurrentMission()->isStoryLine() ) 
+		board->storylineMissionCompleted( getSession()->getCurrentMission() );
 	  missionCompleted();
 	} else if( event->key.keysym.sym == SDLK_t ) {
 	  teleporting = true;

@@ -22,7 +22,7 @@
 
 class Session;
 
-#define PERSIST_VERSION 2
+#define PERSIST_VERSION 4
 
 typedef struct _DiceInfo {
   Uint32 version;

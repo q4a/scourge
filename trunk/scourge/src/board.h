@@ -29,6 +29,7 @@ class Monster;
 class Creature;
 class Item;
 class Session;
+class Board;
 
 /**
   *@author Gabor Torok
@@ -40,6 +41,7 @@ class Session;
 
 class Mission {
 private:
+  Board *board;
   int level;
   int depth;
   char name[80];
@@ -55,7 +57,9 @@ private:
   bool completed;
   bool storyLine;
 public:
-  Mission( int level, int depth, char *name, char *description, char *success, char *failure );
+  Mission( Board *board, int level, int depth, 
+		   char *name, char *description, 
+		   char *success, char *failure );
   ~Mission();
 
   inline void setStoryLine( bool b ) { storyLine = b; }
@@ -101,16 +105,16 @@ public:
   bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
  private:
   void checkMissionCompleted();
-
 };
 
 
 class MissionTemplate {
 private:
+  Board *board;
   char name[80];
   char description[2000];
 public:
-  MissionTemplate( char *name, char *description );
+  MissionTemplate( Board *board, char *name, char *description );
   ~MissionTemplate();
   Mission *createMission( Session *session, int level, int depth );
 private:
@@ -128,7 +132,7 @@ class Board	{
   Session *session;
   vector<MissionTemplate *> templates;
   vector<Mission*> storylineMissions;
-
+  int storylineIndex;
 
   vector<Mission*> availableMissions;
 
@@ -145,6 +149,10 @@ public:
   
   void initMissions();
   void reset();
+
+  inline int getStorylineIndex() { return storylineIndex; }
+  void setStorylineIndex( int n );
+  void storylineMissionCompleted( Mission *mission );
   
   inline int getMissionCount() { return availableMissions.size(); }
   inline Mission *getMission(int index) { return availableMissions[index]; }
