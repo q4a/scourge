@@ -1084,6 +1084,7 @@ void DungeonGenerator::addPregeneratedShapes(Map *map, ShapePalette *shapePal,
     int mapy = location[locationIndex].shapePosition[i].y + offset;
     map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i].z, 
                      shapePal->findShapeByName(location[locationIndex].shapePosition[i].name));
+    /*
     // find and remove this location from ff list (replace w. last entry and decr. counter)
     for(int n = 0; n < ffCount; n++) {
       if(mapx == ff[n * 2] && mapy == ff[n * 2 + 1]) {
@@ -1093,6 +1094,7 @@ void DungeonGenerator::addPregeneratedShapes(Map *map, ShapePalette *shapePal,
         break;
       }
     }
+    */
   }
 }
 
