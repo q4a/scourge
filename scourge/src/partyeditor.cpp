@@ -210,7 +210,30 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->nextModel = cards->createButton( w - 5 - PORTRAIT_SIZE / 2, 60 + PORTRAIT_SIZE + MODEL_SIZE,
                                          w - 10, 80 + PORTRAIT_SIZE + MODEL_SIZE, 
                                          "    >>", n );
-  
+
+  // skills
+  info->skillLabel = cards->createLabel( 350, 80, "Remaining skill points:", n, Constants::RED_COLOR );
+  info->skills = new ScrollingList( 350, 90, 150, 200, scourge->getShapePalette()->getHighlightTexture() );
+  cards->addWidget( info->skills, n );
+  info->skillAddButton = cards->createButton( 350, 485, 390, 505, " + ", n );
+  info->skillRerollButton = cards->createButton( 400, 485, 440, 505, " Reroll ", n );
+  info->skillSubButton = cards->createButton( 450, 485, 490, 505, " - ", n );
+
+  info->availableSkillMod = 30;
+  info->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
+  for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+    info->skill[ i ] = 0;
+    info->skillMod[ i ] = 0;
+    info->skillLine[i] = (char*)malloc(120 * sizeof(char));
+    sprintf(info->skillLine[i], "%d(%d) - %s", 
+            info->skill[ i ], 
+            info->skillMod[ i ], 
+            Constants::SKILL_NAMES[i] );
+  }
+  info->skills->setLines( Constants::SKILL_COUNT, (const char**)info->skillLine );
+  sprintf( msg, "Remaining skill points: %d", info->availableSkillMod );
+  info->skillLabel->setText( msg );
+
 
   info->back = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
                                     w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
