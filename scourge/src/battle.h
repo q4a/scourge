@@ -116,7 +116,7 @@ class Battle {
   inline bool isEmpty() { return empty; }
   bool fightTurn();
 
-  void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW, bool magical=false);
+  void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW, bool magical=false, GLuint delay=0 );
 
   inline Creature *getCreature() { return creature; }
   inline Session *getSession() { return session; }

@@ -343,7 +343,7 @@ class Creature {
 
   // take damage
   // return true if the creature dies
-  bool takeDamage(int damage, int effect_type = Constants::EFFECT_GLOW);
+  bool takeDamage( int damage, int effect_type = Constants::EFFECT_GLOW, GLuint delay=0 );
 
   // returns exp gained
   int addExperience(Creature *creature_killed);
@@ -359,7 +359,7 @@ class Creature {
   void getDetailedDescription(char *s);
 
   // effects
-  void startEffect(int effect_type, int duration = Constants::DAMAGE_DURATION);
+  void startEffect( int effect_type, int duration = Constants::DAMAGE_DURATION, GLuint delay=0 );
   inline void setEffectType(int n) { this->effectType = n; }
   inline int getEffectType() { return effectType; }  
   inline Effect *getEffect() { return effect; }

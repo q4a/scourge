@@ -57,6 +57,7 @@ Map::Map(Session *session) {
   mapViewWidth = MVW;
   mapViewDepth = MVD;
 
+  effectCount = 0;
   chunkCount = 0;
   frustum = new CFrustum();
   useFrustum = true;
@@ -153,16 +154,7 @@ void Map::reset() {
   clearLocked();
 
   // remove area effects
-  vector<EffectLocation*>::iterator e=currentEffects.begin();
-  for(int i = 0; i < (int)currentEffects.size(); i++) {
-    EffectLocation *effectLocation = currentEffects[i];
-    if(effectLocation) {
-      currentEffects.erase(e);
-      e = currentEffects.begin();
-      removeEffect(effectLocation->x, effectLocation->y, effectLocation->z);
-      i--;
-    }
-  }
+  removeAllEffects();
   // clear map
   for(int xp = 0; xp < MAP_WIDTH; xp++) {
     for(int yp = 0; yp < MAP_DEPTH; yp++) {
@@ -354,6 +346,52 @@ void Map::move(int dir) {
   }
 }
 
+void Map::removeCurrentEffects() {
+  int chunkOffsetX = 0;
+  int chunkStartX = (getX() - MAP_OFFSET) / MAP_UNIT;
+  int mod = (getX() - MAP_OFFSET) % MAP_UNIT;
+  if(mod) {
+    chunkOffsetX = -mod;
+  }
+  int chunkEndX = mapViewWidth / MAP_UNIT + chunkStartX;
+
+  int chunkOffsetY = 0;
+  int chunkStartY = (getY() - MAP_OFFSET) / MAP_UNIT;
+  mod = (getY() - MAP_OFFSET) % MAP_UNIT;
+  if(mod) {
+    chunkOffsetY = -mod;
+  }
+  int chunkEndY = mapViewDepth / MAP_UNIT + chunkStartY;
+
+  int posX, posY;
+  for(int chunkX = chunkStartX; chunkX < chunkEndX; chunkX++) {
+    if(chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT) continue;
+    for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
+      if(chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT) continue;
+      for(int yp = 0; yp < MAP_UNIT; yp++) {
+        for(int xp = 0; xp < MAP_UNIT; xp++) {
+
+          /**
+           In scourge, shape coordinates are given by their
+           left-bottom corner. So the +1 for posY moves the
+           position 1 unit down the Y axis, which is the
+           unit square's bottom left corner.
+           */
+          posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
+          posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
+
+          for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
+            if( effect[posX][posY][zp] && !effect[posX][posY][zp]->isEffectOn() ) {
+              removeEffect( posX, posY, zp );
+              mapChanged = true;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 /**
    If 'ground' is true, it draws the ground layer.
    Otherwise the shape arrays (other, stencil, later) are populated.
@@ -498,10 +536,11 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
             }
           } else {
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-
-              if(lightMap[chunkX][chunkY] &&
-                 effect[posX][posY][zp] &&
-				 !effect[posX][posY][zp]->isInDelay() ) {
+              if( effect[posX][posY][zp] && !effect[posX][posY][zp]->isEffectOn() ) {
+                removeEffect( posX, posY, zp );
+              } else if(lightMap[chunkX][chunkY] &&
+                        effect[posX][posY][zp] &&
+                        !effect[posX][posY][zp]->isInDelay() ) {
                 xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                 xp + chunkOffsetX) / GLShape::DIV;
                 ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
@@ -802,19 +841,6 @@ void Map::draw() {
   xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
   ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
 
-  // remove area effects
-  vector<EffectLocation*>::iterator e=currentEffects.begin();
-  for(int i = 0; i < (int)currentEffects.size(); i++) {
-    EffectLocation *effectLocation = currentEffects[i];
-    if(effectLocation && !effectLocation->isEffectOn()) {
-      currentEffects.erase(e);
-      e = currentEffects.begin();
-      removeEffect(effectLocation->x, effectLocation->y, effectLocation->z);
-      mapChanged = true;
-      i--;
-    }
-  }  
-
   float oldrot;
 
   oldrot = yrot;
@@ -830,12 +856,14 @@ void Map::draw() {
   initMapView();
   if( !selectMode ) frustum->CalculateFrustum();
   if(lightMapChanged) configureLightMap();
+  if( effectCount ) removeCurrentEffects();
   // populate the shape arrays
   if(mapChanged) {
     int csx, cex, csy, cey;
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
-    sprintf(mapDebugStr, "chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+    sprintf(mapDebugStr, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+            effectCount,
             (useFrustum ? "*" : ""),
             chunkCount, ((cex - csx)*(cey - csy)),
             csx, cex, csy, cey, shapeCount);
@@ -1610,13 +1638,6 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
-    vector<EffectLocation*>::iterator e=currentEffects.begin();
-    for(int i = 0; i < (int)currentEffects.size(); i++) {
-      EffectLocation *effectLocation = currentEffects[i];
-      if(effectLocation) {
-        cerr << "pos=" << x << "," << y << "," << z << endl;
-      }
-    }
     ((Creature*)NULL)->getName();
   }
 
@@ -1627,10 +1648,6 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
       return;
     } else {
       return;
-      /* FIXME: if we call removeeffect, it also needs to remove from currentEffects.
-      cerr << "*** Warning, removing effect w/o removing from currentEffects!" << endl;
-      removeEffect(x, y, z);
-      */
     }
   }
 
@@ -1648,8 +1665,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->x = x;
   effect[x][y][z]->y = y;
   effect[x][y][z]->z = z;
-
-  currentEffects.push_back(effect[x][y][z]);
+  effectCount++;
 
   // need to do this to make sure effect shows up
   mapChanged = true;
@@ -1659,13 +1675,6 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** REMOVEEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
-    vector<EffectLocation*>::iterator e=currentEffects.begin();
-    for(int i = 0; i < (int)currentEffects.size(); i++) {
-      EffectLocation *effectLocation = currentEffects[i];
-      if(effectLocation) {
-        cerr << "pos=" << x << "," << y << "," << z << endl;
-      }
-    }
     ((Creature*)NULL)->getName();
   }
 
@@ -1676,7 +1685,26 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
     }
     delete effect[x][y][z];
     effect[x][y][z] = NULL;
+    effectCount--;
   }
+}
+
+void Map::removeAllEffects() {
+  for( int x = 0; x < MAP_WIDTH; x++ ) {
+    for( int y = 0; y < MAP_DEPTH; y++ ) {
+      for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
+        if( effect[x][y][z] ) {
+          if(effect[x][y][z]->effect) {
+            delete effect[x][y][z]->effect;
+            effect[x][y][z]->effect = NULL;
+          }
+          delete effect[x][y][z];
+          effect[x][y][z] = NULL;
+        }
+      }
+    }
+  }
+  effectCount = 0;
 }
 
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {

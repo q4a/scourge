@@ -242,7 +242,7 @@ void SpellCaster::launchProjectile(int count, bool stopOnImpact) {
   }
 }
 
-void SpellCaster::causeDamage() {
+void SpellCaster::causeDamage( GLuint delay ) {
   Creature *creature = battle->getCreature();
 
   // roll for the spell damage
@@ -269,10 +269,10 @@ void SpellCaster::causeDamage() {
   }
 
   // cause damage, kill creature, gain levels, etc.
-  battle->dealDamage(damage, 
-                     spell->getAction() * creature->getLevel(), 
-                     spell->getEffect(),
-                     true);
+  battle->dealDamage( damage, 
+                      spell->getAction() * creature->getLevel(), 
+                      spell->getEffect(),
+                      true, delay );
 }
 
 void SpellCaster::setStateMod(int mod, bool setting) {
@@ -393,6 +393,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
 
 void SpellCaster::circleAttack() {
 
+  int spellEffectSize = 2;
   int tw = 1;
   int td = 1;
   Location *pos = battle->getSession()->getMap()->getLocation( battle->getCreature()->getTargetX(), 
@@ -408,7 +409,7 @@ void SpellCaster::circleAttack() {
                                                  battle->getCreature()->getShape()->getDepth(), 
                                                  battle->getCreature()->getTargetX(), battle->getCreature()->getTargetY(),
                                                  tw, td );
-  selectedRadius += toint( battle->getCreature()->getShape()->getWidth() / 2.0f + tw / 2.0f );
+  selectedRadius += toint( battle->getCreature()->getShape()->getWidth() / 2.0f + tw / 2.0f + spellEffectSize );
 
   // cap the selected radius
   int radius = battle->getCreature()->getLevel() * 2;
@@ -427,19 +428,25 @@ void SpellCaster::circleAttack() {
                                                Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
                                                radius, radius );
   // walk around the circle
+  Creature *targets[100];
+  int targetCount = 0;
   Creature *c = battle->getCreature()->getTargetCreature();
   for( int angle = 0; angle < 360; angle += 10 ) {
     int x = toint( sx + ( (float)radius * cos( Util::degreesToRadians( (float)angle ) ) ) );
     int y = toint( sy - ( (float)radius * sin( Util::degreesToRadians( (float)angle ) ) ) );
     if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
-      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
-      battle->getSession()->getMap()->startEffect( x, y, 4, Constants::EFFECT_DUST, 
+//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
+      battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_DUST, 
                                                    (Constants::DAMAGE_DURATION * 4), 
-                                                   2, 2, (GLuint)( angle * 5 ) );
-      // FIXME: check in 2x2 block for creatures, not just at x,y
-      if( pos && pos->creature && battle->getCreature()->canAttack( pos->creature ) ) {
-        battle->getCreature()->setTargetCreature( pos->creature );
-        causeDamage();
+                                                   spellEffectSize, spellEffectSize, 
+                                                   (GLuint)( angle * 5 ) );
+
+      targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, targets );
+      for( int i = 0; i < targetCount; i++ ) {
+        if( battle->getCreature()->canAttack( targets[ i ] ) ) {
+          battle->getCreature()->setTargetCreature( targets[ i ] );
+          causeDamage( (GLuint)( angle * 5 ) );
+        }
       }
     }
   }

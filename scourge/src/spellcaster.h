@@ -69,7 +69,7 @@ class SpellCaster {
   void increaseAC();
   // count==0 means that count depends on level
   void launchProjectile(int count, bool stopOnImpact=true);
-  void causeDamage();
+  void causeDamage( GLuint delay=0 );
   void setStateMod(int mod, bool setting=true);
   void circleAttack();
 };

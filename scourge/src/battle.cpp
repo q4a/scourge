@@ -871,7 +871,7 @@ void Battle::hitWithItem() {
   }
 }
 
-void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
+void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical, GLuint delay ) {
   if(damage) {  
 
     /* 
@@ -948,7 +948,7 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
     }
 
     // target creature death
-    if(creature->getTargetCreature()->takeDamage(damage, effect)) {
+    if(creature->getTargetCreature()->takeDamage(damage, effect, delay)) {
       
       // only in RT mode... otherwise in TB mode character won't move
       if( !session->getUserConfiguration()->isBattleTurnBased() )

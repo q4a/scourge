@@ -91,7 +91,6 @@ class Map {
   float mapx, mapy;
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
   EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
-  vector<EffectLocation*> currentEffects;
   Location *posCache[MAX_POS_CACHE];
   signed int nbPosCache;
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
@@ -426,8 +425,9 @@ class Map {
    CFrustum *frustum;
    CVector3 chunks[100];
    int chunkCount;
-  DrawLater later[100], stencil[1000], other[1000], damage[1000];
-  int laterCount, stencilCount, otherCount, damageCount;
+   int effectCount;
+   DrawLater later[100], stencil[1000], other[1000], damage[1000];
+   int laterCount, stencilCount, otherCount, damageCount;
   
   /**
 	 If 'ground' is true, it draws the ground layer.
@@ -459,12 +459,15 @@ class Map {
   void createOverlayTexture();    
 
   void removeEffect(Sint16 x, Sint16 y, Sint16 z);
+  void removeAllEffects();
 
   void moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
                        Sint16 ox, Sint16 oy, Sint16 oz,
                        Creature *creature);
 
   void drawWater();
+
+  void removeCurrentEffects();
 };
 
 #endif
