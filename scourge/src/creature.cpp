@@ -75,8 +75,7 @@ Creature::~Creature(){
 
 bool Creature::move(Uint16 dir, Map *map) {
 
-  // monster move
-  if(monster) {
+	scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
 	int nx = x;
 	int ny = y;
 	int nz = z;
@@ -102,73 +101,19 @@ bool Creature::move(Uint16 dir, Map *map) {
       ((MD2Shape*)shape)->setDir(dir);
 	  moveTo(nx, ny, nz);
 	  setDir(dir);
-	  return true;
+
+		return true;
 	} else {
 	  map->setCreature(x, y, z, this);
+
+	  if(character) {
+			// Out of my way!
+			setMotion(Constants::MOTION_MOVE_AWAY);
+			move(dir, map);
+		}
+
 	  return false;
 	}
-  }
-
-
-  // character move
-  Uint16 oldDir;
-  while(true) {
-    oldDir = this->dir;
-    this->dir = dir;    
-	
-	Location *position = map->moveCreature(x, y, z, dir, this);
-	if(position == NULL) {
-	  switch(dir) {
-	  case Constants::MOVE_UP:
-		moveTo(x, y - 1, z);
-		break;
-	  case Constants::MOVE_DOWN:
-		moveTo(x, y + 1, z);
-		break;
-	  case Constants::MOVE_LEFT:
-		moveTo(x - 1, y, z);
-		break;
-	  case Constants::MOVE_RIGHT:
-		moveTo(x + 1, y, z);
-		break;
-	  }
-      ((MD2Shape*)shape)->setDir(dir);
-	  scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
-	  return true;
-	} else {
-	  Creature *partyMember = scourge->isPartyMember(position);
-	  if(partyMember) {
-		
-#ifdef ENABLE_PARTY_SWAP
-		// if it's another party member, switch places and try again
-        // This works, but causes an irritating 'jump'
-		map->switchPlaces(partyMember->getX(), partyMember->getY(), partyMember->getZ(),
-						  getX(), getY(), getZ());
-		Sint16 tmpX = getX();
-		Sint16 tmpY = getY();
-		Sint16 tmpZ = getZ();
-		moveTo(partyMember->getX(), partyMember->getY(), partyMember->getZ());
-		partyMember->moveTo(tmpX, tmpY, tmpZ);
-        // adjust the map's center if the player was moved
-        if(partyMember == scourge->getPlayer()) {
-          scourge->getMap()->center(partyMember->getX(), partyMember->getY());
-        } else if(this == scourge->getPlayer()) {
-          scourge->getMap()->center(getX(), getY());
-        }
-        return true;
-#else
-        // Out of my way!
-        partyMember->setMotion(Constants::MOTION_MOVE_AWAY);
-		partyMember->move(dir, map);
-        return false;
-#endif        
-	  } else {
-        this->dir = oldDir;
-        scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
-		return false;
-	  }
-	}
-  }
 }
 
 bool Creature::follow(Map *map) {

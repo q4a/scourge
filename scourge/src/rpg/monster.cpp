@@ -25,19 +25,19 @@ Monster *Monster::monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT] =
   {
 	{
 	  new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX),
-	  new Monster("An Oozing Green Slime", 0, 3, Constants::SLIME_INDEX),
+	  new Monster("An Oozing Green Waddler", 0, 3, Constants::SLIME_INDEX),
 	  new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX),
 	  NULL
 	},
 	{
 	  new Monster("A Rabbid Rodent", 1, 4, Constants::BUGGERLING_INDEX),
-	  new Monster("A Gray Slime", 1, 5, Constants::SLIME_INDEX),
+	  new Monster("A Gray Slimy Waddler", 1, 5, Constants::SLIME_INDEX),
 	  new Monster("A Fleshworm", 1, 3, Constants::BUGGERLING_INDEX),
 	  NULL
 	},
 	{
 	  new Monster("A Kobold", 2, 6, Constants::BUGGERLING_INDEX),
-	  new Monster("A Dire Slime", 2, 6, Constants::SLIME_INDEX),
+	  new Monster("A Dire Stench-Waddler", 2, 6, Constants::SLIME_INDEX),
 	  new Monster("A Minor Spectre", 2, 4, Constants::BUGGERLING_INDEX),
 	  NULL
 	}

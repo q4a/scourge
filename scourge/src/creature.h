@@ -36,11 +36,6 @@
 
 using namespace std;
 
-// if this is defined, party members will exchange places with each other
-// can't get stuck, but can move-off screen.
-// fix this to keep player centered
-//#define ENABLE_PARTY_SWAP 1
-
 #define MAX_CLOSED_NODES 50
 
 class Map;

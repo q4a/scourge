@@ -1026,39 +1026,39 @@ void Scourge::playRound() {
   // -(or) the round was manually started
   if((!player_only && move) || startRound) {
 
-	// remember the players' positions
-	int oldX[4];
-	int oldY[4];
-	for(int i = 0; i < 4; i++) {
-	  oldX[i] = party[i]->getX();
-	  oldY[i] = party[i]->getY();
-	}
+		// remember the players' positions
+		int oldX[4];
+		int oldY[4];
+		for(int i = 0; i < 4; i++) {
+			oldX[i] = party[i]->getX();
+			oldY[i] = party[i]->getY();
+		}
 
-	// move the party members
-	movePlayers();
+		// move the party members
+		movePlayers();
 
-	// if any players moved, onto the next round
-	startRound = false;
-	for(int i = 0; i < 4; i++) {
-	  if(oldX[i] != party[i]->getX() ||
-		 oldY[i] != party[i]->getY()) {
-		startRound = true;
-		break;
-	  }
-	}
+		// if any players moved, onto the next round
+		startRound = false;
+		for(int i = 0; i < 4; i++) {
+			if(oldX[i] != party[i]->getX() ||
+				 oldY[i] != party[i]->getY()) {
+				startRound = true;
+				break;
+			}
+		}
 
-	// move the monsters
-	fprintf(stderr, "FIXME: only move visible creatures!\n");
-	fprintf(stderr, "FIXME: cleanup Creature::move()!\n");
-	for(int i = 0; i < creatureCount; i++) {
-	  moveMonster(creatures[i]);
+		// move visible monsters
+		for(int i = 0; i < creatureCount; i++) {
+			if(map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
+				moveMonster(creatures[i]);
+			}
+		}
 	}
-	
-  }
 }
 
 // move the player in a direction as specified by keystroke
 void Scourge::handleKeyboardMovement() {
+  if(!move) return;
   if(move & Constants::MOVE_UP) {
 	if(getPlayer()->getSelX() == -1) 
 	  getPlayer()->setSelXY(getPlayer()->getX(), getPlayer()->getY() - 1);
