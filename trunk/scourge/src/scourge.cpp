@@ -2230,7 +2230,8 @@ void Scourge::createPartyUI() {
   inventoryButton = cards->createButton( 0, 0, 120, 25, strdup("Party Info"), MAX_SIZE );
   optionsButton = cards->createButton( 0, 25,  60, 50, strdup("Options"), MAX_SIZE );
   quitButton = cards->createButton( 60, 25,  120, 50, strdup("Quit"), MAX_SIZE );
-  roundButton = cards->createButton( 0, 50,  120, 75, strdup("Real-Time"), MAX_SIZE );
+  // string label must be big enough for string changes in toggleRoundUI().
+  roundButton = cards->createButton( 0, 50,  120, 75, strdup("Real-Time      "), MAX_SIZE );
   roundButton->setToggle(true);
   roundButton->setSelected(true);
   
@@ -2579,7 +2580,7 @@ void Scourge::toggleRoundUI(bool startRound) {
       roundButton->setGlowing(false);
     }
   } else {
-    if(startRound) roundButton->getLabel()->setTextCopy("Real-Time");
+    if(startRound) roundButton->getLabel()->setTextCopy("Real-Time      ");
     else roundButton->getLabel()->setTextCopy("Paused");
     roundButton->setGlowing(false);
   }

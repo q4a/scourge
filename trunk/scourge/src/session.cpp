@@ -176,7 +176,6 @@ void Session::stopClientServer() {
 #endif
 
 Item *Session::newItem(RpgItem *rpgItem, Spell *spell) {
-  cerr << "newItem 1, itemCount=" << itemCount << " rpgItem=" << rpgItem->getName() << endl;
   newItems[itemCount] = new Item(rpgItem);
   if(spell) newItems[itemCount]->setSpell(spell);
   itemCount++;
