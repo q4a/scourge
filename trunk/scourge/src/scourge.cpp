@@ -52,55 +52,53 @@ Scourge::Scourge(int argc, char *argv[]){
   Item::initItems();
 
   // init the party
-  party[0] = player = new Creature(this, shapePal->getCreatureShape(Constants::ROGUE_INDEX));
-  party[1] = new Creature(this, shapePal->getCreatureShape(Constants::FIGHTER_INDEX));
-  party[2] = new Creature(this, shapePal->getCreatureShape(Constants::CLERIC_INDEX));
-  party[3] = new Creature(this, shapePal->getCreatureShape(Constants::WIZARD_INDEX));      
+  PlayerChar *pc = new PlayerChar("Alamont", Character::character_class[Character::knight]);
+  party[0] = player = 
+	new Creature(this, shapePal->getCreatureShape(Constants::ROGUE_INDEX), pc);
+  pc = new PlayerChar("Barlett", Character::character_class[Character::loremaster]);
+  party[1] = 
+	new Creature(this, shapePal->getCreatureShape(Constants::FIGHTER_INDEX), pc);
+  pc = new PlayerChar("Corinus", Character::character_class[Character::summoner]);
+  party[2] = 
+	new Creature(this, shapePal->getCreatureShape(Constants::CLERIC_INDEX), pc);
+  pc = new PlayerChar("Dialante", Character::character_class[Character::naturalist]);
+  party[3] = 
+	new Creature(this, shapePal->getCreatureShape(Constants::WIZARD_INDEX), pc);
 
   // hard code the party for now
-  party[0]->setName("Alamont"); party[0]->setPortraitIndex(0);
-  party[0]->setCharacter(Character::knight);
-  party[0]->setLevel(1); party[0]->setExp(300);
-  party[0]->rollAttributes();
-  party[0]->setHp();
-  party[0]->setStateMod(Creature::blessed, true);
-  party[0]->setStateMod(Creature::poisoned, true);
-  for(int i = 0; i < Creature::SKILL_COUNT; i++) {
-      party[0]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  party[0]->getPC()->setLevel(1); party[0]->getPC()->setExp(300);
+  party[0]->getPC()->setHp();
+  party[0]->getPC()->setStateMod(Constants::blessed, true);
+  party[0]->getPC()->setStateMod(Constants::poisoned, true);
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      party[0]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
   
-  party[1]->setName("Barlett"); party[1]->setPortraitIndex(1);
-  party[1]->setCharacter(Character::loremaster);
-  party[1]->setLevel(1); party[1]->setExp(200);
-  party[1]->rollAttributes();
-  party[1]->setHp();
-  party[1]->setStateMod(Creature::drunk, true);
-  party[1]->setStateMod(Creature::cursed, true);      
-  for(int i = 0; i < Creature::SKILL_COUNT; i++) {
-      party[1]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  party[1]->getPC()->setLevel(1); party[1]->getPC()->setExp(200);
+  party[1]->getPC()->setHp();
+  party[1]->getPC()->setStateMod(Constants::drunk, true);
+  party[1]->getPC()->setStateMod(Constants::cursed, true);      
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      party[1]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
   
-  party[2]->setName("Corinus"); party[2]->setPortraitIndex(2);
-  party[2]->setCharacter(Character::summoner);
-  party[2]->setLevel(1); party[2]->setExp(150);
-  party[2]->rollAttributes();
-  party[2]->setHp();
-  party[2]->setStateMod(Creature::ac_protected, true);
-  party[2]->setStateMod(Creature::magic_protected, true);
-  party[2]->setStateMod(Creature::cursed, true);        
-  for(int i = 0; i < Creature::SKILL_COUNT; i++) {
-      party[2]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  party[2]->getPC()->setLevel(1); party[2]->getPC()->setExp(150);
+  party[2]->getPC()->setHp();
+  party[2]->getPC()->setStateMod(Constants::ac_protected, true);
+  party[2]->getPC()->setStateMod(Constants::magic_protected, true);
+  party[2]->getPC()->setStateMod(Constants::cursed, true);        
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      party[2]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
   
-  party[3]->setName("Dialante"); party[3]->setPortraitIndex(3);
-  party[3]->setCharacter(Character::naturalist);
-  party[3]->setLevel(1); party[3]->setExp(400);
-  party[3]->rollAttributes();
-  party[3]->setHp();
-  party[3]->setStateMod(Creature::possessed, true);          
-  for(int i = 0; i < Creature::SKILL_COUNT; i++) {
-      party[3]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+  party[3]->getPC()->setLevel(1); party[3]->getPC()->setExp(400);
+  party[3]->getPC()->setHp();
+  party[3]->getPC()->setStateMod(Constants::possessed, true);          
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+      party[3]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
+
+
   player_only = false;
   inventory = new Inventory(this);
   

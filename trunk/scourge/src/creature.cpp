@@ -17,70 +17,33 @@
 
 #include "creature.h"
 
-	/**
-	 * Formations are defined by 4 set of coordinates in 2d space.
-   * These starting positions assume dir=Constants::MOVE_UP
-	 */
-	static const Sint16 layout[][4][2] = {
-		{ {0, 0}, {-1, 1}, {1, 1}, {0, 2} },  // DIAMOND_FORMATION
-    { {0, 0}, {-1, 1}, {0, 1}, {-1, 2} },  // STAGGERED_FORMATION
-		{ {0, 0}, {1, 0}, {1, 1}, {0, 1} },   // SQUARE_FORMATION
-		{ {0, 0}, {0, 1}, {0, 2}, {0, 3} },   // ROW_FORMATION
-		{ {0, 0}, {-2, 2}, {0, 2}, {2, 2} },  // SCOUT_FORMATION
-		{ {0, 0}, {-1, 1}, {1, 1}, {0, 3} }   // CROSS_FORMATION
-	};
+/**
+ * Formations are defined by 4 set of coordinates in 2d space.
+ * These starting positions assume dir=Constants::MOVE_UP
+ */
+static const Sint16 layout[][4][2] = {
+  { {0, 0}, {-1, 1}, {1, 1}, {0, 2} },  // DIAMOND_FORMATION
+  { {0, 0}, {-1, 1}, {0, 1}, {-1, 2} },  // STAGGERED_FORMATION
+  { {0, 0}, {1, 0}, {1, 1}, {0, 1} },   // SQUARE_FORMATION
+  { {0, 0}, {0, 1}, {0, 2}, {0, 3} },   // ROW_FORMATION
+  { {0, 0}, {-2, 2}, {0, 2}, {2, 2} },  // SCOUT_FORMATION
+  { {0, 0}, {-1, 1}, {1, 1}, {0, 3} }   // CROSS_FORMATION
+};
 
-  const char Creature::ATTR_NAMES[][80] = {
-    "strength", "dexterity", "health", "intel", "willpower", "charisma", "luck"
-  };  
-  const char Creature::STATE_NAMES[][80] = {
-    "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
-    "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed"
-  };
-  const char Creature::STATE_SHORT_NAMES[][10] = {
-    "BL", "EP", "RA", "AP", "MP", "DR", "PO", "CU", "PS", "BL", "CR", "CH"
-  };
-
-  const char *Creature::SKILL_NAMES[80] = {
-      "SWORD_WEAPON",
-      "AXE_WEAPON",
-      "BOW_WEAPON",
-      "SHIELD_DEFEND",
-      "ARMOR_DEFEND",
-      "WEAPON_DEFEND",
-      "MATERIAL_SPELL",
-      "ILLUSION_SPELL",
-      "PSYCHIC_SPELL",
-      "OPEN_LOCK",
-      "FIND_TRAP",
-      "MOVE_UNDETECTED",
-      "SKILL_0", "SKILL_1", "SKILL_2", "SKILL_3", "SKILL_4", "SKILL_5", "SKILL_6", "SKILL_7", "SKILL_8", "SKILL_9",
-
-      "LAST_SKILL"
-  };
-
-Creature::Creature(Scourge *scourge, GLShape *shape) {
+Creature::Creature(Scourge *scourge, GLShape *shape, PlayerChar *pc) {
   this->shape = shape;
-	this->scourge = scourge;
+  this->scourge = scourge;
+  this->pc = pc;
   this->x = this->y = this->z = 0;
-	this->dir = Constants::MOVE_UP;
-	this->next = NULL;
-	this->formation = DIAMOND_FORMATION;
-	this->index = 0;
-  this->character = NULL;
-  this->name = NULL;
-  this->stateMod = (GLuint)0;
-
+  this->dir = Constants::MOVE_UP;
+  this->next = NULL;
+  this->formation = DIAMOND_FORMATION;
+  this->index = 0;
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
 }
 
 Creature::~Creature(){
-  if(name) {
-    free(name);
-    name = NULL;
-  }  
-  delete character;
 }
 
 bool Creature::move(Uint16 dir, Map *map) {
@@ -262,11 +225,5 @@ void Creature::setNext(Creature *next, int index) {
 void Creature::setNextDontMove(Creature *next, int index) {
   this->next = next; 
   this->index = index;
-}
-
-void Creature::rollAttributes() {
-  for(int i = 0; i < 7; i++) {
-    attrib[i] = 1+(int) (20.0*rand()/(RAND_MAX+1.0));
-  }
 }
 

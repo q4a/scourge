@@ -618,11 +618,10 @@ void Map::showCreatureInfo(Creature *creature) {
   
   // draw name
   glTranslatef( 0, 0, 100);
-  scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
+  scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getPC()->getName());
 
   //glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
   glPopMatrix();
-
 }
 
 /**

@@ -30,6 +30,8 @@
 #include "gui.h"
 #include "inventory.h"
 #include "item.h"
+#include "rpg/pc.h"
+#include "rpg/character.h"
 
 using namespace std;
 

@@ -1,6 +1,6 @@
 OBJS = \
 	src/constants.o\
-	src/rpg/rpgitem.o src/rpg/character.o\
+	src/rpg/rpgitem.o src/rpg/character.o src/rpg/pc.o\
 	src/creature.o src/debugshape.o\
 	src/dungeongenerator.o src/glshape.o src/gltorch.o src/gui.o\
 	src/item.o src/location.o src/main.o src/mainmenu.o src/map.o\

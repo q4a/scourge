@@ -43,6 +43,41 @@ PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB = NULL;
 PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
+const char *Constants::SKILL_NAMES[] = {
+  "SWORD_WEAPON",
+  "AXE_WEAPON",
+  "BOW_WEAPON",
+
+  "SPEED",
+  "COORDINATION",
+  "POWER",
+  "IQ",
+  "LEADERSHIP",
+  "LUCK",
+  "PIETY",
+  "LORE",
+
+  "SHIELD_DEFEND",
+  "ARMOR_DEFEND",
+  "WEAPON_DEFEND",
+
+  "MATERIAL_SPELL",
+  "ILLUSION_SPELL",
+  "PSYCHIC_SPELL",
+
+  "OPEN_LOCK",
+  "FIND_TRAP",
+  "MOVE_UNDETECTED",
+
+  "SKILL_0", "SKILL_1", "SKILL_2", "SKILL_3", "SKILL_4", "SKILL_5", "SKILL_6", "SKILL_7", "SKILL_8", "SKILL_9"
+};
+
+const char *Constants::STATE_NAMES[] = {
+  "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
+  "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed"
+};
+
+
 Constants::Constants(){
 }
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          character.cpp  -  description
+                          pc.h  -  description
                              -------------------
     begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -14,25 +14,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "pc.h"
 
-#include "character.h"
-
-Character *Character::character_class[] = {
-  new Character( "Ranger", 10 ),
-  new Character( "Knight", 12 ),
-  new Character( "Tinkerer", 7 ),
-  new Character( "Assassin", 6 ),
-  new Character( "Arcanist", 6 ),
-  new Character( "Loremaster", 6 ),
-  new Character( "Conjurer", 4 ),
-  new Character( "Summoner", 4 ),
-  new Character( "Naturalist", 5 ),
-  new Character( "Monk", 6 )
-};
-
-Character::Character(char *name, int startingHp) {  
+PlayerChar::PlayerChar(char *name, Character *character) {
   this->name = name;
-  this->startingHp = startingHp;
+  this->character = character;
+  this->stateMod = 0;
+  this->level = 1;
+  this->exp = 0;
+  this->hp = 0;
+  this->ac = 0;
+  this->inventory_count = 0;
 }
-Character::~Character(){  
+
+PlayerChar::~PlayerChar() {
+}
+
+RpgItem *PlayerChar::removeInventory(int index) { 
+  RpgItem *item = NULL;
+  if(index < inventory_count) {
+	item = inventory[index];
+	for(int i = index; i < inventory_count - 1; i++) {
+	  inventory[i] = inventory[i + 1];
+	}
+	inventory_count--;
+  }
+  return item;
 }
