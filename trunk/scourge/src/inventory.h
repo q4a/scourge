@@ -105,6 +105,7 @@ private:
 	ScrollingList *objectiveList;
 	char **objectiveText;
 	Color *missionColor, *itemColor;
+  GLuint *itemIcon;
 
 public:
     Inventory(Scourge *scourge);

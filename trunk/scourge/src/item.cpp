@@ -188,6 +188,7 @@ void Item::getDetailedDescription(char *s, bool precise){
 
   rpgItem  = getRpgItem();
   type = rpgItem->getType();
+  /*
   if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
     sprintf(s, "(L:%d,Q:%d,W:%2.2f, N:%d/%d) %s%s", 
             getLevel(), 
@@ -211,6 +212,28 @@ void Item::getDetailedDescription(char *s, bool precise){
             getSpeed(), 
             getQuality(), 
             getWeight(),
+            (precise ? itemName : rpgItem->getShortDesc()),
+            (session->getCurrentMission() && 
+             session->getCurrentMission()->isMissionItem( this ) ? 
+             " *Mission*" : ""));
+  }
+  */
+
+  if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
+    sprintf(s, "(L:%d) %s%s", 
+            getLevel(), 
+            (precise ? itemName : rpgItem->getShortDesc()),
+            (session->getCurrentMission() && 
+             session->getCurrentMission()->isMissionItem( this ) ? 
+             " *Mission*" : ""));
+  } else if(type == RpgItem::SCROLL) {
+    sprintf(s, "(L:%d) %s%s", getLevel(), itemName,
+            (session->getCurrentMission() && 
+             session->getCurrentMission()->isMissionItem( this ) ? 
+             " *Mission*" : ""));
+  } else {
+    sprintf(s, "(L:%d) %s%s", 
+            getLevel(), 
             (precise ? itemName : rpgItem->getShortDesc()),
             (session->getCurrentMission() && 
              session->getCurrentMission()->isMissionItem( this ) ? 
@@ -287,8 +310,9 @@ void Item::initItems(ShapePalette *shapePal) {
       n = Constants::readLine(line, fp);
       strcpy(short_description, line + 1);
       
-      // skip icon tile for now
       n = Constants::readLine(line, fp);
+      int tileX = atoi( strtok( line + 1, "," ) );
+      int tileY = atoi( strtok( NULL, "," ) );
 
       // resolve strings
       int type_index = RpgItem::getTypeByName(type);    
@@ -321,7 +345,8 @@ void Item::initItems(ShapePalette *shapePal) {
                          twohanded, 
                          (distance < (int)Constants::MIN_DISTANCE ? 
                           (int)Constants::MIN_DISTANCE : distance), 
-                         skill_index, maxCharges, potion_skill, potionTime);
+                         skill_index, maxCharges, potion_skill, potionTime, 
+                         tileX - 1, tileY - 1);
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   
     } else if(n == 'A' && last) {

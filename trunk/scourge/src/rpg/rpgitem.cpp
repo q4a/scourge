@@ -60,7 +60,7 @@ int RpgItem::enchantableTypeCount = 4;
 RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
 				 int twohanded, int distance, int skill, int maxCharges, int potionSkill,
-				 int potionTime) {
+				 int potionTime, int iconTileX, int iconTileY) {
   this->index = index;
   this->name = name;
   this->level = level;
@@ -83,6 +83,8 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
   this->potionTime = potionTime;
   this->acl = (GLuint)0xffff; // all on
   this->isWeaponItem = (type == SWORD || type == AXE || type == BOW);
+  this->iconTileX = iconTileX;
+  this->iconTileY = iconTileY;
 }
 
 RpgItem::~RpgItem() {
