@@ -663,10 +663,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 			}
 		  }
 		}
-		// reset battle motion when not in battle
-		for(int i = 0; i < party->getPartySize(); i++) {
-		  party->getParty(i)->setDistanceRange(0, 0);
-		}
 		// end of FIXME
 		
 		
