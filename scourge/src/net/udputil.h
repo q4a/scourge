@@ -1,5 +1,6 @@
+
 /***************************************************************************
-                          protocol.h  -  description
+                          udputil.h  -  description
                              -------------------
     begin                : Sun Sep 28 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,47 +16,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PROTOCOL_H
-#define PROTOCOL_H
+#ifndef UDP_UTIL_H
+#define UDP_UTIL_H
 
 #include "../constants.h"
-#include "../scourge.h"
 
 #ifdef HAVE_SDL_NET
 #include <SDL_net.h>
 #include <SDL_thread.h>
-#include "client.h"
-#include "server.h"
-#endif
 
-/**
- *@author Gabor Torok
- */
-class Protocol {
-private:
-  Scourge *scourge;
+#define ERROR (0xff)
+#define TIMEOUT (5000) //five seconds
+#define PACKET_LENGTH 65535
 
-#ifdef HAVE_SDL_NET
+class UDPUtil {
 
-  static const int DEFAULT_SERVER_PORT = 6543;
-  Server *server;
-  Client *client;
-#endif
+  public:
 
- public:
-   static const char *localhost;
-   static const char *adminUserName;
-
-  Protocol(Scourge *scourge);
-  ~Protocol(); 
-#ifdef HAVE_SDL_NET
-  int startServer(int port=DEFAULT_SERVER_PORT);
-  void stopServer();
-  Uint32 login(char *server, int port, char *name);
-  void logout();
-  void sendChat(char *message);
-
-#endif
+static int udpsend(UDPsocket sock, int channel, 
+                   UDPpacket *out, UDPpacket *in, 
+                   Uint32 delay, Uint8 expect, 
+                   int timeout);
+static int udprecv(UDPsocket sock, UDPpacket *in, 
+                   Uint32 delay, Uint8 expect, 
+                   int timeout);
 };
 
 #endif
+
+#endif
+

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          protocol.h  -  description
+                          client.h  -  description
                              -------------------
     begin                : Sun Sep 28 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,47 +15,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PROTOCOL_H
-#define PROTOCOL_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
 #include "../constants.h"
-#include "../scourge.h"
 
 #ifdef HAVE_SDL_NET
-#include <SDL_net.h>
-#include <SDL_thread.h>
-#include "client.h"
-#include "server.h"
-#endif
+  #include <SDL_net.h>
+  #include <SDL_thread.h>
+  #include "udputil.h"
 
 /**
  *@author Gabor Torok
  */
-class Protocol {
+class Client {
 private:
-  Scourge *scourge;
+  char *clientServerName;
+  char *clientUserName;
+  int clientPort;
+  UDPsocket clientSocket;
+  UDPpacket *clientOut, *clientIn;
+  IPaddress clientServerIP;
+  Uint32 clientId;
 
-#ifdef HAVE_SDL_NET
-
-  static const int DEFAULT_SERVER_PORT = 6543;
-  Server *server;
-  Client *client;
-#endif
-
- public:
-   static const char *localhost;
-   static const char *adminUserName;
-
-  Protocol(Scourge *scourge);
-  ~Protocol(); 
-#ifdef HAVE_SDL_NET
-  int startServer(int port=DEFAULT_SERVER_PORT);
-  void stopServer();
-  Uint32 login(char *server, int port, char *name);
+public:
+  Client(char *server, int port, char *name);
+  ~Client(); 
+  Uint32 login();
   void logout();
   void sendChat(char *message);
 
-#endif
-};
+  inline Uint32 getUserId() { return clientId; }
+};              
 
 #endif
+#endif
+
