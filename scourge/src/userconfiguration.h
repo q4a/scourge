@@ -206,11 +206,10 @@ private:
   inline int setW(int t)           { w=t;          }
   inline int setH(int t)           { h=t;          }
   inline int setShadows(int t)     { shadows=t; }
-  inline int setGameSpeedLevel(int t)   { gamespeed=t; } // [0, 1, 2, 3, 4]
+  inline int setGameSpeedLevel(int t)   { if(t >= 0 && t <= 4) gamespeed=t; } // [0, 1, 2, 3, 4]
   inline bool setAlwaysCenterMap(int t) { centermap=t; }
   
-  // return/set gameSpeed in ticks
-  int setGameSpeedTicks(int ticks);
+  // return gameSpeed in ticks
   int getGameSpeedTicks();           
   
   
