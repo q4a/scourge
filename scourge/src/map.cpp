@@ -38,8 +38,8 @@ const float Map::shadowTransformMatrix[16] = {
 	0.5f, -0.5f, 0, 0,
 	0, 0, 0, 1 };
 
-Map::Map(Scourge *scourge) {
-  this->scourge = scourge;  
+Map::Map(Session *session) {
+  this->session = session;  
   zoom = 1.0f;
   zoomIn = zoomOut = false;
   x = y = 0;
@@ -66,8 +66,8 @@ Map::Map(Scourge *scourge) {
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
   setViewArea(0, 0, 
-              scourge->getSDLHandler()->getScreen()->w, 
-              scourge->getSDLHandler()->getScreen()->h);
+              session->getGameAdapter()->getScreenWidth(), 
+              session->getGameAdapter()->getScreenHeight());
 
   float adjust = (float)viewWidth / 800.0f;
   this->xpos = (float)(viewWidth) / 2.0f / adjust;
@@ -76,10 +76,6 @@ Map::Map(Scourge *scourge) {
 
   this->debugGridFlag = false;
   this->drawGridFlag = false;
-
-  targetWidth = 0.0f;
-  targetWidthDelta = 0.05f / GLShape::DIV;
-  lastTick = SDL_GetTicks();
   
   // initialize shape graph of "in view shapes"
   for(int x = 0; x < MAP_WIDTH; x++) {
@@ -171,8 +167,8 @@ void Map::reset() {
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
   setViewArea(0, 0, 
-              scourge->getSDLHandler()->getScreen()->w, 
-              scourge->getSDLHandler()->getScreen()->h);
+              session->getGameAdapter()->getScreenWidth(), 
+              session->getGameAdapter()->getScreenHeight());
 
   float adjust = (float)viewWidth / 800.0f;
   this->xpos = (float)(viewWidth) / 2.0f / adjust;
@@ -181,10 +177,6 @@ void Map::reset() {
 
   this->debugGridFlag = false;
   this->drawGridFlag = false;
-
-  targetWidth = 0.0f;
-  targetWidthDelta = 0.05f / GLShape::DIV;
-//  lastTick = SDL_GetTicks();
   
   // initialize shape graph of "in view shapes"
   for(int x = 0; x < MAP_WIDTH; x++) {
@@ -222,8 +214,8 @@ void Map::setViewArea(int x, int y, int w, int h) {
   viewHeight = h;
 
   float adjust = (float)viewWidth / 800.0f;
-  if(scourge->getUserConfiguration()->getKeepMapSize()) {
-    zoom = (float)scourge->getSDLHandler()->getScreen()->w / (float)w;
+  if(session->getUserConfiguration()->getKeepMapSize()) {
+    zoom = (float)session->getGameAdapter()->getScreenWidth() / (float)w;
   }
   xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
   ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
@@ -242,7 +234,7 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
                          ((float)viewHeight / 
                           (float)scourge->getSDLHandler()->getScreen()->h)) / 2.0f);
   */
-  if(scourge->getUserConfiguration()->getAlwaysCenterMap() || force) {
+  if(session->getUserConfiguration()->getAlwaysCenterMap() || force) {
 	//  if(scourge->getUserConfiguration()->getAlwaysCenterMap() ||
 	//     abs(this->x - nx) > X_CENTER_TOLERANCE ||
 	//     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
@@ -275,7 +267,7 @@ void Map::move(int dir) {
 	if(dir & Constants::MOVE_UP) setYRot(rot);
 	if(dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
 	if(dir & Constants::MOVE_LEFT) setZRot(rot);
-  } else if(!scourge->getUserConfiguration()->getAlwaysCenterMap()) {
+  } else if(!session->getUserConfiguration()->getAlwaysCenterMap()) {
 	
 	// stop rotating (angle of rotation is kept)
 	setYRot(0);
@@ -479,11 +471,11 @@ void Map::setupShapes(bool ground) {
 				// FIXME: this draws more doors than needed... 
 				// it should use doorValue to figure out what needs to be drawn
 				if((!lightMap[chunkX][chunkY] && 
-					(shape == scourge->getShapePalette()->findShapeByName("NS_DOOR") ||
-					 shape == scourge->getShapePalette()->findShapeByName("EW_DOOR") ||
-					 shape == scourge->getShapePalette()->findShapeByName("NS_DOOR_TOP") ||
-					 shape == scourge->getShapePalette()->findShapeByName("EW_DOOR_TOP") ||
-					 shape == scourge->getShapePalette()->findShapeByName("DOOR_SIDE"))) ||
+					(shape == session->getShapePalette()->findShapeByName("NS_DOOR") ||
+					 shape == session->getShapePalette()->findShapeByName("EW_DOOR") ||
+					 shape == session->getShapePalette()->findShapeByName("NS_DOOR_TOP") ||
+					 shape == session->getShapePalette()->findShapeByName("EW_DOOR_TOP") ||
+					 shape == session->getShapePalette()->findShapeByName("DOOR_SIDE"))) ||
 				   (lightMap[chunkX][chunkY] && shape)) {
 				  xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
 								  xp + chunkOffsetX) / GLShape::DIV;
@@ -582,65 +574,6 @@ void Map::setupPosition(int posX, int posY, int posZ,
   }
 }
 
-void Map::drawDraggedItem() {
-  if(scourge->getMovingItem()) {
-	// glDisable(GL_DEPTH_TEST);
-	//	glDepthMask(GL_FALSE);
-	glPushMatrix();
-	glLoadIdentity();	
-	glTranslatef( scourge->getSDLHandler()->mouseX, scourge->getSDLHandler()->mouseY, 500);
-	glRotatef( xrot, 0.0f, 1.0f, 0.0f );  
-	glRotatef( yrot, 1.0f, 0.0f, 0.0f );  
-	glRotatef( zrot, 0.0f, 0.0f, 1.0f );
-	doDrawShape(0, 0, 0, scourge->getMovingItem()->getShape(), 0);
-	glPopMatrix();
-	//	glEnable(GL_DEPTH_TEST);
-	//glDepthMask(GL_TRUE);
-  }
-
-
-  /*
-  float xpos2, ypos2, zpos2;  
-  Shape *shape = NULL;  
-
-  if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
-	 selY >= getY() && selY < getY() + MAP_VIEW_DEPTH &&
-	 selZ < MAP_VIEW_HEIGHT &&
-	 scourge->getMovingItem()) {
-
-	shape = scourge->getMovingItem()->getShape();	
-	int newz = selZ;
-	Location *dropLoc = isBlocked(selX, selY, selZ, -1, -1, -1, shape, &newz);
-	selZ = newz;
-
-	// only let drop on other creatures and containers
-	// unfortunately I have to call isWallBetween(), so objects aren't dragged behind walls
-	// this makes moving items slow
-	if(dropLoc || 
-	   (oldLocatorSelX < MAP_WIDTH && 
-		isWallBetween(selX, selY, selZ, 
-					  oldLocatorSelX, 
-					  oldLocatorSelY, 
-					  oldLocatorSelZ))) {
-	  selX = oldLocatorSelX;
-	  selY = oldLocatorSelY;
-	  selZ = oldLocatorSelZ;
-	}
-	
-	xpos2 = ((float)(selX - getX()) / GLShape::DIV);
-	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
-	zpos2 = (float)(selZ) / GLShape::DIV;
-	
-	doDrawShape(xpos2, ypos2, zpos2, shape, 0);
-
-	oldLocatorSelX = selX;
-	oldLocatorSelY = selY;
-	oldLocatorSelZ = selZ;
-  }
-  */
-
-}
-
 void Map::draw() {
   if(zoomIn) {
     if(zoom <= 0.5f) {
@@ -703,7 +636,7 @@ void Map::draw() {
     if(debugX < MAP_WIDTH && debugX >= 0) {
       DrawLater later2;
 
-      later2.shape = scourge->getShapePalette()->findShapeByName("LAMP_BASE");
+      later2.shape = session->getShapePalette()->findShapeByName("LAMP_BASE");
 
       later2.xpos = ((float)(debugX - getX()) / GLShape::DIV);
       later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
@@ -730,8 +663,8 @@ void Map::draw() {
       doDrawShape(&other[i]);
     }
 
-    if(scourge->getUserConfiguration()->getStencilbuf() &&
-       scourge->getUserConfiguration()->getStencilBufInitialized()) {
+    if(session->getUserConfiguration()->getStencilbuf() &&
+       session->getUserConfiguration()->getStencilBufInitialized()) {
       // create a stencil for the walls
       glDisable(GL_DEPTH_TEST);
       glColorMask(0,0,0,0);
@@ -750,7 +683,7 @@ void Map::draw() {
       setupShapes(true);
 
       // shadows
-      if(scourge->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
+      if(session->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
         glStencilFunc(GL_EQUAL, 0, 0xffffffff);  // draw if stencil=0
         // GL_INCR makes sure to only draw shadow once
         glStencilOp(GL_KEEP, GL_KEEP, GL_INCR); 
@@ -759,7 +692,7 @@ void Map::draw() {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         useShadow = true;
-        if(scourge->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
+        if(session->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
           for(int i = 0; i < stencilCount; i++) {
             doDrawShape(&stencil[i]);
           }
@@ -811,73 +744,9 @@ void Map::draw() {
     glDepthMask(GL_TRUE);    
     
 
-    // draw the projectiles
-    DrawLater dl;
-    vector<Projectile*> removedProjectiles;
-    map<Projectile*, Creature*> battleProjectiles;
-    map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
-    for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-      //Creature *creature = i->first;
-      vector<Projectile*> *p = i->second;
-      for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
-        Projectile *proj = *e;
+    drawProjectiles();
 
-        // draw it
-        dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
-        //		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
-        dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
-        dl.zpos = (float)(7) / GLShape::DIV;
-        dl.shape = proj->getShape();
-        dl.creature = NULL;
-        dl.item = NULL;
-        dl.projectile = proj;
-        dl.name = 0;
-
-        if(proj->getSpell()) {
-          glEnable(GL_BLEND);
-          glDepthMask(GL_FALSE);
-          proj->getShape()->setupBlending();
-        }
-        doDrawShape(&dl);
-        if(proj->getSpell()) {
-          proj->getShape()->endBlending();
-          glDisable(GL_BLEND);
-          glDepthMask(GL_TRUE);
-        }
-
-        // collision detection
-        bool blocked = false;
-        Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
-        if(loc && proj->doesStopOnImpact()) {
-          if(loc->creature && 
-             proj->getCreature()->isMonster() != loc->creature->isMonster()) {
-            // attack monster
-            //Battle::projectileHitTurn(scourge, proj, loc->creature);
-            battleProjectiles[proj] = loc->creature;
-            blocked = true;
-          } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
-                    (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
-            // hit something
-            blocked = true;
-          }
-          if(blocked) {
-            removedProjectiles.push_back(proj);
-          }
-        }
-      }
-    }
-    // fight battles
-    for(map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
-      Projectile *proj = i->first;
-      Creature *creature = i->second;
-      Battle::projectileHitTurn(scourge, proj, creature);
-    }
-    // remove projectiles
-    for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
-      Projectile::removeProjectile(*e);
-    }
-
-
+    /*
     if(scourge->getTargetSelectionFor()) {
       glPushMatrix();
       glLoadIdentity();
@@ -892,11 +761,82 @@ void Map::draw() {
       //glDepthMask(GL_TRUE);    
       glPopMatrix();
     }
+    */
 
     //drawDraggedItem();
   }
 
   glDisable( GL_SCISSOR_TEST );
+}
+
+void Map::drawProjectiles() {
+  // draw the projectiles
+  DrawLater dl;
+  vector<Projectile*> removedProjectiles;
+  map<Projectile*, Creature*> battleProjectiles;
+  map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
+  for (map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
+    //Creature *creature = i->first;
+    vector<Projectile*> *p = i->second;
+    for (vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+      Projectile *proj = *e;
+
+      // draw it
+      dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
+      //		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
+      dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
+      dl.zpos = (float)(7) / GLShape::DIV;
+      dl.shape = proj->getShape();
+      dl.creature = NULL;
+      dl.item = NULL;
+      dl.projectile = proj;
+      dl.name = 0;
+
+      if (proj->getSpell()) {
+        glEnable(GL_BLEND);
+        glDepthMask(GL_FALSE);
+        proj->getShape()->setupBlending();
+      }
+      doDrawShape(&dl);
+      if (proj->getSpell()) {
+        proj->getShape()->endBlending();
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+      }
+
+      // collision detection
+      bool blocked = false;
+      Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
+      if (loc && proj->doesStopOnImpact()) {
+        if (loc->creature && 
+            proj->getCreature()->isMonster() != loc->creature->isMonster()) {
+          // attack monster
+          //Battle::projectileHitTurn(scourge, proj, loc->creature);
+          battleProjectiles[proj] = loc->creature;
+          blocked = true;
+        } else if ((loc->item && loc->item->getShape()->getHeight() >= 6) ||
+                   (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
+          // hit something
+          blocked = true;
+        }
+        if (blocked) {
+          removedProjectiles.push_back(proj);
+        }
+      }
+    }
+  }
+
+  // fight battles
+  for (map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
+    Projectile *proj = i->first;
+    Creature *creature = i->second;
+    session->getGameAdapter()->fightProjectileHitTurn(proj, creature);
+  }
+
+  // remove projectiles
+  for (vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
+    Projectile::removeProjectile(*e);
+  }
 }
 
 void Map::drawShade() {
@@ -928,126 +868,6 @@ void Map::drawShade() {
   glEnd();
 
   //glEnable( GL_TEXTURE_2D );
-  glEnable(GL_DEPTH_TEST);
-  glPopMatrix();
-
-}
-
-void Map::drawBorder() {
-
-  if(viewWidth == scourge->getSDLHandler()->getScreen()->w && 
-     viewHeight == scourge->getSDLHandler()->getScreen()->h &&
-     !scourge->getUserConfiguration()->getFrameOnFullScreen()) return;
-
-  glPushMatrix();
-  glLoadIdentity();
-
-  glTranslatef(viewX, viewY, 100);
-
-  //  glDisable(GL_BLEND);
-  glDisable(GL_DEPTH_TEST);
-
-  // draw border
-  glColor4f( 1, 1, 1, 1);
-
-  int w = (viewWidth == scourge->getSDLHandler()->getScreen()->w ? viewWidth : viewWidth - Window::SCREEN_GUTTER);
-  int h = (viewHeight == scourge->getSDLHandler()->getScreen()->h ? viewHeight : viewHeight - Window::SCREEN_GUTTER);
-  float TILE_W = 20.0f;
-  float TILE_H = 120.0f;
-
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getBorderTexture() );
-  glBegin( GL_QUADS );
-  // left
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, 0);
-  glTexCoord2f (0.0f, h/TILE_H);
-  glVertex2i (0, h);
-  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
-  glVertex2i ((int)TILE_W, h);
-  glTexCoord2f (TILE_W/TILE_W, 0.0f);      
-  glVertex2i ((int)TILE_W, 0);
-
-  // right
-  glTexCoord2f (TILE_W/TILE_W, 0.0f);
-  glVertex2i (w - (int)TILE_W, 0);
-  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
-  glVertex2i (w - (int)TILE_W, h);
-  glTexCoord2f (0.0f, h/TILE_H);
-  glVertex2i (w, h);
-  glTexCoord2f (0.0f, 0.0f);      
-  glVertex2i (w, 0);
-  glEnd();
-
-  TILE_W = 120.0f;
-  TILE_H = 20.0f;
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getBorder2Texture() );
-  glBegin( GL_QUADS );
-  // top
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, 0);
-  glTexCoord2f (0.0f, TILE_H/TILE_H);
-  glVertex2i (0, (int)TILE_H);
-  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
-  glVertex2i (w, (int)TILE_H);
-  glTexCoord2f (w/TILE_W, 0.0f);      
-  glVertex2i (w, 0);
-
-  // bottom
-  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
-  glVertex2i (0, h - (int)TILE_H);
-  glTexCoord2f (w/TILE_W, 0.0f);
-  glVertex2i (0, h);
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (w, h);
-  glTexCoord2f (0.0f, TILE_H/TILE_H);      
-  glVertex2i (w, h - (int)TILE_H);
-  glEnd();
-
-  //int gw = 128;
-  //int gh = 96;
-
-  int gw = 115;
-  int gh = 81;
-  glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_NOTEQUAL, 0 );
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getGargoyleTexture() );
-
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef(10, -5, 0);
-  glRotatef(20, 0, 0, 1);
-  glBegin( GL_QUADS );
-  // top left
-  glTexCoord2f (1, 0);
-  glVertex2i (0, 0);
-  glTexCoord2f (1, 1);
-  glVertex2i (0, gh);
-  glTexCoord2f (0, 1);
-  glVertex2i (gw, gh);
-  glTexCoord2f (0, 0);      
-  glVertex2i (gw, 0);
-  glEnd();
-  glPopMatrix();
-
-  // top right
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef(w - (gw + 7), 35, 0);
-  glRotatef(-20, 0, 0, 1);
-  glBegin( GL_QUADS );
-  glTexCoord2f (0, 0);
-  glVertex2i (0, 0);
-  glTexCoord2f (0, 1);
-  glVertex2i (0, gh);
-  glTexCoord2f (1, 1);
-  glVertex2i (gw, gh);
-  glTexCoord2f (1, 0);      
-  glVertex2i (gw, 0);
-  glEnd();
-  glPopMatrix();
-
-  //glEnable( GL_TEXTURE_2D );
-  glDisable( GL_ALPHA_TEST );
   glEnable(GL_DEPTH_TEST);
   glPopMatrix();
 
@@ -1145,6 +965,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   glPopMatrix();
 }                                                                     
 
+/*
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
   float xpos2 = ((float)(mapx - getX()) / GLShape::DIV);
   float ypos2 = ((float)(mapy - getY()) / GLShape::DIV);
@@ -1157,139 +978,7 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
 
   glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
 }
-
-void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode) {
-  glPushMatrix();
-  //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
-
-  glEnable( GL_DEPTH_TEST );
-  glDepthMask(GL_FALSE);
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  glDisable( GL_CULL_FACE );
-
-  // draw circle
-  double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
-  double s = 0.35f / GLShape::DIV;
-  
-  float xpos2, ypos2, zpos2;
-
-  GLint t = SDL_GetTicks();
-  if(t - lastTick > 45) {
-	// initialize target width
-	if(targetWidth == 0.0f) {
-	  targetWidth = s;
-	  targetWidthDelta *= -1.0f;
-	}
-	// targetwidth oscillation
-	targetWidth += targetWidthDelta;
-	if((targetWidthDelta < 0 && targetWidth < s) || 
-	   (targetWidthDelta > 0 && targetWidth >= s + (5 * targetWidthDelta))) 
-	  targetWidthDelta *= -1.0f;
-	lastTick = t;
-  }
-
-  if(player && creature->getSelX() > -1 && 
-	 !creature->getTargetCreature() &&
-	 !(creature->getSelX() == creature->getX() && creature->getSelY() == creature->getY()) ) {
-	// draw target
-	glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
-	xpos2 = ((float)(creature->getSelX() - getX()) / GLShape::DIV);
-	ypos2 = ((float)(creature->getSelY() - getY()) / GLShape::DIV);
-	zpos2 = 0.0f / GLShape::DIV;  
-	glPushMatrix();
-	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-	gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
-	glPopMatrix();
-  }
-
-  if(player && creature->getTargetCreature()) {
-	glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
-	xpos2 = ((float)(creature->getTargetCreature()->getX() - getX()) / GLShape::DIV);
-	ypos2 = ((float)(creature->getTargetCreature()->getY() - getY()) / GLShape::DIV);
-	zpos2 = 0.0f / GLShape::DIV;  
-	glPushMatrix();
-	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-	gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
-	glPopMatrix();
-  }
-
-  xpos2 = ((float)(creature->getX() - getX()) / GLShape::DIV);
-  ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
-  zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
-
-  if(creature->getAction() != Constants::ACTION_NO_ACTION) {
-	glColor4f(0, 0.7, 1, 0.5f);
-  } else if(selected) {
-	glColor4f(0, 1, 1, 0.5f);
-  } else if(player) {
-	glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-  } else {
-	glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
-  }
-
-  // draw state mods
-  if(groupMode || player) {
-	glEnable(GL_TEXTURE_2D);
-	int n = 16;
-	//float x = 0.0f;
-	//float y = 0.0f;
-	int on = 0;
-	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	  if(creature->getStateMod(i) && i != Constants::dead) {
-		on++;
-	  }
-	}
-	int count = 0;
-	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	  if(creature->getStateMod(i) && i != Constants::dead) {
-		glPushMatrix();
-		glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-		//		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
-		//		glRotatef( count * (360.0f / on), 0, 0, 1 );
-		float angle = -(count * 30) - (zrot + 180);
-		glRotatef( angle, 0, 0, 1 );
-		glTranslatef( w / 2.0f + 15, 0, 0 );
-		glRotatef( (count * 30) + 180, 0, 0, 1 );
-		glTranslatef( -7, -7, 0 );
-		//	  drawStateMod(i);
-		//glColor4f( 1, 1, 1, 1 );
-		GLuint icon = scourge->getShapePalette()->getStatModIcon(i);
-		if(icon) {
-		  glBindTexture( GL_TEXTURE_2D, icon );
-		}
-		glBegin( GL_QUADS );
-		glNormal3f( 0, 0, 1 );
-		if(icon) glTexCoord2f( 0, 0 );
-		glVertex3f( 0, 0, 0 );
-		if(icon) glTexCoord2f( 0, 1 );
-		glVertex3f( 0, n, 0 );
-		if(icon) glTexCoord2f( 1, 1 );
-		glVertex3f( n, n, 0 );
-		if(icon) glTexCoord2f( 1, 0 );
-		glVertex3f( n, 0, 0 );
-		glEnd();
-		glPopMatrix();
-		count++;
-	  }
-	}
-	glDisable(GL_TEXTURE_2D);
-  }
-
-  glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-  if(groupMode || player) gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
-
-  glEnable( GL_CULL_FACE );
-  glDisable( GL_BLEND );
-  glDisable( GL_DEPTH_TEST );
-  glDepthMask(GL_TRUE);
- 
-  // draw name
-  glTranslatef( 0, 0, 100);
-  scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
-
-  glPopMatrix();
-}
+*/
 
 /**
  * Initialize the map view (translater, rotate)
@@ -1299,7 +988,7 @@ void Map::initMapView(bool ignoreRot) {
 
   glTranslatef(viewX, viewY, 0);
   glScissor(viewX, 
-            scourge->getSDLHandler()->getScreen()->h - (viewY + viewHeight),
+            session->getGameAdapter()->getScreenHeight() - (viewY + viewHeight),
             viewWidth, viewHeight);
   glEnable( GL_SCISSOR_TEST );
 
@@ -1361,10 +1050,11 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
+  cerr << "FIXME: Map::setFloorPosition" << endl;
   for(int xp = 0; xp < shape->getWidth(); xp++) {
-	for(int yp = 0; yp < shape->getDepth(); yp++) {
-	  scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
-	}
+    for(int yp = 0; yp < shape->getDepth(); yp++) {
+      //  scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
+    }
   }
 }
 
@@ -1372,13 +1062,14 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
 	Shape *shape = NULL;
   if(floorPositions[x][y]) {
     shape = floorPositions[x][y];
-	floorPositions[x][y] = 0;
-	for(int xp = 0; xp < shape->getWidth(); xp++) {
-	  for(int yp = 0; yp < shape->getDepth(); yp++) {
-		// fixme : is it good or not to erase the minimap too ???       
-		scourge->getMiniMap()->eraseMiniMapPoint(x, y);
-	  }
-	}
+    floorPositions[x][y] = 0;
+    cerr << "FIXME: Map::setFloorPosition" << endl;
+    for(int xp = 0; xp < shape->getWidth(); xp++) {
+      for(int yp = 0; yp < shape->getDepth(); yp++) {
+        // fixme : is it good or not to erase the minimap too ???       
+        //scourge->getMiniMap()->eraseMiniMapPoint(x, y);
+      }
+    }
   }
 	return shape;
 }
@@ -1528,7 +1219,7 @@ void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) 
 			Shape *shape = loc->shape;
 			//fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
 			if(shape) {
-			  description = scourge->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
+			  description = session->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
 			}        
 		  }
 		}
@@ -1565,6 +1256,8 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   if(!effect[x][y][z]) {
     effect[x][y][z] = new EffectLocation();
   }
+  cerr << "FIXME: Map::startEffect" << endl;
+  /*
   effect[x][y][z]->effect = new Effect(scourge,
                                        scourge->getShapePalette(), 
                                        width, height);
@@ -1580,6 +1273,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
 
   // need to do this to make sure effect shows up
   mapChanged = true;
+  */
 }
 
 void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
@@ -1596,9 +1290,10 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
   if(shape) {
 	mapChanged = true;
+  cerr << "FIXME: Map::setPosition" << endl;
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 	  for(int yp = 0; yp < shape->getDepth(); yp++) {
-	    scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
+	    //scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
 		for(int zp = 0; zp < shape->getHeight(); zp++) {
 		  
 		  if(!pos[x + xp][y - yp][z + zp]) {
@@ -1627,10 +1322,11 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	mapChanged = true;
     shape = pos[x][y][z]->shape;
+    cerr << "FIXME: Map::removePosition" << endl;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???
-        scourge->getMiniMap()->eraseMiniMapPoint(x + xp, y - yp);
+        //scourge->getMiniMap()->eraseMiniMapPoint(x + xp, y - yp);
         for(int zp = 0; zp < shape->getHeight(); zp++) {
             //cerr <<"remove pos " << x + xp << "," << y - yp << "," << z + zp<<endl;
 		  delete pos[x + xp][y - yp][z + zp];
@@ -1928,11 +1624,11 @@ void Map::configureLightMap() {
   }
   if(!LIGHTMAP_ENABLED) return;
 
-  int chunkX = (scourge->getParty()->getPlayer()->getX() + 
-				(scourge->getParty()->getPlayer()->getShape()->getWidth() / 2) - 
+  int chunkX = (session->getParty()->getPlayer()->getX() + 
+				(session->getParty()->getPlayer()->getShape()->getWidth() / 2) - 
 				MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (scourge->getParty()->getPlayer()->getY() - 
-				(scourge->getParty()->getPlayer()->getShape()->getDepth() / 2) - 
+  int chunkY = (session->getParty()->getPlayer()->getY() - 
+				(session->getParty()->getPlayer()->getShape()->getDepth() / 2) - 
 				MAP_OFFSET) / MAP_UNIT;
 
   traceLight(chunkX, chunkY);

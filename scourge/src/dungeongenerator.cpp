@@ -732,7 +732,7 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
 
-  scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+  //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
   bool preGenerated = (locationIndex);
   locationIndex--;
@@ -981,7 +981,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
 				}
 			}
 			rpgItem = RpgItem::getRandomContainer();
@@ -991,7 +991,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
 				}
 			}
 		}
@@ -1004,7 +1004,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
 				}
 			}
 			rpgItem = RpgItem::getRandomContainerNS();
@@ -1014,7 +1014,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				if(map->shapeFits(shape, x, y, 0) && 
 					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
+					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
 				}
 			}
 		}
@@ -1110,7 +1110,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				cerr << "Warning: no items defined for level: " << level << endl;
 				break;
 			}
-			Item *item = scourge->newItem(rpgItem);
+			Item *item = scourge->getSession()->newItem(rpgItem);
 			getRandomLocation(map, item->getShape(), &x, &y);
 			addItem(map, NULL, item, NULL, x, y);
 		}
@@ -1120,9 +1120,9 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		  // mission objects are on a pedestal
 		  // and make them blocking so creatures can't get them
 		  for(int i = 0; i < mission->getObjective()->itemCount; i++) {
-			Item *item = scourge->newItem(mission->getObjective()->item[i]);
+			Item *item = scourge->getSession()->newItem(mission->getObjective()->item[i]);
 			item->setBlocking(true); // don't let monsters pick this up
-			Item *pedestal = scourge->newItem(RpgItem::getItemByName("Pedestal"));
+			Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
 			getRandomLocation(map, pedestal->getShape(), &x, &y);
 			addItem(map, NULL, pedestal, NULL, x, y);
 			addItem(map, NULL, item, NULL, 
@@ -1138,7 +1138,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			  scourge->getShapePalette()->
 			  getCreatureBlockShape(mission->getObjective()->monster[i]->getModelName());
 			getRandomLocation(map, shape, &x, &y);		
-			Creature *creature = scourge->newCreature(mission->getObjective()->monster[i]);
+			Creature *creature = scourge->getSession()->newCreature(mission->getObjective()->monster[i]);
 			addItem(map, creature, NULL, NULL, x, y);
 			creature->moveTo(x, y, 0);
 			cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
@@ -1152,7 +1152,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				cerr << "Warning: no spells defined for level: " << level << endl;
 				break;
 			}
-			Item *item = scourge->newItem(RpgItem::getItemByName("Scroll"), spell);
+			Item *item = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
 			getRandomLocation(map, item->getShape(), &x, &y);
 			addItem(map, NULL, item, NULL, x, y);
 		}
@@ -1183,7 +1183,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 
 				if(fits) {
 					//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
-					Creature *creature = scourge->newCreature(monster);
+					Creature *creature = scourge->getSession()->newCreature(monster);
 					addItem(map, creature, NULL, NULL, x, y);
 					creature->moveTo(x, y, 0);
 					areaCovered += (creature->getShape()->getWidth() * 
@@ -1202,7 +1202,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				cerr << "Warning: no monsters defined for level: " << level << endl;
 				break;
 			}	
-			Creature *creature = scourge->newCreature(monster);
+			Creature *creature = scourge->getSession()->newCreature(monster);
 			getRandomLocation(map, creature->getShape(), &x, &y);
 			addItem(map, creature, NULL, NULL, x, y);
 			creature->moveTo(x, y, 0);
@@ -1377,7 +1377,7 @@ void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n,
 				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 				bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
 				if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
-					Item *item = scourge->newItem(rpgItem);
+					Item *item = scourge->getSession()->newItem(rpgItem);
 					addItem(scourge->getMap(), NULL, item, NULL, x, y);
 					break;
 				}
@@ -1495,7 +1495,7 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
     int n = (int)(3.0f * rand() / RAND_MAX);
     for(int i = 0; i < n; i++) {
       RpgItem *containedItem = RpgItem::getRandomItem(level);
-      if(containedItem) item->addContainedItem(scourge->newItem(containedItem));
+      if(containedItem) item->addContainedItem(scourge->getSession()->newItem(containedItem));
     }
     // some spells
     if(!((int)(25.0f * rand() / RAND_MAX))) {
@@ -1503,7 +1503,7 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
       for(int i = 0; i < n; i++) {
         Spell *spell = MagicSchool::getRandomSpell(level);
         if(spell) {
-          Item *scroll = scourge->newItem(RpgItem::getItemByName("Scroll"), spell);
+          Item *scroll = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
           item->addContainedItem(scroll);
         }
       }

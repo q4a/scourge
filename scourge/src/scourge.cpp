@@ -52,9 +52,6 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   isInfoShowing = true; // what is this?
   info_dialog_showing = false;
 
-  // new item and creature references
-  itemCount = creatureCount = 0;
-
   // we're not in target selection mode
   targetSelectionFor = NULL;
   
@@ -75,6 +72,12 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   inventory = NULL;
   containerGuiCount = 0;
   changingStory = false;  
+
+  targetWidth = 0.0f;
+  targetWidthDelta = 0.05f / GLShape::DIV;
+  lastTargetTick = SDL_GetTicks();
+
+  lastEffectOn = false;
 }
 
 void Scourge::initVideo(ShapePalette *shapePal) {
@@ -85,25 +88,30 @@ void Scourge::initVideo(ShapePalette *shapePal) {
   sdlHandler->setVideoMode(userConfiguration); 
 }
 
-void Scourge::initUI() {
+void Scourge::initUI(Session *session) {
 
-  map = new Map(this);
+  this->session = session;
+
+  // for now pass map in
+  this->map = session->getMap();
   miniMap = new MiniMap(this); 
 
   // init characters first. Items use it for acl
-  Character::initCharacters();
+  //Character::initCharacters();
   // initialize the items
-  Item::initItems(shapePal);
+  //Item::initItems(shapePal);
   // initialize magic
-  MagicSchool::initMagic();
+  //MagicSchool::initMagic();
   // initialize the monsters (they use items, magic)
-  Monster::initMonsters();
+  //Monster::initMonsters();
 
   // create the mission board
   board = new Board(this);
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
-  party = new Party(this);  
+//  party = new Party(this);  
+  this->party = session->getParty();
+  createPartyUI();
 
   netPlay = new NetPlay(this);
 
@@ -179,7 +187,7 @@ void Scourge::startMission() {
   while(true) {
 
     // add gui
-    party->getWindow()->setVisible(true);
+    mainWin->setVisible(true);
     messageWin->setVisible(true);
 #ifdef HAVE_SDL_NET
     if(client) netPlay->getWindow()->setVisible(true);
@@ -286,7 +294,7 @@ void Scourge::startMission() {
     // clean up after the mission
 
     // remove gui
-    party->getWindow()->setVisible(false);
+    mainWin->setVisible(false);
     messageWin->setVisible(false);
     closeAllContainerGuis();
     if(inventory->isVisible()) inventory->hide();
@@ -310,34 +318,7 @@ void Scourge::startMission() {
     // delete active projectiles
     Projectile::resetProjectiles();
 
-    // delete the items and creatures created for this mission
-    // (except items in inventory) 
-    for(int i = 0; i < itemCount; i++) {
-      bool inInventory = false;
-      for(int t = 0; t < party->getPartySize(); t++) {
-        if(party->getParty(t)->isItemInInventory(items[i])) {
-          inInventory = true;
-          break;
-        }
-      }
-      if(!inInventory) {
-        delete items[i];
-        itemCount--;
-        for(int t = i; t < itemCount; t++) {
-          items[t] = items[t + 1];
-        }
-        i--;
-      }
-    }
-    for(int i = 0; i < creatureCount; i++) {
-      delete creatures[i];
-    }
-    creatureCount = 0;
-    /*
-      cerr << "After mission: " <<
-      " creatureCount=" << creatureCount << 
-      " itemCount=" << itemCount << endl;
-    */
+    session->deleteCreaturesAndItems(true);
 
     // delete map
     delete dg; dg = NULL;
@@ -369,11 +350,7 @@ void Scourge::startMission() {
   }
 #endif
 
-  // clean up the last objects in the party's inventory
-  for(int i = 0; i < itemCount; i++) {
-    delete items[i];
-  }
-  itemCount = 0;
+  session->deleteCreaturesAndItems(false);
 
   // delete the party (w/o deleting the party ui)
   party->deleteParty();
@@ -385,26 +362,6 @@ void Scourge::endMission() {
   }
   movingItem = NULL;          // stop moving items
   //	move = 0;  
-}
-
-// items created for the mission
-Item *Scourge::newItem(RpgItem *rpgItem, Spell *spell) {
-  items[itemCount] = new Item(rpgItem);
-  if(spell) items[itemCount]->setSpell(spell);
-  itemCount++;
-  return items[itemCount - 1];
-}
-
-// creatures created for the mission
-Creature *Scourge::newCreature(Character *character, char *name) {
-  creatures[creatureCount++] = new Creature(this, character, name);
-  return creatures[creatureCount - 1];
-}
-
-// creatures created for the mission
-Creature *Scourge::newCreature(Monster *monster) {
-  creatures[creatureCount++] = new Creature(this, monster);
-  return creatures[creatureCount - 1];
 }
 
 void Scourge::drawView() {
@@ -425,7 +382,7 @@ void Scourge::drawView() {
   // make a move (player, monsters, etc.)
   playRound();
 
-  party->drawView();
+  updatePartyUI();
 
   map->draw();
 
@@ -480,10 +437,10 @@ void Scourge::drawView() {
     map->initMapView();  
     for(int i = 0; i < party->getPartySize(); i++) {
       if(!party->getParty(i)->getStateMod(Constants::dead)) {
-        map->showCreatureInfo(party->getParty(i), (party->getPlayer() == party->getParty(i)), 
-                              (map->getSelectedDropTarget() && 
-                               map->getSelectedDropTarget()->creature == party->getParty(i)),
-                              !party->isPlayerOnly());
+        showCreatureInfo(party->getParty(i), (party->getPlayer() == party->getParty(i)), 
+                         (map->getSelectedDropTarget() && 
+                          map->getSelectedDropTarget()->creature == party->getParty(i)),
+                         !party->isPlayerOnly());
       }
     }
     glDisable( GL_CULL_FACE );
@@ -497,11 +454,327 @@ void Scourge::drawView() {
 
   miniMap->buildTexture(0, 0);
 
-  map->drawBorder();
+  drawBorder();
 }
 
 void Scourge::drawAfter() {
-  map->drawDraggedItem();
+  drawDraggedItem();
+}
+
+
+void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode) {
+  glPushMatrix();
+  //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
+
+  glEnable( GL_DEPTH_TEST );
+  glDepthMask(GL_FALSE);
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glDisable( GL_CULL_FACE );
+
+  // draw circle
+  double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
+  double s = 0.35f / GLShape::DIV;
+  
+  float xpos2, ypos2, zpos2;
+
+  GLint t = SDL_GetTicks();
+  if(t - lastTick > 45) {
+	// initialize target width
+	if(targetWidth == 0.0f) {
+	  targetWidth = s;
+	  targetWidthDelta *= -1.0f;
+	}
+	// targetwidth oscillation
+	targetWidth += targetWidthDelta;
+	if((targetWidthDelta < 0 && targetWidth < s) || 
+	   (targetWidthDelta > 0 && targetWidth >= s + (5 * targetWidthDelta))) 
+	  targetWidthDelta *= -1.0f;
+	lastTick = t;
+  }
+
+  if(player && creature->getSelX() > -1 && 
+     !creature->getTargetCreature() &&
+     !(creature->getSelX() == creature->getX() && creature->getSelY() == creature->getY()) ) {
+	// draw target
+	glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
+	xpos2 = ((float)(creature->getSelX() - map->getX()) / GLShape::DIV);
+	ypos2 = ((float)(creature->getSelY() - map->getY()) / GLShape::DIV);
+	zpos2 = 0.0f / GLShape::DIV;  
+	glPushMatrix();
+	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+	gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
+	glPopMatrix();
+  }
+
+  if(player && creature->getTargetCreature()) {
+	glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
+	xpos2 = ((float)(creature->getTargetCreature()->getX() - map->getX()) / GLShape::DIV);
+	ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
+	zpos2 = 0.0f / GLShape::DIV;  
+	glPushMatrix();
+	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+	gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
+	glPopMatrix();
+  }
+
+  xpos2 = ((float)(creature->getX() - map->getX()) / GLShape::DIV);
+  ypos2 = ((float)(creature->getY() - map->getY()) / GLShape::DIV);
+  zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
+
+  if(creature->getAction() != Constants::ACTION_NO_ACTION) {
+	glColor4f(0, 0.7, 1, 0.5f);
+  } else if(selected) {
+	glColor4f(0, 1, 1, 0.5f);
+  } else if(player) {
+	glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+  } else {
+	glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
+  }
+
+  // draw state mods
+  if(groupMode || player) {
+	glEnable(GL_TEXTURE_2D);
+	int n = 16;
+	//float x = 0.0f;
+	//float y = 0.0f;
+	int on = 0;
+	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	  if(creature->getStateMod(i) && i != Constants::dead) {
+		on++;
+	  }
+	}
+	int count = 0;
+	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	  if(creature->getStateMod(i) && i != Constants::dead) {
+		glPushMatrix();
+		glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+		//		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
+		//		glRotatef( count * (360.0f / on), 0, 0, 1 );
+		float angle = -(count * 30) - (map->getZRot() + 180);
+		glRotatef( angle, 0, 0, 1 );
+		glTranslatef( w / 2.0f + 15, 0, 0 );
+		glRotatef( (count * 30) + 180, 0, 0, 1 );
+		glTranslatef( -7, -7, 0 );
+		//	  drawStateMod(i);
+		//glColor4f( 1, 1, 1, 1 );
+		GLuint icon = getShapePalette()->getStatModIcon(i);
+		if(icon) {
+		  glBindTexture( GL_TEXTURE_2D, icon );
+		}
+		glBegin( GL_QUADS );
+		glNormal3f( 0, 0, 1 );
+		if(icon) glTexCoord2f( 0, 0 );
+		glVertex3f( 0, 0, 0 );
+		if(icon) glTexCoord2f( 0, 1 );
+		glVertex3f( 0, n, 0 );
+		if(icon) glTexCoord2f( 1, 1 );
+		glVertex3f( n, n, 0 );
+		if(icon) glTexCoord2f( 1, 0 );
+		glVertex3f( n, 0, 0 );
+		glEnd();
+		glPopMatrix();
+		count++;
+	  }
+	}
+	glDisable(GL_TEXTURE_2D);
+  }
+
+  glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+  if(groupMode || player) gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
+
+  glEnable( GL_CULL_FACE );
+  glDisable( GL_BLEND );
+  glDisable( GL_DEPTH_TEST );
+  glDepthMask(GL_TRUE);
+ 
+  // draw name
+  glTranslatef( 0, 0, 100);
+  getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
+
+  glPopMatrix();
+}
+
+void Scourge::drawDraggedItem() {
+  if(getMovingItem()) {
+	// glDisable(GL_DEPTH_TEST);
+	//	glDepthMask(GL_FALSE);
+	glPushMatrix();
+	glLoadIdentity();	
+	glTranslatef( getSDLHandler()->mouseX, getSDLHandler()->mouseY, 500);
+	glRotatef( getMap()->getXRot(), 0.0f, 1.0f, 0.0f );  
+	glRotatef( getMap()->getYRot(), 1.0f, 0.0f, 0.0f );  
+	glRotatef( getMap()->getZRot(), 0.0f, 0.0f, 1.0f );
+	map->doDrawShape(0, 0, 0, getMovingItem()->getShape(), 0);
+	glPopMatrix();
+	//	glEnable(GL_DEPTH_TEST);
+	//glDepthMask(GL_TRUE);
+  }
+
+
+  /*
+  float xpos2, ypos2, zpos2;  
+  Shape *shape = NULL;  
+
+  if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
+	 selY >= getY() && selY < getY() + MAP_VIEW_DEPTH &&
+	 selZ < MAP_VIEW_HEIGHT &&
+	 scourge->getMovingItem()) {
+
+	shape = scourge->getMovingItem()->getShape();	
+	int newz = selZ;
+	Location *dropLoc = isBlocked(selX, selY, selZ, -1, -1, -1, shape, &newz);
+	selZ = newz;
+
+	// only let drop on other creatures and containers
+	// unfortunately I have to call isWallBetween(), so objects aren't dragged behind walls
+	// this makes moving items slow
+	if(dropLoc || 
+	   (oldLocatorSelX < MAP_WIDTH && 
+		isWallBetween(selX, selY, selZ, 
+					  oldLocatorSelX, 
+					  oldLocatorSelY, 
+					  oldLocatorSelZ))) {
+	  selX = oldLocatorSelX;
+	  selY = oldLocatorSelY;
+	  selZ = oldLocatorSelZ;
+	}
+	
+	xpos2 = ((float)(selX - getX()) / GLShape::DIV);
+	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
+	zpos2 = (float)(selZ) / GLShape::DIV;
+	
+	doDrawShape(xpos2, ypos2, zpos2, shape, 0);
+
+	oldLocatorSelX = selX;
+	oldLocatorSelY = selY;
+	oldLocatorSelZ = selZ;
+  }
+  */
+}
+
+void Scourge::drawBorder() {
+  if(map->getViewWidth() == getSDLHandler()->getScreen()->w && 
+     map->getViewHeight() == getSDLHandler()->getScreen()->h &&
+     !getUserConfiguration()->getFrameOnFullScreen()) return;
+
+  glPushMatrix();
+  glLoadIdentity();
+
+  // ok change: viewx, viewy always 0
+  //glTranslatef(viewX, viewY, 100);
+  glTranslatef(0, 0, 100);
+
+  //  glDisable(GL_BLEND);
+  glDisable(GL_DEPTH_TEST);
+
+  // draw border
+  glColor4f( 1, 1, 1, 1);
+
+  int w = (getMap()->getViewWidth() == getSDLHandler()->getScreen()->w ? 
+           getMap()->getViewWidth() : 
+           getMap()->getViewWidth() - Window::SCREEN_GUTTER);
+  int h = (getMap()->getViewHeight() == getSDLHandler()->getScreen()->h ? 
+           getMap()->getViewHeight() : 
+           getMap()->getViewHeight() - Window::SCREEN_GUTTER);
+  float TILE_W = 20.0f;
+  float TILE_H = 120.0f;
+
+  glBindTexture( GL_TEXTURE_2D, getShapePalette()->getBorderTexture() );
+  glBegin( GL_QUADS );
+  // left
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (0, 0);
+  glTexCoord2f (0.0f, h/TILE_H);
+  glVertex2i (0, h);
+  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
+  glVertex2i ((int)TILE_W, h);
+  glTexCoord2f (TILE_W/TILE_W, 0.0f);      
+  glVertex2i ((int)TILE_W, 0);
+
+  // right
+  glTexCoord2f (TILE_W/TILE_W, 0.0f);
+  glVertex2i (w - (int)TILE_W, 0);
+  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
+  glVertex2i (w - (int)TILE_W, h);
+  glTexCoord2f (0.0f, h/TILE_H);
+  glVertex2i (w, h);
+  glTexCoord2f (0.0f, 0.0f);      
+  glVertex2i (w, 0);
+  glEnd();
+
+  TILE_W = 120.0f;
+  TILE_H = 20.0f;
+  glBindTexture( GL_TEXTURE_2D, getShapePalette()->getBorder2Texture() );
+  glBegin( GL_QUADS );
+  // top
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (0, 0);
+  glTexCoord2f (0.0f, TILE_H/TILE_H);
+  glVertex2i (0, (int)TILE_H);
+  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
+  glVertex2i (w, (int)TILE_H);
+  glTexCoord2f (w/TILE_W, 0.0f);      
+  glVertex2i (w, 0);
+
+  // bottom
+  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
+  glVertex2i (0, h - (int)TILE_H);
+  glTexCoord2f (w/TILE_W, 0.0f);
+  glVertex2i (0, h);
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (w, h);
+  glTexCoord2f (0.0f, TILE_H/TILE_H);      
+  glVertex2i (w, h - (int)TILE_H);
+  glEnd();
+
+  //int gw = 128;
+  //int gh = 96;
+
+  int gw = 115;
+  int gh = 81;
+  glEnable( GL_ALPHA_TEST );
+  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGargoyleTexture() );
+
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef(10, -5, 0);
+  glRotatef(20, 0, 0, 1);
+  glBegin( GL_QUADS );
+  // top left
+  glTexCoord2f (1, 0);
+  glVertex2i (0, 0);
+  glTexCoord2f (1, 1);
+  glVertex2i (0, gh);
+  glTexCoord2f (0, 1);
+  glVertex2i (gw, gh);
+  glTexCoord2f (0, 0);      
+  glVertex2i (gw, 0);
+  glEnd();
+  glPopMatrix();
+
+  // top right
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef(w - (gw + 7), 35, 0);
+  glRotatef(-20, 0, 0, 1);
+  glBegin( GL_QUADS );
+  glTexCoord2f (0, 0);
+  glVertex2i (0, 0);
+  glTexCoord2f (0, 1);
+  glVertex2i (0, gh);
+  glTexCoord2f (1, 1);
+  glVertex2i (gw, gh);
+  glTexCoord2f (1, 0);      
+  glVertex2i (gw, 0);
+  glEnd();
+  glPopMatrix();
+
+  //glEnable( GL_TEXTURE_2D );
+  glDisable( GL_ALPHA_TEST );
+  glEnable(GL_DEPTH_TEST);
+  glPopMatrix();
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
@@ -1428,7 +1701,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   //}
 
   // FIXME: this is hacky...
-  if(party->handleEvent(widget, event)) return true;
+  if(handlePartyEvent(widget, event)) return true;
   int n = board->handleEvent(widget, event);
   if(n == Board::EVENT_HANDLED) return false;
   else if(n == Board::EVENT_PLAY_MISSION) {
@@ -1518,7 +1791,7 @@ void Scourge::setUILayout() {
   messageWin->resize(width, PARTY_GUI_HEIGHT);
   messageWin->move(0, 0);
   messageWin->setLocked(false);
-  party->getWindow()->setLocked(false);
+  mainWin->setLocked(false);
   miniMap->getWindow()->setLocked(false);
   miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
   if(inventory->getWindow()->isLocked()) {
@@ -1535,7 +1808,7 @@ void Scourge::setUILayout() {
   messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
-  party->getWindow()->setLocked(true);
+  mainWin->setLocked(true);
   miniMap->getWindow()->setLocked(true);
   miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH,
                              getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER));
@@ -1561,7 +1834,7 @@ void Scourge::setUILayout() {
   mapWidth = getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH;
   mapHeight = getSDLHandler()->getScreen()->h;
   messageWin->setLocked(true);
-  party->getWindow()->setLocked(true);
+  mainWin->setLocked(true);
   if(inventory->getWindow()->isLocked()) {
     inventory->getWindow()->setVisible(false);
     inventory->getWindow()->setLocked(false);
@@ -1580,7 +1853,7 @@ void Scourge::setUILayout() {
   miniMap->resize(MINIMAP_WINDOW_WIDTH, (h > MINIMAP_WINDOW_HEIGHT ? MINIMAP_WINDOW_HEIGHT : h));
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
-  party->getWindow()->setLocked(true);
+  mainWin->setLocked(true);
   inventory->getWindow()->setVisible(false);
   inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
                                getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
@@ -1598,7 +1871,7 @@ void Scourge::setUILayout() {
   messageWin->setVisible(true, false);
   miniMap->getWindow()->setVisible(true, false);
 
-  party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
+  mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                          getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
 
 
@@ -1647,10 +1920,10 @@ void Scourge::playRound() {
     party->movePlayers();
     
     // move visible monsters
-    for(int i = 0; i < creatureCount; i++) {
+    for(int i = 0; i < session->getCreatureCount(); i++) {
       if(!creatures[i]->getStateMod(Constants::dead) && 
-         map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
-        moveMonster(creatures[i]);
+         map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+        moveMonster(session->getCreature(i));
       }
     }
     
@@ -1671,12 +1944,12 @@ void Scourge::playRound() {
             battle[battleCount++] = new Battle(this, party->getParty(i));
           }
         }
-        for(int i = 0; i < creatureCount; i++) {
-          if(!creatures[i]->getStateMod(Constants::dead) && 
-             map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
-             (creatures[i]->hasTarget() || 
-              creatures[i]->getAction() > -1)) {
-            battle[battleCount++] = new Battle(this, creatures[i]);
+        for(int i = 0; i < session->getCreatureCount(); i++) {
+          if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+             (session->getCreature(i)->hasTarget() || 
+              session->getCreature(i)->getAction() > -1)) {
+            battle[battleCount++] = new Battle(this, session->getCreature(i));
           }
         }
         
@@ -1710,7 +1983,7 @@ void Scourge::creatureDeath(Creature *creature) {
   map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
   // add a container object instead
   //creature->getShape()->setCurrentAnimation(MD2_DEATH1);
-  Item *item = newItem(RpgItem::getItemByName("Corpse"));
+  Item *item = getSession()->newItem(RpgItem::getItemByName("Corpse"));
   // add creature's inventory to container
   map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
   int n = creature->getInventoryCount();
@@ -1867,15 +2140,15 @@ void Scourge::missionCompleted() {
 Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radius) {
   float minDist = 0;
   Creature *p = NULL;
-  for(int i = 0; i < creatureCount; i++) {
-	if(!creatures[i]->getStateMod(Constants::dead) && 
-	   map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
-	   creatures[i]->isMonster()) {
+  for(int i = 0; i < session->getCreatureCount(); i++) {
+	if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+	   map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+	   session->getCreature(i)->isMonster()) {
 	  float dist = Constants::distance(x, y, w, h,
-									   creatures[i]->getX(),
-									   creatures[i]->getY(),
-									   creatures[i]->getShape()->getWidth(),
-									   creatures[i]->getShape()->getDepth());
+									   session->getCreature(i)->getX(),
+									   session->getCreature(i)->getY(),
+									   session->getCreature(i)->getShape()->getWidth(),
+									   session->getCreature(i)->getShape()->getDepth());
 	  if(dist <= (float)radius &&
 		 (!p || dist < minDist)) {
 		p = creatures[i];
@@ -1910,10 +2183,10 @@ void Scourge::runClient(char *host, int port, char *userName) {
   }
 
   // connect as a character
-  Party *party = new Party(this);  
+  Party *party = new Party(session);  
   Creature **pc;
   int pcCount;
-  Party::createHardCodedParty(this, &pc, &pcCount);
+  Party::createHardCodedParty(session, &pc, &pcCount);
   cerr << "Sending character: " << pc[0]->getName() << endl;
   party->resetMultiplayer(pc[0]);
 
@@ -1971,4 +2244,379 @@ int Scourge::initMultiplayer() {
 
 #endif
 
+int Scourge::getScreenWidth() {
+  return getSDLHandler()->getScreen()->w;
+}
+
+int Scourge::getScreenHeight() {
+  return getSDLHandler()->getScreen()->h;
+}
+
+void Scourge::fightProjectileHitTurn(Projectile *proj, Creature *creature) {
+  Battle::projectileHitTurn(this, proj, creature);
+}
+
+void Scourge::createPartyUI() {
+  sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
+  sprintf(min_version, "S.C.O.U.R.G.E.");
+  mainWin = new Window( getSDLHandler(),
+						getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH, 
+						getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
+						Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT, 
+						version, 
+						getShapePalette()->getGuiTexture(), false );
+  cards = new CardContainer(mainWin);  
+
+  inventoryButton = cards->createButton( 0, 0, 120, 25, strdup("Party Info"), MAX_SIZE );
+  optionsButton = cards->createButton( 0, 25,  60, 50, strdup("Options"), MAX_SIZE );
+  quitButton = cards->createButton( 60, 25,  120, 50, strdup("Quit"), MAX_SIZE );
+  roundButton = cards->createButton( 0, 50,  120, 75, strdup("Real-Time"), MAX_SIZE );
+  roundButton->setToggle(true);
+  roundButton->setSelected(true);
+  
+  int lowerRowHeight = 20;
+  diamondButton = cards->createButton( 0, 75,  20, 75 + lowerRowHeight, strdup("f1"), MAX_SIZE );
+  diamondButton->setToggle(true);
+  staggeredButton = cards->createButton( 20, 75,  40, 75 + lowerRowHeight, strdup("f2"), MAX_SIZE );
+  staggeredButton->setToggle(true);
+  squareButton = cards->createButton( 40, 75,  60, 75 + lowerRowHeight, strdup("f3"), MAX_SIZE );
+  squareButton->setToggle(true);
+  rowButton = cards->createButton( 60, 75,  80, 75 + lowerRowHeight, strdup("f4"), MAX_SIZE );
+  rowButton->setToggle(true);
+  scoutButton = cards->createButton( 80, 75, 100, 75 + lowerRowHeight, strdup("f5"), MAX_SIZE );
+  scoutButton->setToggle(true);
+  crossButton = cards->createButton( 100, 75,  120, 75 + lowerRowHeight, strdup("f6"), MAX_SIZE );
+  crossButton->setToggle(true);
+
+  groupButton = cards->createButton( 0, 75 + lowerRowHeight,  20, 75 + (lowerRowHeight * 2), strdup("G"), MAX_SIZE );
+  groupButton->setToggle(true);
+  groupButton->setSelected(true);
+  calendarButton = cards->createButton( 20, 75 + lowerRowHeight, 120, 75 + (lowerRowHeight * 2), 
+							   strdup(party->getCalendar()->getCurrentDate().getDateString()), MAX_SIZE);      
+  //calendarButton->setLabelPosition(Button::CENTER);
+
+  minButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("-"), MAX_SIZE );
+  maxButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("+"), MIN_SIZE );
+
+  layoutButton1 = cards->createButton( 20, 75 + (lowerRowHeight * 2), 40, 75 + (lowerRowHeight * 3), strdup("L1"), MAX_SIZE );
+  layoutButton2 = cards->createButton( 40, 75 + (lowerRowHeight * 2), 60, 75 + (lowerRowHeight * 3), strdup("L2"), MAX_SIZE );
+  layoutButton3 = cards->createButton( 60, 75 + (lowerRowHeight * 2), 80, 75 + (lowerRowHeight * 3), strdup("L3"), MAX_SIZE );
+  layoutButton4 = cards->createButton( 80, 75 + (lowerRowHeight * 2), 100, 75 + (lowerRowHeight * 3), strdup("L4"), MAX_SIZE );
+
+
+  int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - 120) / 4;
+  int playerButtonHeight = 20;  
+  player1Button = cards->createButton( 120 + playerButtonWidth * 0, 0,  
+									   120 + playerButtonWidth * 1, playerButtonHeight, NULL, MAX_SIZE );
+  player1Button->setToggle(true);
+  player2Button = cards->createButton( 120 + playerButtonWidth * 1, 0,  
+									   120 + playerButtonWidth * 2, playerButtonHeight, NULL, MAX_SIZE );
+  player2Button->setToggle(true);
+  player3Button = cards->createButton( 120 + playerButtonWidth * 2, 0, 
+									   120 + playerButtonWidth * 3, playerButtonHeight, NULL, MAX_SIZE );
+  player3Button->setToggle(true);
+  player4Button = cards->createButton( 120 + playerButtonWidth * 3, 0,  
+									   120 + playerButtonWidth * 4, playerButtonHeight, NULL, MAX_SIZE );
+  player4Button->setToggle(true);
+
+  for(int i = 0; i < 4; i++) {
+    playerInfo[i] = new Canvas( 120 + playerButtonWidth * i, playerButtonHeight,  
+                                120 + playerButtonWidth * (i + 1), Scourge::PARTY_GUI_HEIGHT - 25, 
+                                this );
+    cards->addWidget( playerInfo[i], MAX_SIZE );
+  }
+
+  minPartyInfo = new Canvas( 0, 0, Scourge::PARTY_MIN_GUI_WIDTH, 75 + (lowerRowHeight * 2), this );
+  cards->addWidget( minPartyInfo, MIN_SIZE );
+
+  cards->setActiveCard( MAX_SIZE );   
+}
+
+void Scourge::drawWidget(Widget *w) {
+  char msg[80];
+  if(w == minPartyInfo) {
+	for(int i = 0; i < party->getPartySize(); i++) {	  
+	  // hp
+	  if(party->getParty(i) == party->getPlayer()) {
+		w->applyBorderColor();
+		glBegin( GL_QUADS );
+		glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, (i * 20), 0 );
+		glVertex3f( 0, (i * 20), 0 );
+		glVertex3f( 0, 20 + (i * 20), 0 );
+		glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, 20 + (i * 20), 0 );
+		glEnd();
+	  }
+	  //	  w->applyColor();
+	  glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	  sprintf(msg, "%c:", party->getParty(i)->getName()[0]);
+	  getSDLHandler()->texPrint(0, 13 + (i * 20), msg);
+	  Util::drawBar(15, 8 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
+					(float)party->getParty(i)->getHp(), (float)party->getParty(i)->getMaxHp());
+	  Util::drawBar(15, 14 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
+					(float)party->getParty(i)->getMp(), (float)party->getParty(i)->getMaxMp(),
+					0.45f, 0.65f, 1.0f, false);
+	}
+  } else {
+	int selectedPlayerIndex = -1;
+	for(int i = 0; i < party->getPartySize(); i++) {
+	  if(playerInfo[i] == w) {
+		selectedPlayerIndex = i;
+		break;
+	  }
+	}
+	if(selectedPlayerIndex == -1) {
+	  cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
+	  return;
+	}
+	Creature *p = party->getParty(selectedPlayerIndex);
+	
+	// hp
+	w->applyColor();
+	sprintf(msg, "%d/%d", p->getHp(), p->getMaxHp());
+	getSDLHandler()->texPrint(3, 10, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "hp:");
+	getSDLHandler()->texPrint(3, 20, msg);
+	Util::drawBar(22, 18, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
+				  (float)p->getHp(), (float)p->getMaxHp());
+	
+	// mp
+	w->applyColor();
+	sprintf(msg, "%d/%d", p->getMp(), p->getMaxMp());
+	getSDLHandler()->texPrint(3, 35, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "mp:");
+	getSDLHandler()->texPrint(3, 45, msg);
+	Util::drawBar(22, 43, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
+				  (float)p->getMp(), (float)p->getMaxMp(),
+				  0.45f, 0.65f, 1.0f, false);
+
+	/*
+	// ac
+	w->applyColor();
+	sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
+	getSDLHandler()->texPrint(3, 35, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "ac:");
+	getSDLHandler()->texPrint(3, 45, msg);
+	Util::drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
+	(float)p->getSkillModifiedArmor(), (float)p->getArmor());
+	*/
+
+	// exp
+	w->applyColor();
+	sprintf(msg, "%d (%d)", p->getExp(), p->getLevel());
+	getSDLHandler()->texPrint(3, 60, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "ex:");
+	getSDLHandler()->texPrint(3, 70, msg);
+	Util::drawBar(22, 68, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
+				  (float)p->getExp(), (float)p->getExpOfNextLevel(),
+				  1.0f, 0.65f, 1.0f, false);
+	
+	// show stat mods
+	glEnable(GL_TEXTURE_2D);
+	int xp = 0;
+	int yp = 0;
+	float n = 12;
+	int row = 5;
+	int left = 5;
+	int bottom = w->getHeight() - ((int)(3 * n + 1) + 4);
+	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	  GLuint icon = getShapePalette()->getStatModIcon(i);
+	  if(p->getStateMod(i)) {
+		glColor4f( 1.0f, 1.0f, 0.5f, 0.5f );
+		if(icon) {
+		  glBindTexture( GL_TEXTURE_2D, icon );
+		}
+	  } else {
+		w->applyBorderColor();
+		icon = 0;
+	  }
+	  
+	  glPushMatrix();
+	  glTranslatef( left + xp * (n + 1), bottom + (yp * (n + 1)), 0 );
+	  glBegin( GL_QUADS );
+	  glNormal3f( 0, 0, 1 );
+	  if(icon) glTexCoord2f( 0, 0 );
+	  glVertex3f( 0, 0, 0 );
+	  if(icon) glTexCoord2f( 0, 1 );
+	  glVertex3f( 0, n, 0 );
+	  if(icon) glTexCoord2f( 1, 1 );
+	  glVertex3f( n, n, 0 );
+	  if(icon) glTexCoord2f( 1, 0 );
+	  glVertex3f( n, 0, 0 );
+	  glEnd();
+	  glPopMatrix();
+	  
+	  xp++;
+	  if(xp >= row) {
+		xp = 0;
+		yp++;
+	  }
+	}
+	glDisable(GL_TEXTURE_2D);
+  }
+}
+
+void Scourge::resetPartyUI() {
+  player1Button->getLabel()->setText(party->getParty(0)->getName());
+  player1Button->setSelected(true);
+  if(party->getPartySize() > 1) {
+    player2Button->getLabel()->setText(party->getParty(1)->getName());
+    player2Button->setVisible(true);
+    playerInfo[1]->setVisible(true);
+  } else {
+    player2Button->setVisible(false);
+    playerInfo[1]->setVisible(false);
+  }
+  if(party->getPartySize() > 2) {
+    player3Button->getLabel()->setText(party->getParty(2)->getName());
+    player3Button->setVisible(true);
+    playerInfo[2]->setVisible(true);
+  } else {
+    player3Button->setVisible(false);
+    playerInfo[2]->setVisible(false);
+  }
+  if(party->getPartySize() > 3) {
+    player4Button->getLabel()->setText(party->getParty(3)->getName());
+    player4Button->setVisible(true);
+    playerInfo[3]->setVisible(true);
+  } else {
+    player4Button->setVisible(false);
+    playerInfo[3]->setVisible(false);
+  }
+
+  Event *e;  
+  Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
+  for(int i = 0; i < party->getPartySize() ; i++){
+    e = new ThirstHungerEvent(party->getCalendar()->getCurrentDate(), d, party->getParty(i), scourge, Event::INFINITE_EXECUTIONS);
+    party->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
+  }
+}
+
+bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
+  if(widget == inventoryButton) {
+    toggleInventoryWindow();
+  } else if(widget == optionsButton) {
+    toggleOptionsWindow();
+  } else if(widget == quitButton) {
+    showExitConfirmationDialog();
+  } else if(widget == diamondButton) {
+    party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == staggeredButton) {
+    party->setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == squareButton) {
+    party->setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == rowButton) {
+    party->setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == scoutButton) {
+    party->setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == crossButton) {
+    party->setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == player1Button) {
+    party->setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+  } else if(widget == player2Button) {
+    party->setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+  } else if(widget == player3Button) {
+    party->setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+  } else if(widget == player4Button) {
+    party->setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+  } else if(widget == groupButton) {
+    party->togglePlayerOnly();
+  } else if(widget == roundButton) {
+    party->toggleRound();
+  } else if(widget == minButton) {
+    cards->setActiveCard( MIN_SIZE );
+    mainWin->resize( Scourge::PARTY_MIN_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT );
+    oldX = mainWin->getX();
+    mainWin->move( (oldX < (getSDLHandler()->getScreen()->w / 2) - (Scourge::PARTY_GUI_WIDTH / 2) ? 
+                    0 : 
+                    getSDLHandler()->getScreen()->w - Scourge::PARTY_MIN_GUI_WIDTH), mainWin->getY() );
+    mainWin->setTitle( min_version );
+  } else if(widget == maxButton) {
+    cards->setActiveCard( MAX_SIZE );
+    mainWin->move( oldX, mainWin->getY() );
+    mainWin->resize( Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT );
+    mainWin->setTitle( version );
+  } else if(widget == layoutButton1) {
+    setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
+  } else if(widget == layoutButton2) {
+    setUILayout(Constants::GUI_LAYOUT_BOTTOM);
+  } else if(widget == layoutButton3) {
+    setUILayout(Constants::GUI_LAYOUT_SIDE);
+  } else if(widget == layoutButton4) {
+    setUILayout(Constants::GUI_LAYOUT_INVENTORY);
+  }
+  return false;
+}
+
+void Scourge::refreshInventoryUI(int playerIndex) {
+  getInventory()->refresh(playerIndex);
+}
+
+void Scourge::updatePartyUI() {
+  // update current date variables and see if scheduled events have occured  
+  if(party->getCalendar()->update(getUserConfiguration()->getGameSpeedLevel())){
+    calendarButton->getLabel()->setTextCopy(party->getCalendar()->getCurrentDate().getDateString());        
+  }
+  // refresh map if any party member's effect is on
+  bool effectOn = false;
+  for(int i = 0; i < party->getPartySize(); i++) {
+	if(!party->getParty(i)->getStateMod(Constants::dead) && party->getParty(i)->isEffectOn()) {
+	  effectOn = true;
+	  break;
+	}
+  }
+  if(effectOn != lastEffectOn) {
+	lastEffectOn = effectOn;
+	getMap()->refresh();
+  }
+}
+
+void Scourge::setPlayerUI(int index) {
+  player1Button->setSelected(false);
+  player2Button->setSelected(false);
+  player3Button->setSelected(false);
+  player4Button->setSelected(false);
+  switch(index) {
+  case 0 : player1Button->setSelected(true); break;
+  case 1 : player2Button->setSelected(true); break;
+  case 2 : player3Button->setSelected(true); break;
+  case 3 : player4Button->setSelected(true); break;
+  }
+}
+
+void Scourge::toggleRoundUI(bool startRound) {
+  roundButton->setSelected(startRound);
+}
+
+void Scourge::setFormationUI(int formation, bool playerOnly) {
+  groupButton->setSelected(playerOnly);
+  roundButton->setSelected(true);
+  diamondButton->setSelected(false);
+  staggeredButton->setSelected(false);
+  squareButton->setSelected(false);
+  rowButton->setSelected(false);
+  scoutButton->setSelected(false);
+  crossButton->setSelected(false);
+  switch(formation + Constants::DIAMOND_FORMATION) {
+  case Constants::DIAMOND_FORMATION:
+    diamondButton->setSelected(true); break;
+  case Constants::STAGGERED_FORMATION:
+    staggeredButton->setSelected(true); break;
+  case Constants::SQUARE_FORMATION:
+    squareButton->setSelected(true); break;
+  case Constants::ROW_FORMATION:
+    rowButton->setSelected(true); break;
+  case Constants::SCOUT_FORMATION:
+    scoutButton->setSelected(true); break;
+  case Constants::CROSS_FORMATION:
+    crossButton->setSelected(true); break;
+  }
+}
+
+void Scourge::togglePlayerOnlyUI(bool playerOnly) {
+  groupButton->setSelected(playerOnly);
+}
 

@@ -21,6 +21,13 @@
 #include "constants.h"
 #include "userconfiguration.h"
 #include "shapepalette.h"
+//#include "map.h"
+
+class Party;
+class Map;
+class Projectile;
+class Creature;
+class Session;
 
 class GameAdapter {
 protected:
@@ -32,9 +39,18 @@ public:
 
   inline UserConfiguration *getUserConfiguration() { return userConfiguration; }
 
-  virtual void initVideo(ShapePalette *shapePal);
-  virtual void initUI();
-  virtual void start();
+  virtual inline void initVideo(ShapePalette *shapePal) {}
+  virtual inline void initUI(Session *session) {}
+  virtual inline void start() {}
+  virtual inline int getScreenWidth() { return 0; }
+  virtual inline int getScreenHeight() { return 0; }
+  virtual inline void fightProjectileHitTurn(Projectile *proj, Creature *creature) {}
+  virtual inline void resetPartyUI() {}
+  virtual inline void refreshInventoryUI(int playerIndex) {}
+  virtual inline void toggleRoundUI(bool startRound) {}
+  virtual inline void setFormationUI(int formation, bool playerOnly) {}
+  virtual inline void togglePlayerOnlyUI(bool playerOnly) {}
+  virtual inline void setPlayerUI(int index) {}
 };
 
 class ServerAdapter : public GameAdapter {

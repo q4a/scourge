@@ -29,7 +29,7 @@
   */
   
 class Creature;
-class Scourge;
+class Session;
 class RpgItem;
   
 class PotionExpirationEvent : public Event  {
@@ -38,14 +38,14 @@ private:
   Creature *creature;
   int potionSkill;
   int amount;
-  Scourge *scourge;
+  Session *session;
 
 public:
 
   void execute();    
   
-  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, RpgItem *item, Scourge *scourge, int nbExecutionsToDo);  
-  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Scourge *scourge, int nbExecutionsToDo);
+  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, RpgItem *item, Session *session, int nbExecutionsToDo);  
+  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Session *session, int nbExecutionsToDo);
   PotionExpirationEvent();
   virtual ~PotionExpirationEvent();  
   

@@ -49,7 +49,7 @@ void Session::initialize() {
   shapePal = new ShapePalette();
   adapter->initVideo(shapePal);
   initData();
-  adapter->initUI();
+  adapter->initUI(this);
 }
 
 void Session::start() {
@@ -59,22 +59,22 @@ void Session::start() {
 void Session::initData() {
   shapePal->initialize();
 
-//  map = new Map(this);
+  map = new Map(this);
 
   // init characters first. Items use it for acl
-  //Character::initCharacters();
+  Character::initCharacters();
   // initialize the items
-//  Item::initItems(this);
+  Item::initItems(getShapePalette());
   // initialize magic
-  //MagicSchool::initMagic();
+  MagicSchool::initMagic();
   // initialize the monsters (they use items, magic)
-  //Monster::initMonsters();
+  Monster::initMonsters();
 
   // create the mission board
 //  board = new Board(this);
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
-//  party = new Party(this);  
+  party = new Party(this);  
 }
 
 void Session::quit(int value) {
@@ -164,18 +164,14 @@ Item *Session::newItem(RpgItem *rpgItem, Spell *spell) {
 
 // creatures created for the mission
 Creature *Session::newCreature(Character *character, char *name) {
-  cerr << "FIXME!!!" << endl;
-  //creatures[creatureCount++] = new Creature(this, character, name);
-  //return creatures[creatureCount - 1];
-  return NULL;
+  creatures[creatureCount++] = new Creature(this, character, name);
+  return creatures[creatureCount - 1];
 }
 
 // creatures created for the mission
 Creature *Session::newCreature(Monster *monster) {
-  cerr << "FIXME!!!" << endl;
-  //creatures[creatureCount++] = new Creature(this, monster);
-  //return creatures[creatureCount - 1];
-  return NULL;
+  creatures[creatureCount++] = new Creature(this, monster);
+  return creatures[creatureCount - 1];
 }
 
 void Session::deleteCreaturesAndItems(bool missionItemsOnly) {

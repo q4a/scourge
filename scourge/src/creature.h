@@ -28,7 +28,7 @@
 #include "glshape.h"
 #include "md2shape.h"
 #include "map.h"
-#include "scourge.h"
+#include "session.h"
 #include "util.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
@@ -43,7 +43,7 @@ using namespace std;
 #define MAX_CLOSED_NODES 50
 
 class Map;
-class Scourge;
+class Session;
 class Effect;
 class Item;
 
@@ -67,7 +67,7 @@ class Creature {
   GLShape *shape;
   char *model_name, *skin_name;
   Uint16 dir;
-  Scourge *scourge;
+  Session *session;
   GLUquadric *quadric;
   int motion;
   float minRange, maxRange;
@@ -131,8 +131,8 @@ class Creature {
   static const int CROSS_FORMATION = 5;
   static const int FORMATION_COUNT = 6;
   
-  Creature(Scourge *scourge, Character *character, char *name);
-  Creature(Scourge *scourge, Monster *monster);
+  Creature(Session *session, Character *character, char *name);
+  Creature(Session *session, Monster *monster);
   ~Creature();
 
   CreatureInfo *save();

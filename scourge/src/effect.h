@@ -21,11 +21,13 @@
 #include "constants.h"
 #include "glshape.h"
 #include "shapepalette.h"
-#include "scourge.h"
+#include "session.h"
 
 /**
   *@author Gabor Torok
   */
+  
+class Session;
 
 class Effect {
 private:  
@@ -35,14 +37,14 @@ private:
   bool deleteShape;
   float ringRadius, ringRotate;
   GLint lastTimeStamp;
-  Scourge *scourge;
+  Session *session;
   
   static const int PARTICLE_COUNT = 30;
   ParticleStruct *particle[PARTICLE_COUNT];
 
 public:
-  Effect(Scourge *scourge, ShapePalette *shapePal, GLShape *shape);
-  Effect(Scourge *scourge, ShapePalette *shapePal, int width, int height);
+  Effect(Session *session, ShapePalette *shapePal, GLShape *shape);
+  Effect(Session *session, ShapePalette *shapePal, int width, int height);
   ~Effect();
   
   void deleteParticles();
