@@ -1274,7 +1274,13 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
     Sint16 mapy = door[i][1];
     if((int)(20.0f * rand() / RAND_MAX) == 0) {
       // lock the door
-      //map->setLockedDoor(mapx, mapy);
+      Location *pos = map->getPosition(mapx, mapy, 0);
+      if(!pos) {
+        // ASSERT for debugging
+        cerr << "Error while locking doors: no door at position." << endl;
+        exit(1);
+      }
+      map->setLocked(pos);
       // find an accessible location for the switch
       int nx, ny;
       Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
@@ -1285,16 +1291,20 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
       if( nx < MAP_WIDTH ) {
         // place the switch
         addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
+        Location *keyPos = map->getPosition(nx, ny, 0);
+        if(!keyPos) {
+          // ASSERT for debugging
+          cerr << "Error while locking doors: no key at position." << endl;
+          exit(2);
+        }
         // connect the switch and the door
-        // map->connectSwitch(mapx, mapy);
+        map->connectLocked(pos, keyPos);
       } else {
         // if none found, unlock the door
-        //map->setLockedDoor(mapx, mapy);
+        map->setLocked(pos);
       }
     }
   }
-
-
 }
 
 void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal, 
@@ -1628,7 +1638,7 @@ bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal,
                                   Shape *shape, int x, int y) {
   for(int ty = y - shape->getDepth() - 3; ty < y + 3; ty++) {
     for(int tx = x - 3; tx < x + shape->getWidth() + 3; tx++) {
-      if(isDoor(map, shapePal, tx, ty)) return true;
+      if(map->isDoor(tx, ty)) return true;
     }
   }
   return false;
@@ -1675,19 +1685,6 @@ bool DungeonGenerator::isAccessible(Map *map, int x, int y, int fromX, int fromY
     y = oy;
   }
   return isAccessible(map, x, y, fromX, fromY, stepsTaken + 1, dir);
-}
-
-bool DungeonGenerator::isDoor(Map *map, ShapePalette *shapePal, int tx, int ty) {
-  if(tx >= 0 && tx < MAP_WIDTH && 
-	 ty >= 0 && ty < MAP_DEPTH) {
-	Location *loc = map->getLocation(tx, ty, 0);
-	if(loc && 
-	   (loc->shape == shapePal->findShapeByName("EW_DOOR") ||
-		loc->shape == shapePal->findShapeByName("NS_DOOR"))) {
-	  return true;
-	}
-  }
-  return false;
 }
 
 void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z) {

@@ -108,6 +108,8 @@ class Map {
   bool colorAlreadySet;
   Location *selectedDropTarget;
 
+  map<Location*, Location*> locked;
+
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
   unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
@@ -282,6 +284,18 @@ class Map {
            Shape *shape, GLuint name, int effect=0,
            DrawLater *later=NULL);
 
+  bool isDoor(int x, int y);
+
+  // =================
+  // Locked doors/chests code
+  inline void setLocked(Location *pos) { locked[pos] = NULL; }
+  inline bool isLocked(Location *pos) { return(locked.find(pos) != locked.end()); }
+  inline void connectLocked(Location *pos, Location *key) { if(isLocked(pos)) locked[pos] = key; }
+  /**
+   * Can you get from x,y to tx,ty? (Only if there are no locked doors in between.)
+   */
+  bool isPositionAccessible(int x, int y, int tx, int ty);
+
  protected:
   DrawLater later[100], stencil[1000], other[1000], damage[1000];
   int laterCount, stencilCount, otherCount, damageCount;
@@ -301,8 +315,8 @@ class Map {
   bool isWall(int x, int y, int z);
 
   void configureLightMap();
-  void traceLight(int chunkX, int chunkY);
-  bool isLocationBlocked(int x, int y, int z);
+  void traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors);
+  bool isLocationBlocked(int x, int y, int z, bool onlyLockedDoors);
 
   void drawShade();
 
