@@ -42,9 +42,53 @@ void CardContainer::setActiveCard(int card) {
   }
 }
 
-void CardContainer::addWidget(Widget *w, int card) {
+void CardContainer::addWidget(Widget *w, int card, bool addToWindow) {
   containedWidget[card][widgetCount[card]++] = w;
   w->setVisible(card == activeCard);
-  window->addWidget(w);
+  
+  // Add to window only if not already done
+  if(addToWindow) {
+    window->addWidget(w);
+  }
 }
+
+
+Button *CardContainer::createButton(int x1, int y1, int x2, int y2, char *label, int card, bool toggle){
+    if(widgetCount[card] < MAX_WIDGETS){
+        Button *b;
+        b = window->createButton(x1, y1, x2, y2, label, toggle);
+        addWidget((Widget *)b, card, false);      
+        return b;    	
+	}
+	else{
+        cerr<<"Gui/CardContainer.cpp : max widget limit reached!" << endl;
+        return NULL;
+	}
+} 
+
+Label * CardContainer::createLabel(int x1, int x2, char * label, int card, int color){
+    if(widgetCount[card] < MAX_WIDGETS){
+        Label *l;
+        l = window->createLabel(x1, x2, label, color);
+        addWidget((Widget *)l, card, false);   
+        return l;        
+    }
+	else{
+        cerr<<"Gui/CardContainer.cpp : max widget limit reached!" << endl;
+        return NULL;
+	}
+} 
+
+Checkbox * CardContainer::createCheckbox(int x1, int y1, int x2, int y2, char *label, int card){
+    if(widgetCount[card] < MAX_WIDGETS){        
+        Checkbox * c;
+        c = window->createCheckbox(x1, y1, x2, y2, label);        
+        addWidget((Widget *)c, card, false);    
+        return c;
+    }
+    else{
+        cerr<<"Gui/CardContainer.cpp : max widget limit reached!" << endl;
+        return NULL;
+	}    
+} 
 
