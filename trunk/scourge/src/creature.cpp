@@ -162,6 +162,7 @@ CreatureInfo *Creature::save() {
   info->motion = motion;
   info->armor = armor;
   info->bonusArmor = bonusArmor;
+  info->bonusArmor = 0;
   info->thirst = thirst;
   info->hunger = hunger;
   info->availableSkillPoints = availableSkillPoints;
@@ -227,17 +228,23 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   //creature->setSpeed( info->speed );
   creature->setMotion( info->motion );
   //creature->setArmor( info->armor );
-  creature->setBonusArmor( info->bonusArmor );
+  
+  // info->bonusArmor: can't be used until calendar is also persisted
+  //creature->setBonusArmor( info->bonusArmor );
+
   creature->setThirst( info->thirst );
   creature->setHunger( info->hunger );
   creature->setAvailableSkillPoints( info->availableSkillPoints );
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     creature->setSkill( i, info->skills[i] );
     creature->skillMod[i] = info->skillMod[i];
-    creature->setSkillBonus( i, info->skillBonus[i] );
+    // info->skillBonus: can't be used until calendar is also persisted
+    //creature->setSkillBonus( i, info->skillBonus[i] );
   }
-  creature->stateMod = info->stateMod;
-  creature->protStateMod = info->protStateMod;
+  
+  // stateMod and protStateMod not useful until calendar is also persisted
+  //creature->stateMod = info->stateMod;
+  //creature->protStateMod = info->protStateMod;
 
   // inventory
   //creature->inventory_count = info->inventory_count;
@@ -246,7 +253,11 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
     if(item) creature->addInventory( item, true );
   }
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-    creature->equipped[i] = info->equipped[i];
+    if(info->equipped[i] < MAX_INVENTORY_SIZE) { 
+      creature->equipInventory(info->equipped[i]);
+    } else {
+      creature->equipped[i] = info->equipped[i];
+    }
   }
 
   // spells

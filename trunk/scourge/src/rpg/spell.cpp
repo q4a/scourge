@@ -133,6 +133,7 @@ void MagicSchool::initMagic() {
 	  int failureRate = atoi(strtok(NULL, ","));
 	  strcpy(dice, strtok(NULL, ","));
 	  int distance = atoi(strtok(NULL, ","));
+    if(distance < (int)Constants::MIN_DISTANCE) distance = (int)Constants::MIN_DISTANCE;
 	  int targetType = (!strcmp(strtok(NULL, ","), "single") ? 
 						SINGLE_TARGET : GROUP_TARGET);
 	  int speed = atoi(strtok(NULL, ","));
