@@ -626,9 +626,9 @@ void Map::drawWaterPosition(int posX, int posY,
 
         float zz = ( w ? w->z[xx][yy] : 0.0f );
         float sz = ( WATER_HEIGHT + zz ) / GLShape::DIV;
-        glColor4f( 0.15f + ( zz / 30.0f ), 
-                   0.3f + ( zz / 10.0f ), 
-                   0.25f + ( zz / 15.0f ), 
+        glColor4f( 0.3f + ( zz / 30.0f ), 
+                   0.25f + ( zz / 10.0f ), 
+                   0.17f + ( zz / 15.0f ), 
                    0.5f );
         glVertex3f( (float)xp * sx, (float)yp * sy, sz );
 
