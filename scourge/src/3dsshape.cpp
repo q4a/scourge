@@ -16,6 +16,8 @@
  ***************************************************************************/
  
 //#define DEBUG_3DS 
+
+#define LIGHT_ANGLE 135.0f
   
 #include "3dsshape.h"
 
@@ -185,6 +187,8 @@ void C3DSShape::draw() {
 		// Reset the color to normal again
 		if(!useShadow) glColor3ub(255, 255, 255);
 	  }	
+
+	float c[3];
 	
 	// This determines if we are in wireframe or normal mode
 	glBegin(g_ViewMode);                    // Begin drawing with our selected mode (triangles or lines)
@@ -199,19 +203,40 @@ void C3DSShape::draw() {
 		// Give OpenGL the normal for this vertex.
 		glNormal3f(pObject->pNormals[ index ].x, pObject->pNormals[ index ].y, pObject->pNormals[ index ].z);
 
+		// Simple light rendering:
+		// need the normal as mapped on the xy plane
+		// it's degree is the intensity of light it gets
+		float x = (pObject->pNormals[ index ].x == 0 ? 0.01f : pObject->pNormals[ index ].x);
+		float y = pObject->pNormals[ index ].y;
+		float rad = atan(y / x);
+		float angle = (180.0f * rad) / 3.14159;
 
+		// read about the arctan problem: 
+		// http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
+		int q = 1;
+		if(x < 0) { 		// Quadrant 2 & 3
+		  q = ( y >= 0 ? 2 : 3);
+		  angle += 180;
+		} else if(y < 0) { // Quadrant 4
+		  q = 4;
+		  angle += 360;
+		}
 
-		/*
-		  TODO:
-		  Figure out how far the normal is from the shadow angle and apply multitexturing to this 
-		  triangle accordingly.
-		 */
+		// assertion
+		if(angle < 0 || angle > 360) {
+		  cerr << "Warning: angle=" << angle << " quadrant=" << q << endl;
+		}
 
+		// these are not used
+		//if(angle < 0) angle += 360.0f;
+		//if(angle > 360) angle -= 360.0f;
 
-		
 		// If the object has a texture associated with it, give it a texture coordinate.
 		if(!useShadow) {
 		  if(pObject->bHasTexture) {
+
+			// texture color is white
+			c[0] = c[1] = c[2] = 1.0f;
 			
 			// Make sure there was a UVW map applied to the object or else it won't have tex coords.
 			if(pObject->pTexVerts) {
@@ -229,9 +254,36 @@ void C3DSShape::draw() {
 			  BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
 			  
 			  // Assign the current color to this model
-			  glColor3ub(pColor[0], pColor[1], pColor[2]);
+			  //glColor3ub(pColor[0], pColor[1], pColor[2]);
+			  c[0] = (float)pColor[0] / 255.0f;
+			  c[1] = (float)pColor[1] / 255.0f;
+			  c[2] = (float)pColor[2] / 255.0f;
 			}
 		  }
+		  
+		  // calculate the angle distance from the light
+		  float delta = 0;
+		  if(angle > LIGHT_ANGLE && angle < LIGHT_ANGLE + 180.0f) {
+			delta = angle - LIGHT_ANGLE;
+		  } else {
+			if(angle < LIGHT_ANGLE) angle += 360.0f;
+			delta = (360 + LIGHT_ANGLE) - angle;
+		  }
+
+		  // assertion
+		  if(delta < 0 || delta > 180.0f) {
+			cerr << "WARNING: angle=" << angle << " delta=" << delta << endl;
+		  }
+
+		  // reverse and convert to value between 0 and 1
+		  delta = 180.0f - delta;
+		  delta /= 180.0f;
+		  
+		  // apply to current color
+		  c[0] *= delta;
+		  c[1] *= delta;
+		  c[2] *= delta;
+		  glColor3f(c[0], c[1], c[2]);
 		}
 		
 		// Pass in the current vertex of the object (Corner of current face)
