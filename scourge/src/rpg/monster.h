@@ -42,16 +42,18 @@ class Monster  {
   int money;
   int speed;
   int baseArmor;
+  int rareness;
   vector<RpgItem*> items;
 
   static map<int, vector<Monster*>* > monsters;
   static map<string, Monster*> monstersByName;
 
 public:
-  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int baseArmor=0);
+  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int baseArmor=0);
   ~Monster();
 
   inline int getBaseArmor() { return baseArmor; }
+  inline int getRareness() { return rareness; }
   inline char *getType() { return type; };
   inline int getHp() { return hp; }  
   inline int getMp() { return mp; }  
