@@ -251,6 +251,8 @@ protected:
   int getRoomIndex(int x, int y);
 
   void updateStatus(const char *statusMessage);
+
+  int getRandomItemLevel();
 };
 
 #endif

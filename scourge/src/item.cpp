@@ -388,6 +388,8 @@ void Item::commonInit() {
   stateModSet = false;
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) stateMod[i] = 0;
 
+  if( !rpgItem->isEnchantable() ) return;
+
   // roll for magic
   int n = (int)( 100.0f * rand()/RAND_MAX );
   if( n < 5 ) magicLevel = Constants::DIVINE_MAGIC_ITEM;

@@ -1090,6 +1090,12 @@ void DungeonGenerator::addPregeneratedShapes(Map *map, ShapePalette *shapePal,
   }
 }
 
+int DungeonGenerator::getRandomItemLevel() {
+  int itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
+  if( itemLevel < 1 ) itemLevel = 1;
+  return itemLevel;
+}
+
 void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
                                 bool preGenerated, int locationIndex) {
   // add the items
@@ -1101,9 +1107,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
     }
     // Make a random level object
     Item *item = 
-      scourge->getSession()->
-      newItem(rpgItem, 
-              (int)( (float)(level + 5) * rand() / RAND_MAX ));
+      scourge->getSession()->newItem(rpgItem, getRandomItemLevel());
     int x, y;
     getRandomLocation(map, item->getShape(), &x, &y);
     addItem(map, NULL, item, NULL, x, y);
@@ -1117,9 +1121,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
       break;
     }
     Item *item = scourge->getSession()->
-      newItem(RpgItem::getItemByName("Scroll"),  
-              level, 
-              spell);
+      newItem(RpgItem::getItemByName("Scroll"), 1, spell);
     int x, y;
     getRandomLocation(map, item->getShape(), &x, &y);
     addItem(map, NULL, item, NULL, x, y);
@@ -1140,8 +1142,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
       RpgItem *containedItem = RpgItem::getRandomItem(1);
       if(containedItem) 
         item->addContainedItem(scourge->getSession()->
-                               newItem(containedItem, 
-                                       (int)((float)(level + valueBonus + 5) * rand()/RAND_MAX)), 
+                               newItem(containedItem, getRandomItemLevel()), 
                                true);
     }
     // some spells
@@ -1151,15 +1152,14 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
         Spell *spell = MagicSchool::getRandomSpell(level);
         if(spell) {
           Item *scroll = scourge->getSession()->
-            newItem(RpgItem::getItemByName("Scroll"), 
-                    (int)((float)(level + 5) * rand()/RAND_MAX), 
-                    spell);
+            newItem(RpgItem::getItemByName("Scroll"), 1, spell);
           item->addContainedItem(scroll, true);
         }
       }
     }
   }
 
+  /*
   // add some magic items on the bottom level
   if(stairsUp && !stairsDown) {
     int n = (int)(3.0f * rand() / RAND_MAX) + 1;
@@ -1184,6 +1184,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
       }
     }
   }
+  */
 }
 
 void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal, 

@@ -20,8 +20,8 @@
 InfoGui::InfoGui(Scourge *scourge) {
   this->scourge = scourge;
 
-  int width = 220;
-  int height = 350;
+  int width = 350;
+  int height = 400;
 
   int x = (scourge->getSDLHandler()->getScreen()->w - width) / 2;
   int y = (scourge->getSDLHandler()->getScreen()->h - height) / 2;
@@ -36,12 +36,12 @@ InfoGui::InfoGui(Scourge *scourge) {
 
   win->createLabel(10, 10, strdup("Name:"), Constants::RED_COLOR);
   strcpy(name, "");
-  nameLabel = new Label(10, 25, description, 35);
+  nameLabel = new Label(10, 25, description, 50);
   win->addWidget(nameLabel);
 
   win->createLabel(10, 80, strdup("Detailed Description:"), Constants::RED_COLOR);
   strcpy(description, "");
-  label = new Label(10, 95, description, 35);
+  label = new Label(10, 95, description, 50);
   win->addWidget(label);
 }
 
@@ -97,10 +97,14 @@ void InfoGui::describe() {
   strcat( description, tmp );
   sprintf(tmp, "Distance: %d|", item->getDistance());
   strcat( description, tmp );
-  sprintf(tmp, "Max charges: %d|", item->getMaxCharges());
-  strcat( description, tmp );
-  sprintf(tmp, "Duration: %d|", item->getDuration());
-  strcat( description, tmp );
+  if( item->getMaxCharges() > 0 ) {
+    sprintf(tmp, "Max charges: %d|", item->getMaxCharges());
+    strcat( description, tmp );
+  }
+  if( item->getDuration() > 0 ) {
+    sprintf(tmp, "Duration: %d|", item->getDuration());
+    strcat( description, tmp );
+  }
 
 
 
