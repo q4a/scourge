@@ -67,10 +67,17 @@ int ShapePalette::columnDescriptionCount = 2;
 
 char *ShapePalette::teleporterDescription[] = {
   "This teleporter appears to be functional (courtesy of the management)",
-	"This teleporter can take you back to headquarters",
+  "This teleporter can take you back to headquarters",
   "It is a teleporter"
 };
 int ShapePalette::teleporterDescriptionCount = 3;
+
+char *ShapePalette::stairsDescription[] = {
+  "These stairs lead to another level",
+  "Stairs leading into darkness",
+  "You see a flight of stairs"
+};
+int ShapePalette::stairsDescriptionCount = 3;
 
 
 
@@ -376,6 +383,15 @@ void ShapePalette::initShapes() {
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
                 Constants::TELEPORTER_BASE_INDEX);
+
+	shapes[Constants::STAIRS_UP_INDEX] =
+	  new C3DSShape("data/objects/stairs.3ds", 2.0f, this,
+					notex, 7, 7, 10,
+					"STAIRS", stairsDescription, stairsDescriptionCount,
+					0xffffffff,
+					display_list + (count++ * 3), Constants::STAIRS_UP_INDEX, 
+					3, 0);
+
 
 
 	

@@ -1025,7 +1025,22 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		}
 	} 
 
-  // add pre-generated shapes first
+	/*
+	// add some stairs just for demo
+	// this will be used when multi-level missions are ready
+	for(int i = 0; i < 10; i++) {
+	  bool fits = 
+		getLocationInRoom(map, i,
+						  scourge->getShapePalette()->getShape(Constants::STAIRS_UP_INDEX), 
+						  &x, &y);
+	  if(fits) {
+		addItem(map, NULL, NULL, scourge->getShapePalette()->getShape(Constants::STAIRS_UP_INDEX), x, y);
+		break;
+	  }
+	}
+	*/
+
+	// add pre-generated shapes first
 	if(preGenerated) {
 		for(int i = 0; i < location[locationIndex].shapeCount; i++) {
 			int mapx = location[locationIndex].shapePosition[i][1] + offset;
