@@ -16,8 +16,7 @@
  ***************************************************************************/
 #include "button.h"
 #include "window.h"
-
-//#include "../scourge.h"
+#include "guitheme.h"
 
 /**
   *@author Gabor Torok
@@ -43,21 +42,102 @@ Button::~Button() {
 }
 
 void Button::drawWidget(Widget *parent) {
-  if(toggle && selected) {
-    applySelectionColor();
-  } else {
-    applyBackgroundColor(true);
-  }
+  GuiTheme *theme = ((Window*)parent)->getTheme();
+
   if(isTranslucent()) {
     glBlendFunc( GL_SRC_ALPHA, GL_ONE );
     glEnable( GL_BLEND );
   }
+
+  if(toggle && selected) {
+    // FIXME: use theme
+    applySelectionColor();
+  } else if( theme->getButtonBackground() ) {
+    glEnable( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->texture );
+    glColor4f( theme->getButtonBackground()->color.r, 
+               theme->getButtonBackground()->color.g, 
+               theme->getButtonBackground()->color.b, 
+               theme->getButtonBackground()->color.a );
+  } else {
+    applyBackgroundColor(true);
+  }
+  int n = ( theme->getButtonBackground() ? theme->getButtonBackground()->width : 0 );
   glBegin(GL_QUADS);
-  glVertex2d(0, 0);
-  glVertex2d(0, y2 - y);
-  glVertex2d(x2 - x, y2 - y);
-  glVertex2d(x2 - x, 0);
+  glTexCoord2f(0, 0);
+  glVertex2d(n, n);
+  glTexCoord2f(0, 1);
+  glVertex2d(n, y2 - y - n);
+  glTexCoord2f(1, 1);
+  glVertex2d(x2 - x - n, y2 - y - n);
+  glTexCoord2f(1, 0);
+  glVertex2d(x2 - x - n, n);
   glEnd();
+
+  if( n ) {
+    glPushMatrix();
+    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_north );
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex2d(0, 0);
+    glTexCoord2f(0, 1);
+    glVertex2d(0, n);
+    glTexCoord2f(1, 1);
+    glVertex2d(x2 - x, n);
+    glTexCoord2f(1, 0);
+    glVertex2d(x2 - x, 0);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef( 0, y2 - y - n, 0 );
+    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_south );
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex2d(0, 0);
+    glTexCoord2f(0, 1);
+    glVertex2d(0, n);
+    glTexCoord2f(1, 1);
+    glVertex2d(x2 - x, n);
+    glTexCoord2f(1, 0);
+    glVertex2d(x2 - x, 0);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef( 0, n, 0 );
+    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_west );
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex2d(0, 0);
+    glTexCoord2f(0, 1);
+    glVertex2d(0, y2 - y - ( 2 * n ));
+    glTexCoord2f(1, 1);
+    glVertex2d(n, y2 - y - ( 2 * n ));
+    glTexCoord2f(1, 0);
+    glVertex2d(n, 0);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef( x2 - x - n, n, 0 );
+    glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->tex_east );
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex2d(0, 0);
+    glTexCoord2f(0, 1);
+    glVertex2d(0, y2 - y - ( 2 * n ));
+    glTexCoord2f(1, 1);
+    glVertex2d(n, y2 - y - ( 2 * n ));
+    glTexCoord2f(1, 0);
+    glVertex2d(n, 0);
+    glEnd();
+    glPopMatrix();
+  }
+
+  if( theme->getButtonBackground() ) {
+    glDisable( GL_TEXTURE_2D );
+  }
   if(isTranslucent()) {
     glDisable( GL_BLEND );
   }
@@ -69,46 +149,65 @@ void Button::drawWidget(Widget *parent) {
     if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
   }
   if(glowing) {
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 1, 0.15, 0.15, alpha );
-    glBindTexture( GL_TEXTURE_2D, highlight );
+    if( theme->getButtonHighlight() ) {
+      glEnable( GL_TEXTURE_2D );
+      glBindTexture( GL_TEXTURE_2D, theme->getButtonHighlight()->texture );
+    }
+    // FIXME: use theme
+    glColor4f( 1, 0.15, 0.15, alpha );    
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     glBegin( GL_QUADS );
     glTexCoord2f( 0, 0 );
-    glVertex2d(0, 0);
+    glVertex2d(n, n);
     glTexCoord2f( 0, 1 );
-    glVertex2d(0, y2 - y);
+    glVertex2d(n, y2 - y - n);
     glTexCoord2f( 1, 1 );
-    glVertex2d(x2 - x, y2 - y);
+    glVertex2d(x2 - x - n, y2 - y - n);
     glTexCoord2f( 1, 0 );
-    glVertex2d(x2 - x, 0);
+    glVertex2d(x2 - x - n, n);
     glEnd();
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
   }
   if(inside) {
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 0.75, 0.75, 1, alpha );
-    glBindTexture( GL_TEXTURE_2D, highlight );
+    if( theme->getButtonHighlight() ) {
+      glEnable( GL_TEXTURE_2D );
+      glColor4f( theme->getButtonHighlight()->color.r, 
+                 theme->getButtonHighlight()->color.g, 
+                 theme->getButtonHighlight()->color.b, 
+                 alpha );
+      glBindTexture( GL_TEXTURE_2D, theme->getButtonHighlight()->texture );
+    }
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     glBegin( GL_QUADS );
     glTexCoord2f( 0, 0 );
-    glVertex2d(0, 0);
+    glVertex2d(n, n);
     glTexCoord2f( 0, 1 );
-    glVertex2d(0, y2 - y);
+    glVertex2d(n, y2 - y - n);
     glTexCoord2f( 1, 1 );
-    glVertex2d(x2 - x, y2 - y);
+    glVertex2d(x2 - x - n, y2 - y - n);
     glTexCoord2f( 1, 0 );
-    glVertex2d(x2 - x, 0);
+    glVertex2d(x2 - x - n, n);
     glEnd();
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
   }
 
-  applyBorderColor();
-  glBegin(GL_LINES);
+  if( theme->getButtonBorder() ) {
+    glColor4f( theme->getButtonBorder()->color.r,
+               theme->getButtonBorder()->color.g,
+               theme->getButtonBorder()->color.b,
+               theme->getButtonBorder()->color.a );
+  }
+  glBegin( GL_LINE_LOOP );
+  glVertex2d(0, 0);
+  glVertex2d(0, y2 - y);
+  glVertex2d(x2 - x, y2 - y);
+  glVertex2d(x2 - x, 0);
+
+  /*
   glVertex2d(0, 0);
   glVertex2d(0, y2 - y);
   glVertex2d(x2 - x, 0);
@@ -117,6 +216,8 @@ void Button::drawWidget(Widget *parent) {
   glVertex2d(x2 - x, 0);
   glVertex2d(0, y2 - y);
   glVertex2d(x2 - x, y2 - y);
+  */
+
   glEnd();
 
   glPushMatrix();
@@ -127,6 +228,10 @@ void Button::drawWidget(Widget *parent) {
   default: ypos = (y2 - y) / 2 + 5;
   }
   glTranslated( 5, ypos, 0);
+  if( theme->getButtonText() ) label->setColor( theme->getButtonText()->r,
+                                                theme->getButtonText()->g,
+                                                theme->getButtonText()->b,
+                                                theme->getButtonText()->a );
   label->drawWidget(parent);
   glPopMatrix();
 }

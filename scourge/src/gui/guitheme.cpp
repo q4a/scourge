@@ -158,14 +158,14 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
 void GuiTheme::loadTextures( ShapePalette *shapePal ) {
   cerr << "----------------------------------------" << endl;
   cerr << "Loading gui theme: " << name << endl;
-  if( windowBack ) windowBack->texture = shapePal->loadSystemTexture( windowBack->textureFileName );
-  if( windowTop ) windowTop->texture = shapePal->loadSystemTexture( windowTop->textureFileName );
-  if( windowBorder ) windowBorder->texture = shapePal->loadSystemTexture( windowBorder->textureFileName);
-  if( buttonBackground ) buttonBackground->texture = shapePal->loadSystemTexture( buttonBackground->textureFileName );
-  if( buttonHighlight ) buttonHighlight->texture = shapePal->loadSystemTexture( buttonHighlight->textureFileName );
-  if( buttonBorder ) buttonBorder->texture = shapePal->loadSystemTexture( buttonBorder->textureFileName );
-  if( listBackground ) listBackground->texture = shapePal->loadSystemTexture( listBackground->textureFileName );
-  if( inputBackground ) inputBackground->texture = shapePal->loadSystemTexture( inputBackground->textureFileName );
+  if( windowBack ) windowBack->loadTextures( shapePal );
+  if( windowTop ) windowTop->loadTextures( shapePal );
+  if( windowBorder ) windowBorder->loadTextures( shapePal );
+  if( buttonBackground ) buttonBackground->loadTextures( shapePal );
+  if( buttonHighlight ) buttonHighlight->loadTextures( shapePal );
+  if( buttonBorder ) buttonBorder->loadTextures( shapePal );
+  if( listBackground ) listBackground->loadTextures( shapePal );
+  if( inputBackground ) inputBackground->loadTextures( shapePal );
   cerr << "Done loading gui theme: " << name << endl;
   cerr << "----------------------------------------" << endl;
 }
@@ -173,17 +173,37 @@ void GuiTheme::loadTextures( ShapePalette *shapePal ) {
 ThemeElement *GuiTheme::parseElement( char *line ) {
   char *p = strtok( line, "," );
   if( p ) {
-	ThemeElement *element = new ThemeElement();
-	strcpy( element->textureFileName, p );
-	strcat( element->textureFileName, ".bmp" );
-	element->color.r = atof( strtok( NULL, "," ) );
-	element->color.g = atof( strtok( NULL, "," ) );
-	element->color.b = atof( strtok( NULL, "," ) );
-	element->color.a = atof( strtok( NULL, "," ) );
-	element->width = atoi( strtok( NULL, "," ) );
-	return element;
+    ThemeElement *element = new ThemeElement();
+    strcpy( element->textureFileName, p );
+    strcat( element->textureFileName, ".bmp" );
+    element->color.r = atof( strtok( NULL, "," ) );
+    element->color.g = atof( strtok( NULL, "," ) );
+    element->color.b = atof( strtok( NULL, "," ) );
+    element->color.a = atof( strtok( NULL, "," ) );
+    element->width = atoi( strtok( NULL, "," ) );
+    p = strtok( NULL, "," );
+    if( p ) {
+      strcpy( element->north, p );
+      strcat( element->north, ".bmp" );
+    } else strcpy( element->north, "" );
+    p = strtok( NULL, "," );
+    if( p ) {
+      strcpy( element->south, p );
+      strcat( element->south, ".bmp" );
+    } else strcpy( element->south, "" );
+    p = strtok( NULL, "," );
+    if( p ) {
+      strcpy( element->east, p );
+      strcat( element->east, ".bmp" );
+    } else strcpy( element->east, "" );
+    p = strtok( NULL, "," );
+    if( p ) {
+      strcpy( element->west, p );
+      strcat( element->west, ".bmp" );
+    } else strcpy( element->west, "" );
+    return element;
   } else {
-	return NULL;
+    return NULL;
   }
 }
 
@@ -200,3 +220,12 @@ Color *GuiTheme::parseColor( char *line ) {
 	return NULL;
   }
 }
+
+void ThemeElement::loadTextures( ShapePalette *shapePal ) {
+  texture = shapePal->loadSystemTexture( textureFileName );
+  if( strlen( north ) ) tex_north = shapePal->loadSystemTexture( north );
+  if( strlen( south ) ) tex_south = shapePal->loadSystemTexture( south );
+  if( strlen( east ) ) tex_east = shapePal->loadSystemTexture( east );
+  if( strlen( west ) ) tex_west = shapePal->loadSystemTexture( west );
+}   
+
