@@ -64,8 +64,9 @@ char *ClientInfo::describe() {
 }
 
 void ClientInfo::chat(char *message) {
-  // FIXME: prepend "from" to the message
-  server->sendToAllTCP(message);
+  char s[1024];
+  sprintf(s, "CHAT,%s> %s", username, message);
+  server->sendToAllTCP(s);
 }
 
 void ClientInfo::logout() {
@@ -153,11 +154,12 @@ int clientInfoLoop(void *data) {
 
   while(clientInfo->isThreadRunning()) {
 
-    //cerr << "&";
+    cerr << "&";
 
     if(!runAgain) {
       SDL_Delay(500);
     }
+    if(!clientInfo->isThreadRunning()) break;
 
     // lock the mutex
     if(SDL_mutexP(clientInfo->getMutex()) == -1) {
@@ -191,6 +193,7 @@ int clientInfoLoop(void *data) {
       cerr << "Couldn't unlock mutex." << endl;
       exit(7);
     }
+    if(!clientInfo->isThreadRunning()) break;
 
     // send message if any
     if(messageStr) {
@@ -199,6 +202,7 @@ int clientInfoLoop(void *data) {
       messageStr = NULL;
     }
 
+    if(!clientInfo->isThreadRunning()) break;
     // handle the request if any
     int numready=SDLNet_CheckSockets(set, (Uint32)1000);
     if(numready==-1) {
@@ -207,8 +211,9 @@ int clientInfoLoop(void *data) {
       break;
     } else if(numready && SDLNet_SocketReady(clientInfo->getSocket())) {
 #if DEBUG_CLIENT_INFO
-    cerr << "Net: Server: clientInfo: " << clientInfo->describe() << " handling incoming socket messages." << endl;
-#endif
+      cerr << "Net: Server: clientInfo: " << clientInfo->describe() << " handling incoming socket messages." << endl;
+#endif    
+      if(!clientInfo->isThreadRunning()) break;
       clientInfo->receiveTCP();
       runAgain = true;
     }

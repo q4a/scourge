@@ -70,7 +70,7 @@ class ClientInfo : public CommandInterpreter {
   void sendTCP(char *message);
   inline SDL_mutex *getMutex() { return mutex; }
   inline TCPsocket getSocket() { return socket; }
-  inline bool isThreadRunning() { return threadRunning; }
+  inline bool isThreadRunning() { return threadRunning && !dead; }
   inline queue<Message*> *getMessageQueue() { return &messageQueue; }
   inline Commands *getCommands() { return commands; }
 };

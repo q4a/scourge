@@ -12,7 +12,7 @@ Commands::~Commands() {
 void Commands::interpret(char *rawMessage) {
   if(!strncmp(rawMessage, "CHAT,", 5)) {
     lastCommand = CHAT;
-    ci->chat(rawMessage);
+    ci->chat(rawMessage + 5);
   } else if(!strncmp(rawMessage, "LOGOUT,", 7)) {
     lastCommand = LOGOUT;
     ci->logout();
