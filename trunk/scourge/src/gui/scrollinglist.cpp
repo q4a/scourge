@@ -32,6 +32,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h) : Widget(x, y, w, h) {
   this->dragging = false;
   this->dragX = this->dragY = 0;
   selectedLine = -1;
+  scrollerHeight = h;
 }
 
 ScrollingList::~ScrollingList() {

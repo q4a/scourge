@@ -227,6 +227,8 @@ public:
 
   void closeContainerGui(ContainerGui *gui);
 
+  void closeAllContainerGuis();
+
  protected:
   void fightBattle();
 
