@@ -87,12 +87,13 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     cards->addWidget(shadowsML, VIDEO);       
     changeTakeEffectLabel = cards->createLabel(113, 432, strdup(" "), VIDEO, Constants::BLUE_COLOR);
 
-    musicVolume = new Slider(100, 75, 258, 95, 0, 128, strdup("Music Volume"));
+    musicVolume = new Slider(100, 75, 258, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, strdup("Music Volume:"));
     cards->addWidget(musicVolume, AUDIO);
-    effectsVolume = new Slider(100, 110, 258, 130, 0, 128, strdup("Effects Volume"));
+    effectsVolume = new Slider(100, 110, 258, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, strdup("Effects Volume:"));
     cards->addWidget(effectsVolume, AUDIO);
     
     selectedMode = GAME_SETTINGS;
+    cards->setActiveCard(GAME_SETTINGS);
 }
 
 void OptionsMenu::loadGameSettings(){
@@ -102,6 +103,8 @@ void OptionsMenu::loadGameSettings(){
     keepMapSize->setCheck(uc->getKeepMapSize());
     frameOnFullScreen->setCheck(uc->getFrameOnFullScreen());
     turnBasedBattle->setCheck(uc->isBattleTurnBased());
+    musicVolume->setValue(scourge->getUserConfiguration()->getMusicVolume());
+    effectsVolume->setValue(scourge->getUserConfiguration()->getEffectsVolume());
 }
 
 // line i must correspond to engine action i if we want this scrolling list to work
@@ -324,7 +327,13 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         if(selectedMode == VIDEO){
             changeTakeEffectLabel -> setText("Some changes will only take effect upon restart");            
         }       
-    }    
+    } else if(widget == musicVolume) {
+      scourge->getSDLHandler()->getSound()->setMusicVolume(musicVolume->getValue());
+      uc->setMusicVolume(musicVolume->getValue());
+    } else if(widget == effectsVolume) {
+      scourge->getSDLHandler()->getSound()->setEffectsVolume(effectsVolume->getValue());
+      uc->setEffectsVolume(effectsVolume->getValue());
+    }
     setSelectedMode(); 
       
     return false;

@@ -109,6 +109,8 @@ class Widget {
    */
   virtual inline int getEventType() { return 0; }
 
+  virtual inline bool hasSound() { return true; }
+
  protected:
 	 bool debug;
 };

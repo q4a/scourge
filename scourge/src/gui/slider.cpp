@@ -23,39 +23,90 @@
 
 #define BUTTON_SIZE 15
 
-Slider::Slider(int x1, int y1, int x2, int y2, int minValue, int maxValue, char *label) : 
-  Widget(x1, y1, x2 - x1, y2 - y1) {
+Slider::Slider(int x1, int y1, int x2, GLuint highlight, int minValue, int maxValue, char *label) : 
+  Widget(x1, y1, x2 - x1, 30) {
   this->x2 = x2;
-  this->y2 = y2;
   this->minValue = minValue;
   this->maxValue = maxValue;
   this->label = new Label(0, 0, label);
   this->pos = 0;
   this->inside = false;
   this->dragging = false;
+  alpha = 0.5f;
+  alphaInc = 0.05f;
+  lastTick = 0;
+
 }
 
 Slider::~Slider() {
 }
 
 void Slider::drawWidget(Widget *parent) {
-  applyBorderColor();
 
-  glBegin(GL_LINES);
-  glVertex2d( 0, 5 );
-  glVertex2d( x2 - x, 5 );
-  glEnd();
+  GLint t = SDL_GetTicks();
+  if(lastTick == 0 || t - lastTick > 50) {
+    lastTick = t;
+    alpha += alphaInc;
+    if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
+  }
 
+  glPushMatrix();
+  glTranslatef( 0, 10, 0 );
   label->drawWidget(parent);
+  glPopMatrix();
 
   // draw the drag-button
+  applyBorderColor();
   glPushMatrix();
-  glTranslatef( pos, 0, 0 );
+  
+  glBegin(GL_LINES);
+  glVertex2d( 0, 20 );
+  glVertex2d( x2 - x, 20 );
+  glEnd();
+
+  glTranslatef( pos, 12, 0 );
+
+  applyBackgroundColor();
   glBegin( GL_QUADS );
+  glVertex2d(0, 0);
+  glVertex2d(0, BUTTON_SIZE);
+  glVertex2d(BUTTON_SIZE / 2, BUTTON_SIZE);
+  glVertex2d(BUTTON_SIZE / 2, 0);
+  glEnd();
+
+  if(inside) {
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 0.75, 0.75, 1, alpha );
+    glBindTexture( GL_TEXTURE_2D, highlight );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    glDisable( GL_CULL_FACE );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, 0 );glDisable( GL_CULL_FACE );
+    glVertex2d(0, 0);
+    glTexCoord2f( 0, 1 );
+    glVertex2d(0, BUTTON_SIZE);
+    glTexCoord2f( 1, 1 );
+    glVertex2d(BUTTON_SIZE / 2, BUTTON_SIZE);
+    glTexCoord2f( 1, 0 );
+    glVertex2d(BUTTON_SIZE / 2, 0);
+    glEnd();
+    glDisable( GL_BLEND );
+    glDisable( GL_TEXTURE_2D );
+    glEnable( GL_CULL_FACE );
+  }
+
+  applyBorderColor();
+  glBegin( GL_LINES );
   glVertex2d( 0, 0 );
   glVertex2d( 0, BUTTON_SIZE );
-  glVertex2d( BUTTON_SIZE, BUTTON_SIZE );
-  glVertex2d( BUTTON_SIZE, 0 );
+  glVertex2d( 0, BUTTON_SIZE );
+  glVertex2d( BUTTON_SIZE / 2, BUTTON_SIZE );
+  glVertex2d( BUTTON_SIZE / 2, BUTTON_SIZE );
+  glVertex2d( BUTTON_SIZE / 2, 0 );
+  glVertex2d( BUTTON_SIZE / 2, 0 );
+  glVertex2d( 0, 0 );
+
   glEnd();
   glPopMatrix();
 }
@@ -63,32 +114,42 @@ void Slider::drawWidget(Widget *parent) {
 bool Slider::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   inside = isInside(x, y);
   if(inside) ((Window*)parent)->setLastWidget(this);
+  else dragging = false;
   // handle it
   switch( event->type ) {
   case SDL_KEYUP:
   if(hasFocus()) {
     if(event->key.keysym.sym == SDLK_LEFT) {
-      if(pos) pos -= getStep();
+      if(pos) pos -= 10 * getStep();
+      if(pos < 0) pos = 0;
       return true;
     } else if(event->key.keysym.sym == SDLK_RIGHT) {
-      if(pos < getWidth() - BUTTON_SIZE) pos += getStep();
+      if(pos < getWidth() - BUTTON_SIZE / 2) pos += 10 * getStep();
+      if(pos >= getWidth() - BUTTON_SIZE / 2) pos = getWidth() - BUTTON_SIZE / 2;
       return true;
     }
   }
   break;
   case SDL_MOUSEMOTION:
-    if(inside && dragging && x - getX() < getWidth() - BUTTON_SIZE) {
+    if(inside && dragging) {
       pos = x - getX();
+      if(pos >= getWidth() - BUTTON_SIZE / 2) pos = getWidth() - BUTTON_SIZE / 2;
+      if(pos < 0) pos = 0;
+      return true;
     }
 	break;
   case SDL_MOUSEBUTTONUP:
-    if(dragging) dragging = false;
-    else if(inside) pos = x - getX();
-	return inside;
+  if(inside) {
+    dragging = false;
+    pos = x - getX();
+    if(pos >= getWidth() - BUTTON_SIZE / 2) pos = getWidth() - BUTTON_SIZE / 2;
+    if(pos < 0) pos = 0;
+    return true;
+  }
   case SDL_MOUSEBUTTONDOWN:
-    if(x - getX() >= pos && x - getX() < pos + BUTTON_SIZE) {
-      dragging = true;
-    }
+  if(inside) {
+    dragging = true;
+  }
 	break;
   default:
 	break;
@@ -98,5 +159,11 @@ bool Slider::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 
 void Slider::removeEffects(Widget *parent) {
   inside = false;
+}
+
+void Slider::setValue(int n) {
+  pos = (int)((float)(n * getWidth()) / (float)(maxValue - minValue));
+  if(pos >= getWidth() - BUTTON_SIZE / 2) pos = getWidth() - BUTTON_SIZE / 2;
+  if(pos < 0) pos = 0;
 }
 
