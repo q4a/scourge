@@ -104,6 +104,8 @@ class RpgItem {
   static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
   static map<string, const RpgItem *> itemsByName;
   static vector<int> weapons;
+  static vector<RpgItem*> containers;
+  static vector<RpgItem*> containersNS;
 
  public:
 
@@ -179,7 +181,7 @@ class RpgItem {
   inline static RpgItem *getItem(int index) { return items[index]; }
 
   static int getTypeByName(char *name);
-  static void addItem(RpgItem *item);
+  static void addItem(RpgItem *item, int width, int depth, int height);
   static RpgItem *getItemByName(char *name);
 
 protected:
