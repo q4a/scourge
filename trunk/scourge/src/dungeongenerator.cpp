@@ -150,6 +150,8 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown,
   visitedCount = 0;
   visited = (int*)new int[notVisitedCount];
 
+  doorCount = 0;
+
   progress = new Progress(scourge, 12);
 }
 
@@ -772,500 +774,608 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
   progress->updateStatus(MESSAGE);
 }
 
-void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
-									  bool preGenerated, int locationIndex) {
+void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal, 
+                                  bool preGenerated, int locationIndex) {
   // add shapes to map
   Sint16 mapx, mapy;
   for(Sint16 x = 0; x < width; x++) {    
-	for(Sint16 y = 0; y < height; y++) {
-				
-	  mapx = x * unitSide + offset;
-	  mapy = y * unitSide + offset;
-	  if(nodes[x][y] != UNVISITED) {
-					 
-		if(nodes[x][y] >= ROOM) {
-		  map->setFloorPosition(mapx, mapy + unitSide, 
-								shapePal->findShapeByName("ROOM_FLOOR_TILE"));
-		} else {
-		  map->setFloorPosition(mapx, mapy + unitSide, 
-								shapePal->findShapeByName("FLOOR_TILE"));
-		}
-					 
-		// init the free space
-		if(nodes[x][y] & E_DOOR) {
-		  drawDoor(map, shapePal, mapx, mapy, E_DOOR);
-		} else if(nodes[x][y] & W_DOOR) {
-		  drawDoor(map, shapePal, mapx, mapy, W_DOOR);
-		} else if(nodes[x][y] & N_DOOR) {
-		  drawDoor(map, shapePal, mapx, mapy, N_DOOR);
-		} else if(nodes[x][y] & S_DOOR) {
-		  drawDoor(map, shapePal, mapx, mapy, S_DOOR);
-		}
+    for(Sint16 y = 0; y < height; y++) {
 
-		// random doors
-		if((nodes[x][y] & W_PASS) &&
-		   !(nodes[x][y] & N_PASS) &&
-		   !(nodes[x][y] & S_PASS)) {
-		  if((int)(100.0 * rand()/RAND_MAX) <= randomDoors)
-			drawDoor(map, shapePal, mapx, mapy, W_DOOR);
-		}
-		if((nodes[x][y] & E_PASS) &&
-		   !(nodes[x][y] & N_PASS) &&
-		   !(nodes[x][y] & S_PASS)) {
-		  if((int)(100.0 * rand()/RAND_MAX) <= randomDoors)
-			drawDoor(map, shapePal, mapx, mapy, E_DOOR);
-		}
-		if((nodes[x][y] & S_PASS) &&
-		   !(nodes[x][y] & W_PASS) &&
-		   !(nodes[x][y] & E_PASS)) {
-		  if((int)(100.0 * rand()/RAND_MAX) <= randomDoors)
-			drawDoor(map, shapePal, mapx, mapy, S_DOOR);
-		}
-		if((nodes[x][y] & N_PASS) &&
-		   !(nodes[x][y] & W_PASS) &&
-		   !(nodes[x][y] & E_PASS)) {
-		  if((int)(100.0 * rand()/RAND_MAX) <= randomDoors)
-			drawDoor(map, shapePal, mapx, mapy, N_DOOR);
-		}
-					 
-		if(!(nodes[x][y] & W_PASS)) {
-		  if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
-			map->setPosition(mapx, mapy + unitSide, 
-							 0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));								
-		  } else if(nodes[x][y] & N_PASS) {
-			map->setPosition(mapx, mapy + unitSide - unitOffset, 
-							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
-		  } else if(nodes[x][y] & S_PASS) {
-			map->setPosition(mapx, mapy + unitSide, 
-							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
-		  } else {
-			map->setPosition(mapx, mapy + unitSide - unitOffset, 
-							 0, shapePal->findShapeByName("EW_WALL"));								
-		  }						  
-		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
-			map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-							 6, shapePal->findShapeByName("LAMP_WEST"));
-			map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-							 4, shapePal->findShapeByName("LAMP_BASE"));
-		  }          
-		}
-		if(!(nodes[x][y] & E_PASS)) {
-		  if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
-			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
-							 0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));								
-		  } else if(nodes[x][y] & N_PASS) {
-			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
-		  } else if(nodes[x][y] & S_PASS) {
-			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
-							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
-		  } else {
-			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-							 0, shapePal->findShapeByName("EW_WALL"));
-		  }
-		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
-			map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-							 6, shapePal->findShapeByName("LAMP_EAST"));
-			map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-							 4, shapePal->findShapeByName("LAMP_BASE"));
-		  }          
-		}
-		if(!(nodes[x][y] & N_PASS)) {
-		  if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
-			map->setPosition(mapx, mapy + unitOffset, 0, 
-							 shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
-		  } else if(nodes[x][y] & W_PASS) {
-			map->setPosition(mapx, mapy + unitOffset, 0, 
-							 shapePal->findShapeByName("NS_WALL_EXTRA"));
-		  } else if(nodes[x][y] & E_PASS) {
-			map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
-							 shapePal->findShapeByName("NS_WALL_EXTRA"));
-		  } else {
-			map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
-							 shapePal->findShapeByName("NS_WALL"));
-		  }
-		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
-			map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
-							 shapePal->findShapeByName("LAMP_NORTH"));
-			map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
-							 shapePal->findShapeByName("LAMP_BASE"));
-		  }            
-		}
-		if(!(nodes[x][y] & S_PASS)) {
-		  if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
-			map->setPosition(mapx, mapy + unitSide, 0, 
-							 shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
-		  } else if(nodes[x][y] & W_PASS) {
-			map->setPosition(mapx, mapy + unitSide, 0, 
-							 shapePal->findShapeByName("NS_WALL_EXTRA"));
-		  } else if(nodes[x][y] & E_PASS) {
-			map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
-							 shapePal->findShapeByName("NS_WALL_EXTRA"));
-		  } else {
-			map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
-							 shapePal->findShapeByName("NS_WALL"));
-		  }
-		}
-					 
-		if(nodes[x][y] & N_PASS && nodes[x][y] & W_PASS) {
-		  map->setPosition(mapx, mapy + unitOffset, 0, 
-						   shapePal->findShapeByName("CORNER"));
-		}
-		if(nodes[x][y] & N_PASS && nodes[x][y] & E_PASS) {
-		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-						   shapePal->findShapeByName("CORNER"));
-		}
-		if(nodes[x][y] & S_PASS && nodes[x][y] & W_PASS) {
-		  map->setPosition(mapx, mapy + unitSide, 0, 
-						   shapePal->findShapeByName("CORNER"));
-		}
-		if(nodes[x][y] & S_PASS && nodes[x][y] & E_PASS) {
-		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-						   shapePal->findShapeByName("CORNER"));
-		}
-		if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & W_PASS)) {
-		  map->setPosition(mapx, mapy + unitOffset, 0, 
-						   shapePal->findShapeByName("CORNER"));
-		}
-		if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & E_PASS)) {
-		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-						   shapePal->findShapeByName("CORNER")); 
-		}
-		if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & W_PASS)) {
-		  map->setPosition(mapx, mapy + unitSide, 0, 
-						   shapePal->findShapeByName("CORNER")); 
-		}
-		if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & E_PASS)) {
-		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-						   shapePal->findShapeByName("CORNER")); 
-		}					 
-	  }
-	}
+      mapx = x * unitSide + offset;
+      mapy = y * unitSide + offset;
+      if(nodes[x][y] != UNVISITED) {
+
+        if(nodes[x][y] >= ROOM) {
+          map->setFloorPosition(mapx, mapy + unitSide, 
+                                shapePal->findShapeByName("ROOM_FLOOR_TILE"));
+        } else {
+          map->setFloorPosition(mapx, mapy + unitSide, 
+                                shapePal->findShapeByName("FLOOR_TILE"));
+        }
+
+        // init the free space
+        if(nodes[x][y] & E_DOOR) {
+          drawDoor(map, shapePal, mapx, mapy, E_DOOR);
+        } else if(nodes[x][y] & W_DOOR) {
+          drawDoor(map, shapePal, mapx, mapy, W_DOOR);
+        } else if(nodes[x][y] & N_DOOR) {
+          drawDoor(map, shapePal, mapx, mapy, N_DOOR);
+        } else if(nodes[x][y] & S_DOOR) {
+          drawDoor(map, shapePal, mapx, mapy, S_DOOR);
+        }
+
+        // random doors
+        if((nodes[x][y] & W_PASS) &&
+           !(nodes[x][y] & N_PASS) &&
+           !(nodes[x][y] & S_PASS)) {
+          if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
+            drawDoor(map, shapePal, mapx, mapy, W_DOOR);
+          }
+        }
+        if((nodes[x][y] & E_PASS) &&
+           !(nodes[x][y] & N_PASS) &&
+           !(nodes[x][y] & S_PASS)) {
+          if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
+            drawDoor(map, shapePal, mapx, mapy, E_DOOR);
+          }
+        }
+        if((nodes[x][y] & S_PASS) &&
+           !(nodes[x][y] & W_PASS) &&
+           !(nodes[x][y] & E_PASS)) {
+          if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
+            drawDoor(map, shapePal, mapx, mapy, S_DOOR);
+          }
+        }
+        if((nodes[x][y] & N_PASS) &&
+           !(nodes[x][y] & W_PASS) &&
+           !(nodes[x][y] & E_PASS)) {
+          if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
+            drawDoor(map, shapePal, mapx, mapy, N_DOOR);
+          }
+        }
+
+        if(!(nodes[x][y] & W_PASS)) {
+          if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
+            map->setPosition(mapx, mapy + unitSide, 
+                             0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));               
+          } else if(nodes[x][y] & N_PASS) {
+            map->setPosition(mapx, mapy + unitSide - unitOffset, 
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+          } else if(nodes[x][y] & S_PASS) {
+            map->setPosition(mapx, mapy + unitSide, 
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+          } else {
+            map->setPosition(mapx, mapy + unitSide - unitOffset, 
+                             0, shapePal->findShapeByName("EW_WALL"));                
+          }             
+          if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+            map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
+                             6, shapePal->findShapeByName("LAMP_WEST"));
+            map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
+                             4, shapePal->findShapeByName("LAMP_BASE"));
+          }
+        }
+        if(!(nodes[x][y] & E_PASS)) {
+          if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
+            map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
+                             0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));               
+          } else if(nodes[x][y] & N_PASS) {
+            map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+          } else if(nodes[x][y] & S_PASS) {
+            map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+          } else {
+            map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
+                             0, shapePal->findShapeByName("EW_WALL"));
+          }
+          if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+            map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
+                             6, shapePal->findShapeByName("LAMP_EAST"));
+            map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
+                             4, shapePal->findShapeByName("LAMP_BASE"));
+          }
+        }
+        if(!(nodes[x][y] & N_PASS)) {
+          if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
+            map->setPosition(mapx, mapy + unitOffset, 0, 
+                             shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
+          } else if(nodes[x][y] & W_PASS) {
+            map->setPosition(mapx, mapy + unitOffset, 0, 
+                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+          } else if(nodes[x][y] & E_PASS) {
+            map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
+                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+          } else {
+            map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
+                             shapePal->findShapeByName("NS_WALL"));
+          }
+          if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+            map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
+                             shapePal->findShapeByName("LAMP_NORTH"));
+            map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
+                             shapePal->findShapeByName("LAMP_BASE"));
+          }
+        }
+        if(!(nodes[x][y] & S_PASS)) {
+          if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
+            map->setPosition(mapx, mapy + unitSide, 0, 
+                             shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
+          } else if(nodes[x][y] & W_PASS) {
+            map->setPosition(mapx, mapy + unitSide, 0, 
+                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+          } else if(nodes[x][y] & E_PASS) {
+            map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
+                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+          } else {
+            map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
+                             shapePal->findShapeByName("NS_WALL"));
+          }
+        }
+
+        if(nodes[x][y] & N_PASS && nodes[x][y] & W_PASS) {
+          map->setPosition(mapx, mapy + unitOffset, 0, 
+                           shapePal->findShapeByName("CORNER"));
+        }
+        if(nodes[x][y] & N_PASS && nodes[x][y] & E_PASS) {
+          map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
+                           shapePal->findShapeByName("CORNER"));
+        }
+        if(nodes[x][y] & S_PASS && nodes[x][y] & W_PASS) {
+          map->setPosition(mapx, mapy + unitSide, 0, 
+                           shapePal->findShapeByName("CORNER"));
+        }
+        if(nodes[x][y] & S_PASS && nodes[x][y] & E_PASS) {
+          map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
+                           shapePal->findShapeByName("CORNER"));
+        }
+        if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & W_PASS)) {
+          map->setPosition(mapx, mapy + unitOffset, 0, 
+                           shapePal->findShapeByName("CORNER"));
+        }
+        if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & E_PASS)) {
+          map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
+                           shapePal->findShapeByName("CORNER")); 
+        }
+        if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & W_PASS)) {
+          map->setPosition(mapx, mapy + unitSide, 0, 
+                           shapePal->findShapeByName("CORNER")); 
+        }
+        if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & E_PASS)) {
+          map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
+                           shapePal->findShapeByName("CORNER")); 
+        }
+      }
+    }
   }
-  progress->updateStatus(MESSAGE);
-	 
+}
+
+void DungeonGenerator::removeColumns(Map *map, ShapePalette *shapePal, 
+                                     bool preGenerated, int locationIndex) {
   // Remove 'columns' from rooms
   for(int x = 0; x < MAP_WIDTH - unitSide; x++) {
-	for(int y = 0; y < MAP_DEPTH - (unitSide * 2); y++) {
-				
-	  if(map->getFloorPosition(x, y + unitSide) ==
-		 shapePal->findShapeByName("ROOM_FLOOR_TILE") && 
-		 map->getFloorPosition(x + unitSide, y + unitSide) ==
-		 shapePal->findShapeByName("ROOM_FLOOR_TILE") &&
-		 map->getFloorPosition(x, y + unitSide + unitSide) ==
-		 shapePal->findShapeByName("ROOM_FLOOR_TILE") &&         
-		 map->getFloorPosition(x + unitSide, y + unitSide + unitSide) ==
-		 shapePal->findShapeByName("ROOM_FLOOR_TILE")) {
-					 
-		//        map->setFloorPosition(x, y + unitSide, shapePal->findShapeByName("FLOOR_TILE"));
-		map->removePosition(x + unitSide - unitOffset, y + unitSide, 0);
-		map->removePosition(x + unitSide - unitOffset, y + unitSide + unitOffset, 0);
-		map->removePosition(x + unitSide, y + unitSide, 0);
-		map->removePosition(x + unitSide, y + unitSide + unitOffset, 0);                
-	  }
-	}
+    for(int y = 0; y < MAP_DEPTH - (unitSide * 2); y++) {
+
+      if(map->getFloorPosition(x, y + unitSide) ==
+         shapePal->findShapeByName("ROOM_FLOOR_TILE") && 
+         map->getFloorPosition(x + unitSide, y + unitSide) ==
+         shapePal->findShapeByName("ROOM_FLOOR_TILE") &&
+         map->getFloorPosition(x, y + unitSide + unitSide) ==
+         shapePal->findShapeByName("ROOM_FLOOR_TILE") &&         
+         map->getFloorPosition(x + unitSide, y + unitSide + unitSide) ==
+         shapePal->findShapeByName("ROOM_FLOOR_TILE")) {
+
+        //        map->setFloorPosition(x, y + unitSide, shapePal->findShapeByName("FLOOR_TILE"));
+        map->removePosition(x + unitSide - unitOffset, y + unitSide, 0);
+        map->removePosition(x + unitSide - unitOffset, y + unitSide + unitOffset, 0);
+        map->removePosition(x + unitSide, y + unitSide, 0);
+        map->removePosition(x + unitSide, y + unitSide + unitOffset, 0);                
+      }
+    }
   }
-  progress->updateStatus(MESSAGE);
+}
 
-	int x, y;
-	RpgItem *rpgItem;
-	// add the containers
-	for(int i = 0; i < roomCount; i++) {
-		if(preGenerated && location[locationIndex].roomDimension[i][4] == 0) continue;
-		for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
-			rpgItem = RpgItem::getRandomContainer();
-			if(rpgItem) {
-				// WEST side
-				x = (room[i].x * unitSide) + unitOffset + offset;
-				y = (room[i].y * unitSide) + pos + offset;
-				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-				if(map->shapeFits(shape, x, y, 0) && 
-					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-				}
-			}
-			rpgItem = RpgItem::getRandomContainer();
-			if(rpgItem) {
-				// EAST side
-				x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-				if(map->shapeFits(shape, x, y, 0) && 
-					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-				}
-			}
-		}
-		for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
-			rpgItem = RpgItem::getRandomContainerNS();
-			if(rpgItem) {
-				// NORTH side
-				x = (room[i].x * unitSide) + pos + offset;
-				y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
-				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-				if(map->shapeFits(shape, x, y, 0) && 
-					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-				}
-			}
-			rpgItem = RpgItem::getRandomContainerNS();
-			if(rpgItem) {
-				// SOUTH side
-				y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
-				Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-				if(map->shapeFits(shape, x, y, 0) && 
-					 !coversDoor(map, shapePal, shape, x, y)) {
-					addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-				}
-			}
-		}
-	}
-	progress->updateStatus(MESSAGE);
-  
-	// Collapse the free space and put objects in the available spots
-	ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
-	if(!ff) {
-		fprintf(stderr, "out of mem\n");
-		exit(0);    
-	}
-	ffCount = 0;
-	for(int fx = offset; fx < MAP_WIDTH; fx+=unitSide) {
-		for(int fy = offset; fy < MAP_DEPTH; fy+=unitSide) {
-			if(map->getFloorPosition(fx, fy + unitSide)) {
-				for(int ffx = 0; ffx < unitSide; ffx++) {
-					for(int ffy = unitSide; ffy > 0; ffy--) {
-						if(!map->getLocation(fx + ffx, fy + ffy, 0)) {
-							*(ff + ffCount * 2) = fx + ffx;
-							*(ff + ffCount * 2 + 1) = fy + ffy;
-							ffCount++;
-						}
-					}
-				}
-			}
-		}
-	} 
-	progress->updateStatus(MESSAGE);
+void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal, 
+                                     bool preGenerated, int locationIndex) {
+  int x = 0;
+  int y = 0;
+  RpgItem *rpgItem;
+  // add the containers
+  for(int i = 0; i < roomCount; i++) {
+    if(preGenerated && location[locationIndex].roomDimension[i][4] == 0) continue;
+    for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
+      rpgItem = RpgItem::getRandomContainer();
+      if(rpgItem) {
+        // WEST side
+        x = (room[i].x * unitSide) + unitOffset + offset;
+        y = (room[i].y * unitSide) + pos + offset;
+        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+        if(map->shapeFits(shape, x, y, 0) && 
+           !coversDoor(map, shapePal, shape, x, y)) {
+          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+        }
+      }
+      rpgItem = RpgItem::getRandomContainer();
+      if(rpgItem) {
+        // EAST side
+        x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
+        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+        if(map->shapeFits(shape, x, y, 0) && 
+           !coversDoor(map, shapePal, shape, x, y)) {
+          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+        }
+      }
+    }
+    for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
+      rpgItem = RpgItem::getRandomContainerNS();
+      if(rpgItem) {
+        // NORTH side
+        x = (room[i].x * unitSide) + pos + offset;
+        y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
+        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+        if(map->shapeFits(shape, x, y, 0) && 
+           !coversDoor(map, shapePal, shape, x, y)) {
+          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+        }
+      }
+      rpgItem = RpgItem::getRandomContainerNS();
+      if(rpgItem) {
+        // SOUTH side
+        y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
+        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+        if(map->shapeFits(shape, x, y, 0) && 
+           !coversDoor(map, shapePal, shape, x, y)) {
+          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+        }
+      }
+    }
+  }
+}
 
-	// add stairs for multi-level missions
-	if(!preGenerated) {
-	  if(stairsUp) {
-		bool done = false;
-		for(int i = 0; i < 10; i++) {
-		  Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_UP");
-		  bool fits = getLocationInRoom(map, i, shape, &x, &y);
-		  if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
-			addItem(map, NULL, NULL, shape, x, y);
-			done = true;
-			break;
-		  }
-		}
-		if(!done) {
-		  cerr << "Error: couldn't add up stairs." << endl;
-		  exit(1);
-		}
-	  }
-	  if(stairsDown) {
-		bool done = false;
-		for(int i = 0; i < 10; i++) {
-		  Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_DOWN");
-		  bool fits = getLocationInRoom(map, i, shape, &x, &y);
-		  if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
-			addItem(map, NULL, NULL, shape, x, y);
-			done = true;
-			break;
-		  }
-		}
-		if(!done) {
-		  cerr << "Error: couldn't add down stairs." << endl;
-		  exit(1);
-		}
-	  }
-	}
-	progress->updateStatus(MESSAGE);
+void DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal, 
+                                 bool preGenerated, int locationIndex) {
+  // add stairs for multi-level missions
+  if(stairsUp) {
+    bool done = false;
+    for(int i = 0; i < 10; i++) {
+      Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_UP");
+      int x, y;
+      bool fits = getLocationInRoom(map, i, shape, &x, &y);
+      if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+        addItem(map, NULL, NULL, shape, x, y);
+        done = true;
+        break;
+      }
+    }
+    if(!done) {
+      cerr << "Error: couldn't add up stairs." << endl;
+      exit(1);
+    }
+  }
+  if(stairsDown) {
+    bool done = false;
+    for(int i = 0; i < 10; i++) {
+      Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_DOWN");
+      int x, y;
+      bool fits = getLocationInRoom(map, i, shape, &x, &y);
+      if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+        addItem(map, NULL, NULL, shape, x, y);
+        done = true;
+        break;
+      }
+    }
+    if(!done) {
+      cerr << "Error: couldn't add down stairs." << endl;
+      exit(1);
+    }
+  }
+}
 
-	// add pre-generated shapes first
-	if(preGenerated) {
-		for(int i = 0; i < location[locationIndex].shapeCount; i++) {
-			int mapx = location[locationIndex].shapePosition[i].x + offset;
-			int mapy = location[locationIndex].shapePosition[i].y + offset;
-			map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i].z, 
-											 shapePal->findShapeByName(location[locationIndex].shapePosition[i].name));
-			// find and remove this location from ff list (replace w. last entry and decr. counter)
-			for(int n = 0; n < ffCount; n++) {
-				if(mapx == ff[n * 2] && mapy == ff[n * 2 + 1]) {
-					ff[n * 2] = ff[(ffCount - 1) * 2];
-					ff[n * 2 + 1] = ff[(ffCount - 1) * 2 + 1];
-					ffCount--;
-					break;
-				}
-			}
-		}
-	}
-	progress->updateStatus(MESSAGE);
+void DungeonGenerator::addPregeneratedShapes(Map *map, ShapePalette *shapePal, 
+                                             bool preGenerated, int locationIndex) {
+  // add pre-generated shapes first
+  for(int i = 0; i < location[locationIndex].shapeCount; i++) {
+    int mapx = location[locationIndex].shapePosition[i].x + offset;
+    int mapy = location[locationIndex].shapePosition[i].y + offset;
+    map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i].z, 
+                     shapePal->findShapeByName(location[locationIndex].shapePosition[i].name));
+    // find and remove this location from ff list (replace w. last entry and decr. counter)
+    for(int n = 0; n < ffCount; n++) {
+      if(mapx == ff[n * 2] && mapy == ff[n * 2 + 1]) {
+        ff[n * 2] = ff[(ffCount - 1) * 2];
+        ff[n * 2 + 1] = ff[(ffCount - 1) * 2 + 1];
+        ffCount--;
+        break;
+      }
+    }
+  }
+}
 
-	if(!preGenerated) {
-		// add the items
-		for(int i = 0; i < objectCount; i++) {
-			RpgItem *rpgItem = RpgItem::getRandomItem(level);
-			if(!rpgItem) {
-				cerr << "Warning: no items defined for level: " << level << endl;
-				break;
-			}
-			Item *item = scourge->getSession()->newItem(rpgItem);
-			getRandomLocation(map, item->getShape(), &x, &y);
-			addItem(map, NULL, item, NULL, x, y);
-		}
-		// add mission objects 
-		if(mission && mission->getObjective() && !stairsDown) {
+void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
+                                bool preGenerated, int locationIndex) {
+  // add the items
+  for(int i = 0; i < objectCount; i++) {
+    RpgItem *rpgItem = RpgItem::getRandomItem(level);
+    if(!rpgItem) {
+      cerr << "Warning: no items defined for level: " << level << endl;
+      break;
+    }
+    Item *item = scourge->getSession()->newItem(rpgItem);
+    int x, y;
+    getRandomLocation(map, item->getShape(), &x, &y);
+    addItem(map, NULL, item, NULL, x, y);
+  }
 
-		  // mission objects are on a pedestal
-		  // and make them blocking so creatures can't get them
-		  for(int i = 0; i < mission->getObjective()->itemCount; i++) {
-			Item *item = scourge->getSession()->newItem(mission->getObjective()->item[i]);
-			item->setBlocking(true); // don't let monsters pick this up
-			Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
-			getRandomLocation(map, pedestal->getShape(), &x, &y);
-			addItem(map, NULL, pedestal, NULL, x, y);
-			addItem(map, NULL, item, NULL, 
-					x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
-					y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
-					pedestal->getShape()->getHeight());
-			cerr << "*** Added mission item: " << item->getItemName() << endl;
-		  }
+  // add some scrolls with spells
+  for(int i = 0; i < objectCount / 4; i++) {
+    Spell *spell = MagicSchool::getRandomSpell(level);
+    if(!spell) {
+      cerr << "Warning: no spells defined for level: " << level << endl;
+      break;
+    }
+    Item *item = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
+    int x, y;
+    getRandomLocation(map, item->getShape(), &x, &y);
+    addItem(map, NULL, item, NULL, x, y);
+  }
+}
 
-		  // add mission creatures
-		  for(int i = 0; i < mission->getObjective()->monsterCount; i++) {
-			GLShape *shape = 
-			  scourge->getShapePalette()->
-			  getCreatureBlockShape(mission->getObjective()->monster[i]->getModelName());
-			getRandomLocation(map, shape, &x, &y);		
-			Creature *creature = scourge->getSession()->newCreature(mission->getObjective()->monster[i]);
-			addItem(map, creature, NULL, NULL, x, y);
-			creature->moveTo(x, y, 0);
-			cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
-		  }
-		}
+void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal, 
+                                            bool preGenerated, int locationIndex) {
+  // add mission objects 
+  if(mission && mission->getObjective() && !stairsDown) {
 
-    // add some scrolls with spells
-    for(int i = 0; i < objectCount / 4; i++) {
-			Spell *spell = MagicSchool::getRandomSpell(level);
-			if(!spell) {
-				cerr << "Warning: no spells defined for level: " << level << endl;
-				break;
-			}
-			Item *item = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
-			getRandomLocation(map, item->getShape(), &x, &y);
-			addItem(map, NULL, item, NULL, x, y);
-		}
-	}
-	progress->updateStatus(MESSAGE);
+    // mission objects are on a pedestal
+    // and make them blocking so creatures can't get them
+    for(int i = 0; i < mission->getObjective()->itemCount; i++) {
+      Item *item = scourge->getSession()->newItem(mission->getObjective()->item[i]);
+      item->setBlocking(true); // don't let monsters pick this up
+      Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
+      int x, y;
+      getRandomLocation(map, pedestal->getShape(), &x, &y);
+      addItem(map, NULL, pedestal, NULL, x, y);
+      addItem(map, NULL, item, NULL, 
+              x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
+              y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
+              pedestal->getShape()->getHeight());
+      cerr << "*** Added mission item: " << item->getItemName() << endl;
+    }
 
+    // add mission creatures
+    for(int i = 0; i < mission->getObjective()->monsterCount; i++) {
+      GLShape *shape = 
+      scourge->getShapePalette()->
+      getCreatureBlockShape(mission->getObjective()->monster[i]->getModelName());
+      int x, y;
+      getRandomLocation(map, shape, &x, &y);    
+      Creature *creature = scourge->getSession()->newCreature(mission->getObjective()->monster[i]);
+      addItem(map, creature, NULL, NULL, x, y);
+      creature->moveTo(x, y, 0);
+      cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
+    }
+  }
+}
+
+void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal, 
+                                   bool preGenerated, int locationIndex) {
   // add monsters in every room
-	if(monsters) {
-	  //int totalLevel = scourge->getParty()->getTotalLevel();
-		//fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
-		for(int i = 0; i < roomCount; i++) {
+  if(monsters) {
+    //int totalLevel = scourge->getParty()->getTotalLevel();
+    //fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
+    for(int i = 0; i < roomCount; i++) {
       int areaCovered = 0;
       // don't crowd the rooms
       int roomAreaUsed = (int)(room[i].w * room[i].h * unitSide * 0.33f);
-			while(areaCovered < roomAreaUsed) {
-				Monster *monster = Monster::getRandomMonster(level);
-				//fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
-				if(!monster) {
-					cerr << "Warning: no monsters defined for level: " << level << endl;
-					break;
-				}
+      while(areaCovered < roomAreaUsed) {
+        Monster *monster = Monster::getRandomMonster(level);
+        //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
+        if(!monster) {
+          cerr << "Warning: no monsters defined for level: " << level << endl;
+          break;
+        }
 
-				// use the creature's block shape to see if it would fit
-				GLShape *shape = 
-				  scourge->getShapePalette()->
-				  getCreatureBlockShape(monster->getModelName());
-				bool fits = getLocationInRoom(map, i, shape, &x, &y);
+        // use the creature's block shape to see if it would fit
+        GLShape *shape = 
+        scourge->getShapePalette()->
+        getCreatureBlockShape(monster->getModelName());
+        int x, y;
+        bool fits = getLocationInRoom(map, i, shape, &x, &y);
 
-				if(fits) {
-					//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
-					Creature *creature = scourge->getSession()->newCreature(monster);
-					addItem(map, creature, NULL, NULL, x, y);
-					creature->moveTo(x, y, 0);
-					areaCovered += (creature->getShape()->getWidth() * 
+        if(fits) {
+          //fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
+          Creature *creature = scourge->getSession()->newCreature(monster);
+          addItem(map, creature, NULL, NULL, x, y);
+          creature->moveTo(x, y, 0);
+          areaCovered += (creature->getShape()->getWidth() * 
                           creature->getShape()->getDepth());
-				} else {
-					//fprintf(stderr, "\tmonster DOESN'T fit.\n");
-					break;
-				}
-			}
-		}
-	
-		// add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
-		for(int i = 0; i < objectCount * 2; i++) {
-			Monster *monster = Monster::getRandomMonster(level);
-			if(!monster) {
-				cerr << "Warning: no monsters defined for level: " << level << endl;
-				break;
-			}	
-			Creature *creature = scourge->getSession()->newCreature(monster);
-			getRandomLocation(map, creature->getShape(), &x, &y);
-			addItem(map, creature, NULL, NULL, x, y);
-			creature->moveTo(x, y, 0);
-		}
-	}
-	progress->updateStatus(MESSAGE);
+        } else {
+          //fprintf(stderr, "\tmonster DOESN'T fit.\n");
+          break;
+        }
+      }
+    }
 
-	// add tables, chairs, etc.
-	addItemsInRoom(RpgItem::getItemByName("Table"), 1, preGenerated, locationIndex);
-	addItemsInRoom(RpgItem::getItemByName("Chair"), 2, preGenerated, locationIndex);	
-	progress->updateStatus(MESSAGE);
+    // add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
+    for(int i = 0; i < objectCount * 2; i++) {
+      Monster *monster = Monster::getRandomMonster(level);
+      if(!monster) {
+        cerr << "Warning: no monsters defined for level: " << level << endl;
+        break;
+      }
+      Creature *creature = scourge->getSession()->newCreature(monster);
+      int x, y;
+      getRandomLocation(map, creature->getShape(), &x, &y);
+      addItem(map, creature, NULL, NULL, x, y);
+      creature->moveTo(x, y, 0);
+    }
+  }
+}
 
-	// add a teleporters
-	if(!preGenerated) {
-	  int teleportersAdded = 0;
-	  for(int teleporterCount = 0; teleporterCount < 3; teleporterCount++) {
-		getRandomLocation(map, scourge->getShapePalette()->findShapeByName("TELEPORTER"), &x, &y);
-		if( x < MAP_WIDTH ) {
-		  cerr << "teleporter at " << x << "," << y << endl;
-		  addItem(scourge->getMap(), NULL, NULL, 
-				  scourge->getShapePalette()->findShapeByName("TELEPORTER"), 
-				  x, y, 1);
-		  addItem(scourge->getMap(), NULL, NULL, 
-				  scourge->getShapePalette()->findShapeByName("TELEPORTER_BASE"), 
-				  x, y);
-		  teleportersAdded++;
-		} else {
-		  cerr << "ERROR: couldn't add teleporter!!! #" << teleporterCount << endl;
-		}
-	  }
-	  if(teleportersAdded == 0) exit(0);
-	}
-	progress->updateStatus(MESSAGE);
-		
-	// add the party in the first room
-	// FIXME: what happens if the party doesn't fit in the room?
-	//  for(int i = 0; i < roomCount; i++) {
-	for(int t = 0; t < scourge->getParty()->getPartySize(); t++) {
-		if(scourge->getParty()->getParty(t)->getStateMod(Constants::dead)) continue;
-		bool fits;
-		if(preGenerated && location[locationIndex].start[t][0] > 0) {
-			fits = true;
-			x = location[locationIndex].start[t][0] + offset;
-			y = location[locationIndex].start[t][1] + offset;
-		} else {
-			fits = 
-				getLocationInRoom(map, 
-								  0,
-								  scourge->getParty()->getParty(t)->getShape(), 
-								  &x, &y,
-								  true);
-		}
-		if(fits) {
-			addItem(map, scourge->getParty()->getParty(t), NULL, NULL, x, y);
-			scourge->getParty()->getParty(t)->moveTo(x, y, 0);
-			scourge->getParty()->getParty(t)->setSelXY(-1,-1);
-		}
-	}
-	progress->updateStatus(MESSAGE);
-	//}
-	
+void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal, 
+                                    bool preGenerated, int locationIndex) {
+  // add tables, chairs, etc.
+  addItemsInRoom(RpgItem::getItemByName("Table"), 1, preGenerated, locationIndex);
+  addItemsInRoom(RpgItem::getItemByName("Chair"), 2, preGenerated, locationIndex);  
+}
+
+void DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal, 
+                                      bool preGenerated, int locationIndex) {
+  int teleportersAdded = 0;
+  for(int teleporterCount = 0; teleporterCount < 3; teleporterCount++) {
+    int x, y;
+    getRandomLocation(map, scourge->getShapePalette()->findShapeByName("TELEPORTER"), &x, &y);
+    if( x < MAP_WIDTH ) {
+      cerr << "teleporter at " << x << "," << y << endl;
+      addItem(scourge->getMap(), NULL, NULL, 
+              scourge->getShapePalette()->findShapeByName("TELEPORTER"), 
+              x, y, 1);
+      addItem(scourge->getMap(), NULL, NULL, 
+              scourge->getShapePalette()->findShapeByName("TELEPORTER_BASE"), 
+              x, y);
+      teleportersAdded++;
+    } else {
+      cerr << "ERROR: couldn't add teleporter!!! #" << teleporterCount << endl;
+    }
+  }
+  if(teleportersAdded == 0) exit(0);
+}
+
+void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal, 
+                                bool preGenerated, int locationIndex) {
+  // add the party in the first room
+  // FIXME: what happens if the party doesn't fit in the room?
+  //  for(int i = 0; i < roomCount; i++) {
+  int x, y;
+  for(int t = 0; t < scourge->getParty()->getPartySize(); t++) {
+    if(scourge->getParty()->getParty(t)->getStateMod(Constants::dead)) continue;
+    bool fits;
+    if(preGenerated && location[locationIndex].start[t][0] > 0) {
+      fits = true;
+      x = location[locationIndex].start[t][0] + offset;
+      y = location[locationIndex].start[t][1] + offset;
+    } else {
+      fits = 
+      getLocationInRoom(map, 
+                        0,
+                        scourge->getParty()->getParty(t)->getShape(), 
+                        &x, &y,
+                        true);
+    }
+    if(fits) {
+      addItem(map, scourge->getParty()->getParty(t), NULL, NULL, x, y);
+      scourge->getParty()->getParty(t)->moveTo(x, y, 0);
+      scourge->getParty()->getParty(t)->setSelXY(-1,-1);
+    }
+  }
+
+  // lock some doors
+  for(int i = 0; i < doorCount; i++) {
+    Sint16 mapx = door[i][0];
+    Sint16 mapy = door[i][1];
+    if((int)(20.0f * rand() / RAND_MAX) == 0) {
+      // lock the door
+      //map->setLockedDoor(mapx, mapy);
+      // find an accessible location for the switch
+      int nx, ny;
+      Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
+      Uint32 start = SDL_GetTicks();
+      getRandomLocation(map, lever, &nx, &ny, true, x, y);
+      cerr << "*** Location for lever search: " << (SDL_GetTicks() - start) << 
+        " millis. Result=" << ( nx < MAP_WIDTH ) << endl;
+      if( nx < MAP_WIDTH ) {
+        // place the switch
+        addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
+        // connect the switch and the door
+        // map->connectSwitch(mapx, mapy);
+      } else {
+        // if none found, unlock the door
+        //map->setLockedDoor(mapx, mapy);
+      }
+    }
+  }
+
+
+}
+
+void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal, 
+                                          bool preGenerated, int locationIndex) {
+  // Collapse the free space and put objects in the available spots
+  ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
+  if(!ff) {
+    fprintf(stderr, "out of mem\n");
+    exit(0);    
+  }
+  ffCount = 0;
+  for(int fx = offset; fx < MAP_WIDTH; fx+=unitSide) {
+    for(int fy = offset; fy < MAP_DEPTH; fy+=unitSide) {
+      if(map->getFloorPosition(fx, fy + unitSide)) {
+        for(int ffx = 0; ffx < unitSide; ffx++) {
+          for(int ffy = unitSide; ffy > 0; ffy--) {
+            if(!map->getLocation(fx + ffx, fy + ffy, 0)) {
+              *(ff + ffCount * 2) = fx + ffx;
+              *(ff + ffCount * 2 + 1) = fy + ffy;
+              ffCount++;
+            }
+          }
+        }
+      }
+    }
+  } 
+}
+
+void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal, 
+                                          bool preGenerated, int locationIndex) {
   // free empty space container
   free(ff);  
+}
+
+void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
+                                      bool preGenerated, int locationIndex) {
+  drawBasics(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus(MESSAGE);
+
+  removeColumns(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus(MESSAGE);
+
+  addContainers(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus(MESSAGE);
+
+  createFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus(MESSAGE);
+
+  if(!preGenerated) {
+    addStairs(map, shapePal, preGenerated, locationIndex);
+  }
+  progress->updateStatus(MESSAGE);
+
+  if(preGenerated) {
+    addPregeneratedShapes(map, shapePal, preGenerated, locationIndex);
+  }
+  progress->updateStatus(MESSAGE);
+
+  if(!preGenerated) {
+    addItems(map, shapePal, preGenerated, locationIndex);
+
+    addMissionObjectives(map, shapePal, preGenerated, locationIndex);
+  }
+  progress->updateStatus(MESSAGE);
+
+  addMonsters(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus(MESSAGE);
+
+  addFurniture(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus(MESSAGE);
+
+  // add a teleporters
+  if(!preGenerated) {
+    addTeleporters(map, shapePal, preGenerated, locationIndex);
+  }
+  progress->updateStatus(MESSAGE);
+
+  addParty(map, shapePal, preGenerated, locationIndex);
+  progress->updateStatus(MESSAGE);
+
+  deleteFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
 }
 
 void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal, 
@@ -1283,6 +1393,11 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitSide - unitOffset + 1, mapy + unitSide - unitOffset - 2, 
 					   0, shapePal->findShapeByName("EW_DOOR"));
+    if(doorCount < MAX_DOOR_COUNT) {
+      door[doorCount][0] = mapx + unitSide - unitOffset + 1;
+      door[doorCount][1] = mapy + unitSide - unitOffset - 2;
+      doorCount++;
+    }
 	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 
@@ -1300,6 +1415,11 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + 1, mapy + unitSide - unitOffset - 2, 
 					   0, shapePal->findShapeByName("EW_DOOR"));
+    if(doorCount < MAX_DOOR_COUNT) {
+      door[doorCount][0] = mapx + 1;
+      door[doorCount][1] = mapy + unitSide - unitOffset - 2;
+      doorCount++;
+    }
 	  map->setPosition(mapx, mapy + unitSide - unitOffset, 
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	}
@@ -1314,6 +1434,11 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitOffset * 2, mapy + unitOffset - 1, 
 					   0, shapePal->findShapeByName("NS_DOOR"));
+    if(doorCount < MAX_DOOR_COUNT) {
+      door[doorCount][0] = mapx + unitOffset * 2;
+      door[doorCount][1] = mapy + unitOffset - 1;
+      doorCount++;
+    }
 	  map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitOffset, 
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitSide - unitOffset * 3, mapy + unitOffset, 
@@ -1331,6 +1456,11 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitOffset * 2, mapy + unitSide - 1, 
 					   0, shapePal->findShapeByName("NS_DOOR"));
+    if(doorCount < MAX_DOOR_COUNT) {
+      door[doorCount][0] = mapx + unitOffset * 2;
+      door[doorCount][1] = mapy + unitSide - 1;
+      doorCount++;
+    }
 	  map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitSide, 
 					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitSide - unitOffset * 3, mapy + unitSide, 
@@ -1341,30 +1471,61 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
 }
 
 // FIXME: low likelyhood of infinite loop
-void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int *ypos) {
+void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, 
+                                         int *xpos, int *ypos, 
+                                         bool accessible, int fromX, int fromY) {
+  int maxCount = 500; // max # of tries to find accessible location
+  int count = 0;
   int x, y;
   while(1) {
-	// get a random location
-	int n = (int)((float)ffCount * rand()/RAND_MAX);
-	x = ff[n * 2];
-	y = ff[n * 2 + 1];
-	
-	// can it fit?
-	bool fits = map->shapeFits(shape, x, y, 0);
-	// doesn't fit? try again (could be inf. loop)
-	if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
-	  // remove from ff list
-	  for(int i = n + 1; i < ffCount - 1; i++) {
-		ff[i * 2] = ff[i * 2 + 2];
-		ff[i * 2 + 1] = ff[ i * 2 + 3];
-	  }
-	  ffCount--;
-	  // return result
-	  *xpos = x;
-	  *ypos = y;
-	  return;
-	}
-  }	
+    // get a random location
+    int n = (int)((float)ffCount * rand()/RAND_MAX);
+    x = ff[n * 2];
+    y = ff[n * 2 + 1];
+
+    // can it fit?
+    bool fits = map->shapeFits(shape, x, y, 0);
+    // doesn't fit? try again (could be inf. loop)
+    if(fits && 
+       !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+
+      
+      
+      
+      /*
+       Find an accessible location
+       
+       Note: this implementation sucks. Instead use map::lightmap (see: Map::configureLightMap())
+       It uses chunks, it's fast and determenistic.
+       
+      */       
+
+      if(accessible) {
+        if(!isAccessible(map, x, y, fromX, fromY)) {
+          count++;
+          if(count >= maxCount) {
+            // we failed.
+            *xpos = *ypos = MAP_WIDTH;
+            return;
+          }
+          continue;
+        }
+      }
+
+
+
+      // remove from ff list
+      for(int i = n + 1; i < ffCount - 1; i++) {
+        ff[i * 2] = ff[i * 2 + 2];
+        ff[i * 2 + 1] = ff[ i * 2 + 3];
+      }
+      ffCount--;
+      // return result
+      *xpos = x;
+      *ypos = y;
+      return;
+    }
+  } 
 }
 
 void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n, 
@@ -1462,14 +1623,58 @@ bool DungeonGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape,
   return fits;
 }
 
+// move this to Map class
 bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal, 
-								  Shape *shape, int x, int y) {
+                                  Shape *shape, int x, int y) {
   for(int ty = y - shape->getDepth() - 3; ty < y + 3; ty++) {
-	for(int tx = x - 3; tx < x + shape->getWidth() + 3; tx++) {
-	  if(isDoor(map, shapePal, tx, ty)) return true;
-	}
+    for(int tx = x - 3; tx < x + shape->getWidth() + 3; tx++) {
+      if(isDoor(map, shapePal, tx, ty)) return true;
+    }
   }
   return false;
+}
+
+bool DungeonGenerator::isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken, int dir) {
+  //cerr << "&&& isAccessible: x=" << x << " y=" << y << " fromX=" << fromX << " fromY=" << fromY << " dir=" << dir << endl;
+  if(x == fromX && y == fromY) {
+    cerr << "&&& isAccessible is true in " << stepsTaken << " steps." << endl;
+    return true;
+  }
+  if(stepsTaken > MAX_STEPS) {
+    //cerr << "&&& isAccessible is false after " << stepsTaken << " steps." << endl;
+    return false;
+  }
+  int ox = x;
+  int oy = y;
+  switch(dir) {
+  case DIR_N: y--; break;
+  case DIR_E: x++; break;
+  case DIR_S: y++; break;  
+  case DIR_W: x--; break;
+  }
+  bool failed = false;
+  if(!(x < 0 || y < 0 || x >= MAP_WIDTH || y >= MAP_DEPTH)) {
+    Location *pos = map->getLocation(x, y, 0);
+    
+    //if(pos) cerr << "\tpos: shape=" << pos->shape->getName() <<
+    //" item=" << (pos->item ? pos->item->getRpgItem()->getName() : "null") <<
+      //" creature=" << (pos->creature ? pos->creature->getName() : "null") << endl;
+
+    // if it's not true that it's: empty space or has a creature or an item (movable things)
+    // then change dir.
+    if(!(!pos || pos->creature || pos->item)) {
+      failed = true;
+    }
+  } else {
+    failed = true;
+  }
+  if(failed) {
+    dir++;
+    if(dir >= DIR_COUNT) dir = DIR_N;
+    x = ox;
+    y = oy;
+  }
+  return isAccessible(map, x, y, fromX, fromY, stepsTaken + 1, dir);
 }
 
 bool DungeonGenerator::isDoor(Map *map, ShapePalette *shapePal, int tx, int ty) {
