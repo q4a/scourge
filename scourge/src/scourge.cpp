@@ -232,13 +232,13 @@ Creature *Scourge::newCreature(Monster *monster) {
   return creatures[creatureCount - 1];
 }
 
-void Scourge::drawView(SDL_Surface *screen) {
+void Scourge::drawView() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
   // make a move (player, monsters, etc.)
   playRound();
   
-  map->draw(screen);
+  map->draw();
 
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
@@ -264,6 +264,10 @@ void Scourge::drawView(SDL_Surface *screen) {
   
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );      
+}
+
+void Scourge::drawAfter() {
+  map->drawDraggedItem();
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
@@ -640,7 +644,7 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
 
   glMatrixMode(GL_MODELVIEW);
   map->selectMode = true;
-  map->draw(sdlHandler->getScreen());
+  map->draw();
   map->selectMode = false;
 
   glFlush();    
@@ -803,20 +807,23 @@ void Scourge::dropItem(int x, int y) {
 			  c->getName(), 
 			  movingItem->getRpgItem()->getName());
 	  map->addDescription(message);
-	  movingItem = NULL;
-	  movingX = movingY = movingZ = MAP_WIDTH + 1;
+	} else {
+	  map->setItem(movingX, movingY, movingZ, movingItem);
 	}
   } else {
+	// see if it's blocked and get the value of z (stacking items)
 	int z;
 	Location *pos = map->isBlocked(x, y, 0,
 								   movingX, movingY, movingZ,
 								   movingItem->getShape(), &z);
-	if(!pos) {
+	if(!pos && !map->isWallBetween(movingX, movingY, movingZ, x, y, z)) {
 	  map->setItem(x, y, z, movingItem);
-	  movingItem = NULL;
-	  movingX = movingY = movingZ = MAP_WIDTH + 1;
+	} else {
+	  map->setItem(movingX, movingY, movingZ, movingItem);
 	}
   }
+  movingItem = NULL;
+  movingX = movingY = movingZ = MAP_WIDTH + 1;
 }
 
 bool Scourge::useDoor(Location *pos) {

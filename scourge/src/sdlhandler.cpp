@@ -441,10 +441,12 @@ void SDLHandler::mainLoop() {
     }
 	
     if(isActive) {
-	  screenView->drawView(screen);
+	  screenView->drawView();
 
 	  // redraw the gui
 	  Window::drawVisibleWindows();
+
+	  screenView->drawAfter();
 	  	  
       if(shapePal->cursorImage) {
         // for cursor: do alpha bit testing
