@@ -1626,10 +1626,30 @@ void Map::configureLightMap() {
 				(session->getParty()->getPlayer()->getShape()->getDepth() / 2) - 
 				MAP_OFFSET) / MAP_UNIT;
 
-  traceLight(chunkX, chunkY);
+  traceLight(chunkX, chunkY, lightMap, false);
 }
 
-void Map::traceLight(int chunkX, int chunkY) {
+///*
+bool Map::isPositionAccessible(int x, int y, int tx, int ty) {
+  // create the access map
+  int accessMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
+  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+    for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+      accessMap[x][y] = 0;
+    }
+  }
+  int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
+  int chunkY = (y - MAP_OFFSET) / MAP_UNIT;
+  traceLight(chunkX, chunkY, accessMap, true);
+  
+  // interpret the results: see if the target is "in light"
+  chunkX = (tx - MAP_OFFSET) / MAP_UNIT;
+  chunkY = (ty - MAP_OFFSET) / MAP_UNIT;
+  return (accessMap[chunkX][chunkY]);
+}
+//*/
+
+void Map::traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors) {
   if(chunkX < 0 || chunkX >= MAP_WIDTH / MAP_UNIT ||
 	 chunkY < 0 || chunkY >= MAP_DEPTH / MAP_UNIT)
 	return;
@@ -1647,12 +1667,12 @@ void Map::traceLight(int chunkX, int chunkY) {
   for(y = chunkY * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2);
 	  y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
 	  y++) {
-   	if(isLocationBlocked(x, y, 0)) {
+   	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
 	  blocked = true;
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX, chunkY - 1);
+  if(!blocked) traceLight(chunkX, chunkY - 1, lightMap, onlyLockedDoors);
   
   // can we go E?
   blocked = false;
@@ -1660,12 +1680,12 @@ void Map::traceLight(int chunkX, int chunkY) {
   for(x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
 	  x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT;
 	  x++) {
-	if(isLocationBlocked(x, y, 0)) {
+	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
 	  blocked = true;
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX + 1, chunkY);
+  if(!blocked) traceLight(chunkX + 1, chunkY, lightMap, onlyLockedDoors);
   
   // can we go S?
   blocked = false;
@@ -1673,12 +1693,12 @@ void Map::traceLight(int chunkX, int chunkY) {
   for(y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
 	  y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT;
 	  y++) {
-	if(isLocationBlocked(x, y, 0)) {
+	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
 	  blocked = true;
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX, chunkY + 1);
+  if(!blocked) traceLight(chunkX, chunkY + 1, lightMap, onlyLockedDoors);
 
   // can we go W?
   blocked = false;
@@ -1686,21 +1706,23 @@ void Map::traceLight(int chunkX, int chunkY) {
   for(x = chunkX * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2);
 	  x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
 	  x++) {
-	if(isLocationBlocked(x, y, 0)) {
+	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
 	  blocked = true;
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX - 1, chunkY);
+  if(!blocked) traceLight(chunkX - 1, chunkY, lightMap, onlyLockedDoors);
 }
 
-bool Map::isLocationBlocked(int x, int y, int z) {
+bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
 	if(x >= 0 && x < MAP_WIDTH && 
 		 y >= 0 && y < MAP_DEPTH && 
 		 z >= 0 && z < MAP_VIEW_HEIGHT) {
 		Location *pos = getLocation(x, y, z);
 		if(pos == NULL || pos->item || pos->creature || 
-			 !( ((GLShape*)(pos->shape))->isLightBlocking()) ) {
+			 !( ((GLShape*)(pos->shape))->isLightBlocking()) || 
+       (onlyLockedDoors && isDoor(x, y) && 
+        !isLocked(getLocation(pos->x, pos->y, pos->z)))) {
 			return false;
 		}
 	}
@@ -1781,3 +1803,17 @@ int Map::getCreaturesInArea(int x, int y, int radius, Creature *targets[]) {
   }
   return count;
 }
+
+bool Map::isDoor(int tx, int ty) {
+  if(tx >= 0 && tx < MAP_WIDTH && 
+     ty >= 0 && ty < MAP_DEPTH) {
+    Location *loc = getLocation(tx, ty, 0);
+    if(loc && 
+       (loc->shape == session->getShapePalette()->findShapeByName("EW_DOOR") ||
+        loc->shape == session->getShapePalette()->findShapeByName("NS_DOOR"))) {
+      return true;
+    }
+  }
+  return false;
+}
+

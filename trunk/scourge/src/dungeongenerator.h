@@ -225,8 +225,6 @@ protected:
   static const int MAX_STEPS = 10000;
   bool isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken=0, int dir=DIR_N);
 
-  bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
-
   void addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z = 0);
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
