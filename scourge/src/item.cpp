@@ -170,16 +170,18 @@ void Item::getDetailedDescription(char *s, bool precise){
   rpgItem  = getRpgItem();
   type = rpgItem->getType();
   if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
-    sprintf(s, "(Q:%d,W:%2.2f, N:%d/%d) %s", 
+    sprintf(s, "(L:%d,Q:%d,W:%2.2f, N:%d/%d) %s", 
+            getLevel(), 
             getQuality(), 
             getWeight(),
             getCurrentCharges(),
             getMaxCharges(),
             (precise ? itemName : rpgItem->getShortDesc()));
   } else if(type == RpgItem::SCROLL) {
-    sprintf(s, "%s", itemName);
+    sprintf(s, "(L:%d) %s", getLevel(), itemName);
   } else {
-    sprintf(s, "(A:%d,S:%d,Q:%d,W:%2.2f) %s", 
+    sprintf(s, "(L:%d,A:%d,S:%d,Q:%d,W:%2.2f) %s", 
+            getLevel(), 
             getAction(), 
             getSpeed(), 
             getQuality(), 
