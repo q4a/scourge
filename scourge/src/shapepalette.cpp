@@ -26,9 +26,10 @@ ShapePalette::ShapePalette(){
   // load textures
   gui_texture = loadGLTextures("/gui.bmp");
   gui_wood_texture = loadGLTextures("/gui-wood.bmp");
+  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
   cloud = loadGLTextures("/cloud.bmp");
   candle = loadGLTextures("/candle.bmp");
-  torchback = loadGLTextures("/torchback.bmp");
+  torchback = loadGLTextures("/torchback.bmp");  
 
   // load the texture info
   char errMessage[500];
@@ -318,6 +319,7 @@ ShapePalette::ShapePalette(){
   // set up the cursor
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
+  setupAlphaBlendedBMP("/paperdoll.bmp", &paperDoll, &paperDollImage);
 
   // set up the logo
   setupAlphaBlendedBMP("/logo.bmp", &logo, &logoImage);
@@ -458,54 +460,56 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
   char fn[300];
   strcpy(fn, rootDir);
   strcat(fn, filename);
-  
+
   GLuint texture[1];
-  
+
   /* Create storage space for the texture */
   SDL_Surface *TextureImage[1];
-  
+
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
   fprintf(stderr, "Loading texture: %s\n", fn);
-  if ( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
-	fprintf(stderr, "\tFound it.\n");
-	
-	/* Create The Texture */
-	glGenTextures( 1, &texture[0] );
-	
-	/* Typical Texture Generation Using Data From The Bitmap */
-	glBindTexture( GL_TEXTURE_2D, texture[0] );
-	
-	/* Generate The Texture */
-	//	    glTexImage2D( GL_TEXTURE_2D, 0, 3,
-	//                    TextureImage[0]->w, TextureImage[0]->h, 0, GL_BGR,
-	//            			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
-	
-	/* Linear Filtering */
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
-					  TextureImage[0]->w, TextureImage[0]->h,
-					  GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
+  if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
+    fprintf(stderr, "\tFound it. width=%d height=%d\n", TextureImage[0]->w, TextureImage[0]->h);
+
+
+    /* Create The Texture */
+    glGenTextures( 1, &texture[0] );
+
+    /* Typical Texture Generation Using Data From The Bitmap */
+    glBindTexture( GL_TEXTURE_2D, texture[0] );
+
+    /* Generate The Texture */
+    //	    glTexImage2D( GL_TEXTURE_2D, 0, 3,
+    //                    TextureImage[0]->w, TextureImage[0]->h, 0, GL_BGR,
+    //            			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
+
+    /* Linear Filtering */
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
+                      TextureImage[0]->w, TextureImage[0]->h,
+                      GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
   } else {
-	texture[0] = 0;
+    texture[0] = 0;
+    fprintf(stderr, "\tNot found.\n");
   }
   fprintf(stderr, "\tStored texture at: %u\n", texture[0]);
-  
+
   /* Free up any memory we may have used */
-  if ( TextureImage[0] )
-	SDL_FreeSurface( TextureImage[0] );
-  
+  if( TextureImage[0] )
+    SDL_FreeSurface( TextureImage[0] );
+
   return texture[0];
 }
 
 void ShapePalette::swap(unsigned char & a, unsigned char & b) {
-    unsigned char temp;
+  unsigned char temp;
 
-    temp = a;
-    a    = b;
-    b    = temp;
+  temp = a;
+  a    = b;
+  b    = temp;
 
-    return;
+  return;
 }
 
 void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image) {

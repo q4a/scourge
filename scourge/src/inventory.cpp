@@ -92,9 +92,10 @@ Inventory::Inventory(Scourge *scourge) {
 	// inventory page	
 	cards->createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
 	inventoryWeightLabel = cards->createLabel(190, 280, NULL, INVENTORY);
-	coinsLabel = cards->createLabel(300, 45, NULL, INVENTORY);
-	cards->createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
+	coinsLabel = cards->createLabel(300, 15, NULL, INVENTORY);
+	cards->createLabel(115, 15, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
     
+  /*
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	  Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
 	  invEquipLabel[i] = cards->createLabel(300, 60 + (i * 15), 
@@ -104,6 +105,11 @@ Inventory::Inventory(Scourge *scourge) {
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	  cards->createLabel(115, 60 + (i *15), Character::inventory_location[i], INVENTORY);
 	}
+  */
+
+  paperDoll = new Canvas(115, 20, 410, 50 + (Character::INVENTORY_COUNT * 15), this);
+  cards->addWidget(paperDoll, INVENTORY);
+
 	invList = new ScrollingList(115, 285, 295, 175, this);
 	cards->addWidget(invList, INVENTORY);
 	cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
@@ -178,33 +184,72 @@ Inventory::~Inventory() {
 void Inventory::drawWidget(Widget *w) {
   Creature *p = scourge->getParty()->getParty(selected);
 
-  int y = 15;
-  char s[80];
-  sprintf(s, "Exp: %u(%u)", p->getExp(), p->getExpOfNextLevel());
-  if(p->getStateMod(Constants::leveled)) {
-	glColor4f( 1.0f, 0.2f, 0.0f, 1.0f );
-  } else {
-	w->applyColor();
-  }
-  scourge->getSDLHandler()->texPrint(5, y, s);
-  w->applyColor();
-  sprintf(s, "HP: %d (%d)", p->getHp(), p->getMaxHp());
-  scourge->getSDLHandler()->texPrint(5, y + 15, s);
-  sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
-  scourge->getSDLHandler()->texPrint(5, y + 30, s);
-  sprintf(s, "AC: %d (%d)", p->getSkillModifiedArmor(), p->getArmor());
-  scourge->getSDLHandler()->texPrint(5, y + 45, s);
-  sprintf(s, "Thirst: %d (10)", p->getThirst());
-  scourge->getSDLHandler()->texPrint(5, y + 60, s);
-  sprintf(s, "Hunger: %d (10)", p->getHunger());
-  scourge->getSDLHandler()->texPrint(5, y + 75, s);
+  if(w == paperDoll) {
 
-  Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false );
-  Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp() );
-  Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false );
-  Util::drawBar( 160, y + 42, 120, (float)p->getSkillModifiedArmor(), (float)p->getArmor(), 0.45f, 0.65f, 1.0f, false );
-  Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false );
-  Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false );
+    ShapePalette *shapePal = scourge->getShapePalette();
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_NOTEQUAL, 0);        
+    glPixelZoom( 1.0, -1.0 );
+    glRasterPos2f( 0, 0 );
+    glDrawPixels(shapePal->paperDoll->w, shapePal->paperDoll->h,
+                 GL_BGRA, GL_UNSIGNED_BYTE, shapePal->paperDollImage);
+    glDisable(GL_ALPHA_TEST);
+
+    /*
+    glDisable( GL_CULL_FACE );
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getPaperDollTexture() );
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_NOTEQUAL, 0);
+    glBegin( GL_QUADS );
+    // top
+    glNormal3f(0.0f, 0.0f, 1.0f);    
+    glTexCoord2f( 1.0f, 0.0f );
+    glVertex3f(200, 0, 0);
+    glTexCoord2f( 0.0f, 0.0f );
+    glVertex3f(0, 0, 0);
+    glTexCoord2f( 0.0f, 1.0f );
+    glVertex3f(0, w->getHeight(), 0);
+    glTexCoord2f( 1.0f, 1.0f );
+    glVertex3f(200, w->getHeight(), 0);
+    glEnd();
+    glEnable( GL_CULL_FACE );
+    glCullFace( GL_BACK );
+    glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_BLEND);
+    glDisable(GL_ALPHA_TEST);
+    */
+  } else {
+    int y = 15;
+    char s[80];
+    sprintf(s, "Exp: %u(%u)", p->getExp(), p->getExpOfNextLevel());
+    if(p->getStateMod(Constants::leveled)) {
+      glColor4f( 1.0f, 0.2f, 0.0f, 1.0f );
+    } else {
+      w->applyColor();
+    }
+    scourge->getSDLHandler()->texPrint(5, y, s);
+    w->applyColor();
+    sprintf(s, "HP: %d (%d)", p->getHp(), p->getMaxHp());
+    scourge->getSDLHandler()->texPrint(5, y + 15, s);
+    sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
+    scourge->getSDLHandler()->texPrint(5, y + 30, s);
+    sprintf(s, "AC: %d (%d)", p->getSkillModifiedArmor(), p->getArmor());
+    scourge->getSDLHandler()->texPrint(5, y + 45, s);
+    sprintf(s, "Thirst: %d (10)", p->getThirst());
+    scourge->getSDLHandler()->texPrint(5, y + 60, s);
+    sprintf(s, "Hunger: %d (10)", p->getHunger());
+    scourge->getSDLHandler()->texPrint(5, y + 75, s);
+    
+    Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false );
+    Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp() );
+    Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false );
+    Util::drawBar( 160, y + 42, 120, (float)p->getSkillModifiedArmor(), (float)p->getArmor(), 0.45f, 0.65f, 1.0f, false );
+    Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false );
+    Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false );
+  }
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
@@ -477,10 +522,12 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	}
 	invList->setLines(selectedP->getInventoryCount(), 
 										(const char **)pcInvText);
+  /*
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 		Item *item = selectedP->getEquippedInventory(i);
 		invEquipLabel[i]->setText((char *)(item ? item->getItemName() : NULL));
 	}
+  */
 	break;
 	
   case SPELL:

@@ -58,7 +58,8 @@ private:
 	CardContainer *cards;
 
 	// inventory screen
-	Label *invEquipLabel[Character::INVENTORY_COUNT];
+	//Label *invEquipLabel[Character::INVENTORY_COUNT];
+  Canvas *paperDoll;
 	Label *inventoryWeightLabel, *coinsLabel;
 	char inventoryWeightStr[80], coinsStr[80];
 
