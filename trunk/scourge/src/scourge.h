@@ -114,13 +114,18 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Button *groupButton;
 
   Window *boardWin;
-	ScrollingList *missionList;
-	Label *missionDescriptionLabel;
-	Button *playMission;
-	char **missionText;
-	Board *board;
-	int nextMission;
-	bool inHq;
+  ScrollingList *missionList;
+  Label *missionDescriptionLabel;
+  Button *playMission;
+  char **missionText;
+  Board *board;
+  int nextMission;
+  bool inHq;
+
+  Button *infoButton;
+  Window *infoDialog;
+  Label *infoLabel;
+  char infoMessage[200];
 
   Inventory *inventory;
 
