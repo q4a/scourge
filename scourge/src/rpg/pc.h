@@ -28,18 +28,40 @@
 
 #define MAX_INVENTORY_SIZE 200
 
+class RpgItem;
+
 class PlayerChar  {
-private:
+ public:
+  
+  // inventory locations
+  static const int INVENTORY_HEAD = 1;
+  static const int INVENTORY_NECK = 2;
+  static const int INVENTORY_BACK = 4;
+  static const int INVENTORY_CHEST = 8;
+  static const int INVENTORY_LEFT_HAND = 16;
+  static const int INVENTORY_RIGHT_HAND = 32;
+  static const int INVENTORY_BELT = 64;
+  static const int INVENTORY_LEGS = 128;
+  static const int INVENTORY_FEET = 256;
+  static const int INVENTORY_RING1 = 512;
+  static const int INVENTORY_RING2 = 1024;
+  static const int INVENTORY_RING3 = 2048;
+  static const int INVENTORY_RING4 = 4096;
+  static const int INVENTORY_WEAPON_RANGED = 8192;
+  static const int INVENTORY_COUNT = 14;
+  static char inventory_location[][80];
+
+ private:
   char *name;
   int level, exp, hp, ac;
   Character *character;
   RpgItem *inventory[MAX_INVENTORY_SIZE];
   int inventory_count;
+  int equipped[INVENTORY_COUNT];
   int skills[Constants::SKILL_COUNT];
   GLuint stateMod;
 
-public:
-
+ public:
   PlayerChar(char *name, Character *character);
   ~PlayerChar();
 
@@ -72,10 +94,16 @@ public:
 	if(setting) stateMod |= (1 << mod); 
 	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
   }
+  void equipInventory(int index);
+
+  // get the item at the given equip-index (inventory location)
+  RpgItem *getEquippedInventory(int index);
+
+  // return the equip index (inventory location) for an inventory index
+  int getEquippedIndex(int index);
 
   // until *someone* writes a pc editor
   static PlayerChar **createHardCodedParty();
-
 };
 
 #endif

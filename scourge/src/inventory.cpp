@@ -118,9 +118,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   scourge->getGui()->removeActiveRegion(Constants::REMOVE_CURSE_ITEM);
   scourge->getGui()->removeActiveRegion(Constants::COMBINE_ITEM);
   scourge->getGui()->removeActiveRegion(Constants::IDENTIFY_ITEM);
-  int ypos = 50;
+  int ypos = 20;
   int height = 30;
-  int xpos = 530;
+  int xpos = 670;
   int width = 100;
   switch(mode) {
   case CHARACTER:
@@ -130,7 +130,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	break;
   case INVENTORY:
     itemList = scourge->getGui()->   
-	  addScrollingList(120, 50, 510, 550,
+	  addScrollingList(120, 270, 650, 550,
 					   Constants::ITEM_LIST);
 	for(int i = 0; i < 4; i++) {
 	  scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
@@ -191,6 +191,12 @@ bool Inventory::processMouseClick(int x, int y, int button) {
 				item->getName());
 		scourge->getMap()->addDescription(strdup(message));
 		return true;
+	  }
+    } else if(region == Constants::EQUIP_ITEM) {
+	  int itemIndex = scourge->getGui()->getLineSelected(Constants::ITEM_LIST);  
+	  if(itemIndex > -1 && 
+		 scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
+		scourge->getParty(selected)->getPC()->equipInventory(itemIndex);
 	  }
     } else if(region == Constants::ESCAPE) {
         return true;
@@ -372,11 +378,27 @@ void Inventory::drawCharacterInfo() {
 
 void Inventory::drawInventoryInfo() {
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint(120, 40, "Inventory:");    
+    scourge->getSDLHandler()->texPrint(120, 260, "Inventory:");    
+    scourge->getSDLHandler()->texPrint(120, 15, "Equipped items:");
+	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
+	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
+	  scourge->getSDLHandler()->
+		texPrint(280, 30 + (i * 15), "%s", 
+				 (item ? item->getName() : ""));
+	}
+
     glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
+	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
+	  scourge->getSDLHandler()->
+		texPrint(160, 30 + (i * 15), "On %s:", 
+				 PlayerChar::inventory_location[i]);
+	}
+
     for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
 	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
-	  sprintf(pcInvText[t], "(A:%d) (S:%d) (Q:%d) (W: %d) %s", 
+	  int location = scourge->getParty(selected)->getPC()->getEquippedIndex(t);
+	  sprintf(pcInvText[t], "%s (A:%d) (S:%d) (Q:%d) (W: %d) %s", 
+			  (location > -1 ? "<equipped> " : "                "),
 			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
 			  item->getName());
     }
@@ -390,7 +412,7 @@ void Inventory::drawInventoryInfo() {
 	  sprintf(name, "to %s", scourge->getParty(i)->getPC()->getName());
 	  scourge->getGui()->outlineActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_0 + i, name);
 	}
-	scourge->getGui()->outlineActiveRegion(Constants::EQUIP_ITEM, "Equip Item");
+	scourge->getGui()->outlineActiveRegion(Constants::EQUIP_ITEM, "Don/Doff");
 	scourge->getGui()->outlineActiveRegion(Constants::DROP_ITEM, "Drop Item");
 	scourge->getGui()->outlineActiveRegion(Constants::FIX_ITEM, "Fix Item");
 	scourge->getGui()->outlineActiveRegion(Constants::REMOVE_CURSE_ITEM, "Remove Curse");

@@ -555,6 +555,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
   ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
   shape->draw();
+  ((GLShape*)shape)->useShadow = false;
 
   glPopName();
   glPopMatrix();
