@@ -59,8 +59,8 @@ private:
 
   // how big to make the walls
   const static Sint16 unitSide = MAP_UNIT;
-  const static Sint16 unitOffset = 2;
-  const static Sint16 wallHeight = 10;
+  const static Sint16 unitOffset = MAP_UNIT_OFFSET;
+  const static Sint16 wallHeight = MAP_WALL_HEIGHT;
 
   SDL_Surface *portraits[20];
   int portraitCount;

@@ -55,12 +55,7 @@ Map::Map(Scourge *scourge){
     }
   }
 
-  // draw everything
-  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-	for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
-	  lightMap[x][y] = 1;
-	}
-  }
+  lightMapChanged = true;
 }
 
 Map::~Map(){
@@ -297,6 +292,7 @@ void Map::draw(SDL_Surface *surface) {
   
 
   initMapView();
+  if(lightMapChanged) configureLightMap();
   // populate the shape arrays
   if(mapChanged) setupShapes(false);
   if(selectMode) {
@@ -565,26 +561,26 @@ void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
 }
 
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
-	if(shape) {
-        mapChanged = true;
-    for(int xp = 0; xp < shape->getWidth(); xp++) {
-      for(int yp = 0; yp < shape->getDepth(); yp++) {
-        for(int zp = 0; zp < shape->getHeight(); zp++) {
-
-          if(!pos[x + xp][y - yp][z + zp]) {
-            pos[x + xp][y - yp][z + zp] = new Location();
-          }
-
-          pos[x + xp][y - yp][z + zp]->shape = shape;
+  if(shape) {
+	mapChanged = true;
+	for(int xp = 0; xp < shape->getWidth(); xp++) {
+	  for(int yp = 0; yp < shape->getDepth(); yp++) {
+		for(int zp = 0; zp < shape->getHeight(); zp++) {
+		  
+		  if(!pos[x + xp][y - yp][z + zp]) {
+			pos[x + xp][y - yp][z + zp] = new Location();
+		  }
+		  
+		  pos[x + xp][y - yp][z + zp]->shape = shape;
 		  pos[x + xp][y - yp][z + zp]->item = NULL;
 		  pos[x + xp][y - yp][z + zp]->creature = NULL;
-          pos[x + xp][y - yp][z + zp]->x = x;
-          pos[x + xp][y - yp][z + zp]->y = y;
-          pos[x + xp][y - yp][z + zp]->z = z;
-        }
-      }
-    }
+		  pos[x + xp][y - yp][z + zp]->x = x;
+		  pos[x + xp][y - yp][z + zp]->y = y;
+		  pos[x + xp][y - yp][z + zp]->z = z;
+		}
+	  }
 	}
+  }
 }
 
 Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
@@ -611,7 +607,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
 	if(item) {
     if(item->getShape()) {
-        mapChanged = true;
+	  mapChanged = true;
       for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
         for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {
           for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
@@ -765,6 +761,105 @@ bool Map::shapeFits(Shape *shape, int x, int y, int z) {
 	  if(getLocation(x + tx, y - ty, 0)) {
 		return false;
 	  }
+	}
+  }
+  return true;
+}
+
+// the world has changed...
+void Map::configureLightMap() {
+  fprintf(stderr, "configureLightMap\n");
+  lightMapChanged = false;
+
+  // draw nothing at first
+  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+	for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+	  lightMap[x][y] = 0;
+	}
+  }
+
+  int chunkX = (scourge->getParty(0)->getX() + 
+				(scourge->getParty(0)->getShape()->getWidth() / 2) - 
+				MAP_OFFSET) / MAP_UNIT;
+  int chunkY = (scourge->getParty(0)->getY() - 
+				(scourge->getParty(0)->getShape()->getDepth() / 2) - 
+				MAP_OFFSET) / MAP_UNIT;
+
+  traceLight(chunkX, chunkY);
+}
+
+void Map::traceLight(int chunkX, int chunkY) {
+  if(chunkX < 0 || chunkX >= MAP_WIDTH / MAP_UNIT ||
+	 chunkY < 0 || chunkY >= MAP_DEPTH / MAP_UNIT)
+	return;
+
+  // already visited?
+  if(lightMap[chunkX][chunkY]) return;
+
+  // let there be light
+  lightMap[chunkX][chunkY] = 1;
+  
+  // can we go N?
+  int x, y;
+  bool blocked = false;
+  x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+  for(y = chunkY * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2);
+	  y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	  y++) {
+   	if(isLocationBlocked(x, y, 0)) {
+	  blocked = true;
+	  break;
+	}
+  }
+  if(!blocked) traceLight(chunkX, chunkY - 1);
+  
+  // can we go E?
+  blocked = false;
+  y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+  for(x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	  x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT;
+	  x++) {
+	if(isLocationBlocked(x, y, 0)) {
+	  blocked = true;
+	  break;
+	}
+  }
+  if(!blocked) traceLight(chunkX + 1, chunkY);
+  
+  // can we go S?
+  blocked = false;
+  x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+  for(y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	  y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT;
+	  y++) {
+	if(isLocationBlocked(x, y, 0)) {
+	  blocked = true;
+	  break;
+	}
+  }
+  if(!blocked) traceLight(chunkX, chunkY + 1);
+
+  // can we go W?
+  blocked = false;
+  y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+  for(x = chunkX * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2);
+	  x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	  x++) {
+	if(isLocationBlocked(x, y, 0)) {
+	  blocked = true;
+	  break;
+	}
+  }
+  if(!blocked) traceLight(chunkX - 1, chunkY);
+}
+
+bool Map::isLocationBlocked(int x, int y, int z) {
+  if(x >= 0 && x < MAP_WIDTH && 
+	 y >= 0 && y < MAP_DEPTH && 
+	 z >= 0 && z < MAP_VIEW_HEIGHT) {
+	Location *pos = getLocation(x, y, z);
+	if(pos == NULL || pos->item || pos->creature) { 
+	  return false;
 	}
   }
   return true;

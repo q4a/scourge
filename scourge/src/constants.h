@@ -134,6 +134,9 @@ public:
 
   // How big is 1 map chunk
 #define MAP_UNIT 12
+#define MAP_UNIT_OFFSET 2
+#define MAP_WALL_HEIGHT 10
+
   // How far from the edge to start drawing in map
 #define MAP_OFFSET 55
   

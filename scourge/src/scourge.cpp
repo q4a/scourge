@@ -578,7 +578,8 @@ bool Scourge::useItem(int x, int y) {
   if(pos) {
 	if(getItem(pos)) {  
 	  return true;
-	} else if(useDoor(pos)) {        
+	} else if(useDoor(pos)) {
+	  map->updateLightMap();
 	  return true;
 	}
   }

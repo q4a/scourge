@@ -90,6 +90,7 @@ private:
   const static Sint16 offset = MAP_OFFSET;
 
   const static Sint16 torches = 25; // % of time there's a torch
+  const static Sint16 randomDoors = 20; // % chance of a random door
 
   int dirCount;
   int dirs[DIR_COUNT];
@@ -104,6 +105,11 @@ private:
   const static Uint8 EMPTY_SHAPE = 7;
   
   const static bool debug = false;
+
+  const static Sint16 unitOffset = MAP_UNIT_OFFSET;
+  const static Sint16 unitSide = MAP_UNIT;
+  const static Sint16 wallHeight = MAP_WALL_HEIGHT;   
+
 
 public: 
 	DungeonGenerator(int level);
@@ -148,6 +154,9 @@ protected:
   bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
 
   void addItem(Map *map, Item *item, Shape *shape, int x, int y);
+
+  void drawDoor(Map *map, ShapePalette *shapePal, 
+				Sint16 mapx, Sint16 mapy, int doorType);
 };
 
 #endif
