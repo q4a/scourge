@@ -71,7 +71,7 @@ void Party::reset() {
 
 void Party::startPartyOnMission() {
   // Start calendar and add thirst & hunger event scheduling
-  calendar->reset();
+  calendar->reset(false);
 
   player_only = false;
   partyDead = false;

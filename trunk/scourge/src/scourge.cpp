@@ -92,6 +92,7 @@ Scourge::Scourge(int argc, char *argv[]){
     if(mainMenu->getValue() == NEW_GAME) {
 
 	  party->reset();
+	  party->getCalendar()->reset(true); // reset the time
 	  board->reset();
 
 	  // inventory needs the party

@@ -54,7 +54,7 @@ class Calendar {
   void setPause(bool mustPause);
   void setTimeMultiplicator(int t);
   void scheduleEvent(Event *e);
-  void reset();
+  void reset(bool resetTime=true);
 
   // return date by value to avoid modification by other classes
   inline Date getCurrentDate() { return currentDate; }

@@ -35,10 +35,10 @@ Calendar::Calendar(){
     timeFrozen = false;    
 }
 
-void Calendar::reset(){    
+void Calendar::reset(bool resetTime){    
     lastTick = 0;
     scheduledEvents.clear();
-    currentDate.reset();
+	if(resetTime) currentDate.reset();
     timeFrozen = false; 
 }
 
