@@ -288,7 +288,7 @@ void OptionsMenu::setSelectedMode(){
 
 
 bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {    
-    if(widget == mainWin->closeButton) mainWin->setVisible(false);
+    if(widget == mainWin->closeButton) scourge->toggleOptionsWindow();
     else if(widget == gameSettingsButton) {
         selectedMode = GAME_SETTINGS;        
     }  
@@ -385,7 +385,7 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         uc->setShadows(shadowsML->getCurrentTextInd());    
     }
 	else if(widget == closeButton) {
-		hide();
+		scourge->toggleOptionsWindow();
 		return true;
 	}
     else if(widget == saveButton){
@@ -413,7 +413,7 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 	switch(event->key.keysym.sym) {
 	case SDLK_ESCAPE:
 	  if(!ignoreKeyUp){
-		hide();
+		scourge->toggleOptionsWindow();
 		return true;
 	  } else ignoreKeyUp = false;
 	default:
@@ -479,4 +479,8 @@ OptionsMenu::~OptionsMenu(){
 void OptionsMenu::show() {
   mainWin->setVisible(true);
 }  
+
+void OptionsMenu::hide() {
+  mainWin->setVisible(false);
+}
 
