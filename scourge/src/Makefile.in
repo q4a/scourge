@@ -84,7 +84,7 @@ SUBDIRS = freetype gui rpg events net
 
 bin_PROGRAMS = scourge
 
-scourge_SOURCES =  	constants.cpp 	constants.h 	persist.h 	calendar.cpp 	calendar.h 	date.cpp 	date.h 	creature.cpp 	creature.h 	effect.cpp 	effect.h 	dungeongenerator.cpp 	dungeongenerator.h 	glshape.cpp 	glshape.h 	gltorch.cpp 	gltorch.h 	glteleporter.cpp 	glteleporter.h 	item.cpp 	item.h 	location.cpp 	location.h 	main.cpp 	main.h 	mainmenu.cpp 	mainmenu.h 	map.cpp 	map.h 	Md2.cpp 	Md2.h 	md2shape.cpp 	md2shape.h 	netplay.cpp 	netplay.h 	containergui.cpp 	containergui.h 	scourge.cpp 	scourge.h 	sdleventhandler.cpp 	sdleventhandler.h 	sdlhandler.cpp 	sdlhandler.h 	sdlscreenview.cpp 	sdlscreenview.h 	shape.cpp 	shape.h 	inventory.cpp 	inventory.h 	shapepalette.cpp 	shapepalette.h 	util.cpp 	util.h 	text.cpp 	text.h 	gllocator.cpp 	gllocator.h 	minimap.cpp 	minimap.h 	3ds.cpp 	3ds.h 	3dsshape.cpp 	3dsshape.h 	optionsmenu.cpp 	optionsmenu.h 	multiplayer.cpp 	multiplayer.h 	userconfiguration.cpp 	userconfiguration.h 	board.cpp 	board.h 	battle.cpp 	battle.h 	party.cpp 	party.h 	projectile.cpp 	projectile.h 	spellcaster.cpp 	spellcaster.h
+scourge_SOURCES =  	constants.cpp 	constants.h 	persist.h 	calendar.cpp 	calendar.h 	date.cpp 	date.h 	creature.cpp 	creature.h 	effect.cpp 	effect.h 	dungeongenerator.cpp 	dungeongenerator.h 	glshape.cpp 	glshape.h 	gltorch.cpp 	gltorch.h 	glteleporter.cpp 	glteleporter.h 	item.cpp 	item.h 	location.cpp 	location.h 	main.cpp 	main.h 	mainmenu.cpp 	mainmenu.h 	map.cpp 	map.h 	Md2.cpp 	Md2.h 	md2shape.cpp 	md2shape.h 	netplay.cpp 	netplay.h 	containergui.cpp 	containergui.h 	session.cpp 	session.h 	gameadapter.cpp 	gameadapter.h 	scourge.cpp 	scourge.h 	sdleventhandler.cpp 	sdleventhandler.h 	sdlhandler.cpp 	sdlhandler.h 	sdlscreenview.cpp 	sdlscreenview.h 	shape.cpp 	shape.h 	inventory.cpp 	inventory.h 	shapepalette.cpp 	shapepalette.h 	util.cpp 	util.h 	text.cpp 	text.h 	gllocator.cpp 	gllocator.h 	minimap.cpp 	minimap.h 	3ds.cpp 	3ds.h 	3dsshape.cpp 	3dsshape.h 	optionsmenu.cpp 	optionsmenu.h 	multiplayer.cpp 	multiplayer.h 	userconfiguration.cpp 	userconfiguration.h 	board.cpp 	board.h 	battle.cpp 	battle.h 	party.cpp 	party.h 	projectile.cpp 	projectile.h 	spellcaster.cpp 	spellcaster.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -103,10 +103,10 @@ X_PRE_LIBS = @X_PRE_LIBS@
 scourge_OBJECTS =  constants.o calendar.o date.o creature.o effect.o \
 dungeongenerator.o glshape.o gltorch.o glteleporter.o item.o location.o \
 main.o mainmenu.o map.o Md2.o md2shape.o netplay.o containergui.o \
-scourge.o sdleventhandler.o sdlhandler.o sdlscreenview.o shape.o \
-inventory.o shapepalette.o util.o text.o gllocator.o minimap.o 3ds.o \
-3dsshape.o optionsmenu.o multiplayer.o userconfiguration.o board.o \
-battle.o party.o projectile.o spellcaster.o
+session.o gameadapter.o scourge.o sdleventhandler.o sdlhandler.o \
+sdlscreenview.o shape.o inventory.o shapepalette.o util.o text.o \
+gllocator.o minimap.o 3ds.o 3dsshape.o optionsmenu.o multiplayer.o \
+userconfiguration.o board.o battle.o party.o projectile.o spellcaster.o
 scourge_LDADD = $(LDADD)
 scourge_DEPENDENCIES =  $(srcdir)/freetype/libScourgeFreeType.a \
 $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a \
@@ -130,14 +130,14 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/3ds.P .deps/3dsshape.P .deps/Md2.P .deps/battle.P \
 .deps/board.P .deps/calendar.P .deps/constants.P .deps/containergui.P \
 .deps/creature.P .deps/date.P .deps/dungeongenerator.P .deps/effect.P \
-.deps/gllocator.P .deps/glshape.P .deps/glteleporter.P .deps/gltorch.P \
-.deps/inventory.P .deps/item.P .deps/location.P .deps/main.P \
-.deps/mainmenu.P .deps/map.P .deps/md2shape.P .deps/minimap.P \
-.deps/multiplayer.P .deps/netplay.P .deps/optionsmenu.P .deps/party.P \
-.deps/projectile.P .deps/scourge.P .deps/sdleventhandler.P \
-.deps/sdlhandler.P .deps/sdlscreenview.P .deps/shape.P \
-.deps/shapepalette.P .deps/spellcaster.P .deps/text.P \
-.deps/userconfiguration.P .deps/util.P
+.deps/gameadapter.P .deps/gllocator.P .deps/glshape.P \
+.deps/glteleporter.P .deps/gltorch.P .deps/inventory.P .deps/item.P \
+.deps/location.P .deps/main.P .deps/mainmenu.P .deps/map.P \
+.deps/md2shape.P .deps/minimap.P .deps/multiplayer.P .deps/netplay.P \
+.deps/optionsmenu.P .deps/party.P .deps/projectile.P .deps/scourge.P \
+.deps/sdleventhandler.P .deps/sdlhandler.P .deps/sdlscreenview.P \
+.deps/session.P .deps/shape.P .deps/shapepalette.P .deps/spellcaster.P \
+.deps/text.P .deps/userconfiguration.P .deps/util.P
 SOURCES = $(scourge_SOURCES)
 OBJECTS = $(scourge_OBJECTS)
 
