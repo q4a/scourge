@@ -543,7 +543,7 @@ void TexturedText::txfRenderFancyString(char *string,
 }
 
 int TexturedText::txfInFont(int c) {
-  TexGlyphVertexInfo *tgvi;
+  //TexGlyphVertexInfo *tgvi;
 
   /* NOTE: No uppercase/lowercase substituion. */
   if ((c >= txf->min_glyph) && (c < txf->min_glyph + txf->range)) {

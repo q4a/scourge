@@ -136,32 +136,6 @@ int SDLHandler::initGL( GLvoid ) {
     /* Really Nice Perspective Calculations */
 //    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
-    /* Enable lighting */    
-    GLfloat LightAmbient[]= { 0.4f, 0.4f, 0.4f, 1.0f };
-//    GLfloat LightAmbient[]= { 1.0f, 1.0f, 1.0f, 1.0f };    
-    GLfloat LightDiffuse[]= { 0.9f, 0.9f, 0.9f, 1.0f };
-    GLfloat LightPosition[]= { 400.0f, 500.0f, 500.0f, 1.0f };
-    GLfloat LightSpotDir[]= { 0.2f, -0.2f, -1.0f };
-    GLfloat LightSpotCutoff[]= { 40.0f };    
-    
-	//  	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
-    //glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
-   	//glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
-   	//glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, LightSpotDir);
-    //glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, LightSpotCutoff);
-
-
-    GLfloat LightAmbient2[]= { 1.0f, 1.0f, 1.0f, 1.0f };
-    GLfloat LightPosition2[]= { 0.0f, 0.0f, 5.0f, 1.0f };
-
-  	//glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);
-   	//glLightfv(GL_LIGHT2, GL_POSITION, LightPosition2);
-
-        
-//    glEnable( GL_LIGHT1 );
-	//    glEnable( GL_LIGHTING );
-
-
     glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;
     glEnable( GL_COLOR_MATERIAL );
 
@@ -371,6 +345,15 @@ void SDLHandler::mainLoop() {
         glEnable(GL_TEXTURE_2D);
       }
     }
+
+#ifdef SHOW_DEBUG_INFO
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
+	texPrint(700, 10, "FPS: %g", getFPS());
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
+#endif
 
       /* Draw it to the screen */
     SDL_GL_SwapBuffers( );

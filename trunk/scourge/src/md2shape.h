@@ -76,7 +76,7 @@ public:
 
 protected:
   void commonInit(char *file_name, char *texture_name, float div);
-  void CreateTexture(unsigned int textureArray[],char *strFileName,int textureID);
+  void CreateTexture(GLuint textureArray[],char *strFileName,int textureID);
   void swap(unsigned char & a, unsigned char & b);
 };
 

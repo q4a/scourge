@@ -376,7 +376,7 @@ void Gui::drawScrollingList(int id, int count, const char *list[]) {
 
 
     int h = scrollingList[index].y2 - scrollingList[index].y1;
-    int innerHeight = count * 15.0;
+    int innerHeight = count * 15;
 
     int height = (int)((float)h / ((float)innerHeight / (float)h));
     if(height < 40) height = 40;
@@ -528,8 +528,9 @@ void Gui::initScroller(int id) {
 }
 
 bool Gui::handleEvent(SDL_Event *event) {
-    // handle scrolling list callbacks
-    fprintf(stderr, "in handleEvent!\n");
+  // handle scrolling list callbacks
+  fprintf(stderr, "THIS IS NEVER CALLED, RIGHT? In handleEvent!\n");
+  return false;
 }
 
 void Gui::selectScrollingItem(int mousex, int mousey) {

@@ -480,8 +480,6 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, G
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
 
-    int BytesPerPixel = (*surface) -> format -> BytesPerPixel;
-    //(*image) = new unsigned char[width * height * 4];
 	(*image) = (unsigned char*)malloc(width * height * 4);
     int count = 0;
 	int c = 0;
