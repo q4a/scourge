@@ -3,6 +3,10 @@
  * DigiBen     digiben@gametutorials.com
  * Look up his other great tutorials at:
  * http://www.gametutorials.com
+ *
+ * glCommands (and thus simplification of this file) is implemented 
+ * thanks to David Henry tutorial : 
+ *   http://tfc.duke.free.fr/us/tutorials/models/md2.htm 
  */
 
 
@@ -50,15 +54,13 @@ private:
   CLoadMD2 g_LoadMd2;                   // This is MD2 class.  This should go in a good model class.
   t3DModel g_3DModel;                   // This holds the 3D Model info that we load in
   int g_ViewMode;                       // make this GL_LINE_STRIP for outline
-  int dir;    
-  float **vect;
+  int dir;      
+  vect3d *vect;
   bool pauseAnimation;
   
   // Animation stuff
   float elapsedTime;
-  float lastTime;
-  int numAnimationWaiting;  // The "animation buffer" stores only one animation 
-  bool animationPlayed;     // Has current animation been played at least once ?
+  float lastTime;  
    
   // This draws and animates the .md2 model by interpoloated key frame animation
   void AnimateMD2Model(t3DModel *pModel);

@@ -488,8 +488,7 @@ struct t3DObject
 	CVector3  *pVerts;			// The object's vertices
 	CVector3  *pNormals;		// The object's normals
 	CVector2  *pTexVerts;		// The texture's UV coordinates
-	tFace *pFaces;				// The faces information of the object
-	int *pGlCommands;           // The glCommands used to draw the model faster
+	tFace *pFaces;				// The faces information of the object	
 };
 
 
@@ -502,6 +501,8 @@ struct tAnimationInfo
     int endFrame;               // This stores the last frame number for this animation
 };
 
+typedef float vect3d[3];
+
 // We added 4 new variables to our model structure.  These will help us handle
 // the current animation.  As of now, the current animation will continue to loop
 // from it's start from to it's end frame until we right click and change animations.
@@ -509,12 +510,15 @@ struct t3DModel
 {
     int numOfObjects;                   // The number of objects in the model
     int numOfMaterials;                 // The number of materials for the model
-    int numOfAnimations;                // The number of animations in this model (NEW)
-    int currentAnim;                    // The current index into pAnimations list (NEW)
-    int currentFrame;                   // The current frame of the current animation (NEW)
-    vector<tAnimationInfo> pAnimations; // The list of animations (NEW)
+    int numOfAnimations;                // The number of animations in this model 
+    int currentAnim;                    // The current index into pAnimations list 
+    int currentFrame;                   // The current frame of the current animation 
+    vector<tAnimationInfo> pAnimations; // The list of animations 
     vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)
-    vector<t3DObject> pObject;          // The object list for our model
+    vector<t3DObject> pObject;          // The object list for our model (frames)
+    vect3d *vertices;                   // All vertices for every frame of the model
+    int numVertices;                    // The number of vertices (constant for each frame)
+    int *pGlCommands;                   // The glCommands used to draw the model faster
 };
 
 
