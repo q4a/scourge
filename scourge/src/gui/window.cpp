@@ -449,11 +449,21 @@ void Window::drawWidget(Widget *parent) {
     glVertex2i (w, topY + TOP_HEIGHT + openHeight);
     glEnd ();
 
-  } else {
+  } 
+
+  // HACK: blend window if top color's a < 1.0f
+  if(!isModal()) {
+    if( theme->getWindowTop() && 
+        theme->getWindowTop()->color.a < 1.0f ) {
+      glEnable( GL_BLEND );
+      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    }
+  } 
+
+  if(type == SIMPLE_WINDOW) {
     if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
       glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
     }
-
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
@@ -467,10 +477,12 @@ void Window::drawWidget(Widget *parent) {
   }
 
   if(type == BASIC_WINDOW) {
+    /*
     if(!isModal()) {
       glEnable( GL_BLEND );
       glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     }
+    */
     if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
       glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
     } else {
@@ -478,12 +490,12 @@ void Window::drawWidget(Widget *parent) {
     }
 
     //applyBackgroundColor();
-	if( theme->getWindowBackground() ) {
-	  glColor4f( theme->getWindowBackground()->color.r,
-				 theme->getWindowBackground()->color.g,
-				 theme->getWindowBackground()->color.b,
-				 theme->getWindowBackground()->color.a );
-	}
+    if( theme->getWindowBackground() ) {
+      glColor4f( theme->getWindowBackground()->color.r,
+                 theme->getWindowBackground()->color.g,
+                 theme->getWindowBackground()->color.b,
+                 theme->getWindowBackground()->color.a );
+    }
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
@@ -496,11 +508,9 @@ void Window::drawWidget(Widget *parent) {
     glTexCoord2f( 1, 0.0f);      
     glVertex2i(w, topY + TOP_HEIGHT);
     glEnd();
-    if(!isModal()) {
-      glDisable( GL_BLEND );
-    }
   }
 
+  glDisable( GL_BLEND );
   glDisable( GL_TEXTURE_2D );
 
   // draw drop-shadow

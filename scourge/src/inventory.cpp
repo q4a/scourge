@@ -92,14 +92,14 @@ Inventory::Inventory(Scourge *scourge) {
   cards->createLabel(115, 10, "Inventory:", INVENTORY, Constants::RED_COLOR); 
   inventoryWeightLabel = cards->createLabel(190, 10, NULL, INVENTORY);
 
-  coinsLabel = cards->createLabel(300, 180, NULL, INVENTORY);
-  cards->createLabel(115, 180, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
+  coinsLabel = cards->createLabel(300, 170, NULL, INVENTORY);
+  cards->createLabel(115, 170, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
 
   invList = new ScrollingList(115, 15, 295, 140, scourge->getShapePalette()->getHighlightTexture(), this);
   cards->addWidget(invList, INVENTORY);
   cards->createLabel(115, 430, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 
-  paperDoll = new Canvas(115, 185, 411, 206 + (Constants::INVENTORY_COUNT * 15), this, this);
+  paperDoll = new Canvas(115, 175, 411, 206 + (Constants::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
 
   yy = 120;
