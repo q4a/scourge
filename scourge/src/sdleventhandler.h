@@ -19,10 +19,13 @@
 #define SDLEVENTHANDLER_H
 
 #include "constants.h"
+#include "gui/widget.h"
 
 /**
   *@author Gabor Torok
   */
+
+class Widget;
 
 class SDLEventHandler {
 public: 
@@ -33,6 +36,11 @@ public:
     Handle the SDL_Event. Return true to quit, false otherwise
   */
   virtual bool handleEvent(SDL_Event *event) = 0;
+
+  /**
+	 Handle an event, fired by a widget
+   */
+  virtual bool handleEvent(Widget *widget, SDL_Event *event) = 0;
 
 };
 

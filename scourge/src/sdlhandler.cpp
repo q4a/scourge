@@ -370,82 +370,99 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
   resizeWindow( screen->w, screen->h );
 }
 
+void SDLHandler::fireEvent(Widget *widget, SDL_Event *event) {
+  storedWidget = widget;
+  storedEvent = event;
+}
+
 void SDLHandler::mainLoop() {
   /* whether or not the window is active */
   int isActive = TRUE;  
   SDL_Event event;
   while(true) {    
 	mouseEvent = mouseButton = 0;
+	storedWidget = NULL;
+	storedEvent = NULL;
 	int eventCount = 0;  
     while(SDL_PollEvent(&event) && (eventCount++) < 10) {
       switch( event.type ) {
-        case SDL_MOUSEMOTION:
-				if(invertMouse) event.motion.y = screen->h - event.motion.y;
-          mouseX = event.motion.x;
-		  mouseY = event.motion.y;          
-          mouseButton = event.button.button;
-          mouseEvent = SDL_MOUSEMOTION;
-          break;
+	  case SDL_MOUSEMOTION:
+		if(invertMouse) event.motion.y = screen->h - event.motion.y;
+		mouseX = event.motion.x;
+		mouseY = event.motion.y;          
+		mouseButton = event.button.button;
+		mouseEvent = SDL_MOUSEMOTION;
+		Window::handleEvent( &event, mouseX, mouseY );
+		break;
       case SDL_MOUSEBUTTONUP:
-			 if(invertMouse) event.button.y = screen->h - event.button.y;
-          mouseEvent = SDL_MOUSEBUTTONUP;
-          mouseButton = event.button.button;
-          mouseDragging = false;
-          break;
+		if(invertMouse) event.button.y = screen->h - event.button.y;
+		mouseEvent = SDL_MOUSEBUTTONUP;
+		mouseButton = event.button.button;
+		mouseDragging = false;
+		Window::handleEvent( &event, event.button.x, event.button.y );
+		break;
       case SDL_MOUSEBUTTONDOWN:
-			 if(invertMouse) event.button.y = screen->h - event.button.y;			 
-          mouseEvent = SDL_MOUSEBUTTONDOWN;
-          mouseButton = event.button.button;
-          mouseDragging = true;
-          break;
+		if(invertMouse) event.button.y = screen->h - event.button.y;			 
+		mouseEvent = SDL_MOUSEBUTTONDOWN;
+		mouseButton = event.button.button;
+		mouseDragging = true;
+		Window::handleEvent( &event, event.button.x, event.button.y );
+		break;
       case SDL_ACTIVEEVENT:
-		  	    /* Something's happend with our focus
-			       * If we lost focus or we are iconified, we
-			       * shouldn't draw the screen
-			       */
-    	    if ( event.active.gain == 0 )
-				    isActive = FALSE;
-			    else
-    				isActive = TRUE;
-			    break;
-  			case SDL_VIDEORESIZE:
-			    /* handle resize event */
-			    screen = SDL_SetVideoMode( event.resize.w,
-							event.resize.h,
-							16, videoFlags );
-			    if ( !screen ) {
-				    fprintf( stderr, "Could not get a surface after resize: %s\n", SDL_GetError( ) );
-				    quit( 1 );
-  				}
-			    resizeWindow( event.resize.w, event.resize.h );
-			    break;
-	  		case SDL_KEYDOWN:
-          switch(event.key.keysym.sym) {
-            case SDLK_F1:
-        	    SDL_WM_ToggleFullScreen(screen);
-        	    break;
-            default:
-              break;
-          }
-  			  break;
-  			case SDL_QUIT:
-	  		    /* handle quit requests */
-		  	    quit(0);
-			      break;
-  			default:
-	  		    break;
+		/* Something's happend with our focus
+		 * If we lost focus or we are iconified, we
+		 * shouldn't draw the screen
+		 */
+		if ( event.active.gain == 0 )
+		  isActive = FALSE;
+		else
+		  isActive = TRUE;
+		break;
+	  case SDL_VIDEORESIZE:
+		/* handle resize event */
+		screen = SDL_SetVideoMode( event.resize.w,
+								   event.resize.h,
+								   16, videoFlags );
+		if ( !screen ) {
+		  fprintf( stderr, "Could not get a surface after resize: %s\n", SDL_GetError( ) );
+		  quit( 1 );
+		}
+		resizeWindow( event.resize.w, event.resize.h );
+		break;
+	  case SDL_KEYDOWN:
+		switch(event.key.keysym.sym) {
+		case SDLK_F1:
+		  SDL_WM_ToggleFullScreen(screen);
+		  break;
+		default:
+		  break;
+		}
+		break;
+	  case SDL_QUIT:
+		/* handle quit requests */
+		quit(0);
+		break;
+	  default:
+		break;
       }
-      if(eventHandler->handleEvent(&event)) {
-          if(popHandlers()) return;
+	  
+	  bool res = false;
+	  if(storedEvent) {
+		res = eventHandler->handleEvent(storedWidget, storedEvent);
+	  } else {
+		res = eventHandler->handleEvent(&event);
+	  }
+      if(res) {
+		if(popHandlers()) return;
       }
     }
-
+	
     if(isActive) {
 	  screenView->drawView(screen);
-
+	  
 	  // redraw the gui
 	  Window::drawVisibleWindows();
-
+	  
       if(shapePal->cursorImage) {
         // for cursor: do alpha bit testing
         glDisable(GL_TEXTURE_2D);
@@ -458,7 +475,7 @@ void SDLHandler::mainLoop() {
         glRasterPos2f( (float)mouseX, (float)mouseY );
 		glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
 					 GL_BGRA, GL_UNSIGNED_BYTE, shapePal->cursorImage);
-
+		
         //glDrawPixels(shapePal->cursor->w, shapePal->cursor->h,
         //             GL_BGR, GL_UNSIGNED_BYTE, shapePal->cursor->pixels);
         glDisable(GL_ALPHA_TEST);
@@ -466,7 +483,7 @@ void SDLHandler::mainLoop() {
         glEnable(GL_TEXTURE_2D);
       }
     }
-
+	
 #ifdef SHOW_DEBUG_INFO
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
@@ -475,22 +492,22 @@ void SDLHandler::mainLoop() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 #endif
-
-      /* Draw it to the screen */
+	
+	/* Draw it to the screen */
     SDL_GL_SwapBuffers( );
     
 
     /* Gather our frames per second */
     Frames++;
     {
-    	GLint t = SDL_GetTicks();
-    	if (t - T0 >= 5000) {
+	  GLint t = SDL_GetTicks();
+	  if (t - T0 >= 5000) {
         GLfloat seconds = (t - T0) / 1000.0;
   	    fps = Frames / seconds;
   	    //printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);
   	    T0 = t;
   	    Frames = 0;
-    	}
+	  }
     }
   }
 }

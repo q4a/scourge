@@ -50,6 +50,7 @@ class TexturedText;
 
 
 class ShapePalette;                          
+class SDLEventHandler;
 
 class SDLHandler {
 private:
@@ -74,6 +75,10 @@ private:
   SDLScreenView *screenViews[10];
   int handlerCount;
 
+  // the last event fired by a widget
+  Widget *storedWidget;
+  SDL_Event *storedEvent;
+
  public: 
   SDLHandler();
   ~SDLHandler();
@@ -95,9 +100,16 @@ private:
    * Replace the current handlers with the new ones
    */
   void setHandlers(SDLEventHandler *eventHandler, SDLScreenView *screenView);
+
+  /**
+	 Get the current event handler.
+  */
+  inline SDLEventHandler *getEventHandler() { return eventHandler; }
+
   
   void setVideoMode(int argc, char *argv[]);
   void mainLoop();
+  void fireEvent(Widget *widget, SDL_Event *event);
 
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
 

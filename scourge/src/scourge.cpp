@@ -203,6 +203,10 @@ void Scourge::setPlayer(int n) {
   map->refresh();
 }
 
+bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
+  return false;
+}
+
 bool Scourge::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEMOTION:

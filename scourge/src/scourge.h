@@ -119,6 +119,7 @@ public:
 
   void drawView(SDL_Surface *screen);
   bool handleEvent(SDL_Event *event);
+  bool handleEvent(Widget *widget, SDL_Event *event);
 
   void setPlayer(int n);
 

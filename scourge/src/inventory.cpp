@@ -79,6 +79,10 @@ void Inventory::drawView(SDL_Surface *screen) {
     scourge->getGui()->drawWindows();
 }
 
+bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
+  return false;
+}
+
 bool Inventory::handleEvent(SDL_Event *event) {
     switch(event->type) {
     case SDL_MOUSEBUTTONUP:

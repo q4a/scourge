@@ -34,6 +34,7 @@ class Label : public Widget {
  public: 
   Label(int x, int y, char *text);
   ~Label();
+  inline char *getText() { return text; }
   void drawWidget(SDLHandler *sdlHandler);
 };
 

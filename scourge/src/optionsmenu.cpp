@@ -64,6 +64,10 @@ void OptionsMenu::drawMenu(int x, int y) {
   scourge->getGui()->outlineActiveRegion(Constants::MENU_0, "Video Options");
 }
 
+bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
+  return false;
+}
+
 bool OptionsMenu::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEBUTTONUP:
