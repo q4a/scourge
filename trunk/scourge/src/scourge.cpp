@@ -88,14 +88,15 @@ Scourge::Scourge(int argc, char *argv[]){
   optionsMenu = new OptionsMenu(this);
 
   while(true) {
-	mainMenu->show();    
-	sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
-	sdlHandler->mainLoop();
-	mainMenu->hide();
-
+    map = new Map(this);
+    mainMenu->show();    
+    sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
+    sdlHandler->mainLoop();
+    mainMenu->hide();
+    
     // evaluate results and start a missions
     if(mainMenu->getValue() == NEW_GAME) {
-
+      
 	  party->reset();
 	  party->getCalendar()->reset(true); // reset the time
 	  board->reset();
@@ -109,14 +110,16 @@ Scourge::Scourge(int argc, char *argv[]){
 	  nextMission = -1;
 	  inHq = true;
 
-      startMission();
-	} else if(mainMenu->getValue() == OPTIONS) {
-	  optionsMenu->show();
+    delete map;
+
+    startMission();
+    } else if(mainMenu->getValue() == OPTIONS) {
+      optionsMenu->show();
     } else if(mainMenu->getValue() == QUIT) {
       sdlHandler->quit(0);
     }
   }
-}
+}                                                 
 
 Scourge::~Scourge(){
   delete mainMenu;
