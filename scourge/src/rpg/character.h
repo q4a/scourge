@@ -29,6 +29,7 @@ private:
   char *name;
   int startingHp;
   Uint8 shapeIndex;
+  char description[300];
 
 public:
   // inventory locations
@@ -55,7 +56,7 @@ public:
   inline char *getName() { return name; };
   inline int getStartingHp() { return startingHp; }  
   inline Uint8 getShapeIndex() { return shapeIndex; }
-
+  inline char *getDescription() { return description; }
   
 public:  
 

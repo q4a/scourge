@@ -828,6 +828,7 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 		fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
 		Creature *creature = scourge->newCreature(monster);
 		addItem(map, creature, NULL, NULL, x, y);
+		creature->moveTo(x, y, 0);
 		levelSum += level;
 	  } else {
 		fprintf(stderr, "\tmonster DOESN'T fit.\n");

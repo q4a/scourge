@@ -36,6 +36,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->monster = NULL;
   this->name = name;
   this->shape = scourge->getShapePalette()->getCreatureShape(character->getShapeIndex());
+  sprintf(description, "%s the %s", name, character->getName());
   commonInit();
 }
 
@@ -45,6 +46,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->monster = monster;
   this->name = monster->getType();
   this->shape = scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex());
+  sprintf(description, "You see %s", monster->getType());
   commonInit();
 }
 
@@ -72,44 +74,79 @@ Creature::~Creature(){
 }
 
 bool Creature::move(Uint16 dir, Map *map) {
+
+  // monster move
+  if(monster) {
+	int nx = x;
+	int ny = y;
+	int nz = z;
+	switch(dir) {
+	case Constants::MOVE_UP:
+	  ny = y - 1;
+	  break;
+	case Constants::MOVE_DOWN:
+	  ny = y + 1;
+	  break;
+	case Constants::MOVE_LEFT:
+	  nx = x - 1;
+	  break;
+	case Constants::MOVE_RIGHT:
+	  nx = x + 1;
+	  break;
+	}
+	map->removeCreature(x, y, z);
+	if(map->shapeFits(getShape(), nx, ny, nz)) {
+	  map->setCreature(nx, ny, nz, this);
+      ((MD2Shape*)shape)->setDir(dir);
+	  moveTo(nx, ny, nz);
+	  setDir(dir);
+	  return true;
+	} else {
+	  map->setCreature(x, y, z, this);
+	  return false;
+	}
+  }
+
+
+  // character move
   Uint16 oldDir;
-	while(true) {
+  while(true) {
     oldDir = this->dir;
     this->dir = dir;    
-
-		Location *position = map->moveCreature(x, y, z, dir, this);
-		if(position == NULL) {
-			switch(dir) {
-			case Constants::MOVE_UP:
-				moveTo(x, y - 1, z);
-				break;
-			case Constants::MOVE_DOWN:
-				moveTo(x, y + 1, z);
-				break;
-			case Constants::MOVE_LEFT:
-				moveTo(x - 1, y, z);
-				break;
-			case Constants::MOVE_RIGHT:
-				moveTo(x + 1, y, z);
-				break;
-			}
+	
+	Location *position = map->moveCreature(x, y, z, dir, this);
+	if(position == NULL) {
+	  switch(dir) {
+	  case Constants::MOVE_UP:
+		moveTo(x, y - 1, z);
+		break;
+	  case Constants::MOVE_DOWN:
+		moveTo(x, y + 1, z);
+		break;
+	  case Constants::MOVE_LEFT:
+		moveTo(x - 1, y, z);
+		break;
+	  case Constants::MOVE_RIGHT:
+		moveTo(x + 1, y, z);
+		break;
+	  }
       ((MD2Shape*)shape)->setDir(dir);
-      scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
-			return true;
-		} else {
-			Creature *partyMember = scourge->isPartyMember(position);
-			if(partyMember) {
-      
+	  scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+	  return true;
+	} else {
+	  Creature *partyMember = scourge->isPartyMember(position);
+	  if(partyMember) {
+		
 #ifdef ENABLE_PARTY_SWAP
-				// if it's another party member, switch places and try again
+		// if it's another party member, switch places and try again
         // This works, but causes an irritating 'jump'
-				map->switchPlaces(partyMember->getX(), partyMember->getY(), partyMember->getZ(),
-													getX(), getY(), getZ());
-				Sint16 tmpX = getX();
-				Sint16 tmpY = getY();
-				Sint16 tmpZ = getZ();
-				moveTo(partyMember->getX(), partyMember->getY(), partyMember->getZ());
-				partyMember->moveTo(tmpX, tmpY, tmpZ);
+		map->switchPlaces(partyMember->getX(), partyMember->getY(), partyMember->getZ(),
+						  getX(), getY(), getZ());
+		Sint16 tmpX = getX();
+		Sint16 tmpY = getY();
+		Sint16 tmpZ = getZ();
+		moveTo(partyMember->getX(), partyMember->getY(), partyMember->getZ());
+		partyMember->moveTo(tmpX, tmpY, tmpZ);
         // adjust the map's center if the player was moved
         if(partyMember == scourge->getPlayer()) {
           scourge->getMap()->center(partyMember->getX(), partyMember->getY());
@@ -123,13 +160,13 @@ bool Creature::move(Uint16 dir, Map *map) {
         scourge->moveParty();
         return false;
 #endif        
-			} else {
+	  } else {
         this->dir = oldDir;
         scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
-				return false;
-			}
-		}
+		return false;
+	  }
 	}
+  }
 }
 
 void Creature::follow(Map *map) {
@@ -147,9 +184,9 @@ void Creature::follow(Map *map) {
 }
 
 void Creature::moveToLocator(Map *map) {
-    if(selX > -1) {
-        gotoPosition(map, selX, selY, 0);
-    }
+  if(selX > -1) {
+	gotoPosition(map, selX, selY, 0);
+  }
 }
 
 void Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz) {
@@ -181,6 +218,9 @@ void Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz) {
       } else {
         dir = oldDir;
       }
+
+	  // move the others
+	  if(this == scourge->getPlayer()) scourge->moveMonsters();
     }
 }
 

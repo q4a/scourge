@@ -291,6 +291,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  map->setMove(Constants::MOVE_RIGHT);
       break;
 
+	case SDLK_SPACE:
+	  moveMonsters();
+	  break;
+
 	case SDLK_1:
 	  setPlayer(0); break;
 	case SDLK_2:
@@ -426,6 +430,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
   default: break;
   }
+
   return false;  
 }
 
@@ -458,7 +463,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
 	if(useItem(mapx, mapy)) return;
 	getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	player->setSelXY(mapx, mapy);      
+	player->setSelXY(mapx, mapy);
   } else if(button == SDL_BUTTON_RIGHT) {
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	if(mapx < MAP_WIDTH) {    
@@ -848,4 +853,32 @@ void Scourge::createUI() {
   mainWin->addWidget((Widget*)player4Button);
   groupButton = new Button( 196, 20,  220, 40 );
   mainWin->addWidget((Widget*)groupButton);
+}
+
+void Scourge::moveMonsters() {
+  fprintf(stderr, "FIXME: only move visible creatures!\n");
+  fprintf(stderr, "FIXME: cleanup Creature::move()!\n");
+  for(int i = 0; i < creatureCount; i++) {
+	moveMonster(creatures[i]);
+  }
+}
+
+// map calls this for every monster visible
+void Scourge::moveMonster(Creature *monster) {
+  // for now just twitch around
+  // FIXME: this needs to be a lot more intelligent!
+  for(int i = 0; i < 4; i++) {
+	int n = (int)(10.0f * rand()/RAND_MAX);
+	if(n == 0 || !monster->move(monster->getDir(), map)) {
+	  int dir = (int)(4.0f * rand()/RAND_MAX);
+	  switch(dir) {
+	  case 0: monster->setDir(Constants::MOVE_UP); break;
+	  case 1: monster->setDir(Constants::MOVE_DOWN); break;
+	  case 2: monster->setDir(Constants::MOVE_LEFT); break;
+	  case 3: monster->setDir(Constants::MOVE_RIGHT); break;
+	  }
+	} else {
+	  break;
+	}
+  }
 }

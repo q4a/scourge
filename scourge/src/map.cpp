@@ -241,7 +241,8 @@ void Map::setupShapes(bool ground) {
 				  zpos2 = (float)(zp) / GLShape::DIV;
 				  setupPosition(posX, posY, zp,
 								xpos2, ypos2, zpos2,
-								shape); 		  
+								shape, pos[posX][posY][zp]->item, 
+								pos[posX][posY][zp]->creature); 		  
 				}
 			  }
 			}
@@ -267,7 +268,7 @@ void Map::drawGroundPosition(int posX, int posY,
 
 void Map::setupPosition(int posX, int posY, int posZ,
 						float xpos2, float ypos2, float zpos2,
-						Shape *shape) {
+						Shape *shape, Item *item, Creature *creature) {
   GLuint name;
   name = posX + (MAP_WIDTH * (posY)) + (MAP_WIDTH * MAP_DEPTH * posZ);		
   if(shape->isStencil()) {
@@ -275,6 +276,8 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	stencil[stencilCount].ypos = ypos2;
 	stencil[stencilCount].zpos = zpos2;
 	stencil[stencilCount].shape = shape;
+	stencil[stencilCount].item = item;
+	stencil[stencilCount].creature = creature;
 	stencil[stencilCount].name = name;
 	stencilCount++;
   } else if(!shape->isStencil()) {
@@ -283,6 +286,8 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  other[otherCount].ypos = ypos2;
 	  other[otherCount].zpos = zpos2;
 	  other[otherCount].shape = shape;
+	  other[otherCount].item = item;
+	  other[otherCount].creature = creature;
 	  other[otherCount].name = name;
 	  otherCount++;
 	}
@@ -291,6 +296,8 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  later[laterCount].ypos = ypos2;
 	  later[laterCount].zpos = zpos2;
 	  later[laterCount].shape = shape;
+	  later[laterCount].item = item;
+	  later[laterCount].creature = creature;
 	  later[laterCount].name = name;
 	  laterCount++;
 	}
@@ -356,6 +363,7 @@ void Map::draw(SDL_Surface *surface) {
   if(move & Constants::MOVE_RIGHT) {
     if(scourge->getPlayer()->move(Constants::MOVE_RIGHT, this)) this->x++;
   }
+  if(move) scourge->moveMonsters();
   
   if(zoomIn) {
 	if(zoom <= 0.5f) {
@@ -398,7 +406,7 @@ void Map::draw(SDL_Surface *surface) {
   } else {  
 	// draw the creatures/objects/doors/etc.
 	for(int i = 0; i < otherCount; i++) {
-	  if(selectedDropTarget && selectedDropTarget->shape == other[i].shape) {
+	  if(selectedDropTarget && selectedDropTarget->creature == other[i].creature) {
 		colorAlreadySet = true;
 		glColor4f(0, 1, 1, 1);
 	  }
@@ -788,32 +796,36 @@ void Map::drawDescriptions() {
 }
 
 void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) {
-    if(mapx < MAP_WIDTH) {
-        if(button == SDL_BUTTON_RIGHT) {
-            fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
-            Location *loc = getPosition(mapx, mapy, mapz);
-            if(loc) {
-                char *description = NULL;
-                Item *item = loc->item;
-                fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
-                if( item ) {
-                    description = item->getRpgItem()->getShortDesc();
-                }          
-                if(!description) {
-                    Shape *shape = loc->shape;
-                    fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
-                    if(shape) {
-                        description = shape->getRandomDescription();
-                        //description= shape->getName();
-                    }        
-                }
-                if(description) {
-                    //            map->addDescription(x, y, mapx, mapy, mapz, description);
-                    addDescription(description);
-                }
-            }
-        }
+  if(mapx < MAP_WIDTH) {
+	if(button == SDL_BUTTON_RIGHT) {
+	  fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
+	  Location *loc = getPosition(mapx, mapy, mapz);
+	  if(loc) {
+		char *description = NULL;
+		Creature *creature = loc->creature;
+		fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
+		if(creature) {
+		  description = creature->getDescription();
+		} else {
+		  Item *item = loc->item;
+		  fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
+		  if( item ) {
+			description = item->getRpgItem()->getShortDesc();
+		  } else {
+			Shape *shape = loc->shape;
+			fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
+			if(shape) {
+			  description = shape->getRandomDescription();
+			}        
+		  }
+		}
+		if(description) {
+		  //            map->addDescription(x, y, mapx, mapy, mapz, description);
+		  addDescription(description);
+		}
+	  }
     }
+  }
 }
 
 void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
@@ -934,6 +946,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
             pos[x + xp][y - yp][z + zp]->x = x;
             pos[x + xp][y - yp][z + zp]->y = y;
             pos[x + xp][y - yp][z + zp]->z = z;
+			//creature->moveTo(x, y, z);
           }
         }
       }
