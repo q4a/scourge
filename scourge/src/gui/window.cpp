@@ -26,16 +26,21 @@ Window *Window::window[MAX_WINDOW];
   */
 
 #define CLOSE_BUTTON_SIZE 10
+
+Window *Window::message_dialog = NULL;
+Label *Window::message_label = NULL;
+Button *Window::message_button = NULL;
   
 Window::Window(SDLHandler *sdlHandler, 
-							 int x, int y, int w, int h, 
-							 char *title, GLuint texture,
-							 bool hasCloseButton) :
+			   int x, int y, int w, int h, 
+			   char *title, GLuint texture,
+			   bool hasCloseButton) :
 Widget(x, y, w, h) {
   this->sdlHandler = sdlHandler;
   this->title = title;
   this->texture = texture;
   this->visible = false;
+  this->modal = false;
   this->widgetCount = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
@@ -84,67 +89,80 @@ void Window::drawVisibleWindows() {
 }
 
 Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
-	// find the topmost window
-	Window *win = NULL;
-	int maxz = 0;
-	for (int i = 0; i < windowCount; i++) {
-		if (window[i]->isVisible() && window[i]->isInside(x, y)) {
-			if (maxz < window[i]->getZ()) {
-				win = window[i];
-				maxz = win->getZ();
-			}
+  // find the topmost window
+  Window *win = NULL;
+  int maxz = 0;
+  for (int i = 0; i < windowCount; i++) {
+	if(window[i]->isVisible()) {
+	  if(window[i]->isModal()) {
+		win = window[i];
+		break;
+	  } else if(window[i]->isInside(x, y)) {
+		if(maxz < window[i]->getZ()) {
+		  win = window[i];
+		  maxz = win->getZ();
 		}
+	  }
 	}
-	// find the active widget
-	Widget *widget = NULL;
-	if (win) {
-		widget = win->handleWindowEvent(event, x, y);
-	}
-	return widget;
+  }
+  // find the active widget
+  Widget *widget = NULL;
+  if (win) {
+	widget = win->handleWindowEvent(event, x, y);
+  }
+  return widget;
 }
 
 Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
-
-	if(dragging) {
-		handleEvent(NULL, event, x, y);
-		return this;
+  
+  if(dragging) {
+	handleEvent(NULL, event, x, y);
+	return this;
+  }
+  
+  // handled by a component?
+  bool insideWidget = false;
+  Widget *w = NULL;
+  for(int t = 0; t < widgetCount; t++) {
+	if(this->widget[t]->isVisible()) {
+	  if(!insideWidget)
+		insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT));
+	  if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
+		w = this->widget[t];
 	}
+  }
 
-	// handled by a component?
-	bool insideWidget = false;
-	Widget *w = NULL;
-	for(int t = 0; t < widgetCount; t++) {
-		if(this->widget[t]->isVisible()) {
-			if(!insideWidget)
-				insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT));
-			if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
-				w = this->widget[t];
-		}
-	}
-	if(w)	return w;
+  // special handling
+  if(message_button && w == message_button) {
+	message_dialog->setVisible(false);
+  }
 
-	// handled by closebutton
-	if(closeButton) {
-		 if(!insideWidget) {
-			 insideWidget = closeButton->isInside(x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
-																						y - (getY() + 3));
-		 }
-		 if(closeButton->handleEvent(this, event, 
-																 x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
-																 y - (getY() + 3))) {
-			 return closeButton;
-		 }
+  if(w)	return w;
+  
+  // handled by closebutton
+  if(closeButton) {
+	if(!insideWidget) {
+	  insideWidget = closeButton->isInside(x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
+										   y - (getY() + 3));
 	}
+	if(closeButton->handleEvent(this, event, 
+								x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
+								y - (getY() + 3))) {
+	  return closeButton;
+	}
+  }
+  
+  if(insideWidget) {
+	return this;
+  }
+  
+  // see if the window wants it
+  if(handleEvent(NULL, event, x, y)) {
+	return this;
+  }
 
-	if(insideWidget) {
-		return this;
-	}
-
-	// see if the window wants it
-	if(handleEvent(NULL, event, x, y)) {
-		return this;
-	}
-	return NULL;
+  // swallow event if in a modal window
+  return (isModal() ? this : NULL);
 }
 
 bool Window::isInside(int x, int y) {
@@ -231,11 +249,12 @@ void Window::drawWidget(Widget *parent) {
   glTexCoord2f (w/(float)TILE_W, 0.0f);      
   glVertex2i (w, topY + TOP_HEIGHT + openHeight);
   glEnd ();
-
   glDisable( GL_TEXTURE_2D );
 
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  if(!isModal()) {
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  }
   applyBackgroundColor();
   glBegin (GL_QUADS);
   glVertex2i (0, topY + TOP_HEIGHT);
@@ -243,10 +262,33 @@ void Window::drawWidget(Widget *parent) {
   glVertex2i (w, topY + TOP_HEIGHT + openHeight);
   glVertex2i (w, topY + TOP_HEIGHT);
   glEnd();
+  if(!isModal()) {
+	glDisable( GL_BLEND );
+  }
+  
+  // draw drop-shadow
+  glEnable( GL_BLEND );
+  //  glBlendFunc( GL_SRC_ALPHA, GL_DST_COLOR );
+  glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+  int n = 10;
+  glColor4f( 0.15f, 0.15f, 0.15f, 0.25f );
+  glBegin(GL_QUADS);
+  glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
+  glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
+  glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+
+  glVertex2i (w, topY + n);
+  glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glVertex2i (w + n, topY + n);
+  glEnd();
   glDisable( GL_BLEND );
 
   // add a border
   applyBorderColor();
+
+  glLineWidth( isModal() ? 3.0f : 1.0f );
   glBegin(GL_LINES);
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
@@ -256,6 +298,10 @@ void Window::drawWidget(Widget *parent) {
   glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glVertex2d(w, topY);
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glEnd();
+  glLineWidth( 1.0f );
+
+  glBegin(GL_LINES);
   glVertex2i (0, topY + TOP_HEIGHT);
   glVertex2i (w, topY + TOP_HEIGHT);
   glVertex2i (0, topY + TOP_HEIGHT + openHeight);
@@ -389,4 +435,31 @@ void Window::toTop(Window *win) {
 	  break;
 	}
   }
+}
+
+void Window::showMessageDialog(SDLHandler *sdlHandler, 
+							   int x, int y, int w, int h, 
+							   char *title, GLuint texture,
+							   char *message, 
+							   char *buttonLabel) {
+  if(message_dialog && message_dialog->isVisible()) {
+	cerr << "*** Warning: Unable to display second message dialog: " << message << endl;
+	return;
+  }
+  if(!message_dialog) {
+	message_dialog = new Window( sdlHandler,
+								 x, y, w, h, 
+								 title, 
+								 texture, false );
+	message_label = message_dialog->createLabel(10, 30, message);
+	message_button = message_dialog->createButton((w / 2) - 50, h - (40 + TOP_HEIGHT), 
+												  (w / 2) + 50, h - (10 + TOP_HEIGHT), buttonLabel);
+	message_dialog->setModal(true);
+  } else {
+	message_dialog->move(x, y);
+	message_dialog->resize(w, h);
+	message_label->setText(message);
+	message_button->getLabel()->setText(buttonLabel);
+  }
+  message_dialog->setVisible(true);
 }
