@@ -65,6 +65,12 @@ typedef struct _Md2ModelInfo {
   float scale;
 } Md2ModelInfo;
 
+typedef struct _CharacterModelInfo {
+  char model_name[100];
+  char skin_name[300]; 
+  float scale;
+} CharacterModelInfo;
+
 #define MAX_TEXTURE_COUNT 10
 class WallTheme {
  public:
@@ -180,6 +186,7 @@ private:
   map<GLuint, int> loaded_skins;
   map<string, Md2ModelInfo*> creature_models;
   map<Md2ModelInfo*, int> loaded_models;
+  vector<CharacterModelInfo*> character_models;
 
   static ShapePalette *instance;
   
@@ -204,6 +211,9 @@ public:
 
   void initialize();
   GLuint loadSystemTexture( char *line );
+
+  inline int getCharacterModelInfoCount() { return character_models.size(); }
+  inline CharacterModelInfo *getCharacterModelInfo( int index ) { return character_models[ index ]; }
 
   void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );

@@ -21,8 +21,13 @@
   *@author Gabor Torok
   */
 
+#define PORTRAIT_SIZE 150
+#define MODEL_SIZE 200
+
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
+  lastTick = 0;
+  zrot = 180.0f;
   int x = Window::SCREEN_GUTTER;
   int y = ( scourge->getSDLHandler()->getScreen()->h - 600 ) / 2;
   int w = scourge->getSDLHandler()->getScreen()->w - Window::SCREEN_GUTTER * 2;
@@ -99,6 +104,22 @@ void PartyEditor::handleEvent( Widget *widget ) {
           Character *character = Character::character_list[ index ];
           if( character ) info[i].charTypeDescription->setText( character->getDescription() );
         }
+      } else if( widget == info[i].prevPortrait ) {
+        if( info[i].portraitIndex > 0 ) {
+          info[i].portraitIndex--;
+        }
+      } else if( widget == info[i].nextPortrait ) {
+        if( info[i].portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
+          info[i].portraitIndex++;
+        }
+      } else if( widget == info[i].prevModel ) {
+        if( info[i].modelIndex > 0 ) {
+          info[i].modelIndex--;
+        }
+      } else if( widget == info[i].nextModel ) {
+        if( info[i].modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
+          info[i].modelIndex++;
+        }
       }
     }
   }
@@ -107,15 +128,22 @@ void PartyEditor::handleEvent( Widget *widget ) {
 }
 
 void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
+  // FIXME: copy-paste from constructor
+  int w = scourge->getSDLHandler()->getScreen()->w - Window::SCREEN_GUTTER * 2;
+  int h = 600;
+
+  // title
   char msg[80];
   sprintf( msg, "Create character %d out of %d", n - INTRO_TEXT, MAX_PARTY_SIZE );
   Label *title = new Label( 30, 25, msg, 0, SDLHandler::LARGE_FONT );
   cards->addWidget( title, n );
 
+  // name
   cards->createLabel( 30, 50, "Name:", n, Constants::RED_COLOR );
   info->name = new TextField( 100, 40, 20 );
   cards->addWidget( info->name, n );
   
+  // character type
   cards->createLabel( 30, 80, "Character Type:", n, Constants::RED_COLOR );
   info->charType = new ScrollingList( 30, 90, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->charType, n );
@@ -128,6 +156,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->charTypeDescription = new Label( 190, 100, Character::character_list[0]->getDescription(), 60 );
   cards->addWidget( info->charTypeDescription, n );
 
+  // deity
   cards->createLabel( 30, 260, "Chosen Deity:", n, Constants::RED_COLOR );
   info->deityType = new ScrollingList( 30, 270, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->deityType, n );
@@ -140,65 +169,101 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->deityTypeDescription = new Label( 200, 280, "FIXME: deity description", 60 );
   cards->addWidget( info->deityTypeDescription, n );
 
-  info->portrait = new Canvas( 550, 50, 750, 250, this );
+  // portrait
+  info->portrait = new Canvas( w - PORTRAIT_SIZE - 10, 10, w - 10, 10 + PORTRAIT_SIZE, this );
   cards->addWidget( info->portrait, n );
   info->portraitIndex = (int)( (float)( scourge->getShapePalette()->getPortraitCount() ) * rand()/RAND_MAX );
-  //  info->nextPortrait = cards->createButton( 
+  info->prevPortrait = cards->createButton( w - 10 - PORTRAIT_SIZE, 20 + PORTRAIT_SIZE,
+                                            w - 10 - PORTRAIT_SIZE / 2 - 5, 40 + PORTRAIT_SIZE, 
+                                            "<<", n );
+  info->nextPortrait = cards->createButton( w - 5 - PORTRAIT_SIZE / 2, 20 + PORTRAIT_SIZE,
+                                            w - 10, 40 + PORTRAIT_SIZE, 
+                                            "    >>", n );
+  // model
+  info->model = new Canvas( w - PORTRAIT_SIZE - 10, 50 + PORTRAIT_SIZE, w - 10, 50 + PORTRAIT_SIZE + MODEL_SIZE, this );
+  cards->addWidget( info->model, n );
+  info->modelIndex = (int)( (float)( scourge->getShapePalette()->getCharacterModelInfoCount() ) * rand()/RAND_MAX );
+  info->prevModel = cards->createButton( w - 10 - PORTRAIT_SIZE, 60 + PORTRAIT_SIZE + MODEL_SIZE,
+                                         w - 10 - PORTRAIT_SIZE / 2 - 5, 80 + PORTRAIT_SIZE + MODEL_SIZE, 
+                                         "<<", n );
+  info->nextModel = cards->createButton( w - 5 - PORTRAIT_SIZE / 2, 60 + PORTRAIT_SIZE + MODEL_SIZE,
+                                         w - 10, 80 + PORTRAIT_SIZE + MODEL_SIZE, 
+                                         "    >>", n );
   
 
-  // FIXME: copy-paste from constructor
-  int w = scourge->getSDLHandler()->getScreen()->w - Window::SCREEN_GUTTER * 2;
-  int h = 600;
   info->back = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
                                     w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
                                     "Back", n );
   info->next = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
                                     w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
                                     "Next", n );
-
-  
-  /*
-  TextField *name;
-  ScrollingList *charType;
-  Label *charTypeDescription;
-  ScrollingList *deityType;
-  Label *deityTypeDescription;
-  
-  Canvas *portrait;
-  Button *nextPortrait;
-  Button *prevPortrait;
-  int portraitIndex;
-  
-  Canvas *model;
-  Button *nextModel;
-  Button *prevModel;
-  int modelIndex;
-  */
 }
 
 void PartyEditor::drawWidget( Widget *w ) {
+  Uint32 t = SDL_GetTicks();
+  if( t - lastTick > 5 ) {
+    lastTick = t;
+    zrot += 5;
+    if( zrot >= 360 ) zrot -= 360;
+  }
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
     if( w == info[i].portrait ) {
       glPushMatrix();
       glEnable( GL_TEXTURE_2D );
       glDisable( GL_CULL_FACE );
       glColor4f( 1, 1, 1, 1 );
-      //      glColor4f( 1, 0, 0, 1 );
       glBindTexture( GL_TEXTURE_2D, 
                      scourge->getShapePalette()->getPortraitTexture( info[i].portraitIndex ) );
-      int portraitSize = 200;
       glBegin( GL_QUADS );
       glNormal3f( 0, 0, 1 );
       glTexCoord2f( 0, 0 );
       glVertex2i( 0, 0 );
       glTexCoord2f( 1, 0 );
-      glVertex2i( portraitSize, 0 );
+      glVertex2i( PORTRAIT_SIZE, 0 );
       glTexCoord2f( 1, 1 );
-      glVertex2i( portraitSize, portraitSize );
+      glVertex2i( PORTRAIT_SIZE, PORTRAIT_SIZE );
       glTexCoord2f( 0, 1 );
-      glVertex2i( 0, portraitSize );
+      glVertex2i( 0, PORTRAIT_SIZE );
       glEnd();
       glDisable( GL_TEXTURE_2D );
+      glPopMatrix();
+    } else if( w == info[i].model ) {
+      /*
+      glDisable( GL_TEXTURE_2D );
+      glPushMatrix();
+      glDisable( GL_CULL_FACE );
+      glColor4f( 0, 0, 0, 1 );
+      glBegin( GL_QUADS );
+      glVertex2i( 0, 0 );
+      glVertex2i( PORTRAIT_SIZE, 0 );
+      glVertex2i( PORTRAIT_SIZE, MODEL_SIZE );
+      glVertex2i( 0, MODEL_SIZE );
+      glEnd();
+      glPopMatrix();
+      */
+
+      // draw model
+      CharacterModelInfo *cmi = scourge->getShapePalette()->getCharacterModelInfo( info->modelIndex );
+      GLShape *shape = 
+        scourge->getShapePalette()->getCreatureShape(cmi->model_name, 
+                                                     cmi->skin_name, 
+                                                     cmi->scale );      
+      glPushMatrix();
+      glEnable(GL_DEPTH_TEST);
+      glDisable( GL_BLEND );
+      glDepthMask(GL_TRUE);
+      glEnable( GL_TEXTURE_2D );
+      glRotatef( 75, 1, 0, 0 );
+      glTranslatef( PORTRAIT_SIZE, MODEL_SIZE * 3, 100 );      
+      glRotatef( zrot, 0, 0, 1 );
+      glTranslatef( 0, 0, shape->getDepth() / 2.0f / GLShape::DIV );      
+      glScalef( 2, 2, 2 );
+      glColor4f( 1, 1, 1, 1 );
+      glDisable( GL_SCISSOR_TEST );
+      shape->draw();
+      glDisable( GL_TEXTURE_2D );
+      glDepthMask(GL_FALSE);
+      glDisable(GL_DEPTH_TEST);
       glPopMatrix();
     }
   }
