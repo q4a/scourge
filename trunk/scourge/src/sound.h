@@ -32,6 +32,7 @@ private:
   bool haveSound;
 #ifdef HAVE_SDL_MIXER
   Mix_Music *menuMusic;
+  Mix_Music *dungeonMusic;
   map<string, Mix_Chunk*> soundMap;
 #endif
 
@@ -48,6 +49,18 @@ public:
   inline void stopMusicMenu() {
 #ifdef HAVE_SDL_MIXER
     stopMusic(menuMusic);
+#endif
+  }
+
+  inline void playMusicDungeon() {
+#ifdef HAVE_SDL_MIXER
+    playMusic(dungeonMusic);
+#endif
+  }
+
+  inline void stopMusicDungeon() {
+#ifdef HAVE_SDL_MIXER
+    stopMusic(dungeonMusic);
 #endif
   }
 

@@ -257,9 +257,14 @@ void Scourge::startMission() {
     // set the map view
     setUILayout();
 
+    // start the haunting tunes
+    sdlHandler->getSound()->playMusicDungeon();
+
     // run mission
     sdlHandler->mainLoop();
 
+    // stop the music
+    sdlHandler->getSound()->stopMusicDungeon();
 
     // clean up after the mission
 
