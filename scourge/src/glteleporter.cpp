@@ -56,7 +56,7 @@ void GLTeleporter::draw() {
 	  //	  ring[i] = (((float)(height - 1) / DIV) * rand()/RAND_MAX) + (1.0f / DIV);
 	  //	  delta[i] = (ring[i] >= ((float)(height - 1) / DIV) / 2.0f ? 0.5f : -0.5f);
 	  ring[i] = ((float)(height - 1) / DIV) / 2.0f + ((20.0f * rand()/RAND_MAX) - 10.0f);
-	  delta[i] = ((int)(2.0f * rand()/RAND_MAX) == 0 ? 1.5f : -1.5f);
+	  delta[i] = ((int)(2.0f * rand()/RAND_MAX) == 0 ? 3.0f : -3.0f);
 	}
 	
 	// draw 

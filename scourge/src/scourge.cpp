@@ -113,6 +113,10 @@ Scourge::Scourge(int argc, char *argv[]){
 		inventory = new Inventory(this);
 	  }
 
+	  // always start in hq
+	  nextMission = -1;
+	  inHq = true;
+
       startMission();
 	} else if(mainMenu->getValue() == OPTIONS) {
 	  optionsMenu->show();
@@ -169,6 +173,7 @@ void Scourge::startMission() {
   partyDead = false;
   containerGuiCount = 0;
   lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
+  teleporting = false;
   
 	// set player to be the first non-dead character
 	for(int i = 0; i < 4; i++) {
@@ -271,8 +276,12 @@ void Scourge::startMission() {
 
 
 	if(!inHq) {
+	  if(teleporting) {
 		// go back to HQ when coming from a mission	
 		nextMission = -1;
+	  } else {
+		break;
+	  }
 	} else if(nextMission == -1) {
 		// if quiting in HQ, exit loop
 		break;
@@ -397,20 +406,26 @@ bool Scourge::handleEvent(SDL_Event *event) {
   case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
 	  processGameMouseClick(event->button.x, event->button.y, event->button.button);
+	  if(teleporting && !exitConfirmationDialog->isVisible()) {
+		exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+		if(startRound) toggleRound();
+
+		exitConfirmationDialog->setVisible(true);
+	  }
     }
     break;
   case SDL_KEYDOWN:
   case SDL_KEYUP:
   
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
-			if(exitConfirmationDialog->isVisible()) {
-				exitConfirmationDialog->setVisible(false);
-			} else {
-				if(startRound) toggleRound();
-				exitConfirmationDialog->setVisible(true);
-			}	  
-			return false;
-		}
+	  if(exitConfirmationDialog->isVisible()) {
+		exitConfirmationDialog->setVisible(false);
+	  } else {
+		if(startRound) toggleRound();
+		exitConfirmationDialog->setVisible(true);
+	  }	  
+	  return false;
+	}
     
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
@@ -886,6 +901,8 @@ bool Scourge::useItem(int x, int y, int z) {
 			return true;
 		} else if(useBoard(pos)) {
 			return true;
+		} else if(useTeleporter(pos)) {
+		  return true;
 		}
 	}
 	return false;
@@ -986,8 +1003,6 @@ void Scourge::dropItem(int x, int y) {
 bool Scourge::useBoard(Location *pos) {
 	if(pos->shape == shapePal->getShape(Constants::BOARD_INDEX)) {
 		for(int i = 0; i < board->getMissionCount(); i++) {
-			cerr << "\t " << i << endl;
-			cerr << "\t " << board->getMission(i)->name << endl;
 			strcpy(missionText[i], board->getMission(i)->name);
 		}
 		missionList->setLines(board->getMissionCount(), (const char**)missionText);
@@ -997,6 +1012,20 @@ bool Scourge::useBoard(Location *pos) {
 		return true;
 	}
 	return false;
+}
+
+bool Scourge::useTeleporter(Location *pos) {
+  if(pos->shape == shapePal->getShape(Constants::TELEPORTER_INDEX) ||
+	 pos->shape == shapePal->getShape(Constants::TELEPORTER_BASE_INDEX)) {
+	// able to teleport if any party member is alive
+	for(int i = 0; i < 4; i++) {
+	  if(!party[i]->getStateMod(Constants::dead)) {
+		teleporting = true;
+		return true;
+	  }
+	}
+  }
+  return false;
 }
 
 bool Scourge::useDoor(Location *pos) {
@@ -1072,15 +1101,17 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	  optionsMenu->show();
 	}
   } else if(widget == yesExitConfirm) {
-		exitConfirmationDialog->setVisible(false);
-		endMission();
-		return true;
+	exitConfirmationDialog->setVisible(false);
+	endMission();
+	return true;
   } else if(widget == noExitConfirm) {
-		exitConfirmationDialog->setVisible(false);
-		return false;
+	teleporting = false;
+	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+	exitConfirmationDialog->setVisible(false);
+	return false;
   } else if(widget == quitButton) {
-		if(startRound) toggleRound();
-		exitConfirmationDialog->setVisible(true);
+	if(startRound) toggleRound();
+	exitConfirmationDialog->setVisible(true);
   } else if(widget == diamondButton) {
 		setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == staggeredButton) {
@@ -1210,7 +1241,8 @@ void Scourge::createUI() {
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
   noExitConfirm = new Button( 140, 50, 210, 80, strdup("No") );
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
-  exitConfirmationDialog->addWidget((Widget*)new Label(20, 20, strdup("Do you really want to exit this mission?")));
+  exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+  exitConfirmationDialog->addWidget((Widget*)exitLabel);
 
   boardWin = new Window( getSDLHandler(),
 												 (sdlHandler->getScreen()->w - BOARD_GUI_WIDTH) / 2, 

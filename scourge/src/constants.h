@@ -231,7 +231,6 @@ public:
 	COMBINE_ITEM,
 	IDENTIFY_ITEM
 
-
   };
 
   // Directions (a bitfield so they can be combined)
@@ -256,6 +255,8 @@ public:
 	OPEN_CONTAINER_LABEL,
 	EXPLAIN_DRAG_AND_DROP,
 	PLAY_MISSION_LABEL,
+	EXIT_MISSION_LABEL,
+	TELEPORT_TO_BASE_LABEL,
 
 	// last one
 	MESSAGE_COUNT
