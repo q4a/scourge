@@ -341,7 +341,7 @@ void ShapePalette::initialize() {
 
   // set up the cursor
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
-  cursor_texture = loadGLTextureBGRA(cursor, cursorImage);
+  cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
   crosshair_texture = loadGLTextureBGRA(crosshair, crosshairImage);
   setupAlphaBlendedBMP("/paperdoll.bmp", &paperDoll, &paperDollImage);

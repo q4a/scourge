@@ -577,20 +577,15 @@ float Constants::distance(float x1, float y1, float w1, float h1,
 void Constants::checkTexture(char *message, int w, int h) {
   int maxTextureSize;
   glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
-
   if( w > maxTextureSize || h > maxTextureSize) {
     cerr << "*****************************" << endl;
     cerr << "*****************************" << endl;
+    cerr << "***&&&*** " << message << 
+          " size=" << w << "x" << h << 
+          " max texture size=" << maxTextureSize << endl;    
     cerr << "Error: texture too big." << endl;
-  }
-
-  cerr << "***&&&*** " << message << 
-    " size=" << w << "x" << h << 
-    " max texture size=" << maxTextureSize << endl;
-
-  if( w > maxTextureSize || h > maxTextureSize) {
     cerr << "*****************************" << endl;
-    cerr << "*****************************" << endl;
+    cerr << "*****************************" << endl;    
   }
 }
 
