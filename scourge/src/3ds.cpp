@@ -124,7 +124,7 @@ void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
     // Continue to read the sub chunks until we have reached the length.
     // After we read ANYTHING we add the bytes read to the chunk and then check
     // check against the length.
-	int count = 0;
+	//int count = 0;
     while (pPreviousChunk->bytesRead < pPreviousChunk->length)
     {
 	  //	  if(count++ > 20) exit(1);

@@ -108,6 +108,8 @@ public:
   
   void drawMainMenu(int x, int y);
 
+  void drawOptionsMenu(int x, int y);
+
   void drawDescriptions(int x, int y);
 
   void drawInventory(int x, int y);

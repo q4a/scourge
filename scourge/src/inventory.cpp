@@ -405,7 +405,7 @@ void Inventory::drawInventoryInfo() {
     }
 	for(int t = scourge->getParty(selected)->getPC()->getInventoryCount(); 
 		t < MAX_INVENTORY_SIZE; t++) {
-	  sprintf(pcInvText[t], "");
+	  strcpy(pcInvText[t], "");
 	}
     scourge->getGui()->drawScrollingList(itemList, Constants::SKILL_COUNT, (const char**)pcInvText);
 	char name[80];

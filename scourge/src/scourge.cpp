@@ -68,27 +68,30 @@ Scourge::Scourge(int argc, char *argv[]){
   
   // show the main menu
   mainMenu = new MainMenu(this);  
+  optionsMenu = new OptionsMenu(this);
 
   while(true) {
-    mainMenu->init();    
-    sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
-    sdlHandler->mainLoop();
-    mainMenu->destroy();
+	mainMenu->init();    
+	sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
+	sdlHandler->mainLoop();
+	mainMenu->destroy();
 
     // evaluate results and start a missions
     fprintf(stderr, "value=%d\n", mainMenu->getValue());
     if(mainMenu->getValue() == NEW_GAME) {
       //charBuilder-
       startMission();
+	} else if(mainMenu->getValue() == OPTIONS) {
+	  optionsMenu->show();
     } else if(mainMenu->getValue() == QUIT) {
       sdlHandler->quit(0);
     }
   }
-
-  delete mainMenu;
 }
 
 Scourge::~Scourge(){
+  delete mainMenu;
+  delete optionsMenu;
 }
 
 void Scourge::startMission() {
@@ -213,22 +216,22 @@ bool Scourge::handleEvent(SDL_Event *event) {
     break;
   case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
-        int region = gui->testActiveRegions(event->button.x, event->button.y);
-        if(region == Constants::SHOW_INVENTORY) {
-            inventory->show();
-        } else if(region == Constants::SHOW_OPTIONS) {
-            // do something
-        } else if(region == Constants::ESCAPE) {
-            return true;
-		} else if(region >= Constants::DIAMOND_FORMATION && region <= Constants::CROSS_FORMATION) {
-		  setFormation(region - Constants::DIAMOND_FORMATION);
-		} else if(region >= Constants::PLAYER_1 && region <= Constants::PLAYER_4) {
-		  setPlayer(region - Constants::PLAYER_1);
-		} else if(region == Constants::PLAYER_ONLY) {
-		  player_only = (player_only ? false : true);
-        } else {        
-            processGameMouseClick(event->button.x, event->button.y, event->button.button);
-        }
+	  int region = gui->testActiveRegions(event->button.x, event->button.y);
+	  if(region == Constants::SHOW_INVENTORY) {
+		inventory->show();
+	  } else if(region == Constants::SHOW_OPTIONS) {
+		optionsMenu->show();
+	  } else if(region == Constants::ESCAPE) {
+		return true;
+	  } else if(region >= Constants::DIAMOND_FORMATION && region <= Constants::CROSS_FORMATION) {
+		setFormation(region - Constants::DIAMOND_FORMATION);
+	  } else if(region >= Constants::PLAYER_1 && region <= Constants::PLAYER_4) {
+		setPlayer(region - Constants::PLAYER_1);
+	  } else if(region == Constants::PLAYER_ONLY) {
+		player_only = (player_only ? false : true);
+	  } else {        
+		processGameMouseClick(event->button.x, event->button.y, event->button.button);
+	  }
     }
     break;
   case SDL_KEYDOWN:
@@ -277,6 +280,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
     case SDLK_i:
         inventory->show();
+        break;
+    case SDLK_o:
+        optionsMenu->show();
         break;
     case SDLK_q:
         map->setXRot(1.0f);
@@ -788,5 +794,4 @@ void Scourge::drawTopWindow() {
 
 	glPopMatrix();
 }
-
 

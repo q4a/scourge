@@ -40,7 +40,8 @@ Item *Item::getRandomItem(int level) {
   case 1: return items[RpgItem::DAGGER];
   case 2: return items[RpgItem::BASTARD_SWORD];
   case 3: return items[RpgItem::BATTLE_AXE];
-  case 4: return items[RpgItem::THROWING_AXE];
+  case 4: return items[RpgItem::THROWING_AXE];  
+  default: return NULL; // won't happen
   }
 }
 
