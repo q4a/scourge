@@ -500,7 +500,8 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
 
               if(lightMap[chunkX][chunkY] &&
-                 effect[posX][posY][zp]) {
+                 effect[posX][posY][zp] &&
+				 !effect[posX][posY][zp]->isInDelay() ) {
                 xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                 xp + chunkOffsetX) / GLShape::DIV;
                 ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
@@ -1604,8 +1605,8 @@ void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
 }     
 
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
-                      int effect_type, int duration, 
-                      int width, int height) {
+                      int effect_type, GLuint duration, 
+                      int width, int height, GLuint delay) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
@@ -1643,6 +1644,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->resetDamageEffect();
   effect[x][y][z]->effectType = effect_type;
   effect[x][y][z]->effectDuration = duration;
+  effect[x][y][z]->effectDelay = delay;
   effect[x][y][z]->x = x;
   effect[x][y][z]->y = y;
   effect[x][y][z]->z = z;

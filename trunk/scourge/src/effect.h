@@ -63,6 +63,7 @@ protected:
   void drawCastSpell(bool proceed);
   void drawRing(bool proceed);
   void drawRipple(bool proceed);
+  void drawDust(bool proceed);
   
   // particle management
   void createParticle(ParticleStruct **particle);

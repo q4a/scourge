@@ -85,6 +85,8 @@ void Effect::draw(int effect, int startTime) {
     drawRing(proceed);
   } else if(effect == Constants::EFFECT_RIPPLE) {
     drawRipple(proceed);
+  } else if(effect == Constants::EFFECT_DUST) {
+    drawDust(proceed);
   } else {
     glowShape(proceed, startTime);
   }
@@ -212,6 +214,40 @@ void Effect::drawExplosion(bool proceed) {
 	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c, c / 2.0f, c / 2.0f, 0.5);
+
+	  drawParticle(particle[i]);
+    }
+  }
+}
+
+void Effect::drawDust(bool proceed) {
+  // manage particles
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(&(particle[i]));
+	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
+	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+	  particle[i]->moveDelta = 0;
+	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+	  particle[i]->maxLife = 5000;
+	  particle[i]->trail = 4;
+    } else if(proceed) {
+	  particle[i]->rotate = (360.0f * rand()/RAND_MAX);
+
+	  // this causes an explosion!
+	  if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
+	  moveParticle(&(particle[i]));
+    }
+
+    // draw it      
+    if(particle[i]) {            
+
+	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  if(c > 1.0f) c = 1.0f;
+      glColor4f(c / 4.0f, c / 4.0f, c / 4.0f, 0.35);
 
 	  drawParticle(particle[i]);
     }
