@@ -85,6 +85,10 @@ Inventory::Inventory(Scourge *scourge) {
   yy += buttonHeight;
   partyButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Party", true);
   yy += buttonHeight;
+
+  yy = mainWin->getHeight() - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 10 - 20;
+  closeButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Hide" );
+
   cards = new CardContainer(mainWin);
 
 
@@ -308,7 +312,7 @@ void Inventory::drawWidget(Widget *w) {
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   Creature *creature = scourge->getParty()->getParty(selected);
   char *error = NULL;
-  if(widget == mainWin->closeButton) mainWin->setVisible(false);
+  if( widget == mainWin->closeButton || widget == closeButton ) mainWin->setVisible(false);
   else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
   else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
