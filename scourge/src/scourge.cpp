@@ -1894,15 +1894,15 @@ Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radi
 
 #ifdef HAVE_SDL_NET
 void Scourge::runServer(int port) {
-  NetPlay *np = new NetPlay(this);
+  GameStateHandler *gsh = new TestGameStateHandler();
   server = new Server(port ? port : DEFAULT_SERVER_PORT);
-  server->setGameStateHandler(np);
+  server->setGameStateHandler(gsh);
   
   // wait for the server to quit
   int status;
   SDL_WaitThread(server->getThread(), &status);
 
-  delete np;
+  delete gsh;
 }
 
 void Scourge::runClient(char *host, int port, char *userName) {
