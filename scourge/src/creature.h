@@ -62,6 +62,7 @@ class Creature {
   Scourge *scourge;
   GLUquadric *quadric;
   int motion;  
+  int facingDirection;
   int formation;
   int index;
   int tx, ty;
@@ -121,6 +122,11 @@ class Creature {
   
   inline void setMotion(int motion) { this->motion = motion; }
   inline int getMotion() { return this->motion; }
+  
+  inline void setFacingDirection(int direction) { this->facingDirection = direction;}
+  inline int getFacingDirection() { return this->facingDirection; }
+  
+  
   inline char *getDescription() { return description; }
 
   inline void setLastTick(GLint n) { this->lastTick = n; }
