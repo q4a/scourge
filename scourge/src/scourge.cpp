@@ -2120,42 +2120,33 @@ void Scourge::playRound() {
   }
 }
 
+// fight a turn of the battle
 bool Scourge::fightCurrentBattleTurn() {
-  Uint32 t = SDL_GetTicks();
-  if(!getUserConfiguration()->isBattleTurnBased() || 
-     lastTick == 0 || 
-     t - lastTick > (Uint32)userConfiguration->getGameSpeedTicks()) {
-    lastTick = t;
-    // fight a turn of the battle
-    if(battleRound.size() > 0) {
-      if(battleTurn < (int)battleRound.size()) {
-        Battle *battle = battleRound[battleTurn];
-
-        if(getUserConfiguration()->isBattleTurnBased()) {
-          if(battle->fightTurn()) {
-            battleTurn++;
-          }
-        } else {
-          if(battle->fightTurn()) {
-            // in RT mode, if the turn is over move it before rtStartTurn
-            Battle *tmp = battleRound[rtStartTurn];
-            battleRound[rtStartTurn] = battleRound[battleTurn];
-            battleRound[battleTurn] = tmp;
-            rtStartTurn++;
-          }
-          battleTurn++;
-          // go back to the start
-          if(rtStartTurn < (int)battleRound.size() - 1 && 
-             battleTurn == (int)battleRound.size()) battleTurn = rtStartTurn;
-        }
-      } else {
-        rtStartTurn = battleTurn = 0;
-        if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
-        
-        if(DEBUG_BATTLE) cerr << "ROUND ENDS" << endl;
-        if(DEBUG_BATTLE) cerr << "----------------------------------" << endl;
-        return true;
+  if(battleRound.size() > 0) {
+    bool roundOver = false;
+    if( getUserConfiguration()->isBattleTurnBased() ) {
+      // TB: fight the current battle turn only
+      Battle *battle = battleRound[battleTurn];
+      if(battle->fightTurn()) {
+        battleTurn++;
       }
+      roundOver = ( battleTurn >= (int)battleRound.size() );
+    } else {
+      // RT: fight every battle turn
+      for( int i = 0; i < (int)battleRound.size(); i++) {
+        Battle *battle = battleRound[i];
+        battle->fightTurn();
+      }
+      roundOver = true;
+    }
+
+    if( roundOver ) {
+      rtStartTurn = battleTurn = 0;
+      if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
+      
+      if(DEBUG_BATTLE) cerr << "ROUND ENDS" << endl;
+      if(DEBUG_BATTLE) cerr << "----------------------------------" << endl;
+      return true;
     }
   }
   return false;

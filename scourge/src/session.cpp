@@ -248,6 +248,8 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
        !getCreature(i)->getStateMod(Constants::possessed) && 
        map->isLocationVisible(toint(getCreature(i)->getX()), 
                               toint(getCreature(i)->getY())) &&
+       map->isLocationInLight(toint(getCreature(i)->getX()), 
+                              toint(getCreature(i)->getY())) &&
        getCreature(i)->isMonster()) {
       float dist = Constants::distance(x, y, w, h,
                                        getCreature(i)->getX(),
