@@ -256,7 +256,9 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     }
   } else if(spell->getTargetType() == GROUP_TARGET) {
     int radius = battle->getCreature()->getLevel() * 2;
-    if(radius > 15) radius = 15;    
+    if(radius > 15) radius = 15;
+    if(radius < 2) radius = 2;
+    cerr << "radius=" << radius << endl;
     // show radius effect
     battle->getSession()->getMap()->startEffect(battle->getCreature()->getTargetX(),
                                                 battle->getCreature()->getTargetY(),
@@ -271,6 +273,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
                          battle->getCreature()->getTargetY(),
                          radius,
                          targets);
+    cerr << "targetCount=" << targetCount << endl;
   } else {
     targets[targetCount++] = battle->getCreature()->getTargetCreature();
   }
@@ -282,11 +285,11 @@ void SpellCaster::setStateMod(int mod, bool setting) {
   for(int i = 0; i < targetCount; i++) {
     Creature *creature = targets[i];
 
-    // group spells only affect monsters (for now).
-    if(spell->getTargetType() == GROUP_TARGET && !creature->isMonster()) continue;
-
     bool protectiveItem = false;
     if(!Constants::isStateModTransitionWanted(mod, setting)) {
+
+      // bad effects should only happen to enemies
+      if(!battle->getCreature()->canAttack( creature )) continue;
 
       // roll for resistance
       char msg[200];

@@ -568,12 +568,16 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
       if(creature->getStateMod(i) && i != Constants::dead) {
         glPushMatrix();
-        glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+
+        //old: glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
+        //new: glTranslatef( xpos2 + tw, ypos2 - tw, zpos2 + 5);
+
+        glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
         //		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
         //		glRotatef( count * (360.0f / on), 0, 0, 1 );
         float angle = -(count * 30) - (map->getZRot() + 180);
         glRotatef( angle, 0, 0, 1 );
-        glTranslatef( w / 2.0f + 15, 0, 0 );
+        glTranslatef( w + 15, 0, 0 );
         glRotatef( (count * 30) + 180, 0, 0, 1 );
         glTranslatef( -7, -7, 0 );
         //	  drawStateMod(i);
@@ -2526,136 +2530,137 @@ void Scourge::createPartyUI() {
 void Scourge::drawWidget(Widget *w) {
   char msg[80];
   if(w == minPartyInfo) {
-	for(int i = 0; i < party->getPartySize(); i++) {	  
-	  // hp
-	  if(party->getParty(i) == party->getPlayer()) {
-		w->applyBorderColor();
-		glBegin( GL_QUADS );
-		glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, (i * 20), 0 );
-		glVertex3f( 0, (i * 20), 0 );
-		glVertex3f( 0, 20 + (i * 20), 0 );
-		glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, 20 + (i * 20), 0 );
-		glEnd();
-	  }
-	  //	  w->applyColor();
-	  glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
-	  sprintf(msg, "%c:", party->getParty(i)->getName()[0]);
-	  getSDLHandler()->texPrint(0, 13 + (i * 20), msg);
-	  Util::drawBar(15, 8 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
-					(float)party->getParty(i)->getHp(), (float)party->getParty(i)->getMaxHp());
-	  Util::drawBar(15, 14 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
-					(float)party->getParty(i)->getMp(), (float)party->getParty(i)->getMaxMp(),
-					0.45f, 0.65f, 1.0f, false);
-	}
+    for(int i = 0; i < party->getPartySize(); i++) {    
+      // hp
+      if(party->getParty(i) == party->getPlayer()) {
+        w->applyBorderColor();
+        glBegin( GL_QUADS );
+        glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, (i * 20), 0 );
+        glVertex3f( 0, (i * 20), 0 );
+        glVertex3f( 0, 20 + (i * 20), 0 );
+        glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, 20 + (i * 20), 0 );
+        glEnd();
+      }
+      //	  w->applyColor();
+      glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+      sprintf(msg, "%c:", party->getParty(i)->getName()[0]);
+      getSDLHandler()->texPrint(0, 13 + (i * 20), msg);
+      Util::drawBar(15, 8 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
+                    (float)party->getParty(i)->getHp(), (float)party->getParty(i)->getMaxHp());
+      Util::drawBar(15, 14 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
+                    (float)party->getParty(i)->getMp(), (float)party->getParty(i)->getMaxMp(),
+                    0.45f, 0.65f, 1.0f, false);
+    }
   } else {
-	int selectedPlayerIndex = -1;
-	for(int i = 0; i < party->getPartySize(); i++) {
-	  if(playerInfo[i] == w) {
-		selectedPlayerIndex = i;
-		break;
-	  }
-	}
-	if(selectedPlayerIndex == -1) {
-	  cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
-	  return;
-	}
-	Creature *p = party->getParty(selectedPlayerIndex);
-	
-	// hp
-	w->applyColor();
-	sprintf(msg, "%d/%d", p->getHp(), p->getMaxHp());
-	getSDLHandler()->texPrint(3, 10, msg);
-	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
-	sprintf(msg, "hp:");
-	getSDLHandler()->texPrint(3, 20, msg);
-	Util::drawBar(22, 18, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
-				  (float)p->getHp(), (float)p->getMaxHp());
-	
-	// mp
-	w->applyColor();
-	sprintf(msg, "%d/%d", p->getMp(), p->getMaxMp());
-	getSDLHandler()->texPrint(3, 35, msg);
-	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
-	sprintf(msg, "mp:");
-	getSDLHandler()->texPrint(3, 45, msg);
-	Util::drawBar(22, 43, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
-				  (float)p->getMp(), (float)p->getMaxMp(),
-				  0.45f, 0.65f, 1.0f, false);
+    int selectedPlayerIndex = -1;
+    for(int i = 0; i < party->getPartySize(); i++) {
+      if(playerInfo[i] == w) {
+        selectedPlayerIndex = i;
+        break;
+      }
+    }
+    if(selectedPlayerIndex == -1) {
+      cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
+      return;
+    }
+    Creature *p = party->getParty(selectedPlayerIndex);
 
-  // ap
-  glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
-  getSDLHandler()->texPrint(72, 85, "AP:");
-  w->applyColor();
-  sprintf(msg, "%d", p->getBattle()->getAP());
-  getSDLHandler()->texPrint(72, 95, msg);
-  sprintf(msg, "%d", p->getBattle()->getStartingAP());
-  getSDLHandler()->texPrint(72, 105, msg);
+    // hp
+    w->applyColor();
+    sprintf(msg, "%d/%d", p->getHp(), p->getMaxHp());
+    getSDLHandler()->texPrint(3, 10, msg);
+    glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+    sprintf(msg, "hp:");
+    getSDLHandler()->texPrint(3, 20, msg);
+    Util::drawBar(22, 18, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
+                  (float)p->getHp(), (float)p->getMaxHp());
 
-	/*
-	// ac
-	w->applyColor();
-	sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
-	getSDLHandler()->texPrint(3, 35, msg);
-	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
-	sprintf(msg, "ac:");
-	getSDLHandler()->texPrint(3, 45, msg);
-	Util::drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
-	(float)p->getSkillModifiedArmor(), (float)p->getArmor());
-	*/
+    // mp
+    w->applyColor();
+    sprintf(msg, "%d/%d", p->getMp(), p->getMaxMp());
+    getSDLHandler()->texPrint(3, 35, msg);
+    glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+    sprintf(msg, "mp:");
+    getSDLHandler()->texPrint(3, 45, msg);
+    Util::drawBar(22, 43, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
+                  (float)p->getMp(), (float)p->getMaxMp(),
+                  0.45f, 0.65f, 1.0f, false);
 
-	// exp
-	w->applyColor();
-	sprintf(msg, "%d (%d)", p->getExp(), p->getLevel());
-	getSDLHandler()->texPrint(3, 60, msg);
-	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
-	sprintf(msg, "ex:");
-	getSDLHandler()->texPrint(3, 70, msg);
-	Util::drawBar(22, 68, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
-				  (float)p->getExp(), (float)p->getExpOfNextLevel(),
-				  1.0f, 0.65f, 1.0f, false);
-	
-	// show stat mods
-	glEnable(GL_TEXTURE_2D);
-	int xp = 0;
-	int yp = 0;
-	float n = 12;
-	int row = 5;
-	int left = 5;
-	int bottom = w->getHeight() - ((int)(3 * n + 1) + 4);
-	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	  GLuint icon = getShapePalette()->getStatModIcon(i);
-	  if(p->getStateMod(i)) {
-		glColor4f( 1.0f, 1.0f, 0.5f, 0.5f );
-		if(icon) {
-		  glBindTexture( GL_TEXTURE_2D, icon );
-		}
-	  } else {
-		w->applyBorderColor();
-		icon = 0;
-	  }
-	  
-	  glPushMatrix();
-	  glTranslatef( left + xp * (n + 1), bottom + (yp * (n + 1)), 0 );
-	  glBegin( GL_QUADS );
-	  glNormal3f( 0, 0, 1 );
-	  if(icon) glTexCoord2f( 0, 0 );
-	  glVertex3f( 0, 0, 0 );
-	  if(icon) glTexCoord2f( 0, 1 );
-	  glVertex3f( 0, n, 0 );
-	  if(icon) glTexCoord2f( 1, 1 );
-	  glVertex3f( n, n, 0 );
-	  if(icon) glTexCoord2f( 1, 0 );
-	  glVertex3f( n, 0, 0 );
-	  glEnd();
-	  glPopMatrix();
-	  
-	  xp++;
-	  if(xp >= row) {
-		xp = 0;
-		yp++;
-	  }
-	}
-	glDisable(GL_TEXTURE_2D);
+    // ap
+    glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+    getSDLHandler()->texPrint(72, 85, "AP:");
+    w->applyColor();
+    sprintf(msg, "%d", p->getBattle()->getAP());
+    getSDLHandler()->texPrint(72, 95, msg);
+    sprintf(msg, "%d", p->getBattle()->getStartingAP());
+    getSDLHandler()->texPrint(72, 105, msg);
+
+    /*
+    // ac
+    w->applyColor();
+    sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
+    getSDLHandler()->texPrint(3, 35, msg);
+    glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+    sprintf(msg, "ac:");
+    getSDLHandler()->texPrint(3, 45, msg);
+    Util::drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
+    (float)p->getSkillModifiedArmor(), (float)p->getArmor());
+    */
+
+    // exp
+    w->applyColor();
+    sprintf(msg, "%d (%d)", p->getExp(), p->getLevel());
+    getSDLHandler()->texPrint(3, 60, msg);
+    glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+    sprintf(msg, "ex:");
+    getSDLHandler()->texPrint(3, 70, msg);
+    Util::drawBar(22, 68, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
+                  (float)p->getExp(), (float)p->getExpOfNextLevel(),
+                  1.0f, 0.65f, 1.0f, false);
+
+    // show stat mods
+    int xp = 0;
+    int yp = 0;
+    float n = 12;
+    int row = 5;
+    int left = 5;
+    int bottom = w->getHeight() - ((int)(3 * n + 1) + 4);
+    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+      GLuint icon = getShapePalette()->getStatModIcon(i);
+      if(p->getStateMod(i)) {
+        glColor4f( 1.0f, 1.0f, 0.5f, 0.5f );
+        if(icon) {
+          glEnable(GL_TEXTURE_2D);
+          glBindTexture( GL_TEXTURE_2D, icon );
+        }
+      } else {
+        glDisable(GL_TEXTURE_2D);
+        w->applyBorderColor();
+        icon = 0;
+      }
+
+      glPushMatrix();
+      glTranslatef( left + xp * (n + 1), bottom + (yp * (n + 1)), 0 );
+      glBegin( GL_QUADS );
+      glNormal3f( 0, 0, 1 );
+      if(icon) glTexCoord2f( 0, 0 );
+      glVertex3f( 0, 0, 0 );
+      if(icon) glTexCoord2f( 0, 1 );
+      glVertex3f( 0, n, 0 );
+      if(icon) glTexCoord2f( 1, 1 );
+      glVertex3f( n, n, 0 );
+      if(icon) glTexCoord2f( 1, 0 );
+      glVertex3f( n, 0, 0 );
+      glEnd();
+      glPopMatrix();
+
+      xp++;
+      if(xp >= row) {
+        xp = 0;
+        yp++;
+      }
+    }
+    glDisable(GL_TEXTURE_2D);
   }
 }
 
