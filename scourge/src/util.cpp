@@ -175,13 +175,13 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
 
         // Check to see if already on OPEN
         for (int t=0; t<(int)OPEN.size(); t++) {
-          if ((Node.x == OPEN.at(t).x) &&
-              (Node.y == OPEN.at(t).y)) {   // If already on OPEN
-            if (Node.gone < OPEN.at(t).gone) {
-              OPEN.at(t).gone = Node.gone;
-              OPEN.at(t).f = Node.gone + OPEN.at(t).heuristic;
-              OPEN.at(t).px = Node.px;
-              OPEN.at(t).py = Node.py;
+          if ((Node.x == OPEN[t].x) &&
+              (Node.y == OPEN[t].y)) {   // If already on OPEN
+            if (Node.gone < OPEN[t].gone) {
+              OPEN[t].gone = Node.gone;
+              OPEN[t].f = Node.gone + OPEN[t].heuristic;
+              OPEN[t].px = Node.px;
+              OPEN[t].py = Node.py;
             }
             bNodeFound = true;
             break;
@@ -190,13 +190,13 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
         if (!bNodeFound ) { // If Node NOT found on OPEN
           // Check to see if already on CLOSED
           for (int t=0; t<(int)CLOSED.size(); t++) {
-            if ((Node.x == CLOSED.at(t).x) &&
-                (Node.y == CLOSED.at(t).y)) {   // If on CLOSED, Which has lower gone?
-              if (Node.gone < CLOSED.at(t).gone) {
-                CLOSED.at(t).gone = Node.gone;
-                CLOSED.at(t).f = Node.gone + CLOSED.at(t).heuristic;
-                CLOSED.at(t).px = Node.px;
-                CLOSED.at(t).py = Node.py;
+            if ((Node.x == CLOSED[t].x) &&
+                (Node.y == CLOSED[t].y)) {   // If on CLOSED, Which has lower gone?
+              if (Node.gone < CLOSED[t].gone) {
+                CLOSED[t].gone = Node.gone;
+                CLOSED[t].f = Node.gone + CLOSED[t].heuristic;
+                CLOSED[t].px = Node.px;
+                CLOSED[t].py = Node.py;
               }
               bNodeFound = true;
               break;
@@ -214,15 +214,15 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
                    cout << "OPEN:   ";
                    for (i=0; i<OPEN.size(); i++)
                    {
-                       cout << OPEN.at(i).x << "," << OPEN.at(i).y << ",";
-                       cout << OPEN.at(i).gone << "," << OPEN.at(i).heuristic << "  ";
+                       cout << OPEN[i].x << "," << OPEN[i].y << ",";
+                       cout << OPEN[i].gone << "," << OPEN[i].heuristic << "  ";
                    }
                    cout << endl;
                    cout << "CLOSED:   ";
                    for (i=0; i<CLOSED.size(); i++)
                    {
-                       cout << CLOSED.at(i).x << "," << CLOSED.at(i).y << ",";
-                       cout << CLOSED.at(i).gone << "," << CLOSED.at(i).heuristic << "  ";
+                       cout << CLOSED[i].x << "," << CLOSED[i].y << ",";
+                       cout << CLOSED[i].gone << "," << CLOSED[i].heuristic << "  ";
                    }
                    cout << endl << endl;
                    int ch = _getch();
@@ -251,8 +251,8 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
     pVector->clear();
     for (int i=(PATH.size()-1); i>=0; i--) {
       //for (container::iterator i=PATH.begin(); i!= PATH.end(); ++i)
-      Fix.x = PATH.at(i).x;
-      Fix.y = PATH.at(i).y;
+      Fix.x = PATH[i].x;
+      Fix.y = PATH[i].y;
       Fix.z = 0;
       pVector->push_back(Fix);
     }
@@ -327,7 +327,8 @@ char * Util :: getOpenGLError(){
 string Util::getNextWord(const string theInput, int fromPos, int &endWord){
     int firstChar, lastStringChar;
     string sub;
-    sub.clear();
+    //sub.clear();
+	sub.erase(sub.begin(), sub.end());
     
     if (theInput.empty() || fromPos==-1) {return sub;}
 

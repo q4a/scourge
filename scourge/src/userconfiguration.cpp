@@ -247,9 +247,14 @@ void UserConfiguration::loadConfiguration(){
     while(!configFile->eof()){
         configFile -> getline(textLine, 255);
         sLine = textLine;  
+		/*
         sInstruction.clear();      
         sFirstParam.clear();
         sSecondParam.clear();
+		*/
+		sInstruction.erase(sInstruction.begin(), sInstruction.end());      
+        sFirstParam.erase(sFirstParam.begin(), sFirstParam.end());
+        sSecondParam.erase(sSecondParam.begin(), sSecondParam.end());
                       
         for(i = 0; i < sLine.length(); i++){
             sLine[i] = tolower(sLine[i]);                                 
@@ -631,7 +636,8 @@ int UserConfiguration::getEngineAction(SDL_Event *event){
     string s;         
     int res;         
     
-    s.clear();
+	//    s.clear();
+	s.erase(s.begin(), s.end());
     res = -1;
     if(event->type == SDL_KEYDOWN){                
         s = SDL_GetKeyName(event->key.keysym.sym);        
@@ -721,7 +727,8 @@ bool UserConfiguration::isDebugEa(int j){
 string UserConfiguration::getNextWord(const string theInput, int fromPos, int &endWord){
     int firstChar, lastStringChar;
     string sub;
-    sub.clear();
+    //sub.clear();
+	sub.erase(sub.begin(), sub.end());
        
     if (theInput.empty() || fromPos==-1) {return sub;}
 
