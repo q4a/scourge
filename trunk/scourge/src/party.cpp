@@ -20,6 +20,9 @@
 #define MAX_SIZE 0
 #define MIN_SIZE 1
 
+int Party::pcCount;
+Creature **Party::pc;
+
 Party::Party(Scourge *scourge) {
   this->scourge = scourge;
 
@@ -29,9 +32,10 @@ Party::Party(Scourge *scourge) {
   mainWin = NULL;
   calendar = Calendar::getInstance();
 
-  for(int i = 0; i < getPartySize(); i++) {
-	party[i] = NULL;
-  }
+  // do we need this?
+  //for(int i = 0; i < 4; i++) {
+//    party[i] = NULL;
+//  }
   createUI();
   reset();
 }
@@ -55,23 +59,49 @@ void Party::reset() {
   // This will be replaced by a call to the character builder which either
   // loads or creates the party.
   deleteParty();
-  Creature **pc = createHardCodedParty();
   party[0] = player = pc[0];
   party[1] = pc[1];
   party[2] = pc[2];
   party[3] = pc[3];
-  
+  partySize = 4;
+  resetPartyUI();
+}
+
+void Party::resetMultiplayer(Creature *c) {
+  deleteParty();
+  party[0] = player = c;
+  party[1] = party[2] = party[3] = NULL;
+  partySize = 1;
+  resetPartyUI();
+}
+
+void Party::resetPartyUI() {
   player1Button->getLabel()->setText(party[0]->getName());
   player1Button->setSelected(true);
-  player2Button->getLabel()->setText(party[1]->getName());
-  player3Button->getLabel()->setText(party[2]->getName());
-  player4Button->getLabel()->setText(party[3]->getName());
+  if(getPartySize() > 1) {
+    player2Button->getLabel()->setText(party[1]->getName());
+    player2Button->setVisible(true);
+  } else {
+    player2Button->setVisible(false);
+  }
+  if(getPartySize() > 2) {
+    player3Button->getLabel()->setText(party[2]->getName());
+    player3Button->setVisible(true);
+  } else {
+    player3Button->setVisible(false);
+  }
+  if(getPartySize() > 3) {
+    player4Button->getLabel()->setText(party[3]->getName());
+    player4Button->setVisible(true);
+  } else {
+    player4Button->setVisible(false);
+  }
 
   Event *e;  
   Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
-  for(int i = 0; i < 4 ; i++){
-	e = new ThirstHungerEvent(calendar->getCurrentDate(), d, party[i], scourge, Event::INFINITE_EXECUTIONS);
-	calendar->scheduleEvent((Event*)e);   // It's important to cast!!
+  for(int i = 0; i < getPartySize() ; i++){
+    e = new ThirstHungerEvent(calendar->getCurrentDate(), d, party[i], scourge, Event::INFINITE_EXECUTIONS);
+    calendar->scheduleEvent((Event*)e);   // It's important to cast!!
   }
 }
 
@@ -83,7 +113,7 @@ void Party::startPartyOnMission() {
   partyDead = false;
 
   // set player to be the first non-dead character
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < getPartySize(); i++) {
 	if(!party[i]->getStateMod(Constants::dead)) {
 	  setPlayer(getParty(i));
 	  break;
@@ -93,20 +123,20 @@ void Party::startPartyOnMission() {
   getPlayer()->cancelTarget();
   
   // init the rest of the party
-  for(int i = 1; i < 4; i++) {
+  for(int i = 1; i < getPartySize(); i++) {
 	getParty(i)->setNext(getPlayer(), i);
 	getParty(i)->cancelTarget();
   }
 }
 
 void Party::setPartyMotion(int motion) {
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < getPartySize(); i++) {
 	if(party[i] != player) party[i]->setMotion(motion);
   }
 }
 
 void Party::followTargets() {
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < getPartySize(); i++) {
 	if(!party[i]->getStateMod(Constants::dead) && 
 	   party[i]->getTargetCreature()) {
 	  party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
@@ -119,20 +149,20 @@ bool Party::switchToNextLivePartyMember() {
 	Creature *oldPlayer = player;
 	// find the player's index
 	int n = -1;
-	for(int t = 0; t < 4; t++) {
+	for(int t = 0; t < getPartySize(); t++) {
 		if(party[t] == player) {
 			n = t;
 			break;
 		}
 	}			
 	// switch to next player
-	n++; if(n >= 4) n = 0;
-	for(int t = 0; t < 4; t++) {
+	n++; if(n >= getPartySize()) n = 0;
+	for(int t = 0; t < getPartySize(); t++) {
 		if(!party[n]->getStateMod(Constants::dead)) {
 			setPlayer(n);
 			break;
 		}
-		n++; if(n >= 4) n = 0;
+		n++; if(n >= getPartySize()) n = 0;
 	}
 	bool res = (oldPlayer != player);
 	if(!res) partyDead = true;
@@ -145,7 +175,7 @@ void Party::setPlayer(int n) {
   //  player->setSelXY(-1, -1); // don't move
   // init the rest of the party
   int count = 1;
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < getPartySize(); i++) {
 	if(i != n) party[i]->setNextDontMove(player, count++);
   }
 
@@ -171,7 +201,7 @@ void Party::setPlayer(int n) {
  */
 void Party::setFormation(int formation) {
   this->formation = formation;
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < getPartySize(); i++) {
 	party[i]->setFormation(formation);
   }
   player_only = false;
@@ -205,7 +235,7 @@ void Party::togglePlayerOnly() {
   player_only = (player_only ? false : true);
   // in group mode everyone hunts the same creature
   if(!player_only) {
-	for(int i = 0; i < 4; i++) {
+	for(int i = 0; i < getPartySize(); i++) {
 	  if(party[i] != player) 
 		party[i]->setTargetCreature(player->getTargetCreature());
 	}
@@ -296,8 +326,9 @@ int Party::getTotalLevel() {
 /**
    Create a party programmatically until the party editor is made.
  */
-Creature **Party::createHardCodedParty() {
-  Creature **pc = (Creature**)malloc(sizeof(Creature*) * 4);
+Creature **Party::createHardCodedParty(Scourge *scourge) {
+  pcCount = 4;
+  pc = (Creature**)malloc(sizeof(Creature*) * pcCount);
 
   int level = 6;
 
@@ -348,7 +379,7 @@ Creature **Party::createHardCodedParty() {
   pc[3]->setStateMod(Constants::possessed, true);          
   
   // compute starting skill levels
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < pcCount; i++) {
 	for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
 	  int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
     if(n > 99) n = 99;
@@ -504,7 +535,7 @@ void Party::createUI() {
 									   120 + playerButtonWidth * 4, playerButtonHeight, NULL, MAX_SIZE );
   player4Button->setToggle(true);
 
-  for(int i = 0; i < getPartySize(); i++) {
+  for(int i = 0; i < 4; i++) {
 	playerInfo[i] = new Canvas( 120 + playerButtonWidth * i, playerButtonHeight,  
 								120 + playerButtonWidth * (i + 1), Scourge::PARTY_GUI_HEIGHT - 25, 
 								this );

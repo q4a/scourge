@@ -52,14 +52,14 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
 
   // allocate strings for list
   // FIXME: use a character set not the party here
-  charStr = (char**)malloc(scourge->getParty()->getPartySize() * sizeof(char*));
-  for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
+  charStr = (char**)malloc(Party::pcCount * sizeof(char*));
+  for(int i = 0; i < Party::pcCount; i++) {
     charStr[i] = (char*)malloc(255 * sizeof(char));
-    sprintf(charStr[i], "%s, %s level: %d", scourge->getParty()->getParty(i)->getName(),
-            scourge->getParty()->getParty(i)->getCharacter()->getName(),
-            scourge->getParty()->getParty(i)->getLevel());
+    sprintf(charStr[i], "%s, %s level: %d", Party::pc[i]->getName(),
+            Party::pc[i]->getCharacter()->getName(),
+            Party::pc[i]->getLevel());
   }
-  characterList->setLines(scourge->getParty()->getPartySize(), (const char**)charStr);
+  characterList->setLines(Party::pcCount, (const char**)charStr);
 
   okButton = mainWin->createButton( 330, 180, 430, 210, strdup("Start Game") );
 }
