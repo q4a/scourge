@@ -324,7 +324,10 @@ void Scourge::startMission() {
     mainWin->setVisible(false);
     messageWin->setVisible(false);
     closeAllContainerGuis();
-    if(inventory->isVisible()) inventory->hide();
+    if(inventory->isVisible()) {
+      inventory->hide();
+      inventoryButton->setSelected( false );
+    }
     if(boardWin->isVisible()) boardWin->setVisible(false);
     miniMap->hide();
     netPlay->getWindow()->setVisible(false);
@@ -1122,7 +1125,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
       blendB++; if(blendB >= 11) blendB = 0;
       fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     } else if(ea == SHOW_INVENTORY){
-      inventory->show();    
+      toggleInventoryWindow();
     } else if(ea == SHOW_OPTIONS_MENU){
       party->toggleRound(true);
       optionsMenu->show();
@@ -1906,8 +1909,12 @@ void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
 
 void Scourge::toggleInventoryWindow() {
   if(inventory->isVisible()) {
-    if(!inventory->getWindow()->isLocked()) inventory->hide();
-  } else inventory->show();
+    //if(!inventory->getWindow()->isLocked()) inventory->hide();
+    inventory->hide();
+  } else {
+    inventory->show();
+  }
+  inventoryButton->setSelected( inventory->isVisible() );
 }
 
 void Scourge::toggleOptionsWindow() {
@@ -2051,105 +2058,103 @@ void Scourge::setUILayout() {
 
   // move the message gui
   int width = 
-    getSDLHandler()->getScreen()->w -                 
-    (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
+  getSDLHandler()->getScreen()->w -                 
+  (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
 
   messageWin->setVisible(false);
   miniMap->getWindow()->setVisible(false);
   switch(layoutMode) {
   case Constants::GUI_LAYOUT_ORIGINAL:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
-  messageWin->resize(width, PARTY_GUI_HEIGHT);
-  messageWin->move(getSDLHandler()->getScreen()->w - width, 0);
-  messageWin->setLocked(false);
-  mainWin->setLocked(false);
-  miniMap->getWindow()->setLocked(false);
-  miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
-  miniMap->getWindow()->move(0, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT));
-  if(inventory->getWindow()->isLocked()) {
-    //inventory->getWindow()->setVisible(false);
+    messageWin->resize(width, PARTY_GUI_HEIGHT);
+    messageWin->move(getSDLHandler()->getScreen()->w - width, 0);
+    messageWin->setLocked(false);
+    mainWin->setLocked(false);
+    miniMap->getWindow()->setLocked(false);
+    miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
+    miniMap->getWindow()->move(0, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT));
+//  if(inventory->getWindow()->isLocked()) {
     inventory->hide();
-    inventory->getWindow()->setLocked(false);
-  }
-  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-  netPlay->getWindow()->setLocked(false);
-  break;
+//    inventory->getWindow()->setLocked(false);
+//  }
+    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+    netPlay->getWindow()->setLocked(false);
+    break;
 
   case Constants::GUI_LAYOUT_BOTTOM:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
-  messageWin->resize(width, PARTY_GUI_HEIGHT);
-  messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-  mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
-  messageWin->setLocked(true);
-  mainWin->setLocked(true);
-  miniMap->getWindow()->setLocked(true);
-  miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH,
-                             getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER));
-  miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
-  if(inventory->getWindow()->isLocked()) {
+    messageWin->resize(width, PARTY_GUI_HEIGHT);
+    messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+    mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+    messageWin->setLocked(true);
+    mainWin->setLocked(true);
+    miniMap->getWindow()->setLocked(true);
+    miniMap->getWindow()->move(0,
+                               getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER));
+    miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
+//  if(inventory->getWindow()->isLocked()) {
     //inventory->getWindow()->setVisible(false);
     inventory->hide();
-    inventory->getWindow()->setLocked(false);
-  }
-  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2);
-  netPlay->getWindow()->setLocked(true);
-  break;
+//    inventory->getWindow()->setLocked(false);
+//  }
+    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2);
+    netPlay->getWindow()->setLocked(true);
+    break;
 
   case Constants::GUI_LAYOUT_SIDE:
     messageList->resize(PARTY_GUI_WIDTH, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT + 25));
-  messageWin->resize(PARTY_GUI_WIDTH, 
-                     getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT));
-  messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,  MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER);
-  miniMap->getWindow()->setLocked(true);
-  miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
-  miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
-  //mapX = 400;
-  mapX = 0;
-  mapWidth = getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH;
-  mapHeight = getSDLHandler()->getScreen()->h;
-  messageWin->setLocked(true);
-  mainWin->setLocked(true);
-  if(inventory->getWindow()->isLocked()) {
-    //inventory->getWindow()->setVisible(false);
+    messageWin->resize(PARTY_GUI_WIDTH, 
+                       getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT));
+    messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,  MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER);
+    miniMap->getWindow()->setLocked(true);
+    miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
+    miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
+    //mapX = 400;
+    mapX = 0;
+    mapWidth = getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH;
+    mapHeight = getSDLHandler()->getScreen()->h;
+    messageWin->setLocked(true);
+    mainWin->setLocked(true);
+//  if(inventory->getWindow()->isLocked()) {
     inventory->hide();
-    inventory->getWindow()->setLocked(false);
-  }
-  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-  netPlay->getWindow()->setLocked(true);
-  break;
+//    inventory->getWindow()->setLocked(false);
+//  }
+    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+    netPlay->getWindow()->setLocked(true);
+    break;
 
   case Constants::GUI_LAYOUT_INVENTORY:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
-  messageWin->resize(width, PARTY_GUI_HEIGHT);
-  messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-  miniMap->getWindow()->setLocked(true);
-  miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
-  int h = getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER * 2);
-  miniMap->resize(MINIMAP_WINDOW_WIDTH, (h > MINIMAP_WINDOW_HEIGHT ? MINIMAP_WINDOW_HEIGHT : h));
-  mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
-  messageWin->setLocked(true);
-  mainWin->setLocked(true);
-  //inventory->getWindow()->setVisible(false);
-  inventory->hide();
-  inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
-                               getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
-  inventory->getWindow()->setLocked(true);
-  //inventory->getWindow()->setVisible(true, false);
-  inventory->show(false);
-  //mapX = INVENTORY_WIDTH;
-  mapX = 0;
-  mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
-  mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
-  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2);
-  netPlay->getWindow()->setLocked(true);
-  break;
+    messageWin->resize(width, PARTY_GUI_HEIGHT);
+    messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+    miniMap->getWindow()->setLocked(true);
+    miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
+    int h = getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER * 2);
+    miniMap->resize(MINIMAP_WINDOW_WIDTH, (h > MINIMAP_WINDOW_HEIGHT ? MINIMAP_WINDOW_HEIGHT : h));
+    mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+    messageWin->setLocked(true);
+    mainWin->setLocked(true);
+    inventory->hide();
+    inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
+                                 getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
+//  inventory->getWindow()->setLocked(true);
+    inventory->show(false);
+    //mapX = INVENTORY_WIDTH;
+    mapX = 0;
+    mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
+    mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2);
+    netPlay->getWindow()->setLocked(true);
+    break;
   }
+
+  inventoryButton->setSelected( inventory->isVisible() );
 
   messageWin->setVisible(true, false);
   miniMap->getWindow()->setVisible(true, false);
 
   mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
-                         getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+                getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
 
 
   // FIXME: resize levelMap drawing area to remainder of screen.
@@ -2631,6 +2636,8 @@ void Scourge::createPartyUI() {
   groupButton->setSelected(true);
   roundButton->setToggle(true);
   roundButton->setSelected(true);
+  inventoryButton->setToggle(true);
+  inventoryButton->setSelected(false);
 
   int offsetX = 90;
   int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - offsetX) / 4;
@@ -2760,15 +2767,20 @@ void Scourge::drawWidget(Widget *w) {
     glDisable( GL_TEXTURE_2D );
 
     bool shade = false;
-//    if( p->getStateMod( Constants::dead ) ) {
-//      glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
-//      shade = true;
-//    } else 
     if( p->getStateMod( Constants::possessed ) ) {
       glColor4f( 1.0f, 0, 0, 0.5f );
       shade = true;
     } else if( p->getStateMod( Constants::invisible ) ) {
       glColor4f( 0, 0.75f, 1.0f, 0.5f );
+      shade = true;
+    } else if( p->getStateMod( Constants::poisoned ) ) {
+      glColor4f( 1, 0.75f, 0, 0.5f );
+      shade = true;
+    } else if( p->getStateMod( Constants::blinded ) ) {
+      glColor4f( 1, 1, 1, 0.5f );
+      shade = true;
+    } else if( p->getStateMod( Constants::cursed ) ) {
+      glColor4f( 0.75, 0, 0.75f, 0.5f );
       shade = true;
     }
     if( shade ) {
