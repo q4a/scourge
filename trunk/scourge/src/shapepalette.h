@@ -65,8 +65,8 @@ typedef struct _Md2ModelInfo {
 class ShapePalette {
 private:
   GLShape *shapes[256];
+  map<string, GLShape *> shapeMap;
   int shapeCount;
-  GLuint display_list;
   GLuint gui_texture, gui_wood_texture;
   map<int, GLuint> statModIcons;
   
@@ -142,7 +142,6 @@ public:
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
 
-  // the next two methods are slow, only use during initialization
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name);
   int findShapeIndexByName(const char *name);

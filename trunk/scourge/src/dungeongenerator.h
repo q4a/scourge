@@ -32,6 +32,11 @@ class Creature;
 #define DRAW_UNVISITED 0
 
 // a pre-rendered map location
+typedef struct _ShapePosition {
+  char name[80];
+  int x, y, z;
+} ShapePosition;
+
 typedef struct _MapLocation {
   int x, y, w, h;
   int start[4][2]; // party starting coordinates
@@ -40,7 +45,7 @@ typedef struct _MapLocation {
   Uint16 roomDimension[20][5];
   char *map[MAP_WIDTH];
   int shapeCount;            // how many shapes
-  int shapePosition[100][4]; // shapes: shape_index, x, y, z (x,y,z in map coordinates)
+  ShapePosition shapePosition[100]; // shapes: shape_index, x, y, z (x,y,z in map coordinates)
 } MapLocation;
 
 /**

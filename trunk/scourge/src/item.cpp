@@ -153,7 +153,9 @@ void Item::initItems(ShapePalette *shapePal) {
 	  
 	  // resolve strings
 	  int type_index = RpgItem::getTypeByName(type);	  
+	  cerr << "item: looking for shape: " << shape << endl;
 	  int shape_index = shapePal->findShapeIndexByName(shape);
+	  cerr << "\tindex=" << shape_index << endl;
 	  int skill_index = Constants::getSkillByName(skill);
 	  if(skill_index < 0) {
 		if(strlen(skill)) cerr << "*** WARNING: cannot find skill: " << skill << endl;

@@ -325,12 +325,12 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
         }
     }        
     
-    if ((shape == scourge->getShapePalette()->getShape(Constants::EW_WALL_INDEX)) ||
-        (shape == scourge->getShapePalette()->getShape(Constants::EW_WALL_EXTRA_INDEX)) ||
-        (shape == scourge->getShapePalette()->getShape(Constants::EW_WALL_TWO_EXTRAS_INDEX))||
-        (shape == scourge->getShapePalette()->getShape(Constants::NS_WALL_INDEX))||
-        (shape == scourge->getShapePalette()->getShape(Constants::NS_WALL_EXTRA_INDEX))||
-        (shape == scourge->getShapePalette()->getShape(Constants::NS_WALL_TWO_EXTRAS_INDEX)))
+    if ((shape == scourge->getShapePalette()->findShapeByName("EW_WALL")) ||
+        (shape == scourge->getShapePalette()->findShapeByName("EW_WALL_EXTRA")) ||
+        (shape == scourge->getShapePalette()->findShapeByName("EW_WALL_TWO_EXTRAS"))||
+        (shape == scourge->getShapePalette()->findShapeByName("NS_WALL"))||
+        (shape == scourge->getShapePalette()->findShapeByName("NS_WALL_EXTRA"))||
+        (shape == scourge->getShapePalette()->findShapeByName("NS_WALL_TWO_EXTRAS")))
     {        
          if(DEBUG_MINIMAP) fprintf(stderr, "wall\n");
          pos[x][y].r = 0.5f; //gray
@@ -338,7 +338,7 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
          pos[x][y].b = 0.5f;
      }
      else if
-     ((shape == scourge->getShapePalette()->getShape(Constants::CORNER_INDEX)))     
+     ((shape == scourge->getShapePalette()->findShapeByName("CORNER")))     
      {
      	 if(DEBUG_MINIMAP) fprintf(stderr, "corner\n");
 	     pos[x][y].r = 0.3f; // dark gray
@@ -346,11 +346,11 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
          pos[x][y].b = 0.3f;
      }      
      else if
-     ((shape == scourge->getShapePalette()->getShape(Constants::DOOR_SIDE_INDEX)) ||
-     (shape == scourge->getShapePalette()->getShape(Constants::EW_DOOR_INDEX)) ||
-     (shape == scourge->getShapePalette()->getShape(Constants::EW_DOOR_TOP_INDEX))||
-     (shape == scourge->getShapePalette()->getShape(Constants::NS_DOOR_INDEX))||
-     (shape == scourge->getShapePalette()->getShape(Constants::NS_DOOR_TOP_INDEX)))
+     ((shape == scourge->getShapePalette()->findShapeByName("DOOR_SIDE")) ||
+     (shape == scourge->getShapePalette()->findShapeByName("EW_DOOR")) ||
+     (shape == scourge->getShapePalette()->findShapeByName("EW_DOOR_TOP"))||
+     (shape == scourge->getShapePalette()->findShapeByName("NS_DOOR"))||
+     (shape == scourge->getShapePalette()->findShapeByName("NS_DOOR_TOP")))
      {    
           if(DEBUG_MINIMAP) fprintf(stderr, "door\n");
           pos[x][y].r = 0.8f;
@@ -358,13 +358,13 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
           pos[x][y].b = 0.8f;          
      }
      else if
-     ((shape == scourge->getShapePalette()->getShape(Constants::FLOOR_TILE_INDEX))) 
+     ((shape == scourge->getShapePalette()->findShapeByName("FLOOR_TILE"))) 
 	 {
           if(DEBUG_MINIMAP) fprintf(stderr, "floor\n");
           pos[x][y].r = 0.3f; //braun
           pos[x][y].g = 0.17f;
           pos[x][y].b = 0.05f;
-	 } else if ((shape == scourge->getShapePalette()->getShape(Constants::ROOM_FLOOR_TILE_INDEX)))
+	 } else if ((shape == scourge->getShapePalette()->findShapeByName("ROOM_FLOOR_TILE")))
      {
           if(DEBUG_MINIMAP) fprintf(stderr, "room\n");
           pos[x][y].r = 0.7f; //braun
@@ -372,11 +372,11 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
           pos[x][y].b = 0.1f;
      }
      else if
-     ((shape == scourge->getShapePalette()->getShape(Constants::LAMP_NORTH_INDEX)) ||
-     (shape == scourge->getShapePalette()->getShape(Constants::LAMP_SOUTH_INDEX))||
-     (shape == scourge->getShapePalette()->getShape(Constants::LAMP_WEST_INDEX))||
-     (shape == scourge->getShapePalette()->getShape(Constants::LAMP_EAST_INDEX))||
-     (shape == scourge->getShapePalette()->getShape(Constants::LAMP_BASE_INDEX)))
+     ((shape == scourge->getShapePalette()->findShapeByName("LAMP_NORTH")) ||
+     (shape == scourge->getShapePalette()->findShapeByName("LAMP_SOUTH"))||
+     (shape == scourge->getShapePalette()->findShapeByName("LAMP_WEST"))||
+     (shape == scourge->getShapePalette()->findShapeByName("LAMP_EAST"))||
+     (shape == scourge->getShapePalette()->findShapeByName("LAMP_BASE")))
      {
         if(DEBUG_MINIMAP) fprintf(stderr, "lamp\n");
             pos[x][y].r = 0.8f; //yellow
