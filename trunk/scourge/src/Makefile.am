@@ -82,6 +82,8 @@ scourge_SOURCES = \
 	3dsshape.h\
 	optionsmenu.cpp\
 	optionsmenu.h\
+	partyeditor.cpp\
+	partyeditor.h\
 	multiplayer.cpp\
 	multiplayer.h\
 	userconfiguration.cpp\
