@@ -20,6 +20,9 @@
 
 #include "../constants.h"
 #include "widget.h"
+#include <vector>
+
+using namespace std;
 
 /**
   *@author Gabor Torok
@@ -33,6 +36,7 @@ class Label : public Widget {
 	 int lineWidth;
      int fontType;
      int lineHeight;
+     vector<string> lines;
 
  public: 
      Label(int x, int y, char *text=NULL, int lineWidth=0, int fontType=0, int lineHeight=15);
@@ -42,7 +46,7 @@ class Label : public Widget {
      inline int getLineHeight() { return lineHeight; }
      inline void setLineHeight( int n ) { lineHeight = n; }
      inline char *getText() { return text; }
-     inline void setText(char *s) { strncpy(text, ( s ? s : "" ), 3000); text[2999] = '\0'; }
+     void setText(char *s);
      void drawWidget(Widget *parent);
      inline bool canGetFocus() { return false; }
 };

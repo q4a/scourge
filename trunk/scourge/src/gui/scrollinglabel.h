@@ -25,6 +25,8 @@
 #include "draganddrop.h"
 #include <vector>
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */
