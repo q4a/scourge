@@ -50,18 +50,6 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   // we're not in target selection mode
   targetSelectionFor = NULL;
   
-#ifdef HAVE_SDL_NET
-  // standalone mode?
-  if(userConfiguration->getStandAloneMode() == UserConfiguration::SERVER) {
-    session->runServer(userConfiguration->getPort());
-    sdlHandler->quit(0);
-  } else if(userConfiguration->getStandAloneMode() == UserConfiguration::CLIENT) {
-    session->runClient(userConfiguration->getHost(), 
-                       userConfiguration->getPort(), 
-                       userConfiguration->getUserName());
-    sdlHandler->quit(0);
-  }
-#endif
   move = 0;
   battleCount = 0;  
   inventory = NULL;
@@ -86,9 +74,7 @@ void Scourge::initVideo(ShapePalette *shapePal) {
   sdlHandler->setVideoMode(userConfiguration); 
 }
 
-void Scourge::initUI(Session *session) {
-
-  this->session = session;
+void Scourge::initUI() {
 
   // for now pass map in
   this->map = session->getMap();

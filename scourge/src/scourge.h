@@ -194,7 +194,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Button *playMission;
   Window *boardWin;
 
-  Session *session;
   Progress *progress;
   bool inBattle;
   Progress *turnProgress;
@@ -236,6 +235,8 @@ public:
   
   Scourge(UserConfiguration *config);
   ~Scourge();
+
+  inline bool isHeadless() { return false; }
 
   inline Session *getSession() { return session; }
 
@@ -523,7 +524,7 @@ public:
   void initEnd();
 
   void initVideo(ShapePalette *shapePal);
-  void initUI(Session *session);
+  void initUI();
   void start();
 
   void fightProjectileHitTurn(Projectile *proj, Creature *creature);

@@ -47,10 +47,11 @@ Session::~Session() {
 }
 
 void Session::initialize() {
-  shapePal = new ShapePalette();
+  shapePal = new ShapePalette(this);
+  adapter->setSession(this);
   adapter->initVideo(shapePal);
-  initData();
-  adapter->initUI(this);
+  initData();  
+  adapter->initUI();
 }
 
 void Session::start() {
@@ -104,7 +105,6 @@ void Session::quit(int value) {
 
 #ifdef HAVE_SDL_NET
 void Session::runServer(int port) {
-  /*
   GameStateHandler *gsh = new TestGameStateHandler();
   server = new Server(port ? port : DEFAULT_SERVER_PORT);
   server->setGameStateHandler(gsh);
@@ -114,11 +114,9 @@ void Session::runServer(int port) {
   SDL_WaitThread(server->getThread(), &status);
 
   delete gsh;
-  */
 }
 
 void Session::runClient(char *host, int port, char *userName) {
-  /*
   CommandInterpreter *ci = new TestCommandInterpreter();
   GameStateHandler *gsh = new TestGameStateHandler();
   client = new Client((char*)host, port, (char*)userName, ci);
@@ -129,7 +127,7 @@ void Session::runClient(char *host, int port, char *userName) {
   }
 
   // connect as a character
-  Party *party = new Party(this);  
+//  Party *party = new Party(this);  
   Creature **pc;
   int pcCount;
   Party::createHardCodedParty(this, &pc, &pcCount);
@@ -149,7 +147,6 @@ void Session::runClient(char *host, int port, char *userName) {
 
   delete ci;
   delete gsh;
-  */
 }
 
 void Session::startServer(GameStateHandler *gsh, int port) {
