@@ -20,6 +20,9 @@
 
 #include "constants.h"
 #include "shape.h"
+#include <vector>
+
+using namespace std;
 
 class WallTheme;
 
@@ -48,6 +51,8 @@ private:
   float xIconRot, yIconRot, zIconRot;
   GLuint displayListStart;
   bool initialized;
+  vector<GLShape*> variationShape;
+  int variationTextureIndex;
 
   struct surface *surfaces[5];
   enum { 
@@ -88,6 +93,13 @@ public:
   ~GLShape();  
 
   virtual void initialize();
+
+  void deleteVariationShapes();
+  void createVariationShape( int textureIndex, GLuint *textureGroup );
+  inline void setVariationTextureIndex( int index ) { variationTextureIndex = index; }
+  inline int getVariationTextureIndex() { return variationTextureIndex; }
+  inline int getVariationShapesCount() { return variationShape.size(); }
+  inline GLShape *getVariationShape( int index ) { return variationShape[ index ]; }
 
   static void createDarkTexture( WallTheme *theme );
   void setTexture( GLuint *textureGroup );

@@ -20,6 +20,9 @@
 
 #define ALWAYS_RELOAD_THEME 1
 
+//#define VARIATION_BASE 10.0f
+#define VARIATION_BASE 4.0f
+
 char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "wall",
   "corner",
@@ -43,7 +46,7 @@ void WallTheme::load( ShapePalette *shapePal ) {
   cerr << "*** Loading theme: " << getName() << endl;
   debug();
   for(int ref = 0; ref < THEME_REF_COUNT; ref++) {
-    for(int face = 0; face < 3; face++) {
+    for(int face = 0; face < faceCount[ ref ]; face++) {
       loadTextureGroup( ref, face, textures[ ref ][ face ], shapePal );
     }
   }
@@ -80,12 +83,17 @@ GLuint *WallTheme::getTextureGroup( string themeRefName ) {
   int ref = themeRefMap[ themeRefName ];
   return textureGroup[ ref ];
 }
+
+int WallTheme::getFaceCount( string themeRefName ) {
+  int ref = themeRefMap[ themeRefName ];
+  return faceCount[ ref ];
+}
     
 void WallTheme::debug() {
   cerr << "THEME=" << getName() << endl;
   for(int ref = 0; ref < THEME_REF_COUNT; ref++) {
     cerr << "\tref=" << themeRefName[ref] << endl;
-    for(int face = 0; face < 3; face++) {
+    for(int face = 0; face < faceCount[ref]; face++) {
       cerr << "\t\t" << textures[ref][face] << endl;
     }
   }
@@ -293,14 +301,15 @@ void ShapePalette::initialize() {
         n = Constants::readLine(line, fp);
         char *p = strtok( line + 1, "," );
         int i = 0;
-        while( p && i < 3 ) {
+        while( p && i < MAX_TEXTURE_COUNT ) {
           theme->addTextureName( ref, i, (const char *)p );
           p = strtok( NULL, "," );
           i++;
         }
-        if( i != 3 ) {
+        if( i < 3 ) {
           cerr << "*** Error: theme=" << theme->getName() << " has wrong number of textures for line=" << (ref + 1) << endl;
         }
+        theme->setFaceCount( ref, i );
       }
 
       // read the multitexture info
@@ -518,7 +527,7 @@ void ShapePalette::loadTheme( WallTheme *theme ) {
     currentTheme = (WallTheme*)theme;
     currentTheme->load( this );
 
-    // create new shapes
+    // apply theme to shapes
     cerr << "*** Applying theme to shapes: ***" << endl;
     GLShape::createDarkTexture( currentTheme );
     for(int i = 0; i < (int)themeShapes.size(); i++) {
@@ -528,7 +537,14 @@ void ShapePalette::loadTheme( WallTheme *theme ) {
       cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
         " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
       shape->setTexture( textureGroup );
+
+      // create extra shapes for variations
+      shape->deleteVariationShapes();
+      for( int i = 3; i < currentTheme->getFaceCount( ref ); i++ ) {
+        shape->createVariationShape( i, textureGroup );
+      }
     }
+
     cerr << "**********************************" << endl;
   }
 }
@@ -630,14 +646,21 @@ GLuint ShapePalette::findTextureByName(const char *filename) {
   return 0;
 }
 
-GLShape *ShapePalette::findShapeByName(const char *name) {
+GLShape *ShapePalette::findShapeByName(const char *name, bool variation) {
   if(!name || !strlen(name)) return NULL;
   string s = name;
   if(shapeMap.find(s) == shapeMap.end()) {
     cerr << "&&& warning: could not find shape by name " << s << endl;
     return NULL;
   }
-  return shapeMap[s];
+  GLShape *shape = shapeMap[s];
+  if( !variation || shape->getVariationShapesCount() == 0 ) return shape;
+  int n = (int)( ( VARIATION_BASE + (float)( shape->getVariationShapesCount() )) * rand()/RAND_MAX );
+  if( n >= (int)(VARIATION_BASE) ) {
+    cerr << "SHAPEPALETTE: Using variation for: " << name << endl;
+    return shape->getVariationShape( n - (int)(VARIATION_BASE) );
+  }
+  return shape;
 }
 
 // defaults to SWORD for unknown shapes

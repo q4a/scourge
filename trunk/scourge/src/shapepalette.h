@@ -64,6 +64,7 @@ typedef struct _Md2ModelInfo {
   float scale;
 } Md2ModelInfo;
 
+#define MAX_TEXTURE_COUNT 10
 class WallTheme {
  public:
 
@@ -85,8 +86,9 @@ class WallTheme {
  private:
   static const int NAME_LENGTH = 40;
   char *name;
-  char textures[THEME_REF_COUNT][3][NAME_LENGTH]; // holds the text of a theme
-  GLuint textureGroup[THEME_REF_COUNT][3];
+  char textures[THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH]; // holds the text of a theme
+  GLuint textureGroup[THEME_REF_COUNT][MAX_TEXTURE_COUNT];
+  int faceCount[THEME_REF_COUNT];
   map<string,GLuint> loadedTextures;
   map<string,int> themeRefMap;
   GLfloat r[MULTI_TEX_COUNT], g[MULTI_TEX_COUNT], b[MULTI_TEX_COUNT], intensity[MULTI_TEX_COUNT];
@@ -95,6 +97,9 @@ class WallTheme {
  public:
   WallTheme( char *name );
   ~WallTheme();
+
+  inline void setFaceCount( int themeRef, int value ) { faceCount[ themeRef ] = value; }
+  int getFaceCount( string themeRefName );
 
   inline void addTextureName(int themeRef, int face, const char *name) { 
     if( themeRef < 0 || themeRef > THEME_REF_COUNT ) {
@@ -233,7 +238,7 @@ public:
   inline GLuint getHighlightTexture() { return highlight; }
 
   GLuint findTextureByName(const char *filename);
-  GLShape *findShapeByName(const char *name);
+  GLShape *findShapeByName(const char *name, bool variation=false);
   int findShapeIndexByName(const char *name);
   
   // Md2 shapes
