@@ -52,7 +52,12 @@ const int DungeonGenerator::levels[][9] = {
 const MapLocation DungeonGenerator::location[] = {
   { 
 	0,0,5,12,
-	{ {0, 0}, {0, 0}, {0, 0}, {0, 0} },
+	{ 
+		{2*unitSide+16, unitSide+6}, 
+	  {2*unitSide+11, unitSide+9}, 
+		{2*unitSide+21, unitSide+9}, 
+		{2*unitSide+16, unitSide+12} 
+	},
 	false,
 	5,
 	{
@@ -1100,15 +1105,23 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	//  for(int i = 0; i < roomCount; i++) {
 	for(int t = 0; t < 4; t++) {
 		if(scourge->getParty(t)->getStateMod(Constants::dead)) continue;
-		bool fits = 
-			getLocationInRoom(map, 
-												0,
-												scourge->getParty(t)->getShape(), 
-												&x, &y,
-												true);
+		bool fits;
+		if(preGenerated && location[locationIndex].start[t][0] > 0) {
+			fits = true;
+			x = location[locationIndex].start[t][0] + offset;
+			y = location[locationIndex].start[t][1] + offset;
+		} else {
+			fits = 
+				getLocationInRoom(map, 
+													0,
+													scourge->getParty(t)->getShape(), 
+													&x, &y,
+													true);
+		}
 		if(fits) {
 			addItem(map, scourge->getParty(t), NULL, NULL, x, y);
 			scourge->getParty(t)->moveTo(x, y, 0);
+			scourge->getParty(t)->setSelXY(-1,-1);
 		}
 	}
 	//}
