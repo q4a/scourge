@@ -36,59 +36,6 @@ GLShape::GLShape(GLuint tex[],
   commonInit(tex, color, shapePalIndex);
 }
 
-void GLShape::initSurfaces() {
-  // initialize the surfaces
-  float w = (float)width / DIV;
-  float d = (float)depth / DIV;
-  float h = (float)height / DIV;
-  if (h == 0) h = 0.25 / DIV;
-
-  float v[4][3];
-
-  /**
-	 Vertices:
-	 1 - top left (texture mapped)
-	 2 - bottom left
-	 3 - bottom right
-	 4 - top right
-   */
-
-  v[0][0] = 0.0f; v[0][1] = d;    v[0][2] = 0.0f;
-  v[1][0] = 0.0f; v[1][1] = d;    v[1][2] = h;
-  v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
-  v[3][0] = 0.0f; v[3][1] = 0.0f; v[3][2] = 0.0f;
-  if(surfaces[LEFT_SURFACE]) free(surfaces[LEFT_SURFACE]);
-  surfaces[LEFT_SURFACE] = new_surface(v);
-
-  v[0][0] = 0.0f; v[0][1] = 0.0f; v[0][2] = 0.0f;
-  v[1][0] = 0.0f; v[1][1] = 0.0f; v[1][2] = h;
-  v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = h;
-  v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = 0.0f;
-  if(surfaces[BOTTOM_SURFACE]) free(surfaces[BOTTOM_SURFACE]);
-  surfaces[BOTTOM_SURFACE] = new_surface(v);
-
-  v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
-  v[1][0] = w;    v[1][1] = d;    v[1][2] = 0.0f;
-  v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = 0.0f;
-  v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = h;
-  if(surfaces[RIGHT_SURFACE]) free(surfaces[RIGHT_SURFACE]);
-  surfaces[RIGHT_SURFACE] = new_surface(v);
-
-  v[0][0] = w;    v[0][1] = d;    v[0][2] = 0.0f;
-  v[1][0] = w;    v[1][1] = d;    v[1][2] = h;
-  v[2][0] = 0.0f; v[2][1] = d;    v[2][2] = h;
-  v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = 0.0f;
-  if(surfaces[FRONT_SURFACE]) free(surfaces[FRONT_SURFACE]);
-  surfaces[FRONT_SURFACE] = new_surface(v);
-
-  v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
-  v[1][0] = w;    v[1][1] = 0.0f; v[1][2] = h;
-  v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
-  v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = h;
-  if(surfaces[TOP_SURFACE]) free(surfaces[TOP_SURFACE]);
-  surfaces[TOP_SURFACE] = new_surface(v);
-}
-
 void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   this->tex = tex;
   this->color = color;
@@ -98,7 +45,6 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   this->useTexture = true;
   this->lightBlocking = false;
   this->initialized = false;
-  this->theme = NULL;
 
   surfaces[LEFT_SURFACE] = NULL;
   surfaces[BOTTOM_SURFACE] = NULL;
@@ -108,69 +54,16 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   initSurfaces();
 }
 
-void GLShape::setCurrentAnimation (int numAnim, bool force){
-    cout<<"GLShape::setCurrentAnimation : Hey this should call MD2Shape function!"<<endl;
-}
-
-void GLShape::setPauseAnimation (bool pause){
-    cout<<"GLShape::setPauseAnimation : Hey this should call MD2Shape function!"<<endl;
-}
-
-struct surface *GLShape::new_surface(float vertices[4][3]) {
-  int i, j;
-  struct surface *surf;
-
-  surf = (struct surface *)malloc(sizeof(struct surface));
-  if(!surf) {
-	fprintf(stderr, "Error: Couldn't allocate memory for surface\n");
-	return NULL;
-  }
-
-  for(i = 0; i < 4; i++) {
-	for(j = 0; j < 3; j++)
-	  surf->vertices[i][j] = vertices[i][j];
-  }
-  /*
-  // x axis of matrix points in world space direction of the s texture axis 
-  // top,right <- top,left = 3,0
-  // added div by 10.0f, otherwise light is a pinpoint. Why?
-  for(i = 0; i < 3; i++)
-	surf->matrix[0 + i] = (surf->vertices[1][i] - surf->vertices[2][i]) / 10.0f;
-  surf->s_dist = sqrt(Util::dot_product(surf->matrix, surf->matrix));
-  Util::normalize(surf->matrix);
-  
-  // y axis of matrix points in world space direction of the t texture axis
-  // bottom,left <- top,left = 3,0
-  // added div by 10.0f, otherwise light is a pinpoint. Why?
-  for(i = 0; i < 3; i++)
-	surf->matrix[3 + i] = (surf->vertices[3][i] - surf->vertices[2][i]) / 10.0f;
-  surf->t_dist = sqrt(Util::dot_product(surf->matrix + 3, surf->matrix + 3));
-  Util::normalize(surf->matrix + 3);
-  
-  // z axis of matrix is the surface's normal
-  Util::cross_product(surf->matrix, surf->matrix + 3, surf->matrix + 6);
-  */
-  return surf;
-}
-
-void GLShape::setTheme( GLuint *textureGroup, WallTheme *theme ) {
+void GLShape::setTexture( GLuint *textureGroup ) {
   if( initialized ) {
     glDeleteLists( displayListStart, 3 );
   }
-  if(lightmap_tex_num != 0) {
-    glDeleteTextures( 1, (GLuint*)&lightmap_tex_num );
-    glDeleteTextures( 1, (GLuint*)&lightmap_tex_num2 );
-    lightmap_tex_num = lightmap_tex_num2 = 0;
-  }  
-  this->theme = theme;
   for(int i = 0; i < 3; i++) this->tex[i] = textureGroup[i];
   initialize();
 }
 
 void GLShape::initialize() {
-  if(tex && lightmap_tex_num == 0 && Constants::multitexture) {
-  	createDarkTexture();
-  }
+  cerr << "multitexture=" << Constants::multitexture << " lightmap1=" << lightmap_tex_num << " lightmap2=" << lightmap_tex_num2 << endl;
 
   displayListStart = glGenLists( 3 );
   if( !displayListStart ) {
@@ -184,6 +77,7 @@ void GLShape::initialize() {
 
   initialized = true;
 }
+
 
 void GLShape::createShadowList( GLuint listName ) {
   glNewList( listName, GL_COMPILE );
@@ -509,7 +403,18 @@ void GLShape::setupBlending() {
   //Scourge::setBlendFunc();
 }
 
-void GLShape::createDarkTexture() {
+void GLShape::createDarkTexture( WallTheme *theme ) {
+  if( !Constants::multitexture ) {
+    return;
+  }
+
+  // delete the previous texture
+  if(lightmap_tex_num != 0) {
+    glDeleteTextures( 1, (GLuint*)&lightmap_tex_num );
+    glDeleteTextures( 1, (GLuint*)&lightmap_tex_num2 );
+    lightmap_tex_num = lightmap_tex_num2 = 0;
+  }  
+
   cerr << "*** Creating multitexture overlay." << endl;
   if( theme ) {
     cerr << "*** theme=" << theme->getName() << 
@@ -594,3 +499,100 @@ bool GLShape::fitsInside(GLShape *smaller) {
            height + 1 > smaller->getHeight()));
 }
 
+void GLShape::setCurrentAnimation (int numAnim, bool force){
+    cout<<"GLShape::setCurrentAnimation : Hey this should call MD2Shape function!"<<endl;
+}
+
+void GLShape::setPauseAnimation (bool pause){
+    cout<<"GLShape::setPauseAnimation : Hey this should call MD2Shape function!"<<endl;
+}
+
+struct surface *GLShape::new_surface(float vertices[4][3]) {
+  int i, j;
+  struct surface *surf;
+
+  surf = (struct surface *)malloc(sizeof(struct surface));
+  if(!surf) {
+	fprintf(stderr, "Error: Couldn't allocate memory for surface\n");
+	return NULL;
+  }
+
+  for(i = 0; i < 4; i++) {
+	for(j = 0; j < 3; j++)
+	  surf->vertices[i][j] = vertices[i][j];
+  }
+  /*
+  // x axis of matrix points in world space direction of the s texture axis 
+  // top,right <- top,left = 3,0
+  // added div by 10.0f, otherwise light is a pinpoint. Why?
+  for(i = 0; i < 3; i++)
+	surf->matrix[0 + i] = (surf->vertices[1][i] - surf->vertices[2][i]) / 10.0f;
+  surf->s_dist = sqrt(Util::dot_product(surf->matrix, surf->matrix));
+  Util::normalize(surf->matrix);
+  
+  // y axis of matrix points in world space direction of the t texture axis
+  // bottom,left <- top,left = 3,0
+  // added div by 10.0f, otherwise light is a pinpoint. Why?
+  for(i = 0; i < 3; i++)
+	surf->matrix[3 + i] = (surf->vertices[3][i] - surf->vertices[2][i]) / 10.0f;
+  surf->t_dist = sqrt(Util::dot_product(surf->matrix + 3, surf->matrix + 3));
+  Util::normalize(surf->matrix + 3);
+  
+  // z axis of matrix is the surface's normal
+  Util::cross_product(surf->matrix, surf->matrix + 3, surf->matrix + 6);
+  */
+  return surf;
+}
+
+void GLShape::initSurfaces() {
+  // initialize the surfaces
+  float w = (float)width / DIV;
+  float d = (float)depth / DIV;
+  float h = (float)height / DIV;
+  if (h == 0) h = 0.25 / DIV;
+
+  float v[4][3];
+
+  /**
+	 Vertices:
+	 1 - top left (texture mapped)
+	 2 - bottom left
+	 3 - bottom right
+	 4 - top right
+   */
+
+  v[0][0] = 0.0f; v[0][1] = d;    v[0][2] = 0.0f;
+  v[1][0] = 0.0f; v[1][1] = d;    v[1][2] = h;
+  v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
+  v[3][0] = 0.0f; v[3][1] = 0.0f; v[3][2] = 0.0f;
+  if(surfaces[LEFT_SURFACE]) free(surfaces[LEFT_SURFACE]);
+  surfaces[LEFT_SURFACE] = new_surface(v);
+
+  v[0][0] = 0.0f; v[0][1] = 0.0f; v[0][2] = 0.0f;
+  v[1][0] = 0.0f; v[1][1] = 0.0f; v[1][2] = h;
+  v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = h;
+  v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = 0.0f;
+  if(surfaces[BOTTOM_SURFACE]) free(surfaces[BOTTOM_SURFACE]);
+  surfaces[BOTTOM_SURFACE] = new_surface(v);
+
+  v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
+  v[1][0] = w;    v[1][1] = d;    v[1][2] = 0.0f;
+  v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = 0.0f;
+  v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = h;
+  if(surfaces[RIGHT_SURFACE]) free(surfaces[RIGHT_SURFACE]);
+  surfaces[RIGHT_SURFACE] = new_surface(v);
+
+  v[0][0] = w;    v[0][1] = d;    v[0][2] = 0.0f;
+  v[1][0] = w;    v[1][1] = d;    v[1][2] = h;
+  v[2][0] = 0.0f; v[2][1] = d;    v[2][2] = h;
+  v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = 0.0f;
+  if(surfaces[FRONT_SURFACE]) free(surfaces[FRONT_SURFACE]);
+  surfaces[FRONT_SURFACE] = new_surface(v);
+
+  v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
+  v[1][0] = w;    v[1][1] = 0.0f; v[1][2] = h;
+  v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
+  v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = h;
+  if(surfaces[TOP_SURFACE]) free(surfaces[TOP_SURFACE]);
+  surfaces[TOP_SURFACE] = new_surface(v);
+}
