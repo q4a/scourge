@@ -143,8 +143,7 @@ void GLShape::createBodyList( GLuint listName ) {
   glNewList( listName, GL_COMPILE );
 
   // hack...
-  //bool isFloorShape = ( height < 1 );
-  bool isFloorShape = false;
+  bool isFloorShape = ( height < 1 );
 
   // left
   int textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth > width ? this->getVariationTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
@@ -329,8 +328,7 @@ void GLShape::createTopList( GLuint listName ) {
   glNewList( listName, GL_COMPILE );
 
   // hack...
-  //bool isFloorShape = ( height < 1 );
-  bool isFloorShape = true;
+  bool isFloorShape = ( height < 1 );
 
   int textureIndex = ( isFloorShape && this->getVariationTextureIndex() > 0 ? this->getVariationTextureIndex() : GLShape::TOP_SIDE );
 
