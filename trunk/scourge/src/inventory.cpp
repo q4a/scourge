@@ -118,7 +118,8 @@ Inventory::Inventory(Scourge *scourge) {
 	stateList = new ScrollingList(115, 170, 290, 70);
 	cards->addWidget(stateList, CHARACTER);
 
-	cards->createLabel(115, 255, strdup("Skills:"), CHARACTER, Constants::RED_COLOR);
+	strcpy(skillsStr, "Skills:");
+	cards->createLabel(115, 255, skillsStr, CHARACTER, Constants::RED_COLOR);
 	skillModLabel = cards->createLabel(220, 255, NULL, CHARACTER);
 	skillList = new ScrollingList(115, 260, 290, 180);
 	cards->addWidget(skillList, CHARACTER);
@@ -161,7 +162,7 @@ void Inventory::drawWidget(Widget *w) {
   char s[80];
   sprintf(s, "Exp: %u(%u)", p->getExp(), p->getExpOfNextLevel());
   if(p->getStateMod(Constants::leveled)) {
-	expLabel->setColor( 1.0f, 0.2f, 0.0f, 1.0f );
+	glColor4f( 1.0f, 0.2f, 0.0f, 1.0f );
   } else {
 	w->applyColor();
   }
@@ -374,6 +375,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   Creature * selectedP = scourge->getParty()->getParty(selected);
   switch(selectedMode) {
   case CHARACTER:       	
+
+	sprintf(skillsStr, "Skills: (Available points: %d)", selectedP->getAvailableSkillPoints());
+
+
 	sprintf(nameAndClassStr, "%s, %s (level %d)", selectedP->getName(), 
 			selectedP->getCharacter()->getName(), selectedP->getLevel());
 	nameAndClassLabel->setText(nameAndClassStr);	
