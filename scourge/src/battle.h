@@ -40,6 +40,7 @@ using namespace std;
 class Scourge;
 class Creature;
 class Item;
+class Projectile;
 
 /**
    This class represents a single battle turn.
@@ -55,6 +56,7 @@ class Battle {
   int itemSpeed;
   float dist;
   bool empty;
+  bool projectileHit;
 
  public:
   
@@ -62,6 +64,12 @@ class Battle {
 	 This method sets up and creates battle turns (Battle objects) in order of initiative.
    */
   static void setupBattles(Scourge *scourge, Battle *battle[], int count, vector<Battle *> *turns);
+
+  /**
+	 Call this when a projectile weapon finally hits.
+	 It sets up a turn and plays it.
+  */
+  static void projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target);
 
   /**
 	 A no-op turn of battle.
@@ -80,6 +88,7 @@ class Battle {
  protected:
   void hitWithItem();
   void selectBestItem();
+  void initItem(Item *item);
 };
 
 #endif

@@ -1221,7 +1221,7 @@ void Scourge::playRound() {
 
 	if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
 	  lastTick = t;
-	  
+
 	  // move the party members
 	  party->movePlayers();
 	  
