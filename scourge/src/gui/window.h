@@ -125,10 +125,10 @@ class Window : public Widget {
   // static message dialog
   static Button *message_button; // so you can check for it in other classes
   static void showMessageDialog(SDLHandler *sdlHandler, 
-								int x, int y, int w, int h, 
-								char *title, GLuint texture,
-								char *message, 
-								char *buttonLabel = Constants::messages[Constants::OK_LABEL][0]);
+  int x, int y, int w, int h, 
+  char *title, GLuint texture,
+  char *message, 
+  char *buttonLabel = Constants::messages[Constants::OK_LABEL][0]);
 
   void move(int x, int y);
  protected:

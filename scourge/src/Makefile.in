@@ -77,9 +77,9 @@ TR_LIBS = @TR_LIBS@
 VERSION = @VERSION@
 
 INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
-LDADD = $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a
+LDADD = $(srcdir)/glut/libScourgeGlut.a $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a
 
-SUBDIRS = gui rpg events
+SUBDIRS = glut gui rpg events
 
 bin_PROGRAMS = scourge
 
@@ -107,8 +107,9 @@ shapepalette.o util.o text.o gllocator.o minimap.o 3ds.o 3dsshape.o \
 optionsmenu.o userconfiguration.o board.o battle.o party.o projectile.o \
 spellcaster.o
 scourge_LDADD = $(LDADD)
-scourge_DEPENDENCIES =  $(srcdir)/gui/libScourgeGui.a \
-$(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a
+scourge_DEPENDENCIES =  $(srcdir)/glut/libScourgeGlut.a \
+$(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a \
+$(srcdir)/rpg/libScourgeRpg.a
 scourge_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)

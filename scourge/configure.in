@@ -381,84 +381,6 @@ fi
 CPPFLAGS="$saved_CPPFLAGS" 
 TR_CPPFLAGS="$TR_CPPFLAGS $GL_CPPFLAGS"
 
-
-dnl --------------------------------------------------------------------------
-dnl Check for glut library
-dnl --------------------------------------------------------------------------
-AC_ARG_WITH(glut-libs,[  --with-glut-libs=DIR    Location of GLUT library])
-
-dnl if test "x$have_SDL" != "xyes" ; then
-
-case "$host" in
-*darwin*) LIBS="$LIBS -framework GLUT -noprebind";;
-*) 
-    if test "x$with_glut_libs" = "x" ; then
-	GLUT_LDOPTS=""
-    else
-	GLUT_LDOPTS="-L$with_glut_libs"
-    fi
-
-    AC_DEFUN( CHECK_FOR_GLUT_LIB, [
-	AC_MSG_CHECKING([for $GLUT_LIB_NAME library])
-	LIBS="$saved_LIBS $TR_LIBS $GLUT_LDOPTS -l$GLUT_LIB_NAME"
-	AC_TRY_LINK( , , have_glut_lib=yes, have_glut_lib=no )
-	AC_MSG_RESULT([$have_glut_lib])
-    ]) 
-
-    saved_LIBS="$LIBS"
-
-    GLUT_LIB_LIST="glut32 glut"
-
-    for GLUT_LIB_NAME in $GLUT_LIB_LIST ; do
-	CHECK_FOR_GLUT_LIB
-
-	if test "x$have_glut_lib" = "xyes" ; then
-	    break;
-	fi
-    done
-
-    if test "x$have_glut_lib" = "xno" ; then
-	AC_MSG_ERROR([GLUT library not found or too old version. 3.7 (beta) or later required (or install SDL instead).])
-    fi
-
-    LIBS="$saved_LIBS"
-    TR_CPPFLAGS="$TR_CPPFLAGS -DHAVE_GLUT"
-    TR_LIBS="$TR_LIBS $GLUT_LDOPTS -l$GLUT_LIB_NAME";;
-esac
-dnl fi
-
-
-dnl --------------------------------------------------------------------------
-dnl Check for glut.h
-dnl --------------------------------------------------------------------------
-
-AC_ARG_WITH(glut-inc, [  --with-glut-inc=DIR     Specify GLUT header file location])
-
-dnl if test "x$have_SDL" != "xyes" ; then 
-case "$host" in
-*darwin*) ;;
-dnl *darwin*) CPPFLAGS="$CPPFLAGS -framework GLUT";;
-*) 
-    if test "x$with_glut_inc" = "x" ; then
-	GLUT_CPPFLAGS=""
-    else
-	GLUT_CPPFLAGS="-I$with_glut_inc"
-    fi
-
-    saved_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$saved_CPPFLAGS $TR_CPPFLAGS $GLUT_CPPFLAGS"
-    AC_CHECK_HEADER([GL/glut.h], have_glut_h=yes, have_glut_h=no )
-
-    if test "x$have_glut_h" = "xno" ; then
-	AC_MSG_ERROR([Cannot find GL/glut.h])
-    fi
-
-    CPPFLAGS="$saved_CPPFLAGS"
-    TR_CPPFLAGS="$TR_CPPFLAGS $GLUT_CPPFLAGS"
-esac
-dnl fi
-
-
 dnl --------------------------------------------------------------------------
 dnl Other options
 dnl --------------------------------------------------------------------------
@@ -480,4 +402,4 @@ CFLAGS="$CFLAGS $TR_CFLAGS"
 CXXFLAGS="$CXXFLAGS $TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
-AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile )
+AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/glut/Makefile )
