@@ -80,10 +80,10 @@ void InfoGui::describe() {
 
   // detailed description
   strcpy(description, item->getRpgItem()->getLongDesc());
+  strcat(description, "|");
 
   char tmp[1000];
   if(item->getMagicAttrib()) {
-    strcat(description, "|");
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       sprintf(tmp, "|%d bonus to %s.", 
               item->getMagicAttrib()->getBonus(),
@@ -141,6 +141,9 @@ void InfoGui::describe() {
         strcat(description, tmp);
       }
     } 
+  } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
+    strcat(description, "|");
+    strcat(description, item->getSpell()->getNotes());
   }
 
   label->setText(description);
