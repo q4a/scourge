@@ -2162,7 +2162,8 @@ bool Scourge::fightCurrentBattleTurn() {
     bool roundOver = false;
     int c = 0;
     for( int i = 0; i < party->getPartySize(); i++ ) {
-      if( !party->getParty(i)->getBattle()->getAvailableTarget() ) {
+      if( party->getParty(i)->getAction() == Constants::ACTION_NO_ACTION && 
+          !party->getParty(i)->getBattle()->getAvailableTarget() ) {
         c++;
       }
     }
