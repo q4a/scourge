@@ -46,6 +46,14 @@ Inventory::Inventory(Scourge *scourge) {
     for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
         this->objectiveText[i] = (char*)malloc(120 * sizeof(char));
     }
+    this->schoolText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+        this->schoolText[i] = (char*)malloc(120 * sizeof(char));
+    }
+    this->spellText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+        this->spellText[i] = (char*)malloc(120 * sizeof(char));
+    }
 	selected = selectedMode = 0;
 
 	// construct UI
@@ -119,7 +127,18 @@ Inventory::Inventory(Scourge *scourge) {
 	levelUpButton = cards->createButton( 205, 445, 315, 475, strdup("Level Up"), CHARACTER);
 
 	// spellbook
-	cards->createLabel(115, 45, strdup("Spellbook"), SPELL, Constants::RED_COLOR);
+	cards->createLabel(115, 45, strdup("School of magic: (with provider deity)"), 
+					   SPELL, Constants::RED_COLOR);
+	schoolList = new ScrollingList(115, 50, 290, 100);
+	cards->addWidget(schoolList, SPELL);
+	cards->createLabel(115, 170, strdup("Spells memorized:"), SPELL, Constants::RED_COLOR);
+	spellList = new ScrollingList(115, 175, 290, 150);
+	cards->addWidget(spellList, SPELL);
+	cards->createLabel(115, 345, strdup("Spell notes:"), SPELL, Constants::RED_COLOR);
+	spellDescriptionLabel = new Label(115, 360, strdup(""), 58);
+	cards->addWidget(spellDescriptionLabel, SPELL);
+	castButton = cards->createButton( 0, 160, 105, 190, strdup("Cast"), SPELL);
+
 
 	// mission
 	cards->createLabel(115, 45, strdup("Current Mission"), MISSION, Constants::RED_COLOR);
@@ -168,6 +187,7 @@ void Inventory::drawWidget(Widget *w) {
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
+  Creature *creature = scourge->getParty()->getParty(selected);
   char *error = NULL;
   if(widget == mainWin->closeButton) mainWin->setVisible(false);
   else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
@@ -202,12 +222,21 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	} else {
 	  int itemIndex = invList->getSelectedLine();  
 	  if(itemIndex > -1 && 
-		 scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-		if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
-		  scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
-		}
+		 creature->getInventoryCount() > itemIndex) {
+
+		// this action will occur in the next battle round
+		
+		creature->setTargetCreature(creature);
+		creature->setAction(Constants::ACTION_EAT_DRINK, 
+							creature->getInventory(itemIndex),
+							NULL);
+		mainWin->setVisible(false);
+		
+		//		if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
+		//		  scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
+		//		}
 		// refresh screen
-		setSelectedPlayerAndMode(selected, INVENTORY);
+		//setSelectedPlayerAndMode(selected, INVENTORY);
 	  }
 	}
   } else if(widget == skillAddButton) {
@@ -269,6 +298,26 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	if(error) {
 	  cerr << error << endl;
 	  scourge->showMessageDialog(error);
+	}
+  } else if(widget == schoolList) {
+	int n = schoolList->getSelectedLine();
+	if(n != -1 && n < MagicSchool::getMagicSchoolCount()) {
+	  showMemorizedSpellsInSchool( scourge->getParty()->getParty(selected), 
+								   MagicSchool::getMagicSchool(n));
+	}
+  } else if(widget == spellList) {
+	Spell *spell = getSelectedSpell();
+	if(spell) showSpellDescription(spell);
+  } else if(widget == castButton) {
+	Spell *spell = getSelectedSpell();
+	if(spell) {
+	  if(!creature->getTargetCreature()) scourge->setTargetSelectionFor(creature);
+	  creature->setAction(Constants::ACTION_CAST_SPELL, 
+						  NULL,
+						  spell);
+	  mainWin->setVisible(false);
+
+	  //scourge->getParty()->getParty(selected)->castSpell(spell);
 	}
   }
   return false;
@@ -372,6 +421,15 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	break;
 	
   case SPELL:
+	for(int t = 0; t < MagicSchool::getMagicSchoolCount(); t++) {
+	  MagicSchool *school = MagicSchool::getMagicSchool(t);		
+	  sprintf(schoolText[t], "%s (%s)", school->getName(), school->getDeity());
+	  if(t == 0) {
+		showMemorizedSpellsInSchool(scourge->getParty()->getParty(selected), school);
+	  }
+	}
+	schoolList->setLines(MagicSchool::getMagicSchoolCount(), 
+						 (const char**)schoolText);
 	break;
   case LOG:
 	break;
@@ -519,4 +577,48 @@ void Inventory::show() {
 	}
   }
   setSelectedPlayerAndMode(n, selectedMode); 
+}
+
+Spell *Inventory::getSelectedSpell() {
+  Creature *creature = scourge->getParty()->getParty(selected);
+  MagicSchool *school = NULL;
+  int n = schoolList->getSelectedLine();
+  if(n != -1 && n < MagicSchool::getMagicSchoolCount()) {
+	school = MagicSchool::getMagicSchool(n);
+  }
+  if(!school) return NULL;
+
+  n = spellList->getSelectedLine();
+  if(n != -1 && n < spellList->getLineCount()) {
+	int spellCount = 0;
+	for(int r = 0; r < school->getSpellCount(); r++) {
+	  Spell *spell = school->getSpell(r);
+	  if(creature->isSpellMemorized(spell)) {
+		if(n == spellCount) return spell;
+		spellCount++;
+	  }
+	}
+  }
+  return NULL;
+}
+
+void Inventory::showMemorizedSpellsInSchool(Creature *creature, MagicSchool *school) {
+  int spellCount = 0;
+  for(int r = 0; r < school->getSpellCount(); r++) {
+	Spell *spell = school->getSpell(r);
+	if(creature->isSpellMemorized(spell)) {
+	  spell->describe(spellText[spellCount]);
+	  if(spellCount == 0) {
+		showSpellDescription(spell);
+	  }
+	  spellCount++;
+	}
+  }
+  if(spellCount == 0) spellDescriptionLabel->setText("");
+  spellList->setLines(spellCount, 
+					  (const char**)spellText);
+}
+
+void Inventory::showSpellDescription(Spell *spell) {
+  spellDescriptionLabel->setText((char*)(spell->getNotes() ? spell->getNotes() : ""));
 }

@@ -410,6 +410,15 @@ Creature **Party::createHardCodedParty() {
   pc[2]->equipInventory(0);
   pc[3]->equipInventory(0);
 
+  // add some spells
+  pc[2]->addSpell(Spell::getSpellByName("Flame of Azun"));
+  pc[2]->addSpell(Spell::getSpellByName("Silent knives"));
+  pc[2]->addSpell(Spell::getSpellByName("Stinging light"));
+
+  pc[3]->addSpell(Spell::getSpellByName("Healing touch"));
+  pc[3]->addSpell(Spell::getSpellByName("Body of stone"));
+				  
+
   return pc;
 }
 

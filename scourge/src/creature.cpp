@@ -101,6 +101,9 @@ void Creature::commonInit() {
   this->availableSkillPoints = 0;
   this->minRange = this->maxRange = 0;
   this->failedToMoveWithinRangeAttemptCount = 0;
+  this->action = -1;
+  this->actionItem = NULL;
+  this->actionSpell = NULL;
   
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -491,6 +494,14 @@ bool Creature::addInventory(Item *item) {
   }
 }
 
+int Creature::findInInventory(Item *item) {
+  for(int i = 0; i < inventory_count; i++) {
+	Item *invItem = inventory[i];
+	if(item == invItem) return i;
+  }
+  return -1;
+}
+
 Item *Creature::removeInventory(int index) { 
   Item *item = NULL;
   if(index < inventory_count) {
@@ -522,10 +533,12 @@ Item *Creature::removeInventory(int index) {
 }
 
 bool Creature::eatDrink(int index){
+  return eatDrink(getInventory(index));
+}
+
+bool Creature::eatDrink(Item *item) {
   char msg[500];
   char buff[200];
-  //Item * item = getInventory(index);
-  Item *item = getInventory(index);
   RpgItem * rpgItem = item->getRpgItem();
   
   int type = rpgItem->getType();    
@@ -623,7 +636,7 @@ void Creature::usePotion(Item *item) {
 	  {
 		bonusArmor += item->getRpgItem()->getAction();
 		recalcAggregateValues();
-		sprintf(msg, "%s feels impervious to damage!", getName(), item->getRpgItem()->getAction());
+		sprintf(msg, "%s feels impervious to damage!", getName());
 		scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
 		startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 		
@@ -655,6 +668,28 @@ void Creature::usePotion(Item *item) {
 								d, this, item->getRpgItem(), scourge, 1);
 	scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
   }
+}
+
+void Creature::setAction(int action, 
+						 Item *item, 
+						 Spell *spell) {
+  this->action = action;
+  this->actionItem = item;
+  this->actionSpell = spell;
+
+  char msg[80];
+  switch(action) {
+  case Constants::ACTION_EAT_DRINK:
+	sprintf(msg, "%s will consume %s.", getName(), item->getRpgItem()->getName());
+	break;
+  case Constants::ACTION_CAST_SPELL:
+	sprintf(msg, "%s will cast %s.", getName(), spell->getName());
+	break;
+  default:
+	cerr << "*** Error: unknown action " << action << endl;
+	return;
+  }
+  scourge->getMap()->addDescription(msg, 1, 1, 0.5f);
 }
 
 void Creature::equipInventory(int index) {
@@ -758,13 +793,16 @@ Item *Creature::getBestWeapon(float dist) {
 
 // return the initiative for a battle round (0-10), the lower the faster the attack
 // the method can return negative numbers if the weapon skill is very high (-10 to 10)
-int Creature::getInitiative(Item *weapon) {
+int Creature::getInitiative(Item *weapon, Spell *spell) {
   // use the speed skill
   float speed = getSkill(Constants::SPEED);
   // roll for half the luck
   speed += (getSkill(Constants::LUCK / 2) * rand()/RAND_MAX);
-  // add weapon speed (bare hand attack is the fastest, unless weapon skill is very good)
-  if(weapon) {
+  if(spell) {
+	speed -= spell->getSpeed();
+	speed += getSkill(spell->getSchool()->getSkill());
+  } else if(weapon) {
+	// add weapon speed (bare hand attack is the fastest, unless weapon skill is very good)
 	speed -= weapon->getRpgItem()->getSpeed();
 	if(weapon->getRpgItem()->getSkill() > -1) 
 	  speed += getSkill(weapon->getRpgItem()->getSkill());
@@ -964,4 +1002,12 @@ float Creature::getTargetAngle() {
 						getTargetCreature()->getX(), getTargetCreature()->getY(), 
 						getTargetCreature()->getShape()->getWidth(), 
 						getTargetCreature()->getShape()->getHeight());
+}
+
+// FIXME: O(n) but there aren't that many spells...
+bool Creature::isSpellMemorized(Spell *spell) {
+  for(int i = 0; i < (int)spells.size(); i++) {
+	if(spells[i] == spell) return true;
+  }
+  return false;
 }

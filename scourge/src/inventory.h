@@ -26,6 +26,7 @@
 #include "sdlscreenview.h"
 #include "scourge.h"
 #include "rpg/character.h"
+#include "rpg/spell.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/cardcontainer.h"
@@ -33,10 +34,13 @@
 #include "gui/draganddrop.h"
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
+#include "creature.h"
 
 /**
   *@author Gabor Torok
   */
+
+class Creature;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:
@@ -63,6 +67,14 @@ private:
 	Button *eatDrinkButton;
 	ScrollingList *invList;
 	char **pcInvText;
+
+	// spell ui
+	Button *castButton;
+	ScrollingList *schoolList;
+	ScrollingList *spellList;
+	Label *spellDescriptionLabel;
+	char **schoolText;
+	char **spellText;
 
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *expLabel, *hpLabel, *mpLabel;
@@ -111,6 +123,9 @@ protected:
 	void setSelectedPlayerAndMode(int player, int mode);
 	void moveItemTo(int playerIndex);
 	void dropItem();
+	void showMemorizedSpellsInSchool(Creature *creature, MagicSchool *school);
+	void showSpellDescription(Spell *spell);
+	Spell *getSelectedSpell();
 };
 
 #endif
