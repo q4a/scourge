@@ -59,7 +59,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     alwaysCenterMapCheckbox = cards->createCheckbox(100, 120, 258, 140, "Always center map", GAME_SETTINGS);
     keepMapSize = cards->createCheckbox(100, 160, 258, 180, "Keep zoom when switching layouts", GAME_SETTINGS);
     frameOnFullScreen = cards->createCheckbox(100, 200, 258, 220, "Frame map in fullscreen mode", GAME_SETTINGS);
-    turnBasedBattle = cards->createCheckbox(100, 240, 258, 260, "Pause after battle turn", GAME_SETTINGS);
+    turnBasedBattle = cards->createCheckbox(100, 240, 258, 260, "Is battle turn-based?", GAME_SETTINGS);
    
     // Video settings tabs        
     videoResolutionML = new MultipleLabel(100, 40, 300, 60, "Screen resolution", 100);

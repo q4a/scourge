@@ -305,7 +305,13 @@ void Battle::moveCreature() {
   if(creature->isMonster()) {
     session->getGameAdapter()->moveMonster(creature);
   } else {
-    creature->moveToLocator(session->getMap());
+    if(creature->getSelX() != -1) {
+      creature->moveToLocator(session->getMap());
+    } else {
+      creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+      // try to kill something
+      selectNewTarget();
+    }
   }
   ap--;
 }
@@ -431,7 +437,6 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
 }
 
 void Battle::hitWithItem() {
-
   if(item) {
     sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
             creature->getName(), 

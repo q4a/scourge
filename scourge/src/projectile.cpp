@@ -17,6 +17,7 @@
 
 #include "projectile.h"
 
+Uint32 Projectile::lastProjectileTick = 0;
 map<Creature*, vector<Projectile*>*> Projectile::projectiles;
 
 #define DELTA 1.0f
@@ -276,29 +277,35 @@ void Projectile::removeProjectile(Projectile *p) {
 }
 
 void Projectile::moveProjectiles(Scourge *scourge) {
-  // draw the projectiles
-  vector<Projectile*> removedProjectiles;
-  //    cerr << "Projectiles:" << endl;
-  map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
-  for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-    //	  Creature *creature = i->first;
-    //	  cerr << "\tcreature: " << creature->getName() << endl;
-    vector<Projectile*> *p = i->second;
-    for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
-      Projectile *proj = *e;
-      //	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
-      if(proj->move()) {
-        removedProjectiles.push_back(proj);
+  Uint32 t = SDL_GetTicks();
+  if(lastProjectileTick == 0 || 
+     t - lastProjectileTick > (Uint32)(scourge->getUserConfiguration()->getGameSpeedTicks() / 50)) {
+    lastProjectileTick = t;
+
+    // draw the projectiles
+    vector<Projectile*> removedProjectiles;
+    //    cerr << "Projectiles:" << endl;
+    map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
+    for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
+      //	  Creature *creature = i->first;
+      //	  cerr << "\tcreature: " << creature->getName() << endl;
+      vector<Projectile*> *p = i->second;
+      for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+        Projectile *proj = *e;
+        //	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+        if(proj->move()) {
+          removedProjectiles.push_back(proj);
+        }
       }
     }
-  }
-  // remove projectiles
-  for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
-    Projectile *proj = *e;
-    // a location-bound projectile reached its target
-    if(!proj->doesStopOnImpact()) {
-      Battle::projectileHitTurn(scourge->getSession(), proj, (int)proj->getX(), (int)proj->getY());
+    // remove projectiles
+    for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
+      Projectile *proj = *e;
+      // a location-bound projectile reached its target
+      if(!proj->doesStopOnImpact()) {
+        Battle::projectileHitTurn(scourge->getSession(), proj, (int)proj->getX(), (int)proj->getY());
+      }
+      Projectile::removeProjectile(proj);
     }
-    Projectile::removeProjectile(proj);
   }
 }
