@@ -68,7 +68,8 @@ class Map {
   // on screen item descriptions
   int descriptionCount;
   char *descriptions[200];
-  
+
+  bool lightMapChanged;
   int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
   
   
@@ -188,6 +189,8 @@ class Map {
 					 int x2, int y2, int z2);
   
   bool shapeFits(Shape *shape, int x, int y, int z);
+
+  inline void updateLightMap() { lightMapChanged = true; }
   
  protected:
   DrawLater later[100], stencil[1000], other[1000];
@@ -209,6 +212,10 @@ class Map {
 						  Shape *shape);
   void drawLocator();
   bool isWall(int x, int y, int z);
+
+  void configureLightMap();
+  void traceLight(int chunkX, int chunkY);
+  bool isLocationBlocked(int x, int y, int z);
 };
 
 #endif
