@@ -189,7 +189,8 @@ void Battle::fightTurn() {
   // too far? then keep following the target
   // also check if too close when using ranged weapons
   if(!(dist <= Constants::MIN_DISTANCE || item) || 
-	 !creature->isWithinDistanceRange()) {
+	 !creature->isInRange()) {
+	//	 !creature->isWithinDistanceRange()) {
 	creature->setSelXY(creature->getTargetCreature()->getX(),
 					   creature->getTargetCreature()->getY(),
 					   true);

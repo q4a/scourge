@@ -242,11 +242,9 @@ void Party::toggleRound() {
 void Party::setTargetCreature(Creature *creature) { 
   if(player_only) {
 	player->setTargetCreature(creature);
-	if(!creature) player->setDistanceRange(0, 0);
   } else {
 	for(int i = 0; i < getPartySize(); i++) {
 	  party[i]->setTargetCreature(creature); 
-	  if(!creature) party[i]->setDistanceRange(0, 0);
 	}
   }
 }

@@ -89,7 +89,7 @@ class Creature {
 
   // character information
   char *name;
-  int level, exp, hp, ac, thirst, hunger, money, expOfNextLevel;
+  int level, exp, hp, startingHp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
   int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT];
   GLuint stateMod;
@@ -129,15 +129,19 @@ class Creature {
   
   inline GLUquadric *getQuadric() { return quadric; }
 
-  inline void setTargetCreature(Creature *c) { targetCreature = c; }
+  void setTargetCreature(Creature *c);
   inline Creature *getTargetCreature() { return targetCreature; }
   
   inline void setMotion(int motion) { this->motion = motion; }  
   inline int getMotion() { return this->motion; }
 
   inline void setDistanceRange(float min, float max) { minRange = min; maxRange = max; }  
-  bool isWithinDistanceRange();
-  
+
+  /**
+	 Return true only if a range is specified and we're within it.
+  */
+  bool Creature::isInRange();
+    
   inline void setFacingDirection(int direction) { this->facingDirection = direction;}
   inline int getFacingDirection() { return this->facingDirection; }
   
@@ -241,6 +245,7 @@ class Creature {
   inline int getExp() { return exp; }
   inline int getMoney() { return money; }
   inline int getHp() { return hp; }
+  inline int getStartingHp() { return hp; }
   int getMaxHp();
   inline int getAc() { return ac; }
   inline int getThirst() { return thirst; }
@@ -313,6 +318,13 @@ class Creature {
   int getMaxProjectileCount(Item *item);
 
  protected:
+
+  /**
+	 Check that we're within range (if range specified).
+	 If not, try n times, then wait n times before trying again.
+   */
+  void adjustMovementToRange();
+
   /**
    * Get the position of this creature in the formation.
    * returns -1,-1 if the position cannot be set (if the person followed is not moving)
