@@ -144,6 +144,10 @@ private:
 
   static const MapLocation location[];
 
+  const static int MAX_DOOR_COUNT = 500;
+  int doorCount;
+  int door[MAX_DOOR_COUNT][2];
+
 public: 
 
   // pre-rendered location index
@@ -160,6 +164,22 @@ public:
   void toMap(Map *map, ShapePalette *shapePal, int location=0);
 
 protected:
+
+  // used by toMap
+  void drawBasics(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void removeColumns(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addContainers(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addStairs(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addPregeneratedShapes(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addItems(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addMissionObjectives(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addMonsters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addFurniture(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addTeleporters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void addParty(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void createFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+
 
   void initByLevel();
   void generateMaze();
@@ -195,12 +215,15 @@ protected:
 
   int getScore(int x, int y, int rw, int rh);                        
 
-  void getRandomLocation(Map *map, Shape *shape, int *x, int *y);
+  void getRandomLocation(Map *map, Shape *shape, int *x, int *y, bool accessible=false, int fromX=0, int fromY=0);
 
   bool getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
 						 int *xpos, int *ypos, bool startMiddle=false);
   
   bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y);
+
+  static const int MAX_STEPS = 10000;
+  bool isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken=0, int dir=DIR_N);
 
   bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
 
