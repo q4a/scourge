@@ -160,8 +160,8 @@ void MiniMap :: draw(int xCoord, int yCoord){
     } 
                 
     // Compute the postition of the player in the minimap
-    xPartyPos = (int) scourge->getPlayer()->getX();
-    yPartyPos = (int) scourge->getPlayer()->getY();   	
+    xPartyPos = (int) scourge->getParty()->getPlayer()->getX();
+    yPartyPos = (int) scourge->getParty()->getPlayer()->getY();   	
     toMiniMapCoord(xPartyPos, yPartyPos);
     xPartyPos -= minX;   
     yPartyPos -= minY; 
@@ -239,7 +239,7 @@ void MiniMap :: draw(int xCoord, int yCoord){
     // (Must draw counter-clock wise)
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 1.0f, 1.0f);        
-    k = scourge->getPlayer()->getFacingDirection();    
+    k = scourge->getParty()->getPlayer()->getFacingDirection();    
     if(k == Constants::MOVE_UP){
         // North
         glVertex2d(xPartyPos - 4, yPartyPos + 5); 

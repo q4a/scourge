@@ -282,15 +282,12 @@ class Creature {
   // returns coins gained
   int addMoney(Creature *creature_killed);
 
-  // until *someone* writes a pc editor
-  static Creature **createHardCodedParty(Scourge *scourge);
-
-	inline void getDetailedDescription(char *s) {
-		sprintf(s, "%s (Hp:%d A:%d)", 
-						getDescription(), 
-						getHp(), 
-						getArmor());
-	}
+  inline void getDetailedDescription(char *s) {
+	sprintf(s, "%s (Hp:%d A:%d)", 
+			getDescription(), 
+			getHp(), 
+			getArmor());
+  }
 
   inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
   inline int getAvailableSkillPoints() { return availableSkillPoints; }

@@ -65,7 +65,9 @@ public:
   // return removed item, or NULL
   Item *removeContainedItem(int index);
   Item *getContainedItem(int index);
-	bool isContainedItem(Item *item);
+  bool isContainedItem(Item *item);
+  
+  static void initItems(ShapePalette *shapePal);
 };
 
 #endif

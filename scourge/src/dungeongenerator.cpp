@@ -1161,8 +1161,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 
   // add monsters in every room
 	if(monsters) {
-		int totalLevel = 0;
-		for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
+	  int totalLevel = scourge->getParty()->getTotalLevel();
 		//fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
 		for(int i = 0; i < roomCount; i++) {
 			int levelSum = 0;
@@ -1238,8 +1237,8 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	// add the party in the first room
 	// FIXME: what happens if the party doesn't fit in the room?
 	//  for(int i = 0; i < roomCount; i++) {
-	for(int t = 0; t < 4; t++) {
-		if(scourge->getParty(t)->getStateMod(Constants::dead)) continue;
+	for(int t = 0; t < scourge->getParty()->getPartySize(); t++) {
+		if(scourge->getParty()->getParty(t)->getStateMod(Constants::dead)) continue;
 		bool fits;
 		if(preGenerated && location[locationIndex].start[t][0] > 0) {
 			fits = true;
@@ -1249,14 +1248,14 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			fits = 
 				getLocationInRoom(map, 
 								  0,
-								  scourge->getParty(t)->getShape(), 
+								  scourge->getParty()->getParty(t)->getShape(), 
 								  &x, &y,
 								  true);
 		}
 		if(fits) {
-			addItem(map, scourge->getParty(t), NULL, NULL, x, y);
-			scourge->getParty(t)->moveTo(x, y, 0);
-			scourge->getParty(t)->setSelXY(-1,-1);
+			addItem(map, scourge->getParty()->getParty(t), NULL, NULL, x, y);
+			scourge->getParty()->getParty(t)->moveTo(x, y, 0);
+			scourge->getParty()->getParty(t)->setSelXY(-1,-1);
 		}
 	}
 	updateStatus();

@@ -24,7 +24,7 @@ ADD_EXECUTABLE (scourge WIN32 src/constants.cpp \
  src/sdlscreenview.cpp src/shape.cpp src/inventory.cpp src/shapepalette.cpp\
  src/util.cpp src/text.cpp src/gllocator.cpp src/3ds.cpp src/3dsshape.cpp\
  src/minimap.cpp src/optionsmenu.cpp src/userconfiguration.cpp src/board.cpp\
- src/battle.cpp)
+ src/battle.cpp src/party.cpp)
 
 TARGET_LINK_LIBRARIES(scourge ${SDL_LIBRARY} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
 
