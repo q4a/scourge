@@ -70,8 +70,8 @@ void SpellCaster::spellFailed() {
 	}
 	if( tmpTarget ) {
 	  char message[200];
-	  sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName(), 1, 0.15f, 1 );
-	  battle->getSession()->getMap()->addDescription( message );
+	  sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
+	  battle->getSession()->getMap()->addDescription( message, 1, 0.15f, 1 );
 	  Creature *oldTarget = battle->getCreature()->getTargetCreature();
 	  battle->getCreature()->setTargetCreature( tmpTarget );
 
