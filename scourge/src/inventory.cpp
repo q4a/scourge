@@ -39,54 +39,37 @@ Inventory::Inventory(Scourge *scourge) {
 						  "Party Information", 
 						  scourge->getShapePalette()->getGuiTexture() );
 	player1Button = new Button( 0, 0, 105, 120, scourge->getParty(0)->getPC()->getName() );
+	player1Button->setLabelPosition(Button::BOTTOM);	
+	player1Button->setToggle(true);
 	mainWin->addWidget((Widget*)player1Button);
 	player2Button = new Button( 0, 120, 105, 240, scourge->getParty(1)->getPC()->getName() );
+	player2Button->setLabelPosition(Button::BOTTOM);
+	player2Button->setToggle(true);
 	mainWin->addWidget((Widget*)player2Button);
 	player3Button = new Button( 0, 240, 105, 360, scourge->getParty(2)->getPC()->getName() );
+	player3Button->setLabelPosition(Button::BOTTOM);
+	player3Button->setToggle(true);
 	mainWin->addWidget((Widget*)player3Button);
 	player4Button = new Button( 0,360, 105, 480, scourge->getParty(3)->getPC()->getName() );
+	player4Button->setLabelPosition(Button::BOTTOM);
+	player4Button->setToggle(true);
 	mainWin->addWidget((Widget*)player4Button);
 	inventoryButton = new Button( 105,0, 210, 30, "Inventory" );
+	inventoryButton->setToggle(true);
 	mainWin->addWidget((Widget*)inventoryButton);
 	skillsButton = new Button( 210,0, 315, 30, "Skills" );
+	skillsButton->setToggle(true);
 	mainWin->addWidget((Widget*)skillsButton);
 	spellsButton = new Button( 315,0, 420, 30, "Spells" );
+	spellsButton->setToggle(true);
 	mainWin->addWidget((Widget*)spellsButton);
 	closeButton = new Button( 420,0, 525, 30, "Close" );
 	mainWin->addWidget((Widget*)closeButton);
+
+	setSelectedPlayerAndMode(0, INVENTORY);
 }
 
 Inventory::~Inventory() {
-}
-
-void Inventory::createGui() {
-    win = scourge->getGui()->addWindow(1, 1,
-                                       scourge->getSDLHandler()->getScreen()->w - 1,
-                                       scourge->getSDLHandler()->getScreen()->h - 1,
-                                       &Gui::drawInventory);
-    // add some active regions
-    scourge->getGui()->addActiveRegion(0, 0, 105, 120, Constants::INV_PLAYER_0, this);
-    scourge->getGui()->addActiveRegion(0, 120, 105, 240, Constants::INV_PLAYER_1, this);
-    scourge->getGui()->addActiveRegion(0, 240, 105, 360, Constants::INV_PLAYER_2, this);
-    scourge->getGui()->addActiveRegion(0, 360, 105, 480, Constants::INV_PLAYER_3, this);
-
-    scourge->getGui()->addActiveRegion(0, scourge->getSDLHandler()->getScreen()->h - 30, 
-									   160, scourge->getSDLHandler()->getScreen()->h, 
-									   Constants::ESCAPE, this);
-    scourge->getGui()->addActiveRegion(320, scourge->getSDLHandler()->getScreen()->h - 30, 
-									   480, scourge->getSDLHandler()->getScreen()->h, 
-									   Constants::INV_MODE_PROPERTIES, this);
-    scourge->getGui()->addActiveRegion(160, scourge->getSDLHandler()->getScreen()->h - 30, 
-									   320, scourge->getSDLHandler()->getScreen()->h, 
-									   Constants::INV_MODE_INVENTORY, this);
-    scourge->getGui()->addActiveRegion(480, scourge->getSDLHandler()->getScreen()->h - 30, 
-									   640, scourge->getSDLHandler()->getScreen()->h, 
-									   Constants::INV_MODE_SPELLS, this);
-    scourge->getGui()->addActiveRegion(640, scourge->getSDLHandler()->getScreen()->h - 30, 
-									   800, scourge->getSDLHandler()->getScreen()->h, 
-									   Constants::INV_MODE_LOG, this);
-
-	setSelectedPlayerAndMode(0, INVENTORY);
 }
 
 void Inventory::drawView(SDL_Surface *screen) {
@@ -96,6 +79,13 @@ void Inventory::drawView(SDL_Surface *screen) {
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == closeButton) mainWin->setVisible(false);
+  else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
+  else if(widget == player2Button) setSelectedPlayerAndMode(1, selectedMode);
+  else if(widget == player3Button) setSelectedPlayerAndMode(2, selectedMode);
+  else if(widget == player4Button) setSelectedPlayerAndMode(3, selectedMode);
+  else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
+  else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
+  else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
   return false;
   }
 
@@ -126,7 +116,17 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   selected = player;
   selectedMode = mode;
 
+  player1Button->setSelected(selected == 0);
+  player2Button->setSelected(selected == 1);
+  player3Button->setSelected(selected == 2);
+  player4Button->setSelected(selected == 3);
+  inventoryButton->setSelected(selectedMode == INVENTORY);
+  skillsButton->setSelected(selectedMode == CHARACTER);
+  spellsButton->setSelected(selectedMode == SPELL);
+  
+
   // arrange the gui
+  /*
   scourge->getGui()->removeAllScrollingLists();
   scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_0);
   scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_1);
@@ -139,17 +139,21 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   scourge->getGui()->removeActiveRegion(Constants::REMOVE_CURSE_ITEM);
   scourge->getGui()->removeActiveRegion(Constants::COMBINE_ITEM);
   scourge->getGui()->removeActiveRegion(Constants::IDENTIFY_ITEM);
+  */
   int ypos = 20;
   int height = 30;
   int xpos = 670;
   int width = 100;
   switch(mode) {
   case CHARACTER:
+	/*
     skillList = scourge->getGui()->   
 	  addScrollingList(270, 34, 500, 400,
 					   Constants::SKILL_LIST);
+	*/
 	break;
   case INVENTORY:
+	/*
     itemList = scourge->getGui()->   
 	  addScrollingList(120, 270, 650, 550,
 					   Constants::ITEM_LIST);
@@ -179,6 +183,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
 									   Constants::IDENTIFY_ITEM, this);
 	ypos += (height + 10);
+	*/
 	break;
   case SPELL:
 	break;
@@ -275,52 +280,27 @@ void Inventory::drawParty() {
   int h = 120;
   int y;  
   for(int i = 0; i < 4; i++) {
-    if(Constants::stencilbuffer) {
-	  glPushMatrix();
-	  glLoadIdentity();
-	  glTranslatef( mainWin->getX(), mainWin->getY(), 0 );
-	  glTranslatef( 20, 10 + i * h + 90, 100);
-	  glRotatef(90, 1, 0, 0);
-	  glScalef( 1.2f, 0, 0.8f );
-	  
-	  glDisable(GL_DEPTH_TEST);
-	  glColorMask(0,0,0,0);
-	  glEnable(GL_STENCIL_TEST);
-	  glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	  glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-	  scourge->getParty(i)->draw();
-	  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	  glEnable(GL_DEPTH_TEST);
-	  
-	  glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil=0
-	  // GL_INCR makes sure to only draw shadow once
-	  glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
-	  
-	  glEnable( GL_BLEND );
-	  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	  glColor4f( 0.1f, 0, 0.15f, 0.3f );
-	  scourge->getParty(i)->draw();
-	  glDisable( GL_BLEND );
-	  glDisable(GL_STENCIL_TEST); 
-	  glPopMatrix();
-	}
-	
+
+	// why do I need these 2 lines? Otherwise the models go behind the window
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
+
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( mainWin->getX(), mainWin->getY(), 0 );
-	glTranslatef( 24, 10 + i * h + 90, 200);
+
+	glTranslatef( mainWin->getX(), mainWin->getY() + Window::TOP_HEIGHT, mainWin->getZ() + 5 );
+	glTranslatef( 20, 10 + i * h + 90, 300);
+
 	glRotatef(90, 1, 0, 0);
-	glScalef(0.7, 0.7, 0.7);
-	
+	glScalef(0.8, 0.8, 0.8);	
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
+	mainWin->scissorToWindow();
 	scourge->getParty(i)->draw();
+	glDisable( GL_SCISSOR_TEST );
 	glDisable( GL_TEXTURE_2D );
 	glPopMatrix();
-	
-	scourge->getSDLHandler()->
-	  texPrint(10, 10 + i * h + 100, "%s", 
-			   scourge->getParty(i)->getPC()->getName());
+
 	/*	
 	if(selected == i) {
 	  y = 10 + i * h;

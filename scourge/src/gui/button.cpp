@@ -26,9 +26,11 @@ Button::Button(int x1, int y1, int x2, int y2, char *label) :
   this->x2 = x2;
   this->y2 = y2;
   this->label = new Label(0, 0, label);
+  labelPos = CENTER;
   alpha = 0.5f;
   alphaInc = 0.05f;
   lastTick = 0;
+  toggle = selected = false;
 }
 
 Button::~Button() {
@@ -36,16 +38,19 @@ Button::~Button() {
 }
 
 void Button::drawWidget(Widget *parent) {
-  if(!inside) {
-	//	glColor4f( 0.7f, 0.65f, 0.2f, 1.0f );
-	((Window*)parent)->applyBackgroundColor(true);
-	glBegin(GL_QUADS);
-	glVertex2d(0, 0);
-	glVertex2d(0, y2 - y);
-	glVertex2d(x2 - x, y2 - y);
-	glVertex2d(x2 - x, 0);
-	glEnd();
+  if(toggle && selected) {
+	applySelectionColor();
   } else {
+	applyBackgroundColor(true);
+  }
+  glBegin(GL_QUADS);
+  glVertex2d(0, 0);
+  glVertex2d(0, y2 - y);
+  glVertex2d(x2 - x, y2 - y);
+  glVertex2d(x2 - x, 0);
+  glEnd();
+
+  if(inside) {
 	GLint t = SDL_GetTicks();
 	if(lastTick == 0 || t - lastTick > 50) {
 	  lastTick = t;
@@ -67,7 +72,7 @@ void Button::drawWidget(Widget *parent) {
 	glDisable( GL_BLEND );
   }
 
-  ((Window*)parent)->applyBorderColor();
+  applyBorderColor();
   glBegin(GL_LINES);
   glVertex2d(0, 0);
   glVertex2d(0, y2 - y);
@@ -80,7 +85,13 @@ void Button::drawWidget(Widget *parent) {
   glEnd();
 
   glPushMatrix();
-  glTranslated( 5, (y2 - y) / 2 + 5, 0);
+  int ypos;
+  switch(getLabelPosition()) {
+  case TOP: ypos = 13; break;
+  case BOTTOM: ypos = (y2 - y) - 2; break;
+  default: ypos = (y2 - y) / 2 + 5;
+  }
+  glTranslated( 5, ypos, 0);
   label->drawWidget(parent);
   glPopMatrix();
 }
@@ -92,7 +103,8 @@ bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   case SDL_MOUSEMOTION:
 	break;
   case SDL_MOUSEBUTTONUP:
-	return isInside(x, y);
+	if(inside && toggle) selected = (selected ? false : true);
+	return inside;
   case SDL_MOUSEBUTTONDOWN:
 	break;
   default:
