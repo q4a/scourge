@@ -186,7 +186,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       message_dialog->setVisible(false);
     }
     if(w) {
-      sdlHandler->getSound()->playSound(Window::ACTION_SOUND);
+      if(w->hasSound()) sdlHandler->getSound()->playSound(Window::ACTION_SOUND);
       return w;
     }
     

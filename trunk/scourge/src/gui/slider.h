@@ -28,16 +28,19 @@
 
 class Slider : public Widget {
  private:
-  int x2, y2;
+  int x2;
   int minValue, maxValue;
   Label *label;
   bool inside; // was the last event inside the button?
   bool dragging;
   int pos;
+  float alpha, alphaInc;
+  GLint lastTick;
+  GLuint highlight;
 
  public: 
 
-  Slider(int x1, int y1, int x2, int y2, int minValue=0, int maxValue=100, char *label=NULL);
+  Slider(int x1, int y1, int x2, GLuint highlight, int minValue=0, int maxValue=100, char *label=NULL);
   ~Slider();
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void removeEffects(Widget *parent);
@@ -47,9 +50,14 @@ class Slider : public Widget {
     return (int)((float)(pos * (maxValue - minValue)) / (float)getWidth());
   }
 
+  void setValue(int n);
+
   inline int getStep() {
     return (int)((float)getWidth() / (float)(maxValue - minValue));
   }
+
+  // don't play sound when the value changes
+  virtual inline bool hasSound() { return false; }
 
 };
 
