@@ -223,6 +223,13 @@ const char *Constants::MAGIC_ITEM_NAMES[] = {
   "Lesser", "Greater", "Champion", "Divine"
 };
 
+const Color Constants::MAGIC_ITEM_COLOR[] = {
+  { 0.2f, 0.85f, 0.3f, 1 },
+  { 0.2f, 0.3f, 0.85f, 1 },
+  { 0.85f, 0.2f, 0.3f, 1 },
+  { 0.85f, 0.2f, 0.85f, 1 }
+};
+
 const char *Constants::EFFECT_NAMES[] = {
   "EFFECT_FLAMES", "EFFECT_GLOW", "	EFFECT_TELEPORT", "EFFECT_GREEN", "EFFECT_EXPLOSION", 
   "EFFECT_SWIRL", "EFFECT_CAST_SPELL", "EFFECT_RING", "EFFECT_RIPPLE"

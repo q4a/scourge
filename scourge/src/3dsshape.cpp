@@ -345,7 +345,6 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
 }
 
 void C3DSShape::draw() {
-
   if(!initialized) {
     cerr << "*** Warning: shape not intialized. name=" << getName() << endl;
   }
@@ -363,27 +362,38 @@ void C3DSShape::draw() {
 
   glPushMatrix();
 
-  // ***
-  //  glDisable( GL_CULL_FACE );
-  // ***
-
-  //  glEnable( GL_CULL_FACE );
-  // glCullFace( GL_FRONT );
-
-  //  glScalef( div, div, div );
-  //  glTranslatef( -movex, -movey, -movez );
   glTranslatef(-movex * div, 0.0f, 0.0f);
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * div), 0.0f);
-//  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
   glTranslatef(0.0f, 0.0f, movez);
 
   glCallList( displayListStart + (useShadow ? 1 : 0) );
 
   glPopMatrix();
   if (!useShadow) glEnable(GL_TEXTURE_2D);
-  // ***
-  // glEnable( GL_CULL_FACE );
-  // ***
+}
+
+void C3DSShape::outline( float r, float g, float b ) {
+  useShadow = true;
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glPolygonMode( GL_FRONT, GL_LINE );
+  glLineWidth( 4 );
+  glEnable( GL_CULL_FACE );
+  glCullFace( GL_BACK );
+  //glEnable( GL_DEPTH_TEST );
+  //GLint df;
+  //glGetIntegerv( GL_DEPTH_FUNC, &df );
+  //glDepthFunc( GL_GEQUAL );
+  glColor3f( r, g, b );  
+  draw();
+  glLineWidth( 1 );
+  //glDepthFunc( df );
+  //glCullFace( GL_BACK );
+  glDisable( GL_CULL_FACE );
+  glPolygonMode( GL_FRONT, GL_FILL );
+  glDisable( GL_BLEND );
+  useShadow = false;
+  glColor4f(1, 1, 1, 0.9f);
 }
 
 void C3DSShape::setupBlending() { 

@@ -1256,44 +1256,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     shape->draw();
   } else if( later && later->item && later->item->isMagicItem() && !useShadow ) {
     
-
-    // outline the shape
-    ((GLShape*)shape)->useShadow = true;
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPolygonMode( GL_FRONT, GL_LINE );
-    glLineWidth( 4 );
-    glEnable( GL_CULL_FACE );
-    glCullFace( GL_BACK );
-    //glEnable( GL_DEPTH_TEST );
-    //GLint df;
-    //glGetIntegerv( GL_DEPTH_FUNC, &df );
-    //glDepthFunc( GL_GEQUAL );
-    switch( later->item->getMagicLevel() ) {
-    case Constants::LESSER_MAGIC_ITEM:
-      glColor3f( 0.2f, 0.85f, 0.3f ); break;
-    case Constants::GREATER_MAGIC_ITEM:
-      glColor3f( 0.2f, 0.3f, 0.85f ); break;
-    case Constants::CHAMPION_MAGIC_ITEM:
-      glColor3f( 0.85f, 0.2f, 0.3f ); break;
-    case Constants::DIVINE_MAGIC_ITEM:
-      glColor3f( 0.85f, 0.2f, 0.85f ); break;
-    }
-    
-    shape->draw();
-
-    glLineWidth( 1 );
-    //glDepthFunc( df );
-    //glCullFace( GL_BACK );
-    glDisable( GL_CULL_FACE );
-    glPolygonMode( GL_FRONT, GL_FILL );
-    glDisable( GL_BLEND );
-    ((GLShape*)shape)->useShadow = false;
-    glColor4f(1, 1, 1, 0.9f);
-
-    //glDisable( GL_DEPTH_TEST );
-    //shape->draw();
-    //glEnable( GL_DEPTH_TEST );
+    shape->outline( &(Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ]) );
 
     shape->draw();
 
