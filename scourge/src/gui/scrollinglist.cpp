@@ -21,7 +21,8 @@
   */
 ScrollingList::ScrollingList(int x, int y, int w, int h,
                              GLuint highlight, 
-                             DragAndDropHandler *dragAndDropHandler) : Widget(x, y, w, h) {
+                             DragAndDropHandler *dragAndDropHandler, 
+                             int lineHeight ) : Widget(x, y, w, h) {
   value = 0;
   count = 0;
   scrollerWidth = 20;
@@ -36,6 +37,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   selectedLine = -1;
   scrollerHeight = h;
   this->dragAndDropHandler = dragAndDropHandler;
+  this->lineHeight = lineHeight;
   this->innerDrag = false;
   this->list = NULL;
   this->colors = NULL;
@@ -54,7 +56,7 @@ void ScrollingList::setLines(int count, const char *s[], const Color *colors, co
   this->colors = colors;
   this->icons = icons;
   this->count = count;
-  listHeight = count * 15 + 5;
+  listHeight = count * lineHeight + 5;
   scrollerHeight = (listHeight <= getHeight() ? 
 					getHeight() : 
 					(getHeight() * getHeight()) / listHeight);
@@ -96,16 +98,16 @@ void ScrollingList::drawWidget(Widget *parent) {
         applySelectionColor();
       }
       glBegin( GL_QUADS );
-      glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
-      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * 15 + 5));
-      glVertex2d(w, textPos + ((selectedLine + 1) * 15 + 5));
-      glVertex2d(w, textPos + (selectedLine * 15) + 3);
+      glVertex2d(scrollerWidth, textPos + (selectedLine * lineHeight) + 3);
+      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * lineHeight + 5));
+      glVertex2d(w, textPos + ((selectedLine + 1) * lineHeight + 5));
+      glVertex2d(w, textPos + (selectedLine * lineHeight) + 3);
       glEnd();
     }
-    
+
     // draw the contents
     if(!colors) {
-      
+
       if( theme->getWindowText() ) {
         glColor4f( theme->getWindowText()->r,
                    theme->getWindowText()->g,
@@ -114,14 +116,14 @@ void ScrollingList::drawWidget(Widget *parent) {
       } else {
         applyColor();
       }
-	}
+    }
     int ypos;
     for(int i = 0; i < count; i++) {
-      ypos = textPos + (i + 1) * 15;
+      ypos = textPos + (i + 1) * lineHeight;
       // writing text is expensive, only print what's visible
-      if(ypos >= 0 && ypos < getHeight()) {
-		if(icons) drawIcon( scrollerWidth + 5, ypos - 10, icons[i] );
-		if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
+      if( ypos >= 0 && ypos < getHeight() + lineHeight ) {
+        if(icons) drawIcon( scrollerWidth + 5, ypos - (lineHeight - 5), icons[i] );
+        if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
         else if( i == selectedLine && theme->getSelectionText() ) {
           glColor4f( theme->getSelectionText()->r,
                      theme->getSelectionText()->g,
@@ -137,10 +139,10 @@ void ScrollingList::drawWidget(Widget *parent) {
             applyColor();
           }
         }
-		((Window*)parent)->getSDLHandler()->texPrint(scrollerWidth + (icons ? 20 : 5), ypos, list[i]);
+        ((Window*)parent)->getSDLHandler()->texPrint(scrollerWidth + (icons ? (lineHeight + 5) : 5), ypos, list[i]);
       }
     }
-    
+
     if(selectedLine > -1) {
       if( theme->getButtonBorder() ) {
         glColor4f( theme->getButtonBorder()->color.r,
@@ -151,13 +153,13 @@ void ScrollingList::drawWidget(Widget *parent) {
         applyBorderColor();
       }
       glBegin(GL_LINES);
-      glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
-      glVertex2d(w, textPos + (selectedLine * 15) + 3);
-      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * 15 + 5));
-      glVertex2d(w, textPos + ((selectedLine + 1) * 15 + 5));
+      glVertex2d(scrollerWidth, textPos + (selectedLine * lineHeight) + 3);
+      glVertex2d(w, textPos + (selectedLine * lineHeight) + 3);
+      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * lineHeight + 5));
+      glVertex2d(w, textPos + ((selectedLine + 1) * lineHeight + 5));
       glEnd();
     }
-    
+
     glDisable( GL_SCISSOR_TEST );
   }
   drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
@@ -198,8 +200,12 @@ void ScrollingList::drawWidget(Widget *parent) {
 
 void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
   glEnable(GL_TEXTURE_2D);
-  float n = 12;
-  glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+  float n = lineHeight - 3;
+  //glEnable( GL_BLEND );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  //glEnable( GL_ALPHA_TEST );
+  //glAlphaFunc( GL_NOTEQUAL, 0 );
+  glColor3f( 1.0f, 1.0f, 1.0f );
   if(icon) glBindTexture( GL_TEXTURE_2D, icon );
 	
   glPushMatrix();
@@ -216,14 +222,16 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
   glVertex3f( n, 0, 0 );
   glEnd();
   glPopMatrix();
-  
+
+  //glDisable( GL_BLEND );
+  //glDisable( GL_ALPHA_TEST );
   glDisable(GL_TEXTURE_2D);
 }
 
 void ScrollingList::selectLine(int x, int y) {
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   int oldLine = selectedLine;
-  selectedLine = (int)((float)(y - (getY() + textPos)) / 15.0);
+  selectedLine = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
   if(!list || count == 0 || selectedLine < 0 || selectedLine >= count) {
     selectedLine = oldLine;
   }

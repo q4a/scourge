@@ -30,6 +30,7 @@ Inventory::Inventory(Scourge *scourge) {
   // allocate strings for list
   this->itemColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  this->itemIcon = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
   }
@@ -95,7 +96,7 @@ Inventory::Inventory(Scourge *scourge) {
   coinsLabel = cards->createLabel(300, 170, NULL, INVENTORY);
   cards->createLabel(115, 170, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
 
-  invList = new ScrollingList(115, 15, 295, 140, scourge->getShapePalette()->getHighlightTexture(), this);
+  invList = new ScrollingList(115, 15, 295, 140, scourge->getShapePalette()->getHighlightTexture(), this, 30);
   cards->addWidget(invList, INVENTORY);
   cards->createLabel(115, 430, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 
@@ -626,14 +627,16 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
         itemColor[t].b = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->b;
       }
       itemColor[t].a = 1;
-    }
+      itemIcon[t] = scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ];
+    }    
     for(int t = selectedP->getInventoryCount(); 
        t < MAX_INVENTORY_SIZE; t++) {
       strcpy(pcInvText[t], "");
     }
     invList->setLines(selectedP->getInventoryCount(), 
                       (const char **)pcInvText,
-                      itemColor);
+                      itemColor, 
+                      itemIcon);
     /*
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = selectedP->getEquippedInventory(i);

@@ -50,12 +50,13 @@ class ScrollingList : public Widget {
   bool highlightBorders;
   GLuint highlight;
   bool canGetFocusVar;
+  int lineHeight;
 
  public: 
 
    bool debug;
 
-  ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL);
+  ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL, int lineHeight=15);
   virtual ~ScrollingList();
 
   inline int getLineCount() { return count; }

@@ -262,7 +262,6 @@ void MainMenu::drawView() {
 
 
 
-
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
 }

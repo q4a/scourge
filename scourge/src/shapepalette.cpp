@@ -510,7 +510,12 @@ void ShapePalette::initialize() {
   }
 
   // set up the cursor
-  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 32, 32 );
+  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 32, 32, 108, 108, 71, 80, 80, 80 );
+  for( int x = 0; x < 20; x++ ) {
+    for( int y = 0; y < 18; y++ ) {
+      tilesTex[x][y] = loadGLTextureBGRA( 32, 32, tilesImage[x][y], GL_LINEAR );
+    }
+  }
   
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
@@ -857,13 +862,15 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
 
 /* function to load in bitmap as a GL texture */
 GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
+  return loadGLTextureBGRA( surface->w, surface->h, image, glscale );
+}
 
+GLuint ShapePalette::loadGLTextureBGRA(int w, int h, GLubyte *image, int glscale) {
   if(session->getGameAdapter()->isHeadless()) return 0;
 
   GLuint texture[1];
 
-  Constants::checkTexture("ShapePalette::loadGLTextureBGRA", 
-                          surface->w, surface->h);
+  //Constants::checkTexture("ShapePalette::loadGLTextureBGRA", w, h);
 
   /* Create The Texture */
   glGenTextures( 1, &texture[0] );
@@ -878,7 +885,7 @@ GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int
 //                surface->w, surface->h, 0, 
 //                GL_BGRA, GL_UNSIGNED_BYTE, image );
   gluBuild2DMipmaps(GL_TEXTURE_2D, 4,
-                    surface->w, surface->h,
+                    w, h,
                     GL_BGRA, GL_UNSIGNED_BYTE, image);
   return texture[0];
 }
@@ -942,7 +949,8 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
 void ShapePalette::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surface, 
                                              GLubyte *image[20][20], int imageWidth, int imageHeight,
                                              int tileWidth, int tileHeight, 
-                                             int red, int green, int blue ) {
+                                             int red, int green, int blue,
+                                             int nred, int ngreen, int nblue ) {
   if(session->getGameAdapter()->isHeadless()) return;
   
   cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
@@ -978,7 +986,7 @@ void ShapePalette::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surfa
         // where the tile ends in a line
         int rest = ( x + 1 ) * tileWidth * (*surface)->format->BytesPerPixel;
         int c = offs + ( y * tileHeight * (*surface)->pitch );
-        unsigned char r,g,b;
+        unsigned char r,g,b,n;
         // the following lines extract R,G and B values from any bitmap
         for(int i = 0; i < tileWidth * tileHeight; ++i) {
 
@@ -989,13 +997,24 @@ void ShapePalette::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surfa
             c += offs;
           }
 
-          r = data[c++];
-          g = data[c++];
-          b = data[c++];
+          // FIXME: make this more generic...
+          if( (*surface)->format->BytesPerPixel == 1 ) {
+            n = data[c++];
+            r = (*surface)->format->palette->colors[n].b;
+            g = (*surface)->format->palette->colors[n].g;
+            b = (*surface)->format->palette->colors[n].r;
+          } else {
+            r = data[c++];
+            g = data[c++];
+            b = data[c++];
+          }
+
+          //if( i == 0 ) cerr << "r=" << (int)(r) << " g=" << (int)(g) << " b=" << (int)(b) << endl;
           
-          image[x][y][count++] = r;
-          image[x][y][count++] = g;
-          image[x][y][count++] = b;
+          image[x][y][count++] = ( r == red && nred > -1 ? nred : r );
+          image[x][y][count++] = ( g == green && ngreen > -1 ? ngreen : g );
+          image[x][y][count++] = ( b == blue && nblue > -1 ? nblue : b );
+
           //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
           //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
           image[x][y][count++] = (GLubyte)( ((int)r == blue && 

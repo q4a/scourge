@@ -108,6 +108,7 @@ class RpgItem {
   int potionTime;
   GLuint acl; // 1 bit per character class
   bool isWeaponItem;
+  int iconTileX, iconTileY;
 
   static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
   static map<string, const RpgItem *> itemsByName;
@@ -150,7 +151,7 @@ class RpgItem {
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
 		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0,
-		  int potionSkill=-1, int potionTime=0);
+		  int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0);
   ~RpgItem();
 
 
@@ -180,6 +181,8 @@ class RpgItem {
   inline void setAllAcl(bool value) { if(value) acl = (GLuint)0xffff; else acl = (GLuint)0; }
   inline GLuint getAllAcl() { return acl; }
   inline bool isWeapon() { return this->isWeaponItem; }
+  inline int getIconTileX() { return this->iconTileX; }
+  inline int getIconTileY() { return this->iconTileY; }
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs
