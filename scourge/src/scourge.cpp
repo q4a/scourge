@@ -149,6 +149,7 @@ void Scourge::startMission() {
 
   // create the map
   map = new Map(this);
+  player_only = false;
 
   map->addDescription(Constants::getMessage(Constants::WELCOME));
   map->addDescription("----------------------------------");
