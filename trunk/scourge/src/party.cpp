@@ -351,6 +351,14 @@ Creature **Party::createHardCodedParty() {
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Speed")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Coordination")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Power")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of IQ")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Leadership")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Luck")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Piety")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Potion of Lore")));
 
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));

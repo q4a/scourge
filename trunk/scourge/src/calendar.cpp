@@ -17,6 +17,7 @@
 
 #include "calendar.h"
 
+//#define CALENDAR_DEBUG 1
 
 Calendar *Calendar::instance = NULL;
 
