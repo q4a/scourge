@@ -61,6 +61,8 @@ class Battle {
   bool empty;
   bool projectileHit;
   Spell *spell;
+  int weaponWait;
+  float range;
 
   int ap, startingAp;
   bool paused;
@@ -114,6 +116,11 @@ class Battle {
   void executeEatDrinkAction();
   // return true if game paused
   bool pauseBeforePlayerTurn();
+  void initTurnStep();
+  void executeAction();
+  void stepCloserToTarget();
+  bool selectNewTarget();
+  void moveCreature();
 };
 
 #endif
