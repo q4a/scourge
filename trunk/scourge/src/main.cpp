@@ -55,12 +55,9 @@ void findResources(const char *appPath) {
 }
 
 int main(int argc, char *argv[]) {
-	 fprintf(stderr, "argv[0]=%s\n", argv[0]);
-	 findResources(argv[0]);
-  if(argc > 1 && !strcmp(argv[1], "--fullscreen")) {
-    new Scourge(800, 600, 32, true);
-  } else {
-    new Scourge(800, 600, 32, false);
-  }
+  fprintf(stderr, "argv[0]=%s\n", argv[0]);
+  findResources(argv[0]);
+  fprintf(stderr, "\n");
+  new Scourge(argc, argv);
   return EXIT_SUCCESS;
 }

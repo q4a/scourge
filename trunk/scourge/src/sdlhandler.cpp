@@ -152,71 +152,183 @@ int SDLHandler::initGL( GLvoid ) {
     return( TRUE );
 }
 
-void SDLHandler::setVideoMode(int w, int h, int bpp, bool fullscreen) {
-    /* this holds some info about our display */
-    const SDL_VideoInfo *videoInfo;
+void testModesInFormat(SDL_PixelFormat *format, Uint32 flags) {
+  SDL_Rect **modes;
+  int i;
 
-    /* initialize SDL */
-    if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
-	    fprintf( stderr, "Video initialization failed: %s\n", SDL_GetError( ) );
-	    quit( 1 );
-    }
+  printf("Available modes with given flags in %d bpp:\n", format->BitsPerPixel);
 
-    /* Fetch the video info */
-    videoInfo = SDL_GetVideoInfo( );
+  /* Get available fullscreen/hardware modes */
+  modes=SDL_ListModes(format, flags);
+  
+  /* Check is there are any modes available */
+  if(modes == (SDL_Rect **)0){
+	printf("\tNo modes available!\n");
+	return;
+  }
+  
+  /* Check if our resolution is restricted */
+  if(modes == (SDL_Rect **)-1){
+	printf("\tAll resolutions available.\n");
+	return;
+  }
 
-    if ( !videoInfo ) {
-	    fprintf( stderr, "Video query failed: %s\n", SDL_GetError( ) );
-      quit( 1 );
-    }
+  /* Print valid modes */
+  for(i=0;modes[i];++i)
+	printf("\t%d x %d\n", modes[i]->w, modes[i]->h);
 
-    /* the flags to pass to SDL_SetVideoMode */
-    videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
-    videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
-    videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
-    videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
+  //free(modes); // crashes; ok to not free since we quit after this
+}
 
-    /* This checks to see if surfaces can be stored in memory */
-    if ( videoInfo->hw_available ) videoFlags |= SDL_HWSURFACE;
-    else videoFlags |= SDL_SWSURFACE;
+void testModes(Uint32 flags) {
+  SDL_PixelFormat format;
+  
+  format.BitsPerPixel=8;
+  testModesInFormat(&format, flags);
+  format.BitsPerPixel=15;
+  testModesInFormat(&format, flags);
+  format.BitsPerPixel=16;
+  testModesInFormat(&format, flags);
+  format.BitsPerPixel=24;
+  testModesInFormat(&format, flags);
+  format.BitsPerPixel=32;
+  testModesInFormat(&format, flags);
+}
 
-    /* This checks if hardware blits can be done */
-    if ( videoInfo->blit_hw ) videoFlags |= SDL_HWACCEL;
+void SDLHandler::setVideoMode(int argc, char *argv[]) {
+  bool fullscreen = false;
+  bool doublebuf = true;
+  bool hwpal = true;
+  bool resizeable = true;
+  bool force_hwsurf = false;
+  bool force_swsurf = false;
+  bool hwaccel = true;
+  bool test = false;
+  bool printusage = false;
+  int bpp = 32;
+  int w = 800;
+  int h = 600;
 
-    if(fullscreen) videoFlags |= SDL_FULLSCREEN;
+  // interpret command line args
+  for(int i = 1; i < argc; i++) {
+	if(strstr(argv[i], "--bpp") == argv[i]) {	  
+	  bpp = atoi(argv[i] + 5);
+	  if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
+		printf("Error: bad bpp=%d\n", bpp);
+		printusage = true;
+	  }
+	} else if(!strcmp(argv[i], "--test")) {
+	  test = true;
+	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
+	  for(int t = 1; t < strlen(argv[i]); t++) {
+		switch(argv[i][t]) {
+		case 'h': case '?': printusage = true; break;
+		case 'f': fullscreen = true; break;
+		case 'd': doublebuf = false; break;
+		case 'p': hwpal = false; break;
+		case 'r': resizeable = false; break;
+		case 'H': force_hwsurf = true; break;
+		case 'S': force_swsurf = true; break;
+		case 'a': hwaccel = false; break;
+		}
+	  }
+	} else {
+	  printusage = true;
+	}
+  }
 
-    /* Sets up OpenGL double buffering */
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-    SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+  if(printusage) {
+	printf("scourge [-fdprHSa?h] [--test] [--bppXX] [--help]\n");
+	printf("\nOptions:\n");
+	printf("\tf - fullscreen mode\n");
+	printf("\td - disable double buffering\n");
+	printf("\tp - disable hardware palette\n");
+	printf("\tr - disable resizable window\n");
+	printf("\tH - force hardware surface\n");
+	printf("\tS - force software surface\n");
+	printf("\ta - disable hardware acceleration\n");
+	printf("\th,?,--help - show this info\n");
+	printf("\t--test - list card's supported video modes\n");
+	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
+	printf("\nBy default (with no options):\n\tfullscreen mode is off\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available.\n\n");
+	exit(0);
+  }
 
-    /* get a SDL surface */
-    screen = SDL_SetVideoMode( w, h, bpp, videoFlags );
+  /* this holds some info about our display */
+  const SDL_VideoInfo *videoInfo;
+  
+  /* initialize SDL */
+  if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+	fprintf( stderr, "Video initialization failed: %s\n", SDL_GetError( ) );
+	quit( 1 );
+  }
+  
+  /* Fetch the video info */
+  videoInfo = SDL_GetVideoInfo( );
+  
+  if ( !videoInfo ) {
+	fprintf( stderr, "Video query failed: %s\n", SDL_GetError( ) );
+	quit( 1 );
+  }
+  
+  /* the flags to pass to SDL_SetVideoMode */
+  videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
+  if(doublebuf)
+	videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
+  if(hwpal)
+	videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
+  if(resizeable)
+	videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
+  
+  /* This checks to see if surfaces can be stored in memory */
+  if(force_hwsurf) videoFlags |= SDL_HWSURFACE;
+  else if(force_swsurf) videoFlags |= SDL_SWSURFACE;
+  else {
+	if ( videoInfo->hw_available ) videoFlags |= SDL_HWSURFACE;
+	else videoFlags |= SDL_SWSURFACE;
+  }
+  
+  /* This checks if hardware blits can be done */
+  if ( hwaccel && videoInfo->blit_hw ) videoFlags |= SDL_HWACCEL;
+  
+  if(fullscreen) videoFlags |= SDL_FULLSCREEN;
+
+  if(test) {
+	testModes(videoFlags);
+	quit(0);
+  }
+  
+  /* Sets up OpenGL double buffering */
+  if(doublebuf)
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+  SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+
+  cout << "Setting video mode: " << w << "x" << h << "x" << bpp << endl;
+  
+  /* get a SDL surface */
+  screen = SDL_SetVideoMode( w, h, bpp, videoFlags );
     
-    int value;
-    SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE , &value);
-    fprintf(stderr,"SDL_GL_STENCIL_SIZE = %d\n",value);
-
-    /* hide the mouse cursor; we have our own */
-    SDL_ShowCursor(SDL_DISABLE);
-    SDL_WM_SetCaption("Scourge", NULL);
-
-    /* Verify there is a surface */
-    if ( !screen ) {
-	    fprintf( stderr,  "Video mode set failed: %s\n", SDL_GetError( ) );
-	    quit( 1 );
-    }
-	 
-	 /* for Mac OS X in windowed mode, invert the mouse. SDL bug. */
+  /* hide the mouse cursor; we have our own */
+  SDL_ShowCursor(SDL_DISABLE);
+  SDL_WM_SetCaption("Scourge", NULL);
+  
+  /* Verify there is a surface */
+  if ( !screen ) {
+	fprintf( stderr,  "Video mode set failed: %s\n", SDL_GetError( ) );
+	quit( 1 );
+  }
+  
+  /* for Mac OS X in windowed mode, invert the mouse. SDL bug. */
 #ifdef __APPLE__
-	 if(!fullscreen)
-		  invertMouse = true;
+  if(!fullscreen)
+	invertMouse = true;
 #endif	 
-
-    /* initialize OpenGL */
-    initGL( );
-
-    /* resize the initial window */
-    resizeWindow( screen->w, screen->h );
+  
+  /* initialize OpenGL */
+  initGL( );
+  
+  /* resize the initial window */
+  resizeWindow( screen->w, screen->h );
 }
 
 void SDLHandler::mainLoop() {
