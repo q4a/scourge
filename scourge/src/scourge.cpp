@@ -99,6 +99,10 @@ Scourge::Scourge(int argc, char *argv[]){
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
   party = new Party(this);  
+
+  netPlay = new NetPlay();
+  netPlay->setScourge(this);
+
   createUI();
 
   move = 0;
@@ -138,7 +142,7 @@ Scourge::Scourge(int argc, char *argv[]){
         if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
           if(!server) {
             server = new Server(serverPort);
-            server->setGameStateHandler(this);
+            server->setGameStateHandler(netPlay);
           }
           port = serverPort; 
           host = Constants::localhost;
@@ -152,8 +156,8 @@ Scourge::Scourge(int argc, char *argv[]){
           delete client;
           client = NULL;
         }
-        client = new Client((char*)host, port, (char*)username, this);
-        client->setGameStateHandler(this);
+        client = new Client((char*)host, port, (char*)username, (CommandInterpreter*)netPlay);
+        client->setGameStateHandler(netPlay);
         if(!client->login()) {
           cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
           showMessageDialog(Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR));
@@ -185,6 +189,7 @@ Scourge::~Scourge(){
   delete board;
   delete miniMap;
   delete map;
+  delete netPlay;
 }
 
 void Scourge::startMission() {
@@ -1875,24 +1880,25 @@ Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   return p;
 }
 
-char *Scourge::getGameState() {
-  return "abc";
-}
-
 #ifdef HAVE_SDL_NET
 void Scourge::runServer(int port) {
+  NetPlay *np = new NetPlay();
+  np->setScourge(this);
   server = new Server(port ? port : DEFAULT_SERVER_PORT);
-  server->setGameStateHandler(this);
+  server->setGameStateHandler(np);
   
   // wait for the server to quit
   int status;
   SDL_WaitThread(server->getThread(), &status);
+
+  delete np;
 }
 
 void Scourge::runClient(char *host, int port, char *userName) {
   CommandInterpreter *ci = new TestCommandInterpreter();
+  GameStateHandler *gsh = new TestGameStateHandler();
   client = new Client((char*)host, port, (char*)userName, ci);
-  client->setGameStateHandler(this);
+  client->setGameStateHandler(gsh);
   if(!client->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
     return;
@@ -1910,26 +1916,7 @@ void Scourge::runClient(char *host, int port, char *userName) {
   }  
 
   delete ci;
+  delete gsh;
 }
 #endif
-
-void Scourge::chat(char *message) {
-  cout << message << endl;
-}
-
-void Scourge::logout() {
-  cout << "Logout." << endl;
-}
-
-void Scourge::ping(int frame) {
-  cout << "Ping." << endl;
-}
-
-void Scourge::processGameState(int frame, char *p) {
-  cout << "Game state: frame=" << frame << " state=" << p << endl;
-}
-
-void Scourge::handleUnknownMessage() {
-  cout << "Unknown message received." << endl;
-}
 
