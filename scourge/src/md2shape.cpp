@@ -75,9 +75,11 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   // Animation stuff
   elapsedTime = 0.0f;
   lastTime = 0.0f;  
-  pauseAnimation = false;
+  pauseAnimation = false;  
   currentAnim = MD2_STAND;
-  currentFrame = 1;                
+  currentFrame = 1;
+  playedOnce = true;
+  animationWaiting = -1;                
   
 
   vect = new vect3d [g_3DModel->numVertices]; 
@@ -91,11 +93,23 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
 
 
 void MD2Shape::setCurrentAnimation(int numAnim){    
-    if(numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){                
-        if(numAnim != currentAnim) {            
+    if(numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){
+        if(playedOnce){
             currentAnim = numAnim;                
-            currentFrame = g_3DModel->pAnimations[currentAnim].startFrame;                      
-        }                            
+            currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
+                                     
+            // MD2_STAND animation is too long, so we make it "interruptible"
+            if(currentAnim != MD2_STAND){
+                playedOnce = false;                    
+            }                
+        }
+        else{
+            // if animationWaiting != -1 there is already an animation waiting
+            // and we store only one at a time
+            if(animationWaiting == -1){
+                animationWaiting = currentAnim;
+            }
+        }
     }
 }
 
@@ -130,14 +144,9 @@ void MD2Shape::draw() {
       glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
   }  
    
-  AnimateMD2Model();
-  //string s;
-  //s = g_3DModel.pMaterials[0].strFile;
-  //s = s.substr(s.size()-6, 6);
-  //int numAnim = g_3DModel.currentAnim;
-  //cout << s << " " << g_3DModel.pAnimations[numAnim].strName << " frame " << g_3DModel.currentFrame <<       
-  //      "/" << g_3DModel.pAnimations[numAnim].endFrame << endl; 
-  //
+  AnimateMD2Model();      
+  cout << textureId << " " << g_3DModel->pAnimations[currentAnim].strName << " frame " << currentFrame <<       
+        "/" << g_3DModel->pAnimations[currentAnim].endFrame << endl; 
  
   glDisable(GL_CULL_FACE);
   glPopMatrix();    
@@ -174,15 +183,28 @@ void MD2Shape::AnimateMD2Model()
     tAnimationInfo *pAnim = &(g_3DModel->pAnimations[currentAnim]);
     int nextFrame = (currentFrame + 1) % pAnim->endFrame;
     
-    // If next frame == 0, we need to start the animation over
+    // MD2_STAND and MD2_TAUNT animations must be played only once 
     if(nextFrame == 0){        
         nextFrame =  pAnim->startFrame;
+        playedOnce = true;        
 		if(currentAnim == MD2_ATTACK) {
-		  setCurrentAnimation(MD2_STAND);
+		  if(animationWaiting == - 1){
+    		  setCurrentAnimation(MD2_STAND);
+		  }
+		  else{
+		      setCurrentAnimation(animationWaiting);
+		      animationWaiting = -1;
+          }
 		  setAttackEffect(false);
 		}
         else if(currentAnim == MD2_TAUNT) {
-		  setCurrentAnimation(MD2_STAND);
+          if(animationWaiting == - 1){
+    		  setCurrentAnimation(MD2_STAND);
+		  }
+		  else{
+		      setCurrentAnimation(animationWaiting);
+		      animationWaiting = -1;
+          }
 		}
     } 
 

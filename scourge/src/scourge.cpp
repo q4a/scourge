@@ -1235,7 +1235,7 @@ void Scourge::playRound() {
   // change animation if needed
   for(int i = 0; i < 4; i++) {
 	if(((MD2Shape*)(party[i]->getShape()))->getAttackEffect()) {
-	  party[i]->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+	  party[i]->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
 	} else if(party[i]->anyMovesLeft())
 	  party[i]->getShape()->setCurrentAnimation((int)MD2_RUN);
 	else 
@@ -1386,6 +1386,8 @@ void Scourge::fightBattle() {
 				map->addDescription(message, 1.0f, 0.5f, 0.5f);
 				
 				if(creature->getTargetCreature()->takeDamage(damage)) {
+				  cout<< "TAUNT ANIMATION START : " << creature->getName() << endl;  
+				  creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
 				  sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 				  map->addDescription(message, 1.0f, 0.5f, 0.5f);
 				  creatureDeath(creature->getTargetCreature());
