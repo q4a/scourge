@@ -265,10 +265,10 @@ void Scourge::startMission() {
       getSession()->setCurrentMission(board->getMission(nextMission));
       missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
       cerr << "Starting mission: level="  << getSession()->getCurrentMission()->getLevel() << 
-      " stories=" << getSession()->getCurrentMission()->getDungeonStoryCount() << 
+      " depth=" << getSession()->getCurrentMission()->getDepth() << 
       " current story=" << currentStory << endl;
       dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
-                                (currentStory < getSession()->getCurrentMission()->getDungeonStoryCount() - 1), 
+                                (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
                                 (currentStory > 0),
                                 getSession()->getCurrentMission());
       dg->toMap(levelMap, getShapePalette());
@@ -3031,7 +3031,7 @@ int Scourge::handleBoardEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == missionList) {
     int selected = missionList->getSelectedLine();
     if(selected != -1 && selected < board->getMissionCount()) {
-      missionDescriptionLabel->setText((char*)(board->getMission(selected)->getStory()));
+      missionDescriptionLabel->setText((char*)(board->getMission(selected)->getDescription()));
     }
     return Board::EVENT_HANDLED;
   } else if(widget == playMission) {

@@ -19,12 +19,14 @@
 #define BOARD_H
 
 #include "constants.h"
-#include "session.h"
-#include "rpg/rpgitem.h"
-#include "rpg/monster.h"
 #include <map>
+#include <vector>
 
 using namespace std;
+
+class Item;
+class Creature;
+class Session;
 
 /**
   *@author Gabor Torok
@@ -33,6 +35,83 @@ using namespace std;
 #define BOARD_GUI_WIDTH 400
 #define BOARD_GUI_HEIGHT 400
 
+
+class Mission {
+private:
+  int level;
+  int depth;
+  char name[80];
+  char description[2000];
+  char success[2000];
+  char failure[2000];
+  map<Item*, bool> items;
+  vector<Item*> itemList;
+  map<Creature*, bool> creatures;
+  vector<Creature*> creatureList;
+  bool completed;
+public:
+  Mission( int level, int depth, char *name, char *description, char *success, char *failure );
+  ~Mission();
+
+  inline void addCreature( Creature *creature ) {
+    creatures[creature] = false;
+    creatureList.push_back( creature );
+  }
+
+  inline void addItem( Item *item ) {
+    items[item] = false;
+    itemList.push_back( item );
+  }
+
+  inline bool isCompleted() { return completed; }
+  inline char *getName() { return name; }
+  inline char *getDescription() { return description; }
+  inline char *getSuccess() { return success; }
+  inline char *getFailure() { return failure; }
+  inline int getLevel() { return level; }
+  inline int getDepth() { return depth; }  
+  void reset();
+
+  // these return true if the mission has been completed
+  bool itemFound(Item *item);
+  bool creatureSlain(Creature *creature);
+
+  int getItemCount() { return (int)itemList.size(); }
+  Item *getItem( int index ) { return itemList[ index ]; }
+  bool getItemHandled( int index ) { return items[ itemList[ index ] ]; }
+  int getCreatureCount() { return (int)creatureList.size(); }
+  Creature *getCreature( int index ) { return creatureList[ index ]; }
+  bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
+ private:
+  void checkMissionCompleted();
+
+};
+
+
+class MissionTemplate {
+private:
+  char name[80];
+  char description[2000];
+public:
+  MissionTemplate( char *name, char *description );
+  ~MissionTemplate();
+  Mission *createMission( Session *session, int level, int depth );
+private:
+  void parseText( Session *session, int level, 
+                  char *text, char *parsedText,
+                  map<string, Item*> *items, 
+                  map<string, Creature*> *creatures );
+};
+
+
+
+
+
+
+
+
+
+/*
 // mission objectives
 enum {
   FIND_OBJECT = 0,
@@ -86,14 +165,25 @@ class Mission {
  private:
   void checkMissionCompleted();
 };
+*/
+
+
+
+
+
+
+
+
+
 
 class Board	{								
  private:
   Session *session;
-  vector<Mission*> availableMissions;
-  map<int, vector<Mission*>* > missions;
+  vector<MissionTemplate *> templates;
+  vector<Mission*> storylineMissions;
 
-  static char objectiveName[OBJECTIVE_COUNT][80];
+
+  vector<Mission*> availableMissions;
 
   char **missionText;
   Color *missionColor;
