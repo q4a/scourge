@@ -21,6 +21,7 @@
   */
 
 map<int, vector<Monster*>* > Monster::monsters;
+map<string, Monster*> Monster::monstersByName;
 
 Monster::Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor) {
   this->type = type;
@@ -76,8 +77,11 @@ void Monster::initMonsters() {
 	  } else {
 		list = monsters[level];
 	  }
-	  last_monster = new Monster( strdup(name), level, hp, strdup(model_name), strdup(skin_name), armor );
+	  Monster *m = new Monster( strdup(name), level, hp, strdup(model_name), strdup(skin_name), armor );
+	  last_monster = m;
 	  list->push_back(last_monster);
+	  string s = name;
+	  monstersByName[s] = m;
 	} else if(n == 'I' && last_monster) {
 	  // skip ':'
 	  fgetc(fp);
@@ -97,4 +101,13 @@ Monster *Monster::getRandomMonster(int level) {
   vector<Monster*> *list = monsters[level];
   int index = (int) ((float)(list->size()) * rand()/RAND_MAX);
   return (*list)[index];
+}
+
+Monster *Monster::getMonsterByName(char *name) {
+  string s = name;
+  if(monstersByName.find(s) == monstersByName.end()) {
+	cerr << "Warning: can't find monster " << name << endl;
+	return NULL;
+  }
+  return monstersByName[s];
 }

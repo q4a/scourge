@@ -24,6 +24,8 @@
 #include "gui/button.h"
 #include "gui/scrollinglist.h"
 #include "gui/label.h"
+#include "rpg/rpgitem.h"
+#include "rpg/monster.h"
 #include <map>
 
 using namespace std;
@@ -32,28 +34,75 @@ using namespace std;
   *@author Gabor Torok
   */
 	
-typedef	struct _Mission {
+#define BOARD_GUI_WIDTH 400
+#define BOARD_GUI_HEIGHT 400
+
+// mission objectives
+enum {
+  FIND_OBJECT = 0,
+  KILL_MONSTER,
+  
+  // must be last
+  OBJECTIVE_COUNT
+};
+
+#define MAX_OBJECTIVE_PARAM_COUNT 10
+typedef struct _MissionObjective {
+  int index;
+  char name[80];
+  int paramCount;
+  char param[MAX_OBJECTIVE_PARAM_COUNT][80];
+  int itemCount;
+  RpgItem *item[MAX_OBJECTIVE_PARAM_COUNT];
+  bool itemHandled[MAX_OBJECTIVE_PARAM_COUNT];
+  int monsterCount;  
+  Monster *monster[MAX_OBJECTIVE_PARAM_COUNT];
+  bool monsterHandled[MAX_OBJECTIVE_PARAM_COUNT];
+} MissionObjective;
+
+class Mission {
+ private:
   char name[80]; // name of mission
   int level; // what level dungeon
   int dungeonStoryCount; // how many stories
   bool completed;
   char story[2000]; // the background story of the level
-} Mission;
+  MissionObjective *objective;
 
-#define BOARD_GUI_WIDTH 400
-#define BOARD_GUI_HEIGHT 400
+ public:
+  Mission(char *name, int level, int dungeonStoryCount);
+  virtual ~Mission();
+
+  inline bool isCompleted() { return completed; }
+  inline char *getName() { return name; }
+  inline char *getStory() { return story; }
+  inline int getLevel() { return level; }
+  inline int getDungeonStoryCount() { return dungeonStoryCount; }
+  inline MissionObjective *getObjective() { return objective; }
+  inline void addToStory(char *s) { if(!strlen(story)) strcat(story, " "); strcat(story, s); }  
+  void setObjective(MissionObjective *o) { objective = o; }
+
+  // these return true if the mission has been completed
+  bool itemFound(RpgItem *item);
+  bool monsterSlain(Monster *monster);
+ private:
+  void checkMissionCompleted();
+};
 
 class Board	{								
  private:
   Scourge *scourge;
-  vector<const Mission*> availableMissions;
+  vector<Mission*> availableMissions;
   map<int, vector<Mission*>* > missions;
+
+  static char objectiveName[OBJECTIVE_COUNT][80];
 
   // gui
   ScrollingList *missionList;
   Label *missionDescriptionLabel;
   Button *playMission;
   char **missionText;
+  Color *missionColor;
  
  public:
 
@@ -67,10 +116,13 @@ class Board	{
   void initMissions();
   
   inline int getMissionCount() { return availableMissions.size(); }
-  inline const Mission *getMission(int index) { return availableMissions[index]; }
+  inline Mission *getMission(int index) { return availableMissions[index]; }
 
   int handleEvent(Widget *widget, SDL_Event *event);
   inline int getSelectedLine() { return missionList->getSelectedLine(); }
+
+ private:
+  void freeListText();
   
 };
 

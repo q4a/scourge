@@ -44,6 +44,7 @@ class Monster  {
   vector<RpgItem*> items;
 
   static map<int, vector<Monster*>* > monsters;
+  static map<string, Monster*> monstersByName;
 
 public:
   Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor=0);
@@ -63,6 +64,7 @@ public:
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);
+  static Monster *getMonsterByName(char *name);
 
  protected:
   inline void setSpeed(int speed) { this->speed = speed; }

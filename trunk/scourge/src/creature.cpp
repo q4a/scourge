@@ -462,20 +462,26 @@ void Creature::setNextDontMove(Creature *next, int index) {
 
 bool Creature::addInventory(Item *item) { 
   if(inventory_count < MAX_INVENTORY_SIZE) {    
-        inventory[inventory_count++] = item;
-        inventoryWeight += item->getRpgItem()->getWeight(); 
-         
-        if(item->getRpgItem()->getWeight() + inventoryWeight > 
-            maxInventoryWeight)
-        {
-    	    char msg[80];
-            sprintf(msg, "%s is overloaded.", getName());
-            scourge->getMap()->addDescription(msg);            
-            setStateMod(Constants::overloaded, true);
-        }
-        return true;
-  } 
-  else{
+	inventory[inventory_count++] = item;
+	inventoryWeight += item->getRpgItem()->getWeight(); 
+	
+	if(item->getRpgItem()->getWeight() + inventoryWeight > 
+	   maxInventoryWeight) {
+	  char msg[80];
+	  sprintf(msg, "%s is overloaded.", getName());
+	  scourge->getMap()->addDescription(msg);            
+	  setStateMod(Constants::overloaded, true);
+	}
+
+	// check if the mission is over
+	if(!isMonster() && 
+	   scourge->getCurrentMission() &&
+	   scourge->getCurrentMission()->itemFound(item->getRpgItem())) {
+	  scourge->missionCompleted();
+	}
+
+	return true;
+  } else{
     return false;
   }
 }
@@ -491,7 +497,7 @@ Item *Creature::removeInventory(int index) {
 	if(getStateMod(Constants::overloaded) && inventoryWeight < maxInventoryWeight)
     {
     	    char msg[80];
-            sprintf(msg, "%s is no more overloaded.", getName());
+            sprintf(msg, "%s is not overloaded anymore.", getName());
             scourge->getMap()->addDescription(msg);            
             setStateMod(Constants::overloaded, false);
     }

@@ -315,7 +315,7 @@ Creature **Party::createHardCodedParty() {
   pc[1]->setStateMod(Constants::cursed, true);      
 
   pc[2] = new Creature(scourge, Character::getCharacterByName("Summoner"), "Corinus");
-  pc[2]->setLevel(1); 
+  pc[2]->setLevel(3); 
   pc[2]->setExp(150);
   pc[2]->setHp();
   pc[2]->setHunger(3);

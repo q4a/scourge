@@ -66,6 +66,7 @@ class Board;
 class Battle;
 class Party;
 class Projectile;
+class Mission;
 
 /**
   *@author Gabor Torok
@@ -98,6 +99,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Board *board;
   int nextMission;
   bool inHq;
+  Mission *currentMission;
 
   char infoMessage[200];
 
@@ -168,6 +170,9 @@ public:
   
   Scourge(int argc, char *argv[]);
   ~Scourge();
+
+  inline Board *getBoard() { return board; }
+  inline Mission *getCurrentMission() { return currentMission; }
 
   inline void setMove(Uint16 n) { move |= n; };  
   inline void removeMove(Uint16 n) { move &= (0xffff - n); }
@@ -244,6 +249,8 @@ public:
   void showExitConfirmationDialog();
 
   Window *createWoodWindow(int x, int y, int w, int h, char *title);
+  
+  void missionCompleted();
 
  protected:
   //  void fightBattle(); 
