@@ -156,10 +156,11 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
 
           // If this is the final location, try to run into it.
           // This is used for battle mainly.
+          // Note: if it still doesn't work, use intersects( shape, pos->shape ) instead.
           Location *pos = map->getLocation( Node.x, Node.y, sz );
           if( pos && pos->shape && 
-              pos->x <= dx && pos->x + pos->shape->getWidth() >= dx &&
-              pos->y > dy && pos->y - pos->shape->getDepth() <= dy ) {
+              pos->x <= dx + ( shape->getWidth() / 2 ) && pos->x + pos->shape->getWidth() >= dx + ( shape->getWidth() / 2 ) &&
+              pos->y >= dy - ( shape->getDepth() / 2 ) && pos->y - pos->shape->getDepth() <= dy - ( shape->getDepth() / 2 ) ) {
             //cerr << "&&&& !!! " << endl;
             Node.gone = BestNode.gone + 1;
           } else {          

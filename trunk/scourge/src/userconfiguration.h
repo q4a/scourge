@@ -166,6 +166,7 @@ private:
   int w;
   int h;  
   int shadows;
+  bool alwaysShowPath;
   
   // game settings
   int gamespeed;
@@ -226,6 +227,7 @@ private:
   inline bool isSoundEnabled() { return soundEnabled; }
   inline int getMusicVolume() { return musicVolume; }
   inline int getEffectsVolume() { return effectsVolume; }
+  inline bool getAlwaysShowPath() { return alwaysShowPath; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
@@ -249,6 +251,7 @@ private:
   inline void setSoundEnabled(bool b) { soundEnabled = b; }
   inline void setMusicVolume(int n) { musicVolume = n; }
   inline void setEffectsVolume(int n) { effectsVolume = n; }
+  inline void setAlwaysShowPath( bool b ) { alwaysShowPath = b; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           
