@@ -21,8 +21,10 @@
 
 #include "shape.h"
 #include "item.h"
+#include "creature.h"
 
 // forward decl.
+class Creature;
 
 /**
   *@author Gabor Torok
@@ -34,6 +36,7 @@ public:
   Uint16 x, y, z;
   Shape *shape;
   Item *item;
+  Creature *creature;
 };
 
 #endif

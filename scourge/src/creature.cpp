@@ -89,7 +89,7 @@ bool Creature::move(Uint16 dir, Map *map) {
     oldDir = this->dir;
     this->dir = dir;    
 
-		Location *position = map->movePosition(x, y, z, dir, getShape());
+		Location *position = map->moveCreature(x, y, z, dir, this);
 		if(position == NULL) {
 			switch(dir) {
 			case Constants::MOVE_UP:
@@ -183,9 +183,9 @@ void Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz) {
       else if(getX() > location.x) dir = Constants::MOVE_LEFT;
       else if(getY() < location.y) dir = Constants::MOVE_DOWN;
       else if(getY() > location.y) dir = Constants::MOVE_UP;
-      Location *position = map->movePosition(getX(), getY(), getZ(),
+      Location *position = map->moveCreature(getX(), getY(), getZ(),
                                              location.x, location.y, getZ(),
-                                             getShape());
+                                             this);
       if(!position) {
         bestPathPos++;
         moveTo(location.x, location.y, getZ());

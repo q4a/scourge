@@ -37,7 +37,15 @@ Item *Item::items[] =  {
   new Item("Bastard sword", 200, 0, 100, 0,
            "A bookshelf containing tomes of old",
            "A large bookself",
-           ShapePalette::BOOKSHELF_INDEX)
+           ShapePalette::BOOKSHELF_INDEX),
+  new Item("Chest", 100, 0, 100, 0,
+           "A wooden chest with metal re-inforced edges",
+           "An ancient chest",
+           ShapePalette::CHEST2_INDEX),
+  new Item("Bastard sword", 200, 0, 100, 0,
+           "A bookshelf containing tomes of old",
+           "A large bookself",
+           ShapePalette::BOOKSHELF2_INDEX)
 };
 
 int Item::random_item[] = {
@@ -66,10 +74,19 @@ Item *Item::getRandomItem(int level) {
 }
 
 Item *Item::getRandomContainer() {
-  int n = (int)(5.0 * rand()/RAND_MAX);
+  int n = (int)(10.0 * rand()/RAND_MAX);
   switch(n) {
   case 0: return items[BOOKSHELF];
   case 1: return items[CHEST];
+  default: return NULL;
+  }
+}
+
+Item *Item::getRandomContainerNS() {
+  int n = (int)(10.0 * rand()/RAND_MAX);
+  switch(n) {
+  case 0: return items[BOOKSHELF2];
+  case 1: return items[CHEST2];
   default: return NULL;
   }
 }

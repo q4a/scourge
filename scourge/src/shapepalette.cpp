@@ -46,20 +46,6 @@ char *ShapePalette::torchDescription[] = {
 };
 int ShapePalette::torchDescriptionCount = 3;
 
-char *ShapePalette::bookshelfDescription[] = {
-  "The large bookshelf may hide valuable items",
-  "You see large bookshelf",
-  "A huge piece of furniture makes you appreciate you're not in the moving profession"
-};
-int ShapePalette::bookshelfDescriptionCount = 3;
-
-char *ShapePalette::chestDescription[] = {
-  "It appears to be a metal-reinforced wooden chest",
-  "The ancient chest lurks forgotten in the corner",
-  "A common chest, made of wood"
-};
-int ShapePalette::chestDescriptionCount = 3;
-
 
 
 ShapePalette::ShapePalette(){
@@ -294,15 +280,27 @@ void ShapePalette::initShapes() {
 	item_shapes[BOOKSHELF_INDEX] =
     new GLShape(shelftex,
                 2, 5, 7,
-                "BOOKSHELF", bookshelfDescription, bookshelfDescriptionCount,
+                "BOOKSHELF", 
                 0x0000ffff,
                 display_list + (count++ * 3), BOOKSHELF_INDEX);
 	item_shapes[CHEST_INDEX] =
     new GLShape(chesttex,
                 2, 3, 2,
-                "CHEST", chestDescription, chestDescriptionCount,
+                "CHEST", 
                 0xffaa80ff,
                 display_list + (count++ * 3), CHEST_INDEX);
+	item_shapes[BOOKSHELF2_INDEX] =
+    new GLShape(shelftex2,
+                5, 2, 7,
+                "BOOKSHELF", 
+                0x0000ffff,
+                display_list + (count++ * 3), BOOKSHELF2_INDEX);
+	item_shapes[CHEST2_INDEX] =
+    new GLShape(chesttex2,
+                3, 2, 2,
+                "CHEST", 
+                0xffaa80ff,
+                display_list + (count++ * 3), CHEST2_INDEX);
 
   
   max_display_list = display_list + (count * 3);
@@ -373,6 +371,14 @@ void ShapePalette::loadTextures() {
   chesttex[GLShape::FRONT_SIDE] = textures[14];
   chesttex[GLShape::TOP_SIDE] = textures[15];
   chesttex[GLShape::LEFT_RIGHT_SIDE] = textures[13];
+
+  shelftex2[GLShape::FRONT_SIDE] = textures[12];
+  shelftex2[GLShape::TOP_SIDE] = textures[6];
+  shelftex2[GLShape::LEFT_RIGHT_SIDE] = textures[6];
+
+  chesttex2[GLShape::FRONT_SIDE] = textures[13];
+  chesttex2[GLShape::TOP_SIDE] = textures[15];
+  chesttex2[GLShape::LEFT_RIGHT_SIDE] = textures[14];
 
   
   notex[0] = 0;
