@@ -49,7 +49,7 @@ class Window : public Widget {
   GLuint texture;
   SDLHandler *sdlHandler;
   Widget *widget[MAX_WIDGET];
-  
+  int tileWidth, tileHeight;
   int widgetCount;
   bool dragging;
   int dragX, dragY;
@@ -57,6 +57,7 @@ class Window : public Widget {
   GLint lastTick;
   int z;  
   bool modal;
+  int type;
 
   static Window *window[];
   static int windowCount;  
@@ -65,16 +66,25 @@ class Window : public Widget {
   static Label *message_label;
 
  public: 
-	Button *closeButton;
+  Button *closeButton;
+
+  enum {
+	BASIC_WINDOW=0,
+	SIMPLE_WINDOW
+  };
 
   static const int TOP_HEIGHT = 20;
   static const int BOTTOM_HEIGHT = 5;
 
-  Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, GLuint texture=0, bool hasCloseButton=true);
+  Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, 
+		 GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW);
   ~Window();
 
   inline bool isOpening() { return openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)); }
 
+  inline void setBackgroundTileWidth(int n) { tileWidth = n; }
+  inline void setBackgroundTileHeight(int n) { tileHeight = n; }
+  
   inline void setZ(int z) { this->z = z; }
   inline int getZ() { return z; }
 

@@ -1138,6 +1138,9 @@ void Scourge::createUI() {
   messageList = new ScrollingList(0, 0, 400, 95);
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
   messageWin->addWidget(messageList);
+  // this has to be after addWidget
+  messageList->setBackground( 1, 0.75f, 0.45f );
+  messageList->setSelectionColor( 0.25f, 0.25f, 0.25f );
 
   // FIXME: try to encapsulate this in a class...
   //  exitConfirmationDialog = NULL;

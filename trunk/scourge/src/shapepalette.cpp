@@ -25,6 +25,7 @@ ShapePalette::ShapePalette(){
 
   // load textures
   gui_texture = loadGLTextures("data/gui.bmp");
+  gui_wood_texture = loadGLTextures("data/gui-wood.bmp");
   cloud = loadGLTextures("data/cloud.bmp");
   candle = loadGLTextures("data/candle.bmp");
   torchback = loadGLTextures("data/torchback.bmp");

@@ -29,10 +29,11 @@ class SDLHandler;
 class Widget {
  protected:
   int x, y, w, h;
-  float red, green, blue, alpha;
   bool visible;
+  Color color;
   Color background;
   Color selColor;
+  Color borderColor;
 
  public: 
   Widget(int x, int y, int w, int h);
@@ -54,14 +55,32 @@ class Widget {
 
 
   // color
-  inline void setColor( float r, float g, float b, float a ) { this->red = r; this->green = g; this->blue = b; this->alpha = a; }
-  inline void applyBorderColor() { glColor3f(0.8f, 0.5f, 0.2f); }
+  inline void setColor( float r, float g, float b, float a=1.0f ) { this->color.r = r; this->color.g = g; this->color.b = b; this->color.a = a; }
 
-  inline void setBackground(float r, float g, float b) { background.r = r; background.g = g; background.b = b; }
+  inline void setBorderColor( float r, float g, float b, float a=1.0f ) { this->borderColor.r = r; this->borderColor.g = g; this->borderColor.b = b; this->borderColor.a = a; }
+
+  inline void setBackground(float r, float g, float b, float a=1.0f) { background.r = r; background.g = g; background.b = b; background.a = a; }
+  inline void setSelectionColor(float r, float g, float b, float a=1.0f) { selColor.r = r; selColor.g = g; selColor.b = b; selColor.a=a; }
+
+  inline void setColor( Color *c ) { this->color.r = c->r; this->color.g = c->g; this->color.b = c->b; this->color.a = c->a; }
+
+  inline void setBorderColor( Color *c ) { this->borderColor.r = c->r; this->borderColor.g = c->g; this->borderColor.b = c->b; this->borderColor.a = c->a; }
+
+  inline void setBackground( Color *c) { background.r = c->r; background.g = c->g; background.b = c->b; background.a = c->a; }
+  inline void setSelectionColor( Color *c ) { selColor.r = c->r; selColor.g = c->g; selColor.b = c->b; selColor.a=c->a; }
+
+
+  inline void applyColor() { glColor4f( color.r, color.g, color.b, color.a ); }
+  inline void applyBorderColor() { glColor4f(borderColor.r, borderColor.g, borderColor.b, borderColor.a); }
   inline void applyBackgroundColor(bool opaque=false) { glColor4f( background.r, background.g, background.b, (opaque ? 1.0f : 0.85f) ); }
-  inline void setSelectionColor(float r, float g, float b) { selColor.r = r; selColor.g = g; selColor.b = b; }
-  inline void applySelectionColor() { glColor4f( selColor.r, selColor.g, selColor.b, 1 ); }
+  inline void applySelectionColor() { glColor4f( selColor.r, selColor.g, selColor.b, selColor.a ); }
 
+  inline Color *getColor() { return &color; }
+  inline Color *getBorderColor() { return &borderColor; }
+  inline Color *getBackgroundColor() { return &background; }
+  inline Color * getSelectionColor() { return &selColor; }
+
+  inline bool isTranslucent() { return (background.a < 1.0f); }
 
   /**
 	 Return true, if the event activated this widget. (For example, button push, etc.)
@@ -75,7 +94,6 @@ class Widget {
 
  protected:
 	 bool debug;
-	 inline void applyColor() { glColor4f( red, green, blue, alpha ); }
 };
 
 #endif

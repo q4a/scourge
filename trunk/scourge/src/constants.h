@@ -139,7 +139,7 @@ typedef union NetValue NetValue;
 
 // GL color in float
 typedef struct _Color {
-  float r, g, b;
+  float r, g, b, a;
 } Color;
 
 /**

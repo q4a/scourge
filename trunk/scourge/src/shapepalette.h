@@ -67,7 +67,7 @@ private:
   GLShape *shapes[256];
   int shapeCount;
   GLuint display_list;
-  GLuint gui_texture;
+  GLuint gui_texture, gui_wood_texture;
   map<int, GLuint> statModIcons;
   
   typedef struct _Texture {
@@ -140,6 +140,7 @@ public:
   inline Sint16 getWallHeight() { return wallHeight; }
 
   inline GLuint getGuiTexture() { return gui_texture; }
+  inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
 
   // the next two methods are slow, only use during initialization
   GLuint findTextureByName(const char *filename);
