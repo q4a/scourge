@@ -18,6 +18,8 @@
 #include "shapepalette.h"
 #include "session.h"
 
+#define ALWAYS_RELOAD_THEME 1
+
 char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "wall",
   "corner",
@@ -480,7 +482,7 @@ ShapePalette::~ShapePalette(){
 }
 
 void ShapePalette::loadRandomTheme() {
-  loadTheme( themes[ (int)( (float)themeCount * rand()/RAND_MAX ) ] );
+  loadTheme( themes[ (int)( (float)(themeCount - 1) * rand()/RAND_MAX ) + 1 ] );
 }
 
 void ShapePalette::loadTheme(const char *themeName) {
@@ -504,7 +506,7 @@ void ShapePalette::loadTheme(const char *themeName) {
 
 void ShapePalette::loadTheme( WallTheme *theme ) {
   cerr << "*** Using theme: " << theme->getName() << " current=" << (!currentTheme ? "null" : currentTheme->getName()) << endl;
-  if(currentTheme != theme) {
+  if( ALWAYS_RELOAD_THEME || currentTheme != theme) {
 
     // unload the previous theme
     // FIXME: This could be optimized to not unload shared textures.

@@ -503,11 +503,18 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
                      shape == session->getShapePalette()->findShapeByName("EW_DOOR_TOP") ||
                      shape == session->getShapePalette()->findShapeByName("DOOR_SIDE"))) ||
                    (lightMap[chunkX][chunkY] && shape)) {
-                  xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                  xp + chunkOffsetX) / GLShape::DIV;
-                  ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-                                  shape->getDepth() + 
-                                  yp + chunkOffsetY) / GLShape::DIV;
+
+
+                  if(pos[posX][posY][zp]->creature) {
+                    xpos2 = (pos[posX][posY][zp]->creature->getX() - getX()) / GLShape::DIV;
+                    ypos2 = (pos[posX][posY][zp]->creature->getY() - getY() - shape->getDepth()) / GLShape::DIV;
+                  } else {
+                    xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+                                    xp + chunkOffsetX) / GLShape::DIV;
+                    ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+                                    shape->getDepth() + 
+                                    yp + chunkOffsetY) / GLShape::DIV;
+                  }
                   zpos2 = (float)(zp) / GLShape::DIV;
 
                   setupPosition(posX, posY, zp,
@@ -1043,6 +1050,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     if(shape) shape->setupToDraw();
 
     glTranslatef( xpos2, ypos2, zpos2);
+
     if(colorAlreadySet) {
       colorAlreadySet = false;
     } else {

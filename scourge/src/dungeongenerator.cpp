@@ -106,19 +106,19 @@ const MapLocation DungeonGenerator::location[] = {
 		{ "COLUMN", 2*unitSide+3, unitSide+40, 0 },
 		{ "COLUMN", 2*unitSide+26, unitSide+40, 0 },
 
-	  { "BRAZIER", 2*unitSide+7, unitSide+8, 2 },
+	  { "BRAZIER", 2*unitSide+8, unitSide+7, 2 },
 	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+8, 0 },		
-	  { "BRAZIER", 2*unitSide+22, unitSide+8, 2 },
+	  { "BRAZIER", 2*unitSide+23, unitSide+7, 2 },
 	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+8, 0 },
 
-	  { "BRAZIER", 2*unitSide+7, unitSide+16, 2 },
+	  { "BRAZIER", 2*unitSide+8, unitSide+15, 2 },
 	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+16, 0 },
-	  { "BRAZIER", 2*unitSide+22, unitSide+16, 2 },
+	  { "BRAZIER", 2*unitSide+23, unitSide+15, 2 },
 	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+16, 0 },
 
-	  { "BRAZIER", 2*unitSide+7, unitSide+24, 2 },
+	  { "BRAZIER", 2*unitSide+8, unitSide+23, 2 },
 	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+24, 0 },
-	  { "BRAZIER", 2*unitSide+22, unitSide+24, 2 },
+	  { "BRAZIER", 2*unitSide+23, unitSide+23, 2 },
 	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+24, 0 }
 
 
@@ -1451,7 +1451,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
     shapePal->loadTheme( "HQ" );
   } else {
     shapePal->loadRandomTheme();
-  }
+}
 
   updateStatus("Drawing walls");
   drawBasics(map, shapePal, preGenerated, locationIndex);
