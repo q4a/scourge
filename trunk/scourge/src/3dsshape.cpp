@@ -176,12 +176,12 @@ void C3DSShape::draw() {
 		  // but just in case we want to check the size of the material list.
 		  // if the size is at least one, and the material ID != -1,
 		  // then we have a valid material.
-		  if(g_3DModel.pMaterials.size() && pObject->materialID >= 0) {
+		  if(!useShadow && g_3DModel.pMaterials.size() && pObject->materialID >= 0) {
 			// Get and set the color that the object is, since it must not have a texture
 			BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
 			
 			// Assign the current color to this model
-			//glColor3ub(pColor[0], pColor[1], pColor[2]);
+			glColor3ub(pColor[0], pColor[1], pColor[2]);
 		  }
 		}
 		
