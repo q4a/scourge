@@ -35,7 +35,12 @@ class Dice {
   Dice(char *s);
   ~Dice();
   inline char *toString() { return s; }
-  inline int roll() { return ((int)((float)sides * rand()/RAND_MAX) * count) + mod; }
+  inline int roll() { 
+	float n = (float)sides * rand()/RAND_MAX;
+	n *= count;
+	n += mod;
+	return (int)n;
+  }
 };
 
 class MagicSchool;
