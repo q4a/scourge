@@ -1146,7 +1146,7 @@ bool Creature::takeDamage(int damage, int effect_type) {
     int pain = (int)(3.0f * rand()/RAND_MAX);
     getShape()->setCurrentAnimation(pain == 0 ? (int)MD2_PAIN1 : (pain == 1 ? (int)MD2_PAIN2 : (int)MD2_PAIN3));
   } else if(effect_type != Constants::EFFECT_GLOW) {
-    session->getMap()->startEffect(toint(getX()), toint(getY()), toint(getZ()), 
+    session->getMap()->startEffect(toint(getX()), toint(getY() - this->getShape()->getDepth() + 1), toint(getZ()), 
                                    effect_type, (Constants::DAMAGE_DURATION * 4), 
                                    getShape()->getWidth(), getShape()->getDepth());
   }

@@ -17,8 +17,8 @@
 
 #include "battle.h"
 
-#define GOD_MODE 1
-#define MONSTER_IMORTALITY 1
+#define GOD_MODE 0
+#define MONSTER_IMORTALITY 0
 #define WEAPON_WAIT_MUL 5
 
 bool Battle::debugBattle = false;
