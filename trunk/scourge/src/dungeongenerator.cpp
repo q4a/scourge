@@ -1115,7 +1115,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
       break;
     }
     Item *item = scourge->getSession()->
-      newItem(RpgItem::getItemByName("Scroll"), 1, spell);
+      newItem(RpgItem::getItemByName("Scroll"), level, spell);
     int x, y;
     getRandomLocation(map, item->getShape(), &x, &y);
     addItem(map, NULL, item, NULL, x, y);
@@ -1146,39 +1146,12 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
         Spell *spell = MagicSchool::getRandomSpell(level);
         if(spell) {
           Item *scroll = scourge->getSession()->
-            newItem(RpgItem::getItemByName("Scroll"), 1, spell);
+            newItem(RpgItem::getItemByName("Scroll"), level, spell);
           item->addContainedItem(scroll, true);
         }
       }
     }
   }
-
-  /*
-  // add some magic items on the bottom level
-  if(stairsUp && !stairsDown) {
-    int n = (int)(3.0f * rand() / RAND_MAX) + 1;
-    for(int i = 0; i < n; i++) {
-      int i = (int)((float)containers.size() * rand()/RAND_MAX);
-      Item *item = containers[i];
-      int cx = containerX[i];
-      int cy = containerY[i];
-      int roomIndex = getRoomIndex(cx, cy);
-      int valueBonus = 0;
-      if(roomIndex > -1) valueBonus = room[roomIndex].valueBonus;
-
-      RpgItem *containedItem = RpgItem::getRandomEnchantableItem(level + valueBonus);
-      if(containedItem) {
-        Item *magicItem = scourge->getSession()->newItem(containedItem);
-        magicItem->enchant( level / MAGIC_ITEM_MUL );
-        item->addContainedItem(magicItem, true);
-        
-        char tmp[255];
-        magicItem->getDetailedDescription(tmp);
-        cerr << "&&& Added magic item: " << tmp << endl;
-      }
-    }
-  }
-  */
 }
 
 void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal, 

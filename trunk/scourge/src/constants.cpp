@@ -147,13 +147,14 @@ char *Constants::messages[][80] = {
     "Nothing happens.",
     "The teleporter blinks unimpressively." },
   { "Information" },
-  { "Delete old saved game?" }
+  { "Delete old saved game?" },
+  { "You're not experienced enough to equip it yet." }
 
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3, 1, 1
+  3, 2, 2, 3, 3, 1, 1, 1
 };
 
 // opengl extension routines
