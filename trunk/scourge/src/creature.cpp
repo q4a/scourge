@@ -163,6 +163,11 @@ void Creature::stopMoving() {
 }
 
 bool Creature::moveToLocator(Map *map, bool single_step) {
+
+  // Don't move when attacking...
+  // this is actually wrong, the method should not be called in this
+  // case, but the code is simpler this way. (Returning false is 
+  // is incorrect.)
   if(((MD2Shape*)getShape())->getAttackEffect()) return false;
 
   bool moved = false;
