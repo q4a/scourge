@@ -512,34 +512,60 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     // take a step on the bestPath
     Location location = bestPath[bestPathPos];
 
+    GLfloat step = 0.2f;
     Uint16 oldDir = dir;
+    float my = (float)(location.y) - getY();
+    float mx = (float)(location.x) - getX();
+    dir = 0;
+    if( abs(my) > step ) {
+      if( my > 0 ) {
+        dir += Constants::MOVE_DOWN;
+      } else {
+        dir += Constants::MOVE_UP;
+      }
+    }
+    if( abs(mx) > step ) {
+      if( mx > 0 ) {
+        dir += Constants::MOVE_RIGHT;
+      } else {
+        dir += Constants::MOVE_LEFT;
+      }
+    }
+    
+
+    /*
     if((int)getX() < location.x) dir = Constants::MOVE_RIGHT;
     else if((int)getX() > location.x) dir = Constants::MOVE_LEFT;
     else if((int)getY() < location.y) dir = Constants::MOVE_DOWN;
     else if((int)getY() > location.y) dir = Constants::MOVE_UP;
     setFacingDirection(dir);
-
+    */
+    
+    
+    
     // take a step
-    GLfloat step = 0.2f;
     GLfloat newX = getX();
     GLfloat newY = getY();
-    if( dir == Constants::MOVE_RIGHT ) newX += step;
-    if( dir == Constants::MOVE_LEFT ) newX -= step;
-    if( dir == Constants::MOVE_DOWN ) newY += step;
-    if( dir == Constants::MOVE_UP ) newY -= step;
+    if( dir & Constants::MOVE_RIGHT ) newX += step;
+    if( dir & Constants::MOVE_LEFT ) newX -= step;
+    if( dir & Constants::MOVE_DOWN ) newY += step;
+    if( dir & Constants::MOVE_UP ) newY -= step;
 
     //if( !strcmp(getName(), "Alamont") ) 
-    //  cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
+//      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
 
-    Location *position = map->moveCreature(getX(), getY(), getZ(),
-                                           newX, newY, getZ(),
+    Location *position = map->moveCreature(round(getX()), round(getY()), round(getZ()),
+                                           round(newX), round(newY), round(getZ()),
                                            this);
     if(!position) {
+      angle = Util::getAngle( newX, newY, 1, 1,
+                              getX(), getY(), 1, 1 );
       //moveTo(newX, newY, getZ());
       this->x = newX;
       this->y = newY;
-      ((MD2Shape*)shape)->setDir(dir);
-      if( (int)newX == location.x && (int)newY == location.y ) {
+      //((MD2Shape*)shape)->setDir(dir);
+      ((MD2Shape*)shape)->setAngle( angle + 180.0f );
+      if( round(newX) == location.x && round(newY) == location.y ) {
         bestPathPos++;
       }
       return true;
@@ -547,7 +573,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       dir = oldDir;
       // if we're not at the destination, but it's possible to stand there
       // try again
-      if(!(selX == getX() && selY == getY()) && 
+      if(!(selX == round(getX()) && selY == round(getY())) && 
          map->shapeFits(getShape(), selX, selY, -1) &&
          moveRetrycount < MAX_MOVE_RETRY) {
 
@@ -1339,7 +1365,8 @@ int Creature::getMaxMp() {
 }
 
 float Creature::getTargetAngle() {
-  if(!targetCreature) return -1.0f;
+  //if(!targetCreature) return -1.0f;
+  if(!targetCreature) return angle;
   return Util::getAngle(getX(), getY(), getShape()->getWidth(), getShape()->getDepth(),
                         getTargetCreature()->getX(), getTargetCreature()->getY(), 
                         getTargetCreature()->getShape()->getWidth(), 
