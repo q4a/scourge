@@ -104,6 +104,12 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
 	createDarkTexture();
 }
 
+void GLShape::setCurrentAnimation (int numAnim){
+
+    cout<<"GLShape::setCurrentAnimation : Hey this should call MD2Shape function!"<<endl;
+
+}
+
 struct surface *GLShape::new_surface(float vertices[4][3]) {
   int i, j;
   struct surface *surf;

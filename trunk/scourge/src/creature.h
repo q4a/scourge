@@ -75,6 +75,7 @@ class Creature {
   vector<Location> bestPath;
   Creature *targetCreature;
   Sint16 cornerX, cornerY;
+  bool arrived; // true if no particular destination set for this creature
   
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
@@ -125,7 +126,8 @@ class Creature {
   inline void setTargetCreature(Creature *c) { targetCreature = c; }
   inline Creature *getTargetCreature() { return targetCreature; }
   
-  inline void setMotion(int motion) { this->motion = motion; }
+  void setMotion(int motion);
+  
   inline int getMotion() { return this->motion; }
   
   inline void setFacingDirection(int direction) { this->facingDirection = direction;}
@@ -225,7 +227,7 @@ class Creature {
 
   inline void setSkill(int index, int value) { skills[index] = value; }
   inline void setStateMod(int mod, bool setting) { 
-	if(setting) stateMod |= (1 << mod); 
+	if(setting) stateMod |= (1 << mod);  
 	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
   }
 

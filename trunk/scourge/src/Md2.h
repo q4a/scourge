@@ -23,6 +23,12 @@ using namespace std;
 #define MD2_MAX_SKINS           32
 #define MD2_MAX_FRAMESIZE       (MD2_MAX_VERTICES * 4 + 128)
 
+
+// How to enhance it ?
+// 1 - Load different skins
+// 2 - Draw thanks to GLCommands included in md2 model -> faster
+// 3 - Display lists ?
+
 // This holds the header information that is read in at the beginning of the file
 struct tMd2Header
 { 
@@ -92,6 +98,32 @@ struct tMd2Frame
 // This stores a skin name
 typedef char tMd2Skin[64];
 
+enum md2_action{
+    MD2_STAND,
+    MD2_RUN,
+    MD2_ATTACK,
+    MD2_PAIN1,
+    MD2_PAIN2,
+    MD2_PAIN3,
+    MD2_JUMP,
+    MD2_FLIP,
+    MD2_SALUTE,    
+    MD2_TAUNT,
+    MD2_WAVE,
+    MD2_POINT,
+    MD2_CRSTAND,
+    MD2_CRWALK,
+    MD2_CRATTACK,
+    MD2_CRPAIN,
+    MD2_CRDEATH,    
+    MD2_DEATH1,
+    MD2_DEATH2,
+    MD2_DEATH3,
+    
+    // Must be last   
+    MD2_CREATURE_ACTION_COUNT
+};
+
 
 // This class handles all of the loading code
 class CLoadMD2
@@ -101,13 +133,16 @@ public:
     CLoadMD2();                             // This inits the data members
 
     // This is the function that you call to load the MD2
-    bool ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture);
+    bool ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture);    
 
-private:
+private:        
     
     // This reads in the data from the MD2 file and stores it in the member variables
     void ReadMD2Data();
-
+    
+    // This parses the animations name and calculates the number of animations and info
+    void ParseAnimations(t3DModel *pModel);
+    
     // This converts the member variables to our pModel structure
     void ConvertDataStructures(t3DModel *pModel);
 
@@ -126,7 +161,7 @@ private:
     tMd2Skin                *m_pSkins;          // The skin data
     tMd2TexCoord            *m_pTexCoords;      // The texture coordinates
     tMd2Face                *m_pTriangles;      // Face index information
-    tMd2Frame               *m_pFrames;         // The frames of animation (vertices)
+    tMd2Frame               *m_pFrames;         // The frames of animation (vertices)    
 };
 
 
@@ -137,8 +172,13 @@ private:
 //
 // * QUICK NOTES * 
 // 
-// This file holds all of the structure and class definitions needed to load
-// a MD2 Quake2 file.
+// For the second .MD2 tutorial we added a animation speed for our model: kAnimationSpeed.
+// This is used for interpolation between each key frame.  A function was also added to
+// parse through the animation names and create a list of animations for our model
+// to cycle through.  This function is called ParseAnimations().  We did however, take 
+// out the code for calculating the face normals.  This is because the texture maps are
+// desinged to create their own lighting for the model.  It just makes the model darker
+// to turn lighting on.  More of this is explained at the top of Main.cpp.
 //
 // 
 // Ben Humphrey (DigiBen)
