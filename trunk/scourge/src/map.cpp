@@ -887,6 +887,7 @@ void Map::drawDescriptions(ScrollingList *list) {
 }
 
 void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) {
+	char s[300];
   if(mapx < MAP_WIDTH) {
 	if(button == SDL_BUTTON_RIGHT) {
 	  //	  fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
@@ -896,12 +897,14 @@ void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) 
 		Creature *creature = loc->creature;
 		//fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
 		if(creature) {
-		  description = creature->getDescription();
+			creature->getDetailedDescription(s);
+		  description = s;
 		} else {
 		  Item *item = loc->item;
 		  //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
 		  if( item ) {
-			description = item->getRpgItem()->getShortDesc();
+				item->getDetailedDescription(s, false);
+				description = s;
 		  } else {
 			Shape *shape = loc->shape;
 			//fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));

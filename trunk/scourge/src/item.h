@@ -50,6 +50,15 @@ public:
   inline GLShape *getShape() { return shape; }
   inline RpgItem *getRpgItem() { return rpgItem; }
 
+	inline void getDetailedDescription(char *s, bool precise=true) {
+		sprintf(s, "(A:%d,S:%d,Q:%d,W:%d) %s", 
+						getRpgItem()->getAction(), 
+						getRpgItem()->getSpeed(), 
+						getRpgItem()->getQuality(), 
+						getRpgItem()->getWeight(),
+						(precise ? getRpgItem()->getName() : getRpgItem()->getShortDesc()));
+	}
+
 };
 
 #endif

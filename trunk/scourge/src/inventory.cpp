@@ -267,10 +267,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     for(int t = 0; t < scourge->getParty(selected)->getInventoryCount(); t++) {
 	  Item *item = scourge->getParty(selected)->getInventory(t);
 	  int location = scourge->getParty(selected)->getEquippedIndex(t);
-	  sprintf(pcInvText[t], "%s(A:%d,S:%d,Q:%d,W:%d) %s", 
-			  (location > -1 ? " *" : "   "),
-			  item->getRpgItem()->getAction(), item->getRpgItem()->getSpeed(), item->getRpgItem()->getQuality(), item->getRpgItem()->getWeight(),
-			  item->getRpgItem()->getName());
+		char s[100];
+		item->getDetailedDescription(s);
+	  sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
     }
 	for(int t = scourge->getParty(selected)->getInventoryCount(); 
 		t < MAX_INVENTORY_SIZE; t++) {

@@ -252,6 +252,13 @@ class Creature {
   // until *someone* writes a pc editor
   static Creature **createHardCodedParty(Scourge *scourge);
 
+	inline void getDetailedDescription(char *s) {
+		sprintf(s, "%s (Hp:%d A:%d)", 
+						getDescription(), 
+						getHp(), 
+						getArmor());
+	}
+
  protected:
   /**
    * Get the position of this creature in the formation.

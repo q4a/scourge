@@ -128,20 +128,24 @@ void Scourge::startMission() {
   move = 0;
   startRound = true;
   battleCount = 0;
+	partyDead = false;
+
   setPlayer(getParty(0));
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   getPlayer()->moveTo(startx, starty, 0);
   getPlayer()->setTargetCreature(NULL);
+	getPlayer()->setStateMod(Constants::dead, false);
   map->setCreature(startx, starty, 0, getPlayer()); 
 
   // init the rest of the party
   for(int i = 1; i < 4; i++) {
-	getParty(i)->setNext(getPlayer(), i);
-	map->setCreature(getParty(i)->getX(), 
-					 getParty(i)->getY(), 
-					 getParty(i)->getZ(), 
-					 getParty(i));
-	getParty(i)->setTargetCreature(NULL);
+		getParty(i)->setNext(getPlayer(), i);
+		map->setCreature(getParty(i)->getX(), 
+										 getParty(i)->getY(), 
+										 getParty(i)->getZ(), 
+										 getParty(i));
+		getParty(i)->setTargetCreature(NULL);
+		getParty(i)->setStateMod(Constants::dead, false);
   }
  
   // center map on the player
@@ -224,10 +228,12 @@ void Scourge::drawView(SDL_Surface *screen) {
   if(isInfoShowing) {
     map->initMapView();  
     for(int i = 0; i < 4; i++) {
-	  map->showCreatureInfo(party[i], (player == party[i]), 
-							(map->getSelectedDropTarget() && 
-							 map->getSelectedDropTarget()->creature == party[i]),
-							!player_only);
+			if(!party[i]->getStateMod(Constants::dead)) {
+				map->showCreatureInfo(party[i], (player == party[i]), 
+															(map->getSelectedDropTarget() && 
+															 map->getSelectedDropTarget()->creature == party[i]),
+															!player_only);
+			}
     }
 	glDisable( GL_CULL_FACE );
   }
@@ -526,8 +532,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	  player->setTargetCreature(NULL);
 	} else {
 	  for(int i = 0; i < 4; i++) {
-	    party[i]->setTargetCreature(NULL);
-	    if(party[i] != player) party[i]->follow(map);
+			if(!party[i]->getStateMod(Constants::dead)) {
+				party[i]->setTargetCreature(NULL);
+				if(party[i] != player) party[i]->follow(map);
+			}
 	  }
 	}
 
@@ -932,10 +940,11 @@ void Scourge::playRound() {
 
   // hound your targets
   for(int i = 0; i < 4; i++) {
-	if(party[i]->getTargetCreature()) {
-	  party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
-						 party[i]->getTargetCreature()->getY());
-	}
+		if(!party[i]->getStateMod(Constants::dead) && 
+			 party[i]->getTargetCreature()) {
+			party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
+												 party[i]->getTargetCreature()->getY());
+		}
   }
   
   // round starts if:
@@ -962,7 +971,8 @@ void Scourge::playRound() {
 
 	// attack targeted monster if close enough
 	for(int i = 0; i < 4; i++) {
-	  if(party[i]->getTargetCreature()) {
+	  if(!party[i]->getStateMod(Constants::dead) && 
+			 party[i]->getTargetCreature()) {								
 		battle[battleCount].creature = party[i];
 		battleCount++;
 	  }
@@ -1102,6 +1112,11 @@ void Scourge::fightBattle() {
 }
 
 void Scourge::creatureDeath(Creature *creature) {
+	if(creature == player) {
+		if(!switchToNextLivePartyMember()) {
+			partyDead = true;
+		}
+	}
   // remove from the map; the object will be cleaned up at the end of the mission
   map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
   // add a container object instead
@@ -1146,29 +1161,35 @@ void Scourge::handleKeyboardMovement() {
 
   if(!player_only) {
     for(int i = 0; i < 4; i++) {
-      party[i]->setTargetCreature(NULL);
-      if(party[i] != player) party[i]->follow(map);
+			if(!party[i]->getStateMod(Constants::dead)) {
+				party[i]->setTargetCreature(NULL);
+				if(party[i] != player) party[i]->follow(map);
+			}
     }
   }
 }
 
 void Scourge::movePlayers() {   
+	// the player's dead?
+	if(player->getStateMod(Constants::dead)) 
+		return;
+
   if(player_only) {	
-	// in single-step mode:
-	for(int i = 0; i < 4; i++) {
-	  // move the current player
-	  player->moveToLocator(map, player_only);
-	  map->center(player->getX(), player->getY());
-	  
-	  // switch to next player
-	  for(int t = 0; t < 4; t++) {
-		if(party[t] == player) {
-		  setPlayer(t < 3 ? t + 1 : 0);
-		  break;
-		}
-	  }
-	}
-	
+
+		// how many party members are still alive?
+		int sum = 0;
+		for(int i = 0; i < 4; i++) 
+			if(!party[i]->getStateMod(Constants::dead)) sum++;
+
+		// in single-step mode:
+		for(int i = 0; i < sum; i++) {
+			
+			// move the current player
+			player->moveToLocator(map, player_only);
+			map->center(player->getX(), player->getY());
+			
+			switchToNextLivePartyMember();
+		}	
   } else {
 	// In group mode:
 	
@@ -1181,7 +1202,7 @@ void Scourge::movePlayers() {
 	
 	// others follow the player
 	for(int t = 0; t < 4; t++) {
-	  if(party[t] != player) {
+	  if(!party[t]->getStateMod(Constants::dead) && party[t] != player) {
 		if(party[t]->getTargetCreature()) {
 		  party[t]->moveToLocator(map, player_only);
 		} else {
@@ -1191,6 +1212,28 @@ void Scourge::movePlayers() {
 	  }
 	}	
   }
+}
+
+bool Scourge::switchToNextLivePartyMember() {
+	Creature *oldPlayer = player;
+	// find the player's index
+	int n = -1;
+	for(int t = 0; t < 4; t++) {
+		if(party[t] == player) {
+			n = t;
+			break;
+		}
+	}			
+	// switch to next player
+	n++; if(n >= 4) n = 0;
+	for(int t = 0; t < 4; t++) {
+		if(!party[n]->getStateMod(Constants::dead)) {
+			setPlayer(n);
+			break;
+		}
+		n++; if(n >= 4) n = 0;
+	}
+	return(oldPlayer != player);
 }
 
 void Scourge::setPlayer(int n) {

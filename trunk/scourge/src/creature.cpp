@@ -39,6 +39,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
+  this->armor=0;
   commonInit();
 }
 
@@ -51,6 +52,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   sprintf(description, "You see %s", monster->getType());
   this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
+  this->armor = monster->getBaseArmor();
   commonInit();
   monsterInit();
 }
@@ -76,7 +78,6 @@ void Creature::commonInit() {
   this->ac = 0;
   this->targetCreature = NULL;
   this->lastTick = 0;
-  this->armor = 0;
   this->moveRetrycount = 0;
   this->cornerX = this->cornerY = -1;
   this->lastTurn = 0;
@@ -422,7 +423,7 @@ Item *Creature::getItemAtLocation(int location) {
 void Creature::recalcAggregateValues() {
 
   // calculate the armor (0-100, 100-total protection)
-  armor = 0;
+  armor = (monster ? monster->getBaseArmor() : 0);
   for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	if(equipped[i] != MAX_INVENTORY_SIZE) {
 	  Item *item = inventory[equipped[i]];

@@ -41,14 +41,16 @@ private:
   RpgItem *item[ITEM_COUNT]; // starting equipment
   int money;
   int speed;
+	int baseArmor;
 
   static Monster *monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
   static int monsterCount[MAX_MONSTER_LEVEL];
 
 public:
-  Monster(char *type, int level, int hp, Uint8 shapeIndex=Constants::BUGGERLING_INDEX);
+  Monster(char *type, int level, int hp, Uint8 shapeIndex=Constants::BUGGERLING_INDEX, int baseArmor=0);
   ~Monster();
 
+	inline int getBaseArmor() { return baseArmor; }
   inline char *getType() { return type; };
   inline int getHp() { return hp; }  
   inline int getLevel() { return level; }  
