@@ -67,7 +67,7 @@ Scourge::Scourge(int argc, char *argv[]){
   calendar = Calendar::getInstance();  
 
   // initialize the items
-  initItems();
+  Item::initItems(shapePal);
   // initialize the monsters (they use items)
   Monster::initMonsters();
   Character::initCharacters();
@@ -78,15 +78,13 @@ Scourge::Scourge(int argc, char *argv[]){
   // do this before the inventory and optionsdialog (so Z is less than of those)
   createUI();
 
-  player_only = false;
-  move = 0;
+  //  move = 0;
   startRound = true;
   battleCount = 0;  
   inventory = NULL;
   containerGuiCount = 0;
-  changingStory = false;
-  
-  for(int i = 0; i < 4; i++) party[i] = NULL;
+  changingStory = false;  
+  party = NULL;
 
   // show the main menu
   mainMenu = new MainMenu(this);
@@ -101,19 +99,11 @@ Scourge::Scourge(int argc, char *argv[]){
     // evaluate results and start a missions
     if(mainMenu->getValue() == NEW_GAME) {
 
-	  // Init the party; hard code for now
-	  // This will be replaced by a call to the character builder which either
-	  // loads or creates the party.
-	  for(int i = 0; i < 4; i++) {
-		if(party[i]) {
-		  delete party[i];
-		}
+	  if(party) {
+		delete(party);
+		party = NULL;
 	  }
-	  Creature **pc = Creature::createHardCodedParty(this);
-	  party[0] = player = pc[0];
-	  party[1] = pc[1];
-	  party[2] = pc[2];
-	  party[3] = pc[3];	  	  
+	  party = new Party(this);
 
 	  // inventory needs the party
 	  if(!inventory) {
@@ -131,91 +121,6 @@ Scourge::Scourge(int argc, char *argv[]){
       sdlHandler->quit(0);
     }
   }
-}
-
-void Scourge::initItems() {
-  char errMessage[500];
-  char s[200];
-  sprintf(s, "data/world/items.txt");
-  FILE *fp = fopen(s, "r");
-  if(!fp) {        
-	sprintf(errMessage, "Unable to find the file: %s!", s);
-	cerr << errMessage << endl;
-	exit(1);
-  }
-
-  int itemCount = 0;
-  char name[255], type[255], shape[255], skill[255];
-  char long_description[500], short_description[120];
-  char line[255];
-  int n = fgetc(fp);
-  while(n != EOF) {
-	if(n == 'I') {
-	  // skip ':'
-	  fgetc(fp);
-	  // read the rest of the line
-	  n = Constants::readLine(name, fp);
-	  n = Constants::readLine(line, fp);
-	  int level = atoi(strtok(line + 1, ","));
-	  char *p = strtok(NULL, ",");
-	  int action = 0;
-	  int speed = 0;
-	  int distance = 0;
-	  int currentCharges = 0;
-	  int maxCharges = 0;
-	  if(p) {
-		action = atoi(p);
-		speed = atoi(strtok(NULL, ","));
-		distance = atoi(strtok(NULL, ","));
-		currentCharges = atoi(strtok(NULL, ","));
-		maxCharges = atoi(strtok(NULL, ","));
-	  }
-	  n = Constants::readLine(line, fp);
-	  strcpy(type, strtok(line + 1, ","));
-	  float weight = strtof(strtok(NULL, ","), NULL);
-	  int price = atoi(strtok(NULL, ","));
-
-	  int inventory_location = 0;
-	  int twohanded = 0;
-	  strcpy(shape, "");
-	  strcpy(skill, "");
-	  p = strtok(NULL, ",");	  
-	  if(p) {
-		strcpy(shape, p);
-		p = strtok(NULL, ",");
-		if(p) {
-		  inventory_location = atoi(p);
-		  twohanded = atoi(strtok(NULL, ","));
-		  strcpy(skill, strtok(NULL, ","));
-		}
-	  }
-	  
-	  n = Constants::readLine(line, fp);
-	  strcpy(long_description, line + 1);
-	  
-	  n = Constants::readLine(line, fp);
-	  strcpy(short_description, line + 1);
-	  
-	  // resolve strings
-	  int type_index = RpgItem::getTypeByName(type);	  
-	  int shape_index = shapePal->findShapeIndexByName(shape);
-	  int skill_index = Constants::getSkillByName(skill);
-	  if(skill_index < 0) {
-		if(strlen(skill)) cerr << "*** WARNING: cannot find skill: " << skill << endl;
-		skill_index = 0;
-	  }
-	  RpgItem::addItem(new RpgItem(itemCount++, strdup(name), level, type_index, 
-								   weight, price, 100, 
-								   action, speed, strdup(long_description), 
-								   strdup(short_description), 
-								   inventory_location, shape_index, 
-								   twohanded, distance, skill_index, currentCharges, 
-								   maxCharges));	  
-	} else {
-	  n = Constants::readLine(line, fp);
-	}
-  }
-  fclose(fp);
 }
 
 Scourge::~Scourge(){
@@ -250,40 +155,18 @@ void Scourge::startMission() {
 	
 	// Start calendar and add thirst & hunger event scheduling
 	calendar->reset();
-	Event *e;  
-	Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
-	for(int i = 0; i < 4 ; i++){
-   	  e = new ThirstHungerEvent(calendar->getCurrentDate(), d, party[i], this, Event::INFINITE_EXECUTIONS);
-   	  calendar->scheduleEvent((Event*)e);   // It's important to cast!!
-	}
+
+	// ready the party
+	party->startPartyOnMission();
 	
 	// position the players
-	player_only = false;
-	move = 0;
+	//	move = 0;
 	//startRound = true;
 	battleCount = 0;
-	partyDead = false;
 	containerGuiCount = 0;
 	lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
 	teleporting = false;
 	changingStory = false;
-	
-	// set player to be the first non-dead character
-	for(int i = 0; i < 4; i++) {
-	  if(!party[i]->getStateMod(Constants::dead)) {
-		setPlayer(getParty(i));
-		break;
-	  }
-	}
-	setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-	getPlayer()->setTargetCreature(NULL);
-	
-	// init the rest of the party
-	for(int i = 1; i < 4; i++) {
-	  getParty(i)->setNext(getPlayer(), i);
-	  getParty(i)->setTargetCreature(NULL);
-	}
-	
 	
 	
 	
@@ -314,7 +197,8 @@ void Scourge::startMission() {
 	}
 	
 	// center map on the player
-	map->center(player->getX(), player->getY());
+	map->center(party->getPlayer()->getX(), 
+				party->getPlayer()->getY());
 	
 	// Must be called after MiniMap has been built by dg->toMap() !!! 
 	miniMap->computeDrawValues();
@@ -358,8 +242,8 @@ void Scourge::startMission() {
 	// (except items in inventory) 
 	for(int i = 0; i < itemCount; i++) {
 	  bool inInventory = false;
-	  for(int t = 0; t < 4; t++) {
-		if(getParty(t)->isItemInInventory(items[i])) {
+	  for(int t = 0; t < party->getPartySize(); t++) {
+		if(party->getParty(t)->isItemInInventory(items[i])) {
 		  inInventory = true;
 		  break;
 		}
@@ -403,9 +287,9 @@ void Scourge::startMission() {
 }
 
 void Scourge::endMission() {
-	player->setSelXY(-1, -1);   // stop moving
+	party->getPlayer()->setSelXY(-1, -1);   // stop moving
 	movingItem = NULL;          // stop moving items
-	move = 0;
+	//	move = 0;
 }
 
 // items created for the mission
@@ -444,13 +328,13 @@ void Scourge::drawView() {
   
   if(isInfoShowing) {
     map->initMapView();  
-    for(int i = 0; i < 4; i++) {
-			if(!party[i]->getStateMod(Constants::dead)) {
-				map->showCreatureInfo(party[i], (player == party[i]), 
-															(map->getSelectedDropTarget() && 
-															 map->getSelectedDropTarget()->creature == party[i]),
-															!player_only);
-			}
+    for(int i = 0; i < party->getPartySize(); i++) {
+	  if(!party->getParty(i)->getStateMod(Constants::dead)) {
+		map->showCreatureInfo(party->getParty(i), (party->getPlayer() == party->getParty(i)), 
+							  (map->getSelectedDropTarget() && 
+							   map->getSelectedDropTarget()->creature == party->getParty(i)),
+							  !party->isPlayerOnly());
+	  }
     }
 	glDisable( GL_CULL_FACE );
   }
@@ -604,7 +488,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         useItem();        
     }
     else if(ea == SET_NEXT_FORMATION_STOP){
-        if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
+        if(party->getFormation() < Creature::FORMATION_COUNT - 1) setFormation(party->getFormation() + 1);
 	else setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
     }   
     else if(ea == SET_X_ROT_PLUS){        
@@ -747,26 +631,22 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 		
 		// clicking on a creature
 		if(!movingItem && mapx < MAP_WIDTH) {
-			Location *loc = map->getLocation(mapx, mapy, mapz);
-			if(loc && loc->creature) {
-				if(loc->creature->isMonster()) {
-					// follow this creature
-					player->setTargetCreature(loc->creature);
-					if(!player_only) {
-						for(int i = 0; i < 4; i++)
-							party[i]->setTargetCreature(loc->creature);
-					}
-					return;
-				} else {
-					// select player
-					for(int i = 0; i < 4; i++) {
-						if(party[i] == loc->creature) {
-							setPlayer(i);
-							return;
-						}
-					}
+		  Location *loc = map->getLocation(mapx, mapy, mapz);
+		  if(loc && loc->creature) {
+			if(loc->creature->isMonster()) {
+			  // follow this creature
+			  party->setTargetCreature(loc->creature);
+			  return;
+			} else {
+			  // select player
+			  for(int i = 0; i < party->getPartySize(); i++) {
+				if(party->getParty(i) == loc->creature) {
+				  setPlayer(i);
+				  return;
 				}
+			  }
 			}
+		  }
 		}
 		
 		// click on an item
@@ -778,17 +658,21 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 		
 		// click on the map
 		getMapXYAtScreenXY(x, y, &mapx, &mapy);
-		player->setSelXY(mapx, mapy);
-		if(player_only) {
-			player->setTargetCreature(NULL);
+
+
+		// FIXME: try to move to party.cpp
+		party->getPlayer()->setSelXY(mapx, mapy);
+		if(party->isPlayerOnly()) {
+		  party->getPlayer()->setTargetCreature(NULL);
 		} else {
-			for(int i = 0; i < 4; i++) {
-				if(!party[i]->getStateMod(Constants::dead)) {
-					party[i]->setTargetCreature(NULL);
-					if(party[i] != player) party[i]->follow(map);
-				}
+		  for(int i = 0; i < party->getPartySize(); i++) {
+			if(!party->getParty(i)->getStateMod(Constants::dead)) {
+			  party->getParty(i)->setTargetCreature(NULL);
+			  if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
 			}
+		  }
 		}
+		// end of FIXME
 		
 		
 	} else if(button == SDL_BUTTON_RIGHT) {
@@ -954,12 +838,6 @@ void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
     }
 }
 
-void Scourge::setPartyMotion(int motion) {
-  for(int i = 0; i < 4; i++) {
-	if(party[i] != player) party[i]->setMotion(motion);
-  }
-}
-
 void Scourge::startItemDragFromGui(Item *item) {
   movingX = -1;
   movingY = -1;
@@ -986,11 +864,11 @@ void Scourge::endItemDrag() {
 }
 
 bool Scourge::useItem() {
-  for(int x = player->getX() - 2; 
-	  x < player->getX() + player->getShape()->getWidth() + 2; 
+  for(int x = party->getPlayer()->getX() - 2; 
+	  x < party->getPlayer()->getX() + party->getPlayer()->getShape()->getWidth() + 2; 
 	  x++) {
-	for(int y = player->getY() + 2; 
-		y > player->getY() - player->getShape()->getDepth() - 2; 
+	for(int y = party->getPlayer()->getY() + 2; 
+		y > party->getPlayer()->getY() - party->getPlayer()->getShape()->getDepth() - 2; 
 		y--) {
 	  if(useItem(x, y, 0)) return true;
 	}
@@ -1029,8 +907,8 @@ bool Scourge::useItem(int x, int y, int z) {
 bool Scourge::getItem(Location *pos) {
     if(pos->item) {
 	  if(map->isWallBetween(pos->x, pos->y, pos->z, 
-							getPlayer()->getX(),
-							getPlayer()->getY(),
+							party->getPlayer()->getX(),
+							party->getPlayer()->getY(),
 							0)) {
 		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 	  } else {
@@ -1092,9 +970,9 @@ void Scourge::dropItem(int x, int y) {
 								   movingX, movingY, movingZ,
 								   movingItem->getShape(), &z);
 	if(!pos && 
-	   !map->isWallBetween(getPlayer()->getX(), 
-						   getPlayer()->getY(), 
-						   getPlayer()->getZ(), 
+	   !map->isWallBetween(party->getPlayer()->getX(), 
+						   party->getPlayer()->getY(), 
+						   party->getPlayer()->getZ(), 
 						   x, y, z)) {
 	  map->setItem(x, y, z, movingItem);
 	} else {
@@ -1120,7 +998,7 @@ void Scourge::dropItem(int x, int y) {
 
 bool Scourge::useGate(Location *pos) {
   for(int i = 0; i < 4; i++) {
-	if(!party[i]->getStateMod(Constants::dead)) {
+	if(!party->getParty(i)->getStateMod(Constants::dead)) {
 	  if(pos->shape == shapePal->getShape(Constants::STAIRS_UP_INDEX)) {
 		oldStory = currentStory;
 		currentStory--;
@@ -1156,7 +1034,7 @@ bool Scourge::useTeleporter(Location *pos) {
 	 pos->shape == shapePal->getShape(Constants::TELEPORTER_BASE_INDEX)) {
 	// able to teleport if any party member is alive
 	for(int i = 0; i < 4; i++) {
-	  if(!party[i]->getStateMod(Constants::dead)) {
+	  if(!party->getParty(i)->getStateMod(Constants::dead)) {
 		teleporting = true;
 		return true;
 	  }
@@ -1178,29 +1056,20 @@ bool Scourge::useDoor(Location *pos) {
         Sint16 oy = pos->y;
         Sint16 nx = pos->x;
         Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
-        Shape *oldDoorShape = map->removePosition(ox, oy, player->getZ());
-        if(!map->isBlocked(nx, ny, player->getZ(),
-                           ox, oy, player->getZ(),
+        Shape *oldDoorShape = map->removePosition(ox, oy, party->getPlayer()->getZ());
+        if(!map->isBlocked(nx, ny, party->getPlayer()->getZ(),
+                           ox, oy, party->getPlayer()->getZ(),
                            newDoorShape)) {
-            map->setPosition(nx, ny, player->getZ(), newDoorShape);
+            map->setPosition(nx, ny, party->getPlayer()->getZ(), newDoorShape);
             return true;
         } else {
           // rollback
-          map->setPosition(ox, oy, player->getZ(), oldDoorShape);
+          map->setPosition(ox, oy, party->getPlayer()->getZ(), oldDoorShape);
           map->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
           return true;
         }
     }
     return false;
-}
-
-Creature *Scourge::isPartyMember(Location *pos) {
-  for(int i = 0; i < 4; i++) {
-	  if(pos->x == party[i]->getX() &&
-       pos->y == party[i]->getY() &&
-       pos->z == party[i]->getZ()) return party[i];
-  }
-	return NULL;
 }
 
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
@@ -1408,29 +1277,22 @@ void Scourge::createUI() {
   }
 }
 
-
 void Scourge::playRound() {
   // change animation if needed
   for(int i = 0; i < 4; i++) {
-	if(((MD2Shape*)(party[i]->getShape()))->getAttackEffect()) {
-	  party[i]->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
-	} else if(party[i]->anyMovesLeft())
-	  party[i]->getShape()->setCurrentAnimation((int)MD2_RUN);
+	if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
+	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
+	} else if(party->getParty(i)->anyMovesLeft())
+	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
 	else 
-	  party[i]->getShape()->setCurrentAnimation((int)MD2_STAND);
+	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
   }
 
   // move the player's selX,selY in a direction as specified by keystroke
   handleKeyboardMovement();
 
   // hound your targets
-  for(int i = 0; i < 4; i++) {
-	if(!party[i]->getStateMod(Constants::dead) && 
-	   party[i]->getTargetCreature()) {
-	  party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
-						 party[i]->getTargetCreature()->getY());
-	}
-  }
+  party->followTargets();
   
   // round starts if:
   // -in group mode
@@ -1441,7 +1303,7 @@ void Scourge::playRound() {
 	lastTick = t;
 		
 	// move the party members
-	movePlayers();
+	party->movePlayers();
 	
 	// move visible monsters
 	for(int i = 0; i < creatureCount; i++) {
@@ -1459,9 +1321,9 @@ void Scourge::playRound() {
 	  
 	  // attack targeted monster if close enough
 	  for(int i = 0; i < 4; i++) {
-		if(!party[i]->getStateMod(Constants::dead) && 
-		   party[i]->getTargetCreature()) {								
-		  battle[battleCount++] = new Battle(this, party[i]);
+		if(!party->getParty(i)->getStateMod(Constants::dead) && 
+		   party->getParty(i)->getTargetCreature()) {								
+		  battle[battleCount++] = new Battle(this, party->getParty(i));
 		}
 	  }
 	  for(int i = 0; i < creatureCount; i++) {
@@ -1474,17 +1336,15 @@ void Scourge::playRound() {
 	  
 	  // fight one round of the epic battle
 	  if(battleCount > 0) {
+		cerr << "FIXME: clean up Battle::setupBattles and Battle::fightTurn()!!!" << endl;
 		//fightBattle();
 		Battle::setupBattles(this, battle, battleCount, &battleRound);
 		battleTurn = 0;
-
-		cerr << "battleRound=" << battleRound.size() << endl;
 	  }
 	}
 
 	// fight a turn of the battle
 	if(battleRound.size() > 0) {
-	  cerr << "battleTurn=" << battleTurn << " battleRound=" << battleRound.size() << endl;
 	  if(battleTurn < battleRound.size()) {
 		Battle *battle = battleRound[battleTurn];
 		if(!battle->isEmpty()) {
@@ -1498,175 +1358,11 @@ void Scourge::playRound() {
 	}
   }
 }
-/*
-// REFACTOR. Add rand() for a monster to give up fighting, implement damage special effects
-// implement damage, death (esp. character death), level up, containers (corpse w. items)
-void Scourge::fightBattle() {
-  int initiative = -10;
-  char message[200];
-  bool fightingStarted = false;
-  // this is O(n^2) unfortunately... maybe we could use a linked list or something here
-  while(battleCount > 0) {
-	bool creatureFound = false;
-	for(int i = 0; i < battleCount; i++) {
-	  Creature *creature = battle[i].creature;
 
-	  // if someone already killed this target, skip it
-	  if(creature->getTargetCreature()->getStateMod(Constants::dead)) {
-		creature->setTargetCreature(NULL);
-		if(creature->isMonster()) {
-		  creature->setMotion(Constants::MOTION_LOITER);
-		}
-	  } else {
-	  
-		float dist = Util::distance(creature->getX(), 
-									creature->getY(), 
-									creature->getShape()->getWidth(),
-									creature->getShape()->getDepth(),
-									creature->getTargetCreature()->getX(),
-									creature->getTargetCreature()->getY(),
-									creature->getTargetCreature()->getShape()->getWidth(),
-									creature->getTargetCreature()->getShape()->getDepth());
-		// get the best weapon given the distance from the target
-		Item *item = creature->getBestWeapon(dist);
-		// creature won't fight if too far from the action 
-		// (!item) is a bare-hands attack
-		
-		GLint t = SDL_GetTicks();
-		int itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
-		if(item || dist <= 1.0f) {
-		  if((itemSpeed * (userConfiguration->getGameSpeedTicks() + 80)) < t - creature->getLastTurn()) {
-			// not time for this creature's turn yet
-			int creatureInitiative = creature->getInitiative(item);
-			if(creatureInitiative > initiative) continue;
-			creatureFound = true;
-			
-			// remember the last active turn
-			creature->setLastTurn(t);
-			
-			if(!fightingStarted) {
-			  map->addDescription("A round of battle begins...", 1, 1, 1);
-			  fightingStarted = true;
-			}
-			
-			if(item) {
-			  sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
-					  creature->getName(), 
-					  creature->getTargetCreature()->getName(),
-					  item->getRpgItem()->getName(),
-					  creatureInitiative, itemSpeed);
-			  map->addDescription(message);
-			  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
-			} else if(dist <= 1.0f) {
-			  sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
-					  creature->getName(), 
-					  creature->getTargetCreature()->getName(),
-					  creatureInitiative, itemSpeed);
-			  map->addDescription(message);
-			  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
-			}
-			
-			// the target creature gets really upset...
-			// this is also an optimization for fps
-			if(creature->getTargetCreature()->isMonster() && 
-			   !creature->getTargetCreature()->getTargetCreature()) {
-			  creature->getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
-			  creature->getTargetCreature()->setTargetCreature(creature);
-			}
-
-			// if this is a ranged weapon launch a projectile
-			if(item->getRpgItem()->isRangedWeapon()) {
-			  sprintf(message, "...%s shoots a projectile", creature->getName());
-			  map->addDescription(message);
-			  newProjectile(creature->getTargetCreature()->getX(),
-							creature->getTargetCreature()->getY(),
-							item);
-			} else {
-			  hitTarget();
-			}
-		  } else {
-			// out of range
-			creature->setSelXY(creature->getTargetCreature()->getX(),
-							   creature->getTargetCreature()->getY(),
-							   true);
-		  }
-		}
-	  }
-	  // remove this creature from the turn
-	  for(int t = i; t < battleCount - 1; t++) {
-		battle[t].creature = battle[t + 1].creature;
-	  }
-	  battleCount--;
-	  i--;
-	}
-	if(!creatureFound) initiative++;
-  }
-}
-
-void Scourge::hitWithItem(Creature *attacker, Creature *target, Item *item) {
-  // take a swing
-  int tohit = creature->getToHit(item);
-  int ac = target->getSkillModifiedArmor();
-  sprintf(message, "...%s defends with armor=%d", target->getName(), ac);
-  map->addDescription(message);
-  if(tohit > ac) {
-	
-	// deal out the damage
-	int damage = creature->getDamage(item);
-	if(damage) {
-	  sprintf(message, "...and hits! (toHit=%d vs. AC=%d) for %d points of damage", 
-			  tohit, ac, damage);
-	  map->addDescription(message, 1.0f, 0.5f, 0.5f);
-	  
-	  // target creature death
-	  if(target->takeDamage(damage)) {				  
-		creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
-		sprintf(message, "...%s is killed!", target->getName());
-		map->addDescription(message, 1.0f, 0.5f, 0.5f);
-		creatureDeath(target);
-		
-		// add exp. points and money
-		if(!creature->isMonster()) {
-		  for(int i = 0; i < 4; i++) {
-			bool b = party[i]->getStateMod(Constants::leveled);
-			if(!party[i]->getStateMod(Constants::dead)) {
-			  int n = party[i]->addExperience(target);
-			  if(n > 0) {
-				sprintf(message, "%s gains %d experience points.", party[i]->getName(), n);
-				map->addDescription(message);
-				if(!b && party[i]->getStateMod(Constants::leveled)) {
-				  sprintf(message, "%s gains a level!", party[i]->getName());
-				  map->addDescription(message, 1.0f, 0.5f, 0.5f);
-				}
-			  }
-			  
-			  n = party[i]->addMoney(target);
-			  if(n > 0) {
-				sprintf(message, "%s finds %d coins!", party[i]->getName(), n);
-				map->addDescription(message);
-			  }
-			}
-		  }
-		}
-	  }
-	} else {
-	  sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 
-			  tohit, ac);
-	  map->addDescription(message);
-	}
-  } else {
-	// missed
-	sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
-	map->addDescription(message);
-  }
-}
-*/
 void Scourge::creatureDeath(Creature *creature) {
-	if(creature == player) {
-		if(!switchToNextLivePartyMember()) {
-			partyDead = true;
-		}
-	}
+  if(creature == party->getPlayer()) {
+	party->switchToNextLivePartyMember();
+  }
   // remove from the map; the object will be cleaned up at the end of the mission
   map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
   // add a container object instead
@@ -1683,125 +1379,54 @@ void Scourge::creatureDeath(Creature *creature) {
 
 // move the player in a direction as specified by keystroke
 void Scourge::handleKeyboardMovement() {
+  /*
   if(!move) return;
 
   // when moving w. the keyboard don't attack creatures
-  for(int i = 0; i < 4; i++) party[i]->setTargetCreature(NULL);
+  party->setTargetCreature(NULL);
 
   // decode keyboard movement
   if(move & Constants::MOVE_UP) {
-	if(getPlayer()->getSelX() == -1) 
-	  getPlayer()->setSelXY(getPlayer()->getX(), getPlayer()->getY() - 1);
+	if(party->getPlayer()->getSelX() == -1) 
+	  party->getPlayer()->setSelXY(party->getPlayer()->getX(), party->getPlayer()->getY() - 1);
 	else
-	  getPlayer()->setSelXY(getPlayer()->getSelX(), getPlayer()->getSelY() - 1);
+	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX(), party->getPlayer()->getSelY() - 1);
   }
   if(move & Constants::MOVE_DOWN) {
-	if(getPlayer()->getSelX() == -1) 
-	  getPlayer()->setSelXY(getPlayer()->getX(), getPlayer()->getY() + 1);
+	if(party->getPlayer()->getSelX() == -1) 
+	  party->getPlayer()->setSelXY(party->getPlayer()->getX(), party->getPlayer()->getY() + 1);
 	else
-	  getPlayer()->setSelXY(getPlayer()->getSelX(), getPlayer()->getSelY() + 1);
+	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX(), party->getPlayer()->getSelY() + 1);
   }
   if(move & Constants::MOVE_LEFT) {
-	if(getPlayer()->getSelX() == -1) 
-	  getPlayer()->setSelXY(getPlayer()->getX() - 1, getPlayer()->getY());
+	if(party->getPlayer()->getSelX() == -1) 
+	  party->getPlayer()->setSelXY(party->getPlayer()->getX() - 1, party->getPlayer()->getY());
 	else
-	  getPlayer()->setSelXY(getPlayer()->getSelX() - 1, getPlayer()->getSelY());
+	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX() - 1, party->getPlayer()->getSelY());
   }
   if(move & Constants::MOVE_RIGHT) {
-	if(getPlayer()->getSelX() == -1) 
-	  getPlayer()->setSelXY(getPlayer()->getX() + 1, getPlayer()->getY());
+	if(party->getPlayer()->getSelX() == -1) 
+	  party->getPlayer()->setSelXY(party->getPlayer()->getX() + 1, party->getPlayer()->getY());
 	else
-	  getPlayer()->setSelXY(getPlayer()->getSelX() + 1, getPlayer()->getSelY());
+	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX() + 1, party->getPlayer()->getSelY());
   }
 
-  if(!player_only) {
+  if(!party->isPlayerOnly()) {
     for(int i = 0; i < 4; i++) {
-	  if(!party[i]->getStateMod(Constants::dead)) {
-		party[i]->setTargetCreature(NULL);
-		if(party[i] != player) party[i]->follow(map);
+	  if(!party->getParty(i)->getStateMod(Constants::dead)) {
+		party->getParty(i)->setTargetCreature(NULL);
+		if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
 	  }
     }
   }
-}
-
-void Scourge::movePlayers() {   
-  if(player_only) {	
-	
-	// how many party members are still alive?
-	int sum = 0;
-	for(int i = 0; i < 4; i++) 
-	  if(!party[i]->getStateMod(Constants::dead)) sum++;
-	
-	// in single-step mode:
-	for(int i = 0; i < sum; i++) {
-	  
-	  // move the current player
-	  if(!player->getStateMod(Constants::dead)) {
-		player->moveToLocator(map, player_only);
-		map->center(player->getX(), player->getY());
-	  }
-	  
-	  switchToNextLivePartyMember();
-	}	
-  } else {
-	// In group mode:
-	
-	// move the leader
-	if(!player->getStateMod(Constants::dead)) {
-	  player->moveToLocator(map, player_only);
-	  map->center(player->getX(), player->getY());
-	}
-	
-	// in keyboard mode, don't move the selection
-	if(move) player->setSelXY(-1, -1);
-	
-	// others follow the player
-	for(int t = 0; t < 4; t++) {
-	  if(!party[t]->getStateMod(Constants::dead) && party[t] != player) {
-		if(party[t]->getTargetCreature()) {
-		  party[t]->moveToLocator(map, player_only);
-		} else {
-		  party[t]->moveToLocator(map, player_only);
-		}
-	  }
-	}	
-  }
-}
-
-bool Scourge::switchToNextLivePartyMember() {
-	Creature *oldPlayer = player;
-	// find the player's index
-	int n = -1;
-	for(int t = 0; t < 4; t++) {
-		if(party[t] == player) {
-			n = t;
-			break;
-		}
-	}			
-	// switch to next player
-	n++; if(n >= 4) n = 0;
-	for(int t = 0; t < 4; t++) {
-		if(!party[n]->getStateMod(Constants::dead)) {
-			setPlayer(n);
-			break;
-		}
-		n++; if(n >= 4) n = 0;
-	}
-	return(oldPlayer != player);
+  */
 }
 
 void Scourge::setPlayer(int n) {
-  player = party[n];
-  player->setNextDontMove(NULL, 0);
-  move = 0;
-  //  player->setSelXY(-1, -1); // don't move
-  // init the rest of the party
-  int count = 1;
-  for(int i = 0; i < 4; i++) {
-	if(i != n) party[i]->setNextDontMove(player, count++);
-  }
+  party->setPlayer(n);
+  //  move = 0;
   map->refresh();
-  map->center(player->getX(), player->getY());
+  map->center(party->getPlayer()->getX(), party->getPlayer()->getY());
   player1Button->setSelected(false);
   player2Button->setSelected(false);
   player3Button->setSelected(false);
@@ -1818,16 +1443,10 @@ void Scourge::setPlayer(int n) {
    Setting the formation ends single-step mode (back to group mode).
  */
 void Scourge::setFormation(int formation) {
-  this->formation = formation;
-  for(int i = 0; i < 4; i++) {
-	party[i]->setFormation(formation);
-  }
-  player_only = false;
-  groupButton->setSelected(!player_only);
+  party->setFormation(formation);
+  groupButton->setSelected(!party->isPlayerOnly());
   startRound = true;
   roundButton->setSelected(startRound);
-
-
   diamondButton->setSelected(false);
   staggeredButton->setSelected(false);
   squareButton->setSelected(false);
@@ -1848,14 +1467,13 @@ void Scourge::setFormation(int formation) {
   case Constants::CROSS_FORMATION:
     crossButton->setSelected(true); break;
   }
-
 }
 
 void Scourge::addGameSpeed(int speedFactor){
-    char msg[80];
-    userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
-    sprintf(msg, "Speed set to %d\n", userConfiguration->getGameSpeedTicks());
-    map->addDescription(msg);
+  char msg[80];
+  userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
+  sprintf(msg, "Speed set to %d\n", userConfiguration->getGameSpeedTicks());
+  map->addDescription(msg);
 }
 
 /**
@@ -1872,8 +1490,8 @@ void Scourge::toggleRound() {
   }
   
   // Freeze / unfreeze animations
-  for(i = 0; i < 4; i++){
-    party[i]->getShape()->setPauseAnimation(!startRound);
+  for(i = 0; i < party->getPartySize(); i++){
+    party->getParty(i)->getShape()->setPauseAnimation(!startRound);
   }  
   for(i = 0; i < creatureCount; i++){
     creatures[i]->getShape()->setPauseAnimation(!startRound);
@@ -1886,19 +1504,8 @@ void Scourge::toggleRound() {
 }
 
 void Scourge::togglePlayerOnly() {
-  player_only = (player_only ? false : true);
-  // in group mode everyone hunts the same creature
-  if(!player_only) {
-	for(int i = 0; i < 4; i++) {
-	  if(party[i] != player) 
-		party[i]->setTargetCreature(player->getTargetCreature());
-	}
-  }
-  if(player_only)
-	map->addDescription(Constants::getMessage(Constants::SINGLE_MODE), 0.5f, 0.5f, 1.0f);
-  else
-	map->addDescription(Constants::getMessage(Constants::GROUP_MODE), 0.5f, 0.5f, 1.0f);
-  groupButton->setSelected(!player_only);
+  party->togglePlayerOnly();
+  groupButton->setSelected(!party->isPlayerOnly());
 }
   
 void Scourge::moveMonster(Creature *monster) {  
@@ -1914,18 +1521,18 @@ void Scourge::moveMonster(Creature *monster) {
   if(monster->getMotion() == Constants::MOTION_LOITER) {
 	// attack a player
 	if((int)(20.0f * rand()/RAND_MAX) == 0) {
-	  int n = (int)(4.0f * rand()/RAND_MAX);
+	  int n = (int)((float)party->getPartySize() * rand()/RAND_MAX);
 	  float dist = Util::distance(monster->getX(), 
 								  monster->getY(), 
 								  monster->getShape()->getWidth(),
 								  monster->getShape()->getDepth(),
-								  party[n]->getX(),
-								  party[n]->getY(),
-								  party[n]->getShape()->getWidth(),
-								  party[n]->getShape()->getDepth());
+								  party->getParty(n)->getX(),
+								  party->getParty(n)->getY(),
+								  party->getParty(n)->getShape()->getWidth(),
+								  party->getParty(n)->getShape()->getDepth());
 	  if(dist < 20.0) {
 		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
-		monster->setTargetCreature(party[n]);
+		monster->setTargetCreature(party->getParty(n));
 	  }
 	} else {
 	  // random (non-attack) monster movement

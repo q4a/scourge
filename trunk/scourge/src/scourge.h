@@ -42,6 +42,7 @@
 #include "containergui.h"
 #include "board.h"
 #include "battle.h"
+#include "party.h"
 
 using namespace std;
 
@@ -62,6 +63,7 @@ class Window;
 class ContainerGui;
 class Board;
 class Battle;
+class Party;
 
 /**
   *@author Gabor Torok
@@ -73,14 +75,9 @@ class Battle;
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
 
-/*
-typedef struct _Battle {
-  Creature *creature;
-} Battle;
-*/
-
 class Scourge : public SDLEventHandler,SDLScreenView {
  private:
+  Party *party;
   Map *map;
   MiniMap * miniMap;
   Calendar * calendar;
@@ -92,9 +89,6 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Creature *creatures[500];
   int itemCount;
   int creatureCount;
-  Creature *player;
-  Creature *party[4];
-  int formation;
   MainMenu *mainMenu;
   OptionsMenu *optionsMenu;
   bool isInfoShowing;
@@ -140,14 +134,12 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int movingX, movingY, movingZ;
   Item *movingItem;
 
-  bool player_only;
   Uint16 move;
   bool startRound;
 
   GLint lastTick;
   int battleCount;
   Battle *battle[MAX_BATTLE_COUNT];  
-  bool partyDead;
 
   // multi-story levels
   int currentStory, oldStory;
@@ -211,6 +203,7 @@ public:
    */
   void playRound();
 
+  inline Party *getParty() { return party; }
   inline Map *getMap() { return map; }
   inline MiniMap *getMiniMap() { return miniMap; }
 
@@ -229,26 +222,13 @@ public:
 
   inline Inventory *getInventory() { return inventory; }
   
-  inline Creature *getPlayer() { return player; }
-
   void drawView();
   void drawAfter();
 
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
-
-  void setPlayer(int n);
-  inline void setPlayer(Creature *c) { player = c; }
-  
-  void setPartyMotion(int motion);
-  
-  void setFormation(int formation);
-  
-  inline int getFormation() { return formation; }
-  
+   
   void addGameSpeed(int speedFactor);
-  
-  Creature *isPartyMember(Location *pos);
   
   void startItemDragFromGui(Item *item);
   bool startItemDrag(int x, int y, int z);
@@ -264,8 +244,6 @@ public:
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
   
   inline UserConfiguration * getUserConfiguration() { return userConfiguration; }
-
-  inline Creature *getParty(int i) { return party[i]; } 
   
   inline Calendar *getCalendar() { return calendar; } 
 
@@ -281,6 +259,10 @@ public:
 
   void showMessageDialog(char *message);
 
+  void setFormation(int formation);
+
+  void setPlayer(int n);
+
  protected:
   //  void fightBattle(); 
 
@@ -288,21 +270,14 @@ public:
   void createUI();
   // change the player's selX,selY values as specified by keyboard movement
   void handleKeyboardMovement();
-  // move the party
-  void movePlayers();
   // move a creature
   void moveMonster(Creature *monster);
 
   void toggleRound();
   void togglePlayerOnly();
 
-  // returns false if the switch could not be made,
-  // because the entire party is dead (the mission failed)
-  bool switchToNextLivePartyMember();
-
   void refreshContainerGui(Item *container);
 
-  void initItems();
 };
 
 #endif

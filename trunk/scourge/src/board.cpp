@@ -71,7 +71,7 @@ Board::~Board() {
 void Board::initMissions() {
 	missions.clear();
 	int sum = 0;
-	for(int i = 0; i < 4; i++) sum += scourge->getParty(i)->getLevel();
+	for(int i = 0; i < 4; i++) sum += scourge->getParty()->getParty(i)->getLevel();
 	for(int i = 0; i < MAX_AVAILABLE_MISSION_COUNT; i++) {
 		// find the average level for this mission
 		int level = (int)(((float)(sum) / 4.0f) + (4.0f * rand() / RAND_MAX) - 2.0f);

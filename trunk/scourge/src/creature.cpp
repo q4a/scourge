@@ -234,8 +234,8 @@ bool Creature::moveToLocator(Map *map, bool single_step) {
 	  }	  
 	  
 	  // if this is the player, return to regular movement
-	  if(this == scourge->getPlayer()) {
-		scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+	  if(this == scourge->getParty()->getPlayer()) {
+		scourge->getParty()->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
 	  }
 	}
   }
@@ -286,8 +286,8 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       // if another party member is blocking the player, 
 	  // make them move out of the way
 	  Creature *creature = position->creature;
-      if(this == scourge->getPlayer() && 
-		 creature && creature->character && scourge->getPlayer() != creature) {
+      if(this == scourge->getParty()->getPlayer() && 
+		 creature && creature->character && scourge->getParty()->getPlayer() != creature) {
 		
 		creature->moveRetrycount++;
 		if(creature->moveRetrycount < MAX_MOVE_RETRY) {
@@ -356,25 +356,25 @@ void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
   Used to move away from the player. Find the nearest corner of the map.
 */
 void Creature::findCorner(Sint16 *px, Sint16 *py, Sint16 *pz) {
-  if(getX() < scourge->getPlayer()->getX() &&
-     getY() < scourge->getPlayer()->getY()) {
+  if(getX() < scourge->getParty()->getPlayer()->getX() &&
+     getY() < scourge->getParty()->getPlayer()->getY()) {
     *px = *py = *pz = 0;
     return;
   }
-  if(getX() >= scourge->getPlayer()->getX() &&
-     getY() < scourge->getPlayer()->getY()) {
+  if(getX() >= scourge->getParty()->getPlayer()->getX() &&
+     getY() < scourge->getParty()->getPlayer()->getY()) {
     *px = MAP_WIDTH;
     *py = *pz = 0;
     return;
   }
-  if(getX() < scourge->getPlayer()->getX() &&
-     getY() >= scourge->getPlayer()->getY()) {
+  if(getX() < scourge->getParty()->getPlayer()->getX() &&
+     getY() >= scourge->getParty()->getPlayer()->getY()) {
     *px = *pz = 0;
     *py = MAP_DEPTH;
     return;
   }
-  if(getX() >= scourge->getPlayer()->getX() &&
-     getY() >= scourge->getPlayer()->getY()) {
+  if(getX() >= scourge->getParty()->getPlayer()->getX() &&
+     getY() >= scourge->getParty()->getPlayer()->getY()) {
     *px = MAP_WIDTH;
     *py = MAP_DEPTH;
     *pz = 0;
@@ -745,86 +745,6 @@ int Creature::addMoney(Creature *creature_killed) {
   long delta = (long)n * (int)(50.0f * rand()/RAND_MAX);
   money += delta;
   return money;
-}
-
-/**
-   Create a party programmatically until the party editor is made.
- */
-Creature **Creature::createHardCodedParty(Scourge *scourge) {
-  Creature **pc = (Creature**)malloc(sizeof(Creature*) * 4);
-
-  // FIXME: consider using newCreature here
-  // the end of startMission would have to be modified to not delete the party
-  // also in scourge, where-ever creatureCount is used to mean all monsters would have
-  // to change (maybe that's a good thing too... same logic for party and monsters)
-  pc[0] = new Creature(scourge, Character::getCharacterByName("Assassin"), "Alamont");
-  pc[0]->setLevel(1); 
-  pc[0]->setExp(300);
-  pc[0]->setHp();
-  pc[0]->setHunger(8);
-  pc[0]->setThirst(7); 
-  pc[0]->setStateMod(Constants::blessed, true);
-  pc[0]->setStateMod(Constants::poisoned, true);
-
-  pc[1] = new Creature(scourge, Character::getCharacterByName("Knight"), "Barlett");
-  pc[1]->setLevel(1); 
-  pc[1]->setExp(200);
-  pc[1]->setHp();
-  pc[1]->setHunger(10);
-  pc[1]->setThirst(9);
-  pc[1]->setStateMod(Constants::drunk, true);
-  pc[1]->setStateMod(Constants::cursed, true);      
-
-  pc[2] = new Creature(scourge, Character::getCharacterByName("Summoner"), "Corinus");
-  pc[2]->setLevel(1); 
-  pc[2]->setExp(150);
-  pc[2]->setHp();
-  pc[2]->setHunger(3);
-  pc[2]->setThirst(2);
-  pc[2]->setStateMod(Constants::ac_protected, true);
-  pc[2]->setStateMod(Constants::magic_protected, true);
-  pc[2]->setStateMod(Constants::cursed, true);
-  //  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
-  //  	if(i != Constants::dead) pc[2]->setStateMod(i, true);
-
-  pc[3] = new Creature(scourge, Character::getCharacterByName("Naturalist"), "Dialante");    
-  pc[3]->setLevel(1); 
-  pc[3]->setExp(400);
-  pc[3]->setHp();
-  pc[3]->setHunger(10);
-  pc[3]->setThirst(10);
-  pc[3]->setStateMod(Constants::possessed, true);          
-  
-  // compute starting skill levels
-  for(int i = 0; i < 4; i++) {
-	for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
-	  int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + (int)(20.0 * rand()/RAND_MAX);
-	  if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
-		n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
-	  pc[i]->setSkill(skill, n);
-	}
-  }
-
-  // Compute the new maxInventoryWeight for each pc, according to its POWER skill
-  for(int i = 0; i < 4; i++) {
-	pc[i]->setMaxInventoryWeight(pc[i]->computeMaxInventoryWeight());
-  }
-
-  // add some items
-  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Bastard sword")));
-  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Horned helmet")));
-  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger")));
-  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
-  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
-  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
-  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword")));
-  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Wine barrel")));
-  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
-  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
-  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));
-  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));  
-
-  return pc;
 }
 
 void Creature::monsterInit() {

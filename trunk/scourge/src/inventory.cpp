@@ -47,10 +47,10 @@ Inventory::Inventory(Scourge *scourge) {
 						  100, 50, 420, 505, 
 						  strdup("Party Information"), 
 						  scourge->getShapePalette()->getGuiTexture() );
-	player1Button  = mainWin->createButton( 0, 30, 105, 60, scourge->getParty(0)->getName(), true);
-	player2Button  = mainWin->createButton( 0, 60, 105, 90, scourge->getParty(1)->getName(), true);
-	player3Button  = mainWin->createButton( 0, 90, 105, 120, scourge->getParty(2)->getName(), true );
-	player4Button  = mainWin->createButton( 0, 120, 105, 150, scourge->getParty(3)->getName(), true );
+	player1Button  = mainWin->createButton( 0, 30, 105, 60, scourge->getParty()->getParty(0)->getName(), true);
+	player2Button  = mainWin->createButton( 0, 60, 105, 90, scourge->getParty()->getParty(1)->getName(), true);
+	player3Button  = mainWin->createButton( 0, 90, 105, 120, scourge->getParty()->getParty(2)->getName(), true );
+	player4Button  = mainWin->createButton( 0, 120, 105, 150, scourge->getParty()->getParty(3)->getName(), true );
 	inventoryButton = mainWin->createButton( 105,0, 210, 30, strdup("Inventory"), true);
 	skillsButton   = mainWin->createButton( 210,0, 315, 30, strdup("Skills"), true);
 	spellsButton   = mainWin->createButton( 315,0, 420, 30, strdup("Spells"), true);
@@ -63,7 +63,7 @@ Inventory::Inventory(Scourge *scourge) {
 	cards->createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
     
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	  Item *item = scourge->getParty(selected)->getEquippedInventory(i);
+	  Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
 	  invEquipLabel[i] = cards->createLabel(300, 60 + (i * 15), 
                                (char *) item ? item->getRpgItem()->getName() : (char*)NULL, 
                                INVENTORY);
@@ -138,7 +138,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == openButton) {
 	int itemIndex = invList->getSelectedLine();  
 	if(itemIndex > -1) {
-	  Item *item = scourge->getParty(selected)->getInventory(itemIndex);
+	  Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
 	  if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
 		scourge->openContainerGui(item);
 	  }
@@ -146,8 +146,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == equipButton) {
 	int itemIndex = invList->getSelectedLine();  
 	if(itemIndex > -1 && 
-	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
-	  scourge->getParty(selected)->equipInventory(itemIndex);
+	   scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+	  scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
 	  // recreate list strings
 	  int oldLine = invList->getSelectedLine();
 	  setSelectedPlayerAndMode(selected, selectedMode);
@@ -156,25 +156,25 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == eatDrinkButton) {
 	int itemIndex = invList->getSelectedLine();  
 	if(itemIndex > -1 && 
-	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
-	  if(scourge->getParty(selected)->eatDrink(itemIndex)){
-		scourge->getParty(selected)->removeInventory(itemIndex);                
+	   scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+	  if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
+		scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
 	  }
 	  // refresh screen
 	  setSelectedPlayerAndMode(selected, INVENTORY);
 	}					   	   	   	      	
 	
   } else if(widget == skillAddButton) {
-	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
+	if(!scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-	} else if(scourge->getParty(selected)->getAvailableSkillPoints() <= 0) {
+	} else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() <= 0) {
 	  //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
 	} else {
 	  int itemIndex = skillList->getSelectedLine();  
 	  if(itemIndex <= -1) {
 		error = Constants::getMessage(Constants::NO_SKILL_ERROR);
 	  } else {
-		scourge->getParty(selected)->incSkillMod(itemIndex);
+		scourge->getParty()->getParty(selected)->incSkillMod(itemIndex);
 		// recreate list strings
 		int oldLine = skillList->getSelectedLine();
 		setSelectedPlayerAndMode(selected, selectedMode);
@@ -186,17 +186,17 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  scourge->showMessageDialog(error);
 	}
   } else if(widget == skillSubButton) {
-	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
+	if(!scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-	} else if(scourge->getParty(selected)->getAvailableSkillPoints() == 
-			  scourge->getParty(selected)->getCharacter()->getSkillBonus()) {
+	} else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 
+			  scourge->getParty()->getParty(selected)->getCharacter()->getSkillBonus()) {
 	  //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
 	} else {
 	  int itemIndex = skillList->getSelectedLine();  
 	  if(itemIndex <= -1) {
 		error = Constants::getMessage(Constants::NO_SKILL_ERROR);
 	  } else {
-		scourge->getParty(selected)->decSkillMod(itemIndex);
+		scourge->getParty()->getParty(selected)->decSkillMod(itemIndex);
 		// recreate list strings
 		int oldLine = skillList->getSelectedLine();
 		setSelectedPlayerAndMode(selected, selectedMode);
@@ -208,10 +208,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  scourge->showMessageDialog(error);
 	}
   } else if(widget == levelUpButton) {
-	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
+	if(!scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else {
-	  scourge->getParty(selected)->applySkillMod();
+	  scourge->getParty()->getParty(selected)->applySkillMod();
 	  // recreate list strings
 	  int oldLine = skillList->getSelectedLine();
 	  setSelectedPlayerAndMode(selected, selectedMode);
@@ -228,10 +228,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 void Inventory::moveItemTo(int playerIndex) {
   int itemIndex = invList->getSelectedLine();  
   if(itemIndex > -1 && 
-	 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+	 scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
 	if(playerIndex != selected) {
-	  scourge->getParty(playerIndex)->
-		addInventory(scourge->getParty(selected)->removeInventory(itemIndex));
+	  scourge->getParty()->getParty(playerIndex)->
+		addInventory(scourge->getParty()->getParty(selected)->removeInventory(itemIndex));
 	  // recreate strings in list
 	  setSelectedPlayerAndMode(selected, selectedMode);
 	}
@@ -270,7 +270,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   cards->setActiveCard(selectedMode);   
 
 	// arrange the gui
-	Creature * selectedP = scourge->getParty(selected);
+	Creature * selectedP = scourge->getParty()->getParty(selected);
 	switch(selectedMode) {
 	case CHARACTER:       	
 	sprintf(nameAndClassStr, "%s, %s", selectedP->getName(), selectedP->getCharacter()->getName());
@@ -367,7 +367,7 @@ void Inventory::drawInventory() {
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	mainWin->scissorToWindow();
-	scourge->getParty(i)->draw();
+	scourge->getParty()->getParty(i)->draw();
 	glDisable( GL_SCISSOR_TEST );
 	glDisable( GL_TEXTURE_2D );
 	glPopMatrix();
@@ -376,11 +376,11 @@ void Inventory::drawInventory() {
 
 void Inventory::receive(Widget *widget) {
   if(scourge->getMovingItem()) {
-	if(scourge->getParty(selected)->addInventory(scourge->getMovingItem())) {
+	if(scourge->getParty()->getParty(selected)->addInventory(scourge->getMovingItem())) {
 	  // message: the player accepted the item
 	  char message[120];
 	  sprintf(message, "%s picks up %s.", 
-			  scourge->getParty(selected)->getName(),
+			  scourge->getParty()->getParty(selected)->getName(),
 			  scourge->getMovingItem()->getRpgItem()->getName());
 	  scourge->getMap()->addDescription(message);
 	  scourge->endItemDrag();
@@ -398,15 +398,15 @@ void Inventory::startDrag(Widget *widget) {
 void Inventory::dropItem() {
   int itemIndex = invList->getSelectedLine();  
   if(itemIndex > -1 && 
-	 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
-	Item *item = scourge->getParty(selected)->removeInventory(itemIndex);
+	 scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+	Item *item = scourge->getParty()->getParty(selected)->removeInventory(itemIndex);
 	scourge->setMovingItem(item, 
-						   scourge->getParty(selected)->getX(), 
-						   scourge->getParty(selected)->getY(), 
-						   scourge->getParty(selected)->getZ());
+						   scourge->getParty()->getParty(selected)->getX(), 
+						   scourge->getParty()->getParty(selected)->getY(), 
+						   scourge->getParty()->getParty(selected)->getZ());
 	char message[120];
 	sprintf(message, "%s drops %s.", 
-			scourge->getParty(selected)->getName(),
+			scourge->getParty()->getParty(selected)->getName(),
 			item->getRpgItem()->getName());
 	scourge->getMap()->addDescription(message);
 	setSelectedPlayerAndMode(selected, INVENTORY);

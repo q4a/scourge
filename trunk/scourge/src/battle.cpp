@@ -243,26 +243,31 @@ void Battle::hitWithItem() {
 		
 		// add exp. points and money
 		if(!creature->isMonster()) {
-		  for(int i = 0; i < 4; i++) {
-			bool b = scourge->getParty(i)->getStateMod(Constants::leveled);
-			if(!scourge->getParty(i)->getStateMod(Constants::dead)) {
-			  int n = scourge->getParty(i)->addExperience(creature->getTargetCreature());
+
+		  
+		  // FIXME: try to move to party.cpp
+		  for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
+			bool b = scourge->getParty()->getParty(i)->getStateMod(Constants::leveled);
+			if(!scourge->getParty()->getParty(i)->getStateMod(Constants::dead)) {
+			  int n = scourge->getParty()->getParty(i)->addExperience(creature->getTargetCreature());
 			  if(n > 0) {
-				sprintf(message, "%s gains %d experience points.", scourge->getParty(i)->getName(), n);
+				sprintf(message, "%s gains %d experience points.", scourge->getParty()->getParty(i)->getName(), n);
 				scourge->getMap()->addDescription(message);
-				if(!b && scourge->getParty(i)->getStateMod(Constants::leveled)) {
-				  sprintf(message, "%s gains a level!", scourge->getParty(i)->getName());
+				if(!b && scourge->getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+				  sprintf(message, "%s gains a level!", scourge->getParty()->getParty(i)->getName());
 				  scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 				}
 			  }
 			  
-			  n = scourge->getParty(i)->addMoney(creature->getTargetCreature());
+			  n = scourge->getParty()->getParty(i)->addMoney(creature->getTargetCreature());
 			  if(n > 0) {
-				sprintf(message, "%s finds %d coins!", scourge->getParty(i)->getName(), n);
+				sprintf(message, "%s finds %d coins!", scourge->getParty()->getParty(i)->getName(), n);
 				scourge->getMap()->addDescription(message);
 			  }
 			}
 		  }
+		  // end of FIXME
+
 		}
 	  }
 	} else {
