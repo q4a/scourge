@@ -42,6 +42,8 @@
 // this is the clockwise order of movements
 int Map::dir_index[] = { Constants::MOVE_UP, Constants::MOVE_LEFT, Constants::MOVE_DOWN, Constants::MOVE_RIGHT };
 
+bool Map::debugMd2Shapes = false;
+
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -531,8 +533,36 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
 
 
                   if(pos[posX][posY][zp]->creature) {
-                    xpos2 = (pos[posX][posY][zp]->creature->getX() - (GLfloat)getX()) / GLShape::DIV;
-                    ypos2 = (pos[posX][posY][zp]->creature->getY() - (GLfloat)getY() - (GLfloat)(shape->getDepth())) / GLShape::DIV;
+
+                    if( debugMd2Shapes ) {
+                      // debug
+                      xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+                                      xp + chunkOffsetX) / GLShape::DIV;
+                      ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+                                      shape->getDepth() + 
+                                      yp + chunkOffsetY) / GLShape::DIV;
+                      zpos2 = (float)(zp) / GLShape::DIV;
+                      setupPosition(posX, posY, zp,
+                                    xpos2, ypos2, zpos2,
+                                    ((MD2Shape*)pos[posX][posY][zp]->shape)->getDebugShape(), 
+                                    NULL, NULL, NULL);
+                      // end debug
+                    }
+
+
+                    //xpos2 = (pos[posX][posY][zp]->creature->getX() - (GLfloat)getX()) / GLShape::DIV;
+                    //ypos2 = (pos[posX][posY][zp]->creature->getY() - (GLfloat)getY() - (GLfloat)(shape->getDepth())) / GLShape::DIV;
+
+                    float xdiff = ( pos[posX][posY][zp]->creature->getX() - (float)(toint(pos[posX][posY][zp]->creature->getX())));
+                    float ydiff = ( pos[posX][posY][zp]->creature->getY() - (float)(toint(pos[posX][posY][zp]->creature->getY())));
+                    xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+                                    xp + chunkOffsetX +
+                                    xdiff ) / GLShape::DIV;
+                    ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+                                    shape->getDepth() + 
+                                    yp + chunkOffsetY + 
+                                    ydiff ) / GLShape::DIV;
+
                   } else {
                     xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                     xp + chunkOffsetX) / GLShape::DIV;
