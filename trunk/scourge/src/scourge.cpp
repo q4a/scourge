@@ -2056,7 +2056,7 @@ bool Scourge::fightCurrentBattleTurn() {
         }
       } else {
         rtStartTurn = battleTurn = 0;
-        battleRound.clear();
+        if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
         
         if(DEBUG_BATTLE) cerr << "ROUND ENDS" << endl;
         if(DEBUG_BATTLE) cerr << "----------------------------------" << endl;
@@ -2861,7 +2861,7 @@ void Scourge::eraseMiniMapPoint(int x, int y) {
 
 void Scourge::resetBattles() {
   // delete battle references
-  battleRound.clear();
+  if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
   for(int i = 0; i < MAX_BATTLE_COUNT; i++) {
     battle[i] = NULL;
   }

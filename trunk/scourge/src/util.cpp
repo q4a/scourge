@@ -234,7 +234,7 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
 
   if (CLOSED.size() > 0) {
     // Create the path from elements of the CLOSED container
-    PATH.clear();
+    if(PATH.size()) PATH.erase(PATH.begin(), PATH.end());
     PATH.push_back(CLOSED.back());
     CLOSED.pop_back();
 
@@ -248,7 +248,7 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
 
     // Populate the vector that was passed in by reference
     Location Fix;
-    pVector->clear();
+    if(pVector->size()) pVector->erase(pVector->begin(), pVector->end());
     for (int i=(PATH.size()-1); i>=0; i--) {
       //for (container::iterator i=PATH.begin(); i!= PATH.end(); ++i)
       Fix.x = PATH[i].x;
@@ -327,8 +327,7 @@ char * Util :: getOpenGLError(){
 string Util::getNextWord(const string theInput, int fromPos, int &endWord){
     int firstChar, lastStringChar;
     string sub;
-    //sub.clear();
-	sub.erase(sub.begin(), sub.end());
+	if(sub.size()) sub.erase(sub.begin(), sub.end());
     
     if (theInput.empty() || fromPos==-1) {return sub;}
 
