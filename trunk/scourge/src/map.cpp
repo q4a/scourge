@@ -720,7 +720,7 @@ void Map::draw() {
     drawShade();
     glDisable(GL_BLEND);
 
-    drawBorder();
+    //drawBorder();
 
     glDepthMask(GL_TRUE);    
     
@@ -847,10 +847,6 @@ void Map::drawShade() {
 
 }
 
-// the image is 48x114
-#define TILE_W (48.0f / 4.0f)
-#define TILE_H 114.0f
-
 void Map::drawBorder() {
   glPushMatrix();
   glLoadIdentity();
@@ -862,13 +858,14 @@ void Map::drawBorder() {
 
   // draw border
   glColor4f( 1, 1, 1, 1);
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getBorderTexture() );
-  
-  glBegin( GL_QUADS );
 
   int w = (viewWidth == scourge->getSDLHandler()->getScreen()->w ? viewWidth : viewWidth - Window::SCREEN_GUTTER);
   int h = (viewHeight == scourge->getSDLHandler()->getScreen()->h ? viewHeight : viewHeight - Window::SCREEN_GUTTER);
+  float TILE_W = 20.0f;
+  float TILE_H = 120.0f;
 
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getBorderTexture() );
+  glBegin( GL_QUADS );
   // left
   glTexCoord2f (0.0f, 0.0f);
   glVertex2i (0, 0);
@@ -888,30 +885,78 @@ void Map::drawBorder() {
   glVertex2i (w, h);
   glTexCoord2f (0.0f, 0.0f);      
   glVertex2i (w, 0);
+  glEnd();
 
+  TILE_W = 120.0f;
+  TILE_H = 20.0f;
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getBorder2Texture() );
+  glBegin( GL_QUADS );
   // top
-  glTexCoord2f (0.0f, h/TILE_H);
-  glVertex2i (0, 0);
-  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
-  glVertex2i (0, (int)TILE_W);
-  glTexCoord2f (TILE_W/TILE_W, 0.0f);      
-  glVertex2i (w, (int)TILE_W);
   glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (0, 0);
+  glTexCoord2f (0.0f, TILE_H/TILE_H);
+  glVertex2i (0, (int)TILE_H);
+  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
+  glVertex2i (w, (int)TILE_H);
+  glTexCoord2f (w/TILE_W, 0.0f);      
   glVertex2i (w, 0);
 
   // bottom
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, h - (int)TILE_W);
-  glTexCoord2f (TILE_W/TILE_W, 0.0f);
+  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
+  glVertex2i (0, h - (int)TILE_H);
+  glTexCoord2f (w/TILE_W, 0.0f);
   glVertex2i (0, h);
-  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);      
+  glTexCoord2f (0.0f, 0.0f);
   glVertex2i (w, h);
-  glTexCoord2f (0.0f, h/TILE_H);
-  glVertex2i (w, h - (int)TILE_W);
-  
+  glTexCoord2f (0.0f, TILE_H/TILE_H);      
+  glVertex2i (w, h - (int)TILE_H);
   glEnd();
 
+  //int gw = 128;
+  //int gh = 96;
+
+  int gw = 115;
+  int gh = 81;
+  glEnable( GL_ALPHA_TEST );
+  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getGargoyleTexture() );
+
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef(10, -5, 0);
+  glRotatef(20, 0, 0, 1);
+  glBegin( GL_QUADS );
+  // top left
+  glTexCoord2f (1, 0);
+  glVertex2i (0, 0);
+  glTexCoord2f (1, 1);
+  glVertex2i (0, gh);
+  glTexCoord2f (0, 1);
+  glVertex2i (gw, gh);
+  glTexCoord2f (0, 0);      
+  glVertex2i (gw, 0);
+  glEnd();
+  glPopMatrix();
+
+  // top right
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef(w - (gw + 7), 35, 0);
+  glRotatef(-20, 0, 0, 1);
+  glBegin( GL_QUADS );
+  glTexCoord2f (0, 0);
+  glVertex2i (0, 0);
+  glTexCoord2f (0, 1);
+  glVertex2i (0, gh);
+  glTexCoord2f (1, 1);
+  glVertex2i (gw, gh);
+  glTexCoord2f (1, 0);      
+  glVertex2i (gw, 0);
+  glEnd();
+  glPopMatrix();
+
   //glEnable( GL_TEXTURE_2D );
+  glDisable( GL_ALPHA_TEST );
   glEnable(GL_DEPTH_TEST);
   glPopMatrix();
 

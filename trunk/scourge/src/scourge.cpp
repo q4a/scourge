@@ -353,6 +353,8 @@ void Scourge::drawView() {
   glEnable( GL_TEXTURE_2D );
 
   miniMap->buildTexture(0, 0);
+
+  map->drawBorder();
 }
 
 void Scourge::drawAfter() {

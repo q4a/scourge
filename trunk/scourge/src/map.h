@@ -158,6 +158,8 @@ class Map {
   }
     
   void draw();
+
+  void drawBorder();
   
   /**
 	 The map top left x coordinate
@@ -299,8 +301,6 @@ class Map {
 
   void drawShade();
 
-  void drawBorder();
-  
   void drawCube(float x, float y, float z, float r);
 
   void createOverlayTexture();    
