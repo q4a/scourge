@@ -58,9 +58,6 @@ class Spell {
 
  public:
 
-  static const int SINGLE_TARGET = 0;
-  static const int GROUP_TARGET = 1;
-
   Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
 		int distance, int targetType, int speed, MagicSchool *school);
   ~Spell();
