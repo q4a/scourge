@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "canvas.h"
+#include "window.h"
 
 /**
   *@author Gabor Torok
@@ -35,10 +36,18 @@ Canvas::~Canvas() {
 }
 
 void Canvas::drawWidget(Widget *parent) {
-  if(view) {
+  if(view && !((Window*)parent)->isOpening()) {
+    glScissor(((Window*)parent)->getX() + x, 
+              ((Window*)parent)->getSDLHandler()->getScreen()->h - 
+              (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
+              w, getHeight());  
+    glEnable( GL_SCISSOR_TEST );
+    
     glPushMatrix();
     view->drawWidget(this);
     glPopMatrix();
+    
+    glDisable( GL_SCISSOR_TEST );
   }
   // draw the border
   if(highlightBorders) {
