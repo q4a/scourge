@@ -903,10 +903,13 @@ bool Scourge::useItem(int x, int y, int z) {
 	
 	Location *pos = map->getPosition(x, y, z);
 	if(pos) {
-	  if(map->isWallBetween(party->getPlayer()->getX(), 
-							party->getPlayer()->getY(), 
-							party->getPlayer()->getZ(), 
-							x, y, z)) {
+	  Shape *shape = (pos->item ? pos->item->getShape() : pos->shape);
+	  if(map->isWallBetweenShapes(party->getPlayer()->getX(), 
+								  party->getPlayer()->getY(), 
+								  party->getPlayer()->getZ(), 
+								  party->getPlayer()->getShape(),
+								  x, y, z,
+								  shape)) {
 		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 		return true;
 	  } else {
