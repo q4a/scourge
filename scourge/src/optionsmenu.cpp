@@ -171,7 +171,7 @@ void OptionsMenu::loadControls(){
     spaces[i] = '\0';
     
     if(controlLines) {  
-        for(int i = 0; i < uc->getEngineActionCount() ; i++){
+        for(int i = 0; i < ENGINE_ACTION_COUNT ; i++){
             if( controlLines[i] ){
                 free(controlLines[i]);
                 controlLines[i] = NULL;
@@ -181,7 +181,7 @@ void OptionsMenu::loadControls(){
         controlLines = NULL;
     }
     
-    nbControlLines = uc -> getEngineActionCount();            
+    nbControlLines = ENGINE_ACTION_COUNT;
     controlLines = (char **) malloc (nbControlLines *sizeof(char *));    
     for (i = 0; i < nbControlLines; i++){
         //line = spaces;

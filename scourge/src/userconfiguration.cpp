@@ -28,6 +28,39 @@
 //        - make an array for variables too (they are all hard coded for now)
 //        - default config if config file not there ??
 
+const char UserConfiguration::default_key[][20] = {
+  "down",
+  "right",
+  "up",
+  "left",
+  "1",
+  "2",
+  "3",
+  "4",
+  "0",
+  "i",
+  "o",
+  "f",
+  "a",
+  "s",
+  "z",
+  "x",
+  "[+]",
+  "[-]",
+  "l",
+  "8",
+  "9",
+  "m",
+  "j",
+  "k",
+  "space",
+  "f1",
+  "f2",
+  "f3",
+  "f4",
+  "p",
+  "f6"
+};
 
 // Must be exact copy of enums defined in userconfiguration.h
 // (except for ENGINE_ACTION_COUNT)
@@ -46,7 +79,6 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
      
     "SHOW_INVENTORY", 
     "SHOW_OPTIONS_MENU",
-    "USE_ITEM",
     "SET_NEXT_FORMATION",
          
     "SET_Y_ROT_PLUS",
@@ -73,18 +105,7 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "LAYOUT_4",
 
     "SHOW_PATH",
-    
-    "BLEND_A",
-    "BLEND_B",
-    "SET_X_ROT_PLUS",   
-    "SET_X_ROT_MINUS",
-    "ADD_X_POS_PLUS",
-    "ADD_X_POS_MINUS",
-    "ADD_Y_POS_PLUS",
-    "ADD_Y_POS_MINUS",
-    "ADD_Z_POS_PLUS",
-    "ADD_Z_POS_MINUS",    
-    "SHOW_PATH"
+    "SWITCH_COMBAT"
 };
 
 
@@ -96,15 +117,12 @@ const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
     "SET_MOVE_RIGHT",
     "SET_MOVE_UP",
     "SET_MOVE_LEFT",
-    "SET_X_ROT_PLUS",   
-    "SET_X_ROT_MINUS",    
     "SET_Y_ROT_PLUS",
     "SET_Y_ROT_MINUS",    
     "SET_Z_ROT_PLUS",        
     "SET_Z_ROT_MINUS",
     "SET_ZOOM_IN",     
     "SET_ZOOM_OUT",
-    "USE_ITEM", 
     "SHOW_PATH",
     "SET_NEXT_FORMATION"
     
@@ -114,10 +132,10 @@ const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
 
 const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     
-    "Move player south",
-    "Move player north",
-    "Move player east",
-    "Move player west",
+    "Scroll map south",
+    "Scroll map north",
+    "Scroll map east",
+    "Scroll map west",
             
     "Select player 0",
     "Select player 1",
@@ -153,17 +171,8 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     "Side UI layout",
     "Inventory UI layout",
     
-    // Not visible to the user
-    "BLEND_A",    
-    "BLEND_B",  
-    "SET_X_ROT_PLUS",   
-    "SET_X_ROT_MINUS",
-    "ADD_X_POS_PLUS",       
-    "ADD_X_POS_MINUS",
-    "ADD_Y_POS_PLUS",
-    "ADD_Y_POS_MINUS",
-    "ADD_Z_POS_PLUS",
-    "ADD_Z_POS_MINUS",
+    "Show path",
+    "Switch combat mode",
 };
 
 
@@ -244,13 +253,6 @@ UserConfiguration::UserConfiguration(){
         while(p != engineActionNumber.end()){
             cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
             p++;     
-        }
-        
-        cout << "debug ea (ie invisible): " << endl;
-        for (i = ENGINE_ACTION_DEBUG_IND; i < ENGINE_ACTION_COUNT ; i++){                
-            if (engineActionName.find(i) != engineActionName.end()){
-                cout << engineActionName[i] << endl; 
-            }                
         }
     }
 
@@ -346,6 +348,15 @@ void UserConfiguration::loadConfiguration(){
 
   delete configFile;    
 
+  // set default bindings for unbound actions
+  for( int i = 0; i < ENGINE_ACTION_COUNT; i++ ) {
+    // if no bindings
+    if( keyForEngineAction.find( i ) == keyForEngineAction.end() ) {
+      string keyName = default_key[ i ];
+      bind( keyName, engineActionName[ i ], 1 );      
+    }
+  }
+
   // merge old and new settings
   if( !isCurrentVersion ) {
     saveConfiguration();
@@ -393,14 +404,14 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, "// Bindings\n");
     
     // save bindings
-    for (i = 0; i < ENGINE_ACTION_DEBUG_IND ; i++){        
+    for (i = 0; i < ENGINE_ACTION_COUNT ; i++){        
         if(keyForEngineAction.find(i)!=keyForEngineAction.end()){            
             sLine = "bind " + keyForEngineAction[i];
             if(engineActionName.find(i)!=engineActionName.end()){
                 sLine = sLine + " " + engineActionName[i] + "\n";
                 writeFile(configFile, (char *) sLine.c_str());
             }
-        }            
+        }
     }       
     
     // save video variables
@@ -501,13 +512,11 @@ void UserConfiguration::bind(string s1, string s2, int lineNumber){
     // for now, we trust what is written in configuration file        
     if(engineActionNumber.find(s2) != engineActionNumber.end()){                   
         // Ignore debug ea 
-        if(!isDebugEa(engineActionNumber[s2])){                        
-            keyDownBindings[s1] = engineActionNumber[s2];
-            keyForEngineAction[engineActionNumber[s2]] = s1;
-            if(engineActionUpNumber.find(s2) != engineActionUpNumber.end()){                                      
-                keyUpBindings[s1] = engineActionUpNumber[s2];
-            }
-        }
+      keyDownBindings[s1] = engineActionNumber[s2];
+      keyForEngineAction[engineActionNumber[s2]] = s1;
+      if(engineActionUpNumber.find(s2) != engineActionUpNumber.end()){                                      
+        keyUpBindings[s1] = engineActionUpNumber[s2];
+      }    
     }        
 }  
   
@@ -847,15 +856,6 @@ const char * UserConfiguration::getEngineActionKeyName(int i){
     }
 }
 
-bool UserConfiguration::isDebugEa(int j){
-    if (j >= ENGINE_ACTION_DEBUG_IND && j <= ENGINE_ACTION_COUNT){        
-            return true;        
-    }
-    else{
-        return false;
-    }
-}   
-
 // Returns next word from the given position. If there is not a space at the given
 // position, the function suppose it is the first letter of the word wanted. 
 string UserConfiguration::getNextWord(const string theInput, int fromPos, int &endWord){
@@ -988,6 +988,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind f3 layout_3" << endl;
   configFile << "bind f4 layout_4" << endl;
   configFile << "bind p show_path" << endl;
+  configFile << "bind f6 switch_combat" << endl;
   configFile << "" << endl;
   configFile << "// Video settings" << endl;
   configFile << "set fullscreen true" << endl;

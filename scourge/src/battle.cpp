@@ -277,6 +277,7 @@ void Battle::stepCloserToTarget() {
 
   if(debugBattle) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
+    if(debugBattle) cerr << "\t\t\tto target creature: " << creature->getTargetCreature()->getName() << endl;
     int tx = toint(creature->getTargetCreature()->getX() + 
                    creature->getTargetCreature()->getShape()->getWidth() / 2);
     int ty = toint(creature->getTargetCreature()->getY() - 
@@ -284,18 +285,21 @@ void Battle::stepCloserToTarget() {
     if(!(creature->getSelX() == tx && creature->getSelY() == ty)) {
       creature->setSelXY(tx, ty, true);
     }
-  } else {
-    if(!(creature->getSelX() == creature->getTargetX() &&
-         creature->getSelY() == creature->getTargetY())) {
-      creature->setSelXY(creature->getTargetX(),
-                         creature->getTargetY(),
-                         true);
-    }
+  } else if(!(creature->getSelX() == creature->getTargetX() &&
+              creature->getSelY() == creature->getTargetY())) {
+    if(debugBattle) cerr << "\t\t\tto target location: " << creature->getTargetX() <<
+      creature->getTargetY() << endl;
+    creature->setSelXY(creature->getTargetX(),
+                       creature->getTargetY(),
+                       true);
   }
 
   // wait for animation to end
   int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
-  if( !( a == MD2_STAND || a == MD2_RUN )) return;
+  if( !( a == MD2_STAND || a == MD2_RUN )) {
+    if(debugBattle) cerr << "\t\t\tWaiting for animation to end." << endl;
+    return;
+  }
 
   GLfloat oldX = creature->getX();
   GLfloat oldY = creature->getY();

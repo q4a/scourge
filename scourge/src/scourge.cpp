@@ -899,105 +899,105 @@ bool Scourge::handleEvent(SDL_Event *event) {
   int ea;  
 
   if(containerGuiCount > 0) {
-	for(int i = 0; i < containerGuiCount; i++) {
-	  if(containerGui[i]->handleEvent(event)) {
-		closeContainerGui(containerGui[i]);
-	  }
-	}
+    for(int i = 0; i < containerGuiCount; i++) {
+      if(containerGui[i]->handleEvent(event)) {
+        closeContainerGui(containerGui[i]);
+      }
+    }
   }
 
   if(inventory->isVisible()) {
-  	inventory->handleEvent(event);
-	//	return false;
+    inventory->handleEvent(event);
+    //	return false;
   }
 
   if(optionsMenu->isVisible()) {
-	optionsMenu->handleEvent(event);
-	return false;
+    optionsMenu->handleEvent(event);
+    return false;
   }
 
   //if(multiplayer->isVisible()) {
 //    multiplayer->handleEvent(event);
-    //return false;
+  //return false;
   //}
 
   int mx, my;
   switch(event->type) {
   case SDL_MOUSEMOTION:
-  if(mouseRot) {
-    levelMap->setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
-    levelMap->setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
-  } else {
-    //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
-    mx = event->motion.x;
-    my = event->motion.y;
-    if(mx < 10) {
-      mouseMoveScreen = true;
-      setMove(Constants::MOVE_LEFT);
-    } else if(mx >= sdlHandler->getScreen()->w - 10) {
-      mouseMoveScreen = true;
-      setMove(Constants::MOVE_RIGHT);
-    } else if(my < 10) {
-      mouseMoveScreen = true;
-      setMove(Constants::MOVE_UP);
-    } else if(my >= sdlHandler->getScreen()->h - 10) {
-      mouseMoveScreen = true;
-      setMove(Constants::MOVE_DOWN);
+    if(mouseRot) {
+      levelMap->setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
+      levelMap->setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
     } else {
-      if(mouseMoveScreen) {
-        mouseMoveScreen = false;
-        removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
-        removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
-        levelMap->setYRot(0.0f);
-        levelMap->setZRot(0.0f);
+      //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+      mx = event->motion.x;
+      my = event->motion.y;
+      if(mx < 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_LEFT);
+      } else if(mx >= sdlHandler->getScreen()->w - 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_RIGHT);
+      } else if(my < 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_UP);
+      } else if(my >= sdlHandler->getScreen()->h - 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_DOWN);
+      } else {
+        if(mouseMoveScreen) {
+          mouseMoveScreen = false;
+          removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
+          removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
+          levelMap->setYRot(0.0f);
+          levelMap->setZRot(0.0f);
+        }
       }
-    }
 
-    // start the item drag
-    if(willStartDrag && 
-       (abs(mx - willStartDragX) > DRAG_START_TOLERANCE ||
-        abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
-      // click on an item
-      Uint16 mapx, mapy, mapz;
-      getMapXYZAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy, &mapz);
-      if(mapx > MAP_WIDTH) {
-        getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
-        mapz = 0;
+      // start the item drag
+      if(willStartDrag && 
+         (abs(mx - willStartDragX) > DRAG_START_TOLERANCE ||
+          abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
+        // click on an item
+        Uint16 mapx, mapy, mapz;
+        getMapXYZAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy, &mapz);
+        if(mapx > MAP_WIDTH) {
+          getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
+          mapz = 0;
+        }
+        startItemDrag(mapx, mapy, mapz);
+        willStartDrag = false;
       }
-      startItemDrag(mapx, mapy, mapz);
-      willStartDrag = false;
+
+      processGameMouseMove(mx, my);  
     }
-      
-    processGameMouseMove(mx, my);  
-  }
-  break;
+    break;
   case SDL_MOUSEBUTTONDOWN:
-  sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
-  if(event->button.button) {
-    processGameMouseDown(mx, my, event->button.button);
-  }
-  break;	
-  case SDL_MOUSEBUTTONUP:
-  sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
-  if(event->button.button) {
-    processGameMouseClick(mx, my, event->button.button);
-    if(teleporting && !exitConfirmationDialog->isVisible()) {
-      exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
-      party->toggleRound(true);
-      exitConfirmationDialog->setVisible(true);
-    } else if(changingStory && !exitConfirmationDialog->isVisible()) {
-      exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
-      party->toggleRound(true);
-      exitConfirmationDialog->setVisible(true);
+    sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+    if(event->button.button) {
+      processGameMouseDown(mx, my, event->button.button);
     }
-  }
-  break;
+    break;  
+  case SDL_MOUSEBUTTONUP:
+    sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+    if(event->button.button) {
+      processGameMouseClick(mx, my, event->button.button);
+      if(teleporting && !exitConfirmationDialog->isVisible()) {
+        exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+        party->toggleRound(true);
+        exitConfirmationDialog->setVisible(true);
+      } else if(changingStory && !exitConfirmationDialog->isVisible()) {
+        exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
+        party->toggleRound(true);
+        exitConfirmationDialog->setVisible(true);
+      }
+    }
+    break;
   }
   switch(event->type) {
   case SDL_KEYDOWN:
-  
+
     // DEBUG ------------------------------------
-    
+
 #ifdef DEBUG_KEYS
     if(event->key.keysym.sym == SDLK_l) {
       cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
@@ -1009,7 +1009,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
               getSession()->getCurrentMission() && 
               !getSession()->getCurrentMission()->isCompleted()) {
       getSession()->getCurrentMission()->setCompleted( true );
-      if( getSession()->getCurrentMission()->isStoryLine() ) 
+      if( getSession()->getCurrentMission()->isStoryLine() )
         board->storylineMissionCompleted( getSession()->getCurrentMission() );
       missionCompleted();
     } else if( event->key.keysym.sym == SDLK_t ) {
@@ -1039,9 +1039,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
       } else {
         party->toggleRound(true);
         exitConfirmationDialog->setVisible(true);
-      }	  
+      }   
       return false;
-    } 
+    }
 
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
@@ -1049,167 +1049,126 @@ bool Scourge::handleEvent(SDL_Event *event) {
       showPath = true;
     } else if(ea == SHOW_PATH_STOP) {
       showPath = getUserConfiguration()->getAlwaysShowPath();
+    } else if(ea == SWITCH_COMBAT) {
+      getUserConfiguration()->setBattleTurnBased( getUserConfiguration()->isBattleTurnBased() ? false : true );
+      char message[80];
+      sprintf( message, "Combat is now %s.", ( getUserConfiguration()->isBattleTurnBased() ?
+                                               "Turn-based" :
+                                               "Real-time" ) );
+      levelMap->addDescription( message, 0, 1, 1 );
     } else if(ea == SET_MOVE_DOWN){        
-	  setMove(Constants::MOVE_DOWN);
+      setMove(Constants::MOVE_DOWN);
+    } else if(ea == SET_MOVE_UP){
+      setMove(Constants::MOVE_UP);
+    } else if(ea == SET_MOVE_RIGHT){
+      setMove(Constants::MOVE_RIGHT);
+    } else if(ea == SET_MOVE_LEFT){
+      setMove(Constants::MOVE_LEFT);
+    } else if(ea == SET_MOVE_DOWN_STOP){        
+      levelMap->setYRot(0.0f);
+      levelMap->setYRot(0);
+      removeMove(Constants::MOVE_DOWN);
+    } else if(ea == SET_MOVE_UP_STOP){
+      levelMap->setYRot(0.0f);
+      levelMap->setYRot(0);
+      removeMove(Constants::MOVE_UP);
+    } else if(ea == SET_MOVE_RIGHT_STOP){
+      levelMap->setYRot(0.0f);
+      levelMap->setZRot(0);
+      removeMove(Constants::MOVE_RIGHT);
+    } else if(ea == SET_MOVE_LEFT_STOP){
+      levelMap->setYRot(0.0f);
+      levelMap->setZRot(0);
+      removeMove(Constants::MOVE_LEFT);
+    } else if(ea == SET_PLAYER_0){
+      setPlayer(0);
+    } else if(ea == SET_PLAYER_1){
+      setPlayer(1);
+    } else if(ea == SET_PLAYER_2){
+      setPlayer(2);
+    } else if(ea == SET_PLAYER_3){
+      setPlayer(3);
+    } else if(ea == SET_PLAYER_ONLY && !inTurnBasedCombat()) {
+      party->togglePlayerOnly();
     }
-    else if(ea == SET_MOVE_UP){
-	  setMove(Constants::MOVE_UP);
-    }
-    else if(ea == SET_MOVE_RIGHT){
-	  setMove(Constants::MOVE_RIGHT);
-    }
-    else if(ea == SET_MOVE_LEFT){
-	  setMove(Constants::MOVE_LEFT);
-    }
-    else if(ea == SET_MOVE_DOWN_STOP){        
-	  levelMap->setYRot(0.0f);
-	  levelMap->setYRot(0);
-	  removeMove(Constants::MOVE_DOWN);
-    }
-    else if(ea == SET_MOVE_UP_STOP){
-	  levelMap->setYRot(0.0f);
-	  levelMap->setYRot(0);
-	  removeMove(Constants::MOVE_UP);
-    }
-    else if(ea == SET_MOVE_RIGHT_STOP){
-	  levelMap->setYRot(0.0f);
-	  levelMap->setZRot(0);
-	  removeMove(Constants::MOVE_RIGHT);
-    }
-    else if(ea == SET_MOVE_LEFT_STOP){
-	  levelMap->setYRot(0.0f);
-	  levelMap->setZRot(0);
-	  removeMove(Constants::MOVE_LEFT);
-    }            
-    else if(ea == SET_PLAYER_0){
-	  setPlayer(0);
-    }
-    else if(ea == SET_PLAYER_1){
-	  setPlayer(1);
-    }
-    else if(ea == SET_PLAYER_2){
-	  setPlayer(2);
-    }
-    else if(ea == SET_PLAYER_3){
-	  setPlayer(3);
-    }
-    else if(ea == SET_PLAYER_ONLY && !inTurnBasedCombat()) {
-        party->togglePlayerOnly();
-    }    
-	//    else if(ea == BLEND_A){
+    //    else if(ea == BLEND_A){
     else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_6){
-        blendA++; if(blendA >= 11) blendA = 0;
-        fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
+      blendA++; if(blendA >= 11) blendA = 0;
+      fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }
-	//    else if(ea == BLEND_B){    
+    //    else if(ea == BLEND_B){    
     else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_7){    
-        blendB++; if(blendB >= 11) blendB = 0;
-        fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
-    }
-    else if(ea == SHOW_INVENTORY){
-	  inventory->show(); 	  
-    }
-    else if(ea == SHOW_OPTIONS_MENU){
-	  party->toggleRound(true);
-	  optionsMenu->show();
-    }
-    else if(ea == USE_ITEM_STOP){
-        useItem();        
-    }
-    else if(ea == SET_NEXT_FORMATION_STOP){
-        if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
-	else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-    }   
-    else if(ea == SET_X_ROT_PLUS){        
-        levelMap->setXRot(5.0f);
-    }
-    else if(ea == SET_X_ROT_MINUS){
-        levelMap->setXRot(-5.0f);
-    }
-    else if(ea == SET_Y_ROT_PLUS){
-        levelMap->setYRot(5.0f);
-    }
-    else if(ea == SET_Y_ROT_MINUS){
-        levelMap->setYRot(-5.0f);
-    }
-    else if(ea == SET_Z_ROT_PLUS){
-        levelMap->setZRot(5.0f);
-    }
-    else if(ea == SET_Z_ROT_MINUS){
-        levelMap->setZRot(-5.0f);
-    }    
-    else if(ea == SET_X_ROT_PLUS_STOP){
-        levelMap->setXRot(0.0f);
-    }
-    else if(ea == SET_X_ROT_MINUS_STOP){
-        levelMap->setXRot(0.0f);
-    }
-    else if(ea == SET_Y_ROT_PLUS_STOP){
-        levelMap->setYRot(0.0f);
-    }
-    else if(ea == SET_Y_ROT_MINUS_STOP){
-        levelMap->setYRot(0.0f);
-    }
-    else if(ea == SET_Z_ROT_PLUS_STOP){
-        levelMap->setZRot(0.0f);
-    }
-    else if(ea == SET_Z_ROT_MINUS_STOP){
-        levelMap->setZRot(0.0f);
-    }    
-    else if(ea == ADD_X_POS_PLUS){
-        levelMap->addXPos(10.0f);
-    }
-    else if(ea == ADD_X_POS_MINUS){
-        levelMap->addXPos(-10.0f);
-    }
-    else if(ea == ADD_Y_POS_PLUS){
-        levelMap->addYPos(10.0f);
-    }
-    else if(ea == ADD_Y_POS_MINUS){
-        levelMap->addYPos(-10.0f);
-    }
-    else if(ea == ADD_Z_POS_PLUS){
-        levelMap->addZPos(10.0f);
-    }
-    else if(ea == ADD_Z_POS_MINUS){
-        levelMap->addZPos(-10.0f);
-    }     
-    else if(ea == MINIMAP_ZOOM_IN){
-        miniMap->zoomIn();
-    }
-    else if(ea == MINIMAP_ZOOM_OUT){
-        miniMap->zoomOut();
-    }
-    else if(ea == MINIMAP_TOGGLE){
-        miniMap->toggle();
-    }
-    else if(ea == SET_ZOOM_IN){
-        levelMap->setZoomIn(true);
-    }
-    else if(ea == SET_ZOOM_OUT){
-        levelMap->setZoomOut(true);
-    }
-    else if(ea == SET_ZOOM_IN_STOP){
-        levelMap->setZoomIn(false);
-    }
-    else if(ea == SET_ZOOM_OUT_STOP){
-        levelMap->setZoomOut(false);
-    }
-    else if(ea == TOGGLE_MAP_CENTER){
-        bool mc;
-        mc = userConfiguration->getAlwaysCenterMap();
-        userConfiguration->setAlwaysCenterMap(!mc);
-    }
-    else if(ea == INCREASE_GAME_SPEED){
-        addGameSpeed(-1);        
-    }
-    else if(ea == DECREASE_GAME_SPEED){
-        addGameSpeed(1);        
-    }    
-	else if(ea == START_ROUND) {
-	  party->toggleRound();
-	}
-    else if(ea == LAYOUT_1) {
+      blendB++; if(blendB >= 11) blendB = 0;
+      fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
+    } else if(ea == SHOW_INVENTORY){
+      inventory->show();    
+    } else if(ea == SHOW_OPTIONS_MENU){
+      party->toggleRound(true);
+      optionsMenu->show();
+    } else if(ea == SET_NEXT_FORMATION_STOP){
+      if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
+      else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+//    } else if(ea == SET_X_ROT_PLUS){        
+//      levelMap->setXRot(5.0f);
+//    } else if(ea == SET_X_ROT_MINUS){
+//      levelMap->setXRot(-5.0f);
+    } else if(ea == SET_Y_ROT_PLUS){
+      levelMap->setYRot(5.0f);
+    } else if(ea == SET_Y_ROT_MINUS){
+      levelMap->setYRot(-5.0f);
+    } else if(ea == SET_Z_ROT_PLUS){
+      levelMap->setZRot(5.0f);
+    } else if(ea == SET_Z_ROT_MINUS){
+      levelMap->setZRot(-5.0f);
+//    } else if(ea == SET_X_ROT_PLUS_STOP){
+//      levelMap->setXRot(0.0f);
+//    } else if(ea == SET_X_ROT_MINUS_STOP){
+//      levelMap->setXRot(0.0f);
+    } else if(ea == SET_Y_ROT_PLUS_STOP){
+      levelMap->setYRot(0.0f);
+    } else if(ea == SET_Y_ROT_MINUS_STOP){
+      levelMap->setYRot(0.0f);
+    } else if(ea == SET_Z_ROT_PLUS_STOP){
+      levelMap->setZRot(0.0f);
+    } else if(ea == SET_Z_ROT_MINUS_STOP){
+      levelMap->setZRot(0.0f);
+//    } else if(ea == ADD_X_POS_PLUS){
+//      levelMap->addXPos(10.0f);
+//    } else if(ea == ADD_X_POS_MINUS){
+//      levelMap->addXPos(-10.0f);
+//    } else if(ea == ADD_Y_POS_PLUS){
+//      levelMap->addYPos(10.0f);
+//    } else if(ea == ADD_Y_POS_MINUS){
+//      levelMap->addYPos(-10.0f);
+//    } else if(ea == ADD_Z_POS_PLUS){
+//      levelMap->addZPos(10.0f);
+//    } else if(ea == ADD_Z_POS_MINUS){
+//      levelMap->addZPos(-10.0f);
+    } else if(ea == MINIMAP_ZOOM_IN){
+      miniMap->zoomIn();
+    } else if(ea == MINIMAP_ZOOM_OUT){
+      miniMap->zoomOut();
+    } else if(ea == MINIMAP_TOGGLE){
+      miniMap->toggle();
+    } else if(ea == SET_ZOOM_IN){
+      levelMap->setZoomIn(true);
+    } else if(ea == SET_ZOOM_OUT){
+      levelMap->setZoomOut(true);
+    } else if(ea == SET_ZOOM_IN_STOP){
+      levelMap->setZoomIn(false);
+    } else if(ea == SET_ZOOM_OUT_STOP){
+      levelMap->setZoomOut(false);
+    } else if(ea == TOGGLE_MAP_CENTER){
+      bool mc;
+      mc = userConfiguration->getAlwaysCenterMap();
+      userConfiguration->setAlwaysCenterMap(!mc);
+    } else if(ea == INCREASE_GAME_SPEED){
+      addGameSpeed(-1);        
+    } else if(ea == DECREASE_GAME_SPEED){
+      addGameSpeed(1);        
+    } else if(ea == START_ROUND) {
+      party->toggleRound();
+    } else if(ea == LAYOUT_1) {
       setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
     } else if(ea == LAYOUT_2) {
       setUILayout(Constants::GUI_LAYOUT_BOTTOM);
@@ -1621,19 +1580,6 @@ void Scourge::endItemDrag() {
   // item move is over
   movingItem = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;  
-}
-
-bool Scourge::useItem() {
-  for(int x = toint(party->getPlayer()->getX()) - 2; 
-       x < toint(party->getPlayer()->getX()) + party->getPlayer()->getShape()->getWidth() + 2; 
-       x++) {
-    for(int y = toint(party->getPlayer()->getY()) + 2; 
-         y > toint(party->getPlayer()->getY()) - party->getPlayer()->getShape()->getDepth() - 2; 
-         y--) {
-	  if(useItem(x, y, 0)) return true;
-	}
-  }
-  return false;
 }
 
 bool Scourge::useItem(int x, int y, int z) {
