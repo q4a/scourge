@@ -68,20 +68,24 @@ void Party::resetMultiplayer(Creature *c) {
   session->getGameAdapter()->resetPartyUI();
 }
 
+// set player to be the first non-dead character
+void Party::setFirstLivePlayer() {
+  for(int i = 0; i < getPartySize(); i++) {
+    if(!party[i]->getStateMod(Constants::dead)) {
+      setPlayer(getParty(i));
+      break;
+    }
+  }
+}
+
 void Party::startPartyOnMission() {
   // Start calendar and add thirst & hunger event scheduling
   calendar->reset(false);
 
   player_only = false;
   partyDead = false;
-
-  // set player to be the first non-dead character
-  for(int i = 0; i < getPartySize(); i++) {
-	if(!party[i]->getStateMod(Constants::dead)) {
-	  setPlayer(getParty(i));
-	  break;
-	}
-  }
+  
+  setFirstLivePlayer();
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   getPlayer()->cancelTarget();
   

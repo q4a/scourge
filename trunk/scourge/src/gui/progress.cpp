@@ -17,12 +17,13 @@
 
 #include "progress.h"
 
-Progress::Progress(Scourge *scourge, int maxStatus, bool clearScreen, bool center) {
+Progress::Progress(Scourge *scourge, int maxStatus, bool clearScreen, bool center, bool opaque) {
   this->scourge = scourge;
   this->maxStatus = maxStatus;
   this->clearScreen = clearScreen;
   this->center = center;
   this->status = 0;
+  this->opaque = opaque;
 }
 
 Progress::~Progress() {
@@ -52,13 +53,18 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   int y = (center ? scourge->getScreenHeight() / 2 - (35 + h + 10) / 2 : 0);
   glTranslatef( x, y, 0 );
 
-  glColor4f( 0.25f, 0.20f, 0.15f, 0.15f );
+  if(!opaque) {
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  }
+  glColor4f( 0.25f, 0.20f, 0.15f, 0.8f );
   glBegin( GL_QUADS );
   glVertex3f( 0, 0, 0 );
   glVertex3f( 0, 35 + h + 10, 0);
   glVertex3f( maxStatus * 2 * w + 20, 35 + h + 10, 0 );
   glVertex3f( maxStatus * 2 * w + 20, 0, 0 );
   glEnd();
+  glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);
   scourge->getSDLHandler()->texPrint(20, 25, message);

@@ -86,6 +86,8 @@ class Party {
 
   void startPartyOnMission();
 
+  void setFirstLivePlayer();
+
   void followTargets();
 
   void setTargetCreature(Creature *creature);

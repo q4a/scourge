@@ -213,7 +213,7 @@ bool Battle::fightTurn() {
     // This is weird... but it's the only way I could make it work
     // setting the anim. to anything else causes them to not run 
     // when moving after battle.
-    creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+    creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(false);
     return true;
   }

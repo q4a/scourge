@@ -75,7 +75,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   lastEffectOn = false;
   inBattle = false;
 
-  turnProgress = new Progress(this, 10);
+  turnProgress = new Progress(this, 10, false, false, false);
 }
 
 void Scourge::initVideo(ShapePalette *shapePal) {
@@ -1796,7 +1796,7 @@ void Scourge::setUILayout() {
   case Constants::GUI_LAYOUT_ORIGINAL:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
   messageWin->resize(width, PARTY_GUI_HEIGHT);
-  messageWin->move(0, 0);
+  messageWin->move(getSDLHandler()->getScreen()->w - width, 0);
   messageWin->setLocked(false);
   mainWin->setLocked(false);
   miniMap->getWindow()->setLocked(false);
@@ -2003,10 +2003,12 @@ void Scourge::playRound() {
         if(fromBattle) {
           if(party->isPlayerOnly()) party->togglePlayerOnly();
           toggleRoundUI(party->isRealTimeMode());
-          party->setPlayer(0);
+          party->setFirstLivePlayer();
           groupButton->setVisible(true);
-          for(int i = 0; i < party->getPartySize(); i++)
+          for(int i = 0; i < party->getPartySize(); i++) {
             party->getParty(i)->cancelTarget();
+            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+          }
         }
        
         // change animation if needed
@@ -2369,8 +2371,9 @@ void Scourge::drawWidget(Widget *w) {
 				  0.45f, 0.65f, 1.0f, false);
 
   // ap
-  w->applyColor();
+  glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
   getSDLHandler()->texPrint(72, 85, "AP:");
+  w->applyColor();
   sprintf(msg, "%d", p->getBattle()->getAP());
   getSDLHandler()->texPrint(72, 95, msg);
   sprintf(msg, "%d", p->getBattle()->getStartingAP());
