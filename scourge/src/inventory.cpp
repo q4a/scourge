@@ -37,6 +37,7 @@ Inventory::Inventory(Scourge *scourge) {
 	  this->skillLine[i] = (char*)malloc(120 * sizeof(char));
 	}
 	this->stateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
+	this->icons = (GLuint*)malloc(Constants::STATE_MOD_COUNT * sizeof(GLuint));
 	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
 	  this->stateLine[i] = (char*)malloc(120 * sizeof(char));
 	}
@@ -318,21 +319,24 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   // show only the ui elements belonging to the current mode
   cards->setActiveCard(selectedMode);   
 
-	// arrange the gui
-	Creature * selectedP = scourge->getParty()->getParty(selected);
-	switch(selectedMode) {
-	case CHARACTER:       	
-	  sprintf(nameAndClassStr, "%s, %s (level %d)", selectedP->getName(), 
-			  selectedP->getCharacter()->getName(), selectedP->getLevel());
+  // arrange the gui
+  Creature * selectedP = scourge->getParty()->getParty(selected);
+  switch(selectedMode) {
+  case CHARACTER:       	
+	sprintf(nameAndClassStr, "%s, %s (level %d)", selectedP->getName(), 
+			selectedP->getCharacter()->getName(), selectedP->getLevel());
 	nameAndClassLabel->setText(nameAndClassStr);	
 
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
       if(selectedP->getStateMod(t)) {
-        sprintf(stateLine[stateCount++], "%s", Constants::STATE_NAMES[t]);
+        sprintf(stateLine[stateCount], "%s", Constants::STATE_NAMES[t]);
+		icons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
+		stateCount++;
       }
     }
-	stateList->setLines(stateCount, (const char**)stateLine);
+	stateList->setLines(stateCount, (const char**)stateLine, 
+						(const Color *)NULL, (stateCount ? (const GLuint*)icons : NULL));
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
 	  sprintf(skillLine[t], "%d(%d) - %s", 
 			  selectedP->getSkill(t), 

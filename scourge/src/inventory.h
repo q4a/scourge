@@ -69,6 +69,7 @@ private:
 	Label *thirstLabel, *hungerLabel, *skillModLabel, *armorLabel;	
 	int stateCount;
 	char **stateLine, **skillLine;
+	GLuint *icons;
 	ScrollingList *stateList, *skillList;
 	char nameAndClassStr[80];
 	char levelStr[80];
