@@ -32,6 +32,7 @@ Session::Session(GameAdapter *adapter) {
   // new item and creature references
   itemCount = creatureCount = 0;
   multiplayerGame = false;
+  currentMission = NULL;
 }
 
 Session::~Session() {
