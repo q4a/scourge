@@ -335,20 +335,43 @@ void Map::setupPosition(int posX, int posY, int posZ,
 }
 
 void Map::drawLocator() {
-  float xpos2, ypos2, zpos2;
-  
+  float xpos2, ypos2, zpos2;  
   Shape *shape = NULL;  
-  GLuint name;
-  
-  // draw the locator
+
   if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
 	 selY >= getY() && selY < getY() + MAP_VIEW_DEPTH &&
-	 selZ < MAP_VIEW_HEIGHT) {
+	 selZ < MAP_VIEW_HEIGHT &&
+	 scourge->getMovingItem()) {
+
+	shape = scourge->getMovingItem()->getShape();	
+	int newz = selZ;
+	Location *dropLoc = isBlocked(selX, selY, selZ, -1, -1, -1, shape, &newz);
+	selZ = newz;
+
+	// only let drop on other creatures and containers
+	if(dropLoc) {
+	  selX = oldLocatorSelX;
+	  selY = oldLocatorSelY;
+	  selZ = oldLocatorSelZ;
+	}
 	
-	Location *dropLoc = NULL;
-	if(scourge->getMovingItem())
+	xpos2 = ((float)(selX - getX()) / GLShape::DIV);
+	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
+	zpos2 = (float)(selZ) / GLShape::DIV;
+	
+	doDrawShape(xpos2, ypos2, zpos2, shape, 0);
+
+	oldLocatorSelX = selX;
+	oldLocatorSelY = selY;
+	oldLocatorSelZ = selZ;
+  }
+
+
+
+	  /*
+
 	  dropLoc = getDropLocation(scourge->getMovingItem()->getShape(), 
-								selX, selY, 0);
+								selX, selY, selZ);
 	
 	// only let drop on other creatures and containers
 	// FIXME: implement container check (maybe abstract out container interface)
@@ -360,6 +383,10 @@ void Map::drawLocator() {
 	
 	if(scourge->getMovingItem()) {
 	  shape = scourge->getMovingItem()->getShape();
+	  // figure out the z-position at this location
+	  int newz = selZ;
+	  isBlocked(selX, selY, selZ, -1, -1, -1, shape, &newz);
+	  selZ = newz;
 	} else {
 	  shape = scourge->getShapePalette()->getShape(Constants::LOCATOR_INDEX);
 	}
@@ -374,7 +401,8 @@ void Map::drawLocator() {
 	oldLocatorSelX = selX;
 	oldLocatorSelY = selY;
 	oldLocatorSelZ = selZ;
-  }
+	}
+	  */
 }
 
 void Map::draw(SDL_Surface *surface) {
@@ -790,23 +818,24 @@ Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z,
 						 Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
 						 Shape *s, 
 						 int *newz) {
-  int zz = 0;
+  int zz = z;
   for(int sx = 0; sx < s->getWidth(); sx++) {
 	for(int sy = 0; sy < s->getDepth(); sy++) {
 	  // find the lowest location where this item fits
-	  int sz = 0;
+	  int sz = z;
 	  while(sz < zz + s->getHeight()) {
 		Location *loc = pos[x + sx][y - sy][z + sz];
 		if(loc && loc->shape && 
 		   !(loc->x == shapeX && loc->y == shapeY && loc->z == shapeZ)) {
-		  if(newz && loc->item) {
+		  if(newz && (loc->item || loc->creature)) {
 			int tz = loc->z + loc->shape->getHeight();
 			if(tz > zz) zz = tz;
 			if(zz + s->getHeight() >= MAP_VIEW_HEIGHT) {
 			  return pos[x + sx][y - sy][z + sz];
 			}
-			sz = zz;
-		  } else {
+			if(zz > sz) sz = zz;
+			else break;
+		  } else if(!newz || !(loc && loc->item && !loc->item->isBlocking())) {
 			return pos[x + sx][y - sy][z + sz];
 		  }
 		} else {
@@ -1171,7 +1200,7 @@ Location *Map::getBlockingLocation(Shape *shape, int x, int y, int z) {
 Location *Map::getDropLocation(Shape *shape, int x, int y, int z) {
   for(int tx = 0; tx < shape->getWidth(); tx++) {
 	for(int ty = 0; ty < shape->getDepth(); ty++) {
-	  Location *loc = getLocation(x + tx, y - ty, 0);
+	  Location *loc = getLocation(x + tx, y - ty, z);
 	  if(loc) {
 		return loc;
 	  }
