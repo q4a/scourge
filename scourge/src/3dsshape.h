@@ -58,15 +58,10 @@ private:
   ShapePalette *shapePal;
   int offsetx, offsety;
 
-public: 
+public:   
   C3DSShape(char *file_name, float div, ShapePalette *shapePal,
 			GLuint texture[], int width, int depth, int height,
-			char *name,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
-  
-  C3DSShape(char *file_name, float div, ShapePalette *shapePal,
-			GLuint texture[], int width, int depth, int height,
-			char *name, char **description, int descriptionCount,
+			char *name, int descriptionGroup,
 			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
   ~C3DSShape();
 

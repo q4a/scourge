@@ -84,14 +84,9 @@ public:
   shapes. (eg. torch, md2 shape)
 */
 	GLShape(GLuint texture[],
-          int width, int depth, int height,
-          char *name,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
-
-	GLShape(GLuint texture[],
-          int width, int depth, int height,
-          char *name, char **description, int descriptionCount,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+			int width, int depth, int height,
+			char *name, int descriptionGroup,
+			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
          
 	~GLShape();
 	            

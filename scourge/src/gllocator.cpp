@@ -20,16 +20,9 @@
 
 GLLocator::GLLocator(GLuint texture[], 
           int width, int depth, int height,
-          char *name,
+          char *name, int descriptionGroup,
           Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
-  GLShape(texture, width, depth, height, name, color, display_list, shapePalIndex) {
-}
-
-GLLocator::GLLocator(GLuint texture[], 
-          int width, int depth, int height,
-          char *name, char **description, int descriptionCount,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
-  GLShape(texture, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+  GLShape(texture, width, depth, height, name, descriptionGroup, color, display_list, shapePalIndex) {
 }
 
 GLLocator::~GLLocator() {

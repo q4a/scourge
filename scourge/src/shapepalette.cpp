@@ -22,8 +22,6 @@ ShapePalette *ShapePalette::instance = NULL;
 ShapePalette::ShapePalette(){
   texture_count = 0;
   textureGroupCount = 0;
-  descriptionCount = 0;
-  descriptionIndexCount = 0;
 
   // load textures
   gui_texture = loadGLTextures("data/gui.bmp");
@@ -93,13 +91,14 @@ ShapePalette::ShapePalette(){
 	  // read description lines
 	  int count = atoi(line);
 	  if(count > 0) {
-		descriptionLength[descriptionIndexCount] = count;
-		descriptionIndex[descriptionIndexCount++] = sum;
-		sum += count;
+		vector<string> *list = new vector<string>();
+		descriptions.push_back(list);
 		for(int i = 0; i < count; i++) {
 		  n = Constants::readLine(line, fp);
-		  strcpy(description[descriptionCount++], line + 2);
+		  string s = line + 1;
+		  list->push_back(s);
 		}
+		cerr << "added " << count << " lines of description. # of description groups=" << descriptions.size() << endl;
 	  }
 
 	} else if(n == 'N') {
@@ -122,7 +121,8 @@ ShapePalette::ShapePalette(){
 
 	  // description
 	  n = Constants::readLine(line, fp);
-	  sv->descriptionIndex = atoi(line + 2);
+	  //	  cerr << "*** shape description group (string): " << line << endl;
+	  sv->descriptionIndex = atoi(line + 1);
 
 	  // color
 	  n = Constants::readLine(line, fp);
@@ -224,15 +224,6 @@ ShapePalette::ShapePalette(){
 	  " depth=" << sv->depth << 
 	  " height=" << sv->height << endl;
 
-	/*
-	int len = descriptionLength[sv->descriptionIndex];
-    char **d = (char**)malloc(len * sizeof(char*));
-    for(int t = 0; t < len; t++) {
-	  d[t] = (char*)malloc(200 * sizeof(char));
-	  strcpy(d[t], description[descriptionIndex[sv->descriptionIndex]]);
-    }
-	*/
-
 	//	GLuint dl = display_list + (i * 3);
 	GLuint dl = 0;
 	if(sv->teleporter) {
@@ -240,13 +231,7 @@ ShapePalette::ShapePalette(){
 		new GLTeleporter(textureGroup[sv->textureGroupIndex], textures[9].id,
 						 sv->width, sv->depth, sv->height,
 						 strdup(sv->name), 
-						 //d, len,
-						 (sv->descriptionIndex ? 
-						  (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
-						  NULL),
-						 (sv->descriptionIndex ?
-						  descriptionLength[sv->descriptionIndex] :
-						  0),
+						 sv->descriptionIndex,
 						 sv->color,
 						 dl, (i + 1));
 	} else if(strlen(sv->m3ds_name)) {
@@ -255,13 +240,7 @@ ShapePalette::ShapePalette(){
 					  textureGroup[sv->textureGroupIndex], 
 					  sv->width, sv->depth, sv->height,
 					  strdup(sv->name), 
-					  //d, len,
-					  (sv->descriptionIndex ? 
-					   (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
-					   NULL),
-					  (sv->descriptionIndex ?
-					   descriptionLength[sv->descriptionIndex] :
-					   0),
+					  sv->descriptionIndex,
 					  sv->color,
 					  dl,(i + 1));
 	} else if(sv->torch > -1) {
@@ -270,13 +249,7 @@ ShapePalette::ShapePalette(){
 		  new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
 					  sv->width, sv->depth, sv->height,
 					  strdup(sv->name),
-					  //d, len,
-					  (sv->descriptionIndex ? 
-					   (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
-					   NULL),
-					  (sv->descriptionIndex ?
-					   descriptionLength[sv->descriptionIndex] :
-					   0),
+					  sv->descriptionIndex,
 					  sv->color,
 					  dl, (i + 1));
 	  } else {
@@ -284,13 +257,7 @@ ShapePalette::ShapePalette(){
 		  new GLTorch(textureGroup[sv->textureGroupIndex], textures[9].id,
 					  sv->width, sv->depth, sv->height,
 					  strdup(sv->name),
-					  //d, len,
-					  (sv->descriptionIndex ? 
-					   (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
-					   NULL),
-					  (sv->descriptionIndex ?
-					   descriptionLength[sv->descriptionIndex] :
-					   0),
+					  sv->descriptionIndex,
 					  sv->color,
 					  dl, (i + 1), 
 					  torchback, sv->torch);
@@ -300,13 +267,7 @@ ShapePalette::ShapePalette(){
 		new GLShape(textureGroup[sv->textureGroupIndex],
 					sv->width, sv->depth, sv->height,
 					strdup(sv->name),
-					//d, len,
-					(sv->descriptionIndex ? 
-					 (char**)&(description[descriptionIndex[sv->descriptionIndex]]) :
-					 NULL),
-					(sv->descriptionIndex ?
-					 descriptionLength[sv->descriptionIndex] :
-					 0),
+					sv->descriptionIndex,
 					sv->color,
 					dl, (i + 1));
 	}
@@ -369,6 +330,15 @@ ShapePalette::~ShapePalette(){
   //    }
 }
 
+char *ShapePalette::getRandomDescription(int descriptionGroup) {
+  if(descriptionGroup >= 0 && descriptionGroup < descriptions.size()) {
+	vector<string> *list = descriptions[descriptionGroup];
+	int n = (int)((float)list->size() * rand()/RAND_MAX);
+	return (char*)((*list)[n].c_str());
+  }
+  return NULL;
+}
+
 t3DModel * ShapePalette::LoadMd2Model(char *file_name){
     t3DModel * t3d;
     char fn[300];
@@ -420,7 +390,7 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   MD2Shape *shape = new MD2Shape(model_info->model, skin_texture, model_info->scale,
 								 textureGroup[14], 
 								 model_info->width, model_info->depth, model_info->height,
-								 model_info->name,
+								 model_info->name, -1,
 								 0xf0f0ffff, 0); //Constants::FIGHTER_INDEX);  
   shape->setSkinName(skin_name);
   return shape;

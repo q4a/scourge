@@ -33,12 +33,7 @@ private:
 public:
 	GLLocator(GLuint texture[], 
           int width, int depth, int height,
-          char *name,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
-
-	GLLocator(GLuint texture[], 
-          int width, int depth, int height,
-          char *name, char **description, int descriptionCount,
+          char *name, int descriptionGroup,
           Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
 
   ~GLLocator();

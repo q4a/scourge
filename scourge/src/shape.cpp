@@ -17,35 +17,24 @@
 
 #include "shape.h"
 
-Shape::Shape(int width, int depth, int height, char *name, char **description, int descriptionCount){
+Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup){
   this->width = width;
   this->depth = depth;
   this->height = height;
   this->name = name;
-  this->description = description;
-  this->descriptionCount = descriptionCount;
+  this->descriptionGroup = descriptionGroup;
   this->stencil = false;
 }
 
 Shape::Shape(Shape *shape) {
-	this->width = shape->getWidth();
-	this->depth = shape->getDepth();
-	this->height = shape->getHeight();
+  this->width = shape->getWidth();
+  this->depth = shape->getDepth();
+  this->height = shape->getHeight();
   this->name = shape->getName();
-  this->description = shape->getDescription();
-  this->descriptionCount = shape->getDescriptionCount();  
+  this->descriptionGroup = shape->getDescriptionGroup();
 }
 
 Shape::~Shape(){
-}
-
-char *Shape::getRandomDescription() {
-  if(descriptionCount == 0) return NULL;
-  else if(descriptionCount == 1) return description[0];
-  else {
-    int n = (int) ((float)(descriptionCount)*rand()/(RAND_MAX+1.0));
-    return description[n];
-  }
 }
 
 
