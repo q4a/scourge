@@ -134,13 +134,21 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
    -CTRL + arrow keys / mouse at edge of screen: rotate map
    -arrow keys / mouse at edge of screen: move map fast
    -SHIFT + arrow keys / mouse at edge of screen: slow move map
+   -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
  */
 void Map::move(int dir) {
   if(SDL_GetModState() & KMOD_CTRL) {
-	if(dir & Constants::MOVE_DOWN) setYRot(-5.0f);
-	if(dir & Constants::MOVE_UP) setYRot(5.0f);
-	if(dir & Constants::MOVE_RIGHT) setZRot(-5.0f);
-	if(dir & Constants::MOVE_LEFT) setZRot(5.0f);
+    float rot;
+    if(SDL_GetModState() & KMOD_SHIFT){
+        rot = 1.5f;
+    }
+    else{
+        rot = 5.0f;
+    }
+    if(dir & Constants::MOVE_DOWN) setYRot(-1.0f * rot);
+	if(dir & Constants::MOVE_UP) setYRot(rot);
+	if(dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
+	if(dir & Constants::MOVE_LEFT) setZRot(rot);
   } else if(!scourge->getUserConfiguration()->getAlwaysCenterMap()) {
 	
 	// stop rotating (angle of rotation is kept)
@@ -991,10 +999,10 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
 
   // move position
   removeCreature(x, y, z);
-  interX = (x + nx) / 2.0f;
-  interY = (y + ny) / 2.0f;
-  cout << "old : " << x << ", " << y << ", " << z << endl;
-  cout << "new : " << nx << ", " << ny << ", " << nz << endl;
+  //interX = (x + nx) / 2.0f;
+  //interY = (y + ny) / 2.0f;
+  //cout << "old : " << x << ", " << y << ", " << z << endl;
+  //cout << "new : " << nx << ", " << ny << ", " << nz << endl;
   setCreature(nx, ny, nz, newCreature);
   return NULL;
 }
@@ -1220,9 +1228,10 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
     shape = pos[x][y][z]->shape;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
-        // fixme : is it good or not to erase the minimap too ???       
+        // fixme : is it good or not to erase the minimap too ???
         scourge->getMiniMap()->eraseMiniMapPoint(x + xp, y - yp);
         for(int zp = 0; zp < shape->getHeight(); zp++) {
+            //cerr <<"remove pos " << x + xp << "," << y - yp << "," << z + zp<<endl;
 		  delete pos[x + xp][y - yp][z + zp];
 		  pos[x + xp][y - yp][z + zp] = NULL;          
         }
@@ -1314,7 +1323,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
 		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
 			for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-                //cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
+              //  cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
 			  if(!pos[x + xp][y - yp][z + zp]) {
                 if(nbPosCache < 0){
                     //cerr << " no cache available!" << endl;
@@ -1374,7 +1383,7 @@ Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
         for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
             //cerr <<"deleting pos " << x + xp << "," << y - yp << "," << z + zp;
             if(nbPosCache >= MAX_POS_CACHE - 1){
-                //cerr << " no cache available!" << endl;
+             //   cerr << " no cache available!" << endl;
                 delete pos[x + xp][y - yp][z + zp];
                 pos[x + xp][y - yp][z + zp] = NULL;
             }
