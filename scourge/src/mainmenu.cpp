@@ -102,7 +102,22 @@ MainMenu::MainMenu(Scourge *scourge){
 												scourge->getShapePalette()->getGuiTexture(),
 												false );
 #endif
+  
+  int w = 250;
+  int h = 120;
+  newGameConfirm = new Window(scourge->getSDLHandler(),
+                              (scourge->getSDLHandler()->getScreen()->w/2) - (w/2), 
+                              (scourge->getSDLHandler()->getScreen()->h/2) - (h/2), 
+                              w, h,
+                              strdup("New Game Confirmation"),
+                              scourge->getShapePalette()->getGuiTexture(), false);
+  newGameConfirmOK = newGameConfirm->createButton( 40, 50, 110, 80, Constants::getMessage( Constants::OK_LABEL ) );
+  newGameConfirmCancel = newGameConfirm->createButton( 140, 50, 210, 80, Constants::getMessage( Constants::CANCEL_LABEL ));
+  newGameConfirm->createLabel( 20, 20, Constants::getMessage( Constants::DELETE_OLD_SAVED_GAME ));
+  newGameConfirm->setVisible( false );
+  newGameConfirm->setModal( true );
 }
+
 MainMenu::~MainMenu(){
 }
 
@@ -596,7 +611,14 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   }
 
-  if(widget == newGameButton) {
+  if( widget == newGameConfirmOK ) {
+    newGameConfirm->setVisible( false );
+    value = NEW_GAME_START;
+    return true;
+  } else if( widget == newGameConfirmCancel ) {
+    newGameConfirm->setVisible( false );
+    return false;
+  } else if(widget == newGameButton) {
     value = NEW_GAME;
     return true;
   } else if(widget == continueButton) {
@@ -659,4 +681,8 @@ bool MainMenu::handleEvent(SDL_Event *event) {
 
 int MainMenu::getValue() {
   return value;
+}
+
+void MainMenu::showNewGameConfirmationDialog() {
+  newGameConfirm->setVisible( true );
 }

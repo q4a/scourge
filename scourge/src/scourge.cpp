@@ -120,11 +120,20 @@ void Scourge::start() {
 
     sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
     sdlHandler->mainLoop();
-    
+
     // evaluate results and start a missions
-    if(mainMenu->getValue() == NEW_GAME ||
-       mainMenu->getValue() == MULTIPLAYER_START ||
-       mainMenu->getValue() == CONTINUE_GAME ) {
+    int value = mainMenu->getValue();
+    if(value == NEW_GAME) {
+      if(Persist::doesSaveGameExist( session )) {
+        mainMenu->showNewGameConfirmationDialog();
+      } else {
+        value == NEW_GAME_START;
+      }
+    }
+      
+    if(value == NEW_GAME_START ||
+       value == MULTIPLAYER_START ||
+       value == CONTINUE_GAME ) {
       mainMenu->hide();
       sdlHandler->getSound()->stopMusicMenu();
       
@@ -132,25 +141,16 @@ void Scourge::start() {
       bool failed = false;
      
 #ifdef HAVE_SDL_NET
-      if(mainMenu->getValue() == MULTIPLAYER_START) {
+      if(value == MULTIPLAYER_START) {
         if(!initMultiplayer()) continue;
       }
 #endif  
 
-      if(mainMenu->getValue() == CONTINUE_GAME) {
+      if(value == CONTINUE_GAME) {
         if(!Persist::loadGame( session )) {
           showMessageDialog( "Error loading game!" );
           failed = true;
         }
-      } else if(Persist::doesSaveGameExist( session )) {
-        
-        // showConfirmationDialog should be implemented like the main menu;
-        // extends SDLScreenView, SDLEventHandler, etc.
-        cerr << "FIXME: implement Scourge::showConfirmationDialog!";
-
-        //if(!showConfirmationDialog( "A saved game exists. Are you sure you want to erase it?" )) {
-        // failed = true;
-        //}
       }
 
       if( !failed ) {
@@ -159,11 +159,11 @@ void Scourge::start() {
         startMission();
         glPopAttrib();
       }
-    } else if(mainMenu->getValue() == OPTIONS) {
+    } else if(value == OPTIONS) {
       optionsMenu->show();
-    } else if(mainMenu->getValue() == MULTIPLAYER) {
+    } else if(value == MULTIPLAYER) {
       multiplayer->show();
-    } else if(mainMenu->getValue() == QUIT) {
+    } else if(value == QUIT) {
       sdlHandler->quit(0);
     }
   }
