@@ -51,8 +51,24 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   int w = 10;  
   int h = 20;
 
-  int x = (center ? scourge->getScreenWidth() / 2 - (maxStatus * w + 20) : 0);
-  int y = (center ? scourge->getScreenHeight() / 2 - (35 + h + 10) / 2 : 0);
+  int width = maxStatus * 2 * w + 20;
+  int height = 35 + h + 10;
+
+  // display as % if too large
+  int maxWidth = scourge->getScreenWidth() - 50;
+  if( width >= maxWidth ) {
+	//	cerr << "BEFORE: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
+	//	maxStatus = (int)((float)( maxWidth - 20 ) / (float)w / 2.0f);
+	maxStatus = (int)((float)( maxStatus * maxWidth ) / (float)width);
+	status = (int)((float)( status * maxWidth ) / (float)width);
+	if( alt > -1 )
+	  alt = (int)((float)( alt * maxWidth ) / (float)width);
+	width = maxWidth;
+	//	cerr << "AFTER: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
+  }
+
+  int x = (center ? scourge->getScreenWidth() / 2 - width / 2 : 0);
+  int y = (center ? scourge->getScreenHeight() / 2 - height / 2 : 0);
   glTranslatef( x, y, 0 );
 
   if(!opaque) {
@@ -62,9 +78,9 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glColor4f( 0.25f, 0.20f, 0.15f, 0.8f );
   glBegin( GL_QUADS );
   glVertex3f( 0, 0, 0 );
-  glVertex3f( 0, 35 + h + 10, 0);
-  glVertex3f( maxStatus * 2 * w + 20, 35 + h + 10, 0 );
-  glVertex3f( maxStatus * 2 * w + 20, 0, 0 );
+  glVertex3f( 0, height, 0);
+  glVertex3f( width, height, 0 );
+  glVertex3f( width, 0, 0 );
   glEnd();
   glDisable( GL_BLEND );
 
