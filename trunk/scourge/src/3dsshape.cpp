@@ -133,8 +133,11 @@ void C3DSShape::normalizeModel() {
 
   // set the shape's dimensions
   this->width = (int)(fw + 0.5f);
+  if(this->width < 1) this->width = 1;
   this->depth = (int)(fd + 0.5f);
+  if(this->depth < 1) this->depth = 1;
   this->height = (int)(fh + 0.5f);
+  if(this->height < 1) this->height = 1;
 
   cerr << this->getName() << " width=" << width << " depth=" << depth << " height=" << height << endl;
 }
