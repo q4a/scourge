@@ -326,6 +326,8 @@ ShapePalette::ShapePalette(){
   // set up the scourge
   setupAlphaBlendedBMP("/scourge.bmp", &scourge, &scourgeImage);
 
+  emptyShape = findShapeByName("EMPTY_SHAPE");
+
   if(!instance) instance = this;
 }
 

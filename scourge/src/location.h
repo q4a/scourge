@@ -22,9 +22,11 @@
 #include "shape.h"
 #include "item.h"
 #include "creature.h"
+#include "effect.h"
 
 // forward decl.
 class Creature;
+class Effect;
 
 /**
   *@author Gabor Torok
@@ -37,6 +39,23 @@ public:
   Shape *shape;
   Item *item;
   Creature *creature;
+};
+
+class EffectLocation {
+public:
+  Uint16 x, y, z;
+  GLuint effectDuration;
+  GLuint damageEffectCounter;
+  Effect *effect;
+  int effectType;
+
+  // effects
+  inline void setEffectType(int n) { this->effectType = n; }
+  inline int getEffectType() { return effectType; }  
+  inline Effect *getEffect() { return effect; }
+  inline int getDamageEffect() { return damageEffectCounter; }
+  inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
+  inline bool isEffectOn() { return (SDL_GetTicks() - damageEffectCounter < effectDuration ? true : false); }
 };
 
 #endif

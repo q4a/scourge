@@ -81,6 +81,7 @@ Map::Map(Scourge *scourge){
       floorPositions[x][y] = NULL;
 	  for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
         pos[x][y][z] = NULL;
+        effect[x][y][z] = NULL;
       }      
     }
   }
@@ -337,7 +338,24 @@ void Map::setupShapes(bool ground) {
 			}
 		  } else {
 			for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-			  if(pos[posX][posY][zp] && 
+        
+        if(lightMap[chunkX][chunkY] &&
+           effect[posX][posY][zp]) {
+          
+          xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+                          xp + chunkOffsetX) / GLShape::DIV;
+          ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+                          1 + 
+                          yp + chunkOffsetY) / GLShape::DIV;
+          zpos2 = (float)(zp) / GLShape::DIV;
+          
+          setupPosition(posX, posY, zp,
+                        xpos2, ypos2, zpos2,
+                        scourge->getShapePalette()->getEmptyShape(), NULL, NULL,
+                        effect[posX][posY][zp]);
+        } 
+        
+        if(pos[posX][posY][zp] && 
 				 pos[posX][posY][zp]->x == posX &&
 				 pos[posX][posY][zp]->y == posY &&
 				 pos[posX][posY][zp]->z == zp) {
@@ -358,10 +376,11 @@ void Map::setupShapes(bool ground) {
 								  shape->getDepth() + 
 								  yp + chunkOffsetY) / GLShape::DIV;
 				  zpos2 = (float)(zp) / GLShape::DIV;
-				  setupPosition(posX, posY, zp,
-								xpos2, ypos2, zpos2,
-								shape, pos[posX][posY][zp]->item, 
- 								pos[posX][posY][zp]->creature); 		  
+
+          setupPosition(posX, posY, zp,
+                        xpos2, ypos2, zpos2,
+                        shape, pos[posX][posY][zp]->item, pos[posX][posY][zp]->creature, 
+                        NULL);
 				}
 			  }
 			}
@@ -386,22 +405,27 @@ void Map::drawGroundPosition(int posX, int posY,
 }
 
 void Map::setupPosition(int posX, int posY, int posZ,
-						float xpos2, float ypos2, float zpos2,
-						Shape *shape, Item *item, Creature *creature) {
+                        float xpos2, float ypos2, float zpos2,
+                        Shape *shape, Item *item, Creature *creature, 
+                        EffectLocation *effect) {
   GLuint name;
   name = posX + (MAP_WIDTH * (posY)) + (MAP_WIDTH * MAP_DEPTH * posZ);		
   
   // special effects
-  if(creature && creature->isEffectOn()) {
+  if(effect || (creature && creature->isEffectOn())) {
 	damage[damageCount].xpos = xpos2;
 	damage[damageCount].ypos = ypos2;
 	damage[damageCount].zpos = zpos2;
 	damage[damageCount].shape = shape;
 	damage[damageCount].item = item;
 	damage[damageCount].creature = creature;
+  damage[damageCount].effect = effect;
 	damage[damageCount].projectile = NULL;
 	damage[damageCount].name = name;
 	damageCount++;
+
+  // don't draw shape if it's an area effect
+  if(!creature) return;
   }
 
   if(shape->isStencil()) {
@@ -412,6 +436,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	stencil[stencilCount].item = item;
 	stencil[stencilCount].creature = creature;
 	stencil[stencilCount].projectile = NULL;
+  stencil[stencilCount].effect = NULL;
 	stencil[stencilCount].name = name;
 	stencilCount++;
   } else if(!shape->isStencil()) {
@@ -423,6 +448,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  other[otherCount].item = item;
 	  other[otherCount].creature = creature;
 	  other[otherCount].projectile = NULL;
+    other[otherCount].effect = NULL;
 	  other[otherCount].name = name;
 	  otherCount++;
 	}
@@ -434,6 +460,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  later[laterCount].item = item;
 	  later[laterCount].creature = creature;
 	  later[laterCount].projectile = NULL;
+    later[laterCount].effect = NULL;
 	  later[laterCount].name = name;
 	  laterCount++;
 	}
@@ -517,6 +544,19 @@ void Map::draw() {
 	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
     }
   }
+
+  // remove area effects
+  vector<EffectLocation*>::iterator e=currentEffects.begin();
+  for(int i = 0; i < (int)currentEffects.size(); i++) {
+    EffectLocation *effectLocation = currentEffects[i];
+    if(effectLocation && !effectLocation->isEffectOn()) {
+      currentEffects.erase(e);
+      e = currentEffects.begin();
+      removeEffect(effectLocation->x, effectLocation->y, effectLocation->z);
+      mapChanged = true;
+      i--;
+    }
+  }  
 
   float oldrot;
 
@@ -642,9 +682,9 @@ void Map::draw() {
 	  later[i].shape->endBlending();
 	}
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	for(int i = 0; i < damageCount; i++) {
-	  doDrawShape(&damage[i], 1);
-	}
+  for(int i = 0; i < damageCount; i++) {
+    doDrawShape(&damage[i], 1);
+  }
 	drawShade();
 
 	//      glEnable(GL_LIGHTING);
@@ -796,22 +836,22 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 					  GLuint name, int effect, DrawLater *later) {
   glPushMatrix();
   if(useShadow) {
-	// put shadow above the floor a little
-	glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
-	glMultMatrixf(shadowTransformMatrix);
-	glColor4f( 0, 0, 0, 0.5f );
-
-	// FIXME: this is a nicer shadow color, but it draws outside the walls too.
-	// need to fix the stencil ops to restrict shadow drawing to the floor.
-	//glColor4f( 0.04f, 0, 0.07f, 0.6f );
-	((GLShape*)shape)->useShadow = true;
+    // put shadow above the floor a little
+    glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
+    glMultMatrixf(shadowTransformMatrix);
+    glColor4f( 0, 0, 0, 0.5f );
+    
+    // FIXME: this is a nicer shadow color, but it draws outside the walls too.
+    // need to fix the stencil ops to restrict shadow drawing to the floor.
+    //glColor4f( 0.04f, 0, 0.07f, 0.6f );
+    ((GLShape*)shape)->useShadow = true;
   } else {
-	glTranslatef( xpos2, ypos2, zpos2);
-	if(colorAlreadySet) {
-	  colorAlreadySet = false;
-	} else {
-	  glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
-	}
+    glTranslatef( xpos2, ypos2, zpos2);
+    if(colorAlreadySet) {
+      colorAlreadySet = false;
+    } else {
+      glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+    }
   }
 
   // encode this shape's map location in its name
@@ -819,30 +859,36 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   //glPushName( (GLuint)((GLShape*)shape)->getShapePalIndex() );
   ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
   ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
-  if(effect && later && later->creature) {
-	later->creature->getEffect()->draw((GLShape*)shape, 
-									   later->creature->getEffectType(),
-									   later->creature->getDamageEffect());
+  if(effect && later) {
+    if(later->creature) {
+      later->creature->getEffect()->draw((GLShape*)shape, 
+                                         later->creature->getEffectType(),
+                                         later->creature->getDamageEffect());
+    } else if(later->effect) {
+      later->effect->getEffect()->draw((GLShape*)shape, 
+                                       later->effect->getEffectType(),
+                                       later->effect->getDamageEffect());
+    }
   } else if(later && later->projectile) {
-	// orient and draw the projectile
-	float f = later->projectile->getAngle() + 90;
-	if(f < 0) f += 360;
-	if(f >= 360) f -= 360;
-	glRotatef( f, 0, 0, 1 );
-	// for projectiles, set the correct camera angle
-	if(later->projectile->getAngle() < 90) {
-	  ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
-	} else if(later->projectile->getAngle() < 180) {
-	  ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
-	}
-	later->projectile->getShape()->draw();
+    // orient and draw the projectile
+    float f = later->projectile->getAngle() + 90;
+    if(f < 0) f += 360;
+    if(f >= 360) f -= 360;
+    glRotatef( f, 0, 0, 1 );
+    // for projectiles, set the correct camera angle
+    if(later->projectile->getAngle() < 90) {
+      ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
+    } else if(later->projectile->getAngle() < 180) {
+      ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
+    }
+    later->projectile->getShape()->draw();
   } else {
-	shape->draw();
+    shape->draw();
   }
-  ((GLShape*)shape)->useShadow = false;
+  if(shape) ((GLShape*)shape)->useShadow = false;
   glPopName();
   glPopMatrix();
-}
+}                                                                     
 
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
   float xpos2 = ((float)(mapx - getX()) / GLShape::DIV);
@@ -1234,6 +1280,44 @@ void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
 	selX = mapx;
 	selY = mapy;
 	selZ = mapz;
+  }
+}     
+
+void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
+                      int effect_type, int duration) {
+
+  // show an effect
+  if(effect[x][y][z]) {
+    if(effect[x][y][z]->isEffectOn() && 
+       effect[x][y][z]->effectType == effect_type) {
+      return;
+    } else {
+      removeEffect(x, y, z);
+    }
+  }
+
+  if(!effect[x][y][z]) {
+    effect[x][y][z] = new EffectLocation();
+  }
+  effect[x][y][z]->effect = new Effect(scourge->getShapePalette()->getTexture(9));
+  effect[x][y][z]->effect->deleteParticles();
+  effect[x][y][z]->resetDamageEffect();
+  effect[x][y][z]->effectType = effect_type;
+  effect[x][y][z]->effectDuration = duration;
+  effect[x][y][z]->x = x;
+  effect[x][y][z]->y = y;
+  effect[x][y][z]->z = z;
+
+  currentEffects.push_back(effect[x][y][z]);
+
+  // need to do this to make sure effect shows up
+  mapChanged = true;
+}
+
+void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
+  if(effect[x][y][z]) {
+    delete effect[x][y][z];
+    effect[x][y][z] = NULL;
   }
 }
 

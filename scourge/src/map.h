@@ -33,6 +33,7 @@ using namespace std;
 
 // forward decl.
 class Location;
+class EffectLocation;
 class DungeonGenerator;
 class Scourge;
 class Creature;
@@ -45,6 +46,7 @@ typedef struct _DrawLater {
   Creature *creature;
   Item *item;
   Projectile *projectile;
+  EffectLocation *effect;
   GLuint name;  
 } DrawLater;
 
@@ -66,6 +68,8 @@ class Map {
   Sint16 y;
   float mapx, mapy;
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
+  EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
+  vector<EffectLocation*> currentEffects;
   Location *posCache[MAX_POS_CACHE];
   signed int nbPosCache;
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
@@ -167,6 +171,9 @@ class Map {
   inline void setXY(int x, int y) { this->x = x; this->y = y; }
   
   void center(Sint16 x, Sint16 y, bool force=false);
+
+  void startEffect(Sint16 x, Sint16 y, Sint16 z, 
+                   int effect_type, int duration = Constants::DAMAGE_DURATION);
     
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
@@ -274,8 +281,9 @@ class Map {
    */
   void setupShapes(bool ground);
   void setupPosition(int posX, int posY, int posZ,
-					 float xpos2, float ypos2, float zpos2,
-					 Shape *shape, Item *item, Creature *creature);
+                     float xpos2, float ypos2, float zpos2,
+                     Shape *shape, Item *item, Creature *creature, 
+                     EffectLocation *effect);
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
 						  Shape *shape);
@@ -290,6 +298,8 @@ class Map {
   void drawCube(float x, float y, float z, float r);
 
   void createOverlayTexture();    
+
+  void removeEffect(Sint16 x, Sint16 y, Sint16 z);
 };
 
 #endif

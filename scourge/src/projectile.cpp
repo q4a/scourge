@@ -239,7 +239,7 @@ void Projectile::moveProjectiles(Scourge *scourge) {
     Projectile *proj = *e;
     // a location-bound projectile reached its target
     if(!proj->doesStopOnImpact()) {
-      Battle::projectileHitTurn(scourge, proj, proj->getX(), proj->getY());
+      Battle::projectileHitTurn(scourge, proj, (int)proj->getX(), (int)proj->getY());
     }
     Projectile::removeProjectile(proj);
   }

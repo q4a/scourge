@@ -63,30 +63,30 @@ Inventory::Inventory(Scourge *scourge) {
 						  scourge->getShapePalette()->getGuiTexture() );
 
 	player1Button  = 
-	  mainWin->createButton( 0, 16, 105, 32, 
+	  mainWin->createButton( 0, 0, 105, 30, 
 							 scourge->getParty()->getParty(0)->getName(), 
 							 true);
-	mainWin->createLabel( 0, 42, scourge->getParty()->getParty(0)->getCharacter()->getName());
+	//player1Button->createLabel( 0, 42, scourge->getParty()->getParty(0)->getCharacter()->getName());
 	player2Button  = 
-	  mainWin->createButton( 0, 48, 105, 64, 
+	  mainWin->createButton( 0, 30, 105, 60, 
 							 scourge->getParty()->getParty(1)->getName(), 
 							 true);
-	mainWin->createLabel( 0, 74, scourge->getParty()->getParty(1)->getCharacter()->getName());
+	//mainWin->createLabel( 0, 74, scourge->getParty()->getParty(1)->getCharacter()->getName());
 	player3Button  = 
-	  mainWin->createButton( 0, 80, 105, 96, 
+	  mainWin->createButton( 0, 60, 105, 90, 
 							 scourge->getParty()->getParty(2)->getName(), 
 							 true );
-	mainWin->createLabel( 0, 106, scourge->getParty()->getParty(2)->getCharacter()->getName());
+	//mainWin->createLabel( 0, 106, scourge->getParty()->getParty(2)->getCharacter()->getName());
 	player4Button  = 
-	  mainWin->createButton( 0, 112, 105, 128, 
+	  mainWin->createButton( 0, 90, 105, 120, 
 							 scourge->getParty()->getParty(3)->getName(), 
 							 true );
-	mainWin->createLabel( 0, 138, scourge->getParty()->getParty(3)->getCharacter()->getName());
+	//mainWin->createLabel( 0, 138, scourge->getParty()->getParty(3)->getCharacter()->getName());
 
-	inventoryButton = mainWin->createButton( 105,0, 210, 30, strdup("Inventory"), true);
-	skillsButton   = mainWin->createButton( 210,0, 315, 30, strdup("Skills"), true);
-	spellsButton   = mainWin->createButton( 315,0, 420, 30, strdup("Spells"), true);
-	missionButton   = mainWin->createButton( 420,0, 525, 30, strdup("Mission"), true);
+	inventoryButton = mainWin->createButton( 420,0, 525, 30, strdup("Inventory"), true);
+	skillsButton   = mainWin->createButton( 420,30, 525, 60, strdup("Skills"), true);
+	spellsButton   = mainWin->createButton( 420,60, 525, 90, strdup("Spells"), true);
+	missionButton   = mainWin->createButton( 420, 90, 525, 120, strdup("Mission"), true);
 	cards = new CardContainer(mainWin);
 
 	// inventory page	
