@@ -112,6 +112,7 @@ class MagicSchool {
   char *name;
   char *shortName;
   char *deity;
+  char deityDescription[3000];
   int skill, resistSkill;
   vector<Spell*> spells;
 
@@ -126,10 +127,12 @@ class MagicSchool {
   inline char *getName() { return name; }
   inline char *getShortName() { return shortName; }
   inline char *getDeity() { return deity; }
+  inline char *getDeityDescription() { return deityDescription; }
   inline int getSkill() { return skill; }
   inline int getResistSkill() { return resistSkill; }
   inline int getSpellCount() { return spells.size(); }
   inline Spell *getSpell(int index) { return spells[index]; }
+  inline void addToDeityDescription( char *s ) { if( strlen( deityDescription ) ) strcat( deityDescription, " " ); strcat( deityDescription, s ); }
 
   static void initMagic();
   inline static int getMagicSchoolCount() { return schoolCount; }

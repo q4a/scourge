@@ -559,8 +559,11 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     sprintf(skillsStr, "Skills: (Available points: %d)", selectedP->getAvailableSkillPoints());
 
 
-    sprintf(nameAndClassStr, "%s, %s (level %d)", selectedP->getName(), 
-            selectedP->getCharacter()->getName(), selectedP->getLevel());
+    sprintf(nameAndClassStr, "%s, %s (level %d) (%s)", 
+            selectedP->getName(), 
+            selectedP->getCharacter()->getName(), 
+            selectedP->getLevel(),
+            MagicSchool::getMagicSchool(selectedP->getDeityIndex())->getDeity());
     nameAndClassLabel->setText(nameAndClassStr);  
 
     stateCount = 0;

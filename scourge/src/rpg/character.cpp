@@ -34,7 +34,7 @@ void Character::initCharacters() {
   }
 
   Character *last = NULL;
-  char name[255], model[255], skin[255];
+  char name[255];
   char line[255], shortName[10];
   int index = 0;
   int n = fgetc(fp);
@@ -46,19 +46,17 @@ void Character::initCharacters() {
       n = Constants::readLine(line, fp);
 
       strcpy(name, strtok(line, ","));
-      strcpy(model, strtok(NULL, ","));
-      strcpy(skin, strtok(NULL, ","));
       int hp =  atoi(strtok(NULL, ","));
       int mp =  atoi(strtok(NULL, ","));
       int skill_bonus =  atoi(strtok(NULL, ","));
       int level_progression = atoi(strtok(NULL, ","));
       strcpy(shortName, strtok(NULL, ","));
 
-      cerr << "adding character class: " << name << " model: " << model << 
-      " skin: " << skin << " hp: " << hp << " mp: " << mp << " skill_bonus: " << 
+      cerr << "adding character class: " << name << 
+      " hp: " << hp << " mp: " << mp << " skill_bonus: " << 
       skill_bonus << " shortName=" << shortName << endl;
 
-      last = new Character( strdup(name), hp, mp, strdup(model), strdup(skin), skill_bonus, 
+      last = new Character( strdup(name), hp, mp, skill_bonus, 
                             level_progression, strdup(shortName) );
       string s = name;
       character_class[s] = last;
@@ -118,13 +116,11 @@ void Character::addSounds(int type, char *line, Character *c) {
   }
 }
 
-Character::Character(char *name, int startingHp, int startingMp, char *model, 
-                     char *skin, int skill_bonus, int level_progression, char *shortName ) {  
+Character::Character(char *name, int startingHp, int startingMp, 
+                     int skill_bonus, int level_progression, char *shortName ) {  
   this->name = name;
   this->startingHp = startingHp;
   this->startingMp = startingMp;
-  this->model_name = model;
-  this->skin_name = skin;
   this->skill_bonus = skill_bonus;
   this->level_progression = level_progression;
   this->shortName = shortName;

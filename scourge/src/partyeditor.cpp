@@ -51,22 +51,22 @@ PartyEditor::PartyEditor(Scourge *scourge) {
   cards->addWidget( intro, INTRO_TEXT );
   
 
-  cancel = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
-                                w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
+  cancel = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                 "I will not join", INTRO_TEXT );
-  toChar0 = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
-                                 w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
+  toChar0 = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                 w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                  "Ready to exterminate", INTRO_TEXT );
 
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
     createCharUI( 1 + i, &( info[ i ] ) );
   }
 
-  toLastChar = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
-                                    w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
+  toLastChar = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                    w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Back", OUTRO_TEXT );
-  done = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
-                              w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
+  done = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                              w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                               "Enter Head Quarters", OUTRO_TEXT );
 
 }
@@ -114,6 +114,12 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
         if( index > -1 ) {
           Character *character = Character::character_list[ index ];
           if( character ) info[i].charTypeDescription->setText( character->getDescription() );
+        } 
+      } else if( widget == info[i].deityType ) {
+        int index = info[i].deityType->getSelectedLine();  
+        if( index > -1 ) {
+          MagicSchool *school = MagicSchool::getMagicSchool( index );
+          if( school ) info[i].deityTypeDescription->setText( school->getDeityDescription() );
         }
       } else if( widget == info[i].prevPortrait ) {
         if( info[i].portraitIndex > 0 ) {
@@ -153,10 +159,25 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   cards->createLabel( 30, 50, "Name:", n, Constants::RED_COLOR );
   info->name = new TextField( 100, 40, 20 );
   cards->addWidget( info->name, n );
+
+  // deity
+  cards->createLabel( 30, 80, "Chosen Deity:", n, Constants::RED_COLOR );
+  info->deityType = new ScrollingList( 30, 90, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
+  cards->addWidget( info->deityType, n );
+  info->deityTypeStr = (char**)malloc( MagicSchool::getMagicSchoolCount() * sizeof(char*));
+  for(int i = 0; i < MagicSchool::getMagicSchoolCount(); i++) {
+    info->deityTypeStr[i] = (char*)malloc(120 * sizeof(char));
+    strcpy( info->deityTypeStr[i], MagicSchool::getMagicSchool( i )->getDeity() );
+  }
+  info->deityType->setLines( MagicSchool::getMagicSchoolCount(), (const char**)info->deityTypeStr );
+  int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
+  info->deityType->setSelectedLine( deityIndex );
+  info->deityTypeDescription = new Label( 200, 100, MagicSchool::getMagicSchool( deityIndex )->getDeityDescription(), 50 );
+  cards->addWidget( info->deityTypeDescription, n );
   
   // character type
-  cards->createLabel( 30, 80, "Character Type:", n, Constants::RED_COLOR );
-  info->charType = new ScrollingList( 30, 90, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
+  cards->createLabel( 30, 260, "Character Type:", n, Constants::RED_COLOR );
+  info->charType = new ScrollingList( 30, 270, 150, 170, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->charType, n );
   info->charTypeStr = (char**)malloc( Character::character_list.size() * sizeof(char*));
   for(int i = 0; i < (int)Character::character_list.size(); i++) {
@@ -164,21 +185,10 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
     strcpy( info->charTypeStr[i], Character::character_list[i]->getName() );
   }
   info->charType->setLines( (int)Character::character_list.size(), (const char**)info->charTypeStr );
-  info->charTypeDescription = new Label( 190, 100, Character::character_list[0]->getDescription(), 60 );
+  int charIndex = (int)( (float)( Character::character_list.size() ) * rand()/RAND_MAX );
+  info->charType->setSelectedLine( charIndex );
+  info->charTypeDescription = new Label( 190, 280, Character::character_list[charIndex]->getDescription(), 50 );
   cards->addWidget( info->charTypeDescription, n );
-
-  // deity
-  cards->createLabel( 30, 260, "Chosen Deity:", n, Constants::RED_COLOR );
-  info->deityType = new ScrollingList( 30, 270, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
-  cards->addWidget( info->deityType, n );
-  info->deityTypeStr = (char**)malloc( 1 * sizeof(char*));
-  for(int i = 0; i < 1; i++) {
-    info->deityTypeStr[i] = (char*)malloc(120 * sizeof(char));
-    strcpy( info->deityTypeStr[i], "FIXME: deity list" );
-  }
-  info->deityType->setLines( 1, (const char**)info->deityTypeStr );
-  info->deityTypeDescription = new Label( 200, 280, "FIXME: deity description", 60 );
-  cards->addWidget( info->deityTypeDescription, n );
 
   // portrait
   info->portrait = new Canvas( w - PORTRAIT_SIZE - 10, 10, w - 10, 10 + PORTRAIT_SIZE, this );
@@ -202,11 +212,11 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
                                          "    >>", n );
   
 
-  info->back = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
-                                    w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
+  info->back = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                    w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Back", n );
-  info->next = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 130, 
-                                    w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 100, 
+  info->next = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                    w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Next", n );
 }
 
@@ -287,14 +297,8 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     if( !s || !strlen( s ) ) s = names[i];
     int index = info[i].charType->getSelectedLine();  
     Character *c = Character::character_list[ index ];
-    CharacterModelInfo *cmi = scourge->getShapePalette()->
-      getCharacterModelInfo( info[i].modelIndex );
-    pc[i] = new Creature( scourge->getSession(), 
-                          c, 
-                          strdup( s ),
-                          cmi->model_name, 
-                          cmi->skin_name,
-                          cmi->scale );
+    pc[i] = new Creature( scourge->getSession(), c, strdup( s ), info[i].modelIndex );
+    pc[i]->setDeityIndex( info[i].deityType->getSelectedLine() );
     pc[i]->setLevel(level); 
     pc[i]->setExp(0);
     pc[i]->setHp();

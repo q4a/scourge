@@ -38,13 +38,14 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3}}   // CROSS_FORMATION
 };
 
-Creature::Creature(Session *session, Character *character, char *name, char *model_name, char *skin_name, float scale) {
+Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) {
   this->session = session;
   this->character = character;
   this->monster = NULL;
   this->name = name;
-  this->model_name = model_name;
-  this->skin_name = skin_name;
+  this->character_model_info_index = character_model_info_index;
+  this->model_name = session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->model_name;
+  this->skin_name = session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->skin_name;
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 5; // start neutral speed
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
@@ -52,7 +53,7 @@ Creature::Creature(Session *session, Character *character, char *name, char *mod
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
-  this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, scale);
+  this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->scale);
 //  if( !strcmp( name, "Alamont" ) ) ((MD2Shape*)shape)->setDebug( true );
   commonInit();  
 }
@@ -154,10 +155,13 @@ CreatureInfo *Creature::save() {
   if(isMonster()) {
     strcpy((char*)info->character_name, "");
     strcpy((char*)info->monster_name, monster->getType());
+    info->character_model_info_index = 0;
   } else {
     strcpy((char*)info->character_name, character->getName());
     strcpy((char*)info->monster_name, "");    
+    info->character_model_info_index = character_model_info_index;
   }
+  info->deityIndex = deityIndex;
   info->hp = hp;
   info->mp = mp;
   info->exp = exp;
@@ -225,14 +229,13 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
     */                            
   } else {
     // for now it's ok to call new Creature() for characters. This will change once we save NPC-s.
-    // FIXME: save cmi index
-    CharacterModelInfo *cmi = session->getShapePalette()->getCharacterModelInfo( 0 );
     creature = new Creature(session, 
                             Character::getCharacterByName((char*)info->character_name), 
                             strdup((char*)info->name),
-                            cmi->model_name, cmi->skin_name, cmi->scale);
+                            info->character_model_info_index);
   }
   cerr << "*** LOAD: creature=" << info->name << endl;
+  creature->setDeityIndex( info->deityIndex );
   creature->setHp( info->hp );
   creature->setMp( info->mp );
   creature->setExp( info->exp );

@@ -131,6 +131,8 @@ class Creature {
   Battle *battle;
 
   Date lastEnchantDate;
+  int character_model_info_index;
+  int deityIndex;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -141,9 +143,12 @@ class Creature {
   static const int CROSS_FORMATION = 5;
   static const int FORMATION_COUNT = 6;
   
-  Creature(Session *session, Character *character, char *name, char *model_name, char *skin_name, float scale);
+  Creature(Session *session, Character *character, char *name, int character_model_info_index);
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
+
+  inline void setDeityIndex( int n ) { deityIndex = n; }
+  inline int getDeityIndex() { return deityIndex; }
 
   inline void setPortraitTextureIndex( int n ) { this->portraitTextureIndex = n; }
   inline int getPortraitTextureIndex() { return portraitTextureIndex; }
@@ -155,6 +160,8 @@ class Creature {
   inline int getProposedPathIndex() { return 1; }
   inline int getProposedX() { return proposedX; }
   inline int getProposedY() { return proposedY; }
+
+  inline int getCharacterModelInfoIndex() { return character_model_info_index; }
 
   inline void setLastEnchantDate(Date date) { lastEnchantDate = date; }
   inline Date getLastEnchantDate() { return lastEnchantDate; }
