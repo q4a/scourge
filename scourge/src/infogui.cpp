@@ -40,7 +40,7 @@ InfoGui::InfoGui(Scourge *scourge) {
 
   win->createLabel(10, 10, "Name:", Constants::RED_COLOR);
   strcpy(name, "");
-  nameLabel = new Label(10, 25, description, 56);
+  nameLabel = new Label(10, 25, name, 56);
   win->addWidget(nameLabel);
 
   win->createLabel(10, 80, "Detailed Description:", Constants::RED_COLOR);

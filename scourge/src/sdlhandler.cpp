@@ -610,9 +610,9 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 
   freetype_font_data *p;
   switch( fontType ) {
-  case MONO_FONT:
+  case SCOURGE_MONO_FONT:
     p = &monoFont; break;
-  case LARGE_FONT:
+  case SCOURGE_LARGE_FONT:
     p = &largeFont; break;
   default:
     p = &font;

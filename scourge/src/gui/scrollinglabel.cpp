@@ -93,7 +93,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
     //    int ypos = ypos = textPos + (i + 1) * 15;
     //    ((Window*)parent)->getSDLHandler()->texPrint( scrollerWidth + 5, ypos, text, lineWidth );
 
-    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::MONO_FONT );
+    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
     int ypos;
     for(int i = 0; i < (int)lines.size(); i++) {
       ypos = textPos + (i + 1) * 15;
@@ -102,7 +102,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
 		((Window*)parent)->getSDLHandler()->texPrint( scrollerWidth + 5, ypos, lines[i].c_str() );
       }
     }
-    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::DEFAULT_FONT );
+    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
         
     glDisable( GL_SCISSOR_TEST );
   }
