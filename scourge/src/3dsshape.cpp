@@ -114,8 +114,9 @@ C3DSShape::~C3DSShape() {
 		  minx, maxx, miny, maxy, minz, maxz);
   movex = minx;
   movey = maxy;
-  movez = minz;
-
+  float n = 0.25 / DIV;
+  movez = n - minz;
+  
 
 
   // pre-render the light
@@ -191,7 +192,7 @@ void C3DSShape::draw() {
   glTranslatef(-movex * div, 0.0f, 0.0f);
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * div), 0.0f);
 //  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
-  glTranslatef(0.0f, 0.0f, -movez);
+  glTranslatef(0.0f, 0.0f, movez);
   glTranslatef((float)offsetx / DIV, (float)offsety / DIV, 0.0f);
 
   // I am going to attempt to explain what is going on below up here as not to clutter the 
