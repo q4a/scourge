@@ -63,13 +63,6 @@ Scourge::Scourge(int argc, char *argv[]){
   // initialize the monsters
   Monster::initMonsters();
 
-  // init the party; hard code for now
-  Creature **pc = Creature::createHardCodedParty(this);
-  party[0] = player = pc[0];
-  party[1] = pc[1];
-  party[2] = pc[2];
-  party[3] = pc[3];
-
   // do this before the inventory and optionsdialog (so Z is less than of those)
   createUI();
 
@@ -78,10 +71,12 @@ Scourge::Scourge(int argc, char *argv[]){
   startRound = true;
   battleCount = 0;
   gameSpeed = 70; // the greater the slower the game (in ticks) 
+  inventory = NULL;
   
+  for(int i = 0; i < 4; i++) party[i] = NULL;
+
   // show the main menu
-  mainMenu = new MainMenu(this);  
-  inventory = new Inventory(this);
+  mainMenu = new MainMenu(this);
   optionsMenu = new OptionsMenu(this);
 
   while(true) {
@@ -91,9 +86,25 @@ Scourge::Scourge(int argc, char *argv[]){
 	mainMenu->hide();
 
     // evaluate results and start a missions
-    fprintf(stderr, "value=%d\n", mainMenu->getValue());
     if(mainMenu->getValue() == NEW_GAME) {
-      //charBuilder-
+
+	  // Init the party; hard code for now
+	  // This will be replaced by a call to the character builder which either
+	  // loads or creates the party.
+	  for(int i = 0; i < 4; i++) {
+		if(party[i]) delete party[i];
+	  }
+	  Creature **pc = Creature::createHardCodedParty(this);
+	  party[0] = player = pc[0];
+	  party[1] = pc[1];
+	  party[2] = pc[2];
+	  party[3] = pc[3];
+
+	  // inventory needs the party
+	  if(!inventory) {
+		inventory = new Inventory(this);
+	  }
+
       startMission();
 	} else if(mainMenu->getValue() == OPTIONS) {
 	  optionsMenu->show();
@@ -118,47 +129,35 @@ void Scourge::startMission() {
   map = new Map(this);
   miniMap = new MiniMap(this); 
   
-  // Initialize the map with a random dunegeon	
-  dg = new DungeonGenerator(this, level);
-  Sint16 startx, starty;
-  dg->toMap(map, &startx, &starty, getShapePalette());
-
-	/*
+  /*
 	cerr << "Before mission: " <<
-		" creatureCount=" << creatureCount << 
-		" itemCount=" << itemCount << endl;
-		*/
+	" creatureCount=" << creatureCount << 
+	" itemCount=" << itemCount << endl;
+  */
 
   // position the players
   player_only = false;
   move = 0;
   startRound = true;
   battleCount = 0;
-	partyDead = false;
-
-	// resurrect party (do this before calling setPlayer!)
-	for(int i = 0; i < 4; i++) {
-		getParty(i)->setStateMod(Constants::dead, false);
-	}
-
+  partyDead = false;
+  
   setPlayer(getParty(0));
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-  getPlayer()->moveTo(startx, starty, 0);
   getPlayer()->setTargetCreature(NULL);
-  map->setCreature(startx, starty, 0, getPlayer()); 
 
   // init the rest of the party
   for(int i = 1; i < 4; i++) {
-		getParty(i)->setNext(getPlayer(), i);
-		map->setCreature(getParty(i)->getX(), 
-										 getParty(i)->getY(), 
-										 getParty(i)->getZ(), 
-										 getParty(i));
-		getParty(i)->setTargetCreature(NULL);
+	getParty(i)->setNext(getPlayer(), i);
+	getParty(i)->setTargetCreature(NULL);
   }
+
+  // Initialize the map with a random dunegeon	
+  dg = new DungeonGenerator(this, level);
+  dg->toMap(map, getShapePalette());
  
   // center map on the player
-  map->center(startx, starty);
+  map->center(player->getX(), player->getY());
   
   // Must be called after MiniMap has been built by dg->toMap() !!! 
   miniMap->computeDrawValues();
@@ -1177,41 +1176,41 @@ void Scourge::handleKeyboardMovement() {
 
   if(!player_only) {
     for(int i = 0; i < 4; i++) {
-			if(!party[i]->getStateMod(Constants::dead)) {
-				party[i]->setTargetCreature(NULL);
-				if(party[i] != player) party[i]->follow(map);
-			}
+	  if(!party[i]->getStateMod(Constants::dead)) {
+		party[i]->setTargetCreature(NULL);
+		if(party[i] != player) party[i]->follow(map);
+	  }
     }
   }
 }
 
 void Scourge::movePlayers() {   
-	// the player's dead?
-	if(player->getStateMod(Constants::dead)) 
-		return;
-
   if(player_only) {	
-
-		// how many party members are still alive?
-		int sum = 0;
-		for(int i = 0; i < 4; i++) 
-			if(!party[i]->getStateMod(Constants::dead)) sum++;
-
-		// in single-step mode:
-		for(int i = 0; i < sum; i++) {
-			
-			// move the current player
-			player->moveToLocator(map, player_only);
-			map->center(player->getX(), player->getY());
-			
-			switchToNextLivePartyMember();
-		}	
+	
+	// how many party members are still alive?
+	int sum = 0;
+	for(int i = 0; i < 4; i++) 
+	  if(!party[i]->getStateMod(Constants::dead)) sum++;
+	
+	// in single-step mode:
+	for(int i = 0; i < sum; i++) {
+	  
+	  // move the current player
+	  if(!player->getStateMod(Constants::dead)) {
+		player->moveToLocator(map, player_only);
+		map->center(player->getX(), player->getY());
+	  }
+	  
+	  switchToNextLivePartyMember();
+	}	
   } else {
 	// In group mode:
 	
 	// move the leader
-	player->moveToLocator(map, player_only);
-	map->center(player->getX(), player->getY());
+	if(!player->getStateMod(Constants::dead)) {
+	  player->moveToLocator(map, player_only);
+	  map->center(player->getX(), player->getY());
+	}
 	
 	// in keyboard mode, don't move the selection
 	if(move) player->setSelXY(-1, -1);
@@ -1222,7 +1221,6 @@ void Scourge::movePlayers() {
 		if(party[t]->getTargetCreature()) {
 		  party[t]->moveToLocator(map, player_only);
 		} else {
-		  //party[t]->follow(map);
 		  party[t]->moveToLocator(map, player_only);
 		}
 	  }

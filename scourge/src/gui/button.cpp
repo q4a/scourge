@@ -31,6 +31,7 @@ Button::Button(int x1, int y1, int x2, int y2, char *label) :
   alphaInc = 0.05f;
   lastTick = 0;
   toggle = selected = false;
+  inside = false;
 }
 
 Button::~Button() {

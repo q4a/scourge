@@ -91,9 +91,10 @@ Inventory::Inventory(Scourge *scourge) {
 	}
 	invList = new ScrollingList(115, 285, 295, 175);
 	cards->addWidget(invList, INVENTORY);
+	char s[80];
 	for(int i = 0; i < 4; i++) {
-	  invToButton[i] = new Button( 420, 35 + (i * 30), 520, 35 + (i * 30) + 25, 
-								   scourge->getParty(i)->getName() );
+	  sprintf(s, "to %s", scourge->getParty(i)->getName());
+	  invToButton[i] = new Button( 420, 35 + (i * 30), 520, 35 + (i * 30) + 25, strdup(s) );
 	  cards->addWidget( invToButton[i], INVENTORY );
 	}
 	equipButton = new Button( 420, 155, 520, 180, strdup("Don/Doff") );

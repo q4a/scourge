@@ -116,7 +116,7 @@ public:
 	DungeonGenerator(Scourge *scourge, int level);
 	~DungeonGenerator();
 
-  void toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePalette *shapePal);
+  void toMap(Map *map, ShapePalette *shapePal);
 
 protected:
 
@@ -150,7 +150,8 @@ protected:
 
   void getRandomLocation(Map *map, Shape *shape, int *x, int *y);
 
-  bool getLocationInRoom(Map *map, int roomIndex, Shape *shape, int *xpos, int *ypos);
+  bool getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
+						 int *xpos, int *ypos, bool startMiddle=false);
   
   bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y);
 

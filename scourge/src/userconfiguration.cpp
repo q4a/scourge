@@ -226,9 +226,12 @@ void UserConfiguration::loadConfiguration(){
     int lineNumber;
     int i;
         
-    configFile = new ifstream(CONFIG_FILE_NAME);
+    char path[300];
+    strcpy(path, rootDir);
+    strcat(path, CONFIG_FILE_NAME);
+    configFile = new ifstream(path);
     if(!configFile->is_open()){
-        cout << "Error while opening " << CONFIG_FILE_NAME << endl;        
+        cout << "Error while opening " << path << endl;        
         exit(1);
     }    
     
@@ -294,9 +297,12 @@ void UserConfiguration::saveConfiguration(){
     char textLine[255];    
     int i;
     
-    configFile = new ofstream(CONFIG_FILE_NAME);
+    char path[300];
+    strcpy(path, rootDir);
+    strcat(path, CONFIG_FILE_NAME);
+    configFile = new ofstream(path);
     if(!configFile->is_open()){
-        cout << "Error while saving " << CONFIG_FILE_NAME << endl;        
+        cout << "Error while saving " << path << endl;        
         return;
     }    
     
