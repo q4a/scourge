@@ -58,6 +58,10 @@ void Battle::reset() {
   this->startingAp = this->ap = 10 + (creature->getSkill(Constants::COORDINATION) / 10);
   this->projectileHit = false;
   this->paused = false;
+  this->weaponWait = 0;
+  this->range = 0.0f;
+  creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+  ((MD2Shape*)(creature->getShape()))->setAttackEffect(false);
 }
 
 void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
@@ -207,41 +211,6 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
   */
 }                 
 
-bool Battle::pauseBeforePlayerTurn() {
-  // go to single-player mode
-  if (session->getUserConfiguration()->isBattleTurnBased() &&
-      !session->getParty()->isPlayerOnly()) {
-    session->getParty()->togglePlayerOnly(true);
-  }
-
-  // pause if this is a player's first step
-  if (!creature->isMonster() &&
-      !steps && 
-      !paused &&
-      session->getUserConfiguration()->isBattleTurnBased()) {
-    cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
-
-    // center on player
-    for (int i = 0; i < session->getParty()->getPartySize(); i++) {
-      if (session->getParty()->getParty(i) == creature) {
-        session->getParty()->setPlayer(i);
-        break;
-      }
-    }
-    // FIXME: only center if not on-screen
-    session->getMap()->refresh();
-    session->getMap()->center(creature->getX(), creature->getY(), true);
-
-    // pause the game
-    session->getParty()->toggleRound(true);
-    paused = true;
-    return true;
-  }
-  steps++;
-  paused = false;
-  return false;
-}
-
 bool Battle::fightTurn() {
 
   cerr << "TURN: creature=" << creature->getName() << " ap=" << ap << " coordination=" << creature->getSkill(Constants::COORDINATION) << endl;
@@ -252,112 +221,31 @@ bool Battle::fightTurn() {
   // done with this creature's turn
   if(ap <= 0) {
     reset();
-    // This is weird... but it's the only way I could make it work
-    // setting the anim. to anything else causes them to not run 
-    // when moving after battle.
-    creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
-    ((MD2Shape*)(creature->getShape()))->setAttackEffect(false);
     return true;
+  }
+
+  // waiting to cast a spell?
+  if(creature->getAction() == Constants::ACTION_CAST_SPELL) {
+    creature->startEffect(Constants::EFFECT_CAST_SPELL, 
+                          Constants::DAMAGE_DURATION * 4);
   }
 
   if(pauseBeforePlayerTurn()) return false;
 
-  dist = creature->getDistanceToTarget();
-  item = creature->getBestWeapon(dist);
-
-  if(item) {
-    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
-  } else {
-    cerr << "\tUsing bare hands." << endl;
-  }
-
-  float range = Constants::MIN_DISTANCE;
-  if(item) range = item->getRpgItem()->getDistance();
-  if(creature->getTargetCreature()) {
-    range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
-              creature->getTargetCreature()->getShape()->getWidth() / 2 :
-              creature->getTargetCreature()->getShape()->getDepth() / 2);
-  }
-  cerr << "\tDistance=" << dist << " range=" << range << endl;
-
-  /**                 
-    * How many steps to wait before being able to use the weapon.
-    * 
-    *   FIXME: When implementing for real, this depends on item/spell,etc. 
-    * and skills like speed/proficency. Hard-coded for now.
-  */
-  int weaponWait = 3;
+  initTurnStep();
 
   if(creature->getTargetCreature()) {
     if(creature->isTargetValid()) {
       if(dist < range) {
-        if(!projectileHit) {
-          ap -= weaponWait;
-          if(ap < 0) ap = 0;
-        }
-        // attack
-        cerr << "\t\tAttacking." << endl;
-        if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
-          launchProjectile();
-        } else {
-          hitWithItem();
-        }
-        creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
-        ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
+        executeAction();
       } else {
-        // out of range: take 1 step closer
-        creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
-        cerr << "\t\tTaking a step." << endl;
-        if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
-             creature->getSelY() == creature->getTargetCreature()->getY())) {
-          creature->setSelXY(creature->getTargetCreature()->getX(),
-                             creature->getTargetCreature()->getY(),
-                             true);
-        }
-        creature->moveToLocator(session->getMap());
-        ap--;
+        stepCloserToTarget();
       }
     } else {
-      // select a new target
-      // FIXME: this code should move to Creature
-      Creature *target = NULL;
-      if(creature->isMonster()) {
-        target = session->getParty()->getClosestPlayer(creature->getX(), 
-                                                       creature->getY(), 
-                                                       creature->getShape()->getWidth(),
-                                                       creature->getShape()->getDepth(),
-                                                       20);
-      } else {
-        target = session->getClosestVisibleMonster(creature->getX(), 
-                                                   creature->getY(), 
-                                                   creature->getShape()->getWidth(),
-                                                   creature->getShape()->getDepth(),
-                                                   20);
-      }
-      if(target) {
-        cerr << "\tSelected new target: " << target->getName() << endl;
-        creature->setTargetCreature(target);
-        creature->setSelXY(creature->getTargetCreature()->getX(),
-                           creature->getTargetCreature()->getY(),
-                           true);
-        initTurn();
-      } else {
-        creature->setTargetCreature(NULL);
-        cerr << "\t\tCan't find new target." << endl;
-        return true;
-      }
+      if(!selectNewTarget()) return true;
     }
   } else {
-    creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
-    
-    // take 1 step closer
-    cerr << "\t\tTaking a non-battle step." << endl;
-    if(creature->isMonster()) {
-      session->getGameAdapter()->moveMonster(creature);
-    } else {
-      creature->moveToLocator(session->getMap());
-    }
-    ap--;
+    moveCreature();
   }
 
   // not done yet with creature's turn
@@ -424,6 +312,152 @@ bool Battle::fightTurn() {
     hitWithItem();
   }
 */  
+}
+
+bool Battle::pauseBeforePlayerTurn() {
+  // go to single-player mode
+  if (session->getUserConfiguration()->isBattleTurnBased() &&
+      !session->getParty()->isPlayerOnly()) {
+    session->getParty()->togglePlayerOnly(true);
+  }
+
+  // pause if this is a player's first step
+  if (!creature->isMonster() &&
+      !steps && 
+      !paused &&
+      session->getUserConfiguration()->isBattleTurnBased()) {
+    cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
+
+    // center on player
+    for (int i = 0; i < session->getParty()->getPartySize(); i++) {
+      if (session->getParty()->getParty(i) == creature) {
+        session->getParty()->setPlayer(i);
+        break;
+      }
+    }
+    // FIXME: only center if not on-screen
+    session->getMap()->refresh();
+    session->getMap()->center(creature->getX(), creature->getY(), true);
+
+    // pause the game
+    session->getParty()->toggleRound(true);
+    paused = true;
+    return true;
+  }
+  steps++;
+  paused = false;
+  return false;
+}
+
+void Battle::initTurnStep() {
+  dist = creature->getDistanceToTarget();
+  item = creature->getBestWeapon(dist);
+
+  if(item) {
+    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
+  } else {
+    cerr << "\tUsing bare hands." << endl;
+  }
+
+  range = Constants::MIN_DISTANCE;
+  if(item) range = item->getRpgItem()->getDistance();
+  if(creature->getTargetCreature()) {
+    range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
+              creature->getTargetCreature()->getShape()->getWidth() / 2 :
+              creature->getTargetCreature()->getShape()->getDepth() / 2);
+  }
+  cerr << "\tDistance=" << dist << " range=" << range << endl;
+
+  /**                 
+    * How many steps to wait before being able to use the weapon.
+    * 
+    *   FIXME: When implementing for real, this depends on item/spell,etc. 
+    * and skills like speed/proficency. Hard-coded for now.
+  */
+  weaponWait = 3;
+}
+
+void Battle::executeAction() {
+  if(!projectileHit) {
+    ap -= weaponWait;
+    if(ap < 0) ap = 0;
+  }
+  // attack
+  cerr << "\t\tAttacking." << endl;
+//  } else if(spell) {
+//    // a spell projectile hit
+//    SpellCaster *sc = new SpellCaster(this, spell, true); 
+//    sc->spellSucceeded();
+//    delete sc;
+  if(creature->getActionSpell()) {
+    // casting a spell for the first time
+    castSpell();
+  } else if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
+      launchProjectile();
+  } else {
+    hitWithItem();
+  }
+  creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
+  ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
+}
+
+void Battle::stepCloserToTarget() {
+  // out of range: take 1 step closer
+  creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+  cerr << "\t\tTaking a step." << endl;
+  if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
+       creature->getSelY() == creature->getTargetCreature()->getY())) {
+    creature->setSelXY(creature->getTargetCreature()->getX(),
+                       creature->getTargetCreature()->getY(),
+                       true);
+  }
+  creature->moveToLocator(session->getMap());
+  ap--;
+}
+
+bool Battle::selectNewTarget() {
+// select a new target
+  // FIXME: this code should move to Creature
+  Creature *target = NULL;
+  if (creature->isMonster()) {
+    target = session->getParty()->getClosestPlayer(creature->getX(), 
+                                                   creature->getY(), 
+                                                   creature->getShape()->getWidth(),
+                                                   creature->getShape()->getDepth(),
+                                                   20);
+  } else {
+    target = session->getClosestVisibleMonster(creature->getX(), 
+                                               creature->getY(), 
+                                               creature->getShape()->getWidth(),
+                                               creature->getShape()->getDepth(),
+                                               20);
+  }
+  if (target) {
+    cerr << "\tSelected new target: " << target->getName() << endl;
+    creature->setTargetCreature(target);
+    creature->setSelXY(creature->getTargetCreature()->getX(),
+                       creature->getTargetCreature()->getY(),
+                       true);
+    initTurn();
+    return true;
+  } else {
+    creature->setTargetCreature(NULL);
+    cerr << "\t\tCan't find new target." << endl;
+    return false;
+  }
+}
+
+void Battle::moveCreature() {
+  creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+
+  // take 1 step closer
+  cerr << "\t\tTaking a non-battle step." << endl;
+  if(creature->isMonster()) {
+    session->getGameAdapter()->moveMonster(creature);
+  } else {
+    creature->moveToLocator(session->getMap());
+  }
+  ap--;
 }
 
 void Battle::castSpell() {
@@ -506,12 +540,17 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   Battle *battle = proj->getCreature()->getBattle();
   if(proj->getItem()) {
     battle->initItem(proj->getItem());
+    battle->projectileHit = true;
+    battle->hitWithItem();
   } else if(proj->getSpell()) {
-    battle->spell = proj->getSpell();
+//    battle->spell = proj->getSpell();
+//    battle->castSpell();
+    SpellCaster *sc = new SpellCaster(battle, proj->getSpell(), true); 
+    sc->spellSucceeded();
+    delete sc;
   }
-  battle->projectileHit = true;
-  battle->hitWithItem();
   battle->projectileHit = false;
+  battle->spell = NULL;
   proj->getCreature()->cancelTarget();
   proj->getCreature()->setTargetCreature(oldTarget);
 
