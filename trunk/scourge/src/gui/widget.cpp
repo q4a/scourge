@@ -336,3 +336,42 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
   glPopMatrix();
 }
 
+void Widget::breakText( char *text, int lineWidth, vector<string> *lines ) {
+  char *p = (char*)malloc((lineWidth + 3) * sizeof(char));
+  int len = strlen(text);
+  int start = 0;
+  //cerr << "len=" << len << endl;
+  //cerr << "text=" << text << endl;
+  while(start < len) {
+    int end = start + lineWidth;
+    if(end > len) end = len;
+    else {
+      // find a space (if any)
+      int n = end;
+      while(n > start && *(text + n) != ' ') n--;
+      if(n > start) end = n + 1;
+    }
+    
+    // search for hard breaks
+    int n = start;
+    while(n < end && *(text + n) != '|') n++;
+    bool hardbreak = false;
+    if( n < end) {
+      end = n + 1;
+      hardbreak = true;
+    }
+    
+    //cerr << "\tstart=" << start << endl;
+    //cerr << "\tend=" << end << endl;
+    //cerr << "\tend-start=" << (end-start) << endl;
+    
+    strncpy(p, text + start, end - start);
+    *(p + end - (hardbreak ? 1 : 0) - start) = 0;
+    //cerr << "p=" << p << endl;
+
+    string s = p;
+    lines->push_back( s );
+    start = end;
+  }
+  free(p);
+}
