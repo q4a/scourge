@@ -344,11 +344,6 @@ Creature **Party::createHardCodedParty() {
 	}
   }
 
-  // Compute the new maxInventoryWeight for each pc, according to its POWER skill
-  for(int i = 0; i < 4; i++) {
-	pc[i]->setMaxInventoryWeight(pc[i]->computeMaxInventoryWeight());
-  }
-
   // add some items
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Bastard sword")));
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Horned helmet")));

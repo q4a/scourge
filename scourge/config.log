@@ -60,7 +60,7 @@ configure:3488: checking for glXGetProcAddressARB
 configure:3564: checking for GLU library
 configure:3574: gcc -o conftest    conftest.c   -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXi -lXext -lXmu -lXt   -ldl -lm -L/usr/lib -lSDL -lpthread  -lGL -lGLU 1>&5
 configure:3657: checking for GL/gl.h
-configure:3664: gcc -E    -DTUXRACER_NO_ASSERT=1 -DHAVE_SDL=1 conftest.c >/dev/null 2>conftest.out
+configure:3664: gcc -E    -DHAVE_SDL=1 conftest.c >/dev/null 2>conftest.out
 configure:3723: checking for GL/glx.h
 configure:3772: checking for GL/glext.h
 configure:3821: checking whether glext.h is recent enough

@@ -1830,7 +1830,7 @@ esac
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
   enableval="$enable_debug"
-  TR_CFLAGS="-g -Wall -Wno-deprecated"; TR_CXXFLAGS="-g -Wall -Wno-deprecated"
+  TR_CFLAGS="-g -Wall -Wno-deprecated -fno-inline"; TR_CXXFLAGS="-g -Wall -Wno-deprecated -fno-inline"
 else
   TR_CPPFLAGS="$TR_CPPFLAGS -DTUXRACER_NO_ASSERT=1"
 fi

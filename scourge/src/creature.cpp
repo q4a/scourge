@@ -103,7 +103,6 @@ void Creature::commonInit() {
   for(int i = 0; i < inventory_count; i++) {
     inventoryWeight += inventory[i]->getRpgItem()->getWeight();
   }  
-  maxInventoryWeight = computeMaxInventoryWeight();
   this->money = this->level * (int)(10.0f * rand()/RAND_MAX);
   calculateExpOfNextLevel();
 }
@@ -468,7 +467,7 @@ bool Creature::addInventory(Item *item) {
 	inventoryWeight += item->getRpgItem()->getWeight(); 
 	
 	if(item->getRpgItem()->getWeight() + inventoryWeight > 
-	   maxInventoryWeight) {
+	   getMaxInventoryWeight()) {
 	  char msg[80];
 	  sprintf(msg, "%s is overloaded.", getName());
 	  scourge->getMap()->addDescription(msg);            
@@ -496,7 +495,7 @@ Item *Creature::removeInventory(int index) {
 	// drop from inventory
 	item = inventory[index];
 	inventoryWeight -= item->getRpgItem()->getWeight();
-	if(getStateMod(Constants::overloaded) && inventoryWeight < maxInventoryWeight)
+	if(getStateMod(Constants::overloaded) && inventoryWeight < getMaxInventoryWeight())
     {
     	    char msg[80];
             sprintf(msg, "%s is not overloaded anymore.", getName());
