@@ -32,6 +32,11 @@
 #define MVW 150
 #define MVD 150
 
+#define WATER_AMP 0.25f
+#define WATER_ANIM_SPEED 10.0f
+#define WATER_HEIGHT 1.2f
+#define WATER_STEP 0.07f
+
 //#define DEBUG_RENDER 1
 
 // this is the clockwise order of movements
@@ -154,6 +159,13 @@ void Map::reset() {
   // clear map
   for(int xp = 0; xp < MAP_WIDTH; xp++) {
     for(int yp = 0; yp < MAP_DEPTH; yp++) {
+      if( floorPositions[xp][yp] ) {
+        Uint32 key = createPairKey(xp, yp);
+        if( water.find(key) != water.end() ) {
+          WaterTile *w = water[key];
+          free(w);
+        }
+      }
       for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
         if(pos[xp][yp][zp]) {
           delete pos[xp][yp][zp];
@@ -162,6 +174,7 @@ void Map::reset() {
       }
     }
   }
+  water.clear();
 
 
   zoom = 1.0f;
@@ -338,8 +351,8 @@ void Map::move(int dir) {
    If 'ground' is true, it draws the ground layer.
    Otherwise the shape arrays (other, stencil, later) are populated.
 */
-void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
-  if(!ground) {
+void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int *cey) {
+  if(!ground && !water) {
     laterCount = stencilCount = otherCount = damageCount = 0;
     mapChanged = false;
   }
@@ -402,7 +415,7 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
       // chunk that should be hidden. To really fix it, we need to
       // keep track of which side of the chunk to draw.
       if(!lightMap[chunkX][chunkY]) {
-        if(ground) continue;
+        if(ground || water) continue;
         else {
           // see if the door is next to a chunk in the light
           bool found = false;
@@ -457,7 +470,7 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
           posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
           posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
 
-          if(ground) {
+          if(ground || water) {
             shape = floorPositions[posX][posY];
             if(shape) {
               xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
@@ -465,9 +478,16 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
               ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
                               shape->getDepth() +
                               yp + chunkOffsetY) / GLShape::DIV;
-              drawGroundPosition(posX, posY,
-                                 xpos2, ypos2,
-                                 shape);      
+
+              if( water ) {
+                drawWaterPosition(posX, posY,
+                                  xpos2, ypos2,
+                                  shape);      
+              } else {
+                drawGroundPosition(posX, posY,
+                                   xpos2, ypos2,
+                                   shape);      
+              }
             }
           } else {
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
@@ -538,10 +558,105 @@ void Map::drawGroundPosition(int posX, int posY,
   // encode this shape's map location in its name
   name = posX + (MAP_WIDTH * posY);     
   glTranslatef( xpos2, ypos2, 0.0f);
+  
   glPushName( name );
   glColor4f(1, 1, 1, 0.9f);
   shape->draw();
   glPopName();
+
+  glTranslatef( -xpos2, -ypos2, 0.0f);
+}
+
+void Map::drawWaterPosition(int posX, int posY,
+                            float xpos2, float ypos2,
+                            Shape *shape) {
+  GLuint name;
+  // encode this shape's map location in its name
+  name = posX + (MAP_WIDTH * posY);     
+  glTranslatef( xpos2, ypos2, 0.0f);
+  
+  // draw water
+  Uint32 key = createPairKey( posX, posY );
+  if( water.find( key ) != water.end() ) {
+    glDisable( GL_CULL_FACE );
+    
+    float sx = ( (float)MAP_UNIT / (float)WATER_TILE_X ) / GLShape::DIV;
+    float sy = ( (float)MAP_UNIT / (float)WATER_TILE_Y ) / GLShape::DIV;
+    
+    int xp = 0;
+    int yp = 0;
+    while( true ) {
+      int stx = xp;
+      int sty = yp;
+      glBegin( GL_QUADS );
+      for( int i = 0; i < 4; i++ ) {
+        int wx, wy;
+        if( xp == WATER_TILE_X && yp == WATER_TILE_Y ) {
+          wx = (posX + MAP_UNIT) * WATER_TILE_X;
+          wy = (posY + MAP_UNIT) * WATER_TILE_Y;
+        } else if( xp == WATER_TILE_X ) {
+          wx = (posX + MAP_UNIT) * WATER_TILE_X;
+          wy = posY * WATER_TILE_Y + yp;
+        } else if( yp == WATER_TILE_Y ) {
+          wx = posX * WATER_TILE_X + xp;
+          wy = (posY + MAP_UNIT) * WATER_TILE_Y;
+        } else {
+          wx = posX * WATER_TILE_X + xp;
+          wy = posY * WATER_TILE_Y + yp;
+        }
+
+        int xx = wx % WATER_TILE_X;
+        int yy = wy % WATER_TILE_Y;
+        WaterTile *w = NULL;
+        Uint32 key = createPairKey( wx / WATER_TILE_X, wy / WATER_TILE_Y );
+        if( water.find(key) != water.end() ) {
+          w = water[key];
+
+          Uint32 time = SDL_GetTicks();   
+          Uint32 elapsedTime = time - w->lastTime[xx][yy];
+          if(elapsedTime >= (Uint32)(1000.0f / WATER_ANIM_SPEED) ) {
+            
+            w->z[xx][yy] += w->step[xx][yy];
+            if( w->z[xx][yy] > WATER_AMP ||
+                w->z[xx][yy] < -WATER_AMP ) w->step[xx][yy] *= -1.0f;
+            
+            w->lastTime[xx][yy] = time;
+          }
+        }
+
+        float zz = ( w ? w->z[xx][yy] : 0.0f );
+        float sz = ( WATER_HEIGHT + zz ) / GLShape::DIV;
+        glColor4f( 0.15f + ( zz / 30.0f ), 
+                   0.3f + ( zz / 10.0f ), 
+                   0.25f + ( zz / 15.0f ), 
+                   0.5f );
+        glVertex3f( (float)xp * sx, (float)yp * sy, sz );
+
+        switch( i ) {
+        case 0: xp++; break;
+        case 1: yp++; break;
+        case 2: xp--; break;
+        case 3: yp--; break;
+        }
+        if( xp > WATER_TILE_X || yp > WATER_TILE_Y ) {
+          break;
+        }
+      }
+      glEnd();
+      xp = stx + 1;
+      yp = sty;
+      if( xp >= WATER_TILE_X ) {
+        xp = 0;
+        yp++;
+        if( yp >= WATER_TILE_Y ) break;
+      }      
+    }
+    
+    
+    //glDepthMask( GL_TRUE );
+    //glDisable( GL_BLEND );
+  }
+
   glTranslatef( -xpos2, -ypos2, 0.0f);
 }
 
@@ -681,7 +796,7 @@ void Map::draw() {
   // populate the shape arrays
   if(mapChanged) {
     int csx, cex, csy, cey;
-    setupShapes(false, &csx, &cex, &csy, &cey);
+    setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
     sprintf(mapDebugStr, "chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
             (useFrustum ? "*" : ""),
@@ -729,6 +844,8 @@ void Map::draw() {
       }
       doDrawShape(&other[i]);
     }
+    // draw the walls
+    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
 
     if(session->getUserConfiguration()->getStencilbuf() &&
        session->getUserConfiguration()->getStencilBufInitialized()) {
@@ -737,7 +854,18 @@ void Map::draw() {
       glEnable(GL_STENCIL_TEST);
       glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
       glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-      setupShapes(true);
+      setupShapes(true, false);
+
+      /*
+      // draw the water
+      glEnable(GL_BLEND);  
+      glDepthMask(GL_FALSE);
+      //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      ((Scourge*)this->session->getGameAdapter())->setBlendFunc();
+      setupShapes(false, true);
+      glDepthMask(GL_TRUE);    
+      glDisable(GL_BLEND);
+      */
 
       // shadows
       if(session->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
@@ -761,11 +889,12 @@ void Map::draw() {
         glEnable(GL_TEXTURE_2D);
         glDepthMask(GL_TRUE);
       }
+
       //glEnable(GL_DEPTH_TEST);
       glDisable(GL_STENCIL_TEST); 
     } else {
       // draw the ground  
-      setupShapes(true);
+      setupShapes(true, false);
 
       /*
       // -------------------------------------------
@@ -795,14 +924,24 @@ void Map::draw() {
       */
 
     }
-    
-    // draw the blended walls
+
+      // draw the water
+    glDisable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+    glBlendFunc( GL_ONE, GL_SRC_COLOR );
+    setupShapes(false, true);
     glDepthMask(GL_TRUE);    
     glDisable(GL_BLEND);
+    glEnable(GL_TEXTURE_2D);
+    
+    // draw the blended walls
+    //glEnable(GL_BLEND);  
+    //glDepthMask(GL_FALSE);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+    //glDepthMask(GL_TRUE);    
+    //glDisable(GL_BLEND);
 
     // draw the effects
     glEnable(GL_BLEND);  
@@ -1246,6 +1385,15 @@ void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
       session->getGameAdapter()->colorMiniMapPoint(x + xp, y - yp, shape);
     }
   }
+  WaterTile *w = (WaterTile*)malloc(sizeof(WaterTile));
+  for( int xp = 0; xp < WATER_TILE_X; xp++ ) {
+    for( int yp = 0; yp < WATER_TILE_Y; yp++ ) {
+      w->z[xp][yp] = ( (2.0f * WATER_AMP) * rand()/RAND_MAX ) - WATER_AMP;
+      w->step[xp][yp] = WATER_STEP * ((int)(2.0f * rand()/RAND_MAX) == 0 ? 1 : -1);
+      w->lastTime[xp][yp] = 0;
+    }
+  }
+  water[createPairKey(x, y)] = w;
 }
 
 Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
@@ -1259,6 +1407,12 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
         session->getGameAdapter()->eraseMiniMapPoint(x, y);
       }
     }
+  }
+  Uint32 key = createPairKey(x, y);
+  if( water.find(key) != water.end() ) {
+    WaterTile *w = water[key];
+    free(w);
+    water.erase( key );
   }
 	return shape;
 }

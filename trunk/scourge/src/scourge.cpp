@@ -2252,11 +2252,14 @@ bool Scourge::createBattleTurns() {
     // add other movement
     for (int i = 0; i < party->getPartySize(); i++) {
       if (!party->getParty(i)->getStateMod(Constants::dead)) {
-        //bool hasTarget = (party->getParty(i)->hasTarget() || 
-                          //party->getParty(i)->getAction() > -1);
-        //if (!hasTarget || (hasTarget && !party->getParty(i)->isTargetValid())) {
-          battle[battleCount++] = party->getParty(i)->getBattle();
-        //}
+        bool found = false;
+        for( int t = 0; t < battleCount; t++ ) {
+          if( battle[t] == party->getParty(i)->getBattle() ) {
+            found = true;
+            break;
+          }
+        }
+        if( !found ) battle[battleCount++] = party->getParty(i)->getBattle();
       }
     }
     for (int i = 0; i < session->getCreatureCount(); i++) {
@@ -2268,7 +2271,14 @@ bool Scourge::createBattleTurns() {
         bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                           session->getCreature(i)->getAction() > -1);
         if (!hasTarget || (hasTarget && !session->getCreature(i)->isTargetValid())) {
-          battle[battleCount++] = session->getCreature(i)->getBattle();
+          bool found = false;
+          for( int t = 0; t < battleCount; t++ ) {
+            if( battle[t] == session->getCreature(i)->getBattle() ) {
+              found = true;
+              break;
+            }
+          }
+          if( !found ) battle[battleCount++] = session->getCreature(i)->getBattle();
         }
       }
     }
