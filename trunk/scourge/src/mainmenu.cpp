@@ -110,7 +110,7 @@ void MainMenu::drawView(SDL_Surface *screen) {
 
   // draw the house
   glDisable( GL_TEXTURE_2D );
-  glDisable( GL_LIGHTING );
+  //  glDisable( GL_LIGHTING );
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_NOTEQUAL, 0);        
   glPushMatrix();
@@ -163,7 +163,7 @@ void MainMenu::drawView(SDL_Surface *screen) {
 
   glPopMatrix();
   glEnable( GL_TEXTURE_2D );
-  glEnable( GL_LIGHTING );
+  //  glEnable( GL_LIGHTING );
   glEnable(GL_DEPTH_TEST);
 
   // draw the window
@@ -174,7 +174,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
   // draw clouds
   float w, h;
   glEnable( GL_TEXTURE_2D );
-  glDisable( GL_LIGHTING );
+  //  glDisable( GL_LIGHTING );
   glEnable( GL_BLEND );
   glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
   //  setBlendFunc();
@@ -213,7 +213,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
   glDisable( GL_BLEND );
   //glEnable(GL_DEPTH_TEST);
   glDisable( GL_TEXTURE_2D );
-  glDisable( GL_LIGHTING );
+  //  glDisable( GL_LIGHTING );
 }
 
 void MainMenu::drawWater() {
@@ -225,7 +225,7 @@ void MainMenu::drawWater() {
   glLoadIdentity();
   glTranslatef( 0, scourge->getSDLHandler()->getScreen()->h - h, 0);
   glDisable( GL_TEXTURE_2D );
-  glDisable( GL_LIGHTING );
+  //  glDisable( GL_LIGHTING );
   //glEnable( GL_BLEND );
   //glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
   glBegin( GL_QUADS );

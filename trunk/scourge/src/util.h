@@ -66,6 +66,13 @@ public:
   static void findPath(Sint16 sx, Sint16 sy, Sint16 sz,
                 Sint16 dx, Sint16 dy, Sint16 dz,
                 vector<Location> *pVector, Map *map, Shape *shape);
+
+  // some math functions
+  static float dot_product(float v1[3], float v2[3]);
+  static void normalize(float v[3]);
+  static void cross_product(const float *v1, const float *v2, float *out);
+  static void multiply_vector_by_matrix(const float m[9], float v[3]);
+
   
 };
 

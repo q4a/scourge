@@ -24,6 +24,11 @@
 /**
   *@author Gabor Torok
   */
+struct surface {
+	float vertices[4][3];
+  //	float matrix[9];
+  //	float s_dist, t_dist;
+};
 
 class ShapePalette;
 
@@ -48,6 +53,10 @@ private:
   */
   Uint8 shapePalIndex;
   int skipside;
+
+  struct surface *surfaces[5];
+  enum { LEFT_SURFACE=0, RIGHT_SURFACE, FRONT_SURFACE, TOP_SURFACE, BOTTOM_SURFACE };
+#define LIGHTMAP_SIZE 16
 
 public:
   static const int FRONT_SIDE = 0;
@@ -94,6 +103,8 @@ protected:
   GLfloat xrot, yrot, zrot;
   GLfloat xpos, ypos, zpos, xpos2, ypos2, zpos2;
   void commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 shapePalIndex);
+  static struct surface *new_surface(float vertices[4][3]);
+  void createDarkTexture();
 };
 
 #endif

@@ -72,8 +72,8 @@ private:
   static ShapePalette *instance;
 
 public: 
-	ShapePalette();
-	~ShapePalette();
+  ShapePalette();
+  ~ShapePalette();
 
   // singleton
   inline static ShapePalette *getInstance() { return instance; }
@@ -88,7 +88,7 @@ public:
   SDL_Surface *scourge;
   GLubyte *scourgeImage;
 
-  GLuint cloud, candle;
+  GLuint cloud, candle, torchback;
  
   enum { 
 	EW_WALL_INDEX=1,

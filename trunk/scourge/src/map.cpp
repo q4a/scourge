@@ -409,14 +409,14 @@ void Map::draw(SDL_Surface *surface) {
       // draw the effects
       glEnable(GL_BLEND);  
       glDepthMask(GL_FALSE);
-      glDisable(GL_LIGHTING);
+	  //      glDisable(GL_LIGHTING);
       for(int i = 0; i < laterCount; i++) {
           later[i].shape->setupBlending();
           doDrawShape(&later[i]);
           later[i].shape->endBlending();
       }
 	  drawShade();
-      glEnable(GL_LIGHTING);
+	  //      glEnable(GL_LIGHTING);
       glDepthMask(GL_TRUE);    
       glDisable(GL_BLEND);
 

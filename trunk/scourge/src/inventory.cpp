@@ -153,15 +153,15 @@ void Inventory::drawParty() {
         glPushMatrix();
         glLoadIdentity();
         glEnable( GL_TEXTURE_2D );
-        glEnable( GL_LIGHTING ); 
-        glEnable( GL_LIGHT2 );        
+		//        glEnable( GL_LIGHTING ); 
+		//        glEnable( GL_LIGHT2 );        
         glTranslatef( 20, 10 + i * h + 90, 0);
         glRotatef(90, 1, 0, 0);
         glScalef(0.8, 0.8, 0.8);
         scourge->getParty(i)->draw();
         glDisable( GL_TEXTURE_2D );
-        glDisable( GL_LIGHTING ); 
-        glDisable( GL_LIGHT2 );
+		//        glDisable( GL_LIGHTING ); 
+		//        glDisable( GL_LIGHT2 );
         glPopMatrix();
 
         scourge->getSDLHandler()->texPrint(10, 10 + i * h + 100, "%s", scourge->getParty(i)->getName());
