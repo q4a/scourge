@@ -44,6 +44,7 @@ class Effect {
   void drawFlames(GLShape *shape);
   void drawTeleport(GLShape *shape);
   void drawHeal(GLShape *shape);
+  void drawExplosion(GLShape *shape);
 
   // particle management
   void createParticle(GLShape *shape, ParticleStruct **particle);

@@ -424,6 +424,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  party->startEffect(Constants::EFFECT_HEAL, (Constants::DAMAGE_DURATION * 4));
 	  return false;
 	}
+	if(event->key.keysym.sym == SDLK_j) {
+	  party->startEffect(Constants::EFFECT_EXPLOSION, (Constants::DAMAGE_DURATION * 4));
+	  return false;
+	}
 
   
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
