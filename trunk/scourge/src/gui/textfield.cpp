@@ -54,7 +54,11 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
       for(int i = maxPos; i > pos; i--) {
         text[i] = text[i - 1];
       }
-      text[pos] = event->key.keysym.sym;
+      if( SDL_GetModState() & KMOD_SHIFT ) {
+        text[pos] = ( 'A' - 'a' ) + event->key.keysym.sym;
+      } else {
+        text[pos] = event->key.keysym.sym;
+      }
       pos++;
       maxPos++;
     } else if((event->key.keysym.sym == SDLK_BACKSPACE && pos > 0) ||

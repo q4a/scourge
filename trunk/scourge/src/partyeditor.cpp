@@ -71,6 +71,10 @@ PartyEditor::PartyEditor(Scourge *scourge) {
                               w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                               "Enter Head Quarters", OUTRO_TEXT );
 
+  Label *outro = new Label( 30, 100, 
+                     "Good luck on your missions brave adventurers! Be sure to explore the S.C.O.U.R.G.E. head-quarters. You have all been given some basic gear but anything you find around the office is yours to keep or sell.||Remember, you are not only ridding a subterranian lair of unwanted vermin, you are also an integral part of the Corporation. The company, you see, is like a big family where everyone takes part in the daily chores. Our joint success can only be brought about by your... I mean, our, hard work. Now, some of you may regrettably meet your unfortunate end while on your travels, but rest assured, this risk has been considered in the S.C.O.U.R.G.E. business plan. Together we can't fail!", 94, SDLHandler::LARGE_FONT, 24 );
+  cards->addWidget( outro, OUTRO_TEXT );
+
 }
 
 PartyEditor::~PartyEditor() {
