@@ -59,6 +59,7 @@ Inventory::Inventory(Scourge *scourge) {
 	// inventory page	
 	cards->createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
 	inventoryWeightLabel = cards->createLabel(190, 280, NULL, INVENTORY);
+	coinsLabel = cards->createLabel(300, 45, NULL, INVENTORY);
 	cards->createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
     
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
@@ -88,8 +89,8 @@ Inventory::Inventory(Scourge *scourge) {
 	identifyButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
 	yy+=30;
 	openButton     = cards->createButton( 0, yy, 105, yy + 30, 
-																				Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), 
-																				INVENTORY );	
+										  Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), 
+										  INVENTORY );	
 	yy+=30;
 	eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
 
@@ -101,6 +102,10 @@ Inventory::Inventory(Scourge *scourge) {
 	hpLabel        = cards->createLabel(115, 105, NULL, CHARACTER);
 	thirstLabel    = cards->createLabel(115, 120, NULL, CHARACTER);
 	hungerLabel    = cards->createLabel(220, 120, NULL, CHARACTER);
+
+	levelUpButton = cards->createButton( 0, 160, 105, 190, strdup("Level Up"), CHARACTER);
+	// implement me!
+	//levelUpButton->setEnabled(false);
 
 	cards->createLabel(115, 135, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
 	stateList = new ScrollingList(115, 140, 290, 70);
@@ -157,6 +162,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
             setSelectedPlayerAndMode(selected, INVENTORY);
 		}					   	   	   	      	
   
+	} else if(widget == levelUpButton) {
+	  cerr << "FIXME: implement level up!" << endl;
 	}
 	return false;
 }
@@ -213,7 +220,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	nameAndClassLabel->setText(nameAndClassStr);	
 	sprintf(levelStr, "Level: %d", selectedP->getLevel());
 	levelLabel->setText(levelStr);
-	sprintf(expStr, "Exp: %u", selectedP->getExp());
+	sprintf(expStr, "Exp: %u (next level at %u)", selectedP->getExp(), selectedP->getExpOfNextLevel());
 	expLabel->setText(expStr);
 	sprintf(hpStr, "HP: %d / %d", selectedP->getHp(), selectedP->getCharacter()->getStartingHp());
 	hpLabel->setText(hpStr);
@@ -240,6 +247,8 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	sprintf(inventoryWeightStr, " (Total : %2.2fkg / %2.2fkg)", 
 					selectedP->getInventoryWeight(), selectedP->getMaxInventoryWeight());     
 	inventoryWeightLabel->setText(inventoryWeightStr);
+	sprintf(coinsStr, "Coins: %d", selectedP->getMoney());
+	coinsLabel->setText(coinsStr);
 	for(int t = 0; t < selectedP->getInventoryCount(); t++) {
 		Item *item = selectedP->getInventory(t);
 		int location = selectedP->getEquippedIndex(t);

@@ -96,6 +96,16 @@ void Creature::commonInit() {
     inventoryWeight += inventory[i]->getRpgItem()->getWeight();
   }  
   maxInventoryWeight = computeMaxInventoryWeight();
+  this->money = this->level * (int)(10.0f * rand()/RAND_MAX);
+  calculateExpOfNextLevel();
+}
+
+void Creature::calculateExpOfNextLevel() {
+  if(isMonster()) return;
+  expOfNextLevel = 0;
+  for(int i = 0; i < level; i++) {
+	expOfNextLevel += ((i + 1) * character->getLevelProgression());
+  }
 }
 
 Creature::~Creature(){
@@ -675,6 +685,34 @@ bool Creature::takeDamage(int damage) {
 
   hp -= damage;
   return (hp <= 0);
+}
+
+// add exp after killing a creature
+int Creature::addExperience(Creature *creature_killed) {
+  int n = creature_killed->level - getLevel();
+  if( n < 1 ) n = 1;
+  float m = (float)(creature_killed->getMonster()->getHp()) / 2.0f;
+  int delta = n * 10 * (int)((m * rand()/RAND_MAX) + m);
+  exp += delta;
+
+  // level up? (mark as state, with graphic over character)
+  if(exp >= expOfNextLevel) {
+	setStateMod(Constants::leveled, true);
+	level++;
+	calculateExpOfNextLevel();
+  }
+
+  return delta;
+}
+
+// add money after a creature is killed
+int Creature::addMoney(Creature *creature_killed) {
+  int n = creature_killed->level - getLevel();
+  if( n < 1 ) n = 1;
+  // fixme: use creature_killed->getMonster()->getMoney() instead of 100.0f
+  long delta = (long)n * (int)(50.0f * rand()/RAND_MAX);
+  money += delta;
+  return money;
 }
 
 /**

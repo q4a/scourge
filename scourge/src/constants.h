@@ -363,6 +363,7 @@ public:
 	changed,
 	overloaded,
 	dead,
+	leveled,
 	
 	// must be last
 	STATE_MOD_COUNT
