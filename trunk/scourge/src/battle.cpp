@@ -49,9 +49,8 @@ Battle::Battle(Scourge *scourge, Creature *creature) {
 
 
 
-  this->wait = 0;
   this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
-  lastX = lastY = -1;
+  this->ignore = false;
 }
 
 Battle::~Battle() {
@@ -201,7 +200,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 bool Battle::fightTurn() {
 
   // done with this creature's turn
-  if(!ap) {
+  if(ignore || !ap) {
     creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
     return true;
   }
@@ -225,66 +224,76 @@ bool Battle::fightTurn() {
   */
   int weaponWait = 3;
 
-  if(creature->getTargetCreature() && creature->isTargetValid()) {
-    
-    if(dist < range) {
-      if(wait >= weaponWait) {
-        wait = 0;
-        // attack
-        cerr << "\t\tAttacking." << endl;
-        if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
-          launchProjectile();
+  if(creature->getTargetCreature()) {
+    if(creature->isTargetValid()) {
+      if(dist < range) {
+        if(ap >= weaponWait) {
+          ap -= weaponWait;
+          // attack
+          cerr << "\t\tAttacking." << endl;
+          if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
+            launchProjectile();
+          } else {
+            hitWithItem();
+          }
+          creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
+          ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
         } else {
-          hitWithItem();
+          creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+          return true;
         }
-        creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
-        ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
       } else {
-        cerr << "\t\tWaiting." << endl;
-        creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
-        wait++;
+        creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+        
+        // take 1 step closer
+        cerr << "\t\tTaking a step." << endl;
+        if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
+             creature->getSelY() == creature->getTargetCreature()->getY())) {
+          creature->setSelXY(creature->getTargetCreature()->getX(),
+                             creature->getTargetCreature()->getY(),
+                             true);
+        }
+        creature->moveToLocator(scourge->getMap());
+        dist = creature->getDistanceToTarget();
+        ap--;
       }
     } else {
-      creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
-
-      // take 1 step closer
-      cerr << "\t\tTaking a step." << endl;
-      wait++;
-      if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
-           creature->getSelY() == creature->getTargetCreature()->getY())) {
+      // select a new target
+      // FIXME: this code should move to Creature
+      Creature *target = NULL;
+      if(creature->isMonster()) {
+        target = scourge->getParty()->getClosestPlayer(creature->getX(), 
+                                                       creature->getY(), 
+                                                       creature->getShape()->getWidth(),
+                                                       creature->getShape()->getDepth(),
+                                                       20);
+      } else {
+        target = scourge->getClosestVisibleMonster(creature->getX(), 
+                                                   creature->getY(), 
+                                                   creature->getShape()->getWidth(),
+                                                   creature->getShape()->getDepth(),
+                                                   20);
+      }
+      if(target) {
+        cerr << "\tSelected new target: " << target->getName() << endl;
+        creature->setTargetCreature(target);
         creature->setSelXY(creature->getTargetCreature()->getX(),
                            creature->getTargetCreature()->getY(),
                            true);
+        initTurn();
       }
-      creature->moveToLocator(scourge->getMap());
-      dist = creature->getDistanceToTarget();
     }
-    ap--;    
   } else {
-    // select a new target
-    // FIXME: this code should move to Creature
-    Creature *target = NULL;
+    creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+    
+    // take 1 step closer
+    cerr << "\t\tTaking a non-battle step." << endl;
     if(creature->isMonster()) {
-      target = scourge->getParty()->getClosestPlayer(creature->getX(), 
-                                                     creature->getY(), 
-                                                     creature->getShape()->getWidth(),
-                                                     creature->getShape()->getDepth(),
-                                                     20);
+      scourge->moveMonster(creature);
     } else {
-      target = scourge->getClosestVisibleMonster(creature->getX(), 
-                                                 creature->getY(), 
-                                                 creature->getShape()->getWidth(),
-                                                 creature->getShape()->getDepth(),
-                                                 20);
+      creature->moveToLocator(scourge->getMap());
     }
-    if(target) {
-      cerr << "\tSelected new target: " << target->getName() << endl;
-      creature->setTargetCreature(target);
-      creature->setSelXY(creature->getTargetCreature()->getX(),
-                         creature->getTargetCreature()->getY(),
-                         true);
-      initTurn();
-    }
+    ap--;
   }
 
   // not done yet with creature's turn
@@ -566,7 +575,7 @@ void Battle::initTurn() {
   item = creature->getBestWeapon(dist);
 
   if(item) {
-    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << " wait=" << wait << endl;
+    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
   } else {
     cerr << "\tUsing bare hands." << endl;
   }

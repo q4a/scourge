@@ -56,6 +56,7 @@ public:
   virtual inline void setMissionDescriptionUI(char *s) {}
   virtual inline Mission *getCurrentMission() { return NULL; }
   virtual inline void missionCompleted() {}
+  virtual inline void cancelBattle(Creature *creature) {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

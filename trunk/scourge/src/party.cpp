@@ -186,11 +186,13 @@ void Party::toggleRound() {
 
 void Party::setTargetCreature(Creature *creature) { 
   if(player_only) {
-	player->setTargetCreature(creature);
+    session->getGameAdapter()->cancelBattle(player);
+    player->setTargetCreature(creature);
   } else {
-	for(int i = 0; i < getPartySize(); i++) {
-	  party[i]->setTargetCreature(creature); 
-	}
+    for(int i = 0; i < getPartySize(); i++) {
+      session->getGameAdapter()->cancelBattle(party[i]);
+      party[i]->setTargetCreature(creature); 
+    }
   }
 }
 

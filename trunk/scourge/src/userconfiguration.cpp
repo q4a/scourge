@@ -184,6 +184,7 @@ UserConfiguration::UserConfiguration(){
     centermap = true;
     keepMapSize = true;
     frameOnFullScreen = true;
+    turnBasedBattle = true;
     
     // Build (string engineAction -> int engineAction ) lookup table
     // and   (int ea -> string ea) lookup table    
@@ -406,6 +407,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set frameonfullscreen %s\n", frameOnFullScreen ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set turnbasedbattle %s\n", turnBasedBattle ? "true":"false");
+    writeFile(configFile, textLine);
         
     delete configFile;
 }
@@ -472,7 +475,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     if(s1 == "fullscreen"||s1 == "doublebuf" || s1 == "hwpal" || s1 == "resizeable" ||
        s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
-       s1 == "keepmapsize" || s1 == "frameonfullscreen"){
+       s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle"){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -552,6 +555,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     } 
     else if(s1 == "frameonfullscreen") {
       frameOnFullScreen = paramValue;
+    }
+    else if(s1 == "turnbasedbattle") {
+      turnBasedBattle = paramValue;
     } 
     else if(s1 == "gamespeed"){        
         gamespeed = atoi(s2.c_str());
@@ -917,6 +923,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set centermap false" << endl;
   configFile << "set keepmapsize true" << endl;
   configFile << "set frameonfullscreen true" << endl;
+  configFile << "set turnbasedbattle true" << endl;
   configFile << "" << endl;
 
   configFile.close();
