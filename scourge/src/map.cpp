@@ -116,6 +116,27 @@ Map::Map(Scourge *scourge) {
 }
 
 Map::~Map(){
+  reset();
+  // delete the descriptions
+  for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
+    free(descriptions[i]);
+  // delete the overlay texture
+  glDeleteTextures(1, (GLuint*)&overlay_tex);
+}
+
+void Map::reset() {
+  // remove area effects
+  vector<EffectLocation*>::iterator e=currentEffects.begin();
+  for(int i = 0; i < (int)currentEffects.size(); i++) {
+    EffectLocation *effectLocation = currentEffects[i];
+    if(effectLocation) {
+      currentEffects.erase(e);
+      e = currentEffects.begin();
+      removeEffect(effectLocation->x, effectLocation->y, effectLocation->z);
+      i--;
+    }
+  }
+  // clear map
   for(int xp = 0; xp < MAP_WIDTH; xp++) {
     for(int yp = 0; yp < MAP_DEPTH; yp++) {
       for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
@@ -123,15 +144,73 @@ Map::~Map(){
           delete pos[xp][yp][zp];
           pos[xp][yp][zp] = NULL;
         }
-        if(effect[xp][yp][zp]) {
-          delete effect[xp][yp][zp];
-          effect[xp][yp][zp] = NULL;
-        }
       }
     }
   }
-  for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
-    free(descriptions[i]);
+
+
+  zoom = 1.0f;
+  zoomIn = zoomOut = false;
+  x = y = 0;
+  mapx = mapy = 0.0f;
+  selectMode = false;
+  floorOnly = false;
+  selX = selY = selZ = MAP_WIDTH + 1;
+  oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
+  useShadow = false;
+  //alwaysCenter = true;
+  debugX = debugY = debugZ = -1;
+  mapChanged = true;
+  
+//  descriptionCount = 0;
+//  descriptionsChanged = false;
+  
+  this->xrot = 0.0f; // if 0, artifacts appear
+  this->yrot = 30.0f;
+  this->zrot = 45.0f;
+  this->xRotating = this->yRotating = this->zRotating = 0.0f;
+
+  setViewArea(0, 0, 
+              scourge->getSDLHandler()->getScreen()->w, 
+              scourge->getSDLHandler()->getScreen()->h);
+
+  float adjust = (float)viewWidth / 800.0f;
+  this->xpos = (float)(viewWidth) / 2.0f / adjust;
+  this->ypos = (float)(viewHeight) / 2.0f / adjust;
+  this->zpos = 0.0f;  
+
+  this->debugGridFlag = false;
+  this->drawGridFlag = false;
+
+  targetWidth = 0.0f;
+  targetWidthDelta = 0.05f / GLShape::DIV;
+//  lastTick = SDL_GetTicks();
+  
+  // initialize shape graph of "in view shapes"
+  for(int x = 0; x < MAP_WIDTH; x++) {
+	for(int y = 0; y < MAP_DEPTH; y++) {
+      floorPositions[x][y] = NULL;
+	  for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
+        pos[x][y][z] = NULL;
+        effect[x][y][z] = NULL;
+      }      
+    }
+  }
+  // Init the pos cache
+  //for(int x = 0; x < MAX_POS_CACHE; x++) {
+  //  posCache[x] = NULL;
+  //}
+  //nbPosCache = -1;
+
+  // initialize the lightmap
+  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+    for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+      lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
+    }
+  }
+  lightMapChanged = true;  
+  colorAlreadySet = false;
+  selectedDropTarget = NULL;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -1505,6 +1584,10 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
 
 void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
   if(effect[x][y][z]) {
+    if(effect[x][y][z]->effect) {
+      delete effect[x][y][z]->effect;
+      effect[x][y][z]->effect = NULL;
+    }
     delete effect[x][y][z];
     effect[x][y][z] = NULL;
   }

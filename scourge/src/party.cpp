@@ -38,22 +38,23 @@ Party::Party(Scourge *scourge) {
 
 Party::~Party() {
   delete calendar;
+  deleteParty();
+}
+
+void Party::deleteParty() {
   for(int i = 0; i < getPartySize(); i++) {
-	if(party[i]) {
-	  delete party[i];
-	}
-  }
+    if(party[i]) {
+      delete party[i];
+      party[i] = NULL;
+    }
+  }  
 }
 
 void Party::reset() {
   // Init the party; hard code for now
   // This will be replaced by a call to the character builder which either
   // loads or creates the party.
-  for(int i = 0; i < getPartySize(); i++) {
-	if(party[i]) {
-	  delete party[i];
-	}
-  }
+  deleteParty();
   Creature **pc = createHardCodedParty();
   party[0] = player = pc[0];
   party[1] = pc[1];

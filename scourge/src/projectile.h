@@ -89,6 +89,7 @@ class Projectile {
   static void removeProjectile(Projectile *p);
   static void moveProjectiles(Scourge *scourge);
   inline static map<Creature *, vector<Projectile*>*> *getProjectileMap() { return &projectiles; }
+  static void resetProjectiles();
 
  protected:
   void commonInit();

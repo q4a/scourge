@@ -246,6 +246,18 @@ Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, i
   return p;
 }
 
+void Projectile::resetProjectiles() {
+  for(map<Creature *, vector<Projectile*>*>::iterator i=projectiles.begin(); i!=projectiles.end(); ++i) {
+    vector<Projectile*> *v = i->second;
+    for(vector<Projectile*>::iterator e2=v->begin(); e2!=v->end(); ++e2) {
+      Projectile *proj = *e2;  
+      delete proj;
+    }
+    delete v;
+    projectiles.erase(i);
+    continue;
+  }
+}
 
 void Projectile::removeProjectile(Projectile *p) {
   if(projectiles.find(p->creature) != projectiles.end()) {

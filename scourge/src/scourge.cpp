@@ -65,6 +65,8 @@ Scourge::Scourge(int argc, char *argv[]){
   
   shapePal = sdlHandler->getShapePalette();  
 
+  map = new Map(this);
+
   // init characters first. Items use it for acl
   Character::initCharacters();
   // initialize the items
@@ -99,7 +101,6 @@ Scourge::Scourge(int argc, char *argv[]){
 
     if(initMainMenu) {
       initMainMenu = false;
-      map = new Map(this);
       mainMenu->show();    
     }
 
@@ -111,20 +112,6 @@ Scourge::Scourge(int argc, char *argv[]){
        mainMenu->getValue() == MULTIPLAYER_START) {
       mainMenu->hide();
       
-      party->reset();
-      party->getCalendar()->reset(true); // reset the time
-      board->reset();
-      
-      // inventory needs the party
-      if(!inventory) {
-        inventory = new Inventory(this);
-      }
-      
-      // always start in hq
-      nextMission = -1;
-      inHq = true;
-      
-      delete map;
       initMainMenu = true;
 
 #ifdef HAVE_SDL_NET
@@ -166,160 +153,207 @@ Scourge::~Scourge(){
   delete multiplayer;
   delete userConfiguration;
   delete board;
+  delete map;
 }
 
 void Scourge::startMission() {
+
+  // set up some cross-mission objects
+  bool resetParty = true;
+  
+  // always start in hq
+  nextMission = -1;
+  inHq = true;
   
   while(true) {
-	
-	// add gui
-	party->getWindow()->setVisible(true);
-	messageWin->setVisible(true);
-	
-	// create the map
-  map = new Map(this);
-	miniMap = new MiniMap(this); 
-  miniMap->show();
-	
-	// ready the party
-	party->startPartyOnMission();
-	
-	// position the players
-	move = 0;
-	battleCount = 0;
-	containerGuiCount = 0;
-	lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
-	teleporting = false;
-	changingStory = false;
-	mouseMoveScreen = true;
-	targetSelectionFor = NULL;	
-	
-	if(nextMission == -1) {
-	  
-	  currentMission = NULL;
-	  missionWillAwardExpPoints = false;
 
-	  // in HQ map
-	  inHq = true;
-	  
-	  // init the missions board
-	  board->initMissions();
-	  
-	  // display the HQ map
-	  dg = new DungeonGenerator(this, 2, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
-	  dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);		
-	} else {
-	  // in HQ map
-	  inHq = false;
-	  
-	  // Initialize the map with a random dunegeon	
-	  currentMission = board->getMission(nextMission);
-	  missionWillAwardExpPoints = (!currentMission->isCompleted());
-	  cerr << "Starting mission: level="  << currentMission->getLevel() << 
-		" stories=" << currentMission->getDungeonStoryCount() << 
-		" current story=" << currentStory << endl;
-	  dg = new DungeonGenerator(this, currentMission->getLevel(), 
-								(currentStory < currentMission->getDungeonStoryCount() - 1), 
-								(currentStory > 0),
-								currentMission);
-	  dg->toMap(map, getShapePalette());
-	}
-	
-	// center map on the player
-	map->center(party->getPlayer()->getX(), 
-				party->getPlayer()->getY(),
-				true);
-	
-	// Must be called after MiniMap has been built by dg->toMap() !!! 
-	miniMap->computeDrawValues();
-	
-	// set to receive events here
-	sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
-	
-	// hack to unfreeze animations, etc.
-	party->forceStopRound();
+    // add gui
+    party->getWindow()->setVisible(true);
+    messageWin->setVisible(true);
 
-	// show an info dialog
-	if(nextMission == -1) {
-	  sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
-	} else {
-	  sprintf(infoMessage, "Entering dungeon level %d", currentStory);
-	}
-	showMessageDialog(infoMessage);
-	info_dialog_showing = true;
-	
-  // set the map view
-  setUILayout();
-	
-	// run mission
-	sdlHandler->mainLoop();
-	
-	
-	
-	
-	// remove gui
-	party->getWindow()->setVisible(false);
-	messageWin->setVisible(false);
-	closeAllContainerGuis();
-	if(inventory->isVisible()) inventory->hide();
-	if(board->boardWin->isVisible()) board->boardWin->setVisible(false);
-  miniMap->hide();
-	
-	// clean up after the mission
-	delete map; map = NULL;
-	delete miniMap; miniMap = NULL;
-	delete dg; dg = NULL;
-	
-	// delete the items and creatures created for this mission
-	// (except items in inventory) 
-	for(int i = 0; i < itemCount; i++) {
-	  bool inInventory = false;
-	  for(int t = 0; t < party->getPartySize(); t++) {
-		if(party->getParty(t)->isItemInInventory(items[i])) {
-		  inInventory = true;
-		  break;
-		}
-	  }
-	  if(!inInventory) {
-		delete items[i];
-		itemCount--;
-		for(int t = i; t < itemCount; t++) {
-		  items[t] = items[t + 1];
-		}
-		i--;
-	  }
-	}
-	for(int i = 0; i < creatureCount; i++) {
-	  delete creatures[i];
-	}
-	creatureCount = 0;
-	/*
-	  cerr << "After mission: " <<
-	  " creatureCount=" << creatureCount << 
-	  " itemCount=" << itemCount << endl;
-	*/
-	
-	
-	if(!changingStory) {
-	  if(!inHq) {
-		if(teleporting) {
-		  // go back to HQ when coming from a mission	
-		  nextMission = -1;
-		} else {
-		  break;
-		}
-	  } else if(nextMission == -1) {
-		// if quiting in HQ, exit loop
-		break;
-	  }
-	}
-	
-	
+    // create the map
+    map->reset();
+
+    // do this only once
+    if(resetParty) {
+      party->reset();
+      party->getCalendar()->reset(true); // reset the time
+      board->reset();
+
+      // inventory needs the party
+      if(!inventory) {
+        inventory = new Inventory(this);
+      }
+
+      resetParty = false;
+    }
+
+    miniMap = new MiniMap(this); 
+    miniMap->show();
+
+    // ready the party
+    party->startPartyOnMission();
+
+    // position the players
+    move = 0;
+    battleCount = 0;
+    containerGuiCount = 0;
+    lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
+    teleporting = false;
+    changingStory = false;
+    mouseMoveScreen = true;
+    targetSelectionFor = NULL;  
+
+    if(nextMission == -1) {
+
+      currentMission = NULL;
+      missionWillAwardExpPoints = false;
+
+      // in HQ map
+      inHq = true;
+
+      // init the missions board
+      board->initMissions();
+
+      // display the HQ map
+      dg = new DungeonGenerator(this, 2, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
+      dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
+    } else {
+      // in HQ map
+      inHq = false;
+
+      // Initialize the map with a random dunegeon	
+      currentMission = board->getMission(nextMission);
+      missionWillAwardExpPoints = (!currentMission->isCompleted());
+      cerr << "Starting mission: level="  << currentMission->getLevel() << 
+      " stories=" << currentMission->getDungeonStoryCount() << 
+      " current story=" << currentStory << endl;
+      dg = new DungeonGenerator(this, currentMission->getLevel(), 
+                                (currentStory < currentMission->getDungeonStoryCount() - 1), 
+                                (currentStory > 0),
+                                currentMission);
+      dg->toMap(map, getShapePalette());
+    }
+
+    // center map on the player
+    map->center(party->getPlayer()->getX(), 
+                party->getPlayer()->getY(),
+                true);
+
+    // Must be called after MiniMap has been built by dg->toMap() !!! 
+    miniMap->computeDrawValues();
+
+    // set to receive events here
+    sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+
+    // hack to unfreeze animations, etc.
+    party->forceStopRound();
+
+    // show an info dialog
+    if(nextMission == -1) {
+      sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
+    } else {
+      sprintf(infoMessage, "Entering dungeon level %d", currentStory);
+    }
+    showMessageDialog(infoMessage);
+    info_dialog_showing = true;
+
+    // set the map view
+    setUILayout();
+
+    // run mission
+    sdlHandler->mainLoop();
+
+
+    // clean up after the mission
+
+    // remove gui
+    party->getWindow()->setVisible(false);
+    messageWin->setVisible(false);
+    closeAllContainerGuis();
+    if(inventory->isVisible()) inventory->hide();
+    if(board->boardWin->isVisible()) board->boardWin->setVisible(false);
+    miniMap->hide();
+
+    // delete battles
+    cerr << "DELETING BATTLES: battleCount=" << battleCount << " battleRound.size()=" << battleRound.size() << endl;
+    for(int i = battleTurn; i < (int)battleRound.size(); i++) {
+      Battle *battle = battleRound[i];
+      if(battle) delete battle;
+    }
+    battleRound.clear();
+    for(int i = 0; i < MAX_BATTLE_COUNT; i++) {
+      battle[i] = NULL;
+    }
+    battleCount = 0;
+    battleTurn = 0;
+
+    // delete active projectiles
+    Projectile::resetProjectiles();
+
+    // delete the items and creatures created for this mission
+    // (except items in inventory) 
+    for(int i = 0; i < itemCount; i++) {
+      bool inInventory = false;
+      for(int t = 0; t < party->getPartySize(); t++) {
+        if(party->getParty(t)->isItemInInventory(items[i])) {
+          inInventory = true;
+          break;
+        }
+      }
+      if(!inInventory) {
+        delete items[i];
+        itemCount--;
+        for(int t = i; t < itemCount; t++) {
+          items[t] = items[t + 1];
+        }
+        i--;
+      }
+    }
+    for(int i = 0; i < creatureCount; i++) {
+      delete creatures[i];
+    }
+    creatureCount = 0;
+    /*
+      cerr << "After mission: " <<
+      " creatureCount=" << creatureCount << 
+      " itemCount=" << itemCount << endl;
+    */
+
+    // delete map
+    delete miniMap; miniMap = NULL;
+    delete dg; dg = NULL;
+
+
+    if(!changingStory) {
+      if(!inHq) {
+        if(teleporting) {
+          // go back to HQ when coming from a mission	
+          nextMission = -1;
+        } else {
+          break;
+        }
+      } else if(nextMission == -1) {
+        // if quiting in HQ, exit loop
+        break;
+      }
+    }
   }
+
+  // clean up the last objects in the party's inventory
+  for(int i = 0; i < itemCount; i++) {
+    delete items[i];
+  }
+  itemCount = 0;
+
+  // delete the party (w/o deleting the party ui)
+  party->deleteParty();
 }
 
 void Scourge::endMission() {
-  party->getPlayer()->setSelXY(-1, -1);   // stop moving
+  for(int i = 0; i < party->getPartySize(); i++) {
+    party->getParty(i)->setSelXY(-1, -1);   // stop moving
+  }
   movingItem = NULL;          // stop moving items
   //	move = 0;  
 }
