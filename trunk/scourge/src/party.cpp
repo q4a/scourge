@@ -478,3 +478,26 @@ bool Party::handleEvent(Widget *widget, SDL_Event *event) {
   }
   return false;
 }
+
+/** 
+	Return the closest live player within the given radius or null if none can be found.
+*/
+Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
+  float minDist;
+  Creature *p = NULL;
+  for(int i = 0; i < getPartySize(); i++) {
+	if(!party[i]->getStateMod(Constants::dead)) {
+	  float dist = Constants::distance(x, y, w, h,
+									   party[i]->getX(),
+									   party[i]->getY(),
+									   party[i]->getShape()->getWidth(),
+									   party[i]->getShape()->getDepth());
+	  if(dist <= (float)radius &&
+		 (!p || dist < minDist)) {
+		p = party[i];
+		minDist = dist;
+	  }
+	}
+  }
+  return p;
+}

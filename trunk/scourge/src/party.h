@@ -117,6 +117,11 @@ class Party {
   
   int getTotalLevel();
 
+  /** 
+	  Return the closest live player within the given radius or null if none can be found.
+  */
+  Creature *getClosestPlayer(int x, int y, int w, int h, int radius);
+
  protected:
   Creature **createHardCodedParty();
   void createUI();
