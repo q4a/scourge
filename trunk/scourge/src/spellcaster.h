@@ -71,6 +71,7 @@ class SpellCaster {
   void launchProjectile(int count, bool stopOnImpact=true);
   void causeDamage();
   void setStateMod(int mod, bool setting=true);
+  void circleAttack();
 };
 
 #endif

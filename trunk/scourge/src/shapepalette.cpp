@@ -774,7 +774,7 @@ void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name,
 // the next two methods are slow, only use during initialization
 GLuint ShapePalette::findTextureByName(const char *filename) {
   for(int i = 0; i < texture_count; i++) {
-    if(!strcmp(textures[i].filename, filename)) return textures[i].id;
+    if(!strcasecmp(textures[i].filename, filename)) return textures[i].id;
   }
   return 0;
 }

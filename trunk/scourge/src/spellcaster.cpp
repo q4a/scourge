@@ -147,6 +147,8 @@ void SpellCaster::spellSucceeded() {
     setStateMod(Constants::possessed, false);
   } else if(!strcasecmp(spell->getName(), "Ole Taffy's purty colors")) {
     viewInfo();
+  } else if(!strcasecmp(spell->getName(), "Ring of Harm")) {
+    circleAttack();
   } else {
     // default
     cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
@@ -387,4 +389,59 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       creature->setStateModEvent(mod, e);
     }
   }
+}
+
+void SpellCaster::circleAttack() {
+
+  int tw = 1;
+  int td = 1;
+  Location *pos = battle->getSession()->getMap()->getLocation( battle->getCreature()->getTargetX(), 
+                                                               battle->getCreature()->getTargetY(), 
+                                                               0 );
+  if( pos && pos->shape ) {
+    tw = pos->shape->getWidth();
+    td = pos->shape->getDepth();
+  }
+
+  int selectedRadius = (int)Constants::distance( battle->getCreature()->getX(), battle->getCreature()->getY(),
+                                                 battle->getCreature()->getShape()->getWidth(), 
+                                                 battle->getCreature()->getShape()->getDepth(), 
+                                                 battle->getCreature()->getTargetX(), battle->getCreature()->getTargetY(),
+                                                 tw, td );
+  selectedRadius += toint( battle->getCreature()->getShape()->getWidth() / 2.0f + tw / 2.0f );
+
+  // cap the selected radius
+  int radius = battle->getCreature()->getLevel() * 2;
+  if(radius > 15) radius = 15;
+  if(radius < 2) radius = 2;
+
+  cerr << "selected radius=" << selectedRadius << " max radius=" << radius << endl;
+  if( selectedRadius < radius ) radius = selectedRadius;
+  cerr << "radius=" << radius << endl;
+
+  float sx = battle->getCreature()->getX() + ( battle->getCreature()->getShape()->getWidth() / 2.0f ); 
+  float sy = battle->getCreature()->getY() - ( battle->getCreature()->getShape()->getDepth() / 2.0f );
+
+  // show radius effect
+  battle->getSession()->getMap()->startEffect( toint(sx), toint(sy), 1, 
+                                               Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
+                                               radius, radius );
+  // walk around the circle
+  Creature *c = battle->getCreature()->getTargetCreature();
+  for( int angle = 0; angle < 360; angle += 10 ) {
+    int x = toint( sx + ( (float)radius * cos( Util::degreesToRadians( (float)angle ) ) ) );
+    int y = toint( sy - ( (float)radius * sin( Util::degreesToRadians( (float)angle ) ) ) );
+    if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
+      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
+      battle->getSession()->getMap()->startEffect( x, y, 4, Constants::EFFECT_DUST, 
+                                                   (Constants::DAMAGE_DURATION * 4), 
+                                                   2, 2, (GLuint)( angle * 5 ) );
+      // FIXME: check in 2x2 block for creatures, not just at x,y
+      if( pos && pos->creature && battle->getCreature()->canAttack( pos->creature ) ) {
+        battle->getCreature()->setTargetCreature( pos->creature );
+        causeDamage();
+      }
+    }
+  }
+  battle->getCreature()->setTargetCreature( c );
 }
