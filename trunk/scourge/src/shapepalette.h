@@ -67,7 +67,7 @@ private:
   GLShape *shapes[256];
   map<string, GLShape *> shapeMap;
   int shapeCount;
-  GLuint gui_texture, gui_wood_texture;
+  GLuint gui_texture, gui_wood_texture, paper_doll_texture;
   map<int, GLuint> statModIcons;
   
   typedef struct _Texture {
@@ -121,8 +121,8 @@ public:
   inline static ShapePalette *getInstance() { return instance; }
 
   // cursor
-  SDL_Surface *cursor, *crosshair;
-  GLubyte *cursorImage, *crosshairImage;
+  SDL_Surface *cursor, *crosshair, *paperDoll;
+  GLubyte *cursorImage, *crosshairImage, *paperDollImage;
 
   SDL_Surface *logo;
   GLubyte *logoImage;   
@@ -141,6 +141,7 @@ public:
 
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
+  inline GLuint getPaperDollTexture() { return paper_doll_texture; }
 
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name);
