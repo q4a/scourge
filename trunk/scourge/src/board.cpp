@@ -133,9 +133,9 @@ void Board::reset() {
   storylineIndex = 0;
   for( int i = 0; i < (int)availableMissions.size(); i++ ) {
     Mission *mission = availableMissions[i];
-	if( !mission->isStoryLine() ) {
-	  delete mission;
-	}
+    if( !mission->isStoryLine() ) {
+      delete mission;
+    }
   }
   availableMissions.clear();
 }
@@ -143,6 +143,15 @@ void Board::reset() {
 void Board::initMissions() {
   // free ui
   freeListText();
+
+  // remove completed missions
+  for (vector<Mission*>::iterator e=availableMissions.begin(); e!=availableMissions.end(); ++e) {
+    Mission *mission = *e;
+    if( !mission->isStoryLine() && mission->isCompleted() ) {
+      delete mission;
+      availableMissions.erase(e);
+    }
+  }
 
   // find the highest and lowest levels in the party
   int highest = 0;
