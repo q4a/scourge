@@ -321,9 +321,9 @@ class Map {
   }
 
   inline void clearLocked() {
-      locked.clear();
-      doorToKey.clear();
-      keyToDoor.clear();
+    if(locked.size()) locked.erase(locked.begin(), locked.end());
+    if(doorToKey.size()) doorToKey.erase(doorToKey.begin(), doorToKey.end());
+    if(keyToDoor.size()) keyToDoor.erase(keyToDoor.begin(), keyToDoor.end());
   }
 
   inline bool isLocked(int doorX, int doorY, int doorZ) {

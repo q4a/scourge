@@ -65,7 +65,7 @@ Sound::~Sound() {
       Mix_FreeChunk(sample);
       sample = NULL;
     }
-    soundMap.clear();
+    if(soundMap.size()) soundMap.erase(soundMap.begin(), soundMap.end());
     // stop audio system
     Mix_CloseAudio();
   }

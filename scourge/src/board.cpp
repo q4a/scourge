@@ -166,7 +166,9 @@ void Board::initMissions() {
   int ave = (int)((float)sum / (float)session->getParty()->getPartySize() / 1.5f);
 
   // find missions
-  availableMissions.clear();  
+  if(availableMissions.size()) availableMissions.erase(availableMissions.begin(), 
+                                                       availableMissions.end());  
+
   for(int level = 0; level <= highest; level++) {
     if(missions.find(level) == missions.end()) continue;
     vector<Mission*> *v = missions[level];

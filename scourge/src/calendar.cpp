@@ -40,7 +40,8 @@ void Calendar::reset(bool resetTime){
   lastTick = 0;
   if(resetTime) {
     currentDate.reset();
-    scheduledEvents.clear();
+    if(scheduledEvents.size()) 
+      scheduledEvents.erase(scheduledEvents.begin(), scheduledEvents.end());
   }
   timeFrozen = false; 
 }
