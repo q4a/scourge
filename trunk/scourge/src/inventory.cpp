@@ -168,6 +168,7 @@ Inventory::~Inventory() {
 }
 
 void Inventory::drawWidget(Widget *w) {
+  GuiTheme *theme = mainWin->getTheme();
   Creature *p = scourge->getParty()->getParty(selected);
 
   if(w == paperDoll) {
@@ -175,7 +176,15 @@ void Inventory::drawWidget(Widget *w) {
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
       if(item) {
-        w->applySelectionColor();
+
+        if( theme->getSelectionBackground() ) {
+          glColor4f( theme->getSelectionBackground()->color.r,
+                     theme->getSelectionBackground()->color.g,
+                     theme->getSelectionBackground()->color.b,
+                     theme->getSelectionBackground()->color.a );
+        } else {
+          w->applySelectionColor();
+        }
         glBegin( GL_QUADS );
         glVertex2f( x, i * 16 );
         glVertex2f( x, (i + 1) * 16 );
@@ -194,7 +203,14 @@ void Inventory::drawWidget(Widget *w) {
                  GL_BGRA, GL_UNSIGNED_BYTE, shapePal->paperDollImage);
     //glDisable(GL_ALPHA_TEST);
 
-    w->applyBorderColor();
+    if( theme->getButtonBorder() ) {
+      glColor4f( theme->getButtonBorder()->color.r,
+                 theme->getButtonBorder()->color.g,
+                 theme->getButtonBorder()->color.b,
+                 theme->getButtonBorder()->color.a );
+    } else {
+      w->applyBorderColor();
+    }
     glBegin( GL_LINES );
     glVertex2f( x, 0 );
     glVertex2f( x, w->getHeight() );
@@ -203,13 +219,27 @@ void Inventory::drawWidget(Widget *w) {
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
 
-      w->applyBorderColor();
+      if( theme->getButtonBorder() ) {
+        glColor4f( theme->getButtonBorder()->color.r,
+                   theme->getButtonBorder()->color.g,
+                   theme->getButtonBorder()->color.b,
+                   theme->getButtonBorder()->color.a );
+      } else {
+        w->applyBorderColor();
+      }
       glBegin( GL_LINES );
       glVertex2f( x, (i + 1) * 16 );
       glVertex2f( w->getWidth(), (i + 1) * 16 );
       glEnd();
 
-      glColor3f( 0, 0, 0 );
+      if( theme->getWindowText() ) {
+        glColor4f( theme->getWindowText()->r,
+                   theme->getWindowText()->g,
+                   theme->getWindowText()->b,
+                   theme->getWindowText()->a );
+      } else {
+        w->applyColor();
+      }
       if(!item) continue;
       scourge->getSDLHandler()->texPrint( x + 5, (i + 1) * 16 - 4, item->getItemName());
     }
@@ -221,10 +251,24 @@ void Inventory::drawWidget(Widget *w) {
     if(p->getStateMod(Constants::leveled)) {
       glColor4f( 1.0f, 0.2f, 0.0f, 1.0f );
     } else {
-      w->applyColor();
+      if( theme->getWindowText() ) {
+        glColor4f( theme->getWindowText()->r,
+                   theme->getWindowText()->g,
+                   theme->getWindowText()->b,
+                   theme->getWindowText()->a );
+      } else {
+        w->applyColor();
+      }
     }
     scourge->getSDLHandler()->texPrint(5, y, s);
-    w->applyColor();
+    if( theme->getWindowText() ) {
+      glColor4f( theme->getWindowText()->r,
+                 theme->getWindowText()->g,
+                 theme->getWindowText()->b,
+                 theme->getWindowText()->a );
+    } else {
+      w->applyColor();
+    }
     sprintf(s, "HP: %d (%d)", p->getHp(), p->getMaxHp());
     scourge->getSDLHandler()->texPrint(5, y + 15, s);
     sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
@@ -236,12 +280,12 @@ void Inventory::drawWidget(Widget *w) {
     sprintf(s, "Hunger: %d (10)", p->getHunger());
     scourge->getSDLHandler()->texPrint(5, y + 75, s);
 
-    Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false );
-    Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp() );
-    Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false );
-    Util::drawBar( 160, y + 42, 120, (float)p->getSkillModifiedArmor(), (float)p->getArmor(), 0.45f, 0.65f, 1.0f, false );
-    Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false );
-    Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false );
+    Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false, theme );
+    Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp(), -1, -1, -1, true, theme );
+    Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false, theme );
+    Util::drawBar( 160, y + 42, 120, (float)p->getSkillModifiedArmor(), (float)p->getArmor(), 0.45f, 0.65f, 1.0f, false, theme );
+    Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
+    Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
   }
 }
 

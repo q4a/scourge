@@ -344,7 +344,8 @@ void ShapePalette::initialize() {
       fgetc(fp);
       n = Constants::readLine(line, fp);
       cerr << "*** Loading portrait: " << line << endl;
-      portraitTextures.push_back( loadGLTextures( line ) );
+      if( strstr( line, "death" ) ) deathPortraitTexture = loadGLTextures( line );
+      else portraitTextures.push_back( loadGLTextures( line ) );
     } else {
       // skip this line
       n = Constants::readLine(line, fp);

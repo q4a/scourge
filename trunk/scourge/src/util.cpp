@@ -412,17 +412,24 @@ float Util::diffAngle(float a, float b) {
 }
 
 void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
-				   float red, float green, float blue, float gradient) {
+				   float red, float green, float blue, float gradient, GuiTheme *theme) {
   float percent = (maxValue == 0 ? 0 : (value >= maxValue ? 100.0f : value / (maxValue / 100.0f)));
   float length = barLength * (percent / 100.0f);
   if(length < 0) {
-	length = percent = 0;
+    length = percent = 0;
   }
-  
+
   glPushMatrix();
   glTranslatef( x, y, 0 );
 
-  glColor3f( 0.8f, 0.5f, 0.2f );
+  if( theme && theme->getInputBackground() ) {
+    glColor4f( theme->getInputBackground()->color.r,
+               theme->getInputBackground()->color.g,
+               theme->getInputBackground()->color.b,
+               theme->getInputBackground()->color.a );
+  } else {
+    glColor3f( 0.8f, 0.5f, 0.2f );
+  }
   glBegin( GL_QUADS );
   glVertex3f( barLength + 1, -4, 0 );
   glVertex3f( -1, -4, 0 );
@@ -431,41 +438,55 @@ void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
   glEnd();
 
   glLineWidth(6.0f);
-  
+
   //  glColor3f( 0.2f, 0.2f, 0.2f );
-  glColor3f( 1, 0.75f, 0.45f );
+  if( theme && theme->getWindowBorder() ) {
+    glColor4f( theme->getWindowBorder()->color.r,
+               theme->getWindowBorder()->color.g,
+               theme->getWindowBorder()->color.b,
+               theme->getWindowBorder()->color.a );
+  } else {
+    glColor3f( 0.8f, 0.5f, 0.2f );
+  }
+  //glColor3f( 1, 0.75f, 0.45f );
   glBegin( GL_LINES );
   glVertex3f( 0, 0, 0 );
   glVertex3f( barLength, 0, 0 );
   glEnd();
-  
+
   // default args so I don't have to recompile .h file
   if(red == -1) {
-	red = 0.5f;
-	green = 1.0f;
-	blue = 0.5f;
+    red = 0.5f;
+    green = 1.0f;
+    blue = 0.5f;
   }
-  if(!gradient || percent > 40.0f) {	
-	glColor3f( red, green, blue );
+  if(!gradient || percent > 40.0f) {  
+    glColor3f( red, green, blue );
   } else if(percent > 25.0f) {
-	glColor3f( 1.0f, 1.0f, 0.5f );
+    glColor3f( 1.0f, 1.0f, 0.5f );
   } else {
-	glColor3f( 1.0f, 0.5f, 0.5f );
+    glColor3f( 1.0f, 0.5f, 0.5f );
   }
   glBegin( GL_LINES );
   glVertex3f( 0, 0, 0 );
   glVertex3f( length, 0, 0 );
   glEnd();
-  
-  glLineWidth(1.0f);
 
+  glLineWidth(1.0f);
   if(percent > 0.0f && percent < 100.0f) {
-	glColor3f( 0.8f, 0.5f, 0.2f );
-	glBegin( GL_LINES );
-	glVertex3f( length, -4, 0 );
-	glVertex3f( length, 4, 0 );
-	glEnd();
+    if( theme && theme->getWindowBorder() ) {
+      glColor4f( theme->getWindowBorder()->color.r,
+                 theme->getWindowBorder()->color.g,
+                 theme->getWindowBorder()->color.b,
+                 theme->getWindowBorder()->color.a );
+    } else {
+      glColor3f( 0.8f, 0.5f, 0.2f );
+    }
+    glBegin( GL_LINES );
+    glVertex3f( length, -4, 0 );
+    glVertex3f( length, 4, 0 );
+    glEnd();
   }
-  
   glPopMatrix();
 }
+

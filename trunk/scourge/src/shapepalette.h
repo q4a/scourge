@@ -196,6 +196,7 @@ private:
   vector<string> themeShapeRef;
 
   vector<GLuint> portraitTextures;
+  GLuint deathPortraitTexture;
 
 public: 
   ShapePalette(Session *session);
@@ -250,6 +251,7 @@ public:
 
   inline int getPortraitCount() { return portraitTextures.size(); }
   inline GLuint getPortraitTexture( int index ) { return portraitTextures[ index ]; }
+  inline GLuint getDeathPortraitTexture() { return deathPortraitTexture; }
 
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name, bool variation=false);
