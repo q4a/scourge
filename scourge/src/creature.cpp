@@ -198,7 +198,7 @@ CreatureInfo *Creature::save() {
 }
 
 Creature *Creature::load(Session *session, CreatureInfo *info) {
-  Creature *creature;
+  Creature *creature = NULL;
   // FIXME: figure out how/when to call session->newCreature, vs. new Creature()
   // Maybe all creatures should be constructed via session->newCreature() but
   // not destroyed in session->deleteCreaturesAndItems()?

@@ -127,7 +127,7 @@ void Scourge::start() {
       if(Persist::doesSaveGameExist( session )) {
         mainMenu->showNewGameConfirmationDialog();
       } else {
-        value == NEW_GAME_START;
+        value = NEW_GAME_START;
       }
     }
       

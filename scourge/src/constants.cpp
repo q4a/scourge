@@ -44,7 +44,7 @@ char configDir[300] = CONFIG_DIR;
 int get_config_dir_name( char *buff, int len )
 {
 #if defined( WIN32 )
-    if ( strlen( CONFIG_DIR ) +1 > len ) {
+    if ( (int)strlen( CONFIG_DIR ) +1 > len ) {
         return 1;
     }
     strcpy( buff, CONFIG_DIR );

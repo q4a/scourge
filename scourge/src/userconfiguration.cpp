@@ -882,8 +882,8 @@ UserConfiguration::~UserConfiguration(){
 }
 
 void UserConfiguration::createConfigDir() {
-  char path[300]; 
 #ifndef WIN32     
+  char path[300]; 
   // first create the directory
   // no need on windows, this file is saved in the current dir
   get_config_dir_name(path, 300);
