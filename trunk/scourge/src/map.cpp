@@ -506,8 +506,8 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
 
 
                   if(pos[posX][posY][zp]->creature) {
-                    xpos2 = (pos[posX][posY][zp]->creature->getX() - getX()) / GLShape::DIV;
-                    ypos2 = (pos[posX][posY][zp]->creature->getY() - getY() - shape->getDepth()) / GLShape::DIV;
+                    xpos2 = (pos[posX][posY][zp]->creature->getX() - (GLfloat)getX()) / GLShape::DIV;
+                    ypos2 = (pos[posX][posY][zp]->creature->getY() - (GLfloat)getY() - (GLfloat)(shape->getDepth())) / GLShape::DIV;
                   } else {
                     xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                     xp + chunkOffsetX) / GLShape::DIV;
@@ -1220,6 +1220,13 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Creature *n
 Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, 
 							Sint16 nx, Sint16 ny, Sint16 nz,
 							Creature *newCreature) {
+
+  // no need to actually move data
+  if( x == nx && y == ny && z == nz ) {
+    mapChanged = true;
+    return NULL;
+  }
+
   //float interX, interY;
   Location *position = isBlocked(nx, ny, nz, x, y, z, newCreature->getShape());
   if(position) return position;

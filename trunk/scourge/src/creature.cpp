@@ -19,6 +19,9 @@
 
 #define MOVE_DELAY 7
 
+// at this fps, the players step 1 square                     
+#define FPS_ONE 10.0f
+
 /**
  * Formations are defined by 4 set of coordinates in 2d space.
  * These starting positions assume dir=Constants::MOVE_UP
@@ -47,6 +50,7 @@ Creature::Creature(Session *session, Character *character, char *name) {
   this->thirst=10;
   this->hunger=10;  
   this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name);
+//  if( !strcmp( name, "Alamont" ) ) ((MD2Shape*)shape)->setDebug( true );
   commonInit();  
 }
 
@@ -318,9 +322,7 @@ bool Creature::move(Uint16 dir, Map *map) {
   GLfloat nx = x;
   GLfloat ny = y;
   GLfloat nz = z;
-  GLfloat step = 1.0f / ( session->getGameAdapter()->getFps() / ( 10.0f ) );
-  step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ) );
-//  step /= ((GLfloat)(session->getUserConfiguration()->getGameSpeedLevel() + 1) * 0.25f);
+  GLfloat step = getStep();
   switch(dir) {
   case Constants::MOVE_UP:    
     ny = y - step;
@@ -472,6 +474,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     tx = px;
     ty = py;
     bestPathPos = 1; // skip 0th position; it's the starting location
+    //if( !strcmp(getName(),"Alamont") ) cerr << "calling findPath!" << endl;
     Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
                    px, py, pz, &bestPath, session->getMap(), getShape());
   }
@@ -484,27 +487,26 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
     GLfloat newX = getX();
     GLfloat newY = getY();
-    GLfloat step = 1.0f / ( session->getGameAdapter()->getFps() / ( 10.0f ) ); 
-    step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ));
-    //step /= ((GLfloat)(session->getUserConfiguration()->getGameSpeedLevel() + 1) * 0.25f);
+    
+    GLfloat step = getStep();
     float lx = (float)(location.x);
     float ly = (float)(location.y);
     float mx = lx - getX();
     float my = ly - getY();
-    if( abs(my) > step ) {
-      if( my > 0 ) {
-        newY += step;
-      } else {
-        newY -= step;
-      }
+    //if( !strcmp(getName(),"Alamont") ) 
+//      cerr << "taking step! step=" << step << " mx=" << mx << " my=" << my << endl;
+
+    GLfloat tolerance = 0.5f;
+    if( my > tolerance ) {
+      newY += step;
+    } else if( my < -tolerance ) {
+      newY -= step;
     }
-    if( abs(mx) > step ) {
-      if( mx > 0 ) {
-        newX += step;
-      } else {
-        newX -= step;
-      }
-    }
+    if( mx > tolerance ) {
+      newX += step;
+    } else if( mx < -tolerance ) {
+      newX -= step;
+    }    
 
     //if( !strcmp(getName(), "Alamont") ) 
 //      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
@@ -548,20 +550,25 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
 
     if(!position) {
+      //if( !strcmp(getName(),"Alamont") ) cerr << "moved!" << endl;
       angle = Util::getAngle( newX, newY, 1, 1,
                               getX(), getY(), 1, 1 );
       moveTo( newX, newY, getZ() );
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
+        //if( !strcmp(getName(),"Alamont") ) cerr << "reached path pos!" << endl;
         bestPathPos++;
       }
       return true;
     } else {
+      //if( !strcmp(getName(),"Alamont") ) cerr << "blocked" << endl;
       // if we're not at the destination, but it's possible to stand there
       // try again
       if(!(selX == toint(getX()) && selY == toint(getY())) && 
          map->shapeFits(getShape(), selX, selY, -1) &&
          moveRetrycount < MAX_MOVE_RETRY) {
+
+        //if( !strcmp(getName(),"Alamont") ) cerr << "retry" << endl;
 
         // don't keep trying forever
         moveRetrycount++;
@@ -1478,5 +1485,20 @@ void Creature::setExp() {
   for(int i = 0; i < level - 1; i++) {
     expOfNextLevel += ((i + 1) * character->getLevelProgression());
   }
+}
+
+GLfloat Creature::getStep() {
+  GLfloat fps = session->getGameAdapter()->getFps();
+  GLfloat div = FPS_ONE + (float)(session->getUserConfiguration()->getGameSpeedLevel() * 3.0f);
+  if( fps < div ) return 0.8f;
+  GLfloat step = 1.0f / ( fps / div  ); 
+  if( getSpeed() <= 0 ) {
+    step *= 1.0f - ( 1.0f / 10.0f );
+  } else if( getSpeed() >= 10 ) {
+    step *= 1.0f - ( 9.9f / 10.0f );
+  } else {
+    step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ));
+  }
+  return step;
 }
 
