@@ -17,10 +17,6 @@
 
 #include "party.h"
 
-#define GUI_WIDTH 500
-#define MIN_GUI_WIDTH 100
-#define GUI_HEIGHT 165
-
 #define MAX_SIZE 0
 #define MIN_SIZE 1
 
@@ -444,9 +440,9 @@ void Party::createUI() {
   sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
   sprintf(min_version, "S.C.O.U.R.G.E.");
   mainWin = new Window( scourge->getSDLHandler(),
-						scourge->getSDLHandler()->getScreen()->w - GUI_WIDTH, 
-						scourge->getSDLHandler()->getScreen()->h - GUI_HEIGHT, 
-						GUI_WIDTH, GUI_HEIGHT, 
+						scourge->getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH, 
+						scourge->getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
+						Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT, 
 						version, 
 						scourge->getShapePalette()->getGuiTexture(), false );
   cards = new CardContainer(mainWin);  
@@ -482,8 +478,13 @@ void Party::createUI() {
   minButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("-"), MAX_SIZE );
   maxButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("+"), MIN_SIZE );
 
+  layoutButton1 = cards->createButton( 20, 75 + (lowerRowHeight * 2), 40, 75 + (lowerRowHeight * 3), strdup("L1"), MAX_SIZE );
+  layoutButton2 = cards->createButton( 40, 75 + (lowerRowHeight * 2), 60, 75 + (lowerRowHeight * 3), strdup("L2"), MAX_SIZE );
+  layoutButton3 = cards->createButton( 60, 75 + (lowerRowHeight * 2), 80, 75 + (lowerRowHeight * 3), strdup("L3"), MAX_SIZE );
+  layoutButton4 = cards->createButton( 80, 75 + (lowerRowHeight * 2), 100, 75 + (lowerRowHeight * 3), strdup("L4"), MAX_SIZE );
 
-  int playerButtonWidth = (GUI_WIDTH - 120) / 4;
+
+  int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - 120) / 4;
   int playerButtonHeight = 20;  
   player1Button = cards->createButton( 120 + playerButtonWidth * 0, 0,  
 									   120 + playerButtonWidth * 1, playerButtonHeight, NULL, MAX_SIZE );
@@ -500,12 +501,12 @@ void Party::createUI() {
 
   for(int i = 0; i < getPartySize(); i++) {
 	playerInfo[i] = new Canvas( 120 + playerButtonWidth * i, playerButtonHeight,  
-								120 + playerButtonWidth * (i + 1), GUI_HEIGHT - 25, 
+								120 + playerButtonWidth * (i + 1), Scourge::PARTY_GUI_HEIGHT - 25, 
 								this );
 	cards->addWidget( playerInfo[i], MAX_SIZE );
   }
 
-  minPartyInfo = new Canvas( 0, 0, MIN_GUI_WIDTH, 75 + (lowerRowHeight * 2), this );
+  minPartyInfo = new Canvas( 0, 0, Scourge::PARTY_MIN_GUI_WIDTH, 75 + (lowerRowHeight * 2), this );
   cards->addWidget( minPartyInfo, MIN_SIZE );
 
   cards->setActiveCard( MAX_SIZE );   
@@ -519,19 +520,19 @@ void Party::drawWidget(Widget *w) {
 	  if(getParty(i) == getPlayer()) {
 		w->applyBorderColor();
 		glBegin( GL_QUADS );
-		glVertex3f( MIN_GUI_WIDTH, (i * 20), 0 );
+		glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, (i * 20), 0 );
 		glVertex3f( 0, (i * 20), 0 );
 		glVertex3f( 0, 20 + (i * 20), 0 );
-		glVertex3f( MIN_GUI_WIDTH, 20 + (i * 20), 0 );
+		glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, 20 + (i * 20), 0 );
 		glEnd();
 	  }
 	  //	  w->applyColor();
 	  glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	  sprintf(msg, "%c:", getParty(i)->getName()[0]);
 	  scourge->getSDLHandler()->texPrint(0, 13 + (i * 20), msg);
-	  Util::drawBar(15, 8 + (i * 20), MIN_GUI_WIDTH - 20,  
+	  Util::drawBar(15, 8 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
 					(float)getParty(i)->getHp(), (float)getParty(i)->getMaxHp());
-	  Util::drawBar(15, 14 + (i * 20), MIN_GUI_WIDTH - 20,  
+	  Util::drawBar(15, 14 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
 					(float)getParty(i)->getMp(), (float)getParty(i)->getMaxMp(),
 					0.45f, 0.65f, 1.0f, false);
 	}
@@ -556,7 +557,7 @@ void Party::drawWidget(Widget *w) {
 	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	sprintf(msg, "hp:");
 	scourge->getSDLHandler()->texPrint(3, 20, msg);
-	Util::drawBar(22, 18, ((GUI_WIDTH - 120) / 4) - 24,  
+	Util::drawBar(22, 18, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
 				  (float)p->getHp(), (float)p->getMaxHp());
 	
 	// mp
@@ -566,7 +567,7 @@ void Party::drawWidget(Widget *w) {
 	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	sprintf(msg, "mp:");
 	scourge->getSDLHandler()->texPrint(3, 45, msg);
-	Util::drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
+	Util::drawBar(22, 43, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
 				  (float)p->getMp(), (float)p->getMaxMp(),
 				  0.45f, 0.65f, 1.0f, false);
 
@@ -589,7 +590,7 @@ void Party::drawWidget(Widget *w) {
 	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
 	sprintf(msg, "ex:");
 	scourge->getSDLHandler()->texPrint(3, 70, msg);
-	Util::drawBar(22, 68, ((GUI_WIDTH - 120) / 4) - 24,  
+	Util::drawBar(22, 68, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 24,  
 				  (float)p->getExp(), (float)p->getExpOfNextLevel(),
 				  1.0f, 0.65f, 1.0f, false);
 	
@@ -659,48 +660,56 @@ void Party::drawView() {
 
 bool Party::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == inventoryButton) {
-	scourge->toggleInventoryWindow();
+    scourge->toggleInventoryWindow();
   } else if(widget == optionsButton) {
-	scourge->toggleOptionsWindow();
+    scourge->toggleOptionsWindow();
   } else if(widget == quitButton) {
-	scourge->showExitConfirmationDialog();
+    scourge->showExitConfirmationDialog();
   } else if(widget == diamondButton) {
-	setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+    setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == staggeredButton) {
-	setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
+    setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == squareButton) {
-	setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
+    setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == rowButton) {
-	setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
+    setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == scoutButton) {
-	setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
+    setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == crossButton) {
-	setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
+    setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == player1Button) {
-	setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
   } else if(widget == player2Button) {
-	setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
   } else if(widget == player3Button) {
-	setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
   } else if(widget == player4Button) {
-	setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+    setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
   } else if(widget == groupButton) {
-	togglePlayerOnly();
+    togglePlayerOnly();
   } else if(widget == roundButton) {
-	toggleRound();
+    toggleRound();
   } else if(widget == minButton) {
-	cards->setActiveCard( MIN_SIZE );
-	mainWin->resize( MIN_GUI_WIDTH, GUI_HEIGHT );
-	oldX = mainWin->getX();
-	mainWin->move( (oldX < (scourge->getSDLHandler()->getScreen()->w / 2) - (GUI_WIDTH / 2) ? 
-					0 : 
-					scourge->getSDLHandler()->getScreen()->w - MIN_GUI_WIDTH), mainWin->getY() );
-	mainWin->setTitle( min_version );
+    cards->setActiveCard( MIN_SIZE );
+    mainWin->resize( Scourge::PARTY_MIN_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT );
+    oldX = mainWin->getX();
+    mainWin->move( (oldX < (scourge->getSDLHandler()->getScreen()->w / 2) - (Scourge::PARTY_GUI_WIDTH / 2) ? 
+                    0 : 
+                    scourge->getSDLHandler()->getScreen()->w - Scourge::PARTY_MIN_GUI_WIDTH), mainWin->getY() );
+    mainWin->setTitle( min_version );
   } else if(widget == maxButton) {
-	cards->setActiveCard( MAX_SIZE );
-	mainWin->move( oldX, mainWin->getY() );
-	mainWin->resize( GUI_WIDTH, GUI_HEIGHT );
-	mainWin->setTitle( version );
+    cards->setActiveCard( MAX_SIZE );
+    mainWin->move( oldX, mainWin->getY() );
+    mainWin->resize( Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT );
+    mainWin->setTitle( version );
+  } else if(widget == layoutButton1) {
+    scourge->setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
+  } else if(widget == layoutButton2) {
+    scourge->setUILayout(Constants::GUI_LAYOUT_BOTTOM);
+  } else if(widget == layoutButton3) {
+    scourge->setUILayout(Constants::GUI_LAYOUT_SIDE);
+  } else if(widget == layoutButton4) {
+    scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
   }
   return false;
 }

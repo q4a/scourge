@@ -62,10 +62,9 @@ Map::Map(Scourge *scourge){
   this->zrot = 45.0f;
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
-  float adjust = (float)scourge->getSDLHandler()->getScreen()->w / 800.0f;
-  this->xpos = (float)(scourge->getSDLHandler()->getScreen()->w) / 2.0f / adjust;
-  this->ypos = (float)(scourge->getSDLHandler()->getScreen()->h) / 2.0f / adjust;
-  this->zpos = 0.0f;  
+  setViewArea(0, 0, 
+              scourge->getSDLHandler()->getScreen()->w, 
+              scourge->getSDLHandler()->getScreen()->h);
   
   this->scourge = scourge;  
   this->debugGridFlag = false;
@@ -121,6 +120,20 @@ Map::~Map(){
   }
   for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
 	free(descriptions[i]);
+}
+
+void Map::setViewArea(int x, int y, int w, int h) {
+  viewX = x;
+  viewY = y;
+  viewWidth = w;
+  viewHeight = h;
+
+  float adjust = (float)viewWidth / 800.0f;
+  this->xpos = (float)(viewWidth) / 2.0f / adjust;
+  this->ypos = (float)(viewHeight) / 2.0f / adjust;
+  this->zpos = 0.0f;  
+
+  refresh();
 }
 
 void Map::center(Sint16 x, Sint16 y, bool force) { 
@@ -532,16 +545,16 @@ void Map::draw() {
 	  zoomOut = false;
     } else {
 	  zoom /= ZOOM_DELTA; 
-	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
-	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
+	  xpos = (int)((float)viewWidth / zoom / 2.0f);
+	  ypos = (int)((float)viewHeight / zoom / 2.0f);
     }
   } else if(zoomOut) {
 	if(zoom >= 2.8f) {
 	  zoomOut = false;
 	} else {
 	  zoom *= ZOOM_DELTA; 
-	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
-	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
+	  xpos = (int)((float)viewWidth / zoom / 2.0f);
+	  ypos = (int)((float)viewHeight / zoom / 2.0f);
     }
   }
 
@@ -765,7 +778,7 @@ void Map::draw() {
 	  //glDepthMask(GL_FALSE);
 	  glColor3f( 1, 1, 0.15f );
 	  scourge->getSDLHandler()->texPrint( 10,
-										  scourge->getSDLHandler()->getScreen()->h - 10,
+										  viewHeight - 10,
 										  "Select a target for %s.", 
 										  scourge->getTargetSelectionFor()->getName() );
 	  glEnable(GL_DEPTH_TEST);
@@ -775,11 +788,16 @@ void Map::draw() {
 
 	//drawDraggedItem();
   }
+
+  glDisable( GL_SCISSOR_TEST );
 }
 
 void Map::drawShade() {
   glPushMatrix();
   glLoadIdentity();
+
+  glTranslatef(viewX, viewY, 0);
+
   //  glDisable(GL_BLEND);
   glDisable(GL_DEPTH_TEST);
   //glDisable( GL_TEXTURE_2D );
@@ -795,12 +813,11 @@ void Map::drawShade() {
   glVertex3f(0, 0, 0);
   glTexCoord2f( 0.0f, 1.0f );
   glVertex3f(0, 
-			 scourge->getSDLHandler()->getScreen()->h, 0);
+			 viewHeight, 0);
   glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(scourge->getSDLHandler()->getScreen()->w, 
-			 scourge->getSDLHandler()->getScreen()->h, 0);
+  glVertex3f(viewWidth, viewHeight, 0);
   glTexCoord2f( 1.0f, 0.0f );
-  glVertex3f(scourge->getSDLHandler()->getScreen()->w, 0, 0);
+  glVertex3f(viewWidth, 0, 0);
   glEnd();
   //glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
@@ -1051,8 +1068,14 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
 void Map::initMapView(bool ignoreRot) {
   glLoadIdentity();
 
+  glTranslatef(viewX, viewY, 0);
+  glScissor(viewX, 
+            scourge->getSDLHandler()->getScreen()->h - (viewY + viewHeight),
+            viewWidth, viewHeight);
+  glEnable( GL_SCISSOR_TEST );
+
   // adjust for screen size
-  float adjust = (float)scourge->getSDLHandler()->getScreen()->w / 800.0f;
+  float adjust = (float)viewWidth / 800.0f;
   glScalef(adjust, adjust, adjust);
 
   glScalef(zoom, zoom, zoom);

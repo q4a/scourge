@@ -218,29 +218,35 @@ inline void pop_projection_matrix() {
 ///Much like Nehe's glPrint function, but modified to work
 ///with freetype fonts.
 void freetype_print(const freetype_font_data &ft_font, float x, float y, const char *fmt, ...)  {
-	// We want a coordinate system where things coresponding to window pixels.
-	//pushScreenCoordinateMatrix();					
-	
-	GLuint font=ft_font.list_base;
-	float h=ft_font.h/.63f;						//We make the height about 1.5* that of
-	
-	char		text[256];								// Holds Our String
-	va_list		ap;										// Pointer To List Of Arguments
+  // We want a coordinate system where things coresponding to window pixels.
+  //pushScreenCoordinateMatrix();					
+  
+  //float h=ft_font.h/.63f;						//We make the height about 1.5* that of
+  
+  char		text[256];								// Holds Our String
+  va_list		ap;										// Pointer To List Of Arguments
+  
+  if (fmt == NULL)									// If There's No Text
+    *text=0;											// Do Nothing
+  
+  else {
+    va_start(ap, fmt);									// Parses The String For Variables
+    vsprintf(text, fmt, ap);						// And Converts Symbols To Actual Numbers
+    va_end(ap);											// Results Are Stored In Text
+  }
 
-	if (fmt == NULL)									// If There's No Text
-		*text=0;											// Do Nothing
+  freetype_print_simple(ft_font, x, y, text);
+}           
 
-	else {
-	va_start(ap, fmt);									// Parses The String For Variables
-	    vsprintf(text, fmt, ap);						// And Converts Symbols To Actual Numbers
-	va_end(ap);											// Results Are Stored In Text
-	}
+void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, const char *str)  {
+
+  GLuint font=ft_font.list_base;
 
 	//glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
   glPushAttrib(GL_ENABLE_BIT);	
 	glMatrixMode(GL_MODELVIEW);
-  glDisable(GL_CULL_FACE);
-	glDisable(GL_LIGHTING);
+  //glDisable(GL_CULL_FACE);
+	//glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -248,8 +254,8 @@ void freetype_print(const freetype_font_data &ft_font, float x, float y, const c
 
 	glListBase(font);
 
-	float modelview_matrix[16];	
-	glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
+	//float modelview_matrix[16];	
+	//glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
 
 	//This is where the text display actually happens.
 	//For each line of text we reset the modelview matrix
@@ -271,7 +277,7 @@ void freetype_print(const freetype_font_data &ft_font, float x, float y, const c
 	//  in make_dlist().
 	//	glRasterPos2f(0,0);
 
-  glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+  glCallLists(strlen(str), GL_UNSIGNED_BYTE, str);
 
 	//	float rpos[4];
 	//	glGetFloatv(GL_CURRENT_RASTER_POSITION ,rpos);

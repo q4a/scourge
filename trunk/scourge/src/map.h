@@ -66,6 +66,7 @@ class Map {
   bool zoomIn, zoomOut;
   Sint16 x;
   Sint16 y;
+  int viewX, viewY, viewWidth, viewHeight;
   float mapx, mapy;
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
   EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
@@ -254,6 +255,8 @@ class Map {
   inline void updateLightMap() { lightMapChanged = true; }
 
   inline void refresh() { mapChanged = lightMapChanged = true; }
+
+  void setViewArea(int x, int y, int w, int h);
 
   // drop items above this one
   void dropItemsAbove(int x, int y, int z, Item *item);

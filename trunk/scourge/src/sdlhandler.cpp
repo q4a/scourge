@@ -538,7 +538,7 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
     our_font_initialized = true;
   }
   
-  freetype_print(our_font, x, y, str);
+  freetype_print_simple(our_font, x, y, str);
 }
 
 bool SDLHandler::sectionIntersects(int a1, int a2, int b1, int b2) {

@@ -74,6 +74,8 @@ class Party : public WidgetView {
   Canvas *minPartyInfo;
   Canvas *playerInfo[PARTY_SIZE];
 
+  Button *layoutButton1, *layoutButton2, *layoutButton3, *layoutButton4;
+
  public:
   Party(Scourge *scourge);
   virtual ~Party();
