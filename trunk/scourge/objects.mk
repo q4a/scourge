@@ -7,7 +7,7 @@ OBJS = \
 	src/creature.o src/debugshape.o\
 	src/effect.o src/dungeongenerator.o src/glshape.o src/gltorch.o\
 	src/item.o src/location.o src/main.o src/mainmenu.o src/map.o\
-	src/Md2.o src/md2shape.o src/scourge.o src/sdleventhandler.o\
+	src/Md2.o src/md2shape.o src/containergui.o src/scourge.o src/sdleventhandler.o\
 	src/sdlhandler.o src/sdlscreenview.o src/shape.o src/inventory.o\
 	src/shapepalette.o src/util.o src/text.o src/gllocator.o\
 	src/minimap.o src/3ds.o src/3dsshape.o src/optionsmenu.o\

@@ -251,6 +251,7 @@ public:
 	GROUP_MODE,
 	TURN_MODE,
 	REAL_TIME_MODE,
+	CLOSE,
 
 	// last one
 	MESSAGE_COUNT
