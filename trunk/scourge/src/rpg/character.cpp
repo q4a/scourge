@@ -20,6 +20,7 @@
 map<string, Character*> Character::character_class;
 map<string, Character*> Character::character_class_short;
 map<string, int> Character::character_index_short;
+vector<Character*> Character::character_list;
 
 void Character::initCharacters() {
   char errMessage[500];
@@ -64,6 +65,7 @@ void Character::initCharacters() {
       string s2 = shortName;
       character_class_short[s2] = last;
       character_index_short[s2] = index++;
+      character_list.push_back(last);
     } else if(n == 'D' && last) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
