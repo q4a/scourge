@@ -40,7 +40,7 @@ using namespace std;
 
 class Projectile {
  private:
-  Creature *creature;
+  Creature *creature, *target;
   int tx, ty, tw, td;
   Item *item;
   Spell *spell;
@@ -54,12 +54,13 @@ class Projectile {
   float maxDist;
   float startX, startY, distToTarget;
   bool stopOnImpact;
+  bool seeker;
 
   static map<Creature*, vector<Projectile*>*> projectiles;
   
  public:
-  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
-  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
+  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
+  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
   Projectile(Creature *creature, int x, int y, int w, int d, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
   virtual ~Projectile();
 
@@ -91,6 +92,7 @@ class Projectile {
 
  protected:
   void commonInit();
+  void calculateAngle();
 };
 
 #endif
