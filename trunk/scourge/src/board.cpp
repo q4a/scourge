@@ -124,7 +124,7 @@ Board::Board(Scourge *scourge) {
 									   strdup("Available Missions"));
   missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
   boardWin->addWidget(missionList);
-  missionDescriptionLabel = new Label(5, 210, strdup(""), 70);
+  missionDescriptionLabel = new Label(5, 210, strdup(""), 67);
   boardWin->addWidget(missionDescriptionLabel);
   playMission = new Button(5, 5, 105, 35, Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);
