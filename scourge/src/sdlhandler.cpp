@@ -30,6 +30,7 @@ SDLHandler::SDLHandler(){
   handlerCount = 0;
   invertMouse = false; 
   cursorMode = CURSOR_NORMAL;
+  our_font_initialized = false;
 }
 
 SDLHandler::~SDLHandler(){
@@ -539,11 +540,23 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
   vsprintf( str, fmt, ap );
   va_end( ap );
 
+
+  if(!our_font_initialized) {
+	our_font.init("/home/gabor/sourceforge/scourge/data/Test.ttf", 12);
+	our_font_initialized = true;
+  }
+  
+  freetype_print(our_font, x, getScreen()->h - y, str);
+
+  /*	
   glPushMatrix();
 
 
+  // print using glut
   glRasterPos2f(x, y);
   print_bitmap_string(GLUT_BITMAP_HELVETICA_12, str);
+  */
+
 
 /*
   glLoadIdentity();
@@ -563,7 +576,10 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
   glDisable(GL_ALPHA_TEST);
   glDisable( GL_LIGHT2 );
 */
+
+/*
   glPopMatrix();
+ */
 }
 
 bool SDLHandler::sectionIntersects(int a1, int a2, int b1, int b2) {

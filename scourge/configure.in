@@ -288,6 +288,91 @@ TR_LIBS="$TR_LIBS -l$GLU_LIB_NAME"
 
 
 dnl --------------------------------------------------------------------------
+dnl Check for freetype library
+dnl --------------------------------------------------------------------------
+
+AC_ARG_WITH(freetype-lib-name, [  --with-freetype-lib-name=NAME freetype library name])
+
+AC_DEFUN( CHECK_FOR_FREETYPE_LIB, [
+    AC_MSG_CHECKING([for $FREETYPE_LIB_NAME library])
+    LIBS="$saved_LIBS $TR_LIBS -l$FREETYPE_LIB_NAME"
+    AC_TRY_LINK( , , have_FREETYPE=yes, have_FREETYPE=no)
+    AC_MSG_RESULT([$have_FREETYPE])
+])
+
+if test "x$with_freetype_lib_name" = "x" ; then
+    FREETYPE_LIB_NAME="freetype"
+else
+    FREETYPE_LIB_NAME="$with_freetype_lib_name"
+fi
+
+saved_LIBS="$LIBS"
+
+CHECK_FOR_FREETYPE_LIB
+
+if test "x$have_FREETYPE" = "xno" -a "x$with_freetype_lib_name" = "x"; then
+    FREETYPE_LIB_LIST=`grep -v -E "^$FREETYPE_LIB_NAME\$" <<EOF
+freetype
+EOF
+`
+
+    for FREETYPE_LIB_NAME in $FREETYPE_LIB_LIST ; do
+        CHECK_FOR_FREETYPE_LIB
+
+        if test "x$have_FREETYPE" = "xyes" ; then
+            break
+        fi
+    done
+fi
+
+if test "x$have_FREETYPE" = "xno" ; then
+    AC_MSG_ERROR([Cannot find freetype library])
+fi
+
+LIBS="$saved_LIBS"
+TR_LIBS="$TR_LIBS -l$FREETYPE_LIB_NAME"
+
+
+dnl --------------------------------------------------------------------------
+dnl Check for freetype headers
+dnl --------------------------------------------------------------------------
+
+AC_ARG_WITH(freetype-inc,   [  --with-freetype-inc=DIR       freetype header file location])
+
+if test "x$with_freetype_inc" = "x" ; then
+    FREETYPE_CPPFLAGS=""
+else 
+    FREETYPE_CPPFLAGS="-I$with_freetype_inc"
+fi
+
+dnl check for gl.h
+saved_CPPFLAGS="$CPPFLAGS"
+
+AC_DEFUN( CHECK_FOR_FREETYPE_H, [
+    CPPFLAGS="$saved_CPPFLAGS $FREETYPE_CPPFLAGS $TR_CPPFLAGS"
+
+    AC_MSG_CHECKING([for freetype/freetype.h])
+    AC_TRY_CPP( [ #include <freetype/config/ftheader.h> ], have_freetype_h=yes, have_freetype_h=no )
+    AC_MSG_RESULT([$have_freetype_h])
+])
+
+CHECK_FOR_FREETYPE_H
+
+if test "x$have_freetype_h" = "xno" -a "x$FREETYPE_CPPFLAGS" = "x" ; then
+    echo "*** Looking in /usr/include/freetype2"
+    FREETYPE_CPPFLAGS="-I/usr/include/freetype2"
+    CHECK_FOR_FREETYPE_H
+fi
+
+if test "x$have_freetype_h" = "xno" ; then
+    AC_MSG_ERROR([Cannot find freetype/freetype.h])
+fi
+
+CPPFLAGS="$saved_CPPFLAGS" 
+TR_CPPFLAGS="$TR_CPPFLAGS $FREETYPE_CPPFLAGS"
+
+
+dnl --------------------------------------------------------------------------
 dnl Check for OpenGL headers
 dnl --------------------------------------------------------------------------
 
@@ -402,4 +487,4 @@ CFLAGS="$CFLAGS $TR_CFLAGS"
 CXXFLAGS="$CXXFLAGS $TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
-AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/glut/Makefile )
+AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/glut/Makefile src/freetype/Makefile )
