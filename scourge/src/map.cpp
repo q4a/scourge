@@ -57,7 +57,6 @@ Map::Map(Session *session) {
   mapViewWidth = MVW;
   mapViewDepth = MVD;
 
-  effectCount = 0;
   chunkCount = 0;
   frustum = new CFrustum();
   useFrustum = true;
@@ -347,6 +346,22 @@ void Map::move(int dir) {
 }
 
 void Map::removeCurrentEffects() {
+  for( map<Uint32, EffectLocation*>::iterator i=currentEffectsMap.begin(); 
+       i!=currentEffectsMap.end(); ++i ) {
+    Uint32 key = i->first;
+    EffectLocation *pos = i->second;
+    if( !pos->isEffectOn() ) {
+      int x, y, z;
+      decodeTripletKey(key, &x, &y, &z);
+      currentEffectsMap.erase( i );
+      removeEffect( x, y, z );
+      mapChanged = true;
+    }
+  }
+
+  
+
+  /*
   int chunkOffsetX = 0;
   int chunkStartX = (getX() - MAP_OFFSET) / MAP_UNIT;
   int mod = (getX() - MAP_OFFSET) % MAP_UNIT;
@@ -371,12 +386,10 @@ void Map::removeCurrentEffects() {
       for(int yp = 0; yp < MAP_UNIT; yp++) {
         for(int xp = 0; xp < MAP_UNIT; xp++) {
 
-          /**
-           In scourge, shape coordinates are given by their
-           left-bottom corner. So the +1 for posY moves the
-           position 1 unit down the Y axis, which is the
-           unit square's bottom left corner.
-           */
+//           In scourge, shape coordinates are given by their
+//           left-bottom corner. So the +1 for posY moves the
+//           position 1 unit down the Y axis, which is the
+//           unit square's bottom left corner.
           posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
           posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
 
@@ -390,6 +403,7 @@ void Map::removeCurrentEffects() {
       }
     }
   }
+*/  
 }
 
 /**
@@ -536,11 +550,9 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
             }
           } else {
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-              if( effect[posX][posY][zp] && !effect[posX][posY][zp]->isEffectOn() ) {
-                removeEffect( posX, posY, zp );
-              } else if(lightMap[chunkX][chunkY] &&
-                        effect[posX][posY][zp] &&
-                        !effect[posX][posY][zp]->isInDelay() ) {
+              if(lightMap[chunkX][chunkY] &&
+                 effect[posX][posY][zp] &&
+                 !effect[posX][posY][zp]->isInDelay() ) {
                 xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                 xp + chunkOffsetX) / GLShape::DIV;
                 ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
@@ -856,14 +868,14 @@ void Map::draw() {
   initMapView();
   if( !selectMode ) frustum->CalculateFrustum();
   if(lightMapChanged) configureLightMap();
-  if( effectCount ) removeCurrentEffects();
+  if( currentEffectsMap.size() ) removeCurrentEffects();
   // populate the shape arrays
   if(mapChanged) {
     int csx, cex, csy, cey;
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
     sprintf(mapDebugStr, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
-            effectCount,
+            currentEffectsMap.size(),
             (useFrustum ? "*" : ""),
             chunkCount, ((cex - csx)*(cey - csy)),
             csx, cex, csy, cey, shapeCount);
@@ -1665,7 +1677,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->x = x;
   effect[x][y][z]->y = y;
   effect[x][y][z]->z = z;
-  effectCount++;
+  currentEffectsMap[ createTripletKey( x, y, z ) ] = effect[x][y][z];
 
   // need to do this to make sure effect shows up
   mapChanged = true;
@@ -1685,7 +1697,6 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
     }
     delete effect[x][y][z];
     effect[x][y][z] = NULL;
-    effectCount--;
   }
 }
 
@@ -1704,7 +1715,7 @@ void Map::removeAllEffects() {
       }
     }
   }
-  effectCount = 0;
+  currentEffectsMap.clear();
 }
 
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {

@@ -226,7 +226,7 @@ void Effect::drawDust(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
+	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX);
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
 	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
