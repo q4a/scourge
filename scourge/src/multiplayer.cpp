@@ -52,14 +52,15 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
 
   // allocate strings for list
   // FIXME: use a character set not the party here
-  charStr = (char**)malloc(Party::pcCount * sizeof(char*));
-  for(int i = 0; i < Party::pcCount; i++) {
+  Party::createHardCodedParty(scourge, &pc, &pcCount);
+  charStr = (char**)malloc(pcCount * sizeof(char*));
+  for(int i = 0; i < pcCount; i++) {
     charStr[i] = (char*)malloc(255 * sizeof(char));
-    sprintf(charStr[i], "%s, %s level: %d", Party::pc[i]->getName(),
-            Party::pc[i]->getCharacter()->getName(),
-            Party::pc[i]->getLevel());
+    sprintf(charStr[i], "%s, %s level: %d", pc[i]->getName(),
+            pc[i]->getCharacter()->getName(),
+            pc[i]->getLevel());
   }
-  characterList->setLines(Party::pcCount, (const char**)charStr);
+  characterList->setLines(pcCount, (const char**)charStr);
 
   okButton = mainWin->createButton( 330, 180, 430, 210, strdup("Start Game") );
 }
@@ -76,7 +77,19 @@ MultiplayerDialog::~MultiplayerDialog() {
 }
 
 Creature *MultiplayerDialog::getCreature() { 
-  return Party::pc[characterList->getSelectedLine()]; 
+  int n = characterList->getSelectedLine();
+  // The reason for this weird behavior is that party.cpp frees party members.
+  // Since we don't want to delete the original set, create a new one.
+  // Rewrite this when the character editor/store are done.
+  Creature **pc;
+  int pcCount;
+  Party::createHardCodedParty(scourge, &pc, &pcCount);
+  Creature *c = pc[n];
+  // delete the ones not used
+  for(int i = 0; i < pcCount; i++) {
+    if(i != n) delete pc[i];
+  }
+  return c;
 }
 
 bool MultiplayerDialog::handleEvent(SDL_Event *event) {

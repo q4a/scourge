@@ -47,6 +47,8 @@ private:
   ScrollingList *characterList;
   int value;
   char **charStr;
+  Creature **pc;
+  int pcCount;
   
 public:
 

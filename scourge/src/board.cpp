@@ -164,7 +164,7 @@ void Board::initMissions() {
   int highest = 0;
   int lowest = -1;
   int sum = 0;
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
     int n = scourge->getParty()->getParty(i)->getLevel();
     if(n < 1) n = 1;
     if(highest < n) {

@@ -72,11 +72,6 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   monsterInit();
 }
 
-Creature::Creature(Creature *c) {
-  // hope this works...
-  memcpy(this, c, sizeof(Creature));
-}
-
 void Creature::commonInit() {
   this->lastMove = 0;
   this->moveCount = 0;

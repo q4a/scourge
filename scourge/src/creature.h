@@ -134,7 +134,6 @@ class Creature {
   
   Creature(Scourge *scourge, Character *character, char *name);
   Creature(Scourge *scourge, Monster *monster);
-  Creature(Creature *c);
   ~Creature();
 
   inline void setLastTurn(int n) { lastTurn = n; }
