@@ -21,9 +21,11 @@
   *@author Gabor Torok
   */
 
-Label::Label(int x, int y, char *text, int lineWidth) : Widget(x, y, 0, 0) {
+Label::Label(int x, int y, char *text, int lineWidth, int fontType, int lineHeight) : Widget(x, y, 0, 0) {
   setText( text);
   this->lineWidth = lineWidth;
+  this->fontType = fontType;
+  this->lineHeight = lineHeight;
 }
 
 Label::~Label() {
@@ -31,6 +33,7 @@ Label::~Label() {
 
 void Label::drawWidget(Widget *parent) {
   if(text) {
+    ((Window*)parent)->getSDLHandler()->setFontType( fontType );
     GuiTheme *theme = ((Window*)parent)->getTheme();
     if( theme->getWindowText() ) {
       glColor4f( theme->getWindowText()->r,
@@ -80,9 +83,10 @@ void Label::drawWidget(Widget *parent) {
         
         ((Window*)parent)->getSDLHandler()->texPrint(0, y, p);
         start = end;
-        y+=15;
+        y += lineHeight;
       }
       free(p);
     }
+    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::DEFAULT_FONT );
   }
 }

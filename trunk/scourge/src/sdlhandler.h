@@ -85,10 +85,10 @@ private:
   Widget *storedWidget;
   SDL_Event *storedEvent; 
   
-  // truetype font
-  freetype_font_data font;
-  freetype_font_data monoFont;
+  // truetype font  
+  freetype_font_data font, monoFont, largeFont;
   bool font_initialized;
+  int fontType;
 
   char *debugStr;
 
@@ -96,6 +96,12 @@ private:
   static bool stencilBufferUsed;
 
  public: 
+  enum {
+    DEFAULT_FONT=0,
+    MONO_FONT,
+    LARGE_FONT
+  };
+
    bool dontUpdateScreen;
 
   enum {
@@ -156,8 +162,9 @@ private:
   void fireEvent(Widget *widget, SDL_Event *event);
   bool firedEventWaiting();
 
+  inline void setFontType( int fontType ) { this->fontType = fontType; }
+  inline int getFontType() { return fontType; }
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
-  void texPrintMono(GLfloat x, GLfloat y, const char *fmt, ...);
   void initFonts();
 
   GLvoid glPrint( const char *fmt, ... );

@@ -28,11 +28,9 @@
 #include "util.h"
 #include "gui/window.h"
 #include "gui/button.h"
+#include "gui/canvas.h"
 #include "gui/scrollinglist.h"
 #include "gui/cardcontainer.h"
-#include "gui/multiplelabel.h"
-#include "gui/checkbox.h"
-#include "gui/slider.h"
 
 /**
   *@author Gabor Torok
@@ -41,16 +39,40 @@
 class Scourge;
 class UserConfiguration;
 
+typedef struct _CharacterInfo {
+  TextField *name;
+
+  ScrollingList *charType;
+  Label *charTypeDescription;
+  char **charTypeStr;
+
+  ScrollingList *deityType;
+  Label *deityTypeDescription;
+  char **deityTypeStr;
+  
+  Canvas *portrait;
+  Button *nextPortrait;
+  Button *prevPortrait;
+  int portraitIndex;
+  
+  Canvas *model;
+  Button *nextModel;
+  Button *prevModel;
+  int modelIndex;
+
+  Button *back, *next;
+  
+} CharacterInfo;
+
 class PartyEditor {
 private:
 
   enum {
     INTRO_TEXT = 0,
-    SELECT_DIETY,
-    SELECT_NAME,
-    SELECT_CLASS,
-    SELECT_MODEL_AND_PORTRAIT,
-    ADJUST_SKILLS,
+    CREATE_CHAR_0,
+    CREATE_CHAR_1,
+    CREATE_CHAR_2,
+    CREATE_CHAR_3,
     OUTRO_TEXT
   };
 
@@ -58,7 +80,10 @@ private:
   Window *mainWin;
   CardContainer *cards;
   Label *intro;
-  Button *next, *back, *cancel, *done;
+  Button *cancel, *done;
+  Button *toIntro, *toChar0, *toLastChar;
+
+  CharacterInfo info[ MAX_PARTY_SIZE ];
 
   int step;
   
@@ -66,9 +91,15 @@ public:
   PartyEditor(Scourge *scourge);
   ~PartyEditor();
 
+  inline bool isVisible() { return mainWin->isVisible(); }
   inline void setVisible( bool b ) { mainWin->setVisible( b ); }
   inline Widget *getStartGameButton() { return done; }
+  inline Widget *getCancelButton() { return cancel; }
+  void reset();
+  void handleEvent( Widget *widget );
 
+ protected:
+  void createCharUI( int step, CharacterInfo *info );
 };
 
 #endif
