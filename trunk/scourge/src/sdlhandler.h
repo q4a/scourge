@@ -94,7 +94,7 @@ private:
 	CURSOR_CROSSHAIR
   };  
 
-  SDLHandler();
+  SDLHandler(ShapePalette *shapePal);
   ~SDLHandler();
   
   Uint16 mouseX, mouseY;

@@ -20,6 +20,7 @@
 
 #include "constants.h"
 #include "userconfiguration.h"
+#include "shapepalette.h"
 
 class GameAdapter {
 protected:
@@ -30,18 +31,24 @@ public:
   virtual ~GameAdapter();
 
   inline UserConfiguration *getUserConfiguration() { return userConfiguration; }
+
+  virtual void initVideo(ShapePalette *shapePal);
+  virtual void initUI();
+  virtual void start();
 };
 
 class ServerAdapter : public GameAdapter {
 public:
   ServerAdapter(UserConfiguration *config);
   virtual ~ServerAdapter();
+  virtual void start();
 };
 
 class ClientAdapter : public GameAdapter {
 public:
   ClientAdapter(UserConfiguration *config);
   virtual ~ClientAdapter();
+  virtual void start();
 };
 
 #endif

@@ -21,6 +21,7 @@
  */
 Session::Session(GameAdapter *adapter) {
   this->adapter = adapter;
+  shapePal = NULL;
   party = NULL;
   map = NULL;
   board = NULL;
@@ -33,6 +34,7 @@ Session::Session(GameAdapter *adapter) {
 }
 
 Session::~Session() {
+  if(shapePal) delete shapePal;
   if(party) delete party;
   if(board) delete board;
   if(map) delete map;
@@ -44,39 +46,35 @@ Session::~Session() {
 }
 
 void Session::initialize() {
-  initVideo();
+  shapePal = new ShapePalette();
+  adapter->initVideo(shapePal);
   initData();
-  initUI();
+  adapter->initUI();
 }
 
 void Session::start() {
-}
-
-void Session::initVideo() {
+  adapter->start();
 }
 
 void Session::initData() {
-  /*
-  map = new Map(this);
+  shapePal->initialize();
+
+//  map = new Map(this);
 
   // init characters first. Items use it for acl
-  Character::initCharacters();
+  //Character::initCharacters();
   // initialize the items
-  Item::initItems(this);
+//  Item::initItems(this);
   // initialize magic
-  MagicSchool::initMagic();
+  //MagicSchool::initMagic();
   // initialize the monsters (they use items, magic)
-  Monster::initMonsters();
+  //Monster::initMonsters();
 
   // create the mission board
-  board = new Board(this);
+//  board = new Board(this);
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
-  party = new Party(this);  
-  */
-}
-
-void Session::initUI() {
+//  party = new Party(this);  
 }
 
 void Session::quit(int value) {

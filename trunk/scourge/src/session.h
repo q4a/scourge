@@ -56,6 +56,7 @@ class GameAdapter;
 
 class Session {
 private:
+  ShapePalette *shapePal;
   GameAdapter *adapter;
   Party *party;
   Map *map;
@@ -94,14 +95,13 @@ public:
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
   inline bool isMultiPlayerGame() { return multiplayerGame; }
   inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
+  inline ShapePalette *getShapePalette() { return shapePal; }
 
   inline Map *getMap() { return map; }
   inline Board *getBoard() { return board; }
   inline Party *getParty() { return party; }
 
 protected:
-  virtual void initVideo();
-  virtual void initUI();
   virtual void initData();
 };
 

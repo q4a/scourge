@@ -22,7 +22,9 @@ ShapePalette *ShapePalette::instance = NULL;
 ShapePalette::ShapePalette(){
   texture_count = 0;
   textureGroupCount = 0;
+}
 
+void ShapePalette::initialize() {
   // load textures
   gui_texture = loadGLTextures("/gui.bmp");
   gui_wood_texture = loadGLTextures("/gui-wood.bmp");

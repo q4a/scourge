@@ -114,7 +114,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView {
   MultiplayerDialog *multiplayer;
   bool isInfoShowing;
   bool info_dialog_showing;
-  bool headless;
 
   Board *board;
   int nextMission;
@@ -210,8 +209,6 @@ public:
   
   Scourge(UserConfiguration *config);
   ~Scourge();
-
-  inline bool isHeadless() { return headless; }
 
   /**
     @return the Board containing the available missions.
@@ -546,6 +543,10 @@ public:
   */
   inline Client *getClient() { return client; }
 #endif
+
+  void initVideo(ShapePalette *shapePal);
+  void initUI();
+  void start();
 
  protected:
   //  void fightBattle(); 

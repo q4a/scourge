@@ -18,8 +18,9 @@
 
 #include "sdlhandler.h"
 
-SDLHandler::SDLHandler(){
+SDLHandler::SDLHandler(ShapePalette *shapePal){
   /* These are to calculate our fps */
+  this->shapePal = shapePal;
   T0     = 0;
   Frames = 0;                       
   fps = 0;
@@ -115,9 +116,7 @@ void SDLHandler::setOrthoView() {
 
 /* general OpenGL initialization function */
 int SDLHandler::initGL( GLvoid ) {
-    shapePal = new ShapePalette( );
-
-    /* Enable Texture Mapping */
+  /* Enable Texture Mapping */
     glEnable( GL_TEXTURE_2D );
       
     /* Enable smooth shading */
