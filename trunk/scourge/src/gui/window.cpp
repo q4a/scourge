@@ -106,7 +106,9 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
       if(window[i]->isModal()) {
         win = window[i];
         break;
-      } else if(window[i]->isInside(x, y)) {
+      } else if(window[i]->isInside(x, y) || 
+                event->type == SDL_KEYUP || 
+                event->type == SDL_KEYDOWN) {
         if(maxz < window[i]->getZ()) {
           win = window[i];
           maxz = win->getZ();
@@ -118,7 +120,7 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
   Widget *widget = NULL;
   if(win) {
     widget = win->handleWindowEvent(event, x, y);
-  }
+  } 
 
   // tell the other windows that the mouse is elsewhere
   for(int i = 0; i < windowCount; i++) {
@@ -145,7 +147,9 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     if(this->widget[t]->isVisible()) {
       if(!insideWidget) {
         if(insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT))) {
-          setFocus(this->widget[t]);
+          if(event->type == SDL_MOUSEBUTTONUP || 
+             event->type == SDL_MOUSEBUTTONDOWN) 
+            setFocus(this->widget[t]);
         }
       } 
       if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
@@ -157,7 +161,6 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
   if(message_button && w == message_button) {
     message_dialog->setVisible(false);
   }
-
   if(w) return w;
 
   // handled by closebutton
@@ -173,7 +176,9 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     }
   }
 
-  if(insideWidget) {
+  if(insideWidget && 
+     !(event->type == SDL_KEYUP || 
+       event->type == SDL_KEYDOWN)) {
     return this;
   }
 
@@ -192,10 +197,18 @@ bool Window::isInside(int x, int y) {
 
 bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   switch(event->type) {
-  case SDL_KEYDOWN:
+  //case SDL_KEYDOWN:
   case SDL_KEYUP:
   if(event->key.keysym.sym == SDLK_TAB) {
-    nextFocus();
+    if(SDL_GetModState() & KMOD_SHIFT) {
+      prevFocus();
+    } else {
+      nextFocus();
+    }
+    return true;
+  } else if(event->key.keysym.sym == SDLK_ESCAPE && closeButton && !isLocked()) {
+    setVisible(false);
+    return true;
   }
   break;
   case SDL_MOUSEMOTION:
@@ -230,6 +243,21 @@ void Window::nextFocus() {
   bool setFocus = false;
   for(int t = 0; t < 2; t++) {
     for(int i = 0; i < widgetCount; i++) {
+      if(widget[i]->hasFocus()) {
+        widget[i]->setFocus(false);
+        setFocus = true;
+      } else if(setFocus && widget[i]->canGetFocus()) {
+        widget[i]->setFocus(true);
+        return;
+      }
+    }
+  }
+}
+
+void Window::prevFocus() {
+  bool setFocus = false;
+  for(int t = 0; t < 2; t++) {
+    for(int i = widgetCount - 1; i >= 0; i--) {
       if(widget[i]->hasFocus()) {
         widget[i]->setFocus(false);
         setFocus = true;

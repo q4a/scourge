@@ -44,6 +44,7 @@ class Label : public Widget {
   inline void setText(char *s) { text = s; }
   inline void setTextCopy(char *s) { strcpy(text, s); }
   void drawWidget(Widget *parent);
+  inline bool canGetFocus() { return false; }
 };
 
 #endif

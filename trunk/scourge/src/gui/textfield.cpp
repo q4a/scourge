@@ -38,12 +38,12 @@ TextField::~TextField() {
 }
   
 bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
-  inside = isInside(x, y) || hasFocus();
+  inside = hasFocus();
   // handle it
   if(inside) {
     switch( event->type ) {
     case SDL_KEYDOWN:
-    case SDL_KEYUP:
+    //case SDL_KEYUP:
     //cerr << "key: " << event->key.keysym.sym << " maxPos=" << maxPos << " pos=" << pos << " numChars=" << numChars << endl;
     if(event->key.keysym.sym >= SDLK_SPACE && event->key.keysym.sym <= SDLK_z && 
        maxPos < numChars) {
@@ -105,9 +105,6 @@ void TextField::drawWidget(Widget *parent) {
 
   // border
   applyBorderColor();
-  if(inside) {
-    glLineWidth( 3.0f );
-  }
   glPushMatrix();
   glBegin(GL_LINES);
   glVertex2d(0, 0);
@@ -121,6 +118,7 @@ void TextField::drawWidget(Widget *parent) {
   glEnd();
   glPopMatrix();
   if(inside) {
+    glLineWidth( 3.0f );
     // cursor
     glLineWidth( 2.0f );
     glPushMatrix();
@@ -130,7 +128,7 @@ void TextField::drawWidget(Widget *parent) {
     glVertex2d(0, getHeight());
     glEnd();
     glPopMatrix();
+    glLineWidth( 1.0f );
   }
-  glLineWidth( 1.0f );
 }
 
