@@ -258,24 +258,6 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   char names[4][80] = { "Alamont", "Barlett", "Corinus", "Dialante" };
 
   for(int i = 0; i < pcCount; i++) {
-/*     
-    
-C:Ranger,ROGUE,/models/m1.bmp,10,2,12,400,RA
-C:Knight,FIGHTER,/models/m2.bmp,12,0,10,350,KN
-
-C:Tinkerer,ROGUE,/models/m1.bmp,7,4,10,300,TI
-C:Assassin,ROGUE,/models/m1.bmp,6,4,10,400,AS
-
-C:Arcanist,ROGUE,/models/m1.bmp,6,5,10,450,AR
-C:Loremaster,CLERIC,/models/m3.bmp,6,5,10,450,LO
-
-C:Conjurer,WIZARD,/models/m4.bmp,4,7,8,500,CO
-C:Summoner,WIZARD,/models/m4.bmp,4,7,8,500,SU
-
-C:Naturalist,CLERIC,/models/m3.bmp,5,7,9,450,NA
-C:Monk,CLERIC,/models/m3.bmp,6,6,10,400,MO
-    
-*/    
     // Get a good mix of classes (with different graphics)
     Character *c;
     switch(i) {

@@ -22,6 +22,8 @@
 
 #define BATTLES_ENABLED 1
 
+#define DRAG_START_TOLERANCE 5
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 // good for debugging blending
@@ -70,6 +72,8 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
 
   turnProgress = new Progress(this, 10, false, false, false);
   mouseZoom = mouseRot = false;
+  willStartDrag = false;
+  willStartDragX = willStartDragY = 0;
 }
 
 void Scourge::initVideo(ShapePalette *shapePal) {
@@ -860,15 +864,31 @@ bool Scourge::handleEvent(SDL_Event *event) {
         map->setZRot(0.0f);
       }
     }
+
+    // start the item drag
+    if(willStartDrag && 
+       (abs(mx - willStartDragX) > DRAG_START_TOLERANCE ||
+       abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
+      // click on an item
+      Uint16 mapx, mapy, mapz;
+      getMapXYZAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy, &mapz);
+      if(mapx > MAP_WIDTH) {
+        getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
+        mapz = 0;
+      }
+      startItemDrag(mapx, mapy, mapz);
+      willStartDrag = false;
+    }
+      
     processGameMouseMove(mx, my);  
   }
   break;
   case SDL_MOUSEBUTTONDOWN:
-	sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
-    if(event->button.button) {
-	  processGameMouseDown(mx, my, event->button.button);
-    }
-    break;	
+  sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+  if(event->button.button) {
+    processGameMouseDown(mx, my, event->button.button);
+  }
+  break;	
   case SDL_MOUSEBUTTONUP:
   sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
   if(event->button.button) {
@@ -1096,44 +1116,15 @@ bool Scourge::handleEvent(SDL_Event *event) {
 void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
   Uint16 mapx, mapy;
   getMapXYAtScreenXY(x, y, &mapx, &mapy);
-  if(mapx < MAP_WIDTH) {
-
-    /*
-    
-    // too slow to do on mouse move
-    
-    // find the drop target
-    Location *dropTarget = NULL;
-    if(movingItem) {
-      Uint16 mapx, mapy, mapz;
-      getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-      if(mapx < MAP_WIDTH) {
-        dropTarget = map->getLocation(mapx, mapy, mapz);
-        if(!(dropTarget && 
-             (dropTarget->creature || 
-              (dropTarget->item && 
-               dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
-          dropTarget = NULL;
-        }      
-      }
-    }
-    map->setSelectedDropTarget(dropTarget);
-    */
-    
-    map->handleMouseMove(mapx, mapy, 0);
-  }
+  if(mapx < MAP_WIDTH) map->handleMouseMove(mapx, mapy, 0);
 }
 
 void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
-  Uint16 mapx, mapy, mapz;
   if(button == SDL_BUTTON_LEFT) {
-    // click on an item
-    getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-    if(mapx > MAP_WIDTH) {
-      getMapXYAtScreenXY(x, y, &mapx, &mapy);
-      mapz = 0;
-    }
-    if(startItemDrag(mapx, mapy, mapz)) return;
+    // will start to drag when the mouse has moved
+    willStartDrag = true;
+    willStartDragX = x;
+    willStartDragY = y;
   } if(button == SDL_BUTTON_MIDDLE) {
     mouseRot = true;
   } if(button == SDL_BUTTON_WHEELUP) {
@@ -1148,6 +1139,9 @@ void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
 }
 
 void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
+  // don't drag if you haven't started yet
+  willStartDrag = false;
+
   char msg[80];
   Uint16 mapx, mapy, mapz;
   Creature *c = getTargetSelectionFor();
@@ -1223,12 +1217,14 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     Creature *c = getTargetSelectionFor();
     if(c) {
 
+      /*
       // need this hack b/c of the whole messy dragging items bit...
       if(movingItem) {
         mapx = map->getSelX();
         mapy = map->getSelY();
         mapz = dropItem(map->getSelX(), map->getSelY());
       }
+      */
 
       Location *pos = map->getLocation(mapx, mapy, mapz);
       char msg[80];
@@ -1250,7 +1246,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
         return;
       }
     }
-    
+
     if(useItem(mapx, mapy, mapz)) return;
 
     // click on the map
@@ -1531,12 +1527,6 @@ bool Scourge::useItem() {
 
 bool Scourge::useItem(int x, int y, int z) {
   if (movingItem) {
-    // a quick click opens a container
-    GLint delta = SDL_GetTicks() - dragStartTime;
-    if (delta < ACTION_CLICK_TIME &&
-        movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
-      openContainerGui(movingItem);      
-    }
     dropItem(map->getSelX(), map->getSelY());
     return true;
   }
@@ -1562,6 +1552,9 @@ bool Scourge::useItem(int x, int y, int z) {
       } else if (useBoard(pos)) {
         return true;
       } else if (useTeleporter(pos)) {
+        return true;
+      } else if(pos && pos->item && pos->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+        openContainerGui(pos->item);      
         return true;
       }
     }
