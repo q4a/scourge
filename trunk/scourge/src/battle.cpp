@@ -17,8 +17,8 @@
 
 #include "battle.h"
 
-#define GOD_MODE 1
-#define MONSTER_IMORTALITY 1
+#define GOD_MODE 0
+#define MONSTER_IMORTALITY 0
 
 char *Battle::sound[] = {
   "sound/weapon-swish/handheld/sw1.wav",
