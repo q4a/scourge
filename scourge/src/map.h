@@ -72,6 +72,11 @@ public:
 };
 
 
+// how many water points per 1 floor tile
+#define WATER_TILE_X 8
+#define WATER_TILE_Y 8
+
+
 /**
  *@author Gabor Torok
  */
@@ -90,6 +95,12 @@ class Map {
   Location *posCache[MAX_POS_CACHE];
   signed int nbPosCache;
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
+  typedef struct _WaterTile {
+    float z[WATER_TILE_X][WATER_TILE_Y];
+    float step[WATER_TILE_X][WATER_TILE_Y];
+    Uint32 lastTime[WATER_TILE_X][WATER_TILE_Y];
+  } WaterTile;
+  map<Uint32, WaterTile*> water;
   Session *session;
   bool debugGridFlag;
   bool drawGridFlag;
@@ -397,6 +408,18 @@ class Map {
      //cerr << "DEBUG: decodeTripletKey, key=" << key << " x=" << (*x) << " y=" << (*y) << " z=" << (*z) << endl;
    }
 
+   inline Uint32 createPairKey(int x, int y) {
+     Uint32 key = 
+       ((Uint32)x * (Uint32)MAP_WIDTH) + 
+       ((Uint32)y);
+     return key;
+   }
+
+   inline void decodePairKey(Uint32 key, int *x, int *y, int *z) {
+     *x = (int)(key / ((Uint32)MAP_WIDTH));
+     *y = (int)(key % ((Uint32)MAP_WIDTH));
+   }
+
    CFrustum *frustum;
    CVector3 chunks[100];
    int chunkCount;
@@ -407,7 +430,7 @@ class Map {
 	 If 'ground' is true, it draws the ground layer.
 	 Otherwise the shape arrays (other, stencil, later) are populated.
    */
-  void setupShapes(bool ground, int *csx=NULL, int *cex=NULL, int *csy=NULL, int *cey=NULL);
+  void setupShapes(bool ground, bool water, int *csx=NULL, int *cex=NULL, int *csy=NULL, int *cey=NULL);
   void setupPosition(int posX, int posY, int posZ,
                      float xpos2, float ypos2, float zpos2,
                      Shape *shape, Item *item, Creature *creature, 
@@ -415,6 +438,9 @@ class Map {
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
 						  Shape *shape);
+  void drawWaterPosition(int posX, int posY,
+                         float xpos2, float ypos2,
+                         Shape *shape);
   bool isWall(int x, int y, int z);
 
   void configureLightMap();
@@ -434,6 +460,8 @@ class Map {
   void moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
                        Sint16 ox, Sint16 oy, Sint16 oz,
                        Creature *creature);
+
+  void drawWater();
 };
 
 #endif

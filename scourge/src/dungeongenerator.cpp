@@ -775,21 +775,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
   updateStatus(MESSAGE);
     
   // draw the nodes on the map
-  drawNodesOnMap(map, shapePal, preGenerated, locationIndex);
-  
-  // hack: draw diff. floor tiles in HQ
-  /*
-  if(preGenerated) {
-	for(Sint16 x = 0; x < MAP_WIDTH; x++) {
-	  for(Sint16 y = 0; y < MAP_DEPTH; y++) {
-		if(map->getFloorPosition(x,y) == shapePal->findShapeByName("ROOM_FLOOR_TILE")) {
-		  map->setFloorPosition(x,y,shapePal->findShapeByName("ROOM2_FLOOR_TILE"));
-		}
-	  }
-	}
-  }
-  updateStatus(MESSAGE);
-  */
+  drawNodesOnMap(map, shapePal, preGenerated, locationIndex);  
 }
 
 void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal, 
