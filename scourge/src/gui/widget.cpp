@@ -18,6 +18,9 @@
 #include "widget.h"
 #include "window.h"
 #include "guitheme.h"
+#include "../sdlhandler.h"
+
+#define TOOLTIP_DELAY 500
 
 /**
   *@author Gabor Torok
@@ -41,6 +44,9 @@ Widget::Widget(int x, int y, int w, int h) {
   alpha = 0.5f;
   alphaInc = 0.05f;
   lastTick = 0;
+  strcpy( tooltip, "" );
+  tooltipTicks = 0;
+  tooltipShowing = false;
 }
 
 Widget::~Widget() {
@@ -375,3 +381,24 @@ void Widget::breakText( char *text, int lineWidth, vector<string> *lines ) {
   }
   free(p);
 }
+
+void Widget::drawTooltip( Widget *parent ) {
+  int xpos = ((Window*)parent)->getSDLHandler()->mouseX -  parent->getX();
+  int ypos = ((Window*)parent)->getSDLHandler()->mouseY -  parent->getY() - Window::TOP_HEIGHT;
+  bool b = isInside( xpos, ypos );
+
+  if( !( tooltipShowing && b ) ) {
+    if( !b ) {
+      tooltipShowing = b;
+      tooltipTicks = 0;
+    } else {
+      if( !tooltipTicks ) tooltipTicks = SDL_GetTicks();
+      else if( SDL_GetTicks() - tooltipTicks > TOOLTIP_DELAY ) {
+        tooltipShowing = b;
+      }
+    }
+  }
+  if( !tooltipShowing || !strlen( tooltip ) ) return;
+  ((Window*)parent)->getSDLHandler()->drawTooltip( xpos, ypos, 450, 0, 0, tooltip ); 
+}
+

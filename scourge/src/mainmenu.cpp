@@ -135,6 +135,17 @@ MainMenu::MainMenu(Scourge *scourge){
   newGameConfirm->setVisible( false );
   newGameConfirm->setModal( true );
 
+/*
+  newGameButton->setTooltip( "Start a new game" );
+  continueButton->setTooltip( "Load a saved party to continue the game" );
+#ifdef HAVE_SDL_NET
+  multiplayer->setTooltip( "Start or join a cooperative network game" );
+#endif
+  optionsButton->setTooltip( "Edit the game's options" );
+  aboutButton->setTooltip( "About S.C.O.U.R.G.E." );
+  quitButton->setTooltip( "Quit the game to work on more important things" );
+*/  
+
   partyEditor = new PartyEditor( scourge );
 }
 

@@ -2760,6 +2760,7 @@ void Scourge::drawWidget(Widget *w) {
         if( party->getParty( i ) == getParty()->getPlayer() ) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {
 			Spell *spell = getParty()->getPlayer()->getQuickSpell( t );
+      w->setTooltip( spell->getName() );
 			glEnable( GL_ALPHA_TEST );
 			glAlphaFunc( GL_EQUAL, 0xff );
 			glEnable(GL_TEXTURE_2D);
@@ -3332,47 +3333,16 @@ void Scourge::resetInfos() {
 void Scourge::drawInfos() {
   float xpos2, ypos2, zpos2;
   for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
-    glPushMatrix();
+
     InfoMessage *message = i->first;
     xpos2 = ((float)(message->x - levelMap->getX()) / GLShape::DIV);
     ypos2 = ((float)(message->y - levelMap->getY()) / GLShape::DIV);
     zpos2 = ((float)(message->z) / GLShape::DIV);
-    glTranslatef( xpos2, ypos2, zpos2 );
-	  glRotatef( -( levelMap->getZRot() ), 0.0f, 0.0f, 1.0f );
-    glRotatef( -( levelMap->getYRot() ), 1.0f, 0.0f, 0.0f );
 
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    int w = strlen( message->message ) * 7 + 4;
-    int h = 12;
-    int x = -2;
-    int y = -10;
-
-    glColor4f( 0, 0.15f, 0.05f, 0.5 );
-    glBegin( GL_QUADS );
-    glVertex2f( x + w, y );
-    glVertex2f( x, y  );
-    glVertex2f( x, y + h );
-    glVertex2f( x + w, y + h );
-    glEnd();
-    glDisable( GL_BLEND );
-
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    glColor4f( 0, 0.4f, 0.15f, 0.5 );
-    glBegin( GL_QUADS );
-    glVertex2f( x + w, y );
-    glVertex2f( x, y  );
-    glVertex2f( x, y + h );
-    glVertex2f( x + w, y + h );
-    glEnd();
-    glDisable( GL_BLEND );
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-    glColor4f( 1, 1, 1, 1 );
-    getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
-    getSDLHandler()->texPrint( 0, 0, "%s", message->message );
-    getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
-    glPopMatrix();
+    getSDLHandler()->drawTooltip( xpos2, ypos2, zpos2, 
+                                  -( levelMap->getZRot() ),
+                                  -( levelMap->getYRot() ),
+                                  message->message );
   }
 }
 

@@ -644,6 +644,57 @@ bool SDLHandler::intersects(SDL_Rect *a, SDL_Rect *b) {
         ? true : false);
 }
 
+void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2, 
+                              float zrot, float yrot, 
+                              char *message) {
+/*
+  InfoMessage *message = i->first;
+  xpos2 = ((float)(message->x - levelMap->getX()) / GLShape::DIV);
+  ypos2 = ((float)(message->y - levelMap->getY()) / GLShape::DIV);
+  zpos2 = ((float)(message->z) / GLShape::DIV);
+*/  
+  
+  glPushMatrix();
+  glTranslatef( xpos2, ypos2, zpos2 );
+  //glRotatef( -( levelMap->getZRot() ), 0.0f, 0.0f, 1.0f );
+  //glRotatef( -( levelMap->getYRot() ), 1.0f, 0.0f, 0.0f );
+  glRotatef( zrot, 0.0f, 0.0f, 1.0f );
+  glRotatef( yrot, 1.0f, 0.0f, 0.0f );
+  
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  int w = strlen( message ) * 7 + 4;
+  int h = 12;
+  int x = -2;
+  int y = -10;
+  
+  glColor4f( 0, 0.15f, 0.05f, 0.5 );
+  glBegin( GL_QUADS );
+  glVertex2f( x + w, y );
+  glVertex2f( x, y  );
+  glVertex2f( x, y + h );
+  glVertex2f( x + w, y + h );
+  glEnd();
+  glDisable( GL_BLEND );
+  
+  glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+  glColor4f( 0, 0.4f, 0.15f, 0.5 );
+  glBegin( GL_QUADS );
+  glVertex2f( x + w, y );
+  glVertex2f( x, y  );
+  glVertex2f( x, y + h );
+  glVertex2f( x + w, y + h );
+  glEnd();
+  glDisable( GL_BLEND );
+  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+  
+  glColor4f( 1, 1, 1, 1 );
+  setFontType( SDLHandler::SCOURGE_MONO_FONT );
+  texPrint( 0, 0, "%s", message );
+  setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
+  glPopMatrix();
+}
+
 void SDLHandler::testDrawView() {
    /* Clear The Screen And The Depth Buffer */
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

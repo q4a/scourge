@@ -94,7 +94,7 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
       dragging = false;
     }
   }
-  highlightBorders = (isInside(x, y) && dragAndDropHandler);
+  highlightBorders = (isInside(x, y) && dragAndDropHandler);  
   break;
   case SDL_MOUSEBUTTONUP:
   if(inside && dragAndDropHandler) dragAndDropHandler->receive(this);
