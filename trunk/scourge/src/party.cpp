@@ -294,7 +294,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[3]->setMp();
   pc[3]->setHunger(10);
   pc[3]->setThirst(10);
-  pc[3]->setStateMod(Constants::possessed, true);          
+  //pc[3]->setStateMod(Constants::possessed, true);          
 
   // compute starting skill levels
   for(int i = 0; i < pcCount; i++) {

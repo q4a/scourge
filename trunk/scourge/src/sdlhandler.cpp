@@ -441,8 +441,8 @@ void SDLHandler::mainLoop() {
         resizeWindow( event.resize.w, event.resize.h );
         break;
       case SDL_KEYUP:
-      // only process F1 once (on keyup)
-      if(event.key.keysym.sym == SDLK_F1) {
+      // only process F5 once (on keyup)
+      if(event.key.keysym.sym == SDLK_F5) {
         SDL_WM_ToggleFullScreen(screen);
         break;
       }

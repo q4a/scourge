@@ -374,10 +374,8 @@ class Creature {
 
   // handling battle targets (which in the future may be more than targetCreature)
   inline bool hasTarget() { return targetCreature || targetItem || targetX || targetY || targetZ; }
-  inline bool Creature::isTargetValid() {
-    if(!getTargetCreature()) return true;
-    return (!getTargetCreature()->getStateMod(Constants::dead));
-  }
+  bool isTargetValid();
+  bool canAttack(Creature *creature);
   void cancelTarget();
   void followTarget();
   //void makeTargetRetaliate();

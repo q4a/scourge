@@ -1080,7 +1080,12 @@ int Creature::getSkillModifiedArmor() {
 int Creature::addExperience(Creature *creature_killed) {
   int n = creature_killed->level - getLevel();
   if( n < 1 ) n = 1;
-  float m = (float)(creature_killed->getMonster()->getHp()) / 2.0f;
+  float m;
+  if(creature_killed->isMonster()) {
+    m = (float)(creature_killed->getMonster()->getHp()) / 2.0f;
+  } else {
+    m = (float)(creature_killed->getLevel() * 10) / 2.0f;
+  }
   int delta = n * 10 * (int)((m * rand()/RAND_MAX) + m);
   return addExperience(delta);
 }
@@ -1203,6 +1208,22 @@ bool Creature::addSpell(Spell *spell) {
   }
   spells.push_back(spell); 
   return true;
+}
+
+bool Creature::isTargetValid() {
+  if(!getTargetCreature()) return true;
+  if(getTargetCreature()->getStateMod(Constants::dead)) return false;
+  // when attacking, attack the opposite kind (unless possessed)
+  // however, you can cast spells on anyone
+  if(getAction() == Constants::ACTION_NO_ACTION && 
+     canAttack(getTargetCreature())) return false;
+  return true;
+}
+
+bool Creature::canAttack(Creature *creature) {
+  // when attacking, attack the opposite kind (unless possessed)
+  return (getStateMod(Constants::possessed) != 
+          (isMonster() == getTargetCreature()->isMonster()));
 }
 
 void Creature::cancelTarget() {
