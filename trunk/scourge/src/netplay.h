@@ -35,6 +35,10 @@ private:
   Scourge *scourge;
   Window *mainWin;
   ScrollingList *messageList;
+  TextField *chatText;
+  int chatStrCount;
+  char **chatStr;
+  static const int MAX_CHAT_SIZE = 100;
 
 public:
   NetPlay(Scourge *scourge);
@@ -49,6 +53,8 @@ public:
   void handleUnknownMessage();
 
   inline Window *getWindow() { return mainWin; }
+
+  bool handleEvent(Widget *widget, SDL_Event *event);
 };
 
 #endif

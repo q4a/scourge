@@ -1427,6 +1427,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	return false;
   }
 
+  if(netPlay->getWindow()->isVisible()) {
+    netPlay->handleEvent(widget, event);
+  }
+
   //if(multiplayer->isVisible()) {
 //    multiplayer->handleEvent(widget, event);
     //return false;

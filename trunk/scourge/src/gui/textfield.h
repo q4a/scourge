@@ -43,6 +43,7 @@ public:
   void drawWidget(Widget *parent);
   inline char *getText() { text[maxPos] = '\0'; return text; }
   inline void setFocus(bool b) { Widget::setFocus(b); inside = b; }
+  inline void clearText() { pos = maxPos = 0; }
 };
 
 #endif
