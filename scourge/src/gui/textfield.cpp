@@ -42,6 +42,9 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   // handle it
   if(inside) {
     switch( event->type ) {
+    case SDL_KEYUP:
+      if(event->key.keysym.sym == SDLK_RETURN) return true;
+      break;
     case SDL_KEYDOWN:
     //case SDL_KEYUP:
     //cerr << "key: " << event->key.keysym.sym << " maxPos=" << maxPos << " pos=" << pos << " numChars=" << numChars << endl;
