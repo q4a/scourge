@@ -19,7 +19,7 @@
 
 map<Creature*, vector<Projectile*>*> Projectile::projectiles;
 
-#define DELTA 0.75f
+#define DELTA 1.0f
 
 Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape) {
   this->creature = creature;

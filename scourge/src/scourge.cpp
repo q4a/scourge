@@ -1212,12 +1212,11 @@ void Scourge::playRound() {
   // -(or) the round was manually started
   GLint t = SDL_GetTicks();
   if(party->isRealTimeMode()) {
-
 	if(lastProjectileTick == 0 || t - lastProjectileTick > userConfiguration->getGameSpeedTicks() / 10) {
 	  lastProjectileTick = t;
 	  
 	  // move projectiles
-	  Projectile::moveProjectiles();	  
+	  Projectile::moveProjectiles();
 	}
 
 	if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
