@@ -38,7 +38,7 @@ class MultipleLabel : public Widget {
   Label *staticLabel;
   Label *dynamicLabel;
   bool inside;
-  int currentText;   
+  int currentTextInd;   
   
  public: 
 
@@ -48,7 +48,11 @@ class MultipleLabel : public Widget {
   void addText(char *s);
   void setText(int i);  
   void setNextText();
-    
+  inline char * getText(int i){if(i >= 0 && i < vText.size()){return vText[i];}}
+  inline int getCurrentTextInd(){ return currentTextInd; }
+  inline char * getCurrentText() { return vText[currentTextInd]; }
+  inline int getNbText(){ return vText.size();}
+        
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void drawWidget(Widget *parent);
 };

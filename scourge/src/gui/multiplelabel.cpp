@@ -29,7 +29,7 @@ MultipleLabel::MultipleLabel(int x1, int y1, int x2, int y2, char *staticText, i
   this->staticLabel  = new Label(0, 0, staticText);
   this->dynamicLabel = new Label(0, 0, NULL);   
   this->dynWidth = dynWidth;
-  this->currentText = 0;        
+  this->currentTextInd = 0;        
 }
 
 MultipleLabel::~MultipleLabel() {
@@ -37,22 +37,19 @@ MultipleLabel::~MultipleLabel() {
   delete dynamicLabel;
 }
 
-void MultipleLabel::drawWidget(Widget *parent) { 
-      
-  // Draw rectangle
-  glColor3f(0.5f, 0.5f, 0.1f);
-  //glColor3f(0.0f, 0.3f, 0.9f);   
- /* glBegin(GL_LINE_STRIP);  
-  glVertex2d(x2 - dynWidth, getY());
-  glVertex2d(x2 - dynWidth, y2);
-  glVertex2d(x2, y2);
-  glVertex2d(x2, getY());
-  glVertex2d(x2 - dynWidth, getY());
-  glEnd();  */
-  
-  
+void MultipleLabel::drawWidget(Widget *parent) {  
+   
+  // Draw rectangle     
+  applyBackgroundColor(true);    
+  glBegin(GL_QUADS);
+  glVertex2d(x2 - dynWidth, 0);
+  glVertex2d(x2 - dynWidth, y2 - getY());
+  glVertex2d(x2, y2 - getY());
+  glVertex2d(x2, 0);  
+  glEnd();
+    
   // Draw texts
-  glPushMatrix();
+  glPushMatrix();      
   glTranslated( 15, 15, 0);
   staticLabel->drawWidget(parent);
   glTranslated(x2 - dynWidth, 0, 0);
@@ -67,25 +64,21 @@ void MultipleLabel::addText(char * s){
 void MultipleLabel::setText(int i){
     if(i >= 0 && i < vText.size()){
         dynamicLabel->setText(vText[i]);
+        currentTextInd = i;
     }   
 }
 
 void MultipleLabel::setNextText(){
-    currentText++;
-    if(currentText >= vText.size()){
-        currentText = 0;
+    currentTextInd++;
+    if(currentTextInd >= vText.size()){
+        currentTextInd = 0;
     }
-    setText(currentText);
+    setText(currentTextInd);
 }
 
 // inside includes only the dynamic text
 bool MultipleLabel::isInside(int x, int y) {
-  /*return(x >= getX() && x < getX() + w &&
-  		  y >= getY() && y < getY() + h);*/  
-  /*cout << " x , y = " << x << ", " << y <<endl;
-  cout << (x2 - dynWidth) << " , " << x2<< endl;
-  cout << getY() << ", " << y2 - getY() << endl;*/
-  	return(x >= (x2 - dynWidth) && x < x2 && y >= getY() && y < y2);
+  	return(x >= (getX() + x2 - dynWidth) && x < (getX() + x2) && y >= getY() && y < y2);
 }
 
 bool MultipleLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
@@ -96,7 +89,7 @@ bool MultipleLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 	break;
   case SDL_MOUSEBUTTONUP:
     if(inside){setNextText();}
-	//return inside;
+	return inside;
   case SDL_MOUSEBUTTONDOWN:
 	break;
   default:
