@@ -743,28 +743,46 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
 
   // draw state mods
   if(groupMode || player) {
-	int n = 10;
+	glEnable(GL_TEXTURE_2D);
+	int n = 16;
 	float x = 0.0f;
 	float y = 0.0f;
+	int on = 0;
+	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	  if(creature->getStateMod(i) && i != Constants::dead) {
+		on++;
+	  }
+	}
 	int count = 0;
 	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
 	  if(creature->getStateMod(i) && i != Constants::dead) {
 		glPushMatrix();
 		glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
+		//		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
+		glRotatef( count * (360.0f / on), 0, 0, 1 );
 		glTranslatef( w / 2.0f + 5, 0, 0 );
 		//	  drawStateMod(i);
 		//glColor4f( 1, 1, 1, 1 );
+		GLuint icon = scourge->getShapePalette()->getStatModIcon(i);
+		if(icon) {
+		  glBindTexture( GL_TEXTURE_2D, icon );
+		}
 		glBegin( GL_QUADS );
+		glNormal3f( 0, 0, 1 );
+		if(icon) glTexCoord2f( 0, 0 );
 		glVertex3f( 0, 0, 0 );
+		if(icon) glTexCoord2f( 0, 1 );
 		glVertex3f( 0, n, 0 );
+		if(icon) glTexCoord2f( 1, 1 );
 		glVertex3f( n, n, 0 );
+		if(icon) glTexCoord2f( 1, 0 );
 		glVertex3f( n, 0, 0 );
 		glEnd();
 		glPopMatrix();
 		count++;
 	  }
 	}
+	glDisable(GL_TEXTURE_2D);
   }
 
   glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);

@@ -69,6 +69,7 @@ private:
   int shapeCount;
   GLuint display_list;
   GLuint gui_texture;
+  map<int, GLuint> statModIcons;
   
   typedef struct _Texture {
 	GLuint id;
@@ -116,6 +117,8 @@ public:
 
   GLuint formationTexIndex;
   inline GLuint getTexture(int index) { return textures[index].id; }
+
+  inline GLuint getStatModIcon(int statModIndex) { if(statModIcons.find(statModIndex) == statModIcons.end()) return (GLuint)0; else return statModIcons[statModIndex]; }
 
   // singleton
   inline static ShapePalette *getInstance() { return instance; }

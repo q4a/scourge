@@ -330,6 +330,14 @@ ShapePalette::ShapePalette(){
   strcpy(textures[texture_count++].filename, "formation5.bmp");
   strcpy(textures[texture_count++].filename, "formation6.bmp");
 
+  // load the status modifier icons
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	sprintf(path, "data/icons/i%d.bmp", i);
+	GLuint icon = loadGLTextures(path);
+	cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
+	if(icon) statModIcons[i] = icon;
+  }
+
   // set up the cursor
   setupAlphaBlendedBMP("data/cursor.bmp", &cursor, &cursorImage);
 
