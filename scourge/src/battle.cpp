@@ -204,6 +204,9 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
 
 bool Battle::fightTurn() {
 
+  // are we alive?
+  if(!creature || creature->getStateMod(Constants::dead)) return true;
+
   // done with this creature's turn
   if(ap <= 0) {
     reset();
@@ -227,6 +230,7 @@ bool Battle::fightTurn() {
     
     // center on player
     session->getParty()->setPlayer(creature);
+    // FIXME: only center if not on-screen
     session->getMap()->refresh();
     session->getMap()->center(creature->getX(), creature->getY(), true);
     
