@@ -48,6 +48,8 @@ Battle::Battle(Session *session, Creature *creature) {
   this->empty = false;
 
   this->needsReset = true;
+  this->nextTurn = 0;
+  this->weaponWait = 0;
 }
 
 Battle::~Battle() {
@@ -220,6 +222,10 @@ bool Battle::fightTurn() {
 
   // done with this creature's turn
   if(ap <= 0) {
+    if(weaponWait > 0) {
+      nextTurn = weaponWait;
+      cerr << "Carries over into next turn." << endl;
+    }
     reset();
     return true;
   }
@@ -351,37 +357,57 @@ bool Battle::pauseBeforePlayerTurn() {
 
 void Battle::initTurnStep() {
   dist = creature->getDistanceToTarget();
-  item = creature->getBestWeapon(dist);
 
-  if(item) {
-    cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
-  } else {
-    cerr << "\tUsing bare hands." << endl;
+  // select the best weapon only once
+  if(weaponWait <= 0) {
+    if(creature->getActionSpell()) {
+      range = Constants::MIN_DISTANCE;
+      range = creature->getActionSpell()->getDistance();
+      if(creature->getTargetCreature()) {
+        range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
+                  creature->getTargetCreature()->getShape()->getWidth() / 2 :
+                  creature->getTargetCreature()->getShape()->getDepth() / 2);
+      } else if(creature->getTargetItem()) {
+        range += (creature->getTargetItem()->getShape()->getWidth() > creature->getTargetItem()->getShape()->getDepth() ? 
+                  creature->getTargetItem()->getShape()->getWidth() / 2 :
+                  creature->getTargetItem()->getShape()->getDepth() / 2);
+      }
+      if(nextTurn > 0) weaponWait = nextTurn;
+      else weaponWait = creature->getActionSpell()->getSpeed();
+      nextTurn = 0;
+      cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
+    } else {
+      item = creature->getBestWeapon(dist);
+      range = Constants::MIN_DISTANCE;
+      if(item) range = item->getRpgItem()->getDistance();
+      if(creature->getTargetCreature()) {
+        range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
+                  creature->getTargetCreature()->getShape()->getWidth() / 2 :
+                  creature->getTargetCreature()->getShape()->getDepth() / 2);
+      }
+      if(item) {
+        cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
+      } else {
+        cerr << "\tUsing bare hands." << endl;
+      }
+      // How many steps to wait before being able to use the weapon.
+      weaponWait = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
+    }
+    if(nextTurn > 0) weaponWait = nextTurn;
+    nextTurn = 0;
+    cerr << "\tDistance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
   }
-
-  range = Constants::MIN_DISTANCE;
-  if(item) range = item->getRpgItem()->getDistance();
-  if(creature->getTargetCreature()) {
-    range += (creature->getTargetCreature()->getShape()->getWidth() > creature->getTargetCreature()->getShape()->getDepth() ? 
-              creature->getTargetCreature()->getShape()->getWidth() / 2 :
-              creature->getTargetCreature()->getShape()->getDepth() / 2);
-  }
-  cerr << "\tDistance=" << dist << " range=" << range << endl;
-
-  /**                 
-    * How many steps to wait before being able to use the weapon.
-    * 
-    *   FIXME: When implementing for real, this depends on item/spell,etc. 
-    * and skills like speed/proficency. Hard-coded for now.
-  */
-  weaponWait = 3;
 }
 
 void Battle::executeAction() {
   if(!projectileHit) {
-    ap -= weaponWait;
-    if(ap < 0) ap = 0;
+    ap--;
+    if(weaponWait > 0) {
+      weaponWait--;
+      if(weaponWait > 0) return;
+    }
   }
+
   // attack
   cerr << "\t\tAttacking." << endl;
 //  } else if(spell) {
@@ -392,7 +418,8 @@ void Battle::executeAction() {
   if(creature->getActionSpell()) {
     // casting a spell for the first time
     castSpell();
-  } else if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
+  //} else if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
+  } else if(item && item->getRpgItem()->isRangedWeapon()) {
       launchProjectile();
   } else {
     hitWithItem();
@@ -539,7 +566,8 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   proj->getCreature()->setTargetCreature(target);
   Battle *battle = proj->getCreature()->getBattle();
   if(proj->getItem()) {
-    battle->initItem(proj->getItem());
+    //battle->initItem(proj->getItem());
+    battle->item = proj->getItem();
     battle->projectileHit = true;
     battle->hitWithItem();
   } else if(proj->getSpell()) {
@@ -585,7 +613,8 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   battle->projectileHit = true;
 
   if(proj->getItem()) {
-    battle->initItem(proj->getItem());
+    //battle->initItem(proj->getItem());
+    battle->item = proj->getItem();
   } else if(proj->getSpell()) {
     battle->spell = proj->getSpell();
   }
