@@ -374,6 +374,8 @@ void C3DSShape::draw() {
 
 void C3DSShape::outline( float r, float g, float b ) {
   useShadow = true;
+  GLboolean blend;
+  glGetBooleanv( GL_BLEND, &blend );
   glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glPolygonMode( GL_FRONT, GL_LINE );
@@ -391,7 +393,7 @@ void C3DSShape::outline( float r, float g, float b ) {
   //glCullFace( GL_BACK );
   glDisable( GL_CULL_FACE );
   glPolygonMode( GL_FRONT, GL_FILL );
-  glDisable( GL_BLEND );
+  if( !blend ) glDisable( GL_BLEND );
   useShadow = false;
   glColor4f(1, 1, 1, 0.9f);
 }

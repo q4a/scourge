@@ -688,18 +688,28 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
 void Scourge::drawDraggedItem() {
   if(getMovingItem()) {
-	// glDisable(GL_DEPTH_TEST);
-	//	glDepthMask(GL_FALSE);
-	glPushMatrix();
-	glLoadIdentity();	
-	glTranslatef( getSDLHandler()->mouseX, getSDLHandler()->mouseY, 500);
-	glRotatef( getMap()->getXRot(), 0.0f, 1.0f, 0.0f );  
-	glRotatef( getMap()->getYRot(), 1.0f, 0.0f, 0.0f );  
-	glRotatef( getMap()->getZRot(), 0.0f, 0.0f, 1.0f );
-	map->doDrawShape(0, 0, 0, getMovingItem()->getShape(), 0);
-	glPopMatrix();
-	//	glEnable(GL_DEPTH_TEST);
-	//glDepthMask(GL_TRUE);
+    glPushMatrix();
+    glLoadIdentity();	
+    glTranslatef( getSDLHandler()->mouseX, getSDLHandler()->mouseY, 500);
+    glRotatef( getMap()->getXRot(), 0.0f, 1.0f, 0.0f );  
+    glRotatef( getMap()->getYRot(), 1.0f, 0.0f, 0.0f );  
+    glRotatef( getMap()->getZRot(), 0.0f, 0.0f, 1.0f );
+
+    DrawLater later;
+    later.xpos = 0;
+    later.ypos = 0;
+    later.zpos = 0;
+    later.shape = getMovingItem()->getShape();
+    later.creature = NULL;
+    later.item = getMovingItem();
+    later.projectile = NULL;
+    later.effect = NULL;
+    later.name = 0;
+    later.pos = NULL;
+
+    map->doDrawShape( &later );
+    //map->doDrawShape(0, 0, 0, getMovingItem()->getShape(), 0);
+    glPopMatrix();
   }
 
 

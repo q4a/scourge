@@ -954,6 +954,7 @@ void Map::draw() {
     //glDisable(GL_BLEND);
 
     // draw the effects
+    glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
     for(int i = 0; i < laterCount; i++) {
