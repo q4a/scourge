@@ -35,8 +35,8 @@ class Window : public Widget {
   static const int TILE_W=510 / 2;
   static const int TILE_H=270 / 2; 
 
-  static const int MAX_WINDOW = 100;
-  static const int MAX_WIDGET = 100;
+  static const int MAX_WINDOW = 200;
+  static const int MAX_WIDGET = 200;
 
   char *title;
   GLuint texture;

@@ -308,11 +308,14 @@ bool Scourge::handleEvent(SDL_Event *event) {
   case SDL_KEYDOWN:
   case SDL_KEYUP:
   
-    if(event->key.keysym.sym == SDLK_ESCAPE){
-        player->setSelXY(-1, -1);   // stop moving
-        movingItem = NULL;          // stop moving items
-				move = 0;
-        return true;
+    if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
+	  if(exitConfirmationDialog->isVisible()) {
+		exitConfirmationDialog->setVisible(false);
+	  } else {
+		if(startRound) toggleRound();
+		exitConfirmationDialog->setVisible(true);
+	  }	  
+	  return false;
     }
     
     // xxx_yyy_stop means : "do this action when the corresponding key is up"
@@ -848,8 +851,18 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	  if(startRound) toggleRound();
 	  optionsMenu->show();
 	}
-  } else if(widget == quitButton) {
+  } else if(widget == yesExitConfirm) {
+	exitConfirmationDialog->setVisible(false);
+	player->setSelXY(-1, -1);   // stop moving
+	movingItem = NULL;          // stop moving items
+	move = 0;
 	return true;
+  } else if(widget == noExitConfirm) {
+	exitConfirmationDialog->setVisible(false);
+	return false;
+  } else if(widget == quitButton) {
+	if(startRound) toggleRound();
+	exitConfirmationDialog->setVisible(true);
   } else if(widget == diamondButton) {
 	setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == staggeredButton) {
@@ -878,8 +891,8 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   return false;
 }
 
+// create the ui
 void Scourge::createUI() {
-  // create the ui
   char version[100];
   sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
   mainWin = new Window( getSDLHandler(),
@@ -946,6 +959,22 @@ void Scourge::createUI() {
   messageList = new ScrollingList(0, 0, 400, 95);
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
   messageWin->addWidget(messageList);
+
+  // FIXME: try to encapsulate this in a class...
+  //  exitConfirmationDialog = NULL;
+  int w = 250;
+  int h = 120;
+  exitConfirmationDialog = new Window(getSDLHandler(),
+									  (getSDLHandler()->getScreen()->w/2) - (w/2), 
+									  (getSDLHandler()->getScreen()->h/2) - (h/2), 
+									  w, h,
+									  strdup("Exit mission?"), 
+									  getShapePalette()->getGuiTexture());
+  yesExitConfirm = new Button( 40, 50, 110, 80, strdup("Yes") );
+  exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
+  noExitConfirm = new Button( 140, 50, 210, 80, strdup("No") );
+  exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
+  exitConfirmationDialog->addWidget((Widget*)new Label(20, 20, strdup("Do you really want to exit this mission?")));
 }
 
 
