@@ -660,13 +660,24 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
+  for(int xp = 0; xp < shape->getWidth(); xp++) {
+	for(int yp = 0; yp < shape->getDepth(); yp++) {
+	  scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
+	}
+  }
 }
 
 Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
 	Shape *shape = NULL;
   if(floorPositions[x][y]) {
     shape = floorPositions[x][y];
-	  floorPositions[x][y] = 0;
+	floorPositions[x][y] = 0;
+	for(int xp = 0; xp < shape->getWidth(); xp++) {
+	  for(int yp = 0; yp < shape->getDepth(); yp++) {
+		// fixme : is it good or not to erase the minimap too ???       
+		scourge->getMiniMap()->eraseMiniMapPoint(x, y);
+	  }
+	}
   }
 	return shape;
 }
@@ -768,6 +779,7 @@ void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) 
                     fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
                     if(shape) {
                         description = shape->getRandomDescription();
+                        //description= shape->getName();
                     }        
                 }
                 if(description) {
@@ -792,6 +804,7 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
 	mapChanged = true;
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 	  for(int yp = 0; yp < shape->getDepth(); yp++) {
+	    scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
 		for(int zp = 0; zp < shape->getHeight(); zp++) {
 		  
 		  if(!pos[x + xp][y - yp][z + zp]) {
@@ -807,6 +820,7 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
 		}
 	  }
 	}
+	
   }
 }
 
@@ -821,6 +835,8 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
     shape = pos[x][y][z]->shape;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
+        // fixme : is it good or not to erase the minimap too ???       
+        scourge->getMiniMap()->eraseMiniMapPoint(x + xp, y - yp);
         for(int zp = 0; zp < shape->getHeight(); zp++) {
 		  delete pos[x + xp][y - yp][z + zp];
 		  pos[x + xp][y - yp][z + zp] = NULL;          
@@ -836,7 +852,7 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
     if(item->getShape()) {
 	  mapChanged = true;
       for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
-        for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {
+        for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {          
           for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
 
             if(!pos[x + xp][y - yp][z + zp]) {
@@ -866,7 +882,7 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
 	mapChanged = true;
     item = pos[x][y][z]->item;
     for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
-      for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {
+      for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {       
         for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
 		  
 		  delete pos[x + xp][y - yp][z + zp];

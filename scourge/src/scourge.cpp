@@ -113,6 +113,7 @@ void Scourge::startMission() {
 
   // create the map
   map = new Map(this);
+  miniMap = new MiniMap(this);
   player_only = false;
 
   map->addDescription(Constants::getMessage(Constants::WELCOME));
@@ -125,7 +126,7 @@ void Scourge::startMission() {
 
   // position the players
   player->moveTo(startx, starty, 0);
-  map->setCreature(startx, starty, 0, player);
+  map->setCreature(startx, starty, 0, player); 
 
   // init the rest of the party
   player = party[0];
@@ -172,6 +173,8 @@ void Scourge::drawView(SDL_Surface *screen) {
 
   gui->drawWindows();
 
+  // FIXME: it'd be good to specify this in screen coordinates
+  miniMap->draw(0, 200);
   
   glEnable( GL_DEPTH_TEST );
   //  glEnable( GL_LIGHTING );
