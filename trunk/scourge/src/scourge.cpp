@@ -462,10 +462,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
         userConfiguration->setAlwaysCenterMap(!mc);
     }
     else if(ea == INCREASE_GAME_SPEED){
-        addGameSpeed(-15);        
+        addGameSpeed(-1);        
     }
     else if(ea == DECREASE_GAME_SPEED){
-        addGameSpeed(15);        
+        addGameSpeed(1);        
     }    
 	else if(ea == START_ROUND) {
 	  toggleRound();
@@ -1341,21 +1341,9 @@ void Scourge::setFormation(int formation) {
 
 void Scourge::addGameSpeed(int speedFactor){
     char msg[80];
-    int gameSpeed;
-    
-    gameSpeed = userConfiguration->getGameSpeedTicks();
-    gameSpeed +=speedFactor;
-    if(gameSpeed > 300){
-        gameSpeed = 300;
-    }
-    else{
-        if(gameSpeed < 0){
-            gameSpeed = 0;
-        }        
-    }
-    sprintf(msg, "Speed set to %d\n", gameSpeed);
+		userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
+    sprintf(msg, "Speed set to %d\n", userConfiguration->getGameSpeedTicks());
     map->addDescription(msg);
-    userConfiguration->setGameSpeedTicks(gameSpeed);
 }
 
 /**

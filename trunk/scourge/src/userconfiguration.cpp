@@ -527,33 +527,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }    
 }
 
-int UserConfiguration::setGameSpeedTicks(int ticks){
-    if(ticks <= 0){
-        gamespeed = 0;
-    }else if(ticks <= 130){
-        gamespeed = 1;
-    }else if(ticks <= 210){
-        gamespeed = 2;
-    }else if(ticks <= 450){
-        gamespeed = 3;
-    }else if(ticks <= 1000){
-        gamespeed = 4;
-    } 
-}
-
 
 int UserConfiguration::getGameSpeedTicks(){
-    if(gamespeed == 0){
-        return 0;
-    }else if(gamespeed == 1){
-        return 130;
-    }else if(gamespeed == 2){
-        return 210;
-    }else if(gamespeed == 3){
-        return 450;
-    }else if(gamespeed == 4){
-        return 1000;
-    }
+		return gamespeed * 75;
 }
 
 
