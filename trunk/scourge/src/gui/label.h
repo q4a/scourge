@@ -34,6 +34,7 @@ class Label : public Widget {
   Label(int x, int y, char *text);
   ~Label();
   inline char *getText() { return text; }
+  inline void setText(char *s) { free(text); text = strdup(s); }
   void drawWidget(Widget *parent);
 };
 

@@ -218,7 +218,7 @@ void Window::drawWidget(Widget *parent) {
   glPopMatrix();
 
   // draw widgets
-  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {  
+  if(isOpening()) {  
 	scissorToWindow();
   }
   for(int i = 0; i < widgetCount; i++) {                  
@@ -235,7 +235,7 @@ void Window::drawWidget(Widget *parent) {
 	  glPopMatrix();
 	}
   }  
-  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {  
+  if(isOpening()) {  
     glDisable( GL_SCISSOR_TEST );
   }
   

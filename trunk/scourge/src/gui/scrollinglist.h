@@ -38,6 +38,9 @@ class ScrollingList : public Widget {
   GLint lastTick;
   bool inside;
   int scrollerY;
+  bool dragging;
+  int dragX, dragY;
+  int selectedLine;
 
  public: 
   ScrollingList(int x, int y, int w, int h);
@@ -47,6 +50,9 @@ class ScrollingList : public Widget {
   void setLines(int count, const char *s[]);
   inline const char *getLine(int index) { return list[index]; }
 
+  inline int getSelectedLine() { return selectedLine; }
+  inline void setSelectedLine(int n) { selectedLine = n; }
+
   void drawWidget(Widget *parent);
 
   /**
@@ -55,7 +61,6 @@ class ScrollingList : public Widget {
 	 to the outside world.
    */
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
-
 };
 
 #endif

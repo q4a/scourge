@@ -60,6 +60,8 @@ class Window : public Widget {
   Window(SDLHandler *sdlHandler, int x, int y, int w, int h, const char *title, GLuint texture);
   ~Window();
 
+  inline bool isOpening() { return openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)); }
+
   inline void setZ(int z) { this->z = z; }
   inline int getZ() { return z; }
 
