@@ -67,7 +67,7 @@ class Date {
   bool isInferiorTo(Date d);
   bool isEqualTo(Date d);
   void print();
-  
+  bool isADayLater(Date date);
   
   Date();
   Date(int sec, int min, int hour, int day, int month, int year);
