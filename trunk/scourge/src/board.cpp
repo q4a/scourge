@@ -25,13 +25,6 @@
   *@author Gabor Torok
   */
 
-/*
-char Board::objectiveName[OBJECTIVE_COUNT][80] = {
-  "FIND_OBJECT",
-  "KILL_MONSTER"
-};
-*/
-
 Board::Board(Session *session) {
   this->session = session;
 
@@ -100,21 +93,14 @@ Board::Board(Session *session) {
     } else if(n == 'I' && current_mission) {
       fgetc(fp);
       n = Constants::readLine( line, fp );
-      Item *item = new Item( RpgItem::getItemByName(line), 
-                            current_mission->getLevel() );
-      item->setBlocking(true); // don't let monsters pick this up
+      RpgItem *item = RpgItem::getItemByName(line);
       current_mission->addItem( item );
     
     } else if(n == 'M' && current_mission) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
       Monster *monster = Monster::getMonsterByName(line);
-      GLShape *shape = session->getShapePalette()->
-        getCreatureShape(monster->getModelName(), 
-                         monster->getSkinName(), 
-                         monster->getScale());
-      Creature *creature = new Creature( session, monster, shape );
-      current_mission->addCreature( creature );
+      current_mission->addCreature( monster );
     
     } else {
       n = Constants::readLine(line, fp);
@@ -142,6 +128,11 @@ void Board::reset() {
     Mission *mission = storylineMissions[i];
     mission->reset();
   }
+  for( int i = 0; i < (int)availableMissions.size(); i++ ) {
+    Mission *mission = availableMissions[i];
+    delete mission;
+  }
+  availableMissions.clear();
 }
 
 void Board::initMissions() {
@@ -226,9 +217,6 @@ void Board::initMissions() {
 MissionTemplate::MissionTemplate( char *name, char *description ) {
   strcpy( this->name, name );
   strcpy( this->description, description );
-  cerr << "*** Adding template: " << this->name << endl;
-  cerr << this->description << endl;
-  cerr << "----------------------------" << endl;
 }
 
 MissionTemplate::~MissionTemplate() {
@@ -238,8 +226,8 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
 
   cerr << "*** Creating level " << level << " mission, using template: " << this->name << endl;
 
-  map<string, Item*> items;
-  map<string, Creature*> creatures;
+  map<string, RpgItem*> items;
+  map<string, Monster*> creatures;
 
   char parsedName[80];
   char parsedDescription[2000];
@@ -252,13 +240,13 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   Mission *mission = new Mission( level, depth, parsedName, parsedDescription, 
                                   "You have succeeded in your mission!", 
                                   "You have failed to complete your mission" );
-  for(map<string, Item*>::iterator i=items.begin(); i!=items.end(); ++i) {
-    Item *item = i->second;
+  for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
+    RpgItem *item = i->second;
     mission->addItem( item );
   }
-  for(map<string, Creature*>::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
-    Creature *creature = i->second;
-    mission->addCreature( creature );
+  for(map<string, Monster*>::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
+    Monster *monster = i->second;
+    mission->addCreature( monster );
   }
 
   return mission;
@@ -266,8 +254,8 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
 
 void MissionTemplate::parseText( Session *session, int level, 
                                  char *text, char *parsedText,
-                                 map<string, Item*> *items, 
-                                 map<string, Creature*> *creatures ) {
+                                 map<string, RpgItem*> *items, 
+                                 map<string, Monster*> *creatures ) {
   //cerr << "parsing text: " << text << endl;
   strcpy( parsedText, "" );
   char *p = strtok( text, " " );
@@ -282,16 +270,16 @@ void MissionTemplate::parseText( Session *session, int level,
       
       if( strstr( varName, "item" ) ) {
         string s = varName;
-        Item *item;
+        RpgItem *item;
         if( items->find( s ) == items->end() ) {
-          item = new Item( RpgItem::getRandomItem( 1 ), level );
-          item->setBlocking(true); // don't let monsters pick this up
+          item = RpgItem::getRandomItem( 1 );
+          //item->setBlocking(true); // don't let monsters pick this up
           (*items)[ s ] = item;
         } else {
           item = (*items)[s];
         }
         // FIXME: also copy text before and after the variable
-        strcat( parsedText, item->getRpgItem()->getName() );
+        strcat( parsedText, item->getName() );
       } else if( strstr( varName, "creature" ) ) {
 
         // FIXME: must ensure that there is only 1 such monster on this level!
@@ -299,11 +287,10 @@ void MissionTemplate::parseText( Session *session, int level,
         // Items don't matter they're on pedestals.
 
         string s = varName;
-        Creature *creature;
+        Monster *monster = NULL;
         if( creatures->find( s ) == creatures->end() ) {
           
           // find a monster
-          Monster *monster = NULL;
           int monsterLevel = level;
           while( monsterLevel > 0 && !monster ) {
             monster = Monster::getRandomMonster( monsterLevel );
@@ -316,19 +303,12 @@ void MissionTemplate::parseText( Session *session, int level,
             cerr << "Error: could not find any monsters." << endl;
             exit( 1 );
           }
-          
-          // create the shape
-          GLShape *shape = session->getShapePalette()->
-            getCreatureShape(monster->getModelName(), 
-                             monster->getSkinName(), 
-                             monster->getScale());
-          creature = new Creature( session, monster, shape );
-          (*creatures)[ s ] = creature;
+          (*creatures)[ s ] = monster;
         } else {
-          creature = (*creatures)[s];
+          monster = (*creatures)[s];
         }
         // FIXME: also copy text before and after the variable
-        strcat( parsedText, creature->getMonster()->getType() );
+        strcat( parsedText, monster->getType() );
       }
     } else {
       strcat( parsedText, p );
@@ -347,42 +327,40 @@ Mission::Mission( int level, int depth, char *name, char *description, char *suc
   strcpy( this->failure, failure );
   this->completed = false;
 
-  cerr << "*** Created mission: " << getName() << endl;
-  cerr << getDescription() << endl;
-  cerr << "-----------------------" << endl;
+//  cerr << "*** Created mission: " << getName() << endl;
+//  cerr << getDescription() << endl;
+//  cerr << "-----------------------" << endl;
 }
 
 Mission::~Mission() {
-  for(map<Item*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
-    Item *item = i->first;
-    delete item;
-  }
   items.clear();
   itemList.clear();
-  for(map<Creature*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
-    Creature *creature = i->first;
-    delete creature;
-  }
   creatures.clear();
   creatureList.clear();
 }
 
 bool Mission::itemFound(Item *item) {
   if( !completed ) {
-    if( items.find( item ) != items.end() ) {
-      items[ item ] = true;
-      checkMissionCompleted();
+    if( itemInstanceMap.find( item ) != itemInstanceMap.end() ) {
+      RpgItem *rpgItem = itemInstanceMap[ item ];
+      if( items.find( rpgItem ) != items.end() ) {
+        items[ rpgItem ] = true;
+        checkMissionCompleted();
+      }
+      return isCompleted();
     }
-    return isCompleted();
   }
   return false;
 }
 
 bool Mission::creatureSlain(Creature *creature) {
   if( !completed ) {
-    if( creatures.find( creature ) != creatures.end() ) {
-      creatures[ creature ] = true;
-      checkMissionCompleted();
+    if( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() ) {
+      Monster *monster = monsterInstanceMap[ creature ];
+      if( creatures.find( monster ) != creatures.end() ) {
+        creatures[ monster ] = true;
+        checkMissionCompleted();
+      }
     }
     return isCompleted();
   }
@@ -391,14 +369,14 @@ bool Mission::creatureSlain(Creature *creature) {
 
 void Mission::checkMissionCompleted() {
   completed = true;
-  for(map<Item*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
+  for(map<RpgItem*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
     bool b = i->second;
     if( !b ) {
       completed = false;
       return;
     }
   }
-  for(map<Creature*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
+  for(map<Monster*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
     bool b = i->second;
     if( !b ) {
       completed = false;
@@ -410,100 +388,14 @@ void Mission::checkMissionCompleted() {
 void Mission::reset() {
   completed = false;
   // is this ok? (below: to modify the table while iterating it...)
-  for(map<Item*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
-    Item *item = i->first;
+  for(map<RpgItem*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
+    RpgItem *item = i->first;
     items[ item ] = false;
   }
-  for(map<Creature*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
-    Creature *creature = i->first;
-    creatures[ creature ] = false;
+  for(map<Monster*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
+    Monster *monster = i->first;
+    creatures[ monster ] = false;
   }
+  itemInstanceMap.clear();
+  monsterInstanceMap.clear();
 }
-
-
-
-
-
-
-
-
-// ------------------------------
-// Mission stuff
-//
-/*
-Mission::Mission(char *name, int level, int dungeonStoryCount) {
-  strcpy(this->name, name);
-  this->level = level;
-  this->dungeonStoryCount = dungeonStoryCount;
-
-  strcpy(this->story, "");
-  this->completed = false;
-  this->objective = NULL;
-}
-
-Mission::~Mission() {
-  delete objective;
-}
-
-bool Mission::itemFound(RpgItem *item) {
-  if(!completed && 
-	 objective &&
-	 item) {
-	for(int i = 0; i < objective->itemCount; i++) {
-	  if(objective->item[i] == item && !objective->itemHandled[i]) {
-		objective->itemHandled[i] = true;
-		checkMissionCompleted();
-		return isCompleted();
-	  }
-	}
-  }
-  return false;
-}
-
-bool Mission::monsterSlain(Monster *monster) {
-  if(!completed &&
-	 objective &&
-	 monster) {
-	for(int i = 0; i < objective->monsterCount; i++) {
-	  if(objective->monster[i] == monster &&
-		 !objective->monsterHandled[i]) {
-		objective->monsterHandled[i] = true;
-		checkMissionCompleted();
-		return isCompleted();
-	  }
-	}
-  }
-  return false;
-}
-
-void Mission::checkMissionCompleted() {
-  completed = true;
-  if(objective) {
-	for(int i = 0; i < objective->itemCount; i++) {
-	  if(!objective->itemHandled[i]) {
-		completed = false;
-		return;
-	  }
-	}
-	for(int i = 0; i < objective->monsterCount; i++) {
-	  if(!objective->monsterHandled[i]) {
-		completed = false;
-		return;
-	  }
-	}
-  }
-}
-
-void Mission::reset() {
-  completed = false;
-  if(objective) {
-	for(int i = 0; i < objective->itemCount; i++) {
-	  objective->itemHandled[i] = false;
-	}
-	for(int i = 0; i < objective->monsterCount; i++) {
-	  objective->monsterHandled[i] = false;
-	}
-  }
-}
-*/
-

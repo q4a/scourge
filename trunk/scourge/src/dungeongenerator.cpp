@@ -1162,7 +1162,10 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
     // mission objects are on a pedestal
     // and they are blocking so creatures can't get them
     for(int i = 0; i < mission->getItemCount(); i++) {
-      Item *item = mission->getItem( i );
+      RpgItem *rpgItem = mission->getItem( i );
+      Item *item = scourge->getSession()->newItem( rpgItem, mission->getLevel() );
+      mission->addItemInstance( item, rpgItem );
+      item->setBlocking(true); // don't let monsters pick this up
       Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
       int x, y;
       getRandomLocation(map, pedestal->getShape(), &x, &y);
@@ -1177,7 +1180,13 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
     // add mission creatures
     for(int i = 0; i < mission->getCreatureCount(); i++) {
       int x, y;
-      Creature *creature = mission->getCreature( i );
+      Monster *monster = mission->getCreature( i );
+      GLShape *shape = scourge->getSession()->getShapePalette()->
+        getCreatureShape(monster->getModelName(), 
+                         monster->getSkinName(), 
+                         monster->getScale());
+      Creature *creature = scourge->getSession()->newCreature( monster, shape );
+      mission->addCreatureInstanceMap( creature, monster );
       getRandomLocation(map, creature->getShape(), &x, &y);    
       addItem(map, creature, NULL, NULL, x, y);
       creature->moveTo(x, y, 0);
