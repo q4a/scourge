@@ -800,14 +800,19 @@ void Map::drawProjectiles() {
 
       // collision detection
       bool blocked = false;
+
+      // location target projectile hit
+      if(proj->atTargetLocation() &&
+         proj->getSpell() &&
+         proj->getSpell()->isLocationTargetAllowed()) {
+        cerr << "PROJECTILE ATTACK: from map: target location based." << endl;
+        session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());
+        blocked = true;
+      }
+
       Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
       if(loc && proj->doesStopOnImpact()) {
-        if(proj->atTargetLocation() &&
-                  proj->getSpell() &&
-                  proj->getSpell()->isLocationTargetAllowed()) {
-          session->getGameAdapter()->fightProjectileHitTurn(proj, loc->x, loc->y);
-          blocked = true;
-        } else if(loc->creature && 
+        if(loc->creature && 
              proj->getCreature()->canAttack(loc->creature)) {
             battleProjectiles[proj] = loc->creature;
             blocked = true;
@@ -816,9 +821,11 @@ void Map::drawProjectiles() {
           // hit something
           blocked = true;
         }
-        if (blocked) {
-          removedProjectiles.push_back(proj);
-        }
+      }
+
+      // remove finished projectiles
+      if (blocked) {
+        removedProjectiles.push_back(proj);
       }
     }
   }
@@ -827,6 +834,7 @@ void Map::drawProjectiles() {
   for (map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
     Projectile *proj = i->first;
     Creature *creature = i->second;
+    cerr << "PROJECTILE ATTACK: from map: target creature based." << endl;
     session->getGameAdapter()->fightProjectileHitTurn(proj, creature);
   }
 
