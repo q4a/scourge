@@ -46,7 +46,8 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
-  needToCheckInfo = needToCheckDropLocation = true;
+  needToCheckInfo = false;
+  needToCheckDropLocation = true;
   nextMission = -1;
   // in HQ map
   inHq = true;
@@ -396,8 +397,6 @@ void Scourge::drawView() {
   if(isInfoShowing) {
     levelMap->initMapView();
 
-    drawInfos();
-
     // creatures first
     for(int i = 0; i < session->getCreatureCount(); i++) {
       if(!session->getCreature(i)->getStateMod(Constants::dead) && 
@@ -426,6 +425,9 @@ void Scourge::drawView() {
                          !party->isPlayerOnly());
       }
     }
+
+    drawInfos();
+
     glDisable( GL_CULL_FACE );
     glDisable( GL_SCISSOR_TEST );
   }
@@ -3145,13 +3147,18 @@ void Scourge::checkForInfo() {
             // FIXME: use lookup table
             for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
               InfoMessage *message = i->first;
-              if( message->obj == obj ) {
+              if( message->obj == obj || 
+                  ( message->x == pos->x &&
+                    message->y == pos->y &&
+                    message->z == pos->z ) ) {
                 found = true;
                 break;
               }
             }
             if( !found ) {
-              InfoMessage *message = new InfoMessage( s, obj, pos->x, pos->y, pos->z );
+              InfoMessage *message = 
+                new InfoMessage( s, obj, pos->x, pos->y, 
+                                 pos->z + pos->shape->getHeight() );
               infos[ message ] = SDL_GetTicks();
             }
           }
@@ -3184,17 +3191,45 @@ void Scourge::resetInfos() {
 
 void Scourge::drawInfos() {
   float xpos2, ypos2, zpos2;
-  glColor4f( 1, 1, 1, 1 );
   for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
     glPushMatrix();
     InfoMessage *message = i->first;
     xpos2 = ((float)(message->x - levelMap->getX()) / GLShape::DIV);
     ypos2 = ((float)(message->y - levelMap->getY()) / GLShape::DIV);
-    zpos2 = 0.0f / GLShape::DIV;
-    glTranslatef( xpos2, ypos2, 100 );
+    zpos2 = ((float)(message->z) / GLShape::DIV);
+    glTranslatef( xpos2, ypos2, zpos2 );
 	  glRotatef( -( levelMap->getZRot() ), 0.0f, 0.0f, 1.0f );
     glRotatef( -( levelMap->getYRot() ), 1.0f, 0.0f, 0.0f );
-    getSDLHandler()->texPrint( 0, 0, "%s", message->message );
+
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    int w = strlen( message->message ) * 7 + 4;
+    int h = 12;
+    int x = -2;
+    int y = -10;
+
+    glColor4f( 0, 0.15f, 0.05f, 0.5 );
+    glBegin( GL_QUADS );
+    glVertex2f( x + w, y );
+    glVertex2f( x, y  );
+    glVertex2f( x, y + h );
+    glVertex2f( x + w, y + h );
+    glEnd();
+    glDisable( GL_BLEND );
+
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glColor4f( 0, 0.4f, 0.15f, 0.5 );
+    glBegin( GL_QUADS );
+    glVertex2f( x + w, y );
+    glVertex2f( x, y  );
+    glVertex2f( x, y + h );
+    glVertex2f( x + w, y + h );
+    glEnd();
+    glDisable( GL_BLEND );
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+    glColor4f( 1, 1, 1, 1 );
+    getSDLHandler()->texPrintMono( 0, 0, "%s", message->message );
     glPopMatrix();
   }
 }
