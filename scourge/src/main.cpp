@@ -51,6 +51,7 @@ void findLocalResources(const char *appPath, char *dir) {
 	// remove the last separator
 	*(p) = 0;
   }
+  dir[0] = '\0';
 }
 
 int main(int argc, char *argv[]) {
