@@ -112,11 +112,22 @@ private:
 
   Scourge *scourge;
 
-public: 
-	DungeonGenerator(Scourge *scourge, int level);
-	~DungeonGenerator();
+  static const char *location[][MAP_WIDTH];
 
-  void toMap(Map *map, ShapePalette *shapePal);
+public: 
+
+  // pre-rendered location index
+  enum {
+	HQ_LOCATION = 1,
+
+	// must be the last one
+	LOCATION_COUNT
+  };
+  
+  DungeonGenerator(Scourge *scourge, int level);
+  ~DungeonGenerator();
+
+  void toMap(Map *map, ShapePalette *shapePal, int location=0);
 
 protected:
 
@@ -125,6 +136,11 @@ protected:
   void makeSparse();
   void makeLoops();
   void makeRooms();
+
+  // construct a pre-rendered location
+  void constructMaze(int location);
+
+  void drawNodesOnMap(Map *map, ShapePalette *shapePal);
 
   /**
     Return a random location in the maze that has not been visited yet.

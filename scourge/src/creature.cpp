@@ -122,7 +122,20 @@ bool Creature::move(Uint16 dir, Map *map) {
   setFacingDirection(dir);
   map->removeCreature(x, y, z);
   Location *loc = map->getBlockingLocation(getShape(), nx, ny, nz);
-  if(!loc) {
+  Item *item = NULL;
+  if(loc) item = loc->item;
+  if(!loc || (item && !item->isBlocking())) {
+
+	// pick up item
+	if(item) {
+	  addInventory(item);
+	  char message[100];
+	  sprintf(message, "%s picks up %s.", 
+			  getName(), 
+			  item->getRpgItem()->getName());
+	  scourge->getMap()->addDescription(message);
+	}
+
     map->setCreature(nx, ny, nz, this);
     ((MD2Shape*)shape)->setDir(dir);
        
