@@ -259,6 +259,8 @@ class Map {
   inline void refresh() { mapChanged = lightMapChanged = true; }
 
   void setViewArea(int x, int y, int w, int h);
+  inline int getViewWidth() { return viewWidth; }
+  inline int getViewHeight() { return viewHeight; }
 
   // drop items above this one
   void dropItemsAbove(int x, int y, int z, Item *item);
