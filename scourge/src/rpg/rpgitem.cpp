@@ -119,15 +119,27 @@ int RpgItem::getTypeByName(char *name) {
   exit(1);
 }
 
+RpgItem *RpgItem::getRandomEnchantableItem(int level) {
+  int types[] = { SWORD, AXE, BOW, ARMOR };
+  int typeCount = 4;
+  return getRandomItemFromTypes(level, types, typeCount);
+}
+
 RpgItem *RpgItem::getRandomItem(int maxLevel) {
   // item types found in the lying around a dungeon
-  int types[] = { SWORD, AXE, BOW, ARMOR, FOOD, DRINK };
-  int typeCount = 6;
+  int types[] = { SWORD, AXE, BOW, ARMOR, FOOD, DRINK, POTION };
+  int typeCount = 7;
+  return getRandomItemFromTypes(maxLevel, types, typeCount);
+}
 
-  // levels are assumed to be 1-based
+
+
+
+RpgItem *RpgItem::getRandomItemFromTypes(int maxLevel, int types[], int typeCount) {
+// levels are assumed to be 1-based
   if(maxLevel < 1) {
-	cerr << "levels are assumed to be 1-based!!!" << endl;
-	exit(1);
+    cerr << "levels are assumed to be 1-based!!!" << endl;
+    exit(1);
   }
 
   // choose a random level up to maxLevel
@@ -136,22 +148,22 @@ RpgItem *RpgItem::getRandomItem(int maxLevel) {
   int typeIndex = (int)((float)typeCount * rand()/RAND_MAX);
   map<int, vector<const RpgItem*>*> *levelMap = typesMap[types[typeIndex]];
   if(levelMap && levelMap->size()) {
-	vector<const RpgItem*> *list = (*levelMap)[level];
+    vector<const RpgItem*> *list = (*levelMap)[level];
 
-	if(list && list->size()) {
+    if(list && list->size()) {
 
-    // create a new list where each item occurs item->rareness times
-    vector<RpgItem*> rareList;
-    for(int i = 0; i < (int)list->size(); i++) {
-      RpgItem *item = (RpgItem*)(*list)[i];
-      for(int t = 0; t < item->getRareness(); t++) {
-        rareList.push_back(item);
+      // create a new list where each item occurs item->rareness times
+      vector<RpgItem*> rareList;
+      for(int i = 0; i < (int)list->size(); i++) {
+        RpgItem *item = (RpgItem*)(*list)[i];
+        for(int t = 0; t < item->getRareness(); t++) {
+          rareList.push_back(item);
+        }
       }
-    }
 
-	  int n = (int)((float)(rareList.size()) * rand()/RAND_MAX);
-	  return (RpgItem*)rareList[n];
-	}
+      int n = (int)((float)(rareList.size()) * rand()/RAND_MAX);
+      return(RpgItem*)rareList[n];
+    }
   }
   return NULL;
 }
@@ -180,6 +192,18 @@ RpgItem *RpgItem::getItemByName(char *name) {
   //  cerr << "*** Looking for >" << s << "< found=" << item << endl;
   return item;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -241,12 +265,12 @@ void MagicAttrib::enchant(int level) {
   Spell *spell;
   switch(level) {
   case Constants::LESSER_MAGIC_ITEM:
-    bonus = (int)(3.0f * rand()/RAND_MAX);
+    bonus = (int)(1.0f * rand()/RAND_MAX) + 1;
     damageMultiplier = (int)(2.0f * rand()/RAND_MAX);
     monsterType = (char*)Monster::getRandomMonsterType();
     break;
   case Constants::GREATER_MAGIC_ITEM:
-    bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
+    bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
     damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
     monsterType = (char*)Monster::getRandomMonsterType();
     spell = MagicSchool::getRandomSpell(1);
@@ -256,7 +280,7 @@ void MagicAttrib::enchant(int level) {
     }
     break;
   case Constants::CHAMPION_MAGIC_ITEM:
-    bonus = (int)(3.0f * rand()/RAND_MAX) + 4;
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
     damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
     monsterType = (char*)Monster::getRandomMonsterType();
     spell = MagicSchool::getRandomSpell(1);
@@ -271,7 +295,7 @@ void MagicAttrib::enchant(int level) {
     }
     break;
   case Constants::DIVINE_MAGIC_ITEM:
-    bonus = (int)(3.0f * rand()/RAND_MAX) + 6;
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
     damageMultiplier = (int)(4.0f * rand()/RAND_MAX);
     monsterType = NULL;
     spell = MagicSchool::getRandomSpell(1);

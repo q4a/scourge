@@ -631,16 +631,41 @@ void Battle::hitWithItem() {
       damage *= mul;
     }
     dealDamage(damage, maxDamage);
-
-    // magical damage
-    if(item && item->getMagicAttrib() && item->getMagicAttrib()->getSchool()) {
-      // FIXME: implement magical damage
-      // call SpellCaster::causeDamage() so it uses magical resistance.
-    }
   } else {
     // missed
     sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
     session->getMap()->addDescription(message);
+  }
+
+  // magical damage
+  if(item && item->getMagicAttrib() && item->getMagicAttrib()->getSchool() &&
+     creature->getTargetCreature() && creature->isTargetValid()) {
+
+    // roll for the spell damage
+    int damage = (int)((float)item->getMagicAttrib()->rollMagicDamage() * rand()/RAND_MAX);
+
+    // check for resistance
+    int resistance = creature->getTargetCreature()->getSkill(item->getMagicAttrib()->getSchool()->getResistSkill());
+    damage -= (int)(((float)damage / 100.0f) * resistance);
+
+    char msg[200];
+    sprintf(msg, "%s attacks %s with %s magic.", 
+            creature->getName(), 
+            creature->getTargetCreature()->getName(),
+            item->getMagicAttrib()->getSchool()->getShortName());
+    getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
+    if(resistance > 0) {
+      sprintf(msg, "%s resists the magic with %d.", 
+              creature->getTargetCreature()->getName(),
+              resistance);
+      getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
+    }
+
+    // cause damage, kill creature, gain levels, etc.
+    dealDamage(damage, 
+               item->getMagicAttrib()->rollMagicDamage(), 
+               Constants::EFFECT_GREEN,
+               true);
   }
 }
 

@@ -206,7 +206,7 @@ void Monster::initMonsters() {
       string skillStr = strdup(p);
       int n = atoi(strtok(NULL, ","));
       last_monster->skills[skillStr] = n;
-      cerr << "\tsetting skill level: " << skillStr << "=" << n << endl;
+      //cerr << "\tsetting skill level: " << skillStr << "=" << n << endl;
     } else {
       n = Constants::readLine(line, fp);
     }
