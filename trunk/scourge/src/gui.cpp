@@ -343,13 +343,13 @@ void Gui::showCurrentRegion(int id) {
         glEnable(GL_BLEND);
         glBegin (GL_QUADS);
         glColor4f(1, 0, 0, alpha);
-        glVertex3i (regions[currentRegion].x1, regions[currentRegion].y1, 100);
+        glVertex3i (regions[currentRegion].x1, regions[currentRegion].y1, 200);
         glColor4f(0, 1, 0, alpha);
-        glVertex3i (regions[currentRegion].x1, regions[currentRegion].y2, 100);      
+        glVertex3i (regions[currentRegion].x1, regions[currentRegion].y2, 200);      
         glColor4f(0, 0, 1, alpha);
-        glVertex3i (regions[currentRegion].x2, regions[currentRegion].y2, 100);
+        glVertex3i (regions[currentRegion].x2, regions[currentRegion].y2, 200);
         glColor4f(1, 1, 0, alpha);
-        glVertex3i (regions[currentRegion].x2, regions[currentRegion].y1, 100);
+        glVertex3i (regions[currentRegion].x2, regions[currentRegion].y1, 200);
         glEnd ();                    
         glDisable(GL_BLEND);
         glPopMatrix();
@@ -415,6 +415,7 @@ void Gui::drawScrollingList(int id, int count, const char *list[]) {
     int innerHeight = count * 15;
 
     int height = (int)((float)h / ((float)innerHeight / (float)h));
+	if(h >= innerHeight) height = h;
     if(height < 40) height = 40;
     if(height != scrollingList[index].height) {
         scrollingList[index].height = height;

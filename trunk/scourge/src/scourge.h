@@ -79,9 +79,9 @@ protected:
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
   void processGameMouseMove(Uint16 x, Uint16 y);
 
-  bool Scourge::getItem(Location *pos);
-  void Scourge::dropItem(int x, int y);
-  bool Scourge::useDoor(Location *pos);
+  bool getItem(Location *pos);
+  void dropItem(int x, int y);
+  bool useDoor(Location *pos);
 
 public:
   #define SCOURGE_VERSION 0.01
@@ -97,6 +97,9 @@ public:
   
   Scourge(int argc, char *argv[]);
   ~Scourge();
+
+  // drop an item from inventory
+  void setMovingItem(int item_index, int x, int y, int z);
 
   inline Item *getMovingItem() { return movingItem; }
 
