@@ -134,6 +134,8 @@ public:
   GLubyte *scourgeImage;
 
   GLuint cloud, candle, torchback;
+
+  GLuint border;
        
   inline GLShape *getShape(int index) { return shapes[index]; }  
 
@@ -144,6 +146,7 @@ public:
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
   inline GLuint getPaperDollTexture() { return paper_doll_texture; }
+  inline GLuint getBorderTexture() { return border; }
 
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name);

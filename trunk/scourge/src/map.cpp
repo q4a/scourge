@@ -718,10 +718,12 @@ void Map::draw() {
       doDrawShape(&damage[i], 1);
     }
     drawShade();
-
-    //      glEnable(GL_LIGHTING);
-    glDepthMask(GL_TRUE);    
     glDisable(GL_BLEND);
+
+    drawBorder();
+
+    glDepthMask(GL_TRUE);    
+    
 
     // draw the projectiles
     DrawLater dl;
@@ -838,9 +840,81 @@ void Map::drawShade() {
   glTexCoord2f( 1.0f, 0.0f );
   glVertex3f(viewWidth, 0, 0);
   glEnd();
+
   //glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
   glPopMatrix();
+
+}
+
+// the image is 48x114
+#define TILE_W (48.0f / 4.0f)
+#define TILE_H 114.0f
+
+void Map::drawBorder() {
+  glPushMatrix();
+  glLoadIdentity();
+
+  glTranslatef(viewX, viewY, 100);
+
+  //  glDisable(GL_BLEND);
+  glDisable(GL_DEPTH_TEST);
+
+  // draw border
+  glColor4f( 1, 1, 1, 1);
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getBorderTexture() );
+  
+  glBegin( GL_QUADS );
+
+  int w = (viewWidth == scourge->getSDLHandler()->getScreen()->w ? viewWidth : viewWidth - Window::SCREEN_GUTTER);
+  int h = (viewHeight == scourge->getSDLHandler()->getScreen()->h ? viewHeight : viewHeight - Window::SCREEN_GUTTER);
+
+  // left
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (0, 0);
+  glTexCoord2f (0.0f, h/TILE_H);
+  glVertex2i (0, h);
+  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
+  glVertex2i ((int)TILE_W, h);
+  glTexCoord2f (TILE_W/TILE_W, 0.0f);      
+  glVertex2i ((int)TILE_W, 0);
+
+  // right
+  glTexCoord2f (TILE_W/TILE_W, 0.0f);
+  glVertex2i (w - (int)TILE_W, 0);
+  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
+  glVertex2i (w - (int)TILE_W, h);
+  glTexCoord2f (0.0f, h/TILE_H);
+  glVertex2i (w, h);
+  glTexCoord2f (0.0f, 0.0f);      
+  glVertex2i (w, 0);
+
+  // top
+  glTexCoord2f (0.0f, h/TILE_H);
+  glVertex2i (0, 0);
+  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
+  glVertex2i (0, (int)TILE_W);
+  glTexCoord2f (TILE_W/TILE_W, 0.0f);      
+  glVertex2i (w, (int)TILE_W);
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (w, 0);
+
+  // bottom
+  glTexCoord2f (0.0f, 0.0f);
+  glVertex2i (0, h - (int)TILE_W);
+  glTexCoord2f (TILE_W/TILE_W, 0.0f);
+  glVertex2i (0, h);
+  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);      
+  glVertex2i (w, h);
+  glTexCoord2f (0.0f, h/TILE_H);
+  glVertex2i (w, h - (int)TILE_W);
+  
+  glEnd();
+
+  //glEnable( GL_TEXTURE_2D );
+  glEnable(GL_DEPTH_TEST);
+  glPopMatrix();
+
 }
 
 void Map::createOverlayTexture() {

@@ -232,6 +232,9 @@ void Window::removeWidget(Widget *widget) {
   }
 }
 
+#define TOP_HEIGHT 20
+#define BOTTOM_HEIGHT 5
+
 void Window::drawWidget(Widget *parent) {
 
   GLint t = SDL_GetTicks();
