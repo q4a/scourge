@@ -36,6 +36,8 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   scrollerHeight = h;
   this->dragAndDropHandler = dragAndDropHandler;
   this->innerDrag = false;
+  this->list = NULL;
+  this->colors = NULL;
 }
 
 ScrollingList::~ScrollingList() {

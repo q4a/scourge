@@ -73,7 +73,7 @@ Scourge::Scourge(int argc, char *argv[]){
   party = new Party(this);  
   createUI();
 
-  //  move = 0;
+  move = 0;
   battleCount = 0;  
   inventory = NULL;
   containerGuiCount = 0;
@@ -137,7 +137,7 @@ void Scourge::startMission() {
 	party->startPartyOnMission();
 	
 	// position the players
-	//	move = 0;
+	move = 0;
 	battleCount = 0;
 	containerGuiCount = 0;
 	lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;

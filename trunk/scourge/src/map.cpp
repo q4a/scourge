@@ -90,6 +90,13 @@ Map::Map(Scourge *scourge){
   }
   nbPosCache = -1;
 
+  // initialize the lightmap
+  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+	for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+	  lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
+	}
+  }
+
   lightMapChanged = true;  
   colorAlreadySet = false;
   selectedDropTarget = NULL;
@@ -230,10 +237,12 @@ void Map::setupShapes(bool ground) {
   int posX, posY;
   float xpos2, ypos2, zpos2;
   for(int chunkX = chunkStartX; chunkX < chunkEndX; chunkX++) {
+	if(chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT) continue;
 	for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
+	  if(chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT) continue;
+
 	  int doorValue = 0;
 
-	  // if this chunk is not lit, don't draw it
 	  if(!lightMap[chunkX][chunkY]) {
 		if(ground) continue; 
 		else {
