@@ -194,8 +194,8 @@ Creature *Session::newCreature(Character *character, char *name) {
 }
 
 // creatures created for the mission
-Creature *Session::newCreature(Monster *monster) {
-  creatures[creatureCount++] = new Creature(this, monster);
+Creature *Session::newCreature(Monster *monster, GLShape *shape) {
+  creatures[creatureCount++] = new Creature(this, monster, shape);
   return creatures[creatureCount - 1];
 }
 

@@ -121,7 +121,7 @@ public:
     @param monster the monster template to use for the new creature.
     @return the creature created.
   */
-  virtual Creature *newCreature(Monster *monster);
+  virtual Creature *newCreature(Monster *monster, GLShape *shape);
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
   inline bool isMultiPlayerGame() { return multiplayerGame; }
   inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }

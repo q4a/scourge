@@ -1208,11 +1208,12 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
     // add mission creatures
     for(int i = 0; i < mission->getObjective()->monsterCount; i++) {
       GLShape *shape = 
-      scourge->getShapePalette()->
-      getCreatureBlockShape(mission->getObjective()->monster[i]->getModelName());
+        scourge->getShapePalette()->getCreatureShape(mission->getObjective()->monster[i]->getModelName(), 
+                                                     mission->getObjective()->monster[i]->getSkinName(), 
+                                                     mission->getObjective()->monster[i]->getScale());
       int x, y;
       getRandomLocation(map, shape, &x, &y);    
-      Creature *creature = scourge->getSession()->newCreature(mission->getObjective()->monster[i]);
+      Creature *creature = scourge->getSession()->newCreature(mission->getObjective()->monster[i], shape);
       addItem(map, creature, NULL, NULL, x, y);
       creature->moveTo(x, y, 0);
       cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
@@ -1245,14 +1246,15 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
 
         // use the creature's block shape to see if it would fit
         GLShape *shape = 
-        scourge->getShapePalette()->
-        getCreatureBlockShape(monster->getModelName());
+          scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
+                                                       monster->getSkinName(), 
+                                                       monster->getScale());
         int x, y;
         bool fits = getLocationInRoom(map, i, shape, &x, &y);
 
         if(fits) {
           //fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
-          Creature *creature = scourge->getSession()->newCreature(monster);
+          Creature *creature = scourge->getSession()->newCreature(monster, shape);
           addItem(map, creature, NULL, NULL, x, y);
           creature->moveTo(x, y, 0);
           areaCovered += (creature->getShape()->getWidth() * 
@@ -1260,6 +1262,7 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
           monsterLevelTotal += creature->getMonster()->getLevel();
         } else {
           //fprintf(stderr, "\tmonster DOESN'T fit.\n");
+          delete shape;
           break;
         }
       }
@@ -1278,7 +1281,11 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
         cerr << "Warning: no monsters defined for level: " << level << endl;
         break;
       }
-      Creature *creature = scourge->getSession()->newCreature(monster);
+      GLShape *shape = 
+        scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
+                                                     monster->getSkinName(), 
+                                                     monster->getScale());
+      Creature *creature = scourge->getSession()->newCreature(monster, shape);
       int x, y;
       getRandomLocation(map, creature->getShape(), &x, &y);
       addItem(map, creature, NULL, NULL, x, y);

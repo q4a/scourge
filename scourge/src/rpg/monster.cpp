@@ -26,7 +26,7 @@ map<string, map<int, vector<string>*>*> Monster::soundMap;
 map<int, vector<string>*>* Monster::currentSoundMap;
 vector<string> Monster::monsterTypes;
 
-Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, int w, int d, int h) {
+Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale) {
   this->type = type;
   this->level = level;
   this->hp = hp;
@@ -37,9 +37,6 @@ Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin,
   this->rareness = rareness;
   this->baseArmor = baseArmor;
   this->scale = scale;
-  this->w = w;
-  this->d = d;
-  this->h = h;
   sprintf(description, "FIXME: need a description");
 }
 
@@ -101,21 +98,14 @@ void Monster::initMonsters() {
       int speed = atoi(strtok(NULL, ","));
 
       float scale = 0.0f;
-      int width = 0;
-      int depth = 0;
-      int height = 0;
       char *p = strtok(NULL, ",");
       if(p) {
         scale = atof(p);
-        width = atoi(strtok(NULL, ","));
-        depth = atoi(strtok(NULL, ","));
-        height = atoi(strtok(NULL, ","));
       }
 
       cerr << "adding monster: " << name << " level: " << level << 
         " hp: " << hp << " mp: " << mp << " armor: " << armor << 
         " rareness: " << rareness << " scale=" << scale << 
-        " width=" << width << " depth=" << depth << " height=" << height << 
         " speed=" << speed <<
         endl;
 
@@ -129,7 +119,7 @@ void Monster::initMonsters() {
       Monster *m = new Monster( strdup(name), level, hp, mp, 
                                 strdup(model_name), strdup(skin_name), 
                                 rareness, speed, armor, 
-                                scale, width, depth, height );
+                                scale );
       last_monster = m;
       list->push_back(last_monster);
       string s = name;

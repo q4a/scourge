@@ -50,7 +50,7 @@ Creature::Creature(Session *session, Character *character, char *name) {
   commonInit();  
 }
 
-Creature::Creature(Session *session, Monster *monster) {
+Creature::Creature(Session *session, Monster *monster, GLShape *shape) {
   this->session = session;
   this->character = NULL;
   this->monster = monster;
@@ -62,12 +62,7 @@ Creature::Creature(Session *session, Monster *monster) {
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
   this->bonusArmor=0;
-  this->shape = session->getShapePalette()->getCreatureShape(model_name, 
-                                                             skin_name, 
-                                                             monster->getScale(),
-                                                             monster->getWidth(),
-                                                             monster->getDepth(),
-                                                             monster->getHeight());
+  this->shape = shape;
   commonInit();
   monsterInit();
 }

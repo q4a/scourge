@@ -78,18 +78,18 @@ private:
 
   GLShape *debugShape;
 
-public: 
-    MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
-          GLuint texture[], int width, int depth, int height,
-          char *name, int descriptionGroup,
-          Uint32 color, Uint8 shapePalIndex=0);
-          
-	inline bool getAttackEffect() { return attackEffect; }
-	inline void setAttackEffect(bool b) { attackEffect = b; }
+  MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
+           GLuint texture[], int width, int depth, int height,
+           char *name, int descriptionGroup,
+           Uint32 color, Uint8 shapePalIndex=0);
+
+public:     
+	~MD2Shape();
+
+  inline bool getAttackEffect() { return attackEffect; }
+  inline void setAttackEffect(bool b) { attackEffect = b; }
 
   void setCurrentAnimation(int numAnim, bool force=false);
-    
-	~MD2Shape();
 
   void draw();
   void setupToDraw();
@@ -110,6 +110,12 @@ public:
     if(a >= 360.0f) a -= 360.0f;
     this->angle = a; 
   }
+
+  // Factory method to create shape. It computes the dimensions and normalizes the
+  // model's points.
+  static MD2Shape *createShape(t3DModel *g_3DModel, GLuint textureId, float div,
+                               GLuint texture[], char *name, int descriptionGroup,
+                               Uint32 color, Uint8 shapePalIndex);
 
 protected:
   void commonInit(t3DModel * g_3DModel, GLuint textureId, float div);

@@ -124,7 +124,9 @@ void RpgItem::addItem(RpgItem *item, int width, int depth, int height) {
   itemsByName[s] = item;
   //  cerr << "*** Stored name=>" << item->name << "< item=" << item << endl;
 
-  if(item->type == CONTAINER) {
+  // HACK: do not include "corpse" as a valid container...
+  // It should really have a container exclusion flag.
+  if(item->type == CONTAINER && strcmp(item->name, "Corpse"))  {
     if(width >= depth) {
       containersNS.push_back(item);
     }
@@ -198,13 +200,13 @@ RpgItem *RpgItem::getRandomItemFromTypes(int maxLevel, int types[], int typeCoun
 
 RpgItem *RpgItem::getRandomContainer() {
   int n = (int)((3.0f * (float)containers.size()) * rand()/RAND_MAX);
-  if(n >= containers.size()) return NULL;
+  if(n >= (int)containers.size()) return NULL;
   return containers[n];
 }
 
 RpgItem *RpgItem::getRandomContainerNS() {
   int n = (int)((3.0f * (float)containersNS.size()) * rand()/RAND_MAX);
-  if(n >= containersNS.size()) return NULL;
+  if(n >= (int)containersNS.size()) return NULL;
   return containersNS[n];
 }
 

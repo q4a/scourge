@@ -58,7 +58,6 @@ typedef struct _ShapeValues {
 
 typedef struct _Md2ModelInfo {
   t3DModel *model;
-  int width, height, depth;
   char name[100];
   char filename[100];
   float scale;
@@ -100,7 +99,6 @@ private:
 
   // md2 data
   map<string, Md2ModelInfo *> creature_models; 
-  map<string, GLShape *> creature_block_shapes;
   map<string, GLuint> creature_skins;
   map<GLuint, int> loaded_skins;
 
@@ -161,10 +159,8 @@ public:
   int findShapeIndexByName(const char *name);
   
   // Md2 shapes
-  GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f, int w=0, int d=0, int h=0);
+  GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f);
   void decrementSkinRefCount(char *skin_name);
-  // use this method to get a meta-shape for the creature (good for mearuring 'fit'-s in dungeongenerator
-  inline GLShape *getCreatureBlockShape(char *name) { string s = name; return creature_block_shapes[s]; }
 
   char *getRandomDescription(int descriptionGroup);
 
