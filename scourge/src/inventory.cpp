@@ -70,10 +70,15 @@ Inventory::Inventory(Scourge *scourge) {
   playerButton[2]  = mainWin->createButton( 0, 60, 105, 90, strdup(label), true );
   playerButton[3]  = mainWin->createButton( 0, 90, 105, 120, strdup(label), true );
 
-  inventoryButton = mainWin->createButton( 0, 320, 105, 350, strdup("Inventory"), true);
-  skillsButton   = mainWin->createButton( 0,350, 105, 380, strdup("Skills"), true);
-  spellsButton   = mainWin->createButton( 0, 380, 105, 410, strdup("Spells"), true);
-  missionButton   = mainWin->createButton( 0, 410, 105, 440, strdup("Mission"), true);
+  int yy = Scourge::INVENTORY_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - (4 * 30);
+  inventoryButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Inventory"), true);
+  yy += 30;
+  skillsButton   = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Skills"), true);
+  yy += 30;
+  spellsButton   = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Spells"), true);
+  yy += 30;
+  missionButton   = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Mission"), true);
+  yy += 30;
   cards = new CardContainer(mainWin);
 
   // inventory page	
@@ -90,7 +95,7 @@ Inventory::Inventory(Scourge *scourge) {
   cards->addWidget(invList, INVENTORY);
   cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 
-  int yy = 160;
+  yy = 160;
   equipButton    = cards->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
   yy+=30;
   openButton     = cards->createButton( 0, yy, 105, yy + 30, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY ); 
@@ -100,6 +105,8 @@ Inventory::Inventory(Scourge *scourge) {
   castScrollButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Cast Scroll"), INVENTORY );
   yy+=30;
   transcribeButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Transcribe"), INVENTORY );
+  yy+=30;
+  enchantButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Enchant"), INVENTORY );
 
   // character info
   nameAndClassLabel = cards->createLabel(115, 45, NULL, CHARACTER, Constants::RED_COLOR);
@@ -390,6 +397,18 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         }
       } else {
         scourge->showMessageDialog("You can only transcribe scrolls!");
+      }
+    }
+  } else if(widget == enchantButton) {
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
+      Item *item = creature->getInventory(itemIndex);
+      if(item->getMagicAttrib()) {
+        scourge->showMessageDialog("This item is already enchanted.");
+      } else if(!item->getRpgItem()->isEnchantable()) {
+        scourge->showMessageDialog("This item cannot be enchanted.");
+      } else {
+        scourge->showMessageDialog("FIXME: implent enchant item!");
       }
     }
   }

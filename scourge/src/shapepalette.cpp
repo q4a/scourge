@@ -29,7 +29,6 @@ ShapePalette::ShapePalette(Session *session){
 void ShapePalette::initialize() {
   // load textures
   gui_texture = loadGLTextures("/gui.bmp");
-  gui_wood_texture = loadGLTextures("/gui-wood.bmp");
   paper_doll_texture = loadGLTextures("/paperdoll.bmp");
   cloud = loadGLTextures("/cloud.bmp");
   candle = loadGLTextures("/candle.bmp");
@@ -353,6 +352,8 @@ void ShapePalette::initialize() {
 
   // set up the scourge
   setupAlphaBlendedBMP("/scourge.bmp", &scourge, &scourgeImage);
+
+  gui_wood_texture = this->findTextureByName("gui-wood.bmp");
 
   if(!instance) instance = this;
 }

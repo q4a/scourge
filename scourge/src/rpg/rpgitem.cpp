@@ -51,6 +51,9 @@ char RpgItem::itemTypeStr[ITEM_TYPE_COUNT][40] = {
   "SCROLL"
 };
 
+int RpgItem::enchantableTypes[] = { SWORD, AXE, BOW, ARMOR };
+int RpgItem::enchantableTypeCount = 4;
+
 RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
 				 int twohanded, int distance, int skill, int maxCharges, int potionSkill,
@@ -128,9 +131,14 @@ int RpgItem::getTypeByName(char *name) {
 }
 
 RpgItem *RpgItem::getRandomEnchantableItem(int level) {
-  int types[] = { SWORD, AXE, BOW, ARMOR };
-  int typeCount = 4;
-  return getRandomItemFromTypes(level, types, typeCount);
+  return getRandomItemFromTypes(level, enchantableTypes, enchantableTypeCount);
+}
+
+bool RpgItem::isEnchantable() {
+  for(int i = 0; i < enchantableTypeCount; i++) {
+    if(getType() == enchantableTypes[i]) return true;
+  }
+  return false;
 }
 
 RpgItem *RpgItem::getRandomItem(int maxLevel) {
@@ -177,19 +185,25 @@ RpgItem *RpgItem::getRandomItemFromTypes(int maxLevel, int types[], int typeCoun
 }
 
 RpgItem *RpgItem::getRandomContainer() {
-  int n = (int)(10.0 * rand()/RAND_MAX);
+  int n = (int)(12.0 * rand()/RAND_MAX);
   switch(n) {
   case 0: return getItemByName("Bookshelf");
   case 1: return getItemByName("Chest");
+  case 2: return getItemByName("Barrel");
+  case 3: return getItemByName("Crate");
+  case 4: return getItemByName("Vase");
   default: return NULL;
   }
 }
 
 RpgItem *RpgItem::getRandomContainerNS() {
-  int n = (int)(10.0 * rand()/RAND_MAX);
+  int n = (int)(12.0 * rand()/RAND_MAX);
   switch(n) {
   case 0: return getItemByName("Bookshelf2");
   case 1: return getItemByName("Chest2");
+  case 2: return getItemByName("Barrel");
+  case 3: return getItemByName("Crate");
+  case 4: return getItemByName("Vase");
   default: return NULL;
   }
 }
