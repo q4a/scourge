@@ -54,7 +54,7 @@ private:
 	// inventory screen
 	Label *invEquipLabel[Character::INVENTORY_COUNT];
 	Label *inventoryWeightLabel;
-	char inventoryWeightStr[20];
+	char inventoryWeightStr[80];
 	Button *equipButton, *fixButton, *removeCurseButton;
 	Button *combineButton, *enchantButton, *identifyButton, *openButton;
 	Button *eatDrinkButton;
