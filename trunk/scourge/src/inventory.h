@@ -56,15 +56,15 @@ private:
 	Label *inventoryWeightLabel, *coinsLabel;
 	char inventoryWeightStr[80], coinsStr[80];
 
-	Button *equipButton, *fixButton, *removeCurseButton, *levelUpButton;
-	Button *combineButton, *enchantButton, *identifyButton, *openButton;
+	Button *equipButton, *fixButton, *removeCurseButton, *skillAddButton, *skillSubButton;
+	Button *combineButton, *enchantButton, *identifyButton, *openButton, *levelUpButton;
 	Button *eatDrinkButton;
 	ScrollingList *invList;
 	char **pcInvText;
 
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *expLabel, *hpLabel;
-	Label *thirstLabel, *hungerLabel;	
+	Label *thirstLabel, *hungerLabel, *skillModLabel;	
 	int stateCount;
 	char **stateLine, **skillLine;
 	ScrollingList *stateList, *skillList;
@@ -74,6 +74,7 @@ private:
 	char hpStr[80];
 	char thirstStr[80];
 	char hungerStr[80];
+	char skillModStr[80];
 
 public:
     Inventory(Scourge *scourge);

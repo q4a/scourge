@@ -75,6 +75,9 @@ void Creature::commonInit() {
   for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	equipped[i] = MAX_INVENTORY_SIZE;
   }
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+	skillMod[i] = 0;
+  }
   this->stateMod = 0;
   this->level = 1;
   this->exp = 0;
@@ -89,6 +92,7 @@ void Creature::commonInit() {
   this->effect = new Effect(scourge->getShapePalette()->getTexture(9));
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
+  this->availableSkillPoints = 0;
   
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -688,6 +692,7 @@ bool Creature::takeDamage(int damage) {
 }
 
 // add exp after killing a creature
+// only called for characters
 int Creature::addExperience(Creature *creature_killed) {
   int n = creature_killed->level - getLevel();
   if( n < 1 ) n = 1;
@@ -696,10 +701,9 @@ int Creature::addExperience(Creature *creature_killed) {
   exp += delta;
 
   // level up? (mark as state, with graphic over character)
-  if(exp >= expOfNextLevel) {
+  if(exp >= expOfNextLevel && !getStateMod(Constants::leveled)) {
 	setStateMod(Constants::leveled, true);
-	level++;
-	calculateExpOfNextLevel();
+	availableSkillPoints = character->getSkillBonus();
   }
 
   return delta;
@@ -804,4 +808,40 @@ void Creature::monsterInit() {
   }
   // add some hp
   hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
+}
+
+// only for characters: leveling up
+bool Creature::incSkillMod(int index) {
+  if(!availableSkillPoints || 
+	 skills[index] + skillMod[index] >= character->getMaxSkillLevel(index)) return false;
+  availableSkillPoints--;
+  skillMod[index]++;
+  return true;
+}
+
+bool Creature::decSkillMod(int index) {
+  if(!skillMod[index]) return false;
+  availableSkillPoints++;
+  skillMod[index]--;
+  return true;
+}
+
+void Creature::applySkillMod() {
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+	setSkill(i, getSkill(i) + skillMod[i]);
+	skillMod[i] = 0;
+  }
+  level++;
+  hp += character->getStartingHp();
+  setStateMod(Constants::leveled, false);
+  availableSkillPoints = 0;
+  calculateExpOfNextLevel();
+}
+
+int Creature::getMaxHp() {
+  if(isMonster()) {
+	return monster->getHp(); // FIXME: incorrect, see monsterInit()
+  } else {
+	return (character->getStartingHp() * getLevel());
+  }
 }

@@ -86,7 +86,7 @@ class Creature {
   char *name;
   int level, exp, hp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
-  int skills[Constants::SKILL_COUNT];
+  int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT];
   GLuint stateMod;
   Monster *monster;
 
@@ -95,6 +95,7 @@ class Creature {
   int speed;
   int armor;
   int moveRetrycount;
+  int availableSkillPoints;
   
   static const int MAX_MOVE_RETRY = 15;
   int lastTurn;
@@ -223,6 +224,7 @@ class Creature {
   inline int getExp() { return exp; }
   inline int getMoney() { return money; }
   inline int getHp() { return hp; }
+  int getMaxHp();
   inline int getAc() { return ac; }
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
@@ -239,6 +241,11 @@ class Creature {
   inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
   inline void setHp() { hp = getCharacter()->getStartingHp(); }
   inline void setAc(int n) { ac = n; }
+
+  bool incSkillMod(int index);
+  bool decSkillMod(int index);
+  void applySkillMod();
+  inline int getSkillMod(int index) { return skillMod[index]; }
 
   inline void setSkill(int index, int value) { skills[index] = value; }
   inline void setStateMod(int mod, bool setting) { 
@@ -283,6 +290,8 @@ class Creature {
 	}
 
   inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
+  inline int getAvailableSkillPoints() { return availableSkillPoints; }
+  inline void setAvailableSkillPoints(int n) { availableSkillPoints = n; }
 
  protected:
   /**

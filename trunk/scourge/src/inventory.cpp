@@ -103,17 +103,17 @@ Inventory::Inventory(Scourge *scourge) {
 	thirstLabel    = cards->createLabel(115, 120, NULL, CHARACTER);
 	hungerLabel    = cards->createLabel(220, 120, NULL, CHARACTER);
 
-	levelUpButton = cards->createButton( 0, 160, 105, 190, strdup("Level Up"), CHARACTER);
-	// implement me!
-	//levelUpButton->setEnabled(false);
-
 	cards->createLabel(115, 135, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
 	stateList = new ScrollingList(115, 140, 290, 70);
 	cards->addWidget(stateList, CHARACTER);
 
 	cards->createLabel(115, 225, strdup("Skills:"), CHARACTER, Constants::RED_COLOR);
-	skillList = new ScrollingList(115, 230, 290, 220);
+	skillModLabel = cards->createLabel(220, 225, NULL, CHARACTER);
+	skillList = new ScrollingList(115, 230, 290, 210);
 	cards->addWidget(skillList, CHARACTER);
+	skillAddButton = cards->createButton( 115, 445, 200, 475, strdup(" + "), CHARACTER);
+	skillSubButton = cards->createButton( 320, 445, 405, 475, strdup(" - "), CHARACTER);
+	levelUpButton = cards->createButton( 205, 445, 315, 475, strdup("Level Up"), CHARACTER);
 
 	// spellbook
 	cards->createLabel(115, 45, strdup("Spellbook"), SPELL, Constants::RED_COLOR);
@@ -125,47 +125,106 @@ Inventory::~Inventory() {
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
-	if(widget == mainWin->closeButton) mainWin->setVisible(false);
-	else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
-	else if(widget == player2Button) setSelectedPlayerAndMode(1, selectedMode);
-	else if(widget == player3Button) setSelectedPlayerAndMode(2, selectedMode);
-	else if(widget == player4Button) setSelectedPlayerAndMode(3, selectedMode);
-	else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
-	else if(widget == skillsButton)	setSelectedPlayerAndMode(selected, CHARACTER);
-	else if(widget == spellsButton)	setSelectedPlayerAndMode(selected, SPELL);
-	else if(widget == openButton) {
-		int itemIndex = invList->getSelectedLine();  
-		if(itemIndex > -1) {
-			Item *item = scourge->getParty(selected)->getInventory(itemIndex);
-			if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-				scourge->openContainerGui(item);
-			}
-		}
-	} else if(widget == equipButton) {
-		int itemIndex = invList->getSelectedLine();  
-		if(itemIndex > -1 && 
-			 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
-			scourge->getParty(selected)->equipInventory(itemIndex);
-			// recreate list strings
-			int oldLine = invList->getSelectedLine();
-			setSelectedPlayerAndMode(selected, selectedMode);
-			invList->setSelectedLine(oldLine);
-		}
-	} else if(widget == eatDrinkButton) {
-	   int itemIndex = invList->getSelectedLine();  
-	   if(itemIndex > -1 && 
-			 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
-			if(scourge->getParty(selected)->eatDrink(itemIndex)){
-                scourge->getParty(selected)->removeInventory(itemIndex);                
-			}
-			// refresh screen
-            setSelectedPlayerAndMode(selected, INVENTORY);
-		}					   	   	   	      	
-  
-	} else if(widget == levelUpButton) {
-	  cerr << "FIXME: implement level up!" << endl;
+  char error[80];
+  if(widget == mainWin->closeButton) mainWin->setVisible(false);
+  else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
+  else if(widget == player2Button) setSelectedPlayerAndMode(1, selectedMode);
+  else if(widget == player3Button) setSelectedPlayerAndMode(2, selectedMode);
+  else if(widget == player4Button) setSelectedPlayerAndMode(3, selectedMode);
+  else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
+  else if(widget == skillsButton)	setSelectedPlayerAndMode(selected, CHARACTER);
+  else if(widget == spellsButton)	setSelectedPlayerAndMode(selected, SPELL);
+  else if(widget == openButton) {
+	int itemIndex = invList->getSelectedLine();  
+	if(itemIndex > -1) {
+	  Item *item = scourge->getParty(selected)->getInventory(itemIndex);
+	  if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+		scourge->openContainerGui(item);
+	  }
 	}
-	return false;
+  } else if(widget == equipButton) {
+	int itemIndex = invList->getSelectedLine();  
+	if(itemIndex > -1 && 
+	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+	  scourge->getParty(selected)->equipInventory(itemIndex);
+	  // recreate list strings
+	  int oldLine = invList->getSelectedLine();
+	  setSelectedPlayerAndMode(selected, selectedMode);
+	  invList->setSelectedLine(oldLine);
+	}
+  } else if(widget == eatDrinkButton) {
+	int itemIndex = invList->getSelectedLine();  
+	if(itemIndex > -1 && 
+	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+	  if(scourge->getParty(selected)->eatDrink(itemIndex)){
+		scourge->getParty(selected)->removeInventory(itemIndex);                
+	  }
+	  // refresh screen
+	  setSelectedPlayerAndMode(selected, INVENTORY);
+	}					   	   	   	      	
+	
+  } else if(widget == skillAddButton) {
+	strcpy(error, "");
+	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
+	  strcpy(error, "Select a character who has leveled up.");
+	} else if(scourge->getParty(selected)->getAvailableSkillPoints() <= 0) {
+	  strcpy(error, "No skill points left to distribute.");
+	} else {
+	  int itemIndex = skillList->getSelectedLine();  
+	  if(itemIndex <= -1) {
+		strcpy(error, "Select a skill first.");
+	  } else {
+		scourge->getParty(selected)->incSkillMod(itemIndex);
+		// recreate list strings
+		int oldLine = skillList->getSelectedLine();
+		setSelectedPlayerAndMode(selected, selectedMode);
+		skillList->setSelectedLine(oldLine);
+	  }
+	}
+	// FIXME: this should be in a dialog.
+	if(strlen(error)) {
+	  cerr << error << endl;
+	}
+  } else if(widget == skillSubButton) {
+	strcpy(error, "");
+	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
+	  strcpy(error, "Select a character who has leveled up.");
+	} else if(scourge->getParty(selected)->getAvailableSkillPoints() == 
+			  scourge->getParty(selected)->getCharacter()->getSkillBonus()) {
+	  strcpy(error, "No skill points left to remove.");
+	} else {
+	  int itemIndex = skillList->getSelectedLine();  
+	  if(itemIndex <= -1) {
+		strcpy(error, "Select a skill first.");
+	  } else {
+		scourge->getParty(selected)->decSkillMod(itemIndex);
+		// recreate list strings
+		int oldLine = skillList->getSelectedLine();
+		setSelectedPlayerAndMode(selected, selectedMode);
+		skillList->setSelectedLine(oldLine);
+	  }
+	}
+	// FIXME: this should be in a dialog.
+	if(strlen(error)) {
+	  cerr << error << endl;
+	}
+  } else if(widget == levelUpButton) {
+	strcpy(error, "");
+	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
+	  strcpy(error, "Select a character who has leveled up.");
+	} else {
+	  scourge->getParty(selected)->applySkillMod();
+	  // recreate list strings
+	  int oldLine = skillList->getSelectedLine();
+	  setSelectedPlayerAndMode(selected, selectedMode);
+	  skillList->setSelectedLine(oldLine);
+	}
+	// FIXME: this should be in a dialog.
+	if(strlen(error)) {
+	  cerr << error << endl;
+	}
+  }
+  return false;
 }
 
 void Inventory::moveItemTo(int playerIndex) {
@@ -222,12 +281,20 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	levelLabel->setText(levelStr);
 	sprintf(expStr, "Exp: %u (next level at %u)", selectedP->getExp(), selectedP->getExpOfNextLevel());
 	expLabel->setText(expStr);
-	sprintf(hpStr, "HP: %d / %d", selectedP->getHp(), selectedP->getCharacter()->getStartingHp());
+	if(selectedP->getStateMod(Constants::leveled)) {
+	  expLabel->setColor( 1.0f, 0.2f, 0.0f, 1.0f );
+	} else {
+	  expLabel->setColor( 0.0f, 0.0f, 0.0f, 1.0f );
+	}
+	sprintf(hpStr, "HP: %d / %d", selectedP->getHp(), 
+			(selectedP->getCharacter()->getStartingHp() * selectedP->getLevel()));
 	hpLabel->setText(hpStr);
 	sprintf(thirstStr, "Thirst : %d / 10", selectedP->getThirst());
 	thirstLabel->setText(thirstStr);
 	sprintf(hungerStr, "Hunger : %d / 10", selectedP->getHunger());
 	hungerLabel->setText(hungerStr);
+	sprintf(skillModStr, "Available: %d", selectedP->getAvailableSkillPoints());
+	skillModLabel->setText(skillModStr);
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
       if(selectedP->getStateMod(t)) {
@@ -236,8 +303,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     }
 	stateList->setLines(stateCount, (const char**)stateLine);
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-	  sprintf(skillLine[t], "%d - %s", 
+	  sprintf(skillLine[t], "%d(%d) - %s", 
 			  selectedP->getSkill(t), 
+			  selectedP->getSkillMod(t), 
 			  Constants::SKILL_NAMES[t]);
     }
 	skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
