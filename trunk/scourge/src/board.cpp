@@ -304,8 +304,8 @@ void MissionTemplate::parseText( Session *session, int level,
   char *p = strtok( text, " " );
   while( p ) {
     if( strlen( parsedText ) ) strcat( parsedText, " " );
-    char *start = index( p, '{' );
-    char *end = rindex( p, '}' );
+    char *start = strchr( p, '{' );
+    char *end = strrchr( p, '}' );
     if( start && end && end - start < 255 ) {
       char varName[255];
       strncpy( varName, start, (size_t)( end - start ) );

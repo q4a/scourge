@@ -1,7 +1,7 @@
 [Project]
 FileName=scourge.dev
 Name=scourge
-UnitCount=149
+UnitCount=151
 Type=0
 Ver=1
 ObjFiles=
@@ -12,7 +12,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
 CppCompiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
-Linker=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:\GnuWin32\lib -lfreetype -lSDL_mixer_@@_SDL_net-1.2.5/lib/SDL_net.lib_@@_
+Linker=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:\GnuWin32\lib -lfreetype -lSDL_mixer_@@_C:\Dev-Cpp\lib\SDL_net-1.2.5\lib\SDL_net.lib_@@_
 IsCpp=1
 Icon=scourge.ico
 ExeOutput=..
@@ -1531,6 +1531,26 @@ BuildCmd=
 FileName=..\src\gui\slider.h
 CompileCpp=1
 Folder=gui
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit150]
+FileName=..\src\frustum.h
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit151]
+FileName=..\src\frustum.cpp
+CompileCpp=1
+Folder=scourge
 Compile=1
 Link=1
 Priority=1000
