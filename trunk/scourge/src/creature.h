@@ -139,7 +139,7 @@ class Creature {
   static const int FORMATION_COUNT = 6;
   
   Creature(Session *session, Character *character, char *name);
-  Creature(Session *session, Monster *monster);
+  Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
 
   inline void setLastEnchantDate(Date date) { lastEnchantDate = date; }

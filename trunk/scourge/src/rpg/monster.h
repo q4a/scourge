@@ -45,9 +45,6 @@ class Monster  {
   int baseArmor;
   int rareness;
   float scale;
-  int w;
-  int d;
-  int h;
   vector<RpgItem*> items;
   vector<Spell*> spells;
   map<string,int> skills;
@@ -58,15 +55,12 @@ class Monster  {
   static vector<string> monsterTypes;
 
 public:
-  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, int w, int d, int h);
+  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale);
   ~Monster();
 
   static map<string, map<int, vector<string>*>*> soundMap;
 
   inline float getScale() { return scale; }
-  inline int getWidth() { return w; }
-  inline int getDepth() { return d; }
-  inline int getHeight() { return h; }
   inline int getBaseArmor() { return baseArmor; }
   inline int getRareness() { return rareness; }
   inline int getSpeed() { return speed; }

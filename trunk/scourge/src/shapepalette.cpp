@@ -185,29 +185,15 @@ void ShapePalette::initialize() {
       n = Constants::readLine(line, fp);
       // scale
       info->scale = strtod(strtok(line + 1, ","), NULL);
-      // dimensions
-      info->width = atoi(strtok(NULL, ","));
-      info->depth = atoi(strtok(NULL, ","));
-      info->height = atoi(strtok(NULL, ","));
 
       // store the md2 model and info
       sprintf(path, "%s%s", rootDir, info->filename);
-      cerr << "Loading md2 model: " << path << " scale: " << info->scale << 
-      " dim: " << info->width << ", " << info->depth << "," << info->height << endl;
+      cerr << "Loading md2 model: " << path << " scale: " << info->scale << endl;
       info->model = LoadMd2Model(path);
 
       // store it
       string s = info->name;
       creature_models[s] = info;
-
-      // create a block shape for this model
-      // (used to measure space w/o creating a creature shape)
-      creature_block_shapes[s] = 
-      new GLShape(textureGroup[14],
-                  info->width, info->depth, info->height,
-                  strdup(info->name),
-                  0xffffffff, 0, 0);
-
 
     } else if(n == 'P') {
       fgetc(fp);
@@ -379,8 +365,7 @@ t3DModel * ShapePalette::LoadMd2Model(char *file_name){
   return t3d;   
 }    
 
-GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, 
-                                        float scale, int w, int d, int h) {
+GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, float scale) {
 
   // find the model
   string model = model_name;
@@ -419,20 +404,10 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name,
 
   // create the shape.
   // FIXME: shapeindex is always FIGHTER. Does it matter?
-  MD2Shape *shape;
-  if(scale == 0.0f) {
-    shape = new MD2Shape(model_info->model, skin_texture, model_info->scale,
-                         textureGroup[14], 
-                         model_info->width, model_info->depth, model_info->height,
-                         model_info->name, -1,
-                         0xf0f0ffff, 0); //Constants::FIGHTER);  
-  } else {
-    shape = new MD2Shape(model_info->model, skin_texture, scale,
-                         textureGroup[14], 
-                         w, d, h,
-                         model_info->name, -1,
-                         0xf0f0ffff, 0); //Constants::FIGHTER);  
-  }
+  MD2Shape *shape = 
+    MD2Shape::createShape(model_info->model, skin_texture, 
+                          (scale == 0.0f ? model_info->scale : scale),
+                          textureGroup[14], model_info->name, -1, 0xf0f0ffff, 0);
   shape->setSkinName(skin_name);
   return shape;
 }

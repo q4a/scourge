@@ -70,83 +70,6 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
         vect[i][j] = 0.0;
     }
   }         
-
-
-
-  vect3d min;
-  vect3d max;
-
-  /*
-  // find the min/max-s
-  vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[MD2_STAND].startFrame ];
-  min[0] = min[1] = min[2] = 100000.0f; // BAD!!
-  max[0] = max[1] = max[2] = 0.0f;
-  for(int i = 0; i < g_3DModel->numVertices; i++) {
-    for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
-    for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
-  }  
-  for(int t = 0; t < 3; t++) max[t] -= min[t];
-
-  // set the dimensions
-  float fw = max[2] * this->div * DIV;
-  float fd = max[0] * this->div * DIV;
-  float fh = max[1] * this->div * DIV;
-
-  // make it a square
-  if(fw > fd) fd = fw;
-  else fw = fd;
-
-  // set the shape's dimensions
-  // FIXME: instead of setting these here, a factory method
-  this->width = (int)(fw + 0.5f);
-  this->depth = (int)(fd + 0.5f);
-  this->height = (int)(fh + 0.5f);
-  */
-
-  // normalize and center
-  for(int r = 0; r < MD2_CREATURE_ACTION_COUNT; r++) {
-
-    // mins/max-s
-    vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[r].startFrame ];
-    min[0] = min[1] = min[2] = 100000.0f; // BAD!!
-    max[0] = max[1] = max[2] = 0.0f;
-    for(int i = 0; i < g_3DModel->numVertices; i++) {
-      for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
-      for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
-    }  
-    for(int t = 0; t < 3; t++) max[t] -= min[t];
-
-    if( r == MD2_STAND ) {
-      // set the dimensions
-      float fw = max[2] * this->div * DIV;
-      float fd = max[0] * this->div * DIV;
-      float fh = max[1] * this->div * DIV;
-
-      // make it a square
-      if(fw > fd) fd = fw;
-      else fw = fd;
-
-      // set the shape's dimensions
-      // FIXME: instead of setting these here, a factory method
-      this->width = (int)(fw + 0.5f);
-      this->depth = (int)(fd + 0.5f);
-      this->height = (int)(fh + 0.5f);
-    }
-
-    // normalize and center points
-    for(int a = g_3DModel->pAnimations[r].startFrame; a < g_3DModel->pAnimations[r].endFrame; a++) {
-      point = &g_3DModel->vertices[ g_3DModel->numVertices * a ];
-      for(int i = 0; i < g_3DModel->numVertices; i++) {
-        for(int t = 0; t < 3; t++) point[i][t] -= min[t];
-        for(int t = 0; t < 3; t++) if(t != 1) point[i][t] -= (max[t] / 2.0f);
-      }
-    }
-  }
-
-  cerr << "model=" << this->getName() << 
-    " width=" << width <<
-    " depth=" << depth <<
-    " height=" << height << endl;
 }
 
 void MD2Shape::draw() {
@@ -349,4 +272,62 @@ bool MD2Shape::drawFirst() {
   // if true, the next two functions are called
 bool MD2Shape::drawLater() { 
     return false; 
+}
+
+// factory method to create shape
+MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div,
+                                GLuint texture[], char *name, int descriptionGroup,
+                                Uint32 color, Uint8 shapePalIndex) {
+  vect3d min;
+  vect3d max;
+  int width, depth, height;
+
+  // bogus initial value
+  width = depth = height = 1;
+
+  // normalize and center
+  for(int r = 0; r < MD2_CREATURE_ACTION_COUNT; r++) {
+
+    // mins/max-s
+    vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[r].startFrame ];
+    min[0] = min[1] = min[2] = 100000.0f; // BAD!!
+    max[0] = max[1] = max[2] = 0.0f;
+    for(int i = 0; i < g_3DModel->numVertices; i++) {
+      for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
+      for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
+    }  
+    for(int t = 0; t < 3; t++) max[t] -= min[t];
+
+    if( r == MD2_STAND ) {
+      // set the dimensions
+      float fw = max[2] * div * DIV;
+      float fd = max[0] * div * DIV;
+      float fh = max[1] * div * DIV;
+
+      // make it a square
+      if(fw > fd) fd = fw;
+      else fw = fd;
+
+      // set the shape's dimensions
+      // FIXME: instead of setting these here, a factory method
+      width = (int)(fw + 0.5f);
+      depth = (int)(fd + 0.5f);
+      height = (int)(fh + 0.5f);
+    }
+
+    // normalize and center points
+    for(int a = g_3DModel->pAnimations[r].startFrame; a < g_3DModel->pAnimations[r].endFrame; a++) {
+      point = &g_3DModel->vertices[ g_3DModel->numVertices * a ];
+      for(int i = 0; i < g_3DModel->numVertices; i++) {
+        for(int t = 0; t < 3; t++) point[i][t] -= min[t];
+        for(int t = 0; t < 3; t++) if(t != 1) point[i][t] -= (max[t] / 2.0f);
+      }
+    }
+  }
+
+  cerr << "Creating MD2 shape for model=" << name << 
+    " width=" << width << " depth=" << depth << " height=" << height << endl;
+
+  return new MD2Shape(g_3DModel,textureId,div,texture,width,depth,height,
+                      name,descriptionGroup,color,shapePalIndex);
 }
