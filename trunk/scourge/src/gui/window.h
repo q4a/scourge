@@ -58,6 +58,7 @@ class Window : public Widget {
   int z;  
   bool modal;
   int type;
+  bool locked;
 
   static Window *window[];
   static int windowCount;  
@@ -97,6 +98,10 @@ class Window : public Widget {
   void setVisible(bool b);
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
   void toTop();
+  void toBottom();
+
+  inline void setLocked(bool locked) { this->locked = locked; if(locked) toBottom(); }
+  inline bool isLocked() { return locked; }
 
   // crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
   void scissorToWindow();
@@ -121,7 +126,7 @@ class Window : public Widget {
   static void removeWindow(Window *win);
   static Widget *delegateEvent(SDL_Event *event, int x, int y);
   static void toTop(Window *win);
-  
+  static void toBottom(Window *win);
 
   // static message dialog
   static Button *message_button; // so you can check for it in other classes
