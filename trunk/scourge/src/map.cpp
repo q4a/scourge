@@ -1440,7 +1440,7 @@ void Map::dropItemsAbove(int x, int y, int z, Item *item) {
 	}
   }
   for(int i = 0; i < count; i++) {
-	cerr << "item " << drop[i].item->getRpgItem()->getName() << " new z=" << drop[i].z << endl;
+	cerr << "item " << drop[i].item->getItemName() << " new z=" << drop[i].z << endl;
 	setItem(drop[i].x, drop[i].y, drop[i].z, drop[i].item);
   }
 }
@@ -1476,7 +1476,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 				creature->addInventory(item);
 				sprintf(message, "%s picks up %s.", 
 						creature->getName(), 
-						item->getRpgItem()->getName());
+						item->getItemName());
 				addDescription(message);				
 				// since the above will have removed some locations, try adding the creature again
 				continue;

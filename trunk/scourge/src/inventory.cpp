@@ -98,7 +98,7 @@ Inventory::Inventory(Scourge *scourge) {
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	  Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
 	  invEquipLabel[i] = cards->createLabel(300, 60 + (i * 15), 
-                               (char *) item ? item->getRpgItem()->getName() : (char*)NULL, 
+                               (char *) item ? item->getItemName() : (char*)NULL, 
                                INVENTORY);
 	}
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
@@ -441,7 +441,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 										(const char **)pcInvText);
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 		Item *item = selectedP->getEquippedInventory(i);
-		invEquipLabel[i]->setText((char *)(item ? item->getRpgItem()->getName() : NULL));
+		invEquipLabel[i]->setText((char *)(item ? item->getItemName() : NULL));
 	}
 	break;
 	
@@ -554,7 +554,7 @@ void Inventory::receive(Widget *widget) {
 	  char message[120];
 	  sprintf(message, "%s picks up %s.", 
 			  scourge->getParty()->getParty(selected)->getName(),
-			  scourge->getMovingItem()->getRpgItem()->getName());
+			  scourge->getMovingItem()->getItemName());
 	  scourge->getMap()->addDescription(message);
 	  scourge->endItemDrag();
 	  setSelectedPlayerAndMode(selected, INVENTORY);
@@ -580,7 +580,7 @@ void Inventory::dropItem() {
 	char message[120];
 	sprintf(message, "%s drops %s.", 
 			scourge->getParty()->getParty(selected)->getName(),
-			item->getRpgItem()->getName());
+			item->getItemName());
 	scourge->getMap()->addDescription(message);
 	setSelectedPlayerAndMode(selected, INVENTORY);
   }

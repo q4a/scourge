@@ -119,6 +119,7 @@ class MagicSchool {
   static void initMagic();
   inline static int getMagicSchoolCount() { return schoolCount; }
   inline static MagicSchool *getMagicSchool( int index ) { return schools[index]; }
+  static Spell *getRandomSpell(int level);
 
  protected:
   inline void addSpell( Spell *spell ) { spells.push_back( spell ); }

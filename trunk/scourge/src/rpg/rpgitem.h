@@ -61,6 +61,7 @@ class RpgItem {
 	POTION,
 	OTHER,
 	MISSION,
+  SCROLL,
 	
 	// must be last
 	ITEM_TYPE_COUNT

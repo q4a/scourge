@@ -351,7 +351,7 @@ void Battle::hitWithItem() {
     sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
             creature->getName(), 
             creature->getTargetCreature()->getName(),
-            item->getRpgItem()->getName(),
+            item->getItemName(),
             creatureInitiative, speed);
     scourge->getMap()->addDescription(message);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);

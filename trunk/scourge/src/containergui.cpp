@@ -21,7 +21,7 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->scourge = scourge;
   this->container = container;
 
-  win = scourge->createWoodWindow( x, y, 320, 300, container->getRpgItem()->getName() );
+  win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
   openButton = new Button( 5, 5, 105, 35, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
 
@@ -99,8 +99,8 @@ void ContainerGui::receive(Widget *widget) {
 	if(container->addContainedItem(scourge->getMovingItem())) {
 	  // message: the container accepted the item
 	  sprintf(message, "%s is placed in %s.", 
-			  scourge->getMovingItem()->getRpgItem()->getName(), 
-			  container->getRpgItem()->getName());
+			  scourge->getMovingItem()->getItemName(), 
+			  container->getItemName());
 	  scourge->getMap()->addDescription(message);	  
 	  scourge->endItemDrag();
 	  showContents();
