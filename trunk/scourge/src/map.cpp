@@ -51,6 +51,10 @@ Map::Map(Scourge *scourge){
   this->debugGridFlag = false;
   this->drawGridFlag = false;
   
+  targetWidth = 0.0f;
+  targetWidthDelta = 0.05f / GLShape::DIV;
+  lastTick = SDL_GetTicks();
+  
   // initialize shape graph of "in view shapes"
   for(int x = 0; x < MAP_WIDTH; x++) {
 	for(int y = 0; y < MAP_DEPTH; y++) {
@@ -600,14 +604,31 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected) {
   double s = 0.35f / GLShape::DIV;
   
   float xpos2, ypos2, zpos2;
-  if(player && creature->getSelX() > -1) {
+  if(player && creature->getSelX() > -1 && 
+	 !(creature->getSelX() == creature->getX() && creature->getSelY() == creature->getY()) ) {
+
+	GLint t = SDL_GetTicks();
+	if(t - lastTick > 45) {
+	  // initialize target width
+	  if(targetWidth == 0.0f) {
+		targetWidth = s;
+		targetWidthDelta *= -1.0f;
+	  }
+	  // targetwidth oscillation
+	  targetWidth += targetWidthDelta;
+	  if((targetWidthDelta < 0 && targetWidth < s) || 
+		 (targetWidthDelta > 0 && targetWidth >= s + (5 * targetWidthDelta))) 
+		targetWidthDelta *= -1.0f;
+	  lastTick = t;
+	}
+	// draw target
 	glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
 	xpos2 = ((float)(creature->getSelX() - getX()) / GLShape::DIV);
 	ypos2 = ((float)(creature->getSelY() - getY()) / GLShape::DIV);
 	zpos2 = 0.0f / GLShape::DIV;  
 	glPushMatrix();
 	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-	gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
+	gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
 	glPopMatrix();
   }
 

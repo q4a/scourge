@@ -75,45 +75,53 @@ Creature::~Creature(){
 
 bool Creature::move(Uint16 dir, Map *map) {
 
-	scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
-	int nx = x;
-	int ny = y;
-	int nz = z;
-	switch(dir) {
-	case Constants::MOVE_UP:
-	  ny = y - 1;
-	  break;
-	case Constants::MOVE_DOWN:
-	  ny = y + 1;
-	  break;
-	case Constants::MOVE_LEFT:
-	  nx = x - 1;
-	  break;
-	case Constants::MOVE_RIGHT:
-	  nx = x + 1;
-	  break;
+  // a hack for runaway creatures
+  if(!(x > 10 && x < MAP_WIDTH - 10 &&
+	   y > 10 && y < MAP_DEPTH - 10)) {
+	if(monster) cerr << "hack for " << getName() << endl;
+	return;
+  }
+
+  scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+  int nx = x;
+  int ny = y;
+  int nz = z;
+  switch(dir) {
+  case Constants::MOVE_UP:
+	ny = y - 1;
+	break;
+  case Constants::MOVE_DOWN:
+	ny = y + 1;
+	break;
+  case Constants::MOVE_LEFT:
+	nx = x - 1;
+	break;
+  case Constants::MOVE_RIGHT:
+	nx = x + 1;
+	break;
+  }
+  map->removeCreature(x, y, z);
+  //	if(monster) cerr << "trying to move " << getName() << endl;
+  if(map->shapeFits(getShape(), nx, ny, nz)) {
+	//if(monster) cerr << "\tshapeFits" << endl;
+	map->setCreature(nx, ny, nz, this);
+	((MD2Shape*)shape)->setDir(dir);
+	moveTo(nx, ny, nz);
+	setDir(dir);
+	
+	return true;
+  } else {
+	//if(monster) cerr << "\tdoesn't fit" << endl;
+	map->setCreature(x, y, z, this);
+	
+	if(character) {
+	  // Out of my way!
+	  setMotion(Constants::MOTION_MOVE_AWAY);
+	  move(dir, map);
 	}
-	map->removeCreature(x, y, z);
-	if(nx > 0 && nx < MAP_WIDTH &&
-	   ny > 0 && ny < MAP_DEPTH &&
-	   map->shapeFits(getShape(), nx, ny, nz)) {
-	  map->setCreature(nx, ny, nz, this);
-      ((MD2Shape*)shape)->setDir(dir);
-	  moveTo(nx, ny, nz);
-	  setDir(dir);
-
-		return true;
-	} else {
-	  map->setCreature(x, y, z, this);
-
-	  if(character) {
-			// Out of my way!
-			setMotion(Constants::MOTION_MOVE_AWAY);
-			move(dir, map);
-		}
-
-	  return false;
-	}
+	
+	return false;
+  }
 }
 
 bool Creature::follow(Map *map) {

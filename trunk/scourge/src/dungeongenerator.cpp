@@ -810,7 +810,7 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	addItem(map, NULL, item, NULL, x, y);
   }
 
-  // add monsters in every room and a few in the corridors
+  // add monsters in every room
   int totalLevel = 0;
   for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
   fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
@@ -835,6 +835,15 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 		break;
 	  }
 	}
+  }
+
+  // add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
+  for(int i = 0; i < objectCount * 2; i++) {
+	Monster *monster = Monster::getRandomMonster(level - 1);
+	Creature *creature = scourge->newCreature(monster);
+	getRandomLocation(map, creature->getShape(), &x, &y);
+	addItem(map, creature, NULL, NULL, x, y);
+	creature->moveTo(x, y, 0);
   }
   
   // free empty space container
@@ -949,10 +958,10 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
 // return false if the creature won't fit in the room
 bool DungeonGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
 										 int *xpos, int *ypos) {
-  for(int x = offset + room[roomIndex].x * unitSide; 
+  for(int x = offset + room[roomIndex].x * unitSide + unitOffset; 
 	  x < offset + (room[roomIndex].x + room[roomIndex].w) * unitSide;
 	  x++) {
-	for(int y = offset + room[roomIndex].y * unitSide; 
+	for(int y = offset + room[roomIndex].y * unitSide + unitOffset; 
 		y < offset + (room[roomIndex].y + room[roomIndex].h) * unitSide;
 		y++) {
 	  bool fits = map->shapeFits(shape, x, y, 0);
