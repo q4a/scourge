@@ -21,6 +21,7 @@
 #include "constants.h"
 #include "glshape.h"
 #include "shapepalette.h"
+#include "scourge.h"
 
 /**
   *@author Gabor Torok
@@ -33,13 +34,15 @@ private:
   GLShape *shape;
   bool deleteShape;
   float ringRadius, ringRotate;
+  GLint lastTimeStamp;
+  Scourge *scourge;
   
   static const int PARTICLE_COUNT = 30;
   ParticleStruct *particle[PARTICLE_COUNT];
-  
+
 public:
-  Effect(ShapePalette *shapePal, GLShape *shape);
-  Effect(ShapePalette *shapePal, int width, int height);
+  Effect(Scourge *scourge, ShapePalette *shapePal, GLShape *shape);
+  Effect(Scourge *scourge, ShapePalette *shapePal, int width, int height);
   ~Effect();
   
   void deleteParticles();
@@ -49,14 +52,14 @@ public:
    
 protected:
   void commonInit();
-  void glowShape(int startTime);
-  void drawFlames();
-  void drawTeleport();
-  void drawGreen();
-  void drawExplosion();
-  void drawSwirl();
-  void drawCastSpell();
-  void drawRing();
+  void glowShape(bool proceed, int startTime);
+  void drawFlames(bool proceed);
+  void drawTeleport(bool proceed);
+  void drawGreen(bool proceed);
+  void drawExplosion(bool proceed);
+  void drawSwirl(bool proceed);
+  void drawCastSpell(bool proceed);
+  void drawRing(bool proceed);
   
   // particle management
   void createParticle(ParticleStruct **particle);

@@ -1313,7 +1313,8 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   if(!effect[x][y][z]) {
     effect[x][y][z] = new EffectLocation();
   }
-  effect[x][y][z]->effect = new Effect(scourge->getShapePalette(), 
+  effect[x][y][z]->effect = new Effect(scourge,
+                                       scourge->getShapePalette(), 
                                        width, height);
   effect[x][y][z]->effect->deleteParticles();
   effect[x][y][z]->resetDamageEffect();

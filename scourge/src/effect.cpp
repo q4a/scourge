@@ -17,14 +17,16 @@
 
 #include "effect.h"
 
-Effect::Effect(ShapePalette *shapePal, int width, int height) {
+Effect::Effect(Scourge *scourge, ShapePalette *shapePal, int width, int height) {
+  this->scourge = scourge;
   this->shapePal = shapePal;
   this->shape = new GLShape(0, width, height, 1, NULL,0, 0, 0, 2000);
   this->deleteShape = true;
   commonInit();
 }
 
-Effect::Effect(ShapePalette *shapePal, GLShape *shape) {
+Effect::Effect(Scourge *scourge, ShapePalette *shapePal, GLShape *shape) {
+  this->scourge = scourge;
   this->shapePal = shapePal;
   this->shape = shape;
   this->deleteShape = false;
@@ -39,6 +41,7 @@ void Effect::commonInit() {
   }
   ringRadius = 0.25f;
   ringRotate = 0.0f;
+  lastTimeStamp = 0;
 }
 
 Effect::~Effect() {
@@ -56,26 +59,32 @@ void Effect::deleteParticles() {
 }
 
 void Effect::draw(int effect, int startTime) {
+  GLint t = SDL_GetTicks();
+
+  bool proceed = (lastTimeStamp == 0 || 
+                  t - lastTimeStamp >= scourge->getUserConfiguration()->getGameSpeedTicks() / 2);
+  if(proceed) lastTimeStamp = t;
+
   if(effect == Constants::EFFECT_FLAMES) {
-    drawFlames();
+    drawFlames(proceed);
   } else if(effect == Constants::EFFECT_TELEPORT) {
-    drawTeleport();
+    drawTeleport(proceed);
   } else if(effect == Constants::EFFECT_GREEN) {
-    drawGreen();
+    drawGreen(proceed);
   } else if(effect == Constants::EFFECT_EXPLOSION) {
-    drawExplosion();
+    drawExplosion(proceed);
   } else if(effect == Constants::EFFECT_SWIRL) {
-    drawSwirl();
+    drawSwirl(proceed);
   } else if(effect == Constants::EFFECT_CAST_SPELL) {
-    drawCastSpell();
+    drawCastSpell(proceed);
   } else if(effect == Constants::EFFECT_RING) {
-    drawRing();
+    drawRing(proceed);
   } else {
-    glowShape(startTime);
+    glowShape(proceed, startTime);
   }
 }
 
-void Effect::glowShape(int startTime) {
+void Effect::glowShape(bool proceed, int startTime) {
   glColor4f( 1, 0, 0, 1 );
   int t = SDL_GetTicks();
   float scale = 1.0f + (float)(t - startTime) / Constants::DAMAGE_DURATION;
@@ -84,12 +93,12 @@ void Effect::glowShape(int startTime) {
   shape->draw();
 }
 
-void Effect::drawFlames() {
+void Effect::drawFlames(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
 	  createParticle(&(particle[i]));
-    } else {
+    } else if(proceed) {
 	  moveParticle(&(particle[i]));
     }
 
@@ -105,7 +114,7 @@ void Effect::drawFlames() {
   }
 }
 
-void Effect::drawTeleport() {
+void Effect::drawTeleport(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
@@ -116,7 +125,7 @@ void Effect::drawTeleport() {
 	  if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
 	  particle[i]->maxLife = 10000;
 	  particle[i]->trail = 4;
-    } else {
+    } else if(proceed) {
 	  moveParticle(&(particle[i]));
     }
 
@@ -134,7 +143,7 @@ void Effect::drawTeleport() {
   }
 }
 
-void Effect::drawGreen() {
+void Effect::drawGreen(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
@@ -147,7 +156,7 @@ void Effect::drawGreen() {
 	  particle[i]->maxLife = 5000;
 	  particle[i]->trail = 2;
 	  particle[i]->zoom = 1.5f;
-    } else {
+    } else if(proceed) {
 	  particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
 
 	  // this causes an explosion!
@@ -169,7 +178,7 @@ void Effect::drawGreen() {
   }
 }
 
-void Effect::drawExplosion() {
+void Effect::drawExplosion(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
@@ -181,7 +190,7 @@ void Effect::drawExplosion() {
 	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
 	  particle[i]->maxLife = 5000;
 	  particle[i]->trail = 4;
-    } else {
+    } else if(proceed) {
 	  particle[i]->rotate = (360.0f * rand()/RAND_MAX);
 
 	  // this causes an explosion!
@@ -203,7 +212,7 @@ void Effect::drawExplosion() {
   }
 }
 
-void Effect::drawSwirl() {
+void Effect::drawSwirl(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
 	float angle = (float)i * (360.0f / (float)PARTICLE_COUNT);
@@ -219,7 +228,7 @@ void Effect::drawSwirl() {
 	  particle[i]->rotate = angle;
 	  particle[i]->maxLife = 5000;
 	  //particle[i]->trail = 2;
-    } else {
+    } else if(proceed) {
 	  particle[i]->zoom += 0.01f;
 	  particle[i]->rotate += 5.0f;
 	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) + 
@@ -243,7 +252,7 @@ void Effect::drawSwirl() {
   }
 }
 
-void Effect::drawCastSpell() {
+void Effect::drawCastSpell(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
@@ -255,7 +264,7 @@ void Effect::drawCastSpell() {
 	  particle[i]->maxLife = 10000;
 	  particle[i]->trail = 1;
 	  particle[i]->zoom = 0.5f;
-    } else {
+    } else if(proceed) {
 	  moveParticle(&(particle[i]));
     }
 
@@ -276,7 +285,7 @@ void Effect::drawCastSpell() {
   }
 }
 
-void Effect::drawRing() {
+void Effect::drawRing(bool proceed) {
 
   float r = ringRadius / GLShape::DIV;
 
@@ -305,8 +314,10 @@ void Effect::drawRing() {
     glPopMatrix();
   }
 
-  if(ringRadius < shape->getWidth()) ringRadius += 0.8f;
-  ringRotate += 5.0f;
+  if(proceed) {
+    if(ringRadius < shape->getWidth()) ringRadius += 0.8f;
+    ringRotate += 5.0f;
+  }
 }
 
 
