@@ -22,13 +22,16 @@
   */
 
 Canvas::Canvas(int x, int y, int x2, int y2, WidgetView *view, 
-               DragAndDropHandler *dragAndDropHandler) : 
+               DragAndDropHandler *dragAndDropHandler,
+               bool highlightOnMouseOver) : 
   Widget(x, y, x2 - x, y2 - y) {
 	this->view = view;
   this->dragAndDropHandler = dragAndDropHandler;
 	this->x2 = x2;
 	this->y2 = y2;
   this->dragging = false;
+  this->highlightOnMouseOver = highlightOnMouseOver;
+  this->inside = false;
   highlightBorders = false;
 }
 
@@ -37,6 +40,11 @@ Canvas::~Canvas() {
 
 void Canvas::drawWidget(Widget *parent) {
   GuiTheme *theme = ((Window*)parent)->getTheme();
+  if( highlightOnMouseOver ) {
+    drawButton( parent, 0, 0, x2 - x, y2 - y, 
+                false, false, dragging, false, inside );
+  }
+
   if(view && !((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getSDLHandler()->getScreen()->h - 
@@ -50,6 +58,7 @@ void Canvas::drawWidget(Widget *parent) {
     
     glDisable( GL_SCISSOR_TEST );
   }
+
   // draw the border
   if(highlightBorders) {
     glLineWidth( 3.0f );
@@ -72,7 +81,7 @@ void Canvas::drawWidget(Widget *parent) {
 }
 
 bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
-	bool inside = (x >= getX() && x < x2 && y >= getY() && y < y2);
+	inside = (x >= getX() && x < x2 && y >= getY() && y < y2);
 	switch(event->type) {
 	case SDL_MOUSEMOTION:
   if(dragging &&

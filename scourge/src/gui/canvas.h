@@ -35,10 +35,13 @@ class Canvas : public Widget {
   int dragX, dragY;
   bool dragging;
   bool highlightBorders;
+  bool highlightOnMouseOver;
+  bool inside;
 
  public: 
   Canvas(int x, int y, int x2, int y2, WidgetView *view, 
-         DragAndDropHandler *dragAndDropHandler = NULL);
+         DragAndDropHandler *dragAndDropHandler = NULL, 
+         bool highlightOnMouseOver=false);
   virtual ~Canvas();
   inline WidgetView *getView() { return view; }
   void drawWidget(Widget *parent);
