@@ -429,4 +429,4 @@ CFLAGS="$CFLAGS $TR_CFLAGS"
 CXXFLAGS="$CXXFLAGS $TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
-AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/glut/Makefile src/freetype/Makefile )
+AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile )
