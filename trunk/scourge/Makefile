@@ -6,7 +6,7 @@ OBJS = src/character.o src/constants.o src/creature.o src/debugshape.o\
 	src/Md2.o src/md2shape.o src/scourge.o src/sdleventhandler.o\
 	src/sdlhandler.o src/sdlscreenview.o src/shape.o src/inventory.o\
 	src/shapepalette.o src/util.o src/text.o src/gllocator.o
-CFLAGS = `sdl-config --cflags` -Isrc -Wno-deprecated -c -g
+CFLAGS = `sdl-config --cflags` -Isrc -I/usr/X11R6/include -c -g -Wno-deprecated 
 LDFLAGS = `sdl-config --libs` -L/usr/X11R6/lib -lGL -lGLU -lglut -lm
 
 

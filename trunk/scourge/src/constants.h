@@ -23,22 +23,29 @@
 #include <SDL_endian.h>
 #if defined(__APPLE__) || defined(__MACH_O__)
 // OS X framework style notation
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
+//#include <OpenGL/gl.h>
+//#include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 #else
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <GL/glut.h>
-//#include <GL/glext.h>
-#endif
 
+// Could not get these to include on my Mandrake9 box...
+#define APIENTRY
+typedef void (APIENTRY * PFNGLACTIVETEXTUREARBPROC) (GLenum texture);
+typedef void (APIENTRY * PFNGLMULTITEXCOORD2FARBPROC) (GLenum target, GLfloat s, GLfloat t);
+typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, GLint t);
+
+#endif
 #include <stdlib.h>
 
-// opengl extension functions                                     
+// opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
 extern PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB;
 extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
+
+
+
+
 
 /*
   Float swapping code by:
