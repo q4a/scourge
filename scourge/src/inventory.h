@@ -53,7 +53,7 @@ private:
 
 	// UI
 	Window *mainWin;
-	Button *inventoryButton, *skillsButton, *spellsButton, *partyButton;
+	Button *inventoryButton, *skillsButton, *spellsButton, *partyButton, *closeButton;
 	CardContainer *cards;
 
 	// inventory screen
