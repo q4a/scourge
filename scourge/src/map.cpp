@@ -349,7 +349,14 @@ void Map::drawLocator() {
 	selZ = newz;
 
 	// only let drop on other creatures and containers
-	if(dropLoc) {
+	// unfortunately I have to call isWallBetween(), so objects aren't dragged behind walls
+	// this makes moving items slow
+	if(dropLoc || 
+	   (oldLocatorSelX < MAP_WIDTH && 
+		isWallBetween(selX, selY, selZ, 
+					  oldLocatorSelX, 
+					  oldLocatorSelY, 
+					  oldLocatorSelZ))) {
 	  selX = oldLocatorSelX;
 	  selY = oldLocatorSelY;
 	  selZ = oldLocatorSelZ;
@@ -835,6 +842,8 @@ Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z,
 			}
 			if(zz > sz) sz = zz;
 			else break;
+		  } else if(newz && loc) {
+			return pos[x + sx][y - sy][z + sz];
 		  } else if(!newz && !(loc && loc->item && !loc->item->isBlocking())) {
 			return pos[x + sx][y - sy][z + sz];
 		  } else {

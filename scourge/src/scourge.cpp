@@ -71,6 +71,7 @@ Scourge::Scourge(int argc, char *argv[]){
   startRound = true;
   battleCount = 0;  
   inventory = NULL;
+  containerGuiCount = 0;
   
   for(int i = 0; i < 4; i++) party[i] = NULL;
 
@@ -140,6 +141,7 @@ void Scourge::startMission() {
   startRound = true;
   battleCount = 0;
   partyDead = false;
+  containerGuiCount = 0;
   
   setPlayer(getParty(0));
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
@@ -264,6 +266,13 @@ void Scourge::drawView(SDL_Surface *screen) {
 
 bool Scourge::handleEvent(SDL_Event *event) {
   int ea;  
+
+  if(containerGuiCount > 0) {
+	if(containerGui[containerGuiCount - 1]->handleEvent(event)) {
+	  closeContainerGui(containerGui[containerGuiCount - 1]);
+	}
+	return false;
+  }
 
   if(inventory->isVisible()) {
 	inventory->handleEvent(event);
@@ -705,6 +714,7 @@ bool Scourge::startItemDrag(int x, int y, int z) {
   Location *pos = map->getPosition(x, y, z);
   if(pos) {
 	if(getItem(pos)) {  
+	  dragStartTime = SDL_GetTicks();
 	  return true;
 	}
   }
@@ -726,7 +736,12 @@ bool Scourge::useItem() {
 
 bool Scourge::useItem(int x, int y, int z) {
   if(movingItem) {
-	//	dropItem(x, y);
+	// a quick click opens a container
+	GLint delta = SDL_GetTicks() - dragStartTime;
+	if(delta < ACTION_CLICK_TIME &&
+	   movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
+	  openContainerGui(movingItem);
+	}
 	dropItem(map->getSelX(), map->getSelY());
 	return true;
   }
@@ -840,6 +855,14 @@ Creature *Scourge::isPartyMember(Location *pos) {
 }
 
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
+
+  if(containerGuiCount > 0) {
+	if(containerGui[containerGuiCount - 1]->handleEvent(widget, event)) {
+	  closeContainerGui(containerGui[containerGuiCount - 1]);
+	}
+	return false;
+  }
+
   if(inventory->isVisible()) {
 	inventory->handleEvent(widget, event);
 	return false;
@@ -1477,4 +1500,24 @@ void Scourge::moveMonster(Creature *monster) {
 	  }
 	}
   }
+}
+
+void Scourge::openContainerGui(Item *container) {
+  if(containerGuiCount < MAX_CONTAINER_GUI) {
+	if(startRound) toggleRound();
+	containerGui[containerGuiCount++] = new ContainerGui(this, container, 
+														 containerGuiCount,
+														 10 + containerGuiCount * 15, 
+														 10 + containerGuiCount * 15);
+  }
+}
+
+void Scourge::closeContainerGui(ContainerGui *gui) {
+  if(containerGuiCount <= 0) return;
+  for(int i = gui->getId(); i < containerGuiCount - 1; i++) {
+	containerGui[i] = containerGui[i + 1];
+	containerGui[i]->setId(containerGui[i]->getId() - 1);
+  }
+  containerGuiCount--;
+  delete gui;
 }

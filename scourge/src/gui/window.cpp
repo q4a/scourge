@@ -41,7 +41,6 @@ Widget(x, y, w, h) {
 }
 
 Window::~Window() {
-  delete[] widget;
   removeWindow(this);
 }
 
@@ -53,7 +52,15 @@ void Window::addWindow(Window *win) {
 }
 
 void Window::removeWindow(Window *win) {
-  if(windowCount) --windowCount;
+  for(int i = 0; i < windowCount; i++) {
+	if(window[i] == win) {
+	  for(int t = i; t < windowCount - 1; t++) {
+		window[t] = window[t + 1];
+	  }
+	  windowCount--;
+	  return;
+	}
+  }
 }
 
 void Window::drawVisibleWindows() {

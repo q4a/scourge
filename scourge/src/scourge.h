@@ -38,6 +38,7 @@
 #include "gui/button.h"
 #include "userconfiguration.h"
 #include "effect.h"
+#include "containergui.h"
 
 using namespace std;
 
@@ -54,6 +55,7 @@ class UserConfiguration;
 class Effect;
 class DungeonGenerator;
 class Window;
+class ContainerGui;
 
 /**
   *@author Gabor Torok
@@ -124,6 +126,13 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int battleCount;
   Battle battle[MAX_BATTLE_COUNT];  
   bool partyDead;
+
+  static const int MAX_CONTAINER_GUI = 100;
+  int containerGuiCount;
+  ContainerGui *containerGui[MAX_CONTAINER_GUI];
+
+  GLint dragStartTime;
+  static const int ACTION_CLICK_TIME = 200;
 
 protected:
   SDLHandler *sdlHandler;
@@ -213,6 +222,10 @@ public:
   inline Creature *getParty(int i) { return party[i]; }  
 
   void drawTopWindow();
+
+  void openContainerGui(Item *container);
+
+  void closeContainerGui(ContainerGui *gui);
 
  protected:
   void fightBattle();

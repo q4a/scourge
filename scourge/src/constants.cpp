@@ -35,11 +35,12 @@ char *Constants::messages[][80] = {
   { "You are now in single-step mode" },
   { "You are now in group mode" },
   { "Paused: you have entered turn-based mode" },
-  { "Un-paused: you are in real-time mode" }
+  { "Un-paused: you are in real-time mode" },
+  { "Close" }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines
