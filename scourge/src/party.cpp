@@ -45,6 +45,7 @@ void Party::deleteParty() {
       party[i] = NULL;
     }
   }  
+  lastPlayer = NULL;
 }
 
 void Party::reset() {
@@ -170,9 +171,9 @@ void Party::setPlayer(int n) {
 
   // play selection sound
   if(lastPlayer != player) {
-    lastPlayer = player;
-    if(!player->getStateMod(Constants::dead))
+    if(lastPlayer && !player->getStateMod(Constants::dead))
       session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
+    lastPlayer = player;          
   }
 }
 

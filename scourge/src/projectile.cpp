@@ -315,6 +315,7 @@ void Projectile::moveProjectiles(Scourge *scourge) {
         Projectile *proj = *e;
 //        	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
         if(proj->move()) {
+//          cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
           removedProjectiles.push_back(proj);
         }
       }

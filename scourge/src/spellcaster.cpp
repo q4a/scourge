@@ -311,7 +311,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       }
     }
 
-    int timeInMin = 2 * battle->getCreature()->getLevel();
+    int timeInMin = 5 * battle->getCreature()->getLevel();
     if(protectiveItem) timeInMin /= 2;
     creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));  
 

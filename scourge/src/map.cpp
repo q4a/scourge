@@ -806,18 +806,22 @@ void Map::drawProjectiles() {
       if(proj->atTargetLocation() &&
          proj->getSpell() &&
          proj->getSpell()->isLocationTargetAllowed()) {
-        session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());
+//        cerr << "PROJ: reached target, from=" << proj->getCreature()->getName() << endl;                                
+        session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());        
         blocked = true;
       }
 
       Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
-      if(loc && proj->doesStopOnImpact()) {
+      if(loc) {
         if(loc->creature && 
              proj->getCreature()->canAttack(loc->creature)) {
+//               cerr << "PROJ: attacks creature, from=" << proj->getCreature()->getName() << endl;
             battleProjectiles[proj] = loc->creature;
             blocked = true;
-        } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
-                  (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
+        } else if(proj->doesStopOnImpact() &&
+                  ((loc->item && loc->item->getShape()->getHeight() >= 6) ||
+                   (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6))) {
+//               cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
           // hit something
           blocked = true;
         }
