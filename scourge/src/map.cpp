@@ -801,15 +801,13 @@ void Map::drawProjectiles() {
       // collision detection
       bool blocked = false;
       Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
-      if (loc && proj->doesStopOnImpact()) {
-        if (loc->creature && 
-            proj->getCreature()->isMonster() != loc->creature->isMonster()) {
-          // attack monster
-          //Battle::projectileHitTurn(scourge, proj, loc->creature);
+      if(loc && proj->doesStopOnImpact()) {
+        if(loc->creature && 
+           proj->getCreature()->canAttack(loc->creature)) {
           battleProjectiles[proj] = loc->creature;
           blocked = true;
-        } else if ((loc->item && loc->item->getShape()->getHeight() >= 6) ||
-                   (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
+        } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
+                  (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
           // hit something
           blocked = true;
         }

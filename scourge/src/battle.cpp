@@ -17,8 +17,8 @@
 
 #include "battle.h"
 
-#define GOD_MODE 0
-#define MONSTER_IMORTALITY 0
+#define GOD_MODE 1
+#define MONSTER_IMORTALITY 1
 
 char *Battle::sound[] = {
   "sound/weapon-swish/handheld/sw1.wav",
@@ -170,7 +170,8 @@ bool Battle::pauseBeforePlayerTurn() {
 
       // center on player
       for (int i = 0; i < session->getParty()->getPartySize(); i++) {
-        if (session->getParty()->getParty(i) == creature) {
+        if (session->getParty()->getParty(i) == creature &&
+            !creature->getStateMod(Constants::possessed)) {
           session->getParty()->setPlayer(i);
           break;
         }
@@ -494,12 +495,10 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   Battle *battle = proj->getCreature()->getBattle();
   battle->projectileHit = true;
   if(proj->getItem()) {
-    //battle->initItem(proj->getItem());
     battle->item = proj->getItem();
     battle->hitWithItem();
-  } else if(proj->getSpell()) {
-//    battle->spell = proj->getSpell();
-//    battle->castSpell();
+  } else if(proj->getSpell() && 
+            proj->getSpell()->isLocationTargetAllowed()) {
     SpellCaster *sc = new SpellCaster(battle, proj->getSpell(), true); 
     sc->spellSucceeded();
     delete sc;

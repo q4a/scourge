@@ -2076,6 +2076,18 @@ bool Scourge::createBattleTurns() {
   // anybody doing anything?
   for (int i = 0; i < party->getPartySize(); i++) {
     if (!party->getParty(i)->getStateMod(Constants::dead)) {
+      // possessed creature attacks fellows...
+      if(party->getParty(i)->getTargetCreature() && 
+         party->getParty(i)->getStateMod(Constants::possessed)) {
+        Creature *target = session->getParty()->getClosestPlayer(party->getParty(i)->getX(), 
+                                                                 party->getParty(i)->getY(), 
+                                                                 party->getParty(i)->getShape()->getWidth(),
+                                                                 party->getParty(i)->getShape()->getDepth(),
+                                                                 20);
+        if (target) {
+          party->getParty(i)->setTargetCreature(target);
+        }
+      }
       bool hasTarget = (party->getParty(i)->hasTarget() || 
                         party->getParty(i)->getAction() > -1);
       if (hasTarget && party->getParty(i)->isTargetValid()) {

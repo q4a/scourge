@@ -120,8 +120,16 @@ bool Projectile::move() {
       if(sx < ex) sx+=DELTA;
       else sx-=DELTA; 
     } else {        
+      /*
+      cerr << "before: " << sx << "," << sy << 
+        " angle=" << angle << 
+        " rad=" << Constants::toRadians(angle) << 
+        " cos=" << cos(Constants::toRadians(angle)) <<
+        " sin=" << sin(Constants::toRadians(angle)) << endl;
+        */
       sx += (cos(Constants::toRadians(angle)) * DELTA);
       sy += (sin(Constants::toRadians(angle)) * DELTA);
+      //cerr << "after: " << sx << "," << sy << endl;
     }
   }
 
@@ -131,7 +139,7 @@ bool Projectile::move() {
     this->ty = target->getY();
     this->tw = target->getShape()->getWidth();
     this->td = target->getShape()->getDepth();
-    calculateAngle();
+    if(!(sx == ex && sy == ey)) calculateAngle();
   }
 
   // recalculate the distance
@@ -149,7 +157,9 @@ void Projectile::calculateAngle() {
 
   int x = (int)(ex - sx);
   int y = (int)(ey - sy);
-  this->angle = Constants::toAngle(atan((float)y / (float)x));
+  if(!x) this->angle = (y <= 0 ? (90.0f + 180.0f) : 90.0f);
+  else this->angle = Constants::toAngle(atan((float)y / (float)x));
+  //cerr << "x=" << x << " y=" << y << " angle=" << angle << endl;
 
   // read about the arctan problem: 
   // http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
@@ -284,26 +294,33 @@ void Projectile::moveProjectiles(Scourge *scourge) {
 
     // draw the projectiles
     vector<Projectile*> removedProjectiles;
-    //    cerr << "Projectiles:" << endl;
+//        cerr << "Projectiles:" << endl;
     map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
     for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-      //	  Creature *creature = i->first;
-      //	  cerr << "\tcreature: " << creature->getName() << endl;
+      	  //Creature *creature = i->first;
+//      	  cerr << "\tcreature: " << creature->getName() << endl;
       vector<Projectile*> *p = i->second;
       for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
         Projectile *proj = *e;
-        //	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+//        	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
         if(proj->move()) {
           removedProjectiles.push_back(proj);
         }
       }
     }
     // remove projectiles
+//    cerr << "Checking targets:" << endl;
     for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
       Projectile *proj = *e;
+//      cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
       // a location-bound projectile reached its target
       if(!proj->doesStopOnImpact()) {
-        Battle::projectileHitTurn(scourge->getSession(), proj, (int)proj->getX(), (int)proj->getY());
+        Location *pos = scourge->getMap()->getLocation((int)proj->getX(), (int)proj->getY(), 0);
+        if(pos && pos->creature) {
+          Battle::projectileHitTurn(scourge->getSession(), proj, pos->creature);
+        } else {
+          Battle::projectileHitTurn(scourge->getSession(), proj, (int)proj->getX(), (int)proj->getY());
+        }
       }
       Projectile::removeProjectile(proj);
     }

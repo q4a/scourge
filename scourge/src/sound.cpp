@@ -86,11 +86,13 @@ void Sound::stopMusic(Mix_Music *music) {
     if(!Mix_FadeOutMusic(3000)) {
       cerr << "*** Error stopping music: " << Mix_GetError() << endl;
     } else {
+      /*
       while(Mix_PlayingMusic()) {
         // wait for any fades to complete
         SDL_Delay(100);
       }
       cerr << "*** Music stopped." << endl;
+      */
     }
   }
 }
