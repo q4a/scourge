@@ -46,13 +46,13 @@ Scourge::Scourge(int argc, char *argv[]){
   
   // Reads the user configuration from a file      
   userConfiguration = new UserConfiguration();
-  userConfiguration->loadConfiguration();
+  userConfiguration->loadConfiguration();  
+  userConfiguration->parseCommandLine(argc, argv);
   
   // Initialize the video mode
-  sdlHandler = new SDLHandler();
-  sdlHandler->loadUserConfiguration(userConfiguration);  //load user video preferences
-  sdlHandler->setVideoMode(argc, argv); //override them if needed and create video buf
-
+  sdlHandler = new SDLHandler(); 
+  sdlHandler->setVideoMode(userConfiguration); 
+  
   shapePal = sdlHandler->getShapePalette();
 
   // initialize the monsters
@@ -242,7 +242,7 @@ void Scourge::setPlayer(int n) {
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
-  string ea;  
+  int ea;  
 
   if(inventory->isVisible()) {
 	inventory->handleEvent(event);
@@ -288,147 +288,146 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     
     // xxx_yyy_stop means : "do this action when the corresponding key is up"
-    ea = userConfiguration->getEngineAction(event);
-    //cout << "scourge EA reçue : '" << ea << "'" << endl;
-    if(ea == "set_move_down"){        
+    ea = userConfiguration->getEngineAction(event);    
+    if(ea == SET_MOVE_DOWN){        
         setMove(Constants::MOVE_DOWN);
     }
-    else if(ea == "set_move_up"){
+    else if(ea == SET_MOVE_UP){
         setMove(Constants::MOVE_UP);
     }
-    else if(ea == "set_move_right"){
+    else if(ea == SET_MOVE_RIGHT){
         setMove(Constants::MOVE_RIGHT);
     }
-    else if(ea == "set_move_left"){
+    else if(ea == SET_MOVE_LEFT){
         setMove(Constants::MOVE_LEFT);
     }
-    else if(ea == "set_move_down_stop"){        
+    else if(ea == SET_MOVE_DOWN_STOP){        
         removeMove(Constants::MOVE_DOWN);
     }
-    else if(ea == "set_move_up_stop"){
+    else if(ea == SET_MOVE_UP_STOP){
         removeMove(Constants::MOVE_UP);
     }
-    else if(ea == "set_move_right_stop"){
+    else if(ea == SET_MOVE_RIGHT_STOP){
         removeMove(Constants::MOVE_RIGHT);
     }
-    else if(ea == "set_move_left_stop"){
+    else if(ea == SET_MOVE_LEFT_STOP){
         removeMove(Constants::MOVE_LEFT);
     }            
-    else if(ea == "set_player_0"){
+    else if(ea == SET_PLAYER_0){
 	  setPlayer(0);
     }
-    else if(ea == "set_player_1"){
+    else if(ea == SET_PLAYER_1){
 	  setPlayer(1);
     }
-    else if(ea == "set_player_2"){
+    else if(ea == SET_PLAYER_2){
 	  setPlayer(2);
     }
-    else if(ea == "set_player_3"){
+    else if(ea == SET_PLAYER_3){
 	  setPlayer(3);
     }
-    else if(ea == "set_player_only"){
+    else if(ea == SET_PLAYER_ONLY){
         player_only = (player_only ? false : true);
 		move = 0;
 		for(int i = 0; i < 4; i++) party[i]->setSelXY(-1, -1);
-    }
-    else if(ea == "blend_a"){
+    }    
+    else if(ea == BLEND_A){
         blendA++; if(blendA >= 11) blendA = 0;
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }
-    else if(ea == "blend_b"){    
+    else if(ea == BLEND_B){    
         blendB++; if(blendB >= 11) blendB = 0;
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }
-    else if(ea == "show_inventory"){
+    else if(ea == SHOW_INVENTORY){
         inventory->show();        
     }
-    else if(ea == "show_options_menu"){
+    else if(ea == SHOW_OPTIONS_MENU){
         optionsMenu->show();
     }
-    else if(ea == "use_item_stop"){
+    else if(ea == USE_ITEM_STOP){
         useItem();
     }
-    else if(ea == "set_next_formation_stop"){
+    else if(ea == SET_NEXT_FORMATION_STOP){
         if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
     }   
-    else if(ea == "set_x_rot_plus"){
+    else if(ea == SET_X_ROT_PLUS){
         map->setXRot(1.0f);
     }
-    else if(ea == "set_x_rot_minus"){
+    else if(ea == SET_X_ROT_MINUS){
         map->setXRot(-1.0f);
     }
-    else if(ea == "set_y_rot_plus"){
+    else if(ea == SET_Y_ROT_PLUS){
         map->setYRot(1.0f);
     }
-    else if(ea == "set_y_rot_minus"){
+    else if(ea == SET_Y_ROT_MINUS){
         map->setYRot(-1.0f);
     }
-    else if(ea == "set_z_rot_plus"){
+    else if(ea == SET_Z_ROT_PLUS){
         map->setZRot(1.0f);
     }
-    else if(ea == "set_z_rot_minus"){
+    else if(ea == SET_Z_ROT_MINUS){
         map->setZRot(-1.0f);
     }    
-    else if(ea == "set_x_rot_plus_stop"){
+    else if(ea == SET_X_ROT_PLUS_STOP){
         map->setXRot(0.0f);
     }
-    else if(ea == "set_x_rot_minus_stop"){
+    else if(ea == SET_X_ROT_MINUS_STOP){
         map->setXRot(0.0f);
     }
-    else if(ea == "set_y_rot_plus_stop"){
+    else if(ea == SET_Y_ROT_PLUS_STOP){
         map->setYRot(0.0f);
     }
-    else if(ea == "set_y_rot_minus_stop"){
+    else if(ea == SET_Y_ROT_MINUS_STOP){
         map->setYRot(0.0f);
     }
-    else if(ea == "set_z_rot_plus_stop"){
+    else if(ea == SET_Z_ROT_PLUS_STOP){
         map->setZRot(0.0f);
     }
-    else if(ea == "set_z_rot_minus_stop"){
+    else if(ea == SET_Z_ROT_MINUS_STOP){
         map->setZRot(0.0f);
     }
     
-    else if(ea == "add_x_pos_plus"){
+    else if(ea == ADD_X_POS_PLUS){
         map->addXPos(10.0f);
     }
-    else if(ea == "add_x_pos_minus"){
+    else if(ea == ADD_X_POS_MINUS){
         map->addXPos(-10.0f);
     }
-    else if(ea == "add_y_pos_plus"){
+    else if(ea == ADD_Y_POS_PLUS){
         map->addYPos(10.0f);
     }
-    else if(ea == "add_y_pos_minus"){
+    else if(ea == ADD_Y_POS_MINUS){
         map->addYPos(-10.0f);
     }
-    else if(ea == "add_z_pos_plus"){
+    else if(ea == ADD_Z_POS_PLUS){
         map->addZPos(10.0f);
     }
-    else if(ea == "add_z_pos_minus"){
+    else if(ea == ADD_Z_POS_MINUS){
         map->addZPos(-10.0f);
     } 
     
-    else if(ea == "minimap_zoom_in"){
+    else if(ea == MINIMAP_ZOOM_IN){
         miniMap->zoomIn();
     }
-    else if(ea == "minimap_zoom_out"){
+    else if(ea == MINIMAP_ZOOM_OUT){
         miniMap->zoomOut();
     }
-    else if(ea == "minimap_toggle"){
+    else if(ea == MINIMAP_TOGGLE){
         miniMap->toggle();
     }
-    else if(ea == "set_zoom_in"){
+    else if(ea == SET_ZOOM_IN){
         map->setZoomIn(true);
     }
-    else if(ea == "set_zoom_out"){
+    else if(ea == SET_ZOOM_OUT){
         map->setZoomOut(true);
     }
-    else if(ea == "set_zoom_in_stop"){
+    else if(ea == SET_ZOOM_IN_STOP){
         map->setZoomIn(false);
     }
-    else if(ea == "set_zoom_out_stop"){
+    else if(ea == SET_ZOOM_OUT_STOP){
         map->setZoomOut(false);
     }
-	else if(ea == "start_round") {
+	else if(ea == START_ROUND) {
 	  startRound = true;
 	}
       /*case SDL_KEYDOWN:

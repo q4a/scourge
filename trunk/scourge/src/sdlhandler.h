@@ -78,21 +78,7 @@ private:
 
   // the last event fired by a widget
   Widget *storedWidget;
-  SDL_Event *storedEvent;
-  
-  // video settings
-  bool fullscreen;
-  bool doublebuf;
-  bool hwpal;
-  bool resizeable;
-  bool force_hwsurf;
-  bool force_swsurf;
-  bool hwaccel;
-  bool test;   
-  int bpp;
-  int w;    // width and 
-  int h;    // height
-  int shadows;
+  SDL_Event *storedEvent; 
 
  public: 
   SDLHandler();
@@ -122,7 +108,8 @@ private:
   inline SDLEventHandler *getEventHandler() { return eventHandler; }
 
   void loadUserConfiguration(UserConfiguration *uc);
-  void setVideoMode(int argc, char *argv[]);
+  //void setVideoMode(int argc, char *argv[], UserConfiguration *uc);
+  void setVideoMode(UserConfiguration *uc);
   void mainLoop();
   void fireEvent(Widget *widget, SDL_Event *event);
   bool firedEventWaiting();
@@ -141,7 +128,7 @@ private:
   void testDrawView();
 
   inline ShapePalette *getShapePalette() { return shapePal; }
-
+ 
   void quit( int returnCode );
 
   inline double getFPS() { return fps; }

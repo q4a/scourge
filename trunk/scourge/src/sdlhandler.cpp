@@ -192,106 +192,8 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
   return -1;
 }
 
-// Get video variables from config file, these values can be overriden by 
-// command line.
-void SDLHandler::loadUserConfiguration(UserConfiguration *uc){
-    fullscreen = uc->getFullscreen();
-    doublebuf = uc->getDoublebuf();
-    hwpal = uc->getHwpal();
-    resizeable = uc->getResizeable();
-    force_hwsurf = uc->getForce_hwsurf();
-    force_swsurf = uc->getForce_swsurf();
-    hwaccel = uc->getHwaccel();    
-    bpp = uc->getBpp();
-    w = uc->getW();
-    h = uc->getH(); 
-    Constants::shadowMode = uc->getShadows();
-}
-
-void SDLHandler::setVideoMode(int argc, char *argv[]) { 
-  bool printusage = false;
-  bool test = false;
+void SDLHandler::setVideoMode(UserConfiguration *uc) {  
   
-  // interpret command line args
-  for(int i = 1; i < argc; i++) {
-	if(strstr(argv[i], "--bpp") == argv[i]) {	  
-	  bpp = atoi(argv[i] + 5);
-	  if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
-		printf("Error: bad bpp=%d\n", bpp);
-		printusage = true;
-	  }
-	} else if(strstr(argv[i], "--width") == argv[i]) {	  
-	  w = atoi(argv[i] + 7);
-	  if(!w) {
-		printf("Error: bad width=%s\n", argv[i] + 7);
-		printusage = true;
-	  }
-	} else if(strstr(argv[i], "--height") == argv[i]) {	  
-	  h = atoi(argv[i] + 8);
-	  if(!h) {
-		printf("Error: bad height=%s\n", argv[i] + 8);
-		printusage = true;
-	  }
-	} else if(strstr(argv[i], "--shadow") == argv[i]) {	  
-	  Constants::shadowMode = atoi(argv[i] + 8);	  
-      if(!(Constants::shadowMode == 0 || 
-           Constants::shadowMode == 1 || 
-           Constants::shadowMode == 2)) {
-          printf("Error: bad shadow mode: %d\n", Constants::shadowMode);
-          printusage = true;
-      }
-	} else if(!strcmp(argv[i], "--version")) {
-	  printf("Scourge, version %.2f\n", SCOURGE_VERSION);
-	  quit(0);
-	} else if(!strcmp(argv[i], "--test")) {
-	  test = true;
-	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
-	  for(int t = 1; t < (int)strlen(argv[i]); t++) {
-		switch(argv[i][t]) {
-		case 'h': case '?': printusage = true; break;
-		case 'f': fullscreen = false; break;
-		case 'd': doublebuf = false; break;
-		case 'p': hwpal = false; break;
-		case 'r': resizeable = false; break;
-		case 'H': force_hwsurf = true; break;
-		case 'S': force_swsurf = true; break;
-		case 'a': hwaccel = false; break;
-		case 's': Constants::stencilbuffer = false; break;
-		case 'm': Constants::multitexture = false; break;
-		}
-	  }
-	} else {
-	  printusage = true;
-	}
-  }
-
-  if(printusage) {
-	printf("S.C.O.U.R.G.E.: Heroes of Lesser Renown\n");
-	printf("A 3D, roguelike game of not quite epic proportions.\n\n");
-	printf("Usage:\n");
-	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
-	printf("version: %.2f\n", SCOURGE_VERSION);
-	printf("\nOptions:\n");
-	printf("\tf - disable fullscreen mode\n");
-	printf("\td - disable double buffering\n");
-	printf("\tp - disable hardware palette\n");
-	printf("\tr - disable resizable window\n");
-	printf("\tH - force hardware surface\n");
-	printf("\tS - force software surface\n");
-	printf("\ta - disable hardware acceleration\n");
-	printf("\th,?,--help - show this info\n");
-	printf("\ts - disable stencil buffer\n");
-	printf("\tm - disable multitexturing\n");
-	printf("\t--test - list card's supported video modes\n");
-	printf("\t--version - print the build version\n");
-	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
-	printf("\t--widthXX - use XX pixels for the screen width\n");
-	printf("\t--heightXX - use XX pixels for the screen height\n");
-    printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
-	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
-	exit(0);
-  }
-
   /* this holds some info about our display */
   const SDL_VideoInfo *videoInfo;
   
@@ -311,48 +213,54 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
   
   /* the flags to pass to SDL_SetVideoMode */
   videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
-  if(doublebuf)
+  if(uc->getDoublebuf())
 	videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
-  if(hwpal)
+  if(uc->getHwpal())
 	videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
-  if(resizeable)
+  if(uc->getResizeable())
 	videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
   
   /* This checks to see if surfaces can be stored in memory */
-  if(force_hwsurf) videoFlags |= SDL_HWSURFACE;
-  else if(force_swsurf) videoFlags |= SDL_SWSURFACE;
+  if(uc->getForce_hwsurf()) videoFlags |= SDL_HWSURFACE;
+  else if(uc->getForce_swsurf()) videoFlags |= SDL_SWSURFACE;
   else {
 	if ( videoInfo->hw_available ) videoFlags |= SDL_HWSURFACE;
 	else videoFlags |= SDL_SWSURFACE;
   }
   
   /* This checks if hardware blits can be done */
-  if ( hwaccel && videoInfo->blit_hw ) videoFlags |= SDL_HWACCEL;
+  if ( uc->getHwaccel() && videoInfo->blit_hw ) videoFlags |= SDL_HWACCEL;
   
-  if(fullscreen) videoFlags |= SDL_FULLSCREEN;
+  if(uc->getFullscreen()) videoFlags |= SDL_FULLSCREEN;
 
-  if(test) {
+  if(uc->getTest()) {
 	testModes(videoFlags);
 	quit(0);
   }
 
   // try to find the highest bpp for this mode
-  if(bpp == -1) bpp = testModes(videoFlags, true);
-  if(bpp == -1) {
-	fprintf(stderr, "Could not detect suitable opengl video mode.\n");
-	fprintf(stderr, "You can manually select one with the -bpp option\n");
-	quit(0);
+  int bpp;
+  if(uc->getBpp() == -1) {
+    bpp = testModes(videoFlags, true);
+    if(bpp == -1) {
+    	fprintf(stderr, "Could not detect suitable opengl video mode.\n");
+    	fprintf(stderr, "You can manually select one with the -bpp option\n");
+    	quit(0);
+    }
+    else{
+        uc->setBpp(bpp);
+    }
   }
   
   /* Sets up OpenGL double buffering */
-  if(doublebuf)
+  if(uc->getDoublebuf()) 
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   if(Constants::stencilbuffer) SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 
-  cout << "Setting video mode: " << w << "x" << h << "x" << bpp << endl;
+  cout << "Setting video mode: " << uc->getW() << "x" << uc->getH() << "x" << uc->getBpp() << endl;
   
   /* get a SDL surface */
-  screen = SDL_SetVideoMode( w, h, bpp, videoFlags );
+  screen = SDL_SetVideoMode( uc->getW(), uc->getH(), uc->getBpp(), videoFlags );
   /* Verify there is a surface */
   if ( !screen ) {
 	fprintf( stderr,  "Video mode set failed: %s\n", SDL_GetError( ) );
@@ -365,7 +273,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
   
   /* for Mac OS X in windowed mode, invert the mouse. SDL bug. */
 #ifdef __APPLE__
-  if(!fullscreen)
+  if(!uc->getFullscreen())
 	invertMouse = true;
 #endif	 
   
