@@ -1820,12 +1820,12 @@ void Map::configureLightMap() {
   }
   if(!LIGHTMAP_ENABLED) return;
 
-  int chunkX = (session->getParty()->getPlayer()->getX() + 
-				(session->getParty()->getPlayer()->getShape()->getWidth() / 2) - 
-				MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (session->getParty()->getPlayer()->getY() - 
-				(session->getParty()->getPlayer()->getShape()->getDepth() / 2) - 
-				MAP_OFFSET) / MAP_UNIT;
+  int chunkX = (toint(session->getParty()->getPlayer()->getX()) + 
+                (session->getParty()->getPlayer()->getShape()->getWidth() / 2) - 
+                MAP_OFFSET) / MAP_UNIT;
+  int chunkY = (toint(session->getParty()->getPlayer()->getY()) - 
+                (session->getParty()->getPlayer()->getShape()->getDepth() / 2) - 
+                MAP_OFFSET) / MAP_UNIT;
 
   traceLight(chunkX, chunkY, lightMap, false);
 }

@@ -41,7 +41,8 @@ using namespace std;
 class Projectile {
  private:
   Creature *creature, *target;
-  int tx, ty, tw, td;
+  float tx, ty;
+  int tw, td;
   Item *item;
   Spell *spell;
   float sx, sy, ex, ey; 
