@@ -18,23 +18,54 @@
 #ifndef OPTIONSMENU_H
 #define OPTIONSMENU_H
 
+#include <string.h>
 #include "constants.h"
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include "scourge.h"
+#include "userconfiguration.h"
+#include "gui/window.h"
+#include "gui/button.h"
+#include "gui/scrollinglist.h"
+#include "gui/cardcontainer.h"
 
 /**
   *@author Gabor Torok
   */
 
+#define MAX_CONTROLS_LINE_SIZE 80
+
 class Scourge;
+class UserConfiguration;
 
 class OptionsMenu {
 private:
+
+  char ** controlLines; // move it to function loadControls() ?
   Scourge *scourge;
+  UserConfiguration * uc;
   bool showDebug;
-  Window *mainWin;
+  bool controlsLoaded;
+  int nbControlLines;
+  bool waitingForNewKey;
+    
+  enum modeOptions {
+    CONTROLS = 0, VIDEO, AUDIO, GAME_SETTINGS
+  };
+  int selectedMode; 
+  
+  Window *mainWin;  
+  Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton, *closeButton;  
+  Button *changeControlButton, *saveControlButton;
+  Label * waitingLabel;
+  
+  CardContainer *cards;
+  ScrollingList *controlBindingsList;
+  
+  void createButton(int x1, int y1, int x2, int y2, char *label, bool toggle, Button * &theButton);
+  void setSelectedMode();
+  void loadControls();      
   
 public:
   OptionsMenu(Scourge *scourge);
@@ -44,7 +75,7 @@ public:
   bool handleEvent(Widget *widget, SDL_Event *event);
   inline void show() { mainWin->setVisible(true); }
   inline void hide() { mainWin->setVisible(false); }
-  inline bool isVisible() { return mainWin->isVisible(); }
+  inline bool isVisible() { return mainWin->isVisible(); }  
 
  protected:
 };

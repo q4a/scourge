@@ -183,6 +183,8 @@ public:
   inline ShapePalette *getShapePalette() { return shapePal; }  
 
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
+  
+  inline UserConfiguration * getUserConfiguration() { return userConfiguration; }
 
   inline Creature *getParty(int i) { return party[i]; }  
 
