@@ -404,7 +404,7 @@ dnl if test "x$have_SDL" != "xyes" ; then
 
     saved_LIBS="$LIBS"
 
-    GLUT_LIB_LIST="glut glut32"
+    GLUT_LIB_LIST="glut32 glut"
 
     for GLUT_LIB_NAME in $GLUT_LIB_LIST ; do
 	CHECK_FOR_GLUT_LIB
