@@ -130,6 +130,7 @@ void ScrollingList::drawWidget(Widget *parent) {
       if(ypos >= 0 && ypos < getHeight()) {
 		if(icons) drawIcon( scrollerWidth + 5, ypos - 10, icons[i] );
 		if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
+		else applyColor();
 		((Window*)parent)->getSDLHandler()->texPrint(scrollerWidth + (icons ? 20 : 5), ypos, list[i]);
       }
     }

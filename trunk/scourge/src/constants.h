@@ -344,9 +344,12 @@ public:
 	WEAPON_DEFEND,
 	HAND_DEFEND,
 
-	MATERIAL_SPELL,
-	ILLUSION_SPELL,
-	PSYCHIC_SPELL,
+	NATURE_MAGIC,
+	AWARENESS_MAGIC,
+	LIFE_AND_DEATH_MAGIC,
+	HISTORY_MAGIC,
+	DECEIT_MAGIC,
+	CONFRONTATION_MAGIC,	
 
 	OPEN_LOCK,
 	FIND_TRAP,
@@ -420,6 +423,14 @@ public:
     NO_SHADOWS=0,
     OBJECT_SHADOWS,
     ALL_SHADOWS
+  };
+
+  enum {
+	ACTION_EAT_DRINK=0,
+	ACTION_CAST_SPELL,
+
+	// this must be the last one
+	ACTION_COUNT
   };
 
   // the speed when hand fighting is used instead of a weapon

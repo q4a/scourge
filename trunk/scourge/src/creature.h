@@ -35,6 +35,7 @@
 #include "constants.h"
 #include "effect.h"
 #include "events/potionexpirationevent.h"
+#include "rpg/spell.h"
 
 using namespace std;
 
@@ -110,6 +111,11 @@ class Creature {
   GLuint damageEffectCounter;
   Effect *effect;
   int effectType;
+
+  vector<Spell*> spells;
+  int action;
+  Item *actionItem;
+  Spell *actionSpell;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -215,8 +221,10 @@ class Creature {
   // returns the index of the last item added
   bool addInventory(Item *item);
   Item *removeInventory(int index);  
+  int findInInventory(Item *item);
   // returns true if ate/drank item completely and false else
   bool eatDrink(int index);  
+  bool eatDrink(Item *item);
   bool computeNewItemWeight(RpgItem * rpgItem);
   // equip or doff if already equipped
   void equipInventory(int index);
@@ -277,7 +285,7 @@ class Creature {
 
   // return the initiative for a battle round (0-10), the lower the faster the attack
   // the method can return negative numbers if the weapon skill is very high (-10 to 10)
-  int getInitiative(Item *weapon);
+  int getInitiative(Item *weapon, Spell *spell=NULL);
 
   // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
   int getToHit(Item *weapon);
@@ -333,6 +341,15 @@ class Creature {
 
   inline void setBonusArmor(int n) { bonusArmor = n; if(bonusArmor < 0) bonusArmor = 0; recalcAggregateValues(); }
   inline int getBonusArmor() { return bonusArmor; }
+
+  inline void addSpell(Spell *spell) { spells.push_back(spell); }
+  // FIXME: O(n) but there aren't that many spells...
+  bool isSpellMemorized(Spell *spell);
+
+  void setAction(int action, Item *item=NULL, Spell *spell=NULL);
+  inline int getAction() { return action; }
+  inline Item *getActionItem() { return actionItem; }
+  inline Spell *getActionSpell() { return actionSpell; }
 
  protected:
 

@@ -133,10 +133,12 @@ const char *Constants::SKILL_NAMES[] = {
   "WEAPON_DEFEND",
   "HAND_DEFEND",
 
-  "MATERIAL_SPELL",
-  "ILLUSION_SPELL",
-  "NATURE_SPELL",
-  "DIVINE_SPELL",
+  "NATURE_MAGIC",
+  "AWARENESS_MAGIC",
+  "LIFE_AND_DEATH_MAGIC",
+  "HISTORY_MAGIC",
+  "DECEIT_MAGIC",
+  "CONFRONTATION_MAGIC",	
 
   "OPEN_LOCK",
   "FIND_TRAP",
@@ -532,5 +534,6 @@ float Constants::distance(float x1, float y1, float w1, float h1,
   float d2 = sqrt(((w2 / 2.0f) * (w2 / 2.0f)) + 
 				  ((h2 / 2.0f) * (h2 / 2.0f)));
   
-  return d - (d1 + d2);
+  float ret = d - (d1 + d2);
+  return (ret < 0 ? 0 : ret);
 }

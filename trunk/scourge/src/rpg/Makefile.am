@@ -8,4 +8,6 @@ libScourgeRpg_a_SOURCES = \
 	rpgitem.cpp\
 	rpgitem.h\
 	monster.cpp\
-	monster.h
+	monster.h\
+	spell.cpp\
+	spell.h

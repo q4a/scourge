@@ -35,6 +35,7 @@
 #include "item.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
+#include "rpg/spell.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "userconfiguration.h"
@@ -143,6 +144,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int battleTurn;
 
   bool mouseMoveScreen;
+  Creature *targetSelectionFor;
 
 protected:
   SDLHandler *sdlHandler;
@@ -254,6 +256,9 @@ public:
   Window *createWoodWindow(int x, int y, int w, int h, char *title);
   
   void missionCompleted();
+
+  inline void setTargetSelectionFor(Creature *c) { targetSelectionFor = c; }
+  inline Creature *getTargetSelectionFor() { return targetSelectionFor; }
 
  protected:
   //  void fightBattle(); 

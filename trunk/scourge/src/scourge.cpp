@@ -48,6 +48,9 @@ Scourge::Scourge(int argc, char *argv[]){
 
   // new item and creature references
   itemCount = creatureCount = 0;
+
+  // we're not in target selection mode
+  targetSelectionFor = NULL;
   
   // Reads the user configuration from a file      
   userConfiguration = new UserConfiguration();  
@@ -65,6 +68,7 @@ Scourge::Scourge(int argc, char *argv[]){
   // initialize the monsters (they use items)
   Monster::initMonsters();
   Character::initCharacters();
+  MagicSchool::initMagic();
 
   // create the mission board
   board = new Board(this);
@@ -144,7 +148,7 @@ void Scourge::startMission() {
 	teleporting = false;
 	changingStory = false;
 	mouseMoveScreen = true;
-	
+	targetSelectionFor = NULL;	
 	
 	if(nextMission == -1) {
 	  
@@ -659,7 +663,18 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 		if(!movingItem && mapx < MAP_WIDTH) {
 		  Location *loc = map->getLocation(mapx, mapy, mapz);
 		  if(loc && loc->creature) {
-			if(loc->creature->isMonster()) {
+			if(getTargetSelectionFor()) {
+			  // assign this creature
+			  Creature *c = getTargetSelectionFor();
+			  c->setTargetCreature(loc->creature);
+			  char msg[80];
+			  sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
+			  map->addDescription(msg);
+			  
+			  // turn off selection mode
+			  setTargetSelectionFor(NULL);
+			  return;
+			} else if(loc->creature->isMonster()) {
 			  // follow this creature
 			  party->setTargetCreature(loc->creature);
 			  return;
@@ -673,6 +688,17 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 			  }
 			}
 		  }
+		}
+
+		// cancel target selection mode
+		// FIXME: handle item selection. e.g.: open door from afar, etc.
+		if(getTargetSelectionFor()) {
+		  Creature *c = getTargetSelectionFor();
+		  c->setAction(-1);
+		  setTargetSelectionFor(NULL);
+		  char msg[80];
+		  sprintf(msg, "%s cancelled a pending action.", c->getName());
+		  map->addDescription(msg);
 		}
 		
 		// click on an item
@@ -1225,6 +1251,8 @@ void Scourge::playRound() {
   // move the map
   if(move) map->move(move);
 
+  if(targetSelectionFor) return;
+
   // hound your targets
   party->followTargets();
   
@@ -1263,14 +1291,16 @@ void Scourge::playRound() {
 		// attack targeted monster if close enough
 		for(int i = 0; i < 4; i++) {
 		  if(!party->getParty(i)->getStateMod(Constants::dead) && 
-			 party->getParty(i)->getTargetCreature()) {								
+			 (party->getParty(i)->getTargetCreature() || 
+			  party->getParty(i)->getAction() > -1)) {								
 			battle[battleCount++] = new Battle(this, party->getParty(i));
 		  }
 		}
 		for(int i = 0; i < creatureCount; i++) {
 		  if(!creatures[i]->getStateMod(Constants::dead) && 
 			 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
-			 creatures[i]->getTargetCreature()) {
+			 (creatures[i]->getTargetCreature() || 
+			  creatures[i]->getAction() > -1)) {
 			battle[battleCount++] = new Battle(this, creatures[i]);
 		  }
 		}

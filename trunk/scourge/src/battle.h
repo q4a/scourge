@@ -89,6 +89,10 @@ class Battle {
   void hitWithItem();
   void selectBestItem();
   void initItem(Item *item);
+  void initAction();
+  void dealDamage(int damage);
+  void castSpell();
+
 };
 
 #endif

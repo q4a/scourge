@@ -156,8 +156,8 @@
 				762AF849066D856300B92069,
 				762AF84A066D856300B92069,
 				762AF84B066D856300B92069,
-				762AF852066D856300B92069,
 				762AF853066D856300B92069,
+				762AF852066D856300B92069,
 				762AF854066D856300B92069,
 				762AF855066D856300B92069,
 				762AF856066D856300B92069,
@@ -1020,9 +1020,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = scourge.cpp;
-			path = ../../src/scourge.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
+			path = /Users/gabortorok/sourceforge/scourge/src/scourge.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		762AF853066D856300B92069 = {
 			fileEncoding = 30;
@@ -1965,6 +1965,7 @@
 			buildRules = (
 			);
 			buildSettings = {
+				DEPLOYMENT_LOCATION = NO;
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" /Users/gabortorok/Library/Frameworks";
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -1975,7 +1976,7 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers";
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
+				INSTALL_PATH = "$(HOME)/sourceforge/scourge";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-framework SDL -framework Foundation -framework AppKit -framework OpenGL -framework GLUT";

@@ -361,7 +361,7 @@ void Map::setupShapes(bool ground) {
 				  setupPosition(posX, posY, zp,
 								xpos2, ypos2, zpos2,
 								shape, pos[posX][posY][zp]->item, 
-								pos[posX][posY][zp]->creature); 		  
+ 								pos[posX][posY][zp]->creature); 		  
 				}
 			  }
 			}
@@ -697,6 +697,21 @@ void Map::draw() {
 	  Projectile::removeProjectile(*e);
 	}
 
+	
+	if(scourge->getTargetSelectionFor()) {
+	  glPushMatrix();
+	  glLoadIdentity();
+	  glDisable(GL_DEPTH_TEST);
+	  //glDepthMask(GL_FALSE);
+	  glColor3f( 1, 1, 0.15f );
+	  scourge->getSDLHandler()->texPrint( 10,
+										  scourge->getSDLHandler()->getScreen()->h - 10,
+										  "Select a target for %s.", 
+										  scourge->getTargetSelectionFor()->getName() );
+	  glEnable(GL_DEPTH_TEST);
+	  //glDepthMask(GL_TRUE);    
+	  glPopMatrix();
+	}
 
 	//drawDraggedItem();
   }
