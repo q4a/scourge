@@ -390,15 +390,20 @@ float Util::getAngle(float fx, float fy, float fw, float fd,
 	//	q = 4;
 	angle += 360;
   }
+
+  // normalize
+  if( angle < 0.0f ) angle = 360.0f + angle;
+  if( angle >= 360.0f ) angle -= 360.0f;
+
   return angle;
 }
 
 float Util::diffAngle(float a, float b) {
-  a -= (((int)a / 360) * 360);
-  b -= (((int)b / 360) * 360);
+//  a -= (((int)a / 360) * 360);
+//  b -= (((int)b / 360) * 360);
   float diff = a - b;
   if( diff > 180.0f ) {
-    diff = 360.0f - diff;
+    diff = -(360.0f - diff);
   } else if( diff < -180.0f ) {
     diff = 360 + diff;
   }

@@ -481,32 +481,68 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
 
     if(!position) {
-      //if( !strcmp(getName(),"Alamont") ) cerr << "moved!" << endl;
+
+      /*
+      GLfloat a;
+      if( newX > getX() ) {
+        if( newY > getY() ) {
+          a = 135.0f;
+        } else if( newY < getY() ) {
+          a = 45.0f;
+        } else {
+          a = 90.0f;
+        }
+      } else if( newX < getX() ) {
+        if( newY > getY() ) {
+          a = -135.0f;
+        } else if( newY < getY() ) {
+          a = -45.0f;
+        } else {
+          a = -90.0f;
+        }
+      } else {
+        if( newY > getY() ) {
+          a = 180.0f;
+        } else if( newY < getY() ) {
+          a = 0.0f;
+        } else {
+          a = 0.0f;
+        }
+      }
+      a += 90.0f;
+      if( a < 0.0f ) a = 360.0f + a;
+      if( a >= 360.0f ) a -= 360.0f;
+      */
+
       GLfloat a = Util::getAngle( newX, newY, 1, 1,
                                   getX(), getY(), 1, 1 );
-      if( bestPathPos == 1 || a != 0.0f ) {
+
+      if( bestPathPos == 1 || a != wantedAngle ) {
         wantedAngle = a;
         GLfloat diff = Util::diffAngle( a, angle );
         angleStep = diff / (float)TURN_STEP_COUNT;
-        //cerr << "wantedAngle=" << wantedAngle << " angle=" << angle << " diff=" << diff << " step=" << angleStep << endl;
-      }
-      GLfloat diff = Util::diffAngle( wantedAngle, angle );
-      if( diff ) {
-        angle += ( abs( diff ) > angleStep ? 
-                   angleStep : diff );
-        if( angle < 0.0f ) angle = 360.0f + angle;
-        if( angle >= 360.0f ) angle -= 360.0f;
       }
 
-      /*
-      if( angle < wantedAngle ) {
-        GLfloat diff = wantedAngle - angle;
-        angle += ( diff > angleStep ? angleStep : diff );
-      } else if( angle > wantedAngle ) {
-        GLfloat diff = angle - wantedAngle;
-        angle -= ( diff > angleStep ? angleStep : diff );
+      if( abs(angle - wantedAngle) > 2.0f ) {
+        GLfloat diff = Util::diffAngle( wantedAngle, angle );
+      
+        /*
+        cerr << "wantedAngle=" << wantedAngle << 
+          " angle=" << angle << 
+          " diff=" << diff << 
+          " step=" << angleStep << endl;
+          */
+
+        if( abs( diff ) < angleStep ) {
+          angle = wantedAngle;
+        } else {
+          angle += angleStep;
+        }
+        if( angle < 0.0f ) angle = 360.0f + angle;
+        if( angle >= 360.0f ) angle -= 360.0f;
+      } else {
+        angle = wantedAngle;
       }
-      */
 
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
       moveTo( newX, newY, getZ() );
