@@ -152,7 +152,7 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown,
 
   doorCount = 0;
 
-  progress = new Progress(scourge, 12);
+  progress = new Progress(scourge, 16);
 }
 
 DungeonGenerator::~DungeonGenerator(){
@@ -734,6 +734,7 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
 
+  progress->updateStatus(MESSAGE);
   //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
   bool preGenerated = (locationIndex);
@@ -1118,6 +1119,28 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
     getRandomLocation(map, item->getShape(), &x, &y);
     addItem(map, NULL, item, NULL, x, y);
   }
+
+  // populate containers
+  for(int i = 0; i < containers.size(); i++) {
+    Item *item = containers[i];
+    // some items
+    int n = (int)(3.0f * rand() / RAND_MAX);
+    for(int i = 0; i < n; i++) {
+      RpgItem *containedItem = RpgItem::getRandomItem(level);
+      if(containedItem) item->addContainedItem(scourge->getSession()->newItem(containedItem));
+    }
+    // some spells
+    if(!((int)(25.0f * rand() / RAND_MAX))) {
+      int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+      for(int i = 0; i < n; i++) {
+        Spell *spell = MagicSchool::getRandomSpell(level);
+        if(spell) {
+          Item *scroll = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
+          item->addContainedItem(scroll);
+        }
+      }
+    }
+  }
 }
 
 void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal, 
@@ -1267,33 +1290,32 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
       scourge->getParty()->getParty(t)->setSelXY(-1,-1);
     }
   }
+}
 
+void DungeonGenerator::lockDoors(Map *map, ShapePalette *shapePal, 
+                                 bool preGenerated, int locationIndex) {
   // lock some doors
-  cerr << "*** Locking doors, count=" << doorCount << endl;
+  //cerr << "*** Locking doors, count=" << doorCount << endl;
   for(int i = 0; i < doorCount; i++) {
     Sint16 mapx = door[i][0];
     Sint16 mapy = door[i][1];
     if((int)(10.0f * rand() / RAND_MAX) == 0) {
-      cerr << "\t*** Locking door: " << mapx << "," << mapy << endl;
+      //cerr << "\t*** Locking door: " << mapx << "," << mapy << endl;
       // lock the door
       map->setLocked(mapx, mapy, 0, true);
       // find an accessible location for the switch
       int nx, ny;
       Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
       Uint32 start = SDL_GetTicks();
-      getRandomLocation(map, lever, &nx, &ny, true, x, y);
-      cerr << "\t*** Location for lever search: " << (SDL_GetTicks() - start) << 
-        " millis. Result=" << ( nx < MAP_WIDTH ) << endl;
+      getRandomLocation(map, lever, &nx, &ny, true, 
+                        scourge->getParty()->getPlayer()->getX(), 
+                        scourge->getParty()->getPlayer()->getY());
+      //cerr << "\t*** Location for lever search: " << (SDL_GetTicks() - start) << 
+      //  " millis. Result=" << ( nx < MAP_WIDTH ) << endl;
       if( nx < MAP_WIDTH ) {
-        cerr << "\t\t*** Lever at: " << nx << "," << ny << endl;
+        //cerr << "\t\t*** Lever at: " << nx << "," << ny << endl;
         // place the switch
         addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
-        Location *keyPos = map->getPosition(nx, ny, 0);
-        if(!keyPos) {
-          // ASSERT for debugging
-          cerr << "\tError while locking doors: no key at position." << endl;
-          exit(2);
-        }
         // connect the switch and the door
         map->setKeyLocation(mapx, mapy, 0, nx, ny, 0);
       } else {
@@ -1302,7 +1324,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
       }
     }
   }
-  cerr << "*** Done locking doors" << endl;
+  //cerr << "*** Done locking doors" << endl;
 }
 
 void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal, 
@@ -1339,50 +1361,54 @@ void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal,
 
 void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
                                       bool preGenerated, int locationIndex) {
+  progress->updateStatus("Drawing walls");
   drawBasics(map, shapePal, preGenerated, locationIndex);
-  progress->updateStatus(MESSAGE);
-
+  
+  progress->updateStatus("Fixing rooms");
   removeColumns(map, shapePal, preGenerated, locationIndex);
-  progress->updateStatus(MESSAGE);
-
+   
+  progress->updateStatus("Adding containers");
   addContainers(map, shapePal, preGenerated, locationIndex);
-  progress->updateStatus(MESSAGE);
 
+  progress->updateStatus("Compressing free space");
   createFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
-  progress->updateStatus(MESSAGE);
 
+  progress->updateStatus("Adding party");
+  addParty(map, shapePal, preGenerated, locationIndex);
+
+  progress->updateStatus("Locking doors and chests");
+  lockDoors(map, shapePal, preGenerated, locationIndex);
+
+
+  progress->updateStatus("Adding gates");
   if(!preGenerated) {
     addStairs(map, shapePal, preGenerated, locationIndex);
   }
-  progress->updateStatus(MESSAGE);
 
+  progress->updateStatus("Adding pre-generated shapes");
   if(preGenerated) {
     addPregeneratedShapes(map, shapePal, preGenerated, locationIndex);
   }
-  progress->updateStatus(MESSAGE);
 
+  progress->updateStatus("Adding items and mission objectives");
   if(!preGenerated) {
     addItems(map, shapePal, preGenerated, locationIndex);
-
     addMissionObjectives(map, shapePal, preGenerated, locationIndex);
   }
-  progress->updateStatus(MESSAGE);
 
+  progress->updateStatus("Adding monsters");
   addMonsters(map, shapePal, preGenerated, locationIndex);
-  progress->updateStatus(MESSAGE);
 
+  progress->updateStatus("Adding furniture");
   addFurniture(map, shapePal, preGenerated, locationIndex);
-  progress->updateStatus(MESSAGE);
 
   // add a teleporters
+  progress->updateStatus("Adding teleporters");
   if(!preGenerated) {
     addTeleporters(map, shapePal, preGenerated, locationIndex);
   }
-  progress->updateStatus(MESSAGE);
 
-  addParty(map, shapePal, preGenerated, locationIndex);
-  progress->updateStatus(MESSAGE);
-
+  progress->updateStatus("Cleaning up");
   deleteFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
 }
 
@@ -1684,25 +1710,9 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
   if(creature) map->setCreature(x, y, z, creature);
   else if(item) map->setItem(x, y, z, item);
   else map->setPosition(x, y, z, shape);
-  // populate containers
+  // remember the containers
   if(item && item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-    // some items
-    int n = (int)(3.0f * rand() / RAND_MAX);
-    for(int i = 0; i < n; i++) {
-      RpgItem *containedItem = RpgItem::getRandomItem(level);
-      if(containedItem) item->addContainedItem(scourge->getSession()->newItem(containedItem));
-    }
-    // some spells
-    if(!((int)(25.0f * rand() / RAND_MAX))) {
-      int n = (int)(2.0f * rand() / RAND_MAX) + 1;
-      for(int i = 0; i < n; i++) {
-        Spell *spell = MagicSchool::getRandomSpell(level);
-        if(spell) {
-          Item *scroll = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
-          item->addContainedItem(scroll);
-        }
-      }
-    }
-  }
+    containers.push_back(item);
+  }  
 }
 
