@@ -759,7 +759,7 @@ void DungeonGenerator::updateStatus() {
   /* Draw it to the screen */
   SDL_GL_SwapBuffers( );
   status++;
-  usleep(5000);
+  //  usleep(5000);
 }
 
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
