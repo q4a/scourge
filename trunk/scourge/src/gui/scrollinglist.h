@@ -57,7 +57,7 @@ class ScrollingList : public Widget {
   inline const char *getLine(int index) { return list[index]; }
 
   inline int getSelectedLine() { return selectedLine; }
-  inline void setSelectedLine(int n) { selectedLine = n; }
+  void setSelectedLine(int n);
 
   void drawWidget(Widget *parent);
 
