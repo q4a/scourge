@@ -127,7 +127,7 @@ void Item::initItems(ShapePalette *shapePal) {
 	  }
 	  n = Constants::readLine(line, fp);
 	  strcpy(type, strtok(line + 1, ","));
-	  float weight = strtof(strtok(NULL, ","), NULL);
+	  float weight = strtod(strtok(NULL, ","), NULL);
 	  int price = atoi(strtok(NULL, ","));
 
 	  int inventory_location = 0;

@@ -140,7 +140,7 @@ ShapePalette::ShapePalette(){
 		n = Constants::readLine(line, fp);
 		strcpy(sv->m3ds_name, line + 1);
 		n = Constants::readLine(line, fp);
-		sv->m3ds_scale = strtof(line + 1, NULL);
+		sv->m3ds_scale = strtod(line + 1, NULL);
 	  } else if(n == 'L') {
 		n = Constants::readLine(line, fp);
 		sv->teleporter = 1;
@@ -161,7 +161,7 @@ ShapePalette::ShapePalette(){
 	  
 	  n = Constants::readLine(line, fp);
 	  // scale
-	  info->scale = strtof(strtok(line + 1, ","), NULL);
+	  info->scale = strtod(strtok(line + 1, ","), NULL);
 	  // dimensions
 	  info->width = atoi(strtok(NULL, ","));
 	  info->depth = atoi(strtok(NULL, ","));
