@@ -79,7 +79,7 @@ void Creature::commonInit() {
 
   ((MD2Shape*)shape)->setCreatureSpeed( speed );
 
-  for( int i = 0; i < 3; i++ ) quickSpell[ i ] = NULL;
+  for( int i = 0; i < 12; i++ ) quickSpell[ i ] = NULL;
   this->lastMove = 0;
   this->moveCount = 0;
   this->x = this->y = this->z = 0;

@@ -134,7 +134,7 @@ class Creature {
   int character_model_info_index;
   int deityIndex;
 
-  Spell *quickSpell[3];
+  Spell *quickSpell[12];
   
  public:
   static const int DIAMOND_FORMATION = 0;

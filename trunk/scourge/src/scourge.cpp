@@ -1062,6 +1062,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
   case SDL_KEYUP:
 
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
+      if( inventory->inStoreSpellMode() ) {
+        inventory->setStoreSpellMode( false );
+        return false;
+      }
       if(exitConfirmationDialog->isVisible()) {
         exitConfirmationDialog->setVisible(false);
       } else {
@@ -2652,35 +2656,28 @@ void Scourge::createPartyUI() {
 
   int offsetX = 90;
   int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - offsetX) / 4;
-  int playerButtonHeight = 20;  
+  //int playerButtonHeight = 20;  
   int playerInfoHeight = 100;
-  int playerButtonY = playerInfoHeight;
-  player1Button = cards->createButton( offsetX + playerButtonWidth * 0, playerButtonY,  
-									   offsetX + playerButtonWidth * 1, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
-  player1Button->setToggle(true);
-  player2Button = cards->createButton( offsetX + playerButtonWidth * 1, playerButtonY,  
-									   offsetX + playerButtonWidth * 2, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
-  player2Button->setToggle(true);
-  player3Button = cards->createButton( offsetX + playerButtonWidth * 2, playerButtonY, 
-									   offsetX + playerButtonWidth * 3, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
-  player3Button->setToggle(true);
-  player4Button = cards->createButton( offsetX + playerButtonWidth * 3, playerButtonY,  
-									   offsetX + playerButtonWidth * 4, playerButtonY + playerButtonHeight, NULL, MAX_SIZE );
-  player4Button->setToggle(true);
+  //int playerButtonY = playerInfoHeight;
 
   for(int i = 0; i < 4; i++) {
-    playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 0,  
-                                offsetX + playerButtonWidth * (i + 1) - 25, playerInfoHeight, 
+    playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 20,  
+                                offsetX + playerButtonWidth * (i + 1) - 25, 20 + playerInfoHeight, 
                                 this, this );
     cards->addWidget( playerInfo[i], MAX_SIZE );
-    for( int t = 0; t < 3; t++ ) {
-      quickSpell[i][t] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, t * 20,
-                                     offsetX + playerButtonWidth * (i + 1), ( t + 1 ) * 20, 
-                                     this, NULL, true );
-      cards->addWidget( quickSpell[i][t], MAX_SIZE );
-    }    
+    playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,  
+                                offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight, 
+                                this, NULL, true );
+    cards->addWidget( playerHpMp[i], MAX_SIZE );
   }
-
+  int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 10) / 12.0f);
+  for( int i = 0; i < 12; i++ ) {
+    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 5;
+    quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, 20, 
+                                this, NULL, true );
+    cards->addWidget( quickSpell[i], MAX_SIZE );
+  }    
+  
   cards->setActiveCard( MAX_SIZE );   
   
   //int lowerRowHeight = 20;
@@ -2739,65 +2736,42 @@ void Scourge::receive( Widget *widget ) {
 }     
 
 void Scourge::drawWidget(Widget *w) {
-  char msg[80];
-  if(w == minPartyInfo) {
-    for(int i = 0; i < party->getPartySize(); i++) {    
-      // hp
-      if(party->getParty(i) == party->getPlayer()) {
-        w->applyBorderColor();
-        glBegin( GL_QUADS );
-        glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, (i * 20), 0 );
-        glVertex3f( 0, (i * 20), 0 );
-        glVertex3f( 0, 20 + (i * 20), 0 );
-        glVertex3f( Scourge::PARTY_MIN_GUI_WIDTH, 20 + (i * 20), 0 );
-        glEnd();
-      }
-      //	  w->applyColor();
-      glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
-      sprintf(msg, "%c:", party->getParty(i)->getName()[0]);
-      getSDLHandler()->texPrint(0, 13 + (i * 20), msg);
-      Util::drawBar(15, 8 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
-                    (float)party->getParty(i)->getHp(), (float)party->getParty(i)->getMaxHp());
-      Util::drawBar(15, 14 + (i * 20), Scourge::PARTY_MIN_GUI_WIDTH - 20,  
-                    (float)party->getParty(i)->getMp(), (float)party->getParty(i)->getMaxMp(),
-                    0.45f, 0.65f, 1.0f, false);
+  for(int i = 0; i < party->getPartySize(); i++) {
+    if(playerInfo[i] == w) {
+      drawPortrait( w, party->getParty( i ) );
+      return;
+    } else if( playerHpMp[i] == w ) {
+      Creature *p = party->getParty( i );
+      Util::drawBar( 10, 5, 90,
+                     (float)p->getHp(), (float)p->getMaxHp(), 
+                     -1, -1, -1, true, mainWin->getTheme(), 
+                     Util::VERTICAL_LAYOUT );
+      Util::drawBar( 17, 5, 90,
+                     (float)p->getMp(), (float)p->getMaxMp(), 
+                     0, 0, 1, false, mainWin->getTheme(), 
+                     Util::VERTICAL_LAYOUT );
+      return;
     }
-  } else {
-    int selectedPlayerIndex = -1;
-    int selectedSpellIndex = -1;
-    for(int i = 0; i < party->getPartySize(); i++) {
-      if(playerInfo[i] == w) {
-        selectedPlayerIndex = i;
-        break;
-      } else {
-        for( int t = 0; t < 3; t++ ) {
-          if( quickSpell[i][t] == w ) {
-            selectedPlayerIndex = i;
-            selectedSpellIndex = t;
+  }
+  for( int t = 0; t < 12; t++ ) {
+    if( quickSpell[t] == w ) {
+      quickSpell[t]->setGlowing( inventory->inStoreSpellMode() );
+      for(int i = 0; i < party->getPartySize(); i++) {
+        if( party->getParty( i ) == getParty()->getPlayer() ) {
+          if( getParty()->getPlayer()->getQuickSpell( t ) ) {
+            glColor3f( 1, 1, 1 );
+            // FIXME: need spell pics... for now just print name
+            getSDLHandler()->texPrint( 0, 20, "%s", getParty()->getPlayer()->getQuickSpell( t )->getName() );
           }
+          return;
         }
       }
     }
-
-
-
-
-    if(selectedPlayerIndex == -1) {
-      cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
-      return;
-    }
-    Creature *p = party->getParty(selectedPlayerIndex);
-
-    if( selectedSpellIndex > -1 ) {
-      if( p->getQuickSpell( selectedSpellIndex ) ) {
-        glColor3f( 1, 1, 1 );
-        // FIXME: need spell pics... for now just print name
-        getSDLHandler()->texPrint( 0, 10, "%s", p->getQuickSpell( selectedSpellIndex )->getName() );
-      }
-    } else {
-      drawPortrait( w, p );
-    }
   }
+  
+
+  cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
+  return;
 }
 
 void Scourge::drawPortrait( Widget *w, Creature *p ) {
@@ -2854,11 +2828,9 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   }
 
   glPopMatrix();
-
-  Util::drawBar(5, 10, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 20,
-                (float)p->getHp(), (float)p->getMaxHp(), 
-                -1, -1, -1, true,
-                mainWin->getTheme() );
+  
+  glColor3f( 1, 1, 1 );
+  getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
 
   // show stat mods
   glEnable(GL_TEXTURE_2D);
@@ -2899,36 +2871,34 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
     }
   }
   glDisable(GL_TEXTURE_2D);
+
+  // draw selection border
+  if( p == getParty()->getPlayer() ) {
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    float lineWidth = 5.0f;
+    glLineWidth( 5.0f );
+    GuiTheme *theme = mainWin->getTheme();
+    if( theme->getSelectionBackground() ) {
+      glColor4f( theme->getSelectionBackground()->color.r,
+                 theme->getSelectionBackground()->color.g,
+                 theme->getSelectionBackground()->color.b,
+                 0.5f );
+    } else {
+      mainWin->applySelectionColor();
+    }
+    glBegin( GL_LINE_LOOP );
+    glVertex2f( lineWidth / 2.0f, lineWidth / 2.0f );
+    glVertex2f( lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
+    glVertex2f( w->getWidth() - lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
+    glVertex2f( w->getWidth() - lineWidth / 2.0f, lineWidth / 2.0f );
+    glEnd();
+    glLineWidth( 1.0f );
+    glDisable( GL_BLEND );
+  }
 }
 
 void Scourge::resetPartyUI() {
-  player1Button->setLabel(party->getParty(0)->getName());
-  player1Button->setSelected(true);
-  if(party->getPartySize() > 1) {
-    player2Button->setLabel(party->getParty(1)->getName());
-    player2Button->setVisible(true);
-    playerInfo[1]->setVisible(true);
-  } else {
-    player2Button->setVisible(false);
-    playerInfo[1]->setVisible(false);
-  }
-  if(party->getPartySize() > 2) {
-    player3Button->setLabel(party->getParty(2)->getName());
-    player3Button->setVisible(true);
-    playerInfo[2]->setVisible(true);
-  } else {
-    player3Button->setVisible(false);
-    playerInfo[2]->setVisible(false);
-  }
-  if(party->getPartySize() > 3) {
-    player4Button->setLabel(party->getParty(3)->getName());
-    player4Button->setVisible(true);
-    playerInfo[3]->setVisible(true);
-  } else {
-    player4Button->setVisible(false);
-    playerInfo[3]->setVisible(false);
-  }
-
   Event *e;  
   Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < party->getPartySize() ; i++){
@@ -2961,13 +2931,13 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == crossButton) {
     party->setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
     */
-  } else if(widget == player1Button || widget == playerInfo[0] ) {
+  } else if(widget == playerInfo[0] ) {
     setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
-  } else if(widget == player2Button || widget == playerInfo[1] ) {
+  } else if(widget == playerInfo[1] ) {
     setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
-  } else if(widget == player3Button || widget == playerInfo[2] ) {
+  } else if(widget == playerInfo[2] ) {
     setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
-  } else if(widget == player4Button || widget == playerInfo[3] ) {
+  } else if(widget == playerInfo[3] ) {
     setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
   } else if(widget == groupButton && !inTurnBasedCombat()) {
     party->togglePlayerOnly();
@@ -2997,10 +2967,25 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
     setUILayout(Constants::GUI_LAYOUT_INVENTORY);
 */    
   } else {
-    for( int i = 0; i < getParty()->getPartySize(); i++ ) {
-      for( int t = 0; t < 3; t++ ) {
-        if( widget == quickSpell[i][t] ) {
-          Creature *creature = getParty()->getParty( i );
+    for( int t = 0; t < 4; t++ ) {
+      if( widget == playerHpMp[t] ) {
+        inventory->showSkills();
+        if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
+          getParty()->setPlayer( t );
+          if( !inventory->isVisible() ) toggleInventoryWindow();
+        } else {
+          toggleInventoryWindow();
+        }
+      }
+    }
+    for( int t = 0; t < 12; t++ ) {
+      if( widget == quickSpell[t] ) {
+        if( inventory->inStoreSpellMode() ) {
+          getParty()->getPlayer()->setQuickSpell( t, inventory->getStoreSpell() );
+          inventory->setStoreSpellMode( false );
+          if( inventory->isVisible() ) toggleInventoryWindow();
+        } else {
+          Creature *creature = getParty()->getPlayer();
           Spell *spell = creature->getQuickSpell( t );
           if( spell ) {
             if(spell->getMp() > creature->getMp()) {
@@ -3016,7 +3001,6 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
               }
             }
           } else {
-            getParty()->setPlayer( i );
             inventory->showSpells();
             if( !inventory->isVisible() ) toggleInventoryWindow();
           }
@@ -3064,16 +3048,6 @@ void Scourge::setPlayer(int n) {
 }
 
 void Scourge::setPlayerUI(int index) {
-  player1Button->setSelected(false);
-  player2Button->setSelected(false);
-  player3Button->setSelected(false);
-  player4Button->setSelected(false);
-  switch(index) {
-  case 0 : player1Button->setSelected(true); break;
-  case 1 : player2Button->setSelected(true); break;
-  case 2 : player3Button->setSelected(true); break;
-  case 3 : player4Button->setSelected(true); break;
-  }
 }
 
 void Scourge::toggleRoundUI(bool startRound) {

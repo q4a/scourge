@@ -158,9 +158,8 @@ Inventory::Inventory(Scourge *scourge) {
   spellDescriptionLabel = new Label(115, 325, "", 50);
   cards->addWidget(spellDescriptionLabel, SPELL);
   castButton = cards->createButton( 0, 120, 105, 140, "Cast", SPELL);
-  quickSpell1 = cards->createButton( 0, 140, 105, 160, "Quick Spell 1", SPELL);
-  quickSpell2 = cards->createButton( 0, 160, 105, 180, "Quick Spell 2", SPELL);
-  quickSpell3 = cards->createButton( 0, 180, 105, 200, "Quick Spell 3", SPELL);
+  storeSpellButton = cards->createButton( 0, 140, 105, 160, "Store", SPELL, true);
+  storeSpell = NULL;
 
 
   // -------------------------------------------
@@ -185,6 +184,10 @@ Inventory::~Inventory() {
 
 void Inventory::showSpells() {
   setSelectedPlayerAndMode( selected, SPELL );
+}
+
+void Inventory::showSkills() {
+  setSelectedPlayerAndMode( selected, CHARACTER );
 }
 
 void Inventory::drawWidget(Widget *w) {
@@ -420,15 +423,16 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == spellList) {
     Spell *spell = getSelectedSpell();
     if(spell) showSpellDescription(spell);
-  } else if( widget == quickSpell1 ) {
-    Spell *spell = getSelectedSpell();
-    if(spell) creature->setQuickSpell( 0, spell );
-  } else if( widget == quickSpell2 ) {
-    Spell *spell = getSelectedSpell();
-    if(spell) creature->setQuickSpell( 1, spell );
-  } else if( widget == quickSpell3 ) {
-    Spell *spell = getSelectedSpell();
-    if(spell) creature->setQuickSpell( 2, spell );
+//  } else if( widget == quickSpell ) {
+    //Spell *spell = getSelectedSpell();
+    //if(spell) creature->setQuickSpell( 0, spell );
+  } else if( widget == storeSpellButton ) {
+    if( storeSpellButton->isSelected() ) {
+      storeSpell = getSelectedSpell();
+      if( !storeSpell ) {
+        storeSpellButton->setSelected( false );
+      }
+    }
   } else if(widget == castButton) {
     Spell *spell = getSelectedSpell();
     if(spell) {
@@ -436,7 +440,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         scourge->showMessageDialog("Not enough Magic Points to cast this spell!");
       } else {
         // set this as a quickspell if there is space
-        for( int i = 0; i < 3; i++ ) {
+        for( int i = 0; i < 12; i++ ) {
           if( !creature->getQuickSpell( i ) ) {
             creature->setQuickSpell( i, spell );
             break;

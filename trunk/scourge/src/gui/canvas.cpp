@@ -32,6 +32,7 @@ Canvas::Canvas(int x, int y, int x2, int y2, WidgetView *view,
   this->dragging = false;
   this->highlightOnMouseOver = highlightOnMouseOver;
   this->inside = false;
+  this->glowing = false;
   highlightBorders = false;
 }
 
@@ -42,7 +43,7 @@ void Canvas::drawWidget(Widget *parent) {
   GuiTheme *theme = ((Window*)parent)->getTheme();
   if( highlightOnMouseOver ) {
     drawButton( parent, 0, 0, x2 - x, y2 - y, 
-                false, false, dragging, false, inside );
+                false, false, dragging, glowing, inside );
   }
 
   if(view && !((Window*)parent)->isOpening()) {
