@@ -1385,8 +1385,7 @@ void Scourge::fightBattle() {
 						tohit, ac, damage);
 				map->addDescription(message, 1.0f, 0.5f, 0.5f);
 				
-				if(creature->getTargetCreature()->takeDamage(damage)) {
-				  cout<< "TAUNT ANIMATION START : " << creature->getName() << endl;  
+				if(creature->getTargetCreature()->takeDamage(damage)) {				  
 				  creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
 				  sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 				  map->addDescription(message, 1.0f, 0.5f, 0.5f);
