@@ -574,7 +574,7 @@ void SDLHandler::drawScreen() {
   Frames++;
   {
     GLint t = SDL_GetTicks();
-    if(t - T0 >= 5000) {
+    if(t - T0 >= 2500) {
       GLfloat seconds = (t - T0) / 1000.0;
       fps = Frames / seconds;
       //printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);

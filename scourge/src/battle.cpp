@@ -97,8 +97,6 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
       battle[i]->reset();
       battle[i]->needsReset = false;
     }
-    //battle[i]->initTurn();
-    //battle[i]->getCreature()->getShape()->setCurrentAnimation((int)MD2_STAND);
     turns->push_back(battle[i]);
   }
 }                 
@@ -282,27 +280,29 @@ void Battle::stepCloserToTarget() {
   }
   //if( !moved ) moveCreature();
   if( !moved ) {
-    cerr << "*** Warning: not moving closer to target and not in range. " <<
-      " x,y=" << creature->getX() << "," << creature->getY() <<
-      " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
-      " dist=" << dist << " range=" << range << 
-      " item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
-      " creature=" << creature->getName() << 
-      " target=" << ( creature->getTargetCreature() ? 
-                      creature->getTargetCreature()->getName() : 
-                      ( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
-                        ( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
-    if( creature->getTargetCreature() ) {
-      cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
-        "," << creature->getTargetCreature()->getY() << endl;
+    if( DEBUG_BATTLE ) {
+      cerr << "*** Warning: not moving closer to target and not in range. " <<
+        " x,y=" << creature->getX() << "," << creature->getY() <<
+        " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
+        " dist=" << dist << " range=" << range << 
+        " item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
+        " creature=" << creature->getName() << 
+        " target=" << ( creature->getTargetCreature() ? 
+                        creature->getTargetCreature()->getName() : 
+                        ( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
+                          ( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
+      if( creature->getTargetCreature() ) {
+        cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
+          "," << creature->getTargetCreature()->getY() << endl;
+      }
     }
-    if( creature->isMonster() ) {
+      
+    // guess a new path
+    creature->setSelXY( creature->getSelX(), creature->getSelY() );
+
+    if( creature->isMonster() ) {      
       ap--;  
     } else {
-
-      // guess a new path
-      creature->setSelXY( creature->getSelX(), creature->getSelY() );
-
       if( session->getUserConfiguration()->isBattleTurnBased() ) {
         session->getParty()->toggleRound(true);
       } else {
@@ -335,7 +335,7 @@ bool Battle::moveCreature() {
     
     if( oldX == creature->getX() &&
         oldY == creature->getY() ) {
-      cerr << "*** WARNING: monster not moving." << endl;
+      if( DEBUG_BATTLE ) cerr << "*** WARNING: monster not moving." << endl;
       ap--;
     }
     return false;
@@ -356,25 +356,30 @@ bool Battle::moveCreature() {
       }
       
       if( !moved ) {
-        cerr << "*** WARNING: character not moving." << 
-          " x,y=" << creature->getX() << "," << creature->getY() <<
-          " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
-          " dist=" << dist << " range=" << range << 
-          " item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
-          " creature=" << creature->getName() << 
-          " target=" << ( creature->getTargetCreature() ? 
-                          creature->getTargetCreature()->getName() : 
-                          ( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
-                            ( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
-        if( creature->getTargetCreature() ) {
-          cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
-            "," << creature->getTargetCreature()->getY() << endl;
+        if( DEBUG_BATTLE ) {
+          cerr << "*** WARNING: character not moving." << 
+            " x,y=" << creature->getX() << "," << creature->getY() <<
+            " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
+            " dist=" << dist << " range=" << range << 
+            " item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
+            " creature=" << creature->getName() << 
+            " target=" << ( creature->getTargetCreature() ? 
+                            creature->getTargetCreature()->getName() : 
+                            ( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
+                              ( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
+          if( creature->getTargetCreature() ) {
+            cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
+              "," << creature->getTargetCreature()->getY() << endl;
+          }
         }
 
         // guess a new path
         creature->setSelXY( creature->getSelX(), creature->getSelY() );
         if( session->getUserConfiguration()->isBattleTurnBased() ) {          
           session->getParty()->toggleRound(true);
+        } else {
+          // is the below line needed?
+          ap--;
         }
       }
     } else {
@@ -410,7 +415,7 @@ Creature *Battle::getAvailableTarget() {
 bool Battle::selectNewTarget() {
   // select a new target
   if (creature->isMonster()) {    
-    cerr << "*** Error should not Battle::selectNewTarget should not be called for monsters." << endl;
+    cerr << "*** Error Battle::selectNewTarget should not be called for monsters." << endl;
 //    creature->cancelTarget();
 //    moveCreature();
     return false;
@@ -419,7 +424,6 @@ bool Battle::selectNewTarget() {
     Creature *target = getAvailableTarget();
     if (target) {
       if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
-      if(creature->getTargetCreature()) cerr << "*** Warning: setting target when one already exists!"<< endl;
       creature->setTargetCreature(target);
       creature->setSelXY(toint(creature->getTargetCreature()->getX()),
                          toint(creature->getTargetCreature()->getY()),
