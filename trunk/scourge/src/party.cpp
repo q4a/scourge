@@ -298,13 +298,13 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
 
   // compute starting skill levels
   for(int i = 0; i < pcCount; i++) {
-	for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
-	  int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
-    if(n > 99) n = 99;
-    if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
-      n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
-	  pc[i]->setSkill(skill, n);
-	}
+    for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
+      int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
+      if(n > 99) n = 99;
+      if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
+        n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
+      pc[i]->setSkill(skill, n);
+    }
   }
 
   // add some items
