@@ -1460,13 +1460,13 @@ bool Map::isWallBetween(int x1, int y1, int z1,
 	if(yDiffBigger) {
 	  if(y1 < y2) y += 1.0f;
 	  else y -= 1.0f;
-	  if(x1 < x2) x += 1.0f / abs(m);
-	  else x += -1.0f / abs(m);
+	  if(x1 < x2) x += 1.0f / abs((int)m);
+	  else x += -1.0f / abs((int)m);
 	} else {
 	  if(x1 < x2) x += 1.0f;
 	  else x -= 1.0f;
-	  if(y1 < y2) y += abs(m);
-	  else y += -1.0 * abs(m);
+	  if(y1 < y2) y += abs((int)m);
+	  else y += -1.0 * abs((int)m);
 	}
   }
   //  fprintf(stderr, "wall in between? %s\n", (ret ? "TRUE": "FALSE"));

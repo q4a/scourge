@@ -797,7 +797,7 @@ void UserConfiguration::createDefaultConfigFile() {
   int err = mkdir( path, S_IRWXU|S_IRGRP|S_IXGRP );
   if(err) {
 	cerr << "Error creating config directory: " << path << endl;
-	cerr << "Error: " << errno << endl;
+	cerr << "Error: " << err << endl;
 	perror("UserConfiguration::createDefaultConfigFile: ");
 	exit(1);
   }
