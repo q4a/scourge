@@ -460,7 +460,8 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, session->getMap(), getShape());
   }
 
-  if((int)bestPath.size() > bestPathPos) {
+  if((int)bestPath.size() > bestPathPos && 
+     ((MD2Shape*)getShape())->getCurrentAnimation() == MD2_RUN ) {
     // take a step on the bestPath
     Location location = bestPath[bestPathPos];
     // if we can't step there, someone else has moved there ahead of us

@@ -90,6 +90,7 @@ public:
   inline void setAttackEffect(bool b) { attackEffect = b; }
 
   void setCurrentAnimation(int numAnim, bool force=false);
+  inline int getCurrentAnimation() { return currentAnim; }
 
   void draw();
   void setupToDraw();
