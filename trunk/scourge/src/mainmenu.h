@@ -73,6 +73,9 @@ private:
   Button *optionsButton;
   Button *aboutButton;
   Button *quitButton;
+
+  Window *newGameConfirm;
+  Button *newGameConfirmOK, *newGameConfirmCancel;
   
 public:
 #define NEW_GAME 1
@@ -82,6 +85,7 @@ public:
 #define QUIT 5
 #define MULTIPLAYER 6
 #define MULTIPLAYER_START 7
+#define NEW_GAME_START 8
 
   MainMenu(Scourge *scourge);
   ~MainMenu();
@@ -91,6 +95,7 @@ public:
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
   int getValue();
+  void showNewGameConfirmationDialog();
 
   void show();
   void hide();
