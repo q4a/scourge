@@ -584,11 +584,13 @@ bool Scourge::handleEvent(SDL_Event *event) {
     else if(ea == SET_PLAYER_ONLY){
 	  togglePlayerOnly();
     }    
-    else if(ea == BLEND_A){
+	//    else if(ea == BLEND_A){
+    else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_6){
         blendA++; if(blendA >= 11) blendA = 0;
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }
-    else if(ea == BLEND_B){    
+	//    else if(ea == BLEND_B){    
+    else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_7){    
         blendB++; if(blendB >= 11) blendB = 0;
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }

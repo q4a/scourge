@@ -783,8 +783,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[2]->setStateMod(Constants::ac_protected, true);
   pc[2]->setStateMod(Constants::magic_protected, true);
   pc[2]->setStateMod(Constants::cursed, true);
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
-	if(i != Constants::dead) pc[2]->setStateMod(i, true);
+  //  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
+  //	if(i != Constants::dead) pc[2]->setStateMod(i, true);
 
   pc[3] = new Creature(scourge, Character::getCharacterByName("Naturalist"), "Dialante");    
   pc[3]->setLevel(1); 
