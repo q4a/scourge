@@ -63,12 +63,20 @@ Inventory::Inventory(Scourge *scourge) {
   selected = selectedMode = 0;
 
   // construct UI
+  /*
   mainWin = new Window( scourge->getSDLHandler(),
                         100, 50, Scourge::INVENTORY_WIDTH, Scourge::INVENTORY_HEIGHT,
                         "Party Information", 
                         scourge->getShapePalette()->getGuiTexture(),
                         true, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2() );
+*/                        
+  mainWin = new Window( scourge->getSDLHandler(),
+                        scourge->getSDLHandler()->getScreen()->w - Scourge::INVENTORY_WIDTH, 
+                        scourge->getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT - Scourge::INVENTORY_HEIGHT,
+                        Scourge::INVENTORY_WIDTH, Scourge::INVENTORY_HEIGHT,
+                        "Party Information", false, Window::BASIC_WINDOW, "default" );
+  mainWin->setLocked( true );
 
   char label[80];
   memset(label, ' ', 78);
