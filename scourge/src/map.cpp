@@ -835,7 +835,7 @@ Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z,
 			}
 			if(zz > sz) sz = zz;
 			else break;
-		  } else if(!newz) {
+		  } else if(!newz && !(loc && loc->item && !loc->item->isBlocking())) {
 			return pos[x + sx][y - sy][z + sz];
 		  } else {
 			sz++;
@@ -1096,26 +1096,44 @@ void Map::dropItemsAbove(int x, int y, int z, Item *item) {
 }
 
 void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
+  char message[120];  
   if(creature) {
     if(creature->getShape()) {
 	  mapChanged = true;
-      for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
-        for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
-          for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-            if(!pos[x + xp][y - yp][z + zp]) {
-              pos[x + xp][y - yp][z + zp] = new Location();
-            }
-            pos[x + xp][y - yp][z + zp]->item = NULL;
-			pos[x + xp][y - yp][z + zp]->shape = creature->getShape();
-			pos[x + xp][y - yp][z + zp]->creature = creature;
-            pos[x + xp][y - yp][z + zp]->x = x;
-            pos[x + xp][y - yp][z + zp]->y = y;
-            pos[x + xp][y - yp][z + zp]->z = z;
-			//creature->moveTo(x, y, z);
-          }
-        }
-      }
-  	}
+	  while(true) {
+		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+			for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+			  if(!pos[x + xp][y - yp][z + zp]) {
+				pos[x + xp][y - yp][z + zp] = new Location();
+			  } else if(pos[x + xp][y - yp][z + zp]->item) {
+				// creature picks up non-blocking item (this is the only way to handle 
+				// non-blocking items. It's also very 'roguelike'.
+				Item *item = pos[x + xp][y - yp][z + zp]->item;
+				removeItem(pos[x + xp][y - yp][z + zp]->x,
+						   pos[x + xp][y - yp][z + zp]->y,
+						   pos[x + xp][y - yp][z + zp]->z);
+				creature->addInventory(item);
+				sprintf(message, "%s picks up %s.", 
+						creature->getName(), 
+						item->getRpgItem()->getName());
+				addDescription(message);				
+				// since the above will have removed some locations, try adding the creature again
+				continue;
+			  }
+			  pos[x + xp][y - yp][z + zp]->item = NULL;
+			  pos[x + xp][y - yp][z + zp]->shape = creature->getShape();
+			  pos[x + xp][y - yp][z + zp]->creature = creature;
+			  pos[x + xp][y - yp][z + zp]->x = x;
+			  pos[x + xp][y - yp][z + zp]->y = y;
+			  pos[x + xp][y - yp][z + zp]->z = z;
+			  //creature->moveTo(x, y, z);
+			}
+		  }
+		}
+		break;
+	  }
+	}
   }
 }
 

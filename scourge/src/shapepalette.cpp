@@ -372,7 +372,7 @@ void ShapePalette::initShapes() {
                 display_list + (count++ * 3), Constants::CHEST2_INDEX);
 	item_shapes[Constants::CORPSE_INDEX] =
 	  new C3DSShape("data/objects/corpse.3ds", 0.65f, this,
-			notex, 1, 3, 1,
+			notex, 1, 3, 2,
 			"CORPSE",
 			0xffffffff,
 			display_list + (count++ * 3), Constants::CORPSE_INDEX);
