@@ -48,11 +48,14 @@ Scourge::Scourge(int argc, char *argv[]){
   shapePal = sdlHandler->getShapePalette();
   gui = new Gui(this);
 
-   // init the party
-	party[0] = player = new Creature(this, shapePal->getCreatureShape(ShapePalette::ROGUE_INDEX));
-	party[1] = new Creature(this, shapePal->getCreatureShape(ShapePalette::FIGHTER_INDEX));
-	party[2] = new Creature(this, shapePal->getCreatureShape(ShapePalette::CLERIC_INDEX));
-	party[3] = new Creature(this, shapePal->getCreatureShape(ShapePalette::WIZARD_INDEX));      
+  // init the items
+  Item::initItems();
+
+  // init the party
+  party[0] = player = new Creature(this, shapePal->getCreatureShape(Constants::ROGUE_INDEX));
+  party[1] = new Creature(this, shapePal->getCreatureShape(Constants::FIGHTER_INDEX));
+  party[2] = new Creature(this, shapePal->getCreatureShape(Constants::CLERIC_INDEX));
+  party[3] = new Creature(this, shapePal->getCreatureShape(Constants::WIZARD_INDEX));      
 
   // hard code the party for now
   party[0]->setName("Alamont"); party[0]->setPortraitIndex(0);
@@ -98,7 +101,7 @@ Scourge::Scourge(int argc, char *argv[]){
   for(int i = 0; i < Creature::SKILL_COUNT; i++) {
       party[3]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
   }
-
+  player_only = false;
   inventory = new Inventory(this);
   
   // show the main menu
@@ -140,6 +143,12 @@ void Scourge::startMission() {
   gui->addActiveRegion(760, GUI_TOP + 75, 780, GUI_TOP + 100, Constants::SCOUT_FORMATION, this);
   gui->addActiveRegion(780, GUI_TOP + 75, 800, GUI_TOP + 100, Constants::CROSS_FORMATION, this);
 
+  gui->addActiveRegion(680, GUI_TOP + 100, 704, GUI_TOP + 125, Constants::PLAYER_1, this);
+  gui->addActiveRegion(704, GUI_TOP + 100, 728, GUI_TOP + 125, Constants::PLAYER_2, this);
+  gui->addActiveRegion(728, GUI_TOP + 100, 752, GUI_TOP + 125, Constants::PLAYER_3, this);
+  gui->addActiveRegion(752, GUI_TOP + 100, 776, GUI_TOP + 125, Constants::PLAYER_4, this);
+  gui->addActiveRegion(776, GUI_TOP + 100, 800, GUI_TOP + 125, Constants::PLAYER_ONLY, this);
+
   // create the map
   map = new Map(this);
 
@@ -155,15 +164,15 @@ void Scourge::startMission() {
   player->moveTo(startx, starty, 0);
   map->setCreature(startx, starty, 0, player);
 
-	// init the rest of the party
-	for(int i = 1; i < 4; i++) {
-		party[i]->setNext(party[0], i);
-		//		map->setPosition(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]->getShape());
-		map->setCreature(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]);
-	}
+  // init the rest of the party
+  player = party[0];
+  for(int i = 1; i < 4; i++) {
+	party[i]->setNext(player, i);
+	map->setCreature(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]);
+  }
 
-	// center on the player
-	map->center(startx, starty);
+  // center on the player
+  map->center(startx, starty);
 
   sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
   sdlHandler->mainLoop();
@@ -180,23 +189,41 @@ void Scourge::drawView(SDL_Surface *screen) {
   map->draw(screen);
   
   //  glDisable( GL_LIGHTING );
-  glDisable( GL_TEXTURE_2D );
   glDisable( GL_DEPTH_TEST );
+  glDisable( GL_TEXTURE_2D );
 
   if(isInfoShowing) {
     map->initMapView();  
     for(int i = 0; i < 4; i++) {
-      map->showCreatureInfo(party[i]);
+	  if(map->getSelectedDropTarget() && 
+		 map->getSelectedDropTarget()->creature == party[i]) {
+		glColor4f(0, 1, 1, 0.5f);
+	  } else if(player == party[i]) {
+		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+	  } else {
+		glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
+	  }
+	  map->showCreatureInfo(party[i]);
     }
   }
 
   gui->drawWindows();
 
   
-
   glEnable( GL_DEPTH_TEST );
   //  glEnable( GL_LIGHTING );
   glEnable( GL_TEXTURE_2D );      
+}
+
+void Scourge::setPlayer(int n) {
+  player = party[n];
+  player->setNextDontMove(NULL, 0);
+  // init the rest of the party
+  int count = 1;
+  for(int i = 0; i < 4; i++) {
+	if(i != n) party[i]->setNextDontMove(player, count++);
+  }
+  map->refresh();
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
@@ -229,6 +256,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
             return true;
 		} else if(region >= Constants::DIAMOND_FORMATION && region <= Constants::CROSS_FORMATION) {
 		  setFormation(region - Constants::DIAMOND_FORMATION);
+		} else if(region >= Constants::PLAYER_1 && region <= Constants::PLAYER_4) {
+		  setPlayer(region - Constants::PLAYER_1);
+		} else if(region == Constants::PLAYER_ONLY) {
+		  player_only = (player_only ? false : true);
         } else {        
             processGameMouseClick(event->button.x, event->button.y, event->button.button);
         }
@@ -237,7 +268,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
   case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {
     case SDLK_ESCAPE: 
-	  party[0]->setSelXY(-1, -1); // stop moving
+	  player->setSelXY(-1, -1); // stop moving
 	  movingItem = NULL; // stop moving items
 	  return true;
     case SDLK_F10:
@@ -256,6 +287,18 @@ bool Scourge::handleEvent(SDL_Event *event) {
     case SDLK_RIGHT:
 	  map->setMove(Constants::MOVE_RIGHT);
       break;
+
+	case SDLK_1:
+	  setPlayer(0); break;
+	case SDLK_2:
+	  setPlayer(1); break;
+	case SDLK_3:
+	  setPlayer(2); break;
+	case SDLK_4:
+	  setPlayer(3); break;
+	case SDLK_0:
+	  player_only = (player_only ? false : true);
+	  break;
 
     case SDLK_5:
         blendA++; if(blendA >= 11) blendA = 0;
@@ -306,10 +349,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
     case SDLK_n:
         map->addZPos(-10.0f);
         break;        
-    case SDLK_2:
+    case SDLK_LEFTBRACKET:
         map->setZoomOut(true);
         break;
-    case SDLK_1:
+    case SDLK_RIGHTBRACKET:
         map->setZoomIn(true);
         break;
 
@@ -355,10 +398,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
     case SDLK_x:
         map->setZRot(0.0f);
         break;      
-    case SDLK_2:
+    case SDLK_LEFTBRACKET:
         map->setZoomOut(false);
         break;
-    case SDLK_1:
+    case SDLK_RIGHTBRACKET:
         map->setZoomIn(false);
         break;
 
@@ -372,11 +415,25 @@ bool Scourge::handleEvent(SDL_Event *event) {
 }
 
 void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
-    Uint16 mapx, mapy;
-    getMapXYAtScreenXY(x, y, &mapx, &mapy);
-    if(mapx < MAP_WIDTH) {
-        map->handleMouseMove(mapx, mapy, 0);
-    }
+  Uint16 mapx, mapy;
+  getMapXYAtScreenXY(x, y, &mapx, &mapy);
+  if(mapx < MAP_WIDTH) {
+
+	// find the drop target
+	Location *dropTarget = NULL;
+	if(movingItem) {
+	  Uint16 mapx, mapy, mapz;
+	  getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+	  if(mapx < MAP_WIDTH) {
+		dropTarget = map->getLocation(mapx, mapy, mapz);
+		// FIXME: add container handling code
+		if(!(dropTarget && dropTarget->creature)) dropTarget = NULL;
+	  }
+	}
+	map->setSelectedDropTarget(dropTarget);
+
+	map->handleMouseMove(mapx, mapy, 0);
+  }
 }
 
 void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
@@ -386,7 +443,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
 	if(useItem(mapx, mapy)) return;
 	getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	party[0]->setSelXY(mapx, mapy);      
+	player->setSelXY(mapx, mapy);      
   } else if(button == SDL_BUTTON_RIGHT) {
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	if(mapx < MAP_WIDTH) {    
@@ -546,16 +603,18 @@ void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
 }
 
 void Scourge::moveParty() {
-    party[0]->moveToLocator(map);
-    map->center(party[0]->getX(), party[0]->getY());
-	for(int i = 1; i < 4; i++) {
-	  party[i]->follow(map);
+  player->moveToLocator(map);
+  map->center(player->getX(), player->getY());
+  if(!player_only) {
+	for(int i = 0; i < 4; i++) {
+	  if(party[i] != player) party[i]->follow(map);
 	}
+  }
 }
 
 void Scourge::setPartyMotion(int motion) {
-  for(int i = 1; i < 4; i++) {
-		party[i]->setMotion(motion);
+  for(int i = 0; i < 4; i++) {
+	if(party[i] != player) party[i]->setMotion(motion);
   }
 }
 
@@ -573,7 +632,7 @@ bool Scourge::useItem(int x, int y) {
 	return true;
   }
   
-  Location *pos = map->getPosition(x, y, party[0]->getZ());
+  Location *pos = map->getPosition(x, y, player->getZ());
   if(pos) {
 	if(getItem(pos)) {  
 	  return true;
@@ -605,22 +664,25 @@ bool Scourge::getItem(Location *pos) {
 }
 
 void Scourge::dropItem(int x, int y) {
-    if(!map->isBlocked(x, y, 0,
-                       movingX, movingY, movingZ,
-                       movingItem->getShape())) {
-        map->setItem(x, y, 0, movingItem);
-        movingItem->moveTo(x, y, 0);
-        movingItem = NULL;
-        movingX = movingY = movingZ = MAP_WIDTH + 1;
-    }
+  if(map->getSelectedDropTarget()) {
+	fprintf(stderr, "dropped on shape: %s\n", 
+			map->getSelectedDropTarget()->shape->getName());	
+  } else if(!map->isBlocked(x, y, 0,
+					 movingX, movingY, movingZ,
+					 movingItem->getShape())) {
+	map->setItem(x, y, 0, movingItem);
+	movingItem->moveTo(x, y, 0);
+	movingItem = NULL;
+	movingX = movingY = movingZ = MAP_WIDTH + 1;
+  }
 }
 
 bool Scourge::useDoor(Location *pos) {
     Shape *newDoorShape = NULL;
-    if(pos->shape == shapePal->getShape(ShapePalette::EW_DOOR_INDEX)) {
-        newDoorShape = shapePal->getShape(ShapePalette::NS_DOOR_INDEX);
-    } else if(pos->shape == shapePal->getShape(ShapePalette::NS_DOOR_INDEX)) {
-        newDoorShape = shapePal->getShape(ShapePalette::EW_DOOR_INDEX);
+    if(pos->shape == shapePal->getShape(Constants::EW_DOOR_INDEX)) {
+        newDoorShape = shapePal->getShape(Constants::NS_DOOR_INDEX);
+    } else if(pos->shape == shapePal->getShape(Constants::NS_DOOR_INDEX)) {
+        newDoorShape = shapePal->getShape(Constants::EW_DOOR_INDEX);
     }
     if(newDoorShape) {
         // switch door
@@ -628,15 +690,15 @@ bool Scourge::useDoor(Location *pos) {
         Sint16 oy = pos->y;
         Sint16 nx = pos->x;
         Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
-        Shape *oldDoorShape = map->removePosition(ox, oy, party[0]->getZ());
-        if(!map->isBlocked(nx, ny, party[0]->getZ(),
-                           ox, oy, party[0]->getZ(),
+        Shape *oldDoorShape = map->removePosition(ox, oy, player->getZ());
+        if(!map->isBlocked(nx, ny, player->getZ(),
+                           ox, oy, player->getZ(),
                            newDoorShape)) {
-            map->setPosition(nx, ny, party[0]->getZ(), newDoorShape);
+            map->setPosition(nx, ny, player->getZ(), newDoorShape);
             return true;
         } else {
           // rollback
-          map->setPosition(ox, oy, party[0]->getZ(), oldDoorShape);
+          map->setPosition(ox, oy, player->getZ(), oldDoorShape);
           map->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
           return true;
         }
@@ -645,11 +707,11 @@ bool Scourge::useDoor(Location *pos) {
 }
 
 bool Scourge::useItem() {
-  for(int x = party[0]->getX() - 2; 
-	  x < party[0]->getX() + party[0]->getShape()->getWidth() + 2; 
+  for(int x = player->getX() - 2; 
+	  x < player->getX() + player->getShape()->getWidth() + 2; 
 	  x++) {
-	for(int y = party[0]->getY() + 2; 
-		y > party[0]->getY() - party[0]->getShape()->getDepth() - 2; 
+	for(int y = player->getY() + 2; 
+		y > player->getY() - player->getShape()->getDepth() - 2; 
 		y--) {
 	  if(useItem(x, y)) return true;
 	}
@@ -698,6 +760,16 @@ void Scourge::drawTopWindow() {
         glVertex2d(760, GUI_TOP + 75);
         glVertex2d(780, GUI_TOP + 100);
         glVertex2d(780, GUI_TOP + 75);
+
+        glVertex2d(704, GUI_TOP + 100);
+        glVertex2d(704, GUI_TOP + 125);
+        glVertex2d(728, GUI_TOP + 100);
+        glVertex2d(728, GUI_TOP + 125);
+        glVertex2d(752, GUI_TOP + 100);
+        glVertex2d(752, GUI_TOP + 125);
+        glVertex2d(776, GUI_TOP + 100);
+        glVertex2d(776, GUI_TOP + 125);
+
     glEnd();
 
 	/*

@@ -1,7 +1,7 @@
 /***************************************************************************
-                          character.h  -  description
+                          rpgitem.cpp  -  description
                              -------------------
-    begin                : Mon Jul 7 2003
+    begin                : Sun Sep 28 2003
     copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
  ***************************************************************************/
@@ -14,48 +14,40 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef RPG_ITEM_H
+#define RPG_ITEM_H
 
-#ifndef CHARACTER_H
-#define CHARACTER_H
+#include "../constants.h"
 
-/**
-  *@author Gabor Torok
-  */
+class RpgItem {
+ private:
+  char *name, *desc, *shortDesc;
+  int weight, price, quality;
+  int action; // damage, defence, potion str.
+  int shape_index;
 
-class Character;  
+ public:
+  enum itemNames {
+    SHORT_SWORD=0,
+    DAGGER,
+    BASTARD_SWORD,
+	CHEST,
+	BOOKSHELF,
+	CHEST2,
+	BOOKSHELF2,
+	
+	// must be the last ones
+	ITEM_COUNT
+  };
+
+  static RpgItem *items[];
   
-class Character  {
-private:
-  char *name;
-  int startingHp;
+  RpgItem(char *name, int weight, int price, int quality, 
+		  int action, char *desc, char *shortDesc, int shape_index);
+  ~RpgItem();
 
-public:
-	Character(char *name, int startingHp);
-	~Character();
-
-  inline char *getName() { return name; };
-  inline int getStartingHp() { return startingHp; }  
-  
-public:  
-  // fighters
-  static Character *ranger;
-  static Character *knight;
-
-  // rogues
-  static Character *tinkerer;
-  static Character *assassin;
-
-  // rogue/fighter/healer
-  static Character *arcanist;
-  static Character *loremaster;
-
-  // wizards
-  static Character *conjurer;
-  static Character *summoner;
-
-  // healers/religion
-  static Character *naturalist;
-  static Character *monk;
+  inline int getShapeIndex() { return shape_index; }
+  inline char *getShortDesc() { return shortDesc; }
 };
 
 #endif

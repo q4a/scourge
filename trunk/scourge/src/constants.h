@@ -147,8 +147,8 @@ public:
     MOTION_LOITER };
 
 // The map's dimensions
-#define MAP_WIDTH 500
-#define MAP_DEPTH 500
+#define MAP_WIDTH 600
+#define MAP_DEPTH 600
 
 // How big is the on-screen view. Should be calculated.
 #define MAP_VIEW_WIDTH 100
@@ -156,9 +156,9 @@ public:
 #define MAP_VIEW_HEIGHT 16
 
   // How big is 1 map chunk
-#define MAP_UNIT 12
+#define MAP_UNIT 16
 #define MAP_UNIT_OFFSET 2
-#define MAP_WALL_HEIGHT 10
+#define MAP_WALL_HEIGHT 12
 
   // How far from the edge to start drawing in map
 #define MAP_OFFSET 55
@@ -187,7 +187,12 @@ public:
 	SQUARE_FORMATION,
 	ROW_FORMATION,
 	SCOUT_FORMATION,
-	CROSS_FORMATION
+	CROSS_FORMATION,
+	PLAYER_1,
+	PLAYER_2,
+	PLAYER_3,
+	PLAYER_4,
+	PLAYER_ONLY
   };
 
   // Directions (a bitfield so they can be combined)
@@ -202,13 +207,61 @@ public:
   enum {
 	WELCOME=0,
 	ITEM_OUT_OF_REACH,
-  DOOR_BLOCKED,
+	DOOR_BLOCKED,
 
 	// last one
 	MESSAGE_COUNT
   };
   static char *messages[][80];
   static int messageCount[];
+
+  enum { 
+	EW_WALL_INDEX=1,
+	EW_WALL_EXTRA_INDEX,
+	EW_WALL_TWO_EXTRAS_INDEX,  		
+	NS_WALL_INDEX,
+	NS_WALL_EXTRA_INDEX,
+	NS_WALL_TWO_EXTRAS_INDEX,  				
+	CORNER_INDEX,
+	DOOR_SIDE_INDEX,		
+	EW_DOOR_INDEX,
+	EW_DOOR_TOP_INDEX,
+	NS_DOOR_INDEX,
+	NS_DOOR_TOP_INDEX,
+	FLOOR_TILE_INDEX,
+	ROOM_FLOOR_TILE_INDEX,
+	LAMP_NORTH_INDEX,
+	LAMP_SOUTH_INDEX,
+	LAMP_WEST_INDEX,
+	LAMP_EAST_INDEX,
+	LAMP_BASE_INDEX,  
+	DEBUG_INDEX, 
+	LOCATOR_INDEX, 
+	
+	// must be the last one
+	SHAPE_INDEX_COUNT
+  };
+
+  enum {
+	FIGHTER_INDEX = 0,
+	ROGUE_INDEX,
+	CLERIC_INDEX,
+	WIZARD_INDEX,
+
+	// last one
+	CREATURE_INDEX_COUNT
+  };
+  
+  enum {
+	SWORD_INDEX = 0,
+	BOOKSHELF_INDEX,
+	CHEST_INDEX,
+	BOOKSHELF2_INDEX,
+	CHEST2_INDEX,
+
+	// should be the last one
+	ITEM_INDEX_COUNT
+  };
 
   Constants();
   ~Constants();

@@ -29,6 +29,7 @@
 #include "mainmenu.h"
 #include "gui.h"
 #include "inventory.h"
+#include "item.h"
 
 using namespace std;
 
@@ -63,6 +64,8 @@ private:
 
   int movingX, movingY, movingZ;
   Item *movingItem;
+
+  bool player_only;
   
 protected:
   SDLHandler *sdlHandler;
@@ -106,19 +109,21 @@ public:
   void drawView(SDL_Surface *screen);
   bool handleEvent(SDL_Event *event);
 
-	void moveParty();
+  void setPlayer(int n);
+
+  void moveParty();
   
   void setPartyMotion(int motion);
-
-	void setFormation(int formation);
-
-	inline int getFormation() { return formation; }
-
-	Creature *isPartyMember(Location *pos);
-
-	bool useItem();
-    bool useItem(int x, int y);
-
+  
+  void setFormation(int formation);
+  
+  inline int getFormation() { return formation; }
+  
+  Creature *isPartyMember(Location *pos);
+  
+  bool useItem();
+  bool useItem(int x, int y);
+  
   void startMission();  
 
   inline Map *getMap() { return map; }

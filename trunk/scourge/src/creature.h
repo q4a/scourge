@@ -30,7 +30,7 @@
 #include "map.h"
 #include "scourge.h"
 #include "util.h"
-#include "character.h"
+#include "rpg/character.h"
 #include "constants.h"
 
 using namespace std;
@@ -139,6 +139,7 @@ public:
 	inline void setFormation(int formation) { this->formation = formation; }
 	inline int getFormation() { return formation; }
 	void setNext(Creature *next, int index);
+	void setNextDontMove(Creature *next, int index);
     inline Uint16 getDir() { return dir; }
 
 

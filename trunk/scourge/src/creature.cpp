@@ -251,12 +251,17 @@ void Creature::findCorner(Sint16 *px, Sint16 *py, Sint16 *pz) {
 }
 
 void Creature::setNext(Creature *next, int index) { 
-	this->next = next; 
-	this->index = index;
-	// stand in formation
-	Sint16 px, py, pz;
-	getFormationPosition(&px, &py, &pz);
-	moveTo(px, py, pz);
+  this->next = next; 
+  this->index = index;
+  // stand in formation
+  Sint16 px, py, pz;
+  getFormationPosition(&px, &py, &pz);
+  moveTo(px, py, pz);
+}
+
+void Creature::setNextDontMove(Creature *next, int index) {
+  this->next = next; 
+  this->index = index;
 }
 
 void Creature::rollAttributes() {
