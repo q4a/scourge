@@ -27,6 +27,8 @@
 #define LOGO_SPRITE_DELTA 8.0f
 #define PI 3.14159f
 
+#define WATER_HEIGHT 130
+
 MainMenu::MainMenu(Scourge *scourge){
   this->scourge = scourge;
   this->cloudCount = 30;
@@ -49,6 +51,11 @@ MainMenu::MainMenu(Scourge *scourge){
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
   lastTick = 0;
 
+  starCount = 70;
+  for(int i = 0; i < starCount; i++) {
+    star[i].x = (int)( (float)scourge->getSDLHandler()->getScreen()->w * rand()/RAND_MAX );
+    star[i].y = top + (int)( ((float)scourge->getSDLHandler()->getScreen()->h - (top * 2 + WATER_HEIGHT)) * rand()/RAND_MAX );
+  }
   // The new style gui
 #ifndef AT_WORK
 
@@ -133,7 +140,7 @@ void MainMenu::drawView() {
   glDepthMask(GL_TRUE);    
   glDisable(GL_BLEND);
 
-
+  drawStars();
 
   glDisable(GL_DEPTH_TEST);
   drawClouds(true, false);
@@ -462,6 +469,29 @@ void MainMenu::drawParticles() {
   */
 }
 
+void MainMenu::drawStars() {
+  glDisable( GL_TEXTURE_2D );
+  for(int i = 0; i < starCount; i++) {
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef( star[i].x, star[i].y, 0 );
+    glColor3f( 0.6 + (0.39f * rand()/RAND_MAX), 
+               0.6 + (0.39f * rand()/RAND_MAX), 
+               0.6 + (0.39f * rand()/RAND_MAX) );
+    //int n = (int)(2.0f * rand()/RAND_MAX) + 1;
+    int n = 1;
+    glBegin( GL_QUADS );
+    glVertex2d( 0, 0 );
+    glVertex2d( 0, n );
+    glVertex2d( n, n );
+    glVertex2d( n, 0 );
+    glEnd();
+    glPopMatrix();
+  }
+  glEnable( GL_TEXTURE_2D );
+  
+}
+
 void MainMenu::drawClouds(bool moveClouds, bool flipped) {
   // draw clouds
   float w, h;
@@ -513,7 +543,7 @@ void MainMenu::drawWater() {
   // draw the water
   glPushMatrix();
   w = scourge->getSDLHandler()->getScreen()->w;
-  h = 130;
+  h = WATER_HEIGHT;
   glLoadIdentity();
   glTranslatef( 0, top + (600 - h), 0);
   glDisable( GL_TEXTURE_2D );

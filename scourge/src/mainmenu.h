@@ -55,10 +55,15 @@ private:
 
 
   typedef struct _Cloud {
-	int x, y, w, h, speed;
+    int x, y, w, h, speed;
   } Cloud;
   Cloud cloud[100];
   int cloudCount;
+  int starCount;
+  typedef struct _Star {
+    int x, y;
+  } Star;
+  Star star[100];
 
   Window *mainWin;
   Button *newGameButton;
@@ -97,6 +102,7 @@ public:
   void addLogoSprite();
   void drawLogoSprites();
   void drawParticles();
+  void drawStars();
 };
 
 #endif
