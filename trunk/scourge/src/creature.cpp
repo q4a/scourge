@@ -260,21 +260,21 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 		}
 	  } else {	  
 	  */
-		// if we're not at the destination, but it's possible to stand there
-		// try again
-		if(!(selX == getX() && selY == getY()) && 
-		   map->shapeFits(getShape(), selX, selY, -1) &&
-		   moveRetrycount < MAX_MOVE_RETRY) {
-		  
-		  // don't keep trying forever
-		  moveRetrycount++;
-		  tx = ty = -1;
-		} else {
-		  // if we can't get to the destination, stop trying
-		  // do this so the animation switches to "stand"
-		  stopMoving();
-		}		
-		//}
+	  // if we're not at the destination, but it's possible to stand there
+	  // try again
+	  if(!(selX == getX() && selY == getY()) && 
+		 map->shapeFits(getShape(), selX, selY, -1) &&
+		 moveRetrycount < MAX_MOVE_RETRY) {
+		
+		// don't keep trying forever
+		moveRetrycount++;
+		tx = ty = -1;
+	  } else {
+		// if we can't get to the destination, stop trying
+		// do this so the animation switches to "stand"
+		stopMoving();
+	  }		
+	  //}
 	}
   }
   return false;
