@@ -42,6 +42,7 @@ class RpgItem {
   int equip; // where can it be worn?
   int skill; // which skill to check when using the item
   int maxCharges;
+  int potionSkill; // which skill does this potion effect?
 
   static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
   static map<string, const RpgItem *> itemsByName;
@@ -76,7 +77,8 @@ class RpgItem {
   
   RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0);
+		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0,
+		  int potionSkill=-1);
   ~RpgItem();
 
   inline int getIndex() { return index; }
@@ -93,6 +95,7 @@ class RpgItem {
   inline int getSkill() { return skill; } 
   inline int getType() { return type; }
   inline int getMaxCharges() { return maxCharges; }
+  inline int getPotionSkill() { return potionSkill; }
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs

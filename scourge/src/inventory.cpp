@@ -169,16 +169,19 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  invList->setSelectedLine(oldLine);
 	}
   } else if(widget == eatDrinkButton) {
-	int itemIndex = invList->getSelectedLine();  
-	if(itemIndex > -1 && 
-	   scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-	  if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
-		scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
+	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead)) {
+	  scourge->showMessageDialog(Constants::getMessage(Constants::DEAD_CHARACTER_ERROR));
+	} else {
+	  int itemIndex = invList->getSelectedLine();  
+	  if(itemIndex > -1 && 
+		 scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+		if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
+		  scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
+		}
+		// refresh screen
+		setSelectedPlayerAndMode(selected, INVENTORY);
 	  }
-	  // refresh screen
-	  setSelectedPlayerAndMode(selected, INVENTORY);
-	}					   	   	   	      	
-	
+	}
   } else if(widget == skillAddButton) {
 	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
 	   !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {

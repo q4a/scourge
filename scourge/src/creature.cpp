@@ -576,7 +576,6 @@ bool Creature::eatDrink(int index){
 	setThirst(getThirst() + level);
 	sprintf(msg, "%s drinks %s.", getName(), buff);
 	scourge->getMap()->addDescription(msg); 
-	// TODO : add potion effect
 	usePotion(item);
 	bool b = item->decrementCharges();
 	if(b) {
@@ -591,7 +590,38 @@ bool Creature::eatDrink(int index){
 }
 
 void Creature::usePotion(Item *item) {
-  cerr << "Implement me!" << endl;
+  // nothing to do?
+  if(item->getRpgItem()->getPotionSkill() == -1) return; 
+
+  int n;
+  char msg[255];
+
+  int skill = item->getRpgItem()->getPotionSkill();
+  if(skill < 0) {
+	switch(-skill - 2) {
+	case Constants::HP:
+	  n = item->getRpgItem()->getAction();
+	  if(n + getHp() > getMaxHp()) 
+		n = getMaxHp() - getHp();
+	  setHp(getHp() + n);
+	  sprintf(msg, "%s heals %d points.", getName(), n);
+	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+	  startEffect(Constants::EFFECT_HEAL, (Constants::DAMAGE_DURATION * 2));
+	  return;
+	case Constants::AC:
+	  cerr << "Implement me! (AC boost)" << endl;
+	  return;
+	default:
+	  cerr << "Implement me! (other potion skill boost)" << endl;
+	  return;
+	}
+  } else {
+	switch(skill) {
+	default:
+	  cerr << "Implement me! (other regular skill boost)" << endl;
+	  return;
+	}
+  }
 }
 
 void Creature::equipInventory(int index) {
