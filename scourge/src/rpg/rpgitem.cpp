@@ -41,12 +41,12 @@ RpgItem *RpgItem::items[] =  {
 			  "The longsword is a knight's standard weapon",
 			  "A shiny, sharp longsword", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX),
+			  Constants::SWORD_INDEX, 2),
   new RpgItem(GREAT_SWORD, "Great sword", 2, SWORD, 10, 350, 100, 16, 14,
 			  "The two handed great sword can deliver a lot of damage",
 			  "A two-handed greatsword", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::SWORD_INDEX, ONLY_TWO_HANDED),
+			  Constants::SWORD_INDEX, ONLY_TWO_HANDED, 3),
   
   
   // AXES
@@ -54,12 +54,12 @@ RpgItem *RpgItem::items[] =  {
 			  "A battle axe of average workmanship",
 			  "A well made battle axe", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::AXE_INDEX),
+			  Constants::AXE_INDEX, 2),
   new RpgItem(THROWING_AXE, "Throwing axe", 1, AXE, 2, 100, 100, 4, 6,
 			  "A dull-looking axe for chucking",
 			  "A quick throwing axe", 
 			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
-			  Constants::AXE_INDEX),
+			  Constants::AXE_INDEX, 12),
   
   
   // CONTAINERS:
@@ -83,7 +83,7 @@ RpgItem *RpgItem::items[] =  {
 
 RpgItem::RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-				 int twohanded) {
+				 int twohanded, int distance) {
   this->index = index;
   this->name = name;
   this->level = level;
@@ -98,6 +98,7 @@ RpgItem::RpgItem(int index, char *name, int level, int type, int weight, int pri
   this->shape_index = shape_index;
   this->equip = equip;
   this->twohanded = twohanded;
+  this->distance = distance;
 }
 
 RpgItem::~RpgItem() {

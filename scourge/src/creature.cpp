@@ -48,6 +48,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->shape = scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex());
   sprintf(description, "You see %s", monster->getType());
   commonInit();
+  monsterInit();
 }
 
 void Creature::commonInit() {
@@ -68,6 +69,7 @@ void Creature::commonInit() {
   this->exp = 0;
   this->hp = 0;
   this->ac = 0;
+  this->targetCreature = NULL;
 }
 
 Creature::~Creature(){
@@ -79,7 +81,7 @@ bool Creature::move(Uint16 dir, Map *map) {
   if(!(x > 10 && x < MAP_WIDTH - 10 &&
 	   y > 10 && y < MAP_DEPTH - 10)) {
 	if(monster) cerr << "hack for " << getName() << endl;
-	return;
+	return false;
   }
 
   scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
@@ -332,6 +334,30 @@ bool Creature::isItemInInventory(Item *item) {
   return false;
 }
 
+Item *Creature::getItemAtLocation(int location) {
+  int i;
+  for(i = 0; i < Character::INVENTORY_COUNT; i++) {
+	if((1 << i) == location) {
+	  if(equipped[i] < MAX_INVENTORY_SIZE) {
+		return getInventory(equipped[i]);
+	  } else {
+		return NULL;
+	  }
+	}
+  }
+  return NULL;
+}
+
+Item *Creature::getBestWeapon(float dist) {
+  Item *item = getItemAtLocation(Character::INVENTORY_RIGHT_HAND);
+  if(item && item->getRpgItem()->getDistance() >= dist) return item;
+  item = getItemAtLocation(Character::INVENTORY_LEFT_HAND);
+  if(item && item->getRpgItem()->getDistance() >= dist) return item;
+  item = getItemAtLocation(Character::INVENTORY_WEAPON_RANGED);
+  if(item && item->getRpgItem()->getDistance() >= dist) return item;
+  return NULL;
+}
+
 
 /**
    Create a party programmatically until the party editor is made.
@@ -389,4 +415,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[3]->addInventory(new Item(RpgItem::items[RpgItem::THROWING_AXE]));
 
   return pc;
+}
+
+void Creature::monsterInit() {
+  // equip starting inventory
 }

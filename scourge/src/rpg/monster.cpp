@@ -21,33 +21,16 @@
   */
 
 int Monster::monsterCount[MAX_MONSTER_LEVEL];
-Monster *Monster::monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT] =
-  {
-	{
-	  new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX),
-	  new Monster("An Oozing Green Waddler", 0, 3, Constants::SLIME_INDEX),
-	  new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX),
-	  NULL
-	},
-	{
-	  new Monster("A Rabbid Rodent", 1, 4, Constants::BUGGERLING_INDEX),
-	  new Monster("A Gray Slimy Waddler", 1, 5, Constants::SLIME_INDEX),
-	  new Monster("A Fleshworm", 1, 3, Constants::BUGGERLING_INDEX),
-	  NULL
-	},
-	{
-	  new Monster("A Kobold", 2, 6, Constants::BUGGERLING_INDEX),
-	  new Monster("A Dire Stench-Waddler", 2, 6, Constants::SLIME_INDEX),
-	  new Monster("A Minor Spectre", 2, 4, Constants::BUGGERLING_INDEX),
-	  NULL
-	}
-  };
+Monster *Monster::monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
   
 Monster::Monster(char *type, int level, int hp, Uint8 shapeIndex) {
   this->type = type;
   this->level = level;
   this->hp = hp;
   this->shapeIndex = shapeIndex;
+  for(int i = 0; i < 10; i++) {
+	weapon[i] = armor[i] = item[i] = NULL;
+  }
   sprintf(description, "FIXME: need a description");
 }
 
@@ -55,14 +38,54 @@ Monster::~Monster() {
 }
 
 void Monster::initMonsters() {
-  for(int i = 0; i < MAX_MONSTER_LEVEL; i++) {
-	for(int count = 0; count < MAX_MONSTER_COUNT; count++) {
-	  if(!monsters[i][count]) {
-		monsterCount[i] = count;
-		break;
-	  }
-	}
-  }
+  // ###########################################
+  Monster *m;
+  int level = 0;
+  monsterCount[level] = 0;
+  m = monsters[level][monsterCount[0]++] = 
+	new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::SHORT_SWORD];
+  m->weapon[1] = RpgItem::items[RpgItem::DAGGER];
+
+  m = monsters[level][monsterCount[0]++] = 
+	new Monster("An Oozing Green Waddler", 0, 3, Constants::SLIME_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::DAGGER];
+
+  m = monsters[level][monsterCount[0]++] = 
+	new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::SHORT_SWORD];
+
+
+  // ###########################################
+  level = 1;
+  monsterCount[level] = 0;
+  m = monsters[level][monsterCount[1]++] =
+	new Monster("A Rabbid Rodent", 1, 4, Constants::BUGGERLING_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::DAGGER];
+
+  m = monsters[level][monsterCount[1]++] =
+	new Monster("A Gray Slimy Waddler", 1, 5, Constants::SLIME_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::DAGGER];
+
+  m = monsters[level][monsterCount[1]++] =
+	new Monster("A Fleshworm", 1, 3, Constants::BUGGERLING_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::DAGGER];
+
+
+  // ###########################################
+  level = 2;
+  monsterCount[level] = 0;
+  m = monsters[level][monsterCount[1]++] =
+	new Monster("A Kobold", 2, 6, Constants::BUGGERLING_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::DAGGER];
+
+  m = monsters[level][monsterCount[1]++] =
+	new Monster("A Dire Stench-Waddler", 2, 6, Constants::SLIME_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::DAGGER];
+
+  m = monsters[level][monsterCount[1]++] =
+	new Monster("A Minor Spectre", 2, 4, Constants::BUGGERLING_INDEX);
+  m->weapon[0] = RpgItem::items[RpgItem::DAGGER];
 }
 
 Monster *Monster::getRandomMonster(int level) {
