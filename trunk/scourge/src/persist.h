@@ -22,7 +22,7 @@
 
 class Session;
 
-#define PERSIST_VERSION 5
+#define PERSIST_VERSION 6
 
 typedef struct _DiceInfo {
   Uint32 version;
@@ -66,6 +66,8 @@ typedef struct _CreatureInfo {
   Uint32 version;
   Uint8 name[255];
   Uint8 character_name[255];
+  Uint32 character_model_info_index;
+  Uint32 deityIndex;
   Uint8 monster_name[255];
   Uint32 hp, mp, exp, level, money, stateMod, protStateMod, x, y, z, dir;
   Uint32 speed, motion, armor, bonusArmor, thirst, hunger;

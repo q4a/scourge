@@ -33,7 +33,6 @@ class Character  {
 private:
   char *name;
   int startingHp, startingMp, skill_bonus, level_progression;
-  char *model_name, *skin_name;
   char description[3000];
   char *shortName;
   map<int, int> maxSkill;
@@ -42,7 +41,7 @@ private:
 public:
   map<int, vector<string>*> soundMap;
 
-  Character(char *name, int startingHp, int startingMp, char *model, char *skin, int skill_bonus, int level_progression, char *shortName);
+  Character(char *name, int startingHp, int startingMp, int skill_bonus, int level_progression, char *shortName);
   ~Character();
 
   inline char *getName() { return name; };
@@ -51,8 +50,6 @@ public:
   inline int getStartingMp() { return startingMp; }  
   inline int getSkillBonus() { return skill_bonus; }  
   inline int getLevelProgression() { return level_progression; }  
-  inline char *getModelName() { return model_name; }
-  inline char *getSkinName() { return skin_name; }
   inline char *getDescription() { return description; }
   inline int getMaxSkillLevel(int skill) { if(maxSkill.find(skill) == maxSkill.end()) return 100; else return maxSkill[skill]; }
   inline int getMinSkillLevel(int skill) { if(minSkill.find(skill) == minSkill.end()) return 0; else return minSkill[skill]; }

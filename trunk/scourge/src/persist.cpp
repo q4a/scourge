@@ -108,6 +108,8 @@ void Persist::saveCreature(FILE *fp, CreatureInfo *info) {
   fwrite( &(info->version), sizeof(Uint32), 1, fp );
   fwrite( info->name, sizeof(Uint8), 255, fp );
   fwrite( info->character_name, sizeof(Uint8), 255, fp );
+  fwrite( &info->character_model_info_index, sizeof(Uint32), 1, fp );  
+  fwrite( &info->deityIndex, sizeof(Uint32), 1, fp );  
   fwrite( info->monster_name, sizeof(Uint8), 255, fp );
   fwrite( &(info->hp), sizeof(Uint32), 1, fp );
   fwrite( &(info->mp), sizeof(Uint32), 1, fp );
@@ -147,6 +149,8 @@ CreatureInfo *Persist::loadCreature(FILE *fp) {
   fread( &(info->version), sizeof(Uint32), 1, fp );
   fread( info->name, sizeof(Uint8), 255, fp );
   fread( info->character_name, sizeof(Uint8), 255, fp );
+  fread( &info->character_model_info_index, sizeof(Uint32), 1, fp );
+  fread( &info->deityIndex, sizeof(Uint32), 1, fp );
   fread( info->monster_name, sizeof(Uint8), 255, fp );
   fread( &(info->hp), sizeof(Uint32), 1, fp );
   fread( &(info->mp), sizeof(Uint32), 1, fp );

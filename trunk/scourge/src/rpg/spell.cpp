@@ -93,6 +93,7 @@ MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill) {
   this->shortName = strdup(name);
   shortName = strtok(shortName, " ");
   this->deity = deity;
+  strcpy( this->deityDescription, "" );
   this->skill = skill;
   this->resistSkill = resistSkill;
 }
@@ -189,6 +190,9 @@ void MagicSchool::initMagic() {
 	  schools[schoolCount++] = current;
     string nameStr = name;
     schoolMap[nameStr] = current;
+  } else if( n == 'G' && current ) {
+    n = Constants::readLine(line, fp);
+    current->addToDeityDescription( line + 1 );
 	} else {
 	  n = Constants::readLine(line, fp);
 	}
