@@ -940,9 +940,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
     if(event->key.keysym.sym == SDLK_l) {
       cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
       return false;
-    } else if(event->key.keysym.sym == SDLK_m) {
-      missionCompleted();
-      return false;
+    //} else if(event->key.keysym.sym == SDLK_m) {
+//      missionCompleted();
+      //return false;
       //    } else if(event->key.keysym.sym == SDLK_f) {
       //party->startEffect(Constants::EFFECT_FLAMES, (Constants::DAMAGE_DURATION * 4));
       //return false;

@@ -109,7 +109,7 @@ char *Constants::messages[][80] = {
   { "Close" },
   { "Drop Item" },
   { "Open Item" },
-  { "Drag items to/from the list, Double click for info" },
+  { "Drag items to/from the list, Right click for info" },
   { "Play Mission" },
   { "Do you really want to exit this mission?" },
   { "Exit mission and teleport back to base?" },
