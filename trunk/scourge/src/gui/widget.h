@@ -43,6 +43,8 @@ class Widget {
   inline void move(int x, int y) { this->x = x; this->y = y; }
   virtual void drawWidget(SDLHandler *sdlHandler) = 0;
   inline void setColor( float r, float g, float b, float a ) { this->red = r; this->green = g; this->blue = b; this->alpha = a; }
+  virtual void handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
+  virtual bool canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
 
  protected:
   inline void setGlColor() { glColor4f( red, green, blue, alpha ); }

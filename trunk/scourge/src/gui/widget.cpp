@@ -33,3 +33,11 @@ void Widget::draw(SDLHandler *sdlHandler) {
   glTranslated( x, y, 0 );
   drawWidget(sdlHandler);
 }
+
+void Widget::handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y) {
+  // do nothing by default
+}
+
+bool Widget::canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y) {
+  return false;
+}

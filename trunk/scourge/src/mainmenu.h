@@ -27,6 +27,7 @@
 
 #include "gui/window.h"
 #include "gui/label.h"
+#include "gui/button.h"
 
 /**
   *@author Gabor Torok
@@ -52,6 +53,11 @@ private:
   static void setBlendFunc();
 
   Window *mainWin;
+  Button *newGameButton;
+  Button *continueButton;
+  Button *optionsButton;
+  Button *aboutButton;
+  Button *quitButton;
   
 public:
 #define NEW_GAME 1
@@ -66,6 +72,7 @@ public:
   void drawView(SDL_Surface *screen);
   void drawMenu(int x, int y);
   bool handleEvent(SDL_Event *event);
+  bool handleEvent(Widget *widget, SDL_Event *event);
   int getValue();
 
   void init();

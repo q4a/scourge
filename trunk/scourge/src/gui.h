@@ -144,6 +144,7 @@ public:
   void drawScrollingList(int id, int count, const char *list[]);
 
   bool handleEvent(SDL_Event *event);
+  bool handleEvent(Widget *widget, SDL_Event *event);
 
   void debug();
 

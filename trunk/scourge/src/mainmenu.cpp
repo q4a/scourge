@@ -60,14 +60,32 @@ void MainMenu::init() {
 
 	  // The new style gui (testing for now)
 	  mainWin = new Window( scourge->getSDLHandler(),
-							350, 230, 270, 250, 
+							350, 230, 270, 270, 
 							"Main Menu (Testing new UI)", 
 							scourge->getShapePalette()->getGuiTexture() );
+	  
 	  char version[100];
 	  sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
 	  Label *label = new Label( 10, 20, version);
 	  label->setColor( 0.6f, 0.75f, 0.95f, 1.0f );
 	  mainWin->addWidget((Widget*)label);
+
+	  newGameButton = new Button( 10, 40, 260, 70, "New Game" );
+	  newGameButton->getLabel()->setColor( 0.25f, 0.25f, 0, 1.0f );
+	  mainWin->addWidget((Widget*)newGameButton);
+	  continueButton = new Button( 10, 80, 260, 110, "Continue Game" );
+	  continueButton->getLabel()->setColor( 0.25f, 0.25f, 0, 1.0f );
+	  mainWin->addWidget((Widget*)continueButton);
+	  optionsButton = new Button( 10, 120, 260, 150, "Options" );
+	  optionsButton->getLabel()->setColor( 0.25f, 0.25f, 0, 1.0f );
+	  mainWin->addWidget((Widget*)optionsButton);
+	  aboutButton = new Button( 10, 160, 260, 190, "About" );
+	  aboutButton->getLabel()->setColor( 0.25f, 0.25f, 0, 1.0f );
+	  mainWin->addWidget((Widget*)aboutButton);
+	  quitButton = new Button( 10, 200, 260, 230, "Quit" );
+	  quitButton->getLabel()->setColor( 0.25f, 0.25f, 0, 1.0f );
+	  mainWin->addWidget((Widget*)quitButton);
+
     } else {
 	  scourge->getGui()->popWindows();
     }
@@ -278,6 +296,31 @@ void MainMenu::drawMenu(int x, int y) {
   if(showDebug) {
       scourge->getGui()->debugActiveRegions();
   }
+}
+
+bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
+  if(widget == newGameButton) {
+	fprintf(stderr, "new game!!\n");
+	value = NEW_GAME;
+	return true;
+  } else if(widget == continueButton) {
+	fprintf(stderr, "continue!!\n");
+	value = CONTINUE_GAME;
+	return true;
+  } else if(widget == optionsButton) {
+	fprintf(stderr, "options!!\n");
+	value = OPTIONS;
+	return true;
+  } else if(widget == aboutButton) {
+	fprintf(stderr, "about!!\n");
+	value = ABOUT;
+	return true;
+  } else if(widget == quitButton) {
+	fprintf(stderr, "quit!!\n");
+	value = QUIT;
+	return true;
+  }
+  return false;
 }
 
 bool MainMenu::handleEvent(SDL_Event *event) {

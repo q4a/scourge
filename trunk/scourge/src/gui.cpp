@@ -570,6 +570,10 @@ void Gui::initScroller(int id) {
         regions[index2].y1;
 }
 
+bool Gui::handleEvent(Widget *widget, SDL_Event *event) {
+  return false;
+}
+
 bool Gui::handleEvent(SDL_Event *event) {
   // handle scrolling list callbacks
   fprintf(stderr, "THIS IS NEVER CALLED, RIGHT? In handleEvent!\n");

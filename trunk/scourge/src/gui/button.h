@@ -1,7 +1,7 @@
 /***************************************************************************
-                          options.h  -  description
+                          button.h  -  description
                              -------------------
-    begin                : Tue Aug 12 2003
+    begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
  ***************************************************************************/
@@ -15,39 +15,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef OPTIONSMENU_H
-#define OPTIONSMENU_H
+#ifndef BUTTON_H
+#define BUTTON_H
 
-#include "constants.h"
-#include "sdlhandler.h"
-#include "sdleventhandler.h"
-#include "sdlscreenview.h"
-#include "scourge.h"
+#include "../constants.h"
+#include "../sdlhandler.h"
+#include "widget.h"
+#include "label.h"
 
 /**
   *@author Gabor Torok
   */
 
-class Scourge;
+class SDLHandler;
 
-class OptionsMenu : public SDLEventHandler,SDLScreenView {
-private:
-  Scourge *scourge;
-  int win;
-  bool showDebug;
-  
-public:
-  OptionsMenu(Scourge *scourge);
-  ~OptionsMenu();
+class Button : public Widget {
+ private:
+  int x2, y2;
+  Label *label;
+  bool inside; // was the last event inside the button?
+  float alpha, alphaInc;
+  GLint lastTick;
 
-  void drawView(SDL_Surface *screen);
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
-  void drawMenu(int x, int y);
+ public: 
+  Button(int x1, int y1, int x2, int y2, char *label);
+  ~Button();
+  inline Label *getLabel() { return label; }
+  void handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
+  bool canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
 
-  void show();
-
- protected:
+  void drawWidget(SDLHandler *sdlHandler);
 };
 
 #endif
+
