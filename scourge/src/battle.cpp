@@ -714,7 +714,7 @@ void Battle::hitWithItem() {
     delta += (5.0f * rand()/RAND_MAX) + 5;
   }
   int extra = (int)(((float)tohit / 100.0f) * delta) + 
-    (item && item->isMagicItem() ? item->getBonus() : 0);
+    (item && item->isMagicItem() ? ( item->getLevel() * item->getBonus() ) : 0);
 
   int ac = creature->getTargetCreature()->getSkillModifiedArmor();
   sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
@@ -733,7 +733,7 @@ void Battle::hitWithItem() {
 
     // magical weapons
     if(item && item->isMagicItem()) {
-      damage += item->getBonus();
+      damage += ( item->getLevel() * item->getBonus() );
       int mul = 1;
       if(item->getMonsterType() && creature->getTargetCreature() && 
          !strcmp(item->getMonsterType(), creature->getTargetCreature()->getModelName())) {

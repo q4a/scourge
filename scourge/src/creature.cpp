@@ -1190,7 +1190,7 @@ int Creature::getSkillModifiedArmor() {
         
         // magic armor?
         if(item->isMagicItem()) {
-          armor += item->getBonus();
+          armor += ( item->getLevel() * item->getBonus() );
         }
       }
     }
@@ -1238,6 +1238,9 @@ int Creature::addMoney(Creature *creature_killed) {
 }
 
 void Creature::monsterInit() {
+
+  this->level = monster->getLevel();
+
   // set some skills
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
