@@ -520,9 +520,9 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
         angleStep = diff / (float)TURN_STEP_COUNT;
       }
 
-      if( abs(angle - wantedAngle) > 2.0f ) {
+      if( fabs(angle - wantedAngle) > 2.0f ) {
         GLfloat diff = Util::diffAngle( wantedAngle, angle );
-        if( abs( diff ) < angleStep ) {
+        if( fabs( diff ) < angleStep ) {
           angle = wantedAngle;
         } else {
           angle += angleStep;

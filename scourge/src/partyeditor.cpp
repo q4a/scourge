@@ -24,7 +24,7 @@
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 1
+#define LEVEL 15
 
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
@@ -435,7 +435,13 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
         pc[i]->addSpell(Spell::getSpellByName("Lesser healing touch"));
       else
         pc[i]->addSpell(Spell::getSpellByName("Body of stone"));
-    }    
+
+
+      // testing
+      pc[i]->addSpell(Spell::getSpellByName("Ring of Harm"));
+      pc[i]->setMp( 5000 );
+
+    }
   }
 
   *partySize = pcCount;
