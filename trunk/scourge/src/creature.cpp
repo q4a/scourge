@@ -864,6 +864,13 @@ void Creature::equipInventory(int index) {
             this->setProtectedStateMod(i, true);
           }
         }
+        // skill bonuses
+        map<int,int> *m = item->getMagicAttrib()->getSkillBonusMap();
+        for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
+          int skill = e->first;
+          int bonus = e->second;
+          setSkillBonus(skill, getSkillBonus(skill) + bonus);
+        }
         // if armor, enhance magic resistance
         if(!item->getRpgItem()->isWeapon() && 
            item->getMagicAttrib()->getSchool()) {
@@ -902,6 +909,13 @@ int Creature::doff(int index) {
           if(item->getMagicAttrib()->isStateModProtected(i)) {
             this->setProtectedStateMod(i, false);
           }
+        }
+        // skill bonus
+        map<int,int> *m = item->getMagicAttrib()->getSkillBonusMap();
+        for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
+          int skill = e->first;
+          int bonus = e->second;
+          setSkillBonus(skill, getSkillBonus(skill) - bonus);
         }
         // if armor, enhance magic resistance
         if(!item->getRpgItem()->isWeapon() && 

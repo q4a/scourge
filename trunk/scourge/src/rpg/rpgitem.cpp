@@ -277,7 +277,7 @@ void MagicAttrib::enchant(int level, bool isWeapon) {
    * bonus, damageMultiplier vs. a monster type
    * 
    * greater (level 1):
-   * lesser + higher bonus + magic damage 
+   * lesser + higher bonus + magic damage + some basic skills enhanced
    * 
    * champion (level 2):
    * greater + higher magic damage + (1 to 3) good state mods set
@@ -306,6 +306,13 @@ void MagicAttrib::enchant(int level, bool isWeapon) {
       school = spell->getSchool();
       magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 1, (int)(3.0f * rand()/RAND_MAX));
     }
+    n = (int)(3.0f * rand()/RAND_MAX);
+    for(int i = 0; i < n; i++) {
+      int skill = Constants::getRandomBasicSkill();
+      if(skillBonus.find(skill) == skillBonus.end()) {
+        skillBonus[skill] = (int)(8.0f * rand()/RAND_MAX);
+      }
+    }
     break;
   case Constants::CHAMPION_MAGIC_ITEM:
     bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
@@ -322,6 +329,13 @@ void MagicAttrib::enchant(int level, bool isWeapon) {
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
       stateMod[Constants::getRandomGoodStateMod()] = 1;
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    for(int i = 0; i < n; i++) {
+      int skill = Constants::getRandomBasicSkill();
+      if(skillBonus.find(skill) == skillBonus.end()) {
+        skillBonus[skill] = (int)(10.0f * rand()/RAND_MAX);
+      }
     }
     break;
   case Constants::DIVINE_MAGIC_ITEM:
@@ -345,6 +359,13 @@ void MagicAttrib::enchant(int level, bool isWeapon) {
     for(int i = 0; i < n; i++) {
       stateMod[Constants::getRandomBadStateMod()] = 2;
     }
+    n = (int)(3.0f * rand()/RAND_MAX) + 2;
+    for(int i = 0; i < n; i++) {
+      int skill = Constants::getRandomBasicSkill();
+      if(skillBonus.find(skill) == skillBonus.end()) {
+        skillBonus[skill] = (int)(12.0f * rand()/RAND_MAX);
+      }
+    }
     break;
   default:
     cerr << "*** Error: unknown magic attrib level: " << level << endl;
@@ -364,6 +385,12 @@ void MagicAttrib::debug(char *s, RpgItem *item) {
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     if(this->isStateModSet(i)) cerr << "set: " << Constants::STATE_NAMES[i] << endl;
     if(this->isStateModProtected(i)) cerr << "protected: " << Constants::STATE_NAMES[i] << endl;
+  }
+  cerr << "\tskill bonuses:" << endl;
+  for(map<int, int>::iterator i=skillBonus.begin(); i!=skillBonus.end(); ++i) {
+    int skill = i->first;
+    int bonus = i->second;
+    cerr << "\t\t" << Constants::SKILL_NAMES[skill] << " +" << bonus << endl;
   }
   cerr << "-----------" << endl;
 }
