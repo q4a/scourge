@@ -40,11 +40,16 @@ Inventory::Inventory(Scourge *scourge) {
 	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
 	  this->stateLine[i] = (char*)malloc(120 * sizeof(char));
 	}
+    this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+	this->missionColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
+    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+        this->objectiveText[i] = (char*)malloc(120 * sizeof(char));
+    }
 	selected = selectedMode = 0;
 
 	// construct UI
 	mainWin = new Window( scourge->getSDLHandler(),
-						  100, 50, 420, 505, 
+						  100, 50, 525, 505, 
 						  strdup("Party Information"), 
 						  scourge->getShapePalette()->getGuiTexture() );
 	player1Button  = mainWin->createButton( 0, 30, 105, 60, scourge->getParty()->getParty(0)->getName(), true);
@@ -54,6 +59,7 @@ Inventory::Inventory(Scourge *scourge) {
 	inventoryButton = mainWin->createButton( 105,0, 210, 30, strdup("Inventory"), true);
 	skillsButton   = mainWin->createButton( 210,0, 315, 30, strdup("Skills"), true);
 	spellsButton   = mainWin->createButton( 315,0, 420, 30, strdup("Spells"), true);
+	missionButton   = mainWin->createButton( 420,0, 525, 30, strdup("Mission"), true);
 	cards = new CardContainer(mainWin);
 
 	// inventory page	
@@ -119,6 +125,14 @@ Inventory::Inventory(Scourge *scourge) {
 	// spellbook
 	cards->createLabel(115, 45, strdup("Spellbook"), SPELL, Constants::RED_COLOR);
 
+	// mission
+	cards->createLabel(115, 45, strdup("Current Mission"), MISSION, Constants::RED_COLOR);
+	missionDescriptionLabel = new Label(115, 60, strdup(""), 70);
+	cards->addWidget(missionDescriptionLabel, MISSION);
+	cards->createLabel(115, 280, strdup("Mission Objectives"), MISSION, Constants::RED_COLOR);
+	objectiveList = new ScrollingList(115, 285, 295, 175);
+	cards->addWidget(objectiveList, MISSION);
+
 	setSelectedPlayerAndMode(0, INVENTORY);
 }
 
@@ -135,6 +149,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
   else if(widget == skillsButton)	setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton)	setSelectedPlayerAndMode(selected, SPELL);
+  else if(widget == missionButton)	setSelectedPlayerAndMode(selected, MISSION);
   else if(widget == openButton) {
 	int itemIndex = invList->getSelectedLine();  
 	if(itemIndex > -1) {
@@ -265,6 +280,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   inventoryButton->setSelected(selectedMode == INVENTORY);
   skillsButton->setSelected(selectedMode == CHARACTER);
   spellsButton->setSelected(selectedMode == SPELL);
+  missionButton->setSelected(selectedMode == MISSION);
   
   // show only the ui elements belonging to the current mode
   cards->setActiveCard(selectedMode);   
@@ -340,6 +356,59 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	break;
   case LOG:
 	break;
+	case MISSION:
+	  int objectiveCount = 0;
+	  if(scourge->getCurrentMission()) {
+		sprintf(missionText, "%s: %s", 
+				scourge->getCurrentMission()->getName(), 
+				scourge->getCurrentMission()->getStory());
+		objectiveCount = 
+		  scourge->getCurrentMission()->getObjective()->itemCount +
+		  scourge->getCurrentMission()->getObjective()->monsterCount;
+		for(int t = 0; t < scourge->getCurrentMission()->getObjective()->itemCount; t++) {
+		  sprintf(objectiveText[t], "Find %s. %s", 
+				  scourge->getCurrentMission()->getObjective()->item[t]->getName(),
+				  (scourge->getCurrentMission()->getObjective()->itemHandled[t] ? 
+				   "(completed)" : "(not yet found)"));
+		  if(scourge->getCurrentMission()->getObjective()->itemHandled[t]) {
+			missionColor[t].r = 0.2f;
+			missionColor[t].g = 0.7f;
+			missionColor[t].b = 0.2f;
+		  } else {
+			missionColor[t].r = 0.7f;
+			missionColor[t].g = 0.2f;
+			missionColor[t].b = 0.2f;
+		  }
+		}
+		for(int t = 0; t < scourge->getCurrentMission()->getObjective()->monsterCount; t++) {
+		  sprintf(objectiveText[t], "Vanquish %s. %s", 
+				  scourge->getCurrentMission()->getObjective()->monster[t]->getType(),
+				  (scourge->getCurrentMission()->getObjective()->monsterHandled[t] ? 
+				   "(completed)" : "(not yet done)"));
+		  if(scourge->getCurrentMission()->getObjective()->monsterHandled[t]) {
+			missionColor[t].r = 0.3f;
+			missionColor[t].g = 1.0f;
+			missionColor[t].b = 0.3f;
+		  } else {
+			missionColor[t].r = 1.0f;
+			missionColor[t].g = 0.3f;
+			missionColor[t].b = 0.3f;
+		  }
+		}
+		for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
+		  strcpy(objectiveText[t], "");
+		}
+	  } else {
+		strcpy(missionText, "");
+		for(int t = 0; t < MAX_INVENTORY_SIZE; t++) {
+		  strcpy(objectiveText[t], "");
+		}
+	  }
+	  missionDescriptionLabel->setText(missionText);
+	  objectiveList->setLines(objectiveCount, 
+							  (const char **)objectiveText,
+							  missionColor);
+	  break;
   }
 }
 

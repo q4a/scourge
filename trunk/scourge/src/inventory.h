@@ -42,7 +42,7 @@ private:
     int selected; // which player is selected?
     int selectedMode; // which mode is selected?
     enum mode {
-        INVENTORY = 0, CHARACTER, SPELL, LOG
+	  INVENTORY = 0, CHARACTER, SPELL, LOG, MISSION
     };    
 
 	// UI
@@ -76,6 +76,14 @@ private:
 	char hungerStr[80];
 	char skillModStr[80];
 	char armorStr[80];
+
+	// mission
+	char missionText[3000];
+	Label *missionDescriptionLabel;
+	Button *missionButton;
+	ScrollingList *objectiveList;
+	char **objectiveText;
+	Color *missionColor;
 
 public:
     Inventory(Scourge *scourge);
