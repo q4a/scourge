@@ -116,7 +116,9 @@ void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature, Spell *
   // FIXME: implement multiple projectiles... currently n is a number to how many can be in the air at once
   // this works for continuous fire (arrows) but not for magic-missile type action...
   // may have to implement parabolic (in 2d) flight for >1 missiles
-  int n = creature->getLevel() + 1;
+  int n = creature->getLevel();
+  if( n < 1 ) n = 1;
+  cerr << "launching " << n << " spell projectiles!" << endl;
 
   // FIXME: shape should be configurable per spell
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
