@@ -182,7 +182,13 @@ class Creature {
   
   // inventory
   // get the item at the given equip-index (inventory location)
+  float inventoryWeight;
+  float maxInventoryWeight;
+  inline float getInventoryWeight() { return inventoryWeight;  }
+  inline float getMaxInventoryWeight() { return maxInventoryWeight; }  
+  inline float computeMaxInventoryWeight () { return (float) skills[Constants::POWER] + 25.0f; }  
   Item *getEquippedInventory(int index);
+  inline void setMaxInventoryWeight(float w) { maxInventoryWeight = w; }
   
   inline Item *getInventory(int index) { return inventory[index]; }
   inline int getInventoryCount() { return inventory_count; }
@@ -194,7 +200,7 @@ class Creature {
   Item *removeInventory(int index);  
   // returns true if ate/drank item completely and false else
   bool eatDrink(int index);  
-  bool computeNewWeight(RpgItem * rpgItem);
+  bool computeNewItemWeight(RpgItem * rpgItem);
   // equip or doff if already equipped
   void equipInventory(int index);
   int doff(int index);
@@ -206,7 +212,7 @@ class Creature {
 
   // return the best equipped weapon that works on this distance, 
   // or NULL if none are available
-  Item *getBestWeapon(float dist);
+  Item *getBestWeapon(float dist);  
 
   inline char *getName() { return name; }
   inline Character *getCharacter() { return character; }  
@@ -218,8 +224,7 @@ class Creature {
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
   inline int getSkill(int index) { return skills[index]; }
-  inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }
-
+  inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
 
   inline void setName(char *s) { name = s; }
   inline void setCharacter(Character *c) { character = c; }  

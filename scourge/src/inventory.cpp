@@ -57,9 +57,10 @@ Inventory::Inventory(Scourge *scourge) {
 	cards = new CardContainer(mainWin);
 
 	// inventory page	
-	cards->createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);
+	cards->createLabel(115, 280, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
+	inventoryWeightLabel = cards->createLabel(190, 280, NULL, INVENTORY);
 	cards->createLabel(115, 45, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
-
+    
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	  Item *item = scourge->getParty(selected)->getEquippedInventory(i);
 	  invEquipLabel[i] = cards->createLabel(300, 60 + (i * 15), 
@@ -235,6 +236,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	break;
 	
   case INVENTORY:
+    sprintf(inventoryWeightStr, " (Total : %2.2fkg / %2.2fkg)", 
+            selectedP->getInventoryWeight(), selectedP->getMaxInventoryWeight());     
+    inventoryWeightLabel->setText(inventoryWeightStr);
 	for(int t = 0; t < selectedP->getInventoryCount(); t++) {
 	  Item *item = selectedP->getInventory(t);
 	  int location = selectedP->getEquippedIndex(t);
