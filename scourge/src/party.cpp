@@ -18,7 +18,11 @@
 #include "party.h"
 
 #define GUI_WIDTH 500
+#define MIN_GUI_WIDTH 100
 #define GUI_HEIGHT 165
+
+#define MAX_SIZE 0
+#define MIN_SIZE 1
 
 Party::Party(Scourge *scourge) {
   this->scourge = scourge;
@@ -61,6 +65,7 @@ void Party::reset() {
   party[3] = pc[3];
   
   player1Button->getLabel()->setText(party[0]->getName());
+  player1Button->setSelected(true);
   player2Button->getLabel()->setText(party[1]->getName());
   player3Button->getLabel()->setText(party[2]->getName());
   player4Button->getLabel()->setText(party[3]->getName());
@@ -398,166 +403,187 @@ Creature **Party::createHardCodedParty() {
 }
 
 void Party::createUI() {
-  char version[100];
   sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
+  sprintf(min_version, "S.C.O.U.R.G.E.");
   mainWin = new Window( scourge->getSDLHandler(),
 						scourge->getSDLHandler()->getScreen()->w - GUI_WIDTH, 
 						scourge->getSDLHandler()->getScreen()->h - GUI_HEIGHT, 
 						GUI_WIDTH, GUI_HEIGHT, 
-						strdup(version), 
+						version, 
 						scourge->getShapePalette()->getGuiTexture(), false );
-//  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
-//  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
-  inventoryButton = new Button( 0, 0, 120, 25, strdup("Party Info") );
-  mainWin->addWidget((Widget*)inventoryButton);
-  optionsButton = new Button( 0, 25,  60, 50, strdup("Options") );
-  mainWin->addWidget((Widget*)optionsButton);
-  quitButton = new Button( 60, 25,  120, 50, strdup("Quit") );
-  mainWin->addWidget((Widget*)quitButton);
-  roundButton = new Button( 0, 50,  120, 75, strdup("Real-Time") );
+  cards = new CardContainer(mainWin);  
+
+  inventoryButton = cards->createButton( 0, 0, 120, 25, strdup("Party Info"), MAX_SIZE );
+  optionsButton = cards->createButton( 0, 25,  60, 50, strdup("Options"), MAX_SIZE );
+  quitButton = cards->createButton( 60, 25,  120, 50, strdup("Quit"), MAX_SIZE );
+  roundButton = cards->createButton( 0, 50,  120, 75, strdup("Real-Time"), MAX_SIZE );
   roundButton->setToggle(true);
   roundButton->setSelected(true);
-  mainWin->addWidget((Widget*)roundButton);
   
   int lowerRowHeight = 20;
-  diamondButton = new Button( 0, 75,  20, 75 + lowerRowHeight, strdup("f1") );
+  diamondButton = cards->createButton( 0, 75,  20, 75 + lowerRowHeight, strdup("f1"), MAX_SIZE );
   diamondButton->setToggle(true);
-  mainWin->addWidget((Widget*)diamondButton);  
-  staggeredButton = new Button( 20, 75,  40, 75 + lowerRowHeight, strdup("f2") );
+  staggeredButton = cards->createButton( 20, 75,  40, 75 + lowerRowHeight, strdup("f2"), MAX_SIZE );
   staggeredButton->setToggle(true);
-  mainWin->addWidget((Widget*)staggeredButton);
-  squareButton = new Button( 40, 75,  60, 75 + lowerRowHeight, strdup("f3") );
+  squareButton = cards->createButton( 40, 75,  60, 75 + lowerRowHeight, strdup("f3"), MAX_SIZE );
   squareButton->setToggle(true);
-  mainWin->addWidget((Widget*)squareButton);
-  rowButton = new Button( 60, 75,  80, 75 + lowerRowHeight, strdup("f4") );
+  rowButton = cards->createButton( 60, 75,  80, 75 + lowerRowHeight, strdup("f4"), MAX_SIZE );
   rowButton->setToggle(true);
-  mainWin->addWidget((Widget*)rowButton);
-  scoutButton = new Button( 80, 75, 100, 75 + lowerRowHeight, strdup("f5") );
+  scoutButton = cards->createButton( 80, 75, 100, 75 + lowerRowHeight, strdup("f5"), MAX_SIZE );
   scoutButton->setToggle(true);
-  mainWin->addWidget((Widget*)scoutButton);
-  crossButton = new Button( 100, 75,  120, 75 + lowerRowHeight, strdup("f6") );
+  crossButton = cards->createButton( 100, 75,  120, 75 + lowerRowHeight, strdup("f6"), MAX_SIZE );
   crossButton->setToggle(true);
-  mainWin->addWidget((Widget*)crossButton);
 
-  groupButton = new Button( 0, 75 + lowerRowHeight,  20, 75 + (lowerRowHeight * 2), strdup("G") );
+  groupButton = cards->createButton( 0, 75 + lowerRowHeight,  20, 75 + (lowerRowHeight * 2), strdup("G"), MAX_SIZE );
   groupButton->setToggle(true);
   groupButton->setSelected(true);
-  mainWin->addWidget((Widget*)groupButton);
-  calendarButton = new Button( 20, 75 + lowerRowHeight, 120, 75 + (lowerRowHeight * 2), 
-							   strdup(calendar->getCurrentDate().getDateString()));      
+  calendarButton = cards->createButton( 20, 75 + lowerRowHeight, 120, 75 + (lowerRowHeight * 2), 
+							   strdup(calendar->getCurrentDate().getDateString()), MAX_SIZE);      
   //calendarButton->setLabelPosition(Button::CENTER);
-  mainWin->addWidget((Widget*)calendarButton);    
+
+  minButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("-"), MAX_SIZE );
+  maxButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), strdup("+"), MIN_SIZE );
 
 
   int playerButtonWidth = (GUI_WIDTH - 120) / 4;
   int playerButtonHeight = 20;  
-  player1Button = new Button( 120 + playerButtonWidth * 0, 0,  120 + playerButtonWidth * 1, playerButtonHeight );
+  player1Button = cards->createButton( 120 + playerButtonWidth * 0, 0,  
+									   120 + playerButtonWidth * 1, playerButtonHeight, NULL, MAX_SIZE );
   player1Button->setToggle(true);
-  mainWin->addWidget((Widget*)player1Button);
-  player2Button = new Button( 120 + playerButtonWidth * 1, 0,  120 + playerButtonWidth * 2, playerButtonHeight );
+  player2Button = cards->createButton( 120 + playerButtonWidth * 1, 0,  
+									   120 + playerButtonWidth * 2, playerButtonHeight, NULL, MAX_SIZE );
   player2Button->setToggle(true);
-  mainWin->addWidget((Widget*)player2Button);
-  player3Button = new Button( 120 + playerButtonWidth * 2, 0,  120 + playerButtonWidth * 3, playerButtonHeight );
+  player3Button = cards->createButton( 120 + playerButtonWidth * 2, 0, 
+									   120 + playerButtonWidth * 3, playerButtonHeight, NULL, MAX_SIZE );
   player3Button->setToggle(true);
-  mainWin->addWidget((Widget*)player3Button);
-  player4Button = new Button( 120 + playerButtonWidth * 3, 0,  120 + playerButtonWidth * 4, playerButtonHeight );
+  player4Button = cards->createButton( 120 + playerButtonWidth * 3, 0,  
+									   120 + playerButtonWidth * 4, playerButtonHeight, NULL, MAX_SIZE );
   player4Button->setToggle(true);
-  mainWin->addWidget((Widget*)player4Button);
 
   for(int i = 0; i < getPartySize(); i++) {
 	playerInfo[i] = new Canvas( 120 + playerButtonWidth * i, playerButtonHeight,  
 								120 + playerButtonWidth * (i + 1), GUI_HEIGHT - 25, 
 								this );
-	mainWin->addWidget(playerInfo[i]);
+	cards->addWidget( playerInfo[i], MAX_SIZE );
   }
+
+  minPartyInfo = new Canvas( 0, 0, MIN_GUI_WIDTH, 75 + (lowerRowHeight * 2), this );
+  cards->addWidget( minPartyInfo, MIN_SIZE );
+
+  cards->setActiveCard( MAX_SIZE );   
 }
 
 void Party::drawWidget(Widget *w) {
-  int selectedPlayerIndex = -1;
-  for(int i = 0; i < getPartySize(); i++) {
-	if(playerInfo[i] == w) {
-	  selectedPlayerIndex = i;
-	  break;
-	}
-  }
-  if(selectedPlayerIndex == -1) {
-	cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
-	return;
-  }
-  Creature *p = getParty(selectedPlayerIndex);
-
-  // hp
   char msg[80];
-  w->applyColor();
-  sprintf(msg, "%d/%d", p->getHp(), (p->getCharacter()->getStartingHp() * p->getLevel()));
-  scourge->getSDLHandler()->texPrint(3, 10, msg);
-  sprintf(msg, "hp:");
-  scourge->getSDLHandler()->texPrint(3, 20, msg);
-  drawBar(22, 18, ((GUI_WIDTH - 120) / 4) - 24,  
-		  (float)p->getHp(), (float)(p->getCharacter()->getStartingHp() * p->getLevel()));
-
-  // FIXME: instead of ac, show magic pts.?
-  // ac
-  w->applyColor();
-  sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
-  scourge->getSDLHandler()->texPrint(3, 35, msg);
-  sprintf(msg, "ac:");
-  scourge->getSDLHandler()->texPrint(3, 45, msg);
-  drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
-		  (float)p->getSkillModifiedArmor(), (float)p->getArmor());
-
-  // exp
-  w->applyColor();
-  sprintf(msg, "%d (%d)", p->getExp(), p->getLevel());
-  scourge->getSDLHandler()->texPrint(3, 60, msg);
-  sprintf(msg, "ex:");
-  scourge->getSDLHandler()->texPrint(3, 70, msg);
-  drawBar(22, 68, ((GUI_WIDTH - 120) / 4) - 24,  
-		  (float)p->getExp(), (float)p->getExpOfNextLevel(),
-		  0.45f, 0.65f, 1.0f, false);
-
-  // show stat mods
-  glEnable(GL_TEXTURE_2D);
-  int xp = 0;
-  int yp = 0;
-  float n = 12;
-  int row = 5;
-  int left = 5;
-  int bottom = w->getHeight() - ((int)(3 * n + 1) + 4);
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	GLuint icon = scourge->getShapePalette()->getStatModIcon(i);
-	if(p->getStateMod(i)) {
-	  glColor4f( 1.0f, 1.0f, 0.5f, 0.5f );
-	  if(icon) {
-		glBindTexture( GL_TEXTURE_2D, icon );
+  if(w == minPartyInfo) {
+	for(int i = 0; i < getPartySize(); i++) {	  
+	  // hp
+	  if(getParty(i) == getPlayer()) {
+		w->applyBorderColor();
+		glBegin( GL_QUADS );
+		glVertex3f( MIN_GUI_WIDTH, (i * 15), 0 );
+		glVertex3f( 0, (i * 15), 0 );
+		glVertex3f( 0, 15 + (i * 15), 0 );
+		glVertex3f( MIN_GUI_WIDTH, 15 + (i * 15), 0 );
+		glEnd();
 	  }
-	} else {
-	  w->applyBorderColor();
-	  icon = 0;
+	  //	  w->applyColor();
+	  glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	  sprintf(msg, "%c:", getParty(i)->getName()[0]);
+	  scourge->getSDLHandler()->texPrint(0, 10 + (i * 15), msg);
+	  drawBar(15, 7 + (i * 15), MIN_GUI_WIDTH - 20,  
+			  (float)getParty(i)->getHp(), 
+			  (float)(getParty(i)->getCharacter()->getStartingHp() * getParty(i)->getLevel()));
 	}
+  } else {
+	int selectedPlayerIndex = -1;
+	for(int i = 0; i < getPartySize(); i++) {
+	  if(playerInfo[i] == w) {
+		selectedPlayerIndex = i;
+		break;
+	  }
+	}
+	if(selectedPlayerIndex == -1) {
+	  cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
+	  return;
+	}
+	Creature *p = getParty(selectedPlayerIndex);
 	
-	glPushMatrix();
-	glTranslatef( left + xp * (n + 1), bottom + (yp * (n + 1)), 0 );
-	glBegin( GL_QUADS );
-	glNormal3f( 0, 0, 1 );
-	if(icon) glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	if(icon) glTexCoord2f( 0, 1 );
-	glVertex3f( 0, n, 0 );
-	if(icon) glTexCoord2f( 1, 1 );
-	glVertex3f( n, n, 0 );
-	if(icon) glTexCoord2f( 1, 0 );
-	glVertex3f( n, 0, 0 );
-	glEnd();
-	glPopMatrix();
-
-	xp++;
-	if(xp >= row) {
-	  xp = 0;
-	  yp++;
+	// hp
+	w->applyColor();
+	sprintf(msg, "%d/%d", p->getHp(), (p->getCharacter()->getStartingHp() * p->getLevel()));
+	scourge->getSDLHandler()->texPrint(3, 10, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "hp:");
+	scourge->getSDLHandler()->texPrint(3, 20, msg);
+	drawBar(22, 18, ((GUI_WIDTH - 120) / 4) - 24,  
+			(float)p->getHp(), (float)(p->getCharacter()->getStartingHp() * p->getLevel()));
+	
+	// FIXME: instead of ac, show magic pts.?
+	// ac
+	w->applyColor();
+	sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
+	scourge->getSDLHandler()->texPrint(3, 35, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "ac:");
+	scourge->getSDLHandler()->texPrint(3, 45, msg);
+	drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
+			(float)p->getSkillModifiedArmor(), (float)p->getArmor());
+	
+	// exp
+	w->applyColor();
+	sprintf(msg, "%d (%d)", p->getExp(), p->getLevel());
+	scourge->getSDLHandler()->texPrint(3, 60, msg);
+	glColor4f( 0.8f, 0.2f, 0.0f, 1.0f );
+	sprintf(msg, "ex:");
+	scourge->getSDLHandler()->texPrint(3, 70, msg);
+	drawBar(22, 68, ((GUI_WIDTH - 120) / 4) - 24,  
+			(float)p->getExp(), (float)p->getExpOfNextLevel(),
+			0.45f, 0.65f, 1.0f, false);
+	
+	// show stat mods
+	glEnable(GL_TEXTURE_2D);
+	int xp = 0;
+	int yp = 0;
+	float n = 12;
+	int row = 5;
+	int left = 5;
+	int bottom = w->getHeight() - ((int)(3 * n + 1) + 4);
+	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	  GLuint icon = scourge->getShapePalette()->getStatModIcon(i);
+	  if(p->getStateMod(i)) {
+		glColor4f( 1.0f, 1.0f, 0.5f, 0.5f );
+		if(icon) {
+		  glBindTexture( GL_TEXTURE_2D, icon );
+		}
+	  } else {
+		w->applyBorderColor();
+		icon = 0;
+	  }
+	  
+	  glPushMatrix();
+	  glTranslatef( left + xp * (n + 1), bottom + (yp * (n + 1)), 0 );
+	  glBegin( GL_QUADS );
+	  glNormal3f( 0, 0, 1 );
+	  if(icon) glTexCoord2f( 0, 0 );
+	  glVertex3f( 0, 0, 0 );
+	  if(icon) glTexCoord2f( 0, 1 );
+	  glVertex3f( 0, n, 0 );
+	  if(icon) glTexCoord2f( 1, 1 );
+	  glVertex3f( n, n, 0 );
+	  if(icon) glTexCoord2f( 1, 0 );
+	  glVertex3f( n, 0, 0 );
+	  glEnd();
+	  glPopMatrix();
+	  
+	  xp++;
+	  if(xp >= row) {
+		xp = 0;
+		yp++;
+	  }
 	}
+	glDisable(GL_TEXTURE_2D);
   }
-  glDisable(GL_TEXTURE_2D);
 }
 
 void Party::drawBar(int x, int y, float barLength, float value, float maxValue,
@@ -649,6 +675,19 @@ bool Party::handleEvent(Widget *widget, SDL_Event *event) {
 	togglePlayerOnly();
   } else if(widget == roundButton) {
 	toggleRound();
+  } else if(widget == minButton) {
+	cards->setActiveCard( MIN_SIZE );
+	mainWin->resize( MIN_GUI_WIDTH, GUI_HEIGHT );
+	oldX = mainWin->getX();
+	mainWin->move( (oldX < (scourge->getSDLHandler()->getScreen()->w / 2) - (GUI_WIDTH / 2) ? 
+					0 : 
+					scourge->getSDLHandler()->getScreen()->w - MIN_GUI_WIDTH), mainWin->getY() );
+	mainWin->setTitle( min_version );
+  } else if(widget == maxButton) {
+	cards->setActiveCard( MAX_SIZE );
+	mainWin->move( oldX, mainWin->getY() );
+	mainWin->resize( GUI_WIDTH, GUI_HEIGHT );
+	mainWin->setTitle( version );
   }
   return false;
 }

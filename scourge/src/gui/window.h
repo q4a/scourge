@@ -80,6 +80,8 @@ class Window : public Widget {
 		 GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW);
   ~Window();
 
+  inline void setTitle(char *s) { title = s; }
+
   inline bool isOpening() { return openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)); }
 
   inline void setBackgroundTileWidth(int n) { tileWidth = n; }

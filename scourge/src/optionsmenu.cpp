@@ -36,11 +36,11 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 						strdup("Options"), 
 						scourge->getShapePalette()->getGuiTexture() );
 	 
-    gameSettingsButton = mainWin->createButton(105, 0, 210, 30, "Game settings", true);
-	videoButton = mainWin->createButton (210, 0, 315, 30, "Video", true);
- 	audioButton = mainWin->createButton (315, 0, 420, 30, "Audio", true);
-    controlsButton = mainWin->createButton (420, 0, 525, 30, "Controls", true);           
-    saveButton = mainWin->createButton(205, 440, 310, 470, "Save to file", false);      
+    gameSettingsButton = mainWin->createButton(105, 0, 210, 30, strdup("Game settings"), true);
+	videoButton = mainWin->createButton (210, 0, 315, 30, strdup("Video"), true);
+ 	audioButton = mainWin->createButton (315, 0, 420, 30, strdup("Audio"), true);
+    controlsButton = mainWin->createButton (420, 0, 525, 30, strdup("Controls"), true);           
+    saveButton = mainWin->createButton(205, 440, 310, 470, strdup("Save to file"), false);      
                       
     cards = new CardContainer(mainWin);
     
@@ -48,7 +48,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     keyBindingsLabel = cards->createLabel(220, 50, strdup("Key bindings"), CONTROLS, Constants::RED_COLOR);
     controlBindingsList = new ScrollingList(30, 100, 450, 300);
     cards->addWidget(controlBindingsList, CONTROLS);        
-    changeControlButton = cards->createButton (65, 440, 170, 470, "Change", CONTROLS, false);
+    changeControlButton = cards->createButton (65, 440, 170, 470, strdup("Change"), CONTROLS, false);
     waitingLabel = cards->createLabel(35, 80, strdup(" "), CONTROLS, Constants::BLUE_COLOR);         
 
     // Game settings tab
