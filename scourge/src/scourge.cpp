@@ -179,7 +179,7 @@ void Scourge::startMission() {
 	implement "the board", and saving levels (need to save HQ)
   */
   /*
-	// Initialize the map with a random dunegeon	
+  // Initialize the map with a random dunegeon	
   dg = new DungeonGenerator(this, 2); // level 2 is a big enough map for HQ_LOCATION... this is hacky
   dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
   */

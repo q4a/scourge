@@ -30,8 +30,8 @@ class GLTorch : public GLShape  {
 private:
   GLuint flameTex;
 
-  static const int PARTICLE_COUNT = 30;
-  ParticleStruct *particle[PARTICLE_COUNT];
+  int PARTICLE_COUNT;
+  ParticleStruct *particle[200];
   
   GLuint torchback;
   int torch_dir;

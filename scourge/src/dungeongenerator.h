@@ -38,6 +38,8 @@ typedef struct _MapLocation {
   int roomCount;
   int roomDimension[20][4];
   char *map[MAP_WIDTH];
+  int shapeCount;            // how many shapes
+  int shapePosition[100][4]; // shapes: shape_index, x, y, z (x,y,z in map coordinates)
 } MapLocation;
 
 /**

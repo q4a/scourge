@@ -46,7 +46,7 @@ const int DungeonGenerator::levels[][9] = {
    x,y,w,h,
    roomCount,
    roomDimensions: x,y,w,h,
-   map: #-room, +-floor, nsew-doors (by facing), x-the board
+   map: #-room, +-floor, nsew-doors (by facing)
  */
 const MapLocation DungeonGenerator::location[] = {
   { 
@@ -62,7 +62,7 @@ const MapLocation DungeonGenerator::location[] = {
 	},
 	{ 
 	  "#####",
-	  "##x##",
+	  "#####",
 	  "#####",
 	  "##s##",
 	  "  +  ",
@@ -73,6 +73,29 @@ const MapLocation DungeonGenerator::location[] = {
 	  "n# #n",
 	  "#e+w#",
 	  "## ##" 
+	},
+	13, 
+	// something weird with the shapes and the lightmap: 
+	//try putting shapes on x=2*unitSide+6
+	{
+	  { Constants::BOARD_INDEX, 2*unitSide+5, unitSide, 0 },
+
+	  { Constants::BRAZIER_INDEX, 2*unitSide+5, unitSide+8, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+5, unitSide+8, 0 },
+	  { Constants::BRAZIER_INDEX, 2*unitSide+21, unitSide+8, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+21, unitSide+8, 0 },
+
+	  { Constants::BRAZIER_INDEX, 2*unitSide+5, unitSide+16, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+5, unitSide+16, 0 },
+	  { Constants::BRAZIER_INDEX, 2*unitSide+21, unitSide+16, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+21, unitSide+16, 0 },
+
+	  { Constants::BRAZIER_INDEX, 2*unitSide+5, unitSide+24, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+5, unitSide+24, 0 },
+	  { Constants::BRAZIER_INDEX, 2*unitSide+21, unitSide+24, 2 },
+	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+21, unitSide+24, 0 }
+
+
 	}
   }
 };
@@ -584,7 +607,7 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 		continue;
 	  }
 	  switch(c) {
-	  case '#': case 'x': case 'n': case 's': case 'e': case 'w': nodes[nx][ny] = ROOM; break;
+	  case '#': case 'n': case 's': case 'e': case 'w': nodes[nx][ny] = ROOM; break;
 	  case '+': nodes[nx][ny] = PASSAGE; break;
 	  default: nodes[nx][ny] = UNVISITED;
 	  }
@@ -607,7 +630,7 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 		continue;
 	  }
 	  switch(c) {
-	  case '#': case '+': case 'x':
+	  case '#': case '+':
 		break;
 	  case 'n': 
 		nodes[nx][ny] |= N_DOOR; 
@@ -671,9 +694,11 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 }
 
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
+  bool preGenerated = (locationIndex);
+  locationIndex--;
 
   // generate the maze
-  if(!locationIndex) {
+  if(!preGenerated) {
 	generateMaze();
 	//  printMaze();  
 	
@@ -686,11 +711,21 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 	makeRooms();
 	//  printMaze();
   } else {
-	constructMaze(locationIndex - 1);
+	constructMaze(locationIndex);
   }
 
   // draw the nodes on the map
   drawNodesOnMap(map, shapePal);
+
+  // add shapes
+  if(preGenerated) {
+	for(int i = 0; i < location[locationIndex].shapeCount; i++) {
+	  int mapx = location[locationIndex].shapePosition[i][1] + offset;
+	  int mapy = location[locationIndex].shapePosition[i][2] + offset;
+	  map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i][3], 
+					   shapePal->getShape(location[locationIndex].shapePosition[i][0]));	  
+	}
+  }
 }
 
 void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
