@@ -195,8 +195,6 @@ public:
   Item *newItem(RpgItem *rpgItem);
   Creature *newCreature(Character *character, char *name);
   Creature *newCreature(Monster *monster);
-  Projectile *addProjectile(Creature *creature, Creature *target, 
-							Item *item, int maxProjectiles);
 
   // drop an item from inventory
   void setMovingItem(Item *item, int x, int y, int z); 
@@ -263,8 +261,6 @@ public:
   void moveMonster(Creature *monster);
 
   void refreshContainerGui(Item *container);
-
-  void moveProjectiles();
 
 };
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          battle.h  -  description
+                          projectile.h  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,21 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef BATTLE_H
-#define BATTLE_H
+#ifndef PROJECTILE_H
+#define PROJECTILE_H
 
-#include <iostream>
-#include <string>
+#include <map>
 #include <vector>
-#include "constants.h"
-#include "scourge.h"
-#include "map.h"
 #include "creature.h"
 #include "item.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
 #include "effect.h"
-#include "projectile.h"
+
+class Creature;
+class Item;
 
 using namespace std;
 
@@ -37,46 +35,25 @@ using namespace std;
   *@author Gabor Torok
   */
 
-class Scourge;
-class Creature;
-class Item;
-
-class Battle {
+class Projectile {
  private:
-  Scourge *scourge;
   Creature *creature;
-  Item* item;
-  char message[200];
-  int creatureInitiative;
-  bool initiativeCheck;
-  int itemSpeed;
-  float dist;
-  bool empty;
+  Creature *target;
+  Item *item;
+  int sx, sy, ex, ey;
 
- public:
+  static map<Creature*, vector<Projectile*>*> projectiles;
   
-  /**
-	 This method sets up and creates battle turns (Battle objects) in order of initiative.
-   */
-  static void setupBattles(Scourge *scourge, Battle *battle[], int count, vector<Battle *> *turns);
+ public:
+  Projectile(Creature *creature, Creature *target, Item *item);
+  virtual ~Projectile();
 
-  /**
-	 A no-op turn of battle.
-  */
-  Battle();
+  // return true when out of moves
+  bool move();
 
-  /**
-	 A Battle is a round of battle between 'creature' and 'creature->getTargetCreature()'
-   */
-  Battle(Scourge *scourge, Creature *creature);
-  ~Battle();
+  static Projectile *addProjectile(Creature *creature, Creature *target, 
+								   Item *item, int maxProjectiles);
 
-  inline bool isEmpty() { return empty; }
-  void fightTurn();
-
- protected:
-  void hitWithItem();
-  void selectBestItem();
 };
 
 #endif

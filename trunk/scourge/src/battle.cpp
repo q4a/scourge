@@ -209,8 +209,10 @@ void Battle::fightTurn() {
   if(item && item->getRpgItem()->isRangedWeapon()) {
 	sprintf(message, "...%s shoots a projectile", creature->getName());
 	scourge->getMap()->addDescription(message);	
-	scourge->newProjectile(creature, creature->getTargetCreature(), item, 
-						   creature->getMaxProjectileCount(item));
+	if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
+								  creature->getMaxProjectileCount(item))) {
+	  // waiting for turn
+	}
   } else {
 	hitWithItem();
   }

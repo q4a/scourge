@@ -654,7 +654,7 @@ int Creature::getInitiative(Item *weapon) {
 int Creature::getMaxProjectileCount(Item *item) {
   int n = (int)((double)(skills[Constants::SPEED] + 
 						 skills[Constants::COORDINATION] + 
-						 skill[item->getRpgItem()->getSkill()]) / 30.0f);
+						 skills[item->getRpgItem()->getSkill()]) / 30.0f);
   if(n <= 0) n == 1;
   return n;
 }

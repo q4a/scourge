@@ -292,25 +292,6 @@ Creature *Scourge::newCreature(Monster *monster) {
   return creatures[creatureCount - 1];
 }
 
-// return null if the projectile cannot be launched
-Projectile *addProjectile(Creature *creature, Creature *target, 
-						  Item *item, int maxProjectiles) {
-  vector<Projectile*> *v;
-  if(projectiles.find(creature) == projectiles.end()) {
-	v = new vector<Projectile*>();
-  } else {
-	v = projectiles[creature];
-  }
-  if(v->size() > maxProjectiles) return null;
-  Projectile *p = new Projectile(creature, target, item);
-  v->push_back(p);
-  return p;
-}
-
-void moveProjectiles() {
-  
-}
-
 void Scourge::drawView() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
