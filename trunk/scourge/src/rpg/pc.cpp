@@ -16,6 +16,23 @@
  ***************************************************************************/
 #include "pc.h"
 
+char PlayerChar::inventory_location[][80] = {
+  "head",
+  "neck",
+  "back",
+  "chest",
+  "left hand",
+  "right hand",
+  "belt",
+  "legs",
+  "feet",
+  "ring1",
+  "ring2",
+  "ring3",
+  "ring4",
+  "ranged weapon"
+};
+
 PlayerChar::PlayerChar(char *name, Character *character) {
   this->name = name;
   this->character = character;
@@ -25,6 +42,9 @@ PlayerChar::PlayerChar(char *name, Character *character) {
   this->hp = 0;
   this->ac = 0;
   this->inventory_count = 0;
+  for(int i = 0; i < INVENTORY_COUNT; i++) {
+	equipped[i] = MAX_INVENTORY_SIZE;
+  }
 }
 
 PlayerChar::~PlayerChar() {
@@ -94,4 +114,40 @@ PlayerChar **PlayerChar::createHardCodedParty() {
   pc[3]->addInventory(RpgItem::items[RpgItem::THROWING_AXE]);
 
   return pc;
+}
+
+void PlayerChar::equipInventory(int index) {
+  // doff
+  for(int i = 0; i < INVENTORY_COUNT; i++) {
+	if(equipped[i] == index) {
+	  equipped[i] = MAX_INVENTORY_SIZE;
+	  return;
+	}
+  }
+  // don
+  // FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
+  RpgItem *item = getInventory(index);
+  for(int i = 0; i < INVENTORY_COUNT; i++) {
+	// if the slot is empty and the item can be worn here
+	if(item->getEquip() & ( 1 << i ) && 
+	   equipped[i] == MAX_INVENTORY_SIZE) {
+		equipped[i] = index;
+		return;
+	}
+  }
+}
+
+RpgItem *PlayerChar::getEquippedInventory(int index) {
+  int n = equipped[index];
+  if(n < MAX_INVENTORY_SIZE) {
+	return getInventory(n);
+  }
+  return NULL;
+}
+
+int PlayerChar::getEquippedIndex(int index) {
+  for(int i = 0; i < INVENTORY_COUNT; i++) {
+	if(equipped[i] == index) return i;
+  }
+  return -1;
 }

@@ -18,6 +18,7 @@
 #define RPG_ITEM_H
 
 #include "../constants.h"
+#include "pc.h"
 
 class RpgItem {
  private:
@@ -30,6 +31,7 @@ class RpgItem {
   int speed; // 0-20, 0-fast, 20-slow, 10-avg
   int shape_index;
   int twohanded;
+  int equip; // where can it be worn?
 
  public:
   enum itemNames {
@@ -70,7 +72,8 @@ class RpgItem {
   static RpgItem *items[];
   
   RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 
-		  int action, int speed, char *desc, char *shortDesc, int shape_index, int twohanded=NOT_TWO_HANDED);
+		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
+		  int twohanded=NOT_TWO_HANDED);
   ~RpgItem();
 
   inline int getIndex() { return index; }
@@ -81,6 +84,7 @@ class RpgItem {
   inline int getWeight() { return weight; }
   inline int getShapeIndex() { return shape_index; }
   inline char *getShortDesc() { return shortDesc; }  
+  inline int getEquip() { return equip; }
 };
 
 #endif
