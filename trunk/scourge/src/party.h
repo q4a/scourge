@@ -40,6 +40,7 @@ class Party {
   Creature *party[MAX_PARTY_SIZE];
   bool partyDead;
   bool player_only;
+  Uint32 playerMoved;
   int formation;
   Calendar * calendar;
   bool startRound;
@@ -57,6 +58,10 @@ class Party {
 
   Party(Session *session);
   virtual ~Party();
+
+  inline Uint32 getPlayerMoved() { return playerMoved; }
+  inline void setPlayerMoved() { playerMoved = SDL_GetTicks(); }
+  inline void clearPlayerMoved() { playerMoved = 0; }
 
   inline int getStorylineIndex() { return storylineIndex; }
 
