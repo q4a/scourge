@@ -212,6 +212,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   CardContainer *cards;
   Canvas *minPartyInfo;
   Canvas *playerInfo[MAX_PARTY_SIZE];
+  Canvas *quickSpell[MAX_PARTY_SIZE][3];
   Button *layoutButton1, *layoutButton2, *layoutButton3, *layoutButton4;
 
   // board gui
@@ -657,6 +658,8 @@ public:
   void createParty( Creature **pc, int *partySize );
 
  protected:
+
+   void drawPortrait( Widget *w, Creature *p );
 
   void resetBattles();
 

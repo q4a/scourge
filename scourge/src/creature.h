@@ -133,6 +133,8 @@ class Creature {
   Date lastEnchantDate;
   int character_model_info_index;
   int deityIndex;
+
+  Spell *quickSpell[3];
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -146,6 +148,9 @@ class Creature {
   Creature(Session *session, Character *character, char *name, int character_model_info_index);
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
+
+  inline void setQuickSpell( int index, Spell *spell ) { quickSpell[ index ] = spell; }
+  inline Spell *getQuickSpell( int index ) { return quickSpell[ index ]; }
 
   inline void setDeityIndex( int n ) { deityIndex = n; }
   inline int getDeityIndex() { return deityIndex; }

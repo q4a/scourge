@@ -754,7 +754,6 @@ void Scourge::drawDraggedItem() {
     later.pos = NULL;
 
     levelMap->doDrawShape( &later );
-    //map->doDrawShape(0, 0, 0, getMovingItem()->getShape(), 0);
     glPopMatrix();
   }
 
@@ -1261,6 +1260,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     levelMap->setYRot(0);
     levelMap->setZRot(0);
   } else if(button == SDL_BUTTON_LEFT) {
+
     getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 
     // drop target?
@@ -2670,9 +2670,15 @@ void Scourge::createPartyUI() {
 
   for(int i = 0; i < 4; i++) {
     playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 0,  
-                                offsetX + playerButtonWidth * (i + 1), playerInfoHeight, 
+                                offsetX + playerButtonWidth * (i + 1) - 25, playerInfoHeight, 
                                 this, this );
     cards->addWidget( playerInfo[i], MAX_SIZE );
+    for( int t = 0; t < 3; t++ ) {
+      quickSpell[i][t] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, t * 25,
+                                     offsetX + playerButtonWidth * (i + 1), ( t + 1 ) * 25 - 5, 
+                                     this );
+      cards->addWidget( quickSpell[i][t], MAX_SIZE );
+    }    
   }
 
   cards->setActiveCard( MAX_SIZE );   
@@ -2718,17 +2724,18 @@ void Scourge::createPartyUI() {
 }
 
 void Scourge::receive( Widget *widget ) {
-  if( !getMovingItem() ) return;
-  int selected = -1;
-  for(int i = 0; i < 4; i++) {
-    if( widget == playerInfo[i] ) {
-      selected = i;
-      break;
+  if( getMovingItem() ) {
+    int selected = -1;
+    for(int i = 0; i < getParty()->getPartySize(); i++) {
+      if( widget == playerInfo[i] ) {
+        selected = i;
+        break;
+      }
     }
+    if( selected == -1 ) return;
+    getParty()->setPlayer( selected );
+    inventory->receive( widget );
   }
-  if( selected == -1 ) return;
-  getParty()->setPlayer( selected );
-  inventory->receive( widget );
 }     
 
 void Scourge::drawWidget(Widget *w) {
@@ -2757,117 +2764,141 @@ void Scourge::drawWidget(Widget *w) {
     }
   } else {
     int selectedPlayerIndex = -1;
+    int selectedSpellIndex = -1;
     for(int i = 0; i < party->getPartySize(); i++) {
       if(playerInfo[i] == w) {
         selectedPlayerIndex = i;
         break;
+      } else {
+        for( int t = 0; t < 3; t++ ) {
+          if( quickSpell[i][t] == w ) {
+            selectedPlayerIndex = i;
+            selectedSpellIndex = t;
+          }
+        }
       }
     }
+
+
+
+
     if(selectedPlayerIndex == -1) {
       cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
       return;
     }
     Creature *p = party->getParty(selectedPlayerIndex);
 
-    glPushMatrix();
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 1, 1, 1, 1 );
-    if( p->getStateMod( Constants::dead ) ) {
-      glBindTexture( GL_TEXTURE_2D, getShapePalette()->getDeathPortraitTexture() );
+    if( selectedSpellIndex > -1 ) {
+      if( p->getQuickSpell( selectedSpellIndex ) ) {
+        glColor3f( 1, 1, 1 );
+        // FIXME: need spell pics... for now just print name
+        getSDLHandler()->texPrint( 0, 10, "%s", p->getQuickSpell( selectedSpellIndex )->getName() );
+      }
     } else {
-      glBindTexture( GL_TEXTURE_2D, getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
+      drawPortrait( w, p );
     }
-    int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
+  }
+}
+
+void Scourge::drawPortrait( Widget *w, Creature *p ) {
+  glPushMatrix();
+  glEnable( GL_TEXTURE_2D );
+  glColor4f( 1, 1, 1, 1 );
+  if( p->getStateMod( Constants::dead ) ) {
+    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getDeathPortraitTexture() );
+  } else {
+    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
+  }
+  int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
+  int offs = 15;
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex2i( -offs, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex2i( portraitSize - offs, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex2i( portraitSize - offs, portraitSize );
+  glTexCoord2f( 0, 1 );
+  glVertex2i( -offs, portraitSize );
+  glEnd();
+  glDisable( GL_TEXTURE_2D );
+
+  bool shade = false;
+  if( p->getStateMod( Constants::possessed ) ) {
+    glColor4f( 1.0f, 0, 0, 0.5f );
+    shade = true;
+  } else if( p->getStateMod( Constants::invisible ) ) {
+    glColor4f( 0, 0.75f, 1.0f, 0.5f );
+    shade = true;
+  } else if( p->getStateMod( Constants::poisoned ) ) {
+    glColor4f( 1, 0.75f, 0, 0.5f );
+    shade = true;
+  } else if( p->getStateMod( Constants::blinded ) ) {
+    glColor4f( 1, 1, 1, 0.5f );
+    shade = true;
+  } else if( p->getStateMod( Constants::cursed ) ) {
+    glColor4f( 0.75, 0, 0.75f, 0.5f );
+    shade = true;
+  }
+  if( shade ) {
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
-    glTexCoord2f( 1, 0 );
     glVertex2i( portraitSize, 0 );
-    glTexCoord2f( 1, 1 );
     glVertex2i( portraitSize, portraitSize );
-    glTexCoord2f( 0, 1 );
     glVertex2i( 0, portraitSize );
     glEnd();
-    glDisable( GL_TEXTURE_2D );
+    glDisable( GL_BLEND );
+  }
 
-    bool shade = false;
-    if( p->getStateMod( Constants::possessed ) ) {
-      glColor4f( 1.0f, 0, 0, 0.5f );
-      shade = true;
-    } else if( p->getStateMod( Constants::invisible ) ) {
-      glColor4f( 0, 0.75f, 1.0f, 0.5f );
-      shade = true;
-    } else if( p->getStateMod( Constants::poisoned ) ) {
-      glColor4f( 1, 0.75f, 0, 0.5f );
-      shade = true;
-    } else if( p->getStateMod( Constants::blinded ) ) {
-      glColor4f( 1, 1, 1, 0.5f );
-      shade = true;
-    } else if( p->getStateMod( Constants::cursed ) ) {
-      glColor4f( 0.75, 0, 0.75f, 0.5f );
-      shade = true;
-    }
-    if( shade ) {
-      glEnable( GL_BLEND );
-      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glPopMatrix();
+
+  Util::drawBar(5, 10, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 20,
+                (float)p->getHp(), (float)p->getMaxHp(), 
+                -1, -1, -1, true,
+                mainWin->getTheme() );
+
+  // show stat mods
+  glEnable(GL_TEXTURE_2D);
+  glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+  int xp = 0;
+  int yp = 1;
+  float n = 12;
+  int row = ( w->getWidth() / (int)n );
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    if(p->getStateMod(i)) {
+      GLuint icon = getShapePalette()->getStatModIcon(i);
+      if(icon) {
+        glBindTexture( GL_TEXTURE_2D, icon );
+      }
+
+      glPushMatrix();
+      glTranslatef( 5 + xp * (n + 1), 
+                    w->getHeight() - (yp * (n + 1)), 
+                    0 );
       glBegin( GL_QUADS );
-      glVertex2i( 0, 0 );
-      glVertex2i( portraitSize, 0 );
-      glVertex2i( portraitSize, portraitSize );
-      glVertex2i( 0, portraitSize );
+      glNormal3f( 0, 0, 1 );
+      if(icon) glTexCoord2f( 0, 0 );
+      glVertex3f( 0, 0, 0 );
+      if(icon) glTexCoord2f( 0, 1 );
+      glVertex3f( 0, n, 0 );
+      if(icon) glTexCoord2f( 1, 1 );
+      glVertex3f( n, n, 0 );
+      if(icon) glTexCoord2f( 1, 0 );
+      glVertex3f( n, 0, 0 );
       glEnd();
-      glDisable( GL_BLEND );
-    }
+      glPopMatrix();
 
-    glPopMatrix();
-
-    Util::drawBar(5, 10, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 10,
-                  (float)p->getHp(), (float)p->getMaxHp(), 
-                  -1, -1, -1, true,
-                  mainWin->getTheme() );
-
-    // show stat mods
-    glEnable(GL_TEXTURE_2D);
-    glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
-    int xp = 0;
-    int yp = 1;
-    float n = 12;
-    int row = ( portraitSize / (int)n );
-    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-      if(p->getStateMod(i)) {
-        GLuint icon = getShapePalette()->getStatModIcon(i);
-        if(icon) {
-          glBindTexture( GL_TEXTURE_2D, icon );
-        }
-
-        glPushMatrix();
-        glTranslatef( 5 + xp * (n + 1), 
-                      w->getHeight() - (yp * (n + 1)), 
-                      0 );
-        glBegin( GL_QUADS );
-        glNormal3f( 0, 0, 1 );
-        if(icon) glTexCoord2f( 0, 0 );
-        glVertex3f( 0, 0, 0 );
-        if(icon) glTexCoord2f( 0, 1 );
-        glVertex3f( 0, n, 0 );
-        if(icon) glTexCoord2f( 1, 1 );
-        glVertex3f( n, n, 0 );
-        if(icon) glTexCoord2f( 1, 0 );
-        glVertex3f( n, 0, 0 );
-        glEnd();
-        glPopMatrix();
-        
-        xp++;
-        if(xp >= row) {
-          xp = 0;
-          yp++;
-        }
+      xp++;
+      if(xp >= row) {
+        xp = 0;
+        yp++;
       }
     }
-    glDisable(GL_TEXTURE_2D);
-
   }
+  glDisable(GL_TEXTURE_2D);
 }
 
 void Scourge::resetPartyUI() {
@@ -2965,6 +2996,27 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == layoutButton4) {
     setUILayout(Constants::GUI_LAYOUT_INVENTORY);
 */    
+  } else {
+    for( int i = 0; i < getParty()->getPartySize(); i++ ) {
+      for( int t = 0; t < 3; t++ ) {
+        if( widget == quickSpell[i][t] ) {
+          Creature *creature = getParty()->getParty( i );
+          Spell *spell = creature->getQuickSpell( t );
+          if(spell->getMp() > creature->getMp()) {
+            showMessageDialog("Not enough Magic Points to cast this spell!");
+          } else {
+            creature->setAction(Constants::ACTION_CAST_SPELL, 
+                                NULL,
+                                spell);
+            if(!spell->isPartyTargetAllowed()) {
+              setTargetSelectionFor(creature);
+            } else {
+              creature->setTargetCreature(creature);
+            }
+          }
+        }
+      }
+    }
   }
   return false;
 }

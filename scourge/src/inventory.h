@@ -70,7 +70,7 @@ private:
 	char **pcInvText;
 
 	// spell ui
-	Button *castButton;
+	Button *castButton, *quickSpell1, *quickSpell2, *quickSpell3;
 	ScrollingList *schoolList;
 	ScrollingList *spellList;
 	Label *spellDescriptionLabel;
