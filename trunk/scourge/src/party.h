@@ -43,12 +43,43 @@ class Party {
   bool partyDead;
   bool player_only;
   int formation;
+  Calendar * calendar;
+  bool startRound;
+
+  Window *mainWin;
+  Button *inventoryButton;
+  Button *optionsButton;
+  Button *quitButton;
+  Button *roundButton;
+  Button *calendarButton;
+
+  Button *diamondButton;
+  Button *staggeredButton;
+  Button *squareButton;
+  Button *rowButton;
+  Button *scoutButton;
+  Button *crossButton;
+  Button *player1Button;
+  Button *player2Button;
+  Button *player3Button;
+  Button *player4Button;
+  Button *groupButton;
 
  public:
   Party(Scourge *scourge);
   virtual ~Party();
 
+  void reset();
+
+  inline Calendar *getCalendar() { return calendar; } 
+
   inline Creature *getPlayer() { return player; }
+
+  inline Window *getWindow() { return mainWin; }
+
+  void drawView();
+
+  bool handleEvent(Widget *widget, SDL_Event *event);
 
   void setPlayer(int n);
   inline void setPlayer(Creature *c) { player = c; }
@@ -70,6 +101,11 @@ class Party {
 
   void togglePlayerOnly();
 
+  void forceStopRound();
+  void toggleRound(bool test);
+  void toggleRound();
+  inline bool isRealTimeMode() { return startRound; }
+
   void startPartyOnMission();
 
   void followTargets();
@@ -83,7 +119,7 @@ class Party {
 
  protected:
   Creature **createHardCodedParty();
-
+  void createUI();
 };
 
 #endif

@@ -17,13 +17,38 @@
 
 #include "party.h"
 
+#define GUI_WIDTH 220
+#define GUI_HEIGHT 125
+
 Party::Party(Scourge *scourge) {
   this->scourge = scourge;
 
+  startRound = true;
+  mainWin = NULL;
+  calendar = Calendar::getInstance();
+
+  for(int i = 0; i < getPartySize(); i++) {
+	party[i] = NULL;
+  }
+  reset();
+
+  createUI();
+}
+
+Party::~Party() {
+  delete calendar;
+  for(int i = 0; i < getPartySize(); i++) {
+	if(party[i]) {
+	  delete party[i];
+	}
+  }
+}
+
+void Party::reset() {
   // Init the party; hard code for now
   // This will be replaced by a call to the character builder which either
   // loads or creates the party.
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < getPartySize(); i++) {
 	if(party[i]) {
 	  delete party[i];
 	}
@@ -37,15 +62,15 @@ Party::Party(Scourge *scourge) {
   Event *e;  
   Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < 4 ; i++){
-	e = new ThirstHungerEvent(scourge->getCalendar()->getCurrentDate(), d, party[i], scourge, Event::INFINITE_EXECUTIONS);
-	scourge->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
+	e = new ThirstHungerEvent(calendar->getCurrentDate(), d, party[i], scourge, Event::INFINITE_EXECUTIONS);
+	calendar->scheduleEvent((Event*)e);   // It's important to cast!!
   }
 }
 
-Party::~Party() {
-}
-
 void Party::startPartyOnMission() {
+  // Start calendar and add thirst & hunger event scheduling
+  calendar->reset();
+
   player_only = false;
   partyDead = false;
 
@@ -115,14 +140,55 @@ void Party::setPlayer(int n) {
   for(int i = 0; i < 4; i++) {
 	if(i != n) party[i]->setNextDontMove(player, count++);
   }
+
+  //  move = 0;
+  scourge->getMap()->refresh();
+  scourge->getMap()->center(getPlayer()->getX(), getPlayer()->getY());
+  player1Button->setSelected(false);
+  player2Button->setSelected(false);
+  player3Button->setSelected(false);
+  player4Button->setSelected(false);
+  switch(n) {
+  case 0 : player1Button->setSelected(true); break;
+  case 1 : player2Button->setSelected(true); break;
+  case 2 : player3Button->setSelected(true); break;
+  case 3 : player4Button->setSelected(true); break;
+  }
 }
 
+/**
+   Setting the formation ends single-step mode (back to group mode).
+ */
 void Party::setFormation(int formation) {
   this->formation = formation;
   for(int i = 0; i < 4; i++) {
 	party[i]->setFormation(formation);
   }
   player_only = false;
+
+  groupButton->setSelected(!isPlayerOnly());
+  startRound = true;
+  roundButton->setSelected(startRound);
+  diamondButton->setSelected(false);
+  staggeredButton->setSelected(false);
+  squareButton->setSelected(false);
+  rowButton->setSelected(false);
+  scoutButton->setSelected(false);
+  crossButton->setSelected(false);
+  switch(formation + Constants::DIAMOND_FORMATION) {
+  case Constants::DIAMOND_FORMATION:
+    diamondButton->setSelected(true); break;
+  case Constants::STAGGERED_FORMATION:
+    staggeredButton->setSelected(true); break;
+  case Constants::SQUARE_FORMATION:
+    squareButton->setSelected(true); break;
+  case Constants::ROW_FORMATION:
+    rowButton->setSelected(true); break;
+  case Constants::SCOUT_FORMATION:
+    scoutButton->setSelected(true); break;
+  case Constants::CROSS_FORMATION:
+    crossButton->setSelected(true); break;
+  }
 }
 
 void Party::togglePlayerOnly() {
@@ -138,6 +204,38 @@ void Party::togglePlayerOnly() {
 	scourge->getMap()->addDescription(Constants::getMessage(Constants::SINGLE_MODE), 0.5f, 0.5f, 1.0f);
   else
 	scourge->getMap()->addDescription(Constants::getMessage(Constants::GROUP_MODE), 0.5f, 0.5f, 1.0f);
+  groupButton->setSelected(!isPlayerOnly());
+}
+
+void Party::forceStopRound() {
+  startRound = false;
+  toggleRound();
+}
+
+void Party::toggleRound(bool test) {
+  if(startRound == test) toggleRound();
+}
+
+void Party::toggleRound() {
+  startRound = (startRound ? false : true);
+  if(startRound){
+	scourge->getMap()->addDescription(Constants::getMessage(Constants::REAL_TIME_MODE), 0.5f, 0.5f, 1.0f);
+  }
+  else{
+	scourge->getMap()->addDescription(Constants::getMessage(Constants::TURN_MODE), 0.5f, 0.5f, 1.0f);    
+  }
+   
+  // Freeze / unfreeze calendar
+  calendar->setPause(!startRound); 
+  
+  // Freeze / unfreeze animations
+  for(int i = 0; i < getPartySize(); i++){
+    getParty(i)->getShape()->setPauseAnimation(!startRound);
+  }  
+  for(int i = 0; i < scourge->getCreatureCount(); i++){
+    scourge->getCreature(i)->getShape()->setPauseAnimation(!startRound);
+  } 
+  roundButton->setSelected(startRound);
 }
 
 void Party::setTargetCreature(Creature *creature) { 
@@ -274,4 +372,110 @@ Creature **Party::createHardCodedParty() {
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));  
 
   return pc;
+}
+
+void Party::createUI() {
+  char version[100];
+  sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
+  mainWin = new Window( scourge->getSDLHandler(),
+						scourge->getSDLHandler()->getScreen()->w - GUI_WIDTH, 
+						scourge->getSDLHandler()->getScreen()->h - GUI_HEIGHT, 
+						GUI_WIDTH, GUI_HEIGHT, 
+						strdup(version), 
+						scourge->getShapePalette()->getGuiTexture(), false );
+//  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
+//  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
+  inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
+  mainWin->addWidget((Widget*)inventoryButton);
+  optionsButton = new Button( 0, 25,  100, 50, strdup("Options") );
+  mainWin->addWidget((Widget*)optionsButton);
+  quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
+  mainWin->addWidget((Widget*)quitButton);
+  roundButton = new Button( 0, 75,  100, 100, strdup("Real-Time") );
+  roundButton->setToggle(true);
+  roundButton->setSelected(true);
+  mainWin->addWidget((Widget*)roundButton);    
+  
+  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT - 25, strdup(calendar->getCurrentDate().getDateString()));      
+  //calendarButton->setLabelPosition(Button::CENTER);
+  mainWin->addWidget((Widget*)calendarButton);    
+ 
+
+  diamondButton = new Button( 100, 0,  120, 20 );
+  diamondButton->setToggle(true);
+  mainWin->addWidget((Widget*)diamondButton);  
+  staggeredButton = new Button( 120, 0,  140, 20 );
+  staggeredButton->setToggle(true);
+  mainWin->addWidget((Widget*)staggeredButton);
+  squareButton = new Button( 140, 0,  160, 20 );
+  squareButton->setToggle(true);
+  mainWin->addWidget((Widget*)squareButton);
+  rowButton = new Button( 160, 0,  180, 20 );
+  rowButton->setToggle(true);
+  mainWin->addWidget((Widget*)rowButton);
+  scoutButton = new Button( 180, 0,  200, 20 );
+  scoutButton->setToggle(true);
+  mainWin->addWidget((Widget*)scoutButton);
+  crossButton = new Button( 200, 0,  220, 20 );
+  crossButton->setToggle(true);
+  mainWin->addWidget((Widget*)crossButton);
+
+  player1Button = new Button( 100, 20,  124, 40, strdup("1") );
+  player1Button->setToggle(true);
+  mainWin->addWidget((Widget*)player1Button);
+  player2Button = new Button( 124, 20,  148, 40, strdup("2") );
+  player2Button->setToggle(true);
+  mainWin->addWidget((Widget*)player2Button);
+  player3Button = new Button( 148, 20,  172, 40, strdup("3") );
+  player3Button->setToggle(true);
+  mainWin->addWidget((Widget*)player3Button);
+  player4Button = new Button( 172, 20,  196, 40, strdup("4") );
+  player4Button->setToggle(true);
+  mainWin->addWidget((Widget*)player4Button);
+  groupButton = new Button( 196, 20,  220, 40, strdup("G") );
+  groupButton->setToggle(true);
+  groupButton->setSelected(true);
+  mainWin->addWidget((Widget*)groupButton);
+}
+
+void Party::drawView() {
+  // update current date variables and see if scheduled events have occured  
+  if(calendar->update(scourge->getUserConfiguration()->getGameSpeedLevel())){
+	calendarButton->getLabel()->setTextCopy(calendar->getCurrentDate().getDateString());        
+  }
+}
+
+bool Party::handleEvent(Widget *widget, SDL_Event *event) {
+  if(widget == inventoryButton) {
+	scourge->toggleInventoryWindow();
+  } else if(widget == optionsButton) {
+	scourge->toggleOptionsWindow();
+  } else if(widget == quitButton) {
+	scourge->showExitConfirmationDialog();
+  } else if(widget == diamondButton) {
+	setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == staggeredButton) {
+	setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == squareButton) {
+	setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == rowButton) {
+	setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == scoutButton) {
+	setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == crossButton) {
+	setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == player1Button) {
+	setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+  } else if(widget == player2Button) {
+	setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+  } else if(widget == player3Button) {
+	setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+  } else if(widget == player4Button) {
+	setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+  } else if(widget == groupButton) {
+	togglePlayerOnly();
+  } else if(widget == roundButton) {
+	toggleRound();
+  }
+  return false;
 }

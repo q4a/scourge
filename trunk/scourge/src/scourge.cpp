@@ -18,12 +18,7 @@
 #include "scourge.h"
 #include "events/thirsthungerevent.h"
 
-#define GUI_WIDTH 220
-#define GUI_HEIGHT 125
-
-
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
-
 
 // good for debugging blending
 int Scourge::blendA = 2;
@@ -40,7 +35,6 @@ void Scourge::setBlendFunc() {
 
 Scourge::Scourge(int argc, char *argv[]){
   lastTick = 0;
-  mainWin = NULL;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
@@ -64,7 +58,6 @@ Scourge::Scourge(int argc, char *argv[]){
   sdlHandler->setVideoMode(userConfiguration); 
   
   shapePal = sdlHandler->getShapePalette();  
-  calendar = Calendar::getInstance();  
 
   // initialize the items
   Item::initItems(shapePal);
@@ -76,15 +69,14 @@ Scourge::Scourge(int argc, char *argv[]){
   board = new Board(this);
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
+  party = new Party(this);  
   createUI();
 
   //  move = 0;
-  startRound = true;
   battleCount = 0;  
   inventory = NULL;
   containerGuiCount = 0;
   changingStory = false;  
-  party = NULL;
 
   // show the main menu
   mainMenu = new MainMenu(this);
@@ -99,11 +91,7 @@ Scourge::Scourge(int argc, char *argv[]){
     // evaluate results and start a missions
     if(mainMenu->getValue() == NEW_GAME) {
 
-	  if(party) {
-		delete(party);
-		party = NULL;
-	  }
-	  party = new Party(this);
+	  party->reset();
 
 	  // inventory needs the party
 	  if(!inventory) {
@@ -127,12 +115,11 @@ Scourge::~Scourge(){
   delete mainMenu;
   delete optionsMenu;
   delete userConfiguration;
-  delete calendar;
-	for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
-		free(missionText[i]);
-	}
-	free(missionText);
-	delete board;
+  for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
+	free(missionText[i]);
+  }
+  free(missionText);
+  delete board;
 }
 
 void Scourge::startMission() {
@@ -140,7 +127,7 @@ void Scourge::startMission() {
   while(true) {
 	
 	// add gui
-	mainWin->setVisible(true);
+	party->getWindow()->setVisible(true);
 	messageWin->setVisible(true);
 	
 	// create the map
@@ -153,15 +140,11 @@ void Scourge::startMission() {
 	  " itemCount=" << itemCount << endl;
 	*/
 	
-	// Start calendar and add thirst & hunger event scheduling
-	calendar->reset();
-
 	// ready the party
 	party->startPartyOnMission();
 	
 	// position the players
 	//	move = 0;
-	//startRound = true;
 	battleCount = 0;
 	containerGuiCount = 0;
 	lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
@@ -207,8 +190,7 @@ void Scourge::startMission() {
 	sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 	
 	// hack to unfreeze animations, etc.
-	startRound = false;
-	toggleRound();
+	party->forceStopRound();
 
 	// show an info dialog
 	if(nextMission == -1) {
@@ -227,7 +209,7 @@ void Scourge::startMission() {
 	
 	
 	// remove gui
-	mainWin->setVisible(false);
+	party->getWindow()->setVisible(false);
 	messageWin->setVisible(false);
 	closeAllContainerGuis();
 	if(inventory->isVisible()) inventory->hide();
@@ -316,11 +298,8 @@ void Scourge::drawView() {
   // make a move (player, monsters, etc.)
   playRound();
   
-  // update current date variables and see if scheduled events have occured  
-  if(calendar->update(userConfiguration->getGameSpeedLevel())){
-    calendarButton->getLabel()->setTextCopy(calendar->getCurrentDate().getDateString());        
-  }
-  
+  party->drawView();
+    
   map->draw();
 
   glDisable( GL_DEPTH_TEST );
@@ -403,11 +382,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  processGameMouseClick(event->button.x, event->button.y, event->button.button);
 	  if(teleporting && !exitConfirmationDialog->isVisible()) {
 		exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
-		if(startRound) toggleRound();
+		party->toggleRound(true);
 		exitConfirmationDialog->setVisible(true);
 	  } else if(changingStory && !exitConfirmationDialog->isVisible()) {
 		exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
-		if(startRound) toggleRound();
+		party->toggleRound(true);
 		exitConfirmationDialog->setVisible(true);
 	  }
     }
@@ -419,7 +398,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  if(exitConfirmationDialog->isVisible()) {
 		exitConfirmationDialog->setVisible(false);
 	  } else {
-		if(startRound) toggleRound();
+		party->toggleRound(true);
 		exitConfirmationDialog->setVisible(true);
 	  }	  
 	  return false;
@@ -452,19 +431,19 @@ bool Scourge::handleEvent(SDL_Event *event) {
         removeMove(Constants::MOVE_LEFT);
     }            
     else if(ea == SET_PLAYER_0){
-	  setPlayer(0);
+	  party->setPlayer(0);
     }
     else if(ea == SET_PLAYER_1){
-	  setPlayer(1);
+	  party->setPlayer(1);
     }
     else if(ea == SET_PLAYER_2){
-	  setPlayer(2);
+	  party->setPlayer(2);
     }
     else if(ea == SET_PLAYER_3){
-	  setPlayer(3);
+	  party->setPlayer(3);
     }
     else if(ea == SET_PLAYER_ONLY){
-	  togglePlayerOnly();
+	  party->togglePlayerOnly();
     }    
 	//    else if(ea == BLEND_A){
     else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_6){
@@ -477,19 +456,18 @@ bool Scourge::handleEvent(SDL_Event *event) {
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }
     else if(ea == SHOW_INVENTORY){
-	  //	  if(startRound) toggleRound();
 	  inventory->show(); 	  
     }
     else if(ea == SHOW_OPTIONS_MENU){
-	  if(startRound) toggleRound();
+	  party->toggleRound(true);
 	  optionsMenu->show();
     }
     else if(ea == USE_ITEM_STOP){
         useItem();        
     }
     else if(ea == SET_NEXT_FORMATION_STOP){
-        if(party->getFormation() < Creature::FORMATION_COUNT - 1) setFormation(party->getFormation() + 1);
-	else setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+        if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
+	else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
     }   
     else if(ea == SET_X_ROT_PLUS){        
         map->setXRot(5.0f);
@@ -578,7 +556,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         addGameSpeed(1);        
     }    
 	else if(ea == START_ROUND) {
-	  toggleRound();
+	  party->toggleRound();
 	}
     break;
   default: break;
@@ -641,7 +619,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 			  // select player
 			  for(int i = 0; i < party->getPartySize(); i++) {
 				if(party->getParty(i) == loc->creature) {
-				  setPlayer(i);
+				  party->setPlayer(i);
 				  return;
 				}
 			  }
@@ -1072,10 +1050,28 @@ bool Scourge::useDoor(Location *pos) {
     return false;
 }
 
+void Scourge::toggleInventoryWindow() {
+  if(inventory->isVisible()) inventory->hide();
+  else inventory->show();
+}
+
+void Scourge::toggleOptionsWindow() {
+  if(optionsMenu->isVisible()) optionsMenu->hide();
+  else {
+	party->toggleRound(true);
+	optionsMenu->show();
+  }
+}
+
+void Scourge::showExitConfirmationDialog() {
+  party->toggleRound(true);
+  exitConfirmationDialog->setVisible(true);
+}
+
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(widget == Window::message_button && info_dialog_showing) {
-	if(!startRound) toggleRound();
+	party->toggleRound(false);
 	info_dialog_showing = false;
   }
 
@@ -1098,20 +1094,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	return false;
   }
 
-
-  if(widget == inventoryButton) {
-	if(inventory->isVisible()) inventory->hide();
-	else {
-	  //	  if(startRound) toggleRound();
-	  inventory->show();
-	}
-  } else if(widget == optionsButton) {
-	if(optionsMenu->isVisible()) optionsMenu->hide();
-	else {
-	  if(startRound) toggleRound();
-	  optionsMenu->show();
-	}
-  } else if(widget == yesExitConfirm) {
+  // FIXME: this is hacky...
+  if(party->handleEvent(widget, event)) return true;
+  
+  if(widget == yesExitConfirm) {
 	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
 	exitConfirmationDialog->setVisible(false);
 	endMission();
@@ -1123,116 +1109,27 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
 	exitConfirmationDialog->setVisible(false);
 	return false;
-  } else if(widget == quitButton) {
-	if(startRound) toggleRound();
-	exitConfirmationDialog->setVisible(true);
-  } else if(widget == diamondButton) {
-		setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == staggeredButton) {
-		setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == squareButton) {
-		setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == rowButton) {
-		setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == scoutButton) {
-		setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == crossButton) {
-		setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == player1Button) {
-		setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
-  } else if(widget == player2Button) {
-		setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
-  } else if(widget == player3Button) {
-		setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
-  } else if(widget == player4Button) {
-		setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
-  } else if(widget == groupButton) {
-		togglePlayerOnly();
-  } else if(widget == roundButton) {
-		toggleRound();
   } else if(widget == boardWin->closeButton) {
-		boardWin->setVisible(false);
-	} else if(widget == missionList) {
-		int selected = missionList->getSelectedLine();
-		if(selected != -1 && selected < board->getMissionCount()) {
-			missionDescriptionLabel->setText((char*)(board->getMission(selected)->story));
-		}
-	} else if(widget == playMission) {
-		int selected = missionList->getSelectedLine();
-		if(selected != -1 && selected < board->getMissionCount()) {
-			nextMission = selected;
-			oldStory = currentStory = 0;
-			endMission();
-			return true;
-		}
+	boardWin->setVisible(false);
+  } else if(widget == missionList) {
+	int selected = missionList->getSelectedLine();
+	if(selected != -1 && selected < board->getMissionCount()) {
+	  missionDescriptionLabel->setText((char*)(board->getMission(selected)->story));
 	}
+  } else if(widget == playMission) {
+	int selected = missionList->getSelectedLine();
+	if(selected != -1 && selected < board->getMissionCount()) {
+	  nextMission = selected;
+	  oldStory = currentStory = 0;
+	  endMission();
+	  return true;
+	}
+  }
   return false;
 }
 
 // create the ui
 void Scourge::createUI() {
-  char version[100];
-  sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
-  mainWin = new Window( getSDLHandler(),
-						sdlHandler->getScreen()->w - GUI_WIDTH, 
-						sdlHandler->getScreen()->h - GUI_HEIGHT, 
-						GUI_WIDTH, GUI_HEIGHT, 
-						strdup(version), 
-						getShapePalette()->getGuiTexture(), false );
-//  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
-//  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
-  inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
-  mainWin->addWidget((Widget*)inventoryButton);
-  optionsButton = new Button( 0, 25,  100, 50, strdup("Options") );
-  mainWin->addWidget((Widget*)optionsButton);
-  quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
-  mainWin->addWidget((Widget*)quitButton);
-  roundButton = new Button( 0, 75,  100, 100, strdup("Real-Time") );
-  roundButton->setToggle(true);
-  roundButton->setSelected(true);
-  mainWin->addWidget((Widget*)roundButton);    
-  
-  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT - 25, strdup(calendar->getCurrentDate().getDateString()));      
-  //calendarButton->setLabelPosition(Button::CENTER);
-  mainWin->addWidget((Widget*)calendarButton);    
- 
-
-  diamondButton = new Button( 100, 0,  120, 20 );
-  diamondButton->setToggle(true);
-  mainWin->addWidget((Widget*)diamondButton);  
-  staggeredButton = new Button( 120, 0,  140, 20 );
-  staggeredButton->setToggle(true);
-  mainWin->addWidget((Widget*)staggeredButton);
-  squareButton = new Button( 140, 0,  160, 20 );
-  squareButton->setToggle(true);
-  mainWin->addWidget((Widget*)squareButton);
-  rowButton = new Button( 160, 0,  180, 20 );
-  rowButton->setToggle(true);
-  mainWin->addWidget((Widget*)rowButton);
-  scoutButton = new Button( 180, 0,  200, 20 );
-  scoutButton->setToggle(true);
-  mainWin->addWidget((Widget*)scoutButton);
-  crossButton = new Button( 200, 0,  220, 20 );
-  crossButton->setToggle(true);
-  mainWin->addWidget((Widget*)crossButton);
-
-  player1Button = new Button( 100, 20,  124, 40, strdup("1") );
-  player1Button->setToggle(true);
-  mainWin->addWidget((Widget*)player1Button);  
-  player2Button = new Button( 124, 20,  148, 40, strdup("2") );
-  player2Button->setToggle(true);
-  mainWin->addWidget((Widget*)player2Button);
-  player3Button = new Button( 148, 20,  172, 40, strdup("3") );
-  player3Button->setToggle(true);
-  mainWin->addWidget((Widget*)player3Button);
-  player4Button = new Button( 172, 20,  196, 40, strdup("4") );
-  player4Button->setToggle(true);
-  mainWin->addWidget((Widget*)player4Button);
-  groupButton = new Button( 196, 20,  220, 40, strdup("G") );
-  groupButton->setToggle(true);
-  groupButton->setSelected(true);
-  mainWin->addWidget((Widget*)groupButton);
-
   messageWin = new Window( getSDLHandler(),
 						   0, 0, 400, 120, 
 						   strdup("Messages"), 
@@ -1298,7 +1195,7 @@ void Scourge::playRound() {
   // -in group mode
   // -(or) the round was manually started
   GLint t = SDL_GetTicks();
-  if(startRound && 
+  if(party->isRealTimeMode() && 
 	 (lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks())) {
 	lastTick = t;
 		
@@ -1422,53 +1319,6 @@ void Scourge::handleKeyboardMovement() {
   */
 }
 
-void Scourge::setPlayer(int n) {
-  party->setPlayer(n);
-  //  move = 0;
-  map->refresh();
-  map->center(party->getPlayer()->getX(), party->getPlayer()->getY());
-  player1Button->setSelected(false);
-  player2Button->setSelected(false);
-  player3Button->setSelected(false);
-  player4Button->setSelected(false);
-  switch(n) {
-  case 0 : player1Button->setSelected(true); break;
-  case 1 : player2Button->setSelected(true); break;
-  case 2 : player3Button->setSelected(true); break;
-  case 3 : player4Button->setSelected(true); break;
-  }
-}
-
-/**
-   Setting the formation ends single-step mode (back to group mode).
- */
-void Scourge::setFormation(int formation) {
-  party->setFormation(formation);
-  groupButton->setSelected(!party->isPlayerOnly());
-  startRound = true;
-  roundButton->setSelected(startRound);
-  diamondButton->setSelected(false);
-  staggeredButton->setSelected(false);
-  squareButton->setSelected(false);
-  rowButton->setSelected(false);
-  scoutButton->setSelected(false);
-  crossButton->setSelected(false);
-  switch(formation + Constants::DIAMOND_FORMATION) {
-  case Constants::DIAMOND_FORMATION:
-    diamondButton->setSelected(true); break;
-  case Constants::STAGGERED_FORMATION:
-    staggeredButton->setSelected(true); break;
-  case Constants::SQUARE_FORMATION:
-    squareButton->setSelected(true); break;
-  case Constants::ROW_FORMATION:
-    rowButton->setSelected(true); break;
-  case Constants::SCOUT_FORMATION:
-    scoutButton->setSelected(true); break;
-  case Constants::CROSS_FORMATION:
-    crossButton->setSelected(true); break;
-  }
-}
-
 void Scourge::addGameSpeed(int speedFactor){
   char msg[80];
   userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
@@ -1476,38 +1326,6 @@ void Scourge::addGameSpeed(int speedFactor){
   map->addDescription(msg);
 }
 
-/**
-   When pausing the round, we enter single-step mode.
- */
-void Scourge::toggleRound() {
-  int i ;
-  startRound = (startRound ? false : true);
-  if(startRound){
-	map->addDescription(Constants::getMessage(Constants::REAL_TIME_MODE), 0.5f, 0.5f, 1.0f);
-  }
-  else{
-	map->addDescription(Constants::getMessage(Constants::TURN_MODE), 0.5f, 0.5f, 1.0f);    
-  }
-  
-  // Freeze / unfreeze animations
-  for(i = 0; i < party->getPartySize(); i++){
-    party->getParty(i)->getShape()->setPauseAnimation(!startRound);
-  }  
-  for(i = 0; i < creatureCount; i++){
-    creatures[i]->getShape()->setPauseAnimation(!startRound);
-  } 
-  
-  // Freeze / unfreeze calendar
-  calendar->setPause(!startRound); 
-  
-  roundButton->setSelected(startRound);       
-}
-
-void Scourge::togglePlayerOnly() {
-  party->togglePlayerOnly();
-  groupButton->setSelected(!party->isPlayerOnly());
-}
-  
 void Scourge::moveMonster(Creature *monster) {  
   // set running animation (currently move or attack)
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
@@ -1586,7 +1404,6 @@ void Scourge::openContainerGui(Item *container) {
   }
   // open new window
   if(containerGuiCount < MAX_CONTAINER_GUI) {
-	//	if(startRound) toggleRound();
 	containerGui[containerGuiCount++] = new ContainerGui(this, container, 
 														 10 + containerGuiCount * 15, 
 														 10 + containerGuiCount * 15);
@@ -1623,7 +1440,7 @@ void Scourge::refreshContainerGui(Item *container) {
 }
 
 void Scourge::showMessageDialog(char *message) {
-  if(startRound) toggleRound();
+  party->toggleRound(true);
   Window::showMessageDialog(getSDLHandler(), 
 							getSDLHandler()->getScreen()->w / 2 - 150,
 							getSDLHandler()->getScreen()->h / 2 - 55,
