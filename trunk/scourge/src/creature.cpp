@@ -38,8 +38,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->shapeIndex = character->getShapeIndex();
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
-  //this->motion = Constants::MOTION_MOVE_TOWARDS;  
-  this->motion = Constants::MOTION_LOITER;  
+  this->motion = Constants::MOTION_MOVE_TOWARDS;  
   this->armor=0;
   commonInit();  
 }
@@ -86,7 +85,6 @@ void Creature::commonInit() {
   this->effect = new Effect(scourge->getShapePalette()->getTexture(9));
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
-  this->arrived = true;
 }
 
 Creature::~Creature(){
@@ -142,23 +140,6 @@ bool Creature::move(Uint16 dir, Map *map) {
   }
 }
 
-void Creature::setMotion(int motion){
-{ 
-    // We change the current animation ONLY if necessary     
-    if(this->motion != motion){
-        if(this->motion == Constants::MOTION_LOITER){
-            shape->setCurrentAnimation(MD2_RUN);                    
-        }
-        else{
-            if(motion == Constants::MOTION_LOITER){
-                shape->setCurrentAnimation(MD2_STAND);
-            }            
-        }    
-        this->motion = motion;            
-    }                   
-  }
-}
-
 bool Creature::follow(Map *map) {
   // find out where the creature should be relative to the formation
   Sint16 px, py, pz;
@@ -178,8 +159,6 @@ void Creature::setSelXY(int x, int y, bool force) {
 }
 
 void Creature::stopMoving() {
-  shape->setCurrentAnimation(MD2_STAND);
-  setMotion(Constants::MOTION_LOITER);
   bestPathPos = (int)bestPath.size();
 }
 
@@ -192,29 +171,22 @@ bool Creature::moveToLocator(Map *map, bool single_step) {
     } else {
       moved = gotoPosition(map, selX, selY, 0, "selXY");
     }
-    if(!arrived){	
-        if((int)bestPath.size() <=  bestPathPos && selX > -1) {    
-            // if we've no more steps, but we're not there yet, recalc steps
-            if(!(selX == getX() && selY == getY()) &&
-                map->shapeFits(getShape(), selX, selY, -1)) {
-    		
-        		// don't keep trying forever
-        		moveRetrycount++;
-        		if(moveRetrycount < MAX_MOVE_RETRY) {
-                    tx = ty = -1;
-        		} else {
-        		  //scourge->setPartyMotion(Constants::MOTION_LOITER);
-        		  //cerr << getName() << " would move but ran out of retries" << endl;
-        		}
-            }
-            else if(this == scourge->getPlayer()) {
-        		scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
-            }
-        }    
-    }
-    else{
-        setMotion(Constants::MOTION_LOITER);    
-    }
+	if((int)bestPath.size() <=  bestPathPos && selX > -1) {    
+	  // if we've no more steps, but we're not there yet, recalc steps
+	  if(!(selX == getX() && selY == getY()) &&
+		 map->shapeFits(getShape(), selX, selY, -1)) {
+		
+		// don't keep trying forever
+		moveRetrycount++;
+		if(moveRetrycount < MAX_MOVE_RETRY) {
+		  tx = ty = -1;
+		} else {
+		  //cerr << getName() << " would move but ran out of retries" << endl;
+		}
+	  } else if(this == scourge->getPlayer()) {
+		scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+	  }
+	}        
   }
   return moved;
 }
@@ -252,7 +224,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       bestPathPos++;
       moveTo(location.x, location.y, getZ());
       ((MD2Shape*)shape)->setDir(dir);
-      //scourge->setPartyMotion(Constants::MOTION_LOITER);
       return true;
     }
     else {    
@@ -261,27 +232,22 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       // if it's another party member blocking us, make them move out of the way
       // does this work? Need to test...
       if(!monster && this == scourge->getPlayer()) {
-	       Creature *creature = position->creature;
-	       if(creature && creature->character && scourge->getPlayer() != creature) {
-
-	           creature->moveRetrycount++;
-	           if(creature->moveRetrycount < MAX_MOVE_RETRY) {
-        	       Sint16 nz;
-        	       creature->findCorner(&creature->cornerX, &creature->cornerY, &nz);
-        	       //	    creature->gotoPosition(map, nx, ny, nz, "corner");
-        	       creature->setMotion(Constants::MOTION_MOVE_AWAY);
-        	   }
-               else{
-    	           creature->setMotion(Constants::MOTION_LOITER);
-    	           //cerr << creature->getName() << " would move but ran out of retries" << endl;
-               }     
-    	   }
+		Creature *creature = position->creature;
+		if(creature && creature->character && scourge->getPlayer() != creature) {
+		  
+		  creature->moveRetrycount++;
+		  if(creature->moveRetrycount < MAX_MOVE_RETRY) {
+			Sint16 nz;
+			creature->findCorner(&creature->cornerX, &creature->cornerY, &nz);
+			//	    creature->gotoPosition(map, nx, ny, nz, "corner");
+			creature->setMotion(Constants::MOTION_MOVE_AWAY);
+		  } else{
+			//cerr << creature->getName() << " would move but ran out of retries" << endl;
+		  }     
+		}
       }      
       return false;
     }
-  }
-  else{     
-    arrived = true;
   }
       
   return false;

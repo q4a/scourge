@@ -126,8 +126,7 @@ class Creature {
   inline void setTargetCreature(Creature *c) { targetCreature = c; }
   inline Creature *getTargetCreature() { return targetCreature; }
   
-  void setMotion(int motion);
-  
+  inline void setMotion(int motion) { this->motion = motion; }  
   inline int getMotion() { return this->motion; }
   
   inline void setFacingDirection(int direction) { this->facingDirection = direction;}
