@@ -283,8 +283,10 @@ void Scourge::endMission() {
 }
 
 // items created for the mission
-Item *Scourge::newItem(RpgItem *rpgItem) {
-  items[itemCount++] = new Item(rpgItem);
+Item *Scourge::newItem(RpgItem *rpgItem, Spell *spell) {
+  items[itemCount] = new Item(rpgItem);
+  if(spell) items[itemCount]->setSpell(spell);
+  itemCount++;
   return items[itemCount - 1];
 }
 

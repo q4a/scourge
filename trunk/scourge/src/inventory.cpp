@@ -121,11 +121,13 @@ Inventory::Inventory(Scourge *scourge) {
 	yy+=30;
 	identifyButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
 	yy+=30;
-	openButton     = cards->createButton( 0, yy, 105, yy + 30, 
-										  Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), 
-										  INVENTORY );	
+	openButton     = cards->createButton( 0, yy, 105, yy + 30, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY );	
 	yy+=30;
 	eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
+  yy+=30;
+	castScrollButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Cast Scroll"), INVENTORY );
+  yy+=30;
+	transcribeButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Transcribe"), INVENTORY );
 
 	// character info
 	nameAndClassLabel = cards->createLabel(115, 45, NULL, CHARACTER, Constants::RED_COLOR);
@@ -214,132 +216,147 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == player3Button) setSelectedPlayerAndMode(2, selectedMode);
   else if(widget == player4Button) setSelectedPlayerAndMode(3, selectedMode);
   else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
-  else if(widget == skillsButton)	setSelectedPlayerAndMode(selected, CHARACTER);
-  else if(widget == spellsButton)	setSelectedPlayerAndMode(selected, SPELL);
-  else if(widget == missionButton)	setSelectedPlayerAndMode(selected, MISSION);
+  else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
+  else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
+  else if(widget == missionButton)  setSelectedPlayerAndMode(selected, MISSION);
   else if(widget == openButton) {
-	int itemIndex = invList->getSelectedLine();  
-	if(itemIndex > -1) {
-	  Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
-	  if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-		scourge->openContainerGui(item);
-	  }
-	}
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1) {
+      Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
+      if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+        scourge->openContainerGui(item);
+      }
+    }
   } else if(widget == equipButton) {
-	int itemIndex = invList->getSelectedLine();  
-	if(itemIndex > -1 && 
-	   scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-	  scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
-	  // recreate list strings
-	  int oldLine = invList->getSelectedLine();
-	  setSelectedPlayerAndMode(selected, selectedMode);
-	  invList->setSelectedLine(oldLine);
-	}
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1 && 
+       scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+      scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
+      // recreate list strings
+      int oldLine = invList->getSelectedLine();
+      setSelectedPlayerAndMode(selected, selectedMode);
+      invList->setSelectedLine(oldLine);
+    }
   } else if(widget == eatDrinkButton) {
-	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead)) {
-	  scourge->showMessageDialog(Constants::getMessage(Constants::DEAD_CHARACTER_ERROR));
-	} else {
-	  int itemIndex = invList->getSelectedLine();  
-	  if(itemIndex > -1 && 
-		 creature->getInventoryCount() > itemIndex) {
+    if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead)) {
+      scourge->showMessageDialog(Constants::getMessage(Constants::DEAD_CHARACTER_ERROR));
+    } else {
+      int itemIndex = invList->getSelectedLine();  
+      if(itemIndex > -1 && 
+         creature->getInventoryCount() > itemIndex) {
 
-		// this action will occur in the next battle round
-		
-		creature->setAction(Constants::ACTION_EAT_DRINK, 
-							creature->getInventory(itemIndex),
-							NULL);
-		creature->setTargetCreature(creature);
-		mainWin->setVisible(false);
-		
-		//		if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
-		//		  scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
-		//		}
-		// refresh screen
-		//setSelectedPlayerAndMode(selected, INVENTORY);
-	  }
-	}
+        // this action will occur in the next battle round
+
+        creature->setAction(Constants::ACTION_EAT_DRINK, 
+                            creature->getInventory(itemIndex),
+                            NULL);
+        creature->setTargetCreature(creature);
+        mainWin->setVisible(false);
+
+        //		if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
+        //		  scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
+        //		}
+        // refresh screen
+        //setSelectedPlayerAndMode(selected, INVENTORY);
+      }
+    }
   } else if(widget == skillAddButton) {
-	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
-	   !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
-	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-	} else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() <= 0) {
-	  //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
-	} else {
-	  int itemIndex = skillList->getSelectedLine();  
-	  if(itemIndex <= -1) {
-		error = Constants::getMessage(Constants::NO_SKILL_ERROR);
-	  } else {
-		scourge->getParty()->getParty(selected)->incSkillMod(itemIndex);
-		// recreate list strings
-		int oldLine = skillList->getSelectedLine();
-		setSelectedPlayerAndMode(selected, selectedMode);
-		skillList->setSelectedLine(oldLine);
-	  }
-	}
-	if(error) {
-	  cerr << error << endl;
-	  scourge->showMessageDialog(error);
-	}
+    if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
+       !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
+      error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
+    } else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() <= 0) {
+      //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
+    } else {
+      int itemIndex = skillList->getSelectedLine();  
+      if(itemIndex <= -1) {
+        error = Constants::getMessage(Constants::NO_SKILL_ERROR);
+      } else {
+        scourge->getParty()->getParty(selected)->incSkillMod(itemIndex);
+        // recreate list strings
+        int oldLine = skillList->getSelectedLine();
+        setSelectedPlayerAndMode(selected, selectedMode);
+        skillList->setSelectedLine(oldLine);
+      }
+    }
+    if(error) {
+      cerr << error << endl;
+      scourge->showMessageDialog(error);
+    }
   } else if(widget == skillSubButton) {
-	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
-	   !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
-	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-	} else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 
-			  scourge->getParty()->getParty(selected)->getCharacter()->getSkillBonus()) {
-	  //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
-	} else {
-	  int itemIndex = skillList->getSelectedLine();  
-	  if(itemIndex <= -1) {
-		error = Constants::getMessage(Constants::NO_SKILL_ERROR);
-	  } else {
-		scourge->getParty()->getParty(selected)->decSkillMod(itemIndex);
-		// recreate list strings
-		int oldLine = skillList->getSelectedLine();
-		setSelectedPlayerAndMode(selected, selectedMode);
-		skillList->setSelectedLine(oldLine);
-	  }
-	}
-	if(error) {
-	  cerr << error << endl;
-	  scourge->showMessageDialog(error);
-	}
+    if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
+       !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
+      error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
+    } else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 
+              scourge->getParty()->getParty(selected)->getCharacter()->getSkillBonus()) {
+      //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
+    } else {
+      int itemIndex = skillList->getSelectedLine();  
+      if(itemIndex <= -1) {
+        error = Constants::getMessage(Constants::NO_SKILL_ERROR);
+      } else {
+        scourge->getParty()->getParty(selected)->decSkillMod(itemIndex);
+        // recreate list strings
+        int oldLine = skillList->getSelectedLine();
+        setSelectedPlayerAndMode(selected, selectedMode);
+        skillList->setSelectedLine(oldLine);
+      }
+    }
+    if(error) {
+      cerr << error << endl;
+      scourge->showMessageDialog(error);
+    }
   } else if(widget == levelUpButton) {
-	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
-	   !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
-	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-	} else {
-	  scourge->getParty()->getParty(selected)->applySkillMod();
-	  // recreate list strings
-	  int oldLine = skillList->getSelectedLine();
-	  setSelectedPlayerAndMode(selected, selectedMode);
-	  skillList->setSelectedLine(oldLine);
-	}
-	if(error) {
-	  cerr << error << endl;
-	  scourge->showMessageDialog(error);
-	}
+    if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
+       !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
+      error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
+    } else {
+      scourge->getParty()->getParty(selected)->applySkillMod();
+      // recreate list strings
+      int oldLine = skillList->getSelectedLine();
+      setSelectedPlayerAndMode(selected, selectedMode);
+      skillList->setSelectedLine(oldLine);
+    }
+    if(error) {
+      cerr << error << endl;
+      scourge->showMessageDialog(error);
+    }
   } else if(widget == schoolList) {
-	int n = schoolList->getSelectedLine();
-	if(n != -1 && n < MagicSchool::getMagicSchoolCount()) {
-	  showMemorizedSpellsInSchool( scourge->getParty()->getParty(selected), 
-								   MagicSchool::getMagicSchool(n));
-	}
+    int n = schoolList->getSelectedLine();
+    if(n != -1 && n < MagicSchool::getMagicSchoolCount()) {
+      showMemorizedSpellsInSchool( scourge->getParty()->getParty(selected), 
+                                   MagicSchool::getMagicSchool(n));
+    }
   } else if(widget == spellList) {
-	Spell *spell = getSelectedSpell();
-	if(spell) showSpellDescription(spell);
+    Spell *spell = getSelectedSpell();
+    if(spell) showSpellDescription(spell);
   } else if(widget == castButton) {
-	Spell *spell = getSelectedSpell();
-	if(spell) {
-	  if(spell->getMp() > creature->getMp()) {
-		scourge->showMessageDialog("Not enough Magic Points to cast this spell!");
-	  } else {
-		creature->setAction(Constants::ACTION_CAST_SPELL, 
-							NULL,
-							spell);
-		scourge->setTargetSelectionFor(creature);
-		mainWin->setVisible(false);
-	  }
-	}
+    Spell *spell = getSelectedSpell();
+    if(spell) {
+      if(spell->getMp() > creature->getMp()) {
+        scourge->showMessageDialog("Not enough Magic Points to cast this spell!");
+      } else {
+        creature->setAction(Constants::ACTION_CAST_SPELL, 
+                            NULL,
+                            spell);
+        scourge->setTargetSelectionFor(creature);
+        mainWin->setVisible(false);
+      }
+    }
+  } else if(widget == castScrollButton) {
+    // no MP-s used when casting from scroll, but the scroll is destroyed.
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
+      Item *item = creature->getInventory(itemIndex);
+      if(item->getSpell()) {
+        creature->setAction(Constants::ACTION_CAST_SPELL, 
+                            item,
+                            item->getSpell());
+        scourge->setTargetSelectionFor(creature);
+        mainWin->setVisible(false);
+      } else {
+        scourge->showMessageDialog("Cannot cast this item!");
+      }
+    }
   }
   return false;
 }

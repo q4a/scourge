@@ -195,7 +195,7 @@ public:
   inline Map *getMap() { return map; }
   inline MiniMap *getMiniMap() { return miniMap; }
 
-  Item *newItem(RpgItem *rpgItem);
+  Item *newItem(RpgItem *rpgItem, Spell *spell=NULL);
   Creature *newCreature(Character *character, char *name);
   Creature *newCreature(Monster *monster);
 
