@@ -74,6 +74,11 @@ void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base ) {
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
+  char msg[80];
+  sprintf(msg, "FreeType::make_dlist char=%d", ch);
+  Constants::checkTexture(msg, width, height);
+
+
 	//Here we actually create the texture itself, notice
 	//that we are using GL_LUMINANCE_ALPHA to indicate that
 	//we are using 2 channel data.

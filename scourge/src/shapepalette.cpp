@@ -504,6 +504,8 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
   if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
     fprintf(stderr, "\tFound it. width=%d height=%d\n", TextureImage[0]->w, TextureImage[0]->h);
 
+    Constants::checkTexture("ShapePalette::loadGLTextures", 
+                            TextureImage[0]->w, TextureImage[0]->h);
 
     /* Create The Texture */
     glGenTextures( 1, &texture[0] );
@@ -538,6 +540,9 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
 /* function to load in bitmap as a GL texture */
 GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
   GLuint texture[1];
+
+  Constants::checkTexture("ShapePalette::loadGLTextureBGRA", 
+                          surface->w, surface->h);
 
   /* Create The Texture */
   glGenTextures( 1, &texture[0] );
