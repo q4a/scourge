@@ -21,7 +21,10 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->scourge = scourge;
   this->container = container;
 
-  win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
+  //win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
+  win = new Window( scourge->getSDLHandler(),
+                    x, y, 320, 300, container->getItemName(), true, 
+                    Window::SIMPLE_WINDOW, "wood" );
   openButton = new Button( 5, 5, 105, 35, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
   infoButton = new Button( 110, 5, 210, 35, scourge->getShapePalette()->getHighlightTexture(), "Info" );

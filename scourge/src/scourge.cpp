@@ -3063,10 +3063,18 @@ void Scourge::initEnd() {
 
 void Scourge::createBoardUI() {
   // init gui
+  /*
   boardWin = createWoodWindow((getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
 									   (getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
 									   BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
 									   "Available Missions");
+*/                     
+  boardWin = new Window( getSDLHandler(),
+                        (getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
+                        (getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
+                        BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
+                        "Available Missions", true, Window::SIMPLE_WINDOW,
+                        "wood" );
   missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150, getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
   missionDescriptionLabel = new Label(5, 210, "", 67);
