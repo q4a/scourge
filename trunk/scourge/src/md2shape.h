@@ -85,7 +85,7 @@ public:
 	inline bool getAttackEffect() { return attackEffect; }
 	inline void setAttackEffect(bool b) { attackEffect = b; }
 
-    void setCurrentAnimation(int numAnim);
+  void setCurrentAnimation(int numAnim, bool force=false);
     
 	~MD2Shape();
 

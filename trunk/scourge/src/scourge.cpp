@@ -74,6 +74,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   lastTargetTick = SDL_GetTicks();
 
   lastEffectOn = false;
+  inBattle = false;
 }
 
 void Scourge::initVideo(ShapePalette *shapePal) {
@@ -342,6 +343,12 @@ void Scourge::endMission() {
   //	move = 0;  
 }
 
+void Scourge::drawInBattle() {
+  inBattle = true;
+  sdlHandler->drawScreen();
+  inBattle = false;
+}
+
 void Scourge::drawView() {
 
   /*
@@ -415,7 +422,14 @@ void Scourge::drawView() {
     map->initMapView();  
     for(int i = 0; i < party->getPartySize(); i++) {
       if(!party->getParty(i)->getStateMod(Constants::dead)) {
-        showCreatureInfo(party->getParty(i), (party->getPlayer() == party->getParty(i)), 
+
+        bool player = party->getPlayer() == party->getParty(i);
+        if(party->isRealTimeMode() && battleTurn < (int)battleRound.size()) {
+          player = (party->getParty(i) == battleRound[battleTurn]->getCreature());
+        }
+
+        showCreatureInfo(party->getParty(i), 
+                         player, 
                          (map->getSelectedDropTarget() && 
                           map->getSelectedDropTarget()->creature == party->getParty(i)),
                          !party->isPlayerOnly());
@@ -439,7 +453,6 @@ void Scourge::drawAfter() {
   drawDraggedItem();
 }
 
-
 void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode) {
   glPushMatrix();
   //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
@@ -453,47 +466,50 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   // draw circle
   double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
   double s = 0.35f / GLShape::DIV;
-  
+
   float xpos2, ypos2, zpos2;
 
-  GLint t = SDL_GetTicks();
-  if(t - lastTick > 45) {
-	// initialize target width
-	if(targetWidth == 0.0f) {
-	  targetWidth = s;
-	  targetWidthDelta *= -1.0f;
-	}
-	// targetwidth oscillation
-	targetWidth += targetWidthDelta;
-	if((targetWidthDelta < 0 && targetWidth < s) || 
-	   (targetWidthDelta > 0 && targetWidth >= s + (5 * targetWidthDelta))) 
-	  targetWidthDelta *= -1.0f;
-	lastTick = t;
+  Uint32 t = SDL_GetTicks();
+  if(t - lastTargetTick > 45) {
+    // initialize target width
+    if(targetWidth == 0.0f) {
+      targetWidth = s;
+      targetWidthDelta *= -1.0f;
+    }
+    // targetwidth oscillation
+    targetWidth += targetWidthDelta;
+    if((targetWidthDelta < 0 && targetWidth < s) || 
+       (targetWidthDelta > 0 && targetWidth >= s + (5 * targetWidthDelta)))
+      targetWidthDelta *= -1.0f;
+
+    lastTargetTick = t;
   }
 
+  // Yellow for move creature target
   if(player && creature->getSelX() > -1 && 
      !creature->getTargetCreature() &&
      !(creature->getSelX() == creature->getX() && creature->getSelY() == creature->getY()) ) {
-	// draw target
-	glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
-	xpos2 = ((float)(creature->getSelX() - map->getX()) / GLShape::DIV);
-	ypos2 = ((float)(creature->getSelY() - map->getY()) / GLShape::DIV);
-	zpos2 = 0.0f / GLShape::DIV;  
-	glPushMatrix();
-	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-	gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
-	glPopMatrix();
+    // draw target
+    glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
+    xpos2 = ((float)(creature->getSelX() - map->getX()) / GLShape::DIV);
+    ypos2 = ((float)(creature->getSelY() - map->getY()) / GLShape::DIV);
+    zpos2 = 0.0f / GLShape::DIV;  
+    glPushMatrix();
+    glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+    gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
+    glPopMatrix();
   }
 
+  // red for attack target
   if(player && creature->getTargetCreature()) {
-	glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
-	xpos2 = ((float)(creature->getTargetCreature()->getX() - map->getX()) / GLShape::DIV);
-	ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
-	zpos2 = 0.0f / GLShape::DIV;  
-	glPushMatrix();
-	glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-	gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
-	glPopMatrix();
+    glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
+    xpos2 = ((float)(creature->getTargetCreature()->getX() - map->getX()) / GLShape::DIV);
+    ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
+    zpos2 = 0.0f / GLShape::DIV;  
+    glPushMatrix();
+    glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+    gluDisk(creature->getQuadric(), w / 1.8f - targetWidth, w / 1.8f, 12, 1);
+    glPopMatrix();
   }
 
   xpos2 = ((float)(creature->getX() - map->getX()) / GLShape::DIV);
@@ -501,61 +517,61 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
 
   if(creature->getAction() != Constants::ACTION_NO_ACTION) {
-	glColor4f(0, 0.7, 1, 0.5f);
+    glColor4f(0, 0.7, 1, 0.5f);
   } else if(selected) {
-	glColor4f(0, 1, 1, 0.5f);
+    glColor4f(0, 1, 1, 0.5f);
   } else if(player) {
-	glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+    glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
   } else {
-	glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
+    glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
   }
 
   // draw state mods
   if(groupMode || player) {
-	glEnable(GL_TEXTURE_2D);
-	int n = 16;
-	//float x = 0.0f;
-	//float y = 0.0f;
-	int on = 0;
-	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	  if(creature->getStateMod(i) && i != Constants::dead) {
-		on++;
-	  }
-	}
-	int count = 0;
-	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	  if(creature->getStateMod(i) && i != Constants::dead) {
-		glPushMatrix();
-		glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-		//		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
-		//		glRotatef( count * (360.0f / on), 0, 0, 1 );
-		float angle = -(count * 30) - (map->getZRot() + 180);
-		glRotatef( angle, 0, 0, 1 );
-		glTranslatef( w / 2.0f + 15, 0, 0 );
-		glRotatef( (count * 30) + 180, 0, 0, 1 );
-		glTranslatef( -7, -7, 0 );
-		//	  drawStateMod(i);
-		//glColor4f( 1, 1, 1, 1 );
-		GLuint icon = getShapePalette()->getStatModIcon(i);
-		if(icon) {
-		  glBindTexture( GL_TEXTURE_2D, icon );
-		}
-		glBegin( GL_QUADS );
-		glNormal3f( 0, 0, 1 );
-		if(icon) glTexCoord2f( 0, 0 );
-		glVertex3f( 0, 0, 0 );
-		if(icon) glTexCoord2f( 0, 1 );
-		glVertex3f( 0, n, 0 );
-		if(icon) glTexCoord2f( 1, 1 );
-		glVertex3f( n, n, 0 );
-		if(icon) glTexCoord2f( 1, 0 );
-		glVertex3f( n, 0, 0 );
-		glEnd();
-		glPopMatrix();
-		count++;
-	  }
-	}
-	glDisable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
+    int n = 16;
+    //float x = 0.0f;
+    //float y = 0.0f;
+    int on = 0;
+    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+      if(creature->getStateMod(i) && i != Constants::dead) {
+        on++;
+      }
+    }
+    int count = 0;
+    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+      if(creature->getStateMod(i) && i != Constants::dead) {
+        glPushMatrix();
+        glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+        //		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
+        //		glRotatef( count * (360.0f / on), 0, 0, 1 );
+        float angle = -(count * 30) - (map->getZRot() + 180);
+        glRotatef( angle, 0, 0, 1 );
+        glTranslatef( w / 2.0f + 15, 0, 0 );
+        glRotatef( (count * 30) + 180, 0, 0, 1 );
+        glTranslatef( -7, -7, 0 );
+        //	  drawStateMod(i);
+        //glColor4f( 1, 1, 1, 1 );
+        GLuint icon = getShapePalette()->getStatModIcon(i);
+        if(icon) {
+          glBindTexture( GL_TEXTURE_2D, icon );
+        }
+        glBegin( GL_QUADS );
+        glNormal3f( 0, 0, 1 );
+        if(icon) glTexCoord2f( 0, 0 );
+        glVertex3f( 0, 0, 0 );
+        if(icon) glTexCoord2f( 0, 1 );
+        glVertex3f( 0, n, 0 );
+        if(icon) glTexCoord2f( 1, 1 );
+        glVertex3f( n, n, 0 );
+        if(icon) glTexCoord2f( 1, 0 );
+        glVertex3f( n, 0, 0 );
+        glEnd();
+        glPopMatrix();
+        count++;
+      }
+    }
+    glDisable(GL_TEXTURE_2D);
   }
 
   glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
@@ -565,7 +581,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   glDisable( GL_BLEND );
   glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_TRUE);
- 
+
   // draw name
   glTranslatef( 0, 0, 100);
   getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
@@ -1862,26 +1878,14 @@ void Scourge::setUILayout() {
   }
 }
 
+bool pauseBetweenTurns = false;
+
 void Scourge::playRound() {                           
-  // change animation if needed                         
-  for(int i = 0; i < party->getPartySize(); i++) {                            
-    if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
-      ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
-    } else if(party->getParty(i)->anyMovesLeft())
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
-    else 
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
-  }
-  
   // move the map
   if(move) map->move(move);
-  
+
   if(targetSelectionFor) return;
-  
-  // hound your targets
-  party->followTargets();
-  
+ 
   // round starts if:
   // -in group mode
   // -(or) the round was manually started
@@ -1894,64 +1898,92 @@ void Scourge::playRound() {
       Projectile::moveProjectiles(this);
     }
 
-    // move the party members
-    party->movePlayers();
-    
-    // move visible monsters
-    for(int i = 0; i < session->getCreatureCount(); i++) {
-      if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-         map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
-        moveMonster(session->getCreature(i));
-      }
-    }
-    
-    if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
-      lastTick = t;
-      
-      // setup the current battle round
-      if(battleRound.size() == 0) {
-        
-        // set up for battle
-        battleCount = 0;
-        
-        // attack targeted monster if close enough
-        for(int i = 0; i < party->getPartySize(); i++) {
-          if(!party->getParty(i)->getStateMod(Constants::dead) && 
-             (party->getParty(i)->hasTarget() || 
-              party->getParty(i)->getAction() > -1)) {								
-            battle[battleCount++] = new Battle(this, party->getParty(i));
+    if(inBattle) return;
+
+
+
+    if(battleRound.size() > 0) {
+      // in battle mode
+
+      if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
+        lastTick = t;
+
+        // fight a turn of the battle
+        if(battleRound.size() > 0) {
+          if(battleTurn < (int)battleRound.size()) {
+            Battle *battle = battleRound[battleTurn];
+            if(battle->fightTurn()) {
+              delete battle;
+              battleTurn++;
+              if(pauseBetweenTurns) party->toggleRound(true);
+            }
+          } else {
+            battleRound.clear();
+            cerr << "TURN ENDS" << endl;
+            cerr << "----------------------------------" << endl;
           }
         }
-        for(int i = 0; i < session->getCreatureCount(); i++) {
-          if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-             (session->getCreature(i)->hasTarget() || 
-              session->getCreature(i)->getAction() > -1)) {
-            battle[battleCount++] = new Battle(this, session->getCreature(i));
-          }
+      }
+
+    } else {
+      // not in battle
+
+      // change animation if needed
+      for(int i = 0; i < party->getPartySize(); i++) {                            
+        if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
+          party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
+          ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
+        } else if(party->getParty(i)->anyMovesLeft())
+          party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
+        else 
+          party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
+      }
+
+      // hound your targets
+      party->followTargets();
+
+      // move the party members
+      party->movePlayers();
+      
+      // move visible monsters
+      for(int i = 0; i < session->getCreatureCount(); i++) {
+        if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+           map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+          moveMonster(session->getCreature(i));
         }
-        
-        // order the battle turns by initiative
-        if(battleCount > 0) {
-          Battle::setupBattles(this, battle, battleCount, &battleRound);
-          battleTurn = 0;
+      }
+
+      // set up for battle
+      battleCount = 0;
+      
+      // attack targeted monster if close enough
+      for(int i = 0; i < party->getPartySize(); i++) {
+        if(!party->getParty(i)->getStateMod(Constants::dead) && 
+           (party->getParty(i)->hasTarget() || 
+            party->getParty(i)->getAction() > -1)) {								
+          battle[battleCount++] = new Battle(this, party->getParty(i));
+        }
+      }
+      for(int i = 0; i < session->getCreatureCount(); i++) {
+        if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+           map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+           (session->getCreature(i)->hasTarget() || 
+            session->getCreature(i)->getAction() > -1)) {
+          battle[battleCount++] = new Battle(this, session->getCreature(i));
         }
       }
       
-      // fight a turn of the battle
-      if(battleRound.size() > 0) {
-        if(battleTurn < (int)battleRound.size()) {
-          Battle *battle = battleRound[battleTurn];
-          battle->fightTurn();
-          delete battle;
-          battleTurn++;
-        } else {
-          battleRound.clear();
-        }
+      // order the battle turns by initiative
+      if(battleCount > 0) {
+        Battle::setupBattles(this, battle, battleCount, &battleRound);
+        battleTurn = 0;
+        cerr << "++++++++++++++++++++++++++++++++++" << endl;
+        cerr << "TURN STARTS" << endl;
+        if(pauseBetweenTurns) party->toggleRound(true);
       }
     }
   }
-}                                                   
+}
 
 void Scourge::creatureDeath(Creature *creature) {
   if(creature == party->getPlayer()) {
@@ -1960,7 +1992,7 @@ void Scourge::creatureDeath(Creature *creature) {
   // remove from the map; the object will be cleaned up at the end of the mission
   map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
   // add a container object instead
-  //creature->getShape()->setCurrentAnimation(MD2_DEATH1);
+  if(battleRound.size() > 0) creature->getShape()->setCurrentAnimation(MD2_DEATH1);
   Item *item = getSession()->newItem(RpgItem::getItemByName("Corpse"));
   // add creature's inventory to container
   map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
@@ -1978,15 +2010,17 @@ void Scourge::addGameSpeed(int speedFactor){
   map->addDescription(msg);
 }
 
+//#define MONSTER_FLEE_IF_LOW_HP
+
 void Scourge::moveMonster(Creature *monster) {
   // set running animation (currently move or attack)
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
-    monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
-    ((MD2Shape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
+    //monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+    //((MD2Shape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
     // don't move when attacking
     return;
   } else {
-    monster->getShape()->setCurrentAnimation((int)MD2_RUN);
+    if(battleRound.size() > 0) monster->getShape()->setCurrentAnimation((int)MD2_RUN);
   }
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
@@ -1999,6 +2033,7 @@ void Scourge::moveMonster(Creature *monster) {
       monster->move(monster->getDir(), map);
     }
   } else if(monster->hasTarget()) {
+#ifdef MONSTER_FLEE_IF_LOW_HP
     // monster gives up when low on hp or bored
     // FIXME: when low on hp, it should run away not loiter
     if(monster->getAction() == Constants::ACTION_NO_ACTION &&
@@ -2007,6 +2042,11 @@ void Scourge::moveMonster(Creature *monster) {
       monster->cancelTarget();
     } else {
       monster->moveToLocator(map);
+    }
+#endif
+    // see if there's another target that's closer
+    if(monster->getAction() == Constants::ACTION_NO_ACTION) {
+      monster->decideMonsterAction();
     }
   }
 }

@@ -76,9 +76,9 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
 
 
 
-void MD2Shape::setCurrentAnimation(int numAnim){    
+void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
     if(numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){
-        if(playedOnce){
+        if(force || playedOnce){
             currentAnim = numAnim;                
             currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
                                      

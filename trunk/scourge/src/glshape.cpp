@@ -96,7 +96,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
   	createDarkTexture();
 }
 
-void GLShape::setCurrentAnimation (int numAnim){
+void GLShape::setCurrentAnimation (int numAnim, bool force){
     cout<<"GLShape::setCurrentAnimation : Hey this should call MD2Shape function!"<<endl;
 }
 

@@ -75,7 +75,7 @@ public:
   inline bool getUseTexture() { return useTexture; }
 
   inline void setSkipSide(int n) { skipside = n; }
-  virtual void setCurrentAnimation (int numAnim);      
+  virtual void setCurrentAnimation (int numAnim, bool force=false);      
   virtual void setPauseAnimation(bool pause);
   
   bool useShadow;

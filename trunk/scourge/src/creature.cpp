@@ -381,10 +381,10 @@ bool Creature::moveToLocator(Map *map) {
   // this is actually wrong, the method should not be called in this
   // case, but the code is simpler this way. (Returning false is 
   // is incorrect.)
-  if(((MD2Shape*)getShape())->getAttackEffect()) return false;
+//  if(((MD2Shape*)getShape())->getAttackEffect()) return false;
 
   // don't move when in range
-  if(isInRange()) return false;
+//  if(isInRange()) return false;
 
   bool moved = false;
   if(selX > -1) {
