@@ -406,22 +406,28 @@ void Window::drawWidget(Widget *parent) {
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
-    glTexCoord2f (0.0f, TOP_HEIGHT/(float)tileHeight);
+    //glTexCoord2f (0.0f, TOP_HEIGHT/(float)tileHeight);
+    glTexCoord2f (0.0f, 1);
     glVertex2i (0, topY + TOP_HEIGHT);
-    glTexCoord2f (w/(float)tileWidth, TOP_HEIGHT/(float)tileHeight);
+    //glTexCoord2f (w/(float)tileWidth, TOP_HEIGHT/(float)tileHeight);
+    glTexCoord2f (1, 1);
     glVertex2i (w, topY + TOP_HEIGHT);
-    glTexCoord2f (w/(float)tileWidth, 0.0f);      
+    //glTexCoord2f (w/(float)tileWidth, 0.0f);      
+    glTexCoord2f (1, 0.0f);      
     glVertex2i (w, topY);
     glEnd ();
 
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY + TOP_HEIGHT + openHeight);
-    glTexCoord2f (0.0f, BOTTOM_HEIGHT/(float)tileHeight);
+    //glTexCoord2f (0.0f, BOTTOM_HEIGHT/(float)tileHeight);
+    glTexCoord2f (0.0f, 1);
     glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glTexCoord2f (w/(float)tileWidth, BOTTOM_HEIGHT/(float)tileHeight);
+    //glTexCoord2f (w/(float)tileWidth, BOTTOM_HEIGHT/(float)tileHeight);
+    glTexCoord2f (1, 1);
     glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glTexCoord2f (w/(float)tileWidth, 0.0f);      
+    //glTexCoord2f (w/(float)tileWidth, 0.0f);      
+    glTexCoord2f (1, 0.0f);      
     glVertex2i (w, topY + TOP_HEIGHT + openHeight);
     glEnd ();
 
@@ -508,24 +514,31 @@ void Window::drawWidget(Widget *parent) {
 
   // add a border
   if(currentWin == this) {
-    applyHighlightedBorderColor();
+    if( theme->getSelectedBorder() ) {
+      glColor4f( theme->getSelectedBorder()->color.r,
+                 theme->getSelectedBorder()->color.g,
+                 theme->getSelectedBorder()->color.b,
+                 theme->getSelectedBorder()->color.a );
+    } else {
+      applyHighlightedBorderColor();
+    }
   } else if(isLocked()) {
     glColor3f(0.5f, 0.3f, 0.2f);
   } else if( theme->getWindowBorder() ) {
-	glColor4f( theme->getWindowBorder()->color.r, 
-			   theme->getWindowBorder()->color.g,
-			   theme->getWindowBorder()->color.b,
-			   theme->getWindowBorder()->color.a );
+    glColor4f( theme->getWindowBorder()->color.r, 
+               theme->getWindowBorder()->color.g,
+               theme->getWindowBorder()->color.b,
+               theme->getWindowBorder()->color.a );
   } else {
     applyBorderColor();
   }
-
+  
   if( this == currentWin || isLocked() || isModal() ) {
-	glLineWidth( 3.0f );
+    glLineWidth( 3.0f );
   } else if( theme->getWindowBorder() ) {
-	glLineWidth( theme->getWindowBorder()->width );
+    glLineWidth( theme->getWindowBorder()->width );
   } else {
-	glLineWidth( 2.0f );
+    glLineWidth( 2.0f );
   }
   glBegin(GL_LINES);
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
