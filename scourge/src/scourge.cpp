@@ -1086,24 +1086,29 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
   getMapXYAtScreenXY(x, y, &mapx, &mapy);
   if(mapx < MAP_WIDTH) {
 
-	// find the drop target
-	Location *dropTarget = NULL;
-	if(movingItem) {
-    Uint16 mapx, mapy, mapz;
-	  getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-	  if(mapx < MAP_WIDTH) {
-      dropTarget = map->getLocation(mapx, mapy, mapz);
-      if(!(dropTarget && 
-           (dropTarget->creature || 
-            (dropTarget->item && 
-             dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
-        dropTarget = NULL;
-      }      
-	  }
-	}
-	map->setSelectedDropTarget(dropTarget);
-
-	map->handleMouseMove(mapx, mapy, 0);
+    /*
+    
+    // too slow to do on mouse move
+    
+    // find the drop target
+    Location *dropTarget = NULL;
+    if(movingItem) {
+      Uint16 mapx, mapy, mapz;
+      getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+      if(mapx < MAP_WIDTH) {
+        dropTarget = map->getLocation(mapx, mapy, mapz);
+        if(!(dropTarget && 
+             (dropTarget->creature || 
+              (dropTarget->item && 
+               dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
+          dropTarget = NULL;
+        }      
+      }
+    }
+    map->setSelectedDropTarget(dropTarget);
+    */
+    
+    map->handleMouseMove(mapx, mapy, 0);
   }
 }
 
@@ -1141,6 +1146,21 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     map->setZRot(0);
   } else if(button == SDL_BUTTON_LEFT) {
     getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+
+    // drop target?
+    Location *dropTarget = NULL;
+    if(movingItem) {
+      if(mapx < MAP_WIDTH) {
+        dropTarget = map->getLocation(mapx, mapy, mapz);
+        if(!(dropTarget && 
+             (dropTarget->creature || 
+              (dropTarget->item && 
+               dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
+          dropTarget = NULL;
+        }      
+      }
+    }
+    map->setSelectedDropTarget(dropTarget);
 
     // clicking on a creature
     if(!movingItem && mapx < MAP_WIDTH) {
@@ -1325,6 +1345,7 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
 
 void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
                                   Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
+  /*
   // only do this if the mouse has moved some (optimization)
   if(abs(lastX - x) < POSITION_SAMPLE_DELTA && abs(lastY - y) < POSITION_SAMPLE_DELTA) {
     *mapx = lastMapX;
@@ -1332,6 +1353,7 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
     *mapz = lastMapZ;
     return;
   }
+  */
 
   GLuint buffer[512];
   GLint  hits, viewport[4];
@@ -1585,6 +1607,7 @@ void Scourge::dropItem(int x, int y) {
     } else {
       replace = true;
     }
+    map->setSelectedDropTarget(NULL);
   } else {
     // see if it's blocked and get the value of z (stacking items)
     Location *pos = map->isBlocked(x, y, 0,
