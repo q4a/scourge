@@ -18,7 +18,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-// include sdl, opengl and glut xxx 
+// include sdl, opengl and glut
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_endian.h>
