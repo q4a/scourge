@@ -145,8 +145,8 @@ void MD2Shape::draw() {
   }  
    
   AnimateMD2Model();      
-  cout << textureId << " " << g_3DModel->pAnimations[currentAnim].strName << " frame " << currentFrame <<       
-        "/" << g_3DModel->pAnimations[currentAnim].endFrame << endl; 
+ //cout << textureId << " " << g_3DModel->pAnimations[currentAnim].strName << " frame " << currentFrame <<       
+  //      "/" << g_3DModel->pAnimations[currentAnim].endFrame << endl; 
  
   glDisable(GL_CULL_FACE);
   glPopMatrix();    
