@@ -2,7 +2,7 @@ OBJS = \
 	src/constants.o\
 	src/gui/widget.o src/gui/window.o src/gui/label.o\
 	src/gui/button.o src/gui/cardcontainer.o src/gui/scrollinglist.o\
-	src/rpg/rpgitem.o src/rpg/character.o src/rpg/pc.o\
+	src/rpg/rpgitem.o src/rpg/character.o src/rpg/monster.o\
 	src/creature.o src/debugshape.o\
 	src/dungeongenerator.o src/glshape.o src/gltorch.o\
 	src/item.o src/location.o src/main.o src/mainmenu.o src/map.o\

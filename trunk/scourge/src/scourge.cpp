@@ -50,65 +50,20 @@ Scourge::Scourge(int argc, char *argv[]){
 
   shapePal = sdlHandler->getShapePalette();
 
-  // init the items
-  Item::initItems();
+  // initialize the monsters
+  Monster::initMonsters();
 
   // init the party; hard code for now
-  PlayerChar **pc = PlayerChar::createHardCodedParty();
-  party[0] = player = 
-	new Creature(this, shapePal->getCreatureShape(Constants::ROGUE_INDEX), pc[0]);
-  party[1] = 
-	new Creature(this, shapePal->getCreatureShape(Constants::FIGHTER_INDEX), pc[1]);
-  party[2] = 
-	new Creature(this, shapePal->getCreatureShape(Constants::CLERIC_INDEX), pc[2]);
-  party[3] = 
-	new Creature(this, shapePal->getCreatureShape(Constants::WIZARD_INDEX), pc[3]);
-
+  Creature **pc = Creature::createHardCodedParty(this);
+  party[0] = player = pc[0];
+  party[1] = pc[1];
+  party[2] = pc[2];
+  party[3] = pc[3];
 
   player_only = false;
   inventory = new Inventory(this);
 
-  // create the ui
-  char version[100];
-  sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
-  mainWin = new Window( getSDLHandler(),
-						sdlHandler->getScreen()->w - GUI_WIDTH, 
-						sdlHandler->getScreen()->h - GUI_HEIGHT, 
-						GUI_WIDTH, GUI_HEIGHT, 
-						strdup(version), 
-						getShapePalette()->getGuiTexture() );
-  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
-  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
-  inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
-  mainWin->addWidget((Widget*)inventoryButton);
-  optionsButton = new Button( 0, 25,  100, 50, strdup("Options") );
-  mainWin->addWidget((Widget*)optionsButton);
-  quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
-  mainWin->addWidget((Widget*)quitButton);
-
-  diamondButton = new Button( 100, 0,  120, 20 );
-  mainWin->addWidget((Widget*)diamondButton);
-  staggeredButton = new Button( 120, 0,  140, 20 );
-  mainWin->addWidget((Widget*)staggeredButton);
-  squareButton = new Button( 140, 0,  160, 20 );
-  mainWin->addWidget((Widget*)squareButton);
-  rowButton = new Button( 160, 0,  180, 20 );
-  mainWin->addWidget((Widget*)rowButton);
-  scoutButton = new Button( 180, 0,  200, 20 );
-  mainWin->addWidget((Widget*)scoutButton);
-  crossButton = new Button( 200, 0,  220, 20 );
-  mainWin->addWidget((Widget*)crossButton);
-
-  player1Button = new Button( 100, 20,  124, 40 );
-  mainWin->addWidget((Widget*)player1Button);
-  player2Button = new Button( 124, 20,  148, 40 );
-  mainWin->addWidget((Widget*)player2Button);
-  player3Button = new Button( 148, 20,  172, 40 );
-  mainWin->addWidget((Widget*)player3Button);
-  player4Button = new Button( 172, 20,  196, 40 );
-  mainWin->addWidget((Widget*)player4Button);
-  groupButton = new Button( 196, 20,  220, 40 );
-  mainWin->addWidget((Widget*)groupButton);
+  createUI();
   
   // show the main menu
   mainMenu = new MainMenu(this);  
@@ -142,44 +97,94 @@ void Scourge::startMission() {
   // add gui
   mainWin->setVisible(true);
 
+  // new item and creature references
+  itemCount = creatureCount = 0;
+  
   // create the map
   map = new Map(this);
   miniMap = new MiniMap(this); 
-  player_only = false;
-
-  map->addDescription(Constants::getMessage(Constants::WELCOME));
-  map->addDescription("----------------------------------");
   
   // Initialize the map with a random dunegeon	
-  DungeonGenerator *dg = new DungeonGenerator(1);
+  dg = new DungeonGenerator(this, level);
   Sint16 startx, starty;
-  dg->toMap(map, &startx, &starty, shapePal);
+  dg->toMap(map, &startx, &starty, getShapePalette());
 
   // position the players
-  player->moveTo(startx, starty, 0);
-  map->setCreature(startx, starty, 0, player); 
+  player_only = false;
+  setPlayer(getParty(0));
+  getPlayer()->moveTo(startx, starty, 0);
+  map->setCreature(startx, starty, 0, getPlayer()); 
 
   // init the rest of the party
-  player = party[0];
   for(int i = 1; i < 4; i++) {
-	party[i]->setNext(player, i);
-	map->setCreature(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]);
+	getParty(i)->setNext(getPlayer(), i);
+	map->setCreature(getParty(i)->getX(), 
+					 getParty(i)->getY(), 
+					 getParty(i)->getZ(), 
+					 getParty(i));
   }
  
-  // center on the player
+  // center map on the player
   map->center(startx, starty);
   
   // Must be called after MiniMap has been built by dg->toMap() !!! 
   miniMap->computeDrawValues();
 
+  // set to receive events here
   sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+
+
+
+  // run mission
   sdlHandler->mainLoop();
+
+
 
   // remove gui
   mainWin->setVisible(false);
+
+  // clean up after the mission
   delete map;
   delete miniMap;
   delete dg;
+
+  // delete the items and creatures created for this mission
+  // (except items in inventory)
+  for(int i = 0; i < itemCount; i++) {
+	bool inInventory = false;
+	for(int t = 0; t < 4; t++) {
+	  if(getParty(t)->isItemInInventory(items[i])) {
+		inInventory = true;
+		break;
+	  }
+	}
+	if(!inInventory) {
+	  //fprintf(stderr, "Freeing item: i=%d name=%s\n", i, items[i]->getRpgItem()->getName());
+	  delete items[i];
+	}
+  }
+  for(int i = 0; i < creatureCount; i++) {
+	//fprintf(stderr, "Freeing creature: i=%d name=%s\n", i, creatures[i]->getCharacter()->getName());
+	delete creatures[i];
+  }
+}
+
+// items created for the mission
+Item *Scourge::newItem(RpgItem *rpgItem) {
+  items[itemCount++] = new Item(rpgItem);
+  return items[itemCount - 1];
+}
+
+// creatures created for the mission
+Creature *Scourge::newCreature(Character *character, char *name) {
+  creatures[creatureCount++] = new Creature(this, character, name);
+  return creatures[creatureCount - 1];
+}
+
+// creatures created for the mission
+Creature *Scourge::newCreature(Monster *monster) {
+  creatures[creatureCount++] = new Creature(this, monster);
+  return creatures[creatureCount - 1];
 }
 
 void Scourge::drawView(SDL_Surface *screen) {
@@ -674,11 +679,11 @@ bool Scourge::getItem(Location *pos) {
 }
 
 // drop an item from the inventory
-void Scourge::setMovingItem(int item_index, int x, int y, int z) {
+void Scourge::setMovingItem(Item *item, int x, int y, int z) {
   movingX = x;
   movingY = y;
   movingZ = z;
-  movingItem = Item::getItem(item_index);
+  movingItem = item;
 }
 
 void Scourge::dropItem(int x, int y) {
@@ -686,9 +691,9 @@ void Scourge::dropItem(int x, int y) {
 	char message[120];
 	Creature *c = map->getSelectedDropTarget()->creature;
 	if(c) {
-	  c->getPC()->addInventory(movingItem->getRpgItem());
+	  c->addInventory(movingItem);
 	  sprintf(message, "%s picks up %s.", 
-			  c->getPC()->getName(), 
+			  c->getName(), 
 			  movingItem->getRpgItem()->getName());
 	  map->addDescription(strdup(message));
 	  movingItem = NULL;
@@ -698,7 +703,7 @@ void Scourge::dropItem(int x, int y) {
 					 movingX, movingY, movingZ,
 					 movingItem->getShape())) {
 	map->setItem(x, y, 0, movingItem);
-	movingItem->moveTo(x, y, 0);
+	//	movingItem->moveTo(x, y, 0);
 	movingItem = NULL;
 	movingX = movingY = movingZ = MAP_WIDTH + 1;
   }
@@ -799,4 +804,48 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	player_only = (player_only ? false : true);
   }
   return false;
+}
+
+void Scourge::createUI() {
+  // create the ui
+  char version[100];
+  sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
+  mainWin = new Window( getSDLHandler(),
+						sdlHandler->getScreen()->w - GUI_WIDTH, 
+						sdlHandler->getScreen()->h - GUI_HEIGHT, 
+						GUI_WIDTH, GUI_HEIGHT, 
+						strdup(version), 
+						getShapePalette()->getGuiTexture() );
+  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
+  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
+  inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
+  mainWin->addWidget((Widget*)inventoryButton);
+  optionsButton = new Button( 0, 25,  100, 50, strdup("Options") );
+  mainWin->addWidget((Widget*)optionsButton);
+  quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
+  mainWin->addWidget((Widget*)quitButton);
+
+  diamondButton = new Button( 100, 0,  120, 20 );
+  mainWin->addWidget((Widget*)diamondButton);
+  staggeredButton = new Button( 120, 0,  140, 20 );
+  mainWin->addWidget((Widget*)staggeredButton);
+  squareButton = new Button( 140, 0,  160, 20 );
+  mainWin->addWidget((Widget*)squareButton);
+  rowButton = new Button( 160, 0,  180, 20 );
+  mainWin->addWidget((Widget*)rowButton);
+  scoutButton = new Button( 180, 0,  200, 20 );
+  mainWin->addWidget((Widget*)scoutButton);
+  crossButton = new Button( 200, 0,  220, 20 );
+  mainWin->addWidget((Widget*)crossButton);
+
+  player1Button = new Button( 100, 20,  124, 40 );
+  mainWin->addWidget((Widget*)player1Button);
+  player2Button = new Button( 124, 20,  148, 40 );
+  mainWin->addWidget((Widget*)player2Button);
+  player3Button = new Button( 148, 20,  172, 40 );
+  mainWin->addWidget((Widget*)player3Button);
+  player4Button = new Button( 172, 20,  196, 40 );
+  mainWin->addWidget((Widget*)player4Button);
+  groupButton = new Button( 196, 20,  220, 40 );
+  mainWin->addWidget((Widget*)groupButton);
 }

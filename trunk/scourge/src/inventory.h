@@ -25,7 +25,7 @@
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include "scourge.h"
-#include "rpg/pc.h"
+#include "rpg/character.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/cardcontainer.h"
@@ -51,7 +51,7 @@ private:
 	CardContainer *cards;
 
 	// inventory screen
-	Label *invEquipLabel[PlayerChar::INVENTORY_COUNT];
+	Label *invEquipLabel[Character::INVENTORY_COUNT];
 	Button *invToButton[4];
 	Button *equipButton, *dropButton, *fixButton, *removeCurseButton;
 	Button *combineButton, *enchantButton, *identifyButton;
@@ -70,7 +70,7 @@ private:
 public:
     Inventory(Scourge *scourge);
 	~Inventory();
-    inline void show() { mainWin->setVisible(true); }
+    inline void show() { mainWin->setVisible(true); setSelectedPlayerAndMode(selected, selectedMode); }
 	inline void hide() { mainWin->setVisible(false); }
 	inline bool isVisible() { return mainWin->isVisible(); }
     bool handleEvent(SDL_Event *event);

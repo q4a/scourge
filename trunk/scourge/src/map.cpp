@@ -67,18 +67,21 @@ Map::Map(Scourge *scourge){
   selectedDropTarget = NULL;
 
   createOverlayTexture();
+
+  addDescription(Constants::getMessage(Constants::WELCOME));
+  addDescription("----------------------------------");
 }
 
 Map::~Map(){
-    for(int xp = 0; xp < MAP_WIDTH; xp++) {
-        for(int yp = 0; yp < MAP_DEPTH; yp++) {
-            for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-                if(pos[xp][yp][zp]) {
-                    delete pos[xp][yp][zp];
-                }
-            }
-        }
-    }
+  for(int xp = 0; xp < MAP_WIDTH; xp++) {
+	for(int yp = 0; yp < MAP_DEPTH; yp++) {
+	  for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
+		if(pos[xp][yp][zp]) {
+		  delete pos[xp][yp][zp];
+		}
+	  }
+	}
+  }
 }
 
 void Map::center(Sint16 x, Sint16 y) { 
@@ -618,7 +621,7 @@ void Map::showCreatureInfo(Creature *creature) {
   
   // draw name
   glTranslatef( 0, 0, 100);
-  scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getPC()->getName());
+  scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
 
   //glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
   glPopMatrix();
@@ -794,7 +797,7 @@ void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) 
                 Item *item = loc->item;
                 fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
                 if( item ) {
-                    description = item->getShortDescription();
+                    description = item->getRpgItem()->getShortDesc();
                 }          
                 if(!description) {
                     Shape *shape = loc->shape;
@@ -870,13 +873,13 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 }
 
 void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
-	if(item) {
+  if(item) {
     if(item->getShape()) {
 	  mapChanged = true;
       for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
         for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {          
           for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
-
+			
             if(!pos[x + xp][y - yp][z + zp]) {
               pos[x + xp][y - yp][z + zp] = new Location();
             }
@@ -913,7 +916,6 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
       }
     }
   }
-  return item;
 }
 
 void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {

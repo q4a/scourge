@@ -313,6 +313,15 @@ void ShapePalette::initShapes() {
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
                  Constants::WIZARD_INDEX);  
+  creature_shapes[Constants::BUGGERLING_INDEX] =
+    new MD2Shape("data/models/m5.md2", "data/models/m5.bmp", 1.2f,
+                 notex,
+                 3, 3, 6,
+                 "BUGGERLING",
+                 (debug ? 0xff0000ff : 0xf0f0ffff),
+                 display_list + (count++ * 3),
+                 Constants::BUGGERLING_INDEX);  
+
   
   // items
   item_display_list_start = display_list + (count * 3);                                

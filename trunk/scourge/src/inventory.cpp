@@ -46,19 +46,19 @@ Inventory::Inventory(Scourge *scourge) {
 						  100, 50, 525, 505, 
 						  strdup("Party Information"), 
 						  scourge->getShapePalette()->getGuiTexture() );
-	player1Button = new Button( 0, 0, 105, 120, scourge->getParty(0)->getPC()->getName() );
+	player1Button = new Button( 0, 0, 105, 120, scourge->getParty(0)->getName() );
 	player1Button->setLabelPosition(Button::BOTTOM);	
 	player1Button->setToggle(true);
 	mainWin->addWidget((Widget*)player1Button);
-	player2Button = new Button( 0, 120, 105, 240, scourge->getParty(1)->getPC()->getName() );
+	player2Button = new Button( 0, 120, 105, 240, scourge->getParty(1)->getName() );
 	player2Button->setLabelPosition(Button::BOTTOM);
 	player2Button->setToggle(true);
 	mainWin->addWidget((Widget*)player2Button);
-	player3Button = new Button( 0, 240, 105, 360, scourge->getParty(2)->getPC()->getName() );
+	player3Button = new Button( 0, 240, 105, 360, scourge->getParty(2)->getName() );
 	player3Button->setLabelPosition(Button::BOTTOM);
 	player3Button->setToggle(true);
 	mainWin->addWidget((Widget*)player3Button);
-	player4Button = new Button( 0,360, 105, 480, scourge->getParty(3)->getPC()->getName() );
+	player4Button = new Button( 0,360, 105, 480, scourge->getParty(3)->getName() );
 	player4Button->setLabelPosition(Button::BOTTOM);
 	player4Button->setToggle(true);
 	mainWin->addWidget((Widget*)player4Button);
@@ -83,20 +83,21 @@ Inventory::Inventory(Scourge *scourge) {
 	label = new Label(115, 45, strdup("Equipped Items:"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, INVENTORY);
-	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
-	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
-	  invEquipLabel[i] = new Label(300, 60 + (i * 15), (char *)(item ? item->getName() : (char*)NULL));
+	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	  Item *item = scourge->getParty(selected)->getEquippedInventory(i);
+	  invEquipLabel[i] = new Label(300, 60 + (i * 15), 
+								   (char *)(item ? item->getRpgItem()->getName() : (char*)NULL));
 	  cards->addWidget(invEquipLabel[i], INVENTORY);
 	}
-	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
-	  label = new Label(115, 60 + (i * 15), PlayerChar::inventory_location[i]);
+	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	  label = new Label(115, 60 + (i * 15), Character::inventory_location[i]);
 	  cards->addWidget(label, INVENTORY);
 	}
 	invList = new ScrollingList(115, 285, 295, 175);
 	cards->addWidget(invList, INVENTORY);
 	for(int i = 0; i < 4; i++) {
 	  invToButton[i] = new Button( 420, 35 + (i * 30), 520, 35 + (i * 30) + 25, 
-								   scourge->getParty(i)->getPC()->getName() );
+								   scourge->getParty(i)->getName() );
 	  cards->addWidget( invToButton[i], INVENTORY );
 	}
 	equipButton = new Button( 420, 155, 520, 180, strdup("Don/Doff") );
@@ -162,24 +163,24 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == dropButton) {
 	int itemIndex = invList->getSelectedLine();  
 	if(itemIndex > -1 && 
-	   scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
-	  RpgItem *item = scourge->getParty(selected)->getPC()->removeInventory(itemIndex);
-	  scourge->setMovingItem(item->getIndex(), 
+	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+	  Item *item = scourge->getParty(selected)->removeInventory(itemIndex);
+	  scourge->setMovingItem(item, 
 							 scourge->getParty(selected)->getX(), 
 							 scourge->getParty(selected)->getY(), 
 							 scourge->getParty(selected)->getZ());
 	  char message[120];
 	  sprintf(message, "%s drops %s.", 
-			  scourge->getParty(selected)->getPC()->getName(),
-			  item->getName());
+			  scourge->getParty(selected)->getName(),
+			  item->getRpgItem()->getName());
 	  scourge->getMap()->addDescription(strdup(message));	  
 	  mainWin->setVisible(false);
 	}
   } else if(widget == equipButton) {
 	int itemIndex = invList->getSelectedLine();  
 	if(itemIndex > -1 && 
-	   scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
-	  scourge->getParty(selected)->getPC()->equipInventory(itemIndex);
+	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+	  scourge->getParty(selected)->equipInventory(itemIndex);
 	  // recreate list strings
 	  int oldLine = invList->getSelectedLine();
 	  setSelectedPlayerAndMode(selected, selectedMode);
@@ -200,10 +201,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 void Inventory::moveItemTo(int playerIndex) {
   int itemIndex = invList->getSelectedLine();  
   if(itemIndex > -1 && 
-	 scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
+	 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
 	if(playerIndex != selected) {
-	  scourge->getParty(playerIndex)->getPC()->
-		addInventory(scourge->getParty(selected)->getPC()->removeInventory(itemIndex));
+	  scourge->getParty(playerIndex)->
+		addInventory(scourge->getParty(selected)->removeInventory(itemIndex));
 	  // recreate strings in list
 	  setSelectedPlayerAndMode(selected, selectedMode);
 	}
@@ -244,46 +245,46 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   // arrange the gui
   switch(selectedMode) {
   case CHARACTER:
-	nameLabel->setText(scourge->getParty(selected)->getPC()->getName());
-	classLabel->setText(scourge->getParty(selected)->getPC()->getCharacter()->getName());
-	sprintf(levelStr, "Level: %d", scourge->getParty(selected)->getPC()->getLevel());
+	nameLabel->setText(scourge->getParty(selected)->getName());
+	classLabel->setText(scourge->getParty(selected)->getCharacter()->getName());
+	sprintf(levelStr, "Level: %d", scourge->getParty(selected)->getLevel());
 	levelLabel->setText(levelStr);
-	sprintf(expStr, "Exp: %u", scourge->getParty(selected)->getPC()->getExp());
+	sprintf(expStr, "Exp: %u", scourge->getParty(selected)->getExp());
 	expLabel->setText(expStr);
-	sprintf(hpStr, "HP: %d", scourge->getParty(selected)->getPC()->getHp());
+	sprintf(hpStr, "HP: %d", scourge->getParty(selected)->getHp());
 	hpLabel->setText(hpStr);
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
-      if(scourge->getParty(selected)->getPC()->getStateMod(t)) {
+      if(scourge->getParty(selected)->getStateMod(t)) {
         sprintf(stateLine[stateCount++], "%s", Constants::STATE_NAMES[t]);
       }
     }
 	stateList->setLines(stateCount, (const char**)stateLine);
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
 	  sprintf(skillLine[t], "%d - %s", 
-			  scourge->getParty(selected)->getPC()->getSkill(t), 
+			  scourge->getParty(selected)->getSkill(t), 
 			  Constants::SKILL_NAMES[t]);
     }
 	skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
 	break;
   case INVENTORY:
-    for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
-	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
-	  int location = scourge->getParty(selected)->getPC()->getEquippedIndex(t);
+    for(int t = 0; t < scourge->getParty(selected)->getInventoryCount(); t++) {
+	  Item *item = scourge->getParty(selected)->getInventory(t);
+	  int location = scourge->getParty(selected)->getEquippedIndex(t);
 	  sprintf(pcInvText[t], "%s(A:%d,S:%d,Q:%d,W:%d) %s", 
 			  (location > -1 ? " *" : "   "),
-			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
-			  item->getName());
+			  item->getRpgItem()->getAction(), item->getRpgItem()->getSpeed(), item->getRpgItem()->getQuality(), item->getRpgItem()->getWeight(),
+			  item->getRpgItem()->getName());
     }
-	for(int t = scourge->getParty(selected)->getPC()->getInventoryCount(); 
+	for(int t = scourge->getParty(selected)->getInventoryCount(); 
 		t < MAX_INVENTORY_SIZE; t++) {
 	  strcpy(pcInvText[t], "");
 	}
-	invList->setLines(scourge->getParty(selected)->getPC()->getInventoryCount(), 
+	invList->setLines(scourge->getParty(selected)->getInventoryCount(), 
 					  (const char **)pcInvText);
-	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
-	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
-	  invEquipLabel[i]->setText((char *)(item ? item->getName() : NULL));
+	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	  Item *item = scourge->getParty(selected)->getEquippedInventory(i);
+	  invEquipLabel[i]->setText((char *)(item ? item->getRpgItem()->getName() : NULL));
 	}
 	break;
   case SPELL:

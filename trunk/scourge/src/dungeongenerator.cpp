@@ -41,8 +41,8 @@ const int DungeonGenerator::levels[][9] = {
   { 31, 31,   3, 5, 25,    6,  7,  7,     35 }
 };
 
-DungeonGenerator::DungeonGenerator(int level){
-
+DungeonGenerator::DungeonGenerator(Scourge *scourge, int level){
+  this->scourge = scourge;
   this->level = level;
 
   initByLevel();  
@@ -729,75 +729,55 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 
   // add the containers
   int x, y;
-  Item *item;
+  RpgItem *rpgItem;
   for(int i = 0; i < roomCount; i++) {
   	for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
-	  item = Item::getRandomContainer();
-	  if(item) {
+	  rpgItem = RpgItem::getRandomContainer();
+	  if(rpgItem) {
 		// WEST side
 		x = (room[i].x * unitSide) + unitOffset + offset;
 		y = (room[i].y * unitSide) + pos + offset;
-		if(map->shapeFits(item->getShape(), x, y, 0) && 
-		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
-		  addItem(map, item, item->getShape(), x, y);
+		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+		if(map->shapeFits(shape, x, y, 0) && 
+		   !coversDoor(map, shapePal, shape, x, y)) {
+		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
 		}
 	  }
-	  item = Item::getRandomContainer();
-	  if(item) {
+	  rpgItem = RpgItem::getRandomContainer();
+	  if(rpgItem) {
 		// EAST side
 		x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-		if(map->shapeFits(item->getShape(), x, y, 0) && 
-		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
-		  addItem(map, item, item->getShape(), x, y);
+		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+		if(map->shapeFits(shape, x, y, 0) && 
+		   !coversDoor(map, shapePal, shape, x, y)) {
+		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
 		}
 	  }
 	}
   	for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
-	  item = Item::getRandomContainerNS();
-	  if(item) {
+	  rpgItem = RpgItem::getRandomContainerNS();
+	  if(rpgItem) {
 		// NORTH side
 		x = (room[i].x * unitSide) + pos + offset;
 		y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
-		if(map->shapeFits(item->getShape(), x, y, 0) && 
-		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
-		  addItem(map, item, item->getShape(), x, y);
+		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+		if(map->shapeFits(shape, x, y, 0) && 
+		   !coversDoor(map, shapePal, shape, x, y)) {
+		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
 		}
 	  }
-	  item = Item::getRandomContainerNS();
-	  if(item) {
+	  rpgItem = RpgItem::getRandomContainerNS();
+	  if(rpgItem) {
 		// SOUTH side
 		y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
-		if(map->shapeFits(item->getShape(), x, y, 0) && 
-		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
-		  addItem(map, item, item->getShape(), x, y);
+		Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+		if(map->shapeFits(shape, x, y, 0) && 
+		   !coversDoor(map, shapePal, shape, x, y)) {
+		  addItem(map, NULL, scourge->newItem(rpgItem), NULL, x, y);
 		}
 	  }
 	}
   }
-  /*
-  // DEBUG stuff: draws room perimeter; to debug chunking
-  Shape *shape = shapePal->getShape(Constants::LAMP_BASE_INDEX);
-  for(int i = 0; i < roomCount; i++) {
-  	for(int pos = 1; pos < room[i].h * unitSide; pos++) {
-	  // WEST side
-	  x = (room[i].x * unitSide) + offset;
-	  y = (room[i].y * unitSide) + pos + offset;
-	  addItem(map, NULL, shape, x, y);
-	  // EAST side
-	  x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - 1 + offset;
-	  addItem(map, NULL, shape, x, y);
-	}
-  	for(int pos = 0; pos < room[i].w * unitSide; pos++) {
-	  // NORTH side
-	  x = (room[i].x * unitSide) + pos + offset;
-	  y = (room[i].y * unitSide) + 1 + offset;
-	  addItem(map, NULL, shape, x, y);
-	  // SOUTH side
-	  y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide + offset;
-	  addItem(map, NULL, shape, x, y);
-	}
-  }
-  */
   
   // Collapse the free space and put objects in the available spots
   ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
@@ -821,12 +801,42 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	  }
 	}
   } 
+
+  // add the items
   for(int i = 0; i < objectCount; i++) {
-	// Get an item
-	Item *item = Item::getRandomItem(0); // FIXME: pass in level 
+	RpgItem *rpgItem = RpgItem::getRandomItem(level);
+	Item *item = scourge->newItem(rpgItem);
 	getRandomLocation(map, item->getShape(), &x, &y);
-	addItem(map, item, item->getShape(), x, y);
+	addItem(map, NULL, item, NULL, x, y);
   }
+
+  // add monsters in every room and a few in the corridors
+  int totalLevel = 0;
+  for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
+  fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
+  for(int i = 0; i < roomCount; i++) {
+	int levelSum = 0;
+	while(levelSum < totalLevel) {
+	  Monster *monster = Monster::getRandomMonster(level - 1);
+	  fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
+	  bool fits = 
+		getLocationInRoom(map, 
+						  i,
+						  scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
+						  &x, &y);
+	  if(fits) {
+		fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
+		Creature *creature = scourge->newCreature(monster);
+		addItem(map, creature, NULL, NULL, x, y);
+		levelSum += level;
+	  } else {
+		fprintf(stderr, "\tmonster DOESN'T fit.\n");
+		break;
+	  }
+	}
+  }
+  
+  // free empty space container
   free(ff);  
 
   // find a starting position
@@ -906,6 +916,7 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
   }
 }
 
+// FIXME: low likelyhood of infinite loop
 void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int *ypos) {
   int x, y;
   while(1) {
@@ -932,6 +943,40 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
   }	
 }
 
+// FIXME: it's possible that location collides with startx,starty for mission
+// maybe don't put monsters in the room the mission's started
+// return false if the creature won't fit in the room
+bool DungeonGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
+										 int *xpos, int *ypos) {
+  for(int x = offset + room[roomIndex].x * unitSide; 
+	  x < offset + (room[roomIndex].x + room[roomIndex].w) * unitSide;
+	  x++) {
+	for(int y = offset + room[roomIndex].y * unitSide; 
+		y < offset + (room[roomIndex].y + room[roomIndex].h) * unitSide;
+		y++) {
+	  bool fits = map->shapeFits(shape, x, y, 0);
+	  if(fits) {
+		// find this location in ff list
+		for(int n = 0; n < ffCount; n++) {
+		  if(x == ff[n * 2] && y == ff[n * 2 + 1]) {
+			// remove from ff list
+			for(int i = n + 1; i < ffCount - 1; i++) {
+			  ff[i * 2] = ff[i * 2 + 2];
+			  ff[i * 2 + 1] = ff[ i * 2 + 3];
+			}
+			ffCount--;
+			break;
+		  }
+		}
+		*xpos = x;
+		*ypos = y;
+		return true;
+	  }
+	}
+  }
+  return false;
+}
+
 bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal, 
 								  Shape *shape, int x, int y) {
   for(int ty = y - shape->getDepth() - 3; ty < y + 3; ty++) {
@@ -955,7 +1000,8 @@ bool DungeonGenerator::isDoor(Map *map, ShapePalette *shapePal, int tx, int ty) 
   return false;
 }
 
-void DungeonGenerator::addItem(Map *map, Item *item, Shape *shape, int x, int y) {
-  if(item) map->setItem(x, y, 0, item);
+void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y) {
+  if(creature) map->setCreature(x, y, 0, creature);
+  else if(item) map->setItem(x, y, 0, item);
   else map->setPosition(x, y, 0, shape);
 }

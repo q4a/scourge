@@ -25,27 +25,27 @@ RpgItem *RpgItem::items[] =  {
   new RpgItem(SHORT_SWORD, "Short sword", 1, SWORD, 2, 150, 100, 4, 8, 
 			  "A dwarven shortsword of average workmanship",
 			  "A stubby short sword", 
-			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
+			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
 			  Constants::SWORD_INDEX),
   new RpgItem(DAGGER, "Dagger", 1, SWORD, 1, 80, 100, 3, 5, 
 			  "There's nothing special about this dagger",
 			  "A small dagger", 
-			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
+			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
 			  Constants::SWORD_INDEX),
   new RpgItem(BASTARD_SWORD, "Bastard sword", 1, SWORD, 4, 200, 100, 8, 11,
 			  "A bastard sword can be wielded either by one or both hands... (If you still have both hands)",
 			  "A rusty bastard sword", 
-			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
+			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
 			  Constants::SWORD_INDEX, OPTIONAL_TWO_HANDED),
   new RpgItem(LONG_SWORD, "Long sword", 2, SWORD, 6, 250, 100, 10, 12,
 			  "The longsword is a knight's standard weapon",
 			  "A shiny, sharp longsword", 
-			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
+			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
 			  Constants::SWORD_INDEX),
   new RpgItem(GREAT_SWORD, "Great sword", 2, SWORD, 10, 350, 100, 16, 14,
 			  "The two handed great sword can deliver a lot of damage",
 			  "A two-handed greatsword", 
-			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
+			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
 			  Constants::SWORD_INDEX, ONLY_TWO_HANDED),
   
   
@@ -53,12 +53,12 @@ RpgItem *RpgItem::items[] =  {
   new RpgItem(BATTLE_AXE, "Battleaxe", 1, AXE, 4, 150, 100, 6, 10,
 			  "A battle axe of average workmanship",
 			  "A well made battle axe", 
-			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
+			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
 			  Constants::AXE_INDEX),
   new RpgItem(THROWING_AXE, "Throwing axe", 1, AXE, 2, 100, 100, 4, 6,
 			  "A dull-looking axe for chucking",
 			  "A quick throwing axe", 
-			  PlayerChar::INVENTORY_LEFT_HAND | PlayerChar::INVENTORY_RIGHT_HAND,
+			  Character::INVENTORY_LEFT_HAND | Character::INVENTORY_RIGHT_HAND,
 			  Constants::AXE_INDEX),
   
   
@@ -101,4 +101,34 @@ RpgItem::RpgItem(int index, char *name, int level, int type, int weight, int pri
 }
 
 RpgItem::~RpgItem() {
+}
+
+RpgItem *RpgItem::getRandomItem(int level) {
+  int n = (int) (5.0 * rand()/RAND_MAX);
+  switch(n) {
+  case 0: return items[RpgItem::SHORT_SWORD];
+  case 1: return items[RpgItem::DAGGER];
+  case 2: return items[RpgItem::BASTARD_SWORD];
+  case 3: return items[RpgItem::BATTLE_AXE];
+  case 4: return items[RpgItem::THROWING_AXE];  
+  default: return NULL; // won't happen
+  }
+}
+
+RpgItem *RpgItem::getRandomContainer() {
+  int n = (int)(10.0 * rand()/RAND_MAX);
+  switch(n) {
+  case 0: return items[RpgItem::BOOKSHELF];
+  case 1: return items[RpgItem::CHEST];
+  default: return NULL;
+  }
+}
+
+RpgItem *RpgItem::getRandomContainerNS() {
+  int n = (int)(10.0 * rand()/RAND_MAX);
+  switch(n) {
+  case 0: return items[RpgItem::BOOKSHELF2];
+  case 1: return items[RpgItem::CHEST2];
+  default: return NULL;
+  }
 }
