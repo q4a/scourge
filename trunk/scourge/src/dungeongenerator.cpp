@@ -680,7 +680,7 @@ void DungeonGenerator::constructMaze(int locationIndex) {
   // seal off some walls
   for(int y = 0; y < location[locationIndex].h; y++) {
 	for(int x = 0; x < location[locationIndex].w; x++) {
-	  char c = location[locationIndex].map[y][x];
+	  //char c = location[locationIndex].map[y][x];
 	  int nx = location[locationIndex].x + x;
 	  int ny = location[locationIndex].y + y;
 	  if(nx >= width || ny >= height) {

@@ -165,7 +165,8 @@ bool Date::isInferiorTo(Date d){
     else if(min < d.getMin()) return true;
     else if(min > d.getMin()) return false;
     else if(sec < d.getSec()) return true;
-    else if(sec > d.getSec()) return false;            
+    else if(sec > d.getSec()) return false;
+    return false;
 }
 
 bool Date::isEqualTo(Date d){

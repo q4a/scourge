@@ -34,7 +34,7 @@ Label::~Label() {
 void Label::drawWidget(Widget *parent) {
 	if(text) {
 		applyColor();
-		if(lineWidth <= 1 || strlen(text) < lineWidth) {
+		if(lineWidth <= 1 || (int)strlen(text) < lineWidth) {
 			// draw a single-line label
 			((Window*)parent)->getSDLHandler()->texPrint(0, 0, text);
 		} else {
