@@ -149,7 +149,7 @@ public:
   int findShapeIndexByName(const char *name);
   
   // Md2 shapes
-  GLShape *getCreatureShape(char *model_name, char *skin_name);                    
+  GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f, int w=0, int d=0, int h=0);
   void decrementSkinRefCount(char *skin_name);
   // use this method to get a meta-shape for the creature (good for mearuring 'fit'-s in dungeongenerator
   inline GLShape *getCreatureBlockShape(char *name) { string s = name; return creature_block_shapes[s]; }
