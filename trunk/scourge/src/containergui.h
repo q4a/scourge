@@ -39,6 +39,7 @@ class ContainerGui : public DragAndDropHandler {
   ScrollingList *list;
   Label *label;
   char **containedItemNames;
+  Color *itemColor;
 
  public:
   ContainerGui(Scourge *scourge, Item *container, int x, int y);

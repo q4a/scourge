@@ -34,8 +34,9 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
 
   // allocate memory for the contained item descriptions
   this->containedItemNames = (char**)malloc(MAX_CONTAINED_ITEMS * sizeof(char*));
+  this->itemColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   for(int i = 0; i < MAX_CONTAINED_ITEMS; i++) {
-	this->containedItemNames[i] = (char*)malloc(120 * sizeof(char));
+    this->containedItemNames[i] = (char*)malloc(120 * sizeof(char));
   }
 
   showContents();
@@ -45,9 +46,10 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
 
 ContainerGui::~ContainerGui() {
   for(int i = 0; i < MAX_CONTAINED_ITEMS; i++) {
-	free(containedItemNames[i]);
+    free(containedItemNames[i]);
   }
   free(containedItemNames);
+  free(itemColor);
 
   //delete label;
   //delete list;
@@ -57,10 +59,21 @@ ContainerGui::~ContainerGui() {
 
 void ContainerGui::showContents() {
   for(int i = 0; i < container->getContainedItemCount(); i++) {
-	container->getContainedItem(i)->getDetailedDescription(containedItemNames[i]);
+    container->getContainedItem(i)->getDetailedDescription(containedItemNames[i]);
+    if( !container->getContainedItem(i)->isMagicItem() ) {
+      itemColor[i].r = 1;
+      itemColor[i].g = 1;
+      itemColor[i].b = 1;
+    } else {
+      itemColor[i].r = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ].r;
+      itemColor[i].g = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ].g;
+      itemColor[i].b = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ].b;
+    }
+    itemColor[i].a = 1;
   }
   list->setLines(container->getContainedItemCount(), 
-				 (const char **)containedItemNames);
+                 (const char **)containedItemNames,
+                 itemColor);
 }
 
 bool ContainerGui::handleEvent(SDL_Event *event) {

@@ -28,6 +28,7 @@ Inventory::Inventory(Scourge *scourge) {
   this->scourge = scourge;
 
   // allocate strings for list
+  this->itemColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
@@ -560,13 +561,24 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       char s[100];
       item->getDetailedDescription(s);
       sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
+      if( !item->isMagicItem() ) {
+        itemColor[t].r = 0;
+        itemColor[t].g = 0;
+        itemColor[t].b = 0;
+      } else {
+        itemColor[t].r = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ].r;
+        itemColor[t].g = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ].g;
+        itemColor[t].b = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ].b;
+      }
+      itemColor[t].a = 1;
     }
     for(int t = selectedP->getInventoryCount(); 
        t < MAX_INVENTORY_SIZE; t++) {
       strcpy(pcInvText[t], "");
     }
     invList->setLines(selectedP->getInventoryCount(), 
-                      (const char **)pcInvText);
+                      (const char **)pcInvText,
+                      itemColor);
     /*
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = selectedP->getEquippedInventory(i);
