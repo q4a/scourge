@@ -103,13 +103,14 @@ bool Projectile::atTargetLocation() {
 }
 
 bool Projectile::move() {
+  // return true to let this class handle the attack
+  // this has to be the first test
+  if(steps >= maxDist) return true;
+  steps++;
+
   // are we at the target location?
   // return false to let the map class handle the attack.
   if(this->atTargetLocation()) return false;
-
-  // return true to let this class handle the attack
-  if(steps >= maxDist) return true;
-  steps++;
 
   float oldAngle = angle;
   if(parabolic != 0.0f) {
@@ -280,6 +281,7 @@ void Projectile::resetProjectiles() {
 }
 
 void Projectile::removeProjectile(Projectile *p) {
+  //cerr << "removing projectile for " << p->creature->getName() << endl;
   if(projectiles.find(p->creature) != projectiles.end()) {
     vector<Projectile*> *v = projectiles[p->creature];
     for(vector<Projectile*>::iterator e=v->begin(); e!=v->end(); ++e) {
