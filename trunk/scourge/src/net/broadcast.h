@@ -1,3 +1,4 @@
+#ifdef HAVE_SDL_NET
 #ifndef BROADCAST_H
 #define BROADCAST_H
 
@@ -32,4 +33,5 @@ class Broadcast {
   void initBroadcastSocket();
 };
 
+#endif
 #endif

@@ -1,3 +1,5 @@
+#ifdef HAVE_SDL_NET
+
 #ifndef TCP_UTIL_H
 #define TCP_UTIL_H
 
@@ -17,5 +19,7 @@ class TCPUtil {
   // returns 0 on any errors, length sent on success
   static int send(TCPsocket sock, char *buf);
 };
+
+#endif
 
 #endif

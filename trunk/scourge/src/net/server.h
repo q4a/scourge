@@ -1,3 +1,5 @@
+#ifdef HAVE_SDL_NET
+
 #ifndef SERVER_H
 #define SERVER_H
 
@@ -58,5 +60,7 @@ class Server {
  protected:
   void initTCPSocket();
 };
+
+#endif
 
 #endif

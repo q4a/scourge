@@ -1,3 +1,5 @@
+#ifdef HAVE_SDL_NET
+
 #ifndef CLIENT_INFO_H
 #define CLIENT_INFO_H
 
@@ -74,4 +76,5 @@ class ClientInfo : public CommandInterpreter {
   inline Commands *getCommands() { return commands; }
 };
 
+#endif
 #endif

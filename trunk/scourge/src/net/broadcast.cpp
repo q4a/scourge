@@ -1,3 +1,4 @@
+#ifdef HAVE_SDL_NET
 #include "broadcast.h"
 
 #define SIGNAL_PREFIX "SCOURGE,"
@@ -113,3 +114,4 @@ bool Broadcast::listen(IPaddress *ip, Uint32 timeout) {
 #endif
   return ret;  
 }
+#endif

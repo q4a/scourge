@@ -1,3 +1,4 @@
+#ifdef HAVE_SDL_NET
 #include "tcputil.h"
 
 char *TCPUtil::buffer = NULL;
@@ -81,3 +82,4 @@ int TCPUtil::send(TCPsocket sock, char *buf) {
   // return the length sent
   return(result);
 }
+#endif

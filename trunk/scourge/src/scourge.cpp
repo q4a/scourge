@@ -34,8 +34,10 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(int argc, char *argv[]){
+#ifdef HAVE_SDL_NET
   server = NULL;
   client = NULL;
+#endif
   lastTick = lastProjectileTick = 0;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
@@ -61,6 +63,7 @@ Scourge::Scourge(int argc, char *argv[]){
   userConfiguration->loadConfiguration();    
   userConfiguration->parseCommandLine(argc, argv);  
 
+#ifdef HAVE_SDL_NET
   // standalone mode?
   if(userConfiguration->getStandAloneMode() == UserConfiguration::SERVER) {
     runServer(userConfiguration->getPort());
@@ -71,6 +74,7 @@ Scourge::Scourge(int argc, char *argv[]){
               userConfiguration->getUserName());
     sdlHandler->quit(0);
   }
+#endif
    
   // Initialize the video mode
   sdlHandler = new SDLHandler(); 
@@ -170,8 +174,10 @@ Scourge::Scourge(int argc, char *argv[]){
 }
 
 Scourge::~Scourge(){
+#ifdef HAVE_SDL_NET
   if(server) delete server;
   if(client) delete client;
+#endif
   delete mainMenu;
   delete optionsMenu;
   delete multiplayer;
@@ -1877,6 +1883,7 @@ void Scourge::consumeGameState(int frame, char *state) {
   cerr << "got frame: " << frame << " state=" << state << endl;
 }
 
+#ifdef HAVE_SDL_NET
 void Scourge::runServer(int port) {
   server = new Server(port ? port : DEFAULT_SERVER_PORT);
   server->setGameStateHandler(this);
@@ -1905,3 +1912,4 @@ void Scourge::runClient(char *host, int port, char *userName) {
     //client->sendRawTCP(message);
   }  
 }
+#endif

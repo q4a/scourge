@@ -605,6 +605,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 	} else if(!strcmp(argv[i], "--version")) {
 	  printf("Scourge, version %.2f\n", SCOURGE_VERSION);
 	  exit(0);
+#ifdef HAVE_SDL_NET
     } else if(!strncmp(argv[i], "--server", 8)) {
       standAloneMode = SERVER;
       port = atoi(argv[i] + 8);
@@ -617,6 +618,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
       //free(host);
       //free(userName);
       free(p);
+#endif
 	} else if(!strcmp(argv[i], "--test")) {
 	  test = true;
 	} else if(argv[i][0] == '-' && argv[i][1] != '-') {

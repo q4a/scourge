@@ -1,3 +1,4 @@
+#ifdef HAVE_SDL_NET
 #include "clientinfo.h"
 
 ClientInfo::ClientInfo(Server *server, TCPsocket socket, int id, char *username) {
@@ -208,3 +209,4 @@ Message::Message(char *message) {
 Message::~Message() {
   free(message);
 }
+#endif
