@@ -56,6 +56,7 @@ private:
   ThemeElement *buttonHighlight;
   ThemeElement *buttonBorder;
   Color *buttonText;
+  Color *buttonSelectionText;
   ThemeElement *listBackground;
   ThemeElement *inputBackground;
   Color *inputText;
@@ -91,6 +92,7 @@ public:
   inline ThemeElement *getButtonHighlight() { return buttonHighlight; }
   inline ThemeElement *getButtonBorder() { return buttonBorder; }
   inline Color *getButtonText() { return buttonText; }
+  inline Color *getButtonSelectionText() { return buttonSelectionText; }
   inline ThemeElement *getListBackground() { return listBackground; }
   inline ThemeElement *getInputBackground() { return inputBackground; }
   inline Color *getInputText() { return inputText; }
@@ -114,6 +116,7 @@ public:
   inline void setButtonHighlight( ThemeElement *element ) { this->buttonHighlight = element; }
   inline void setButtonBorder( ThemeElement *element ) { this->buttonBorder = element; }
   inline void setButtonText( Color *color ) { this->buttonText = color; }
+  inline void setButtonSelectionText( Color *color ) { this->buttonSelectionText = color; }
   inline void setListBackground( ThemeElement *element ) { this->listBackground = element; }
   inline void setInputBackground( ThemeElement *element ) { this->inputBackground = element; }
   inline void setInputText( Color *color ) { this->inputText = color; }
