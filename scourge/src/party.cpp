@@ -154,6 +154,7 @@ void Party::setPlayer(int n) {
   case 2 : player3Button->setSelected(true); break;
   case 3 : player4Button->setSelected(true); break;
   }
+  scourge->getMap()->center(player->getX(), player->getY(), true);
 }
 
 /**
@@ -258,6 +259,7 @@ void Party::movePlayers() {
 	  if(!player->getStateMod(Constants::dead)) {
 		player->moveToLocator(scourge->getMap(), player_only);
 		scourge->getMap()->center(player->getX(), player->getY());
+		break;
 	  }
 	  
 	  switchToNextLivePartyMember();

@@ -154,7 +154,7 @@ class Map {
   
   inline void setXY(int x, int y) { this->x = x; this->y = y; }
   
-  void center(Sint16 x, Sint16 y);
+  void center(Sint16 x, Sint16 y, bool force=false);
     
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
@@ -213,6 +213,8 @@ class Map {
   inline Uint16 getSelX() { return selX; }
   inline Uint16 getSelY() { return selY; }
   inline Uint16 getSelZ() { return selZ; }
+
+  void move(int dir);
   
   bool isWallBetween(int x1, int y1, int z1,
 					 int x2, int y2, int z2);
