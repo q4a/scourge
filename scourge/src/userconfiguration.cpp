@@ -185,6 +185,9 @@ UserConfiguration::UserConfiguration(){
     keepMapSize = true;
     frameOnFullScreen = true;
     turnBasedBattle = true;
+
+    // audio settings
+    soundFreq = 5;
     
     // Build (string engineAction -> int engineAction ) lookup table
     // and   (int ea -> string ea) lookup table    
@@ -409,6 +412,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set turnbasedbattle %s\n", turnBasedBattle ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set soundfreq %d\n", soundFreq);
+    writeFile(configFile, textLine);
         
     delete configFile;
 }
@@ -524,7 +529,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
              bpp = -1; // To autodetect best bpp value
         }                               
     }
-    else if(s1 == "w"){
+    else if(s1 == "soundfreq") {
+      soundFreq = atoi(s2.c_str());
+    } else if(s1 == "w"){
         w = atoi(s2.c_str());
     }
     else if(s1 == "h"){
@@ -924,6 +931,8 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set keepmapsize true" << endl;
   configFile << "set frameonfullscreen true" << endl;
   configFile << "set turnbasedbattle true" << endl;
+  configFile << "// Audio settings" << endl;
+  configFile << "set soundfreq 5  // 0: most frequent, 10: least frequent" << endl;
   configFile << "" << endl;
 
   configFile.close();

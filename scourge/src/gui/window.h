@@ -68,7 +68,13 @@ class Window : public Widget {
   static Label *message_label;
   static Window *currentWin;
 
+  Widget *lastWidget;
+
  public: 
+
+   static const char ROLL_OVER_SOUND[80];
+   static const char ACTION_SOUND[80];
+
   Button *closeButton;
 
   enum {
@@ -145,6 +151,8 @@ class Window : public Widget {
   char *buttonLabel = Constants::messages[Constants::OK_LABEL][0]);
 
   void move(int x, int y);
+
+  void setLastWidget(Widget *w);
  protected:
 };
 

@@ -18,6 +18,9 @@
 
 #define OPEN_STEPS 10
 
+const char Window::ROLL_OVER_SOUND[80] = "sound/ui/roll.wav";
+const char Window::ACTION_SOUND[80] = "sound/ui/press.wav";
+
 //#define DEBUG_WINDOWS
 
 int Window::windowCount = 0;
@@ -39,6 +42,7 @@ Window::Window(SDLHandler *sdlHandler,
                char *title, GLuint texture,
                bool hasCloseButton, int type) :
 Widget(x, y, w, h) {
+  this->lastWidget = NULL;
   this->sdlHandler = sdlHandler;
   this->title = title;
   this->texture = texture;
@@ -181,7 +185,10 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     if(message_button && w == message_button) {
       message_dialog->setVisible(false);
     }
-    if(w) return w;
+    if(w) {
+      sdlHandler->getSound()->playSound(Window::ACTION_SOUND);
+      return w;
+    }
     
     // handled by closebutton
     if(closeButton) {
@@ -192,6 +199,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       if(closeButton->handleEvent(this, event, 
                                   x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
                                   y - (getY() + 3))) {
+        sdlHandler->getSound()->playSound(Window::ACTION_SOUND);
         return closeButton;
       }
     }
@@ -707,3 +715,11 @@ void Window::move(int x, int y) {
   if(x >= sdlHandler->getScreen()->w - (w + SCREEN_GUTTER)) this->x = sdlHandler->getScreen()->w - (w + SCREEN_GUTTER + 1);
   if(y >= sdlHandler->getScreen()->h - (h + SCREEN_GUTTER)) this->y = sdlHandler->getScreen()->h - (h + SCREEN_GUTTER + 1);
 }
+
+void Window::setLastWidget(Widget *w) {
+  if(w != lastWidget) {
+    lastWidget = w;
+    sdlHandler->getSound()->playSound(Window::ROLL_OVER_SOUND);
+  }
+}
+

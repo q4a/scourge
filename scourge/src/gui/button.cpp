@@ -133,6 +133,7 @@ void Button::drawWidget(Widget *parent) {
 
 bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   inside = isInside(x, y);
+  if(inside) ((Window*)parent)->setLastWidget(this);
   // handle it
   switch( event->type ) {
   case SDL_KEYUP:

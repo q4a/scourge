@@ -78,7 +78,7 @@ void Scourge::initVideo(ShapePalette *shapePal) {
 }
 
 void Scourge::initUI() {
-  // for now pass map in
+// for now pass map in
   this->map = session->getMap();
   miniMap = new MiniMap(this); 
 
@@ -95,6 +95,9 @@ void Scourge::initUI() {
   mainMenu = new MainMenu(this);
   optionsMenu = new OptionsMenu(this);
   multiplayer = new MultiplayerDialog(this);
+
+  // load character, creature, item sounds
+  sdlHandler->getSound()->loadSounds();
 }
 
 void Scourge::start() {
@@ -104,6 +107,7 @@ void Scourge::start() {
     if(initMainMenu) {
       initMainMenu = false;
       mainMenu->show();    
+      sdlHandler->getSound()->playMusicMenu();
     }
 
     sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
@@ -113,6 +117,7 @@ void Scourge::start() {
     if(mainMenu->getValue() == NEW_GAME ||
        mainMenu->getValue() == MULTIPLAYER_START) {
       mainMenu->hide();
+      sdlHandler->getSound()->stopMusicMenu();
       
       initMainMenu = true;
      

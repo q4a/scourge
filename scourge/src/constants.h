@@ -36,6 +36,10 @@
 #include <SDL_thread.h>
 #endif
 
+#ifdef HAVE_SDL_MIXER
+#include <SDL_mixer.h>
+#endif
+
 #if defined(__APPLE__) || defined(__MACH_O__)
 // *** #include <GLUT/glut.h>
 #else
@@ -511,6 +515,17 @@ public:
     
     // must be last one
     GUI_LAYOUT_COUNT
+  };
+
+  // sound types
+  enum {
+    SOUND_TYPE_COMMAND=0,
+    SOUND_TYPE_HIT,
+    SOUND_TYPE_SELECT,
+    SOUND_TYPE_ATTACK,
+
+    // must be the last one
+    SOUND_TYPE_COUNT
   };
 
   // the speed when hand fighting is used instead of a weapon

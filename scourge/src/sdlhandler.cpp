@@ -73,6 +73,10 @@ void SDLHandler::quit( int returnCode ) {
   SDLNet_Quit();
 #endif
 
+#ifdef HAVE_SDL_MIXER
+  if(sound) delete sound;
+#endif
+
     /* clean up the window */
     SDL_Quit( );
 
@@ -268,6 +272,7 @@ char **SDLHandler::getVideoModes(int &nbModes){
 }
 
 void SDLHandler::setVideoMode( UserConfiguration * uc ) {  
+  sound = NULL;
   
   /* this holds some info about our display */
   const SDL_VideoInfo *videoInfo;
@@ -355,6 +360,9 @@ void SDLHandler::setVideoMode( UserConfiguration * uc ) {
   if(!uc->getFullscreen())
 	invertMouse = true;
 #endif	 
+
+  // initialize sound support
+  sound = new Sound();
   
   /* initialize OpenGL */
   initGL( );

@@ -138,6 +138,7 @@ public:
   inline Item *getItem(int index) { return newItems[index]; }
   inline Mission *getCurrentMission() { return currentMission; }
   inline void setCurrentMission(Mission *mission) { currentMission = mission; }
+  inline void playSound(const char *sound) { getGameAdapter()->playSound(sound); }
 
   virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
   virtual void creatureDeath(Creature *creature);

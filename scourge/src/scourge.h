@@ -529,6 +529,8 @@ public:
   void initUI();
   void start();
 
+  void playSound(const char *sound) { sdlHandler->getSound()->playSound(sound); }
+
   void fightProjectileHitTurn(Projectile *proj, Creature *creature);
 
   void drawWidget(Widget *w);

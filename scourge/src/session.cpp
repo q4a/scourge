@@ -51,7 +51,6 @@ void Session::initialize() {
   adapter->setSession(this);
   adapter->initVideo(shapePal);
   initData();  
-  adapter->initUI();
 }
 
 void Session::start() {
@@ -94,6 +93,10 @@ void Session::initData() {
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
   party = new Party(this);
+
+  adapter->initUpdate("Initializing...");
+
+  adapter->initUI();
 
   adapter->initEnd();
 }

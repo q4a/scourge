@@ -172,6 +172,9 @@ private:
   // was the stencil buf. initialized at start?
   bool stencilBufInitialized;
 
+  // audio settings
+  int soundFreq;
+
   int standAloneMode;
   char *host, *userName;
   int port;
@@ -211,6 +214,7 @@ private:
   inline bool getKeepMapSize() { return keepMapSize; }
   inline bool getFrameOnFullScreen() { return frameOnFullScreen; }
   inline bool isBattleTurnBased() { return turnBasedBattle; }
+  inline int getSoundFreq() { return soundFreq; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
@@ -230,6 +234,7 @@ private:
   inline void setKeepMapSize(int t) { keepMapSize = t; }
   inline void setFrameOnFullScreen(int t) { frameOnFullScreen = t; }
   inline void setBattleTurnBased(bool b) { turnBasedBattle = b; }
+  inline void getSoundFreq(int n) { soundFreq = n; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           
