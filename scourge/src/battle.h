@@ -78,6 +78,8 @@ class Battle {
 
  public:
 
+   static bool debugBattle;
+
    inline int getAP() { return ap; }
    inline int decrAP() { return --ap; }
    inline int getStartingAP() { return startingAp; }
