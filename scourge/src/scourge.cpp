@@ -28,6 +28,8 @@
 
 #define DEBUG_BATTLE_ROUND 0
 
+#define DEBUG_KEYS 1
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 // good for debugging blending
@@ -266,9 +268,11 @@ void Scourge::startMission() {
       // Initialize the map with a random dunegeon	
       getSession()->setCurrentMission(board->getMission(nextMission));
       missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
+	  /*
       cerr << "Starting mission: level="  << getSession()->getCurrentMission()->getLevel() << 
       " depth=" << getSession()->getCurrentMission()->getDepth() << 
       " current story=" << currentStory << endl;
+	  */
       dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
                                 (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
                                 (currentStory > 0),
@@ -996,15 +1000,27 @@ bool Scourge::handleEvent(SDL_Event *event) {
   
     // DEBUG ------------------------------------
     
+#ifdef DEBUG_KEYS
     if(event->key.keysym.sym == SDLK_l) {
       cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
       return false;
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
       getMap()->refresh();
+	} else if(event->key.keysym.sym == SDLK_c && 
+			  getSession()->getCurrentMission() && 
+			  !getSession()->getCurrentMission()->isCompleted()) {
+	  getSession()->getCurrentMission()->setCompleted( true );
+	  missionCompleted();
+	} else if( event->key.keysym.sym == SDLK_t ) {
+	  teleporting = true;
+      exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+      party->toggleRound(true);
+      exitConfirmationDialog->setVisible(true);
     } else if(event->key.keysym.sym == SDLK_g) {
       party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
     }
+#endif
 
     // END OF DEBUG ------------------------------------
 

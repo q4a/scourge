@@ -40,6 +40,8 @@ room max height
 
 object count
 */
+#define MAX_DUNGEON_LEVEL 7
+
 const int DungeonGenerator::levels[][9] = {
   { 10, 20,  90, 5,  1,    2,  4,  4,      5 },  
   { 15, 15,  70, 5, 10,    3,  6,  4,     10 },
@@ -175,17 +177,26 @@ DungeonGenerator::~DungeonGenerator(){
 }
 
 void DungeonGenerator::initByLevel() {
-  if(level < 1) level = 1;
+  int dungeonLevel = level / 8;
+  if(dungeonLevel < 0) dungeonLevel = 0;
+
+  if( dungeonLevel >= MAX_DUNGEON_LEVEL ) {
+	cerr << "*** Warning: attempted to create dungeon level " << dungeonLevel << 
+	  ". Max is " << MAX_DUNGEON_LEVEL << endl;
+	dungeonLevel = MAX_DUNGEON_LEVEL - 1;
+  }
+
+  cerr << "*** Creating dungeon level: " << dungeonLevel << " depth=" << depth << endl;
   
-  this->width = levels[level - 1][dgWIDTH];
-  this->height = levels[level - 1][dgHEIGHT];
-  this->curvyness = levels[level - 1][dgCURVYNESS];
-  this->sparseness = levels[level - 1][dgSPARSENESS];
-  this->loopyness = levels[level - 1][dgLOOPYNESS];
-  this->roomCount = levels[level - 1][dgROOMCOUNT];
-  this->roomMaxWidth = levels[level - 1][dgROOMMAXWIDTH];
-  this->roomMaxHeight = levels[level - 1][dgROOMMAXHEIGHT];
-  this->objectCount = levels[level - 1][dgOBJECTCOUNT];
+  this->width = levels[dungeonLevel][dgWIDTH];
+  this->height = levels[dungeonLevel][dgHEIGHT];
+  this->curvyness = levels[dungeonLevel][dgCURVYNESS];
+  this->sparseness = levels[dungeonLevel][dgSPARSENESS];
+  this->loopyness = levels[dungeonLevel][dgLOOPYNESS];
+  this->roomCount = levels[dungeonLevel][dgROOMCOUNT];
+  this->roomMaxWidth = levels[dungeonLevel][dgROOMMAXWIDTH];
+  this->roomMaxHeight = levels[dungeonLevel][dgROOMMAXHEIGHT];
+  this->objectCount = levels[dungeonLevel][dgOBJECTCOUNT];
   this->monsters = true;
 }
 
