@@ -59,6 +59,7 @@ class RpgItem {
 	DRINK,
 	POTION,
 	OTHER,
+	MISSION,
 	
 	// must be last
 	ITEM_TYPE_COUNT

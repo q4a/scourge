@@ -81,7 +81,7 @@ const MapLocation DungeonGenerator::location[] = {
 	  "#e+w#",
 	  "## ##" 
 	},
-	25, 
+	26, 
 	{
 	  { Constants::BOARD_INDEX, 2*unitSide+11, unitSide + 1, 0 },
 
@@ -98,6 +98,8 @@ const MapLocation DungeonGenerator::location[] = {
 		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+32, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+40, 0 },
 		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+40, 0 },
+
+	  { Constants::COLUMN_INDEX, 2*unitSide+14, unitSide+40, 0 },
 
 	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+8, 2 },
 	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+8, 0 },		

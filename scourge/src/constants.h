@@ -492,6 +492,7 @@ struct t3DObject
 	char strName[255];			// The name of the object
 	CVector3  *pVerts;			// The object's vertices
 	CVector3  *pNormals;		// The object's normals
+  float *shadingColorDelta;     // 1 per normal
 	CVector2  *pTexVerts;		// The texture's UV coordinates
 	tFace *pFaces;				// The faces information of the object	
 };

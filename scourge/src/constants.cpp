@@ -259,6 +259,7 @@ void ComputeNormals(t3DModel *pModel)
         CVector3 *pNormals      = new CVector3 [pObject->numOfFaces];
         CVector3 *pTempNormals  = new CVector3 [pObject->numOfFaces];
         pObject->pNormals       = new CVector3 [pObject->numOfVerts];
+		pObject->shadingColorDelta = new float [pObject->numOfVerts];
 
         // Go though all of the faces of this object
         for(int i=0; i < pObject->numOfFaces; i++)
