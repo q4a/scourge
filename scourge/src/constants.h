@@ -357,7 +357,7 @@ public:
   static int getSkillByName(char *p);
 
   enum { 
-	blessed, 
+	blessed=0, 
 	empowered, 
 	enraged, 
 	ac_protected, 

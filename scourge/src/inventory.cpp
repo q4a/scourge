@@ -168,7 +168,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else if(scourge->getParty(selected)->getAvailableSkillPoints() <= 0) {
-	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
+	  //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
 	} else {
 	  int itemIndex = skillList->getSelectedLine();  
 	  if(itemIndex <= -1) {
@@ -190,7 +190,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else if(scourge->getParty(selected)->getAvailableSkillPoints() == 
 			  scourge->getParty(selected)->getCharacter()->getSkillBonus()) {
-	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
+	  //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
 	} else {
 	  int itemIndex = skillList->getSelectedLine();  
 	  if(itemIndex <= -1) {
@@ -293,7 +293,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	hungerLabel->setText(hungerStr);
 	sprintf(skillModStr, "Available: %d", selectedP->getAvailableSkillPoints());
 	skillModLabel->setText(skillModStr);
-	sprintf(armorStr, "Armor: %d", selectedP->getArmor());
+	sprintf(armorStr, "Armor: %d / %d", selectedP->getSkillModifiedArmor(), selectedP->getArmor());
 	armorLabel->setText(armorStr);
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
