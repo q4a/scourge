@@ -542,7 +542,9 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 
 
   if(!our_font_initialized) {
-    our_font.init("/home/gabor/sourceforge/scourge/data/Test.ttf", 8);
+    char s[200];
+    sprintf(s, "%s/Vera.ttf", rootDir);
+    our_font.init(s, 8);
     our_font_initialized = true;
   }
   
