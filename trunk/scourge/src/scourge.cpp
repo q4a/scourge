@@ -554,11 +554,14 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   // show path
-  if(player && session->getUserConfiguration()->isBattleTurnBased() ) {
+  if(player && 
+     session->getUserConfiguration()->isBattleTurnBased() && 
+     battleTurn < (int)battleRound.size() ) {
     for( int i = creature->getProposedPathIndex(); 
-         i < (int)creature->getProposedPath()->size(); i++) {
+         i < (int)creature->getProposedPath()->size() && 
+         i <= creature->getBattle()->getAP(); i++) {
       Location pos = (*(creature->getProposedPath()))[i];
-      glColor4f(0.75f, 1.0f, 0.0f, 0.5f);
+      glColor4f(1, 0.4f, 0.0f, 1);
       xpos2 = ((float)(pos.x - map->getX()) / GLShape::DIV);
       ypos2 = ((float)(pos.y - map->getY()) / GLShape::DIV);
       zpos2 = 0.0f / GLShape::DIV;  
