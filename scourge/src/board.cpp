@@ -145,6 +145,17 @@ void Board::freeListText() {
   }
 }
 
+void Board::reset() {
+  cerr << "Resetting missions" << endl;
+  for(map<int, vector<Mission*>* >::iterator i=missions.begin(); i!=missions.end(); ++i) {
+	vector<Mission*> *p = i->second;
+	for(vector<Mission*>::iterator e=p->begin(); e!=p->end(); ++e) {
+	  Mission *m = *e;
+	  m->reset();
+	}
+  }
+}
+
 void Board::initMissions() {
   // free ui
   freeListText();
@@ -249,7 +260,6 @@ Mission::~Mission() {
 bool Mission::itemFound(RpgItem *item) {
   if(!completed && 
 	 objective &&
-	 objective->index == FIND_OBJECT && 
 	 item) {
 	for(int i = 0; i < objective->itemCount; i++) {
 	  if(objective->item[i] == item && !objective->itemHandled[i]) {
@@ -265,7 +275,6 @@ bool Mission::itemFound(RpgItem *item) {
 bool Mission::monsterSlain(Monster *monster) {
   if(!completed &&
 	 objective &&
-	 objective->index == FIND_OBJECT && 
 	 monster) {
 	for(int i = 0; i < objective->monsterCount; i++) {
 	  if(objective->monster[i] == monster &&
@@ -293,6 +302,18 @@ void Mission::checkMissionCompleted() {
 		completed = false;
 		return;
 	  }
+	}
+  }
+}
+
+void Mission::reset() {
+  completed = false;
+  if(objective) {
+	for(int i = 0; i < objective->itemCount; i++) {
+	  objective->itemHandled[i] = false;
+	}
+	for(int i = 0; i < objective->monsterCount; i++) {
+	  objective->monsterHandled[i] = false;
 	}
   }
 }

@@ -92,6 +92,7 @@ Scourge::Scourge(int argc, char *argv[]){
     if(mainMenu->getValue() == NEW_GAME) {
 
 	  party->reset();
+	  board->reset();
 
 	  // inventory needs the party
 	  if(!inventory) {

@@ -73,6 +73,8 @@ class Mission {
   Mission(char *name, int level, int dungeonStoryCount);
   virtual ~Mission();
 
+  void reset();
+
   inline bool isCompleted() { return completed; }
   inline char *getName() { return name; }
   inline char *getStory() { return story; }
@@ -114,6 +116,7 @@ class Board	{
   virtual ~Board();
   
   void initMissions();
+  void reset();
   
   inline int getMissionCount() { return availableMissions.size(); }
   inline Mission *getMission(int index) { return availableMissions[index]; }
