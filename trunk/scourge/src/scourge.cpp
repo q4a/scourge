@@ -176,8 +176,7 @@ void Scourge::drawView(SDL_Surface *screen) {
 
   gui->drawWindows();
 
-  // FIXME: it'd be good to specify this in screen coordinates
-  miniMap->draw(0, 200);
+  miniMap->draw(0, 400);
   
   glEnable( GL_DEPTH_TEST );
   //  glEnable( GL_LIGHTING );
@@ -320,7 +319,16 @@ bool Scourge::handleEvent(SDL_Event *event) {
         break;
     case SDLK_n:
         map->addZPos(-10.0f);
-        break;        
+        break;   
+    case SDLK_KP_PLUS:
+        miniMap->zoomIn();
+        break;
+    case SDLK_KP_MINUS:
+        miniMap->zoomOut();
+        break;  
+    case SDLK_l:
+        miniMap->toggle(); 
+        break;   
     case SDLK_LEFTBRACKET:
         map->setZoomOut(true);
         break;
