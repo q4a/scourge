@@ -48,6 +48,7 @@ typedef struct _DrawLater {
   Projectile *projectile;
   EffectLocation *effect;
   GLuint name;  
+  Location *pos;
 } DrawLater;
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
@@ -55,6 +56,20 @@ typedef struct _DrawLater {
 #define POS_CACHE_DEPTH    5
 #define POS_CACHE_HEIGHT   10
 #define MAX_POS_CACHE (POS_CACHE_WIDTH * POS_CACHE_DEPTH * POS_CACHE_HEIGHT)
+
+// used by locked doors
+class Pos3 {
+public:
+  int x, y, z;
+  Pos3(int x, int y, int z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
+  ~Pos3() {
+  }
+};
+
 
 /**
  *@author Gabor Torok
@@ -109,8 +124,9 @@ class Map {
   Location *selectedDropTarget;
 
   int accessMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
-  map<Location*, bool> locked;
-  map<Location*, Location*> lockedKey;
+  map<Uint32, bool> locked;
+  map<Uint32, Uint32> doorToKey;
+  map<Uint32, Uint32> keyToDoor;
 
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
@@ -288,19 +304,99 @@ class Map {
 
   bool isDoor(int x, int y);
 
-  // =================
+  // ====================================================================
   // Locked doors/chests code
-  inline void setLocked(Location *pos, bool value) { locked[pos] = value; }
-  inline void removeLocked(Location *pos) { locked.erase(pos); }
-  inline bool isLocked(Location *pos) { return(locked.find(pos) != locked.end() ? locked[pos] : false); }
-  inline void connectLocked(Location *pos, Location *key) { lockedKey[key] = pos; }
-  inline Location *getLockedByKey(Location *key) { if(lockedKey.find(key) == lockedKey.end()) return NULL; else return lockedKey[key]; }
+  inline void setLocked(int doorX, int doorY, int doorZ, bool value) {
+    locked[createTripletKey(doorX, doorY, doorZ)] = value;
+  }
+
+  inline void removeLocked(int doorX, int doorY, int doorZ) {
+    Uint32 door = createTripletKey(doorX, doorY, doorZ);
+    locked.erase(door);
+    if(doorToKey.find(door) != doorToKey.end()) {
+      Uint32 key = doorToKey[door];
+      doorToKey.erase(key);
+      keyToDoor.erase(door);
+    }
+  }
+
+  inline void clearLocked() {
+      locked.clear();
+      doorToKey.clear();
+      keyToDoor.clear();
+  }
+
+  inline bool isLocked(int doorX, int doorY, int doorZ) {
+    Uint32 door = createTripletKey(doorX, doorY, doorZ);
+    return (locked.find(door) != locked.end() ? locked[door] : false);
+  }
+
+  inline void getDoorLocation(int keyX, int keyY, int keyZ, 
+                              int *doorX, int *doorY, int *doorZ) {
+    Uint32 key = createTripletKey(keyX, keyY, keyZ);
+    if(keyToDoor.find(key) != keyToDoor.end()) {
+      decodeTripletKey(keyToDoor[key], doorX, doorY, doorZ);
+    } else {
+      *doorX = *doorY = *doorZ = -1;
+    }
+  }
+
+  inline void updateDoorLocation(int oldDoorX, int oldDoorY, int oldDoorZ, 
+                                 int newDoorX, int newDoorY, int newDoorZ) {
+    //cerr << "**********************" << endl;
+    Uint32 oldDoor = createTripletKey(oldDoorX, oldDoorY, oldDoorZ);
+    Uint32 newDoor = createTripletKey(newDoorX, newDoorY, newDoorZ);
+    //cerr << "oldDoor=" << oldDoor << " pos: " << oldDoorX << "," << oldDoorY << "," << oldDoorZ << endl;
+    //cerr << "newDoor=" << newDoor << " pos: " << newDoorX << "," << newDoorY << "," << newDoorZ << endl;
+    if(locked.find(oldDoor) != locked.end()) {
+      //cerr << "\tfound locked." << endl;
+      locked[newDoor] = locked[oldDoor];
+      locked.erase(oldDoor);
+    }
+    if(doorToKey.find(oldDoor) != doorToKey.end()) {
+      //cerr << "\tfound door<->key." << endl;
+      Uint32 key = doorToKey[oldDoor];
+      int keyX, keyY, keyZ;
+      decodeTripletKey(key, &keyX, &keyY, &keyZ);
+      //cerr << "\tkey=" << key << " pos: " << keyX << "," << keyY << "," << keyZ << endl;
+      doorToKey[newDoor] = key;
+      doorToKey.erase(oldDoor);
+      keyToDoor[key] = newDoor;
+    }
+    //cerr << "**********************" << endl;
+  }
+
+  void setKeyLocation(int doorX, int doorY, int doorZ, 
+                      int keyX, int keyY, int keyZ) {
+    Uint32 door = createTripletKey(doorX, doorY, doorZ);
+    Uint32 key = createTripletKey(keyX, keyY, keyZ);
+    doorToKey[door] = key;
+    keyToDoor[key] = door;
+  }
+  // ====================================================================
   
   // access map methods for locked doors/chests
   void configureAccessMap(int fromX, int fromY);
   bool isPositionAccessible(int atX, int atY);
 
  protected:
+   // This assumes that MAP_WIDTH >= MAP_HEIGHT and that MAP_WIDTH^3 < 2^32.
+   inline Uint32 createTripletKey(int x, int y, int z) {
+     Uint32 key = 
+       ((Uint32)x * (Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH) + 
+       ((Uint32)y * (Uint32)MAP_WIDTH) + 
+       ((Uint32)z);
+     //cerr << "DEBUG: createTripletKey, x=" << x << " y=" << y << " z=" << z << " key=" << key << endl;
+     return key;
+   }
+
+   inline void decodeTripletKey(Uint32 key, int *x, int *y, int *z) {
+     *x = (int)(key / ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH));
+     *y = (int)((key % ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH)) / (Uint32)MAP_WIDTH);
+     *z = (int)((key % ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH)) % (Uint32)MAP_WIDTH);
+     //cerr << "DEBUG: decodeTripletKey, key=" << key << " x=" << (*x) << " y=" << (*y) << " z=" << (*z) << endl;
+   }
+
   DrawLater later[100], stencil[1000], other[1000], damage[1000];
   int laterCount, stencilCount, otherCount, damageCount;
   

@@ -263,6 +263,8 @@ public:
 #define DEFAULT_SERVER_PORT 6543
 
 // The map's dimensions
+// Warning: if this ever changes, be sure to look at Map::createTripletKey().
+// it assumes that MAP_WIDTH >= MAP_HEIGHT and that MAP_WIDTH^3 < 2^32.
 #define MAP_WIDTH 600
 #define MAP_DEPTH 600
 
@@ -361,9 +363,13 @@ public:
 	HP_LABEL,
 	AC_LABEL,
 	SPELL_FAILED_MESSAGE,
-    ITEM_ACL_VIOLATION,
-    JOIN_SERVER_ERROR,
-    CLIENT_CANT_CONNECT_ERROR,
+  ITEM_ACL_VIOLATION,
+  JOIN_SERVER_ERROR,
+  CLIENT_CANT_CONNECT_ERROR,
+  DOOR_OPENED_CLOSE,
+  DOOR_OPENED,
+  DOOR_OPENED_FAR,
+  DOOR_LOCKED,
 
 	// last one
 	MESSAGE_COUNT

@@ -1591,28 +1591,30 @@ bool Scourge::useTeleporter(Location *pos) {
 
 bool Scourge::useLever(Location *pos) {
   Shape *newShape = NULL;
-  if(pos->shape == shapePal->findShapeByName("OFF_SWITCH")) {
-    newShape = shapePal->findShapeByName("ON_SWITCH");
-  } else if(pos->shape == shapePal->findShapeByName("ON_SWITCH")) {
-    newShape = shapePal->findShapeByName("OFF_SWITCH");
+  if(pos->shape == shapePal->findShapeByName("SWITCH_OFF")) {
+    newShape = shapePal->findShapeByName("SWITCH_ON");
+  } else if(pos->shape == shapePal->findShapeByName("SWITCH_ON")) {
+    newShape = shapePal->findShapeByName("SWITCH_OFF");
   }
   if(newShape) {
-    Location *keyPos = map->getLocation(pos->x, pos->y, pos->z);
-    Location *doorPos = map->getLockedByKey(keyPos);
+    int keyX = pos->x;
+    int keyY = pos->y;
+    int keyZ = pos->z;
+    int doorX, doorY, doorZ;
+    map->getDoorLocation(keyX, keyY, keyZ,
+                         &doorX, &doorY, &doorZ);
     // flip the switch
-    map->setPosition(keyPos->x, keyPos->y, keyPos->z, newShape);
+    map->setPosition(keyX, keyY, keyZ, newShape);
     // unlock the door
-    map->setLocked(doorPos, false);
+    map->setLocked(doorX, doorY, doorZ, (map->isLocked(doorX, doorY, doorZ) ? false : true));
     // show message, depending on distance from key to door
-    float d = Constants::distance(keyPos->x,  keyPos->y, 1, 1,
-                                  doorPos->x, doorPos->y, 1, 1);
-    // FIXME: use constants message lookup!
+    float d = Constants::distance(keyX,  keyY, 1, 1, doorX, doorY, 1, 1);
     if(d < 20.0f) {
-      map->addDescription("You hear the very loud sound of a spring releasing.");
+      map->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
     } else if(d >= 20.0f && d < 100.0f) {
-      map->addDescription("A muffled metalic grating noise echoes.");
+      map->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
     } else {
-      map->addDescription("An almost sub-tonal bass note reverberates.");
+      map->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
     }
     return true;
   }
@@ -1627,9 +1629,26 @@ bool Scourge::useDoor(Location *pos) {
         newDoorShape = shapePal->findShapeByName("EW_DOOR");
     }
     if(newDoorShape) {
-      if(map->isLocked(map->getLocation(pos->x, pos->y, pos->z))) {
-        // FIXME: use constants message lookup
-        map->addDescription("This door is locked.");
+      int doorX = pos->x;
+      int doorY = pos->y;
+      int doorZ = pos->z;
+      
+      // see if the door is open or closed. This is done by checking the shape above the
+      // door. If there's something there and the orientation (NS vs. EW) matches, the
+      // door is closed. I know it's a hack.
+      Location *above = map->getLocation(doorX, 
+                                         doorY, 
+                                         doorZ + pos->shape->getHeight());
+      //if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
+      //else cerr << "Nothing above!" << endl;
+      bool closed = ((pos->shape == shapePal->findShapeByName("EW_DOOR") &&
+                      above && above->shape == shapePal->findShapeByName("EW_DOOR_TOP")) ||
+                     (pos->shape == shapePal->findShapeByName("NS_DOOR") &&
+                      above && above->shape == shapePal->findShapeByName("NS_DOOR_TOP")) ?
+                     true : false);
+      //cerr << "DOOR is closed? " << closed << endl;
+      if(closed && map->isLocked(doorX, doorY, doorZ)) {
+        map->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
         return true;
       }
 
@@ -1639,16 +1658,15 @@ bool Scourge::useDoor(Location *pos) {
         Sint16 nx = pos->x;
         Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
 
-        // FIXME!
-        cerr << "FIXME: update locked/lockedKey tables in Map." << endl;
-
         Shape *oldDoorShape = map->removePosition(ox, oy, party->getPlayer()->getZ());
         if(!map->isBlocked(nx, ny, party->getPlayer()->getZ(),
                            ox, oy, party->getPlayer()->getZ(),
                            newDoorShape)) {
-            map->setPosition(nx, ny, party->getPlayer()->getZ(), newDoorShape);
-            map->updateLightMap();
-            return true;
+          map->setPosition(nx, ny, party->getPlayer()->getZ(), newDoorShape);
+          map->updateLightMap();          
+          map->updateDoorLocation(doorX, doorY, doorZ,
+                                  nx, ny, party->getPlayer()->getZ());
+          return true;
         } else {
           // rollback
           map->setPosition(ox, oy, party->getPlayer()->getZ(), oldDoorShape);

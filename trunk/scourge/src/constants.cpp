@@ -128,11 +128,24 @@ char *Constants::messages[][80] = {
 	"Bazzoomm! A small cloud of smoke rises to the ceiling." },
   { "Your character cannot equip that item." },
   { "Fill out the server details, first." },
-  { "Unable to connect to server." }
+  { "Unable to connect to server." },
+
+  { "You hear a very loud, metallic sound nearby.",
+    "Something clicks.",
+    "The loud twang doesn't help; this is freaky enough already."  },
+  { "A muffled, metalic, grating noise echoes from the dark.",
+    "You've done something... you're not sure what but you hope it's had dinner." },
+  { "You feel the resonance of an almost sub-tonal bass note.",
+    "An omnious sound floats from a distant corner." },
+  { "Suck! This door is locked shut!",
+    "Try as you might, you can't open it.",
+    "Perhaps it's locked." }
+
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
+  3, 2, 2, 3
 };
 
 // opengl extension routines

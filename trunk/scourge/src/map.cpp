@@ -121,6 +121,9 @@ Map::~Map(){
 }
 
 void Map::reset() {
+  // remove locking info
+  clearLocked();
+
   // remove area effects
   vector<EffectLocation*>::iterator e=currentEffects.begin();
   for(int i = 0; i < (int)currentEffects.size(); i++) {
@@ -529,6 +532,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
   damage[damageCount].effect = effect;
 	damage[damageCount].projectile = NULL;
 	damage[damageCount].name = name;
+  damage[damageCount].pos = getLocation(posX, posY, posZ);
 	damageCount++;
 
   // don't draw shape if it's an area effect
@@ -545,6 +549,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	stencil[stencilCount].projectile = NULL;
   stencil[stencilCount].effect = NULL;
 	stencil[stencilCount].name = name;
+  stencil[stencilCount].pos = getLocation(posX, posY, posZ);
 	stencilCount++;
   } else if(!shape->isStencil()) {
 	if(shape->drawFirst()) {
@@ -557,6 +562,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  other[otherCount].projectile = NULL;
     other[otherCount].effect = NULL;
 	  other[otherCount].name = name;
+    other[otherCount].pos = getLocation(posX, posY, posZ);
 	  otherCount++;
 	}
 	if(shape->drawLater()) {
@@ -569,6 +575,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  later[laterCount].projectile = NULL;
     later[laterCount].effect = NULL;
 	  later[laterCount].name = name;
+    later[laterCount].pos = getLocation(posX, posY, posZ);
 	  laterCount++;
 	}
   }
@@ -645,7 +652,8 @@ void Map::draw() {
       later2.item = NULL;
       later2.creature = NULL;
       later2.projectile = NULL;
-      later2.name = 0;   
+      later2.name = 0;
+      later2.pos = NULL;
       doDrawShape(&later2);
     }
 #endif
@@ -791,6 +799,7 @@ void Map::drawProjectiles() {
       dl.item = NULL;
       dl.projectile = proj;
       dl.name = 0;
+      dl.pos = NULL;
 
       if (proj->getSpell()) {
         glEnable(GL_BLEND);
@@ -925,8 +934,12 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     if(colorAlreadySet) {
       colorAlreadySet = false;
     } else {
-      //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
-      glColor4f(1, 1, 1, 0.9f);
+      if(later && isLocked(later->pos->x, later->pos->y, later->pos->z)) {
+        glColor4f(1, 0.3f, 0.3f, 1.0f);
+      } else {
+        //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+        glColor4f(1, 1, 1, 0.9f);
+      }
     }
   }
 
@@ -1721,7 +1734,7 @@ bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
 		if(pos == NULL || pos->item || pos->creature || 
 			 !( ((GLShape*)(pos->shape))->isLightBlocking()) || 
        (onlyLockedDoors && isDoor(x, y) && 
-        !isLocked(getLocation(pos->x, pos->y, pos->z)))) {
+        !isLocked(pos->x, pos->y, pos->z))) {
 			return false;
 		}
 	}

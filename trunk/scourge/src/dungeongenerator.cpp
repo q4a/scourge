@@ -1273,16 +1273,10 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
   for(int i = 0; i < doorCount; i++) {
     Sint16 mapx = door[i][0];
     Sint16 mapy = door[i][1];
-    if((int)(20.0f * rand() / RAND_MAX) == 0) {
+    if((int)(10.0f * rand() / RAND_MAX) == 0) {
       cerr << "\t*** Locking door: " << mapx << "," << mapy << endl;
       // lock the door
-      Location *pos = map->getPosition(mapx, mapy, 0);
-      if(!pos) {
-        // ASSERT for debugging
-        cerr << "\tError while locking doors: no door at position." << endl;
-        exit(1);
-      }
-      map->setLocked(pos, true);
+      map->setLocked(mapx, mapy, 0, true);
       // find an accessible location for the switch
       int nx, ny;
       Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
@@ -1291,6 +1285,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
       cerr << "\t*** Location for lever search: " << (SDL_GetTicks() - start) << 
         " millis. Result=" << ( nx < MAP_WIDTH ) << endl;
       if( nx < MAP_WIDTH ) {
+        cerr << "\t\t*** Lever at: " << nx << "," << ny << endl;
         // place the switch
         addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
         Location *keyPos = map->getPosition(nx, ny, 0);
@@ -1300,10 +1295,10 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
           exit(2);
         }
         // connect the switch and the door
-        map->connectLocked(pos, keyPos);
+        map->setKeyLocation(mapx, mapy, 0, nx, ny, 0);
       } else {
         // if none found, unlock the door
-        map->removeLocked(pos);
+        map->removeLocked(mapx, mapy, 0);
       }
     }
   }
