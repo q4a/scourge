@@ -1352,6 +1352,7 @@ void Scourge::setUILayout() {
     (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
 
   messageWin->setVisible(false);
+  miniMap->getWindow()->setVisible(false);
   switch(layoutMode) {
   case Constants::GUI_LAYOUT_ORIGINAL:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
@@ -1359,11 +1360,14 @@ void Scourge::setUILayout() {
   messageWin->move(0, 0);
   messageWin->setLocked(false);
   party->getWindow()->setLocked(false);
+  miniMap->getWindow()->setLocked(false);
+  miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
   if(inventory->getWindow()->isLocked()) {
     inventory->getWindow()->setVisible(false);
     inventory->getWindow()->setLocked(false);
   }
   break;
+
   case Constants::GUI_LAYOUT_BOTTOM:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
   messageWin->resize(width, PARTY_GUI_HEIGHT);
@@ -1371,15 +1375,24 @@ void Scourge::setUILayout() {
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
   party->getWindow()->setLocked(true);
+  miniMap->getWindow()->setLocked(true);
+  miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH,
+                             getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER));
+  miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
   if(inventory->getWindow()->isLocked()) {
     inventory->getWindow()->setVisible(false);
     inventory->getWindow()->setLocked(false);
   }
   break;
+
   case Constants::GUI_LAYOUT_SIDE:
-    messageList->resize(PARTY_GUI_WIDTH, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + 25));
-  messageWin->resize(PARTY_GUI_WIDTH, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2));
-  messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH, 0);
+    messageList->resize(PARTY_GUI_WIDTH, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT + 25));
+  messageWin->resize(PARTY_GUI_WIDTH, 
+                     getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT));
+  messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,  MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER);
+  miniMap->getWindow()->setLocked(true);
+  miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
+  miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
   //mapX = 400;
   mapX = 0;
   mapWidth = getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH;
@@ -1391,10 +1404,15 @@ void Scourge::setUILayout() {
     inventory->getWindow()->setLocked(false);
   }
   break;
+
   case Constants::GUI_LAYOUT_INVENTORY:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
   messageWin->resize(width, PARTY_GUI_HEIGHT);
   messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  miniMap->getWindow()->setLocked(true);
+  miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
+  int h = getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER * 2);
+  miniMap->resize(MINIMAP_WINDOW_WIDTH, (h > MINIMAP_WINDOW_HEIGHT ? MINIMAP_WINDOW_HEIGHT : h));
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
   party->getWindow()->setLocked(true);
@@ -1411,6 +1429,7 @@ void Scourge::setUILayout() {
   }
 
   messageWin->setVisible(true);
+  miniMap->getWindow()->setVisible(true);
 
   party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                          getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);

@@ -172,6 +172,8 @@ public:
 #define TOP_GUI_HEIGHT 100
 #define GUI_PLAYER_INFO_W 250
 #define GUI_PLAYER_INFO_H 350
+#define MINIMAP_WINDOW_WIDTH 200
+#define MINIMAP_WINDOW_HEIGHT 150
 
   static const int PARTY_GUI_WIDTH=500;
   static const int PARTY_GUI_HEIGHT=165;

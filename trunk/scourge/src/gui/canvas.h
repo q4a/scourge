@@ -50,6 +50,7 @@ class Canvas : public Widget {
    */
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void removeEffects(Widget *parent);
+  inline void resize(int w, int h) { Widget::resize(w, h); x2 = getX() + w; y2 = getY() + h; }
 };
 
 #endif
