@@ -241,7 +241,7 @@ int Party::getTotalLevel() {
 void Party::createHardCodedParty(Session *session, Creature ***party, int *partySize) {
   int pcCount = 4;
   Creature **pc = (Creature**)malloc(sizeof(Creature*) * pcCount);
-  int level = 6;
+  int level = 3;
 
   // FIXME: consider using newCreature here
   // the end of startMission would have to be modified to not delete the party

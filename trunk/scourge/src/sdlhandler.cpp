@@ -505,7 +505,7 @@ void SDLHandler::drawScreen() {
 
     ///*
     glEnable( GL_ALPHA_TEST );
-    glAlphaFunc( GL_NOTEQUAL, 0 );
+    glAlphaFunc( GL_EQUAL, 0xff );
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);

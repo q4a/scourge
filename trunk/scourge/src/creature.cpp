@@ -444,9 +444,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
   Uint32 t = SDL_GetTicks();
   if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
-  cerr << "*** gotoPosition: creature=" << getName() << 
-    " speed=" << (t - lastMove) << 
-    " vs. " << (getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1)) << endl;  
   lastMove = t;
 
   // If the target moved, get the best path to the location

@@ -187,7 +187,7 @@ int clientInfoLoop(void *data) {
 
   // copy the message  into this, so Message can be deleted in mutex
   char *messageStr = NULL;
-  int messageLength;
+  int messageLength = 0;
 
   while(clientInfo->isThreadRunning()) {
 
