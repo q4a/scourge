@@ -33,6 +33,10 @@ InfoGui::InfoGui(Scourge *scourge) {
                            scourge->getShapePalette()->getHighlightTexture(), 
                            Constants::getMessage(Constants::CLOSE_LABEL) );
   win->addWidget((Widget*)openButton);
+  
+  int n = 48;
+  image = new Canvas( width - n - 10, 10, width - 10, 10 + n, this );
+  win->addWidget( image );
 
   win->createLabel(10, 10, "Name:", Constants::RED_COLOR);
   strcpy(name, "");
@@ -70,6 +74,31 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 void InfoGui::drawWidget(Widget *w) {
+  if( w == image && item ) {
+    glEnable( GL_ALPHA_TEST );
+    glAlphaFunc( GL_EQUAL, 0xff );
+    glEnable(GL_TEXTURE_2D);
+    glPushMatrix();
+    //    glTranslatef( x, y, 0 );
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+    glColor4f(1, 1, 1, 1);
+    
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex3f( 0, 0, 0 );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( 0, image->getHeight(), 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex3f( image->getWidth(), image->getHeight(), 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( image->getWidth(), 0, 0 );
+    glEnd();
+    glPopMatrix();
+    
+    glDisable( GL_ALPHA_TEST );
+    glDisable(GL_TEXTURE_2D);
+  }
 }
 
 void InfoGui::describe() {

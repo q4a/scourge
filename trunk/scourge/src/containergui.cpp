@@ -25,12 +25,15 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   win = new Window( scourge->getSDLHandler(),
                     x, y, 320, 300, container->getItemName(), true, 
                     Window::SIMPLE_WINDOW, "wood" );
-  openButton = new Button( 5, 5, 105, 35, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
+  openButton = new Button( 5, 5, 105, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
-  infoButton = new Button( 110, 5, 210, 35, scourge->getShapePalette()->getHighlightTexture(), "Info" );
+  infoButton = new Button( 110, 5, 210, 25, scourge->getShapePalette()->getHighlightTexture(), "Info" );
   win->addWidget((Widget*)infoButton);
+  closeButton = new Button( 215, 5, 315, 25, scourge->getShapePalette()->getHighlightTexture(), "Close" );
+  win->addWidget((Widget*)closeButton);
 
-  list = new ScrollingList(5, 40, 310, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), scourge->getShapePalette()->getHighlightTexture(), this);
+  list = new ScrollingList( 10, 35, 300, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 10), 
+                            scourge->getShapePalette()->getHighlightTexture(), this, 30 );
   win->addWidget((Widget*)list);
   label = new Label(5, 270, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP));
   win->addWidget(label);
@@ -38,6 +41,7 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   // allocate memory for the contained item descriptions
   this->containedItemNames = (char**)malloc(MAX_CONTAINED_ITEMS * sizeof(char*));
   this->itemColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
+  this->itemIcon = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
   for(int i = 0; i < MAX_CONTAINED_ITEMS; i++) {
     this->containedItemNames[i] = (char*)malloc(120 * sizeof(char));
   }
@@ -53,6 +57,7 @@ ContainerGui::~ContainerGui() {
   }
   free(containedItemNames);
   free(itemColor);
+  free(itemIcon);
 
   //delete label;
   //delete list;
@@ -73,10 +78,12 @@ void ContainerGui::showContents() {
       itemColor[i].b = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem(i)->getMagicLevel() ]->b;
     }
     itemColor[i].a = 1;
+    itemIcon[i] = scourge->getShapePalette()->tilesTex[ container->getContainedItem(i)->getRpgItem()->getIconTileX() ][ container->getContainedItem(i)->getRpgItem()->getIconTileY() ];
   }
-  list->setLines(container->getContainedItemCount(), 
-                 (const char **)containedItemNames,
-                 itemColor);
+  list->setLines( container->getContainedItemCount(), 
+                  (const char **)containedItemNames,
+                  itemColor,
+                  itemIcon );
 }
 
 bool ContainerGui::handleEvent(SDL_Event *event) {
@@ -97,7 +104,7 @@ bool ContainerGui::handleEvent(SDL_Event *event) {
 }
 
 bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
-	if(widget == win->closeButton) {
+	if(widget == win->closeButton || widget == closeButton) {
 		win->setVisible(false);
 		return true;
   } else if(widget == infoButton || 
