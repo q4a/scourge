@@ -219,7 +219,6 @@ void MiniMap::drawWidget(Widget *w) {
   //	glDisable(GL_CULL_FACE);
   int xPartyPos, yPartyPos;     
   float distX, distY; 
-  int k;
   int xCoord=0;
   int yCoord=0;
 
@@ -242,7 +241,7 @@ void MiniMap::drawWidget(Widget *w) {
   glTranslatef(win->getX(), win->getY(), 0);
 
   // Set origin to top-left pixel of minimap
-  glTranslatef(xCoord, yCoord, 100);                                                                                                                          
+  glTranslatef(xCoord, yCoord, 100);
 
   // Translate minimap so that it is centered on party position if needed
   if(zoomFactor > 1.0){                 
@@ -292,37 +291,23 @@ void MiniMap::drawWidget(Widget *w) {
   glEnd();       
   glDisable(GL_TEXTURE_2D);                           
 
+
   // Draw the position of the active player and its orientation
   // (Must draw counter-clock wise)
+  glTranslatef( xPartyPos, yPartyPos, 0 );
+  glRotatef( scourge->getParty()->getPlayer()->getTargetAngle() - 90, 0, 0, 1 );
+
+  // keep the arrow the same
+  glScalef(1.0f / zoomFactor, 1.0f / zoomFactor, 1);
+
   glBegin(GL_TRIANGLES);
   glColor3f(1.0f, 1.0f, 1.0f);        
-  k = scourge->getParty()->getPlayer()->getFacingDirection();    
-  if(k == Constants::MOVE_UP){
-    // North
-    glVertex2d(xPartyPos - 4, yPartyPos + 5); 
-    glVertex2d(xPartyPos + 4, yPartyPos + 5); 
-    glVertex2d(xPartyPos, yPartyPos - 5); 
-  } else if(k == Constants::MOVE_RIGHT){
-    // East
-    glVertex2d(xPartyPos + 5, yPartyPos); 
-    glVertex2d(xPartyPos - 5, yPartyPos - 4); 
-    glVertex2d(xPartyPos - 5, yPartyPos + 4);         
-  } else if(k == Constants::MOVE_LEFT){
-    // West
-    glVertex2d(xPartyPos - 5, yPartyPos); 
-    glVertex2d(xPartyPos + 5, yPartyPos + 4); 
-    glVertex2d(xPartyPos + 5, yPartyPos - 4);         
-  } else if(k == Constants::MOVE_DOWN){
-    // South
-    glVertex2d(xPartyPos + 4, yPartyPos - 5); 
-    glVertex2d(xPartyPos - 4, yPartyPos - 5); 
-    glVertex2d(xPartyPos, yPartyPos + 5); 
-  }
+  glVertex2d(-4, 5); 
+  glVertex2d(4, 5); 
+  glVertex2d(0, -5); 
   glEnd();       
+  glPopMatrix();
 
-
-  glPopMatrix();   
-  //  glPopAttrib();
 
   glEnable( GL_TEXTURE_2D );
   glDisable(GL_ALPHA_TEST);
