@@ -58,7 +58,8 @@ Scourge::Scourge(int argc, char *argv[]){
   sdlHandler = new SDLHandler(); 
   sdlHandler->setVideoMode(userConfiguration); 
   
-  shapePal = sdlHandler->getShapePalette();
+  shapePal = sdlHandler->getShapePalette();  
+  calendar = Calendar::getInstance();  
 
   // initialize the monsters
   Monster::initMonsters();
@@ -118,6 +119,7 @@ Scourge::~Scourge(){
   delete mainMenu;
   delete optionsMenu;
   delete userConfiguration;
+  delete calendar;
 }
 
 void Scourge::startMission() {
@@ -246,6 +248,11 @@ void Scourge::drawView() {
 
   // make a move (player, monsters, etc.)
   playRound();
+  
+  // update current date variables and see if scheduled events have occured
+  calendar->update();
+  calendarButton->getLabel()->setText(calendar->getDateString());
+  
   
   map->draw();
 
@@ -603,6 +610,7 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
     glPushMatrix();
 
     // Initialize the scene w/o y rotation.
+    //map->initMapView(false, true);
     map->initMapView(true);
 
     double obj_x, obj_y, obj_z;
@@ -623,7 +631,19 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                            projection,
                            viewport,
                            &obj_x, &obj_y, &obj_z);
+   
     if(res) {
+        /*char buff[255];
+        sprintf(buff, "avant: x %2.2f, y %2.2f, z %2.2f, getX %d, getY %d", obj_x, obj_y, obj_z, map->getX(), map->getY());
+        map->addDescription(buff, 1.0f, 1.0f, 0.5f);  
+        sprintf(buff, "avant op : yrot = %2.2f, sin(yrot) = %2.2f, obj_x * sin(yrot) = %2.2f", map->getYRot(), sin(map->getYRot()), obj_x * sin(map->getYRot()));
+        map->addDescription(buff, 1.0f, 1.0f, 0.5f);
+        float radians;
+        radians = map->getYRot() * 3.1415926 / 180.0f;
+        obj_x += (obj_x * sin(radians));
+        obj_y += (obj_y * sin(radians));
+        sprintf(buff, "avant 2: x %2.2f, y %2.2f, z %2.2f", obj_x, obj_y, obj_z);
+        map->addDescription(buff, 1.0f, 1.0f, 0.5f);*/
         *mapx = map->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
         *mapy = map->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
         //*mapz = (Uint16)0;
@@ -631,6 +651,8 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
 		map->debugX = *mapx;
 		map->debugY = *mapy;
 		map->debugZ = 0;
+		//map->debgTextMouse= true;
+		//map->debugZ = obj_z;
     } else {
         //*mapx = *mapy = *mapz = MAP_WIDTH + 1;
         *mapx = *mapy = MAP_WIDTH + 1;
@@ -1029,7 +1051,10 @@ void Scourge::createUI() {
   roundButton = new Button( 0, 75,  100, 100, strdup("Real-Time") );
   roundButton->setToggle(true);
   roundButton->setSelected(true);
-  mainWin->addWidget((Widget*)roundButton);
+  mainWin->addWidget((Widget*)roundButton);    
+      
+  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT, strdup(calendar->getDateString()));
+  mainWin->addWidget((Widget*)calendarButton);    
 
 
   diamondButton = new Button( 100, 0,  120, 20 );
@@ -1501,7 +1526,11 @@ void Scourge::toggleRound() {
   for(i = 0; i < creatureCount; i++){
     creatures[i]->getShape()->setPauseAnimation(!startRound);
   }  
-  roundButton->setSelected(startRound);
+  
+  // Freeze / unfreeze calendar
+  calendar->setPause(!startRound); 
+  
+  roundButton->setSelected(startRound);       
 }
 
 void Scourge::togglePlayerOnly() {

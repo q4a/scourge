@@ -24,6 +24,7 @@
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
+#include "calendar.h"
 #include "minimap.h"
 #include "map.h"
 #include "dungeongenerator.h"
@@ -43,6 +44,7 @@
 using namespace std;
 
 class Creature;
+class Calendar;
 class MiniMap;
 class Map;
 class DungeonGenerator;
@@ -76,6 +78,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
  private:
   Map *map;
   MiniMap * miniMap;
+  Calendar * calendar;
   UserConfiguration *userConfiguration;  
   DungeonGenerator *dg;
   Scourge *scourge;
@@ -95,6 +98,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Button *optionsButton;
   Button *quitButton;
   Button *roundButton;
+  Button *calendarButton;
 
   Button *diamondButton;
   Button *staggeredButton;
@@ -228,7 +232,9 @@ public:
   
   inline UserConfiguration * getUserConfiguration() { return userConfiguration; }
 
-  inline Creature *getParty(int i) { return party[i]; }  
+  inline Creature *getParty(int i) { return party[i]; } 
+  
+  inline Calendar *getCalendar() { return calendar; } 
 
   void drawTopWindow();
 
