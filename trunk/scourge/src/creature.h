@@ -87,6 +87,7 @@ class Creature {
   GLint lastTick;
   int speed;
   int armor;
+  int moveRetrycount;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -123,7 +124,6 @@ class Creature {
    */
   bool move(Uint16 dir, Map *map);
   bool follow(Map *map);
-  bool gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz);
   bool moveToLocator(Map *map, bool single_step);
   
   inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
@@ -145,7 +145,7 @@ class Creature {
   */
   void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
   
-  inline void setSelXY(int x, int y) { selX = x; selY = y; }
+  inline void setSelXY(int x, int y) { selX = x; selY = y; moveRetrycount = 0; }
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
   
@@ -229,6 +229,8 @@ class Creature {
   void commonInit();
   void monsterInit();
   void recalcAggregateValues();
+
+  bool gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug);
 };
 
 

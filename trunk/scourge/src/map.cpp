@@ -1113,6 +1113,17 @@ bool Map::shapeFits(Shape *shape, int x, int y, int z) {
   return true;
 }
 
+// FIXME: only uses x, y for now
+Location *Map::getBlockingLocation(Shape *shape, int x, int y, int z) {
+  for(int tx = 0; tx < shape->getWidth(); tx++) {
+	for(int ty = 0; ty < shape->getDepth(); ty++) {
+	  Location *loc = getLocation(x + tx, y - ty, 0);
+	  if(loc) return loc;
+	}
+  }
+  return NULL;
+}
+
 /**
    Return the drop location, or NULL if none
  */
