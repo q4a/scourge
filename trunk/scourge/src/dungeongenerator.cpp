@@ -1282,7 +1282,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
         cerr << "\tError while locking doors: no door at position." << endl;
         exit(1);
       }
-      map->setLocked(pos);
+      map->setLocked(pos, true);
       // find an accessible location for the switch
       int nx, ny;
       Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
@@ -1303,7 +1303,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
         map->connectLocked(pos, keyPos);
       } else {
         // if none found, unlock the door
-        map->setLocked(pos);
+        map->removeLocked(pos);
       }
     }
   }

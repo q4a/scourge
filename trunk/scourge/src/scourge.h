@@ -210,6 +210,7 @@ protected:
 
   bool getItem(Location *pos);
   void dropItem(int x, int y);
+  bool useLever(Location *pos);
   bool useDoor(Location *pos);
   bool useBoard(Location *pos);
   bool useTeleporter(Location *pos);

@@ -1440,8 +1440,9 @@ bool Scourge::useItem(int x, int y, int z) {
 		  return true;
 		}
 
-		if(useDoor(pos)) {
-		  map->updateLightMap();
+    if(useLever(pos)) {
+      return true;
+    } else if(useDoor(pos)) {
 		  return true;
 		} else if(useGate(pos)) {
 		  return true;
@@ -1588,6 +1589,36 @@ bool Scourge::useTeleporter(Location *pos) {
   return false;
 }
 
+bool Scourge::useLever(Location *pos) {
+  Shape *newShape = NULL;
+  if(pos->shape == shapePal->findShapeByName("OFF_SWITCH")) {
+    newShape = shapePal->findShapeByName("ON_SWITCH");
+  } else if(pos->shape == shapePal->findShapeByName("ON_SWITCH")) {
+    newShape = shapePal->findShapeByName("OFF_SWITCH");
+  }
+  if(newShape) {
+    Location *keyPos = map->getLocation(pos->x, pos->y, pos->z);
+    Location *doorPos = map->getLockedByKey(keyPos);
+    // flip the switch
+    map->setPosition(keyPos->x, keyPos->y, keyPos->z, newShape);
+    // unlock the door
+    map->setLocked(doorPos, false);
+    // show message, depending on distance from key to door
+    float d = Constants::distance(keyPos->x,  keyPos->y, 1, 1,
+                                  doorPos->x, doorPos->y, 1, 1);
+    // FIXME: use constants message lookup!
+    if(d < 20.0f) {
+      map->addDescription("You hear the very loud sound of a spring releasing.");
+    } else if(d >= 20.0f && d < 100.0f) {
+      map->addDescription("A muffled metalic grating noise echoes.");
+    } else {
+      map->addDescription("An almost sub-tonal bass note reverberates.");
+    }
+    return true;
+  }
+  return false;
+}
+
 bool Scourge::useDoor(Location *pos) {
     Shape *newDoorShape = NULL;
     if(pos->shape == shapePal->findShapeByName("EW_DOOR")) {
@@ -1596,16 +1627,27 @@ bool Scourge::useDoor(Location *pos) {
         newDoorShape = shapePal->findShapeByName("EW_DOOR");
     }
     if(newDoorShape) {
+      if(map->isLocked(map->getLocation(pos->x, pos->y, pos->z))) {
+        // FIXME: use constants message lookup
+        map->addDescription("This door is locked.");
+        return true;
+      }
+
         // switch door
         Sint16 ox = pos->x;
         Sint16 oy = pos->y;
         Sint16 nx = pos->x;
         Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
+
+        // FIXME!
+        cerr << "FIXME: update locked/lockedKey tables in Map." << endl;
+
         Shape *oldDoorShape = map->removePosition(ox, oy, party->getPlayer()->getZ());
         if(!map->isBlocked(nx, ny, party->getPlayer()->getZ(),
                            ox, oy, party->getPlayer()->getZ(),
                            newDoorShape)) {
             map->setPosition(nx, ny, party->getPlayer()->getZ(), newDoorShape);
+            map->updateLightMap();
             return true;
         } else {
           // rollback
