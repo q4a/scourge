@@ -1257,68 +1257,41 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
 }
 
 Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z, 
-						 Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
-						 Shape *s, 
-						 int *newz) {
+                         Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
+                         Shape *s, 
+                         int *newz) {
   int zz = z;
   for(int sx = 0; sx < s->getWidth(); sx++) {
-	for(int sy = 0; sy < s->getDepth(); sy++) {
-	  // find the lowest location where this item fits
-	  int sz = z;
-	  while(sz < zz + s->getHeight()) {
-		Location *loc = pos[x + sx][y - sy][z + sz];
-		if(loc && loc->shape && 
-		   !(loc->x == shapeX && loc->y == shapeY && loc->z == shapeZ)) {
-		  if(newz && (loc->item || loc->creature)) {
-			int tz = loc->z + loc->shape->getHeight();
-			if(tz > zz) zz = tz;
-			if(zz + s->getHeight() >= MAP_VIEW_HEIGHT) {
-			  return pos[x + sx][y - sy][z + sz];
-			}
-			if(zz > sz) sz = zz;
-			else break;
-		  } else if(newz && loc) {
-			return pos[x + sx][y - sy][z + sz];
-		  } else if(!newz && !(loc && loc->item && !loc->item->isBlocking())) {
-			return pos[x + sx][y - sy][z + sz];
-		  } else {
-			sz++;
-		  }
-		} else {
-		  sz++;
-		}
-	  }
-	}
+    for(int sy = 0; sy < s->getDepth(); sy++) {
+      // find the lowest location where this item fits
+      int sz = z;
+      while(sz < zz + s->getHeight()) {
+        Location *loc = pos[x + sx][y - sy][z + sz];
+        if(loc && loc->shape && 
+           !(loc->x == shapeX && loc->y == shapeY && loc->z == shapeZ)) {
+          if(newz && (loc->item || loc->creature)) {
+            int tz = loc->z + loc->shape->getHeight();
+            if(tz > zz) zz = tz;
+            if(zz + s->getHeight() >= MAP_VIEW_HEIGHT) {
+              return pos[x + sx][y - sy][z + sz];
+            }
+            if(zz > sz) sz = zz;
+            else break;
+          } else if(newz && loc) {
+            return pos[x + sx][y - sy][z + sz];
+          } else if(!newz && !(loc && loc->item && !loc->item->isBlocking())) {
+            return pos[x + sx][y - sy][z + sz];
+          } else {
+            sz++;
+          }
+        } else {
+          sz++;
+        }
+      }
+    }
   }
   if(newz) *newz = zz;
   return NULL;
-}
-
-void Map::switchPlaces(Sint16 x1, Sint16 y1, Sint16 z1,
-											 Sint16 x2, Sint16 y2, Sint16 z2) {
-	Shape *shape1 = removePosition(x1, y1, z1);
-	Shape *shape2 = removePosition(x2, y2, z2);
-
-  Location *position = isBlocked(x2, y2, z2, x1, y1, z1, shape1);
-	if(position) {
-    // can't do it
-  	setPosition(x1, y1, z1, shape1);
-	  setPosition(x2, y2, z2, shape2);
-    return;
-  }
-	// move it
-	setPosition(x2, y2, z2, shape1);
-
-  position = isBlocked(x1, y1, z1, x2, y2, z2, shape2);
-	if(position) {
-    // can't do it
-    removePosition(x2, y2, z2); // undo previous step
-  	setPosition(x1, y1, z1, shape1);
-	  setPosition(x2, y2, z2, shape2);
-    return;
-  }
-	// move it
-	setPosition(x1, y1, z1, shape2);  
 }
 
 Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {

@@ -298,7 +298,8 @@ bool Creature::move(Uint16 dir, Map *map) {
   if(character) return false;
 
   Uint32 t = SDL_GetTicks();
-  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
   //cerr << "*** move(): creature=" << getName() << 
   //  " speed=" << (t - lastMove) << 
   //  " vs. " << (getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1)) << endl;
@@ -496,7 +497,8 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
   // creature speed
   Uint32 t = SDL_GetTicks();
-  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
   lastMove = t;
 
   // If the target moved, get the best path to the location
@@ -504,52 +506,37 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     tx = px;
     ty = py;
     bestPathPos = 1; // skip 0th position; it's the starting location
-    Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, session->getMap(), getShape());
+    Util::findPath(round(getX()), round(getY()), round(getZ()), 
+                   px, py, pz, &bestPath, session->getMap(), getShape());
   }
 
-  if((int)bestPath.size() > bestPathPos && 
-     ((MD2Shape*)getShape())->getCurrentAnimation() == MD2_RUN ) {
+  if((int)bestPath.size() > bestPathPos ) {
+//  if((int)bestPath.size() > bestPathPos && 
+//     ((MD2Shape*)getShape())->getCurrentAnimation() == MD2_RUN ) {
     // take a step on the bestPath
     Location location = bestPath[bestPathPos];
 
-    GLfloat step = 0.2f;
-    Uint16 oldDir = dir;
-    float my = (float)(location.y) - getY();
-    float mx = (float)(location.x) - getX();
-    dir = 0;
+    GLfloat newX = getX();
+    GLfloat newY = getY();
+    GLfloat step = 0.4f;
+    float lx = (float)(location.x);
+    float ly = (float)(location.y);
+    float mx = lx - getX();
+    float my = ly - getY();
     if( abs(my) > step ) {
       if( my > 0 ) {
-        dir += Constants::MOVE_DOWN;
+        newY += step;
       } else {
-        dir += Constants::MOVE_UP;
+        newY -= step;
       }
     }
     if( abs(mx) > step ) {
       if( mx > 0 ) {
-        dir += Constants::MOVE_RIGHT;
+        newX += step;
       } else {
-        dir += Constants::MOVE_LEFT;
+        newX -= step;
       }
     }
-    
-
-    /*
-    if((int)getX() < location.x) dir = Constants::MOVE_RIGHT;
-    else if((int)getX() > location.x) dir = Constants::MOVE_LEFT;
-    else if((int)getY() < location.y) dir = Constants::MOVE_DOWN;
-    else if((int)getY() > location.y) dir = Constants::MOVE_UP;
-    setFacingDirection(dir);
-    */
-    
-    
-    
-    // take a step
-    GLfloat newX = getX();
-    GLfloat newY = getY();
-    if( dir & Constants::MOVE_RIGHT ) newX += step;
-    if( dir & Constants::MOVE_LEFT ) newX -= step;
-    if( dir & Constants::MOVE_DOWN ) newY += step;
-    if( dir & Constants::MOVE_UP ) newY -= step;
 
     //if( !strcmp(getName(), "Alamont") ) 
 //      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
@@ -557,20 +544,52 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     Location *position = map->moveCreature(round(getX()), round(getY()), round(getZ()),
                                            round(newX), round(newY), round(getZ()),
                                            this);
+
+
+    /**
+     * FIXME: sending newX,newY as new coordinates could be a wall.
+     * location.x,location.y are the only known non-wall coordinates.
+     * This is probably what's causing the creatures to "hang" not
+     * want to move around obsticles.
+     * To fix this, we need to test for walls and undo one of the
+     * directional steps (newX change or newY change) and try again.
+     * 
+     * Situation:
+     * (X-wall, s-start, e-end
+     * 
+     * XXXXXXXs
+     *       e
+     * 
+     * The path using round(float-s) would go through the wall.
+     */
+    if(position && ( newX != getX() && newY != getY() )) {
+      position = map->moveCreature(round(getX()), round(getY()), round(getZ()),
+                                   round(getX()), round(newY), round(getZ()),
+                                   this);
+      if( !position ) {
+        newX = getX();
+      } else {
+        position = map->moveCreature(round(getX()), round(getY()), round(getZ()),
+                                     round(newX), round(getY()), round(getZ()),
+                                     this);
+        if( !position ) {
+          newY = getY();
+        }
+      }
+    }
+
+
     if(!position) {
       angle = Util::getAngle( newX, newY, 1, 1,
                               getX(), getY(), 1, 1 );
-      //moveTo(newX, newY, getZ());
       this->x = newX;
       this->y = newY;
-      //((MD2Shape*)shape)->setDir(dir);
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
-      if( round(newX) == location.x && round(newY) == location.y ) {
+      if( round(newX) == round(lx) && round(newY) == round(ly) ) {
         bestPathPos++;
       }
       return true;
     } else {
-      dir = oldDir;
       // if we're not at the destination, but it's possible to stand there
       // try again
       if(!(selX == round(getX()) && selY == round(getY())) && 
