@@ -243,11 +243,11 @@ public:
   void closeContainerGui(ContainerGui *gui);
 
   void closeAllContainerGuis();
+  
+  void creatureDeath(Creature *creature);
 
  protected:
-  void fightBattle();
-
-  void creatureDeath(Creature *creature);
+  void fightBattle(); 
 
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
   void createUI();

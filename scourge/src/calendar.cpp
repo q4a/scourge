@@ -19,25 +19,6 @@
 
 Calendar *Calendar::instance = NULL;
 
-unsigned char Calendar::dayInMonth[13] = {
-    0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-};
-
-const char * Calendar::monthName[13] = {
-    NULL, 
-    "January", "February", 
-    "March", "April", 
-    "May", "June", 
-    "July", "August", 
-    "September", "October", 
-    "November", "December"
-};
-
-const char * Calendar::dayName[8] = {
-    NULL, "Monday", "Tuesday", "Wednesday", "Thursday", 
-    "Friday", "Saturday", "Sunday"
-};
-
 
 Calendar *Calendar::getInstance(){
     if(!Calendar::instance){
@@ -47,16 +28,18 @@ Calendar *Calendar::getInstance(){
 }
 
 Calendar::Calendar(){
-    currentDate.sec = 0;
-    currentDate.min = 0;
-    currentDate.hour = 0;
-    currentDate.dayOfWeek = 1;
-    currentDate.numDayMonth = 1;
-    currentDate.month = 1;
-    currentDate.year = 1128;
+    //currentDate = new Date();    
     timeMultiplicator = 6;
     lastTick = 0;
-    timeFrozen = false;
+    timeFrozen = false;    
+}
+
+
+void Calendar::scheduleEvent(Event *e){
+    if(scheduledEvents.size() < MAX_SCHEDULED_EVENTS){
+          scheduledEvents.push_back(e);
+          cout << "scheduleEvent id : " << e->id << endl;
+    }
 }
 
 void Calendar::setPause(bool mustPause){
@@ -67,75 +50,57 @@ void Calendar::setPause(bool mustPause){
     timeFrozen = mustPause;             
 }
 
-void Calendar::update(){
-    bool changed = false;
+bool Calendar::update(){
+    Event * e;            
     
     // no update if time is frozen
-    if(timeFrozen) return;
+    if(timeFrozen) return false;
       
     GLint t = SDL_GetTicks();
         
-    if(t - lastTick >= 1000){       
-        // One second (real time) has passed
-        changed = true;
+    if(t - lastTick >= 1000){               
         lastTick = t;
-        currentDate.sec += timeMultiplicator;        
-        
-        if(currentDate.sec > 59){            
-            currentDate.sec -= 60;    
-            currentDate.min ++;
-                        
-            if(currentDate.min > 59){                
-                currentDate.min = 0;    
-                currentDate.hour ++;              
-                
-                if(currentDate.hour > 23){                
-                    currentDate.hour = 0;    
-                    currentDate.dayOfWeek ++;                              
-                    
-                    if(currentDate.dayOfWeek > 7){                
-                        currentDate.dayOfWeek = 1;    
-                        currentDate.numDayMonth ++;
-                        
-                        if(currentDate.numDayMonth > dayInMonth[currentDate.month]){
-                            currentDate.numDayMonth = 1;
-                            currentDate.month ++;
-                                                        
-                            if(currentDate.month > 12){
-                                currentDate.month = 1;
-                                currentDate.year ++;
-                            }                            
-                        }
-                    }              
-                }
+        currentDate.addSeconds(timeMultiplicator);                       
+    }        
+    
+    // look for scheduled events
+    cout << "nbScheduled events: " <<  scheduledEvents.size() << endl;
+    for(int i = 0 ; i < scheduledEvents.size(); i++){
+        cout << "test event: " <<  i  << endl;
+        scheduledEvents[i]->getEventDate().print();
+        cout << " < ";
+         currentDate.print();
+         cout << " ?" << endl;        
+        if( (scheduledEvents[i]->getEventDate()).isInferiorTo(currentDate) ){
+            cout<< "Oui : event " << i << " execution."<< endl;
+            scheduledEvents[i]->execute();                                   
+            
+            // remove this event as it has been executed
+            e = scheduledEvents[i];                        
+            scheduledEvents[i] = scheduledEvents[scheduledEvents.size()]; 
+            scheduledEvents[scheduledEvents.size()] = e;
+            scheduledEvents.pop_back(); 
+            e -> increaseNbExecutions();
+            
+            // and re-adds it if needed
+            if(    e->getNbExecutionsToDo() == Event::INFINITE_EXECUTIONS
+                || e->getNbExecutions() < e->getNbExecutionsToDo()){
+                Date d;
+                d = e->getEventDate();
+                d.addDate(e->getTimeOut());
+                e -> setEventDate(d);
+                scheduleEvent(e);
             }
-        }  
+            else{
+                // Don't need this event anymore
+                cout << "before Delete!!!" << endl;
+                delete e;                 
+                cout << "after Delete!!!" << endl;
+            }
+            
+        }     
     }
-    
-    // rebuild date string
-    if (changed){
-        buildDateString();    
-    }
-    
-}
-
-void Calendar::buildDateString(){
-    char buff[10];
-                
-    buff[0] = monthName[currentDate.month][0];
-    buff[1] = monthName[currentDate.month][1];
-    buff[2] = monthName[currentDate.month][2];
-    buff[3] = ' ';
-    buff[4] = '\0';    
-    
-    sprintf(currentDateString, "%s %.2d %.2dh%.2d :%.2d", 
-            buff, 
-            (int)currentDate.numDayMonth,            
-            (int)currentDate.hour,
-            (int)currentDate.min,
-            (int)currentDate.sec
-    );
-        
+    return true;
 }
 
 void Calendar::setTimeMultiplicator(int t){
@@ -146,6 +111,7 @@ void Calendar::setTimeMultiplicator(int t){
 
 Calendar::~Calendar(){
     Calendar::instance = NULL;
+    //if(currentDate) delete currentDate;
 }
 
 

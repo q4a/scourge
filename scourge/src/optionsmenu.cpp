@@ -111,7 +111,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 }
 
 void OptionsMenu::loadGameSettings(){
-        cout<<"sqdf gamespeed "<<gameSpeedML->getNbText()<< endl;
+        
     gameSpeedML->setText(gameSpeedML->getNbText() - uc->getGameSpeedLevel() - 1);
     alwaysCenterMapCheckbox->setCheck(uc->getAlwaysCenterMap());
 

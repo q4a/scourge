@@ -39,7 +39,9 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
-  this->armor=0;
+  this->armor=0;  
+  this->thirst=10;
+  this->hunger=10;
   commonInit();  
 }
 
@@ -573,6 +575,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[0]->setLevel(1); 
   pc[0]->setExp(300);
   pc[0]->setHp();
+  pc[0]->setHunger(8);
+  pc[0]->setThirst(7); 
   pc[0]->setStateMod(Constants::blessed, true);
   pc[0]->setStateMod(Constants::poisoned, true);
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
@@ -582,6 +586,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[1]->setLevel(1); 
   pc[1]->setExp(200);
   pc[1]->setHp();
+  pc[1]->setHunger(10);
+  pc[1]->setThirst(9);
   pc[1]->setStateMod(Constants::drunk, true);
   pc[1]->setStateMod(Constants::cursed, true);      
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
@@ -591,6 +597,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[2]->setLevel(1); 
   pc[2]->setExp(150);
   pc[2]->setHp();
+  pc[2]->setHunger(3);
+  pc[2]->setThirst(2);
   pc[2]->setStateMod(Constants::ac_protected, true);
   pc[2]->setStateMod(Constants::magic_protected, true);
   pc[2]->setStateMod(Constants::cursed, true);        
@@ -601,6 +609,8 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[3]->setLevel(1); 
   pc[3]->setExp(400);
   pc[3]->setHp();
+  pc[3]->setHunger(10);
+  pc[3]->setThirst(10);
   pc[3]->setStateMod(Constants::possessed, true);          
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
       pc[3]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));

@@ -19,57 +19,43 @@
 #define CALENDAR_H
 
 #include "constants.h"
+#include <vector>    // STL for Vector
+#include "date.h"
+#include "events/event.h"
+
+#define MAX_SCHEDULED_EVENTS 500
 
 /**
   *@author Daroth-U
   */
 
-typedef struct _date{
-    unsigned char sec;      // 0 to 59
-    unsigned char min;      // 0 to 59
-    unsigned char hour;     // 0 to 23
-    unsigned char dayOfWeek;        // 1 to 7
-    unsigned char numDayMonth;      // 1 to 31 or 30 or 29
-    unsigned char month;    // 1 to 12
-    int year;               // -32000 to +32000 
-}date;
 
-
+class Event;
+class Date;
 
 class Calendar {
  private:  
   
   static Calendar *instance;   
   
-  static unsigned char dayInMonth[13]; 
-  static const char * monthName[13];
-  static const char * dayName[8];
-  
-  date currentDate;
-  char currentDateString[100];
+  Date currentDate;
   int timeMultiplicator;
   GLint lastTick; 
   bool timeFrozen; 
   
-  void buildDateString();    
+  vector<Event*> scheduledEvents;  
   
  public:
  
   static Calendar * getInstance();
-  void update();
+  bool update();
   void setPause(bool mustPause);
   void setTimeMultiplicator(int t);
-  
-  inline const char * getDayOfWeekString()    { return dayName[currentDate.dayOfWeek]; }
-  inline const char * getMonthString()        { return monthName[currentDate.month]; }
-  inline unsigned char getNumDayMonth() { return currentDate.numDayMonth; }
-  inline int getYear()                  { return currentDate.year; }
-  inline unsigned char getHour()        { return currentDate.hour; }
-  inline unsigned char getMin()         { return currentDate.min; }
-  inline unsigned char getSec()         { return currentDate.sec; }
-  inline char * getDateString()         { return currentDateString; }
-  
-  
+  void scheduleEvent(Event *e);
+
+  // return date by value to avoid modification by other classes
+  inline Date getCurrentDate() { return currentDate; }
+    
   Calendar();
   ~Calendar();
   

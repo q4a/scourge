@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "scourge.h"
+#include "events/thirsthungerevent.h"
 
 #define GUI_WIDTH 220
 #define GUI_HEIGHT 125
@@ -99,7 +100,14 @@ Scourge::Scourge(int argc, char *argv[]){
 	  party[0] = player = pc[0];
 	  party[1] = pc[1];
 	  party[2] = pc[2];
-	  party[3] = pc[3];	  
+	  party[3] = pc[3];
+	  
+	  Event *e;
+	  Date d(0, 0, 6, 0, 0, 0); // 6 hours	  
+	  for(int i = 0; i < 4 ; i++){
+    	  e = new ThirstHungerEvent(calendar->getCurrentDate(), d, pc[i], this, Event::INFINITE_EXECUTIONS);
+    	  calendar->scheduleEvent(e);
+	  }
 
 	  // inventory needs the party
 	  if(!inventory) {
@@ -250,9 +258,9 @@ void Scourge::drawView() {
   playRound();
   
   // update current date variables and see if scheduled events have occured
-  calendar->update();
-  calendarButton->getLabel()->setText(calendar->getDateString());
-  
+  if(calendar->update()){
+    calendarButton->getLabel()->setTextCopy(calendar->getCurrentDate().getDateString());
+  }
   
   map->draw();
 
@@ -1052,10 +1060,11 @@ void Scourge::createUI() {
   roundButton->setToggle(true);
   roundButton->setSelected(true);
   mainWin->addWidget((Widget*)roundButton);    
-      
-  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT, strdup(calendar->getDateString()));
+  
+  calendarButton = new Button( 100, 20, GUI_WIDTH, GUI_HEIGHT - 25, strdup(calendar->getCurrentDate().getDateString()));  
+  //calendarButton->setLabelPosition(Button::CENTER);
   mainWin->addWidget((Widget*)calendarButton);    
-
+ 
 
   diamondButton = new Button( 100, 0,  120, 20 );
   diamondButton->setToggle(true);
@@ -1107,11 +1116,11 @@ void Scourge::createUI() {
   int w = 250;
   int h = 120;
   exitConfirmationDialog = new Window(getSDLHandler(),
-																			(getSDLHandler()->getScreen()->w/2) - (w/2), 
-																			(getSDLHandler()->getScreen()->h/2) - (h/2), 
-																			w, h,
-																			strdup("Exit mission?"), 
-																			getShapePalette()->getGuiTexture(), false);
+	(getSDLHandler()->getScreen()->w/2) - (w/2), 
+	(getSDLHandler()->getScreen()->h/2) - (h/2), 
+	 w, h,
+	 strdup("Exit mission?"), 
+	 getShapePalette()->getGuiTexture(), false);
   yesExitConfirm = new Button( 40, 50, 110, 80, strdup("Yes") );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
   noExitConfirm = new Button( 140, 50, 210, 80, strdup("No") );

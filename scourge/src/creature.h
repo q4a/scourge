@@ -84,7 +84,7 @@ class Creature {
 
   // character information
   char *name;
-  int level, exp, hp, ac;
+  int level, exp, hp, ac, thirst, hunger;
   Character *character;
   int skills[Constants::SKILL_COUNT];
   GLuint stateMod;
@@ -212,6 +212,8 @@ class Creature {
   inline int getExp() { return exp; }
   inline int getHp() { return hp; }
   inline int getAc() { return ac; }
+  inline int getThirst() { return thirst; }
+  inline int getHunger() { return hunger; }
   inline int getSkill(int index) { return skills[index]; }
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }
 
@@ -221,6 +223,8 @@ class Creature {
   inline void setLevel(int n) { level = n; }
   inline void setExp(int n) { exp = n; }
   inline void setHp(int n) { hp = n; }
+  inline void setThirst(int n)  { thirst = n; }
+  inline void setHunger(int n)  { hunger = n; }
   inline void setHp() { hp = getCharacter()->getStartingHp(); }
   inline void setAc(int n) { ac = n; }
 
