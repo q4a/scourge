@@ -61,7 +61,6 @@ private:
   int roomMaxHeight;
   int objectCount;
 
-  bool *freePos;
   Sint16 *ff;
   int ffCount;
 
@@ -142,15 +141,21 @@ protected:
 
   int getScore(int x, int y, int rw, int rh);                        
 
-  void getRandomLocation(Shape *shape, int *x, int *y);
+  void getRandomLocation(Map *map, Shape *shape, int *x, int *y);
   
-  bool shapeFits(Shape *shape, int x, int y);
+  bool shapeFits(Map *map, Shape *shape, int x, int y);
 
   bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y, int dir);
 
   bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
 
   void addItem(Map *map, Item *item, Shape *shape, int x, int y);
+
+  Shape *getRandomContainer(ShapePalette *shapePal);
 };
 
 #endif
+
+
+
+

@@ -544,11 +544,6 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	 
   // add shapes to map
   Sint16 mapx, mapy;
-  freePos = (bool*)malloc(sizeof(bool) * MAP_WIDTH * MAP_DEPTH);
-  if(!freePos) {
-	fprintf(stderr, "out of mem\n");
-	exit(0);
-  }  
   for(Sint16 x = 0; x < width; x++) {    
 	for(Sint16 y = 0; y < height; y++) {
 				
@@ -569,13 +564,7 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 								shapePal->getShape(ShapePalette::FLOOR_TILE_INDEX));
 		}
 					 
-		// init the free space
-		for(Sint16 fx = mapx + unitOffset; fx < mapx + unitSide - unitOffset; fx++) {
-		  for(Sint16 fy = mapy + unitSide - unitOffset; fy > mapy + unitOffset ; fy--) {
-			*(freePos + (fx + (fy * MAP_WIDTH))) = true;
-		  }
-		}        
-					 
+		// init the free space					 
 		if(nodes[x][y] & E_DOOR) {
 		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
 						   wallHeight - 2, shapePal->getShape(ShapePalette::EW_DOOR_TOP_INDEX));
@@ -751,20 +740,27 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	}    
   }
 
-  // add the cabinets/chests
+  // add the containers
   int x, y;
-  Shape *shape = shapePal->getShape(ShapePalette::BOOKSHELF_INDEX);
+  Shape *shape;
   for(int i = 0; i < roomCount; i++) {
-  	for(int pos = room[i].y; pos < room[i].y + room[i].h; pos++) {
-	  x = (room[i].x * unitSide) + unitOffset + offset;
-	  y = (pos * unitSide) + unitSide - unitOffset + offset;
-	  if(shapeFits(shape, x, y) && !coversDoor(map, shapePal, shape, x, y, DIR_W)) {
-		addItem(map, NULL, shape, x, y);
+  	for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
+	  shape = getRandomContainer(shapePal);
+	  if(shape) {
+		// WEST side
+		x = (room[i].x * unitSide) + unitOffset + offset;
+		y = (room[i].y * unitSide) + pos + offset;
+		if(shapeFits(map, shape, x, y) && !coversDoor(map, shapePal, shape, x, y, DIR_W)) {
+		  addItem(map, NULL, shape, x, y);
+		}
 	  }
-	  x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-	  y = (pos * unitSide) + unitSide - unitOffset + offset;
-	  if(shapeFits(shape, x, y) && !coversDoor(map, shapePal, shape, x, y, DIR_E)) {
-		addItem(map, NULL, shape, x, y);
+	  shape = getRandomContainer(shapePal);
+	  if(shape) {
+		// EAST side
+		x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
+		if(shapeFits(map, shape, x, y) && !coversDoor(map, shapePal, shape, x, y, DIR_E)) {
+		  addItem(map, NULL, shape, x, y);
+		}
 	  }
 	}
   }
@@ -776,28 +772,40 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	exit(0);    
   }
   ffCount = 0;
-  for(int fx = 0; fx < MAP_WIDTH; fx++) {
-	for(int fy = 0; fy < MAP_DEPTH; fy++) {
-	  if(*(freePos + fx + (fy * MAP_WIDTH))) {
-		*(ff + ffCount * 2) = fx;
-		*(ff + ffCount * 2 + 1) = fy;
-		ffCount++;
+  for(int fx = offset; fx < MAP_WIDTH; fx+=unitSide) {
+	for(int fy = offset; fy < MAP_DEPTH; fy+=unitSide) {
+	  if(map->getFloorPosition(fx, fy + unitSide)) {
+		for(int ffx = 0; ffx < unitSide; ffx++) {
+		  for(int ffy = unitSide; ffy > 0; ffy--) {
+			if(!map->getLocation(fx + ffx, fy + ffy, 0)) {
+			  *(ff + ffCount * 2) = fx + ffx;
+			  *(ff + ffCount * 2 + 1) = fy + ffy;
+			  ffCount++;
+			}
+		  }
+		}
 	  }
-	}    
-  }
-	 
+	}
+  } 
   for(int i = 0; i < objectCount; i++) {
 	// Get an item
 	Item *item = Item::getRandomItem(0); // FIXME: pass in level 
-	getRandomLocation(item->getShape(), &x, &y);
+	getRandomLocation(map, item->getShape(), &x, &y);
 	addItem(map, item, item->getShape(), x, y);
   }
-
-  free(freePos);
   free(ff);  
 }
 
-void DungeonGenerator::getRandomLocation(Shape *shape, int *xpos, int *ypos) {
+Shape *DungeonGenerator::getRandomContainer(ShapePalette *shapePal) {
+  int n = (int)(5.0 * rand()/RAND_MAX);
+  switch(n) {
+  case 0: return shapePal->getShape(ShapePalette::BOOKSHELF_INDEX);
+  case 1: return shapePal->getShape(ShapePalette::CHEST_INDEX);
+  default: return NULL;
+  }
+}
+
+void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int *ypos) {
   int x, y;
   while(1) {
 	// get a random location
@@ -806,21 +814,28 @@ void DungeonGenerator::getRandomLocation(Shape *shape, int *xpos, int *ypos) {
 	y = ff[n * 2 + 1];
 	
 	// can it fit?
-	bool fits = shapeFits(shape, x, y);
+	bool fits = shapeFits(map, shape, x, y);
 	// doesn't fit? try again (could be inf. loop)
-	if(fits) break;
-  }
-	
-  *xpos = x;
-  *ypos = y;
+	if(fits) {
+	  // remove from ff list
+	  for(int i = n + 1; i < ffCount - 1; i++) {
+		ff[i * 2] = ff[i * 2 + 2];
+		ff[i * 2 + 1] = ff[ i * 2 + 3];
+	  }
+	  ffCount--;
+	  // return result
+	  *xpos = x;
+	  *ypos = y;
+	  return;
+	}
+  }	
 }
 
-bool DungeonGenerator::shapeFits(Shape *shape, int x, int y) {
+bool DungeonGenerator::shapeFits(Map *map, Shape *shape, int x, int y) {
   int index;
   for(int tx = 0; tx < shape->getWidth(); tx++) {
 	for(int ty = 0; ty < shape->getDepth(); ty++) {
-	  index = x + tx + ((y - ty) * MAP_WIDTH);        
-	  if(index < 0 || !(*(freePos + index))) {
+	  if(map->getLocation(x + tx, y - ty, 0)) {
 		return false;
 	  }
 	}
@@ -830,7 +845,6 @@ bool DungeonGenerator::shapeFits(Shape *shape, int x, int y) {
 
 bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal, 
 								  Shape *shape, int x, int y, int dir) {
-  fprintf(stderr, "dir=%d\n", dir);
   switch(dir) {
   case DIR_W:
 	for(int ty = y - shape->getDepth(); ty <= y; ty++) {
@@ -851,10 +865,9 @@ bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal,
 }
 
 bool DungeonGenerator::isDoor(Map *map, ShapePalette *shapePal, int tx, int ty) {
-  fprintf(stderr, "\tx=%d y=%d\n", tx, ty);
   if(tx >= 0 && tx < MAP_WIDTH && 
 	 ty >= 0 && ty < MAP_DEPTH) {
-	Location *loc = map->getPosition(tx, ty, 0);
+	Location *loc = map->getLocation(tx, ty, 0);
 	if(loc && 
 	   (loc->shape == shapePal->getShape(ShapePalette::EW_DOOR_INDEX) ||
 		loc->shape == shapePal->getShape(ShapePalette::NS_DOOR_INDEX))) {
@@ -869,10 +882,4 @@ void DungeonGenerator::addItem(Map *map, Item *item, Shape *shape, int x, int y)
 	map->addItem(item, x, y, 0);    
 	shape = item->getShape();
   } else map->setPosition(x, y, 0, shape);
-  // remove from free space
-  for(int tx = x; tx < shape->getWidth(); tx++) {
-	for(int ty = y; ty < shape->getDepth(); ty++) {
-	  *(freePos + tx + (ty * MAP_WIDTH)) = false;
-	}
-  }
 }

@@ -53,6 +53,7 @@ private:
   GLuint doorNStex[3];
   GLuint doorEWtex[3];      
   GLuint shelftex[3];
+  GLuint chesttex[3];
 
   // how big to make the walls
   const static Sint16 unitSide = 12;

@@ -159,7 +159,10 @@ public:
 											Sint16 shapex, Sint16 shapey, Sint16 shapez,
 											Shape *shape);
 
+	/** This one only returns if the shape originates at xyz. */
   Location *getPosition(Sint16 x, Sint16 y, Sint16 z);
+  /** This one returns even if shape doesn't originate at xyz */
+  inline Location *getLocation(Sint16 x, Sint16 y, Sint16 z) { return pos[x][y][z]; }
   inline Shape *getFloorPosition(Sint16 x, Sint16 y) { if(x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH) return NULL; else return floorPositions[x][y]; }
 
   void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);

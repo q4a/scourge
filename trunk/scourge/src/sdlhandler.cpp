@@ -247,8 +247,9 @@ void SDLHandler::mainLoop() {
   int isActive = TRUE;  
   SDL_Event event;
   while(true) {    
-      mouseEvent = mouseButton = 0;
-    while(SDL_PollEvent(&event)) {
+	mouseEvent = mouseButton = 0;
+	int eventCount = 0;  
+    while(SDL_PollEvent(&event) && (eventCount++) < 10) {
       switch( event.type ) {
         case SDL_MOUSEMOTION:
 				if(invertMouse) event.motion.y = screen->h - event.motion.y;
