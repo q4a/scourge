@@ -155,6 +155,7 @@ typedef struct _ParticleStruct {
   GLint height;
   int life;
   GLfloat moveDelta;
+  int maxLife;
 } ParticleStruct;
 
 class Constants {

@@ -36,6 +36,7 @@ class Effect {
   Effect(GLuint flameTex);
   ~Effect();
 
+  void deleteParticles();
   void draw(GLShape *shape, int effect, int startTime);
 
  protected:
