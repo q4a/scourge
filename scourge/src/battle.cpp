@@ -487,6 +487,10 @@ void Battle::hitWithItem() {
             creatureInitiative, speed);
     session->getMap()->addDescription(message);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
+
+    // play item sound
+    session->playSound(item->getRandomSound());
+
   } else if(dist <= Constants::MIN_DISTANCE) {
     sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
             creature->getName(), 
@@ -624,6 +628,11 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
 
     sprintf(message, "...and hits! for %d(%d) (max=%d) points of damage", damage, extra, maxDamage);
     session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+
+    // play hit sound
+    if(!creature->getTargetCreature()->isMonster()) {
+      session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
+    }
 
     damage += extra;
 

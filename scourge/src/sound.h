@@ -23,6 +23,7 @@
 #include "constants.h"
 #include "rpg/character.h"
 #include "gui/window.h"
+#include "item.h"
 
 using namespace std;
 
