@@ -51,7 +51,6 @@ C3DSShape::~C3DSShape() {
  }
 
  void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety) {
-   fprintf(stderr, "%s\n", file_name);
    g_Texture[0] = 0;
    g_ViewMode = GL_TRIANGLES;
    this->div = div;
@@ -64,6 +63,7 @@ C3DSShape::~C3DSShape() {
   char path[300];
   strcpy(path, rootDir);
   strcat(path, file_name);
+   fprintf(stderr, "Loading 3ds file: %s\n", path);
   g_Load3ds.Import3DS(&g_3DModel, path);         // Load our .3DS file into our model structure
 
   // Depending on how many textures we found, load each one (Assuming .BMP)
