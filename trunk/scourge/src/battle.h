@@ -68,6 +68,7 @@ class Battle {
   bool paused;
   int steps;
   bool needsReset;
+  int nextTurn;
 
  public:
 
