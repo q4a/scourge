@@ -44,6 +44,7 @@ void Checkbox::drawWidget(Widget *parent) {
   glTranslated(15, 15, 0);
   staticLabel->drawWidget(parent);
   glTranslated(x2 - 15 - CHECKBOX_SIZE, -15, 0);
+  checkButton->setInside( inside );
   checkButton->drawWidget(parent);
   glPopMatrix();
 }

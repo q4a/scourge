@@ -40,13 +40,8 @@ MultipleLabel::~MultipleLabel() {
 void MultipleLabel::drawWidget(Widget *parent) {  
    
   // Draw rectangle     
-  applyBackgroundColor(true);    
-  glBegin(GL_QUADS);
-  glVertex2d(x2 - dynWidth, 0);
-  glVertex2d(x2 - dynWidth, y2 - getY());
-  glVertex2d(x2, y2 - getY());
-  glVertex2d(x2, 0);  
-  glEnd();
+  drawButton( parent, x2 - dynWidth, 0, x2, y2 - getY(),
+              false, false, false, false, inside );
     
   // Draw texts
   glPushMatrix();      
