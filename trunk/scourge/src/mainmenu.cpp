@@ -245,6 +245,24 @@ void MainMenu::drawView() {
 
   //}
 
+
+
+  /*
+  // debug tile images
+  glPixelZoom( 1.0, -1.0 );
+  for( int x = 0; x < 20; x++ ) {
+    for( int y = 0; y < 18; y++ ) {
+      glRasterPos2f( x * 34, y * 34 );
+      glDrawPixels( 32, 32, GL_BGRA, GL_UNSIGNED_BYTE, 
+                    scourge->getShapePalette()->tilesImage[x][y] );
+    }
+  }
+  */
+
+
+
+
+
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
 }

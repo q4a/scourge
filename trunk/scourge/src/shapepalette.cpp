@@ -510,6 +510,8 @@ void ShapePalette::initialize() {
   }
 
   // set up the cursor
+  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 32, 32 );
+  
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
@@ -909,7 +911,7 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d scanline=%d\n", 
+    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
             fn, width, height, (*surface)->format->BitsPerPixel,
             (*surface)->format->BytesPerPixel, (*surface)->pitch);
 
@@ -933,6 +935,76 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
       //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
       //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
       (*image)[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+    }
+  }
+}
+
+void ShapePalette::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surface, 
+                                             GLubyte *image[20][20], int imageWidth, int imageHeight,
+                                             int tileWidth, int tileHeight, 
+                                             int red, int green, int blue ) {
+  if(session->getGameAdapter()->isHeadless()) return;
+  
+  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
+
+  //  *image = NULL;
+  char fn[300];
+  strcpy(fn, rootDir);
+  strcat(fn, filename);
+  if(((*surface) = SDL_LoadBMP( fn ))) {
+
+    // Rearrange the pixelData
+    int width  = (*surface) -> w;
+    int height = (*surface) -> h;
+
+    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
+            fn, width, height, (*surface)->format->BitsPerPixel,
+            (*surface)->format->BytesPerPixel, (*surface)->pitch);
+
+    fprintf( stderr, "*** w/tileWidth=%d h/tileHeight=%d\n",
+             ( width/tileWidth ), ( height/tileHeight ) );
+
+    unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
+    
+    for( int x = 0; x < width / tileWidth; x++ ) {
+      if( x >= imageWidth ) continue;
+      for( int y = 0; y < height / tileHeight; y++ ) {
+        if( y >= imageHeight ) continue;
+
+        image[ x ][ y ] = (unsigned char*)malloc( tileWidth * tileHeight * 4 );
+        int count = 0;
+        // where the tile starts in a line
+        int offs = x * tileWidth * (*surface)->format->BytesPerPixel;
+        // where the tile ends in a line
+        int rest = ( x + 1 ) * tileWidth * (*surface)->format->BytesPerPixel;
+        int c = offs + ( y * tileHeight * (*surface)->pitch );
+        unsigned char r,g,b;
+        // the following lines extract R,G and B values from any bitmap
+        for(int i = 0; i < tileWidth * tileHeight; ++i) {
+
+          if( i > 0 && i % tileWidth == 0 ) {
+            // skip the rest of the line
+            c += ( (*surface)->pitch - rest );
+            // skip the offset (go to where the tile starts)
+            c += offs;
+          }
+
+          r = data[c++];
+          g = data[c++];
+          b = data[c++];
+          
+          image[x][y][count++] = r;
+          image[x][y][count++] = g;
+          image[x][y][count++] = b;
+          //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
+          //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
+          image[x][y][count++] = (GLubyte)( ((int)r == blue && 
+                                          (int)g == green && 
+                                          (int)b == red ? 
+                                          0x00 : 
+                                          0xff) );
+        }
+      }
     }
   }
 }

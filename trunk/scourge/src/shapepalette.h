@@ -228,6 +228,9 @@ public:
   inline static ShapePalette *getInstance() { return instance; }
 
   // cursor
+  SDL_Surface *tiles;
+  GLubyte *tilesImage[20][20];
+  GLuint tilesTex[20][20];
   SDL_Surface *cursor, *crosshair, *paperDoll;
   GLubyte *cursorImage, *crosshairImage, *paperDollImage;
   GLuint cursor_texture, crosshair_texture;
@@ -280,6 +283,7 @@ public:
 protected:
   GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
   void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0);
+  void setupAlphaBlendedBMPGrid(char *filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0);
   void swap(unsigned char & a, unsigned char & b);
 };
 
