@@ -71,9 +71,12 @@ class MiniMap {
   // pixels at the bottom or at the right side) including a little marge.
   int effectiveWidth, effectiveHeight; 
   int maxX, maxY;
+  float midX, midY;
+  float errorMargin; 
+  
   
   // Transform Map coordinates to MiniMap coordinates
-  void toMiniMapCoord(int &x, int &y);      
+  void toMiniMapCoord(int &x, int &y);       
   
  public:
   MiniMap::MiniMap();
@@ -87,6 +90,7 @@ class MiniMap {
   void zoomOut();
   
   inline void toggle(){showMiniMap = !showMiniMap;} 
+  void computeDrawValues(); // needed before drawing the minimap
   void draw(int xCoord, int yCoord);
   
   //void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);    
