@@ -432,6 +432,10 @@ void SDLHandler::mainLoop() {
 	  bool res = false;
 	  if(widget) {
 		res = eventHandler->handleEvent(widget, &event);
+		// this is so that moving the cursor over a 
+		// window doesn't scroll the map forever
+		if( event.type == SDL_MOUSEMOTION )	
+		  res = eventHandler->handleEvent(&event);
 	  } else {
 		res = eventHandler->handleEvent(&event);
 	  }
