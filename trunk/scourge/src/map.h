@@ -122,6 +122,11 @@ class Map {
   inline float getXPos() { return xpos; }
   inline float getYPos() { return ypos; }
   inline float getZPos() { return zpos; } 
+
+	inline bool isLocationVisible(int x, int y) { 
+			return (x >= getX() && x < getX() + MAP_VIEW_WIDTH &&
+							y >= getY() && y < getY() + MAP_VIEW_DEPTH);
+	}
     
   void draw(SDL_Surface *surface);
   
