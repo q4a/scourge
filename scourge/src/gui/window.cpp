@@ -421,6 +421,9 @@ Label * Window::createLabel(int x1, int x2, char * label, int color){
     if(widgetCount < MAX_WIDGET){
         Label * theLabel;
         theLabel = new Label(x1, x2, label);  
+
+		// addwidget call must come before setColor...
+        addWidget((Widget *)theLabel);     
           
         // set new color or keep default color (black)
         if(color == Constants::RED_COLOR){        
@@ -429,7 +432,6 @@ Label * Window::createLabel(int x1, int x2, char * label, int color){
         else if(color == Constants::BLUE_COLOR){
             theLabel->setColor( 0.0f, 0.3f, 0.9f, 1.0f  );
         }               
-        addWidget((Widget *)theLabel);     
         return theLabel;
     }
 	else{
