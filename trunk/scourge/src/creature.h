@@ -290,7 +290,7 @@ class Creature {
   int getInitiative(Item *weapon, Spell *spell=NULL);
 
   // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
-  int getToHit(Item *weapon);
+  int getToHit(Item *weapon, int *maxToHit=NULL, int *rolledToHit=NULL);
 
   // get the armor value of the creature (0-100) (this is the max armor)
   inline int getArmor() { return armor; }
@@ -300,7 +300,7 @@ class Creature {
   
   // return the damage as:
   // rand(weapon + power + (skill - 50 % weapon))
-  int getDamage(Item *weapon);
+  int getDamage(Item *weapon, int *maxDamage=NULL, int *rolledDamage=NULL);
 
   // take damage
   // return true if the creature dies

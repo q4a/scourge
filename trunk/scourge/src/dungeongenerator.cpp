@@ -1206,11 +1206,13 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 
   // add monsters in every room
 	if(monsters) {
-	  int totalLevel = scourge->getParty()->getTotalLevel();
+	  //int totalLevel = scourge->getParty()->getTotalLevel();
 		//fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
 		for(int i = 0; i < roomCount; i++) {
-			int levelSum = 0;
-			while(levelSum < totalLevel) {
+      int areaCovered = 0;
+      // don't crowd the rooms
+      int roomAreaUsed = (int)(room[i].w * room[i].h * unitSide * 0.33f);
+			while(areaCovered < roomAreaUsed) {
 				Monster *monster = Monster::getRandomMonster(level);
 				//fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
 				if(!monster) {
@@ -1229,7 +1231,8 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 					Creature *creature = scourge->newCreature(monster);
 					addItem(map, creature, NULL, NULL, x, y);
 					creature->moveTo(x, y, 0);
-					levelSum += level;
+					areaCovered += (creature->getShape()->getWidth() * 
+                          creature->getShape()->getDepth());
 				} else {
 					//fprintf(stderr, "\tmonster DOESN'T fit.\n");
 					break;

@@ -378,15 +378,18 @@ void Battle::hitWithItem() {
   }
 
   // take a swing
-  int tohit = creature->getToHit(item);
+  int maxToHit;
+  int tohit = creature->getToHit(item, &maxToHit);
   int ac = creature->getTargetCreature()->getSkillModifiedArmor();
   sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
   scourge->getMap()->addDescription(message);
-  sprintf(message, "...toHit=%d vs. AC=%d", tohit, ac);
+  sprintf(message, "...toHit=%d (max=%d) vs. AC=%d", tohit, maxToHit, ac);
   scourge->getMap()->addDescription(message);
   if(tohit > ac) {
     // deal out the damage
-    dealDamage(creature->getDamage(item));
+    int maxDamage;
+    int damage = creature->getDamage(item, &maxDamage);
+    dealDamage(damage, maxDamage);
   } else {
     // missed
     sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
@@ -394,9 +397,9 @@ void Battle::hitWithItem() {
   }
 }
 
-void Battle::dealDamage(int damage, int effect) {
+void Battle::dealDamage(int damage, int maxDamage, int effect) {
   if(damage) {  
-    sprintf(message, "...and hits! for %d points of damage", damage);
+    sprintf(message, "...and hits! for %d (max=%d) points of damage", damage, maxDamage);
     scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
     // target creature death

@@ -90,7 +90,7 @@ class Battle {
   inline bool isEmpty() { return empty; }
   void fightTurn();
 
-  void dealDamage(int damage, int effect=Constants::EFFECT_GLOW);
+  void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW);
 
   inline Creature *getCreature() { return creature; }
   inline Scourge *getScourge() { return scourge; }
