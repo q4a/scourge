@@ -19,6 +19,7 @@
 #define CALENDAR_H
 
 #include "constants.h"
+#include <iostream>
 #include <vector>    // STL for Vector
 #include "date.h"
 #include "events/event.h"

@@ -18,7 +18,7 @@
 #ifndef SDLHANDLER_H
 #define SDLHANDLER_H
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdarg.h>
 #include "constants.h"

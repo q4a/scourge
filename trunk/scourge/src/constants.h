@@ -46,7 +46,9 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #endif
 #include <stdlib.h>
 #include <math.h>
-#include <vector.h>
+#include <vector>
+#include <iostream>
+
 
 #if defined( COMPILER_IS_UNIX_COMPATIBLE )
 #   include <unistd.h>
