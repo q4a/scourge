@@ -80,7 +80,7 @@ void SpellCaster::spellSucceeded() {
     if(projectileHit) {
       setStateMod(Constants::blinded);
     } else {
-      launchProjectile(0, false);
+      launchProjectile(1, false);
     }
   } else {
     // default
@@ -186,7 +186,11 @@ void SpellCaster::setStateMod(int mod) {
   int radius = battle->getCreature()->getLevel() * 3;
   if(radius > 15) radius = 15;
 
-  // FIXME: show radius effect
+  // show radius effect
+  battle->getScourge()->getMap()->startEffect(battle->getCreature()->getTargetX(),
+                                              battle->getCreature()->getTargetY(),
+                                              1, Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
+                                              radius, radius);
 
   int targetCount = battle->getScourge()->getMap()->getCreaturesInArea(battle->getCreature()->getTargetX(),
                                                                        battle->getCreature()->getTargetY(),
@@ -199,6 +203,10 @@ void SpellCaster::setStateMod(int mod) {
     // FIXME: should extend expiration event somehow if condition already exists
     if(creature->getStateMod(mod)) continue;    
     creature->setStateMod(mod, true);
+
+    char msg[200];
+    sprintf(msg, "%s is %s.", creature->getName(), Constants::STATE_NAMES[mod]);
+    battle->getScourge()->getMap()->addDescription(msg, 1, 0.15f, 1);
     
     // add calendar event to remove condition            
     // (format : sec, min, hours, days, months, years)
