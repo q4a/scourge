@@ -39,6 +39,18 @@ class MainMenu : public SDLEventHandler,SDLScreenView {
 private:
   Scourge *scourge;
   int value;
+  float logoRot, logoRotDelta;
+  GLint logoTicks;
+  GLint logoTicksDelta;
+
+#define MAX_LOGOS 100
+  typedef struct _LogoSprite {
+	float x, y, angle, rot;
+	int quadrant, steps;
+  } LogoSprite;
+  int logoSpriteCount;
+  LogoSprite logoSprite[MAX_LOGOS];
+
 
   typedef struct _Cloud {
 	int x, y, w, h, speed;
@@ -76,6 +88,9 @@ public:
  protected:
   void drawClouds(bool moveClouds, bool flipped);
   void drawWater();
+  void drawLogo();
+  void addLogoSprite();
+  void drawLogoSprites();
 };
 
 #endif
