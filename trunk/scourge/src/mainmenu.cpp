@@ -124,20 +124,21 @@ void MainMenu::drawView() {
 
   // drawWater();
 
-
-  // draw the house
-  glDisable( GL_TEXTURE_2D );
-  //  glDisable( GL_LIGHTING );
+  
+  glDisable(GL_TEXTURE_2D);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  glDisable(GL_DEPTH_TEST);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_NOTEQUAL, 0);        
   glPushMatrix();
-  //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, 
-				 0 );
+  glLoadIdentity( );                         
+  glPixelZoom( 1.0, -1.0 );
+  glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, 0 );
   glDrawPixels(scourge->getShapePalette()->scourge->w, 
 			   scourge->getShapePalette()->scourge->h,
 			   GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImage);
   glDisable(GL_ALPHA_TEST);
+  glPopMatrix();
 
   // draw candle flame
   glEnable( GL_TEXTURE_2D );

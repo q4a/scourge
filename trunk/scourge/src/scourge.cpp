@@ -310,36 +310,36 @@ Creature *Scourge::newCreature(Monster *monster) {
 
 void Scourge::drawView() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  glClearColor( 0, 0, 0, 1 );
+  glClearDepth( 1.0f );
 
   // make a move (player, monsters, etc.)
   playRound();
-  
+
   party->drawView();
-    
+
   map->draw();
 
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
-  
+
   if(isInfoShowing) {
     map->initMapView();  
     for(int i = 0; i < party->getPartySize(); i++) {
-	  if(!party->getParty(i)->getStateMod(Constants::dead)) {
-		map->showCreatureInfo(party->getParty(i), (party->getPlayer() == party->getParty(i)), 
-							  (map->getSelectedDropTarget() && 
-							   map->getSelectedDropTarget()->creature == party->getParty(i)),
-							  !party->isPlayerOnly());
-	  }
+      if(!party->getParty(i)->getStateMod(Constants::dead)) {
+        map->showCreatureInfo(party->getParty(i), (party->getPlayer() == party->getParty(i)), 
+                              (map->getSelectedDropTarget() && 
+                               map->getSelectedDropTarget()->creature == party->getParty(i)),
+                              !party->isPlayerOnly());
+      }
     }
-	glDisable( GL_CULL_FACE );
+    glDisable( GL_CULL_FACE );
   }
 
   map->drawDescriptions(messageList);
 
   miniMap->draw(0, 400);
 
-  //  if(inventory->isVisible()) inventory->drawInventory();
-  
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );      
 }

@@ -18,7 +18,7 @@
 
 #define OPEN_STEPS 10
 
-#define DEBUG_WINDOWS
+//#define DEBUG_WINDOWS
 
 int Window::windowCount = 0;
 Window *Window::window[MAX_WINDOW];

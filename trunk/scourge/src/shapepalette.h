@@ -124,6 +124,7 @@ public:
   // cursor
   SDL_Surface *cursor, *crosshair, *paperDoll;
   GLubyte *cursorImage, *crosshairImage, *paperDollImage;
+  GLuint cursor_texture, crosshair_texture;
 
   SDL_Surface *logo;
   GLubyte *logoImage;   
@@ -158,6 +159,7 @@ public:
 
 protected:
   GLuint loadGLTextures(char *fileName);
+  GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image);
   void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0);
   void swap(unsigned char & a, unsigned char & b);
 };

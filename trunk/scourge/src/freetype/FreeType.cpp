@@ -242,8 +242,8 @@ void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, 
 
   GLuint font=ft_font.list_base;
 
-	//glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
-  glPushAttrib(GL_ENABLE_BIT);	
+	glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
+  //glPushAttrib(GL_ENABLE_BIT);	
 	glMatrixMode(GL_MODELVIEW);
   //glDisable(GL_CULL_FACE);
 	//glDisable(GL_LIGHTING);
