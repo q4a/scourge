@@ -106,6 +106,8 @@ class Map {
  public:
   Map(Scourge *scourge);
   ~Map();
+
+  int debugX, debugY, debugZ;  
   
   bool selectMode;
   bool floorOnly;

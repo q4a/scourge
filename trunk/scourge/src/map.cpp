@@ -17,6 +17,8 @@
 
 #include "map.h"
 
+#define DEBUG_MOUSE_POS
+
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -33,6 +35,8 @@ Map::Map(Scourge *scourge){
   oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
   useShadow = false;
   //alwaysCenter = true;
+
+  debugX = debugY = debugZ = -1;
   
   mapChanged = true;
   
@@ -431,6 +435,29 @@ void Map::draw() {
   if(selectMode) {
       for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
   } else {  
+
+
+
+#ifdef DEBUG_MOUSE_POS
+	// debugging mouse position
+	if(debugX < MAP_WIDTH && debugX >= 0) {
+	  DrawLater later2;
+	  
+	  later2.shape = scourge->getShapePalette()->getShape(Constants::LAMP_BASE_INDEX);
+
+	  later2.xpos = ((float)(debugX - getX()) / GLShape::DIV);
+	  later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
+	  later2.zpos = (float)(debugZ) / GLShape::DIV;
+	  
+	  later2.item = NULL;
+	  later2.creature = NULL;
+	  later2.name = 0;	 
+	  doDrawShape(&later2);
+	}
+#endif
+
+
+
 	// draw the creatures/objects/doors/etc.
 	for(int i = 0; i < otherCount; i++) {
 	  if(selectedDropTarget && 

@@ -628,11 +628,13 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
         *mapy = map->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
         //*mapz = (Uint16)0;
         //*mapz = (Uint16)(obj_z * GLShape::DIV);
+		map->debugX = *mapx;
+		map->debugY = *mapy;
+		map->debugZ = 0;
     } else {
         //*mapx = *mapy = *mapz = MAP_WIDTH + 1;
         *mapx = *mapy = MAP_WIDTH + 1;
     }
-
     glPopMatrix();
 }
 
