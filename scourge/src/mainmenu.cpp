@@ -772,3 +772,8 @@ void MainMenu::showPartyEditor() {
   mainWin->setVisible( false );
   partyEditor->setVisible( true );
 }
+
+void MainMenu::createParty( Creature **pc, int *partySize ) { 
+  partyEditor->createParty( pc, partySize ); 
+}
+

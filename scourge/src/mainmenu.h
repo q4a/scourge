@@ -103,6 +103,7 @@ public:
   void hide();
   inline bool isVisible() { return mainWin->isVisible(); }
   void showPartyEditor();
+  void createParty( Creature **pc, int *partySize );
 
  protected:
   void drawClouds(bool moveClouds, bool flipped);

@@ -72,6 +72,17 @@ PartyEditor::PartyEditor(Scourge *scourge) {
 }
 
 PartyEditor::~PartyEditor() {
+  deleteLoadedShapes();
+}
+
+void PartyEditor::deleteLoadedShapes() {
+  for( map<CharacterModelInfo*, GLShape*>::iterator i=shapes.begin(); i!=shapes.end(); ++i ) {
+    CharacterModelInfo *cmi = i->first;
+    GLShape *shape = i->second;  
+    scourge->getShapePalette()->decrementSkinRefCount( cmi->model_name, cmi->skin_name );
+    delete shape;
+  }
+  shapes.clear();
 }
 
 void PartyEditor::reset() { 
@@ -261,4 +272,105 @@ void PartyEditor::drawWidget( Widget *w ) {
 }
 
 void PartyEditor::drawAfter() {
+}   
+      
+void PartyEditor::createParty( Creature **pc, int *partySize ) {
+
+  deleteLoadedShapes();
+
+  int pcCount = 4;
+  int level = 1;
+  char names[4][80] = { "Alamont", "Barlett", "Corinus", "Dialante" };
+
+  for( int i = 0; i < pcCount; i++ ) {
+    char *s = info[i].name->getText();
+    if( !s || !strlen( s ) ) s = names[i];
+    int index = info[i].charType->getSelectedLine();  
+    Character *c = Character::character_list[ index ];
+    CharacterModelInfo *cmi = scourge->getShapePalette()->
+      getCharacterModelInfo( info[i].modelIndex );
+    pc[i] = new Creature( scourge->getSession(), 
+                          c, 
+                          strdup( s ),
+                          cmi->model_name, 
+                          cmi->skin_name,
+                          cmi->scale );
+    pc[i]->setLevel(level); 
+    pc[i]->setExp(0);
+    pc[i]->setHp();
+    pc[i]->setMp();
+    pc[i]->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
+    pc[i]->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
+    
+    // assign portraits
+    pc[i]->setPortraitTextureIndex( info[i].portraitIndex );
+    
+    // compute starting skill levels
+    for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
+      int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
+      // basic skills
+      if(skill < Constants::SWORD_WEAPON) n = 20 + level * (int)(10.0 * rand()/RAND_MAX);
+      if(n > 99) n = 99;
+      if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
+        n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
+      pc[i]->setSkill(skill, n);
+    }
+    
+    // add a weapon anyone can wield
+    int n = (int)(3.0f * rand()/RAND_MAX);
+    switch(n) {
+    case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow"))); break;
+    case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"))); break;
+    case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"))); break;
+    }
+    pc[i]->equipInventory(0);
+    
+    // add some armor
+    if(0 == (int)(4.0f * rand()/RAND_MAX)) {
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet")));
+      pc[i]->equipInventory(1);
+    }
+    
+    // some potions
+    if(0 == (int)(4.0f * rand()/RAND_MAX))
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion")));  
+    if(0 == (int)(4.0f * rand()/RAND_MAX))
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion")));  
+    if(0 == (int)(4.0f * rand()/RAND_MAX))
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor")));  
+    
+    // some food
+    for(int t = 0; t < (int)(6.0f * rand()/RAND_MAX); t++) {
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Apple")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Bread")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mushroom")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Big egg")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mutton meat")));
+    }
+    
+    // some spells
+    if(pc[i]->getMaxMp() > 0) {
+      // useful spells
+      pc[i]->addSpell(Spell::getSpellByName("Flame of Azun"));
+      pc[i]->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
+      // attack spell
+      if(0 == (int)(2.0f * rand()/RAND_MAX))
+        pc[i]->addSpell(Spell::getSpellByName("Silent knives"));
+      else
+        pc[i]->addSpell(Spell::getSpellByName("Stinging light"));
+      // defensive spell
+      if(0 == (int)(2.0f * rand()/RAND_MAX))
+        pc[i]->addSpell(Spell::getSpellByName("Lesser healing touch"));
+      else
+        pc[i]->addSpell(Spell::getSpellByName("Body of stone"));
+    }    
+  }
+
+  *partySize = pcCount;
 }
+
