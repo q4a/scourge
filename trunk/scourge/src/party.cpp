@@ -93,12 +93,12 @@ void Party::startPartyOnMission() {
 	}
   }
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-  getPlayer()->setTargetCreature(NULL);
+  getPlayer()->cancelTarget();
   
   // init the rest of the party
   for(int i = 1; i < 4; i++) {
 	getParty(i)->setNext(getPlayer(), i);
-	getParty(i)->setTargetCreature(NULL);
+	getParty(i)->cancelTarget();
   }
 }
 

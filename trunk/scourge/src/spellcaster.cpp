@@ -76,6 +76,12 @@ void SpellCaster::spellSucceeded() {
 	} else {
 	  launchProjectile(0);
 	}
+  } else if(!strcasecmp(spell->getName(), "Flame of Azun")) {
+	if(projectileHit) {
+	  cerr << "*** Implement me: Flame of Azun blinds a group." << endl;
+	} else {
+	  launchProjectile(0);
+	}
   } else {
 	// default
 	cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
@@ -139,13 +145,22 @@ void SpellCaster::launchProjectile(int count) {
 	cerr << "launching " << n << " spell projectiles!" << endl;
   }
 
-  // FIXME: shape should be configurable per spell
-  if(!Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
-								battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
-								n)) {
+  // FIXME: projectile shape should be configurable per spell
+  Projectile *p;
+  if(creature->getTargetCreature()) {
+	p = Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
+								  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
+								  n);
+  } else {
+	int x, y, z;
+	creature->getTargetLocation(&x, &y, &z);
+	p = Projectile::addProjectile(creature, x, y, 1, 1, spell, 
+								  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
+								  n);
+  }
+  if(!p) {
 	// max number of projectiles in the air
 	// FIXME: do something... 
-	// (like print message: can't launch projectile due to use of fixed-sized array in code?)
   }
 }
 

@@ -81,6 +81,8 @@ class Creature {
   int bestPathPos;
   vector<Location> bestPath;
   Creature *targetCreature;
+  int targetX, targetY, targetZ;
+  Item *targetItem;
   Sint16 cornerX, cornerY;
   bool arrived; // true if no particular destination set for this creature
   
@@ -138,8 +140,15 @@ class Creature {
   
   inline GLUquadric *getQuadric() { return quadric; }
 
+  inline int getTargetX() { if(targetCreature) return targetCreature->getX(); else return targetX; }
+  inline int getTargetY() { if(targetCreature) return targetCreature->getY(); else return targetY; }
+  inline int getTargetZ() { if(targetCreature) return targetCreature->getZ(); else return targetZ; }
   void setTargetCreature(Creature *c);
   inline Creature *getTargetCreature() { return targetCreature; }
+  inline void setTargetLocation(int x, int y, int z) { targetX = x; targetY = y; targetZ = z; }
+  inline void getTargetLocation(int *x, int *y, int *z) { *x = targetX; *y = targetY; *z = targetZ; }
+  inline void setTargetItem(int x, int y, int z, Item *item) { setTargetLocation(x, y, z); targetItem = item; }
+  inline Item *getTargetItem() { return targetItem; }
   
   inline void setMotion(int motion) { this->motion = motion; }  
   inline int getMotion() { return this->motion; }
@@ -346,8 +355,11 @@ class Creature {
 
 
   // handling battle targets (which in the future may be more than targetCreature)
-  bool hasTarget();
-  bool isTargetValid();
+  inline bool hasTarget() { return targetCreature || targetItem || targetX || targetY || targetZ; }
+  inline bool Creature::isTargetValid() {
+    if(!getTargetCreature()) return true;
+    return (!getTargetCreature()->getStateMod(Constants::dead));
+  }
   void cancelTarget();
   void followTarget();
   void makeTargetRetaliate();
