@@ -38,14 +38,16 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   this->innerDrag = false;
   this->list = NULL;
   this->colors = NULL;
+  this->icons = NULL;
 }
 
 ScrollingList::~ScrollingList() {
 }
 
-void ScrollingList::setLines(int count, const char *s[], const Color *colors) { 
+void ScrollingList::setLines(int count, const char *s[], const Color *colors, const GLuint *icons) { 
   list = s; 
   this->colors = colors;
+  this->icons = icons;
   this->count = count;
   listHeight = count * 15 + 5;
   scrollerHeight = (listHeight <= getHeight() ? 
@@ -126,9 +128,9 @@ void ScrollingList::drawWidget(Widget *parent) {
       ypos = textPos + (i + 1) * 15;
       // writing text is expensive, only print what's visible
       if(ypos >= 0 && ypos < getHeight()) {
-	if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
-	((Window*)parent)->getSDLHandler()->
-	  texPrint(scrollerWidth + 5, ypos, list[i]);
+		if(icons) drawIcon( scrollerWidth + 5, ypos - 10, icons[i] );
+		if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
+		((Window*)parent)->getSDLHandler()->texPrint(scrollerWidth + (icons ? 20 : 5), ypos, list[i]);
       }
     }
     
@@ -163,6 +165,30 @@ void ScrollingList::drawWidget(Widget *parent) {
   glVertex2d(0, scrollerY + scrollerHeight);
   glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
   glEnd();
+}
+
+void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
+  glEnable(GL_TEXTURE_2D);
+  float n = 12;
+  glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+  if(icon) glBindTexture( GL_TEXTURE_2D, icon );
+	
+  glPushMatrix();
+  glTranslatef( x, y, 0 );
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  if(icon) glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, 0 );
+  if(icon) glTexCoord2f( 0, 1 );
+  glVertex3f( 0, n, 0 );
+  if(icon) glTexCoord2f( 1, 1 );
+  glVertex3f( n, n, 0 );
+  if(icon) glTexCoord2f( 1, 0 );
+  glVertex3f( n, 0, 0 );
+  glEnd();
+  glPopMatrix();
+  
+  glDisable(GL_TEXTURE_2D);
 }
 
 void ScrollingList::selectLine(int x, int y) {

@@ -33,6 +33,7 @@ class ScrollingList : public Widget {
   int count;
   const char **list;
   const Color *colors;
+  const GLuint *icons;
   int value;
   int scrollerWidth, scrollerHeight;
   int listHeight;
@@ -52,7 +53,7 @@ class ScrollingList : public Widget {
   virtual ~ScrollingList();
 
   inline int getLineCount() { return count; }
-  void setLines(int count, const char *s[], const Color *colors=NULL);
+  void setLines(int count, const char *s[], const Color *colors=NULL, const GLuint *icon=NULL);
   inline const char *getLine(int index) { return list[index]; }
 
   inline int getSelectedLine() { return selectedLine; }
@@ -69,6 +70,7 @@ class ScrollingList : public Widget {
 
  private:
   void selectLine(int x, int y);
+  void drawIcon( int x, int y, GLuint icon );
 };
 
 #endif
