@@ -33,6 +33,7 @@ private:
   int hp;
   int level;
   Uint8 shapeIndex;
+  char description[300];
 
   static Monster *monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
   static int monsterCount[MAX_MONSTER_LEVEL];
@@ -45,6 +46,7 @@ public:
   inline int getHp() { return hp; }  
   inline int getLevel() { return level; }  
   inline Uint8 getShapeIndex() { return shapeIndex; }
+  inline char *getDescription() { return description; }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);

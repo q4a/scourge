@@ -124,6 +124,9 @@ public:
   Scourge(int argc, char *argv[]);
   ~Scourge();
 
+  void moveMonsters();
+  void moveMonster(Creature *monster);
+
   inline Map *getMap() { return map; }
   inline MiniMap *getMiniMap() { return miniMap; }
 

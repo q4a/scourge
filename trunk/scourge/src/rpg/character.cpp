@@ -51,6 +51,7 @@ Character::Character(char *name, int startingHp, Uint8 shapeIndex) {
   this->name = name;
   this->startingHp = startingHp;
   this->shapeIndex = shapeIndex;
+  sprintf(description, "FIXME: need a description");
 }
 Character::~Character(){  
 }

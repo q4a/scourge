@@ -39,6 +39,8 @@ class Item;
 typedef struct _DrawLater {
   float xpos, ypos, zpos;
   Shape *shape;
+  Creature *creature;
+  Item *item;
   GLuint name;  
 } DrawLater;
 
@@ -223,7 +225,7 @@ class Map {
   void setupShapes(bool ground);
   void setupPosition(int posX, int posY, int posZ,
 					 float xpos2, float ypos2, float zpos2,
-					 Shape *shape);
+					 Shape *shape, Item *item, Creature *creature);
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
 						  Shape *shape);

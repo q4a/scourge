@@ -24,21 +24,21 @@ int Monster::monsterCount[MAX_MONSTER_LEVEL];
 Monster *Monster::monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT] =
   {
 	{
-	  new Monster("Imp", 0, 4, Constants::BUGGERLING_INDEX),
-	  new Monster("Oozing Green Slime", 0, 3, Constants::SLIME_INDEX),
-	  new Monster("Buggerling", 0, 3, Constants::BUGGERLING_INDEX),
+	  new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX),
+	  new Monster("An Oozing Green Slime", 0, 3, Constants::SLIME_INDEX),
+	  new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX),
 	  NULL
 	},
 	{
-	  new Monster("Rabbid Rodent", 1, 4, Constants::BUGGERLING_INDEX),
-	  new Monster("Gray Slime", 1, 5, Constants::SLIME_INDEX),
-	  new Monster("Fleshworm", 1, 3, Constants::BUGGERLING_INDEX),
+	  new Monster("A Rabbid Rodent", 1, 4, Constants::BUGGERLING_INDEX),
+	  new Monster("A Gray Slime", 1, 5, Constants::SLIME_INDEX),
+	  new Monster("A Fleshworm", 1, 3, Constants::BUGGERLING_INDEX),
 	  NULL
 	},
 	{
-	  new Monster("Kobold", 2, 6, Constants::BUGGERLING_INDEX),
-	  new Monster("Dire Slime", 2, 6, Constants::SLIME_INDEX),
-	  new Monster("Minor Spectre", 2, 4, Constants::BUGGERLING_INDEX),
+	  new Monster("A Kobold", 2, 6, Constants::BUGGERLING_INDEX),
+	  new Monster("A Dire Slime", 2, 6, Constants::SLIME_INDEX),
+	  new Monster("A Minor Spectre", 2, 4, Constants::BUGGERLING_INDEX),
 	  NULL
 	}
   };
@@ -48,6 +48,7 @@ Monster::Monster(char *type, int level, int hp, Uint8 shapeIndex) {
   this->level = level;
   this->hp = hp;
   this->shapeIndex = shapeIndex;
+  sprintf(description, "FIXME: need a description");
 }
 
 Monster::~Monster() {

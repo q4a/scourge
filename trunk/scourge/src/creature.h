@@ -86,6 +86,8 @@ class Creature {
   int skills[Constants::SKILL_COUNT];
   GLuint stateMod;
   Monster *monster;
+
+  char description[300];
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -99,11 +101,14 @@ class Creature {
   Creature(Scourge *scourge, Character *character, char *name);
   Creature(Scourge *scourge, Monster *monster);
   ~Creature();
+
+  inline bool isMonster() { return (monster ? TRUE : FALSE); }
   
   inline GLUquadric *getQuadric() { return quadric; }
   
   inline void setMotion(int motion) { this->motion = motion; }
   inline int getMotion() { return this->motion; }
+  inline char *getDescription() { return description; }
   
   bool move(Uint16 dir, Map *map);
   void follow(Map *map);
@@ -120,6 +125,7 @@ class Creature {
   void setNext(Creature *next, int index);
   void setNextDontMove(Creature *next, int index);
   inline Uint16 getDir() { return dir; }
+  inline void setDir(Uint16 dir) { this->dir = dir; }
   
   inline void draw() { getShape()->draw(); }  
   
