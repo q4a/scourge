@@ -78,7 +78,7 @@ class Item {
 
 
 public:
-  Item(RpgItem *rpgItem, int level=1);
+  Item(RpgItem *rpgItem, int level=1, bool loading=false);
   ~Item();
 
   ItemInfo *save();
@@ -153,7 +153,7 @@ public:
   void debugMagic(char *s);
 
  protected:
-  void commonInit();
+  void commonInit( bool loading=false );
   float getRandomSum( float base, int count );
   void describeMagic(char *s, char *itemName);
 };

@@ -20,7 +20,7 @@
 
 map<int, vector<string> *> Item::soundMap;
 
-Item::Item(RpgItem *rpgItem, int level) {
+Item::Item(RpgItem *rpgItem, int level, bool loading) {
   this->rpgItem = rpgItem;
   this->level = level;
   this->shapeIndex = this->rpgItem->getShapeIndex();
@@ -36,7 +36,7 @@ Item::Item(RpgItem *rpgItem, int level) {
   this->containsMagicItem = false;
   sprintf(this->itemName, "%s", rpgItem->getName());
 
-  commonInit();
+  commonInit( loading );
 
   currentCharges = rpgItem->getMaxChargesRpg();
   weight = rpgItem->getWeightRpg();
@@ -54,6 +54,13 @@ ItemInfo *Item::save() {
   info->blocking = blocking;
   info->currentCharges = currentCharges;
   info->weight = (Uint32)(weight * 100);
+  info->quality = quality;
+  info->price = price;
+  info->action = action;
+  info->speed = speed;
+  info->distance = distance;
+  info->maxCharges = maxCharges;
+  info->duration = duration;
   strcpy((char*)info->spell_name, (spell ? spell->getName() : ""));
   info->containedItemCount = containedItemCount;
   for(int i = 0; i < containedItemCount; i++) {
@@ -95,15 +102,23 @@ Item *Item::load(Session *session, ItemInfo *info) {
   if( strlen((char*)info->spell_name) ) spell = Spell::getSpellByName( (char*)info->spell_name );
   Item *item = session->newItem( RpgItem::getItemByName( (char*)info->rpgItem_name ), 
                                  info->level, 
-                                 spell);
+                                 spell,
+                                 true);
   item->blocking = (info->blocking == 1);
   item->currentCharges = info->currentCharges;
   item->weight = (float)(info->weight) / 100.0f;
+  item->quality = info->quality;
+  item->price = info->price;
+  item->action = info->action;
+  item->speed = info->speed;
+  item->distance = info->distance;
+  item->maxCharges = info->maxCharges;
+  item->duration = info->duration;  
   item->containedItemCount = info->containedItemCount;
   for(int i = 0; i < (int)info->containedItemCount; i++) {
     item->containedItems[i] = Item::load( session, info->containedItems[i] );
-  }    
-
+  }
+    
   item->bonus = info->bonus;
   item->damageMultiplier = info->damageMultiplier;
   item->cursed = (info->cursed == 1);
@@ -118,6 +133,9 @@ Item *Item::load(Session *session, ItemInfo *info) {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     if(info->skillBonus[i]) item->skillBonus[i] = info->skillBonus[i];
   }
+
+  if( item->isMagicItem() )
+    item->describeMagic(item->itemName, item->rpgItem->getName());
 
   return item;
 }
@@ -383,7 +401,7 @@ float Item::getRandomSum( float base, int count ) {
   return sum;
 }
 
-void Item::commonInit() {
+void Item::commonInit( bool loading ) {
 
   // --------------
   // regular attribs
@@ -433,7 +451,7 @@ void Item::commonInit() {
   stateModSet = false;
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) stateMod[i] = 0;
 
-  if( !rpgItem->isEnchantable() ) return;
+  if( !rpgItem->isEnchantable() || loading ) return;
 
   // roll for magic
   int n = (int)( ( 200.0f - ( level * 1.5f ) ) * rand()/RAND_MAX );

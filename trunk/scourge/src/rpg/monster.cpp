@@ -262,8 +262,8 @@ const char *Monster::getRandomMonsterType() {
 const char *Monster::getMonsterType(char *type) {
   if(!type || !strlen(type)) return NULL;
   for(int i = 0; i < (int)monsterTypes.size(); i++) {
-    const char *s = monsterTypes[i].c_str();
-    if(!strcpy((char*)s, type)) return s;
+    string ss = monsterTypes[i];
+    if(!strcmp((char*)ss.c_str(), type)) return ss.c_str();
   }
   return NULL;
 }
