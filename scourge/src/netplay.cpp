@@ -36,7 +36,7 @@ NetPlay::NetPlay(Scourge *scourge) {
                         strdup("Chat"), 
                         scourge->getShapePalette()->getGuiTexture(), false );
   mainWin->setBackground(0, 0, 0);
-  messageList = new ScrollingList(0, 20, width, Scourge::PARTY_GUI_HEIGHT - 45, 
+  messageList = new ScrollingList(10, 35, width - 20, Scourge::PARTY_GUI_HEIGHT - 65, 
                                   scourge->getShapePalette()->getHighlightTexture());
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
   mainWin->addWidget(messageList);
@@ -45,7 +45,7 @@ NetPlay::NetPlay(Scourge *scourge) {
   messageList->setSelectionColor( 0.25f, 0.25f, 0.25f );
   messageList->setColor( 1, 1, 1 );
 
-  chatText = new TextField( 0, 0, 70 );
+  chatText = new TextField( 10, 10, 70 );
   mainWin->addWidget( chatText );
 }
 

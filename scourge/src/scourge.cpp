@@ -1539,6 +1539,8 @@ void Scourge::setUILayout() {
     inventory->getWindow()->setVisible(false);
     inventory->getWindow()->setLocked(false);
   }
+  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  netPlay->getWindow()->setLocked(false);
   break;
 
   case Constants::GUI_LAYOUT_BOTTOM:
@@ -1556,6 +1558,8 @@ void Scourge::setUILayout() {
     inventory->getWindow()->setVisible(false);
     inventory->getWindow()->setLocked(false);
   }
+  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2);
+  netPlay->getWindow()->setLocked(true);
   break;
 
   case Constants::GUI_LAYOUT_SIDE:
@@ -1576,6 +1580,8 @@ void Scourge::setUILayout() {
     inventory->getWindow()->setVisible(false);
     inventory->getWindow()->setLocked(false);
   }
+  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  netPlay->getWindow()->setLocked(true);
   break;
 
   case Constants::GUI_LAYOUT_INVENTORY:
@@ -1598,6 +1604,8 @@ void Scourge::setUILayout() {
   mapX = 0;
   mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+  netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2);
+  netPlay->getWindow()->setLocked(true);
   break;
   }
 
