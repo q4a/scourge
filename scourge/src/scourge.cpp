@@ -333,42 +333,6 @@ void Scourge::drawAfter() {
   map->drawDraggedItem();
 }
 
-void Scourge::moveMap(int dir, bool set) {
-
-  // FIXME: this needs to be cleaned up
-  // needs a map of key/mouse to real-dir, so if the map is rotated and the key is let go the right direction is unset
-  // also, mouse move doesn't work on left/right screen edges
-
-  // this is the clockwise order of movements
-  int dir_index[] = { Constants::MOVE_UP, Constants::MOVE_LEFT, Constants::MOVE_DOWN, Constants::MOVE_RIGHT };
-
-  // get "real" direction based on map's z rotation
-  // normalize z rot to 0-359
-  float z = map->getZRot();
-  if(z < 0) z += 360;
-  if(z >= 360) z -= 360;
-
-  // get delta to real direction
-  int di;
-  if(z >= 315 || z < 45) di = 0;
-  else if(z >= 45 && z < 135) di = 1;
-  else if(z >= 135 && z < 225) di = 2;
-  else if(z >= 225 && z < 315) di = 3;
-
-  // get real direction
-  int real_dir = -1;
-  for(int i = 0; i < 4; i++) {
-	if(dir_index[i] == dir) {
-	  if(i + di < 4) real_dir = dir_index[i + di];
-	  else real_dir = dir_index[i + di - 4];
-	}
-  }
-
-  // move map
-  if(set) setMove(real_dir);
-  else removeMove(real_dir);
-}
-
 bool Scourge::handleEvent(SDL_Event *event) {
   int ea;  
 
@@ -393,26 +357,24 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
   switch(event->type) {
   case SDL_MOUSEMOTION:
-    if(event->motion.x < 10) {
-      if(getUserConfiguration()->getAlwaysCenterMap()) map->setZRot(5.0f);
-	  else moveMap(Constants::MOVE_LEFT);
-    } else if(event->motion.x >= sdlHandler->getScreen()->w - 10) {
-      if(getUserConfiguration()->getAlwaysCenterMap()) map->setZRot(-5.0f);
-	  else moveMap(Constants::MOVE_RIGHT);
-    } else {
-      if(getUserConfiguration()->getAlwaysCenterMap()) map->setZRot(0.0f);
-	  else removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
-    }
-    if(event->motion.y < 10) {
-      if(getUserConfiguration()->getAlwaysCenterMap()) map->setYRot(5.0f);
-	  else moveMap(Constants::MOVE_UP);
-    } else if(event->motion.y >= sdlHandler->getScreen()->h - 10) {
-      if(getUserConfiguration()->getAlwaysCenterMap()) map->setYRot(-5.0f);
-	  else moveMap(Constants::MOVE_DOWN);
-    } else {
-      if(getUserConfiguration()->getAlwaysCenterMap()) map->setYRot(0.0f);
-	  else removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
-    }
+	if(event->motion.x < 10) {
+	  setMove(Constants::MOVE_LEFT);
+	} else if(event->motion.x >= sdlHandler->getScreen()->w - 10) {
+	  setMove(Constants::MOVE_RIGHT);
+	} else {
+	  removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
+	  map->setYRot(0.0f);
+	  map->setZRot(0.0f);
+	}
+	if(event->motion.y < 10) {
+	  setMove(Constants::MOVE_UP);
+	} else if(event->motion.y >= sdlHandler->getScreen()->h - 10) {
+	  setMove(Constants::MOVE_DOWN);
+	} else {
+	  removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
+	  map->setYRot(0.0f);
+	  map->setZRot(0.0f);
+	}
     processGameMouseMove(event->motion.x, event->motion.y);
     break;
   case SDL_MOUSEBUTTONDOWN:
@@ -450,28 +412,36 @@ bool Scourge::handleEvent(SDL_Event *event) {
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
     if(ea == SET_MOVE_DOWN){        
-	  moveMap(Constants::MOVE_DOWN);
+	  setMove(Constants::MOVE_DOWN);
     }
     else if(ea == SET_MOVE_UP){
-	  moveMap(Constants::MOVE_UP);
+	  setMove(Constants::MOVE_UP);
     }
     else if(ea == SET_MOVE_RIGHT){
-	  moveMap(Constants::MOVE_RIGHT);
+	  setMove(Constants::MOVE_RIGHT);
     }
     else if(ea == SET_MOVE_LEFT){
-	  moveMap(Constants::MOVE_LEFT);
+	  setMove(Constants::MOVE_LEFT);
     }
     else if(ea == SET_MOVE_DOWN_STOP){        
-	  moveMap(Constants::MOVE_DOWN, false);
+	  map->setYRot(0.0f);
+	  map->setYRot(0);
+	  removeMove(Constants::MOVE_DOWN);
     }
     else if(ea == SET_MOVE_UP_STOP){
-	  moveMap(Constants::MOVE_UP, false);
+	  map->setYRot(0.0f);
+	  map->setYRot(0);
+	  removeMove(Constants::MOVE_UP);
     }
     else if(ea == SET_MOVE_RIGHT_STOP){
-	  moveMap(Constants::MOVE_RIGHT, false);
+	  map->setYRot(0.0f);
+	  map->setZRot(0);
+	  removeMove(Constants::MOVE_RIGHT);
     }
     else if(ea == SET_MOVE_LEFT_STOP){
-	  moveMap(Constants::MOVE_LEFT, false);
+	  map->setYRot(0.0f);
+	  map->setZRot(0);
+	  removeMove(Constants::MOVE_LEFT);
     }            
     else if(ea == SET_PLAYER_0){
 	  party->setPlayer(0);
@@ -1231,8 +1201,8 @@ void Scourge::playRound() {
 	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
   }
 
-  // move the player's selX,selY in a direction as specified by keystroke
-  handleKeyboardMovement();
+  // move the map
+  if(move) map->move(move);
 
   // hound your targets
   party->followTargets();
@@ -1314,54 +1284,6 @@ void Scourge::creatureDeath(Creature *creature) {
 	item->addContainedItem(creature->removeInventory(0));
   }
   creature->setStateMod(Constants::dead, true);
-}
-
-// move the player in a direction as specified by keystroke
-void Scourge::handleKeyboardMovement() {
-  if(!move) return;
-  map->move(move);
-
-  /*
-  if(!move) return;
-
-  // when moving w. the keyboard don't attack creatures
-  party->setTargetCreature(NULL);
-
-  // decode keyboard movement
-  if(move & Constants::MOVE_UP) {
-	if(party->getPlayer()->getSelX() == -1) 
-	  party->getPlayer()->setSelXY(party->getPlayer()->getX(), party->getPlayer()->getY() - 1);
-	else
-	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX(), party->getPlayer()->getSelY() - 1);
-  }
-  if(move & Constants::MOVE_DOWN) {
-	if(party->getPlayer()->getSelX() == -1) 
-	  party->getPlayer()->setSelXY(party->getPlayer()->getX(), party->getPlayer()->getY() + 1);
-	else
-	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX(), party->getPlayer()->getSelY() + 1);
-  }
-  if(move & Constants::MOVE_LEFT) {
-	if(party->getPlayer()->getSelX() == -1) 
-	  party->getPlayer()->setSelXY(party->getPlayer()->getX() - 1, party->getPlayer()->getY());
-	else
-	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX() - 1, party->getPlayer()->getSelY());
-  }
-  if(move & Constants::MOVE_RIGHT) {
-	if(party->getPlayer()->getSelX() == -1) 
-	  party->getPlayer()->setSelXY(party->getPlayer()->getX() + 1, party->getPlayer()->getY());
-	else
-	  party->getPlayer()->setSelXY(party->getPlayer()->getSelX() + 1, party->getPlayer()->getSelY());
-  }
-
-  if(!party->isPlayerOnly()) {
-    for(int i = 0; i < 4; i++) {
-	  if(!party->getParty(i)->getStateMod(Constants::dead)) {
-		party->getParty(i)->setTargetCreature(NULL);
-		if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
-	  }
-    }
-  }
-  */
 }
 
 void Scourge::addGameSpeed(int speedFactor){

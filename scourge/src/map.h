@@ -99,6 +99,8 @@ class Map {
 
   float targetWidth, targetWidthDelta;
   GLint lastTick;
+
+  static int dir_index[];
   
   void drawGrid(SDL_Surface *surface);
   void debugGrid(SDL_Surface *surface);
@@ -135,10 +137,10 @@ class Map {
   inline float getYPos() { return ypos; }
   inline float getZPos() { return zpos; } 
 
-	inline bool isLocationVisible(int x, int y) { 
-			return (x >= getX() && x < getX() + MAP_VIEW_WIDTH &&
-							y >= getY() && y < getY() + MAP_VIEW_DEPTH);
-	}
+  inline bool isLocationVisible(int x, int y) { 
+	return (x >= getX() && x < getX() + MAP_VIEW_WIDTH &&
+			y >= getY() && y < getY() + MAP_VIEW_DEPTH);
+  }
     
   void draw();
   

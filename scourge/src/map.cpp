@@ -24,6 +24,9 @@
 
 #define PI 3.14159f
 
+// this is the clockwise order of movements
+int Map::dir_index[] = { Constants::MOVE_UP, Constants::MOVE_LEFT, Constants::MOVE_DOWN, Constants::MOVE_RIGHT };
+
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -117,11 +120,49 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
 }
 
 void Map::move(int dir) {
-  mapChanged = true;
-  if((dir & Constants::MOVE_DOWN) && y < MAP_DEPTH) y++;
-  if((dir & Constants::MOVE_UP) && y > 0) y--;
-  if((dir & Constants::MOVE_RIGHT) && x < MAP_WIDTH) x++;
-  if((dir & Constants::MOVE_LEFT) && x > 0) x--;  
+  if(SDL_GetModState() & KMOD_CTRL) {
+	if(dir & Constants::MOVE_DOWN) setYRot(-5.0f);
+	if(dir & Constants::MOVE_UP) setYRot(5.0f);
+	if(dir & Constants::MOVE_RIGHT) setZRot(-5.0f);
+	if(dir & Constants::MOVE_LEFT) setZRot(5.0f);
+  } else if(!scourge->getUserConfiguration()->getAlwaysCenterMap()) {
+	
+	setYRot(0);
+	setZRot(0);
+
+	// get "real" direction based on map's z rotation
+	// normalize z rot to 0-359
+	float z = getZRot();
+	if(z < 0) z += 360;
+	if(z >= 360) z -= 360;
+	
+	// get delta to real direction
+	int di;
+	if(z >= 315 || z < 45) di = 0;
+	else if(z >= 45 && z < 135) di = 1;
+	else if(z >= 135 && z < 225) di = 2;
+	else if(z >= 225 && z < 315) di = 3;
+	
+	// get real direction
+	int real_dir = 0;
+	for(int t = 0; t < 4; t++) {
+	  if(dir & dir_index[t]) {
+		for(int i = 0; i < 4; i++) {
+		  if(dir_index[i] == dir_index[t]) {
+			if(i + di < 4) real_dir |= dir_index[i + di];
+			else real_dir |= dir_index[i + di - 4];
+			break;
+		  }
+		}
+	  }
+	}
+	
+	mapChanged = true;
+	if((real_dir & Constants::MOVE_DOWN) && y < MAP_DEPTH) y++;
+	if((real_dir & Constants::MOVE_UP) && y > 0) y--;
+	if((real_dir & Constants::MOVE_RIGHT) && x < MAP_WIDTH) x++;
+	if((real_dir & Constants::MOVE_LEFT) && x > 0) x--;  
+  }
 }
 
 /**
