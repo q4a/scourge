@@ -868,8 +868,8 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set multitexturing true" << endl;
   configFile << "set hwaccel true" << endl;
   configFile << "set shadows 2  // 0 : no shadows, 2 : best shadows" << endl;
-  configFile << "set w 800" << endl;
-  configFile << "set h 600" << endl;
+  configFile << "set w 1024" << endl;
+  configFile << "set h 768" << endl;
   configFile << "set bpp 32" << endl;
   configFile << "" << endl;
   configFile << "// Game settings" << endl;

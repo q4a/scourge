@@ -44,6 +44,8 @@ void Effect::draw(GLShape *shape, int effect, int startTime) {
 	drawTeleport(shape);
   } else if(effect == Constants::EFFECT_HEAL) {
 	drawHeal(shape);
+  } else if(effect == Constants::EFFECT_EXPLOSION) {
+	drawExplosion(shape);
   } else {
 	glowShape(shape, startTime);
   }
@@ -89,7 +91,7 @@ void Effect::drawTeleport(GLShape *shape) {
 	  particle[i]->moveDelta = 0.3f + (0.3f * rand()/RAND_MAX);
 	  if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
 	  particle[i]->maxLife = 10000;
-	  particle[i]->trail = 3;
+	  particle[i]->trail = 4;
     } else {
 	  moveParticle(&(particle[i]));
     }
@@ -114,6 +116,41 @@ void Effect::drawHeal(GLShape *shape) {
     if(!particle[i]) {
       // create a new particle
       createParticle(shape, &(particle[i]));
+	  particle[i]->z = (int)(1.0f * rand()/RAND_MAX);
+	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+	  particle[i]->moveDelta = 0.15f;
+	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+	  particle[i]->maxLife = 5000;
+	  particle[i]->trail = 2;
+	  particle[i]->zoom = 1.5f;
+    } else {
+	  particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
+
+	  // this causes an explosion!
+	  //particle[i]->zoom += 0.3f;
+	  moveParticle(&(particle[i]));
+    }
+
+    // draw it      
+    if(particle[i]) {            
+
+	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  if(c > 1) c = 1;
+      glColor4f(c / 4.0f, c, c / 4.0f, 0.15);
+
+	  drawParticle(shape, particle[i]);
+    }
+  }
+}
+
+void Effect::drawExplosion(GLShape *shape) {
+  // manage particles
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(shape, &(particle[i]));
 	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
@@ -121,10 +158,10 @@ void Effect::drawHeal(GLShape *shape) {
 	  particle[i]->maxLife = 5000;
 	  particle[i]->trail = 4;
     } else {
-	  particle[i]->rotate += (3.0f * rand()/RAND_MAX) + 2.0f;
+	  particle[i]->rotate = (360.0f * rand()/RAND_MAX);
 
 	  // this causes an explosion!
-	  //particle[i]->zoom += 0.3f;
+	  if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
 	  moveParticle(&(particle[i]));
     }
 
