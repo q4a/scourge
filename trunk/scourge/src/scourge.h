@@ -19,6 +19,7 @@
 #define SCOURGE_H
 
 #include <iostream>
+#include <string>
 #include "constants.h"
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
@@ -35,6 +36,7 @@
 #include "rpg/monster.h"
 #include "gui/window.h"
 #include "gui/button.h"
+#include "userconfiguration.h"
 
 using namespace std;
 
@@ -46,6 +48,7 @@ class Location;
 class MainMenu;
 class OptionsMenu;
 class Inventory;
+class UserConfiguration;
 
 /**
   *@author Gabor Torok
@@ -61,6 +64,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
  private:
   Map *map;
   MiniMap * miniMap;
+  UserConfiguration *userConfiguration;  
   DungeonGenerator *dg;
   Scourge *scourge;
   int level;

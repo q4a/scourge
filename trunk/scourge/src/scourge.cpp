@@ -43,7 +43,11 @@ Scourge::Scourge(int argc, char *argv[]){
   movingItem = NULL;
 
   isInfoShowing = true;
-
+  
+  // Reads the user configuration from a file      
+  userConfiguration = new UserConfiguration();
+  userConfiguration->loadConfiguration();
+  
   // Initialize the video mode
   sdlHandler = new SDLHandler();
   sdlHandler->setVideoMode(argc, argv);
@@ -91,6 +95,7 @@ Scourge::Scourge(int argc, char *argv[]){
 Scourge::~Scourge(){
   delete mainMenu;
   delete optionsMenu;
+  delete userConfiguration;
 }
 
 void Scourge::startMission() {
@@ -232,6 +237,8 @@ void Scourge::setPlayer(int n) {
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
+  string ea;  
+
   if(inventory->isVisible()) {
 	inventory->handleEvent(event);
 	return false;
@@ -267,17 +274,165 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     break;
   case SDL_KEYDOWN:
+  case SDL_KEYUP:
+  
+    if(event->key.keysym.sym == SDLK_ESCAPE){
+        player->setSelXY(-1, -1);   // stop moving
+        movingItem = NULL;          // stop moving items
+        return true;
+    }
+    
+    // xxx_yyy_stop means : "do this action when the corresponding key is up"
+    ea = userConfiguration->getEngineAction(event);
+    cout << "scourge EA reçue : '" << ea << "'" << endl;
+    if(ea == "set_move_down"){        
+        map->setMove(Constants::MOVE_DOWN);
+    }
+    else if(ea == "set_move_up"){
+        map->setMove(Constants::MOVE_UP);
+    }
+    else if(ea == "set_move_right"){
+        map->setMove(Constants::MOVE_RIGHT);
+    }
+    else if(ea == "set_move_left"){
+        map->setMove(Constants::MOVE_LEFT);
+    }
+    else if(ea == "set_move_down_stop"){        
+        map->removeMove(Constants::MOVE_DOWN);
+    }
+    else if(ea == "set_move_up_stop"){
+        map->removeMove(Constants::MOVE_UP);
+    }
+    else if(ea == "set_move_right_stop"){
+        map->removeMove(Constants::MOVE_RIGHT);
+    }
+    else if(ea == "set_move_left_stop"){
+        map->removeMove(Constants::MOVE_LEFT);
+    }            
+    else if(ea == "set_player_0"){
+        setPlayer(0);
+    }
+    else if(ea == "set_player_1"){
+        setPlayer(1);
+    }
+    else if(ea == "set_player_2"){
+        setPlayer(2);
+    }
+    else if(ea == "set_player_3"){
+        setPlayer(3);
+    }
+    else if(ea == "set_player_only"){
+        player_only = (player_only ? false : true);
+    }    
+    else if(ea == "blend_a"){
+        blendA++; if(blendA >= 11) blendA = 0;
+        fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
+    }
+    else if(ea == "blend_b"){    
+        blendB++; if(blendB >= 11) blendB = 0;
+        fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
+    }
+    else if(ea == "show_inventory"){
+        inventory->show();        
+    }
+    else if(ea == "show_options_menu"){
+        optionsMenu->show();
+    }
+    else if(ea == "use_item_stop"){
+        useItem();
+    }
+    else if(ea == "set_next_formation_stop"){
+        if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
+    }   
+    else if(ea == "set_x_rot_plus"){
+        map->setXRot(1.0f);
+    }
+    else if(ea == "set_x_rot_minus"){
+        map->setXRot(-1.0f);
+    }
+    else if(ea == "set_y_rot_plus"){
+        map->setYRot(1.0f);
+    }
+    else if(ea == "set_y_rot_minus"){
+        map->setYRot(-1.0f);
+    }
+    else if(ea == "set_z_rot_plus"){
+        map->setZRot(1.0f);
+    }
+    else if(ea == "set_z_rot_minus"){
+        map->setZRot(-1.0f);
+    }    
+    else if(ea == "set_x_rot_plus_stop"){
+        map->setXRot(0.0f);
+    }
+    else if(ea == "set_x_rot_minus_stop"){
+        map->setXRot(0.0f);
+    }
+    else if(ea == "set_y_rot_plus_stop"){
+        map->setYRot(0.0f);
+    }
+    else if(ea == "set_y_rot_minus_stop"){
+        map->setYRot(0.0f);
+    }
+    else if(ea == "set_z_rot_plus_stop"){
+        map->setZRot(0.0f);
+    }
+    else if(ea == "set_z_rot_minus_stop"){
+        map->setZRot(0.0f);
+    }
+    
+    else if(ea == "add_x_pos_plus"){
+        map->addXPos(10.0f);
+    }
+    else if(ea == "add_x_pos_minus"){
+        map->addXPos(-10.0f);
+    }
+    else if(ea == "add_y_pos_plus"){
+        map->addYPos(10.0f);
+    }
+    else if(ea == "add_y_pos_minus"){
+        map->addYPos(-10.0f);
+    }
+    else if(ea == "add_z_pos_plus"){
+        map->addZPos(10.0f);
+    }
+    else if(ea == "add_z_pos_minus"){
+        map->addZPos(-10.0f);
+    } 
+    
+    else if(ea == "minimap_zoom_in"){
+        miniMap->zoomIn();
+    }
+    else if(ea == "minimap_zoom_out"){
+        miniMap->zoomOut();
+    }
+    else if(ea == "minimap_toggle"){
+        miniMap->toggle();
+    }
+    else if(ea == "set_zoom_in"){
+        map->setZoomIn(true);
+    }
+    else if(ea == "set_zoom_out"){
+        map->setZoomOut(true);
+    }
+    else if(ea == "set_zoom_in_stop"){
+        map->setZoomIn(false);
+    }
+    else if(ea == "set_zoom_out_stop"){
+        map->setZoomOut(false);
+    }
+      /*case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {
     case SDLK_ESCAPE: 
 	  player->setSelXY(-1, -1); // stop moving
 	  movingItem = NULL; // stop moving items
 	  return true;
-	  /*
-    case SDLK_F10:
-      isInfoShowing = (isInfoShowing ? false : true);
-      gui->setWindowVisible(topWin, isInfoShowing);
-      break;
-	  */
+	 
+    //case SDLK_F10:
+      //isInfoShowing = (isInfoShowing ? false : true);
+      //gui->setWindowVisible(topWin, isInfoShowing);
+      //break;
+	  
     case SDLK_DOWN:
 	  map->setMove(Constants::MOVE_DOWN);
       break;
@@ -425,7 +580,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         break;
 
     default: break;
-    }
+    }*/
     break;
 
   default: break;
