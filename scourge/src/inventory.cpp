@@ -58,6 +58,7 @@ Inventory::Inventory(Scourge *scourge) {
     this->schoolText[i] = (char*)malloc(120 * sizeof(char));
   }
   this->spellText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  this->spellIcons = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->spellText[i] = (char*)malloc(120 * sizeof(char));
   }
@@ -152,7 +153,7 @@ Inventory::Inventory(Scourge *scourge) {
   schoolList = new ScrollingList(115, 15, 290, 100, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(schoolList, SPELL);
   cards->createLabel(115, 135, "Spells memorized:", SPELL, Constants::RED_COLOR);
-  spellList = new ScrollingList(115, 140, 290, 150, scourge->getShapePalette()->getHighlightTexture());
+  spellList = new ScrollingList(115, 140, 290, 150, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
   cards->addWidget(spellList, SPELL);
   cards->createLabel(115, 310, "Spell notes:", SPELL, Constants::RED_COLOR);
   spellDescriptionLabel = new Label(115, 325, "", 50);
@@ -960,12 +961,16 @@ void Inventory::showMemorizedSpellsInSchool(Creature *creature, MagicSchool *sch
       if(spellCount == 0) {
         showSpellDescription(spell);
       }
+      spellIcons[spellCount] = scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ];
+
       spellCount++;
     }
   }
   if(spellCount == 0) spellDescriptionLabel->setText("");
   spellList->setLines(spellCount, 
-                      (const char**)spellText);
+                      (const char**)spellText, 
+					  NULL, 
+					  spellIcons);
 }
 
 void Inventory::showSpellDescription(Spell *spell) {

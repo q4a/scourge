@@ -68,6 +68,7 @@ class Spell {
   int effect;
   MagicSchool *school;  
   bool creatureTarget, locationTarget, itemTarget, partyTarget;
+  int iconTileX, iconTileY;
 
   static map<string, Spell*> spellMap;
 
@@ -75,9 +76,12 @@ class Spell {
 
   Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
 		int distance, int targetType, int speed, int effect, bool creatureTarget, 
-		bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school);
+		bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
+		int iconTileX, int iconTileY);
   ~Spell();
 
+  inline int getIconTileX() { return iconTileX; }
+  inline int getIconTileY() { return iconTileY; }
   inline char *getName() { return name; }
   inline int getAction() { return action->roll(); }
   inline int getLevel()  { return level; }

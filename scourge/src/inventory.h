@@ -76,6 +76,7 @@ private:
 	Label *spellDescriptionLabel;
 	char **schoolText;
 	char **spellText;
+	GLuint *spellIcons;
 
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *hpLabel, *mpLabel;
