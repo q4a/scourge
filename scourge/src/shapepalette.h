@@ -113,6 +113,8 @@ public:
   ShapePalette();
   ~ShapePalette();
 
+  void initialize();
+
   GLuint formationTexIndex;
   inline GLuint getTexture(int index) { return textures[index].id; }
 

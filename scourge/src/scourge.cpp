@@ -58,28 +58,34 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   // we're not in target selection mode
   targetSelectionFor = NULL;
   
-  headless = false;
 #ifdef HAVE_SDL_NET
   // standalone mode?
   if(userConfiguration->getStandAloneMode() == UserConfiguration::SERVER) {
-    headless = true;
     runServer(userConfiguration->getPort());
     sdlHandler->quit(0);
   } else if(userConfiguration->getStandAloneMode() == UserConfiguration::CLIENT) {
-    headless = true;
     runClient(userConfiguration->getHost(), 
               userConfiguration->getPort(), 
               userConfiguration->getUserName());
     sdlHandler->quit(0);
   }
 #endif
+  move = 0;
+  battleCount = 0;  
+  inventory = NULL;
+  containerGuiCount = 0;
+  changingStory = false;  
+}
 
-  
+void Scourge::initVideo(ShapePalette *shapePal) {
+  this->shapePal = shapePal;
+
   // Initialize the video mode
-  sdlHandler = new SDLHandler(); 
-  if(!headless) sdlHandler->setVideoMode(userConfiguration); 
-  
-  shapePal = sdlHandler->getShapePalette();  
+  sdlHandler = new SDLHandler(shapePal); 
+  sdlHandler->setVideoMode(userConfiguration); 
+}
+
+void Scourge::initUI() {
 
   map = new Map(this);
   miniMap = new MiniMap(this); 
@@ -103,18 +109,14 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
 
   createUI();
 
-  move = 0;
-  battleCount = 0;  
-  inventory = NULL;
-  containerGuiCount = 0;
-  changingStory = false;  
-
   // show the main menu
   mainMenu = new MainMenu(this);
   optionsMenu = new OptionsMenu(this);
   multiplayer = new MultiplayerDialog(this);
-  bool initMainMenu = true;
+}
 
+void Scourge::start() {
+  bool initMainMenu = true;
   while(true) {
 
     if(initMainMenu) {
