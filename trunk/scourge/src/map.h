@@ -64,6 +64,7 @@ class Map {
   float xpos, ypos, zpos;
   float xRotating, yRotating, zRotating;
   Uint16 selX, selY, selZ, oldLocatorSelX, oldLocatorSelY, oldLocatorSelZ;
+  float fShadowMatrix[16];
 
   // on screen item descriptions
   int descriptionCount;
@@ -76,6 +77,11 @@ class Map {
 
   // FIXME: either make this value adjustable or find a faster way to blast it onscreen?
   static const int SHADE_SIZE = 20;
+
+  bool useShadow;
+  // squish on z and shear x,y
+  static const float shadowTransformMatrix[16];
+
   
   void drawGrid(SDL_Surface *surface);
   void debugGrid(SDL_Surface *surface);
@@ -99,9 +105,9 @@ class Map {
   inline float getYRot() { return yrot; }
   inline float getZRot() { return zrot; }  
 
-  inline void addXPos(float f) { xpos += f; fprintf(stderr, "xpos=%f\n", xpos); }
-  inline void addYPos(float f) { ypos += f; fprintf(stderr, "ypos=%f\n", ypos); }  
-  inline void addZPos(float f) { zpos += f; fprintf(stderr, "zpos=%f\n", zpos); }
+  inline void addXPos(float f) { xpos += f; }
+  inline void addYPos(float f) { ypos += f; }  
+  inline void addZPos(float f) { zpos += f; }
 
   inline float getXPos() { return xpos; }
   inline float getYPos() { return ypos; }
@@ -220,6 +226,8 @@ class Map {
   bool isLocationBlocked(int x, int y, int z);
 
   void drawShade();
+  
+  void drawCube(float x, float y, float z, float r);
 };
 
 #endif

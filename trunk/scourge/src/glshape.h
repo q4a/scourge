@@ -64,7 +64,9 @@ public:
   static const int LEFT_RIGHT_SIDE = 2;  
 
   inline void setSkipSide(int n) { skipside = n; }
-  
+
+  bool useShadow;
+
 public:
 /**
   Passing 0 for texture disables the creation of
