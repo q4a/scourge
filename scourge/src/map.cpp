@@ -433,7 +433,9 @@ void Map::draw() {
   } else {  
 	// draw the creatures/objects/doors/etc.
 	for(int i = 0; i < otherCount; i++) {
-	  if(selectedDropTarget && selectedDropTarget->creature == other[i].creature) {
+	  if(selectedDropTarget && 
+		 ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
+		  (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
 		colorAlreadySet = true;
 		glColor4f(0, 1, 1, 1);
 	  }

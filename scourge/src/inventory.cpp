@@ -89,8 +89,10 @@ Inventory::Inventory(Scourge *scourge) {
 	  label = new Label(115, 60 + (i * 15), Character::inventory_location[i]);
 	  cards->addWidget(label, INVENTORY);
 	}
-	invList = new ScrollingList(115, 285, 295, 175);
+	invList = new ScrollingList(115, 285, 295, 175, this);
 	cards->addWidget(invList, INVENTORY);
+	cards->addWidget(new Label(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP)),
+					 INVENTORY);
 	char s[80];
 	for(int i = 0; i < 4; i++) {
 	  sprintf(s, "to %s", scourge->getParty(i)->getName());
@@ -111,6 +113,9 @@ Inventory::Inventory(Scourge *scourge) {
 	cards->addWidget(enchantButton, INVENTORY);
 	identifyButton = new Button( 420, 335, 520, 360, strdup("Identify Item") );
 	cards->addWidget(identifyButton, INVENTORY);
+	openButton = new Button( 420, 335, 520, 360, 
+							 Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
+	cards->addWidget(openButton, INVENTORY);
 
 	// character info
 	label = new Label(115, 45, strdup("Character Information"));
@@ -157,22 +162,16 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
   else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
-  else if(widget == dropButton) {
+  else if(widget == openButton) {
 	int itemIndex = invList->getSelectedLine();  
-	if(itemIndex > -1 && 
-	   scourge->getParty(selected)->getInventoryCount() > itemIndex) {
-	  Item *item = scourge->getParty(selected)->removeInventory(itemIndex);
-	  scourge->setMovingItem(item, 
-							 scourge->getParty(selected)->getX(), 
-							 scourge->getParty(selected)->getY(), 
-							 scourge->getParty(selected)->getZ());
-	  char message[120];
-	  sprintf(message, "%s drops %s.", 
-			  scourge->getParty(selected)->getName(),
-			  item->getRpgItem()->getName());
-	  scourge->getMap()->addDescription(message);	  
-	  mainWin->setVisible(false);
+	if(itemIndex > -1) {
+	  Item *item = scourge->getParty(selected)->getInventory(itemIndex);
+	  if(item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+		scourge->openContainerGui(item);
+	  }
 	}
+ } else if(widget == dropButton) {
+	dropItem();
   } else if(widget == equipButton) {
 	int itemIndex = invList->getSelectedLine();  
 	if(itemIndex > -1 && 
@@ -318,7 +317,48 @@ void Inventory::drawInventory() {
 	glDisable( GL_SCISSOR_TEST );
 	glDisable( GL_TEXTURE_2D );
 	glPopMatrix();
-
-  }      
+  }
 }
 
+void Inventory::receive(Widget *widget) {
+  if(scourge->getMovingItem()) {
+	if(scourge->getParty(selected)->addInventory(scourge->getMovingItem())) {
+	  // message: the player accepted the item
+	  char message[120];
+	  sprintf(message, "%s picks up %s.", 
+			  scourge->getParty(selected)->getName(),
+			  scourge->getMovingItem()->getRpgItem()->getName());
+	  scourge->getMap()->addDescription(message);
+	  scourge->endItemDrag();
+	  setSelectedPlayerAndMode(selected, INVENTORY);
+	} else {
+	  // message: the player's inventory is full
+	}
+  }
+}
+
+void Inventory::startDrag(Widget *widget) {
+  dropItem();
+}
+
+void Inventory::dropItem() {
+  int itemIndex = invList->getSelectedLine();  
+  if(itemIndex > -1 && 
+	 scourge->getParty(selected)->getInventoryCount() > itemIndex) {
+	Item *item = scourge->getParty(selected)->removeInventory(itemIndex);
+	scourge->setMovingItem(item, 
+						   scourge->getParty(selected)->getX(), 
+						   scourge->getParty(selected)->getY(), 
+						   scourge->getParty(selected)->getZ());
+	char message[120];
+	sprintf(message, "%s drops %s.", 
+			scourge->getParty(selected)->getName(),
+			item->getRpgItem()->getName());
+	scourge->getMap()->addDescription(message);
+	setSelectedPlayerAndMode(selected, INVENTORY);
+  }
+}
+
+void Inventory::refresh() {
+  setSelectedPlayerAndMode(selected, INVENTORY);
+}

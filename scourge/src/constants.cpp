@@ -38,11 +38,12 @@ char *Constants::messages[][80] = {
   { "Un-paused: you are in real-time mode" },
   { "Close" },
   { "Drop Item" },
-  { "Open Item" }
+  { "Open Item" },
+  { "Drag items to/from the list" } 
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines

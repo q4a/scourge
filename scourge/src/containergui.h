@@ -37,6 +37,7 @@ class ContainerGui : public DragAndDropHandler {
   Window *win;
   Button *closeButton, *dropButton, *openButton;
   ScrollingList *list;
+  Label *label;
   char **containedItemNames;
 
  public:
@@ -48,13 +49,15 @@ class ContainerGui : public DragAndDropHandler {
 
   inline Item *getContainer() { return container; }
   inline Window *getWindow() { return win; }
+  inline void refresh() { showContents(); }
 
   // drag and drop handling
-  void receive();
-  void startDrag();
+  void receive(Widget *widget);
+  void startDrag(Widget *widget);
 
  private:
   void showContents();
+  void dropItem();
   
 };
 

@@ -30,12 +30,13 @@
 #include "gui/button.h"
 #include "gui/cardcontainer.h"
 #include "gui/scrollinglist.h"
+#include "gui/draganddrop.h"
 
 /**
   *@author Gabor Torok
   */
 
-class Inventory {
+class Inventory : public DragAndDropHandler {
 private:
     Scourge *scourge;
     int selected; // which player is selected?
@@ -54,7 +55,7 @@ private:
 	Label *invEquipLabel[Character::INVENTORY_COUNT];
 	Button *invToButton[4];
 	Button *equipButton, *dropButton, *fixButton, *removeCurseButton;
-	Button *combineButton, *enchantButton, *identifyButton;
+	Button *combineButton, *enchantButton, *identifyButton, *openButton;
 	ScrollingList *invList;
 	char **pcInvText;
 
@@ -76,10 +77,16 @@ public:
     bool handleEvent(SDL_Event *event);
 	bool handleEvent(Widget *widget, SDL_Event *event);
     void drawInventory();
+	void refresh();
+
+	// drag-n-drop
+	void receive(Widget *widget);
+	void startDrag(Widget *widget);
 
 protected:
 	void setSelectedPlayerAndMode(int player, int mode);
 	void moveItemTo(int playerIndex);
+	void dropItem();
 };
 
 #endif

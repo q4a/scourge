@@ -18,6 +18,8 @@
 #ifndef DRAG_AND_DROP_H
 #define DRAG_AND_DROP_H
 
+#include "widget.h"
+
 /**
   *@author Gabor Torok
   */
@@ -31,15 +33,19 @@ public:
 	DragAndDropHandler();
 	virtual ~DragAndDropHandler();
 
+	// the distance in pixels for a drag event to start
+	// so a casual click doesn't start a drag
+	static const int DRAG_START_DISTANCE = 10;
+
   /**
     The widget received a dragged item
   */
-  virtual void receive() = 0;
+  virtual void receive(Widget *widget) = 0;
 
   /**
 	 The widget initiated a drag
    */
-  virtual void startDrag() = 0;
+  virtual void startDrag(Widget *widget) = 0;
 };
 
 #endif

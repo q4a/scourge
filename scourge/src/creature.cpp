@@ -355,7 +355,12 @@ void Creature::setNextDontMove(Creature *next, int index) {
   this->index = index;
 }
 
-
+bool Creature::addInventory(Item *item) { 
+  if(inventory_count < MAX_INVENTORY_SIZE) {
+	inventory[inventory_count++] = item; 
+	return true;
+  } else return false;
+}
 
 Item *Creature::removeInventory(int index) { 
   Item *item = NULL;
@@ -603,7 +608,8 @@ void Creature::monsterInit() {
   // equip starting inventory
   for(int i = 0; i < Monster::ITEM_COUNT; i++) {
 	if(getMonster()->getStartingItem(i)) {
-	  equipInventory(addInventory(scourge->newItem(getMonster()->getStartingItem(i))));
+	  addInventory(scourge->newItem(getMonster()->getStartingItem(i)));
+	  equipInventory(inventory_count - 1);
 	}
   }
   // set some skills
