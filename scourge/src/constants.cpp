@@ -47,7 +47,7 @@ char *Constants::messages[][80] = {
   { "Cancel" },
   { "Yes" },
   { "No" },
-  { "Select a character who has leveled up." },
+  { "Select a character who is alive and has leveled up." },
   { "No skill points available." },
   { "Select a skill first." },
   { "S.C.O.U.R.G.E. dialog" },

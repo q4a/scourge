@@ -180,7 +180,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	}					   	   	   	      	
 	
   } else if(widget == skillAddButton) {
-	if(!scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
+	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
+	   !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() <= 0) {
 	  //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
@@ -201,7 +202,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  scourge->showMessageDialog(error);
 	}
   } else if(widget == skillSubButton) {
-	if(!scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
+	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
+	   !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 
 			  scourge->getParty()->getParty(selected)->getCharacter()->getSkillBonus()) {
@@ -223,7 +225,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  scourge->showMessageDialog(error);
 	}
   } else if(widget == levelUpButton) {
-	if(!scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
+	if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
+	   !scourge->getParty()->getParty(selected)->getStateMod(Constants::leveled)) {
 	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else {
 	  scourge->getParty()->getParty(selected)->applySkillMod();

@@ -22,6 +22,9 @@
 // only use 1 (disabled) or 0 (enabled)
 #define LIGHTMAP_ENABLED 1
 
+// set to 1 when location cache works
+#define USE_LOC_CACHE 0
+
 #define PI 3.14159f
 
 // this is the clockwise order of movements
@@ -1323,16 +1326,16 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
 		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
 			for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-              //  cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
+			  //			  cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
 			  if(!pos[x + xp][y - yp][z + zp]) {
-                if(nbPosCache < 0){
-                    //cerr << " no cache available!" << endl;
+                if(!USE_LOC_CACHE || nbPosCache < 0){
+				  //                    cerr << " no cache available!" << endl;
 				    pos[x + xp][y - yp][z + zp] = new Location();
                 }
                 else{
-                    //cerr << " cache number : " << nbPosCache << endl;
+				  //                    cerr << " cache number : " << nbPosCache << endl;
                     pos[x + xp][y - yp][z + zp] = posCache[nbPosCache];
-                    posCache[nbPosCache] = NULL;
+                    //posCache[nbPosCache] = NULL;
                     nbPosCache--;
                 }
 			  } else if(pos[x + xp][y - yp][z + zp]->item) {
@@ -1375,21 +1378,21 @@ Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	mapChanged = true;
     creature = pos[x][y][z]->creature;
-    //cout<<"width : "<< creature->getShape()->getWidth()<<endl;
-    //cout<<"depth: "<< creature->getShape()->getDepth()<<endl;
-    //cout<<"height: "<< creature->getShape()->getHeight()<<endl;
+	//    cout<<"width : "<< creature->getShape()->getWidth()<<endl;
+	//    cout<<"depth: "<< creature->getShape()->getDepth()<<endl;
+	//    cout<<"height: "<< creature->getShape()->getHeight()<<endl;
     for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
       for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
         for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-            //cerr <<"deleting pos " << x + xp << "," << y - yp << "," << z + zp;
-            if(nbPosCache >= MAX_POS_CACHE - 1){
-             //   cerr << " no cache available!" << endl;
+		  //            cerr <<"deleting pos " << x + xp << "," << y - yp << "," << z + zp;
+            if(!USE_LOC_CACHE || nbPosCache >= MAX_POS_CACHE - 1){
+			  //                cerr << " no cache available!" << endl;
                 delete pos[x + xp][y - yp][z + zp];
                 pos[x + xp][y - yp][z + zp] = NULL;
             }
             else{
                 nbPosCache++;
-                //cerr << " cache number : " << nbPosCache << endl;
+				//                cerr << " cache number : " << nbPosCache << endl;
                 posCache[nbPosCache] = pos[x + xp][y - yp][z + zp];
                 pos[x + xp][y - yp][z + zp] = NULL;
                 
