@@ -1208,7 +1208,11 @@ void Map::addDescription(char *desc, float r, float g, float b) {
     }
   }
   if(descriptionCount < MAX_DESCRIPTION_COUNT) descriptionCount++;
-  strcpy(descriptions[0], desc);
+  // only copy as much as the buffer can hold
+  strncpy(descriptions[0], desc, 120);
+  // zero terminate just in case desc.length > 120
+  descriptions[0][119] = 0;
+
   descriptionsColor[0].r = r;
   descriptionsColor[0].g = g;
   descriptionsColor[0].b = b;

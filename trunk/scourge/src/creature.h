@@ -343,7 +343,9 @@ class Creature {
   inline void setBonusArmor(int n) { bonusArmor = n; if(bonusArmor < 0) bonusArmor = 0; recalcAggregateValues(); }
   inline int getBonusArmor() { return bonusArmor; }
 
-  inline void addSpell(Spell *spell) { spells.push_back(spell); }
+  // FIXME: O(n) but there aren't that many spells...
+  // return true if spell was added, false if creature already had this spell
+  bool addSpell(Spell *spell);
   // FIXME: O(n) but there aren't that many spells...
   bool isSpellMemorized(Spell *spell);
 
