@@ -37,9 +37,12 @@ Effect::Effect(Session *session, ShapePalette *shapePal, GLShape *shape) {
 void Effect::commonInit() {
   flameTex = shapePal->getTexture(9);
   ringTex = shapePal->getTexture(18);
+  rippleTex = shapePal->getRippleTexture();
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     particle[i] = NULL;
   }
+  rippleRadius = 2.0f;
+  rippleAlpha = 0.4f;
   ringRadius = 0.25f;
   ringRotate = 0.0f;
   lastTimeStamp = 0;
@@ -80,6 +83,8 @@ void Effect::draw(int effect, int startTime) {
     drawCastSpell(proceed);
   } else if(effect == Constants::EFFECT_RING) {
     drawRing(proceed);
+  } else if(effect == Constants::EFFECT_RIPPLE) {
+    drawRipple(proceed);
   } else {
     glowShape(proceed, startTime);
   }
@@ -318,6 +323,35 @@ void Effect::drawRing(bool proceed) {
   if(proceed) {
     if(ringRadius < shape->getWidth()) ringRadius += 0.8f;
     ringRotate += 5.0f;
+  }
+}
+
+void Effect::drawRipple(bool proceed) {
+
+  float r = rippleRadius / GLShape::DIV;
+  float z = 0.3f / GLShape::DIV;
+
+  glDisable( GL_CULL_FACE );
+  glPushMatrix();
+  glColor4f( 0.3f, 0.25f, 0.17f, rippleAlpha );
+  if(rippleTex) glBindTexture( GL_TEXTURE_2D, rippleTex );
+  glBegin( GL_QUADS );
+  // front
+  glNormal3f(0.0f, 1.0f, 0.0f);
+  if(ringTex) glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(r, -r, z);
+  if(ringTex) glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(-r, -r, z);
+  if(ringTex) glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(-r, r, z);
+  if(ringTex) glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(r, r, z);  
+  glEnd();
+  glPopMatrix();
+
+  if(proceed) {
+    rippleRadius += 0.1f;
+    rippleAlpha /= 1.1f;
   }
 }
 

@@ -104,6 +104,7 @@ ShapePalette::ShapePalette(Session *session){
 
 void ShapePalette::initialize() {
   // load textures
+  ripple_texture = loadGLTextures("/ripple.bmp");
   gui_texture = loadGLTextures("/gui.bmp");
   gui_texture2 = loadGLTextures("/gui2.bmp");
   paper_doll_texture = loadGLTextures("/paperdoll.bmp");

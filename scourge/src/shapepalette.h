@@ -135,7 +135,7 @@ private:
   GLShape *shapes[256];
   map<string, GLShape *> shapeMap;
   int shapeCount;
-  GLuint gui_texture, gui_wood_texture, paper_doll_texture, gui_texture2;
+  GLuint gui_texture, gui_wood_texture, paper_doll_texture, gui_texture2, ripple_texture;
   map<int, GLuint> statModIcons;
   
   typedef struct _Texture {
@@ -222,6 +222,7 @@ public:
   inline Sint16 getUnitOffset() { return unitOffset; }
   inline Sint16 getWallHeight() { return wallHeight; }
 
+  inline GLuint getRippleTexture() { return ripple_texture; }
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
