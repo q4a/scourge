@@ -303,13 +303,11 @@ class Map {
            DrawLater *later=NULL);
 
   bool isDoor(int x, int y);
+  bool Map::isDoor(Shape *shape);
 
   // ====================================================================
   // Locked doors/chests code
-  inline void setLocked(int doorX, int doorY, int doorZ, bool value) {
-    locked[createTripletKey(doorX, doorY, doorZ)] = value;
-  }
-
+  void setLocked(int doorX, int doorY, int doorZ, bool value);
   inline void removeLocked(int doorX, int doorY, int doorZ) {
     Uint32 door = createTripletKey(doorX, doorY, doorZ);
     locked.erase(door);

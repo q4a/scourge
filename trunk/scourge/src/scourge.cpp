@@ -227,7 +227,7 @@ void Scourge::startMission() {
                 true);
 
     // Must be called after MiniMap has been built by dg->toMap() !!! 
-    miniMap->computeDrawValues();
+    //miniMap->computeDrawValues();
 
     // set to receive events here
     sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
@@ -2753,8 +2753,8 @@ void Scourge::removeBattle(Battle *b) {
   }
 }
 
-void Scourge::colorMiniMapPoint(int x, int y, Shape *shape) { 
-  miniMap->colorMiniMapPoint(x,y,shape); 
+void Scourge::colorMiniMapPoint(int x, int y, Shape *shape, Location *pos) { 
+  miniMap->colorMiniMapPoint(x, y, shape, pos); 
 }
 
 void Scourge::eraseMiniMapPoint(int x, int y) { 

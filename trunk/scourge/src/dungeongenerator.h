@@ -62,7 +62,8 @@ private:
   static const char MESSAGE[];
 
   typedef struct _Room {
-	int x, y, w, h;
+    int x, y, w, h;
+    int valueBonus;
   } Room;
   Room room[20];
 
@@ -149,6 +150,8 @@ private:
   int door[MAX_DOOR_COUNT][2];
 
   vector<Item*> containers;
+  vector<int> containerX;
+  vector<int> containerY;
 
 public: 
 
@@ -182,7 +185,7 @@ protected:
   void lockDoors(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void createFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-
+  void calculateRoomValues(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
 
   void initByLevel();
   void generateMaze();
@@ -238,6 +241,8 @@ protected:
   bool addShapeInARoom(int shapeIndex);
 
   void getRandomDeadEndLocation(int *x, int *y, GLShape *shape, Map *map);
+
+  int getRoomIndex(int x, int y);
 };
 
 #endif
