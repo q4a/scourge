@@ -103,11 +103,80 @@ void Map::setupShapes(bool ground) {
   int chunkEndY = MAP_VIEW_DEPTH / MAP_UNIT + chunkStartY;
 
   Shape *shape;
+  int posX, posY;
   float xpos2, ypos2, zpos2;
   for(int chunkX = chunkStartX; chunkX < chunkEndX; chunkX++) {
 	for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
+	  int doorValue = 0;
+
 	  // if this chunk is not lit, don't draw it
-	  if(!lightMap[chunkX][chunkY]) continue; 
+	  if(!lightMap[chunkX][chunkY]) {
+		if(ground) continue; 
+		else {
+		  // see if a door has to be drawn
+		  for(int yp = MAP_UNIT_OFFSET + 1; yp < MAP_UNIT; yp++) {
+			bool found = false;
+			if(chunkX - 1 >= 0 && lightMap[chunkX - 1][chunkY]) {
+			  for(int xp = MAP_UNIT - MAP_UNIT_OFFSET; xp < MAP_UNIT; xp++) {
+				posX = (chunkX - 1) * MAP_UNIT + xp + MAP_OFFSET;
+				posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
+				if(posX >= 0 && posX < MAP_WIDTH && 
+				   posY >= 0 && posY < MAP_DEPTH &&
+				   pos[posX][posY][0]) {
+				  found = true;
+				  break;
+				}
+			  }
+			}
+			if(!found) doorValue |= Constants::MOVE_LEFT;
+			found = false;
+			if(chunkX + 1 < MAP_WIDTH / MAP_UNIT && lightMap[chunkX + 1][chunkY]) {
+			  for(int xp = 0; xp < MAP_UNIT_OFFSET; xp++) {
+				posX = (chunkX + 1) * MAP_UNIT + xp + MAP_OFFSET;
+				posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
+				if(posX >= 0 && posX < MAP_WIDTH && 
+				   posY >= 0 && posY < MAP_DEPTH &&
+				   pos[posX][posY][0]) {
+				  found = true;
+				  break;
+				}
+			  }
+			}
+			if(!found) doorValue |= Constants::MOVE_RIGHT;
+		  }
+		  for(int xp = MAP_UNIT_OFFSET; xp < MAP_UNIT - MAP_UNIT_OFFSET; xp++) {
+			bool found = false;
+			if(chunkY - 1 >= 0 && lightMap[chunkX][chunkY - 1]) {
+			  for(int yp = MAP_UNIT - MAP_UNIT_OFFSET; yp < MAP_UNIT; yp++) {
+				posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
+				posY = (chunkY - 1) * MAP_UNIT + yp + MAP_OFFSET + 1;
+				if(posX >= 0 && posX < MAP_WIDTH && 
+				   posY >= 0 && posY < MAP_DEPTH &&
+				   pos[posX][posY][0]) {
+				  found = true;
+				  break;
+				}
+			  }
+			}
+			if(!found) doorValue |= Constants::MOVE_UP;
+			found = false;
+			if(chunkY + 1 >= 0 && lightMap[chunkX][chunkY + 1]) {
+			  for(int yp = 0; yp < MAP_UNIT_OFFSET; yp++) {
+				posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
+				posY = (chunkY + 1) * MAP_UNIT + yp + MAP_OFFSET + 1;
+				if(posX >= 0 && posX < MAP_WIDTH && 
+				   posY >= 0 && posY < MAP_DEPTH &&
+				   pos[posX][posY][0]) {
+				  found = true;
+				  break;
+				}
+			  }
+			}
+			if(!found) doorValue |= Constants::MOVE_DOWN;
+		  }
+		  if(doorValue == 0) continue;
+		}
+	  }
 	  
 	  for(int yp = 0; yp < MAP_UNIT; yp++) {
 		for(int xp = 0; xp < MAP_UNIT; xp++) {
@@ -118,8 +187,8 @@ void Map::setupShapes(bool ground) {
 			 position 1 unit down the Y axis, which is the
 			 unit square's bottom left corner.
 		   */
-		  int posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
-		  int posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
+		  posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
+		  posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
 
 		  if(ground) {
 			shape = floorPositions[posX][posY];
@@ -140,7 +209,16 @@ void Map::setupShapes(bool ground) {
 				 pos[posX][posY][zp]->y == posY &&
 				 pos[posX][posY][zp]->z == zp) {
 				shape = pos[posX][posY][zp]->shape;
-				if(shape) {
+
+				// FIXME: this draws more doors than needed... 
+				// it should use doorValue to figure out what needs to be drawn
+				if((!lightMap[chunkX][chunkY] && 
+					(shape == scourge->getShapePalette()->getShape(ShapePalette::NS_DOOR_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(ShapePalette::EW_DOOR_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(ShapePalette::NS_DOOR_TOP_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(ShapePalette::EW_DOOR_TOP_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(ShapePalette::DOOR_SIDE_INDEX))) ||
+				   (lightMap[chunkX][chunkY] && shape)) {
 				  xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
 								  xp + chunkOffsetX) / GLShape::DIV;
 				  ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
@@ -337,12 +415,46 @@ void Map::draw(SDL_Surface *surface) {
           doDrawShape(&later[i]);
           later[i].shape->endBlending();
       }
+	  drawShade();
       glEnable(GL_LIGHTING);
       glDepthMask(GL_TRUE);    
       glDisable(GL_BLEND);
 
       drawLocator();
   }
+}
+
+void Map::drawShade() {
+  glPushMatrix();
+  glLoadIdentity();
+  glDisable(GL_DEPTH_TEST);
+  glDisable( GL_TEXTURE_2D );
+  glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+  //scourge->setBlendFunc();
+  for(int xt = 0; xt < scourge->getSDLHandler()->getScreen()->w; xt+=SHADE_SIZE) {
+	for(int yt = 0; yt < scourge->getSDLHandler()->getScreen()->h; yt+=SHADE_SIZE) {
+	  int xd = (scourge->getSDLHandler()->getScreen()->w / 2 - 30) - xt;
+	  int yd = (scourge->getSDLHandler()->getScreen()->h / 2 - 30) - yt;
+	  float dist = (float)((xd * xd) + (yd * yd));
+	  float alpha = dist / 100000;
+	  glColor4f( 0, 0, 0, alpha);
+
+	  float zp = 0.0f;
+	  glBegin( GL_QUADS );
+      glVertex3f(xt + SHADE_SIZE, yt + SHADE_SIZE, zp);
+      glVertex3f(xt + SHADE_SIZE, yt, zp);
+      glVertex3f(xt, yt, zp);
+      glVertex3f(xt, yt + SHADE_SIZE, zp);
+	  glEnd();
+
+	  glColor4f(1, 1, 1, 1);
+	  //	  scourge->getSDLHandler()->texPrint(xt, yt, "%4.2f", alpha);
+	  //	  scourge->getSDLHandler()->texPrint(xt, yt + 15, "%4.2f", dist);
+	}
+  }
+  glEnable( GL_TEXTURE_2D );
+  glEnable(GL_DEPTH_TEST);
+  glPopMatrix();
 }
 
 void Map::doDrawShape(DrawLater *later) {
