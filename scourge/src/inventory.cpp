@@ -506,19 +506,19 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     break;
   case MISSION:
     int objectiveCount = 0;
-    if(scourge->getCurrentMission()) {
+    if(scourge->getSession()->getCurrentMission()) {
       sprintf(missionText, "%s: %s", 
-              scourge->getCurrentMission()->getName(), 
-              scourge->getCurrentMission()->getStory());
+              scourge->getSession()->getCurrentMission()->getName(), 
+              scourge->getSession()->getCurrentMission()->getStory());
       objectiveCount = 
-      scourge->getCurrentMission()->getObjective()->itemCount +
-      scourge->getCurrentMission()->getObjective()->monsterCount;   
-      for(int t = 0; t < scourge->getCurrentMission()->getObjective()->itemCount; t++) {
+      scourge->getSession()->getCurrentMission()->getObjective()->itemCount +
+      scourge->getSession()->getCurrentMission()->getObjective()->monsterCount;   
+      for(int t = 0; t < scourge->getSession()->getCurrentMission()->getObjective()->itemCount; t++) {
         sprintf(objectiveText[t], "Find %s. %s", 
-                scourge->getCurrentMission()->getObjective()->item[t]->getName(),
-                (scourge->getCurrentMission()->getObjective()->itemHandled[t] ? 
+                scourge->getSession()->getCurrentMission()->getObjective()->item[t]->getName(),
+                (scourge->getSession()->getCurrentMission()->getObjective()->itemHandled[t] ? 
                  "(completed)" : "(not yet found)"));
-        if(scourge->getCurrentMission()->getObjective()->itemHandled[t]) {
+        if(scourge->getSession()->getCurrentMission()->getObjective()->itemHandled[t]) {
           missionColor[t].r = 0.2f;
           missionColor[t].g = 0.7f;
           missionColor[t].b = 0.2f;
@@ -528,13 +528,13 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
           missionColor[t].b = 0.2f;
         }
       }
-      int start = scourge->getCurrentMission()->getObjective()->itemCount;
-      for(int t = 0; t < scourge->getCurrentMission()->getObjective()->monsterCount; t++) {
+      int start = scourge->getSession()->getCurrentMission()->getObjective()->itemCount;
+      for(int t = 0; t < scourge->getSession()->getCurrentMission()->getObjective()->monsterCount; t++) {
         sprintf(objectiveText[start + t], "Vanquish %s. %s", 
-                scourge->getCurrentMission()->getObjective()->monster[t]->getType(),
-                (scourge->getCurrentMission()->getObjective()->monsterHandled[t] ? 
+                scourge->getSession()->getCurrentMission()->getObjective()->monster[t]->getType(),
+                (scourge->getSession()->getCurrentMission()->getObjective()->monsterHandled[t] ? 
                  "(completed)" : "(not yet done)"));
-        if(scourge->getCurrentMission()->getObjective()->monsterHandled[t]) {
+        if(scourge->getSession()->getCurrentMission()->getObjective()->monsterHandled[t]) {
           missionColor[start + t].r = 0.2f;
           missionColor[start + t].g = 0.7f;
           missionColor[start + t].b = 0.2f;
@@ -544,7 +544,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
           missionColor[start + t].b = 0.2f;
         }
       }
-      start += scourge->getCurrentMission()->getObjective()->monsterCount;
+      start += scourge->getSession()->getCurrentMission()->getObjective()->monsterCount;
       for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
         strcpy(objectiveText[t], "");
       }

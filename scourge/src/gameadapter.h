@@ -62,7 +62,6 @@ public:
   virtual inline void setPlayerUI(int index) {}
   virtual inline void updateBoardUI(int count, const char **missionText, Color *missionColor) {}
   virtual inline void setMissionDescriptionUI(char *s) {}
-  virtual inline Mission *getCurrentMission() { return NULL; }
   virtual inline void missionCompleted() {}
   virtual inline void cancelBattle(Creature *creature) {}
   virtual inline void moveMonster(Creature *monster) {}

@@ -610,8 +610,8 @@ bool Creature::addInventory(Item *item) {
 
     // check if the mission is over
     if(!isMonster() && 
-       session->getGameAdapter()->getCurrentMission() &&
-       session->getGameAdapter()->getCurrentMission()->itemFound(item->getRpgItem())) {
+       session->getCurrentMission() &&
+       session->getCurrentMission()->itemFound(item->getRpgItem())) {
       session->getGameAdapter()->missionCompleted();
     }
 

@@ -18,6 +18,8 @@
 #include "scourge.h"
 #include "events/thirsthungerevent.h"
 
+#define MOUSE_ROT_DELTA 2
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 // good for debugging blending
@@ -64,6 +66,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   resetBattles();
 
   turnProgress = new Progress(this, 10, false, false, false);
+  mouseZoom = mouseRot = false;
 }
 
 void Scourge::initVideo(ShapePalette *shapePal) {
@@ -202,6 +205,8 @@ void Scourge::startMission() {
       board->initMissions();
 
       // display the HQ map
+      getSession()->setCurrentMission(NULL);
+      missionWillAwardExpPoints = false;
       dg = new DungeonGenerator(this, 2, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
       dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
     } else {
@@ -324,6 +329,16 @@ void Scourge::drawView() {
   updatePartyUI();
 
   map->draw();
+  if(mouseRot) {
+    map->setXRot(0);
+    map->setYRot(0);
+    map->setZRot(0);
+  }
+  if(mouseZoom) {
+    mouseZoom = false;
+    map->setZoomIn(false);
+    map->setZoomOut(false);
+  }
 
   // cover the area outside the map
   if(map->getViewWidth() < sdlHandler->getScreen()->w || 
@@ -779,32 +794,37 @@ bool Scourge::handleEvent(SDL_Event *event) {
   int mx, my;
   switch(event->type) {
   case SDL_MOUSEMOTION:
-	//sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
-	mx = event->motion.x;
-	my = event->motion.y;
-	if(mx < 10) {
-	  mouseMoveScreen = true;
-	  setMove(Constants::MOVE_LEFT);
-	} else if(mx >= sdlHandler->getScreen()->w - 10) {
-	  mouseMoveScreen = true;
-	  setMove(Constants::MOVE_RIGHT);
-	} else if(my < 10) {
-	  mouseMoveScreen = true;
-	  setMove(Constants::MOVE_UP);
-	} else if(my >= sdlHandler->getScreen()->h - 10) {
-	  mouseMoveScreen = true;
-	  setMove(Constants::MOVE_DOWN);
-	} else {
-	  if(mouseMoveScreen) {
-		mouseMoveScreen = false;
-		removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
-		removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
-		map->setYRot(0.0f);
-		map->setZRot(0.0f);
-	  }
-	}
-    processGameMouseMove(mx, my);
-    break;
+  if(mouseRot) {
+    map->setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
+    map->setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
+  } else {
+    //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+    mx = event->motion.x;
+    my = event->motion.y;
+    if(mx < 10) {
+      mouseMoveScreen = true;
+      setMove(Constants::MOVE_LEFT);
+    } else if(mx >= sdlHandler->getScreen()->w - 10) {
+      mouseMoveScreen = true;
+      setMove(Constants::MOVE_RIGHT);
+    } else if(my < 10) {
+      mouseMoveScreen = true;
+      setMove(Constants::MOVE_UP);
+    } else if(my >= sdlHandler->getScreen()->h - 10) {
+      mouseMoveScreen = true;
+      setMove(Constants::MOVE_DOWN);
+    } else {
+      if(mouseMoveScreen) {
+        mouseMoveScreen = false;
+        removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
+        removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
+        map->setYRot(0.0f);
+        map->setZRot(0.0f);
+      }
+    }
+    processGameMouseMove(mx, my);  
+  }
+  break;
   case SDL_MOUSEBUTTONDOWN:
 	sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
     if(event->button.button) {
@@ -812,20 +832,20 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     break;	
   case SDL_MOUSEBUTTONUP:
-	sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
-    if(event->button.button) {
-	  processGameMouseClick(mx, my, event->button.button);
-	  if(teleporting && !exitConfirmationDialog->isVisible()) {
-		exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
-		party->toggleRound(true);
-		exitConfirmationDialog->setVisible(true);
-	  } else if(changingStory && !exitConfirmationDialog->isVisible()) {
-		exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
-		party->toggleRound(true);
-		exitConfirmationDialog->setVisible(true);
-	  }
+  sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+  if(event->button.button) {
+    processGameMouseClick(mx, my, event->button.button);
+    if(teleporting && !exitConfirmationDialog->isVisible()) {
+      exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+      party->toggleRound(true);
+      exitConfirmationDialog->setVisible(true);
+    } else if(changingStory && !exitConfirmationDialog->isVisible()) {
+      exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
+      party->toggleRound(true);
+      exitConfirmationDialog->setVisible(true);
     }
-    break;
+  }
+  break;
   }
   switch(event->type) {
   case SDL_KEYDOWN:
@@ -1083,13 +1103,23 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
 void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
   Uint16 mapx, mapy, mapz;
   if(button == SDL_BUTTON_LEFT) {
-	// click on an item
-	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-	if(mapx > MAP_WIDTH) {
-	  getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	  mapz = 0;
-	}
-	if(startItemDrag(mapx, mapy, mapz)) return;
+    // click on an item
+    getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+    if(mapx > MAP_WIDTH) {
+      getMapXYAtScreenXY(x, y, &mapx, &mapy);
+      mapz = 0;
+    }
+    if(startItemDrag(mapx, mapy, mapz)) return;
+  } if(button == SDL_BUTTON_MIDDLE) {
+    mouseRot = true;
+  } if(button == SDL_BUTTON_WHEELUP) {
+    mouseZoom = true;
+    map->setZoomIn(false);
+    map->setZoomOut(true);
+  } if(button == SDL_BUTTON_WHEELDOWN) {
+    mouseZoom = true;
+    map->setZoomIn(true);
+    map->setZoomOut(false);
   }
 }
 
@@ -1097,7 +1127,12 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   char msg[80];
   Uint16 mapx, mapy, mapz;
   Creature *c = getTargetSelectionFor();
-  if(button == SDL_BUTTON_LEFT) {
+  if(button == SDL_BUTTON_MIDDLE) {
+    mouseRot = false;
+    map->setXRot(0);
+    map->setYRot(0);
+    map->setZRot(0);
+  } else if(button == SDL_BUTTON_LEFT) {
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	
 	// clicking on a creature
@@ -1964,7 +1999,7 @@ bool Scourge::fightCurrentBattleTurn() {
   Uint32 t = SDL_GetTicks();
   if(!getUserConfiguration()->isBattleTurnBased() || 
      lastTick == 0 || 
-     t - lastTick > userConfiguration->getGameSpeedTicks()) {
+     t - lastTick > (Uint32)userConfiguration->getGameSpeedTicks()) {
     lastTick = t;
     // fight a turn of the battle
     if(battleRound.size() > 0) {

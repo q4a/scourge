@@ -197,6 +197,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Progress *progress;
   bool inBattle;
   Progress *turnProgress;
+  bool mouseRot, mouseZoom;
 
 protected:
   SDLHandler *sdlHandler;
