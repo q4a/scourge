@@ -52,6 +52,7 @@
 #include "netplay.h"
 #include "gui/progress.h"
 #include "gameadapter.h"
+#include "session.h"
 
 using namespace std;
 
@@ -91,13 +92,16 @@ class GameAdapter;
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
 
+#define MAX_SIZE 0
+#define MIN_SIZE 1
+
 /** 
   This is the main class of the game. It is a central place to put
   references to other objects, like the party, minimap, etc.
   
   @author Gabor Torok
 */ 
-class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView {
+class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
  private:
   Party *party;
   Map *map;
@@ -172,6 +176,38 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView {
   NetPlay *netPlay;
   bool multiplayerGame;
 
+  float targetWidth, targetWidthDelta;
+  GLint lastTargetTick;
+
+  // party ui
+  bool lastEffectOn;
+  int oldX;
+  char version[100], min_version[20];
+  Window *mainWin;
+  Button *inventoryButton;
+  Button *optionsButton;
+  Button *quitButton;
+  Button *roundButton;
+  Button *calendarButton;
+  Button *diamondButton;
+  Button *staggeredButton;
+  Button *squareButton;
+  Button *rowButton;
+  Button *scoutButton;
+  Button *crossButton;
+  Button *player1Button;
+  Button *player2Button;
+  Button *player3Button;
+  Button *player4Button;
+  Button *groupButton;
+  Button *minButton, *maxButton;
+  CardContainer *cards;
+  Canvas *minPartyInfo;
+  Canvas *playerInfo[MAX_PARTY_SIZE];
+  Button *layoutButton1, *layoutButton2, *layoutButton3, *layoutButton4;
+
+  Session *session;
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;
@@ -209,6 +245,11 @@ public:
   
   Scourge(UserConfiguration *config);
   ~Scourge();
+
+  inline Session *getSession() { return session; }
+
+  int getScreenWidth();
+  int getScreenHeight();
 
   /**
     @return the Board containing the available missions.
@@ -346,6 +387,12 @@ public:
   */
   void drawAfter();
 
+  void drawDraggedItem();
+
+  void drawBorder();
+
+  void showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode);
+
   /**
     Respond to keyboard and mouse events in this method.
     @param event the actual SDL_Event structure as captured by the main app loop.
@@ -426,12 +473,7 @@ public:
     @return the SDLHandler.
   */
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
-  
-  /**
-    @return the UserConfiguration.
-  */
-  inline UserConfiguration * getUserConfiguration() { return userConfiguration; }
-  
+   
   
   //void drawTopWindow();
 
@@ -470,6 +512,8 @@ public:
     @param formation One of the formation constants.
   */
   void setFormation(int formation);
+
+  void togglePlayerOnly();
   
   void toggleInventoryWindow();
 
@@ -545,8 +589,24 @@ public:
 #endif
 
   void initVideo(ShapePalette *shapePal);
-  void initUI();
+  void initUI(Session *session);
   void start();
+
+  void fightProjectileHitTurn(Projectile *proj, Creature *creature);
+
+  void drawWidget(Widget *w);
+
+  void resetPartyUI();
+
+  void refreshInventoryUI(int playerIndex);
+
+  void toggleRoundUI(bool startRound);
+
+  void setFormationUI(int formation, bool playerOnly);
+
+  void togglePlayerOnlyUI(bool playerOnly);
+
+  void setPlayerUI(int index);
 
  protected:
   //  void fightBattle(); 
@@ -563,6 +623,12 @@ public:
   void decideMonsterAction(Creature *monster);
 
   void refreshContainerGui(Item *container);
+
+  void createPartyUI();
+
+  bool handlePartyEvent(Widget *widget, SDL_Event *event);
+
+  void updatePartyUI();
 
 };
 

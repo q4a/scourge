@@ -19,22 +19,22 @@
 
 PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, 
 											 Creature *c, RpgItem *item, 
-											 Scourge * scourge, int nbExecutionsToDo) : 
+											 Session *session, int nbExecutionsToDo) : 
   Event(currentDate, timeOut, nbExecutionsToDo) {
     this->creature = c;
 	this->potionSkill = item->getPotionSkill();
 	this->amount = item->getAction();
-    this->scourge = scourge;
+    this->session = session;
   }
 
 PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, 
 											 int potionSkill, int amount, 
-											 Scourge *scourge, int nbExecutionsToDo) :
+											 Session *session, int nbExecutionsToDo) :
   Event(currentDate, timeOut, nbExecutionsToDo) {
     this->creature = c;
 	this->potionSkill = potionSkill;
 	this->amount = amount;
-    this->scourge = scourge;
+    this->session = session;
   }
 
 PotionExpirationEvent::~PotionExpirationEvent(){
@@ -57,7 +57,7 @@ void PotionExpirationEvent::execute() {
 	case Constants::AC:
 	  creature->setBonusArmor(creature->getBonusArmor() - amount);
 	  sprintf(msg, "%s feels vulnerable...", creature->getName());
-	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+	  session->getMap()->addDescription(msg, 0.2f, 1, 1);
 	  creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return;
 	default:
@@ -70,7 +70,7 @@ void PotionExpirationEvent::execute() {
 							amount);
 	//	recalcAggregateValues();
 	sprintf(msg, "%s feels a loss of contentment.", creature->getName());
-	scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+	session->getMap()->addDescription(msg, 0.2f, 1, 1);
 	creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
   }
 }

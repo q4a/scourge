@@ -128,7 +128,7 @@ void SpellCaster::increaseAC() {
   Event *e = new PotionExpirationEvent(battle->getScourge()->getParty()->getCalendar()->getCurrentDate(), 
                                        d, creature->getTargetCreature(), 
                                        Constants::getPotionSkillByName("AC"), n, 
-                                       battle->getScourge(), 1);
+                                       battle->getScourge()->getSession(), 1);
   battle->getScourge()->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
 
 }

@@ -25,15 +25,6 @@ GameAdapter::~GameAdapter() {
   delete userConfiguration;
 }
 
-void GameAdapter::initVideo(ShapePalette *shapePal) {
-}
-
-void GameAdapter::initUI() {
-}
-
-void GameAdapter::start() {
-}
-
 
 
 

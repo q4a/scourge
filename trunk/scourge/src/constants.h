@@ -114,6 +114,8 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
 // show fps info
 #define SHOW_DEBUG_INFO
 
+#define MAX_PARTY_SIZE 4
+
 /*
   Float swapping code by:
   Ramin Firoozye' -- rp&A Inc.

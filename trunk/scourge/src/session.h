@@ -49,6 +49,7 @@ class Map;
 class Item;
 class Creature;
 class GameAdapter;
+class UserConfiguration;
 
 /**
  *@author Gabor Torok
@@ -95,11 +96,17 @@ public:
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
   inline bool isMultiPlayerGame() { return multiplayerGame; }
   inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
-  inline ShapePalette *getShapePalette() { return shapePal; }
 
+  inline GameAdapter *getGameAdapter() { return adapter; }
+  inline ShapePalette *getShapePalette() { return shapePal; }
   inline Map *getMap() { return map; }
   inline Board *getBoard() { return board; }
   inline Party *getParty() { return party; }
+  inline UserConfiguration *getUserConfiguration() { return getGameAdapter()->getUserConfiguration(); }
+  inline int getCreatureCount() { return creatureCount; }
+  inline Creature *getCreature(int index) { return creatures[index]; }
+  inline int getItemCount() { return itemCount; }
+  inline Item *getItem(int index) { return items[index]; }
 
 protected:
   virtual void initData();

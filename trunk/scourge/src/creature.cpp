@@ -32,8 +32,8 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3}}   // CROSS_FORMATION
 };
 
-Creature::Creature(Scourge *scourge, Character *character, char *name) {
-  this->scourge = scourge;
+Creature::Creature(Session *session, Character *character, char *name) {
+  this->session = session;
   this->character = character;
   this->monster = NULL;
   this->name = name;
@@ -46,12 +46,12 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
-  this->shape = scourge->getShapePalette()->getCreatureShape(model_name, skin_name);
+  this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name);
   commonInit();  
 }
 
-Creature::Creature(Scourge *scourge, Monster *monster) {
-  this->scourge = scourge;
+Creature::Creature(Session *session, Monster *monster) {
+  this->session = session;
   this->character = NULL;
   this->monster = monster;
   this->name = monster->getType();
@@ -62,7 +62,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
   this->bonusArmor=0;
-  this->shape = scourge->getShapePalette()->getCreatureShape(model_name, 
+  this->shape = session->getShapePalette()->getCreatureShape(model_name, 
                                                              skin_name, 
                                                              monster->getScale(),
                                                              monster->getWidth(),
@@ -107,7 +107,7 @@ void Creature::commonInit() {
   this->lastTurn = 0;
   this->damageEffectCounter = 0;
   this->effectDuration = Constants::DAMAGE_DURATION;
-  this->effect = new Effect(scourge, scourge->getShapePalette(), shape);
+  this->effect = new Effect(session, session->getShapePalette(), shape);
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
   this->availableSkillPoints = 0;
@@ -203,7 +203,7 @@ void Creature::calculateExpOfNextLevel() {
 Creature::~Creature(){
   delete effect;
   // do this before deleting the shape
-  scourge->getShapePalette()->decrementSkinRefCount(skin_name);
+  session->getShapePalette()->decrementSkinRefCount(skin_name);
   delete shape;
 }
 
@@ -225,7 +225,7 @@ bool Creature::move(Uint16 dir, Map *map) {
   if(character) return false;
 
   Uint32 t = SDL_GetTicks();
-  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (scourge->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
   lastMove = t;
 
   /*
@@ -277,7 +277,7 @@ bool Creature::move(Uint16 dir, Map *map) {
       sprintf(message, "%s picks up %s.", 
               getName(), 
               item->getItemName());
-      scourge->getMap()->addDescription(message);
+      session->getMap()->addDescription(message);
     }
 
     map->setCreature(nx, ny, nz, this);
@@ -414,8 +414,8 @@ bool Creature::moveToLocator(Map *map) {
       }   
 
       // if this is the player, return to regular movement
-      if(this == scourge->getParty()->getPlayer()) {
-        scourge->getParty()->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+      if(this == session->getParty()->getPlayer()) {
+        session->getParty()->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
       }
     }
   }
@@ -436,7 +436,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
   */
 
   Uint32 t = SDL_GetTicks();
-  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (scourge->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
+  if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
   lastMove = t;
 
   // If the target moved, get the best path to the location
@@ -446,7 +446,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     tx = px;
     ty = py;
     bestPathPos = 1; // skip 0th position; it's the starting location
-    Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, scourge->getMap(), getShape());
+    Util::findPath(getX(), getY(), getZ(), px, py, pz, &bestPath, session->getMap(), getShape());
   }
 
   if((int)bestPath.size() > bestPathPos) {
@@ -548,25 +548,25 @@ void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
   Used to move away from the player. Find the nearest corner of the map.
 */
 void Creature::findCorner(Sint16 *px, Sint16 *py, Sint16 *pz) {
-  if(getX() < scourge->getParty()->getPlayer()->getX() &&
-     getY() < scourge->getParty()->getPlayer()->getY()) {
+  if(getX() < session->getParty()->getPlayer()->getX() &&
+     getY() < session->getParty()->getPlayer()->getY()) {
     *px = *py = *pz = 0;
     return;
   }
-  if(getX() >= scourge->getParty()->getPlayer()->getX() &&
-     getY() < scourge->getParty()->getPlayer()->getY()) {
+  if(getX() >= session->getParty()->getPlayer()->getX() &&
+     getY() < session->getParty()->getPlayer()->getY()) {
     *px = MAP_WIDTH;
     *py = *pz = 0;
     return;
   }
-  if(getX() < scourge->getParty()->getPlayer()->getX() &&
-     getY() >= scourge->getParty()->getPlayer()->getY()) {
+  if(getX() < session->getParty()->getPlayer()->getX() &&
+     getY() >= session->getParty()->getPlayer()->getY()) {
     *px = *pz = 0;
     *py = MAP_DEPTH;
     return;
   }
-  if(getX() >= scourge->getParty()->getPlayer()->getX() &&
-     getY() >= scourge->getParty()->getPlayer()->getY()) {
+  if(getX() >= session->getParty()->getPlayer()->getX() &&
+     getY() >= session->getParty()->getPlayer()->getY()) {
     *px = MAP_WIDTH;
     *py = MAP_DEPTH;
     *pz = 0;
@@ -597,16 +597,19 @@ bool Creature::addInventory(Item *item) {
        getMaxInventoryWeight()) {
       char msg[80];
       sprintf(msg, "%s is overloaded.", getName());
-      scourge->getMap()->addDescription(msg);            
+      session->getMap()->addDescription(msg);            
       setStateMod(Constants::overloaded, true);
     }
 
     // check if the mission is over
+    cerr << "FIXME: Creature::addInventory" << endl;
+    /*
     if(!isMonster() && 
        scourge->getCurrentMission() &&
        scourge->getCurrentMission()->itemFound(item->getRpgItem())) {
       scourge->missionCompleted();
     }
+    */
 
     return true;
   } else{
@@ -634,7 +637,7 @@ Item *Creature::removeInventory(int index) {
     {
       char msg[80];
       sprintf(msg, "%s is not overloaded anymore.", getName());
-      scourge->getMap()->addDescription(msg);            
+      session->getMap()->addDescription(msg);            
       setStateMod(Constants::overloaded, false);
     }
     for(int i = index; i < inventory_count - 1; i++) {
@@ -667,7 +670,7 @@ bool Creature::eatDrink(Item *item) {
   if(type == RpgItem::FOOD){
     if(getHunger() == 10){                
       sprintf(msg, "%s is not hungry at the moment.", getName()); 
-      scourge->getMap()->addDescription(msg); 
+      session->getMap()->addDescription(msg); 
       return false;
     }
 
@@ -678,29 +681,29 @@ bool Creature::eatDrink(Item *item) {
     strcpy(buff, rpgItem->getShortDesc());
     buff[0] = tolower(buff[0]);
     sprintf(msg, "%s eats %s.", getName(), buff);
-    scourge->getMap()->addDescription(msg);
+    session->getMap()->addDescription(msg);
     bool b = item->decrementCharges();
     if(b) {
       sprintf(msg, "%s is used up.", item->getItemName());
-      scourge->getMap()->addDescription(msg);
+      session->getMap()->addDescription(msg);
     }
     return b;
   } else if(type == RpgItem::DRINK){
     if(getThirst() == 10){                
       sprintf(msg, "%s is not thirsty at the moment.", getName()); 
-      scourge->getMap()->addDescription(msg); 
+      session->getMap()->addDescription(msg); 
       return false;
     }
     setThirst(getThirst() + level);
     strcpy(buff, rpgItem->getShortDesc());
     buff[0] = tolower(buff[0]);
     sprintf(msg, "%s drinks %s.", getName(), buff);
-    scourge->getMap()->addDescription(msg); 
+    session->getMap()->addDescription(msg); 
     // TODO : according to the alcool rate set drunk state or not            
     bool b = item->decrementCharges();
     if(b) {
       sprintf(msg, "%s is used up.", item->getItemName());
-      scourge->getMap()->addDescription(msg);
+      session->getMap()->addDescription(msg);
     }
     return b;
   } else if(type == RpgItem::POTION) {
@@ -710,16 +713,16 @@ bool Creature::eatDrink(Item *item) {
     buff[0] = tolower(buff[0]);
     setThirst(getThirst() + level);
     sprintf(msg, "%s drinks from %s.", getName(), buff);
-    scourge->getMap()->addDescription(msg); 
+    session->getMap()->addDescription(msg); 
     usePotion(item);
     bool b = item->decrementCharges();
     if(b) {
       sprintf(msg, "%s is used up.", item->getItemName());
-      scourge->getMap()->addDescription(msg);
+      session->getMap()->addDescription(msg);
     }
     return b;
   } else {
-    scourge->getMap()->addDescription("You cannot eat or drink that!", 1, 0.2f, 0.2f);
+    session->getMap()->addDescription("You cannot eat or drink that!", 1, 0.2f, 0.2f);
     return false;
   }
 }
@@ -740,7 +743,7 @@ void Creature::usePotion(Item *item) {
         n = getMaxHp() - getHp();
       setHp(getHp() + n);
       sprintf(msg, "%s heals %d points.", getName(), n);
-      scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+      session->getMap()->addDescription(msg, 0.2f, 1, 1);
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::MP:
@@ -749,7 +752,7 @@ void Creature::usePotion(Item *item) {
         n = getMaxMp() - getMp();
       setMp(getMp() + n);
       sprintf(msg, "%s receives %d magic points.", getName(), n);
-      scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+      session->getMap()->addDescription(msg, 0.2f, 1, 1);
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::AC:
@@ -757,16 +760,16 @@ void Creature::usePotion(Item *item) {
         bonusArmor += item->getRpgItem()->getAction();
         recalcAggregateValues();
         sprintf(msg, "%s feels impervious to damage!", getName());
-        scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+        session->getMap()->addDescription(msg, 0.2f, 1, 1);
         startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
         // add calendar event to remove armor bonus
         // (format : sec, min, hours, days, months, years)
         Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
         Event *e = 
-        new PotionExpirationEvent(scourge->getParty()->getCalendar()->getCurrentDate(), 
-                                  d, this, item->getRpgItem(), scourge, 1);
-        scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
+        new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
+                                  d, this, item->getRpgItem(), session, 1);
+        session->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
       }
       return;
     default:
@@ -777,16 +780,16 @@ void Creature::usePotion(Item *item) {
     skillBonus[skill] += item->getRpgItem()->getAction();
     //	recalcAggregateValues();
     sprintf(msg, "%s feels at peace.", getName());
-    scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+    session->getMap()->addDescription(msg, 0.2f, 1, 1);
     startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
     // add calendar event to remove armor bonus
     // (format : sec, min, hours, days, months, years)
     Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
     Event *e = 
-    new PotionExpirationEvent(scourge->getParty()->getCalendar()->getCurrentDate(), 
-                              d, this, item->getRpgItem(), scourge, 1);
-    scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
+    new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
+                              d, this, item->getRpgItem(), session, 1);
+    session->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
   }
 }
 
@@ -817,7 +820,7 @@ void Creature::setAction(int action,
     cerr << "*** Error: unknown action " << action << endl;
     return;
   }
-  if(strlen(msg)) scourge->getMap()->addDescription(msg, 1, 1, 0.5f);
+  if(strlen(msg)) session->getMap()->addDescription(msg, 1, 1, 0.5f);
 }
 
 void Creature::equipInventory(int index) {
@@ -1011,7 +1014,7 @@ bool Creature::takeDamage(int damage, int effect_type) {
   // if creature dies start effect at its location
   if(hp > 0) startEffect(effect_type);
   else if(effect_type != Constants::EFFECT_GLOW) {
-    scourge->getMap()->startEffect(getX(), getY(), getZ(), 
+    session->getMap()->startEffect(getX(), getY(), getZ(), 
                                    effect_type, (Constants::DAMAGE_DURATION * 4), 
                                    getShape()->getWidth(), getShape()->getDepth());
   }
@@ -1029,7 +1032,7 @@ void Creature::startEffect(int effect_type, int duration) {
   effectDuration = duration;
 
   // need to do this to make sure effect shows up
-  scourge->getMap()->refresh();
+  session->getMap()->refresh();
 }
 
 /**
@@ -1095,7 +1098,7 @@ int Creature::addMoney(Creature *creature_killed) {
 void Creature::monsterInit() {
   // equip starting inventory
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {
-    addInventory(scourge->newItem(getMonster()->getStartingItem(i)));
+    addInventory(session->newItem(getMonster()->getStartingItem(i)));
     equipInventory(inventory_count - 1);
   }
   // add spells
@@ -1211,7 +1214,7 @@ void Creature::decideMonsterAction() {
 
   // increase MP, AC or skill (via potion)?
 
-  Creature *p = scourge->getParty()->getClosestPlayer(getX(), getY(), 
+  Creature *p = session->getParty()->getClosestPlayer(getX(), getY(), 
                                                       getShape()->getWidth(),
                                                       getShape()->getDepth(),
                                                       20);

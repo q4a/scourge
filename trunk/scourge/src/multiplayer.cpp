@@ -52,7 +52,7 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
 
   // allocate strings for list
   // FIXME: use a character set not the party here
-  Party::createHardCodedParty(scourge, &pc, &pcCount);
+  Party::createHardCodedParty(scourge->getSession(), &pc, &pcCount);
   charStr = (char**)malloc(pcCount * sizeof(char*));
   for(int i = 0; i < pcCount; i++) {
     charStr[i] = (char*)malloc(255 * sizeof(char));
@@ -83,7 +83,7 @@ Creature *MultiplayerDialog::getCreature() {
   // Rewrite this when the character editor/store are done.
   Creature **pc;
   int pcCount;
-  Party::createHardCodedParty(scourge, &pc, &pcCount);
+  Party::createHardCodedParty(scourge->getSession(), &pc, &pcCount);
   Creature *c = pc[n];
   // delete the ones not used
   for(int i = 0; i < pcCount; i++) {

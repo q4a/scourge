@@ -17,16 +17,16 @@
 
 #include "effect.h"
 
-Effect::Effect(Scourge *scourge, ShapePalette *shapePal, int width, int height) {
-  this->scourge = scourge;
+Effect::Effect(Session *session, ShapePalette *shapePal, int width, int height) {
+  this->session = session;
   this->shapePal = shapePal;
   this->shape = new GLShape(0, width, height, 1, NULL,0, 0, 0, 2000);
   this->deleteShape = true;
   commonInit();
 }
 
-Effect::Effect(Scourge *scourge, ShapePalette *shapePal, GLShape *shape) {
-  this->scourge = scourge;
+Effect::Effect(Session *session, ShapePalette *shapePal, GLShape *shape) {
+  this->session = session;
   this->shapePal = shapePal;
   this->shape = shape;
   this->deleteShape = false;
@@ -62,7 +62,7 @@ void Effect::draw(int effect, int startTime) {
   GLint t = SDL_GetTicks();
 
   bool proceed = (lastTimeStamp == 0 || 
-                  t - lastTimeStamp >= scourge->getUserConfiguration()->getGameSpeedTicks() / 2);
+                  t - lastTimeStamp >= session->getUserConfiguration()->getGameSpeedTicks() / 2);
   if(proceed) lastTimeStamp = t;
 
   if(effect == Constants::EFFECT_FLAMES) {

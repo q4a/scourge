@@ -21,24 +21,21 @@
 #include <iostream>
 #include <string>
 #include "constants.h"
-#include "scourge.h"
 #include "map.h"
 #include "calendar.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
 #include "rpg/rpgitem.h"
 #include "events/thirsthungerevent.h"
-#include "gui/canvas.h"
-#include "gui/widgetview.h"
 
 using namespace std;
 
-#define MAX_PARTY_SIZE 4
+class Session;
 
-class Party : public WidgetView {
+class Party {
  private:
     
-  Scourge *scourge;
+  Session *session;
   Creature *player;
   Creature *party[MAX_PARTY_SIZE];
   bool partyDead;
@@ -46,40 +43,11 @@ class Party : public WidgetView {
   int formation;
   Calendar * calendar;
   bool startRound;
-  bool lastEffectOn;
-  int oldX;
-  char version[100], min_version[20];
-
-  Window *mainWin;
-  Button *inventoryButton;
-  Button *optionsButton;
-  Button *quitButton;
-  Button *roundButton;
-  Button *calendarButton;
-
-  Button *diamondButton;
-  Button *staggeredButton;
-  Button *squareButton;
-  Button *rowButton;
-  Button *scoutButton;
-  Button *crossButton;
-  Button *player1Button;
-  Button *player2Button;
-  Button *player3Button;
-  Button *player4Button;
-  Button *groupButton;
-  Button *minButton, *maxButton;
-  CardContainer *cards;
-  Canvas *minPartyInfo;
-  Canvas *playerInfo[MAX_PARTY_SIZE];
-
-  Button *layoutButton1, *layoutButton2, *layoutButton3, *layoutButton4;
-
   int partySize;
 
  public:
 
-  Party(Scourge *scourge);
+  Party(Session *session);
   virtual ~Party();
 
   void reset();
@@ -90,12 +58,6 @@ class Party : public WidgetView {
   inline Calendar *getCalendar() { return calendar; } 
 
   inline Creature *getPlayer() { return player; }
-
-  inline Window *getWindow() { return mainWin; }
-
-  void drawView();
-
-  bool handleEvent(Widget *widget, SDL_Event *event);
 
   void setPlayer(int n);
   inline void setPlayer(Creature *c) { player = c; }
@@ -140,12 +102,9 @@ class Party : public WidgetView {
 
   void startEffect(int effect_type, int duration=Constants::DAMAGE_DURATION);
 
-  void drawWidget(Widget *w);
-
-  static void createHardCodedParty(Scourge *scourge, Creature ***party, int *partySize);
+  static void createHardCodedParty(Session *session, Creature ***party, int *partySize);
 
 protected:
-  void createUI();
   void resetPartyUI();
 };
 

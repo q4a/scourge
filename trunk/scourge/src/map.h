@@ -24,7 +24,7 @@
 #include "location.h"
 #include "dungeongenerator.h"
 #include "creature.h"
-#include "scourge.h"
+#include "session.h"
 #include "item.h"
 #include "projectile.h"
 #include "gui/scrollinglist.h"
@@ -35,7 +35,7 @@ using namespace std;
 class Location;
 class EffectLocation;
 class DungeonGenerator;
-class Scourge;
+class Session;
 class Creature;
 class Item;
 class Projectile;
@@ -74,7 +74,7 @@ class Map {
   Location *posCache[MAX_POS_CACHE];
   signed int nbPosCache;
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
-  Scourge *scourge;
+  Session *session;
   bool debugGridFlag;
   bool drawGridFlag;
   float xrot, yrot, zrot;  
@@ -112,16 +112,13 @@ class Map {
   GLuint overlay_tex;
   unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
 
-  float targetWidth, targetWidthDelta;
-  GLint lastTick;
-
   static int dir_index[];
   
   void drawGrid(SDL_Surface *surface);
   void debugGrid(SDL_Surface *surface);
 
  public:
-  Map(Scourge *scourge);
+  Map(Session *session);
   ~Map();
 
   void reset();
@@ -223,7 +220,7 @@ class Map {
   inline Location *getLocation(Sint16 x, Sint16 y, Sint16 z) { return pos[x][y][z]; }
   inline Shape *getFloorPosition(Sint16 x, Sint16 y) { if(x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH) return NULL; else return floorPositions[x][y]; }
   
-  void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);
+  //void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);
   void showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode);
   
   void initMapView(bool ignoreRot = false);
@@ -267,8 +264,6 @@ class Map {
   // drop items above this one
   void dropItemsAbove(int x, int y, int z, Item *item);
 
-  void drawDraggedItem();
-
   /**
    * Find the creatures in this area and add them to the targets array.
    * Returns the number of creatures found. (0 if none.)
@@ -276,15 +271,15 @@ class Map {
   */
   int getCreaturesInArea(int x, int y, int radius, Creature *targets[]);
 
+  void doDrawShape(DrawLater *later, int effect=0);
+  void doDrawShape(float xpos2, float ypos2, float zpos2, 
+           Shape *shape, GLuint name, int effect=0,
+           DrawLater *later=NULL);
+
  protected:
   DrawLater later[100], stencil[1000], other[1000], damage[1000];
   int laterCount, stencilCount, otherCount, damageCount;
   
-  void doDrawShape(DrawLater *later, int effect=0);
-  void doDrawShape(float xpos2, float ypos2, float zpos2, 
-				   Shape *shape, GLuint name, int effect=0,
-				   DrawLater *later=NULL);
-
   /**
 	 If 'ground' is true, it draws the ground layer.
 	 Otherwise the shape arrays (other, stencil, later) are populated.
@@ -304,6 +299,8 @@ class Map {
   bool isLocationBlocked(int x, int y, int z);
 
   void drawShade();
+
+  void drawProjectiles();
 
   void drawCube(float x, float y, float z, float r);
 
