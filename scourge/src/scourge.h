@@ -284,7 +284,7 @@ public:
   */
   inline MiniMap *getMiniMap() { return miniMap; }
 
-  void colorMiniMapPoint(int x, int y, Shape *shape);
+  void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL);
   void eraseMiniMapPoint(int x, int y);
 
   /** 

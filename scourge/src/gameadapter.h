@@ -31,6 +31,7 @@ class Session;
 class Mission;
 class Battle;
 class Shape;
+class Location;
 
 class GameAdapter {
 protected:
@@ -66,7 +67,7 @@ public:
   virtual inline void cancelBattle(Creature *creature) {}
   virtual inline void moveMonster(Creature *monster) {}
   virtual inline void removeBattle(Battle *battle) {}
-  virtual inline void colorMiniMapPoint(int x, int y, Shape *shape) {}
+  virtual inline void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL) {}
   virtual inline void eraseMiniMapPoint(int x, int y) {}
 
   // initialization events

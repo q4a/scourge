@@ -101,7 +101,7 @@ class MiniMap : public WidgetView {
   inline void resize(int w, int h) { win->resize(w, h); canvas->resize(w, h - 25); }
   
   // x, y are in *global Map* coordinates (see Map.h to know its size) 
-  void colorMiniMapPoint(int x, int y, Shape *shape);
+  void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos);
   void eraseMiniMapPoint(int x, int y);
   void zoomIn();
   void zoomOut();

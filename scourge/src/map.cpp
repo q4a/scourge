@@ -1301,27 +1301,28 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
 
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
   if(shape) {
-	mapChanged = true;
-  //cerr << "FIXME: Map::setPosition" << endl;
-	for(int xp = 0; xp < shape->getWidth(); xp++) {
-	  for(int yp = 0; yp < shape->getDepth(); yp++) {
-	    session->getGameAdapter()->colorMiniMapPoint(x + xp, y - yp, shape);
-		for(int zp = 0; zp < shape->getHeight(); zp++) {
-		  
-		  if(!pos[x + xp][y - yp][z + zp]) {
-			pos[x + xp][y - yp][z + zp] = new Location();
-		  }
-		  
-		  pos[x + xp][y - yp][z + zp]->shape = shape;
-		  pos[x + xp][y - yp][z + zp]->item = NULL;
-		  pos[x + xp][y - yp][z + zp]->creature = NULL;
-		  pos[x + xp][y - yp][z + zp]->x = x;
-		  pos[x + xp][y - yp][z + zp]->y = y;
-		  pos[x + xp][y - yp][z + zp]->z = z;
-		}
-	  }
-	}
-	
+    mapChanged = true;
+    //cerr << "FIXME: Map::setPosition" << endl;
+    for(int xp = 0; xp < shape->getWidth(); xp++) {
+      for(int yp = 0; yp < shape->getDepth(); yp++) {
+        for(int zp = 0; zp < shape->getHeight(); zp++) {          
+          if(!pos[x + xp][y - yp][z + zp]) {
+            pos[x + xp][y - yp][z + zp] = new Location();
+          }
+          pos[x + xp][y - yp][z + zp]->shape = shape;
+          pos[x + xp][y - yp][z + zp]->item = NULL;
+          pos[x + xp][y - yp][z + zp]->creature = NULL;
+          pos[x + xp][y - yp][z + zp]->x = x;
+          pos[x + xp][y - yp][z + zp]->y = y;
+          pos[x + xp][y - yp][z + zp]->z = z;
+        }
+      }
+    }
+    for(int xp = 0; xp < shape->getWidth(); xp++) {
+      for(int yp = 0; yp < shape->getDepth(); yp++) {
+        session->getGameAdapter()->colorMiniMapPoint(x + xp, y - yp, shape, pos[x + xp][y - yp][0]);
+      }
+    }
   }
 }
 
@@ -1664,16 +1665,16 @@ void Map::configureAccessMap(int fromX, int fromY) {
   traceLight(chunkX, chunkY, accessMap, true);
 }
 
-void Map::traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors) {
+void Map::traceLight(int chunkX, int chunkY, int lm[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors) {
   if(chunkX < 0 || chunkX >= MAP_WIDTH / MAP_UNIT ||
 	 chunkY < 0 || chunkY >= MAP_DEPTH / MAP_UNIT)
 	return;
 
   // already visited?
-  if(lightMap[chunkX][chunkY]) return;
+  if(lm[chunkX][chunkY]) return;
 
   // let there be light
-  lightMap[chunkX][chunkY] = 1;
+  lm[chunkX][chunkY] = 1;
   
   // can we go N?
   int x, y;
@@ -1687,7 +1688,7 @@ void Map::traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX, chunkY - 1, lightMap, onlyLockedDoors);
+  if(!blocked) traceLight(chunkX, chunkY - 1, lm, onlyLockedDoors);
   
   // can we go E?
   blocked = false;
@@ -1700,7 +1701,7 @@ void Map::traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX + 1, chunkY, lightMap, onlyLockedDoors);
+  if(!blocked) traceLight(chunkX + 1, chunkY, lm, onlyLockedDoors);
   
   // can we go S?
   blocked = false;
@@ -1713,7 +1714,7 @@ void Map::traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX, chunkY + 1, lightMap, onlyLockedDoors);
+  if(!blocked) traceLight(chunkX, chunkY + 1, lm, onlyLockedDoors);
 
   // can we go W?
   blocked = false;
@@ -1726,20 +1727,18 @@ void Map::traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][
 	  break;
 	}
   }
-  if(!blocked) traceLight(chunkX - 1, chunkY, lightMap, onlyLockedDoors);
+  if(!blocked) traceLight(chunkX - 1, chunkY, lm, onlyLockedDoors);
 }
 
 bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
-	if(x >= 0 && x < MAP_WIDTH && 
-		 y >= 0 && y < MAP_DEPTH && 
+  if(x >= 0 && x < MAP_WIDTH && 
+     y >= 0 && y < MAP_DEPTH && 
 		 z >= 0 && z < MAP_VIEW_HEIGHT) {
 		Location *pos = getLocation(x, y, z);
-		if(pos == NULL || pos->item || pos->creature || 
-			 !( ((GLShape*)(pos->shape))->isLightBlocking()) || 
-       (onlyLockedDoors && isDoor(x, y) && 
-        !isLocked(pos->x, pos->y, pos->z))) {
-			return false;
-		}
+		if(pos == NULL || pos->item || pos->creature) return false;
+    if(onlyLockedDoors && isDoor(x, y)) 
+      return isLocked(pos->x, pos->y, pos->z);
+    if(!((GLShape*)(pos->shape))->isLightBlocking()) return false;
 	}
 	return true;
 }
@@ -1823,12 +1822,26 @@ bool Map::isDoor(int tx, int ty) {
   if(tx >= 0 && tx < MAP_WIDTH && 
      ty >= 0 && ty < MAP_DEPTH) {
     Location *loc = getLocation(tx, ty, 0);
-    if(loc && 
-       (loc->shape == session->getShapePalette()->findShapeByName("EW_DOOR") ||
-        loc->shape == session->getShapePalette()->findShapeByName("NS_DOOR"))) {
-      return true;
-    }
+    return(loc && isDoor(loc->shape));
   }
   return false;
+}
+
+bool Map::isDoor(Shape *shape) {
+  return(shape == session->getShapePalette()->findShapeByName("EW_DOOR") ||
+         shape == session->getShapePalette()->findShapeByName("NS_DOOR"));
+}
+
+void Map::setLocked(int doorX, int doorY, int doorZ, bool value) {
+  locked[createTripletKey(doorX, doorY, doorZ)] = value;
+  Location *p = pos[doorX][doorY][doorZ];
+  for(int xp = 0; xp < p->shape->getWidth(); xp++) {
+    for(int yp = 0; yp < p->shape->getDepth(); yp++) {
+      session->getGameAdapter()->colorMiniMapPoint(doorX + xp, 
+                                                   doorY - yp, 
+                                                   p->shape, 
+                                                   p);
+    }
+  }
 }
 

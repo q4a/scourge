@@ -17,6 +17,8 @@
 
 #include "dungeongenerator.h"
 
+#define LOCKED_DOOR_RAND 8.0f
+
 const char DungeonGenerator::MESSAGE[] = "Assembling Dungeon Level";
 
 /*
@@ -223,6 +225,7 @@ void DungeonGenerator::makeRooms() {
 	  room[i].y = py;
 	  room[i].w = rw;
 	  room[i].h = rh;
+    room[i].valueBonus = 0;
 
       for(int x = px; x < px + rw; x++) {
         for(int y = py; y < py + rh; y++) {
@@ -631,6 +634,7 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 	room[i].y = location[locationIndex].roomDimension[i][1];
 	room[i].w = location[locationIndex].roomDimension[i][2];
 	room[i].h = location[locationIndex].roomDimension[i][3];
+  room[i].valueBonus = 0;
   }
 
   // turn location into nodes
@@ -1121,12 +1125,18 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
   }
 
   // populate containers
-  for(int i = 0; i < containers.size(); i++) {
+  for(int i = 0; i < (int)containers.size(); i++) {
     Item *item = containers[i];
+    int cx = containerX[i];
+    int cy = containerY[i];
+    int roomIndex = getRoomIndex(cx, cy);
+    int valueBonus = 0;
+    if(roomIndex > -1) valueBonus = room[roomIndex].valueBonus;
+
     // some items
     int n = (int)(3.0f * rand() / RAND_MAX);
     for(int i = 0; i < n; i++) {
-      RpgItem *containedItem = RpgItem::getRandomItem(level);
+      RpgItem *containedItem = RpgItem::getRandomItem(level + valueBonus);
       if(containedItem) item->addContainedItem(scourge->getSession()->newItem(containedItem));
     }
     // some spells
@@ -1299,32 +1309,46 @@ void DungeonGenerator::lockDoors(Map *map, ShapePalette *shapePal,
   for(int i = 0; i < doorCount; i++) {
     Sint16 mapx = door[i][0];
     Sint16 mapy = door[i][1];
-    if((int)(10.0f * rand() / RAND_MAX) == 0) {
-      //cerr << "\t*** Locking door: " << mapx << "," << mapy << endl;
+    if((int)(LOCKED_DOOR_RAND * rand() / RAND_MAX) == 0) {
+      //cerr << "\t*** Locking door: " << mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << endl;
       // lock the door
       map->setLocked(mapx, mapy, 0, true);
       // find an accessible location for the switch
       int nx, ny;
       Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
-      Uint32 start = SDL_GetTicks();
       getRandomLocation(map, lever, &nx, &ny, true, 
                         scourge->getParty()->getPlayer()->getX(), 
                         scourge->getParty()->getPlayer()->getY());
-      //cerr << "\t*** Location for lever search: " << (SDL_GetTicks() - start) << 
-      //  " millis. Result=" << ( nx < MAP_WIDTH ) << endl;
       if( nx < MAP_WIDTH ) {
-        //cerr << "\t\t*** Lever at: " << nx << "," << ny << endl;
+        cerr << "*** Locking door: " << mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << 
+          " with lever at: " << nx << "," << ny << " roomIndex=" << getRoomIndex(nx, ny) << endl;
         // place the switch
         addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
         // connect the switch and the door
         map->setKeyLocation(mapx, mapy, 0, nx, ny, 0);
       } else {
+        //cerr << "\t\t*** Room not locked." << endl;
         // if none found, unlock the door
         map->removeLocked(mapx, mapy, 0);
       }
     }
   }
   //cerr << "*** Done locking doors" << endl;
+}
+
+void DungeonGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal, 
+                                           bool preGenerated, int locationIndex) {
+  // see which rooms are locked
+  map->configureAccessMap(scourge->getParty()->getPlayer()->getX(), 
+                          scourge->getParty()->getPlayer()->getY());
+  for(int i = 0; i < roomCount; i++) {
+    int x = offset + room[i].x * unitSide + room[i].w  * (unitSide / 2);
+    int y = offset + room[i].y * unitSide + room[i].h * ( unitSide / 2);
+    if(!map->isPositionAccessible(x, y)) {
+      room[i].valueBonus++;
+      cerr << "\tRoom " << i << " is locked. valueBonus=" << room[i].valueBonus << endl;
+    } 
+  }
 }
 
 void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal, 
@@ -1379,6 +1403,8 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
   progress->updateStatus("Locking doors and chests");
   lockDoors(map, shapePal, preGenerated, locationIndex);
 
+  progress->updateStatus("Calculating room values");
+  calculateRoomValues(map, shapePal, preGenerated, locationIndex);
 
   progress->updateStatus("Adding gates");
   if(!preGenerated) {
@@ -1713,6 +1739,18 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
   // remember the containers
   if(item && item->getRpgItem()->getType() == RpgItem::CONTAINER) {
     containers.push_back(item);
+    containerX.push_back(x);
+    containerY.push_back(y);
   }  
 }
 
+int DungeonGenerator::getRoomIndex(int x, int y) {
+  int rx = (x - offset) / unitSide;
+  int ry = (y - offset) / unitSide;
+  for(int i = 0; i < roomCount; i++) {
+    if(rx >= room[i].x && rx < room[i].x + room[i].w &&
+       ry >= room[i].y && ry < room[i].y + room[i].h)
+      return i;
+  }
+  return -1;
+}
