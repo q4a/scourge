@@ -83,6 +83,14 @@ public:
     monsterInstanceMap[ creature ] = monster;
   }
 
+  inline bool isMissionItem( Item *item ) {
+    return ( itemInstanceMap.find( item ) != itemInstanceMap.end() );
+  }
+
+  inline bool isMissionCreature( Creature *creature ) {
+    return ( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() );
+  }
+
   inline bool isCompleted() { return completed; }
   inline void setCompleted( bool b ) { completed = b; }
   inline char *getName() { return name; }

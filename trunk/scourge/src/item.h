@@ -27,6 +27,7 @@
 #include <vector>
 
 class Scourge;
+class Session;
 
 /**
   *@author Gabor Torok
@@ -75,10 +76,10 @@ class Item {
   int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
   bool stateModSet;
   map<int, int> skillBonus;
-
+  Session *session;
 
 public:
-  Item(RpgItem *rpgItem, int level=1, bool loading=false);
+  Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false);
   ~Item();
 
   ItemInfo *save();

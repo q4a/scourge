@@ -1275,6 +1275,13 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     } else if(later->creature->getStateMod(Constants::possessed)) {
       glColor4f(1.0, 0.3f, 0.8f, 1.0f);    
     }
+    
+    // outline mission creatures
+    if( session->getCurrentMission() &&
+        session->getCurrentMission()->isMissionCreature( later->creature ) ) {
+      shape->outline( 0.15f, 0.15f, 0.4f );
+    }
+
     shape->draw();
   } else if( later && later->item && !useShadow ) {
     

@@ -186,7 +186,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
     itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
   }
   if( itemLevel < 1 ) itemLevel = 1;
-  newItems[itemCount] = new Item(rpgItem, itemLevel, loading);
+  newItems[itemCount] = new Item(this, rpgItem, itemLevel, loading);
   if(spell) newItems[itemCount]->setSpell(spell);
   itemCount++;
   return newItems[itemCount - 1];

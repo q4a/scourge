@@ -20,7 +20,8 @@
 
 map<int, vector<string> *> Item::soundMap;
 
-Item::Item(RpgItem *rpgItem, int level, bool loading) {
+Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
+  this->session = session;
   this->rpgItem = rpgItem;
   this->level = level;
   this->shapeIndex = this->rpgItem->getShapeIndex();
@@ -188,23 +189,32 @@ void Item::getDetailedDescription(char *s, bool precise){
   rpgItem  = getRpgItem();
   type = rpgItem->getType();
   if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
-    sprintf(s, "(L:%d,Q:%d,W:%2.2f, N:%d/%d) %s", 
+    sprintf(s, "(L:%d,Q:%d,W:%2.2f, N:%d/%d) %s%s", 
             getLevel(), 
             getQuality(), 
             getWeight(),
             getCurrentCharges(),
             getMaxCharges(),
-            (precise ? itemName : rpgItem->getShortDesc()));
+            (precise ? itemName : rpgItem->getShortDesc()),
+            (session->getCurrentMission() && 
+             session->getCurrentMission()->isMissionItem( this ) ? 
+             " *Mission*" : ""));
   } else if(type == RpgItem::SCROLL) {
-    sprintf(s, "(L:%d) %s", getLevel(), itemName);
+    sprintf(s, "(L:%d) %s%s", getLevel(), itemName,
+            (session->getCurrentMission() && 
+             session->getCurrentMission()->isMissionItem( this ) ? 
+             " *Mission*" : ""));
   } else {
-    sprintf(s, "(L:%d,A:%d,S:%d,Q:%d,W:%2.2f) %s", 
+    sprintf(s, "(L:%d,A:%d,S:%d,Q:%d,W:%2.2f) %s%s", 
             getLevel(), 
             getAction(), 
             getSpeed(), 
             getQuality(), 
             getWeight(),
-            (precise ? itemName : rpgItem->getShortDesc()));
+            (precise ? itemName : rpgItem->getShortDesc()),
+            (session->getCurrentMission() && 
+             session->getCurrentMission()->isMissionItem( this ) ? 
+             " *Mission*" : ""));
   }
 }
 

@@ -114,6 +114,56 @@ void MD2Shape::draw() {
   glPopMatrix();    
 }
 
+void MD2Shape::outline( float r, float g, float b ) {
+  //GLboolean blend;
+  //glGetBooleanv( GL_BLEND, &blend );
+  //glEnable( GL_BLEND );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glPolygonMode( GL_BACK, GL_LINE );
+  glLineWidth( 4 );
+  glEnable( GL_CULL_FACE );
+  glCullFace( GL_FRONT );
+  glColor3f( r, g, b );  
+  
+  
+  glPushMatrix();
+
+  // rotate to upright
+  glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+
+  // move to the middle of the space
+  //glTranslatef( ((float)width / DIV) / 2.0f, 
+                //0.25f / DIV, 
+                //-((float)depth / DIV) / 2.0f );
+  glTranslatef( ((float)(width) / 2.0f) / DIV, 
+                0.25f / DIV, 
+                -( (((float)(depth) / 2.0f) - 1.0f) / DIV ) );
+
+  // rotate to movement angle
+  glRotatef(angle - 90, 0.0f, 1.0f, 0.0f);
+
+  // To make our model render somewhat faster, we do some front back culling.
+  // It seems that Quake2 orders their polygons clock-wise.  
+//  glEnable( GL_CULL_FACE );
+//  glCullFace( GL_BACK );
+//  bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+//  glEnable( GL_TEXTURE_2D );
+
+  AnimateMD2Model();      
+ 
+//  if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+//  glDisable(GL_CULL_FACE);
+  glPopMatrix();    
+
+  
+  
+  glLineWidth( 1 );
+  glDisable( GL_CULL_FACE );
+  glPolygonMode( GL_BACK, GL_FILL );
+  //if( !blend ) glDisable( GL_BLEND );
+  glColor4f(1, 1, 1, 0.9f);
+}
+
 void MD2Shape::setDir(int dir) { 
   this->dir = dir; 
   switch(dir) {

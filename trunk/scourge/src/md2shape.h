@@ -101,6 +101,7 @@ public:
   inline int getCurrentAnimation() { return currentAnim; }
 
   void draw();
+  void outline( float r, float g, float b );
   void setupToDraw();
 
   void setDir(int dir);  
