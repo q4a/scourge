@@ -36,7 +36,8 @@ private:
   char *type;
   int hp;
   int level;
-  Uint8 shapeIndex;
+  char *model_name;
+  char *skin_name;
   char description[300];
   RpgItem *item[ITEM_COUNT]; // starting equipment
   int money;
@@ -47,14 +48,15 @@ private:
   static int monsterCount[MAX_MONSTER_LEVEL];
 
 public:
-  Monster(char *type, int level, int hp, Uint8 shapeIndex=Constants::BUGGERLING_INDEX, int baseArmor=0);
+  Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor=0);
   ~Monster();
 
-	inline int getBaseArmor() { return baseArmor; }
+  inline int getBaseArmor() { return baseArmor; }
   inline char *getType() { return type; };
   inline int getHp() { return hp; }  
   inline int getLevel() { return level; }  
-  inline Uint8 getShapeIndex() { return shapeIndex; }
+  inline char *getModelName() { return model_name; }
+  inline char *getSkinName() { return skin_name; }
   inline char *getDescription() { return description; }
   inline int getSpeed() { return speed; }
   inline RpgItem *getStartingItem(int index) { return item[index]; }

@@ -35,7 +35,8 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->character = character;
   this->monster = NULL;
   this->name = name;
-  this->shapeIndex = character->getShapeIndex();
+  this->model_name = character->getModelName();
+  this->skin_name = character->getSkinName();
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
@@ -50,7 +51,8 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->character = NULL;
   this->monster = monster;
   this->name = monster->getType();
-  this->shapeIndex = monster->getShapeIndex();
+  this->model_name = monster->getModelName();
+  this->skin_name = monster->getSkinName();
   sprintf(description, "You see %s", monster->getType());
   this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
@@ -60,7 +62,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
 }
 
 void Creature::commonInit() {
-  this->shape = scourge->getShapePalette()->getCreatureShape(shapeIndex);
+  this->shape = scourge->getShapePalette()->getCreatureShape(model_name, skin_name);
   this->x = this->y = this->z = 0;
   this->dir = Constants::MOVE_UP;
   this->next = NULL;

@@ -35,22 +35,23 @@ char Character::inventory_location[][80] = {
 };
 
 Character *Character::character_class[] = {
-  new Character( "Ranger", 10, Constants::ROGUE_INDEX ),
-  new Character( "Knight", 12, Constants::FIGHTER_INDEX ),
-  new Character( "Tinkerer", 7, Constants::ROGUE_INDEX ),
-  new Character( "Assassin", 6, Constants::ROGUE_INDEX ),
-  new Character( "Arcanist", 6, Constants::ROGUE_INDEX ),
-  new Character( "Loremaster", 6, Constants::CLERIC_INDEX ),
-  new Character( "Conjurer", 4, Constants::WIZARD_INDEX ),
-  new Character( "Summoner", 4, Constants::WIZARD_INDEX ),
-  new Character( "Naturalist", 5, Constants::CLERIC_INDEX ),
-  new Character( "Monk", 6, Constants::CLERIC_INDEX )
+  new Character( "Ranger", 10, "ROGUE", "models/m1.bmp" ),
+  new Character( "Knight", 12, "FIGHTER", "models/m2.bmp" ),
+  new Character( "Tinkerer", 7, "ROGUE", "models/m1.bmp" ),
+  new Character( "Assassin", 6, "ROGUE", "models/m1.bmp" ),
+  new Character( "Arcanist", 6, "ROGUE", "models/m1.bmp" ),
+  new Character( "Loremaster", 6, "CLERIC", "models/m3.bmp" ),
+  new Character( "Conjurer", 4, "WIZARD", "models/m4.bmp" ),
+  new Character( "Summoner", 4, "WIZARD", "models/m4.bmp" ),
+  new Character( "Naturalist", 5, "CLERIC", "models/m3.bmp" ),
+  new Character( "Monk", 6, "CLERIC", "models/m3.bmp" )
 };
 
-Character::Character(char *name, int startingHp, Uint8 shapeIndex) {  
+Character::Character(char *name, int startingHp, char *model, char *skin) {  
   this->name = name;
   this->startingHp = startingHp;
-  this->shapeIndex = shapeIndex;
+  this->model_name = model;
+  this->skin_name = skin;
   sprintf(description, "FIXME: need a description");
 }
 Character::~Character(){  

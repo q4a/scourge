@@ -28,7 +28,7 @@ class Character  {
 private:
   char *name;
   int startingHp;
-  Uint8 shapeIndex;
+  char *model_name, *skin_name;
   char description[300];
 
 public:
@@ -50,12 +50,13 @@ public:
   static const int INVENTORY_COUNT = 14;
   static char inventory_location[][80];
 
-  Character(char *name, int startingHp, Uint8 shapeIndex);
+  Character(char *name, int startingHp, char *model, char *skin);
   ~Character();
 
   inline char *getName() { return name; };
   inline int getStartingHp() { return startingHp; }  
-  inline Uint8 getShapeIndex() { return shapeIndex; }
+  inline char *getModelName() { return model_name; }
+  inline char *getSkinName() { return skin_name; }
   inline char *getDescription() { return description; }
   
 public:  
