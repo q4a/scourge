@@ -120,6 +120,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int battleCount;
   Battle battle[MAX_BATTLE_COUNT];
   int gameSpeed;
+	bool partyDead;
 
 protected:
   SDLHandler *sdlHandler;
@@ -229,6 +230,10 @@ public:
 
   void toggleRound();
   void togglePlayerOnly();
+
+	// returns false if the switch could not be made,
+	// because the entire party is dead (the mission failed)
+	bool switchToNextLivePartyMember();
 
 };
 

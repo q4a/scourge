@@ -23,15 +23,16 @@
 int Monster::monsterCount[MAX_MONSTER_LEVEL];
 Monster *Monster::monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
   
-Monster::Monster(char *type, int level, int hp, Uint8 shapeIndex) {
+Monster::Monster(char *type, int level, int hp, Uint8 shapeIndex, int baseArmor) {
   this->type = type;
   this->level = level;
   this->hp = hp;
   this->shapeIndex = shapeIndex;
   for(int i = 0; i < ITEM_COUNT; i++) {
-	item[i] = NULL;
+		item[i] = NULL;
   }
   speed = 50;
+	this->baseArmor = baseArmor;
   sprintf(description, "FIXME: need a description");
 }
 
@@ -44,17 +45,17 @@ void Monster::initMonsters() {
   int level = 0;
   monsterCount[level] = 0;
   m = monsters[level][monsterCount[0]++] = 
-	new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX);
+	new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX, 4);
   m->item[0] = RpgItem::items[RpgItem::SHORT_SWORD];
   m->item[1] = RpgItem::items[RpgItem::DAGGER];
   m->item[2] = RpgItem::items[RpgItem::HORNED_HELMET];
 
   m = monsters[level][monsterCount[0]++] = 
-	new Monster("An Oozing Green Waddler", 0, 3, Constants::SLIME_INDEX);
+	new Monster("An Oozing Green Waddler", 0, 3, Constants::SLIME_INDEX, 8);
   m->item[0] = RpgItem::items[RpgItem::DAGGER];
 
   m = monsters[level][monsterCount[0]++] = 
-	new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX);
+	new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX, 6);
   m->item[0] = RpgItem::items[RpgItem::SHORT_SWORD];
 
 
