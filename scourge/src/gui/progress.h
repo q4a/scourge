@@ -33,9 +33,10 @@ class Progress	{
   int status;
   bool clearScreen;
   bool center;
+  bool opaque;
  
  public:
-  Progress(Scourge *scourge, int maxStatus, bool clearScreen=false, bool center=false);
+  Progress(Scourge *scourge, int maxStatus, bool clearScreen=false, bool center=false, bool opaque=true);
   virtual ~Progress();  
   void updateStatus(const char *message, bool updateScreen=true, int status=-1, int maxStatus=-1);
 };
