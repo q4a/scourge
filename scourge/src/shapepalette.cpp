@@ -362,7 +362,7 @@ void ShapePalette::initShapes() {
 
 	shapes[Constants::TELEPORTER_INDEX] =
     new GLTeleporter(wood_tex, textures[9].id,
-					 4, 4, 14,
+					 3, 3, 14,
 					 "TELEPORTER", teleporterDescription, teleporterDescriptionCount,
 					 //(debug ? 0xff0000ff : 0xf0f0ffff),
 					 0x0020ffff,
@@ -371,7 +371,7 @@ void ShapePalette::initShapes() {
 
 	shapes[Constants::TELEPORTER_BASE_INDEX] =
     new GLShape(marble_tex, 
-                4, 4, 1,
+                3, 3, 1,
                 "TELEPORTER", teleporterDescription, teleporterDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),

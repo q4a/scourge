@@ -34,7 +34,7 @@ class Creature;
 // a pre-rendered map location
 typedef struct _MapLocation {
   int x, y, w, h;
-	int start[4][2]; // party starting coordinates
+  int start[4][2]; // party starting coordinates
   bool monsters;
   int roomCount;
   Uint16 roomDimension[20][5];
@@ -193,10 +193,12 @@ protected:
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
+  
+  void addItemsInRoom(RpgItem *rpgItem, int n, bool preGenerated, int locationIndex);
+  
+  bool addShapeInARoom(int shapeIndex);
 
-	void addItemsInRoom(RpgItem *rpgItem, int n, bool preGenerated, int locationIndex);
-
-	bool DungeonGenerator::addShapeInARoom(int shapeIndex);
+  void getRandomDeadEndLocation(int *x, int *y, GLShape *shape, Map *map);
 };
 
 #endif
