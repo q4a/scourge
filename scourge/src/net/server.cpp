@@ -139,16 +139,16 @@ void Server::sendGameState() {
   // reset clients' lag timers
   Uint32 now = SDL_GetTicks();
   for(int i = 0; i < clientCount; i++) {
-    if(!clients[i]->dead)
-      clients[i]->setLagTimer(currentFrame, now);
+      if(!clients[i]->dead)
+          clients[i]->setLagTimer(currentFrame, now);
   }
 
 #if DEBUG_SERVER
-    cerr << "Net: Server: sending game state. frame=" << currentFrame << endl;
+  cerr << "Net: Server: sending game state. frame=" << currentFrame << endl;
 #endif
 
   char message[1024];
-  sprintf(message, "STATE,%d,%s", currentFrame, gsh->getGameState());
+  Commands::buildGameState(message, currentFrame, gsh->getGameState());
   sendToAllTCP(message);
   currentFrame++;
 }
