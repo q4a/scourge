@@ -385,6 +385,8 @@ Creature **Party::createHardCodedParty() {
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger")));
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Wine barrel")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
@@ -392,7 +394,7 @@ Creature **Party::createHardCodedParty() {
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
-  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));   
 
   // add some scrolls
   for(int i = 0; i < 10; i++) {
@@ -403,8 +405,9 @@ Creature **Party::createHardCodedParty() {
       pc[2]->addInventory(scroll);  
     }
   }
-  pc[2]->setMp(500);
+  pc[2]->setMp(50);
 
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe")));  
@@ -414,11 +417,13 @@ Creature **Party::createHardCodedParty() {
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
-
+  
   // equip weapons
   pc[0]->equipInventory(0);
+  pc[0]->equipInventory(1);
   pc[1]->equipInventory(0);
   pc[2]->equipInventory(0);
+  pc[2]->equipInventory(1);
   pc[3]->equipInventory(0);
 
   // add some spells

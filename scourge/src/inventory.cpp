@@ -22,149 +22,165 @@
 /**
   *@author Gabor Torok
   */
-  
-  
+
+
 Inventory::Inventory(Scourge *scourge) {
-    this->scourge = scourge;
+  this->scourge = scourge;
 
-	// allocate strings for list
-    this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
-    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
-        this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
-    }
-	this->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
-	for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-	  this->skillLine[i] = (char*)malloc(120 * sizeof(char));
-	}
-	this->stateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
-	this->icons = (GLuint*)malloc(Constants::STATE_MOD_COUNT * sizeof(GLuint));
-	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-	  this->stateLine[i] = (char*)malloc(120 * sizeof(char));
-	}
-    this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
-	this->missionColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
-    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
-        this->objectiveText[i] = (char*)malloc(120 * sizeof(char));
-    }
-    this->schoolText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
-    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
-        this->schoolText[i] = (char*)malloc(120 * sizeof(char));
-    }
-    this->spellText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
-    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
-        this->spellText[i] = (char*)malloc(120 * sizeof(char));
-    }
-	selected = selectedMode = 0;
+  // allocate strings for list
+  this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
+  }
+  this->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    this->skillLine[i] = (char*)malloc(120 * sizeof(char));
+  }
+  this->stateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
+  this->icons = (GLuint*)malloc(Constants::STATE_MOD_COUNT * sizeof(GLuint));
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    this->stateLine[i] = (char*)malloc(120 * sizeof(char));
+  }
+  this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  this->missionColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
+  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    this->objectiveText[i] = (char*)malloc(120 * sizeof(char));
+  }
+  this->schoolText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    this->schoolText[i] = (char*)malloc(120 * sizeof(char));
+  }
+  this->spellText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    this->spellText[i] = (char*)malloc(120 * sizeof(char));
+  }
+  selected = selectedMode = 0;
 
-	// construct UI
-	mainWin = new Window( scourge->getSDLHandler(),
-						  100, 50, 525, 505, 
-						  strdup("Party Information"), 
-						  scourge->getShapePalette()->getGuiTexture() );
+  // construct UI
+  mainWin = new Window( scourge->getSDLHandler(),
+                        100, 50, 525, 505, 
+                        strdup("Party Information"), 
+                        scourge->getShapePalette()->getGuiTexture() );
 
-	player1Button  = 
-	  mainWin->createButton( 0, 0, 105, 30, 
-							 scourge->getParty()->getParty(0)->getName(), 
-							 true);
-	//player1Button->createLabel( 0, 42, scourge->getParty()->getParty(0)->getCharacter()->getName());
-	player2Button  = 
-	  mainWin->createButton( 0, 30, 105, 60, 
-							 scourge->getParty()->getParty(1)->getName(), 
-							 true);
-	//mainWin->createLabel( 0, 74, scourge->getParty()->getParty(1)->getCharacter()->getName());
-	player3Button  = 
-	  mainWin->createButton( 0, 60, 105, 90, 
-							 scourge->getParty()->getParty(2)->getName(), 
-							 true );
-	//mainWin->createLabel( 0, 106, scourge->getParty()->getParty(2)->getCharacter()->getName());
-	player4Button  = 
-	  mainWin->createButton( 0, 90, 105, 120, 
-							 scourge->getParty()->getParty(3)->getName(), 
-							 true );
-	//mainWin->createLabel( 0, 138, scourge->getParty()->getParty(3)->getCharacter()->getName());
+  char buttonText[80];
+  sprintf(buttonText, "%s (%s)", 
+          scourge->getParty()->getParty(0)->getName(),
+          scourge->getParty()->getParty(0)->getCharacter()->getShortName());
+  player1Button  = 
+  mainWin->createButton( 0, 0, 105, 30, 
+                         strdup(buttonText), 
+                         true);
+  //player1Button->createLabel( 0, 42, scourge->getParty()->getParty(0)->getCharacter()->getName());
 
-	inventoryButton = mainWin->createButton( 420,0, 525, 30, strdup("Inventory"), true);
-	skillsButton   = mainWin->createButton( 420,30, 525, 60, strdup("Skills"), true);
-	spellsButton   = mainWin->createButton( 420,60, 525, 90, strdup("Spells"), true);
-	missionButton   = mainWin->createButton( 420, 90, 525, 120, strdup("Mission"), true);
-	cards = new CardContainer(mainWin);
+  sprintf(buttonText, "%s (%s)", 
+          scourge->getParty()->getParty(1)->getName(),
+          scourge->getParty()->getParty(1)->getCharacter()->getShortName());
+  player2Button  = 
+  mainWin->createButton( 0, 30, 105, 60, 
+                         strdup(buttonText), 
+                         true);
+  //mainWin->createLabel( 0, 74, scourge->getParty()->getParty(1)->getCharacter()->getName());
 
-	// inventory page	
-	cards->createLabel(115, 15, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
-	inventoryWeightLabel = cards->createLabel(190, 15, NULL, INVENTORY);
-	
+  sprintf(buttonText, "%s (%s)", 
+          scourge->getParty()->getParty(2)->getName(),
+          scourge->getParty()->getParty(2)->getCharacter()->getShortName());
+  player3Button  = 
+  mainWin->createButton( 0, 60, 105, 90, 
+                         strdup(buttonText), 
+                         true );
+  //mainWin->createLabel( 0, 106, scourge->getParty()->getParty(2)->getCharacter()->getName());
+
+  sprintf(buttonText, "%s (%s)", 
+          scourge->getParty()->getParty(3)->getName(),
+          scourge->getParty()->getParty(3)->getCharacter()->getShortName());
+  player4Button  = 
+  mainWin->createButton( 0, 90, 105, 120, 
+                         strdup(buttonText), 
+                         true );
+  //mainWin->createLabel( 0, 138, scourge->getParty()->getParty(3)->getCharacter()->getName());
+
+  inventoryButton = mainWin->createButton( 420,0, 525, 30, strdup("Inventory"), true);
+  skillsButton   = mainWin->createButton( 420,30, 525, 60, strdup("Skills"), true);
+  spellsButton   = mainWin->createButton( 420,60, 525, 90, strdup("Spells"), true);
+  missionButton   = mainWin->createButton( 420, 90, 525, 120, strdup("Mission"), true);
+  cards = new CardContainer(mainWin);
+
+  // inventory page	
+  cards->createLabel(115, 15, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR); 
+  inventoryWeightLabel = cards->createLabel(190, 15, NULL, INVENTORY);
+
   coinsLabel = cards->createLabel(300, 212, NULL, INVENTORY);
-	cards->createLabel(115, 212, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
-  
+  cards->createLabel(115, 212, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
+
   paperDoll = new Canvas(115, 220, 411, 251 + (Character::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
 
-	invList = new ScrollingList(115, 20, 295, 175, this);
-	cards->addWidget(invList, INVENTORY);
-	cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
-	
-	int yy = 160;
-	equipButton    = cards->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
-	yy+=30;
-	fixButton      = cards->createButton( 0, yy, 105, yy + 30, strdup("Fix Item"), INVENTORY);
-	yy+=30;
-	removeCurseButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Remove Curse"), INVENTORY );
-	yy+=30;
-	combineButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Combine Item"), INVENTORY );
-	yy+=30;
-	enchantButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Enchant Item"), INVENTORY );
-	yy+=30;
-	identifyButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
-	yy+=30;
-	openButton     = cards->createButton( 0, yy, 105, yy + 30, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY );	
-	yy+=30;
-	eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
+  invList = new ScrollingList(115, 20, 295, 175, this);
+  cards->addWidget(invList, INVENTORY);
+  cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
+
+  int yy = 160;
+  equipButton    = cards->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
   yy+=30;
-	castScrollButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Cast Scroll"), INVENTORY );
+  fixButton      = cards->createButton( 0, yy, 105, yy + 30, strdup("Fix Item"), INVENTORY);
   yy+=30;
-	transcribeButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Transcribe"), INVENTORY );
+  removeCurseButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Remove Curse"), INVENTORY );
+  yy+=30;
+  combineButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Combine Item"), INVENTORY );
+  yy+=30;
+  enchantButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Enchant Item"), INVENTORY );
+  yy+=30;
+  identifyButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
+  yy+=30;
+  openButton     = cards->createButton( 0, yy, 105, yy + 30, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY ); 
+  yy+=30;
+  eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
+  yy+=30;
+  castScrollButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Cast Scroll"), INVENTORY );
+  yy+=30;
+  transcribeButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Transcribe"), INVENTORY );
 
-	// character info
-	nameAndClassLabel = cards->createLabel(115, 45, NULL, CHARACTER, Constants::RED_COLOR);
-	attrCanvas     = new Canvas( 115, 50, 405, 150, this );
-	cards->addWidget( attrCanvas, CHARACTER );
+  // character info
+  nameAndClassLabel = cards->createLabel(115, 45, NULL, CHARACTER, Constants::RED_COLOR);
+  attrCanvas     = new Canvas( 115, 50, 405, 150, this );
+  cards->addWidget( attrCanvas, CHARACTER );
 
-	cards->createLabel(115, 165, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
-	stateList = new ScrollingList(115, 170, 290, 70);
-	cards->addWidget(stateList, CHARACTER);
+  cards->createLabel(115, 165, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
+  stateList = new ScrollingList(115, 170, 290, 70);
+  cards->addWidget(stateList, CHARACTER);
 
-	strcpy(skillsStr, "Skills:");
-	cards->createLabel(115, 255, skillsStr, CHARACTER, Constants::RED_COLOR);
-	skillModLabel = cards->createLabel(220, 255, NULL, CHARACTER);
-	skillList = new ScrollingList(115, 260, 290, 180);
-	cards->addWidget(skillList, CHARACTER);
-	skillAddButton = cards->createButton( 115, 445, 200, 475, strdup(" + "), CHARACTER);
-	skillSubButton = cards->createButton( 320, 445, 405, 475, strdup(" - "), CHARACTER);
-	levelUpButton = cards->createButton( 205, 445, 315, 475, strdup("Level Up"), CHARACTER);
+  strcpy(skillsStr, "Skills:");
+  cards->createLabel(115, 255, skillsStr, CHARACTER, Constants::RED_COLOR);
+  skillModLabel = cards->createLabel(220, 255, NULL, CHARACTER);
+  skillList = new ScrollingList(115, 260, 290, 180);
+  cards->addWidget(skillList, CHARACTER);
+  skillAddButton = cards->createButton( 115, 445, 200, 475, strdup(" + "), CHARACTER);
+  skillSubButton = cards->createButton( 320, 445, 405, 475, strdup(" - "), CHARACTER);
+  levelUpButton = cards->createButton( 205, 445, 315, 475, strdup("Level Up"), CHARACTER);
 
-	// spellbook
-	cards->createLabel(115, 45, strdup("School of magic: (with provider deity)"), 
-					   SPELL, Constants::RED_COLOR);
-	schoolList = new ScrollingList(115, 50, 290, 100);
-	cards->addWidget(schoolList, SPELL);
-	cards->createLabel(115, 170, strdup("Spells memorized:"), SPELL, Constants::RED_COLOR);
-	spellList = new ScrollingList(115, 175, 290, 150);
-	cards->addWidget(spellList, SPELL);
-	cards->createLabel(115, 345, strdup("Spell notes:"), SPELL, Constants::RED_COLOR);
-	spellDescriptionLabel = new Label(115, 360, strdup(""), 58);
-	cards->addWidget(spellDescriptionLabel, SPELL);
-	castButton = cards->createButton( 0, 160, 105, 190, strdup("Cast"), SPELL);
+  // spellbook
+  cards->createLabel(115, 45, strdup("School of magic: (with provider deity)"), 
+                     SPELL, Constants::RED_COLOR);
+  schoolList = new ScrollingList(115, 50, 290, 100);
+  cards->addWidget(schoolList, SPELL);
+  cards->createLabel(115, 170, strdup("Spells memorized:"), SPELL, Constants::RED_COLOR);
+  spellList = new ScrollingList(115, 175, 290, 150);
+  cards->addWidget(spellList, SPELL);
+  cards->createLabel(115, 345, strdup("Spell notes:"), SPELL, Constants::RED_COLOR);
+  spellDescriptionLabel = new Label(115, 360, strdup(""), 58);
+  cards->addWidget(spellDescriptionLabel, SPELL);
+  castButton = cards->createButton( 0, 160, 105, 190, strdup("Cast"), SPELL);
 
 
-	// mission
-	cards->createLabel(115, 45, strdup("Current Mission"), MISSION, Constants::RED_COLOR);
-	missionDescriptionLabel = new Label(115, 60, strdup(""), 50);
-	cards->addWidget(missionDescriptionLabel, MISSION);
-	cards->createLabel(115, 280, strdup("Mission Objectives"), MISSION, Constants::RED_COLOR);
-	objectiveList = new ScrollingList(115, 285, 295, 175);
-	cards->addWidget(objectiveList, MISSION);
+  // mission
+  cards->createLabel(115, 45, strdup("Current Mission"), MISSION, Constants::RED_COLOR);
+  missionDescriptionLabel = new Label(115, 60, strdup(""), 50);
+  cards->addWidget(missionDescriptionLabel, MISSION);
+  cards->createLabel(115, 280, strdup("Mission Objectives"), MISSION, Constants::RED_COLOR);
+  objectiveList = new ScrollingList(115, 285, 295, 175);
+  cards->addWidget(objectiveList, MISSION);
 
-	setSelectedPlayerAndMode(0, INVENTORY);
+  setSelectedPlayerAndMode(0, INVENTORY);
 }
 
 Inventory::~Inventory() {
@@ -187,7 +203,7 @@ void Inventory::drawWidget(Widget *w) {
         glEnd();
       }
     }
-    
+
     ShapePalette *shapePal = scourge->getShapePalette();
 //    glEnable(GL_ALPHA_TEST);
     //glAlphaFunc(GL_NOTEQUAL, 0);        
@@ -205,7 +221,7 @@ void Inventory::drawWidget(Widget *w) {
 
     for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
-      
+
       w->applyBorderColor();
       glBegin( GL_LINES );
       glVertex2f( x, (i + 1) * 16 );
@@ -238,7 +254,7 @@ void Inventory::drawWidget(Widget *w) {
     scourge->getSDLHandler()->texPrint(5, y + 60, s);
     sprintf(s, "Hunger: %d (10)", p->getHunger());
     scourge->getSDLHandler()->texPrint(5, y + 75, s);
-    
+
     Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false );
     Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp() );
     Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false );
@@ -418,30 +434,30 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 void Inventory::moveItemTo(int playerIndex) {
   int itemIndex = invList->getSelectedLine();  
   if(itemIndex > -1 && 
-	 scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-	if(playerIndex != selected) {
-	  scourge->getParty()->getParty(playerIndex)->
-		addInventory(scourge->getParty()->getParty(selected)->removeInventory(itemIndex));
-	  // recreate strings in list
-	  setSelectedPlayerAndMode(selected, selectedMode);
-	}
+     scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+    if(playerIndex != selected) {
+      scourge->getParty()->getParty(playerIndex)->
+      addInventory(scourge->getParty()->getParty(selected)->removeInventory(itemIndex));
+      // recreate strings in list
+      setSelectedPlayerAndMode(selected, selectedMode);
+    }
   }
 }
 
 bool Inventory::handleEvent(SDL_Event *event) {
-    switch(event->type) {
-    case SDL_MOUSEBUTTONUP:
-        break;     
-    case SDL_KEYUP:
-        switch(event->key.keysym.sym) {
-		  //        case SDLK_ESCAPE: 
-		  //		  hide();
-		  //		  return true;
-        default: break;
-        }
+  switch(event->type) {
+  case SDL_MOUSEBUTTONUP:
+    break;     
+  case SDL_KEYUP:
+    switch(event->key.keysym.sym) {
+    //        case SDLK_ESCAPE: 
+    //		  hide();
+    //		  return true;
     default: break;
     }
-    return false;
+  default: break;
+  }
+  return false;
 }
 
 void Inventory::setSelectedPlayerAndMode(int player, int mode) {
@@ -456,136 +472,136 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   skillsButton->setSelected(selectedMode == CHARACTER);
   spellsButton->setSelected(selectedMode == SPELL);
   missionButton->setSelected(selectedMode == MISSION);
-  
+
   // show only the ui elements belonging to the current mode
   cards->setActiveCard(selectedMode);   
 
   // arrange the gui
   Creature * selectedP = scourge->getParty()->getParty(selected);
   switch(selectedMode) {
-  case CHARACTER:       	
+  case CHARACTER:         
 
-	sprintf(skillsStr, "Skills: (Available points: %d)", selectedP->getAvailableSkillPoints());
+    sprintf(skillsStr, "Skills: (Available points: %d)", selectedP->getAvailableSkillPoints());
 
 
-	sprintf(nameAndClassStr, "%s, %s (level %d)", selectedP->getName(), 
-			selectedP->getCharacter()->getName(), selectedP->getLevel());
-	nameAndClassLabel->setText(nameAndClassStr);	
+    sprintf(nameAndClassStr, "%s, %s (level %d)", selectedP->getName(), 
+            selectedP->getCharacter()->getName(), selectedP->getLevel());
+    nameAndClassLabel->setText(nameAndClassStr);  
 
-	stateCount = 0;
+    stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
       if(selectedP->getStateMod(t)) {
         sprintf(stateLine[stateCount], "%s", Constants::STATE_NAMES[t]);
-		icons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
-		stateCount++;
+        icons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
+        stateCount++;
       }
     }
-	stateList->setLines(stateCount, (const char**)stateLine, 
-						(const Color *)NULL, (stateCount ? (const GLuint*)icons : NULL));
+    stateList->setLines(stateCount, (const char**)stateLine, 
+                        (const Color *)NULL, (stateCount ? (const GLuint*)icons : NULL));
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-	  sprintf(skillLine[t], "%d(%d) - %s", 
-			  selectedP->getSkill(t), 
-			  selectedP->getSkillMod(t), 
-			  Constants::SKILL_NAMES[t]);
+      sprintf(skillLine[t], "%d(%d) - %s", 
+              selectedP->getSkill(t), 
+              selectedP->getSkillMod(t), 
+              Constants::SKILL_NAMES[t]);
     }
-	skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
-	break;
-	
+    skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
+    break;
+
   case INVENTORY:
-	sprintf(inventoryWeightStr, " (Total : %2.2fkg / %2.2fkg)", 
-					selectedP->getInventoryWeight(), selectedP->getMaxInventoryWeight());     
-	inventoryWeightLabel->setText(inventoryWeightStr);
-	sprintf(coinsStr, "Coins: %d", selectedP->getMoney());
-	coinsLabel->setText(coinsStr);
-	for(int t = 0; t < selectedP->getInventoryCount(); t++) {
-		Item *item = selectedP->getInventory(t);
-		int location = selectedP->getEquippedIndex(t);
-		char s[100];
-		item->getDetailedDescription(s);
-		sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
-	}
-	for(int t = selectedP->getInventoryCount(); 
-			 t < MAX_INVENTORY_SIZE; t++) {
-		strcpy(pcInvText[t], "");
-	}
-	invList->setLines(selectedP->getInventoryCount(), 
-										(const char **)pcInvText);
-  /*
-	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-		Item *item = selectedP->getEquippedInventory(i);
-		invEquipLabel[i]->setText((char *)(item ? item->getItemName() : NULL));
-	}
-  */
-	break;
-	
+    sprintf(inventoryWeightStr, " (Total : %2.2fkg / %2.2fkg)", 
+            selectedP->getInventoryWeight(), selectedP->getMaxInventoryWeight());     
+    inventoryWeightLabel->setText(inventoryWeightStr);
+    sprintf(coinsStr, "Coins: %d", selectedP->getMoney());
+    coinsLabel->setText(coinsStr);
+    for(int t = 0; t < selectedP->getInventoryCount(); t++) {
+      Item *item = selectedP->getInventory(t);
+      int location = selectedP->getEquippedIndex(t);
+      char s[100];
+      item->getDetailedDescription(s);
+      sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
+    }
+    for(int t = selectedP->getInventoryCount(); 
+       t < MAX_INVENTORY_SIZE; t++) {
+      strcpy(pcInvText[t], "");
+    }
+    invList->setLines(selectedP->getInventoryCount(), 
+                      (const char **)pcInvText);
+    /*
+    for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+      Item *item = selectedP->getEquippedInventory(i);
+      invEquipLabel[i]->setText((char *)(item ? item->getItemName() : NULL));
+    }
+    */
+    break;
+
   case SPELL:
-	for(int t = 0; t < MagicSchool::getMagicSchoolCount(); t++) {
-	  MagicSchool *school = MagicSchool::getMagicSchool(t);		
-	  sprintf(schoolText[t], "%s (%s)", school->getName(), school->getDeity());
-	  if(t == 0) {
-		showMemorizedSpellsInSchool(scourge->getParty()->getParty(selected), school);
-	  }
-	}
-	schoolList->setLines(MagicSchool::getMagicSchoolCount(), 
-						 (const char**)schoolText);
-	break;
+    for(int t = 0; t < MagicSchool::getMagicSchoolCount(); t++) {
+      MagicSchool *school = MagicSchool::getMagicSchool(t);   
+      sprintf(schoolText[t], "%s (%s)", school->getName(), school->getDeity());
+      if(t == 0) {
+        showMemorizedSpellsInSchool(scourge->getParty()->getParty(selected), school);
+      }
+    }
+    schoolList->setLines(MagicSchool::getMagicSchoolCount(), 
+                         (const char**)schoolText);
+    break;
   case LOG:
-	break;
-	case MISSION:
-	  int objectiveCount = 0;
-	  if(scourge->getCurrentMission()) {
-		sprintf(missionText, "%s: %s", 
-				scourge->getCurrentMission()->getName(), 
-				scourge->getCurrentMission()->getStory());
-		objectiveCount = 
-		  scourge->getCurrentMission()->getObjective()->itemCount +
-		  scourge->getCurrentMission()->getObjective()->monsterCount;		
-		for(int t = 0; t < scourge->getCurrentMission()->getObjective()->itemCount; t++) {
-		  sprintf(objectiveText[t], "Find %s. %s", 
-				  scourge->getCurrentMission()->getObjective()->item[t]->getName(),
-				  (scourge->getCurrentMission()->getObjective()->itemHandled[t] ? 
-				   "(completed)" : "(not yet found)"));
-		  if(scourge->getCurrentMission()->getObjective()->itemHandled[t]) {
-			missionColor[t].r = 0.2f;
-			missionColor[t].g = 0.7f;
-			missionColor[t].b = 0.2f;
-		  } else {
-			missionColor[t].r = 0.7f;
-			missionColor[t].g = 0.2f;
-			missionColor[t].b = 0.2f;
-		  }
-		}
-		int start = scourge->getCurrentMission()->getObjective()->itemCount;
-		for(int t = 0; t < scourge->getCurrentMission()->getObjective()->monsterCount; t++) {
-		  sprintf(objectiveText[start + t], "Vanquish %s. %s", 
-				  scourge->getCurrentMission()->getObjective()->monster[t]->getType(),
-				  (scourge->getCurrentMission()->getObjective()->monsterHandled[t] ? 
-				   "(completed)" : "(not yet done)"));
-		  if(scourge->getCurrentMission()->getObjective()->monsterHandled[t]) {
-			missionColor[start + t].r = 0.2f;
-			missionColor[start + t].g = 0.7f;
-			missionColor[start + t].b = 0.2f;
-		  } else {
-			missionColor[start + t].r = 0.7f;
-			missionColor[start + t].g = 0.2f;
-			missionColor[start + t].b = 0.2f;
-		  }
-		}
-		start += scourge->getCurrentMission()->getObjective()->monsterCount;
-		for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
-		  strcpy(objectiveText[t], "");
-		}
-	  } else {
-		strcpy(missionText, "");
-		for(int t = 0; t < MAX_INVENTORY_SIZE; t++) {
-		  strcpy(objectiveText[t], "");
-		}
-	  }
-	  missionDescriptionLabel->setText(missionText);
-	  objectiveList->setLines(objectiveCount, 
-							  (const char **)objectiveText,
-							  missionColor);
-	  break;
+    break;
+  case MISSION:
+    int objectiveCount = 0;
+    if(scourge->getCurrentMission()) {
+      sprintf(missionText, "%s: %s", 
+              scourge->getCurrentMission()->getName(), 
+              scourge->getCurrentMission()->getStory());
+      objectiveCount = 
+      scourge->getCurrentMission()->getObjective()->itemCount +
+      scourge->getCurrentMission()->getObjective()->monsterCount;   
+      for(int t = 0; t < scourge->getCurrentMission()->getObjective()->itemCount; t++) {
+        sprintf(objectiveText[t], "Find %s. %s", 
+                scourge->getCurrentMission()->getObjective()->item[t]->getName(),
+                (scourge->getCurrentMission()->getObjective()->itemHandled[t] ? 
+                 "(completed)" : "(not yet found)"));
+        if(scourge->getCurrentMission()->getObjective()->itemHandled[t]) {
+          missionColor[t].r = 0.2f;
+          missionColor[t].g = 0.7f;
+          missionColor[t].b = 0.2f;
+        } else {
+          missionColor[t].r = 0.7f;
+          missionColor[t].g = 0.2f;
+          missionColor[t].b = 0.2f;
+        }
+      }
+      int start = scourge->getCurrentMission()->getObjective()->itemCount;
+      for(int t = 0; t < scourge->getCurrentMission()->getObjective()->monsterCount; t++) {
+        sprintf(objectiveText[start + t], "Vanquish %s. %s", 
+                scourge->getCurrentMission()->getObjective()->monster[t]->getType(),
+                (scourge->getCurrentMission()->getObjective()->monsterHandled[t] ? 
+                 "(completed)" : "(not yet done)"));
+        if(scourge->getCurrentMission()->getObjective()->monsterHandled[t]) {
+          missionColor[start + t].r = 0.2f;
+          missionColor[start + t].g = 0.7f;
+          missionColor[start + t].b = 0.2f;
+        } else {
+          missionColor[start + t].r = 0.7f;
+          missionColor[start + t].g = 0.2f;
+          missionColor[start + t].b = 0.2f;
+        }
+      }
+      start += scourge->getCurrentMission()->getObjective()->monsterCount;
+      for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
+        strcpy(objectiveText[t], "");
+      }
+    } else {
+      strcpy(missionText, "");
+      for(int t = 0; t < MAX_INVENTORY_SIZE; t++) {
+        strcpy(objectiveText[t], "");
+      }
+    }
+    missionDescriptionLabel->setText(missionText);
+    objectiveList->setLines(objectiveCount, 
+                            (const char **)objectiveText,
+                            missionColor);
+    break;
   }
 }
 
@@ -597,26 +613,26 @@ void Inventory::drawInventory() {
 //  int y;  
   for(int i = 0; i < 4; i++) {
 
-	// why do I need these 2 lines? Otherwise the models go behind the window
-	//	glDisable(GL_DEPTH_TEST);
-	//glEnable(GL_DEPTH_TEST);
+    // why do I need these 2 lines? Otherwise the models go behind the window
+    //	glDisable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
 
-	glPushMatrix();
-	glLoadIdentity();
+    glPushMatrix();
+    glLoadIdentity();
 
 //	cerr << "z=" << mainWin->getZ() << endl;
-	glTranslatef( mainWin->getX(), mainWin->getY() + Window::TOP_HEIGHT, mainWin->getZ() + 200 );
-	glTranslatef( 20, 10 + i * h + 90, 300);
+    glTranslatef( mainWin->getX(), mainWin->getY() + Window::TOP_HEIGHT, mainWin->getZ() + 200 );
+    glTranslatef( 20, 10 + i * h + 90, 300);
 
-	glRotatef(90, 1, 0, 0);
-	glScalef(0.8, 0.8, 0.8);	
-	glEnable( GL_TEXTURE_2D );
-	glColor4f( 1, 1, 1, 1 );
-	mainWin->scissorToWindow();
-	scourge->getParty()->getParty(i)->draw();
-	glDisable( GL_SCISSOR_TEST );
-	glDisable( GL_TEXTURE_2D );
-	glPopMatrix();
+    glRotatef(90, 1, 0, 0);
+    glScalef(0.8, 0.8, 0.8);  
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 1, 1, 1, 1 );
+    mainWin->scissorToWindow();
+    scourge->getParty()->getParty(i)->draw();
+    glDisable( GL_SCISSOR_TEST );
+    glDisable( GL_TEXTURE_2D );
+    glPopMatrix();
   }
 }
 
@@ -676,6 +692,29 @@ void Inventory::equipItem() {
   int itemIndex = invList->getSelectedLine();  
   if(itemIndex > -1 && 
      scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+    Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
+    Character *character = scourge->getParty()->getParty(selected)->getCharacter();
+/*
+    cerr << "RA=" << Character::getCharacterIndexByShortName("RA") <<
+      " KN=" << Character::getCharacterIndexByShortName("KN") <<
+      " TI=" << Character::getCharacterIndexByShortName("TI") << 
+      " AS=" << Character::getCharacterIndexByShortName("AS") << 
+      " AR=" << Character::getCharacterIndexByShortName("AR") << 
+      " LO=" << Character::getCharacterIndexByShortName("LO") << 
+      " CO=" << Character::getCharacterIndexByShortName("CO") << 
+      " SU=" << Character::getCharacterIndexByShortName("SU") << 
+      " NA=" << Character::getCharacterIndexByShortName("NA") << 
+      " MO=" << Character::getCharacterIndexByShortName("MO") << 
+      " this=" << character->getShortName() << "=" << Character::getCharacterIndexByShortName(character->getShortName()) <<
+      " item=" << item->getRpgItem()->getName() << 
+      " acl=" << item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName())) << 
+      " all acl=" << item->getRpgItem()->getAllAcl() << endl;
+*/
+
+    if(!item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName()))) {
+      scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_ACL_VIOLATION));
+      return;
+    }
     scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
     // recreate list strings
     int oldLine = invList->getSelectedLine();
@@ -687,18 +726,18 @@ void Inventory::equipItem() {
 void Inventory::dropItem() {
   int itemIndex = invList->getSelectedLine();  
   if(itemIndex > -1 && 
-	 scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-	Item *item = scourge->getParty()->getParty(selected)->removeInventory(itemIndex);
-	scourge->setMovingItem(item, 
-						   scourge->getParty()->getParty(selected)->getX(), 
-						   scourge->getParty()->getParty(selected)->getY(), 
-						   scourge->getParty()->getParty(selected)->getZ());
-	char message[120];
-	sprintf(message, "%s drops %s.", 
-			scourge->getParty()->getParty(selected)->getName(),
-			item->getItemName());
-	scourge->getMap()->addDescription(message);
-	setSelectedPlayerAndMode(selected, INVENTORY);
+     scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+    Item *item = scourge->getParty()->getParty(selected)->removeInventory(itemIndex);
+    scourge->setMovingItem(item, 
+                           scourge->getParty()->getParty(selected)->getX(), 
+                           scourge->getParty()->getParty(selected)->getY(), 
+                           scourge->getParty()->getParty(selected)->getZ());
+    char message[120];
+    sprintf(message, "%s drops %s.", 
+            scourge->getParty()->getParty(selected)->getName(),
+            item->getItemName());
+    scourge->getMap()->addDescription(message);
+    setSelectedPlayerAndMode(selected, INVENTORY);
   }
 }
 
@@ -708,14 +747,14 @@ void Inventory::refresh() {
 
 void Inventory::show() { 
   mainWin->setVisible(true); 
-  
+
   // find selected player. FIXME: this is inefficient
   int n = selected;
   for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
-	if(scourge->getParty()->getPlayer() == scourge->getParty()->getParty(i)) {
-	  n = i;
-	  break;
-	}
+    if(scourge->getParty()->getPlayer() == scourge->getParty()->getParty(i)) {
+      n = i;
+      break;
+    }
   }
   setSelectedPlayerAndMode(n, selectedMode); 
 }
@@ -725,20 +764,20 @@ Spell *Inventory::getSelectedSpell() {
   MagicSchool *school = NULL;
   int n = schoolList->getSelectedLine();
   if(n != -1 && n < MagicSchool::getMagicSchoolCount()) {
-	school = MagicSchool::getMagicSchool(n);
+    school = MagicSchool::getMagicSchool(n);
   }
   if(!school) return NULL;
 
   n = spellList->getSelectedLine();
   if(n != -1 && n < spellList->getLineCount()) {
-	int spellCount = 0;
-	for(int r = 0; r < school->getSpellCount(); r++) {
-	  Spell *spell = school->getSpell(r);
-	  if(creature->isSpellMemorized(spell)) {
-		if(n == spellCount) return spell;
-		spellCount++;
-	  }
-	}
+    int spellCount = 0;
+    for(int r = 0; r < school->getSpellCount(); r++) {
+      Spell *spell = school->getSpell(r);
+      if(creature->isSpellMemorized(spell)) {
+        if(n == spellCount) return spell;
+        spellCount++;
+      }
+    }
   }
   return NULL;
 }
@@ -746,18 +785,18 @@ Spell *Inventory::getSelectedSpell() {
 void Inventory::showMemorizedSpellsInSchool(Creature *creature, MagicSchool *school) {
   int spellCount = 0;
   for(int r = 0; r < school->getSpellCount(); r++) {
-	Spell *spell = school->getSpell(r);
-	if(creature->isSpellMemorized(spell)) {
-	  spell->describe(spellText[spellCount]);
-	  if(spellCount == 0) {
-		showSpellDescription(spell);
-	  }
-	  spellCount++;
-	}
+    Spell *spell = school->getSpell(r);
+    if(creature->isSpellMemorized(spell)) {
+      spell->describe(spellText[spellCount]);
+      if(spellCount == 0) {
+        showSpellDescription(spell);
+      }
+      spellCount++;
+    }
   }
   if(spellCount == 0) spellDescriptionLabel->setText("");
   spellList->setLines(spellCount, 
-					  (const char**)spellText);
+                      (const char**)spellText);
 }
 
 void Inventory::showSpellDescription(Spell *spell) {

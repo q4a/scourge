@@ -105,11 +105,12 @@ char *Constants::messages[][80] = {
   { "Your magic fizzles and dies.", 
 	"Only the roaches are impressed by your mumbled words.",
 	"The silence is broken only by some crickets nearby.",
-	"Bazzoomm! A small cloud of smoke rises to the ceiling." }
+	"Bazzoomm! A small cloud of smoke rises to the ceiling." },
+  { "Your character cannot equip that item." }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1
 };
 
 // opengl extension routines
