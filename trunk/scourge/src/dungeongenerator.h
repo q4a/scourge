@@ -179,13 +179,13 @@ protected:
   void drawBasics(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void removeColumns(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addContainers(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addStairs(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  bool addStairs(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addPregeneratedShapes(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addItems(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addMissionObjectives(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addMonsters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addFurniture(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addTeleporters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  bool addTeleporters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addParty(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void lockDoors(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void lockLocation(Map *map, int mapx, int mapy);
@@ -202,8 +202,8 @@ protected:
   // construct a pre-rendered location
   void constructMaze(int location);
 
-  void drawNodesOnMap(Map *map, ShapePalette *shapePal, 
-											bool preGenerated, int locationIndex);
+  bool drawNodesOnMap(Map *map, ShapePalette *shapePal, 
+                      bool preGenerated, int locationIndex);
 
   /**
     Return a random location in the maze that has not been visited yet.
