@@ -512,6 +512,10 @@ bool Creature::takeDamage(int damage) {
 Creature **Creature::createHardCodedParty(Scourge *scourge) {
   Creature **pc = (Creature**)malloc(sizeof(Creature*) * 4);
 
+	// FIXME: consider using newCreature here
+	// the end of startMission would have to be modified to not delete the party
+	// also in scourge, where-ever creatureCount is used to mean all monsters would have
+	// to change (maybe that's a good thing too... same logic for party and monsters)
   pc[0] = new Creature(scourge, Character::character_class[Character::assassin], "Alamont");
   pc[1] = new Creature(scourge, Character::character_class[Character::knight], "Barlett");
   pc[2] = new Creature(scourge, Character::character_class[Character::summoner], "Corinus");
@@ -554,12 +558,12 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   }
 
   // add some items
-  pc[0]->addInventory(new Item(RpgItem::items[RpgItem::BASTARD_SWORD]));
-  pc[0]->addInventory(new Item(RpgItem::items[RpgItem::DAGGER]));
-  pc[2]->addInventory(new Item(RpgItem::items[RpgItem::LONG_SWORD]));
-  pc[3]->addInventory(new Item(RpgItem::items[RpgItem::GREAT_SWORD]));
-  pc[3]->addInventory(new Item(RpgItem::items[RpgItem::BATTLE_AXE]));
-  pc[3]->addInventory(new Item(RpgItem::items[RpgItem::THROWING_AXE]));
+  pc[0]->addInventory(scourge->newItem(RpgItem::items[RpgItem::BASTARD_SWORD]));
+  pc[0]->addInventory(scourge->newItem(RpgItem::items[RpgItem::DAGGER]));
+  pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::LONG_SWORD]));
+  pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::GREAT_SWORD]));
+  pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::BATTLE_AXE]));
+  pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::THROWING_AXE]));
 
   return pc;
 }
@@ -573,8 +577,8 @@ void Creature::monsterInit() {
   }
   // set some skills
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    setSkill(i, (int)((float)(10 * (level + 1)) * rand()/RAND_MAX));
+    setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
   }
   // add some hp
-  hp = 8 + (int)((float)(15.0f * (level + 1)) * rand()/RAND_MAX);
+  hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
 }

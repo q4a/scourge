@@ -45,6 +45,9 @@ Scourge::Scourge(int argc, char *argv[]){
   movingItem = NULL;
 
   isInfoShowing = true;
+
+  // new item and creature references
+  itemCount = creatureCount = 0;
   
   // Reads the user configuration from a file      
   userConfiguration = new UserConfiguration();  
@@ -110,9 +113,6 @@ void Scourge::startMission() {
   // add gui
   mainWin->setVisible(true);
   messageWin->setVisible(true);
-
-  // new item and creature references
-  itemCount = creatureCount = 0;
   
   // create the map
   map = new Map(this);
@@ -123,6 +123,12 @@ void Scourge::startMission() {
   Sint16 startx, starty;
   dg->toMap(map, &startx, &starty, getShapePalette());
 
+	/*
+	cerr << "Before mission: " <<
+		" creatureCount=" << creatureCount << 
+		" itemCount=" << itemCount << endl;
+		*/
+
   // position the players
   player_only = false;
   move = 0;
@@ -130,11 +136,15 @@ void Scourge::startMission() {
   battleCount = 0;
 	partyDead = false;
 
+	// resurrect party (do this before calling setPlayer!)
+	for(int i = 0; i < 4; i++) {
+		getParty(i)->setStateMod(Constants::dead, false);
+	}
+
   setPlayer(getParty(0));
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   getPlayer()->moveTo(startx, starty, 0);
   getPlayer()->setTargetCreature(NULL);
-	getPlayer()->setStateMod(Constants::dead, false);
   map->setCreature(startx, starty, 0, getPlayer()); 
 
   // init the rest of the party
@@ -145,7 +155,6 @@ void Scourge::startMission() {
 										 getParty(i)->getZ(), 
 										 getParty(i));
 		getParty(i)->setTargetCreature(NULL);
-		getParty(i)->setStateMod(Constants::dead, false);
   }
  
   // center map on the player
@@ -175,25 +184,32 @@ void Scourge::startMission() {
 
   // delete the items and creatures created for this mission
   // (except items in inventory) 
-  // FIXME: may still be a memory leak... the ones in the inventory should be
-  // kept in items w. the right itemCount
   for(int i = 0; i < itemCount; i++) {
-	bool inInventory = false;
-	for(int t = 0; t < 4; t++) {
-	  if(getParty(t)->isItemInInventory(items[i])) {
-		inInventory = true;
-		break;
-	  }
+		bool inInventory = false;
+		for(int t = 0; t < 4; t++) {
+			if(getParty(t)->isItemInInventory(items[i])) {
+				inInventory = true;
+				break;
+			}
+		}
+		if(!inInventory) {
+			delete items[i];
+			itemCount--;
+			for(int t = i; t < itemCount; t++) {
+				items[t] = items[t + 1];
+			}
+			i--;
+		}
 	}
-	if(!inInventory) {
-	  //fprintf(stderr, "Freeing item: i=%d name=%s\n", i, items[i]->getRpgItem()->getName());
-	  delete items[i];
+	for(int i = 0; i < creatureCount; i++) {
+		delete creatures[i];
 	}
-  }
-  for(int i = 0; i < creatureCount; i++) {
-	//fprintf(stderr, "Freeing creature: i=%d name=%s\n", i, creatures[i]->getCharacter()->getName());
-	delete creatures[i];
-  }
+	creatureCount = 0;
+	/*
+	cerr << "After mission: " <<
+		" creatureCount=" << creatureCount << 
+		" itemCount=" << itemCount << endl;
+		*/
 }
 
 // items created for the mission
