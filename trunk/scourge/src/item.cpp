@@ -54,6 +54,15 @@ Item *Item::getContainedItem(int index) {
   return ((index >= 0 && index < containedItemCount) ? containedItems[index] : NULL);
 }
 
+bool Item::isContainedItem(Item *item) {
+	for(int i = 0; i < containedItemCount; i++) {
+		if(containedItems[i] == item || 
+			 (containedItems[i]->getRpgItem()->getType() == RpgItem::CONTAINER &&
+				containedItems[i]->isContainedItem(item))) return true;
+	}
+	return false;
+}
+
 void Item::getDetailedDescription(char *s, bool precise){
     int type;
     RpgItem * rpgItem;

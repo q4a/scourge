@@ -72,27 +72,28 @@ Inventory::Inventory(Scourge *scourge) {
 	}
 	invList = new ScrollingList(115, 285, 295, 175, this);
 	cards->addWidget(invList, INVENTORY);
-    cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
-	  
-    int yy = 160;
-	equipButton    = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
-	yy+=30;
-	fixButton      = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Fix Item"), INVENTORY);
-	yy+=30;
-	removeCurseButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Remove Curse"), INVENTORY );
-	yy+=30;
-	combineButton  = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Combine Item"), INVENTORY );
-	yy+=30;
-	enchantButton  = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Enchant Item"), INVENTORY );
-	yy+=30;
-	identifyButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
-	yy+=30;
-	openButton     = mainWin->createButton( 0, yy, 105, yy + 30, 
-							 Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY );	
-    yy+=30;
-    eatDrinkButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
+	cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 	
-    // character info
+	int yy = 160;
+	equipButton    = cards->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
+	yy+=30;
+	fixButton      = cards->createButton( 0, yy, 105, yy + 30, strdup("Fix Item"), INVENTORY);
+	yy+=30;
+	removeCurseButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Remove Curse"), INVENTORY );
+	yy+=30;
+	combineButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Combine Item"), INVENTORY );
+	yy+=30;
+	enchantButton  = cards->createButton( 0, yy, 105, yy + 30, strdup("Enchant Item"), INVENTORY );
+	yy+=30;
+	identifyButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Identify Item"), INVENTORY );
+	yy+=30;
+	openButton     = cards->createButton( 0, yy, 105, yy + 30, 
+																				Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), 
+																				INVENTORY );	
+	yy+=30;
+	eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
+
+	// character info
 	cards->createLabel(115, 45, strdup("Character Information"), CHARACTER, Constants::RED_COLOR);	
 	nameAndClassLabel = cards->createLabel(115, 60, NULL, CHARACTER);
 	levelLabel     = cards->createLabel(115, 75, NULL, CHARACTER);
@@ -100,7 +101,7 @@ Inventory::Inventory(Scourge *scourge) {
 	hpLabel        = cards->createLabel(115, 105, NULL, CHARACTER);
 	thirstLabel    = cards->createLabel(115, 120, NULL, CHARACTER);
 	hungerLabel    = cards->createLabel(220, 120, NULL, CHARACTER);
-	
+
 	cards->createLabel(115, 135, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
 	stateList = new ScrollingList(115, 140, 290, 70);
 	cards->addWidget(stateList, CHARACTER);
@@ -204,11 +205,11 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   // show only the ui elements belonging to the current mode
   cards->setActiveCard(selectedMode);   
 
-  // arrange the gui
-  Creature * selectedP = scourge->getParty(selected);
-  switch(selectedMode) {
-  case CHARACTER:       	
-    sprintf(nameAndClassStr, "%s, %s", selectedP->getName(), selectedP->getCharacter()->getName());
+	// arrange the gui
+	Creature * selectedP = scourge->getParty(selected);
+	switch(selectedMode) {
+	case CHARACTER:       	
+	sprintf(nameAndClassStr, "%s, %s", selectedP->getName(), selectedP->getCharacter()->getName());
 	nameAndClassLabel->setText(nameAndClassStr);	
 	sprintf(levelStr, "Level: %d", selectedP->getLevel());
 	levelLabel->setText(levelStr);
@@ -236,25 +237,25 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	break;
 	
   case INVENTORY:
-    sprintf(inventoryWeightStr, " (Total : %2.2fkg / %2.2fkg)", 
-            selectedP->getInventoryWeight(), selectedP->getMaxInventoryWeight());     
-    inventoryWeightLabel->setText(inventoryWeightStr);
+	sprintf(inventoryWeightStr, " (Total : %2.2fkg / %2.2fkg)", 
+					selectedP->getInventoryWeight(), selectedP->getMaxInventoryWeight());     
+	inventoryWeightLabel->setText(inventoryWeightStr);
 	for(int t = 0; t < selectedP->getInventoryCount(); t++) {
-	  Item *item = selectedP->getInventory(t);
-	  int location = selectedP->getEquippedIndex(t);
-        char s[100];
+		Item *item = selectedP->getInventory(t);
+		int location = selectedP->getEquippedIndex(t);
+		char s[100];
 		item->getDetailedDescription(s);
-	  sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
-    }
+		sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
+	}
 	for(int t = selectedP->getInventoryCount(); 
-		t < MAX_INVENTORY_SIZE; t++) {
-	  strcpy(pcInvText[t], "");
+			 t < MAX_INVENTORY_SIZE; t++) {
+		strcpy(pcInvText[t], "");
 	}
 	invList->setLines(selectedP->getInventoryCount(), 
-					  (const char **)pcInvText);
+										(const char **)pcInvText);
 	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	  Item *item = selectedP->getEquippedInventory(i);
-	  invEquipLabel[i]->setText((char *)(item ? item->getRpgItem()->getName() : NULL));
+		Item *item = selectedP->getEquippedInventory(i);
+		invEquipLabel[i]->setText((char *)(item ? item->getRpgItem()->getName() : NULL));
 	}
 	break;
 	
@@ -280,7 +281,7 @@ void Inventory::drawInventory() {
 	glPushMatrix();
 	glLoadIdentity();
 
-	cerr << "z=" << mainWin->getZ() << endl;
+//	cerr << "z=" << mainWin->getZ() << endl;
 	glTranslatef( mainWin->getX(), mainWin->getY() + Window::TOP_HEIGHT, mainWin->getZ() + 200 );
 	glTranslatef( 20, 10 + i * h + 90, 300);
 

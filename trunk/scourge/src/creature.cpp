@@ -512,32 +512,32 @@ bool Creature::computeNewItemWeight(RpgItem * rpgItem){
 }
 
 void Creature::equipInventory(int index) {
-  // doff
-  if(doff(index)) return;
-  // don
-  // FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
-  Item *item = getInventory(index);
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	// if the slot is empty and the item can be worn here
-	if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
-	   equipped[i] == MAX_INVENTORY_SIZE) {
-		equipped[i] = index;
-		recalcAggregateValues();
-		return;
+	// doff
+	if(doff(index))	return;
+	// don
+	// FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
+	Item *item = getInventory(index);
+	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+		// if the slot is empty and the item can be worn here
+		if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
+			 equipped[i] == MAX_INVENTORY_SIZE) {
+			equipped[i] = index;
+			recalcAggregateValues();
+			return;
+		}
 	}
-  }
 }
 
 int Creature::doff(int index) {
-  // doff
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
-	if(equipped[i] == index) {
-	  equipped[i] = MAX_INVENTORY_SIZE;
-	  recalcAggregateValues();
-	  return 1;
+	// doff
+	for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+		if(equipped[i] == index) {
+			equipped[i] = MAX_INVENTORY_SIZE;
+			recalcAggregateValues();
+			return 1;
+		}
 	}
-  }
-  return 0;
+	return 0;
 }
 
 /**
@@ -563,9 +563,12 @@ int Creature::getEquippedIndex(int index) {
 
 bool Creature::isItemInInventory(Item *item) {
   for(int i = 0; i < inventory_count; i++) {
-	if(inventory[i] == item) return true;
-  }
-  return false;
+		if(inventory[i] == item || 
+			 (inventory[i]->getRpgItem()->getType() == RpgItem::CONTAINER &&
+				inventory[i]->isContainedItem(item))) 
+			return true;
+	}
+	return false;
 }
 
 Item *Creature::getItemAtLocation(int location) {
