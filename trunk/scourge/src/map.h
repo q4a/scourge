@@ -226,6 +226,7 @@ class Map {
 
   inline void refresh() { mapChanged = lightMapChanged = true; }
 
+  // drop items above this one
   void dropItemsAbove(int x, int y, int z, Item *item);
 
  protected:

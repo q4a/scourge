@@ -835,8 +835,10 @@ Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z,
 			}
 			if(zz > sz) sz = zz;
 			else break;
-		  } else if(!newz || !(loc && loc->item && !loc->item->isBlocking())) {
+		  } else if(!newz) {
 			return pos[x + sx][y - sy][z + sz];
+		  } else {
+			sz++;
 		  }
 		} else {
 		  sz++;
@@ -1130,7 +1132,7 @@ Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
       for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
         for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {	  
 		  delete pos[x + xp][y - yp][z + zp];
-		  pos[x + xp][y - yp][z + zp] = NULL;		
+		  pos[x + xp][y - yp][z + zp] = NULL;	
         }
       }
     }
