@@ -100,7 +100,7 @@ public:
     @param spell if not NULL, the spell to associate with the created scroll.
     @return the item created.
   */
-  virtual Item *newItem(RpgItem *rpgItem, int level=1, Spell *spell=NULL);
+  virtual Item *newItem(RpgItem *rpgItem, int level=1, Spell *spell=NULL, bool loading=false);
 
   /**
     Create a new creature for use on this story. Calling this method instead of new Creature()

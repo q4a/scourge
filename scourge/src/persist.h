@@ -35,6 +35,13 @@ typedef struct _ItemInfo {
   Uint8 rpgItem_name[255];
   Uint8 shape_name[255];
   Uint32 blocking, currentCharges, weight;
+  Uint32 quality;
+  Uint32 price;
+  Uint32 action;
+  Uint32 speed;
+  Uint32 distance;
+  Uint32 maxCharges;
+  Uint32 duration;
   Uint8 spell_name[255];
   Uint32 containedItemCount;
   struct _ItemInfo *containedItems[MAX_CONTAINED_ITEMS];

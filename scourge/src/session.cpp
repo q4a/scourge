@@ -180,10 +180,13 @@ void Session::stopClientServer() {
 
 #endif
 
-Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell) {
-  int itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
+Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) {
+  int itemLevel = level;
+  if( !loading ) {
+    itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
+  }
   if( itemLevel < 1 ) itemLevel = 1;
-  newItems[itemCount] = new Item(rpgItem, itemLevel);
+  newItems[itemCount] = new Item(rpgItem, itemLevel, loading);
   if(spell) newItems[itemCount]->setSpell(spell);
   itemCount++;
   return newItems[itemCount - 1];

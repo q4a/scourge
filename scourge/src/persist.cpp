@@ -184,6 +184,13 @@ void Persist::saveItem( FILE *fp, ItemInfo *info ) {
   fwrite( &(info->blocking), sizeof(Uint32), 1, fp );
   fwrite( &(info->currentCharges), sizeof(Uint32), 1, fp );
   fwrite( &(info->weight), sizeof(Uint32), 1, fp );
+  fwrite( &(info->quality), sizeof(Uint32), 1, fp );
+  fwrite( &(info->price), sizeof(Uint32), 1, fp );
+  fwrite( &(info->action), sizeof(Uint32), 1, fp );
+  fwrite( &(info->speed), sizeof(Uint32), 1, fp );
+  fwrite( &(info->distance), sizeof(Uint32), 1, fp );
+  fwrite( &(info->maxCharges), sizeof(Uint32), 1, fp );
+  fwrite( &(info->duration), sizeof(Uint32), 1, fp );
   fwrite( info->spell_name, sizeof(Uint8), 255, fp );
   fwrite( &(info->containedItemCount), sizeof(Uint32), 1, fp );
   for(int i = 0; i < (int)info->containedItemCount; i++) {
@@ -214,6 +221,13 @@ ItemInfo *Persist::loadItem( FILE *fp ) {
   fread( &(info->blocking), sizeof(Uint32), 1, fp );
   fread( &(info->currentCharges), sizeof(Uint32), 1, fp );
   fread( &(info->weight), sizeof(Uint32), 1, fp );
+  fread( &(info->quality), sizeof(Uint32), 1, fp );
+  fread( &(info->price), sizeof(Uint32), 1, fp );
+  fread( &(info->action), sizeof(Uint32), 1, fp );
+  fread( &(info->speed), sizeof(Uint32), 1, fp );
+  fread( &(info->distance), sizeof(Uint32), 1, fp );
+  fread( &(info->maxCharges), sizeof(Uint32), 1, fp );
+  fread( &(info->duration), sizeof(Uint32), 1, fp );
   fread( info->spell_name, sizeof(Uint8), 255, fp );
   fread( &(info->containedItemCount), sizeof(Uint32), 1, fp );
   for(int i = 0; i < (int)info->containedItemCount; i++) {
