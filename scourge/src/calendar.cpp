@@ -17,7 +17,6 @@
 
 #include "calendar.h"
 
-#define DEBUG_EVENTS 0
 
 Calendar *Calendar::instance = NULL;
 
@@ -36,11 +35,16 @@ Calendar::Calendar(){
     timeFrozen = false;    
 }
 
+void Calendar::reset(){    
+    lastTick = 0;
+    scheduledEvents.clear();
+    currentDate.reset();
+    timeFrozen = false; 
+}
 
 void Calendar::scheduleEvent(Event *e){
     if(scheduledEvents.size() < MAX_SCHEDULED_EVENTS){
-          scheduledEvents.push_back(e);
-          cout << "scheduleEvent id : " << e->id << endl;
+          scheduledEvents.push_back(e);          
     }
 }
 
@@ -52,61 +56,75 @@ void Calendar::setPause(bool mustPause){
     timeFrozen = mustPause;             
 }
 
-bool Calendar::update(){
+bool Calendar::update(int gameSpeed){
     Event * e;            
     
-    // no update if time is frozen
+    // no time update if time is frozen
     if(timeFrozen) return false;
       
     GLint t = SDL_GetTicks();
         
     if(t - lastTick >= 1000){               
         lastTick = t;
+        switch(gameSpeed){
+            case 0 : setTimeMultiplicator(60); break;
+            case 1 : setTimeMultiplicator(15); break;
+            case 2 : setTimeMultiplicator(6); break;
+            case 3 : setTimeMultiplicator(2); break;
+            case 4 : setTimeMultiplicator(1); break;
+        }
         currentDate.addSeconds(timeMultiplicator);                       
     }        
     
     // look for scheduled events
-    if(DEBUG_EVENTS) cout << "nbScheduled events: " <<  scheduledEvents.size() << endl;
-    for(int i = 0 ; i < scheduledEvents.size(); i++){
-        if(DEBUG_EVENTS) cout << "test event: " <<  i  << endl;
-        if(DEBUG_EVENTS) scheduledEvents[i]->getEventDate().print();
-        if(DEBUG_EVENTS) cout << " < ";
-		if(DEBUG_EVENTS) currentDate.print();
-		if(DEBUG_EVENTS) cout << " ?" << endl;        
-        if( (scheduledEvents[i]->getEventDate()).isInferiorTo(currentDate) ){
-            if(DEBUG_EVENTS) cout<< "Oui : event " << i << " execution."<< endl;
-            scheduledEvents[i]->execute();                                   
+    if(CALENDAR_DEBUG) cout << "nbScheduled events: " <<  scheduledEvents.size() << endl;
+    for(int i = 0 ; i < scheduledEvents.size(); i++){ 
+        if(CALENDAR_DEBUG){      
+            currentDate.print();        
+            cout << " >= ";
+            scheduledEvents[i]->getEventDate().print(); 
+            cout << " ? ";        
+        }  
+        // eventDate >= currentDate ?
+        if( !(currentDate.isInferiorTo(scheduledEvents[i]->getEventDate())) ){
+            if(CALENDAR_DEBUG) cout<< " Yes " << endl;            
+            scheduledEvents[i]->execute();                                                           
             
             // remove this event as it has been executed
-            e = scheduledEvents[i];                        
-            scheduledEvents[i] = scheduledEvents[scheduledEvents.size()]; 
-            scheduledEvents[scheduledEvents.size()] = e;
+            e = scheduledEvents[i];                                    
+            scheduledEvents[i] = scheduledEvents[scheduledEvents.size()-1]; 
+            scheduledEvents[scheduledEvents.size()-1] = e;
             scheduledEvents.pop_back(); 
             e -> increaseNbExecutions();
+            if(CALENDAR_DEBUG) cout << "NbExecutions : " << e->getNbExecutions() << "/" << e->getNbExecutionsToDo() << endl;
             
             // and re-adds it if needed
+            if(CALENDAR_DEBUG) cout << " readd ? ";
             if(    e->getNbExecutionsToDo() == Event::INFINITE_EXECUTIONS
                 || e->getNbExecutions() < e->getNbExecutionsToDo()){
+                if(CALENDAR_DEBUG) cout << " Yes" << endl;
                 Date d;
                 d = e->getEventDate();
-                d.addDate(e->getTimeOut());
+                d.addDate(e->getTimeOut());                
                 e -> setEventDate(d);
                 scheduleEvent(e);
             }
             else{
                 // Don't need this event anymore
-                if(DEBUG_EVENTS) cout << "before Delete!!!" << endl;
-                delete e;                 
-                if(DEBUG_EVENTS) cout << "after Delete!!!" << endl;
-            }
-            
-        }     
+                if(CALENDAR_DEBUG) cout << " No, deleting this event." << endl;
+                delete e;                                 
+                if(CALENDAR_DEBUG) cout << " Ok, event deleted." << endl;
+            }            
+        }    
+        else{
+            if(CALENDAR_DEBUG) cout << " No" << endl; 
+        } 
     }
     return true;
 }
 
 void Calendar::setTimeMultiplicator(int t){
-    if(t > 0 && t < 60){
+    if(t > 0 && t <= 60){
         timeMultiplicator = t;
     }    
 }

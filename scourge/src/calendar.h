@@ -23,6 +23,8 @@
 #include "date.h"
 #include "events/event.h"
 
+// set to 1 to debug and to 0 to not debug
+#define CALENDAR_DEBUG 0
 #define MAX_SCHEDULED_EVENTS 500
 
 /**
@@ -48,10 +50,11 @@ class Calendar {
  public:
  
   static Calendar * getInstance();
-  bool update();
+  bool update(int gameSpeed);
   void setPause(bool mustPause);
   void setTimeMultiplicator(int t);
   void scheduleEvent(Event *e);
+  void reset();
 
   // return date by value to avoid modification by other classes
   inline Date getCurrentDate() { return currentDate; }

@@ -19,7 +19,7 @@
 #define DATE_H
 
 //uncomment to debug
-//#define DEBUG_DATE
+#define DEBUG_DATE
 
 #include "constants.h"
 
@@ -57,7 +57,8 @@ class Date {
   inline int getHour()        { return hour;}
   inline int getMin()         { return min; }
   inline int getSec()         { return sec; }
-  inline char * getDateString()   { buildDateString();return dateString; }    
+  inline char * getDateString()   { buildDateString();return dateString; }
+  void reset();    
   
   /*bool operator==(const Date &d);
   bool operator<=(const Date &d);
