@@ -49,6 +49,10 @@ typedef struct _DrawLater {
 } DrawLater;
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
+#define POS_CACHE_WIDTH    5
+#define POS_CACHE_DEPTH    5
+#define POS_CACHE_HEIGHT   10
+#define MAX_POS_CACHE (POS_CACHE_WIDTH * POS_CACHE_DEPTH * POS_CACHE_HEIGHT)
 
 /**
  *@author Gabor Torok
@@ -62,6 +66,8 @@ class Map {
   Sint16 y;
   float mapx, mapy;
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
+  Location *posCache[MAX_POS_CACHE];
+  signed int nbPosCache;
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
   Scourge *scourge;
   bool debugGridFlag;
