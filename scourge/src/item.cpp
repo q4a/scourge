@@ -286,6 +286,9 @@ void Item::initItems(ShapePalette *shapePal) {
 
       n = Constants::readLine(line, fp);
       strcpy(short_description, line + 1);
+      
+      // skip icon tile for now
+      n = Constants::readLine(line, fp);
 
       // resolve strings
       int type_index = RpgItem::getTypeByName(type);    
