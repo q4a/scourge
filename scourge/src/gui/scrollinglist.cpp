@@ -259,7 +259,7 @@ void ScrollingList::removeEffects(Widget *parent) {
 }
 
 void ScrollingList::setSelectedLine(int line) { 
-  selectedLine = line; 
+  selectedLine = (line < count ? line : count - 1);
 
   // fixme: should check if line is already visible
   value = (int)(((float)(selectedLine + 1) / (float)count) * 100.0f);
