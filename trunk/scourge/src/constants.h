@@ -322,6 +322,7 @@ public:
 	APPLE_INDEX,
 	BREAD_INDEX,
 	MUSHROOM_INDEX,
+	ARROW_INDEX,
 
 	// must be the last one
 	SHAPE_INDEX_COUNT

@@ -34,7 +34,7 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(int argc, char *argv[]){
-  lastTick = 0;
+  lastTick = lastProjectileTick = 0;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
@@ -1211,61 +1211,67 @@ void Scourge::playRound() {
   // -in group mode
   // -(or) the round was manually started
   GLint t = SDL_GetTicks();
-  if(party->isRealTimeMode() && 
-	 (lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks())) {
-	lastTick = t;
-		
-	// move the party members
-	party->movePlayers();
-	
-	// move visible monsters
-	for(int i = 0; i < creatureCount; i++) {
-	  if(!creatures[i]->getStateMod(Constants::dead) && 
-		 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
-		moveMonster(creatures[i]);
-	  }
+  if(party->isRealTimeMode()) {
+
+	if(lastProjectileTick == 0 || t - lastProjectileTick > userConfiguration->getGameSpeedTicks() / 10) {
+	  lastProjectileTick = t;
+	  
+	  // move projectiles
+	  Projectile::moveProjectiles();	  
 	}
 
-	// move projectiles
-	Projectile::moveProjectiles();
-
-	// setup the current battle round
-	if(battleRound.size() == 0) {
-
-	  // set up for battle
-	  battleCount = 0;
+	if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
+	  lastTick = t;
 	  
-	  // attack targeted monster if close enough
-	  for(int i = 0; i < 4; i++) {
-		if(!party->getParty(i)->getStateMod(Constants::dead) && 
-		   party->getParty(i)->getTargetCreature()) {								
-		  battle[battleCount++] = new Battle(this, party->getParty(i));
-		}
-	  }
+	  // move the party members
+	  party->movePlayers();
+	  
+	  // move visible monsters
 	  for(int i = 0; i < creatureCount; i++) {
 		if(!creatures[i]->getStateMod(Constants::dead) && 
-		   map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
-		   creatures[i]->getTargetCreature()) {
-		  battle[battleCount++] = new Battle(this, creatures[i]);
+		   map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
+		  moveMonster(creatures[i]);
+		}
+	  }
+
+	  // setup the current battle round
+	  if(battleRound.size() == 0) {
+		
+		// set up for battle
+		battleCount = 0;
+		
+		// attack targeted monster if close enough
+		for(int i = 0; i < 4; i++) {
+		  if(!party->getParty(i)->getStateMod(Constants::dead) && 
+			 party->getParty(i)->getTargetCreature()) {								
+			battle[battleCount++] = new Battle(this, party->getParty(i));
+		  }
+		}
+		for(int i = 0; i < creatureCount; i++) {
+		  if(!creatures[i]->getStateMod(Constants::dead) && 
+			 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
+			 creatures[i]->getTargetCreature()) {
+			battle[battleCount++] = new Battle(this, creatures[i]);
+		  }
+		}
+		
+		// fight one round of the epic battle
+		if(battleCount > 0) {
+		  Battle::setupBattles(this, battle, battleCount, &battleRound);
+		  battleTurn = 0;
 		}
 	  }
 	  
-	  // fight one round of the epic battle
-	  if(battleCount > 0) {
-		Battle::setupBattles(this, battle, battleCount, &battleRound);
-		battleTurn = 0;
-	  }
-	}
-
-	// fight a turn of the battle
-	if(battleRound.size() > 0) {
-	  if(battleTurn < battleRound.size()) {
-		Battle *battle = battleRound[battleTurn];
-		battle->fightTurn();
-		delete battle;
-		battleTurn++;
-	  } else {
-		battleRound.clear();
+	  // fight a turn of the battle
+	  if(battleRound.size() > 0) {
+		if(battleTurn < battleRound.size()) {
+		  Battle *battle = battleRound[battleTurn];
+		  battle->fightTurn();
+		  delete battle;
+		  battleTurn++;
+		} else {
+		  battleRound.clear();
+		}
 	  }
 	}
   }

@@ -59,6 +59,7 @@ class Projectile {
 
   inline float getX() { return sx; }
   inline float getY() { return sy; }
+  inline float getAngle() { return angle; }
   inline Shape *getShape() { return shape; }
 
   static Projectile *addProjectile(Creature *creature, Creature *target, 

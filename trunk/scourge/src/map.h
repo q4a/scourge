@@ -26,6 +26,7 @@
 #include "creature.h"
 #include "scourge.h"
 #include "item.h"
+#include "projectile.h"
 #include "gui/scrollinglist.h"
 
 using namespace std;
@@ -36,12 +37,14 @@ class DungeonGenerator;
 class Scourge;
 class Creature;
 class Item;
+class Projectile;
 
 typedef struct _DrawLater {
   float xpos, ypos, zpos;
   Shape *shape;
   Creature *creature;
   Item *item;
+  Projectile *projectile;
   GLuint name;  
 } DrawLater;
 

@@ -356,6 +356,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	damage[damageCount].shape = shape;
 	damage[damageCount].item = item;
 	damage[damageCount].creature = creature;
+	damage[damageCount].projectile = NULL;
 	damage[damageCount].name = name;
 	damageCount++;
   }
@@ -367,6 +368,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	stencil[stencilCount].shape = shape;
 	stencil[stencilCount].item = item;
 	stencil[stencilCount].creature = creature;
+	stencil[stencilCount].projectile = NULL;
 	stencil[stencilCount].name = name;
 	stencilCount++;
   } else if(!shape->isStencil()) {
@@ -377,6 +379,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  other[otherCount].shape = shape;
 	  other[otherCount].item = item;
 	  other[otherCount].creature = creature;
+	  other[otherCount].projectile = NULL;
 	  other[otherCount].name = name;
 	  otherCount++;
 	}
@@ -387,6 +390,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
 	  later[laterCount].shape = shape;
 	  later[laterCount].item = item;
 	  later[laterCount].creature = creature;
+	  later[laterCount].projectile = NULL;
 	  later[laterCount].name = name;
 	  laterCount++;
 	}
@@ -506,6 +510,7 @@ void Map::draw() {
 	  
 	  later2.item = NULL;
 	  later2.creature = NULL;
+	  later2.projectile = NULL;
 	  later2.name = 0;	 
 	  doDrawShape(&later2);
 	}
@@ -619,10 +624,11 @@ void Map::draw() {
 		dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
 		//		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
 		dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
-		dl.zpos = (float)(10) / GLShape::DIV;
+		dl.zpos = (float)(7) / GLShape::DIV;
 		dl.shape = proj->getShape();
 		dl.creature = NULL;
 		dl.item = NULL;
+		dl.projectile = proj;
 		dl.name = 0;
 		doDrawShape(&dl);
 	  }
@@ -727,6 +733,13 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 	later->creature->getEffect()->draw((GLShape*)shape, 
 									   later->creature->getEffectType(),
 									   later->creature->getDamageEffect());
+  } else if(later && later->projectile) {
+	// orient and draw the projectile
+	float f = later->projectile->getAngle() + 90;
+	if(f < 0) f += 360;
+	if(f >= 360) f -= 360;
+	glRotatef( f, 0, 0, 1 );
+	later->projectile->getShape()->draw();
   } else {
 	shape->draw();
   }
