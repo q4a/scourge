@@ -28,7 +28,7 @@ Sound::Sound() {
 
   if(haveSound) {
     char fn[300];
-    sprintf(fn, "%s/sound/menu.mp3", rootDir);
+    sprintf(fn, "%s/sound/menu.ogg", rootDir);
     menuMusic = Mix_LoadMUS(fn);
     if(!menuMusic) {
       cerr << "*** Error: couldn't load music: " << fn << endl;
