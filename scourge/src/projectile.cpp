@@ -103,14 +103,17 @@ bool Projectile::atTargetLocation() {
 }
 
 bool Projectile::move() {
-  // return true to let this class handle the attack
-  // this has to be the first test
-  if(steps >= maxDist) return true;
-  steps++;
-
+  
+  
   // are we at the target location?
   // return false to let the map class handle the attack.
   if(this->atTargetLocation()) return false;
+
+    
+  // return true to let this class handle the attack
+  // this has to be the first test
+  if(steps++ >= maxDist) return true;
+
 
   float oldAngle = angle;
   if(parabolic != 0.0f) {

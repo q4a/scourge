@@ -920,24 +920,24 @@ void Map::drawProjectiles() {
         blocked = true;
       }
 
-      Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
+      Location *loc = getLocation(toint(proj->getX()), toint(proj->getY()), 0);
       if(loc) {
         if(loc->creature && 
-             proj->getCreature()->canAttack(loc->creature)) {
-//               cerr << "PROJ: attacks creature, from=" << proj->getCreature()->getName() << endl;
-            battleProjectiles[proj] = loc->creature;
-            blocked = true;
+           proj->getCreature()->canAttack(loc->creature)) {
+          //               cerr << "PROJ: attacks creature, from=" << proj->getCreature()->getName() << endl;
+          battleProjectiles[proj] = loc->creature;
+          blocked = true;
         } else if(proj->doesStopOnImpact() &&
                   ((loc->item && loc->item->getShape()->getHeight() >= 6) ||
                    (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6))) {
-//               cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
+          //               cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
           // hit something
           blocked = true;
         }
       }
 
       // remove finished projectiles
-      if (blocked) {
+      if( blocked || proj->atTargetLocation() ) {
         removedProjectiles.push_back(proj);
       }
     }
