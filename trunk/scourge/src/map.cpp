@@ -831,8 +831,8 @@ void Map::addDescription(char *desc, float r, float g, float b) {
 
 void Map::drawDescriptions(ScrollingList *list) {
   if(descriptionsChanged) {
-	descriptionsChanged = false;
-	list->setLines(descriptionCount, (const char**)descriptions, descriptionsColor);
+    descriptionsChanged = false;
+    list->setLines(descriptionCount, (const char**)descriptions, descriptionsColor);
   }
 
   /*

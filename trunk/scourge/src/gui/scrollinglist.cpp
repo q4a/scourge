@@ -63,68 +63,73 @@ void ScrollingList::drawWidget(Widget *parent) {
   glEnd();
 
   if(inside) {
-	GLint t = SDL_GetTicks();
-	if(lastTick == 0 || t - lastTick > 50) {
-	  lastTick = t;
-	  alpha += alphaInc;
-	  if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
-	}
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	glEnable( GL_BLEND );
-	glBegin( GL_QUADS );
-	glColor4f( 1, 0, 0, alpha );
-	glVertex2d(0, scrollerY);
-	glColor4f( 0, 1, 0, alpha );
-	glVertex2d(0, scrollerY + scrollerHeight);
-	glColor4f( 0, 0, 1, alpha );
-	glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
-	glColor4f( 1, 0, 1, alpha );
-	glVertex2d(scrollerWidth, scrollerY);
-	glEnd();
-	glDisable( GL_BLEND );
+    GLint t = SDL_GetTicks();
+    if(lastTick == 0 || t - lastTick > 50) {
+      lastTick = t;
+      alpha += alphaInc;
+      if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
+    }
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+    glEnable( GL_BLEND );
+    glBegin( GL_QUADS );
+    glColor4f( 1, 0, 0, alpha );
+    glVertex2d(0, scrollerY);
+    glColor4f( 0, 1, 0, alpha );
+    glVertex2d(0, scrollerY + scrollerHeight);
+    glColor4f( 0, 0, 1, alpha );
+    glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
+    glColor4f( 1, 0, 1, alpha );
+    glVertex2d(scrollerWidth, scrollerY);
+    glEnd();
+    glDisable( GL_BLEND );
   }
 
   // draw the text
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   if(!((Window*)parent)->isOpening()) {
-	glScissor(((Window*)parent)->getX() + x, 
-			  ((Window*)parent)->getSDLHandler()->getScreen()->h - 
-			  (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
-			  w, getHeight());  
-	glEnable( GL_SCISSOR_TEST );
-
-	// highlight the selected line
-	if(selectedLine > -1) {
-	  applySelectionColor();
-	  glBegin( GL_QUADS );
-	  glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
-	  glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * 15 + 5));
-	  glVertex2d(w, textPos + ((selectedLine + 1) * 15 + 5));
-	  glVertex2d(w, textPos + (selectedLine * 15) + 3);
-	  glEnd();
-	}
-	
-	// draw the contents
-	if(!colors) glColor4f( 0, 0, 0, 1 );
-	for(int i = 0; i < count; i++) {
-	  if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
-	  ((Window*)parent)->getSDLHandler()->
-		texPrint(scrollerWidth + 5, textPos + (i + 1) * 15, list[i]);
-	}
-
-	if(selectedLine > -1) {
-	  applyBorderColor();
-	  glBegin(GL_LINES);
-	  glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
-	  glVertex2d(w, textPos + (selectedLine * 15) + 3);
-	  glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * 15 + 5));
-	  glVertex2d(w, textPos + ((selectedLine + 1) * 15 + 5));
-	  glEnd();
-	}
-
-	glDisable( GL_SCISSOR_TEST );
+    glScissor(((Window*)parent)->getX() + x, 
+	      ((Window*)parent)->getSDLHandler()->getScreen()->h - 
+	      (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
+	      w, getHeight());  
+    glEnable( GL_SCISSOR_TEST );
+   
+    // highlight the selected line
+    if(selectedLine > -1) {
+      applySelectionColor();
+      glBegin( GL_QUADS );
+      glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
+      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * 15 + 5));
+      glVertex2d(w, textPos + ((selectedLine + 1) * 15 + 5));
+      glVertex2d(w, textPos + (selectedLine * 15) + 3);
+      glEnd();
+    }
+    
+    // draw the contents
+    if(!colors) glColor4f( 0, 0, 0, 1 );
+    int ypos;
+    for(int i = 0; i < count; i++) {
+      ypos = textPos + (i + 1) * 15;
+      // writing text is expensive, only print what's visible
+      if(ypos >= 0 && ypos < getHeight()) {
+	if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
+	((Window*)parent)->getSDLHandler()->
+	  texPrint(scrollerWidth + 5, ypos, list[i]);
+      }
+    }
+    
+    if(selectedLine > -1) {
+      applyBorderColor();
+      glBegin(GL_LINES);
+      glVertex2d(scrollerWidth, textPos + (selectedLine * 15) + 3);
+      glVertex2d(w, textPos + (selectedLine * 15) + 3);
+      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * 15 + 5));
+      glVertex2d(w, textPos + ((selectedLine + 1) * 15 + 5));
+      glEnd();
+    }
+    
+    glDisable( GL_SCISSOR_TEST );
   }
-
+  
   // draw the outline
   applyBorderColor();
   glBegin(GL_LINES);
