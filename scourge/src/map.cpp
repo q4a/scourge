@@ -934,7 +934,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     if(colorAlreadySet) {
       colorAlreadySet = false;
     } else {
-      if(later && isLocked(later->pos->x, later->pos->y, later->pos->z)) {
+      if(later && later->pos && 
+         isLocked(later->pos->x, 
+                  later->pos->y, 
+                  later->pos->z)) {
         glColor4f(1, 0.3f, 0.3f, 1.0f);
       } else {
         //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);

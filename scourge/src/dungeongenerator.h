@@ -148,6 +148,8 @@ private:
   int doorCount;
   int door[MAX_DOOR_COUNT][2];
 
+  vector<Item*> containers;
+
 public: 
 
   // pre-rendered location index
@@ -177,6 +179,7 @@ protected:
   void addFurniture(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addTeleporters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addParty(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void lockDoors(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void createFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
 
