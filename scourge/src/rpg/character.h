@@ -23,8 +23,6 @@
 /**
   *@author Gabor Torok
   */
-
-class Character;  
   
 class Character  {
 private:
@@ -32,32 +30,31 @@ private:
   int startingHp;
 
 public:
-	Character(char *name, int startingHp);
-	~Character();
+  Character(char *name, int startingHp);
+  ~Character();
 
   inline char *getName() { return name; };
   inline int getStartingHp() { return startingHp; }  
   
 public:  
-  // fighters
-  static Character *ranger;
-  static Character *knight;
 
-  // rogues
-  static Character *tinkerer;
-  static Character *assassin;
+  enum {
+	ranger = 0,
+	knight,
+	tinkerer,
+	assassin,
+	arcanist,
+	loremaster,
+	constants,
+	summoner,
+	naturalist,
+	monk,
+	
+	// should be last one
+	character_count
+  };
 
-  // rogue/fighter/healer
-  static Character *arcanist;
-  static Character *loremaster;
-
-  // wizards
-  static Character *conjurer;
-  static Character *summoner;
-
-  // healers/religion
-  static Character *naturalist;
-  static Character *monk;
+  static Character *character_class[character_count];
 };
 
 #endif

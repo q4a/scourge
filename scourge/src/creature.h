@@ -30,7 +30,7 @@
 #include "map.h"
 #include "scourge.h"
 #include "util.h"
-#include "rpg/character.h"
+#include "rpg/pc.h"
 #include "constants.h"
 
 using namespace std;
@@ -51,34 +51,13 @@ class Scourge;
 
 class Creature {
 
-public:
-    enum {
-        SWORD_WEAPON = 0,
-        AXE_WEAPON,
-        BOW_WEAPON,
-        SHIELD_DEFEND,
-        ARMOR_DEFEND,
-        WEAPON_DEFEND,
-        MATERIAL_SPELL,
-        ILLUSION_SPELL,
-        PSYCHIC_SPELL,
-        OPEN_LOCK,
-        FIND_TRAP,
-        MOVE_UNDETECTED,
-        SKILL_0, SKILL_1, SKILL_2, SKILL_3, SKILL_4, SKILL_5, SKILL_6, SKILL_7, SKILL_8, SKILL_9,
-
-        SKILL_COUNT
-    };
-    static const char *SKILL_NAMES[];
-
 private:
     Sint16 x, y, z;
 	Creature *next;
 	GLShape *shape;
-	//Uint8 shapePosition;
 	Uint16 dir;
 	Scourge *scourge;
-    Character *character;
+    PlayerChar *pc;
 
     int motion;
 
@@ -89,27 +68,8 @@ private:
     int selX, selY;
     int bestPathPos;
     vector<Location> bestPath;
-
-    // character stats
-    char *name;
-    int portraitIndex;
-    int level;
-    GLuint exp;
-    int attrib[7];
-    int hp;
-    GLuint stateMod;
-    int skills[SKILL_COUNT];
   
 public:
-    enum { strength, dexterity, health, intel, willpower, charisma, luck };
-    enum { blessed, empowered, enraged, ac_protected, magic_protected, drunk, poisoned, cursed, possessed, blinded, charmed, changed };
-    static const char ATTR_NAMES[][80];         
-    static const char STATE_NAMES[][80];
-    static const char STATE_SHORT_NAMES[][10];
-
-    static const int ATTR_COUNT = 7;
-    static const int STATE_MOD_COUNT = 12;  
-
 	static const int DIAMOND_FORMATION = 0;
     static const int STAGGERED_FORMATION = 1;
 	static const int SQUARE_FORMATION = 2;
@@ -118,8 +78,10 @@ public:
 	static const int CROSS_FORMATION = 5;
 	static const int FORMATION_COUNT = 6;
     
-	Creature(Scourge *scourge, GLShape *shape);
+	Creature(Scourge *scourge, GLShape *shape, PlayerChar *pc);
 	~Creature();
+
+	inline PlayerChar *getPC() { return pc; }
 
     inline void setMotion(int motion) { this->motion = motion; }
     inline int getMotion() { return this->motion; }
@@ -142,7 +104,6 @@ public:
 	void setNextDontMove(Creature *next, int index);
     inline Uint16 getDir() { return dir; }
 
-
 	inline void draw() { getShape()->draw(); }  
 
 	/**
@@ -154,32 +115,8 @@ public:
         Used to move away from the player. Find the nearest corner of the map.
     */
     void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
-
-
   
-    inline void setName(char *s) { name = strdup(s); }
-    inline char *getName() { return name; };
-    inline void setPortraitIndex(int n) { portraitIndex = n; }
-    inline int getPortraitIndex() { return portraitIndex; };    
-    inline void setCharacter(Character *c) { character = c; }
-    inline Character *getCharacter() { return character; }
-    inline void setLevel(int n) { level = n; }
-    inline int getLevel() { return level; };
-    inline void setExp(GLuint n) { exp = n; }
-    inline GLuint getExp() { return exp; };
-    void rollAttributes();
-    inline int getAttr(int index) { return attrib[index]; }
-    inline void setHp() { hp = getCharacter()->getStartingHp(); }
-    inline int getHp() { return hp; }  
-    inline void setStateMod(int mod, bool setting) { if(setting) stateMod |= (1 << mod); else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); }
-    inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }
-    inline void setSkill(int skillIndex, int value) { skills[skillIndex] = value; }
-    inline int getSkill(int skillIndex) { return skills[skillIndex]; }
     inline void setSelXY(int x, int y) { selX = x; selY = y; }
-
-protected:
-  
-
 };
 
 

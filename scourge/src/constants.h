@@ -263,6 +263,57 @@ public:
 	ITEM_INDEX_COUNT
   };
 
+  enum {
+	SWORD_WEAPON = 0,
+	AXE_WEAPON,
+	BOW_WEAPON,
+
+	SPEED,
+	COORDINATION,
+	POWER,
+	IQ,
+	LEADERSHIP,
+	LUCK,
+	PIETY,
+	LORE,
+
+	SHIELD_DEFEND,
+	ARMOR_DEFEND,
+	WEAPON_DEFEND,
+
+	MATERIAL_SPELL,
+	ILLUSION_SPELL,
+	PSYCHIC_SPELL,
+
+	OPEN_LOCK,
+	FIND_TRAP,
+	MOVE_UNDETECTED,
+
+	SKILL_0, SKILL_1, SKILL_2, SKILL_3, SKILL_4, SKILL_5, SKILL_6, SKILL_7, SKILL_8, SKILL_9,
+	
+	SKILL_COUNT
+  };
+  static const char *SKILL_NAMES[];
+
+  enum { 
+	blessed, 
+	empowered, 
+	enraged, 
+	ac_protected, 
+	magic_protected, 
+	drunk, 
+	poisoned, 
+	cursed, 
+	possessed, 
+	blinded, 
+	charmed, 
+	changed,
+	
+	// must be last
+	STATE_MOD_COUNT
+  };
+  static const char *STATE_NAMES[];
+
   Constants();
   ~Constants();
 

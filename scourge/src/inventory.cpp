@@ -31,8 +31,8 @@ Inventory::Inventory(Scourge *scourge) {
     this->modeName[1] = "Inventory";
     this->modeName[2] = "Spells";
     this->modeName[3] = "Accomplishments";
-    this->invText = (char**)malloc(Creature::SKILL_COUNT * sizeof(char*));
-    for(int i = 0; i < Creature::SKILL_COUNT; i++) {
+    this->invText = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
+    for(int i = 0; i < Constants::SKILL_COUNT; i++) {
         this->invText[i] = (char*)malloc(120 * sizeof(char));
     }
 }
@@ -145,11 +145,6 @@ void Inventory::drawParty() {
     int h = 120;
     int y;  
     for(int i = 0; i < 4; i++) {
-        //y = 10 + i * h;
-        //glRasterPos2f( 10, y );
-        //scourge->getShapePalette()->drawPortrait(scourge->getParty(i)->getPortraitIndex());        
-
-
         glPushMatrix();
         glLoadIdentity();
         glEnable( GL_TEXTURE_2D );
@@ -164,7 +159,7 @@ void Inventory::drawParty() {
 		//        glDisable( GL_LIGHT2 );
         glPopMatrix();
 
-        scourge->getSDLHandler()->texPrint(10, 10 + i * h + 100, "%s", scourge->getParty(i)->getName());
+        scourge->getSDLHandler()->texPrint(10, 10 + i * h + 100, "%s", scourge->getParty(i)->getPC()->getName());
 
         if(selected == i) {
             y = 10 + i * h;
@@ -225,12 +220,12 @@ void Inventory::drawCharacterInfo() {
     x += xx;
     y += yy;
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 10), "%s", scourge->getParty(i)->getName());
+    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 10), "%s", scourge->getParty(i)->getPC()->getName());
     glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 24), "%s", scourge->getParty(i)->getCharacter()->getName());
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 38), "Level: %d", scourge->getParty(i)->getLevel());
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 52), "Exp: %u", scourge->getParty(i)->getExp());
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 66), "HP: %d", scourge->getParty(i)->getHp());
+    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 24), "%s", scourge->getParty(i)->getPC()->getCharacter()->getName());
+    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 38), "Level: %d", scourge->getParty(i)->getPC()->getLevel());
+    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 52), "Exp: %u", scourge->getParty(i)->getPC()->getExp());
+    scourge->getSDLHandler()->texPrint((float)x, (float)(y + 66), "HP: %d", scourge->getParty(i)->getPC()->getHp());
 
 
     y = yy + 100;
@@ -246,13 +241,14 @@ void Inventory::drawCharacterInfo() {
     glEnd();
 
     y += 24;
-    for(int t = 0; t < Creature::STATE_MOD_COUNT; t++) {
-      if(scourge->getParty(i)->getStateMod(t)) {
-        scourge->getSDLHandler()->texPrint((float)x, (float)(y), "%s", Creature::STATE_NAMES[t]);
+    for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
+      if(scourge->getParty(i)->getPC()->getStateMod(t)) {
+        scourge->getSDLHandler()->texPrint((float)x, (float)(y), "%s", Constants::STATE_NAMES[t]);
         y += 14;
       }
     }
 
+	/*
     y = yy + 100;
     x = xx + 10;
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
@@ -270,15 +266,16 @@ void Inventory::drawCharacterInfo() {
       scourge->getSDLHandler()->texPrint((float)x, (float)(y), "%s: %d", Creature::ATTR_NAMES[t], scourge->getParty(i)->getAttr(t));
       y += 14;
     }    
+	*/
 
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
     scourge->getSDLHandler()->texPrint(120, 245, "Skills:");    
     glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
-    for(int t = 0; t < Creature::SKILL_COUNT; t++) {
-        sprintf(invText[t], "%d - %s", scourge->getParty(i)->getSkill(t), Creature::SKILL_NAMES[t]);
+    for(int t = 0; t < Constants::SKILL_COUNT; t++) {
+        sprintf(invText[t], "%d - %s", scourge->getParty(i)->getPC()->getSkill(t), Constants::SKILL_NAMES[t]);
     }
 
-    scourge->getGui()->drawScrollingList(skillList, Creature::SKILL_COUNT, (const char**)invText);
+    scourge->getGui()->drawScrollingList(skillList, Constants::SKILL_COUNT, (const char**)invText);
 }
 void Inventory::drawInventoryInfo() {
 }
