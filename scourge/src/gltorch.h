@@ -38,16 +38,18 @@ private:
   static const int PARTICLE_COUNT = 30;
   ParticleStruct *particle[PARTICLE_COUNT];
   
+  GLuint torchback;
+  
 public:
 	GLTorch(GLuint texture[], GLuint flameTex,
           int width, int depth, int height,
           char *name,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, GLuint torchback=0);
 
 	GLTorch(GLuint texture[], GLuint flameTex,
           int width, int depth, int height,
           char *name, char **description, int descriptionCount,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, GLuint torchback=0);
 
   ~GLTorch();
   

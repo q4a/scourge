@@ -182,7 +182,7 @@ void Scourge::drawView(SDL_Surface *screen) {
   
   map->draw(screen);
   
-  glDisable( GL_LIGHTING );
+  //  glDisable( GL_LIGHTING );
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_DEPTH_TEST );
 
@@ -196,7 +196,7 @@ void Scourge::drawView(SDL_Surface *screen) {
   gui->drawWindows();
 
   glEnable( GL_DEPTH_TEST );
-  glEnable( GL_LIGHTING );
+  //  glEnable( GL_LIGHTING );
   glEnable( GL_TEXTURE_2D );      
 }
 

@@ -134,8 +134,8 @@ void Gui::drawGui(GUIWindow win) {
   glLoadIdentity( );
 
   glEnable( GL_TEXTURE_2D );
-  glEnable( GL_LIGHTING );
-  glEnable( GL_LIGHT2 );
+  //glEnable( GL_LIGHTING );
+  //glEnable( GL_LIGHT2 );
 
   // tile the background
   glColor3f(1.0f, 0.6f, 0.3f);
@@ -155,8 +155,8 @@ void Gui::drawGui(GUIWindow win) {
 	    glVertex2i (win.w, 0);
 	glEnd ();
 
-  glDisable( GL_LIGHT2 );
-  glDisable( GL_LIGHTING );
+	//glDisable( GL_LIGHT2 );
+  //glDisable( GL_LIGHTING );
   glDisable( GL_TEXTURE_2D );
 
   // add a border
@@ -209,7 +209,7 @@ void Gui::drawGui(GUIWindow win) {
   }
 
   glEnable( GL_TEXTURE_2D );
-  glEnable( GL_LIGHTING );  
+  //glEnable( GL_LIGHTING );  
 }
 
 void Gui::drawMainMenu(int x, int y) {

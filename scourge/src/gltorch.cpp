@@ -20,18 +20,20 @@
 GLTorch::GLTorch(GLuint texture[], GLuint flameTex,
           int width, int depth, int height,
           char *name,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
+          Uint32 color, GLuint display_list, Uint8 shapePalIndex, GLuint torchback) :
   GLShape(texture, width, depth, height, name, color, display_list, shapePalIndex) {
   this->flameTex = flameTex;
+  this->torchback = torchback;
   initParticles();                                
 }
 
 GLTorch::GLTorch(GLuint texture[], GLuint flameTex,
           int width, int depth, int height,
           char *name, char **description, int descriptionCount,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
+          Uint32 color, GLuint display_list, Uint8 shapePalIndex, GLuint torchback) :
   GLShape(texture, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
   this->flameTex = flameTex;
+  this->torchback = torchback;
   initParticles();                
 }
 
@@ -51,6 +53,8 @@ void GLTorch::initParticles() {
 }
 
 void GLTorch::draw() {
+  float w, d, h;
+
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
@@ -75,9 +79,9 @@ void GLTorch::draw() {
       // save the model_view matrix
       glPushMatrix();
 
-      float w = (float)(width / DIV) / 2.0;
+      w = (float)(width / DIV) / 2.0;
       //float d = (float)(depth / DIV) / 2.0;
-      float h = (float)(height / DIV) / 2.5;
+      h = (float)(height / DIV) / 2.5;
       if(h == 0) h = 0.25 / DIV;
 
       // position the particle
@@ -113,5 +117,37 @@ void GLTorch::draw() {
       glPopMatrix();
     }
   }
+
+  // add the flickering reflection on the wall behind
+  // FIXME: great looking light on N wall... now make it look good on all walls.
+  w = 5.0f / DIV;
+  d = 0;
+  h = 5.0f / DIV;
+  // max. amount of movement
+  float mm = 0.4f / DIV;
+  // max. amount of color component variation
+  float mc = 0.25f;
+  glPushMatrix();
+  glTranslatef( -w/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
+				0.0f, 
+				-h/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
+  glBindTexture( GL_TEXTURE_2D, torchback );
+  float red = 1.0f + (mc * rand()/RAND_MAX) - (mc * 2.0f);
+  if(red > 1.0f) red = 1.0f;
+  float green = 1.0f + (mc * rand()/RAND_MAX) - (mc * 2.0f);
+  if(green > 1.0f) red = 1.0f;
+  glColor4f( red, green, 0.3f, 0.4 );
+  glBegin( GL_QUADS );
+  glNormal3f(0.0f, 1.0f, 0.0f);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(w, d, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(w, d, h);  
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, d, h);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, d, 0);
+  glEnd();
+  glPopMatrix();
 }
 

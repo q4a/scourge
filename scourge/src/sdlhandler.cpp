@@ -144,29 +144,22 @@ int SDLHandler::initGL( GLvoid ) {
     GLfloat LightSpotDir[]= { 0.2f, -0.2f, -1.0f };
     GLfloat LightSpotCutoff[]= { 40.0f };    
     
-  	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
-   	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
-   	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, LightSpotDir);
-    glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, LightSpotCutoff);
+	//  	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
+    //glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
+   	//glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
+   	//glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, LightSpotDir);
+    //glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, LightSpotCutoff);
 
 
     GLfloat LightAmbient2[]= { 1.0f, 1.0f, 1.0f, 1.0f };
-//    GLfloat LightDiffuse2[]= { 0.9f, 0.9f, 0.9f, 1.0f };
     GLfloat LightPosition2[]= { 0.0f, 0.0f, 5.0f, 1.0f };
-//    GLfloat LightSpotDir2[]= { 0.0f, 0.0f, 0.0f };
-//    GLfloat LightSpotCutoff2[]= { 40.0f };
 
-  	glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);
-//    glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse2);
-   	glLightfv(GL_LIGHT2, GL_POSITION, LightPosition2);
-//   	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, LightSpotDir2);
-//    glLightfv(GL_LIGHT2, GL_SPOT_CUTOFF, LightSpotCutoff2);
+  	//glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);
+   	//glLightfv(GL_LIGHT2, GL_POSITION, LightPosition2);
 
         
-    glEnable( GL_LIGHT1 );
-    //glEnable( GL_LIGHT2 );
-    glEnable( GL_LIGHTING );
+//    glEnable( GL_LIGHT1 );
+	//    glEnable( GL_LIGHTING );
 
 
     glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;

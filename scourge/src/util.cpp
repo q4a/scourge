@@ -272,3 +272,33 @@ bool operator<(const CPathNode &a, const CPathNode &b) {
 bool operator>(const CPathNode &a, const CPathNode &b) {
   return a.f > b.f;
 }
+
+float Util::dot_product(float v1[3], float v2[3]) {
+  return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+}
+
+void Util::normalize(float v[3]) {
+  float f = 1.0f / sqrt(dot_product(v, v));
+  
+  v[0] *= f;
+  v[1] *= f;
+  v[2] *= f;
+}
+
+void Util::cross_product(const float *v1, const float *v2, float *out) {
+  out[0] = v1[1] * v2[2] - v1[2] * v2[1];
+  out[1] = v1[2] * v2[0] - v1[0] * v2[2];
+  out[2] = v1[0] * v2[1] - v1[1] * v2[0];
+}
+
+void Util::multiply_vector_by_matrix(const float m[9], float v[3]) {
+  float tmp[3];
+  
+  tmp[0] = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
+  tmp[1] = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
+  tmp[2] = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
+  
+  v[0] = tmp[0];
+  v[1] = tmp[1];
+  v[2] = tmp[2];
+}

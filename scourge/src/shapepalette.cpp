@@ -200,7 +200,7 @@ void ShapePalette::initShapes() {
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LAMP_INDEX);
+                LAMP_INDEX, torchback);
 	shapes[LAMP_BASE_INDEX] =
     new GLShape(wood_tex, 
                 1, 1, 2,
@@ -327,6 +327,7 @@ void ShapePalette::loadTextures() {
   // set up the scourge
   cloud = loadGLTextures("data/cloud.bmp");
   candle = loadGLTextures("data/candle.bmp");
+  torchback = loadGLTextures("data/torchback.bmp");
 
 
   ns_tex[GLShape::FRONT_SIDE] = textures[0];
@@ -478,4 +479,3 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, G
     }
   }
 }
-
