@@ -63,13 +63,12 @@ class Battle {
   Spell *spell;
 
   int ap;
-  bool ignore;
+  bool paused;
+  int steps;
 
 
  public:
   
-   inline void setIgnore() { ignore = true; }
-
   /**
 	 This method sets up and creates battle turns (Battle objects) in order of initiative.
    */
@@ -92,6 +91,8 @@ class Battle {
    */
   Battle(Session *session, Creature *creature);
   ~Battle();
+
+  void reset();
 
   inline bool isEmpty() { return empty; }
   bool fightTurn();
