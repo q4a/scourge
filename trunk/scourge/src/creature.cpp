@@ -197,11 +197,7 @@ void Creature::setSelXY(int x, int y, bool force) {
 	tx = ty = -1;
   }
   // if we're trying to move within a range, try a number of times
-  if(!isWithinDistanceRange()) {
-	Sint16 nz;
-	findCorner(&cornerX, &cornerY, &nz);
-	setMotion(Constants::MOTION_MOVE_AWAY);   
-  }
+  isWithinDistanceRange();
 }
 
 /**
@@ -209,14 +205,23 @@ void Creature::setSelXY(int x, int y, bool force) {
    If not, try n times, then wait n times before trying again.
 */
 bool Creature::isWithinDistanceRange() {
-  if(minRange <= 0 || !getTargetCreature()) return true;
+  if(maxRange <= 0 || !getTargetCreature()) return true;
   float d = getDistanceToTargetCreature();
   bool ret = (d >= minRange && d < maxRange);
   if(ret) {
 	failedToMoveWithinRangeAttemptCount = 0;
+	stopMoving();
 	return true;
   } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS) {
 	failedToMoveWithinRangeAttemptCount++;
+
+	// if too close, move away
+	if(d < minRange) {
+	  Sint16 nz;
+	  findCorner(&cornerX, &cornerY, &nz);
+	  setMotion(Constants::MOTION_MOVE_AWAY);   
+	}
+
 	return false;
   } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS * 2) {
 	failedToMoveWithinRangeAttemptCount++;
