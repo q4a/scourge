@@ -84,7 +84,7 @@ class Creature {
 
   // character information
   char *name;
-  int level, exp, hp, ac, thirst, hunger;
+  int level, exp, hp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
   int skills[Constants::SKILL_COUNT];
   GLuint stateMod;
@@ -219,7 +219,9 @@ class Creature {
   inline Character *getCharacter() { return character; }  
   inline Monster *getMonster() { return monster; }  
   inline int getLevel() { return level; }
+  inline int getExpOfNextLevel() { return expOfNextLevel; }
   inline int getExp() { return exp; }
+  inline int getMoney() { return money; }
   inline int getHp() { return hp; }
   inline int getAc() { return ac; }
   inline int getThirst() { return thirst; }
@@ -231,6 +233,7 @@ class Creature {
   inline void setCharacter(Character *c) { character = c; }  
   inline void setLevel(int n) { level = n; }
   inline void setExp(int n) { exp = n; }
+  inline void setMoney(int n) { money = n; }
   inline void setHp(int n) { hp = n; }
   inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; }
   inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
@@ -263,6 +266,12 @@ class Creature {
 
   inline int getDamageEffect() { return damageEffectCounter; }
 
+  // returns exp gained
+  int addExperience(Creature *creature_killed);
+
+  // returns coins gained
+  int addMoney(Creature *creature_killed);
+
   // until *someone* writes a pc editor
   static Creature **createHardCodedParty(Scourge *scourge);
 
@@ -283,6 +292,7 @@ class Creature {
   void getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz);
 
   void commonInit();
+  void calculateExpOfNextLevel();
   void monsterInit();
   void recalcAggregateValues();
 

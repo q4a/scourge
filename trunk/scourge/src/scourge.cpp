@@ -1572,11 +1572,36 @@ void Scourge::fightBattle() {
 						tohit, ac, damage);
 				map->addDescription(message, 1.0f, 0.5f, 0.5f);
 				
+				// target creature death
 				if(creature->getTargetCreature()->takeDamage(damage)) {				  
 				  creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
 				  sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 				  map->addDescription(message, 1.0f, 0.5f, 0.5f);
 				  creatureDeath(creature->getTargetCreature());
+
+				  // add exp. points and money
+				  if(!creature->isMonster()) {
+					for(int i = 0; i < 4; i++) {
+					  bool b = party[i]->getStateMod(Constants::leveled);
+					  if(!party[i]->getStateMod(Constants::dead)) {
+						int n = party[i]->addExperience(creature->getTargetCreature());
+						if(n > 0) {
+						  sprintf(message, "%s gains %d experience points.", party[i]->getName(), n);
+						  map->addDescription(message);
+						  if(!b && party[i]->getStateMod(Constants::leveled)) {
+							sprintf(message, "%s gains a level!", party[i]->getName());
+							map->addDescription(message, 1.0f, 0.5f, 0.5f);
+						  }
+						}
+
+						n = party[i]->addMoney(creature->getTargetCreature());
+						if(n > 0) {
+						  sprintf(message, "%s finds %d coins!", party[i]->getName(), n);
+						  map->addDescription(message);
+						}
+					  }
+					}
+				  }
 				}
 			  } else {
 				sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 

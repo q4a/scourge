@@ -89,7 +89,7 @@ const char *Constants::SKILL_NAMES[] = {
 const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
   "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed", 
-  "overloaded", "dead"
+  "overloaded", "dead", "leveled"
 }; 
 /*
 float Constants::textColor[][4]={{0.8f, 0.2f, 0.0f, 0.0f},
