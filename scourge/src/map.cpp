@@ -879,18 +879,18 @@ void Map::createOverlayTexture() {
   glGenTextures(1, (GLuint*)&overlay_tex);
 //  float tmp = 0.7f;
   for(i = 0; i < OVERLAY_SIZE; i++) {
-	for(j = 0; j < OVERLAY_SIZE; j++) {
-	  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
-	  float id = (float)i - half;
-	  float jd = (float)j - half;
-	  float dd = 255.0f - ((255.0f / (half * half / 1.2f)) * (id * id + jd * jd));
-	  if(dd < 0.0f) dd = 0.0f;
-	  if(dd > 255.0f) dd = 255.0f;
-	  unsigned char d = (unsigned char)dd;
-	  overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = d;
-	  overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = d;
-	  overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = d;
-	}
+    for(j = 0; j < OVERLAY_SIZE; j++) {
+      float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+      float id = (float)i - half;
+      float jd = (float)j - half;
+      float dd = 255.0f - ((255.0f / (half * half / 1.2f)) * (id * id + jd * jd));
+      if(dd < 0.0f) dd = 0.0f;
+      if(dd > 255.0f) dd = 255.0f;
+      unsigned char d = (unsigned char)dd;
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = d;
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = d;
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = d;
+    }
   }
   glBindTexture(GL_TEXTURE_2D, overlay_tex);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -925,7 +925,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     if(colorAlreadySet) {
       colorAlreadySet = false;
     } else {
-      glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+      //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+      glColor4f(1, 1, 1, 0.9f);
     }
   }
 
