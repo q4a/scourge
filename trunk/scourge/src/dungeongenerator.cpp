@@ -1269,15 +1269,17 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
   }
 
   // lock some doors
+  cerr << "*** Locking doors, count=" << doorCount << endl;
   for(int i = 0; i < doorCount; i++) {
     Sint16 mapx = door[i][0];
     Sint16 mapy = door[i][1];
     if((int)(20.0f * rand() / RAND_MAX) == 0) {
+      cerr << "\t*** Locking door: " << mapx << "," << mapy << endl;
       // lock the door
       Location *pos = map->getPosition(mapx, mapy, 0);
       if(!pos) {
         // ASSERT for debugging
-        cerr << "Error while locking doors: no door at position." << endl;
+        cerr << "\tError while locking doors: no door at position." << endl;
         exit(1);
       }
       map->setLocked(pos);
@@ -1286,7 +1288,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
       Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
       Uint32 start = SDL_GetTicks();
       getRandomLocation(map, lever, &nx, &ny, true, x, y);
-      cerr << "*** Location for lever search: " << (SDL_GetTicks() - start) << 
+      cerr << "\t*** Location for lever search: " << (SDL_GetTicks() - start) << 
         " millis. Result=" << ( nx < MAP_WIDTH ) << endl;
       if( nx < MAP_WIDTH ) {
         // place the switch
@@ -1294,7 +1296,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
         Location *keyPos = map->getPosition(nx, ny, 0);
         if(!keyPos) {
           // ASSERT for debugging
-          cerr << "Error while locking doors: no key at position." << endl;
+          cerr << "\tError while locking doors: no key at position." << endl;
           exit(2);
         }
         // connect the switch and the door
@@ -1305,6 +1307,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
       }
     }
   }
+  cerr << "*** Done locking doors" << endl;
 }
 
 void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal, 
@@ -1484,6 +1487,11 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
 void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, 
                                          int *xpos, int *ypos, 
                                          bool accessible, int fromX, int fromY) {
+
+  if(accessible) {
+    map->configureAccessMap(fromX, fromY);
+  }
+
   int maxCount = 500; // max # of tries to find accessible location
   int count = 0;
   int x, y;
@@ -1499,19 +1507,9 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape,
     if(fits && 
        !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
 
-      
-      
-      
-      /*
-       Find an accessible location
-       
-       Note: this implementation sucks. Instead use map::lightmap (see: Map::configureLightMap())
-       It uses chunks, it's fast and determenistic.
-       
-      */       
-
+      // check if location is accessible
       if(accessible) {
-        if(!isAccessible(map, x, y, fromX, fromY)) {
+        if(!map->isPositionAccessible(x, y)) {
           count++;
           if(count >= maxCount) {
             // we failed.

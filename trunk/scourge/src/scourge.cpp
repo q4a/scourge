@@ -1913,8 +1913,8 @@ bool Scourge::fightCurrentBattleTurn() {
       battleTurn = 0;
       battleRound.clear();
 
-      cerr << "ROUND ENDS" << endl;
-      cerr << "----------------------------------" << endl;
+      if(DEBUG_BATTLE) cerr << "ROUND ENDS" << endl;
+      if(DEBUG_BATTLE) cerr << "----------------------------------" << endl;
       return true;
     }
   }
@@ -1976,8 +1976,8 @@ bool Scourge::createBattleTurns() {
     // order the battle turns by initiative
     Battle::setupBattles(getSession(), battle, battleCount, &battleRound);
     battleTurn = 0;
-    cerr << "++++++++++++++++++++++++++++++++++" << endl;
-    cerr << "ROUND STARTS" << endl;
+    if(DEBUG_BATTLE) cerr << "++++++++++++++++++++++++++++++++++" << endl;
+    if(DEBUG_BATTLE) cerr << "ROUND STARTS" << endl;
 
     if(getUserConfiguration()->isBattleTurnBased()) groupButton->setVisible(false);
     return true;

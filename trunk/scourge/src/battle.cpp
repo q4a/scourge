@@ -17,7 +17,6 @@
 
 #include "battle.h"
 
-//#define DEBUG_BATTLE
 #define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
 
@@ -51,14 +50,14 @@ Battle::Battle(Session *session, Creature *creature) {
   this->nextTurn = 0;
   this->weaponWait = 0;
   this->startingAp = this->ap = 0;
-  cerr << "*** constructor, creature=" << creature->getName() << endl;
+  if(DEBUG_BATTLE) cerr << "*** constructor, creature=" << creature->getName() << endl;
 }
 
 Battle::~Battle() {
 }
 
 void Battle::reset() {
-  cerr << "*** reset: creature=" << creature->getName() << endl;
+  if(DEBUG_BATTLE) cerr << "*** reset: creature=" << creature->getName() << endl;
   this->steps = 0;
   this->startingAp = this->ap = 10 + (creature->getSkill(Constants::COORDINATION) / 10);
   this->projectileHit = false;
@@ -71,6 +70,7 @@ void Battle::reset() {
 
 void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
   // for now put all battles into the vector
+  // FIXME: need to order by initiative
   for(int i = 0; i < count; i++) {
     // reset for the first time
     // (to avoid whack skill numbers for un-initialized creatures.)
@@ -78,147 +78,15 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
       battle[i]->reset();
       battle[i]->needsReset = false;
     }
-    battle[i]->initTurn();
+    //battle[i]->initTurn();
     battle[i]->getCreature()->getShape()->setCurrentAnimation((int)MD2_STAND, true);
     turns->push_back(battle[i]);
   }
-
-
-
-/*
-  if(count == 0) return;
-  bool battleStarted = false;
-  int battleCount = count;  
-  int initiative = -10;
-//char message[200];
-  int turn = 0;
-
-#ifdef DEBUG_BATTLE
-  cerr << "==================================================" << endl;
-  cerr << "battleCount=" << battleCount << endl;
-  for(int i = 0; i < battleCount; i++) {
-    cerr << "\t(" << battle[i]->creature->getName() << 
-    "->" << (battle[i]->creature->getTargetCreature() ? 
-             battle[i]->creature->getTargetCreature()->getName() :
-             "NULL") << 
-    ")" << endl;
-  }
-#endif
-
-// this is O(n^2) unfortunately... maybe we could use a linked list or something here
-  while(battleCount > 0) {
-    bool creatureFound = false; 
-
-    for(int i = 0; i < battleCount; i++) {
-      int action = NO_ACTION;
-
-      battle[i]->empty = false;
-      battle[i]->projectileHit = false;
-
-      if(!battle[i]->creature->hasTarget()) {
-        // remove creatures with no target creature from this round
-        action = NO_TARGET;
-      } else if(!battle[i]->creature->isTargetValid()) {
-        // if someone already killed this target, skip it
-        battle[i]->creature->cancelTarget();
-        if(battle[i]->creature->isMonster()) {
-          //battle[i]->creature->setMotion(Constants::MOTION_LOITER);     
-          action = LOITER;
-        } else {
-          // if party member re-join the battle
-          Creature *c = battle[i]->creature;
-          c->setTargetCreature(scourge->getClosestVisibleMonster(c->getX(), 
-                                                                 c->getY(), 
-                                                                 c->getShape()->getWidth(),
-                                                                 c->getShape()->getDepth(),
-                                                                 20));
-        }
-      } else {
-        GLint t = SDL_GetTicks();
-
-        // get the best weapon given the distance from the target
-        battle[i]->initTurn();
-
-        // check the creature's initiative
-        if(!battle[i]->initiativeCheck || 
-           battle[i]->creatureInitiative < initiative) {
-
-          // remember that it passed (creature can attack next time if timing (below) is good)
-          battle[i]->initiativeCheck = true;
-          creatureFound = true;
-
-          // this is to slow down battle, depending on your weapon
-          // getLastTurn is 0 when an action is decided to be executed
-          // this way it's two trips through this method forcing a spell (e.g.)
-          // to use the clock.
-          bool initialActionTurn = (battle[i]->creature->getLastTurn() == 0);
-#ifdef DEBUG_BATTLE                                                                   
-          cerr << "speed=" << battle[i]->speed << " last=" << battle[i]->creature->getLastTurn() << 
-          " diff=" << (t - battle[i]->creature->getLastTurn()) << endl;
-#endif                                                                                        
-          if(initialActionTurn ||
-             battle[i]->speed < t - battle[i]->creature->getLastTurn()) {
-
-            // remember the last active turn			
-            battle[i]->creature->setLastTurn(t);
-
-            if(!battleStarted) {
-              scourge->getMap()->addDescription("A round of battle begins...", 1, 1, 1);
-              battleStarted = true;
-            }
-
-            if(initialActionTurn) {
-              // add a waiting term
-              battle[i]->empty = true;
-              action = WAIT;
-              turns->push_back(battle[i]);
-            } else {
-              // save this turn
-              turns->push_back(battle[i]);
-              action = ATTACK;
-            }
-          } else {
-            // add a waiting term
-            battle[i]->empty = true;
-            action = WAIT;
-            turns->push_back(battle[i]);
-          }
-        }
-      }
-
-      if(action != NO_ACTION) {
-
-#ifdef DEBUG_BATTLE                 
-        cerr << "Turn: " << turn << " " << actionName[action] << ", " <<
-        battle[i]->creature->getName() << "(" << battle[i]->creatureInitiative << ")" <<
-        "->" << (battle[i]->creature->getTargetCreature() ? 
-                 battle[i]->creature->getTargetCreature()->getName() : 
-                 "<no target>") <<
-        endl;
-#endif                                                    
-
-        // remove this battle from the turn
-        Battle *tmp = battle[i];
-        for(int t = i; t < battleCount - 1; t++) {
-          battle[t] = battle[t + 1];
-        }
-        // move current one to the end of the list so we don't loose it
-        battle[battleCount - 1] = tmp;
-        battleCount--;
-        i--;
-        turn++;
-      }
-    }
-
-    // if there are no creatures for this initiative slot, go to the next one
-    if(!creatureFound) initiative++;
-  }
-  */
 }                 
 
 bool Battle::fightTurn() {
 
-  cerr << "TURN: creature=" << creature->getName() << 
+  if(DEBUG_BATTLE) cerr << "TURN: creature=" << creature->getName() << 
     " ap=" << ap << 
     " wait=" << weaponWait << 
     " nextTurn=" << nextTurn << endl;
@@ -230,7 +98,7 @@ bool Battle::fightTurn() {
   if(ap <= 0) {
     if(weaponWait > 0) {
       nextTurn = weaponWait;
-      cerr << "Carries over into next turn." << endl;
+      if(DEBUG_BATTLE) cerr << "Carries over into next turn." << endl;
     }
     reset();
     return true;
@@ -266,68 +134,6 @@ bool Battle::fightTurn() {
 
   // not done yet with creature's turn
   return false;
-
-  /*
-
-  // waiting to cast a spell?
-  if(creature->getAction() == Constants::ACTION_CAST_SPELL) {
-    creature->startEffect(Constants::EFFECT_CAST_SPELL, 
-                          Constants::DAMAGE_DURATION * 4);
-  }
-
-  // waiting to attack?
-  if(isEmpty()) return;
-
-  // target killed?
-  if(!creature->hasTarget()) return;
-
-  // if there was no 'item' selected it's because we're too far from the target
-  // (getBestWeapon returned NULL) and we're not casting a spell, follow the target
-  //
-  // If it's an empty-handed attack, follow the target
-  //
-  // If it's a ranged attack and we're not in range, follow the target (will move away from target)
-  //
-  // This sure is confusing code...
-//  cerr << "projectileHit=" << projectileHit <<
-//        " dist=" << dist <<
-//        " creature->isInRange()=" << creature->isInRange() <<
-//        " item=" << item <<
-//        " creature->getActionSpell()=" << creature->getActionSpell() <<
-//        " spell=" << spell << endl;
-  if(!projectileHit &&
-     ((dist > Constants::MIN_DISTANCE && !item && !creature->getActionSpell() && !spell) ||  
-      !creature->isInRange())) { 
-    //cerr << "\tfollowing..." << endl;
-    creature->followTarget();
-    return;
-  }
-  //cerr << "\tcontinuing" << endl;
-
-  // handle action: eat/drink items
-  if(creature->getAction() == Constants::ACTION_EAT_DRINK) {
-    executeEatDrinkAction();
-    return;
-  }
-
-  // the attacked target may get upset
-  creature->decideMonsterAction();
-
-  // handle the action
-  if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
-    launchProjectile();
-  } else if(spell) {
-    // a spell projectile hit
-    SpellCaster *sc = new SpellCaster(this, spell, true); 
-    sc->spellSucceeded();
-    delete sc;
-  } else if(creature->getActionSpell()) {
-    // casting a spell for the first time
-    castSpell();
-  } else {
-    hitWithItem();
-  }
-*/  
 }
 
 bool Battle::pauseBeforePlayerTurn() {
@@ -342,7 +148,7 @@ bool Battle::pauseBeforePlayerTurn() {
       !paused &&
       session->getUserConfiguration()->isBattleTurnBased()) {
     if(!creature->isMonster()) {
-      cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
+      if(DEBUG_BATTLE) cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
 
       // center on player
       for (int i = 0; i < session->getParty()->getPartySize(); i++) {
@@ -375,7 +181,7 @@ void Battle::initTurnStep() {
 
   // select the best weapon only once
   if(weaponWait <= 0) {
-    cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
+    if(DEBUG_BATTLE) cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
     if(creature->getActionSpell()) {
       range = Constants::MIN_DISTANCE;
       range = creature->getActionSpell()->getDistance();
@@ -391,7 +197,7 @@ void Battle::initTurnStep() {
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = creature->getActionSpell()->getSpeed();
       nextTurn = 0;
-      cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
+      if(DEBUG_BATTLE) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
       item = creature->getBestWeapon(dist);
       range = Constants::MIN_DISTANCE;
@@ -402,16 +208,16 @@ void Battle::initTurnStep() {
                   creature->getTargetCreature()->getShape()->getDepth() / 2);
       }
       if(item) {
-        cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
+        if(DEBUG_BATTLE) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
       } else {
-        cerr << "\tUsing bare hands." << endl;
+        if(DEBUG_BATTLE) cerr << "\tUsing bare hands." << endl;
       }
       // How many steps to wait before being able to use the weapon.
       weaponWait = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
     }
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
-    cerr << "\tDistance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
+    if(DEBUG_BATTLE) cerr << "\tDistance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
   }
 }
 
@@ -423,16 +229,10 @@ void Battle::executeAction() {
   }
 
   // attack
-  cerr << "\t\t *** Attacking." << endl;
-//  } else if(spell) {
-//    // a spell projectile hit
-//    SpellCaster *sc = new SpellCaster(this, spell, true); 
-//    sc->spellSucceeded();
-//    delete sc;
+  if(DEBUG_BATTLE) cerr << "\t\t *** Attacking." << endl;
   if(creature->getActionSpell()) {
     // casting a spell for the first time
     castSpell();
-  //} else if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
   } else if(item && item->getRpgItem()->isRangedWeapon()) {
       launchProjectile();
   } else {
@@ -445,7 +245,7 @@ void Battle::executeAction() {
 void Battle::stepCloserToTarget() {
   // out of range: take 1 step closer
   creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
-  cerr << "\t\tTaking a step." << endl;
+  if(DEBUG_BATTLE) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
     if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
          creature->getSelY() == creature->getTargetCreature()->getY())) {
@@ -483,16 +283,16 @@ bool Battle::selectNewTarget() {
                                                20);
   }
   if (target) {
-    cerr << "\tSelected new target: " << target->getName() << endl;
+    if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
     creature->setTargetCreature(target);
     creature->setSelXY(creature->getTargetCreature()->getX(),
                        creature->getTargetCreature()->getY(),
                        true);
-    initTurn();
+    //initTurn();
     return true;
   } else {
     creature->setTargetCreature(NULL);
-    cerr << "\t\tCan't find new target." << endl;
+    if(DEBUG_BATTLE) cerr << "\t\tCan't find new target." << endl;
     return false;
   }
 }
@@ -501,7 +301,7 @@ void Battle::moveCreature() {
   creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
 
   // take 1 step closer
-  cerr << "\t\tTaking a non-battle step." << endl;
+  if(DEBUG_BATTLE) cerr << "\t\tTaking a non-battle step." << endl;
   if(creature->isMonster()) {
     session->getGameAdapter()->moveMonster(creature);
   } else {
@@ -584,7 +384,7 @@ void Battle::launchProjectile() {
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
-  cerr << "*** Projectile hit (target): creature=" << proj->getCreature()->getName() << endl;  
+  if(DEBUG_BATTLE) cerr << "*** Projectile hit (target): creature=" << proj->getCreature()->getName() << endl;  
   Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
   Battle *battle = proj->getCreature()->getBattle();
@@ -604,11 +404,11 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   battle->spell = NULL;
   proj->getCreature()->cancelTarget();
   proj->getCreature()->setTargetCreature(oldTarget);
-  cerr << "*** Projectile hit ends." << endl;
+  if(DEBUG_BATTLE) cerr << "*** Projectile hit ends." << endl;
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y) {
-  cerr << "*** Projectile hit (x,y): creature=" << proj->getCreature()->getName() << endl;
+  if(DEBUG_BATTLE) cerr << "*** Projectile hit (x,y): creature=" << proj->getCreature()->getName() << endl;
   // configure a turn
   proj->getCreature()->setTargetLocation(x, y, 0);
   Battle *battle = proj->getCreature()->getBattle();
@@ -627,7 +427,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   battle->projectileHit = false;
   battle->spell = NULL;
   proj->getCreature()->cancelTarget();
-  cerr << "*** Projectile hit ends." << endl;
+  if(DEBUG_BATTLE) cerr << "*** Projectile hit ends." << endl;
 }
 
 void Battle::hitWithItem() {
@@ -725,55 +525,6 @@ void Battle::dealDamage(int damage, int maxDamage, int effect) {
   }
 }
 
-void Battle::initTurn() {
-/*
-  float range = 0.0f;
-
-  // select a weapon
-  if(creature->getAction() == Constants::ACTION_NO_ACTION) {
-
-    // already selected weapon?
-    if(item) return;
-    Item *i = creature->getBestWeapon(dist);  
-    if(i) range = i->getRpgItem()->getDistance();
-    // set up distance range for ranged weapons (do it here so it only happens when the action changes)
-    creature->setDistanceRange(0, Constants::MIN_DISTANCE);
-    if(range >= 8) {
-      creature->setDistanceRange(Constants::MIN_DISTANCE, range);
-    }
-    initItem(i);
-  } else {
-    // or init action
-    switch(creature->getAction()) {
-    case Constants::ACTION_CAST_SPELL:
-      range = creature->getActionSpell()->getDistance();
-      speed = creature->getActionSpell()->getSpeed() * 
-              (scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
-      creatureInitiative = creature->getInitiative(NULL, creature->getActionSpell());
-      // set up distance range for ranged weapons (do it here so it only happens when the action changes)
-      creature->setDistanceRange(0, Constants::MIN_DISTANCE);
-      if(range >= 8) {
-        creature->setDistanceRange(Constants::MIN_DISTANCE, range);
-      }
-      break;
-    case Constants::ACTION_EAT_DRINK:
-      range = creature->getActionItem()->getRpgItem()->getDistance();
-      speed = creature->getActionItem()->getRpgItem()->getSpeed() *
-              (scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
-      creatureInitiative = creature->getInitiative(creature->getActionItem(), NULL);
-      // set up distance range for ranged weapons (do it here so it only happens when the action changes)
-      creature->setDistanceRange(0, Constants::MIN_DISTANCE);
-      if(range >= 8) {
-        creature->setDistanceRange(Constants::MIN_DISTANCE, range);
-      }
-      break;
-    default:
-      cerr << "*** Error: unhandled action: " << creature->getAction() << endl;
-    }
-  }  
-  */
-}
-
 void Battle::initItem(Item *item) {
   this->item = item;
 
@@ -799,7 +550,7 @@ void Battle::executeEatDrinkAction() {
 }
 
 void Battle::invalidate() {
-  cerr << "*** invalidate: creature=" << getCreature()->getName() << endl;
+  if(DEBUG_BATTLE) cerr << "*** invalidate: creature=" << getCreature()->getName() << endl;
   nextTurn = weaponWait = 0;
 }
 

@@ -112,7 +112,7 @@ class Battle {
 
  protected:
   void launchProjectile();
-  void initTurn();
+  //void initTurn();
   void hitWithItem();
   void initItem(Item *item);
   void castSpell();

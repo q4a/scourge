@@ -95,12 +95,23 @@ using namespace std;
 #  endif /* defined( WIN32 ) */
 #endif
 
+
+
+// debug flags
+#define DEBUG_BATTLE 0
+// show fps info
+#define SHOW_DEBUG_INFO
+
+
+#define SCOURGE_VERSION 0.8
+#define MAX_PARTY_SIZE 4
+
+
+
 extern char rootDir[300];
 extern char configDir[300];
 extern int get_config_dir_name( char *buff, int len );
 extern int get_config_file_name( char *buff, int len );
-
-#define SCOURGE_VERSION 0.7
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
@@ -111,10 +122,6 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
 #define GL_BGR                                  0x80E0
 #define GL_BGRA                                 0x80E1
 
-// show fps info
-#define SHOW_DEBUG_INFO
-
-#define MAX_PARTY_SIZE 4
 
 /*
   Float swapping code by:
