@@ -302,11 +302,11 @@ void Map::setupShapes(bool ground) {
 				// FIXME: this draws more doors than needed... 
 				// it should use doorValue to figure out what needs to be drawn
 				if((!lightMap[chunkX][chunkY] && 
-					(shape == scourge->getShapePalette()->getShape(Constants::NS_DOOR_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(Constants::EW_DOOR_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(Constants::NS_DOOR_TOP_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(Constants::EW_DOOR_TOP_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(Constants::DOOR_SIDE_INDEX))) ||
+					(shape == scourge->getShapePalette()->findShapeByName("NS_DOOR") ||
+					 shape == scourge->getShapePalette()->findShapeByName("EW_DOOR") ||
+					 shape == scourge->getShapePalette()->findShapeByName("NS_DOOR_TOP") ||
+					 shape == scourge->getShapePalette()->findShapeByName("EW_DOOR_TOP") ||
+					 shape == scourge->getShapePalette()->findShapeByName("DOOR_SIDE"))) ||
 				   (lightMap[chunkX][chunkY] && shape)) {
 				  xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
 								  xp + chunkOffsetX) / GLShape::DIV;
@@ -502,7 +502,7 @@ void Map::draw() {
 	if(debugX < MAP_WIDTH && debugX >= 0) {
 	  DrawLater later2;
 	  
-	  later2.shape = scourge->getShapePalette()->getShape(Constants::LAMP_BASE_INDEX);
+	  later2.shape = scourge->getShapePalette()->findShapeByName("LAMP_BASE");
 
 	  later2.xpos = ((float)(debugX - getX()) / GLShape::DIV);
 	  later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);

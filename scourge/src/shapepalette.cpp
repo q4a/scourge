@@ -212,10 +212,6 @@ ShapePalette::ShapePalette(){
 	}
   }
 
-  // Create the display lists
-  // FIXME: this should use shapeValueVector.size() instead once all the shapes come from shapes.txt
-  //  display_list = glGenLists((Constants::SHAPE_INDEX_COUNT) * 3);
-
   // create shapes
   for(int i = 0; i < (int)shapeValueVector.size(); i++) {
 	cerr << "Creating shape i=" << i << endl;
@@ -225,7 +221,6 @@ ShapePalette::ShapePalette(){
 	  " depth=" << sv->depth << 
 	  " height=" << sv->height << endl;
 
-	//	GLuint dl = display_list + (i * 3);
 	GLuint dl = 0;
 	if(sv->teleporter) {
 	  shapes[(i + 1)] =
@@ -275,6 +270,9 @@ ShapePalette::ShapePalette(){
 	shapes[(i + 1)]->setSkipSide(sv->skipSide);
 	shapes[(i + 1)]->setStencil(sv->stencil == 1);
 	shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
+
+	string s = sv->name;
+	shapeMap[s] = shapes[(i + 1)];
   }
   // remember the number of shapes
   shapeCount = (int)shapeValueVector.size() + 1;
@@ -309,18 +307,6 @@ ShapePalette::ShapePalette(){
 
   // set up the scourge
   setupAlphaBlendedBMP("data/scourge.bmp", &scourge, &scourgeImage);
-     
-  /*
-  // creatures              
-  // The order at which we "push back" models is important                 
-  creature_models.push_back(LoadMd2Model("data/models/m2.md2"));  
-  creature_models.push_back(LoadMd2Model("data/models/m1.md2"));
-  creature_models.push_back(LoadMd2Model("data/models/m3.md2"));
-  creature_models.push_back(LoadMd2Model("data/models/m4.md2"));
-  creature_models.push_back(LoadMd2Model("data/models/m5.md2"));
-  creature_models.push_back(LoadMd2Model("data/models/m6.md2"));
-  cout<<"MD2 Models loaded" << endl;
-  */
 
   if(!instance) instance = this;
 }
@@ -387,12 +373,12 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   //  cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
 
   // create the shape.
-  // FIXME: shapeindex is always FIGHTER_INDEX. Does it matter?
+  // FIXME: shapeindex is always FIGHTER. Does it matter?
   MD2Shape *shape = new MD2Shape(model_info->model, skin_texture, model_info->scale,
 								 textureGroup[14], 
 								 model_info->width, model_info->depth, model_info->height,
 								 model_info->name, -1,
-								 0xf0f0ffff, 0); //Constants::FIGHTER_INDEX);  
+								 0xf0f0ffff, 0); //Constants::FIGHTER);  
   shape->setSkinName(skin_name);
   return shape;
 }
@@ -434,21 +420,24 @@ GLuint ShapePalette::findTextureByName(const char *filename) {
 
 GLShape *ShapePalette::findShapeByName(const char *name) {
   if(!name || !strlen(name)) return NULL;
-  for(int i = 1; i < shapeCount; i++) {
-	if(!strcmp(shapes[i]->getName(), name)) return shapes[i];
+  string s = name;
+  if(shapeMap.find(s) == shapeMap.end()) {
+	cerr << "&&& warning: could not find shape by name " << s << endl;
+	return NULL;
   }
-  return NULL;
+  return shapeMap[s];
 }
 
-// defaults to SWORD_INDEX for unknown shapes
+// defaults to SWORD for unknown shapes
 int ShapePalette::findShapeIndexByName(const char *name) {
-  if(!name || !strlen(name)) return Constants::SWORD_INDEX;
-  for(int i = 1; i < shapeCount; i++) {
-	if(!strcmp(shapes[i]->getName(), name)) {
-	  return i;
-	}
+  string s;
+  if(!name || !strlen(name)) s = "SWORD";
+  else s = name;
+  if(shapeMap.find(s) == shapeMap.end()) {
+	cerr << "&&& warning: could not find shape INDEX by name " << s << endl;
+	return 0;
   }
-  return Constants::SWORD_INDEX;
+  return shapeMap[s]->getShapePalIndex();
 }
 
 /* function to load in bitmap as a GL texture */

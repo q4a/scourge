@@ -83,36 +83,36 @@ const MapLocation DungeonGenerator::location[] = {
 	},
 	25, 
 	{
-	  { Constants::BOARD_INDEX, 2*unitSide+11, unitSide + 1, 0 },
+	  { "BOARD", 2*unitSide+11, unitSide + 1, 0 },
 
 
-		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+8, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+8, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+16, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+16, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+24, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+24, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+32, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+32, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+3, unitSide+40, 0 },
-		{ Constants::COLUMN_INDEX, 2*unitSide+26, unitSide+40, 0 },
+		{ "COLUMN", 2*unitSide+3, unitSide, 0 },
+		{ "COLUMN", 2*unitSide+26, unitSide, 0 },
+		{ "COLUMN", 2*unitSide+3, unitSide+8, 0 },
+		{ "COLUMN", 2*unitSide+26, unitSide+8, 0 },
+		{ "COLUMN", 2*unitSide+3, unitSide+16, 0 },
+		{ "COLUMN", 2*unitSide+26, unitSide+16, 0 },
+		{ "COLUMN", 2*unitSide+3, unitSide+24, 0 },
+		{ "COLUMN", 2*unitSide+26, unitSide+24, 0 },
+		{ "COLUMN", 2*unitSide+3, unitSide+32, 0 },
+		{ "COLUMN", 2*unitSide+26, unitSide+32, 0 },
+		{ "COLUMN", 2*unitSide+3, unitSide+40, 0 },
+		{ "COLUMN", 2*unitSide+26, unitSide+40, 0 },
 
-	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+8, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+8, 0 },		
-	  { Constants::BRAZIER_INDEX, 2*unitSide+22, unitSide+8, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+22, unitSide+8, 0 },
+	  { "BRAZIER", 2*unitSide+7, unitSide+8, 2 },
+	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+8, 0 },		
+	  { "BRAZIER", 2*unitSide+22, unitSide+8, 2 },
+	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+8, 0 },
 
-	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+16, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+16, 0 },
-	  { Constants::BRAZIER_INDEX, 2*unitSide+22, unitSide+16, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+22, unitSide+16, 0 },
+	  { "BRAZIER", 2*unitSide+7, unitSide+16, 2 },
+	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+16, 0 },
+	  { "BRAZIER", 2*unitSide+22, unitSide+16, 2 },
+	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+16, 0 },
 
-	  { Constants::BRAZIER_INDEX, 2*unitSide+7, unitSide+24, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+7, unitSide+24, 0 },
-	  { Constants::BRAZIER_INDEX, 2*unitSide+22, unitSide+24, 2 },
-	  { Constants::BRAZIER_BASE_INDEX, 2*unitSide+22, unitSide+24, 0 }
+	  { "BRAZIER", 2*unitSide+7, unitSide+24, 2 },
+	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+24, 0 },
+	  { "BRAZIER", 2*unitSide+22, unitSide+24, 2 },
+	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+24, 0 }
 
 
 	}
@@ -805,8 +805,8 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
   if(preGenerated) {
 	for(Sint16 x = 0; x < MAP_WIDTH; x++) {
 	  for(Sint16 y = 0; y < MAP_DEPTH; y++) {
-		if(map->getFloorPosition(x,y) == shapePal->getShape(Constants::ROOM_FLOOR_TILE_INDEX)) {
-		  map->setFloorPosition(x,y,shapePal->getShape(Constants::ROOM2_FLOOR_TILE_INDEX));
+		if(map->getFloorPosition(x,y) == shapePal->findShapeByName("ROOM_FLOOR_TILE")) {
+		  map->setFloorPosition(x,y,shapePal->findShapeByName("ROOM2_FLOOR_TILE"));
 		}
 	  }
 	}
@@ -827,10 +827,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 					 
 		if(nodes[x][y] >= ROOM) {
 		  map->setFloorPosition(mapx, mapy + unitSide, 
-								shapePal->getShape(Constants::ROOM_FLOOR_TILE_INDEX));
+								shapePal->findShapeByName("ROOM_FLOOR_TILE"));
 		} else {
 		  map->setFloorPosition(mapx, mapy + unitSide, 
-								shapePal->getShape(Constants::FLOOR_TILE_INDEX));
+								shapePal->findShapeByName("FLOOR_TILE"));
 		}
 					 
 		// init the free space
@@ -873,113 +873,113 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		if(!(nodes[x][y] & W_PASS)) {
 		  if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
 			map->setPosition(mapx, mapy + unitSide, 
-							 0, shapePal->getShape(Constants::EW_WALL_TWO_EXTRAS_INDEX));								
+							 0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));								
 		  } else if(nodes[x][y] & N_PASS) {
 			map->setPosition(mapx, mapy + unitSide - unitOffset, 
-							 0, shapePal->getShape(Constants::EW_WALL_EXTRA_INDEX));
+							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
 		  } else if(nodes[x][y] & S_PASS) {
 			map->setPosition(mapx, mapy + unitSide, 
-							 0, shapePal->getShape(Constants::EW_WALL_EXTRA_INDEX));
+							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
 		  } else {
 			map->setPosition(mapx, mapy + unitSide - unitOffset, 
-							 0, shapePal->getShape(Constants::EW_WALL_INDEX));								
+							 0, shapePal->findShapeByName("EW_WALL"));								
 		  }						  
 		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
 			map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-							 6, shapePal->getShape(Constants::LAMP_WEST_INDEX));
+							 6, shapePal->findShapeByName("LAMP_WEST"));
 			map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-							 4, shapePal->getShape(Constants::LAMP_BASE_INDEX));
+							 4, shapePal->findShapeByName("LAMP_BASE"));
 		  }          
 		}
 		if(!(nodes[x][y] & E_PASS)) {
 		  if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
 			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
-							 0, shapePal->getShape(Constants::EW_WALL_TWO_EXTRAS_INDEX));								
+							 0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));								
 		  } else if(nodes[x][y] & N_PASS) {
 			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-							 0, shapePal->getShape(Constants::EW_WALL_EXTRA_INDEX));
+							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
 		  } else if(nodes[x][y] & S_PASS) {
 			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
-							 0, shapePal->getShape(Constants::EW_WALL_EXTRA_INDEX));
+							 0, shapePal->findShapeByName("EW_WALL_EXTRA"));
 		  } else {
 			map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-							 0, shapePal->getShape(Constants::EW_WALL_INDEX));
+							 0, shapePal->findShapeByName("EW_WALL"));
 		  }
 		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
 			map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-							 6, shapePal->getShape(Constants::LAMP_EAST_INDEX));
+							 6, shapePal->findShapeByName("LAMP_EAST"));
 			map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-							 4, shapePal->getShape(Constants::LAMP_BASE_INDEX));
+							 4, shapePal->findShapeByName("LAMP_BASE"));
 		  }          
 		}
 		if(!(nodes[x][y] & N_PASS)) {
 		  if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
 			map->setPosition(mapx, mapy + unitOffset, 0, 
-							 shapePal->getShape(Constants::NS_WALL_TWO_EXTRAS_INDEX));
+							 shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
 		  } else if(nodes[x][y] & W_PASS) {
 			map->setPosition(mapx, mapy + unitOffset, 0, 
-							 shapePal->getShape(Constants::NS_WALL_EXTRA_INDEX));
+							 shapePal->findShapeByName("NS_WALL_EXTRA"));
 		  } else if(nodes[x][y] & E_PASS) {
 			map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
-							 shapePal->getShape(Constants::NS_WALL_EXTRA_INDEX));
+							 shapePal->findShapeByName("NS_WALL_EXTRA"));
 		  } else {
 			map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
-							 shapePal->getShape(Constants::NS_WALL_INDEX));
+							 shapePal->findShapeByName("NS_WALL"));
 		  }
 		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
 			map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
-							 shapePal->getShape(Constants::LAMP_NORTH_INDEX));
+							 shapePal->findShapeByName("LAMP_NORTH"));
 			map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
-							 shapePal->getShape(Constants::LAMP_BASE_INDEX));
+							 shapePal->findShapeByName("LAMP_BASE"));
 		  }            
 		}
 		if(!(nodes[x][y] & S_PASS)) {
 		  if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
 			map->setPosition(mapx, mapy + unitSide, 0, 
-							 shapePal->getShape(Constants::NS_WALL_TWO_EXTRAS_INDEX));
+							 shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
 		  } else if(nodes[x][y] & W_PASS) {
 			map->setPosition(mapx, mapy + unitSide, 0, 
-							 shapePal->getShape(Constants::NS_WALL_EXTRA_INDEX));
+							 shapePal->findShapeByName("NS_WALL_EXTRA"));
 		  } else if(nodes[x][y] & E_PASS) {
 			map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
-							 shapePal->getShape(Constants::NS_WALL_EXTRA_INDEX));
+							 shapePal->findShapeByName("NS_WALL_EXTRA"));
 		  } else {
 			map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
-							 shapePal->getShape(Constants::NS_WALL_INDEX));
+							 shapePal->findShapeByName("NS_WALL"));
 		  }
 		}
 					 
 		if(nodes[x][y] & N_PASS && nodes[x][y] & W_PASS) {
 		  map->setPosition(mapx, mapy + unitOffset, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX));
+						   shapePal->findShapeByName("CORNER"));
 		}
 		if(nodes[x][y] & N_PASS && nodes[x][y] & E_PASS) {
 		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX));
+						   shapePal->findShapeByName("CORNER"));
 		}
 		if(nodes[x][y] & S_PASS && nodes[x][y] & W_PASS) {
 		  map->setPosition(mapx, mapy + unitSide, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX));
+						   shapePal->findShapeByName("CORNER"));
 		}
 		if(nodes[x][y] & S_PASS && nodes[x][y] & E_PASS) {
 		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX));
+						   shapePal->findShapeByName("CORNER"));
 		}
 		if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & W_PASS)) {
 		  map->setPosition(mapx, mapy + unitOffset, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX));
+						   shapePal->findShapeByName("CORNER"));
 		}
 		if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & E_PASS)) {
 		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX)); 
+						   shapePal->findShapeByName("CORNER")); 
 		}
 		if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & W_PASS)) {
 		  map->setPosition(mapx, mapy + unitSide, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX)); 
+						   shapePal->findShapeByName("CORNER")); 
 		}
 		if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & E_PASS)) {
 		  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-						   shapePal->getShape(Constants::CORNER_INDEX)); 
+						   shapePal->findShapeByName("CORNER")); 
 		}					 
 	  }
 	}
@@ -991,15 +991,15 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	for(int y = 0; y < MAP_DEPTH - (unitSide * 2); y++) {
 				
 	  if(map->getFloorPosition(x, y + unitSide) ==
-		 shapePal->getShape(Constants::ROOM_FLOOR_TILE_INDEX) && 
+		 shapePal->findShapeByName("ROOM_FLOOR_TILE") && 
 		 map->getFloorPosition(x + unitSide, y + unitSide) ==
-		 shapePal->getShape(Constants::ROOM_FLOOR_TILE_INDEX) &&
+		 shapePal->findShapeByName("ROOM_FLOOR_TILE") &&
 		 map->getFloorPosition(x, y + unitSide + unitSide) ==
-		 shapePal->getShape(Constants::ROOM_FLOOR_TILE_INDEX) &&         
+		 shapePal->findShapeByName("ROOM_FLOOR_TILE") &&         
 		 map->getFloorPosition(x + unitSide, y + unitSide + unitSide) ==
-		 shapePal->getShape(Constants::ROOM_FLOOR_TILE_INDEX)) {
+		 shapePal->findShapeByName("ROOM_FLOOR_TILE")) {
 					 
-		//        map->setFloorPosition(x, y + unitSide, shapePal->getShape(Constants::FLOOR_TILE_INDEX));
+		//        map->setFloorPosition(x, y + unitSide, shapePal->findShapeByName("FLOOR_TILE"));
 		map->removePosition(x + unitSide - unitOffset, y + unitSide, 0);
 		map->removePosition(x + unitSide - unitOffset, y + unitSide + unitOffset, 0);
 		map->removePosition(x + unitSide, y + unitSide, 0);
@@ -1092,7 +1092,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	  if(stairsUp) {
 		bool done = false;
 		for(int i = 0; i < 10; i++) {
-		  Shape *shape = scourge->getShapePalette()->getShape(Constants::STAIRS_UP_INDEX);
+		  Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_UP");
 		  bool fits = getLocationInRoom(map, i, shape, &x, &y);
 		  if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
 			addItem(map, NULL, NULL, shape, x, y);
@@ -1108,7 +1108,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	  if(stairsDown) {
 		bool done = false;
 		for(int i = 0; i < 10; i++) {
-		  Shape *shape = scourge->getShapePalette()->getShape(Constants::STAIRS_DOWN_INDEX);
+		  Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_DOWN");
 		  bool fits = getLocationInRoom(map, i, shape, &x, &y);
 		  if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
 			addItem(map, NULL, NULL, shape, x, y);
@@ -1127,10 +1127,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	// add pre-generated shapes first
 	if(preGenerated) {
 		for(int i = 0; i < location[locationIndex].shapeCount; i++) {
-			int mapx = location[locationIndex].shapePosition[i][1] + offset;
-			int mapy = location[locationIndex].shapePosition[i][2] + offset;
-			map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i][3], 
-											 shapePal->getShape(location[locationIndex].shapePosition[i][0]));
+			int mapx = location[locationIndex].shapePosition[i].x + offset;
+			int mapy = location[locationIndex].shapePosition[i].y + offset;
+			map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i].z, 
+											 shapePal->findShapeByName(location[locationIndex].shapePosition[i].name));
 			// find and remove this location from ff list (replace w. last entry and decr. counter)
 			for(int n = 0; n < ffCount; n++) {
 				if(mapx == ff[n * 2] && mapy == ff[n * 2 + 1]) {
@@ -1216,14 +1216,14 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	if(!preGenerated) {
 	  int teleportersAdded = 0;
 	  for(int teleporterCount = 0; teleporterCount < 3; teleporterCount++) {
-		getRandomLocation(map, scourge->getShapePalette()->getShape(Constants::TELEPORTER_INDEX), &x, &y);
+		getRandomLocation(map, scourge->getShapePalette()->findShapeByName("TELEPORTER"), &x, &y);
 		if( x < MAP_WIDTH ) {
 		  cerr << "teleporter at " << x << "," << y << endl;
 		  addItem(scourge->getMap(), NULL, NULL, 
-				  scourge->getShapePalette()->getShape(Constants::TELEPORTER_INDEX), 
+				  scourge->getShapePalette()->findShapeByName("TELEPORTER"), 
 				  x, y, 1);
 		  addItem(scourge->getMap(), NULL, NULL, 
-				  scourge->getShapePalette()->getShape(Constants::TELEPORTER_BASE_INDEX), 
+				  scourge->getShapePalette()->findShapeByName("TELEPORTER_BASE"), 
 				  x, y);
 		  teleportersAdded++;
 		} else {
@@ -1270,68 +1270,68 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
   switch(doorType) {
   case E_DOOR:
 	if(!coversDoor(map, shapePal, 
-				   shapePal->getShape(Constants::EW_DOOR_INDEX), 
+				   shapePal->findShapeByName("EW_DOOR"), 
 				   mapx + unitSide - unitOffset + 1, mapy + unitSide - unitOffset - 2)) {
 	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-					   wallHeight - 2, shapePal->getShape(Constants::EW_DOOR_TOP_INDEX));
+					   wallHeight - 2, shapePal->findShapeByName("EW_DOOR_TOP"));
 	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset +  2, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset * 2 +  2, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitSide - unitOffset + 1, mapy + unitSide - unitOffset - 2, 
-					   0, shapePal->getShape(Constants::EW_DOOR_INDEX));
+					   0, shapePal->findShapeByName("EW_DOOR"));
 	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 
 	}
 	break;
   case W_DOOR:
 	if(!coversDoor(map, shapePal, 
-				   shapePal->getShape(Constants::EW_DOOR_INDEX), 
+				   shapePal->findShapeByName("EW_DOOR"), 
 				   mapx + 1, mapy + unitSide - unitOffset - 2)) {
 	  map->setPosition(mapx, mapy + unitSide - unitOffset, 
-					   wallHeight - 2, shapePal->getShape(Constants::EW_DOOR_TOP_INDEX));
+					   wallHeight - 2, shapePal->findShapeByName("EW_DOOR_TOP"));
 	  map->setPosition(mapx, mapy + unitOffset +  2, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx, mapy + unitOffset * 2 +  2, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + 1, mapy + unitSide - unitOffset - 2, 
-					   0, shapePal->getShape(Constants::EW_DOOR_INDEX));
+					   0, shapePal->findShapeByName("EW_DOOR"));
 	  map->setPosition(mapx, mapy + unitSide - unitOffset, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	}
 	break;
   case N_DOOR:
 	if(!coversDoor(map, shapePal, 
-				   shapePal->getShape(Constants::NS_DOOR_INDEX), 
+				   shapePal->findShapeByName("NS_DOOR"), 
 				   mapx + unitOffset * 2, mapy + unitOffset - 1)) {
 	  map->setPosition(mapx + unitOffset, mapy + unitOffset, 
-					   wallHeight - 2, shapePal->getShape(Constants::NS_DOOR_TOP_INDEX));
+					   wallHeight - 2, shapePal->findShapeByName("NS_DOOR_TOP"));
 	  map->setPosition(mapx + unitOffset, mapy + unitOffset, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitOffset * 2, mapy + unitOffset - 1, 
-					   0, shapePal->getShape(Constants::NS_DOOR_INDEX));
+					   0, shapePal->findShapeByName("NS_DOOR"));
 	  map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitOffset, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitSide - unitOffset * 3, mapy + unitOffset, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 
 	}
 	break;
   case S_DOOR:
 	if(!coversDoor(map, shapePal, 
-				   shapePal->getShape(Constants::NS_DOOR_INDEX), 
+				   shapePal->findShapeByName("NS_DOOR"), 
 				   mapx + unitOffset * 2, mapy + unitSide - 1)) {
 	  map->setPosition(mapx + unitOffset, mapy + unitSide, 
-					   wallHeight - 2, shapePal->getShape(Constants::NS_DOOR_TOP_INDEX));
+					   wallHeight - 2, shapePal->findShapeByName("NS_DOOR_TOP"));
 	  map->setPosition(mapx + unitOffset, mapy + unitSide, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitOffset * 2, mapy + unitSide - 1, 
-					   0, shapePal->getShape(Constants::NS_DOOR_INDEX));
+					   0, shapePal->findShapeByName("NS_DOOR"));
 	  map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitSide, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	  map->setPosition(mapx + unitSide - unitOffset * 3, mapy + unitSide, 
-					   0, shapePal->getShape(Constants::DOOR_SIDE_INDEX));
+					   0, shapePal->findShapeByName("DOOR_SIDE"));
 	}
 	break;
   }
@@ -1474,8 +1474,8 @@ bool DungeonGenerator::isDoor(Map *map, ShapePalette *shapePal, int tx, int ty) 
 	 ty >= 0 && ty < MAP_DEPTH) {
 	Location *loc = map->getLocation(tx, ty, 0);
 	if(loc && 
-	   (loc->shape == shapePal->getShape(Constants::EW_DOOR_INDEX) ||
-		loc->shape == shapePal->getShape(Constants::NS_DOOR_INDEX))) {
+	   (loc->shape == shapePal->findShapeByName("EW_DOOR") ||
+		loc->shape == shapePal->findShapeByName("NS_DOOR"))) {
 	  return true;
 	}
   }

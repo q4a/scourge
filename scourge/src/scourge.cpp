@@ -990,12 +990,12 @@ void Scourge::dropItem(int x, int y) {
 bool Scourge::useGate(Location *pos) {
   for(int i = 0; i < 4; i++) {
 	if(!party->getParty(i)->getStateMod(Constants::dead)) {
-	  if(pos->shape == shapePal->getShape(Constants::STAIRS_UP_INDEX)) {
+	  if(pos->shape == shapePal->findShapeByName("GATE_UP")) {
 		oldStory = currentStory;
 		currentStory--;
 		changingStory = true;
 		return true;
-	  } else if(pos->shape == shapePal->getShape(Constants::STAIRS_DOWN_INDEX)) {
+	  } else if(pos->shape == shapePal->findShapeByName("GATE_DOWN")) {
 		oldStory = currentStory;
 		currentStory++;
 		changingStory = true;
@@ -1007,7 +1007,7 @@ bool Scourge::useGate(Location *pos) {
 }
 
 bool Scourge::useBoard(Location *pos) {
-	if(pos->shape == shapePal->getShape(Constants::BOARD_INDEX)) {
+	if(pos->shape == shapePal->findShapeByName("BOARD")) {
 		for(int i = 0; i < board->getMissionCount(); i++) {
 			strcpy(missionText[i], board->getMission(i)->name);
 		}
@@ -1021,8 +1021,8 @@ bool Scourge::useBoard(Location *pos) {
 }
 
 bool Scourge::useTeleporter(Location *pos) {
-  if(pos->shape == shapePal->getShape(Constants::TELEPORTER_INDEX) ||
-	 pos->shape == shapePal->getShape(Constants::TELEPORTER_BASE_INDEX)) {
+  if(pos->shape == shapePal->findShapeByName("TELEPORTER") ||
+	 pos->shape == shapePal->findShapeByName("TELEPORTER_BASE")) {
 	// able to teleport if any party member is alive
 	for(int i = 0; i < 4; i++) {
 	  if(!party->getParty(i)->getStateMod(Constants::dead)) {
@@ -1036,10 +1036,10 @@ bool Scourge::useTeleporter(Location *pos) {
 
 bool Scourge::useDoor(Location *pos) {
     Shape *newDoorShape = NULL;
-    if(pos->shape == shapePal->getShape(Constants::EW_DOOR_INDEX)) {
-        newDoorShape = shapePal->getShape(Constants::NS_DOOR_INDEX);
-    } else if(pos->shape == shapePal->getShape(Constants::NS_DOOR_INDEX)) {
-        newDoorShape = shapePal->getShape(Constants::EW_DOOR_INDEX);
+    if(pos->shape == shapePal->findShapeByName("EW_DOOR")) {
+        newDoorShape = shapePal->findShapeByName("NS_DOOR");
+    } else if(pos->shape == shapePal->findShapeByName("NS_DOOR")) {
+        newDoorShape = shapePal->findShapeByName("EW_DOOR");
     }
     if(newDoorShape) {
         // switch door
