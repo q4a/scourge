@@ -50,18 +50,26 @@ void GLTorch::initParticles() {
 void GLTorch::draw() {
   float w, d, h;
 
+  // HACK: if torch_dir is SOUTH, then this is a spell projectile
+  bool isSpell = (torch_dir == Constants::SOUTH);
+
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
       // create a new particle
       particle[i] = new ParticleStruct();
-      particle[i]->x = ((float)(width / DIV) * rand()/RAND_MAX);
-      particle[i]->y = ((float)(depth / DIV) * rand()/RAND_MAX);
+	  if(isSpell) {
+		particle[i]->x = ((float)(width / 5.0f / DIV) * rand()/RAND_MAX);
+		particle[i]->y = ((float)(depth / 5.0f / DIV) * rand()/RAND_MAX);
+	  } else {
+		particle[i]->x = ((float)(width / DIV) * rand()/RAND_MAX);
+		particle[i]->y = ((float)(depth / DIV) * rand()/RAND_MAX);
+	  }
       particle[i]->z = 0.0f;
       particle[i]->height = (int)(25.0 * rand()/RAND_MAX) + 10;
     } else {
       // move this particle
-      particle[i]->z+=0.5f;
+	  particle[i]->z+=0.5f;
       if(particle[i]->z >= particle[i]->height) {
         delete(particle[i]);
         particle[i] = 0;
@@ -81,11 +89,16 @@ void GLTorch::draw() {
 
       // position the particle
       GLfloat z = (float)(particle[i]->z * h) / 10.0;
-      glTranslatef( particle[i]->x, particle[i]->y, z );
+	  if(isSpell) {
+		glTranslatef( particle[i]->x, z, particle[i]->y );
+		w = h = 0.75 / DIV;
+	  } else {
+		glTranslatef( particle[i]->x, particle[i]->y, z );
+	  }
 
-      // rotate each particle to face viewer
-      glRotatef(-zrot, 0.0f, 0.0f, 1.0f);
-      glRotatef(-(90.0 + yrot), 1.0f, 0.0f, 0.0f);      
+	  // rotate each particle to face viewer
+	  glRotatef(-zrot, 0.0f, 0.0f, 1.0f);
+	  glRotatef(-(90.0 + yrot), 1.0f, 0.0f, 0.0f);      
 
       if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
 
@@ -153,8 +166,24 @@ void GLTorch::draw() {
 	glTranslatef( 1.0f/DIV - offset,
 				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
 				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
+  } else if(isSpell) {
+
+	// rotate each particle to face viewer
+	glRotatef(-zrot, 0.0f, 0.0f, 1.0f);
+	glRotatef(-(90.0 + yrot), 1.0f, 0.0f, 0.0f);      
+
+	// position the particle
+	glTranslatef( -(size / 2.0f), 
+				  0,
+				  -(size / 2.0f));	
+
+	// HACK: this is for spells
+	//	glTranslatef( -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
+	//				  0.0f,
+	//				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f));
+	
   }
-  glBindTexture( GL_TEXTURE_2D, torchback );
+  //  glBindTexture( GL_TEXTURE_2D, torchback );
   glColor4f( red, green, 0.3f, 0.4 );
   glBegin( GL_QUADS );
   if(torch_dir == Constants::NORTH) {
@@ -196,6 +225,19 @@ void GLTorch::draw() {
 	glVertex3f(w, 0, h);
 	glTexCoord2f( 0.0f, 1.0f );
 	glVertex3f(w, 0, 0);
+  } else if(isSpell) {
+	w = size;
+	d = 0;
+	h = size;
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2f( 1.0f, 1.0f );
+	glVertex3f(w, 0, 0);
+	glTexCoord2f( 0.0f, 1.0f );
+	glVertex3f(0, 0, 0);
+	glTexCoord2f( 0.0f, 0.0f );
+	glVertex3f(0, 0, h);
+	glTexCoord2f( 1.0f, 0.0f );
+	glVertex3f(w, 0, h);
   }
   glEnd();
   glPopMatrix();

@@ -671,7 +671,18 @@ void Map::draw() {
 		dl.item = NULL;
 		dl.projectile = proj;
 		dl.name = 0;
+		
+		if(proj->getSpell()) {
+		  glEnable(GL_BLEND);
+		  glDepthMask(GL_FALSE);
+		  proj->getShape()->setupBlending();
+		}
 		doDrawShape(&dl);
+		if(proj->getSpell()) {
+		  proj->getShape()->endBlending();
+		  glDisable(GL_BLEND);
+		  glDepthMask(GL_TRUE);
+		}
 		
 		// collision detection
 		bool blocked = false;
@@ -818,6 +829,12 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 	if(f < 0) f += 360;
 	if(f >= 360) f -= 360;
 	glRotatef( f, 0, 0, 1 );
+	// for projectiles, set the correct camera angle
+	if(later->projectile->getAngle() < 90) {
+	  ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
+	} else if(later->projectile->getAngle() < 180) {
+	  ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
+	}
 	later->projectile->getShape()->draw();
   } else {
 	shape->draw();

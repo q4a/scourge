@@ -122,7 +122,7 @@ void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature, Spell *
 
   // FIXME: shape should be configurable per spell
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
-								scourge->getShapePalette()->findShapeByName("ARROW"),
+								scourge->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
 								n)) {
 	// max number of projectiles in the air
 	// FIXME: do something... 

@@ -213,6 +213,7 @@ ShapePalette::ShapePalette(){
   }
 
   // create shapes
+  GLuint dl = 0;
   for(int i = 0; i < (int)shapeValueVector.size(); i++) {
 	cerr << "Creating shape i=" << i << endl;
 	ShapeValues *sv = shapeValueVector[i];
@@ -221,7 +222,6 @@ ShapePalette::ShapePalette(){
 	  " depth=" << sv->depth << 
 	  " height=" << sv->height << endl;
 
-	GLuint dl = 0;
 	if(sv->teleporter) {
 	  shapes[(i + 1)] =
 		new GLTeleporter(textureGroup[sv->textureGroupIndex], textures[9].id,
@@ -274,12 +274,29 @@ ShapePalette::ShapePalette(){
 	string s = sv->name;
 	shapeMap[s] = shapes[(i + 1)];
   }
+
   // remember the number of shapes
   shapeCount = (int)shapeValueVector.size() + 1;
 
   // clean up temp. shape objects 
   // FIXME: do we need to free the vector's elements?
   shapeValueVector.clear();
+
+  // add some special, "internal" shapes
+  shapes[shapeCount] = 
+	new GLTorch(textureGroup[14], textures[9].id,
+				1, 1, 2,
+				strdup("SPELL_FIREBALL"),
+				0,
+				strtoul("6070ffff", NULL, 16),
+				dl, shapeCount, 
+				torchback, Constants::SOUTH); // Hack: use SOUTH for a spell
+  shapes[shapeCount]->setSkipSide(false);
+  shapes[shapeCount]->setStencil(false);
+  shapes[shapeCount]->setLightBlocking(false);  
+  string nameStr = shapes[shapeCount]->getName();
+  shapeMap[nameStr] = shapes[shapeCount];
+  shapeCount++;
 
   // FIXME: do something with these...
   formationTexIndex = texture_count;
