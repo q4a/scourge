@@ -1381,8 +1381,9 @@ void Scourge::setUILayout() {
   case Constants::GUI_LAYOUT_SIDE:
     messageList->resize(400, getSDLHandler()->getScreen()->h - (Window::SCREEN_GUTTER * 2 + 25));
   messageWin->resize(400, getSDLHandler()->getScreen()->h - (Window::SCREEN_GUTTER * 2));
-  messageWin->move(0, 0);
-  mapX = 400;
+  messageWin->move(getSDLHandler()->getScreen()->w - 400, 0);
+  //mapX = 400;
+  mapX = 0;
   mapWidth = getSDLHandler()->getScreen()->w - 400;
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
@@ -1402,12 +1403,14 @@ void Scourge::setUILayout() {
   messageWin->setLocked(true);
   party->getWindow()->setLocked(true);
   inventory->getWindow()->setVisible(false);
-  inventory->getWindow()->move(0, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
+  inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
+                               getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
   inventory->getWindow()->setLocked(true);
   inventory->getWindow()->setVisible(true);
   party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                          getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-  mapX = INVENTORY_WIDTH;
+  //mapX = INVENTORY_WIDTH;
+  mapX = 0;
   mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   break;

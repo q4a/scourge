@@ -130,22 +130,32 @@ Map::~Map(){
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
-  viewX = x;
-  viewY = y;
+  //viewX = x;
+//  viewY = y;
+  viewX = 0;
+  viewY = 0;
   viewWidth = w;
   viewHeight = h;
 
+  float adjust = (float)viewWidth / 800.0f;
   zoom = (float)scourge->getSDLHandler()->getScreen()->w / (float)w;
-  xpos = (int)((float)viewWidth / zoom / 2.0f);
-  ypos = (int)((float)viewHeight / zoom / 2.0f);
+  xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
+  ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
 
   refresh();
 }
 
 void Map::center(Sint16 x, Sint16 y, bool force) { 
   Sint16 nx = x - MAP_VIEW_WIDTH / 2; 
-  Sint16 ny = y - MAP_VIEW_DEPTH / 2; 
-
+  Sint16 ny = y - MAP_VIEW_DEPTH / 2;
+  /*
+  Sint16 nx = x - (int)(((float)MAP_VIEW_WIDTH * 
+                         ((float)viewWidth / 
+                          (float)scourge->getSDLHandler()->getScreen()->w)) / 2.0f); 
+  Sint16 ny = y - (int)(((float)MAP_VIEW_DEPTH * 
+                         ((float)viewHeight / 
+                          (float)scourge->getSDLHandler()->getScreen()->h)) / 2.0f);
+  */
   if(scourge->getUserConfiguration()->getAlwaysCenterMap() || force) {
 	//  if(scourge->getUserConfiguration()->getAlwaysCenterMap() ||
 	//     abs(this->x - nx) > X_CENTER_TOLERANCE ||
@@ -551,8 +561,9 @@ void Map::draw() {
       zoomOut = false;
     } else {
       zoom /= ZOOM_DELTA; 
-      xpos = (int)((float)viewWidth / zoom / 2.0f);
-      ypos = (int)((float)viewHeight / zoom / 2.0f);
+      float adjust = (float)viewWidth / 800.0f;
+      xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
+      ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
 
     }
   } else if(zoomOut) {
@@ -560,8 +571,9 @@ void Map::draw() {
       zoomOut = false;
     } else {
       zoom *= ZOOM_DELTA; 
-      xpos = (int)((float)viewWidth / zoom / 2.0f);
-      ypos = (int)((float)viewHeight / zoom / 2.0f);
+      float adjust = (float)viewWidth / 800.0f;
+      xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
+      ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
     }
   }
 
