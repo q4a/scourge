@@ -312,8 +312,8 @@ void Map::drawLocator() {
 	// FIXME: implement container check (maybe abstract out container interface)
 	if(scourge->getMovingItem() && 
 	   (isWallBetween(selX, selY, 0, 
-					  scourge->getParty(0)->getX(),
-					  scourge->getParty(0)->getY(),
+					  scourge->getPlayer()->getX(),
+					  scourge->getPlayer()->getY(),
 					  0) ||
 		(dropLoc && !dropLoc->creature)) ) {
 	  selX = oldLocatorSelX;
@@ -584,34 +584,18 @@ void Map::showCreatureInfo(Creature *creature) {
   // draw circle
   double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
   double d = (double)creature->getShape()->getDepth() / GLShape::DIV;
-  double s = 0.2f / GLShape::DIV;
-  glTranslatef( xpos2, ypos2, zpos2 + 5);
-  // FIXME: replace with quadric instead (gluDisk)
+  double s = 0.35f / GLShape::DIV;
+
   glEnable( GL_DEPTH_TEST );
   glDepthMask(GL_FALSE);
   glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  glBegin( GL_QUADS );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( w, 0, 0 );
-  glVertex3f( w, -s, 0 );
-  glVertex3f( 0, -s, 0 );
 
-  glVertex3f( 0, -d + s, 0 );
-  glVertex3f( w, -d + s, 0 );
-  glVertex3f( w, -d, 0 );
-  glVertex3f( 0, -d, 0 );
+  glDisable( GL_CULL_FACE );
+  glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+  gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
+  glEnable( GL_CULL_FACE );
 
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( s, 0, 0 );
-  glVertex3f( s, -d, 0 );
-  glVertex3f( 0, -d, 0 );
-
-  glVertex3f( w - s, 0, 0 );
-  glVertex3f( w, 0, 0 );
-  glVertex3f( w, -d, 0 );
-  glVertex3f( w - s, -d, 0 );
-  glEnd();
   glDisable( GL_BLEND );
   glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_TRUE);

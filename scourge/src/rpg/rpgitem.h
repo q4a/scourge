@@ -72,6 +72,11 @@ class RpgItem {
 		  int action, int speed, char *desc, char *shortDesc, int shape_index, int twohanded=NOT_TWO_HANDED);
   ~RpgItem();
 
+  inline char *getName() { return name; }
+  inline int getAction() { return action; }
+  inline int getSpeed() { return speed; }
+  inline int getQuality() { return quality; }
+  inline int getWeight() { return weight; }
   inline int getShapeIndex() { return shape_index; }
   inline char *getShortDesc() { return shortDesc; }  
 };

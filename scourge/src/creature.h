@@ -58,7 +58,7 @@ private:
 	Uint16 dir;
 	Scourge *scourge;
     PlayerChar *pc;
-
+	GLUquadric *quadric;
     int motion;
 
 	int formation;
@@ -68,6 +68,8 @@ private:
     int selX, selY;
     int bestPathPos;
     vector<Location> bestPath;
+
+	
   
 public:
 	static const int DIAMOND_FORMATION = 0;
@@ -82,6 +84,8 @@ public:
 	~Creature();
 
 	inline PlayerChar *getPC() { return pc; }
+
+	inline GLUquadric *getQuadric() { return quadric; }
 
     inline void setMotion(int motion) { this->motion = motion; }
     inline int getMotion() { return this->motion; }

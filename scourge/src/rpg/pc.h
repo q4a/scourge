@@ -62,7 +62,9 @@ public:
   inline void setHp(int n) { hp = n; }
   inline void setHp() { hp = getCharacter()->getStartingHp(); }
   inline void setAc(int n) { ac = n; }
-  inline void setInventory(int index, RpgItem *item) { if(index < inventory_count) inventory[index] = item; }
+  inline void setInventory(int index, RpgItem *item) { 
+	if(index < inventory_count) inventory[index] = item; 
+  }
   inline void addInventory(RpgItem *item) { inventory[inventory_count++] = item; }
   RpgItem *removeInventory(int index);
   inline void setSkill(int index, int value) { skills[index] = value; }
@@ -70,6 +72,9 @@ public:
 	if(setting) stateMod |= (1 << mod); 
 	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
   }
+
+  // until *someone* writes a pc editor
+  static PlayerChar **createHardCodedParty();
 
 };
 

@@ -26,6 +26,7 @@
 #include "sdlscreenview.h"
 #include "gui.h"
 #include "scourge.h"
+#include "rpg/pc.h"
 
 /**
   *@author Gabor Torok
@@ -41,8 +42,8 @@ private:
     enum mode {
         CHARACTER = 0, INVENTORY, SPELL, LOG
     };
-    int skillList;
-    char **invText;
+    int skillList, itemList;
+    char **invText, **pcInvText;
 
 protected:
 

@@ -41,6 +41,7 @@ Creature::Creature(Scourge *scourge, GLShape *shape, PlayerChar *pc) {
   this->index = 0;
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
+  this->quadric = gluNewQuadric();
 }
 
 Creature::~Creature(){
