@@ -52,7 +52,6 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 	createButton (210, 0, 315, 30, "Video", true, videoButton);
  	createButton (315, 0, 420, 30, "Audio", true, audioButton);
     createButton (420, 0, 525, 30, "Controls", true, controlsButton);       
-    createButton (350, 440, 455, 470, "Close", false, closeButton);           
     createButton (65, 440, 170, 470, "Save to file", false, saveButton);        		          
     //saveControlButton->setVisible(false);    
                       
@@ -246,7 +245,7 @@ void OptionsMenu::setSelectedMode(){
 
 
 bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {    
-    if(widget == closeButton) mainWin->setVisible(false);
+    if(widget == mainWin->closeButton) mainWin->setVisible(false);
     else if(widget == gameSettingsButton) {
         selectedMode = GAME_SETTINGS;        
     }  
@@ -401,7 +400,6 @@ OptionsMenu::~OptionsMenu(){
     if(controlsButton) delete controlsButton;
     if(videoButton) delete videoButton;
     if(audioButton) delete audioButton;
-    if(closeButton) delete closeButton;
     if(gameSettingsButton) delete gameSettingsButton;
     if(changeControlButton) delete changeControlButton;
     if(gameSpeedML) delete gameSpeedML;

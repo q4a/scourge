@@ -62,7 +62,7 @@ private:
   int selectedMode; 
   
   Window *mainWin;  
-  Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton, *closeButton;  
+  Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton;
   Button *changeControlButton, *saveButton;
   Label * waitingLabel;  
   Label * changeTakeEffectLabel;
