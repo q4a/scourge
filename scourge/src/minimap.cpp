@@ -99,186 +99,201 @@ void MiniMap :: computeDrawValues(){
 
 // Create and fill the texture for the minimap
 void MiniMap :: buildTexture(int xCoord, int yCoord){             
-    
-    // Create texture and copy minimap date from backbuffer on it    
-    textureInMemory = (unsigned char *) malloc(textureSizeH * textureSizeW * 4);    
-    glGenTextures(1, texture);    
-    glBindTexture(GL_TEXTURE_2D, texture[0]); 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliqué a la texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-    glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory
-    );                       
-             
-    // Draw minimap a first time to screen with quads     
-    glPushMatrix();   
-    glLoadIdentity();    
-    glTranslatef(xCoord, yCoord, 100);  
-    glBegin(GL_QUADS);      
-    for (int x = minX ; x < MINI_MAP_WIDTH; x++){
-	   for(int y = minY; y < MINI_MAP_DEPTH; y++){
-	       if((pos[x][y].visible == true) && (pos[x][y].r != 0.0f)){
-                glColor3f(pos[x][y].r, pos[x][y].g, pos[x][y].b);
-                glVertex2d (x - 1.0f , y - 1.0f);
-                glVertex2d (x - 1.0f , y);
-                glVertex2d (x , y);
-                glVertex2d (x , y - 1.0f);                
-	       }
-	   }       
-    }    
-    glEnd();      
- 
-    // Copy to a texture
-    glLoadIdentity();
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
-    glCopyTexSubImage2D(
-				GL_TEXTURE_2D,
-				0,      // MIPMAP level
-				0,      // x texture offset
-				0,      // y texture offset
-				xCoord + minX,                                  // x window coordinates
-				screenHeight - (yCoord +textureSizeH+ minY) ,   // y window coordinates
-				textureSizeW,    // width
-				textureSizeH     // height
-			); 
-    if(DEBUG_MINIMAP){  
-        fprintf(stderr, "OpenGl result for minimap texture building : %s\n", Util::getOpenGLError());          
-    }
-    glPopMatrix();
-  
+
+  if(!mustBuildTexture) return;
+  mustBuildTexture = false;
+
+  glPushAttrib(GL_ENABLE_BIT);
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_DEPTH_TEST );
+  glDisable( GL_SCISSOR_TEST );
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_BLEND );
+
+  // Create texture and copy minimap date from backbuffer on it    
+  textureInMemory = (unsigned char *) malloc(textureSizeH * textureSizeW * 4);    
+  glGenTextures(1, texture);    
+  glBindTexture(GL_TEXTURE_2D, texture[0]); 
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliqué a la texture
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
+  glTexImage2D(
+              GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
+              GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory
+              );                       
+
+  // Draw minimap a first time to screen with quads     
+  glPushMatrix();   
+  glLoadIdentity();    
+  glTranslatef(xCoord, yCoord, 0);  
+  glBegin(GL_QUADS);      
+
+//  glColor4f( 1, 1, 1, 1 );
+//  glVertex2d( 10, 10 );
+//  glVertex2d( 200, 10 );
+//  glVertex2d( 200, 200 );
+//  glVertex2d( 10, 200 );
+
+  for(int x = minX ; x < MINI_MAP_WIDTH; x++){
+    for(int y = minY; y < MINI_MAP_DEPTH; y++){
+      if((pos[x][y].visible == true) && (pos[x][y].r != 0.0f)){
+        glColor4f(pos[x][y].r, pos[x][y].g, pos[x][y].b, 1);
+        glVertex2d (x - 1.0f , y - 1.0f);
+        glVertex2d (x - 1.0f , y);
+        glVertex2d (x , y);
+        glVertex2d (x , y - 1.0f);                
+      }
+    }       
+  }    
+  glEnd();      
+
+  cerr << "building minimap texture: minX=" << minX << " minY=" << minY << 
+        " xCoord=" << xCoord << " yCoord=" << yCoord << " textureSizeW=" << textureSizeW <<
+        " textureSizeH=" << textureSizeH << " screenHeight=" << screenHeight << endl;
+
+  // Copy to a texture
+  glLoadIdentity();
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
+  glCopyTexSubImage2D(
+                     GL_TEXTURE_2D,
+                     0,      // MIPMAP level
+                     0,      // x texture offset
+                     0,      // y texture offset
+                     xCoord + minX,                                  // x window coordinates
+                     screenHeight - (yCoord +textureSizeH+ minY) ,   // y window coordinates
+                     textureSizeW,    // width
+                     textureSizeH     // height
+                     ); 
+  if(DEBUG_MINIMAP){  
+    fprintf(stderr, "OpenGl result for minimap texture building : %s\n", Util::getOpenGLError());          
+  }
+  glPopMatrix();
+  glPopAttrib();
 }
 
 void MiniMap::drawWidget(Widget *w) {
   //	glDisable(GL_CULL_FACE);
-    int xPartyPos, yPartyPos;     
-    float distX, distY; 
-    int k;
-    int xCoord=0;
-    int yCoord=0;
-  
-    if (!showMiniMap) return;    
-  
-    if (mustBuildTexture){
-        // Create minimap texture
-        mustBuildTexture = false;
-        buildTexture(xCoord, yCoord);    
-    } 
-                
-    // Compute the postition of the player in the minimap
-    xPartyPos = (int) scourge->getParty()->getPlayer()->getX();
-    yPartyPos = (int) scourge->getParty()->getPlayer()->getY();   	
-    toMiniMapCoord(xPartyPos, yPartyPos);
-    xPartyPos -= minX;   
-    yPartyPos -= minY; 
-    
-    //updateFog(xPartyPos, yPartyPos);  
-    glPushMatrix();   
-    
-    /*
-    glLoadIdentity(); 
-    if(DEBUG_MINIMAP){
-        // Show scissor 
-        glBegin(GL_LINE_LOOP);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glVertex2d(xCoord, yCoord);
-        glVertex2d(xCoord + textureSizeW +15, yCoord);
-        glVertex2d(xCoord + textureSizeW +15, yCoord + textureSizeH + 15);
-        glVertex2d(xCoord, yCoord + textureSizeH + 15);
-        glEnd();  
+  int xPartyPos, yPartyPos;     
+  float distX, distY; 
+  int k;
+  int xCoord=0;
+  int yCoord=0;
+
+  if(!showMiniMap) return;
+
+  // Compute the postition of the player in the minimap
+  xPartyPos = (int) scourge->getParty()->getPlayer()->getX();
+  yPartyPos = (int) scourge->getParty()->getPlayer()->getY();     
+  toMiniMapCoord(xPartyPos, yPartyPos);
+  xPartyPos -= minX;   
+  yPartyPos -= minY; 
+
+  //updateFog(xPartyPos, yPartyPos);  
+  glPushMatrix();   
+
+  /*
+  glLoadIdentity(); 
+  if(DEBUG_MINIMAP){
+      // Show scissor 
+      glBegin(GL_LINE_LOOP);
+      glColor3f(1.0f, 1.0f, 1.0f);
+      glVertex2d(xCoord, yCoord);
+      glVertex2d(xCoord + textureSizeW +15, yCoord);
+      glVertex2d(xCoord + textureSizeW +15, yCoord + textureSizeH + 15);
+      glVertex2d(xCoord, yCoord + textureSizeH + 15);
+      glEnd();  
+  }
+  */
+  // glScissor(x, y, width, height). (x, y) is the lower-left pixel. And y axis
+  // is reversed.       
+  //glScissor(win->getX(), screenHeight - win->getY(), w->getWidth(), w->getHeight()); 
+  //glEnable(GL_SCISSOR_TEST);
+
+  // Set origin to top-left pixel of minimap
+  glTranslatef(xCoord, yCoord, 100);                                                                                                                          
+
+  // Translate minimap so that it is centered on party position if needed
+  if(zoomFactor > 1.0){                 
+    distX = (xPartyPos*zoomFactor-midX);
+    if(distX < 0.0f) distX *=-1.0f;
+    distY = (yPartyPos*zoomFactor-midY);
+    if(distY < 0.0f) distY *=-1.0f;
+
+    if(xPartyPos * zoomFactor > midX){
+      distX *= -1.0f;
     }
-    */
-    // glScissor(x, y, width, height). (x, y) is the lower-left pixel. And y axis
-    // is reversed.       
-    //glScissor(win->getX(), screenHeight - win->getY(), w->getWidth(), w->getHeight()); 
-    //glEnable(GL_SCISSOR_TEST);
-                 
-    // Set origin to top-left pixel of minimap
-    glTranslatef(xCoord, yCoord, 100);                                                                                                                          
-  
-    // Translate minimap so that it is centered on party position if needed
-    if (zoomFactor > 1.0){                 
-        distX = (xPartyPos*zoomFactor-midX);
-        if (distX < 0.0f) distX *=-1.0f;
-        distY = (yPartyPos*zoomFactor-midY);
-        if (distY < 0.0f) distY *=-1.0f;
-               
-        if(xPartyPos * zoomFactor > midX){
-            distX *= -1.0f;
-        }
-        if(yPartyPos * zoomFactor > midY){
-            distY *= -1.0f;
-        }
-        
-        // smooth centering
-        float slowDown;
-        if( zoomFactor > 2.2)
-            slowDown = 1.0f;
-        else
-            slowDown = ((zoomFactor - 0.4)/2.0f)+0.2f;          
-        glTranslatef(distX * slowDown, distY * slowDown, 0); 
-        
-        if(DEBUG_MINIMAP) {
-            fprintf(stderr, "zoom : %f    translating : %f, %f   mid (%f, %f),   partyPos (%d, %d)\n", zoomFactor, distX, distY, midX, midY, xPartyPos, yPartyPos); 
-        }       
-     }
-  
-    /*else
-      glTranslatef(-5.0f, -5.0f, 0.0f);*/
-    glScalef(zoomFactor, zoomFactor, 1.0f); 
-    
-    // Draw the minimap using a texture
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
-    glBegin(GL_QUADS); 
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glTexCoord2i(0, 0);
-    glVertex2d(0, textureSizeH); 
-    glTexCoord2i(1, 0);    
-    glVertex2d(textureSizeW, textureSizeH); 
-    glTexCoord2i(1, 1);    
-    glVertex2d(textureSizeW, 0); 
-    glTexCoord2i(0, 1);    
-    glVertex2d(0, 0);     
-    glEnd();       
-    glDisable(GL_TEXTURE_2D);                           
-           
-    // Draw the position of the active player and its orientation
-    // (Must draw counter-clock wise)
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 1.0f, 1.0f);        
-    k = scourge->getParty()->getPlayer()->getFacingDirection();    
-    if(k == Constants::MOVE_UP){
-        // North
-        glVertex2d(xPartyPos - 4, yPartyPos + 5); 
-        glVertex2d(xPartyPos + 4, yPartyPos + 5); 
-        glVertex2d(xPartyPos, yPartyPos - 5); 
-    }else if(k == Constants::MOVE_RIGHT){
-        // East
-        glVertex2d(xPartyPos + 5, yPartyPos); 
-        glVertex2d(xPartyPos - 5, yPartyPos - 4); 
-        glVertex2d(xPartyPos - 5, yPartyPos + 4);         
-    }else if(k == Constants::MOVE_LEFT){
-        // West
-        glVertex2d(xPartyPos - 5, yPartyPos); 
-        glVertex2d(xPartyPos + 5, yPartyPos + 4); 
-        glVertex2d(xPartyPos + 5, yPartyPos - 4);         
-    }else if(k == Constants::MOVE_DOWN){
-        // South
-        glVertex2d(xPartyPos + 4, yPartyPos - 5); 
-        glVertex2d(xPartyPos - 4, yPartyPos - 5); 
-        glVertex2d(xPartyPos, yPartyPos + 5); 
-    }   
-    glEnd();   	   
-    
-  
-    glPopMatrix();   
-    //glDisable(GL_SCISSOR_TEST);        
-  
+    if(yPartyPos * zoomFactor > midY){
+      distY *= -1.0f;
+    }
+
+    // smooth centering
+    float slowDown;
+    if( zoomFactor > 2.2)
+      slowDown = 1.0f;
+    else
+      slowDown = ((zoomFactor - 0.4)/2.0f)+0.2f;          
+    glTranslatef(distX * slowDown, distY * slowDown, 0); 
+
+    if(DEBUG_MINIMAP) {
+      fprintf(stderr, "zoom : %f    translating : %f, %f   mid (%f, %f),   partyPos (%d, %d)\n", zoomFactor, distX, distY, midX, midY, xPartyPos, yPartyPos); 
+    }
+  }
+
+  /*else
+    glTranslatef(-5.0f, -5.0f, 0.0f);*/
+  glScalef(zoomFactor, zoomFactor, 1.0f); 
+
+  // Draw the minimap using a texture
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
+  glBegin(GL_QUADS); 
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glTexCoord2i(0, 0);
+  glVertex2d(0, textureSizeH); 
+  glTexCoord2i(1, 0);    
+  glVertex2d(textureSizeW, textureSizeH); 
+  glTexCoord2i(1, 1);    
+  glVertex2d(textureSizeW, 0); 
+  glTexCoord2i(0, 1);    
+  glVertex2d(0, 0);     
+  glEnd();       
+  glDisable(GL_TEXTURE_2D);                           
+
+  // Draw the position of the active player and its orientation
+  // (Must draw counter-clock wise)
+  glBegin(GL_TRIANGLES);
+  glColor3f(1.0f, 1.0f, 1.0f);        
+  k = scourge->getParty()->getPlayer()->getFacingDirection();    
+  if(k == Constants::MOVE_UP){
+    // North
+    glVertex2d(xPartyPos - 4, yPartyPos + 5); 
+    glVertex2d(xPartyPos + 4, yPartyPos + 5); 
+    glVertex2d(xPartyPos, yPartyPos - 5); 
+  } else if(k == Constants::MOVE_RIGHT){
+    // East
+    glVertex2d(xPartyPos + 5, yPartyPos); 
+    glVertex2d(xPartyPos - 5, yPartyPos - 4); 
+    glVertex2d(xPartyPos - 5, yPartyPos + 4);         
+  } else if(k == Constants::MOVE_LEFT){
+    // West
+    glVertex2d(xPartyPos - 5, yPartyPos); 
+    glVertex2d(xPartyPos + 5, yPartyPos + 4); 
+    glVertex2d(xPartyPos + 5, yPartyPos - 4);         
+  } else if(k == Constants::MOVE_DOWN){
+    // South
+    glVertex2d(xPartyPos + 4, yPartyPos - 5); 
+    glVertex2d(xPartyPos - 4, yPartyPos - 5); 
+    glVertex2d(xPartyPos, yPartyPos + 5); 
+  }
+  glEnd();       
+
+
+  glPopMatrix();   
+  //glDisable(GL_SCISSOR_TEST);        
+
 }
 
 void MiniMap :: updateFog(int a, int b){   
