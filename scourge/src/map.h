@@ -44,6 +44,11 @@ typedef struct _DrawLater {
   GLuint name;  
 } DrawLater;
 
+typedef struct _Description {
+  float r, g, b;
+  char text[120];
+} Description;
+
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
 
 /**
@@ -68,8 +73,9 @@ class Map {
   float fShadowMatrix[16];
 
   // on screen item descriptions
+  static const int MAX_DESCRIPTION_COUNT = 200;
   int descriptionCount;
-  char *descriptions[200];
+  Description descriptions[MAX_DESCRIPTION_COUNT];
 
   bool lightMapChanged;
   int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
@@ -187,11 +193,11 @@ class Map {
   inline Shape *getFloorPosition(Sint16 x, Sint16 y) { if(x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH) return NULL; else return floorPositions[x][y]; }
   
   void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);
-  void showCreatureInfo(Creature *creature, bool player, bool selected);
+  void showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode);
   
   void initMapView(bool ignoreRot = false);
   
-  void addDescription(char *description);
+  void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f);
   
   void drawDescriptions();
   

@@ -37,6 +37,7 @@ private:
   char description[300];
   RpgItem *weapon[10], *armor[10], *item[10]; // starting equipment
   int money;
+  int speed;
 
   static Monster *monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
   static int monsterCount[MAX_MONSTER_LEVEL];
@@ -50,9 +51,13 @@ public:
   inline int getLevel() { return level; }  
   inline Uint8 getShapeIndex() { return shapeIndex; }
   inline char *getDescription() { return description; }
+  inline int getSpeed() { return speed; }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);
+
+ protected:
+  inline int setSpeed(int speed) { this->speed = speed; }
 };
 
 #endif

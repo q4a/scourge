@@ -105,10 +105,13 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Uint16 move;
   bool startRound;
 
+  GLint lastTick;
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;
 
+  void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
   void getMapXYZAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);

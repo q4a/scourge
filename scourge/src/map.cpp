@@ -71,8 +71,8 @@ Map::Map(Scourge *scourge){
 
   createOverlayTexture();
 
-  addDescription(Constants::getMessage(Constants::WELCOME));
-  addDescription("----------------------------------");
+  addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
+  addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
 }
 
 Map::~Map(){
@@ -589,7 +589,7 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
   glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
 }
 
-void Map::showCreatureInfo(Creature *creature, bool player, bool selected) {
+void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode) {
   glPushMatrix();
   //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
 
@@ -657,7 +657,7 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected) {
   ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
   zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
   glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
-  gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
+  if(groupMode || player) gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
 
   glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );
@@ -805,26 +805,35 @@ Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
   return NULL;
 }
 
-void Map::addDescription(char *desc) {
+void Map::addDescription(char *desc, float r, float g, float b) {
   if(descriptionCount > 0) {
-    for(int i = descriptionCount; i >= 1; i--) {
-      descriptions[i] = descriptions[i - 1];
+	int last = descriptionCount;
+	if(last >= MAX_DESCRIPTION_COUNT) last--;
+    for(int i = last; i >= 1; i--) {
+	  strcpy(descriptions[i].text, descriptions[i - 1].text);
+	  descriptions[i].r = descriptions[i - 1].r;
+	  descriptions[i].g = descriptions[i - 1].g;
+	  descriptions[i].b = descriptions[i - 1].b;
     }
   }
-  if(descriptionCount < 200) descriptionCount++;
-  descriptions[0] = desc;
+  if(descriptionCount < MAX_DESCRIPTION_COUNT) descriptionCount++;
+  strcpy(descriptions[0].text, desc);
+  descriptions[0].r = r;
+  descriptions[0].g = g;
+  descriptions[0].b = b;
 }
 
 void Map::drawDescriptions() {
   glPushMatrix();
   glLoadIdentity();
-  glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
+  //glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
   int y = TOP_GUI_HEIGHT - 5;
   if(descriptionCount <= 5) y = descriptionCount * 15;
   int index =  0;
   while(y > 5 && index < descriptionCount) {    
+	glColor4f(descriptions[index].r, descriptions[index].g, descriptions[index].b, 1.0f);
     glRasterPos2f( (float)5, (float)y );
-    scourge->getSDLHandler()->texPrint(5, y, "%s", descriptions[index]);
+    scourge->getSDLHandler()->texPrint(5, y, "%s", descriptions[index].text);
 
     y -= 15;
     index++;
