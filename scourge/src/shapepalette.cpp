@@ -275,7 +275,6 @@ void ShapePalette::initShapes() {
                 display_list + (count++ * 3),
                 Constants::LOCATOR_INDEX);
 
-
   // creatures
   creature_display_list_start = display_list + (count * 3);                
 
@@ -377,6 +376,19 @@ void ShapePalette::initShapes() {
 			"CORPSE",
 			0xffffffff,
 			display_list + (count++ * 3), Constants::CORPSE_INDEX);
+	item_shapes[Constants::TABLE_INDEX] =
+		new C3DSShape("data/objects/table.3ds", 1.3f, this,
+									notex, 4, 5, 3,
+									"TABLE",
+									0xffffffff,
+									display_list + (count++ * 3), Constants::TABLE_INDEX);
+	item_shapes[Constants::CHAIR_INDEX] =
+		new C3DSShape("data/objects/chair.3ds", 0.8f, this,
+									notex, 2, 3, 4,
+									"CHAIR",
+									0xffffffff,
+									display_list + (count++ * 3), Constants::CHAIR_INDEX);
+
 	
 
   

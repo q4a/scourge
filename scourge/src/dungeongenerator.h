@@ -161,6 +161,8 @@ protected:
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
+
+	void addItemsInRoom(RpgItem *rpgItem, int n);
 };
 
 #endif

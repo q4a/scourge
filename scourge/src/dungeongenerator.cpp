@@ -846,6 +846,10 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal) {
 	creature->moveTo(x, y, 0);
   }
 
+	// add tables, chairs, etc.
+	addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1);
+	addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2);
+
   // add the party in the first room
   // FIXME: what happens if the party doesn't fit in the room?
   //  for(int i = 0; i < roomCount; i++) {
@@ -865,6 +869,23 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal) {
 
   // free empty space container
   free(ff);  
+}
+
+void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n) {
+	int x, y;
+	for(int i = 0; i < roomCount; i++) {
+		for(int r = 0; r < n; r++) {
+			for(int t = 0; t < 5; t++) { // 5 tries
+				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
+				if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+					Item *item = scourge->newItem(rpgItem);
+					addItem(scourge->getMap(), NULL, item, NULL, x, y);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal, 

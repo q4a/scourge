@@ -89,7 +89,15 @@ RpgItem *RpgItem::items[] =  {
   new RpgItem(CORPSE, "Corpse", 1, CONTAINER, 200, CONTAINER, 100, 0, 0,
 			  "The decomposing corpse of one once strong and able",
 			  "A decomposing corpse", 0,
-			  Constants::CORPSE_INDEX)
+			  Constants::CORPSE_INDEX),
+  new RpgItem(TABLE, "Table", 1, OTHER, 50, OTHER, 100, 0, 0,
+			  "A large featureless wooden table",
+			  "A large table", 0,
+			  Constants::TABLE_INDEX),
+  new RpgItem(CHAIR, "Chair", 1, OTHER, 50, OTHER, 100, 0, 0,
+			  "A simple wooden chair",
+			  "A simple chair", 0,
+			  Constants::CHAIR_INDEX)
 
 };
 
