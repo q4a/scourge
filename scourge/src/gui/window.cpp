@@ -197,7 +197,8 @@ bool Window::isInside(int x, int y) {
 
 bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   switch(event->type) {
-  //case SDL_KEYDOWN:
+  case SDL_KEYDOWN:
+    return false;
   case SDL_KEYUP:
   if(event->key.keysym.sym == SDLK_TAB) {
     if(SDL_GetModState() & KMOD_SHIFT) {
@@ -209,8 +210,9 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   } else if(event->key.keysym.sym == SDLK_ESCAPE && closeButton && !isLocked()) {
     setVisible(false);
     return true;
+  } else {
+    return false;
   }
-  break;
   case SDL_MOUSEMOTION:
   if(dragging) move(x - dragX, y - dragY);
   break;
