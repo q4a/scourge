@@ -896,7 +896,7 @@ void Creature::equipInventory(int index) {
       // handle magic attrib settings
       if(item->isMagicItem()) {
 
-        item->debugMagic("Equip: ");
+        //item->debugMagic("Equip: ");
 
         // set the good attributes
         for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {

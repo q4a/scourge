@@ -131,7 +131,9 @@ void Board::reset() {
   }
   for( int i = 0; i < (int)availableMissions.size(); i++ ) {
     Mission *mission = availableMissions[i];
-    delete mission;
+	if( !mission->isStoryLine() ) {
+	  delete mission;
+	}
   }
   availableMissions.clear();
 }
@@ -354,6 +356,7 @@ Mission::Mission( int level, int depth, char *name, char *description, char *suc
   strcpy( this->success, success );
   strcpy( this->failure, failure );
   this->completed = false;
+  this->storyLine = false;
 
 //  cerr << "*** Created mission: " << getName() << endl;
 //  cerr << getDescription() << endl;
@@ -365,6 +368,8 @@ Mission::~Mission() {
   itemList.clear();
   creatures.clear();
   creatureList.clear();
+  itemInstanceMap.clear();
+  monsterInstanceMap.clear();
 }
 
 bool Mission::itemFound(Item *item) {

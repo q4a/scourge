@@ -233,12 +233,16 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   }
   for(int i = 0; i < creatureCount; i++) {
     delete creatures[i];
+	creatures[i] = NULL;
   }
   creatureCount = 0;
+
   /*
+  cerr << "***************************************" << endl;
     cerr << "After mission: " <<
     " creatureCount=" << creatureCount << 
     " itemCount=" << itemCount << endl;
+  cerr << "***************************************" << endl;
   */
 }
 

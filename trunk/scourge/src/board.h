@@ -80,6 +80,7 @@ public:
   }
 
   inline bool isCompleted() { return completed; }
+  inline void setCompleted( bool b ) { completed = b; }
   inline char *getName() { return name; }
   inline char *getDescription() { return description; }
   inline char *getSuccess() { return success; }
