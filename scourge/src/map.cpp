@@ -1167,25 +1167,26 @@ Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
 }
 
 void Map::addDescription(char *desc, float r, float g, float b) {
-  if(descriptionCount > 0) {
-	int last = descriptionCount;
-	if(last >= MAX_DESCRIPTION_COUNT) last--;
-    for(int i = last; i >= 1; i--) {
-	  strcpy(descriptions[i], descriptions[i - 1]);
-	  descriptionsColor[i].r = descriptionsColor[i - 1].r;
-	  descriptionsColor[i].g = descriptionsColor[i - 1].g;
-	  descriptionsColor[i].b = descriptionsColor[i - 1].b;
-    }
-  }
-  if(descriptionCount < MAX_DESCRIPTION_COUNT) descriptionCount++;
-  // only copy as much as the buffer can hold
-  strncpy(descriptions[0], desc, 120);
+  strncpy(descriptions[descriptionCount], desc, 120);
   // zero terminate just in case desc.length > 120
-  descriptions[0][119] = 0;
+  descriptions[descriptionCount][119] = 0;
+  // set the color
+  descriptionsColor[descriptionCount].r = r;
+  descriptionsColor[descriptionCount].g = g;
+  descriptionsColor[descriptionCount].b = b;
 
-  descriptionsColor[0].r = r;
-  descriptionsColor[0].g = g;
-  descriptionsColor[0].b = b;
+  // delete the first one if max reached
+  if(descriptionCount == MAX_DESCRIPTION_COUNT - 1) {
+    for(int i = 0; i < (MAX_DESCRIPTION_COUNT - 1); i++) {
+      strcpy(descriptions[i], descriptions[i + 1]);
+      descriptionsColor[i].r = descriptionsColor[i + 1].r;
+      descriptionsColor[i].g = descriptionsColor[i + 1].g;
+      descriptionsColor[i].b = descriptionsColor[i + 1].b;
+    }
+  } else {
+    descriptionCount++;
+  }
+
   descriptionsChanged = true;
 }
 
@@ -1193,6 +1194,7 @@ void Map::drawDescriptions(ScrollingList *list) {
   if(descriptionsChanged) {
     descriptionsChanged = false;
     list->setLines(descriptionCount, (const char**)descriptions, descriptionsColor);
+    list->setSelectedLine(descriptionCount - 1);
   }
 
   /*
