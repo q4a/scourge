@@ -36,7 +36,8 @@ char RpgItem::itemTypeStr[ITEM_TYPE_COUNT][40] = {
   "FOOD",
   "DRINK",
   "POTION",
-  "OTHER"
+  "OTHER",
+  "MISSION"
 };
 
 RpgItem::RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 

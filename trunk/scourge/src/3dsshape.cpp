@@ -68,11 +68,11 @@ C3DSShape::~C3DSShape() {
  void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety) {
    fprintf(stderr, "%s\n", file_name);
    g_Texture[0] = 0;
-  g_ViewMode = GL_TRIANGLES;
-  this->div = div;
-  this->shapePal = shapePal;
-  this->offsetx = offsetx;
-  this->offsety = offsety;
+   g_ViewMode = GL_TRIANGLES;
+   this->div = div;
+   this->shapePal = shapePal;
+   this->offsetx = offsetx;
+   this->offsety = offsety;
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
@@ -130,6 +130,67 @@ C3DSShape::~C3DSShape() {
   movex = minx;
   movey = maxy;
   movez = minz;
+
+
+
+  // pre-render the light
+  for(int i = 0; i < g_3DModel.numOfObjects; i++) {
+	if(g_3DModel.pObject.size() <= 0) break;
+	t3DObject *pObject = &g_3DModel.pObject[i];	
+	for(int j = 0; j < pObject->numOfFaces; j++) {
+	  for(int whichVertex = 0; whichVertex < 3; whichVertex++) {
+		int index = pObject->pFaces[j].vertIndex[whichVertex];
+
+		// Simple light rendering:
+		// need the normal as mapped on the xy plane
+		// it's degree is the intensity of light it gets
+		float x = (pObject->pNormals[ index ].x == 0 ? 0.01f : pObject->pNormals[ index ].x);
+		float y = pObject->pNormals[ index ].y;
+		float rad = atan(y / x);
+		float angle = (180.0f * rad) / 3.14159;
+		  
+		// read about the arctan problem: 
+		// http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
+		int q = 1;
+		if(x < 0) { 		// Quadrant 2 & 3
+		  q = ( y >= 0 ? 2 : 3);
+		  angle += 180;
+		} else if(y < 0) { // Quadrant 4
+		  q = 4;
+		  angle += 360;
+		}
+		  
+		// assertion
+		if(angle < 0 || angle > 360) {
+		  cerr << "Warning: angle=" << angle << " quadrant=" << q << endl;
+		}
+		  
+		// these are not used
+		//if(angle < 0) angle += 360.0f;
+		//if(angle > 360) angle -= 360.0f;
+		  
+		// calculate the angle distance from the light
+		float delta = 0;
+		if(angle > LIGHT_ANGLE && angle < LIGHT_ANGLE + 180.0f) {
+		  delta = angle - LIGHT_ANGLE;
+		} else {
+		  if(angle < LIGHT_ANGLE) angle += 360.0f;
+		  delta = (360 + LIGHT_ANGLE) - angle;
+		}
+
+		// assertion
+		if(delta < 0 || delta > 180.0f) {
+		  cerr << "WARNING: angle=" << angle << " delta=" << delta << endl;
+		}
+
+		// reverse and convert to value between 0 and 1
+		delta = 1.0f - (delta / 180.0f);
+
+		// store the value
+		pObject->shadingColorDelta[ index ] = delta;
+	  }
+	}
+  }
 }
 
 void C3DSShape::draw() {
@@ -203,34 +264,6 @@ void C3DSShape::draw() {
 		// Give OpenGL the normal for this vertex.
 		glNormal3f(pObject->pNormals[ index ].x, pObject->pNormals[ index ].y, pObject->pNormals[ index ].z);
 
-		// Simple light rendering:
-		// need the normal as mapped on the xy plane
-		// it's degree is the intensity of light it gets
-		float x = (pObject->pNormals[ index ].x == 0 ? 0.01f : pObject->pNormals[ index ].x);
-		float y = pObject->pNormals[ index ].y;
-		float rad = atan(y / x);
-		float angle = (180.0f * rad) / 3.14159;
-
-		// read about the arctan problem: 
-		// http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
-		int q = 1;
-		if(x < 0) { 		// Quadrant 2 & 3
-		  q = ( y >= 0 ? 2 : 3);
-		  angle += 180;
-		} else if(y < 0) { // Quadrant 4
-		  q = 4;
-		  angle += 360;
-		}
-
-		// assertion
-		if(angle < 0 || angle > 360) {
-		  cerr << "Warning: angle=" << angle << " quadrant=" << q << endl;
-		}
-
-		// these are not used
-		//if(angle < 0) angle += 360.0f;
-		//if(angle > 360) angle -= 360.0f;
-
 		// If the object has a texture associated with it, give it a texture coordinate.
 		if(!useShadow) {
 		  if(pObject->bHasTexture) {
@@ -261,28 +294,10 @@ void C3DSShape::draw() {
 			}
 		  }
 		  
-		  // calculate the angle distance from the light
-		  float delta = 0;
-		  if(angle > LIGHT_ANGLE && angle < LIGHT_ANGLE + 180.0f) {
-			delta = angle - LIGHT_ANGLE;
-		  } else {
-			if(angle < LIGHT_ANGLE) angle += 360.0f;
-			delta = (360 + LIGHT_ANGLE) - angle;
-		  }
-
-		  // assertion
-		  if(delta < 0 || delta > 180.0f) {
-			cerr << "WARNING: angle=" << angle << " delta=" << delta << endl;
-		  }
-
-		  // reverse and convert to value between 0 and 1
-		  delta = 180.0f - delta;
-		  delta /= 180.0f;
-		  
-		  // apply to current color
-		  c[0] *= delta;
-		  c[1] *= delta;
-		  c[2] *= delta;
+		  // apply the precomputed shading to the current color
+		  c[0] *= pObject->shadingColorDelta[ index ];
+		  c[1] *= pObject->shadingColorDelta[ index ];
+		  c[2] *= pObject->shadingColorDelta[ index ];
 		  glColor3f(c[0], c[1], c[2]);
 		}
 		
