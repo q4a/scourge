@@ -1,11 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <SDL.h>
-#include <SDL_net.h>
-#include <SDL_thread.h>
-#include <iostream.h>
-#include <string>
+#include "../constants.h"
 #include "tcputil.h"
 #include "gamestatehandler.h"
 #include "testgamestatehandler.h"

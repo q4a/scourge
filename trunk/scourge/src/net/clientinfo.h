@@ -1,13 +1,7 @@
 #ifndef CLIENT_INFO_H
 #define CLIENT_INFO_H
 
-#include <SDL.h>
-#include <SDL_net.h>
-#include <SDL_thread.h>
-#include <string>
-#include <iostream>
-#include <queue>
-#include <map>
+#include "../constants.h"
 #include "server.h"
 #include "tcputil.h"
 #include "commands.h"

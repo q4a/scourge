@@ -30,6 +30,12 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_endian.h>
+
+#ifdef HAVE_SDL_NET
+#include <SDL_net.h>
+#include <SDL_thread.h>
+#endif
+
 #if defined(__APPLE__) || defined(__MACH_O__)
 // *** #include <GLUT/glut.h>
 #else
@@ -47,6 +53,8 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #include <stdlib.h>
 #include <math.h>
 #include <vector>
+#include <queue>
+#include <map>
 #include <iostream>
 
 
@@ -222,6 +230,8 @@ public:
 // So this value should not be modified. Maybe later there will be an
 // animation_speed for each creature, to give the feeling some are faster than others ?
 #define ANIMATION_SPEED         5.0f  
+
+#define DEFAULT_SERVER_PORT 6543
 
 // The map's dimensions
 #define MAP_WIDTH 600

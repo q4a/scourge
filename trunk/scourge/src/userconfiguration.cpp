@@ -157,6 +157,8 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
 UserConfiguration::UserConfiguration(){    
     unsigned int i, j;
     string temp;
+
+    standAloneMode = NONE;
     
 		stencilBufInitialized = false;
     configurationChanged = false;
@@ -603,6 +605,18 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 	} else if(!strcmp(argv[i], "--version")) {
 	  printf("Scourge, version %.2f\n", SCOURGE_VERSION);
 	  exit(0);
+    } else if(!strncmp(argv[i], "--server", 8)) {
+      standAloneMode = SERVER;
+      port = atoi(argv[i] + 8);
+    } else if(!strncmp(argv[i], "--client", 8)) {
+      char *p = strdup(argv[i] + 8);
+      host = strdup(strtok(p, ":"));
+      port = atoi(strtok(NULL, ","));
+      userName = strdup(strtok(NULL, ","));
+      standAloneMode = CLIENT;
+      //free(host);
+      //free(userName);
+      free(p);
 	} else if(!strcmp(argv[i], "--test")) {
 	  test = true;
 	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
@@ -631,6 +645,12 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 	printf("Usage:\n");
 	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
 	printf("version: %.2f\n", SCOURGE_VERSION);
+#ifdef HAVE_SDL_NET
+    printf("[Multiplayer support]\n");
+#endif
+#ifdef HAVE_SDL_MIXER
+    printf("[Sound support]\n");
+#endif
 	printf("\nOptions:\n");
 	printf("\tf - disable fullscreen mode\n");
 	printf("\td - disable double buffering\n");
@@ -650,6 +670,11 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 	printf("\t--heightXX - use XX pixels for the screen height\n");
     printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
 	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
+#ifdef HAVE_SDL_NET
+    printf("Multiplayer options:\n");
+    printf("\t--serverPORT - run a standalone server w/o a ui on PORT\n");
+    printf("\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. Connect to server HOST:PORT as USERNAME.\n");
+#endif
 	exit(0);
   }   
 } 

@@ -1,11 +1,7 @@
 #ifndef BROADCAST_H
 #define BROADCAST_H
 
-#include <SDL.h>
-#include <SDL_net.h>
-#include <SDL_thread.h>
-#include <string>
-#include <iostream>
+#include "../constants.h"
 
 using namespace std;
 

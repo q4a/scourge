@@ -168,10 +168,20 @@ private:
   bool keepMapSize;
   bool frameOnFullScreen;
 
-	// was the stencil buf. initialized at start?
-	bool stencilBufInitialized;
+  // was the stencil buf. initialized at start?
+  bool stencilBufInitialized;
+
+  int standAloneMode;
+  char *host, *userName;
+  int port;
    
  public:
+
+  enum {
+    NONE = 0,
+    SERVER,
+    CLIENT
+  };
  
   UserConfiguration::UserConfiguration();
   UserConfiguration::~UserConfiguration();
@@ -243,8 +253,13 @@ private:
   void parseCommandLine(int argc, char *argv[]);  
   void setKeyForEngineAction(string keyName, int ea);
 
-	inline void setStencilBufInitialized(bool b) { stencilBufInitialized = b; }
-	inline bool getStencilBufInitialized() { return stencilBufInitialized; }
+  inline void setStencilBufInitialized(bool b) { stencilBufInitialized = b; }
+  inline bool getStencilBufInitialized() { return stencilBufInitialized; }
+
+  inline int getStandAloneMode() { return standAloneMode; }
+  inline char *getHost() { return host; }
+  inline char *getUserName() { return userName; }
+  inline int getPort() { return port; }
 
  protected:  
 	void createDefaultConfigFile();

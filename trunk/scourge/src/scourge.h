@@ -539,6 +539,8 @@ public:
   */
   void consumeGameState(int frame, char *state);
 
+  void runClient(char *host, int port, char *userName);
+  void runServer(int port);
 
  protected:
   //  void fightBattle(); 
