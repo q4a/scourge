@@ -20,7 +20,7 @@
 #define LOGO_DELTA 0.05f
 #define LOGO_ROT_POS 30.0f
 #define LOGO_ROT_NEG 0
-#define LOGO_ZOOM 0.2f
+#define LOGO_ZOOM 0.8f
 
 #define LOGO_SPRITE_DELTA 8.0f
 #define PI 3.14159f
@@ -182,6 +182,10 @@ void MainMenu::drawAfter() {
 }
 
 void MainMenu::drawLogo() {
+
+  if((int)(5.0f * rand()/RAND_MAX) == 0) addLogoSprite();
+  drawLogoSprites();
+
   //  glDisable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_BLEND);  
@@ -229,9 +233,6 @@ void MainMenu::drawLogo() {
 	  }
 	}
   }
-
-  if((int)(5.0f * rand()/RAND_MAX) == 0) addLogoSprite();
-  drawLogoSprites();
 }
 
 void MainMenu::addLogoSprite() {
@@ -249,7 +250,9 @@ void MainMenu::drawLogoSprites() {
   for(int i = 0; i < logoSpriteCount; i++) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable(GL_BLEND);  
-	glBlendFunc( GL_ONE_MINUS_SRC_COLOR, GL_ONE );
+	//	GL_ONE_MINUS_SRC_COLOR, GL_ZERO
+	// GL_DST_COLOR, GL_ONE
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//scourge->setBlendFunc();
 	glPushMatrix();
 	glLoadIdentity();
@@ -260,9 +263,12 @@ void MainMenu::drawLogoSprites() {
 	float w = scourge->getShapePalette()->logo->w;
 	float h = scourge->getShapePalette()->logo->h;
 
-	float alpha = (float)logoSprite[i].steps / 200.0f;
+	float alpha = (float)logoSprite[i].steps / 70.0f;
+	if(alpha > 1.0f) alpha = 1.0f;
+	//	cerr << "i=" << i << " steps=" << logoSprite[i].steps << " alpha=" << alpha << endl;
+	logoSprite[i].steps++;
 
-	glColor4f( 1, 1, 1, alpha );
+	glColor4f( 0.5, 0.5, 1, alpha );
 	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
 	glBegin( GL_QUADS );
 	glNormal3f(0.0f, 0.0f, 1.0f);
@@ -310,8 +316,6 @@ void MainMenu::drawLogoSprites() {
 	  logoSprite[i].rot = logoSprite[logoSpriteCount - 1].rot;
 	  logoSpriteCount--;
 	  i--;
-	} else {
-	  logoSprite[logoSpriteCount].steps++;
 	}
   }
 }
