@@ -157,7 +157,7 @@ class Creature {
   inline int getTargetZ() { if(targetCreature) return targetCreature->getZ(); else return targetZ; }
   void setTargetCreature(Creature *c);
   inline Creature *getTargetCreature() { return targetCreature; }
-  inline void setTargetLocation(int x, int y, int z) { targetX = x; targetY = y; targetZ = z; }
+  inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
   inline void getTargetLocation(int *x, int *y, int *z) { *x = targetX; *y = targetY; *z = targetZ; }
   inline void setTargetItem(int x, int y, int z, Item *item) { setTargetLocation(x, y, z); targetItem = item; }
   inline Item *getTargetItem() { return targetItem; }

@@ -53,6 +53,7 @@ public:
   virtual inline int getScreenWidth() { return 0; }
   virtual inline int getScreenHeight() { return 0; }
   virtual inline void fightProjectileHitTurn(Projectile *proj, Creature *creature) {}
+  virtual inline void fightProjectileHitTurn(Projectile *proj, int x, int y) {}
   virtual inline void resetPartyUI() {}
   virtual inline void refreshInventoryUI(int playerIndex) {}
   virtual inline void refreshInventoryUI() {}

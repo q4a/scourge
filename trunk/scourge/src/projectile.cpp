@@ -96,10 +96,15 @@ void Projectile::commonInit() {
 Projectile::~Projectile() {
 }
 
+bool Projectile::atTargetLocation() {
+  int dx = abs(ex - sx);
+  int dy = abs(ey - sy);
+  return (dx < DELTA && dy < DELTA);
+}
+
 bool Projectile::move() {
   // are we at the target location?
-  if(steps >= maxDist ||
-     (sx == ex && sy == ey)) return true;
+  if(steps >= maxDist || this->atTargetLocation()) return true;
   steps++;
 
   float oldAngle = angle;
