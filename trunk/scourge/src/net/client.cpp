@@ -16,6 +16,7 @@ Client::Client(char *host, int port, char *username, CommandInterpreter *ci) {
   this->gsh = NULL;
   this->broadcast = new Broadcast();
   this->commands = new Commands(ci);
+  tryToReconnect = true;
 
   if(host && port) {
     // Resolve the argument into an IPaddress type
@@ -82,7 +83,7 @@ int clientLoop(void *data) {
   // process incoming data
   while(client->isThreadRunning()) {
 
-    cerr << "@";
+    //cerr << "@";
 
     sendPing = false;
 
@@ -124,9 +125,17 @@ int clientLoop(void *data) {
 #endif
         client->getCommands()->interpret(str);
 
-        // respond to this with a ping
-        if(!strncmp(str, "STATE,", 6)) {
+        // Handle some low level requests
+        switch(client->getCommands()->getLastCommand()) {
+        case Commands::STATE:
           sendPing = true;
+          break;
+        case Commands::CLOSING:
+          client->setTryToReconnect(false);
+          cerr << "* Client: will not reconnect." << endl;
+          break;
+        default:
+          break;
         }
       }
     }
@@ -175,12 +184,12 @@ void Client::closeConnection() {
 
 int Client::connect() {
   if(connected && !readError) {
-    cerr << "** connected=" << connected << " readError=" << readError << endl;
+    cerr << "* Client: connected=" << connected << " readError=" << readError << endl;
     return 1;
   }
   readError = false;
   cerr << "* Client: Connecting to server..." << endl;
-  for(int i = 0; RETRY_COUNT <= 0 || i < RETRY_COUNT; i++) {
+  for(int i = 0; tryToReconnect && RETRY_COUNT <= 0 || i < RETRY_COUNT; i++) {
     closeConnection();
     if(openConnection()) {
       cerr << "\tClient: Success." << endl;
@@ -230,7 +239,7 @@ int Client::sendRawTCP(char *s) {
   for(int i = 0; RETRY_COUNT <= 0 || i < RETRY_COUNT; i++) {
     if(!TCPUtil::send(tcpSocket, s)) {
       cerr << "* Client: Connection lost to server. Re-logging in..." << endl;
-      if(!connect()) {
+      if(!(tryToReconnect && connect())) {
         cerr << "* Client: Reconnect failed. Giving up on server." << endl;
         return 0;
       }

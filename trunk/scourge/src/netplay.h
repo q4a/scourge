@@ -52,6 +52,7 @@ public:
   void ping(int frame);
   void processGameState(int frame, char *p);
   void handleUnknownMessage();
+  void serverClosing();
 
   inline Window *getWindow() { return mainWin; }
 

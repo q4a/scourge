@@ -102,4 +102,7 @@ void NetPlay::handleUnknownMessage() {
   cerr << "Unknown message received." << endl;
 }
 
+void NetPlay::serverClosing() {
+  // do nothing
+}
 
