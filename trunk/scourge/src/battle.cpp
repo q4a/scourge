@@ -301,10 +301,10 @@ void Battle::hitWithItem() {
 		  
 		  // see if this is a mission objective
 		  if(scourge->getCurrentMission() && 
-			 creature->getTargetCreature()->getMonster()) {
-			scourge->getCurrentMission()->monsterSlain(creature->getTargetCreature()->getMonster());
+			 creature->getTargetCreature()->getMonster() &&
+			 scourge->getCurrentMission()->monsterSlain(creature->getTargetCreature()->getMonster())) {
+			scourge->missionCompleted();
 		  }
-
 		}
 	  }
 	} else {
