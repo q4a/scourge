@@ -193,7 +193,7 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
 }
 
 void SDLHandler::setVideoMode(int argc, char *argv[]) {
-  bool fullscreen = false;
+  bool fullscreen = true;
   bool doublebuf = true;
   bool hwpal = true;
   bool resizeable = true;
@@ -231,7 +231,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	  for(int t = 1; t < strlen(argv[i]); t++) {
 		switch(argv[i][t]) {
 		case 'h': case '?': printusage = true; break;
-		case 'f': fullscreen = true; break;
+		case 'f': fullscreen = false; break;
 		case 'd': doublebuf = false; break;
 		case 'p': hwpal = false; break;
 		case 'r': resizeable = false; break;
@@ -254,7 +254,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
 	printf("version: %.2f\n", SCOURGE_VERSION);
 	printf("\nOptions:\n");
-	printf("\tf - fullscreen mode\n");
+	printf("\tf - disable fullscreen mode\n");
 	printf("\td - disable double buffering\n");
 	printf("\tp - disable hardware palette\n");
 	printf("\tr - disable resizable window\n");
@@ -268,7 +268,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	printf("\t--version - print the build version\n");
 	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
     printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
-	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is off\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
+	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
 	exit(0);
   }
 
