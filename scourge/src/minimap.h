@@ -21,6 +21,8 @@
 #define MINI_MAP_X_SCALE 3
 #define MINI_MAP_Y_SCALE 3
 
+#define MINI_MAP_PARTY_VIEW 4
+
 #define MINI_MAP_WIDTH MAP_WIDTH/MINI_MAP_X_SCALE
 #define MINI_MAP_DEPTH MAP_DEPTH/MINI_MAP_Y_SCALE
 
@@ -34,6 +36,7 @@
 #include "map.h"
 #include "dungeongenerator.h"
 #include "scourge.h"
+#include "math.h"
 
 using namespace std;
 
@@ -43,6 +46,7 @@ class Shape;
 class DungeonGenerator;
 class Map;
 class Scourge;
+class Util;
 
 
 typedef struct _MiniMapPoint {
@@ -67,6 +71,12 @@ class MiniMap {
   bool showMiniMap;     // true : draw it, false : don't draw the minimap
   int screenHeight;     // Needed for glScissor used in MiniMap::Draw()
   
+  // Texture that will hold the minimap
+  int textureSize;   
+  GLuint texture[1];
+  unsigned char * textureInMemory;
+  bool mustBuildTexture;   
+  
   // Real width and height of minimap in pixels (i.e. : without insignificant
   // pixels at the bottom or at the right side) including a little marge.
   int effectiveWidth, effectiveHeight; 
@@ -89,9 +99,12 @@ class MiniMap {
   void zoomIn();
   void zoomOut();
   
+  bool checkInside(int a, int b); 
   inline void toggle(){showMiniMap = !showMiniMap;} 
   void computeDrawValues(); // needed before drawing the minimap
-  void draw(int xCoord, int yCoord);
+  void updateFog(int a, int b); // gradually set the minimap visible for the player
+  void buildTexture(int xCoord, int yCoord);
+  void draw(int xCoord, int yCoord); 
   
   //void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);    
   
