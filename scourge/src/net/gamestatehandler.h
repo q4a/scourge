@@ -1,8 +1,7 @@
 #ifndef GAME_STATE_HANDLER_H
 #define GAME_STATE_HANDLER_H
 
-#include <string>
-#include <iostream>
+#include "../constants.h"
 
 using namespace std;
 

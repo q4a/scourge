@@ -1,10 +1,7 @@
 #ifndef TCP_UTIL_H
 #define TCP_UTIL_H
 
-#include <SDL.h>
-#include <SDL_net.h>
-#include <SDL_thread.h>
-#include <iostream.h>
+#include "../constants.h"
 
 class TCPUtil {
  private:

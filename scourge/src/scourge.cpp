@@ -60,6 +60,17 @@ Scourge::Scourge(int argc, char *argv[]){
   userConfiguration = new UserConfiguration();  
   userConfiguration->loadConfiguration();    
   userConfiguration->parseCommandLine(argc, argv);  
+
+  // standalone mode?
+  if(userConfiguration->getStandAloneMode() == UserConfiguration::SERVER) {
+    runServer(userConfiguration->getPort());
+    sdlHandler->quit(0);
+  } else if(userConfiguration->getStandAloneMode() == UserConfiguration::CLIENT) {
+    runClient(userConfiguration->getHost(), 
+              userConfiguration->getPort(), 
+              userConfiguration->getUserName());
+    sdlHandler->quit(0);
+  }
    
   // Initialize the video mode
   sdlHandler = new SDLHandler(); 
@@ -1866,3 +1877,31 @@ void Scourge::consumeGameState(int frame, char *state) {
   cerr << "got frame: " << frame << " state=" << state << endl;
 }
 
+void Scourge::runServer(int port) {
+  server = new Server(port ? port : DEFAULT_SERVER_PORT);
+  server->setGameStateHandler(this);
+  
+  // wait for the server to quit
+  int status;
+  SDL_WaitThread(server->getThread(), &status);
+}
+
+void Scourge::runClient(char *host, int port, char *userName) {
+  client = new Client((char*)host, port, (char*)userName);
+  client->setGameStateHandler(this);
+  if(!client->login()) {
+    cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
+    return;
+  }
+
+  char message[80];
+  while(true) {
+    cout << "> ";
+    int c;
+    int n = 0;
+    while(n < 79 && (c = getchar()) != '\n') message[n++] = c;
+    message[n] = 0;
+    client->sendChatTCP(message);
+    //client->sendRawTCP(message);
+  }  
+}
