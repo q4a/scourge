@@ -77,7 +77,7 @@ private:
 	char **spellText;
 
 	// character info screen
-	Label *nameAndClassLabel, *levelLabel, *expLabel, *hpLabel, *mpLabel;
+	Label *nameAndClassLabel, *levelLabel, *hpLabel, *mpLabel;
 	Label *thirstLabel, *hungerLabel, *skillModLabel, *armorLabel;	
 	int stateCount;
 	char **stateLine, **skillLine;
@@ -91,6 +91,7 @@ private:
 	char thirstStr[80];
 	char hungerStr[80];
 	char skillModStr[80];
+	char skillsStr[80];
 	char armorStr[80];
 	Canvas *attrCanvas;
 
