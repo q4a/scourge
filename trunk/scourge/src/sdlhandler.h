@@ -87,6 +87,9 @@ private:
   freetype_font_data monoFont;
   bool font_initialized;
 
+  // only do stencil buffer ops if this is true
+  static bool stencilBufferUsed;
+
  public: 
 
   enum {

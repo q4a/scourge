@@ -18,6 +18,8 @@
 
 #include "sdlhandler.h"
 
+bool SDLHandler::stencilBufferUsed = false;
+
 SDLHandler::SDLHandler(ShapePalette *shapePal){
   /* These are to calculate our fps */
   this->shapePal = shapePal;
@@ -132,7 +134,7 @@ int SDLHandler::initGL( GLvoid ) {
 
     /* Depth buffer setup */
     glClearDepth( 1.0f );
-	glClearStencil(0);									// Clear The Stencil Buffer To 0
+    if(stencilBufferUsed) glClearStencil(0); // Clear The Stencil Buffer To 0
 
     /* Enables Depth Testing */
     glEnable( GL_DEPTH_TEST );
@@ -327,9 +329,10 @@ void SDLHandler::setVideoMode( UserConfiguration * uc ) {
   
   /* Sets up OpenGL double buffering */
   if(uc->getDoublebuf()) 
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   if(uc->getStencilbuf()) {
 		uc->setStencilBufInitialized(true);
+    stencilBufferUsed = true;
 		SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 	}
 
@@ -468,7 +471,8 @@ void SDLHandler::mainLoop() {
 }
 
 void SDLHandler::drawScreen() {
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+  if(stencilBufferUsed) glClear( GL_STENCIL_BUFFER_BIT );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
   glClearDepth( 1.0f );
 
