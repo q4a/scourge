@@ -77,6 +77,7 @@ private:
 
   Sint16 *ff;
   int ffCount;
+  int status;
 
   // directions
   const static int DIR_N = 0;
@@ -146,6 +147,8 @@ public:
   void toMap(Map *map, ShapePalette *shapePal, int location=0);
 
 protected:
+
+  void updateStatus();
 
   void initByLevel();
   void generateMaze();
