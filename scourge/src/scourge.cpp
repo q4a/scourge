@@ -38,8 +38,8 @@ void Scourge::setBlendFunc() {
 Scourge::Scourge(int width, int height,
                  int bpp, bool fullscreen){
 
-    movingX = movingY = movingZ = MAP_WIDTH + 1;
-    movingItem = NULL;
+  movingX = movingY = movingZ = MAP_WIDTH + 1;
+  movingItem = NULL;
 
   isInfoShowing = true;
 

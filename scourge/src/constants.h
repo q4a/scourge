@@ -114,6 +114,8 @@ typedef union NetValue NetValue;
   *@author Gabor Torok
   */
 
+extern char rootDir[300];
+
 class Constants {
 public:
 

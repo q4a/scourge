@@ -26,6 +26,12 @@
 #include "scourge.h"
 
 int main(int argc, char *argv[]) {
+  // Where are we running from?
+  strcpy(rootDir, argv[0]);
+  int n = strlen(rootDir);
+  *(rootDir + n - strlen("scourge")) = 0;
+  fprintf(stderr, "rootDir=%s\n", rootDir);
+
   if(argc > 1 && !strcmp(argv[1], "--fullscreen")) {
     new Scourge(800, 600, 32, true);
   } else {
