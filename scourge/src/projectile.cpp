@@ -23,7 +23,10 @@ map<Creature*, vector<Projectile*>*> Projectile::projectiles;
 
 Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic) {
   this->creature = creature;
-  this->target = target;
+  this->tx = target->getX();
+  this->ty = target->getY();
+  this->tw = target->getShape()->getWidth();
+  this->td = target->getShape()->getDepth();
   this->item = item;
   this->spell = NULL;
   this->shape = shape;
@@ -34,7 +37,25 @@ Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *
 
 Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic) {
   this->creature = creature;
-  this->target = target;
+  this->tx = target->getX();
+  this->ty = target->getY();
+  this->tw = target->getShape()->getWidth();
+  this->td = target->getShape()->getDepth();
+  this->item = NULL;
+  this->spell = spell;
+  this->shape = shape;
+  this->parabolic = parabolic;
+
+  commonInit();
+}
+
+Projectile::Projectile(Creature *creature, int x, int y, int w, int d, 
+					   Spell *spell, Shape *shape, float parabolic) {
+  this->creature = creature;
+  this->tx = x;
+  this->ty = y;
+  this->tw = w;
+  this->td = d;
   this->item = NULL;
   this->spell = spell;
   this->shape = shape;
@@ -46,8 +67,8 @@ Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape
 void Projectile::commonInit() {
   this->sx = creature->getX() + (creature->getShape()->getWidth() / 2);
   this->sy = creature->getY() - (creature->getShape()->getDepth() / 2);
-  this->ex = target->getX() + (target->getShape()->getWidth() / 2);
-  this->ey = target->getY() - (target->getShape()->getDepth() / 2);
+  this->ex = tx + (tw / 2);
+  this->ey = ty - (td / 2);
 
   int x = (int)(ex - sx);
   int y = (int)(ey - sy);
@@ -67,15 +88,12 @@ void Projectile::commonInit() {
   cx = cy = 0;
   steps = 0;
   
-  maxDist = (spell ? spell->getDistance() : item->getRpgItem()->getDistance()) + 
-	target->getShape()->getWidth();
+  maxDist = (spell ? spell->getDistance() : item->getRpgItem()->getDistance()) + tw;
   startX = sx;
   startY = sy;
   distToTarget = Constants::distance(startX,  startY, 
 									 1, 1,
-									 target->getX(), target->getY(),
-									 target->getShape()->getWidth(), 
-									 target->getShape()->getDepth());
+									 tx, ty, tw, td);
 }
 
 Projectile::~Projectile() {
@@ -113,9 +131,7 @@ bool Projectile::move() {
   // recalculate the distance
   distToTarget = Constants::distance(startX,  startY, 
 									 1, 1,
-									 target->getX(), target->getY(),
-									 target->getShape()->getWidth(), 
-									 target->getShape()->getDepth());
+									 tx, ty, tw, td);
 
 
   // we're not at the target yet
@@ -143,6 +159,14 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
 									  Spell *spell, Shape *shape, 
 									  int maxProjectiles) {
+  return addProjectile(creature, target->getX(), target->getY(), 
+					   target->getShape()->getWidth(), target->getShape()->getDepth(), 
+					   spell, shape, maxProjectiles);
+}
+
+Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, int d, 
+									  Spell *spell, Shape *shape, 
+									  int maxProjectiles) {
   vector<Projectile*> *v;
   if(projectiles.find(creature) == projectiles.end()) {
 	v = new vector<Projectile*>();
@@ -155,17 +179,17 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
 
 
   // add a straight-flying projectile
-  Projectile *p = new Projectile(creature, target, spell, shape);
+  Projectile *p = new Projectile(creature, x, y, w, d, spell, shape);
   v->push_back(p);
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
 	if(i < maxProjectiles - 1) {
-	  v->push_back(new Projectile(creature, target, spell, shape, r));
+	  v->push_back(new Projectile(creature, x, y, w, d, spell, shape, r));
 	}
 	if((i + 1) < maxProjectiles - 1) {
-	  v->push_back(new Projectile(creature, target, spell, shape, -r));
+	  v->push_back(new Projectile(creature, x, y, w, d, spell, shape, -r));
 	}
 	r += (r/2.0f);
   }

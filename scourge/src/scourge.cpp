@@ -665,94 +665,113 @@ void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
 }
 
 void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
-	Uint16 mapx, mapy, mapz;
-	if(button == SDL_BUTTON_LEFT) {
-		getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-		
-		// clicking on a creature
-		if(!movingItem && mapx < MAP_WIDTH) {
-		  Location *loc = map->getLocation(mapx, mapy, mapz);
-		  if(loc && loc->creature) {
-			if(getTargetSelectionFor()) {
-			  
-			  Creature *c = getTargetSelectionFor();
-
-			  // make sure the selected action can target a creature
-			  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-				 c->getActionSpell() &&
-				 c->getActionSpell()->isCreatureTargetAllowed()) {
-
-				// assign this creature
-				c->setTargetCreature(loc->creature);
-				char msg[80];
-				sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
-				map->addDescription(msg);				
-			  } else {
-				scourge->showMessageDialog("Please select a different target.");
-				c->cancelTarget();
-			  }
-			  // turn off selection mode
-			  setTargetSelectionFor(NULL);
-			  return;
-			} else if(loc->creature->isMonster()) {
-			  // follow this creature
-			  party->setTargetCreature(loc->creature);
-			  return;
-			} else {
-			  // select player
-			  for(int i = 0; i < party->getPartySize(); i++) {
-				if(party->getParty(i) == loc->creature) {
-				  party->setPlayer(i);
-				  return;
-				}
-			  }
-			}
-		  }
-		}
-
-		// cancel target selection mode
-		// FIXME: handle item selection. e.g.: open door from afar, etc.
+  char msg[80];
+  Uint16 mapx, mapy, mapz;
+  Creature *c = getTargetSelectionFor();
+  if(button == SDL_BUTTON_LEFT) {
+	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+	
+	// clicking on a creature
+	if(!movingItem && mapx < MAP_WIDTH) {
+	  Location *loc = map->getLocation(mapx, mapy, mapz);
+	  if(loc && loc->creature) {
 		if(getTargetSelectionFor()) {
-		  Creature *c = getTargetSelectionFor();
-		  c->setAction(-1);
+		  
+		  // make sure the selected action can target a creature
+		  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+			 c->getActionSpell() &&
+			 c->getActionSpell()->isCreatureTargetAllowed()) {
+			
+			// assign this creature
+			c->setTargetCreature(loc->creature);
+			char msg[80];
+			sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
+			map->addDescription(msg);				
+		  } else {
+			sprintf(msg, "%s cancelled a pending action.", c->getName());
+			map->addDescription(msg);
+		  }
+		  // turn off selection mode
 		  setTargetSelectionFor(NULL);
-		  char msg[80];
-		  sprintf(msg, "%s cancelled a pending action.", c->getName());
-		  map->addDescription(msg);
-		}
-		
-		// click on an item
-		if(mapx > MAP_WIDTH) {
-			getMapXYAtScreenXY(x, y, &mapx, &mapy);
-			mapz = 0;
-		}
-		if(useItem(mapx, mapy, mapz)) return;
-		
-		// click on the map
-		getMapXYAtScreenXY(x, y, &mapx, &mapy);
-
-
-		// FIXME: try to move to party.cpp
-		party->getPlayer()->setSelXY(mapx, mapy);
-		if(party->isPlayerOnly()) {
-		  party->getPlayer()->setTargetCreature(NULL);
+		  return;
+		} else if(loc->creature->isMonster()) {
+		  // follow this creature
+		  party->setTargetCreature(loc->creature);
+		  return;
 		} else {
+		  // select player
 		  for(int i = 0; i < party->getPartySize(); i++) {
-			if(!party->getParty(i)->getStateMod(Constants::dead)) {
-			  party->getParty(i)->setTargetCreature(NULL);
-			  if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
+			if(party->getParty(i) == loc->creature) {
+			  party->setPlayer(i);
+			  return;
 			}
 		  }
 		}
-		// end of FIXME
-		
-		
-	} else if(button == SDL_BUTTON_RIGHT) {
-		getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-		if(mapx < MAP_WIDTH) {    
-			map->handleMouseClick(mapx, mapy, mapz, button);
-		}
+	  }
 	}
+	
+	// click on an item
+	if(mapx > MAP_WIDTH) {
+	  getMapXYAtScreenXY(x, y, &mapx, &mapy);
+	  mapz = 0;
+	}
+	if(useItem(mapx, mapy, mapz)) return;
+	
+	// click on the map
+	getMapXYAtScreenXY(x, y, &mapx, &mapy);
+	
+	// make sure the selected action can target a location
+	if(c) {
+	  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+		 c->getActionSpell() &&
+		 c->getActionSpell()->isLocationTargetAllowed()) {
+		
+		// assign this creature
+		c->setTargetLocation(mapx, mapy, 0);
+		char msg[80];
+		sprintf(msg, "%s selected a target", c->getName());
+		map->addDescription(msg);				
+	  } else {
+		sprintf(msg, "%s cancelled a pending action.", c->getName());
+		map->addDescription(msg);
+	  }
+	  // turn off selection mode
+	  setTargetSelectionFor(NULL);
+	  return;
+	}
+	
+	/*
+	// cancel target selection mode
+	// FIXME: handle item selection. e.g.: open door from afar, etc.
+	if(getTargetSelectionFor()) {
+	Creature *c = getTargetSelectionFor();
+	c->setAction(-1);
+	setTargetSelectionFor(NULL);
+	sprintf(msg, "%s cancelled a pending action.", c->getName());
+	map->addDescription(msg);
+	}
+	*/
+	
+	// FIXME: try to move to party.cpp
+	party->getPlayer()->setSelXY(mapx, mapy);
+	if(party->isPlayerOnly()) {
+	  party->getPlayer()->cancelTarget();
+	} else {
+	  for(int i = 0; i < party->getPartySize(); i++) {
+		if(!party->getParty(i)->getStateMod(Constants::dead)) {
+		  party->getParty(i)->cancelTarget();
+		  if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
+		}
+	  }
+	}
+	// end of FIXME
+	
+	
+  } else if(button == SDL_BUTTON_RIGHT) {
+	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+	// default click handling
+	map->handleMouseClick(mapx, mapy, mapz, button);		
+  }
 }
 
 void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
@@ -972,6 +991,28 @@ bool Scourge::useItem(int x, int y, int z) {
 		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 		return true;
 	  } else {
+
+		// make sure the selected action can target a creature
+		Creature *c = getTargetSelectionFor();
+		if(c && pos->item) {
+		  char msg[80];
+		  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+			 c->getActionSpell() &&
+			 c->getActionSpell()->isItemTargetAllowed()) {
+			
+			// assign this creature
+			c->setTargetItem(x, y, z, pos->item);
+			sprintf(msg, "%s targeted %s.", c->getName(), shape->getName());
+			map->addDescription(msg);				
+		  } else {
+			sprintf(msg, "%s cancelled a pending action.", c->getName());
+			map->addDescription(msg);
+		  }
+		  // turn off selection mode
+		  setTargetSelectionFor(NULL);
+		  return true;
+		}
+
 		if(useDoor(pos)) {
 		  map->updateLightMap();
 		  return true;
@@ -1256,23 +1297,23 @@ void Scourge::createUI() {
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
 }
 
-void Scourge::playRound() {
-  // change animation if needed
-  for(int i = 0; i < 4; i++) {
-	if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
-	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
-	  ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
-	} else if(party->getParty(i)->anyMovesLeft())
-	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
-	else 
-	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
+void Scourge::playRound() {                           
+  // change animation if needed                         
+  for(int i = 0; i < 4; i++) {                            
+    if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
+      ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
+    } else if(party->getParty(i)->anyMovesLeft())
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
+    else 
+      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
   }
-
+  
   // move the map
   if(move) map->move(move);
-
+  
   if(targetSelectionFor) return;
-
+  
   // hound your targets
   party->followTargets();
   
@@ -1281,71 +1322,71 @@ void Scourge::playRound() {
   // -(or) the round was manually started
   GLint t = SDL_GetTicks();
   if(party->isRealTimeMode()) {
-	if(lastProjectileTick == 0 || t - lastProjectileTick > userConfiguration->getGameSpeedTicks() / 10) {
-	  lastProjectileTick = t;
-	  
-	  // move projectiles
-	  Projectile::moveProjectiles();
-	}
-
-	if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
-	  lastTick = t;
-
-	  // move the party members
-	  party->movePlayers();
-	  
-	  // move visible monsters
-	  for(int i = 0; i < creatureCount; i++) {
-		if(!creatures[i]->getStateMod(Constants::dead) && 
-		   map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
-		  moveMonster(creatures[i]);
-		}
-	  }
-
-	  // setup the current battle round
-	  if(battleRound.size() == 0) {
-		
-		// set up for battle
-		battleCount = 0;
-		
-		// attack targeted monster if close enough
-		for(int i = 0; i < 4; i++) {
-		  if(!party->getParty(i)->getStateMod(Constants::dead) && 
-			 (party->getParty(i)->getTargetCreature() || 
-			  party->getParty(i)->getAction() > -1)) {								
-			battle[battleCount++] = new Battle(this, party->getParty(i));
-		  }
-		}
-		for(int i = 0; i < creatureCount; i++) {
-		  if(!creatures[i]->getStateMod(Constants::dead) && 
-			 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
-			 (creatures[i]->getTargetCreature() || 
-			  creatures[i]->getAction() > -1)) {
-			battle[battleCount++] = new Battle(this, creatures[i]);
-		  }
-		}
-		
-		// fight one round of the epic battle
-		if(battleCount > 0) {
-		  Battle::setupBattles(this, battle, battleCount, &battleRound);
-		  battleTurn = 0;
-		}
-	  }
-	  
-	  // fight a turn of the battle
-	  if(battleRound.size() > 0) {
-		if(battleTurn < (int)battleRound.size()) {
-		  Battle *battle = battleRound[battleTurn];
-		  battle->fightTurn();
-		  delete battle;
-		  battleTurn++;
-		} else {
-		  battleRound.clear();
-		}
-	  }
-	}
+    if(lastProjectileTick == 0 || t - lastProjectileTick > userConfiguration->getGameSpeedTicks() / 10) {
+      lastProjectileTick = t;
+      
+      // move projectiles
+      Projectile::moveProjectiles();
+    }
+    
+    if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
+      lastTick = t;
+      
+      // move the party members
+      party->movePlayers();
+      
+      // move visible monsters
+      for(int i = 0; i < creatureCount; i++) {
+        if(!creatures[i]->getStateMod(Constants::dead) && 
+           map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
+          moveMonster(creatures[i]);
+        }
+      }
+      
+      // setup the current battle round
+      if(battleRound.size() == 0) {
+        
+        // set up for battle
+        battleCount = 0;
+        
+        // attack targeted monster if close enough
+        for(int i = 0; i < 4; i++) {
+          if(!party->getParty(i)->getStateMod(Constants::dead) && 
+             (party->getParty(i)->hasTarget() || 
+              party->getParty(i)->getAction() > -1)) {								
+            battle[battleCount++] = new Battle(this, party->getParty(i));
+          }
+        }
+        for(int i = 0; i < creatureCount; i++) {
+          if(!creatures[i]->getStateMod(Constants::dead) && 
+             map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
+             (creatures[i]->hasTarget() || 
+              creatures[i]->getAction() > -1)) {
+            battle[battleCount++] = new Battle(this, creatures[i]);
+          }
+        }
+        
+        // fight one round of the epic battle
+        if(battleCount > 0) {
+          Battle::setupBattles(this, battle, battleCount, &battleRound);
+          battleTurn = 0;
+        }
+      }
+      
+      // fight a turn of the battle
+      if(battleRound.size() > 0) {
+        if(battleTurn < (int)battleRound.size()) {
+          Battle *battle = battleRound[battleTurn];
+          battle->fightTurn();
+          delete battle;
+          battleTurn++;
+        } else {
+          battleRound.clear();
+        }
+      }
+    }
   }
-}
+}                                                   
 
 void Scourge::creatureDeath(Creature *creature) {
   if(creature == party->getPlayer()) {
@@ -1419,7 +1460,7 @@ void Scourge::moveMonster(Creature *monster) {
 	if(monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f) ||
 	   (int)(20.0f * rand()/RAND_MAX) == 0) {
 	  monster->setMotion(Constants::MOTION_LOITER);
-	  monster->setTargetCreature(NULL);
+	  monster->cancelTarget();
 	} else {
 	  monster->moveToLocator(map);
 	}

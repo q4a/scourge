@@ -59,13 +59,15 @@ class Spell {
   int speed;
   int effect;
   MagicSchool *school;  
+  bool creatureTarget, locationTarget, itemTarget;
 
   static map<string, Spell*> spellMap;
 
  public:
 
   Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
-		int distance, int targetType, int speed, int effect, MagicSchool *school);
+		int distance, int targetType, int speed, int effect, bool creatureTarget, 
+		bool locationTarget, bool itemTarget, MagicSchool *school);
   ~Spell();
 
   inline char *getName() { return name; }
@@ -85,9 +87,9 @@ class Spell {
   inline void addNotes(char *s) { strcat(notes, s); }
 
   // what kind of target is allowed for this spell
-  inline bool isCreatureTargetAllowed() { cerr << "FIXME: implement Spell::isCreatureTargetAllowed()." << endl; return true; }
-  inline bool isLocationTargetAllowed() { cerr << "FIXME: implement Spell::isLocationTargetAllowed()." << endl; return true; }
-  inline bool isItemTargetAllowed() { cerr << "FIXME: implement Spell::isItemTargetAllowed()." << endl; return true; }
+  inline bool isCreatureTargetAllowed() { return creatureTarget; }
+  inline bool isLocationTargetAllowed() { return locationTarget; }
+  inline bool isItemTargetAllowed() { return itemTarget; }
 
   static Spell *getSpellByName(char *name);
 };

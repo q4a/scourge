@@ -41,7 +41,7 @@ using namespace std;
 class Projectile {
  private:
   Creature *creature;
-  Creature *target;
+  int tx, ty, tw, td;
   Item *item;
   Spell *spell;
   float sx, sy, ex, ey; 
@@ -59,6 +59,7 @@ class Projectile {
  public:
   Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f);
   Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f);
+  Projectile(Creature *creature, int x, int y, int w, int d, Spell *spell, Shape *shape, float parabolic=0.0f); 
   virtual ~Projectile();
 
   // return true when out of moves
@@ -76,6 +77,9 @@ class Projectile {
 								   Item *item, Shape *shape, 
 								   int maxProjectiles);
   static Projectile *addProjectile(Creature *creature, Creature *target, 
+								   Spell *spell, Shape *shape, 
+								   int maxProjectiles);
+  static Projectile *addProjectile(Creature *creature, int x, int y, int w, int d, 
 								   Spell *spell, Shape *shape, 
 								   int maxProjectiles);
   static void removeProjectile(Projectile *p);

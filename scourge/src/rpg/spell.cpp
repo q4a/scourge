@@ -90,12 +90,13 @@ void MagicSchool::initMagic() {
 	  int targetType = (strcmp(strtok(NULL, ","), "single") ? 
 						SINGLE_TARGET : GROUP_TARGET);
 	  int speed = atoi(strtok(NULL, ","));
+	  int effect = Constants::getEffectByName(strtok(NULL, ","));
+	  cerr << "*** looking up: " << s << " effect=" << effect << endl;
 	  char *s = strtok(NULL, ",");
-	  int effect = Constants::EFFECT_EXPLOSION;
-	  if(s) {
-		effect = Constants::getEffectByName(s);
-		cerr << "*** looking up: " << s << " effect=" << effect << endl;
-	  }
+	  bool creatureTarget = (strchr(s, 'C') != NULL);
+	  bool locationTarget = (strchr(s, 'L') != NULL);
+	  bool itemTarget = (strchr(s, 'I') != NULL);
+
 
 	  if(!current) {
 		cerr << "*** ignoring spell: " << name << " because no school of magic was specified." << endl;
@@ -112,6 +113,7 @@ void MagicSchool::initMagic() {
 	  
 	  currentSpell = new Spell( strdup(name), level, mp, exp, failureRate, 
 								action, distance, targetType, speed, effect, 
+								creatureTarget, locationTarget, itemTarget,
 								current );
 	  current->addSpell( currentSpell );
 	} else if( n == 'D' && currentSpell ) {
@@ -142,7 +144,8 @@ void MagicSchool::initMagic() {
 
 
 Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
-			 int distance, int targetType, int speed, int effect, MagicSchool *school) {
+			 int distance, int targetType, int speed, int effect, bool creatureTarget, 
+			 bool locationTarget, bool itemTarget, MagicSchool *school) {
   this->name = name;
   this->level = level;
   this->mp = mp;
@@ -153,6 +156,9 @@ Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *acti
   this->targetType = targetType;
   this->speed = speed;
   this->effect = effect;
+  this->creatureTarget = creatureTarget; 
+  this->locationTarget = locationTarget;
+  this->itemTarget = itemTarget;
   this->school = school;
 
   strcpy(this->notes, "");
