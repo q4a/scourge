@@ -62,12 +62,15 @@ class Battle {
   bool projectileHit;
   Spell *spell;
 
-  int ap;
+  int ap, startingAp;
   bool paused;
   int steps;
 
 
  public:
+
+   inline int getAP() { return ap; }
+   inline int getStartingAP() { return startingAp; }
   
   /**
 	 This method sets up and creates battle turns (Battle objects) in order of initiative.

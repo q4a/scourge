@@ -56,7 +56,7 @@ Battle::~Battle() {
 
 void Battle::reset() {
   this->steps = 0;
-  this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
+  this->startingAp = this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
   this->projectileHit = false;
   this->paused = false;
 }
@@ -230,7 +230,15 @@ bool Battle::fightTurn() {
     cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
     
     // center on player
-    session->getParty()->setPlayer(creature);
+    for(int i = 0; i < session->getParty()->getPartySize(); i++) {
+      if(session->getParty()->getParty(i) == creature) {
+        session->getParty()->setPlayer(i);
+        break;
+      }
+    }
+    //session->getParty()->setPlayer(creature);
+    //session->getGameAdapter()->setPlayerUI(int index)
+
     // FIXME: only center if not on-screen
     session->getMap()->refresh();
     session->getMap()->center(creature->getX(), creature->getY(), true);
