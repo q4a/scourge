@@ -36,6 +36,7 @@ class Button : public Widget {
   int labelPos;
   bool toggle;
   bool selected;
+  GLuint highlight;
 
  public: 
 
@@ -45,7 +46,7 @@ class Button : public Widget {
 	BOTTOM
   };
 
-  Button(int x1, int y1, int x2, int y2, char *label=NULL);
+  Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label=NULL);
   ~Button();
   /**
 	 Set if this button is a toggle button.

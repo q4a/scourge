@@ -17,11 +17,13 @@
 #include "button.h"
 #include "window.h"
 
+#include "../scourge.h"
+
 /**
   *@author Gabor Torok
   */
 
-Button::Button(int x1, int y1, int x2, int y2, char *label) : 
+Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) : 
   Widget(x1, y1, x2 - x1, y2 - y1) {
   this->x2 = x2;
   this->y2 = y2;
@@ -32,6 +34,7 @@ Button::Button(int x1, int y1, int x2, int y2, char *label) :
   lastTick = 0;
   toggle = selected = false;
   inside = false;
+  this->highlight = highlight;
 }
 
 Button::~Button() {
@@ -65,19 +68,23 @@ void Button::drawWidget(Widget *parent) {
       alpha += alphaInc;
       if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
     }
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 0.75, 0.75, 1, alpha );
+    glBindTexture( GL_TEXTURE_2D, highlight );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     glBegin( GL_QUADS );
-    glColor4f( 1, 0, 0, alpha );
+    glTexCoord2f( 0, 0 );
     glVertex2d(0, 0);
-    glColor4f( 0, 1, 0, alpha );
+    glTexCoord2f( 0, 1 );
     glVertex2d(0, y2 - y);
-    glColor4f( 0, 0, 1, alpha );
+    glTexCoord2f( 1, 1 );
     glVertex2d(x2 - x, y2 - y);
-    glColor4f( 1, 0, 1, alpha );
+    glTexCoord2f( 1, 0 );
     glVertex2d(x2 - x, 0);
     glEnd();
     glDisable( GL_BLEND );
+    glDisable( GL_TEXTURE_2D );
   }
 
   applyBorderColor();

@@ -59,15 +59,15 @@ MainMenu::MainMenu(Scourge *scourge){
   label->setColor( 0, 0, 0, 1.0f );
   mainWin->addWidget((Widget*)label);
   
-  newGameButton = new Button( 10, 40, 260, 60, strdup("New Game") );
+  newGameButton = new Button( 10, 40, 260, 60, scourge->getShapePalette()->getHighlightTexture(), strdup("New Game") );
   mainWin->addWidget((Widget*)newGameButton);
-  continueButton = new Button( 10, 70, 260, 90, strdup("Continue Game") );
+  continueButton = new Button( 10, 70, 260, 90, scourge->getShapePalette()->getHighlightTexture(), strdup("Continue Game") );
   mainWin->addWidget((Widget*)continueButton);
-  optionsButton = new Button( 10, 100, 260, 120, strdup("Options") );
+  optionsButton = new Button( 10, 100, 260, 120, scourge->getShapePalette()->getHighlightTexture(), strdup("Options") );
   mainWin->addWidget((Widget*)optionsButton);
-  aboutButton = new Button( 10, 130, 260, 150, strdup("About") );
+  aboutButton = new Button( 10, 130, 260, 150, scourge->getShapePalette()->getHighlightTexture(), strdup("About") );
   mainWin->addWidget((Widget*)aboutButton);
-  quitButton = new Button( 10, 160, 260, 180, strdup("Quit") );
+  quitButton = new Button( 10, 160, 260, 180, scourge->getShapePalette()->getHighlightTexture(), strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
 #else
   mainWin = new Window( scourge->getSDLHandler(),

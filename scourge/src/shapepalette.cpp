@@ -32,6 +32,7 @@ ShapePalette::ShapePalette(){
   torchback = loadGLTextures("/torchback.bmp");
   border = loadGLTextures("/border.bmp");
   border2 = loadGLTextures("/border2.bmp");
+  highlight = loadGLTextures("/highlight.bmp");
   SDL_Surface *tmpSurface;
   GLubyte *tmpImage;
   setupAlphaBlendedBMP("/gargoyle.bmp", &tmpSurface, &tmpImage);

@@ -1354,7 +1354,7 @@ void Scourge::createUI() {
 						   strdup("Messages"), 
 						   getShapePalette()->getGuiTexture(), false );
   messageWin->setBackground(0, 0, 0);
-  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25);
+  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getShapePalette()->getHighlightTexture());
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
   messageWin->addWidget(messageList);
   // this has to be after addWidget
@@ -1371,9 +1371,9 @@ void Scourge::createUI() {
 	 w, h,
 	 strdup("Leave level?"), 
 	 getShapePalette()->getGuiTexture(), false);
-  yesExitConfirm = new Button( 40, 50, 110, 80, strdup("Yes") );
+  yesExitConfirm = new Button( 40, 50, 110, 80, getShapePalette()->getHighlightTexture(), strdup("Yes") );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
-  noExitConfirm = new Button( 140, 50, 210, 80, strdup("No") );
+  noExitConfirm = new Button( 140, 50, 210, 80, getShapePalette()->getHighlightTexture(), strdup("No") );
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);

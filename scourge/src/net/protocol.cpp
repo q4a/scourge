@@ -17,6 +17,8 @@
 
 #include "protocol.h"
 
+#ifdef HAVE_SDL_NET
+
 #define PACKET_LENGTH 65535
 
 /**
@@ -210,3 +212,5 @@ int serverLoop(void *data) {
 
   return 0;
 }
+
+#endif

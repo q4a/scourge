@@ -133,7 +133,7 @@ public:
   SDL_Surface *scourge;
   GLubyte *scourgeImage;
 
-  GLuint cloud, candle, torchback;
+  GLuint cloud, candle, torchback, highlight;
 
   GLuint border, border2, gargoyle;
        
@@ -149,6 +149,7 @@ public:
   inline GLuint getBorderTexture() { return border; }
   inline GLuint getBorder2Texture() { return border2; }
   inline GLuint getGargoyleTexture() { return gargoyle; }
+  inline GLuint getHighlightTexture() { return highlight; }
 
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name);
