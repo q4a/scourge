@@ -24,10 +24,11 @@ enum {
   LOITER,
   ATTACK,
   MOVE,
-  NO_TARGET
+  NO_TARGET,
+  WAIT,
 };
 
-char *actionName[] = { "NO ACTION", "LOITER", "ATTACK", "MOVE", "NO_TARGET" };
+char *actionName[] = { "NO ACTION", "LOITER", "ATTACK", "MOVE", "NO_TARGET", "WAIT" };
 
 Battle::Battle() {
   this->creature = NULL;
@@ -77,6 +78,8 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 	for(int i = 0; i < battleCount; i++) {
 	  int action = NO_ACTION;
 
+	  battle[i]->empty = false;
+
 	  if(!battle[i]->creature->getTargetCreature()) {
 		// remove creatures with no target creature from this round
 		action = NO_TARGET;
@@ -109,10 +112,8 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 			battle[i]->initiativeCheck = true;
 			creatureFound = true;
 			
-			// FIXME: need to represent itemSpeed (later spell speed) with empty battle turns
-			// is it time to act? (this is to slow down battle, 
-			// depending on your weapon)
-			//			if(battle[i]->itemSpeed < t - battle[i]->creature->getLastTurn()) {
+			// this is to slow down battle, depending on your weapon
+			if(battle[i]->itemSpeed < t - battle[i]->creature->getLastTurn()) {
 			  
 			  // remember the last active turn
 			  battle[i]->creature->setLastTurn(t);
@@ -127,16 +128,12 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 			  turns->push_back(battle[i]);
 			  
 			  action = ATTACK;
-			  //}
+			} else {
+			  // add a waiting term
+			  battle[i]->empty = true;
+			  action = WAIT;
+			}
 		  }
-		  /*
-		} else {
-		  // out of range, keep following the target
-		  battle[i]->creature->setSelXY(battle[i]->creature->getTargetCreature()->getX(),
-										battle[i]->creature->getTargetCreature()->getY(),
-										true);
-		  action = MOVE;
-		  */
 		}
 	  }
 
@@ -169,10 +166,13 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 
 void Battle::fightTurn() {
 
+  // waiting to attack?
+  if(isEmpty()) return;
+
   // target killed?
   if(!creature->getTargetCreature()) return;
 
-  // too far?
+  // too far? then keep following the target
   if(!(dist <= 1.0f || item)) {
 	creature->setSelXY(creature->getTargetCreature()->getX(),
 					   creature->getTargetCreature()->getY(),
@@ -208,12 +208,9 @@ void Battle::fightTurn() {
   // if this is a ranged weapon launch a projectile
   if(item && item->getRpgItem()->isRangedWeapon()) {
 	sprintf(message, "...%s shoots a projectile", creature->getName());
-	scourge->getMap()->addDescription(message);
-	/*
-	scourge->newProjectile(creature->getTargetCreature()->getX(),
-						   creature->getTargetCreature()->getY(),
-						   item);
-	*/
+	scourge->getMap()->addDescription(message);	
+	scourge->newProjectile(creature, creature->getTargetCreature(), item, 
+						   creature->getMaxProjectileCount(item));
   } else {
 	hitWithItem();
   }

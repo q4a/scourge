@@ -50,6 +50,7 @@ class Battle {
   bool initiativeCheck;
   int itemSpeed;
   float dist;
+  bool empty;
 
  public:
   
@@ -69,7 +70,7 @@ class Battle {
   Battle(Scourge *scourge, Creature *creature);
   ~Battle();
 
-  inline bool isEmpty() { return (creature == NULL); }
+  inline bool isEmpty() { return empty; }
   void fightTurn();
 
  protected:
