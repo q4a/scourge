@@ -146,7 +146,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   bool partyDead;
 
   // multi-story levels
-  int currentStory;
+  int currentStory, oldStory;
   bool changingStory;
 
   static const int MAX_CONTAINER_GUI = 100;
