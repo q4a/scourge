@@ -141,7 +141,7 @@ Creature::~Creature(){
   delete battle;
   delete effect;
   // do this before deleting the shape
-  session->getShapePalette()->decrementSkinRefCount(skin_name);
+  session->getShapePalette()->decrementSkinRefCount(model_name, skin_name);
   delete shape;
 }
 

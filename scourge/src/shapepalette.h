@@ -170,9 +170,11 @@ private:
   vector<ShapeValues*> shapeValueVector;
 
   // md2 data
-  map<string, Md2ModelInfo *> creature_models; 
+  map<string, Md2ModelInfo*> old_creature_models; 
   map<string, GLuint> creature_skins;
   map<GLuint, int> loaded_skins;
+  map<string, Md2ModelInfo*> creature_models;
+  map<Md2ModelInfo*, int> loaded_models;
 
   static ShapePalette *instance;
   
@@ -243,7 +245,7 @@ public:
   
   // Md2 shapes
   GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f);
-  void decrementSkinRefCount(char *skin_name);
+  void decrementSkinRefCount(char *model_name, char *skin_name);
 
   char *getRandomDescription(int descriptionGroup);
 
