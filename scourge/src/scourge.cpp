@@ -115,10 +115,6 @@ Scourge::~Scourge(){
   delete mainMenu;
   delete optionsMenu;
   delete userConfiguration;
-  for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
-	free(missionText[i]);
-  }
-  free(missionText);
   delete board;
 }
 
@@ -208,7 +204,7 @@ void Scourge::startMission() {
 	messageWin->setVisible(false);
 	closeAllContainerGuis();
 	if(inventory->isVisible()) inventory->hide();
-	if(boardWin->isVisible()) boardWin->setVisible(false);
+	if(board->boardWin->isVisible()) board->boardWin->setVisible(false);
 	
 	// clean up after the mission
 	delete map;
@@ -1016,17 +1012,11 @@ bool Scourge::useGate(Location *pos) {
 }
 
 bool Scourge::useBoard(Location *pos) {
-	if(pos->shape == shapePal->findShapeByName("BOARD")) {
-		for(int i = 0; i < board->getMissionCount(); i++) {
-			strcpy(missionText[i], board->getMission(i)->name);
-		}
-		missionList->setLines(board->getMissionCount(), (const char**)missionText);
-		if(board->getMissionCount())
-			missionDescriptionLabel->setText((char*)(board->getMission(0)->story));
-		boardWin->setVisible(true);
-		return true;
-	}
-	return false;
+  if(pos->shape == shapePal->findShapeByName("BOARD")) {
+	board->boardWin->setVisible(true);
+	return true;
+  }
+  return false;
 }
 
 bool Scourge::useTeleporter(Location *pos) {
@@ -1119,6 +1109,17 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   // FIXME: this is hacky...
   if(party->handleEvent(widget, event)) return true;
+  int n = board->handleEvent(widget, event);
+  if(n == Board::EVENT_HANDLED) return false;
+  else if(n == Board::EVENT_PLAY_MISSION) {
+	int selected = board->getSelectedLine();
+	if(selected != -1 && selected < board->getMissionCount()) {
+	  nextMission = selected;
+	  oldStory = currentStory = 0;
+	  endMission();
+	  return true;
+	}
+  }
   
   if(widget == yesExitConfirm) {
 	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
@@ -1132,21 +1133,6 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
 	exitConfirmationDialog->setVisible(false);
 	return false;
-  } else if(widget == boardWin->closeButton) {
-	boardWin->setVisible(false);
-  } else if(widget == missionList) {
-	int selected = missionList->getSelectedLine();
-	if(selected != -1 && selected < board->getMissionCount()) {
-	  missionDescriptionLabel->setText((char*)(board->getMission(selected)->story));
-	}
-  } else if(widget == playMission) {
-	int selected = missionList->getSelectedLine();
-	if(selected != -1 && selected < board->getMissionCount()) {
-	  nextMission = selected;
-	  oldStory = currentStory = 0;
-	  endMission();
-	  return true;
-	}
   }
   return false;
 }
@@ -1181,23 +1167,6 @@ void Scourge::createUI() {
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
-
-  boardWin = new Window( getSDLHandler(),
-						 (sdlHandler->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
-						 (sdlHandler->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
-						 BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
-						 strdup("Available Missions"), 
-						 getShapePalette()->getGuiTexture() );
-  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
-  boardWin->addWidget(missionList);
-  missionDescriptionLabel = new Label(5, 210, strdup(""), 70);
-  boardWin->addWidget(missionDescriptionLabel);
-  playMission = new Button(5, 5, 105, 35, Constants::getMessage(Constants::PLAY_MISSION_LABEL));
-  boardWin->addWidget(playMission);
-  missionText = (char**)malloc(Board::MAX_AVAILABLE_MISSION_COUNT * sizeof(char*));
-  for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
-	missionText[i] = (char*)malloc(120 * sizeof(char));
-  }
 }
 
 void Scourge::playRound() {

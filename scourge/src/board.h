@@ -22,6 +22,8 @@
 #include "scourge.h"
 #include "gui/window.h"
 #include "gui/button.h"
+#include "gui/scrollinglist.h"
+#include "gui/label.h"
 #include <map>
 
 using namespace std;
@@ -31,42 +33,45 @@ using namespace std;
   */
 	
 typedef	struct _Mission {
-	char name[80]; // name of mission
-	int level; // what level dungeon
-	int dungeonStoryCount; // how many stories
-	char story[2000]; // the background story of the level
+  char name[80]; // name of mission
+  int level; // what level dungeon
+  int dungeonStoryCount; // how many stories
+  bool completed;
+  char story[2000]; // the background story of the level
 } Mission;
 
+#define BOARD_GUI_WIDTH 400
+#define BOARD_GUI_HEIGHT 400
+
 class Board	{								
-private:
-	Scourge *scourge;
-	vector<const Mission* > missions;
-	static const Mission prototypes[];
-	map<int, vector<const Mission*>* > prototypesPerLevel;
-		
-public:
+ private:
+  Scourge *scourge;
+  vector<const Mission*> availableMissions;
+  map<int, vector<Mission*>* > missions;
 
-	static const int MAX_AVAILABLE_MISSION_COUNT = 20;
+  // gui
+  ScrollingList *missionList;
+  Label *missionDescriptionLabel;
+  Button *playMission;
+  char **missionText;
+ 
+ public:
 
-	enum {
-		MISSING_WAND = 0,
-		STRANGE_CREATURES,
-		DIAMONDS,
-		
-		// must be the last one
-		MISSION_COUNT
-	};
+  Window *boardWin;
+  static const int EVENT_HANDLED = 0;
+  static const int EVENT_PLAY_MISSION = 1;
 
-public:
+  Board(Scourge *scourge);
+  virtual ~Board();
+  
+  void initMissions();
+  
+  inline int getMissionCount() { return availableMissions.size(); }
+  inline const Mission *getMission(int index) { return availableMissions[index]; }
 
-	Board(Scourge *scourge);
-	virtual ~Board();
-
-	void initMissions();
-
-	inline int getMissionCount() { return missions.size(); }
-	inline const Mission *getMission(int index) { return missions[index]; }
-	
+  int handleEvent(Widget *widget, SDL_Event *event);
+  inline int getSelectedLine() { return missionList->getSelectedLine(); }
+  
 };
 
 #endif

@@ -20,89 +20,149 @@
 /**
   *@author Gabor Torok
   */
-
-const Mission Board::prototypes[] = {
-	{ "Quest for the missing wand", 0, 2,
-	  "One of our returning clients, Miffy the Merciless \
-		(the name has been changed to protect the client's identity) \
-		has managed to loose his favorite wand of Slow Strangling, \
-		somewhere on level 2 within the Dungeon of Distaste. Your \
-		job is to fetch this object and return it to him. \
-		Don't even think about trying to keep or use the wand, as \
-		it is magically encoded to only work for its owner."		 
-	},
-	{ "Strange creatures seen in Hopelessness", 0, 3, 
-	  "The local authorities contracted us to clean out the  \
-		hillside dungeon of Fatal Hopelessness. They have reportedly seen strange \
-		monsters within its dismal halls. Please behave yourselves \
-		on this mission, as it is to our advantage to co-operate \
-		with the local police force."
-	},
-	{ "Diamonds of the black chest", 0, 4,
-	  "A new client (a pirate by profession) with an unhealthy look in his eyes \
-		requested that we retrieve his lost chest from the dungeons \
-		located in the caves near the islands of Salten Scurvy. Apparently, \
-		his chest contains a small fortune in diamonds. What makes his case \
-		unusually interesting is that everyone who has gazed upon this treasure \
-		has gone mad. If you should meet some of these unfortunate souls while \
-		on your mission, do dispatch them quickly."
-	}
-       
-};
 	
 Board::Board(Scourge *scourge) {
-	this->scourge = scourge;
-	// organize missons per level
-	for(int i = 0; i < MISSION_COUNT; i++) {
-		vector<const Mission*> *list = NULL;
-		if(prototypesPerLevel.find(prototypes[i].level) != prototypesPerLevel.end()){
-			list = prototypesPerLevel[(const int)(prototypes[i].level)];
-		} else {
-			list = new vector<const Mission*>();
-			prototypesPerLevel[prototypes[i].level] = list;
-		}
-		list->push_back(&(prototypes[i]));
+  this->scourge = scourge;
+  
+  char errMessage[500];
+  char s[200];
+  sprintf(s, "data/world/missions.txt");
+  FILE *fp = fopen(s, "r");
+  if(!fp) {        
+	sprintf(errMessage, "Unable to find the file: %s!", s);
+	cerr << errMessage << endl;
+	exit(1);
+  }
+
+  Mission *current_mission = NULL;
+  char name[255], line[255];
+  int n = fgetc(fp);
+  while(n != EOF) {
+	if(n == 'T') {
+	  // skip ':'
+	  fgetc(fp);
+	  // read the name
+	  n = Constants::readLine(name, fp);
+
+	  // read the level and story count
+	  n = Constants::readLine(line, fp);
+	  int level = atoi(strtok(line + 1, ","));
+	  int stories = atoi(strtok(NULL, ","));
+
+	  // skip the objective line for now...
+	  n = Constants::readLine(line, fp);
+
+	  vector<Mission *> *v;
+	  if(missions.find(level) == missions.end()) {
+		v = new vector<Mission *>();
+		missions[level] = v;
+	  } else v = missions[level];
+	  current_mission = new Mission();
+	  strcpy(current_mission->name, name);
+	  current_mission->level = level;
+	  current_mission->dungeonStoryCount = stories;
+	  current_mission->completed = false;
+	  strcpy(current_mission->story, "");
+	  v->push_back(current_mission);
+	} else if(n == 'M' && current_mission) {
+	  // skip ':'
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+	  strcat(current_mission->story, line);
+	} else {
+	  n = Constants::readLine(line, fp);
 	}
+  }
+  fclose(fp);
+
+  // init gui
+  boardWin = new Window( scourge->getSDLHandler(),
+						 (scourge->getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
+						 (scourge->getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
+						 BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
+						 strdup("Available Missions"), 
+						 scourge->getShapePalette()->getGuiWoodTexture(),
+						 true, Window::SIMPLE_WINDOW );
+  boardWin->setBackgroundTileHeight(96);
+  boardWin->setBorderColor( 0.5f, 0.2f, 0.1f );
+  boardWin->setColor( 0.8f, 0.8f, 0.7f, 1 );
+  boardWin->setBackground( 0.65, 0.30f, 0.20f, 0.15f );
+  boardWin->setSelectionColor(  0.25f, 0.35f, 0.6f );
+
+
+  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
+  boardWin->addWidget(missionList);
+  missionDescriptionLabel = new Label(5, 210, strdup(""), 70);
+  boardWin->addWidget(missionDescriptionLabel);
+  playMission = new Button(5, 5, 105, 35, Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+  boardWin->addWidget(playMission);
 }
 
 Board::~Board() {
+  // free ui
+  if(availableMissions.size()) {
+	for(int i = 0; i < availableMissions.size(); i++) {
+	  free(missionText[i]);
+	}
+	free(missionText);
+  }
 }
 
 void Board::initMissions() {
-	missions.clear();
-	int sum = 0;
-	for(int i = 0; i < 4; i++) sum += scourge->getParty()->getParty(i)->getLevel();
-	for(int i = 0; i < MAX_AVAILABLE_MISSION_COUNT; i++) {
-		// find the average level for this mission
-		int level = (int)(((float)(sum) / 4.0f) + (4.0f * rand() / RAND_MAX) - 2.0f);
-		// pick a mission of this level
-		int count = 0;
-		if(prototypesPerLevel.find(level) != prototypesPerLevel.end()){
-			count = prototypesPerLevel[level]->size();
-		}		
-		const Mission *p;
-		if(!count) {
-//			cerr << "i=" << i << "no missions for level: " << level << ", reusing first mission." << endl;
-			p = &(prototypes[0]);
-		} else {
-			int index = (int)((float)count * rand() / RAND_MAX);
-			//cerr << "i=" << i << "level=" << level << " index=" << index << endl;
-			vector<const Mission*> list = *prototypesPerLevel[level];
-			p = list[index];
-		}
-
-		// see if this mission has been chosen yet
-		// FIXME: use a vector-set combo instead for mission; something that supports [] and uniqueness
-		bool found = false;
-		for(int i = 0; i < (int)missions.size(); i++) {
-			if(missions[i] == p) {
-				found = true;
-				break;
-			}
-		}
-		if(!found) missions.push_back(p);
-
+  // free ui
+  if(availableMissions.size()) {
+	for(int i = 0; i < availableMissions.size(); i++) {
+	  free(missionText[i]);
 	}
+	free(missionText);
+  }
+
+  // find the highest level in the party
+  int highest = 0;
+  for(int i = 0; i < 4; i++) 
+	if(highest < scourge->getParty()->getParty(i)->getLevel())
+	  highest = scourge->getParty()->getParty(i)->getLevel();
+
+  // find missions
+  availableMissions.clear();  
+  for(int level = 0; level <= highest; level++) {
+	if(missions.find(level) == missions.end()) continue;
+	vector<Mission*> *v = missions[level];
+	for(int i = 0; i < v->size(); i++) {
+	  availableMissions.push_back((*v)[i]);
+	}
+  }
+
+  // init ui
+  if(availableMissions.size()) {
+	missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
+	for(int i = 0; i < availableMissions.size(); i++) {
+	  missionText[i] = (char*)malloc(120 * sizeof(char));
+	  strcpy(missionText[i], availableMissions[i]->name);
+	  if(i == 0) {
+		missionDescriptionLabel->setText((char*)availableMissions[i]->story);
+	  }
+	}
+	missionList->setLines(availableMissions.size(), (const char**)missionText);
+  }
 }
 
-
+int Board::handleEvent(Widget *widget, SDL_Event *event) {
+  if(widget == boardWin->closeButton) {
+	boardWin->setVisible(false);
+	return EVENT_HANDLED;
+  } else if(widget == missionList) {
+	int selected = missionList->getSelectedLine();
+	if(selected != -1 && selected < getMissionCount()) {
+	  missionDescriptionLabel->setText((char*)(getMission(selected)->story));
+	}
+	return EVENT_HANDLED;
+  } else if(widget == playMission) {
+	int selected = missionList->getSelectedLine();
+	if(selected != -1 && selected < getMissionCount()) {
+	  return EVENT_PLAY_MISSION;
+	}
+	return EVENT_HANDLED;
+  }
+  return -1;
+}

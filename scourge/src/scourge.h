@@ -95,11 +95,6 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   bool isInfoShowing;
   bool info_dialog_showing;
 
-  Window *boardWin;
-  ScrollingList *missionList;
-  Label *missionDescriptionLabel;
-  Button *playMission;
-  char **missionText;
   Board *board;
   int nextMission;
   bool inHq;
@@ -166,8 +161,6 @@ public:
 #define TOP_GUI_HEIGHT 100
 #define GUI_PLAYER_INFO_W 250
 #define GUI_PLAYER_INFO_H 350
-#define BOARD_GUI_WIDTH 400
-#define BOARD_GUI_HEIGHT 400
   
   static int blendA, blendB;
   static int blend[];
