@@ -106,6 +106,7 @@ class Battle {
   ~Battle();
 
   void reset();
+  Creature *getAvailableTarget();
 
   inline bool isEmpty() { return empty; }
   bool fightTurn();
@@ -134,7 +135,6 @@ class Battle {
   void stepCloserToTarget();
   bool selectNewTarget();
   bool moveCreature();
-  Creature *getAvailableTarget();
 
   static char *getRandomSound(int start, int count);
 };
