@@ -411,17 +411,22 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
       Item *item = creature->getInventory(itemIndex);
       if(item->getSpell()) {
-        bool res = creature->addSpell(item->getSpell());
-        if(res) {
-          scourge->showMessageDialog("Spell was entered into your spellbook.");
-          // destroy the scroll
-          creature->removeInventory(itemIndex);
-          setSelectedPlayerAndMode(selected, selectedMode);
-          char msg[120];
-          sprintf(msg, "%s crumbles into dust.", item->getItemName());
-          scourge->getMap()->addDescription(msg);
+        if(creature->getSkill(item->getSpell()->getSchool()->getSkill()) > item->getSpell()->getLevel() * 5 &&
+           creature->getMp() > 0) {
+          bool res = creature->addSpell(item->getSpell());
+          if(res) {
+            scourge->showMessageDialog("Spell was entered into your spellbook.");
+            // destroy the scroll
+            creature->removeInventory(itemIndex);
+            setSelectedPlayerAndMode(selected, selectedMode);
+            char msg[120];
+            sprintf(msg, "%s crumbles into dust.", item->getItemName());
+            scourge->getMap()->addDescription(msg);
+          } else {
+            scourge->showMessageDialog("You already know this spell");
+          }
         } else {
-          scourge->showMessageDialog("You already know this spell");
+        scourge->showMessageDialog("You are not proficient enough to transcribe this scroll.");
         }
       } else {
         scourge->showMessageDialog("You can only transcribe scrolls!");
