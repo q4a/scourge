@@ -113,11 +113,7 @@ void SpellCaster::spellSucceeded() {
   } else if(!strcasecmp(spell->getName(), "Remove curse")) {
       setStateMod(Constants::cursed, false);
   } else if(!strcasecmp(spell->getName(), "Enthrall fiend")) {
-    if(projectileHit) {
       setStateMod(Constants::possessed);
-    } else {
-      launchProjectile(1, false);
-    }
   } else if(!strcasecmp(spell->getName(), "Break from possession")) {
       setStateMod(Constants::possessed, false);
   } else {

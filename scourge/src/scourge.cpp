@@ -2133,6 +2133,8 @@ bool Scourge::createBattleTurns() {
       }
     }
 
+    party->savePlayerSettings();
+
     // order the battle turns by initiative
     Battle::setupBattles(getSession(), battle, battleCount, &battleRound);
     rtStartTurn = battleTurn = 0;
@@ -2147,9 +2149,10 @@ bool Scourge::createBattleTurns() {
 }
 
 void Scourge::resetUIAfterBattle() {
-  if(party->isPlayerOnly()) party->togglePlayerOnly();
+  //if(party->isPlayerOnly()) party->togglePlayerOnly();
   toggleRoundUI(party->isRealTimeMode());
-  party->setFirstLivePlayer();
+  //party->setFirstLivePlayer();
+  party->restorePlayerSettings();
   groupButton->setVisible(true);
   for(int i = 0; i < party->getPartySize(); i++) {
     party->getParty(i)->cancelTarget();
