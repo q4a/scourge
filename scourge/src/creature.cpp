@@ -114,7 +114,6 @@ void Creature::commonInit() {
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
   this->availableSkillPoints = 0;
-  this->minRange = this->maxRange = 0;
   this->failedToMoveWithinRangeAttemptCount = 0;
   this->action = Constants::ACTION_NO_ACTION;
   this->actionItem = NULL;
@@ -305,14 +304,6 @@ void Creature::switchDirection(bool force) {
 bool Creature::move(Uint16 dir, Map *map) {
   if(character) return false;
 
-  //Uint32 t = SDL_GetTicks();
-  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
-  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
-  //cerr << "*** move(): creature=" << getName() << 
-  //  " speed=" << (t - lastMove) << 
-  //  " vs. " << (getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1)) << endl;
-  //lastMove = t;
-
   switchDirection(false);
 
   // a hack for runaway creatures
@@ -372,8 +363,6 @@ void Creature::setSelXY(int x, int y, bool force) {
   //if(force) {
     tx = ty = -1;
   //}
-  // if we're trying to move within a range, try a number of times
-  //adjustMovementToRange();
   
   // play command sound
   if(x > -1 && 
@@ -384,61 +373,8 @@ void Creature::setSelXY(int x, int y, bool force) {
   }
 }
 
-/**
-   Return true only if a range is specified and we're within it.
- */
-/*
-bool Creature::isInRange() {
-  if(maxRange > 0) {
-    float d = getDistanceToTarget();
-    //cerr << "\tisInRange: dist=" << d << " min=" << minRange << " max=" << maxRange << endl;
-    return(d >= minRange && d < maxRange);
-  }
-  return false;
-}
- */
-
-/**
-   Check that we're within range (if range specified).
-   If not, try n times, then wait n times before trying again.
-*/
-void Creature::adjustMovementToRange() {
-  if(maxRange <= 0 || !hasTarget()) return;
-  float d = getDistanceToTarget();
-  bool inRange = (d >= minRange && d < maxRange);
-  if(inRange) {
-    // we're in range: stop moving
-    failedToMoveWithinRangeAttemptCount = 0;
-    stopMoving();
-    return;
-  } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS) {
-    // we're not in range: move away if too close
-    failedToMoveWithinRangeAttemptCount++;
-
-    // if too close, move away
-    if(d < minRange) {
-      Sint16 nz;
-      findCorner(&cornerX, &cornerY, &nz);
-      setMotion(Constants::MOTION_MOVE_AWAY);
-    }
-
-    return;
-  } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS * 2) {
-    // we're still not in range: return true to continue attacks and not try to position forever
-    failedToMoveWithinRangeAttemptCount++;
-    return;
-  } else {
-    // we're still not in range but continue to try to position creature
-    failedToMoveWithinRangeAttemptCount = 0;
-    return;
-  }
-}
-
 void Creature::setTargetCreature(Creature *c) { 
   targetCreature = c; 
-  if(!c) {
-    setDistanceRange(0, 0);
-  }
 }
 
 bool Creature::moveToLocator(Map *map) {
@@ -446,10 +382,8 @@ bool Creature::moveToLocator(Map *map) {
   if(selX > -1) {
     // take a step
     if(getMotion() == Constants::MOTION_MOVE_AWAY){    
-      //if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving away! attempt=" << failedToMoveWithinRangeAttemptCount << endl;
       moved = gotoPosition(map, cornerX, cornerY, 0, "cornerXY");
     } else {
-      //if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving towards! attempt=" << failedToMoveWithinRangeAttemptCount << " min=" << minRange << " max=" << maxRange << endl;
       moved = gotoPosition(map, selX, selY, 0, "selXY");
     }
     // if we've no more steps
@@ -470,7 +404,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     tx = px;
     ty = py;
     bestPathPos = 1; // skip 0th position; it's the starting location
-    cerr << "calling findPath!" << endl;
+//    cerr << "calling findPath!" << endl;
     Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
                    px, py, pz, &bestPath, session->getMap(), getShape());
   }
@@ -552,15 +486,28 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
                                   getX(), getY(), 1, 1 );
       if( bestPathPos == 1 || a != 0.0f ) {
         wantedAngle = a;
-        angleStep = abs( angle - wantedAngle ) / (float)TURN_STEP_COUNT;
+        GLfloat diff = Util::diffAngle( a, angle );
+        angleStep = diff / (float)TURN_STEP_COUNT;
+        //cerr << "wantedAngle=" << wantedAngle << " angle=" << angle << " diff=" << diff << " step=" << angleStep << endl;
       }
+      GLfloat diff = Util::diffAngle( wantedAngle, angle );
+      if( diff ) {
+        angle += ( abs( diff ) > angleStep ? 
+                   angleStep : diff );
+        if( angle < 0.0f ) angle = 360.0f + angle;
+        if( angle >= 360.0f ) angle -= 360.0f;
+      }
+
+      /*
       if( angle < wantedAngle ) {
         GLfloat diff = wantedAngle - angle;
         angle += ( diff > angleStep ? angleStep : diff );
       } else if( angle > wantedAngle ) {
         GLfloat diff = angle - wantedAngle;
         angle -= ( diff > angleStep ? angleStep : diff );
-      }            
+      }
+      */
+
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
       moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
@@ -1386,7 +1333,6 @@ bool Creature::canAttack(Creature *creature) {
 void Creature::cancelTarget() {
   setTargetCreature(NULL);
   setTargetItem(0, 0, 0, NULL);
-  setDistanceRange(0, 0);
   if(preActionTargetCreature) setTargetCreature(preActionTargetCreature);
   preActionTargetCreature = NULL;
   setAction(Constants::ACTION_NO_ACTION);
@@ -1461,7 +1407,6 @@ void Creature::decideMonsterAction() {
     // attack with item
     setMotion(Constants::MOTION_MOVE_TOWARDS);
     setTargetCreature(p);
-    //setDistanceRange(0, Constants::MIN_DISTANCE);
   }
 }
 

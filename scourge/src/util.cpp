@@ -153,11 +153,14 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
         // If location is obstruction
         if(map->isBlocked(Node.x, Node.y, sz,
                           sx, sy, sz, shape)) { 
+
+          // If this is the final location, try to run into it.
+          // This is used for battle mainly.
           Location *pos = map->getLocation( Node.x, Node.y, sz );
           if( pos && pos->shape && 
               pos->x <= dx && pos->x + pos->shape->getWidth() >= dx &&
               pos->y > dy && pos->y - pos->shape->getDepth() <= dy ) {
-            cerr << "&&&& !!! " << endl;
+            //cerr << "&&&& !!! " << endl;
             Node.gone = BestNode.gone + 1;
           } else {          
             Node.gone = 1000;
@@ -388,6 +391,18 @@ float Util::getAngle(float fx, float fy, float fw, float fd,
 	angle += 360;
   }
   return angle;
+}
+
+float Util::diffAngle(float a, float b) {
+  a -= (((int)a / 360) * 360);
+  b -= (((int)b / 360) * 360);
+  float diff = a - b;
+  if( diff > 180.0f ) {
+    diff = 360.0f - diff;
+  } else if( diff < -180.0f ) {
+    diff = 360 + diff;
+  }
+  return diff;
 }
 
 void Util::drawBar(int x, int y, float barLength, float value, float maxValue,

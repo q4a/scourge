@@ -73,7 +73,6 @@ class Creature {
   Uint16 dir;
   Session *session;
   int motion;
-  float minRange, maxRange;
   int failedToMoveWithinRangeAttemptCount;
   int facingDirection;
   int formation;
@@ -144,6 +143,7 @@ class Creature {
   ~Creature();
 
   inline vector<Location> *getPath() { return &bestPath; }
+  inline int getPathIndex() { return bestPathPos; }
 
   inline void setLastEnchantDate(Date date) { lastEnchantDate = date; }
   inline Date getLastEnchantDate() { return lastEnchantDate; }
@@ -170,8 +170,6 @@ class Creature {
   
   inline void setMotion(int motion) { this->motion = motion; }  
   inline int getMotion() { return this->motion; }
-
-  inline void setDistanceRange(float min, float max) { minRange = min; maxRange = max; }  
 
   /**
 	 Return true only if a range is specified and we're within it.
@@ -396,12 +394,6 @@ class Creature {
   inline Event *getStateModEvent(int mod) { return(stateModEventMap.find(mod) == stateModEventMap.end() ? NULL : stateModEventMap[mod]); }
 
  protected:
-
-  /**
-	 Check that we're within range (if range specified).
-	 If not, try n times, then wait n times before trying again.
-   */
-  void adjustMovementToRange();
 
   /**
    * Get the position of this creature in the formation.
