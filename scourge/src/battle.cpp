@@ -248,38 +248,32 @@ void Battle::fightTurn() {
 }
 
 void Battle::castSpell() {
-  //  cerr << "FIXME: implement Battle::castSpell()" << endl;
-  //  cerr << "\tdynamic effects (flame, explode, etc.), saving throws, multiple targets, projectile hits, mana usage, etc." << endl;
-  //  cerr << "\tcall Battle::dealDamage() for each target." << endl;
-
-  sprintf(message, "%s casts %s!", 
-          creature->getName(), 
-          creature->getActionSpell()->getName());
-  scourge->getMap()->addDescription(message, 1, 0.15f, 1);
-  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
-
   // use up some MP (not when using a scroll)
   if(!creature->getActionItem()) {
     int n = creature->getMp() - creature->getActionSpell()->getMp();
     if(n < 0) n = 0;
     creature->setMp( n );
   } else {
-    // destroy the scroll
-    
-    // FIXME: it's possible to cast a scroll, move it out of the inventory and then move it back
-    // later. Instead, we need to put it in some tmp. place while casting and move it back on
-    // cancel and remove it on cast.
-
+    // try to destroy the scroll
     int itemIndex = creature->findInInventory(creature->getActionItem());
     if(itemIndex > -1) {
       creature->removeInventory(itemIndex);
-      char msg[120];
-      sprintf(msg, "A scroll crumbles into dust.");
-      scourge->getMap()->addDescription(msg);
+      sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
+      scourge->getMap()->addDescription(message);
     } else {
-      cerr << "*** error: can't find scroll to destroy." << endl;
+      // scroll was removed from inventory before casting
+      sprintf(message, "Couldn't find scroll, cancelled spell.");
+      scourge->getMap()->addDescription(message);
+      creature->cancelTarget();
+      return;
     }
   }
+
+  sprintf(message, "%s casts %s!", 
+          creature->getName(), 
+          creature->getActionSpell()->getName());
+  scourge->getMap()->addDescription(message, 1, 0.15f, 1);
+  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 
   // spell succeeds?
   // FIXME: use stats like IQ here to modify spell success rate...

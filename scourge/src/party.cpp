@@ -403,6 +403,7 @@ Creature **Party::createHardCodedParty() {
       pc[2]->addInventory(scroll);  
     }
   }
+  pc[2]->setMp(500);
 
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));

@@ -872,8 +872,12 @@ int Creature::getDamage(Item *weapon) {
  take some damage
 */
 bool Creature::takeDamage(int damage, int effect_type) {
-  startEffect(effect_type);
   hp -= damage;
+  // if creature dies start effect at its location
+  if(hp > 0) startEffect(effect_type);
+  else scourge->getMap()->startEffect(getX(), getY(), getZ(), 
+                                      effect_type, (Constants::DAMAGE_DURATION * 4), 
+                                      getShape()->getWidth(), getShape()->getDepth());
   return(hp <= 0);
 }
 
@@ -1025,6 +1029,17 @@ bool Creature::isSpellMemorized(Spell *spell) {
     if(spells[i] == spell) return true;
   }
   return false;
+}
+
+// FIXME: O(n) but there aren't that many spells...
+// return true if spell was added, false if creature already had this spell
+bool Creature::addSpell(Spell *spell) { 
+  for(vector<Spell*>::iterator e = spells.begin(); e != spells.end(); ++e) {
+    Spell *thisSpell = *e;
+    if(thisSpell == spell) return false;
+  }
+  spells.push_back(spell); 
+  return true;
 }
 
 void Creature::cancelTarget() {

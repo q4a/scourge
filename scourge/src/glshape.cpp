@@ -160,7 +160,7 @@ void GLShape::draw() {
     glCullFace( GL_BACK );
 
     if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {    
-	  if (tex[LEFT_RIGHT_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE] );
+	  if (tex && tex[LEFT_RIGHT_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE] );
 	  glBegin( GL_QUADS );
 	  // left    
 	  glNormal3f(-1.0f, 0.0f, 0.0f);
@@ -177,7 +177,7 @@ void GLShape::draw() {
     }
 
     if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
-	  if(tex[FRONT_SIDE]) {
+	  if(tex && tex[FRONT_SIDE]) {
 		if(Constants::multitexture) {
 		  glSDLActiveTextureARB(GL_TEXTURE0_ARB);
 		  if(!useShadow) glEnable(GL_TEXTURE_2D);
@@ -227,7 +227,7 @@ void GLShape::draw() {
     }
 
     if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {
-	  if(tex[LEFT_RIGHT_SIDE]) {
+	  if(tex && tex[LEFT_RIGHT_SIDE]) {
 		if(Constants::multitexture) {
 		  glSDLActiveTextureARB(GL_TEXTURE0_ARB);
 		  if(!useShadow) glEnable(GL_TEXTURE_2D);
@@ -277,7 +277,7 @@ void GLShape::draw() {
     }
 
     if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
-	  if(tex[FRONT_SIDE]) {
+	  if(tex && tex[FRONT_SIDE]) {
 		if(Constants::multitexture) {
 		  glSDLActiveTextureARB(GL_TEXTURE0_ARB);
 		  if(!useShadow) glEnable(GL_TEXTURE_2D);
@@ -329,7 +329,7 @@ void GLShape::draw() {
 	  glDisable(GL_BLEND);
 	  glDepthMask(GL_TRUE);
     }
-    if (tex[TOP_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[TOP_SIDE] );
+    if (tex && tex[TOP_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[TOP_SIDE] );
     glBegin( GL_QUADS );
     // top
     glNormal3f(0.0f, 0.0f, 1.0f);

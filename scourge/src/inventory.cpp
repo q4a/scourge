@@ -354,7 +354,28 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         scourge->setTargetSelectionFor(creature);
         mainWin->setVisible(false);
       } else {
-        scourge->showMessageDialog("Cannot cast this item!");
+        scourge->showMessageDialog("You can only cast objects of magical nature!");
+      }
+    }
+  } else if(widget == transcribeButton) {
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
+      Item *item = creature->getInventory(itemIndex);
+      if(item->getSpell()) {
+        bool res = creature->addSpell(item->getSpell());
+        if(res) {
+          scourge->showMessageDialog("Spell was entered into your spellbook.");
+          // destroy the scroll
+          creature->removeInventory(itemIndex);
+          setSelectedPlayerAndMode(selected, selectedMode);
+          char msg[120];
+          sprintf(msg, "%s crumbles into dust.", item->getItemName());
+          scourge->getMap()->addDescription(msg);
+        } else {
+          scourge->showMessageDialog("You already know this spell");
+        }
+      } else {
+        scourge->showMessageDialog("You can only transcribe scrolls!");
       }
     }
   }
