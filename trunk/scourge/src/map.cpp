@@ -54,7 +54,7 @@ Map::Map(Scourge *scourge){
   this->scourge = scourge;  
   this->debugGridFlag = false;
   this->drawGridFlag = false;
-  
+
   targetWidth = 0.0f;
   targetWidthDelta = 0.05f / GLShape::DIV;
   lastTick = SDL_GetTicks();
@@ -1053,7 +1053,7 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->y == y &&
      pos[x][y][z]->z == z) {
 	mapChanged = true;
-    item = pos[x][y][z]->item;
+	item = pos[x][y][z]->item;
     for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
       for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {       
         for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
@@ -1065,6 +1065,32 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
     }
   }
   return item;
+}
+
+// drop items above this one
+void Map::dropItemsAbove(int x, int y, int z, Item *item) {
+  int count = 0;
+  Location drop[100];
+  for(int tx = 0; tx < item->getShape()->getWidth(); tx++) {
+	for(int ty = 0; ty < item->getShape()->getDepth(); ty++) {
+	  for(int tz = z + item->getShape()->getHeight(); tz < MAP_VIEW_HEIGHT; tz++) {
+		Location *loc2 = pos[x + tx][y - ty][tz];
+		if(loc2 && loc2->item) {
+		  drop[count].x = loc2->x;
+		  drop[count].y = loc2->y;
+		  drop[count].z = loc2->z - item->getShape()->getHeight();
+		  drop[count].item = loc2->item;
+		  count++;
+		  removeItem(loc2->x, loc2->y, loc2->z);
+		  tz += drop[count - 1].item->getShape()->getHeight() - 1;
+		}
+	  }
+	}
+  }
+  for(int i = 0; i < count; i++) {
+	cerr << "item " << drop[i].item->getRpgItem()->getName() << " new z=" << drop[i].z << endl;
+	setItem(drop[i].x, drop[i].y, drop[i].z, drop[i].item);
+  }
 }
 
 void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {

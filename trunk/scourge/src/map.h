@@ -102,7 +102,7 @@ class Map {
   
   void drawGrid(SDL_Surface *surface);
   void debugGrid(SDL_Surface *surface);
-  
+
  public:
   Map(Scourge *scourge);
   ~Map();
@@ -225,6 +225,8 @@ class Map {
   inline void updateLightMap() { lightMapChanged = true; }
 
   inline void refresh() { mapChanged = lightMapChanged = true; }
+
+  void dropItemsAbove(int x, int y, int z, Item *item);
 
  protected:
   DrawLater later[100], stencil[1000], other[1000], damage[1000];
