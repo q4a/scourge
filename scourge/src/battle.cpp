@@ -50,6 +50,7 @@ Battle::Battle(Session *session, Creature *creature) {
   this->needsReset = true;
   this->nextTurn = 0;
   this->weaponWait = 0;
+  this->startingAp = this->ap = 0;
   cerr << "*** constructor, creature=" << creature->getName() << endl;
 }
 

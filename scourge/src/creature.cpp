@@ -82,6 +82,7 @@ void Creature::commonInit() {
   this->index = 0;
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
+  this->bestPathPos = 0;
   this->quadric = gluNewQuadric();
   this->inventory_count = 0;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
@@ -1099,6 +1100,10 @@ int Creature::addMoney(Creature *creature_killed) {
 }
 
 void Creature::monsterInit() {
+  // set some skills
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
+  }
   // equip starting inventory
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {
     addInventory(session->newItem(getMonster()->getStartingItem(i)));
@@ -1108,10 +1113,7 @@ void Creature::monsterInit() {
   for(int i = 0; i < getMonster()->getStartingSpellCount(); i++) {
     addSpell(getMonster()->getStartingSpell(i));
   }
-  // set some skills
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
-  }
+
   // add some hp
   //startingHp = hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
   //startingMp = mp = 4 + (int)((float)(4.0f * level) * rand()/RAND_MAX);
