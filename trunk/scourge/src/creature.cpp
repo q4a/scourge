@@ -606,7 +606,6 @@ Item *Creature::getItemAtLocation(int location) {
 
 // calculate the aggregate values based on equipped items
 void Creature::recalcAggregateValues() {
-
   // calculate the armor (0-100, 100-total protection)
   armor = (monster ? monster->getBaseArmor() : 0);
   for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
@@ -680,15 +679,43 @@ int Creature::getDamage(Item *weapon) {
   return (int)(damage * rand()/RAND_MAX);
 }
 
-// take some damage
-bool Creature::takeDamage(int damage) {
+/**
+ take some damage
+*/
+bool Creature::takeDamage(int damage, int effect_type) {
   // show an effect
   resetDamageEffect();
-  setEffectType(Constants::EFFECT_GLOW);
+  setEffectType(effect_type);
+  //setEffectType(Constants::EFFECT_GLOW);
   //setEffectType(Constants::EFFECT_FLAMES);
-
   hp -= damage;
   return (hp <= 0);
+}
+
+
+/**
+   Get the total value of armor worn and roll for the skill of each piece.
+   Monsters' base armor is not rolled (ie. they're experts in using their natural armor.)
+ */
+int Creature::getSkillModifiedArmor() {
+  // calculate the armor (0-100, 100-total protection)
+  int armor = (monster ? monster->getBaseArmor() : 0);
+  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	if(equipped[i] != MAX_INVENTORY_SIZE) {
+	  Item *item = inventory[equipped[i]];
+	  if(item->getRpgItem()->getType() == RpgItem::ARMOR) {
+		int skill_index = (item->getRpgItem()->getSkill() > -1 ? 
+						   item->getRpgItem()->getSkill() : 
+						   Constants::HAND_DEFEND);
+		float skill = (float)skills[skill_index];
+		int value = item->getRpgItem()->getAction();
+		
+		// add (value + ((skill-50)% of value)) to armor
+		armor += value + (int)( (float)value * ((skill - 50.0f) / 100.0f) );
+	  }
+	}
+  }
+  return armor;
 }
 
 // add exp after killing a creature
@@ -755,7 +782,9 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[2]->setThirst(2);
   pc[2]->setStateMod(Constants::ac_protected, true);
   pc[2]->setStateMod(Constants::magic_protected, true);
-  pc[2]->setStateMod(Constants::cursed, true);        
+  pc[2]->setStateMod(Constants::cursed, true);
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
+	if(i != Constants::dead) pc[2]->setStateMod(i, true);
 
   pc[3] = new Creature(scourge, Character::getCharacterByName("Naturalist"), "Dialante");    
   pc[3]->setLevel(1); 

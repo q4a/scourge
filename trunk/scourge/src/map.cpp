@@ -22,6 +22,8 @@
 // only use 1 (disabled) or 0 (enabled)
 #define LIGHTMAP_ENABLED 1
 
+#define PI 3.14159f
+
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -734,10 +736,37 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
   } else {
 	glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
   }
-  
+
   xpos2 = ((float)(creature->getX() - getX()) / GLShape::DIV);
   ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
   zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
+
+  // draw state mods
+  if(groupMode || player) {
+	int n = 10;
+	float x = 0.0f;
+	float y = 0.0f;
+	int count = 0;
+	for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	  if(creature->getStateMod(i) && i != Constants::dead) {
+		glPushMatrix();
+		glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
+		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
+		glTranslatef( w / 2.0f + 5, 0, 0 );
+		//	  drawStateMod(i);
+		//glColor4f( 1, 1, 1, 1 );
+		glBegin( GL_QUADS );
+		glVertex3f( 0, 0, 0 );
+		glVertex3f( 0, n, 0 );
+		glVertex3f( n, n, 0 );
+		glVertex3f( n, 0, 0 );
+		glEnd();
+		glPopMatrix();
+		count++;
+	  }
+	}
+  }
+
   glTranslatef( xpos2 + w / 2.0f, ypos2 - w, zpos2 + 5);
   if(groupMode || player) gluDisk(creature->getQuadric(), w / 1.8f - s, w / 1.8f, 12, 1);
 
@@ -745,7 +774,7 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
   glDisable( GL_BLEND );
   glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_TRUE);
-  
+ 
   // draw name
   glTranslatef( 0, 0, 100);
   scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getName());

@@ -260,8 +260,11 @@ class Creature {
   // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
   int getToHit(Item *weapon);
 
-  // get the armor value of the creature (0-100)
+  // get the armor value of the creature (0-100) (this is the max armor)
   inline int getArmor() { return armor; }
+
+  // get the armor as modified by each item's assc. skill
+  int getSkillModifiedArmor();
   
   // return the damage as:
   // rand(weapon + power + (skill - 50 % weapon))
@@ -269,7 +272,7 @@ class Creature {
 
   // take damage
   // return true if the creature dies
-  bool takeDamage(int damage);
+  bool takeDamage(int damage, int effect_type = Constants::EFFECT_GLOW);
 
   inline int getDamageEffect() { return damageEffectCounter; }
 

@@ -1549,7 +1549,9 @@ void Scourge::fightBattle() {
 			
 			// take a swing
 			int tohit = creature->getToHit(item);
-			int ac = creature->getTargetCreature()->getArmor();
+			int ac = creature->getTargetCreature()->getSkillModifiedArmor();
+			sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
+			map->addDescription(message);
 			if(tohit > ac) {
 			  
 			  // deal out the damage
