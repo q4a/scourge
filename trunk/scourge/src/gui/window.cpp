@@ -67,12 +67,12 @@ void Window::commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char
   this->dragging = false;
   this->dragX = this->dragY = 0;
   if(hasCloseButton) {
-	if( theme->getButtonHighlight() ) {
-	  this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 
-									 theme->getButtonHighlight()->texture);
-	} else {
-	  this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 0 );
-	}
+    if( theme->getButtonHighlight() ) {
+      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 
+                                     theme->getButtonHighlight()->texture);
+    } else {
+      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 0 );
+    }
   } else closeButton = NULL;
   openHeight = 0;
   this->type = type;

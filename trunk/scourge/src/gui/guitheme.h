@@ -32,13 +32,15 @@ class ShapePalette;
 
 class ThemeElement {
  public:
-  char textureFileName[40];
-  GLuint texture;
+  char textureFileName[40], north[40], south[40], east[40], west[40];
+  GLuint texture, tex_north, tex_south, tex_east, tex_west;
   Color color;
   int width;
 
   ThemeElement() {}
   ~ThemeElement() {}
+
+  void loadTextures( ShapePalette *shapePal );
 };
 
 class GuiTheme {

@@ -101,6 +101,8 @@ class Window : public Widget {
 
   ~Window();
 
+  inline GuiTheme *getTheme() { return theme; }
+
   inline void setTitle(char *s) { title = s; }
 
   inline bool isOpening() { return openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)); }
