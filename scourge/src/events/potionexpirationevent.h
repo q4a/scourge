@@ -36,7 +36,8 @@ class PotionExpirationEvent : public Event  {
 
 private:
   Creature *creature;
-  RpgItem *item;
+  int potionSkill;
+  int amount;
   Scourge *scourge;
 
 public:
@@ -44,6 +45,7 @@ public:
   void execute();    
   
   PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, RpgItem *item, Scourge *scourge, int nbExecutionsToDo);  
+  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Scourge *scourge, int nbExecutionsToDo);
   PotionExpirationEvent();
   virtual ~PotionExpirationEvent();  
   

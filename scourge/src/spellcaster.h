@@ -50,7 +50,8 @@ class SpellCaster {
   static void spellSucceeded(Scourge *scourge, Creature *creature, int power);
 
  protected:
-  static void castHealingTouch(Scourge *scourge, Creature *creature, int power);
+  static void increaseHP(Scourge *scourge, Creature *creature, int power);
+  static void increaseAC(Scourge *scourge, Creature *creature, int power);
   
 };
 

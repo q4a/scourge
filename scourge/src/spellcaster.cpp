@@ -35,8 +35,12 @@ void SpellCaster::spellFailed(Scourge *scourge, Creature *creature, int power) {
 void SpellCaster::spellSucceeded(Scourge *scourge, Creature *creature, int power) {
   if(!creature->getActionSpell()) return;
   cerr << "SUCCEEDED: " << creature->getActionSpell()->getName() << " power=" << power << endl;
-  if(!strcasecmp(creature->getActionSpell()->getName(), "Healing touch")) {
-	castHealingTouch(scourge, creature, power);
+  if(!strcasecmp(creature->getActionSpell()->getName(), "Lesser healing touch") ||
+	 !strcasecmp(creature->getActionSpell()->getName(), "Greater healing touch") ||
+	 !strcasecmp(creature->getActionSpell()->getName(), "Divine healing touch")) {
+	increaseHP(scourge, creature, power);
+  } else if(!strcasecmp(creature->getActionSpell()->getName(), "Body of stone")) {
+	increaseAC(scourge, creature, power);
   } else {
 	// default
 	cerr << "*** ERROR: Implement spell " << creature->getActionSpell()->getName() << endl;
@@ -45,12 +49,40 @@ void SpellCaster::spellSucceeded(Scourge *scourge, Creature *creature, int power
 
 
 
-void SpellCaster::castHealingTouch(Scourge *scourge, Creature *creature, int power) {
-  if(power + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp()) 
-	power = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
-  creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + power));
+void SpellCaster::increaseHP(Scourge *scourge, Creature *creature, int power) {
+  int n = creature->getActionSpell()->getAction();
+  n += (int)((((float)n / 100.0f) * (float)power) * rand()/RAND_MAX);
+
+  if(n + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp()) 
+	n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
+  creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + n));
   char msg[200];
-  sprintf(msg, "%s heals %d points.", creature->getTargetCreature()->getName(), power);
+  sprintf(msg, "%s heals %d points.", creature->getTargetCreature()->getName(), n);
   scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
+}
+
+void SpellCaster::increaseAC(Scourge *scourge, Creature *creature, int power) {
+  int n = creature->getActionSpell()->getAction();
+  n += (int)((((float)n / 100.0f) * (float)power) * rand()/RAND_MAX);
+
+  int timeInMin = 2 * creature->getLevel();
+
+  //  cerr << "increaseAC: points=" << n << " time=" << timeInMin << " min-s." << endl;
+
+  creature->getTargetCreature()->setBonusArmor(creature->getTargetCreature()->getBonusArmor() + n);
+  char msg[200];
+  sprintf(msg, "%s feels impervious to damage!", creature->getTargetCreature()->getName());
+  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+  creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
+  
+  // add calendar event to remove armor bonus
+  // (format : sec, min, hours, days, months, years)
+  Date d(0, timeInMin, 0, 0, 0, 0); 
+  Event *e = new PotionExpirationEvent(scourge->getParty()->getCalendar()->getCurrentDate(), 
+									   d, creature->getTargetCreature(), 
+									   Constants::getPotionSkillByName("AC"), n, 
+									   scourge, 1);
+  scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
+
 }
