@@ -38,7 +38,8 @@ void findLocalResources(const char *appPath, char *dir) {
   // Where are we running from?
   strcpy(dir, appPath);	 
   // Look in this and the parent dir for a 'data' folder
-  for(int i = 0; i < 2; i++) {
+  // ('i' has to count to at least 4 for OS X)
+  for(int i = 0; i < 10; i++) {
 	char *p = strrchr(dir, SEPARATOR);
 	if(!p) {
 	  dir[0] = '\0';
