@@ -1143,7 +1143,8 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
     int n = (int)(3.0f * rand() / RAND_MAX);
     for(int i = 0; i < n; i++) {
       RpgItem *containedItem = RpgItem::getRandomItem(level + valueBonus);
-      if(containedItem) item->addContainedItem(scourge->getSession()->newItem(containedItem));
+      if(containedItem) 
+        item->addContainedItem(scourge->getSession()->newItem(containedItem), true);
     }
     // some spells
     if(!((int)(25.0f * rand() / RAND_MAX))) {
@@ -1152,7 +1153,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
         Spell *spell = MagicSchool::getRandomSpell(level);
         if(spell) {
           Item *scroll = scourge->getSession()->newItem(RpgItem::getItemByName("Scroll"), spell);
-          item->addContainedItem(scroll);
+          item->addContainedItem(scroll, true);
         }
       }
     }
@@ -1174,7 +1175,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
       if(containedItem) {
         Item *magicItem = scourge->getSession()->newItem(containedItem);
         magicItem->enchant( level / MAGIC_ITEM_MUL );
-        item->addContainedItem(magicItem);
+        item->addContainedItem(magicItem, true);
         
         char tmp[255];
         magicItem->getDetailedDescription(tmp);

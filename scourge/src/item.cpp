@@ -42,12 +42,16 @@ Item::~Item(){
   }
 }
 
-bool Item::addContainedItem(Item *item) { 
-  if(containedItemCount < MAX_CONTAINED_ITEMS) {
+bool Item::addContainedItem(Item *item, bool force) { 
+  if(containedItemCount < MAX_CONTAINED_ITEMS && 
+     (force || !item->isBlocking() || getShape()->fitsInside(item->getShape()))) {
     containedItems[containedItemCount++] = item; 
     return true;
-  } else return false;
-}
+  } else {
+    cerr << "Warning: unable to add to container. Container=" << getRpgItem()->getName() << " item=" << item->getRpgItem()->getName() << endl;
+    return false;
+  }
+} 
 
 Item *Item::removeContainedItem(int index) {
   Item *item = NULL;

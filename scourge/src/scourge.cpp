@@ -1601,13 +1601,17 @@ void Scourge::dropItem(int x, int y) {
       if(inventory->isVisible()) inventory->refresh();
     } else if(map->getSelectedDropTarget()->item && 
               map->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-      map->getSelectedDropTarget()->item->addContainedItem(movingItem);
-      sprintf(message, "%s is placed in %s.", 
-              movingItem->getItemName(), 
-              map->getSelectedDropTarget()->item->getItemName());
-      map->addDescription(message);
-      // if this container's gui is open, update it
-      refreshContainerGui(map->getSelectedDropTarget()->item);
+      if(!map->getSelectedDropTarget()->item->addContainedItem(movingItem)) {
+        showMessageDialog("The item won't fit in that container!");
+        replace = true;
+      } else {
+        sprintf(message, "%s is placed in %s.", 
+                movingItem->getItemName(), 
+                map->getSelectedDropTarget()->item->getItemName());
+        map->addDescription(message);
+        // if this container's gui is open, update it
+        refreshContainerGui(map->getSelectedDropTarget()->item);
+      }
     } else {
       replace = true;
     }

@@ -36,13 +36,6 @@ GLShape::GLShape(GLuint tex[],
   commonInit(tex, color, display_list, shapePalIndex);
 }
 
-void GLShape::setDimensions(int w, int d, int h) {
-  this->width = w;
-  this->depth = d;
-  this->height = h;
-  initSurfaces();
-}
-
 void GLShape::initSurfaces() {
   // initialize the surfaces
   float w = (float)width / DIV;
@@ -451,5 +444,12 @@ bool GLShape::isLightBlocking() {
 
 void GLShape::setLightBlocking(bool b) { 
 	lightBlocking = b; 
+}
+
+// loosely interpreted...
+bool GLShape::fitsInside(GLShape *smaller) {
+  return (width > smaller->getWidth() && 
+          depth > smaller->getDepth() &&
+          height > smaller->getHeight());
 }
 

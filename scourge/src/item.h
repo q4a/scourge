@@ -79,7 +79,7 @@ public:
 
   inline int getContainedItemCount() { return containedItemCount; }
   // return true if successful
-  bool addContainedItem(Item *item);
+  bool addContainedItem(Item *item, bool force=false);
   // return removed item, or NULL
   Item *removeContainedItem(int index);
   Item *getContainedItem(int index);
