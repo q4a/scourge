@@ -81,7 +81,7 @@ INCLUDES = -I$./..
 
 noinst_LIBRARIES = libScourgeGui.a
 
-libScourgeGui_a_SOURCES =  	widget.cpp 	widget.h 	textfield.cpp 	textfield.h 	widgetview.cpp 	widgetview.h 	canvas.cpp         canvas.h 	button.cpp 	button.h 	label.cpp 	label.h 	checkbox.cpp 	checkbox.h 	cardcontainer.cpp 	cardcontainer.h 	draganddrop.cpp 	draganddrop.h 	multiplelabel.cpp 	multiplelabel.h 	scrollinglist.cpp 	scrollinglist.h 	window.cpp 	window.h 	progress.cpp 	progress.h
+libScourgeGui_a_SOURCES =  	widget.cpp 	widget.h 	slider.cpp 	slider.h 	textfield.cpp 	textfield.h 	widgetview.cpp 	widgetview.h 	canvas.cpp         canvas.h 	button.cpp 	button.h 	label.cpp 	label.h 	checkbox.cpp 	checkbox.h 	cardcontainer.cpp 	cardcontainer.h 	draganddrop.cpp 	draganddrop.h 	multiplelabel.cpp 	multiplelabel.h 	scrollinglist.cpp 	scrollinglist.h 	window.cpp 	window.h 	progress.cpp 	progress.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -98,8 +98,8 @@ X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libScourgeGui_a_LIBADD = 
-libScourgeGui_a_OBJECTS =  widget.o textfield.o widgetview.o canvas.o \
-button.o label.o checkbox.o cardcontainer.o draganddrop.o \
+libScourgeGui_a_OBJECTS =  widget.o slider.o textfield.o widgetview.o \
+canvas.o button.o label.o checkbox.o cardcontainer.o draganddrop.o \
 multiplelabel.o scrollinglist.o window.o progress.o
 AR = ar
 CXXFLAGS = @CXXFLAGS@
@@ -120,7 +120,8 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/button.P .deps/canvas.P .deps/cardcontainer.P \
 .deps/checkbox.P .deps/draganddrop.P .deps/label.P \
 .deps/multiplelabel.P .deps/progress.P .deps/scrollinglist.P \
-.deps/textfield.P .deps/widget.P .deps/widgetview.P .deps/window.P
+.deps/slider.P .deps/textfield.P .deps/widget.P .deps/widgetview.P \
+.deps/window.P
 SOURCES = $(libScourgeGui_a_SOURCES)
 OBJECTS = $(libScourgeGui_a_OBJECTS)
 

@@ -187,7 +187,10 @@ UserConfiguration::UserConfiguration(){
     turnBasedBattle = true;
 
     // audio settings
+    soundEnabled = true;
     soundFreq = 5;
+    musicVolume = 64;
+    effectsVolume = 128;
     
     // Build (string engineAction -> int engineAction ) lookup table
     // and   (int ea -> string ea) lookup table    
@@ -412,7 +415,13 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set turnbasedbattle %s\n", turnBasedBattle ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set soundenabled %s\n", soundEnabled ? "true" : "false");
+    writeFile(configFile, textLine);
     sprintf(textLine, "set soundfreq %d\n", soundFreq);
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set musicvolume %d\n", musicVolume);
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set effectsvolume %d\n", effectsVolume);
     writeFile(configFile, textLine);
         
     delete configFile;
@@ -480,7 +489,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     if(s1 == "fullscreen"||s1 == "doublebuf" || s1 == "hwpal" || s1 == "resizeable" ||
        s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
-       s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle"){
+       s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle" ||
+       s1 == "soundenabled" ){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -528,9 +538,12 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
              << ", valid values are 8, 15, 16, 24 or 32 . Ignoring line" << endl;    
              bpp = -1; // To autodetect best bpp value
         }                               
-    }
-    else if(s1 == "soundfreq") {
+    } else if(s1 == "soundfreq") {
       soundFreq = atoi(s2.c_str());
+    } else if(s1 == "musicvolume") {
+      musicVolume = atoi(s2.c_str());
+    } else if(s1 == "effectsvolume") {
+      effectsVolume = atoi(s2.c_str());
     } else if(s1 == "w"){
         w = atoi(s2.c_str());
     }
@@ -565,7 +578,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "turnbasedbattle") {
       turnBasedBattle = paramValue;
-    } 
+    } else if(s1 == "soundenabled") {
+      soundEnabled = paramValue;
+    }
     else if(s1 == "gamespeed"){        
         gamespeed = atoi(s2.c_str());
         if(gamespeed < 0 || gamespeed > 4){           
@@ -634,6 +649,8 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 #endif
 	} else if(!strcmp(argv[i], "--test")) {
 	  test = true;
+  } else if(!strcmp(argv[i], "--nosound")) {
+    soundEnabled = false;
 	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
 	  for(int t = 1; t < (int)strlen(argv[i]); t++) {
 		switch(argv[i][t]) {
@@ -689,6 +706,10 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
     printf("Multiplayer options:\n");
     printf("\t--serverPORT - run a standalone server w/o a ui on PORT\n");
     printf("\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. Connect to server HOST:PORT as USERNAME.\n");
+#endif
+#ifdef HAVE_SDL_MIXER
+    printf("Sound options:\n");
+    printf("\t--nosound - run without sound\n");
 #endif
 	exit(0);
   }   
@@ -931,7 +952,11 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set keepmapsize true" << endl;
   configFile << "set frameonfullscreen true" << endl;
   configFile << "set turnbasedbattle true" << endl;
+  configFile << "" << endl;
   configFile << "// Audio settings" << endl;
+  configFile << "set soundenabled true" << endl;
+  configFile << "set musicvolume 64 // 0-silent, 128-loudest" << endl;
+  configFile << "set effectsvolume 128 // 0-silent, 128-loudest" << endl;
   configFile << "set soundfreq 5  // 0: most frequent, 10: least frequent" << endl;
   configFile << "" << endl;
 

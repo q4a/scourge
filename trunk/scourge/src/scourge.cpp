@@ -97,7 +97,7 @@ void Scourge::initUI() {
   multiplayer = new MultiplayerDialog(this);
 
   // load character, creature, item sounds
-  sdlHandler->getSound()->loadSounds();
+  sdlHandler->getSound()->loadSounds(session->getUserConfiguration());
 }
 
 void Scourge::start() {

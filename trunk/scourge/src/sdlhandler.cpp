@@ -362,7 +362,7 @@ void SDLHandler::setVideoMode( UserConfiguration * uc ) {
 #endif	 
 
   // initialize sound support
-  sound = new Sound();
+  sound = new Sound(uc);
   
   /* initialize OpenGL */
   initGL( );

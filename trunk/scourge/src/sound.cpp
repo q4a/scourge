@@ -14,39 +14,40 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "sound.h"
 
-Sound::Sound() {
+Sound::Sound(UserConfiguration *userConfiguration) {
+  haveSound = false;
+
+  if(userConfiguration->isSoundEnabled()) {
 #ifdef HAVE_SDL_MIXER
-  haveSound = true;
-  if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024)) {
-    cerr << "*** Error opening audio: " << Mix_GetError() << endl;
-    cerr << "\tDisabling sound." << endl;
-    haveSound = false;
-  }
-
-  if(haveSound) {
-    char fn[300];
-    sprintf(fn, "%s/sound/menu.ogg", rootDir);
-    menuMusic = Mix_LoadMUS(fn);
-    if(!menuMusic) {
-      cerr << "*** Error: couldn't load music: " << fn << endl;
-      cerr << "\t" << Mix_GetError() << endl;
+    if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024)) {
+      cerr << "*** Error opening audio: " << Mix_GetError() << endl;
+      cerr << "\tDisabling sound." << endl;
+    } else {
+      haveSound = true;
     }
 
-    sprintf(fn, "%s/sound/dungeon.ogg", rootDir);
-    dungeonMusic = Mix_LoadMUS(fn);
-    if(!dungeonMusic) {
-      cerr << "*** Error: couldn't load music: " << fn << endl;
-      cerr << "\t" << Mix_GetError() << endl;
+    if(haveSound) {
+      char fn[300];
+      sprintf(fn, "%s/sound/menu.ogg", rootDir);
+      menuMusic = Mix_LoadMUS(fn);
+      if(!menuMusic) {
+        cerr << "*** Error: couldn't load music: " << fn << endl;
+        cerr << "\t" << Mix_GetError() << endl;
+      }
+
+      sprintf(fn, "%s/sound/dungeon.ogg", rootDir);
+      dungeonMusic = Mix_LoadMUS(fn);
+      if(!dungeonMusic) {
+        cerr << "*** Error: couldn't load music: " << fn << endl;
+        cerr << "\t" << Mix_GetError() << endl;
+      }
+
+      setMusicVolume(userConfiguration->getMusicVolume());
     }
-
-    // FIXME: this should come from userconfig: set the music volume
-    Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
-  }
-
 #endif
+  }
 }
 
 Sound::~Sound() {
@@ -94,7 +95,9 @@ void Sound::stopMusic(Mix_Music *music) {
 }
 #endif
 
-void Sound::loadSounds() {
+void Sound::loadSounds(UserConfiguration *userConfiguration) {
+  if(!haveSound) return;
+
   cerr << "Loading UI sounds..." << endl;
   storeSound(0, Window::ROLL_OVER_SOUND);
   storeSound(0, Window::ACTION_SOUND);
@@ -124,28 +127,30 @@ void Sound::loadSounds() {
       storeSound(0, file.c_str());
     }
   }
+
+  setEffectsVolume(userConfiguration->getEffectsVolume());
 }
 
 void Sound::storeSound(int type, const char *file) {
 #ifdef HAVE_SDL_MIXER
-  char fn[300];
-  sprintf(fn, "%s/%s", rootDir, file);
-  cerr << "*** Loading sound file: " << fn << endl;
-  Mix_Chunk *sample = Mix_LoadWAV(fn);
-  if(!sample) {
-    cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
-  } else {
-    string fileStr = file;
-    soundMap[fileStr] = sample;
-    // FIXME: this should come from userconfig: set the volume
-    Mix_VolumeChunk(sample, MIX_MAX_VOLUME);
+  if(haveSound) {
+    char fn[300];
+    sprintf(fn, "%s/%s", rootDir, file);
+    cerr << "*** Loading sound file: " << fn << endl;
+    Mix_Chunk *sample = Mix_LoadWAV(fn);
+    if(!sample) {
+      cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
+    } else {
+      string fileStr = file;
+      soundMap[fileStr] = sample;
+    }
   }
 #endif
 }
 
 void Sound::playSound(const char *file) {
 #ifdef HAVE_SDL_MIXER
-  if(file) {
+  if(haveSound && file) {
     //cerr << "*** Playing WAV: " << file << endl;
     string fileStr = file;
     if(soundMap.find(fileStr) != soundMap.end()) {
@@ -153,6 +158,23 @@ void Sound::playSound(const char *file) {
         cerr << "*** Error playing WAV file: " << fileStr << endl;
         cerr << "\t" << Mix_GetError() << endl;
       }
+    }
+  }
+#endif
+}
+
+void Sound::setMusicVolume(int volume) {
+#ifdef HAVE_SDL_MIXER
+  if(haveSound) Mix_VolumeMusic(volume);
+#endif
+}
+
+void Sound::setEffectsVolume(int volume) {
+#ifdef HAVE_SDL_MIXER
+  if(haveSound) {
+    for(map<string, Mix_Chunk*>::iterator i = soundMap.begin(); i != soundMap.end(); ++i) {
+      Mix_Chunk *sample = i->second;
+      Mix_VolumeChunk(sample, volume);
     }
   }
 #endif

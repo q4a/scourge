@@ -86,9 +86,13 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     shadowsML -> addText("All");       
     cards->addWidget(shadowsML, VIDEO);       
     changeTakeEffectLabel = cards->createLabel(113, 432, strdup(" "), VIDEO, Constants::BLUE_COLOR);
+
+    musicVolume = new Slider(100, 75, 258, 95, 0, 128, strdup("Music Volume"));
+    cards->addWidget(musicVolume, AUDIO);
+    effectsVolume = new Slider(100, 110, 258, 130, 0, 128, strdup("Effects Volume"));
+    cards->addWidget(effectsVolume, AUDIO);
     
     selectedMode = GAME_SETTINGS;
-    				
 }
 
 void OptionsMenu::loadGameSettings(){
