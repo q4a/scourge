@@ -106,6 +106,7 @@ class CLoadMD2
 public:
     CLoadMD2();                                
     bool ImportMD2(t3DModel *pModel, char *strFileName);    
+	void DeleteMD2( t3DModel *pModel );
 
 private:        
         
