@@ -66,10 +66,12 @@ MiniMap :: MiniMap(Scourge *scourge){
 
 
 MiniMap :: ~MiniMap(){
-    if(textureInMemory != NULL){
-        free(textureInMemory);
-        textureInMemory = NULL;
-    }          
+  if(textureInMemory != NULL){
+    free(textureInMemory);
+    textureInMemory = NULL;
+  }          
+  // delete the overlay texture
+  glDeleteTextures(1, texture);
 }
 
 

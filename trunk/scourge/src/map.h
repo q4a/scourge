@@ -124,6 +124,8 @@ class Map {
   Map(Scourge *scourge);
   ~Map();
 
+  void reset();
+
   int debugX, debugY, debugZ;  
   
   bool selectMode;

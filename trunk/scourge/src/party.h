@@ -82,6 +82,8 @@ class Party : public WidgetView {
 
   void reset();
 
+  void deleteParty();
+
   inline Calendar *getCalendar() { return calendar; } 
 
   inline Creature *getPlayer() { return player; }
