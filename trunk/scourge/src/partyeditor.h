@@ -67,7 +67,9 @@ typedef struct _CharacterInfo {
   Button *skillAddButton, *skillRerollButton, *skillSubButton;
   int availableSkillMod;
   char **skillLine;
+  Color *skillColor;
   int skill[ Constants::SKILL_COUNT ], skillMod[ Constants::SKILL_COUNT ];
+  ScrollingLabel *skillDescription;
 
   Button *back, *next;
   
@@ -115,6 +117,8 @@ public:
  protected:
   void createCharUI( int step, CharacterInfo *info );
   void deleteLoadedShapes();
+  void rollSkills( CharacterInfo *info );
+  void updateUI( CharacterInfo *info );
 };
 
 #endif
