@@ -134,6 +134,7 @@ class Battle {
   void stepCloserToTarget();
   bool selectNewTarget();
   bool moveCreature();
+  Creature *getAvailableTarget();
 
   static char *getRandomSound(int start, int count);
 };

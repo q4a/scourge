@@ -145,6 +145,10 @@ bool Battle::fightTurn() {
       stepCloserToTarget();
     }
   } else {
+
+    if( !creature->isMonster() && 
+        !getAvailableTarget() ) return true;
+
     moveCreature();
   }
   // not done yet with creature's turn
@@ -340,7 +344,7 @@ bool Battle::moveCreature() {
 
     // someone killed our target, try to pick another one
     if(creature->hasTarget() && !creature->isTargetValid()) {
-      cerr << "*** Character has invalid target, selecting new one." << endl;
+      //cerr << "*** Character has invalid target, selecting new one." << endl;
       if( selectNewTarget() ) return true;
     }
 
@@ -375,15 +379,34 @@ bool Battle::moveCreature() {
         }
       }
     } else {
-      //creature->getShape()->setCurrentAnimation((int)MD2_STAND);
-      // try to kill something
-      cerr << "*** Character has no location, selecting new target." << endl;
+      //cerr << "*** Character has no location, selecting new target." << endl;
       return selectNewTarget();
     }
   }
   return false;
 }
 
+Creature *Battle::getAvailableTarget() {
+  if( creature->isMonster() ) {
+    cerr << "*** Error: Battle::getAvailableTarget() should only be called for characters!" << endl;
+    return NULL;
+  }
+  Creature *target;
+  if(creature->getStateMod(Constants::possessed)) {
+    target = session->getParty()->getClosestPlayer(toint(creature->getX()), 
+                                                   toint(creature->getY()), 
+                                                   creature->getShape()->getWidth(),
+                                                   creature->getShape()->getDepth(),
+                                                   20);
+  } else {
+    target = session->getClosestVisibleMonster(toint(creature->getX()), 
+                                               toint(creature->getY()), 
+                                               creature->getShape()->getWidth(),
+                                               creature->getShape()->getDepth(),
+                                               20);
+  }
+  return target;
+}
 
 bool Battle::selectNewTarget() {
   // select a new target
@@ -394,20 +417,7 @@ bool Battle::selectNewTarget() {
     return false;
   } else {
     // select a new target
-    Creature *target;
-    if(creature->getStateMod(Constants::possessed)) {
-      target = session->getParty()->getClosestPlayer(toint(creature->getX()), 
-                                                     toint(creature->getY()), 
-                                                     creature->getShape()->getWidth(),
-                                                     creature->getShape()->getDepth(),
-                                                     20);
-    } else {
-      target = session->getClosestVisibleMonster(toint(creature->getX()), 
-                                                 toint(creature->getY()), 
-                                                 creature->getShape()->getWidth(),
-                                                 creature->getShape()->getDepth(),
-                                                 20);
-    }
+    Creature *target = getAvailableTarget();
     if (target) {
       if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
       if(creature->getTargetCreature()) cerr << "*** Warning: setting target when one already exists!"<< endl;

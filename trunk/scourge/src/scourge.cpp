@@ -557,14 +557,14 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
      !(creature->getSelX() == toint(creature->getX()) && 
        creature->getSelY() == toint(creature->getY())) &&
      session->getUserConfiguration()->isBattleTurnBased() ) {
-    for( int i = 0; i < (int)creature->getPath()->size(); i++) {
+    for( int i = creature->getPathIndex(); i < (int)creature->getPath()->size(); i++) {
       Location pos = (*(creature->getPath()))[i];
       glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
       xpos2 = ((float)(pos.x - map->getX()) / GLShape::DIV);
       ypos2 = ((float)(pos.y - map->getY()) / GLShape::DIV);
       zpos2 = 0.0f / GLShape::DIV;  
       glPushMatrix();
-      glTranslatef( xpos2, ypos2, zpos2 + 5);
+      glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
       gluDisk(quadric, 0, 4, 12, 1);
       glPopMatrix();
     }
@@ -2324,7 +2324,6 @@ void Scourge::moveMonster(Creature *monster) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement
-      monster->setDistanceRange(0, Constants::MIN_DISTANCE);
       monster->move(monster->getDir(), map);
     }
   } else if(monster->hasTarget()) {
