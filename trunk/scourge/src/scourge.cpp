@@ -91,7 +91,10 @@ void Scourge::initVideo(ShapePalette *shapePal) {
 }
 
 void Scourge::initUI() {
-// for now pass map in
+  // init UI themes
+  GuiTheme::initThemes( shapePal );
+
+  // for now pass map in
   this->levelMap = session->getMap();
   miniMap = new MiniMap(this); 
 

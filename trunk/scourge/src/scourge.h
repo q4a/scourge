@@ -55,6 +55,7 @@
 #include "gameadapter.h"
 #include "session.h"
 #include "infogui.h"
+#include "gui/guitheme.h"
 
 using namespace std;
 
@@ -88,6 +89,7 @@ class NetPlay;
 class Progress;
 class GameAdapter;
 class InfoGui;
+class GuiTheme;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"

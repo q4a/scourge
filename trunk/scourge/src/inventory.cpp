@@ -566,9 +566,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
         itemColor[t].g = 0;
         itemColor[t].b = 0;
       } else {
-        itemColor[t].r = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ].r;
-        itemColor[t].g = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ].g;
-        itemColor[t].b = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ].b;
+        itemColor[t].r = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->r;
+        itemColor[t].g = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->g;
+        itemColor[t].b = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->b;
       }
       itemColor[t].a = 1;
     }

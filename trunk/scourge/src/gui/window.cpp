@@ -40,32 +40,43 @@ Label *Window::message_label = NULL;
 Button *Window::message_button = NULL;
 bool Window::windowWasClosed = false;
 
-Window::Window(SDLHandler *sdlHandler, 
-               int x, int y, int w, int h, 
-               char *title, GLuint texture,
-               bool hasCloseButton, int type, 
-               GLuint texture2) :
-Widget(x, y, w, h) {
+Window::Window( SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type, const char *themeName ) : Widget(x, y, w, h) {
+  theme = GuiTheme::getThemeByName( themeName );
+  commonInit( sdlHandler, x, y, w, h, title, hasCloseButton, type );
+}
+
+Window::Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, GLuint texture, bool hasCloseButton, int type, GLuint texture2) : Widget(x, y, w, h) {
+  theme = GuiTheme::getThemeByName( GuiTheme::DEFAULT_THEME );
+  /*
+  this->texture = texture;
+  this->texture2 = texture2;
+  background.r = 1.0f;
+  background.g = 0.85f;
+  background.b = 0.5f;
+  */
+  commonInit( sdlHandler, x, y, w, h, title, hasCloseButton, type );
+}
+
+void Window::commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type) {
   this->lastWidget = NULL;
   this->sdlHandler = sdlHandler;
   this->title = title;
-  this->texture = texture;
   this->visible = false;
   this->modal = false;
   this->widgetCount = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
   if(hasCloseButton) {
-    this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, sdlHandler->getShapePalette()->getHighlightTexture());
+	if( theme->getButtonHighlight() ) {
+	  this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 
+									 theme->getButtonHighlight()->texture);
+	} else {
+	  this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 0 );
+	}
   } else closeButton = NULL;
   openHeight = 0;
   this->type = type;
-  this->texture2 = texture2;
   this->locked = false;
-  //1, 0.75f, 0.45f
-  background.r = 1.0f;
-  background.g = 0.85f;
-  background.b = 0.5f;
   setBackgroundTileWidth(TILE_W);
   setBackgroundTileHeight(TILE_H);
   // make windows stay on screen
@@ -318,11 +329,14 @@ void Window::prevFocus() {
 void Window::addWidget(Widget *widget) {
   if(widgetCount < MAX_WIDGET){
     this->widget[widgetCount++] = widget;
+
     // apply the window's color scheme
-    widget->setColor( getColor() );
-    widget->setBackground( getBackgroundColor() );
-    widget->setSelectionColor( getSelectionColor() );
-    widget->setBorderColor( getBorderColor() );
+	if( !theme ) {
+	  widget->setColor( getColor() );
+	  widget->setBackground( getBackgroundColor() );
+	  widget->setSelectionColor( getSelectionColor() );
+	  widget->setBorderColor( getBorderColor() );
+	}
     setFocus(widget);
   } else{
     cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
@@ -359,14 +373,33 @@ void Window::drawWidget(Widget *parent) {
   glLoadIdentity( );
   glEnable( GL_TEXTURE_2D );
   // tile the background
+
+  /*
   if(isLocked()) {
     glColor3f(0.65f, 0.6f, 0.55f);
   } else {
     glColor3f(1.0f, 0.6f, 0.3f);
   }
+  */
+
+  if(isLocked()) {
+    glColor3f(0.65f, 0.6f, 0.55f);
+  } else if( theme->getWindowTop() ) {
+	glColor4f( theme->getWindowTop()->color.r, 
+			   theme->getWindowTop()->color.g, 
+			   theme->getWindowTop()->color.b, 
+			   theme->getWindowTop()->color.a );
+  } else {
+    glColor3f(1.0f, 0.6f, 0.3f);
+  }
+
   glTranslated(x, y, z);
+  /*
   if(texture)
     glBindTexture( GL_TEXTURE_2D, texture );
+  */
+  if( theme->getWindowTop() && theme->getWindowTop()->texture ) 
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowTop()->texture );
 
   if(type == BASIC_WINDOW) {
     glBegin (GL_QUADS);
@@ -412,7 +445,6 @@ void Window::drawWidget(Widget *parent) {
     glTexCoord2f (1, 0);      
     glVertex2i (w, topY);
 
-
     glEnd ();
   }
 
@@ -421,26 +453,19 @@ void Window::drawWidget(Widget *parent) {
       glEnable( GL_BLEND );
       glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     }
-    if(texture2) {
-      glBindTexture( GL_TEXTURE_2D, texture2 );
+    if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
+      glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
     } else {
       glDisable( GL_TEXTURE_2D );
     }
 
-    /*
-    // z-dependent background color
-    // FIXME: move this to Window::applyBackgroundColor()
-    float f = (float)(getZ() - 50) / 10.0f;
-    f /= (float)windowCount;
-    float m = f;
-
-    float r = background.r + m; if( r > 1.0f ) r = 1.0f;
-    float g = background.g + m; if( g > 1.0f ) g = 1.0f;
-    float b = background.b + m; if( b > 1.0f ) b = 1.0f;
-    glColor4f( r, g, b, 0.85f );
-    */
-    applyBackgroundColor();
-
+    //applyBackgroundColor();
+	if( theme->getWindowBackground() ) {
+	  glColor4f( theme->getWindowBackground()->color.r,
+				 theme->getWindowBackground()->color.g,
+				 theme->getWindowBackground()->color.b,
+				 theme->getWindowBackground()->color.a );
+	}
 
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
@@ -485,11 +510,22 @@ void Window::drawWidget(Widget *parent) {
     applyHighlightedBorderColor();
   } else if(isLocked()) {
     glColor3f(0.5f, 0.3f, 0.2f);
+  } else if( theme->getWindowBorder() ) {
+	glColor4f( theme->getWindowBorder()->color.r, 
+			   theme->getWindowBorder()->color.g,
+			   theme->getWindowBorder()->color.b,
+			   theme->getWindowBorder()->color.a );
   } else {
     applyBorderColor();
   }
 
-  glLineWidth( this == currentWin || isLocked() || isModal() ? 3.0f : 2.0f );
+  if( this == currentWin || isLocked() || isModal() ) {
+	glLineWidth( 3.0f );
+  } else if( theme->getWindowBorder() ) {
+	glLineWidth( theme->getWindowBorder()->width );
+  } else {
+	glLineWidth( 2.0f );
+  }
   glBegin(GL_LINES);
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
@@ -515,7 +551,14 @@ void Window::drawWidget(Widget *parent) {
   if(title) {
     glPushMatrix();
     glTranslated( 0, 0, 5 );
-    glColor3f( 1, 1, 1 );
+	if( theme->getWindowTitleText() ) {
+	  glColor4f( theme->getWindowTitleText()->r, 
+				 theme->getWindowTitleText()->g,
+				 theme->getWindowTitleText()->b,
+				 theme->getWindowTitleText()->a );
+	} else {
+	  glColor3f( 1, 1, 1 );
+	}
 #ifdef DEBUG_WINDOWS
     sdlHandler->texPrint(10, topY + 13, "%s (%d)", title, getZ());
 #else
@@ -528,10 +571,18 @@ void Window::drawWidget(Widget *parent) {
   if(closeButton && !isLocked()) {
 
     // apply the window's color scheme
+	/*
     closeButton->setColor( getColor() );
     closeButton->setBackground( getBackgroundColor() );
     closeButton->setSelectionColor( getSelectionColor() );
     closeButton->setBorderColor( getBorderColor() );
+	*/
+
+    if( theme->getButtonText() ) closeButton->setColor( theme->getButtonText() );
+    if( theme->getButtonBackground() ) closeButton->setBackground( &(theme->getButtonBackground()->color) );
+    if( theme->getButtonHighlight() ) closeButton->setSelectionColor( &(theme->getButtonHighlight()->color) );
+    if( theme->getButtonBorder() ) closeButton->setBorderColor( &(theme->getButtonBorder()->color) );
+
 
     glPushMatrix(); 
     //glLoadIdentity();

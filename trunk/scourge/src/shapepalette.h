@@ -137,6 +137,9 @@ class WallTheme {
   void debug();
 };
   
+
+#define MAX_SYSTEM_TEXTURE_COUNT 1000
+
 class ShapePalette {
 private:
   GLShape *shapes[256];
@@ -150,7 +153,7 @@ private:
 	char filename[80];
   } Texture;
 
-  Texture textures[100]; // store textures
+  Texture textures[ MAX_SYSTEM_TEXTURE_COUNT ]; // store textures
   int texture_count;
   GLShape *shapeNameArray[256];
 
@@ -197,6 +200,7 @@ public:
   ~ShapePalette();
 
   void initialize();
+  GLuint loadSystemTexture( char *line );
 
   void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );

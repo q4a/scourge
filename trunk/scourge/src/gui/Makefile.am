@@ -3,6 +3,8 @@ INCLUDES = -I$./..
 noinst_LIBRARIES = libScourgeGui.a
 
 libScourgeGui_a_SOURCES = \
+	guitheme.cpp\
+	guitheme.h\
 	widget.cpp\
 	widget.h\
 	slider.cpp\

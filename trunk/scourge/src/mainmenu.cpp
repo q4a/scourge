@@ -61,6 +61,7 @@ MainMenu::MainMenu(Scourge *scourge){
 #ifndef AT_WORK
 
 #ifdef HAVE_SDL_NET
+  /*
   mainWin = new Window( scourge->getSDLHandler(),
 												50, top + 230, 270, 250, 
 												strdup("Main Menu"), 
@@ -68,7 +69,15 @@ MainMenu::MainMenu(Scourge *scourge){
 												false,
                         Window::BASIC_WINDOW, 
                         scourge->getShapePalette()->getGuiTexture2() );
+  */
+
+  mainWin = new Window( scourge->getSDLHandler(),
+						50, top + 230, 270, 250, 
+						strdup("Main Menu"), false, Window::BASIC_WINDOW,
+						GuiTheme::DEFAULT_THEME );
+
 #else
+  /*
   mainWin = new Window( scourge->getSDLHandler(),
 												50, top + 230, 270, 220, 
 												strdup("Main Menu"), 
@@ -76,6 +85,11 @@ MainMenu::MainMenu(Scourge *scourge){
 												false,
                         Window::BASIC_WINDOW, 
                         scourge->getShapePalette()->getGuiTexture2() );
+  */
+  mainWin = new Window( scourge->getSDLHandler(),
+						50, top + 230, 270, 220, 
+						strdup("Main Menu"), false, Window::BASIC_WINDOW,
+						GuiTheme::DEFAULT_THEME );
 #endif
     
   int y = 30;
