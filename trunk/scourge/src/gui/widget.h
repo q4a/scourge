@@ -39,6 +39,9 @@ class Widget {
   bool focus;
   float alpha, alphaInc;
   GLint lastTick;
+  char tooltip[255];
+  GLuint tooltipTicks;
+  bool tooltipShowing;
 
  public: 
   Widget(int x, int y, int w, int h);
@@ -112,6 +115,11 @@ class Widget {
   virtual inline int getEventType() { return 0; }
 
   virtual inline bool hasSound() { return true; }
+
+  inline void setTooltip( char *s ) { strncpy( tooltip, ( s ? s : "" ), 255); tooltip[254] = '\0'; }
+  inline char *getTooltip() { return tooltip; }
+
+  void drawTooltip( Widget *parent );
 
  protected:
   bool debug;

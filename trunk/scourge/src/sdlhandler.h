@@ -113,6 +113,10 @@ public:
   SDLHandler(ShapePalette *shapePal);
   ~SDLHandler();
 
+  void drawTooltip( float xpos2, float ypos2, float zpos2, 
+                    float zrot, float yrot, 
+                    char *message );
+
   inline void setDebugStr(char *s) { debugStr = s; }
   
   Uint16 mouseX, mouseY, lastMouseX, lastMouseY;

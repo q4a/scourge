@@ -655,6 +655,12 @@ void Window::drawWidget(Widget *parent) {
     glDisable( GL_SCISSOR_TEST );
   }
 
+  for(int i = 0; i < widgetCount; i++) {                  
+    if(widget[i]->isVisible()) {
+      widget[i]->drawTooltip( this );
+    }
+  }
+
   glEnable( GL_TEXTURE_2D );
   glPopMatrix();
 
