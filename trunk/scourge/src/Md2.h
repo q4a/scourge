@@ -95,6 +95,11 @@ struct tMd2Frame
    tMd2Triangle *pVertices;
 };
 
+struct tMd2GlCommands
+{
+    int command;
+};
+
 // This stores a skin name
 typedef char tMd2Skin[64];
 
@@ -161,7 +166,8 @@ private:
     tMd2Skin                *m_pSkins;          // The skin data
     tMd2TexCoord            *m_pTexCoords;      // The texture coordinates
     tMd2Face                *m_pTriangles;      // Face index information
-    tMd2Frame               *m_pFrames;         // The frames of animation (vertices)    
+    tMd2Frame               *m_pFrames;         // The frames of animation (vertices) 
+    tMd2GlCommands          *m_pGlCommands;     // The glCommands      
 };
 
 
