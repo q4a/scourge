@@ -345,20 +345,6 @@ void Window::removeWidget(Widget *widget) {
 #define BOTTOM_HEIGHT 5
 
 void Window::drawWidget(Widget *parent) {
-
-  /*
-  // this needs to be smarter...
-  if( currentWin == this ) {
-    background.r = 1.0f;
-    background.g = 0.85f;
-    background.b = 0.5f;
-  } else {
-    background.r = 0.9f;
-    background.g = 0.7f;
-    background.b = 0.3f;
-  }
-  */
-
   GLint t = SDL_GetTicks();
   //if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
   if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
@@ -440,7 +426,22 @@ void Window::drawWidget(Widget *parent) {
     } else {
       glDisable( GL_TEXTURE_2D );
     }
+
+    /*
+    // z-dependent background color
+    // FIXME: move this to Window::applyBackgroundColor()
+    float f = (float)(getZ() - 50) / 10.0f;
+    f /= (float)windowCount;
+    float m = f;
+
+    float r = background.r + m; if( r > 1.0f ) r = 1.0f;
+    float g = background.g + m; if( g > 1.0f ) g = 1.0f;
+    float b = background.b + m; if( b > 1.0f ) b = 1.0f;
+    glColor4f( r, g, b, 0.85f );
+    */
     applyBackgroundColor();
+
+
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY + TOP_HEIGHT);
