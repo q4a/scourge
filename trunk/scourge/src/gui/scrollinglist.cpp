@@ -199,17 +199,16 @@ void ScrollingList::drawWidget(Widget *parent) {
 }
 
 void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
-  glEnable(GL_TEXTURE_2D);
   float n = lineHeight - 3;
-  //glEnable( GL_BLEND );
-  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  //glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_NOTEQUAL, 0 );
-  glColor3f( 1.0f, 1.0f, 1.0f );
-  if(icon) glBindTexture( GL_TEXTURE_2D, icon );
-	
+
+  glEnable( GL_ALPHA_TEST );
+  glAlphaFunc( GL_EQUAL, 0xff );
+  glEnable(GL_TEXTURE_2D);
   glPushMatrix();
   glTranslatef( x, y, 0 );
+  if(icon) glBindTexture( GL_TEXTURE_2D, icon );
+  glColor4f(1, 1, 1, 1);
+  
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   if(icon) glTexCoord2f( 0, 0 );
@@ -223,8 +222,7 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
   glEnd();
   glPopMatrix();
 
-  //glDisable( GL_BLEND );
-  //glDisable( GL_ALPHA_TEST );
+  glDisable( GL_ALPHA_TEST );
   glDisable(GL_TEXTURE_2D);
 }
 
