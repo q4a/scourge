@@ -1050,7 +1050,7 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
-  cerr << "FIXME: Map::setFloorPosition" << endl;
+  //cerr << "FIXME: Map::setFloorPosition" << endl;
   for(int xp = 0; xp < shape->getWidth(); xp++) {
     for(int yp = 0; yp < shape->getDepth(); yp++) {
       //  scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
@@ -1063,7 +1063,7 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
   if(floorPositions[x][y]) {
     shape = floorPositions[x][y];
     floorPositions[x][y] = 0;
-    cerr << "FIXME: Map::setFloorPosition" << endl;
+    //cerr << "FIXME: Map::setFloorPosition" << endl;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???       
@@ -1256,10 +1256,8 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   if(!effect[x][y][z]) {
     effect[x][y][z] = new EffectLocation();
   }
-  cerr << "FIXME: Map::startEffect" << endl;
-  /*
-  effect[x][y][z]->effect = new Effect(scourge,
-                                       scourge->getShapePalette(), 
+  effect[x][y][z]->effect = new Effect(session,
+                                       session->getShapePalette(), 
                                        width, height);
   effect[x][y][z]->effect->deleteParticles();
   effect[x][y][z]->resetDamageEffect();
@@ -1273,7 +1271,6 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
 
   // need to do this to make sure effect shows up
   mapChanged = true;
-  */
 }
 
 void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
@@ -1290,7 +1287,7 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
   if(shape) {
 	mapChanged = true;
-  cerr << "FIXME: Map::setPosition" << endl;
+  //cerr << "FIXME: Map::setPosition" << endl;
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 	  for(int yp = 0; yp < shape->getDepth(); yp++) {
 	    //scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
@@ -1322,7 +1319,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	mapChanged = true;
     shape = pos[x][y][z]->shape;
-    cerr << "FIXME: Map::removePosition" << endl;
+    //cerr << "FIXME: Map::removePosition" << endl;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???

@@ -51,6 +51,13 @@ public:
   virtual inline void setFormationUI(int formation, bool playerOnly) {}
   virtual inline void togglePlayerOnlyUI(bool playerOnly) {}
   virtual inline void setPlayerUI(int index) {}
+  virtual inline void updateBoardUI(int count, const char **missionText, Color *missionColor) {}
+  virtual inline void setMissionDescriptionUI(char *s) {}
+
+  // initialization events
+  virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }
+  virtual inline void initUpdate(char *message) { cerr << message << endl; }
+  virtual inline void initEnd() { }
 };
 
 class ServerAdapter : public GameAdapter {

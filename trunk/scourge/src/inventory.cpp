@@ -716,19 +716,20 @@ void Inventory::show() {
   // find selected player. FIXME: this is inefficient
   int n = selected;
   char buttonText[80];
+
   for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
     if(scourge->getParty()->getPlayer() == scourge->getParty()->getParty(i)) {
       n = i;
-      break;
+      //break;
     }
 
     sprintf(buttonText, "%s (%s)", 
             scourge->getParty()->getParty(i)->getName(),
             scourge->getParty()->getParty(i)->getCharacter()->getShortName());
-    playerButton[i]->getLabel()->setTextCopy(strdup(buttonText));
+    playerButton[i]->getLabel()->setTextCopy(buttonText);
     playerButton[i]->setVisible(true);
   }
-  for(int i = scourge->getParty()->getPartySize(); i < 4; i++) {
+  for(int i = scourge->getParty()->getPartySize(); i < MAX_PARTY_SIZE; i++) {
     playerButton[i]->setVisible(false);
   }
   setSelectedPlayerAndMode(n, selectedMode); 

@@ -106,12 +106,14 @@ void Scourge::initUI(Session *session) {
   //Monster::initMonsters();
 
   // create the mission board
-  board = new Board(this);
+  //board = new Board(this);
+  this->board = session->getBoard();
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
 //  party = new Party(this);  
   this->party = session->getParty();
   createPartyUI();
+  createBoardUI();
 
   netPlay = new NetPlay(this);
 
@@ -161,17 +163,17 @@ void Scourge::start() {
 }
 
 Scourge::~Scourge(){
-#ifdef HAVE_SDL_NET
-  if(server) delete server;
-  if(client) delete client;
-#endif
+//#ifdef HAVE_SDL_NET
+//  if(server) delete server;
+//  if(client) delete client;
+//#endif
   delete mainMenu;
   delete optionsMenu;
   delete multiplayer;
-  delete userConfiguration;
-  delete board;
+//  delete userConfiguration;
+  //delete board;
   delete miniMap;
-  delete map;
+  //delete map;
   delete netPlay;
 }
 
@@ -298,7 +300,7 @@ void Scourge::startMission() {
     messageWin->setVisible(false);
     closeAllContainerGuis();
     if(inventory->isVisible()) inventory->hide();
-    if(board->boardWin->isVisible()) board->boardWin->setVisible(false);
+    if(boardWin->isVisible()) boardWin->setVisible(false);
     miniMap->hide();
     netPlay->getWindow()->setVisible(false);
 
@@ -322,7 +324,6 @@ void Scourge::startMission() {
 
     // delete map
     delete dg; dg = NULL;
-
 
     if(!changingStory) {
       if(!inHq) {
@@ -1596,8 +1597,8 @@ bool Scourge::useGate(Location *pos) {
 
 bool Scourge::useBoard(Location *pos) {
   if(pos->shape == shapePal->findShapeByName("BOARD")) {
-	board->boardWin->setVisible(true);
-	return true;
+    boardWin->setVisible(true);
+    return true;
   }
   return false;
 }
@@ -1702,10 +1703,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   // FIXME: this is hacky...
   if(handlePartyEvent(widget, event)) return true;
-  int n = board->handleEvent(widget, event);
+  int n = handleBoardEvent(widget, event);
   if(n == Board::EVENT_HANDLED) return false;
   else if(n == Board::EVENT_PLAY_MISSION) {
-	int selected = board->getSelectedLine();
+	int selected = missionList->getSelectedLine();
 	if(selected != -1 && selected < board->getMissionCount()) {
 	  nextMission = selected;
 	  oldStory = currentStory = 0;
@@ -1921,7 +1922,7 @@ void Scourge::playRound() {
     
     // move visible monsters
     for(int i = 0; i < session->getCreatureCount(); i++) {
-      if(!creatures[i]->getStateMod(Constants::dead) && 
+      if(!session->getCreature(i)->getStateMod(Constants::dead) && 
          map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
         moveMonster(session->getCreature(i));
       }
@@ -2151,7 +2152,7 @@ Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radi
 									   session->getCreature(i)->getShape()->getDepth());
 	  if(dist <= (float)radius &&
 		 (!p || dist < minDist)) {
-		p = creatures[i];
+		p = session->getCreature(i);
 		minDist = dist;
 	  }
 	}
@@ -2618,5 +2619,61 @@ void Scourge::setFormationUI(int formation, bool playerOnly) {
 
 void Scourge::togglePlayerOnlyUI(bool playerOnly) {
   groupButton->setSelected(playerOnly);
+}
+
+  // initialization events
+void Scourge::initStart(int statusCount, char *message) {
+  progress = new Progress(this, statusCount, true, true);
+  progress->updateStatus(message);
+}
+
+void Scourge::initUpdate(char *message) {
+  progress->updateStatus(message);
+}
+
+void Scourge::initEnd() {
+  delete progress;
+}
+
+void Scourge::createBoardUI() {
+  // init gui
+  boardWin = createWoodWindow((getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
+									   (getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
+									   BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
+									   strdup("Available Missions"));
+  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150, getShapePalette()->getHighlightTexture());
+  boardWin->addWidget(missionList);
+  missionDescriptionLabel = new Label(5, 210, strdup(""), 67);
+  boardWin->addWidget(missionDescriptionLabel);
+  playMission = new Button(5, 5, 105, 35, getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+  boardWin->addWidget(playMission);
+}
+
+void Scourge::updateBoardUI(int count, const char **missionText, Color *missionColor) {
+  missionList->setLines(count, missionText, missionColor);
+}
+
+int Scourge::handleBoardEvent(Widget *widget, SDL_Event *event) {
+  if(widget == boardWin->closeButton) {
+    boardWin->setVisible(false);
+    return Board::EVENT_HANDLED;
+  } else if(widget == missionList) {
+    int selected = missionList->getSelectedLine();
+    if(selected != -1 && selected < board->getMissionCount()) {
+      missionDescriptionLabel->setText((char*)(board->getMission(selected)->getStory()));
+    }
+    return Board::EVENT_HANDLED;
+  } else if(widget == playMission) {
+    int selected = missionList->getSelectedLine();
+    if(selected != -1 && selected < board->getMissionCount()) {
+      return Board::EVENT_PLAY_MISSION;
+    }
+    return Board::EVENT_HANDLED;
+  }
+  return -1;
+}
+
+void Scourge::setMissionDescriptionUI(char *s) {
+  missionDescriptionLabel->setText(s);
 }
 

@@ -46,6 +46,7 @@ class Map;
 class Session;
 class Effect;
 class Item;
+class Location;
 
 /**
   *@author Gabor Torok

@@ -57,24 +57,43 @@ void Session::start() {
 }
 
 void Session::initData() {
+
+  adapter->initStart(7, "Loading shapes...");
+
   shapePal->initialize();
 
   map = new Map(this);
 
+  adapter->initUpdate("Loading characters...");
+
   // init characters first. Items use it for acl
   Character::initCharacters();
+
+  adapter->initUpdate("Loading items...");
+
   // initialize the items
   Item::initItems(getShapePalette());
+
+  adapter->initUpdate("Loading spells...");
   // initialize magic
   MagicSchool::initMagic();
+
+  adapter->initUpdate("Loading monsters...");
+
   // initialize the monsters (they use items, magic)
   Monster::initMonsters();
 
+  adapter->initUpdate("Loading missions...");
+
   // create the mission board
-//  board = new Board(this);
+  board = new Board(this);
+
+  adapter->initUpdate("Creating party...");
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
-  party = new Party(this);  
+  party = new Party(this);
+
+  adapter->initEnd();
 }
 
 void Session::quit(int value) {
@@ -177,26 +196,28 @@ Creature *Session::newCreature(Monster *monster) {
 void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   // delete the items and creatures created for this mission
   // (except items in inventory) 
-  for(int i = 0; i < itemCount; i++) {
-    if(!missionItemsOnly) {
+  if(!missionItemsOnly) {
+    for(int i = 0; i < itemCount; i++) {
       delete items[i];
-      itemCount--;
-      continue;
     }
-    bool inInventory = false;
-    for(int t = 0; t < getParty()->getPartySize(); t++) {
-      if(getParty()->getParty(t)->isItemInInventory(items[i])) {
-        inInventory = true;
-        break;
+    itemCount = 0;
+  } else {
+    for(int i = 0; i < itemCount; i++) {
+      bool inInventory = false;
+      for(int t = 0; t < getParty()->getPartySize(); t++) {
+        if(getParty()->getParty(t)->isItemInInventory(items[i])) {
+          inInventory = true;
+          break;
+        }
       }
-    }
-    if(!inInventory) {
-      delete items[i];
-      itemCount--;
-      for(int t = i; t < itemCount; t++) {
-        items[t] = items[t + 1];
+      if(!inInventory) {
+        delete items[i];
+        itemCount--;
+        for(int t = i; t < itemCount; t++) {
+          items[t] = items[t + 1];
+        }
+        i--;
       }
-      i--;
     }
   }
   for(int i = 0; i < creatureCount; i++) {
