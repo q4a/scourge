@@ -24,16 +24,19 @@
  */
 
 /*
+ * FIXME: Make this property-driven
+ *
  * Remember to change isWeaponItem=, getRandomEnchantableItem, 
- * getRandomItem, getRandomContainer, getRandomContainerNS
+ * getRandomItem
  * 
  * when adding a new item or type.
  */
-
 RpgItem *RpgItem::items[1000];
 
 map<int, map<int, vector<const RpgItem*>*>*> RpgItem::typesMap;
 map<string, const RpgItem *> RpgItem::itemsByName;
+vector<RpgItem*> RpgItem::containers;
+vector<RpgItem*> RpgItem::containersNS; 
 
 int RpgItem::itemCount = 0;
 
@@ -85,7 +88,7 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
 RpgItem::~RpgItem() {
 }
 
-void RpgItem::addItem(RpgItem *item) {
+void RpgItem::addItem(RpgItem *item, int width, int depth, int height) {
   // store the item
   cerr << "adding item: " << item->name << 
 	" level=" << item->level << 
@@ -120,6 +123,15 @@ void RpgItem::addItem(RpgItem *item) {
   string s = item->name;
   itemsByName[s] = item;
   //  cerr << "*** Stored name=>" << item->name << "< item=" << item << endl;
+
+  if(item->type == CONTAINER) {
+    if(width >= depth) {
+      containersNS.push_back(item);
+    }
+    if(width <= depth) {
+      containers.push_back(item);
+    }
+  }
 }
 
 int RpgItem::getTypeByName(char *name) {
@@ -185,27 +197,15 @@ RpgItem *RpgItem::getRandomItemFromTypes(int maxLevel, int types[], int typeCoun
 }
 
 RpgItem *RpgItem::getRandomContainer() {
-  int n = (int)(12.0 * rand()/RAND_MAX);
-  switch(n) {
-  case 0: return getItemByName("Bookshelf");
-  case 1: return getItemByName("Chest");
-  case 2: return getItemByName("Barrel");
-  case 3: return getItemByName("Crate");
-  case 4: return getItemByName("Vase");
-  default: return NULL;
-  }
+  int n = (int)((3.0f * (float)containers.size()) * rand()/RAND_MAX);
+  if(n >= containers.size()) return NULL;
+  return containers[n];
 }
 
 RpgItem *RpgItem::getRandomContainerNS() {
-  int n = (int)(12.0 * rand()/RAND_MAX);
-  switch(n) {
-  case 0: return getItemByName("Bookshelf2");
-  case 1: return getItemByName("Chest2");
-  case 2: return getItemByName("Barrel");
-  case 3: return getItemByName("Crate");
-  case 4: return getItemByName("Vase");
-  default: return NULL;
-  }
+  int n = (int)((3.0f * (float)containersNS.size()) * rand()/RAND_MAX);
+  if(n >= containersNS.size()) return NULL;
+  return containersNS[n];
 }
 
 RpgItem *RpgItem::getItemByName(char *name) {

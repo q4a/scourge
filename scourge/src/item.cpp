@@ -199,7 +199,8 @@ void Item::initItems(ShapePalette *shapePal) {
                          (distance < (int)Constants::MIN_DISTANCE ? 
                           (int)Constants::MIN_DISTANCE : distance), 
                          skill_index, maxCharges, potion_skill, potionTime);
-      RpgItem::addItem(last);   
+      GLShape *s = shapePal->findShapeByName(shape);
+      RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   
     } else if(n == 'A' && last) {
       // skip ':'
       fgetc(fp);
