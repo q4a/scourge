@@ -341,7 +341,8 @@ bool Creature::move(Uint16 dir, Map *map) {
   if(!map->moveCreature(toint(x), toint(y), toint(z), 
                         toint(nx), toint(ny), toint(nz), this)) {
     ((MD2Shape*)shape)->setDir(dir);
-    if( !( toint(x) == toint(nx) &&
+    if( map->getHasWater() &&
+        !( toint(x) == toint(nx) &&
            toint(y) == toint(ny) ) ) {
       session->getMap()->startEffect( toint(getX() + getShape()->getWidth() / 2), 
                                       toint(getY() - getShape()->getDepth() / 2), 0,
@@ -523,7 +524,8 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
       
-      if( !( toint(getX()) == toint(newX) &&
+      if( map->getHasWater() &&
+          !( toint(getX()) == toint(newX) &&
              toint(getY()) == toint(newY) ) ) {
         session->getMap()->startEffect( toint(getX() + getShape()->getWidth() / 2), 
                                         toint(getY() - getShape()->getDepth() / 2), 0, 

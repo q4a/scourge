@@ -50,6 +50,8 @@ const float Map::shadowTransformMatrix[16] = {
 
 Map::Map(Session *session) {
 
+  hasWater = false;
+
   mapViewWidth = MVW;
   mapViewDepth = MVD;
 
@@ -142,6 +144,9 @@ Map::~Map(){
 }
 
 void Map::reset() {
+
+  hasWater = false;
+
   // remove locking info
   clearLocked();
 
@@ -926,14 +931,16 @@ void Map::draw() {
     }
 
     // draw the water
-    glDisable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);  
-    glDepthMask(GL_FALSE);
-    glBlendFunc( GL_ONE, GL_SRC_COLOR );
-    setupShapes(false, true);
-    glDepthMask(GL_TRUE);    
-    glDisable(GL_BLEND);
-    glEnable(GL_TEXTURE_2D);
+    if( hasWater ) {
+      glDisable(GL_TEXTURE_2D);
+      glEnable(GL_BLEND);  
+      glDepthMask(GL_FALSE);
+      glBlendFunc( GL_ONE, GL_SRC_COLOR );
+      setupShapes(false, true);
+      glDepthMask(GL_TRUE);    
+      glDisable(GL_BLEND);
+      glEnable(GL_TEXTURE_2D);
+    }
     
     // draw the blended walls
     //glEnable(GL_BLEND);  

@@ -152,6 +152,8 @@ class Map {
   int mapViewWidth, mapViewDepth;
   char mapDebugStr[200];
 
+  bool hasWater;
+
  public:
   bool useFrustum;
 
@@ -159,6 +161,9 @@ class Map {
   ~Map();
 
   void reset();
+
+  inline bool getHasWater() { return hasWater; }
+  inline void setHasWater(bool b) { hasWater = b; }
 
   int debugX, debugY, debugZ;  
 
