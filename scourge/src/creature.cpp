@@ -101,9 +101,10 @@ void Creature::commonInit() {
   this->availableSkillPoints = 0;
   this->minRange = this->maxRange = 0;
   this->failedToMoveWithinRangeAttemptCount = 0;
-  this->action = -1;
+  this->action = Constants::ACTION_NO_ACTION;
   this->actionItem = NULL;
   this->actionSpell = NULL;
+  this->preActionTargetCreature = NULL;
   
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -213,7 +214,7 @@ void Creature::setSelXY(int x, int y, bool force) {
  */
 bool Creature::isInRange() {
   if(maxRange > 0) {
-	float d = getDistanceToTargetCreature();
+	float d = getDistanceToTarget();
 	return (d >= minRange && d < maxRange);
   }
   return false;
@@ -225,7 +226,7 @@ bool Creature::isInRange() {
 */
 void Creature::adjustMovementToRange() {
   if(maxRange <= 0 || !getTargetCreature()) return;
-  float d = getDistanceToTargetCreature();
+  float d = getDistanceToTarget();
   bool inRange = (d >= minRange && d < maxRange);
   if(inRange) {
 	// we're in range: stop moving
@@ -676,6 +677,7 @@ void Creature::setAction(int action,
   this->action = action;
   this->actionItem = item;
   this->actionSpell = spell;
+  preActionTargetCreature = getTargetCreature();  
 
   char msg[80];
   switch(action) {
@@ -684,6 +686,10 @@ void Creature::setAction(int action,
 	break;
   case Constants::ACTION_CAST_SPELL:
 	sprintf(msg, "%s will cast %s.", getName(), spell->getName());
+	break;
+  case Constants::ACTION_NO_ACTION:
+	// no-op
+	preActionTargetCreature = NULL;
 	break;
   default:
 	cerr << "*** Error: unknown action " << action << endl;
@@ -1010,4 +1016,60 @@ bool Creature::isSpellMemorized(Spell *spell) {
 	if(spells[i] == spell) return true;
   }
   return false;
+}
+
+bool Creature::hasTarget() {
+  return (getTargetCreature() != NULL);
+}
+
+bool Creature::isTargetValid() {
+  return (!getTargetCreature()->getStateMod(Constants::dead));
+}
+
+void Creature::cancelTarget() {
+  setTargetCreature(NULL);
+  setDistanceRange(0, 0);  
+  if(preActionTargetCreature) setTargetCreature(preActionTargetCreature);
+  preActionTargetCreature = NULL;
+  setAction(Constants::ACTION_NO_ACTION);
+}
+
+void Creature::followTarget() {
+  setSelXY(getTargetCreature()->getX(),
+		   getTargetCreature()->getY(),
+		   true);
+}
+
+void Creature::makeTargetRetaliate() {
+  char message[200];
+
+  // the target creature gets really upset...
+  // this is also an optimization for fps
+  if(getTargetCreature()->isMonster() && 
+	 !getTargetCreature()->getTargetCreature()) {
+	// try to attack the nearest player
+	Creature *p = scourge->getParty()->getClosestPlayer(getTargetCreature()->getX(), 
+														getTargetCreature()->getY(), 
+														getTargetCreature()->getShape()->getWidth(),
+														getTargetCreature()->getShape()->getDepth(),
+														20);
+	// if that's not possible, go for the attacker
+	if(!p) p = this;
+	getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
+	getTargetCreature()->setTargetCreature(p);
+
+	sprintf(message, "...%s is enraged and attacks %s", 
+			getTargetCreature()->getName(), 
+			p->getName());
+	scourge->getMap()->addDescription(message);	
+  }
+}
+
+float Creature::getDistanceToTarget() {
+  if(!getTargetCreature()) return 0.0f;
+  return Constants::distance(getX(),  getY(), 
+							 getShape()->getWidth(), getShape()->getDepth(),
+							 getTargetCreature()->getX(), getTargetCreature()->getY(),
+							 getTargetCreature()->getShape()->getWidth(), 
+							 getTargetCreature()->getShape()->getDepth());
 }

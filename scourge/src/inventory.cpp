@@ -226,10 +226,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 
 		// this action will occur in the next battle round
 		
-		creature->setTargetCreature(creature);
 		creature->setAction(Constants::ACTION_EAT_DRINK, 
 							creature->getInventory(itemIndex),
 							NULL);
+		creature->setTargetCreature(creature);
 		mainWin->setVisible(false);
 		
 		//		if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
@@ -311,10 +311,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == castButton) {
 	Spell *spell = getSelectedSpell();
 	if(spell) {
-	  if(!creature->getTargetCreature()) scourge->setTargetSelectionFor(creature);
 	  creature->setAction(Constants::ACTION_CAST_SPELL, 
 						  NULL,
 						  spell);
+	  if(!creature->getTargetCreature()) scourge->setTargetSelectionFor(creature);
 	  mainWin->setVisible(false);
 
 	  //scourge->getParty()->getParty(selected)->castSpell(spell);
