@@ -35,8 +35,10 @@ void Label::drawWidget(Widget *parent) {
 	if(text) {
 		applyColor();
 		if(lineWidth <= 1 || strlen(text) < lineWidth) {
+			// draw a single-line label
 			((Window*)parent)->getSDLHandler()->texPrint(0, 0, text);
 		} else {
+			// draw multi-line label
 			char *p = (char*)malloc((lineWidth + 3) * sizeof(char));
 			int len = strlen(text);
 			int start = 0;
@@ -46,6 +48,13 @@ void Label::drawWidget(Widget *parent) {
 			while(start < len) {
 				int end = start + lineWidth;
 				if(end > len) end = len;
+				else {
+					// find a space (if any)
+					int n = end;
+					while(n > start && *(text + n) != ' ') n--;
+					if(n > start) end = n + 1;
+				}
+
 				//cerr << "\tstart=" << start << endl;
 				//cerr << "\tend=" << end << endl;
 				//cerr << "\tend-start=" << (end-start) << endl;
@@ -55,7 +64,7 @@ void Label::drawWidget(Widget *parent) {
 				//cerr << "p=" << p << endl;
 
 				((Window*)parent)->getSDLHandler()->texPrint(0, y, p);
-				start += lineWidth;
+				start = end;
 				y+=15;
 			}
 			free(p);

@@ -44,6 +44,9 @@ Scourge::Scourge(int argc, char *argv[]){
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
+	nextMission = -1;
+	// in HQ map
+	inHq = true;
 
   isInfoShowing = true;
 
@@ -132,6 +135,9 @@ Scourge::~Scourge(){
 }
 
 void Scourge::startMission() {
+
+	while(true) {
+
   // add gui
   mainWin->setVisible(true);
   messageWin->setVisible(true);
@@ -158,7 +164,7 @@ void Scourge::startMission() {
   // position the players
   player_only = false;
   move = 0;
-  startRound = true;
+  //startRound = true;
   battleCount = 0;
   partyDead = false;
   containerGuiCount = 0;
@@ -176,24 +182,26 @@ void Scourge::startMission() {
 
 
 
-
   
+	if(nextMission == -1) {
 
+		// in HQ map
+		inHq = true;
 
-  /*
-	Still working on pre-rendered maps (like HQ)
-	
-	need to figure out how to start game with this, 
-	implement "the board", and saving levels (need to save HQ)
-  */
-	/*
-  // Initialize the map with a random dunegeon	
-  dg = new DungeonGenerator(this, 2); // level 2 is a big enough map for HQ_LOCATION... this is hacky
-  dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
-	*/
+		// init the missions board
+		board->initMissions();
+		
+		// display the HQ map
+		dg = new DungeonGenerator(this, 2); // level 2 is a big enough map for HQ_LOCATION... this is hacky
+		dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
+	} else {
+		// in HQ map
+		inHq = false;
 
-  dg = new DungeonGenerator(this, level);
-  dg->toMap(map, getShapePalette());
+		// Initialize the map with a random dunegeon	
+		dg = new DungeonGenerator(this, level);
+		dg->toMap(map, getShapePalette());
+	}
  
   // center map on the player
   map->center(player->getX(), player->getY());
@@ -204,10 +212,12 @@ void Scourge::startMission() {
   // set to receive events here
   sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
+	// hack to unfreeze animations, etc.
+	startRound = false;
+	toggleRound();
+
   // run mission
   sdlHandler->mainLoop();
-
-
 
 
 
@@ -252,6 +262,24 @@ void Scourge::startMission() {
 		" creatureCount=" << creatureCount << 
 		" itemCount=" << itemCount << endl;
 		*/
+
+
+	if(!inHq) {
+		// go back to HQ when coming from a mission	
+		nextMission = -1;
+	} else if(nextMission == -1) {
+		// if quiting in HQ, exit loop
+		break;
+	}
+
+
+	}
+}
+
+void Scourge::endMission() {
+	player->setSelXY(-1, -1);   // stop moving
+	movingItem = NULL;          // stop moving items
+	move = 0;
 }
 
 // items created for the mission
@@ -369,14 +397,14 @@ bool Scourge::handleEvent(SDL_Event *event) {
   case SDL_KEYUP:
   
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
-	  if(exitConfirmationDialog->isVisible()) {
-		exitConfirmationDialog->setVisible(false);
-	  } else {
-		if(startRound) toggleRound();
-		exitConfirmationDialog->setVisible(true);
-	  }	  
-	  return false;
-    }
+			if(exitConfirmationDialog->isVisible()) {
+				exitConfirmationDialog->setVisible(false);
+			} else {
+				if(startRound) toggleRound();
+				exitConfirmationDialog->setVisible(true);
+			}	  
+			return false;
+		}
     
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
@@ -951,7 +979,6 @@ void Scourge::dropItem(int x, int y) {
 
 bool Scourge::useBoard(Location *pos) {
 	if(pos->shape == shapePal->getShape(Constants::BOARD_INDEX)) {
-		board->initMissions();
 		for(int i = 0; i < board->getMissionCount(); i++) {
 			cerr << "\t " << i << endl;
 			cerr << "\t " << board->getMission(i)->name << endl;
@@ -1039,43 +1066,53 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	  optionsMenu->show();
 	}
   } else if(widget == yesExitConfirm) {
-	exitConfirmationDialog->setVisible(false);
-	player->setSelXY(-1, -1);   // stop moving
-	movingItem = NULL;          // stop moving items
-	move = 0;
-	return true;
+		exitConfirmationDialog->setVisible(false);
+		endMission();
+		return true;
   } else if(widget == noExitConfirm) {
-	exitConfirmationDialog->setVisible(false);
-	return false;
+		exitConfirmationDialog->setVisible(false);
+		return false;
   } else if(widget == quitButton) {
-	if(startRound) toggleRound();
-	exitConfirmationDialog->setVisible(true);
+		if(startRound) toggleRound();
+		exitConfirmationDialog->setVisible(true);
   } else if(widget == diamondButton) {
-	setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+		setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == staggeredButton) {
-	setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
+		setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == squareButton) {
-	setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
+		setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == rowButton) {
-	setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
+		setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == scoutButton) {
-	setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
+		setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == crossButton) {
-	setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
+		setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
   } else if(widget == player1Button) {
-	setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+		setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
   } else if(widget == player2Button) {
-	setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+		setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
   } else if(widget == player3Button) {
-	setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+		setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
   } else if(widget == player4Button) {
-	setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+		setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
   } else if(widget == groupButton) {
-	togglePlayerOnly();
+		togglePlayerOnly();
   } else if(widget == roundButton) {
-	toggleRound();
+		toggleRound();
   } else if(widget == boardWin->closeButton) {
 		boardWin->setVisible(false);
+	} else if(widget == missionList) {
+		int selected = missionList->getSelectedLine();
+		if(selected != -1 && selected < board->getMissionCount()) {
+			missionDescriptionLabel->setText((char*)(board->getMission(selected)->story));
+		}
+	} else if(widget == playMission) {
+		int selected = missionList->getSelectedLine();
+		if(selected != -1 && selected < board->getMissionCount()) {
+			nextMission = selected;
+			endMission();
+			return true;
+		}
 	}
   return false;
 }
@@ -1175,10 +1212,12 @@ void Scourge::createUI() {
 												 BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
 												 strdup("Available Missions"), 
 												 getShapePalette()->getGuiTexture() );
-	missionList = new ScrollingList(5, 5, BOARD_GUI_WIDTH - 10, 150);
+	missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
 	boardWin->addWidget(missionList);
-	missionDescriptionLabel = new Label(5, 170, strdup(""), 70);
+	missionDescriptionLabel = new Label(5, 210, strdup(""), 70);
 	boardWin->addWidget(missionDescriptionLabel);
+	playMission = new Button(5, 5, 105, 35, Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+	boardWin->addWidget(playMission);
 	missionText = (char**)malloc(Board::MAX_AVAILABLE_MISSION_COUNT * sizeof(char*));
 	for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
 		missionText[i] = (char*)malloc(120 * sizeof(char));

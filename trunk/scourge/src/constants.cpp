@@ -39,11 +39,12 @@ char *Constants::messages[][80] = {
   { "Close" },
   { "Drop Item" },
   { "Open Item" },
-  { "Drag items to/from the list" } 
+  { "Drag items to/from the list" },
+	{ "Play Mission" }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines

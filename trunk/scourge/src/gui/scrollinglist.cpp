@@ -183,7 +183,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 		}
 		innerDrag = false;
 		dragging = false;
-		break;
+		return isInside(x, y);
 	case SDL_MOUSEBUTTONDOWN:
 		if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
 			innerDrag = false;
