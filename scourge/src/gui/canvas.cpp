@@ -57,7 +57,8 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 	bool inside = (x >= getX() && x < x2 && y >= getY() && y < y2);
 	switch(event->type) {
 	case SDL_MOUSEMOTION:
-  if((abs(dragX - x) > DragAndDropHandler::DRAG_START_DISTANCE ||
+  if(dragging &&
+     (abs(dragX - x) > DragAndDropHandler::DRAG_START_DISTANCE ||
       abs(dragY - y) > DragAndDropHandler::DRAG_START_DISTANCE) &&
      dragAndDropHandler) {
     if(!dragAndDropHandler->startDrag(this, dragX, dragY)) {
@@ -67,9 +68,7 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   }
   break;
   case SDL_MOUSEBUTTONUP:
-  if(!dragging && inside) {
-    if(dragAndDropHandler) dragAndDropHandler->receive(this);
-  }
+  if(inside && dragAndDropHandler) dragAndDropHandler->receive(this);
   dragging = false;
   return inside;
   case SDL_MOUSEBUTTONDOWN:

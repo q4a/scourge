@@ -197,7 +197,7 @@ void ScrollingList::selectLine(int x, int y) {
   int oldLine = selectedLine;
   selectedLine = (int)((float)(y - (getY() + textPos)) / 15.0);
   if(!list || count == 0 || selectedLine < 0 || selectedLine >= count) {
-	selectedLine = oldLine;
+    selectedLine = oldLine;
   }
 }
 
@@ -245,5 +245,15 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 		scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
 	}
 	return false;
+}
+
+void ScrollingList::setSelectedLine(int line) { 
+  selectedLine = line; 
+
+  // fixme: should check if line is already visible
+  value = (int)(((float)(selectedLine + 1) / (float)count) * 100.0f);
+  if(value < 0)	value = 0;
+  if(value > 100)	value = 100;
+  scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
 }
 

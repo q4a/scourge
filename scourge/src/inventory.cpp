@@ -624,8 +624,7 @@ void Inventory::receive(Widget *widget) {
   if(widget == invList) {
     putItem();
   } else if(widget == paperDoll) {
-    putItem();
-    equipItem();
+    if(putItem() != -1) equipItem();
   }
 }
 
