@@ -92,6 +92,7 @@ void Creature::commonInit() {
     skillMod[i] = skillBonus[i] = 0;
   }
   this->stateMod = 0;
+  this->protStateMod = 0;
   this->level = 1;
   this->exp = 0;
   this->hp = 0;
@@ -148,7 +149,8 @@ CreatureInfo *Creature::save() {
   info->exp = exp;
   info->level = level;
   info->money = money;
-  info->statemod = stateMod;
+  info->stateMod = stateMod;
+  info->protStateMod = protStateMod;
   info->x = x;
   info->y = y;
   info->z = z;
@@ -860,12 +862,20 @@ void Creature::equipInventory(int index) {
             this->setStateMod(i, true);
           }
         }
+        // set the protected attributes
+        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+          if(item->getMagicAttrib()->isStateModProtected(i)) {
+            this->setProtectedStateMod(i, true);
+          }
+        }
         // if armor, enhance magic resistance
         if(!item->getRpgItem()->isWeapon() && 
            item->getMagicAttrib()->getSchool()) {
           int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
           setSkillBonus(skill, getSkillBonus(skill) + (7 * item->getMagicAttrib()->getLevel()));
         }
+        // refresh map for invisibility, etc.
+        session->getMap()->refresh();
       }
       recalcAggregateValues();
       return;
@@ -891,12 +901,21 @@ int Creature::doff(int index) {
             this->setStateMod(i, false);
           }
         }
+        // set the protected attributes
+        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+          if(item->getMagicAttrib()->isStateModProtected(i)) {
+            this->setProtectedStateMod(i, false);
+          }
+        }
         // if armor, enhance magic resistance
         if(!item->getRpgItem()->isWeapon() && 
            item->getMagicAttrib()->getSchool()) {
           int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
           setSkillBonus(skill, getSkillBonus(skill) - (7 * item->getMagicAttrib()->getLevel()));
         }
+
+        // refresh map for invisibility, etc.
+        session->getMap()->refresh();
       }
 
       recalcAggregateValues();
@@ -904,21 +923,6 @@ int Creature::doff(int index) {
     }
   }
   return 0;
-}
-
-/**
- * Returns the first magic item which protects against this mod.
- * If there are no such items, NULL is returned.
- */
-Item *Creature::isProtectedAgainst(int mod) {
-  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-    if(equipped[i] != MAX_INVENTORY_SIZE) {
-      Item *item = getInventory(equipped[i]);
-      if(item->getMagicAttrib() && 
-         item->getMagicAttrib()->isStateModProtected(mod)) return item;
-    }
-  }
-  return NULL;
 }
 
 /**

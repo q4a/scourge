@@ -30,7 +30,7 @@ typedef struct _CreatureInfo {
   Uint8 name[255];
   Uint32 character_index;
   Uint32 monster_index;
-  Uint32 hp, mp, exp, level, money, statemod, x, y, z, dir;
+  Uint32 hp, mp, exp, level, money, stateMod, protStateMod, x, y, z, dir;
   Uint32 speed, motion, armor, bonusArmor, thirst, hunger;
   Uint32 availableSkillPoints;
   Uint32 skills[Constants::SKILL_COUNT];

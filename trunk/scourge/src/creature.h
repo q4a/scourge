@@ -99,7 +99,7 @@ class Creature {
   int level, exp, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
   int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
-  GLuint stateMod;
+  GLuint stateMod, protStateMod;
   Monster *monster;
 
   char description[300];
@@ -226,13 +226,6 @@ class Creature {
   inline float getInventoryWeight() { return inventoryWeight;  }
   inline float getMaxInventoryWeight() { return (float) getSkill(Constants::POWER) + 25.0f; }  
   Item *getEquippedInventory(int index);
-
-  /**
-   * Returns the first magic item which protects against this mod.
-   * If there are no such items, NULL is returned.
-   */
-  Item *isProtectedAgainst(int mod);
-
   
   inline Item *getInventory(int index) { return inventory[index]; }
   inline int getInventoryCount() { return inventory_count; }
@@ -278,6 +271,7 @@ class Creature {
   inline int getHunger() { return hunger; }
   inline int getSkill(int index) { return skills[index] + skillBonus[index]; }
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
+  inline bool getProtectedStateMod(int mod) { return (protStateMod & (1 << mod) ? true : false); }  
 
   inline void setName(char *s) { name = s; }
   inline void setCharacter(Character *c) { character = c; }  
@@ -301,8 +295,12 @@ class Creature {
   inline void setSkillBonus(int index, int value) { skillBonus[index] = value; }
   inline int getSkillBonus(int index) { return skillBonus[index]; }
   inline void setStateMod(int mod, bool setting) { 
-	if(setting) stateMod |= (1 << mod);  
-	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
+    if(setting) stateMod |= (1 << mod);  
+    else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
+  }
+  inline void setProtectedStateMod(int mod, bool setting) { 
+    if(setting) protStateMod |= (1 << mod);  
+    else protStateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
   }
 
   // return the initiative for a battle round (0-10), the lower the faster the attack
