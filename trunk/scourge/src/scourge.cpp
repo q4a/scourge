@@ -394,7 +394,15 @@ bool Scourge::handleEvent(SDL_Event *event) {
   case SDL_KEYUP:
 
 	if(event->key.keysym.sym == SDLK_f) {
-	  party->startEffect(Constants::EFFECT_FLAMES);
+	  party->startEffect(Constants::EFFECT_FLAMES, (Constants::DAMAGE_DURATION * 4));
+	  return false;
+	}
+	if(event->key.keysym.sym == SDLK_t) {
+	  party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
+	  return false;
+	}
+	if(event->key.keysym.sym == SDLK_g) {
+	  party->startEffect(Constants::EFFECT_GLOW, (Constants::DAMAGE_DURATION * 4));
 	  return false;
 	}
   
@@ -1085,7 +1093,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == Window::message_button && info_dialog_showing) {
 	party->toggleRound(false);
 	info_dialog_showing = false;
-	party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 2));
+	party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
   }
 
   if(containerGuiCount > 0) {

@@ -25,6 +25,10 @@ Effect::Effect(GLuint flameTex) {
 }
 
 Effect::~Effect() {
+  deleteParticles();
+}
+
+void Effect::deleteParticles() {
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(particle[i]) {
       delete(particle[i]);
@@ -81,8 +85,10 @@ void Effect::drawTeleport(GLShape *shape) {
     if(!particle[i]) {
       // create a new particle
       createParticle(shape, &(particle[i]));
-	  particle[i]->z = (int)(5.0 * rand()/RAND_MAX);
-	  particle[i]->moveDelta = 0.1f;
+	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 4.0f;
+	  particle[i]->moveDelta = 0.5f * rand()/RAND_MAX;
+	  if(particle[i]->z < 5) particle[i]->moveDelta *= -1.0f;
+	  particle[i]->maxLife = 10000;
     } else {
 	  moveParticle(&(particle[i]));
     }
@@ -90,9 +96,8 @@ void Effect::drawTeleport(GLShape *shape) {
     // draw it      
     if(particle[i]) {            
 
-	  float gg = 1 - ((float)particle[i]->life / 3.0f);
-	  if(gg < 0) gg = 0;
-      glColor4f(gg, gg, 1, 0.5);
+	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+      glColor4f(c / 2.0f, c, 1.0f, 0.5);
 
 	  drawParticle(shape, particle[i]);
     }
@@ -109,13 +114,14 @@ void Effect::createParticle(GLShape *shape, ParticleStruct **particle) {
   (*particle)->height = (int)(15.0 * rand()/RAND_MAX) + 10;
   (*particle)->life = 0;
   (*particle)->moveDelta = 0.3f;
+  (*particle)->maxLife = 10;
 }
 
 void Effect::moveParticle(ParticleStruct **particle) {
   // move this particle
   (*particle)->life++;
   (*particle)->z+=(*particle)->moveDelta;
-  if((*particle)->life >= 10) {
+  if((*particle)->life >= (*particle)->maxLife) {
 	delete((*particle));
 	(*particle) = 0;
   }

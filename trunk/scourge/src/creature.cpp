@@ -767,6 +767,7 @@ bool Creature::takeDamage(int damage, int effect_type) {
 void Creature::startEffect(int effect_type, int duration) {
   // show an effect
   if(isEffectOn()) return;
+  effect->deleteParticles();
   resetDamageEffect();
   setEffectType(effect_type);
   effectDuration = duration;
