@@ -523,7 +523,6 @@ bool MainMenu::handleEvent(SDL_Event *event) {
     case SDLK_4: value = OPTIONS; return true;
     case SDLK_5: value = ABOUT; return true;
     case SDLK_6: case SDLK_ESCAPE: value = QUIT; return true;
-    case SDLK_SPACE: mainWin->setVisible(false); mainWin->setVisible(true); break;
     default: break;
     }
 	break;

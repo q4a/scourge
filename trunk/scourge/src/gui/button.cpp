@@ -115,7 +115,6 @@ bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   inside = isInside(x, y);
   // handle it
   switch( event->type ) {
-  //case SDL_KEYDOWN:
   case SDL_KEYUP:
   if(hasFocus()) {
     if(event->key.keysym.sym == SDLK_RETURN) {
