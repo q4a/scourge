@@ -275,7 +275,6 @@ void Battle::castSpell() {
 	}
 
 	SpellCaster::spellSucceeded(scourge, creature, (int)power);
-
   }
   
   // cancel action

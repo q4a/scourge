@@ -876,13 +876,16 @@ bool Creature::takeDamage(int damage, int effect_type) {
 
 void Creature::startEffect(int effect_type, int duration) {
   // show an effect
-  if(isEffectOn()) return;
+  if(isEffectOn() && effect_type == getEffectType()) {
+	return;
+  }
   effect->deleteParticles();
   resetDamageEffect();
   setEffectType(effect_type);
   effectDuration = duration;
-  //setEffectType(Constants::EFFECT_GLOW);
-  //setEffectType(Constants::EFFECT_FLAMES);
+
+  // need to do this to make sure effect shows up
+  scourge->getMap()->refresh();
 }
 
 /**

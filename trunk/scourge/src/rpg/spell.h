@@ -79,6 +79,11 @@ class Spell {
   inline void describe(char *s) { sprintf(s, "%s (L:%d)(M:%d)", name, level, mp); }
   inline void addNotes(char *s) { strcat(notes, s); }
 
+  // what kind of target is allowed for this spell
+  inline bool isCreatureTargetAllowed() { cerr << "FIXME: implement Spell::isCreatureTargetAllowed()." << endl; return true; }
+  inline bool isLocationTargetAllowed() { cerr << "FIXME: implement Spell::isLocationTargetAllowed()." << endl; return true; }
+  inline bool isItemTargetAllowed() { cerr << "FIXME: implement Spell::isItemTargetAllowed()." << endl; return true; }
+
   static Spell *getSpellByName(char *name);
 };
 
