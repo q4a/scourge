@@ -3927,7 +3927,7 @@ fi
 
 
 case "$host" in
-*darwin*) CPPFLAGS="$CPPFLAGS -framework GLUT";;
+*darwin*) ;;
 *) 
     if test "x$with_glut_inc" = "x" ; then
 	GLUT_CPPFLAGS=""
