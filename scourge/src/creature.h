@@ -79,6 +79,7 @@ class Creature {
   int index;
   int tx, ty;
   int selX, selY;
+  int proposedX, proposedY;
   int bestPathPos;
   vector<Location> bestPath;
   vector<Location> proposedPath;
@@ -148,6 +149,8 @@ class Creature {
 
   inline vector<Location> *getProposedPath() { return &proposedPath; }
   inline int getProposedPathIndex() { return 1; }
+  inline int getProposedX() { return proposedX; }
+  inline int getProposedY() { return proposedY; }
 
   inline void setLastEnchantDate(Date date) { lastEnchantDate = date; }
   inline Date getLastEnchantDate() { return lastEnchantDate; }
