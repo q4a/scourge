@@ -62,42 +62,13 @@ Inventory::Inventory(Scourge *scourge) {
                         strdup("Party Information"), 
                         scourge->getShapePalette()->getGuiTexture() );
 
-  char buttonText[80];
-  sprintf(buttonText, "%s (%s)", 
-          scourge->getParty()->getParty(0)->getName(),
-          scourge->getParty()->getParty(0)->getCharacter()->getShortName());
-  player1Button  = 
-  mainWin->createButton( 0, 0, 105, 30, 
-                         strdup(buttonText), 
-                         true);
-  //player1Button->createLabel( 0, 42, scourge->getParty()->getParty(0)->getCharacter()->getName());
-
-  sprintf(buttonText, "%s (%s)", 
-          scourge->getParty()->getParty(1)->getName(),
-          scourge->getParty()->getParty(1)->getCharacter()->getShortName());
-  player2Button  = 
-  mainWin->createButton( 0, 30, 105, 60, 
-                         strdup(buttonText), 
-                         true);
-  //mainWin->createLabel( 0, 74, scourge->getParty()->getParty(1)->getCharacter()->getName());
-
-  sprintf(buttonText, "%s (%s)", 
-          scourge->getParty()->getParty(2)->getName(),
-          scourge->getParty()->getParty(2)->getCharacter()->getShortName());
-  player3Button  = 
-  mainWin->createButton( 0, 60, 105, 90, 
-                         strdup(buttonText), 
-                         true );
-  //mainWin->createLabel( 0, 106, scourge->getParty()->getParty(2)->getCharacter()->getName());
-
-  sprintf(buttonText, "%s (%s)", 
-          scourge->getParty()->getParty(3)->getName(),
-          scourge->getParty()->getParty(3)->getCharacter()->getShortName());
-  player4Button  = 
-  mainWin->createButton( 0, 90, 105, 120, 
-                         strdup(buttonText), 
-                         true );
-  //mainWin->createLabel( 0, 138, scourge->getParty()->getParty(3)->getCharacter()->getName());
+  char label[80];
+  memset(label, ' ', 78);
+  label[79] = 0;
+  playerButton[0]  = mainWin->createButton( 0, 0, 105, 30, strdup(label), true);
+  playerButton[1]  = mainWin->createButton( 0, 30, 105, 60, strdup(label), true);
+  playerButton[2]  = mainWin->createButton( 0, 60, 105, 90, strdup(label), true );
+  playerButton[3]  = mainWin->createButton( 0, 90, 105, 120, strdup(label), true );
 
   inventoryButton = mainWin->createButton( 0, 320, 105, 350, strdup("Inventory"), true);
   skillsButton   = mainWin->createButton( 0,350, 105, 380, strdup("Skills"), true);
@@ -258,10 +229,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   Creature *creature = scourge->getParty()->getParty(selected);
   char *error = NULL;
   if(widget == mainWin->closeButton) mainWin->setVisible(false);
-  else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
-  else if(widget == player2Button) setSelectedPlayerAndMode(1, selectedMode);
-  else if(widget == player3Button) setSelectedPlayerAndMode(2, selectedMode);
-  else if(widget == player4Button) setSelectedPlayerAndMode(3, selectedMode);
+  else if(widget == playerButton[0]) setSelectedPlayerAndMode(0, selectedMode);
+  else if(widget == playerButton[1]) setSelectedPlayerAndMode(1, selectedMode);
+  else if(widget == playerButton[2]) setSelectedPlayerAndMode(2, selectedMode);
+  else if(widget == playerButton[3]) setSelectedPlayerAndMode(3, selectedMode);
   else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
   else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
@@ -450,10 +421,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   selected = player;
   selectedMode = mode;
 
-  player1Button->setSelected(selected == 0);
-  player2Button->setSelected(selected == 1);
-  player3Button->setSelected(selected == 2);
-  player4Button->setSelected(selected == 3);
+  playerButton[0]->setSelected(selected == 0);
+  playerButton[1]->setSelected(selected == 1);
+  playerButton[2]->setSelected(selected == 2);
+  playerButton[3]->setSelected(selected == 3);
   inventoryButton->setSelected(selectedMode == INVENTORY);
   skillsButton->setSelected(selectedMode == CHARACTER);
   spellsButton->setSelected(selectedMode == SPELL);
@@ -591,6 +562,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   }
 }
 
+/*
 // FIXME: this doesn't work: I can't get it to draw above the window
 void Inventory::drawInventory() {
   // draw the characters on top of the UI
@@ -621,6 +593,7 @@ void Inventory::drawInventory() {
     glPopMatrix();
   }
 }
+*/
 
 void Inventory::receive(Widget *widget) {
   if(widget == invList) {
@@ -742,11 +715,21 @@ void Inventory::show() {
 
   // find selected player. FIXME: this is inefficient
   int n = selected;
+  char buttonText[80];
   for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
     if(scourge->getParty()->getPlayer() == scourge->getParty()->getParty(i)) {
       n = i;
       break;
     }
+
+    sprintf(buttonText, "%s (%s)", 
+            scourge->getParty()->getParty(i)->getName(),
+            scourge->getParty()->getParty(i)->getCharacter()->getShortName());
+    playerButton[i]->getLabel()->setTextCopy(strdup(buttonText));
+    playerButton[i]->setVisible(true);
+  }
+  for(int i = scourge->getParty()->getPartySize(); i < 4; i++) {
+    playerButton[i]->setVisible(false);
   }
   setSelectedPlayerAndMode(n, selectedMode); 
 }

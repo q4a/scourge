@@ -78,9 +78,6 @@ class Party : public WidgetView {
   int partySize;
 
  public:
-   // the hard coded party
-   static Creature **pc;
-   static int pcCount;
 
   Party(Scourge *scourge);
   virtual ~Party();
@@ -145,7 +142,7 @@ class Party : public WidgetView {
 
   void drawWidget(Widget *w);
 
-  static Creature **createHardCodedParty(Scourge *scourge);
+  static void createHardCodedParty(Scourge *scourge, Creature ***party, int *partySize);
 
 protected:
   void createUI();

@@ -20,9 +20,6 @@
 #define MAX_SIZE 0
 #define MIN_SIZE 1
 
-int Party::pcCount;
-Creature **Party::pc;
-
 Party::Party(Scourge *scourge) {
   this->scourge = scourge;
 
@@ -32,12 +29,8 @@ Party::Party(Scourge *scourge) {
   mainWin = NULL;
   calendar = Calendar::getInstance();
 
-  // do we need this?
-  //for(int i = 0; i < 4; i++) {
-//    party[i] = NULL;
-//  }
+  partySize = 0;
   createUI();
-  reset();
 }
 
 Party::~Party() {
@@ -59,17 +52,20 @@ void Party::reset() {
   // This will be replaced by a call to the character builder which either
   // loads or creates the party.
   deleteParty();
-  party[0] = player = new Creature(pc[0]);
-  party[1] = new Creature(pc[1]);
-  party[2] = new Creature(pc[2]);
-  party[3] = new Creature(pc[3]);
-  partySize = 4;
+  Creature **pc;
+  int pcCount;
+  createHardCodedParty(scourge, &pc, &pcCount);
+  party[0] = player = pc[0];
+  party[1] = pc[1];
+  party[2] = pc[2];
+  party[3] = pc[3];
+  partySize = pcCount;
   resetPartyUI();
 }
 
 void Party::resetMultiplayer(Creature *c) {
   deleteParty();
-  party[0] = player = new Creature(c);
+  party[0] = player = c;
   party[1] = party[2] = party[3] = NULL;
   partySize = 1;
   resetPartyUI();
@@ -326,9 +322,9 @@ int Party::getTotalLevel() {
 /**
    Create a party programmatically until the party editor is made.
  */
-Creature **Party::createHardCodedParty(Scourge *scourge) {
-  pcCount = 4;
-  pc = (Creature**)malloc(sizeof(Creature*) * pcCount);
+void Party::createHardCodedParty(Scourge *scourge, Creature ***party, int *partySize) {
+  int pcCount = 4;
+  Creature **pc = (Creature**)malloc(sizeof(Creature*) * pcCount);
 
   int level = 6;
 
@@ -468,8 +464,8 @@ Creature **Party::createHardCodedParty(Scourge *scourge) {
   pc[3]->addSpell(Spell::getSpellByName("Lesser healing touch"));
   pc[3]->addSpell(Spell::getSpellByName("Body of stone"));
 				  
-
-  return pc;
+  *party = pc;
+  *partySize = pcCount;  
 }
 
 void Party::createUI() {
@@ -536,10 +532,10 @@ void Party::createUI() {
   player4Button->setToggle(true);
 
   for(int i = 0; i < 4; i++) {
-	playerInfo[i] = new Canvas( 120 + playerButtonWidth * i, playerButtonHeight,  
-								120 + playerButtonWidth * (i + 1), Scourge::PARTY_GUI_HEIGHT - 25, 
-								this );
-	cards->addWidget( playerInfo[i], MAX_SIZE );
+    playerInfo[i] = new Canvas( 120 + playerButtonWidth * i, playerButtonHeight,  
+                                120 + playerButtonWidth * (i + 1), Scourge::PARTY_GUI_HEIGHT - 25, 
+                                this );
+    cards->addWidget( playerInfo[i], MAX_SIZE );
   }
 
   minPartyInfo = new Canvas( 0, 0, Scourge::PARTY_MIN_GUI_WIDTH, 75 + (lowerRowHeight * 2), this );

@@ -53,7 +53,7 @@ private:
 
 	// UI
 	Window *mainWin;
-	Button *player1Button, *player2Button, *player3Button, *player4Button;
+	Button *playerButton[4];
 	Button *inventoryButton, *skillsButton, *spellsButton;
 	CardContainer *cards;
 
@@ -114,7 +114,7 @@ public:
   inline Window *getWindow() { return mainWin; }
     bool handleEvent(SDL_Event *event);
 	bool handleEvent(Widget *widget, SDL_Event *event);
-    void drawInventory();
+    //void drawInventory();
 	void refresh(int player=-1);
 
 	// drag-n-drop

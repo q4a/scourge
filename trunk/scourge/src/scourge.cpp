@@ -63,8 +63,6 @@ Scourge::Scourge(int argc, char *argv[]){
   userConfiguration->loadConfiguration();    
   userConfiguration->parseCommandLine(argc, argv); 
 
-  Party::createHardCodedParty(this);
-
 #ifdef HAVE_SDL_NET
   // standalone mode?
   if(userConfiguration->getStandAloneMode() == UserConfiguration::SERVER) {
@@ -1304,7 +1302,7 @@ void Scourge::dropItem(int x, int y) {
 }
 
 bool Scourge::useGate(Location *pos) {
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < party->getPartySize(); i++) {
 	if(!party->getParty(i)->getStateMod(Constants::dead)) {
 	  if(pos->shape == shapePal->findShapeByName("GATE_UP")) {
 		oldStory = currentStory;
@@ -1614,7 +1612,7 @@ void Scourge::setUILayout() {
 
 void Scourge::playRound() {                           
   // change animation if needed                         
-  for(int i = 0; i < 4; i++) {                            
+  for(int i = 0; i < party->getPartySize(); i++) {                            
     if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
       ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
@@ -1665,7 +1663,7 @@ void Scourge::playRound() {
         battleCount = 0;
         
         // attack targeted monster if close enough
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < party->getPartySize(); i++) {
           if(!party->getParty(i)->getStateMod(Constants::dead) && 
              (party->getParty(i)->hasTarget() || 
               party->getParty(i)->getAction() > -1)) {								
