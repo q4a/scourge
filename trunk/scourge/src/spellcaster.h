@@ -53,8 +53,10 @@ class SpellCaster {
   static float getPower(Creature *creature, Spell *spell);
   static void increaseHP(Scourge *scourge, Creature *creature, Spell *spell, float power);
   static void increaseAC(Scourge *scourge, Creature *creature, Spell *spell, float power);
-  static void launchProjectile(Scourge *scourge, Creature *creature, Spell *spell, float power);
-  static void causeDamage(Scourge *scourge, Creature *creature, Spell *spell, float power);
+  // count==0 means that count depends on level
+  static void launchProjectile(Scourge *scourge, Creature *creature, Spell *spell, float power, int count);
+  static void causeDamage(Scourge *scourge, Creature *creature, Spell *spell, float power, 
+						  int effect=Constants::EFFECT_EXPLOSION);
 };
 
 #endif

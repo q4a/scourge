@@ -160,6 +160,12 @@ const char *Constants::STATE_NAMES[] = {
   "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed", 
   "overloaded", "dead", "leveled"
 }; 
+
+const char *Constants::EFFECT_NAMES[] = {
+  "EFFECT_FLAMES", "EFFECT_GLOW", "	EFFECT_TELEPORT", "EFFECT_GREEN", "EFFECT_EXPLOSION", 
+  "EFFECT_SWIRL", "EFFECT_CAST_SPELL"
+};
+
 /*
 float Constants::textColor[][4]={{0.8f, 0.2f, 0.0f, 0.0f},
                            {0.0f, 0.2f, 0.0f, 0.0f}

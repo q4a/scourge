@@ -58,11 +58,18 @@ void SpellCaster::spellSucceeded(Scourge *scourge, Creature *creature, Spell *sp
 	increaseHP(scourge, creature, spell, power);
   } else if(!strcasecmp(spell->getName(), "Body of stone")) {
 	increaseAC(scourge, creature, spell, power);
+  } else if(!strcasecmp(spell->getName(), "Burning stare") ||
+			!strcasecmp(spell->getName(), "Silent knives")) {
+	if(projectileHit) {
+	  causeDamage(scourge, creature, spell, power, spell->getEffect());
+	} else {
+	  launchProjectile(scourge, creature, spell, power, 1);
+	}
   } else if(!strcasecmp(spell->getName(), "Stinging light")) {
 	if(projectileHit) {
-	  causeDamage(scourge, creature, spell, power);
+	  causeDamage(scourge, creature, spell, power, spell->getEffect());
 	} else {
-	  launchProjectile(scourge, creature, spell, power);
+	  launchProjectile(scourge, creature, spell, power, 0);
 	}
   } else {
 	// default
@@ -112,13 +119,16 @@ void SpellCaster::increaseAC(Scourge *scourge, Creature *creature, Spell *spell,
 
 }
 
-void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature, Spell *spell, float power) {
-  // FIXME: implement multiple projectiles... currently n is a number to how many can be in the air at once
-  // this works for continuous fire (arrows) but not for magic-missile type action...
-  // may have to implement parabolic (in 2d) flight for >1 missiles
-  int n = creature->getLevel();
-  if( n < 1 ) n = 1;
-  cerr << "launching " << n << " spell projectiles!" << endl;
+void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature, 
+								   Spell *spell, float power, int count) {
+  // maxcount for spells means number of projectiles
+  // (for missiles it means how many can be in the air at once.)
+  int n = count;
+  if(n == 0) {
+	n = creature->getLevel();
+	if( n < 1 ) n = 1;
+	cerr << "launching " << n << " spell projectiles!" << endl;
+  }
 
   // FIXME: shape should be configurable per spell
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
@@ -130,8 +140,14 @@ void SpellCaster::launchProjectile(Scourge *scourge, Creature *creature, Spell *
   }
 }
 
-void SpellCaster::causeDamage(Scourge *scourge, Creature *creature, Spell *spell, float power) {
+void SpellCaster::causeDamage(Scourge *scourge, Creature *creature, Spell *spell, float power, int effect) {
   cerr << "SpellCaster::causeDamage: Implement me!" << endl;
+
+  int damage = spell->getAction();
+  if(!strcasecmp(spell->getName(), "Burning stare")) {
+	damage *= creature->getLevel();
+  }
+
   // FIXME: effect should be configurable per spell
-  creature->getTargetCreature()->startEffect(Constants::EFFECT_EXPLOSION, (Constants::DAMAGE_DURATION * 4));
+  creature->getTargetCreature()->startEffect(effect, (Constants::DAMAGE_DURATION * 4));
 }
