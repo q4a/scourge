@@ -150,8 +150,6 @@ protected:
   bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
 
   void addItem(Map *map, Item *item, Shape *shape, int x, int y);
-
-  Shape *getRandomContainer(ShapePalette *shapePal);
 };
 
 #endif

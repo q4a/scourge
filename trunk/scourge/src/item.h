@@ -39,7 +39,17 @@ public:
   enum itemNames {
     SHORT_SWORD=0,
     DAGGER,
-    BASTARD_SWORD };
+    BASTARD_SWORD,
+	CHEST,
+	BOOKSHELF,
+
+	// must be the last ones
+	ITEM_COUNT
+  };
+
+  static int random_item[];
+  static const int RANDOM_ITEM_COUNT=3;
+
   static Item *items[];
   static int itemCount;
 
@@ -48,11 +58,13 @@ public:
 	~Item();
 
   static Item *getRandomItem(int level);
+  static Item *getRandomContainer();
+  inline static Item *getItem(int index) { return items[index]; }
   inline GLShape *getShape() { return ShapePalette::getInstance()->getItemShape(this->shape_index); }
-	inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
-	inline Sint16 getX() { return x; }
-	inline Sint16 getY() { return y; }
-	inline Sint16 getZ() { return z; }
+  inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
+  inline Sint16 getX() { return x; }
+  inline Sint16 getY() { return y; }
+  inline Sint16 getZ() { return z; }
   inline char *getShortDescription() { return shortDesc; }
 };
 

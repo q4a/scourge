@@ -742,24 +742,28 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 
   // add the containers
   int x, y;
-  Shape *shape;
+  Item *item;
   for(int i = 0; i < roomCount; i++) {
   	for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
-	  shape = getRandomContainer(shapePal);
-	  if(shape) {
+	  item = Item::getRandomContainer();
+	  if(item) {
+		fprintf(stderr, "item=%s\n", item->getShortDescription());
+		fprintf(stderr, "shape=%s\n", item->getShape()->getName());
 		// WEST side
 		x = (room[i].x * unitSide) + unitOffset + offset;
 		y = (room[i].y * unitSide) + pos + offset;
-		if(shapeFits(map, shape, x, y) && !coversDoor(map, shapePal, shape, x, y, DIR_W)) {
-		  addItem(map, NULL, shape, x, y);
+		if(shapeFits(map, item->getShape(), x, y) && !coversDoor(map, shapePal, item->getShape(), x, y, DIR_W)) {
+		  addItem(map, item, item->getShape(), x, y);
 		}
 	  }
-	  shape = getRandomContainer(shapePal);
-	  if(shape) {
+	  item = Item::getRandomContainer();
+	  if(item) {
+		fprintf(stderr, "item=%s\n", item->getShortDescription());
+		fprintf(stderr, "shape=%s\n", item->getShape()->getName());
 		// EAST side
 		x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-		if(shapeFits(map, shape, x, y) && !coversDoor(map, shapePal, shape, x, y, DIR_E)) {
-		  addItem(map, NULL, shape, x, y);
+		if(shapeFits(map, item->getShape(), x, y) && !coversDoor(map, shapePal, item->getShape(), x, y, DIR_E)) {
+		  addItem(map, item, item->getShape(), x, y);
 		}
 	  }
 	}
@@ -794,15 +798,6 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	addItem(map, item, item->getShape(), x, y);
   }
   free(ff);  
-}
-
-Shape *DungeonGenerator::getRandomContainer(ShapePalette *shapePal) {
-  int n = (int)(5.0 * rand()/RAND_MAX);
-  switch(n) {
-  case 0: return shapePal->getShape(ShapePalette::BOOKSHELF_INDEX);
-  case 1: return shapePal->getShape(ShapePalette::CHEST_INDEX);
-  default: return NULL;
-  }
 }
 
 void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int *ypos) {

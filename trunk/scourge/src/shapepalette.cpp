@@ -240,21 +240,7 @@ void ShapePalette::initShapes() {
                 "LOCATOR", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LOCATOR_INDEX);                
-
-	shapes[BOOKSHELF_INDEX] =
-    new GLShape(shelftex,
-                2, 5, 7,
-                "BOOKSHELF", bookshelfDescription, bookshelfDescriptionCount,
-                0x0000ffff,
-                display_list + (count++ * 3), BOOKSHELF_INDEX);
-	shapes[CHEST_INDEX] =
-    new GLShape(chesttex,
-                2, 3, 2,
-                "CHEST", chestDescription, chestDescriptionCount,
-                0xffaa80ff,
-                display_list + (count++ * 3), CHEST_INDEX);
-
+                LOCATOR_INDEX);
 
 
   // creatures
@@ -305,6 +291,19 @@ void ShapePalette::initShapes() {
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
                 SWORD_INDEX);
+	item_shapes[BOOKSHELF_INDEX] =
+    new GLShape(shelftex,
+                2, 5, 7,
+                "BOOKSHELF", bookshelfDescription, bookshelfDescriptionCount,
+                0x0000ffff,
+                display_list + (count++ * 3), BOOKSHELF_INDEX);
+	item_shapes[CHEST_INDEX] =
+    new GLShape(chesttex,
+                2, 3, 2,
+                "CHEST", chestDescription, chestDescriptionCount,
+                0xffaa80ff,
+                display_list + (count++ * 3), CHEST_INDEX);
+
   
   max_display_list = display_list + (count * 3);
 }

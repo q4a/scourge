@@ -111,30 +111,30 @@ public:
 	LAMP_BASE_INDEX,  
 	DEBUG_INDEX, 
 	LOCATOR_INDEX, 
-	BOOKSHELF_INDEX,
-	CHEST_INDEX,
 	
 	// must be the last one
 	SHAPE_INDEX_COUNT
   };
-  
-  const static Uint8 FIGHTER_INDEX = 0;
-  const static Uint8 ROGUE_INDEX = 1;
-  const static Uint8 CLERIC_INDEX = 2;
-  const static Uint8 WIZARD_INDEX = 3;
 
-  // increment me if you add a new creature shape
-  const static Uint8 CREATURE_INDEX_COUNT = 3;
-  
+  enum {
+	FIGHTER_INDEX = 0,
+	ROGUE_INDEX,
+	CLERIC_INDEX,
+	WIZARD_INDEX,
 
-  const static Uint8 SWORD_INDEX = 0;
-  const static Uint8 AXE_INDEX = 1;
-  const static Uint8 SHIELD_INDEX = 2;      
-
-  // increment me if you add a new creature shape
-  const static Uint8 ITEM_INDEX_COUNT = 3;
-    
+	// last one
+	CREATURE_INDEX_COUNT
+  };
   
+  enum {
+	SWORD_INDEX = 0,
+	BOOKSHELF_INDEX,
+	CHEST_INDEX,
+
+	// should be the last one
+	ITEM_INDEX_COUNT
+  };
+      
   inline GLShape *getShape(int index) { return shapes[index]; }
   inline GLShape *getCreatureShape(int index) { return creature_shapes[index]; }
   inline GLShape *getItemShape(int index) { return item_shapes[index]; }
