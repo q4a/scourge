@@ -85,9 +85,9 @@ void Effect::drawTeleport(GLShape *shape) {
     if(!particle[i]) {
       // create a new particle
       createParticle(shape, &(particle[i]));
-	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 4.0f;
-	  particle[i]->moveDelta = 0.5f * rand()/RAND_MAX;
-	  if(particle[i]->z < 5) particle[i]->moveDelta *= -1.0f;
+	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 7.0f;
+	  particle[i]->moveDelta = 0.5f;
+	  if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
 	  particle[i]->maxLife = 10000;
     } else {
 	  moveParticle(&(particle[i]));
@@ -96,7 +96,9 @@ void Effect::drawTeleport(GLShape *shape) {
     // draw it      
     if(particle[i]) {            
 
-	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+	  float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  if(c > 1) c = 1;
       glColor4f(c / 2.0f, c, 1.0f, 0.5);
 
 	  drawParticle(shape, particle[i]);
@@ -121,7 +123,8 @@ void Effect::moveParticle(ParticleStruct **particle) {
   // move this particle
   (*particle)->life++;
   (*particle)->z+=(*particle)->moveDelta;
-  if((*particle)->life >= (*particle)->maxLife) {
+  if((*particle)->z < 0 || (*particle)->z > MAP_VIEW_HEIGHT || 
+	 (*particle)->life >= (*particle)->maxLife) {
 	delete((*particle));
 	(*particle) = 0;
   }
