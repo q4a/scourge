@@ -273,8 +273,6 @@ public:
 #define MAP_DEPTH 600
 
 // How big is the on-screen view. Should be calculated.
-#define MAP_VIEW_WIDTH 100
-#define MAP_VIEW_DEPTH 110
 #define MAP_VIEW_HEIGHT 16
 
   // How big is 1 map chunk
@@ -283,7 +281,7 @@ public:
 #define MAP_WALL_HEIGHT 12
 
   // How far from the edge to start drawing in map
-#define MAP_OFFSET 55
+#define MAP_OFFSET 80
   
 // define some active region labels
   enum {

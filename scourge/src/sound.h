@@ -28,7 +28,6 @@
 
 using namespace std;
 
-
 class Sound {
 private:
   bool haveSound;

@@ -51,6 +51,8 @@ public:
   inline void setFocus(bool b) { Widget::setFocus(b); inside = b; }
   inline void clearText() { pos = maxPos = 0; }
   inline int getEventType() { return eventType; }
+  // don't play sound when the value changes
+  virtual inline bool hasSound() { return false; }
 };
 
 #endif

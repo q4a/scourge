@@ -74,6 +74,8 @@ class Window : public Widget {
 
    static const char ROLL_OVER_SOUND[80];
    static const char ACTION_SOUND[80];
+   static const char DROP_SUCCESS[80];
+   static const char DROP_FAILED[80];
 
   Button *closeButton;
 

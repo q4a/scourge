@@ -70,6 +70,12 @@ class Battle {
   bool needsReset;
   int nextTurn;
 
+  // sounds
+  static int handheldSwishSoundStart, handheldSwishSoundCount;
+  static int bowSwishSoundStart, bowSwishSoundCount;
+  static int potionSoundStart, potionSoundCount;
+  static char *sound[];
+
  public:
 
    inline int getAP() { return ap; }
@@ -110,6 +116,9 @@ class Battle {
 
   void invalidate();
 
+  static inline int getSoundCount() { return handheldSwishSoundCount + bowSwishSoundCount + potionSoundCount; }
+  static inline char *getSound(int index) { return sound[index]; }
+
  protected:
   void launchProjectile();
   //void initTurn();
@@ -124,6 +133,8 @@ class Battle {
   void stepCloserToTarget();
   bool selectNewTarget();
   void moveCreature();
+
+  static char *getRandomSound(int start, int count);
 };
 
 #endif

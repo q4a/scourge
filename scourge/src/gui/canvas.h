@@ -52,6 +52,9 @@ class Canvas : public Widget {
   void removeEffects(Widget *parent);
   inline void resize(int w, int h) { Widget::resize(w, h); x2 = getX() + w; y2 = getY() + h; }
   inline bool canGetFocus() { return false; }
+
+  // don't play sound when the value changes
+  virtual inline bool hasSound() { return false; }
 };
 
 #endif

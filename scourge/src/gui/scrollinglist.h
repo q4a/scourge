@@ -75,6 +75,9 @@ class ScrollingList : public Widget {
 
   void removeEffects(Widget *parent);
 
+  // don't play sound when the value changes
+  virtual inline bool hasSound() { return false; }
+
  private:
   void selectLine(int x, int y);
   void drawIcon( int x, int y, GLuint icon );

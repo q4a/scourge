@@ -104,8 +104,10 @@ void ContainerGui::receive(Widget *widget) {
 	  scourge->getMap()->addDescription(message);	  
 	  scourge->endItemDrag();
 	  showContents();
+    scourge->getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
 	} else {
 	  // message: the container is full
+    scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
 	}
   }
 }

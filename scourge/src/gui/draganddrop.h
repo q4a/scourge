@@ -47,6 +47,7 @@ public:
    * return true if there's something to drag at x,y
    */
   virtual bool startDrag(Widget *widget, int x=0, int y=0) = 0;
+
 };
 
 #endif

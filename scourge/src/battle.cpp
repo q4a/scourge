@@ -20,6 +20,24 @@
 #define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
 
+char *Battle::sound[] = {
+  "sound/weapon-swish/handheld/sw1.wav",
+  "sound/weapon-swish/handheld/sw2.wav",
+  "sound/weapon-swish/handheld/sw3.wav",
+  
+  "sound/weapon-swish/bows/swb2.wav",
+  "sound/weapon-swish/bows/swb3.wav",
+
+  "sound/potion/pd1.wav"
+};
+
+int Battle::handheldSwishSoundStart = 0;
+int Battle::handheldSwishSoundCount = 3;
+int Battle::bowSwishSoundStart = 3;
+int Battle::bowSwishSoundCount = 2;
+int Battle::potionSoundStart = 5;
+int Battle::potionSoundCount = 1;
+
 enum {
   NO_ACTION = 0,
   LOITER,
@@ -429,6 +447,7 @@ void Battle::launchProjectile() {
     // FIXME: do something... 
     // (like print message: can't launch projectile due to use of fixed-sized array in code?)
   }
+  session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount) );
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
@@ -489,7 +508,7 @@ void Battle::hitWithItem() {
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 
     // play item sound
-    session->playSound(item->getRandomSound());
+    session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
 
   } else if(dist <= Constants::MIN_DISTANCE) {
     sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
@@ -553,6 +572,10 @@ void Battle::hitWithItem() {
   session->getMap()->addDescription(message);
   tohit += extra;
   if(tohit > ac) {
+
+    // play item sound
+    if(item) session->playSound(item->getRandomSound());
+
     // deal out the damage
     int maxDamage;
     int damage = creature->getDamage(item, &maxDamage);
@@ -629,12 +652,12 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
     sprintf(message, "...and hits! for %d(%d) (max=%d) points of damage", damage, extra, maxDamage);
     session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
+    damage += extra;
+
     // play hit sound
-    if(!creature->getTargetCreature()->isMonster()) {
+    if(!creature->getTargetCreature()->isMonster() && damage > 0) {
       session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
     }
-
-    damage += extra;
 
     // target creature death
     if(creature->getTargetCreature()->takeDamage(damage, effect)) {         
@@ -702,6 +725,7 @@ void Battle::executeEatDrinkAction() {
   // is it still in the inventory?
   int index = creature->findInInventory(creature->getActionItem());
   if(index > -1) {
+    session->playSound( getRandomSound(potionSoundStart, potionSoundCount) );
     if(creature->eatDrink(creature->getActionItem())){
       creature->removeInventory(index);
       session->getGameAdapter()->refreshInventoryUI();
@@ -715,4 +739,11 @@ void Battle::invalidate() {
   if(DEBUG_BATTLE) cerr << "*** invalidate: creature=" << getCreature()->getName() << endl;
   nextTurn = weaponWait = 0;
 }
+
+char *Battle::getRandomSound(int start, int count) {
+  if(count)
+    return sound[start + (int)((float)(count) * rand()/RAND_MAX)];
+  else return NULL;
+}
+
 

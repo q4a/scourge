@@ -45,6 +45,8 @@ class Party {
   bool startRound;
   int partySize;
 
+  static Creature *lastPlayer;
+
  public:
 
   Party(Session *session);

@@ -27,6 +27,11 @@
 
 #define KEEP_MAP_SIZE 0
 
+//#define MAP_VIEW_WIDTH 100
+//#define MAP_VIEW_DEPTH 110               
+#define MVW 150
+#define MVD 150
+
 // this is the clockwise order of movements
 int Map::dir_index[] = { Constants::MOVE_UP, Constants::MOVE_LEFT, Constants::MOVE_DOWN, Constants::MOVE_RIGHT };
 
@@ -227,13 +232,13 @@ void Map::setViewArea(int x, int y, int w, int h) {
 }
 
 void Map::center(Sint16 x, Sint16 y, bool force) { 
-  Sint16 nx = x - MAP_VIEW_WIDTH / 2; 
-  Sint16 ny = y - MAP_VIEW_DEPTH / 2;
+  Sint16 nx = x - MVW / 2; 
+  Sint16 ny = y - MVD / 2;
   /*
-  Sint16 nx = x - (int)(((float)MAP_VIEW_WIDTH * 
+  Sint16 nx = x - (int)(((float)MVW * 
                          ((float)viewWidth / 
                           (float)scourge->getSDLHandler()->getScreen()->w)) / 2.0f); 
-  Sint16 ny = y - (int)(((float)MAP_VIEW_DEPTH * 
+  Sint16 ny = y - (int)(((float)MVD * 
                          ((float)viewHeight / 
                           (float)scourge->getSDLHandler()->getScreen()->h)) / 2.0f);
   */
@@ -306,9 +311,9 @@ void Map::move(int dir) {
 
 	//	cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
 
-	if(mapy > MAP_DEPTH - MAP_VIEW_DEPTH) mapy = MAP_DEPTH - MAP_VIEW_DEPTH;
+	if(mapy > MAP_DEPTH - MVD) mapy = MAP_DEPTH - MVD;
 	if(mapy < 0) mapy = 0;
-	if(mapx > MAP_WIDTH - MAP_VIEW_WIDTH) mapx = MAP_WIDTH - MAP_VIEW_WIDTH;
+	if(mapx > MAP_WIDTH - MVW) mapx = MAP_WIDTH - MVW;
 	if(mapx < 0) mapx = 0;
 	//	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
 
@@ -334,7 +339,7 @@ void Map::setupShapes(bool ground) {
   if(mod) {
     chunkOffsetX = -mod;
   }
-  int chunkEndX = MAP_VIEW_WIDTH / MAP_UNIT + chunkStartX;
+  int chunkEndX = MVW / MAP_UNIT + chunkStartX;
 
   int chunkOffsetY = 0;
   int chunkStartY = (getY() - MAP_OFFSET) / MAP_UNIT;
@@ -342,7 +347,7 @@ void Map::setupShapes(bool ground) {
   if(mod) {
     chunkOffsetY = -mod;
   }
-  int chunkEndY = MAP_VIEW_DEPTH / MAP_UNIT + chunkStartY;
+  int chunkEndY = MVD / MAP_UNIT + chunkStartY;
 
   Shape *shape;
   int posX, posY;
@@ -1075,10 +1080,10 @@ void Map::initMapView(bool ignoreRot) {
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   glTranslatef( 0, 0, this->zpos);  
 
-  //  float startx = -(((float)MAP_VIEW_WIDTH + (mapx - (float)x)) / 2.0) / GLShape::DIV;
-  //  float starty = -(((float)MAP_VIEW_DEPTH + (mapy - (float)y)) / 2.0) / GLShape::DIV;
-  float startx = -((float)MAP_VIEW_WIDTH / 2.0 + (mapx - (float)x)) / GLShape::DIV;
-  float starty = -((float)MAP_VIEW_DEPTH / 2.0 + (mapy - (float)y)) / GLShape::DIV;
+  //  float startx = -(((float)MVW + (mapx - (float)x)) / 2.0) / GLShape::DIV;
+  //  float starty = -(((float)MVD + (mapy - (float)y)) / 2.0) / GLShape::DIV;
+  float startx = -((float)MVW / 2.0 + (mapx - (float)x)) / GLShape::DIV;
+  float starty = -((float)MVD / 2.0 + (mapy - (float)y)) / GLShape::DIV;
   //float startz = -(float)(MAP_VIEW_HEIGHT) / GLShape::DIV;
   float startz = 0.0;
 
@@ -1902,4 +1907,9 @@ int Map::toggleLightMap() {
   lightMapChanged = true;
   return LIGHTMAP_ENABLED;
 } 
+
+bool Map::isLocationVisible(int x, int y) { 
+  return (x >= getX() && x < getX() + MVW &&
+          y >= getY() && y < getY() + MVD);
+}
 
