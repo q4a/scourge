@@ -760,6 +760,7 @@ void Map::draw() {
       // draw the ground  
       setupShapes(true);
 
+      /*
       // -------------------------------------------
       // Only here to debug glshape changes. After that REMOVE this!
       // -------------------------------------------
@@ -784,7 +785,7 @@ void Map::draw() {
       // -------------------------------------------
       // Only here to debug glshape changes. After that REMOVE this!
       // -------------------------------------------
-
+      */
 
     }
     

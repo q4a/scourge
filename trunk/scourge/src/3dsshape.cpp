@@ -44,7 +44,9 @@ C3DSShape::~C3DSShape() {
 	delete [] g_3DModel.pObject[i].pVerts;
 	delete [] g_3DModel.pObject[i].pTexVerts;
   }
- }
+
+  glDeleteLists( displayListStart, 2 );
+}
 
 void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety) {
   g_Texture[0] = 0;
@@ -231,54 +233,22 @@ void C3DSShape::preRenderLight() {
   }
 }
 
-void C3DSShape::draw() {
-
-#ifdef DEBUG_3DS
-  if ( glIsEnabled( GL_TEXTURE_2D ) ) {
-    glPushMatrix();
-    debugShape->draw();
-    glPopMatrix();
+void C3DSShape::initialize() {
+  displayListStart = glGenLists( 2 );
+  if( !displayListStart ) {
+    cerr << "*** Error: couldn't generate display lists for shape: " << getName() << endl;
+    exit(1);
   }
-#endif
 
-  GLfloat currentColor[4];
-  glGetFloatv( GL_CURRENT_COLOR, currentColor );
+  createDisplayList( displayListStart, false );
+  createDisplayList( displayListStart + 1, true );
 
-  glPushMatrix();
+  initialized = true;
+}
 
-  glDisable( GL_CULL_FACE );
-  //  glEnable( GL_CULL_FACE );
-  // glCullFace( GL_FRONT );
+void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
 
-  //  glScalef( div, div, div );
-  //  glTranslatef( -movex, -movey, -movez );
-  glTranslatef(-movex * div, 0.0f, 0.0f);
-  glTranslatef(0.0f, (getDepth() / DIV) - (movey * div), 0.0f);
-//  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
-  glTranslatef(0.0f, 0.0f, movez);
-
-  /*
-  glTranslatef((float)offsetx / DIV, (float)offsety / DIV, 0.0f);
-  */
-
-  // I am going to attempt to explain what is going on below up here as not to clutter the 
-  // code below.  We have a model that has a certain amount of objects and textures.  We want 
-  // to go through each object in the model, bind it's texture map to it, then render it.
-  // To render the current object, we go through all of it's faces (Polygons).  
-  // What is a face you ask?  A face is just (in this case) a triangle of the object.
-  // For instance, a cube has 12 faces because each side has 2 triangles.
-  // You might be thinking.  Well, if there are 12 faces in a cube, that makes
-  // 36 vertices that we needed to read in for that object.  Not really true.  Because
-  // a lot of the vertices are the same, since they share sides, they only need to save
-  // 8 vertices, and ignore the duplicates.  Then, you have an array of all the
-  // unique vertices in that object.  No 2 vertices will be the same.  This cuts down
-  // on memory.  Then, another array is saved, which is the index numbers for each face,
-  // which index in to that array of vertices.  That might sound silly, but it is better
-  // than saving tons of duplicate vertices.  The same thing happens for UV coordinates.
-  // You don't save duplicate UV coordinates, you just save the unique ones, then an array
-  // that index's into them.  This might be confusing, but most 3D files use this format.
-  // This loop below will stay the same for most file formats that you load, so all you need
-  // to change is the loading code.  You don't need to change this loop (Except for animation).
+  glNewList( listName, GL_COMPILE );
 
   // Since we know how many objects our model has, go through each of them.
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
@@ -289,16 +259,16 @@ void C3DSShape::draw() {
     t3DObject *pObject = &g_3DModel.pObject[i];
 
     // Check to see if this object has a texture map, if so bind the texture to it.
-    if (pObject->bHasTexture && !useShadow) {
+    if (pObject->bHasTexture && !isShadow) {
       // Bind the texture map to the object by it's materialID
       glEnable(GL_TEXTURE_2D);
       glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
-      //if (!useShadow) glColor3ub(255, 255, 255);
+      //if (!isShadow) glColor3ub(255, 255, 255);
     } else {
       // Turn off texture mapping and turn on color
       glDisable(GL_TEXTURE_2D);   
       // Reset the color to normal again
-      //if (!useShadow) glColor3ub(255, 255, 255);
+      //if (!isShadow) glColor3ub(255, 255, 255);
     } 
 
     float c[3];
@@ -317,7 +287,7 @@ void C3DSShape::draw() {
         glNormal3f(pObject->pNormals[ index ].x, pObject->pNormals[ index ].y, pObject->pNormals[ index ].z);
 
         // If the object has a texture associated with it, give it a texture coordinate.
-        if (!useShadow) {
+        if (!isShadow) {
           if (pObject->bHasTexture) {
 
             // texture color is white
@@ -346,10 +316,13 @@ void C3DSShape::draw() {
             }
           }
 
+          // FIXME: will need to figure out some way to do this
+          /*
           // apply the current color
           c[0] *= currentColor[0];
           c[1] *= currentColor[1];
           c[2] *= currentColor[2];
+          */
 
           // apply the precomputed shading to the current color
           c[0] *= pObject->shadingColorDelta[ index ];
@@ -367,6 +340,42 @@ void C3DSShape::draw() {
 
     glEnd();                                // End the drawing
   }
+
+  glEndList();
+}
+
+void C3DSShape::draw() {
+
+  if(!initialized) {
+    cerr << "*** Warning: shape not intialized. name=" << getName() << endl;
+  }
+
+#ifdef DEBUG_3DS
+  if ( glIsEnabled( GL_TEXTURE_2D ) ) {
+    glPushMatrix();
+    debugShape->draw();
+    glPopMatrix();
+  }
+#endif
+
+  GLfloat currentColor[4];
+  glGetFloatv( GL_CURRENT_COLOR, currentColor );
+
+  glPushMatrix();
+
+  glDisable( GL_CULL_FACE );
+  //  glEnable( GL_CULL_FACE );
+  // glCullFace( GL_FRONT );
+
+  //  glScalef( div, div, div );
+  //  glTranslatef( -movex, -movey, -movez );
+  glTranslatef(-movex * div, 0.0f, 0.0f);
+  glTranslatef(0.0f, (getDepth() / DIV) - (movey * div), 0.0f);
+//  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
+  glTranslatef(0.0f, 0.0f, movez);
+
+  glCallList( displayListStart + (useShadow ? 1 : 0) );
+
   glPopMatrix();
   if (!useShadow) glEnable(GL_TEXTURE_2D);
   glEnable( GL_CULL_FACE );

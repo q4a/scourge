@@ -58,6 +58,8 @@ private:
   ShapePalette *shapePal;
   int offsetx, offsety;
   GLShape *debugShape;
+  GLuint displayListStart;
+  bool initialized;
 
 public:   
   C3DSShape(char *file_name, float div, ShapePalette *shapePal,
@@ -65,6 +67,7 @@ public:
 			Uint32 color, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
   ~C3DSShape();
 
+  void initialize();
   void draw();
   
   bool drawFirst();
@@ -78,6 +81,7 @@ protected:
   void preRenderLight();
   void resolveTextures();
   void normalizeModel();
+  void createDisplayList( GLuint listName, bool isShadow );
 };
 
 #endif
