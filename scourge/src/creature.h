@@ -86,6 +86,7 @@ class Creature {
   char description[300];
   GLint lastTick;
   int speed;
+  int armor;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -159,7 +160,8 @@ class Creature {
   inline void setInventory(int index, Item *item) { 
 	if(index < inventory_count) inventory[index] = item; 
   }
-  inline void addInventory(Item *item) { inventory[inventory_count++] = item; }
+  // returns the index of the last item added
+  inline int addInventory(Item *item) { inventory[inventory_count++] = item; return (inventory_count - 1); }
   Item *removeInventory(int index);
   // equip or doff if already equipped
   void equipInventory(int index);
@@ -198,6 +200,16 @@ class Creature {
 	if(setting) stateMod |= (1 << mod); 
 	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
   }
+
+  // return the initiative for a battle round (0-10), the lower the faster the attack
+  // the method can return negative numbers if the weapon skill is very high (-10 to 10)
+  int getInitiative(Item *weapon);
+
+  // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
+  int getToHit(Item *weapon);
+
+  // get the armor value of the creature (0-100)
+  inline int getArmor() { return armor; }
   
   
 
@@ -213,6 +225,7 @@ class Creature {
 
   void commonInit();
   void monsterInit();
+  void recalcAggregateValues();
 };
 
 

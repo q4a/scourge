@@ -73,6 +73,7 @@ void Creature::commonInit() {
   this->ac = 0;
   this->targetCreature = NULL;
   this->lastTick = 0;
+  this->armor = 0;
 }
 
 Creature::~Creature(){
@@ -286,6 +287,7 @@ Item *Creature::removeInventory(int index) {
 		equipped[i]--;
 	  }
 	}
+	recalcAggregateValues();
   }
   return item;
 }
@@ -301,6 +303,7 @@ void Creature::equipInventory(int index) {
 	if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
 	   equipped[i] == MAX_INVENTORY_SIZE) {
 		equipped[i] = index;
+		recalcAggregateValues();
 		return;
 	}
   }
@@ -311,6 +314,7 @@ int Creature::doff(int index) {
   for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
 	if(equipped[i] == index) {
 	  equipped[i] = MAX_INVENTORY_SIZE;
+	  recalcAggregateValues();
 	  return 1;
 	}
   }
@@ -359,6 +363,21 @@ Item *Creature::getItemAtLocation(int location) {
   return NULL;
 }
 
+// calculate the aggregate values based on equipped items
+void Creature::recalcAggregateValues() {
+
+  // calculate the armor (0-100, 100-total protection)
+  armor = 0;
+  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+	if(equipped[i] != MAX_INVENTORY_SIZE) {
+	  Item *item = inventory[equipped[i]];
+	  if(item->getRpgItem()->getType() == RpgItem::ARMOR) {
+		armor += item->getRpgItem()->getAction();
+	  }
+	}
+  }
+}
+
 Item *Creature::getBestWeapon(float dist) {
   Item *item = getItemAtLocation(Character::INVENTORY_RIGHT_HAND);
   if(item && item->getRpgItem()->getDistance() >= dist) return item;
@@ -368,6 +387,42 @@ Item *Creature::getBestWeapon(float dist) {
   if(item && item->getRpgItem()->getDistance() >= dist) return item;
   return NULL;
 }
+
+// return the initiative for a battle round (0-10), the lower the faster the attack
+// the method can return negative numbers if the weapon skill is very high (-10 to 10)
+int Creature::getInitiative(Item *weapon) {
+  // use the speed skill
+  float speed = skills[Constants::SPEED];
+  // roll for half the luck
+  speed += (skills[Constants::LUCK / 2] * rand()/RAND_MAX);
+  // add weapon speed (bare hand attack is the fastest, unless weapon skill is very good)
+  if(weapon) {
+	speed -= weapon->getRpgItem()->getSpeed();
+	if(weapon->getRpgItem()->getSkill() > -1) 
+	  speed += skills[weapon->getRpgItem()->getSkill()];
+  }
+  // at this point a score of 150 is the fastest and 0 is the slowest
+
+  // convert to 0-10 and flip (so 10 is the slowest)
+  return (10 - (int)(speed / 15.0f));
+}
+
+// roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
+int Creature::getToHit(Item *weapon) {
+  float tohit = skills[Constants::COORDINATION] + skills[Constants::LUCK] / 2;
+  if(weapon && weapon->getRpgItem()->getSkill() > -1) {
+	tohit += skills[weapon->getRpgItem()->getSkill()];
+  } else {
+	tohit += skills[Constants::HAND_TO_HAND_COMBAT];
+  }
+  // so far the max score is 250
+  
+  // tohit = 75% of tohit + (rand(25% of tohit))
+  float score = (0.75f * tohit) + ((0.25f * tohit) * rand()/RAND_MAX);
+  // convert to 0-100 value
+  return (int)(score / 2.5f);
+}
+
 
 
 /**
@@ -387,7 +442,7 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[0]->setStateMod(Constants::blessed, true);
   pc[0]->setStateMod(Constants::poisoned, true);
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[0]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+      pc[0]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
   }
   
   pc[1]->setLevel(1); 
@@ -396,7 +451,7 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[1]->setStateMod(Constants::drunk, true);
   pc[1]->setStateMod(Constants::cursed, true);      
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[1]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+      pc[1]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
   }
   
   pc[2]->setLevel(1); 
@@ -406,7 +461,7 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[2]->setStateMod(Constants::magic_protected, true);
   pc[2]->setStateMod(Constants::cursed, true);        
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[2]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+      pc[2]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
   }
   
   pc[3]->setLevel(1); 
@@ -414,7 +469,7 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[3]->setHp();
   pc[3]->setStateMod(Constants::possessed, true);          
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      pc[3]->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
+      pc[3]->setSkill(i, (int)(20.0 * rand()/RAND_MAX));
   }
 
   // add some items
@@ -430,4 +485,9 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
 
 void Creature::monsterInit() {
   // equip starting inventory
+  for(int i = 0; i < Monster::ITEM_COUNT; i++) {
+	if(getMonster()->getStartingItem(i)) {
+	  equipInventory(addInventory(scourge->newItem(getMonster()->getStartingItem(i))));
+	}
+  }
 }

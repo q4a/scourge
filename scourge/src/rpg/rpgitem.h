@@ -28,11 +28,12 @@ class RpgItem {
   int type;
   int weight, price, quality;
   int action; // damage, defence, potion str.
-  int speed; // 0-20, 0-fast, 20-slow, 10-avg
+  int speed; // 0-100, 100-slowest, 0-fastest
   int shape_index;
   int twohanded;
   int distance; // how far can it reach?
   int equip; // where can it be worn?
+  int skill; // which skill to check when using the item
 
  public:
   enum itemNames {
@@ -44,6 +45,8 @@ class RpgItem {
 	
 	BATTLE_AXE,
 	THROWING_AXE,
+
+	HORNED_HELMET,
 
 	CHEST,
 	BOOKSHELF,
@@ -59,6 +62,7 @@ class RpgItem {
 	AXE,
 	BOW,
 	CONTAINER,
+	ARMOR,
 	
 	// must be last
 	ITEM_TYPE_COUNT
@@ -74,7 +78,7 @@ class RpgItem {
   
   RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-		  int twohanded=NOT_TWO_HANDED, int distance=1);
+		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1);
   ~RpgItem();
 
   inline int getIndex() { return index; }
@@ -87,6 +91,8 @@ class RpgItem {
   inline char *getShortDesc() { return shortDesc; }  
   inline int getEquip() { return equip; }
   inline int getDistance() { return distance; }
+  inline int getSkill() { return skill; } 
+  inline int getType() { return type; }
 
   static RpgItem *getRandomItem(int level);
   static RpgItem *getRandomContainer();

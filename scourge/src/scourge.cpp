@@ -70,6 +70,8 @@ Scourge::Scourge(int argc, char *argv[]){
   inventory = new Inventory(this);
   move = 0;
   startRound = true;
+  battleCount = 0;
+  gameSpeed = 100; // the greater the slower the game (in ticks) 
 
   createUI();
   
@@ -122,6 +124,7 @@ void Scourge::startMission() {
   player_only = false;
   move = 0;
   startRound = true;
+  battleCount = 0;
   setPlayer(getParty(0));
   getPlayer()->moveTo(startx, starty, 0);
   getPlayer()->setTargetCreature(NULL);
@@ -134,6 +137,7 @@ void Scourge::startMission() {
 					 getParty(i)->getY(), 
 					 getParty(i)->getZ(), 
 					 getParty(i));
+	getParty(i)->setTargetCreature(NULL);
   }
  
   // center map on the player
@@ -161,7 +165,9 @@ void Scourge::startMission() {
   delete dg;
 
   // delete the items and creatures created for this mission
-  // (except items in inventory)
+  // (except items in inventory) 
+  // FIXME: may still be a memory leak... the ones in the inventory should be
+  // kept in items w. the right itemCount
   for(int i = 0; i < itemCount; i++) {
 	bool inInventory = false;
 	for(int t = 0; t < 4; t++) {
@@ -882,7 +888,7 @@ void Scourge::playRound() {
   // -(or) the round was manually started
   GLint t = SDL_GetTicks();
   if(startRound && 
-	 (lastTick == 0 || t - lastTick > 50)) {
+	 (lastTick == 0 || t - lastTick > gameSpeed)) {
 	lastTick = t;
 		
 	// move the party members
@@ -895,32 +901,99 @@ void Scourge::playRound() {
 	  }
 	}
 
+	// set up for battle
+	battleCount = 0;
+
 	// attack targeted monster if close enough
-	char message[200];
 	for(int i = 0; i < 4; i++) {
 	  if(party[i]->getTargetCreature()) {
-		float dist = Util::distance(party[i]->getX(), party[i]->getY(), 
-									party[i]->getShape()->getWidth(),
-									party[i]->getShape()->getDepth(),
-									party[i]->getTargetCreature()->getX(),
-									party[i]->getTargetCreature()->getY(),
-									party[i]->getTargetCreature()->getShape()->getWidth(),
-									party[i]->getTargetCreature()->getShape()->getDepth());
-		Item *item = party[i]->getBestWeapon(dist);
-		if(item) {
-		  sprintf(message, "%s attacks %s with %s!", 
-				  party[i]->getName(), 
-				  party[i]->getTargetCreature()->getName(),
-				  item->getRpgItem()->getName());
-		  map->addDescription(message, 1.0f, 0.5f, 0.5f);
-		} else if(dist <= 1.0f) {
-		  sprintf(message, "%s attacks %s with bare hands!", 
-				  party[i]->getName(), 
-				  party[i]->getTargetCreature()->getName());
-		  map->addDescription(message, 1.0f, 0.5f, 0.5f);		  
-		}
+		battle[battleCount].creature = party[i];
+		battleCount++;
 	  }
 	}
+	for(int i = 0; i < creatureCount; i++) {
+	  if(map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
+		 creatures[i]->getTargetCreature()) {
+		battle[battleCount].creature = creatures[i];
+		battleCount++;
+	  }
+	}
+
+	// fight one round of the epic battle
+	if(battleCount > 0) fightBattle();
+  }
+}
+
+void Scourge::fightBattle() {
+  int initiative = -10;
+  char message[200];
+  bool fightingStarted = false;
+  // this is O(n^2) unfortunately... maybe we could use a linked list or something here
+  while(battleCount > 0) {
+	bool creatureFound = false;
+	for(int i = 0; i < battleCount; i++) {
+	  Creature *creature = battle[i].creature;
+	  float dist = Util::distance(creature->getX(), 
+								  creature->getY(), 
+								  creature->getShape()->getWidth(),
+								  creature->getShape()->getDepth(),
+								  creature->getTargetCreature()->getX(),
+								  creature->getTargetCreature()->getY(),
+								  creature->getTargetCreature()->getShape()->getWidth(),
+								  creature->getTargetCreature()->getShape()->getDepth());
+	  // get the best weapon given the distance from the target
+	  Item *item = creature->getBestWeapon(dist);
+	  // creature won't fight if too far from the action 
+	  // (!item) is a bare-hands attack
+	  if(item || dist <= 1.0f) {
+		// not time for this creature's turn yet
+		int creatureInitiative = creature->getInitiative(item);
+		if(creatureInitiative > initiative) continue;
+		creatureFound = true;
+
+		if(!fightingStarted) {
+		  map->addDescription("A round of battle begins...");
+		  fightingStarted = true;
+		}
+
+		if(item) {
+		  sprintf(message, "%s attacks %s with %s! (initiative: %d)", 
+				  creature->getName(), 
+				  creature->getTargetCreature()->getName(),
+				  item->getRpgItem()->getName(),
+				  creatureInitiative);
+		  map->addDescription(message);
+		} else if(dist <= 1.0f) {
+		  sprintf(message, "%s attacks %s with bare hands! (initiative: %d)", 
+				  creature->getName(), 
+				  creature->getTargetCreature()->getName(),
+				  creatureInitiative);
+		  map->addDescription(message);
+		}
+
+		// take a swing
+		int tohit = creature->getToHit(item);
+		int ac = creature->getTargetCreature()->getArmor();
+		if(tohit > ac) {
+		  sprintf(message, "...and hits! (toHit=%d vs. AC=%d)", tohit, ac);
+		  map->addDescription(message, 1.0f, 0.5f, 0.5f);
+
+		  // deal out the damage
+
+		} else {
+		  // missed
+		  sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
+		  map->addDescription(message);
+		}
+	  }
+	  // remove this creature from the turn
+	  for(int t = i; t < battleCount - 1; t++) {
+		battle[t].creature = battle[t + 1].creature;
+	  }
+	  battleCount--;
+	  i--;
+	}
+	if(!creatureFound) initiative++;
   }
 }
 
@@ -1021,7 +1094,9 @@ void Scourge::setFormation(int formation) {
 	party[i]->setFormation(formation);
   }
   player_only = false;
+  groupButton->setSelected(!player_only);
   startRound = true;
+  roundButton->setSelected(startRound);
 }
 
 /**
