@@ -1067,8 +1067,7 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
       if(!(dropTarget && 
            (dropTarget->creature || 
             (dropTarget->item && 
-             dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER &&
-             !map->isLocked(dropTarget->x, dropTarget->y, dropTarget->z) )) )) {
+             dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
         dropTarget = NULL;
       }      
 	  }
@@ -1403,12 +1402,7 @@ bool Scourge::useItem(int x, int y, int z) {
 		GLint delta = SDL_GetTicks() - dragStartTime;
 		if(delta < ACTION_CLICK_TIME &&
 			 movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
-      if(map->isLocked(map->getSelX(), map->getSelY(), map->getSelZ())) {
-        // misnamed: DOOR_LOCKED message also applies to chests
-        map->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
-      } else {
-        openContainerGui(movingItem);
-      }
+      openContainerGui(movingItem);      
 		}
 		dropItem(map->getSelX(), map->getSelY());
 		return true;
@@ -1585,14 +1579,19 @@ bool Scourge::useBoard(Location *pos) {
 
 bool Scourge::useTeleporter(Location *pos) {
   if(pos->shape == shapePal->findShapeByName("TELEPORTER") ||
-	 pos->shape == shapePal->findShapeByName("TELEPORTER_BASE")) {
-	// able to teleport if any party member is alive
-	for(int i = 0; i < 4; i++) {
-	  if(!party->getParty(i)->getStateMod(Constants::dead)) {
-		teleporting = true;
-		return true;
-	  }
-	}
+     pos->shape == shapePal->findShapeByName("TELEPORTER_BASE")) {
+    if(map->isLocked(pos->x, pos->y, pos->z)) {
+      map->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
+      return true;
+    } else {
+      // able to teleport if any party member is alive
+      for(int i = 0; i < 4; i++) {
+        if(!party->getParty(i)->getStateMod(Constants::dead)) {
+          teleporting = true;
+          return true;
+        }
+      }
+    }
   }
   return false;
 }
