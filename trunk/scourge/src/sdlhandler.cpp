@@ -228,7 +228,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 	} else if(!strcmp(argv[i], "--test")) {
 	  test = true;
 	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
-	  for(int t = 1; t < strlen(argv[i]); t++) {
+	  for(int t = 1; t < (int)strlen(argv[i]); t++) {
 		switch(argv[i][t]) {
 		case 'h': case '?': printusage = true; break;
 		case 'f': fullscreen = false; break;

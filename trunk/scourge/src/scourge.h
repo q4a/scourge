@@ -28,6 +28,7 @@
 #include "dungeongenerator.h"
 #include "creature.h"
 #include "mainmenu.h"
+#include "optionsmenu.h"
 #include "gui.h"
 #include "inventory.h"
 #include "item.h"
@@ -42,6 +43,7 @@ class Map;
 class ShapePalette;
 class Location;
 class MainMenu;
+class OptionsMenu;
 class Gui;
 class Inventory;
 
@@ -56,11 +58,12 @@ class Inventory;
 #define CREATURES_DIR "creatures/"
 
 class Scourge : public SDLEventHandler,SDLScreenView {
-private:
-	Creature *player;
-	Creature *party[4];
-	int formation;
+ private:
+  Creature *player;
+  Creature *party[4];
+  int formation;
   MainMenu *mainMenu;
+  OptionsMenu *optionsMenu;
   Gui *gui;
   bool isInfoShowing;
   int topWin;
@@ -107,11 +110,13 @@ public:
 
   inline MainMenu *getMainMenu() { return mainMenu; }
 
+  inline OptionsMenu *getOptionsMenu() { return optionsMenu; }
+
   inline Gui *getGui() { return gui; }
 
   inline Inventory *getInventory() { return inventory; }
-
-	inline Creature *getPlayer() { return player; }
+  
+  inline Creature *getPlayer() { return player; }
 
   void drawView(SDL_Surface *screen);
   bool handleEvent(SDL_Event *event);

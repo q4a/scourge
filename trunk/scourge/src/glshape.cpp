@@ -153,12 +153,6 @@ void GLShape::draw() {
     glEnable( GL_CULL_FACE );
     glCullFace( GL_BACK );
 
-    float red = 0.72f;
-    float green = 0.65f;
-    float blue = 0.55f;
-    float alpha = 0.5f;
-
-	//	glColor4f(red, green, blue, alpha);
     if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {    
 	  if (tex[LEFT_RIGHT_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE] );
 	  glBegin( GL_QUADS );

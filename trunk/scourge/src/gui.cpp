@@ -220,6 +220,10 @@ void Gui::drawMainMenu(int x, int y) {
   scourge->getMainMenu()->drawMenu(x, y);
 }
 
+void Gui::drawOptionsMenu(int x, int y) {
+  scourge->getOptionsMenu()->drawMenu(x, y);
+}
+
 void Gui::drawDescriptions(int x, int y) {
   scourge->drawTopWindow();
 }

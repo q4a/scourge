@@ -512,7 +512,7 @@ void Map::createOverlayTexture() {
   // create the dark texture
   unsigned int i, j;
   glGenTextures(1, (GLuint*)&overlay_tex);
-  float tmp = 0.7f;
+//  float tmp = 0.7f;
   for(i = 0; i < OVERLAY_SIZE; i++) {
 	for(j = 0; j < OVERLAY_SIZE; j++) {
 	  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
@@ -598,7 +598,7 @@ void Map::showCreatureInfo(Creature *creature) {
   
   // draw circle
   double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
-  double d = (double)creature->getShape()->getDepth() / GLShape::DIV;
+  //double d = (double)creature->getShape()->getDepth() / GLShape::DIV;
   double s = 0.35f / GLShape::DIV;
 
   glEnable( GL_DEPTH_TEST );

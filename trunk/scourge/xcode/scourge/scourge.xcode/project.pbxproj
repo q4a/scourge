@@ -100,13 +100,23 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				7625A9FE05F46C45005D9F4F,
+				7625A9FF05F46C45005D9F4F,
+				7625A9EA05F46B8C005D9F4F,
+				7625A9EB05F46B8C005D9F4F,
+				7625A9EC05F46B8C005D9F4F,
+				7625A9ED05F46B8C005D9F4F,
+				7625A9EE05F46B8C005D9F4F,
+				7625A9EF05F46B8C005D9F4F,
+				7625A9DA05F46B48005D9F4F,
+				7625A9DB05F46B48005D9F4F,
+				7625A9DC05F46B48005D9F4F,
+				7625A9DD05F46B48005D9F4F,
 				080E96DDFE201D6D7F000001,
 				29B97315FDCFA39411CA2CEA,
 				29B97317FDCFA39411CA2CEA,
 				29B97323FDCFA39411CA2CEA,
 				19C28FACFE9D520D11CA2CBB,
-				7674A5F405D5F9B500A583B9,
-				7674A5F505D5F9B500A583B9,
 				7674A5F605D5F9B500A583B9,
 				7674A5F705D5F9B500A583B9,
 				7674A5F805D5F9B500A583B9,
@@ -279,6 +289,186 @@
 //762
 //763
 //764
+		7625A9DA05F46B48005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = 3ds.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/3ds.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9DB05F46B48005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = 3ds.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/3ds.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9DC05F46B48005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = 3dsshape.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/3dsshape.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9DD05F46B48005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = 3dsshape.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/3dsshape.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9DE05F46B48005D9F4F = {
+			fileRef = 7625A9DA05F46B48005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9DF05F46B48005D9F4F = {
+			fileRef = 7625A9DB05F46B48005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9E005F46B48005D9F4F = {
+			fileRef = 7625A9DC05F46B48005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9E105F46B48005D9F4F = {
+			fileRef = 7625A9DD05F46B48005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9EA05F46B8C005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = character.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/rpg/character.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9EB05F46B8C005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = character.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/rpg/character.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9EC05F46B8C005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = pc.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/rpg/pc.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9ED05F46B8C005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = pc.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/rpg/pc.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9EE05F46B8C005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = rpgitem.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/rpg/rpgitem.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9EF05F46B8C005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = rpgitem.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/rpg/rpgitem.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9F005F46B8C005D9F4F = {
+			fileRef = 7625A9EA05F46B8C005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9F105F46B8C005D9F4F = {
+			fileRef = 7625A9EB05F46B8C005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9F205F46B8C005D9F4F = {
+			fileRef = 7625A9EC05F46B8C005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9F305F46B8C005D9F4F = {
+			fileRef = 7625A9ED05F46B8C005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9F405F46B8C005D9F4F = {
+			fileRef = 7625A9EE05F46B8C005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9F505F46B8C005D9F4F = {
+			fileRef = 7625A9EF05F46B8C005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625A9FE05F46C45005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = minimap.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/minimap.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625A9FF05F46C45005D9F4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = minimap.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/minimap.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7625AA0005F46C45005D9F4F = {
+			fileRef = 7625A9FE05F46C45005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7625AA0105F46C45005D9F4F = {
+			fileRef = 7625A9FF05F46C45005D9F4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		763630E805D61253007F401E = {
 			isa = PBXFileReference;
 			lastKnownFileType = image.icns;
@@ -292,24 +482,6 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
-		};
-		7674A5F405D5F9B500A583B9 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = character.cpp;
-			path = /Users/gabortorok/sourceforge/scourge/src/character.cpp;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		7674A5F505D5F9B500A583B9 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = character.h;
-			path = /Users/gabortorok/sourceforge/scourge/src/character.h;
-			refType = 0;
-			sourceTree = "<absolute>";
 		};
 		7674A5F605D5F9B500A583B9 = {
 			fileEncoding = 30;
@@ -733,18 +905,6 @@
 			path = /Users/gabortorok/sourceforge/scourge/src/util.h;
 			refType = 0;
 			sourceTree = "<absolute>";
-		};
-		7674A62505D5F9B600A583B9 = {
-			fileRef = 7674A5F405D5F9B500A583B9;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		7674A62605D5F9B600A583B9 = {
-			fileRef = 7674A5F505D5F9B500A583B9;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		7674A62705D5F9B600A583B9 = {
 			fileRef = 7674A5F605D5F9B500A583B9;
@@ -1180,7 +1340,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D1107280486CEB800E47090,
-				7674A62605D5F9B600A583B9,
 				7674A62805D5F9B600A583B9,
 				7674A62A05D5F9B600A583B9,
 				7674A62C05D5F9B600A583B9,
@@ -1205,6 +1364,12 @@
 				7674A65305D5F9B600A583B9,
 				7674A65505D5F9B600A583B9,
 				7674A88805D5FE5900A583B9,
+				7625A9DF05F46B48005D9F4F,
+				7625A9E105F46B48005D9F4F,
+				7625A9F105F46B8C005D9F4F,
+				7625A9F305F46B8C005D9F4F,
+				7625A9F505F46B8C005D9F4F,
+				7625AA0105F46C45005D9F4F,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1228,7 +1393,6 @@
 		8D11072C0486CEB800E47090 = {
 			buildActionMask = 2147483647;
 			files = (
-				7674A62505D5F9B600A583B9,
 				7674A62705D5F9B600A583B9,
 				7674A62905D5F9B600A583B9,
 				7674A62B05D5F9B600A583B9,
@@ -1254,6 +1418,12 @@
 				7674A65205D5F9B600A583B9,
 				7674A65405D5F9B600A583B9,
 				7674A88905D5FE5900A583B9,
+				7625A9DE05F46B48005D9F4F,
+				7625A9E005F46B48005D9F4F,
+				7625A9F005F46B8C005D9F4F,
+				7625A9F205F46B8C005D9F4F,
+				7625A9F405F46B8C005D9F4F,
+				7625AA0005F46C45005D9F4F,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
