@@ -603,6 +603,31 @@ void Map::draw() {
 	glDepthMask(GL_TRUE);    
 	glDisable(GL_BLEND);
 
+	// draw the projectiles
+	DrawLater dl;
+	//	cerr << "Projectiles:" << endl;
+	map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
+	for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
+	  Creature *creature = i->first;
+	  //	  cerr << "\tcreature: " << creature->getName() << endl;
+	  vector<Projectile*> *p = i->second;
+	  for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+		Projectile *proj = *e;
+		//		cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+
+		// FIXME: optimize this
+		dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
+		//		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
+		dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
+		dl.zpos = (float)(10) / GLShape::DIV;
+		dl.shape = proj->getShape();
+		dl.creature = NULL;
+		dl.item = NULL;
+		dl.name = 0;
+		doDrawShape(&dl);
+	  }
+	}
+
 	//drawDraggedItem();
   }
 }

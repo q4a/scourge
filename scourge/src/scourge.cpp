@@ -1226,6 +1226,9 @@ void Scourge::playRound() {
 	  }
 	}
 
+	// move projectiles
+	Projectile::moveProjectiles();
+
 	// setup the current battle round
 	if(battleRound.size() == 0) {
 

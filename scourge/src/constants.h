@@ -421,6 +421,14 @@ public:
   // read until EOL into line. Exclude EOL from LINE.
   // returns the next char after the EOL.
   static int readLine(char *line, FILE *fp);
+
+  inline static float toRadians(float angle) {
+	return 3.14159 * (angle / 180.0f);
+  }
+
+  inline static float toAngle(float rad) {
+	return (180.0f * rad) / 3.14159;
+  }
 };
 
 // This is our 3D point class.  This will be used to store the vertices of our model.

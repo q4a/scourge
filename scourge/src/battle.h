@@ -41,6 +41,9 @@ class Scourge;
 class Creature;
 class Item;
 
+/**
+   This class represents a single battle turn.
+ */
 class Battle {
  private:
   Scourge *scourge;
