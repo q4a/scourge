@@ -88,7 +88,7 @@ void MagicSchool::initMagic() {
 	  strcpy(dice, strtok(NULL, ","));
 	  int distance = atoi(strtok(NULL, ","));
 	  int targetType = (strcmp(strtok(NULL, ","), "single") ? 
-						Spell::SINGLE_TARGET : Spell::GROUP_TARGET);
+						SINGLE_TARGET : GROUP_TARGET);
 	  int speed = atoi(strtok(NULL, ","));
 
 	  if(!current) {

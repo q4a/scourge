@@ -201,6 +201,9 @@ typedef struct _ParticleStruct {
   float zoom;
 } ParticleStruct;
 
+#define SINGLE_TARGET 0
+#define GROUP_TARGET 1
+
 class Constants {
 public:
 
