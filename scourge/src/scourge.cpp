@@ -49,7 +49,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   // in HQ map
   inHq = true;
 
-  layoutMode = Constants::GUI_LAYOUT_ORIGINAL;
+  layoutMode = Constants::GUI_LAYOUT_BOTTOM;
   
   isInfoShowing = true; // what is this?
   info_dialog_showing = false;
