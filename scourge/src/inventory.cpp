@@ -610,7 +610,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       int location = selectedP->getEquippedIndex(t);
       char s[100];
       item->getDetailedDescription(s);
-      sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
+      sprintf(pcInvText[t], "%s %s", (location > -1 ? "(E)" : ""), s);
       if( !item->isMagicItem() ) {
         if( mainWin->getTheme()->getWindowText() ) {
           itemColor[t].r = mainWin->getTheme()->getWindowText()->r;
