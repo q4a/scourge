@@ -230,9 +230,9 @@ bool Creature::move(Uint16 dir, Map *map) {
 
   Uint32 t = SDL_GetTicks();
   if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
-  cerr << "*** move(): creature=" << getName() << 
-    " speed=" << (t - lastMove) << 
-    " vs. " << (getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1)) << endl;
+  //cerr << "*** move(): creature=" << getName() << 
+  //  " speed=" << (t - lastMove) << 
+  //  " vs. " << (getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1)) << endl;
   lastMove = t;
 
   /*

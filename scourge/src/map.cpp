@@ -1629,25 +1629,24 @@ void Map::configureLightMap() {
   traceLight(chunkX, chunkY, lightMap, false);
 }
 
-///*
-bool Map::isPositionAccessible(int x, int y, int tx, int ty) {
+bool Map::isPositionAccessible(int atX, int atY) {
+  // interpret the results: see if the target is "in light"
+  int chunkX = (atX - MAP_OFFSET) / MAP_UNIT;
+  int chunkY = (atY - MAP_OFFSET) / MAP_UNIT;
+  return (accessMap[chunkX][chunkY]);
+}
+
+void Map::configureAccessMap(int fromX, int fromY) {
   // create the access map
-  int accessMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
   for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
     for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
       accessMap[x][y] = 0;
     }
   }
-  int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (y - MAP_OFFSET) / MAP_UNIT;
+  int chunkX = (fromX - MAP_OFFSET) / MAP_UNIT;
+  int chunkY = (fromY - MAP_OFFSET) / MAP_UNIT;
   traceLight(chunkX, chunkY, accessMap, true);
-  
-  // interpret the results: see if the target is "in light"
-  chunkX = (tx - MAP_OFFSET) / MAP_UNIT;
-  chunkY = (ty - MAP_OFFSET) / MAP_UNIT;
-  return (accessMap[chunkX][chunkY]);
 }
-//*/
 
 void Map::traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors) {
   if(chunkX < 0 || chunkX >= MAP_WIDTH / MAP_UNIT ||
