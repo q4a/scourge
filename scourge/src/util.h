@@ -98,9 +98,14 @@ public:
   static float diffAngle(float a, float b);
 
   // draw a percentage bar
-  static void drawBar(int x, int y, float barLength, float value, float maxValue,
-                      float red=-1, float green=-1, float blue=-1, float gradient=true, 
-                      GuiTheme *theme=NULL);
+  enum {
+    HORIZONTAL_LAYOUT=0,
+    VERTICAL_LAYOUT
+  };
+
+  static void drawBar( int x, int y, float barLength, float value, float maxValue,
+                       float red=-1, float green=-1, float blue=-1, float gradient=true, 
+                       GuiTheme *theme=NULL, int layout=HORIZONTAL_LAYOUT );
   
 };
 

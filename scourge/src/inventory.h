@@ -70,7 +70,7 @@ private:
 	char **pcInvText;
 
 	// spell ui
-	Button *castButton, *quickSpell1, *quickSpell2, *quickSpell3;
+	Button *castButton, *storeSpellButton;
 	ScrollingList *schoolList;
 	ScrollingList *spellList;
 	Label *spellDescriptionLabel;
@@ -106,11 +106,17 @@ private:
 	char **objectiveText;
 	Color *missionColor, *itemColor;
   GLuint *itemIcon;
+  Spell *storeSpell;
 
 public:
     Inventory(Scourge *scourge);
 	~Inventory();
-    void show(bool animate=true);
+
+  inline bool inStoreSpellMode() { return storeSpellButton->isSelected(); }
+  inline void setStoreSpellMode( bool b ) { storeSpellButton->setSelected( b ); if( !b ) storeSpell = NULL; }
+  inline Spell *getStoreSpell() { return storeSpell; }
+
+  void show(bool animate=true);
 	inline void hide() { mainWin->setVisible(false); }
 	inline bool isVisible() { return mainWin->isVisible(); }
   inline Window *getWindow() { return mainWin; }
@@ -126,6 +132,7 @@ public:
 	void drawWidget(Widget *w);
 
   void showSpells();
+  void showSkills();
 
 protected:
 	void setSelectedPlayerAndMode(int player, int mode);

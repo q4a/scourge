@@ -411,8 +411,9 @@ float Util::diffAngle(float a, float b) {
   return diff;
 }
 
-void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
-				   float red, float green, float blue, float gradient, GuiTheme *theme) {
+void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
+                    float red, float green, float blue, float gradient, GuiTheme *theme,
+                    int layout ) {
   float percent = (maxValue == 0 ? 0 : (value >= maxValue ? 100.0f : value / (maxValue / 100.0f)));
   float length = barLength * (percent / 100.0f);
   if(length < 0) {
@@ -422,6 +423,7 @@ void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
   glPushMatrix();
   glTranslatef( x, y, 0 );
 
+  /*
   if( theme && theme->getInputBackground() ) {
     glColor4f( theme->getInputBackground()->color.r,
                theme->getInputBackground()->color.g,
@@ -431,11 +433,19 @@ void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
     glColor3f( 0.8f, 0.5f, 0.2f );
   }
   glBegin( GL_QUADS );
-  glVertex3f( barLength + 1, -4, 0 );
-  glVertex3f( -1, -4, 0 );
-  glVertex3f( -1, 4, 0 );
-  glVertex3f( barLength + 1, 4, 0 );
+  if( layout == HORIZONTAL_LAYOUT ) {
+    glVertex3f( barLength + 1, -4, 0 );
+    glVertex3f( -1, -4, 0 );
+    glVertex3f( -1, 4, 0 );
+    glVertex3f( barLength + 1, 4, 0 );
+  } else {
+    glVertex3f( -4, barLength + 1, 0 );
+    glVertex3f( -4, -1, 0 );
+    glVertex3f( 4, -1, 0 );
+    glVertex3f( 4, barLength + 1, 0 );
+  }
   glEnd();
+  */
 
   glLineWidth(6.0f);
 
@@ -450,8 +460,13 @@ void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
   }
   //glColor3f( 1, 0.75f, 0.45f );
   glBegin( GL_LINES );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( barLength, 0, 0 );
+  if( layout == HORIZONTAL_LAYOUT ) {
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( barLength, 0, 0 );
+  } else {
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( 0, barLength, 0 );
+  }
   glEnd();
 
   // default args so I don't have to recompile .h file
@@ -468,11 +483,17 @@ void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
     glColor3f( 1.0f, 0.5f, 0.5f );
   }
   glBegin( GL_LINES );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( length, 0, 0 );
+  if( layout == HORIZONTAL_LAYOUT ) {
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( length, 0, 0 );
+  } else {
+    glVertex3f( 0, barLength - length, 0 );
+    glVertex3f( 0, barLength, 0 );
+  }
   glEnd();
 
   glLineWidth(1.0f);
+  /*
   if(percent > 0.0f && percent < 100.0f) {
     if( theme && theme->getWindowBorder() ) {
       glColor4f( theme->getWindowBorder()->color.r,
@@ -483,10 +504,16 @@ void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
       glColor3f( 0.8f, 0.5f, 0.2f );
     }
     glBegin( GL_LINES );
-    glVertex3f( length, -4, 0 );
-    glVertex3f( length, 4, 0 );
+    if( layout == HORIZONTAL_LAYOUT ) {
+      glVertex3f( length, -4, 0 );
+      glVertex3f( length, 4, 0 );
+    } else {
+      glVertex3f( -4, length, 0 );
+      glVertex3f( 4, length, 0 );
+    }
     glEnd();
   }
+  */
   glPopMatrix();
 }
 

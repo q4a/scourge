@@ -37,6 +37,7 @@ class Canvas : public Widget {
   bool highlightBorders;
   bool highlightOnMouseOver;
   bool inside;
+  bool glowing;
 
  public: 
   Canvas(int x, int y, int x2, int y2, WidgetView *view, 
@@ -45,6 +46,9 @@ class Canvas : public Widget {
   virtual ~Canvas();
   inline WidgetView *getView() { return view; }
   void drawWidget(Widget *parent);
+
+  inline void setGlowing( bool b ) { glowing = b; }
+  inline bool isGlowing() { return glowing; }
 
   /**
 	 Return true, if the event activated this widget. (For example, button push, etc.)
