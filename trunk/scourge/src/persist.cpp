@@ -130,6 +130,7 @@ void Persist::saveCreature(FILE *fp, CreatureInfo *info) {
   fwrite( info->skills, sizeof(Uint32), Constants::SKILL_COUNT, fp );
   fwrite( info->skillMod, sizeof(Uint32), Constants::SKILL_COUNT, fp );
   fwrite( info->skillBonus, sizeof(Uint32), Constants::SKILL_COUNT, fp );
+  fwrite( &info->portraitTextureIndex, sizeof(Uint32), 1, fp );
   fwrite( &(info->inventory_count), sizeof(Uint32), 1, fp );
   for(int i = 0; i < (int)info->inventory_count; i++) {
     saveItem( fp, info->inventory[i] );
@@ -168,6 +169,7 @@ CreatureInfo *Persist::loadCreature(FILE *fp) {
   fread( info->skills, sizeof(Uint32), Constants::SKILL_COUNT, fp );
   fread( info->skillMod, sizeof(Uint32), Constants::SKILL_COUNT, fp );
   fread( info->skillBonus, sizeof(Uint32), Constants::SKILL_COUNT, fp );
+  fread( &info->portraitTextureIndex, sizeof(Uint32), 1, fp );
   fread( &(info->inventory_count), sizeof(Uint32), 1, fp );
   for(int i = 0; i < (int)info->inventory_count; i++) {
     info->inventory[i] = loadItem( fp );

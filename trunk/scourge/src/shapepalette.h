@@ -195,6 +195,8 @@ private:
   vector<GLShape*> themeShapes;
   vector<string> themeShapeRef;
 
+  vector<GLuint> portraitTextures;
+
 public: 
   ShapePalette(Session *session);
   ~ShapePalette();
@@ -245,6 +247,9 @@ public:
   inline GLuint getBorder2Texture() { return border2; }
   inline GLuint getGargoyleTexture() { return gargoyle; }
   inline GLuint getHighlightTexture() { return highlight; }
+
+  inline int getPortraitCount() { return portraitTextures.size(); }
+  inline GLuint getPortraitTexture( int index ) { return portraitTextures[ index ]; }
 
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name, bool variation=false);

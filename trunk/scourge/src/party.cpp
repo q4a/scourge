@@ -20,7 +20,7 @@
 
 Creature *Party::lastPlayer = NULL;
 
-#define RANDOM_PARTY 1
+//#define RANDOM_PARTY 1
 
 #define PARTY_FOLLOW_INTERVAL 1500
 
@@ -555,6 +555,11 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[3]->addSpell(Spell::getSpellByName("Enthrall fiend"));
   pc[3]->addSpell(Spell::getSpellByName("Break from possession"));
 #endif
+
+  // assign random portraits
+  for( int i = 0; i < pcCount; i++ ) {
+    pc[i]->setPortraitTextureIndex( (int)( (float)(session->getShapePalette()->getPortraitCount()) * rand()/RAND_MAX ) );
+  }
 
   *partySize = pcCount;  
 }

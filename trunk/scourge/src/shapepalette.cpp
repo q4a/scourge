@@ -340,6 +340,11 @@ void ShapePalette::initialize() {
 
       themes[themeCount++] = theme;
       cerr << "&&& Added theme: " << theme->getName() << " count=" << themeCount << endl;
+    } else if( n == 'O' ) {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      cerr << "*** Loading portrait: " << line << endl;
+      portraitTextures.push_back( loadGLTextures( line ) );
     } else {
       // skip this line
       n = Constants::readLine(line, fp);
