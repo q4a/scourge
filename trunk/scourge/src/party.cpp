@@ -412,6 +412,7 @@ Creature **Party::createHardCodedParty() {
 
   // add some spells
   pc[2]->addSpell(Spell::getSpellByName("Flame of Azun"));
+  pc[2]->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
   pc[2]->addSpell(Spell::getSpellByName("Silent knives"));
   pc[2]->addSpell(Spell::getSpellByName("Stinging light"));
   pc[2]->addSpell(Spell::getSpellByName("Burning stare"));

@@ -30,6 +30,7 @@
 #include "rpg/monster.h"
 #include "effect.h"
 #include "projectile.h"
+#include "battle.h"
 
 using namespace std;
 
@@ -41,22 +42,31 @@ class Scourge;
 class Creature;
 class Item;
 class Projectile;
+class Battle;
 
 class SpellCaster {
- public:
-  
-  static void spellFailed(Scourge *scourge, Creature *creature, Spell *spell, bool projectileHit);
+ private:
+  Battle *battle;
+  Spell *spell;
+  bool projectileHit;
+  float power;
 
-  static void spellSucceeded(Scourge *scourge, Creature *creature, Spell *spell, bool projectileHit);
+ public:
+
+  SpellCaster(Battle *battle, Spell *spell, bool projectileHit);
+  virtual ~SpellCaster();
+  
+  void spellFailed();
+
+  void spellSucceeded();
 
  protected:
-  static float getPower(Creature *creature, Spell *spell);
-  static void increaseHP(Scourge *scourge, Creature *creature, Spell *spell, float power);
-  static void increaseAC(Scourge *scourge, Creature *creature, Spell *spell, float power);
+  float getPower();
+  void increaseHP();
+  void increaseAC();
   // count==0 means that count depends on level
-  static void launchProjectile(Scourge *scourge, Creature *creature, Spell *spell, float power, int count);
-  static void causeDamage(Scourge *scourge, Creature *creature, Spell *spell, float power, 
-						  int effect=Constants::EFFECT_EXPLOSION);
+  void launchProjectile(int count);
+  void causeDamage();
 };
 
 #endif

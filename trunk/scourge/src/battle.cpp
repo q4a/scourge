@@ -226,7 +226,9 @@ void Battle::fightTurn() {
 	launchProjectile();
   } else if(spell) {
 	// a spell projectile hit
-	SpellCaster::spellSucceeded(scourge, creature, spell, true);	
+	SpellCaster *sc = new SpellCaster(this, spell, true);	
+	sc->spellSucceeded();
+	delete sc;
   } else if(creature->getActionSpell()) {
 	// casting a spell for the first time
 	castSpell();
@@ -255,7 +257,9 @@ void Battle::castSpell() {
   // FIXME: use stats like IQ here to modify spell success rate...
   if(!projectileHit && 
 	 (int)(100.0f * rand() / RAND_MAX) < creature->getActionSpell()->getFailureRate()) {
-	SpellCaster::spellFailed(scourge, creature, creature->getActionSpell(), false);
+	SpellCaster *sc = new SpellCaster(this, creature->getActionSpell(), false);
+	sc->spellFailed();
+	delete sc;
   } else {
 	
 	// get exp for casting the spell
@@ -272,7 +276,9 @@ void Battle::castSpell() {
 	  }
 	}
 
-	SpellCaster::spellSucceeded(scourge, creature, creature->getActionSpell(), false);
+	SpellCaster *sc = new SpellCaster(this, creature->getActionSpell(), false);
+	sc->spellSucceeded();
+	delete sc;
   }
   
   // cancel action
@@ -350,13 +356,13 @@ void Battle::hitWithItem() {
   }
 }
 
-void Battle::dealDamage(int damage) {
+void Battle::dealDamage(int damage, int effect) {
   if(damage) {	
 	sprintf(message, "...and hits! for %d points of damage", damage);
 	scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 	
 	// target creature death
-	if(creature->getTargetCreature()->takeDamage(damage)) {				  
+	if(creature->getTargetCreature()->takeDamage(damage, effect)) {				  
 	  creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
 	  sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 	  scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
