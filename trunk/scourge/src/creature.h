@@ -348,6 +348,8 @@ class Creature {
   bool addSpell(Spell *spell);
   // FIXME: O(n) but there aren't that many spells...
   bool isSpellMemorized(Spell *spell);
+  inline int getSpellCount() { return (int)spells.size(); }
+  inline Spell *getSpell(int index) { return spells[index]; }
 
   void setAction(int action, Item *item=NULL, Spell *spell=NULL);
   inline int getAction() { return action; }
@@ -364,7 +366,8 @@ class Creature {
   }
   void cancelTarget();
   void followTarget();
-  void makeTargetRetaliate();
+  //void makeTargetRetaliate();
+  void decideMonsterAction();
   float getDistanceToTarget();
 
 

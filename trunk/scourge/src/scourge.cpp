@@ -67,9 +67,10 @@ Scourge::Scourge(int argc, char *argv[]){
   Character::initCharacters();
   // initialize the items
   Item::initItems(shapePal);
-  // initialize the monsters (they use items)
-  Monster::initMonsters();
+  // initialize magic
   MagicSchool::initMagic();
+  // initialize the monsters (they use items, magic)
+  Monster::initMonsters();
 
   // create the mission board
   board = new Board(this);
@@ -1442,15 +1443,7 @@ void Scourge::moveMonster(Creature *monster) {
   if(monster->getMotion() == Constants::MOTION_LOITER) {
     // attack the closest player
     if((int)(20.0f * rand()/RAND_MAX) == 0) {
-      Creature *p = party->getClosestPlayer(monster->getX(), monster->getY(), 
-                                            monster->getShape()->getWidth(),
-                                            monster->getShape()->getDepth(),
-                                            20);
-      if(p) {
-        monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
-        monster->setTargetCreature(p);
-        //monster->setDistanceRange(0, Constants::MIN_DISTANCE);
-      }
+      monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement
       monster->setDistanceRange(0, Constants::MIN_DISTANCE);
@@ -1469,11 +1462,12 @@ void Scourge::moveMonster(Creature *monster) {
         }
       }
     }
-  } else if(monster->getTargetCreature()) {
+  } else if(monster->hasTarget()) {
     // monster gives up when low on hp or bored
     // FIXME: when low on hp, it should run away not loiter
-    if(monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f) ||
-       (int)(20.0f * rand()/RAND_MAX) == 0) {
+    if(monster->getAction() == Constants::ACTION_NO_ACTION &&
+       (monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f) ||
+        (int)(20.0f * rand()/RAND_MAX) == 0)) {
       monster->setMotion(Constants::MOTION_LOITER);
       monster->cancelTarget();
     } else {

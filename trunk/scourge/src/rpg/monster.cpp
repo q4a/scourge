@@ -115,6 +115,13 @@ void Monster::initMonsters() {
       n = Constants::readLine(line, fp);
       // add item to monster
       last_monster->addItem(RpgItem::getItemByName(line));
+    } else if(n == 'S' && last_monster) {
+      // skip ':'
+      fgetc(fp);
+      // read the rest of the line
+      n = Constants::readLine(line, fp);
+      // add spell to monster
+      last_monster->addSpell(Spell::getSpellByName(line));
     } else {
       n = Constants::readLine(line, fp);
     }

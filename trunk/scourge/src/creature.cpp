@@ -969,13 +969,21 @@ void Creature::monsterInit() {
     addInventory(scourge->newItem(getMonster()->getStartingItem(i)));
     equipInventory(inventory_count - 1);
   }
+  // add spells
+  for(int i = 0; i < getMonster()->getStartingSpellCount(); i++) {
+    addSpell(getMonster()->getStartingSpell(i));
+  }
   // set some skills
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
   }
   // add some hp
-  startingHp = hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
-  startingMp = mp = 4 + (int)((float)(4.0f * level) * rand()/RAND_MAX);
+  //startingHp = hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
+  //startingMp = mp = 4 + (int)((float)(4.0f * level) * rand()/RAND_MAX);
+
+  startingHp = hp = monster->getHp() + (int)((float)(10.0f * level) * rand()/RAND_MAX);
+  startingMp = mp = monster->getMp() + (int)((float)(4.0f * level) * rand()/RAND_MAX);
+
 }
 
 // only for characters: leveling up
@@ -1057,6 +1065,7 @@ void Creature::cancelTarget() {
   if(preActionTargetCreature) setTargetCreature(preActionTargetCreature);
   preActionTargetCreature = NULL;
   setAction(Constants::ACTION_NO_ACTION);
+  if(isMonster()) setMotion(Constants::MOTION_LOITER);     
 }
 
 void Creature::followTarget() {
@@ -1065,30 +1074,63 @@ void Creature::followTarget() {
            true);
 }
 
-void Creature::makeTargetRetaliate() {
-  if(!getTargetCreature()) return;
+// FIXME: make this more intelligent: potions, spells, scrolls, etc.
+void Creature::decideMonsterAction() {
+  if(!isMonster()) return;
 
-  char message[200];
+  // does monster need to be healed?
 
-  // the target creature gets really upset...
-  // this is also an optimization for fps
-  if(getTargetCreature()->isMonster() && 
-     !getTargetCreature()->getTargetCreature()) {
-    // try to attack the nearest player
-    Creature *p = scourge->getParty()->getClosestPlayer(getTargetCreature()->getX(), 
-                                                        getTargetCreature()->getY(), 
-                                                        getTargetCreature()->getShape()->getWidth(),
-                                                        getTargetCreature()->getShape()->getDepth(),
-                                                        20);
-    // if that's not possible, go for the attacker
-    if(!p) p = this;
-    getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
-    getTargetCreature()->setTargetCreature(p);
+  // increase MP, AC or skill (via potion)?
 
-    sprintf(message, "...%s is enraged and attacks %s", 
-            getTargetCreature()->getName(), 
-            p->getName());
-    scourge->getMap()->addDescription(message); 
+  Creature *p = scourge->getParty()->getClosestPlayer(getX(), getY(), 
+                                                      getShape()->getWidth(),
+                                                      getShape()->getDepth(),
+                                                      20);
+  if(p) {
+
+    float dist = Constants::distance(getX(),  getY(), 
+                                     getShape()->getWidth(), getShape()->getDepth(),
+                                     p->getX(), p->getY(),
+                                     p->getShape()->getWidth(), 
+                                     p->getShape()->getDepth());
+    
+    // can monster use magic?
+    if(getSpellCount()) {
+
+      /*              
+        FIXME:          
+                  
+        Other considerations:
+        -heal other monsters (by spell)?
+        -attack by spell?
+        -group attack vs. single target?
+        
+        For now, just assume that monsters only know attack spells 
+        where the target can be a single creature. Later when spell
+        casting is smarter (by monsters) we'll need to implement some
+        way to classify spells (attack, help (hp+,ac+,etc.), group vs. 
+        single target, etc.)
+      */
+      for(int i = 0; i < getSpellCount(); i++) {
+        Spell *spell = getSpell(i);
+        if(spell->getMp() < getMp()) {
+          if((spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE) ||
+             (spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE)) {
+            setAction(Constants::ACTION_CAST_SPELL, 
+                      NULL,
+                      spell);
+            setMotion(Constants::MOTION_MOVE_TOWARDS);
+            setTargetCreature(p);
+            return;
+          }
+        }
+      }
+    }
+
+    // attack with item
+    setMotion(Constants::MOTION_MOVE_TOWARDS);
+    setTargetCreature(p);
+    //setDistanceRange(0, Constants::MIN_DISTANCE);
   }
 }
 
