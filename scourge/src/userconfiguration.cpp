@@ -250,87 +250,99 @@ UserConfiguration::UserConfiguration(){
 }
 
 void UserConfiguration::loadConfiguration(){
-    ifstream *configFile;  
-    string sLine;
-    string sInstruction, sFirstParam, sSecondParam;    
-    char textLine[255];
-    int pos, firstChar, endWord, foo;
-    int lineNumber;
-    unsigned int i;
-        
-    char path[300];
-	//    strcpy(path, rootDir);
-	//    strcat(path, CONFIG_FILE_NAME);
-	get_config_file_name(path, 300);
+  ifstream *configFile;  
+  string sLine;
+  string sInstruction, sFirstParam, sSecondParam;    
+  char textLine[255];
+  int pos, firstChar, endWord, foo;
+  int lineNumber;
+  unsigned int i;
+  bool isCurrentVersion = false;
+
+  char path[300];
+  //    strcpy(path, rootDir);
+  //    strcat(path, CONFIG_FILE_NAME);
+  get_config_file_name(path, 300);
+  configFile = new ifstream(path);
+  if (!configFile->is_open()) {
+    cerr << "Can't open configuration file: " << path << endl;
+    cerr << "Will create a default config file at the above location." << endl; 
+    createDefaultConfigFile();
+
+    // try to open it again
+    delete configFile;
     configFile = new ifstream(path);
-    if(!configFile->is_open()){
-        cerr << "Can't open configuration file: " << path << endl;
-		cerr << "Will create a default config file at the above location." << endl; 
-		createDefaultConfigFile();
-
-		// try to open it again
-		delete configFile;
-		configFile = new ifstream(path);
-		if(!configFile->is_open()){
-		  cout << "Error: Can't open configuration file: " << path << endl;		
-		  exit(1);
-		}
-    }    
-    
-    // loop through the whole configuration file
-    lineNumber = 0;
-    while(!configFile->eof()){
-        configFile -> getline(textLine, 255);
-        sLine = textLine;  
-		if(sInstruction.size()) sInstruction.erase(sInstruction.begin(), sInstruction.end());      
-        if(sFirstParam.size()) sFirstParam.erase(sFirstParam.begin(), sFirstParam.end());
-        if(sSecondParam.size()) sSecondParam.erase(sSecondParam.begin(), sSecondParam.end());
-                      
-        for(i = 0; i < sLine.length(); i++){
-            sLine[i] = tolower(sLine[i]);                                 
-        }         
-        
-        // search for keywords, ignore lines not begining with keyword or spaces
-        endWord = -1;
-        foo = -1;
-        firstChar = sLine.find_first_not_of(' ', 0);
-        pos = sLine.find("bind", 0);       
-        if(pos < 0){            
-            pos = sLine.find("set", 0);
-            if ((pos >= 0)&&(pos <= firstChar)){
-                sInstruction = "set";                
-                sFirstParam = getNextWord(sLine, pos + 3, endWord);
-                sSecondParam = getNextWord(sLine, endWord, foo);                             
-            }           
-        } 
-        else if(pos <= firstChar){
-            sInstruction = "bind";                                 
-            sFirstParam = getNextWord(sLine, pos + 4, endWord);
-            sSecondParam = getNextWord(sLine, endWord, foo);                        
-        }
-        
-        if (sFirstParam.empty() || sSecondParam.empty() || foo == endWord){            
-            if( pos >= 0 && sInstruction.length()!=0){                
-                cerr  << "Warning : in file " << path 
-                << " missing parameter at line " << lineNumber 
-                << ", ignoring line." << endl;                
-            }            
-        }                    
-        else{              
-            if(sInstruction == "bind"){
-                bind(sFirstParam, sSecondParam, lineNumber);
-            }
-            else{
-                set(sFirstParam, sSecondParam, lineNumber);
-            }
-        } 
-                
-        lineNumber++;
+    if (!configFile->is_open()) {
+      cout << "Error: Can't open configuration file: " << path << endl;   
+      exit(1);
     }
-    configurationChanged = true;
-    
-    delete configFile;    
+  }
 
+  // loop through the whole configuration file
+  lineNumber = 0;
+  while (!configFile->eof()) {
+    configFile -> getline(textLine, 255);
+    sLine = textLine;  
+    if (sInstruction.size()) sInstruction.erase(sInstruction.begin(), sInstruction.end());
+    if (sFirstParam.size()) sFirstParam.erase(sFirstParam.begin(), sFirstParam.end());
+    if (sSecondParam.size()) sSecondParam.erase(sSecondParam.begin(), sSecondParam.end());
+
+    for (i = 0; i < sLine.length(); i++) {
+      sLine[i] = tolower(sLine[i]);                                 
+    }         
+
+    // search for keywords, ignore lines not begining with keyword or spaces
+    endWord = -1;
+    foo = -1;
+    firstChar = sLine.find_first_not_of(' ', 0);
+    pos = sLine.find("bind", 0);       
+    if (pos < 0) {
+      pos = sLine.find("set", 0);
+      if ( pos < 0 ) {
+        pos = sLine.find("version", 0);
+        if ( pos >= 0 && pos <= firstChar ) {
+          sInstruction = "version";
+          sFirstParam = getNextWord(sLine, pos + 7, endWord);
+          // hack
+          foo = 2;
+        }
+      } else if ( pos <= firstChar ) {
+        sInstruction = "set";                
+        sFirstParam = getNextWord(sLine, pos + 3, endWord);
+        sSecondParam = getNextWord(sLine, endWord, foo);                             
+      }
+    } else if (pos <= firstChar) {
+      sInstruction = "bind";                                 
+      sFirstParam = getNextWord(sLine, pos + 4, endWord);
+      sSecondParam = getNextWord(sLine, endWord, foo);                        
+    }
+
+    if (sFirstParam.empty() || (sInstruction != "version" && sSecondParam.empty()) || foo == endWord) {
+      if ( pos >= 0 && sInstruction.length()!=0) {
+        cerr  << "Warning : in file " << path 
+          << " missing parameter at line " << lineNumber 
+          << ", ignoring line." << endl;                
+      }
+    } else {
+      if (sInstruction == "bind") {
+        bind(sFirstParam, sSecondParam, lineNumber);
+      } else if( sInstruction == "version" ) {
+        isCurrentVersion = ( sFirstParam == SCOURGE_VERSION );
+      } else {
+        set(sFirstParam, sSecondParam, lineNumber);
+      }
+    } 
+
+    lineNumber++;
+  }
+  configurationChanged = true;
+
+  delete configFile;    
+
+  // merge old and new settings
+  if( !isCurrentVersion ) {
+    saveConfiguration();
+  }
 }
 
 void UserConfiguration::saveConfiguration(){
@@ -349,7 +361,7 @@ void UserConfiguration::saveConfiguration(){
         return;
     }    
     
-    sprintf(textLine, "Generated by Scourge version %.2f\n", SCOURGE_VERSION);
+    sprintf(textLine, "Generated by Scourge version %s\n", SCOURGE_VERSION);
     writeFile(configFile, textLine);
     writeFile(configFile, "Modify at your own risks.\n");
     writeFile(configFile, "-------------------------------------------------\n"); 
@@ -366,6 +378,11 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, "sdl_key_names are defined in SDL.h\n");
     writeFile(configFile, "engineActions and variables are defined in userconfiguration.h\n");    
     writeFile(configFile, "-------------------------------------------------\n\n"); 
+
+    // print the version
+    sprintf(textLine, "version %s\n", SCOURGE_VERSION);
+    writeFile(configFile, textLine);
+
     writeFile(configFile, "// Bindings\n");
     
     // save bindings
@@ -418,6 +435,8 @@ void UserConfiguration::saveConfiguration(){
     sprintf(textLine, "set frameonfullscreen %s\n", frameOnFullScreen ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set turnbasedbattle %s\n", turnBasedBattle ? "true":"false");
+    writeFile(configFile, textLine);
+    sprintf(textLine, "\n// Audio settings\n");
     writeFile(configFile, textLine);
     sprintf(textLine, "set soundenabled %s\n", soundEnabled ? "true" : "false");
     writeFile(configFile, textLine);
@@ -635,7 +654,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
           printusage = true;
       }       
 	} else if(!strcmp(argv[i], "--version")) {
-	  printf("Scourge, version %.2f\n", SCOURGE_VERSION);
+	  printf("Scourge, version %s\n", SCOURGE_VERSION);
 	  exit(0);
 #ifdef HAVE_SDL_NET
     } else if(!strncmp(argv[i], "--server", 8)) {
@@ -680,7 +699,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 	printf("A 3D, roguelike game of not quite epic proportions.\n\n");
 	printf("Usage:\n");
 	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
-	printf("version: %.2f\n", SCOURGE_VERSION);
+	printf("version: %s\n", SCOURGE_VERSION);
 #ifdef HAVE_SDL_NET
     printf("[Multiplayer support]\n");
 #endif
@@ -904,6 +923,8 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "sdl_key_names are defined in SDL.h" << endl;
   configFile << "engineActions and variables are defined in userconfiguration.h" << endl;
   configFile << "-------------------------------------------------" << endl;
+  configFile << "" << endl;
+  configFile << "version " << SCOURGE_VERSION << endl;
   configFile << "" << endl;
   configFile << "// Bindings" << endl;
   configFile << "bind down set_move_down" << endl;
