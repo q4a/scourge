@@ -772,10 +772,13 @@ void Inventory::dropItem() {
   if(itemIndex > -1 && 
      scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
     Item *item = scourge->getParty()->getParty(selected)->removeInventory(itemIndex);
+    scourge->startItemDragFromGui(item);
+    /*
     scourge->setMovingItem(item, 
                            scourge->getParty()->getParty(selected)->getX(), 
                            scourge->getParty()->getParty(selected)->getY(), 
                            scourge->getParty()->getParty(selected)->getZ());
+    */                           
     char message[120];
     sprintf(message, "%s drops %s.", 
             scourge->getParty()->getParty(selected)->getName(),

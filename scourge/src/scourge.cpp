@@ -2230,10 +2230,11 @@ bool Scourge::createBattleTurns() {
 }
 
 void Scourge::resetUIAfterBattle() {
-  //if(party->isPlayerOnly()) party->togglePlayerOnly();
   toggleRoundUI(party->isRealTimeMode());
   //party->setFirstLivePlayer();
   party->restorePlayerSettings();
+  if(getUserConfiguration()->isBattleTurnBased() && 
+     party->isPlayerOnly()) party->togglePlayerOnly();
   groupButton->setVisible(true);
   for(int i = 0; i < party->getPartySize(); i++) {
     party->getParty(i)->cancelTarget();
