@@ -140,6 +140,10 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
 
   // Create texture and copy minimap date from backbuffer on it    
   textureInMemory = (unsigned char *) malloc(textureSizeH * textureSizeW * 4);    
+
+  Constants::checkTexture("MiniMap::buildTexture", 
+                          textureSizeW, textureSizeH);
+
   glGenTextures(1, texture);    
   glBindTexture(GL_TEXTURE_2D, texture[0]); 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        

@@ -60,7 +60,6 @@ class Party {
   inline Creature *getPlayer() { return player; }
 
   void setPlayer(int n);
-  inline void setPlayer(Creature *c) { player = c; }
 
   void setPartyMotion(int motion);
   

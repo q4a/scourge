@@ -455,6 +455,9 @@ void CreateTexture(GLuint textureArray[],char *strFileName,int textureID) {
 	  return;
     }
 
+    Constants::checkTexture("Constants::CreateTexture", 
+                            pBitmap[0]->w, pBitmap[0]->h);
+
     // Generate a texture with the associative texture ID stored in the array
     glGenTextures(1, &textureArray[textureID]);
 
@@ -570,3 +573,24 @@ float Constants::distance(float x1, float y1, float w1, float h1,
   float ret = d - (d1 + d2);
   return (ret < 0 ? 0 : ret);
 }
+
+void Constants::checkTexture(char *message, int w, int h) {
+  int maxTextureSize;
+  glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
+
+  if( w > maxTextureSize || h > maxTextureSize) {
+    cerr << "*****************************" << endl;
+    cerr << "*****************************" << endl;
+    cerr << "Error: texture too big." << endl;
+  }
+
+  cerr << "***&&&*** " << message << 
+    " size=" << w << "x" << h << 
+    " max texture size=" << maxTextureSize << endl;
+
+  if( w > maxTextureSize || h > maxTextureSize) {
+    cerr << "*****************************" << endl;
+    cerr << "*****************************" << endl;
+  }
+}
+

@@ -112,6 +112,8 @@ class Battle {
   void initItem(Item *item);
   void castSpell();
   void executeEatDrinkAction();
+  // return true if game paused
+  bool pauseBeforePlayerTurn();
 };
 
 #endif

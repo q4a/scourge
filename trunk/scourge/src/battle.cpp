@@ -207,6 +207,41 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
   */
 }                 
 
+bool Battle::pauseBeforePlayerTurn() {
+  // go to single-player mode
+  if (session->getUserConfiguration()->isBattleTurnBased() &&
+      !session->getParty()->isPlayerOnly()) {
+    session->getParty()->togglePlayerOnly(true);
+  }
+
+  // pause if this is a player's first step
+  if (!creature->isMonster() &&
+      !steps && 
+      !paused &&
+      session->getUserConfiguration()->isBattleTurnBased()) {
+    cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
+
+    // center on player
+    for (int i = 0; i < session->getParty()->getPartySize(); i++) {
+      if (session->getParty()->getParty(i) == creature) {
+        session->getParty()->setPlayer(i);
+        break;
+      }
+    }
+    // FIXME: only center if not on-screen
+    session->getMap()->refresh();
+    session->getMap()->center(creature->getX(), creature->getY(), true);
+
+    // pause the game
+    session->getParty()->toggleRound(true);
+    paused = true;
+    return true;
+  }
+  steps++;
+  paused = false;
+  return false;
+}
+
 bool Battle::fightTurn() {
 
   cerr << "TURN: creature=" << creature->getName() << " ap=" << ap << " coordination=" << creature->getSkill(Constants::COORDINATION) << endl;
@@ -225,43 +260,7 @@ bool Battle::fightTurn() {
     return true;
   }
 
-  cerr << "TURN:" << getCreature()->getName() << endl;
-
-  // ---------------------------------------------
-  // go to single-player mode
-  if(session->getUserConfiguration()->isBattleTurnBased() &&
-     !session->getParty()->isPlayerOnly()) 
-    session->getParty()->togglePlayerOnly(true);
-
-  // pause if this is a player's first step
-  if(!creature->isMonster() &&
-     !steps && 
-     !paused &&
-     session->getUserConfiguration()->isBattleTurnBased()) {
-    cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
-    
-    // center on player
-    for(int i = 0; i < session->getParty()->getPartySize(); i++) {
-      if(session->getParty()->getParty(i) == creature) {
-        session->getParty()->setPlayer(i);
-        break;
-      }
-    }
-    //session->getParty()->setPlayer(creature);
-    //session->getGameAdapter()->setPlayerUI(int index)
-
-    // FIXME: only center if not on-screen
-    session->getMap()->refresh();
-    session->getMap()->center(creature->getX(), creature->getY(), true);
-    
-    // pause the game
-    session->getParty()->toggleRound(true);
-    paused = true;
-    return false;
-  }  
-  steps++;
-  paused = false;
-  // ---------------------------------------------
+  if(pauseBeforePlayerTurn()) return false;
 
   dist = creature->getDistanceToTarget();
   item = creature->getBestWeapon(dist);
@@ -292,25 +291,19 @@ bool Battle::fightTurn() {
   if(creature->getTargetCreature()) {
     if(creature->isTargetValid()) {
       if(dist < range) {
-//        if(ap >= weaponWait) {
         if(!projectileHit) {
           ap -= weaponWait;
           if(ap < 0) ap = 0;
         }
-          // attack
-          cerr << "\t\tAttacking." << endl;
-          if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
-            launchProjectile();
-          } else {
-            hitWithItem();
-          }
-          creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
-          ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
-//        } else {
-//          cerr << "\t\tNo action." << endl;
-//          creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
-//          ap--;
-//        }
+        // attack
+        cerr << "\t\tAttacking." << endl;
+        if(!projectileHit && item && item->getRpgItem()->isRangedWeapon()) {
+          launchProjectile();
+        } else {
+          hitWithItem();
+        }
+        creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
+        ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
       } else {
         // out of range: take 1 step closer
         creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
