@@ -1,5 +1,6 @@
+
 /***************************************************************************
-                          mainmenu.h  -  description
+                          multiplayer.h  -  description
                              -------------------
     begin                : Tue Aug 12 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,16 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#ifndef MULTIPLAYER_H
+#define MULTIPLAYER_H
 
 #include "constants.h"
-#include "sdlhandler.h"
-#include "sdleventhandler.h"
-#include "sdlscreenview.h"
 #include "scourge.h"
-#include "text.h"
-
 #include "gui/window.h"
 #include "gui/label.h"
 #include "gui/button.h"
@@ -35,65 +31,23 @@
 
 class Scourge;
 
-class MainMenu : public SDLEventHandler,SDLScreenView {
+class MultiplayerDialog {
 private:
   Scourge *scourge;
-  int value;
-  float logoRot, logoRotDelta;
-  GLint logoTicks;
-  GLint logoTicksDelta;
-
-#define MAX_LOGOS 100
-  typedef struct _LogoSprite {
-	float x, y, angle, rot;
-	int quadrant, steps;
-  } LogoSprite;
-  int logoSpriteCount;
-  LogoSprite logoSprite[MAX_LOGOS];
-
-
-  typedef struct _Cloud {
-	int x, y, w, h, speed;
-  } Cloud;
-  Cloud cloud[100];
-  int cloudCount;
-
   Window *mainWin;
-  Button *newGameButton;
-  Button *continueButton;
-  Button *multiplayer;
-  Button *optionsButton;
-  Button *aboutButton;
-  Button *quitButton;
+  Button *startServer;
+  Button *joinServer;
   
 public:
-#define NEW_GAME 1
-#define CONTINUE_GAME 2
-#define OPTIONS 3
-#define ABOUT 4
-#define QUIT 5
-#define MULTIPLAYER 6
-
-  MainMenu(Scourge *scourge);
-  ~MainMenu();
-
-  void drawView();
-  void drawAfter();
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
-  int getValue();
+  MultiplayerDialog(Scourge *scourge);
+  ~MultiplayerDialog();
 
   inline void show() { mainWin->setVisible(true); }
   inline void hide() { mainWin->setVisible(false); }
   inline bool isVisible() { return mainWin->isVisible(); }
 
- protected:
-  void drawClouds(bool moveClouds, bool flipped);
-  void drawWater();
-  void drawLogo();
-  void addLogoSprite();
-  void drawLogoSprites();
-  void drawParticles();
+  bool handleEvent(SDL_Event *event);
+  bool handleEvent(Widget *widget, SDL_Event *event);
 };
 
 #endif

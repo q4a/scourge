@@ -68,6 +68,8 @@ scourge_SOURCES = \
 	3dsshape.h\
 	optionsmenu.cpp\
 	optionsmenu.h\
+	multiplayer.cpp\
+	multiplayer.h\
 	userconfiguration.cpp\
 	userconfiguration.h\
 	board.cpp\

@@ -45,6 +45,7 @@
 #include "battle.h"
 #include "party.h"
 #include "projectile.h"
+#include "multiplayer.h"
 
 using namespace std;
 
@@ -68,6 +69,7 @@ class Battle;
 class Party;
 class Projectile;
 class Mission;
+class MultiplayerDialog;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -96,6 +98,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int creatureCount;
   MainMenu *mainMenu;
   OptionsMenu *optionsMenu;
+  MultiplayerDialog *multiplayer;
   bool isInfoShowing;
   bool info_dialog_showing;
 
@@ -299,6 +302,11 @@ public:
     @return the options menu
   */
   inline OptionsMenu *getOptionsMenu() { return optionsMenu; }
+
+  /**                                                             
+    @return the multiplayer dialog window
+  */
+  inline MultiplayerDialog *getMultiplayerDialog() { return multiplayer; }
 
   /**
     @return the inventory

@@ -90,17 +90,23 @@ Scourge::Scourge(int argc, char *argv[]){
   // show the main menu
   mainMenu = new MainMenu(this);
   optionsMenu = new OptionsMenu(this);
+  multiplayer = new MultiplayerDialog(this);
+  bool initMainMenu = true;
 
   while(true) {
-    map = new Map(this);
-    mainMenu->show();    
+
+    if(initMainMenu) {
+      initMainMenu = false;
+      map = new Map(this);
+      mainMenu->show();    
+    }
+
     sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
     sdlHandler->mainLoop();
-    mainMenu->hide();
     
     // evaluate results and start a missions
     if(mainMenu->getValue() == NEW_GAME) {
-      
+      mainMenu->hide();
       party->reset();
       party->getCalendar()->reset(true); // reset the time
       board->reset();
@@ -115,10 +121,13 @@ Scourge::Scourge(int argc, char *argv[]){
       inHq = true;
       
       delete map;
+      initMainMenu = true;
       
       startMission();
     } else if(mainMenu->getValue() == OPTIONS) {
       optionsMenu->show();
+    } else if(mainMenu->getValue() == MULTIPLAYER) {
+      multiplayer->show();
     } else if(mainMenu->getValue() == QUIT) {
       sdlHandler->quit(0);
     }
@@ -128,6 +137,7 @@ Scourge::Scourge(int argc, char *argv[]){
 Scourge::~Scourge(){
   delete mainMenu;
   delete optionsMenu;
+  delete multiplayer;
   delete userConfiguration;
   delete board;
 }
@@ -424,6 +434,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
   if(optionsMenu->isVisible()) {
 	optionsMenu->handleEvent(event);
 	return false;
+  }
+
+  if(multiplayer->isVisible()) {
+    multiplayer->handleEvent(event);
+    return false;
   }
 
 
@@ -1312,6 +1327,11 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   if(optionsMenu->isVisible()) {
 	optionsMenu->handleEvent(widget, event);
 	return false;
+  }
+
+  if(multiplayer->isVisible()) {
+    multiplayer->handleEvent(widget, event);
+    return false;
   }
 
   // FIXME: this is hacky...
