@@ -46,7 +46,7 @@ using namespace std;
 #define SEPARATOR '/'
 #endif
 
-#define SCOURGE_VERSION 0.3
+#define SCOURGE_VERSION 0.4
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;

@@ -172,7 +172,7 @@ void MD2Shape::draw() {
   // To make our model render somewhat faster, we do some front back culling.
   // It seems that Quake2 orders their polygons clock-wise.  
   glEnable( GL_CULL_FACE );
-  glCullFace( GL_FRONT );
+  glCullFace( GL_BACK );
   
   glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
   glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
