@@ -1,0 +1,203 @@
+# Project: scourge
+# Makefile created by Dev-C++ 4.9.9.0
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = scourge_private.res
+OBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/glut/og_font_data.o ../src/glut/og_font.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o $(RES)
+LINKOBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/glut/og_font_data.o ../src/glut/og_font.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/include/c++/3.3.1"  -I"C:/Dev-Cpp/include/c++/3.3.1/mingw32"  -I"C:/Dev-Cpp/include/c++/3.3.1/backward"  -I"C:/Dev-Cpp/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/Dev-Cpp/include" 
+BIN  = scourge.exe
+CXXFLAGS = $(CXXINCS) -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main  
+CFLAGS = $(INCS) -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main  
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before scourge.exe all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "scourge.exe" $(LIBS)
+
+../src/3ds.o: ../src/3ds.cpp
+	$(CPP) -c ../src/3ds.cpp -o ../src/3ds.o $(CXXFLAGS)
+
+../src/3dsshape.o: ../src/3dsshape.cpp
+	$(CPP) -c ../src/3dsshape.cpp -o ../src/3dsshape.o $(CXXFLAGS)
+
+../src/battle.o: ../src/battle.cpp
+	$(CPP) -c ../src/battle.cpp -o ../src/battle.o $(CXXFLAGS)
+
+../src/board.o: ../src/board.cpp
+	$(CPP) -c ../src/board.cpp -o ../src/board.o $(CXXFLAGS)
+
+../src/calendar.o: ../src/calendar.cpp
+	$(CPP) -c ../src/calendar.cpp -o ../src/calendar.o $(CXXFLAGS)
+
+../src/constants.o: ../src/constants.cpp
+	$(CPP) -c ../src/constants.cpp -o ../src/constants.o $(CXXFLAGS)
+
+../src/containergui.o: ../src/containergui.cpp
+	$(CPP) -c ../src/containergui.cpp -o ../src/containergui.o $(CXXFLAGS)
+
+../src/creature.o: ../src/creature.cpp
+	$(CPP) -c ../src/creature.cpp -o ../src/creature.o $(CXXFLAGS)
+
+../src/date.o: ../src/date.cpp
+	$(CPP) -c ../src/date.cpp -o ../src/date.o $(CXXFLAGS)
+
+../src/dungeongenerator.o: ../src/dungeongenerator.cpp
+	$(CPP) -c ../src/dungeongenerator.cpp -o ../src/dungeongenerator.o $(CXXFLAGS)
+
+../src/effect.o: ../src/effect.cpp
+	$(CPP) -c ../src/effect.cpp -o ../src/effect.o $(CXXFLAGS)
+
+../src/gllocator.o: ../src/gllocator.cpp
+	$(CPP) -c ../src/gllocator.cpp -o ../src/gllocator.o $(CXXFLAGS)
+
+../src/glshape.o: ../src/glshape.cpp
+	$(CPP) -c ../src/glshape.cpp -o ../src/glshape.o $(CXXFLAGS)
+
+../src/glteleporter.o: ../src/glteleporter.cpp
+	$(CPP) -c ../src/glteleporter.cpp -o ../src/glteleporter.o $(CXXFLAGS)
+
+../src/gltorch.o: ../src/gltorch.cpp
+	$(CPP) -c ../src/gltorch.cpp -o ../src/gltorch.o $(CXXFLAGS)
+
+../src/inventory.o: ../src/inventory.cpp
+	$(CPP) -c ../src/inventory.cpp -o ../src/inventory.o $(CXXFLAGS)
+
+../src/item.o: ../src/item.cpp
+	$(CPP) -c ../src/item.cpp -o ../src/item.o $(CXXFLAGS)
+
+../src/location.o: ../src/location.cpp
+	$(CPP) -c ../src/location.cpp -o ../src/location.o $(CXXFLAGS)
+
+../src/main.o: ../src/main.cpp
+	$(CPP) -c ../src/main.cpp -o ../src/main.o $(CXXFLAGS)
+
+../src/mainmenu.o: ../src/mainmenu.cpp
+	$(CPP) -c ../src/mainmenu.cpp -o ../src/mainmenu.o $(CXXFLAGS)
+
+../src/map.o: ../src/map.cpp
+	$(CPP) -c ../src/map.cpp -o ../src/map.o $(CXXFLAGS)
+
+../src/Md2.o: ../src/Md2.cpp
+	$(CPP) -c ../src/Md2.cpp -o ../src/Md2.o $(CXXFLAGS)
+
+../src/md2shape.o: ../src/md2shape.cpp
+	$(CPP) -c ../src/md2shape.cpp -o ../src/md2shape.o $(CXXFLAGS)
+
+../src/minimap.o: ../src/minimap.cpp
+	$(CPP) -c ../src/minimap.cpp -o ../src/minimap.o $(CXXFLAGS)
+
+../src/optionsmenu.o: ../src/optionsmenu.cpp
+	$(CPP) -c ../src/optionsmenu.cpp -o ../src/optionsmenu.o $(CXXFLAGS)
+
+../src/party.o: ../src/party.cpp
+	$(CPP) -c ../src/party.cpp -o ../src/party.o $(CXXFLAGS)
+
+../src/projectile.o: ../src/projectile.cpp
+	$(CPP) -c ../src/projectile.cpp -o ../src/projectile.o $(CXXFLAGS)
+
+../src/scourge.o: ../src/scourge.cpp
+	$(CPP) -c ../src/scourge.cpp -o ../src/scourge.o $(CXXFLAGS)
+
+../src/sdleventhandler.o: ../src/sdleventhandler.cpp
+	$(CPP) -c ../src/sdleventhandler.cpp -o ../src/sdleventhandler.o $(CXXFLAGS)
+
+../src/sdlhandler.o: ../src/sdlhandler.cpp
+	$(CPP) -c ../src/sdlhandler.cpp -o ../src/sdlhandler.o $(CXXFLAGS)
+
+../src/sdlscreenview.o: ../src/sdlscreenview.cpp
+	$(CPP) -c ../src/sdlscreenview.cpp -o ../src/sdlscreenview.o $(CXXFLAGS)
+
+../src/shape.o: ../src/shape.cpp
+	$(CPP) -c ../src/shape.cpp -o ../src/shape.o $(CXXFLAGS)
+
+../src/shapepalette.o: ../src/shapepalette.cpp
+	$(CPP) -c ../src/shapepalette.cpp -o ../src/shapepalette.o $(CXXFLAGS)
+
+../src/spellcaster.o: ../src/spellcaster.cpp
+	$(CPP) -c ../src/spellcaster.cpp -o ../src/spellcaster.o $(CXXFLAGS)
+
+../src/text.o: ../src/text.cpp
+	$(CPP) -c ../src/text.cpp -o ../src/text.o $(CXXFLAGS)
+
+../src/userconfiguration.o: ../src/userconfiguration.cpp
+	$(CPP) -c ../src/userconfiguration.cpp -o ../src/userconfiguration.o $(CXXFLAGS)
+
+../src/util.o: ../src/util.cpp
+	$(CPP) -c ../src/util.cpp -o ../src/util.o $(CXXFLAGS)
+
+../src/events/event.o: ../src/events/event.cpp
+	$(CPP) -c ../src/events/event.cpp -o ../src/events/event.o $(CXXFLAGS)
+
+../src/events/potionexpirationevent.o: ../src/events/potionexpirationevent.cpp
+	$(CPP) -c ../src/events/potionexpirationevent.cpp -o ../src/events/potionexpirationevent.o $(CXXFLAGS)
+
+../src/events/statemodexpirationevent.o: ../src/events/statemodexpirationevent.cpp
+	$(CPP) -c ../src/events/statemodexpirationevent.cpp -o ../src/events/statemodexpirationevent.o $(CXXFLAGS)
+
+../src/events/thirsthungerevent.o: ../src/events/thirsthungerevent.cpp
+	$(CPP) -c ../src/events/thirsthungerevent.cpp -o ../src/events/thirsthungerevent.o $(CXXFLAGS)
+
+../src/glut/og_font_data.o: ../src/glut/og_font_data.cpp
+	$(CPP) -c ../src/glut/og_font_data.cpp -o ../src/glut/og_font_data.o $(CXXFLAGS)
+
+../src/glut/og_font.o: ../src/glut/og_font.cpp
+	$(CPP) -c ../src/glut/og_font.cpp -o ../src/glut/og_font.o $(CXXFLAGS)
+
+../src/gui/button.o: ../src/gui/button.cpp
+	$(CPP) -c ../src/gui/button.cpp -o ../src/gui/button.o $(CXXFLAGS)
+
+../src/gui/canvas.o: ../src/gui/canvas.cpp
+	$(CPP) -c ../src/gui/canvas.cpp -o ../src/gui/canvas.o $(CXXFLAGS)
+
+../src/gui/cardcontainer.o: ../src/gui/cardcontainer.cpp
+	$(CPP) -c ../src/gui/cardcontainer.cpp -o ../src/gui/cardcontainer.o $(CXXFLAGS)
+
+../src/gui/checkbox.o: ../src/gui/checkbox.cpp
+	$(CPP) -c ../src/gui/checkbox.cpp -o ../src/gui/checkbox.o $(CXXFLAGS)
+
+../src/gui/draganddrop.o: ../src/gui/draganddrop.cpp
+	$(CPP) -c ../src/gui/draganddrop.cpp -o ../src/gui/draganddrop.o $(CXXFLAGS)
+
+../src/gui/label.o: ../src/gui/label.cpp
+	$(CPP) -c ../src/gui/label.cpp -o ../src/gui/label.o $(CXXFLAGS)
+
+../src/gui/multiplelabel.o: ../src/gui/multiplelabel.cpp
+	$(CPP) -c ../src/gui/multiplelabel.cpp -o ../src/gui/multiplelabel.o $(CXXFLAGS)
+
+../src/gui/scrollinglist.o: ../src/gui/scrollinglist.cpp
+	$(CPP) -c ../src/gui/scrollinglist.cpp -o ../src/gui/scrollinglist.o $(CXXFLAGS)
+
+../src/gui/widget.o: ../src/gui/widget.cpp
+	$(CPP) -c ../src/gui/widget.cpp -o ../src/gui/widget.o $(CXXFLAGS)
+
+../src/gui/widgetview.o: ../src/gui/widgetview.cpp
+	$(CPP) -c ../src/gui/widgetview.cpp -o ../src/gui/widgetview.o $(CXXFLAGS)
+
+../src/gui/window.o: ../src/gui/window.cpp
+	$(CPP) -c ../src/gui/window.cpp -o ../src/gui/window.o $(CXXFLAGS)
+
+../src/rpg/character.o: ../src/rpg/character.cpp
+	$(CPP) -c ../src/rpg/character.cpp -o ../src/rpg/character.o $(CXXFLAGS)
+
+../src/rpg/monster.o: ../src/rpg/monster.cpp
+	$(CPP) -c ../src/rpg/monster.cpp -o ../src/rpg/monster.o $(CXXFLAGS)
+
+../src/rpg/rpgitem.o: ../src/rpg/rpgitem.cpp
+	$(CPP) -c ../src/rpg/rpgitem.cpp -o ../src/rpg/rpgitem.o $(CXXFLAGS)
+
+../src/rpg/spell.o: ../src/rpg/spell.cpp
+	$(CPP) -c ../src/rpg/spell.cpp -o ../src/rpg/spell.o $(CXXFLAGS)
+
+scourge_private.res: scourge_private.rc 
+	$(WINDRES) -i scourge_private.rc -I rc -o scourge_private.res -O coff 
