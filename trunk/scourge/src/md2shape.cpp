@@ -309,7 +309,6 @@ MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div
       else fw = fd;
 
       // set the shape's dimensions
-      // FIXME: instead of setting these here, a factory method
       width = (int)(fw + 0.5f);
       depth = (int)(fd + 0.5f);
       height = (int)(fh + 0.5f);

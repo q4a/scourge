@@ -241,8 +241,7 @@ void ShapePalette::initialize() {
     } else if(strlen(sv->m3ds_name)) {
       shapes[(i + 1)] =
       new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
-                    textureGroup[sv->textureGroupIndex], 
-                    sv->width, sv->depth, sv->height,
+                    textureGroup[sv->textureGroupIndex],                     
                     strdup(sv->name), 
                     sv->descriptionIndex,
                     sv->color,

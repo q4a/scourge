@@ -57,11 +57,11 @@ private:
   float movex, movey, movez;
   ShapePalette *shapePal;
   int offsetx, offsety;
+  GLShape *debugShape;
 
 public:   
   C3DSShape(char *file_name, float div, ShapePalette *shapePal,
-			GLuint texture[], int width, int depth, int height,
-			char *name, int descriptionGroup,
+			GLuint texture[], char *name, int descriptionGroup,
 			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
   ~C3DSShape();
 
@@ -75,6 +75,9 @@ public:
 
 protected:
   void commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety);
+  void preRenderLight();
+  void resolveTextures();
+  void normalizeModel();
 };
 
 #endif
