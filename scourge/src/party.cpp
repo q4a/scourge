@@ -17,8 +17,8 @@
 
 #include "party.h"
 
-#define GUI_WIDTH 400
-#define GUI_HEIGHT 125
+#define GUI_WIDTH 500
+#define GUI_HEIGHT 165
 
 Party::Party(Scourge *scourge) {
   this->scourge = scourge;
@@ -408,64 +408,65 @@ void Party::createUI() {
 						scourge->getShapePalette()->getGuiTexture(), false );
 //  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
 //  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
-  inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
+  inventoryButton = new Button( 0, 0, 120, 25, strdup("Party Info") );
   mainWin->addWidget((Widget*)inventoryButton);
-  optionsButton = new Button( 0, 25,  100, 50, strdup("Options") );
+  optionsButton = new Button( 0, 25,  60, 50, strdup("Options") );
   mainWin->addWidget((Widget*)optionsButton);
-  quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
+  quitButton = new Button( 60, 25,  120, 50, strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
-  roundButton = new Button( 0, 75,  100, 100, strdup("Real-Time") );
+  roundButton = new Button( 0, 50,  120, 75, strdup("Real-Time") );
   roundButton->setToggle(true);
   roundButton->setSelected(true);
   mainWin->addWidget((Widget*)roundButton);
   
   int lowerRowHeight = 20;
-  diamondButton = new Button( 100, GUI_HEIGHT - (lowerRowHeight + 25),  120, GUI_HEIGHT - 25, strdup("f1") );
+  diamondButton = new Button( 0, 75,  20, 75 + lowerRowHeight, strdup("f1") );
   diamondButton->setToggle(true);
   mainWin->addWidget((Widget*)diamondButton);  
-  staggeredButton = new Button( 120, GUI_HEIGHT - (lowerRowHeight + 25),  140, GUI_HEIGHT - 25, strdup("f2") );
+  staggeredButton = new Button( 20, 75,  40, 75 + lowerRowHeight, strdup("f2") );
   staggeredButton->setToggle(true);
   mainWin->addWidget((Widget*)staggeredButton);
-  squareButton = new Button( 140, GUI_HEIGHT - (lowerRowHeight + 25),  160, GUI_HEIGHT - 25, strdup("f3") );
+  squareButton = new Button( 40, 75,  60, 75 + lowerRowHeight, strdup("f3") );
   squareButton->setToggle(true);
   mainWin->addWidget((Widget*)squareButton);
-  rowButton = new Button( 160, GUI_HEIGHT - (lowerRowHeight + 25),  180, GUI_HEIGHT - 25, strdup("f4") );
+  rowButton = new Button( 60, 75,  80, 75 + lowerRowHeight, strdup("f4") );
   rowButton->setToggle(true);
   mainWin->addWidget((Widget*)rowButton);
-  scoutButton = new Button( 180, GUI_HEIGHT - (lowerRowHeight + 25),  200, GUI_HEIGHT - 25, strdup("f5") );
+  scoutButton = new Button( 80, 75, 100, 75 + lowerRowHeight, strdup("f5") );
   scoutButton->setToggle(true);
   mainWin->addWidget((Widget*)scoutButton);
-  crossButton = new Button( 200, GUI_HEIGHT - (lowerRowHeight + 25),  220, GUI_HEIGHT - 25, strdup("f6") );
+  crossButton = new Button( 100, 75,  120, 75 + lowerRowHeight, strdup("f6") );
   crossButton->setToggle(true);
   mainWin->addWidget((Widget*)crossButton);
-  groupButton = new Button( 220, GUI_HEIGHT - (lowerRowHeight + 25),  240, GUI_HEIGHT - 25, strdup("G") );
+
+  groupButton = new Button( 0, 75 + lowerRowHeight,  20, 75 + (lowerRowHeight * 2), strdup("G") );
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   mainWin->addWidget((Widget*)groupButton);
-  calendarButton = new Button( 240, GUI_HEIGHT - (lowerRowHeight + 25), GUI_WIDTH, GUI_HEIGHT - 25, 
+  calendarButton = new Button( 20, 75 + lowerRowHeight, 120, 75 + (lowerRowHeight * 2), 
 							   strdup(calendar->getCurrentDate().getDateString()));      
   //calendarButton->setLabelPosition(Button::CENTER);
   mainWin->addWidget((Widget*)calendarButton);    
 
 
-  int playerButtonWidth = (GUI_WIDTH - 100) / 4;
+  int playerButtonWidth = (GUI_WIDTH - 120) / 4;
   int playerButtonHeight = 20;  
-  player1Button = new Button( 100 + playerButtonWidth * 0, 0,  100 + playerButtonWidth * 1, playerButtonHeight );
+  player1Button = new Button( 120 + playerButtonWidth * 0, 0,  120 + playerButtonWidth * 1, playerButtonHeight );
   player1Button->setToggle(true);
   mainWin->addWidget((Widget*)player1Button);
-  player2Button = new Button( 100 + playerButtonWidth * 1, 0,  100 + playerButtonWidth * 2, playerButtonHeight );
+  player2Button = new Button( 120 + playerButtonWidth * 1, 0,  120 + playerButtonWidth * 2, playerButtonHeight );
   player2Button->setToggle(true);
   mainWin->addWidget((Widget*)player2Button);
-  player3Button = new Button( 100 + playerButtonWidth * 2, 0,  100 + playerButtonWidth * 3, playerButtonHeight );
+  player3Button = new Button( 120 + playerButtonWidth * 2, 0,  120 + playerButtonWidth * 3, playerButtonHeight );
   player3Button->setToggle(true);
   mainWin->addWidget((Widget*)player3Button);
-  player4Button = new Button( 100 + playerButtonWidth * 3, 0,  100 + playerButtonWidth * 4, playerButtonHeight );
+  player4Button = new Button( 120 + playerButtonWidth * 3, 0,  120 + playerButtonWidth * 4, playerButtonHeight );
   player4Button->setToggle(true);
   mainWin->addWidget((Widget*)player4Button);
 
   for(int i = 0; i < getPartySize(); i++) {
-	playerInfo[i] = new Canvas( 100 + playerButtonWidth * i, playerButtonHeight,  
-								100 + playerButtonWidth * (i + 1), GUI_HEIGHT - (lowerRowHeight + 25), 
+	playerInfo[i] = new Canvas( 120 + playerButtonWidth * i, playerButtonHeight,  
+								120 + playerButtonWidth * (i + 1), GUI_HEIGHT - 25, 
 								this );
 	mainWin->addWidget(playerInfo[i]);
   }
@@ -492,39 +493,101 @@ void Party::drawWidget(Widget *w) {
   scourge->getSDLHandler()->texPrint(3, 10, msg);
   sprintf(msg, "hp:");
   scourge->getSDLHandler()->texPrint(3, 20, msg);
-  drawBar(22, 18, ((GUI_WIDTH - 100) / 4) - 24,  
+  drawBar(22, 18, ((GUI_WIDTH - 120) / 4) - 24,  
 		  (float)p->getHp(), (float)(p->getCharacter()->getStartingHp() * p->getLevel()));
 
+  // FIXME: instead of ac, show magic pts.?
   // ac
   w->applyColor();
   sprintf(msg, "%d/%d", p->getSkillModifiedArmor(), p->getArmor());
   scourge->getSDLHandler()->texPrint(3, 35, msg);
   sprintf(msg, "ac:");
   scourge->getSDLHandler()->texPrint(3, 45, msg);
-  drawBar(22, 43, ((GUI_WIDTH - 100) / 4) - 24,  
+  drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
 		  (float)p->getSkillModifiedArmor(), (float)p->getArmor());
+
+  // exp
+  w->applyColor();
+  sprintf(msg, "%d (%d)", p->getExp(), p->getLevel());
+  scourge->getSDLHandler()->texPrint(3, 60, msg);
+  sprintf(msg, "ex:");
+  scourge->getSDLHandler()->texPrint(3, 70, msg);
+  drawBar(22, 68, ((GUI_WIDTH - 120) / 4) - 24,  
+		  (float)p->getExp(), (float)p->getExpOfNextLevel(),
+		  0.45f, 0.65f, 1.0f, false);
+
+  // show stat mods
+  glEnable(GL_TEXTURE_2D);
+  int xp = 0;
+  int yp = 0;
+  float n = 12;
+  int row = 5;
+  int left = 5;
+  int bottom = w->getHeight() - ((int)(3 * n + 1) + 4);
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+	GLuint icon = scourge->getShapePalette()->getStatModIcon(i);
+	if(p->getStateMod(i)) {
+	  glColor4f( 1.0f, 1.0f, 0.5f, 0.5f );
+	  if(icon) {
+		glBindTexture( GL_TEXTURE_2D, icon );
+	  }
+	} else {
+	  w->applyBorderColor();
+	  icon = 0;
+	}
+	
+	glPushMatrix();
+	glTranslatef( left + xp * (n + 1), bottom + (yp * (n + 1)), 0 );
+	glBegin( GL_QUADS );
+	glNormal3f( 0, 0, 1 );
+	if(icon) glTexCoord2f( 0, 0 );
+	glVertex3f( 0, 0, 0 );
+	if(icon) glTexCoord2f( 0, 1 );
+	glVertex3f( 0, n, 0 );
+	if(icon) glTexCoord2f( 1, 1 );
+	glVertex3f( n, n, 0 );
+	if(icon) glTexCoord2f( 1, 0 );
+	glVertex3f( n, 0, 0 );
+	glEnd();
+	glPopMatrix();
+
+	xp++;
+	if(xp >= row) {
+	  xp = 0;
+	  yp++;
+	}
+  }
+  glDisable(GL_TEXTURE_2D);
 }
 
-void Party::drawBar(int x, int y, float barLength, float value, float maxValue) {
-  float percent = (maxValue == 0 ? 0 : value / (maxValue / 100.0f));
+void Party::drawBar(int x, int y, float barLength, float value, float maxValue,
+					float red, float green, float blue, float gradient) {
+  float percent = (maxValue == 0 ? 0 : (value >= maxValue ? 100.0f : value / (maxValue / 100.0f)));
   float length = barLength * (percent / 100.0f);
   
   glPushMatrix();
   glTranslatef( x, y, 0 );
   glLineWidth(6.0f);
   
-  glColor3f( 0.5f, 0.5f, 0.5f );
+  //  glColor3f( 0.2f, 0.2f, 0.2f );
+  glColor3f( 1, 0.75f, 0.45f );
   glBegin( GL_LINES );
   glVertex3f( 0, 0, 0 );
   glVertex3f( barLength, 0, 0 );
   glEnd();
   
-  if(percent > 40.0f) {	
-	glColor3f( 0.5f, 1, 0.5f );
+  // default args so I don't have to recompile party.h
+  if(red == -1) {
+	red = 0.5f;
+	green = 1.0f;
+	blue = 0.5f;
+  }
+  if(!gradient || percent > 40.0f) {	
+	glColor3f( red, green, blue );
   } else if(percent > 25.0f) {
-	glColor3f( 1, 1, 0.5f );
+	glColor3f( 1.0f, 1.0f, 0.5f );
   } else {
-	glColor3f( 1, 0.5f, 0.5f );
+	glColor3f( 1.0f, 0.5f, 0.5f );
   }
   glBegin( GL_LINES );
   glVertex3f( 0, 0, 0 );

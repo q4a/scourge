@@ -493,3 +493,17 @@ void Inventory::dropItem() {
 void Inventory::refresh() {
   setSelectedPlayerAndMode(selected, INVENTORY);
 }
+
+void Inventory::show() { 
+  mainWin->setVisible(true); 
+  
+  // find selected player. FIXME: this is inefficient
+  int n = selected;
+  for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
+	if(scourge->getParty()->getPlayer() == scourge->getParty()->getParty(i)) {
+	  n = i;
+	  break;
+	}
+  }
+  setSelectedPlayerAndMode(n, selectedMode); 
+}
