@@ -1220,13 +1220,13 @@ bool Creature::isTargetValid() {
   // when attacking, attack the opposite kind (unless possessed)
   // however, you can cast spells on anyone
   if(getAction() == Constants::ACTION_NO_ACTION && 
-     canAttack(getTargetCreature())) return false;
+     !canAttack(getTargetCreature())) return false;
   return true;
 }
 
 bool Creature::canAttack(Creature *creature) {
   // when attacking, attack the opposite kind (unless possessed)
-  return (getStateMod(Constants::possessed) != 
+  return (getStateMod(Constants::possessed) == 
           (isMonster() == creature->isMonster()));
 }
 

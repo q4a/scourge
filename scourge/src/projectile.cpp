@@ -104,7 +104,11 @@ bool Projectile::atTargetLocation() {
 
 bool Projectile::move() {
   // are we at the target location?
-  if(steps >= maxDist || this->atTargetLocation()) return true;
+  // return false to let the map class handle the attack.
+  if(this->atTargetLocation()) return false;
+
+  // return true to let this class handle the attack
+  if(steps >= maxDist) return true;
   steps++;
 
   float oldAngle = angle;
@@ -318,15 +322,18 @@ void Projectile::moveProjectiles(Scourge *scourge) {
     for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
       Projectile *proj = *e;
 //      cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+      
+      /*
       // a location-bound projectile reached its target
       if(!proj->doesStopOnImpact()) {
-        Location *pos = scourge->getMap()->getLocation((int)proj->getX(), (int)proj->getY(), 0);
-        if(pos && pos->creature) {
-          Battle::projectileHitTurn(scourge->getSession(), proj, pos->creature);
-        } else {
+        if(proj->atTargetLocation() &&
+           proj->getSpell() &&
+           proj->getSpell()->isLocationTargetAllowed()) {
+          cerr << "PROJECTILE ATTACK: from projectile: target location based." << endl;
           Battle::projectileHitTurn(scourge->getSession(), proj, (int)proj->getX(), (int)proj->getY());
         }
       }
+      */
       Projectile::removeProjectile(proj);
     }
   }
