@@ -793,6 +793,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 	
 	makeRooms();
 	//  printMaze();
+
   } else {
 	constructMaze(locationIndex);
   }

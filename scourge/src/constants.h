@@ -364,6 +364,10 @@ public:
 
   static char *getMessage(int index);
 
+  // shortest distance between two rectangles
+  static float distance(float x1, float y1, float w1, float h1, 
+						float x2, float y2, float w2, float h2);
+
   // read until EOL into line. Exclude EOL from LINE.
   // returns the next char after the EOL.
   static int readLine(char *line, FILE *fp);

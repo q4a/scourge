@@ -54,6 +54,9 @@ class Item;
 
 #define MAX_INVENTORY_SIZE 200
 
+// how many times to attempt to move to range
+#define MAX_FAILED_MOVE_ATTEMPTS 10
+
 class Creature {
   
  private:
@@ -65,7 +68,9 @@ class Creature {
   Uint16 dir;
   Scourge *scourge;
   GLUquadric *quadric;
-  int motion;  
+  int motion;
+  float minRange, maxRange;
+  int failedToMoveWithinRangeAttemptCount;
   int facingDirection;
   int formation;
   int index;
@@ -129,6 +134,9 @@ class Creature {
   
   inline void setMotion(int motion) { this->motion = motion; }  
   inline int getMotion() { return this->motion; }
+
+  inline void setDistanceRange(float min, float max) { minRange = min; maxRange = max; }  
+  bool isWithinDistanceRange();
   
   inline void setFacingDirection(int direction) { this->facingDirection = direction;}
   inline int getFacingDirection() { return this->facingDirection; }
@@ -152,8 +160,17 @@ class Creature {
    */
   bool move(Uint16 dir, Map *map);
   bool follow(Map *map);
-  bool moveToLocator(Map *map, bool single_step);
+  bool moveToLocator(Map *map);
   void stopMoving();
+
+  inline float getDistanceToTargetCreature() {
+	if(!getTargetCreature()) return 0.0f;
+	return Constants::distance(getX(),  getY(), 
+							   getShape()->getWidth(), getShape()->getDepth(),
+							   getTargetCreature()->getX(), getTargetCreature()->getY(),
+							   getTargetCreature()->getShape()->getWidth(), 
+							   getTargetCreature()->getShape()->getDepth());
+  }
   
   inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
   inline Sint16 getX() { return x; }

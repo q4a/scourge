@@ -451,3 +451,23 @@ void CreateTexture(GLuint textureArray[],char *strFileName,int textureID) {
 
     SDL_FreeSurface(pBitmap[0]);                        // Free the texture data we dont need it anymore
 }
+
+float Constants::distance(float x1, float y1, float w1, float h1, 
+					 float x2, float y2, float w2, float h2) {
+  // the distance between their centers
+  float rx1 = x1 + (w1 / 2.0f);
+  float rx2 = x2 + (w2 / 2.0f);
+  float ry1 = y1 - (h1 / 2.0f);
+  float ry2 = y2 - (h2 / 2.0f);
+
+  float d = sqrt(((rx2 - rx1) * (rx2 - rx1)) + 
+				 ((ry2 - ry1) * (ry2 - ry1)));
+
+  // remove the shapes' radius from the distance
+  float d1 = sqrt(((w1 / 2.0f) * (w1 / 2.0f)) + 
+				  ((h1 / 2.0f) * (h1 / 2.0f)));
+  float d2 = sqrt(((w2 / 2.0f) * (w2 / 2.0f)) + 
+				  ((h2 / 2.0f) * (h2 / 2.0f)));
+  
+  return d - (d1 + d2);
+}

@@ -77,11 +77,7 @@ public:
   // Return a string containing the last OpenGL error.
   // Useful to debug strange OpenGL behaviors
   static char * getOpenGLError();
-  
-  // shortest distance between two rectangles
-  static float distance(float x1, float y1, float w1, float h1, 
-						float x2, float y2, float w2, float h2);
-	
+  	
   // Returns next word from the given position  					
   static string getNextWord(const string theInput, int fromPos, int &endWord);
   
