@@ -284,6 +284,7 @@ void ShapePalette::initialize() {
       fgetc(fp);
       n = Constants::readLine(line, fp);
       WallTheme *theme = new WallTheme( strdup(line) );
+      // read the shape ref-s
       for(int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++) {
         n = Constants::readLine(line, fp);
         char *p = strtok( line + 1, "," );
@@ -297,6 +298,22 @@ void ShapePalette::initialize() {
           cerr << "*** Error: theme=" << theme->getName() << " has wrong number of textures for line=" << (ref + 1) << endl;
         }
       }
+
+      // read the multitexture info
+      for(int i = 0; i < WallTheme::MULTI_TEX_COUNT; i++) {
+        n = Constants::readLine(line, fp);
+        char *p = strtok( line + 1, "," );
+        theme->setMultiTexRed( i, atof( p ) );
+        p = strtok( NULL, "," );
+        theme->setMultiTexGreen( i, atof( p ) );
+        p = strtok( NULL, "," );
+        theme->setMultiTexBlue( i, atof( p ) );
+        p = strtok( NULL, "," );
+        theme->setMultiTexInt( i, atof( p ) );
+        p = strtok( NULL, "," );
+        theme->setMultiTexSmooth( i, ( atoi( p ) != 0 ) );
+      }
+
       themes[themeCount++] = theme;
       cerr << "&&& Added theme: " << theme->getName() << " count=" << themeCount << endl;
     } else {
@@ -501,11 +518,11 @@ void ShapePalette::loadTheme( WallTheme *theme ) {
     cerr << "*** Applying theme to shapes: ***" << endl;
     for(int i = 0; i < (int)themeShapes.size(); i++) {
       GLShape *shape = themeShapes[i];
-      GLuint *textureGroup = currentTheme->getTextureGroup( themeShapeRef[i] );
-      cerr << "\tshape=" << shape->getName() << 
-        " ref=" << themeShapeRef[i] << 
-        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;
-      shape->setTexture( textureGroup );
+      string ref = themeShapeRef[i];
+      GLuint *textureGroup = currentTheme->getTextureGroup( ref );
+      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
+        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
+      shape->setTheme( textureGroup, currentTheme );
     }
     cerr << "**********************************" << endl;
   }

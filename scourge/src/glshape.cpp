@@ -17,6 +17,7 @@
 
 #include "glshape.h"
 #include "map.h"
+#include "shapepalette.h"
 
 class Map;
 
@@ -97,6 +98,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   this->useTexture = true;
   this->lightBlocking = false;
   this->initialized = false;
+  this->theme = NULL;
 
   surfaces[LEFT_SURFACE] = NULL;
   surfaces[BOTTOM_SURFACE] = NULL;
@@ -104,9 +106,6 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   surfaces[FRONT_SURFACE] = NULL;
   surfaces[TOP_SURFACE] = NULL;
   initSurfaces();
-
-  if(tex && lightmap_tex_num == 0 && Constants::multitexture) 
-  	createDarkTexture();
 }
 
 void GLShape::setCurrentAnimation (int numAnim, bool force){
@@ -154,13 +153,25 @@ struct surface *GLShape::new_surface(float vertices[4][3]) {
   return surf;
 }
 
-void GLShape::setTexture( GLuint* texture ) {
-  if( initialized ) glDeleteLists( displayListStart, 3 );
-  for(int i = 0; i < 3; i++) this->tex[i] = texture[i];
+void GLShape::setTheme( GLuint *textureGroup, WallTheme *theme ) {
+  if( initialized ) {
+    glDeleteLists( displayListStart, 3 );
+  }
+  if(lightmap_tex_num != 0) {
+    glDeleteTextures( 1, (GLuint*)&lightmap_tex_num );
+    glDeleteTextures( 1, (GLuint*)&lightmap_tex_num2 );
+    lightmap_tex_num = lightmap_tex_num2 = 0;
+  }  
+  this->theme = theme;
+  for(int i = 0; i < 3; i++) this->tex[i] = textureGroup[i];
   initialize();
 }
 
 void GLShape::initialize() {
+  if(tex && lightmap_tex_num == 0 && Constants::multitexture) {
+  	createDarkTexture();
+  }
+
   displayListStart = glGenLists( 3 );
   if( !displayListStart ) {
     cerr << "*** Error: couldn't generate display lists for shape: " << getName() << endl;
@@ -499,35 +510,52 @@ void GLShape::setupBlending() {
 }
 
 void GLShape::createDarkTexture() {
-
-  bool smooth = false;
+  cerr << "*** Creating multitexture overlay." << endl;
+  if( theme ) {
+    cerr << "*** theme=" << theme->getName() << 
+      " color=" << theme->getMultiTexRed(0) << "," << theme->getMultiTexGreen(0) << "," << theme->getMultiTexBlue(0) << 
+      "," << theme->getMultiTexInt(0) << 
+      " color2=" << theme->getMultiTexRed(1) << "," << theme->getMultiTexGreen(1) << "," << theme->getMultiTexBlue(1) << 
+      "," << theme->getMultiTexInt(1) << 
+      " smooth? " << theme->getMultiTexSmooth( 0 ) << ", " << theme->getMultiTexSmooth( 1 ) << endl;
+  } else {
+    cerr << "*** no theme." << endl;
+  }
 
   // create the dark texture
   unsigned int i, j;
   glGenTextures(1, (GLuint*)&lightmap_tex_num);
   glGenTextures(1, (GLuint*)&lightmap_tex_num2);
-  float tmp = 0.95f;
-  float tmp2 = 0.8f;
+  float tmp = (theme ? theme->getMultiTexInt( 0 ) : 0.95f);
+  float tmp2 = (theme ? theme->getMultiTexInt( 1 ) : 0.8f);
   for(i = 0; i < LIGHTMAP_SIZE; i++) {
     for(j = 0; j < LIGHTMAP_SIZE; j++) {
 
       float d = 255.0f;
-      if(!smooth) d = (128.0f * rand()/RAND_MAX) + 127.0f;
-                    
+      if(!theme || !theme->getMultiTexSmooth( 0 )) d = (128.0f * rand()/RAND_MAX) + 127.0f;
+
+      // purple
       data[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = 
-        (unsigned char)(d * tmp * 0.8f);
+        (unsigned char)(d * tmp * (theme ? theme->getMultiTexRed(0) : 0.8f));
       data[i * LIGHTMAP_SIZE * 3 + j * 3 + 1] = 
-        (unsigned char)(d * tmp * 0.4f);
+        (unsigned char)(d * tmp * (theme ? theme->getMultiTexGreen(0) : 0.4f));
       data[i * LIGHTMAP_SIZE * 3 + j * 3 + 2] = 
-        (unsigned char)(d * tmp * 1.0f);
+        (unsigned char)(d * tmp * (theme ? theme->getMultiTexBlue(0) : 1.0f));
+
+      d = 255.0f;
+      if(!theme || !theme->getMultiTexSmooth( 1 )) d = (128.0f * rand()/RAND_MAX) + 127.0f;
+
+      // dark
       data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = 
-        (unsigned char)(d * tmp2 * 0.5f);
+        (unsigned char)(d * tmp2 * (theme ? theme->getMultiTexRed(1) : 0.5f));
       data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 1] = 
-        (unsigned char)(d * tmp2 * 0.6f);
+        (unsigned char)(d * tmp2 * (theme ? theme->getMultiTexGreen(1) : 0.6f));
       data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 2] = 
-        (unsigned char)(d * tmp2 * 0.8f);        
+        (unsigned char)(d * tmp2 * (theme ? theme->getMultiTexBlue(1) : 0.8f));        
     }
   }
+
+
   glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

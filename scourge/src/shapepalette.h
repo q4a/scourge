@@ -80,6 +80,7 @@ class WallTheme {
     THEME_REF_COUNT
   };
   static char themeRefName[THEME_REF_COUNT][40];
+  static const int MULTI_TEX_COUNT = 2;
 
  private:
   static const int NAME_LENGTH = 40;
@@ -88,6 +89,8 @@ class WallTheme {
   GLuint textureGroup[THEME_REF_COUNT][3];
   map<string,GLuint> loadedTextures;
   map<string,int> themeRefMap;
+  GLfloat r[MULTI_TEX_COUNT], g[MULTI_TEX_COUNT], b[MULTI_TEX_COUNT], intensity[MULTI_TEX_COUNT];
+  bool smooth[MULTI_TEX_COUNT];
 
  public:
   WallTheme( char *name );
@@ -105,6 +108,17 @@ class WallTheme {
         " name=" << name << endl;
     }
   }
+  inline void setMultiTexRed( int index, GLfloat value ) { r[index] = value; }
+  inline void setMultiTexGreen( int index, GLfloat value ) { g[index] = value; }
+  inline void setMultiTexBlue( int index, GLfloat value ) { b[index] = value; }
+  inline void setMultiTexInt( int index, GLfloat value ) { intensity[index] = value; }
+  inline void setMultiTexSmooth( int index, bool value ) { smooth[index] = value; }
+
+  inline GLfloat getMultiTexRed( int index ) { return r[index]; }
+  inline GLfloat getMultiTexGreen( int index ) { return g[index]; }
+  inline GLfloat getMultiTexBlue( int index ) { return b[index]; }
+  inline GLfloat getMultiTexInt( int index ) { return intensity[index]; }
+  inline bool getMultiTexSmooth( int index ) { return smooth[index]; }
 
   GLuint *getTextureGroup( string themeRefName );
   inline char *getName() { return name; }
