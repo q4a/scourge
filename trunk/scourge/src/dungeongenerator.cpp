@@ -333,19 +333,27 @@ void DungeonGenerator::makeSparse() {
         switch(nodes[x][y]) {
           case N_PASS:
             nodes[x][y] = UNVISITED;
-            if(y > 0) nodes[x][y - 1] -= S_PASS;
+            if(y > 0) {
+			  nodes[x][y - 1] -= S_PASS;
+			}
             break;
           case S_PASS:
             nodes[x][y] = UNVISITED;
-            if(y < height - 1) nodes[x][y + 1] -= N_PASS;
+            if(y < height - 1) {
+			  nodes[x][y + 1] -= N_PASS;
+			}
             break;
           case E_PASS:
             nodes[x][y] = UNVISITED;
-            if(x < width - 1) nodes[x + 1][y] -= W_PASS;
+            if(x < width - 1) {
+			  nodes[x + 1][y] -= W_PASS;
+			}
             break;
           case W_PASS:
             nodes[x][y] = UNVISITED;
-            if(x > 0) nodes[x - 1][y] -= E_PASS;
+            if(x > 0) {
+			  nodes[x - 1][y] -= E_PASS;
+			}
             break;
           default:
             break;
@@ -994,7 +1002,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		}
 	}	
   
-  // Collapse the free space and put objects in the available spots
+	// Collapse the free space and put objects in the available spots
 	ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
 	if(!ff) {
 		fprintf(stderr, "out of mem\n");
@@ -1066,9 +1074,9 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				}
 				bool fits = 
 					getLocationInRoom(map, 
-														i,
-														scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
-														&x, &y);
+									  i,
+									  scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
+									  &x, &y);
 				if(fits) {
 					//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
 					Creature *creature = scourge->newCreature(monster);
@@ -1099,23 +1107,26 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	// add tables, chairs, etc.
 	addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1, preGenerated, locationIndex);
 	addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2, preGenerated, locationIndex);	
+
+	// add a teleporters
 	if(!preGenerated) {
-	  bool done = false;
-	  for(int tt = 0; !done && tt < 5; tt++) { // 5 room tries
-		int i = (int)(roomCount * rand() / RAND_MAX);	
-		for(int t = 0; !done && t < 5; t++) { // 5 tries
-		  Shape *shape = scourge->getShapePalette()->getShape(Constants::TELEPORTER_INDEX);
-		  bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
-		  if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
-			addItem(scourge->getMap(), NULL, NULL, shape, x, y, 1);
-			addItem(scourge->getMap(), NULL, NULL, 
-					scourge->getShapePalette()->getShape(Constants::TELEPORTER_BASE_INDEX), 
-					x, y);
-			done = true;
-			break;
-		  }
+	  int teleportersAdded = 0;
+	  for(int teleporterCount = 0; teleporterCount < 3; teleporterCount++) {
+		getRandomLocation(map, scourge->getShapePalette()->getShape(Constants::TELEPORTER_INDEX), &x, &y);
+		if( x < MAP_WIDTH ) {
+		  cerr << "teleporter at " << x << "," << y << endl;
+		  addItem(scourge->getMap(), NULL, NULL, 
+				  scourge->getShapePalette()->getShape(Constants::TELEPORTER_INDEX), 
+				  x, y, 1);
+		  addItem(scourge->getMap(), NULL, NULL, 
+				  scourge->getShapePalette()->getShape(Constants::TELEPORTER_BASE_INDEX), 
+				  x, y);
+		  teleportersAdded++;
+		} else {
+		  cerr << "ERROR: couldn't add teleporter!!! #" << teleporterCount << endl;
 		}
 	  }
+	  if(teleportersAdded == 0) exit(0);
 	}
 		
 	// add the party in the first room
@@ -1131,10 +1142,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 		} else {
 			fits = 
 				getLocationInRoom(map, 
-													0,
-													scourge->getParty(t)->getShape(), 
-													&x, &y,
-													true);
+								  0,
+								  scourge->getParty(t)->getShape(), 
+								  &x, &y,
+								  true);
 		}
 		if(fits) {
 			addItem(map, scourge->getParty(t), NULL, NULL, x, y);
@@ -1232,7 +1243,7 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
 	// can it fit?
 	bool fits = map->shapeFits(shape, x, y, 0);
 	// doesn't fit? try again (could be inf. loop)
-	if(fits) {
+	if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
 	  // remove from ff list
 	  for(int i = n + 1; i < ffCount - 1; i++) {
 		ff[i * 2] = ff[i * 2 + 2];
