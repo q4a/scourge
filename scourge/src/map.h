@@ -227,11 +227,13 @@ class Map {
   inline void refresh() { mapChanged = lightMapChanged = true; }
 
  protected:
-  DrawLater later[100], stencil[1000], other[1000];
-  int laterCount, stencilCount, otherCount;
+  DrawLater later[100], stencil[1000], other[1000], damage[1000];
+  int laterCount, stencilCount, otherCount, damageCount;
   
-  void doDrawShape(DrawLater *later);
-  void doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuint name);
+  void doDrawShape(DrawLater *later, int effect=0);
+  void doDrawShape(float xpos2, float ypos2, float zpos2, 
+				   Shape *shape, GLuint name, int effect=0,
+				   DrawLater *later=NULL);
 
   /**
 	 If 'ground' is true, it draws the ground layer.

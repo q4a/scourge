@@ -37,6 +37,7 @@
 #include "gui/window.h"
 #include "gui/button.h"
 #include "userconfiguration.h"
+#include "effect.h"
 
 using namespace std;
 
@@ -49,6 +50,8 @@ class MainMenu;
 class OptionsMenu;
 class Inventory;
 class UserConfiguration;
+class Effect;
+class DungeonGenerator;
 
 /**
   *@author Gabor Torok

@@ -1,7 +1,7 @@
 /***************************************************************************
-                          gltorch.h  -  description
+                          effect.h  -  description
                              -------------------
-    begin                : Sat Sep 20 2003
+    begin                : Thu Jul 10 2003
     copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
  ***************************************************************************/
@@ -15,52 +15,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef GLTORCH_H
-#define GLTORCH_H
+#ifndef EFFECT_H
+#define EFFECT_H
 
+#include "constants.h"
 #include "glshape.h"
-
-class GLShape;
 
 /**
   *@author Gabor Torok
   */
 
-class GLTorch : public GLShape  {
-private:
+class Effect {
+ private:  
   GLuint flameTex;
-
+  
   static const int PARTICLE_COUNT = 30;
   ParticleStruct *particle[PARTICLE_COUNT];
-  
-  GLuint torchback;
-  int torch_dir;
-  
-public:
-	GLTorch(GLuint texture[], GLuint flameTex,
-			int width, int depth, int height,
-			char *name,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, 
-			GLuint torchback=0, int torch_dir=Constants::NORTH);
 
-	GLTorch(GLuint texture[], GLuint flameTex,
-			int width, int depth, int height,
-			char *name, char **description, int descriptionCount,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, 
-			GLuint torchback=0, int torch_dir=Constants::NORTH);
-	
-  ~GLTorch();
-  
-  void draw();
+ public:
+  Effect(GLuint flameTex);
+  ~Effect();
 
-  inline bool drawFirst() { return false; }
-  // if true, the next two functions are called
-  inline bool drawLater() { return true; }
-  inline void setupBlending() { glBlendFunc(GL_SRC_ALPHA, GL_ONE); }
+  void draw(GLShape *shape, int effect, int startTime);
 
-          
-protected:
-  void initParticles();
+ protected:
+  void glowShape(GLShape *shape, int startTime);
+  void drawFlames(GLShape *shape);
+
+
 };
 
 #endif

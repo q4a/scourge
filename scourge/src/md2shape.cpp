@@ -165,7 +165,7 @@ void MD2Shape::draw() {
     t3DObject *pObject = &g_3DModel.pObject[0];
 
     // Bind the texture
-    glBindTexture(GL_TEXTURE_2D, g_Texture[0]);
+    if(getUseTexture()) glBindTexture(GL_TEXTURE_2D, g_Texture[0]);
     // set the color so it's not random...
     //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -188,7 +188,7 @@ void MD2Shape::draw() {
           glNormal3f(-pObject->pNormals[ index ].x, -pObject->pNormals[ index ].y, pObject->pNormals[ index ].z);          
 
           // Make sure there was a UVW map applied to the object or else it won't have tex coords.
-          if(pObject->pTexVerts) {
+          if(getUseTexture() && pObject->pTexVerts) {
               glTexCoord2f(pObject->pTexVerts[ index2 ].x, pObject->pTexVerts[ index2 ].y);             
           }          
 
@@ -198,8 +198,8 @@ void MD2Shape::draw() {
       }
     glEnd();  
   }
-  glPopMatrix();    
   glDisable(GL_CULL_FACE);
+  glPopMatrix();    
 }
 
 void MD2Shape::setupBlending() { 

@@ -33,6 +33,7 @@
 #include "rpg/character.h"
 #include "rpg/monster.h"
 #include "constants.h"
+#include "effect.h"
 
 using namespace std;
 
@@ -40,6 +41,7 @@ using namespace std;
 
 class Map;
 class Scourge;
+class Effect;
 
 /**
   *@author Gabor Torok
@@ -95,7 +97,8 @@ class Creature {
   int lastTurn;
 
   int damageEffectCounter;
-  static const int DAMAGE_EFFECT_TIME = 1500;
+  Effect *effect;
+  int effectType;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -134,6 +137,11 @@ class Creature {
 
   // FIXME: should be modified by inventory (boots of speed, etc.)
   inline int getSpeed() { return speed; }
+
+  inline void setEffectType(int n) { this->effectType = n; }
+  inline int getEffectType() { return effectType; }
+  
+  inline Effect *getEffect() { return effect; }
   
   /**
 	 The movement functions return true if movement has occured, false if it has not.
@@ -232,8 +240,9 @@ class Creature {
   // rand(weapon + power + (skill - 50 % weapon))
   int getDamage(Item *weapon);
 
-  inline void resetDamageEffect() { damageEffectCounter = DAMAGE_EFFECT_TIME; }
-  inline int getDamageEffect() { damageEffectCounter = SDL_GetTicks(); return damageEffectCounter; }
+  void takeDamage(int damage);
+
+  inline int getDamageEffect() { return damageEffectCounter; }
 
   // until *someone* writes a pc editor
   static Creature **createHardCodedParty(Scourge *scourge);
@@ -250,6 +259,8 @@ class Creature {
   void recalcAggregateValues();
 
   bool gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug);
+
+  inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
 };
 
 

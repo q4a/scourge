@@ -148,6 +148,12 @@ typedef struct _Color {
 
 extern char rootDir[300];
 
+typedef struct _ParticleStruct {
+  GLfloat x, y, z;
+  GLint height;
+  int life;
+} ParticleStruct;
+
 class Constants {
 public:
 
@@ -348,6 +354,14 @@ public:
 	STATE_MOD_COUNT
   };
   static const char *STATE_NAMES[];
+
+  // special effect names
+  enum {
+	EFFECT_FLAMES=0,
+	EFFECT_GLOW
+  };
+
+  static const int DAMAGE_DURATION = 500;
 
   static bool stencilbuffer;
   static bool multitexture;	
