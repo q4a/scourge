@@ -29,6 +29,12 @@ void ThirstHungerEvent::execute(){
     int thirst, hunger;
     char buff[255];  
     
+    if(creature -> getStateMod(Constants::dead)){
+        // Don't need this event anymore    
+        scheduleDeleteEvent();        
+        return;
+    }
+    
     thirst = creature->getThirst();
     hunger = creature->getHunger();
     
@@ -46,13 +52,13 @@ void ThirstHungerEvent::execute(){
     }
     else if(thirst == 2){
     
-        sprintf(buff, "%s is beginning to dehydrate.", creature->getName());     
+        sprintf(buff, "%s is beginning to dehydrate!", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state dehydrated or weak?
         // creature->setModState(dehydrated);    
     }
     else if(thirst == 1){        
-        sprintf(buff, "%s is totally dehydrated.", creature->getName());     
+        sprintf(buff, "%s is totally dehydrated!", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state nearlyDead -> can't walk fast ...?
         // creature->setModState(nearly_dead);
@@ -61,6 +67,7 @@ void ThirstHungerEvent::execute(){
         sprintf(buff, "%s dies from lack of water.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
         scourge->creatureDeath(creature);
+        scheduleDeleteEvent();
         return; // no need to go further        
     }        
     
@@ -68,19 +75,19 @@ void ThirstHungerEvent::execute(){
         sprintf(buff, "%s is hungry.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);   
     }    
-    else if(thirst == 3){
+    else if(hunger == 3){
         sprintf(buff, "%s is really hungry.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);   
     }
-    else if(thirst == 2){
+    else if(hunger == 2){
     
-        sprintf(buff, "%s is starving.", creature->getName());     
+        sprintf(buff, "%s is starving!", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state starving ? or weak?
         // creature->setModState(starving);    
     }
-    else if(thirst == 1){        
-        sprintf(buff, "%s is really weak.", creature->getName());     
+    else if(hunger == 1){        
+        sprintf(buff, "%s feels really weak!", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state nearlyDead -> can't walk fast ...?
         // creature->setModState(nearly_dead);
@@ -88,7 +95,8 @@ void ThirstHungerEvent::execute(){
     else if( hunger == 0 ){
         sprintf(buff, "%s dies from starvation.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
-        scourge->creatureDeath(creature);        
+        scourge->creatureDeath(creature); 
+        scheduleDeleteEvent();       
     }                  
 }
 

@@ -33,13 +33,13 @@ class ThirstHungerEvent : public Event  {
 
 private:
   Creature * creature;
-  Scourge * scourge;        
+  Scourge * scourge;          
 
 public:
 
   void execute();    
   
-  ThirstHungerEvent(Date currentDate, Date timeOut, Creature *c, Scourge *scourge, int nbExecutionsToDo);
+  ThirstHungerEvent(Date currentDate, Date timeOut, Creature *c, Scourge *scourge, int nbExecutionsToDo);  
   ThirstHungerEvent();
   ~ThirstHungerEvent();  
   
