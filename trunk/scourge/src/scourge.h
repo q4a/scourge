@@ -342,6 +342,8 @@ public:
   void drawDraggedItem();
 
   void drawBorder();
+  
+  void drawOutsideMap();
 
   void showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode);
 

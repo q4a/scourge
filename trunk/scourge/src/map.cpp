@@ -27,8 +27,8 @@
 
 #define KEEP_MAP_SIZE 0
 
-//#define MAP_VIEW_WIDTH 100
-//#define MAP_VIEW_DEPTH 110               
+//#define MVW 100
+//#define MVD 110
 #define MVW 150
 #define MVD 150
 
@@ -683,23 +683,11 @@ void Map::draw() {
 
     if(session->getUserConfiguration()->getStencilbuf() &&
        session->getUserConfiguration()->getStencilBufInitialized()) {
-      // create a stencil for the walls
-      glDisable(GL_DEPTH_TEST);
-      glColorMask(0,0,0,0);
+      //glDisable(GL_DEPTH_TEST);
+      //glColorMask(0,0,0,0);
       glEnable(GL_STENCIL_TEST);
       glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
       glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-      //for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-      setupShapes(true);
-
-      // Use the stencil to draw
-      glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-      glEnable(GL_DEPTH_TEST);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-      glStencilFunc(GL_EQUAL, 1, 0xffffffff);
-      //glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-      //glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil=0
-      // draw the ground  
       setupShapes(true);
 
       // shadows
@@ -724,31 +712,24 @@ void Map::draw() {
         glEnable(GL_TEXTURE_2D);
         glDepthMask(GL_TRUE);
       }
+      //glEnable(GL_DEPTH_TEST);
       glDisable(GL_STENCIL_TEST); 
-
-      // draw the blended walls
-      /*
-      glEnable(GL_BLEND);  
-      glDepthMask(GL_FALSE);
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      */
-      for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-      /*
-      glDepthMask(GL_TRUE);    
-      glDisable(GL_BLEND);
-      */
-
     } else {
-      // draw the walls
-      for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
       // draw the ground  
       setupShapes(true);
     }
+    
+    // draw the blended walls
+    glEnable(GL_BLEND);  
+    glDepthMask(GL_FALSE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+    glDepthMask(GL_TRUE);    
+    glDisable(GL_BLEND);
 
     // draw the effects
     glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
-    //      glDisable(GL_LIGHTING);
     for(int i = 0; i < laterCount; i++) {
       later[i].shape->setupBlending();
       doDrawShape(&later[i]);
@@ -761,31 +742,9 @@ void Map::draw() {
     drawShade();
     glDisable(GL_BLEND);
 
-    //drawBorder();
-
     glDepthMask(GL_TRUE);    
-    
 
     drawProjectiles();
-
-    /*
-    if(scourge->getTargetSelectionFor()) {
-      glPushMatrix();
-      glLoadIdentity();
-      glDisable(GL_DEPTH_TEST);
-      //glDepthMask(GL_FALSE);
-      glColor3f( 1, 1, 0.15f );
-      scourge->getSDLHandler()->texPrint( 10,
-                                          viewHeight - 10,
-                                          "Select a target for %s.", 
-                                          scourge->getTargetSelectionFor()->getName() );
-      glEnable(GL_DEPTH_TEST);
-      //glDepthMask(GL_TRUE);    
-      glPopMatrix();
-    }
-    */
-
-    //drawDraggedItem();
   }
 
   glDisable( GL_SCISSOR_TEST );

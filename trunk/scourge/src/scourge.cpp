@@ -342,55 +342,14 @@ void Scourge::drawView() {
     map->setZoomOut(false);
   }
 
-  // cover the area outside the map
-  if(map->getViewWidth() < sdlHandler->getScreen()->w || 
-     map->getViewHeight() < sdlHandler->getScreen()->h) {
-    glPushAttrib( GL_ENABLE_BIT );
-    glDisable( GL_CULL_FACE );
-    glDisable( GL_DEPTH_TEST );
-    glEnable( GL_TEXTURE_2D );
-    glPushMatrix();
-    glColor3f( 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGuiWoodTexture() );
-
-    //    float TILE_W = 510 / 2.0f;
-    float TILE_H = 270 / 2.0f; 
-    
-    glLoadIdentity();
-    glTranslatef( map->getViewWidth(), 0, 0 );
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 0, 0 );
-    glTexCoord2f( 0, sdlHandler->getScreen()->h / TILE_H );
-    glVertex2i( 0, sdlHandler->getScreen()->h );
-    glTexCoord2f( 1, sdlHandler->getScreen()->h / TILE_H );
-    glVertex2i( sdlHandler->getScreen()->w - map->getViewWidth(), sdlHandler->getScreen()->h );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( sdlHandler->getScreen()->w - map->getViewWidth(), 0 );
-    glEnd();
-
-    glLoadIdentity();
-    glTranslatef( 0, map->getViewHeight(), 0 );
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 0, 0 );
-    glTexCoord2f( 0, map->getViewHeight() / TILE_H );
-    glVertex2i( 0, map->getViewHeight() );
-    glTexCoord2f( 1, map->getViewHeight() / TILE_H );
-    glVertex2i( map->getViewWidth(), map->getViewHeight() );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( map->getViewWidth(), 0 );
-    glEnd();
-
-    glPopMatrix();
-    glPopAttrib();
-  }
+  // the boards outside the map
+  drawOutsideMap();
 
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
 
   if(isInfoShowing) {
-    map->initMapView();  
+    map->initMapView();
     // creatures first
     for(int i = 0; i < session->getCreatureCount(); i++) {
       if(!session->getCreature(i)->getStateMod(Constants::dead) && 
@@ -431,6 +390,52 @@ void Scourge::drawView() {
   drawBorder();
 }
 
+void Scourge::drawOutsideMap() {
+  // cover the area outside the map
+  if(map->getViewWidth() < sdlHandler->getScreen()->w || 
+     map->getViewHeight() < sdlHandler->getScreen()->h) {
+    glPushAttrib( GL_ENABLE_BIT );
+    glDisable( GL_CULL_FACE );
+    glDisable( GL_DEPTH_TEST );
+    glEnable( GL_TEXTURE_2D );
+    glPushMatrix();
+    glColor3f( 1, 1, 1 );
+    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGuiWoodTexture() );
+    
+    //    float TILE_W = 510 / 2.0f;
+    float TILE_H = 270 / 2.0f; 
+    
+    glLoadIdentity();
+    glTranslatef( map->getViewWidth(), 0, 0 );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( 0, sdlHandler->getScreen()->h / TILE_H );
+    glVertex2i( 0, sdlHandler->getScreen()->h );
+    glTexCoord2f( 1, sdlHandler->getScreen()->h / TILE_H );
+    glVertex2i( sdlHandler->getScreen()->w - map->getViewWidth(), sdlHandler->getScreen()->h );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( sdlHandler->getScreen()->w - map->getViewWidth(), 0 );
+    glEnd();
+    
+    glLoadIdentity();
+    glTranslatef( 0, map->getViewHeight(), 0 );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( 0, map->getViewHeight() / TILE_H );
+    glVertex2i( 0, map->getViewHeight() );
+    glTexCoord2f( 1, map->getViewHeight() / TILE_H );
+    glVertex2i( map->getViewWidth(), map->getViewHeight() );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( map->getViewWidth(), 0 );
+    glEnd();
+    
+    glPopMatrix();
+    glPopAttrib();
+  }  
+}
+
 bool Scourge::inTurnBasedCombatPlayerTurn() {
   return (inTurnBasedCombat() &&
           !battleRound[battleTurn]->getCreature()->isMonster());
@@ -441,6 +446,7 @@ void Scourge::drawAfter() {
 
   // draw turn info
   if(inTurnBasedCombat()) {
+    glPushAttrib(GL_ENABLE_BIT);
     glPushMatrix();
     glLoadIdentity();
     glTranslatef( 20, 20, 0 );
@@ -454,6 +460,7 @@ void Scourge::drawAfter() {
                                c->getBattle()->getAP(), 
                                c->getBattle()->getStartingAP());
     glPopMatrix();
+    glPushAttrib(GL_ENABLE_BIT);
   }
 }
 
