@@ -66,6 +66,7 @@ Scourge::Scourge(int argc, char *argv[]){
   shapePal = sdlHandler->getShapePalette();  
 
   map = new Map(this);
+  miniMap = new MiniMap(this); 
 
   // init characters first. Items use it for acl
   Character::initCharacters();
@@ -153,6 +154,7 @@ Scourge::~Scourge(){
   delete multiplayer;
   delete userConfiguration;
   delete board;
+  delete miniMap;
   delete map;
 }
 
@@ -188,7 +190,7 @@ void Scourge::startMission() {
       resetParty = false;
     }
 
-    miniMap = new MiniMap(this); 
+    miniMap->reset();
     miniMap->show();
 
     // ready the party
@@ -321,7 +323,6 @@ void Scourge::startMission() {
     */
 
     // delete map
-    delete miniMap; miniMap = NULL;
     delete dg; dg = NULL;
 
 

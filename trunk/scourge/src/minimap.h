@@ -93,6 +93,8 @@ class MiniMap : public WidgetView {
   MiniMap::~MiniMap();
   MiniMap(Scourge *scourge);
 
+  void reset();
+
   inline void show() { win->setVisible(true); }
   inline void hide() { win->setVisible(false); }
   inline Window *getWindow() { return win; }
