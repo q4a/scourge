@@ -3167,16 +3167,15 @@ void Scourge::checkForInfo() {
     } else {
       needToCheckInfo = true;
     }
-
-    // timeout descriptions
-    Uint32 now = SDL_GetTicks();
-    for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
-      InfoMessage *message = i->first;
-      Uint32 time = i->second;
-      if( now - time > INFO_INTERVAL ) {
-        delete message;
-        infos.erase( i );
-      }
+  }
+  // timeout descriptions
+  Uint32 now = SDL_GetTicks();
+  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
+    InfoMessage *message = i->first;
+    Uint32 time = i->second;
+    if( now - time > INFO_INTERVAL ) {
+      delete message;
+      infos.erase( i );
     }
   }
 }
