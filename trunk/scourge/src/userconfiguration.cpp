@@ -630,6 +630,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 	printf("\ts - disable stencil buffer\n");
 	printf("\tm - disable multitexturing\n");
 	printf("\t--test - list card's supported video modes\n");
+	printf("\t--test-config - print out the file configuration and exit\n");
 	printf("\t--version - print the build version\n");
 	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
 	printf("\t--widthXX - use XX pixels for the screen width\n");
