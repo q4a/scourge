@@ -90,7 +90,12 @@ void MD2Shape::draw() {
   glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 
   // move to the middle of the space
-  glTranslatef( ((float)width / DIV) / 2.0f, 0.25f / DIV, -((float)depth / DIV) / 2.0f );
+  //glTranslatef( ((float)width / DIV) / 2.0f, 
+                //0.25f / DIV, 
+                //-((float)depth / DIV) / 2.0f );
+  glTranslatef( ((float)(width) / 2.0f) / DIV, 
+                0.25f / DIV, 
+                -( (((float)(depth) / 2.0f) - 1.0f) / DIV ) );
 
   // rotate to movement angle
   glRotatef(angle - 90, 0.0f, 1.0f, 0.0f);
