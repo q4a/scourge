@@ -28,8 +28,8 @@ void Util::rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle) {
     // rotate
     float oldx = (float)(x);
     float oldy = (float)(y);
-    *px = (Sint16)round((oldx * cos(angle)) - (oldy * sin(angle)));
-    *py = (Sint16)round((oldx * sin(angle)) + (oldy * cos(angle)));
+    *px = (Sint16)rint((oldx * cos(angle)) - (oldy * sin(angle)));
+    *py = (Sint16)rint((oldx * sin(angle)) + (oldy * cos(angle)));
 }
 
 // A Sample by D.S.Reynolds
