@@ -33,6 +33,7 @@ GuiTheme::GuiTheme( char *name ) {
   windowTitleText = NULL;
   windowText = NULL;
   buttonBackground = NULL;
+  buttonSelectionBackground = NULL;
   buttonHighlight = NULL;
   buttonBorder = NULL;
   buttonText = NULL;
@@ -51,6 +52,7 @@ GuiTheme::~GuiTheme() {
   if( windowTitleText ) delete windowTitleText;
   if( windowText ) delete windowText;
   if( buttonBackground ) delete buttonBackground;
+  if( buttonSelectionBackground ) delete buttonSelectionBackground;
   if( buttonHighlight ) delete buttonHighlight;
   if( buttonBorder ) delete buttonBorder;
   if( buttonText ) delete buttonText;
@@ -116,6 +118,11 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
       element = parseElement( line + 1 );
       if( element ) theme->setButtonBackground( element );
       else cerr << "Gui theme: " << name << " skipping button background" << endl;
+
+      n = Constants::readLine( line, fp );
+      element = parseElement( line + 1 );
+      if( element ) theme->setButtonSelectionBackground( element );
+      else cerr << "Gui theme: " << name << " skipping button selection background" << endl;
       
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
@@ -181,6 +188,7 @@ void GuiTheme::loadTextures( ShapePalette *shapePal ) {
   if( windowTop ) windowTop->loadTextures( shapePal );
   if( windowBorder ) windowBorder->loadTextures( shapePal );
   if( buttonBackground ) buttonBackground->loadTextures( shapePal );
+  if( buttonSelectionBackground ) buttonSelectionBackground->loadTextures( shapePal );
   if( buttonHighlight ) buttonHighlight->loadTextures( shapePal );
   if( buttonBorder ) buttonBorder->loadTextures( shapePal );
   if( listBackground ) listBackground->loadTextures( shapePal );
@@ -190,6 +198,7 @@ void GuiTheme::loadTextures( ShapePalette *shapePal ) {
 }
 
 ThemeElement *GuiTheme::parseElement( char *line ) {
+  cerr << "parseElement: line=" << line << endl;
   char *p = strtok( line, "," );
   if( p ) {
     ThemeElement *element = new ThemeElement();
@@ -227,6 +236,7 @@ ThemeElement *GuiTheme::parseElement( char *line ) {
 }
 
 Color *GuiTheme::parseColor( char *line ) {
+  cerr << "parseColor: line=" << line << endl;
   char *p = strtok( line, "," );
   if( p ) {
 	Color *color = new Color();

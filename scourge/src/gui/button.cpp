@@ -49,12 +49,16 @@ void Button::drawWidget(Widget *parent) {
     glEnable( GL_BLEND );
   }
 
+  int n = 0;
   if(toggle && selected) {
-    if( theme->getSelectionBackground() ) {
-      glColor4f( theme->getSelectionBackground()->color.r,
-                 theme->getSelectionBackground()->color.g,
-                 theme->getSelectionBackground()->color.b,
-                 theme->getSelectionBackground()->color.a );
+    if( theme->getButtonSelectionBackground() ) {
+      glEnable( GL_TEXTURE_2D );
+      glBindTexture( GL_TEXTURE_2D, theme->getButtonSelectionBackground()->texture );
+      glColor4f( theme->getButtonSelectionBackground()->color.r,
+                 theme->getButtonSelectionBackground()->color.g,
+                 theme->getButtonSelectionBackground()->color.b,
+                 theme->getButtonSelectionBackground()->color.a );
+      n = theme->getButtonSelectionBackground()->width;
     } else {
       applySelectionColor();
     }
@@ -65,11 +69,11 @@ void Button::drawWidget(Widget *parent) {
                theme->getButtonBackground()->color.g, 
                theme->getButtonBackground()->color.b, 
                theme->getButtonBackground()->color.a );
+    n = theme->getButtonBackground()->width;
   } else {
     applyBackgroundColor(true);
   }
 
-  int n = ( theme->getButtonBackground() ? theme->getButtonBackground()->width : 0 );
   if( inverse ) {
     glBegin(GL_QUADS);
     glTexCoord2f(1, 1);
@@ -96,9 +100,15 @@ void Button::drawWidget(Widget *parent) {
 
   if( n ) {
     glPushMatrix();
-    glBindTexture( GL_TEXTURE_2D, 
-                   ( inverse ? theme->getButtonBackground()->tex_south :
-                     theme->getButtonBackground()->tex_north ) );
+    if( toggle && selected ) {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonSelectionBackground()->tex_south :
+                       theme->getButtonSelectionBackground()->tex_north ) );
+    } else {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonBackground()->tex_south :
+                       theme->getButtonBackground()->tex_north ) );
+    }
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -113,9 +123,15 @@ void Button::drawWidget(Widget *parent) {
 
     glPushMatrix();
     glTranslatef( 0, y2 - y - n, 0 );
-    glBindTexture( GL_TEXTURE_2D, 
-                   ( inverse ? theme->getButtonBackground()->tex_north : 
-                     theme->getButtonBackground()->tex_south ) );
+    if( toggle && selected ) {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonSelectionBackground()->tex_north :
+                       theme->getButtonSelectionBackground()->tex_south ) );
+    } else {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonBackground()->tex_north : 
+                       theme->getButtonBackground()->tex_south ) );
+    }
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -130,9 +146,15 @@ void Button::drawWidget(Widget *parent) {
 
     glPushMatrix();
     glTranslatef( 0, n, 0 );
-    glBindTexture( GL_TEXTURE_2D, 
-                   ( inverse ? theme->getButtonBackground()->tex_east : 
-                     theme->getButtonBackground()->tex_west ) );
+    if( toggle && selected ) {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonSelectionBackground()->tex_east :
+                       theme->getButtonSelectionBackground()->tex_west ) );
+    } else {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonBackground()->tex_east : 
+                       theme->getButtonBackground()->tex_west ) );
+    }
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -147,9 +169,15 @@ void Button::drawWidget(Widget *parent) {
 
     glPushMatrix();
     glTranslatef( x2 - x - n, n, 0 );
-    glBindTexture( GL_TEXTURE_2D, 
-                   ( inverse ? theme->getButtonBackground()->tex_west :
-                     theme->getButtonBackground()->tex_east ) );
+    if( toggle && selected ) {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonSelectionBackground()->tex_west :
+                       theme->getButtonSelectionBackground()->tex_east ) );
+    } else {
+      glBindTexture( GL_TEXTURE_2D, 
+                     ( inverse ? theme->getButtonBackground()->tex_west :
+                       theme->getButtonBackground()->tex_east ) );
+    }
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex2d(0, 0);
@@ -163,9 +191,7 @@ void Button::drawWidget(Widget *parent) {
     glPopMatrix();
   }
 
-  if( theme->getButtonBackground() ) {
-    glDisable( GL_TEXTURE_2D );
-  }
+  glDisable( GL_TEXTURE_2D );
   if(isTranslucent()) {
     glDisable( GL_BLEND );
   }
@@ -176,6 +202,9 @@ void Button::drawWidget(Widget *parent) {
     alpha += alphaInc;
     if(alpha >= 0.7f || alpha < 0.4f) alphaInc *= -1.0f;
   }
+
+
+  // glowing red
   if(glowing) {
     if( theme->getButtonHighlight() ) {
       glEnable( GL_TEXTURE_2D );
@@ -198,6 +227,8 @@ void Button::drawWidget(Widget *parent) {
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
   }
+
+
   if(inside) {
     if( theme->getButtonHighlight() ) {
       glEnable( GL_TEXTURE_2D );

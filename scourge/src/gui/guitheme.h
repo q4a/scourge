@@ -52,6 +52,7 @@ private:
   Color *windowTitleText;
   Color *windowText;
   ThemeElement *buttonBackground;
+  ThemeElement *buttonSelectionBackground;
   ThemeElement *buttonHighlight;
   ThemeElement *buttonBorder;
   Color *buttonText;
@@ -86,6 +87,7 @@ public:
   inline Color *getWindowTitleText() { return windowTitleText; }
   inline Color *getWindowText() { return windowText; }  
   inline ThemeElement *getButtonBackground() { return buttonBackground; }
+  inline ThemeElement *getButtonSelectionBackground() { return buttonSelectionBackground; }
   inline ThemeElement *getButtonHighlight() { return buttonHighlight; }
   inline ThemeElement *getButtonBorder() { return buttonBorder; }
   inline Color *getButtonText() { return buttonText; }
@@ -108,6 +110,7 @@ public:
   inline void setWindowTitleText( Color *color ) { this->windowTitleText = color; }
   inline void setWindowText( Color *color ) { this->windowText = color; }
   inline void setButtonBackground( ThemeElement *element ) { this->buttonBackground = element; }
+  inline void setButtonSelectionBackground( ThemeElement *element ) { this->buttonSelectionBackground = element; }
   inline void setButtonHighlight( ThemeElement *element ) { this->buttonHighlight = element; }
   inline void setButtonBorder( ThemeElement *element ) { this->buttonBorder = element; }
   inline void setButtonText( Color *color ) { this->buttonText = color; }
@@ -116,7 +119,7 @@ public:
   inline void setInputText( Color *color ) { this->inputText = color; }
   inline void setSelectionBackground( ThemeElement *element ) { selectionBackground = element; }
   inline void setSelectionText( Color *color ) { this->selectionText = color; }
-  inline void setSelectedBorder( ThemeElement *element ) { selectedBorder = element; }
+  inline void setSelectedBorder( ThemeElement *element ) { selectedBorder = element; }  
 };
 
 #endif
