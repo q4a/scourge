@@ -21,7 +21,7 @@ Item::Item(RpgItem *rpgItem) {
   this->rpgItem = rpgItem;
   this->shapeIndex = this->rpgItem->getShapeIndex();
   this->color = NULL;
-  this->shape = ShapePalette::getInstance()->getItemShape(shapeIndex);
+  this->shape = ShapePalette::getInstance()->getShape(shapeIndex);
   // for now objects larger than 1 height will block (we can change this later)
   // this is so the player is not blocked by swords and axes on the ground
   this->blocking = (shape->getHeight() > 1);

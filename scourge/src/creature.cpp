@@ -738,16 +738,16 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   }
 
   // add some items
-  pc[0]->addInventory(scourge->newItem(RpgItem::items[RpgItem::BASTARD_SWORD]));
-  pc[0]->addInventory(scourge->newItem(RpgItem::items[RpgItem::DAGGER]));
-  pc[1]->addInventory(scourge->newItem(RpgItem::items[RpgItem::APPLE]));
-  pc[1]->addInventory(scourge->newItem(RpgItem::items[RpgItem::APPLE]));
-  pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::LONG_SWORD]));
-  pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::WINE_BARREL]));
-  pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::MUTTON_MEAT]));
-  pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::GREAT_SWORD]));
-  pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::BATTLE_AXE]));
-  pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::THROWING_AXE]));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Bastard sword"))); // items[RpgItem::BASTARD_SWORD]));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger"))); // items[RpgItem::DAGGER]));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple"))); // items[RpgItem::APPLE]));
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple"))); // items[RpgItem::APPLE]));
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword"))); // items[RpgItem::LONG_SWORD]));
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Wine barrel"))); // items[RpgItem::WINE_BARREL]));
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat"))); // items[RpgItem::MUTTON_MEAT]));
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword"))); // items[RpgItem::GREAT_SWORD]));
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe"))); // items[RpgItem::BATTLE_AXE]));
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Throwing axe"))); // items[RpgItem::THROWING_AXE]));
   
 
   return pc;

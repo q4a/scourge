@@ -285,8 +285,8 @@ public:
 	LAMP_WEST_INDEX,
 	LAMP_EAST_INDEX,
 	LAMP_BASE_INDEX,  
-	DEBUG_INDEX, 
-	LOCATOR_INDEX, 
+	//	DEBUG_INDEX, 
+	//	LOCATOR_INDEX, 
 	BOARD_INDEX,
 	BRAZIER_INDEX,
 	BRAZIER_BASE_INDEX,
@@ -296,25 +296,8 @@ public:
 	STAIRS_UP_INDEX,
 	STAIRS_DOWN_INDEX,
 	
-	// must be the last one
-	SHAPE_INDEX_COUNT
-  };
-
-  enum {
-	FIGHTER_INDEX = 0,
-	ROGUE_INDEX,
-	CLERIC_INDEX,
-	WIZARD_INDEX,
-
-	BUGGERLING_INDEX,
-	SLIME_INDEX,
-
-	// last one
-	CREATURE_INDEX_COUNT
-  };
-  
-  enum {
-	SWORD_INDEX = 0,
+	// item shape indexes
+	SWORD_INDEX,
 	AXE_INDEX,
 	BOOKSHELF_INDEX,
 	CHEST_INDEX,
@@ -324,10 +307,25 @@ public:
 	TABLE_INDEX,
 	CHAIR_INDEX,
 
-	// should be the last one
-	ITEM_INDEX_COUNT
+	// must be the last one
+	SHAPE_INDEX_COUNT
   };
 
+  enum {
+	// creature shape indexes
+	FIGHTER_INDEX=1,
+	ROGUE_INDEX,
+	CLERIC_INDEX,
+	WIZARD_INDEX,
+
+	BUGGERLING_INDEX,
+	SLIME_INDEX,
+
+	// must be last
+	CREATURE_SHAPE_COUNT
+  };
+
+  // skills
   enum {
 	SWORD_WEAPON = 0,
 	AXE_WEAPON,
@@ -360,6 +358,7 @@ public:
 	SKILL_COUNT
   };
   static const char *SKILL_NAMES[];
+  static int getSkillByName(char *p);
 
   enum { 
 	blessed, 
@@ -414,6 +413,10 @@ public:
   ~Constants();
 
   static char *getMessage(int index);
+
+  // read until EOL into line. Exclude EOL from LINE.
+  // returns the next char after the EOL.
+  static int readLine(char *line, FILE *fp);
 };
 
 // This is our 3D point class.  This will be used to store the vertices of our model.

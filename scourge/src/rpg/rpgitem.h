@@ -17,11 +17,25 @@
 #ifndef RPG_ITEM_H
 #define RPG_ITEM_H
 
+#include <map>
+#include <string>
+#include <vector>
 #include "../constants.h"
 #include "character.h"
 
+using namespace std;
+
 class RpgItem {
  private:
+
+  // used for containers...
+  enum {
+	CHEST=8,
+	BOOKSHELF,
+	CHEST2,
+	BOOKSHELF2
+  };
+
   int index;
   char *name, *desc, *shortDesc;
   int level;
@@ -38,49 +52,10 @@ class RpgItem {
   int currentCharges;   // useful for wands for example
   int maxCharges;
 
+  static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
+  static map<string, const RpgItem *> itemsByName;
+
  public:
-  enum itemNames {
-    SHORT_SWORD=0,
-    DAGGER,
-    BASTARD_SWORD,
-	LONG_SWORD,
-	GREAT_SWORD,
-	
-	BATTLE_AXE,
-	THROWING_AXE,
-
-	HORNED_HELMET,
-
-	CHEST,
-	BOOKSHELF,
-	CHEST2,
-	BOOKSHELF2,
-
-	CORPSE,			
-
-	TABLE,
-	CHAIR,
-	
-	APPLE, 
-	BANANA,
-	BREAD,
-	CHOCOLATE_BAR,
-	MUSHROOM,
-	TINY_EGG,
-	BIG_EGG,
-	MUTTON_MEAT,	
-	WATER_POTION,
-	WATER_BOTTLE,
-	MILK_BOTTLE,
-	WINE_BOTTLE,
-	FINE_WINE_BOTTLE,
-	WATER_BARREL,
-	WINE_BARREL,
-	BEER_BARREL,
-	
-	// must be the last ones
-	ITEM_COUNT
-  };
 
   enum itemTypes {
 	SWORD=0,
@@ -96,6 +71,7 @@ class RpgItem {
 	// must be last
 	ITEM_TYPE_COUNT
   };
+  static char itemTypeStr[ITEM_TYPE_COUNT][40];
 
   enum twoHandedType {
 	NOT_TWO_HANDED=0,
@@ -103,7 +79,8 @@ class RpgItem {
 	OPTIONAL_TWO_HANDED
   };
 
-  static RpgItem *items[];
+  static RpgItem *items[1000];
+  static int itemCount;
   
   RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
@@ -132,6 +109,10 @@ class RpgItem {
   static RpgItem *getRandomContainer();
   static RpgItem *getRandomContainerNS();
   inline static RpgItem *getItem(int index) { return items[index]; }
+
+  static int getTypeByName(char *name);
+  static void addItem(RpgItem *item);
+  static RpgItem *getItemByName(char *name);
 };
 
 #endif

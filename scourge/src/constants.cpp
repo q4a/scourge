@@ -107,6 +107,39 @@ char *Constants::getMessage(int index) {
   return messages[index][n];
 }
 
+int Constants::getSkillByName(char *p) {
+  if(!p || !strlen(p)) return 0;
+  for(int i = 0; i < SKILL_COUNT; i++) {
+	if(!strcmp(p, SKILL_NAMES[i])) return i;
+  }
+  return 0;
+}
+
+/*
+  Read until the EOL (or EOF whichever comes first)
+  Put line chars into 'line', excluding EOL chars.
+  Return first char after EOL.
+ */
+int Constants::readLine(char *line, FILE *fp) {
+  bool reachedEOL = false;
+  int lc = 0;
+  int n;
+  while((n = fgetc(fp)) != EOF) {
+	bool isEOLchar = (n == '\n' || n == '\r');
+	if(reachedEOL) {
+	  if(!isEOLchar) {
+		line[lc++] = '\0';
+		return n;
+	  }
+	} else {
+	  if(!isEOLchar) line[lc++] = n;
+	  else reachedEOL = true;
+	}
+  }
+  line[lc++] = '\0';
+  return EOF;
+}
+
 // *Note* 
 //
 // Below are some math functions for calculating vertex normals.  We want vertex normals
@@ -306,8 +339,10 @@ void CreateTexture(GLuint textureArray[],char *strFileName,int textureID) {
 
     if(pBitmap[0] == NULL)                                // If we can't load the file, quit!
     {
-        cerr << " Failed loading " << strFileName << " : " << SDL_GetError() << endl;
-        exit(0);
+	  textureArray[textureID] = 0;	  
+	  cerr << " Failed loading " << strFileName << " : " << SDL_GetError() << endl;
+	  //exit(0);
+	  return;
     }
 
     // Generate a texture with the associative texture ID stored in the array
