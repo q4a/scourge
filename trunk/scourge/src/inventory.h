@@ -88,7 +88,7 @@ private:
 public:
     Inventory(Scourge *scourge);
 	~Inventory();
-    inline void show() { mainWin->setVisible(true); setSelectedPlayerAndMode(selected, selectedMode); }
+    void show();
 	inline void hide() { mainWin->setVisible(false); }
 	inline bool isVisible() { return mainWin->isVisible(); }
     bool handleEvent(SDL_Event *event);
