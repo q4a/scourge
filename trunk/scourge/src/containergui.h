@@ -35,7 +35,7 @@ class ContainerGui : public DragAndDropHandler {
   Scourge *scourge;
   Item *container;
   Window *win;
-  Button *closeButton, *dropButton, *openButton;
+  Button *openButton;
   ScrollingList *list;
   Label *label;
   char **containedItemNames;

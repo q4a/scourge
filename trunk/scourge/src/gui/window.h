@@ -21,6 +21,7 @@
 #include "../constants.h"
 #include "../sdlhandler.h"
 #include "widget.h"
+#include "button.h"
 
 /**
   *@author Gabor Torok
@@ -53,11 +54,12 @@ class Window : public Widget {
   static int windowCount;
 
  public: 
+	Button *closeButton;
 
   static const int TOP_HEIGHT = 20;
   static const int BOTTOM_HEIGHT = 5;
 
-  Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, GLuint texture=0);
+  Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, GLuint texture=0, bool hasCloseButton=true);
   ~Window();
 
   inline bool isOpening() { return openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)); }

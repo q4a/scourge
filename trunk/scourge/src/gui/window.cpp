@@ -24,10 +24,13 @@ Window *Window::window[MAX_WINDOW];
 /**
   *@author Gabor Torok
   */
+
+#define CLOSE_BUTTON_SIZE 10
   
 Window::Window(SDLHandler *sdlHandler, 
-			   int x, int y, int w, int h, 
-			   char *title, GLuint texture) :
+							 int x, int y, int w, int h, 
+							 char *title, GLuint texture,
+							 bool hasCloseButton) :
 Widget(x, y, w, h) {
   this->sdlHandler = sdlHandler;
   this->title = title;
@@ -36,11 +39,14 @@ Widget(x, y, w, h) {
   this->widgetCount = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
+	if(hasCloseButton) this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6);
+	else closeButton = NULL;
   openHeight = 0;
   addWindow(this);
 }
 
 Window::~Window() {
+	delete closeButton;
   // the window doesn't delete its widgets in case they're used in multiple windows
   removeWindow(this);
 }
@@ -74,52 +80,67 @@ void Window::drawVisibleWindows() {
 }
 
 Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
-  // find the topmost window
-  Window *win = NULL;
-  int maxz = 0;
-  for(int i = 0; i < windowCount; i++) {
-	if(window[i]->isVisible() && window[i]->isInside(x, y)) {
-	  if(maxz < window[i]->getZ()) {
-		win = window[i];
-		maxz = win->getZ();
-	  }
+	// find the topmost window
+	Window *win = NULL;
+	int maxz = 0;
+	for (int i = 0; i < windowCount; i++) {
+		if (window[i]->isVisible() && window[i]->isInside(x, y)) {
+			if (maxz < window[i]->getZ()) {
+				win = window[i];
+				maxz = win->getZ();
+			}
+		}
 	}
-  }
-  // find the active widget
-  Widget *widget = NULL;
-  if(win) {
-	widget = win->handleWindowEvent(event, x, y);
-  }
-  return widget;
+	// find the active widget
+	Widget *widget = NULL;
+	if (win) {
+		widget = win->handleWindowEvent(event, x, y);
+	}
+	return widget;
 }
 
 Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
-  if(dragging) {
-	handleEvent(NULL, event, x, y);
-	return this;
-  }
 
-  // handled by a component?
-  bool insideWidget = false;
-  Widget *w = NULL;
-  for(int t = 0; t < widgetCount; t++) {
-	if(this->widget[t]->isVisible()) {
-	  if(!insideWidget) 
-		insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT));
-	  if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
-		w = this->widget[t];
+	if(dragging) {
+		handleEvent(NULL, event, x, y);
+		return this;
 	}
-  }
-  if(w) return w;
-  if(insideWidget) {
-	return this;
-  }
 
-  // see if the window wants it
-  if(handleEvent(NULL, event, x, y)) {
-	  return this;
-  }
-  return NULL;
+	// handled by a component?
+	bool insideWidget = false;
+	Widget *w = NULL;
+	for(int t = 0; t < widgetCount; t++) {
+		if(this->widget[t]->isVisible()) {
+			if(!insideWidget)
+				insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT));
+			if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
+				w = this->widget[t];
+		}
+	}
+	if(w)	return w;
+
+	// handled by closebutton
+	if(closeButton) {
+		 if(!insideWidget) {
+			 insideWidget = closeButton->isInside(x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
+																						y - (getY() + 3));
+		 }
+		 if(closeButton->handleEvent(this, event, 
+																 x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
+																 y - (getY() + 3))) {
+			 return closeButton;
+		 }
+	}
+
+	if(insideWidget) {
+		return this;
+	}
+
+	// see if the window wants it
+	if(handleEvent(NULL, event, x, y)) {
+		return this;
+	}
+	return NULL;
 }
 
 bool Window::isInside(int x, int y) {
@@ -127,21 +148,21 @@ bool Window::isInside(int x, int y) {
 }
 
 bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
-  switch(event->type) {
-  case SDL_MOUSEMOTION:
-	if(dragging) move(x - dragX, y - dragY);
-	break;
-  case SDL_MOUSEBUTTONUP:
-	dragging = false;
-	break;
-  case SDL_MOUSEBUTTONDOWN:
-	toTop();
-	dragging = isInside(x, y);
-	dragX = x - getX();
-	dragY = y - getY();
-	break;
-  }
-  return isInside(x, y);
+	switch(event->type) {
+	case SDL_MOUSEMOTION:
+		if(dragging) move(x - dragX, y - dragY);
+		break;
+	case SDL_MOUSEBUTTONUP:
+		dragging = false;
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+		toTop();
+		dragging = isInside(x, y);
+		dragX = x - getX();
+		dragY = y - getY();
+		break;
+	}
+	return isInside(x, y);
 }
 
 void Window::addWidget(Widget *widget) {
@@ -164,13 +185,13 @@ void Window::drawWidget(Widget *parent) {
 
   GLint t = SDL_GetTicks();
   //if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
-  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
-	lastTick = t;
-	openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
-	if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) 
-      openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
-  }
-  GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);  
+	if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
+		lastTick = t;
+		openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
+		if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) 
+			openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+	}
+	GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);  
 
   glPushMatrix();
   glLoadIdentity( );
@@ -233,32 +254,41 @@ void Window::drawWidget(Widget *parent) {
   glEnd();
 
   // print title
-  if(title) {
-	glPushMatrix();
-	glTranslated( 0, 0, 5 );
-	glColor3f( 1, 1, 1 );
-	sdlHandler->texPrint(10, topY + 13, "%s", title);
-	glPopMatrix();
-  }
+	if(title) {
+		glPushMatrix();
+		glTranslated( 0, 0, 5 );
+		glColor3f( 1, 1, 1 );
+		sdlHandler->texPrint(10, topY + 13, "%s", title);
+		glPopMatrix();
+	}
+
+	// draw the close button
+	if(closeButton) {
+		glPushMatrix();	
+		//glLoadIdentity();
+		glTranslated(w - (closeButton->getWidth() + 3), topY + 3, z + 5);
+		closeButton->draw(this);
+		glPopMatrix();
+	}
 
   // draw widgets
-  if(isOpening()) {  
-	scissorToWindow();
+	if(isOpening()) {  
+		scissorToWindow();
   }
-  for(int i = 0; i < widgetCount; i++) {                  
-	if(widget[i]->isVisible()) {
+	for(int i = 0; i < widgetCount; i++) {                  
+		if(widget[i]->isVisible()) {
 
-	  glPushMatrix();
-	  glLoadIdentity();
+			glPushMatrix();
+			glLoadIdentity();
 	
 	
-	  // if this is modified, also change handleWindowEvent
-	  glTranslated(x, y + TOP_HEIGHT, z + 5);
+			// if this is modified, also change handleWindowEvent
+			glTranslated(x, y + TOP_HEIGHT, z + 5);
 	
 	
-	  widget[i]->draw(this);
-	  glPopMatrix();
-	}
+			widget[i]->draw(this);
+			glPopMatrix();
+		}
   }  
   if(isOpening()) {  
     glDisable( GL_SCISSOR_TEST );

@@ -164,46 +164,48 @@ void ScrollingList::selectLine(int x, int y) {
 }
 
 bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
-  inside = (x >= getX() && x < getX() + scrollerWidth &&
-			y >= getY() + scrollerY && y < getY() + scrollerY + scrollerHeight);
-  switch(event->type) {
-  case SDL_MOUSEMOTION:
-	if(innerDrag && 
-	   (abs(innerDragX - x) > DragAndDropHandler::DRAG_START_DISTANCE ||
-		abs(innerDragY - y) > DragAndDropHandler::DRAG_START_DISTANCE) &&
-	   dragAndDropHandler) {
-	  innerDrag = false;
-	  dragAndDropHandler->startDrag(this);
+	inside = (x >= getX() && x < getX() + scrollerWidth &&
+						y >= getY() + scrollerY && y < getY() + scrollerY + scrollerHeight);
+	switch(event->type) {
+	case SDL_MOUSEMOTION:
+		if(innerDrag && 
+			 (abs(innerDragX - x) > DragAndDropHandler::DRAG_START_DISTANCE ||
+				abs(innerDragY - y) > DragAndDropHandler::DRAG_START_DISTANCE) &&
+			 dragAndDropHandler) {
+			innerDrag = false;
+			dragAndDropHandler->startDrag(this);
+		}
+		break;
+	case SDL_MOUSEBUTTONUP:
+		if(!dragging && isInside(x, y)) {
+			selectLine(x, y);
+			if(dragAndDropHandler) dragAndDropHandler->receive(this);
+		}
+		innerDrag = false;
+		dragging = false;
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+		if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
+			innerDrag = false;
+			dragging = inside;
+			dragX = x - getX();
+			dragY = y - (scrollerY + getY());
+		} else if(isInside(x, y)) {
+			dragging = false;
+			selectLine(x, y);
+			innerDrag = (selectedLine != -1);
+			innerDragX = x;
+			innerDragY = y;
+		}
+		break;
 	}
-	break;
-  case SDL_MOUSEBUTTONUP:
-	if(!dragging && isInside(x, y)) {
-	  selectLine(x, y);
-	  if(dragAndDropHandler) dragAndDropHandler->receive(this);
+	if(dragging) {
+		value = (int)((float)((y - dragY) - getY()) / 
+									((float)(getHeight() - scrollerHeight) / 100.0f));
+		if(value < 0)	value = 0;
+		if(value > 100)	value = 100;
+		scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
 	}
-	innerDrag = false;
-	dragging = false;
-	break;
-  case SDL_MOUSEBUTTONDOWN:
-	if(scrollerHeight < getHeight() && x < scrollerWidth) {
-	  dragging = inside;
-	  dragX = x - getX();
-	  dragY = y - (scrollerY + getY());
-	} else if(isInside(x, y)) {
-	  selectLine(x, y);
-	  innerDrag = (selectedLine != -1);
-	  innerDragX = x;
-	  innerDragY = y;
-	}
-	break;
-  }
-  if(dragging) {
-	value = (int)((float)((y - dragY) - getY()) / 
-				  ((float)(getHeight() - scrollerHeight) / 100.0f));
-	if(value < 0) value = 0;
-	if(value > 100) value = 100;
-	scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
-  }
-  return false;
+	return false;
 }
 
