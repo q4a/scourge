@@ -582,7 +582,7 @@ void Party::drawWidget(Widget *w) {
 	Util::drawBar(22, 43, ((GUI_WIDTH - 120) / 4) - 24,  
 	(float)p->getSkillModifiedArmor(), (float)p->getArmor());
 	*/
-	
+
 	// exp
 	w->applyColor();
 	sprintf(msg, "%d (%d)", p->getExp(), p->getLevel());

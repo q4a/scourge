@@ -313,6 +313,19 @@ void Scourge::drawView() {
   glClearColor( 0, 0, 0, 1 );
   glClearDepth( 1.0f );
 
+  /*
+  glPushMatrix();
+  glLoadIdentity();
+  glColor4f( 1, 0, 0, 1 );
+  glBegin( GL_QUADS );
+  glVertex2f( getSDLHandler()->getScreen()->w, 0 );
+  glVertex2f( 0, 0 );
+  glVertex2f( 0, getSDLHandler()->getScreen()->h );
+  glVertex2f( getSDLHandler()->getScreen()->w, getSDLHandler()->getScreen()->h );
+  glEnd();
+  glPopMatrix();
+  */
+
   // make a move (player, monsters, etc.)
   playRound();
 
