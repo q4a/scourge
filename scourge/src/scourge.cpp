@@ -1101,6 +1101,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	  optionsMenu->show();
 	}
   } else if(widget == yesExitConfirm) {
+	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
 	exitConfirmationDialog->setVisible(false);
 	endMission();
 	return true;
