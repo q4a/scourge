@@ -290,7 +290,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
                             creature->getInventory(itemIndex),
                             NULL);
         creature->setTargetCreature(creature);
-        mainWin->setVisible(false);
+        if(!mainWin->isLocked()) mainWin->setVisible(false);
 
         //		if(scourge->getParty()->getParty(selected)->eatDrink(itemIndex)){
         //		  scourge->getParty()->getParty(selected)->removeInventory(itemIndex);                
@@ -311,10 +311,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         error = Constants::getMessage(Constants::NO_SKILL_ERROR);
       } else {
         scourge->getParty()->getParty(selected)->incSkillMod(itemIndex);
-        // recreate list strings
-        int oldLine = skillList->getSelectedLine();
-        setSelectedPlayerAndMode(selected, selectedMode);
-        skillList->setSelectedLine(oldLine);
+        refresh();
       }
     }
     if(error) {
@@ -334,10 +331,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         error = Constants::getMessage(Constants::NO_SKILL_ERROR);
       } else {
         scourge->getParty()->getParty(selected)->decSkillMod(itemIndex);
-        // recreate list strings
-        int oldLine = skillList->getSelectedLine();
-        setSelectedPlayerAndMode(selected, selectedMode);
-        skillList->setSelectedLine(oldLine);
+        refresh();
       }
     }
     if(error) {
@@ -350,10 +344,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
     } else {
       scourge->getParty()->getParty(selected)->applySkillMod();
-      // recreate list strings
-      int oldLine = skillList->getSelectedLine();
-      setSelectedPlayerAndMode(selected, selectedMode);
-      skillList->setSelectedLine(oldLine);
+      refresh();
     }
     if(error) {
       cerr << error << endl;
@@ -378,7 +369,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
                             NULL,
                             spell);
         scourge->setTargetSelectionFor(creature);
-        mainWin->setVisible(false);
+        if(!mainWin->isLocked()) mainWin->setVisible(false);
       }
     }
   } else if(widget == castScrollButton) {
@@ -391,7 +382,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
                             item,
                             item->getSpell());
         scourge->setTargetSelectionFor(creature);
-        mainWin->setVisible(false);
+        if(!mainWin->isLocked()) mainWin->setVisible(false);
       } else {
         scourge->showMessageDialog("You can only cast objects of magical nature!");
       }
@@ -408,7 +399,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
             scourge->showMessageDialog("Spell was entered into your spellbook.");
             // destroy the scroll
             creature->removeInventory(itemIndex);
-            setSelectedPlayerAndMode(selected, selectedMode);
+            refresh();
             char msg[120];
             sprintf(msg, "%s crumbles into dust.", item->getItemName());
             scourge->getMap()->addDescription(msg);
@@ -434,7 +425,7 @@ void Inventory::moveItemTo(int playerIndex) {
       scourge->getParty()->getParty(playerIndex)->
       addInventory(scourge->getParty()->getParty(selected)->removeInventory(itemIndex));
       // recreate strings in list
-      setSelectedPlayerAndMode(selected, selectedMode);
+      refresh();
     }
   }
 }
@@ -712,9 +703,7 @@ void Inventory::equipItem() {
     }
     scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
     // recreate list strings
-    int oldLine = invList->getSelectedLine();
-    setSelectedPlayerAndMode(selected, selectedMode);
-    invList->setSelectedLine(oldLine);
+    refresh();
   }
 }
 
@@ -736,8 +725,16 @@ void Inventory::dropItem() {
   }
 }
 
-void Inventory::refresh() {
-  setSelectedPlayerAndMode(selected, INVENTORY);
+void Inventory::refresh(int player) {
+  if(player == -1) player = selected;
+  //setSelectedPlayerAndMode(selected, INVENTORY);
+
+  // FIXME: remember other lists too
+  int oldLine = invList->getSelectedLine();
+  int oldSkillLine = skillList->getSelectedLine();
+  setSelectedPlayerAndMode(player, selectedMode);
+  invList->setSelectedLine(oldLine);
+  skillList->setSelectedLine(oldSkillLine);
 }
 
 void Inventory::show() { 

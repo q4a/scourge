@@ -162,6 +162,7 @@ void Party::setPlayer(int n) {
   case 3 : player4Button->setSelected(true); break;
   }
   scourge->getMap()->center(player->getX(), player->getY(), true);
+  scourge->getInventory()->refresh(n);
 }
 
 /**

@@ -115,7 +115,7 @@ public:
     bool handleEvent(SDL_Event *event);
 	bool handleEvent(Widget *widget, SDL_Event *event);
     void drawInventory();
-	void refresh();
+	void refresh(int player=-1);
 
 	// drag-n-drop
 	void receive(Widget *widget);

@@ -260,6 +260,7 @@ void Battle::castSpell() {
       creature->removeInventory(itemIndex);
       sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
       scourge->getMap()->addDescription(message);
+      scourge->getInventory()->refresh();
     } else {
       // scroll was removed from inventory before casting
       sprintf(message, "Couldn't find scroll, cancelled spell.");
@@ -513,6 +514,7 @@ void Battle::executeEatDrinkAction() {
   if(index > -1) {
     if(creature->eatDrink(creature->getActionItem())){
       creature->removeInventory(index);
+      scourge->getInventory()->refresh();
     }
   }
   // cancel action
