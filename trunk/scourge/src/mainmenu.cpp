@@ -235,23 +235,18 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
   }
 
   if(widget == newGameButton) {
-	fprintf(stderr, "new game!!\n");
 	value = NEW_GAME;
 	return true;
   } else if(widget == continueButton) {
-	fprintf(stderr, "continue!!\n");
 	value = CONTINUE_GAME;
 	return true;
   } else if(widget == optionsButton) {
-	fprintf(stderr, "options!!\n");
 	value = OPTIONS;
 	return true;
   } else if(widget == aboutButton) {
-	fprintf(stderr, "about!!\n");
 	value = ABOUT;
 	return true;
   } else if(widget == quitButton) {
-	fprintf(stderr, "quit!!\n");
 	value = QUIT;
 	return true;
   }

@@ -535,7 +535,7 @@ void DungeonGenerator::printMaze() {
   printf("---------------------------------------\n");
 }
 
-void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePalette *shapePal) {	 
+void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal) {	 
   // add shapes to map
   Sint16 mapx, mapy;
   for(Sint16 x = 0; x < width; x++) {    
@@ -845,13 +845,26 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 	addItem(map, creature, NULL, NULL, x, y);
 	creature->moveTo(x, y, 0);
   }
-  
+
+  // add the party in the first room
+  // FIXME: what happens if the party doesn't fit in the room?
+  //  for(int i = 0; i < roomCount; i++) {
+	for(int t = 0; t < 4; t++) {
+	  bool fits = 
+		getLocationInRoom(map, 
+						  0,
+						  scourge->getParty(t)->getShape(), 
+						  &x, &y,
+						  true);
+	  if(fits) {
+		addItem(map, scourge->getParty(t), NULL, NULL, x, y);
+		scourge->getParty(t)->moveTo(x, y, 0);
+	  }
+	}
+	//}
+
   // free empty space container
   free(ff);  
-
-  // find a starting position
-  *startx = room[0].x * unitSide + (room[0].w * unitSide / 2) + offset;
-  *starty = room[0].y * unitSide + (room[0].h * unitSide / 2) + offset;
 }
 
 void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal, 
@@ -953,15 +966,20 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
   }	
 }
 
-// FIXME: it's possible that location collides with startx,starty for mission
-// maybe don't put monsters in the room the mission's started
 // return false if the creature won't fit in the room
 bool DungeonGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
-										 int *xpos, int *ypos) {
-  for(int x = offset + room[roomIndex].x * unitSide + unitOffset; 
+										 int *xpos, int *ypos,
+										 bool startMiddle) {
+  int startx = (startMiddle ? 
+				offset + (room[roomIndex].x + (room[roomIndex].w / 2)) * unitSide + unitOffset :
+				offset + room[roomIndex].x * unitSide + unitOffset);
+  int starty = (startMiddle ?
+				offset + (room[roomIndex].y + (room[roomIndex].h / 2)) * unitSide + unitOffset :
+				offset + room[roomIndex].y * unitSide + unitOffset);
+  for(int x = startx;
 	  x < offset + (room[roomIndex].x + room[roomIndex].w) * unitSide;
 	  x++) {
-	for(int y = offset + room[roomIndex].y * unitSide + unitOffset; 
+	for(int y = starty;
 		y < offset + (room[roomIndex].y + room[roomIndex].h) * unitSide;
 		y++) {
 	  bool fits = map->shapeFits(shape, x, y, 0);

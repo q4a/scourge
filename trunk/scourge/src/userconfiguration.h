@@ -29,7 +29,7 @@
 using namespace std;
 
 // Max number of event binding for each engine action
-#define CONFIG_FILE_NAME "saved/scourge.cfg"
+#define CONFIG_FILE_NAME "/saved/scourge.cfg"
 
 // Indice for the first debug engine action defined in engine_action_int
 #define ENGINE_ACTION_DEBUG_IND 26

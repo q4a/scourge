@@ -68,7 +68,10 @@ void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal) {
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
-  g_Load3ds.Import3DS(&g_3DModel, file_name);         // Load our .3DS file into our model structure
+  char path[300];
+  strcpy(path, rootDir);
+  strcat(path, file_name);
+  g_Load3ds.Import3DS(&g_3DModel, path);         // Load our .3DS file into our model structure
 
   // Depending on how many textures we found, load each one (Assuming .BMP)
   // If you want to load other files than bitmaps, you will need to adjust CreateTexture().
