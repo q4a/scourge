@@ -145,6 +145,8 @@ void Scourge::startMission() {
 	
 	if(nextMission == -1) {
 	  
+	  currentMission = NULL;
+
 	  // in HQ map
 	  inHq = true;
 	  
@@ -159,12 +161,12 @@ void Scourge::startMission() {
 	  inHq = false;
 	  
 	  // Initialize the map with a random dunegeon	
-	  const Mission *mission = board->getMission(nextMission);
-	  cerr << "Starting mission: level="  << mission->level << 
-		" stories=" << mission->dungeonStoryCount << 
+	  currentMission = board->getMission(nextMission);
+	  cerr << "Starting mission: level="  << currentMission->getLevel() << 
+		" stories=" << currentMission->getDungeonStoryCount() << 
 		" current story=" << currentStory << endl;
-	  dg = new DungeonGenerator(this, mission->level, 
-								(currentStory < mission->dungeonStoryCount - 1), 
+	  dg = new DungeonGenerator(this, currentMission->getLevel(), 
+								(currentStory < currentMission->getDungeonStoryCount() - 1), 
 								(currentStory > 0));
 	  dg->toMap(map, getShapePalette());
 	}
@@ -1398,4 +1400,8 @@ Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
   win->setBackground( 0.65, 0.30f, 0.20f, 0.15f );
   win->setSelectionColor(  0.25f, 0.35f, 0.6f );
   return win;
+}
+
+void Scourge::missionCompleted() {
+  showMessageDialog("Congratulations! Mission accomplished.");
 }
