@@ -105,6 +105,7 @@ class Creature {
   static const int MAX_MOVE_RETRY = 15;
   int lastTurn;
 
+  int effectDuration;
   int damageEffectCounter;
   Effect *effect;
   int effectType;
@@ -153,11 +154,6 @@ class Creature {
 
   // FIXME: should be modified by inventory (boots of speed, etc.)
   inline int getSpeed() { return speed; }
-
-  inline void setEffectType(int n) { this->effectType = n; }
-  inline int getEffectType() { return effectType; }
-  
-  inline Effect *getEffect() { return effect; }
   
   /**
 	 The movement functions return true if movement has occured, false if it has not.
@@ -296,8 +292,6 @@ class Creature {
   // return true if the creature dies
   bool takeDamage(int damage, int effect_type = Constants::EFFECT_GLOW);
 
-  inline int getDamageEffect() { return damageEffectCounter; }
-
   // returns exp gained
   int addExperience(Creature *creature_killed);
 
@@ -311,7 +305,15 @@ class Creature {
 			getArmor());
   }
 
+  // effects
+  void startEffect(int effect_type, int duration = Constants::DAMAGE_DURATION);
+  inline void setEffectType(int n) { this->effectType = n; }
+  inline int getEffectType() { return effectType; }  
+  inline Effect *getEffect() { return effect; }
+  inline int getDamageEffect() { return damageEffectCounter; }
   inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
+  inline bool isEffectOn() { return (SDL_GetTicks() - damageEffectCounter < effectDuration ? true : false); }
+
   inline int getAvailableSkillPoints() { return availableSkillPoints; }
   inline void setAvailableSkillPoints(int n) { availableSkillPoints = n; }
   

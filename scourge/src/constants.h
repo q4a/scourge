@@ -154,6 +154,7 @@ typedef struct _ParticleStruct {
   GLfloat x, y, z;
   GLint height;
   int life;
+  GLfloat moveDelta;
 } ParticleStruct;
 
 class Constants {
@@ -336,7 +337,8 @@ public:
   // special effect names
   enum {
 	EFFECT_FLAMES=0,
-	EFFECT_GLOW
+	EFFECT_GLOW,
+	EFFECT_TELEPORT
   };    
 
   static const int DAMAGE_DURATION = 500;

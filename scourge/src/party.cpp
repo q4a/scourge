@@ -23,6 +23,8 @@
 Party::Party(Scourge *scourge) {
   this->scourge = scourge;
 
+  lastEffectOn = false;
+
   startRound = true;
   mainWin = NULL;
   calendar = Calendar::getInstance();
@@ -442,6 +444,18 @@ void Party::drawView() {
   if(calendar->update(scourge->getUserConfiguration()->getGameSpeedLevel())){
 	calendarButton->getLabel()->setTextCopy(calendar->getCurrentDate().getDateString());        
   }
+  // refresh map if any party member's effect is on
+  bool effectOn = false;
+  for(int i = 0; i < getPartySize(); i++) {
+	if(!party[i]->getStateMod(Constants::dead) && party[i]->isEffectOn()) {
+	  effectOn = true;
+	  break;
+	}
+  }
+  if(effectOn != lastEffectOn) {
+	lastEffectOn = effectOn;
+	scourge->getMap()->refresh();
+  }
 }
 
 bool Party::handleEvent(Widget *widget, SDL_Event *event) {
@@ -500,4 +514,12 @@ Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
 	}
   }
   return p;
+}
+
+void Party::startEffect(int effect_type, int duration) {
+  for(int i = 0; i < getPartySize(); i++) {
+	if(!party[i]->getStateMod(Constants::dead)) {
+	  party[i]->startEffect(effect_type, duration);
+	}
+  }
 }

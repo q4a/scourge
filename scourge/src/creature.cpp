@@ -90,6 +90,7 @@ void Creature::commonInit() {
   this->cornerX = this->cornerY = -1;
   this->lastTurn = 0;
   this->damageEffectCounter = 0;
+  this->effectDuration = Constants::DAMAGE_DURATION;
   this->effect = new Effect(scourge->getShapePalette()->getTexture(9));
   this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
@@ -758,15 +759,20 @@ int Creature::getDamage(Item *weapon) {
  take some damage
 */
 bool Creature::takeDamage(int damage, int effect_type) {
-  // show an effect
-  resetDamageEffect();
-  setEffectType(effect_type);
-  //setEffectType(Constants::EFFECT_GLOW);
-  //setEffectType(Constants::EFFECT_FLAMES);
+  startEffect(effect_type);
   hp -= damage;
   return (hp <= 0);
 }
 
+void Creature::startEffect(int effect_type, int duration) {
+  // show an effect
+  if(isEffectOn()) return;
+  resetDamageEffect();
+  setEffectType(effect_type);
+  effectDuration = duration;
+  //setEffectType(Constants::EFFECT_GLOW);
+  //setEffectType(Constants::EFFECT_FLAMES);
+}
 
 /**
    Get the total value of armor worn and roll for the skill of each piece.
