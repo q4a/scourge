@@ -28,6 +28,7 @@
 #include "item.h"
 #include "projectile.h"
 #include "gui/scrollinglist.h"
+#include "frustum.h"
 
 using namespace std;
 
@@ -141,6 +142,8 @@ class Map {
   char mapDebugStr[200];
 
  public:
+  bool useFrustum;
+
   Map(Session *session);
   ~Map();
 
@@ -397,6 +400,9 @@ class Map {
      //cerr << "DEBUG: decodeTripletKey, key=" << key << " x=" << (*x) << " y=" << (*y) << " z=" << (*z) << endl;
    }
 
+   CFrustum *frustum;
+   CVector3 chunks[100];
+   int chunkCount;
   DrawLater later[100], stencil[1000], other[1000], damage[1000];
   int laterCount, stencilCount, otherCount, damageCount;
   

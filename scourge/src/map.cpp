@@ -32,6 +32,8 @@
 #define MVW 150
 #define MVD 150
 
+//#define DEBUG_RENDER 1
+
 // this is the clockwise order of movements
 int Map::dir_index[] = { Constants::MOVE_UP, Constants::MOVE_LEFT, Constants::MOVE_DOWN, Constants::MOVE_RIGHT };
 
@@ -45,6 +47,10 @@ Map::Map(Session *session) {
 
   mapViewWidth = MVW;
   mapViewDepth = MVD;
+
+  chunkCount = 0;
+  frustum = new CFrustum();
+  useFrustum = true;
 
   this->session = session;  
   // only use 1 (disabled) or 0 (enabled)
@@ -127,6 +133,7 @@ Map::~Map(){
     free(descriptions[i]);
   // delete the overlay texture
   glDeleteTextures(1, (GLuint*)&overlay_tex);
+  delete frustum;
 }
 
 void Map::reset() {
@@ -337,6 +344,8 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
     mapChanged = false;
   }
 
+  chunkCount = 0;
+
   int chunkOffsetX = 0;
   int chunkStartX = (getX() - MAP_OFFSET) / MAP_UNIT;
   int mod = (getX() - MAP_OFFSET) % MAP_UNIT;
@@ -415,6 +424,24 @@ void Map::setupShapes(bool ground, int *csx, int *cex, int *csy, int *cey) {
         }
       }
 
+      // remember the chunk's starting pos.
+      float chunkPosX = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+                                chunkOffsetX) / GLShape::DIV;
+      float chunkPosY = (float)((chunkY - chunkStartY) * MAP_UNIT + 
+                                chunkOffsetY) / GLShape::DIV;
+      
+      // frustum testing
+      frustum->CalculateFrustum();
+      if(useFrustum && 
+         !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / GLShape::DIV)) 
+        continue;
+
+      // store this chunk
+      chunks[chunkCount].x = chunkPosX;
+      chunks[chunkCount].y = chunkPosY;
+      chunkCount++;
+
+      
       for(int yp = 0; yp < MAP_UNIT; yp++) {
         for(int xp = 0; xp < MAP_UNIT; xp++) {
 
@@ -643,15 +670,14 @@ void Map::draw() {
   if(lightMapChanged) configureLightMap();
   // populate the shape arrays
   if(mapChanged) {
-    sprintf(mapDebugStr, "z=%.2f w=%d ", zoom, mapViewWidth);
     int csx, cex, csy, cey;
     setupShapes(false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
-    char tmp[80];
-    sprintf(tmp, "cx=[%d %d][%d %d] sc=%d [l=%d o=%d d=%d s=%d]", 
-            csx, cex, csy, cey,
-            shapeCount, laterCount, otherCount, damageCount, stencilCount);
-    strcat(mapDebugStr, tmp);
+    sprintf(mapDebugStr, "chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+            (useFrustum ? "*" : ""),
+            chunkCount, ((cex - csx)*(cey - csy)),
+            csx, cex, csy, cey, shapeCount);
+    //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
     session->getGameAdapter()->setDebugStr(mapDebugStr);
   }
   if(selectMode) {
@@ -759,6 +785,51 @@ void Map::draw() {
 
     drawProjectiles();
   }
+  
+  
+#ifdef DEBUG_RENDER
+  for(int i = 0; i < chunkCount; i++) {
+
+    float n = (float)MAP_UNIT / GLShape::DIV;
+
+    glDisable( GL_CULL_FACE );
+    glDisable( GL_TEXTURE_2D );
+    glPushMatrix();
+    glTranslatef( chunks[i].x, chunks[i].y, 0 );
+
+    glColor4f( 1,1,1,1 );
+    glBegin( GL_LINE_LOOP );
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( n, 0, 0 );
+    glVertex3f( n, n, 0 );
+    glVertex3f( 0, n, 0 );
+    glEnd();
+    glBegin( GL_LINE_LOOP );
+    glVertex3f( 0, 0, n );
+    glVertex3f( n, 0, n );
+    glVertex3f( n, n, n );
+    glVertex3f( 0, n, n );
+    glEnd();
+
+    glColor4f( 0,1,1,1 );
+    glBegin( GL_LINE_LOOP );
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( n, 0, 0 );
+    glVertex3f( n, 0, n );
+    glVertex3f( 0, 0, n );
+    glEnd();
+    glBegin( GL_LINE_LOOP );
+    glVertex3f( 0, n, 0 );
+    glVertex3f( n, n, 0 );
+    glVertex3f( n, n, n );
+    glVertex3f( 0, n, n );
+    glEnd();
+
+    glPopMatrix();
+    glEnable( GL_CULL_FACE );
+    glEnable( GL_TEXTURE_2D );
+  }
+#endif
 
   glDisable( GL_SCISSOR_TEST );
 }
