@@ -28,8 +28,11 @@ Progress::Progress(Scourge *scourge, int maxStatus, bool clearScreen, bool cente
 Progress::~Progress() {
 }
 
-void Progress::updateStatus(const char *message) {
-  glLoadIdentity();
+void Progress::updateStatus(const char *message, bool updateScreen, int n, int max) {
+  if(n != -1) status = n;
+  if(max != -1) maxStatus = max;
+
+  if(updateScreen) glLoadIdentity();
 
   if(clearScreen) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
@@ -63,7 +66,7 @@ void Progress::updateStatus(const char *message) {
     if (i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
     else glColor4f(0.5f, 0.5f, 0.5f, 1);
     glPushMatrix();
-    glLoadIdentity();
+    if(updateScreen) glLoadIdentity();
     glTranslatef( x + i * 2 * w + 20, y + 35, 0 );
     glBegin( GL_QUADS );
     glVertex3f( 0, 0, 0 );
@@ -75,7 +78,7 @@ void Progress::updateStatus(const char *message) {
   }
 
   /* Draw it to the screen */
-  SDL_GL_SwapBuffers( );
+  if(updateScreen) SDL_GL_SwapBuffers( );
   status++;
   //sleep(1);
 

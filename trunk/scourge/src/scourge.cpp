@@ -74,6 +74,8 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
 
   lastEffectOn = false;
   inBattle = false;
+
+  turnProgress = new Progress(this, 10);
 }
 
 void Scourge::initVideo(ShapePalette *shapePal) {
@@ -437,8 +439,30 @@ void Scourge::drawView() {
   drawBorder();
 }
 
+bool Scourge::inTurnBasedCombatPlayerTurn() {
+  return (inTurnBasedCombat() &&
+          !battleRound[battleTurn]->getCreature()->isMonster());
+}         
+
 void Scourge::drawAfter() {
   drawDraggedItem();
+
+  // draw turn info
+  if(inTurnBasedCombatPlayerTurn()) {
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef( 20, 20, 0 );
+    Creature *c = battleRound[battleTurn]->getCreature();
+    char msg[80];
+    sprintf(msg, "%s %d/%d", 
+            c->getName(),
+            c->getBattle()->getAP(),
+            c->getBattle()->getStartingAP());
+    turnProgress->updateStatus(msg, false, 
+                               c->getBattle()->getAP(), 
+                               c->getBattle()->getStartingAP());
+    glPopMatrix();
+  }
 }
 
 void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode) {
@@ -1981,7 +2005,8 @@ void Scourge::playRound() {
           toggleRoundUI(party->isRealTimeMode());
           party->setPlayer(0);
           groupButton->setVisible(true);
-          party->setTargetCreature(NULL);
+          for(int i = 0; i < party->getPartySize(); i++)
+            party->getParty(i)->cancelTarget();
         }
        
         // change animation if needed

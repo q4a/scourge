@@ -197,6 +197,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Session *session;
   Progress *progress;
   bool inBattle;
+  Progress *turnProgress;
 
 protected:
   SDLHandler *sdlHandler;
@@ -589,6 +590,13 @@ public:
   void moveMonster(Creature *monster);
 
   void removeBattle(Battle *battle);
+
+  inline bool Scourge::inTurnBasedCombat() {
+    return (battleTurn < (int)battleRound.size() && 
+            getUserConfiguration()->isBattleTurnBased());
+  }
+
+  bool Scourge::inTurnBasedCombatPlayerTurn();
 
  protected:
   //  void fightBattle(); 
