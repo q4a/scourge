@@ -33,6 +33,7 @@ Inventory::Inventory(Scourge *scourge) {
     for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
         this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
     }
+    selected = selectedMode = 0;
 
 	mainWin = new Window( scourge->getSDLHandler(),
 						  100, 50, 525, 505, 
