@@ -607,31 +607,17 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
   va_end( ap );
 
   initFonts();
-  
-  freetype_print_simple(font, x, y, str);
-}
 
-void SDLHandler::texPrintMono(GLfloat x, GLfloat y, 
-                              const char *fmt, ...) {
-  
-  if(!text) text = new TexturedText();
-
-  char str[256]; // Holds our string
-  va_list ap;     // Pointer to our list of elements
-
-  // If there's no text, do nothing
-  if ( fmt == NULL ) return;
-
-  // Parses The String For Variables
-  va_start( ap, fmt );
-
-  // Converts Symbols To Actual Numbers
-  vsprintf( str, fmt, ap );
-  va_end( ap );
-
-  initFonts();
-  
-  freetype_print_simple(monoFont, x, y, str);
+  freetype_font_data *p;
+  switch( fontType ) {
+  case MONO_FONT:
+    p = &monoFont; break;
+  case LARGE_FONT:
+    p = &largeFont; break;
+  default:
+    p = &font;
+  }
+  freetype_print_simple( *p, x, y, str );
 }
 
 void SDLHandler::initFonts() {
@@ -641,6 +627,8 @@ void SDLHandler::initFonts() {
     font.init(s, 8);
     sprintf(s, "%s/VeraMono.ttf", rootDir);
     monoFont.init(s, 8);
+    sprintf(s, "%s/Cas_antn.ttf", rootDir);
+    largeFont.init(s, 14);
     font_initialized = true;
   }
 }

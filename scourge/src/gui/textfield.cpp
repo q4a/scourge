@@ -118,7 +118,9 @@ void TextField::drawWidget(Widget *parent) {
     glTranslatef( OFFSET + i * AVG_CHAR_WIDTH, 0, 0 );
     letter[0] = text[i];
     letter[1] = '\0';
-    ((Window*)parent)->getSDLHandler()->texPrintMono(0, 12, letter);
+    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::MONO_FONT );
+    ((Window*)parent)->getSDLHandler()->texPrint(0, 12, letter);
+    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::DEFAULT_FONT );
     glPopMatrix();
   }
 

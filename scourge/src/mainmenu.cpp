@@ -611,6 +611,10 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   }
 
+  if( partyEditor->isVisible() ) {
+    partyEditor->handleEvent( widget );
+  }
+
   if(scourge->getMultiplayerDialog()->isVisible()) {
     scourge->getMultiplayerDialog()->handleEvent(widget, event);
     if(!scourge->getMultiplayerDialog()->isVisible()) {
@@ -631,7 +635,12 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   }
 
-  if( widget == partyEditor->getStartGameButton() ) {
+  if( widget == partyEditor->getCancelButton() ) {
+    partyEditor->reset();
+    partyEditor->setVisible( false );
+    mainWin->setVisible( true );
+    return false;
+  } else if( widget == partyEditor->getStartGameButton() ) {
     partyEditor->setVisible( false );
     value = NEW_GAME_START;
     return true;

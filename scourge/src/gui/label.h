@@ -31,14 +31,20 @@ class Label : public Widget {
  private:
 	 char text[3000];
 	 int lineWidth;
+     int fontType;
+     int lineHeight;
 
  public: 
-  Label(int x, int y, char *text=NULL, int lineWidth=0);
-  ~Label();
-  inline char *getText() { return text; }
-  inline void setText(char *s) { strncpy(text, ( s ? s : "" ), 3000); text[2999] = '\0'; }
-  void drawWidget(Widget *parent);
-  inline bool canGetFocus() { return false; }
+     Label(int x, int y, char *text=NULL, int lineWidth=0, int fontType=0, int lineHeight=15);
+     ~Label();
+     inline int getFontType() { return fontType; }
+     inline void setFontType( int n ) { fontType = n; }
+     inline int getLineHeight() { return lineHeight; }
+     inline void setLineHeight( int n ) { lineHeight = n; }
+     inline char *getText() { return text; }
+     inline void setText(char *s) { strncpy(text, ( s ? s : "" ), 3000); text[2999] = '\0'; }
+     void drawWidget(Widget *parent);
+     inline bool canGetFocus() { return false; }
 };
 
 #endif
