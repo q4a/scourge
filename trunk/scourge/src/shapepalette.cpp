@@ -194,13 +194,36 @@ void ShapePalette::initShapes() {
                 (debug ? 0xff0000ff : 0xa08040ff),
                 display_list + (count++ * 3), ROOM_FLOOR_TILE_INDEX);
 
-	shapes[LAMP_INDEX] =
+	shapes[LAMP_NORTH_INDEX] =
     new GLTorch(notex, textures[9],
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LAMP_INDEX, torchback);
+                LAMP_NORTH_INDEX, torchback, Constants::NORTH);
+	shapes[LAMP_SOUTH_INDEX] =
+    new GLTorch(notex, textures[9],
+                1, 1, 2,
+                "LAMP", torchDescription, torchDescriptionCount,
+                (debug ? 0xff0000ff : 0xf0f0ffff),
+                display_list + (count++ * 3),
+                LAMP_SOUTH_INDEX, torchback, Constants::SOUTH);
+	shapes[LAMP_WEST_INDEX] =
+    new GLTorch(notex, textures[9],
+                1, 1, 2,
+                "LAMP", torchDescription, torchDescriptionCount,
+                (debug ? 0xff0000ff : 0xf0f0ffff),
+                display_list + (count++ * 3),
+                LAMP_WEST_INDEX, torchback, Constants::WEST);
+	shapes[LAMP_EAST_INDEX] =
+    new GLTorch(notex, textures[9],
+                1, 1, 2,
+                "LAMP", torchDescription, torchDescriptionCount,
+                (debug ? 0xff0000ff : 0xf0f0ffff),
+                display_list + (count++ * 3),
+                LAMP_EAST_INDEX, torchback, Constants::EAST);
+
+
 	shapes[LAMP_BASE_INDEX] =
     new GLShape(wood_tex, 
                 1, 1, 2,

@@ -182,6 +182,8 @@ public:
   static const Uint16 MOVE_LEFT = 4;
   static const Uint16 MOVE_RIGHT = 8;
 
+  enum { NORTH=0, EAST, SOUTH, WEST };
+
   // messages
   enum {
 	WELCOME=0,
