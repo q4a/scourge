@@ -1050,10 +1050,9 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
-  //cerr << "FIXME: Map::setFloorPosition" << endl;
   for(int xp = 0; xp < shape->getWidth(); xp++) {
     for(int yp = 0; yp < shape->getDepth(); yp++) {
-      //  scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
+      session->getGameAdapter()->colorMiniMapPoint(x + xp, y - yp, shape);
     }
   }
 }
@@ -1063,11 +1062,10 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
   if(floorPositions[x][y]) {
     shape = floorPositions[x][y];
     floorPositions[x][y] = 0;
-    //cerr << "FIXME: Map::setFloorPosition" << endl;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???       
-        //scourge->getMiniMap()->eraseMiniMapPoint(x, y);
+        session->getGameAdapter()->eraseMiniMapPoint(x, y);
       }
     }
   }
@@ -1290,7 +1288,7 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
   //cerr << "FIXME: Map::setPosition" << endl;
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 	  for(int yp = 0; yp < shape->getDepth(); yp++) {
-	    //scourge->getMiniMap()->colorMiniMapPoint(x + xp, y - yp, shape);
+	    session->getGameAdapter()->colorMiniMapPoint(x + xp, y - yp, shape);
 		for(int zp = 0; zp < shape->getHeight(); zp++) {
 		  
 		  if(!pos[x + xp][y - yp][z + zp]) {
@@ -1319,11 +1317,10 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	mapChanged = true;
     shape = pos[x][y][z]->shape;
-    //cerr << "FIXME: Map::removePosition" << endl;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???
-        //scourge->getMiniMap()->eraseMiniMapPoint(x + xp, y - yp);
+        session->getGameAdapter()->eraseMiniMapPoint(x + xp, y - yp);
         for(int zp = 0; zp < shape->getHeight(); zp++) {
             //cerr <<"remove pos " << x + xp << "," << y - yp << "," << z + zp<<endl;
 		  delete pos[x + xp][y - yp][z + zp];
