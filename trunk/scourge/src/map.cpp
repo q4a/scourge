@@ -342,23 +342,20 @@ void Map::drawLocator() {
   
   // draw the locator
   if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
-	 selY >= getY() && selY < getY() + MAP_VIEW_DEPTH) {
+	 selY >= getY() && selY < getY() + MAP_VIEW_DEPTH &&
+	 selZ < MAP_VIEW_HEIGHT) {
 	
 	Location *dropLoc = NULL;
 	if(scourge->getMovingItem())
 	  dropLoc = getDropLocation(scourge->getMovingItem()->getShape(), 
 								selX, selY, 0);
 	
-	// don't move objects across walls, and only let drop on other creatures and containers
+	// only let drop on other creatures and containers
 	// FIXME: implement container check (maybe abstract out container interface)
-	if(scourge->getMovingItem() && 
-	   (isWallBetween(selX, selY, 0, 
-					  scourge->getPlayer()->getX(),
-					  scourge->getPlayer()->getY(),
-					  0) ||
-		(dropLoc && !dropLoc->creature)) ) {
+	if(scourge->getMovingItem() && (dropLoc && !dropLoc->item && !dropLoc->creature)) {
 	  selX = oldLocatorSelX;
 	  selY = oldLocatorSelY;
+	  selZ = oldLocatorSelZ;
 	}
 	
 	if(scourge->getMovingItem()) {
@@ -368,7 +365,7 @@ void Map::drawLocator() {
 	}
 	xpos2 = ((float)(selX - getX()) / GLShape::DIV);
 	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
-	zpos2 = (float)(0) / GLShape::DIV;
+	zpos2 = (float)(selZ) / GLShape::DIV;
 	
 	name = 0;
 	doDrawShape(xpos2, ypos2, zpos2, 
@@ -376,6 +373,7 @@ void Map::drawLocator() {
 				name);
 	oldLocatorSelX = selX;
 	oldLocatorSelY = selY;
+	oldLocatorSelZ = selZ;
   }
 }
 
@@ -789,22 +787,36 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
 }
 
 Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z, 
-											   Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
-											   Shape *s) {
-	for(int sx = 0; sx < s->getWidth(); sx++) {
-		for(int sy = 0; sy < s->getDepth(); sy++) {
-			for(int sz = 0; sz < s->getHeight(); sz++) {
-        if(pos[x + sx][y - sy][z + sz] &&
-           pos[x + sx][y - sy][z + sz]->shape &&
-           !(pos[x + sx][y - sy][z + sz]->x == shapeX &&
-						 pos[x + sx][y - sy][z + sz]->y == shapeY &&
-						 pos[x + sx][y - sy][z + sz]->z == shapeZ)) {
-          return pos[x + sx][y - sy][z + sz];
-        }
+						 Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
+						 Shape *s, 
+						 int *newz) {
+  int zz = 0;
+  for(int sx = 0; sx < s->getWidth(); sx++) {
+	for(int sy = 0; sy < s->getDepth(); sy++) {
+	  // find the lowest location where this item fits
+	  int sz = 0;
+	  while(sz < zz + s->getHeight()) {
+		Location *loc = pos[x + sx][y - sy][z + sz];
+		if(loc && loc->shape && 
+		   !(loc->x == shapeX && loc->y == shapeY && loc->z == shapeZ)) {
+		  if(newz && loc->item) {
+			int tz = loc->z + loc->shape->getHeight();
+			if(tz > zz) zz = tz;
+			if(zz + s->getHeight() >= MAP_VIEW_HEIGHT) {
+			  return pos[x + sx][y - sy][z + sz];
 			}
+			sz = zz;
+		  } else {
+			return pos[x + sx][y - sy][z + sz];
+		  }
+		} else {
+		  sz++;
 		}
+	  }
 	}
-	return NULL;
+  }
+  if(newz) *newz = zz;
+  return NULL;
 }
 
 void Map::switchPlaces(Sint16 x1, Sint16 y1, Sint16 z1,

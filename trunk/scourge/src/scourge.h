@@ -198,9 +198,9 @@ public:
   
   Creature *isPartyMember(Location *pos);
   
-  bool startItemDrag(int x, int y);
+  bool startItemDrag(int x, int y, int z);
   bool useItem();
-  bool useItem(int x, int y);
+  bool useItem(int x, int y, int z);
   
   void startMission();  
 
