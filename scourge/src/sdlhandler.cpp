@@ -387,8 +387,7 @@ void SDLHandler::mainLoop() {
 	int eventCount = 0;  
     while(SDL_PollEvent(&event) && (eventCount++) < 10) {
 	  mouseEvent = mouseButton = 0;
-	  storedWidget = NULL;
-	  storedEvent = NULL;
+	  Widget *widget = NULL;
       switch( event.type ) {
 	  case SDL_MOUSEMOTION:
 		if(invertMouse) event.motion.y = screen->h - event.motion.y;
@@ -396,21 +395,21 @@ void SDLHandler::mainLoop() {
 		mouseY = event.motion.y;          
 		mouseButton = event.button.button;
 		mouseEvent = SDL_MOUSEMOTION;
-		Window::delegateEvent( &event, mouseX, mouseY );
+		widget = Window::delegateEvent( &event, mouseX, mouseY );
 		break;
       case SDL_MOUSEBUTTONUP:
 		if(invertMouse) event.button.y = screen->h - event.button.y;
 		mouseEvent = SDL_MOUSEBUTTONUP;
 		mouseButton = event.button.button;
 		mouseDragging = false;
-		Window::delegateEvent( &event, event.button.x, event.button.y );
+		widget = Window::delegateEvent( &event, event.button.x, event.button.y );
 		break;
       case SDL_MOUSEBUTTONDOWN:
 		if(invertMouse) event.button.y = screen->h - event.button.y;			 
 		mouseEvent = SDL_MOUSEBUTTONDOWN;
 		mouseButton = event.button.button;
 		mouseDragging = true;
-		Window::delegateEvent( &event, event.button.x, event.button.y );
+		widget = Window::delegateEvent( &event, event.button.x, event.button.y );
 		break;
       case SDL_ACTIVEEVENT:
 		/* Something's happend with our focus
@@ -451,8 +450,8 @@ void SDLHandler::mainLoop() {
       }
 	  
 	  bool res = false;
-	  if(storedEvent) {
-		res = eventHandler->handleEvent(storedWidget, storedEvent);
+	  if(widget) {
+		res = eventHandler->handleEvent(widget, &event);
 	  } else {
 		res = eventHandler->handleEvent(&event);
 	  }
@@ -463,10 +462,10 @@ void SDLHandler::mainLoop() {
 	
     if(isActive) {
 	  screenView->drawView(screen);
-	  
+
 	  // redraw the gui
 	  Window::drawVisibleWindows();
-	  
+	  	  
       if(shapePal->cursorImage) {
         // for cursor: do alpha bit testing
         glDisable(GL_TEXTURE_2D);

@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "button.h"
+#include "window.h"
 
 /**
   *@author Gabor Torok
   */
 
 Button::Button(int x1, int y1, int x2, int y2, char *label) : 
-  Widget(x1, y1) {
+  Widget(x1, y1, x2 - x1, y2 - y1) {
   this->x2 = x2;
   this->y2 = y2;
   this->label = new Label(0, 0, label);
@@ -34,10 +35,10 @@ Button::~Button() {
   delete label;
 }
 
-void Button::drawWidget(Window *parent) {
+void Button::drawWidget(Widget *parent) {
   if(!inside) {
 	//	glColor4f( 0.7f, 0.65f, 0.2f, 1.0f );
-	parent->applyBackgroundColor(true);
+	((Window*)parent)->applyBackgroundColor(true);
 	glBegin(GL_QUADS);
 	glVertex2d(0, 0);
 	glVertex2d(0, y2 - y);
@@ -66,7 +67,7 @@ void Button::drawWidget(Window *parent) {
 	glDisable( GL_BLEND );
   }
 
-  parent->applyBorderColor();
+  ((Window*)parent)->applyBorderColor();
   glBegin(GL_LINES);
   glVertex2d(0, 0);
   glVertex2d(0, y2 - y);
@@ -84,24 +85,19 @@ void Button::drawWidget(Window *parent) {
   glPopMatrix();
 }
 
-bool Button::canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y) {
-  inside = (x >= getX() && x <= x2 && 
-			y >= getY() && y <= y2);
-  return inside;
-}
-
-void Button::handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y) {
+bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
+  inside = isInside(x, y);
   // handle it
   switch( event->type ) {
   case SDL_MOUSEMOTION:
 	break;
   case SDL_MOUSEBUTTONUP:
-	sdlHandler->fireEvent(this, event);
-	break;
+	return isInside(x, y);
   case SDL_MOUSEBUTTONDOWN:
 	break;
   default:
 	break;
   }
+  return false;
 }
 

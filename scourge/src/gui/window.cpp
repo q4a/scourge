@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "window.h"
 
+#define OPEN_STEPS 10
+
 int Window::windowCount = 0;
 Window *Window::window[MAX_WINDOW];
 
@@ -25,12 +27,9 @@ Window *Window::window[MAX_WINDOW];
   
 Window::Window(SDLHandler *sdlHandler, 
 			   int x, int y, int w, int h, 
-			   const char *title, GLuint texture) {
+			   const char *title, GLuint texture) :
+Widget(x, y, w, h) {
   this->sdlHandler = sdlHandler;
-  this->x = x;
-  this->y = y;
-  this->h = h;
-  this->w = w;
   this->title = strdup(title);
   this->texture = texture;
   this->visible = false;
@@ -43,6 +42,7 @@ Window::Window(SDLHandler *sdlHandler,
 
 Window::~Window() {
   free(title);
+  delete[] widget;
   removeWindow(this);
 }
 
@@ -56,39 +56,46 @@ void Window::removeWindow(Window *win) {
 
 void Window::drawVisibleWindows() {
   for(int i = 0; i < windowCount; i++) {
-	if(window[i]->isVisible()) window[i]->draw();
+	if(window[i]->isVisible()) window[i]->drawWidget(NULL);
   }
 }
 
-void Window::delegateEvent(SDL_Event *event, int x, int y) {
-  for(int i = 0; i < windowCount; i++) {
+Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
+  Widget *widget = NULL;
+  // loop backwards so it's drawn in order
+  for(int i = windowCount - 1; i >= 0; i--) {
 	if(window[i]->isVisible()) {
-	  window[i]->handleWindowEvent(event, x, y);
+	  widget = window[i]->handleWindowEvent(event, x, y);
+	  if(widget) return widget;
 	}
   }
+  return NULL;
 }
 
-void Window::handleWindowEvent(SDL_Event *event, int x, int y) {
+Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
   // handled by a component?
-  bool handled = false;
+  Widget *widget = NULL;
   for(int t = 0; t < widgetCount; t++) {
-	if(widget[t]->canHandle(sdlHandler, event, x - getX(), y - (getY() + TOP_HEIGHT))) {
-	  widget[t]->handleEvent(sdlHandler, event, x - getX(), y - (getY() + TOP_HEIGHT));
-	  handled = true;
+	if(this->widget[t]->isVisible() && 
+	   this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT))) {
+	  widget = this->widget[t];
 	}
   }
   // see if the window wants it
-  if(!handled && canHandle(event, x, y))
-	handleEvent(event, x, y);
+  if(!widget && handleEvent(NULL, event, x, y)) {
+	  widget = this;
+  } else {
+	// cancel any pending window events
+	dragging = false;
+  }
+  return widget;
 }
 
-bool Window::canHandle(SDL_Event *event, int x, int y) {
-  return(dragging || 
-  		 (x >= getX() && x < getX() + w &&
-  		  y >= getY() && y < getY() + h));
+bool Window::isInside(int x, int y) {
+  return(dragging || Widget::isInside(x, y));
 }
 
-void Window::handleEvent(SDL_Event *event, int x, int y) {
+bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
 	if(dragging) move(x - dragX, y - dragY);
@@ -97,42 +104,39 @@ void Window::handleEvent(SDL_Event *event, int x, int y) {
 	dragging = false;
 	break;
   case SDL_MOUSEBUTTONDOWN:
-	dragging = true;
+	dragging = isInside(x, y);
 	dragX = x - getX();
 	dragY = y - getY();
 	break;
   }
-  // fire a dummy event, so the event it's not used by the map
-  sdlHandler->fireEvent(NULL, event);
+  return isInside(x, y);
 }
 
 void Window::addWidget(Widget *widget) {
   if(widgetCount < MAX_WIDGET) this->widget[widgetCount++] = widget;
 }
 
-/*
 void Window::removeWidget(Widget *widget) {
   for(int i = 0; i < widgetCount; i++) {
-	if(widget[i] == widget) {
+	if(this->widget[i] == widget) {
 	  for(int t = i; t < widgetCount - 1; t++) {
-		widget[t] = widget[t + 1];
+		this->widget[t] = this->widget[t + 1];
 	  }
 	  widgetCount--;
 	  return;
 	}
   }
 }
-*/
 
-void Window::draw() {
-
-	GLint t = SDL_GetTicks();
-	if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
-      lastTick = t;
-	  openHeight += ( h / 5 ); // always open in 5 steps
-	  if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) 
+void Window::drawWidget(Widget *parent) {
+  
+  GLint t = SDL_GetTicks();
+  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
+	lastTick = t;
+	openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
+	if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) 
       openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
-	}
+  }
   GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);  
 
   glDisable( GL_DEPTH_TEST );
@@ -202,36 +206,39 @@ void Window::draw() {
 
   // draw widgets
   if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {  
-    // scissor test: y screen coordinate is reversed, rectangle is specified by lower-left corner. sheesh!
+    // scissor test: y screen coordinate is reversed, rectangle is 
+	// specified by lower-left corner. sheesh!
     glScissor(x, sdlHandler->getScreen()->h - (y + topY + TOP_HEIGHT + openHeight), 
               w, openHeight);  
     glEnable( GL_SCISSOR_TEST );
   }
   for(int i = 0; i < widgetCount; i++) {                  
-    glPushMatrix();
-    glLoadIdentity();
-
-
-    // if this is modified, also change handleWindowEvent
-    glTranslated(x, y + TOP_HEIGHT, 0);
-
-
-    widget[i]->draw(this);
-    glPopMatrix();
+	if(widget[i]->isVisible()) {
+	  glPushMatrix();
+	  glLoadIdentity();
+	
+	
+	  // if this is modified, also change handleWindowEvent
+	  glTranslated(x, y + TOP_HEIGHT, 0);
+	
+	
+	  widget[i]->draw(this);
+	  glPopMatrix();
+	}
   }  
   if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {  
     glDisable( GL_SCISSOR_TEST );
   }
-
+  
   glEnable( GL_TEXTURE_2D );
   glPopMatrix();
-
+  
   glEnable( GL_DEPTH_TEST );
 }
 
 void Window::setVisible(bool b) {
-    visible = b;
-    if(visible) openHeight = 0;
+  Widget::setVisible(b);
+  if(b) openHeight = 0;
 }
 
 void Window::applyBorderColor() { 

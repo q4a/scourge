@@ -27,6 +27,8 @@
 #include "gui.h"
 #include "scourge.h"
 #include "rpg/pc.h"
+#include "gui/window.h"
+#include "gui/button.h"
 
 /**
   *@author Gabor Torok
@@ -43,13 +45,18 @@ private:
     };
     int skillList, itemList;
     char **invText, **pcInvText;
+	Window *mainWin;
+	Button *player1Button, *player2Button, *player3Button, *player4Button;
+	Button *inventoryButton, *skillsButton, *spellsButton, *closeButton;
 
 protected:
 
 public:
     Inventory(Scourge *scourge);
 	~Inventory();
-    void show();
+    inline void show() { mainWin->setVisible(true); }
+	inline void hide() { mainWin->setVisible(false); }
+	inline bool isVisible() { return mainWin->isVisible(); }
     void drawView(SDL_Surface *screen);
     bool handleEvent(SDL_Event *event);
 	bool handleEvent(Widget *widget, SDL_Event *event);

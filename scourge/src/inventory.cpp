@@ -33,15 +33,30 @@ Inventory::Inventory(Scourge *scourge) {
     for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
         this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
     }
+
+	mainWin = new Window( scourge->getSDLHandler(),
+						  100, 50, 525, 505, 
+						  "Party Information", 
+						  scourge->getShapePalette()->getGuiTexture() );
+	player1Button = new Button( 0, 0, 105, 120, scourge->getParty(0)->getPC()->getName() );
+	mainWin->addWidget((Widget*)player1Button);
+	player2Button = new Button( 0, 120, 105, 240, scourge->getParty(1)->getPC()->getName() );
+	mainWin->addWidget((Widget*)player2Button);
+	player3Button = new Button( 0, 240, 105, 360, scourge->getParty(2)->getPC()->getName() );
+	mainWin->addWidget((Widget*)player3Button);
+	player4Button = new Button( 0,360, 105, 480, scourge->getParty(3)->getPC()->getName() );
+	mainWin->addWidget((Widget*)player4Button);
+	inventoryButton = new Button( 105,0, 210, 30, "Inventory" );
+	mainWin->addWidget((Widget*)inventoryButton);
+	skillsButton = new Button( 210,0, 315, 30, "Skills" );
+	mainWin->addWidget((Widget*)skillsButton);
+	spellsButton = new Button( 315,0, 420, 30, "Spells" );
+	mainWin->addWidget((Widget*)spellsButton);
+	closeButton = new Button( 420,0, 525, 30, "Close" );
+	mainWin->addWidget((Widget*)closeButton);
 }
 
 Inventory::~Inventory() {
-}
-
-void Inventory::show() {
-    scourge->getGui()->pushWindows();
-    createGui();
-    scourge->getSDLHandler()->pushHandlers(this, this);
 }
 
 void Inventory::createGui() {
@@ -76,12 +91,13 @@ void Inventory::createGui() {
 
 void Inventory::drawView(SDL_Surface *screen) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    scourge->getGui()->drawWindows();
+	//    scourge->getGui()->drawWindows();
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
+  if(widget == closeButton) mainWin->setVisible(false);
   return false;
-}
+  }
 
 bool Inventory::handleEvent(SDL_Event *event) {
     switch(event->type) {
@@ -96,8 +112,9 @@ bool Inventory::handleEvent(SDL_Event *event) {
     case SDL_KEYDOWN:
         switch(event->key.keysym.sym) {
         case SDLK_ESCAPE: 
-            scourge->getGui()->popWindows();
-            return true;
+		  //scourge->getGui()->popWindows();
+		  mainWin->setVisible(false);
+		  return true;
         default: break;
         }
     default: break;
@@ -223,6 +240,7 @@ void Inventory::drawInventory() {
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
     drawParty();
 
+	/*
 	glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
 	scourge->getGui()->outlineActiveRegion(Constants::INV_PLAYER_0);
 	scourge->getGui()->outlineActiveRegion(Constants::INV_PLAYER_1);
@@ -250,6 +268,7 @@ void Inventory::drawInventory() {
     case LOG:
 	  drawLogInfo(); break;
     }
+	*/
 }
 
 void Inventory::drawParty() {
@@ -259,6 +278,7 @@ void Inventory::drawParty() {
     if(Constants::stencilbuffer) {
 	  glPushMatrix();
 	  glLoadIdentity();
+	  glTranslatef( mainWin->getX(), mainWin->getY(), 0 );
 	  glTranslatef( 20, 10 + i * h + 90, 100);
 	  glRotatef(90, 1, 0, 0);
 	  glScalef( 1.2f, 0, 0.8f );
@@ -287,6 +307,7 @@ void Inventory::drawParty() {
 	
 	glPushMatrix();
 	glLoadIdentity();
+	glTranslatef( mainWin->getX(), mainWin->getY(), 0 );
 	glTranslatef( 24, 10 + i * h + 90, 200);
 	glRotatef(90, 1, 0, 0);
 	glScalef(0.7, 0.7, 0.7);
@@ -300,7 +321,7 @@ void Inventory::drawParty() {
 	scourge->getSDLHandler()->
 	  texPrint(10, 10 + i * h + 100, "%s", 
 			   scourge->getParty(i)->getPC()->getName());
-	
+	/*	
 	if(selected == i) {
 	  y = 10 + i * h;
 	  glColor4f(0.6f, 0.4f, 0.2f, 0.5f);
@@ -315,6 +336,7 @@ void Inventory::drawParty() {
 	  glDisable(GL_BLEND);
 	  glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
 	}
+	*/
   }      
 }
 

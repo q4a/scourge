@@ -126,10 +126,10 @@ Scourge::Scourge(int argc, char *argv[]){
   optionsMenu = new OptionsMenu(this);
 
   while(true) {
-	mainMenu->init();    
+	mainMenu->show();    
 	sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
 	sdlHandler->mainLoop();
-	mainMenu->destroy();
+	mainMenu->hide();
 
     // evaluate results and start a missions
     fprintf(stderr, "value=%d\n", mainMenu->getValue());
@@ -244,6 +244,8 @@ void Scourge::drawView(SDL_Surface *screen) {
   map->drawDescriptions();
 
   miniMap->draw(0, 400);
+
+  if(inventory->isVisible()) inventory->drawInventory();
   
   glEnable( GL_DEPTH_TEST );
   //  glEnable( GL_LIGHTING );
@@ -262,6 +264,11 @@ void Scourge::setPlayer(int n) {
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
+  if(inventory->isVisible()) {
+	inventory->handleEvent(event);
+	return false;
+  }
+
   switch(event->type) {
   case SDL_MOUSEMOTION:
     if(event->motion.x < 10) {
@@ -857,8 +864,16 @@ void Scourge::drawTopWindow() {
 
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == inventoryButton) {
-	inventory->show();
-  } else if(widget == optionsButton) {
+	if(inventory->isVisible()) inventory->hide();
+	else inventory->show();
+  }
+
+  if(inventory->isVisible()) {
+	inventory->handleEvent(widget, event);
+	return false;
+  }
+
+  if(widget == optionsButton) {
 	optionsMenu->show();
   } else if(widget == quitButton) {
 	return true;
