@@ -90,12 +90,13 @@ Inventory::Inventory(Scourge *scourge) {
 	cards = new CardContainer(mainWin);
 
 	// inventory page	
-	cards->createLabel(115, 212, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
-	inventoryWeightLabel = cards->createLabel(190, 212, NULL, INVENTORY);
-	coinsLabel = cards->createLabel(300, 15, NULL, INVENTORY);
-	cards->createLabel(115, 15, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
+	cards->createLabel(115, 15, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR);	
+	inventoryWeightLabel = cards->createLabel(190, 15, NULL, INVENTORY);
+	
+  coinsLabel = cards->createLabel(300, 212, NULL, INVENTORY);
+	cards->createLabel(115, 212, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
   
-  paperDoll = new Canvas(115, 220, 411, 251 + (Character::INVENTORY_COUNT * 15), this);
+  paperDoll = new Canvas(115, 220, 411, 251 + (Character::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
 
 	invList = new ScrollingList(115, 20, 295, 175, this);
@@ -268,15 +269,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       }
     }
   } else if(widget == equipButton) {
-    int itemIndex = invList->getSelectedLine();  
-    if(itemIndex > -1 && 
-       scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-      scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
-      // recreate list strings
-      int oldLine = invList->getSelectedLine();
-      setSelectedPlayerAndMode(selected, selectedMode);
-      invList->setSelectedLine(oldLine);
-    }
+    equipItem();
   } else if(widget == eatDrinkButton) {
     if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead)) {
       scourge->showMessageDialog(Constants::getMessage(Constants::DEAD_CHARACTER_ERROR));
@@ -628,24 +621,68 @@ void Inventory::drawInventory() {
 }
 
 void Inventory::receive(Widget *widget) {
-  if(scourge->getMovingItem()) {
-	if(scourge->getParty()->getParty(selected)->addInventory(scourge->getMovingItem())) {
-	  // message: the player accepted the item
-	  char message[120];
-	  sprintf(message, "%s picks up %s.", 
-			  scourge->getParty()->getParty(selected)->getName(),
-			  scourge->getMovingItem()->getItemName());
-	  scourge->getMap()->addDescription(message);
-	  scourge->endItemDrag();
-	  setSelectedPlayerAndMode(selected, INVENTORY);
-	} else {
-	  // message: the player's inventory is full
-	}
+  if(widget == invList) {
+    putItem();
+  } else if(widget == paperDoll) {
+    putItem();
+    equipItem();
   }
 }
 
-void Inventory::startDrag(Widget *widget) {
-  dropItem();
+bool Inventory::startDrag(Widget *widget, int x, int y) {
+  if(widget == invList) {
+    dropItem();
+    return true;
+  } else if(widget == paperDoll) {
+    if(y > 0 && y < Character::INVENTORY_COUNT * 16) {
+      // what's equiped at this inventory slot?
+      Item *item = scourge->getParty()->getParty(selected)->getItemAtLocation((1 << (y / 16)));
+      if(item) {
+        // find its index in the inventory
+        int index = scourge->getParty()->getParty(selected)->findInInventory(item);
+        // select it
+        invList->setSelectedLine(index);
+        // drop it
+        dropItem();
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+int Inventory::putItem() {
+  Item *item = scourge->getMovingItem();
+  if(item) {
+    if(scourge->getParty()->getParty(selected)->addInventory(item)) {
+      // message: the player accepted the item
+      char message[120];
+      sprintf(message, "%s picks up %s.", 
+              scourge->getParty()->getParty(selected)->getName(),
+              item->getItemName());
+      scourge->getMap()->addDescription(message);
+      scourge->endItemDrag();
+      int index = scourge->getParty()->getParty(selected)->findInInventory(item);
+      setSelectedPlayerAndMode(selected, INVENTORY);
+      invList->setSelectedLine(index);
+      return index;
+    } else {
+      // message: the player's inventory is full
+    }
+  }
+  return -1;
+}
+
+void Inventory::equipItem() {
+  int itemIndex = invList->getSelectedLine();  
+  if(itemIndex > -1 && 
+     scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
+    scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
+    // recreate list strings
+    int oldLine = invList->getSelectedLine();
+    setSelectedPlayerAndMode(selected, selectedMode);
+    invList->setSelectedLine(oldLine);
+  }
 }
 
 void Inventory::dropItem() {

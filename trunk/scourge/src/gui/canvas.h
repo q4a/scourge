@@ -21,6 +21,7 @@
 #include "../constants.h"
 #include "widget.h"
 #include "widgetview.h"
+#include "draganddrop.h"
 
 /**
   *@author Gabor Torok
@@ -30,12 +31,23 @@ class Canvas : public Widget {
  private:
   WidgetView *view;
   int x2, y2;
+  DragAndDropHandler *dragAndDropHandler;
+  int dragX, dragY;
+  bool dragging;
 
  public: 
-  Canvas(int x, int y, int x2, int y2, WidgetView *view);
+  Canvas(int x, int y, int x2, int y2, WidgetView *view, 
+         DragAndDropHandler *dragAndDropHandler = NULL);
   virtual ~Canvas();
   inline WidgetView *getView() { return view; }
   void drawWidget(Widget *parent);
+
+  /**
+	 Return true, if the event activated this widget. (For example, button push, etc.)
+	 Another way to think about it is that if true, the widget fires an "activated" event
+	 to the outside world.
+   */
+  bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
 };
 
 #endif

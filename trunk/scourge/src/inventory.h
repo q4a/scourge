@@ -118,7 +118,7 @@ public:
 
 	// drag-n-drop
 	void receive(Widget *widget);
-	void startDrag(Widget *widget);
+	bool startDrag(Widget *widget, int x=0, int y=0);
 
 	void drawWidget(Widget *w);
 
@@ -126,6 +126,9 @@ protected:
 	void setSelectedPlayerAndMode(int player, int mode);
 	void moveItemTo(int playerIndex);
 	void dropItem();
+  // returns item's index in inventory or -1 if inv. was full
+  int putItem();
+  void equipItem();
 	void showMemorizedSpellsInSchool(Creature *creature, MagicSchool *school);
 	void showSpellDescription(Spell *spell);
 	Spell *getSelectedSpell();
