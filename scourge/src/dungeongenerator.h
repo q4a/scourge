@@ -31,6 +31,14 @@ class Creature;
 
 #define DRAW_UNVISITED 0
 
+// a pre-rendered map location
+typedef struct _MapLocation {
+  int x, y, w, h;
+  int roomCount;
+  int roomDimension[20][4];
+  char *map[MAP_WIDTH];
+} MapLocation;
+
 /**
   *@author Gabor Torok
   */
@@ -112,7 +120,7 @@ private:
 
   Scourge *scourge;
 
-  static const char *location[][MAP_WIDTH];
+  static const MapLocation location[];
 
 public: 
 

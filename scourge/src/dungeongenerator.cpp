@@ -41,16 +41,33 @@ const int DungeonGenerator::levels[][9] = {
   { 31, 31,   3, 5, 25,    6,  7,  7,     35 }
 };
 
-const char *DungeonGenerator::location[][MAP_WIDTH] = {
+/**
+   Pre-generated maps:
+   x,y,w,h,
+   roomCount,
+   roomDimensions: x,y,w,h,
+   map: #-room, +-floor, nsew-doors (by facing)
+ */
+const MapLocation DungeonGenerator::location[] = {
   { 
-	"   ####   ####  ",
-	"   ####+++####  ",
-	"   ####   ####  ",
-	"    ++     ++   ",
-	"    ++     ++   ",
-	"   ####   ####  ",
-	"   ####+++####  ",
-	"   ####   ####  " }
+	0,0,5,7,
+	4,
+	{ 
+	  {0,0,2,3}, 
+	  {3,0,2,3}, 
+	  {0,4,2,3}, 
+	  {3,4,2,3}
+	},
+	{ 
+	  "## ##",
+	  "#e+w#",
+	  "s# #s",
+	  "+   +",
+	  "n# #n",
+	  "#e+w#",
+	  "## ##" 
+	}
+  }
 };
 
 DungeonGenerator::DungeonGenerator(Scourge *scourge, int level){
@@ -522,7 +539,7 @@ void DungeonGenerator::printMaze() {
               if((nodes[x][y] & S_PASS)) {
                 printf(" | ");
               } else {
-                printf("   ");              
+                printf("   ");
               }
               break;
           }        
@@ -536,19 +553,82 @@ void DungeonGenerator::printMaze() {
 }
 
 // draw a pre-rendered location on the map
-void DungeonGenerator::constructMaze(int location) {
+void DungeonGenerator::constructMaze(int locationIndex) {
+  // create the rooms
+  roomCount = location[locationIndex].roomCount;
+  for(int i = 0; i < location[locationIndex].roomCount; i++) {
+	room[i].x = location[locationIndex].roomDimension[i][0];
+	room[i].y = location[locationIndex].roomDimension[i][1];
+	room[i].w = location[locationIndex].roomDimension[i][2];
+	room[i].h = location[locationIndex].roomDimension[i][3];
+  }
+
   // turn location into nodes
-  for(int x = 0; x < width; x++) {
-	for(int y = 0; y < height; y++) {
-	  
+  for(int y = 0; y < location[locationIndex].h; y++) {
+	for(int x = 0; x < location[locationIndex].w; x++) {
+	  char c = location[locationIndex].map[y][x];
+	  int nx = location[locationIndex].x + x;
+	  int ny = location[locationIndex].y + y;
+	  if(nx >= width || ny >= height) {
+		cerr << "Warning: location doesn't fit on map! location:" << 
+		  location[locationIndex].w << "," << location[locationIndex].h << 
+		  " map:" << width << "," << height << endl;
+		continue;
+	  }
+	  switch(c) {
+	  case '#': case 'n': case 's': case 'e': case 'w': nodes[nx][ny] = ROOM; break;
+	  case '+': nodes[nx][ny] = 0; break;
+	  default: nodes[nx][ny] = UNVISITED;
+	  }
+	  // open every side for now
+	  nodes[nx][ny] |= (N_PASS | S_PASS | W_PASS | E_PASS);
+	  // add door
 	}
   }
+  // build walls
+  for(int y = 0; y < location[locationIndex].h; y++) {
+	for(int x = 0; x < location[locationIndex].w; x++) {
+	  char c = location[locationIndex].map[y][x];
+	  int nx = location[locationIndex].x + x;
+	  int ny = location[locationIndex].y + y;
+	  if(nx >= width || ny >= height) {
+		cerr << "Warning: location doesn't fit on map! location:" << 
+		  location[locationIndex].w << "," << location[locationIndex].h << 
+		  " map:" << width << "," << height << endl;
+		continue;
+	  }
+	  switch(c) {
+	  case '#': case '+':
+		if(!nx || nodes[nx - 1][ny] == UNVISITED || 
+		   ((nodes[nx][ny] & ROOM) && !(nodes[nx - 1][ny] & ROOM))) {
+		  nodes[nx][ny] &= (0xffff - W_PASS);
+		}
+		if(nx >= width - 1 || nodes[nx + 1][ny] == UNVISITED || 
+		   ((nodes[nx][ny] & ROOM) && !(nodes[nx + 1][ny] & ROOM))) {
+		  nodes[nx][ny] &= (0xffff - E_PASS);
+		}
+		if(!ny || nodes[nx][ny - 1] == UNVISITED ||
+		   ((nodes[nx][ny] & ROOM) && !(nodes[nx][ny - 1] & ROOM))) {
+		  nodes[nx][ny] &= (0xffff - N_PASS);
+		}
+		if(ny >= height - 1 || nodes[nx][ny + 1] == UNVISITED || 
+		   ((nodes[nx][ny] & ROOM) && !(nodes[nx][ny + 1] & ROOM))) {
+		  nodes[nx][ny] &= (0xffff - S_PASS);
+		}
+		break;
+	  case 'n': nodes[nx][ny] |= N_DOOR; break;
+	  case 's': nodes[nx][ny] |= S_DOOR; break;
+	  case 'e': nodes[nx][ny] |= E_DOOR; break;
+	  case 'w': nodes[nx][ny] |= W_DOOR; break;
+	  }
+	}
+  }  
 }
 
-void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int location) {	 
+void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
 
   // generate the maze
-  if(!location) {
+  if(!locationIndex) {
 	generateMaze();
 	//  printMaze();  
 	
@@ -561,7 +641,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int location) {
 	makeRooms();
 	//  printMaze();
   } else {
-	constructMaze(location);
+	constructMaze(locationIndex - 1);
   }
 
   // draw the nodes on the map
@@ -838,6 +918,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   // add the items
   for(int i = 0; i < objectCount; i++) {
 	RpgItem *rpgItem = RpgItem::getRandomItem(level);
+	if(!rpgItem) {
+	  cerr << "Warning: no items defined for level: " << level << endl;
+	  break;
+	}
 	Item *item = scourge->newItem(rpgItem);
 	getRandomLocation(map, item->getShape(), &x, &y);
 	addItem(map, NULL, item, NULL, x, y);
@@ -852,6 +936,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
 	while(levelSum < totalLevel) {
 	  Monster *monster = Monster::getRandomMonster(level - 1);
 	  //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
+	  if(!monster) {
+		cerr << "Warning: no monsters defined for level: " << level << endl;
+		break;
+	  }
 	  bool fits = 
 		getLocationInRoom(map, 
 						  i,
@@ -873,6 +961,10 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   // add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
   for(int i = 0; i < objectCount * 2; i++) {
 	Monster *monster = Monster::getRandomMonster(level - 1);
+	if(!monster) {
+	  cerr << "Warning: no monsters defined for level: " << level << endl;
+	  break;
+	}	
 	Creature *creature = scourge->newCreature(monster);
 	getRandomLocation(map, creature->getShape(), &x, &y);
 	addItem(map, creature, NULL, NULL, x, y);
