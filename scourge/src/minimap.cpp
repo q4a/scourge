@@ -224,6 +224,9 @@ void MiniMap::drawWidget(Widget *w) {
 
   if(!showMiniMap) return;
 
+  bool textureEnabled = glIsEnabled( GL_TEXTURE_2D );
+  bool alphaEnabled = glIsEnabled( GL_ALPHA_TEST );
+
   // Compute the postition of the player in the minimap
   xPartyPos = toint(scourge->getParty()->getPlayer()->getX());
   yPartyPos = toint(scourge->getParty()->getPlayer()->getY());     
@@ -308,9 +311,10 @@ void MiniMap::drawWidget(Widget *w) {
   glEnd();       
   glPopMatrix();
 
-
-  glEnable( GL_TEXTURE_2D );
-  glDisable(GL_ALPHA_TEST);
+  if( textureEnabled ) glEnable( GL_TEXTURE_2D );
+  else glDisable( GL_TEXTURE_2D );
+  if( alphaEnabled ) glEnable( GL_ALPHA_TEST );
+  else glDisable(GL_ALPHA_TEST);
   glDisable(GL_SCISSOR_TEST);
 
 }

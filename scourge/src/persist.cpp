@@ -42,6 +42,8 @@ bool Persist::saveGame(Session *session) {
   }
   Uint32 n = PERSIST_VERSION;
   fwrite( &n, sizeof(Uint32), 1, fp );
+  n = session->getBoard()->getStorylineIndex();
+  fwrite( &n, sizeof(Uint32), 1, fp );
   n = session->getParty()->getPartySize();
   fwrite( &n, sizeof(Uint32), 1, fp );
   for(int i = 0; i < session->getParty()->getPartySize(); i++) {
@@ -67,6 +69,8 @@ bool Persist::loadGame(Session *session) {
   if( n != PERSIST_VERSION ) {
     cerr << "Savegame file is old: ignoring data in file." << endl;
   } else {
+	fread( &n, sizeof(Uint32), 1, fp );
+	session->getBoard()->setStorylineIndex( (int)n );
     fread( &n, sizeof(Uint32), 1, fp );
     Creature *pc[MAX_PARTY_SIZE];
     for(int i = 0; i < (int)n; i++) {
