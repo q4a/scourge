@@ -142,6 +142,9 @@ void Persist::saveCreature(FILE *fp, CreatureInfo *info) {
   for(int i = 0; i < (int)info->spell_count; i++) {
     fwrite( info->spell_name[i], sizeof(Uint8), 255, fp );
   }
+  for(int i = 0; i < 12; i++ ) {
+    fwrite( info->quick_spell[i], sizeof(Uint8), 255, fp );
+  }
 }
 
 CreatureInfo *Persist::loadCreature(FILE *fp) {
@@ -182,6 +185,9 @@ CreatureInfo *Persist::loadCreature(FILE *fp) {
   fread( &(info->spell_count), sizeof(Uint32), 1, fp );
   for(int i = 0; i < (int)info->spell_count; i++) {
     fread( info->spell_name[i], sizeof(Uint8), 255, fp );
+  }
+  for(int i = 0; i < 12; i++ ) {
+    fread( info->quick_spell[i], sizeof(Uint8), 255, fp );
   }
   return info;
 }

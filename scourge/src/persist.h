@@ -22,7 +22,7 @@
 
 class Session;
 
-#define PERSIST_VERSION 6
+#define PERSIST_VERSION 7
 
 typedef struct _DiceInfo {
   Uint32 version;
@@ -86,6 +86,7 @@ typedef struct _CreatureInfo {
   // spells memorized ([school][spell]
   Uint32 spell_count;
   Uint8 spell_name[100][255];
+  Uint8 quick_spell[12][255];
 } CreatureInfo;
 
 class Persist {

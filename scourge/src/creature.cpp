@@ -212,6 +212,11 @@ CreatureInfo *Creature::save() {
   }
   info->spell_count = count;
 
+  for( int i = 0; i < 12; i++ ) {
+    strcpy( (char*)info->quick_spell[ i ], 
+            ( getQuickSpell( i ) ? getQuickSpell( i )->getName() : "" ) );
+  }
+
   return info;
 }
 
@@ -289,6 +294,11 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   for(int i = 0; i < (int)info->spell_count; i++) {
     Spell *spell = Spell::getSpellByName( (char*)info->spell_name[i] );
     creature->addSpell( spell );
+  }
+
+  for( int i = 0; i < 12; i++ ) {
+    if( strlen( (char*)info->quick_spell[ i ] ) )
+      creature->setQuickSpell( i, Spell::getSpellByName( (char*)info->quick_spell[ i ] ) );
   }
 
   return creature;
