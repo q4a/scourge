@@ -29,6 +29,7 @@
 #include "gui/window.h"
 #include "userconfiguration.h"
 #include "freetype/FreeType.h"
+#include "sound.h"
 
 class TexturedText;
 
@@ -53,10 +54,12 @@ class TexturedText;
 class ShapePalette;                          
 class SDLEventHandler;
 class UserConfiguration;
+class Sound;
 
 class SDLHandler {
 private:
   /* These are to calculate our fps */
+  Sound *sound;
   GLint T0, Frames;
   double fps;
   SDL_Surface *screen;
@@ -105,6 +108,8 @@ private:
   bool mouseDragging;
 
   void setOrthoView();
+
+  inline Sound *getSound() { return sound; }
 
   void setCursorMode(int n) { cursorMode = n; }
   int getCursorMode() { return cursorMode; }

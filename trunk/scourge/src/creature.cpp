@@ -320,6 +320,12 @@ void Creature::setSelXY(int x, int y, bool force) {
   }
   // if we're trying to move within a range, try a number of times
   adjustMovementToRange();
+  
+  // play command sound
+  if(!isMonster() && x > -1 && 
+     0 == (int)(session->getUserConfiguration()->getSoundFreq() * rand()/RAND_MAX)) {
+    session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
+  }
 }
 
 /**

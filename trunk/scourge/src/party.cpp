@@ -155,6 +155,9 @@ void Party::setPlayer(int n) {
   session->getMap()->center(player->getX(), player->getY(), true);
   session->getGameAdapter()->refreshInventoryUI(n);  
   session->getGameAdapter()->setPlayerUI(n);
+
+  // play selection sound
+  session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
 }
 
 

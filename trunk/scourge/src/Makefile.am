@@ -57,6 +57,8 @@ scourge_SOURCES = \
 	sdlscreenview.h\
 	shape.cpp\
 	shape.h\
+	sound.cpp\
+	sound.h\
 	inventory.cpp\
 	inventory.h\
 	shapepalette.cpp\
