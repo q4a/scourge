@@ -23,12 +23,17 @@ ClientInfo::ClientInfo(Server *server, TCPsocket socket, int id, char *username)
 }
 
 ClientInfo::~ClientInfo() {  
+  threadRunning = false;
+
+  // tell the client not to reconnect
+  TCPUtil::send(socket, "CLOSING");
+
   // empty message queue
   if(SDL_mutexP(mutex) == -1) {
     cerr << "Couldn't lock mutex." << endl;
     exit(7);
   }    
-  while(!messageQueue.size()) {
+  while(messageQueue.size()) {
     Message *message = messageQueue.front();
     messageQueue.pop();
     delete message;
@@ -36,11 +41,10 @@ ClientInfo::~ClientInfo() {
   if(SDL_mutexV(mutex) == -1) {
     cerr << "Couldn't lock mutex." << endl;
     exit(7);
-  }    
+  }
 
   // stop the thread
   cerr << "* Stopping client thread: " << describe() << endl;
-  threadRunning = false;
   int status;
   SDL_WaitThread(thread, &status);
   // kill the mutex
@@ -80,6 +84,10 @@ void ClientInfo::handleUnknownMessage() {
 }
 
 void ClientInfo::processGameState(int frame, char *p) {
+  // do nothing
+}
+
+void ClientInfo::serverClosing() {
   // do nothing
 }
 
@@ -145,7 +153,7 @@ int clientInfoLoop(void *data) {
 
   while(clientInfo->isThreadRunning()) {
 
-    cerr << "&";
+    //cerr << "&";
 
     if(!runAgain) {
       SDL_Delay(500);

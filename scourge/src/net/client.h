@@ -27,6 +27,7 @@ class Client {
   Broadcast *broadcast;
   IPaddress ip;
   Commands *commands;
+  bool tryToReconnect;
 
   static const Uint32 FIND_SERVER_TIMEOUT = 10000;
 
@@ -43,6 +44,8 @@ class Client {
   inline void setGameStateHandler(GameStateHandler *gsh) { this->gsh = gsh; }
   inline GameStateHandler *getGameStateHandler() { return gsh; }
   inline Commands *getCommands() { return commands; }
+  inline void setTryToReconnect(bool b) { tryToReconnect = b; }
+  inline bool getTryToReconnect() { return tryToReconnect; }
 
   inline bool isConnected() { return connected; }
   inline bool isThreadRunning() { return threadRunning; }

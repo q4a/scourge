@@ -158,7 +158,7 @@ int serverLoop(void *data) {
   Uint32 lastTick = 0;
   while(!server->getStopThread()) {
 
-    cerr << "$";
+    //cerr << "$";
 
     // wait for a real long time, if there's no activity
 #if DEBUG_SERVER
