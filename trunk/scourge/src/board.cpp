@@ -137,7 +137,7 @@ Board::~Board() {
 void Board::freeListText() {
   // free ui
   if(availableMissions.size()) {
-	for(int i = 0; i < availableMissions.size(); i++) {
+	for(int i = 0; i < (int)availableMissions.size(); i++) {
 	  free(missionText[i]);
 	}
 	free(missionText);
@@ -179,7 +179,7 @@ void Board::initMissions() {
   for(int level = 0; level <= highest; level++) {
 	if(missions.find(level) == missions.end()) continue;
 	vector<Mission*> *v = missions[level];
-	for(int i = 0; i < v->size(); i++) {
+	for(int i = 0; i < (int)v->size(); i++) {
 	  availableMissions.push_back((*v)[i]);
 	}
   }
@@ -188,7 +188,7 @@ void Board::initMissions() {
   if(availableMissions.size()) {
 	missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
 	missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
-	for(int i = 0; i < availableMissions.size(); i++) {
+	for(int i = 0; i < (int)availableMissions.size(); i++) {
 	  missionText[i] = (char*)malloc(120 * sizeof(char));
 	  sprintf(missionText[i], "L:%d, S:%d, %s%s", 
 			  availableMissions[i]->getLevel(), 

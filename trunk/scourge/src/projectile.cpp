@@ -122,7 +122,7 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
   } else {
 	v = projectiles[creature];
   }
-  if(v->size() > maxProjectiles) return NULL;
+  if((int)v->size() > maxProjectiles) return NULL;
   Projectile *p = new Projectile(creature, target, item, shape);
   v->push_back(p);
   return p;
@@ -150,7 +150,7 @@ void Projectile::moveProjectiles() {
   //cerr << "Projectiles:" << endl;
   map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
   for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-	Creature *creature = i->first;
+	//Creature *creature = i->first;
 	//cerr << "\tcreature: " << creature->getName() << endl;
 	vector<Projectile*> *p = i->second;
 	for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {

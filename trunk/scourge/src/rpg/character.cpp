@@ -48,7 +48,7 @@ void Character::initCharacters() {
   }
 
   Character *last = NULL;
-  char name[255], model[255], skin[255], skill[255];
+  char name[255], model[255], skin[255];
   char line[255];
   int n = fgetc(fp);
   while(n != EOF) {
@@ -106,7 +106,7 @@ Character::Character(char *name, int startingHp, char *model, char *skin, int sk
   this->skin_name = skin;
   this->skill_bonus = skill_bonus;
   this->level_progression = level_progression;
-  sprintf(description, "");
+  strcpy(description, "");
 }
 
 Character::~Character(){  
