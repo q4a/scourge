@@ -1,11 +1,15 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
 LDADD = $(srcdir)/freetype/libScourgeFreeType.a $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a $(srcdir)/net/libScourgeNet.a
 
+AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
+
 SUBDIRS = freetype gui rpg events net
 
 bin_PROGRAMS = scourge
 
 scourge_SOURCES = \
+	prefix.c\
+	prefix.h\
 	constants.cpp\
 	constants.h\
 	frustum.cpp\

@@ -38,7 +38,8 @@ const char *Constants::localhost = "localhost";
 const char *Constants::adminUserName = "admin";
  
 // assign the data dir
-char rootDir[300] = DATA_DIR;
+//char rootDir[300] = DATA_DIR;
+char *rootDir = NULL;
 char configDir[300] = CONFIG_DIR;
 
 int get_config_dir_name( char *buff, int len )
