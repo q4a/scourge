@@ -46,8 +46,12 @@ Widget(x, y, w, h) {
 }
 
 Window::~Window() {
-	delete closeButton;
-  // the window doesn't delete its widgets in case they're used in multiple windows
+  delete closeButton;   
+  // Delete all widgets, may cause problem if someday we use same widgets for 
+  // multiple windows. For now, no problem.
+  for(int i = 0; i < widgetCount ; i++){
+    if(this->widget[i]) delete this->widget[i];
+  }
   removeWindow(this);
 }
 
@@ -166,7 +170,12 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 }
 
 void Window::addWidget(Widget *widget) {
-  if(widgetCount < MAX_WIDGET) this->widget[widgetCount++] = widget;
+  if(widgetCount < MAX_WIDGET){
+    this->widget[widgetCount++] = widget;
+  }
+  else{
+    cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
+  }
 }
 
 void Window::removeWidget(Widget *widget) {
@@ -299,6 +308,55 @@ void Window::drawWidget(Widget *parent) {
   
   //glEnable( GL_DEPTH_TEST );
 }
+
+
+Button *Window::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle){
+    if(widgetCount < MAX_WIDGET){
+        Button * theButton;
+        theButton = new Button(x1, y1, x2, y2, strdup(label));
+    	theButton->setToggle(toggle);	   	
+    	addWidget((Widget *)theButton);
+    	return theButton;
+	}
+	else{
+	   cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
+	   return NULL;
+	}
+} 
+
+Label * Window::createLabel(int x1, int x2, char * label, int color){
+    if(widgetCount < MAX_WIDGET){
+        Label * theLabel;
+        theLabel = new Label(x1, x2, label);  
+          
+        // set new color or keep default color (black)
+        if(color == Constants::RED_COLOR){        
+            theLabel->setColor( 0.8f, 0.2f, 0.0f, 1.0f );            
+        }
+        else if(color == Constants::BLUE_COLOR){
+            theLabel->setColor( 0.0f, 0.3f, 0.9f, 1.0f  );
+        }               
+        addWidget((Widget *)theLabel);     
+        return theLabel;
+    }
+	else{
+	   cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
+	   return NULL;
+	}
+} 
+
+Checkbox * Window::createCheckbox(int x1, int y1, int x2, int y2, char *label){
+    if(widgetCount < MAX_WIDGET){
+        Checkbox * theCheckbox;
+        theCheckbox = new Checkbox(x1, y1, x2, y2, strdup(label));    
+        addWidget((Widget *)theCheckbox);      
+        return theCheckbox;
+    }
+    else{
+	   cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
+	   return NULL;
+	}    
+} 
 
 void Window::scissorToWindow() {
   GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);

@@ -22,6 +22,9 @@
 #include "../sdlhandler.h"
 #include "widget.h"
 #include "button.h"
+#include "label.h"
+#include "checkbox.h"
+
 
 /**
   *@author Gabor Torok
@@ -29,6 +32,9 @@
 
 class SDLHandler;
 class Widget;
+class Button;
+class Label;
+class Checkbox;
 
 class Window : public Widget {
  private:
@@ -43,15 +49,16 @@ class Window : public Widget {
   GLuint texture;
   SDLHandler *sdlHandler;
   Widget *widget[MAX_WIDGET];
+  
   int widgetCount;
   bool dragging;
   int dragX, dragY;
   int openHeight;
   GLint lastTick;
-  int z;
+  int z;  
 
   static Window *window[];
-  static int windowCount;
+  static int windowCount;  
 
  public: 
 	Button *closeButton;
@@ -74,6 +81,10 @@ class Window : public Widget {
   // crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
   void scissorToWindow();
   
+  // widget managment functions
+  Button    * createButton(int x1, int y1, int x2, int y2, char *label, bool toggle=false);    
+  Label     * createLabel(int x1, int x2, char * label, int color=Constants::DEFAULT_COLOR); 
+  Checkbox  * createCheckbox(int x1, int y1, int x2, int y2, char *label);  
   void addWidget(Widget *widget);
   void removeWidget(Widget *widget);
   Widget *handleWindowEvent(SDL_Event *event, int x, int y);
@@ -82,13 +93,16 @@ class Window : public Widget {
   void drawWidget(Widget *parent);
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   bool isInside(int x, int y);
-
+  
+  
   // window management
   static void drawVisibleWindows();
   static void addWindow(Window *win);
   static void removeWindow(Window *win);
   static Widget *delegateEvent(SDL_Event *event, int x, int y);
   static void toTop(Window *win);
+  
+  
 	
  protected:
 };

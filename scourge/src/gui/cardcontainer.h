@@ -25,12 +25,15 @@
 /**
   *@author Gabor Torok
   */
+class Button;
+class Label;
+class Checkbox;
 
 class CardContainer {
  protected:
   static const int MAX_CARDS = 10;
   static const int MAX_WIDGETS = 100;
-
+  
   Widget *containedWidget[MAX_CARDS][MAX_WIDGETS];
   int cardCount;
   int widgetCount[MAX_CARDS];
@@ -41,9 +44,14 @@ class CardContainer {
   CardContainer(Window *window);
   virtual ~CardContainer();
 
+  // widget managment functions
+  Button    * createButton(int x1, int y1, int x2, int y2, char *label, int card, bool toggle=false);   
+  Label     * createLabel(int x1, int x2, char * label, int card, int color=Constants::DEFAULT_COLOR); 
+  Checkbox  * createCheckbox(int x1, int y1, int x2, int y2, char *label, int card);  
+
   void setActiveCard(int card);
   inline int getActiveCard() { return activeCard; }
-  void addWidget(Widget *w, int card);
+  void addWidget(Widget *w, int card, bool addToWindow=true); 
 };
 
 #endif
