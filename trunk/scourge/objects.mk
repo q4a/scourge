@@ -5,7 +5,7 @@ OBJS = \
 	src/gui/checkbox.o src/gui/multiplelabel.o src/gui/draganddrop.o\
 	src/rpg/rpgitem.o src/rpg/character.o src/rpg/monster.o\
 	src/events/event.o src/events/thirsthungerevent.o\
-	src/calendar.o src/date.o src/creature.o src/debugshape.o\
+	src/calendar.o src/date.o src/creature.o\
 	src/effect.o src/dungeongenerator.o src/glshape.o src/gltorch.o\
 	src/glteleporter.o\
 	src/item.o src/location.o src/main.o src/mainmenu.o src/map.o\

@@ -76,14 +76,9 @@ private:
   float ReturnCurrentTime(int nextFrame);
 
 public: 
-	MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
-          GLuint texture[], int width, int depth, int height,
-          char *name,
-          Uint32 color, Uint8 shapePalIndex=0);
-          
     MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
           GLuint texture[], int width, int depth, int height,
-          char *name, char **description, int descriptionCount,
+          char *name, int descriptionGroup,
           Uint32 color, Uint8 shapePalIndex=0);
           
 	inline bool getAttackEffect() { return attackEffect; }

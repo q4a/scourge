@@ -32,31 +32,15 @@
 MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
                    GLuint texture[],
                    int width, int depth, int height,
-                   char *name,
-                   Uint32 color, Uint8 shapePalIndex) :
-  // passing 0 for texture causes glshape to not init, 
-  // 0 for display_list means : no display list available
-#ifdef DEBUG_MD2
-  GLShape(texture, width, depth, height, name, color, display_list, shapePalIndex) {
-#else 
-  //GLShape(0, width, depth, height, name, color, display_list, shapePalIndex) {
-  GLShape(0, width, depth, height, name, color, 0, shapePalIndex) {
-#endif    
-  commonInit(g_3DModel, textureId, div);    
-}
-
-MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
-                   GLuint texture[],
-                   int width, int depth, int height,
-                   char *name, char **description, int descriptionCount,
+                   char *name, int descriptionGroup,
                    Uint32 color, Uint8 shapePalIndex) :
   // passing 0 for texture causes glshape to not init
   // 0 for display_list means : no display list available
 #ifdef DEBUG_MD2
-  GLShape(texture, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+  GLShape(texture, width, depth, height, name, descriptionGroup, color, display_list, shapePalIndex) {
 #else
   //GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
-  GLShape(0, width, depth, height, name, description, descriptionCount, color, 0, shapePalIndex) {
+  GLShape(0, width, depth, height, name, descriptionGroup, color, 0, shapePalIndex) {
 #endif
   commonInit(g_3DModel, textureId, div);    
 }

@@ -1005,7 +1005,7 @@ void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) 
 	char s[300];
   if(mapx < MAP_WIDTH) {
 	if(button == SDL_BUTTON_RIGHT) {
-	  //	  fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
+	  //fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
 	  Location *loc = getPosition(mapx, mapy, mapz);
 	  if(loc) {
 		char *description = NULL;
@@ -1024,12 +1024,11 @@ void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) 
 			Shape *shape = loc->shape;
 			//fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
 			if(shape) {
-			  description = shape->getRandomDescription();
+			  description = scourge->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
 			}        
 		  }
 		}
 		if(description) {
-		  //            map->addDescription(x, y, mapx, mapy, mapz, description);
 		  addDescription(description);
 		}
 	  }

@@ -28,20 +28,17 @@ class Shape {
 private:
   Uint8 index;
   char *name;
-  char **description;
-  int descriptionCount;  
+  int descriptionGroup;  
   bool stencil;
 
 protected:
   int width, height, depth;
   
 public: 
-	Shape(int width, int depth, int height, char *name, char **description, int descriptionCount);
+	Shape(int width, int depth, int height, char *name, int descriptionGroup);
 	Shape(Shape *shape);
 	virtual ~Shape();
 
-  char *getRandomDescription();
-  
   /**
     The widht (x) of the shape-block's base
   */
@@ -56,14 +53,13 @@ public:
   inline int getHeight() { return height; }
 
   inline char *getName() { return name; }
-  inline char **getDescription() { return description; }
-  inline int getDescriptionCount() { return descriptionCount; }
+  inline int getDescriptionGroup() { return descriptionGroup; }
 
   virtual void draw() = 0;
-
-	inline void setIndex(Uint8 index) { this->index = index; }
-
-	inline Uint8 getIndex() { return index; }
+  
+  inline void setIndex(Uint8 index) { this->index = index; }
+  
+  inline Uint8 getIndex() { return index; }
 
   /**
     Draw after all the others?

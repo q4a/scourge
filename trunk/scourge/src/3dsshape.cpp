@@ -24,29 +24,14 @@
 C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
 					 GLuint texture[],
 					 int width, int depth, int height,
-					 char *name,
-					 Uint32 color, GLuint display_list, Uint8 shapePalIndex, 
-					 int offsetx, int offsety) :
-  // passing 0 for texture causes glshape to not init
-#ifdef DEBUG_3DS
-  GLShape(texture, width, depth, height, name, color, display_list, shapePalIndex) {
-#else
-	GLShape(0, width, depth, height, name, color, display_list, shapePalIndex) {
-#endif
-	commonInit(file_name, div, shapePal, offsetx, offsety);    
-}
-
-C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
-					 GLuint texture[],
-					 int width, int depth, int height,
-					 char *name, char **description, int descriptionCount,
+					 char *name, int descriptionGroup,
 					 Uint32 color, GLuint display_list, Uint8 shapePalIndex,
 					 int offsetx, int offsety) :
   // passing 0 for texture causes glshape to not init
 #ifdef DEBUG_3DS
-  GLShape(texture, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+  GLShape(texture, width, depth, height, name, descriptionGroup, color, display_list, shapePalIndex) {
 #else
-	GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+	GLShape(0, width, depth, height, name, descriptionGroup, color, display_list, shapePalIndex) {
 #endif
 	commonInit(file_name, div, shapePal, offsetx, offsety);    
 }

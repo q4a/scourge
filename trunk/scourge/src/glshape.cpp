@@ -28,20 +28,11 @@ static unsigned char data2[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3];
 
 GLShape::GLShape(GLuint tex[],
                  int width, int depth, int height,
-                 char *name,
-                 Uint32 color, GLuint display_list,
-                 Uint8 shapePalIndex) :
-  Shape(width, depth, height, name, NULL, 0) {
-  commonInit(tex, color, display_list, shapePalIndex);
-}
-
-GLShape::GLShape(GLuint tex[],
-                 int width, int depth, int height,
-                 char *name, char **description, int descriptionCount,
+                 char *name, int descriptionGroup,
                  Uint32 color,
                  GLuint display_list,
                  Uint8 shapePalIndex) :
-  Shape(width, depth, height, name, description, descriptionCount) {
+  Shape(width, depth, height, name, descriptionGroup) {
   commonInit(tex, color, display_list, shapePalIndex);
 }
 

@@ -18,16 +18,15 @@
 #ifndef SHAPEPALETTE_H
 #define SHAPEPALETTE_H
 
-#include <string.h>
-#include <vector.h>
-#include <map.h>
+#include <string>
+#include <vector>
+#include <map>
 #include "constants.h"
 #include "shape.h"
 #include "glshape.h"
 #include "gltorch.h"
 #include "glteleporter.h"
 #include "gllocator.h"
-#include "debugshape.h"
 #include "md2shape.h"
 #include "3dsshape.h"
 #include "Md2.h"
@@ -92,9 +91,7 @@ private:
   const static Sint16 wallHeight = MAP_WALL_HEIGHT;
 
   // shape descriptions
-  char description[100][200];
-  int descriptionIndex[100], descriptionLength[100];
-  int descriptionCount, descriptionIndexCount;
+  vector<vector<string>*> descriptions;
 
   // temp. shape data
   vector<ShapeValues*> shapeValueVector;
@@ -154,6 +151,8 @@ public:
   void decrementSkinRefCount(char *skin_name);
   // use this method to get a meta-shape for the creature (good for mearuring 'fit'-s in dungeongenerator
   inline GLShape *getCreatureBlockShape(char *name) { string s = name; return creature_block_shapes[s]; }
+
+  char *getRandomDescription(int descriptionGroup);
 
 protected:
   GLuint loadGLTextures(char *fileName);

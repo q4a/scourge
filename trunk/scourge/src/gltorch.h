@@ -37,17 +37,11 @@ private:
   int torch_dir;
   
 public:
-	GLTorch(GLuint texture[], GLuint flameTex,
-			int width, int depth, int height,
-			char *name,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, 
-			GLuint torchback=0, int torch_dir=Constants::NORTH);
-
-	GLTorch(GLuint texture[], GLuint flameTex,
-			int width, int depth, int height,
-			char *name, char **description, int descriptionCount,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, 
-			GLuint torchback=0, int torch_dir=Constants::NORTH);
+  GLTorch(GLuint texture[], GLuint flameTex,
+		  int width, int depth, int height,
+		  char *name, int descriptionGroup,
+		  Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, 
+		  GLuint torchback=0, int torch_dir=Constants::NORTH);
 	
   ~GLTorch();
   
