@@ -843,7 +843,7 @@ int Creature::getMaxProjectileCount(Item *item) {
 }
 
 // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
-int Creature::getToHit(Item *weapon) {
+int Creature::getToHit(Item *weapon, int *maxToHit, int *rolledToHit) {
   float tohit = getSkill(Constants::COORDINATION) + getSkill(Constants::LUCK) / 2;
   if(weapon && weapon->getRpgItem()->getSkill() > -1) {
     tohit += getSkill(weapon->getRpgItem()->getSkill());
@@ -852,26 +852,45 @@ int Creature::getToHit(Item *weapon) {
   }
   // so far the max score is 250
 
-  // tohit = 75% of tohit + (rand(25% of tohit))
-  float score = (0.75f * tohit) + ((0.25f * tohit) * rand()/RAND_MAX);
+  if(maxToHit) *maxToHit = (int)(tohit / 2.5f);
+
+  // roll it
+  float score = (tohit * rand()/RAND_MAX);
+  
   // convert to 0-100 value
-  return(int)(score / 2.5f);
+  int ret = (int)(score / 2.5f);
+
+  if(rolledToHit) *rolledToHit = ret;
+  return ret;
 }
 
 // return the damage as:
-// rand(weapon + power + (skill - 50 % weapon))
-int Creature::getDamage(Item *weapon) {
+int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
   float damage = 0.0f;
+  // get the base damage
   float baseDamage = (weapon ? weapon->getRpgItem()->getAction() : 
                       (getSkill(Constants::POWER) / 10));
-  damage = getLevel() * baseDamage;
+  damage = baseDamage;
+
+  // add strength proficiency (10% of strength=0-10 pts)
   damage += (float)getSkill(Constants::POWER) / 10.0f;
 
   float skill = (weapon && weapon->getRpgItem()->getSkill() > -1 ?
                  getSkill(weapon->getRpgItem()->getSkill()) :
                  getSkill(Constants::HAND_TO_HAND_COMBAT));
-  damage = damage + (damage * ((skill - 50) / 100.0f) );
-  return(int)(damage * .7 + ((damage * 0.3) * rand()/RAND_MAX));
+  
+  // add 50% of value, more via skill proficiency
+  if(skill > 50.0f) {
+    damage += (damage * ((skill - 50) / 100.0f) );
+  }
+
+  if(maxDamage) *maxDamage = (int)damage;
+
+  // return the 70% of value + 30% random
+  int ret = (int)((damage * .7) + ((damage * 0.3) * rand()/RAND_MAX));
+
+  if(rolledDamage) *rolledDamage = ret;
+  return ret;
 }
 
 /**

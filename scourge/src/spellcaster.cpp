@@ -44,7 +44,7 @@ SpellCaster::~SpellCaster() {
 void SpellCaster::spellFailed() {
   if(!spell) return;
 
-  cerr << "FAILED: " << spell->getName() << " power=" << power << endl;
+//  cerr << "FAILED: " << spell->getName() << " power=" << power << endl;
 
   // put code here for spells with something spectacular when they fail...
   // (fouled fireball decimates party, etc.)
@@ -56,7 +56,7 @@ void SpellCaster::spellFailed() {
 void SpellCaster::spellSucceeded() {
   if(!spell) return;
 
-  cerr << "SUCCEEDED: " << spell->getName() << " power=" << power << endl;
+//  cerr << "SUCCEEDED: " << spell->getName() << " power=" << power << endl;
   if(!strcasecmp(spell->getName(), "Lesser healing touch") ||
      !strcasecmp(spell->getName(), "Greater healing touch") ||
      !strcasecmp(spell->getName(), "Divine healing touch")) {
@@ -142,7 +142,7 @@ void SpellCaster::launchProjectile(int count, bool stopOnImpact) {
   if(n == 0) {
     n = creature->getLevel();
     if( n < 1 ) n = 1;
-    cerr << "launching " << n << " spell projectiles!" << endl;
+//    cerr << "launching " << n << " spell projectiles!" << endl;
   }
 
   // FIXME: projectile shape should be configurable per spell
@@ -167,8 +167,11 @@ void SpellCaster::launchProjectile(int count, bool stopOnImpact) {
 void SpellCaster::causeDamage() {
   Creature *creature = battle->getCreature();
 
-  int damage = spell->getAction() * creature->getLevel();
-  cerr << "causes " << damage << " points of damage" << endl;
+  // roll for the spell damage
+  int damage = 0;
+  for(int i = 0; i < creature->getLevel(); i++) {
+    damage += (int)((float)spell->getAction() * rand()/RAND_MAX);
+  }
 
   char msg[200];
   sprintf(msg, "%s attacks %s with %s.", 
@@ -178,7 +181,9 @@ void SpellCaster::causeDamage() {
   battle->getScourge()->getMap()->addDescription(msg, 1, 0.15f, 1);
 
   // cause damage, kill creature, gain levels, etc.
-  battle->dealDamage(damage, spell->getEffect());
+  battle->dealDamage(damage, 
+                     spell->getAction() * creature->getLevel(), 
+                     spell->getEffect());
 }
 
 void SpellCaster::setStateMod(int mod) {
@@ -212,7 +217,7 @@ void SpellCaster::setStateMod(int mod) {
     // (format : sec, min, hours, days, months, years)
     Calendar *cal = battle->getScourge()->getParty()->getCalendar();
     int timeInMin = 2 * battle->getCreature()->getLevel();
-    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
+//    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
     Date d(0, timeInMin, 0, 0, 0, 0); 
     Event *e = new StateModExpirationEvent(cal->getCurrentDate(), 
                                            d, creature, mod, battle->getScourge(), 1);

@@ -165,57 +165,60 @@ void Board::initMissions() {
   int lowest = -1;
   int sum = 0;
   for(int i = 0; i < 4; i++) {
-	if(highest < scourge->getParty()->getParty(i)->getLevel()) {
-	  highest = scourge->getParty()->getParty(i)->getLevel();
-	} else if(lowest == -1 || lowest > scourge->getParty()->getParty(i)->getLevel()) {
-	  lowest = scourge->getParty()->getParty(i)->getLevel();
-	}
-	sum += scourge->getParty()->getParty(i)->getLevel();
+    // a mission level is about 1.5 times the equivalent player level
+    int n = (int)((float)scourge->getParty()->getParty(i)->getLevel() /  1.5f);
+    if(n < 1) n = 1;
+    if(highest < n) {
+      highest = n;
+    } else if(lowest == -1 || lowest > n) {
+      lowest = n;
+    }
+    sum += n;
   }
   int ave = (int)((float)sum / (float)scourge->getParty()->getPartySize());
 
   // find missions
   availableMissions.clear();  
   for(int level = 0; level <= highest; level++) {
-	if(missions.find(level) == missions.end()) continue;
-	vector<Mission*> *v = missions[level];
-	for(int i = 0; i < (int)v->size(); i++) {
-	  availableMissions.push_back((*v)[i]);
-	}
+    if(missions.find(level) == missions.end()) continue;
+    vector<Mission*> *v = missions[level];
+    for(int i = 0; i < (int)v->size(); i++) {
+      availableMissions.push_back((*v)[i]);
+    }
   }
 
   // init ui
   if(availableMissions.size()) {
-	missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
-	missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
-	for(int i = 0; i < (int)availableMissions.size(); i++) {
-	  missionText[i] = (char*)malloc(120 * sizeof(char));
-	  sprintf(missionText[i], "L:%d, S:%d, %s%s", 
-			  availableMissions[i]->getLevel(), 
-			  availableMissions[i]->getDungeonStoryCount(), 
-			  availableMissions[i]->getName(),
-			  (availableMissions[i]->isCompleted() ? "(completed)" : ""));
-	  missionColor[i].r = 1.0f;
-	  missionColor[i].g = 1.0f;
-	  missionColor[i].b = 0.0f;
-	  if(availableMissions[i]->isCompleted()) {
-		missionColor[i].r = 0.5f;
-		missionColor[i].g = 0.5f;
-		missionColor[i].b = 0.5f;
-	  } else if(availableMissions[i]->getLevel() < ave) {
-		missionColor[i].r = 1.0f;
-		missionColor[i].g = 1.0f;
-		missionColor[i].b = 1.0f;
-	  } else if(availableMissions[i]->getLevel() > ave) {
-		missionColor[i].r = 1.0f;
-		missionColor[i].g = 0.0f;
-		missionColor[i].b = 0.0f;
-	  }
-	  if(i == 0) {
-		missionDescriptionLabel->setText((char*)availableMissions[i]->getStory());
-	  }
-	}
-	missionList->setLines(availableMissions.size(), (const char**)missionText, missionColor);
+    missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
+    missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
+    for(int i = 0; i < (int)availableMissions.size(); i++) {
+      missionText[i] = (char*)malloc(120 * sizeof(char));
+      sprintf(missionText[i], "L:%d, S:%d, %s%s", 
+              availableMissions[i]->getLevel(), 
+              availableMissions[i]->getDungeonStoryCount(), 
+              availableMissions[i]->getName(),
+              (availableMissions[i]->isCompleted() ? "(completed)" : ""));
+      missionColor[i].r = 1.0f;
+      missionColor[i].g = 1.0f;
+      missionColor[i].b = 0.0f;
+      if(availableMissions[i]->isCompleted()) {
+        missionColor[i].r = 0.5f;
+        missionColor[i].g = 0.5f;
+        missionColor[i].b = 0.5f;
+      } else if(availableMissions[i]->getLevel() < ave) {
+        missionColor[i].r = 1.0f;
+        missionColor[i].g = 1.0f;
+        missionColor[i].b = 1.0f;
+      } else if(availableMissions[i]->getLevel() > ave) {
+        missionColor[i].r = 1.0f;
+        missionColor[i].g = 0.0f;
+        missionColor[i].b = 0.0f;
+      }
+      if(i == 0) {
+        missionDescriptionLabel->setText((char*)availableMissions[i]->getStory());
+      }
+    }
+    missionList->setLines(availableMissions.size(), (const char**)missionText, missionColor);
   }
 }
 
