@@ -50,12 +50,12 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 
 #if defined( COMPILER_IS_UNIX_COMPATIBLE )
 #   include <unistd.h>
-#   include <sys/types.h>
 #   include <pwd.h>
 #   include <dirent.h>
 #   include <sys/time.h>
 #   include <sys/types.h>
 #   include <dirent.h>
+#   include <sys/stat.h>
 #endif
 
 using namespace std;
@@ -70,8 +70,8 @@ using namespace std;
   Data and config dirs. Shamelessly borrowed from tuxracer.
  */
 #if defined( WIN32 )
-#  define CONFIG_DIR "saved"
-#  define CONFIG_FILE "scourge.cfg"
+#  define CONFIG_DIR "."
+#  define CONFIG_FILE "options.txt"
 #else
 #  define CONFIG_DIR ".scourge"
 #  define CONFIG_FILE "options"

@@ -239,8 +239,9 @@ private:
 
 	inline void setStencilBufInitialized(bool b) { stencilBufInitialized = b; }
 	inline bool getStencilBufInitialized() { return stencilBufInitialized; }
-  
-  
+
+ protected:  
+	void createDefaultConfigFile();
 };
 
 #endif
