@@ -60,6 +60,8 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     gameSpeedML -> addText(strdup("Fastest"));    
     cards->addWidget(gameSpeedML, GAME_SETTINGS);
     alwaysCenterMapCheckbox = cards->createCheckbox(100, 120, 258, 140, "Always center map", GAME_SETTINGS);
+    keepMapSize = cards->createCheckbox(100, 160, 258, 180, "Keep zoom when switching layouts", GAME_SETTINGS);
+    frameOnFullScreen = cards->createCheckbox(100, 200, 258, 220, "Frame map in fullscreen mode", GAME_SETTINGS);
    
     // Video settings tabs        
     videoResolutionML = new MultipleLabel(100, 40, 300, 60, "Screen resolution", 100);
@@ -93,7 +95,8 @@ void OptionsMenu::loadGameSettings(){
         
     gameSpeedML->setText(gameSpeedML->getNbText() - uc->getGameSpeedLevel() - 1);
     alwaysCenterMapCheckbox->setCheck(uc->getAlwaysCenterMap());
-
+    keepMapSize->setCheck(uc->getKeepMapSize());
+    frameOnFullScreen->setCheck(uc->getFrameOnFullScreen());
 }
 
 // line i must correspond to engine action i if we want this scrolling list to work
@@ -246,6 +249,12 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     }
     else if(widget == alwaysCenterMapCheckbox){
         uc -> setAlwaysCenterMap(alwaysCenterMapCheckbox->isChecked());
+    }
+    else if(widget == keepMapSize){
+        uc ->setKeepMapSize(keepMapSize->isChecked());
+    }
+    else if(widget == frameOnFullScreen){
+        uc ->setFrameOnFullScreen(frameOnFullScreen->isChecked());
     }
     else if(widget == videoResolutionML){
         string line, s1, s2;
