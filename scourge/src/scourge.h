@@ -206,6 +206,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   bool willStartDrag;
   int willStartDragX, willStartDragY;
   GLUquadric *quadric;
+  bool showPath;
 
 protected:
   SDLHandler *sdlHandler;
@@ -255,6 +256,8 @@ public:
 
   int getScreenWidth();
   int getScreenHeight();
+
+  inline void setShowPath( bool b ) { showPath = b; }
 
   /**
     @return the Board containing the available missions.

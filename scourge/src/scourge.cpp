@@ -48,6 +48,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   nextMission = -1;
   // in HQ map
   inHq = true;
+  showPath = config->getAlwaysShowPath();
 
   layoutMode = Constants::GUI_LAYOUT_BOTTOM;
   
@@ -556,12 +557,12 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   // show path
   if(player && 
      session->getUserConfiguration()->isBattleTurnBased() && 
-     battleTurn < (int)battleRound.size() ) {
+     battleTurn < (int)battleRound.size() && showPath ) {
     for( int i = creature->getProposedPathIndex(); 
          i < (int)creature->getProposedPath()->size() && 
          i <= creature->getBattle()->getAP(); i++) {
       Location pos = (*(creature->getProposedPath()))[i];
-      glColor4f(1, 0.4f, 0.0f, 1);
+      glColor4f(1, 0.4f, 0.0f, 0.5f);
       xpos2 = ((float)(pos.x - map->getX()) / GLShape::DIV);
       ypos2 = ((float)(pos.y - map->getY()) / GLShape::DIV);
       zpos2 = 0.0f / GLShape::DIV;  
@@ -991,7 +992,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
     // END OF DEBUG ------------------------------------
 
-
   case SDL_KEYUP:
 
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
@@ -1002,6 +1002,14 @@ bool Scourge::handleEvent(SDL_Event *event) {
         exitConfirmationDialog->setVisible(true);
       }	  
       return false;
+    } 
+
+    if( event->key.keysym.sym == SDLK_p ) {
+      if( event->type == SDL_KEYUP ) {
+        showPath = getUserConfiguration()->getAlwaysShowPath();
+      } else {
+        showPath = true;
+      }
     }
     
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
@@ -1190,7 +1198,8 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
       battleTurn < (int)battleRound.size() ) {
     Creature *c = battleRound[battleTurn]->getCreature();
     if( !c->isMonster() &&
-        !( c->getProposedX() == mapx && c->getProposedY() == mapy ) ) {
+        !( c->getProposedX() == mapx && c->getProposedY() == mapy ) &&
+        showPath ) {
       battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
     }
   }

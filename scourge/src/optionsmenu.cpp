@@ -62,6 +62,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     keepMapSize = cards->createCheckbox(100, 160, 258, 180, "Keep zoom when switching layouts", GAME_SETTINGS);
     frameOnFullScreen = cards->createCheckbox(100, 200, 258, 220, "Frame map in fullscreen mode", GAME_SETTINGS);
     turnBasedBattle = cards->createCheckbox(100, 240, 258, 260, "Is battle turn-based?", GAME_SETTINGS);
+    alwaysShowPath = cards->createCheckbox(100, 280, 258, 300, "Show path in TB battle?", GAME_SETTINGS);
    
     // Video settings tabs        
     videoResolutionML = new MultipleLabel(100, 40, 300, 60, "Screen resolution", 100);
@@ -105,6 +106,7 @@ void OptionsMenu::loadGameSettings(){
     keepMapSize->setCheck(uc->getKeepMapSize());
     frameOnFullScreen->setCheck(uc->getFrameOnFullScreen());
     turnBasedBattle->setCheck(uc->isBattleTurnBased());
+    alwaysShowPath->setCheck(uc->getAlwaysShowPath());
     musicVolume->setValue(scourge->getUserConfiguration()->getMusicVolume());
     effectsVolume->setValue(scourge->getUserConfiguration()->getEffectsVolume());
 }
@@ -268,6 +270,10 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     }
     else if(widget == turnBasedBattle){
         uc ->setBattleTurnBased(turnBasedBattle->isChecked());
+    }
+    else if(widget == alwaysShowPath){
+        uc ->setAlwaysShowPath(alwaysShowPath->isChecked());
+        scourge->setShowPath(alwaysShowPath->isChecked());
     }
     else if(widget == videoResolutionML){
         string line, s1, s2;

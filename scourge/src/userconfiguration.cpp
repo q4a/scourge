@@ -187,6 +187,7 @@ UserConfiguration::UserConfiguration(){
     w = 800;
     h = 600;
     shadows = 0;
+    alwaysShowPath = true;
     
     // game settings
     gamespeed = 1;  // fast speed
@@ -436,6 +437,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set turnbasedbattle %s\n", turnBasedBattle ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set alwaysshowpath %s\n", alwaysShowPath ? "true":"false");
+    writeFile(configFile, textLine);
     sprintf(textLine, "\n// Audio settings\n");
     writeFile(configFile, textLine);
     sprintf(textLine, "set soundenabled %s\n", soundEnabled ? "true" : "false");
@@ -513,7 +516,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
        s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
        s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle" ||
-       s1 == "soundenabled" ){
+       s1 == "soundenabled" || s1 == "alwaysshowpath" ){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -603,6 +606,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
       turnBasedBattle = paramValue;
     } else if(s1 == "soundenabled") {
       soundEnabled = paramValue;
+    }
+    else if(s1 == "alwaysshowpath" ) {
+      alwaysShowPath = paramValue;
     }
     else if(s1 == "gamespeed"){        
         gamespeed = atoi(s2.c_str());
@@ -988,6 +994,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set keepmapsize true" << endl;
   configFile << "set frameonfullscreen true" << endl;
   configFile << "set turnbasedbattle true" << endl;
+  configFile << "set alwaysshowpath false" << endl;
   configFile << "" << endl;
   configFile << "// Audio settings" << endl;
   configFile << "set soundenabled true" << endl;
