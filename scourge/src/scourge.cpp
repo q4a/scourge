@@ -624,6 +624,25 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   Uint16 mapx, mapy, mapz;
   if(button == SDL_BUTTON_LEFT) {
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+
+	// clicking on a creature
+	if(!movingItem && mapx < MAP_WIDTH) {
+		Location *loc = map->getLocation(mapx, mapy, mapz);
+		if(loc && loc->creature) {
+			if(loc->creature->isMonster()) {
+				// fight/talk/trade?
+			} else {
+				// select player
+				for(int i = 0; i < 4; i++) {
+					if(party[i] == loc->creature) {
+						setPlayer(i);
+						return;
+					}
+				}
+			}
+		}
+	}	
+
 	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
 	if(useItem(mapx, mapy)) return;
 	getMapXYAtScreenXY(x, y, &mapx, &mapy);
