@@ -86,6 +86,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 		battle[i]->creature->setTargetCreature(NULL);
 		if(battle[i]->creature->isMonster()) {
 		  battle[i]->creature->setMotion(Constants::MOTION_LOITER);
+		  battle[i]->creature->setDistanceRange(0, 0);
 
 		  action = LOITER;
 		} else {
@@ -100,7 +101,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 
 		// FIXME: clean this up
 		// creature won't fight if too far from the action (!item is a bare-hands attack)
-		if(1 || battle[i]->item || battle[i]->dist <= 1.0f) {
+		if(1 || battle[i]->item || battle[i]->dist <= Constants::MIN_DISTANCE) {
 
 		  // check the creature's initiative
 		  if(!battle[i]->initiativeCheck || 
@@ -187,7 +188,7 @@ void Battle::fightTurn() {
 
   // too far? then keep following the target
   // also check if too close when using ranged weapons
-  if(!(dist <= 1.0f || item) || 
+  if(!(dist <= Constants::MIN_DISTANCE || item) || 
 	 !creature->isWithinDistanceRange()) {
 	creature->setSelXY(creature->getTargetCreature()->getX(),
 					   creature->getTargetCreature()->getY(),
@@ -203,7 +204,7 @@ void Battle::fightTurn() {
 			creatureInitiative, itemSpeed);
 	scourge->getMap()->addDescription(message);
 	((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
-  } else if(dist <= 1.0f) {
+  } else if(dist <= Constants::MIN_DISTANCE) {
 	sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
 			creature->getName(), 
 			creature->getTargetCreature()->getName(),
@@ -302,7 +303,7 @@ void Battle::selectBestItem() {
   Item *i = creature->getBestWeapon(dist);
 
   // set up distance range for ranged weapons
-  creature->setDistanceRange(0, 0);
+  creature->setDistanceRange(0, Constants::MIN_DISTANCE);
   if(i) {
 	float range = i->getRpgItem()->getDistance();
 	if(range >= 8) {

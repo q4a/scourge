@@ -359,6 +359,8 @@ public:
   // the speed when hand fighting is used instead of a weapon
   static const int HAND_WEAPON_SPEED = 10;
 
+  static const float MIN_DISTANCE = 1.0f;
+
   Constants();
   ~Constants();
 

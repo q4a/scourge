@@ -1326,6 +1326,7 @@ void Scourge::moveMonster(Creature *monster) {
 	  if(dist < 20.0) {
 		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
 		monster->setTargetCreature(party->getParty(n));
+		monster->setDistanceRange(0, Constants::MIN_DISTANCE);
 	  }
 	} else {
 	  // random (non-attack) monster movement
@@ -1349,21 +1350,16 @@ void Scourge::moveMonster(Creature *monster) {
 	if((int)(20.0f * rand()/RAND_MAX) == 0) {
 	  monster->setMotion(Constants::MOTION_LOITER);
 	  monster->setTargetCreature(NULL);
-	} else {
+	} else {	
 	  // creature won't fight if too far from the action 
-	  float dist = Constants::distance(monster->getX(), 
-									   monster->getY(), 
-									   monster->getShape()->getWidth(),
-									   monster->getShape()->getDepth(),
-									   monster->getTargetCreature()->getX(),
-									   monster->getTargetCreature()->getY(),
-									   monster->getTargetCreature()->getShape()->getWidth(),
-									   monster->getTargetCreature()->getShape()->getDepth());
+	  float dist = monster->getDistanceToTargetCreature();
 	  Item *item = monster->getBestWeapon(dist);
-	  if(item || dist <= 1.0) {
+	  if(item || dist <= Constants::MIN_DISTANCE) {
 		monster->stopMoving(); // fps optimization
 	  } else {
 		monster->moveToLocator(map);
+		// FIXME: should be different for ranged weapons
+		monster->setDistanceRange(0, Constants::MIN_DISTANCE);
 	  }
 	}
   }

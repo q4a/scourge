@@ -639,8 +639,7 @@ void Map::draw() {
 			Battle::projectileHitTurn(scourge, proj, loc->creature);
 			blocked = true;
 		  } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
-					(loc->creature && loc->creature != proj->getCreature()) || 
-					(!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 4)) {
+					(!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
 			// hit something
 			blocked = true;
 		  }		  
