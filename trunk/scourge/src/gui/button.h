@@ -38,6 +38,7 @@ class Button : public Widget {
   bool selected;
   GLuint highlight;
   bool glowing;
+  bool inverse;
 
  public: 
 
