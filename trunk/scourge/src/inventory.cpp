@@ -154,6 +154,9 @@ Inventory::Inventory(Scourge *scourge) {
   spellDescriptionLabel = new Label(115, 325, "", 50);
   cards->addWidget(spellDescriptionLabel, SPELL);
   castButton = cards->createButton( 0, 120, 105, 140, "Cast", SPELL);
+  quickSpell1 = cards->createButton( 0, 140, 105, 160, "Quick Spell 1", SPELL);
+  quickSpell2 = cards->createButton( 0, 160, 105, 180, "Quick Spell 2", SPELL);
+  quickSpell3 = cards->createButton( 0, 180, 105, 200, "Quick Spell 3", SPELL);
 
 
   // -------------------------------------------
@@ -409,12 +412,29 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == spellList) {
     Spell *spell = getSelectedSpell();
     if(spell) showSpellDescription(spell);
+  } else if( widget == quickSpell1 ) {
+    Spell *spell = getSelectedSpell();
+    if(spell) creature->setQuickSpell( 0, spell );
+  } else if( widget == quickSpell2 ) {
+    Spell *spell = getSelectedSpell();
+    if(spell) creature->setQuickSpell( 1, spell );
+  } else if( widget == quickSpell3 ) {
+    Spell *spell = getSelectedSpell();
+    if(spell) creature->setQuickSpell( 2, spell );
   } else if(widget == castButton) {
     Spell *spell = getSelectedSpell();
     if(spell) {
       if(spell->getMp() > creature->getMp()) {
         scourge->showMessageDialog("Not enough Magic Points to cast this spell!");
       } else {
+        // set this as a quickspell if there is space
+        for( int i = 0; i < 3; i++ ) {
+          if( !creature->getQuickSpell( i ) ) {
+            creature->setQuickSpell( i, spell );
+            break;
+          }
+        }
+
         creature->setAction(Constants::ACTION_CAST_SPELL, 
                             NULL,
                             spell);
