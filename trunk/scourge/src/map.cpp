@@ -43,8 +43,9 @@ Map::Map(Scourge *scourge){
   this->zrot = 45.0f;
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
-  this->xpos = (float)(scourge->getSDLHandler()->getScreen()->w) / 2.0f;
-  this->ypos = (float)(scourge->getSDLHandler()->getScreen()->h) / 2.0f;
+  float adjust = (float)scourge->getSDLHandler()->getScreen()->w / 800.0f;
+  this->xpos = (float)(scourge->getSDLHandler()->getScreen()->w) / 2.0f / adjust;
+  this->ypos = (float)(scourge->getSDLHandler()->getScreen()->h) / 2.0f / adjust;
   this->zpos = 0.0f;  
   
   this->scourge = scourge;  
@@ -629,10 +630,11 @@ void Map::showCreatureInfo(Creature *creature) {
 void Map::initMapView(bool ignoreRot) {
   glLoadIdentity();
 
-  glScalef(zoom, zoom, zoom);
   // adjust for screen size
   float adjust = (float)scourge->getSDLHandler()->getScreen()->w / 800.0f;
   glScalef(adjust, adjust, adjust);
+
+  glScalef(zoom, zoom, zoom);
   
   // translate the camera and rotate
   // the offsets ensure that the center of rotation is under the player
