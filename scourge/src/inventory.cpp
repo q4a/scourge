@@ -603,8 +603,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   case MISSION:
     int objectiveCount = 0;
     if(scourge->getSession()->getCurrentMission()) {
-      sprintf(missionText, "%s: %s", 
-              scourge->getSession()->getCurrentMission()->getName(), 
+      sprintf(missionText, "%s:|Depth: %d out of %d.|%s", 
+              scourge->getSession()->getCurrentMission()->getName(),
+              (scourge->getCurrentStory() + 1),
+              scourge->getSession()->getCurrentMission()->getDepth(),
               scourge->getSession()->getCurrentMission()->getDescription());
       objectiveCount = 
       scourge->getSession()->getCurrentMission()->getItemCount() +

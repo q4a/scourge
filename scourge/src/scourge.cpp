@@ -298,7 +298,7 @@ void Scourge::startMission() {
     if(nextMission == -1) {
       sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
     } else {
-      sprintf(infoMessage, "Entering dungeon level %d", currentStory);
+      sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
     }
     showMessageDialog(infoMessage);
     info_dialog_showing = true;

@@ -272,6 +272,8 @@ public:
   Scourge(UserConfiguration *config);
   ~Scourge();
 
+  inline int getCurrentStory() { return currentStory; }
+
   inline bool isHeadless() { return false; }
 
   inline Session *getSession() { return session; }
