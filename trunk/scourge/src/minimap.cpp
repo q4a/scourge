@@ -315,6 +315,19 @@ void MiniMap::drawWidget(Widget *w) {
   else glDisable( GL_TEXTURE_2D );
   if( alphaEnabled ) glEnable( GL_ALPHA_TEST );
   else glDisable(GL_ALPHA_TEST);
+
+
+  // Print date
+  if(scourge->getParty()->getCalendar()->
+     update(scourge->getUserConfiguration()->getGameSpeedLevel())){
+    glPushMatrix();   
+    glLoadIdentity();  
+    glTranslatef(win->getX() + 5, win->getY() + win->getHeight() - Window::BOTTOM_HEIGHT - 10, 0);  
+    scourge->getSDLHandler()->texPrint( 0, 0, scourge->getParty()->getCalendar()->
+                                        getCurrentDate().getDateString());
+    glPopMatrix();
+  }
+
   glDisable(GL_SCISSOR_TEST);
 
 }
