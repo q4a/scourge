@@ -284,6 +284,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     if(event->key.keysym.sym == SDLK_ESCAPE){
         player->setSelXY(-1, -1);   // stop moving
         movingItem = NULL;          // stop moving items
+				move = 0;
         return true;
     }
     

@@ -120,8 +120,8 @@ UserConfiguration::UserConfiguration(){
     }
     
     // Build (string engineActionUp <-> int engineActionUp ) lookup table
-    for (i = 0; i < ENGINE_ACTION_UP_COUNT ; i++){
-        temp = ENGINE_ACTION_UP_NAMES[i];
+    for (i = SET_MOVE_DOWN_STOP; i < ENGINE_ACTION_UP_COUNT ; i++){
+        temp = ENGINE_ACTION_UP_NAMES[i - SET_MOVE_DOWN_STOP];
         for(j = 0; j < temp.length(); j++){
             temp[j] = tolower(temp[j]);                                 
         } 
@@ -308,7 +308,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
 //    Bind   sdl_name_of_key    engineAction
 // OR Bind   sdl_mouse_button   engineAction
 void UserConfiguration::bind(string s1, string s2, int lineNumber){        
-    int i;    
+    int i;  
     
     if(DEBUG_USER_CONFIG){
         cout << "line : " << lineNumber << " ";        
@@ -322,7 +322,7 @@ void UserConfiguration::bind(string s1, string s2, int lineNumber){
         if(engineActionUpNames.find(s2) != engineActionUpNames.end()){        
             //s2.insert(s2.length(), "_stop");        
             keyUpBindings.insert(pair<string, int>(s1, engineActionUpNames[s2]));
-        }                             
+        }
     }        
 }  
   
@@ -419,14 +419,14 @@ int UserConfiguration::getEngineAction(SDL_Event *event){
         s = replaceSpaces(s);         
         if(keyDownBindings.find(s) != keyDownBindings.end()){             
             return keyDownBindings[s];               
-        }
+				}
     }
     else if(event->type == SDL_KEYUP){
         s = SDL_GetKeyName(event->key.keysym.sym);
-        s = replaceSpaces(s);        
-        if(keyUpBindings.find(s) != keyDownBindings.end()){ 
+        s = replaceSpaces(s);   
+        if(keyUpBindings.find(s) != keyUpBindings.end()){ 
             return keyUpBindings[s]; 
-        }
+				}
     }
     else if(event->type == SDL_MOUSEBUTTONDOWN){
         if(mouseDownBindings.find(event->button.button) != mouseDownBindings.end()){
