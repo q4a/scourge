@@ -1185,6 +1185,7 @@ void Scourge::playRound() {
   for(int i = 0; i < 4; i++) {
 	if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
 	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
+	  ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
 	} else if(party->getParty(i)->anyMovesLeft())
 	  party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
 	else 
@@ -1295,6 +1296,7 @@ void Scourge::moveMonster(Creature *monster) {
   // set running animation (currently move or attack)
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
 	monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+	((MD2Shape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
 	// don't move when attacking
 	return;
   } else {

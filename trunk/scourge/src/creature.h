@@ -297,6 +297,9 @@ class Creature {
 
   int addExperience(int exp);
 
+  // get angle to target creature
+  float getTargetAngle();
+
   // returns coins gained
   int addMoney(Creature *creature_killed);
 

@@ -64,6 +64,7 @@ private:
   int currentAnim;
   int currentFrame; 
   int animationWaiting; // memorizes one animation waiting to be played
+  float angle;
   
   // To ensure that animations with few frames are played at least once entirely
   bool playedOnce; 
@@ -90,7 +91,19 @@ public:
 
   void draw();
 
-  inline void setDir(int dir) { this->dir = dir; }
+  inline void setDir(int dir) { 
+	this->dir = dir; 
+	switch(dir) {
+    case Constants::MOVE_UP:
+      angle = 0.0f; break;
+    case Constants::MOVE_LEFT:
+      angle = -90.0f; break;
+    case Constants::MOVE_RIGHT:
+      angle = 90.0f;break;
+    default:
+      angle = 180.0f;
+	}
+  }
   
   bool drawFirst();
   // if true, the next two functions are called
@@ -101,6 +114,12 @@ public:
   inline GLuint getTextureId() { return textureId; }
   inline void setSkinName(char *s) { skin_name = s; }
   inline char *getSkinName() { return skin_name; }
+
+  inline void setAngle(float angle) { 
+	float a = angle + 90.0f;
+	if(a >= 360.0f) a -= 360.0f;
+	this->angle = a; 
+  }
 
 protected:
   void commonInit(t3DModel * g_3DModel, GLuint textureId, float div);
