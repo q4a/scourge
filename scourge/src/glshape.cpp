@@ -63,7 +63,7 @@ void GLShape::setTexture( GLuint *textureGroup ) {
 }
 
 void GLShape::initialize() {
-  cerr << "multitexture=" << Constants::multitexture << " lightmap1=" << lightmap_tex_num << " lightmap2=" << lightmap_tex_num2 << endl;
+  //cerr << "multitexture=" << Constants::multitexture << " lightmap1=" << lightmap_tex_num << " lightmap2=" << lightmap_tex_num2 << endl;
 
   displayListStart = glGenLists( 3 );
   if( !displayListStart ) {

@@ -143,6 +143,8 @@ class Creature {
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
 
+  inline vector<Location> *getPath() { return &bestPath; }
+
   inline void setLastEnchantDate(Date date) { lastEnchantDate = date; }
   inline Date getLastEnchantDate() { return lastEnchantDate; }
 

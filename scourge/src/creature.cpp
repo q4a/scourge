@@ -369,11 +369,11 @@ void Creature::setSelXY(int x, int y, bool force) {
   selY = y; 
   moveRetrycount = 0; 
   setMotion(Constants::MOTION_MOVE_TOWARDS);   
-  if(force) {
+  //if(force) {
     tx = ty = -1;
-  }
+  //}
   // if we're trying to move within a range, try a number of times
-  adjustMovementToRange();
+  //adjustMovementToRange();
   
   // play command sound
   if(x > -1 && 
@@ -465,26 +465,18 @@ bool Creature::moveToLocator(Map *map) {
 
 bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
 
-  // creature speed
-  //Uint32 t = SDL_GetTicks();
-  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
-  
-  
-//  if(t - lastMove < (Uint32)(session->getUserConfiguration()->getGameSpeedLevel() * MOVE_DELAY)) return true;
-//  lastMove = t;
-
   // If the target moved, get the best path to the location
   if(!(tx == px && ty == py)) {
     tx = px;
     ty = py;
     bestPathPos = 1; // skip 0th position; it's the starting location
-    //if( !strcmp(getName(),"Alamont") ) cerr << "calling findPath!" << endl;
+    cerr << "calling findPath!" << endl;
     Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
                    px, py, pz, &bestPath, session->getMap(), getShape());
   }
 
-  if((int)bestPath.size() > bestPathPos && 
-     ((MD2Shape*)getShape())->getCurrentAnimation() == MD2_RUN ) {
+  int a = ((MD2Shape*)getShape())->getCurrentAnimation();
+  if((int)bestPath.size() > bestPathPos && a != MD2_TAUNT ) {
 
     // take a step on the bestPath
     Location location = bestPath[bestPathPos];
