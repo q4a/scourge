@@ -104,6 +104,7 @@ class Spell {
 class MagicSchool {
  private:
   char *name;
+  char *shortName;
   char *deity;
   int skill, resistSkill;
   vector<Spell*> spells;
@@ -116,6 +117,7 @@ class MagicSchool {
   ~MagicSchool();
 
   inline char *getName() { return name; }
+  inline char *getShortName() { return shortName; }
   inline char *getDeity() { return deity; }
   inline int getSkill() { return skill; }
   inline int getResistSkill() { return resistSkill; }

@@ -214,13 +214,15 @@ void MagicAttrib::describe(char *s, char *itemName) {
     strcat(s, tmp);
   }
   if(school) {
-    sprintf(tmp, " of %s magic", school->getName());
+    sprintf(tmp, " of %s magic", school->getShortName());
+    strcat(s, tmp);
   }
 }
 
 void MagicAttrib::enchant(int level) {
   if(level < Constants::LESSER_MAGIC_ITEM) level = Constants::LESSER_MAGIC_ITEM;
   if(level > Constants::DIVINE_MAGIC_ITEM) level = Constants::DIVINE_MAGIC_ITEM;
+  this->level = level;
 
   /**
    * lesser (level 0):
@@ -236,6 +238,7 @@ void MagicAttrib::enchant(int level) {
    * champion + monster_type is NULL + (1 to 3) bad state mods protected
    */
   int n;
+  Spell *spell;
   switch(level) {
   case Constants::LESSER_MAGIC_ITEM:
     bonus = (int)(3.0f * rand()/RAND_MAX);
@@ -246,15 +249,21 @@ void MagicAttrib::enchant(int level) {
     bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
     damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
     monsterType = (char*)Monster::getRandomMonsterType();
-    school = MagicSchool::getRandomSpell(1)->getSchool();
-    magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 1, (int)(3.0f * rand()/RAND_MAX));
+    spell = MagicSchool::getRandomSpell(1);
+    if(spell) {
+      school = spell->getSchool();
+      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 1, (int)(3.0f * rand()/RAND_MAX));
+    }
     break;
   case Constants::CHAMPION_MAGIC_ITEM:
     bonus = (int)(3.0f * rand()/RAND_MAX) + 4;
     damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
     monsterType = (char*)Monster::getRandomMonsterType();
-    school = MagicSchool::getRandomSpell(1)->getSchool();
-    magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 2, (int)(3.0f * rand()/RAND_MAX) + 1);
+    spell = MagicSchool::getRandomSpell(1);
+    if(spell) {
+      school = spell->getSchool();
+      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 2, (int)(3.0f * rand()/RAND_MAX));
+    }
     n = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
@@ -265,8 +274,11 @@ void MagicAttrib::enchant(int level) {
     bonus = (int)(3.0f * rand()/RAND_MAX) + 6;
     damageMultiplier = (int)(4.0f * rand()/RAND_MAX);
     monsterType = NULL;
-    school = MagicSchool::getRandomSpell(1)->getSchool();
-    magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 3, (int)(3.0f * rand()/RAND_MAX) + 2);
+    spell = MagicSchool::getRandomSpell(1);
+    if(spell) {
+      school = spell->getSchool();
+      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 3, (int)(3.0f * rand()/RAND_MAX));
+    }
     n = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {

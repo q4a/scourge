@@ -55,12 +55,16 @@ Dice::~Dice() {
 
 MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill) {
   this->name = name;
+  this->shortName = strdup(name);
+  shortName = strtok(shortName, " ");
   this->deity = deity;
   this->skill = skill;
   this->resistSkill = resistSkill;
 }
 
 MagicSchool::~MagicSchool() {
+  free(shortName);
+  shortName = NULL;
 }
 
 void MagicSchool::initMagic() {
