@@ -134,12 +134,6 @@ void Scourge::startMission() {
 	map = new Map(this);
 	miniMap = new MiniMap(this); 
 	
-	/*
-	  cerr << "Before mission: " <<
-	  " creatureCount=" << creatureCount << 
-	  " itemCount=" << itemCount << endl;
-	*/
-	
 	// ready the party
 	party->startPartyOnMission();
 	
@@ -398,6 +392,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
     break;
   case SDL_KEYDOWN:
   case SDL_KEYUP:
+
+	if(event->key.keysym.sym == SDLK_f) {
+	  party->startEffect(Constants::EFFECT_FLAMES);
+	  return false;
+	}
   
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
 	  if(exitConfirmationDialog->isVisible()) {
@@ -1086,6 +1085,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == Window::message_button && info_dialog_showing) {
 	party->toggleRound(false);
 	info_dialog_showing = false;
+	party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 2));
   }
 
   if(containerGuiCount > 0) {
@@ -1321,7 +1321,7 @@ void Scourge::moveMonster(Creature *monster) {
 	  if(p) {
 		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
 		monster->setTargetCreature(p);
-		monster->setDistanceRange(0, Constants::MIN_DISTANCE);		
+		//monster->setDistanceRange(0, Constants::MIN_DISTANCE);
 	  }
 	} else {
 	  // random (non-attack) monster movement

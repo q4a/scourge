@@ -41,7 +41,12 @@ class Effect {
  protected:
   void glowShape(GLShape *shape, int startTime);
   void drawFlames(GLShape *shape);
+  void drawTeleport(GLShape *shape);
 
+  // particle management
+  void createParticle(GLShape *shape, ParticleStruct **particle);
+  void moveParticle(ParticleStruct **particle);
+  void drawParticle(GLShape *shape, ParticleStruct *particle);
 
 };
 

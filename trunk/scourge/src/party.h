@@ -45,6 +45,7 @@ class Party {
   int formation;
   Calendar * calendar;
   bool startRound;
+  bool lastEffectOn;
 
   Window *mainWin;
   Button *inventoryButton;
@@ -121,6 +122,8 @@ class Party {
 	  Return the closest live player within the given radius or null if none can be found.
   */
   Creature *getClosestPlayer(int x, int y, int w, int h, int radius);
+
+  void startEffect(int effect_type, int duration=Constants::DAMAGE_DURATION);
 
  protected:
   Creature **createHardCodedParty();

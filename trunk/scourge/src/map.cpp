@@ -348,8 +348,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
   name = posX + (MAP_WIDTH * (posY)) + (MAP_WIDTH * MAP_DEPTH * posZ);		
   
   // special effects
-  GLint t = SDL_GetTicks();
-  if(creature && t - creature->getDamageEffect() < Constants::DAMAGE_DURATION) {
+  if(creature && creature->isEffectOn()) {
 	damage[damageCount].xpos = xpos2;
 	damage[damageCount].ypos = ypos2;
 	damage[damageCount].zpos = zpos2;
