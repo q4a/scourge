@@ -45,3 +45,12 @@
    fun:__libc_writev
    obj:/usr/X11R6/lib/libX11.so.6.2
 }
+{
+   ggg
+   Memcheck:Param
+   write(buf)
+   fun:__libc_write
+   obj:/lib/i686/libc-2.3.3.so
+   fun:_IO_do_write
+   fun:_IO_file_overflow
+}

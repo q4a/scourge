@@ -33,7 +33,7 @@ sparseness - (1-5) the higher the more sparse (more empty space)
 loopyness - in %, the higher the more loops in the maze
 
 roomcount
-rooom max width
+room max width
 room max height
 
 object count
@@ -68,7 +68,7 @@ const MapLocation DungeonGenerator::location[] = {
 	false,
 	5,
 	{
-	  {0,0,5,4,0},
+	  {2,0,2,4,0},
 	  {0,5,2,3,1}, 
 	  {3,5,2,3,1}, 
 	  {0,9,2,3,1}, 
@@ -740,9 +740,16 @@ void DungeonGenerator::constructMaze(int locationIndex) {
   monsters = location[locationIndex].monsters;
 }
 
-void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
+void DungeonGenerator::updateStatus(const char *statusMessage) {
+  progress->updateStatus(statusMessage);
+  Uint32 now = SDL_GetTicks();
+  cerr << "+++ " << statusMessage << ". Previous task's time=" << (now - start) << endl;
+  start = now;
+}
 
-  progress->updateStatus(MESSAGE);
+void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
+  start = SDL_GetTicks();
+  updateStatus(MESSAGE);
   //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
   bool preGenerated = (locationIndex);
@@ -765,7 +772,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
   } else {
 	constructMaze(locationIndex);
   }
-  progress->updateStatus(MESSAGE);
+  updateStatus(MESSAGE);
     
   // draw the nodes on the map
   drawNodesOnMap(map, shapePal, preGenerated, locationIndex);
@@ -780,7 +787,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 	  }
 	}
   }
-  progress->updateStatus(MESSAGE);
+  updateStatus(MESSAGE);
 }
 
 void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal, 
@@ -795,8 +802,13 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal,
       if(nodes[x][y] != UNVISITED) {
 
         if(nodes[x][y] >= ROOM) {
+          if(preGenerated) {
           map->setFloorPosition(mapx, mapy + unitSide, 
-                                shapePal->findShapeByName("ROOM_FLOOR_TILE"));
+                                shapePal->findShapeByName("ROOM2_FLOOR_TILE"));
+          } else {
+            map->setFloorPosition(mapx, mapy + unitSide, 
+                                  shapePal->findShapeByName("ROOM_FLOOR_TILE"));
+          }
         } else {
           map->setFloorPosition(mapx, mapy + unitSide, 
                                 shapePal->findShapeByName("FLOOR_TILE"));
@@ -962,23 +974,14 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal,
 void DungeonGenerator::removeColumns(Map *map, ShapePalette *shapePal, 
                                      bool preGenerated, int locationIndex) {
   // Remove 'columns' from rooms
-  for(int x = 0; x < MAP_WIDTH - unitSide; x++) {
-    for(int y = 0; y < MAP_DEPTH - (unitSide * 2); y++) {
-
-      if(map->getFloorPosition(x, y + unitSide) ==
-         shapePal->findShapeByName("ROOM_FLOOR_TILE") && 
-         map->getFloorPosition(x + unitSide, y + unitSide) ==
-         shapePal->findShapeByName("ROOM_FLOOR_TILE") &&
-         map->getFloorPosition(x, y + unitSide + unitSide) ==
-         shapePal->findShapeByName("ROOM_FLOOR_TILE") &&         
-         map->getFloorPosition(x + unitSide, y + unitSide + unitSide) ==
-         shapePal->findShapeByName("ROOM_FLOOR_TILE")) {
-
-        //        map->setFloorPosition(x, y + unitSide, shapePal->findShapeByName("FLOOR_TILE"));
-        map->removePosition(x + unitSide - unitOffset, y + unitSide, 0);
-        map->removePosition(x + unitSide - unitOffset, y + unitSide + unitOffset, 0);
-        map->removePosition(x + unitSide, y + unitSide, 0);
-        map->removePosition(x + unitSide, y + unitSide + unitOffset, 0);                
+  for(int roomIndex = 0; roomIndex < roomCount; roomIndex++) {
+    int startx = offset + (room[roomIndex].x * unitSide) + unitOffset;
+    int endx = offset + ((room[roomIndex].x + room[roomIndex].w) * unitSide) - (unitOffset * 2);
+    int starty = offset + (room[roomIndex].y * unitSide) + (unitOffset * 2);
+    int endy = offset + ((room[roomIndex].y + room[roomIndex].h) * unitSide) - unitOffset;
+    for(int x = startx; x < endx; x++) {
+      for(int y = starty; y < endy; y++) {
+        map->removePosition( x, y, 0 );
       }
     }
   }
@@ -1445,58 +1448,58 @@ void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal,
 
 void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
                                       bool preGenerated, int locationIndex) {
-  progress->updateStatus("Drawing walls");
+  updateStatus("Drawing walls");
   drawBasics(map, shapePal, preGenerated, locationIndex);
   
-  progress->updateStatus("Fixing rooms");
+  updateStatus("Fixing rooms");
   removeColumns(map, shapePal, preGenerated, locationIndex);
 
-  progress->updateStatus("Adding pre-generated shapes");
+  updateStatus("Adding pre-generated shapes");
   if(preGenerated) {
     addPregeneratedShapes(map, shapePal, preGenerated, locationIndex);
   }
 
-  progress->updateStatus("Compressing free space");
+  updateStatus("Compressing free space");
   createFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
    
-  progress->updateStatus("Adding containers");
+  updateStatus("Adding containers");
   addContainers(map, shapePal, preGenerated, locationIndex);  
 
-  progress->updateStatus("Adding gates");
+  updateStatus("Adding gates");
   if(!preGenerated) {
     addStairs(map, shapePal, preGenerated, locationIndex);
   }
 
-  progress->updateStatus("Adding party");
+  updateStatus("Adding party");
   addParty(map, shapePal, preGenerated, locationIndex);
 
   // add a teleporters
-  progress->updateStatus("Adding teleporters");
+  updateStatus("Adding teleporters");
   if(!preGenerated) {
     addTeleporters(map, shapePal, preGenerated, locationIndex);
   }
 
-  progress->updateStatus("Locking doors and chests");
+  updateStatus("Locking doors and chests");
   lockDoors(map, shapePal, preGenerated, locationIndex);
 
-  progress->updateStatus("Calculating room values");
+  updateStatus("Calculating room values");
   calculateRoomValues(map, shapePal, preGenerated, locationIndex);
 
-  progress->updateStatus("Adding mission objectives");
+  updateStatus("Adding mission objectives");
   if(!preGenerated) {
     addMissionObjectives(map, shapePal, preGenerated, locationIndex);
   }
 
-  progress->updateStatus("Adding monsters");
+  updateStatus("Adding monsters");
   addMonsters(map, shapePal, preGenerated, locationIndex);
 
-  progress->updateStatus("Adding items");
+  updateStatus("Adding items");
   addItems(map, shapePal, preGenerated, locationIndex);
 
-  progress->updateStatus("Adding furniture");
+  updateStatus("Adding furniture");
   addFurniture(map, shapePal, preGenerated, locationIndex);
 
-  progress->updateStatus("Cleaning up");
+  updateStatus("Cleaning up");
   deleteFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
 }
 
