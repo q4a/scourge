@@ -251,7 +251,11 @@ void Window::drawWidget(Widget *parent) {
   glLoadIdentity( );
   glEnable( GL_TEXTURE_2D );
   // tile the background
-  glColor3f(1.0f, 0.6f, 0.3f);
+  if(isLocked()) {
+    glColor3f(0.65f, 0.6f, 0.55f);
+  } else {
+    glColor3f(1.0f, 0.6f, 0.3f);
+  }
   glTranslated(x, y, z);
   if(texture)
     glBindTexture( GL_TEXTURE_2D, texture );
@@ -482,10 +486,10 @@ void Window::scissorToWindow() {
   glEnable( GL_SCISSOR_TEST );
 }
 
-void Window::setVisible(bool b) {
+void Window::setVisible(bool b, bool animate) {
   toTop();
   Widget::setVisible(b);
-  if(b) openHeight = 0;
+  if(b) openHeight = (animate ? 0 : getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT));
 }
 
 void Window::toTop() {

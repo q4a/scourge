@@ -1420,7 +1420,7 @@ void Scourge::setUILayout() {
   inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
                                getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
   inventory->getWindow()->setLocked(true);
-  inventory->getWindow()->setVisible(true);
+  inventory->getWindow()->setVisible(true, false);
   //mapX = INVENTORY_WIDTH;
   mapX = 0;
   mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
@@ -1428,8 +1428,8 @@ void Scourge::setUILayout() {
   break;
   }
 
-  messageWin->setVisible(true);
-  miniMap->getWindow()->setVisible(true);
+  messageWin->setVisible(true, false);
+  miniMap->getWindow()->setVisible(true, false);
 
   party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                          getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);

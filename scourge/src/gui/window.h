@@ -95,7 +95,7 @@ class Window : public Widget {
   inline void setModal(bool b) { modal = b; }
   inline bool isModal() { return modal; }
 
-  void setVisible(bool b);
+  void setVisible(bool b, bool animate=true);
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
   void toTop();
   void toBottom();
