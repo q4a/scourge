@@ -900,7 +900,9 @@ void Map::showCreatureInfo(Creature *creature, bool player, bool selected, bool 
   ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
   zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
 
-  if(selected) {
+  if(creature->getAction() != Constants::ACTION_NO_ACTION) {
+	glColor4f(0, 0.7, 1, 0.5f);
+  } else if(selected) {
 	glColor4f(0, 1, 1, 0.5f);
   } else if(player) {
 	glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
