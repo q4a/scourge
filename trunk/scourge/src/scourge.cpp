@@ -65,6 +65,9 @@ Scourge::Scourge(int argc, char *argv[]){
   // initialize the monsters
   Monster::initMonsters();
 
+	// create the mission board
+	board = new Board(this);
+
   // do this before the inventory and optionsdialog (so Z is less than of those)
   createUI();
 
@@ -121,6 +124,11 @@ Scourge::~Scourge(){
   delete optionsMenu;
   delete userConfiguration;
   delete calendar;
+	for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
+		free(missionText[i]);
+	}
+	free(missionText);
+	delete board;
 }
 
 void Scourge::startMission() {
@@ -178,14 +186,12 @@ void Scourge::startMission() {
 	need to figure out how to start game with this, 
 	implement "the board", and saving levels (need to save HQ)
   */
-  /*
   // Initialize the map with a random dunegeon	
   dg = new DungeonGenerator(this, 2); // level 2 is a big enough map for HQ_LOCATION... this is hacky
   dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
-  */
 
-  dg = new DungeonGenerator(this, level);
-  dg->toMap(map, getShapePalette());
+//  dg = new DungeonGenerator(this, level);
+//  dg->toMap(map, getShapePalette());
  
   // center map on the player
   map->center(player->getX(), player->getY());
@@ -209,6 +215,7 @@ void Scourge::startMission() {
   messageWin->setVisible(false);
   closeAllContainerGuis();
   if(inventory->isVisible()) inventory->hide();
+	if(boardWin->isVisible()) boardWin->setVisible(false);
 
   // clean up after the mission
   delete map;
@@ -567,62 +574,62 @@ void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
 }
 
 void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
-  Uint16 mapx, mapy, mapz;
-  if(button == SDL_BUTTON_LEFT) {
-	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-	
-	// clicking on a creature
-	if(!movingItem && mapx < MAP_WIDTH) {
-	  Location *loc = map->getLocation(mapx, mapy, mapz);
-	  if(loc && loc->creature) {
-		if(loc->creature->isMonster()) {
-		  // follow this creature
-		  player->setTargetCreature(loc->creature);
-		  if(!player_only) {
-			for(int i = 0; i < 4; i++) 
-			  party[i]->setTargetCreature(loc->creature);
-		  }
-		  return;
-		} else {
-		  // select player
-		  for(int i = 0; i < 4; i++) {
-			if(party[i] == loc->creature) {
-			  setPlayer(i);
-			  return;
+	Uint16 mapx, mapy, mapz;
+	if(button == SDL_BUTTON_LEFT) {
+		getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+		
+		// clicking on a creature
+		if(!movingItem && mapx < MAP_WIDTH) {
+			Location *loc = map->getLocation(mapx, mapy, mapz);
+			if(loc && loc->creature) {
+				if(loc->creature->isMonster()) {
+					// follow this creature
+					player->setTargetCreature(loc->creature);
+					if(!player_only) {
+						for(int i = 0; i < 4; i++)
+							party[i]->setTargetCreature(loc->creature);
+					}
+					return;
+				} else {
+					// select player
+					for(int i = 0; i < 4; i++) {
+						if(party[i] == loc->creature) {
+							setPlayer(i);
+							return;
+						}
+					}
+				}
 			}
-		  }
 		}
-	  }
-	}	
-
-	// click on an item
-	if(mapx > MAP_WIDTH) {
-	  getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	  mapz = 0;
-	}
-	if(useItem(mapx, mapy, mapz)) return;
-
-	// click on the map
-	getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	player->setSelXY(mapx, mapy);
-	if(player_only) {
-	  player->setTargetCreature(NULL);
-	} else {
-	  for(int i = 0; i < 4; i++) {
-			if(!party[i]->getStateMod(Constants::dead)) {
-				party[i]->setTargetCreature(NULL);
-				if(party[i] != player) party[i]->follow(map);
+		
+		// click on an item
+		if(mapx > MAP_WIDTH) {
+			getMapXYAtScreenXY(x, y, &mapx, &mapy);
+			mapz = 0;
+		}
+		if(useItem(mapx, mapy, mapz))	return;
+		
+		// click on the map
+		getMapXYAtScreenXY(x, y, &mapx, &mapy);
+		player->setSelXY(mapx, mapy);
+		if(player_only) {
+			player->setTargetCreature(NULL);
+		} else {
+			for(int i = 0; i < 4; i++) {
+				if(!party[i]->getStateMod(Constants::dead)) {
+					party[i]->setTargetCreature(NULL);
+					if(party[i] != player) party[i]->follow(map);
+				}
 			}
-	  }
+		}
+		
+		
+	} else if(button == SDL_BUTTON_RIGHT) {
+		getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+		if(mapx < MAP_WIDTH) {    
+			map->handleMouseClick(mapx, mapy, mapz, button);
+		}
 	}
-
-
-  } else if(button == SDL_BUTTON_RIGHT) {
-	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-	if(mapx < MAP_WIDTH) {    
-	  map->handleMouseClick(mapx, mapy, mapz, button);
-	}
-  }
 }
 
 void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
@@ -826,24 +833,26 @@ bool Scourge::useItem() {
 
 bool Scourge::useItem(int x, int y, int z) {
   if(movingItem) {
-	// a quick click opens a container
-	GLint delta = SDL_GetTicks() - dragStartTime;
-	if(delta < ACTION_CLICK_TIME &&
-	   movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
-	  openContainerGui(movingItem);
+		// a quick click opens a container
+		GLint delta = SDL_GetTicks() - dragStartTime;
+		if(delta < ACTION_CLICK_TIME &&
+			 movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
+			openContainerGui(movingItem);
+		}
+		dropItem(map->getSelX(), map->getSelY());
+		return true;
 	}
-	dropItem(map->getSelX(), map->getSelY());
-	return true;
-  }
-  
-  Location *pos = map->getPosition(x, y, z);
-  if(pos) {
-	if(useDoor(pos)) {
-	  map->updateLightMap();
-	  return true;
+	
+	Location *pos = map->getPosition(x, y, z);
+	if(pos) {
+		if(useDoor(pos)) {
+			map->updateLightMap();
+			return true;
+		} else if(useBoard(pos)) {
+			return true;
+		}
 	}
-  }
-  return false;
+	return false;
 }
 
 bool Scourge::getItem(Location *pos) {
@@ -936,6 +945,23 @@ void Scourge::dropItem(int x, int y) {
 	}
   }
   endItemDrag();
+}
+
+bool Scourge::useBoard(Location *pos) {
+	if(pos->shape == shapePal->getShape(Constants::BOARD_INDEX)) {
+		board->initMissions();
+		for(int i = 0; i < board->getMissionCount(); i++) {
+			cerr << "\t " << i << endl;
+			cerr << "\t " << board->getMission(i)->name << endl;
+			strcpy(missionText[i], board->getMission(i)->name);
+		}
+		missionList->setLines(board->getMissionCount(), (const char**)missionText);
+		if(board->getMissionCount())
+			missionDescriptionLabel->setText((char*)(board->getMission(0)->story));
+		boardWin->setVisible(true);
+		return true;
+	}
+	return false;
 }
 
 bool Scourge::useDoor(Location *pos) {
@@ -1046,7 +1072,9 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	togglePlayerOnly();
   } else if(widget == roundButton) {
 	toggleRound();
-  }
+  } else if(widget == boardWin->closeButton) {
+		boardWin->setVisible(false);
+	}
   return false;
 }
 
@@ -1138,6 +1166,21 @@ void Scourge::createUI() {
   noExitConfirm = new Button( 140, 50, 210, 80, strdup("No") );
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitConfirmationDialog->addWidget((Widget*)new Label(20, 20, strdup("Do you really want to exit this mission?")));
+
+  boardWin = new Window( getSDLHandler(),
+												 (sdlHandler->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
+												 (sdlHandler->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
+												 BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
+												 strdup("Available Missions"), 
+												 getShapePalette()->getGuiTexture() );
+	missionList = new ScrollingList(5, 5, BOARD_GUI_WIDTH - 10, 150);
+	boardWin->addWidget(missionList);
+	missionDescriptionLabel = new Label(5, 170, strdup(""), 70);
+	boardWin->addWidget(missionDescriptionLabel);
+	missionText = (char**)malloc(Board::MAX_AVAILABLE_MISSION_COUNT * sizeof(char*));
+	for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
+		missionText[i] = (char*)malloc(120 * sizeof(char));
+	}
 }
 
 

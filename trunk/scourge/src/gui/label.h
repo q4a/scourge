@@ -29,14 +29,16 @@ class SDLHandler;
 
 class Label : public Widget {
  private:
-  char *text;
+	 char *text;
+	 int lineWidth;
+
  public: 
   /**
 	 Create a label with text. The user is responsible for freeing text after label is freed.
 	 With constants, you can create a label by calling:
 	 new Label(x, y, strdup("xyz"));
    */
-  Label(int x, int y, char *text=NULL);
+  Label(int x, int y, char *text=NULL, int lineWidth=0);
   ~Label();
   inline char *getText() { return text; }
   inline void setText(char *s) { text = s; }

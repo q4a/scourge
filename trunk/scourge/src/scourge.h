@@ -40,6 +40,7 @@
 #include "userconfiguration.h"
 #include "effect.h"
 #include "containergui.h"
+#include "board.h"
 
 using namespace std;
 
@@ -58,12 +59,12 @@ class Effect;
 class DungeonGenerator;
 class Window;
 class ContainerGui;
+class Board;
 
 /**
   *@author Gabor Torok
   */
 
-#define BASE_PATH "/home/gabor/sourceforge/woodward/scourge/"
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
 #define DEFAULT_IMAGES_DIR "default/"
@@ -112,6 +113,12 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Button *player4Button;
   Button *groupButton;
 
+  Window *boardWin;
+	ScrollingList *missionList;
+	Label *missionDescriptionLabel;
+	char **missionText;
+	Board *board;
+
   Inventory *inventory;
 
   Window *messageWin, *exitConfirmationDialog;
@@ -156,12 +163,15 @@ protected:
   bool getItem(Location *pos);
   void dropItem(int x, int y);
   bool useDoor(Location *pos);
+	bool useBoard(Location *pos);
 
 public:
   #define TOP_GUI_WIDTH 400
   #define TOP_GUI_HEIGHT 100
   #define GUI_PLAYER_INFO_W 250
   #define GUI_PLAYER_INFO_H 350
+	#define BOARD_GUI_WIDTH 400
+	#define BOARD_GUI_HEIGHT 300
   
   static int blendA, blendB;
   static int blend[];

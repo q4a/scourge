@@ -21,18 +21,44 @@
   *@author Gabor Torok
   */
 
-Label::Label(int x, int y, char *text) : 
+Label::Label(int x, int y, char *text, int lineWidth) : 
   Widget(x, y, 0, 0) {
   this->text = text;
+	this->lineWidth = lineWidth;
 }
 
 Label::~Label() {
 }
 
-void Label::drawWidget(Widget *parent) {
-  if(text) {
-	applyColor();
-	((Window*)parent)->getSDLHandler()->texPrint(0, 0, text);
-  }
-}
 
+void Label::drawWidget(Widget *parent) {
+	if(text) {
+		applyColor();
+		if(lineWidth <= 1 || strlen(text) < lineWidth) {
+			((Window*)parent)->getSDLHandler()->texPrint(0, 0, text);
+		} else {
+			char *p = (char*)malloc((lineWidth + 3) * sizeof(char));
+			int len = strlen(text);
+			int start = 0;
+			int y = 0;
+			//cerr << "len=" << len << endl;
+			//cerr << "text=" << text << endl;
+			while(start < len) {
+				int end = start + lineWidth;
+				if(end > len) end = len;
+				//cerr << "\tstart=" << start << endl;
+				//cerr << "\tend=" << end << endl;
+				//cerr << "\tend-start=" << (end-start) << endl;
+
+				strncpy(p, text + start, end - start);
+				*(p + end - start) = 0;
+				//cerr << "p=" << p << endl;
+
+				((Window*)parent)->getSDLHandler()->texPrint(0, y, p);
+				start += lineWidth;
+				y+=15;
+			}
+			free(p);
+		}
+	}
+}
