@@ -44,6 +44,8 @@ class ScrollingList : public Widget {
   int dragX, dragY;
   int selectedLine;
   DragAndDropHandler *dragAndDropHandler;
+  bool innerDrag;
+  int innerDragX, innerDragY;
 
  public: 
   ScrollingList(int x, int y, int w, int h, DragAndDropHandler *dragAndDropHandler = NULL);
@@ -64,6 +66,9 @@ class ScrollingList : public Widget {
 	 to the outside world.
    */
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+
+ private:
+  void selectLine(int x, int y);
 };
 
 #endif

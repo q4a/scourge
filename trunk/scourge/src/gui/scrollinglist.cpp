@@ -35,6 +35,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   selectedLine = -1;
   scrollerHeight = h;
   this->dragAndDropHandler = dragAndDropHandler;
+  this->innerDrag = false;
 }
 
 ScrollingList::~ScrollingList() {
@@ -153,29 +154,46 @@ void ScrollingList::drawWidget(Widget *parent) {
   glEnd();
 }
 
+void ScrollingList::selectLine(int x, int y) {
+  int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
+  int oldLine = selectedLine;
+  selectedLine = (int)((float)(y - (getY() + textPos)) / 15.0);
+  if(!list || count == 0 || selectedLine < 0 || selectedLine >= count) {
+	selectedLine = oldLine;
+  }
+}
+
 bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   inside = (x >= getX() && x < getX() + scrollerWidth &&
 			y >= getY() + scrollerY && y < getY() + scrollerY + scrollerHeight);
   switch(event->type) {
   case SDL_MOUSEMOTION:
+	if(innerDrag && 
+	   (abs(innerDragX - x) > DragAndDropHandler::DRAG_START_DISTANCE ||
+		abs(innerDragY - y) > DragAndDropHandler::DRAG_START_DISTANCE) &&
+	   dragAndDropHandler) {
+	  innerDrag = false;
+	  dragAndDropHandler->startDrag(this);
+	}
 	break;
   case SDL_MOUSEBUTTONUP:
 	if(!dragging && isInside(x, y)) {
-	  int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
-	  int oldLine = selectedLine;
-	  selectedLine = (int)((float)(y - (getY() + textPos)) / 15.0);
-	  if(!list || count == 0 || selectedLine < 0 || selectedLine >= count) {
-		selectedLine = oldLine;
-	  }
-	  if(dragAndDropHandler) dragAndDropHandler->receive();
+	  selectLine(x, y);
+	  if(dragAndDropHandler) dragAndDropHandler->receive(this);
 	}
+	innerDrag = false;
 	dragging = false;
 	break;
   case SDL_MOUSEBUTTONDOWN:
-	if(scrollerHeight < getHeight()) {
+	if(scrollerHeight < getHeight() && x < scrollerWidth) {
 	  dragging = inside;
 	  dragX = x - getX();
 	  dragY = y - (scrollerY + getY());
+	} else if(isInside(x, y)) {
+	  selectLine(x, y);
+	  innerDrag = (selectedLine != -1);
+	  innerDragX = x;
+	  innerDragY = y;
 	}
 	break;
   }

@@ -190,7 +190,7 @@ class Creature {
 	if(index < inventory_count) inventory[index] = item; 
   }
   // returns the index of the last item added
-  inline int addInventory(Item *item) { inventory[inventory_count++] = item; return (inventory_count - 1); }
+  bool addInventory(Item *item);
   Item *removeInventory(int index);
   // equip or doff if already equipped
   void equipInventory(int index);

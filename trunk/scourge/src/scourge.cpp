@@ -505,8 +505,10 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
 	  getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	  if(mapx < MAP_WIDTH) {
 		dropTarget = map->getLocation(mapx, mapy, mapz);
-		// FIXME: add container handling code
-		if(!(dropTarget && dropTarget->creature)) dropTarget = NULL;
+		if(!(dropTarget && 
+			 (dropTarget->creature || 
+			  (dropTarget->item && dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)) )) 
+		  dropTarget = NULL;
 	  }
 	}
 	map->setSelectedDropTarget(dropTarget);
@@ -822,6 +824,17 @@ void Scourge::dropItem(int x, int y) {
 			  c->getName(), 
 			  movingItem->getRpgItem()->getName());
 	  map->addDescription(message);
+	  // if the inventory is open, update it
+	  if(inventory->isVisible()) inventory->refresh();
+	} else if(map->getSelectedDropTarget()->item && 
+			  map->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+	  map->getSelectedDropTarget()->item->addContainedItem(movingItem);
+	  sprintf(message, "%s is placed in %s.", 
+			  movingItem->getRpgItem()->getName(), 
+			  map->getSelectedDropTarget()->item->getRpgItem()->getName());
+	  map->addDescription(message);
+	  // if this container's gui is open, update it
+	  refreshContainerGui(map->getSelectedDropTarget()->item);
 	} else {
 	  replace = true;
 	}
@@ -1256,8 +1269,12 @@ void Scourge::creatureDeath(Creature *creature) {
   // add a container object instead
   //creature->getShape()->setCurrentAnimation(MD2_DEATH1);
   Item *item = newItem(RpgItem::items[RpgItem::CORPSE]);
-  // FIXME: add creature's inventory to container
+  // add creature's inventory to container
   map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
+  int n = creature->getInventoryCount();
+  for(int i = 0; i < n; i++) {
+	item->addContainedItem(creature->removeInventory(0));
+  }
   creature->setStateMod(Constants::dead, true);
 }
 
@@ -1581,4 +1598,12 @@ void Scourge::closeAllContainerGuis() {
 	delete containerGui[i];
   }
   containerGuiCount = 0;
+}
+
+void Scourge::refreshContainerGui(Item *container) {
+  for(int i = 0; i < containerGuiCount; i++) {
+	if(containerGui[i]->getContainer() == container) {
+	  containerGui[i]->refresh();
+	}
+  }
 }

@@ -250,9 +250,11 @@ public:
   void toggleRound();
   void togglePlayerOnly();
 
-	// returns false if the switch could not be made,
-	// because the entire party is dead (the mission failed)
-	bool switchToNextLivePartyMember();
+  // returns false if the switch could not be made,
+  // because the entire party is dead (the mission failed)
+  bool switchToNextLivePartyMember();
+
+  void refreshContainerGui(Item *container);
 
 };
 

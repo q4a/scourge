@@ -31,8 +31,10 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   win->addWidget((Widget*)dropButton);
   openButton = new Button( 195, 75, 295, 105, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
-  list = new ScrollingList(5, 5, 185, 295 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), this);
+  list = new ScrollingList(5, 5, 185, 275 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), this);
   win->addWidget((Widget*)list);
+  label = new Label(5, 265, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP));
+  win->addWidget(label);
 
   // allocate memory for the contained item descriptions
   this->containedItemNames = (char**)malloc(Item::MAX_CONTAINED_ITEMS * sizeof(char*));
@@ -51,6 +53,7 @@ ContainerGui::~ContainerGui() {
   }
   free(containedItemNames);
 
+  delete label;
   delete list;
   delete closeButton;
   delete dropButton;
@@ -88,36 +91,47 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
 	win->setVisible(false);
 	return true;
   } else if(widget == dropButton) {
-	int n = list->getSelectedLine();
-	if(n > -1) {
-	  Item *item = container->removeContainedItem(n);
-	  if(item) {
-		scourge->startItemDragFromGui(item);
-		showContents();
-	  }
-	}
+	dropItem();
   } else if(widget == openButton) {
 	int n = list->getSelectedLine();
-	if(n > -1) {	
+	if(n > -1 && 
+	   container->getContainedItem(n)->getRpgItem()->getType() == RpgItem::CONTAINER) {	
 	  scourge->openContainerGui(container->getContainedItem(n));
 	}
   }
   return false;
 }
 
-void ContainerGui::receive() {
+void ContainerGui::receive(Widget *widget) {
+  char message[120];
   if(scourge->getMovingItem() && 
 	 scourge->getMovingItem() != container) {
 	if(container->addContainedItem(scourge->getMovingItem())) {
+	  // message: the container accepted the item
+	  sprintf(message, "%s is placed in %s.", 
+			  scourge->getMovingItem()->getRpgItem()->getName(), 
+			  container->getRpgItem()->getName());
+	  scourge->getMap()->addDescription(message);	  
 	  scourge->endItemDrag();
 	  showContents();
-	  // message: the container accepted the item
 	} else {
 	  // message: the container is full
 	}
   }
 }
 
-void ContainerGui::startDrag() {
-  cerr << "starting to drag item!" << endl;
+void ContainerGui::startDrag(Widget *widget) {
+  dropItem();
 }
+
+void ContainerGui::dropItem() {
+  int n = list->getSelectedLine();
+  if(n > -1) {
+	Item *item = container->removeContainedItem(n);
+	if(item) {
+	  scourge->startItemDragFromGui(item);
+	  showContents();
+	}
+  }
+}
+
