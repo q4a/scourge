@@ -24,7 +24,7 @@
 #include "sdlscreenview.h"
 #include "scourge.h"
 #include "text.h"
-
+#include "partyeditor.h"
 #include "gui/window.h"
 #include "gui/label.h"
 #include "gui/button.h"
@@ -34,6 +34,7 @@
   */
 
 class Scourge;
+class PartyEditor;
 
 class MainMenu : public SDLEventHandler,SDLScreenView {
 private:
@@ -45,6 +46,7 @@ private:
   int top, openingTop;
   Uint32 lastTick;
   int candleFlameX, candleFlameY;
+  PartyEditor *partyEditor;
 
 #define MAX_LOGOS 100
   typedef struct _LogoSprite {
@@ -100,6 +102,7 @@ public:
   void show();
   void hide();
   inline bool isVisible() { return mainWin->isVisible(); }
+  void showPartyEditor();
 
  protected:
   void drawClouds(bool moveClouds, bool flipped);

@@ -134,6 +134,8 @@ MainMenu::MainMenu(Scourge *scourge){
   newGameConfirm->createLabel( 20, 20, Constants::getMessage( Constants::DELETE_OLD_SAVED_GAME ));
   newGameConfirm->setVisible( false );
   newGameConfirm->setModal( true );
+
+  partyEditor = new PartyEditor( scourge );
 }
 
 MainMenu::~MainMenu(){
@@ -629,10 +631,14 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   }
 
-  if( widget == newGameConfirmOK ) {
-    newGameConfirm->setVisible( false );
+  if( widget == partyEditor->getStartGameButton() ) {
+    partyEditor->setVisible( false );
     value = NEW_GAME_START;
     return true;
+  } else if( widget == newGameConfirmOK ) {
+    newGameConfirm->setVisible( false );
+    showPartyEditor();
+    return false;
   } else if( widget == newGameConfirmCancel ) {
     newGameConfirm->setVisible( false );
     return false;
@@ -713,4 +719,9 @@ int MainMenu::getValue() {
 
 void MainMenu::showNewGameConfirmationDialog() {
   newGameConfirm->setVisible( true );
+}
+
+void MainMenu::showPartyEditor() {
+  mainWin->setVisible( false );
+  partyEditor->setVisible( true );
 }
