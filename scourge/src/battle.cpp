@@ -466,7 +466,7 @@ void Battle::initTurn() {
     // set up distance range for ranged weapons (do it here so it only happens when the action changes)
     creature->setDistanceRange(0, Constants::MIN_DISTANCE);
     if(range >= 8) {
-      creature->setDistanceRange(range * 0.5f, range);
+      creature->setDistanceRange(Constants::MIN_DISTANCE, range);
     }
     initItem(i);
   } else {
@@ -480,7 +480,7 @@ void Battle::initTurn() {
       // set up distance range for ranged weapons (do it here so it only happens when the action changes)
       creature->setDistanceRange(0, Constants::MIN_DISTANCE);
       if(range >= 8) {
-        creature->setDistanceRange(range * 0.5f, range);
+        creature->setDistanceRange(Constants::MIN_DISTANCE, range);
       }
       break;
     case Constants::ACTION_EAT_DRINK:
@@ -491,7 +491,7 @@ void Battle::initTurn() {
       // set up distance range for ranged weapons (do it here so it only happens when the action changes)
       creature->setDistanceRange(0, Constants::MIN_DISTANCE);
       if(range >= 8) {
-        creature->setDistanceRange(range * 0.5f, range);
+        creature->setDistanceRange(Constants::MIN_DISTANCE, range);
       }
       break;
     default:

@@ -266,9 +266,9 @@ void Scourge::startMission() {
   miniMap->hide();
 	
 	// clean up after the mission
-	delete map;
-	delete miniMap;
-	delete dg;
+	delete map; map = NULL;
+	delete miniMap; miniMap = NULL;
+	delete dg; dg = NULL;
 	
 	// delete the items and creatures created for this mission
 	// (except items in inventory) 
@@ -1689,8 +1689,7 @@ void Scourge::moveMonster(Creature *monster) {
     // monster gives up when low on hp or bored
     // FIXME: when low on hp, it should run away not loiter
     if(monster->getAction() == Constants::ACTION_NO_ACTION &&
-       (monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f) ||
-        (int)(20.0f * rand()/RAND_MAX) == 0)) {
+       monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f)) {
       monster->setMotion(Constants::MOTION_LOITER);
       monster->cancelTarget();
     } else {
