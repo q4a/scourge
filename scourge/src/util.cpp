@@ -262,16 +262,16 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
 
 ///////////////////////////////////////////////////////////
 // Needed because the template doesn't know what a PathNode is
-bool operator<(const CPathNode &a, const CPathNode &b) {
-  return a.f < b.f;
-}
+//bool operator<(const CPathNode &a, const CPathNode &b) {
+//  return a.f < b.f;
+//}
 
 
 ///////////////////////////////////////////////////////////
 // Needed because the template doesn't know what a PathNode is
-bool operator>(const CPathNode &a, const CPathNode &b) {
-  return a.f > b.f;
-}
+//bool operator>(const CPathNode &a, const CPathNode &b) {
+//  return a.f > b.f;
+//}
 
 float Util::dot_product(float v1[3], float v2[3]) {
   return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
