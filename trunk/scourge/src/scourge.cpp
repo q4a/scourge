@@ -170,7 +170,13 @@ void Scourge::startMission() {
   containerGuiCount = 0;
   lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
   
-  setPlayer(getParty(0));
+	// set player to be the first non-dead character
+	for(int i = 0; i < 4; i++) {
+		if(!party[i]->getStateMod(Constants::dead)) {
+			setPlayer(getParty(i));
+			break;
+		}
+	}
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
   getPlayer()->setTargetCreature(NULL);
 
