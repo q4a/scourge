@@ -34,10 +34,10 @@ Button::~Button() {
   delete label;
 }
 
-void Button::drawWidget(SDLHandler *sdlHandler) {
-  // same as the window color but opaque (FIXME: this should change w. window color)
+void Button::drawWidget(Window *parent) {
   if(!inside) {
-	glColor4f( 0.7f, 0.65f, 0.2f, 1.0f );
+	//	glColor4f( 0.7f, 0.65f, 0.2f, 1.0f );
+	parent->applyBackgroundColor(true);
 	glBegin(GL_QUADS);
 	glVertex2d(0, 0);
 	glVertex2d(0, y2 - y);
@@ -66,7 +66,7 @@ void Button::drawWidget(SDLHandler *sdlHandler) {
 	glDisable( GL_BLEND );
   }
 
-  setGlColor();
+  parent->applyBorderColor();
   glBegin(GL_LINES);
   glVertex2d(0, 0);
   glVertex2d(0, y2 - y);
@@ -80,7 +80,7 @@ void Button::drawWidget(SDLHandler *sdlHandler) {
 
   glPushMatrix();
   glTranslated( 5, (y2 - y) / 2 + 5, 0);
-  label->drawWidget(sdlHandler);
+  label->drawWidget(parent);
   glPopMatrix();
 }
 

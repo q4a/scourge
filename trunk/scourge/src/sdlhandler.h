@@ -110,6 +110,7 @@ private:
   void setVideoMode(int argc, char *argv[]);
   void mainLoop();
   void fireEvent(Widget *widget, SDL_Event *event);
+  bool firedEventWaiting();
 
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
 

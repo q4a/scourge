@@ -39,18 +39,12 @@ class MainMenu : public SDLEventHandler,SDLScreenView {
 private:
   Scourge *scourge;
   int value;
-  int win;
-  bool showDebug;
 
   typedef struct _Cloud {
 	int x, y, w, h, speed;
   } Cloud;
   Cloud cloud[100];
   int cloudCount;
-
-  static int blendA, blendB;
-  static int blend[];
-  static void setBlendFunc();
 
   Window *mainWin;
   Button *newGameButton;
@@ -66,11 +60,10 @@ public:
 #define ABOUT 4
 #define QUIT 5
 
-	MainMenu(Scourge *scourge);
-	~MainMenu();
+  MainMenu(Scourge *scourge);
+  ~MainMenu();
 
   void drawView(SDL_Surface *screen);
-  void drawMenu(int x, int y);
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
   int getValue();

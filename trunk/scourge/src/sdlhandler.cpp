@@ -375,16 +375,20 @@ void SDLHandler::fireEvent(Widget *widget, SDL_Event *event) {
   storedEvent = event;
 }
 
+bool SDLHandler::firedEventWaiting() {
+  return storedEvent != NULL;
+}
+
 void SDLHandler::mainLoop() {
   /* whether or not the window is active */
   int isActive = TRUE;  
   SDL_Event event;
   while(true) {    
-	mouseEvent = mouseButton = 0;
-	storedWidget = NULL;
-	storedEvent = NULL;
 	int eventCount = 0;  
     while(SDL_PollEvent(&event) && (eventCount++) < 10) {
+	  mouseEvent = mouseButton = 0;
+	  storedWidget = NULL;
+	  storedEvent = NULL;
       switch( event.type ) {
 	  case SDL_MOUSEMOTION:
 		if(invertMouse) event.motion.y = screen->h - event.motion.y;
@@ -392,21 +396,21 @@ void SDLHandler::mainLoop() {
 		mouseY = event.motion.y;          
 		mouseButton = event.button.button;
 		mouseEvent = SDL_MOUSEMOTION;
-		Window::handleEvent( &event, mouseX, mouseY );
+		Window::delegateEvent( &event, mouseX, mouseY );
 		break;
       case SDL_MOUSEBUTTONUP:
 		if(invertMouse) event.button.y = screen->h - event.button.y;
 		mouseEvent = SDL_MOUSEBUTTONUP;
 		mouseButton = event.button.button;
 		mouseDragging = false;
-		Window::handleEvent( &event, event.button.x, event.button.y );
+		Window::delegateEvent( &event, event.button.x, event.button.y );
 		break;
       case SDL_MOUSEBUTTONDOWN:
 		if(invertMouse) event.button.y = screen->h - event.button.y;			 
 		mouseEvent = SDL_MOUSEBUTTONDOWN;
 		mouseButton = event.button.button;
 		mouseDragging = true;
-		Window::handleEvent( &event, event.button.x, event.button.y );
+		Window::delegateEvent( &event, event.button.x, event.button.y );
 		break;
       case SDL_ACTIVEEVENT:
 		/* Something's happend with our focus

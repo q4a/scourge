@@ -20,12 +20,14 @@
 
 #include "../constants.h"
 #include "../sdlhandler.h"
+#include "window.h"
 
 /**
   *@author Gabor Torok
   */
 
 class SDLHandler;
+class Window;
 
 class Widget {
  protected:
@@ -36,18 +38,18 @@ class Widget {
  public: 
   Widget(int x, int y);
   virtual ~Widget();
-  void draw(SDLHandler *sdlHandler);
+  void draw(Window *parent);
 
   inline int getX() { return x; }
   inline int getY() { return y; }
   inline void move(int x, int y) { this->x = x; this->y = y; }
-  virtual void drawWidget(SDLHandler *sdlHandler) = 0;
+  virtual void drawWidget(Window *parent) = 0;
   inline void setColor( float r, float g, float b, float a ) { this->red = r; this->green = g; this->blue = b; this->alpha = a; }
   virtual void handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
   virtual bool canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
 
  protected:
-  inline void setGlColor() { glColor4f( red, green, blue, alpha ); }
+  inline void applyColor() { glColor4f( red, green, blue, alpha ); }
 };
 
 #endif

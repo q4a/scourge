@@ -24,14 +24,14 @@
 Widget::Widget(int x, int y) {
   this->x = x;
   this->y = y;
-  red = green = blue = alpha = 1.0f;
+  red = green = blue = alpha = 0;
 }
 Widget::~Widget() {
 }
 
-void Widget::draw(SDLHandler *sdlHandler) {
+void Widget::draw(Window *parent) {
   glTranslated( x, y, 0 );
-  drawWidget(sdlHandler);
+  drawWidget(parent);
 }
 
 void Widget::handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y) {

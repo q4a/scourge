@@ -17,7 +17,7 @@
 
 #include "scourge.h"
 
-#define GUI_WIDTH 300
+#define GUI_WIDTH 220
 #define GUI_HEIGHT 125
 
 
@@ -38,6 +38,7 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(int argc, char *argv[]){
+  mainWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
 
@@ -67,6 +68,58 @@ Scourge::Scourge(int argc, char *argv[]){
 
   player_only = false;
   inventory = new Inventory(this);
+
+  // create the ui
+  char version[100];
+  sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
+  mainWin = new Window( getSDLHandler(),
+						sdlHandler->getScreen()->w - GUI_WIDTH, 
+						sdlHandler->getScreen()->h - GUI_HEIGHT, 
+						GUI_WIDTH, GUI_HEIGHT, 
+						version, 
+						getShapePalette()->getGuiTexture() );
+  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
+  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
+  inventoryButton = new Button( 0, 0, 100, 25, "Party Info" );
+  mainWin->addWidget((Widget*)inventoryButton);
+  optionsButton = new Button( 0, 25,  100, 50, "Options" );
+  mainWin->addWidget((Widget*)optionsButton);
+  quitButton = new Button( 0, 50,  100, 75, "Quit" );
+  mainWin->addWidget((Widget*)quitButton);
+
+  diamondButton = new Button( 100, 0,  120, 20, "" );
+  mainWin->addWidget((Widget*)diamondButton);
+  staggeredButton = new Button( 120, 0,  140, 20, "" );
+  mainWin->addWidget((Widget*)staggeredButton);
+  squareButton = new Button( 140, 0,  160, 20, "" );
+  mainWin->addWidget((Widget*)squareButton);
+  rowButton = new Button( 160, 0,  180, 20, "" );
+  mainWin->addWidget((Widget*)rowButton);
+  scoutButton = new Button( 180, 0,  200, 20, "" );
+  mainWin->addWidget((Widget*)scoutButton);
+  crossButton = new Button( 200, 0,  220, 20, "" );
+  mainWin->addWidget((Widget*)crossButton);
+
+  player1Button = new Button( 100, 20,  124, 40, "" );
+  mainWin->addWidget((Widget*)player1Button);
+  player2Button = new Button( 124, 20,  148, 40, "" );
+  mainWin->addWidget((Widget*)player2Button);
+  player3Button = new Button( 148, 20,  172, 40, "" );
+  mainWin->addWidget((Widget*)player3Button);
+  player4Button = new Button( 172, 20,  196, 40, "" );
+  mainWin->addWidget((Widget*)player4Button);
+  groupButton = new Button( 196, 20,  220, 40, "" );
+  mainWin->addWidget((Widget*)groupButton);
+  
+
+  /*
+  gui->addActiveRegion(gx + 180, gy + 100, gx + 204, gy + 125, Constants::PLAYER_1, this);
+  gui->addActiveRegion(gx + 204, gy + 100, gx + 228, gy + 125, Constants::PLAYER_2, this);
+  gui->addActiveRegion(gx + 228, gy + 100, gx + 252, gy + 125, Constants::PLAYER_3, this);
+  gui->addActiveRegion(gx + 252, gy + 100, gx + 276, gy + 125, Constants::PLAYER_4, this);
+  gui->addActiveRegion(gx + 276, gy + 100, gx + 300, gy + 125, Constants::PLAYER_ONLY, this);
+  */
+
   
   // show the main menu
   mainMenu = new MainMenu(this);  
@@ -98,6 +151,8 @@ Scourge::~Scourge(){
 
 void Scourge::startMission() {
   // add gui
+  mainWin->setVisible(true);
+  /*
   topWin = gui->addWindow(sdlHandler->getScreen()->w - GUI_WIDTH, 
 						  sdlHandler->getScreen()->h - GUI_HEIGHT, 
 						  GUI_WIDTH, GUI_HEIGHT, 
@@ -119,6 +174,7 @@ void Scourge::startMission() {
   gui->addActiveRegion(gx + 228, gy + 100, gx + 252, gy + 125, Constants::PLAYER_3, this);
   gui->addActiveRegion(gx + 252, gy + 100, gx + 276, gy + 125, Constants::PLAYER_4, this);
   gui->addActiveRegion(gx + 276, gy + 100, gx + 300, gy + 125, Constants::PLAYER_ONLY, this);
+  */
 
   // create the map
   map = new Map(this);
@@ -154,7 +210,8 @@ void Scourge::startMission() {
   sdlHandler->mainLoop();
 
   // remove gui
-  gui->removeWindow(topWin);
+  //  gui->removeWindow(topWin);
+  mainWin->setVisible(false);
   delete map;
   delete dg;
 }
@@ -183,7 +240,8 @@ void Scourge::drawView(SDL_Surface *screen) {
     }
   }
 
-  gui->drawWindows();
+  //  gui->drawWindows();
+  map->drawDescriptions();
 
   miniMap->draw(0, 400);
   
@@ -201,10 +259,6 @@ void Scourge::setPlayer(int n) {
 	if(i != n) party[i]->setNextDontMove(player, count++);
   }
   map->refresh();
-}
-
-bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
-  return false;
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
@@ -228,6 +282,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     break;
   case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
+	  /*
 	  int region = gui->testActiveRegions(event->button.x, event->button.y);
 	  if(region == Constants::SHOW_INVENTORY) {
 		inventory->show();
@@ -242,8 +297,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  } else if(region == Constants::PLAYER_ONLY) {
 		player_only = (player_only ? false : true);
 	  } else {        
+	  */
 		processGameMouseClick(event->button.x, event->button.y, event->button.button);
-	  }
+		//}
     }
     break;
   case SDL_KEYDOWN:
@@ -252,10 +308,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  player->setSelXY(-1, -1); // stop moving
 	  movingItem = NULL; // stop moving items
 	  return true;
+	  /*
     case SDLK_F10:
       isInfoShowing = (isInfoShowing ? false : true);
       gui->setWindowVisible(topWin, isInfoShowing);
       break;
+	  */
     case SDLK_DOWN:
 	  map->setMove(Constants::MOVE_DOWN);
       break;
@@ -797,3 +855,35 @@ void Scourge::drawTopWindow() {
   glPopMatrix();
 }
 
+bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
+  if(widget == inventoryButton) {
+	inventory->show();
+  } else if(widget == optionsButton) {
+	optionsMenu->show();
+  } else if(widget == quitButton) {
+	return true;
+  } else if(widget == diamondButton) {
+	setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == staggeredButton) {
+	setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == squareButton) {
+	setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == rowButton) {
+	setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == scoutButton) {
+	setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == crossButton) {
+	setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
+  } else if(widget == player1Button) {
+	setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+  } else if(widget == player2Button) {
+	setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+  } else if(widget == player3Button) {
+	setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+  } else if(widget == player4Button) {
+	setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+  } else if(widget == groupButton) {
+	player_only = (player_only ? false : true);
+  }
+  return false;
+}
