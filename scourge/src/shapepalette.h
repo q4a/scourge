@@ -40,10 +40,11 @@ using namespace std;
 class GLShape;
 class GLTorch;
 class Session;
+class ShapePalette;
 
 // temporary information when constructing shapes from a file
 typedef struct _ShapeValues {
-  int textureGroupIndex;
+  char textureGroupIndex[100]; // index or theme ref.
   int width, height, depth;
   char name[100];
   int descriptionIndex;
@@ -62,6 +63,58 @@ typedef struct _Md2ModelInfo {
   char filename[100];
   float scale;
 } Md2ModelInfo;
+
+class WallTheme {
+ public:
+
+  // types of theme section references
+  enum {
+    THEME_REF_WALL,
+    THEME_REF_CORNER,
+    THEME_REF_DOOR_EW,
+    THEME_REF_DOOR_NS,
+    THEME_REF_PASSAGE_FLOOR,
+    THEME_REF_ROOM_FLOOR,
+
+    // must be the last one
+    THEME_REF_COUNT
+  };
+  static char themeRefName[THEME_REF_COUNT][40];
+
+ private:
+  static const int NAME_LENGTH = 40;
+  char *name;
+  char textures[THEME_REF_COUNT][3][NAME_LENGTH]; // holds the text of a theme
+  GLuint textureGroup[THEME_REF_COUNT][3];
+  map<string,GLuint> loadedTextures;
+  map<string,int> themeRefMap;
+
+ public:
+  WallTheme( char *name );
+  ~WallTheme();
+
+  inline void addTextureName(int themeRef, int face, const char *name) { 
+    if( themeRef < 0 || themeRef > THEME_REF_COUNT ) {
+      cerr << "*** Error: theme ref is out of bounds: theme=" << getName() << endl;
+    } else {
+      strncpy( textures[themeRef][face], name, NAME_LENGTH - 1 ); 
+      textures[themeRef][face][NAME_LENGTH - 1] = '\0';
+      cerr << 
+        "\ttheme: " << getName() << 
+        " texture: ref=" << themeRef << 
+        " name=" << name << endl;
+    }
+  }
+
+  GLuint *getTextureGroup( string themeRefName );
+  inline char *getName() { return name; }
+  void load( ShapePalette *shapePal );
+  void unload();
+
+ protected:
+  void loadTextureGroup( int ref, int face, char *texture, ShapePalette *shapePal );
+  void debug();
+};
   
 class ShapePalette {
 private:
@@ -109,12 +162,21 @@ private:
   t3DModel * LoadMd2Model(char *file_name);
 
   Session *session;
+  WallTheme *themes[100];
+  int themeCount;
+  WallTheme *currentTheme;
+  vector<GLShape*> themeShapes;
+  vector<string> themeShapeRef;
 
 public: 
   ShapePalette(Session *session);
   ~ShapePalette();
 
   void initialize();
+
+  void loadTheme( const WallTheme *theme );
+  void loadTheme( const char *name );
+  void loadRandomTheme();
 
   GLuint formationTexIndex;
   inline GLuint getTexture(int index) { return textures[index].id; }
@@ -164,8 +226,9 @@ public:
 
   char *getRandomDescription(int descriptionGroup);
 
-protected:
   GLuint loadGLTextures(char *fileName);
+
+protected:
   GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
   void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0);
   void swap(unsigned char & a, unsigned char & b);

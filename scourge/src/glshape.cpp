@@ -154,6 +154,12 @@ struct surface *GLShape::new_surface(float vertices[4][3]) {
   return surf;
 }
 
+void GLShape::setTexture( GLuint* texture ) {
+  if( initialized ) glDeleteLists( displayListStart, 3 );
+  for(int i = 0; i < 3; i++) this->tex[i] = texture[i];
+  initialize();
+}
+
 void GLShape::initialize() {
   displayListStart = glGenLists( 3 );
   if( !displayListStart ) {
@@ -426,7 +432,7 @@ GLShape::~GLShape(){
   free(surfaces[RIGHT_SURFACE]);
   free(surfaces[FRONT_SURFACE]);
   free(surfaces[TOP_SURFACE]);
-  glDeleteLists( displayListStart, 3 );
+  if( initialized ) glDeleteLists( displayListStart, 3 );
 }
 
 void GLShape::drawShadow() {

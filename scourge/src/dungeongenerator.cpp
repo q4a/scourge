@@ -778,6 +778,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
   drawNodesOnMap(map, shapePal, preGenerated, locationIndex);
   
   // hack: draw diff. floor tiles in HQ
+  /*
   if(preGenerated) {
 	for(Sint16 x = 0; x < MAP_WIDTH; x++) {
 	  for(Sint16 y = 0; y < MAP_DEPTH; y++) {
@@ -788,6 +789,7 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex
 	}
   }
   updateStatus(MESSAGE);
+  */
 }
 
 void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal, 
@@ -802,13 +804,8 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal,
       if(nodes[x][y] != UNVISITED) {
 
         if(nodes[x][y] >= ROOM) {
-          if(preGenerated) {
           map->setFloorPosition(mapx, mapy + unitSide, 
-                                shapePal->findShapeByName("ROOM2_FLOOR_TILE"));
-          } else {
-            map->setFloorPosition(mapx, mapy + unitSide, 
-                                  shapePal->findShapeByName("ROOM_FLOOR_TILE"));
-          }
+                                shapePal->findShapeByName("ROOM_FLOOR_TILE"));
         } else {
           map->setFloorPosition(mapx, mapy + unitSide, 
                                 shapePal->findShapeByName("FLOOR_TILE"));
@@ -1448,6 +1445,14 @@ void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal,
 
 void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
                                       bool preGenerated, int locationIndex) {
+
+  updateStatus("Loading theme");
+  if(preGenerated) {
+    shapePal->loadTheme( "HQ" );
+  } else {
+    shapePal->loadRandomTheme();
+  }
+
   updateStatus("Drawing walls");
   drawBasics(map, shapePal, preGenerated, locationIndex);
   
