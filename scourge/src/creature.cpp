@@ -758,11 +758,9 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
 
 void Creature::monsterInit() {
   // equip starting inventory
-  for(int i = 0; i < Monster::ITEM_COUNT; i++) {
-	if(getMonster()->getStartingItem(i)) {
-	  addInventory(scourge->newItem(getMonster()->getStartingItem(i)));
-	  equipInventory(inventory_count - 1);
-	}
+  for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {
+	addInventory(scourge->newItem(getMonster()->getStartingItem(i)));
+	equipInventory(inventory_count - 1);
   }
   // set some skills
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {

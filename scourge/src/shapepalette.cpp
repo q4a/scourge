@@ -57,6 +57,7 @@ ShapePalette::ShapePalette(){
 	  // load the texture
 	  textures[texture_count].id = loadGLTextures(path);
 	  texture_count++;
+	  /*
 	} else if(n == 'S') {
 	  fgetc(fp);
 	  n = Constants::readLine(line, fp);
@@ -67,6 +68,7 @@ ShapePalette::ShapePalette(){
 	  CreateTexture(&skin, path, 0);
 	  string name = line;
 	  creature_skins[name] = skin;
+	  */
 	} else if(n == 'G') {
 	  // skip ':'
 	  fgetc(fp);
@@ -173,6 +175,16 @@ ShapePalette::ShapePalette(){
 	  // store it
 	  string s = info->name;
 	  creature_models[s] = info;
+
+	  // create a block shape for this model
+	  // (used to measure space w/o creating a creature shape)
+	  creature_block_shapes[s] = 
+		new GLShape(textureGroup[14],
+					info->width, info->depth, info->height,
+					strdup(info->name),
+					0xffffffff, 0, 0);
+	  
+
 	} else if(n == 'P') {
 	  fgetc(fp);
 	  n = Constants::readLine(line, fp);
@@ -370,24 +382,67 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   }
   Md2ModelInfo *model_info = creature_models[model];
 
-  // find the skin
+  // find or load the skin
   string skin = skin_name;
+  GLuint skin_texture;
+  char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
-	cerr << "Can't find md2 skin named " << skin << endl;
-	exit(1);
+	sprintf(path, "data/%s", skin_name);
+	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
+	CreateTexture(&skin_texture, path, 0);
+	cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
+	creature_skins[skin] = skin_texture;
+  } else {
+	skin_texture = creature_skins[skin];
   }
-  GLuint skin_texture = creature_skins[skin];
+
+  // increment its ref. count
+  if(loaded_skins.find(skin_texture) == loaded_skins.end()) {
+	loaded_skins[skin_texture] = 1;
+  } else {
+	loaded_skins[skin_texture] = loaded_skins[skin_texture] + 1;
+  }
+  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
+	" count: " << loaded_skins[skin_texture] << endl;
 
   cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
 
   // create the shape.
   // FIXME: shapeindex is always FIGHTER_INDEX. Does it matter?
-  return new MD2Shape(model_info->model, skin_texture, model_info->scale,
-					  textureGroup[14], 
-					  model_info->width, model_info->depth, model_info->height,
-					  model_info->name,
-					  0xf0f0ffff, 0);
-					  //Constants::FIGHTER_INDEX);  
+  MD2Shape *shape = new MD2Shape(model_info->model, skin_texture, model_info->scale,
+								 textureGroup[14], 
+								 model_info->width, model_info->depth, model_info->height,
+								 model_info->name,
+								 0xf0f0ffff, 0); //Constants::FIGHTER_INDEX);  
+  shape->setSkinName(skin_name);
+  return shape;
+}
+
+void ShapePalette::decrementSkinRefCount(char *skin_name) {
+  string skin = skin_name;
+  GLuint skin_texture;
+  if(creature_skins.find(skin) == creature_skins.end()){
+	cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin_name << endl;
+	return;
+  } else {
+	skin_texture = creature_skins[skin];
+  }
+
+  if(loaded_skins.find(skin_texture) == loaded_skins.end()) {
+	cerr << "&&&&&&&&&& WARNING: could not find skin id=" << skin_texture << endl;
+	return;
+  }
+
+  loaded_skins[skin_texture] = loaded_skins[skin_texture] - 1;
+  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
+	" count: " << loaded_skins[skin_texture] << endl;
+  // unload texture if no more references
+  if(loaded_skins[skin_texture] == 0) {
+	cerr << "\t&&&&&&&&&& Deleting texture: " << skin_texture << endl;
+	loaded_skins.erase(skin_texture);
+	creature_skins.erase(skin);
+	glDeleteTextures(1, &skin_texture);
+  }
 }
 
 // the next two methods are slow, only use during initialization

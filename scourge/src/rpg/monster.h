@@ -18,6 +18,8 @@
 #ifndef MONSTER_H
 #define MONSTER_H
 
+#include <vector>
+#include <map>
 #include "../constants.h"
 #include "rpgitem.h"
 
@@ -25,27 +27,23 @@
   *@author Gabor Torok
   */
 
-#define MAX_MONSTER_LEVEL 10
-#define MAX_MONSTER_COUNT 50
+using namespace std;
   
 class Monster  {
- public:
-  static const int ITEM_COUNT = 50;
 
-private:
+ private:
   char *type;
   int hp;
   int level;
   char *model_name;
   char *skin_name;
   char description[300];
-  RpgItem *item[ITEM_COUNT]; // starting equipment
   int money;
   int speed;
-	int baseArmor;
+  int baseArmor;
+  vector<RpgItem*> items;
 
-  static Monster *monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
-  static int monsterCount[MAX_MONSTER_LEVEL];
+  static map<int, vector<Monster*>* > monsters;
 
 public:
   Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor=0);
@@ -59,7 +57,9 @@ public:
   inline char *getSkinName() { return skin_name; }
   inline char *getDescription() { return description; }
   inline int getSpeed() { return speed; }
-  inline RpgItem *getStartingItem(int index) { return item[index]; }
+  inline int getStartingItemCount() { return items.size(); }
+  inline RpgItem *getStartingItem(int index) { return items[index]; }
+  inline void addItem(RpgItem *item) { items.push_back(item); }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);

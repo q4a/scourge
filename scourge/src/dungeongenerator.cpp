@@ -1113,13 +1113,11 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 					break;
 				}
 
-				// FIXME: do this w/o creating a shape. Md2 model info is already loaded in shapepalette.
-				// create a creature shape temporarily
+				// use the creature's block shape to see if it would fit
 				GLShape *shape = 
 				  scourge->getShapePalette()->
-				  getCreatureShape(monster->getModelName(), monster->getSkinName());
+				  getCreatureBlockShape(monster->getModelName());
 				bool fits = getLocationInRoom(map, i, shape, &x, &y);
-				delete shape;
 
 				if(fits) {
 					//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
