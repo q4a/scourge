@@ -93,12 +93,6 @@ void Persist::deleteItemInfo( ItemInfo *info ) {
   for(int i = 0; i < (int)info->containedItemCount; i++) {
     deleteItemInfo( info->containedItems[i] );
   }
-  if( info->magic ) deleteMagicAttribInfo( info->magic );
-  free( info );
-}
-
-void Persist::deleteMagicAttribInfo( MagicAttribInfo *info ) {
-  if( info->magicDamage ) deleteDiceInfo( info->magicDamage );
   free( info );
 }
 
@@ -195,7 +189,20 @@ void Persist::saveItem( FILE *fp, ItemInfo *info ) {
   for(int i = 0; i < (int)info->containedItemCount; i++) {
     saveItem( fp, info->containedItems[i] );
   }
-  saveMagicAttrib( fp, info->magic );
+
+  fwrite( &(info->bonus), sizeof(Uint32), 1, fp );
+  fwrite( &(info->damageMultiplier), sizeof(Uint32), 1, fp );
+  fwrite( &(info->cursed), sizeof(Uint32), 1, fp );
+  fwrite( &(info->magicLevel), sizeof(Uint32), 1, fp );
+  fwrite( info->monster_type, sizeof(Uint8), 255, fp );
+  fwrite( info->magic_school_name, sizeof(Uint8), 255, fp );
+  saveDice( fp, info->magicDamage );
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    fwrite( &(info->stateMod[i]), sizeof(Uint8), 1, fp );
+  }
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    fwrite( &(info->skillBonus[i]), sizeof(Uint8), 1, fp );
+  }
 }
 
 ItemInfo *Persist::loadItem( FILE *fp ) {
@@ -212,34 +219,11 @@ ItemInfo *Persist::loadItem( FILE *fp ) {
   for(int i = 0; i < (int)info->containedItemCount; i++) {
     info->containedItems[i] = loadItem( fp );
   }
-  info->magic = loadMagicAttrib( fp );
-  return info;
-}
 
-void Persist::saveMagicAttrib( FILE *fp, MagicAttribInfo *info ) {
-  fwrite( &(info->version), sizeof(Uint32), 1, fp );
-  fwrite( &(info->bonus), sizeof(Uint32), 1, fp );
-  fwrite( &(info->damageMultiplier), sizeof(Uint32), 1, fp );
-  fwrite( &(info->cursed), sizeof(Uint32), 1, fp );
-  fwrite( &(info->level), sizeof(Uint32), 1, fp );
-  fwrite( info->monster_type, sizeof(Uint8), 255, fp );
-  fwrite( info->magic_school_name, sizeof(Uint8), 255, fp );
-  saveDice( fp, info->magicDamage );
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-    fwrite( &(info->stateMod[i]), sizeof(Uint8), 1, fp );
-  }
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    fwrite( &(info->skillBonus[i]), sizeof(Uint8), 1, fp );
-  }
-}
-
-MagicAttribInfo *Persist::loadMagicAttrib( FILE *fp ) {
-  MagicAttribInfo *info = (MagicAttribInfo*)malloc(sizeof(MagicAttribInfo));
-  fread( &(info->version), sizeof(Uint32), 1, fp );
   fread( &(info->bonus), sizeof(Uint32), 1, fp );
   fread( &(info->damageMultiplier), sizeof(Uint32), 1, fp );
   fread( &(info->cursed), sizeof(Uint32), 1, fp );
-  fread( &(info->level), sizeof(Uint32), 1, fp );
+  fread( &(info->magicLevel), sizeof(Uint32), 1, fp );
   fread( info->monster_type, sizeof(Uint8), 255, fp );
   fread( info->magic_school_name, sizeof(Uint8), 255, fp );
   info->magicDamage = loadDice( fp );
@@ -249,6 +233,7 @@ MagicAttribInfo *Persist::loadMagicAttrib( FILE *fp ) {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     fread( &(info->skillBonus[i]), sizeof(Uint8), 1, fp );
   }
+
   return info;
 }
 

@@ -85,7 +85,7 @@ void Projectile::commonInit() {
   cx = cy = 0;
   steps = 0;
 
-  maxDist = (spell ? spell->getDistance() : item->getRpgItem()->getDistance()) + tw;
+  maxDist = (spell ? spell->getDistance() : item->getDistance()) + tw;
   startX = sx;
   startY = sy;
   distToTarget = Constants::distance(startX,  startY, 

@@ -19,7 +19,7 @@
 #define POTION_EXPIRATION_EVENT_H
 
 #include "../constants.h"
-#include "../rpg/rpgitem.h"
+#include "../item.h"
 #include "../creature.h"
 #include "event.h"
 
@@ -30,7 +30,7 @@
   
 class Creature;
 class Session;
-class RpgItem;
+class Item;
   
 class PotionExpirationEvent : public Event  {
 
@@ -44,7 +44,7 @@ public:
 
   void execute();    
   
-  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, RpgItem *item, Session *session, int nbExecutionsToDo);  
+  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, Item *item, Session *session, int nbExecutionsToDo);  
   PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Session *session, int nbExecutionsToDo);
   PotionExpirationEvent();
   virtual ~PotionExpirationEvent();  

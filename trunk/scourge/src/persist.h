@@ -29,16 +29,6 @@ typedef struct _DiceInfo {
   Uint32 count, sides, mod;
 } DiceInfo;
 
-typedef struct _MagicAttribInfo {
-  Uint32 version;
-  Uint32 bonus, damageMultiplier, cursed, level;
-  Uint8 monster_type[255];
-  Uint8 magic_school_name[255];
-  DiceInfo *magicDamage;
-  Uint8 stateMod[Constants::STATE_MOD_COUNT];
-  Uint8 skillBonus[Constants::SKILL_COUNT];
-} MagicAttribInfo;
-
 typedef struct _ItemInfo {
   Uint32 version;
   Uint32 level;
@@ -48,7 +38,14 @@ typedef struct _ItemInfo {
   Uint8 spell_name[255];
   Uint32 containedItemCount;
   struct _ItemInfo *containedItems[MAX_CONTAINED_ITEMS];
-  MagicAttribInfo *magic;
+
+  Uint32 bonus, damageMultiplier, cursed, magicLevel;
+  Uint8 monster_type[255];
+  Uint8 magic_school_name[255];
+  DiceInfo *magicDamage;
+  Uint8 stateMod[Constants::STATE_MOD_COUNT];
+  Uint8 skillBonus[Constants::SKILL_COUNT];
+
 } ItemInfo;
 /*
 typedef struct _ContainedItemInfo {
@@ -95,10 +92,6 @@ protected:
   static void saveItem(FILE *fp, ItemInfo *item);
   static ItemInfo *loadItem(FILE *fp);
   static void deleteItemInfo( ItemInfo *info );
-
-  static void saveMagicAttrib( FILE *fp, MagicAttribInfo *info );
-  static MagicAttribInfo *loadMagicAttrib(FILE *fp);
-  static void deleteMagicAttribInfo( MagicAttribInfo *info );
 
   static void saveDice( FILE *fp, DiceInfo *info );
   static DiceInfo *loadDice(FILE *fp);
