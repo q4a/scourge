@@ -40,6 +40,7 @@ GuiTheme::GuiTheme( char *name ) {
   inputBackground = NULL;
   inputText = NULL;
   selectionBackground = NULL;
+  selectedBorder = NULL;
 }
 
 GuiTheme::~GuiTheme() {
@@ -57,6 +58,7 @@ GuiTheme::~GuiTheme() {
   if( inputBackground ) delete inputBackground;
   if( inputText ) delete inputText;
   if( selectionBackground ) delete selectionBackground;
+  if( selectedBorder ) delete selectedBorder;
 }
 
 void GuiTheme::initThemes( ShapePalette *shapePal ) {
@@ -80,87 +82,91 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
       fgetc(fp);
       // read the rest of the line
       n = Constants::readLine(name, fp);
-
+      
       GuiTheme *theme = new GuiTheme( strdup( name ) );
-	  Color *color;
-	  ThemeElement *element;
-	  
+      Color *color;
+      ThemeElement *element;
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setWindowBackground( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setWindowBackground( element );
       else cerr << "Gui theme: " << name << " skipping window background" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setWindowTop( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setWindowTop( element );
       else cerr << "Gui theme: " << name << " skipping window top/bottom" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setWindowBorder( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setWindowBorder( element );
       else cerr << "Gui theme: " << name << " skipping window border" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  color = parseColor( line + 1 );
-	  if( color ) theme->setWindowTitleText( color );
+      color = parseColor( line + 1 );
+      if( color ) theme->setWindowTitleText( color );
       else cerr << "Gui theme: " << name << " skipping window title text color" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  color = parseColor( line + 1 );
-	  if( color ) theme->setWindowText( color );
+      color = parseColor( line + 1 );
+      if( color ) theme->setWindowText( color );
       else cerr << "Gui theme: " << name << " skipping window text color" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setButtonBackground( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setButtonBackground( element );
       else cerr << "Gui theme: " << name << " skipping button background" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setButtonHighlight( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setButtonHighlight( element );
       else cerr << "Gui theme: " << name << " skipping button highlight" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setButtonBorder( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setButtonBorder( element );
       else cerr << "Gui theme: " << name << " skipping button border" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  color = parseColor( line + 1 );
-	  if( color ) theme->setButtonText( color );
+      color = parseColor( line + 1 );
+      if( color ) theme->setButtonText( color );
       else cerr << "Gui theme: " << name << " skipping button text" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setListBackground( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setListBackground( element );
       else cerr << "Gui theme: " << name << " skipping list background" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setInputBackground( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setInputBackground( element );
       else cerr << "Gui theme: " << name << " skipping input background" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  color = parseColor( line + 1 );
-	  if( color ) theme->setInputText( color );
+      color = parseColor( line + 1 );
+      if( color ) theme->setInputText( color );
       else cerr << "Gui theme: " << name << " skipping input text" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  element = parseElement( line + 1 );
-	  if( element ) theme->setSelectionBackground( element );
+      element = parseElement( line + 1 );
+      if( element ) theme->setSelectionBackground( element );
       else cerr << "Gui theme: " << name << " skipping selection background" << endl;
-
+      
       n = Constants::readLine( line, fp );
-	  color = parseColor( line + 1 );
-	  if( color ) theme->setSelectionText( color );
+      color = parseColor( line + 1 );
+      if( color ) theme->setSelectionText( color );
       else cerr << "Gui theme: " << name << " skipping selection text" << endl;
 
+      n = Constants::readLine( line, fp );
+      element = parseElement( line + 1 );
+      if( element ) theme->setSelectedBorder( element );
+      else cerr << "Gui theme: " << name << " skipping selected border" << endl;
 
-	  theme->loadTextures( shapePal );
-	  
-	  string s = name;
-	  themes[name] = theme;
-
+      theme->loadTextures( shapePal );
+      
+      string s = name;
+      themes[name] = theme;
+      
     } else {
       n = Constants::readLine(line, fp);
     }

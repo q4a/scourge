@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "widget.h"
+#include "window.h"
+#include "guitheme.h"
 
 /**
   *@author Gabor Torok
@@ -44,7 +46,15 @@ Widget::~Widget() {
 void Widget::draw(Widget *parent) {
   glTranslated( x, y, 0 );
   if(hasFocus()) {
-    applyFocusColor();
+    GuiTheme *theme = ((Window*)parent)->getTheme();
+    if( theme->getSelectedBorder() ) {
+      glColor4f( theme->getSelectedBorder()->color.r,
+                 theme->getSelectedBorder()->color.g,
+                 theme->getSelectedBorder()->color.b,
+                 theme->getSelectedBorder()->color.a );
+    } else {
+      applyFocusColor();
+    }
     glLineWidth( 2.0f );
     glBegin(GL_LINES);
     glVertex2f( -1, -1 );

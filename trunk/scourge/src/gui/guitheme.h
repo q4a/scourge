@@ -60,6 +60,7 @@ private:
   Color *inputText;
   ThemeElement *selectionBackground;
   Color *selectionText;
+  ThemeElement *selectedBorder;
 
   static map<string, GuiTheme*> themes;
 
@@ -93,7 +94,7 @@ public:
   inline Color *getInputText() { return inputText; }
   inline ThemeElement *getSelectionBackground() { return selectionBackground; }
   inline Color *getSelectionText() { return selectionText; }
-
+  inline ThemeElement *getSelectedBorder() { return selectedBorder; }
 
  protected:
   static ThemeElement *parseElement( char *line );
@@ -115,6 +116,7 @@ public:
   inline void setInputText( Color *color ) { this->inputText = color; }
   inline void setSelectionBackground( ThemeElement *element ) { selectionBackground = element; }
   inline void setSelectionText( Color *color ) { this->selectionText = color; }
+  inline void setSelectedBorder( ThemeElement *element ) { selectedBorder = element; }
 };
 
 #endif
