@@ -87,34 +87,27 @@ bool Projectile::move() {
 	 (sx == ex && sy == ey)) return true;
   steps++;
 
-  // angle-based floating pt. movement
-  if(sx == ex) {
-	// vertical movement
-	if(sy < ey) sy+=DELTA;
-	else sy-=DELTA;
-  } else if(sy == ey) {
-	// horizontal movement
-	if(sx < ex) sx+=DELTA;
-	else sx-=DELTA;
-  } else {
-
-	float oldAngle = angle;
-	if(parabolic != 0.0f) {
-	  float a = (179.0f * steps) / distToTarget;
-	  angle = angle + parabolic * 40 * sin(Constants::toRadians(a));
-	  /*
-	  if(parabolic == 0.5f) cerr << "parabolic=" << parabolic << 
-		" steps=" << steps << " out of " << distToTarget <<
-		" a=" << a << 
-		" sin=" << sin(Constants::toRadians(a)) << 
-		" angle=" << angle <<
-		endl;
-	  */
-	}
-
+  float oldAngle = angle;
+  if(parabolic != 0.0f) {
+	float a = (179.0f * steps) / distToTarget;
+	angle = angle + parabolic * 40 * sin(Constants::toRadians(a));
 	sx += (cos(Constants::toRadians(angle)) * DELTA);
 	sy += (sin(Constants::toRadians(angle)) * DELTA);
 	angle = oldAngle;
+  } else {
+	// angle-based floating pt. movement
+	if(sx == ex) {
+	  // vertical movement
+	  if(sy < ey) sy+=DELTA;
+	  else sy-=DELTA;	
+	} else if(sy == ey) {
+	  // horizontal movement
+	  if(sx < ex) sx+=DELTA;
+	  else sx-=DELTA;	
+	} else {	  	  
+	  sx += (cos(Constants::toRadians(angle)) * DELTA);
+	  sy += (sin(Constants::toRadians(angle)) * DELTA);
+	}
   }
 
   // recalculate the distance
