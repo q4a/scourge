@@ -752,10 +752,11 @@ void Inventory::drawInventory() {
 */
 
 void Inventory::receive(Widget *widget) {
-  if(widget == invList) {
-    putItem();
-  } else if(widget == paperDoll) {
+  if(widget == paperDoll) {
     if(putItem() != -1) equipItem();
+  } else {
+    // don't check for widget, it may be party member portrait.
+    putItem();
   }
 }
 

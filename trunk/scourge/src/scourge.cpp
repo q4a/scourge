@@ -2671,7 +2671,7 @@ void Scourge::createPartyUI() {
   for(int i = 0; i < 4; i++) {
     playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 0,  
                                 offsetX + playerButtonWidth * (i + 1), playerInfoHeight, 
-                                this );
+                                this, this );
     cards->addWidget( playerInfo[i], MAX_SIZE );
   }
 
@@ -2716,6 +2716,20 @@ void Scourge::createPartyUI() {
   //minPartyInfo = new Canvas( 0, 0, Scourge::PARTY_MIN_GUI_WIDTH, 75 + (lowerRowHeight * 2), this );
   //cards->addWidget( minPartyInfo, MIN_SIZE );
 }
+
+void Scourge::receive( Widget *widget ) {
+  if( !getMovingItem() ) return;
+  int selected = -1;
+  for(int i = 0; i < 4; i++) {
+    if( widget == playerInfo[i] ) {
+      selected = i;
+      break;
+    }
+  }
+  if( selected == -1 ) return;
+  getParty()->setPlayer( selected );
+  inventory->receive( widget );
+}     
 
 void Scourge::drawWidget(Widget *w) {
   char msg[80];
@@ -2916,13 +2930,13 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == crossButton) {
     party->setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
     */
-  } else if(widget == player1Button) {
+  } else if(widget == player1Button || widget == playerInfo[0] ) {
     setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
-  } else if(widget == player2Button) {
+  } else if(widget == player2Button || widget == playerInfo[1] ) {
     setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
-  } else if(widget == player3Button) {
+  } else if(widget == player3Button || widget == playerInfo[2] ) {
     setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
-  } else if(widget == player4Button) {
+  } else if(widget == player4Button || widget == playerInfo[3] ) {
     setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
   } else if(widget == groupButton && !inTurnBasedCombat()) {
     party->togglePlayerOnly();
