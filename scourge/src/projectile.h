@@ -53,14 +53,17 @@ class Projectile {
   Shape *shape;
   float maxDist;
   float startX, startY, distToTarget;
+  bool stopOnImpact;
 
   static map<Creature*, vector<Projectile*>*> projectiles;
   
  public:
-  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f);
-  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f);
-  Projectile(Creature *creature, int x, int y, int w, int d, Spell *spell, Shape *shape, float parabolic=0.0f); 
+  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
+  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
+  Projectile(Creature *creature, int x, int y, int w, int d, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
   virtual ~Projectile();
+
+  inline bool doesStopOnImpact() { return stopOnImpact; }
 
   // return true when out of moves
   bool move();
@@ -75,15 +78,15 @@ class Projectile {
 
   static Projectile *addProjectile(Creature *creature, Creature *target, 
 								   Item *item, Shape *shape, 
-								   int maxProjectiles);
+								   int maxProjectiles, bool stopOnImpact=true);
   static Projectile *addProjectile(Creature *creature, Creature *target, 
 								   Spell *spell, Shape *shape, 
-								   int maxProjectiles);
+								   int maxProjectiles, bool stopOnImpact=true);
   static Projectile *addProjectile(Creature *creature, int x, int y, int w, int d, 
 								   Spell *spell, Shape *shape, 
-								   int maxProjectiles);
+								   int maxProjectiles, bool stopOnImpact=true);
   static void removeProjectile(Projectile *p);
-  static void moveProjectiles();
+  static void moveProjectiles(Scourge *scourge);
   inline static map<Creature *, vector<Projectile*>*> *getProjectileMap() { return &projectiles; }
 
  protected:

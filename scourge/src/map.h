@@ -252,6 +252,13 @@ class Map {
 
   void drawDraggedItem();
 
+  /**
+   * Find the creatures in this area and add them to the targets array.
+   * Returns the number of creatures found. (0 if none.)
+   * It's the caller responsibility to create the targets array.
+  */
+  int getCreaturesInArea(int x, int y, int radius, Creature *targets[]);
+
  protected:
   DrawLater later[100], stencil[1000], other[1000], damage[1000];
   int laterCount, stencilCount, otherCount, damageCount;

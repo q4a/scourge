@@ -21,7 +21,7 @@ map<Creature*, vector<Projectile*>*> Projectile::projectiles;
 
 #define DELTA 1.0f
 
-Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic) {
+Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic, bool stopOnImpact) {
   this->creature = creature;
   this->tx = target->getX();
   this->ty = target->getY();
@@ -31,11 +31,12 @@ Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *
   this->spell = NULL;
   this->shape = shape;
   this->parabolic = parabolic;
+  this->stopOnImpact = stopOnImpact;
 
   commonInit();
 }
 
-Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic) {
+Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic, bool stopOnImpact) {
   this->creature = creature;
   this->tx = target->getX();
   this->ty = target->getY();
@@ -45,12 +46,13 @@ Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape
   this->spell = spell;
   this->shape = shape;
   this->parabolic = parabolic;
+  this->stopOnImpact = stopOnImpact;
 
   commonInit();
 }
 
 Projectile::Projectile(Creature *creature, int x, int y, int w, int d, 
-					   Spell *spell, Shape *shape, float parabolic) {
+                       Spell *spell, Shape *shape, float parabolic, bool stopOnImpact) {
   this->creature = creature;
   this->tx = x;
   this->ty = y;
@@ -60,6 +62,7 @@ Projectile::Projectile(Creature *creature, int x, int y, int w, int d,
   this->spell = spell;
   this->shape = shape;
   this->parabolic = parabolic;
+  this->stopOnImpact = stopOnImpact;
 
   commonInit();
 }
@@ -77,23 +80,23 @@ void Projectile::commonInit() {
   // read about the arctan problem: 
   // http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
   q = 1;
-  if(x < 0) { 		// Quadrant 2 & 3
-	q = ( y >= 0 ? 2 : 3);
-	angle += 180;
+  if(x < 0) {     // Quadrant 2 & 3
+    q = ( y >= 0 ? 2 : 3);
+    angle += 180;
   } else if(y < 0) { // Quadrant 4
-	q = 4;
-	angle += 360;
+    q = 4;
+    angle += 360;
   }
   //  cerr << "NEW PROJECTILE: (" << sx << "," << sy << ")-(" << ex << "," << ey << ") angle=" << angle << " q=" << q << endl;
   cx = cy = 0;
   steps = 0;
-  
+
   maxDist = (spell ? spell->getDistance() : item->getRpgItem()->getDistance()) + tw;
   startX = sx;
   startY = sy;
   distToTarget = Constants::distance(startX,  startY, 
-									 1, 1,
-									 tx, ty, tw, td);
+                                     1, 1,
+                                     tx, ty, tw, td);
 }
 
 Projectile::~Projectile() {
@@ -102,36 +105,36 @@ Projectile::~Projectile() {
 bool Projectile::move() {
   // are we at the target location?
   if(steps >= maxDist ||
-	 (sx == ex && sy == ey)) return true;
+     (sx == ex && sy == ey)) return true;
   steps++;
 
   float oldAngle = angle;
   if(parabolic != 0.0f) {
-	float a = (179.0f * steps) / distToTarget;
-	angle = angle + parabolic * 40 * sin(Constants::toRadians(a));
-	sx += (cos(Constants::toRadians(angle)) * DELTA);
-	sy += (sin(Constants::toRadians(angle)) * DELTA);
-	angle = oldAngle;
+    float a = (179.0f * steps) / distToTarget;
+    angle = angle + parabolic * 40 * sin(Constants::toRadians(a));
+    sx += (cos(Constants::toRadians(angle)) * DELTA);
+    sy += (sin(Constants::toRadians(angle)) * DELTA);
+    angle = oldAngle;
   } else {
-	// angle-based floating pt. movement
-	if(sx == ex) {
-	  // vertical movement
-	  if(sy < ey) sy+=DELTA;
-	  else sy-=DELTA;	
-	} else if(sy == ey) {
-	  // horizontal movement
-	  if(sx < ex) sx+=DELTA;
-	  else sx-=DELTA;	
-	} else {	  	  
-	  sx += (cos(Constants::toRadians(angle)) * DELTA);
-	  sy += (sin(Constants::toRadians(angle)) * DELTA);
-	}
+    // angle-based floating pt. movement
+    if(sx == ex) {
+      // vertical movement
+      if(sy < ey) sy+=DELTA;
+      else sy-=DELTA; 
+    } else if(sy == ey) {
+      // horizontal movement
+      if(sx < ex) sx+=DELTA;
+      else sx-=DELTA; 
+    } else {        
+      sx += (cos(Constants::toRadians(angle)) * DELTA);
+      sy += (sin(Constants::toRadians(angle)) * DELTA);
+    }
   }
 
   // recalculate the distance
   distToTarget = Constants::distance(startX,  startY, 
-									 1, 1,
-									 tx, ty, tw, td);
+                                     1, 1,
+                                     tx, ty, tw, td);
 
 
   // we're not at the target yet
@@ -140,58 +143,58 @@ bool Projectile::move() {
 
 // return null if the projectile cannot be launched
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
-									  Item *item, Shape *shape, 
-									  int maxProjectiles) {
+                                      Item *item, Shape *shape, 
+                                      int maxProjectiles, bool stopOnImpact) {
   vector<Projectile*> *v;
   if(projectiles.find(creature) == projectiles.end()) {
-	v = new vector<Projectile*>();
-	projectiles[creature] = v;
+    v = new vector<Projectile*>();
+    projectiles[creature] = v;
   } else {
-	v = projectiles[creature];
+    v = projectiles[creature];
   }
   // for items this is the max number of proj.-s in the air
   if((int)v->size() > maxProjectiles) return NULL;
-  Projectile *p = new Projectile(creature, target, item, shape);
+  Projectile *p = new Projectile(creature, target, item, shape, 0.0f, stopOnImpact);
   v->push_back(p);
   return p;
 }
 
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
-									  Spell *spell, Shape *shape, 
-									  int maxProjectiles) {
+                                      Spell *spell, Shape *shape, 
+                                      int maxProjectiles, bool stopOnImpact) {
   return addProjectile(creature, target->getX(), target->getY(), 
-					   target->getShape()->getWidth(), target->getShape()->getDepth(), 
-					   spell, shape, maxProjectiles);
+                       target->getShape()->getWidth(), target->getShape()->getDepth(), 
+                       spell, shape, maxProjectiles, stopOnImpact);
 }
 
 Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, int d, 
-									  Spell *spell, Shape *shape, 
-									  int maxProjectiles) {
+                                      Spell *spell, Shape *shape, 
+                                      int maxProjectiles, bool stopOnImpact) {
   vector<Projectile*> *v;
   if(projectiles.find(creature) == projectiles.end()) {
-	v = new vector<Projectile*>();
-	projectiles[creature] = v;
+    v = new vector<Projectile*>();
+    projectiles[creature] = v;
   } else {
-	v = projectiles[creature];
+    v = projectiles[creature];
   }
   // FIXME: for spells, it's how many to launch at once...
   if((int)v->size() > maxProjectiles) return NULL;
 
 
   // add a straight-flying projectile
-  Projectile *p = new Projectile(creature, x, y, w, d, spell, shape);
+  Projectile *p = new Projectile(creature, x, y, w, d, spell, shape, 0.0f, stopOnImpact);
   v->push_back(p);
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
-	if(i < maxProjectiles - 1) {
-	  v->push_back(new Projectile(creature, x, y, w, d, spell, shape, r));
-	}
-	if((i + 1) < maxProjectiles - 1) {
-	  v->push_back(new Projectile(creature, x, y, w, d, spell, shape, -r));
-	}
-	r += (r/2.0f);
+    if(i < maxProjectiles - 1) {
+      v->push_back(new Projectile(creature, x, y, w, d, spell, shape, r, stopOnImpact));
+    }
+    if((i + 1) < maxProjectiles - 1) {
+      v->push_back(new Projectile(creature, x, y, w, d, spell, shape, -r, stopOnImpact));
+    }
+    r += (r/2.0f);
   }
 
   return p;
@@ -200,39 +203,44 @@ Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, i
 
 void Projectile::removeProjectile(Projectile *p) {
   if(projectiles.find(p->creature) != projectiles.end()) {
-	vector<Projectile*> *v = projectiles[p->creature];
-	for(vector<Projectile*>::iterator e=v->begin(); e!=v->end(); ++e) {
-	  Projectile *proj = *e;	
-	  if(proj == p) {
-		v->erase(e);
-		if(v->size() == 0) {
-		  projectiles.erase(p->creature);
-		}
-		return;
-	  }
-	}
+    vector<Projectile*> *v = projectiles[p->creature];
+    for(vector<Projectile*>::iterator e=v->begin(); e!=v->end(); ++e) {
+      Projectile *proj = *e;  
+      if(proj == p) {
+        v->erase(e);
+        if(v->size() == 0) {
+          projectiles.erase(p->creature);
+        }
+        return;
+      }
+    }
   }
 }
 
-void Projectile::moveProjectiles() {
+void Projectile::moveProjectiles(Scourge *scourge) {
   // draw the projectiles
   vector<Projectile*> removedProjectiles;
   //    cerr << "Projectiles:" << endl;
   map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
   for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-	//	  Creature *creature = i->first;
-	//	  cerr << "\tcreature: " << creature->getName() << endl;
-	vector<Projectile*> *p = i->second;
-	for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
-	  Projectile *proj = *e;
-	  //	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
-	  if(proj->move()) {
-		removedProjectiles.push_back(proj);
-	  }
-	}
+    //	  Creature *creature = i->first;
+    //	  cerr << "\tcreature: " << creature->getName() << endl;
+    vector<Projectile*> *p = i->second;
+    for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+      Projectile *proj = *e;
+      //	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+      if(proj->move()) {
+        removedProjectiles.push_back(proj);
+      }
+    }
   }
   // remove projectiles
   for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
-	Projectile::removeProjectile(*e);
+    Projectile *proj = *e;
+    // a location-bound projectile reached its target
+    if(!proj->doesStopOnImpact()) {
+      Battle::projectileHitTurn(scourge, proj, proj->getX(), proj->getY());
+    }
+    Projectile::removeProjectile(proj);
   }
 }

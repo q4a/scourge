@@ -45,7 +45,7 @@ void SpellCaster::spellFailed() {
   if(!spell) return;
 
   cerr << "FAILED: " << spell->getName() << " power=" << power << endl;
-  
+
   // put code here for spells with something spectacular when they fail...
   // (fouled fireball decimates party, etc.)
 
@@ -58,33 +58,33 @@ void SpellCaster::spellSucceeded() {
 
   cerr << "SUCCEEDED: " << spell->getName() << " power=" << power << endl;
   if(!strcasecmp(spell->getName(), "Lesser healing touch") ||
-	 !strcasecmp(spell->getName(), "Greater healing touch") ||
-	 !strcasecmp(spell->getName(), "Divine healing touch")) {
-	increaseHP();
+     !strcasecmp(spell->getName(), "Greater healing touch") ||
+     !strcasecmp(spell->getName(), "Divine healing touch")) {
+    increaseHP();
   } else if(!strcasecmp(spell->getName(), "Body of stone")) {
-	increaseAC();
+    increaseAC();
   } else if(!strcasecmp(spell->getName(), "Burning stare") ||
-			!strcasecmp(spell->getName(), "Silent knives")) {
-	if(projectileHit) {
-	  causeDamage();
-	} else {
-	  launchProjectile(1);
-	}
+            !strcasecmp(spell->getName(), "Silent knives")) {
+    if(projectileHit) {
+      causeDamage();
+    } else {
+      launchProjectile(1);
+    }
   } else if(!strcasecmp(spell->getName(), "Stinging light")) {
-	if(projectileHit) {
-	  causeDamage();
-	} else {
-	  launchProjectile(0);
-	}
+    if(projectileHit) {
+      causeDamage();
+    } else {
+      launchProjectile(0);
+    }
   } else if(!strcasecmp(spell->getName(), "Flame of Azun")) {
-	if(projectileHit) {
-	  cerr << "*** Implement me: Flame of Azun blinds a group." << endl;
-	} else {
-	  launchProjectile(0);
-	}
+    if(projectileHit) {
+      setStateMod(Constants::blinded);
+    } else {
+      launchProjectile(0, false);
+    }
   } else {
-	// default
-	cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
+    // default
+    cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
   }
 }
 
@@ -98,8 +98,8 @@ void SpellCaster::increaseHP() {
   int n = spell->getAction();
   n += (int)((((float)n / 100.0f) * power) * rand()/RAND_MAX);
 
-  if(n + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp()) 
-	n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
+  if(n + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp())
+    n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
   creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + n));
   char msg[200];
   sprintf(msg, "%s heals %d points.", creature->getTargetCreature()->getName(), n);
@@ -121,46 +121,46 @@ void SpellCaster::increaseAC() {
   sprintf(msg, "%s feels impervious to damage!", creature->getTargetCreature()->getName());
   battle->getScourge()->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
-  
+
   // add calendar event to remove armor bonus
   // (format : sec, min, hours, days, months, years)
   Date d(0, timeInMin, 0, 0, 0, 0); 
   Event *e = new PotionExpirationEvent(battle->getScourge()->getParty()->getCalendar()->getCurrentDate(), 
-									   d, creature->getTargetCreature(), 
-									   Constants::getPotionSkillByName("AC"), n, 
-									   battle->getScourge(), 1);
+                                       d, creature->getTargetCreature(), 
+                                       Constants::getPotionSkillByName("AC"), n, 
+                                       battle->getScourge(), 1);
   battle->getScourge()->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
 
 }
 
-void SpellCaster::launchProjectile(int count) {
+void SpellCaster::launchProjectile(int count, bool stopOnImpact) {
   Creature *creature = battle->getCreature();
 
   // maxcount for spells means number of projectiles
   // (for missiles it means how many can be in the air at once.)
   int n = count;
   if(n == 0) {
-	n = creature->getLevel();
-	if( n < 1 ) n = 1;
-	cerr << "launching " << n << " spell projectiles!" << endl;
+    n = creature->getLevel();
+    if( n < 1 ) n = 1;
+    cerr << "launching " << n << " spell projectiles!" << endl;
   }
 
   // FIXME: projectile shape should be configurable per spell
   Projectile *p;
   if(creature->getTargetCreature()) {
-	p = Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
-								  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
-								  n);
+    p = Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
+                                  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
+                                  n, stopOnImpact);
   } else {
-	int x, y, z;
-	creature->getTargetLocation(&x, &y, &z);
-	p = Projectile::addProjectile(creature, x, y, 1, 1, spell, 
-								  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
-								  n);
+    int x, y, z;
+    creature->getTargetLocation(&x, &y, &z);
+    p = Projectile::addProjectile(creature, x, y, 1, 1, spell, 
+                                  battle->getScourge()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
+                                  n, stopOnImpact);
   }
   if(!p) {
-	// max number of projectiles in the air
-	// FIXME: do something... 
+    // max number of projectiles in the air
+    // FIXME: do something... 
   }
 }
 
@@ -172,11 +172,43 @@ void SpellCaster::causeDamage() {
 
   char msg[200];
   sprintf(msg, "%s attacks %s with %s.", 
-		  creature->getName(), 
-		  creature->getTargetCreature()->getName(),
-		  spell->getName());
+          creature->getName(), 
+          creature->getTargetCreature()->getName(),
+          spell->getName());
   battle->getScourge()->getMap()->addDescription(msg, 1, 0.15f, 1);
 
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage(damage, spell->getEffect());
 }
+
+void SpellCaster::setStateMod(int mod) {
+  Creature *targets[100];
+  int radius = battle->getCreature()->getLevel() * 3;
+  if(radius > 15) radius = 15;
+
+  // FIXME: show radius effect
+
+  int targetCount = battle->getScourge()->getMap()->getCreaturesInArea(battle->getCreature()->getTargetX(),
+                                                                       battle->getCreature()->getTargetY(),
+                                                                       radius,
+                                                                       targets);
+  for(int i = 0; i < targetCount; i++) {
+    Creature *creature = targets[i];
+    if(!creature->isMonster()) continue;
+    creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));  
+    // FIXME: should extend expiration event somehow if condition already exists
+    if(creature->getStateMod(mod)) continue;    
+    creature->setStateMod(mod, true);
+    
+    // add calendar event to remove condition            
+    // (format : sec, min, hours, days, months, years)
+    Calendar *cal = battle->getScourge()->getParty()->getCalendar();
+    int timeInMin = 2 * battle->getCreature()->getLevel();
+    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
+    Date d(0, timeInMin, 0, 0, 0, 0); 
+    Event *e = new StateModExpirationEvent(cal->getCurrentDate(), 
+                                           d, creature, mod, battle->getScourge(), 1);
+    cal->scheduleEvent((Event*)e);   // It's important to cast!!		
+  }
+}                                     
+

@@ -651,62 +651,62 @@ void Map::draw() {
 	glDepthMask(GL_TRUE);    
 	glDisable(GL_BLEND);
 
-	// draw the projectiles
-	DrawLater dl;
-	vector<Projectile*> removedProjectiles;
-	map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
-	for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-	  //Creature *creature = i->first;
-	  vector<Projectile*> *p = i->second;
-	  for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
-		Projectile *proj = *e;
+    // draw the projectiles
+    DrawLater dl;
+    vector<Projectile*> removedProjectiles;
+    map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
+    for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
+      //Creature *creature = i->first;
+      vector<Projectile*> *p = i->second;
+      for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+        Projectile *proj = *e;
 
-		// draw it
-		dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
-		//		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
-		dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
-		dl.zpos = (float)(7) / GLShape::DIV;
-		dl.shape = proj->getShape();
-		dl.creature = NULL;
-		dl.item = NULL;
-		dl.projectile = proj;
-		dl.name = 0;
-		
-		if(proj->getSpell()) {
-		  glEnable(GL_BLEND);
-		  glDepthMask(GL_FALSE);
-		  proj->getShape()->setupBlending();
-		}
-		doDrawShape(&dl);
-		if(proj->getSpell()) {
-		  proj->getShape()->endBlending();
-		  glDisable(GL_BLEND);
-		  glDepthMask(GL_TRUE);
-		}
-		
-		// collision detection
-		bool blocked = false;
-		Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
-		if(loc) {
-		  if(loc->creature && loc->creature->isMonster()) {
-			// attack monster
-			Battle::projectileHitTurn(scourge, proj, loc->creature);
-			blocked = true;
-		  } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
-					(!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
-			// hit something
-			blocked = true;
-		  }		  
-		  if(blocked) {
-			removedProjectiles.push_back(proj);
-		  }
-		}
-	  }
-	}
-	// remove projectiles
-	for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
-	  Projectile::removeProjectile(*e);
-	}
+        // draw it
+        dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
+        //		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
+        dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
+        dl.zpos = (float)(7) / GLShape::DIV;
+        dl.shape = proj->getShape();
+        dl.creature = NULL;
+        dl.item = NULL;
+        dl.projectile = proj;
+        dl.name = 0;
+
+        if(proj->getSpell()) {
+          glEnable(GL_BLEND);
+          glDepthMask(GL_FALSE);
+          proj->getShape()->setupBlending();
+        }
+        doDrawShape(&dl);
+        if(proj->getSpell()) {
+          proj->getShape()->endBlending();
+          glDisable(GL_BLEND);
+          glDepthMask(GL_TRUE);
+        }
+
+        // collision detection
+        bool blocked = false;
+        Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
+        if(loc && proj->doesStopOnImpact()) {
+          if(loc->creature && loc->creature->isMonster()) {
+            // attack monster
+            Battle::projectileHitTurn(scourge, proj, loc->creature);
+            blocked = true;
+          } else if((loc->item && loc->item->getShape()->getHeight() >= 6) ||
+                    (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6)) {
+            // hit something
+            blocked = true;
+          }
+          if(blocked) {
+            removedProjectiles.push_back(proj);
+          }
+        }
+      }
+    }
+    // remove projectiles
+    for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
+      Projectile::removeProjectile(*e);
+    }
 
 	
 	if(scourge->getTargetSelectionFor()) {
@@ -1706,4 +1706,31 @@ void Map::drawCube(float x, float y, float z, float r) {
   
   glEnd();
   
+}
+
+/**
+ * Find the creatures in this area and add them to the targets array.
+ * Returns the number of creatures found. (0 if none.)
+ * It's the caller responsibility to create the targets array.
+ */
+int Map::getCreaturesInArea(int x, int y, int radius, Creature *targets[]) {
+  int count = 0;
+  for(int xx = x - radius; xx < x + radius && xx < MAP_WIDTH; xx++) {
+    for(int yy = y - radius; yy < y + radius && yy < MAP_DEPTH; yy++) {
+      Location *loc = pos[xx][yy][0];      
+      if(loc && loc->creature) {
+        bool alreadyFound = false;
+        for(int i = 0; i < count; i++) {
+          if(targets[i] == loc->creature) {
+            alreadyFound = true;
+            break;
+          }
+        }
+        if(!alreadyFound) {
+          targets[count++] = loc->creature;
+        }
+      }
+    }
+  }
+  return count;
 }
