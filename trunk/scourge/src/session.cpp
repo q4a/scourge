@@ -246,7 +246,8 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   for(int i = 0; i < getCreatureCount(); i++) {
     if(!getCreature(i)->getStateMod(Constants::dead) && 
        !getCreature(i)->getStateMod(Constants::possessed) && 
-       map->isLocationVisible(getCreature(i)->getX(), getCreature(i)->getY()) &&
+       map->isLocationVisible(toint(getCreature(i)->getX()), 
+                              toint(getCreature(i)->getY())) &&
        getCreature(i)->isMonster()) {
       float dist = Constants::distance(x, y, w, h,
                                        getCreature(i)->getX(),
@@ -267,12 +268,16 @@ void Session::creatureDeath(Creature *creature) {
     party->switchToNextLivePartyMember();
   }
   // remove from the map; the object will be cleaned up at the end of the mission
-  map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
+  map->removeCreature(toint(creature->getX()), 
+                      toint(creature->getY()), 
+                      toint(creature->getZ()));
   // add a container object instead
   //if(battleRound.size() > 0) creature->getShape()->setCurrentAnimation(MD2_DEATH1);
   Item *item = newItem(RpgItem::getItemByName("Corpse"));
   // add creature's inventory to container
-  map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
+  map->setItem(toint(creature->getX()), 
+               toint(creature->getY()), 
+               toint(creature->getZ()), item);
   int n = creature->getInventoryCount();
   for(int i = 0; i < n; i++) {
     // make it contain all items, no matter what size

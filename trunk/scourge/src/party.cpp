@@ -121,8 +121,8 @@ void Party::followTargets() {
   for(int i = 0; i < getPartySize(); i++) {
 	if(!party[i]->getStateMod(Constants::dead) && 
 	   party[i]->getTargetCreature()) {
-	  party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
-						 party[i]->getTargetCreature()->getY());
+	  party[i]->setSelXY(toint(party[i]->getTargetCreature()->getX()),
+                       toint(party[i]->getTargetCreature()->getY()));
 	}
   }
 }
@@ -163,9 +163,9 @@ void Party::setPlayer(int n) {
 
   //  move = 0;
   session->getMap()->refresh();
-  session->getMap()->center(getPlayer()->getX(), getPlayer()->getY());
+  session->getMap()->center(toint(getPlayer()->getX()), toint(getPlayer()->getY()));
   
-  session->getMap()->center(player->getX(), player->getY(), true);
+  session->getMap()->center(toint(player->getX()), toint(player->getY()), true);
   session->getGameAdapter()->refreshInventoryUI(n);  
   session->getGameAdapter()->setPlayerUI(n);
 
@@ -229,14 +229,14 @@ void Party::movePlayers() {
 	  }
 	}
 	// center on player
-	session->getMap()->center(player->getX(), player->getY());
+	session->getMap()->center(toint(player->getX()), toint(player->getY()));
   } else {
 	// In group mode:
 	
 	// move the leader
 	if(!player->getStateMod(Constants::dead)) {
 	  player->moveToLocator(session->getMap());
-	  session->getMap()->center(player->getX(), player->getY());
+	  session->getMap()->center(toint(player->getX()), toint(player->getY()));
 	}
 	
 	// others follow the player
@@ -569,10 +569,10 @@ Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
 	if(!party[i]->getStateMod(Constants::dead) &&
        !party[i]->getStateMod(Constants::possessed)) {
 	  float dist = Constants::distance(x, y, w, h,
-									   party[i]->getX(),
-									   party[i]->getY(),
-									   party[i]->getShape()->getWidth(),
-									   party[i]->getShape()->getDepth());
+                                     party[i]->getX(),
+                                     party[i]->getY(),
+                                     party[i]->getShape()->getWidth(),
+                                     party[i]->getShape()->getDepth());
 	  if(dist <= (float)radius &&
 		 (!p || dist < minDist)) {
 		p = party[i];

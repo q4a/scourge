@@ -154,9 +154,9 @@ CreatureInfo *Creature::save() {
   info->money = money;
   info->stateMod = stateMod;
   info->protStateMod = protStateMod;
-  info->x = x;
-  info->y = y;
-  info->z = z;
+  info->x = toint(x);
+  info->y = toint(y);
+  info->z = toint(z);
   info->dir = dir;
   info->speed = speed;
   info->motion = motion;
@@ -320,6 +320,7 @@ bool Creature::move(Uint16 dir, Map *map) {
   GLfloat nz = z;
   GLfloat step = 1.0f / ( session->getGameAdapter()->getFps() / ( 10.0f ) );
   step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ) );
+//  step /= ((GLfloat)(session->getUserConfiguration()->getGameSpeedLevel() + 1) * 0.25f);
   switch(dir) {
   case Constants::MOVE_UP:    
     ny = y - step;
@@ -337,8 +338,8 @@ bool Creature::move(Uint16 dir, Map *map) {
   setFacingDirection(dir);
   
 
-  if(!map->moveCreature(round(x), round(y), round(z), 
-                        round(nx), round(ny), round(nz), this)) {
+  if(!map->moveCreature(toint(x), toint(y), toint(z), 
+                        toint(nx), toint(ny), toint(nz), this)) {
     ((MD2Shape*)shape)->setDir(dir);
     moveTo(nx, ny, nz);
     setDir(dir);        
@@ -459,25 +460,25 @@ bool Creature::moveToLocator(Map *map) {
 bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
 
   // creature speed
-  Uint32 t = SDL_GetTicks();
+  //Uint32 t = SDL_GetTicks();
   //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
   
   
-  //if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY)) return true;
-  //lastMove = t;
+//  if(t - lastMove < (Uint32)(session->getUserConfiguration()->getGameSpeedLevel() * MOVE_DELAY)) return true;
+//  lastMove = t;
 
   // If the target moved, get the best path to the location
   if(!(tx == px && ty == py)) {
     tx = px;
     ty = py;
     bestPathPos = 1; // skip 0th position; it's the starting location
-    Util::findPath(round(getX()), round(getY()), round(getZ()), 
+    Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
                    px, py, pz, &bestPath, session->getMap(), getShape());
   }
 
-  if((int)bestPath.size() > bestPathPos ) {
-//  if((int)bestPath.size() > bestPathPos && 
-//     ((MD2Shape*)getShape())->getCurrentAnimation() == MD2_RUN ) {
+  if((int)bestPath.size() > bestPathPos && 
+     ((MD2Shape*)getShape())->getCurrentAnimation() == MD2_RUN ) {
+
     // take a step on the bestPath
     Location location = bestPath[bestPathPos];
 
@@ -485,6 +486,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     GLfloat newY = getY();
     GLfloat step = 1.0f / ( session->getGameAdapter()->getFps() / ( 10.0f ) ); 
     step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ));
+    //step /= ((GLfloat)(session->getUserConfiguration()->getGameSpeedLevel() + 1) * 0.25f);
     float lx = (float)(location.x);
     float ly = (float)(location.y);
     float mx = lx - getX();
@@ -507,8 +509,8 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     //if( !strcmp(getName(), "Alamont") ) 
 //      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
 
-    Location *position = map->moveCreature(round(getX()), round(getY()), round(getZ()),
-                                           round(newX), round(newY), round(getZ()),
+    Location *position = map->moveCreature(toint(getX()), toint(getY()), toint(getZ()),
+                                           toint(newX), toint(newY), toint(getZ()),
                                            this);
 
 
@@ -526,17 +528,17 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
      * XXXXXXXs
      *       e
      * 
-     * The path using round(float-s) would go through the wall.
+     * The path using toint(float-s) would go through the wall.
      */
     if(position && ( newX != getX() && newY != getY() )) {
-      position = map->moveCreature(round(getX()), round(getY()), round(getZ()),
-                                   round(getX()), round(newY), round(getZ()),
+      position = map->moveCreature(toint(getX()), toint(getY()), toint(getZ()),
+                                   toint(getX()), toint(newY), toint(getZ()),
                                    this);
       if( !position ) {
         newX = getX();
       } else {
-        position = map->moveCreature(round(getX()), round(getY()), round(getZ()),
-                                     round(newX), round(getY()), round(getZ()),
+        position = map->moveCreature(toint(getX()), toint(getY()), toint(getZ()),
+                                     toint(newX), toint(getY()), toint(getZ()),
                                      this);
         if( !position ) {
           newY = getY();
@@ -550,14 +552,14 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
                               getX(), getY(), 1, 1 );
       moveTo( newX, newY, getZ() );
       ((MD2Shape*)shape)->setAngle( angle + 180.0f );
-      if( round(newX) == round(lx) && round(newY) == round(ly) ) {
+      if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         bestPathPos++;
       }
       return true;
     } else {
       // if we're not at the destination, but it's possible to stand there
       // try again
-      if(!(selX == round(getX()) && selY == round(getY())) && 
+      if(!(selX == toint(getX()) && selY == toint(getY())) && 
          map->shapeFits(getShape(), selX, selY, -1) &&
          moveRetrycount < MAX_MOVE_RETRY) {
 
@@ -608,10 +610,10 @@ void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
     *px = (*(px) * getShape()->getWidth()) + next->getSelX();
     *py = (-(*(py)) * getShape()->getDepth()) + next->getSelY();
   } else {
-    *px = (*(px) * getShape()->getWidth()) + next->getX();
-    *py = (-(*(py)) * getShape()->getDepth()) + next->getY();
+    *px = (*(px) * getShape()->getWidth()) + toint(next->getX());
+    *py = (-(*(py)) * getShape()->getDepth()) + toint(next->getY());
   }
-  *pz = next->getZ();
+  *pz = toint(next->getZ());
 }
 
 /**
@@ -1159,7 +1161,7 @@ bool Creature::takeDamage(int damage, int effect_type) {
     int pain = (int)(3.0f * rand()/RAND_MAX);
     getShape()->setCurrentAnimation(pain == 0 ? (int)MD2_PAIN1 : (pain == 1 ? (int)MD2_PAIN2 : (int)MD2_PAIN3));
   } else if(effect_type != Constants::EFFECT_GLOW) {
-    session->getMap()->startEffect(getX(), getY(), getZ(), 
+    session->getMap()->startEffect(toint(getX()), toint(getY()), toint(getZ()), 
                                    effect_type, (Constants::DAMAGE_DURATION * 4), 
                                    getShape()->getWidth(), getShape()->getDepth());
   }
@@ -1391,12 +1393,12 @@ void Creature::decideMonsterAction() {
   // increase MP, AC or skill (via potion)?
   Creature *p;
   if(getStateMod(Constants::possessed)) {
-    p = session->getClosestVisibleMonster(getX(), getY(), 
+    p = session->getClosestVisibleMonster(toint(getX()), toint(getY()), 
                                           getShape()->getWidth(),
                                           getShape()->getDepth(),
                                           20);
   } else {
-    p = session->getParty()->getClosestPlayer(getX(), getY(), 
+    p = session->getParty()->getClosestPlayer(toint(getX()), toint(getY()), 
                                               getShape()->getWidth(),
                                               getShape()->getDepth(),
                                               20);

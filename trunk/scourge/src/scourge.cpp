@@ -20,7 +20,7 @@
 
 #define MOUSE_ROT_DELTA 2
 
-#define BATTLES_ENABLED 1
+#define BATTLES_ENABLED 0
 
 #define DRAG_START_TOLERANCE 5
 
@@ -271,8 +271,8 @@ void Scourge::startMission() {
     }
 
     // center map on the player
-    map->center(party->getPlayer()->getX(), 
-                party->getPlayer()->getY(),
+    map->center(toint(party->getPlayer()->getX()), 
+                toint(party->getPlayer()->getY()),
                 true);
 
     // Must be called after MiniMap has been built by dg->toMap() !!! 
@@ -393,8 +393,10 @@ void Scourge::drawView() {
     // creatures first
     for(int i = 0; i < session->getCreatureCount(); i++) {
       if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-         map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-         map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+         map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+                                toint(session->getCreature(i)->getY())) &&
+         map->isLocationInLight(toint(session->getCreature(i)->getX()), 
+                                toint(session->getCreature(i)->getY()))) {
         showCreatureInfo(session->getCreature(i), false, false, false);
       }
     }
@@ -553,7 +555,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   // Yellow for move creature target
   if(player && creature->getSelX() > -1 && 
      !creature->getTargetCreature() &&
-     !(creature->getSelX() == creature->getX() && creature->getSelY() == creature->getY()) ) {
+     !(creature->getSelX() == toint(creature->getX()) && 
+       creature->getSelY() == toint(creature->getY())) ) {
     // draw target
     glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getSelX() - map->getX()) / GLShape::DIV);
@@ -580,9 +583,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glPopMatrix();
   }
 
-  xpos2 = ((float)(creature->getX() - map->getX()) / GLShape::DIV);
-  ypos2 = ((float)(creature->getY() - map->getY()) / GLShape::DIV);
-  zpos2 = (float)(creature->getZ()) / GLShape::DIV;  
+  xpos2 = (creature->getX() - (float)(map->getX())) / GLShape::DIV;
+  ypos2 = (creature->getY() - (float)(map->getY())) / GLShape::DIV;
+  zpos2 = creature->getZ() / GLShape::DIV;  
 
   if(creature->getAction() != Constants::ACTION_NO_ACTION) {
     glColor4f(0, 0.7, 1, 0.5f);
@@ -1549,12 +1552,12 @@ void Scourge::endItemDrag() {
 }
 
 bool Scourge::useItem() {
-  for(int x = party->getPlayer()->getX() - 2; 
-	  x < party->getPlayer()->getX() + party->getPlayer()->getShape()->getWidth() + 2; 
-	  x++) {
-	for(int y = party->getPlayer()->getY() + 2; 
-		y > party->getPlayer()->getY() - party->getPlayer()->getShape()->getDepth() - 2; 
-		y--) {
+  for(int x = toint(party->getPlayer()->getX()) - 2; 
+       x < toint(party->getPlayer()->getX()) + party->getPlayer()->getShape()->getWidth() + 2; 
+       x++) {
+    for(int y = toint(party->getPlayer()->getY()) + 2; 
+         y > toint(party->getPlayer()->getY()) - party->getPlayer()->getShape()->getDepth() - 2; 
+         y--) {
 	  if(useItem(x, y, 0)) return true;
 	}
   }
@@ -1570,9 +1573,9 @@ bool Scourge::useItem(int x, int y, int z) {
   Location *pos = map->getPosition(x, y, z);
   if (pos) {
     Shape *shape = (pos->item ? pos->item->getShape() : pos->shape);
-    if (map->isWallBetweenShapes(party->getPlayer()->getX(), 
-                                 party->getPlayer()->getY(), 
-                                 party->getPlayer()->getZ(), 
+    if (map->isWallBetweenShapes(toint(party->getPlayer()->getX()), 
+                                 toint(party->getPlayer()->getY()), 
+                                 toint(party->getPlayer()->getZ()), 
                                  party->getPlayer()->getShape(),
                                  x, y, z,
                                  shape)) {
@@ -1600,10 +1603,10 @@ bool Scourge::useItem(int x, int y, int z) {
 
 bool Scourge::getItem(Location *pos) {
     if(pos->item) {
-	  if(map->isWallBetween(pos->x, pos->y, pos->z, 
-							party->getPlayer()->getX(),
-							party->getPlayer()->getY(),
-							0)) {
+      if(map->isWallBetween(pos->x, pos->y, pos->z, 
+                            toint(party->getPlayer()->getX()),
+                            toint(party->getPlayer()->getY()),
+                            0)) {
 		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 	  } else {
         movingX = pos->x;
@@ -1673,9 +1676,9 @@ int Scourge::dropItem(int x, int y) {
                                    movingX, movingY, movingZ,
                                    movingItem->getShape(), &z);
     if(!pos && 
-       !map->isWallBetween(party->getPlayer()->getX(), 
-                           party->getPlayer()->getY(), 
-                           party->getPlayer()->getZ(), 
+       !map->isWallBetween(toint(party->getPlayer()->getX()), 
+                           toint(party->getPlayer()->getY()), 
+                           toint(party->getPlayer()->getZ()), 
                            x, y, z)) {
       map->setItem(x, y, z, movingItem);
     } else {
@@ -1816,18 +1819,18 @@ bool Scourge::useDoor(Location *pos) {
         Sint16 nx = pos->x;
         Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
 
-        Shape *oldDoorShape = map->removePosition(ox, oy, party->getPlayer()->getZ());
-        if(!map->isBlocked(nx, ny, party->getPlayer()->getZ(),
-                           ox, oy, party->getPlayer()->getZ(),
+        Shape *oldDoorShape = map->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+        if(!map->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
+                           ox, oy, toint(party->getPlayer()->getZ()),
                            newDoorShape)) {
-          map->setPosition(nx, ny, party->getPlayer()->getZ(), newDoorShape);
+          map->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
           map->updateLightMap();          
           map->updateDoorLocation(doorX, doorY, doorZ,
-                                  nx, ny, party->getPlayer()->getZ());
+                                  nx, ny, toint(party->getPlayer()->getZ()));
           return true;
         } else {
           // rollback
-          map->setPosition(ox, oy, party->getPlayer()->getZ(), oldDoorShape);
+          map->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
           map->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
           return true;
         }
@@ -2082,8 +2085,8 @@ void Scourge::setUILayout() {
   // FIXME: resize map drawing area to remainder of screen.
   map->setViewArea(mapX, mapY, mapWidth, mapHeight);
   if(getParty()->getPlayer()) {
-    getMap()->center(getParty()->getPlayer()->getX(),
-                     getParty()->getPlayer()->getY(), 
+    getMap()->center(toint(getParty()->getPlayer()->getX()),
+                     toint(getParty()->getPlayer()->getY()), 
                      true);
   }
 }
@@ -2170,8 +2173,8 @@ bool Scourge::createBattleTurns() {
       // possessed creature attacks fellows...
       if(party->getParty(i)->getTargetCreature() && 
          party->getParty(i)->getStateMod(Constants::possessed)) {
-        Creature *target = session->getParty()->getClosestPlayer(party->getParty(i)->getX(), 
-                                                                 party->getParty(i)->getY(), 
+        Creature *target = session->getParty()->getClosestPlayer(toint(party->getParty(i)->getX()), 
+                                                                 toint(party->getParty(i)->getY()), 
                                                                  party->getParty(i)->getShape()->getWidth(),
                                                                  party->getParty(i)->getShape()->getDepth(),
                                                                  20);
@@ -2188,8 +2191,10 @@ bool Scourge::createBattleTurns() {
   }
   for (int i = 0; i < session->getCreatureCount(); i++) {
     if (!session->getCreature(i)->getStateMod(Constants::dead) &&
-        map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-        map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+        map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+                               toint(session->getCreature(i)->getY())) &&
+        map->isLocationInLight(toint(session->getCreature(i)->getX()), 
+                               toint(session->getCreature(i)->getY()))) {
       bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                         session->getCreature(i)->getAction() > -1);
       if (hasTarget && session->getCreature(i)->isTargetValid()) {
@@ -2214,8 +2219,10 @@ bool Scourge::createBattleTurns() {
     }
     for (int i = 0; i < session->getCreatureCount(); i++) {
       if (!session->getCreature(i)->getStateMod(Constants::dead) &&
-          map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
-          map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+          map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+                                 toint(session->getCreature(i)->getY())) &&
+          map->isLocationInLight(toint(session->getCreature(i)->getX()), 
+                                 toint(session->getCreature(i)->getY()))) {
         bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                           session->getCreature(i)->getAction() > -1);
         if (!hasTarget || (hasTarget && !session->getCreature(i)->isTargetValid())) {
@@ -2274,7 +2281,8 @@ void Scourge::moveCreatures() {
   // move visible monsters
   for(int i = 0; i < session->getCreatureCount(); i++) {
     if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-       map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+       map->isLocationVisible(toint(session->getCreature(i)->getX()), 
+                              toint(session->getCreature(i)->getY()))) {
       moveMonster(session->getCreature(i));
     }
   }

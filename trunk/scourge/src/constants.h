@@ -111,6 +111,7 @@ using namespace std;
 #define MAX_PARTY_SIZE 4
 
 
+#define toint( x ) (int)(round( x ))
 
 extern char rootDir[300];
 extern char configDir[300];

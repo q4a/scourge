@@ -226,8 +226,8 @@ void MiniMap::drawWidget(Widget *w) {
   if(!showMiniMap) return;
 
   // Compute the postition of the player in the minimap
-  xPartyPos = (int) scourge->getParty()->getPlayer()->getX();
-  yPartyPos = (int) scourge->getParty()->getPlayer()->getY();     
+  xPartyPos = toint(scourge->getParty()->getPlayer()->getX());
+  yPartyPos = toint(scourge->getParty()->getPlayer()->getY());     
   toMiniMapCoord(xPartyPos, yPartyPos);
   xPartyPos -= minX;   
   yPartyPos -= minY; 

@@ -1377,8 +1377,8 @@ void DungeonGenerator::lockLocation(Map *map, int mapx, int mapy) {
     int nx, ny;
     Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
     getRandomLocation(map, lever, &nx, &ny, true, 
-                      scourge->getParty()->getPlayer()->getX(), 
-                      scourge->getParty()->getPlayer()->getY());
+                      toint(scourge->getParty()->getPlayer()->getX()), 
+                      toint(scourge->getParty()->getPlayer()->getY()));
     if( nx < MAP_WIDTH ) {
       Location *pos = map->getLocation(mapx, mapy, 0);
       cerr << "*** Locking " << pos->shape->getName() << ": " << 
@@ -1399,8 +1399,8 @@ void DungeonGenerator::lockLocation(Map *map, int mapx, int mapy) {
 void DungeonGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal, 
                                            bool preGenerated, int locationIndex) {
   // see which rooms are locked
-  map->configureAccessMap(scourge->getParty()->getPlayer()->getX(), 
-                          scourge->getParty()->getPlayer()->getY());
+  map->configureAccessMap(toint(scourge->getParty()->getPlayer()->getX()), 
+                          toint(scourge->getParty()->getPlayer()->getY()));
   for(int i = 0; i < roomCount; i++) {
     int x = offset + room[i].x * unitSide + room[i].w  * (unitSide / 2);
     int y = offset + room[i].y * unitSide + room[i].h * ( unitSide / 2);

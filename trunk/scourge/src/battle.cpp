@@ -178,7 +178,7 @@ bool Battle::pauseBeforePlayerTurn() {
       }
       // FIXME: only center if not on-screen
       session->getMap()->refresh();
-      session->getMap()->center(creature->getX(), creature->getY(), true);
+      session->getMap()->center( toint(creature->getX()), toint(creature->getY()), true);
 
       // pause the game
       session->getParty()->toggleRound(true);
@@ -187,7 +187,7 @@ bool Battle::pauseBeforePlayerTurn() {
     } else {
       // FIXME: only center if not on-screen
       session->getMap()->refresh();
-      session->getMap()->center(creature->getX(), creature->getY(), true);
+      session->getMap()->center( toint(creature->getX()), toint(creature->getY()), true);
     }
   }
   steps++;
@@ -252,10 +252,10 @@ void Battle::stepCloserToTarget() {
   creature->getShape()->setCurrentAnimation((int)MD2_RUN);
   if(DEBUG_BATTLE) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
-    if(!(creature->getSelX() == creature->getTargetCreature()->getX() &&
-         creature->getSelY() == creature->getTargetCreature()->getY())) {
-      creature->setSelXY(creature->getTargetCreature()->getX(),
-                         creature->getTargetCreature()->getY(),
+    if(!(creature->getSelX() == toint(creature->getTargetCreature()->getX()) &&
+         creature->getSelY() == toint(creature->getTargetCreature()->getY()))) {
+      creature->setSelXY(toint(creature->getTargetCreature()->getX()),
+                         toint(creature->getTargetCreature()->getY()),
                          true);
     }
   } else {
@@ -284,14 +284,14 @@ bool Battle::selectNewTarget() {
   } else {
     Creature *target;
     if(creature->getStateMod(Constants::possessed)) {
-      target = session->getParty()->getClosestPlayer(creature->getX(), 
-                                                     creature->getY(), 
+      target = session->getParty()->getClosestPlayer(toint(creature->getX()), 
+                                                     toint(creature->getY()), 
                                                      creature->getShape()->getWidth(),
                                                      creature->getShape()->getDepth(),
                                                      20);
     } else {
-      target = session->getClosestVisibleMonster(creature->getX(), 
-                                                 creature->getY(), 
+      target = session->getClosestVisibleMonster(toint(creature->getX()), 
+                                                 toint(creature->getY()), 
                                                  creature->getShape()->getWidth(),
                                                  creature->getShape()->getDepth(),
                                                  20);
@@ -299,8 +299,8 @@ bool Battle::selectNewTarget() {
     if (target) {
       if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
       creature->setTargetCreature(target);
-      creature->setSelXY(creature->getTargetCreature()->getX(),
-                         creature->getTargetCreature()->getY(),
+      creature->setSelXY(toint(creature->getTargetCreature()->getX()),
+                         toint(creature->getTargetCreature()->getY()),
                          true);
       //initTurn();
       return true;

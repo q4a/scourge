@@ -156,9 +156,9 @@ class Creature {
 
   inline bool isMonster() { return (monster ? TRUE : FALSE); }
   
-  inline int getTargetX() { if(targetCreature) return (int)targetCreature->getX(); else return targetX; }
-  inline int getTargetY() { if(targetCreature) return (int)targetCreature->getY(); else return targetY; }
-  inline int getTargetZ() { if(targetCreature) return (int)targetCreature->getZ(); else return targetZ; }
+  inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
+  inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }
+  inline int getTargetZ() { if(targetCreature) return toint(targetCreature->getZ()); else return targetZ; }
   void setTargetCreature(Creature *c);
   inline Creature *getTargetCreature() { return targetCreature; }
   inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
