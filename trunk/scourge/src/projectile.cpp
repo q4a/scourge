@@ -97,9 +97,15 @@ Projectile::~Projectile() {
 }
 
 bool Projectile::atTargetLocation() {
+
+  return( toint(ex) == toint(sx) && 
+          toint(ey) == toint(sy) );
+
+  /*
   int dx = abs(toint(ex - sx));
   int dy = abs(toint(ey - sy));
   return (dx < DELTA && dy < DELTA);
+  */
 }
 
 void Projectile::debug() {
