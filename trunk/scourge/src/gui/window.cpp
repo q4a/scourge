@@ -142,7 +142,8 @@ void Window::removeWidget(Widget *widget) {
 void Window::drawWidget(Widget *parent) {
   
   GLint t = SDL_GetTicks();
-  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
+  //if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
+  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
 	lastTick = t;
 	openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
 	if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) 
