@@ -228,9 +228,6 @@ class Map {
 						 Sint16 nx, Sint16 ny, Sint16 nz, 
 						 Creature *newCreature);
   
-  void switchPlaces(Sint16 x1, Sint16 y1, Sint16 z1, 
-					Sint16 x2, Sint16 y2, Sint16 z2);
-  
   void setFloorPosition(Sint16 x, Sint16 y, Shape *shape);
   Shape *removeFloorPosition(Sint16 x, Sint16 y);
   
