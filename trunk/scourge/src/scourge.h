@@ -91,7 +91,7 @@ class GameStateHandler;
   
   @author Gabor Torok
 */ 
-class Scourge : public SDLEventHandler,SDLScreenView,GameStateHandler {
+class Scourge : public SDLEventHandler,SDLScreenView,GameStateHandler,CommandInterpreter {
  private:
   Party *party;
   Map *map;
@@ -528,10 +528,11 @@ public:
   */
   char *getGameState();
   
-  /** 
-      the consumer
-  */
-  void consumeGameState(int frame, char *state);
+  void chat(char *message);
+  void logout();
+  void ping(int frame);
+  void processGameState(int frame, char *p);
+  void handleUnknownMessage();
 
 #ifdef HAVE_SDL_NET
   void runClient(char *host, int port, char *userName);

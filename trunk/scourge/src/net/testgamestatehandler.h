@@ -17,8 +17,6 @@ class TestGameStateHandler : public GameStateHandler {
   // the producer
   char *getGameState();
   
-  // the consumer
-  void consumeGameState(int frame, char *state);
 };
 
 #endif

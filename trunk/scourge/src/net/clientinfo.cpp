@@ -77,6 +77,10 @@ void ClientInfo::handleUnknownMessage() {
   dead = true;
 }
 
+void ClientInfo::processGameState(int frame, char *p) {
+  // do nothing
+}
+
 void ClientInfo::sendMessageAsync(char *message) {
   // wake up the thread
   if(message && !dead) {
