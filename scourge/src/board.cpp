@@ -72,11 +72,11 @@ void Board::initMissions() {
 		}		
 		const Mission *p;
 		if(!count) {
-			cerr << "i=" << i << "no missions for level: " << level << ", reusing first mission." << endl;
+//			cerr << "i=" << i << "no missions for level: " << level << ", reusing first mission." << endl;
 			p = &(prototypes[0]);
 		} else {
 			int index = (int)((float)count * rand() / RAND_MAX);
-			cerr << "i=" << i << "level=" << level << " index=" << index << endl;
+			//cerr << "i=" << i << "level=" << level << " index=" << index << endl;
 			vector<const Mission*> list = *prototypesPerLevel[level];
 			p = list[index];
 		}

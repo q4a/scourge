@@ -34,9 +34,10 @@ class Creature;
 // a pre-rendered map location
 typedef struct _MapLocation {
   int x, y, w, h;
+	int start[4][2]; // party starting coordinates
   bool monsters;
   int roomCount;
-  int roomDimension[20][4];
+  int roomDimension[20][5];
   char *map[MAP_WIDTH];
   int shapeCount;            // how many shapes
   int shapePosition[100][4]; // shapes: shape_index, x, y, z (x,y,z in map coordinates)

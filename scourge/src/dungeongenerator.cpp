@@ -44,21 +44,23 @@ const int DungeonGenerator::levels[][9] = {
 /**
    Pre-generated maps:
    x,y,w,h,
+   starting coord
    roomCount,
-   roomDimensions: x,y,w,h,
+   roomDimensions: x,y,w,h,furnish(0,1)
    map: #-room, +-floor, nsew-doors (by facing)
  */
 const MapLocation DungeonGenerator::location[] = {
   { 
 	0,0,5,12,
+	{ {0, 0}, {0, 0}, {0, 0}, {0, 0} },
 	false,
 	5,
 	{
-	  {0,0,5,4},
-	  {0,5,2,3}, 
-	  {3,5,2,3}, 
-	  {0,9,2,3}, 
-	  {3,9,2,3}
+	  {0,0,5,4,0},
+	  {0,5,2,3,1}, 
+	  {3,5,2,3,1}, 
+	  {0,9,2,3,1}, 
+	  {3,9,2,3,1}
 	},
 	{ 
 	  "#####",
