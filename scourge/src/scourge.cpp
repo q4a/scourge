@@ -521,7 +521,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
   // red for attack target
   if(player && creature->getTargetCreature()) {
-    double tw = (double)creature->getTargetCreature()->getShape()->getWidth() / GLShape::DIV;
+    double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / GLShape::DIV) / 2.0f;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getTargetCreature()->getX() - map->getX()) / GLShape::DIV);
     ypos2 = ((float)(creature->getTargetCreature()->getY() - map->getY()) / GLShape::DIV);
