@@ -17,6 +17,14 @@
 
 #include "mainmenu.h"
 
+#define LOGO_DELTA 0.05f
+#define LOGO_ROT_POS 30.0f
+#define LOGO_ROT_NEG 0
+#define LOGO_ZOOM 0.2f
+
+#define LOGO_SPRITE_DELTA 8.0f
+#define PI 3.14159f
+
 MainMenu::MainMenu(Scourge *scourge){
   this->scourge = scourge;
   this->cloudCount = 30;
@@ -28,6 +36,13 @@ MainMenu::MainMenu(Scourge *scourge){
 	cloud[i].h = (int)(28.0 * rand()/RAND_MAX) + 100;
 	cloud[i].speed = (int)(2.0 * rand()/RAND_MAX) + 1;
   }
+
+  logoRot = 0;
+  logoRotDelta = LOGO_DELTA;
+  logoTicks = 0;
+  logoTicksDelta = 50;
+  logoSpriteCount = 0;
+
   // The new style gui
   mainWin = new Window( scourge->getSDLHandler(),
 												50, 230, 270, 220, 
@@ -155,16 +170,31 @@ void MainMenu::drawView() {
   //			   GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->logoImage);
   //glDisable(GL_ALPHA_TEST);
 
-  glDisable( GL_DEPTH_TEST );
+  drawLogo();
+
+  glPopMatrix();
+  glEnable( GL_TEXTURE_2D );
+  //  glEnable( GL_LIGHTING );
+  glEnable(GL_DEPTH_TEST);
+}
+
+void MainMenu::drawAfter() {
+}
+
+void MainMenu::drawLogo() {
+  //  glDisable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_BLEND);  
-  //  glBlendFunc(GL_SRC_COLOR, GL_ONE);
-  scourge->setBlendFunc();
+  glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
+  //  scourge->setBlendFunc();
   glPushMatrix();
   glLoadIdentity();
-  glTranslatef( 250, 30, 500 );
-  w = scourge->getShapePalette()->logo->w;
-  h = scourge->getShapePalette()->logo->h;
+  glRotatef(logoRot, 0, 0, 1 );
+  glTranslatef( 70, 30 - (abs(logoRot) / 0.25f), 500 );
+  float zoom = (abs(logoRot) / (LOGO_ROT_POS / LOGO_ZOOM)) + 1.0f;
+  glScalef( zoom, zoom, 1 );
+  float w = scourge->getShapePalette()->logo->w;
+  float h = scourge->getShapePalette()->logo->h;
   glColor4f( 1, 1, 1, 1 );
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
   glBegin( GL_QUADS );
@@ -181,15 +211,109 @@ void MainMenu::drawView() {
   glPopMatrix();
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_BLEND );
-  glEnable( GL_DEPTH_TEST );
+  //  glEnable( GL_DEPTH_TEST );
 
-  glPopMatrix();
-  glEnable( GL_TEXTURE_2D );
-  //  glEnable( GL_LIGHTING );
-  glEnable(GL_DEPTH_TEST);
+  GLint t = SDL_GetTicks();
+  if(t - logoTicks > logoTicksDelta) {
+	logoTicks = t;
+	logoRot += logoRotDelta;
+	if(logoRotDelta < 0) {
+	  logoRotDelta += -LOGO_DELTA;
+	  if(logoRot <= LOGO_ROT_NEG ) {
+		logoRotDelta = LOGO_DELTA;
+	  }
+	} else {
+	  logoRotDelta += LOGO_DELTA;
+	  if(logoRot >= LOGO_ROT_POS) {
+		logoRotDelta = -LOGO_DELTA;		
+	  }
+	}
+  }
+
+  if((int)(5.0f * rand()/RAND_MAX) == 0) addLogoSprite();
+  drawLogoSprites();
 }
 
-void MainMenu::drawAfter() {
+void MainMenu::addLogoSprite() {
+  if(logoSpriteCount >= MAX_LOGOS - 1) return;
+  logoSprite[logoSpriteCount].x = 70.0f;
+  logoSprite[logoSpriteCount].y = 30 - (abs(logoRot) / 0.25f);
+  logoSprite[logoSpriteCount].angle = 1.0f + (88.0f * rand()/RAND_MAX);
+  logoSprite[logoSpriteCount].quadrant = (int)(4.0f * rand()/RAND_MAX);
+  logoSprite[logoSpriteCount].steps = 0;
+  logoSprite[logoSpriteCount].rot = logoRot;
+  logoSpriteCount++;
+}
+
+void MainMenu::drawLogoSprites() {
+  for(int i = 0; i < logoSpriteCount; i++) {
+	glEnable( GL_TEXTURE_2D );
+	glEnable(GL_BLEND);  
+	glBlendFunc( GL_ONE_MINUS_SRC_COLOR, GL_ONE );
+	//scourge->setBlendFunc();
+	glPushMatrix();
+	glLoadIdentity();
+	glRotatef(logoSprite[i].rot, 0, 0, 1 );
+	glTranslatef( logoSprite[i].x, logoSprite[i].y, 500 );
+	float zoom = 1.2f;
+	glScalef( zoom, zoom, 1 );
+	float w = scourge->getShapePalette()->logo->w;
+	float h = scourge->getShapePalette()->logo->h;
+
+	float alpha = (float)logoSprite[i].steps / 200.0f;
+
+	glColor4f( 1, 1, 1, alpha );
+	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
+	glBegin( GL_QUADS );
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f( 1.0f, 1.0f );
+	glVertex3f(w, h, 0);
+	glTexCoord2f( 1.0f, 0.0f );
+	glVertex3f(w, 0, 0);
+	glTexCoord2f( 0.0f, 0.0f );
+	glVertex3f(0, 0, 0);
+	glTexCoord2f( 0.0f, 1.0f );
+	glVertex3f(0, h, 0);
+	glEnd();
+	glPopMatrix();
+	glDisable( GL_TEXTURE_2D );
+	glDisable( GL_BLEND );	
+
+	float rad = PI / (180.0f / logoSprite[i].angle);
+	switch(logoSprite[i].quadrant) {
+	case 0:
+	  logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
+	  logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
+	  break;
+	case 1:
+	  logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
+	  logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
+	  break;
+	case 2:
+	  logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
+	  logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
+	  break;
+	case 3:
+	  logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
+	  logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
+	  break;
+	}
+
+	// delete if off-screen
+	if(logoSprite[i].x <= -w * 2.0f || logoSprite[i].x >= scourge->getSDLHandler()->getScreen()->w ||
+	   logoSprite[i].y <= -h * 2.0f || logoSprite[i].y >= scourge->getSDLHandler()->getScreen()->h) {
+	  logoSprite[i].x = logoSprite[logoSpriteCount - 1].x;
+	  logoSprite[i].y = logoSprite[logoSpriteCount - 1].y;
+	  logoSprite[i].angle = logoSprite[logoSpriteCount - 1].angle;
+	  logoSprite[i].quadrant = logoSprite[logoSpriteCount - 1].quadrant;
+	  logoSprite[i].steps = logoSprite[logoSpriteCount - 1].steps;
+	  logoSprite[i].rot = logoSprite[logoSpriteCount - 1].rot;
+	  logoSpriteCount--;
+	  i--;
+	} else {
+	  logoSprite[logoSpriteCount].steps++;
+	}
+  }
 }
 
 void MainMenu::drawClouds(bool moveClouds, bool flipped) {
@@ -210,7 +334,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
     h = cloud[i].h;
 	glPushMatrix();
 	glTranslatef( cloud[i].x, 
-				  (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y), 
+				  (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y + 100), 
 				  0 );
     glBegin( GL_QUADS );
     glNormal3f(0.0f, 0.0f, 1.0f);
