@@ -5,6 +5,8 @@
 // 0 or less is retry forever
 #define RETRY_COUNT 10
 
+#define DEBUG_CLIENT 0
+
 Client::Client(char *host, int port, char *username, CommandInterpreter *ci) {
   this->host = host;
   this->port = port;
@@ -56,7 +58,13 @@ int clientLoop(void *data) {
   Client *client = (Client*)data;
 
   // wait until connected
+#if DEBUG_CLIENT
+  cerr << "Net: client: waiting for connection." << endl;
+#endif
   while(!client->isConnected() && client->isThreadRunning()) SDL_Delay(200);
+#if DEBUG_CLIENT
+  cerr << "Net: client: connected." << endl;
+#endif
 
   SDLNet_SocketSet set;
   int numready;
@@ -73,6 +81,8 @@ int clientLoop(void *data) {
 
   // process incoming data
   while(client->isThreadRunning()) {
+
+    cerr << "@";
 
     sendPing = false;
 
@@ -91,6 +101,9 @@ int clientLoop(void *data) {
     }
 
     // wait for a real long time for activity
+#if DEBUG_CLIENT
+    cerr << "Net: client: waiting for socket activity." << endl;
+#endif
     numready=SDLNet_CheckSockets(set, (Uint32)1000);
     if(numready==-1) {
       cerr << "SDLNet_CheckSockets: " << SDLNet_GetError() << endl;
@@ -99,7 +112,6 @@ int clientLoop(void *data) {
     }
     // check to see if the server sent us data
     if(numready && SDLNet_SocketReady(client->getTCPSocket())) {
-
       if(!TCPUtil::receive(client->getTCPSocket(), &str)) {
         char *error = SDLNet_GetError();
         cerr << "* Error in get message: " << (strlen(error) ? error : "Server disconnected?") << endl;
@@ -107,23 +119,15 @@ int clientLoop(void *data) {
         // next ping will reconnect
         sendPing = true;
       } else {
-        
+#if DEBUG_CLIENT
+        cerr << "Net: client: interpreting str=" << str << endl;
+#endif
         client->getCommands()->interpret(str);
 
         // respond to this with a ping
         if(!strncmp(str, "STATE,", 6)) {
           sendPing = true;
         }
-
-        /*
-        if(!strncmp(str, "STATE,", 6)) {
-          client->processGameState(str);        
-          sendPing = true;
-        } else {
-          // FIXME: call a client interface here
-          cout << str << endl;
-        }
-        */
       }
     }
 
@@ -166,23 +170,26 @@ void Client::closeConnection() {
     tcpSocket = NULL;
   }
   connected = false;
-  cerr << "* Disconnected." << endl;
+  cerr << "* Client: Disconnected." << endl;
 }
 
 int Client::connect() {
-  if(connected && !readError) return 1;
+  if(connected && !readError) {
+    cerr << "** connected=" << connected << " readError=" << readError << endl;
+    return 1;
+  }
   readError = false;
-  cerr << "* Connecting to server..." << endl;
+  cerr << "* Client: Connecting to server..." << endl;
   for(int i = 0; RETRY_COUNT <= 0 || i < RETRY_COUNT; i++) {
     closeConnection();
     if(openConnection()) {
-      cerr << "\tSuccess." << endl;
+      cerr << "\tClient: Success." << endl;
       return 1;
     }
-    cerr << "\tFailed to connect to server. Retrying..." << endl;
+    cerr << "\tClient: Failed to connect to server. Retrying..." << endl;
     SDL_Delay(2000);
   }
-  cerr << "* Giving up on server." << endl;
+  cerr << "* Client: Giving up on server." << endl;
   return 0;
 }
 
@@ -222,9 +229,9 @@ int Client::sendRawTCP(char *s) {
   // send message with retry
   for(int i = 0; RETRY_COUNT <= 0 || i < RETRY_COUNT; i++) {
     if(!TCPUtil::send(tcpSocket, s)) {
-      cerr << "* Connection lost to server. Re-logging in..." << endl;
+      cerr << "* Client: Connection lost to server. Re-logging in..." << endl;
       if(!connect()) {
-        cerr << "* Reconnect failed. Giving up on server." << endl;
+        cerr << "* Client: Reconnect failed. Giving up on server." << endl;
         return 0;
       }
       login();
@@ -232,7 +239,7 @@ int Client::sendRawTCP(char *s) {
       return 1;
     }
   }
-  cerr << "* Giving up on server." << endl;
+  cerr << "* Client: Giving up on server." << endl;
   return 0;
 }
 

@@ -39,6 +39,7 @@ private:
   int chatStrCount;
   char **chatStr;
   static const int MAX_CHAT_SIZE = 100;
+  static const int CHAT_STR_LENGTH = 120;
 
 public:
   NetPlay(Scourge *scourge);

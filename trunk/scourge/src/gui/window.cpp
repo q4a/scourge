@@ -145,50 +145,64 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     return this;
   }
 
-  // handled by a component?
-  bool insideWidget = false;
-  Widget *w = NULL;
-  for(int t = 0; t < widgetCount; t++) {
-    if(this->widget[t]->isVisible()) {
-      if(!insideWidget) {
-        if(insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT))) {
-          if(event->type == SDL_MOUSEBUTTONUP || 
-             event->type == SDL_MOUSEBUTTONDOWN) {
-            currentWin = this;
-            setFocus(this->widget[t]);
+  // handle some special key strokes
+  bool systemKeyPressed = false;
+  if(event->type == SDL_KEYUP || event->type == SDL_KEYDOWN) {
+    switch(event->key.keysym.sym) {
+    case SDLK_ESCAPE: case SDLK_TAB:
+        systemKeyPressed = true;
+        break;
+    default:
+        break;
+    }
+  }
+
+  if(!systemKeyPressed) {
+    // handled by a component?
+    bool insideWidget = false;
+    Widget *w = NULL;
+    for(int t = 0; t < widgetCount; t++) {
+      if(this->widget[t]->isVisible()) {
+        if(!insideWidget) {
+          if(insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT))) {
+            if(event->type == SDL_MOUSEBUTTONUP || 
+               event->type == SDL_MOUSEBUTTONDOWN) {
+              currentWin = this;
+              setFocus(this->widget[t]);
+            }
           }
-        }
-      } 
-      if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
-        w = this->widget[t];
+        } 
+        if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
+          w = this->widget[t];
+      }
+    }
+    
+    // special handling
+    if(message_button && w == message_button) {
+      message_dialog->setVisible(false);
+    }
+    if(w) return w;
+    
+    // handled by closebutton
+    if(closeButton) {
+      if(!insideWidget) {
+        insideWidget = closeButton->isInside(x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
+                                             y - (getY() + 3));
+      }
+      if(closeButton->handleEvent(this, event, 
+                                  x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
+                                  y - (getY() + 3))) {
+        return closeButton;
+      }
+    }
+    
+    if(insideWidget && 
+       !(event->type == SDL_KEYUP || 
+         event->type == SDL_KEYDOWN)) {
+      return this;
     }
   }
-
-  // special handling
-  if(message_button && w == message_button) {
-    message_dialog->setVisible(false);
-  }
-  if(w) return w;
-
-  // handled by closebutton
-  if(closeButton) {
-    if(!insideWidget) {
-      insideWidget = closeButton->isInside(x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
-                                           y - (getY() + 3));
-    }
-    if(closeButton->handleEvent(this, event, 
-                                x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
-                                y - (getY() + 3))) {
-      return closeButton;
-    }
-  }
-
-  if(insideWidget && 
-     !(event->type == SDL_KEYUP || 
-       event->type == SDL_KEYDOWN)) {
-    return this;
-  }
-
+  
   // see if the window wants it
   if(handleEvent(NULL, event, x, y)) {
     return this;

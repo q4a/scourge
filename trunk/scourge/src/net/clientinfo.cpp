@@ -1,6 +1,8 @@
 #ifdef HAVE_SDL_NET
 #include "clientinfo.h"
 
+#define DEBUG_CLIENT_INFO 0
+
 ClientInfo::ClientInfo(Server *server, TCPsocket socket, int id, char *username) {
   this->server = server;
   this->socket = socket;
@@ -17,44 +19,44 @@ ClientInfo::ClientInfo(Server *server, TCPsocket socket, int id, char *username)
   // start the client thread
   threadRunning = true;
   mutex = SDL_CreateMutex();
-  cond = SDL_CreateCond();
   thread = SDL_CreateThread(clientInfoLoop, this);
 }
 
-ClientInfo::~ClientInfo() {
-  delete commands;
-  // stop the thread
-  threadRunning = false;
-  // wake up the thread
-  handleRequestAsync();
-  int status;
-  SDL_WaitThread(thread, &status);
-  // kill the mutex, cond
-  SDL_DestroyMutex(mutex);
-  SDL_DestroyCond(cond);
-  // close the socket
-  SDLNet_TCP_Close(socket);
-  // misc. other stuff
-  free(username);
+ClientInfo::~ClientInfo() {  
   // empty message queue
+  if(SDL_mutexP(mutex) == -1) {
+    cerr << "Couldn't lock mutex." << endl;
+    exit(7);
+  }    
   while(!messageQueue.size()) {
     Message *message = messageQueue.front();
     messageQueue.pop();
     delete message;
   }
+  if(SDL_mutexV(mutex) == -1) {
+    cerr << "Couldn't lock mutex." << endl;
+    exit(7);
+  }    
+
+  // stop the thread
+  cerr << "* Stopping client thread: " << describe() << endl;
+  threadRunning = false;
+  int status;
+  SDL_WaitThread(thread, &status);
+  // kill the mutex
+  SDL_DestroyMutex(mutex);
+  cerr << "* Closing client socket: " << describe() << endl;
+  // close the socket
+  SDLNet_TCP_Close(socket);
+  // misc. other stuff
+  free(username);
+  delete commands;
+  cerr << "* Client stopped: " << describe() << endl;
 }
 
 char *ClientInfo::describe() {
   sprintf(desc, "id=%d name=%s", id, username);
   return desc;
-}
-
-void ClientInfo::handleRequestAsync() {
-  // wake up the thread
-  if(SDL_CondSignal(cond) == -1) {
-    cerr << "Couldn't signal condition." << endl;
-    exit(6);
-  }  
 }
 
 void ClientInfo::chat(char *message) {
@@ -99,11 +101,6 @@ void ClientInfo::sendMessageAsync(char *message) {
       cerr << "Couldn't unlock mutex." << endl;
       exit(7);
     }
-
-    if(SDL_CondSignal(cond) == -1) {
-      cerr << "Couldn't signal condition." << endl;
-      exit(6);
-    }
   }
 }
 
@@ -116,9 +113,9 @@ void ClientInfo::receiveTCP() {
   free(text);
 }
 
-void ClientInfo::sendTCP(Message *message) {
+void ClientInfo::sendTCP(char *message) {
   if(message) {
-    if(!TCPUtil::send(socket, message->message)) {
+    if(!TCPUtil::send(socket, message)) {
       cerr << "* Can't send TCP to client: " << describe() << endl;
       dead = true;
     }
@@ -128,27 +125,58 @@ void ClientInfo::sendTCP(Message *message) {
 int clientInfoLoop(void *data) {
   bool runAgain = false;
   ClientInfo *clientInfo = (ClientInfo*)data;
+
+  SDLNet_SocketSet set = SDLNet_AllocSocketSet(1);
+  if(!set) {
+    cerr << "*** error: SDLNet_AllocSocketSet: " << SDLNet_GetError() << endl;
+    exit(1); //most of the time this is a major error, but do what you want.
+  }
+
+  // add the socket to the set, so we can call SDLNet_CheckSockets
+  if(SDLNet_TCP_AddSocket(set, clientInfo->getSocket()) == -1) {
+    cerr << "* SDLNet_TCP_AddSocket: " << SDLNet_GetError() << endl;
+    SDLNet_FreeSocketSet(set);
+    clientInfo->dead = true;
+    return 0;
+  }  
+
+  // copy the message  into this, so Message can be deleted in mutex
+  char *messageStr = NULL;
+
   while(clientInfo->isThreadRunning()) {
+
+    cerr << "&";
+
+    if(!runAgain) {
+      SDL_Delay(500);
+    }
+
     // lock the mutex
     if(SDL_mutexP(clientInfo->getMutex()) == -1) {
       cerr << "Couldn't lock mutex." << endl;
       exit(7);
     }    
     // then wait for a signal to start again
-    if(!runAgain && 
-       SDL_CondWait(clientInfo->getCond(), clientInfo->getMutex()) == -1) {
-      cerr << "Couldn't wait on condition." << endl;
-      exit(7);
-    }
+#if DEBUG_CLIENT_INFO
+    cerr << "Net: Server: clientInfo: " << clientInfo->describe() << " waiting..." << endl;
+#endif
+
+    runAgain = false;
+
     // remove a message from the queue
     Message *message = NULL;
     if(clientInfo->getMessageQueue()->size()) {
+
+#if DEBUG_CLIENT_INFO
+    cerr << "Net: Server: clientInfo: " << clientInfo->describe() << " handling outgoing messages." << endl;
+#endif
+
       // do I need to copy the message?
       message = clientInfo->getMessageQueue()->front();
+      messageStr = strdup(message->message);
       clientInfo->getMessageQueue()->pop();
-      runAgain = (clientInfo->getMessageQueue()->size() > 0 ? true : false);
-    } else {
-      runAgain = false;
+      delete message;
+      runAgain = true;
     }
     // unlock the mutex
     if(SDL_mutexV(clientInfo->getMutex()) == -1) {
@@ -157,16 +185,30 @@ int clientInfoLoop(void *data) {
     }
 
     // send message if any
-    if(message) {
-      clientInfo->sendTCP(message);
-      delete message;
+    if(messageStr) {
+      clientInfo->sendTCP(messageStr);
+      delete messageStr;
+      messageStr = NULL;
     }
 
     // handle the request if any
-    if(SDLNet_SocketReady(clientInfo->socket)) {
+    int numready=SDLNet_CheckSockets(set, (Uint32)1000);
+    if(numready==-1) {
+      cerr << "SDLNet_CheckSockets: " << SDLNet_GetError() << endl;
+      clientInfo->dead = true;
+      break;
+    } else if(numready && SDLNet_SocketReady(clientInfo->getSocket())) {
+#if DEBUG_CLIENT_INFO
+    cerr << "Net: Server: clientInfo: " << clientInfo->describe() << " handling incoming socket messages." << endl;
+#endif
       clientInfo->receiveTCP();
+      runAgain = true;
     }
   }
+
+  if(messageStr) delete messageStr;
+
+  SDLNet_FreeSocketSet(set);
   return 0;
 }
 

@@ -42,6 +42,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   this->icons = NULL;
   this->highlight = highlight;
   highlightBorders = false;
+  debug = false;
 }
 
 ScrollingList::~ScrollingList() {
@@ -128,6 +129,14 @@ void ScrollingList::drawWidget(Widget *parent) {
   }
 
   // draw the text
+  if(debug) {
+    cerr << "**********************************************" << endl;
+    cerr << "SCROLLING LIST: count=" << count << endl;
+    for(int i = 0; i < count; i++) {
+      cerr << "i=" << i << " " << list[i] << endl;
+    }
+    cerr << "**********************************************" << endl;
+  }
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 

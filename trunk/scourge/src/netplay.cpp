@@ -24,14 +24,14 @@ NetPlay::NetPlay(Scourge *scourge) {
   chatStrCount = 0;
   chatStr = (char**)malloc(MAX_CHAT_SIZE * sizeof(char*));
   for(int i = 0; i < MAX_CHAT_SIZE; i++) {
-    this->chatStr[i] = (char*)malloc(120 * sizeof(char));
+    this->chatStr[i] = (char*)malloc(CHAT_STR_LENGTH * sizeof(char));
   }
 
   int width = 
     scourge->getSDLHandler()->getScreen()->w - 
     (Scourge::PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
   mainWin = new Window( scourge->getSDLHandler(),
-                        0, scourge->getSDLHandler()->getScreen()->w - width, 
+                        0, scourge->getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
                         width, Scourge::PARTY_GUI_HEIGHT, 
                         strdup("Chat"), 
                         scourge->getShapePalette()->getGuiTexture(), false );
@@ -43,8 +43,9 @@ NetPlay::NetPlay(Scourge *scourge) {
   // this has to be after addWidget
   messageList->setBackground( 1, 0.75f, 0.45f );
   messageList->setSelectionColor( 0.25f, 0.25f, 0.25f );
+  messageList->setColor( 1, 1, 1 );
 
-  chatText = new TextField( 0, 0, 100 );
+  chatText = new TextField( 0, 0, 70 );
   mainWin->addWidget( chatText );
 }
 
@@ -55,7 +56,8 @@ NetPlay::~NetPlay() {
 }
 
 bool NetPlay::handleEvent(Widget *widget, SDL_Event *event) {
-  if(widget == chatText) {
+  if(widget == chatText && 
+     chatText->getEventType() == TextField::EVENT_ACTION) {
 #ifdef HAVE_SDL_NET
     scourge->getClient()->sendChatTCP(chatText->getText());
 #endif    
@@ -69,31 +71,35 @@ char *NetPlay::getGameState() {
 }
   
 void NetPlay::chat(char *message) {
-  //  cout << message << endl;
+  cerr << message << endl;
   if(chatStrCount == MAX_CHAT_SIZE) {
     for(int i = 1; i < chatStrCount - 1; i++)
       strcpy(chatStr[i - 1], chatStr[i]);
   } else {
     chatStrCount++;
   }
-  strcpy(chatStr[chatStrCount - 1], message);
+  cerr << "chatStrCount=" << chatStrCount << endl;
+  strncpy(chatStr[chatStrCount - 1], message, CHAT_STR_LENGTH - 2);
+  chatStr[chatStrCount - 1][CHAT_STR_LENGTH - 1] = '\0';
+  //messageList->debug = true;
   messageList->setLines(chatStrCount, (const char **)chatStr);
+  messageList->setSelectedLine(chatStrCount - 1);
 }
 
 void NetPlay::logout() {
-  cout << "Logout." << endl;
+  cerr << "Logout." << endl;
 }
 
 void NetPlay::ping(int frame) {
-  cout << "Ping." << endl;
+  //cerr << "Ping." << endl;
 }
 
 void NetPlay::processGameState(int frame, char *p) {
-  cout << "Game state: frame=" << frame << " state=" << p << endl;
+  //cerr << "Game state: frame=" << frame << " state=" << p << endl;
 }
 
 void NetPlay::handleUnknownMessage() {
-  cout << "Unknown message received." << endl;
+  cerr << "Unknown message received." << endl;
 }
 
 

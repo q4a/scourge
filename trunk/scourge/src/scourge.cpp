@@ -132,17 +132,15 @@ Scourge::Scourge(int argc, char *argv[]){
       mainMenu->hide();
       
       initMainMenu = true;
-
+     
 #ifdef HAVE_SDL_NET
       if(mainMenu->getValue() == MULTIPLAYER_START) {
         int serverPort = 6666; // FIXME: make this more dynamic
         int port;
         const char *host, *username;
         if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
-          if(!server) {
-            server = new Server(serverPort);
-            server->setGameStateHandler(netPlay);
-          }
+          server = new Server(serverPort);
+          server->setGameStateHandler(netPlay);
           port = serverPort; 
           host = Constants::localhost;
           username = Constants::adminUserName;
@@ -150,10 +148,6 @@ Scourge::Scourge(int argc, char *argv[]){
           port = atoi(multiplayer->getServerPort());
           host = multiplayer->getServerName();
           username = multiplayer->getUserName();
-        }
-        if(client) {
-          delete client;
-          client = NULL;
         }
         client = new Client((char*)host, port, (char*)username, (CommandInterpreter*)netPlay);
         client->setGameStateHandler(netPlay);
@@ -163,8 +157,8 @@ Scourge::Scourge(int argc, char *argv[]){
           continue;
         }
       }
-#endif
-      
+#endif  
+
       startMission();
     } else if(mainMenu->getValue() == OPTIONS) {
       optionsMenu->show();
@@ -377,6 +371,17 @@ void Scourge::startMission() {
       }
     }
   }
+
+#ifdef HAVE_SDL_NET
+  if(server) {
+    delete server;
+    server = NULL;
+  }
+  if(client) {
+    delete client;
+    client = NULL;
+  }
+#endif
 
   // clean up the last objects in the party's inventory
   for(int i = 0; i < itemCount; i++) {

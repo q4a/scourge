@@ -31,6 +31,7 @@ TextField::TextField(int x, int y, int numChars):
   this->text = (char*)malloc((numChars + 1) * sizeof(char));
   this->pos = 0;
   this->maxPos = 0;
+  this->eventType = EVENT_KEYPRESS;
 } 
 
 TextField::~TextField() {
@@ -39,17 +40,17 @@ TextField::~TextField() {
   
 bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   inside = hasFocus();
+  eventType = EVENT_KEYPRESS;
   // handle it
   if(inside) {
     switch( event->type ) {
     case SDL_KEYUP:
-      if(event->key.keysym.sym == SDLK_RETURN) return true;
-      break;
+    return true;
     case SDL_KEYDOWN:
-    //case SDL_KEYUP:
-    //cerr << "key: " << event->key.keysym.sym << " maxPos=" << maxPos << " pos=" << pos << " numChars=" << numChars << endl;
-    if(event->key.keysym.sym >= SDLK_SPACE && event->key.keysym.sym <= SDLK_z && 
-       maxPos < numChars) {
+    if(event->key.keysym.sym == SDLK_RETURN) {
+      eventType = EVENT_ACTION;
+    } else if(event->key.keysym.sym >= SDLK_SPACE && event->key.keysym.sym <= SDLK_z && 
+              maxPos < numChars) {
       for(int i = maxPos; i > pos; i--) {
         text[i] = text[i - 1];
       }
@@ -72,7 +73,7 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     } else if(event->key.keysym.sym == SDLK_END) {
       pos = maxPos;
     }
-    break;
+    return true;
     default:
     break;
     }

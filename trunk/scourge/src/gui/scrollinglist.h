@@ -51,6 +51,9 @@ class ScrollingList : public Widget {
   GLuint highlight;
 
  public: 
+
+   bool debug;
+
   ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL);
   virtual ~ScrollingList();
 
