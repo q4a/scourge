@@ -45,14 +45,16 @@ class Projectile;
 class SpellCaster {
  public:
   
-  static void spellFailed(Scourge *scourge, Creature *creature, int power);
+  static void spellFailed(Scourge *scourge, Creature *creature, Spell *spell, bool projectileHit);
 
-  static void spellSucceeded(Scourge *scourge, Creature *creature, int power);
+  static void spellSucceeded(Scourge *scourge, Creature *creature, Spell *spell, bool projectileHit);
 
  protected:
-  static void increaseHP(Scourge *scourge, Creature *creature, int power);
-  static void increaseAC(Scourge *scourge, Creature *creature, int power);
-  
+  static float getPower(Creature *creature, Spell *spell);
+  static void increaseHP(Scourge *scourge, Creature *creature, Spell *spell, float power);
+  static void increaseAC(Scourge *scourge, Creature *creature, Spell *spell, float power);
+  static void launchProjectile(Scourge *scourge, Creature *creature, Spell *spell, float power);
+  static void causeDamage(Scourge *scourge, Creature *creature, Spell *spell, float power);
 };
 
 #endif
