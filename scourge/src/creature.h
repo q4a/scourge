@@ -37,6 +37,7 @@
 #include "events/potionexpirationevent.h"
 #include "rpg/spell.h"
 #include "persist.h"
+#include "battle.h"
 
 using namespace std;
 
@@ -47,6 +48,7 @@ class Session;
 class Effect;
 class Item;
 class Location;
+class Battle;
 
 /**
   *@author Gabor Torok
@@ -122,6 +124,7 @@ class Creature {
 
   int moveCount;
   Uint32 lastMove;
+  Battle *battle;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -135,6 +138,8 @@ class Creature {
   Creature(Session *session, Character *character, char *name);
   Creature(Session *session, Monster *monster);
   ~Creature();
+
+  inline Battle *getBattle() { return battle; }
 
   CreatureInfo *save();
   static Creature *load(CreatureInfo *info);

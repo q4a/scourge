@@ -358,9 +358,6 @@ public:
   */
   void drawView();
 
-  // refresh the screen in battle
-  void drawInBattle();
-  
   /**
     The main app loop calls this after the drawView and the UI (windows) have been drawn.
     In this implementation, the dragged item is drawn over the map.
@@ -585,6 +582,8 @@ public:
 
   // move a creature
   void moveMonster(Creature *monster);
+
+  void removeBattle(Battle *battle);
 
  protected:
   //  void fightBattle(); 
