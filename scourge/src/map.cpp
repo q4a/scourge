@@ -426,7 +426,8 @@ void Map::draw(SDL_Surface *surface) {
 	  doDrawShape(&other[i]);
 	}
 
-    if(scourge->getUserConfiguration()->getStencilbuf()) {
+    if(scourge->getUserConfiguration()->getStencilbuf() &&
+			 scourge->getUserConfiguration()->getStencilBufInitialized()) {
 	  // create a stencil for the walls
 	  glDisable(GL_DEPTH_TEST);
 	  glColorMask(0,0,0,0);

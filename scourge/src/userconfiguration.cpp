@@ -153,6 +153,7 @@ UserConfiguration::UserConfiguration(){
     unsigned int i, j;
     string temp;
     
+		stencilBufInitialized = false;
     configurationChanged = false;
     
     // default settings for video mode (are overridden by command line)

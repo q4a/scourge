@@ -165,6 +165,9 @@ private:
   // game settings
   int gamespeed;
   bool centermap;
+
+	// was the stencil buf. initialized at start?
+	bool stencilBufInitialized;
    
  public:
  
@@ -233,6 +236,9 @@ private:
   
   void parseCommandLine(int argc, char *argv[]);  
   void setKeyForEngineAction(string keyName, int ea);
+
+	inline void setStencilBufInitialized(bool b) { stencilBufInitialized = b; }
+	inline bool getStencilBufInitialized() { return stencilBufInitialized; }
   
   
 };
