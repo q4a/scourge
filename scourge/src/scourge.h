@@ -80,7 +80,6 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Party *party;
   Map *map;
   MiniMap * miniMap;
-  Calendar * calendar;
   UserConfiguration *userConfiguration;  
   DungeonGenerator *dg;
   Scourge *scourge;
@@ -93,24 +92,6 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   OptionsMenu *optionsMenu;
   bool isInfoShowing;
   bool info_dialog_showing;
-  Window *mainWin;
-  Button *inventoryButton;
-  Button *optionsButton;
-  Button *quitButton;
-  Button *roundButton;
-  Button *calendarButton;
-
-  Button *diamondButton;
-  Button *staggeredButton;
-  Button *squareButton;
-  Button *rowButton;
-  Button *scoutButton;
-  Button *crossButton;
-  Button *player1Button;
-  Button *player2Button;
-  Button *player3Button;
-  Button *player4Button;
-  Button *groupButton;
 
   Window *boardWin;
   ScrollingList *missionList;
@@ -135,7 +116,6 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Item *movingItem;
 
   Uint16 move;
-  bool startRound;
 
   GLint lastTick;
   int battleCount;
@@ -197,12 +177,15 @@ public:
   inline void setMove(Uint16 n) { move |= n; };  
   inline void removeMove(Uint16 n) { move &= (0xffff - n); }
 
+  inline int getCreatureCount() { return creatureCount; }
+  inline Creature *getCreature(int index) { return creatures[index]; }
+
   /**
 	 This method is called after the player decides what to do this round.
 	 This method will move monsters, cast spells, organize the battle, etc.
    */
   void playRound();
-
+ 
   inline Party *getParty() { return party; }
   inline Map *getMap() { return map; }
   inline MiniMap *getMiniMap() { return miniMap; }
@@ -237,7 +220,7 @@ public:
   bool useItem(int x, int y, int z);
   
   void startMission();  
-	void endMission();
+  void endMission();
 
   inline ShapePalette *getShapePalette() { return shapePal; }  
 
@@ -245,8 +228,6 @@ public:
   
   inline UserConfiguration * getUserConfiguration() { return userConfiguration; }
   
-  inline Calendar *getCalendar() { return calendar; } 
-
   void drawTopWindow();
 
   void openContainerGui(Item *container);
@@ -260,8 +241,12 @@ public:
   void showMessageDialog(char *message);
 
   void setFormation(int formation);
+  
+  void toggleInventoryWindow();
 
-  void setPlayer(int n);
+  void toggleOptionsWindow();
+
+  void showExitConfirmationDialog();
 
  protected:
   //  void fightBattle(); 
@@ -272,9 +257,6 @@ public:
   void handleKeyboardMovement();
   // move a creature
   void moveMonster(Creature *monster);
-
-  void toggleRound();
-  void togglePlayerOnly();
 
   void refreshContainerGui(Item *container);
 
