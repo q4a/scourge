@@ -73,10 +73,10 @@ private:
   SDLScreenView *screenViews[10];
   int handlerCount;
 
-  public: 
-	SDLHandler();
-	~SDLHandler();
-
+ public: 
+  SDLHandler();
+  ~SDLHandler();
+  
   Uint16 mouseX, mouseY;
   Uint8 mouseButton, mouseEvent;
   bool mouseDragging;

@@ -77,6 +77,8 @@ const char *Constants::STATE_NAMES[] = {
   "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed"
 };
 
+bool Constants::stencilbuffer = true;
+bool Constants::multitexture = true;	
 
 Constants::Constants(){
 }

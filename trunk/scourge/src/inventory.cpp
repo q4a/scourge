@@ -252,33 +252,34 @@ void Inventory::drawParty() {
   int h = 120;
   int y;  
   for(int i = 0; i < 4; i++) {
-	glPushMatrix();
-	glLoadIdentity();
-	glTranslatef( 20, 10 + i * h + 90, 100);
-	glRotatef(90, 1, 0, 0);
-	glScalef( 1.2f, 0, 0.8f );
-	
-	glDisable(GL_DEPTH_TEST);
-	glColorMask(0,0,0,0);
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-	scourge->getParty(i)->draw();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glEnable(GL_DEPTH_TEST);
-	
-	glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil=0
-	// GL_INCR makes sure to only draw shadow once
-	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
-	
-	glEnable( GL_BLEND );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glColor4f( 0.1f, 0, 0.15f, 0.3f );
-	scourge->getParty(i)->draw();
-	glDisable( GL_BLEND );
-	glDisable(GL_STENCIL_TEST); 
-	glPopMatrix();
-	
+    if(Constants::stencilbuffer) {
+	  glPushMatrix();
+	  glLoadIdentity();
+	  glTranslatef( 20, 10 + i * h + 90, 100);
+	  glRotatef(90, 1, 0, 0);
+	  glScalef( 1.2f, 0, 0.8f );
+	  
+	  glDisable(GL_DEPTH_TEST);
+	  glColorMask(0,0,0,0);
+	  glEnable(GL_STENCIL_TEST);
+	  glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	  glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+	  scourge->getParty(i)->draw();
+	  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	  glEnable(GL_DEPTH_TEST);
+	  
+	  glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil=0
+	  // GL_INCR makes sure to only draw shadow once
+	  glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);	
+	  
+	  glEnable( GL_BLEND );
+	  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	  glColor4f( 0.1f, 0, 0.15f, 0.3f );
+	  scourge->getParty(i)->draw();
+	  glDisable( GL_BLEND );
+	  glDisable(GL_STENCIL_TEST); 
+	  glPopMatrix();
+	}
 	
 	glPushMatrix();
 	glLoadIdentity();
@@ -383,7 +384,7 @@ void Inventory::drawInventoryInfo() {
 	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
 	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
 	  scourge->getSDLHandler()->
-		texPrint(280, 30 + (i * 15), "%s", 
+		texPrint(300, 30 + (i * 15), "%s", 
 				 (item ? item->getName() : ""));
 	}
 

@@ -29,7 +29,7 @@ bool checkFile(const char *dir, const char *file) {
 	 char path[300];
 	 strcpy(path, dir);
 	 strcat(path, file);
-	 fprintf(stderr, "\tchecking path: %s\n", path);
+	 //fprintf(stderr, "\tchecking path: %s\n", path);
 	 bool ret = true;
 	 FILE *fp = fopen(path, "rb");
 	 if(!fp || ferror(fp)) ret = false;
@@ -47,7 +47,7 @@ void findResources(const char *appPath) {
 				exit(1);
 		  }	
 		  *(p + 1) = 0;
-		  fprintf(stderr, "Looking at: rootDir=%s\n", rootDir);
+		  //fprintf(stderr, "Looking at: rootDir=%s\n", rootDir);
 		  if(checkFile(rootDir, "data/cursor.bmp")) return;
 		  // remove the last separator
 		  *(p) = 0;
@@ -55,9 +55,9 @@ void findResources(const char *appPath) {
 }
 
 int main(int argc, char *argv[]) {
-  fprintf(stderr, "argv[0]=%s\n", argv[0]);
+  //fprintf(stderr, "argv[0]=%s\n", argv[0]);
   findResources(argv[0]);
-  fprintf(stderr, "\n");
+  //fprintf(stderr, "\n");
   new Scourge(argc, argv);
   return EXIT_SUCCESS;
 }

@@ -94,7 +94,9 @@ class PlayerChar  {
 	if(setting) stateMod |= (1 << mod); 
 	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
   }
+  // equip or doff if already equipped
   void equipInventory(int index);
+  int doff(int index);
 
   // get the item at the given equip-index (inventory location)
   RpgItem *getEquippedInventory(int index);

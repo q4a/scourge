@@ -53,15 +53,75 @@ PlayerChar::~PlayerChar() {
 RpgItem *PlayerChar::removeInventory(int index) { 
   RpgItem *item = NULL;
   if(index < inventory_count) {
+	// drop item if carrying it
+	doff(index);
+	// drop from inventory
 	item = inventory[index];
 	for(int i = index; i < inventory_count - 1; i++) {
 	  inventory[i] = inventory[i + 1];
 	}
 	inventory_count--;
+	// adjust equipped indexes too
+	for(int i = 0; i < INVENTORY_COUNT; i++) {
+	  if(equipped[i] > index && equipped[i] < MAX_INVENTORY_SIZE) {
+		equipped[i]--;
+	  }
+	}
   }
   return item;
 }
 
+void PlayerChar::equipInventory(int index) {
+  // doff
+  if(doff(index)) return;
+  // don
+  // FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
+  RpgItem *item = getInventory(index);
+  for(int i = 0; i < INVENTORY_COUNT; i++) {
+	// if the slot is empty and the item can be worn here
+	if(item->getEquip() & ( 1 << i ) && 
+	   equipped[i] == MAX_INVENTORY_SIZE) {
+		equipped[i] = index;
+		return;
+	}
+  }
+}
+
+int PlayerChar::doff(int index) {
+  // doff
+  for(int i = 0; i < INVENTORY_COUNT; i++) {
+	if(equipped[i] == index) {
+	  equipped[i] = MAX_INVENTORY_SIZE;
+	  return 1;
+	}
+  }
+  return 0;
+}
+
+/**
+   Get item at equipped index. (What is at equipped location?)
+ */
+RpgItem *PlayerChar::getEquippedInventory(int index) {
+  int n = equipped[index];
+  if(n < MAX_INVENTORY_SIZE) {
+	return getInventory(n);
+  }
+  return NULL;
+}
+
+/**
+   Get equipped index of inventory index. (Where is the item worn?)
+*/
+int PlayerChar::getEquippedIndex(int index) {
+  for(int i = 0; i < INVENTORY_COUNT; i++) {
+	if(equipped[i] == index) return i;
+  }
+  return -1;
+}
+
+/**
+   Create a party programmatically until the party editor is made.
+ */
 PlayerChar **PlayerChar::createHardCodedParty() {
   //PlayerChar *pc = new PlayerChar[4];
   PlayerChar **pc = (PlayerChar**)malloc(sizeof(PlayerChar*) * 4);
@@ -114,40 +174,4 @@ PlayerChar **PlayerChar::createHardCodedParty() {
   pc[3]->addInventory(RpgItem::items[RpgItem::THROWING_AXE]);
 
   return pc;
-}
-
-void PlayerChar::equipInventory(int index) {
-  // doff
-  for(int i = 0; i < INVENTORY_COUNT; i++) {
-	if(equipped[i] == index) {
-	  equipped[i] = MAX_INVENTORY_SIZE;
-	  return;
-	}
-  }
-  // don
-  // FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
-  RpgItem *item = getInventory(index);
-  for(int i = 0; i < INVENTORY_COUNT; i++) {
-	// if the slot is empty and the item can be worn here
-	if(item->getEquip() & ( 1 << i ) && 
-	   equipped[i] == MAX_INVENTORY_SIZE) {
-		equipped[i] = index;
-		return;
-	}
-  }
-}
-
-RpgItem *PlayerChar::getEquippedInventory(int index) {
-  int n = equipped[index];
-  if(n < MAX_INVENTORY_SIZE) {
-	return getInventory(n);
-  }
-  return NULL;
-}
-
-int PlayerChar::getEquippedIndex(int index) {
-  for(int i = 0; i < INVENTORY_COUNT; i++) {
-	if(equipped[i] == index) return i;
-  }
-  return -1;
 }

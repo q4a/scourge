@@ -721,11 +721,29 @@ void Scourge::drawTopWindow() {
     sdlHandler->texPrint(705, GUI_TOP + 40, "Options");
     sdlHandler->texPrint(705, GUI_TOP + 65, "Quit");
 
-    glColor3f(1.0f, 0.6f, 0.3f);
+	glEnable( GL_TEXTURE_2D );
+	glColor3f( 0.75f, 0.5f, 0.05f );
+	for(int i = 0; i < Creature::FORMATION_COUNT; i++) {
+	  glBindTexture( GL_TEXTURE_2D, 
+					 getShapePalette()->getTexture(getShapePalette()->formationTexIndex + i) );
+	  glBegin(GL_QUADS);
+	  glTexCoord2f(1, 0);
+	  glVertex3d(700 + (i * 20), GUI_TOP + 75, 200);
+	  glTexCoord2f(0, 0);
+	  glVertex3d(680 + (i * 20), GUI_TOP + 75, 200);
+	  glTexCoord2f(0, 1);
+	  glVertex3d(680 + (i * 20), GUI_TOP + 100, 200);
+	  glTexCoord2f(1, 1);
+	  glVertex3d(700 + (i * 20), GUI_TOP + 100, 200);
+	  glEnd();
+	}
+	glDisable( GL_TEXTURE_2D );
+	
+	glColor3f(1.0f, 0.6f, 0.3f);
     glBegin(GL_LINES);
         glVertex2d(680, GUI_TOP);
         glVertex2d(680, 600);
-        glVertex2d(680, GUI_TOP + 25);
+		glVertex2d(680, GUI_TOP + 25);
         glVertex2d(800, GUI_TOP + 25);
         glVertex2d(680, GUI_TOP + 50);
         glVertex2d(800, GUI_TOP + 50);
@@ -734,7 +752,8 @@ void Scourge::drawTopWindow() {
 		glVertex2d(680, GUI_TOP + 100);
         glVertex2d(800, GUI_TOP + 100);
         glVertex2d(700, GUI_TOP + 100);
-        glVertex2d(700, GUI_TOP + 75);
+        
+		glVertex2d(700, GUI_TOP + 75);
         glVertex2d(720, GUI_TOP + 100);
         glVertex2d(720, GUI_TOP + 75);
         glVertex2d(740, GUI_TOP + 100);
