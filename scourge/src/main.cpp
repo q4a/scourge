@@ -21,15 +21,20 @@
 
 #include <iostream.h>
 #include <stdlib.h>
-#include <string.h>
+#include <strings.h>
 
 #include "scourge.h"
 
 int main(int argc, char *argv[]) {
   // Where are we running from?
+  fprintf(stderr, "argv[0]=%s\n", argv[0]);
   strcpy(rootDir, argv[0]);
-  int n = strlen(rootDir);
-  *(rootDir + n - strlen("scourge")) = 0;
+  char *p = strrchr(rootDir, SEPARATOR);
+  if(!p) {
+	  fprintf(stderr, "Can't parse argv[0]=%s\n", argv[0]);
+	  exit(1);
+  }
+  *(p + 1) = 0;
   fprintf(stderr, "rootDir=%s\n", rootDir);
 
   if(argc > 1 && !strcmp(argv[1], "--fullscreen")) {
