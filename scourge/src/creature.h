@@ -194,6 +194,7 @@ class Creature {
   Item *removeInventory(int index);  
   // returns true if ate/drank item completely and false else
   bool eatDrink(int index);  
+  bool computeNewWeight(RpgItem * rpgItem);
   // equip or doff if already equipped
   void equipInventory(int index);
   int doff(int index);

@@ -428,8 +428,9 @@ bool Creature::eatDrink(int index){
             setHunger(getHunger() + level);            
             strcpy(buff, rpgItem->getShortDesc());
             buff[0] = tolower(buff[0]);
-            sprintf(msg, "%s eats %s.", getName(), buff);            
-            
+            sprintf(msg, "%s eats %s.", getName(), buff);
+            scourge->getMap()->addDescription(msg);
+            return(computeNewWeight(rpgItem));                              
         }
         else if(type == RpgItem::DRINK){
             if(getThirst() == 10){                
@@ -443,22 +444,7 @@ bool Creature::eatDrink(int index){
             sprintf(msg, "%s drinks %s.", getName(), buff);
             scourge->getMap()->addDescription(msg); 
             // TODO : according to the alcool rate set drunk state or not            
-            int oldCharges = rpgItem->getCurrentCharges();            
-            if(oldCharges <= 1){
-                // The object is entirely drunk                
-                return true;    
-            }            
-            rpgItem->setCurrentCharges(oldCharges - 1);
-            
-            // Compute initial weight to be able to compute new weight
-            // (without increasing error each time)
-            float f1;
-            f1 = rpgItem->getWeight();
-            f1 *= (float) rpgItem->getMaxCharges();
-            f1 /= (float) oldCharges;
-            f1 *= (((float)oldCharges - 1.0f) / (float)rpgItem->getMaxCharges());            
-            rpgItem->setWeight(f1);
-            return false;
+            return(computeNewWeight(rpgItem));  
             
         }
         else{   
@@ -469,25 +455,32 @@ bool Creature::eatDrink(int index){
             setThirst(getThirst() + level);
             sprintf(msg, "%s drinks %s.", getName(), buff);
             scourge->getMap()->addDescription(msg); 
-            int oldCharges = rpgItem->getCurrentCharges();            
-            if(oldCharges <= 1){
-                // The object is entirely drunk                
-                return true;    
-            }            
-            rpgItem->setCurrentCharges(oldCharges - 1);
-            
-            // Compute initial weight to be able to compute new weight
-            // (without increasing error each time)
-            float f1;
-            f1 = rpgItem->getWeight();
-            f1 *= (float) rpgItem->getMaxCharges();
-            f1 /= (float) oldCharges;
-            f1 *= (((float)oldCharges - 1.0f) / (float)rpgItem->getMaxCharges());            
-            rpgItem->setWeight(f1);            
-            // TODO : execute special potion actions
-            return false;                                   
+            // TODO : add potion effect
+            return(computeNewWeight(rpgItem));                                   
         }        
     }
+}
+
+bool Creature::computeNewWeight(RpgItem * rpgItem){
+    float f1;
+    int oldCharges;
+    
+    oldCharges = rpgItem->getCurrentCharges();            
+    if(oldCharges <= 1){
+        // The object is totally consummed
+        return true;    
+    }            
+    rpgItem->setCurrentCharges(oldCharges - 1);
+            
+    // Compute initial weight to be able to compute new weight
+    // (without increasing error each time)
+    
+    f1 = rpgItem->getWeight();
+    f1 *= (float) rpgItem->getMaxCharges();
+    f1 /= (float) oldCharges;
+    f1 *= (((float)oldCharges - 1.0f) / (float)rpgItem->getMaxCharges());            
+    rpgItem->setWeight(f1);
+    return false;      
 }
 
 void Creature::equipInventory(int index) {
@@ -714,9 +707,11 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[1]->addInventory(scourge->newItem(RpgItem::items[RpgItem::APPLE]));
   pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::LONG_SWORD]));
   pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::WINE_BARREL]));
+  pc[2]->addInventory(scourge->newItem(RpgItem::items[RpgItem::MUTTON_MEAT]));
   pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::GREAT_SWORD]));
   pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::BATTLE_AXE]));
   pc[3]->addInventory(scourge->newItem(RpgItem::items[RpgItem::THROWING_AXE]));
+  
 
   return pc;
 }
