@@ -122,6 +122,7 @@ class RpgItem {
 	SWORD=0,
 	AXE,
 	BOW,
+    MACE,
 	CONTAINER,
 	ARMOR,
 	FOOD,

@@ -383,11 +383,12 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     }
     
     // add a weapon anyone can wield
-    int n = (int)(3.0f * rand()/RAND_MAX);
+    int n = (int)(4.0f * rand()/RAND_MAX);
     switch(n) {
     case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow"))); break;
     case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"))); break;
     case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"))); break;
+    case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"))); break;
     }
     pc[i]->equipInventory(0);
     

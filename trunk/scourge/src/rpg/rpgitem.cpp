@@ -44,6 +44,7 @@ char RpgItem::itemTypeStr[ITEM_TYPE_COUNT][40] = {
   "SWORD",
   "AXE",
   "BOW",
+  "MACE",
   "CONTAINER",
   "ARMOR",
   "FOOD",
@@ -54,7 +55,7 @@ char RpgItem::itemTypeStr[ITEM_TYPE_COUNT][40] = {
   "SCROLL"
 };
 
-int RpgItem::enchantableTypes[] = { SWORD, AXE, BOW, ARMOR };
+int RpgItem::enchantableTypes[] = { SWORD, AXE, BOW, MACE, ARMOR };
 int RpgItem::enchantableTypeCount = 4;
 
 RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
@@ -82,7 +83,7 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
   this->potionSkill = potionSkill;
   this->potionTime = potionTime;
   this->acl = (GLuint)0xffff; // all on
-  this->isWeaponItem = (type == SWORD || type == AXE || type == BOW);
+  this->isWeaponItem = ( type == SWORD || type == AXE || type == BOW || type == MACE );
   this->iconTileX = iconTileX;
   this->iconTileY = iconTileY;
 }
@@ -159,7 +160,7 @@ bool RpgItem::isEnchantable() {
 
 RpgItem *RpgItem::getRandomItem(int maxLevel) {
   // item types found in the lying around a dungeon
-  int types[] = { SWORD, AXE, BOW, ARMOR, FOOD, DRINK, POTION };
+  int types[] = { SWORD, AXE, BOW, MACE, ARMOR, FOOD, DRINK, POTION };
   int typeCount = 7;
   return getRandomItemFromTypes(maxLevel, types, typeCount);
 }
