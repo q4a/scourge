@@ -40,7 +40,7 @@ Map::Map(Scourge *scourge){
   
   this->xrot = 0.0f; // if 0, artifacts appear
   this->yrot = 30.0f;
-  this->zrot = -45.0f;
+  this->zrot = 45.0f;
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
   this->xpos = (float)(scourge->getSDLHandler()->getScreen()->w) / 2.0f;
@@ -62,6 +62,8 @@ Map::Map(Scourge *scourge){
   }
 
   lightMapChanged = true;  
+  colorAlreadySet = false;
+  selectedDropTarget = NULL;
 
   createOverlayTexture();
 }
@@ -221,11 +223,11 @@ void Map::setupShapes(bool ground) {
 				// FIXME: this draws more doors than needed... 
 				// it should use doorValue to figure out what needs to be drawn
 				if((!lightMap[chunkX][chunkY] && 
-					(shape == scourge->getShapePalette()->getShape(ShapePalette::NS_DOOR_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(ShapePalette::EW_DOOR_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(ShapePalette::NS_DOOR_TOP_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(ShapePalette::EW_DOOR_TOP_INDEX) ||
-					 shape == scourge->getShapePalette()->getShape(ShapePalette::DOOR_SIDE_INDEX))) ||
+					(shape == scourge->getShapePalette()->getShape(Constants::NS_DOOR_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(Constants::EW_DOOR_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(Constants::NS_DOOR_TOP_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(Constants::EW_DOOR_TOP_INDEX) ||
+					 shape == scourge->getShapePalette()->getShape(Constants::DOOR_SIDE_INDEX))) ||
 				   (lightMap[chunkX][chunkY] && shape)) {
 				  xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
 								  xp + chunkOffsetX) / GLShape::DIV;
@@ -292,42 +294,48 @@ void Map::setupPosition(int posX, int posY, int posZ,
 }
 
 void Map::drawLocator() {
-    float xpos2, ypos2, zpos2;
-
-    Shape *shape = NULL;  
-    GLuint name;
-
-    // draw the locator
-    if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
-       selY >= getY() && selY < getY() + MAP_VIEW_DEPTH) {
-
-		// don't move objects across walls
-		if(scourge->getMovingItem() && 
-		   (isWallBetween(selX, selY, 0, 
-						  scourge->getParty(0)->getX(),
-						  scourge->getParty(0)->getY(),
-						  0) ||
-			!shapeFits(scourge->getMovingItem()->getShape(), selX, selY, 0)) ) {
-		  selX = oldLocatorSelX;
-		  selY = oldLocatorSelY;
-		}
-
-        if(scourge->getMovingItem()) {
-            shape = scourge->getMovingItem()->getShape();
-        } else {
-            shape = scourge->getShapePalette()->getShape(ShapePalette::LOCATOR_INDEX);
-        }
-        xpos2 = ((float)(selX - getX()) / GLShape::DIV);
-        ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
-        zpos2 = (float)(0) / GLShape::DIV;
-
-        name = 0;
-        doDrawShape(xpos2, ypos2, zpos2, 
-                    shape, 
-                    name);
-		oldLocatorSelX = selX;
-		oldLocatorSelY = selY;
-    }
+  float xpos2, ypos2, zpos2;
+  
+  Shape *shape = NULL;  
+  GLuint name;
+  
+  // draw the locator
+  if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
+	 selY >= getY() && selY < getY() + MAP_VIEW_DEPTH) {
+	
+	Location *dropLoc = NULL;
+	if(scourge->getMovingItem())
+	  dropLoc = getDropLocation(scourge->getMovingItem()->getShape(), 
+								selX, selY, 0);
+	
+	// don't move objects across walls, and only let drop on other creatures and containers
+	// FIXME: implement container check (maybe abstract out container interface)
+	if(scourge->getMovingItem() && 
+	   (isWallBetween(selX, selY, 0, 
+					  scourge->getParty(0)->getX(),
+					  scourge->getParty(0)->getY(),
+					  0) ||
+		(dropLoc && !dropLoc->creature)) ) {
+	  selX = oldLocatorSelX;
+	  selY = oldLocatorSelY;
+	}
+	
+	if(scourge->getMovingItem()) {
+	  shape = scourge->getMovingItem()->getShape();
+	} else {
+	  shape = scourge->getShapePalette()->getShape(Constants::LOCATOR_INDEX);
+	}
+	xpos2 = ((float)(selX - getX()) / GLShape::DIV);
+	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
+	zpos2 = (float)(0) / GLShape::DIV;
+	
+	name = 0;
+	doDrawShape(xpos2, ypos2, zpos2, 
+				shape, 
+				name);
+	oldLocatorSelX = selX;
+	oldLocatorSelY = selY;
+  }
 }
 
 void Map::draw(SDL_Surface *surface) {
@@ -385,7 +393,13 @@ void Map::draw(SDL_Surface *surface) {
       for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
   } else {  
 	// draw the creatures/objects/doors/etc.
-	for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
+	for(int i = 0; i < otherCount; i++) {
+	  if(selectedDropTarget && selectedDropTarget->shape == other[i].shape) {
+		colorAlreadySet = true;
+		glColor4f(0, 1, 1, 1);
+	  }
+	  doDrawShape(&other[i]);
+	}
     
 	// create a stencil for the walls
 	glDisable(GL_DEPTH_TEST);
@@ -446,6 +460,7 @@ void Map::draw(SDL_Surface *surface) {
 	  later[i].shape->endBlending();
 	}
 	drawShade();
+
 	//      glEnable(GL_LIGHTING);
 	glDepthMask(GL_TRUE);    
 	glDisable(GL_BLEND);
@@ -493,7 +508,7 @@ void Map::createOverlayTexture() {
 	  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
 	  float id = (float)i - half;
 	  float jd = (float)j - half;
-	  float dd = 255.0f - ((255.0f / (half * half / 1.5f)) * (id * id + jd * jd));
+	  float dd = 255.0f - ((255.0f / (half * half / 1.2f)) * (id * id + jd * jd));
 	  if(dd < 0.0f) dd = 0.0f;
 	  if(dd > 255.0f) dd = 255.0f;
 	  unsigned char d = (unsigned char)dd;
@@ -527,7 +542,11 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 	((GLShape*)shape)->useShadow = true;
   } else {
 	glTranslatef( xpos2, ypos2, zpos2);
-	glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+	if(colorAlreadySet) {
+	  colorAlreadySet = false;
+	} else {
+	  glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+	}
   }
   
   // encode this shape's map location in its name
@@ -547,7 +566,7 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
   float zpos2 = (float)(mapz) / GLShape::DIV;
   glTranslatef( xpos2, ypos2, zpos2 + 100);
 
-  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   //glRasterPos2f( 0, 0 );
   scourge->getSDLHandler()->texPrint(0, 0, "%s", message);
 
@@ -555,7 +574,55 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
 }
 
 void Map::showCreatureInfo(Creature *creature) {
-  showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
+  glPushMatrix();
+  //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
+
+  float xpos2 = ((float)(creature->getX() - getX()) / GLShape::DIV);
+  float ypos2 = ((float)(creature->getY() - getY()) / GLShape::DIV);
+  float zpos2 = (float)(creature->getZ()) / GLShape::DIV;
+  
+  // draw circle
+  double w = (double)creature->getShape()->getWidth() / GLShape::DIV;
+  double d = (double)creature->getShape()->getDepth() / GLShape::DIV;
+  double s = 0.2f / GLShape::DIV;
+  glTranslatef( xpos2, ypos2, zpos2 + 5);
+  // FIXME: replace with quadric instead (gluDisk)
+  glEnable( GL_DEPTH_TEST );
+  glDepthMask(GL_FALSE);
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glBegin( GL_QUADS );
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( w, 0, 0 );
+  glVertex3f( w, -s, 0 );
+  glVertex3f( 0, -s, 0 );
+
+  glVertex3f( 0, -d + s, 0 );
+  glVertex3f( w, -d + s, 0 );
+  glVertex3f( w, -d, 0 );
+  glVertex3f( 0, -d, 0 );
+
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( s, 0, 0 );
+  glVertex3f( s, -d, 0 );
+  glVertex3f( 0, -d, 0 );
+
+  glVertex3f( w - s, 0, 0 );
+  glVertex3f( w, 0, 0 );
+  glVertex3f( w, -d, 0 );
+  glVertex3f( w - s, -d, 0 );
+  glEnd();
+  glDisable( GL_BLEND );
+  glDisable( GL_DEPTH_TEST );
+  glDepthMask(GL_TRUE);
+  
+  // draw name
+  glTranslatef( 0, 0, 100);
+  scourge->getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
+
+  //glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
+  glPopMatrix();
+
 }
 
 /**
@@ -730,11 +797,11 @@ void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) 
 }
 
 void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
-    if(mapx < MAP_WIDTH) {
-        selX = mapx;
-        selY = mapy;
-        selZ = mapz;
-    }
+  if(mapx < MAP_WIDTH) {
+	selX = mapx;
+	selY = mapy;
+	selZ = mapz;
+  }
 }
 
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
@@ -941,6 +1008,21 @@ bool Map::shapeFits(Shape *shape, int x, int y, int z) {
 	}
   }
   return true;
+}
+
+/**
+   Return the drop location, or NULL if none
+ */
+Location *Map::getDropLocation(Shape *shape, int x, int y, int z) {
+  for(int tx = 0; tx < shape->getWidth(); tx++) {
+	for(int ty = 0; ty < shape->getDepth(); ty++) {
+	  Location *loc = getLocation(x + tx, y - ty, 0);
+	  if(loc) {
+		return loc;
+	  }
+	}
+  }
+  return NULL;
 }
 
 // the world has changed...

@@ -89,55 +89,7 @@ public:
   GLubyte *scourgeImage;
 
   GLuint cloud, candle, torchback;
- 
-  enum { 
-	EW_WALL_INDEX=1,
-	EW_WALL_EXTRA_INDEX,
-	EW_WALL_TWO_EXTRAS_INDEX,  		
-	NS_WALL_INDEX,
-	NS_WALL_EXTRA_INDEX,
-	NS_WALL_TWO_EXTRAS_INDEX,  				
-	CORNER_INDEX,
-	DOOR_SIDE_INDEX,		
-	EW_DOOR_INDEX,
-	EW_DOOR_TOP_INDEX,
-	NS_DOOR_INDEX,
-	NS_DOOR_TOP_INDEX,
-	FLOOR_TILE_INDEX,
-	ROOM_FLOOR_TILE_INDEX,
-	LAMP_NORTH_INDEX,
-	LAMP_SOUTH_INDEX,
-	LAMP_WEST_INDEX,
-	LAMP_EAST_INDEX,
-	LAMP_BASE_INDEX,  
-	DEBUG_INDEX, 
-	LOCATOR_INDEX, 
-	
-	// must be the last one
-	SHAPE_INDEX_COUNT
-  };
-
-  enum {
-	FIGHTER_INDEX = 0,
-	ROGUE_INDEX,
-	CLERIC_INDEX,
-	WIZARD_INDEX,
-
-	// last one
-	CREATURE_INDEX_COUNT
-  };
-  
-  enum {
-	SWORD_INDEX = 0,
-	BOOKSHELF_INDEX,
-	CHEST_INDEX,
-	BOOKSHELF2_INDEX,
-	CHEST2_INDEX,
-
-	// should be the last one
-	ITEM_INDEX_COUNT
-  };
-      
+       
   inline GLShape *getShape(int index) { return shapes[index]; }
   inline GLShape *getCreatureShape(int index) { return creature_shapes[index]; }
   inline GLShape *getItemShape(int index) { return item_shapes[index]; }

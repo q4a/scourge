@@ -63,7 +63,7 @@ ShapePalette::ShapePalette(){
   loadTextures();
 
   // Create the display lists
-  display_list = glGenLists((SHAPE_INDEX_COUNT + CREATURE_INDEX_COUNT) * 3);
+  display_list = glGenLists((Constants::SHAPE_INDEX_COUNT + Constants::CREATURE_INDEX_COUNT) * 3);
  
  	// init the shapes
   initShapes();
@@ -78,254 +78,250 @@ void ShapePalette::initShapes() {
 	Uint32 color = 0xac8060ff;
   bool debug = false;
   int count = 0;
-  shapes[EW_WALL_INDEX] =
+  shapes[Constants::EW_WALL_INDEX] =
     new GLShape(ew_tex,
                 unitOffset, unitSide - (unitOffset * 2), wallHeight,
                 "EAST WALL", wallDescription, wallDescriptionCount,
                 (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), EW_WALL_INDEX);
-  shapes[EW_WALL_EXTRA_INDEX] =
+                display_list + (count++ * 3), Constants::EW_WALL_INDEX);
+  shapes[Constants::EW_WALL_EXTRA_INDEX] =
 		new GLShape(ew_tex,
 				  unitOffset, unitSide - unitOffset, wallHeight,
 				  "EAST WALL EXTRA", wallDescription, wallDescriptionCount,
 				  (debug ? 0xff0000ff : color),
-				  display_list + (count++ * 3), EW_WALL_EXTRA_INDEX);
-  shapes[EW_WALL_TWO_EXTRAS_INDEX] =
+				  display_list + (count++ * 3), Constants::EW_WALL_EXTRA_INDEX);
+  shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX] =
 		new GLShape(ew_tex,
 				  unitOffset, unitSide, wallHeight,
 				  "EAST WALL TWO EXTRAS", wallDescription, wallDescriptionCount,
 				  (debug ? 0xff0000ff : color),
-				  display_list + (count++ * 3), EW_WALL_TWO_EXTRAS_INDEX);
+				  display_list + (count++ * 3), Constants::EW_WALL_TWO_EXTRAS_INDEX);
   
-  shapes[NS_WALL_INDEX] =
+  shapes[Constants::NS_WALL_INDEX] =
 		new GLShape(ns_tex,
 				  unitSide - (unitOffset * 2), unitOffset, wallHeight,
 				  "SOUTH WALL", wallDescription, wallDescriptionCount,
 				  (debug ? 0xff0000ff : color),
-				  display_list + (count++ * 3), NS_WALL_INDEX);  
-  shapes[NS_WALL_EXTRA_INDEX] =
+				  display_list + (count++ * 3), Constants::NS_WALL_INDEX);  
+  shapes[Constants::NS_WALL_EXTRA_INDEX] =
     new GLShape(ns_tex,
                 unitSide - unitOffset, unitOffset, wallHeight,
                 "SOUTH WALL EXTRA", wallDescription, wallDescriptionCount,
                 (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), NS_WALL_EXTRA_INDEX);
-  shapes[NS_WALL_TWO_EXTRAS_INDEX] =
+                display_list + (count++ * 3), Constants::NS_WALL_EXTRA_INDEX);
+  shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX] =
     new GLShape(ns_tex,
                 unitSide, unitOffset, wallHeight,
                 "SOUTH WALL TWO EXTRAS", wallDescription, wallDescriptionCount,
                 (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), NS_WALL_TWO_EXTRAS_INDEX);
-
-  //FRONT_SIDE = 0;
-  //static const int TOP_SIDE = 1;
-  //static const int LEFT_RIGHT_SIDE
+                display_list + (count++ * 3), Constants::NS_WALL_TWO_EXTRAS_INDEX);
 
   // make the walls seethru
-  ((GLShape*)shapes[EW_WALL_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );
-  ((GLShape*)shapes[EW_WALL_EXTRA_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[EW_WALL_TWO_EXTRAS_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[NS_WALL_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-  ((GLShape*)shapes[NS_WALL_EXTRA_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-  ((GLShape*)shapes[NS_WALL_TWO_EXTRAS_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
+  ((GLShape*)shapes[Constants::EW_WALL_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );
+  ((GLShape*)shapes[Constants::EW_WALL_EXTRA_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
+  ((GLShape*)shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
+  ((GLShape*)shapes[Constants::NS_WALL_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
+  ((GLShape*)shapes[Constants::NS_WALL_EXTRA_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
+  ((GLShape*)shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
 
-  shapes[EW_WALL_INDEX]->setStencil(true);
-  shapes[EW_WALL_EXTRA_INDEX]->setStencil(true);
-  shapes[EW_WALL_TWO_EXTRAS_INDEX]->setStencil(true);
-  shapes[NS_WALL_INDEX]->setStencil(true);
-  shapes[NS_WALL_EXTRA_INDEX]->setStencil(true);
-  shapes[NS_WALL_TWO_EXTRAS_INDEX]->setStencil(true);
+  shapes[Constants::EW_WALL_INDEX]->setStencil(true);
+  shapes[Constants::EW_WALL_EXTRA_INDEX]->setStencil(true);
+  shapes[Constants::EW_WALL_TWO_EXTRAS_INDEX]->setStencil(true);
+  shapes[Constants::NS_WALL_INDEX]->setStencil(true);
+  shapes[Constants::NS_WALL_EXTRA_INDEX]->setStencil(true);
+  shapes[Constants::NS_WALL_TWO_EXTRAS_INDEX]->setStencil(true);
 
 
   // corners
-  shapes[CORNER_INDEX] =
+  shapes[Constants::CORNER_INDEX] =
     new GLShape(wood_tex,
                 unitOffset, unitOffset, wallHeight,
                 "CORNER",
                 (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), CORNER_INDEX);
+                display_list + (count++ * 3), Constants::CORNER_INDEX);
 
 	// ew door
   Uint32 doorColor = 0xaa6633ff;
-	int doorSize = unitSide - unitOffset * 2 - 4;
-  shapes[EW_DOOR_INDEX] =
+	int doorSize = unitSide - unitOffset * 3 - 4;
+  shapes[Constants::EW_DOOR_INDEX] =
     new GLShape(doorEWtex,
                 1, doorSize, wallHeight - 2,
                 "EW DOOR", doorDescription, doorDescriptionCount,
                 (debug ? 0xff0000ff : doorColor),
-                display_list + (count++ * 3), EW_DOOR_INDEX);
-	shapes[DOOR_SIDE_INDEX] =
+                display_list + (count++ * 3), Constants::EW_DOOR_INDEX);
+	shapes[Constants::DOOR_SIDE_INDEX] =
     new GLShape(wood_tex,
                 unitOffset, 2, wallHeight - 2,
                 "CORNER SIDE", doorFrameDescription, doorFrameDescriptionCount,
                 (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), DOOR_SIDE_INDEX);
-	shapes[EW_DOOR_TOP_INDEX] =
+                display_list + (count++ * 3), Constants::DOOR_SIDE_INDEX);
+	shapes[Constants::EW_DOOR_TOP_INDEX] =
     new GLShape(wood_tex,
                 2, unitSide - unitOffset * 2, 2,
                 "EW DOOR TOP", doorFrameDescription, doorFrameDescriptionCount,
                 (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), EW_DOOR_TOP_INDEX);
+                display_list + (count++ * 3), Constants::EW_DOOR_TOP_INDEX);
 
 	// ns door
-  shapes[NS_DOOR_INDEX] =
+  shapes[Constants::NS_DOOR_INDEX] =
     new GLShape(doorNStex,
                 doorSize, 1, wallHeight - 2,
                 "NS DOOR", doorDescription, doorDescriptionCount,
                 (debug ? 0xff0000ff : doorColor),
-                display_list + (count++ * 3), NS_DOOR_INDEX);
-	shapes[NS_DOOR_TOP_INDEX] =
+                display_list + (count++ * 3), Constants::NS_DOOR_INDEX);
+	shapes[Constants::NS_DOOR_TOP_INDEX] =
     new GLShape(wood_tex,
                 unitSide - unitOffset * 2, 2, 2,
                 "NS DOOR TOP", doorFrameDescription, doorFrameDescriptionCount,
                 (debug ? 0xff0000ff : color),
-                display_list + (count++ * 3), NS_DOOR_TOP_INDEX);
+                display_list + (count++ * 3), Constants::NS_DOOR_TOP_INDEX);
 
   // floor tile 1
-	shapes[FLOOR_TILE_INDEX] =
+	shapes[Constants::FLOOR_TILE_INDEX] =
     new GLShape(floor2_tex,
                 unitSide, unitSide, 0,
                 "FLOOR TILE",
                 (debug ? 0xff0000ff : 0x806040ff),
-                display_list + (count++ * 3), FLOOR_TILE_INDEX);
-	shapes[ROOM_FLOOR_TILE_INDEX] =
+                display_list + (count++ * 3), Constants::FLOOR_TILE_INDEX);
+	shapes[Constants::ROOM_FLOOR_TILE_INDEX] =
     new GLShape(floor_tex,
                 unitSide, unitSide, 0,
                 "ROOM FLOOR TILE",
                 (debug ? 0xff0000ff : 0xa08040ff),
-                display_list + (count++ * 3), ROOM_FLOOR_TILE_INDEX);
+                display_list + (count++ * 3), Constants::ROOM_FLOOR_TILE_INDEX);
   
-  ((GLShape*)shapes[FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
-  ((GLShape*)shapes[ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
-  ((GLShape*)shapes[ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
+  ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
+  ((GLShape*)shapes[Constants::FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
+  ((GLShape*)shapes[Constants::ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::FRONT_SIDE );  
+  ((GLShape*)shapes[Constants::ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
 
-	shapes[LAMP_NORTH_INDEX] =
+	shapes[Constants::LAMP_NORTH_INDEX] =
     new GLTorch(notex, textures[9],
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LAMP_NORTH_INDEX, torchback, Constants::NORTH);
-	shapes[LAMP_SOUTH_INDEX] =
+                Constants::LAMP_NORTH_INDEX, torchback, Constants::NORTH);
+	shapes[Constants::LAMP_SOUTH_INDEX] =
     new GLTorch(notex, textures[9],
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LAMP_SOUTH_INDEX, torchback, Constants::SOUTH);
-	shapes[LAMP_WEST_INDEX] =
+                Constants::LAMP_SOUTH_INDEX, torchback, Constants::SOUTH);
+	shapes[Constants::LAMP_WEST_INDEX] =
     new GLTorch(notex, textures[9],
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LAMP_WEST_INDEX, torchback, Constants::WEST);
-	shapes[LAMP_EAST_INDEX] =
+                Constants::LAMP_WEST_INDEX, torchback, Constants::WEST);
+	shapes[Constants::LAMP_EAST_INDEX] =
     new GLTorch(notex, textures[9],
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LAMP_EAST_INDEX, torchback, Constants::EAST);
+                Constants::LAMP_EAST_INDEX, torchback, Constants::EAST);
 
 
-	shapes[LAMP_BASE_INDEX] =
+	shapes[Constants::LAMP_BASE_INDEX] =
     new GLShape(wood_tex, 
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LAMP_BASE_INDEX);                
+                Constants::LAMP_BASE_INDEX);                
 
-	shapes[DEBUG_INDEX] =
+	shapes[Constants::DEBUG_INDEX] =
     new DebugShape(wood_tex, 
                 2, 1, 2,
                 "DEBUG", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                DEBUG_INDEX);                
+                Constants::DEBUG_INDEX);                
 
-	shapes[LOCATOR_INDEX] =
+	shapes[Constants::LOCATOR_INDEX] =
         new GLLocator(notex, 
                 3, 3, 1,
                 "LOCATOR", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                LOCATOR_INDEX);
+                Constants::LOCATOR_INDEX);
 
 
   // creatures
   creature_display_list_start = display_list + (count * 3);                
 
   // creatures
-  creature_shapes[FIGHTER_INDEX] =
+  creature_shapes[Constants::FIGHTER_INDEX] =
     new MD2Shape("data/models/m2.md2", "data/models/m2.bmp", 2.0f,
                  notex,
                  3, 3, 6,
                  "FIGHTER",
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
-                 FIGHTER_INDEX);
+                 Constants::FIGHTER_INDEX);
   
-  creature_shapes[ROGUE_INDEX] =
+  creature_shapes[Constants::ROGUE_INDEX] =
     new MD2Shape("data/models/m1.md2", "data/models/m1.bmp", 2.0f,
                  notex,
                  3, 3, 6,
                  "ROGUE",
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
-                 ROGUE_INDEX);
-  creature_shapes[CLERIC_INDEX] =
+                 Constants::ROGUE_INDEX);
+  creature_shapes[Constants::CLERIC_INDEX] =
     new MD2Shape("data/models/m3.md2", "data/models/m3.bmp", 2.5f,
                  notex,
                  3, 3, 6,
                  "CLERIC",
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
-                 CLERIC_INDEX);  
-  creature_shapes[WIZARD_INDEX] =
+                 Constants::CLERIC_INDEX);  
+  creature_shapes[Constants::WIZARD_INDEX] =
     new MD2Shape("data/models/m4.md2", "data/models/m4.bmp", 2.5f,
                  notex,
                  3, 3, 6,
                  "WIZARD",
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
-                 WIZARD_INDEX);  
+                 Constants::WIZARD_INDEX);  
   
   // items
   item_display_list_start = display_list + (count * 3);                                
 
-	item_shapes[SWORD_INDEX] =
+	item_shapes[Constants::SWORD_INDEX] =
     new GLShape(wood_tex,
                 2, 2, 1,
                 "SWORD",
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                SWORD_INDEX);
-	item_shapes[BOOKSHELF_INDEX] =
+                Constants::SWORD_INDEX);
+	item_shapes[Constants::BOOKSHELF_INDEX] =
     new GLShape(shelftex,
                 2, 5, 7,
                 "BOOKSHELF", 
                 0x0000ffff,
-                display_list + (count++ * 3), BOOKSHELF_INDEX);
-	item_shapes[CHEST_INDEX] =
+                display_list + (count++ * 3), Constants::BOOKSHELF_INDEX);
+	item_shapes[Constants::CHEST_INDEX] =
     new GLShape(chesttex,
                 2, 3, 2,
                 "CHEST", 
                 0xffaa80ff,
-                display_list + (count++ * 3), CHEST_INDEX);
-	item_shapes[BOOKSHELF2_INDEX] =
+                display_list + (count++ * 3), Constants::CHEST_INDEX);
+	item_shapes[Constants::BOOKSHELF2_INDEX] =
     new GLShape(shelftex2,
                 5, 2, 7,
                 "BOOKSHELF", 
                 0x0000ffff,
-                display_list + (count++ * 3), BOOKSHELF2_INDEX);
-	item_shapes[CHEST2_INDEX] =
+                display_list + (count++ * 3), Constants::BOOKSHELF2_INDEX);
+	item_shapes[Constants::CHEST2_INDEX] =
     new GLShape(chesttex2,
                 3, 2, 2,
                 "CHEST", 
                 0xffaa80ff,
-                display_list + (count++ * 3), CHEST2_INDEX);
+                display_list + (count++ * 3), Constants::CHEST2_INDEX);
 
   
   max_display_list = display_list + (count * 3);

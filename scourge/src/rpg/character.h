@@ -1,7 +1,7 @@
 /***************************************************************************
-                          item.h  -  description
+                          character.h  -  description
                              -------------------
-    begin                : Sun Sep 28 2003
+    begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
  ***************************************************************************/
@@ -15,41 +15,49 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ITEM_H
-#define ITEM_H
+#ifndef CHARACTER_H
+#define CHARACTER_H
 
-#include "constants.h"
-#include "glshape.h"
-#include "shapepalette.h"
-#include "rpg/rpgitem.h"
-
-class Scourge;
+#include "../constants.h"
 
 /**
   *@author Gabor Torok
   */
 
-class Item {
+class Character;  
+  
+class Character  {
 private:
-  RpgItem *rpgItem;
-  Sint16 x, y, z;
-  static Item *items[];
-  
+  char *name;
+  int startingHp;
+
 public:
-  Item(RpgItem *rpgItem);
-  ~Item();
+	Character(char *name, int startingHp);
+	~Character();
+
+  inline char *getName() { return name; };
+  inline int getStartingHp() { return startingHp; }  
   
-  static void initItems();
-  static Item *getRandomItem(int level);
-  static Item *getRandomContainer();
-  static Item *getRandomContainerNS();
-  inline static Item *getItem(int index) { return items[index]; }
-  inline GLShape *getShape() { return ShapePalette::getInstance()->getItemShape(this->rpgItem->getShapeIndex()); }
-  inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
-  inline Sint16 getX() { return x; }
-  inline Sint16 getY() { return y; }
-  inline Sint16 getZ() { return z; }
-  inline char *getShortDescription() { return rpgItem->getShortDesc(); }
+public:  
+  // fighters
+  static Character *ranger;
+  static Character *knight;
+
+  // rogues
+  static Character *tinkerer;
+  static Character *assassin;
+
+  // rogue/fighter/healer
+  static Character *arcanist;
+  static Character *loremaster;
+
+  // wizards
+  static Character *conjurer;
+  static Character *summoner;
+
+  // healers/religion
+  static Character *naturalist;
+  static Character *monk;
 };
 
 #endif

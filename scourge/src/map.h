@@ -82,6 +82,9 @@ class Map {
   // squish on z and shear x,y
   static const float shadowTransformMatrix[16];
 
+  bool colorAlreadySet;
+  Location *selectedDropTarget;
+
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
   unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
@@ -95,6 +98,9 @@ class Map {
   
   bool selectMode;
   bool floorOnly;
+
+  inline void setSelectedDropTarget(Location *loc) { selectedDropTarget = loc; }
+  inline Location *getSelectedDropTarget() { return selectedDropTarget; }
   
   inline void setZoomIn(bool b) { zoomIn = b; }
   inline void setZoomOut(bool b) { zoomOut = b; }
@@ -200,8 +206,11 @@ class Map {
 					 int x2, int y2, int z2);
   
   bool shapeFits(Shape *shape, int x, int y, int z);
+  Location *Map::getDropLocation(Shape *shape, int x, int y, int z);
 
   inline void updateLightMap() { lightMapChanged = true; }
+
+  inline void refresh() { mapChanged = true; }
   
  protected:
   DrawLater later[100], stencil[1000], other[1000];
