@@ -49,6 +49,8 @@ class Window {
   int widgetCount;
   bool dragging;
   int dragX, dragY;
+  int openHeight;
+  GLint lastTick;
 
   static Window *window[];
   static int windowCount;
@@ -62,7 +64,7 @@ class Window {
   inline int getWidth() { return w; }
   inline int getHeight() { return h; }
   inline bool isVisible() { return visible; }
-  inline void setVisible(bool b) { visible = b; }
+  void setVisible(bool b);
   inline void move(int x, int y) { this->x = x; this->y = y; }
   inline void resize(int w, int h) { this->w = w; this->h = h; }
   void applyBorderColor();

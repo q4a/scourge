@@ -37,6 +37,7 @@ Window::Window(SDLHandler *sdlHandler,
   this->widgetCount = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
+  openHeight = 0;
   addWindow(this);
 }
 
@@ -125,6 +126,15 @@ void Window::removeWidget(Widget *widget) {
 
 void Window::draw() {
 
+	GLint t = SDL_GetTicks();
+	if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) && (lastTick == 0 || t - lastTick > 15)) {
+      lastTick = t;
+	  openHeight += ( h / 5 ); // always open in 5 steps
+	  if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) 
+      openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+	}
+  GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);  
+
   glDisable( GL_DEPTH_TEST );
 
   glPushMatrix();
@@ -136,24 +146,24 @@ void Window::draw() {
   glBindTexture( GL_TEXTURE_2D, texture );
   glBegin (GL_QUADS);
   glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, 0);
+  glVertex2i (0, topY);
   glTexCoord2f (0.0f, TOP_HEIGHT/(float)TILE_H);
-  glVertex2i (0, TOP_HEIGHT);
+  glVertex2i (0, topY + TOP_HEIGHT);
   glTexCoord2f (w/(float)TILE_W, TOP_HEIGHT/(float)TILE_H);
-  glVertex2i (w, TOP_HEIGHT);
+  glVertex2i (w, topY + TOP_HEIGHT);
   glTexCoord2f (w/(float)TILE_W, 0.0f);      
-  glVertex2i (w, 0);
+  glVertex2i (w, topY);
   glEnd ();
 
   glBegin (GL_QUADS);
   glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, h - BOTTOM_HEIGHT);
+  glVertex2i (0, topY + TOP_HEIGHT + openHeight);
   glTexCoord2f (0.0f, BOTTOM_HEIGHT/(float)TILE_H);
-  glVertex2i (0, h);
+  glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glTexCoord2f (w/(float)TILE_W, BOTTOM_HEIGHT/(float)TILE_H);
-  glVertex2i (w, h);
+  glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glTexCoord2f (w/(float)TILE_W, 0.0f);      
-  glVertex2i (w, h - BOTTOM_HEIGHT);
+  glVertex2i (w, topY + TOP_HEIGHT + openHeight);
   glEnd ();
 
   glDisable( GL_TEXTURE_2D );
@@ -162,52 +172,66 @@ void Window::draw() {
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   applyBackgroundColor();
   glBegin (GL_QUADS);
-  glVertex2i (0, TOP_HEIGHT);
-  glVertex2i (0, h - BOTTOM_HEIGHT);
-  glVertex2i (w, h - BOTTOM_HEIGHT);
-  glVertex2i (w, TOP_HEIGHT);
+  glVertex2i (0, topY + TOP_HEIGHT);
+  glVertex2i (0, topY + TOP_HEIGHT + openHeight);
+  glVertex2i (w, topY + TOP_HEIGHT + openHeight);
+  glVertex2i (w, topY + TOP_HEIGHT);
   glEnd();
   glDisable( GL_BLEND );
 
   // add a border
   applyBorderColor();
   glBegin(GL_LINES);
-  glVertex2d(w, h);
-  glVertex2d(0, h);
-  glVertex2d(0, 0);
-  glVertex2d(w, 0);
-  glVertex2d(0, 0);
-  glVertex2d(0, h);
-  glVertex2d(w, 0);
-  glVertex2d(w, h);		            
-  glVertex2i (0, TOP_HEIGHT);
-  glVertex2i (w, TOP_HEIGHT);
-  glVertex2i (0, h - BOTTOM_HEIGHT);
-  glVertex2i (w, h - BOTTOM_HEIGHT);
+  glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glVertex2d(0, topY);
+  glVertex2d(w, topY);
+  glVertex2d(0, topY);
+  glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glVertex2d(w, topY);
+  glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+  glVertex2i (0, topY + TOP_HEIGHT);
+  glVertex2i (w, topY + TOP_HEIGHT);
+  glVertex2i (0, topY + TOP_HEIGHT + openHeight);
+  glVertex2i (w, topY + TOP_HEIGHT + openHeight);
   glEnd();
 
   // print title
   glColor3f( 1, 1, 1 );
-  sdlHandler->texPrint(10, 13, "%s", title);
+  sdlHandler->texPrint(10, topY + 13, "%s", title);
 
   // draw widgets
-  for(int i = 0; i < widgetCount; i++) {
-  	glPushMatrix();
-  	glLoadIdentity();
+  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {  
+    // scissor test: y screen coordinate is reversed, rectangle is specified by lower-left corner. sheesh!
+    glScissor(x, sdlHandler->getScreen()->h - (y + topY + TOP_HEIGHT + openHeight), 
+              w, openHeight);  
+    glEnable( GL_SCISSOR_TEST );
+  }
+  for(int i = 0; i < widgetCount; i++) {                  
+    glPushMatrix();
+    glLoadIdentity();
 
 
-	// if this is modified, also change handleWindowEvent
-  	glTranslated(x, y + TOP_HEIGHT, 0);
+    // if this is modified, also change handleWindowEvent
+    glTranslated(x, y + TOP_HEIGHT, 0);
 
 
-	widget[i]->draw(this);
-  	glPopMatrix();
+    widget[i]->draw(this);
+    glPopMatrix();
+  }  
+  if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {  
+    glDisable( GL_SCISSOR_TEST );
   }
 
   glEnable( GL_TEXTURE_2D );
   glPopMatrix();
 
   glEnable( GL_DEPTH_TEST );
+}
+
+void Window::setVisible(bool b) {
+    visible = b;
+    if(visible) openHeight = 0;
 }
 
 void Window::applyBorderColor() { 
