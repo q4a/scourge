@@ -5,25 +5,25 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = scourge_private.res
-OBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/glut/og_font_data.o ../src/glut/og_font.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o $(RES)
-LINKOBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/glut/og_font_data.o ../src/glut/og_font.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o $(RES)
-LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm  
+OBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o $(RES)
+LINKOBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:/GnuWin32/lib -lfreetype  
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/include/c++/3.3.1"  -I"C:/Dev-Cpp/include/c++/3.3.1/mingw32"  -I"C:/Dev-Cpp/include/c++/3.3.1/backward"  -I"C:/Dev-Cpp/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/Dev-Cpp/include" 
-BIN  = scourge.exe
-CXXFLAGS = $(CXXINCS) -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main  
-CFLAGS = $(INCS) -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main  
+BIN  = ../scourge.exe
+CXXFLAGS = $(CXXINCS) -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\  
+CFLAGS = $(INCS) -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\  
 
 .PHONY: all all-before all-after clean clean-custom
 
-all: all-before scourge.exe all-after
+all: all-before ../scourge.exe all-after
 
 
 clean: clean-custom
 	rm -f $(OBJ) $(BIN)
 
 $(BIN): $(OBJ)
-	$(CPP) $(LINKOBJ) -o "scourge.exe" $(LIBS)
+	$(CPP) $(LINKOBJ) -o "..\scourge.exe" $(LIBS)
 
 ../src/3ds.o: ../src/3ds.cpp
 	$(CPP) -c ../src/3ds.cpp -o ../src/3ds.o $(CXXFLAGS)
@@ -148,12 +148,6 @@ $(BIN): $(OBJ)
 ../src/events/thirsthungerevent.o: ../src/events/thirsthungerevent.cpp
 	$(CPP) -c ../src/events/thirsthungerevent.cpp -o ../src/events/thirsthungerevent.o $(CXXFLAGS)
 
-../src/glut/og_font_data.o: ../src/glut/og_font_data.cpp
-	$(CPP) -c ../src/glut/og_font_data.cpp -o ../src/glut/og_font_data.o $(CXXFLAGS)
-
-../src/glut/og_font.o: ../src/glut/og_font.cpp
-	$(CPP) -c ../src/glut/og_font.cpp -o ../src/glut/og_font.o $(CXXFLAGS)
-
 ../src/gui/button.o: ../src/gui/button.cpp
 	$(CPP) -c ../src/gui/button.cpp -o ../src/gui/button.o $(CXXFLAGS)
 
@@ -198,6 +192,9 @@ $(BIN): $(OBJ)
 
 ../src/rpg/spell.o: ../src/rpg/spell.cpp
 	$(CPP) -c ../src/rpg/spell.cpp -o ../src/rpg/spell.o $(CXXFLAGS)
+
+../src/freetype/FreeType.o: ../src/freetype/FreeType.cpp
+	$(CPP) -c ../src/freetype/FreeType.cpp -o ../src/freetype/FreeType.o $(CXXFLAGS)
 
 scourge_private.res: scourge_private.rc 
 	$(WINDRES) -i scourge_private.rc -I rc -o scourge_private.res -O coff 
