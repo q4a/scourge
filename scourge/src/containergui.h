@@ -53,7 +53,7 @@ class ContainerGui : public DragAndDropHandler {
 
   // drag and drop handling
   void receive(Widget *widget);
-  void startDrag(Widget *widget);
+  bool startDrag(Widget *widget, int x=0, int y=0);
 
  private:
   void showContents();

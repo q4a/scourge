@@ -110,8 +110,9 @@ void ContainerGui::receive(Widget *widget) {
   }
 }
 
-void ContainerGui::startDrag(Widget *widget) {
+bool ContainerGui::startDrag(Widget *widget, int x, int y) {
   dropItem();
+  return true;
 }
 
 void ContainerGui::dropItem() {
