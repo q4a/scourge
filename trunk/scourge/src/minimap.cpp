@@ -29,6 +29,7 @@ How to enhance it ? (or what will be done soon)
 
  */
 
+#define DEBUG_MINIMAP 0
 
 MiniMap :: MiniMap(Scourge *scourge){
     this->scourge = scourge;
@@ -39,6 +40,12 @@ MiniMap :: MiniMap(Scourge *scourge){
     midX = midY = -1.0f;
     screenHeight = screenHeight = scourge->getSDLHandler()->getScreen()->h; ;
     showMiniMap = true;            
+
+    win = new Window( scourge->getSDLHandler(),
+                      0, 400, 200, 150, 
+                      strdup("Minimap"), 
+                      scourge->getShapePalette()->getGuiTexture() );
+    canvas = new Canvas( 0, 0, 200, 150, this );
       
     if(DEBUG_MINIMAP) fprintf(stderr, "mini map =( %d x %d )\n", MINI_MAP_WIDTH, MINI_MAP_DEPTH);
     for (int x = 0 ; x < MINI_MAP_WIDTH ; x++){
@@ -143,6 +150,10 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
     }
     glPopMatrix();
   
+}
+
+void MiniMap::drawWidget(Widget *w) {
+  draw(0, 0);
 }
 
 void MiniMap :: draw(int xCoord, int yCoord){

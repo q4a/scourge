@@ -26,8 +26,6 @@
 #define MINI_MAP_WIDTH MAP_WIDTH/MINI_MAP_X_SCALE
 #define MINI_MAP_DEPTH MAP_DEPTH/MINI_MAP_Y_SCALE
 
-// set to non-zero for debugging
-#define DEBUG_MINIMAP 0
 
 #include "constants.h"
 #include "location.h"
@@ -37,6 +35,9 @@
 #include "dungeongenerator.h"
 #include "scourge.h"
 #include "math.h"
+#include "gui/window.h"
+#include "gui/canvas.h"
+#include "gui/widgetview.h"
 
 using namespace std;
 
@@ -55,7 +56,7 @@ typedef struct _MiniMapPoint {
 /**
  *@author Daroth-U
  */
-class MiniMap {
+class MiniMap : public WidgetView {
  private:
     
   // Basic Idea : minimap is already filled but a point becomes visible only
@@ -63,6 +64,8 @@ class MiniMap {
   MiniMapPoint pos[MINI_MAP_WIDTH][MINI_MAP_DEPTH];
   Scourge *scourge;  
   
+	Window *win;
+  Canvas *canvas;
   
   GLfloat zoomFactor;   // Determines the zoom factor of the minimap   
   int mode;             // 0 : show structures : wall, doors and floor , 1: add monsters ... 
@@ -89,6 +92,9 @@ class MiniMap {
   MiniMap::MiniMap();
   MiniMap::~MiniMap();
   MiniMap(Scourge *scourge);
+
+  void show() { win->setVisible(true); }
+  void hide() { win->setVisible(false); }
   
   // x, y are in *global Map* coordinates (see Map.h to know its size) 
   void colorMiniMapPoint(int x, int y, Shape *shape);
@@ -102,6 +108,8 @@ class MiniMap {
   void updateFog(int a, int b); // gradually set the minimap visible for the player
   void buildTexture(int xCoord, int yCoord);
   void draw(int xCoord, int yCoord); 
+
+  void drawWidget(Widget *w);
   
   //void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);    
   

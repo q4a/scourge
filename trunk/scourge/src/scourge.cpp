@@ -139,6 +139,7 @@ void Scourge::startMission() {
 	// create the map
   map = new Map(this);
 	miniMap = new MiniMap(this); 
+  //miniMap->show();
 	
 	// ready the party
 	party->startPartyOnMission();
@@ -220,6 +221,7 @@ void Scourge::startMission() {
 	closeAllContainerGuis();
 	if(inventory->isVisible()) inventory->hide();
 	if(board->boardWin->isVisible()) board->boardWin->setVisible(false);
+  //miniMap->hide();
 	
 	// clean up after the mission
 	delete map;
@@ -434,7 +436,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  return false;
 	}
 	if(event->key.keysym.sym == SDLK_h) {
-	  party->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
+	  //party->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
+    map->startEffect(party->getParty(0)->getX(), party->getParty(0)->getY(), 3, 
+                     Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
 	  return false;
 	}
 	if(event->key.keysym.sym == SDLK_j) {
