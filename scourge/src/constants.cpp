@@ -28,11 +28,14 @@ char *Constants::messages[][80] = {
   { "That item is out of your reach", 
 	"You can't touch that", 
 	"You have to be closer to get that", 
-	"You are too far to reach it" }
+	"You are too far to reach it" },
+{ "The door is blocked",
+  "Something is blocking that door",
+  "You can't use that door; something is in the way" }
 };
 
 int Constants::messageCount[] = {
-  3, 4
+  3, 4, 3
 };
 
 // opengl extension routines

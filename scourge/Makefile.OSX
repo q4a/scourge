@@ -1,3 +1,4 @@
+# Makefile for use with Fink version of SDL.
 CPP = g++
 TARGET = scourge
 OBJS = src/character.o src/constants.o src/creature.o src/debugshape.o\

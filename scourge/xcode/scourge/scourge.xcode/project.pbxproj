@@ -1,0 +1,1288 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		080E96DDFE201D6D7F000001 = {
+			children = (
+			);
+			isa = PBXGroup;
+			name = Classes;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//080
+//081
+//082
+//083
+//084
+//100
+//101
+//102
+//103
+//104
+		1058C7A0FEA54F0111CA2CBB = {
+			children = (
+				7674A65805D5F9EB00A583B9,
+				7674A65905D5F9EB00A583B9,
+				7674A68405D5FA1600A583B9,
+				1058C7A1FEA54F0111CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "Linked Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1058C7A1FEA54F0111CA2CBB = {
+			expectedFileType = wrapper.framework;
+			fallbackIsa = PBXFileReference;
+			isa = PBXFrameworkReference;
+			name = Cocoa.framework;
+			path = /System/Library/Frameworks/Cocoa.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1058C7A2FEA54F0111CA2CBB = {
+			children = (
+				29B97325FDCFA39411CA2CEA,
+				29B97324FDCFA39411CA2CEA,
+			);
+			isa = PBXGroup;
+			name = "Other Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//100
+//101
+//102
+//103
+//104
+//190
+//191
+//192
+//193
+//194
+		19C28FACFE9D520D11CA2CBB = {
+			children = (
+				8D1107320486CEB800E47090,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//190
+//191
+//192
+//193
+//194
+//290
+//291
+//292
+//293
+//294
+		29B97313FDCFA39411CA2CEA = {
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504CCFFE6A4B311CA0CBA,
+				4A9504CDFFE6A4B311CA0CBA,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
+			projectDirPath = "";
+			targets = (
+				8D1107260486CEB800E47090,
+			);
+		};
+		29B97314FDCFA39411CA2CEA = {
+			children = (
+				080E96DDFE201D6D7F000001,
+				29B97315FDCFA39411CA2CEA,
+				29B97317FDCFA39411CA2CEA,
+				29B97323FDCFA39411CA2CEA,
+				19C28FACFE9D520D11CA2CBB,
+				7674A5F405D5F9B500A583B9,
+				7674A5F505D5F9B500A583B9,
+				7674A5F605D5F9B500A583B9,
+				7674A5F705D5F9B500A583B9,
+				7674A5F805D5F9B500A583B9,
+				7674A5F905D5F9B500A583B9,
+				7674A5FA05D5F9B500A583B9,
+				7674A5FB05D5F9B500A583B9,
+				7674A5FC05D5F9B500A583B9,
+				7674A5FD05D5F9B500A583B9,
+				7674A5FE05D5F9B500A583B9,
+				7674A5FF05D5F9B500A583B9,
+				7674A60005D5F9B500A583B9,
+				7674A60105D5F9B500A583B9,
+				7674A60205D5F9B500A583B9,
+				7674A60305D5F9B500A583B9,
+				7674A60405D5F9B500A583B9,
+				7674A60505D5F9B500A583B9,
+				7674A60605D5F9B500A583B9,
+				7674A60705D5F9B500A583B9,
+				7674A60805D5F9B500A583B9,
+				7674A60905D5F9B500A583B9,
+				7674A60A05D5F9B500A583B9,
+				7674A60B05D5F9B500A583B9,
+				7674A60C05D5F9B500A583B9,
+				7674A60D05D5F9B500A583B9,
+				7674A60E05D5F9B500A583B9,
+				7674A60F05D5F9B500A583B9,
+				7674A61005D5F9B500A583B9,
+				7674A61105D5F9B500A583B9,
+				7674A61205D5F9B500A583B9,
+				7674A61305D5F9B500A583B9,
+				7674A61405D5F9B500A583B9,
+				7674A61505D5F9B500A583B9,
+				7674A61605D5F9B500A583B9,
+				7674A61705D5F9B500A583B9,
+				7674A61805D5F9B500A583B9,
+				7674A61905D5F9B500A583B9,
+				7674A61A05D5F9B500A583B9,
+				7674A61B05D5F9B500A583B9,
+				7674A61C05D5F9B500A583B9,
+				7674A61D05D5F9B500A583B9,
+				7674A61E05D5F9B500A583B9,
+				7674A61F05D5F9B500A583B9,
+				7674A62005D5F9B500A583B9,
+				7674A62105D5F9B500A583B9,
+				7674A62205D5F9B500A583B9,
+				7674A62305D5F9B500A583B9,
+				7674A62405D5F9B500A583B9,
+				7674A88505D5FE5900A583B9,
+				7674A88605D5FE5900A583B9,
+				7674A88705D5FE5900A583B9,
+				7674A88F05D5FED300A583B9,
+				763630E805D61253007F401E,
+			);
+			isa = PBXGroup;
+			name = scourge;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA = {
+			children = (
+				32CA4F630368D1EE00C91783,
+			);
+			isa = PBXGroup;
+			name = "Other Sources";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA = {
+			children = (
+			);
+			isa = PBXGroup;
+			name = Resources;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA = {
+			children = (
+				1058C7A0FEA54F0111CA2CBB,
+				1058C7A2FEA54F0111CA2CBB,
+			);
+			isa = PBXGroup;
+			name = Frameworks;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97324FDCFA39411CA2CEA = {
+			expectedFileType = wrapper.framework;
+			fallbackIsa = PBXFileReference;
+			isa = PBXFrameworkReference;
+			name = AppKit.framework;
+			path = /System/Library/Frameworks/AppKit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		29B97325FDCFA39411CA2CEA = {
+			expectedFileType = wrapper.framework;
+			fallbackIsa = PBXFileReference;
+			isa = PBXFrameworkReference;
+			name = Foundation.framework;
+			path = /System/Library/Frameworks/Foundation.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+//290
+//291
+//292
+//293
+//294
+//320
+//321
+//322
+//323
+//324
+		32CA4F630368D1EE00C91783 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = scourge_Prefix.pch;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//320
+//321
+//322
+//323
+//324
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+		4A9504CCFFE6A4B311CA0CBA = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+				ZERO_LINK = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		4A9504CDFFE6A4B311CA0CBA = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+//760
+//761
+//762
+//763
+//764
+		763630E805D61253007F401E = {
+			expectedFileType = image.icns;
+			isa = PBXFileReference;
+			name = icon.icns;
+			path = /Users/gabortorok/sourceforge/scourge/xcode/icon.icns;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		763630E905D61253007F401E = {
+			fileRef = 763630E805D61253007F401E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A5F405D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = character.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/character.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5F505D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = character.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/character.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5F605D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = constants.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/constants.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5F705D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = constants.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/constants.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5F805D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = creature.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/creature.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5F905D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = creature.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/creature.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5FA05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = debugshape.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/debugshape.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5FB05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = debugshape.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/debugshape.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5FC05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = dungeongenerator.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/dungeongenerator.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5FD05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = dungeongenerator.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/dungeongenerator.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5FE05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = gllocator.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/gllocator.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A5FF05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = gllocator.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/gllocator.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60005D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = glshape.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/glshape.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60105D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = glshape.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/glshape.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60205D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = gltorch.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/gltorch.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60305D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = gltorch.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/gltorch.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60405D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = gui.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/gui.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60505D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = gui.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/gui.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60605D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = inventory.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/inventory.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60705D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = inventory.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/inventory.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60805D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = item.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/item.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60905D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = item.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/item.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60A05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = location.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/location.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60B05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = location.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/location.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60C05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = main.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/main.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60D05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = mainmenu.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/mainmenu.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60E05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = mainmenu.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/mainmenu.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A60F05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = map.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/map.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61005D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = map.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/map.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61105D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Md2.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/Md2.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61205D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Md2.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/Md2.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61305D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = md2shape.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/md2shape.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61405D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = md2shape.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/md2shape.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61505D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = scourge.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/scourge.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61605D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = scourge.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/scourge.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61705D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = sdleventhandler.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/sdleventhandler.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61805D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = sdleventhandler.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/sdleventhandler.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61905D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = sdlhandler.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/sdlhandler.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61A05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = sdlhandler.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/sdlhandler.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61B05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = sdlscreenview.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/sdlscreenview.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61C05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = sdlscreenview.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/sdlscreenview.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61D05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = shape.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/shape.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61E05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = shape.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/shape.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A61F05D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = shapepalette.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/shapepalette.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A62005D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = shapepalette.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/shapepalette.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A62105D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = text.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/text.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A62205D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = text.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/text.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A62305D5F9B500A583B9 = {
+			expectedFileType = sourcecode.cpp.cpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = util.cpp;
+			path = /Users/gabortorok/sourceforge/scourge/src/util.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A62405D5F9B500A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = util.h;
+			path = /Users/gabortorok/sourceforge/scourge/src/util.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A62505D5F9B600A583B9 = {
+			fileRef = 7674A5F405D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62605D5F9B600A583B9 = {
+			fileRef = 7674A5F505D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62705D5F9B600A583B9 = {
+			fileRef = 7674A5F605D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62805D5F9B600A583B9 = {
+			fileRef = 7674A5F705D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62905D5F9B600A583B9 = {
+			fileRef = 7674A5F805D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62A05D5F9B600A583B9 = {
+			fileRef = 7674A5F905D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62B05D5F9B600A583B9 = {
+			fileRef = 7674A5FA05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62C05D5F9B600A583B9 = {
+			fileRef = 7674A5FB05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62D05D5F9B600A583B9 = {
+			fileRef = 7674A5FC05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62E05D5F9B600A583B9 = {
+			fileRef = 7674A5FD05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A62F05D5F9B600A583B9 = {
+			fileRef = 7674A5FE05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63005D5F9B600A583B9 = {
+			fileRef = 7674A5FF05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63105D5F9B600A583B9 = {
+			fileRef = 7674A60005D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63205D5F9B600A583B9 = {
+			fileRef = 7674A60105D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63305D5F9B600A583B9 = {
+			fileRef = 7674A60205D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63405D5F9B600A583B9 = {
+			fileRef = 7674A60305D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63505D5F9B600A583B9 = {
+			fileRef = 7674A60405D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63605D5F9B600A583B9 = {
+			fileRef = 7674A60505D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63705D5F9B600A583B9 = {
+			fileRef = 7674A60605D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63805D5F9B600A583B9 = {
+			fileRef = 7674A60705D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63905D5F9B600A583B9 = {
+			fileRef = 7674A60805D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63A05D5F9B600A583B9 = {
+			fileRef = 7674A60905D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63B05D5F9B600A583B9 = {
+			fileRef = 7674A60A05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63C05D5F9B600A583B9 = {
+			fileRef = 7674A60B05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63D05D5F9B600A583B9 = {
+			fileRef = 7674A60C05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63E05D5F9B600A583B9 = {
+			fileRef = 7674A60D05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A63F05D5F9B600A583B9 = {
+			fileRef = 7674A60E05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64005D5F9B600A583B9 = {
+			fileRef = 7674A60F05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64105D5F9B600A583B9 = {
+			fileRef = 7674A61005D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64205D5F9B600A583B9 = {
+			fileRef = 7674A61105D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64305D5F9B600A583B9 = {
+			fileRef = 7674A61205D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64405D5F9B600A583B9 = {
+			fileRef = 7674A61305D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64505D5F9B600A583B9 = {
+			fileRef = 7674A61405D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64605D5F9B600A583B9 = {
+			fileRef = 7674A61505D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64705D5F9B600A583B9 = {
+			fileRef = 7674A61605D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64805D5F9B600A583B9 = {
+			fileRef = 7674A61705D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64905D5F9B600A583B9 = {
+			fileRef = 7674A61805D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64A05D5F9B600A583B9 = {
+			fileRef = 7674A61905D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64B05D5F9B600A583B9 = {
+			fileRef = 7674A61A05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64C05D5F9B600A583B9 = {
+			fileRef = 7674A61B05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64D05D5F9B600A583B9 = {
+			fileRef = 7674A61C05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64E05D5F9B600A583B9 = {
+			fileRef = 7674A61D05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A64F05D5F9B600A583B9 = {
+			fileRef = 7674A61E05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65005D5F9B600A583B9 = {
+			fileRef = 7674A61F05D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65105D5F9B600A583B9 = {
+			fileRef = 7674A62005D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65205D5F9B600A583B9 = {
+			fileRef = 7674A62105D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65305D5F9B600A583B9 = {
+			fileRef = 7674A62205D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65405D5F9B600A583B9 = {
+			fileRef = 7674A62305D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65505D5F9B600A583B9 = {
+			fileRef = 7674A62405D5F9B500A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65805D5F9EB00A583B9 = {
+			expectedFileType = wrapper.framework;
+			isa = PBXFileReference;
+			name = GLUT.framework;
+			path = /System/Library/Frameworks/GLUT.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A65905D5F9EB00A583B9 = {
+			expectedFileType = wrapper.framework;
+			isa = PBXFileReference;
+			name = OpenGL.framework;
+			path = /System/Library/Frameworks/OpenGL.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A65A05D5F9EB00A583B9 = {
+			fileRef = 7674A65805D5F9EB00A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A65B05D5F9EB00A583B9 = {
+			fileRef = 7674A65905D5F9EB00A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A68405D5FA1600A583B9 = {
+			expectedFileType = wrapper.framework;
+			isa = PBXFileReference;
+			name = SDL.framework;
+			path = /Users/gabortorok/Library/Frameworks/SDL.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A68505D5FA1600A583B9 = {
+			fileRef = 7674A68405D5FA1600A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A88505D5FE5900A583B9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SDLMain.h;
+			path = /Users/gabortorok/sourceforge/scourge/xcode/SDLMain.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A88605D5FE5900A583B9 = {
+			expectedFileType = sourcecode.c.objc;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SDLMain.m;
+			path = /Users/gabortorok/sourceforge/scourge/xcode/SDLMain.m;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A88705D5FE5900A583B9 = {
+			expectedFileType = wrapper.nib;
+			isa = PBXFileReference;
+			name = SDLMain.nib;
+			path = /Users/gabortorok/sourceforge/scourge/xcode/SDLMain.nib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		7674A88805D5FE5900A583B9 = {
+			fileRef = 7674A88505D5FE5900A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A88905D5FE5900A583B9 = {
+			fileRef = 7674A88605D5FE5900A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A88A05D5FE5900A583B9 = {
+			fileRef = 7674A88705D5FE5900A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7674A88F05D5FED300A583B9 = {
+			expectedFileType = text.plist;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Info.plist;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		7674A89005D5FED300A583B9 = {
+			fileRef = 7674A88F05D5FED300A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//760
+//761
+//762
+//763
+//764
+//8D0
+//8D1
+//8D2
+//8D3
+//8D4
+		8D1107260486CEB800E47090 = {
+			buildPhases = (
+				8D1107270486CEB800E47090,
+				8D1107290486CEB800E47090,
+				8D11072C0486CEB800E47090,
+				8D11072E0486CEB800E47090,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" /Users/gabortorok/Library/Frameworks";
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = scourge_Prefix.pch;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-framework SDL -framework Foundation -framework AppKit -framework OpenGL -framework GLUT";
+				PRODUCT_NAME = scourge;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = scourge;
+			productInstallPath = "$(HOME)/Applications";
+			productName = scourge;
+			productReference = 8D1107320486CEB800E47090;
+			productType = "com.apple.product-type.application";
+		};
+		8D1107270486CEB800E47090 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D1107280486CEB800E47090,
+				7674A62605D5F9B600A583B9,
+				7674A62805D5F9B600A583B9,
+				7674A62A05D5F9B600A583B9,
+				7674A62C05D5F9B600A583B9,
+				7674A62E05D5F9B600A583B9,
+				7674A63005D5F9B600A583B9,
+				7674A63205D5F9B600A583B9,
+				7674A63405D5F9B600A583B9,
+				7674A63605D5F9B600A583B9,
+				7674A63805D5F9B600A583B9,
+				7674A63A05D5F9B600A583B9,
+				7674A63C05D5F9B600A583B9,
+				7674A63F05D5F9B600A583B9,
+				7674A64105D5F9B600A583B9,
+				7674A64305D5F9B600A583B9,
+				7674A64505D5F9B600A583B9,
+				7674A64705D5F9B600A583B9,
+				7674A64905D5F9B600A583B9,
+				7674A64B05D5F9B600A583B9,
+				7674A64D05D5F9B600A583B9,
+				7674A64F05D5F9B600A583B9,
+				7674A65105D5F9B600A583B9,
+				7674A65305D5F9B600A583B9,
+				7674A65505D5F9B600A583B9,
+				7674A88805D5FE5900A583B9,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D1107280486CEB800E47090 = {
+			fileRef = 32CA4F630368D1EE00C91783;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D1107290486CEB800E47090 = {
+			buildActionMask = 2147483647;
+			files = (
+				7674A88A05D5FE5900A583B9,
+				7674A89005D5FED300A583B9,
+				763630E905D61253007F401E,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072C0486CEB800E47090 = {
+			buildActionMask = 2147483647;
+			files = (
+				7674A62505D5F9B600A583B9,
+				7674A62705D5F9B600A583B9,
+				7674A62905D5F9B600A583B9,
+				7674A62B05D5F9B600A583B9,
+				7674A62D05D5F9B600A583B9,
+				7674A62F05D5F9B600A583B9,
+				7674A63105D5F9B600A583B9,
+				7674A63305D5F9B600A583B9,
+				7674A63505D5F9B600A583B9,
+				7674A63705D5F9B600A583B9,
+				7674A63905D5F9B600A583B9,
+				7674A63B05D5F9B600A583B9,
+				7674A63D05D5F9B600A583B9,
+				7674A63E05D5F9B600A583B9,
+				7674A64005D5F9B600A583B9,
+				7674A64205D5F9B600A583B9,
+				7674A64405D5F9B600A583B9,
+				7674A64605D5F9B600A583B9,
+				7674A64805D5F9B600A583B9,
+				7674A64A05D5F9B600A583B9,
+				7674A64C05D5F9B600A583B9,
+				7674A64E05D5F9B600A583B9,
+				7674A65005D5F9B600A583B9,
+				7674A65205D5F9B600A583B9,
+				7674A65405D5F9B600A583B9,
+				7674A88905D5FE5900A583B9,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072E0486CEB800E47090 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090,
+				7674A65A05D5F9EB00A583B9,
+				7674A65B05D5F9EB00A583B9,
+				7674A68505D5FA1600A583B9,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072F0486CEB800E47090 = {
+			fileRef = 1058C7A1FEA54F0111CA2CBB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D1107320486CEB800E47090 = {
+			expectedFileType = wrapper.application;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = scourge.app;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA;
+}

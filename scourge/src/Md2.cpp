@@ -98,7 +98,7 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture)
     fread(&m_Header, 1, sizeof(tMd2Header), m_FilePointer);
 	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 	  unsigned int *p = (unsigned int *)&m_Header;
-	  for(int n = 0; n < sizeof(tMd2Header) / sizeof(unsigned int); n++) {
+	  for(unsigned int n = 0; n < sizeof(tMd2Header) / sizeof(unsigned int); n++) {
 		*p = SDL_SwapLE32(*p);
 		p++;
 	  }
@@ -273,7 +273,7 @@ void CLoadMD2::ReadMD2Data()
 
 void CLoadMD2::ConvertDataStructures(t3DModel *pModel)
 {
-    int j = 0, i = 0;
+    int j = 0;
     
     // Assign the number of objects, which is 1 since we only want 1 frame
     // of animation.  In the next tutorial each object will be a key frame

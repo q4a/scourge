@@ -93,7 +93,7 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
       // Use the name of the texture file to load the bitmap, with a texture ID (i).
       // We pass in our global texture array, the name of the texture, and an ID to reference it.
       cout << "CreateTexture " << endl;
-      CreateTexture(g_Texture, g_3DModel.pMaterials[i].strFile, i);
+      CreateTexture((GLuint*)g_Texture, g_3DModel.pMaterials[i].strFile, i);
       cout << g_3DModel.pMaterials[i].strFile << endl;
     }
     // Set the texture ID for this material
@@ -224,7 +224,7 @@ void MD2Shape::swap(unsigned char & a, unsigned char & b) {
 /////
 /////////////////////////////////// CREATE TEXTURE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void MD2Shape::CreateTexture(unsigned int textureArray[],char *strFileName,int textureID) {
+void MD2Shape::CreateTexture(GLuint textureArray[],char *strFileName,int textureID) {
     SDL_Surface *pBitmap[1];
 
     if( strFileName == NULL )                           // Return from the function if no file name was passed in

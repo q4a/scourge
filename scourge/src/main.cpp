@@ -25,18 +25,38 @@
 
 #include "scourge.h"
 
-int main(int argc, char *argv[]) {
-  // Where are we running from?
-  fprintf(stderr, "argv[0]=%s\n", argv[0]);
-  strcpy(rootDir, argv[0]);
-  char *p = strrchr(rootDir, SEPARATOR);
-  if(!p) {
-	  fprintf(stderr, "Can't parse argv[0]=%s\n", argv[0]);
-	  exit(1);
-  }
-  *(p + 1) = 0;
-  fprintf(stderr, "rootDir=%s\n", rootDir);
+bool checkFile(const char *dir, const char *file) {
+	 char path[300];
+	 strcpy(path, dir);
+	 strcat(path, file);
+	 fprintf(stderr, "\tchecking path: %s\n", path);
+	 bool ret = true;
+	 FILE *fp = fopen(path, "rb");
+	 if(!fp || ferror(fp)) ret = false;
+	 if(fp) fclose(fp);
+	 return ret;
+}
 
+void findResources(const char *appPath) {
+	 // Where are we running from?
+	 strcpy(rootDir, appPath);	 
+	 while(1) {
+		  char *p = strrchr(rootDir, SEPARATOR);
+		  if(!p) {
+				fprintf(stderr, "Can't find data dir!\n");
+				exit(1);
+		  }	
+		  *(p + 1) = 0;
+		  fprintf(stderr, "Looking at: rootDir=%s\n", rootDir);
+		  if(checkFile(rootDir, "data/cursor.bmp")) return;
+		  // remove the last separator
+		  *(p) = 0;
+	 }
+}
+
+int main(int argc, char *argv[]) {
+	 fprintf(stderr, "argv[0]=%s\n", argv[0]);
+	 findResources(argv[0]);
   if(argc > 1 && !strcmp(argv[1], "--fullscreen")) {
     new Scourge(800, 600, 32, true);
   } else {

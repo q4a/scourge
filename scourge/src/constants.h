@@ -38,7 +38,7 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #ifdef WIN32
 #define SEPARATOR '\\'
 #else
-#define SEPARATOR '\/'
+#define SEPARATOR '/'
 #endif
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
@@ -50,6 +50,8 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
 #define GL_BGR                                  0x80E0
 #define GL_BGRA                                 0x80E1
 
+// show fps info
+#define SHOW_DEBUG_INFO
 
 /*
   Float swapping code by:
@@ -199,6 +201,7 @@ public:
   enum {
 	WELCOME=0,
 	ITEM_OUT_OF_REACH,
+  DOOR_BLOCKED,
 
 	// last one
 	MESSAGE_COUNT

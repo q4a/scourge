@@ -195,6 +195,8 @@ void Scourge::drawView(SDL_Surface *screen) {
 
   gui->drawWindows();
 
+  
+
   glEnable( GL_DEPTH_TEST );
   //  glEnable( GL_LIGHTING );
   glEnable( GL_TEXTURE_2D );      
@@ -410,7 +412,7 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
 
     double projection[16];
     double modelview[16];
-    int viewport[4];
+    GLint viewport[4];
 
     glGetDoublev(GL_PROJECTION_MATRIX, projection);
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
@@ -636,8 +638,10 @@ bool Scourge::useDoor(Location *pos) {
             map->setPosition(nx, ny, party[0]->getZ(), newDoorShape);
             return true;
         } else {
-            // rollback
-            map->setPosition(ox, oy, party[0]->getZ(), oldDoorShape);
+          // rollback
+          map->setPosition(ox, oy, party[0]->getZ(), oldDoorShape);
+          map->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+          return true;
         }
     }
     return false;
@@ -698,6 +702,7 @@ void Scourge::drawTopWindow() {
         glVertex2d(780, GUI_TOP + 100);
         glVertex2d(780, GUI_TOP + 75);
     glEnd();
+
 	/*
     // debug info
     sdlHandler->texPrint(450, 10, "rot: %f, %f, %f", map->getXRot(), map->getYRot(), map->getZRot());
