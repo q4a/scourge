@@ -41,6 +41,7 @@ Scourge::Scourge(int argc, char *argv[]){
   nextMission = -1;
   // in HQ map
   inHq = true;
+  currentMission = NULL;
   
   isInfoShowing = true; // what is this?
   info_dialog_showing = false;
