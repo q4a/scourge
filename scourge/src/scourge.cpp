@@ -50,7 +50,8 @@ Scourge::Scourge(int argc, char *argv[]){
   
   // Initialize the video mode
   sdlHandler = new SDLHandler();
-  sdlHandler->setVideoMode(argc, argv);
+  sdlHandler->loadUserConfiguration(userConfiguration);  //load user video preferences
+  sdlHandler->setVideoMode(argc, argv); //override them if needed and create video buf
 
   shapePal = sdlHandler->getShapePalette();
 
@@ -284,7 +285,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     
     // xxx_yyy_stop means : "do this action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);
-    cout << "scourge EA reçue : '" << ea << "'" << endl;
+    //cout << "scourge EA reçue : '" << ea << "'" << endl;
     if(ea == "set_move_down"){        
         map->setMove(Constants::MOVE_DOWN);
     }

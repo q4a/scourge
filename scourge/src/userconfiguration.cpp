@@ -91,25 +91,18 @@ UserConfiguration::UserConfiguration(){
     int i, j;
     string temp;
     
-    // engine variables
+    // default settings for video mode (are overridden by command line)
     fullscreen = true;
     doublebuf = true;
     hwpal = true;
     resizeable = true;
     force_hwsurf = false;
     force_swsurf = false;
-    hwaccel = true;
-    test = false;    
+    hwaccel = true;      
     bpp = -1;
     w = 800;
     h = 600;
-    
-    // Build (string engineAction <-> int engineAction ) lookup table
-    /*for (i = 0; i < ENGINE_ACTION_COUNT ; i++){
-        engineActionNames.insert(
-            pair<string, int>(ENGINE_ACTION_NAMES[i], i)
-        );
-    }*/
+    shadows = 0;       
     
     // Build (string engineActionUp <-> int engineActionUp ) lookup table
     for (i = 0; i < ENGINE_ACTION_UP_COUNT ; i++){
@@ -121,12 +114,6 @@ UserConfiguration::UserConfiguration(){
     }
     if(DEBUG_USER_CONFIG){
         map<string, int>::iterator p;
-       /* p = engineActionNames.begin();
-        cout << "Engine Action list : " << endl;
-        while(p != engineActionNames.end()){
-            cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
-            p++;     
-        }*/
                 
         p = engineActionUpNames.begin();
         cout << "Engine Action Up list : " << endl;
@@ -163,8 +150,7 @@ void UserConfiguration::loadConfiguration(){
                       
         for(i = 0; i < sLine.length(); i++){
             sLine[i] = tolower(sLine[i]);                                 
-        } 
-        //cout << "line : " << lineNumber << " '" << sLine << "'" << endl;
+        }         
         
         // search for keywords, ignore lines not begining with keyword or spaces
         endWord = -1;
@@ -214,38 +200,34 @@ void UserConfiguration::loadConfiguration(){
 void UserConfiguration::bind(string s1, string s2, int lineNumber){        
     int i;    
     SDLKey keyCode;
-    cout << "line : " << lineNumber << " ";          
-    cout << "bind '" << s1 << "' '" << s2 << "'" << endl; 
+    if(DEBUG_USER_CONFIG){
+        cout << "line : " << lineNumber << " ";        
+        cout << "bind '" << s1 << "' '" << s2 << "'" << endl; 
+    }
             
     // for now, we trust what is written in configuration file
     // so it should be generated later    
     keyDownBindings.insert(pair<string, string>(s1, s2));
-    cout << "keyDownBindings[" << s1 << "]=" << keyDownBindings[s1]<<endl;
-
-    if(engineActionUpNames.find(s2) != engineActionUpNames.end()){        
-        s2.insert(s2.length(), "_stop");
-        cout<< "s2 == " << s2 << endl;                                   
-        keyUpBindings.insert(pair<string, string>(s1, s2));
-    }            
     
-    /*map<string, int>::iterator c;
-    c = engineActionNames.find("SET_X_ROT_PLUS");
-    if(c == engineActionNames.end())
-        cout <<"qsdhsqdfhdsf";
-    else
-        cout <<"YES!!!!!!";*/                   
+    if(engineActionUpNames.find(s2) != engineActionUpNames.end()){        
+        s2.insert(s2.length(), "_stop");        
+        keyUpBindings.insert(pair<string, string>(s1, s2));
+    }                             
 }  
   
 void UserConfiguration::set(string s1, string s2, int lineNumber){
     bool paramValue;
     
-    cout << "line : " << lineNumber << " ";              
-    cout << "set '" << s1 << "' '" << s2 << "'" << endl; 
+    if(DEBUG_USER_CONFIG){
+        cout << "line : " << lineNumber << " ";              
+        cout << "set '" << s1 << "' '" << s2 << "'" << endl; 
+    }
     
     // Check if s1 is a valid variable to set (engineVariable?)
     // Check if s2 is a valid value
     
-    if((s1!="bpp")&&(s1!="h")&&(s1!="w")){
+    if(s1 == "fullscreen"||s1 == "doublebuf" || s1 == "hwpal" || s1 == "resizeable" ||
+       s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel"){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -280,23 +262,35 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "hwaccel"){
         hwaccel = paramValue;
-    }
-    else if(s1 == "test"){
-        test = paramValue;
-    }
-    // TODO : int values like in sdlhandler :: setvideomode
-    else if(s1 == "bpp"){
-        //bpp = 
+    }     
+     
+    else if(s1 == "bpp"){        
+        bpp = atoi(s2.c_str());
+        if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
+		 cerr << "Warning : in file " << CONFIG_FILE_NAME 
+             << " invalid bpp value at line " << lineNumber 
+             << ", valid values are 8, 15, 16, 24 or 32 . Ignoring line" << endl;    
+             bpp = -1; // To autodetect best bpp value
+        }                               
     }
     else if(s1 == "w"){
-        //w = int(s2.c_str());
+        w = atoi(s2.c_str());
     }
     else if(s1 == "h"){
-        //hwpal = paramValue;
+        h = atoi(s2.c_str());
     }
-    
-    
-    
+    else if(s1 == "shadows"){        
+        shadows = atoi(s2.c_str());
+        if(!(shadows == 0 || 
+           shadows == 1 || 
+           shadows == 2)) {
+            cerr << "Warning : in file " << CONFIG_FILE_NAME 
+             << " invalid shadow mode at line " << lineNumber 
+             << ", valid modes 0, 1, 2 . Ignoring line" << endl;    
+             shadows = 2; // Default value
+        }      
+          
+    }  
 }
 
 // returns the action to do for this event
