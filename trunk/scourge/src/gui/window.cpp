@@ -481,6 +481,18 @@ Checkbox * Window::createCheckbox(int x1, int y1, int x2, int y2, char *label){
   }    
 } 
 
+TextField *Window::createTextField(int x, int y, int numChars) {
+  if(widgetCount < MAX_WIDGET){
+    TextField *tf;
+    tf = new TextField(x, y, numChars);    
+    addWidget((Widget *)tf);
+    return tf;
+  } else {
+    cerr<<"Gui/Window.cpp : max widget limit reached!" << endl;
+    return NULL;
+  }    
+}
+
 void Window::scissorToWindow() {
   GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
   // scissor test: y screen coordinate is reversed, rectangle is 

@@ -426,6 +426,8 @@ void SDLHandler::mainLoop() {
         default:
           break;
         }
+        applyMouseOffset(mouseX, mouseY, &mx, &my);
+        widget = Window::delegateEvent( &event, mx, my );
         break;
       case SDL_QUIT:
         /* handle quit requests */

@@ -17,7 +17,7 @@
 #include "button.h"
 #include "window.h"
 
-#include "../scourge.h"
+//#include "../scourge.h"
 
 /**
   *@author Gabor Torok

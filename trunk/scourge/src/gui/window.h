@@ -24,7 +24,7 @@
 #include "button.h"
 #include "label.h"
 #include "checkbox.h"
-
+#include "textfield.h"
 
 /**
   *@author Gabor Torok
@@ -35,6 +35,7 @@ class Widget;
 class Button;
 class Label;
 class Checkbox;
+class TextField;
 
 class Window : public Widget {
  private:
@@ -110,6 +111,7 @@ class Window : public Widget {
   Button    * createButton(int x1, int y1, int x2, int y2, char *label, bool toggle=false);    
   Label     * createLabel(int x1, int x2, char * label, int color=Constants::DEFAULT_COLOR); 
   Checkbox  * createCheckbox(int x1, int y1, int x2, int y2, char *label);  
+  TextField * createTextField(int x, int y, int numChars);
   void addWidget(Widget *widget);
   void removeWidget(Widget *widget);
   Widget *handleWindowEvent(SDL_Event *event, int x, int y);

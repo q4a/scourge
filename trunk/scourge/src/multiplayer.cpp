@@ -28,8 +28,18 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
                         scourge->getShapePalette()->getGuiTexture(),
 												true );
   mainWin->setModal( true );
-  startServer = mainWin->createButton( 20, 20, 120, 40, strdup("Host a game"), false );
-  joinServer = mainWin->createButton( 20, 60, 120, 80, strdup("Join a game"), false );
+  startServer = mainWin->createButton( 20, 20, 160, 40, strdup("Host a game"), false );
+
+  mainWin->createLabel( 90, 65, strdup("--- OR ---") );
+
+  mainWin->createLabel( 20, 90, strdup("Server address:") );
+  serverName = mainWin->createTextField( 20, 95, 30);
+  mainWin->createLabel( 20, 130, strdup("Server port:") );
+  serverPort = mainWin->createTextField( 20, 135, 10 );
+  mainWin->createLabel( 20, 170, strdup("Username:") );
+  serverPort = mainWin->createTextField( 20, 175, 30 );
+  
+  joinServer = mainWin->createButton( 20, 200, 160, 220, strdup("Join a game"), false );
 }
 
 MultiplayerDialog::~MultiplayerDialog() {

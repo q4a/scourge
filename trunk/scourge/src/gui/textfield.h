@@ -1,8 +1,8 @@
 
 /***************************************************************************
-                          multiplayer.h  -  description
+                          textfield.h  -  description
                              -------------------
-    begin                : Tue Aug 12 2003
+    begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
  ***************************************************************************/
@@ -16,41 +16,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MULTIPLAYER_H
-#define MULTIPLAYER_H
+#ifndef TEXTFIELD_H
+#define TEXTFIELD_H
 
-#include "constants.h"
-#include "scourge.h"
-#include "gui/window.h"
-#include "gui/label.h"
-#include "gui/button.h"
-#include "gui/textfield.h"
+#include "../constants.h"
+#include "widget.h"
+#include "window.h"
+#include "label.h"
 
 /**
   *@author Gabor Torok
   */
 
-class Scourge;
-
-class MultiplayerDialog {
+class TextField : public  Widget {
 private:
-  Scourge *scourge;
-  Window *mainWin;
-  Button *startServer;
-  Button *joinServer;
-  TextField *serverName;
-  TextField *serverPort;
-  
-public:
-  MultiplayerDialog(Scourge *scourge);
-  ~MultiplayerDialog();
+  int numChars;
+  bool inside; // was the last event inside the button?
+  char *text;
+  int pos, maxPos;
 
-  inline void show() { mainWin->setVisible(true); }
-  inline void hide() { mainWin->setVisible(false); }
-  inline bool isVisible() { return mainWin->isVisible(); }
+public: 
 
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
+  TextField(int x, int y, int numChars);
+  ~TextField();
+  bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+  void drawWidget(Widget *parent);
+  inline char *getText() { text[maxPos] = '\0'; return text; }
 };
 
 #endif
+
