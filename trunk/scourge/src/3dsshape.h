@@ -56,17 +56,18 @@ private:
   int g_ViewMode;
   float movex, movey, movez;
   ShapePalette *shapePal;
+  int offsetx, offsety;
 
 public: 
   C3DSShape(char *file_name, float div, ShapePalette *shapePal,
 			GLuint texture[], int width, int depth, int height,
 			char *name,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
   
   C3DSShape(char *file_name, float div, ShapePalette *shapePal,
 			GLuint texture[], int width, int depth, int height,
 			char *name, char **description, int descriptionCount,
-			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
   ~C3DSShape();
 
   void draw();
@@ -78,7 +79,7 @@ public:
   void endBlending();
 
 protected:
-  void commonInit(char *file_name, float div, ShapePalette *shapePal);
+  void commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety);
 };
 
 #endif

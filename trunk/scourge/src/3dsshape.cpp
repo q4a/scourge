@@ -20,31 +20,33 @@
 #include "3dsshape.h"
 
 C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
-                   GLuint texture[],
-                   int width, int depth, int height,
-                   char *name,
-                   Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
+					 GLuint texture[],
+					 int width, int depth, int height,
+					 char *name,
+					 Uint32 color, GLuint display_list, Uint8 shapePalIndex, 
+					 int offsetx, int offsety) :
   // passing 0 for texture causes glshape to not init
 #ifdef DEBUG_3DS
   GLShape(texture, width, depth, height, name, color, display_list, shapePalIndex) {
 #else
-  GLShape(0, width, depth, height, name, color, display_list, shapePalIndex) {
+	GLShape(0, width, depth, height, name, color, display_list, shapePalIndex) {
 #endif
-  commonInit(file_name, div, shapePal);    
+	commonInit(file_name, div, shapePal, offsetx, offsety);    
 }
 
 C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
-                   GLuint texture[],
-                   int width, int depth, int height,
-                   char *name, char **description, int descriptionCount,
-                   Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
+					 GLuint texture[],
+					 int width, int depth, int height,
+					 char *name, char **description, int descriptionCount,
+					 Uint32 color, GLuint display_list, Uint8 shapePalIndex,
+					 int offsetx, int offsety) :
   // passing 0 for texture causes glshape to not init
 #ifdef DEBUG_3DS
   GLShape(texture, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
 #else
-  GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+	GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
 #endif
-  commonInit(file_name, div, shapePal);    
+	commonInit(file_name, div, shapePal, offsetx, offsety);    
 }
 
 C3DSShape::~C3DSShape() {
@@ -59,14 +61,16 @@ C3DSShape::~C3DSShape() {
 	delete [] g_3DModel.pObject[i].pVerts;
 	delete [] g_3DModel.pObject[i].pTexVerts;
   }
-}
+ }
 
-void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal) {
-  fprintf(stderr, "%s\n", file_name);
-  g_Texture[0] = 0;
+ void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety) {
+   fprintf(stderr, "%s\n", file_name);
+   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
   this->div = div;
   this->shapePal = shapePal;
+  this->offsetx = offsetx;
+  this->offsety = offsety;
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
@@ -140,6 +144,7 @@ void C3DSShape::draw() {
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * div), 0.0f);
 //  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
   glTranslatef(0.0f, 0.0f, -movez);
+  glTranslatef((float)offsetx / DIV, (float)offsety / DIV, 0.0f);
 
   // I am going to attempt to explain what is going on below up here as not to clutter the 
   // code below.  We have a model that has a certain amount of objects and textures.  We want 
