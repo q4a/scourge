@@ -302,3 +302,22 @@ void Util::multiply_vector_by_matrix(const float m[9], float v[3]) {
   v[1] = tmp[1];
   v[2] = tmp[2];
 }
+
+
+// Return a string containing the last OpenGL error.
+// Useful to debug strange OpenGL behaviors
+char * Util :: getOpenGLError(){
+    int error;
+    error = glGetError();
+    
+    // All openGl errors possible
+    switch(error){
+        case GL_NO_ERROR : return "GL_NO_ERROR";break;
+        case GL_INVALID_ENUM : return "GL_INVALID_ENUM"; break;
+        case GL_INVALID_VALUE : return "GL_INVALID_VALUE"; break;
+        case GL_INVALID_OPERATION : return "GL_INVALID_OPERATION"; break;
+        case GL_STACK_OVERFLOW : return "GL_STACK_OVERFLOW"; break;
+        case GL_OUT_OF_MEMORY : return "GL_OUT_OF_MEMORY"; break;
+        default : return "Unknown error"; break;
+    }
+}
