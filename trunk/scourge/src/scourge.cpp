@@ -93,6 +93,8 @@ Scourge::Scourge(int argc, char *argv[]){
   multiplayer = new MultiplayerDialog(this);
   bool initMainMenu = true;
 
+  protocol = NULL;
+
   while(true) {
 
     if(initMainMenu) {
@@ -108,6 +110,7 @@ Scourge::Scourge(int argc, char *argv[]){
     if(mainMenu->getValue() == NEW_GAME ||
        mainMenu->getValue() == MULTIPLAYER_START) {
       mainMenu->hide();
+      
       party->reset();
       party->getCalendar()->reset(true); // reset the time
       board->reset();
@@ -123,6 +126,28 @@ Scourge::Scourge(int argc, char *argv[]){
       
       delete map;
       initMainMenu = true;
+
+#ifdef HAVE_SDL_NET
+      if(mainMenu->getValue() == MULTIPLAYER_START) {
+        if(protocol) {
+          delete protocol;
+          protocol = NULL;
+        }
+        protocol = new Protocol(this);
+        int port;
+        char *host, *username;
+        if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
+          port = protocol->startServer();
+          host = (char*)protocol->localhost;
+          username = (char*)protocol->adminUserName;
+        } else {
+          port = atoi(multiplayer->getServerPort());
+          host = multiplayer->getServerName();
+          username = multiplayer->getUserName();
+        }
+        protocol->login(host, port, username);
+      }
+#endif
       
       startMission();
     } else if(mainMenu->getValue() == OPTIONS) {

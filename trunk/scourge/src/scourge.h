@@ -46,6 +46,7 @@
 #include "party.h"
 #include "projectile.h"
 #include "multiplayer.h"
+#include "net/protocol.h"
 
 using namespace std;
 
@@ -70,6 +71,7 @@ class Party;
 class Projectile;
 class Mission;
 class MultiplayerDialog;
+class Protocol;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -152,6 +154,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Creature *targetSelectionFor;
 
   int layoutMode;
+  Protocol *protocol;
 
 protected:
   SDLHandler *sdlHandler;
@@ -190,6 +193,11 @@ public:
   
   Scourge(int argc, char *argv[]);
   ~Scourge();
+
+  /**
+    @return the network Protocol.
+  */
+  inline Protocol *getProtocol() { return protocol; }
 
   /**
     @return the Board containing the available missions.

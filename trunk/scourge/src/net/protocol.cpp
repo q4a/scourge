@@ -17,6 +17,12 @@
 
 #include "protocol.h"
 
+#define ERROR (0xff)
+#define TIMEOUT (5000) //five seconds
+
+const char *Protocol::localhost = "localhost";
+const char *Protocol::adminUserName = "admin";
+
 #ifdef HAVE_SDL_NET
 
 #define PACKET_LENGTH 65535
@@ -30,6 +36,11 @@ Protocol::Protocol(Scourge *scourge) {
   this->serverThread = NULL;
   this->stopServerThread = false;
 
+  strcpy(clientServerName, "");
+  strcpy(clientUserName, "");
+  clientPort = -1;
+  clientId = 0;
+
   // initialize SDL_net
   if(SDLNet_Init()==-1) {
     printf("SDLNet_Init: %s\n",SDLNet_GetError());
@@ -39,16 +50,19 @@ Protocol::Protocol(Scourge *scourge) {
 
 Protocol::~Protocol() {
   stopServer();
+  logout();
   // shutdown SDL_net
   SDLNet_Quit();
 }
 
-void Protocol::startServer(int port) {
+int Protocol::startServer(int port) {
   if(serverPort > -1) {
     cerr << "*** Warning: attempting to start server when it's already running." << endl;
-    return;
+    return serverPort;
   }
   cerr << "Starting server..." << endl;
+
+  serverPort = port;
 
   // open udp server socket
   if(!(serverSocket = SDLNet_UDP_Open( serverPort ))) {
@@ -67,7 +81,11 @@ void Protocol::startServer(int port) {
   }
   
   // start server thread
-  serverThread = SDL_CreateThread(serverLoop, NULL);
+  serverThread = SDL_CreateThread(serverLoop, this);
+
+  SDL_Delay(2000);
+
+  return serverPort;
 }
 
 void Protocol::stopServer() {
@@ -97,8 +115,64 @@ void Protocol::stopServer() {
   cerr << "Server stopped." << endl;
 }
 
-int Protocol::login(char *server, int port, char *name) {
-  return 0;
+Uint32 Protocol::login(char *server, int port, char *name) {
+  strcpy(clientServerName, server);
+  strcpy(clientUserName, name);
+  clientPort = port;
+
+  if(SDLNet_ResolveHost(&clientServerIP, clientServerName, clientPort)==-1) {
+    printf("SDLNet_ResolveHost: %s\n", SDLNet_GetError());
+    exit(4);
+  }
+  
+  // open udp client socket
+  if(!(clientSocket = SDLNet_UDP_Open(0))) {
+    printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+    exit(5);
+  }
+
+	// allocate max packet
+	if(!(clientOut = SDLNet_AllocPacket(65535))) {
+    printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
+    exit(6);
+	}
+	if(!(clientIn = SDLNet_AllocPacket(65535))) {
+    printf("SDLNet_AllocPacket: %s\n",SDLNet_GetError());
+    exit(6);
+  }
+  
+	// bind server address to channel 0
+  if(SDLNet_UDP_Bind(clientSocket, 0, &clientServerIP)==-1) {
+		printf("SDLNet_UDP_Bind: %s\n",SDLNet_GetError());
+    exit(7);
+  }
+  cerr << "Client is connected to " << clientServerName << ":" << clientPort << endl;
+
+  // send login request
+	cerr << "Client is logging in as " << clientUserName << endl;
+	clientOut->data[0] = 1<<4;
+	//strcpy(clientOut->data + 1, clientUserName);
+  sprintf((char*)(clientOut->data + 1), "LOGIN,%s", clientUserName);
+	clientOut->len = 1 + 6 + strlen(clientUserName) + 1;
+	if(udpsend(clientSocket, 0, clientOut, clientIn, 200, 1, TIMEOUT) < 1) exit(9);
+	
+	clientId = SDLNet_Read32(clientIn->data + 1);
+	cerr << "Server sent userid: " << clientId << endl;
+  
+  return clientId;
+}
+
+void Protocol::logout() {
+  if(clientId == 0) return;
+
+	// close the socket
+	SDLNet_UDP_Close(clientSocket);
+	
+	// free packets
+	SDLNet_FreePacket(clientOut);
+	SDLNet_FreePacket(clientIn);
+
+  clientId = 0;
 }
 
 void Protocol::sendChat(char *message) {
@@ -106,8 +180,21 @@ void Protocol::sendChat(char *message) {
 
 
 
-#define ERROR (0xff)
-#define TIMEOUT (5000) //five seconds
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 int udpsend(UDPsocket sock, int channel, UDPpacket *out, UDPpacket *in, Uint32 delay, Uint8 expect, int timeout) {
   Uint32 t,t2;
@@ -201,8 +288,7 @@ int serverLoop(void *data) {
     // send some bogus data for now
     protocol->getServerOutPacket()->data[0] = 1;
     SDLNet_Write32(12, protocol->getServerOutPacket()->data+1);
-    SDLNet_Write32(14, protocol->getServerOutPacket()->data+5);
-    protocol->getServerOutPacket()->len=9;
+    protocol->getServerOutPacket()->len=5;
     if(udpsend(protocol->getServerSocket(), 0, 
                protocol->getServerOutPacket(), 
                protocol->getServerInPacket(), 10, 2<<4, TIMEOUT) < 1)
@@ -211,6 +297,15 @@ int serverLoop(void *data) {
   }
 
   return 0;
+}
+
+#else
+
+Protocol::Protocol(Scourge *scourge) {
+  this->scourge = scourge;
+}
+
+Protocol::~Protocol() {
 }
 
 #endif
