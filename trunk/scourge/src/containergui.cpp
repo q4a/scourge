@@ -22,18 +22,19 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->container = container;
 
   win = new Window( scourge->getSDLHandler(),
-						x, y, 300, 300, 
+						x, y, 320, 300, 
 						container->getRpgItem()->getName(), 
 						scourge->getShapePalette()->getGuiTexture() );
-  closeButton = new Button( 195, 5, 295, 35, Constants::getMessage(Constants::CLOSE_LABEL) );
+  closeButton = new Button( 5, 5, 105, 35, Constants::getMessage(Constants::CLOSE_LABEL) );
   win->addWidget((Widget*)closeButton);
-  dropButton = new Button( 195, 40, 295, 70, Constants::getMessage(Constants::DROP_ITEM_LABEL) );
+  dropButton = new Button( 110, 5, 210, 35, Constants::getMessage(Constants::DROP_ITEM_LABEL) );
   win->addWidget((Widget*)dropButton);
-  openButton = new Button( 195, 75, 295, 105, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
+  openButton = new Button( 215, 5, 315, 35, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
-  list = new ScrollingList(5, 5, 185, 275 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), this);
+
+  list = new ScrollingList(5, 40, 310, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), this);
   win->addWidget((Widget*)list);
-  label = new Label(5, 265, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP));
+  label = new Label(5, 270, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP));
   win->addWidget(label);
 
   // allocate memory for the contained item descriptions

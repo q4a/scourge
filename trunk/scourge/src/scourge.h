@@ -134,6 +134,11 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   GLint dragStartTime;
   static const int ACTION_CLICK_TIME = 200;
 
+  int lastMapX, lastMapY, lastMapZ, lastX, lastY;
+  // how many pixels to wait between sampling 3d coordinates 
+  // when dragging items (the more the faster)
+  static const int POSITION_SAMPLE_DELTA = 10; 
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;

@@ -41,6 +41,18 @@ const int DungeonGenerator::levels[][9] = {
   { 31, 31,   3, 5, 25,    6,  7,  7,     35 }
 };
 
+const char *DungeonGenerator::location[][MAP_WIDTH] = {
+  { 
+	"   ####   ####  ",
+	"   ####+++####  ",
+	"   ####   ####  ",
+	"    ++     ++   ",
+	"    ++     ++   ",
+	"   ####   ####  ",
+	"   ####+++####  ",
+	"   ####   ####  " }
+};
+
 DungeonGenerator::DungeonGenerator(Scourge *scourge, int level){
   this->scourge = scourge;
   this->level = level;
@@ -65,18 +77,6 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level){
   }
   visitedCount = 0;
   visited = (int*)new int[notVisitedCount];
-  
-  generateMaze();
-//  printMaze();  
-
-  makeSparse();
-//  printMaze();
-
-  makeLoops();
-//  printMaze();
-
-  makeRooms();
-  //  printMaze();
 }
 
 DungeonGenerator::~DungeonGenerator(){
@@ -535,7 +535,40 @@ void DungeonGenerator::printMaze() {
   printf("---------------------------------------\n");
 }
 
-void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal) {	 
+// draw a pre-rendered location on the map
+void DungeonGenerator::constructMaze(int location) {
+  // turn location into nodes
+  for(int x = 0; x < width; x++) {
+	for(int y = 0; y < height; y++) {
+	  
+	}
+  }
+}
+
+void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int location) {	 
+
+  // generate the maze
+  if(!location) {
+	generateMaze();
+	//  printMaze();  
+	
+	makeSparse();
+	//  printMaze();
+	
+	makeLoops();
+	//  printMaze();
+	
+	makeRooms();
+	//  printMaze();
+  } else {
+	constructMaze(location);
+  }
+
+  // draw the nodes on the map
+  drawNodesOnMap(map, shapePal);
+}
+
+void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   // add shapes to map
   Sint16 mapx, mapy;
   for(Sint16 x = 0; x < width; x++) {    
@@ -1074,4 +1107,11 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
   if(creature) map->setCreature(x, y, 0, creature);
   else if(item) map->setItem(x, y, 0, item);
   else map->setPosition(x, y, 0, shape);
+  // populate containers
+  if(item && item->getRpgItem()->getType() == RpgItem::CONTAINER) {
+	int n = (int)(3.0f * rand() / RAND_MAX);
+	for(int i = 0; i < n; i++) {
+	  item->addContainedItem(scourge->newItem(RpgItem::getRandomItem(level)));
+	}
+  }
 }

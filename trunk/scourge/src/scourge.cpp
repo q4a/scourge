@@ -142,6 +142,7 @@ void Scourge::startMission() {
   battleCount = 0;
   partyDead = false;
   containerGuiCount = 0;
+  lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
   
   setPlayer(getParty(0));
   setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
@@ -153,8 +154,15 @@ void Scourge::startMission() {
 	getParty(i)->setTargetCreature(NULL);
   }
 
+
+
+
+  
+
+
   // Initialize the map with a random dunegeon	
   dg = new DungeonGenerator(this, level);
+  //  dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
   dg->toMap(map, getShapePalette());
  
   // center map on the player
@@ -166,10 +174,11 @@ void Scourge::startMission() {
   // set to receive events here
   sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
-
-
   // run mission
   sdlHandler->mainLoop();
+
+
+
 
 
 
@@ -629,6 +638,15 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
 
 void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
                                   Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
+
+  // only do this if the mouse has moved some (optimization)
+  if(abs(lastX - x) < POSITION_SAMPLE_DELTA && abs(lastY - y) < POSITION_SAMPLE_DELTA) {
+	*mapx = lastMapX;
+	*mapy = lastMapY;
+	*mapz = lastMapZ;
+	return;
+  }
+
   GLuint buffer[512];
   GLint  hits, viewport[4];
 
@@ -684,6 +702,12 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
 
   // Go back to modelview for normal rendering
   glMatrixMode(GL_MODELVIEW);
+
+  lastMapX = *mapx;
+  lastMapY = *mapy;
+  lastMapZ = *mapz;
+  lastX = x;
+  lastY = y;
 }
 
 void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
@@ -856,7 +880,7 @@ void Scourge::dropItem(int x, int y) {
 
   // failed to drop item; put it back to where we got it from
   if(replace) {
-	if(movingX > -1 || movingX < MAP_WIDTH) {
+	if(movingX <= -1 || movingX >= MAP_WIDTH) {
 	  // the item drag originated from the gui... what to do?
 	  // for now don't end the drag
 	  return;
