@@ -63,9 +63,7 @@ private:
   float xrot, yrot, zrot;  
   float xpos, ypos, zpos;
   float xRotating, yRotating, zRotating;
-  Uint16 selX, selY, selZ;
-  float oldLocatorPosX, oldLocatorPosY, oldLocatorPosZ;
-  
+  Uint16 selX, selY, selZ, oldLocatorSelX, oldLocatorSelY, oldLocatorSelZ;
 
   // on screen item descriptions
   int descriptionCount;
@@ -129,17 +127,23 @@ public:
   inline Uint16 getMove() { return move; }
 
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape);
-	Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
+  Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
 
   void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item);
-	Item *removeItem(Sint16 x, Sint16 y, Sint16 z);
+  Item *removeItem(Sint16 x, Sint16 y, Sint16 z);
+
+  void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature);
+  Creature *removeCreature(Sint16 x, Sint16 y, Sint16 z);
 
 	/**
 	 * if you can't move to this spot (blocked) returns the blocking shape,
 	 * otherwise returns NULL and moves the shape.
 	 */
-	Location *movePosition(Sint16 x, Sint16 y, Sint16 z, Uint16 dir, Shape *newShape);
-	Location *movePosition(Sint16 x, Sint16 y, Sint16 z, Sint16 nx, Sint16 ny, Sint16 nz, Shape *newShape);
+	Location *moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir, 
+							   Creature *newCreature);
+	Location *moveCreature(Sint16 x, Sint16 y, Sint16 z, 
+							   Sint16 nx, Sint16 ny, Sint16 nz, 
+							   Creature *newCreature);
 
 	void switchPlaces(Sint16 x1, Sint16 y1, Sint16 z1, 
 										Sint16 x2, Sint16 y2, Sint16 z2);
@@ -181,6 +185,8 @@ public:
 
   bool isWallBetween(int x1, int y1, int z1,
 						  int x2, int y2, int z2);
+
+  bool shapeFits(Shape *shape, int x, int y, int z);
 
 protected:
   DrawLater later[100], stencil[1000], other[1000];

@@ -54,6 +54,8 @@ private:
   GLuint doorEWtex[3];      
   GLuint shelftex[3];
   GLuint chesttex[3];
+  GLuint shelftex2[3];
+  GLuint chesttex2[3];
 
   // how big to make the walls
   const static Sint16 unitSide = 12;
@@ -68,8 +70,8 @@ private:
   void loadPortraits();
 
   // shape descriptions
-  static char *wallDescription[], *doorDescription[], *doorFrameDescription[], *torchDescription[], *bookshelfDescription[], *chestDescription[];
-  static int wallDescriptionCount, doorDescriptionCount, doorFrameDescriptionCount, torchDescriptionCount, bookshelfDescriptionCount, chestDescriptionCount;
+  static char *wallDescription[], *doorDescription[], *doorFrameDescription[], *torchDescription[];
+  static int wallDescriptionCount, doorDescriptionCount, doorFrameDescriptionCount, torchDescriptionCount;
 
   static ShapePalette *instance;
 
@@ -130,6 +132,8 @@ public:
 	SWORD_INDEX = 0,
 	BOOKSHELF_INDEX,
 	CHEST_INDEX,
+	BOOKSHELF2_INDEX,
+	CHEST2_INDEX,
 
 	// should be the last one
 	ITEM_INDEX_COUNT

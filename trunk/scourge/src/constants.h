@@ -31,7 +31,7 @@
 #include <GL/glut.h>
 #endif
 
-
+#include <stdlib.h>
 
 /*
   Float swapping code by:
@@ -165,8 +165,21 @@ public:
   static const Uint16 MOVE_LEFT = 4;
   static const Uint16 MOVE_RIGHT = 8;
 
-	Constants();
-	~Constants();
+  // messages
+  enum {
+	WELCOME=0,
+	ITEM_OUT_OF_REACH,
+
+	// last one
+	MESSAGE_COUNT
+  };
+  static char *messages[][80];
+  static int messageCount[];
+
+  Constants();
+  ~Constants();
+
+  static char *getMessage(int index);
 };
 
 #endif

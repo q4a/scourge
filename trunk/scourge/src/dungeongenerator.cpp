@@ -747,22 +747,41 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
   	for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
 	  item = Item::getRandomContainer();
 	  if(item) {
-		fprintf(stderr, "item=%s\n", item->getShortDescription());
-		fprintf(stderr, "shape=%s\n", item->getShape()->getName());
 		// WEST side
 		x = (room[i].x * unitSide) + unitOffset + offset;
 		y = (room[i].y * unitSide) + pos + offset;
-		if(shapeFits(map, item->getShape(), x, y) && !coversDoor(map, shapePal, item->getShape(), x, y, DIR_W)) {
+		if(map->shapeFits(item->getShape(), x, y, 0) && 
+		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
 		  addItem(map, item, item->getShape(), x, y);
 		}
 	  }
 	  item = Item::getRandomContainer();
 	  if(item) {
-		fprintf(stderr, "item=%s\n", item->getShortDescription());
-		fprintf(stderr, "shape=%s\n", item->getShape()->getName());
 		// EAST side
 		x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-		if(shapeFits(map, item->getShape(), x, y) && !coversDoor(map, shapePal, item->getShape(), x, y, DIR_E)) {
+		if(map->shapeFits(item->getShape(), x, y, 0) && 
+		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
+		  addItem(map, item, item->getShape(), x, y);
+		}
+	  }
+	}
+  	for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
+	  item = Item::getRandomContainerNS();
+	  if(item) {
+		// NORTH side
+		x = (room[i].x * unitSide) + pos + offset;
+		y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
+		if(map->shapeFits(item->getShape(), x, y, 0) && 
+		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
+		  addItem(map, item, item->getShape(), x, y);
+		}
+	  }
+	  item = Item::getRandomContainerNS();
+	  if(item) {
+		// SOUTH side
+		y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
+		if(map->shapeFits(item->getShape(), x, y, 0) && 
+		   !coversDoor(map, shapePal, item->getShape(), x, y)) {
 		  addItem(map, item, item->getShape(), x, y);
 		}
 	  }
@@ -809,7 +828,7 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
 	y = ff[n * 2 + 1];
 	
 	// can it fit?
-	bool fits = shapeFits(map, shape, x, y);
+	bool fits = map->shapeFits(shape, x, y, 0);
 	// doesn't fit? try again (could be inf. loop)
 	if(fits) {
 	  // remove from ff list
@@ -826,35 +845,12 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
   }	
 }
 
-bool DungeonGenerator::shapeFits(Map *map, Shape *shape, int x, int y) {
-  int index;
-  for(int tx = 0; tx < shape->getWidth(); tx++) {
-	for(int ty = 0; ty < shape->getDepth(); ty++) {
-	  if(map->getLocation(x + tx, y - ty, 0)) {
-		return false;
-	  }
-	}
-  }
-  return true;
-}
-
 bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal, 
-								  Shape *shape, int x, int y, int dir) {
-  switch(dir) {
-  case DIR_W:
-	for(int ty = y - shape->getDepth(); ty <= y; ty++) {
-	  for(int tx = x; tx > x - 3; tx--) {
-		if(isDoor(map, shapePal, tx, ty)) return true;
-	  }
+								  Shape *shape, int x, int y) {
+  for(int ty = y - shape->getDepth() - 3; ty < y + 3; ty++) {
+	for(int tx = x - 3; tx < x + shape->getWidth() + 3; tx++) {
+	  if(isDoor(map, shapePal, tx, ty)) return true;
 	}
-	break;
-  case DIR_E:
-	for(int ty = y - shape->getDepth(); ty <= y; ty++) {
-	  for(int tx = x + shape->getWidth(); tx < x + shape->getWidth() + 3; tx++) {
-		if(isDoor(map, shapePal, tx, ty)) return true;
-	  }
-	}
-	break;
   }
   return false;
 }

@@ -25,7 +25,7 @@ Map::Map(Scourge *scourge){
   selectMode = false;
   floorOnly = false;
   selX = selY = selZ = MAP_WIDTH + 1;
-  oldLocatorPosX = oldLocatorPosY = oldLocatorPosZ = selZ;
+  oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
 
 
   mapChanged = true;
@@ -142,6 +142,17 @@ void Map::drawLocator() {
     if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
        selY >= getY() && selY < getY() + MAP_VIEW_DEPTH) {
 
+		// don't move objects across walls
+		if(scourge->getMovingItem() && 
+		   (isWallBetween(selX, selY, 0, 
+						  scourge->getParty(0)->getX(),
+						  scourge->getParty(0)->getY(),
+						  0) ||
+			!shapeFits(scourge->getMovingItem()->getShape(), selX, selY, 0)) ) {
+		  selX = oldLocatorSelX;
+		  selY = oldLocatorSelY;
+		}
+
         if(scourge->getMovingItem()) {
             shape = scourge->getMovingItem()->getShape();
         } else {
@@ -151,23 +162,12 @@ void Map::drawLocator() {
         ypos2 = (((float)(selY - getY()) - (float)shape->getDepth()) / GLShape::DIV);
         zpos2 = (float)(0) / GLShape::DIV;
 
-		// don't move objects across walls
-		if(scourge->getMovingItem() && isWallBetween(selX, selY, 0, 
-													 scourge->getParty(0)->getX(),
-													 scourge->getParty(0)->getY(),
-													 0)) {
-		  xpos2 = oldLocatorPosX;
-		  ypos2 = oldLocatorPosY;
-		  zpos2 = oldLocatorPosZ;
-		}
-
         name = 0;
         doDrawShape(xpos2, ypos2, zpos2, 
                     shape, 
                     name);
-		oldLocatorPosX = xpos2;
-		oldLocatorPosY = ypos2;
-		oldLocatorPosZ = zpos2;
+		oldLocatorSelX = selX;
+		oldLocatorSelY = selY;
     }
 }
 
@@ -392,7 +392,7 @@ void Map::initMapView(bool ignoreRot) {
   glTranslatef( startx, starty, startz );
 }
 
-Location *Map::movePosition(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Shape *newShape) {
+Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Creature *newCreature) {
 	Sint16 nx = x;
 	Sint16 ny = y;
 	Sint16 nz = z;
@@ -402,18 +402,18 @@ Location *Map::movePosition(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Shape *newS
 	case Constants::MOVE_LEFT: nx--; break;
 	case Constants::MOVE_RIGHT: nx++; break;
 	}
-	return movePosition(x,y,z,nx,ny,nz,newShape);
+	return moveCreature(x, y, z, nx, ny, nz, newCreature);
 }
 
-Location *Map::movePosition(Sint16 x, Sint16 y, Sint16 z, 
-												 Sint16 nx, Sint16 ny, Sint16 nz,
-                         Shape *newShape) {
-  Location *position = isBlocked(nx, ny, nz, x, y, z, newShape);
-	if(position) return position;
-	// move position
-  removePosition(x, y, z);
-	setPosition(nx, ny, nz, newShape);
-	return NULL;
+Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, 
+							Sint16 nx, Sint16 ny, Sint16 nz,
+							Creature *newCreature) {
+  Location *position = isBlocked(nx, ny, nz, x, y, z, newCreature->getShape());
+  if(position) return position;
+  // move position
+  removeCreature(x, y, z);
+  setCreature(nx, ny, nz, newCreature);
+  return NULL;
 }
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
@@ -558,6 +558,7 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
 
           pos[x + xp][y - yp][z + zp]->shape = shape;
 		  pos[x + xp][y - yp][z + zp]->item = NULL;
+		  pos[x + xp][y - yp][z + zp]->creature = NULL;
           pos[x + xp][y - yp][z + zp]->x = x;
           pos[x + xp][y - yp][z + zp]->y = y;
           pos[x + xp][y - yp][z + zp]->z = z;
@@ -602,6 +603,7 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
 
             pos[x + xp][y - yp][z + zp]->item = item;
 			pos[x + xp][y - yp][z + zp]->shape = item->getShape();
+			pos[x + xp][y - yp][z + zp]->creature = NULL;
             pos[x + xp][y - yp][z + zp]->x = x;
             pos[x + xp][y - yp][z + zp]->y = y;
             pos[x + xp][y - yp][z + zp]->z = z;
@@ -634,6 +636,51 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
   return item;
 }
 
+void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
+  if(creature) {
+    if(creature->getShape()) {
+	  mapChanged = true;
+      for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+        for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+          for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+            if(!pos[x + xp][y - yp][z + zp]) {
+              pos[x + xp][y - yp][z + zp] = new Location();
+            }
+            pos[x + xp][y - yp][z + zp]->item = NULL;
+			pos[x + xp][y - yp][z + zp]->shape = creature->getShape();
+			pos[x + xp][y - yp][z + zp]->creature = creature;
+            pos[x + xp][y - yp][z + zp]->x = x;
+            pos[x + xp][y - yp][z + zp]->y = y;
+            pos[x + xp][y - yp][z + zp]->z = z;
+          }
+        }
+      }
+  	}
+  }
+}
+
+Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
+  Creature *creature = NULL;
+  if(pos[x][y][z] &&
+     pos[x][y][z]->creature &&
+     pos[x][y][z]->x == x &&
+     pos[x][y][z]->y == y &&
+     pos[x][y][z]->z == z) {
+	mapChanged = true;
+    creature = pos[x][y][z]->creature;
+    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {	  
+		  delete pos[x + xp][y - yp][z + zp];
+		  pos[x + xp][y - yp][z + zp] = NULL;		
+        }
+      }
+    }
+  }
+  return creature;
+}
+
+
 // FIXME: only uses x,y for now
 bool Map::isWallBetween(int x1, int y1, int z1,
 						int x2, int y2, int z2) {
@@ -655,7 +702,7 @@ bool Map::isWallBetween(int x1, int y1, int z1,
   }
   
 
-  fprintf(stderr, "Checking for wall: from: %d,%d to %d,%d\n", x1, y1, x2, y2);
+  //  fprintf(stderr, "Checking for wall: from: %d,%d to %d,%d\n", x1, y1, x2, y2);
   bool ret = false;
   bool yDiffBigger = (abs(y2 - y1) > abs(x2 - x1));
   float m = (float)(y2 - y1) / (float)(x2 - x1);
@@ -665,7 +712,7 @@ bool Map::isWallBetween(int x1, int y1, int z1,
   for(int i = 0; i < steps; i++) {
 	//	fprintf(stderr, "\tat=%f,%f\n", x, y);
 	if(isWall((int)x, (int)y, z1)) {
-	  fprintf(stderr, "wall at %f, %f\n", x, y);
+	  //fprintf(stderr, "wall at %f, %f\n", x, y);
 	  ret = true;
 	  break;
 	}
@@ -687,5 +734,19 @@ bool Map::isWallBetween(int x1, int y1, int z1,
 
 bool Map::isWall(int x, int y, int z) {
   Location *loc = getLocation((int)x, (int)y, z);
-  return (loc && (!loc->item || loc->item->getShape() != loc->shape));
+  return (loc && 
+		  (!loc->item || loc->item->getShape() != loc->shape) && 
+		  (!loc->creature || loc->creature->getShape() != loc->shape));
+}
+
+// FIXME: only uses x, y for now
+bool Map::shapeFits(Shape *shape, int x, int y, int z) {
+  for(int tx = 0; tx < shape->getWidth(); tx++) {
+	for(int ty = 0; ty < shape->getDepth(); ty++) {
+	  if(getLocation(x + tx, y - ty, 0)) {
+		return false;
+	  }
+	}
+  }
+  return true;
 }

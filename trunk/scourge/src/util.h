@@ -29,6 +29,7 @@
 using namespace std;
 
 class Map;
+class Location;
 
 /**
   *@author Gabor Torok

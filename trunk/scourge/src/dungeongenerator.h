@@ -143,9 +143,7 @@ protected:
 
   void getRandomLocation(Map *map, Shape *shape, int *x, int *y);
   
-  bool shapeFits(Map *map, Shape *shape, int x, int y);
-
-  bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y, int dir);
+  bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y);
 
   bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
 

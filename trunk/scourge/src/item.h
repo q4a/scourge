@@ -42,6 +42,8 @@ public:
     BASTARD_SWORD,
 	CHEST,
 	BOOKSHELF,
+	CHEST2,
+	BOOKSHELF2,
 
 	// must be the last ones
 	ITEM_COUNT
@@ -59,6 +61,7 @@ public:
 
   static Item *getRandomItem(int level);
   static Item *getRandomContainer();
+  static Item *getRandomContainerNS();
   inline static Item *getItem(int index) { return items[index]; }
   inline GLShape *getShape() { return ShapePalette::getInstance()->getItemShape(this->shape_index); }
   inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }

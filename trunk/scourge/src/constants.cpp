@@ -17,7 +17,29 @@
 
 #include "constants.h"
 
+//sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
+char *Constants::messages[][80] = {
+  { 
+	"Infamy awaits in the dungeons of Scourge!", 
+	"Another day, another sewer! Welcome to Scourge!", 
+	"Happy hunting; welcome to Scourge!" },
+  { "That item is out of your reach", 
+	"You can't touch that", 
+	"You have to be closer to get that", 
+	"You are too far to reach it" }
+};
+
+int Constants::messageCount[] = {
+  3, 4
+};
+
 Constants::Constants(){
 }
+
 Constants::~Constants(){
+}
+
+char *Constants::getMessage(int index) {
+  int n = (int)((float)messageCount[index] * rand() / RAND_MAX);
+  return messages[index][n];
 }

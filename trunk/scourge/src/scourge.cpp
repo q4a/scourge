@@ -146,9 +146,7 @@ void Scourge::startMission() {
   // create the map
   map = new Map(this);
 
-  char s[300];
-  sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
-  map->addDescription(strdup(s));
+  map->addDescription(Constants::getMessage(Constants::WELCOME));
   map->addDescription("----------------------------------");
   
 	// Initialize the map with a random dunegeon	
@@ -158,12 +156,13 @@ void Scourge::startMission() {
 
   // position the players
   player->moveTo(startx, starty, 0);
-	map->setPosition(startx, starty, 0, player->getShape());
+  map->setCreature(startx, starty, 0, player);
 
 	// init the rest of the party
 	for(int i = 1; i < 4; i++) {
 		party[i]->setNext(party[0], i);
-		map->setPosition(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]->getShape());
+		//		map->setPosition(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]->getShape());
+		map->setCreature(party[i]->getX(), party[i]->getY(), party[i]->getZ(), party[i]);
 	}
 
 	// center on the player
@@ -240,6 +239,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     switch(event->key.keysym.sym) {
     case SDLK_ESCAPE: 
 	  party[0]->setSelXY(-1, -1); // stop moving
+	  movingItem = NULL; // stop moving items
 	  return true;
     case SDLK_F10:
       isInfoShowing = (isInfoShowing ? false : true);
@@ -569,7 +569,8 @@ void Scourge::setFormation(int formation) {
 
 bool Scourge::useItem(int x, int y) {
   if(movingItem) {
-	dropItem(x, y);
+	//	dropItem(x, y);
+	dropItem(map->getSelX(), map->getSelY());
 	return true;
   }
   
@@ -586,12 +587,19 @@ bool Scourge::useItem(int x, int y) {
 
 bool Scourge::getItem(Location *pos) {
     if(pos->item) {
+	  if(map->isWallBetween(pos->x, pos->y, pos->z, 
+							getParty(0)->getX(),
+							getParty(0)->getY(),
+							0)) {
+		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+	  } else {
         movingX = pos->x;
         movingY = pos->y;
         movingZ = pos->z;
         movingItem = pos->item;
         map->removeItem(pos->x, pos->y, pos->z);
-        return true;
+	  }
+	  return true;
     }
     return false;
 }
