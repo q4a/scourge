@@ -99,9 +99,11 @@ void MD2Shape::draw() {
   // It seems that Quake2 orders their polygons clock-wise.  
   glEnable( GL_CULL_FACE );
   glCullFace( GL_BACK );
+  glEnable( GL_TEXTURE_2D );
 
   AnimateMD2Model();      
  
+  glDisable( GL_TEXTURE_2D );
   glDisable(GL_CULL_FACE);
   glPopMatrix();    
 }

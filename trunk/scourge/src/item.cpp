@@ -369,7 +369,7 @@ bool Item::decrementCharges(){
 float Item::getRandomSum( float base, int count ) {
   float sum = 0;
   float third = base / 3.0f;
-  for( int i = 0; i < count; i++ ) {
+  for( int i = 0; i < ( count < 1 ? 1 : count ); i++ ) {
     sum += ( ( third * rand()/RAND_MAX ) + ( base - third ) );
   }
   return sum;
