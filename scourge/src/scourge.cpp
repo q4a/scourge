@@ -431,168 +431,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	else if(ea == START_ROUND) {
 	  startRound = true;
 	}
-      /*case SDL_KEYDOWN:
-    switch(event->key.keysym.sym) {
-    case SDLK_ESCAPE: 
-	  player->setSelXY(-1, -1); // stop moving
-	  movingItem = NULL; // stop moving items
-	  return true;
-	 
-    //case SDLK_F10:
-      //isInfoShowing = (isInfoShowing ? false : true);
-      //gui->setWindowVisible(topWin, isInfoShowing);
-      //break;
-	  
-    case SDLK_DOWN:
-	  map->setMove(Constants::MOVE_DOWN);
-      break;
-    case SDLK_UP:
-	  map->setMove(Constants::MOVE_UP);
-      break;
-    case SDLK_LEFT:
-	  map->setMove(Constants::MOVE_LEFT);
-      break;
-    case SDLK_RIGHT:
-	  map->setMove(Constants::MOVE_RIGHT);
-      break;
-
-	case SDLK_SPACE:
-	  moveMonsters();
-	  break;
-
-	case SDLK_1:
-	  setPlayer(0); break;
-	case SDLK_2:
-	  setPlayer(1); break;
-	case SDLK_3:
-	  setPlayer(2); break;
-	case SDLK_4:
-	  setPlayer(3); break;
-	case SDLK_0:
-	  player_only = (player_only ? false : true);
-	  break;
-
-    case SDLK_5:
-        blendA++; if(blendA >= 11) blendA = 0;
-        fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
-        break;
-    case SDLK_6:
-        blendB++; if(blendB >= 11) blendB = 0;
-        fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
-        break;
-
-    case SDLK_i:
-        inventory->show();
-        break;
-    case SDLK_o:
-        optionsMenu->show();
-        break;
-    case SDLK_q:
-        map->setXRot(1.0f);
-        break;
-    case SDLK_w:
-        map->setXRot(-1.0f);
-        break;
-    case SDLK_a:
-        map->setYRot(1.0f);
-        break;
-    case SDLK_s:
-        map->setYRot(-1.0f);
-        break;
-    case SDLK_z:
-        map->setZRot(1.0f);
-        break;
-    case SDLK_x:
-        map->setZRot(-1.0f);
-        break;
-
-    case SDLK_t:
-        map->addXPos(10.0f);
-        break;
-    case SDLK_y:
-        map->addXPos(-10.0f);
-        break;        
-    case SDLK_g:
-        map->addYPos(10.0f);
-        break;
-    case SDLK_h:
-        map->addYPos(-10.0f);
-        break;        
-    case SDLK_b:
-        map->addZPos(10.0f);
-        break;
-    case SDLK_n:
-        map->addZPos(-10.0f);
-        break;   
-    case SDLK_KP_PLUS:
-        miniMap->zoomIn();
-        break;
-    case SDLK_KP_MINUS:
-        miniMap->zoomOut();
-        break;  
-    case SDLK_l:
-        miniMap->toggle(); 
-        break;   
-    case SDLK_LEFTBRACKET:
-        map->setZoomOut(true);
-        break;
-    case SDLK_RIGHTBRACKET:
-        map->setZoomIn(true);
-        break;
-
-    default: break;
-    }
     break;
-  case SDL_KEYUP:
-    switch(event->key.keysym.sym) {    
-    case SDLK_DOWN:
-      map->removeMove(Constants::MOVE_DOWN);
-      break;
-    case SDLK_UP:
-      map->removeMove(Constants::MOVE_UP);
-      break;
-    case SDLK_LEFT:
-      map->removeMove(Constants::MOVE_LEFT);
-      break;
-    case SDLK_RIGHT:
-      map->removeMove(Constants::MOVE_RIGHT);
-      break;
-	case SDLK_f:
-	  if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
-	  else setFormation(0);
-	  break;
-	case SDLK_u:
-	  useItem();
-      break;
-    case SDLK_q:
-        map->setXRot(0.0f);
-        break;
-    case SDLK_w:
-        map->setXRot(0.0f);
-        break;
-    case SDLK_a:
-        map->setYRot(0.0f);
-        break;
-    case SDLK_s:
-        map->setYRot(0.0f);
-        break;
-    case SDLK_z:
-        map->setZRot(0.0f);
-        break;
-    case SDLK_x:
-        map->setZRot(0.0f);
-        break;      
-    case SDLK_LEFTBRACKET:
-        map->setZoomOut(false);
-        break;
-    case SDLK_RIGHTBRACKET:
-        map->setZoomIn(false);
-        break;
-
-    default: break;
-    }*/
-    break;
-
   default: break;
   }
 
@@ -825,6 +664,9 @@ bool Scourge::getItem(Location *pos) {
         movingZ = pos->z;
         movingItem = pos->item;
         map->removeItem(pos->x, pos->y, pos->z);
+		// draw the item as 'selected'
+		map->setSelectedDropTarget(NULL);
+		map->handleMouseMove(movingX, movingY, movingZ);
 	  }
 	  return true;
     }
