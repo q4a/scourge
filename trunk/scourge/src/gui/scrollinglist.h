@@ -31,6 +31,7 @@ class ScrollingList : public Widget {
  protected:
   int count;
   const char **list;
+  const Color *colors;
   int value;
   int scrollerWidth, scrollerHeight;
   int listHeight;
@@ -47,7 +48,7 @@ class ScrollingList : public Widget {
   virtual ~ScrollingList();
 
   inline int getLineCount() { return count; }
-  void setLines(int count, const char *s[]);
+  void setLines(int count, const char *s[], const Color *colors=NULL);
   inline const char *getLine(int index) { return list[index]; }
 
   inline int getSelectedLine() { return selectedLine; }

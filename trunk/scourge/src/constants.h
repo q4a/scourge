@@ -137,6 +137,11 @@ typedef union NetValue NetValue;
  ((long *)&dst)[0] = _t.gL[1]; ((long *)&dst)[1] = _t.gL[0]; \
 }
 
+// GL color in float
+typedef struct _Color {
+  float r, g, b;
+} Color;
+
 /**
   *@author Gabor Torok
   */
@@ -351,7 +356,7 @@ public:
     OBJECT_SHADOWS,
     ALL_SHADOWS
   };
-  static int shadowMode;
+  static int shadowMode;  
 
   Constants();
   ~Constants();

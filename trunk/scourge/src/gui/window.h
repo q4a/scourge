@@ -28,7 +28,7 @@
 
 class SDLHandler;
 class Widget;
-  
+
 class Window : public Widget {
  private:
   // the image is 510x270

@@ -211,6 +211,9 @@ class Creature {
   // get the armor value of the creature (0-100)
   inline int getArmor() { return armor; }
   
+  // return the damage as:
+  // rand(weapon + power + (skill - 50 % weapon))
+  int getDamage(Item *weapon);
   
 
   // until *someone* writes a pc editor

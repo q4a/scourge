@@ -423,7 +423,21 @@ int Creature::getToHit(Item *weapon) {
   return (int)(score / 2.5f);
 }
 
-
+// return the damage as:
+// rand(weapon + power + (skill - 50 % weapon))
+int Creature::getDamage(Item *weapon) {
+  float damage = 0.0f;
+  float baseDamage = (weapon ? weapon->getRpgItem()->getAction() : 
+					  (skills[Constants::POWER] / 10));
+  damage = baseDamage;
+  damage += skills[Constants::POWER];
+  
+  float skill = (weapon && weapon->getRpgItem()->getSkill() > -1 ?
+				 skills[weapon->getRpgItem()->getSkill()] :
+				 skills[Constants::HAND_TO_HAND_COMBAT]);
+  damage = damage + (damage * ((skill - 50) / 100.0f) );
+  return (int)(damage * rand()/RAND_MAX);
+}
 
 /**
    Create a party programmatically until the party editor is made.

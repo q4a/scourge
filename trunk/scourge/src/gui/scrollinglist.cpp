@@ -37,8 +37,9 @@ ScrollingList::ScrollingList(int x, int y, int w, int h) : Widget(x, y, w, h) {
 ScrollingList::~ScrollingList() {
 }
 
-void ScrollingList::setLines(int count, const char *s[]) { 
+void ScrollingList::setLines(int count, const char *s[], const Color *colors) { 
   list = s; 
+  this->colors = colors;
   this->count = count;
   listHeight = count * 15 + 5;
   scrollerHeight = (listHeight <= getHeight() ? 
@@ -104,8 +105,9 @@ void ScrollingList::drawWidget(Widget *parent) {
 	}
 	
 	// draw the contents
-	glColor4f( 0, 0, 0, 1 );
+	if(!colors) glColor4f( 0, 0, 0, 1 );
 	for(int i = 0; i < count; i++) {
+	  if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
 	  ((Window*)parent)->getSDLHandler()->
 		texPrint(scrollerWidth + 5, textPos + (i + 1) * 15, list[i]);
 	}

@@ -36,6 +36,9 @@ Map::Map(Scourge *scourge){
   mapChanged = true;
   
   descriptionCount = 0;
+  descriptionsChanged = false;
+  for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
+	descriptions[i] = (char*)malloc(120 * sizeof(char));
   
   this->xrot = 0.0f; // if 0, artifacts appear
   this->yrot = 30.0f;
@@ -85,6 +88,8 @@ Map::~Map(){
 	  }
 	}
   }
+  for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
+	free(descriptions[i]);
 }
 
 void Map::center(Sint16 x, Sint16 y) { 
@@ -810,20 +815,27 @@ void Map::addDescription(char *desc, float r, float g, float b) {
 	int last = descriptionCount;
 	if(last >= MAX_DESCRIPTION_COUNT) last--;
     for(int i = last; i >= 1; i--) {
-	  strcpy(descriptions[i].text, descriptions[i - 1].text);
-	  descriptions[i].r = descriptions[i - 1].r;
-	  descriptions[i].g = descriptions[i - 1].g;
-	  descriptions[i].b = descriptions[i - 1].b;
+	  strcpy(descriptions[i], descriptions[i - 1]);
+	  descriptionsColor[i].r = descriptionsColor[i - 1].r;
+	  descriptionsColor[i].g = descriptionsColor[i - 1].g;
+	  descriptionsColor[i].b = descriptionsColor[i - 1].b;
     }
   }
   if(descriptionCount < MAX_DESCRIPTION_COUNT) descriptionCount++;
-  strcpy(descriptions[0].text, desc);
-  descriptions[0].r = r;
-  descriptions[0].g = g;
-  descriptions[0].b = b;
+  strcpy(descriptions[0], desc);
+  descriptionsColor[0].r = r;
+  descriptionsColor[0].g = g;
+  descriptionsColor[0].b = b;
+  descriptionsChanged = true;
 }
 
-void Map::drawDescriptions() {
+void Map::drawDescriptions(ScrollingList *list) {
+  if(descriptionsChanged) {
+	descriptionsChanged = false;
+	list->setLines(descriptionCount, (const char**)descriptions, descriptionsColor);
+  }
+
+  /*
   glPushMatrix();
   glLoadIdentity();
   //glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
@@ -839,27 +851,28 @@ void Map::drawDescriptions() {
     index++;
   }
   glPopMatrix();
+  */
 }
 
 void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) {
   if(mapx < MAP_WIDTH) {
 	if(button == SDL_BUTTON_RIGHT) {
-	  fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
+	  //	  fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
 	  Location *loc = getPosition(mapx, mapy, mapz);
 	  if(loc) {
 		char *description = NULL;
 		Creature *creature = loc->creature;
-		fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
+		//fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
 		if(creature) {
 		  description = creature->getDescription();
 		} else {
 		  Item *item = loc->item;
-		  fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
+		  //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
 		  if( item ) {
 			description = item->getRpgItem()->getShortDesc();
 		  } else {
 			Shape *shape = loc->shape;
-			fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
+			//fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
 			if(shape) {
 			  description = shape->getRandomDescription();
 			}        
