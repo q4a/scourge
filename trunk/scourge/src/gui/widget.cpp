@@ -25,7 +25,7 @@ Widget::Widget(int x, int y, int w, int h) {
   move(x, y);
   this->w = w;
   this->h = h;
-  setColor( 0, 0, 0, 0 );
+  setColor( 0.05f, 0.05f, 0.05f, 1 );
   setBackground( 1, 0.75f, 0.45f );
   //  setSelectionColor( 1, 0.5f, 0.45f );
   setSelectionColor( 0.75f, 0.75f, 0.8f );

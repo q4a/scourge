@@ -542,11 +542,11 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 
 
   if(!our_font_initialized) {
-	our_font.init("/home/gabor/sourceforge/scourge/data/Test.ttf", 12);
-	our_font_initialized = true;
+    our_font.init("/home/gabor/sourceforge/scourge/data/Test.ttf", 8);
+    our_font_initialized = true;
   }
   
-  freetype_print(our_font, x, getScreen()->h - y, str);
+  freetype_print(our_font, x, y, str);
 
   /*	
   glPushMatrix();
