@@ -192,20 +192,26 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
   return -1;
 }
 
-void SDLHandler::setVideoMode(int argc, char *argv[]) {
-  bool fullscreen = true;
-  bool doublebuf = true;
-  bool hwpal = true;
-  bool resizeable = true;
-  bool force_hwsurf = false;
-  bool force_swsurf = false;
-  bool hwaccel = true;
-  bool test = false;
-  bool printusage = false;
-  int bpp = -1;
-  int w = 800;
-  int h = 600;
+// Get video variables from config file, these values can be overriden by 
+// command line.
+void SDLHandler::loadUserConfiguration(UserConfiguration *uc){
+    fullscreen = uc->getFullscreen();
+    doublebuf = uc->getDoublebuf();
+    hwpal = uc->getHwpal();
+    resizeable = uc->getResizeable();
+    force_hwsurf = uc->getForce_hwsurf();
+    force_swsurf = uc->getForce_swsurf();
+    hwaccel = uc->getHwaccel();    
+    bpp = uc->getBpp();
+    w = uc->getW();
+    h = uc->getH(); 
+    Constants::shadowMode = uc->getShadows();
+}
 
+void SDLHandler::setVideoMode(int argc, char *argv[]) { 
+  bool printusage = false;
+  bool test = false;
+  
   // interpret command line args
   for(int i = 1; i < argc; i++) {
 	if(strstr(argv[i], "--bpp") == argv[i]) {	  
@@ -227,7 +233,7 @@ void SDLHandler::setVideoMode(int argc, char *argv[]) {
 		printusage = true;
 	  }
 	} else if(strstr(argv[i], "--shadow") == argv[i]) {	  
-	  Constants::shadowMode = atoi(argv[i] + 8);
+	  Constants::shadowMode = atoi(argv[i] + 8);	  
       if(!(Constants::shadowMode == 0 || 
            Constants::shadowMode == 1 || 
            Constants::shadowMode == 2)) {

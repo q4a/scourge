@@ -57,26 +57,23 @@ private:
   // replace " " by "_" in a string
   string replaceSpaces(string s);  
   
-  // engine variables  
+  // engine variables (video settings) 
   bool fullscreen;
   bool doublebuf;
   bool hwpal;
   bool resizeable;
   bool force_hwsurf;
   bool force_swsurf;
-  bool hwaccel;
-  bool test; 
+  bool hwaccel;  
   int bpp;
   int w;
   int h;  
+  int shadows;
    
  public:
   UserConfiguration::UserConfiguration();
   UserConfiguration::~UserConfiguration();
-
-  //UserConfiguration::UserConfiguration(Scourge *scourge, char *name);
-  
-  
+      
   // engine variables
   inline bool getFullscreen(){ return fullscreen; }
   inline bool getDoublebuf() { return doublebuf;  }
@@ -84,14 +81,12 @@ private:
   inline bool getResizeable(){ return resizeable; }
   inline bool getForce_hwsurf() { return force_hwsurf; }
   inline bool getForce_swsurf() { return force_swsurf; }
-  inline bool getHwaccel()   { return hwaccel;    }
-  inline bool getTest()      { return test;       }  
+  inline bool getHwaccel()   { return hwaccel;    }   
   inline int getBpp()        { return bpp;        }
   inline int getW()          { return w;          }
   inline int getH()          { return h;          }
-  
-  
-  
+  inline int getShadows()    { return shadows;    }
+     
   // reads the configuration file where keys are binded, returns -1 if error
   void loadConfiguration(); 
     

@@ -27,6 +27,7 @@
 #include "shapepalette.h"
 #include "text.h"
 #include "gui/window.h"
+#include "userconfiguration.h"
 
 class TexturedText;
 
@@ -78,6 +79,20 @@ private:
   // the last event fired by a widget
   Widget *storedWidget;
   SDL_Event *storedEvent;
+  
+  // video settings
+  bool fullscreen;
+  bool doublebuf;
+  bool hwpal;
+  bool resizeable;
+  bool force_hwsurf;
+  bool force_swsurf;
+  bool hwaccel;
+  bool test;   
+  int bpp;
+  int w;    // width and 
+  int h;    // height
+  int shadows;
 
  public: 
   SDLHandler();
@@ -106,7 +121,7 @@ private:
   */
   inline SDLEventHandler *getEventHandler() { return eventHandler; }
 
-  
+  void loadUserConfiguration(UserConfiguration *uc);
   void setVideoMode(int argc, char *argv[]);
   void mainLoop();
   void fireEvent(Widget *widget, SDL_Event *event);
@@ -121,7 +136,7 @@ private:
 
   inline double getFps() { return fps; }
 
-  inline SDL_Surface *getScreen() { return screen; }
+  inline SDL_Surface *getScreen() { return screen; }  
 
   void testDrawView();
 
