@@ -189,12 +189,14 @@ protected:
 
   bool isDoor(Map *map, ShapePalette *shapePal, int tx, int ty);
 
-  void addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y);
+  void addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z = 0);
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
 
 	void addItemsInRoom(RpgItem *rpgItem, int n, bool preGenerated, int locationIndex);
+
+	bool DungeonGenerator::addShapeInARoom(int shapeIndex);
 };
 
 #endif

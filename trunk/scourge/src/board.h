@@ -51,6 +51,7 @@ public:
 	enum {
 		MISSING_WAND = 0,
 		STRANGE_CREATURES,
+		DIAMONDS,
 		
 		// must be the last one
 		MISSION_COUNT

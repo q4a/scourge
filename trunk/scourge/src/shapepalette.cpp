@@ -65,6 +65,13 @@ char *ShapePalette::columnDescription[] = {
 };
 int ShapePalette::columnDescriptionCount = 2;
 
+char *ShapePalette::teleporterDescription[] = {
+  "This teleporter appears to be functional (courtesy of the management)",
+	"This teleporter can take you back to headquarters",
+  "It is a teleporter"
+};
+int ShapePalette::teleporterDescriptionCount = 3;
+
 
 
 ShapePalette::ShapePalette(){
@@ -88,7 +95,7 @@ ShapePalette::ShapePalette(){
   strcpy(textures[texture_count++].filename, "chestside.bmp");
   strcpy(textures[texture_count++].filename, "chesttop.bmp");
   strcpy(textures[texture_count++].filename, "marble.bmp");
-	strcpy(textures[texture_count++].filename, "floor3.bmp");
+  strcpy(textures[texture_count++].filename, "floor3.bmp");
   formationTexIndex = texture_count;
   strcpy(textures[texture_count++].filename, "formation1.bmp");
   strcpy(textures[texture_count++].filename, "formation2.bmp");
@@ -352,6 +359,25 @@ void ShapePalette::initShapes() {
 					"COLUMN", columnDescription, columnDescriptionCount,
 					0xffffffff,
 					display_list + (count++ * 3), Constants::COLUMN_INDEX);
+
+	shapes[Constants::TELEPORTER_INDEX] =
+    new GLTeleporter(wood_tex, textures[9].id,
+					 4, 4, 14,
+					 "TELEPORTER", teleporterDescription, teleporterDescriptionCount,
+					 //(debug ? 0xff0000ff : 0xf0f0ffff),
+					 0x0040ffff,
+					 display_list + (count++ * 3),
+					 Constants::TELEPORTER_INDEX);
+
+	shapes[Constants::TELEPORTER_BASE_INDEX] =
+    new GLShape(marble_tex, 
+                4, 4, 1,
+                "TELEPORTER", teleporterDescription, teleporterDescriptionCount,
+                (debug ? 0xff0000ff : 0xf0f0ffff),
+                display_list + (count++ * 3),
+                Constants::TELEPORTER_BASE_INDEX);
+
+
 	
 	// creatures              
   // The order at which we "push back" models is important                 
@@ -541,6 +567,10 @@ void ShapePalette::loadTextures() {
   wood_tex[GLShape::FRONT_SIDE] = textures[3].id;
   wood_tex[GLShape::TOP_SIDE] = textures[6].id;
   wood_tex[GLShape::LEFT_RIGHT_SIDE] = textures[3].id;
+
+  marble_tex[GLShape::FRONT_SIDE] = textures[3].id;
+  marble_tex[GLShape::TOP_SIDE] = textures[16].id;
+  marble_tex[GLShape::LEFT_RIGHT_SIDE] = textures[3].id;
 
   floor_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
   floor_tex[GLShape::TOP_SIDE] = textures[4].id;

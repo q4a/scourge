@@ -23,7 +23,7 @@
 
 const Mission Board::prototypes[] = {
 	{ "Quest for the missing wand", 0, 2,
-		"One of our returning clients, Miffy the Merciless \
+	  "One of our returning clients, Miffy the Merciless \
 		(the name has been changed to protect the client's identity) \
 		has managed to loose his favorite wand of Slow Strangling, \
 		somewhere on level 2 within the Dungeon of Distaste. Your \
@@ -32,12 +32,22 @@ const Mission Board::prototypes[] = {
 		it is magically encoded to only work for its owner."		 
 	},
 	{ "Strange creatures seen in Hopelessness", 0, 3, 
-		"The local authorities contracted us to clean out the  \
+	  "The local authorities contracted us to clean out the  \
 		hillside dungeon of Fatal Hopelessness. They have reportedly seen strange \
 		monsters within its dismal halls. Please behave yourselves \
 		on this mission, as it is to our advantage to co-operate \
 		with the local police force."
+	},
+	{ "Diamonds of the black chest", 0, 4,
+	  "A new client (a pirate by profession) with an unhealthy look in his eyes \
+		requested that we retrieve his lost chest from the dungeons \
+		located in the caves near the islands of Salten Scurvy. Apparently, \
+		his chest contains a small fortune in diamonds. What makes his case \
+		unusually interesting is that everyone who has gazed upon this treasure \
+		has gone mad. If you should meet some of these unfortunate souls while \
+		on your mission, do dispatch them quickly."
 	}
+       
 };
 	
 Board::Board(Scourge *scourge) {
