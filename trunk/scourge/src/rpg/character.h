@@ -35,6 +35,7 @@ private:
   int startingHp, startingMp, skill_bonus, level_progression;
   char *model_name, *skin_name;
   char description[3000];
+  char *shortName;
   map<int, int> maxSkill;
   map<int, int> minSkill;
 
@@ -57,10 +58,11 @@ public:
   static const int INVENTORY_COUNT = 14;
   static char inventory_location[][80];
 
-  Character(char *name, int startingHp, int startingMp, char *model, char *skin, int skill_bonus, int level_progression);
+  Character(char *name, int startingHp, int startingMp, char *model, char *skin, int skill_bonus, int level_progression, char *shortName);
   ~Character();
 
   inline char *getName() { return name; };
+  inline char *getShortName() { return shortName; };
   inline int getStartingHp() { return startingHp; }  
   inline int getStartingMp() { return startingMp; }  
   inline int getSkillBonus() { return skill_bonus; }  
@@ -72,8 +74,12 @@ public:
   inline int getMinSkillLevel(int skill) { if(minSkill.find(skill) == minSkill.end()) return 0; else return minSkill[skill]; }
   
   static map<string, Character*> character_class;
+  static map<string, Character*> character_class_short;
+  static map<string, int> character_index_short;
   static void initCharacters();
   static Character *getCharacterByName(char *p) { string s = p; return character_class[s]; }
+  static Character *getCharacterByShortName(char *p) { string s = p; return character_class_short[s]; }
+  static int getCharacterIndexByShortName(char *p) {  string s = p; return character_index_short[s]; }
 
  protected:
   inline void setMinMaxSkill(int skill, int min, int max) { minSkill[skill] = min; maxSkill[skill] = max; }

@@ -31,6 +31,7 @@ class RpgItem {
   int index;
   char *name, *desc, *shortDesc;
   int level;
+  int rareness;
   int type;
   float weight; 
   int price, quality;
@@ -44,6 +45,7 @@ class RpgItem {
   int maxCharges;
   int potionSkill; // which skill does this potion effect?
   int potionTime;
+  GLuint acl; // 1 bit per character class
 
   static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
   static map<string, const RpgItem *> itemsByName;
@@ -77,7 +79,7 @@ class RpgItem {
   static RpgItem *items[1000];
   static int itemCount;
   
-  RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 
+  RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
 		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0,
 		  int potionSkill=-1, int potionTime=0);
@@ -87,6 +89,7 @@ class RpgItem {
   inline char *getName() { return name; }
   inline int getAction() { return action; }
   inline int getLevel()  { return level; }
+  inline int getRareness()  { return rareness; }
   inline int getSpeed() { return speed; }
   inline int getQuality() { return quality; }
   inline float getWeight() { return weight; }
@@ -99,6 +102,10 @@ class RpgItem {
   inline int getMaxCharges() { return maxCharges; }
   inline int getPotionSkill() { return potionSkill; }
   inline int getPotionTime() { return potionTime; }
+  inline bool getAcl(int index) { return (acl & (1 << index) ? true : false); }
+  inline void setAcl(int index, bool value) { if(value) acl |= (1 << index); else acl &= ((GLuint)0xffff - (GLuint)(1 << index)); }
+  inline void setAllAcl(bool value) { if(value) acl = (GLuint)0xffff; else acl = (GLuint)0; }
+  inline GLuint getAllAcl() { return acl; }
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs

@@ -41,13 +41,14 @@ char RpgItem::itemTypeStr[ITEM_TYPE_COUNT][40] = {
   "SCROLL"
 };
 
-RpgItem::RpgItem(int index, char *name, int level, int type, float weight, int price, int quality, 
+RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
 				 int twohanded, int distance, int skill, int maxCharges, int potionSkill,
 				 int potionTime) {
   this->index = index;
   this->name = name;
   this->level = level;
+  this->rareness = rareness;
   this->type = type;
   this->weight = weight;
   this->price = price;
@@ -64,6 +65,7 @@ RpgItem::RpgItem(int index, char *name, int level, int type, float weight, int p
   this->maxCharges = maxCharges;
   this->potionSkill = potionSkill;
   this->potionTime = potionTime;
+  this->acl = (GLuint)0xffff; // all on
 }
 
 RpgItem::~RpgItem() {
@@ -133,20 +135,19 @@ RpgItem *RpgItem::getRandomItem(int maxLevel) {
   if(levelMap && levelMap->size()) {
 	vector<const RpgItem*> *list = (*levelMap)[level];
 
-  /*
-  // create a new list where each item occurs item->rareness times
-  vector<const RpgItem*> rareList;
-  for(int i = 0; i < list->size(); i++) {
-    RpgItem *item = (*list)[i];
-    for(int t = 0; t < item->getRareness(); t++) {
-      rareList.push_back(item);
-    }
-  }
-  */
-
 	if(list && list->size()) {
-	  int n = (int)((float)((*list).size()) * rand()/RAND_MAX);
-	  return (RpgItem*)(*list)[n];
+
+    // create a new list where each item occurs item->rareness times
+    vector<RpgItem*> rareList;
+    for(int i = 0; i < (int)list->size(); i++) {
+      RpgItem *item = (RpgItem*)(*list)[i];
+      for(int t = 0; t < item->getRareness(); t++) {
+        rareList.push_back(item);
+      }
+    }
+
+	  int n = (int)((float)(rareList.size()) * rand()/RAND_MAX);
+	  return (RpgItem*)rareList[n];
 	}
   }
   return NULL;

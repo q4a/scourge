@@ -63,11 +63,12 @@ Scourge::Scourge(int argc, char *argv[]){
   
   shapePal = sdlHandler->getShapePalette();  
 
+  // init characters first. Items use it for acl
+  Character::initCharacters();
   // initialize the items
   Item::initItems(shapePal);
   // initialize the monsters (they use items)
   Monster::initMonsters();
-  Character::initCharacters();
   MagicSchool::initMagic();
 
   // create the mission board

@@ -35,6 +35,8 @@ char Character::inventory_location[][80] = {
 };
 
 map<string, Character*> Character::character_class;
+map<string, Character*> Character::character_class_short;
+map<string, int> Character::character_index_short;
 
 void Character::initCharacters() {
   char errMessage[500];
@@ -49,7 +51,8 @@ void Character::initCharacters() {
 
   Character *last = NULL;
   char name[255], model[255], skin[255];
-  char line[255];
+  char line[255], shortName[10];
+  int index = 0;
   int n = fgetc(fp);
   while(n != EOF) {
 	if(n == 'C') {
@@ -65,13 +68,19 @@ void Character::initCharacters() {
 	  int mp =  atoi(strtok(NULL, ","));
 	  int skill_bonus =  atoi(strtok(NULL, ","));
 	  int level_progression = atoi(strtok(NULL, ","));
+    strcpy(shortName, strtok(NULL, ","));
 
 	  cerr << "adding character class: " << name << " model: " << model << 
-		" skin: " << skin << " hp: " << hp << " mp: " << mp << " skill_bonus: " << skill_bonus << endl;
+		" skin: " << skin << " hp: " << hp << " mp: " << mp << " skill_bonus: " << 
+      skill_bonus << " shortName=" << shortName << endl;
 
-	  last = new Character( strdup(name), hp, mp, strdup(model), strdup(skin), skill_bonus, level_progression );
+	  last = new Character( strdup(name), hp, mp, strdup(model), strdup(skin), skill_bonus, 
+                          level_progression, strdup(shortName) );
 	  string s = name;
 	  character_class[s] = last;
+    string s2 = shortName;
+	  character_class_short[s2] = last;
+    character_index_short[s2] = index++;
 	} else if(n == 'D' && last) {
 	  fgetc(fp);
 	  n = Constants::readLine(line, fp);
@@ -101,7 +110,7 @@ void Character::initCharacters() {
 }
 
 Character::Character(char *name, int startingHp, int startingMp, char *model, 
-					 char *skin, int skill_bonus, int level_progression ) {  
+					 char *skin, int skill_bonus, int level_progression, char *shortName ) {  
   this->name = name;
   this->startingHp = startingHp;
   this->startingMp = startingMp;
@@ -109,6 +118,7 @@ Character::Character(char *name, int startingHp, int startingMp, char *model,
   this->skin_name = skin;
   this->skill_bonus = skill_bonus;
   this->level_progression = level_progression;
+  this->shortName = shortName;
   strcpy(description, "");
 }
 
