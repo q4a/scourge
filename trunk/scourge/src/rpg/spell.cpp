@@ -145,6 +145,8 @@ void MagicSchool::initMagic() {
 	  bool locationTarget = (strchr(s, 'L') != NULL);
 	  bool itemTarget = (strchr(s, 'I') != NULL);
       bool partyTarget = (strchr(s, 'P') != NULL);
+	  int iconTileX = atoi( strtok( NULL, "," ) ) - 1;
+	  int iconTileY = atoi( strtok( NULL, "," ) ) - 1;
 
 
 	  if(!current) {
@@ -163,7 +165,7 @@ void MagicSchool::initMagic() {
 	  currentSpell = new Spell( strdup(name), level, mp, exp, failureRate, 
 								action, distance, targetType, speed, effect, 
 								creatureTarget, locationTarget, itemTarget, partyTarget,
-								current );
+								current, iconTileX, iconTileY );
 	  current->addSpell( currentSpell );
 	} else if( n == 'W' && currentSpell ) {
 	  fgetc(fp);
@@ -214,7 +216,8 @@ Spell *MagicSchool::getRandomSpell(int level) {
 
 Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
 			 int distance, int targetType, int speed, int effect, bool creatureTarget, 
-			 bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school) {
+			 bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
+			 int iconTileX, int iconTileY) {
   this->name = name;
   this->sound = NULL;
   this->level = level;
@@ -231,6 +234,8 @@ Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *acti
   this->itemTarget = itemTarget;
   this->partyTarget = partyTarget;
   this->school = school;
+  this->iconTileX = iconTileX;
+  this->iconTileY = iconTileY;
 
   strcpy(this->notes, "");
 

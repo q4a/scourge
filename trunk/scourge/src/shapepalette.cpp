@@ -510,10 +510,20 @@ void ShapePalette::initialize() {
   }
 
   // set up the inventory tiles
-  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 32, 32, 71, 108, 108, 80, 80, 80 );
+  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 
+							32, 32, 71, 108, 108, 80, 80, 80 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
       tilesTex[x][y] = loadGLTextureBGRA( 32, 32, tilesImage[x][y], GL_LINEAR );
+    }
+  }
+
+  // set up the spell tiles
+  setupAlphaBlendedBMPGrid( "/spells.bmp", &spells, spellsImage, 20, 5, 
+							32, 32, 71, 108, 108, 80, 80, 80 );
+  for( int x = 0; x < 20; x++ ) {
+    for( int y = 0; y < 5; y++ ) {
+      spellsTex[x][y] = loadGLTextureBGRA( 32, 32, spellsImage[x][y], GL_LINEAR );
     }
   }
   
@@ -1011,13 +1021,13 @@ void ShapePalette::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surfa
 
           //if( i == 0 ) cerr << "r=" << (int)(r) << " g=" << (int)(g) << " b=" << (int)(b) << endl;
           
-          image[x][y][count++] = ( r == red && nred > -1 ? nred : r );
-          image[x][y][count++] = ( g == green && ngreen > -1 ? ngreen : g );
-          image[x][y][count++] = ( b == blue && nblue > -1 ? nblue : b );
+          image[ x ][ y ][count++] = ( r == red && nred > -1 ? nred : r );
+          image[ x ][ y ][count++] = ( g == green && ngreen > -1 ? ngreen : g );
+          image[ x ][ y ][count++] = ( b == blue && nblue > -1 ? nblue : b );
 
           //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
           //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
-          image[x][y][count++] = (GLubyte)( ((int)r == blue && 
+          image[ x ][ y ][count++] = (GLubyte)( ((int)r == blue && 
                                           (int)g == green && 
                                           (int)b == red ? 
                                           0x00 : 

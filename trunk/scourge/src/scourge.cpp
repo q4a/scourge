@@ -2759,9 +2759,30 @@ void Scourge::drawWidget(Widget *w) {
       for(int i = 0; i < party->getPartySize(); i++) {
         if( party->getParty( i ) == getParty()->getPlayer() ) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {
-            glColor3f( 1, 1, 1 );
-            // FIXME: need spell pics... for now just print name
-            getSDLHandler()->texPrint( 0, 20, "%s", getParty()->getPlayer()->getQuickSpell( t )->getName() );
+			Spell *spell = getParty()->getPlayer()->getQuickSpell( t );
+			glEnable( GL_ALPHA_TEST );
+			glAlphaFunc( GL_EQUAL, 0xff );
+			glEnable(GL_TEXTURE_2D);
+			glPushMatrix();
+			//    glTranslatef( x, y, 0 );
+			glBindTexture( GL_TEXTURE_2D, getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+			glColor4f(1, 1, 1, 1);
+			
+			glBegin( GL_QUADS );
+			glNormal3f( 0, 0, 1 );
+			glTexCoord2f( 0, 0 );
+			glVertex3f( 0, 0, 0 );
+			glTexCoord2f( 0, 1 );
+			glVertex3f( 0, w->getHeight(), 0 );
+			glTexCoord2f( 1, 1 );
+			glVertex3f( w->getWidth(), w->getHeight(), 0 );
+			glTexCoord2f( 1, 0 );
+			glVertex3f( w->getWidth(), 0, 0 );
+			glEnd();
+			glPopMatrix();
+			
+			glDisable( GL_ALPHA_TEST );
+			glDisable(GL_TEXTURE_2D);
           }
           return;
         }
