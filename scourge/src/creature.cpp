@@ -35,7 +35,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->character = character;
   this->monster = NULL;
   this->name = name;
-  this->shape = scourge->getShapePalette()->getCreatureShape(character->getShapeIndex());
+  this->shapeIndex = character->getShapeIndex();
   sprintf(description, "%s the %s", name, character->getName());
   this->speed = 50;
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
@@ -47,7 +47,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->character = NULL;
   this->monster = monster;
   this->name = monster->getType();
-  this->shape = scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex());
+  this->shapeIndex = monster->getShapeIndex();
   sprintf(description, "You see %s", monster->getType());
   this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
@@ -56,6 +56,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
 }
 
 void Creature::commonInit() {
+  this->shape = scourge->getShapePalette()->getCreatureShape(shapeIndex);
   this->x = this->y = this->z = 0;
   this->dir = Constants::MOVE_UP;
   this->next = NULL;
@@ -494,10 +495,14 @@ int Creature::getDamage(Item *weapon) {
 }
 
 // take some damage
-void Creature::takeDamage(int damage) {
+bool Creature::takeDamage(int damage) {
+  // show an effect
   resetDamageEffect();
   setEffectType(Constants::EFFECT_GLOW);
   //setEffectType(Constants::EFFECT_FLAMES);
+
+  hp -= damage;
+  return (hp <= 0);
 }
 
 /**
@@ -569,4 +574,6 @@ void Creature::monsterInit() {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
       setSkill(i, (int)((float)(10 * level) * rand()/RAND_MAX));
   }
+  // add some hp
+  hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
 }

@@ -50,6 +50,7 @@ private:
   bool controlsLoaded;
   int nbControlLines;
   bool waitingForNewKey;
+  bool ignoreKeyUp;
     
   enum modeOptions {
     CONTROLS = 0, VIDEO, AUDIO, GAME_SETTINGS

@@ -36,13 +36,20 @@ class Scourge;
 class Item {
 private:
   RpgItem *rpgItem;
+  int shapeIndex;
+  Color *color;
+  GLShape *shape;
   
 public:
   Item(RpgItem *rpgItem);
   ~Item();
   
-  inline GLShape *getShape() { return ShapePalette::getInstance()->getItemShape(this->rpgItem->getShapeIndex()); }
+  inline Color *getColor() { return color; }
+  inline void setColor(Color *c) { color = c; }
+  inline void setShape(GLShape *s) { shape = s; }
+  inline GLShape *getShape() { return shape; }
   inline RpgItem *getRpgItem() { return rpgItem; }
+
 };
 
 #endif

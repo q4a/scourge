@@ -70,22 +70,27 @@ RpgItem *RpgItem::items[] =  {
 
   
   // CONTAINERS:
-  new RpgItem(CHEST, "Chest", 1, CONTAINER, 100, 0, 100, 0, 0,
+  new RpgItem(CHEST, "Chest", 1, CONTAINER, 100, CONTAINER, 100, 0, 0,
 			  "A wooden chest with metal re-inforced edges",
 			  "An ancient chest", 0,
 			  Constants::CHEST_INDEX),
-  new RpgItem(BOOKSHELF, "Bookshelf", 1, CONTAINER, 200, 0, 100, 0, 0,
+  new RpgItem(BOOKSHELF, "Bookshelf", 1, CONTAINER, 200, CONTAINER, 100, 0, 0,
 			  "A bookshelf containing tomes of old",
 			  "A large bookself", 0,
 			  Constants::BOOKSHELF_INDEX),
-  new RpgItem(CHEST2, "Chest", 1, CONTAINER, 100, 0, 100, 0, 0,
+  new RpgItem(CHEST2, "Chest", 1, CONTAINER, 100, CONTAINER, 100, 0, 0,
 			  "A wooden chest with metal re-inforced edges",
 			  "An ancient chest", 0,
 			  Constants::CHEST2_INDEX),
-  new RpgItem(BOOKSHELF2, "Bookshelf", 1, CONTAINER, 200, 0, 100, 0, 0,
+  new RpgItem(BOOKSHELF2, "Bookshelf", 1, CONTAINER, 200, CONTAINER, 100, 0, 0,
 			  "A bookshelf containing tomes of old",
 			  "A large bookself", 0,
-			  Constants::BOOKSHELF2_INDEX)
+			  Constants::BOOKSHELF2_INDEX),
+  new RpgItem(CORPSE, "Corpse", 1, CONTAINER, 200, CONTAINER, 100, 0, 0,
+			  "The decomposing corpse of one once strong and able",
+			  "A decomposing corpse", 0,
+			  Constants::CHEST_INDEX)
+
 };
 
 RpgItem::RpgItem(int index, char *name, int level, int type, int weight, int price, int quality, 

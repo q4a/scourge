@@ -349,6 +349,7 @@ public:
 	blinded, 
 	charmed, 
 	changed,
+	dead,
 	
 	// must be last
 	STATE_MOD_COUNT

@@ -64,14 +64,23 @@ void Window::drawVisibleWindows() {
 }
 
 Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
-  Widget *widget = NULL;
+  // find the topmost window
+  Window *win = NULL;
+  int maxz = 0;
   for(int i = 0; i < windowCount; i++) {
-	if(window[i]->isVisible()) {
-	  widget = window[i]->handleWindowEvent(event, x, y);
-	  if(widget) return widget;
+	if(window[i]->isVisible() && window[i]->isInside(x, y)) {
+	  if(maxz < window[i]->getZ()) {
+		win = window[i];
+		maxz = win->getZ();
+	  }
 	}
   }
-  return NULL;
+  // find the active widget
+  Widget *widget = NULL;
+  if(win) {
+	widget = win->handleWindowEvent(event, x, y);
+  }
+  return widget;
 }
 
 Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {

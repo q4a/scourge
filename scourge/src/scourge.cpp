@@ -67,17 +67,18 @@ Scourge::Scourge(int argc, char *argv[]){
   party[2] = pc[2];
   party[3] = pc[3];
 
+  // do this before the inventory and optionsdialog (so Z is less than of those)
+  createUI();
+
   player_only = false;
-  inventory = new Inventory(this);
   move = 0;
   startRound = true;
   battleCount = 0;
   gameSpeed = 70; // the greater the slower the game (in ticks) 
-
-  createUI();
   
   // show the main menu
   mainMenu = new MainMenu(this);  
+  inventory = new Inventory(this);
   optionsMenu = new OptionsMenu(this);
 
   while(true) {
@@ -235,7 +236,7 @@ void Scourge::drawView(SDL_Surface *screen) {
 
   miniMap->draw(0, 400);
 
-  if(inventory->isVisible()) inventory->drawInventory();
+  //  if(inventory->isVisible()) inventory->drawInventory();
   
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );      
@@ -343,10 +344,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }
     else if(ea == SHOW_INVENTORY){
-        inventory->show();        
+	  if(startRound) toggleRound();
+	  inventory->show();        
     }
     else if(ea == SHOW_OPTIONS_MENU){
-        optionsMenu->show();
+	  if(startRound) toggleRound();
+	  optionsMenu->show();
     }
     else if(ea == USE_ITEM_STOP){
         useItem();
@@ -356,22 +359,22 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	else setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
     }   
     else if(ea == SET_X_ROT_PLUS){        
-        map->setXRot(1.0f);
+        map->setXRot(5.0f);
     }
     else if(ea == SET_X_ROT_MINUS){
-        map->setXRot(-1.0f);
+        map->setXRot(-5.0f);
     }
     else if(ea == SET_Y_ROT_PLUS){
-        map->setYRot(1.0f);
+        map->setYRot(5.0f);
     }
     else if(ea == SET_Y_ROT_MINUS){
-        map->setYRot(-1.0f);
+        map->setYRot(-5.0f);
     }
     else if(ea == SET_Z_ROT_PLUS){
-        map->setZRot(1.0f);
+        map->setZRot(5.0f);
     }
     else if(ea == SET_Z_ROT_MINUS){
-        map->setZRot(-1.0f);
+        map->setZRot(-5.0f);
     }    
     else if(ea == SET_X_ROT_PLUS_STOP){
         map->setXRot(0.0f);
@@ -812,10 +815,16 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(widget == inventoryButton) {
 	if(inventory->isVisible()) inventory->hide();
-	else inventory->show();
+	else {
+	  if(startRound) toggleRound();
+	  inventory->show();
+	}
   } else if(widget == optionsButton) {
 	if(optionsMenu->isVisible()) optionsMenu->hide();
-	else optionsMenu->show();
+	else {
+	  if(startRound) toggleRound();
+	  optionsMenu->show();
+	}
   } else if(widget == quitButton) {
 	return true;
   } else if(widget == diamondButton) {
@@ -942,7 +951,8 @@ void Scourge::playRound() {
 	
 	// move visible monsters
 	for(int i = 0; i < creatureCount; i++) {
-	  if(map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
+	  if(!creatures[i]->getStateMod(Constants::dead) && 
+		 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
 		moveMonster(creatures[i]);
 	  }
 	}
@@ -958,7 +968,8 @@ void Scourge::playRound() {
 	  }
 	}
 	for(int i = 0; i < creatureCount; i++) {
-	  if(map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
+	  if(!creatures[i]->getStateMod(Constants::dead) && 
+		 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
 		 creatures[i]->getTargetCreature()) {
 		battle[battleCount].creature = creatures[i];
 		battleCount++;
@@ -981,90 +992,103 @@ void Scourge::fightBattle() {
 	bool creatureFound = false;
 	for(int i = 0; i < battleCount; i++) {
 	  Creature *creature = battle[i].creature;
-	  float dist = Util::distance(creature->getX(), 
-								  creature->getY(), 
-								  creature->getShape()->getWidth(),
-								  creature->getShape()->getDepth(),
-								  creature->getTargetCreature()->getX(),
-								  creature->getTargetCreature()->getY(),
-								  creature->getTargetCreature()->getShape()->getWidth(),
-								  creature->getTargetCreature()->getShape()->getDepth());
-	  // get the best weapon given the distance from the target
-	  Item *item = creature->getBestWeapon(dist);
-	  // creature won't fight if too far from the action 
-	  // (!item) is a bare-hands attack
+
+	  // if someone already killed this target, skip it
+	  if(creature->getTargetCreature()->getStateMod(Constants::dead)) {
+		creature->setTargetCreature(NULL);
+		if(creature->isMonster()) {
+		  creature->setMotion(Constants::MOTION_LOITER);
+		}
+	  } else {
 	  
-	  GLint t = SDL_GetTicks();
-	  int itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
-	  if(item || dist <= 1.0f) {
-		if((itemSpeed * 150) < t - creature->getLastTurn()) {
-		  // not time for this creature's turn yet
-		  int creatureInitiative = creature->getInitiative(item);
-		  if(creatureInitiative > initiative) continue;
-		  creatureFound = true;
-		  
-		  // remember the last active turn
-		  creature->setLastTurn(t);
-		  
-		  if(!fightingStarted) {
-			map->addDescription("A round of battle begins...", 1, 1, 1);
-			fightingStarted = true;
-		  }
-		  
-		  if(item) {
-			sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
-					creature->getName(), 
-					creature->getTargetCreature()->getName(),
-					item->getRpgItem()->getName(),
-					creatureInitiative, itemSpeed);
-			map->addDescription(message);
-		  } else if(dist <= 1.0f) {
-			sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
-					creature->getName(), 
-					creature->getTargetCreature()->getName(),
-					creatureInitiative, itemSpeed);
-			map->addDescription(message);
-		  }
-		  
-		  // the target creature gets really upset...
-		  // this is also an optimization for fps
-		  if(creature->getTargetCreature()->isMonster() && 
-			 !creature->getTargetCreature()->getTargetCreature()) {
-			creature->getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
-			creature->getTargetCreature()->setTargetCreature(creature);
-		  }
-		  
-		  // take a swing
-		  int tohit = creature->getToHit(item);
-		  int ac = creature->getTargetCreature()->getArmor();
-		  if(tohit > ac) {
+		float dist = Util::distance(creature->getX(), 
+									creature->getY(), 
+									creature->getShape()->getWidth(),
+									creature->getShape()->getDepth(),
+									creature->getTargetCreature()->getX(),
+									creature->getTargetCreature()->getY(),
+									creature->getTargetCreature()->getShape()->getWidth(),
+									creature->getTargetCreature()->getShape()->getDepth());
+		// get the best weapon given the distance from the target
+		Item *item = creature->getBestWeapon(dist);
+		// creature won't fight if too far from the action 
+		// (!item) is a bare-hands attack
+		
+		GLint t = SDL_GetTicks();
+		int itemSpeed = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
+		if(item || dist <= 1.0f) {
+		  if((itemSpeed * 150) < t - creature->getLastTurn()) {
+			// not time for this creature's turn yet
+			int creatureInitiative = creature->getInitiative(item);
+			if(creatureInitiative > initiative) continue;
+			creatureFound = true;
 			
-			// deal out the damage
-			int damage = creature->getDamage(item);
-			if(damage) {
-			  sprintf(message, "...and hits! (toHit=%d vs. AC=%d) for %d points of damage", 
-					  tohit, ac, damage);
-			  map->addDescription(message, 1.0f, 0.5f, 0.5f);
-			  
-			  creature->getTargetCreature()->takeDamage(damage);
-			  
-			} else {
-			  sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 
-					  tohit, ac);
+			// remember the last active turn
+			creature->setLastTurn(t);
+			
+			if(!fightingStarted) {
+			  map->addDescription("A round of battle begins...", 1, 1, 1);
+			  fightingStarted = true;
+			}
+			
+			if(item) {
+			  sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
+					  creature->getName(), 
+					  creature->getTargetCreature()->getName(),
+					  item->getRpgItem()->getName(),
+					  creatureInitiative, itemSpeed);
+			  map->addDescription(message);
+			} else if(dist <= 1.0f) {
+			  sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
+					  creature->getName(), 
+					  creature->getTargetCreature()->getName(),
+					  creatureInitiative, itemSpeed);
 			  map->addDescription(message);
 			}
 			
-		  } else {
-			// missed
-			sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
-			map->addDescription(message);
+			// the target creature gets really upset...
+			// this is also an optimization for fps
+			if(creature->getTargetCreature()->isMonster() && 
+			   !creature->getTargetCreature()->getTargetCreature()) {
+			  creature->getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
+			  creature->getTargetCreature()->setTargetCreature(creature);
+			}
+			
+			// take a swing
+			int tohit = creature->getToHit(item);
+			int ac = creature->getTargetCreature()->getArmor();
+			if(tohit > ac) {
+			  
+			  // deal out the damage
+			  int damage = creature->getDamage(item);
+			  if(damage) {
+				sprintf(message, "...and hits! (toHit=%d vs. AC=%d) for %d points of damage", 
+						tohit, ac, damage);
+				map->addDescription(message, 1.0f, 0.5f, 0.5f);
+				
+				if(creature->getTargetCreature()->takeDamage(damage)) {
+				  sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
+				  map->addDescription(message, 1.0f, 0.5f, 0.5f);
+				  creatureDeath(creature->getTargetCreature());
+				}
+			  } else {
+				sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 
+						tohit, ac);
+				map->addDescription(message);
+			  }
+			  
+			} else {
+			  // missed
+			  sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
+			  map->addDescription(message);
+			}
 		  }
+		} else {
+		  // out of range
+		  creature->setSelXY(creature->getTargetCreature()->getX(),
+							 creature->getTargetCreature()->getY(),
+							 true);
 		}
-	  } else {
-		// out of range
-		creature->setSelXY(creature->getTargetCreature()->getX(),
-						   creature->getTargetCreature()->getY(),
-						   true);
 	  }
 	  // remove this creature from the turn
 	  for(int t = i; t < battleCount - 1; t++) {
@@ -1075,6 +1099,16 @@ void Scourge::fightBattle() {
 	}
 	if(!creatureFound) initiative++;
   }
+}
+
+void Scourge::creatureDeath(Creature *creature) {
+  // remove from the map; the object will be cleaned up at the end of the mission
+  map->removeCreature(creature->getX(), creature->getY(), creature->getZ());
+  // add a container object instead
+  Item *item = newItem(RpgItem::items[RpgItem::CORPSE]);
+  // FIXME: add creature's inventory to container
+  map->setItem(creature->getX(), creature->getY(), creature->getZ(), item);
+  creature->setStateMod(Constants::dead, true);
 }
 
 // move the player in a direction as specified by keystroke
