@@ -54,6 +54,7 @@ public:
   void handleUnknownMessage();
   void serverClosing();
   void character(char *bytes, int length);
+  void addPlayer(Uint32 id, char *bytes, int length);
 
   inline Window *getWindow() { return mainWin; }
 
