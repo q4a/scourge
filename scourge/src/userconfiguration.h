@@ -88,7 +88,7 @@ enum engine_action_int{
 // If you change this, ALSO change ENGINE_ACTION_UP_NAMES in userconfiguration.cpp
 enum engine_action_up_int{
 
-    SET_MOVE_DOWN_STOP = 0,
+    SET_MOVE_DOWN_STOP = 500,
     SET_MOVE_RIGHT_STOP, 
     SET_MOVE_UP_STOP,
     SET_MOVE_LEFT_STOP,
