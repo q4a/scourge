@@ -127,7 +127,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   int movingX, movingY, movingZ;
   Item *movingItem;
   Uint16 move;
-  GLint lastTick, lastProjectileTick;
+  GLint lastTick;
   int battleCount;
   Battle *battle[MAX_BATTLE_COUNT];  
 
@@ -150,7 +150,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   bool teleporting;
   
   vector<Battle *> battleRound;
-  int battleTurn;
+  int battleTurn, rtStartTurn;
 
   bool mouseMoveScreen;
   Creature *targetSelectionFor;
@@ -589,6 +589,7 @@ public:
 
   void updatePartyUI();
 
+  void moveProjectiles();
   bool fightCurrentBattleTurn();
   bool createBattleTurns();
   void resetUIAfterBattle();

@@ -34,7 +34,7 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
-  lastTick = lastProjectileTick = 0;
+  lastTick = 0;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
@@ -378,7 +378,9 @@ void Scourge::drawView() {
       if(!party->getParty(i)->getStateMod(Constants::dead)) {
 
         bool player = party->getPlayer() == party->getParty(i);
-        if(party->isRealTimeMode() && battleTurn < (int)battleRound.size()) {
+        if(session->getUserConfiguration()->isBattleTurnBased() && 
+           party->isRealTimeMode() && 
+           battleTurn < (int)battleRound.size()) {
           player = (party->getParty(i) == battleRound[battleTurn]->getCreature());
         }
 
@@ -1935,25 +1937,15 @@ void Scourge::playRound() {
 
   if(targetSelectionFor) return;
  
-  // round starts if:
-  // -in group mode
-  // -(or) the round was manually started
-  GLint t = SDL_GetTicks();
+  // is the game not paused?
   if(party->isRealTimeMode()) {
-    if(lastProjectileTick == 0 || t - lastProjectileTick > userConfiguration->getGameSpeedTicks() / 50) {
-      lastProjectileTick = t;
-      
-      // move projectiles
-      Projectile::moveProjectiles(this);
-    }
+
+    Projectile::moveProjectiles(this);
 
     // fight battle turns
     bool fromBattle = false;
     if(battleRound.size() > 0) {
-      if(lastTick == 0 || t - lastTick > userConfiguration->getGameSpeedTicks()) {
-        lastTick = t;
-        fromBattle = fightCurrentBattleTurn();
-      }
+      fromBattle = fightCurrentBattleTurn();
     } 
 
     // create a new battle round
@@ -1969,20 +1961,41 @@ void Scourge::playRound() {
 }
 
 bool Scourge::fightCurrentBattleTurn() {
-  // fight a turn of the battle
-  if(battleRound.size() > 0) {
-    if(battleTurn < (int)battleRound.size()) {
-      Battle *battle = battleRound[battleTurn];
-      if(battle->fightTurn()) {
-        battleTurn++;
-      }
-    } else {
-      battleTurn = 0;
-      battleRound.clear();
+  Uint32 t = SDL_GetTicks();
+  if(!getUserConfiguration()->isBattleTurnBased() || 
+     lastTick == 0 || 
+     t - lastTick > userConfiguration->getGameSpeedTicks()) {
+    lastTick = t;
+    // fight a turn of the battle
+    if(battleRound.size() > 0) {
+      if(battleTurn < (int)battleRound.size()) {
+        Battle *battle = battleRound[battleTurn];
 
-      if(DEBUG_BATTLE) cerr << "ROUND ENDS" << endl;
-      if(DEBUG_BATTLE) cerr << "----------------------------------" << endl;
-      return true;
+        if(getUserConfiguration()->isBattleTurnBased()) {
+          if(battle->fightTurn()) {
+            battleTurn++;
+          }
+        } else {
+          if(battle->fightTurn()) {
+            // in RT mode, if the turn is over move it before rtStartTurn
+            Battle *tmp = battleRound[rtStartTurn];
+            battleRound[rtStartTurn] = battleRound[battleTurn];
+            battleRound[battleTurn] = tmp;
+            rtStartTurn++;
+          }
+          battleTurn++;
+          // go back to the start
+          if(rtStartTurn < (int)battleRound.size() - 1 && 
+             battleTurn == (int)battleRound.size()) battleTurn = rtStartTurn;
+        }
+      } else {
+        rtStartTurn = battleTurn = 0;
+        battleRound.clear();
+        
+        if(DEBUG_BATTLE) cerr << "ROUND ENDS" << endl;
+        if(DEBUG_BATTLE) cerr << "----------------------------------" << endl;
+        return true;
+      }
     }
   }
   return false;

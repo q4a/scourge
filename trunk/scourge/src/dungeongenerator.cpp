@@ -1692,8 +1692,8 @@ bool DungeonGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape,
 // move this to Map class
 bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal, 
                                   Shape *shape, int x, int y) {
-  for(int ty = y - shape->getDepth() - 3; ty < y + 3; ty++) {
-    for(int tx = x - 3; tx < x + shape->getWidth() + 3; tx++) {
+  for(int ty = y - shape->getDepth() - 6; ty < y + 6; ty++) {
+    for(int tx = x - 6; tx < x + shape->getWidth() + 6; tx++) {
       if(map->isDoor(tx, ty)) return true;
     }
   }

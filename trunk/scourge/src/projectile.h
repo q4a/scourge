@@ -57,6 +57,7 @@ class Projectile {
   bool seeker;
 
   static map<Creature*, vector<Projectile*>*> projectiles;
+  static Uint32 lastProjectileTick;
   
  public:
   Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
