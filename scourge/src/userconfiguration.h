@@ -283,6 +283,8 @@ private:
   inline char *getUserName() { return userName; }
   inline int getPort() { return port; }
 
+  void createConfigDir();
+
  protected:  
 	void createDefaultConfigFile();
 };

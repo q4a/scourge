@@ -22,6 +22,7 @@
 #include <vector>
 #include "../constants.h"
 #include "character.h"
+#include "../persist.h"
 
 using namespace std;
 
@@ -55,7 +56,12 @@ public:
   MagicAttrib();
   ~MagicAttrib();
 
+  MagicAttribInfo *save();
+  static MagicAttribInfo *saveEmpty();
+  static MagicAttrib *load(Session *session, MagicAttribInfo *info);
+
   inline map<int,int> *getSkillBonusMap() { return &skillBonus; }
+  inline int getSkillBonus(int skill) { return (skillBonus.find(skill) == skillBonus.end() ? 0 : skillBonus[skill]); }
   inline int getLevel() { return level; }
   inline int getBonus() { return bonus; }
   inline int getDamageMultiplier() { return damageMultiplier; }

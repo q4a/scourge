@@ -29,6 +29,8 @@ Party::Party(Session *session) {
   calendar = Calendar::getInstance();
 
   partySize = 0;
+
+  loadedCount = 0;
 }
 
 Party::~Party() {
@@ -50,14 +52,20 @@ void Party::reset() {
   // This will be replaced by a call to the character builder which either
   // loads or creates the party.
   deleteParty();
-  Creature **pc;
-  int pcCount;
-  createHardCodedParty(session, &pc, &pcCount);
-  party[0] = player = pc[0];
-  party[1] = pc[1];
-  party[2] = pc[2];
-  party[3] = pc[3];
-  partySize = pcCount;
+  if(loadedCount) {
+    cerr << "*** Using loaded party!" << endl;
+    for(int i = 0; i < loadedCount; i++) {
+      party[i] = loadedParty[i];
+    }
+    partySize = loadedCount;
+    loadedCount = 0;
+  } else {
+    cerr << "*** Creating new party!" << endl;
+//    Creature *pc[MAX_PARTY_SIZE];
+//    int pcCount;
+    createHardCodedParty(session, party, &partySize);  
+  }
+  player = party[0];
   session->getGameAdapter()->resetPartyUI();
 }
 
@@ -248,9 +256,8 @@ int Party::getTotalLevel() {
 /**
    Create a party programmatically until the party editor is made.
  */
-void Party::createHardCodedParty(Session *session, Creature ***party, int *partySize) {
+void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize) {
   int pcCount = 4;
-  Creature **pc = (Creature**)malloc(sizeof(Creature*) * pcCount);
 
 #ifdef RANDOM_PARTY
 
@@ -364,7 +371,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   // the end of startMission would have to be modified to not delete the party
   // also in scourge, where-ever creatureCount is used to mean all monsters would have
   // to change (maybe that's a good thing too... same logic for party and monsters)
-  pc[0] = new Creature(session, Character::getCharacterByName("Assassin"), "Alamont");
+  pc[0] = new Creature(session, Character::getCharacterByName("Assassin"), strdup("Alamont"));
   pc[0]->setLevel(level); 
   pc[0]->setExp();
   pc[0]->setHp();
@@ -373,7 +380,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[0]->setThirst(7); 
   pc[0]->setStateMod(Constants::blessed, true);
 
-  pc[1] = new Creature(session, Character::getCharacterByName("Knight"), "Barlett");
+  pc[1] = new Creature(session, Character::getCharacterByName("Knight"), strdup("Barlett"));
   pc[1]->setLevel(level); 
   pc[1]->setExp();
   pc[1]->setHp();
@@ -383,7 +390,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[1]->setStateMod(Constants::drunk, true);
   pc[1]->setStateMod(Constants::cursed, true);      
 
-  pc[2] = new Creature(session, Character::getCharacterByName("Summoner"), "Corinus");
+  pc[2] = new Creature(session, Character::getCharacterByName("Summoner"), strdup("Corinus"));
   pc[2]->setLevel(level); 
   pc[2]->setExp();
   pc[2]->setHp();
@@ -396,7 +403,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   //  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
   //  	if(i != Constants::dead) pc[2]->setStateMod(i, true);
 
-  pc[3] = new Creature(session, Character::getCharacterByName("Naturalist"), "Dialante");    
+  pc[3] = new Creature(session, Character::getCharacterByName("Naturalist"), strdup("Dialante"));    
   pc[3]->setLevel(level); 
   pc[3]->setExp();
   pc[3]->setHp();
@@ -532,8 +539,12 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[3]->addSpell(Spell::getSpellByName("Break from possession"));
 #endif
 
-  *party = pc;
   *partySize = pcCount;  
+}
+
+void Party::setParty(int count, Creature **creatures) {
+  loadedCount = count;
+  for(int i = 0; i < count; i++) loadedParty[i] = creatures[i];
 }
 
 /** 

@@ -881,22 +881,31 @@ UserConfiguration::~UserConfiguration(){
 
 }
 
-void UserConfiguration::createDefaultConfigFile() {
-  char path[300];
-  
-#ifndef WIN32
+void UserConfiguration::createConfigDir() {
+  char path[300]; 
+#ifndef WIN32     
   // first create the directory
   // no need on windows, this file is saved in the current dir
-
   get_config_dir_name(path, 300);
-  int err = mkdir( path, S_IRWXU|S_IRGRP|S_IXGRP );
-  if(err) {
-	cerr << "Error creating config directory: " << path << endl;
-	cerr << "Error: " << err << endl;
-	perror("UserConfiguration::createDefaultConfigFile: ");
-	exit(1);
+  FILE *fp = fopen( path, "r" );
+  if( !fp ) {
+    int err = mkdir( path, S_IRWXU|S_IRGRP|S_IXGRP );
+    if(err) {
+      cerr << "Error creating config directory: " << path << endl;
+      cerr << "Error: " << err << endl;
+      perror("UserConfiguration::createDefaultConfigFile: ");
+      exit(1);
+    }
+  } else {
+    fclose( fp );
   }
-#endif
+#endif      
+}
+
+void UserConfiguration::createDefaultConfigFile() {
+  createConfigDir();
+
+  char path[300];
 
   // now create the file
   get_config_file_name(path, 300);

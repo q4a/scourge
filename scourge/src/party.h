@@ -49,6 +49,9 @@ class Party {
 
   static Creature *lastPlayer;
 
+  Creature *loadedParty[MAX_PARTY_SIZE];
+  int loadedCount;
+
  public:
 
   Party(Session *session);
@@ -107,10 +110,12 @@ class Party {
 
   void startEffect(int effect_type, int duration=Constants::DAMAGE_DURATION);
 
-  static void createHardCodedParty(Session *session, Creature ***party, int *partySize);
+  static void createHardCodedParty(Session *session, Creature **party, int *partySize);
 
   void savePlayerSettings();
   void restorePlayerSettings();
+
+  void setParty(int count, Creature **creatures);
 
 protected:
   void resetPartyUI();

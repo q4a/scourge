@@ -116,6 +116,7 @@ extern char rootDir[300];
 extern char configDir[300];
 extern int get_config_dir_name( char *buff, int len );
 extern int get_config_file_name( char *buff, int len );
+extern int get_file_name( char *buff, int len, char *fileName );
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
@@ -228,6 +229,7 @@ typedef struct _ParticleStruct {
 #define GROUP_TARGET 1
 
 #define MAX_INVENTORY_SIZE 200
+#define MAX_CONTAINED_ITEMS 100
 
 class Constants {
 public:

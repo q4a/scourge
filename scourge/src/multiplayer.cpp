@@ -51,7 +51,7 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
 
   // allocate strings for list
   // FIXME: use a character set not the party here
-  Party::createHardCodedParty(scourge->getSession(), &pc, &pcCount);
+  Party::createHardCodedParty(scourge->getSession(), pc, &pcCount);
   charStr = (char**)malloc(pcCount * sizeof(char*));
   for(int i = 0; i < pcCount; i++) {
     charStr[i] = (char*)malloc(255 * sizeof(char));
@@ -78,16 +78,16 @@ Creature *MultiplayerDialog::getCreature() {
   // The reason for this weird behavior is that party.cpp frees party members.
   // Since we don't want to delete the original set, create a new one.
   // Rewrite this when the character editor/store are done.
-  Creature **pc;
+  Creature *pc[MAX_PARTY_SIZE];
   int pcCount;
-  Party::createHardCodedParty(scourge->getSession(), &pc, &pcCount);
+  Party::createHardCodedParty(scourge->getSession(), pc, &pcCount);
   Creature *c = pc[n];
   // delete the ones not used
   for(int i = 0; i < pcCount; i++) {
     if(i != n) delete pc[i];
   }
   return c;
-}
+}           
 
 bool MultiplayerDialog::handleEvent(SDL_Event *event) {
   return false;

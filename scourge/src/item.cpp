@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "item.h"
+#include "session.h"
 
 map<int, vector<string> *> Item::soundMap;
 
@@ -42,6 +43,55 @@ Item::~Item(){
     delete magic;
     magic = NULL;
   }
+}
+
+ItemInfo *Item::save() {
+  ItemInfo *info = (ItemInfo*)malloc(sizeof(ItemInfo));
+  info->version = PERSIST_VERSION;
+  strcpy((char*)info->rpgItem_name, getRpgItem()->getName());
+  strcpy((char*)info->shape_name, getShape()->getName());
+  info->blocking = blocking;
+  info->currentCharges = currentCharges;
+  info->weight = (Uint32)(weight * 100);
+  strcpy((char*)info->spell_name, (spell ? spell->getName() : ""));
+  info->containedItemCount = containedItemCount;
+  for(int i = 0; i < containedItemCount; i++) {
+    info->containedItems[i] = containedItems[i]->save();
+  }
+  info->magic = (magic ? magic->save() : MagicAttrib::saveEmpty());
+  return info;
+}
+
+/*
+ContainedItemInfo Item::saveContainedItems() {
+  ContainedItemInfo info;
+  info->version = PERSIST_VERSION;
+  info->containedItemCount = containedItemCount;
+  for(int i = 0; i < containedItemCount; i++) {
+    info->containedItems[i] = containedItems[i]->save();
+  }
+  return info;
+}
+*/
+
+Item *Item::load(Session *session, ItemInfo *info) {
+  if( !strlen( (char*)info->rpgItem_name )) return NULL;
+  Spell *spell = NULL;
+  if( strlen((char*)info->spell_name) ) spell = Spell::getSpellByName( (char*)info->spell_name );
+  Item *item = session->newItem( RpgItem::getItemByName( (char*)info->rpgItem_name ), spell);
+  item->blocking = (info->blocking == 1);
+  item->currentCharges = info->currentCharges;
+  item->weight = (float)(info->weight) / 100.0f;
+  item->containedItemCount = info->containedItemCount;
+  for(int i = 0; i < (int)info->containedItemCount; i++) {
+    item->containedItems[i] = Item::load( session, info->containedItems[i] );
+  }    
+  MagicAttrib *magic = MagicAttrib::load( session, info->magic );
+  if( magic ) {
+    item->magic = magic;
+    magic->describe(item->itemName, item->getRpgItem()->getName());
+  }
+  return item;
 }
 
 bool Item::addContainedItem(Item *item, bool force) { 

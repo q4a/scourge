@@ -19,6 +19,7 @@
 MagicSchool *MagicSchool::schools[10];
 int MagicSchool::schoolCount = 0;
 map<string, Spell*> Spell::spellMap;
+map<string, MagicSchool*> MagicSchool::schoolMap;
 
 
 // FIXME: move this to some other location if needed elsewhere (rpg/dice.cpp?)
@@ -60,6 +61,31 @@ Dice::Dice(int count, int sides, int mod) {
 Dice::~Dice() {
   if(frees) free(s);
 }
+
+DiceInfo *Dice::save() {
+  DiceInfo *info = (DiceInfo*)malloc(sizeof(DiceInfo));
+  info->version = PERSIST_VERSION;
+  info->count = count;
+  info->sides = sides;
+  info->mod = mod;
+  return info;
+}
+
+DiceInfo *Dice::saveEmpty() {
+  DiceInfo *info = (DiceInfo*)malloc(sizeof(DiceInfo));
+  info->version = PERSIST_VERSION;
+  info->count = 0;
+  info->sides = 0;
+  info->mod = 0;
+  return info;
+}
+
+Dice *Dice::load(Session *session, DiceInfo *info) {
+  if( !info->count ) return NULL;
+  return new Dice( info->count, info->sides, info->mod );
+}
+
+
 
 
 MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill) {
@@ -160,6 +186,8 @@ void MagicSchool::initMagic() {
 
 	  current = new MagicSchool( strdup(name), strdup(notes), skill, resistSkill );
 	  schools[schoolCount++] = current;
+    string nameStr = name;
+    schoolMap[nameStr] = current;
 	} else {
 	  n = Constants::readLine(line, fp);
 	}

@@ -8,6 +8,7 @@ bin_PROGRAMS = scourge
 scourge_SOURCES = \
 	constants.cpp\
 	constants.h\
+	persist.cpp\
 	persist.h\
 	calendar.cpp\
 	calendar.h\
