@@ -38,10 +38,13 @@ private:
   Window *mainWin;
   Button *startServer;
   Button *joinServer;
+  Button *okButton;
   TextField *serverName;
   TextField *serverPort;
   TextField *userName;
+  ScrollingList *characterList;
   int value;
+  char **charStr;
   
 public:
 
