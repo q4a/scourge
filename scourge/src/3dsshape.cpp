@@ -363,7 +363,10 @@ void C3DSShape::draw() {
 
   glPushMatrix();
 
-  glDisable( GL_CULL_FACE );
+  // ***
+  //  glDisable( GL_CULL_FACE );
+  // ***
+
   //  glEnable( GL_CULL_FACE );
   // glCullFace( GL_FRONT );
 
@@ -378,7 +381,9 @@ void C3DSShape::draw() {
 
   glPopMatrix();
   if (!useShadow) glEnable(GL_TEXTURE_2D);
-  glEnable( GL_CULL_FACE );
+  // ***
+  // glEnable( GL_CULL_FACE );
+  // ***
 }
 
 void C3DSShape::setupBlending() { 
