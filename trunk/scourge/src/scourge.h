@@ -23,6 +23,7 @@
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
+#include "minimap.h"
 #include "map.h"
 #include "dungeongenerator.h"
 #include "creature.h"
@@ -36,6 +37,7 @@
 using namespace std;
 
 class Creature;
+class MiniMap;
 class Map;
 class ShapePalette;
 class Location;
@@ -72,6 +74,7 @@ private:
 protected:
   SDLHandler *sdlHandler;
   Map *map;
+  MiniMap * miniMap;
   ShapePalette *shapePal;
 
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
@@ -99,7 +102,7 @@ public:
   ~Scourge();
 
   // drop an item from inventory
-  void setMovingItem(int item_index, int x, int y, int z);
+  void setMovingItem(int item_index, int x, int y, int z); 
 
   inline Item *getMovingItem() { return movingItem; }
 
@@ -132,6 +135,8 @@ public:
   void startMission();  
 
   inline Map *getMap() { return map; }
+  
+  inline MiniMap *getMiniMap() { return miniMap; } 
 
   inline ShapePalette *getShapePalette() { return shapePal; }  
 

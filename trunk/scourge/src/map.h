@@ -120,7 +120,7 @@ class Map {
 
   inline float getXPos() { return xpos; }
   inline float getYPos() { return ypos; }
-  inline float getZPos() { return zpos; }  
+  inline float getZPos() { return zpos; } 
   
   void addItem(Item *item, int x, int y, int z);
   Item *getItem(Sint16 mapx, Sint16 mapy, Sint16 mapz); 
@@ -211,7 +211,7 @@ class Map {
   inline void updateLightMap() { lightMapChanged = true; }
 
   inline void refresh() { mapChanged = lightMapChanged = true; }
-  
+
  protected:
   DrawLater later[100], stencil[1000], other[1000];
   int laterCount, stencilCount, otherCount;
@@ -241,7 +241,7 @@ class Map {
   
   void drawCube(float x, float y, float z, float r);
 
-  void createOverlayTexture();
+  void createOverlayTexture();    
 };
 
 #endif
