@@ -1090,12 +1090,6 @@ void DungeonGenerator::addPregeneratedShapes(Map *map, ShapePalette *shapePal,
   }
 }
 
-int DungeonGenerator::getRandomItemLevel() {
-  int itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
-  if( itemLevel < 1 ) itemLevel = 1;
-  return itemLevel;
-}
-
 void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
                                 bool preGenerated, int locationIndex) {
   // add the items
@@ -1107,7 +1101,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
     }
     // Make a random level object
     Item *item = 
-      scourge->getSession()->newItem(rpgItem, getRandomItemLevel());
+      scourge->getSession()->newItem(rpgItem, level);
     int x, y;
     getRandomLocation(map, item->getShape(), &x, &y);
     addItem(map, NULL, item, NULL, x, y);
@@ -1142,7 +1136,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
       RpgItem *containedItem = RpgItem::getRandomItem(1);
       if(containedItem) 
         item->addContainedItem(scourge->getSession()->
-                               newItem(containedItem, getRandomItemLevel()), 
+                               newItem(containedItem, level), 
                                true);
     }
     // some spells

@@ -20,7 +20,7 @@
 
 Creature *Party::lastPlayer = NULL;
 
-#define RANDOM_PARTY 1
+//#define RANDOM_PARTY 1
 
 Party::Party(Session *session) {
   this->session = session;
@@ -436,92 +436,65 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   }
 
   // add some items
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Bastard sword")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Horned helmet")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Dagger")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Speed")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Coordination")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Power")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of IQ")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Leadership")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Luck")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Piety")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Lore")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Bastard sword"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Horned helmet"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Dagger"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor"), level));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Speed"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Coordination"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Power"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of IQ"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Leadership"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Luck"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Piety"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Lore"), level));
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion"), level));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion"), level));  
 
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Smallbow")));
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Apple")));
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Bread")));
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Mushroom")));
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Big egg")));
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Mutton meat")));
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Smallbow"), level));
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Apple"), level));
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Bread"), level));
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Mushroom"), level));
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Big egg"), level));
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Mutton meat"), level));
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level));  
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion"), level));  
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor"), level));  
 
-  Item *item = session->newItem(RpgItem::getItemByName("Long sword"));
-  item->enchant(Constants::LESSER_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-  item = session->newItem(RpgItem::getItemByName("Long sword"));
-  item->enchant(Constants::GREATER_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-  item = session->newItem(RpgItem::getItemByName("Long sword"));
-  item->enchant(Constants::CHAMPION_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-  item = session->newItem(RpgItem::getItemByName("Long sword"));
-  item->enchant(Constants::DIVINE_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-
-  item = session->newItem(RpgItem::getItemByName("Horned helmet"));
-  item->enchant(Constants::LESSER_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-  item = session->newItem(RpgItem::getItemByName("Horned helmet"));
-  item->enchant(Constants::GREATER_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-  item = session->newItem(RpgItem::getItemByName("Horned helmet"));
-  item->enchant(Constants::CHAMPION_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-  item = session->newItem(RpgItem::getItemByName("Horned helmet"));
-  item->enchant(Constants::DIVINE_MAGIC_ITEM);
-  pc[1]->addInventory(item);
-
-
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Dagger")));
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Smallbow")));
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Long sword")));
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Wine barrel")));
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Mutton meat")));
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));   
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Dagger"), level));
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Smallbow"), level));
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Long sword"), level));
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Wine barrel"), level));
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Mutton meat"), level));
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level));  
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level)); 
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion"), level));  
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion"), level));  
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor"), level));   
   
   // add some scrolls
   for(int i = 0; i < 10; i++) {
     Spell *spell = MagicSchool::getRandomSpell(1);
     if(spell) {
       RpgItem *rpgItem = RpgItem::getItemByName("Scroll");
-      Item *scroll = session->newItem(rpgItem);
+      Item *scroll = session->newItem(rpgItem, level);
       scroll->setSpell(spell);
       pc[2]->addInventory(scroll);  
     }
   }
   pc[2]->setMp(50);
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Dagger")));
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Great sword")));
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Battleaxe")));
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Throwing axe")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Dagger"), level));
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Great sword"), level));
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Battleaxe"), level));
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Throwing axe"), level));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion"), level));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion"), level));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion"), level));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor"), level));  
   pc[3]->setMp(500);
  
   // equip weapons
