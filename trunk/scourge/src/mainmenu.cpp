@@ -270,7 +270,8 @@ bool MainMenu::handleEvent(SDL_Event *event) {
     case SDLK_2: value = CONTINUE_GAME; return true;
     case SDLK_3: value = OPTIONS; return true;
     case SDLK_4: value = ABOUT; return true;
-	case SDLK_5: case SDLK_ESCAPE: value = QUIT; return true;
+    case SDLK_5: case SDLK_ESCAPE: value = QUIT; return true;
+    case SDLK_SPACE: mainWin->setVisible(false); mainWin->setVisible(true); break;
     default: break;
     }
   default: break;  
