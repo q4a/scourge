@@ -519,6 +519,10 @@ void Map::setupPosition(int posX, int posY, int posZ,
                         float xpos2, float ypos2, float zpos2,
                         Shape *shape, Item *item, Creature *creature, 
                         EffectLocation *effect) {
+
+  // This really doesn't make a difference unfortunately.
+  //if(!isOnScreen(posX, posY, posZ)) return;
+
   GLuint name;
   name = posX + (MAP_WIDTH * (posY)) + (MAP_WIDTH * MAP_DEPTH * posZ);		
   
@@ -984,6 +988,42 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   glPopName();
   glPopMatrix();
 }                                                                     
+
+bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
+  glPushMatrix();
+  
+  // Initialize the scene w/o y rotation.
+  initMapView(true);
+  
+  double obj_x = (mapx - getX() + 1) / GLShape::DIV;
+  double obj_y = (mapy - getY() - 2) / GLShape::DIV;
+  double obj_z = 0.0f;
+  //double obj_z = mapz / GLShape::DIV;
+  double win_x, win_y, win_z;
+  
+  double projection[16];
+  double modelview[16];
+  GLint viewport[4];
+  
+  glGetDoublev(GL_PROJECTION_MATRIX, projection);
+  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+  glGetIntegerv(GL_VIEWPORT, viewport);
+  
+  int res = gluProject(obj_x, obj_y, obj_z,
+                       modelview,
+                       projection,
+                       viewport,
+                       &win_x, &win_y, &win_z);
+  
+  glDisable( GL_SCISSOR_TEST );
+  glPopMatrix();
+  
+  if(res) {
+    win_y = session->getGameAdapter()->getScreenHeight() - win_y;
+    return (win_x >= 0 && win_x < session->getGameAdapter()->getScreenWidth() &&
+            win_y >= 0 && win_y < session->getGameAdapter()->getScreenHeight());
+  } return false;
+}
 
 /*
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
