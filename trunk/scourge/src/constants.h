@@ -92,7 +92,7 @@ extern char configDir[300];
 extern int get_config_dir_name( char *buff, int len );
 extern int get_config_file_name( char *buff, int len );
 
-#define SCOURGE_VERSION 0.6
+#define SCOURGE_VERSION 0.7
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;

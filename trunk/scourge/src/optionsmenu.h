@@ -70,6 +70,8 @@ private:
   
   MultipleLabel * gameSpeedML; 
   Checkbox * alwaysCenterMapCheckbox;
+  Checkbox * keepMapSize;
+  Checkbox * frameOnFullScreen;
   
   MultipleLabel * videoResolutionML;  
   Checkbox * fullscreenCheckbox;

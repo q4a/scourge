@@ -165,6 +165,8 @@ private:
   // game settings
   int gamespeed;
   bool centermap;
+  bool keepMapSize;
+  bool frameOnFullScreen;
 
 	// was the stencil buf. initialized at start?
 	bool stencilBufInitialized;
@@ -195,6 +197,8 @@ private:
   inline int getShadows()    { return shadows;    }  
   inline int getGameSpeedLevel()  { return gamespeed;  } // [0, 1, 2, 3, 4] 
   inline bool getAlwaysCenterMap(){ return centermap;  }  
+  inline bool getKeepMapSize() { return keepMapSize; }
+  inline bool getFrameOnFullScreen() { return frameOnFullScreen; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
@@ -211,6 +215,8 @@ private:
   inline void setShadows(int t)     { shadows=t; }
   inline void setGameSpeedLevel(int t)   { if(t >= 0 && t <= 4) gamespeed=t; } // [0, 1, 2, 3, 4]
   inline void setAlwaysCenterMap(int t) { centermap=t; }
+  inline void setKeepMapSize(int t) { keepMapSize = t; }
+  inline void setFrameOnFullScreen(int t) { frameOnFullScreen = t; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           

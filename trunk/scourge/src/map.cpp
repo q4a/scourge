@@ -138,7 +138,9 @@ void Map::setViewArea(int x, int y, int w, int h) {
   viewHeight = h;
 
   float adjust = (float)viewWidth / 800.0f;
-  zoom = (float)scourge->getSDLHandler()->getScreen()->w / (float)w;
+  if(scourge->getUserConfiguration()->getKeepMapSize()) {
+    zoom = (float)scourge->getSDLHandler()->getScreen()->w / (float)w;
+  }
   xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
   ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
 
@@ -848,6 +850,11 @@ void Map::drawShade() {
 }
 
 void Map::drawBorder() {
+
+  if(viewWidth == scourge->getSDLHandler()->getScreen()->w && 
+     viewHeight == scourge->getSDLHandler()->getScreen()->h &&
+     !scourge->getUserConfiguration()->getFrameOnFullScreen()) return;
+
   glPushMatrix();
   glLoadIdentity();
 

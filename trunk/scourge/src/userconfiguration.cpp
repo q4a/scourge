@@ -180,6 +180,8 @@ UserConfiguration::UserConfiguration(){
     // game settings
     gamespeed = 1;  // fast speed
     centermap = true;
+    keepMapSize = true;
+    frameOnFullScreen = true;
     
     // Build (string engineAction -> int engineAction ) lookup table
     // and   (int ea -> string ea) lookup table    
@@ -398,6 +400,10 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set centermap %s\n", centermap ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set keepmapsize %s\n", keepMapSize ? "true":"false");
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set frameonfullscreen %s\n", frameOnFullScreen ? "true":"false");
+    writeFile(configFile, textLine);
         
     delete configFile;
 }
@@ -463,7 +469,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     
     if(s1 == "fullscreen"||s1 == "doublebuf" || s1 == "hwpal" || s1 == "resizeable" ||
        s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
-       s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap"){
+       s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
+       s1 == "keepmapsize" || s1 == "frameonfullscreen"){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -538,6 +545,12 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     else if(s1 == "centermap"){
         centermap = paramValue;
     }
+    else if(s1 == "keepmapsize") {
+      keepMapSize = paramValue;
+    } 
+    else if(s1 == "frameonfullscreen") {
+      frameOnFullScreen = paramValue;
+    } 
     else if(s1 == "gamespeed"){        
         gamespeed = atoi(s2.c_str());
         if(gamespeed < 0 || gamespeed > 4){           
@@ -875,6 +888,8 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "// Game settings" << endl;
   configFile << "set gamespeed 2  // 0 : fastest, 4 : slowest" << endl;
   configFile << "set centermap false" << endl;
+  configFile << "set keepmapsize true" << endl;
+  configFile << "set frameonfullscreen true" << endl;
   configFile << "" << endl;
 
   configFile.close();
