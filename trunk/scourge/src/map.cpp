@@ -26,12 +26,12 @@ Map::Map(Scourge *scourge){
   floorOnly = false;
   selX = selY = selZ = MAP_WIDTH + 1;
   oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
-
-
+  
+  
   mapChanged = true;
-
+  
   descriptionCount = 0;
-
+  
   this->xrot = 0.0f; // if 0, artifacts appear
   this->yrot = 30.0f;
   this->zrot = -45.0f;
@@ -41,18 +41,25 @@ Map::Map(Scourge *scourge){
   this->ypos = (float)(scourge->getSDLHandler()->getScreen()->h) / 2.0f;
   this->zpos = 0.0f;  
   
-	this->scourge = scourge;  
+  this->scourge = scourge;  
   this->debugGridFlag = false;
   this->drawGridFlag = false;
-
-	// initialize shape graph of "in view shapes"
-	for(int x = 0; x < MAP_WIDTH; x++) {
-		for(int y = 0; y < MAP_DEPTH; y++) {
+  
+  // initialize shape graph of "in view shapes"
+  for(int x = 0; x < MAP_WIDTH; x++) {
+	for(int y = 0; y < MAP_DEPTH; y++) {
       floorPositions[x][y] = NULL;
-			for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
+	  for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
         pos[x][y][z] = NULL;
       }      
     }
+  }
+
+  // draw everything
+  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+	for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+	  lightMap[x][y] = 1;
+	}
   }
 }
 
@@ -75,61 +82,132 @@ void Map::center(Sint16 x, Sint16 y) {
 }
 
 /**
- * Get the distance to the viewer for comparisson purposes.
- * Assumes that the current modelview matrix contains the right
- * rotations, etc.
- * 
- * 	You can extract the (modelview) matrix as usual, into a 16-element array. 
- *	Then you multiply the homogenous point in worldspace (x, y, z, 1) with this matrix, and you have the point's coordinates relative the origin. 
- *	Then you calculate the distance from the origin to the transformed point using pythagoras theorem. Then you have the distance from the viewpoint which you can use for depthsorting.
- */
-/*
-GLfloat Map::getDistance(float xpos, float ypos, float zpos) {
-    GLfloat res[16];
-    GLfloat m[16];
-    for(int i = 0; i < 16; i++) m[i] = 0;
-    m[0] = xpos;
-    m[5] = ypos;
-    m[10] = zpos;
-    m[15] = 1.0f;
-    glPushMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glMultMatrixf(m);
-    glGetFloatv(GL_MODELVIEW, res);
-    glPopMatrix();
-    return (res[0] * res[0] + res[5] * res[5] + res[10] * res[10]);
-}
+   If 'ground' is true, it draws the ground layer.
+   Otherwise the shape arrays (other, stencil, later) are populated.
 */
+void Map::setupShapes(bool ground) {
+  if(!ground) {
+	laterCount = stencilCount = otherCount = 0;
+	mapChanged = false;
+  }
 
-void Map::drawGround() {
-    float xpos2, ypos2, zpos2;
+  int chunkOffsetX = 0;
+  int chunkStartX = (getX() - MAP_OFFSET) / MAP_UNIT;
+  int mod = (getX() - MAP_OFFSET) % MAP_UNIT;
+  if(mod) {
+	chunkOffsetX = -mod;
+  }
+  int chunkEndX = MAP_VIEW_WIDTH / MAP_UNIT + chunkStartX;
 
-    Shape *shape = NULL;  
-    GLuint name;
+  int chunkOffsetY = 0;
+  int chunkStartY = (getY() - MAP_OFFSET) / MAP_UNIT;
+  mod = (getY() - MAP_OFFSET) % MAP_UNIT;
+  if(mod) {
+	chunkOffsetY = -mod;
+  }
+  int chunkEndY = MAP_VIEW_DEPTH / MAP_UNIT + chunkStartY;
 
-    for(int yp = 0; yp < MAP_VIEW_DEPTH; yp++) {
-        for(int xp = 0; xp < MAP_VIEW_WIDTH; xp++) {
-            for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-                shape = (zp == 0 ? floorPositions[getX() + xp][getY() + yp] : NULL);
-                // draw the floor
-                if(shape) {
+  Shape *shape;
+  float xpos2, ypos2, zpos2;
+  for(int chunkX = chunkStartX; chunkX < chunkEndX; chunkX++) {
+	for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
+	  // if this chunk is not lit, don't draw it
+	  if(!lightMap[chunkX][chunkY]) continue; 
+	  
+	  for(int yp = 0; yp < MAP_UNIT; yp++) {
+		for(int xp = 0; xp < MAP_UNIT; xp++) {
 
-                    xpos2 = ((float)(xp) / GLShape::DIV);
-                    ypos2 = (((float)(yp) - (float)shape->getDepth()) / GLShape::DIV);
-                    zpos2 = (float)(zp) / GLShape::DIV;
-                    name = getX() + xp + (MAP_WIDTH * (getY() + yp)) + (MAP_WIDTH * MAP_DEPTH * zp);
-                    //name = ((GLShape*)shape)->getShapePalIndex();
+		  /**
+			 In scourge, shape coordinates are given by their
+			 left-bottom corner. So the +1 for posY moves the
+			 position 1 unit down the Y axis, which is the
+			 unit square's bottom left corner.
+		   */
+		  int posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
+		  int posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
 
-                    glTranslatef( xpos2, ypos2, zpos2);
-                    // encode this shape's map location in its name
-                    glPushName( name );
-                    shape->draw();
-                    glPopName();
-                    glTranslatef( -xpos2, -ypos2, -zpos2);
-                }
-            }
-        }
-    }
+		  if(ground) {
+			shape = floorPositions[posX][posY];
+			if(shape) {
+			  xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+							  xp + chunkOffsetX) / GLShape::DIV;
+			  ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+							  shape->getDepth() +
+							  yp + chunkOffsetY) / GLShape::DIV;
+			  drawGroundPosition(posX, posY,
+								 xpos2, ypos2,
+								 shape); 		  
+			}
+		  } else {
+			for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
+			  if(pos[posX][posY][zp] && 
+				 pos[posX][posY][zp]->x == posX &&
+				 pos[posX][posY][zp]->y == posY &&
+				 pos[posX][posY][zp]->z == zp) {
+				shape = pos[posX][posY][zp]->shape;
+				if(shape) {
+				  xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+								  xp + chunkOffsetX) / GLShape::DIV;
+				  ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+								  shape->getDepth() + 
+								  yp + chunkOffsetY) / GLShape::DIV;
+				  zpos2 = (float)(zp) / GLShape::DIV;
+				  setupPosition(posX, posY, zp,
+								xpos2, ypos2, zpos2,
+								shape); 		  
+				}
+			  }
+			}
+		  }
+		}
+	  }
+	}
+  }
+}
+
+void Map::drawGroundPosition(int posX, int posY,
+							 float xpos2, float ypos2,
+							 Shape *shape) {
+  GLuint name;
+  // encode this shape's map location in its name
+  name = posX + (MAP_WIDTH * posY);			
+  glTranslatef( xpos2, ypos2, 0.0f);
+  glPushName( name );
+  shape->draw();
+  glPopName();
+  glTranslatef( -xpos2, -ypos2, 0.0f);
+}
+
+void Map::setupPosition(int posX, int posY, int posZ,
+						float xpos2, float ypos2, float zpos2,
+						Shape *shape) {
+  GLuint name;
+  name = posX + (MAP_WIDTH * (posY)) + (MAP_WIDTH * MAP_DEPTH * posZ);		
+  if(shape->isStencil()) {
+	stencil[stencilCount].xpos = xpos2;
+	stencil[stencilCount].ypos = ypos2;
+	stencil[stencilCount].zpos = zpos2;
+	stencil[stencilCount].shape = shape;
+	stencil[stencilCount].name = name;
+	stencilCount++;
+  } else if(!shape->isStencil()) {
+	if(shape->drawFirst()) {
+	  other[otherCount].xpos = xpos2;
+	  other[otherCount].ypos = ypos2;
+	  other[otherCount].zpos = zpos2;
+	  other[otherCount].shape = shape;
+	  other[otherCount].name = name;
+	  otherCount++;
+	}
+	if(shape->drawLater()) {
+	  later[laterCount].xpos = xpos2;
+	  later[laterCount].ypos = ypos2;
+	  later[laterCount].zpos = zpos2;
+	  later[laterCount].shape = shape;
+	  later[laterCount].name = name;
+	  laterCount++;
+	}
+  }
 }
 
 void Map::drawLocator() {
@@ -159,7 +237,7 @@ void Map::drawLocator() {
             shape = scourge->getShapePalette()->getShape(ShapePalette::LOCATOR_INDEX);
         }
         xpos2 = ((float)(selX - getX()) / GLShape::DIV);
-        ypos2 = (((float)(selY - getY()) - (float)shape->getDepth()) / GLShape::DIV);
+        ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
         zpos2 = (float)(0) / GLShape::DIV;
 
         name = 0;
@@ -171,98 +249,37 @@ void Map::drawLocator() {
     }
 }
 
-void Map::setupShapes() {
-  float xpos2, ypos2, zpos2;
-  
-  Shape *shape = NULL;  
-  GLuint name;
-  laterCount = stencilCount = otherCount = 0;
-  mapChanged = false;
-  
-  for(int yp = 0; yp < MAP_VIEW_DEPTH; yp++) {
-	for(int xp = 0; xp < MAP_VIEW_WIDTH; xp++) {
-	  for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-		// draw the walls
-		if(pos[getX() + xp][getY() + yp][zp]) {
-		  
-		  // draw the shape and item
-		  shape = NULL;
-		  if(pos[getX() + xp][getY() + yp][zp]->x == getX() + xp &&
-			 pos[getX() + xp][getY() + yp][zp]->y == getY() + yp &&
-			 pos[getX() + xp][getY() + yp][zp]->z == zp) {
-			shape = pos[getX() + xp][getY() + yp][zp]->shape;
-			if(shape) {
-			  xpos2 = ((float)(xp) / GLShape::DIV);
-			  ypos2 = (((float)(yp) - (float)shape->getDepth()) / GLShape::DIV);
-			  zpos2 = (float)(zp) / GLShape::DIV;
-			  name = getX() + xp + (MAP_WIDTH * (getY() + yp)) + (MAP_WIDTH * MAP_DEPTH * zp);
-			  
-			  if(shape->isStencil()) {
-				//doDrawShape(xpos2, ypos2, zpos2, shape, name);
-				stencil[stencilCount].xpos = xpos2;
-				stencil[stencilCount].ypos = ypos2;
-				stencil[stencilCount].zpos = zpos2;
-				stencil[stencilCount].shape = shape;
-				stencil[stencilCount].name = name;
-				stencilCount++;
-			  } else if(!shape->isStencil()) {
-				if(shape->drawFirst()) {
-				  //doDrawShape(xpos2, ypos2, zpos2, shape, name);
-				  other[otherCount].xpos = xpos2;
-				  other[otherCount].ypos = ypos2;
-				  other[otherCount].zpos = zpos2;
-				  other[otherCount].shape = shape;
-				  other[otherCount].name = name;
-				  otherCount++;
-				}
-				if(shape->drawLater()) {
-				  later[laterCount].xpos = xpos2;
-				  later[laterCount].ypos = ypos2;
-				  later[laterCount].zpos = zpos2;
-				  later[laterCount].shape = shape;
-				  later[laterCount].name = name;
-				  laterCount++;
-				}
-			  }
-			}
-		  }
-		}
-	  }
-	}
-  }
-}
-
 void Map::draw(SDL_Surface *surface) {
   // move the map
   if(move & Constants::MOVE_UP) {
     if(scourge->getPlayer()->move(Constants::MOVE_UP, this)) this->y--;
-	}
+  }
   if(move & Constants::MOVE_DOWN) {
     if(scourge->getPlayer()->move(Constants::MOVE_DOWN, this)) this->y++;
-	}
+  }
   if(move & Constants::MOVE_LEFT) {
     if(scourge->getPlayer()->move(Constants::MOVE_LEFT, this)) this->x--;
-	}
+  }
   if(move & Constants::MOVE_RIGHT) {
     if(scourge->getPlayer()->move(Constants::MOVE_RIGHT, this)) this->x++;
-	}
-
+  }
+  
   if(zoomIn) {
-      if(zoom <= 0.5f) {
-          zoomOut = false;
-      } else {
-          zoom /= ZOOM_DELTA; 
-          xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
-          ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
-      }
+	if(zoom <= 0.5f) {
+	  zoomOut = false;
+	} else {
+	  zoom /= ZOOM_DELTA; 
+	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
+	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
+	}
   } else if(zoomOut) {
-      if(zoom >= 2.8f) {
-          zoomOut = false;
-      } else {
-          zoom *= ZOOM_DELTA; 
-          xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
-          ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
-      }
+	if(zoom >= 2.8f) {
+	  zoomOut = false;
+	} else {
+	  zoom *= ZOOM_DELTA; 
+	  xpos = (int)((float)scourge->getSDLHandler()->getScreen()->w / zoom / 2.0f);
+	  ypos = (int)((float)scourge->getSDLHandler()->getScreen()->h / zoom / 2.0f);
+	}
   }
 
   scourge->moveParty();
@@ -280,7 +297,8 @@ void Map::draw(SDL_Surface *surface) {
   
 
   initMapView();
-  if(mapChanged) setupShapes();
+  // populate the shape arrays
+  if(mapChanged) setupShapes(false);
   if(selectMode) {
       for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
   } else {  
@@ -300,7 +318,8 @@ void Map::draw(SDL_Surface *surface) {
       glEnable(GL_DEPTH_TEST);
       glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
       glStencilFunc(GL_NOTEQUAL, 1, 0xffffffff);  // draw if stencil!=1
-      drawGround();
+      // draw the ground
+	  setupShapes(true);
       glDisable(GL_STENCIL_TEST);
       
       // draw the blended walls

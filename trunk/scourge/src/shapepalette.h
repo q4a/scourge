@@ -58,7 +58,7 @@ private:
   GLuint chesttex2[3];
 
   // how big to make the walls
-  const static Sint16 unitSide = 12;
+  const static Sint16 unitSide = MAP_UNIT;
   const static Sint16 unitOffset = 2;
   const static Sint16 wallHeight = 10;
 

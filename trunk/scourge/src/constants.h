@@ -132,6 +132,11 @@ public:
 #define MAP_VIEW_DEPTH 110
 #define MAP_VIEW_HEIGHT 16
 
+  // How big is 1 map chunk
+#define MAP_UNIT 12
+  // How far from the edge to start drawing in map
+#define MAP_OFFSET 55
+  
 // define some active region labels
   enum {
 	INV_PLAYER_0 = 0,
