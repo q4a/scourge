@@ -56,6 +56,7 @@ public:
   inline GLShape *getShape() { return shape; }
   inline RpgItem *getRpgItem() { return rpgItem; }
   inline bool isBlocking() { return blocking; }
+  inline bool setBlocking(bool b) { blocking = b; }
 
   void getDetailedDescription(char *s, bool precise=true);
 
