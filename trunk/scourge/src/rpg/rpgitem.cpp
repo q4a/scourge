@@ -23,6 +23,13 @@
    These basic objects are enhanced by adding magical capabilities.
  */
 
+/*
+ * Remember to change isWeaponItem=, getRandomEnchantableItem, 
+ * getRandomItem, getRandomContainer, getRandomContainerNS
+ * 
+ * when adding a new item or type.
+ */
+
 RpgItem *RpgItem::items[1000];
 
 map<int, map<int, vector<const RpgItem*>*>*> RpgItem::typesMap;
@@ -69,6 +76,7 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
   this->potionSkill = potionSkill;
   this->potionTime = potionTime;
   this->acl = (GLuint)0xffff; // all on
+  this->isWeaponItem = (type == SWORD || type == AXE || type == BOW);
 }
 
 RpgItem::~RpgItem() {
@@ -243,7 +251,7 @@ void MagicAttrib::describe(char *s, char *itemName) {
   }
 }
 
-void MagicAttrib::enchant(int level) {
+void MagicAttrib::enchant(int level, bool isWeapon) {
   if(level < Constants::LESSER_MAGIC_ITEM) level = Constants::LESSER_MAGIC_ITEM;
   if(level > Constants::DIVINE_MAGIC_ITEM) level = Constants::DIVINE_MAGIC_ITEM;
   this->level = level;
@@ -266,13 +274,17 @@ void MagicAttrib::enchant(int level) {
   switch(level) {
   case Constants::LESSER_MAGIC_ITEM:
     bonus = (int)(1.0f * rand()/RAND_MAX) + 1;
-    damageMultiplier = (int)(2.0f * rand()/RAND_MAX);
-    monsterType = (char*)Monster::getRandomMonsterType();
+    if(isWeapon) {
+      damageMultiplier = (int)(2.0f * rand()/RAND_MAX);
+      monsterType = (char*)Monster::getRandomMonsterType();
+    }
     break;
   case Constants::GREATER_MAGIC_ITEM:
     bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
-    damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
-    monsterType = (char*)Monster::getRandomMonsterType();
+    if(isWeapon) {
+      damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+      monsterType = (char*)Monster::getRandomMonsterType();
+    }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
       school = spell->getSchool();
@@ -281,8 +293,10 @@ void MagicAttrib::enchant(int level) {
     break;
   case Constants::CHAMPION_MAGIC_ITEM:
     bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
-    damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
-    monsterType = (char*)Monster::getRandomMonsterType();
+    if(isWeapon) {
+      damageMultiplier = (int)(3.0f * rand()/RAND_MAX);
+      monsterType = (char*)Monster::getRandomMonsterType();
+    }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
       school = spell->getSchool();
@@ -296,8 +310,10 @@ void MagicAttrib::enchant(int level) {
     break;
   case Constants::DIVINE_MAGIC_ITEM:
     bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
-    damageMultiplier = (int)(4.0f * rand()/RAND_MAX);
-    monsterType = NULL;
+    if(isWeapon) {
+      damageMultiplier = (int)(4.0f * rand()/RAND_MAX);
+      monsterType = NULL;
+    }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
       school = spell->getSchool();
@@ -323,3 +339,15 @@ int MagicAttrib::rollMagicDamage() {
   return (magicDamage ? magicDamage->roll() : 0); 
 }
 
+void MagicAttrib::debug(char *s, RpgItem *item) {
+  cerr << s << endl;
+  cerr << "Magic item: " << item->getName() << "(+" << bonus << ")" << endl;
+  cerr << "\tdamageMultiplier=" << damageMultiplier << " vs. monsterType=" << (monsterType ? monsterType : "null") << endl;
+  cerr << "\tSchool: " << (school ? school->getName() : "null") << endl;
+  cerr << "\tstate mods:" << endl;
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    if(this->isStateModSet(i)) cerr << "set: " << Constants::STATE_NAMES[i] << endl;
+    if(this->isStateModProtected(i)) cerr << "protected: " << Constants::STATE_NAMES[i] << endl;
+  }
+  cerr << "-----------" << endl;
+}

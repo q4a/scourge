@@ -25,10 +25,18 @@
 
 using namespace std;
 
+/*
+ * Remember to change isWeaponItem=, getRandomEnchantableItem, 
+ * getRandomItem, getRandomContainer, getRandomContainerNS
+ * 
+ * when adding a new item or type.
+ */
+
 class Monster;
 class Dice;
 class MagicSchool;
 class Spell;
+class RpgItem;
 
 class MagicAttrib {
 private:
@@ -55,12 +63,13 @@ public:
   inline bool isCursed() { return cursed; }
   inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
   inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
+  void debug(char *s, RpgItem *item);
 
   /**
    * Create a magic attribute obj. depending on the level.
    * (0=lesser,1=greater,2=champion,3=divine)
    */
-  void enchant(int level);
+  void enchant(int level, bool isWeapon);
 
   /**
    * Write the description of this item into buffer s.
@@ -90,9 +99,11 @@ class RpgItem {
   int potionSkill; // which skill does this potion effect?
   int potionTime;
   GLuint acl; // 1 bit per character class
+  bool isWeaponItem;
 
   static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
   static map<string, const RpgItem *> itemsByName;
+  static vector<int> weapons;
 
  public:
 
@@ -150,6 +161,7 @@ class RpgItem {
   inline void setAcl(int index, bool value) { if(value) acl |= (1 << index); else acl &= ((GLuint)0xffff - (GLuint)(1 << index)); }
   inline void setAllAcl(bool value) { if(value) acl = (GLuint)0xffff; else acl = (GLuint)0; }
   inline GLuint getAllAcl() { return acl; }
+  inline bool isWeapon() { return this->isWeaponItem; }
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs
