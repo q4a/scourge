@@ -476,16 +476,6 @@ void Creature::stopMoving() {
 }
 
 bool Creature::moveToLocator(Map *map) {
-
-  // Don't move when attacking...
-  // this is actually wrong, the method should not be called in this
-  // case, but the code is simpler this way. (Returning false is 
-  // is incorrect.)
-//  if(((MD2Shape*)getShape())->getAttackEffect()) return false;
-
-  // don't move when in range
-//  if(isInRange()) return false;
-
   bool moved = false;
   if(selX > -1) {
 
@@ -499,20 +489,6 @@ bool Creature::moveToLocator(Map *map) {
     }
     // if we've no more steps
     if((int)bestPath.size() <=  bestPathPos && selX > -1) {    
-
-      // if we're not there yet, and it's possible to stand there, recalc steps
-      if(!(selX == getX() && selY == getY()) &&
-         map->shapeFits(getShape(), selX, selY, -1) &&
-         moveRetrycount < MAX_MOVE_RETRY) {
-
-        // don't keep trying forever
-        moveRetrycount++;
-        tx = ty = -1;
-      } else {
-        // do this so the animation switches to "stand"
-        stopMoving();
-      }   
-
       // if this is the player, return to regular movement
       if(this == session->getParty()->getPlayer()) {
         session->getParty()->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
@@ -527,22 +503,14 @@ bool Creature::anyMovesLeft() {
 }
 
 bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
-  /*
-  // creature speed
-  moveCount++;
-  if(moveCount >= getSpeed()) {
-    moveCount = 0;
-  } else return true;
-  */
 
+  // creature speed
   Uint32 t = SDL_GetTicks();
   if(t - lastMove < (Uint32)(getSpeed() * MOVE_DELAY * (session->getUserConfiguration()->getGameSpeedLevel() + 1))) return true;
   lastMove = t;
 
   // If the target moved, get the best path to the location
   if(!(tx == px && ty == py)) {
-    //    cerr << getName() << " - " << debug << " steps left: " << 
-    //      ((int)bestPath.size() - bestPathPos) << " out of " << (int)bestPath.size() << endl;
     tx = px;
     ty = py;
     bestPathPos = 1; // skip 0th position; it's the starting location
@@ -555,7 +523,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     Location location = bestPath[bestPathPos];
     // if we can't step there, someone else has moved there ahead of us
     Uint16 oldDir = dir;
-    //dir = next->getDir();
     if(getX() < location.x) dir = Constants::MOVE_RIGHT;
     else if(getX() > location.x) dir = Constants::MOVE_LEFT;
     else if(getY() < location.y) dir = Constants::MOVE_DOWN;
@@ -571,29 +538,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       return true;
     } else {    
       dir = oldDir;
-
-      /*
-      commented out: this doesn't really work... the player will block forever
-      if 'creature' can't move
-  
-        // if another party member is blocking the player, 
-      // make them move out of the way
-      Creature *creature = position->creature;
-        if(this == scourge->getParty()->getPlayer() && 
-       creature && creature->character && scourge->getParty()->getPlayer() != creature) {
-      
-      creature->moveRetrycount++;
-      if(creature->moveRetrycount < MAX_MOVE_RETRY) {
-        Sint16 nz;
-        creature->findCorner(&creature->cornerX, &creature->cornerY, &nz);
-        //	    creature->gotoPosition(map, nx, ny, nz, "corner");
-        creature->setMotion(Constants::MOTION_MOVE_AWAY);
-      } else {
-        // do this so the animation switches to "stand"
-        creature->stopMoving();
-      }
-      } else {	  
-      */
       // if we're not at the destination, but it's possible to stand there
       // try again
       if(!(selX == getX() && selY == getY()) && 
@@ -607,8 +551,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
         // if we can't get to the destination, stop trying
         // do this so the animation switches to "stand"
         stopMoving();
-      }   
-      //}
+      }
     }
   }
   return false;
