@@ -111,8 +111,6 @@ class Map {
   bool lightMapChanged;
   int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
   
-  static const float ZOOM_DELTA = 1.02f;
-
   // FIXME: either make this value adjustable or find a faster way to blast it onscreen?
   static const int SHADE_SIZE = 20;
 

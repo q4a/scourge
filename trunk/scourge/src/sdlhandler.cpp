@@ -398,7 +398,9 @@ void SDLHandler::mainLoop() {
         mouseEvent = SDL_MOUSEBUTTONUP;
         mouseButton = event.button.button;
         mouseDragging = false;
-        widget = Window::delegateEvent( &event, mx, my );
+        if(event.button.button == SDL_BUTTON_LEFT) {
+          widget = Window::delegateEvent( &event, mx, my );
+        }
         break;
       case SDL_MOUSEBUTTONDOWN:
         if(invertMouse) event.button.y = screen->h - event.button.y;
@@ -406,7 +408,9 @@ void SDLHandler::mainLoop() {
         mouseEvent = SDL_MOUSEBUTTONDOWN;
         mouseButton = event.button.button;
         mouseDragging = true;
-        widget = Window::delegateEvent( &event, mx, my );
+        if(event.button.button == SDL_BUTTON_LEFT) {
+          widget = Window::delegateEvent( &event, mx, my );
+        }
         break;
       case SDL_ACTIVEEVENT:
         /* Something's happend with our focus

@@ -17,6 +17,7 @@
 
 #include "map.h"
 
+#define ZOOM_DELTA 1.2f
 //#define DEBUG_MOUSE_POS
 
 // only use 1 (disabled) or 0 (enabled)
