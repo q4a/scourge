@@ -260,11 +260,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  map->setMove(Constants::MOVE_RIGHT);
       break;
 
-    case SDLK_F5:
+    case SDLK_5:
         blendA++; if(blendA >= 11) blendA = 0;
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
         break;
-    case SDLK_F6:
+    case SDLK_6:
         blendB++; if(blendB >= 11) blendB = 0;
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
         break;

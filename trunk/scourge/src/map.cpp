@@ -62,6 +62,8 @@ Map::Map(Scourge *scourge){
   }
 
   lightMapChanged = true;  
+
+  createOverlayTexture();
 }
 
 Map::~Map(){
@@ -454,36 +456,61 @@ void Map::draw(SDL_Surface *surface) {
 void Map::drawShade() {
   glPushMatrix();
   glLoadIdentity();
+  //  glDisable(GL_BLEND);
   glDisable(GL_DEPTH_TEST);
-  glDisable( GL_TEXTURE_2D );
-  glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+  //glDisable( GL_TEXTURE_2D );
+  glBlendFunc(GL_DST_COLOR, GL_ZERO);
   //scourge->setBlendFunc();
-  for(int xt = 0; xt < scourge->getSDLHandler()->getScreen()->w; xt+=SHADE_SIZE) {
-	for(int yt = 0; yt < scourge->getSDLHandler()->getScreen()->h; yt+=SHADE_SIZE) {
-	  int xd = (scourge->getSDLHandler()->getScreen()->w / 2 - 30) - xt;
-	  int yd = (scourge->getSDLHandler()->getScreen()->h / 2 - 30) - yt;
-	  float dist = (float)((xd * xd) + (yd * yd));
-	  float alpha = dist / 100000;
-      if(alpha <= 0) continue;
+  
+  glColor4f( 1, 1, 1, 0.5f);
 
-	  glColor4f( 0, 0, 0, alpha);
-
-	  float zp = 0.0f;
-	  glBegin( GL_QUADS );
-      glVertex3f(xt + SHADE_SIZE, yt + SHADE_SIZE, zp);
-      glVertex3f(xt + SHADE_SIZE, yt, zp);
-      glVertex3f(xt, yt, zp);
-      glVertex3f(xt, yt + SHADE_SIZE, zp);
-	  glEnd();
-
-	  glColor4f(1, 1, 1, 1);
-	  //	  scourge->getSDLHandler()->texPrint(xt, yt, "%4.2f", alpha);
-	  //	  scourge->getSDLHandler()->texPrint(xt, yt + 15, "%4.2f", dist);
-	}
-  }
+  glBindTexture( GL_TEXTURE_2D, overlay_tex );
+  glBegin( GL_QUADS );
+  //  glNormal3f(0.0f, 1.0f, 0.0f);
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, 0, 0);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, 
+			 scourge->getSDLHandler()->getScreen()->h, 0);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(scourge->getSDLHandler()->getScreen()->w, 
+			 scourge->getSDLHandler()->getScreen()->h, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(scourge->getSDLHandler()->getScreen()->w, 0, 0);
+  glEnd();
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
   glPopMatrix();
+}
+
+void Map::createOverlayTexture() {
+  // create the dark texture
+  unsigned int i, j;
+  glGenTextures(1, (GLuint*)&overlay_tex);
+  float tmp = 0.7f;
+  for(i = 0; i < OVERLAY_SIZE; i++) {
+	for(j = 0; j < OVERLAY_SIZE; j++) {
+	  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+	  float id = (float)i - half;
+	  float jd = (float)j - half;
+	  float dd = 255.0f - ((255.0f / (half * half / 1.5f)) * (id * id + jd * jd));
+	  if(dd < 0.0f) dd = 0.0f;
+	  if(dd > 255.0f) dd = 255.0f;
+	  unsigned char d = (unsigned char)dd;
+	  overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = d;
+	  overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = d;
+	  overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = d;
+	}
+  }
+  glBindTexture(GL_TEXTURE_2D, overlay_tex);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
+			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
 }
 
 void Map::doDrawShape(DrawLater *later) {
