@@ -1088,6 +1088,23 @@ void Map::drawProjectiles() {
 
       // remove finished projectiles
       if( blocked || proj->atTargetLocation() ) {
+        
+        // DEBUG INFO
+        if( !blocked ) {
+          cerr << "*** Warning: projectile didn't hit target ***" << endl;
+          cerr << "Creature: " << proj->getCreature()->getName() << endl;
+          if( proj->getCreature()->getTargetCreature() ) {
+            cerr << " target=" << proj->getCreature()->getTargetCreature()->getName() << " at: " << 
+              proj->getCreature()->getTargetCreature()->getX() << "," <<
+              proj->getCreature()->getTargetCreature()->getY() << " " <<
+              " shape: " << proj->getCreature()->getTargetCreature()->getShape()->getWidth() << "," <<
+              proj->getCreature()->getTargetCreature()->getShape()->getHeight() << endl;
+          } else {
+            cerr << " no target." << endl;
+          }
+          proj->debug();
+        }
+
         removedProjectiles.push_back(proj);
       }
     }

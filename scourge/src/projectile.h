@@ -93,6 +93,7 @@ class Projectile {
   inline static map<Creature *, vector<Projectile*>*> *getProjectileMap() { return &projectiles; }
   static void resetProjectiles();
   bool atTargetLocation();
+  void debug();
 
  protected:
   void commonInit();

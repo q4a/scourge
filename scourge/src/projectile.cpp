@@ -97,9 +97,14 @@ Projectile::~Projectile() {
 }
 
 bool Projectile::atTargetLocation() {
-  int dx = abs((int)(ex - sx));
-  int dy = abs((int)(ey - sy));
+  int dx = abs(toint(ex - sx));
+  int dy = abs(toint(ey - sy));
   return (dx < DELTA && dy < DELTA);
+}
+
+void Projectile::debug() {
+  cerr << "Projectile at: " << sx << "," << sy << " target: " << ex << "," << ey <<
+    " at target? " << atTargetLocation() << endl;
 }
 
 bool Projectile::move() {
@@ -107,11 +112,15 @@ bool Projectile::move() {
   
   // are we at the target location?
   // return false to let the map class handle the attack.
-  if(this->atTargetLocation()) return false;
+  if(this->atTargetLocation()) {
+    // clamp to target
+    sx = ex;
+    sy = ey;
+    return false;
+  }
 
     
   // return true to let this class handle the attack
-  // this has to be the first test
   if(steps++ >= maxDist) return true;
 
 
@@ -340,6 +349,7 @@ void Projectile::moveProjectiles(Scourge *scourge) {
         }
       }
       */
+      scourge->getMap()->addDescription( "Projectile did not reach the target." );
       Projectile::removeProjectile(proj);
     }
   }
