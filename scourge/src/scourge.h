@@ -285,38 +285,6 @@ public:
   void colorMiniMapPoint(int x, int y, Shape *shape);
   void eraseMiniMapPoint(int x, int y);
 
-  /**
-    Creat a new item for use on this story. Calling this method instead of new Item()
-    directly ensures that the item will be cleaned up properly when the story is
-    exited. Only items in a party member's inventory are not deleted.
-    
-    @param rpgItem if not NULL, the RpgItem template for the item to create.
-    @param spell if not NULL, the spell to associate with the created scroll.
-    @return the item created.
-  */
-  //Item *newItem(RpgItem *rpgItem, Spell *spell=NULL);
-  
-  /**
-    Create a new creature for use on this story. Calling this method instead of new Creature()
-    directly ensures that the creature will be cleaned up properly when the story is
-    exited. 
-    
-    @param character the character class to use for the new creature.
-    @param name the name of the new creature
-    @return the creature created.
-  */
-  //Creature *newCreature(Character *character, char *name);
-  
-  /**
-    Create a new creature for use on this story. Calling this method instead of new Creature()
-    directly ensures that the creature will be cleaned up properly when the story is
-    exited. 
-    
-    @param monster the character template to use for the new creature.
-    @return the creature created.
-  */
-  //Creature *newCreature(Monster *monster);
-
   /** 
     When dropping an item from the inventory this method sets up the parameters so
     the cursor can drag it around the screen and eventually deposit it at a location
@@ -617,6 +585,12 @@ public:
   bool handlePartyEvent(Widget *widget, SDL_Event *event);
 
   void updatePartyUI();
+
+  bool fightCurrentBattleTurn();
+  bool createBattleTurns();
+  void resetUIAfterBattle();
+  void moveCreatures();
+
 
 };
 

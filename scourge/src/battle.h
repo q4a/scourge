@@ -65,7 +65,7 @@ class Battle {
   int ap, startingAp;
   bool paused;
   int steps;
-
+  bool needsReset;
 
  public:
 

@@ -72,7 +72,8 @@ void Party::resetMultiplayer(Creature *c) {
 void Party::setFirstLivePlayer() {
   for(int i = 0; i < getPartySize(); i++) {
     if(!party[i]->getStateMod(Constants::dead)) {
-      setPlayer(getParty(i));
+      //setPlayer(getParty(i));
+      setPlayer(i);
       break;
     }
   }

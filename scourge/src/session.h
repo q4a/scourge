@@ -90,8 +90,37 @@ public:
   virtual void startClient(GameStateHandler *gsh, CommandInterpreter *ci, char *host, int port, char *username);
   virtual void stopClientServer();
 #endif
+
+  /**
+    Creat a new item for use on this story. Calling this method instead of new Item()
+    directly ensures that the item will be cleaned up properly when the story is
+    exited. Only items in a party member's inventory are not deleted.
+
+    @param rpgItem if not NULL, the RpgItem template for the item to create.
+    @param spell if not NULL, the spell to associate with the created scroll.
+    @return the item created.
+  */
   virtual Item *newItem(RpgItem *rpgItem, Spell *spell=NULL);
+
+  /**
+    Create a new creature for use on this story. Calling this method instead of new Creature()
+    directly ensures that the creature will be cleaned up properly when the story is
+    exited. 
+
+    @param character the character class to use for the new creature.
+    @param name the name of the new creature
+    @return the creature created.
+  */
   virtual Creature *newCreature(Character *character, char *name);
+
+  /**
+    Create a new creature for use on this story. Calling this method instead of new Creature()
+    directly ensures that the creature will be cleaned up properly when the story is
+    exited. 
+
+    @param monster the monster template to use for the new creature.
+    @return the creature created.
+  */
   virtual Creature *newCreature(Monster *monster);
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
   inline bool isMultiPlayerGame() { return multiplayerGame; }
