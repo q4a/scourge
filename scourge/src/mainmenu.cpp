@@ -64,9 +64,12 @@ void MainMenu::drawView() {
   // create a stencil for the water
   glDisable(GL_DEPTH_TEST);
   glColorMask(0,0,0,0);
-  glEnable(GL_STENCIL_TEST);
-  glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-  glStencilFunc(GL_ALWAYS, 1, 1);
+  if(scourge->getUserConfiguration()->getStencilbuf()
+     && scourge->getUserConfiguration()->getStencilBufInitialized()){
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilFunc(GL_ALWAYS, 1, 1);
+  }
   drawWater();
   
   // Use the stencil to draw
