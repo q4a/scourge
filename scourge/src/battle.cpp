@@ -21,6 +21,8 @@
 #define MONSTER_IMORTALITY 0
 #define WEAPON_WAIT_MUL 5
 
+#define DEBUG_BATTLE_TURN 0
+
 char *Battle::sound[] = {
   "sound/weapon-swish/handheld/sw1.wav",
   "sound/weapon-swish/handheld/sw2.wav",
@@ -69,14 +71,14 @@ Battle::Battle(Session *session, Creature *creature) {
   this->nextTurn = 0;
   this->weaponWait = 0;
   this->startingAp = this->ap = 0;
-  if(DEBUG_BATTLE) cerr << "*** constructor, creature=" << creature->getName() << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "*** constructor, creature=" << creature->getName() << endl;
 }
 
 Battle::~Battle() {
 }
 
 void Battle::reset() {
-  if(DEBUG_BATTLE) cerr << "*** reset: creature=" << creature->getName() << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "*** reset: creature=" << creature->getName() << endl;
   this->steps = 0;
   this->startingAp = this->ap = 30 + (creature->getSkill(Constants::COORDINATION) / 5);
   this->projectileHit = false;
@@ -94,6 +96,7 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
     // reset for the first time
     // (to avoid whack skill numbers for un-initialized creatures.)
     if(battle[i]->needsReset) {
+	  if( DEBUG_BATTLE_TURN ) cerr << "*** Reset 1" << endl;
       battle[i]->reset();
       battle[i]->needsReset = false;
     }
@@ -103,7 +106,7 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
 
 bool Battle::fightTurn() {
 
-  if(DEBUG_BATTLE) cerr << "TURN: creature=" << creature->getName() << 
+  if(DEBUG_BATTLE_TURN) cerr << "TURN: creature=" << creature->getName() << 
     " ap=" << ap << 
     " wait=" << weaponWait << 
     " nextTurn=" << nextTurn << endl;
@@ -112,6 +115,7 @@ bool Battle::fightTurn() {
   if(!creature || creature->getStateMod(Constants::dead) ||
      (creature->getAction() == Constants::ACTION_NO_ACTION &&
       !creature->isMonster() && !getAvailablePartyTarget()) ) {
+	if( DEBUG_BATTLE_TURN ) cerr << "*** Reset 2" << endl;
     reset();
     return true;
   }
@@ -120,7 +124,7 @@ bool Battle::fightTurn() {
   if(ap <= 0) {
     if(weaponWait > 0) {
       nextTurn = weaponWait;
-      if(DEBUG_BATTLE) cerr << "Carries over into next turn." << endl;
+      if(DEBUG_BATTLE_TURN) cerr << "Carries over into next turn." << endl;
     }
     if( session->getUserConfiguration()->isBattleTurnBased()) {
       int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
@@ -128,6 +132,7 @@ bool Battle::fightTurn() {
         return false;
       }
     }
+	if( DEBUG_BATTLE_TURN ) cerr << "*** Reset 3" << endl;
     reset();
     return true;
   }
@@ -172,7 +177,7 @@ bool Battle::pauseBeforePlayerTurn() {
       !paused &&
       session->getUserConfiguration()->isBattleTurnBased()) {
     if(!creature->isMonster()) {
-      if(DEBUG_BATTLE) cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
+      if(DEBUG_BATTLE_TURN) cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
 
       // center on player
       for (int i = 0; i < session->getParty()->getPartySize(); i++) {
@@ -208,29 +213,29 @@ void Battle::initTurnStep() {
 
   // select the best weapon only once
   if(weaponWait <= 0) {
-    if(DEBUG_BATTLE) cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
+    if(DEBUG_BATTLE_TURN) cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
     if(creature->getActionSpell()) {
       range = Constants::MIN_DISTANCE;
       range = creature->getActionSpell()->getDistance();
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = creature->getActionSpell()->getSpeed() * WEAPON_WAIT_MUL;
       nextTurn = 0;
-      if(DEBUG_BATTLE) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
+      if(DEBUG_BATTLE_TURN) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
       item = creature->getBestWeapon(dist);
       range = Constants::MIN_DISTANCE;
       if(item) range = item->getDistance();
       if(item) {
-        if(DEBUG_BATTLE) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
+        if(DEBUG_BATTLE_TURN) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
       } else {
-        if(DEBUG_BATTLE) cerr << "\tUsing bare hands." << endl;
+        if(DEBUG_BATTLE_TURN) cerr << "\tUsing bare hands." << endl;
       }
       // How many steps to wait before being able to use the weapon.
       weaponWait = (item ? item->getSpeed() : Constants::HAND_WEAPON_SPEED) * WEAPON_WAIT_MUL;
     }
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
-    if(DEBUG_BATTLE) cerr << "\tDistance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
+    if(DEBUG_BATTLE_TURN) cerr << "\tDistance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
   }
 }
 
@@ -242,7 +247,7 @@ void Battle::executeAction() {
   }
 
   // attack
-  if(DEBUG_BATTLE) cerr << "\t\t *** Attacking." << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "\t\t *** Attacking." << endl;
   if(creature->getActionSpell()) {
     // casting a spell for the first time
     castSpell();
@@ -264,7 +269,7 @@ void Battle::stepCloserToTarget() {
   // Set the movement mode; otherwise character won't move
   creature->getShape()->setCurrentAnimation((int)MD2_RUN);
 
-  if(DEBUG_BATTLE) cerr << "\t\tTaking a step." << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
     int tx = toint(creature->getTargetCreature()->getX() + 
                    creature->getTargetCreature()->getShape()->getWidth() / 2);
@@ -295,7 +300,7 @@ void Battle::stepCloserToTarget() {
   }
   //if( !moved ) moveCreature();
   if( !moved ) {
-    if( DEBUG_BATTLE ) {
+    if( DEBUG_BATTLE_TURN ) {
       cerr << "*** Warning: not moving closer to target and not in range. " <<
         " x,y=" << creature->getX() << "," << creature->getY() <<
         " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
@@ -337,7 +342,7 @@ bool Battle::moveCreature() {
   }
 
   // take 1 step closer
-  if(DEBUG_BATTLE) cerr << "\t\tTaking a non-battle step." << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "\t\tTaking a non-battle step." << endl;
 
   GLfloat oldX = creature->getX();
   GLfloat oldY = creature->getY();
@@ -350,7 +355,7 @@ bool Battle::moveCreature() {
     
     if( oldX == creature->getX() &&
         oldY == creature->getY() ) {
-      if( DEBUG_BATTLE ) cerr << "*** WARNING: monster not moving." << endl;
+      if( DEBUG_BATTLE_TURN ) cerr << "*** WARNING: monster not moving." << endl;
       ap--;
     }
     return false;
@@ -374,7 +379,7 @@ bool Battle::moveCreature() {
       }
       
       if( !moved ) {
-        if( DEBUG_BATTLE ) {
+        if( DEBUG_BATTLE_TURN ) {
           cerr << "*** WARNING: character not moving." << 
             " x,y=" << creature->getX() << "," << creature->getY() <<
             " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
@@ -455,7 +460,7 @@ bool Battle::selectNewTarget() {
     // select a new target
     Creature *target = getAvailableTarget();
     if (target) {
-      if(DEBUG_BATTLE) cerr << "\tSelected new target: " << target->getName() << endl;
+      if(DEBUG_BATTLE_TURN) cerr << "\tSelected new target: " << target->getName() << endl;
       creature->setTargetCreature(target);
       creature->setSelXY(toint(creature->getTargetCreature()->getX()),
                          toint(creature->getTargetCreature()->getY()),
@@ -463,7 +468,7 @@ bool Battle::selectNewTarget() {
       //initTurn();
     } else {
       creature->setTargetCreature(NULL);
-      if(DEBUG_BATTLE) cerr << "\t\tCan't find new target." << endl;
+      if(DEBUG_BATTLE_TURN) cerr << "\t\tCan't find new target." << endl;
     }
 
     // let the player override in TB mode
@@ -600,7 +605,7 @@ void Battle::launchProjectile() {
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
-  if(DEBUG_BATTLE) cerr << "*** Projectile hit (target): creature=" << proj->getCreature()->getName() << endl;  
+  if(DEBUG_BATTLE_TURN) cerr << "*** Projectile hit (target): creature=" << proj->getCreature()->getName() << endl;  
   Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
   Battle *battle = proj->getCreature()->getBattle();
@@ -620,11 +625,11 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   battle->spell = NULL;
   proj->getCreature()->cancelTarget();
   proj->getCreature()->setTargetCreature(oldTarget);
-  if(DEBUG_BATTLE) cerr << "*** Projectile hit ends." << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "*** Projectile hit ends." << endl;
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y) {
-  if(DEBUG_BATTLE) cerr << "*** Projectile hit (x,y): creature=" << proj->getCreature()->getName() << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "*** Projectile hit (x,y): creature=" << proj->getCreature()->getName() << endl;
   // configure a turn
   proj->getCreature()->setTargetLocation(x, y, 0);
   Battle *battle = proj->getCreature()->getBattle();
@@ -641,7 +646,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   battle->projectileHit = false;
   battle->spell = NULL;
   proj->getCreature()->cancelTarget();
-  if(DEBUG_BATTLE) cerr << "*** Projectile hit ends." << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "*** Projectile hit ends." << endl;
 }
 
 void Battle::hitWithItem() {
@@ -957,7 +962,7 @@ void Battle::executeEatDrinkAction() {
 }
 
 void Battle::invalidate() {
-  if(DEBUG_BATTLE) cerr << "*** invalidate: creature=" << getCreature()->getName() << endl;
+  if(DEBUG_BATTLE_TURN) cerr << "*** invalidate: creature=" << getCreature()->getName() << endl;
   nextTurn = weaponWait = 0;
 }
 
