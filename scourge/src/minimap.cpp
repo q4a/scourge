@@ -66,14 +66,39 @@ MiniMap :: MiniMap(Scourge *scourge){
 
 
 MiniMap :: ~MiniMap(){
+  reset();
+}
+
+void MiniMap::reset() {
   if(textureInMemory != NULL){
     free(textureInMemory);
     textureInMemory = NULL;
+    // delete the overlay texture
+    glDeleteTextures(1, texture);
   }          
-  // delete the overlay texture
-  glDeleteTextures(1, texture);
-}
 
+  zoomFactor = 1.2f; // default we see the entire minimap
+  effectiveWidth = effectiveHeight = 0;
+  maxX = maxY = -1;
+  minX = minY = 3000;
+  midX = midY = -1.0f;
+  screenHeight = screenHeight = scourge->getSDLHandler()->getScreen()->h; ;
+  showMiniMap = true;            
+
+  if(DEBUG_MINIMAP) fprintf(stderr, "mini map =( %d x %d )\n", MINI_MAP_WIDTH, MINI_MAP_DEPTH);
+  for (int x = 0 ; x < MINI_MAP_WIDTH ; x++){
+    for(int y = 0; y < MINI_MAP_DEPTH ; y++){
+      pos[x][y].r = 0.0;
+      pos[x][y].g = 0.0;
+      pos[x][y].b = 0.0;
+      pos[x][y].visible = true;            
+    }
+  }   
+  
+  textureSizeH = textureSizeW = 0;
+  textureInMemory = NULL;
+  mustBuildTexture = true;
+}
 
 void MiniMap :: computeDrawValues(){        
     effectiveWidth = int(maxX - minX);
