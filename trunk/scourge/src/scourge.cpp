@@ -45,10 +45,10 @@ Scourge::Scourge(int argc, char *argv[]){
   isInfoShowing = true;
   
   // Reads the user configuration from a file      
-  userConfiguration = new UserConfiguration();
-  userConfiguration->loadConfiguration();  
-  userConfiguration->parseCommandLine(argc, argv);
-  
+  userConfiguration = new UserConfiguration();  
+  userConfiguration->loadConfiguration();    
+  userConfiguration->parseCommandLine(argc, argv);  
+   
   // Initialize the video mode
   sdlHandler = new SDLHandler(); 
   sdlHandler->setVideoMode(userConfiguration); 
@@ -350,7 +350,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     else if(ea == SET_NEXT_FORMATION_STOP){
         if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
     }   
-    else if(ea == SET_X_ROT_PLUS){
+    else if(ea == SET_X_ROT_PLUS){        
         map->setXRot(1.0f);
     }
     else if(ea == SET_X_ROT_MINUS){

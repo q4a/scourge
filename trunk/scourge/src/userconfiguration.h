@@ -30,6 +30,7 @@ using namespace std;
 // Max number of event binding for each engine action
 //#define MAX_BINDING 3
 #define CONFIG_FILE_NAME "saved/scourge.cfg"
+#define CONFIG_FILE_NAME_2 "saved/scourge_haha.cfg"
 
 // set to non-zero for debugging
 #define DEBUG_USER_CONFIG 0   
@@ -88,7 +89,7 @@ enum engine_action_int{
 // If you change this, ALSO change ENGINE_ACTION_UP_NAMES in userconfiguration.cpp
 enum engine_action_up_int{
 
-    SET_MOVE_DOWN_STOP = 500,
+    SET_MOVE_DOWN_STOP = 500,   // Must be first
     SET_MOVE_RIGHT_STOP, 
     SET_MOVE_UP_STOP,
     SET_MOVE_LEFT_STOP,
@@ -103,7 +104,7 @@ enum engine_action_up_int{
     USE_ITEM_STOP,
     SET_NEXT_FORMATION_STOP,
     
-    // must be last one
+    // must be the last one
     ENGINE_ACTION_UP_COUNT
 };
 
@@ -112,21 +113,29 @@ class UserConfiguration{
 private:
   static const char * ENGINE_ACTION_NAMES[];     
   static const char * ENGINE_ACTION_UP_NAMES[];
-  ifstream *configFile;  
+  static const char * ENGINE_ACTION_DESCRIPTION[]; 
   
-  // Associate keys and mouse buttons to an engineAction  
-  map<string, int> keyDownBindings;     // string keyName -> int ea
-  map<string, int> keyUpBindings;       // string keyName -> int ea
-  map<Uint8, int> mouseDownBindings;    // uint8 mouseButton -> int ea
-  map<Uint8, int> mouseUpBindings;      // uint8 mouseButton -> int ea 
-  map<string, int> engineActionUpNames; // string ea -> int ea
-  map<string, int> engineActionNames;   // string ea -> int ea
+  // becomes true every time loadConfiguration is called  
+  // and false every time getConfigurationChanged is called
+  bool configurationChanged; 
+  
+  // mappings to speed-up search processing
+  map<string, int> keyDownBindings;      // string keyName -> int ea
+  map<string, int> keyUpBindings;        // string keyName -> int ea
+  map<Uint8, int> mouseDownBindings;     // uint8 mouseButton -> int ea
+  map<Uint8, int> mouseUpBindings;       // uint8 mouseButton -> int ea 
+  map<string, int> engineActionUpNumber; // string ea -> int ea
+  map<string, int> engineActionNumber;   // string ea -> int ea
+  map<int, string> keyForEngineAction;   // int ea -> string keyName
+  map<int, string> engineActionName;     // int ea -> string ea  
        
   // return next word from string or empty string
   string getNextWord(const string theInput, int fromPos, int &endWord);
   
   // replace " " by "_" in a string
-  string replaceSpaces(string s);  
+  string replaceSpaces(string s);
+  
+  void writeFile(ofstream *fileOut, char *text);  
   
   // engine variables (video settings) 
   bool fullscreen;
@@ -143,6 +152,7 @@ private:
   int shadows;
    
  public:
+ 
   UserConfiguration::UserConfiguration();
   UserConfiguration::~UserConfiguration();
       
@@ -159,6 +169,10 @@ private:
   inline int getW()          { return w;          }
   inline int getH()          { return h;          }
   inline int getShadows()    { return shadows;    }   
+  inline int getEngineActionCount() { return ENGINE_ACTION_COUNT; }
+  const char * getEngineActionDescription(int i);  
+  const char * getEngineActionKeyName(int i);
+  bool getConfigurationChanged();
   
   inline bool setFullscreen(bool t){ fullscreen=t; }
   inline bool setDoublebuf(bool t) { doublebuf=t;  }
@@ -172,20 +186,26 @@ private:
   inline int setH(int t)           { h=t;          }
   inline int setShadows(int t)     { shadows=t;    }
   
+  
+  
      
-  // reads the configuration file where keys are bindeds
-  void loadConfiguration(); 
+  // reads the configuration file where keys are binded
+  void loadConfiguration();
+  
+  // save configuration into file
+  void saveConfiguration(char **controlLine); 
   
   // Associate SDL events to an engine action    
   void bind(string s1, string s2, int lineNumber);
   
   // Read in engine variables from file
-  void set (string s1, string s2, int lineNumber);
+  void set (string s1, string s2, int lineNumber); 
   
   // returns the action to do for this event
   int getEngineAction(SDL_Event *event); 
   
-  void parseCommandLine(int argc, char *argv[]);
+  void parseCommandLine(int argc, char *argv[]);  
+  void setKeyForEngineAction(string keyName, int ea);
   
   
 };
