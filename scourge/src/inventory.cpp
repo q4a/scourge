@@ -561,9 +561,15 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       item->getDetailedDescription(s);
       sprintf(pcInvText[t], "%s %s", (location > -1 ? " *" : "   "), s);
       if( !item->isMagicItem() ) {
-        itemColor[t].r = 0;
-        itemColor[t].g = 0;
-        itemColor[t].b = 0;
+        if( mainWin->getTheme()->getWindowText() ) {
+          itemColor[t].r = mainWin->getTheme()->getWindowText()->r;
+          itemColor[t].g = mainWin->getTheme()->getWindowText()->g;
+          itemColor[t].b = mainWin->getTheme()->getWindowText()->b;
+        } else {
+          itemColor[t].r = 0;
+          itemColor[t].g = 0;
+          itemColor[t].b = 0;
+        }
       } else {
         itemColor[t].r = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->r;
         itemColor[t].g = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->g;

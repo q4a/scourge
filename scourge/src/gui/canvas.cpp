@@ -36,6 +36,7 @@ Canvas::~Canvas() {
 }
 
 void Canvas::drawWidget(Widget *parent) {
+  GuiTheme *theme = ((Window*)parent)->getTheme();
   if(view && !((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getSDLHandler()->getScreen()->h - 
@@ -51,18 +52,21 @@ void Canvas::drawWidget(Widget *parent) {
   }
   // draw the border
   if(highlightBorders) {
-    applyHighlightedBorderColor();
     glLineWidth( 3.0f );
-  } else applyBorderColor();
-  glBegin(GL_LINES);
+  }
+  if( theme->getButtonBorder() ) {
+    glColor4f( theme->getButtonBorder()->color.r,
+               theme->getButtonBorder()->color.g,
+               theme->getButtonBorder()->color.b,
+               theme->getButtonBorder()->color.a );
+  } else {
+    applyBorderColor();
+  }  
+  glBegin( GL_LINE_LOOP );
   glVertex2d(0, 0);
   glVertex2d(0, y2 - y);
-  glVertex2d(x2 - x, 0);
   glVertex2d(x2 - x, y2 - y);
-  glVertex2d(0, 0);
   glVertex2d(x2 - x, 0);
-  glVertex2d(0, y2 - y);
-  glVertex2d(x2 - x, y2 - y);
   glEnd();
   glLineWidth( 1.0f );
 }

@@ -162,24 +162,22 @@ void ScrollingList::drawWidget(Widget *parent) {
     glDisable( GL_SCISSOR_TEST );
   }
   
-  // draw the outline
-  if(highlightBorders) {
-    applyHighlightedBorderColor();
-    glLineWidth( 3.0f );
-  } else {
-    if( theme->getButtonBorder() ) {
-      glColor4f( theme->getButtonBorder()->color.r,
-                 theme->getButtonBorder()->color.g,
-                 theme->getButtonBorder()->color.b,
-                 theme->getButtonBorder()->color.a );
-    } else {
-      applyBorderColor();
-    }
-  }
-
-
   drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
               false, false, false, false, inside );
+
+  // draw the outline
+  glDisable( GL_TEXTURE_2D );
+  if(highlightBorders) {
+    glLineWidth( 3.0f );
+  }
+  if( theme->getButtonBorder() ) {
+    glColor4f( theme->getButtonBorder()->color.r,
+               theme->getButtonBorder()->color.g,
+               theme->getButtonBorder()->color.b,
+               theme->getButtonBorder()->color.a );
+  } else {
+    applyBorderColor();
+  }  
 
   glBegin(GL_LINES);
   glVertex2d(0, 0);
