@@ -36,12 +36,15 @@ private:
   long nbExecutionsToDo;
   long nbExecutions;
   
+  // For debug purpose
+  static int globalId;  
+  int eventId;  // unique  
 
 public:
-  static int id; // For debug purpose
+  
   
   enum {
-    INFINITE_EXECUTIONS = -1  
+    INFINITE_EXECUTIONS = -1 
   }; 
    
   // This event will occur nbExecutionsTD time every tmOut from currentDate.  
@@ -53,14 +56,20 @@ public:
   Event(); 
   ~Event();
   
-  virtual void execute()=0;
+  //virtual void execute()=0;
+  virtual void execute() { cout << "Event.cpp : execute function should'nt be called by event base class!" << endl; }
   inline long getNbExecutionsToDo() { return nbExecutionsToDo; }
   inline long getNbExecutions()     { return nbExecutions; }
-  inline void increaseNbExecutions(){ nbExecutionsToDo ++ ; }
+  inline int getEventId()           { return eventId;   }
+  inline void increaseNbExecutions(){ nbExecutions ++ ; }
+  inline void setNbExecutionsToDo(int nb){ if(nb >= -1) nbExecutionsToDo = nb; else nbExecutions = 0; }
+  
     
   Date getEventDate() { return eventDate; }
   Date getTimeOut()   { return timeOut;   }
-  void setEventDate(Date d) { eventDate = d; }  
+  void setEventDate(Date d) { eventDate = d; }   
+  void scheduleDeleteEvent();
+  
   
 };
 
