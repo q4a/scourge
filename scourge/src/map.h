@@ -82,6 +82,9 @@ class Map {
   // squish on z and shear x,y
   static const float shadowTransformMatrix[16];
 
+#define OVERLAY_SIZE 16
+  GLuint overlay_tex;
+  unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
   
   void drawGrid(SDL_Surface *surface);
   void debugGrid(SDL_Surface *surface);
@@ -228,6 +231,8 @@ class Map {
   void drawShade();
   
   void drawCube(float x, float y, float z, float r);
+
+  void createOverlayTexture();
 };
 
 #endif
