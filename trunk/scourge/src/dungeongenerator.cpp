@@ -1305,35 +1305,47 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
 void DungeonGenerator::lockDoors(Map *map, ShapePalette *shapePal, 
                                  bool preGenerated, int locationIndex) {
   // lock some doors
-  //cerr << "*** Locking doors, count=" << doorCount << endl;
   for(int i = 0; i < doorCount; i++) {
     Sint16 mapx = door[i][0];
     Sint16 mapy = door[i][1];
-    if((int)(LOCKED_DOOR_RAND * rand() / RAND_MAX) == 0) {
-      //cerr << "\t*** Locking door: " << mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << endl;
-      // lock the door
-      map->setLocked(mapx, mapy, 0, true);
-      // find an accessible location for the switch
-      int nx, ny;
-      Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
-      getRandomLocation(map, lever, &nx, &ny, true, 
-                        scourge->getParty()->getPlayer()->getX(), 
-                        scourge->getParty()->getPlayer()->getY());
-      if( nx < MAP_WIDTH ) {
-        cerr << "*** Locking door: " << mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << 
-          " with lever at: " << nx << "," << ny << " roomIndex=" << getRoomIndex(nx, ny) << endl;
-        // place the switch
-        addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
-        // connect the switch and the door
-        map->setKeyLocation(mapx, mapy, 0, nx, ny, 0);
-      } else {
-        //cerr << "\t\t*** Room not locked." << endl;
-        // if none found, unlock the door
-        map->removeLocked(mapx, mapy, 0);
-      }
+    lockLocation(map, mapx, mapy);
+  }
+  // lock some chests
+  for(int i = 0; i < (int)containers.size(); i++) {
+    if(containers[i]->getShape() == scourge->getSession()->getShapePalette()->findShapeByName("CHEST") ||
+       containers[i]->getShape() == scourge->getSession()->getShapePalette()->findShapeByName("CHEST2")) {
+      lockLocation(map, containerX[i], containerY[i]);
     }
   }
-  //cerr << "*** Done locking doors" << endl;
+
+}
+
+void DungeonGenerator::lockLocation(Map *map, int mapx, int mapy) {
+  if((int)(LOCKED_DOOR_RAND * rand() / RAND_MAX) == 0) {
+    //cerr << "\t*** Locking door: " << mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << endl;
+    // lock the door
+    map->setLocked(mapx, mapy, 0, true);
+    // find an accessible location for the switch
+    int nx, ny;
+    Shape *lever = scourge->getShapePalette()->findShapeByName("SWITCH_OFF");
+    getRandomLocation(map, lever, &nx, &ny, true, 
+                      scourge->getParty()->getPlayer()->getX(), 
+                      scourge->getParty()->getPlayer()->getY());
+    if( nx < MAP_WIDTH ) {
+      Location *pos = map->getLocation(mapx, mapy, 0);
+      cerr << "*** Locking " << pos->shape->getName() << ": " << 
+        mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << 
+        " with lever at: " << nx << "," << ny << " roomIndex=" << getRoomIndex(nx, ny) << endl;
+      // place the switch
+      addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
+      // connect the switch and the door
+      map->setKeyLocation(mapx, mapy, 0, nx, ny, 0);
+    } else {
+      //cerr << "\t\t*** Room not locked." << endl;
+      // if none found, unlock the door
+      map->removeLocked(mapx, mapy, 0);
+    }
+  }
 }
 
 void DungeonGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal, 
@@ -1390,12 +1402,22 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
   
   progress->updateStatus("Fixing rooms");
   removeColumns(map, shapePal, preGenerated, locationIndex);
-   
-  progress->updateStatus("Adding containers");
-  addContainers(map, shapePal, preGenerated, locationIndex);
+
+  progress->updateStatus("Adding pre-generated shapes");
+  if(preGenerated) {
+    addPregeneratedShapes(map, shapePal, preGenerated, locationIndex);
+  }
 
   progress->updateStatus("Compressing free space");
   createFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
+   
+  progress->updateStatus("Adding containers");
+  addContainers(map, shapePal, preGenerated, locationIndex);  
+
+  progress->updateStatus("Adding gates");
+  if(!preGenerated) {
+    addStairs(map, shapePal, preGenerated, locationIndex);
+  }
 
   progress->updateStatus("Adding party");
   addParty(map, shapePal, preGenerated, locationIndex);
@@ -1405,16 +1427,6 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 
   progress->updateStatus("Calculating room values");
   calculateRoomValues(map, shapePal, preGenerated, locationIndex);
-
-  progress->updateStatus("Adding gates");
-  if(!preGenerated) {
-    addStairs(map, shapePal, preGenerated, locationIndex);
-  }
-
-  progress->updateStatus("Adding pre-generated shapes");
-  if(preGenerated) {
-    addPregeneratedShapes(map, shapePal, preGenerated, locationIndex);
-  }
 
   progress->updateStatus("Adding items and mission objectives");
   if(!preGenerated) {
