@@ -91,6 +91,7 @@ public:
   void drawLogo();
   void addLogoSprite();
   void drawLogoSprites();
+  void drawParticles();
 };
 
 #endif

@@ -110,10 +110,19 @@ int RpgItem::getTypeByName(char *name) {
   exit(1);
 }
 
-RpgItem *RpgItem::getRandomItem(int level) {
+RpgItem *RpgItem::getRandomItem(int maxLevel) {
   // item types found in the lying around a dungeon
-  int types[] = { SWORD, AXE, ARMOR, FOOD, DRINK };
-  int typeCount = 5;
+  int types[] = { SWORD, AXE, BOW, ARMOR, FOOD, DRINK };
+  int typeCount = 6;
+
+  // levels are assumed to be 1-based
+  if(maxLevel < 1) {
+	cerr << "levels are assumed to be 1-based!!!" << endl;
+	exit(1);
+  }
+
+  // choose a random level up to maxLevel
+  int level = (int)((float)maxLevel * rand()/RAND_MAX) + 1;
 
   int typeIndex = (int)((float)typeCount * rand()/RAND_MAX);
   map<int, vector<const RpgItem*>*> *levelMap = typesMap[types[typeIndex]];
@@ -130,8 +139,8 @@ RpgItem *RpgItem::getRandomItem(int level) {
 RpgItem *RpgItem::getRandomContainer() {
   int n = (int)(10.0 * rand()/RAND_MAX);
   switch(n) {
-  case 0: return items[RpgItem::BOOKSHELF];
-  case 1: return items[RpgItem::CHEST];
+  case 0: return getItemByName("Bookshelf");
+  case 1: return getItemByName("Chest");
   default: return NULL;
   }
 }
@@ -139,8 +148,8 @@ RpgItem *RpgItem::getRandomContainer() {
 RpgItem *RpgItem::getRandomContainerNS() {
   int n = (int)(10.0 * rand()/RAND_MAX);
   switch(n) {
-  case 0: return items[RpgItem::BOOKSHELF2];
-  case 1: return items[RpgItem::CHEST2];
+  case 0: return getItemByName("Bookshelf2");
+  case 1: return getItemByName("Chest2");
   default: return NULL;
   }
 }

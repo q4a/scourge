@@ -173,7 +173,9 @@ void Scourge::initItems() {
 
 	  int inventory_location = 0;
 	  int twohanded = 0;
-	  p = strtok(NULL, ",");
+	  strcpy(shape, "");
+	  strcpy(skill, "");
+	  p = strtok(NULL, ",");	  
 	  if(p) {
 		strcpy(shape, p);
 		p = strtok(NULL, ",");

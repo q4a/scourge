@@ -186,6 +186,8 @@ void MainMenu::drawLogo() {
   if((int)(5.0f * rand()/RAND_MAX) == 0) addLogoSprite();
   drawLogoSprites();
 
+  drawParticles();
+
   //  glDisable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_BLEND);  
@@ -318,6 +320,20 @@ void MainMenu::drawLogoSprites() {
 	  i--;
 	}
   }
+}
+
+void MainMenu::drawParticles() {
+  /*
+	// draw particles from logo to right like a torch
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+	if(particle[i] == null) {
+	  particle[i] = new Particle();
+	  particle[i]->x = 80;
+	  particle[i]->y = 30 + (30.0f * rand()/RAND_MAX);
+
+	}
+  }
+  */
 }
 
 void MainMenu::drawClouds(bool moveClouds, bool flipped) {
