@@ -43,7 +43,7 @@ Inventory::Inventory(Scourge *scourge) {
 
 	// construct UI
 	mainWin = new Window( scourge->getSDLHandler(),
-						  100, 50, 525, 505, 
+						  100, 50, 420, 505, 
 						  strdup("Party Information"), 
 						  scourge->getShapePalette()->getGuiTexture() );
 	player1Button = new Button( 0, 30, 105, 60, scourge->getParty(0)->getName() );
@@ -91,29 +91,31 @@ Inventory::Inventory(Scourge *scourge) {
 	cards->addWidget(invList, INVENTORY);
 	cards->addWidget(new Label(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP)),
 					 INVENTORY);
-	char s[80];
-	for(int i = 0; i < 4; i++) {
-	  sprintf(s, "to %s", scourge->getParty(i)->getName());
-	  invToButton[i] = new Button( 420, 35 + (i * 30), 520, 35 + (i * 30) + 25, strdup(s) );
-	  cards->addWidget( invToButton[i], INVENTORY );
-	}
-	equipButton = new Button( 420, 155, 520, 180, strdup("Don/Doff") );
+	
+	//char s[80];
+	int yy = 160;
+	equipButton = new Button( 0, yy, 105, yy + 30, strdup("Don/Doff") );
 	cards->addWidget(equipButton, INVENTORY);
-	dropButton = new Button( 420, 185, 520, 210, strdup("Drop Item") );
-	cards->addWidget(dropButton, INVENTORY);
-	fixButton = new Button( 420, 215, 520, 240, strdup("Fix Item") );
+	yy+=30;
+	fixButton = new Button( 0, yy, 105, yy + 30, strdup("Fix Item") );
 	cards->addWidget(fixButton, INVENTORY);
-	removeCurseButton = new Button( 420, 245, 520, 270, strdup("Remove Curse") );
+	yy+=30;
+	removeCurseButton = new Button( 0, yy, 105, yy + 30, strdup("Remove Curse") );
 	cards->addWidget(removeCurseButton, INVENTORY);
-	combineButton = new Button( 420, 275, 520, 300, strdup("Combine Item") );
+	yy+=30;
+	combineButton = new Button( 0, yy, 105, yy + 30, strdup("Combine Item") );
 	cards->addWidget(combineButton, INVENTORY);
-	enchantButton = new Button( 420, 305, 520, 330, strdup("Enchant Item") );
+	yy+=30;
+	enchantButton = new Button( 0, yy, 105, yy + 30, strdup("Enchant Item") );
 	cards->addWidget(enchantButton, INVENTORY);
-	identifyButton = new Button( 420, 335, 520, 360, strdup("Identify Item") );
+	yy+=30;
+	identifyButton = new Button( 0, yy, 105, yy + 30, strdup("Identify Item") );
 	cards->addWidget(identifyButton, INVENTORY);
-	openButton = new Button( 420, 335, 520, 360, 
+	yy+=30;
+	openButton = new Button( 0, yy, 105, yy + 30, 
 							 Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
 	cards->addWidget(openButton, INVENTORY);
+	yy+=30;
 
 	// character info
 	label = new Label(115, 45, strdup("Character Information"));
@@ -129,15 +131,17 @@ Inventory::Inventory(Scourge *scourge) {
 	cards->addWidget(expLabel, CHARACTER);
 	hpLabel = new Label(115, 120);
 	cards->addWidget(hpLabel, CHARACTER);
+	
 	label = new Label(115, 135, strdup("Current State:"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, CHARACTER);
-	label = new Label(320, 45, strdup("Skills:"));
+	stateList = new ScrollingList(115, 140, 290, 70);
+	cards->addWidget(stateList, CHARACTER);
+
+	label = new Label(115, 225, strdup("Skills:"));
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, CHARACTER);
-	stateList = new ScrollingList(115, 140, 150, 70);
-	cards->addWidget(stateList, CHARACTER);
-	skillList = new ScrollingList(320, 50, 190, 290);
+	skillList = new ScrollingList(115, 230, 290, 220);
 	cards->addWidget(skillList, CHARACTER);
 
 	// spellbook
@@ -168,8 +172,6 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 				scourge->openContainerGui(item);
 			}
 		}
-	} else if(widget == dropButton) {
-		dropItem();
 	} else if(widget == equipButton) {
 		int itemIndex = invList->getSelectedLine();  
 		if(itemIndex > -1 && 
@@ -180,14 +182,6 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 			setSelectedPlayerAndMode(selected, selectedMode);
 			invList->setSelectedLine(oldLine);
 		}
-	} else if(widget == invToButton[0]) {
-		moveItemTo(0);
-	} else if(widget == invToButton[1]) {
-		moveItemTo(1);
-	} else if(widget == invToButton[2]) {
-		moveItemTo(2);
-	} else if(widget == invToButton[3]) {
-		moveItemTo(3);
 	}
 	return false;
 }

@@ -53,8 +53,7 @@ private:
 
 	// inventory screen
 	Label *invEquipLabel[Character::INVENTORY_COUNT];
-	Button *invToButton[4];
-	Button *equipButton, *dropButton, *fixButton, *removeCurseButton;
+	Button *equipButton, *fixButton, *removeCurseButton;
 	Button *combineButton, *enchantButton, *identifyButton, *openButton;
 	ScrollingList *invList;
 	char **pcInvText;
