@@ -76,20 +76,10 @@ Board::Board(Scourge *scourge) {
   fclose(fp);
 
   // init gui
-  boardWin = new Window( scourge->getSDLHandler(),
-						 (scourge->getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
-						 (scourge->getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
-						 BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
-						 strdup("Available Missions"), 
-						 scourge->getShapePalette()->getGuiWoodTexture(),
-						 true, Window::SIMPLE_WINDOW );
-  boardWin->setBackgroundTileHeight(96);
-  boardWin->setBorderColor( 0.5f, 0.2f, 0.1f );
-  boardWin->setColor( 0.8f, 0.8f, 0.7f, 1 );
-  boardWin->setBackground( 0.65, 0.30f, 0.20f, 0.15f );
-  boardWin->setSelectionColor(  0.25f, 0.35f, 0.6f );
-
-
+  boardWin = scourge->createWoodWindow((scourge->getSDLHandler()->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
+									   (scourge->getSDLHandler()->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
+									   BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
+									   strdup("Available Missions"));
   missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
   boardWin->addWidget(missionList);
   missionDescriptionLabel = new Label(5, 210, strdup(""), 70);

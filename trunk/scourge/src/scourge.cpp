@@ -1387,3 +1387,15 @@ void Scourge::showMessageDialog(char *message) {
 							getShapePalette()->getGuiTexture(),
 							message);
 }
+
+Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
+  Window *win = new Window( getSDLHandler(), x, y, w, h, title, 
+							getShapePalette()->getGuiWoodTexture(),
+							true, Window::SIMPLE_WINDOW );
+  win->setBackgroundTileHeight(96);
+  win->setBorderColor( 0.5f, 0.2f, 0.1f );
+  win->setColor( 0.8f, 0.8f, 0.7f, 1 );
+  win->setBackground( 0.65, 0.30f, 0.20f, 0.15f );
+  win->setSelectionColor(  0.25f, 0.35f, 0.6f );
+  return win;
+}

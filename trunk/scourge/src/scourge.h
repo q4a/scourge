@@ -243,6 +243,8 @@ public:
 
   void showExitConfirmationDialog();
 
+  Window *createWoodWindow(int x, int y, int w, int h, char *title);
+
  protected:
   //  void fightBattle(); 
 
