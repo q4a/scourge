@@ -347,7 +347,7 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
   GLuint skin_texture;
   char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
-	sprintf(path, "%s/%s", rootDir, skin_name);
+	sprintf(path, "%s%s", rootDir, skin_name);
 	cerr << "&&&&&&&&&& Loading texture: " << path << endl;
 	CreateTexture(&skin_texture, path, 0);
 	cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
