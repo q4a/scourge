@@ -201,10 +201,6 @@ void Creature::setSelXY(int x, int y, bool force) {
 	Sint16 nz;
 	findCorner(&cornerX, &cornerY, &nz);
 	setMotion(Constants::MOTION_MOVE_AWAY);   
-  } else {
-	// give up on attempting to move to range
-	minRange = maxRange = 0;
-	failedToMoveWithinRangeAttemptCount = 0;
   }
 }
 
@@ -224,6 +220,9 @@ bool Creature::isWithinDistanceRange() {
 	return false;
   } else if(failedToMoveWithinRangeAttemptCount < MAX_FAILED_MOVE_ATTEMPTS * 2) {
 	failedToMoveWithinRangeAttemptCount++;
+	return true;
+  } else {
+	failedToMoveWithinRangeAttemptCount = 0;
 	return true;
   }
 }
@@ -246,10 +245,10 @@ bool Creature::moveToLocator(Map *map) {
 	
     // take a step
     if(getMotion() == Constants::MOTION_MOVE_AWAY){    
-	  //	  if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving away! attempt=" << failedToMoveWithinRangeAttemptCount << endl;
+	  //if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving away! attempt=" << failedToMoveWithinRangeAttemptCount << endl;
       moved = gotoPosition(map, cornerX, cornerY, 0, "cornerXY");
     } else {
-	  //if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving towards!" << endl;
+	  //if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving towards! attempt=" << failedToMoveWithinRangeAttemptCount << " min=" << minRange << " max=" << maxRange << endl;
       moved = gotoPosition(map, selX, selY, 0, "selXY");
     }
 	// if we've no more steps

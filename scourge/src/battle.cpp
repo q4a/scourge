@@ -164,6 +164,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 
 void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target) {
   // configure a turn
+  Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
   Battle *battle = new Battle(scourge, proj->getCreature());
   battle->projectileHit = true;
@@ -173,6 +174,7 @@ void Battle::projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *tar
   battle->fightTurn();
   
   delete battle;
+  proj->getCreature()->setTargetCreature(oldTarget);
 }
 
 void Battle::fightTurn() {
@@ -184,6 +186,7 @@ void Battle::fightTurn() {
   if(!creature->getTargetCreature()) return;
 
   // too far? then keep following the target
+  // also check if too close when using ranged weapons
   if(!(dist <= 1.0f || item) || 
 	 !creature->isWithinDistanceRange()) {
 	creature->setSelXY(creature->getTargetCreature()->getX(),
@@ -191,10 +194,6 @@ void Battle::fightTurn() {
 					   true);
 	return;
   }
-
-  // when using ranged weapons, try to stay within the distance range
-  // when not in range, don't attack, allowing the character to move into
-  // position. 
 
   if(item) {
 	sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
@@ -255,8 +254,7 @@ void Battle::hitWithItem() {
 		creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
 		sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 		scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-		// UNCOMMENT ME!!!
-		scourge->creatureDeath(creature->getTargetCreature());
+		//scourge->creatureDeath(creature->getTargetCreature());
 		
 		// add exp. points and money
 		if(!creature->isMonster()) {
