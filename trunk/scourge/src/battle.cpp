@@ -229,9 +229,9 @@ void Battle::fightTurn() {
 }
 
 void Battle::castSpell() {
-  cerr << "FIXME: implement Battle::castSpell()" << endl;
-  cerr << "\tdynamic effects (flame, explode, etc.), saving throws, multiple targets, projectile hits, mana usage, etc." << endl;
-  cerr << "\tcall Battle::dealDamage() for each target." << endl;
+  //  cerr << "FIXME: implement Battle::castSpell()" << endl;
+  //  cerr << "\tdynamic effects (flame, explode, etc.), saving throws, multiple targets, projectile hits, mana usage, etc." << endl;
+  //  cerr << "\tcall Battle::dealDamage() for each target." << endl;
 
   sprintf(message, "%s casts %s!", 
 		  creature->getName(), 
@@ -239,6 +239,44 @@ void Battle::castSpell() {
   scourge->getMap()->addDescription(message, 1, 0.15f, 1);
   ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
   
+  // use up some MP
+  int n = creature->getMp() - creature->getActionSpell()->getMp();
+  if(n < 0) n = 0;
+  creature->setMp( n );
+
+  // calculate spell's power
+  // power=[0-25]
+  float power = (float)creature->getSkill(creature->getActionSpell()->getSchool()->getSkill()) / 4.0f;
+  // power=[0-45]
+  power += (float)creature->getSkill(Constants::IQ) / 5.0f;
+  // power=[0-450]
+  power *= creature->getLevel();
+  // power=[0-500]
+  power += ((float)creature->getSkill(Constants::LUCK) / 2.0f);
+
+  // spell succeeds?
+  // FIXME: use stats like IQ here... Maybe calculate 'power' based on skill, IQ, luck, etc.
+  if((int)(100.0f * rand() / RAND_MAX) < creature->getActionSpell()->getFailureRate()) {
+	SpellCaster::spellFailed(scourge, creature, (int)power);
+  } else {
+	
+	// get exp for casting the spell
+	bool b = creature->getStateMod(Constants::leveled);
+	if(!creature->getStateMod(Constants::dead)) {
+	  int n = creature->addExperience(creature->getActionSpell()->getExp());
+	  if(n > 0) {
+		sprintf(message, "%s gains %d experience points.", creature->getName(), n);
+		scourge->getMap()->addDescription(message);
+		if(!b && creature->getStateMod(Constants::leveled)) {
+		  sprintf(message, "%s gains a level!", creature->getName());
+		  scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+		}
+	  }
+	}
+
+	SpellCaster::spellSucceeded(scourge, creature, (int)power);
+
+  }
   
   // cancel action
   creature->cancelTarget();

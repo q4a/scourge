@@ -102,10 +102,14 @@ char *Constants::messages[][80] = {
   { "A dead character cannot perform this action." },
   { "hp:" },
   { "ac:" },
+  { "Your magic fizzles and dies.", 
+	"Only the roaches are impressed by your mumbled words.",
+	"The silence is broken only by some crickets nearby.",
+	"Bazzoomm! A small cloud of smoke rises to the ceiling." }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4
 };
 
 // opengl extension routines

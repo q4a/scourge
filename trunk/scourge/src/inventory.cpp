@@ -311,14 +311,16 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == castButton) {
 	Spell *spell = getSelectedSpell();
 	if(spell) {
-	  creature->setAction(Constants::ACTION_CAST_SPELL, 
-						  NULL,
-						  spell);
-	  if(!creature->getTargetCreature() ||
-		 !spell->useDefaultTarget()) scourge->setTargetSelectionFor(creature);
-	  mainWin->setVisible(false);
-
-	  //scourge->getParty()->getParty(selected)->castSpell(spell);
+	  if(spell->getMp() > creature->getMp()) {
+		scourge->showMessageDialog("Not enough Magic Points to cast this spell!");
+	  } else {
+		creature->setAction(Constants::ACTION_CAST_SPELL, 
+							NULL,
+							spell);
+		if(!creature->getTargetCreature() ||
+		   !spell->useDefaultTarget()) scourge->setTargetSelectionFor(creature);
+		mainWin->setVisible(false);
+	  }
 	}
   }
   return false;

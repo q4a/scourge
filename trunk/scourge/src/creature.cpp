@@ -692,12 +692,13 @@ void Creature::setAction(int action,
   case Constants::ACTION_NO_ACTION:
 	// no-op
 	preActionTargetCreature = NULL;
+	sprintf(msg, "");
 	break;
   default:
 	cerr << "*** Error: unknown action " << action << endl;
 	return;
   }
-  scourge->getMap()->addDescription(msg, 1, 1, 0.5f);
+  if(strlen(msg)) scourge->getMap()->addDescription(msg, 1, 1, 0.5f);
 }
 
 void Creature::equipInventory(int index) {

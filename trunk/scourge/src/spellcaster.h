@@ -1,5 +1,5 @@
 /***************************************************************************
-                          battle.h  -  description
+                          spellcaster.h  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef BATTLE_H
-#define BATTLE_H
+#ifndef SPELL_CASTER_H
+#define SPELL_CASTER_H
 
 #include <iostream>
 #include <string>
@@ -30,7 +30,6 @@
 #include "rpg/monster.h"
 #include "effect.h"
 #include "projectile.h"
-#include "spellcaster.h"
 
 using namespace std;
 
@@ -43,57 +42,16 @@ class Creature;
 class Item;
 class Projectile;
 
-/**
-   This class represents a single battle turn.
- */
-class Battle {
- private:
-  Scourge *scourge;
-  Creature *creature;
-  Item* item;
-  char message[200];
-  int creatureInitiative;
-  bool initiativeCheck;
-  int speed;
-  float dist;
-  bool empty;
-  bool projectileHit;
-
+class SpellCaster {
  public:
   
-  /**
-	 This method sets up and creates battle turns (Battle objects) in order of initiative.
-   */
-  static void setupBattles(Scourge *scourge, Battle *battle[], int count, vector<Battle *> *turns);
+  static void spellFailed(Scourge *scourge, Creature *creature, int power);
 
-  /**
-	 Call this when a projectile weapon finally hits.
-	 It sets up a turn and plays it.
-  */
-  static void projectileHitTurn(Scourge *scourge, Projectile *proj, Creature *target);
-
-  /**
-	 A no-op turn of battle.
-  */
-  Battle();
-
-  /**
-	 A Battle is a round of battle between 'creature' and 'creature->getTargetCreature()'
-   */
-  Battle(Scourge *scourge, Creature *creature);
-  ~Battle();
-
-  inline bool isEmpty() { return empty; }
-  void fightTurn();
+  static void spellSucceeded(Scourge *scourge, Creature *creature, int power);
 
  protected:
-  void launchProjectile();
-  void initTurn();
-  void hitWithItem();
-  void initItem(Item *item);
-  void dealDamage(int damage);
-  void castSpell();
-  void executeEatDrinkAction();
+  static void castHealingTouch(Scourge *scourge, Creature *creature, int power);
+  
 };
 
 #endif
