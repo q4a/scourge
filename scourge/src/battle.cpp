@@ -737,14 +737,47 @@ void Battle::hitWithItem() {
   sprintf(message, "...toHit=%d(%d) (max=%d) vs. AC=%d", tohit, extra, maxToHit, ac);
   session->getMap()->addDescription(message);
   tohit += extra;
+
+  // deal out the damage
+  int maxDamage;
+  int damage = creature->getDamage(item, &maxDamage);
+  
+  // special actions for very low tohits
+  if( tohit < 2 && creature->getTargetCreature() ) {
+	if( 0 == (int)( 3.0f * rand() / RAND_MAX ) ) {
+	  Creature *tmpTarget;
+	  if( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) {
+		tmpTarget = session->getClosestVisibleMonster(toint(creature->getX()), 
+													  toint(creature->getY()), 
+													  creature->getShape()->getWidth(),
+													  creature->getShape()->getDepth(),
+													  20);
+	  } else {
+		tmpTarget = session->getParty()->getClosestPlayer(toint(creature->getX()), 
+														  toint(creature->getY()), 
+														  creature->getShape()->getWidth(),
+														  creature->getShape()->getDepth(),
+														  20);
+	  }
+	  if( tmpTarget ) {
+		// play item sound
+		if(item) session->playSound(item->getRandomSound());
+
+		sprintf( message, "...fumble: you hit %s instead!", tmpTarget->getName() );
+		session->getMap()->addDescription( message );
+		Creature *oldTarget = creature->getTargetCreature();
+		creature->setTargetCreature( tmpTarget );
+		dealDamage(damage, maxDamage);
+		creature->setTargetCreature( oldTarget );
+		return;
+	  }
+	}
+  }
+
   if(tohit > ac) {
 
-    // play item sound
-    if(item) session->playSound(item->getRandomSound());
-
-    // deal out the damage
-    int maxDamage;
-    int damage = creature->getDamage(item, &maxDamage);
+	// play item sound
+	if(item) session->playSound(item->getRandomSound());
 
     // magical weapons
     if(item && item->isMagicItem()) {
@@ -772,6 +805,29 @@ void Battle::hitWithItem() {
       }
       damage *= mul;
     }
+
+	// special actions for very high tohits
+	if( tohit > 97 ) {
+	  int mul = (int)( 8.0f * rand()/RAND_MAX );
+	  if( mul == 2 ) {
+		strcpy(message, "...precise hit: double damage!");
+        session->getMap()->addDescription(message);
+		damage *= mul;
+	  } else if( mul == 3 ) {
+		strcpy(message, "...precise hit: tripple damage!");
+        session->getMap()->addDescription(message);
+		damage *= mul;
+	  } else if( mul == 4 ) {
+		strcpy(message, "...precise hit: quad damage!");
+        session->getMap()->addDescription(message);
+		damage *= mul;
+	  } else if( mul == 0 && tohit >= 99 ) {
+		strcpy(message, "...precise hit: instant kill!");
+        session->getMap()->addDescription(message);
+		damage = 1000;
+	  }
+	}
+
     dealDamage(damage, maxDamage);
   } else {
     // missed
