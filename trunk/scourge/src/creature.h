@@ -66,7 +66,7 @@ class Creature {
   
  private:
   // gui information
-  Sint16 x, y, z;
+  GLfloat x, y, z;
   Creature *next;
   GLShape *shape;
   char *model_name, *skin_name;
@@ -155,9 +155,9 @@ class Creature {
 
   inline bool isMonster() { return (monster ? TRUE : FALSE); }
   
-  inline int getTargetX() { if(targetCreature) return targetCreature->getX(); else return targetX; }
-  inline int getTargetY() { if(targetCreature) return targetCreature->getY(); else return targetY; }
-  inline int getTargetZ() { if(targetCreature) return targetCreature->getZ(); else return targetZ; }
+  inline int getTargetX() { if(targetCreature) return (int)targetCreature->getX(); else return targetX; }
+  inline int getTargetY() { if(targetCreature) return (int)targetCreature->getY(); else return targetY; }
+  inline int getTargetZ() { if(targetCreature) return (int)targetCreature->getZ(); else return targetZ; }
   void setTargetCreature(Creature *c);
   inline Creature *getTargetCreature() { return targetCreature; }
   inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
@@ -197,9 +197,9 @@ class Creature {
   void stopMoving();
   
   inline void moveTo(Sint16 x, Sint16 y, Sint16 z) { this->x = x; this->y = y; this->z = z; }
-  inline Sint16 getX() { return x; }
-  inline Sint16 getY() { return y; }
-  inline Sint16 getZ() { return z; }
+  inline GLfloat getX() { return x; }
+  inline GLfloat getY() { return y; }
+  inline GLfloat getZ() { return z; }
   inline char *getModelName() { return model_name; }
   inline char *getSkinName() { return skin_name; }
   inline GLShape *getShape() { return shape; }

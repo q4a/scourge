@@ -470,15 +470,9 @@ void Creature::setTargetCreature(Creature *c) {
   }
 }
 
-void Creature::stopMoving() {
-  bestPathPos = (int)bestPath.size();
-  selX = selY = -1;
-}
-
 bool Creature::moveToLocator(Map *map) {
   bool moved = false;
   if(selX > -1) {
-
     // take a step
     if(getMotion() == Constants::MOTION_MOVE_AWAY){    
       //if(this == scourge->getParty()->getParty(1)) cerr << "Barlett: moving away! attempt=" << failedToMoveWithinRangeAttemptCount << endl;
@@ -496,10 +490,6 @@ bool Creature::moveToLocator(Map *map) {
     }
   }
   return moved;
-}
-
-bool Creature::anyMovesLeft() {
-  return(selX > -1 && (int)bestPath.size() > bestPathPos); 
 }
 
 bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
@@ -521,13 +511,57 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
      ((MD2Shape*)getShape())->getCurrentAnimation() == MD2_RUN ) {
     // take a step on the bestPath
     Location location = bestPath[bestPathPos];
-    // if we can't step there, someone else has moved there ahead of us
+
     Uint16 oldDir = dir;
-    if(getX() < location.x) dir = Constants::MOVE_RIGHT;
-    else if(getX() > location.x) dir = Constants::MOVE_LEFT;
-    else if(getY() < location.y) dir = Constants::MOVE_DOWN;
-    else if(getY() > location.y) dir = Constants::MOVE_UP;
+    if((int)getX() < location.x) dir = Constants::MOVE_RIGHT;
+    else if((int)getX() > location.x) dir = Constants::MOVE_LEFT;
+    else if((int)getY() < location.y) dir = Constants::MOVE_DOWN;
+    else if((int)getY() > location.y) dir = Constants::MOVE_UP;
     setFacingDirection(dir);
+
+    // take a step
+    GLfloat step = 0.2f;
+    GLfloat newX = getX();
+    GLfloat newY = getY();
+    if( dir == Constants::MOVE_RIGHT ) newX += step;
+    if( dir == Constants::MOVE_LEFT ) newX -= step;
+    if( dir == Constants::MOVE_DOWN ) newY += step;
+    if( dir == Constants::MOVE_UP ) newY -= step;
+
+    //if( !strcmp(getName(), "Alamont") ) 
+    //  cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
+
+    Location *position = map->moveCreature(getX(), getY(), getZ(),
+                                           newX, newY, getZ(),
+                                           this);
+    if(!position) {
+      //moveTo(newX, newY, getZ());
+      this->x = newX;
+      this->y = newY;
+      ((MD2Shape*)shape)->setDir(dir);
+      if( (int)newX == location.x && (int)newY == location.y ) {
+        bestPathPos++;
+      }
+      return true;
+    } else {
+      dir = oldDir;
+      // if we're not at the destination, but it's possible to stand there
+      // try again
+      if(!(selX == getX() && selY == getY()) && 
+         map->shapeFits(getShape(), selX, selY, -1) &&
+         moveRetrycount < MAX_MOVE_RETRY) {
+
+        // don't keep trying forever
+        moveRetrycount++;
+        tx = ty = -1;
+      } else {
+        // if we can't get to the destination, stop trying
+        // do this so the animation switches to "stand"
+        stopMoving();
+      }
+    }
+    
+    /*
     Location *position = map->moveCreature(getX(), getY(), getZ(),
                                            location.x, location.y, getZ(),
                                            this);
@@ -553,8 +587,18 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
         stopMoving();
       }
     }
+    */
   }
   return false;
+}
+
+void Creature::stopMoving() {
+  bestPathPos = (int)bestPath.size();
+  selX = selY = -1;
+}
+
+bool Creature::anyMovesLeft() {
+  return(selX > -1 && (int)bestPath.size() > bestPathPos); 
 }
 
 void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
