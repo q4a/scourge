@@ -32,6 +32,7 @@
 #include "gui/scrollinglist.h"
 #include "gui/cardcontainer.h"
 #include "gui/widgetview.h"
+#include "gui/scrollinglabel.h"
 
 /**
   *@author Gabor Torok
@@ -44,11 +45,11 @@ typedef struct _CharacterInfo {
   TextField *name;
 
   ScrollingList *charType;
-  Label *charTypeDescription;
+  ScrollingLabel *charTypeDescription;
   char **charTypeStr;
 
   ScrollingList *deityType;
-  Label *deityTypeDescription;
+  ScrollingLabel *deityTypeDescription;
   char **deityTypeStr;
   
   Canvas *portrait;

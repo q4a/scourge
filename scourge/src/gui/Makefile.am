@@ -29,6 +29,8 @@ libScourgeGui_a_SOURCES = \
 	multiplelabel.h\
 	scrollinglist.cpp\
 	scrollinglist.h\
+	scrollinglabel.cpp\
+	scrollinglabel.h\
 	window.cpp\
 	window.h\
 	progress.cpp\

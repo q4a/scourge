@@ -148,6 +148,10 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   // FIXME: copy-paste from constructor
   int w = scourge->getSDLHandler()->getScreen()->w - Window::SCREEN_GUTTER * 2;
   int h = 600;
+  
+  //  int col2X = ( scourge->getScreenWidth() > 800 ? 500 : 350 );
+  int skillColWidth = 240;
+  int col2X = w - PORTRAIT_SIZE - 20 - skillColWidth;
 
   // title
   char msg[80];
@@ -172,7 +176,9 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->deityType->setLines( MagicSchool::getMagicSchoolCount(), (const char**)info->deityTypeStr );
   int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
   info->deityType->setSelectedLine( deityIndex );
-  info->deityTypeDescription = new Label( 200, 100, MagicSchool::getMagicSchool( deityIndex )->getDeityDescription(), 50 );
+
+  info->deityTypeDescription = new ScrollingLabel( 190, 90, col2X - 10 - 190, 150, 
+                                                   MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
   cards->addWidget( info->deityTypeDescription, n );
   
   // character type
@@ -187,7 +193,8 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->charType->setLines( (int)Character::character_list.size(), (const char**)info->charTypeStr );
   int charIndex = (int)( (float)( Character::character_list.size() ) * rand()/RAND_MAX );
   info->charType->setSelectedLine( charIndex );
-  info->charTypeDescription = new Label( 190, 280, Character::character_list[charIndex]->getDescription(), 50 );
+  info->charTypeDescription = new ScrollingLabel( 190, 270, col2X - 10 - 190, 170, 
+                                                  Character::character_list[charIndex]->getDescription() );
   cards->addWidget( info->charTypeDescription, n );
 
   // portrait
@@ -212,12 +219,13 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
                                          "    >>", n );
 
   // skills
-  info->skillLabel = cards->createLabel( 350, 80, "Remaining skill points:", n, Constants::RED_COLOR );
-  info->skills = new ScrollingList( 350, 90, 150, 200, scourge->getShapePalette()->getHighlightTexture() );
+  int buttonWidth =  skillColWidth / 3;
+  info->skillLabel = cards->createLabel( col2X, 30, "Remaining skill points:", n, Constants::RED_COLOR );
+  info->skills = new ScrollingList( col2X, 40, skillColWidth, 260, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->skills, n );
-  info->skillAddButton = cards->createButton( 350, 485, 390, 505, " + ", n );
-  info->skillRerollButton = cards->createButton( 400, 485, 440, 505, " Reroll ", n );
-  info->skillSubButton = cards->createButton( 450, 485, 490, 505, " - ", n );
+  info->skillAddButton = cards->createButton( col2X, 310, col2X + buttonWidth - 5, 330, " + ", n );
+  info->skillRerollButton = cards->createButton( col2X + buttonWidth, 310, col2X + buttonWidth * 2 - 5, 330, " Reroll ", n );
+  info->skillSubButton = cards->createButton( col2X + buttonWidth * 2, 310, col2X + buttonWidth * 3 - 5, 330, " - ", n );
 
   info->availableSkillMod = 30;
   info->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
