@@ -38,7 +38,7 @@ TextField::~TextField() {
 }
   
 bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
-  inside = isInside(x, y);
+  inside = isInside(x, y) || hasFocus();
   // handle it
   if(inside) {
     switch( event->type ) {
