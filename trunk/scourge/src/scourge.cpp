@@ -2670,9 +2670,9 @@ void Scourge::createPartyUI() {
                                 this, NULL, true );
     cards->addWidget( playerHpMp[i], MAX_SIZE );
   }
-  int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 10) / 12.0f);
+  int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);
   for( int i = 0; i < 12; i++ ) {
-    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 5;
+    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 10;
     quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, 20, 
                                 this, NULL, true );
     cards->addWidget( quickSpell[i], MAX_SIZE );
