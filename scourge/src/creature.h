@@ -119,6 +119,9 @@ class Creature {
   Item *actionItem;
   Spell *actionSpell;
   Creature *preActionTargetCreature;
+
+  int moveCount;
+  Uint32 lastMove;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -176,6 +179,7 @@ class Creature {
 	 The movement functions return true if movement has occured, false if it has not.
    */
   bool move(Uint16 dir, Map *map);
+  void switchDirection(bool force);
   bool follow(Map *map);
   bool moveToLocator(Map *map);
   void stopMoving();

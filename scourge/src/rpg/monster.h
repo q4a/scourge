@@ -55,7 +55,7 @@ class Monster  {
   static map<string, Monster*> monstersByName;
 
 public:
-  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int baseArmor, float scale, int w, int d, int h);
+  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, int w, int d, int h);
   ~Monster();
 
   inline float getScale() { return scale; }
@@ -64,6 +64,7 @@ public:
   inline int getHeight() { return h; }
   inline int getBaseArmor() { return baseArmor; }
   inline int getRareness() { return rareness; }
+  inline int getSpeed() { return speed; }
   inline char *getType() { return type; };
   inline int getHp() { return hp; }  
   inline int getMp() { return mp; }  
@@ -71,7 +72,6 @@ public:
   inline char *getModelName() { return model_name; }
   inline char *getSkinName() { return skin_name; }
   inline char *getDescription() { return description; }
-  inline int getSpeed() { return speed; }
   inline int getStartingItemCount() { return items.size(); }
   inline RpgItem *getStartingItem(int index) { return items[index]; }
   inline void addItem(RpgItem *item) { items.push_back(item); }
@@ -82,9 +82,6 @@ public:
   static void initMonsters();
   static Monster *getRandomMonster(int level);
   static Monster *getMonsterByName(char *name);
-
- protected:
-  inline void setSpeed(int speed) { this->speed = speed; }
 };
 
 #endif
