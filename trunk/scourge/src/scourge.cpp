@@ -1409,6 +1409,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
     // FIXME: try to move to party.cpp
     party->getPlayer()->setSelXY(mapx, mapy);
+	// if player stopping not set, set it
 	if( party->getPlayerMoved() == 0 ) party->setPlayerMoved();
     if(party->isPlayerOnly()) {
       party->getPlayer()->cancelTarget();
