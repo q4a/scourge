@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "optionsmenu.h"
+#include "optionsmenu.h" 
 
 void OptionsMenu::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle, Button * &theButton){
     theButton = new Button(x1, y1, x2, y2, strdup(label));
@@ -23,11 +23,20 @@ void OptionsMenu::createButton(int x1, int y1, int x2, int y2, char *label, bool
 	mainWin->addWidget((Widget*)theButton);            	
 }
 
+void OptionsMenu::createCheckbox(int x1, int y1, int x2, int y2, char *label, int where, Checkbox *&theCheckbox){
+    theCheckbox = new Checkbox(x1, y1, x2, y2, strdup(label));    
+    cards->addWidget(theCheckbox, where);    
+}
+ 
+
 OptionsMenu::OptionsMenu(Scourge *scourge){    
-        
+    int nbModes, i;
+    char ** modes;
+ 
     this->scourge = scourge;
     this->uc = scourge->getUserConfiguration();
     controlsLoaded = false;
+    videoLoaded = false;
     controlLines = NULL;
     nbControlLines = 0;
     waitingForNewKey = false;
@@ -41,10 +50,11 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     createButton (105, 0, 210, 30, "Game settings", true, gameSettingsButton);  					
 	createButton (210, 0, 315, 30, "Video", true, videoButton);
  	createButton (315, 0, 420, 30, "Audio", true, audioButton);
-    createButton (420, 0, 525, 30, "Controls", true, controlsButton);
-    //createButton (420, 0, 525, 30, "Close", false, closeButton);   
-    createButton (350, 440, 455, 470, "Close", false, closeButton);   
-            
+    createButton (420, 0, 525, 30, "Controls", true, controlsButton);       
+    createButton (350, 440, 455, 470, "Close", false, closeButton);           
+    createButton (65, 440, 170, 470, "Save changes", false, saveControlButton);    		          
+    //saveControlButton->setVisible(false);    
+                      
     cards = new CardContainer(mainWin);
     
     // Controls tab
@@ -53,33 +63,50 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 	cards->addWidget(label, CONTROLS);	    
     controlBindingsList = new ScrollingList(30, 100, 450, 300);
     cards->addWidget(controlBindingsList, CONTROLS);
-    createButton (65, 440, 170, 470, "Change", false, changeControlButton);
-    changeControlButton->setLabelPosition(Button::CENTER);
-    cards->addWidget(changeControlButton, CONTROLS);    
-    createButton (205, 440, 310, 470, "Save changes", false, saveControlButton);    		          
-    saveControlButton->setVisible(false);
-    cards->addWidget(saveControlButton, CONTROLS);		          
+    createButton (205, 440, 310, 470, "Change", false, changeControlButton); 
+    changeControlButton->setLabelPosition(Button::CENTER); 
+    cards->addWidget(changeControlButton, CONTROLS);   		          
     waitingLabel = new Label(35, 80, strdup(" ")); 	
     waitingLabel->setColor( 0.0f, 0.3f, 0.9f, 1 );  
     cards->addWidget(waitingLabel, CONTROLS);          
-    
+
     // Game settings tab
-    /*gameSpeedML = new MultipleLabel(100, 80, 300, 100, "Game speed", 100);
+    gameSpeedML = new MultipleLabel(100, 80, 300, 100, "Game speed", 100);
     gameSpeedML -> addText(strdup("Very slow"));
     gameSpeedML -> addText(strdup("Slow"));
     gameSpeedML -> addText(strdup("Normal"));
     gameSpeedML -> addText(strdup("Fast"));
     gameSpeedML -> addText(strdup("Very fast"));
     gameSpeedML -> setText(0);
-    cards->addWidget(gameSpeedML, GAME_SETTINGS);*/
-        
-    
+    cards->addWidget(gameSpeedML, GAME_SETTINGS);
+   
+    // Video settings tabs        
+    videoResolutionML = new MultipleLabel(100, 80, 300, 100, "Screen resolution", 100);
+    modes = scourge->getSDLHandler()->getVideoModes(nbModes);     
+    for(i = 0; i < nbModes; i++){
+        videoResolutionML -> addText(modes[i]);        
+    }    
+    cards->addWidget(videoResolutionML, VIDEO);
+
+    createCheckbox(100, 120, 258, 140, "Fullscreen", VIDEO, fullscreenCheckbox);    
+    createCheckbox(100, 160, 258, 180, "Window resizeable", VIDEO, resizeableCheckbox);
+    createCheckbox(100, 200, 258, 220, "Double buffering", VIDEO, doublebufCheckbox);    
+    createCheckbox(100, 240, 258, 260, "Force hardware surfaces", VIDEO, forceHwsurfCheckbox);
+    createCheckbox(100, 280, 258, 300, "Force software surfaces", VIDEO, forceSwsurfCheckbox);
+    createCheckbox(100, 320, 258, 340, "Hardware palette", VIDEO, hwpalCheckbox);
+    createCheckbox(100, 360, 258, 380, "Hardware acceleration", VIDEO, hwaccelCheckbox); 
+
+    shadowsML = new MultipleLabel(100, 395, 300, 415, "Shadows", 100);
+    shadowsML -> addText("None");  
+    shadowsML -> addText("Some");
+    shadowsML -> addText("All");       
+    cards->addWidget(shadowsML, VIDEO);       
     
     selectedMode = CONTROLS;
     				
 }
 
-// line i must be for engine action i if we want this scrolling list to work
+// line i must correspond to engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
     string line, s1, s2, s3;
     
@@ -122,6 +149,53 @@ void OptionsMenu::loadControls(){
                    
 }
 
+void OptionsMenu::loadVideo(){    
+    char temp[50];
+    string line;
+    string s, s1, s2, s3, s4;
+    int i;
+    int end;
+    
+    sprintf(temp, "%d x %d", uc -> getW(), uc-> getH());          
+    s = temp;
+    s1 = Util::getNextWord(s, 0, end);
+    s2 = Util::getNextWord(s, end, end);  // ignores the ' x '  
+    s2 = Util::getNextWord(s, end, end);       
+    i = 0;  
+    
+    // don't know why the string::find() function does not work, so...
+    while (i < videoResolutionML -> getNbText()){
+        line = videoResolutionML -> getText(i);
+        s3 = Util::getNextWord(line, 0, end);               
+        if(s1 == s3){                           
+            s4 = Util::getNextWord(line, end, end);   // ignores the ' x ' 
+            s4 = Util::getNextWord(line, end, end);              
+            if(s2 == s4){                
+                break;            
+            }            
+        }
+        i++;        
+    }
+    if(i < videoResolutionML -> getNbText()){
+        videoResolutionML -> setText(i);
+    }
+    else{
+        videoResolutionML -> setText(0);
+    }    
+    shadowsML->setText(uc->getShadows());
+    
+    // Checkboxes
+    fullscreenCheckbox->setCheck(uc -> getFullscreen());
+    doublebufCheckbox->setCheck(uc->getDoublebuf());   
+    hwpalCheckbox->setCheck(uc->getHwpal());
+    resizeableCheckbox->setCheck(uc->getResizeable());
+    forceHwsurfCheckbox->setCheck(uc->getForce_hwsurf());
+    forceSwsurfCheckbox->setCheck(uc->getForce_swsurf());
+    hwaccelCheckbox->setCheck(uc->getHwaccel());    
+    
+    
+}
+
 void OptionsMenu::setSelectedMode(){
 
     videoButton->setSelected(selectedMode == VIDEO);
@@ -130,16 +204,18 @@ void OptionsMenu::setSelectedMode(){
     gameSettingsButton->setSelected(selectedMode == GAME_SETTINGS);        
     
     switch(selectedMode){
-        case VIDEO : 
+        case VIDEO :
+            if(!videoLoaded){
+                loadVideo();
+                videoLoaded = true;                
+            } 
             break;
         case AUDIO : 
             break;
         case CONTROLS :
             if(!controlsLoaded){                
                 loadControls();
-                if(!controlsLoaded){
-                    controlsLoaded = true;
-                }
+                controlsLoaded = true;                
             }            
             break;
         case GAME_SETTINGS :
@@ -165,17 +241,49 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     }
     else if(widget == controlsButton) {
         selectedMode = CONTROLS;        
-    }
+    }       
     else if(widget == changeControlButton) { // && selectedMode== Controls?       
         waitingLabel->setText(strdup("Waiting for new key ... Press ESCAPE to cancel"));        
-        waitingForNewKey = true;        
+        waitingForNewKey = true;               
+    }
+    else if(widget == videoResolutionML){
+        string line, s1, s2;
+        int end;
+        line = videoResolutionML->getCurrentText();
+        s1 = Util::getNextWord(line, 0, end);
+        s2 = Util::getNextWord(line, end, end);
+        s2 = Util::getNextWord(line, end, end);
+        uc-> setW(atoi(s1.c_str()));
+        uc-> setH(atoi(s2.c_str()));        
+    }
+    else if(widget == fullscreenCheckbox){
+        uc->setFullscreen(fullscreenCheckbox->isChecked());
+    } 
+    else if(widget == resizeableCheckbox){
+        uc->setResizeable(resizeableCheckbox->isChecked());
+    }
+    else if(widget == doublebufCheckbox){
+        uc->setDoublebuf(doublebufCheckbox->isChecked());
+    }
+    else if(widget == hwpalCheckbox){
+        uc->setHwpal(hwpalCheckbox->isChecked());
+    }
+    else if(widget == forceSwsurfCheckbox){
+        uc->setForce_swsurf(forceSwsurfCheckbox->isChecked());
+    }
+    else if(widget == forceHwsurfCheckbox){
+        uc->setForce_hwsurf(forceHwsurfCheckbox->isChecked());
+    }
+    else if(widget == hwaccelCheckbox){
+        uc->setHwaccel(hwaccelCheckbox->isChecked());
     }
     else if(widget == saveControlButton){
-        uc->saveConfiguration(controlLines);
+        uc->saveConfiguration();        
     }
+    
                
     setSelectedMode(); 
-     
+      
     return false;
 }
 
@@ -240,11 +348,18 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 
 OptionsMenu::~OptionsMenu(){
 
+    // really needed ? OS do this normally
+    
     if(controlsButton) delete controlsButton;
     if(videoButton) delete videoButton;
     if(audioButton) delete audioButton;
     if(closeButton) delete closeButton;
     if(gameSettingsButton) delete gameSettingsButton;
     if(changeControlButton) delete changeControlButton;
+    if(gameSpeedML) delete gameSpeedML;
+    if(videoResolutionML) delete videoResolutionML;
     
 }
+
+
+

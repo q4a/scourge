@@ -192,6 +192,60 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
   return -1;
 }
 
+
+char ** SDLHandler::getVideoModes(int &nbModes){
+    SDL_Rect **modes;
+    char ** modesDescription;
+    char temp [50];
+    Uint32 flags;  
+    int i;    
+        
+    if(!screen){
+        fprintf(stderr, "SDLHandler :: you must allocate screen before calling getVideoModes!!\n");
+        exit(-1);
+    }
+    
+    // Get current video flags (hwsurface/swsurface, fullscreen/not fullscreen..)
+    flags = screen->flags;    
+        
+    // Get available modes for the current flags    
+    modes = SDL_ListModes(NULL, flags);    
+    
+    // Copy them to a char array
+    if(modes != (SDL_Rect **)0){                    
+        nbModes = 0;            
+        if(modes == (SDL_Rect **)-1) {
+            // All modes are available, so let's go..
+            nbModes = 7;
+            modesDescription = (char **) malloc (nbModes * sizeof(char *));
+            modesDescription[0] = strdup("  320 x 200");
+            modesDescription[1] = strdup("  640 x 480");
+            modesDescription[2] = strdup("  800 x 600");
+            modesDescription[3] = strdup(" 1024 x 768");
+            modesDescription[4] = strdup(" 1152 x 864");
+            modesDescription[5] = strdup("1280 x 1024");
+            modesDescription[6] = strdup("1600 x 1200");        
+        }
+        else{
+            // Only a few modes available which ones ?        
+            for(i=0;modes[i];++i){}
+            nbModes = i - 1;            
+            modesDescription = (char **) malloc (nbModes * sizeof(char *));
+            for(i=0;modes[i];++i){
+                sprintf(temp, "%d x %d", modes[i]->w, modes[i]->x);
+                modesDescription[i] = strdup(temp);
+            }
+        } 
+    }       
+    else{         
+        nbModes = 1;           
+        modesDescription = (char **) malloc (sizeof(char *));
+        modesDescription[0] = strdup("No modes available!\n");         
+    }
+    
+    return modesDescription;
+}
+
 void SDLHandler::setVideoMode(UserConfiguration *uc) {  
   
   /* this holds some info about our display */

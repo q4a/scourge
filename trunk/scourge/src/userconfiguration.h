@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "constants.h"
+//#include "util.h"
 
 using namespace std;
 
@@ -180,8 +181,7 @@ private:
   inline int getShadows()    { return shadows;    }   
   inline int getEngineActionCount() { return ENGINE_ACTION_DEBUG_IND; }
   const char * getEngineActionDescription(int i);  
-  const char * getEngineActionKeyName(int i);
-  //bool getConfigurationChanged();
+  const char * getEngineActionKeyName(int i);  
   
   inline bool setFullscreen(bool t){ fullscreen=t; }
   inline bool setDoublebuf(bool t) { doublebuf=t;  }
@@ -202,7 +202,7 @@ private:
   void loadConfiguration();
   
   // save configuration into file
-  void saveConfiguration(char **controlLine); 
+  void saveConfiguration(); 
   
   // Associate SDL events to an engine action    
   void bind(string s1, string s2, int lineNumber);

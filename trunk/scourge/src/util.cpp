@@ -341,3 +341,35 @@ float Util::distance(float x1, float y1, float w1, float h1,
   
   return d - (d1 + d2);
 }
+
+
+// Returns next word from the given position. If there is not a space at the given
+// position, the function suppose it is the first letter of the word wanted. 
+string Util::getNextWord(const string theInput, int fromPos, int &endWord){
+    int firstChar, lastStringChar;
+    string sub;
+    sub.clear();
+    
+    if (theInput.empty() || fromPos==-1) {return sub;}
+
+    lastStringChar = theInput.find_last_not_of(' ');    
+    if(theInput[fromPos] == ' '){
+        firstChar = theInput.find_first_not_of(' ', fromPos);
+    }
+    else{
+        firstChar = fromPos;
+    }    
+    endWord = theInput.find_first_of(' ', firstChar);
+   // cout << "line :" << theInput << endl;
+   // cout << "\t\tpos = " << fromPos << " firstChar = " << firstChar << " endWord = " << endWord << " lastStringChar =" << lastStringChar << endl; 
+    if(endWord == -1){
+        if( (lastStringChar >= firstChar)&&(firstChar!=-1)){
+            sub = theInput.substr(firstChar, lastStringChar - firstChar + 1);
+        }                    
+    } 
+    else{        
+        sub = theInput.substr(firstChar, endWord - firstChar);
+    }
+    return sub;
+
+}

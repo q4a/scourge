@@ -44,6 +44,7 @@ using namespace std;
 class Creature;
 class MiniMap;
 class Map;
+class DungeonGenerator;
 class ShapePalette;
 class Location;
 class MainMenu;
@@ -52,6 +53,7 @@ class Inventory;
 class UserConfiguration;
 class Effect;
 class DungeonGenerator;
+class Window;
 
 /**
   *@author Gabor Torok
