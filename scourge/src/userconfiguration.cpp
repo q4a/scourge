@@ -23,9 +23,10 @@
 // TODO : - warn if there is an unknown parameter in the file ?
 
 
+// Must be exact copy of enums defined in userconfiguration.h
+// (except for ENGINE_ACTION_COUNT)
 const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
-
-    "SET_MOVE_STOP",
+    
     "SET_MOVE_DOWN",
     "SET_MOVE_RIGHT",
     "SET_MOVE_UP",
@@ -64,16 +65,15 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     
     "SET_ZOOM_IN",     
     "SET_ZOOM_OUT",
-	
-	"START_ROUND"
+    
+    "START_ROUND"               
 };
 
 
-// All engine actions that have a corresponding keyup action 
-// (which will be formed as follows : engineActionName_stop)
-// Do not forget to update ENGINE_ACTION_UP_COUNT if the
-// variable below is modified
+// Must be exact copy of enums defined in userconfiguration.h 
+// (without the "_STOP" and except for ENGINE_ACTION_UP_COUNT)
 const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
+
     "SET_MOVE_DOWN",     
     "SET_MOVE_RIGHT",
     "SET_MOVE_UP",
@@ -85,7 +85,10 @@ const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
     "SET_Z_ROT_PLUS",        
     "SET_Z_ROT_MINUS",
     "SET_ZOOM_IN",     
-    "SET_ZOOM_OUT"            
+    "SET_ZOOM_OUT",
+    "USE_ITEM", 
+    "SET_NEXT_FORMATION"
+    
 };
 
 
@@ -100,11 +103,21 @@ UserConfiguration::UserConfiguration(){
     resizeable = true;
     force_hwsurf = false;
     force_swsurf = false;
-    hwaccel = true;      
+    hwaccel = true;
+    test = false;      
     bpp = -1;
     w = 800;
     h = 600;
     shadows = 0;       
+    
+    // Build (string engineAction <-> int engineAction ) lookup table
+    for (i = 0; i < ENGINE_ACTION_COUNT ; i++){
+        temp = ENGINE_ACTION_NAMES[i];
+        for(j = 0; j < temp.length(); j++){
+            temp[j] = tolower(temp[j]);                                 
+        } 
+        engineActionNames.insert(pair<string, int>(temp, i));
+    }
     
     // Build (string engineActionUp <-> int engineActionUp ) lookup table
     for (i = 0; i < ENGINE_ACTION_UP_COUNT ; i++){
@@ -120,6 +133,14 @@ UserConfiguration::UserConfiguration(){
         p = engineActionUpNames.begin();
         cout << "Engine Action Up list : " << endl;
         while(p != engineActionUpNames.end()){
+            cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
+            p++;     
+        }
+        
+        cout << endl << endl;
+        p = engineActionNames.begin();
+        cout << "Engine Action list : " << endl;
+        while(p != engineActionNames.end()){
             cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
             p++;     
         }
@@ -196,25 +217,113 @@ void UserConfiguration::loadConfiguration(){
     delete configFile;    
 
 }
+
+void UserConfiguration::parseCommandLine(int argc, char *argv[]){
+  bool printusage;
+  
+  printusage = false;
+  
+  
+  // interpret command line args
+  for(int i = 1; i < argc; i++) {
+	if(strstr(argv[i], "--bpp") == argv[i]) {	  
+	  bpp = atoi(argv[i] + 5);
+	  if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
+		printf("Error: bad bpp=%d\n", bpp);
+		printusage = true;
+	  }      
+	} else if(strstr(argv[i], "--width") == argv[i]) {	  
+	  w = atoi(argv[i] + 7);
+	  if(!w) {
+		printf("Error: bad width=%s\n", argv[i] + 7);
+		printusage = true;
+	  }     	  
+	} else if(strstr(argv[i], "--height") == argv[i]) {	  
+	  h = atoi(argv[i] + 8);
+	  if(!h) {
+		printf("Error: bad height=%s\n", argv[i] + 8);
+		printusage = true;
+	  }	   
+	} else if(strstr(argv[i], "--shadow") == argv[i]) {	  
+	  Constants::shadowMode = atoi(argv[i] + 8);	  
+      if(!(Constants::shadowMode == 0 || 
+           Constants::shadowMode == 1 || 
+           Constants::shadowMode == 2)) {
+          printf("Error: bad shadow mode: %d\n", Constants::shadowMode);
+          printusage = true;
+      }       
+	} else if(!strcmp(argv[i], "--version")) {
+	  printf("Scourge, version %.2f\n", SCOURGE_VERSION);
+	  exit(0);
+	} else if(!strcmp(argv[i], "--test")) {
+	  test = true;
+	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
+	  for(int t = 1; t < (int)strlen(argv[i]); t++) {
+		switch(argv[i][t]) {
+		case 'h': case '?': printusage = true; break;
+		case 'f': fullscreen = false; break;
+		case 'd': doublebuf = false; break;
+		case 'p': hwpal = false; break;
+		case 'r': resizeable = false; break;
+		case 'H': force_hwsurf = true; break;
+		case 'S': force_swsurf = true; break;
+		case 'a': hwaccel = false; break;
+		case 's': Constants::stencilbuffer = false; break;
+		case 'm': Constants::multitexture = false; break;
+		}
+	  }
+	} else {
+	  printusage = true;
+	}
+  }
+
+  if(printusage) {
+	printf("S.C.O.U.R.G.E.: Heroes of Lesser Renown\n");
+	printf("A 3D, roguelike game of not quite epic proportions.\n\n");
+	printf("Usage:\n");
+	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
+	printf("version: %.2f\n", SCOURGE_VERSION);
+	printf("\nOptions:\n");
+	printf("\tf - disable fullscreen mode\n");
+	printf("\td - disable double buffering\n");
+	printf("\tp - disable hardware palette\n");
+	printf("\tr - disable resizable window\n");
+	printf("\tH - force hardware surface\n");
+	printf("\tS - force software surface\n");
+	printf("\ta - disable hardware acceleration\n");
+	printf("\th,?,--help - show this info\n");
+	printf("\ts - disable stencil buffer\n");
+	printf("\tm - disable multitexturing\n");
+	printf("\t--test - list card's supported video modes\n");
+	printf("\t--version - print the build version\n");
+	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
+	printf("\t--widthXX - use XX pixels for the screen width\n");
+	printf("\t--heightXX - use XX pixels for the screen height\n");
+    printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
+	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
+	exit(0);
+  }   
+} 
  
 //    Bind   sdl_name_of_key    engineAction
 // OR Bind   sdl_mouse_button   engineAction
 void UserConfiguration::bind(string s1, string s2, int lineNumber){        
     int i;    
-    SDLKey keyCode;
+    
     if(DEBUG_USER_CONFIG){
         cout << "line : " << lineNumber << " ";        
         cout << "bind '" << s1 << "' '" << s2 << "'" << endl; 
     }
             
     // for now, we trust what is written in configuration file
-    // so it should be generated later    
-    keyDownBindings.insert(pair<string, string>(s1, s2));
-    
-    if(engineActionUpNames.find(s2) != engineActionUpNames.end()){        
-        s2.insert(s2.length(), "_stop");        
-        keyUpBindings.insert(pair<string, string>(s1, s2));
-    }                             
+    // so it should be generated later 
+    if(engineActionNames.find(s2) != engineActionNames.end()){   
+        keyDownBindings.insert(pair<string, int>(s1, engineActionNames[s2]));
+        if(engineActionUpNames.find(s2) != engineActionUpNames.end()){        
+            //s2.insert(s2.length(), "_stop");        
+            keyUpBindings.insert(pair<string, int>(s1, engineActionUpNames[s2]));
+        }                             
+    }        
 }  
   
 void UserConfiguration::set(string s1, string s2, int lineNumber){
@@ -265,7 +374,10 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     else if(s1 == "hwaccel"){
         hwaccel = paramValue;
     }     
-     
+    else if(s1 == "test"){
+        test = paramValue;
+    }  
+    
     else if(s1 == "bpp"){        
         bpp = atoi(s2.c_str());
         if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
@@ -296,7 +408,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
 }
 
 // returns the action to do for this event
-string UserConfiguration::getEngineAction(SDL_Event *event){    
+int UserConfiguration::getEngineAction(SDL_Event *event){    
     string s;    
     int i, j;
     
@@ -328,7 +440,7 @@ string UserConfiguration::getEngineAction(SDL_Event *event){
     }
     
     // Should never reach this code
-    return s;
+    return -1;
     
     
  /* case SDL_MOUSEBUTTONUP:
