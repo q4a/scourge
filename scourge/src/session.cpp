@@ -31,6 +31,7 @@ Session::Session(GameAdapter *adapter) {
 #endif
   // new item and creature references
   itemCount = creatureCount = 0;
+  multiplayerGame = false;
 }
 
 Session::~Session() {
@@ -154,11 +155,13 @@ void Session::runClient(char *host, int port, char *userName) {
 void Session::startServer(GameStateHandler *gsh, int port) {
   server = new Server(port);
   server->setGameStateHandler(gsh);
+  multiplayerGame = true;
 }
 
 void Session::startClient(GameStateHandler *gsh, CommandInterpreter *ci, char *host, int port, char *username) {
   client = new Client(host, port, username, ci);
   client->setGameStateHandler(gsh);
+  multiplayerGame = true;
 }
 
 void Session::stopClientServer() {
@@ -170,6 +173,7 @@ void Session::stopClientServer() {
     delete client;
     client = NULL;
   }
+  multiplayerGame = false;
 }
 
 #endif

@@ -59,7 +59,7 @@ bool NetPlay::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == chatText && 
      chatText->getEventType() == TextField::EVENT_ACTION) {
 #ifdef HAVE_SDL_NET
-    scourge->getClient()->sendChatTCP(chatText->getText());
+    scourge->getSession()->getClient()->sendChatTCP(chatText->getText());
 #endif    
     chatText->clearText();
   }

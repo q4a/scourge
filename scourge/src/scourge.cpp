@@ -34,10 +34,6 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
-#ifdef HAVE_SDL_NET
-  server = NULL;
-  client = NULL;
-#endif
   lastTick = lastProjectileTick = 0;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
@@ -58,12 +54,12 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
 #ifdef HAVE_SDL_NET
   // standalone mode?
   if(userConfiguration->getStandAloneMode() == UserConfiguration::SERVER) {
-    runServer(userConfiguration->getPort());
+    session->runServer(userConfiguration->getPort());
     sdlHandler->quit(0);
   } else if(userConfiguration->getStandAloneMode() == UserConfiguration::CLIENT) {
-    runClient(userConfiguration->getHost(), 
-              userConfiguration->getPort(), 
-              userConfiguration->getUserName());
+    session->runClient(userConfiguration->getHost(), 
+                       userConfiguration->getPort(), 
+                       userConfiguration->getUserName());
     sdlHandler->quit(0);
   }
 #endif
@@ -143,7 +139,6 @@ void Scourge::start() {
       mainMenu->hide();
       
       initMainMenu = true;
-      multiplayerGame = false;
      
 #ifdef HAVE_SDL_NET
       if(mainMenu->getValue() == MULTIPLAYER_START) {
@@ -163,17 +158,10 @@ void Scourge::start() {
 }
 
 Scourge::~Scourge(){
-//#ifdef HAVE_SDL_NET
-//  if(server) delete server;
-//  if(client) delete client;
-//#endif
   delete mainMenu;
   delete optionsMenu;
   delete multiplayer;
-//  delete userConfiguration;
-  //delete board;
   delete miniMap;
-  //delete map;
   delete netPlay;
 }
 
@@ -191,16 +179,14 @@ void Scourge::startMission() {
     // add gui
     mainWin->setVisible(true);
     messageWin->setVisible(true);
-#ifdef HAVE_SDL_NET
-    if(client) netPlay->getWindow()->setVisible(true);
-#endif
+    if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
 
     // create the map
     map->reset();
 
     // do this only once
     if(resetParty) {
-      if(multiplayerGame) {
+      if(session->isMultiPlayerGame()) {
         party->resetMultiplayer(multiplayer->getCreature());
       } else {
         party->reset();
@@ -340,16 +326,7 @@ void Scourge::startMission() {
     }
   }
 
-#ifdef HAVE_SDL_NET
-  if(server) {
-    delete server;
-    server = NULL;
-  }
-  if(client) {
-    delete client;
-    client = NULL;
-  }
-#endif
+  session->stopClientServer();
 
   session->deleteCreaturesAndItems(false);
 
@@ -2161,72 +2138,23 @@ Creature *Scourge::getClosestVisibleMonster(int x, int y, int w, int h, int radi
 }
 
 #ifdef HAVE_SDL_NET
-void Scourge::runServer(int port) {
-  GameStateHandler *gsh = new TestGameStateHandler();
-  server = new Server(port ? port : DEFAULT_SERVER_PORT);
-  server->setGameStateHandler(gsh);
-  
-  // wait for the server to quit
-  int status;
-  SDL_WaitThread(server->getThread(), &status);
-
-  delete gsh;
-}
-
-void Scourge::runClient(char *host, int port, char *userName) {
-  CommandInterpreter *ci = new TestCommandInterpreter();
-  GameStateHandler *gsh = new TestGameStateHandler();
-  client = new Client((char*)host, port, (char*)userName, ci);
-  client->setGameStateHandler(gsh);
-  if(!client->login()) {
-    cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
-    return;
-  }
-
-  // connect as a character
-  Party *party = new Party(session);  
-  Creature **pc;
-  int pcCount;
-  Party::createHardCodedParty(session, &pc, &pcCount);
-  cerr << "Sending character: " << pc[0]->getName() << endl;
-  party->resetMultiplayer(pc[0]);
-
-  char message[80];
-  while(true) {
-    cout << "> ";
-    int c;
-    int n = 0;
-    while(n < 79 && (c = getchar()) != '\n') message[n++] = c;
-    message[n] = 0;
-    client->sendChatTCP(message);
-    //client->sendRawTCP(message);
-  }  
-
-  delete ci;
-  delete gsh;
-}
-
 int Scourge::initMultiplayer() {
   int serverPort = 6666; // FIXME: make this more dynamic
-  int port;
-  const char *host, *username;
   if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
-    server = new Server(serverPort);
-    server->setGameStateHandler(netPlay);
-    port = serverPort; 
-    host = Constants::localhost;
-    username = Constants::adminUserName;
+    session->startServer((GameStateHandler*)netPlay, serverPort);
+    session->startClient((GameStateHandler*)netPlay, (CommandInterpreter*)netPlay, 
+                         (char*)Constants::localhost, 
+                         serverPort, 
+                         (char*)Constants::adminUserName);
   } else {
-    port = atoi(multiplayer->getServerPort());
-    host = multiplayer->getServerName();
-    username = multiplayer->getUserName();
+    session->startClient((GameStateHandler*)netPlay, (CommandInterpreter*)netPlay,
+                         multiplayer->getServerName(),
+                         atoi(multiplayer->getServerPort()),
+                         multiplayer->getUserName());
   }
-  client = new Client((char*)host, port, (char*)username, (CommandInterpreter*)netPlay);
-  client->setGameStateHandler(netPlay);
-
   Progress *progress = new Progress(this, 10);
   progress->updateStatus("Connecting to server");
-  if(!client->login()) {
+  if(!session->getClient()->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
     showMessageDialog(Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR));
     delete progress;
@@ -2237,8 +2165,6 @@ int Scourge::initMultiplayer() {
 
   delete progress;
 
-  multiplayerGame = true;
-  
   return 1;
 } 
 
