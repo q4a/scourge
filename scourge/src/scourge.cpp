@@ -2277,10 +2277,13 @@ bool Scourge::createBattleTurns() {
 									toint(session->getCreature(i)->getY()))) {
 	  bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
 						session->getCreature(i)->getAction() > -1);
+    // Don't start a round if this creature is unreachable by party. Otherwise
+    // this causes a lock-up.
 	  bool possible = ( session->getCreature(i)->getBattle()->getAvailablePartyTarget() != NULL );
       if(hasTarget && session->getCreature(i)->isTargetValid()) {
 		if( !possible ) {
-		  if( DEBUG_BATTLE_ROUND ) cerr << "*** not starting combat: possible is false." << endl;
+		  if( DEBUG_BATTLE_ROUND ) 
+        cerr << "*** not starting combat: possible is false." << endl;
 		} else battle[battleCount++] = session->getCreature(i)->getBattle();
       }
     }
