@@ -190,7 +190,6 @@ void Battle::fightTurn() {
   // also check if too close when using ranged weapons
   if(!(dist <= Constants::MIN_DISTANCE || item) || 
 	 !creature->isInRange()) {
-	//	 !creature->isWithinDistanceRange()) {
 	creature->setSelXY(creature->getTargetCreature()->getX(),
 					   creature->getTargetCreature()->getY(),
 					   true);
@@ -218,8 +217,20 @@ void Battle::fightTurn() {
   // this is also an optimization for fps
   if(creature->getTargetCreature()->isMonster() && 
 	 !creature->getTargetCreature()->getTargetCreature()) {
+	// try to attack the nearest player
+	Creature *p = scourge->getParty()->getClosestPlayer(creature->getTargetCreature()->getX(), 
+														creature->getTargetCreature()->getY(), 
+														creature->getTargetCreature()->getShape()->getWidth(),
+														creature->getTargetCreature()->getShape()->getDepth(),
+														20);
+	// if that's not possible, go for the attacker
+	if(!p) p = creature;
+	sprintf(message, "...%s is enraged and attacks %s", 
+			creature->getTargetCreature()->getName(), 
+			creature->getName());
+	scourge->getMap()->addDescription(message);	
 	creature->getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
-	creature->getTargetCreature()->setTargetCreature(creature);
+	creature->getTargetCreature()->setTargetCreature(p);
   }
   
   // if this is a ranged weapon launch a projectile

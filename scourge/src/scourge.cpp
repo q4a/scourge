@@ -1312,22 +1312,16 @@ void Scourge::moveMonster(Creature *monster) {
   }
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
-	// FIXME: pick closest target
-	// attack a player
+	// attack the closest player
 	if((int)(20.0f * rand()/RAND_MAX) == 0) {
-	  int n = (int)((float)party->getPartySize() * rand()/RAND_MAX);
-	  float dist = Constants::distance(monster->getX(), 
-									   monster->getY(), 
-									   monster->getShape()->getWidth(),
-									   monster->getShape()->getDepth(),
-									   party->getParty(n)->getX(),
-									   party->getParty(n)->getY(),
-									   party->getParty(n)->getShape()->getWidth(),
-									   party->getParty(n)->getShape()->getDepth());
-	  if(dist < 20.0 && !party->getParty(n)->getStateMod(Constants::dead)) {
+	  Creature *p = party->getClosestPlayer(monster->getX(), monster->getY(), 
+											monster->getShape()->getWidth(),
+											monster->getShape()->getDepth(),
+											20);
+	  if(p) {
 		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
-		monster->setTargetCreature(party->getParty(n));
-		monster->setDistanceRange(0, Constants::MIN_DISTANCE);
+		monster->setTargetCreature(p);
+		monster->setDistanceRange(0, Constants::MIN_DISTANCE);		
 	  }
 	} else {
 	  // random (non-attack) monster movement
