@@ -391,6 +391,7 @@ void GLShape::draw() {
   // cull back faces
   glEnable( GL_CULL_FACE );
   glCullFace( GL_BACK );
+  bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   glEnable( GL_TEXTURE_2D );
 
   glCallList( displayListStart + 1 );
@@ -407,7 +408,7 @@ void GLShape::draw() {
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
   }
-  glDisable( GL_TEXTURE_2D );
+  if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
 }
 
 void GLShape::setupBlending() { 
