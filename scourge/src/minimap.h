@@ -46,7 +46,7 @@ class Shape;
 //class Map;
 class Scourge;
 class Util;
-
+class Location;
 
 typedef struct _MiniMapPoint {
     GLfloat r, g, b;

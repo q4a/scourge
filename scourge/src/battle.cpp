@@ -920,7 +920,7 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
         // see if this is a mission objective
         if(session->getCurrentMission() && 
            creature->getTargetCreature()->getMonster() &&
-           session->getCurrentMission()->monsterSlain(creature->getTargetCreature()->getMonster())) {
+           session->getCurrentMission()->creatureSlain(creature->getTargetCreature())) {
           session->getGameAdapter()->missionCompleted();
         }
       }

@@ -1157,13 +1157,12 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
 void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal, 
                                             bool preGenerated, int locationIndex) {
   // add mission objects 
-  if(mission && mission->getObjective() && !stairsDown) {
+  if(mission && !stairsDown) {
 
     // mission objects are on a pedestal
     // and make them blocking so creatures can't get them
-    for(int i = 0; i < mission->getObjective()->itemCount; i++) {
-      Item *item = scourge->getSession()->newItem(mission->getObjective()->item[i]);
-      item->setBlocking(true); // don't let monsters pick this up
+    for(int i = 0; i < mission->getItemCount(); i++) {
+      Item *item = mission->getItem( i );
       Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
       int x, y;
       getRandomLocation(map, pedestal->getShape(), &x, &y);
@@ -1176,14 +1175,10 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
     }
 
     // add mission creatures
-    for(int i = 0; i < mission->getObjective()->monsterCount; i++) {
-      GLShape *shape = 
-        scourge->getShapePalette()->getCreatureShape(mission->getObjective()->monster[i]->getModelName(), 
-                                                     mission->getObjective()->monster[i]->getSkinName(), 
-                                                     mission->getObjective()->monster[i]->getScale());
+    for(int i = 0; i < mission->getCreatureCount(); i++) {
       int x, y;
-      getRandomLocation(map, shape, &x, &y);    
-      Creature *creature = scourge->getSession()->newCreature(mission->getObjective()->monster[i], shape);
+      Creature *creature = mission->getCreature( i );
+      getRandomLocation(map, creature->getShape(), &x, &y);    
       addItem(map, creature, NULL, NULL, x, y);
       creature->moveTo(x, y, 0);
       cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
