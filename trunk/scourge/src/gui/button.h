@@ -33,10 +33,32 @@ class Button : public Widget {
   bool inside; // was the last event inside the button?
   float alpha, alphaInc;
   GLint lastTick;
+  int labelPos;
+  bool toggle;
+  bool selected;
 
  public: 
+
+  enum {
+	TOP = 0,
+	CENTER,
+	BOTTOM
+  };
+
   Button(int x1, int y1, int x2, int y2, char *label);
   ~Button();
+  /**
+	 Set if this button is a toggle button.
+  */
+  inline void setToggle(bool b) { toggle = b; }
+  inline bool isToggle() { return toggle; }
+  /**
+	 For toggle buttons, this returns true if the button has been toggled.
+  */
+  inline bool isSelected() { return selected; }
+  inline void setSelected(bool b) { selected = b; }
+  inline void setLabelPosition(int p) { labelPos = p; }
+  inline int getLabelPosition() { return labelPos; }
   inline Label *getLabel() { return label; }
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void drawWidget(Widget *parent);

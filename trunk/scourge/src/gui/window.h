@@ -37,8 +37,6 @@ class Window : public Widget {
 
   static const int MAX_WINDOW = 100;
   static const int MAX_WIDGET = 100;
-  static const int TOP_HEIGHT = 20;
-  static const int BOTTOM_HEIGHT = 5;
 
   char *title;
   GLuint texture;
@@ -49,18 +47,27 @@ class Window : public Widget {
   int dragX, dragY;
   int openHeight;
   GLint lastTick;
+  int z;
 
   static Window *window[];
   static int windowCount;
 
  public: 
+
+  static const int TOP_HEIGHT = 20;
+  static const int BOTTOM_HEIGHT = 5;
+
   Window(SDLHandler *sdlHandler, int x, int y, int w, int h, const char *title, GLuint texture);
   ~Window();
 
+  inline void setZ(int z) { this->z = z; }
+  inline int getZ() { return z; }
+
   void setVisible(bool b);
-  void applyBorderColor();
-  void applyBackgroundColor(bool opaque=false);
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
+
+  // crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
+  void scissorToWindow();
   
   void addWidget(Widget *widget);
   void removeWidget(Widget *widget);

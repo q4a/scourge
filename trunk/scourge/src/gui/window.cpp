@@ -47,7 +47,10 @@ Window::~Window() {
 }
 
 void Window::addWindow(Window *win) {
-  if(windowCount < MAX_WINDOW) window[windowCount++] = win;
+  if(windowCount < MAX_WINDOW) {
+	win->setZ(500 + windowCount * 100);
+	window[windowCount++] = win;
+  }
 }
 
 void Window::removeWindow(Window *win) {
@@ -62,8 +65,7 @@ void Window::drawVisibleWindows() {
 
 Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
   Widget *widget = NULL;
-  // loop backwards so it's drawn in order
-  for(int i = windowCount - 1; i >= 0; i--) {
+  for(int i = 0; i < windowCount; i++) {
 	if(window[i]->isVisible()) {
 	  widget = window[i]->handleWindowEvent(event, x, y);
 	  if(widget) return widget;
@@ -139,14 +141,12 @@ void Window::drawWidget(Widget *parent) {
   }
   GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);  
 
-  glDisable( GL_DEPTH_TEST );
-
   glPushMatrix();
   glLoadIdentity( );
   glEnable( GL_TEXTURE_2D );
   // tile the background
   glColor3f(1.0f, 0.6f, 0.3f);
-  glTranslated(x, y, 0);
+  glTranslated(x, y, z);
   glBindTexture( GL_TEXTURE_2D, texture );
   glBegin (GL_QUADS);
   glTexCoord2f (0.0f, 0.0f);
@@ -201,16 +201,15 @@ void Window::drawWidget(Widget *parent) {
   glEnd();
 
   // print title
+  glPushMatrix();
+  glTranslated( 0, 0, 5 );
   glColor3f( 1, 1, 1 );
-  sdlHandler->texPrint(10, topY + 13, "%s", title);
+  sdlHandler->texPrint(10, topY + 13, "%s z=%d", title, getZ());
+  glPopMatrix();
 
   // draw widgets
   if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {  
-    // scissor test: y screen coordinate is reversed, rectangle is 
-	// specified by lower-left corner. sheesh!
-    glScissor(x, sdlHandler->getScreen()->h - (y + topY + TOP_HEIGHT + openHeight), 
-              w, openHeight);  
-    glEnable( GL_SCISSOR_TEST );
+	scissorToWindow();
   }
   for(int i = 0; i < widgetCount; i++) {                  
 	if(widget[i]->isVisible()) {
@@ -219,7 +218,7 @@ void Window::drawWidget(Widget *parent) {
 	
 	
 	  // if this is modified, also change handleWindowEvent
-	  glTranslated(x, y + TOP_HEIGHT, 0);
+	  glTranslated(x, y + TOP_HEIGHT, z + 5);
 	
 	
 	  widget[i]->draw(this);
@@ -233,18 +232,19 @@ void Window::drawWidget(Widget *parent) {
   glEnable( GL_TEXTURE_2D );
   glPopMatrix();
   
-  glEnable( GL_DEPTH_TEST );
+  //glEnable( GL_DEPTH_TEST );
+}
+
+void Window::scissorToWindow() {
+  GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
+  // scissor test: y screen coordinate is reversed, rectangle is 
+  // specified by lower-left corner. sheesh!
+  glScissor(x, sdlHandler->getScreen()->h - (y + topY + TOP_HEIGHT + openHeight), 
+			w, openHeight);  
+  glEnable( GL_SCISSOR_TEST );
 }
 
 void Window::setVisible(bool b) {
   Widget::setVisible(b);
   if(b) openHeight = 0;
-}
-
-void Window::applyBorderColor() { 
-  glColor3f(0.8f, 0.5f, 0.2f); 
-}
-
-void Window::applyBackgroundColor(bool opaque) { 
-  glColor4f( 1, 0.75f, 0.45f, (opaque ? 1.0f : 0.85f) ); 
 }

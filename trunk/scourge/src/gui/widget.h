@@ -49,7 +49,14 @@ class Widget {
   virtual inline bool isVisible() { return visible; }
 
   virtual void drawWidget(Widget *parent) = 0;
+
+
+  // color
   inline void setColor( float r, float g, float b, float a ) { this->red = r; this->green = g; this->blue = b; this->alpha = a; }
+  inline void applyBorderColor() { glColor3f(0.8f, 0.5f, 0.2f); }
+  inline void applyBackgroundColor(bool opaque=false) { glColor4f( 1, 0.75f, 0.45f, (opaque ? 1.0f : 0.85f) ); }
+  inline void applySelectionColor() { glColor4f( 1, 0.5f, 0.45f, 1 ); }
+
 
   /**
 	 Return true, if the event activated this widget. (For example, button push, etc.)
