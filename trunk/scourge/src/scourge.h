@@ -190,6 +190,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   char version[100], min_version[20];
   Window *mainWin;
   Button *inventoryButton;
+  Button *endTurnButton;
   Button *optionsButton;
   Button *quitButton;
   Button *roundButton;

@@ -84,6 +84,8 @@ class Battle {
    inline int decrAP() { return --ap; }
    inline int getStartingAP() { return startingAp; }
   
+   void endTurn();
+
   /**
 	 This method sets up and creates battle turns (Battle objects) in order of initiative.
    */

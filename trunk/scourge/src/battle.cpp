@@ -132,7 +132,7 @@ bool Battle::fightTurn() {
         return false;
       }
     }
-	if( debugBattle ) cerr << "*** Reset 3" << endl;
+    if( debugBattle ) cerr << "*** Reset 3" << endl;
     reset();
     return true;
   }
@@ -163,6 +163,12 @@ bool Battle::fightTurn() {
   }
   // not done yet with creature's turn
   return false;
+}
+
+void Battle::endTurn() {
+  ap = 0;
+  session->getParty()->toggleRound(false);
+  //paused = false;
 }
 
 bool Battle::pauseBeforePlayerTurn() {
