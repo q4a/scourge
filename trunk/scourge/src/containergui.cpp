@@ -50,9 +50,9 @@ ContainerGui::~ContainerGui() {
   }
   free(containedItemNames);
 
-  delete label;
-  delete list;
-  delete openButton;
+  //delete label;
+  //delete list;
+  //delete openButton;
   delete win;
 }
 
