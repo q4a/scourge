@@ -412,7 +412,7 @@ void Scourge::drawAfter() {
   drawDraggedItem();
 
   // draw turn info
-  if(inTurnBasedCombatPlayerTurn()) {
+  if(inTurnBasedCombat()) {
     glPushMatrix();
     glLoadIdentity();
     glTranslatef( 20, 20, 0 );

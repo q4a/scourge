@@ -806,9 +806,11 @@ void Creature::setAction(int action,
   char msg[80];
   switch(action) {
   case Constants::ACTION_EAT_DRINK:
+    this->battle->invalidate();
     sprintf(msg, "%s will consume %s.", getName(), item->getItemName());
     break;
   case Constants::ACTION_CAST_SPELL:
+    this->battle->invalidate();
     sprintf(msg, "%s will cast %s.", getName(), spell->getName());
     break;
   case Constants::ACTION_NO_ACTION:
@@ -824,6 +826,7 @@ void Creature::setAction(int action,
 }
 
 void Creature::equipInventory(int index) {
+  this->battle->invalidate();
   // doff
   if(doff(index)) return;
   // don
