@@ -19,12 +19,23 @@
 
 PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, 
 											 Creature *c, RpgItem *item, 
-											 Scourge * scourge, int nbExecutionsToDo):
+											 Scourge * scourge, int nbExecutionsToDo) : 
   Event(currentDate, timeOut, nbExecutionsToDo) {
     this->creature = c;
-	this->item = item;
+	this->potionSkill = item->getPotionSkill();
+	this->amount = item->getAction();
     this->scourge = scourge;
-}
+  }
+
+PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, 
+											 int potionSkill, int amount, 
+											 Scourge *scourge, int nbExecutionsToDo) :
+  Event(currentDate, timeOut, nbExecutionsToDo) {
+    this->creature = c;
+	this->potionSkill = potionSkill;
+	this->amount = amount;
+    this->scourge = scourge;
+  }
 
 PotionExpirationEvent::~PotionExpirationEvent(){
 }
@@ -37,15 +48,14 @@ void PotionExpirationEvent::execute() {
   if(creature->getStateMod(Constants::dead)) return;
 
   char msg[255];
-  int skill = item->getPotionSkill();
-  if(skill < 0) {
-	switch(-skill - 2) {
+  if(potionSkill < 0) {
+	switch(-potionSkill - 2) {
 	case Constants::HP:
 	case Constants::MP:
 	  // no-op
 	  return;
 	case Constants::AC:
-	  creature->setBonusArmor(creature->getBonusArmor() - item->getAction());
+	  creature->setBonusArmor(creature->getBonusArmor() - amount);
 	  sprintf(msg, "%s feels vulnerable...", creature->getName());
 	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
 	  creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
@@ -55,9 +65,9 @@ void PotionExpirationEvent::execute() {
 	  return;
 	}
   } else {
-	creature->setSkillBonus(skill, 
-						  creature->getSkillBonus(skill) - 
-						  item->getAction());
+	creature->setSkillBonus(potionSkill, 
+							creature->getSkillBonus(potionSkill) - 
+							amount);
 	//	recalcAggregateValues();
 	sprintf(msg, "%s feels a loss of contentment.", creature->getName());
 	scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
