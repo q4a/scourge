@@ -80,6 +80,9 @@ public:
   int getSkillLevel(const char *skillName);
   const char *getRandomSound(int type);
 
+  void loadMd2Sounds();
+  void unloadMd2Sounds();
+
   static void initMonsters();
   static Monster *getRandomMonster(int level);
   static Monster *getMonsterByName(char *name);  

@@ -279,7 +279,7 @@ void ShapePalette::initialize() {
 
       // store it
       string s = info->name;
-      creature_models[s] = info;
+      old_creature_models[s] = info;
 
     } else if(n == 'P') {
       fgetc(fp);
@@ -566,21 +566,50 @@ t3DModel * ShapePalette::LoadMd2Model(char *file_name){
 
 GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, float scale) {
 
-  // find the model
-  string model = model_name;
-  if(creature_models.find(model) == creature_models.end()){
-    cerr << "Can't find md2 model named " << model << endl;
-    exit(1);
+  // find the model the old way
+  Md2ModelInfo *model_info;
+  char realSkinName[300];
+
+  string model_name_str = model_name;
+  if(old_creature_models.find(model_name_str) != old_creature_models.end()) {  
+    model_info = old_creature_models[model_name_str];
+	strcpy( realSkinName, skin_name );
+  } else {
+	// load the model the new way
+    if( creature_models.find( model_name_str ) == creature_models.end() ) {
+      model_info = (Md2ModelInfo*)malloc( sizeof( Md2ModelInfo ) );
+
+      char path[300];
+      sprintf(path, "%s%s/tris.md2", rootDir, model_name);
+      cerr << "&&&&&&&&&& Loading md2 model: " << path << endl;
+      model_info->model = LoadMd2Model(path);
+      strcpy( model_info->name, model_name );
+      model_info->scale = 1.0f;
+
+      creature_models[ model_name_str ] = model_info;
+    } else {
+	  //	  cerr << "&&&&&&&&&& Using already loaded md2 model: " << model_name_str << endl;
+      model_info = creature_models[ model_name_str ];
+    }
+
+    // increment its ref. count
+    if(loaded_models.find(model_info) == loaded_models.end()) {
+      loaded_models[model_info] = 1;
+    } else {
+      loaded_models[model_info] = loaded_models[model_info] + 1;
+    }
+
+	// expand the skin name location
+	sprintf( realSkinName, "%s/%s", model_name, skin_name );
   }
-  Md2ModelInfo *model_info = creature_models[model];
 
   // find or load the skin
-  string skin = skin_name;
+  string skin = realSkinName;
   GLuint skin_texture;
   char path[300];
   if(creature_skins.find(skin) == creature_skins.end()){
     if(!session->getGameAdapter()->isHeadless()) {
-      sprintf(path, "%s%s", rootDir, skin_name);
+      sprintf(path, "%s%s", rootDir, realSkinName);
       cerr << "&&&&&&&&&& Loading texture: " << path << endl;
       CreateTexture(&skin_texture, path, 0);
       cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
@@ -607,16 +636,25 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, float
     MD2Shape::createShape(model_info->model, skin_texture, 
                           (scale == 0.0f ? model_info->scale : scale),
                           textureGroup[14], model_info->name, -1, 0xf0f0ffff, 0);
-  shape->setSkinName(skin_name);
+  shape->setSkinName(realSkinName);
   return shape;
 }
 
-void ShapePalette::decrementSkinRefCount(char *skin_name) {
+void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name) {
   string skin = skin_name;
   GLuint skin_texture;
+  // look for old-style skin
   if(creature_skins.find(skin) == creature_skins.end()){
-    cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin_name << endl;
-    return;
+	// look for new-style skin
+	char realSkinName[300];
+	sprintf( realSkinName, "%s/%s", model_name, skin_name );
+	skin = realSkinName;
+	if(creature_skins.find(skin) == creature_skins.end()){
+	  cerr << "&&&&&&&&&& WARNING: could not find skin: " << realSkinName << endl;
+	  return;
+	} else {
+	  skin_texture = creature_skins[skin];
+	}
   } else {
     skin_texture = creature_skins[skin];
   }
@@ -636,6 +674,41 @@ void ShapePalette::decrementSkinRefCount(char *skin_name) {
     creature_skins.erase(skin);
     glDeleteTextures(1, &skin_texture);
   }
+
+  // ------------------------------------------------------
+
+  // We currently don't have the technology to unload these...
+  // Oh well, at least we have lazy loading.
+  // Freeing model_info->model is verrry complicated! 
+  // (See CLoadMD2::ImportMD2 for how they're created.)
+
+  /*
+  string model = model_name;
+  Md2ModelInfo *model_info;
+  if(creature_models.find(model) == creature_models.end()){
+    //cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin_name << endl;
+    return;
+  } else {
+    model_info = creature_models[model];
+  }
+
+  if(loaded_models.find(model_info) == loaded_models.end()) {
+    cerr << "&&&&&&&&&& WARNING: could not find model id=" << model << endl;
+    return;
+  }
+
+  loaded_models[model_info] = loaded_models[model_info] - 1;
+  //  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
+  //	" count: " << loaded_skins[skin_texture] << endl;
+  // unload texture if no more references  
+  if(loaded_models[model_info] == 0) {
+    cerr << "&&&&&&&&&& Deleting model: " << model << endl;
+    loaded_models.erase(model_info);
+    creature_models.erase(model);
+    free(model_info->model);
+    free(model_info);
+  }
+  */
 }
 
 // the next two methods are slow, only use during initialization

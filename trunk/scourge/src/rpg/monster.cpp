@@ -268,3 +268,37 @@ const char *Monster::getMonsterType(char *type) {
   return NULL;
 }
 
+void Monster::loadMd2Sounds() {
+  /*
+  char soundFile[300];
+  
+  sprinf( soundFile, "%s/gurp1.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
+  sprinf( soundFile, "%s/gurp2.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
+  sprinf( soundFile, "%s/jump1.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
+  sprinf( soundFile, "%s/land1.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_ATTACK, soundFile );
+  
+  sprinf( soundFile, "%s/pain25_1.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  sprinf( soundFile, "%s/pain25_2.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  sprinf( soundFile, "%s/pain50_1.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  sprinf( soundFile, "%s/pain50_2.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  sprinf( soundFile, "%s/pain75_1.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  sprinf( soundFile, "%s/pain75_2.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  sprinf( soundFile, "%s/pain100_1.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  sprinf( soundFile, "%s/pain100_2.wav", model_name );
+  monster->loadSound( Constants::SOUND_TYPE_HIT, soundFile );
+  */
+}
+
+void Monster::unloadMd2Sounds() {
+}
