@@ -534,9 +534,12 @@ GLuint ShapePalette::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image) {
   /* Typical Texture Generation Using Data From The Bitmap */
   glBindTexture( GL_TEXTURE_2D, texture[0] );
 
-  /* Linear Filtering */
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  /* Use faster filtering here */
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+//  glTexImage2D( GL_TEXTURE_2D, 0, 4,
+//                surface->w, surface->h, 0, 
+//                GL_BGRA, GL_UNSIGNED_BYTE, image );
   gluBuild2DMipmaps(GL_TEXTURE_2D, 4,
                     surface->w, surface->h,
                     GL_BGRA, GL_UNSIGNED_BYTE, image);
