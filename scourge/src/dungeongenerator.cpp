@@ -838,44 +838,60 @@ void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal,
 								Sint16 mapx, Sint16 mapy, int doorType) {
   switch(doorType) {
   case E_DOOR:
-	map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-					 wallHeight - 2, shapePal->getShape(ShapePalette::EW_DOOR_TOP_INDEX));
-	map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset +  2, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
-	map->setPosition(mapx + unitSide - unitOffset + 1, mapy + unitSide - unitOffset - 2, 
-					 0, shapePal->getShape(ShapePalette::EW_DOOR_INDEX));
-	map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	if(!coversDoor(map, shapePal, 
+				   shapePal->getShape(ShapePalette::EW_DOOR_INDEX), 
+				   mapx + unitSide - unitOffset + 1, mapy + unitSide - unitOffset - 2)) {
+	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
+					   wallHeight - 2, shapePal->getShape(ShapePalette::EW_DOOR_TOP_INDEX));
+	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset +  2, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	  map->setPosition(mapx + unitSide - unitOffset + 1, mapy + unitSide - unitOffset - 2, 
+					   0, shapePal->getShape(ShapePalette::EW_DOOR_INDEX));
+	  map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	}
 	break;
   case W_DOOR:
-	map->setPosition(mapx, mapy + unitSide - unitOffset, 
-					 wallHeight - 2, shapePal->getShape(ShapePalette::EW_DOOR_TOP_INDEX));
-	map->setPosition(mapx, mapy + unitOffset +  2, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
-	map->setPosition(mapx + 1, mapy + unitSide - unitOffset - 2, 
-					 0, shapePal->getShape(ShapePalette::EW_DOOR_INDEX));
-	map->setPosition(mapx, mapy + unitSide - unitOffset, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	if(!coversDoor(map, shapePal, 
+				   shapePal->getShape(ShapePalette::EW_DOOR_INDEX), 
+				   mapx + 1, mapy + unitSide - unitOffset - 2)) {
+	  map->setPosition(mapx, mapy + unitSide - unitOffset, 
+					   wallHeight - 2, shapePal->getShape(ShapePalette::EW_DOOR_TOP_INDEX));
+	  map->setPosition(mapx, mapy + unitOffset +  2, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	  map->setPosition(mapx + 1, mapy + unitSide - unitOffset - 2, 
+					   0, shapePal->getShape(ShapePalette::EW_DOOR_INDEX));
+	  map->setPosition(mapx, mapy + unitSide - unitOffset, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	}
 	break;
   case N_DOOR:
-	map->setPosition(mapx + unitOffset, mapy + unitOffset, 
-					 wallHeight - 2, shapePal->getShape(ShapePalette::NS_DOOR_TOP_INDEX));
-	map->setPosition(mapx + unitOffset, mapy + unitOffset, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
-	map->setPosition(mapx + unitOffset * 2, mapy + unitOffset - 1, 
-					 0, shapePal->getShape(ShapePalette::NS_DOOR_INDEX));
-	map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitOffset, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	if(!coversDoor(map, shapePal, 
+				   shapePal->getShape(ShapePalette::NS_DOOR_INDEX), 
+				   mapx + unitOffset * 2, mapy + unitOffset - 1)) {
+	  map->setPosition(mapx + unitOffset, mapy + unitOffset, 
+					   wallHeight - 2, shapePal->getShape(ShapePalette::NS_DOOR_TOP_INDEX));
+	  map->setPosition(mapx + unitOffset, mapy + unitOffset, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	  map->setPosition(mapx + unitOffset * 2, mapy + unitOffset - 1, 
+					   0, shapePal->getShape(ShapePalette::NS_DOOR_INDEX));
+	  map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitOffset, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	}
 	break;
   case S_DOOR:
-	map->setPosition(mapx + unitOffset, mapy + unitSide, 
-					 wallHeight - 2, shapePal->getShape(ShapePalette::NS_DOOR_TOP_INDEX));
-	map->setPosition(mapx + unitOffset, mapy + unitSide, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
-	map->setPosition(mapx + unitOffset * 2, mapy + unitSide - 1, 
-					 0, shapePal->getShape(ShapePalette::NS_DOOR_INDEX));
-	map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitSide, 
-					 0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	if(!coversDoor(map, shapePal, 
+				   shapePal->getShape(ShapePalette::NS_DOOR_INDEX), 
+				   mapx + unitOffset * 2, mapy + unitSide - 1)) {
+	  map->setPosition(mapx + unitOffset, mapy + unitSide, 
+					   wallHeight - 2, shapePal->getShape(ShapePalette::NS_DOOR_TOP_INDEX));
+	  map->setPosition(mapx + unitOffset, mapy + unitSide, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	  map->setPosition(mapx + unitOffset * 2, mapy + unitSide - 1, 
+					   0, shapePal->getShape(ShapePalette::NS_DOOR_INDEX));
+	  map->setPosition(mapx + unitSide - unitOffset * 2, mapy + unitSide, 
+					   0, shapePal->getShape(ShapePalette::DOOR_SIDE_INDEX));
+	}
 	break;
   }
 }
