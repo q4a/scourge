@@ -67,6 +67,13 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
   this->div = div;
+
+  char fn[300], texfn[300];
+  strcpy(fn, rootDir);
+  strcat(fn, file_name);
+
+  strcpy(texfn, rootDir);
+  strcat(texfn, texture_name);
           
   // First we need to actually load the .MD2 file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("tris.md2").
@@ -74,7 +81,7 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
   // are usually a lot of textures with each character.  You choose the best one.
   // It seems that all of the Quake2 characters .md2 files are called: "tris.md2"
 
-  g_LoadMd2.ImportMD2(&g_3DModel, file_name, texture_name);
+  g_LoadMd2.ImportMD2(&g_3DModel, fn, texfn);
 
   // There is no color information for these models, as well as only one
   // texture.  If everything goes well, it should load the TEXTURE_NAME file.

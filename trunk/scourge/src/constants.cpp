@@ -17,6 +17,8 @@
 
 #include "constants.h"
 
+char rootDir[300];
+
 //sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
 char *Constants::messages[][80] = {
   { 

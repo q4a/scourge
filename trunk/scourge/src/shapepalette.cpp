@@ -58,10 +58,7 @@ ShapePalette::ShapePalette(){
 
   // set up the scourge
   setupAlphaBlendedBMP("data/scourge.bmp", &scourge, &scourgeImage);
-  
-  // load portraits
-  loadPortraits();
-  
+    
   // load textures
   loadTextures();
 
@@ -388,82 +385,48 @@ void ShapePalette::loadTextures() {
 
 /* function to load in bitmap as a GL texture */
 GLuint ShapePalette::loadGLTextures(char *filename) {
-    GLuint texture[1];
-
-    /* Create storage space for the texture */
-    SDL_Surface *TextureImage[1];
-
-    /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-    fprintf(stderr, "Loading texture: %s\n", filename);
-    if ( ( TextureImage[0] = SDL_LoadBMP( filename ) ) ) {
-      fprintf(stderr, "\tFound it.\n");
-
-	    /* Create The Texture */
-	    glGenTextures( 1, &texture[0] );
-
-	    /* Typical Texture Generation Using Data From The Bitmap */
-	    glBindTexture( GL_TEXTURE_2D, texture[0] );
-
-	    /* Generate The Texture */
-//	    glTexImage2D( GL_TEXTURE_2D, 0, 3,
-//                    TextureImage[0]->w, TextureImage[0]->h, 0, GL_BGR,
-//            			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
-
-	    /* Linear Filtering */
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-      gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
-                        TextureImage[0]->w, TextureImage[0]->h,
-                        GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
-    } else {
-      texture[0] = 0;
-    }
-    fprintf(stderr, "\tStored texture at: %u\n", texture[0]);
-
-    /* Free up any memory we may have used */
-    if ( TextureImage[0] )
-	    SDL_FreeSurface( TextureImage[0] );
-
-    return texture[0];
-}
-
-/* function to load in bitmap as a GL texture */
-void ShapePalette::loadPortraits() {
-    portraitCount = 0;
+  char fn[300];
+  strcpy(fn, rootDir);
+  strcat(fn, filename);
   
-    /* Create storage space for the texture */
-    SDL_Surface *image;
-
-    char filename[100];
-    
-    /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-    for(int i = 0; i < 20; i++) {
-      sprintf(filename, "data/portraits/p%d.bmp", (i + 1));
-      fprintf(stderr, "Loading texture: %s\n", filename);
-      if ( ( image = SDL_LoadBMP( filename ) ) ) {
-        fprintf(stderr, "\tFound it.\n");
-        portraits[portraitCount++] = image;
-      } else {
-        break;
-      }
-    }
-    fprintf(stderr, "Done. Loaded %d portraits.\n", portraitCount);
-}
-
-/**
- * Assume that glRasterPos has been called.
- */
-void ShapePalette::drawPortrait(int index) {
-  if(index >= 0 && index < portraitCount) {
-    glPixelZoom( 1.0, -1.0 );    
-    glDrawPixels(portraits[index]->w,
-                 portraits[index]->h,
-                 GL_BGR,
-                 GL_UNSIGNED_BYTE,
-                 portraits[index]->pixels);
+  GLuint texture[1];
+  
+  /* Create storage space for the texture */
+  SDL_Surface *TextureImage[1];
+  
+  /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
+  fprintf(stderr, "Loading texture: %s\n", fn);
+  if ( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
+	fprintf(stderr, "\tFound it.\n");
+	
+	/* Create The Texture */
+	glGenTextures( 1, &texture[0] );
+	
+	/* Typical Texture Generation Using Data From The Bitmap */
+	glBindTexture( GL_TEXTURE_2D, texture[0] );
+	
+	/* Generate The Texture */
+	//	    glTexImage2D( GL_TEXTURE_2D, 0, 3,
+	//                    TextureImage[0]->w, TextureImage[0]->h, 0, GL_BGR,
+	//            			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
+	
+	/* Linear Filtering */
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
+					  TextureImage[0]->w, TextureImage[0]->h,
+					  GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
+  } else {
+	texture[0] = 0;
   }
+  fprintf(stderr, "\tStored texture at: %u\n", texture[0]);
+  
+  /* Free up any memory we may have used */
+  if ( TextureImage[0] )
+	SDL_FreeSurface( TextureImage[0] );
+  
+  return texture[0];
 }
-
 
 void ShapePalette::swap(unsigned char & a, unsigned char & b) {
     unsigned char temp;
@@ -477,14 +440,18 @@ void ShapePalette::swap(unsigned char & a, unsigned char & b) {
 
 void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image) {
   *image = NULL;
-  if(((*surface) = SDL_LoadBMP( filename ))) {
+  char fn[300];
+  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
+  strcpy(fn, rootDir);
+  strcat(fn, filename);
+  if(((*surface) = SDL_LoadBMP( fn ))) {
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
 	fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d scanline=%d\n", 
-			filename, width, height, (*surface)->format->BitsPerPixel,
+			fn, width, height, (*surface)->format->BitsPerPixel,
 			(*surface)->format->BytesPerPixel, (*surface)->pitch);
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data

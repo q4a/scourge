@@ -96,7 +96,7 @@ private:
 
 char *lastError;
 int useLuminanceAlpha;
-char *filename;
+char filename[300];
 TexFont *txf;
 
 public:

@@ -62,12 +62,8 @@ private:
   const static Sint16 unitOffset = MAP_UNIT_OFFSET;
   const static Sint16 wallHeight = MAP_WALL_HEIGHT;
 
-  SDL_Surface *portraits[20];
-  int portraitCount;
-
   void initShapes();
   void loadTextures();
-  void loadPortraits();
 
   // shape descriptions
   static char *wallDescription[], *doorDescription[], *doorFrameDescription[], *torchDescription[];
@@ -150,9 +146,6 @@ public:
   inline Sint16 getWallHeight() { return wallHeight; }
 
   inline GLuint getGuiTexture() { return gui_texture; }
-
-  // for these, call glRasterPos, first.
-  void drawPortrait(int index);
 
 protected:
   GLuint loadGLTextures(char *fileName);
