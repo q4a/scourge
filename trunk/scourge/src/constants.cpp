@@ -35,6 +35,11 @@ int Constants::messageCount[] = {
   3, 4
 };
 
+// opengl extension routines
+PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB = NULL;
+PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
+PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
+
 Constants::Constants(){
 }
 
