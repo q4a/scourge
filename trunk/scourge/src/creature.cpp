@@ -75,6 +75,9 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) {
 }
 
 void Creature::commonInit() {
+
+  ((MD2Shape*)shape)->setCreatureSpeed( speed );
+
   this->lastMove = 0;
   this->moveCount = 0;
   this->x = this->y = this->z = 0;
