@@ -18,6 +18,8 @@
 
 #define OPEN_STEPS 10
 
+#define DEBUG_WINDOWS
+
 int Window::windowCount = 0;
 Window *Window::window[MAX_WINDOW];
 
@@ -49,6 +51,7 @@ Widget(x, y, w, h) {
   } else closeButton = NULL;
   openHeight = 0;
   this->type = type;
+  this->locked = false;
   setBackgroundTileWidth(TILE_W);
   setBackgroundTileHeight(TILE_H);
   // make windows stay on screen
@@ -194,9 +197,11 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     break;
   case SDL_MOUSEBUTTONDOWN:
     toTop();
-    dragging = isInside(x, y);
-    dragX = x - getX();
-    dragY = y - getY();
+    if(!isLocked()) {
+      dragging = isInside(x, y);
+      dragX = x - getX();
+      dragY = y - getY();
+    }
     break;
   }
   return isInside(x, y);
@@ -314,28 +319,30 @@ void Window::drawWidget(Widget *parent) {
   }
 
   // draw drop-shadow
-  glEnable( GL_BLEND );
-  //  glBlendFunc( GL_SRC_ALPHA, GL_DST_COLOR );
-  glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
-  int n = 10;
-  glColor4f( 0.15f, 0.15f, 0.15f, 0.25f );
-  glBegin(GL_QUADS);
-  glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
-  glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
-  glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-
-  glVertex2i (w, topY + n);
-  glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glVertex2i (w + n, topY + n);
-  glEnd();
-  glDisable( GL_BLEND );
+  if(!isLocked()) {
+    glEnable( GL_BLEND );
+    //  glBlendFunc( GL_SRC_ALPHA, GL_DST_COLOR );
+    glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+    int n = 10;
+    glColor4f( 0.15f, 0.15f, 0.15f, 0.25f );
+    glBegin(GL_QUADS);
+    glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
+    glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
+    glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    
+    glVertex2i (w, topY + n);
+    glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glVertex2i (w + n, topY + n);
+    glEnd();
+    glDisable( GL_BLEND );
+  }
 
   // add a border
   applyBorderColor();
 
-  glLineWidth( isModal() ? 3.0f : 2.0f );
+  glLineWidth( isLocked()  || isModal() ? 3.0f : 2.0f );
   glBegin(GL_LINES);
   glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
   glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
@@ -362,12 +369,16 @@ void Window::drawWidget(Widget *parent) {
     glPushMatrix();
     glTranslated( 0, 0, 5 );
     glColor3f( 1, 1, 1 );
+#ifdef DEBUG_WINDOWS
+    sdlHandler->texPrint(10, topY + 13, "%s (%d)", title, getZ());
+#else
     sdlHandler->texPrint(10, topY + 13, "%s", title);
+#endif
     glPopMatrix();
   }
 
   // draw the close button
-  if(closeButton) {
+  if(closeButton && !isLocked()) {
 
     // apply the window's color scheme
     closeButton->setColor( getColor() );
@@ -478,6 +489,7 @@ void Window::toTop() {
 }
 
 void Window::toTop(Window *win) {
+  if(win->isLocked()) return;
   for(int i = 0; i < windowCount; i++) {
     if(window[i] == win) {
       for(int t = i; t < windowCount - 1; t++) {
@@ -486,6 +498,25 @@ void Window::toTop(Window *win) {
       }
       window[windowCount - 1] = win;
       win->setZ(50 + (windowCount * 10));
+      break;
+    }
+  }
+}
+
+void Window::toBottom() {
+  toBottom(this);
+}
+
+void Window::toBottom(Window *win) {
+  if(win->isLocked()) return;
+  for(int i = 0; i < windowCount; i++) {
+    if(window[i] == win) {
+      for(int t = i - 1; t >= 0; t--) {
+        window[t] = window[t - 1];    
+        window[t]->setZ(window[t]->getZ() + 10);
+      }
+      window[0] = win;
+      win->setZ(50);
       break;
     }
   }

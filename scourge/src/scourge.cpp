@@ -1325,6 +1325,8 @@ void Scourge::setUILayout(int mode) {
 }
 
 void Scourge::setUILayout() {
+
+  // reshape the map
   int mapX = 0;
   int mapY = 0;
   int mapWidth = getSDLHandler()->getScreen()->w;
@@ -1341,12 +1343,16 @@ void Scourge::setUILayout() {
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
   messageWin->resize(width, PARTY_GUI_HEIGHT);
   messageWin->move(0, 0);
+  messageWin->setLocked(false);
+  party->getWindow()->setLocked(false);
   break;
   case Constants::GUI_LAYOUT_BOTTOM:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
   messageWin->resize(width, PARTY_GUI_HEIGHT);
   messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+  messageWin->setLocked(true);
+  party->getWindow()->setLocked(true);
   break;
   case Constants::GUI_LAYOUT_SIDE:
     messageList->resize(400, getSDLHandler()->getScreen()->h - (Window::SCREEN_GUTTER * 2 + 25));
@@ -1355,6 +1361,8 @@ void Scourge::setUILayout() {
   mapX = 400;
   mapWidth = getSDLHandler()->getScreen()->w - 400;
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+  messageWin->setLocked(true);
+  party->getWindow()->setLocked(true);
   break;
   }
 
