@@ -170,6 +170,8 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
           info[ i ].skillMod[ n ]--;
           updateUI( &( info[ i ] ) );
         }
+      } else if( widget == info[i].skills ) {
+        info[i].skillDescription->setText( Constants::SKILL_DESCRIPTION[ info[i].skills->getSelectedLine() ] );
       }
     }
   }
@@ -259,7 +261,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->skillAddButton = cards->createButton( col2X, 310, col2X + buttonWidth - 5, 330, " + ", n );
   info->skillRerollButton = cards->createButton( col2X + buttonWidth, 310, col2X + buttonWidth * 2 - 5, 330, " Reroll ", n );
   info->skillSubButton = cards->createButton( col2X + buttonWidth * 2, 310, col2X + buttonWidth * 3 - 5, 330, " - ", n );
-  info->skillDescription = new ScrollingLabel( col2X, 340, skillColWidth, 100, "Skill description goes here..." );
+  info->skillDescription = new ScrollingLabel( col2X, 340, skillColWidth, 100, "" );
   cards->addWidget( info->skillDescription, n );
 
   rollSkills( info );
@@ -270,6 +272,8 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
     info->skillLine[i] = (char*)malloc(120 * sizeof(char));
   }
   updateUI( info );
+  info->skills->setSelectedLine( 0 );
+  info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
 
 
   info->back = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 

@@ -458,7 +458,8 @@ public:
     
     SKILL_COUNT
   };
-  static const char *SKILL_NAMES[];
+  static char *SKILL_NAMES[];
+  static char *SKILL_DESCRIPTION[];
   static int getSkillByName(char *p);
   static int getRandomBasicSkill();
 

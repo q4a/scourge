@@ -157,9 +157,25 @@ void ShapePalette::initialize() {
   //int sum = 0;
   char path[300];
   char line[255];
+  int skillCount = 0;
   int n = fgetc(fp);
   while(n != EOF) {
-    if(n == 'T') {
+    if(n == 'S') {
+      // skip ':'
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      
+      char *p = strtok( line, "," );
+      Constants::SKILL_NAMES[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
+      strcpy( Constants::SKILL_NAMES[ skillCount ], p );
+
+      p = strtok( NULL, "," );
+      Constants::SKILL_DESCRIPTION[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
+      strcpy( Constants::SKILL_DESCRIPTION[ skillCount ], p );
+
+      skillCount++;
+
+    } else if(n == 'T') {
       // skip ':'
       fgetc(fp);
       n = Constants::readLine(line, fp);
