@@ -73,6 +73,7 @@ public:
 #define ABOUT 4
 #define QUIT 5
 #define MULTIPLAYER 6
+#define MULTIPLAYER_START 7
 
   MainMenu(Scourge *scourge);
   ~MainMenu();

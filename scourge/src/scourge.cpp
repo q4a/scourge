@@ -105,7 +105,8 @@ Scourge::Scourge(int argc, char *argv[]){
     sdlHandler->mainLoop();
     
     // evaluate results and start a missions
-    if(mainMenu->getValue() == NEW_GAME) {
+    if(mainMenu->getValue() == NEW_GAME ||
+       mainMenu->getValue() == MULTIPLAYER_START) {
       mainMenu->hide();
       party->reset();
       party->getCalendar()->reset(true); // reset the time
@@ -436,10 +437,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	return false;
   }
 
-  if(multiplayer->isVisible()) {
-    multiplayer->handleEvent(event);
-    return false;
-  }
+  //if(multiplayer->isVisible()) {
+//    multiplayer->handleEvent(event);
+    //return false;
+  //}
 
 
   int mx, my;
@@ -1329,10 +1330,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 	return false;
   }
 
-  if(multiplayer->isVisible()) {
-    multiplayer->handleEvent(widget, event);
-    return false;
-  }
+  //if(multiplayer->isVisible()) {
+//    multiplayer->handleEvent(widget, event);
+    //return false;
+  //}
 
   // FIXME: this is hacky...
   if(party->handleEvent(widget, event)) return true;

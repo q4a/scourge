@@ -40,14 +40,25 @@ private:
   Button *joinServer;
   TextField *serverName;
   TextField *serverPort;
+  TextField *userName;
+  int value;
   
 public:
+
+  static const int START_SERVER = 1;
+  static const int JOIN_SERVER = 2;
+
   MultiplayerDialog(Scourge *scourge);
   ~MultiplayerDialog();
 
-  inline void show() { mainWin->setVisible(true); }
+  inline void show() { value = 0; mainWin->setVisible(true); }
   inline void hide() { mainWin->setVisible(false); }
   inline bool isVisible() { return mainWin->isVisible(); }
+
+  inline char *getServerName() { return serverName->getText(); }
+  inline char *getServerPort() { return serverPort->getText(); }
+  inline char *getUserName() { return userName->getText(); }
+  inline int getValue() { return value; }
 
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
