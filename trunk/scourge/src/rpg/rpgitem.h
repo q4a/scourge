@@ -133,6 +133,9 @@ class RpgItem {
 
   static RpgItem *items[1000];
   static int itemCount;
+
+  static int enchantableTypes[];
+  static int enchantableTypeCount;
   
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
@@ -166,6 +169,8 @@ class RpgItem {
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs
   inline bool isRangedWeapon() { return type == BOW; }
+
+  bool isEnchantable();
 
   static RpgItem *getRandomItem(int level);
   static RpgItem *getRandomEnchantableItem(int level);
