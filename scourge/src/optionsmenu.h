@@ -25,11 +25,13 @@
 #include "sdlscreenview.h"
 #include "scourge.h"
 #include "userconfiguration.h"
+#include "util.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/scrollinglist.h"
 #include "gui/cardcontainer.h"
 #include "gui/multiplelabel.h"
+#include "gui/checkbox.h"
 
 /**
   *@author Gabor Torok
@@ -48,6 +50,7 @@ private:
   UserConfiguration * uc;
   bool showDebug;
   bool controlsLoaded;
+  bool videoLoaded; 
   int nbControlLines;
   bool waitingForNewKey;
   bool ignoreKeyUp;
@@ -60,17 +63,27 @@ private:
   Window *mainWin;  
   Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton, *closeButton;  
   Button *changeControlButton, *saveControlButton;
-  Label * waitingLabel;  
+  Label * waitingLabel;    
   
-  MultipleLabel * gameSpeedML;  
-
+  MultipleLabel * gameSpeedML; 
+  MultipleLabel * videoResolutionML;  
+  Checkbox * fullscreenCheckbox;
+  Checkbox * doublebufCheckbox;   
+  Checkbox * hwpalCheckbox;
+  Checkbox * resizeableCheckbox;
+  Checkbox * forceHwsurfCheckbox;
+  Checkbox * forceSwsurfCheckbox;
+  Checkbox * hwaccelCheckbox;
+  MultipleLabel * shadowsML;
   
   CardContainer *cards;
   ScrollingList *controlBindingsList;
   
   void createButton(int x1, int y1, int x2, int y2, char *label, bool toggle, Button * &theButton);
+  void createCheckbox(int x1, int y1, int x2, int y2, char *label, int where, Checkbox *&theCheckbox);
   void setSelectedMode();
-  void loadControls();      
+  void loadControls(); 
+  void loadVideo();
   
 public:
   OptionsMenu(Scourge *scourge);
@@ -81,6 +94,7 @@ public:
   inline void show() { mainWin->setVisible(true); }
   inline void hide() { mainWin->setVisible(false); }
   inline bool isVisible() { return mainWin->isVisible(); }  
+  //string getNextWord(const string theInput, int fromPos, int &endWord);
 
  protected:
 };

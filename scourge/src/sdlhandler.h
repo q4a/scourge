@@ -52,6 +52,7 @@ class TexturedText;
 
 class ShapePalette;                          
 class SDLEventHandler;
+class UserConfiguration;
 
 class SDLHandler {
 private:
@@ -106,10 +107,9 @@ private:
 	 Get the current event handler.
   */
   inline SDLEventHandler *getEventHandler() { return eventHandler; }
-
-  void loadUserConfiguration(UserConfiguration *uc);
-  //void setVideoMode(int argc, char *argv[], UserConfiguration *uc);
+   
   void setVideoMode(UserConfiguration *uc);
+  char ** getVideoModes(int &nbModes);
   void mainLoop();
   void fireEvent(Widget *widget, SDL_Event *event);
   bool firedEventWaiting();

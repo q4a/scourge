@@ -257,7 +257,7 @@ void UserConfiguration::loadConfiguration(){
                 sFirstParam = getNextWord(sLine, pos + 3, endWord);
                 sSecondParam = getNextWord(sLine, endWord, foo);                             
             }           
-        }
+        } 
         else if(pos <= firstChar){
             sInstruction = "bind";                                 
             sFirstParam = getNextWord(sLine, pos + 4, endWord);
@@ -288,7 +288,7 @@ void UserConfiguration::loadConfiguration(){
 
 }
 
-void UserConfiguration::saveConfiguration(char **controlLine){
+void UserConfiguration::saveConfiguration(){
     ofstream *configFile;  
     string sLine;    
     char textLine[255];    
@@ -679,15 +679,22 @@ bool UserConfiguration::isDebugEa(int j){
 }*/
    
 
+// Returns next word from the given position. If there is not a space at the given
+// position, the function suppose it is the first letter of the word wanted. 
 string UserConfiguration::getNextWord(const string theInput, int fromPos, int &endWord){
     int firstChar, lastStringChar;
     string sub;
     sub.clear();
-    
+       
     if (theInput.empty() || fromPos==-1) {return sub;}
 
-    lastStringChar = theInput.find_last_not_of(' ');
-    firstChar = theInput.find_first_not_of(' ', fromPos);
+    lastStringChar = theInput.find_last_not_of(' ');    
+    if(theInput[fromPos] == ' '){
+        firstChar = theInput.find_first_not_of(' ', fromPos);
+    }
+    else{
+        firstChar = fromPos;
+    }    
     endWord = theInput.find_first_of(' ', firstChar);
    // cout << "line :" << theInput << endl;
    // cout << "\t\tpos = " << fromPos << " firstChar = " << firstChar << " endWord = " << endWord << " lastStringChar =" << lastStringChar << endl; 
