@@ -209,7 +209,9 @@ public:
   
   Creature *isPartyMember(Location *pos);
   
+  void startItemDragFromGui(Item *item);
   bool startItemDrag(int x, int y, int z);
+  void endItemDrag();
   bool useItem();
   bool useItem(int x, int y, int z);
   

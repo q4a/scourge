@@ -27,42 +27,49 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
 						scourge->getShapePalette()->getGuiTexture() );
   closeButton = new Button( 195, 5, 295, 35, Constants::getMessage(Constants::CLOSE_LABEL) );
   win->addWidget((Widget*)closeButton);
-  player1Button = new Button( 195, 40, 295, 70, scourge->getParty(0)->getName() );
-  win->addWidget((Widget*)player1Button);
-  player2Button = new Button( 195, 75, 295, 105, scourge->getParty(1)->getName() );
-  win->addWidget((Widget*)player2Button);
-  player3Button = new Button( 195, 110, 295, 140, scourge->getParty(2)->getName() );
-  win->addWidget((Widget*)player3Button);
-  player4Button = new Button( 195, 145, 295, 175, scourge->getParty(3)->getName() );
-  win->addWidget((Widget*)player4Button);
-  dropButton = new Button( 195, 180, 295, 210, Constants::getMessage(Constants::DROP_ITEM_LABEL) );
+  dropButton = new Button( 195, 40, 295, 70, Constants::getMessage(Constants::DROP_ITEM_LABEL) );
   win->addWidget((Widget*)dropButton);
-  openButton = new Button( 195, 215, 295, 245, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
+  openButton = new Button( 195, 75, 295, 105, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
-  list = new ScrollingList(5, 5, 185, 295 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5));
+  list = new ScrollingList(5, 5, 185, 295 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 5), this);
   win->addWidget((Widget*)list);
 
-  
-  //  setLines(int count, const char *s[])
+  // allocate memory for the contained item descriptions
+  this->containedItemNames = (char**)malloc(Item::MAX_CONTAINED_ITEMS * sizeof(char*));
+  for(int i = 0; i < Item::MAX_CONTAINED_ITEMS; i++) {
+	this->containedItemNames[i] = (char*)malloc(120 * sizeof(char));
+  }
+
+  showContents();
 
   win->setVisible(true);
 }
 
 ContainerGui::~ContainerGui() {
+  for(int i = 0; i < Item::MAX_CONTAINED_ITEMS; i++) {
+	free(containedItemNames[i]);
+  }
+  free(containedItemNames);
+
   delete list;
   delete closeButton;
   delete dropButton;
   delete openButton;
-  delete player1Button;
-  delete player2Button;
-  delete player3Button;
-  delete player4Button;
   delete win;
+}
+
+void ContainerGui::showContents() {
+  for(int i = 0; i < container->getContainedItemCount(); i++) {
+	container->getContainedItem(i)->getDetailedDescription(containedItemNames[i]);
+  }
+  list->setLines(container->getContainedItemCount(), 
+				 (const char **)containedItemNames);
 }
 
 bool ContainerGui::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEBUTTONUP:
+	
 	break;     
   case SDL_KEYUP:
 	switch(event->key.keysym.sym) {
@@ -80,6 +87,37 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == closeButton) {
 	win->setVisible(false);
 	return true;
+  } else if(widget == dropButton) {
+	int n = list->getSelectedLine();
+	if(n > -1) {
+	  Item *item = container->removeContainedItem(n);
+	  if(item) {
+		scourge->startItemDragFromGui(item);
+		showContents();
+	  }
+	}
+  } else if(widget == openButton) {
+	int n = list->getSelectedLine();
+	if(n > -1) {	
+	  scourge->openContainerGui(container->getContainedItem(n));
+	}
   }
   return false;
+}
+
+void ContainerGui::receive() {
+  if(scourge->getMovingItem() && 
+	 scourge->getMovingItem() != container) {
+	if(container->addContainedItem(scourge->getMovingItem())) {
+	  scourge->endItemDrag();
+	  showContents();
+	  // message: the container accepted the item
+	} else {
+	  // message: the container is full
+	}
+  }
+}
+
+void ContainerGui::startDrag() {
+  cerr << "starting to drag item!" << endl;
 }

@@ -19,7 +19,8 @@
 /**
   *@author Gabor Torok
   */
-ScrollingList::ScrollingList(int x, int y, int w, int h) : Widget(x, y, w, h) {
+ScrollingList::ScrollingList(int x, int y, int w, int h, 
+							 DragAndDropHandler *dragAndDropHandler) : Widget(x, y, w, h) {
   value = 0;
   count = 0;
   scrollerWidth = 20;
@@ -33,6 +34,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h) : Widget(x, y, w, h) {
   this->dragX = this->dragY = 0;
   selectedLine = -1;
   scrollerHeight = h;
+  this->dragAndDropHandler = dragAndDropHandler;
 }
 
 ScrollingList::~ScrollingList() {
@@ -165,6 +167,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 	  if(!list || count == 0 || selectedLine < 0 || selectedLine >= count) {
 		selectedLine = oldLine;
 	  }
+	  if(dragAndDropHandler) dragAndDropHandler->receive();
 	}
 	dragging = false;
 	break;
