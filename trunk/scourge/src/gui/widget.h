@@ -37,6 +37,8 @@ class Widget {
   Color borderColor2;
   Color focusColor;
   bool focus;
+  float alpha, alphaInc;
+  GLint lastTick;
 
  public: 
   Widget(int x, int y, int w, int h);
@@ -113,6 +115,9 @@ class Widget {
 
  protected:
 	 bool debug;
+   virtual void drawButton( Widget *parent, int x, int y, int x2, int y2, 
+                            bool toggle, bool selected, bool inverse, 
+                            bool glowing, bool inside );
 };
 
 #endif

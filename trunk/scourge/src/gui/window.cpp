@@ -383,9 +383,10 @@ void Window::drawWidget(Widget *parent) {
   }
   */
 
-  if(isLocked()) {
-    glColor3f(0.65f, 0.6f, 0.55f);
-  } else if( theme->getWindowTop() ) {
+//  if(isLocked()) {
+//    glColor3f(0.65f, 0.6f, 0.55f);
+//  } else 
+  if( theme->getWindowTop() ) {
 	glColor4f( theme->getWindowTop()->color.r, 
 			   theme->getWindowTop()->color.g, 
 			   theme->getWindowTop()->color.b, 
@@ -523,15 +524,17 @@ void Window::drawWidget(Widget *parent) {
     } else {
       applyHighlightedBorderColor();
     }
-  } else if(isLocked()) {
-    glColor3f(0.5f, 0.3f, 0.2f);
-  } else if( theme->getWindowBorder() ) {
+//  } else if(isLocked()) {
+//    glColor3f(0.5f, 0.3f, 0.2f);
+//  } else 
+    if( theme->getWindowBorder() ) {
     glColor4f( theme->getWindowBorder()->color.r, 
                theme->getWindowBorder()->color.g,
                theme->getWindowBorder()->color.b,
                theme->getWindowBorder()->color.a );
-  } else {
-    applyBorderColor();
+    } else {
+      applyBorderColor();
+    }
   }
   
   if( this == currentWin || isLocked() || isModal() ) {
