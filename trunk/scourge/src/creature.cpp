@@ -98,6 +98,7 @@ void Creature::commonInit() {
 
 Creature::~Creature(){
   delete effect;
+  delete shape;
 }
 
 // moving monsters only

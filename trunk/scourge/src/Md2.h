@@ -105,12 +105,13 @@ class CLoadMD2
  
 public:
     CLoadMD2();                                
-    bool ImportMD2(t3DModel *pModel, char *strFileName, char *strTexture);    
+    bool ImportMD2(t3DModel *pModel, char *strFileName);    
 
 private:        
         
     void ReadMD2Data(t3DModel *pModel);        
-    void ParseAnimations(t3DModel *pModel);            
+    void ParseAnimations(t3DModel *pModel);    
+    void ComputeMinMaxValues(t3DModel *pModel);
     void CleanUp();
         
     FILE *m_FilePointer;   

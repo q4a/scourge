@@ -19,6 +19,7 @@
 #define SHAPEPALETTE_H
 
 #include <string.h>
+#include <vector.h>
 #include "constants.h"
 #include "shape.h"
 #include "glshape.h"
@@ -27,6 +28,7 @@
 #include "debugshape.h"
 #include "md2shape.h"
 #include "3dsshape.h"
+#include "Md2.h"
 
 /**
   *@author Gabor Torok
@@ -40,8 +42,10 @@ private:
   GLShape *shapes[256];
   GLShape *creature_shapes[256];
   GLShape *item_shapes[256];  
-  GLuint display_list, creature_display_list_start, item_display_list_start, max_display_list;
+  GLuint display_list, item_display_list_start, max_display_list;
+  //GLuint creature_display_list_start;
   GLuint gui_texture;
+  int count;
   
   typedef struct _Texture {
 	GLuint id;
@@ -64,6 +68,7 @@ private:
   GLuint chesttex[3];
   GLuint shelftex2[3];
   GLuint chesttex2[3];
+  GLuint md2_tex[6];
 
   // how big to make the walls
   const static Sint16 unitSide = MAP_UNIT;
@@ -81,6 +86,10 @@ private:
   
 
   static ShapePalette *instance;
+  
+  // Md2 shapes
+  CLoadMD2 g_LoadMd2; 
+  t3DModel * LoadMd2Model(char *file_name);                  
 
 public: 
   ShapePalette();
@@ -104,8 +113,7 @@ public:
 
   GLuint cloud, candle, torchback;
        
-  inline GLShape *getShape(int index) { return shapes[index]; }
-  inline GLShape *getCreatureShape(int index) { return creature_shapes[index]; }
+  inline GLShape *getShape(int index) { return shapes[index]; }  
   inline GLShape *getItemShape(int index) { return item_shapes[index]; }
 
   inline bool isItem(GLShape *shape) { return shape->getDisplayList() >= item_display_list_start; }
@@ -117,6 +125,10 @@ public:
   inline GLuint getGuiTexture() { return gui_texture; }
 
   GLuint findTextureByName(const char *filename);
+  
+  // Md2 shapes
+  GLShape *getCreatureShape(int index);                    
+  vector<t3DModel *> creature_models; 
 
 protected:
   GLuint loadGLTextures(char *fileName);

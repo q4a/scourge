@@ -26,111 +26,80 @@
  ***************************************************************************/
 
 #include <string>  
+#include "Md2.h"
 #include "md2shape.h"
 
-
-MD2Shape::MD2Shape(char *file_name, char *texture_name, float div,
+MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
                    GLuint texture[],
                    int width, int depth, int height,
                    char *name,
-                   Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
-  // passing 0 for texture causes glshape to not init
+                   Uint32 color, Uint8 shapePalIndex) :
+  // passing 0 for texture causes glshape to not init, 
+  // 0 for display_list means : no display list available
 #ifdef DEBUG_MD2
   GLShape(texture, width, depth, height, name, color, display_list, shapePalIndex) {
-#else
-  GLShape(0, width, depth, height, name, color, display_list, shapePalIndex) {
+#else 
+  //GLShape(0, width, depth, height, name, color, display_list, shapePalIndex) {
+  GLShape(0, width, depth, height, name, color, 0, shapePalIndex) {
 #endif    
-  commonInit(file_name, texture_name, div);    
+  commonInit(g_3DModel, textureId, div);    
 }
 
-MD2Shape::MD2Shape(char *file_name, char *texture_name, float div,
+MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
                    GLuint texture[],
                    int width, int depth, int height,
                    char *name, char **description, int descriptionCount,
-                   Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
+                   Uint32 color, Uint8 shapePalIndex) :
   // passing 0 for texture causes glshape to not init
+  // 0 for display_list means : no display list available
 #ifdef DEBUG_MD2
   GLShape(texture, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
 #else
-  GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+  //GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+  GLShape(0, width, depth, height, name, description, descriptionCount, color, 0, shapePalIndex) {
 #endif
-  commonInit(file_name, texture_name, div);    
+  commonInit(g_3DModel, textureId, div);    
 }
 
 MD2Shape::~MD2Shape() {
   delete [] vect;
 }
 
-void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {  
-  g_Texture[0] = 0;
+void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
+  this->g_3DModel = g_3DModel;    
   g_ViewMode = GL_TRIANGLES;
   this->attackEffect = false;
-  this->div = div;
-
-  char fn[300], texfn[300];
-  strcpy(fn, rootDir);
-  strcat(fn, file_name);
-
-  strcpy(texfn, rootDir);
-  strcat(texfn, texture_name);   
+  this->div = div; 
+  this->textureId = textureId;
   
   // Animation stuff
   elapsedTime = 0.0f;
   lastTime = 0.0f;  
-  pauseAnimation = false;          
+  pauseAnimation = false;
+  currentAnim = MD2_STAND;
+  currentFrame = 1;                
   
-  // Loads the model with the given texture  
-  // There is no color information for these models, and only one texture.    
-  g_LoadMd2.ImportMD2(&g_3DModel, fn, texfn);
-    
-  // Go through all the materials and see if there is a 
-  // file name to load for each material
-  for(int i = 0; i < g_3DModel.numOfMaterials; i++) {    
-    if(strlen(g_3DModel.pMaterials[i].strFile) > 0) {      
-      cout << "CreateTexture " << endl;
-      CreateTexture((GLuint*)g_Texture, g_3DModel.pMaterials[i].strFile, i);
-      cout << g_3DModel.pMaterials[i].strFile << endl;
-    }    
-    g_3DModel.pMaterials[i].texureId = i;
-  }    
 
-  vect = new vect3d [g_3DModel.numVertices]; 
-  for(int i = 0; i < g_3DModel.numVertices; i++){
+  vect = new vect3d [g_3DModel->numVertices]; 
+  for(int i = 0; i < g_3DModel->numVertices; i++){
     for(int j = 0; j < 3; j++){
         vect[i][j] = 0.0;
     }
-  }
-    
-  // Find the lowest point
-  float minx, miny, minz;  
-  float maxx, maxy, maxz;
-  minx = miny = minz = maxx = maxy = maxz = 0;
-  for(int i = 0; i < g_3DModel.numVertices ; i++){
-    if(g_3DModel.vertices[i][0] > maxx) maxx = g_3DModel.vertices[i][0];
-    if(g_3DModel.vertices[i][1] > maxy) maxy = g_3DModel.vertices[i][1];
-    if(g_3DModel.vertices[i][2] > maxz) maxz = g_3DModel.vertices[i][2];
-    if(g_3DModel.vertices[i][0] < minx) minx = g_3DModel.vertices[i][0];
-    if(g_3DModel.vertices[i][1] < miny) miny = g_3DModel.vertices[i][1];
-    if(g_3DModel.vertices[i][2] < minz) minz = g_3DModel.vertices[i][2];     
-  }
-  movex = maxx - minx;
-  movey = maxy;
-  movez = maxz - minz;    
+  }         
 }
 
-void MD2Shape::setCurrentAnimation(int numAnim){
-    
+
+
+void MD2Shape::setCurrentAnimation(int numAnim){    
     if(numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){                
-        if(numAnim != g_3DModel.currentAnim) {            
-            g_3DModel.currentAnim = numAnim;                
-            g_3DModel.currentFrame = g_3DModel.pAnimations[g_3DModel.currentAnim].startFrame;                      
+        if(numAnim != currentAnim) {            
+            currentAnim = numAnim;                
+            currentFrame = g_3DModel->pAnimations[currentAnim].startFrame;                      
         }                            
     }
-
 }
 
 void MD2Shape::draw() {
-
 #ifdef DEBUG_MD2
   // draw the outline for debugging
   GLShape::draw();
@@ -145,9 +114,9 @@ void MD2Shape::draw() {
   
   glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
   glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-  glTranslatef(-movex / 2.0f * div, 0.0f, 0.0f);
-  glTranslatef(0.0f, movey * div, 0.0f);
-  glTranslatef(0.0f, 0.0f, -movez / 2.0f * div);   
+  glTranslatef(-g_3DModel->movex / 2.0f * div, 0.0f, 0.0f);
+  glTranslatef(0.0f, g_3DModel->movey * div, 0.0f);
+  glTranslatef(0.0f, 0.0f, -g_3DModel->movez / 2.0f * div);   
 
 //    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
   switch(dir) {
@@ -161,14 +130,14 @@ void MD2Shape::draw() {
       glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
   }  
    
-  AnimateMD2Model(&g_3DModel);
-  /*string s;
-  s = g_3DModel.pMaterials[0].strFile;
-  s = s.substr(s.size()-6, 6);
-  int numAnim = g_3DModel.currentAnim;
-  cout << s << " " << g_3DModel.pAnimations[numAnim].strName << " frame " << g_3DModel.currentFrame <<       
-        "/" << g_3DModel.pAnimations[numAnim].endFrame << endl; 
-  */
+  AnimateMD2Model();
+  //string s;
+  //s = g_3DModel.pMaterials[0].strFile;
+  //s = s.substr(s.size()-6, 6);
+  //int numAnim = g_3DModel.currentAnim;
+  //cout << s << " " << g_3DModel.pAnimations[numAnim].strName << " frame " << g_3DModel.currentFrame <<       
+  //      "/" << g_3DModel.pAnimations[numAnim].endFrame << endl; 
+  //
  
   glDisable(GL_CULL_FACE);
   glPopMatrix();    
@@ -177,7 +146,7 @@ void MD2Shape::draw() {
 
 
 // This returns time t for the interpolation between the current and next key frame
-float MD2Shape::ReturnCurrentTime(t3DModel *pModel, int nextFrame)
+float MD2Shape::ReturnCurrentTime(int nextFrame)
 {       
     float time = SDL_GetTicks();   
     elapsedTime = time - lastTime;    
@@ -188,7 +157,7 @@ float MD2Shape::ReturnCurrentTime(t3DModel *pModel, int nextFrame)
     {
         // Set current frame to the next key frame (which could be the start of the anim)
         if(!pauseAnimation){
-            pModel->currentFrame = nextFrame;
+            currentFrame = nextFrame;
         }               
         lastTime = time;
     }
@@ -197,51 +166,51 @@ float MD2Shape::ReturnCurrentTime(t3DModel *pModel, int nextFrame)
 
 
 // This draws and animates the .md2 model by interpoloated key frame animation
-void MD2Shape::AnimateMD2Model(t3DModel *pModel)
+void MD2Shape::AnimateMD2Model()
 {
     int *ptricmds ;
     int nb;               
         
-    tAnimationInfo *pAnim = &(pModel->pAnimations[pModel->currentAnim]);
-    int nextFrame = (pModel->currentFrame + 1) % pAnim->endFrame;
+    tAnimationInfo *pAnim = &(g_3DModel->pAnimations[currentAnim]);
+    int nextFrame = (currentFrame + 1) % pAnim->endFrame;
     
     // If next frame == 0, we need to start the animation over
     if(nextFrame == 0){        
         nextFrame =  pAnim->startFrame;
-		if(g_3DModel.currentAnim == MD2_ATTACK) {
+		if(currentAnim == MD2_ATTACK) {
 		  setCurrentAnimation(MD2_STAND);
 		  setAttackEffect(false);
 		}
-        /*else if(g_3DModel.currentAnim == MD2_TAUNT) {
+        else if(currentAnim == MD2_TAUNT) {
 		  setCurrentAnimation(MD2_STAND);
-		}*/		        
-    }
+		}
+    } 
 
     // t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation    
-    float t = ReturnCurrentTime(pModel, nextFrame);
-            
-    if(getUseTexture()) glBindTexture(GL_TEXTURE_2D, g_Texture[0]);           
+    float t = ReturnCurrentTime(nextFrame);
+                        
+    glBindTexture(GL_TEXTURE_2D, textureId);
     
     // Compute interpolated vertices        
     vect3d * currVertices, * nextVertices;    
-    currVertices = &pModel->vertices[ pModel->numVertices * pModel->currentFrame ];
-    nextVertices = &pModel->vertices[ pModel->numVertices * nextFrame ];
+    currVertices = &g_3DModel->vertices[ g_3DModel->numVertices * currentFrame ];
+    nextVertices = &g_3DModel->vertices[ g_3DModel->numVertices * nextFrame ];
     if(!pauseAnimation){    
-        for(int i = 0; i < pModel->numVertices ; i++){
+        for(int i = 0; i < g_3DModel->numVertices ; i++){
             vect[i][0] = (currVertices[i][0] + t * (nextVertices[i][0] - currVertices[i][0])) * div;
             vect[i][1] = (currVertices[i][1] + t * (nextVertices[i][1] - currVertices[i][1])) * div;
             vect[i][2] = (currVertices[i][2] + t * (nextVertices[i][2] - currVertices[i][2])) * div;    
         }
     }
     else{
-        for(int i = 0; i < pModel->numVertices ; i++){
+        for(int i = 0; i < g_3DModel->numVertices ; i++){
             vect[i][0] = currVertices[i][0]  * div;
             vect[i][1] = currVertices[i][1]  * div;
             vect[i][2] = currVertices[i][2]  * div;    
         }    
     }
             
-    ptricmds = pModel->pGlCommands;
+    ptricmds = g_3DModel->pGlCommands;
     nb = *(ptricmds);    
     ptricmds++;
     while(nb != 0){        
