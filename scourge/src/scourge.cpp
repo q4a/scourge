@@ -17,6 +17,8 @@
 
 #include "scourge.h"
 
+#define GUI_TOP 475
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 
@@ -129,16 +131,18 @@ Scourge::~Scourge(){
 
 void Scourge::startMission() {
   // add gui
-  topWin = gui->addWindow(0, 0,
-               sdlHandler->getScreen()->w,
-               TOP_GUI_HEIGHT,
-               &Gui::drawDescriptions);
-  gui->addActiveRegion(sdlHandler->getScreen()->w - 110, 0,  sdlHandler->getScreen()->w, 25, Constants::SHOW_INVENTORY, this);
-  gui->addActiveRegion(sdlHandler->getScreen()->w - 110, 25, sdlHandler->getScreen()->w, 50, Constants::SHOW_OPTIONS, this);
-  gui->addActiveRegion(sdlHandler->getScreen()->w - 110, 50, sdlHandler->getScreen()->w, 75, Constants::ESCAPE, this);
+  topWin = gui->addWindow(500, GUI_TOP, 300, sdlHandler->getScreen()->h - GUI_TOP, 
+						  &Gui::drawDescriptions);
+  gui->addActiveRegion(680, GUI_TOP,  800, GUI_TOP + 25, Constants::SHOW_INVENTORY, this);
+  gui->addActiveRegion(680, GUI_TOP + 25, 800, GUI_TOP + 50, Constants::SHOW_OPTIONS, this);
+  gui->addActiveRegion(680, GUI_TOP + 50, 800, GUI_TOP + 75, Constants::ESCAPE, this);
+  gui->addActiveRegion(680, GUI_TOP + 75, 700, GUI_TOP + 100, Constants::DIAMOND_FORMATION, this);
+  gui->addActiveRegion(700, GUI_TOP + 75, 720, GUI_TOP + 100, Constants::STAGGERED_FORMATION, this);
+  gui->addActiveRegion(720, GUI_TOP + 75, 740, GUI_TOP + 100, Constants::SQUARE_FORMATION, this);
+  gui->addActiveRegion(740, GUI_TOP + 75, 760, GUI_TOP + 100, Constants::ROW_FORMATION, this);
+  gui->addActiveRegion(760, GUI_TOP + 75, 780, GUI_TOP + 100, Constants::SCOUT_FORMATION, this);
+  gui->addActiveRegion(780, GUI_TOP + 75, 800, GUI_TOP + 100, Constants::CROSS_FORMATION, this);
 
-  fprintf(stderr, "scourge::topWin=%d\n", topWin);
-                       
   // create the map
   map = new Map(this);
 
@@ -225,6 +229,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
             // do something
         } else if(region == Constants::ESCAPE) {
             return true;
+		} else if(region >= Constants::DIAMOND_FORMATION && region <= Constants::CROSS_FORMATION) {
+		  setFormation(region - Constants::DIAMOND_FORMATION);
         } else {        
             processGameMouseClick(event->button.x, event->button.y, event->button.button);
         }
@@ -232,7 +238,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
     break;
   case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {
-    case SDLK_ESCAPE: return true;
+    case SDLK_ESCAPE: 
+	  party[0]->setSelXY(-1, -1); // stop moving
+	  return true;
     case SDLK_F10:
       isInfoShowing = (isInfoShowing ? false : true);
       gui->setWindowVisible(topWin, isInfoShowing);
@@ -323,12 +331,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
     case SDLK_RIGHT:
       map->removeMove(Constants::MOVE_RIGHT);
       break;
-		case SDLK_f:
-			if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
-			else setFormation(0);
-			break;
-		case SDLK_u:
-			useItem();
+	case SDLK_f:
+	  if(getFormation() < Creature::FORMATION_COUNT - 1) setFormation(getFormation() + 1);
+	  else setFormation(0);
+	  break;
+	case SDLK_u:
+	  useItem();
       break;
     case SDLK_q:
         map->setXRot(0.0f);
@@ -375,16 +383,16 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
 void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   Uint16 mapx, mapy, mapz;
   if(button == SDL_BUTTON_LEFT) {
-      getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-      if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
-      if(useItem(mapx, mapy)) return;
-      getMapXYAtScreenXY(x, y, &mapx, &mapy);
-      party[0]->setSelXY(mapx, mapy);      
+	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
+	if(useItem(mapx, mapy)) return;
+	getMapXYAtScreenXY(x, y, &mapx, &mapy);
+	party[0]->setSelXY(mapx, mapy);      
   } else if(button == SDL_BUTTON_RIGHT) {
-      getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-      if(mapx < MAP_WIDTH) {    
-          map->handleMouseClick(mapx, mapy, mapz, button);
-      }
+	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+	if(mapx < MAP_WIDTH) {    
+	  map->handleMouseClick(mapx, mapy, mapz, button);
+	}
   }
 }
 
@@ -450,7 +458,7 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
 
     glFlush();    
     hits = glRenderMode(GL_RENDER);
-    fprintf(stderr, "hits=%d\n", hits);
+	//    fprintf(stderr, "hits=%d\n", hits);
     if (hits > 0)												// If There Were More Than 0 Hits
 	{
 		int	choose = buffer[4];									// Make Our Selection The First Object
@@ -461,18 +469,18 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
 		{
             
             s = NULL;
-            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
-                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
-                    buffer[loop*5+3],  buffer[loop*5+4]);
+			//            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
+			//                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
+			//                    buffer[loop*5+3],  buffer[loop*5+4]);
             if(buffer[loop*5+4] > 0) {
                 decodeName(buffer[loop*5+4], mapx, mapy, mapz);
                 if(*mapx < MAP_WIDTH) {
                     Location *pos = map->getPosition(*mapx, *mapy, *mapz);
                     if(pos) {
                         if(pos->shape && pos->shape->getName()) {
-                            fprintf(stderr, "\tname=%s\n", pos->shape->getName());
+						  //                            fprintf(stderr, "\tname=%s\n", pos->shape->getName());
                         } else if(pos->item && pos->item->getShape() && pos->item->getShape()->getName()) {
-                            fprintf(stderr, "\tname=ITEM:%s\n", pos->item->getShape()->getName());
+						  //                            fprintf(stderr, "\tname=ITEM:%s\n", pos->item->getShape()->getName());
                         }
                     }
                 }
@@ -486,21 +494,23 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
 			}
 		}
         
-        fprintf(stderr, "\n\n*** choose=%u\n", choose);
+		//        fprintf(stderr, "\n\n*** choose=%u\n", choose);
         //if(choose > 0) {
             decodeName(choose, mapx, mapy, mapz);
             if(*mapx < MAP_WIDTH) {
                 Location *pos = map->getPosition(*mapx, *mapy, *mapz);
                 if(pos) {
                     if(pos->shape && pos->shape->getName()) {
-                        fprintf(stderr, "\tname=%s\n", pos->shape->getName());
+					  //                        fprintf(stderr, "\tname=%s\n", pos->shape->getName());
                     } else if(pos->item && pos->item->getShape() && pos->item->getShape()->getName()) {
-                        fprintf(stderr, "\tname=ITEM:%s\n", pos->item->getShape()->getName());
+					  //                        fprintf(stderr, "\tname=ITEM:%s\n", pos->item->getShape()->getName());
                     }
                 }
             }
         //}
-    }
+    } else {
+	  *mapx = *mapy = MAP_WIDTH + 1;
+	}
 
  // Restore the projection matrix
  glMatrixMode(GL_PROJECTION);
@@ -526,13 +536,13 @@ void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
                 s = pos->item->getShape()->getName();
             }
         } else s = NULL;
-        fprintf(stderr, "\tmap coordinates: pos null=%s shape null=%s item null=%s %u,%u,%u name=%s\n", 
-                (pos ? "no" : "yes"), (pos && pos->shape ? "no" : "yes"), (pos && pos->item ? "no" : "yes"), *mapx, *mapy, *mapz, (s ? s : "NULL"));
+		//        fprintf(stderr, "\tmap coordinates: pos null=%s shape null=%s item null=%s %u,%u,%u name=%s\n", 
+		//                (pos ? "no" : "yes"), (pos && pos->shape ? "no" : "yes"), (pos && pos->item ? "no" : "yes"), *mapx, *mapy, *mapz, (s ? s : "NULL"));
     } else {
         *mapx = MAP_WIDTH + 1;
         *mapy = 0;
         *mapz = 0;
-        fprintf(stderr, "\t---\n");
+		//        fprintf(stderr, "\t---\n");
     }
 }
 
@@ -558,8 +568,6 @@ void Scourge::setFormation(int formation) {
 }
 
 bool Scourge::useItem(int x, int y) {
-  fprintf(stderr, "movingItem==NULL? %s\n", (movingItem == NULL ? "true" : "false"));
-
   if(movingItem) {
 	dropItem(x, y);
 	return true;
@@ -583,7 +591,6 @@ bool Scourge::getItem(Location *pos) {
         movingZ = pos->iz;
         movingItem = pos->item;
         map->removeItem(pos->ix, pos->iy, pos->iz);
-        fprintf(stderr, "MOVING item: %s pos=%d,%d\n", movingItem->getShortDescription(), movingX, movingY);
         return true;
     }
     return false;
@@ -595,7 +602,6 @@ void Scourge::dropItem(int x, int y) {
                        movingItem->getShape())) {
         map->setItem(x, y, 0, movingItem);
         movingItem->moveTo(x, y, 0);
-        fprintf(stderr, "DROPPED item: %s pos=%d,%d\n", movingItem->getShortDescription(), x, y);
         movingItem = NULL;
         movingX = movingY = movingZ = MAP_WIDTH + 1;
     }
@@ -604,10 +610,8 @@ void Scourge::dropItem(int x, int y) {
 bool Scourge::useDoor(Location *pos) {
     Shape *newDoorShape = NULL;
     if(pos->shape == shapePal->getShape(ShapePalette::EW_DOOR_INDEX)) {
-        // fprintf(stderr, "EW door found\n");
         newDoorShape = shapePal->getShape(ShapePalette::NS_DOOR_INDEX);
     } else if(pos->shape == shapePal->getShape(ShapePalette::NS_DOOR_INDEX)) {
-        // fprintf(stderr, "NS door found\n");
         newDoorShape = shapePal->getShape(ShapePalette::EW_DOOR_INDEX);
     }
     if(newDoorShape) {
@@ -649,23 +653,39 @@ Creature *Scourge::isPartyMember(Location *pos) {
 }
 
 void Scourge::drawTopWindow() {
+
+  glPushMatrix();
+  glLoadIdentity();
+
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    sdlHandler->texPrint(sdlHandler->getScreen()->w - 95, 15, "Party Info");
-    sdlHandler->texPrint(sdlHandler->getScreen()->w - 95, 40, "Options");
-    sdlHandler->texPrint(sdlHandler->getScreen()->w - 95, 65, "Quit");
+    sdlHandler->texPrint(705, GUI_TOP + 15, "Party Info");
+    sdlHandler->texPrint(705, GUI_TOP + 40, "Options");
+    sdlHandler->texPrint(705, GUI_TOP + 65, "Quit");
 
     glColor3f(1.0f, 0.6f, 0.3f);
     glBegin(GL_LINES);
-        glVertex2d(sdlHandler->getScreen()->w - 110, 0);
-        glVertex2d(sdlHandler->getScreen()->w - 110, TOP_GUI_HEIGHT);
-        glVertex2d(sdlHandler->getScreen()->w - 110, 25);
-        glVertex2d(sdlHandler->getScreen()->w, 25);
-        glVertex2d(sdlHandler->getScreen()->w - 110, 50);
-        glVertex2d(sdlHandler->getScreen()->w, 50);
-        glVertex2d(sdlHandler->getScreen()->w - 110, 75);
-        glVertex2d(sdlHandler->getScreen()->w, 75);
+        glVertex2d(680, GUI_TOP);
+        glVertex2d(680, 600);
+        glVertex2d(680, GUI_TOP + 25);
+        glVertex2d(800, GUI_TOP + 25);
+        glVertex2d(680, GUI_TOP + 50);
+        glVertex2d(800, GUI_TOP + 50);
+        glVertex2d(680, GUI_TOP + 75);
+        glVertex2d(800, GUI_TOP + 75);
+		glVertex2d(680, GUI_TOP + 100);
+        glVertex2d(800, GUI_TOP + 100);
+        glVertex2d(700, GUI_TOP + 100);
+        glVertex2d(700, GUI_TOP + 75);
+        glVertex2d(720, GUI_TOP + 100);
+        glVertex2d(720, GUI_TOP + 75);
+        glVertex2d(740, GUI_TOP + 100);
+        glVertex2d(740, GUI_TOP + 75);
+        glVertex2d(760, GUI_TOP + 100);
+        glVertex2d(760, GUI_TOP + 75);
+        glVertex2d(780, GUI_TOP + 100);
+        glVertex2d(780, GUI_TOP + 75);
     glEnd();
-
+	/*
     // debug info
     sdlHandler->texPrint(450, 10, "rot: %f, %f, %f", map->getXRot(), map->getYRot(), map->getZRot());
     sdlHandler->texPrint(450, 30, "FPS: %g", sdlHandler->getFPS());
@@ -674,8 +694,10 @@ void Scourge::drawTopWindow() {
     sdlHandler->texPrint(450, 70, "sel: (%u, %u, %u)", 
                          map->getSelX(), map->getSelY(), map->getSelZ());
     sdlHandler->texPrint(450, 90, "zoom: %f", map->getZoom());
-
+	*/
     map->drawDescriptions();
+
+	glPopMatrix();
 }
 
 

@@ -500,6 +500,7 @@ void Map::addDescription(char *desc) {
 void Map::drawDescriptions() {
   glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
   int y = TOP_GUI_HEIGHT - 5;
+  if(descriptionCount <= 5) y = descriptionCount * 15;
   int index =  0;
   while(y > 5 && index < descriptionCount) {    
     glRasterPos2f( (float)5, (float)y );

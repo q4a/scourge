@@ -249,8 +249,8 @@ void ShapePalette::initShapes() {
                 0x0000ffff,
                 display_list + (count++ * 3), BOOKSHELF_INDEX);
 	shapes[CHEST_INDEX] =
-    new GLShape(notex,
-                3, 4, 3,
+    new GLShape(chesttex,
+                2, 3, 2,
                 "CHEST", chestDescription, chestDescriptionCount,
                 0xffaa80ff,
                 display_list + (count++ * 3), CHEST_INDEX);
@@ -325,6 +325,10 @@ void ShapePalette::loadTextures() {
   textures[10] = loadGLTextures("data/doorNS.bmp");
   textures[11] = loadGLTextures("data/doorEW.bmp");
   textures[12] = loadGLTextures("data/bookshelf.bmp");
+  textures[13] = loadGLTextures("data/chestfront.bmp");
+  textures[14] = loadGLTextures("data/chestside.bmp");
+  textures[15] = loadGLTextures("data/chesttop.bmp");
+  
 
   // set up the scourge
   cloud = loadGLTextures("data/cloud.bmp");
@@ -366,6 +370,11 @@ void ShapePalette::loadTextures() {
   shelftex[GLShape::FRONT_SIDE] = textures[6];
   shelftex[GLShape::TOP_SIDE] = textures[6];
   shelftex[GLShape::LEFT_RIGHT_SIDE] = textures[12];
+
+  chesttex[GLShape::FRONT_SIDE] = textures[14];
+  chesttex[GLShape::TOP_SIDE] = textures[15];
+  chesttex[GLShape::LEFT_RIGHT_SIDE] = textures[13];
+
   
   notex[0] = 0;
   notex[1] = 0;

@@ -133,23 +133,31 @@ public:
 #define MAP_VIEW_HEIGHT 16
 
 // define some active region labels
-static const int INV_PLAYER_0 = 0;
-static const int INV_PLAYER_1 = 1;
-static const int INV_PLAYER_2 = 2;
-static const int INV_PLAYER_3 = 3;
-static const int INV_MODE_PROPERTIES = 4;
-static const int INV_MODE_INVENTORY = 5;
-static const int INV_MODE_SPELLS = 6;
-static const int INV_MODE_LOG = 7;
-static const int MENU_0 = 8;
-static const int MENU_1 = 9;
-static const int MENU_2 = 10;
-static const int MENU_3 = 11;
-static const int MENU_4 = 12;
-static const int ESCAPE = 13;
-static const int SHOW_INVENTORY = 14;
-static const int SHOW_OPTIONS = 15;
-static const int SKILL_LIST = 16;
+  enum {
+	INV_PLAYER_0 = 0,
+	INV_PLAYER_1,
+	INV_PLAYER_2,
+	INV_PLAYER_3,
+	INV_MODE_PROPERTIES,
+	INV_MODE_INVENTORY,
+	INV_MODE_SPELLS,
+	INV_MODE_LOG,
+	MENU_0, 
+	MENU_1,
+	MENU_2,
+	MENU_3,
+	MENU_4,
+	ESCAPE,
+	SHOW_INVENTORY,
+	SHOW_OPTIONS,
+	SKILL_LIST,
+	DIAMOND_FORMATION,
+	STAGGERED_FORMATION,
+	SQUARE_FORMATION,
+	ROW_FORMATION,
+	SCOUT_FORMATION,
+	CROSS_FORMATION
+  };
 
   // Directions (a bitfield so they can be combined)
   static const Uint16 MOVE_UP = 1;
