@@ -22,7 +22,9 @@
   */
 
 #define PORTRAIT_SIZE 150
-#define MODEL_SIZE 200
+#define MODEL_SIZE 210
+#define AVAILABLE_SKILL_POINTS 30
+#define LEVEL 1
 
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
@@ -46,7 +48,7 @@ PartyEditor::PartyEditor(Scourge *scourge) {
   cards = new CardContainer( mainWin );
   cards->setActiveCard( INTRO_TEXT );
 
-  intro = new Label( 150, 100, 
+  intro = new Label( 30, 100, 
                      "You have arrived... as we knew you would. The sand swirls gently in the hourglass of time and reveals all. Sooner or later even the proudest realize that there is no more adventure to be had in the city of Horghh. But fear not! The S.C.O.U.R.G.E. Vermin Extermination Services Company takes good care of its employees. You will be payed in gold, fed nourishing gruel on most days and have access to the company training grounds and shops. Should you sustain injuries or a debilitating predicament (including but not limited to: poison, curses, possession or death ) our clerics will provide healing at a reduced cost. Positions fill up fast, but there are always some available (...) so sign up with a cheerful heart and a song in your step. Your past glories cannot possible compare to the wonder and excitement that lies ahead in the ...uh.. sewers of your new vocation!", 94, SDLHandler::LARGE_FONT, 24 );
   cards->addWidget( intro, INTRO_TEXT );
   
@@ -113,7 +115,11 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
         int index = info[i].charType->getSelectedLine();  
         if( index > -1 ) {
           Character *character = Character::character_list[ index ];
-          if( character ) info[i].charTypeDescription->setText( character->getDescription() );
+          if( character ) {
+            info[i].charTypeDescription->setText( character->getDescription() );
+            rollSkills( &( info[ i ] ) );
+            updateUI( &( info[ i ] ) );
+          }
         } 
       } else if( widget == info[i].deityType ) {
         int index = info[i].deityType->getSelectedLine();  
@@ -136,6 +142,33 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
       } else if( widget == info[i].nextModel ) {
         if( info[i].modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
           info[i].modelIndex++;
+        }
+      } else if( widget == info[i].skillRerollButton ) {
+        rollSkills( &( info[ i ] ) );
+        updateUI( &( info[ i ] ) );
+      } else if( widget == info[i].skillAddButton && info[i].availableSkillMod ) {
+        int n = info[i].skills->getSelectedLine();
+        Character *c = Character::character_list[ info->charType->getSelectedLine() ];
+        // is it ok?
+        int newValue = info[ i ].skill[ n ] + info[ i ].skillMod[ n ] + 1;
+        if( newValue >= c->getMinSkillLevel( n ) && 
+            newValue <= c->getMaxSkillLevel( n ) &&
+            newValue <= 99 ) {
+          info[ i ].availableSkillMod--;
+          info[ i ].skillMod[ n ]++;
+          updateUI( &( info[ i ] ) );
+        }
+      } else if( widget == info[i].skillSubButton && info[i].availableSkillMod < AVAILABLE_SKILL_POINTS ) {
+        int n = info[i].skills->getSelectedLine();
+        Character *c = Character::character_list[ info->charType->getSelectedLine() ];
+        // is it ok?
+        int newValue = info[ i ].skill[ n ] + info[ i ].skillMod[ n ] - 1;
+        if( newValue >= c->getMinSkillLevel( n ) && 
+            newValue <= c->getMaxSkillLevel( n ) &&
+            newValue <= 99 ) {
+          info[ i ].availableSkillMod++;
+          info[ i ].skillMod[ n ]--;
+          updateUI( &( info[ i ] ) );
         }
       }
     }
@@ -226,21 +259,17 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->skillAddButton = cards->createButton( col2X, 310, col2X + buttonWidth - 5, 330, " + ", n );
   info->skillRerollButton = cards->createButton( col2X + buttonWidth, 310, col2X + buttonWidth * 2 - 5, 330, " Reroll ", n );
   info->skillSubButton = cards->createButton( col2X + buttonWidth * 2, 310, col2X + buttonWidth * 3 - 5, 330, " - ", n );
+  info->skillDescription = new ScrollingLabel( col2X, 340, skillColWidth, 100, "Skill description goes here..." );
+  cards->addWidget( info->skillDescription, n );
 
-  info->availableSkillMod = 30;
-  info->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
+  rollSkills( info );
+
+  info->skillColor = (Color*)malloc( Constants::SKILL_COUNT * sizeof( Color ) );
+  info->skillLine = (char**)malloc( Constants::SKILL_COUNT * sizeof( char* ) );
   for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
-    info->skill[ i ] = 0;
-    info->skillMod[ i ] = 0;
     info->skillLine[i] = (char*)malloc(120 * sizeof(char));
-    sprintf(info->skillLine[i], "%d(%d) - %s", 
-            info->skill[ i ], 
-            info->skillMod[ i ], 
-            Constants::SKILL_NAMES[i] );
   }
-  info->skills->setLines( Constants::SKILL_COUNT, (const char**)info->skillLine );
-  sprintf( msg, "Remaining skill points: %d", info->availableSkillMod );
-  info->skillLabel->setText( msg );
+  updateUI( info );
 
 
   info->back = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
@@ -296,7 +325,7 @@ void PartyEditor::drawWidget( Widget *w ) {
       glDisable( GL_BLEND );
       glDepthMask(GL_TRUE);
       glEnable( GL_TEXTURE_2D );
-      glTranslatef( 130, 210, 500 );
+      glTranslatef( 130, MODEL_SIZE + 10, 500 );
       glRotatef( 90, 1, 0, 0 );
       glRotatef( 180, 0, 0, 1 );
       glScalef( 2, 2, 2 );
@@ -320,7 +349,6 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
   deleteLoadedShapes();
 
   int pcCount = 4;
-  int level = 1;
   char names[4][80] = { "Alamont", "Barlett", "Corinus", "Dialante" };
 
   for( int i = 0; i < pcCount; i++ ) {
@@ -330,7 +358,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     Character *c = Character::character_list[ index ];
     pc[i] = new Creature( scourge->getSession(), c, strdup( s ), info[i].modelIndex );
     pc[i]->setDeityIndex( info[i].deityType->getSelectedLine() );
-    pc[i]->setLevel(level); 
+    pc[i]->setLevel( LEVEL ); 
     pc[i]->setExp(0);
     pc[i]->setHp();
     pc[i]->setMp();
@@ -341,14 +369,8 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     pc[i]->setPortraitTextureIndex( info[i].portraitIndex );
     
     // compute starting skill levels
-    for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
-      int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
-      // basic skills
-      if(skill < Constants::SWORD_WEAPON) n = 20 + level * (int)(10.0 * rand()/RAND_MAX);
-      if(n > 99) n = 99;
-      if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
-        n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
-      pc[i]->setSkill(skill, n);
+    for(int t = 0; t < Constants::SKILL_COUNT; t++) {
+      pc[i]->setSkill( t, info->skill[ t ] + info->skillMod[ t ] );
     }
     
     // add a weapon anyone can wield
@@ -409,3 +431,50 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
   *partySize = pcCount;
 }
 
+void PartyEditor::rollSkills( CharacterInfo *info ) {
+  info->availableSkillMod = AVAILABLE_SKILL_POINTS;
+  Character *c = Character::character_list[ info->charType->getSelectedLine() ];
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    int n = c->getMinSkillLevel(i) + LEVEL * (int)(10.0 * rand()/RAND_MAX);
+    // basic skills
+    if(i < Constants::SWORD_WEAPON) n = 20 + LEVEL * (int)(10.0 * rand()/RAND_MAX);
+    if(n > 99) n = 99;
+    if(n > c->getMaxSkillLevel( i )) 
+      n = c->getMaxSkillLevel( i );
+    info->skill[ i ] = n;
+    info->skillMod[ i ] = 0;
+  }  
+}
+
+void PartyEditor::updateUI( CharacterInfo *info ) {
+  for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+
+    if( info->skillMod[i] ) {
+      info->skillColor[i].r = 0;
+      info->skillColor[i].g = 1;
+      info->skillColor[i].b = 0;
+    } else {
+      if( mainWin->getTheme()->getWindowText() ) {
+        info->skillColor[i].r = mainWin->getTheme()->getWindowText()->r;
+        info->skillColor[i].g = mainWin->getTheme()->getWindowText()->g;
+        info->skillColor[i].b = mainWin->getTheme()->getWindowText()->b;
+      } else {
+        info->skillColor[i].r = 0;
+        info->skillColor[i].g = 0;
+        info->skillColor[i].b = 0;
+      }
+    }
+
+    sprintf(info->skillLine[i], "%d(%d) - %s", 
+            info->skill[ i ], 
+            info->skillMod[ i ], 
+            Constants::SKILL_NAMES[i] );
+  }
+  int line = info->skills->getSelectedLine();
+  info->skills->setLines( Constants::SKILL_COUNT, (const char**)info->skillLine, info->skillColor );
+  info->skills->setSelectedLine( line );
+
+  char msg[80];
+  sprintf( msg, "Remaining skill points: %d", info->availableSkillMod );
+  info->skillLabel->setText( msg );
+}
