@@ -116,17 +116,7 @@ void MD2Shape::draw() {
   glTranslatef(0.0f, g_3DModel->movey * div, 0.0f);
   glTranslatef(0.0f, 0.0f, -g_3DModel->movez / 2.0f * div);   
 
-//    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-  switch(dir) {
-    case Constants::MOVE_UP:
-      glRotatef(0.0f, 0.0f, 1.0f, 0.0f); break;
-    case Constants::MOVE_LEFT:
-      glRotatef(-90.0f, 0.0f, 1.0f, 0.0f); break;
-    case Constants::MOVE_RIGHT:
-      glRotatef(90.0f, 0.0f, 1.0f, 0.0f); break;
-    default:
-      glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-  }  
+  glRotatef(angle, 0.0f, 1.0f, 0.0f);
    
   AnimateMD2Model();      
  //cout << textureId << " " << g_3DModel->pAnimations[currentAnim].strName << " frame " << currentFrame <<       

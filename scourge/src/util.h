@@ -80,6 +80,10 @@ public:
   	
   // Returns next word from the given position  					
   static string getNextWord(const string theInput, int fromPos, int &endWord);
+
+  // get the angle between two shapes (x,y,width,depth)
+  static float getAngle(float sx, float sy, float sw, float sd,
+						float tx, float ty, float tw, float td);
   
 };
 

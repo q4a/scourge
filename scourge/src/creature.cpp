@@ -251,7 +251,9 @@ void Creature::adjustMovementToRange() {
 
 void Creature::setTargetCreature(Creature *c) { 
   targetCreature = c; 
-  if(!c) setDistanceRange(0, 0);
+  if(!c) {
+	setDistanceRange(0, 0);
+  }
 }
 
 void Creature::stopMoving() {
@@ -888,4 +890,12 @@ int Creature::getMaxHp() {
   } else {
 	return (character->getStartingHp() * getLevel());
   }
+}
+
+float Creature::getTargetAngle() {
+  if(!targetCreature) return -1.0f;
+  return Util::getAngle(getX(), getY(), getShape()->getWidth(), getShape()->getDepth(),
+						getTargetCreature()->getX(), getTargetCreature()->getY(), 
+						getTargetCreature()->getShape()->getWidth(), 
+						getTargetCreature()->getShape()->getHeight());
 }

@@ -353,3 +353,28 @@ string Util::getNextWord(const string theInput, int fromPos, int &endWord){
     return sub;
 
 }
+
+float Util::getAngle(float fx, float fy, float fw, float fd,
+					 float tx, float ty, float tw, float td) {
+  // figure out targetCreatureAngle
+  float sx = fx + (fw / 2);
+  float sy = fy - (fd / 2);
+  float ex = tx + (tw / 2);
+  float ey = ty - (td / 2);
+
+  float x = ex - sx;
+  float y = ey - sy;
+  float angle = Constants::toAngle(atan(y / x));
+
+  // read about the arctan problem: 
+  // http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
+  //  q = 1;
+  if(x < 0) { 		// Quadrant 2 & 3
+	//	q = ( y >= 0 ? 2 : 3);
+	angle += 180;
+  } else if(y < 0) { // Quadrant 4
+	//	q = 4;
+	angle += 360;
+  }
+  return angle;
+}
