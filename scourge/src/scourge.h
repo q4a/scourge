@@ -269,6 +269,8 @@ public:
     a battle with multiple participants, someone drinking a potion, casting a spell, etc.
   */
   void playRound();
+
+  void cancelBattle(Creature *creature);
  
   /**
     @return the party object.
@@ -591,6 +593,9 @@ public:
 
   void setMissionDescriptionUI(char *s);
 
+  // move a creature
+  void moveMonster(Creature *monster);
+
  protected:
   //  void fightBattle(); 
 
@@ -599,9 +604,7 @@ public:
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
   void createUI();
   // change the player's selX,selY values as specified by keyboard movement
-  void handleKeyboardMovement();
-  // move a creature
-  void moveMonster(Creature *monster);
+  void handleKeyboardMovement();  
 
   void decideMonsterAction(Creature *monster);
 

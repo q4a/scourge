@@ -62,13 +62,14 @@ class Battle {
   bool projectileHit;
   Spell *spell;
 
-  int wait;
   int ap;
-  int lastX, lastY;
+  bool ignore;
 
 
  public:
   
+   inline void setIgnore() { ignore = true; }
+
   /**
 	 This method sets up and creates battle turns (Battle objects) in order of initiative.
    */

@@ -1169,21 +1169,21 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	
 	// make sure the selected action can target a location
 	if(c) {
-	  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-		 c->getActionSpell() &&
-		 c->getActionSpell()->isLocationTargetAllowed()) {
-		
-		// assign this creature
-		c->setTargetLocation(mapx, mapy, 0);
-		char msg[80];
-		sprintf(msg, "%s selected a target", c->getName());
-		map->addDescription(msg);				
-	  } else {
-		sprintf(msg, "%s cancelled a pending action.", c->getName());
-		map->addDescription(msg);
-	  }
-	  // turn off selection mode
-	  setTargetSelectionFor(NULL);
+    if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+       c->getActionSpell() &&
+       c->getActionSpell()->isLocationTargetAllowed()) {
+      
+      // assign this creature
+      c->setTargetLocation(mapx, mapy, 0);
+      char msg[80];
+      sprintf(msg, "%s selected a target", c->getName());
+      map->addDescription(msg);				
+    } else {
+      sprintf(msg, "%s cancelled a pending action.", c->getName());
+      map->addDescription(msg);
+    }
+    // turn off selection mode
+    setTargetSelectionFor(NULL);
 	  return;
 	}
 	
@@ -1200,26 +1200,28 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	*/
 	
 	// FIXME: try to move to party.cpp
-	party->getPlayer()->setSelXY(mapx, mapy);
-	if(party->isPlayerOnly()) {
-	  party->getPlayer()->cancelTarget();
-	} else {
-	  for(int i = 0; i < party->getPartySize(); i++) {
-		if(!party->getParty(i)->getStateMod(Constants::dead)) {
-		  party->getParty(i)->cancelTarget();
-		  if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
-		}
-	  }
-	}
-	// end of FIXME
-	
-	
-  } else if(button == SDL_BUTTON_RIGHT) {
-	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-	// default click handling
-	map->handleMouseClick(mapx, mapy, mapz, button);		
+  party->getPlayer()->setSelXY(mapx, mapy);
+  if(party->isPlayerOnly()) {
+    cancelBattle(party->getPlayer());
+    party->getPlayer()->cancelTarget();
+  } else {
+    for(int i = 0; i < party->getPartySize(); i++) {
+      if(!party->getParty(i)->getStateMod(Constants::dead)) {
+        cancelBattle(party->getParty(i));
+        party->getParty(i)->cancelTarget();
+        if(party->getParty(i) != party->getPlayer()) party->getParty(i)->follow(map);
+      }
+    }
   }
-}
+  // end of FIXME
+  
+  
+  } else if(button == SDL_BUTTON_RIGHT) {
+    getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+    // default click handling
+    map->handleMouseClick(mapx, mapy, mapz, button);		
+  }
+}         
 
 void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                                  Uint16 *mapx, Uint16 *mapy) {
@@ -1878,7 +1880,14 @@ void Scourge::setUILayout() {
   }
 }
 
-bool pauseBetweenTurns = false;
+void Scourge::cancelBattle(Creature *creature) {
+  for(int i = 0; i < (int)battleRound.size(); i++) {
+    if(battleRound[i]->getCreature() == creature) {
+      battleRound[i]->setIgnore();
+      return;
+    }
+  }
+}
 
 void Scourge::playRound() {                           
   // move the map
@@ -1915,7 +1924,6 @@ void Scourge::playRound() {
             if(battle->fightTurn()) {
               delete battle;
               battleTurn++;
-              if(pauseBetweenTurns) party->toggleRound(true);
             }
           } else {
             battleRound.clear();
@@ -1926,34 +1934,7 @@ void Scourge::playRound() {
       }
 
     } else {
-      // not in battle
-
-      // change animation if needed
-      for(int i = 0; i < party->getPartySize(); i++) {                            
-        if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
-          party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
-          ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
-        } else if(party->getParty(i)->anyMovesLeft())
-          party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
-        else 
-          party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
-      }
-
-      // hound your targets
-      party->followTargets();
-
-      // move the party members
-      party->movePlayers();
-      
-      // move visible monsters
-      for(int i = 0; i < session->getCreatureCount(); i++) {
-        if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-           map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
-          moveMonster(session->getCreature(i));
-        }
-      }
-
-      // set up for battle
+      // set up battles
       battleCount = 0;
       
       // attack targeted monster if close enough
@@ -1972,14 +1953,61 @@ void Scourge::playRound() {
           battle[battleCount++] = new Battle(this, session->getCreature(i));
         }
       }
-      
-      // order the battle turns by initiative
+
       if(battleCount > 0) {
+
+        // add other movement
+        for(int i = 0; i < party->getPartySize(); i++) {
+          if(!party->getParty(i)->getStateMod(Constants::dead) && 
+             !(party->getParty(i)->hasTarget() || 
+               party->getParty(i)->getAction() > -1) &&
+             party->getParty(i)->getSelX() > -1) {
+            battle[battleCount++] = new Battle(this, party->getParty(i));
+          }
+        }
+        for(int i = 0; i < session->getCreatureCount(); i++) {
+          if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+             !session->getCreature(i)->getTargetCreature() &&
+             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+            battle[battleCount++] = new Battle(this, session->getCreature(i));
+          }
+        }
+      
+        // order the battle turns by initiative
         Battle::setupBattles(this, battle, battleCount, &battleRound);
         battleTurn = 0;
         cerr << "++++++++++++++++++++++++++++++++++" << endl;
         cerr << "TURN STARTS" << endl;
-        if(pauseBetweenTurns) party->toggleRound(true);
+        if(getUserConfiguration()->isBattleTurnBased()) party->toggleRound(true);
+      
+      } else {
+
+        // not in battle
+        
+        // change animation if needed
+        for(int i = 0; i < party->getPartySize(); i++) {                            
+          if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
+            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
+            ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
+          } else if(party->getParty(i)->anyMovesLeft())
+            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
+          else 
+            party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
+        }
+        
+        // hound your targets
+        //party->followTargets();
+        
+        // move the party members
+        party->movePlayers();
+
+        // move visible monsters
+        for(int i = 0; i < session->getCreatureCount(); i++) {
+          if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+            moveMonster(session->getCreature(i));
+          }
+        }
       }
     }
   }

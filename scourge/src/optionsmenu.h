@@ -72,6 +72,7 @@ private:
   Checkbox * alwaysCenterMapCheckbox;
   Checkbox * keepMapSize;
   Checkbox * frameOnFullScreen;
+  Checkbox * turnBasedBattle;
   
   MultipleLabel * videoResolutionML;  
   Checkbox * fullscreenCheckbox;

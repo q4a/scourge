@@ -167,6 +167,7 @@ private:
   bool centermap;
   bool keepMapSize;
   bool frameOnFullScreen;
+  bool turnBasedBattle;
 
   // was the stencil buf. initialized at start?
   bool stencilBufInitialized;
@@ -209,6 +210,7 @@ private:
   inline bool getAlwaysCenterMap(){ return centermap;  }  
   inline bool getKeepMapSize() { return keepMapSize; }
   inline bool getFrameOnFullScreen() { return frameOnFullScreen; }
+  inline bool isBattleTurnBased() { return turnBasedBattle; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
@@ -227,6 +229,7 @@ private:
   inline void setAlwaysCenterMap(int t) { centermap=t; }
   inline void setKeepMapSize(int t) { keepMapSize = t; }
   inline void setFrameOnFullScreen(int t) { frameOnFullScreen = t; }
+  inline void setBattleTurnBased(bool b) { turnBasedBattle = b; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           
