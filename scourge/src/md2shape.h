@@ -43,6 +43,7 @@ class MD2Shape : public GLShape  {
 //#define DEBUG_MD2 1
 
 private:
+  bool attackEffect;
   float div;
   float movex, movey, movez;
   unsigned int g_Texture[MAX_TEXTURES]; // This holds the texture info, referenced by an ID
@@ -74,6 +75,9 @@ public:
           char *name, char **description, int descriptionCount,
           Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
           
+	inline bool getAttackEffect() { return attackEffect; }
+	inline void setAttackEffect(bool b) { attackEffect = b; }
+
     void setCurrentAnimation(int numAnim);
     
 	~MD2Shape();

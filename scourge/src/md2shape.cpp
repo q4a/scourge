@@ -68,6 +68,7 @@ MD2Shape::~MD2Shape() {
 void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {  
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
+  this->attackEffect = false;
   this->div = div;
 
   char fn[300], texfn[300];
@@ -296,6 +297,12 @@ void MD2Shape::AnimateMD2Model(t3DModel *pModel)
     // If a new animation is waiting to be played, play it.
     if(nextFrame == 0){        
         nextFrame =  pAnim->startFrame;
+
+		if(g_3DModel.currentAnim == MD2_ATTACK) {
+		  setCurrentAnimation(MD2_STAND);
+		  setAttackEffect(false);
+		}		
+
         /*animationPlayed = true;
         if(numAnimationWaiting == -1){
             nextFrame =  pAnim->startFrame;

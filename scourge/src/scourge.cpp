@@ -989,7 +989,12 @@ void Scourge::createUI() {
 void Scourge::playRound() {
   // change animation if needed
   for(int i = 0; i < 4; i++) {
-	party[i]->getShape()->setCurrentAnimation((int)(party[i]->anyMovesLeft() ? MD2_RUN : MD2_STAND));
+	if(((MD2Shape*)(party[i]->getShape()))->getAttackEffect()) {
+	  party[i]->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+	} else if(party[i]->anyMovesLeft())
+	  party[i]->getShape()->setCurrentAnimation((int)MD2_RUN);
+	else 
+	  party[i]->getShape()->setCurrentAnimation((int)MD2_STAND);
   }
 
   // move the player's selX,selY in a direction as specified by keystroke
@@ -1105,12 +1110,14 @@ void Scourge::fightBattle() {
 					  item->getRpgItem()->getName(),
 					  creatureInitiative, itemSpeed);
 			  map->addDescription(message);
+			  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 			} else if(dist <= 1.0f) {
 			  sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
 					  creature->getName(), 
 					  creature->getTargetCreature()->getName(),
 					  creatureInitiative, itemSpeed);
 			  map->addDescription(message);
+			  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 			}
 			
 			// the target creature gets really upset...

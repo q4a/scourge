@@ -260,6 +260,8 @@ class Creature {
 						getArmor());
 	}
 
+  inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
+
  protected:
   /**
    * Get the position of this creature in the formation.
@@ -272,8 +274,6 @@ class Creature {
   void recalcAggregateValues();
 
   bool gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug);
-
-  inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
 };
 
 
