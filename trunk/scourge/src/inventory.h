@@ -108,7 +108,7 @@ private:
 public:
     Inventory(Scourge *scourge);
 	~Inventory();
-    void show();
+    void show(bool animate=true);
 	inline void hide() { mainWin->setVisible(false); }
 	inline bool isVisible() { return mainWin->isVisible(); }
   inline Window *getWindow() { return mainWin; }

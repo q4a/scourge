@@ -710,8 +710,8 @@ void Inventory::refresh(int player) {
   skillList->setSelectedLine(oldSkillLine);
 }
 
-void Inventory::show() { 
-  mainWin->setVisible(true); 
+void Inventory::show(bool animate) { 
+  mainWin->setVisible(true, animate); 
 
   // find selected player. FIXME: this is inefficient
   int n = selected;

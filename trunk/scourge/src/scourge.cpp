@@ -1801,8 +1801,10 @@ void Scourge::setUILayout() {
   mainWin->setLocked(false);
   miniMap->getWindow()->setLocked(false);
   miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
+  miniMap->getWindow()->move(0, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT));
   if(inventory->getWindow()->isLocked()) {
-    inventory->getWindow()->setVisible(false);
+    //inventory->getWindow()->setVisible(false);
+    inventory->hide();
     inventory->getWindow()->setLocked(false);
   }
   netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
@@ -1821,7 +1823,8 @@ void Scourge::setUILayout() {
                              getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER));
   miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
   if(inventory->getWindow()->isLocked()) {
-    inventory->getWindow()->setVisible(false);
+    //inventory->getWindow()->setVisible(false);
+    inventory->hide();
     inventory->getWindow()->setLocked(false);
   }
   netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2);
@@ -1843,7 +1846,8 @@ void Scourge::setUILayout() {
   messageWin->setLocked(true);
   mainWin->setLocked(true);
   if(inventory->getWindow()->isLocked()) {
-    inventory->getWindow()->setVisible(false);
+    //inventory->getWindow()->setVisible(false);
+    inventory->hide();
     inventory->getWindow()->setLocked(false);
   }
   netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
@@ -1861,11 +1865,13 @@ void Scourge::setUILayout() {
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
   mainWin->setLocked(true);
-  inventory->getWindow()->setVisible(false);
+  //inventory->getWindow()->setVisible(false);
+  inventory->hide();
   inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
                                getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
   inventory->getWindow()->setLocked(true);
-  inventory->getWindow()->setVisible(true, false);
+  //inventory->getWindow()->setVisible(true, false);
+  inventory->show(false);
   //mapX = INVENTORY_WIDTH;
   mapX = 0;
   mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
