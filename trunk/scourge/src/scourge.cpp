@@ -1430,54 +1430,54 @@ void Scourge::addGameSpeed(int speedFactor){
 void Scourge::moveMonster(Creature *monster) {
   // set running animation (currently move or attack)
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
-	monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
-	((MD2Shape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
-	// don't move when attacking
-	return;
+    monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+    ((MD2Shape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
+    // don't move when attacking
+    return;
   } else {
-	monster->getShape()->setCurrentAnimation((int)MD2_RUN);
+    monster->getShape()->setCurrentAnimation((int)MD2_RUN);
   }
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
-	// attack the closest player
-	if((int)(20.0f * rand()/RAND_MAX) == 0) {
-	  Creature *p = party->getClosestPlayer(monster->getX(), monster->getY(), 
-											monster->getShape()->getWidth(),
-											monster->getShape()->getDepth(),
-											20);
-	  if(p) {
-		monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
-		monster->setTargetCreature(p);
-		//monster->setDistanceRange(0, Constants::MIN_DISTANCE);
-	  }
-	} else {
-	  // random (non-attack) monster movement
-	  monster->setDistanceRange(0, Constants::MIN_DISTANCE);
-	  for(int i = 0; i < 4; i++) {
-		int n = (int)(10.0f * rand()/RAND_MAX);
-		if(n == 0 || !monster->move(monster->getDir(), map)) {
-		  int dir = (int)(4.0f * rand()/RAND_MAX);
-		  switch(dir) {
-		  case 0: monster->setDir(Constants::MOVE_UP); break;
-		  case 1: monster->setDir(Constants::MOVE_DOWN); break;
-		  case 2: monster->setDir(Constants::MOVE_LEFT); break;
-		  case 3: monster->setDir(Constants::MOVE_RIGHT); break;
-		  }
-		} else {
-		  break;
-		}
-	  }
-	}
+    // attack the closest player
+    if((int)(20.0f * rand()/RAND_MAX) == 0) {
+      Creature *p = party->getClosestPlayer(monster->getX(), monster->getY(), 
+                                            monster->getShape()->getWidth(),
+                                            monster->getShape()->getDepth(),
+                                            20);
+      if(p) {
+        monster->setMotion(Constants::MOTION_MOVE_TOWARDS);
+        monster->setTargetCreature(p);
+        //monster->setDistanceRange(0, Constants::MIN_DISTANCE);
+      }
+    } else {
+      // random (non-attack) monster movement
+      monster->setDistanceRange(0, Constants::MIN_DISTANCE);
+      for(int i = 0; i < 4; i++) {
+        int n = (int)(10.0f * rand()/RAND_MAX);
+        if(n == 0 || !monster->move(monster->getDir(), map)) {
+          int dir = (int)(4.0f * rand()/RAND_MAX);
+          switch(dir) {
+          case 0: monster->setDir(Constants::MOVE_UP); break;
+          case 1: monster->setDir(Constants::MOVE_DOWN); break;
+          case 2: monster->setDir(Constants::MOVE_LEFT); break;
+          case 3: monster->setDir(Constants::MOVE_RIGHT); break;
+          }
+        } else {
+          break;
+        }
+      }
+    }
   } else if(monster->getTargetCreature()) {
-	// monster gives up when low on hp or bored
-	// FIXME: when low on hp, it should run away not loiter
-	if(monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f) ||
-	   (int)(20.0f * rand()/RAND_MAX) == 0) {
-	  monster->setMotion(Constants::MOTION_LOITER);
-	  monster->cancelTarget();
-	} else {
-	  monster->moveToLocator(map);
-	}
+    // monster gives up when low on hp or bored
+    // FIXME: when low on hp, it should run away not loiter
+    if(monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f) ||
+       (int)(20.0f * rand()/RAND_MAX) == 0) {
+      monster->setMotion(Constants::MOTION_LOITER);
+      monster->cancelTarget();
+    } else {
+      monster->moveToLocator(map);
+    }
   }
 }
 

@@ -728,7 +728,8 @@ void Map::draw() {
         bool blocked = false;
         Location *loc = getLocation((int)proj->getX(), (int)proj->getY(), 0);
         if(loc && proj->doesStopOnImpact()) {
-          if(loc->creature && loc->creature->isMonster()) {
+          if(loc->creature && 
+             proj->getCreature()->isMonster() != loc->creature->isMonster()) {
             // attack monster
             Battle::projectileHitTurn(scourge, proj, loc->creature);
             blocked = true;
