@@ -65,13 +65,17 @@ MainMenu::MainMenu(Scourge *scourge){
 												50, top + 230, 270, 250, 
 												strdup("Main Menu"), 
 												scourge->getShapePalette()->getGuiTexture(),
-												false );
+												false,
+                        Window::BASIC_WINDOW, 
+                        scourge->getShapePalette()->getGuiTexture2() );
 #else
   mainWin = new Window( scourge->getSDLHandler(),
 												50, top + 230, 270, 220, 
 												strdup("Main Menu"), 
 												scourge->getShapePalette()->getGuiTexture(),
-												false );
+												false,
+                        Window::BASIC_WINDOW, 
+                        scourge->getShapePalette()->getGuiTexture2() );
 #endif
     
   int y = 30;

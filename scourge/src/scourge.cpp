@@ -1954,9 +1954,11 @@ void Scourge::createUI() {
     getSDLHandler()->getScreen()->w - 
     (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
   messageWin = new Window( getSDLHandler(),
-						   0, 0, width, PARTY_GUI_HEIGHT, 
-						   strdup("Messages"), 
-						   getShapePalette()->getGuiTexture(), false );
+                           0, 0, width, PARTY_GUI_HEIGHT, 
+                           strdup("Messages"), 
+                           getShapePalette()->getGuiTexture(), false,
+                           Window::BASIC_WINDOW,
+                           getShapePalette()->getGuiTexture2() );
   messageWin->setBackground(0, 0, 0);
   messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getShapePalette()->getHighlightTexture());
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
@@ -1971,11 +1973,13 @@ void Scourge::createUI() {
   int w = 250;
   int h = 120;
   exitConfirmationDialog = new Window(getSDLHandler(),
-	(getSDLHandler()->getScreen()->w/2) - (w/2), 
-	(getSDLHandler()->getScreen()->h/2) - (h/2), 
-	 w, h,
-	 strdup("Leave level?"), 
-	 getShapePalette()->getGuiTexture(), false);
+                                      (getSDLHandler()->getScreen()->w/2) - (w/2), 
+                                      (getSDLHandler()->getScreen()->h/2) - (h/2), 
+                                      w, h,
+                                      strdup("Leave level?"), 
+                                      getShapePalette()->getGuiTexture(), false,
+                                      Window::BASIC_WINDOW,
+                                      getShapePalette()->getGuiTexture2());
   yesExitConfirm = new Button( 40, 50, 110, 80, getShapePalette()->getHighlightTexture(), strdup("Yes") );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
   noExitConfirm = new Button( 140, 50, 210, 80, getShapePalette()->getHighlightTexture(), strdup("No") );
@@ -2431,7 +2435,9 @@ Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
 
 Window *Scourge::createWindow(int x, int y, int w, int h, char *title) {
   Window *win = new Window( getSDLHandler(), x, y, w, h, title, 
-                            getShapePalette()->getGuiTexture() );
+                            getShapePalette()->getGuiTexture(), 
+                            true, Window::BASIC_WINDOW,
+                            getShapePalette()->getGuiTexture2() );
   return win;
 }
 
@@ -2523,11 +2529,13 @@ void Scourge::createPartyUI() {
   sprintf(version, "S.C.O.U.R.G.E. version %s", SCOURGE_VERSION);
   sprintf(min_version, "S.C.O.U.R.G.E.");
   mainWin = new Window( getSDLHandler(),
-						getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH, 
-						getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
-						Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT, 
-						version, 
-						getShapePalette()->getGuiTexture(), false );
+                        getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH, 
+                        getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
+                        Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT, 
+                        version, 
+                        getShapePalette()->getGuiTexture(), false,
+                        Window::BASIC_WINDOW,
+                        getShapePalette()->getGuiTexture2() );
   cards = new CardContainer(mainWin);  
 
   inventoryButton = cards->createButton( 0, 0, 120, 25, strdup("Party Info"), MAX_SIZE );

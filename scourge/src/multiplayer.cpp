@@ -26,7 +26,8 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
                         250, 250, 440, 250, 
                         strdup("Multiplayer Setup"), 
                         scourge->getShapePalette()->getGuiTexture(),
-												true );
+                        true, Window::BASIC_WINDOW,
+                        scourge->getShapePalette()->getGuiTexture2() );
   mainWin->setModal( true );
   startServer = mainWin->createButton( 10, 10, 160, 30, strdup("Host a game"), true );
   startServer->setSelected(true);

@@ -19,29 +19,31 @@
 
 OptionsMenu::OptionsMenu(Scourge *scourge){    
   this->scourge = scourge;
-    this->uc = scourge->getUserConfiguration();
-    controlsLoaded = false;
-    videoLoaded = false;
-    gameSettingsLoaded = false;
-    controlLines = NULL;
-    nbControlLines = 0;
-    waitingForNewKey = false;
-	ignoreKeyUp = false;
-     
-    mainWin = new Window( scourge->getSDLHandler(),
-						100, 50, 525, 505, 
-						strdup("Options"), 
-						scourge->getShapePalette()->getGuiTexture() );
-	 
-    gameSettingsButton = mainWin->createButton(105, 0, 210, 30, strdup("Game settings"), true);
-	videoButton = mainWin->createButton (210, 0, 315, 30, strdup("Video"), true);
- 	audioButton = mainWin->createButton (315, 0, 420, 30, strdup("Audio"), true);
-    controlsButton = mainWin->createButton (420, 0, 525, 30, strdup("Controls"), true);           
-    saveButton = mainWin->createButton(205, 440, 310, 470, strdup("Save to file"), false);      
-                      
-    cards = new CardContainer(mainWin);
-    
-    // Controls tab
+  this->uc = scourge->getUserConfiguration();
+  controlsLoaded = false;
+  videoLoaded = false;
+  gameSettingsLoaded = false;
+  controlLines = NULL;
+  nbControlLines = 0;
+  waitingForNewKey = false;
+  ignoreKeyUp = false;
+  
+  mainWin = new Window( scourge->getSDLHandler(),
+                        100, 50, 525, 505, 
+                        strdup("Options"), 
+                        scourge->getShapePalette()->getGuiTexture(),
+                        true, Window::BASIC_WINDOW,
+                        scourge->getShapePalette()->getGuiTexture2());
+  
+  gameSettingsButton = mainWin->createButton(105, 0, 210, 30, strdup("Game settings"), true);
+  videoButton = mainWin->createButton (210, 0, 315, 30, strdup("Video"), true);
+  audioButton = mainWin->createButton (315, 0, 420, 30, strdup("Audio"), true);
+  controlsButton = mainWin->createButton (420, 0, 525, 30, strdup("Controls"), true);           
+  saveButton = mainWin->createButton(205, 440, 310, 470, strdup("Save to file"), false);      
+  
+  cards = new CardContainer(mainWin);
+  
+  // Controls tab
     keyBindingsLabel = cards->createLabel(220, 50, strdup("Key bindings"), CONTROLS, Constants::RED_COLOR);
     controlBindingsList = new ScrollingList(30, 100, 450, 300, scourge->getShapePalette()->getHighlightTexture());
     cards->addWidget(controlBindingsList, CONTROLS);        

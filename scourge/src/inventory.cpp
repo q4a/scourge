@@ -65,7 +65,9 @@ Inventory::Inventory(Scourge *scourge) {
   mainWin = new Window( scourge->getSDLHandler(),
                         100, 50, Scourge::INVENTORY_WIDTH, Scourge::INVENTORY_HEIGHT,
                         strdup("Party Information"), 
-                        scourge->getShapePalette()->getGuiTexture() );
+                        scourge->getShapePalette()->getGuiTexture(),
+                        true, Window::BASIC_WINDOW,
+                        scourge->getShapePalette()->getGuiTexture2() );
 
   char label[80];
   memset(label, ' ', 78);

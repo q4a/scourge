@@ -47,7 +47,7 @@ class Window : public Widget {
   static const int MAX_WIDGET = 1000;
 
   char *title;
-  GLuint texture;
+  GLuint texture, texture2;
   SDLHandler *sdlHandler;
   Widget *widget[MAX_WIDGET];
   int tileWidth, tileHeight;
@@ -91,7 +91,8 @@ class Window : public Widget {
   static const int SCREEN_GUTTER = 5;
 
   Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, 
-		 GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW);
+         GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW, 
+         GLuint texture2=0);
   ~Window();
 
   inline void setTitle(char *s) { title = s; }
