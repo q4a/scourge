@@ -332,6 +332,7 @@ void MainMenu::drawAfter() {
 
 void MainMenu::show() { 
   mainWin->setVisible(true); 
+  partyEditor->reset();
 }
 
 void MainMenu::hide() { 
