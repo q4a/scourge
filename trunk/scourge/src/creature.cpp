@@ -160,6 +160,7 @@ void Creature::setSelXY(int x, int y, bool force) {
 
 void Creature::stopMoving() {
   bestPathPos = (int)bestPath.size();
+  selX = selY = -1;
 }
 
 bool Creature::moveToLocator(Map *map, bool single_step) {
@@ -178,22 +179,27 @@ bool Creature::moveToLocator(Map *map, bool single_step) {
     } else {
       moved = gotoPosition(map, selX, selY, 0, "selXY");
     }
+	// if we've no more steps
 	if((int)bestPath.size() <=  bestPathPos && selX > -1) {    
-	  // if we've no more steps, but we're not there yet, recalc steps
+
+	  // if we're not there yet, and it's possible to stand there, recalc steps
 	  if(!(selX == getX() && selY == getY()) &&
-		 map->shapeFits(getShape(), selX, selY, -1)) {
+		 map->shapeFits(getShape(), selX, selY, -1) &&
+		 moveRetrycount < MAX_MOVE_RETRY) {
 		
 		// don't keep trying forever
 		moveRetrycount++;
-		if(moveRetrycount < MAX_MOVE_RETRY) {
-		  tx = ty = -1;
-		} else {
-		  //cerr << getName() << " would move but ran out of retries" << endl;
-		}
-	  } else if(this == scourge->getPlayer()) {
+		tx = ty = -1;
+	  } else {
+		// do this so the animation switches to "stand"
+		stopMoving();
+	  }	  
+	  
+	  // if this is the player, return to regular movement
+	  if(this == scourge->getPlayer()) {
 		scourge->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
 	  }
-	}        
+	}
   }
   return moved;
 }
@@ -225,38 +231,55 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
     else if(getY() > location.y) dir = Constants::MOVE_UP;
     setFacingDirection(dir);
     Location *position = map->moveCreature(getX(), getY(), getZ(),
-					   location.x, location.y, getZ(),
-					   this);
+										   location.x, location.y, getZ(),
+										   this);
     if(!position) {
       bestPathPos++;
       moveTo(location.x, location.y, getZ());
       ((MD2Shape*)shape)->setDir(dir);
       return true;
-    }
-    else {    
+    } else {    
       dir = oldDir;
-      
-      // if it's another party member blocking us, make them move out of the way
-      // does this work? Need to test...
-      if(!monster && this == scourge->getPlayer()) {
-		Creature *creature = position->creature;
-		if(creature && creature->character && scourge->getPlayer() != creature) {
-		  
-		  creature->moveRetrycount++;
-		  if(creature->moveRetrycount < MAX_MOVE_RETRY) {
-			Sint16 nz;
-			creature->findCorner(&creature->cornerX, &creature->cornerY, &nz);
-			//	    creature->gotoPosition(map, nx, ny, nz, "corner");
-			creature->setMotion(Constants::MOTION_MOVE_AWAY);
-		  } else{
-			//cerr << creature->getName() << " would move but ran out of retries" << endl;
-		  }     
+  
+	  /*
+		commented out: this doesn't really work... the player will block forever
+		if 'creature' can't move
+
+      // if another party member is blocking the player, 
+	  // make them move out of the way
+	  Creature *creature = position->creature;
+      if(this == scourge->getPlayer() && 
+		 creature && creature->character && scourge->getPlayer() != creature) {
+		
+		creature->moveRetrycount++;
+		if(creature->moveRetrycount < MAX_MOVE_RETRY) {
+		  Sint16 nz;
+		  creature->findCorner(&creature->cornerX, &creature->cornerY, &nz);
+		  //	    creature->gotoPosition(map, nx, ny, nz, "corner");
+		  creature->setMotion(Constants::MOTION_MOVE_AWAY);
+		} else {
+		  // do this so the animation switches to "stand"
+		  creature->stopMoving();
 		}
-      }      
-      return false;
-    }
+	  } else {	  
+	  */
+		// if we're not at the destination, but it's possible to stand there
+		// try again
+		if(!(selX == getX() && selY == getY()) && 
+		   map->shapeFits(getShape(), selX, selY, -1) &&
+		   moveRetrycount < MAX_MOVE_RETRY) {
+		  
+		  // don't keep trying forever
+		  moveRetrycount++;
+		  tx = ty = -1;
+		} else {
+		  // if we can't get to the destination, stop trying
+		  // do this so the animation switches to "stand"
+		  stopMoving();
+		}		
+		//}
+	}
   }
-      
   return false;
 }
 
