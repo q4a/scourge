@@ -509,8 +509,8 @@ void ShapePalette::initialize() {
     if(icon) statModIcons[i] = icon;
   }
 
-  // set up the cursor
-  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 32, 32, 108, 108, 71, 80, 80, 80 );
+  // set up the inventory tiles
+  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 32, 32, 71, 108, 108, 80, 80, 80 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
       tilesTex[x][y] = loadGLTextureBGRA( 32, 32, tilesImage[x][y], GL_LINEAR );
