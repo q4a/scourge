@@ -928,6 +928,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  setPlayer(3);
     }
     else if(ea == SET_PLAYER_ONLY && 
+            battleTurn < battleRound.size() &&
             !session->getUserConfiguration()->isBattleTurnBased()) { 
         party->togglePlayerOnly();
     }    
@@ -2492,7 +2493,9 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
     setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
   } else if(widget == player4Button) {
     setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
-  } else if(widget == groupButton && !session->getUserConfiguration()->isBattleTurnBased()) {
+  } else if(widget == groupButton && 
+            battleTurn < battleRound.size() &&
+            !session->getUserConfiguration()->isBattleTurnBased()) {
     party->togglePlayerOnly();
   } else if(widget == roundButton) {
     party->toggleRound();

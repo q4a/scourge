@@ -200,7 +200,7 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
 }
 
 
-char ** SDLHandler::getVideoModes(int &nbModes){
+char **SDLHandler::getVideoModes(int &nbModes){
     SDL_Rect **modes;
     char ** modesDescription;
     char temp [50];
@@ -217,7 +217,7 @@ char ** SDLHandler::getVideoModes(int &nbModes){
         
     // Get available modes for the current flags    
     modes = SDL_ListModes(NULL, flags);    
-    
+
     // Copy them to a char array
     if(modes != (SDL_Rect **)0){                    
         nbModes = 0;            
@@ -244,21 +244,24 @@ char ** SDLHandler::getVideoModes(int &nbModes){
         }
         else{
             // Only a few modes available, which ones ?            
-            for(i=0;modes[i];++i){}
-            nbModes = i - 1;                        
-            modesDescription = (char **) malloc (nbModes * sizeof(char *));
-            for(i=0;modes[i];++i){
+            for(nbModes = 0; modes[nbModes]; nbModes++);
+            if(nbModes) {
+              modesDescription = (char **)malloc(nbModes * sizeof(char *));
+              for(i=0; i < nbModes; i++){
                 sprintf(temp, "%d x %d", modes[i]->w, modes[i]->h);                
                 modesDescription[i] = strdup(temp);
-            }
+              }
+           } else {
+             nbModes = 1;           
+             modesDescription = (char **) malloc (sizeof(char *));
+             modesDescription[0] = strdup("No modes available!\n");              
+           }  
         } 
-    }       
-    else{         
+    } else {         
         nbModes = 1;           
         modesDescription = (char **) malloc (sizeof(char *));
         modesDescription[0] = strdup("No modes available!\n");         
     }
-    
     return modesDescription;
 }
 

@@ -11,8 +11,8 @@ LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu3
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/include/c++/3.3.1"  -I"C:/Dev-Cpp/include/c++/3.3.1/mingw32"  -I"C:/Dev-Cpp/include/c++/3.3.1/backward"  -I"C:/Dev-Cpp/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/Dev-Cpp/include" 
 BIN  = ../scourge.exe
-CXXFLAGS = $(CXXINCS) -g -Wall -Wno-deprecated -fno-inline -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\  
-CFLAGS = $(INCS) -g -Wall -Wno-deprecated -fno-inline -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\  
+CXXFLAGS = $(CXXINCS) -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\  
+CFLAGS = $(INCS) -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\  
 
 .PHONY: all all-before all-after clean clean-custom
 

@@ -100,7 +100,8 @@ public:
 
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
-  inline void show() { mainWin->setVisible(true); }
+  //inline void show() { mainWin->setVisible(true); }
+  void show();
   inline void hide() { mainWin->setVisible(false); }
   inline bool isVisible() { return mainWin->isVisible(); }    
 
