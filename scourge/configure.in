@@ -390,7 +390,7 @@ AC_ARG_WITH(glut-libs,[  --with-glut-libs=DIR    Location of GLUT library])
 dnl if test "x$have_SDL" != "xyes" ; then
 
 case "$host" in
-*darwin*) LIBS="$LIBS -framework GLUT -noprenind";;
+*darwin*) LIBS="$LIBS -framework GLUT -noprebind";;
 *) 
     if test "x$with_glut_libs" = "x" ; then
 	GLUT_LDOPTS=""
@@ -436,7 +436,7 @@ AC_ARG_WITH(glut-inc, [  --with-glut-inc=DIR     Specify GLUT header file locati
 
 dnl if test "x$have_SDL" != "xyes" ; then 
 case "$host" in
-*darwin*) ;;
+*darwin*) CPPFLAGS="$CPPFLAGS -framework GLUT";;
 *) 
     if test "x$with_glut_inc" = "x" ; then
 	GLUT_CPPFLAGS=""
