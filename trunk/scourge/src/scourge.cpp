@@ -169,7 +169,7 @@ void Scourge::start() {
         glPopAttrib();
       }
     } else if(value == OPTIONS) {
-      optionsMenu->show();
+      toggleOptionsWindow();
     } else if(value == MULTIPLAYER) {
       multiplayer->show();
     } else if(value == QUIT) {
@@ -937,7 +937,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
   if(optionsMenu->isVisible()) {
     optionsMenu->handleEvent(event);
-    return false;
+    //    return false;
   }
 
   //if(multiplayer->isVisible()) {
@@ -1127,8 +1127,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(ea == SHOW_INVENTORY){
       toggleInventoryWindow();
     } else if(ea == SHOW_OPTIONS_MENU){
-      party->toggleRound(true);
-      optionsMenu->show();
+      toggleOptionsWindow();
     } else if(ea == SET_NEXT_FORMATION_STOP){
       if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
       else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
@@ -1918,11 +1917,13 @@ void Scourge::toggleInventoryWindow() {
 }
 
 void Scourge::toggleOptionsWindow() {
-  if(optionsMenu->isVisible()) optionsMenu->hide();
-  else {
-	party->toggleRound(true);
+  if(optionsMenu->isVisible()) {
+    optionsMenu->hide();
+  } else {
+    //	party->toggleRound(true);
 	optionsMenu->show();
   }
+  optionsButton->setSelected( optionsMenu->isVisible() );
 }
 
 void Scourge::showExitConfirmationDialog() {
@@ -1954,7 +1955,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(optionsMenu->isVisible()) {
 	optionsMenu->handleEvent(widget, event);
-	return false;
+    //	return false;
   }
 
   if(netPlay->getWindow()->isVisible()) {
@@ -2061,6 +2062,7 @@ void Scourge::setUILayout() {
   getSDLHandler()->getScreen()->w -                 
   (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
 
+  mainWin->setVisible( false );
   messageWin->setVisible(false);
   miniMap->getWindow()->setVisible(false);
   switch(layoutMode) {
@@ -2155,6 +2157,7 @@ void Scourge::setUILayout() {
 
   mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                 getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  mainWin->setVisible( true, false );
 
 
   // FIXME: resize levelMap drawing area to remainder of screen.
@@ -2638,6 +2641,8 @@ void Scourge::createPartyUI() {
   roundButton->setSelected(true);
   inventoryButton->setToggle(true);
   inventoryButton->setSelected(false);
+  optionsButton->setToggle(true);
+  optionsButton->setSelected(false);
 
   int offsetX = 90;
   int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - offsetX) / 4;
