@@ -36,9 +36,9 @@
 			sourceTree = "<group>";
 		};
 		1058C7A1FEA54F0111CA2CBB = {
-			expectedFileType = wrapper.framework;
 			fallbackIsa = PBXFileReference;
 			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
 			name = Cocoa.framework;
 			path = /System/Library/Frameworks/Cocoa.framework;
 			refType = 0;
@@ -197,18 +197,18 @@
 			sourceTree = "<group>";
 		};
 		29B97324FDCFA39411CA2CEA = {
-			expectedFileType = wrapper.framework;
 			fallbackIsa = PBXFileReference;
 			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
 			name = AppKit.framework;
 			path = /System/Library/Frameworks/AppKit.framework;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		29B97325FDCFA39411CA2CEA = {
-			expectedFileType = wrapper.framework;
 			fallbackIsa = PBXFileReference;
 			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
 			name = Foundation.framework;
 			path = /System/Library/Frameworks/Foundation.framework;
 			refType = 0;
@@ -225,9 +225,9 @@
 //323
 //324
 		32CA4F630368D1EE00C91783 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = scourge_Prefix.pch;
 			refType = 4;
 			sourceTree = "<group>";
@@ -280,8 +280,8 @@
 //763
 //764
 		763630E805D61253007F401E = {
-			expectedFileType = image.icns;
 			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
 			name = icon.icns;
 			path = /Users/gabortorok/sourceforge/scourge/xcode/icon.icns;
 			refType = 0;
@@ -294,441 +294,441 @@
 			};
 		};
 		7674A5F405D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = character.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/character.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5F505D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = character.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/character.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5F605D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = constants.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/constants.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5F705D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = constants.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/constants.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5F805D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = creature.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/creature.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5F905D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = creature.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/creature.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5FA05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = debugshape.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/debugshape.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5FB05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = debugshape.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/debugshape.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5FC05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = dungeongenerator.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/dungeongenerator.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5FD05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = dungeongenerator.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/dungeongenerator.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5FE05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = gllocator.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/gllocator.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A5FF05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = gllocator.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/gllocator.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60005D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = glshape.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/glshape.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60105D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = glshape.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/glshape.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60205D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = gltorch.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/gltorch.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60305D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = gltorch.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/gltorch.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60405D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = gui.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/gui.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60505D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = gui.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/gui.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60605D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = inventory.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/inventory.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60705D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = inventory.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/inventory.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60805D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = item.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/item.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60905D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = item.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/item.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60A05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = location.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/location.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60B05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = location.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/location.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60C05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = main.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/main.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60D05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = mainmenu.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/mainmenu.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60E05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = mainmenu.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/mainmenu.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A60F05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = map.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/map.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61005D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = map.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/map.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61105D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Md2.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/Md2.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61205D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Md2.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/Md2.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61305D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = md2shape.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/md2shape.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61405D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = md2shape.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/md2shape.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61505D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = scourge.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/scourge.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61605D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = scourge.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/scourge.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61705D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = sdleventhandler.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/sdleventhandler.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61805D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = sdleventhandler.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/sdleventhandler.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61905D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = sdlhandler.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/sdlhandler.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61A05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = sdlhandler.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/sdlhandler.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61B05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = sdlscreenview.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/sdlscreenview.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61C05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = sdlscreenview.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/sdlscreenview.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61D05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = shape.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/shape.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61E05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = shape.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/shape.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A61F05D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = shapepalette.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/shapepalette.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A62005D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = shapepalette.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/shapepalette.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A62105D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = text.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/text.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A62205D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = text.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/text.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A62305D5F9B500A583B9 = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = util.cpp;
 			path = /Users/gabortorok/sourceforge/scourge/src/util.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A62405D5F9B500A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = util.h;
 			path = /Users/gabortorok/sourceforge/scourge/src/util.h;
 			refType = 0;
@@ -1029,16 +1029,16 @@
 			};
 		};
 		7674A65805D5F9EB00A583B9 = {
-			expectedFileType = wrapper.framework;
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = GLUT.framework;
 			path = /System/Library/Frameworks/GLUT.framework;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A65905D5F9EB00A583B9 = {
-			expectedFileType = wrapper.framework;
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = OpenGL.framework;
 			path = /System/Library/Frameworks/OpenGL.framework;
 			refType = 0;
@@ -1057,8 +1057,8 @@
 			};
 		};
 		7674A68405D5FA1600A583B9 = {
-			expectedFileType = wrapper.framework;
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = SDL.framework;
 			path = /Users/gabortorok/Library/Frameworks/SDL.framework;
 			refType = 0;
@@ -1071,26 +1071,26 @@
 			};
 		};
 		7674A88505D5FE5900A583B9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = SDLMain.h;
 			path = /Users/gabortorok/sourceforge/scourge/xcode/SDLMain.h;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A88605D5FE5900A583B9 = {
-			expectedFileType = sourcecode.c.objc;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			name = SDLMain.m;
 			path = /Users/gabortorok/sourceforge/scourge/xcode/SDLMain.m;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		7674A88705D5FE5900A583B9 = {
-			expectedFileType = wrapper.nib;
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
 			name = SDLMain.nib;
 			path = /Users/gabortorok/sourceforge/scourge/xcode/SDLMain.nib;
 			refType = 0;
@@ -1115,9 +1115,9 @@
 			};
 		};
 		7674A88F05D5FED300A583B9 = {
-			expectedFileType = text.plist;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = text.plist;
 			path = Info.plist;
 			refType = 4;
 			sourceTree = "<group>";
@@ -1276,7 +1276,7 @@
 			};
 		};
 		8D1107320486CEB800E47090 = {
-			expectedFileType = wrapper.application;
+			explicitFileType = wrapper.application;
 			includeInIndex = 0;
 			isa = PBXFileReference;
 			path = scourge.app;
