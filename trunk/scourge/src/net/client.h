@@ -4,6 +4,7 @@
 #define CLIENT_H
 
 #include "../constants.h"
+#include "../persist.h"
 #include "tcputil.h"
 #include "gamestatehandler.h"
 #include "testgamestatehandler.h"
@@ -39,8 +40,9 @@ class Client {
   int login();
   int sendChatTCP(char *message);
   int sendPing();
-  int sendRawTCP(char *s);
-  int sendCharacter(char *bytes, int length);
+  // if length==0, s is assumed to be a 0-terminated string
+  int sendRawTCP(char *s, int length=0);
+  int sendCharacter(CreatureInfo *info);
 
   inline void setGameStateHandler(GameStateHandler *gsh) { this->gsh = gsh; }
   inline GameStateHandler *getGameStateHandler() { return gsh; }

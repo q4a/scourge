@@ -17,6 +17,23 @@
 
 #include "constants.h"
 
+char Constants::inventory_location[][80] = {
+  "head",
+  "neck",
+  "back",
+  "chest",
+  "left hand",
+  "right hand",
+  "belt",
+  "legs",
+  "feet",
+  "ring1",
+  "ring2",
+  "ring3",
+  "ring4",
+  "ranged weapon"
+};
+
 const char *Constants::localhost = "localhost";
 const char *Constants::adminUserName = "admin";
  

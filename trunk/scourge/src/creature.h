@@ -36,6 +36,7 @@
 #include "effect.h"
 #include "events/potionexpirationevent.h"
 #include "rpg/spell.h"
+#include "persist.h"
 
 using namespace std;
 
@@ -53,8 +54,6 @@ class Item;
   All creatures of the same type (character or monster) share the same instance of the prototype class (Character of Monster)
 
   */
-
-#define MAX_INVENTORY_SIZE 200
 
 // how many times to attempt to move to range
 #define MAX_FAILED_MOVE_ATTEMPTS 10
@@ -89,7 +88,7 @@ class Creature {
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
   int inventory_count;
-  int equipped[Character::INVENTORY_COUNT];
+  int equipped[Constants::INVENTORY_COUNT];
 
   // character information
   char *name;
@@ -122,29 +121,6 @@ class Creature {
 
   int moveCount;
   Uint32 lastMove;
-
-  typedef struct _ItemInfo {
-  } ItemInfo;
-  
-  typedef struct _CreatureInfo {
-    int version;
-    char name[255];
-    int character_index;
-    int hp, mp, exp, level, money, statemod, x, y, z, dir;
-    int speed, motion, armor, bonusArmor, thirst, hunger;
-    int availableSkillPoints;
-    int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
-    
-    // inventory
-    int inventory_count;
-    ItemInfo inventory[MAX_INVENTORY_SIZE];
-    int equipped[Character::INVENTORY_COUNT];
-    
-    // spells ([school][spell]
-    int spell_index[10][10];
-    
-  } CreatureInfo;
-
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -159,8 +135,8 @@ class Creature {
   Creature(Scourge *scourge, Monster *monster);
   ~Creature();
 
-  void save(char *buff, int *length);
-  void load(char *buff, int length);
+  CreatureInfo *save();
+  static Creature *load(CreatureInfo *info);
 
   inline void setLastTurn(int n) { lastTurn = n; }
   inline int getLastTurn() { return lastTurn; }

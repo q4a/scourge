@@ -9,8 +9,11 @@ Commands::Commands(CommandInterpreter *ci) {
 Commands::~Commands() {
 }
 
-void Commands::interpret(char *rawMessage) {
-  if(!strncmp(rawMessage, "CHAT,", 5)) {
+void Commands::interpret(char *rawMessage, int length) {
+  if(length > 2 && !strncmp(rawMessage, "C:", 2)) {
+    lastCommand = CHARACTER;
+    ci->character(rawMessage + 2, length - 2);
+  } else if(!strncmp(rawMessage, "CHAT,", 5)) {
     lastCommand = CHAT;
     ci->chat(rawMessage + 5);
   } else if(!strncmp(rawMessage, "LOGOUT,", 7)) {
@@ -50,10 +53,10 @@ void Commands::buildPing(char *buff) {
   sprintf(buff, "PING,%d", getLastGameFrameReceived());
 }
 
-void Commands::buildCharacter(char *buff, char *bytes, int length) {
-  strcpy(buff, "CHAR");
-  memcpy(buff + 4, bytes, length);
-  buff[4 + length] = 0;
+void Commands::buildBytesCharacter(char *buff, int size, char *info, int *messageSize) {
+  strcpy(buff, "C:");
+  memcpy(buff + 2, info, size);
+  *messageSize = size + 2;
 }
 
 TestCommandInterpreter::TestCommandInterpreter() {
@@ -86,4 +89,7 @@ void TestCommandInterpreter::serverClosing() {
   cout << "Server closing." << endl;
 }
 
+void TestCommandInterpreter::character(char *bytes, int length) {
+  cout << "Received character: length=" << length << endl;
+}
 

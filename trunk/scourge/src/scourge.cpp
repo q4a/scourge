@@ -1955,12 +1955,6 @@ int Scourge::initMultiplayer() {
   delete progress;
 
   multiplayerGame = true;
-
-  // upload your character
-  char buff[1000];
-  int length;
-  party->getPlayer()->save(buff, &length);
-  client->sendCharacter(buff, length);
   
   return 1;
 } 

@@ -92,6 +92,10 @@ void ClientInfo::serverClosing() {
   // do nothing
 }
 
+void ClientInfo::character(char *bytes, int length) {
+  cerr << "Received character info: length=" << length << endl;
+}
+
 void ClientInfo::sendMessageAsync(char *message) {
   // wake up the thread
   if(message && !dead) {
@@ -116,8 +120,9 @@ void ClientInfo::sendMessageAsync(char *message) {
 void ClientInfo::receiveTCP() {
   // read from the socket
   char *text = NULL;
-  if(TCPUtil::receive(socket, &text)) {
-    commands->interpret(text);
+  int length;
+  if(TCPUtil::receive(socket, &text, &length)) {
+    commands->interpret(text, length);
   }
   free(text);
 }

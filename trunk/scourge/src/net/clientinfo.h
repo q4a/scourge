@@ -64,6 +64,7 @@ class ClientInfo : public CommandInterpreter {
   void handleUnknownMessage();
   void processGameState(int frame, char *p);
   void serverClosing();
+  void character(char *bytes, int length);
 
   // protected
   void receiveTCP();

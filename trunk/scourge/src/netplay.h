@@ -53,6 +53,7 @@ public:
   void processGameState(int frame, char *p);
   void handleUnknownMessage();
   void serverClosing();
+  void character(char *bytes, int length);
 
   inline Window *getWindow() { return mainWin; }
 

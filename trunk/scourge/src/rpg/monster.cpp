@@ -43,6 +43,27 @@ Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin,
 Monster::~Monster() {
 }
 
+// O(n)! Used only while saving
+bool Monster::getIndexOrFindByIndex(Monster **monster, int *index) {
+  int current_index = 0;
+  for(int level = 0; level < (int)monsters.size(); level++) {
+    if(monsters.find(level) != monsters.end()) {
+      vector<Monster*> *list = monsters[level];
+      for(int i = 0; i < (int)list->size(); i++, current_index++) {
+        if(*monster && (*list)[i] == *monster) {
+          *index = current_index;
+          return true;
+        }
+        if(!(*monster) && current_index == *index) {
+          *monster = (*list)[i];
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 void Monster::initMonsters() {
   char errMessage[500];
   char s[200];
