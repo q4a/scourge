@@ -1930,6 +1930,7 @@ void Scourge::createUI() {
   messageWin->setBackground(0, 0, 0);
   messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getShapePalette()->getHighlightTexture());
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
+  messageList->setCanGetFocus( false );
   messageWin->addWidget(messageList);
   // this has to be after addWidget
   messageList->setBackground( 1, 0.75f, 0.45f );

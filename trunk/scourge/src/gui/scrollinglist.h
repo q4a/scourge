@@ -49,6 +49,7 @@ class ScrollingList : public Widget {
   int innerDragX, innerDragY;
   bool highlightBorders;
   GLuint highlight;
+  bool canGetFocusVar;
 
  public: 
 
@@ -77,6 +78,9 @@ class ScrollingList : public Widget {
 
   // don't play sound when the value changes
   virtual inline bool hasSound() { return false; }
+
+  inline bool canGetFocus() { return canGetFocusVar; }
+  inline void setCanGetFocus(bool b) { this->canGetFocusVar = b; }
 
  private:
   void selectLine(int x, int y);

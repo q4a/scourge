@@ -43,6 +43,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   this->highlight = highlight;
   highlightBorders = false;
   debug = false;
+  canGetFocusVar = Widget::canGetFocus();
 }
 
 ScrollingList::~ScrollingList() {
