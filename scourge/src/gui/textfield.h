@@ -42,6 +42,7 @@ public:
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void drawWidget(Widget *parent);
   inline char *getText() { text[maxPos] = '\0'; return text; }
+  inline void setFocus(bool b) { Widget::setFocus(b); inside = b; }
 };
 
 #endif

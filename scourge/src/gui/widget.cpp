@@ -31,7 +31,7 @@ Widget::Widget(int x, int y, int w, int h) {
   setSelectionColor( 0.75f, 0.75f, 0.8f );
   setBorderColor( 0.8f, 0.5f, 0.2f );
   setHighlightedBorderColor( 1.0f, 0.8f, 0.4f );
-  setFocusColor( 0, 0, 0, 1 );
+  setFocusColor( 0.8f, 0.5f, 0.2f, 1 );
   visible = true;
   debug = false;
   focus = false;
@@ -46,16 +46,16 @@ void Widget::draw(Widget *parent) {
     applyFocusColor();
     glLineWidth( 2.0f );
     glBegin(GL_LINES);
-    glVertex2f( -2, -2 );
-    glVertex2f( -2, getHeight() + 2 );
+    glVertex2f( -1, -1 );
+    glVertex2f( -1, getHeight() + 2 );
     
-    glVertex2f( -2, -2 );
-    glVertex2f( getWidth() + 2, -2 );
+    glVertex2f( -1, -1 );
+    glVertex2f( getWidth() + 2, -1 );
     
-    glVertex2f( -2, getHeight() + 2 );
+    glVertex2f( -1, getHeight() + 2 );
     glVertex2f( getWidth() + 2, getHeight() + 2 );
     
-    glVertex2f( getWidth() + 2, -2 );
+    glVertex2f( getWidth() + 2, -1 );
     glVertex2f( getWidth() + 2, getHeight() + 2 );
     glEnd();
     glLineWidth( 1.0f );

@@ -418,14 +418,16 @@ void SDLHandler::mainLoop() {
         }
         resizeWindow( event.resize.w, event.resize.h );
         break;
+      case SDL_KEYUP:
+      switch(event.key.keysym.sym) {
+      case SDLK_F1:
+      SDL_WM_ToggleFullScreen(screen);
+      break;
+      default:
+      break;
+      }
+      // no break here!!!
       case SDL_KEYDOWN:
-        switch(event.key.keysym.sym) {
-        case SDLK_F1:
-          SDL_WM_ToggleFullScreen(screen);
-          break;
-        default:
-          break;
-        }
         applyMouseOffset(mouseX, mouseY, &mx, &my);
         widget = Window::delegateEvent( &event, mx, my );
         break;
@@ -442,8 +444,9 @@ void SDLHandler::mainLoop() {
         res = eventHandler->handleEvent(widget, &event);
         // this is so that moving the cursor over a 
         // window doesn't scroll the map forever
-        if( event.type == SDL_MOUSEMOTION )
+        if( event.type == SDL_MOUSEMOTION ) {
           res = eventHandler->handleEvent(&event);
+        }
       } else {
         res = eventHandler->handleEvent(&event);
       }

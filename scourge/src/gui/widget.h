@@ -58,7 +58,7 @@ class Widget {
 
   virtual inline bool hasFocus() { return focus; }
   virtual inline void setFocus(bool b) { focus = b; }
-  virtual inline bool canGetFocus() { return true; }
+  virtual inline bool canGetFocus() { return isVisible(); }
 
 
   // color
