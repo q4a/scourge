@@ -46,6 +46,7 @@ class Effect {
   void drawGreen(GLShape *shape);
   void drawExplosion(GLShape *shape);
   void drawSwirl(GLShape *shape);
+  void drawCastSpell(GLShape *shape);
 
   // particle management
   void createParticle(GLShape *shape, ParticleStruct **particle);

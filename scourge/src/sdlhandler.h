@@ -49,7 +49,6 @@ class TexturedText;
 #define TRUE  1
 #define FALSE 0
 
-
 class ShapePalette;                          
 class SDLEventHandler;
 class UserConfiguration;
@@ -66,6 +65,7 @@ private:
   int videoFlags;
   ShapePalette *shapePal;
   bool invertMouse;
+  int cursorMode;
 
   // rotation for test draw view
   GLfloat rtri, rquad;
@@ -82,6 +82,12 @@ private:
   SDL_Event *storedEvent; 
 
  public: 
+
+  enum {
+	CURSOR_NORMAL=0,
+	CURSOR_CROSSHAIR
+  };  
+
   SDLHandler();
   ~SDLHandler();
   
@@ -90,6 +96,18 @@ private:
   bool mouseDragging;
 
   void setOrthoView();
+
+  void setCursorMode(int n) { cursorMode = n; }
+  int getCursorMode() { return cursorMode; }
+  inline void applyMouseOffset(int x, int y, int *newX, int *newY) {
+	if(cursorMode == CURSOR_NORMAL) {
+	  *newX = x;
+	  *newY = y;
+	} else {
+	  *newX = x + 24;
+	  *newY = y + 24;
+	}
+  }
 
   /**
    * Add a new set of handlers and push the old ones on the stack.

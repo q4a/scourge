@@ -357,18 +357,22 @@ bool Scourge::handleEvent(SDL_Event *event) {
   }
 
 
+  int mx, my;
   switch(event->type) {
   case SDL_MOUSEMOTION:
-	if(event->motion.x < 10) {
+	//sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+	mx = event->motion.x;
+	my = event->motion.y;
+	if(mx < 10) {
 	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_LEFT);
-	} else if(event->motion.x >= sdlHandler->getScreen()->w - 10) {
+	} else if(mx >= sdlHandler->getScreen()->w - 10) {
 	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_RIGHT);
-	} else if(event->motion.y < 10) {
+	} else if(my < 10) {
 	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_UP);
-	} else if(event->motion.y >= sdlHandler->getScreen()->h - 10) {
+	} else if(my >= sdlHandler->getScreen()->h - 10) {
 	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_DOWN);
 	} else {
@@ -380,16 +384,18 @@ bool Scourge::handleEvent(SDL_Event *event) {
 		map->setZRot(0.0f);
 	  }
 	}
-    processGameMouseMove(event->motion.x, event->motion.y);
+    processGameMouseMove(mx, my);
     break;
   case SDL_MOUSEBUTTONDOWN:
+	sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
     if(event->button.button) {
-	  processGameMouseDown(event->button.x, event->button.y, event->button.button);
+	  processGameMouseDown(mx, my, event->button.button);
     }
     break;	
   case SDL_MOUSEBUTTONUP:
+	sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
     if(event->button.button) {
-	  processGameMouseClick(event->button.x, event->button.y, event->button.button);
+	  processGameMouseClick(mx, my, event->button.button);
 	  if(teleporting && !exitConfirmationDialog->isVisible()) {
 		exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
 		party->toggleRound(true);
@@ -434,6 +440,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	}
 	if(event->key.keysym.sym == SDLK_k) {
 	  party->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
+	  return false;
+	}
+	if(event->key.keysym.sym == SDLK_l) {
+	  party->startEffect(Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
 	  return false;
 	}
 

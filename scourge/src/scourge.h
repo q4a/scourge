@@ -257,7 +257,7 @@ public:
   
   void missionCompleted();
 
-  inline void setTargetSelectionFor(Creature *c) { targetSelectionFor = c; }
+  inline void setTargetSelectionFor(Creature *c) { targetSelectionFor = c; sdlHandler->setCursorMode(targetSelectionFor ? SDLHandler::CURSOR_CROSSHAIR : SDLHandler::CURSOR_NORMAL); }
   inline Creature *getTargetSelectionFor() { return targetSelectionFor; }
 
   /** 

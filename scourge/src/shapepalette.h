@@ -121,8 +121,8 @@ public:
   inline static ShapePalette *getInstance() { return instance; }
 
   // cursor
-  SDL_Surface *cursor;
-  GLubyte *cursorImage;
+  SDL_Surface *cursor, *crosshair;
+  GLubyte *cursorImage, *crosshairImage;
 
   SDL_Surface *logo;
   GLubyte *logoImage;   

@@ -300,6 +300,7 @@ ShapePalette::ShapePalette(){
 
   // set up the cursor
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
+  setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
 
   // set up the logo
   setupAlphaBlendedBMP("/logo.bmp", &logo, &logoImage);
