@@ -606,7 +606,7 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 		  }						  
 		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
 			map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-							 6, shapePal->getShape(ShapePalette::LAMP_INDEX));
+							 6, shapePal->getShape(ShapePalette::LAMP_WEST_INDEX));
 			map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
 							 4, shapePal->getShape(ShapePalette::LAMP_BASE_INDEX));
 		  }          
@@ -627,7 +627,7 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 		  }
 		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
 			map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-							 6, shapePal->getShape(ShapePalette::LAMP_INDEX));
+							 6, shapePal->getShape(ShapePalette::LAMP_EAST_INDEX));
 			map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
 							 4, shapePal->getShape(ShapePalette::LAMP_BASE_INDEX));
 		  }          
@@ -648,7 +648,7 @@ void DungeonGenerator::toMap(Map *map, Sint16 *startx, Sint16 *starty, ShapePale
 		  }
 		  if((int) (100.0 * rand()/RAND_MAX) <= torches) {
 			map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
-							 shapePal->getShape(ShapePalette::LAMP_INDEX));
+							 shapePal->getShape(ShapePalette::LAMP_NORTH_INDEX));
 			map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
 							 shapePal->getShape(ShapePalette::LAMP_BASE_INDEX));
 		  }            
