@@ -42,7 +42,7 @@ char *Constants::messages[][80] = {
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines

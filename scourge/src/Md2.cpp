@@ -200,12 +200,10 @@ void CLoadMD2::ReadMD2Data()
 	// Read the glCommands
     fseek(m_FilePointer, m_Header.offsetGlCommands, SEEK_SET);
     fread(m_pGlCommands, sizeof(tMd2GlCommands), m_Header.numGlCommands, m_FilePointer);    
-    if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {        
-        unsigned int *p = (unsigned int *)&m_pGlCommands;
-        for(unsigned int n = 0; n < sizeof(tMd2GlCommands) / sizeof(unsigned int); n++) {
-            *p = SDL_SwapLE32(*p);
-            p++;
-        }
+    if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+	  for(int i = 0; i < m_Header.numGlCommands; i++) {
+		m_pGlCommands[i].command = SDL_SwapLE32(m_pGlCommands[i].command);
+	  }
 	}
 	
             
@@ -535,9 +533,7 @@ void CLoadMD2::CleanUp()
 {
     // This just just the regular cleanup or our md2 model class.  We can free
     // all of this data because we already have it stored in our own structures.
-
     fclose(m_FilePointer);                      // Close the current file pointer
-
     if(m_pSkins)     delete [] m_pSkins;        // Free the skins data
     if(m_pTexCoords) delete m_pTexCoords;       // Free the texture coord data
     if(m_pTriangles) delete m_pTriangles;       // Free the triangle face data

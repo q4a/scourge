@@ -287,7 +287,6 @@ void ShapePalette::initShapes() {
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
                  Constants::FIGHTER_INDEX);
-  
   creature_shapes[Constants::ROGUE_INDEX] =
     new MD2Shape("data/models/m1.md2", "data/models/m1.bmp", 2.0f,
                  notex,
@@ -328,8 +327,6 @@ void ShapePalette::initShapes() {
                  (debug ? 0xff0000ff : 0xf0f0ffff),
                  display_list + (count++ * 3),
                  Constants::SLIME_INDEX);  
-
-
   
   // items
   item_display_list_start = display_list + (count * 3);                                

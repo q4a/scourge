@@ -151,7 +151,6 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
   movex = maxx - minx;
   movey = maxy;
   movez = maxz - minz;    
-    
 }
 
  void MD2Shape::setCurrentAnimation(int numAnim){
