@@ -37,6 +37,7 @@ Creature::Creature(Scourge *scourge, Character *character, char *name) {
   this->name = name;
   this->shape = scourge->getShapePalette()->getCreatureShape(character->getShapeIndex());
   sprintf(description, "%s the %s", name, character->getName());
+  this->speed = 50;
   commonInit();
 }
 
@@ -47,6 +48,7 @@ Creature::Creature(Scourge *scourge, Monster *monster) {
   this->name = monster->getType();
   this->shape = scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex());
   sprintf(description, "You see %s", monster->getType());
+  this->speed = monster->getSpeed();
   commonInit();
   monsterInit();
 }
@@ -70,6 +72,7 @@ void Creature::commonInit() {
   this->hp = 0;
   this->ac = 0;
   this->targetCreature = NULL;
+  this->lastTick = 0;
 }
 
 Creature::~Creature(){
@@ -133,7 +136,8 @@ bool Creature::follow(Map *map) {
   if(getMotion() == Constants::MOTION_MOVE_AWAY) {
     findCorner(&px, &py, &pz);
   } else {
-  	getFormationPosition(&px, &py, &pz);   
+	// optimization, only move when the followed creature is moving
+  	getFormationPosition(&px, &py, &pz);
   }
   
   return gotoPosition(map, px, py, pz);
@@ -207,9 +211,16 @@ void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
   }
 
   // translate
+  //	*px = (*(px) * getShape()->getWidth()) + next->getX();
+  //	*py = (-(*(py)) * getShape()->getDepth()) + next->getY();
+  if(next->getSelX() > -1) {
+	*px = (*(px) * getShape()->getWidth()) + next->getSelX();
+	*py = (-(*(py)) * getShape()->getDepth()) + next->getSelY();
+  } else {
 	*px = (*(px) * getShape()->getWidth()) + next->getX();
 	*py = (-(*(py)) * getShape()->getDepth()) + next->getY();
-	*pz = next->getZ();
+  }
+  *pz = next->getZ();
 }
 
 /**
@@ -248,7 +259,7 @@ void Creature::setNext(Creature *next, int index) {
   // stand in formation
   Sint16 px, py, pz;
   getFormationPosition(&px, &py, &pz);
-  moveTo(px, py, pz);
+  if(px > -1) moveTo(px, py, pz);
 }
 
 void Creature::setNextDontMove(Creature *next, int index) {

@@ -31,6 +31,7 @@ Monster::Monster(char *type, int level, int hp, Uint8 shapeIndex) {
   for(int i = 0; i < 10; i++) {
 	weapon[i] = armor[i] = item[i] = NULL;
   }
+  speed = 50;
   sprintf(description, "FIXME: need a description");
 }
 

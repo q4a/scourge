@@ -173,7 +173,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  sprintf(message, "%s drops %s.", 
 			  scourge->getParty(selected)->getName(),
 			  item->getRpgItem()->getName());
-	  scourge->getMap()->addDescription(strdup(message));	  
+	  scourge->getMap()->addDescription(message);	  
 	  mainWin->setVisible(false);
 	}
   } else if(widget == equipButton) {

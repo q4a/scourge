@@ -29,13 +29,17 @@ char *Constants::messages[][80] = {
 	"You can't touch that", 
 	"You have to be closer to get that", 
 	"You are too far to reach it" },
-{ "The door is blocked",
-  "Something is blocking that door",
-  "You can't use that door; something is in the way" }
+  { "The door is blocked",
+	"Something is blocking that door",
+	"You can't use that door; something is in the way" },
+  { "You are now in single-step mode" },
+  { "You are now in group mode" },
+  { "Paused: you have entered turn-based mode" },
+  { "Un-paused: you are in real-time mode" }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3
+  3, 4, 3, 1, 1, 1, 1
 };
 
 // opengl extension routines

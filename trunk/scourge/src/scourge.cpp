@@ -38,6 +38,7 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(int argc, char *argv[]){
+  lastTick = 0;
   mainWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
@@ -68,7 +69,7 @@ Scourge::Scourge(int argc, char *argv[]){
   player_only = false;
   inventory = new Inventory(this);
   move = 0;
-  startRound = false;
+  startRound = true;
 
   createUI();
   
@@ -120,7 +121,7 @@ void Scourge::startMission() {
   // position the players
   player_only = false;
   move = 0;
-  startRound = false;
+  startRound = true;
   setPlayer(getParty(0));
   getPlayer()->moveTo(startx, starty, 0);
   getPlayer()->setTargetCreature(NULL);
@@ -214,7 +215,8 @@ void Scourge::drawView(SDL_Surface *screen) {
     for(int i = 0; i < 4; i++) {
 	  map->showCreatureInfo(party[i], (player == party[i]), 
 							(map->getSelectedDropTarget() && 
-							 map->getSelectedDropTarget()->creature == party[i]) );
+							 map->getSelectedDropTarget()->creature == party[i]),
+							!player_only);
     }
   }
 
@@ -226,20 +228,6 @@ void Scourge::drawView(SDL_Surface *screen) {
 
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );      
-}
-
-void Scourge::setPlayer(int n) {
-  player = party[n];
-  player->setNextDontMove(NULL, 0);
-  move = 0;
-  //  player->setSelXY(-1, -1); // don't move
-  // init the rest of the party
-  int count = 1;
-  for(int i = 0; i < 4; i++) {
-	if(i != n) party[i]->setNextDontMove(player, count++);
-  }
-  map->refresh();
-  map->center(player->getX(), player->getY());
 }
 
 bool Scourge::handleEvent(SDL_Event *event) {
@@ -274,6 +262,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     processGameMouseMove(event->motion.x, event->motion.y);
     break;
+  case SDL_MOUSEBUTTONDOWN:
+    if(event->button.button) {
+	  processGameMouseDown(event->button.x, event->button.y, event->button.button);
+    }
+    break;	
   case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
 	  processGameMouseClick(event->button.x, event->button.y, event->button.button);
@@ -459,6 +452,16 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
   }
 }
 
+void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
+  Uint16 mapx, mapy, mapz;
+  if(button == SDL_BUTTON_LEFT) {
+	// click on an item
+	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
+	useItem(mapx, mapy);
+  }
+}
+
 void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   Uint16 mapx, mapy, mapz;
   if(button == SDL_BUTTON_LEFT) {
@@ -472,7 +475,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 		  // follow this creature
 		  player->setTargetCreature(loc->creature);
 		  if(!player_only) {
-			startRound = true;
 			for(int i = 0; i < 4; i++) 
 			  party[i]->setTargetCreature(loc->creature);
 		  }
@@ -501,7 +503,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	} else {
 	  for(int i = 0; i < 4; i++) party[i]->setTargetCreature(NULL);
 	}
-	if(!player_only) startRound = true;
 
 
   } else if(button == SDL_BUTTON_RIGHT) {
@@ -641,14 +642,6 @@ void Scourge::setPartyMotion(int motion) {
   }
 }
 
-void Scourge::setFormation(int formation) {
-  this->formation = formation;
-  for(int i = 0; i < 4; i++) {
-	party[i]->setFormation(formation);
-  }
-  startRound = true;
-}
-
 bool Scourge::useItem(int x, int y) {
   if(movingItem) {
 	//	dropItem(x, y);
@@ -707,7 +700,7 @@ void Scourge::dropItem(int x, int y) {
 	  sprintf(message, "%s picks up %s.", 
 			  c->getName(), 
 			  movingItem->getRpgItem()->getName());
-	  map->addDescription(strdup(message));
+	  map->addDescription(message);
 	  movingItem = NULL;
 	  movingX = movingY = movingZ = MAP_WIDTH + 1;
 	}
@@ -820,20 +813,6 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   return false;
 }
 
-void Scourge::toggleRound() {
-  move = 0;
-  startRound = (startRound ? false : true);
-}
-
-void Scourge::togglePlayerOnly() {
-  player_only = (player_only ? false : true);
-  move = 0;
-  for(int i = 0; i < 4; i++) {
-	party[i]->setSelXY(-1, -1);
-	party[i]->setTargetCreature(NULL);
-  }
-}
-
 void Scourge::createUI() {
   // create the ui
   char version[100];
@@ -852,7 +831,9 @@ void Scourge::createUI() {
   mainWin->addWidget((Widget*)optionsButton);
   quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
-  roundButton = new Button( 0, 75,  100, 100, strdup("Start/Stop Round") );
+  roundButton = new Button( 0, 75,  100, 100, strdup("Real-Time") );
+  roundButton->setToggle(true);
+  roundButton->setSelected(true);
   mainWin->addWidget((Widget*)roundButton);
 
 
@@ -869,15 +850,17 @@ void Scourge::createUI() {
   crossButton = new Button( 200, 0,  220, 20 );
   mainWin->addWidget((Widget*)crossButton);
 
-  player1Button = new Button( 100, 20,  124, 40 );
+  player1Button = new Button( 100, 20,  124, 40, strdup("1") );
   mainWin->addWidget((Widget*)player1Button);
-  player2Button = new Button( 124, 20,  148, 40 );
+  player2Button = new Button( 124, 20,  148, 40, strdup("2") );
   mainWin->addWidget((Widget*)player2Button);
-  player3Button = new Button( 148, 20,  172, 40 );
+  player3Button = new Button( 148, 20,  172, 40, strdup("3") );
   mainWin->addWidget((Widget*)player3Button);
-  player4Button = new Button( 172, 20,  196, 40 );
+  player4Button = new Button( 172, 20,  196, 40, strdup("4") );
   mainWin->addWidget((Widget*)player4Button);
-  groupButton = new Button( 196, 20,  220, 40 );
+  groupButton = new Button( 196, 20,  220, 40, strdup("G") );
+  groupButton->setToggle(true);
+  groupButton->setSelected(true);
   mainWin->addWidget((Widget*)groupButton);
 }
 
@@ -895,30 +878,15 @@ void Scourge::playRound() {
   }
   
   // round starts if:
-  // -in group mode a move was made
+  // -in group mode
   // -(or) the round was manually started
-  if((!player_only && move) || startRound) {
-	
-	// remember the players' positions
-	int oldX[4];
-	int oldY[4];
-	for(int i = 0; i < 4; i++) {
-	  oldX[i] = party[i]->getX();
-	  oldY[i] = party[i]->getY();
-	}
-	
+  GLint t = SDL_GetTicks();
+  if(startRound && 
+	 (lastTick == 0 || t - lastTick > 50)) {
+	lastTick = t;
+		
 	// move the party members
 	movePlayers();
-	
-	// if any players moved, onto the next round
-	startRound = false;
-	for(int i = 0; i < 4; i++) {
-	  if(oldX[i] != party[i]->getX() ||
-		 oldY[i] != party[i]->getY()) {
-		startRound = true;
-		break;
-	  }
-	}
 	
 	// move visible monsters
 	for(int i = 0; i < creatureCount; i++) {
@@ -944,12 +912,12 @@ void Scourge::playRound() {
 				  party[i]->getName(), 
 				  party[i]->getTargetCreature()->getName(),
 				  item->getRpgItem()->getName());
-		  map->addDescription(strdup(message));
+		  map->addDescription(message, 1.0f, 0.5f, 0.5f);
 		} else if(dist <= 1.0f) {
 		  sprintf(message, "%s attacks %s with bare hands!", 
 				  party[i]->getName(), 
 				  party[i]->getTargetCreature()->getName());
-		  map->addDescription(strdup(message));		  
+		  map->addDescription(message, 1.0f, 0.5f, 0.5f);		  
 		}
 	  }
 	}
@@ -959,6 +927,11 @@ void Scourge::playRound() {
 // move the player in a direction as specified by keystroke
 void Scourge::handleKeyboardMovement() {
   if(!move) return;
+
+  // when moving w. the keyboard don't attack creatures
+  for(int i = 0; i < 4; i++) party[i]->setTargetCreature(NULL);
+
+  // decode keyboard movement
   if(move & Constants::MOVE_UP) {
 	if(getPlayer()->getSelX() == -1) 
 	  getPlayer()->setSelXY(getPlayer()->getX(), getPlayer()->getY() - 1);
@@ -983,32 +956,11 @@ void Scourge::handleKeyboardMovement() {
 	else
 	  getPlayer()->setSelXY(getPlayer()->getSelX() + 1, getPlayer()->getSelY());
   }
-
-  
-  
-  // attacking a creature
-  if(move) {
-	Location *loc = map->getLocation(player->getSelX(), player->getSelY(), 0);
-	if(loc && loc->creature && loc->creature->isMonster()) {
-	  if(!player_only) {
-		for(int i = 0; i < 4; i++) party[i]->setTargetCreature(loc->creature);
-	  } else {
-		player->setTargetCreature(loc->creature);
-	  }
-	} else {
-	  if(!player_only) {
-		for(int i = 0; i < 4; i++) party[i]->setTargetCreature(NULL);
-	  } else {
-		player->setTargetCreature(NULL);
-	  }
-	}
-  }
 }
 
-void Scourge::movePlayers() {
+void Scourge::movePlayers() {   
   if(player_only) {	
 	// in single-step mode:
-
 	for(int i = 0; i < 4; i++) {
 	  // move the current player
 	  player->moveToLocator(map, player_only);
@@ -1046,7 +998,61 @@ void Scourge::movePlayers() {
   }
 }
 
-void Scourge::moveMonster(Creature *monster) {
+void Scourge::setPlayer(int n) {
+  player = party[n];
+  player->setNextDontMove(NULL, 0);
+  move = 0;
+  //  player->setSelXY(-1, -1); // don't move
+  // init the rest of the party
+  int count = 1;
+  for(int i = 0; i < 4; i++) {
+	if(i != n) party[i]->setNextDontMove(player, count++);
+  }
+  map->refresh();
+  map->center(player->getX(), player->getY());
+}
+
+/**
+   Setting the formation ends single-step mode (back to group mode).
+ */
+void Scourge::setFormation(int formation) {
+  this->formation = formation;
+  for(int i = 0; i < 4; i++) {
+	party[i]->setFormation(formation);
+  }
+  player_only = false;
+  startRound = true;
+}
+
+/**
+   When pausing the round, we enter single-step mode.
+ */
+void Scourge::toggleRound() {
+  startRound = (startRound ? false : true);
+  if(startRound)
+	map->addDescription(Constants::getMessage(Constants::REAL_TIME_MODE), 0.5f, 0.5f, 1.0f);
+  else
+	map->addDescription(Constants::getMessage(Constants::TURN_MODE), 0.5f, 0.5f, 1.0f);
+  roundButton->setSelected(startRound);
+}
+
+void Scourge::togglePlayerOnly() {
+  player_only = (player_only ? false : true);
+  // in group mode everyone hunts the same creature
+  if(!player_only) {
+	for(int i = 0; i < 4; i++) {
+	  if(party[i] != player) 
+		party[i]->setTargetCreature(player->getTargetCreature());
+	}
+  }
+  if(player_only)
+	map->addDescription(Constants::getMessage(Constants::SINGLE_MODE), 0.5f, 0.5f, 1.0f);
+  else
+	map->addDescription(Constants::getMessage(Constants::GROUP_MODE), 0.5f, 0.5f, 1.0f);
+  groupButton->setSelected(!player_only);
+}
+  
+void Scourge::moveMonster(Creature *monster) {	
   // for now just twitch around
   // FIXME: this needs to be a lot more intelligent!
   for(int i = 0; i < 4; i++) {

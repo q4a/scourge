@@ -84,6 +84,8 @@ class Creature {
   Monster *monster;
 
   char description[300];
+  GLint lastTick;
+  int speed;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -108,6 +110,12 @@ class Creature {
   inline void setMotion(int motion) { this->motion = motion; }
   inline int getMotion() { return this->motion; }
   inline char *getDescription() { return description; }
+
+  inline void setLastTick(GLint n) { this->lastTick = n; }
+  inline GLint getLastTick() { return lastTick; }
+
+  // FIXME: should be modified by inventory (boots of speed, etc.)
+  inline int getSpeed() { return speed; }
   
   /**
 	 The movement functions return true if movement has occured, false if it has not.
@@ -130,12 +138,7 @@ class Creature {
   inline void setDir(Uint16 dir) { this->dir = dir; }
   
   inline void draw() { getShape()->draw(); }  
-  
-  /**
-   * Get the position of this creature in the formation.
-   */
-  void getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz);
-  
+    
   /**
 	 Used to move away from the player. Find the nearest corner of the map.
   */
@@ -202,6 +205,12 @@ class Creature {
   static Creature **createHardCodedParty(Scourge *scourge);
 
  protected:
+  /**
+   * Get the position of this creature in the formation.
+   * returns -1,-1 if the position cannot be set (if the person followed is not moving)
+   */
+  void getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz);
+
   void commonInit();
   void monsterInit();
 };
