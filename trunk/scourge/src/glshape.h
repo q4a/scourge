@@ -21,6 +21,8 @@
 #include "constants.h"
 #include "shape.h"
 
+class WallTheme;
+
 /**
   *@author Gabor Torok
   */
@@ -46,6 +48,7 @@ private:
   float xIconRot, yIconRot, zIconRot;
   GLuint displayListStart;
   bool initialized;
+  WallTheme *theme;
 
   struct surface *surfaces[5];
   enum { 
@@ -87,7 +90,7 @@ public:
 
   virtual void initialize();
 
-  void setTexture( GLuint* texture );
+  void setTheme( GLuint *textureGroup, WallTheme *theme );
 
   inline void setSkipSide(int n) { skipside = n; }
   bool fitsInside(GLShape *smaller);  
