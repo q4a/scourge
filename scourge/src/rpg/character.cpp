@@ -17,23 +17,6 @@
 
 #include "character.h"
 
-char Character::inventory_location[][80] = {
-  "head",
-  "neck",
-  "back",
-  "chest",
-  "left hand",
-  "right hand",
-  "belt",
-  "legs",
-  "feet",
-  "ring1",
-  "ring2",
-  "ring3",
-  "ring4",
-  "ranged weapon"
-};
-
 map<string, Character*> Character::character_class;
 map<string, Character*> Character::character_class_short;
 map<string, int> Character::character_index_short;

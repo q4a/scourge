@@ -83,7 +83,7 @@ Inventory::Inventory(Scourge *scourge) {
   coinsLabel = cards->createLabel(300, 212, NULL, INVENTORY);
   cards->createLabel(115, 212, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
 
-  paperDoll = new Canvas(115, 220, 411, 251 + (Character::INVENTORY_COUNT * 15), this, this);
+  paperDoll = new Canvas(115, 220, 411, 251 + (Constants::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
 
   invList = new ScrollingList(115, 20, 295, 175, scourge->getShapePalette()->getHighlightTexture(), this);
@@ -152,7 +152,7 @@ void Inventory::drawWidget(Widget *w) {
 
   if(w == paperDoll) {
     float x = 125;
-    for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+    for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
       if(item) {
         w->applySelectionColor();
@@ -180,7 +180,7 @@ void Inventory::drawWidget(Widget *w) {
     glVertex2f( x, w->getHeight() );
     glEnd();
 
-    for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+    for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
 
       w->applyBorderColor();
@@ -484,7 +484,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     invList->setLines(selectedP->getInventoryCount(), 
                       (const char **)pcInvText);
     /*
-    for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+    for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = selectedP->getEquippedInventory(i);
       invEquipLabel[i]->setText((char *)(item ? item->getItemName() : NULL));
     }
@@ -608,7 +608,7 @@ bool Inventory::startDrag(Widget *widget, int x, int y) {
     dropItem();
     return true;
   } else if(widget == paperDoll) {
-    if(y > 0 && y < Character::INVENTORY_COUNT * 16) {
+    if(y > 0 && y < Constants::INVENTORY_COUNT * 16) {
       // what's equiped at this inventory slot?
       Item *item = scourge->getParty()->getParty(selected)->getItemAtLocation((1 << (y / 16)));
       if(item) {

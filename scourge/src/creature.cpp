@@ -84,7 +84,7 @@ void Creature::commonInit() {
   this->selX = this->selY = -1;
   this->quadric = gluNewQuadric();
   this->inventory_count = 0;
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
@@ -127,12 +127,67 @@ void Creature::commonInit() {
   calculateExpOfNextLevel();
 }
 
-void Creature::save(char *buff, int *length) {
-  CreatureInfo info;
-  
+CreatureInfo *Creature::save() {
+  CreatureInfo *info = (CreatureInfo*)malloc(sizeof(CreatureInfo));
+  info->version = PERSIST_VERSION;
+  strncpy(info->name, getName(), 254);
+  info->name[254] = 0;
+  if(isMonster()) {
+    info->character_index = -1;
+    Monster::getIndexOrFindByIndex(&monster, &info->monster_index);
+  } else {
+    info->character_index = Character::getCharacterIndexByShortName(character->getShortName());
+    info->monster_index = -1;
+  }
+  info->hp = hp;
+  info->mp = mp;
+  info->exp = exp;
+  info->level = level;
+  info->money = money;
+  info->statemod = stateMod;
+  info->x = x;
+  info->y = y;
+  info->z = z;
+  info->dir = dir;
+  info->speed = speed;
+  info->motion = motion;
+  info->armor = armor;
+  info->bonusArmor = bonusArmor;
+  info->thirst = thirst;
+  info->hunger = hunger;
+  info->availableSkillPoints = availableSkillPoints;
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    info->skills[i] = skills[i];
+    info->skillMod[i] = skillMod[i];
+    info->skillBonus[i] = skillBonus[i];
+  }
+
+  // inventory
+  info->inventory_count = inventory_count;
+  for(int i = 0; i < inventory_count; i++) {
+    //info->inventory[i] = inventory[i]->save();
+  }
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+    info->equipped[i] = equipped[i];
+  }
+
+  // spells
+  for(int i = 0; i < MagicSchool::getMagicSchoolCount(); i++) {
+    MagicSchool *school = MagicSchool::getMagicSchool(i);
+    for(int t = 0; t < school->getSpellCount(); t++) {
+      Spell *spell = school->getSpell(t);
+      if(isSpellMemorized(spell)) {
+        info->spell_index[i][t] = true;
+      }
+    }
+  }
+
+  return info;
 }
 
-void Creature::load(char *buff, int length) {
+Creature *Creature::load(CreatureInfo *info) {
+  cerr << "Implement me!" << endl;
+  return NULL;
 }
 
 void Creature::calculateExpOfNextLevel() {
@@ -585,7 +640,7 @@ Item *Creature::removeInventory(int index) {
     }
     inventory_count--;
     // adjust equipped indexes too
-    for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+    for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       if(equipped[i] > index && equipped[i] < MAX_INVENTORY_SIZE) {
         equipped[i]--;
       }
@@ -769,7 +824,7 @@ void Creature::equipInventory(int index) {
   // don
   // FIXME: take into account: two-handed weapons, race/class modifiers, min skill req-s., etc.
   Item *item = getInventory(index);
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     // if the slot is empty and the item can be worn here
     if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
        equipped[i] == MAX_INVENTORY_SIZE) {
@@ -782,7 +837,7 @@ void Creature::equipInventory(int index) {
 
 int Creature::doff(int index) {
   // doff
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] == index) {
       equipped[i] = MAX_INVENTORY_SIZE;
       recalcAggregateValues();
@@ -807,7 +862,7 @@ Item *Creature::getEquippedInventory(int index) {
    Get equipped index of inventory index. (Where is the item worn?)
 */
 int Creature::getEquippedIndex(int index) {
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] == index) return i;
   }
   return -1;
@@ -825,7 +880,7 @@ bool Creature::isItemInInventory(Item *item) {
 
 Item *Creature::getItemAtLocation(int location) {
   int i;
-  for(i = 0; i < Character::INVENTORY_COUNT; i++) {
+  for(i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if((1 << i) == location) {
       if(equipped[i] < MAX_INVENTORY_SIZE) {
         return getInventory(equipped[i]);
@@ -841,7 +896,7 @@ Item *Creature::getItemAtLocation(int location) {
 void Creature::recalcAggregateValues() {
   // calculate the armor (0-100, 100-total protection)
   armor = (monster ? monster->getBaseArmor() : 0);
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] != MAX_INVENTORY_SIZE) {
       Item *item = inventory[equipped[i]];
       if(item->getRpgItem()->getType() == RpgItem::ARMOR) {
@@ -853,11 +908,11 @@ void Creature::recalcAggregateValues() {
 }
 
 Item *Creature::getBestWeapon(float dist) {
-  Item *item = getItemAtLocation(Character::INVENTORY_RIGHT_HAND);
+  Item *item = getItemAtLocation(Constants::INVENTORY_RIGHT_HAND);
   if(item && item->getRpgItem()->getDistance() >= dist) return item;
-  item = getItemAtLocation(Character::INVENTORY_LEFT_HAND);
+  item = getItemAtLocation(Constants::INVENTORY_LEFT_HAND);
   if(item && item->getRpgItem()->getDistance() >= dist) return item;
-  item = getItemAtLocation(Character::INVENTORY_WEAPON_RANGED);
+  item = getItemAtLocation(Constants::INVENTORY_WEAPON_RANGED);
   if(item && item->getRpgItem()->getDistance() >= dist) return item;
   return NULL;
 }
@@ -983,7 +1038,7 @@ int Creature::getSkillModifiedArmor() {
   // calculate the armor (0-100, 100-total protection)
   int armor = (monster ? monster->getBaseArmor() : 0);
   armor += bonusArmor;
-  for(int i = 0; i < Character::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] != MAX_INVENTORY_SIZE) {
       Item *item = inventory[equipped[i]];
       if(item->getRpgItem()->getType() == RpgItem::ARMOR) {

@@ -106,3 +106,6 @@ void NetPlay::serverClosing() {
   // do nothing
 }
 
+void NetPlay::character(char *bytes, int length) {
+  // do nothing
+}

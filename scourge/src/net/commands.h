@@ -2,6 +2,7 @@
 #define COMMANDS_H
 
 #include "../constants.h"
+#include "../persist.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ class CommandInterpreter {
   virtual void processGameState(int frame, char *p) = 0;
   virtual void handleUnknownMessage() = 0;
   virtual void serverClosing() = 0;
+  virtual void character(char *bytes, int length) = 0;
 };
 
 class TestCommandInterpreter : public CommandInterpreter {
@@ -25,6 +27,7 @@ public:
   void processGameState(int frame, char *p);
   void handleUnknownMessage();
   void serverClosing();
+  void character(char *bytes, int length);
 };
 
 class Commands {
@@ -40,6 +43,7 @@ class Commands {
      PING,
      STATE,
      CLOSING,
+     CHARACTER,
 
      // must be last entry
      COMMAND_COUNT
@@ -49,7 +53,7 @@ class Commands {
   ~Commands();
 
   inline int getLastGameFrameReceived() { return lastGameFrameReceived; }
-  void interpret(char *rawMessage);
+  void interpret(char *rawMessage, int length);
   inline int getLastCommand() { return lastCommand; }
 
   static void buildGameState(char *buff, int frame, char *state);
@@ -57,7 +61,7 @@ class Commands {
   static void buildLogin(char *buff, char *username);
   // not static!
   void buildPing(char *buff);
-  static void buildCharacter(char *buff, char *bytes, int length);
+  static void buildBytesCharacter(char *buff, int size, char *info, int *messageSize);
 };
 
 #endif

@@ -81,7 +81,15 @@ public:
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);
-  static Monster *getMonsterByName(char *name);
+  static Monster *getMonsterByName(char *name);  
+
+  /**
+   * Finds the index of a monster or a monster by an index:
+   * If *monster is NULL, it sets *monster when *index is found.
+   * If *monster is not null, it sets *index when *monster is found.
+   * @return true if search was successful, false otherwise.
+   */
+  static bool getIndexOrFindByIndex(Monster **monster, int *index);
 };
 
 #endif

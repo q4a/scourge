@@ -70,6 +70,7 @@ int clientLoop(void *data) {
   SDLNet_SocketSet set;
   int numready;
   char *str = NULL;
+  int strLength;
   bool sendPing = false;
 
   set=SDLNet_AllocSocketSet(1);
@@ -113,17 +114,14 @@ int clientLoop(void *data) {
     }
     // check to see if the server sent us data
     if(numready && SDLNet_SocketReady(client->getTCPSocket())) {
-      if(!TCPUtil::receive(client->getTCPSocket(), &str)) {
+      if(!TCPUtil::receive(client->getTCPSocket(), &str, &strLength)) {
         char *error = SDLNet_GetError();
         cerr << "* Error in get message: " << (strlen(error) ? error : "Server disconnected?") << endl;
         client->setReadError(true);
         // next ping will reconnect
         sendPing = true;
       } else {
-#if DEBUG_CLIENT
-        cerr << "Net: client: interpreting str=" << str << endl;
-#endif
-        client->getCommands()->interpret(str);
+        client->getCommands()->interpret(str, strLength);
 
         // Handle some low level requests
         switch(client->getCommands()->getLastCommand()) {
@@ -231,19 +229,22 @@ int Client::sendPing() {
   return sendRawTCP(message);
 }
 
-int Client::sendCharacter(char *bytes, int length) {
-  char message[1024];
-  commands->buildCharacter(message, bytes, length);
-  return sendRawTCP(message);
+int Client::sendCharacter(CreatureInfo *info) {
+  int size = sizeof(CreatureInfo);
+  char *message = (char*)malloc(size + 20);
+  int messageSize;
+  Commands::buildBytesCharacter(message, size, (char*)info, &messageSize);
+  return sendRawTCP(message, messageSize);
 }
 
-int Client::sendRawTCP(char *s) {
+// if length==0, s is assumed to be a 0-terminated string
+int Client::sendRawTCP(char *s, int length) {
   // try to connect the first time
   if(!connected && !connect()) return 0;
 
   // send message with retry
   for(int i = 0; RETRY_COUNT <= 0 || i < RETRY_COUNT; i++) {
-    if(!TCPUtil::send(tcpSocket, s)) {
+    if(!TCPUtil::send(tcpSocket, s, length)) {
       cerr << "* Client: Connection lost to server. Re-logging in..." << endl;
       if(!(tryToReconnect && connect())) {
         cerr << "* Client: Reconnect failed. Giving up on server." << endl;

@@ -68,6 +68,10 @@ void Party::resetMultiplayer(Creature *c) {
   party[0] = player = c;
   party[1] = party[2] = party[3] = NULL;
   partySize = 1;
+#ifdef HAVE_SDL_NET
+  // upload your character to the server
+  scourge->getClient()->sendCharacter(player->save());
+#endif
   resetPartyUI();
 }
 
