@@ -678,6 +678,8 @@ void Creature::setAction(int action,
   this->actionItem = item;
   this->actionSpell = spell;
   preActionTargetCreature = getTargetCreature();  
+  // zero the clock
+  setLastTurn(0);
 
   char msg[80];
   switch(action) {

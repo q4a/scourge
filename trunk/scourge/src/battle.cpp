@@ -19,6 +19,7 @@
 
 //#define DEBUG_BATTLE
 #define GOD_MODE 0
+#define MONSTER_IMORTALITY 0
 
 enum {
   NO_ACTION = 0,
@@ -72,7 +73,7 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 
   // this is O(n^2) unfortunately... maybe we could use a linked list or something here
   while(battleCount > 0) {
-	bool creatureFound = false;
+	bool creatureFound = false;	
 
 	for(int i = 0; i < battleCount; i++) {
 	  int action = NO_ACTION;
@@ -113,9 +114,18 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 		  creatureFound = true;
 		  
 		  // this is to slow down battle, depending on your weapon
-		  if(battle[i]->speed < t - battle[i]->creature->getLastTurn()) {
+		  // getLastTurn is 0 when an action is decided to be executed
+		  // this way it's two trips through this method forcing a spell (e.g.)
+		  // to use the clock.
+		  bool initialActionTurn = (battle[i]->creature->getLastTurn() == 0);
+#ifdef DEBUG_BATTLE
+		  cerr << "speed=" << battle[i]->speed << " last=" << battle[i]->creature->getLastTurn() << 
+			" diff=" << (t - battle[i]->creature->getLastTurn()) << endl;
+#endif
+		  if(initialActionTurn ||
+			 battle[i]->speed < t - battle[i]->creature->getLastTurn()) {
 			
-			// remember the last active turn
+			// remember the last active turn			
 			battle[i]->creature->setLastTurn(t);
 			
 			if(!battleStarted) {
@@ -123,14 +133,21 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 			  battleStarted = true;
 			}
 
-			// save this turn
-			turns->push_back(battle[i]);
-			
-			action = ATTACK;
+			if(initialActionTurn) {
+			  // add a waiting term
+			  battle[i]->empty = true;
+			  action = WAIT;
+			  turns->push_back(battle[i]);
+			} else {
+			  // save this turn
+			  turns->push_back(battle[i]);
+			  action = ATTACK;
+			}
 		  } else {
 			// add a waiting term
 			battle[i]->empty = true;
 			action = WAIT;
+			turns->push_back(battle[i]);
 		  }
 		}
 	  }
@@ -166,12 +183,17 @@ void Battle::setupBattles(Scourge *scourge, Battle *battle[], int count, vector<
 
 void Battle::fightTurn() {
 
+  // waiting to cast a spell?
+  if(creature->getAction() == Constants::ACTION_CAST_SPELL) {
+	creature->startEffect(Constants::EFFECT_GREEN, 
+						  Constants::DAMAGE_DURATION * 4);
+  }  
+
   // waiting to attack?
   if(isEmpty()) return;
 
   // target killed?
   if(!creature->hasTarget()) return;
-  //  if(!creature->getTargetCreature()) return;
 
   // if there was no 'item' selected it's because we're too far from the target
   // (getBestWeapon returned NULL) and we're not casting a spell, follow the target
@@ -300,7 +322,8 @@ void Battle::dealDamage(int damage) {
 	  sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 	  scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 	  
-	  if(creature->getTargetCreature()->isMonster() || !GOD_MODE)
+	  if((creature->getTargetCreature()->isMonster() && !MONSTER_IMORTALITY) || 
+		 !GOD_MODE)
 		scourge->creatureDeath(creature->getTargetCreature());
 	  
 	  // add exp. points and money
@@ -360,12 +383,14 @@ void Battle::initTurn() {
 	switch(creature->getAction()) {
 	case Constants::ACTION_CAST_SPELL:
 	  range = creature->getActionSpell()->getDistance();
-	  speed = creature->getActionSpell()->getLevel() * Constants::HAND_WEAPON_SPEED * 2;
+	  speed = creature->getActionSpell()->getSpeed() * 
+		(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
 	  creatureInitiative = creature->getInitiative(NULL, creature->getActionSpell());
 	  break;
 	case Constants::ACTION_EAT_DRINK:
 	  range = creature->getActionItem()->getRpgItem()->getDistance();
-	  speed = creature->getActionItem()->getRpgItem()->getSpeed();
+	  speed = creature->getActionItem()->getRpgItem()->getSpeed() *
+		(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
 	  creatureInitiative = creature->getInitiative(creature->getActionItem(), NULL);
 	  break;
 	default:

@@ -383,6 +383,9 @@ void Util::drawBar(int x, int y, float barLength, float value, float maxValue,
 				   float red, float green, float blue, float gradient) {
   float percent = (maxValue == 0 ? 0 : (value >= maxValue ? 100.0f : value / (maxValue / 100.0f)));
   float length = barLength * (percent / 100.0f);
+  if(length < 0) {
+	length = percent = 0;
+  }
   
   glPushMatrix();
   glTranslatef( x, y, 0 );
