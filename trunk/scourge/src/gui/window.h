@@ -47,7 +47,7 @@ class Window : public Widget {
   static const int MAX_WINDOW = 1000;
   static const int MAX_WIDGET = 1000;
 
-  char *title;
+  char title[255];
   GLuint texture, texture2;
   SDLHandler *sdlHandler;
   Widget *widget[MAX_WIDGET];
@@ -103,7 +103,7 @@ class Window : public Widget {
 
   inline GuiTheme *getTheme() { return theme; }
 
-  inline void setTitle(char *s) { title = s; }
+  inline void setTitle(char *s) { strncpy(title, ( s ? s : "" ), 255); title[254] = '\0'; }
 
   inline bool isOpening() { return openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)); }
 

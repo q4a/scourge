@@ -43,7 +43,7 @@ MiniMap :: MiniMap(Scourge *scourge){
 
     win = new Window( scourge->getSDLHandler(),
                       0, 400, MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT, 
-                      strdup("Minimap"), 
+                      "Minimap", 
                       scourge->getShapePalette()->getGuiTexture(), 
                       false );
     canvas = new Canvas( 0, 0, MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT - 25, this );

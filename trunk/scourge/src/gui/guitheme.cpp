@@ -39,6 +39,7 @@ GuiTheme::GuiTheme( char *name ) {
   listBackground = NULL;
   inputBackground = NULL;
   inputText = NULL;
+  selectionBackground = NULL;
 }
 
 GuiTheme::~GuiTheme() {
@@ -55,6 +56,7 @@ GuiTheme::~GuiTheme() {
   if( listBackground ) delete listBackground;
   if( inputBackground ) delete inputBackground;
   if( inputText ) delete inputText;
+  if( selectionBackground ) delete selectionBackground;
 }
 
 void GuiTheme::initThemes( ShapePalette *shapePal ) {
@@ -142,6 +144,17 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
 	  color = parseColor( line + 1 );
 	  if( color ) theme->setInputText( color );
       else cerr << "Gui theme: " << name << " skipping input text" << endl;
+
+      n = Constants::readLine( line, fp );
+	  element = parseElement( line + 1 );
+	  if( element ) theme->setSelectionBackground( element );
+      else cerr << "Gui theme: " << name << " skipping selection background" << endl;
+
+      n = Constants::readLine( line, fp );
+	  color = parseColor( line + 1 );
+	  if( color ) theme->setSelectionText( color );
+      else cerr << "Gui theme: " << name << " skipping selection text" << endl;
+
 
 	  theme->loadTextures( shapePal );
 	  

@@ -34,12 +34,12 @@ InfoGui::InfoGui(Scourge *scourge) {
                            Constants::getMessage(Constants::CLOSE_LABEL) );
   win->addWidget((Widget*)openButton);
 
-  win->createLabel(10, 10, strdup("Name:"), Constants::RED_COLOR);
+  win->createLabel(10, 10, "Name:", Constants::RED_COLOR);
   strcpy(name, "");
   nameLabel = new Label(10, 25, description, 56);
   win->addWidget(nameLabel);
 
-  win->createLabel(10, 80, strdup("Detailed Description:"), Constants::RED_COLOR);
+  win->createLabel(10, 80, "Detailed Description:", Constants::RED_COLOR);
   strcpy(description, "");
   label = new Label(10, 95, description, 56);
   win->addWidget(label);

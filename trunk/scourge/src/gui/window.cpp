@@ -60,7 +60,8 @@ Window::Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, 
 void Window::commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type) {
   this->lastWidget = NULL;
   this->sdlHandler = sdlHandler;
-  this->title = title;
+  //  this->title = title;
+  setTitle( title );
   this->visible = false;
   this->modal = false;
   this->widgetCount = 0;
@@ -658,7 +659,7 @@ Label * Window::createLabel(int x1, int x2, char * label, int color){
 Checkbox * Window::createCheckbox(int x1, int y1, int x2, int y2, char *label){
   if(widgetCount < MAX_WIDGET){
     Checkbox * theCheckbox;
-    theCheckbox = new Checkbox(x1, y1, x2, y2, sdlHandler->getShapePalette()->getHighlightTexture(), strdup(label));    
+    theCheckbox = new Checkbox(x1, y1, x2, y2, sdlHandler->getShapePalette()->getHighlightTexture(), label);    
     addWidget((Widget *)theCheckbox);      
     return theCheckbox;
   } else{
@@ -787,7 +788,7 @@ void Window::showMessageDialog(SDLHandler *sdlHandler,
     message_dialog->move(x, y);
     message_dialog->resize(w, h);
     message_label->setText(message);
-    message_button->getLabel()->setText(buttonLabel);
+    message_button->setLabel(buttonLabel);
   }
   message_dialog->setVisible(true);
 }

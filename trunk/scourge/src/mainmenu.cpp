@@ -64,7 +64,7 @@ MainMenu::MainMenu(Scourge *scourge){
   /*
   mainWin = new Window( scourge->getSDLHandler(),
 												50, top + 230, 270, 250, 
-												strdup("Main Menu"), 
+												"Main Menu", 
 												scourge->getShapePalette()->getGuiTexture(),
 												false,
                         Window::BASIC_WINDOW, 
@@ -73,14 +73,14 @@ MainMenu::MainMenu(Scourge *scourge){
 
   mainWin = new Window( scourge->getSDLHandler(),
 						50, top + 230, 270, 250, 
-						strdup("Main Menu"), false, Window::BASIC_WINDOW,
+						"Main Menu", false, Window::BASIC_WINDOW,
 						GuiTheme::DEFAULT_THEME );
 
 #else
   /*
   mainWin = new Window( scourge->getSDLHandler(),
 												50, top + 230, 270, 220, 
-												strdup("Main Menu"), 
+												"Main Menu", 
 												scourge->getShapePalette()->getGuiTexture(),
 												false,
                         Window::BASIC_WINDOW, 
@@ -88,35 +88,35 @@ MainMenu::MainMenu(Scourge *scourge){
   */
   mainWin = new Window( scourge->getSDLHandler(),
 						50, top + 230, 270, 220, 
-						strdup("Main Menu"), false, Window::BASIC_WINDOW,
+						"Main Menu", false, Window::BASIC_WINDOW,
 						GuiTheme::DEFAULT_THEME );
 #endif
     
   int y = 30;
-  newGameButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("New Game") );
+  newGameButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "New Game" );
   mainWin->addWidget((Widget*)newGameButton);
   y += 30;
-  continueButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Continue Game") );
+  continueButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Continue Game" );
   mainWin->addWidget((Widget*)continueButton);
   y += 30;
 #ifdef HAVE_SDL_NET
-  multiplayer = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Multiplayer") );
+  multiplayer = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Multiplayer" );
   mainWin->addWidget((Widget*)multiplayer);
   y += 30;
 #endif
-  optionsButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Options") );
+  optionsButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Options" );
   mainWin->addWidget((Widget*)optionsButton);
   y += 30;
-  aboutButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("About") );
+  aboutButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "About" );
   mainWin->addWidget((Widget*)aboutButton);
   y += 30;
-  quitButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Quit") );
+  quitButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Quit" );
   mainWin->addWidget((Widget*)quitButton);
   y += 30;
 #else
   mainWin = new Window( scourge->getSDLHandler(),
 												50, 230, 5, 5, 
-												strdup(""), 
+												"", 
 												scourge->getShapePalette()->getGuiTexture(),
 												false );
 #endif
@@ -127,7 +127,7 @@ MainMenu::MainMenu(Scourge *scourge){
                               (scourge->getSDLHandler()->getScreen()->w/2) - (w/2), 
                               (scourge->getSDLHandler()->getScreen()->h/2) - (h/2), 
                               w, h,
-                              strdup("New Game Confirmation"),
+                              "New Game Confirmation",
                               scourge->getShapePalette()->getGuiTexture(), false);
   newGameConfirmOK = newGameConfirm->createButton( 40, 50, 110, 80, Constants::getMessage( Constants::OK_LABEL ) );
   newGameConfirmCancel = newGameConfirm->createButton( 140, 50, 210, 80, Constants::getMessage( Constants::CANCEL_LABEL ));

@@ -65,7 +65,7 @@ Inventory::Inventory(Scourge *scourge) {
   // construct UI
   mainWin = new Window( scourge->getSDLHandler(),
                         100, 50, Scourge::INVENTORY_WIDTH, Scourge::INVENTORY_HEIGHT,
-                        strdup("Party Information"), 
+                        "Party Information", 
                         scourge->getShapePalette()->getGuiTexture(),
                         true, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2() );
@@ -73,28 +73,28 @@ Inventory::Inventory(Scourge *scourge) {
   char label[80];
   memset(label, ' ', 78);
   label[79] = 0;
-  playerButton[0]  = mainWin->createButton( 0, 0, 105, 30, strdup(label), true);
-  playerButton[1]  = mainWin->createButton( 0, 30, 105, 60, strdup(label), true);
-  playerButton[2]  = mainWin->createButton( 0, 60, 105, 90, strdup(label), true );
-  playerButton[3]  = mainWin->createButton( 0, 90, 105, 120, strdup(label), true );
+  playerButton[0]  = mainWin->createButton( 0, 0, 105, 30, label, true);
+  playerButton[1]  = mainWin->createButton( 0, 30, 105, 60, label, true);
+  playerButton[2]  = mainWin->createButton( 0, 60, 105, 90, label, true );
+  playerButton[3]  = mainWin->createButton( 0, 90, 105, 120, label, true );
 
   int yy = Scourge::INVENTORY_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - (4 * 30);
-  inventoryButton = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Inventory"), true);
+  inventoryButton = mainWin->createButton( 0, yy, 105, yy + 30, "Inventory", true);
   yy += 30;
-  skillsButton   = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Skills"), true);
+  skillsButton   = mainWin->createButton( 0, yy, 105, yy + 30, "Skills", true);
   yy += 30;
-  spellsButton   = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Spells"), true);
+  spellsButton   = mainWin->createButton( 0, yy, 105, yy + 30, "Spells", true);
   yy += 30;
-  missionButton   = mainWin->createButton( 0, yy, 105, yy + 30, strdup("Mission"), true);
+  missionButton   = mainWin->createButton( 0, yy, 105, yy + 30, "Mission", true);
   yy += 30;
   cards = new CardContainer(mainWin);
 
   // inventory page	
-  cards->createLabel(115, 15, strdup("Inventory:"), INVENTORY, Constants::RED_COLOR); 
+  cards->createLabel(115, 15, "Inventory:", INVENTORY, Constants::RED_COLOR); 
   inventoryWeightLabel = cards->createLabel(190, 15, NULL, INVENTORY);
 
   coinsLabel = cards->createLabel(300, 212, NULL, INVENTORY);
-  cards->createLabel(115, 212, strdup("Equipped Items:"), INVENTORY, Constants::RED_COLOR);
+  cards->createLabel(115, 212, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
 
   paperDoll = new Canvas(115, 220, 411, 251 + (Constants::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
@@ -104,30 +104,30 @@ Inventory::Inventory(Scourge *scourge) {
   cards->createLabel(115, 475, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 
   yy = 130;
-  equipButton    = cards->createButton( 0, yy, 105, yy + 30, strdup("Don/Doff"), INVENTORY);
+  equipButton    = cards->createButton( 0, yy, 105, yy + 30, "Don/Doff", INVENTORY);
   yy+=30;
   openButton     = cards->createButton( 0, yy, 105, yy + 30, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY ); 
   yy+=30;
-  eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Eat/Drink"), INVENTORY );
+  eatDrinkButton = cards->createButton( 0, yy, 105, yy + 30, "Eat/Drink", INVENTORY );
   yy+=30;
-  castScrollButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Cast Scroll"), INVENTORY );
+  castScrollButton = cards->createButton( 0, yy, 105, yy + 30, "Cast Scroll", INVENTORY );
   yy+=30;
-  transcribeButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Transcribe"), INVENTORY );
+  transcribeButton = cards->createButton( 0, yy, 105, yy + 30, "Transcribe", INVENTORY );
   yy+=30;
-  enchantButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Enchant"), INVENTORY );
+  enchantButton = cards->createButton( 0, yy, 105, yy + 30, "Enchant", INVENTORY );
   yy+=30;
-  infoButton = cards->createButton( 0, yy, 105, yy + 30, strdup("Info"), INVENTORY );
+  infoButton = cards->createButton( 0, yy, 105, yy + 30, "Info", INVENTORY );
 
   // character info
   nameAndClassLabel = cards->createLabel(115, 45, NULL, CHARACTER, Constants::RED_COLOR);
   attrCanvas     = new Canvas( 115, 50, 405, 150, this );
   cards->addWidget( attrCanvas, CHARACTER );
 
-  cards->createLabel(115, 165, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
+  cards->createLabel(115, 165, "Current State:", CHARACTER, Constants::RED_COLOR);
   stateList = new ScrollingList(115, 170, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(stateList, CHARACTER);
   
-  cards->createLabel(265, 165, strdup("Protected States:"), CHARACTER, Constants::RED_COLOR);
+  cards->createLabel(265, 165, "Protected States:", CHARACTER, Constants::RED_COLOR);
   protStateList = new ScrollingList(265, 170, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(protStateList, CHARACTER);
 
@@ -136,29 +136,28 @@ Inventory::Inventory(Scourge *scourge) {
   skillModLabel = cards->createLabel(220, 255, NULL, CHARACTER);
   skillList = new ScrollingList(115, 260, 290, 180, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(skillList, CHARACTER);
-  skillAddButton = cards->createButton( 115, 445, 200, 475, strdup(" + "), CHARACTER);
-  skillSubButton = cards->createButton( 320, 445, 405, 475, strdup(" - "), CHARACTER);
-  levelUpButton = cards->createButton( 205, 445, 315, 475, strdup("Level Up"), CHARACTER);
+  skillAddButton = cards->createButton( 115, 445, 200, 475, " + ", CHARACTER);
+  skillSubButton = cards->createButton( 320, 445, 405, 475, " - ", CHARACTER);
+  levelUpButton = cards->createButton( 205, 445, 315, 475, "Level Up", CHARACTER);
 
   // spellbook
-  cards->createLabel(115, 45, strdup("School of magic: (with provider deity)"), 
-                     SPELL, Constants::RED_COLOR);
+  cards->createLabel(115, 45, "School of magic: (with provider deity)", SPELL, Constants::RED_COLOR);
   schoolList = new ScrollingList(115, 50, 290, 100, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(schoolList, SPELL);
-  cards->createLabel(115, 170, strdup("Spells memorized:"), SPELL, Constants::RED_COLOR);
+  cards->createLabel(115, 170, "Spells memorized:", SPELL, Constants::RED_COLOR);
   spellList = new ScrollingList(115, 175, 290, 150, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(spellList, SPELL);
-  cards->createLabel(115, 345, strdup("Spell notes:"), SPELL, Constants::RED_COLOR);
-  spellDescriptionLabel = new Label(115, 360, strdup(""), 58);
+  cards->createLabel(115, 345, "Spell notes:", SPELL, Constants::RED_COLOR);
+  spellDescriptionLabel = new Label(115, 360, "", 58);
   cards->addWidget(spellDescriptionLabel, SPELL);
-  castButton = cards->createButton( 0, 160, 105, 190, strdup("Cast"), SPELL);
+  castButton = cards->createButton( 0, 160, 105, 190, "Cast", SPELL);
 
 
   // mission
-  cards->createLabel(115, 45, strdup("Current Mission"), MISSION, Constants::RED_COLOR);
-  missionDescriptionLabel = new Label(115, 60, strdup(""), 50);
+  cards->createLabel(115, 45, "Current Mission", MISSION, Constants::RED_COLOR);
+  missionDescriptionLabel = new Label(115, 60, "", 50);
   cards->addWidget(missionDescriptionLabel, MISSION);
-  cards->createLabel(115, 280, strdup("Mission Objectives"), MISSION, Constants::RED_COLOR);
+  cards->createLabel(115, 280, "Mission Objectives", MISSION, Constants::RED_COLOR);
   objectiveList = new ScrollingList(115, 285, 295, 175, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(objectiveList, MISSION);
 
@@ -837,7 +836,7 @@ void Inventory::show(bool animate) {
     sprintf(buttonText, "%s (%s)", 
             scourge->getParty()->getParty(i)->getName(),
             scourge->getParty()->getParty(i)->getCharacter()->getShortName());
-    playerButton[i]->getLabel()->setTextCopy(buttonText);
+    playerButton[i]->setLabel(buttonText);
     playerButton[i]->setVisible(true);
   }
   for(int i = scourge->getParty()->getPartySize(); i < MAX_PARTY_SIZE; i++) {

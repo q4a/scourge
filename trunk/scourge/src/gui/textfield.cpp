@@ -82,9 +82,17 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 }
 
 void TextField::drawWidget(Widget *parent) {
+  GuiTheme *theme = ((Window*)parent)->getTheme();
   
   //glColor3f( 1, 1, 1 );
-  applyHighlightedBorderColor();
+  if( theme->getInputBackground() ) {
+    glColor4f( theme->getInputBackground()->color.r,
+               theme->getInputBackground()->color.g,
+               theme->getInputBackground()->color.b,
+               theme->getInputBackground()->color.a );
+  } else {
+    applyHighlightedBorderColor();
+  }
   glPushMatrix();
   glBegin(GL_QUADS);
   glVertex2d(0, 0);
@@ -94,7 +102,14 @@ void TextField::drawWidget(Widget *parent) {
   glEnd();
   glPopMatrix();
 
-  applyColor();
+  if( theme->getInputText() ) {
+    glColor4f( theme->getInputText()->r,
+               theme->getInputText()->g,
+               theme->getInputText()->b,
+               theme->getInputText()->a );
+  } else {
+    applyColor();
+  }
 //  ((Window*)parent)->getSDLHandler()->texPrintMono(OFFSET, 12, getText());
   
   char letter[2];
@@ -108,17 +123,20 @@ void TextField::drawWidget(Widget *parent) {
   }
 
   // border
-  applyBorderColor();
+  if( theme->getButtonBorder() ) {
+    glColor4f( theme->getButtonBorder()->color.r,
+               theme->getButtonBorder()->color.g,
+               theme->getButtonBorder()->color.b,
+               theme->getButtonBorder()->color.a );
+  } else {
+    applyBorderColor();
+  }
   glPushMatrix();
-  glBegin(GL_LINES);
+  glBegin(GL_LINE_LOOP);
   glVertex2d(0, 0);
   glVertex2d(0, getHeight());
-  glVertex2d(getWidth(), 0);
   glVertex2d(getWidth(), getHeight());
-  glVertex2d(0, 0);
   glVertex2d(getWidth(), 0);
-  glVertex2d(0, getHeight());
-  glVertex2d(getWidth(), getHeight());
   glEnd();
   glPopMatrix();
   if(inside) {
