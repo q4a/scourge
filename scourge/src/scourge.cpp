@@ -2639,7 +2639,8 @@ void Scourge::createPartyUI() {
                         getShapePalette()->getGuiTexture2() );
   cards = new CardContainer(mainWin);  
 
-  inventoryButton = cards->createButton( 0, 0, 120, 25, strdup("Party Info"), MAX_SIZE );
+  inventoryButton = cards->createButton( 0, 0, 60, 25, strdup("Party Info"), MAX_SIZE );
+  endTurnButton = cards->createButton( 60, 0, 120, 25, strdup("End Turn"), MAX_SIZE );
   optionsButton = cards->createButton( 0, 25,  60, 50, strdup("Options"), MAX_SIZE );
   quitButton = cards->createButton( 60, 25,  120, 50, strdup("Quit"), MAX_SIZE );
   // string label must be big enough for string changes in toggleRoundUI().
@@ -2881,6 +2882,9 @@ void Scourge::resetPartyUI() {
 bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
   if(widget == inventoryButton) {
     toggleInventoryWindow();
+  } else if(widget == endTurnButton &&
+            inTurnBasedCombatPlayerTurn()) {
+    battleRound[battleTurn]->endTurn();
   } else if(widget == optionsButton) {
     toggleOptionsWindow();
   } else if(widget == quitButton) {
