@@ -617,7 +617,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
 
 
 int UserConfiguration::getGameSpeedTicks(){
-		return gamespeed * 35;
+		return gamespeed * 50;
 }
 
 
