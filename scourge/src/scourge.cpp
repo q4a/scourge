@@ -987,16 +987,21 @@ void Scourge::createUI() {
 
 
 void Scourge::playRound() {
+  // change animation if needed
+  for(int i = 0; i < 4; i++) {
+	party[i]->getShape()->setCurrentAnimation((int)(party[i]->anyMovesLeft() ? MD2_RUN : MD2_STAND));
+  }
+
   // move the player's selX,selY in a direction as specified by keystroke
   handleKeyboardMovement();
 
   // hound your targets
   for(int i = 0; i < 4; i++) {
-		if(!party[i]->getStateMod(Constants::dead) && 
-			 party[i]->getTargetCreature()) {
-			party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
-												 party[i]->getTargetCreature()->getY());
-		}
+	if(!party[i]->getStateMod(Constants::dead) && 
+	   party[i]->getTargetCreature()) {
+	  party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
+						 party[i]->getTargetCreature()->getY());
+	}
   }
   
   // round starts if:

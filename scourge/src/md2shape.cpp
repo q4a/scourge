@@ -132,9 +132,9 @@ void MD2Shape::commonInit(char *file_name, char *texture_name, float div) {
   movez = maxz - minz;
 }
 
-void MD2Shape::setCurrentAnimation(int numAnim){
+ void MD2Shape::setCurrentAnimation(int numAnim){
     
-    if(numAnim > 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){        
+    if(numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){        
         //if(animationPlayed){
             if(numAnim != g_3DModel.currentAnim) {
                 // Set the current animation to the new one wanted
