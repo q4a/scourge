@@ -125,6 +125,8 @@ public:
 
 	void drawWidget(Widget *w);
 
+  void showSpells();
+
 protected:
 	void setSelectedPlayerAndMode(int player, int mode);
 	void moveItemTo(int playerIndex);

@@ -2674,9 +2674,9 @@ void Scourge::createPartyUI() {
                                 this, this );
     cards->addWidget( playerInfo[i], MAX_SIZE );
     for( int t = 0; t < 3; t++ ) {
-      quickSpell[i][t] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, t * 25,
-                                     offsetX + playerButtonWidth * (i + 1), ( t + 1 ) * 25 - 5, 
-                                     this );
+      quickSpell[i][t] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, t * 20,
+                                     offsetX + playerButtonWidth * (i + 1), ( t + 1 ) * 20, 
+                                     this, NULL, true );
       cards->addWidget( quickSpell[i][t], MAX_SIZE );
     }    
   }
@@ -3002,17 +3002,23 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
         if( widget == quickSpell[i][t] ) {
           Creature *creature = getParty()->getParty( i );
           Spell *spell = creature->getQuickSpell( t );
-          if(spell->getMp() > creature->getMp()) {
-            showMessageDialog("Not enough Magic Points to cast this spell!");
-          } else {
-            creature->setAction(Constants::ACTION_CAST_SPELL, 
-                                NULL,
-                                spell);
-            if(!spell->isPartyTargetAllowed()) {
-              setTargetSelectionFor(creature);
+          if( spell ) {
+            if(spell->getMp() > creature->getMp()) {
+              showMessageDialog("Not enough Magic Points to cast this spell!");
             } else {
-              creature->setTargetCreature(creature);
+              creature->setAction(Constants::ACTION_CAST_SPELL, 
+                                  NULL,
+                                  spell);
+              if(!spell->isPartyTargetAllowed()) {
+                setTargetSelectionFor(creature);
+              } else {
+                creature->setTargetCreature(creature);
+              }
             }
+          } else {
+            getParty()->setPlayer( i );
+            inventory->showSpells();
+            if( !inventory->isVisible() ) toggleInventoryWindow();
           }
         }
       }

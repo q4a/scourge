@@ -179,6 +179,10 @@ Inventory::Inventory(Scourge *scourge) {
 Inventory::~Inventory() {
 }
 
+void Inventory::showSpells() {
+  setSelectedPlayerAndMode( selected, SPELL );
+}
+
 void Inventory::drawWidget(Widget *w) {
   GuiTheme *theme = mainWin->getTheme();
   Creature *p = scourge->getParty()->getParty(selected);
