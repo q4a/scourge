@@ -914,14 +914,18 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
 
 GLuint ShapePalette::loadSystemTexture( char *line ) {
   if( texture_count >= MAX_SYSTEM_TEXTURE_COUNT ) {
-	cerr << "Error: *** no more room for system textures!. Not loading: " << line << endl;
-	return 0;
+    cerr << "Error: *** no more room for system textures!. Not loading: " << line << endl;
+    return 0;
   }
-  char path[300];
-  strcpy( textures[texture_count].filename, line );
-  sprintf( path, "/%s", textures[texture_count].filename );
-  // load the texture
-  GLuint id = textures[ texture_count ].id = loadGLTextures( path );
-  texture_count++;
+
+  GLuint id = findTextureByName( line );
+  if( !id ) {
+    char path[300];
+    strcpy( textures[texture_count].filename, line );
+    sprintf( path, "/%s", textures[texture_count].filename );
+    // load the texture
+    id = textures[ texture_count ].id = loadGLTextures( path );
+    texture_count++;
+  }
   return id;
 }

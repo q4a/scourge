@@ -29,14 +29,14 @@ class SDLHandler;
 
 class Label : public Widget {
  private:
-	 char text[255];
+	 char text[3000];
 	 int lineWidth;
 
  public: 
   Label(int x, int y, char *text=NULL, int lineWidth=0);
   ~Label();
   inline char *getText() { return text; }
-  inline void setText(char *s) { strncpy(text, ( s ? s : "" ), 255); text[254] = '\0'; }
+  inline void setText(char *s) { strncpy(text, ( s ? s : "" ), 3000); text[2999] = '\0'; }
   void drawWidget(Widget *parent);
   inline bool canGetFocus() { return false; }
 };
