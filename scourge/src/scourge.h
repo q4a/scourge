@@ -124,7 +124,7 @@ public:
   
   @author Gabor Torok
 */ 
-class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
+class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler  {
  private:
   Party *party;
   Map *levelMap;
@@ -275,6 +275,20 @@ public:
   
   Scourge(UserConfiguration *config);
   ~Scourge();
+
+  /**
+    The widget received a dragged item
+  */
+  void receive(Widget *widget);
+
+  /**
+	 The widget initiated a drag
+   * return true if there's something to drag at x,y
+   */
+  inline bool startDrag(Widget *widget, int x=0, int y=0) {
+    return false;
+  }
+
 
   inline int getCurrentStory() { return currentStory; }
 
