@@ -28,40 +28,30 @@ MainMenu::MainMenu(Scourge *scourge){
 	cloud[i].h = (int)(28.0 * rand()/RAND_MAX) + 100;
 	cloud[i].speed = (int)(2.0 * rand()/RAND_MAX) + 1;
   }
+  // The new style gui
+  mainWin = new Window( scourge->getSDLHandler(),
+						50, 230, 270, 220, 
+						"Main Menu", 
+						scourge->getShapePalette()->getGuiTexture() );
+  
+  char version[100];
+  sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
+  Label *label = new Label( 10, 20, version);
+  label->setColor( 0, 0, 0, 1.0f );
+  mainWin->addWidget((Widget*)label);
+  
+  newGameButton = new Button( 10, 40, 260, 60, "New Game" );
+  mainWin->addWidget((Widget*)newGameButton);
+  continueButton = new Button( 10, 70, 260, 90, "Continue Game" );
+  mainWin->addWidget((Widget*)continueButton);
+  optionsButton = new Button( 10, 100, 260, 120, "Options" );
+  mainWin->addWidget((Widget*)optionsButton);
+  aboutButton = new Button( 10, 130, 260, 150, "About" );
+  mainWin->addWidget((Widget*)aboutButton);
+  quitButton = new Button( 10, 160, 260, 180, "Quit" );
+  mainWin->addWidget((Widget*)quitButton);
 }
 MainMenu::~MainMenu(){
-}
-
-void MainMenu::init() {
-    if(!mainWin) {
-	  // The new style gui (testing for now)
-	  mainWin = new Window( scourge->getSDLHandler(),
-							50, 230, 270, 220, 
-							"Main Menu", 
-							scourge->getShapePalette()->getGuiTexture() );
-	  
-	  char version[100];
-	  sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
-	  Label *label = new Label( 10, 20, version);
-	  label->setColor( 0, 0, 0, 1.0f );
-	  mainWin->addWidget((Widget*)label);
-
-	  newGameButton = new Button( 10, 40, 260, 60, "New Game" );
-	  mainWin->addWidget((Widget*)newGameButton);
-	  continueButton = new Button( 10, 70, 260, 90, "Continue Game" );
-	  mainWin->addWidget((Widget*)continueButton);
-	  optionsButton = new Button( 10, 100, 260, 120, "Options" );
-	  mainWin->addWidget((Widget*)optionsButton);
-	  aboutButton = new Button( 10, 130, 260, 150, "About" );
-	  mainWin->addWidget((Widget*)aboutButton);
-	  quitButton = new Button( 10, 160, 260, 180, "Quit" );
-	  mainWin->addWidget((Widget*)quitButton);
-    }
-	mainWin->setVisible(true);
-}
-
-void MainMenu::destroy() {
-  mainWin->setVisible(false);
 }
 
 void MainMenu::drawView(SDL_Surface *screen) {

@@ -19,34 +19,45 @@
 #define WIDGET_H
 
 #include "../constants.h"
-#include "../sdlhandler.h"
-#include "window.h"
 
 /**
   *@author Gabor Torok
   */
 
 class SDLHandler;
-class Window;
 
 class Widget {
  protected:
-  int x;
-  int y;
+  int x, y, w, h;
   float red, green, blue, alpha;
+  bool visible;
 
  public: 
-  Widget(int x, int y);
+  Widget(int x, int y, int w, int h);
   virtual ~Widget();
-  void draw(Window *parent);
+  void draw(Widget *parent);
 
   inline int getX() { return x; }
   inline int getY() { return y; }
+  inline int getWidth() { return w; }
+  inline int getHeight() { return h; }
+
   inline void move(int x, int y) { this->x = x; this->y = y; }
-  virtual void drawWidget(Window *parent) = 0;
+  inline void resize(int w, int h) { this->w = w; this->h = h; }
+
+  virtual inline void setVisible(bool b) { visible = b; }
+  virtual inline bool isVisible() { return visible; }
+
+  virtual void drawWidget(Widget *parent) = 0;
   inline void setColor( float r, float g, float b, float a ) { this->red = r; this->green = g; this->blue = b; this->alpha = a; }
-  virtual void handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
-  virtual bool canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
+
+  /**
+	 Return true, if the event activated this widget. (For example, button push, etc.)
+	 Another way to think about it is that if true, the widget fires an "activated" event
+	 to the outside world.
+   */
+  virtual bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+  virtual bool isInside(int x, int y);
 
  protected:
   inline void applyColor() { glColor4f( red, green, blue, alpha ); }

@@ -21,23 +21,28 @@
   *@author Gabor Torok
   */
 
-Widget::Widget(int x, int y) {
+Widget::Widget(int x, int y, int w, int h) {
   this->x = x;
   this->y = y;
+  this->w = w;
+  this->h = h;
   red = green = blue = alpha = 0;
+  visible = true;
 }
 Widget::~Widget() {
 }
 
-void Widget::draw(Window *parent) {
+void Widget::draw(Widget *parent) {
   glTranslated( x, y, 0 );
   drawWidget(parent);
 }
 
-void Widget::handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y) {
+bool Widget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   // do nothing by default
+  return false;
 }
 
-bool Widget::canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y) {
-  return false;
+bool Widget::isInside(int x, int y) {
+  return(x >= getX() && x < getX() + w &&
+  		  y >= getY() && y < getY() + h);
 }

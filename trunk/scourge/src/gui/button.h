@@ -19,15 +19,12 @@
 #define BUTTON_H
 
 #include "../constants.h"
-#include "../sdlhandler.h"
 #include "widget.h"
 #include "label.h"
 
 /**
   *@author Gabor Torok
   */
-
-class SDLHandler;
 
 class Button : public Widget {
  private:
@@ -41,10 +38,8 @@ class Button : public Widget {
   Button(int x1, int y1, int x2, int y2, char *label);
   ~Button();
   inline Label *getLabel() { return label; }
-  void handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
-  bool canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
-
-  void drawWidget(Window *parent);
+  bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+  void drawWidget(Widget *parent);
 };
 
 #endif

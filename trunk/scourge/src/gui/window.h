@@ -29,7 +29,7 @@
 class SDLHandler;
 class Widget;
   
-class Window {
+class Window : public Widget {
  private:
   // the image is 510x270
   static const int TILE_W=510 / 2;
@@ -40,8 +40,6 @@ class Window {
   static const int TOP_HEIGHT = 20;
   static const int BOTTOM_HEIGHT = 5;
 
-  int x, y, w, h;
-  bool visible;
   char *title;
   GLuint texture;
   SDLHandler *sdlHandler;
@@ -59,30 +57,25 @@ class Window {
   Window(SDLHandler *sdlHandler, int x, int y, int w, int h, const char *title, GLuint texture);
   ~Window();
 
-  inline int getX() { return x; }
-  inline int getY() { return y; }
-  inline int getWidth() { return w; }
-  inline int getHeight() { return h; }
-  inline bool isVisible() { return visible; }
   void setVisible(bool b);
-  inline void move(int x, int y) { this->x = x; this->y = y; }
-  inline void resize(int w, int h) { this->w = w; this->h = h; }
   void applyBorderColor();
   void applyBackgroundColor(bool opaque=false);
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
-  void draw();
   
   void addWidget(Widget *widget);
-  //  void removeWidget(Widget *widget);
-  void handleWindowEvent(SDL_Event *event, int x, int y);
-  bool canHandle(SDL_Event *event, int x, int y);
-  void handleEvent(SDL_Event *event, int x, int y);
+  void removeWidget(Widget *widget);
+  Widget *handleWindowEvent(SDL_Event *event, int x, int y);
+
+  // from Widget
+  void drawWidget(Widget *parent);
+  bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+  bool isInside(int x, int y);
 
   // window management
   static void drawVisibleWindows();
   static void addWindow(Window *win);
   static void removeWindow(Window *win);
-  static void delegateEvent(SDL_Event *event, int x, int y);
+  static Widget *delegateEvent(SDL_Event *event, int x, int y);
   
 	
  protected:

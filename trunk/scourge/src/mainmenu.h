@@ -68,8 +68,9 @@ public:
   bool handleEvent(Widget *widget, SDL_Event *event);
   int getValue();
 
-  void init();
-  void destroy();
+  inline void show() { mainWin->setVisible(true); }
+  inline void hide() { mainWin->setVisible(false); }
+  inline bool isVisible() { return mainWin->isVisible(); }
 
  protected:
   void drawClouds(bool moveClouds, bool flipped);

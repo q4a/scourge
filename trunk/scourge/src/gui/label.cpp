@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "label.h"
+#include "window.h"
 
 /**
   *@author Gabor Torok
   */
 
 Label::Label(int x, int y, char *text) : 
-  Widget(x, y) {
+  Widget(x, y, 0, 0) {
   this->text = strdup(text);
 }
 
@@ -29,8 +30,8 @@ Label::~Label() {
   free(text);
 }
 
-void Label::drawWidget(Window *parent) {
+void Label::drawWidget(Widget *parent) {
   applyColor();
-  parent->getSDLHandler()->texPrint(0, 0, text);
+  ((Window*)parent)->getSDLHandler()->texPrint(0, 0, text);
 }
 
