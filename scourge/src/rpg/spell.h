@@ -52,7 +52,7 @@ class Spell {
   int targetType;
   char notes[1000];
   int speed;
-  bool defaultTarget;
+  int effect;
   MagicSchool *school;  
 
   static map<string, Spell*> spellMap;
@@ -60,7 +60,7 @@ class Spell {
  public:
 
   Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
-		int distance, int targetType, int speed, bool defaultTarget, MagicSchool *school);
+		int distance, int targetType, int speed, int effect, MagicSchool *school);
   ~Spell();
 
   inline char *getName() { return name; }
@@ -73,7 +73,7 @@ class Spell {
   inline int getTargetType() { return targetType; }  
   inline char *getNotes() { return notes; }
   inline int getSpeed() { return speed; }
-  inline bool useDefaultTarget() { return defaultTarget; }
+  inline int getEffect() { return effect; }
   inline MagicSchool *getSchool() { return school; }
   inline bool isRangedSpell() { return distance > 1; }  
   inline void describe(char *s) { sprintf(s, "%s (L:%d)(M:%d)", name, level, mp); }

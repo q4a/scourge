@@ -408,10 +408,19 @@ public:
 	EFFECT_GREEN,
 	EFFECT_EXPLOSION,
 	EFFECT_SWIRL,
-	EFFECT_CAST_SPELL
-  };    
+	EFFECT_CAST_SPELL,
 
+	// must be last
+	EFFECT_COUNT
+  };    
   static const int DAMAGE_DURATION = 500;
+
+  static const char *EFFECT_NAMES[];
+  inline static int getEffectByName(char *s) { 
+	for(int i = 0; i < EFFECT_COUNT; i++) 
+	  if(!strcmp(s, EFFECT_NAMES[i])) return i; 
+	return EFFECT_FLAMES; 
+  }
   
   // glColor for texts
   enum {

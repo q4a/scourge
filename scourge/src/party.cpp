@@ -414,6 +414,7 @@ Creature **Party::createHardCodedParty() {
   pc[2]->addSpell(Spell::getSpellByName("Flame of Azun"));
   pc[2]->addSpell(Spell::getSpellByName("Silent knives"));
   pc[2]->addSpell(Spell::getSpellByName("Stinging light"));
+  pc[2]->addSpell(Spell::getSpellByName("Burning stare"));
 
   pc[3]->addSpell(Spell::getSpellByName("Lesser healing touch"));
   pc[3]->addSpell(Spell::getSpellByName("Body of stone"));
