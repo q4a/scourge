@@ -166,9 +166,10 @@ void Board::initMissions() {
 
   // maintain a set of missions
   while( availableMissions.size() < 5 ) {
-    int depth = (int)( 7.0f * rand()/RAND_MAX ) + 1;
     int level = (int)( ( ave + 2.0f ) * rand()/RAND_MAX ) - 4;
     if( level < 1 ) level = 1;
+    int depth =  (int)((float)level / 7.0f ) + 1 + (int)( 3.0f * rand()/RAND_MAX );
+    if( depth > 9 ) depth = 9;
     int templateIndex = (int)( (float)( templates.size() ) * rand()/RAND_MAX );
     Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
     availableMissions.push_back( mission );

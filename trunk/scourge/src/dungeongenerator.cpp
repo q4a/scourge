@@ -1160,7 +1160,7 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
   if(mission && !stairsDown) {
 
     // mission objects are on a pedestal
-    // and make them blocking so creatures can't get them
+    // and they are blocking so creatures can't get them
     for(int i = 0; i < mission->getItemCount(); i++) {
       Item *item = mission->getItem( i );
       Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
@@ -1171,7 +1171,7 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
               x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
               y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
               pedestal->getShape()->getHeight());
-      cerr << "*** Added mission item: " << item->getItemName() << endl;
+      cerr << "*** Added mission item: " << item->getItemName() << " at: " << x << "," << y << endl;
     }
 
     // add mission creatures
@@ -1208,8 +1208,6 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
           cerr << "Warning: no monsters defined for level: " << level << endl;
           break;
         }
-
-        // use the creature's block shape to see if it would fit
         GLShape *shape = 
           scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
                                                        monster->getSkinName(), 
