@@ -287,6 +287,21 @@ void Session::creatureDeath(Creature *creature) {
     // make it contain all items, no matter what size
     item->addContainedItem(creature->removeInventory(0), true);
   }
+  // for monsters add the loot
+  if( creature->isMonster() ) {
+    n = (int)( 5.0f * rand()/RAND_MAX ) + 3;
+    for( int i = 0; i < n; i++ ) {
+      Item *loot;
+      if( 0 == (int)( 10.0f * rand()/RAND_MAX ) ) {
+        Spell *spell = MagicSchool::getRandomSpell( creature->getLevel() );
+        loot = newItem(RpgItem::getItemByName("Scroll"), creature->getLevel(), spell);
+      } else {
+        loot = newItem( RpgItem::getRandomItem( 1 ), creature->getLevel() );
+      }
+      // make it contain all items, no matter what size
+      item->addContainedItem( loot, true );
+    }
+  }
   creature->setStateMod(Constants::dead, true);
 }                 
 
