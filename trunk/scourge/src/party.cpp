@@ -350,6 +350,7 @@ Creature **Party::createHardCodedParty() {
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger")));
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));
@@ -357,13 +358,15 @@ Creature **Party::createHardCodedParty() {
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Mushroom")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Big egg")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
-  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Long sword")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Wine barrel")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Mutton meat")));
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[2]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Battleaxe")));
@@ -371,6 +374,7 @@ Creature **Party::createHardCodedParty() {
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
   pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[3]->addInventory(scourge->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   // equip weapons
   pc[0]->equipInventory(0);

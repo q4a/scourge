@@ -34,6 +34,7 @@
 #include "rpg/monster.h"
 #include "constants.h"
 #include "effect.h"
+#include "events/potionexpirationevent.h"
 
 using namespace std;
 
@@ -98,7 +99,7 @@ class Creature {
   char description[300];
   GLint lastTick;
   int speed;
-  int armor;
+  int armor, bonusArmor;
   int moveRetrycount;
   int availableSkillPoints;
   
@@ -322,6 +323,9 @@ class Creature {
   int getMaxProjectileCount(Item *item);
 
   void usePotion(Item *item);
+
+  inline void setBonusArmor(int n) { bonusArmor = n; if(bonusArmor < 0) bonusArmor = 0; recalcAggregateValues(); }
+  inline int getBonusArmor() { return bonusArmor; }
 
  protected:
 

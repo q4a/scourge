@@ -6,4 +6,6 @@ libScourgeEvents_a_SOURCES = \
 	event.cpp\
 	event.h\
 	thirsthungerevent.cpp\
-	thirsthungerevent.h
+	thirsthungerevent.h\
+	potionexpirationevent.cpp\
+	potionexpirationevent.h

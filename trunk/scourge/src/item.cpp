@@ -101,7 +101,7 @@ void Item::initItems(ShapePalette *shapePal) {
 	exit(1);
   }
 
-  int itemCount = 0;
+  int itemCount = 0, potionTime;
   char name[255], type[255], shape[255], skill[255], potionSkill[255];
   char long_description[500], short_description[120];
   char line[255];
@@ -127,6 +127,8 @@ void Item::initItems(ShapePalette *shapePal) {
 		p = strtok(NULL, ",");
 		if(p) strcpy(potionSkill, p);
 		else strcpy(potionSkill, "");
+		p = strtok(NULL, ",");
+		potionTime = (p ? atoi(p) : 0);
 	  }
 	  n = Constants::readLine(line, fp);
 	  strcpy(type, strtok(line + 1, ","));
@@ -145,7 +147,7 @@ void Item::initItems(ShapePalette *shapePal) {
 		  inventory_location = atoi(p);
 		  twohanded = atoi(strtok(NULL, ","));
 		  strcpy(skill, strtok(NULL, ","));
-		}
+		}		
 	  }
 	  
 	  n = Constants::readLine(line, fp);
@@ -184,7 +186,7 @@ void Item::initItems(ShapePalette *shapePal) {
 								   twohanded, 
 								   (distance < (int)Constants::MIN_DISTANCE ? 
 									(int)Constants::MIN_DISTANCE : distance), 
-								   skill_index, maxCharges, potion_skill));	  
+								   skill_index, maxCharges, potion_skill, potionTime));	  
 	} else {
 	  n = Constants::readLine(line, fp);
 	}

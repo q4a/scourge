@@ -80,7 +80,7 @@ INCLUDES = -I$(srcdir)
 
 noinst_LIBRARIES = libScourgeEvents.a
 
-libScourgeEvents_a_SOURCES =  	event.cpp 	event.h 	thirsthungerevent.cpp 	thirsthungerevent.h
+libScourgeEvents_a_SOURCES =  	event.cpp 	event.h 	thirsthungerevent.cpp 	thirsthungerevent.h 	potionexpirationevent.cpp 	potionexpirationevent.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -97,7 +97,8 @@ X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libScourgeEvents_a_LIBADD = 
-libScourgeEvents_a_OBJECTS =  event.o thirsthungerevent.o
+libScourgeEvents_a_OBJECTS =  event.o thirsthungerevent.o \
+potionexpirationevent.o
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -114,7 +115,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/event.P .deps/thirsthungerevent.P
+DEP_FILES =  .deps/event.P .deps/potionexpirationevent.P \
+.deps/thirsthungerevent.P
 SOURCES = $(libScourgeEvents_a_SOURCES)
 OBJECTS = $(libScourgeEvents_a_OBJECTS)
 
