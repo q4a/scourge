@@ -64,6 +64,7 @@ protected:
     void drawInventoryInfo();
     void drawSpellInfo();
     void drawLogInfo();
+	void setSelectedPlayerAndMode(int player, int mode);
 };
 
 #endif

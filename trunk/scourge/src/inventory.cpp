@@ -25,8 +25,6 @@
   
 Inventory::Inventory(Scourge *scourge) {
     this->scourge = scourge;
-    this->selected = 0;
-    this->selectedMode = 0;
     this->modeName[0] = "Properties";
     this->modeName[1] = "Inventory";
     this->modeName[2] = "Spells";
@@ -66,13 +64,7 @@ void Inventory::createGui() {
     scourge->getGui()->addActiveRegion(555, scourge->getSDLHandler()->getScreen()->h - 30, 705, scourge->getSDLHandler()->getScreen()->h, Constants::INV_MODE_LOG, this);
     scourge->getGui()->addActiveRegion(0, scourge->getSDLHandler()->getScreen()->h - 30, 105, scourge->getSDLHandler()->getScreen()->h, Constants::ESCAPE, this);
 
-    skillList = scourge->getGui()->   
-	  addScrollingList(120, 250, 350, 500,
-					   Constants::SKILL_LIST);
-    itemList = scourge->getGui()->   
-	  addScrollingList(120, 250, 500, 500,
-					   Constants::ITEM_LIST);
-
+	setSelectedPlayerAndMode(0, CHARACTER);
 }
 
 void Inventory::drawView(SDL_Surface *screen) {
@@ -102,18 +94,71 @@ bool Inventory::handleEvent(SDL_Event *event) {
     return false;
 }
 
+void Inventory::setSelectedPlayerAndMode(int player, int mode) {
+  selected = player;
+  selectedMode = mode;
+
+  // arrange the gui
+  scourge->getGui()->removeAllScrollingLists();
+  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_0);
+  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_1);
+  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_2);
+  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_3);
+  int xpos = 120;
+  int width = 90;
+  switch(mode) {
+  case CHARACTER:
+    skillList = scourge->getGui()->   
+	  addScrollingList(120, 250, 350, 500,
+					   Constants::SKILL_LIST);
+	break;
+  case INVENTORY:
+    itemList = scourge->getGui()->   
+	  addScrollingList(120, 50, 510, 500,
+					   Constants::ITEM_LIST);
+	for(int i = 0; i < 4; i++) {
+	  if(selected != i) {
+		scourge->getGui()->addActiveRegion(xpos, 520, xpos + width, 550, 
+										   Constants::MOVE_ITEM_TO_PLAYER_0 + i, this);
+		xpos += (width + 10);
+	  }
+	}
+	scourge->getGui()->addActiveRegion(xpos, 520, xpos + width, 550, 
+									   Constants::DROP_ITEM, this);
+	xpos += (width + 10);
+
+
+	break;
+  case SPELL:
+	break;
+  case LOG:
+	break;
+  }
+}
+
 bool Inventory::processMouseClick(int x, int y, int button) {
     int region = scourge->getGui()->testActiveRegions(x, y);
 //    fprintf(stderr, "*** region=%d\n", region);
     if(region == Constants::INV_PLAYER_0 || region == Constants::INV_PLAYER_1 ||
        region == Constants::INV_PLAYER_2 || region == Constants::INV_PLAYER_3) {
-        selected = region;
-    } else if(region == Constants::INV_MODE_PROPERTIES || region == Constants::INV_MODE_INVENTORY ||
-              region == Constants::INV_MODE_SPELLS || region == Constants::INV_MODE_LOG) {
-        selectedMode = region - Constants::INV_MODE_PROPERTIES;
+		setSelectedPlayerAndMode(region, selectedMode);
+    } else if(region == Constants::INV_MODE_PROPERTIES || 
+			  region == Constants::INV_MODE_INVENTORY ||
+              region == Constants::INV_MODE_SPELLS || 
+			  region == Constants::INV_MODE_LOG) {
+		setSelectedPlayerAndMode(selected, region - Constants::INV_MODE_PROPERTIES);
     } else if(region == Constants::ESCAPE) {
         return true;
-    }
+    } else if(region >= Constants::MOVE_ITEM_TO_PLAYER_0 && 
+			  region <= Constants::MOVE_ITEM_TO_PLAYER_3) {
+	  int itemIndex = scourge->getGui()->getLineSelected(Constants::ITEM_LIST);  
+	  if(itemIndex > -1 && 
+		 scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
+		int index = region - Constants::MOVE_ITEM_TO_PLAYER_0;
+		scourge->getParty(index)->getPC()->
+		  addInventory(scourge->getParty(selected)->getPC()->removeInventory(itemIndex));
+	  }
+	}
     return false;
 }
 
@@ -139,13 +184,13 @@ void Inventory::drawInventory() {
 
     switch(selectedMode) {
     case CHARACTER:
-        drawCharacterInfo(); break;
+	  drawCharacterInfo(); break;
     case INVENTORY:
-        drawInventoryInfo(); break;
+	  drawInventoryInfo(); break;
     case SPELL:
-        drawSpellInfo(); break;
+	  drawSpellInfo(); break;
     case LOG:
-        drawLogInfo(); break;
+	  drawLogInfo(); break;
     }
 }
 
@@ -256,26 +301,6 @@ void Inventory::drawCharacterInfo() {
       }
     }
 
-	/*
-    y = yy + 100;
-    x = xx + 10;
-    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint((float)x, (float)(y), "Attributes:");
-    glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
-
-    y += 10;
-    glBegin(GL_LINES);
-        glVertex2d(x, y);
-        glVertex2d(x + GUI_PLAYER_INFO_W / 2 - 20, y);
-    glEnd();
-
-    y += 24;
-    for(int t = 0; t < Creature::ATTR_COUNT; t++) {
-      scourge->getSDLHandler()->texPrint((float)x, (float)(y), "%s: %d", Creature::ATTR_NAMES[t], scourge->getParty(i)->getAttr(t));
-      y += 14;
-    }    
-	*/
-
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
     scourge->getSDLHandler()->texPrint(120, 245, "Skills:");    
     glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
@@ -288,7 +313,7 @@ void Inventory::drawCharacterInfo() {
 
 void Inventory::drawInventoryInfo() {
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-    scourge->getSDLHandler()->texPrint(120, 245, "Inventory:");    
+    scourge->getSDLHandler()->texPrint(120, 40, "Inventory:");    
     glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
     for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
 	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
@@ -301,6 +326,14 @@ void Inventory::drawInventoryInfo() {
 	  sprintf(pcInvText[t], "");
 	}
     scourge->getGui()->drawScrollingList(itemList, Constants::SKILL_COUNT, (const char**)pcInvText);
+	char name[80];
+	for(int i = 0; i < 4; i++) {
+	  if(i != selected) {
+		sprintf(name, "to %s", scourge->getParty(i)->getPC()->getName());
+		scourge->getGui()->outlineActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_0 + i, name);
+	  }
+	}
+	scourge->getGui()->outlineActiveRegion(Constants::DROP_ITEM, "Drop Item");
 }
 
 

@@ -193,7 +193,13 @@ public:
 	PLAYER_2,
 	PLAYER_3,
 	PLAYER_4,
-	PLAYER_ONLY
+	PLAYER_ONLY,
+	MOVE_ITEM_TO_PLAYER_0,
+	MOVE_ITEM_TO_PLAYER_1,
+	MOVE_ITEM_TO_PLAYER_2,
+	MOVE_ITEM_TO_PLAYER_3,
+	DROP_ITEM
+
   };
 
   // Directions (a bitfield so they can be combined)

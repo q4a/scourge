@@ -44,13 +44,13 @@ private:
   } ActiveRegion;
 
   typedef struct _ScrollingList {
-      int x1, y1, x2, y2;
-      int id;
-      int pos;
-      int height;
-      int activeOffset;
-      int top; // the top of the inner content
-      int lineSelected;
+	int x1, y1, x2, y2;
+	int id;
+	int pos; // scroller pos in % (50 is in the middle)
+	int height; // height of the scroll bar
+	int activeOffset;
+	int top; // the top of the inner content
+	int lineSelected;
   } ScrollingList;
 
   static const int MAX_WINDOW_COUNT = 100;  
@@ -120,6 +120,11 @@ public:
    */
   void addActiveRegion(int x1, int y1, int x2, int y2, int id, SDLEventHandler *eventHandler);
 
+  /**
+   * Draw the button w. optional label
+   */
+  void outlineActiveRegion(int id, const char *label = NULL);
+
   void removeActiveRegion(int id);
 
   int testActiveRegions(int mousex, int mousey);
@@ -129,6 +134,10 @@ public:
   void showCurrentRegion(int id);
 
   int addScrollingList(int x, int y, int w, int h, int activeRegion);
+
+  void removeAllScrollingLists();
+
+  int getLineSelected(int id);
 
   void drawScrollingList(int id, int count, const char *list[]);
 

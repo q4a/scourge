@@ -72,15 +72,16 @@ void Gui::pushWindows() {
     for(int i = 0; i < windowCount; i++) {
         memcpy(&(windowStack[windowStackCount].windows[i]), &(windows[i]), sizeof(GUIWindow));
     }
+
+    // fixme
+	removeAllScrollingLists();
+
     windowStack[windowStackCount].regionCount = regionCount;
     for(int i = 0; i < regionCount; i++) {
         memcpy(&(windowStack[windowStackCount].regions[i]), &(regions[i]), sizeof(ActiveRegion));
     }
     windowStackCount++;
     windowCount = regionCount = 0;
-
-    // fixme
-    scrollingListCount = 0;
 }
 
 void Gui::popWindows() {
@@ -90,13 +91,14 @@ void Gui::popWindows() {
     for(int i = 0; i < windowCount; i++) {
         memcpy(&(windows[i]), &(windowStack[windowStackCount].windows[i]), sizeof(GUIWindow));
     }
+
+    // fixme
+	removeAllScrollingLists();
+
     regionCount = windowStack[windowStackCount].regionCount;
     for(int i = 0; i < regionCount; i++) {
         memcpy(&(regions[i]), &(windowStack[windowStackCount].regions[i]), sizeof(ActiveRegion));
     }
-
-    // fixme
-    scrollingListCount = 0;
 }
 
 void Gui::setWindowVisible(int id, bool b) {
@@ -238,6 +240,33 @@ void Gui::addActiveRegion(int x1, int y1,
     regionCount++;
 }
 
+void Gui::outlineActiveRegion(int id, const char *label) {
+  int index = -1;
+  for(int i = 0; i < regionCount; i++) {
+	if(regions[i].id == id) {
+	  index = i;
+	  break;
+	}
+  }
+  if(index == -1) return;
+  glBegin(GL_LINES);
+  glVertex2d(regions[index].x1, regions[index].y1);
+  glVertex2d(regions[index].x1, regions[index].y2);
+  glVertex2d(regions[index].x2, regions[index].y1);
+  glVertex2d(regions[index].x2, regions[index].y2);
+  glVertex2d(regions[index].x1, regions[index].y1);
+  glVertex2d(regions[index].x2, regions[index].y1);
+  glVertex2d(regions[index].x1, regions[index].y2);
+  glVertex2d(regions[index].x2, regions[index].y2);
+  glEnd();
+
+  if(label) {
+	float y = (float)(regions[index].y2 - regions[index].y1) / 2.0 + regions[index].y1 + 5;
+	scourge->getSDLHandler()->texPrint(regions[index].x1 + 10, y, 
+									   "%s", label);
+  }
+}
+
 void Gui::moveActiveRegion(int x1, int y1, 
                            int x2, int y2, 
                            int id) {
@@ -365,6 +394,13 @@ int Gui::addScrollingList(int x1, int y1, int x2, int y2, int activeRegion) {
     scrollingList[scrollingListCount].lineSelected = -1;
     scrollingListCount++;
     return activeRegion;
+}
+
+void Gui::removeAllScrollingLists() {
+  for(int i = 0; i < scrollingListCount; i++) {
+	removeActiveRegion(scrollingList[i].id);
+  }
+  scrollingListCount = 0;
 }
 
 void Gui::drawScrollingList(int id, int count, const char *list[]) {
@@ -545,4 +581,13 @@ void Gui::selectScrollingItem(int mousex, int mousey) {
     if(index == -1) return;
     scrollingList[index].lineSelected = 
         (int)((float)(mousey - scrollingList[index].top) / 15.0);
+}
+
+int Gui::getLineSelected(int id) {
+    int index = -1;
+    for(int i = 0; i < scrollingListCount; i++) {
+        if(scrollingList[i].id == id) index = i;
+    }    
+    if(index == -1) return -1;
+	return scrollingList[index].lineSelected;
 }
