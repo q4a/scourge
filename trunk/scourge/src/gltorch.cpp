@@ -51,6 +51,9 @@ GLTorch::~GLTorch() {
 }
 
 void GLTorch::initParticles() {
+  PARTICLE_COUNT = width * height * 10;
+  if(PARTICLE_COUNT > 100) PARTICLE_COUNT = 100;
+  if(PARTICLE_COUNT < 30) PARTICLE_COUNT = 30;
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     particle[i] = NULL;
   }
@@ -98,11 +101,22 @@ void GLTorch::draw() {
 
       if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
 
-      float color = 1.0f / ((GLfloat)particle[i]->height / (GLfloat)particle[i]->z);
-      float red = (((1.0f - color) / 4.0) * rand()/RAND_MAX);
-      float green = (((1.0f - color) / 8.0) * rand()/RAND_MAX);
-      float blue = (((1.0f - color) / 10.0) * rand()/RAND_MAX);      
-      glColor4f(color + red, color + green, color + blue, 1.0f);      
+	  if(color == 0xffffffff) {
+		float color = 1.0f / ((GLfloat)particle[i]->height / (GLfloat)particle[i]->z);
+		float red = (((1.0f - color) / 4.0) * rand()/RAND_MAX);
+		float green = (((1.0f - color) / 8.0) * rand()/RAND_MAX);
+		float blue = (((1.0f - color) / 10.0) * rand()/RAND_MAX);      
+		glColor4f(color + red, color + green, color + blue, 1.0f);      
+	  } else {
+		float red = ((float)((this->color & 0xff000000) >> (3 * 8)) + 
+					 (64.0f * rand()/RAND_MAX) - 32.0f) / (float)(0xff);
+		float green = ((float)((this->color & 0x00ff0000) >> (2 * 8)) + 
+					   (64.0f * rand()/RAND_MAX) - 32.0f) / (float)(0xff);
+		float blue = ((float)((this->color & 0x0000ff00) >> (1 * 8)) + 
+					  (64.0f * rand()/RAND_MAX) - 32.0f) / (float)(0xff);
+		float height = ((GLfloat)particle[i]->z / (GLfloat)particle[i]->height );
+		glColor4f(height * red, height * green, height * blue, 1.0f);       
+	  }
       glBegin( GL_QUADS );
         // front
         glNormal3f(0.0f, 1.0f, 0.0f);
@@ -121,6 +135,8 @@ void GLTorch::draw() {
       glPopMatrix();
     }
   }
+
+  if(!torchback) return;
 
   // add the flickering reflection on the wall behind
   // max. amount of movement

@@ -46,6 +46,19 @@ char *ShapePalette::torchDescription[] = {
 };
 int ShapePalette::torchDescriptionCount = 3;
 
+char *ShapePalette::boardDescription[] = {
+  "A large wooden board that describes available missions",
+  "Click on the board to learn about your missions",
+  "The corporate 'brains' of S.C.O.U.R.G.E. inc."
+};
+int ShapePalette::boardDescriptionCount = 3;
+
+char *ShapePalette::brazierDescription[] = {
+  "A burning brazier",
+  "A brazier radiates heat nearby"
+};
+int ShapePalette::brazierDescriptionCount = 2;
+
 
 
 ShapePalette::ShapePalette(){
@@ -225,28 +238,28 @@ void ShapePalette::initShapes() {
     new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
+                0xffffffff,
                 display_list + (count++ * 3),
                 Constants::LAMP_NORTH_INDEX, torchback, Constants::NORTH);
 	shapes[Constants::LAMP_SOUTH_INDEX] =
     new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
+                0xffffffff,
                 display_list + (count++ * 3),
                 Constants::LAMP_SOUTH_INDEX, torchback, Constants::SOUTH);
 	shapes[Constants::LAMP_WEST_INDEX] =
     new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
+                0xffffffff,
                 display_list + (count++ * 3),
                 Constants::LAMP_WEST_INDEX, torchback, Constants::WEST);
 	shapes[Constants::LAMP_EAST_INDEX] =
     new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
-                (debug ? 0xff0000ff : 0xf0f0ffff),
+                0xffffffff,
                 display_list + (count++ * 3),
                 Constants::LAMP_EAST_INDEX, torchback, Constants::EAST);
 
@@ -268,15 +281,41 @@ void ShapePalette::initShapes() {
                 Constants::DEBUG_INDEX);                
 
 	shapes[Constants::LOCATOR_INDEX] =
-        new GLLocator(notex, 
+	  new GLLocator(notex, 
+					3, 3, 1,
+					"LOCATOR", torchDescription, torchDescriptionCount,
+					(debug ? 0xff0000ff : 0xf0f0ffff),
+					display_list + (count++ * 3),
+					Constants::LOCATOR_INDEX);
+	
+	shapes[Constants::BOARD_INDEX] =
+	  new GLShape(wood_tex, 
+				  20, 1, 10,
+				  "BOARD", boardDescription, boardDescriptionCount,
+				  (debug ? 0xff0000ff : 0xf0f0ffff),
+				  display_list + (count++ * 3),
+				  Constants::BOARD_INDEX);
+
+	shapes[Constants::BRAZIER_INDEX] =
+    new GLTorch(notex, textures[9].id,
+                3, 3, 3,
+                "BRAZIER", brazierDescription, brazierDescriptionCount,
+                0xe820ffff,
+                display_list + (count++ * 3),
+                Constants::BRAZIER_INDEX);
+
+	shapes[Constants::BRAZIER_BASE_INDEX] =
+    new GLShape(wood_tex, 
                 3, 3, 1,
-                "LOCATOR", torchDescription, torchDescriptionCount,
+                "BRAZIER", brazierDescription, brazierDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
-                Constants::LOCATOR_INDEX);
+                Constants::BRAZIER_BASE_INDEX);
 
-  // creatures
-  creature_display_list_start = display_list + (count * 3);                
+
+	
+	// creatures
+	creature_display_list_start = display_list + (count * 3);                
 
   // creatures
   creature_shapes[Constants::FIGHTER_INDEX] =

@@ -41,7 +41,6 @@ private:
     display_list + LEFT_RIGHT_SIDE
   */
   GLuint display_list;
-  Uint32 color;
   /**
     Represents an array of 3 addresses for textures. If tex[i]==NULL, no texture is given,
     only a color.
@@ -59,6 +58,9 @@ private:
 #define LIGHTMAP_SIZE 16
 
   bool useTexture;
+
+ protected:
+  Uint32 color;
 
 public:
   static const int FRONT_SIDE = 0;
