@@ -44,6 +44,7 @@ private:
   GLint logoTicksDelta;
   int top, openingTop;
   Uint32 lastTick;
+  int candleFlameX, candleFlameY;
 
 #define MAX_LOGOS 100
   typedef struct _LogoSprite {
@@ -101,6 +102,7 @@ public:
   void drawLogo();
   void addLogoSprite();
   void drawLogoSprites();
+  void moveLogoSprites();
   void drawParticles();
   void drawStars();
 };

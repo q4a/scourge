@@ -24,7 +24,7 @@
 #define LOGO_ROT_NEG 0
 #define LOGO_ZOOM 0.8f
 
-#define LOGO_SPRITE_DELTA 8.0f
+#define LOGO_SPRITE_DELTA 1.0f
 #define PI 3.14159f
 
 #define WATER_HEIGHT 130
@@ -46,6 +46,7 @@ MainMenu::MainMenu(Scourge *scourge){
   logoTicks = 0;
   logoTicksDelta = 50;
   logoSpriteCount = 0;
+  candleFlameX = candleFlameY = 0;
 
   top = (scourge->getSDLHandler()->getScreen()->h - 600) / 2;
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
@@ -163,48 +164,8 @@ void MainMenu::drawView() {
   glDisable(GL_ALPHA_TEST);
   glPopMatrix();
 
-  // draw candle flame
-  glEnable( GL_TEXTURE_2D );
-  glEnable(GL_BLEND);  
-  glBlendFunc(GL_SRC_COLOR, GL_ONE);
-  //setBlendFunc();
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->candle );
-  glColor4f( 0.7, 0.7, 0.3, 0.5 );
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef( scourge->getSDLHandler()->getScreen()->w - 215 + (int)(8.0 * rand()/RAND_MAX) - 4, 
-				top + 385 + (int)(8.0 * rand()/RAND_MAX) - 4, 
-				0 ); 
-  float w = 64;
-  float h = 64;
-  glBegin( GL_QUADS );
-  glNormal3f(0.0f, 0.0f, 1.0f);
-  glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(w, h, 0);
-  glTexCoord2f( 1.0f, 0.0f );
-  glVertex3f(w, 0, 0);
-  glTexCoord2f( 0.0f, 0.0f );
-  glVertex3f(0, 0, 0);
-  glTexCoord2f( 0.0f, 1.0f );
-  glVertex3f(0, h, 0);
-  glEnd();
-  glPopMatrix();
-  glDisable( GL_TEXTURE_2D );
-  glDisable( GL_BLEND );
-
-  // draw the logo
-  //glEnable(GL_ALPHA_TEST);
-  //glAlphaFunc(GL_NOTEQUAL, 0);        
-  //  glPixelZoom( 1.0, -1.0 );
-  //  glRasterPos2f( 250, 30 );
-  //  glDrawPixels(scourge->getShapePalette()->logo->w, 
-  //			   scourge->getShapePalette()->logo->h,
-  //			   GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->logoImage);
-  //glDisable(GL_ALPHA_TEST);
-
   drawLogo();
 
-  //glPopMatrix();
 #else
   glLoadIdentity();
   glTranslatef(0.0f,0.0f,-1.0f);
@@ -312,7 +273,7 @@ void MainMenu::hide() {
 void MainMenu::drawLogo() {
 
   //  if((int)(5.0f * rand()/RAND_MAX) == 0) 
-	addLogoSprite();
+  addLogoSprite();
   drawLogoSprites();
 
   drawParticles();
@@ -351,20 +312,51 @@ void MainMenu::drawLogo() {
 
   GLint t = SDL_GetTicks();
   if(t - logoTicks > logoTicksDelta) {
-	logoTicks = t;
-	logoRot += logoRotDelta;
-	if(logoRotDelta < 0) {
-	  logoRotDelta += -LOGO_DELTA;
-	  if(logoRot <= LOGO_ROT_NEG ) {
-		logoRotDelta = LOGO_DELTA;
-	  }
-	} else {
-	  logoRotDelta += LOGO_DELTA;
-	  if(logoRot >= LOGO_ROT_POS) {
-		logoRotDelta = -LOGO_DELTA;		
-	  }
-	}
+    logoTicks = t;
+    logoRot += logoRotDelta;
+    if(logoRotDelta < 0) {
+      logoRotDelta += -LOGO_DELTA;
+      if(logoRot <= LOGO_ROT_NEG ) {
+        logoRotDelta = LOGO_DELTA;
+      }
+    } else {
+      logoRotDelta += LOGO_DELTA;
+      if(logoRot >= LOGO_ROT_POS) {
+        logoRotDelta = -LOGO_DELTA;   
+      }
+    }
+    candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + (int)(4.0 * rand()/RAND_MAX) - 4;
+    candleFlameY = top + 385 + (int)(4.0 * rand()/RAND_MAX) - 4;
+    moveLogoSprites();
   }
+
+  // draw candle flame
+  glEnable( GL_TEXTURE_2D );
+  glEnable(GL_BLEND);  
+  glBlendFunc(GL_SRC_COLOR, GL_ONE);
+  //setBlendFunc();
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->candle );
+  glColor4f( 0.7, 0.7, 0.3, 0.5 );
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( candleFlameX, candleFlameY, 0 ); 
+  w = 64;
+  h = 64;
+  glBegin( GL_QUADS );
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(w, h, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(w, 0, 0);
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, 0, 0);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, h, 0);
+  glEnd();
+  glPopMatrix();
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_BLEND );
+
 }
 
 void MainMenu::addLogoSprite() {
@@ -380,78 +372,90 @@ void MainMenu::addLogoSprite() {
 
 void MainMenu::drawLogoSprites() {
   for(int i = 0; i < logoSpriteCount; i++) {
-	glEnable( GL_TEXTURE_2D );
-	glEnable(GL_BLEND);  
-	//	GL_ONE_MINUS_SRC_COLOR, GL_ZERO
-	// GL_DST_COLOR, GL_ONE
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	//scourge->setBlendFunc();
-	glPushMatrix();
-	glLoadIdentity();
-	glRotatef(logoSprite[i].rot, 0, 0, 1 );
-	glTranslatef( logoSprite[i].x, top + logoSprite[i].y, 500 );
-	float zoom = 1.2f;
-	glScalef( zoom, zoom, 1 );
-	float w = scourge->getShapePalette()->logo->w;
-	float h = scourge->getShapePalette()->logo->h;
+    glEnable( GL_TEXTURE_2D );
+    glEnable(GL_BLEND);  
+    //	GL_ONE_MINUS_SRC_COLOR, GL_ZERO
+    // GL_DST_COLOR, GL_ONE
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE );    
+    //scourge->setBlendFunc();
+    glPushMatrix();
+    glLoadIdentity();
+    //glRotatef(logoSprite[i].rot, 0, 0, 1 );
+    glTranslatef( logoSprite[i].x, top + logoSprite[i].y, 500 );
+    float zoom = 1.2f;
+    glScalef( zoom, zoom, 1 );
+    float w = scourge->getShapePalette()->logo->w;
+    float h = scourge->getShapePalette()->logo->h;
 
-	float alpha = (float)logoSprite[i].steps / 70.0f;
-	//	if(alpha > 1.0f) alpha = 1.0f;
-	if(alpha >= 1.0f) alpha = 1.0f - (logoSprite[i].steps / 10.0f);
+    //float alpha = (float)logoSprite[i].steps / 70.0f;
+    //if(alpha >= 0.5f) alpha = 0.5f - (logoSprite[i].steps / 10.0f);
+    float alpha = 0.2f;
 
-	//	cerr << "i=" << i << " steps=" << logoSprite[i].steps << " alpha=" << alpha << endl;
-	logoSprite[i].steps++;
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
+    glColor4f( 0.10f, 0.15f, 0.05f, alpha );
+    glBegin( GL_QUADS );
+    glNormal3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f( 1.0f, 1.0f );
+    glVertex3f(w, h, 0);
+    glTexCoord2f( 1.0f, 0.0f );
+    glVertex3f(w, 0, 0);
+    glTexCoord2f( 0.0f, 0.0f );
+    glVertex3f(0, 0, 0);
+    glTexCoord2f( 0.0f, 1.0f );
+    glVertex3f(0, h, 0);
+    glEnd();
+    glPopMatrix();
+    glDisable( GL_TEXTURE_2D );
+    glDisable( GL_BLEND );  
+  }
+}
 
-	glColor4f( 0.5, 0.5, 1, alpha );
-	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
-	glBegin( GL_QUADS );
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f( 1.0f, 1.0f );
-	glVertex3f(w, h, 0);
-	glTexCoord2f( 1.0f, 0.0f );
-	glVertex3f(w, 0, 0);
-	glTexCoord2f( 0.0f, 0.0f );
-	glVertex3f(0, 0, 0);
-	glTexCoord2f( 0.0f, 1.0f );
-	glVertex3f(0, h, 0);
-	glEnd();
-	glPopMatrix();
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );	
+void MainMenu::moveLogoSprites() {
+  for(int i = 0; i < logoSpriteCount; i++) {
+    //	cerr << "i=" << i << " steps=" << logoSprite[i].steps << " alpha=" << alpha << endl;
+    logoSprite[i].steps++;
+    float w = scourge->getShapePalette()->logo->w;
+    float h = scourge->getShapePalette()->logo->h;
 
-	float rad = PI / (180.0f / logoSprite[i].angle);
-	switch(logoSprite[i].quadrant) {
-	case 0:
-	  logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
-	  logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
-	  break;
-	case 1:
-	  logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
-	  logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
-	  break;
-	case 2:
-	  logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
-	  logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
-	  break;
-	case 3:
-	  logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
-	  logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
-	  break;
-	}
+    //logoSprite[i].y += LOGO_SPRITE_DELTA;
 
-	// delete if off-screen
-	if(logoSprite[i].steps > 20 || 
-	   logoSprite[i].x <= -w * 2.0f || logoSprite[i].x >= scourge->getSDLHandler()->getScreen()->w ||
-	   logoSprite[i].y <= -h * 2.0f || logoSprite[i].y >= scourge->getSDLHandler()->getScreen()->h) {
-	  logoSprite[i].x = logoSprite[logoSpriteCount - 1].x;
-	  logoSprite[i].y = logoSprite[logoSpriteCount - 1].y;
-	  logoSprite[i].angle = logoSprite[logoSpriteCount - 1].angle;
-	  logoSprite[i].quadrant = logoSprite[logoSpriteCount - 1].quadrant;
-	  logoSprite[i].steps = logoSprite[logoSpriteCount - 1].steps;
-	  logoSprite[i].rot = logoSprite[logoSpriteCount - 1].rot;
-	  logoSpriteCount--;
-	  i--;
-	}
+    //float rad = PI / (180.0f / logoSprite[i].angle);
+    switch(logoSprite[i].quadrant) {
+    case 0:
+      //logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
+      //logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
+      logoSprite[i].y -= LOGO_SPRITE_DELTA;
+      break;
+    case 1:
+      //logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
+      //logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
+      logoSprite[i].y += LOGO_SPRITE_DELTA;
+      break;
+    case 2:
+      //logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
+      //logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
+      logoSprite[i].x -= LOGO_SPRITE_DELTA;
+      break;
+    case 3:
+      //logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
+      //logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
+      logoSprite[i].x -= LOGO_SPRITE_DELTA;
+      break;
+    }
+
+    // delete if off-screen
+    if(logoSprite[i].steps > 80 || 
+       logoSprite[i].x <= -w * 2.0f || logoSprite[i].x >= scourge->getSDLHandler()->getScreen()->w ||
+       logoSprite[i].y <= -h * 2.0f || logoSprite[i].y >= scourge->getSDLHandler()->getScreen()->h) {
+      logoSprite[i].x = logoSprite[logoSpriteCount - 1].x;
+      logoSprite[i].y = logoSprite[logoSpriteCount - 1].y;
+      logoSprite[i].angle = logoSprite[logoSpriteCount - 1].angle;
+      logoSprite[i].quadrant = logoSprite[logoSpriteCount - 1].quadrant;
+      logoSprite[i].steps = logoSprite[logoSpriteCount - 1].steps;
+      logoSprite[i].rot = logoSprite[logoSpriteCount - 1].rot;
+      logoSpriteCount--;
+      i--;
+    }
   }
 }
 

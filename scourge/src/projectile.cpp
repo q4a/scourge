@@ -97,8 +97,8 @@ Projectile::~Projectile() {
 }
 
 bool Projectile::atTargetLocation() {
-  int dx = abs(ex - sx);
-  int dy = abs(ey - sy);
+  int dx = abs((int)(ex - sx));
+  int dy = abs((int)(ey - sy));
   return (dx < DELTA && dy < DELTA);
 }
 
