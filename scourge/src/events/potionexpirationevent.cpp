@@ -47,18 +47,20 @@ void PotionExpirationEvent::execute() {
 	  creature->setBonusArmor(creature->getBonusArmor() - item->getAction());
 	  sprintf(msg, "%s feels vulnerable...", creature->getName(), item->getAction());
 	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
-	  creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 2));
+	  creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return;
 	default:
 	  cerr << "Implement me! (other potion skill boost)" << endl;
 	  return;
 	}
   } else {
-	switch(skill) {
-	default:
-	  cerr << "Implement me! (other regular skill boost)" << endl;
-	  return;
-	}
+	creature->setSkillBonus(skill, 
+						  creature->getSkillBonus(skill) - 
+						  item->getAction());
+	//	recalcAggregateValues();
+	sprintf(msg, "%s feels a loss of contentment.", creature->getName());
+	scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+	creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
   }
 }
 

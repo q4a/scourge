@@ -92,7 +92,7 @@ class Creature {
   char *name;
   int level, exp, hp, startingHp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
-  int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT];
+  int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
   GLuint stateMod;
   Monster *monster;
 
@@ -204,7 +204,7 @@ class Creature {
   // get the item at the given equip-index (inventory location)
   float inventoryWeight;
   inline float getInventoryWeight() { return inventoryWeight;  }
-  inline float getMaxInventoryWeight() { return (float) skills[Constants::POWER] + 25.0f; }  
+  inline float getMaxInventoryWeight() { return (float) getSkill(Constants::POWER) + 25.0f; }  
   Item *getEquippedInventory(int index);
   
   inline Item *getInventory(int index) { return inventory[index]; }
@@ -244,7 +244,7 @@ class Creature {
   inline int getAc() { return ac; }
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
-  inline int getSkill(int index) { return skills[index]; }
+  inline int getSkill(int index) { return skills[index] + skillBonus[index]; }
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
 
   inline void setName(char *s) { name = s; }
@@ -262,8 +262,9 @@ class Creature {
   bool decSkillMod(int index);
   void applySkillMod();
   inline int getSkillMod(int index) { return skillMod[index]; }
-
   inline void setSkill(int index, int value) { skills[index] = value; }
+  inline void setSkillBonus(int index, int value) { skillBonus[index] = value; }
+  inline int getSkillBonus(int index) { return skillBonus[index]; }
   inline void setStateMod(int mod, bool setting) { 
 	if(setting) stateMod |= (1 << mod);  
 	else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 

@@ -78,7 +78,7 @@ void Creature::commonInit() {
 	equipped[i] = MAX_INVENTORY_SIZE;
   }
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-	skillMod[i] = 0;
+	skillMod[i] = skillBonus[i] = 0;
   }
   this->stateMod = 0;
   this->level = 1;
@@ -520,17 +520,15 @@ Item *Creature::removeInventory(int index) {
 }
 
 bool Creature::eatDrink(int index){
-  char msg[80];
-  char buff[80];
+  char msg[500];
+  char buff[200];
   //Item * item = getInventory(index);
   Item *item = getInventory(index);
   RpgItem * rpgItem = item->getRpgItem();
-  int type;
-  //float weight;
   
-  type = rpgItem->getType();    
+  int type = rpgItem->getType();    
   //weight = item->getRpgItem()->getWeight();
-  level = rpgItem->getLevel();
+  int level = rpgItem->getLevel();
   if(type == RpgItem::FOOD){
 	if(getHunger() == 10){                
 	  sprintf(msg, "%s is not hungry at the moment.", getName()); 
@@ -608,7 +606,7 @@ void Creature::usePotion(Item *item) {
 	  setHp(getHp() + n);
 	  sprintf(msg, "%s heals %d points.", getName(), n);
 	  scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
-	  startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 2));
+	  startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return;
 	case Constants::AC:
 	  {
@@ -616,7 +614,7 @@ void Creature::usePotion(Item *item) {
 		recalcAggregateValues();
 		sprintf(msg, "%s feels impervious to damage!", getName(), item->getRpgItem()->getAction());
 		scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
-		startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 2));
+		startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 		
 		// add calendar event to remove armor bonus
 		// (format : sec, min, hours, days, months, years)
@@ -624,8 +622,7 @@ void Creature::usePotion(Item *item) {
 		Event *e = 
 		  new PotionExpirationEvent(scourge->getParty()->getCalendar()->getCurrentDate(), 
 									d, this, item->getRpgItem(), scourge, 1);
-		scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
-		
+		scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!		
 	  }
 	  return;
 	default:
@@ -633,11 +630,19 @@ void Creature::usePotion(Item *item) {
 	  return;
 	}
   } else {
-	switch(skill) {
-	default:
-	  cerr << "Implement me! (other regular skill boost)" << endl;
-	  return;
-	}
+	skillBonus[skill] += item->getRpgItem()->getAction();
+	//	recalcAggregateValues();
+	sprintf(msg, "%s feels at peace.", getName());
+	scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
+	startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
+	
+	// add calendar event to remove armor bonus
+	// (format : sec, min, hours, days, months, years)
+	Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
+	Event *e = 
+	  new PotionExpirationEvent(scourge->getParty()->getCalendar()->getCurrentDate(), 
+								d, this, item->getRpgItem(), scourge, 1);
+	scourge->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
   }
 }
 
@@ -744,14 +749,14 @@ Item *Creature::getBestWeapon(float dist) {
 // the method can return negative numbers if the weapon skill is very high (-10 to 10)
 int Creature::getInitiative(Item *weapon) {
   // use the speed skill
-  float speed = skills[Constants::SPEED];
+  float speed = getSkill(Constants::SPEED);
   // roll for half the luck
-  speed += (skills[Constants::LUCK / 2] * rand()/RAND_MAX);
+  speed += (getSkill(Constants::LUCK / 2) * rand()/RAND_MAX);
   // add weapon speed (bare hand attack is the fastest, unless weapon skill is very good)
   if(weapon) {
 	speed -= weapon->getRpgItem()->getSpeed();
 	if(weapon->getRpgItem()->getSkill() > -1) 
-	  speed += skills[weapon->getRpgItem()->getSkill()];
+	  speed += getSkill(weapon->getRpgItem()->getSkill());
   }
   // at this point a score of 150 is the fastest and 0 is the slowest
 
@@ -763,20 +768,20 @@ int Creature::getInitiative(Item *weapon) {
 // it is a function of speed, coordination and weapon skill
 // this method returns a number from 1-10
 int Creature::getMaxProjectileCount(Item *item) {
-  int n = (int)((double)(skills[Constants::SPEED] + 
-						 skills[Constants::COORDINATION] + 
-						 skills[item->getRpgItem()->getSkill()]) / 30.0f);
+  int n = (int)((double)(getSkill(Constants::SPEED) + 
+						 getSkill(Constants::COORDINATION) + 
+						 getSkill(item->getRpgItem()->getSkill())) / 30.0f);
   if(n <= 0) n = 1;
   return n;
 }
 
 // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
 int Creature::getToHit(Item *weapon) {
-  float tohit = skills[Constants::COORDINATION] + skills[Constants::LUCK] / 2;
+  float tohit = getSkill(Constants::COORDINATION) + getSkill(Constants::LUCK) / 2;
   if(weapon && weapon->getRpgItem()->getSkill() > -1) {
-	tohit += skills[weapon->getRpgItem()->getSkill()];
+	tohit += getSkill(weapon->getRpgItem()->getSkill());
   } else {
-	tohit += skills[Constants::HAND_TO_HAND_COMBAT];
+	tohit += getSkill(Constants::HAND_TO_HAND_COMBAT);
   }
   // so far the max score is 250
   
@@ -791,13 +796,13 @@ int Creature::getToHit(Item *weapon) {
 int Creature::getDamage(Item *weapon) {
   float damage = 0.0f;
   float baseDamage = (weapon ? weapon->getRpgItem()->getAction() : 
-					  (skills[Constants::POWER] / 10));
+					  (getSkill(Constants::POWER) / 10));
   damage = baseDamage;
-  damage += (float)skills[Constants::POWER] / 10.0f;
+  damage += (float)getSkill(Constants::POWER) / 10.0f;
   
   float skill = (weapon && weapon->getRpgItem()->getSkill() > -1 ?
-				 skills[weapon->getRpgItem()->getSkill()] :
-				 skills[Constants::HAND_TO_HAND_COMBAT]);
+				 getSkill(weapon->getRpgItem()->getSkill()) :
+				 getSkill(Constants::HAND_TO_HAND_COMBAT));
   damage = damage + (damage * ((skill - 50) / 100.0f) );
   return (int)(damage * rand()/RAND_MAX);
 }
@@ -837,7 +842,7 @@ int Creature::getSkillModifiedArmor() {
 		int skill_index = (item->getRpgItem()->getSkill() > -1 ? 
 						   item->getRpgItem()->getSkill() : 
 						   Constants::HAND_DEFEND);
-		float skill = (float)skills[skill_index];
+		float skill = (float)getSkill(skill_index);
 		int value = item->getRpgItem()->getAction();
 		
 		// add (value + ((skill-50)% of value)) to armor
@@ -899,7 +904,7 @@ void Creature::monsterInit() {
 // only for characters: leveling up
 bool Creature::incSkillMod(int index) {
   if(!availableSkillPoints || 
-	 skills[index] + skillMod[index] >= character->getMaxSkillLevel(index)) return false;
+	 getSkill(index) + skillMod[index] >= character->getMaxSkillLevel(index)) return false;
   availableSkillPoints--;
   skillMod[index]++;
   return true;
