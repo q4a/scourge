@@ -52,6 +52,7 @@ private:
   int g_ViewMode;                       // make this GL_LINE_STRIP for outline
   int dir;    
   float **vect;
+  bool pauseAnimation;
   
   // Animation stuff
   float elapsedTime;
@@ -92,6 +93,7 @@ public:
   bool drawLater();
   void setupBlending();
   void endBlending();  
+  inline void setPauseAnimation(bool pause) { pauseAnimation = pause; }
 
 protected:
   void commonInit(char *file_name, char *texture_name, float div);

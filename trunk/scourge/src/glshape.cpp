@@ -105,9 +105,11 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, GLuint display_list, Uint8 
 }
 
 void GLShape::setCurrentAnimation (int numAnim){
-
     cout<<"GLShape::setCurrentAnimation : Hey this should call MD2Shape function!"<<endl;
+}
 
+void GLShape::setPauseAnimation (bool pause){
+    cout<<"GLShape::setPauseAnimation : Hey this should call MD2Shape function!"<<endl;
 }
 
 struct surface *GLShape::new_surface(float vertices[4][3]) {

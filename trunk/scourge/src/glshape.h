@@ -70,6 +70,7 @@ public:
 
   inline void setSkipSide(int n) { skipside = n; }
   virtual void setCurrentAnimation (int numAnim);      
+  virtual void setPauseAnimation(bool pause);
   
   bool useShadow;
 

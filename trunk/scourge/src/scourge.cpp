@@ -1372,11 +1372,22 @@ void Scourge::addGameSpeed(int speedFactor){
    When pausing the round, we enter single-step mode.
  */
 void Scourge::toggleRound() {
+  int i ;
   startRound = (startRound ? false : true);
-  if(startRound)
+  if(startRound){
 	map->addDescription(Constants::getMessage(Constants::REAL_TIME_MODE), 0.5f, 0.5f, 1.0f);
-  else
-	map->addDescription(Constants::getMessage(Constants::TURN_MODE), 0.5f, 0.5f, 1.0f);
+  }
+  else{
+	map->addDescription(Constants::getMessage(Constants::TURN_MODE), 0.5f, 0.5f, 1.0f);    
+  }
+  
+  // Freeze / unfreeze animations
+  for(i = 0; i < 4; i++){
+    party[i]->getShape()->setPauseAnimation(!startRound);
+  }  
+  for(i = 0; i < creatureCount; i++){
+    creatures[i]->getShape()->setPauseAnimation(!startRound);
+  }  
   roundButton->setSelected(startRound);
 }
 
@@ -1401,7 +1412,7 @@ void Scourge::moveMonster(Creature *monster) {
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
 	monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
 	// don't move when attacking
-	continue;
+	//continue;
   } else {
 	monster->getShape()->setCurrentAnimation((int)MD2_RUN);
   }
