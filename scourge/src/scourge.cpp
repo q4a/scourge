@@ -1214,6 +1214,39 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
       getMapXYAtScreenXY(x, y, &mapx, &mapy);
       mapz = 0;
     }
+
+    // make sure the selected action can target an item
+    Creature *c = getTargetSelectionFor();
+    if(c) {
+
+      // need this hack b/c of the whole messy dragging items bit...
+      if(movingItem) {
+        mapx = map->getSelX();
+        mapy = map->getSelY();
+        mapz = dropItem(map->getSelX(), map->getSelY());
+      }
+
+      Location *pos = map->getLocation(mapx, mapy, mapz);
+      char msg[80];
+      if(mapx < MAP_WIDTH && pos && pos->item) {
+        if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+           c->getActionSpell() &&
+           c->getActionSpell()->isItemTargetAllowed()) {
+
+          // assign this creature
+          c->setTargetItem(pos->x, pos->y, pos->z, pos->item);
+          sprintf(msg, "%s targeted %s.", c->getName(), pos->item->getRpgItem()->getName());
+          map->addDescription(msg);       
+        } else {
+          sprintf(msg, "%s cancelled a pending action.", c->getName());
+          map->addDescription(msg);
+        }
+        // turn off selection mode
+        setTargetSelectionFor(NULL);
+        return;
+      }
+    }
+    
     if(useItem(mapx, mapy, mapz)) return;
 
     // click on the map
@@ -1493,65 +1526,43 @@ bool Scourge::useItem() {
 }
 
 bool Scourge::useItem(int x, int y, int z) {
-  if(movingItem) {
-		// a quick click opens a container
-		GLint delta = SDL_GetTicks() - dragStartTime;
-		if(delta < ACTION_CLICK_TIME &&
-			 movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
+  if (movingItem) {
+    // a quick click opens a container
+    GLint delta = SDL_GetTicks() - dragStartTime;
+    if (delta < ACTION_CLICK_TIME &&
+        movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
       openContainerGui(movingItem);      
-		}
-		dropItem(map->getSelX(), map->getSelY());
-		return true;
-	}
-	
-	Location *pos = map->getPosition(x, y, z);
-	if(pos) {
-	  Shape *shape = (pos->item ? pos->item->getShape() : pos->shape);
-	  if(map->isWallBetweenShapes(party->getPlayer()->getX(), 
-								  party->getPlayer()->getY(), 
-								  party->getPlayer()->getZ(), 
-								  party->getPlayer()->getShape(),
-								  x, y, z,
-								  shape)) {
-		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
-		return true;
-	  } else {
+    }
+    dropItem(map->getSelX(), map->getSelY());
+    return true;
+  }
 
-		// make sure the selected action can target a creature
-		Creature *c = getTargetSelectionFor();
-		if(c && pos->item) {
-		  char msg[80];
-		  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-			 c->getActionSpell() &&
-			 c->getActionSpell()->isItemTargetAllowed()) {
-			
-			// assign this creature
-			c->setTargetItem(x, y, z, pos->item);
-			sprintf(msg, "%s targeted %s.", c->getName(), shape->getName());
-			map->addDescription(msg);				
-		  } else {
-			sprintf(msg, "%s cancelled a pending action.", c->getName());
-			map->addDescription(msg);
-		  }
-		  // turn off selection mode
-		  setTargetSelectionFor(NULL);
-		  return true;
-		}
-
-    if(useLever(pos)) {
+  Location *pos = map->getPosition(x, y, z);
+  if (pos) {
+    Shape *shape = (pos->item ? pos->item->getShape() : pos->shape);
+    if (map->isWallBetweenShapes(party->getPlayer()->getX(), 
+                                 party->getPlayer()->getY(), 
+                                 party->getPlayer()->getZ(), 
+                                 party->getPlayer()->getShape(),
+                                 x, y, z,
+                                 shape)) {
+      map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
       return true;
-    } else if(useDoor(pos)) {
-		  return true;
-		} else if(useGate(pos)) {
-		  return true;
-		} else if(useBoard(pos)) {
-		  return true;
-		} else if(useTeleporter(pos)) {
-		  return true;
-		}
-	  }
-	}
-	return false;
+    } else {
+      if (useLever(pos)) {
+        return true;
+      } else if (useDoor(pos)) {
+        return true;
+      } else if (useGate(pos)) {
+        return true;
+      } else if (useBoard(pos)) {
+        return true;
+      } else if (useTeleporter(pos)) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 bool Scourge::getItem(Location *pos) {
@@ -1588,8 +1599,8 @@ void Scourge::setMovingItem(Item *item, int x, int y, int z) {
   movingItem = item;
 }
 
-void Scourge::dropItem(int x, int y) {
-  int z;
+int Scourge::dropItem(int x, int y) {
+  int z=-1;
   bool replace = false;
   if(map->getSelectedDropTarget()) {
     char message[120];
@@ -1639,7 +1650,7 @@ void Scourge::dropItem(int x, int y) {
     if(movingX <= -1 || movingX >= MAP_WIDTH) {
       // the item drag originated from the gui... what to do?
       // for now don't end the drag
-      return;
+      return z;
     } else {
       map->isBlocked(movingX, movingY, movingZ,
                      -1, -1, -1,
@@ -1649,6 +1660,7 @@ void Scourge::dropItem(int x, int y) {
   }
   endItemDrag();
   getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
+  return z;
 }
 
 bool Scourge::useGate(Location *pos) {
@@ -2955,5 +2967,10 @@ void Scourge::checkForDropTarget() {
       needToCheckDropLocation = true;
     }
   }  
+}
+
+void Scourge::showItemInfoUI(Item *item, int level) {
+  infoGui->setItem( item, level );
+  if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );    
 }
 
