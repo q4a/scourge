@@ -142,6 +142,8 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   vector<Battle *> battleRound;
   int battleTurn;
 
+  bool mouseMoveScreen;
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;

@@ -38,15 +38,15 @@ class Widget {
  public: 
   Widget(int x, int y, int w, int h);
   virtual ~Widget();
-  void draw(Widget *parent);
+  virtual void draw(Widget *parent);
 
-  inline int getX() { return x; }
-  inline int getY() { return y; }
-  inline int getWidth() { return w; }
-  inline int getHeight() { return h; }
+  virtual inline int getX() { return x; }
+  virtual inline int getY() { return y; }
+  virtual inline int getWidth() { return w; }
+  virtual inline int getHeight() { return h; }
 
-  inline void move(int x, int y) { this->x = x; this->y = y; }
-  inline void resize(int w, int h) { this->w = w; this->h = h; }
+  virtual inline void move(int x, int y) { this->x = x; this->y = y; }
+  virtual inline void resize(int w, int h) { this->w = w; this->h = h; }
 
   virtual inline void setVisible(bool b) { visible = b; }
   virtual inline bool isVisible() { return visible; }

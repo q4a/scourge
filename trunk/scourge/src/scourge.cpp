@@ -142,7 +142,7 @@ void Scourge::startMission() {
 	lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
 	teleporting = false;
 	changingStory = false;
-	
+	mouseMoveScreen = true;
 	
 	
 	if(nextMission == -1) {
@@ -355,22 +355,25 @@ bool Scourge::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
 	if(event->motion.x < 10) {
+	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_LEFT);
 	} else if(event->motion.x >= sdlHandler->getScreen()->w - 10) {
+	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_RIGHT);
-	} else {
-	  removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
-	  map->setYRot(0.0f);
-	  map->setZRot(0.0f);
-	}
-	if(event->motion.y < 10) {
+	} else if(event->motion.y < 10) {
+	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_UP);
 	} else if(event->motion.y >= sdlHandler->getScreen()->h - 10) {
+	  mouseMoveScreen = true;
 	  setMove(Constants::MOVE_DOWN);
 	} else {
-	  removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
-	  map->setYRot(0.0f);
-	  map->setZRot(0.0f);
+	  if(mouseMoveScreen) {
+		mouseMoveScreen = false;
+		removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
+		removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
+		map->setYRot(0.0f);
+		map->setZRot(0.0f);
+	  }
 	}
     processGameMouseMove(event->motion.x, event->motion.y);
     break;
@@ -393,6 +396,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  }
     }
     break;
+  }
+  switch(event->type) {
   case SDL_KEYDOWN:
   case SDL_KEYUP:
 
