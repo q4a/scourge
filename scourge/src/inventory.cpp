@@ -128,13 +128,12 @@ Inventory::Inventory(Scourge *scourge) {
   stateList = new ScrollingList(115, 135, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(stateList, CHARACTER);
   
-  cards->createLabel(265, 165, "Protected States:", CHARACTER, Constants::RED_COLOR);
+  cards->createLabel(265, 130, "Protected States:", CHARACTER, Constants::RED_COLOR);
   protStateList = new ScrollingList(265, 135, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(protStateList, CHARACTER);
 
   strcpy(skillsStr, "Skills:");
-  cards->createLabel(115, 220, skillsStr, CHARACTER, Constants::RED_COLOR);
-  skillModLabel = cards->createLabel(220, 220, NULL, CHARACTER);
+  skillLabel = cards->createLabel(115, 220, skillsStr, CHARACTER, Constants::RED_COLOR);
   skillList = new ScrollingList(115, 225, 290, 180, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(skillList, CHARACTER);
   skillAddButton = cards->createButton( 115, 410, 200, 410 + buttonHeight, " + ", CHARACTER);
@@ -557,6 +556,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   case CHARACTER:         
 
     sprintf(skillsStr, "Skills: (Available points: %d)", selectedP->getAvailableSkillPoints());
+    skillLabel->setText( skillsStr );
 
 
     sprintf(nameAndClassStr, "%s, %s (level %d) (%s)", 

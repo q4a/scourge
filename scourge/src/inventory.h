@@ -79,7 +79,7 @@ private:
 
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *hpLabel, *mpLabel;
-	Label *thirstLabel, *hungerLabel, *skillModLabel, *armorLabel;	
+	Label *thirstLabel, *hungerLabel, *skillLabel, *armorLabel;	
 	//int stateCount;
 	char **stateLine, **skillLine;
 	GLuint *icons;
