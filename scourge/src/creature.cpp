@@ -848,6 +848,25 @@ void Creature::equipInventory(int index) {
     if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
        equipped[i] == MAX_INVENTORY_SIZE) {
       equipped[i] = index;
+
+      // handle magic attrib settings
+      if(item->getMagicAttrib()) {
+
+        item->getMagicAttrib()->debug("Equip: ", item->getRpgItem());
+
+        // set the good attributes
+        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+          if(item->getMagicAttrib()->isStateModSet(i)) {
+            this->setStateMod(i, true);
+          }
+        }
+        // if armor, enhance magic resistance
+        if(!item->getRpgItem()->isWeapon() && 
+           item->getMagicAttrib()->getSchool()) {
+          int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
+          setSkillBonus(skill, getSkillBonus(skill) + (7 * item->getMagicAttrib()->getLevel()));
+        }
+      }
       recalcAggregateValues();
       return;
     }
@@ -858,7 +877,28 @@ int Creature::doff(int index) {
   // doff
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] == index) {
+      Item *item = getInventory(index);
       equipped[i] = MAX_INVENTORY_SIZE;
+
+      // handle magic attrib settings
+      if(item->getMagicAttrib()) {
+
+        item->getMagicAttrib()->debug("Doff: ", item->getRpgItem());
+
+        // set the good attributes
+        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+          if(item->getMagicAttrib()->isStateModSet(i)) {
+            this->setStateMod(i, false);
+          }
+        }
+        // if armor, enhance magic resistance
+        if(!item->getRpgItem()->isWeapon() && 
+           item->getMagicAttrib()->getSchool()) {
+          int skill = item->getMagicAttrib()->getSchool()->getResistSkill();
+          setSkillBonus(skill, getSkillBonus(skill) - (7 * item->getMagicAttrib()->getLevel()));
+        }
+      }
+
       recalcAggregateValues();
       return 1;
     }
@@ -1072,6 +1112,11 @@ int Creature::getSkillModifiedArmor() {
 
         // add (value + ((skill-50)% of value)) to armor
         armor += value + (int)( (float)value * ((skill - 50.0f) / 100.0f) );
+        
+        // magic armor?
+        if(item->getMagicAttrib()) {
+          armor += item->getMagicAttrib()->getBonus();
+        }
       }
     }
   }

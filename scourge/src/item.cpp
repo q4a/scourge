@@ -281,7 +281,7 @@ bool Item::decrementCharges(){
 void Item::enchant(int level) {
   if(magic) return;
   magic = new MagicAttrib();
-  magic->enchant(level);
+  magic->enchant(level, rpgItem->isWeapon());
   magic->describe(itemName, rpgItem->getName());
   return;
 }
