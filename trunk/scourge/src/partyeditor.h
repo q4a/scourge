@@ -31,6 +31,7 @@
 #include "gui/canvas.h"
 #include "gui/scrollinglist.h"
 #include "gui/cardcontainer.h"
+#include "gui/widgetview.h"
 
 /**
   *@author Gabor Torok
@@ -64,7 +65,7 @@ typedef struct _CharacterInfo {
   
 } CharacterInfo;
 
-class PartyEditor {
+class PartyEditor : public WidgetView {
 private:
 
   enum {
@@ -90,6 +91,8 @@ private:
 public:
   PartyEditor(Scourge *scourge);
   ~PartyEditor();
+
+  void drawWidget(Widget *w);
 
   inline bool isVisible() { return mainWin->isVisible(); }
   inline void setVisible( bool b ) { mainWin->setVisible( b ); }
