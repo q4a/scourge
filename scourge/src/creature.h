@@ -143,6 +143,8 @@ class Creature {
   void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
   
   inline void setSelXY(int x, int y) { selX = x; selY = y; }
+  inline int getSelX() { return selX; }
+  inline int getSelY() { return selY; }
   
   bool anyMovesLeft();
   
