@@ -26,15 +26,18 @@
 #include "gui/window.h"
 #include "gui/widget.h"
 #include "gui/button.h"
+#include "gui/scrollinglist.h"
+#include "gui/draganddrop.h"
 
-class ContainerGui {
+class ContainerGui : public DragAndDropHandler {
 
  private:
   Scourge *scourge;
   Item *container;
   Window *win;
-  Button *closeButton, *dropButton, *openButton, *player1Button, *player2Button, *player3Button, *player4Button;
+  Button *closeButton, *dropButton, *openButton;
   ScrollingList *list;
+  char **containedItemNames;
 
  public:
   ContainerGui(Scourge *scourge, Item *container, int x, int y);
@@ -45,6 +48,13 @@ class ContainerGui {
 
   inline Item *getContainer() { return container; }
   inline Window *getWindow() { return win; }
+
+  // drag and drop handling
+  void receive();
+  void startDrag();
+
+ private:
+  void showContents();
   
 };
 

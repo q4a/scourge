@@ -22,6 +22,7 @@
 #include "widget.h"
 #include "button.h"
 #include "window.h"
+#include "draganddrop.h"
 
 /**
   *@author Gabor Torok
@@ -42,9 +43,10 @@ class ScrollingList : public Widget {
   bool dragging;
   int dragX, dragY;
   int selectedLine;
+  DragAndDropHandler *dragAndDropHandler;
 
  public: 
-  ScrollingList(int x, int y, int w, int h);
+  ScrollingList(int x, int y, int w, int h, DragAndDropHandler *dragAndDropHandler = NULL);
   virtual ~ScrollingList();
 
   inline int getLineCount() { return count; }

@@ -716,6 +716,13 @@ void Scourge::setPartyMotion(int motion) {
   }
 }
 
+void Scourge::startItemDragFromGui(Item *item) {
+  movingX = -1;
+  movingY = -1;
+  movingZ = -1;
+  movingItem = item;
+}
+
 bool Scourge::startItemDrag(int x, int y, int z) {
   if(movingItem) return false;
   Location *pos = map->getPosition(x, y, z);
@@ -726,6 +733,12 @@ bool Scourge::startItemDrag(int x, int y, int z) {
 	}
   }
   return false;
+}
+
+void Scourge::endItemDrag() {
+  // item move is over
+  movingItem = NULL;
+  movingX = movingY = movingZ = MAP_WIDTH + 1;  
 }
 
 bool Scourge::useItem() {
@@ -798,6 +811,8 @@ void Scourge::setMovingItem(Item *item, int x, int y, int z) {
 }
 
 void Scourge::dropItem(int x, int y) {
+  int z;
+  bool replace = false;
   if(map->getSelectedDropTarget()) {
 	char message[120];
 	Creature *c = map->getSelectedDropTarget()->creature;
@@ -808,22 +823,38 @@ void Scourge::dropItem(int x, int y) {
 			  movingItem->getRpgItem()->getName());
 	  map->addDescription(message);
 	} else {
-	  map->setItem(movingX, movingY, movingZ, movingItem);
+	  replace = true;
 	}
   } else {
 	// see if it's blocked and get the value of z (stacking items)
-	int z;
 	Location *pos = map->isBlocked(x, y, 0,
 								   movingX, movingY, movingZ,
 								   movingItem->getShape(), &z);
-	if(!pos && !map->isWallBetween(movingX, movingY, movingZ, x, y, z)) {
+	if(!pos && 
+	   !map->isWallBetween(getPlayer()->getX(), 
+						   getPlayer()->getY(), 
+						   getPlayer()->getZ(), 
+						   x, y, z)) {
 	  map->setItem(x, y, z, movingItem);
 	} else {
-	  map->setItem(movingX, movingY, movingZ, movingItem);
+	  replace = true;
 	}
   }
-  movingItem = NULL;
-  movingX = movingY = movingZ = MAP_WIDTH + 1;
+
+  // failed to drop item; put it back to where we got it from
+  if(replace) {
+	if(movingX > -1 || movingX < MAP_WIDTH) {
+	  // the item drag originated from the gui... what to do?
+	  // for now don't end the drag
+	  return;
+	} else {
+	  map->isBlocked(movingX, movingY, movingZ,
+					 -1, -1, -1,
+					 movingItem->getShape(), &z);
+	  map->setItem(movingX, movingY, z, movingItem);
+	}
+  }
+  endItemDrag();
 }
 
 bool Scourge::useDoor(Location *pos) {

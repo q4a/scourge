@@ -34,12 +34,17 @@ class Scourge;
   */
 
 class Item {
-private:
+ public:
+  static const int MAX_CONTAINED_ITEMS = 100;
+
+ private:
   RpgItem *rpgItem;
   int shapeIndex;
   Color *color;
   GLShape *shape;
   bool blocking;
+  Item *containedItems[MAX_CONTAINED_ITEMS];
+  int containedItemCount;
   
 public:
   Item(RpgItem *rpgItem);
@@ -52,15 +57,21 @@ public:
   inline RpgItem *getRpgItem() { return rpgItem; }
   inline bool isBlocking() { return blocking; }
 
-	inline void getDetailedDescription(char *s, bool precise=true) {
-		sprintf(s, "(A:%d,S:%d,Q:%d,W:%d) %s", 
-						getRpgItem()->getAction(), 
-						getRpgItem()->getSpeed(), 
-						getRpgItem()->getQuality(), 
-						getRpgItem()->getWeight(),
-						(precise ? getRpgItem()->getName() : getRpgItem()->getShortDesc()));
-	}
+  inline void getDetailedDescription(char *s, bool precise=true) {
+	sprintf(s, "(A:%d,S:%d,Q:%d,W:%d) %s", 
+			getRpgItem()->getAction(), 
+			getRpgItem()->getSpeed(), 
+			getRpgItem()->getQuality(), 
+			getRpgItem()->getWeight(),
+			(precise ? getRpgItem()->getName() : getRpgItem()->getShortDesc()));
+  }
 
+  inline int getContainedItemCount() { return containedItemCount; }
+  // return true if successful
+  bool addContainedItem(Item *item);
+  // return removed item, or NULL
+  Item *removeContainedItem(int index);
+  Item *getContainedItem(int index);
 };
 
 #endif
