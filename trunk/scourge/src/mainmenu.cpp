@@ -75,8 +75,11 @@ void MainMenu::drawView() {
   // Use the stencil to draw
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
   glEnable(GL_DEPTH_TEST);
-  glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-  glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil==1
+  if(scourge->getUserConfiguration()->getStencilbuf()
+     && scourge->getUserConfiguration()->getStencilBufInitialized()){
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil==1
+  }
   drawClouds(false, true);
   glDisable(GL_STENCIL_TEST);
       
