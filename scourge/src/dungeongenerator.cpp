@@ -804,10 +804,10 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal,
 
         if(nodes[x][y] >= ROOM) {
           map->setFloorPosition(mapx, mapy + unitSide, 
-                                shapePal->findShapeByName("ROOM_FLOOR_TILE"));
+                                shapePal->findShapeByName("ROOM_FLOOR_TILE", true));
         } else {
           map->setFloorPosition(mapx, mapy + unitSide, 
-                                shapePal->findShapeByName("FLOOR_TILE"));
+                                shapePal->findShapeByName("FLOOR_TILE", true));
         }
 
         // init the free space
@@ -854,113 +854,113 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal,
         if(!(nodes[x][y] & W_PASS)) {
           if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
             map->setPosition(mapx, mapy + unitSide, 
-                             0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));               
+                             0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS", true));               
           } else if(nodes[x][y] & N_PASS) {
             map->setPosition(mapx, mapy + unitSide - unitOffset, 
-                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA", true));
           } else if(nodes[x][y] & S_PASS) {
             map->setPosition(mapx, mapy + unitSide, 
-                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA", true));
           } else {
             map->setPosition(mapx, mapy + unitSide - unitOffset, 
-                             0, shapePal->findShapeByName("EW_WALL"));                
+                             0, shapePal->findShapeByName("EW_WALL", true));
           }             
           if((int) (100.0 * rand()/RAND_MAX) <= torches) {
             map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-                             6, shapePal->findShapeByName("LAMP_WEST"));
+                             6, shapePal->findShapeByName("LAMP_WEST", true));
             map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-                             4, shapePal->findShapeByName("LAMP_BASE"));
+                             4, shapePal->findShapeByName("LAMP_BASE", true));
           }
         }
         if(!(nodes[x][y] & E_PASS)) {
           if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
             map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
-                             0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS"));               
+                             0, shapePal->findShapeByName("EW_WALL_TWO_EXTRAS", true));               
           } else if(nodes[x][y] & N_PASS) {
             map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA", true));
           } else if(nodes[x][y] & S_PASS) {
             map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 
-                             0, shapePal->findShapeByName("EW_WALL_EXTRA"));
+                             0, shapePal->findShapeByName("EW_WALL_EXTRA", true));
           } else {
             map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide - unitOffset, 
-                             0, shapePal->findShapeByName("EW_WALL"));
+                             0, shapePal->findShapeByName("EW_WALL", true));
           }
           if((int) (100.0 * rand()/RAND_MAX) <= torches) {
             map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-                             6, shapePal->findShapeByName("LAMP_EAST"));
+                             6, shapePal->findShapeByName("LAMP_EAST", true));
             map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-                             4, shapePal->findShapeByName("LAMP_BASE"));
+                             4, shapePal->findShapeByName("LAMP_BASE", true));
           }
         }
         if(!(nodes[x][y] & N_PASS)) {
           if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
             map->setPosition(mapx, mapy + unitOffset, 0, 
-                             shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
+                             shapePal->findShapeByName("NS_WALL_TWO_EXTRAS", true));
           } else if(nodes[x][y] & W_PASS) {
             map->setPosition(mapx, mapy + unitOffset, 0, 
-                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+                             shapePal->findShapeByName("NS_WALL_EXTRA", true));
           } else if(nodes[x][y] & E_PASS) {
             map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
-                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+                             shapePal->findShapeByName("NS_WALL_EXTRA", true));
           } else {
             map->setPosition(mapx + unitOffset, mapy + unitOffset, 0, 
-                             shapePal->findShapeByName("NS_WALL"));
+                             shapePal->findShapeByName("NS_WALL", true));
           }
           if((int) (100.0 * rand()/RAND_MAX) <= torches) {
             map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
-                             shapePal->findShapeByName("LAMP_NORTH"));
+                             shapePal->findShapeByName("LAMP_NORTH", true));
             map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
-                             shapePal->findShapeByName("LAMP_BASE"));
+                             shapePal->findShapeByName("LAMP_BASE", true));
           }
         }
         if(!(nodes[x][y] & S_PASS)) {
           if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
             map->setPosition(mapx, mapy + unitSide, 0, 
-                             shapePal->findShapeByName("NS_WALL_TWO_EXTRAS"));
+                             shapePal->findShapeByName("NS_WALL_TWO_EXTRAS", true));
           } else if(nodes[x][y] & W_PASS) {
             map->setPosition(mapx, mapy + unitSide, 0, 
-                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+                             shapePal->findShapeByName("NS_WALL_EXTRA", true));
           } else if(nodes[x][y] & E_PASS) {
             map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
-                             shapePal->findShapeByName("NS_WALL_EXTRA"));
+                             shapePal->findShapeByName("NS_WALL_EXTRA", true));
           } else {
             map->setPosition(mapx + unitOffset, mapy + unitSide, 0, 
-                             shapePal->findShapeByName("NS_WALL"));
+                             shapePal->findShapeByName("NS_WALL", true));
           }
         }
 
         if(nodes[x][y] & N_PASS && nodes[x][y] & W_PASS) {
           map->setPosition(mapx, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER"));
+                           shapePal->findShapeByName("CORNER", true));
         }
         if(nodes[x][y] & N_PASS && nodes[x][y] & E_PASS) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER"));
+                           shapePal->findShapeByName("CORNER", true));
         }
         if(nodes[x][y] & S_PASS && nodes[x][y] & W_PASS) {
           map->setPosition(mapx, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER"));
+                           shapePal->findShapeByName("CORNER", true));
         }
         if(nodes[x][y] & S_PASS && nodes[x][y] & E_PASS) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER"));
+                           shapePal->findShapeByName("CORNER", true));
         }
         if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & W_PASS)) {
           map->setPosition(mapx, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER"));
+                           shapePal->findShapeByName("CORNER", true));
         }
         if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & E_PASS)) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER")); 
+                           shapePal->findShapeByName("CORNER", true)); 
         }
         if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & W_PASS)) {
           map->setPosition(mapx, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER")); 
+                           shapePal->findShapeByName("CORNER", true)); 
         }
         if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & E_PASS)) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER")); 
+                           shapePal->findShapeByName("CORNER", true)); 
         }
       }
     }

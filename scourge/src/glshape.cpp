@@ -45,6 +45,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   this->useTexture = true;
   this->lightBlocking = false;
   this->initialized = false;
+  this->variationTextureIndex = 0;
 
   surfaces[LEFT_SURFACE] = NULL;
   surfaces[BOTTOM_SURFACE] = NULL;
@@ -58,7 +59,7 @@ void GLShape::setTexture( GLuint *textureGroup ) {
   if( initialized ) {
     glDeleteLists( displayListStart, 3 );
   }
-  for(int i = 0; i < 3; i++) this->tex[i] = textureGroup[i];
+  this->tex = textureGroup;
   initialize();
 }
 
@@ -141,10 +142,16 @@ void GLShape::createShadowList( GLuint listName ) {
 void GLShape::createBodyList( GLuint listName ) {
   glNewList( listName, GL_COMPILE );
 
+  // hack...
+  //bool isFloorShape = ( height < 1 );
+  bool isFloorShape = false;
+
   // left
+  int textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth > width ? this->getVariationTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
+  cerr << "LEFT_RIGHT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {    
-    if(tex && tex[LEFT_RIGHT_SIDE]) 
-      glBindTexture( GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE] );
+    if(tex && tex[textureIndex]) 
+      glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
     glBegin( GL_QUADS );
     glNormal3f(-1.0f, 0.0f, 0.0f);
     glTexCoord2f( 0.0f, 1.0f );
@@ -158,17 +165,19 @@ void GLShape::createBodyList( GLuint listName ) {
     glEnd();
   }
 
+  textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth < width ? this->getVariationTextureIndex() : GLShape::FRONT_SIDE );
+  cerr << "FRONT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
-    if(tex && tex[FRONT_SIDE]) {
+    if(tex && tex[textureIndex]) {
       if(Constants::multitexture) {
         glSDLActiveTextureARB(GL_TEXTURE0_ARB);
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, tex[FRONT_SIDE]);
+        glBindTexture(GL_TEXTURE_2D, tex[textureIndex]);
         glSDLActiveTextureARB(GL_TEXTURE1_ARB);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);
       } else {
-        glBindTexture( GL_TEXTURE_2D, tex[FRONT_SIDE] );
+        glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
       }
     }
 
@@ -208,17 +217,19 @@ void GLShape::createBodyList( GLuint listName ) {
     }
   }
 
+  textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth > width ? this->getVariationTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
+  cerr << "LEFT_RIGHT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {
-    if(tex && tex[LEFT_RIGHT_SIDE]) {
+    if(tex && tex[textureIndex]) {
       if(Constants::multitexture) {
         glSDLActiveTextureARB(GL_TEXTURE0_ARB);
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE]);
+        glBindTexture(GL_TEXTURE_2D, tex[textureIndex]);
         glSDLActiveTextureARB(GL_TEXTURE1_ARB);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, lightmap_tex_num2);
       } else {
-        glBindTexture( GL_TEXTURE_2D, tex[LEFT_RIGHT_SIDE] );
+        glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
       }
     }
 
@@ -258,17 +269,19 @@ void GLShape::createBodyList( GLuint listName ) {
     }
   }
 
+  textureIndex = ( !isFloorShape && this->getVariationTextureIndex() > 0 && depth < width ? this->getVariationTextureIndex() : GLShape::FRONT_SIDE );
+  cerr << "FRONT_SIDE: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
   if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
-    if(tex && tex[FRONT_SIDE]) {
+    if(tex && tex[textureIndex]) {
       if(Constants::multitexture) {
         glSDLActiveTextureARB(GL_TEXTURE0_ARB);
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, tex[FRONT_SIDE]);
+        glBindTexture(GL_TEXTURE_2D, tex[textureIndex]);
         glSDLActiveTextureARB(GL_TEXTURE1_ARB);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);
       } else {
-        glBindTexture( GL_TEXTURE_2D, tex[FRONT_SIDE] );
+        glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
       }
     }
 
@@ -315,7 +328,15 @@ void GLShape::createBodyList( GLuint listName ) {
 void GLShape::createTopList( GLuint listName ) {
   glNewList( listName, GL_COMPILE );
 
-  if(tex && tex[TOP_SIDE]) glBindTexture( GL_TEXTURE_2D, tex[TOP_SIDE] );
+  // hack...
+  //bool isFloorShape = ( height < 1 );
+  bool isFloorShape = true;
+
+  int textureIndex = ( isFloorShape && this->getVariationTextureIndex() > 0 ? this->getVariationTextureIndex() : GLShape::TOP_SIDE );
+
+  cerr << "TOP: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
+
+  if(tex && tex[textureIndex]) glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
   glBegin( GL_QUADS );
   glNormal3f(0.0f, 0.0f, 1.0f);
 
@@ -361,6 +382,7 @@ GLShape::~GLShape(){
   free(surfaces[FRONT_SURFACE]);
   free(surfaces[TOP_SURFACE]);
   if( initialized ) glDeleteLists( displayListStart, 3 );
+  deleteVariationShapes();
 }
 
 void GLShape::drawShadow() {
@@ -639,3 +661,22 @@ void GLShape::initSurfaces() {
   if(surfaces[TOP_SURFACE]) free(surfaces[TOP_SURFACE]);
   surfaces[TOP_SURFACE] = new_surface(v);
 }
+
+void GLShape::deleteVariationShapes() {
+  for( int i = 0; i < (int)variationShape.size(); i++ ) {
+    GLShape *shape = variationShape[i];
+    delete shape;
+  }
+  variationShape.clear();
+}
+
+void GLShape::createVariationShape( int textureIndex, GLuint *textureGroup ) {
+  // create a duplicate of this shape and set the texture index
+  GLShape *dup = new GLShape( tex, width, depth, height,
+                              getName(), getDescriptionGroup(),
+                              color, shapePalIndex );
+  dup->setVariationTextureIndex( textureIndex );
+  dup->setTexture( textureGroup );
+  variationShape.push_back( dup );
+}
+
