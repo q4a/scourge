@@ -62,7 +62,7 @@ const MapLocation DungeonGenerator::location[] = {
 	{ 
 		{2*unitSide+16, unitSide+4}, 
 	  {2*unitSide+12, unitSide+9}, 
-		{2*unitSide+20, unitSide+9}, 
+		{2*unitSide+18, unitSide+9}, 
 		{2*unitSide+16, unitSide+13} 
 	},
 	false,
