@@ -18,10 +18,13 @@
 #include "item.h"
 
 Item::Item(RpgItem *rpgItem) {
+  cerr << "New item!!!" << endl;
   this->rpgItem = rpgItem;
   this->shapeIndex = this->rpgItem->getShapeIndex();
   this->color = NULL;
+  cerr << " shapeIndex=" << this->shapeIndex << endl;
   this->shape = ShapePalette::getInstance()->getShape(shapeIndex);
+  cerr << "shape: size=" << shape->getWidth() << "x" << shape->getDepth() << endl;
   // for now objects larger than 1 height will block (we can change this later)
   // this is so the player is not blocked by swords and axes on the ground
   this->blocking = (shape->getHeight() > 1);
@@ -30,6 +33,7 @@ Item::Item(RpgItem *rpgItem) {
   weight = rpgItem->getWeight();
   this->spell = NULL;
   sprintf(this->itemName, "%s", rpgItem->getName());
+  cerr << "Done. creating item. name=" << this->itemName << endl;
 }
 
 Item::~Item(){

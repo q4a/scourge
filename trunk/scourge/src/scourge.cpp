@@ -61,7 +61,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   lastTargetTick = SDL_GetTicks();
 
   lastEffectOn = false;
-  inBattle = false;
+  resetBattles();
 
   turnProgress = new Progress(this, 10, false, false, false);
 }
@@ -75,32 +75,17 @@ void Scourge::initVideo(ShapePalette *shapePal) {
 }
 
 void Scourge::initUI() {
-
   // for now pass map in
   this->map = session->getMap();
   miniMap = new MiniMap(this); 
 
-  // init characters first. Items use it for acl
-  //Character::initCharacters();
-  // initialize the items
-  //Item::initItems(shapePal);
-  // initialize magic
-  //MagicSchool::initMagic();
-  // initialize the monsters (they use items, magic)
-  //Monster::initMonsters();
-
   // create the mission board
-  //board = new Board(this);
   this->board = session->getBoard();
 
-  // do this before the inventory and optionsdialog (so Z is less than of those)
-//  party = new Party(this);  
-  this->party = session->getParty();
-  createPartyUI();
+  this->party = session->getParty();  
+  createPartyUI();  
   createBoardUI();
-
   netPlay = new NetPlay(this);
-
   createUI();
 
   // show the main menu
@@ -277,15 +262,8 @@ void Scourge::startMission() {
     miniMap->hide();
     netPlay->getWindow()->setVisible(false);
 
-    // delete battle references
-    battleRound.clear();
-    for(int i = 0; i < MAX_BATTLE_COUNT; i++) {
-      battle[i] = NULL;
-    }
-    battleCount = 0;
-    battleTurn = 0;
-    inBattle = false;
-
+    resetBattles();
+    
     // delete active projectiles
     Projectile::resetProjectiles();
 
@@ -2640,11 +2618,15 @@ void Scourge::togglePlayerOnlyUI(bool playerOnly) {
   // initialization events
 void Scourge::initStart(int statusCount, char *message) {
   progress = new Progress(this, statusCount, true, true);
-  progress->updateStatus(message);
+  // Don't print text during startup. On windows this causes font corruption.
+//  progress->updateStatus(message);
+  progress->updateStatus(NULL);
 }
 
 void Scourge::initUpdate(char *message) {
-  progress->updateStatus(message);
+  // Don't print text during startup. On windows this causes font corruption.  
+//  progress->updateStatus(message);
+  progress->updateStatus(NULL);  
 }
 
 void Scourge::initEnd() {
@@ -2714,4 +2696,15 @@ void Scourge::colorMiniMapPoint(int x, int y, Shape *shape) {
 void Scourge::eraseMiniMapPoint(int x, int y) { 
   miniMap->eraseMiniMapPoint(x,y); 
 }
+
+void Scourge::resetBattles() {
+  // delete battle references
+  battleRound.clear();
+  for(int i = 0; i < MAX_BATTLE_COUNT; i++) {
+    battle[i] = NULL;
+  }
+  battleCount = 0;
+  battleTurn = 0;
+  inBattle = false;  
+}  
 

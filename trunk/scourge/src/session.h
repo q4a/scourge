@@ -68,7 +68,7 @@ private:
 #endif
   bool multiplayerGame;
   Mission *currentMission;
-  Item *items[500];
+  Item *newItems[500];
   Creature *creatures[500];
   int itemCount;
   int creatureCount;
@@ -135,7 +135,7 @@ public:
   inline int getCreatureCount() { return creatureCount; }
   inline Creature *getCreature(int index) { return creatures[index]; }
   inline int getItemCount() { return itemCount; }
-  inline Item *getItem(int index) { return items[index]; }
+  inline Item *getItem(int index) { return newItems[index]; }
   inline Mission *getCurrentMission() { return currentMission; }
   inline void setCurrentMission(Mission *mission) { currentMission = mission; }
 

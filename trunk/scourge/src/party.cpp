@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "party.h"
+#include "rpg/rpgitem.h"
 
 Party::Party(Session *session) {
   this->session = session;
@@ -238,9 +239,10 @@ int Party::getTotalLevel() {
    Create a party programmatically until the party editor is made.
  */
 void Party::createHardCodedParty(Session *session, Creature ***party, int *partySize) {
+  cerr << "1" << endl;
   int pcCount = 4;
   Creature **pc = (Creature**)malloc(sizeof(Creature*) * pcCount);
-
+  cerr << "2" << endl;
   int level = 6;
 
   // FIXME: consider using newCreature here
@@ -256,7 +258,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[0]->setThirst(7); 
   pc[0]->setStateMod(Constants::blessed, true);
   pc[0]->setStateMod(Constants::poisoned, true);
-
+  cerr << "3" << endl;
   pc[1] = new Creature(session, Character::getCharacterByName("Knight"), "Barlett");
   pc[1]->setLevel(level); 
   pc[1]->setExp();
@@ -266,7 +268,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[1]->setThirst(9);
   pc[1]->setStateMod(Constants::drunk, true);
   pc[1]->setStateMod(Constants::cursed, true);      
-
+  cerr << "4" << endl;
   pc[2] = new Creature(session, Character::getCharacterByName("Summoner"), "Corinus");
   pc[2]->setLevel(level); 
   pc[2]->setExp();
@@ -279,7 +281,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[2]->setStateMod(Constants::cursed, true);
   //  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
   //  	if(i != Constants::dead) pc[2]->setStateMod(i, true);
-
+  cerr << "5" << endl;
   pc[3] = new Creature(session, Character::getCharacterByName("Naturalist"), "Dialante");    
   pc[3]->setLevel(level); 
   pc[3]->setExp();
@@ -288,7 +290,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[3]->setHunger(10);
   pc[3]->setThirst(10);
   pc[3]->setStateMod(Constants::possessed, true);          
-  
+  cerr << "6" << endl;  
   // compute starting skill levels
   for(int i = 0; i < pcCount; i++) {
 	for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
@@ -299,7 +301,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
 	  pc[i]->setSkill(skill, n);
 	}
   }
-
+  cerr << "7" << endl;
   // add some items
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Bastard sword")));
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Horned helmet")));
@@ -338,18 +340,29 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));   
-
+  cerr << "8" << endl;
+  
   // add some scrolls
   for(int i = 0; i < 10; i++) {
+    cerr << "8.1" << endl;
     Spell *spell = MagicSchool::getRandomSpell(1);
+    cerr << "8.2" << endl;
     if(spell) {
-      Item *scroll = session->newItem(RpgItem::getItemByName("Scroll"));
+      cerr << "8.3 spell=" << spell->getName() << endl;
+      RpgItem *rpgItem = RpgItem::getItemByName("Scroll");
+      cerr << "8.35 item=" << rpgItem->getName() << endl;
+      Item *scroll = session->newItem(rpgItem);
+      cerr << "8.4 item=" << scroll->getRpgItem()->getName() << 
+      endl;
       scroll->setSpell(spell);
+      cerr << "8.5" << endl;
       pc[2]->addInventory(scroll);  
+      cerr << "8.6" << endl;
     }
   }
+  cerr << "8.7" << endl;  
   pc[2]->setMp(50);
-
+  cerr << "9" << endl;
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Dagger")));
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Battleaxe")));
@@ -360,7 +373,8 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
-  
+  cerr << "10" << endl; 
+ 
   // equip weapons
   pc[0]->equipInventory(0);
   pc[0]->equipInventory(1);
@@ -378,9 +392,10 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
 
   pc[3]->addSpell(Spell::getSpellByName("Lesser healing touch"));
   pc[3]->addSpell(Spell::getSpellByName("Body of stone"));
-				  
+  cerr << "11" << endl;				  
   *party = pc;
   *partySize = pcCount;  
+  cerr << "12" << endl;  
 }
 
 /** 

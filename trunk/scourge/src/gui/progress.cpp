@@ -67,7 +67,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);
-  scourge->getSDLHandler()->texPrint(20, 25, message);
+  if(message) scourge->getSDLHandler()->texPrint(20, 25, message);
   for (int i = 0; i < maxStatus; i++) {
     if (i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
     else glColor4f(0.5f, 0.5f, 0.5f, 1);
