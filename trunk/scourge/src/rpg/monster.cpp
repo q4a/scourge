@@ -23,16 +23,17 @@
 int Monster::monsterCount[MAX_MONSTER_LEVEL];
 Monster *Monster::monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
   
-Monster::Monster(char *type, int level, int hp, Uint8 shapeIndex, int baseArmor) {
+Monster::Monster(char *type, int level, int hp, char *model, char *skin, int baseArmor) {
   this->type = type;
   this->level = level;
   this->hp = hp;
-  this->shapeIndex = shapeIndex;
+  this->model_name = model;
+  this->skin_name = skin;
   for(int i = 0; i < ITEM_COUNT; i++) {
 		item[i] = NULL;
   }
   speed = 50;
-	this->baseArmor = baseArmor;
+  this->baseArmor = baseArmor;
   sprintf(description, "FIXME: need a description");
 }
 
@@ -45,50 +46,50 @@ void Monster::initMonsters() {
   int level = 0;
   monsterCount[level] = 0;
   m = monsters[level][monsterCount[0]++] = 
-	new Monster("An Imp", 0, 4, Constants::BUGGERLING_INDEX, 4);
-  m->item[0] = RpgItem::getItemByName("Short sword"); // items[RpgItem::SHORT_SWORD];
-  m->item[1] = RpgItem::getItemByName("Dagger"); //items[RpgItem::DAGGER];
-  m->item[2] = RpgItem::getItemByName("Horned helmet"); //items[RpgItem::HORNED_HELMET];
+	new Monster("An Imp", 0, 4, "BUGGERLING", "models/m5.bmp", 4);
+  m->item[0] = RpgItem::getItemByName("Short sword");
+  m->item[1] = RpgItem::getItemByName("Dagger");
+  m->item[2] = RpgItem::getItemByName("Horned helmet");
 
   m = monsters[level][monsterCount[0]++] = 
-	new Monster("An Oozing Green Waddler", 0, 3, Constants::SLIME_INDEX, 8);
-  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
+	new Monster("An Oozing Green Waddler", 0, 3, "SLIME", "models/m6.bmp", 8);
+  m->item[0] = RpgItem::getItemByName("Dagger");
 
   m = monsters[level][monsterCount[0]++] = 
-	new Monster("A Buggerling", 0, 3, Constants::BUGGERLING_INDEX, 6);
-  m->item[0] = RpgItem::getItemByName("Short sword"); //items[RpgItem::SHORT_SWORD];
+	new Monster("A Buggerling", 0, 3, "BUGGERLING", "models/m5.bmp", 6);
+  m->item[0] = RpgItem::getItemByName("Short sword");
 
 
   // ###########################################
   level = 1;
   monsterCount[level] = 0;
   m = monsters[level][monsterCount[1]++] =
-	new Monster("A Rabbid Rodent", 1, 4, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
+	new Monster("A Rabbid Rodent", 1, 4, "BUGGERLING", "models/m5.bmp");
+  m->item[0] = RpgItem::getItemByName("Dagger");
 
   m = monsters[level][monsterCount[1]++] =
-	new Monster("A Gray Slimy Waddler", 1, 5, Constants::SLIME_INDEX);
-  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
+	new Monster("A Gray Slimy Waddler", 1, 5, "SLIME", "models/m6.bmp");
+  m->item[0] = RpgItem::getItemByName("Dagger");
 
   m = monsters[level][monsterCount[1]++] =
-	new Monster("A Fleshworm", 1, 3, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
+	new Monster("A Fleshworm", 1, 3, "BUGGERLING", "models/m5.bmp");
+  m->item[0] = RpgItem::getItemByName("Dagger");
 
 
   // ###########################################
   level = 2;
   monsterCount[level] = 0;
   m = monsters[level][monsterCount[1]++] =
-	new Monster("A Kobold", 2, 6, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
+	new Monster("A Kobold", 2, 6, "BUGGERLING", "models/m5.bmp");
+  m->item[0] = RpgItem::getItemByName("Dagger");
 
   m = monsters[level][monsterCount[1]++] =
-	new Monster("A Dire Stench-Waddler", 2, 6, Constants::SLIME_INDEX);
-  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
+	new Monster("A Dire Stench-Waddler", 2, 6, "SLIME", "models/m6.bmp");
+  m->item[0] = RpgItem::getItemByName("Dagger");
 
   m = monsters[level][monsterCount[1]++] =
-	new Monster("A Minor Spectre", 2, 4, Constants::BUGGERLING_INDEX);
-  m->item[0] = RpgItem::getItemByName("Dagger"); // items[RpgItem::DAGGER];
+	new Monster("A Minor Spectre", 2, 4, "BUGGERLING", "models/m5.bmp");
+  m->item[0] = RpgItem::getItemByName("Dagger");
 }
 
 Monster *Monster::getRandomMonster(int level) {

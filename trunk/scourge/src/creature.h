@@ -61,7 +61,7 @@ class Creature {
   Sint16 x, y, z;
   Creature *next;
   GLShape *shape;
-  int shapeIndex;
+  char *model_name, *skin_name;
   Uint16 dir;
   Scourge *scourge;
   GLUquadric *quadric;
@@ -158,7 +158,8 @@ class Creature {
   inline Sint16 getX() { return x; }
   inline Sint16 getY() { return y; }
   inline Sint16 getZ() { return z; }
-  inline int getShapeIndex() { return shapeIndex; }
+  inline char *getModelName() { return model_name; }
+  inline char *getSkinName() { return skin_name; }
   inline GLShape *getShape() { return shape; }
   inline void setFormation(int formation) { this->formation = formation; }
   inline int getFormation() { return formation; }

@@ -26,7 +26,10 @@ ShapePalette::ShapePalette(){
   descriptionIndexCount = 0;
 
   // load textures
-  loadTextures();
+  gui_texture = loadGLTextures("data/gui.bmp");
+  cloud = loadGLTextures("data/cloud.bmp");
+  candle = loadGLTextures("data/candle.bmp");
+  torchback = loadGLTextures("data/torchback.bmp");
 
   // load the texture info
   char errMessage[500];
@@ -54,6 +57,16 @@ ShapePalette::ShapePalette(){
 	  // load the texture
 	  textures[texture_count].id = loadGLTextures(path);
 	  texture_count++;
+	} else if(n == 'S') {
+	  fgetc(fp);
+	  n = Constants::readLine(line, fp);
+	  // load md2 skin 
+	  GLuint skin;
+	  sprintf(path, "data/%s", line);
+	  cerr << "Loading md2 skin: " << line << endl;
+	  CreateTexture(&skin, path, 0);
+	  string name = line;
+	  creature_skins[name] = skin;
 	} else if(n == 'G') {
 	  // skip ':'
 	  fgetc(fp);
@@ -132,6 +145,34 @@ ShapePalette::ShapePalette(){
 
 	  // store it for now
 	  shapeValueVector.push_back(sv);
+	
+	} else if(n == '2') {	  
+	  Md2ModelInfo *info = new Md2ModelInfo();
+	  // name
+	  n = Constants::readLine(line, fp);
+	  strcpy(info->name, line + 1);
+	  
+	  // file
+	  n = Constants::readLine(line, fp);
+	  strcpy(info->filename, line + 1);
+	  
+	  n = Constants::readLine(line, fp);
+	  // scale
+	  info->scale = strtof(strtok(line + 1, ","), NULL);
+	  // dimensions
+	  info->width = atoi(strtok(NULL, ","));
+	  info->depth = atoi(strtok(NULL, ","));
+	  info->height = atoi(strtok(NULL, ","));
+	  	  
+	  // store the md2 model and info
+	  sprintf(path, "data/%s", info->filename);
+	  cerr << "Loading md2 model: " << path << " scale: " << info->scale << 
+		" dim: " << info->width << ", " << info->depth << "," << info->height << endl;
+	  info->model = LoadMd2Model(path);
+	  
+	  // store it
+	  string s = info->name;
+	  creature_models[s] = info;
 	} else if(n == 'P') {
 	  fgetc(fp);
 	  n = Constants::readLine(line, fp);
@@ -287,6 +328,7 @@ ShapePalette::ShapePalette(){
   // set up the scourge
   setupAlphaBlendedBMP("data/scourge.bmp", &scourge, &scourgeImage);
      
+  /*
   // creatures              
   // The order at which we "push back" models is important                 
   creature_models.push_back(LoadMd2Model("data/models/m2.md2"));  
@@ -296,14 +338,15 @@ ShapePalette::ShapePalette(){
   creature_models.push_back(LoadMd2Model("data/models/m5.md2"));
   creature_models.push_back(LoadMd2Model("data/models/m6.md2"));
   cout<<"MD2 Models loaded" << endl;
+  */
 
   if(!instance) instance = this;
 }
 
 ShapePalette::~ShapePalette(){
-    for(int i =0; i < (int)creature_models.size(); i++){
-        delete creature_models[i];    
-    }
+  //    for(int i =0; i < (int)creature_models.size(); i++){
+  //        delete creature_models[i];    
+  //    }
 }
 
 t3DModel * ShapePalette::LoadMd2Model(char *file_name){
@@ -317,72 +360,34 @@ t3DModel * ShapePalette::LoadMd2Model(char *file_name){
     return t3d;   
 }    
 
-GLShape *ShapePalette::getCreatureShape(int index){    
-    
-    GLShape * sh;
-    int index2 = index - Constants::FIGHTER_INDEX;
-    bool debug = false;
-    
-    switch(index) {
-        case Constants::FIGHTER_INDEX :
-        //cout << "Creating FIGHTER instance" << endl;
-        sh = new MD2Shape(creature_models[index2], md2_tex[0], 2.0f,
-                 textureGroup[14], /*notex*/
-                 3, 3, 6,
-                 "FIGHTER",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),                  
-                 Constants::FIGHTER_INDEX);
-        break;
-        case Constants::ROGUE_INDEX : 
-        //cout << "Creating ROGUE instance" << endl;
-        sh = new MD2Shape(creature_models[index2], md2_tex[1], 2.0f,
-                 textureGroup[14], /*notex*/
-                 3, 3, 6,
-                 "ROGUE",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
-                 Constants::ROGUE_INDEX);
-        break;
-        case Constants::CLERIC_INDEX :
-        //cout << "Creating CLERIC instance" << endl;
-        sh = new MD2Shape(creature_models[index2], md2_tex[2], 2.5f,
-                 textureGroup[14], /*notex*/
-                 3, 3, 6,
-                 "CLERIC",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
-                 Constants::CLERIC_INDEX);  
-        break;
-        case Constants::WIZARD_INDEX :
-        //cout << "Creating WIZARD instance" << endl;
-        sh = new MD2Shape(creature_models[index2], md2_tex[3],  2.5f,
-                 textureGroup[14], /*notex*/
-                 3, 3, 6,
-                 "WIZARD",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
-                 Constants::WIZARD_INDEX);  
-        break;           
-        case Constants::BUGGERLING_INDEX :
-        //cout << "Creating BUGGERLING instance" << endl;
-        sh = new MD2Shape(creature_models[index2], md2_tex[4], 1.2f,
-                 textureGroup[14], /*notex*/
-                 3, 3, 4,
-                 "BUGGERLING",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
-                 Constants::BUGGERLING_INDEX);
-        break;  
-        case Constants::SLIME_INDEX : 
-        //cout << "Creating SLIME instance" << endl;   
-        sh = new MD2Shape(creature_models[index2], md2_tex[5], 1.2f,
-                 textureGroup[14], /*notex*/
-                 3, 3, 4,
-                 "SLIME",
-                 (debug ? 0xff0000ff : 0xf0f0ffff),                 
-                 Constants::SLIME_INDEX);
-        break;  
-        default : cerr << "getCreatureShape : unknown creature shape index : " << index << endl;                  
-                  sh = NULL;
-    }
-    
-    return sh;
+GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name) {
+
+  // find the model
+  string model = model_name;
+  if(creature_models.find(model) == creature_models.end()){
+	cerr << "Can't find md2 model named " << model << endl;
+	exit(1);
+  }
+  Md2ModelInfo *model_info = creature_models[model];
+
+  // find the skin
+  string skin = skin_name;
+  if(creature_skins.find(skin) == creature_skins.end()){
+	cerr << "Can't find md2 skin named " << skin << endl;
+	exit(1);
+  }
+  GLuint skin_texture = creature_skins[skin];
+
+  cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
+
+  // create the shape.
+  // FIXME: shapeindex is always FIGHTER_INDEX. Does it matter?
+  return new MD2Shape(model_info->model, skin_texture, model_info->scale,
+					  textureGroup[14], 
+					  model_info->width, model_info->depth, model_info->height,
+					  model_info->name,
+					  0xf0f0ffff,
+					  Constants::FIGHTER_INDEX);  
 }
 
 // the next two methods are slow, only use during initialization
@@ -410,39 +415,6 @@ int ShapePalette::findShapeIndexByName(const char *name) {
 	}
   }
   return Constants::SWORD_INDEX;
-}
-
-void ShapePalette::loadTextures() {
-  gui_texture = loadGLTextures("data/gui.bmp");
-
-  // set up the scourge
-  cloud = loadGLTextures("data/cloud.bmp");
-  candle = loadGLTextures("data/candle.bmp");
-  torchback = loadGLTextures("data/torchback.bmp");
-  
-  // FIXME : With loadGLTextures => crash!
-  // Why is Constants::CreateTexture different from ShapePal::loadGLTextures ????
-  // We should need only one texture loading function...
-  GLuint mdtext[1];  
-  CreateTexture(mdtext, "data/models/m2.bmp", 0);
-  md2_tex[0] = mdtext[0];
-  CreateTexture(mdtext, "data/models/m1.bmp", 0);
-  md2_tex[1] = mdtext[0];
-  CreateTexture(mdtext, "data/models/m3.bmp", 0);
-  md2_tex[2] = mdtext[0];
-  CreateTexture(mdtext, "data/models/m4.bmp", 0);
-  md2_tex[3] = mdtext[0];
-  CreateTexture(mdtext, "data/models/m5.bmp", 0);
-  md2_tex[4] = mdtext[0];
-  CreateTexture(mdtext, "data/models/m6.bmp", 0);
-  md2_tex[5] = mdtext[0];
-  
-  /*md2_tex[0] = loadGLTextures("data/models/m2.bmp");
-  md2_tex[1] = loadGLTextures("data/models/m1.bmp");
-  md2_tex[2] = loadGLTextures("data/models/m3.bmp");
-  md2_tex[3] = loadGLTextures("data/models/m4.bmp");
-  md2_tex[4] = loadGLTextures("data/models/m5.bmp");
-  md2_tex[5] = loadGLTextures("data/models/m6.bmp");*/
 }
 
 /* function to load in bitmap as a GL texture */

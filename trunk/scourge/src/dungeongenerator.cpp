@@ -1112,11 +1112,15 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 					cerr << "Warning: no monsters defined for level: " << level << endl;
 					break;
 				}
-				bool fits = 
-					getLocationInRoom(map, 
-									  i,
-									  scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
-									  &x, &y);
+
+				// FIXME: do this w/o creating a shape. Md2 model info is already loaded in shapepalette.
+				// create a creature shape temporarily
+				GLShape *shape = 
+				  scourge->getShapePalette()->
+				  getCreatureShape(monster->getModelName(), monster->getSkinName());
+				bool fits = getLocationInRoom(map, i, shape, &x, &y);
+				delete shape;
+
 				if(fits) {
 					//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
 					Creature *creature = scourge->newCreature(monster);

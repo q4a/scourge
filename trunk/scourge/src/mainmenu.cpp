@@ -183,7 +183,8 @@ void MainMenu::drawAfter() {
 
 void MainMenu::drawLogo() {
 
-  if((int)(5.0f * rand()/RAND_MAX) == 0) addLogoSprite();
+  //  if((int)(5.0f * rand()/RAND_MAX) == 0) 
+	addLogoSprite();
   drawLogoSprites();
 
   drawParticles();
@@ -191,12 +192,13 @@ void MainMenu::drawLogo() {
   //  glDisable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_BLEND);  
-  glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
+  //  glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE );
   //  scourge->setBlendFunc();
   glPushMatrix();
   glLoadIdentity();
   glRotatef(logoRot, 0, 0, 1 );
-  glTranslatef( 70, 30 - (abs(logoRot) / 0.25f), 500 );
+  glTranslatef( 70, 10 - (abs(logoRot) / 0.25f), 500 );
   float zoom = (abs(logoRot) / (LOGO_ROT_POS / LOGO_ZOOM)) + 1.0f;
   glScalef( zoom, zoom, 1 );
   float w = scourge->getShapePalette()->logo->w;
@@ -240,7 +242,7 @@ void MainMenu::drawLogo() {
 void MainMenu::addLogoSprite() {
   if(logoSpriteCount >= MAX_LOGOS - 1) return;
   logoSprite[logoSpriteCount].x = 70.0f;
-  logoSprite[logoSpriteCount].y = 30 - (abs(logoRot) / 0.25f);
+  logoSprite[logoSpriteCount].y = 10 - (abs(logoRot) / 0.25f);
   logoSprite[logoSpriteCount].angle = 1.0f + (88.0f * rand()/RAND_MAX);
   logoSprite[logoSpriteCount].quadrant = (int)(4.0f * rand()/RAND_MAX);
   logoSprite[logoSpriteCount].steps = 0;
@@ -266,7 +268,9 @@ void MainMenu::drawLogoSprites() {
 	float h = scourge->getShapePalette()->logo->h;
 
 	float alpha = (float)logoSprite[i].steps / 70.0f;
-	if(alpha > 1.0f) alpha = 1.0f;
+	//	if(alpha > 1.0f) alpha = 1.0f;
+	if(alpha >= 1.0f) alpha = 1.0f - (logoSprite[i].steps / 10.0f);
+
 	//	cerr << "i=" << i << " steps=" << logoSprite[i].steps << " alpha=" << alpha << endl;
 	logoSprite[i].steps++;
 
@@ -308,7 +312,8 @@ void MainMenu::drawLogoSprites() {
 	}
 
 	// delete if off-screen
-	if(logoSprite[i].x <= -w * 2.0f || logoSprite[i].x >= scourge->getSDLHandler()->getScreen()->w ||
+	if(logoSprite[i].steps > 20 || 
+	   logoSprite[i].x <= -w * 2.0f || logoSprite[i].x >= scourge->getSDLHandler()->getScreen()->w ||
 	   logoSprite[i].y <= -h * 2.0f || logoSprite[i].y >= scourge->getSDLHandler()->getScreen()->h) {
 	  logoSprite[i].x = logoSprite[logoSpriteCount - 1].x;
 	  logoSprite[i].y = logoSprite[logoSpriteCount - 1].y;
@@ -329,7 +334,7 @@ void MainMenu::drawParticles() {
 	if(particle[i] == null) {
 	  particle[i] = new Particle();
 	  particle[i]->x = 80;
-	  particle[i]->y = 30 + (30.0f * rand()/RAND_MAX);
+	  particle[i]->y = 10 + (30.0f * rand()/RAND_MAX);
 
 	}
   }
@@ -354,7 +359,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
     h = cloud[i].h;
 	glPushMatrix();
 	glTranslatef( cloud[i].x, 
-				  (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y + 100), 
+				  (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y + 130), 
 				  0 );
     glBegin( GL_QUADS );
     glNormal3f(0.0f, 0.0f, 1.0f);

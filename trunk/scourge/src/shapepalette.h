@@ -20,6 +20,7 @@
 
 #include <string.h>
 #include <vector.h>
+#include <map.h>
 #include "constants.h"
 #include "shape.h"
 #include "glshape.h"
@@ -53,6 +54,14 @@ typedef struct _ShapeValues {
   float m3ds_scale;
   int teleporter;
 } ShapeValues;
+
+typedef struct _Md2ModelInfo {
+  t3DModel *model;
+  int width, height, depth;
+  char name[100];
+  char filename[100];
+  float scale;
+} Md2ModelInfo;
   
 class ShapePalette {
 private:
@@ -81,8 +90,6 @@ private:
   const static Sint16 unitOffset = MAP_UNIT_OFFSET;
   const static Sint16 wallHeight = MAP_WALL_HEIGHT;
 
-  void loadTextures();
-
   // shape descriptions
   char description[100][200];
   int descriptionIndex[100], descriptionLength[100];
@@ -91,11 +98,15 @@ private:
   // temp. shape data
   vector<ShapeValues*> shapeValueVector;
 
+  // md2 data
+  map<string, Md2ModelInfo *> creature_models; 
+  map<string, GLuint> creature_skins;
+
   static ShapePalette *instance;
   
   // Md2 shapes
   CLoadMD2 g_LoadMd2; 
-  t3DModel * LoadMd2Model(char *file_name);                  
+  t3DModel * LoadMd2Model(char *file_name);
 
 public: 
   ShapePalette();
@@ -134,8 +145,7 @@ public:
   int findShapeIndexByName(const char *name);
   
   // Md2 shapes
-  GLShape *getCreatureShape(int index);                    
-  vector<t3DModel *> creature_models; 
+  GLShape *getCreatureShape(char *model_name, char *skin_name);                    
 
 protected:
   GLuint loadGLTextures(char *fileName);
