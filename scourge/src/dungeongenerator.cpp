@@ -54,8 +54,8 @@ const MapLocation DungeonGenerator::location[] = {
 	0,0,5,12,
 	{ 
 		{2*unitSide+16, unitSide+6}, 
-	  {2*unitSide+11, unitSide+9}, 
-		{2*unitSide+21, unitSide+9}, 
+	  {2*unitSide+13, unitSide+9}, 
+		{2*unitSide+19, unitSide+9}, 
 		{2*unitSide+16, unitSide+12} 
 	},
 	false,
@@ -1099,6 +1099,24 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 	// add tables, chairs, etc.
 	addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1, preGenerated, locationIndex);
 	addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2, preGenerated, locationIndex);	
+	if(!preGenerated) {
+	  bool done = false;
+	  for(int tt = 0; !done && tt < 5; tt++) { // 5 room tries
+		int i = (int)(roomCount * rand() / RAND_MAX);	
+		for(int t = 0; !done && t < 5; t++) { // 5 tries
+		  Shape *shape = scourge->getShapePalette()->getShape(Constants::TELEPORTER_INDEX);
+		  bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
+		  if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+			addItem(scourge->getMap(), NULL, NULL, shape, x, y, 1);
+			addItem(scourge->getMap(), NULL, NULL, 
+					scourge->getShapePalette()->getShape(Constants::TELEPORTER_BASE_INDEX), 
+					x, y);
+			done = true;
+			break;
+		  }
+		}
+	  }
+	}
 		
 	// add the party in the first room
 	// FIXME: what happens if the party doesn't fit in the room?
@@ -1248,6 +1266,22 @@ void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n,
 	}
 }
 
+bool DungeonGenerator::addShapeInARoom(int shapeIndex) {
+	int x, y;
+	for(int tt = 0; tt < 5; tt++) { // 5 room tries
+		int i = (int)(roomCount * rand() / RAND_MAX);	
+		for(int t = 0; t < 5; t++) { // 5 tries
+			Shape *shape = scourge->getShapePalette()->getShape(shapeIndex);
+			bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
+			if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+				addItem(scourge->getMap(), NULL, NULL, shape, x, y);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 // return false if the creature won't fit in the room
 bool DungeonGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
 										 int *xpos, int *ypos,
@@ -1331,10 +1365,10 @@ bool DungeonGenerator::isDoor(Map *map, ShapePalette *shapePal, int tx, int ty) 
   return false;
 }
 
-void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y) {
-  if(creature) map->setCreature(x, y, 0, creature);
-  else if(item) map->setItem(x, y, 0, item);
-  else map->setPosition(x, y, 0, shape);
+void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z) {
+  if(creature) map->setCreature(x, y, z, creature);
+  else if(item) map->setItem(x, y, z, item);
+  else map->setPosition(x, y, z, shape);
   // populate containers
   if(item && item->getRpgItem()->getType() == RpgItem::CONTAINER) {
 	int n = (int)(3.0f * rand() / RAND_MAX);

@@ -17,7 +17,8 @@ ADD_EXECUTABLE (scourge WIN32 src/constants.cpp \
  src/rpg/rpgitem.cpp src/rpg/character.cpp src/rpg/monster.cpp\
  src/events/event.cpp src/events/thirsthungerevent.cpp\
  src/calendar.cpp src/date.cpp src/effect.cpp src/creature.cpp src/debugshape.cpp\
- src/dungeongenerator.cpp src/glshape.cpp src/gltorch.cpp src/item.cpp src/location.cpp\
+ src/dungeongenerator.cpp src/glshape.cpp src/glteleporter.cpp src/gltorch.cpp\
+ src/item.cpp src/location.cpp\
  src/main.cpp src/mainmenu.cpp src/map.cpp src/Md2.cpp src/md2shape.cpp\
  src/containergui.cpp src/scourge.cpp src/sdleventhandler.cpp src/sdlhandler.cpp\
  src/sdlscreenview.cpp src/shape.cpp src/inventory.cpp src/shapepalette.cpp\

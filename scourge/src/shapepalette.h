@@ -24,6 +24,7 @@
 #include "shape.h"
 #include "glshape.h"
 #include "gltorch.h"
+#include "glteleporter.h"
 #include "gllocator.h"
 #include "debugshape.h"
 #include "md2shape.h"
@@ -58,6 +59,7 @@ private:
   GLuint ns_tex[3];
   GLuint ew_tex[3];
   GLuint wood_tex[3];
+  GLuint marble_tex[3];
   GLuint floor_tex[3], floor2_tex[3], floor3_tex[3];
   GLuint notex[3];
   GLuint lamptex[3];
@@ -79,9 +81,9 @@ private:
 
   // shape descriptions
   static char *wallDescription[], *doorDescription[], *doorFrameDescription[], *torchDescription[];
-  static char *boardDescription[], *brazierDescription[], *columnDescription[];
+  static char *boardDescription[], *brazierDescription[], *columnDescription[], *teleporterDescription[];
   static int wallDescriptionCount, doorDescriptionCount, doorFrameDescriptionCount, torchDescriptionCount;
-  static int boardDescriptionCount, brazierDescriptionCount, columnDescriptionCount;
+  static int boardDescriptionCount, brazierDescriptionCount, columnDescriptionCount, teleporterDescriptionCount;
   
 
   static ShapePalette *instance;
