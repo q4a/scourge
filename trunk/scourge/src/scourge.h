@@ -29,7 +29,6 @@
 #include "creature.h"
 #include "mainmenu.h"
 #include "optionsmenu.h"
-#include "gui.h"
 #include "inventory.h"
 #include "item.h"
 #include "rpg/pc.h"
@@ -46,7 +45,6 @@ class ShapePalette;
 class Location;
 class MainMenu;
 class OptionsMenu;
-class Gui;
 class Inventory;
 
 /**
@@ -66,9 +64,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int formation;
   MainMenu *mainMenu;
   OptionsMenu *optionsMenu;
-  Gui *gui;
   bool isInfoShowing;
-  //  int topWin;
   Window *mainWin;
   Button *inventoryButton;
   Button *optionsButton;
@@ -129,8 +125,6 @@ public:
   inline MainMenu *getMainMenu() { return mainMenu; }
 
   inline OptionsMenu *getOptionsMenu() { return optionsMenu; }
-
-  inline Gui *getGui() { return gui; }
 
   inline Inventory *getInventory() { return inventory; }
   

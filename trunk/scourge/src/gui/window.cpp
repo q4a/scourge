@@ -27,10 +27,10 @@ Window *Window::window[MAX_WINDOW];
   
 Window::Window(SDLHandler *sdlHandler, 
 			   int x, int y, int w, int h, 
-			   const char *title, GLuint texture) :
+			   char *title, GLuint texture) :
 Widget(x, y, w, h) {
   this->sdlHandler = sdlHandler;
-  this->title = strdup(title);
+  this->title = title;
   this->texture = texture;
   this->visible = false;
   this->widgetCount = 0;
@@ -41,7 +41,6 @@ Widget(x, y, w, h) {
 }
 
 Window::~Window() {
-  free(title);
   delete[] widget;
   removeWindow(this);
 }
@@ -157,7 +156,8 @@ void Window::drawWidget(Widget *parent) {
   // tile the background
   glColor3f(1.0f, 0.6f, 0.3f);
   glTranslated(x, y, z);
-  glBindTexture( GL_TEXTURE_2D, texture );
+  if(texture)
+	glBindTexture( GL_TEXTURE_2D, texture );
   glBegin (GL_QUADS);
   glTexCoord2f (0.0f, 0.0f);
   glVertex2i (0, topY);
@@ -211,11 +211,13 @@ void Window::drawWidget(Widget *parent) {
   glEnd();
 
   // print title
-  glPushMatrix();
-  glTranslated( 0, 0, 5 );
-  glColor3f( 1, 1, 1 );
-  sdlHandler->texPrint(10, topY + 13, "%s", title);
-  glPopMatrix();
+  if(title) {
+	glPushMatrix();
+	glTranslated( 0, 0, 5 );
+	glColor3f( 1, 1, 1 );
+	sdlHandler->texPrint(10, topY + 13, "%s", title);
+	glPopMatrix();
+  }
 
   // draw widgets
   if(isOpening()) {  

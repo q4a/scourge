@@ -30,22 +30,21 @@
 
 class Scourge;
 
-class OptionsMenu : public SDLEventHandler,SDLScreenView {
+class OptionsMenu {
 private:
   Scourge *scourge;
-  int win;
   bool showDebug;
+  Window *mainWin;
   
 public:
   OptionsMenu(Scourge *scourge);
   ~OptionsMenu();
 
-  void drawView(SDL_Surface *screen);
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
-  void drawMenu(int x, int y);
-
-  void show();
+  inline void show() { mainWin->setVisible(true); }
+  inline void hide() { mainWin->setVisible(false); }
+  inline bool isVisible() { return mainWin->isVisible(); }
 
  protected:
 };

@@ -49,7 +49,6 @@ Scourge::Scourge(int argc, char *argv[]){
   sdlHandler->setVideoMode(argc, argv);
 
   shapePal = sdlHandler->getShapePalette();
-  gui = new Gui(this);
 
   // init the items
   Item::initItems();
@@ -76,50 +75,40 @@ Scourge::Scourge(int argc, char *argv[]){
 						sdlHandler->getScreen()->w - GUI_WIDTH, 
 						sdlHandler->getScreen()->h - GUI_HEIGHT, 
 						GUI_WIDTH, GUI_HEIGHT, 
-						version, 
+						strdup(version), 
 						getShapePalette()->getGuiTexture() );
   int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
   int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
-  inventoryButton = new Button( 0, 0, 100, 25, "Party Info" );
+  inventoryButton = new Button( 0, 0, 100, 25, strdup("Party Info") );
   mainWin->addWidget((Widget*)inventoryButton);
-  optionsButton = new Button( 0, 25,  100, 50, "Options" );
+  optionsButton = new Button( 0, 25,  100, 50, strdup("Options") );
   mainWin->addWidget((Widget*)optionsButton);
-  quitButton = new Button( 0, 50,  100, 75, "Quit" );
+  quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
 
-  diamondButton = new Button( 100, 0,  120, 20, "" );
+  diamondButton = new Button( 100, 0,  120, 20 );
   mainWin->addWidget((Widget*)diamondButton);
-  staggeredButton = new Button( 120, 0,  140, 20, "" );
+  staggeredButton = new Button( 120, 0,  140, 20 );
   mainWin->addWidget((Widget*)staggeredButton);
-  squareButton = new Button( 140, 0,  160, 20, "" );
+  squareButton = new Button( 140, 0,  160, 20 );
   mainWin->addWidget((Widget*)squareButton);
-  rowButton = new Button( 160, 0,  180, 20, "" );
+  rowButton = new Button( 160, 0,  180, 20 );
   mainWin->addWidget((Widget*)rowButton);
-  scoutButton = new Button( 180, 0,  200, 20, "" );
+  scoutButton = new Button( 180, 0,  200, 20 );
   mainWin->addWidget((Widget*)scoutButton);
-  crossButton = new Button( 200, 0,  220, 20, "" );
+  crossButton = new Button( 200, 0,  220, 20 );
   mainWin->addWidget((Widget*)crossButton);
 
-  player1Button = new Button( 100, 20,  124, 40, "" );
+  player1Button = new Button( 100, 20,  124, 40 );
   mainWin->addWidget((Widget*)player1Button);
-  player2Button = new Button( 124, 20,  148, 40, "" );
+  player2Button = new Button( 124, 20,  148, 40 );
   mainWin->addWidget((Widget*)player2Button);
-  player3Button = new Button( 148, 20,  172, 40, "" );
+  player3Button = new Button( 148, 20,  172, 40 );
   mainWin->addWidget((Widget*)player3Button);
-  player4Button = new Button( 172, 20,  196, 40, "" );
+  player4Button = new Button( 172, 20,  196, 40 );
   mainWin->addWidget((Widget*)player4Button);
-  groupButton = new Button( 196, 20,  220, 40, "" );
+  groupButton = new Button( 196, 20,  220, 40 );
   mainWin->addWidget((Widget*)groupButton);
-  
-
-  /*
-  gui->addActiveRegion(gx + 180, gy + 100, gx + 204, gy + 125, Constants::PLAYER_1, this);
-  gui->addActiveRegion(gx + 204, gy + 100, gx + 228, gy + 125, Constants::PLAYER_2, this);
-  gui->addActiveRegion(gx + 228, gy + 100, gx + 252, gy + 125, Constants::PLAYER_3, this);
-  gui->addActiveRegion(gx + 252, gy + 100, gx + 276, gy + 125, Constants::PLAYER_4, this);
-  gui->addActiveRegion(gx + 276, gy + 100, gx + 300, gy + 125, Constants::PLAYER_ONLY, this);
-  */
-
   
   // show the main menu
   mainMenu = new MainMenu(this);  
@@ -152,29 +141,6 @@ Scourge::~Scourge(){
 void Scourge::startMission() {
   // add gui
   mainWin->setVisible(true);
-  /*
-  topWin = gui->addWindow(sdlHandler->getScreen()->w - GUI_WIDTH, 
-						  sdlHandler->getScreen()->h - GUI_HEIGHT, 
-						  GUI_WIDTH, GUI_HEIGHT, 
-						  &Gui::drawDescriptions);
-  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
-  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
-  gui->addActiveRegion(gx + 180, gy,  gx + 300, gy + 25, Constants::SHOW_INVENTORY, this);
-  gui->addActiveRegion(gx + 180, gy + 25, gx + 300, gy + 50, Constants::SHOW_OPTIONS, this);
-  gui->addActiveRegion(gx + 180, gy + 50, gx + 300, gy + 75, Constants::ESCAPE, this);
-  gui->addActiveRegion(gx + 180, gy + 75, gx + 200, gy + 100, Constants::DIAMOND_FORMATION, this);
-  gui->addActiveRegion(gx + 200, gy + 75, gx + 220, gy + 100, Constants::STAGGERED_FORMATION, this);
-  gui->addActiveRegion(gx + 220, gy + 75, gx + 240, gy + 100, Constants::SQUARE_FORMATION, this);
-  gui->addActiveRegion(gx + 240, gy + 75, gx + 260, gy + 100, Constants::ROW_FORMATION, this);
-  gui->addActiveRegion(gx + 260, gy + 75, gx + 280, gy + 100, Constants::SCOUT_FORMATION, this);
-  gui->addActiveRegion(gx + 280, gy + 75, gx + 300, gy + 100, Constants::CROSS_FORMATION, this);
-
-  gui->addActiveRegion(gx + 180, gy + 100, gx + 204, gy + 125, Constants::PLAYER_1, this);
-  gui->addActiveRegion(gx + 204, gy + 100, gx + 228, gy + 125, Constants::PLAYER_2, this);
-  gui->addActiveRegion(gx + 228, gy + 100, gx + 252, gy + 125, Constants::PLAYER_3, this);
-  gui->addActiveRegion(gx + 252, gy + 100, gx + 276, gy + 125, Constants::PLAYER_4, this);
-  gui->addActiveRegion(gx + 276, gy + 100, gx + 300, gy + 125, Constants::PLAYER_ONLY, this);
-  */
 
   // create the map
   map = new Map(this);
@@ -210,7 +176,6 @@ void Scourge::startMission() {
   sdlHandler->mainLoop();
 
   // remove gui
-  //  gui->removeWindow(topWin);
   mainWin->setVisible(false);
   delete map;
   delete miniMap;
@@ -222,7 +187,6 @@ void Scourge::drawView(SDL_Surface *screen) {
   
   map->draw(screen);
   
-  //  glDisable( GL_LIGHTING );
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
 
@@ -241,15 +205,13 @@ void Scourge::drawView(SDL_Surface *screen) {
     }
   }
 
-  //  gui->drawWindows();
   map->drawDescriptions();
 
   miniMap->draw(0, 400);
 
   if(inventory->isVisible()) inventory->drawInventory();
-  
+
   glEnable( GL_DEPTH_TEST );
-  //  glEnable( GL_LIGHTING );
   glEnable( GL_TEXTURE_2D );      
 }
 
@@ -269,6 +231,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	inventory->handleEvent(event);
 	return false;
   }
+
+  if(optionsMenu->isVisible()) {
+	optionsMenu->handleEvent(event);
+	return false;
+  }
+
 
   switch(event->type) {
   case SDL_MOUSEMOTION:
@@ -290,24 +258,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     break;
   case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
-	  /*
-	  int region = gui->testActiveRegions(event->button.x, event->button.y);
-	  if(region == Constants::SHOW_INVENTORY) {
-		inventory->show();
-	  } else if(region == Constants::SHOW_OPTIONS) {
-		optionsMenu->show();
-	  } else if(region == Constants::ESCAPE) {
-		return true;
-	  } else if(region >= Constants::DIAMOND_FORMATION && region <= Constants::CROSS_FORMATION) {
-		setFormation(region - Constants::DIAMOND_FORMATION);
-	  } else if(region >= Constants::PLAYER_1 && region <= Constants::PLAYER_4) {
-		setPlayer(region - Constants::PLAYER_1);
-	  } else if(region == Constants::PLAYER_ONLY) {
-		player_only = (player_only ? false : true);
-	  } else {        
-	  */
-		processGameMouseClick(event->button.x, event->button.y, event->button.button);
-		//}
+	  processGameMouseClick(event->button.x, event->button.y, event->button.button);
     }
     break;
   case SDL_KEYDOWN:
@@ -804,78 +755,24 @@ Creature *Scourge::isPartyMember(Location *pos) {
 	return NULL;
 }
 
-void Scourge::drawTopWindow() {
-
-  glPushMatrix();
-  glLoadIdentity();
-
-  int gx = sdlHandler->getScreen()->w - GUI_WIDTH;
-  int gy = sdlHandler->getScreen()->h - GUI_HEIGHT;
-
-  glEnable( GL_TEXTURE_2D );
-  glColor3f( 0.75f, 0.5f, 0.05f );
-  for(int i = 0; i < Creature::FORMATION_COUNT; i++) {
-	glBindTexture( GL_TEXTURE_2D, 
-				   getShapePalette()->getTexture(getShapePalette()->formationTexIndex + i) );
-	glBegin(GL_QUADS);
-	glTexCoord2f(1, 0);
-	glVertex3d(gx + 200 + (i * 20), gy + 75, 200);
-	glTexCoord2f(0, 0);
-	glVertex3d(gx + 180 + (i * 20), gy + 75, 200);
-	glTexCoord2f(0, 1);
-	glVertex3d(gx + 180 + (i * 20), gy + 100, 200);
-	glTexCoord2f(1, 1);
-	glVertex3d(gx + 200 + (i * 20), gy + 100, 200);
-	glEnd();
-  }
-  glDisable( GL_TEXTURE_2D );
-
-  glColor3f(1.0f, 0.6f, 0.3f);
-  gui->outlineActiveRegion(Constants::SHOW_INVENTORY, "Party Info");
-  gui->outlineActiveRegion(Constants::SHOW_OPTIONS, "Options");
-  gui->outlineActiveRegion(Constants::ESCAPE, "Quit");
-  gui->outlineActiveRegion(Constants::DIAMOND_FORMATION);
-  gui->outlineActiveRegion(Constants::STAGGERED_FORMATION);
-  gui->outlineActiveRegion(Constants::SQUARE_FORMATION);
-  gui->outlineActiveRegion(Constants::ROW_FORMATION);
-  gui->outlineActiveRegion(Constants::SCOUT_FORMATION);
-  gui->outlineActiveRegion(Constants::CROSS_FORMATION);
-
-  gui->outlineActiveRegion(Constants::PLAYER_1);
-  gui->outlineActiveRegion(Constants::PLAYER_2);
-  gui->outlineActiveRegion(Constants::PLAYER_3);
-  gui->outlineActiveRegion(Constants::PLAYER_4);
-  gui->outlineActiveRegion(Constants::PLAYER_ONLY);
-
-
-  /*
-  // debug info
-  sdlHandler->texPrint(450, 10, "rot: %f, %f, %f", map->getXRot(), map->getYRot(), map->getZRot());
-  sdlHandler->texPrint(450, 30, "FPS: %g", sdlHandler->getFPS());
-  sdlHandler->texPrint(450, 50, "map: (%d, %d)-(%d, %d)", map->getX(), map->getY(), 
-  (map->getX() + MAP_VIEW_WIDTH), (map->getY() + MAP_VIEW_DEPTH));
-  sdlHandler->texPrint(450, 70, "sel: (%u, %u, %u)", 
-  map->getSelX(), map->getSelY(), map->getSelZ());
-  sdlHandler->texPrint(450, 90, "zoom: %f", map->getZoom());
-  */
-  map->drawDescriptions();
-  
-  glPopMatrix();
-}
-
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
-  if(widget == inventoryButton) {
-	if(inventory->isVisible()) inventory->hide();
-	else inventory->show();
-  }
-
   if(inventory->isVisible()) {
 	inventory->handleEvent(widget, event);
 	return false;
   }
 
-  if(widget == optionsButton) {
-	optionsMenu->show();
+  if(optionsMenu->isVisible()) {
+	optionsMenu->handleEvent(widget, event);
+	return false;
+  }
+
+
+  if(widget == inventoryButton) {
+	if(inventory->isVisible()) inventory->hide();
+	else inventory->show();
+  } else if(widget == optionsButton) {
+	if(optionsMenu->isVisible()) optionsMenu->hide();
+	else optionsMenu->show();
   } else if(widget == quitButton) {
 	return true;
   } else if(widget == diamondButton) {
