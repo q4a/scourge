@@ -43,6 +43,8 @@ scourge_SOURCES = \
 	netplay.h\
 	containergui.cpp\
 	containergui.h\
+	infogui.cpp\
+	infogui.h\
 	session.cpp\
 	session.h\
 	gameadapter.cpp\

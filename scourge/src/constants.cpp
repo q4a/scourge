@@ -106,7 +106,7 @@ char *Constants::messages[][80] = {
   { "Close" },
   { "Drop Item" },
   { "Open Item" },
-  { "Drag items to/from the list" },
+  { "Drag items to/from the list, Double click for info" },
   { "Play Mission" },
   { "Do you really want to exit this mission?" },
   { "Exit mission and teleport back to base?" },
@@ -142,13 +142,14 @@ char *Constants::messages[][80] = {
     "Perhaps it's locked." },
   { "This teleporter is off-line.",
     "Nothing happens.",
-    "The teleporter blinks unimpressively." }
+    "The teleporter blinks unimpressively." },
+  { "Information" }
 
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3
+  3, 2, 2, 3, 3, 1
 };
 
 // opengl extension routines

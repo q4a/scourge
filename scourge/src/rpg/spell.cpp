@@ -24,6 +24,7 @@ map<string, Spell*> Spell::spellMap;
 // FIXME: move this to some other location if needed elsewhere (rpg/dice.cpp?)
 Dice::Dice(char *s) {
   this->s = s;
+  frees = false;
 
   char tmp[80];
   strcpy(tmp, s);
@@ -47,9 +48,17 @@ Dice::Dice(int count, int sides, int mod) {
   this->count = count;
   this->sides = sides;
   this->mod = mod;
+  s = (char*)malloc(80);
+  sprintf(s, "%dd%d", count, sides);
+  if(mod) {
+    // FIXME: handle negative numbers
+    sprintf(s, "+%d", mod);
+  }
+  frees = true;
 }
 
 Dice::~Dice() {
+  if(frees) free(s);
 }
 
 

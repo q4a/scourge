@@ -30,6 +30,7 @@ private:
   int count;
   int sides;
   int mod;
+  bool frees;
 
 public:
   Dice(char *s);

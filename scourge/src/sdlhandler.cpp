@@ -20,6 +20,11 @@
 
 bool SDLHandler::stencilBufferUsed = false;
 
+// milllis
+#define DOUBLE_CLICK_INTERVAL 500
+// pixel range 
+#define DOUBLE_CLICK_TOLERANCE 5
+
 SDLHandler::SDLHandler(ShapePalette *shapePal){
   /* These are to calculate our fps */
   this->shapePal = shapePal;
@@ -27,7 +32,7 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   Frames = 0;                       
   fps = 0;
   screen = NULL;
-  mouseX = mouseY = mouseButton = mouseEvent = 0;
+  lastMouseX = lastMouseY = mouseX = mouseY = mouseButton = mouseEvent = 0;
   mouseDragging = false;
   mouseIsMovingOverMap = false;
   text = NULL;
@@ -36,6 +41,8 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   cursorMode = CURSOR_NORMAL;
   font_initialized = false;
   debugStr = NULL;
+  lastLeftClick = 0;
+  isDoubleClick = false;
 }
 
 SDLHandler::~SDLHandler(){
@@ -389,6 +396,7 @@ void SDLHandler::mainLoop() {
     int eventCount = 0;  
     mouseIsMovingOverMap = false;
     while(SDL_PollEvent(&event) && (eventCount++) < 10) {
+      isDoubleClick = false;
       mouseEvent = mouseButton = 0;
       Widget *widget = NULL;
       switch( event.type ) {
@@ -409,8 +417,15 @@ void SDLHandler::mainLoop() {
         mouseButton = event.button.button;
         mouseDragging = false;
         if(event.button.button == SDL_BUTTON_LEFT) {
+          Uint32 now = SDL_GetTicks();
+          isDoubleClick = (now - lastLeftClick < DOUBLE_CLICK_INTERVAL && 
+                           abs(lastMouseX - event.button.x) < DOUBLE_CLICK_TOLERANCE &&
+                           abs(lastMouseY - event.button.y) < DOUBLE_CLICK_TOLERANCE);
+          lastLeftClick = now;
           widget = Window::delegateEvent( &event, mx, my );
         }
+        lastMouseX = event.button.x;
+        lastMouseY = event.button.y;
         break;
       case SDL_MOUSEBUTTONDOWN:
         if(invertMouse) event.button.y = screen->h - event.button.y;

@@ -53,6 +53,7 @@
 #include "gui/progress.h"
 #include "gameadapter.h"
 #include "session.h"
+#include "infogui.h"
 
 using namespace std;
 
@@ -85,6 +86,7 @@ class GameStateHandler;
 class NetPlay;
 class Progress;
 class GameAdapter;
+class InfoGui;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -121,6 +123,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   char infoMessage[200];
   Inventory *inventory;
   Window *messageWin, *exitConfirmationDialog;
+  InfoGui *infoGui;
   Label *exitLabel;
   ScrollingList *messageList;
   Button *yesExitConfirm, *noExitConfirm;
@@ -490,6 +493,16 @@ public:
     @param title the window's title
   */
   Window *createWoodWindow(int x, int y, int w, int h, char *title);
+
+  /**
+    A helper method to create a window with the default look.
+    @param x the window's position on screen
+    @param y the window's position on screen
+    @param w the window's width
+    @param h the window's height
+    @param title the window's title
+  */
+  Window *createWindow(int x, int y, int w, int h, char *title);
   
   /**
     Called when the mission was completed (monster killed, item bagged, etc.). This
@@ -579,6 +592,8 @@ public:
   }
 
   bool Scourge::inTurnBasedCombatPlayerTurn();
+
+  inline InfoGui *getInfoGui() { return infoGui; }
 
  protected:
 

@@ -253,7 +253,15 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
   else if(widget == missionButton)  setSelectedPlayerAndMode(selected, MISSION);
-  else if(widget == openButton) {
+  else if(widget == invList && scourge->getSDLHandler()->isDoubleClick) {
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1) {
+      Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
+      scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill(Constants::IDENTIFY_ITEM_SKILL) );
+      if(!scourge->getInfoGui()->getWindow()->isVisible()) 
+        scourge->getInfoGui()->getWindow()->setVisible( true );
+    }
+  } else if(widget == openButton) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1) {
       Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);

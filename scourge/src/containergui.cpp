@@ -82,6 +82,14 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
 	if(widget == win->closeButton) {
 		win->setVisible(false);
 		return true;
+  } else if(widget == list && scourge->getSDLHandler()->isDoubleClick) {
+      int itemIndex = list->getSelectedLine();  
+      if(itemIndex > -1) {
+        Item *item = container->getContainedItem(itemIndex);
+        scourge->getInfoGui()->setItem( item, scourge->getParty()->getPlayer()->getSkill(Constants::IDENTIFY_ITEM_SKILL) );
+        if(!scourge->getInfoGui()->getWindow()->isVisible()) 
+          scourge->getInfoGui()->getWindow()->setVisible( true );
+      }
 	} else if(widget == openButton) {
 		int n = list->getSelectedLine();
 		if(n > -1 && 
