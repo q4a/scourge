@@ -81,10 +81,12 @@ private:
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *hpLabel, *mpLabel;
 	Label *thirstLabel, *hungerLabel, *skillModLabel, *armorLabel;	
-	int stateCount;
+	//int stateCount;
 	char **stateLine, **skillLine;
 	GLuint *icons;
-	ScrollingList *stateList, *skillList;
+  char **protStateLine;
+	GLuint *protIcons;
+	ScrollingList *stateList, *skillList, *protStateList;
 	char nameAndClassStr[80];
 	char levelStr[80];
 	char expStr[80];

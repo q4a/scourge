@@ -41,6 +41,11 @@ Inventory::Inventory(Scourge *scourge) {
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     this->stateLine[i] = (char*)malloc(120 * sizeof(char));
   }
+  this->protStateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
+  this->protIcons = (GLuint*)malloc(Constants::STATE_MOD_COUNT * sizeof(GLuint));
+  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+    this->protStateLine[i] = (char*)malloc(120 * sizeof(char));
+  }
   this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   this->missionColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
@@ -114,8 +119,12 @@ Inventory::Inventory(Scourge *scourge) {
   cards->addWidget( attrCanvas, CHARACTER );
 
   cards->createLabel(115, 165, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
-  stateList = new ScrollingList(115, 170, 290, 70, scourge->getShapePalette()->getHighlightTexture());
+  stateList = new ScrollingList(115, 170, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(stateList, CHARACTER);
+  
+  cards->createLabel(265, 165, strdup("Protected States:"), CHARACTER, Constants::RED_COLOR);
+  protStateList = new ScrollingList(265, 170, 140, 70, scourge->getShapePalette()->getHighlightTexture());
+  cards->addWidget(protStateList, CHARACTER);
 
   strcpy(skillsStr, "Skills:");
   cards->createLabel(115, 255, skillsStr, CHARACTER, Constants::RED_COLOR);
@@ -461,6 +470,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   cards->setActiveCard(selectedMode);   
 
   // arrange the gui
+  int stateCount;
   Creature * selectedP = scourge->getParty()->getParty(selected);
   switch(selectedMode) {
   case CHARACTER:         
@@ -482,6 +492,19 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     }
     stateList->setLines(stateCount, (const char**)stateLine, 
                         (const Color *)NULL, (stateCount ? (const GLuint*)icons : NULL));
+
+    stateCount = 0;
+    for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
+      if(selectedP->getProtectedStateMod(t)) {
+        sprintf(protStateLine[stateCount], "%s", Constants::STATE_NAMES[t]);
+        protIcons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
+        stateCount++;
+      }
+    }
+    protStateList->setLines(stateCount, (const char**)protStateLine, 
+                            (const Color *)NULL, (stateCount ? (const GLuint*)protIcons : NULL));
+
+
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
       sprintf(skillLine[t], "%d(%d) - %s", 
               selectedP->getSkill(t), 
