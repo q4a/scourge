@@ -77,5 +77,7 @@ scourge_SOURCES = \
 	party.cpp\
 	party.h\
 	projectile.cpp\
-	projectile.h
+	projectile.h\
+	spellcaster.cpp\
+	spellcaster.h
 
