@@ -253,24 +253,14 @@ void Party::setTargetCreature(Creature *creature) {
 
 void Party::movePlayers() {   
   if(player_only) {	
-	
-	// how many party members are still alive?
-	int sum = 0;
-	for(int i = 0; i < getPartySize(); i++) 
-	  if(!party[i]->getStateMod(Constants::dead)) sum++;
-	
-	// in single-step mode:
-	for(int i = 0; i < sum; i++) {
-	  
-	  // move the current player
-	  if(!player->getStateMod(Constants::dead)) {
-		player->moveToLocator(scourge->getMap());
-		scourge->getMap()->center(player->getX(), player->getY());
-		break;
+	// move everyone
+	for(int i = 0; i < getPartySize(); i++) {
+	  if(!party[i]->getStateMod(Constants::dead)) {
+		party[i]->moveToLocator(scourge->getMap());
 	  }
-	  
-	  switchToNextLivePartyMember();
-	}	
+	}
+	// center on player
+	scourge->getMap()->center(player->getX(), player->getY());
   } else {
 	// In group mode:
 	
