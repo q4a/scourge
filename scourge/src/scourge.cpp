@@ -674,13 +674,23 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 		  Location *loc = map->getLocation(mapx, mapy, mapz);
 		  if(loc && loc->creature) {
 			if(getTargetSelectionFor()) {
-			  // assign this creature
-			  Creature *c = getTargetSelectionFor();
-			  c->setTargetCreature(loc->creature);
-			  char msg[80];
-			  sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
-			  map->addDescription(msg);
 			  
+			  Creature *c = getTargetSelectionFor();
+
+			  // make sure the selected action can target a creature
+			  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+				 c->getActionSpell() &&
+				 c->getActionSpell()->isCreatureTargetAllowed()) {
+
+				// assign this creature
+				c->setTargetCreature(loc->creature);
+				char msg[80];
+				sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
+				map->addDescription(msg);				
+			  } else {
+				scourge->showMessageDialog("Please select a different target.");
+				c->cancelTarget();
+			  }
 			  // turn off selection mode
 			  setTargetSelectionFor(NULL);
 			  return;

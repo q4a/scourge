@@ -46,22 +46,11 @@ void SpellCaster::spellSucceeded(Scourge *scourge, Creature *creature, int power
 
 
 void SpellCaster::castHealingTouch(Scourge *scourge, Creature *creature, int power) {
-
-  // FIXME: taget type enforcement should be elsewhere
-  // must target a creature
-  if(!creature->getTargetCreature()) {
-	spellFailed(scourge, creature, power);
-  }
-
   if(power + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp()) 
 	power = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
   creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + power));
   char msg[200];
   sprintf(msg, "%s heals %d points.", creature->getTargetCreature()->getName(), power);
   scourge->getMap()->addDescription(msg, 0.2f, 1, 1);
-
-  // FIXME: this won't show until multiple simultanious effects are allowed 
-  // (currently 1 effect at a time.)
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
-  
 }
