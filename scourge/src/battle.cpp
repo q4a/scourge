@@ -763,7 +763,7 @@ void Battle::hitWithItem() {
 		// play item sound
 		if(item) session->playSound(item->getRandomSound());
 
-		sprintf( message, "...fumble: you hit %s instead!", tmpTarget->getName() );
+		sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
 		session->getMap()->addDescription( message );
 		Creature *oldTarget = creature->getTargetCreature();
 		creature->setTargetCreature( tmpTarget );

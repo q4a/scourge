@@ -44,13 +44,42 @@ SpellCaster::~SpellCaster() {
 void SpellCaster::spellFailed() {
   if(!spell) return;
 
-//  cerr << "FAILED: " << spell->getName() << " power=" << power << endl;
+  // print patronizing message...
+  battle->getSession()->getMap()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
 
   // put code here for spells with something spectacular when they fail...
   // (fouled fireball decimates party, etc.)
+  if(!strcasecmp(spell->getName(), "Burning stare") ||
+	 !strcasecmp(spell->getName(), "Silent knives") || 
+	 !strcasecmp(spell->getName(), "Stinging light")) {
 
-  // default is to print patronizing message...
-  battle->getSession()->getMap()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
+	Creature *tmpTarget;
+	if( battle->getCreature()->isMonster() || 
+		battle->getCreature()->getStateMod( Constants::possessed ) ) {
+	  tmpTarget = battle->getSession()->getClosestVisibleMonster(toint(battle->getCreature()->getX()), 
+																 toint(battle->getCreature()->getY()), 
+																 battle->getCreature()->getShape()->getWidth(),
+																 battle->getCreature()->getShape()->getDepth(),
+																 20);
+	} else {
+	  tmpTarget = battle->getSession()->getParty()->getClosestPlayer(toint(battle->getCreature()->getX()), 
+																	 toint(battle->getCreature()->getY()), 
+																	 battle->getCreature()->getShape()->getWidth(),
+																	 battle->getCreature()->getShape()->getDepth(),
+																	 20);
+	}
+	if( tmpTarget ) {
+	  char message[200];
+	  sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName(), 1, 0.15f, 1 );
+	  battle->getSession()->getMap()->addDescription( message );
+	  Creature *oldTarget = battle->getCreature()->getTargetCreature();
+	  battle->getCreature()->setTargetCreature( tmpTarget );
+
+	  causeDamage();
+
+	  battle->getCreature()->setTargetCreature( oldTarget );
+	}
+  }
 }
 
 void SpellCaster::spellSucceeded() {
