@@ -40,6 +40,7 @@ class Label : public Widget {
   ~Label();
   inline char *getText() { return text; }
   inline void setText(char *s) { text = s; }
+  inline void setTextCopy(char *s) { strcpy(text, s); }
   void drawWidget(Widget *parent);
 };
 
