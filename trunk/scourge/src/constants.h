@@ -322,14 +322,18 @@ public:
 	HP_LABEL,
 	AC_LABEL,
 	SPELL_FAILED_MESSAGE,
-  ITEM_ACL_VIOLATION,
-  JOIN_SERVER_ERROR,
+    ITEM_ACL_VIOLATION,
+    JOIN_SERVER_ERROR,
+    CLIENT_CANT_CONNECT_ERROR,
 
 	// last one
 	MESSAGE_COUNT
   };
   static char *messages[][80];
   static int messageCount[];
+
+  static const char *localhost;
+  static const char *adminUserName;
 
   // skills
   enum {

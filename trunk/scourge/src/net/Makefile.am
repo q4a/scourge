@@ -3,11 +3,20 @@ INCLUDES = -I$(srcdir)
 noinst_LIBRARIES = libScourgeNet.a
 
 libScourgeNet_a_SOURCES = \
-	protocol.cpp\
-	protocol.h\
+	broadcast.cpp\
+	broadcast.h\
 	client.cpp\
 	client.h\
+	clientinfo.cpp\
+	clientinfo.h\
+	commands.cpp\
+	commands.h\
+	gamestatehandler.cpp\
+	gamestatehandler.h\
 	server.cpp\
 	server.h\
-	udputil.cpp\
-	udputil.h
+	tcputil.cpp\
+	tcputil.h\
+	testgamestatehandler.cpp\
+	testgamestatehandler.h
+
