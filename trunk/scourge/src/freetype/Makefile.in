@@ -77,11 +77,11 @@ TR_CXXFLAGS = @TR_CXXFLAGS@
 TR_LIBS = @TR_LIBS@
 VERSION = @VERSION@
 
-INCLUDES = -I$./..
+INCLUDES = -I$(srcdir)
 
-noinst_LIBRARIES = libScourgeGui.a
+noinst_LIBRARIES = libScourgeFreeType.a
 
-libScourgeGui_a_SOURCES =  	widget.cpp 	widget.h 	widgetview.cpp 	widgetview.h 	canvas.cpp         canvas.h 	button.cpp 	button.h 	label.cpp 	label.h 	checkbox.cpp 	checkbox.h 	cardcontainer.cpp 	cardcontainer.h 	draganddrop.cpp 	draganddrop.h 	multiplelabel.cpp 	multiplelabel.h 	scrollinglist.cpp 	scrollinglist.h 	window.cpp 	window.h
+libScourgeFreeType_a_SOURCES =  	FreeType.cpp 	FreeType.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -97,10 +97,8 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-libScourgeGui_a_LIBADD = 
-libScourgeGui_a_OBJECTS =  widget.o widgetview.o canvas.o button.o \
-label.o checkbox.o cardcontainer.o draganddrop.o multiplelabel.o \
-scrollinglist.o window.o
+libScourgeFreeType_a_LIBADD = 
+libScourgeFreeType_a_OBJECTS =  FreeType.o
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -117,18 +115,15 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/button.P .deps/canvas.P .deps/cardcontainer.P \
-.deps/checkbox.P .deps/draganddrop.P .deps/label.P \
-.deps/multiplelabel.P .deps/scrollinglist.P .deps/widget.P \
-.deps/widgetview.P .deps/window.P
-SOURCES = $(libScourgeGui_a_SOURCES)
-OBJECTS = $(libScourgeGui_a_OBJECTS)
+DEP_FILES =  .deps/FreeType.P
+SOURCES = $(libScourgeFreeType_a_SOURCES)
+OBJECTS = $(libScourgeFreeType_a_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cpp .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/gui/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/freetype/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -160,10 +155,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libScourgeGui.a: $(libScourgeGui_a_OBJECTS) $(libScourgeGui_a_DEPENDENCIES)
-	-rm -f libScourgeGui.a
-	$(AR) cru libScourgeGui.a $(libScourgeGui_a_OBJECTS) $(libScourgeGui_a_LIBADD)
-	$(RANLIB) libScourgeGui.a
+libScourgeFreeType.a: $(libScourgeFreeType_a_OBJECTS) $(libScourgeFreeType_a_DEPENDENCIES)
+	-rm -f libScourgeFreeType.a
+	$(AR) cru libScourgeFreeType.a $(libScourgeFreeType_a_OBJECTS) $(libScourgeFreeType_a_LIBADD)
+	$(RANLIB) libScourgeFreeType.a
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 
@@ -198,14 +193,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = src/gui
+subdir = src/freetype
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/gui/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/freetype/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
