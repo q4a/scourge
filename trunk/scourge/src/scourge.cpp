@@ -177,6 +177,7 @@ void Scourge::startMission() {
   mainWin->setVisible(false);
   messageWin->setVisible(false);
   closeAllContainerGuis();
+  if(inventory->isVisible()) inventory->hide();
 
   // clean up after the mission
   delete map;
@@ -277,8 +278,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
   }
 
   if(inventory->isVisible()) {
-	inventory->handleEvent(event);
-	return false;
+  	inventory->handleEvent(event);
+	//	return false;
   }
 
   if(optionsMenu->isVisible()) {
@@ -378,7 +379,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
     }
     else if(ea == SHOW_INVENTORY){
-	  if(startRound) toggleRound();
+	  //	  if(startRound) toggleRound();
 	  inventory->show(); 	  
     }
     else if(ea == SHOW_OPTIONS_MENU){
@@ -869,7 +870,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(inventory->isVisible()) {
 	inventory->handleEvent(widget, event);
-	return false;
+	//	return false;
   }
 
   if(optionsMenu->isVisible()) {
@@ -881,7 +882,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == inventoryButton) {
 	if(inventory->isVisible()) inventory->hide();
 	else {
-	  if(startRound) toggleRound();
+	  //	  if(startRound) toggleRound();
 	  inventory->show();
 	}
   } else if(widget == optionsButton) {
@@ -1516,7 +1517,7 @@ void Scourge::openContainerGui(Item *container) {
   }
   // open new window
   if(containerGuiCount < MAX_CONTAINER_GUI) {
-	if(startRound) toggleRound();
+	//	if(startRound) toggleRound();
 	containerGui[containerGuiCount++] = new ContainerGui(this, container, 
 														 10 + containerGuiCount * 15, 
 														 10 + containerGuiCount * 15);

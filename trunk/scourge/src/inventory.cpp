@@ -214,9 +214,9 @@ bool Inventory::handleEvent(SDL_Event *event) {
         break;     
     case SDL_KEYUP:
         switch(event->key.keysym.sym) {
-        case SDLK_ESCAPE: 
-		  hide();
-		  return true;
+		  //        case SDLK_ESCAPE: 
+		  //		  hide();
+		  //		  return true;
         default: break;
         }
     default: break;
