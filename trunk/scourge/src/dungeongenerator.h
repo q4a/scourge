@@ -34,6 +34,7 @@ class Creature;
 // a pre-rendered map location
 typedef struct _MapLocation {
   int x, y, w, h;
+  bool monsters;
   int roomCount;
   int roomDimension[20][4];
   char *map[MAP_WIDTH];
@@ -68,6 +69,7 @@ private:
   int roomMaxWidth;
   int roomMaxHeight;
   int objectCount;
+  int monsters;
 
   Sint16 *ff;
   int ffCount;
@@ -87,11 +89,12 @@ private:
   const static Uint16 E_PASS = 0x0008;
 
   const static Uint16 N_DOOR = 0x0010;
-	const static Uint16 S_DOOR = 0x0020;
- 	const static Uint16 E_DOOR = 0x0040;
- 	const static Uint16 W_DOOR = 0x0080;
+  const static Uint16 S_DOOR = 0x0020;
+  const static Uint16 E_DOOR = 0x0040;
+  const static Uint16 W_DOOR = 0x0080;
   
-  const static Uint16 ROOM = 0x0100;
+  const static Uint16 PASSAGE = 0x0100;
+  const static Uint16 ROOM = 0x0200;
 
   const static Uint16 EMPTY_ROOM = ROOM + N_PASS + S_PASS + E_PASS + W_PASS;
 

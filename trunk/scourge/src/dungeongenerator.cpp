@@ -46,20 +46,27 @@ const int DungeonGenerator::levels[][9] = {
    x,y,w,h,
    roomCount,
    roomDimensions: x,y,w,h,
-   map: #-room, +-floor, nsew-doors (by facing)
+   map: #-room, +-floor, nsew-doors (by facing), x-the board
  */
 const MapLocation DungeonGenerator::location[] = {
   { 
-	0,0,5,7,
-	4,
-	{ 
-	  {0,0,2,3}, 
-	  {3,0,2,3}, 
-	  {0,4,2,3}, 
-	  {3,4,2,3}
+	0,0,5,12,
+	false,
+	5,
+	{
+	  {0,0,5,4},
+	  {0,5,2,3}, 
+	  {3,5,2,3}, 
+	  {0,9,2,3}, 
+	  {3,9,2,3}
 	},
 	{ 
-	  "## ##",
+	  "#####",
+	  "##x##",
+	  "#####",
+	  "##s##",
+	  "  +  ",
+	  "##+##",
 	  "#e+w#",
 	  "s# #s",
 	  "+   +",
@@ -117,6 +124,7 @@ void DungeonGenerator::initByLevel() {
   this->roomMaxWidth = levels[level - 1][dgROOMMAXWIDTH];
   this->roomMaxHeight = levels[level - 1][dgROOMMAXHEIGHT];
   this->objectCount = levels[level - 1][dgOBJECTCOUNT];
+  this->monsters = true;
 }
 
 void DungeonGenerator::makeRooms() {
@@ -576,15 +584,16 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 		continue;
 	  }
 	  switch(c) {
-	  case '#': case 'n': case 's': case 'e': case 'w': nodes[nx][ny] = ROOM; break;
-	  case '+': nodes[nx][ny] = 0; break;
+	  case '#': case 'x': case 'n': case 's': case 'e': case 'w': nodes[nx][ny] = ROOM; break;
+	  case '+': nodes[nx][ny] = PASSAGE; break;
 	  default: nodes[nx][ny] = UNVISITED;
 	  }
 	  // open every side for now
-	  nodes[nx][ny] |= (N_PASS | S_PASS | W_PASS | E_PASS);
+	  if(nodes[nx][ny] != UNVISITED) nodes[nx][ny] |= (N_PASS | S_PASS | W_PASS | E_PASS);
 	  // add door
 	}
   }
+
   // build walls
   for(int y = 0; y < location[locationIndex].h; y++) {
 	for(int x = 0; x < location[locationIndex].w; x++) {
@@ -598,31 +607,67 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 		continue;
 	  }
 	  switch(c) {
-	  case '#': case '+':
-		if(!nx || nodes[nx - 1][ny] == UNVISITED || 
-		   ((nodes[nx][ny] & ROOM) && !(nodes[nx - 1][ny] & ROOM))) {
-		  nodes[nx][ny] &= (0xffff - W_PASS);
-		}
-		if(nx >= width - 1 || nodes[nx + 1][ny] == UNVISITED || 
-		   ((nodes[nx][ny] & ROOM) && !(nodes[nx + 1][ny] & ROOM))) {
-		  nodes[nx][ny] &= (0xffff - E_PASS);
-		}
-		if(!ny || nodes[nx][ny - 1] == UNVISITED ||
-		   ((nodes[nx][ny] & ROOM) && !(nodes[nx][ny - 1] & ROOM))) {
-		  nodes[nx][ny] &= (0xffff - N_PASS);
-		}
-		if(ny >= height - 1 || nodes[nx][ny + 1] == UNVISITED || 
-		   ((nodes[nx][ny] & ROOM) && !(nodes[nx][ny + 1] & ROOM))) {
-		  nodes[nx][ny] &= (0xffff - S_PASS);
-		}
+	  case '#': case '+': case 'x':
 		break;
-	  case 'n': nodes[nx][ny] |= N_DOOR; break;
-	  case 's': nodes[nx][ny] |= S_DOOR; break;
-	  case 'e': nodes[nx][ny] |= E_DOOR; break;
-	  case 'w': nodes[nx][ny] |= W_DOOR; break;
+	  case 'n': 
+		nodes[nx][ny] |= N_DOOR; 
+		break;
+	  case 's': 
+		nodes[nx][ny] |= S_DOOR; 
+		break;
+	  case 'e': 
+		nodes[nx][ny] |= E_DOOR; 
+		break;
+	  case 'w': 
+		nodes[nx][ny] |= W_DOOR; 
+		break;
 	  }
 	}
-  }  
+  }
+
+  // seal off some walls
+  for(int y = 0; y < location[locationIndex].h; y++) {
+	for(int x = 0; x < location[locationIndex].w; x++) {
+	  char c = location[locationIndex].map[y][x];
+	  int nx = location[locationIndex].x + x;
+	  int ny = location[locationIndex].y + y;
+	  if(nx >= width || ny >= height) {
+		cerr << "Warning: location doesn't fit on map! location:" << 
+		  location[locationIndex].w << "," << location[locationIndex].h << 
+		  " map:" << width << "," << height << endl;
+		continue;
+	  }
+	  if(nodes[nx][ny] != UNVISITED) {
+		if(!(nodes[nx][ny] & W_DOOR) &&
+		   (!nx || nodes[nx - 1][ny] == UNVISITED || 
+			((nodes[nx][ny] & ROOM) && !(nodes[nx - 1][ny] & ROOM)) || 
+			(!(nodes[nx][ny] & ROOM) && (nodes[nx - 1][ny] & ROOM) && !(nodes[nx - 1][ny] & E_DOOR)))) {
+		  nodes[nx][ny] &= (0xffff - W_PASS);
+		}
+		if(!(nodes[nx][ny] & E_DOOR) && 
+		   (nx >= width - 1 || nodes[nx + 1][ny] == UNVISITED || 
+			((nodes[nx][ny] & ROOM) && !(nodes[nx + 1][ny] & ROOM)) || 
+			(!(nodes[nx][ny] & ROOM) && (nodes[nx + 1][ny] & ROOM) && !(nodes[nx + 1][ny] & W_DOOR)))) {
+		  nodes[nx][ny] &= (0xffff - E_PASS);
+		}
+		if(!(nodes[nx][ny] & N_DOOR) && 
+		   (!ny || nodes[nx][ny - 1] == UNVISITED ||
+			((nodes[nx][ny] & ROOM) && !(nodes[nx][ny - 1] & ROOM)) || 
+			(!(nodes[nx][ny] & ROOM) && (nodes[nx][ny - 1] & ROOM) && !(nodes[nx][ny - 1] & S_DOOR)))) {
+		  nodes[nx][ny] &= (0xffff - N_PASS);
+		}
+		if(!(nodes[nx][ny] & S_DOOR) && 
+		   (ny >= height - 1 || nodes[nx][ny + 1] == UNVISITED || 
+			((nodes[nx][ny] & ROOM) && !(nodes[nx][ny + 1] & ROOM)) || 
+			(!(nodes[nx][ny] & ROOM) && (nodes[nx][ny + 1] & ROOM) && !(nodes[nx][ny + 1] & N_DOOR)))) {
+		  nodes[nx][ny] &= (0xffff - S_PASS);
+		}
+	  }
+	}
+  }
+
+  // other settings
+  monsters = location[locationIndex].monsters;
 }
 
 void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
@@ -928,52 +973,54 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   }
 
   // add monsters in every room
-  int totalLevel = 0;
-  for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
-  //fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
-  for(int i = 0; i < roomCount; i++) {
-	int levelSum = 0;
-	while(levelSum < totalLevel) {
+  if(monsters) {
+	int totalLevel = 0;
+	for(int i = 0; i < 4; i++) totalLevel += scourge->getParty(i)->getLevel();
+	//fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
+	for(int i = 0; i < roomCount; i++) {
+	  int levelSum = 0;
+	  while(levelSum < totalLevel) {
+		Monster *monster = Monster::getRandomMonster(level - 1);
+		//fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
+		if(!monster) {
+		  cerr << "Warning: no monsters defined for level: " << level << endl;
+		  break;
+		}
+		bool fits = 
+		  getLocationInRoom(map, 
+							i,
+							scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
+							&x, &y);
+		if(fits) {
+		  //fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
+		  Creature *creature = scourge->newCreature(monster);
+		  addItem(map, creature, NULL, NULL, x, y);
+		  creature->moveTo(x, y, 0);
+		  levelSum += level;
+		} else {
+		  //fprintf(stderr, "\tmonster DOESN'T fit.\n");
+		  break;
+		}
+	  }
+	}
+	
+	// add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
+	for(int i = 0; i < objectCount * 2; i++) {
 	  Monster *monster = Monster::getRandomMonster(level - 1);
-	  //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
 	  if(!monster) {
 		cerr << "Warning: no monsters defined for level: " << level << endl;
 		break;
-	  }
-	  bool fits = 
-		getLocationInRoom(map, 
-						  i,
-						  scourge->getShapePalette()->getCreatureShape(monster->getShapeIndex()), 
-						  &x, &y);
-	  if(fits) {
-		//fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
-		Creature *creature = scourge->newCreature(monster);
-		addItem(map, creature, NULL, NULL, x, y);
-		creature->moveTo(x, y, 0);
-		levelSum += level;
-	  } else {
-		//fprintf(stderr, "\tmonster DOESN'T fit.\n");
-		break;
-	  }
+	  }	
+	  Creature *creature = scourge->newCreature(monster);
+	  getRandomLocation(map, creature->getShape(), &x, &y);
+	  addItem(map, creature, NULL, NULL, x, y);
+	  creature->moveTo(x, y, 0);
 	}
   }
 
-  // add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
-  for(int i = 0; i < objectCount * 2; i++) {
-	Monster *monster = Monster::getRandomMonster(level - 1);
-	if(!monster) {
-	  cerr << "Warning: no monsters defined for level: " << level << endl;
-	  break;
-	}	
-	Creature *creature = scourge->newCreature(monster);
-	getRandomLocation(map, creature->getShape(), &x, &y);
-	addItem(map, creature, NULL, NULL, x, y);
-	creature->moveTo(x, y, 0);
-  }
-
-	// add tables, chairs, etc.
-	addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1);
-	addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2);
+  // add tables, chairs, etc.
+  addItemsInRoom(RpgItem::items[RpgItem::TABLE], 1);
+  addItemsInRoom(RpgItem::items[RpgItem::CHAIR], 2);
 
   // add the party in the first room
   // FIXME: what happens if the party doesn't fit in the room?
