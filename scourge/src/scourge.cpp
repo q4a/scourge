@@ -752,8 +752,12 @@ bool Scourge::getItem(Location *pos) {
         movingX = pos->x;
         movingY = pos->y;
         movingZ = pos->z;
-        movingItem = pos->item;
+        movingItem = pos->item;		
+		int x = pos->x;
+		int y = pos->y;
+		int z = pos->z;
         map->removeItem(pos->x, pos->y, pos->z);
+		map->dropItemsAbove(x, y, z, movingItem);
 		// draw the item as 'selected'
 		map->setSelectedDropTarget(NULL);
 		map->handleMouseMove(movingX, movingY, movingZ);
@@ -1412,7 +1416,7 @@ void Scourge::moveMonster(Creature *monster) {
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
 	monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
 	// don't move when attacking
-	//continue;
+	return;
   } else {
 	monster->getShape()->setCurrentAnimation((int)MD2_RUN);
   }
