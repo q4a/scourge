@@ -51,52 +51,16 @@ Scourge::Scourge(int argc, char *argv[]){
   // init the items
   Item::initItems();
 
-  // init the party
-  PlayerChar *pc = new PlayerChar("Alamont", Character::character_class[Character::knight]);
+  // init the party; hard code for now
+  PlayerChar **pc = PlayerChar::createHardCodedParty();
   party[0] = player = 
-	new Creature(this, shapePal->getCreatureShape(Constants::ROGUE_INDEX), pc);
-  pc = new PlayerChar("Barlett", Character::character_class[Character::loremaster]);
+	new Creature(this, shapePal->getCreatureShape(Constants::ROGUE_INDEX), pc[0]);
   party[1] = 
-	new Creature(this, shapePal->getCreatureShape(Constants::FIGHTER_INDEX), pc);
-  pc = new PlayerChar("Corinus", Character::character_class[Character::summoner]);
+	new Creature(this, shapePal->getCreatureShape(Constants::FIGHTER_INDEX), pc[1]);
   party[2] = 
-	new Creature(this, shapePal->getCreatureShape(Constants::CLERIC_INDEX), pc);
-  pc = new PlayerChar("Dialante", Character::character_class[Character::naturalist]);
+	new Creature(this, shapePal->getCreatureShape(Constants::CLERIC_INDEX), pc[2]);
   party[3] = 
-	new Creature(this, shapePal->getCreatureShape(Constants::WIZARD_INDEX), pc);
-
-  // hard code the party for now
-  party[0]->getPC()->setLevel(1); party[0]->getPC()->setExp(300);
-  party[0]->getPC()->setHp();
-  party[0]->getPC()->setStateMod(Constants::blessed, true);
-  party[0]->getPC()->setStateMod(Constants::poisoned, true);
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      party[0]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
-  }
-  
-  party[1]->getPC()->setLevel(1); party[1]->getPC()->setExp(200);
-  party[1]->getPC()->setHp();
-  party[1]->getPC()->setStateMod(Constants::drunk, true);
-  party[1]->getPC()->setStateMod(Constants::cursed, true);      
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      party[1]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
-  }
-  
-  party[2]->getPC()->setLevel(1); party[2]->getPC()->setExp(150);
-  party[2]->getPC()->setHp();
-  party[2]->getPC()->setStateMod(Constants::ac_protected, true);
-  party[2]->getPC()->setStateMod(Constants::magic_protected, true);
-  party[2]->getPC()->setStateMod(Constants::cursed, true);        
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      party[2]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
-  }
-  
-  party[3]->getPC()->setLevel(1); party[3]->getPC()->setExp(400);
-  party[3]->getPC()->setHp();
-  party[3]->getPC()->setStateMod(Constants::possessed, true);          
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      party[3]->getPC()->setSkill(i, (int)(100.0 * rand()/RAND_MAX));
-  }
+	new Creature(this, shapePal->getCreatureShape(Constants::WIZARD_INDEX), pc[3]);
 
 
   player_only = false;
@@ -646,8 +610,8 @@ bool Scourge::useItem(int x, int y) {
 bool Scourge::getItem(Location *pos) {
     if(pos->item) {
 	  if(map->isWallBetween(pos->x, pos->y, pos->z, 
-							getParty(0)->getX(),
-							getParty(0)->getY(),
+							getPlayer()->getX(),
+							getPlayer()->getY(),
 							0)) {
 		map->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 	  } else {

@@ -35,6 +35,10 @@ Inventory::Inventory(Scourge *scourge) {
     for(int i = 0; i < Constants::SKILL_COUNT; i++) {
         this->invText[i] = (char*)malloc(120 * sizeof(char));
     }
+    this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+    for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+        this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
+    }
 }
 
 Inventory::~Inventory() {
@@ -63,8 +67,12 @@ void Inventory::createGui() {
     scourge->getGui()->addActiveRegion(0, scourge->getSDLHandler()->getScreen()->h - 30, 105, scourge->getSDLHandler()->getScreen()->h, Constants::ESCAPE, this);
 
     skillList = scourge->getGui()->   
-        addScrollingList(120, 250, 350, 500,
-                         Constants::SKILL_LIST);
+	  addScrollingList(120, 250, 350, 500,
+					   Constants::SKILL_LIST);
+    itemList = scourge->getGui()->   
+	  addScrollingList(120, 250, 500, 500,
+					   Constants::ITEM_LIST);
+
 }
 
 void Inventory::drawView(SDL_Surface *screen) {
@@ -274,11 +282,28 @@ void Inventory::drawCharacterInfo() {
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
         sprintf(invText[t], "%d - %s", scourge->getParty(i)->getPC()->getSkill(t), Constants::SKILL_NAMES[t]);
     }
-
     scourge->getGui()->drawScrollingList(skillList, Constants::SKILL_COUNT, (const char**)invText);
 }
+
+
 void Inventory::drawInventoryInfo() {
+    glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
+    scourge->getSDLHandler()->texPrint(120, 245, "Inventory:");    
+    glColor4f(1.0f, 0.6f, 0.4f, 1.0f);
+    for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
+	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
+	  sprintf(pcInvText[t], "(A:%d) (S:%d) (Q:%d) (W: %d) %s", 
+			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
+			  item->getName());
+    }
+	for(int t = scourge->getParty(selected)->getPC()->getInventoryCount(); 
+		t < MAX_INVENTORY_SIZE; t++) {
+	  sprintf(pcInvText[t], "");
+	}
+    scourge->getGui()->drawScrollingList(itemList, Constants::SKILL_COUNT, (const char**)pcInvText);
 }
+
+
 void Inventory::drawSpellInfo() {
 }
 void Inventory::drawLogInfo() {
