@@ -46,6 +46,7 @@ class Party {
   int partySize;
   Creature *savedPlayer;
   bool savedPlayerOnly;
+  int storylineIndex;
 
   static Creature *lastPlayer;
 
@@ -56,6 +57,8 @@ class Party {
 
   Party(Session *session);
   virtual ~Party();
+
+  inline int getStorylineIndex() { return storylineIndex; }
 
   void reset();
   void resetMultiplayer(Creature *c);
@@ -115,7 +118,7 @@ class Party {
   void savePlayerSettings();
   void restorePlayerSettings();
 
-  void setParty(int count, Creature **creatures);
+  void setParty(int count, Creature **creatures, int storylineIndex);
 
 protected:
   void resetPartyUI();

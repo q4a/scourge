@@ -207,13 +207,13 @@ void Scourge::startMission() {
 
     // do this only once
     if(resetParty) {
+      board->reset();
       if(session->isMultiPlayerGame()) {
         party->resetMultiplayer(multiplayer->getCreature());
       } else {
         party->reset();
       }
       party->getCalendar()->reset(true); // reset the time
-      board->reset();
 
       // inventory needs the party
       if(!inventory) {
