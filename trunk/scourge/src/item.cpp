@@ -102,7 +102,7 @@ void Item::initItems(ShapePalette *shapePal) {
   }
 
   int itemCount = 0;
-  char name[255], type[255], shape[255], skill[255];
+  char name[255], type[255], shape[255], skill[255], potionSkill[255];
   char long_description[500], short_description[120];
   char line[255];
   int n = fgetc(fp);
@@ -124,6 +124,9 @@ void Item::initItems(ShapePalette *shapePal) {
 		speed = atoi(strtok(NULL, ","));
 		distance = atoi(strtok(NULL, ","));
 		maxCharges = atoi(strtok(NULL, ","));
+		p = strtok(NULL, ",");
+		if(p) strcpy(potionSkill, p);
+		else strcpy(potionSkill, "");
 	  }
 	  n = Constants::readLine(line, fp);
 	  strcpy(type, strtok(line + 1, ","));
@@ -161,6 +164,18 @@ void Item::initItems(ShapePalette *shapePal) {
 		if(strlen(skill)) cerr << "*** WARNING: cannot find skill: " << skill << endl;
 		skill_index = 0;
 	  }
+	  int potion_skill = -1;
+	  if(potionSkill != NULL && strlen(potionSkill)) {
+		potion_skill = Constants::getSkillByName(potionSkill);
+		if(potion_skill < 0) {
+		  // try special potion 'skills' like HP, AC boosts
+		  potion_skill = Constants::getPotionSkillByName(potionSkill);
+		  if(potion_skill == -1) {
+			cerr << "*** WARNING: cannot find potion_skill: " << potionSkill << endl;
+		  }
+		}
+		cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
+	  }
 	  RpgItem::addItem(new RpgItem(itemCount++, strdup(name), level, type_index, 
 								   weight, price, 100, 
 								   action, speed, strdup(long_description), 
@@ -169,7 +184,7 @@ void Item::initItems(ShapePalette *shapePal) {
 								   twohanded, 
 								   (distance < (int)Constants::MIN_DISTANCE ? 
 									(int)Constants::MIN_DISTANCE : distance), 
-								   skill_index, maxCharges));	  
+								   skill_index, maxCharges, potion_skill));	  
 	} else {
 	  n = Constants::readLine(line, fp);
 	}

@@ -197,6 +197,8 @@ typedef struct _ParticleStruct {
   GLfloat moveDelta;
   int maxLife;
   int trail;
+  float rotate;
+  float zoom;
 } ParticleStruct;
 
 class Constants {
@@ -311,6 +313,7 @@ public:
 	NO_SKILL_ERROR,
 	SCOURGE_DIALOG,
 	USE_GATE_LABEL,
+	DEAD_CHARACTER_ERROR,
 
 	// last one
 	MESSAGE_COUNT
@@ -354,6 +357,17 @@ public:
   static const char *SKILL_NAMES[];
   static int getSkillByName(char *p);
 
+  // other things potions can act on:
+  enum {
+	HP=0,
+	AC,
+	
+	POTION_SKILL_COUNT
+  };
+  static const char *POTION_SKILL_NAMES[];
+  // return -1 on failure, or (-2 - i) on success
+  static int getPotionSkillByName(char *p);
+
   enum { 
 	blessed=0, 
 	empowered, 
@@ -380,7 +394,8 @@ public:
   enum {
 	EFFECT_FLAMES=0,
 	EFFECT_GLOW,
-	EFFECT_TELEPORT
+	EFFECT_TELEPORT,
+	EFFECT_HEAL
   };    
 
   static const int DAMAGE_DURATION = 500;

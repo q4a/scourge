@@ -43,6 +43,7 @@ class Effect {
   void glowShape(GLShape *shape, int startTime);
   void drawFlames(GLShape *shape);
   void drawTeleport(GLShape *shape);
+  void drawHeal(GLShape *shape);
 
   // particle management
   void createParticle(GLShape *shape, ParticleStruct **particle);

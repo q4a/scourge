@@ -98,11 +98,12 @@ char *Constants::messages[][80] = {
   { "No skill points available." },
   { "Select a skill first." },
   { "S.C.O.U.R.G.E. dialog" },
-  { "Use gate to enter another level?" }
+  { "Use gate to enter another level?" },
+  { "A dead character cannot perform this action." }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines
@@ -142,6 +143,10 @@ const char *Constants::SKILL_NAMES[] = {
   "SKILL_0", "SKILL_1", "SKILL_2", "SKILL_3", "SKILL_4", "SKILL_5", "SKILL_6", "SKILL_7", "SKILL_8", "SKILL_9"
 };
 
+const char *Constants::POTION_SKILL_NAMES[] = {
+  "HP", "AC" 
+};
+
 const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
   "drunk", "poisoned", "cursed", "possessed", "blinded", "charmed", "changed", 
@@ -169,6 +174,15 @@ int Constants::getSkillByName(char *p) {
   if(!p || !strlen(p)) return -1;
   for(int i = 0; i < SKILL_COUNT; i++) {
 	if(!strcmp(p, SKILL_NAMES[i])) return i;
+  }
+  return -1;
+}
+
+// return -1 on failure, or (-2 - i) on success
+int Constants::getPotionSkillByName(char *p) {
+  if(!p || !strlen(p)) return -1;
+  for(int i = 0; i < POTION_SKILL_COUNT; i++) {
+	if(!strcmp(p, POTION_SKILL_NAMES[i])) return (-2 - i);
   }
   return -1;
 }

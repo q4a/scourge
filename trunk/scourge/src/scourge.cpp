@@ -407,7 +407,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  return false;
 	}
 
-	/* this is here to test effects
+	// this is here to test effects
 	if(event->key.keysym.sym == SDLK_f) {
 	  party->startEffect(Constants::EFFECT_FLAMES, (Constants::DAMAGE_DURATION * 4));
 	  return false;
@@ -420,7 +420,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  party->startEffect(Constants::EFFECT_GLOW, (Constants::DAMAGE_DURATION * 4));
 	  return false;
 	}
-	*/
+	if(event->key.keysym.sym == SDLK_h) {
+	  party->startEffect(Constants::EFFECT_HEAL, (Constants::DAMAGE_DURATION * 4));
+	  return false;
+	}
+
   
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
 	  if(exitConfirmationDialog->isVisible()) {

@@ -42,6 +42,8 @@ void Effect::draw(GLShape *shape, int effect, int startTime) {
 	drawFlames(shape);
   } else if(effect == Constants::EFFECT_TELEPORT) {
 	drawTeleport(shape);
+  } else if(effect == Constants::EFFECT_HEAL) {
+	drawHeal(shape);
   } else {
 	glowShape(shape, startTime);
   }
@@ -106,6 +108,40 @@ void Effect::drawTeleport(GLShape *shape) {
   }
 }
 
+void Effect::drawHeal(GLShape *shape) {
+  // manage particles
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(shape, &(particle[i]));
+	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
+	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+	  particle[i]->moveDelta = 0;
+	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+	  particle[i]->maxLife = 5000;
+	  particle[i]->trail = 4;
+    } else {
+	  particle[i]->rotate += (3.0f * rand()/RAND_MAX) + 2.0f;
+
+	  // this causes an explosion!
+	  //particle[i]->zoom += 0.3f;
+	  moveParticle(&(particle[i]));
+    }
+
+    // draw it      
+    if(particle[i]) {            
+
+	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  if(c > 1) c = 1;
+      glColor4f(c, c / 2.0f, c / 2.0f, 0.5);
+
+	  drawParticle(shape, particle[i]);
+    }
+  }
+}
+
 void Effect::createParticle(GLShape *shape, ParticleStruct **particle) {
   // create a new particle
   *particle = new ParticleStruct();
@@ -118,6 +154,8 @@ void Effect::createParticle(GLShape *shape, ParticleStruct **particle) {
   (*particle)->moveDelta = (0.3f * rand()/RAND_MAX) + 0.2f;
   (*particle)->maxLife = 10;
   (*particle)->trail = 1;
+  (*particle)->rotate = 0.0f;
+  (*particle)->zoom = 1.0f;
 }
 
 void Effect::moveParticle(ParticleStruct **particle) {
@@ -141,7 +179,7 @@ void Effect::drawParticle(GLShape *shape, ParticleStruct *particle) {
 
   for(int i = 0; i < particle->trail; i++) {
 	glPushMatrix();
-		
+	
 	// position the particle
 	//  GLfloat z = (float)(particle->z * h) / 10.0;
 	GLfloat z = (particle->z + i) / GLShape::DIV;
@@ -152,6 +190,12 @@ void Effect::drawParticle(GLShape *shape, ParticleStruct *particle) {
 	glRotatef(-(90.0 + shape->getYRot()), 1.0f, 0.0f, 0.0f);      
 	
 	if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
+
+	// rotate particles
+	glRotatef( particle->rotate, 0, 1, 0 );
+
+	// zoom
+	glScalef(particle->zoom, particle->zoom, particle->zoom);
 	
 	glBegin( GL_QUADS );
 	// front
