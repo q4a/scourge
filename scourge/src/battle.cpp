@@ -258,10 +258,28 @@ void Battle::castSpell() {
   scourge->getMap()->addDescription(message, 1, 0.15f, 1);
   ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 
-  // use up some MP
-  int n = creature->getMp() - creature->getActionSpell()->getMp();
-  if(n < 0) n = 0;
-  creature->setMp( n );
+  // use up some MP (not when using a scroll)
+  if(!creature->getActionItem()) {
+    int n = creature->getMp() - creature->getActionSpell()->getMp();
+    if(n < 0) n = 0;
+    creature->setMp( n );
+  } else {
+    // destroy the scroll
+    
+    // FIXME: it's possible to cast a scroll, move it out of the inventory and then move it back
+    // later. Instead, we need to put it in some tmp. place while casting and move it back on
+    // cancel and remove it on cast.
+
+    int itemIndex = creature->findInInventory(creature->getActionItem());
+    if(itemIndex > -1) {
+      creature->removeInventory(itemIndex);
+      char msg[120];
+      sprintf(msg, "A scroll crumbles into dust.");
+      scourge->getMap()->addDescription(msg);
+    } else {
+      cerr << "*** error: can't find scroll to destroy." << endl;
+    }
+  }
 
   // spell succeeds?
   // FIXME: use stats like IQ here to modify spell success rate...

@@ -1197,8 +1197,7 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 				cerr << "Warning: no spells defined for level: " << level << endl;
 				break;
 			}
-			Item *item = scourge->newItem(RpgItem::getItemByName("Scroll"));
-      item->setSpell(spell);
+			Item *item = scourge->newItem(RpgItem::getItemByName("Scroll"), spell);
 			getRandomLocation(map, item->getShape(), &x, &y);
 			addItem(map, NULL, item, NULL, x, y);
 		}
@@ -1546,8 +1545,7 @@ void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *
       for(int i = 0; i < n; i++) {
         Spell *spell = MagicSchool::getRandomSpell(level);
         if(spell) {
-          Item *scroll = scourge->newItem(RpgItem::getItemByName("Scroll"));
-          scroll->setSpell(spell);
+          Item *scroll = scourge->newItem(RpgItem::getItemByName("Scroll"), spell);
           item->addContainedItem(scroll);
         }
       }
