@@ -161,7 +161,7 @@ Inventory::Inventory(Scourge *scourge) {
 
 	// mission
 	cards->createLabel(115, 45, strdup("Current Mission"), MISSION, Constants::RED_COLOR);
-	missionDescriptionLabel = new Label(115, 60, strdup(""), 70);
+	missionDescriptionLabel = new Label(115, 60, strdup(""), 50);
 	cards->addWidget(missionDescriptionLabel, MISSION);
 	cards->createLabel(115, 280, strdup("Mission Objectives"), MISSION, Constants::RED_COLOR);
 	objectiveList = new ScrollingList(115, 285, 295, 175);
