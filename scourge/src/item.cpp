@@ -26,7 +26,9 @@ Item::Item(RpgItem *rpgItem) {
   this->shape = ShapePalette::getInstance()->getShape(shapeIndex);
   // for now objects larger than 1 height will block (we can change this later)
   // this is so the player is not blocked by swords and axes on the ground
-  this->blocking = (shape->getHeight() > 1 || rpgItem->getType() == RpgItem::CONTAINER);
+  this->blocking = (shape->getHeight() > 1 || 
+                    rpgItem->getType() == RpgItem::CONTAINER ||
+                    rpgItem->getType() == RpgItem::MISSION);
   this->containedItemCount = 0;
   currentCharges = rpgItem->getMaxCharges();
   weight = rpgItem->getWeight();
