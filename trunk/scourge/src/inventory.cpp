@@ -33,7 +33,7 @@ Inventory::Inventory(Scourge *scourge) {
     for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
         this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
     }
-    selected = selectedMode = 0;
+	selected = selectedMode = 0;
 
 	mainWin = new Window( scourge->getSDLHandler(),
 						  100, 50, 525, 505, 
@@ -70,7 +70,7 @@ Inventory::Inventory(Scourge *scourge) {
 	cards = new CardContainer(mainWin);
 
 	// inventory page
-	Label *label = new Label(115, 270, "Inventory:");
+	Label *label = new Label(115, 280, "Inventory:");
 	label->setColor( 0.8f, 0.2f, 0, 1 );
 	cards->addWidget(label, INVENTORY);
 	label = new Label(115, 45, "Equipped Items:");
@@ -85,22 +85,8 @@ Inventory::Inventory(Scourge *scourge) {
 	  label = new Label(115, 60 + (i * 15), PlayerChar::inventory_location[i]);
 	  cards->addWidget(label, INVENTORY);
 	}
-	/*
-    for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
-	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
-	  int location = scourge->getParty(selected)->getPC()->getEquippedIndex(t);
-	  sprintf(pcInvText[t], "%s (A:%d) (S:%d) (Q:%d) (W: %d) %s", 
-			  (location > -1 ? "<equipped> " : "                "),
-			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
-			  item->getName());
-    }
-	for(int t = scourge->getParty(selected)->getPC()->getInventoryCount(); 
-		t < MAX_INVENTORY_SIZE; t++) {
-	  strcpy(pcInvText[t], "");
-	}
-    scourge->getGui()->drawScrollingList(itemList, Constants::SKILL_COUNT, (const char**)pcInvText);
-	*/
-	
+	invList = new ScrollingList(115, 285, 295, 175);	
+	cards->addWidget(invList, INVENTORY);
 	char name[80];
 	for(int i = 0; i < 4; i++) {
 	  sprintf(name, "to %s", scourge->getParty(i)->getPC()->getName());
@@ -193,64 +179,24 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   cards->setActiveCard(selectedMode);
 
   // arrange the gui
-  /*
-  scourge->getGui()->removeAllScrollingLists();
-  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_0);
-  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_1);
-  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_2);
-  scourge->getGui()->removeActiveRegion(Constants::MOVE_ITEM_TO_PLAYER_3);
-  scourge->getGui()->removeActiveRegion(Constants::EQUIP_ITEM);
-  scourge->getGui()->removeActiveRegion(Constants::DROP_ITEM);
-  scourge->getGui()->removeActiveRegion(Constants::FIX_ITEM);
-  scourge->getGui()->removeActiveRegion(Constants::ENCHANT_ITEM);
-  scourge->getGui()->removeActiveRegion(Constants::REMOVE_CURSE_ITEM);
-  scourge->getGui()->removeActiveRegion(Constants::COMBINE_ITEM);
-  scourge->getGui()->removeActiveRegion(Constants::IDENTIFY_ITEM);
-  */
-  int ypos = 20;
-  int height = 30;
-  int xpos = 670;
-  int width = 100;
-  switch(mode) {
+  switch(selectedMode) {
   case CHARACTER:
-	/*
-    skillList = scourge->getGui()->   
-	  addScrollingList(270, 34, 500, 400,
-					   Constants::SKILL_LIST);
-	*/
 	break;
   case INVENTORY:
-	/*
-    itemList = scourge->getGui()->   
-	  addScrollingList(120, 270, 650, 550,
-					   Constants::ITEM_LIST);
-	for(int i = 0; i < 4; i++) {
-	  scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-										 Constants::MOVE_ITEM_TO_PLAYER_0 + i, this);
-	  ypos += (height + 10);
+    for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
+	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
+	  int location = scourge->getParty(selected)->getPC()->getEquippedIndex(t);
+	  sprintf(pcInvText[t], "%s (A:%d) (S:%d) (Q:%d) (W: %d) %s", 
+			  (location > -1 ? "<equipped> " : "                "),
+			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
+			  item->getName());
+    }
+	for(int t = scourge->getParty(selected)->getPC()->getInventoryCount(); 
+		t < MAX_INVENTORY_SIZE; t++) {
+	  strcpy(pcInvText[t], "");
 	}
-	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-									   Constants::EQUIP_ITEM, this);
-	ypos += (height + 10);
-	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-									   Constants::DROP_ITEM, this);
-	ypos += (height + 10);
-	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-									   Constants::FIX_ITEM, this);
-	ypos += (height + 10);
-	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-									   Constants::ENCHANT_ITEM, this);
-	ypos += (height + 10);
-	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-									   Constants::REMOVE_CURSE_ITEM, this);
-	ypos += (height + 10);
-	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-									   Constants::COMBINE_ITEM, this);
-	ypos += (height + 10);
-	scourge->getGui()->addActiveRegion(xpos, ypos, xpos + width, ypos + height, 
-									   Constants::IDENTIFY_ITEM, this);
-	ypos += (height + 10);
-	*/
+	invList->setLines(scourge->getParty(selected)->getPC()->getInventoryCount(), 
+					  (const char **)pcInvText);
 	break;
   case SPELL:
 	break;
