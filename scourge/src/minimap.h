@@ -61,27 +61,32 @@ class MiniMap {
   MiniMapPoint pos[MINI_MAP_WIDTH][MINI_MAP_DEPTH];
   Scourge *scourge;  
   
-  // Determines the size of the minimap  
-  GLfloat zoomFactor;
   
-  int mode;  // 0 : show structures : wall, doors and floor , 1: add monsters ... 
+  GLfloat zoomFactor;   // Determines the zoom factor of the minimap   
+  int mode;             // 0 : show structures : wall, doors and floor , 1: add monsters ... 
+  bool showMiniMap;     // true : draw it, false : don't draw the minimap
+  int screenHeight;     // Needed for glScissor used in MiniMap::Draw()
+  
+  // Real width and height of minimap in pixels (i.e. : without insignificant
+  // pixels at the bottom or at the right side) including a little marge.
+  int effectiveWidth, effectiveHeight; 
+  int maxX, maxY;
   
   // Transform Map coordinates to MiniMap coordinates
-  void toMiniMapCoord(int &x, int &y);   
-  
-  
+  void toMiniMapCoord(int &x, int &y);      
   
  public:
   MiniMap::MiniMap();
   MiniMap::~MiniMap();
   MiniMap(Scourge *scourge);
   
-  // x, y are in *Map* coordinates
+  // x, y are in *global Map* coordinates (see Map.h to know its size) 
   void colorMiniMapPoint(int x, int y, Shape *shape);
   void eraseMiniMapPoint(int x, int y);
-  void zoomIn(GLfloat zoomFactor);
-  void zoomOut(GLfloat sdf);
+  void zoomIn();
+  void zoomOut();
   
+  inline void toggle(){showMiniMap = !showMiniMap;} 
   void draw(int xCoord, int yCoord);
   
   //void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);    

@@ -24,7 +24,7 @@ and a texture mask (certainly possible with openGL) to hide the part of the map
 not discovered by the player yet.
 - manage differents display mode of the minimap -> only walls and doors, add creatures...
 - handle mouse click on the minimap
--nicer integration in the gui...
+- zoom
     
  */
 
@@ -32,6 +32,11 @@ not discovered by the player yet.
 MiniMap :: MiniMap(Scourge *scourge){
     this->scourge = scourge;
     zoomFactor = 1.0f; // default we see the entire minimap
+    effectiveWidth = effectiveHeight = 0;
+    maxX = maxY = -1;
+    
+    screenHeight = screenHeight = scourge->getSDLHandler()->getScreen()->h; ;
+    showMiniMap = true;
     
     if(DEBUG_MINIMAP) fprintf(stderr, "Minimap constructor\n");
       
@@ -43,31 +48,62 @@ MiniMap :: MiniMap(Scourge *scourge){
             pos[x][y].b = 0.0;
             pos[x][y].visible = true; // true for now, to debug
         }
-    } 
-    
+    }   
 }
 
 
 MiniMap :: ~MiniMap(){   
 }
 
+/* 
+void MiniMap :: computeDrawValues(){
+    effectiveWidth = maxX - minX + 20;
+    ...
+}*/
+
 void MiniMap :: draw(int xCoord, int yCoord){
-  int xPartyPos, yPartyPos;        
+
+  if (!showMiniMap) return;
   
+  int xPartyPos, yPartyPos;     
+       
   glDisable(GL_DEPTH_TEST);
-  glDisable( GL_TEXTURE_2D );        
+  glDisable( GL_TEXTURE_2D );
+         
+  // Compute the postition of the player in the minimap
+  xPartyPos = (int) scourge->getPlayer()->getX();
+  yPartyPos = (int) scourge->getPlayer()->getY();   	
+  toMiniMapCoord(xPartyPos, yPartyPos);   
+  
   glPushMatrix();   
-  glLoadIdentity();            
-  glTranslatef(xCoord, yCoord, 100);   
-   
+  glLoadIdentity(); 
+  
+  // glScissor(x, y, width, height). (x, y) is the lower-left pixel. And y axis
+  // is reversed. 
+  //glScissor(xCoord, screenHeight - (yCoord + MINI_MAP_DEPTH), MINI_MAP_WIDTH, MINI_MAP_DEPTH); 
+  glScissor(xCoord, screenHeight - (yCoord + effectiveHeight), effectiveWidth, effectiveHeight); 
+  glEnable(GL_SCISSOR_TEST); 
+  
+  // Debug : show low-left corner and top-right corner of the scissor
   glPointSize(4.0f);
   glBegin(GL_POINTS);  
-  glColor3f(1.0f, 1.0f, 0.0f);   	   	  	   	
-  glVertex2d(0.0f, 0.f);   	       	    
+  glColor3f(1.0f, 1.0f, 0.0f);
+  glVertex2d(xCoord, yCoord + MINI_MAP_DEPTH);
+  glColor3f(0.0f, 0.0f, 1.0f);   	   	  	   	
+  glVertex2d(xCoord + MINI_MAP_WIDTH, yCoord);
   glEnd ();
-  glPointSize(1.0f);   
-      
-  glScalef(zoomFactor, zoomFactor, 1.0f);
+  glPointSize(1.0f);
+
+/* if (zoomFactor > 1.0f)
+        minimap is overlaying : center on player pixel..
+    else
+        display the whole minimap
+*/
+                
+  // Set origin to top-left pixel of minimap
+  glTranslatef(xCoord, yCoord, 100);       
+
+  glScalef(zoomFactor, zoomFactor, 1.0f); 
 
   // Draw the map 
   glBegin(GL_QUADS);
@@ -86,29 +122,28 @@ void MiniMap :: draw(int xCoord, int yCoord){
   }  
   glEnd(); 
     	
-
   // Draw the position of the player  	
-  xPartyPos = (int) scourge->getPlayer()->getX();
-  yPartyPos = (int) scourge->getPlayer()->getY();   	
-  toMiniMapCoord(xPartyPos, yPartyPos);
-  glPointSize(4.0f);
+  glPointSize(4.0f * zoomFactor);
   glBegin(GL_POINTS);  
   glColor3f(1.0f, 0.0f, 0.0f);   	   	  	   	
   glVertex2d(xPartyPos, yPartyPos);   	       	    
-  glEnd ();
-  
+  glEnd (); 
   glPointSize(1.0f);   
-  glPopMatrix();
   
+  glPopMatrix();   
+  glDisable(GL_SCISSOR_TEST);
+    
   glEnable(GL_DEPTH_TEST);
   glEnable (GL_TEXTURE_2D);
+   
+  
 }
 
-void MiniMap :: zoomIn(GLfloat zoom){
+void MiniMap :: zoomIn(){
     this-> zoomFactor += 0.2f;
 }
 
-void MiniMap :: zoomOut(GLfloat zoom){
+void MiniMap :: zoomOut(){
     this-> zoomFactor -= 0.2f;
 }
 
@@ -120,7 +155,18 @@ void MiniMap :: toMiniMapCoord(int &x, int &y){
 
 void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
     toMiniMapCoord(x, y);
-    if(DEBUG_MINIMAP) fprintf(stderr, "setMiniMapPoint2 apres : %d, %d : ", x, y);
+    
+    // Update maximums
+    if (x > maxX){
+        maxX = x;
+        effectiveWidth = maxX;
+    }
+    if (y > maxY){
+        maxY = y;
+        effectiveHeight = maxY;
+    }
+    
+    if(DEBUG_MINIMAP) fprintf(stderr, "colorMiniMapPoint : %d, %d : ", x, y);
 
     if ((shape == scourge->getShapePalette()->getShape(Constants::EW_WALL_INDEX)) ||
         (shape == scourge->getShapePalette()->getShape(Constants::EW_WALL_EXTRA_INDEX)) ||
@@ -158,13 +204,13 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
      ((shape == scourge->getShapePalette()->getShape(Constants::FLOOR_TILE_INDEX))) 
 	 {
           if(DEBUG_MINIMAP) fprintf(stderr, "floor\n");
-          pos[x][y].r = 0.3f; //marron
+          pos[x][y].r = 0.3f; //braun
           pos[x][y].g = 0.17f;
           pos[x][y].b = 0.05f;
 	 } else if ((shape == scourge->getShapePalette()->getShape(Constants::ROOM_FLOOR_TILE_INDEX)))
      {
           if(DEBUG_MINIMAP) fprintf(stderr, "room\n");
-          pos[x][y].r = 0.7f; //marron
+          pos[x][y].r = 0.7f; //braun
           pos[x][y].g = 0.5f;
           pos[x][y].b = 0.1f;
      }
@@ -182,7 +228,7 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
      }
      else
      {
-        if(DEBUG_MINIMAP) fprintf(stderr, "unknown shape\n");     
+        if(DEBUG_MINIMAP) fprintf(stderr, "Unknown shape\n");     
      }
      
 }  
