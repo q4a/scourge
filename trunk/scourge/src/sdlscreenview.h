@@ -30,7 +30,10 @@ public:
 	virtual ~SDLScreenView();
 
   /** Draw shapes, etc. */
-  virtual void drawView(SDL_Surface *screen) = 0;
+  virtual void drawView() = 0;
+
+  /** Draw stuff on top of the gui */
+  virtual void drawAfter() = 0;
 };
 
 #endif

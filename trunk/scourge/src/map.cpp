@@ -334,7 +334,24 @@ void Map::setupPosition(int posX, int posY, int posZ,
   }
 }
 
-void Map::drawLocator() {
+void Map::drawDraggedItem() {
+  if(scourge->getMovingItem()) {
+	// glDisable(GL_DEPTH_TEST);
+	//	glDepthMask(GL_FALSE);
+	glPushMatrix();
+	glLoadIdentity();	
+	glTranslatef( scourge->getSDLHandler()->mouseX, scourge->getSDLHandler()->mouseY, 500);
+	glRotatef( xrot, 0.0f, 1.0f, 0.0f );  
+	glRotatef( yrot, 1.0f, 0.0f, 0.0f );  
+	glRotatef( zrot, 0.0f, 0.0f, 1.0f );
+	doDrawShape(0, 0, 0, scourge->getMovingItem()->getShape(), 0);
+	glPopMatrix();
+	//	glEnable(GL_DEPTH_TEST);
+	//glDepthMask(GL_TRUE);
+  }
+
+
+  /*
   float xpos2, ypos2, zpos2;  
   Shape *shape = NULL;  
 
@@ -372,47 +389,11 @@ void Map::drawLocator() {
 	oldLocatorSelY = selY;
 	oldLocatorSelZ = selZ;
   }
+  */
 
-
-
-	  /*
-
-	  dropLoc = getDropLocation(scourge->getMovingItem()->getShape(), 
-								selX, selY, selZ);
-	
-	// only let drop on other creatures and containers
-	// FIXME: implement container check (maybe abstract out container interface)
-	if(scourge->getMovingItem() && (dropLoc && !dropLoc->item && !dropLoc->creature)) {
-	  selX = oldLocatorSelX;
-	  selY = oldLocatorSelY;
-	  selZ = oldLocatorSelZ;
-	}
-	
-	if(scourge->getMovingItem()) {
-	  shape = scourge->getMovingItem()->getShape();
-	  // figure out the z-position at this location
-	  int newz = selZ;
-	  isBlocked(selX, selY, selZ, -1, -1, -1, shape, &newz);
-	  selZ = newz;
-	} else {
-	  shape = scourge->getShapePalette()->getShape(Constants::LOCATOR_INDEX);
-	}
-	xpos2 = ((float)(selX - getX()) / GLShape::DIV);
-	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
-	zpos2 = (float)(selZ) / GLShape::DIV;
-	
-	name = 0;
-	doDrawShape(xpos2, ypos2, zpos2, 
-				shape, 
-				name);
-	oldLocatorSelX = selX;
-	oldLocatorSelY = selY;
-	oldLocatorSelZ = selZ;
-	}
-	  */
 }
 
-void Map::draw(SDL_Surface *surface) {
+void Map::draw() {
   if(zoomIn) {
 	if(zoom <= 0.5f) {
 	  zoomOut = false;
@@ -538,9 +519,7 @@ void Map::draw(SDL_Surface *surface) {
 	glDepthMask(GL_TRUE);    
 	glDisable(GL_BLEND);
 
-	// now that we're drawing target circles we don't need the locator
-	// (except when moving an item)
-	if(scourge->getMovingItem()) drawLocator();
+	//drawDraggedItem();
   }
 }
 

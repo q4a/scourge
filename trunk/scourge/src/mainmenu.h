@@ -63,7 +63,8 @@ public:
   MainMenu(Scourge *scourge);
   ~MainMenu();
 
-  void drawView(SDL_Surface *screen);
+  void drawView();
+  void drawAfter();
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
   int getValue();

@@ -138,7 +138,7 @@ class Map {
 							y >= getY() && y < getY() + MAP_VIEW_DEPTH);
 	}
     
-  void draw(SDL_Surface *surface);
+  void draw();
   
   /**
 	 The map top left x coordinate
@@ -229,6 +229,8 @@ class Map {
   // drop items above this one
   void dropItemsAbove(int x, int y, int z, Item *item);
 
+  void drawDraggedItem();
+
  protected:
   DrawLater later[100], stencil[1000], other[1000], damage[1000];
   int laterCount, stencilCount, otherCount, damageCount;
@@ -249,7 +251,6 @@ class Map {
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
 						  Shape *shape);
-  void drawLocator();
   bool isWall(int x, int y, int z);
 
   void configureLightMap();
