@@ -1060,14 +1060,17 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
 	// find the drop target
 	Location *dropTarget = NULL;
 	if(movingItem) {
-	  Uint16 mapx, mapy, mapz;
+    Uint16 mapx, mapy, mapz;
 	  getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	  if(mapx < MAP_WIDTH) {
-		dropTarget = map->getLocation(mapx, mapy, mapz);
-		if(!(dropTarget && 
-			 (dropTarget->creature || 
-			  (dropTarget->item && dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)) )) 
-		  dropTarget = NULL;
+      dropTarget = map->getLocation(mapx, mapy, mapz);
+      if(!(dropTarget && 
+           (dropTarget->creature || 
+            (dropTarget->item && 
+             dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER &&
+             !map->isLocked(dropTarget->x, dropTarget->y, dropTarget->z) )) )) {
+        dropTarget = NULL;
+      }      
 	  }
 	}
 	map->setSelectedDropTarget(dropTarget);
@@ -1400,7 +1403,12 @@ bool Scourge::useItem(int x, int y, int z) {
 		GLint delta = SDL_GetTicks() - dragStartTime;
 		if(delta < ACTION_CLICK_TIME &&
 			 movingItem->getRpgItem()->getType() == RpgItem::CONTAINER) {
-			openContainerGui(movingItem);
+      if(map->isLocked(map->getSelX(), map->getSelY(), map->getSelZ())) {
+        // misnamed: DOOR_LOCKED message also applies to chests
+        map->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+      } else {
+        openContainerGui(movingItem);
+      }
 		}
 		dropItem(map->getSelX(), map->getSelY());
 		return true;

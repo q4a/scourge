@@ -183,6 +183,7 @@ protected:
   void addTeleporters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void addParty(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void lockDoors(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void lockLocation(Map *map, int mapx, int mapy);
   void createFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
   void calculateRoomValues(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
