@@ -508,6 +508,7 @@ bool Creature::eatDrink(int index){
     }
 }
 
+// FIXME: rpgItem should not change (same rpgItem reused in many Item-s)
 bool Creature::computeNewItemWeight(RpgItem * rpgItem){
     float f1;
     int oldCharges;
@@ -784,7 +785,7 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
   pc[2]->setStateMod(Constants::magic_protected, true);
   pc[2]->setStateMod(Constants::cursed, true);
   //  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
-  //	if(i != Constants::dead) pc[2]->setStateMod(i, true);
+  //  	if(i != Constants::dead) pc[2]->setStateMod(i, true);
 
   pc[3] = new Creature(scourge, Character::getCharacterByName("Naturalist"), "Dialante");    
   pc[3]->setLevel(1); 
