@@ -30,7 +30,7 @@ Party::Party(Scourge *scourge) {
   calendar = Calendar::getInstance();
 
   partySize = 0;
-  createUI();
+  if(!scourge->isHeadless()) createUI();
 }
 
 Party::~Party() {
@@ -76,6 +76,8 @@ void Party::resetMultiplayer(Creature *c) {
 }
 
 void Party::resetPartyUI() {
+  if(scourge->isHeadless()) return;
+
   player1Button->getLabel()->setText(party[0]->getName());
   player1Button->setSelected(true);
   if(getPartySize() > 1) {
