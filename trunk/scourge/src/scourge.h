@@ -94,6 +94,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   MainMenu *mainMenu;
   OptionsMenu *optionsMenu;
   bool isInfoShowing;
+  bool info_dialog_showing;
   Window *mainWin;
   Button *inventoryButton;
   Button *optionsButton;
@@ -122,9 +123,6 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int nextMission;
   bool inHq;
 
-  Button *infoButton;
-  Window *infoDialog;
-  Label *infoLabel;
   char infoMessage[200];
 
   Inventory *inventory;
@@ -273,6 +271,8 @@ public:
   void closeAllContainerGuis();
   
   void creatureDeath(Creature *creature);
+
+  void showMessageDialog(char *message);
 
  protected:
   void fightBattle(); 

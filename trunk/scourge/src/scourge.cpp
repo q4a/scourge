@@ -48,7 +48,8 @@ Scourge::Scourge(int argc, char *argv[]){
   // in HQ map
   inHq = true;
   
-  isInfoShowing = true;
+  isInfoShowing = true; // what is this?
+  info_dialog_showing = false;
 
   // new item and creature references
   itemCount = creatureCount = 0;
@@ -331,8 +332,8 @@ void Scourge::startMission() {
 	} else {
 	  sprintf(infoMessage, "Entering dungeon level %d", currentStory);
 	}
-	infoDialog->setVisible(true);
-	if(startRound) toggleRound();
+	showMessageDialog(infoMessage);
+	info_dialog_showing = true;
 	
 	
 	// run mission
@@ -1202,9 +1203,9 @@ Creature *Scourge::isPartyMember(Location *pos) {
 
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
-  if(widget == infoButton) {
-	infoDialog->setVisible(false);
+  if(widget == Window::message_button && info_dialog_showing) {
 	if(!startRound) toggleRound();
+	info_dialog_showing = false;
   }
 
   if(containerGuiCount > 0) {
@@ -1401,20 +1402,6 @@ void Scourge::createUI() {
   for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
 	missionText[i] = (char*)malloc(120 * sizeof(char));
   }
-
-  // FIXME: this should be in a generic class
-  w = 350;
-  h = 120;
-  infoDialog = new Window(getSDLHandler(),
-						  (getSDLHandler()->getScreen()->w/2) - (w/2), 
-						  (getSDLHandler()->getScreen()->h/2) - (h/2), 
-						  w, h,
-	 strdup("S.C.O.U.R.G.E. Message"), 
-	 getShapePalette()->getGuiTexture(), false);
-  infoButton = new Button( w/2 - 55, 50, w/2 + 55, 80, strdup("Ok") );
-  infoDialog->addWidget((Widget*)infoButton);
-  infoLabel = new Label(20, 20, infoMessage);
-  infoDialog->addWidget((Widget*)infoLabel);
 }
 
 
@@ -1985,4 +1972,14 @@ void Scourge::refreshContainerGui(Item *container) {
 	  containerGui[i]->refresh();
 	}
   }
+}
+
+void Scourge::showMessageDialog(char *message) {
+  if(startRound) toggleRound();
+  Window::showMessageDialog(getSDLHandler(), 
+							getSDLHandler()->getScreen()->w / 2 - 150,
+							getSDLHandler()->getScreen()->h / 2 - 55,
+							300, 110, Constants::messages[Constants::SCOURGE_DIALOG][0],
+							getShapePalette()->getGuiTexture(),
+							message);
 }

@@ -56,9 +56,13 @@ class Window : public Widget {
   int openHeight;
   GLint lastTick;
   int z;  
+  bool modal;
 
   static Window *window[];
   static int windowCount;  
+
+  static Window *message_dialog;
+  static Label *message_label;
 
  public: 
 	Button *closeButton;
@@ -73,6 +77,9 @@ class Window : public Widget {
 
   inline void setZ(int z) { this->z = z; }
   inline int getZ() { return z; }
+
+  inline void setModal(bool b) { modal = b; }
+  inline bool isModal() { return modal; }
 
   void setVisible(bool b);
   inline SDLHandler *getSDLHandler() { return sdlHandler; }
@@ -102,7 +109,14 @@ class Window : public Widget {
   static Widget *delegateEvent(SDL_Event *event, int x, int y);
   static void toTop(Window *win);
   
-  
+
+  // static message dialog
+  static Button *message_button; // so you can check for it in other classes
+  static void showMessageDialog(SDLHandler *sdlHandler, 
+								int x, int y, int w, int h, 
+								char *title, GLuint texture,
+								char *message, 
+								char *buttonLabel = Constants::messages[Constants::OK_LABEL][0]);
 	
  protected:
 };

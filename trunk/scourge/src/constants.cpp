@@ -42,11 +42,19 @@ char *Constants::messages[][80] = {
   { "Drag items to/from the list" },
   { "Play Mission" },
   { "Do you really want to exit this mission?" },
-  { "Exit mission and teleport back to base?" }
+  { "Exit mission and teleport back to base?" },
+  { "OK" },
+  { "Cancel" },
+  { "Yes" },
+  { "No" },
+  { "Select a character who has leveled up." },
+  { "No skill points available." },
+  { "Select a skill first." },
+  { "S.C.O.U.R.G.E. dialog" }
 };
 
 int Constants::messageCount[] = {
-  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines

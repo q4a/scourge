@@ -782,6 +782,7 @@ Creature **Creature::createHardCodedParty(Scourge *scourge) {
 
   // add some items
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Bastard sword")));
+  pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Horned helmet")));
   pc[0]->addInventory(scourge->newItem(RpgItem::getItemByName("Dagger")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Smallbow")));
   pc[1]->addInventory(scourge->newItem(RpgItem::getItemByName("Apple")));

@@ -102,6 +102,7 @@ Inventory::Inventory(Scourge *scourge) {
 	hpLabel        = cards->createLabel(115, 105, NULL, CHARACTER);
 	thirstLabel    = cards->createLabel(115, 120, NULL, CHARACTER);
 	hungerLabel    = cards->createLabel(220, 120, NULL, CHARACTER);
+	armorLabel     = cards->createLabel(220, 105, NULL, CHARACTER);
 
 	cards->createLabel(115, 135, strdup("Current State:"), CHARACTER, Constants::RED_COLOR);
 	stateList = new ScrollingList(115, 140, 290, 70);
@@ -125,7 +126,7 @@ Inventory::~Inventory() {
 }
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
-  char error[80];
+  char *error = NULL;
   if(widget == mainWin->closeButton) mainWin->setVisible(false);
   else if(widget == player1Button) setSelectedPlayerAndMode(0, selectedMode);
   else if(widget == player2Button) setSelectedPlayerAndMode(1, selectedMode);
@@ -164,15 +165,14 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	}					   	   	   	      	
 	
   } else if(widget == skillAddButton) {
-	strcpy(error, "");
 	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
-	  strcpy(error, "Select a character who has leveled up.");
+	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else if(scourge->getParty(selected)->getAvailableSkillPoints() <= 0) {
-	  strcpy(error, "No skill points left to distribute.");
+	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
 	} else {
 	  int itemIndex = skillList->getSelectedLine();  
 	  if(itemIndex <= -1) {
-		strcpy(error, "Select a skill first.");
+		error = Constants::getMessage(Constants::NO_SKILL_ERROR);
 	  } else {
 		scourge->getParty(selected)->incSkillMod(itemIndex);
 		// recreate list strings
@@ -181,21 +181,20 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 		skillList->setSelectedLine(oldLine);
 	  }
 	}
-	// FIXME: this should be in a dialog.
-	if(strlen(error)) {
+	if(error) {
 	  cerr << error << endl;
+	  scourge->showMessageDialog(error);
 	}
   } else if(widget == skillSubButton) {
-	strcpy(error, "");
 	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
-	  strcpy(error, "Select a character who has leveled up.");
+	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else if(scourge->getParty(selected)->getAvailableSkillPoints() == 
 			  scourge->getParty(selected)->getCharacter()->getSkillBonus()) {
-	  strcpy(error, "No skill points left to remove.");
+	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
 	} else {
 	  int itemIndex = skillList->getSelectedLine();  
 	  if(itemIndex <= -1) {
-		strcpy(error, "Select a skill first.");
+		error = Constants::getMessage(Constants::NO_SKILL_ERROR);
 	  } else {
 		scourge->getParty(selected)->decSkillMod(itemIndex);
 		// recreate list strings
@@ -204,14 +203,13 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 		skillList->setSelectedLine(oldLine);
 	  }
 	}
-	// FIXME: this should be in a dialog.
-	if(strlen(error)) {
+	if(error) {
 	  cerr << error << endl;
+	  scourge->showMessageDialog(error);
 	}
   } else if(widget == levelUpButton) {
-	strcpy(error, "");
 	if(!scourge->getParty(selected)->getStateMod(Constants::leveled)) {
-	  strcpy(error, "Select a character who has leveled up.");
+	  error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
 	} else {
 	  scourge->getParty(selected)->applySkillMod();
 	  // recreate list strings
@@ -219,9 +217,9 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 	  setSelectedPlayerAndMode(selected, selectedMode);
 	  skillList->setSelectedLine(oldLine);
 	}
-	// FIXME: this should be in a dialog.
-	if(strlen(error)) {
+	if(error) {
 	  cerr << error << endl;
+	  scourge->showMessageDialog(error);
 	}
   }
   return false;
@@ -295,6 +293,8 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	hungerLabel->setText(hungerStr);
 	sprintf(skillModStr, "Available: %d", selectedP->getAvailableSkillPoints());
 	skillModLabel->setText(skillModStr);
+	sprintf(armorStr, "Armor: %d", selectedP->getArmor());
+	armorLabel->setText(armorStr);
 	stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
       if(selectedP->getStateMod(t)) {

@@ -64,7 +64,7 @@ private:
 
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *expLabel, *hpLabel;
-	Label *thirstLabel, *hungerLabel, *skillModLabel;	
+	Label *thirstLabel, *hungerLabel, *skillModLabel, *armorLabel;	
 	int stateCount;
 	char **stateLine, **skillLine;
 	ScrollingList *stateList, *skillList;
@@ -75,6 +75,7 @@ private:
 	char thirstStr[80];
 	char hungerStr[80];
 	char skillModStr[80];
+	char armorStr[80];
 
 public:
     Inventory(Scourge *scourge);
