@@ -163,6 +163,8 @@ void Creature::stopMoving() {
 }
 
 bool Creature::moveToLocator(Map *map, bool single_step) {
+  if(((MD2Shape*)getShape())->getAttackEffect()) return false;
+
   bool moved = false;
   if(selX > -1) {
     // take a step
