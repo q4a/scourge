@@ -27,6 +27,8 @@ Widget::Widget(int x, int y, int w, int h) {
   this->w = w;
   this->h = h;
   red = green = blue = alpha = 0;
+  setBackground( 1, 0.75f, 0.45f );
+  setSelectionColor( 1, 0.5f, 0.45f );
   visible = true;
 }
 Widget::~Widget() {

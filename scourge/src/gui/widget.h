@@ -31,6 +31,8 @@ class Widget {
   int x, y, w, h;
   float red, green, blue, alpha;
   bool visible;
+  Color background;
+  Color selColor;
 
  public: 
   Widget(int x, int y, int w, int h);
@@ -54,8 +56,11 @@ class Widget {
   // color
   inline void setColor( float r, float g, float b, float a ) { this->red = r; this->green = g; this->blue = b; this->alpha = a; }
   inline void applyBorderColor() { glColor3f(0.8f, 0.5f, 0.2f); }
-  inline void applyBackgroundColor(bool opaque=false) { glColor4f( 1, 0.75f, 0.45f, (opaque ? 1.0f : 0.85f) ); }
-  inline void applySelectionColor() { glColor4f( 1, 0.5f, 0.45f, 1 ); }
+
+  inline void setBackground(float r, float g, float b) { background.r = r; background.g = g; background.b = b; }
+  inline void applyBackgroundColor(bool opaque=false) { glColor4f( background.r, background.g, background.b, (opaque ? 1.0f : 0.85f) ); }
+  inline void setSelectionColor(float r, float g, float b) { selColor.r = r; selColor.g = g; selColor.b = b; }
+  inline void applySelectionColor() { glColor4f( selColor.r, selColor.g, selColor.b, 1 ); }
 
 
   /**

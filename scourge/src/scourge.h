@@ -101,6 +101,9 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   Button *player4Button;
   Button *groupButton;
 
+  Window *messageWin;
+  ScrollingList *messageList;
+
   Inventory *inventory;
 
   int movingX, movingY, movingZ;
@@ -186,6 +189,7 @@ public:
   
   Creature *isPartyMember(Location *pos);
   
+  bool startItemDrag(int x, int y);
   bool useItem();
   bool useItem(int x, int y);
   

@@ -26,6 +26,7 @@
 #include "creature.h"
 #include "scourge.h"
 #include "item.h"
+#include "gui/scrollinglist.h"
 
 using namespace std;
 
@@ -43,11 +44,6 @@ typedef struct _DrawLater {
   Item *item;
   GLuint name;  
 } DrawLater;
-
-typedef struct _Description {
-  float r, g, b;
-  char text[120];
-} Description;
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
 
@@ -75,7 +71,9 @@ class Map {
   // on screen item descriptions
   static const int MAX_DESCRIPTION_COUNT = 200;
   int descriptionCount;
-  Description descriptions[MAX_DESCRIPTION_COUNT];
+  bool descriptionsChanged;
+  char *descriptions[MAX_DESCRIPTION_COUNT];
+  Color descriptionsColor[MAX_DESCRIPTION_COUNT];
 
   bool lightMapChanged;
   int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
@@ -199,7 +197,7 @@ class Map {
   
   void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f);
   
-  void drawDescriptions();
+  void drawDescriptions(ScrollingList *list);
   
   void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);
   void handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz);

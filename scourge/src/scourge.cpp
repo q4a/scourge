@@ -40,6 +40,7 @@ void Scourge::setBlendFunc() {
 Scourge::Scourge(int argc, char *argv[]){
   lastTick = 0;
   mainWin = NULL;
+  messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
 
@@ -107,6 +108,7 @@ Scourge::~Scourge(){
 void Scourge::startMission() {
   // add gui
   mainWin->setVisible(true);
+  messageWin->setVisible(true);
 
   // new item and creature references
   itemCount = creatureCount = 0;
@@ -158,6 +160,7 @@ void Scourge::startMission() {
 
   // remove gui
   mainWin->setVisible(false);
+  messageWin->setVisible(false);
 
   // clean up after the mission
   delete map;
@@ -226,7 +229,7 @@ void Scourge::drawView(SDL_Surface *screen) {
     }
   }
 
-  map->drawDescriptions();
+  map->drawDescriptions(messageList);
 
   miniMap->draw(0, 400);
 
@@ -464,7 +467,7 @@ void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
 	// click on an item
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
-	useItem(mapx, mapy);
+	if(startItemDrag(mapx, mapy)) return;
   }
 }
 
@@ -648,6 +651,30 @@ void Scourge::setPartyMotion(int motion) {
   }
 }
 
+bool Scourge::startItemDrag(int x, int y) {
+  if(movingItem) return false;
+  Location *pos = map->getPosition(x, y, player->getZ());
+  if(pos) {
+	if(getItem(pos)) {  
+	  return true;
+	}
+  }
+  return false;
+}
+
+bool Scourge::useItem() {
+  for(int x = player->getX() - 2; 
+	  x < player->getX() + player->getShape()->getWidth() + 2; 
+	  x++) {
+	for(int y = player->getY() + 2; 
+		y > player->getY() - player->getShape()->getDepth() - 2; 
+		y--) {
+	  if(useItem(x, y)) return true;
+	}
+  }
+  return false;
+}
+
 bool Scourge::useItem(int x, int y) {
   if(movingItem) {
 	//	dropItem(x, y);
@@ -657,9 +684,7 @@ bool Scourge::useItem(int x, int y) {
   
   Location *pos = map->getPosition(x, y, player->getZ());
   if(pos) {
-	if(getItem(pos)) {  
-	  return true;
-	} else if(useDoor(pos)) {
+	if(useDoor(pos)) {
 	  map->updateLightMap();
 	  return true;
 	}
@@ -747,19 +772,6 @@ bool Scourge::useDoor(Location *pos) {
         }
     }
     return false;
-}
-
-bool Scourge::useItem() {
-  for(int x = player->getX() - 2; 
-	  x < player->getX() + player->getShape()->getWidth() + 2; 
-	  x++) {
-	for(int y = player->getY() + 2; 
-		y > player->getY() - player->getShape()->getDepth() - 2; 
-		y--) {
-	  if(useItem(x, y)) return true;
-	}
-  }
-  return false;
 }
 
 Creature *Scourge::isPartyMember(Location *pos) {
@@ -868,6 +880,15 @@ void Scourge::createUI() {
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   mainWin->addWidget((Widget*)groupButton);
+
+  messageWin = new Window( getSDLHandler(),
+						   0, 0, 400, 120, 
+						   strdup("Messages"), 
+						   getShapePalette()->getGuiTexture() );
+  messageWin->setBackground(0, 0, 0);
+  messageList = new ScrollingList(0, 0, 400, 95);
+  messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
+  messageWin->addWidget(messageList);
 }
 
 
@@ -952,7 +973,7 @@ void Scourge::fightBattle() {
 		creatureFound = true;
 
 		if(!fightingStarted) {
-		  map->addDescription("A round of battle begins...");
+		  map->addDescription("A round of battle begins...", 1, 1, 1);
 		  fightingStarted = true;
 		}
 
@@ -975,11 +996,23 @@ void Scourge::fightBattle() {
 		int tohit = creature->getToHit(item);
 		int ac = creature->getTargetCreature()->getArmor();
 		if(tohit > ac) {
-		  sprintf(message, "...and hits! (toHit=%d vs. AC=%d)", tohit, ac);
-		  map->addDescription(message, 1.0f, 0.5f, 0.5f);
 
 		  // deal out the damage
+		  int damage = creature->getDamage(item);
+		  if(damage) {
+			sprintf(message, "...and hits! (toHit=%d vs. AC=%d) for %d points of damage", 
+					tohit, ac, damage);
+			map->addDescription(message, 1.0f, 0.5f, 0.5f);
 
+			// FIXME: implement me!
+			// creature->getTargetCreature()->takeDamage(damage);
+
+		  } else {
+			sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 
+					tohit, ac);
+			map->addDescription(message);
+		  }
+		  
 		} else {
 		  // missed
 		  sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
