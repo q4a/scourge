@@ -656,6 +656,7 @@ void Map::draw() {
   }
   if(selectMode) {
     for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
+    for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
   } else {  
 
 
