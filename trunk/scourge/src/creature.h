@@ -292,6 +292,8 @@ class Creature {
   inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
   inline int getAvailableSkillPoints() { return availableSkillPoints; }
   inline void setAvailableSkillPoints(int n) { availableSkillPoints = n; }
+  
+  int getMaxProjectileCount(Item *item);
 
  protected:
   /**

@@ -648,6 +648,17 @@ int Creature::getInitiative(Item *weapon) {
   return (10 - (int)(speed / 15.0f));
 }
 
+// return number of projectiles that can be launched simultaniously
+// it is a function of speed, coordination and weapon skill
+// this method returns a number from 1-10
+int Creature::getMaxProjectileCount(Item *item) {
+  int n = (int)((double)(skills[Constants::SPEED] + 
+						 skills[Constants::COORDINATION] + 
+						 skill[item->getRpgItem()->getSkill()]) / 30.0f);
+  if(n <= 0) n == 1;
+  return n;
+}
+
 // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
 int Creature::getToHit(Item *weapon) {
   float tohit = skills[Constants::COORDINATION] + skills[Constants::LUCK] / 2;
