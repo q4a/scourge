@@ -1217,12 +1217,10 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
   if(position) return position;
 
   // move position
-  removeCreature(x, y, z);
-  //interX = (x + nx) / 2.0f;
-  //interY = (y + ny) / 2.0f;
-  //cout << "old : " << x << ", " << y << ", " << z << endl;
-  //cout << "new : " << nx << ", " << ny << ", " << nz << endl;
-  setCreature(nx, ny, nz, newCreature);
+  moveCreaturePos(nx, ny, nz, x, y, z, newCreature);
+
+  //  removeCreature(x, y, z);
+  //  setCreature(nx, ny, nz, newCreature);
   return NULL;
 }
 
@@ -1600,6 +1598,83 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 		break;
 	  }
 	}
+  }
+}
+
+void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
+                          Sint16 ox, Sint16 oy, Sint16 oz,
+                          Creature *creature) {
+  Location *p = pos[ox][oy][oz];
+  if(creature && creature->getShape() &&
+     p && p->creature &&
+     p->x == ox && p->y == oy && p->z == oz) {
+    mapChanged = true;
+    
+    // remove the old pos
+    Location *tmp[MAP_UNIT][MAP_UNIT][MAP_UNIT];
+    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+          int oldX = ox + xp;
+          int oldY = oy - yp;
+          int oldZ = oz + zp;
+          tmp[xp][yp][zp] = pos[oldX][oldY][oldZ];
+          pos[oldX][oldY][oldZ] = NULL;
+          if(!(tmp[xp][yp][zp])) cerr << "*** tmp is null!" << endl;
+        }
+      }
+    }
+
+    // pick up any items in the way
+    char message[120];
+    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+          int newX = nx + xp;
+          int newY = ny - yp;
+          int newZ = nz + zp;            
+            
+          if(pos[newX][newY][newZ]) {
+            if(pos[newX][newY][newZ]->item) {
+              // creature picks up non-blocking item (this is the only way to handle 
+              // non-blocking items. It's also very 'roguelike'.)
+              Item *item = pos[newX][newY][newZ]->item;
+              removeItem(pos[newX][newY][newZ]->x,
+                         pos[newX][newY][newZ]->y,
+                         pos[newX][newY][newZ]->z);
+              creature->addInventory(item, true);
+              sprintf(message, "%s picks up %s.", 
+                      creature->getName(), 
+                      item->getItemName());
+              addDescription(message);
+            } else {
+              cerr << "*** Error: when moving " << creature->getName() << " path contained a non-item position." << endl;
+            }
+          }
+        }    
+      }
+    }
+            
+    // insert the new pos
+    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+          int newX = nx + xp;
+          int newY = ny - yp;
+          int newZ = nz + zp;            
+          
+          // copy
+          pos[newX][newY][newZ] = tmp[xp][yp][zp];              
+          pos[newX][newY][newZ]->item = NULL;
+          pos[newX][newY][newZ]->shape = creature->getShape();
+          pos[newX][newY][newZ]->creature = creature;
+          pos[newX][newY][newZ]->x = nx;
+          pos[newX][newY][newZ]->y = ny;
+          pos[newX][newY][newZ]->z = nz;
+        }
+      }
+    }
+
   }
 }
 

@@ -433,6 +433,10 @@ class Map {
   void createOverlayTexture();    
 
   void removeEffect(Sint16 x, Sint16 y, Sint16 z);
+
+  void moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
+                       Sint16 ox, Sint16 oy, Sint16 oz,
+                       Creature *creature);
 };
 
 #endif

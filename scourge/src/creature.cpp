@@ -340,6 +340,20 @@ bool Creature::move(Uint16 dir, Map *map) {
     break;
   }
   setFacingDirection(dir);
+  
+
+  if(!map->moveCreature(x, y, z, nx, ny, nz, this)) {
+    ((MD2Shape*)shape)->setDir(dir);
+    moveTo(nx, ny, nz);
+    setDir(dir);        
+    return true;
+  } else {
+    switchDirection(true);
+    return false;
+  }
+
+  
+  /*
   map->removeCreature(x, y, z);
   Location *loc = map->getBlockingLocation(getShape(), nx, ny, nz);
   Item *item = NULL;
@@ -368,6 +382,7 @@ bool Creature::move(Uint16 dir, Map *map) {
     switchDirection(true);
     return false;
   }
+  */
 }
 
 bool Creature::follow(Map *map) {
