@@ -52,6 +52,8 @@ Widget(x, y, w, h) {
   this->type = type;
   setBackgroundTileWidth(TILE_W);
   setBackgroundTileHeight(TILE_H);
+  // make windows stay on screen
+  this->move(x, y);
   addWindow(this);
 }
 
@@ -511,4 +513,14 @@ void Window::showMessageDialog(SDLHandler *sdlHandler,
 	message_button->getLabel()->setText(buttonLabel);
   }
   message_dialog->setVisible(true);
+}
+
+// overridden so windows stay on screen and moving/rotating still works
+void Window::move(int x, int y) {
+  this->x = x; 
+  this->y = y;
+  if(x< 5) this->x = 5;
+  if(y < 5) this->y = 5;
+  if(x >= sdlHandler->getScreen()->w - (w + 5)) this->x = sdlHandler->getScreen()->w - (w + 5 + 1);
+  if(y >= sdlHandler->getScreen()->h - (h + 5)) this->y = sdlHandler->getScreen()->h - (h + 5 + 1);
 }

@@ -127,7 +127,8 @@ class Window : public Widget {
 								char *title, GLuint texture,
 								char *message, 
 								char *buttonLabel = Constants::messages[Constants::OK_LABEL][0]);
-	
+
+  void move(int x, int y);
  protected:
 };
 
