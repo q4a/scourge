@@ -1396,7 +1396,16 @@ void Scourge::togglePlayerOnly() {
   groupButton->setSelected(!player_only);
 }
   
-void Scourge::moveMonster(Creature *monster) {	
+void Scourge::moveMonster(Creature *monster) {  
+  // set running animation (currently move or attack)
+  if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
+	monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+	// don't move when attacking
+	continue;
+  } else {
+	monster->getShape()->setCurrentAnimation((int)MD2_RUN);
+  }
+
   if(monster->getMotion() == Constants::MOTION_LOITER) {
 	// attack a player
 	if((int)(20.0f * rand()/RAND_MAX) == 0) {

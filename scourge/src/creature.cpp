@@ -125,10 +125,7 @@ bool Creature::move(Uint16 dir, Map *map) {
   if(!loc) {
     map->setCreature(nx, ny, nz, this);
     ((MD2Shape*)shape)->setDir(dir);
-    
-    // set running animation
-    shape->setCurrentAnimation(MD2_RUN);    
-    
+       
     moveTo(nx, ny, nz);
     setDir(dir);        
     
