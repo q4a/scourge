@@ -26,7 +26,7 @@
 
 #define INFO_INTERVAL 3000
 
-#define DEBUG_KEYS 1
+//#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -649,21 +649,39 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     int count = 0;
     for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
       if(creature->getStateMod(i) && i != Constants::dead) {
+
+        /* DEBUG
         glPushMatrix();
+        glTranslatef( xpos2, ypos2 - ( w * 2.0f ) - ( 1.0f / GLShape::DIV ), zpos2 + 5);
+        glColor4f( 1, 1, 1, 1 );
+        glBegin( GL_LINES );
+        glVertex3f( 0, 0, 0 );
+        glVertex3f( 0, w*2.0f, 0 );
+        glVertex3f( 0, w*2.0f, 0 );
+        glVertex3f( w*2.0f, w*2.0f, 0 );
+        glVertex3f( w*2.0f, w*2.0f, 0 );
+        glVertex3f( w*2.0f, 0, 0 );
+        glVertex3f( w*2.0f, 0, 0 );
+        glVertex3f( 0, 0, 0 );
+        glVertex3f( 0, 0, 0 );
+        glVertex3f( w*2.0f, w*2.0f, 0 );
+        glVertex3f( 0, w*2.0f, 0 );
+        glVertex3f( w*2.0f, 0, 0 );
+        glEnd();
+        glPopMatrix();
+        */
 
-        //old: glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
-        //new: glTranslatef( xpos2 + tw, ypos2 - tw, zpos2 + 5);
-
-        glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
-        //		glRotatef( count * (360.0f / Constants::STATE_MOD_COUNT), 0, 0, 1 );
-        //		glRotatef( count * (360.0f / on), 0, 0, 1 );
+        glPushMatrix();
+        glTranslatef( xpos2 + w, 
+                      ypos2 - ( w * 2.0f ) - ( 1.0f / GLShape::DIV ) + w, 
+                      zpos2 + 5);
         float angle = -(count * 30) - (levelMap->getZRot() + 180);
+        
         glRotatef( angle, 0, 0, 1 );
         glTranslatef( w + 15, 0, 0 );
         glRotatef( (count * 30) + 180, 0, 0, 1 );
         glTranslatef( -7, -7, 0 );
-        //	  drawStateMod(i);
-        //glColor4f( 1, 1, 1, 1 );
+
         GLuint icon = getShapePalette()->getStatModIcon(i);
         if(icon) {
           glBindTexture( GL_TEXTURE_2D, icon );
@@ -1019,7 +1037,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
       exitConfirmationDialog->setVisible(true);
     } else if(event->key.keysym.sym == SDLK_g) {
 //      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
-      party->startEffect( Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
+      party->startEffect( Constants::EFFECT_EXPLOSION, (Constants::DAMAGE_DURATION * 4));
     } else if(event->key.keysym.sym == SDLK_m) {
       Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
       return false;
