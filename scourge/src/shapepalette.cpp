@@ -32,8 +32,9 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "room_floor"  
 };
 
-WallTheme::WallTheme( char *name ) {
+WallTheme::WallTheme( char *name, ShapePalette *shapePal ) {
   this->name = name;
+  this->shapePal = shapePal;
   for(int i = 0; i < THEME_REF_COUNT; i++)
     themeRefMap[ themeRefName[i] ] = i;
 }
@@ -42,25 +43,31 @@ WallTheme::~WallTheme() {
   unload();
 }
 
-void WallTheme::load( ShapePalette *shapePal ) {
+void WallTheme::load() {
   cerr << "*** Loading theme: " << getName() << endl;
   debug();
   for(int ref = 0; ref < THEME_REF_COUNT; ref++) {
     for(int face = 0; face < faceCount[ ref ]; face++) {
-      loadTextureGroup( ref, face, textures[ ref ][ face ], shapePal );
+      loadTextureGroup( ref, face, textures[ ref ][ face ] );
     }
   }
 }
 
-void WallTheme::loadTextureGroup( int ref, int face, char *texture, ShapePalette *shapePal ) {
-  char path[300];  
+void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
+  char path[300], bmp[300];  
   if( texture ) {
     string s = texture;
     GLuint id;
     if( loadedTextures.find(s) == loadedTextures.end() ) {
-      sprintf(path, "/%s.bmp", texture);
-      id = shapePal->loadGLTextures(path);
-      loadedTextures[s] = id;
+
+	  // see if it's a system texture (no need to double load it)
+	  sprintf( bmp, "%s.bmp", texture );
+	  id = shapePal->findTextureByName( bmp );
+	  if( id == 0 ) {
+		sprintf( path, "/%s", bmp );
+		id = shapePal->loadGLTextures(path);
+		loadedTextures[s] = id;
+	  }
     } else {
       id = loadedTextures[s];
     }
@@ -71,10 +78,18 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, ShapePalette
 }
 
 void WallTheme::unload() {
+  char bmp[300];
   cerr << "*** Dumping theme: " << getName() << endl;
   for(map<string,GLuint>::iterator i=loadedTextures.begin(); i!=loadedTextures.end(); ++i) {
+	string s = i->first;
     GLuint id = i->second;
-    glDeleteTextures( 1, &id );
+
+	// don't delete system textures!
+	sprintf( bmp, "%s.bmp", s.c_str() );
+	id = shapePal->findTextureByName( bmp );
+	if( id == 0 ) {
+	  glDeleteTextures( 1, &id );
+	}
   }
   loadedTextures.clear();
 }
@@ -295,7 +310,7 @@ void ShapePalette::initialize() {
     } else if( n == 'H' ) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
-      WallTheme *theme = new WallTheme( strdup(line) );
+      WallTheme *theme = new WallTheme( strdup(line), this );
       // read the shape ref-s
       for(int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++) {
         n = Constants::readLine(line, fp);
@@ -525,7 +540,7 @@ void ShapePalette::loadTheme( WallTheme *theme ) {
     
     // load new theme
     currentTheme = (WallTheme*)theme;
-    currentTheme->load( this );
+    currentTheme->load();
 
     // apply theme to shapes
     cerr << "*** Applying theme to shapes: ***" << endl;

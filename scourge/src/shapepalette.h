@@ -94,9 +94,10 @@ class WallTheme {
   map<string,int> themeRefMap;
   GLfloat r[MULTI_TEX_COUNT], g[MULTI_TEX_COUNT], b[MULTI_TEX_COUNT], intensity[MULTI_TEX_COUNT];
   bool smooth[MULTI_TEX_COUNT];
+  ShapePalette *shapePal;
 
  public:
-  WallTheme( char *name );
+  WallTheme( char *name, ShapePalette *shapePal );
   ~WallTheme();
 
   inline void setFaceCount( int themeRef, int value ) { faceCount[ themeRef ] = value; }
@@ -128,11 +129,11 @@ class WallTheme {
 
   GLuint *getTextureGroup( string themeRefName );
   inline char *getName() { return name; }
-  void load( ShapePalette *shapePal );
+  void load();
   void unload();
 
  protected:
-  void loadTextureGroup( int ref, int face, char *texture, ShapePalette *shapePal );
+  void loadTextureGroup( int ref, int face, char *texture );
   void debug();
 };
   
