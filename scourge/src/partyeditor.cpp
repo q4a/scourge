@@ -37,7 +37,7 @@ PartyEditor::PartyEditor(Scourge *scourge) {
                         "Create your party of brave souls...", false, Window::BASIC_WINDOW, "default" );
 
   mainWin->setVisible( false );
-  mainWin->setModal( true );  
+  //mainWin->setModal( true );  
   mainWin->setLocked( true );  
 
   
@@ -79,8 +79,8 @@ void PartyEditor::reset() {
   cards->setActiveCard( step ); 
 }
 
-void PartyEditor::handleEvent( Widget *widget ) {
-
+void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
+  
   //
   // cancel and done are handled in mainmenu.cpp
   //
@@ -200,12 +200,6 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
 }
 
 void PartyEditor::drawWidget( Widget *w ) {
-  Uint32 t = SDL_GetTicks();
-  if( t - lastTick > 5 ) {
-    lastTick = t;
-    zrot += 5;
-    if( zrot >= 360 ) zrot -= 360;
-  }
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
     if( w == info[i].portrait ) {
       glPushMatrix();
@@ -228,43 +222,43 @@ void PartyEditor::drawWidget( Widget *w ) {
       glDisable( GL_TEXTURE_2D );
       glPopMatrix();
     } else if( w == info[i].model ) {
-      /*
-      glDisable( GL_TEXTURE_2D );
-      glPushMatrix();
-      glDisable( GL_CULL_FACE );
-      glColor4f( 0, 0, 0, 1 );
-      glBegin( GL_QUADS );
-      glVertex2i( 0, 0 );
-      glVertex2i( PORTRAIT_SIZE, 0 );
-      glVertex2i( PORTRAIT_SIZE, MODEL_SIZE );
-      glVertex2i( 0, MODEL_SIZE );
-      glEnd();
-      glPopMatrix();
-      */
-
       // draw model
-      CharacterModelInfo *cmi = scourge->getShapePalette()->getCharacterModelInfo( info->modelIndex );
-      GLShape *shape = 
-        scourge->getShapePalette()->getCreatureShape(cmi->model_name, 
-                                                     cmi->skin_name, 
-                                                     cmi->scale );      
+      CharacterModelInfo *cmi = scourge->getShapePalette()->
+        getCharacterModelInfo( info[i].modelIndex );
+      GLShape *shape;
+      if( shapes.find( cmi ) == shapes.end() ) {
+        shape = 
+          scourge->getShapePalette()->getCreatureShape(cmi->model_name, 
+                                                       cmi->skin_name, 
+                                                       cmi->scale );
+        shapes[ cmi ] = shape;
+        shape->setCurrentAnimation( MD2_STAND );
+      } else {
+        shape = shapes[ cmi ];
+      }      
       glPushMatrix();
+      glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+      glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
+      glClearDepth( 1.0f );
       glEnable(GL_DEPTH_TEST);
       glDisable( GL_BLEND );
       glDepthMask(GL_TRUE);
       glEnable( GL_TEXTURE_2D );
-      glRotatef( 75, 1, 0, 0 );
-      glTranslatef( PORTRAIT_SIZE, MODEL_SIZE * 3, 100 );      
-      glRotatef( zrot, 0, 0, 1 );
-      glTranslatef( 0, 0, shape->getDepth() / 2.0f / GLShape::DIV );      
+      glTranslatef( 130, 210, 500 );
+      glRotatef( 90, 1, 0, 0 );
+      glRotatef( 180, 0, 0, 1 );
       glScalef( 2, 2, 2 );
       glColor4f( 1, 1, 1, 1 );
-      glDisable( GL_SCISSOR_TEST );
+      //glDisable( GL_SCISSOR_TEST );
       shape->draw();
       glDisable( GL_TEXTURE_2D );
       glDepthMask(GL_FALSE);
       glDisable(GL_DEPTH_TEST);
+      glDisable( GL_BLEND );
       glPopMatrix();
     }
   }
+}
+
+void PartyEditor::drawAfter() {
 }

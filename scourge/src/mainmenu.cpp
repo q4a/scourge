@@ -142,29 +142,53 @@ MainMenu::~MainMenu(){
 }
 
 void MainMenu::drawView() {
+
+  /*
+  if( partyEditor->isVisible() ) {
+    drawWater();
+
+    glDisable(GL_TEXTURE_2D);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_NOTEQUAL, 0);        
+    glPushMatrix();
+    glLoadIdentity( );                         
+    glPixelZoom( 1.0, -1.0 );
+    glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, top );
+    glDrawPixels(scourge->getShapePalette()->scourge->w, 
+                 scourge->getShapePalette()->scourge->h,
+                 GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImage);
+    glDisable(GL_ALPHA_TEST);
+    glPopMatrix();
+
+  } else {
+  */
 #ifndef AT_WORK
 
-  // create a stencil for the water
-  glDisable(GL_DEPTH_TEST);
-  glColorMask(0,0,0,0);
-  if(scourge->getUserConfiguration()->getStencilbuf()
-     && scourge->getUserConfiguration()->getStencilBufInitialized()){
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilFunc(GL_ALWAYS, 1, 1);
+  if( !partyEditor->isVisible() ) {
+    // create a stencil for the water
+    glDisable(GL_DEPTH_TEST);
+    glColorMask(0,0,0,0);
+    if(scourge->getUserConfiguration()->getStencilbuf()
+       && scourge->getUserConfiguration()->getStencilBufInitialized()){
+      glEnable(GL_STENCIL_TEST);
+      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+      glStencilFunc(GL_ALWAYS, 1, 1);
+    }
+    drawWater();
+    
+    // Use the stencil to draw
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+    if(scourge->getUserConfiguration()->getStencilbuf()
+       && scourge->getUserConfiguration()->getStencilBufInitialized()){
+      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+      glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil==1
+    }
+    drawClouds(false, true);
+    glDisable(GL_STENCIL_TEST);
   }
-  drawWater();
-  
-  // Use the stencil to draw
-  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-  glEnable(GL_DEPTH_TEST);
-  if(scourge->getUserConfiguration()->getStencilbuf()
-     && scourge->getUserConfiguration()->getStencilBufInitialized()){
-    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-    glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil==1
-  }
-  drawClouds(false, true);
-  glDisable(GL_STENCIL_TEST);
       
   // draw the blended water
   glEnable(GL_BLEND);  
@@ -179,7 +203,9 @@ void MainMenu::drawView() {
   drawStars();
 
   glDisable(GL_DEPTH_TEST);
-  drawClouds(true, false);
+  if( !partyEditor->isVisible() ) {
+    drawClouds(true, false);
+  }
 
   // drawWater();
 
@@ -199,7 +225,9 @@ void MainMenu::drawView() {
   glDisable(GL_ALPHA_TEST);
   glPopMatrix();
 
-  drawLogo();
+  if( !partyEditor->isVisible() ) {
+    drawLogo();
+  }
 
 #else
   glLoadIdentity();
@@ -214,11 +242,17 @@ void MainMenu::drawView() {
   glEnd();
   scourge->getSDLHandler()->texPrint(300, 300, "Hello world");
 #endif
+
+  //}
+
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
 }
 
 void MainMenu::drawAfter() {
+
+  if( partyEditor->isVisible() ) partyEditor->drawAfter();
+
   // draw the boards
   if(openingTop > 0) {
     glPushMatrix();
@@ -612,7 +646,7 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
   }
 
   if( partyEditor->isVisible() ) {
-    partyEditor->handleEvent( widget );
+    partyEditor->handleEvent( widget, event );
   }
 
   if(scourge->getMultiplayerDialog()->isVisible()) {
@@ -676,13 +710,17 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 bool MainMenu::handleEvent(SDL_Event *event) {
 
   if(scourge->getOptionsMenu()->isVisible()) {
-	scourge->getOptionsMenu()->handleEvent(event);
-	return false;
+    scourge->getOptionsMenu()->handleEvent(event);
+    return false;
   }
 
   if(scourge->getMultiplayerDialog()->isVisible()) {
     scourge->getMultiplayerDialog()->handleEvent(event);
     return false;
+  }
+
+  if( partyEditor->isVisible() ) {
+    partyEditor->handleEvent( NULL, event );
   }
 
   /*

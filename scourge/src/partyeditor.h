@@ -87,19 +87,21 @@ private:
   int step;
   Uint32 lastTick;
   float zrot;
+  map<CharacterModelInfo*, GLShape*> shapes;
   
 public:
   PartyEditor(Scourge *scourge);
   ~PartyEditor();
 
   void drawWidget(Widget *w);
+  void drawAfter();
 
   inline bool isVisible() { return mainWin->isVisible(); }
   inline void setVisible( bool b ) { mainWin->setVisible( b ); }
   inline Widget *getStartGameButton() { return done; }
   inline Widget *getCancelButton() { return cancel; }
   void reset();
-  void handleEvent( Widget *widget );
+  void handleEvent( Widget *widget, SDL_Event *event );
 
  protected:
   void createCharUI( int step, CharacterInfo *info );
