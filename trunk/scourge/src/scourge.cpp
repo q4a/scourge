@@ -1007,20 +1007,23 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
       getMap()->refresh();
-	} else if(event->key.keysym.sym == SDLK_c && 
-			  getSession()->getCurrentMission() && 
-			  !getSession()->getCurrentMission()->isCompleted()) {
-	  getSession()->getCurrentMission()->setCompleted( true );
-	  if( getSession()->getCurrentMission()->isStoryLine() ) 
-		board->storylineMissionCompleted( getSession()->getCurrentMission() );
-	  missionCompleted();
-	} else if( event->key.keysym.sym == SDLK_t ) {
-	  teleporting = true;
+    } else if(event->key.keysym.sym == SDLK_c && 
+              getSession()->getCurrentMission() && 
+              !getSession()->getCurrentMission()->isCompleted()) {
+      getSession()->getCurrentMission()->setCompleted( true );
+      if( getSession()->getCurrentMission()->isStoryLine() ) 
+        board->storylineMissionCompleted( getSession()->getCurrentMission() );
+      missionCompleted();
+    } else if( event->key.keysym.sym == SDLK_t ) {
+      teleporting = true;
       exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
       party->toggleRound(true);
       exitConfirmationDialog->setVisible(true);
     } else if(event->key.keysym.sym == SDLK_g) {
       party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
+    } else if(event->key.keysym.sym == SDLK_m) {
+      Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
+      return false;
     }
 #endif
 

@@ -156,6 +156,7 @@ class Map {
 
  public:
   bool useFrustum;
+  static bool debugMd2Shapes;
 
   Map(Session *session);
   ~Map();

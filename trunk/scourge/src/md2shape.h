@@ -90,6 +90,8 @@ private:
 public:     
 	~MD2Shape();
 
+  inline GLShape *getDebugShape() { return debugShape; }
+
   inline void setCreatureSpeed( float n ) { creatureSpeed = n; }
 
   inline void setDebug(bool b) { debug = b; }

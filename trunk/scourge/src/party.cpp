@@ -20,7 +20,7 @@
 
 Creature *Party::lastPlayer = NULL;
 
-//#define RANDOM_PARTY 1
+#define RANDOM_PARTY 1
 
 Party::Party(Session *session) {
   this->session = session;

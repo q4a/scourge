@@ -36,9 +36,10 @@ MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
                    int width, int depth, int height,
                    char *name, int descriptionGroup,
                    Uint32 color, Uint8 shapePalIndex) :
-  GLShape(0, width, depth, height, name, descriptionGroup, color, shapePalIndex) {
+  GLShape(0, width, depth, height/2, name, descriptionGroup, color, shapePalIndex) {
   commonInit(g_3DModel, textureId, div);    
-  debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
+  debugShape = new GLShape(0, this->width, this->depth, this->height, 
+                           name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
 }
 
@@ -77,11 +78,11 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
 void MD2Shape::draw() {
 
 #ifdef DEBUG_MD2
-  if( glIsEnabled( GL_TEXTURE_2D ) ) {
+  //if( glIsEnabled( GL_TEXTURE_2D ) ) {
     glPushMatrix();
     debugShape->draw();
     glPopMatrix();
-  }
+  //}
 #endif
 
   glPushMatrix();
@@ -95,7 +96,7 @@ void MD2Shape::draw() {
                 //-((float)depth / DIV) / 2.0f );
   glTranslatef( ((float)(width) / 2.0f) / DIV, 
                 0.25f / DIV, 
-                -( (((float)(depth) / 2.0f) - 1.0f) / DIV ) );
+                -(((float)(depth) / 2.0f) / DIV ) );
 
   // rotate to movement angle
   glRotatef(angle - 90, 0.0f, 1.0f, 0.0f);
@@ -368,9 +369,9 @@ MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div
   else fw = fd;
     
   // set the shape's dimensions
-  width = (int)(fw + 0.5f);
-  depth = (int)(fd + 0.5f);
-  height = (int)(fh + 0.5f);
+  width = (int)( fw + ( (float)((int)fw) == fw ? 0 : 1 ) );
+  depth = (int)( fd + ( (float)((int)fd) == fd ? 0 : 1 ) );
+  height = toint(fh);
   
   // normalize and center points
   map<int, int> seenFrames;

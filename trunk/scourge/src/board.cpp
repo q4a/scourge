@@ -168,7 +168,8 @@ void Board::initMissions() {
     }
   }
   // add the current storyline mission
-  availableMissions.push_back( storylineMissions[ storylineIndex ] );
+  if( storylineMissions[ storylineIndex ]->getLevel() <= highest )
+    availableMissions.push_back( storylineMissions[ storylineIndex ] );
 
   // maintain a set of missions
   while( availableMissions.size() < 5 ) {
