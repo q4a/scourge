@@ -19,6 +19,7 @@
 
 #define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
+#define WEAPON_WAIT_MUL 5
 
 char *Battle::sound[] = {
   "sound/weapon-swish/handheld/sw1.wav",
@@ -77,7 +78,7 @@ Battle::~Battle() {
 void Battle::reset() {
   if(DEBUG_BATTLE) cerr << "*** reset: creature=" << creature->getName() << endl;
   this->steps = 0;
-  this->startingAp = this->ap = 10 + (creature->getSkill(Constants::COORDINATION) / 10);
+  this->startingAp = this->ap = 30 + (creature->getSkill(Constants::COORDINATION) / 5);
   this->projectileHit = false;
   this->paused = false;
   this->weaponWait = 0;
@@ -205,7 +206,7 @@ void Battle::initTurnStep() {
       range = Constants::MIN_DISTANCE;
       range = creature->getActionSpell()->getDistance();
       if(nextTurn > 0) weaponWait = nextTurn;
-      else weaponWait = creature->getActionSpell()->getSpeed();
+      else weaponWait = creature->getActionSpell()->getSpeed() * WEAPON_WAIT_MUL;
       nextTurn = 0;
       if(DEBUG_BATTLE) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
@@ -218,7 +219,7 @@ void Battle::initTurnStep() {
         if(DEBUG_BATTLE) cerr << "\tUsing bare hands." << endl;
       }
       // How many steps to wait before being able to use the weapon.
-      weaponWait = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED);
+      weaponWait = (item ? item->getRpgItem()->getSpeed() : Constants::HAND_WEAPON_SPEED) * WEAPON_WAIT_MUL;
     }
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
