@@ -25,12 +25,14 @@
 #include "gui/label.h"
 #include "gui/button.h"
 #include "gui/textfield.h"
+#include "party.h"
 
 /**
   *@author Gabor Torok
   */
 
 class Scourge;
+class Party;
 
 class MultiplayerDialog {
 private:
@@ -62,6 +64,7 @@ public:
   inline char *getServerPort() { return serverPort->getText(); }
   inline char *getUserName() { return userName->getText(); }
   inline int getValue() { return value; }
+  Creature *getCreature();
 
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);

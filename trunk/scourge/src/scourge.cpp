@@ -134,6 +134,7 @@ Scourge::Scourge(int argc, char *argv[]){
       mainMenu->hide();
       
       initMainMenu = true;
+      multiplayerGame = false;
      
 #ifdef HAVE_SDL_NET
       if(mainMenu->getValue() == MULTIPLAYER_START) {
@@ -190,7 +191,11 @@ void Scourge::startMission() {
 
     // do this only once
     if(resetParty) {
-      party->reset();
+      if(multiplayerGame) {
+        party->resetMultiplayer(multiplayer->getCreature());
+      } else {
+        party->reset();
+      }
       party->getCalendar()->reset(true); // reset the time
       board->reset();
 
@@ -1951,8 +1956,10 @@ int Scourge::initMultiplayer() {
 
   delete progress;
 
-  // upload your character
+  multiplayerGame = true;
 
+  // upload your character
+  
   return 1;
 } 
 

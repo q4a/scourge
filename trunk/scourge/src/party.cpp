@@ -59,17 +59,17 @@ void Party::reset() {
   // This will be replaced by a call to the character builder which either
   // loads or creates the party.
   deleteParty();
-  party[0] = player = pc[0];
-  party[1] = pc[1];
-  party[2] = pc[2];
-  party[3] = pc[3];
+  party[0] = player = new Creature(pc[0]);
+  party[1] = new Creature(pc[1]);
+  party[2] = new Creature(pc[2]);
+  party[3] = new Creature(pc[3]);
   partySize = 4;
   resetPartyUI();
 }
 
 void Party::resetMultiplayer(Creature *c) {
   deleteParty();
-  party[0] = player = c;
+  party[0] = player = new Creature(c);
   party[1] = party[2] = party[3] = NULL;
   partySize = 1;
   resetPartyUI();
