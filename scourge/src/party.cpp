@@ -229,6 +229,26 @@ void Party::setTargetCreature(Creature *creature) {
   }
 }
 
+void Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
+  getPlayer()->setSelXY(mapx, mapy);
+  // if player stopping not set, set it
+  if( getPlayerMoved() == 0 ) setPlayerMoved();
+  if(isPlayerOnly()) {
+	getPlayer()->cancelTarget();
+  } else {
+	for(int i = 0; i < getPartySize(); i++) {
+	  if(!getParty(i)->getStateMod(Constants::dead)) {
+		getParty(i)->cancelTarget();
+		if(getParty(i) != getPlayer()) {
+		  // if already moving, don't stop
+		  if( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
+		  getParty(i)->follow( session->getMap() );
+		}
+	  }
+	}
+  }
+}
+
 void Party::movePlayers() {   
   if(player_only) {	
 	// move everyone
