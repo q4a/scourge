@@ -146,6 +146,7 @@ void Scourge::startMission() {
 	if(nextMission == -1) {
 	  
 	  currentMission = NULL;
+	  missionWillAwardExpPoints = false;
 
 	  // in HQ map
 	  inHq = true;
@@ -162,12 +163,14 @@ void Scourge::startMission() {
 	  
 	  // Initialize the map with a random dunegeon	
 	  currentMission = board->getMission(nextMission);
+	  missionWillAwardExpPoints = (!currentMission->isCompleted());
 	  cerr << "Starting mission: level="  << currentMission->getLevel() << 
 		" stories=" << currentMission->getDungeonStoryCount() << 
 		" current story=" << currentStory << endl;
 	  dg = new DungeonGenerator(this, currentMission->getLevel(), 
 								(currentStory < currentMission->getDungeonStoryCount() - 1), 
-								(currentStory > 0));
+								(currentStory > 0),
+								currentMission);
 	  dg->toMap(map, getShapePalette());
 	}
 	
@@ -262,9 +265,9 @@ void Scourge::startMission() {
 }
 
 void Scourge::endMission() {
-	party->getPlayer()->setSelXY(-1, -1);   // stop moving
-	movingItem = NULL;          // stop moving items
-	//	move = 0;
+  party->getPlayer()->setSelXY(-1, -1);   // stop moving
+  movingItem = NULL;          // stop moving items
+  //	move = 0;  
 }
 
 // items created for the mission
@@ -390,6 +393,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
     break;
   case SDL_KEYDOWN:
   case SDL_KEYUP:
+
+	if(event->key.keysym.sym == SDLK_m) {
+	  missionCompleted();
+	  return false;
+	}
 
 	/* this is here to test effects
 	if(event->key.keysym.sym == SDLK_f) {
@@ -1403,5 +1411,35 @@ Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
 }
 
 void Scourge::missionCompleted() {
-  showMessageDialog("Congratulations! Mission accomplished.");
+  showMessageDialog("Congratulations, mission accomplished!");
+
+  // Award exp. points for completing the mission
+  if(currentMission && missionWillAwardExpPoints && 
+	 currentMission->isCompleted()) {
+
+	// only do this once
+	missionWillAwardExpPoints = false;
+
+	// how many points?
+	int exp = (currentMission->getLevel() + 1) * 100;
+	map->addDescription("For completing the mission", 0, 1, 1);
+	char message[200];
+	sprintf(message, "The party receives %d points.", exp);
+	map->addDescription(message, 0, 1, 1);
+	
+	for(int i = 0; i < getParty()->getPartySize(); i++) {
+	  bool b = getParty()->getParty(i)->getStateMod(Constants::leveled);
+	  if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
+		int n = getParty()->getParty(i)->addExperience(exp);
+		if(n > 0) {
+		  // sprintf(message, "%s gains %d experience points.", getParty()->getParty(i)->getName(), n);
+		  // getMap()->addDescription(message);
+		  if(!b && getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+			sprintf(message, "%s gains a level!", getParty()->getParty(i)->getName());
+			getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+		  }
+		}
+	  }
+	}
+  }
 }

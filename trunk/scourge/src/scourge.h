@@ -100,6 +100,7 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   int nextMission;
   bool inHq;
   Mission *currentMission;
+  bool missionWillAwardExpPoints;
 
   char infoMessage[200];
 

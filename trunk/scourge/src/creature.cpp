@@ -813,6 +813,12 @@ int Creature::addExperience(Creature *creature_killed) {
   if( n < 1 ) n = 1;
   float m = (float)(creature_killed->getMonster()->getHp()) / 2.0f;
   int delta = n * 10 * (int)((m * rand()/RAND_MAX) + m);
+  return addExperience(delta);
+}
+
+// add n exp points
+// only called for characters
+int Creature::addExperience(int delta) {
   exp += delta;
 
   // level up? (mark as state, with graphic over character)

@@ -119,11 +119,13 @@ const MapLocation DungeonGenerator::location[] = {
   }
 };
 
-DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown, bool stairsUp){
+DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, bool stairsDown, 
+								   bool stairsUp, Mission *mission){
   this->scourge = scourge;
   this->level = level;
   this->stairsUp = stairsUp;
   this->stairsDown = stairsDown;
+  this->mission = mission;
   this->status = 0;
 
   initByLevel();  
@@ -1156,6 +1158,30 @@ void DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal,
 			Item *item = scourge->newItem(rpgItem);
 			getRandomLocation(map, item->getShape(), &x, &y);
 			addItem(map, NULL, item, NULL, x, y);
+		}
+		// add mission objects 
+		if(mission && mission->getObjective() && !stairsDown) {
+
+		  // FIXME: mission objects should be on a pedestal:
+		  // easy to see and creatures can't get them)
+		  for(int i = 0; i < mission->getObjective()->itemCount; i++) {
+			Item *item = scourge->newItem(mission->getObjective()->item[i]);
+			getRandomLocation(map, item->getShape(), &x, &y);
+			addItem(map, NULL, item, NULL, x, y);
+			cerr << "*** Added mission item: " << item->getRpgItem()->getName() << endl;
+		  }
+
+		  // add mission creatures
+		  for(int i = 0; i < mission->getObjective()->monsterCount; i++) {
+			GLShape *shape = 
+			  scourge->getShapePalette()->
+			  getCreatureBlockShape(mission->getObjective()->monster[i]->getModelName());
+			getRandomLocation(map, shape, &x, &y);		
+			Creature *creature = scourge->newCreature(mission->getObjective()->monster[i]);
+			addItem(map, creature, NULL, NULL, x, y);
+			creature->moveTo(x, y, 0);
+			cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
+		  }
 		}
 	}
 	updateStatus();

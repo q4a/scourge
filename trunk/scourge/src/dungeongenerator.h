@@ -24,10 +24,12 @@
 #include "map.h"
 #include "creature.h"
 #include "shapepalette.h"
+#include "board.h"
 
 // forward decl.
 class Map;
 class Creature;
+class Mission;
 
 #define DRAW_UNVISITED 0
 
@@ -79,6 +81,7 @@ private:
   int objectCount;
   int monsters;
   bool stairsDown, stairsUp;
+  Mission *mission;
 
   Sint16 *ff;
   int ffCount;
@@ -146,7 +149,7 @@ public:
 	LOCATION_COUNT
   };
   
-  DungeonGenerator(Scourge *scourge, int level, bool stairsDown, bool stairsUp);
+  DungeonGenerator(Scourge *scourge, int level, bool stairsDown, bool stairsUp, Mission *mission = NULL);
   ~DungeonGenerator();
 
   void toMap(Map *map, ShapePalette *shapePal, int location=0);

@@ -18,6 +18,7 @@
 #include "battle.h"
 
 //#define DEBUG_BATTLE
+#define GOD_MODE 0
 
 enum {
   NO_ACTION = 0,
@@ -267,7 +268,9 @@ void Battle::hitWithItem() {
 		creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
 		sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
 		scourge->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-		scourge->creatureDeath(creature->getTargetCreature());
+
+		if(creature->getTargetCreature()->isMonster() || !GOD_MODE)
+		  scourge->creatureDeath(creature->getTargetCreature());
 		
 		// add exp. points and money
 		if(!creature->isMonster()) {
@@ -295,6 +298,12 @@ void Battle::hitWithItem() {
 			}
 		  }
 		  // end of FIXME
+		  
+		  // see if this is a mission objective
+		  if(scourge->getCurrentMission() && 
+			 creature->getTargetCreature()->getMonster()) {
+			scourge->getCurrentMission()->monsterSlain(creature->getTargetCreature()->getMonster());
+		  }
 
 		}
 	  }
