@@ -152,8 +152,14 @@ class Map {
   inline float getZPos() { return zpos; } 
 
   inline bool isLocationVisible(int x, int y) { 
-	return (x >= getX() && x < getX() + MAP_VIEW_WIDTH &&
-			y >= getY() && y < getY() + MAP_VIEW_DEPTH);
+    return (x >= getX() && x < getX() + MAP_VIEW_WIDTH &&
+            y >= getY() && y < getY() + MAP_VIEW_DEPTH);
+  }
+
+  inline bool isLocationInLight(int x, int y) {
+    int chunkX = ((x - MAP_OFFSET) / MAP_UNIT) + 1;
+    int chunkY = (y - (MAP_OFFSET + 1)) / MAP_UNIT;
+    return lightMap[chunkX][chunkY];
   }
     
   void draw();

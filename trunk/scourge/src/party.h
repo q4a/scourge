@@ -77,7 +77,7 @@ class Party {
   // because the entire party is dead (the mission failed)
   bool switchToNextLivePartyMember();
 
-  void togglePlayerOnly();
+  void togglePlayerOnly(bool keepTargets = false);
 
   void forceStopRound();
   void toggleRound(bool test);

@@ -1884,6 +1884,7 @@ void Scourge::playRound() {
       Projectile::moveProjectiles(this);
     }
 
+    bool fromBattle = false;
     if(battleRound.size() > 0) {
       // in battle mode
 
@@ -1896,25 +1897,20 @@ void Scourge::playRound() {
             Battle *battle = battleRound[battleTurn];
             if(battle->fightTurn()) {
               battleTurn++;
-
-              // in TB mode, pause before next player's turn
-              if(battleTurn < (int)battleRound.size() &&
-                 !battleRound[battleTurn]->getCreature()->isMonster() &&
-                 getUserConfiguration()->isBattleTurnBased()) 
-                party->toggleRound(true);
             }
           } else {
+            battleTurn = 0;
             battleRound.clear();
             cerr << "ROUND ENDS" << endl;
             cerr << "----------------------------------" << endl;
-
-            // enter group mode
-            if(party->isPlayerOnly()) party->togglePlayerOnly();
+            fromBattle = true;
           }
         }
       }
+    } 
 
-    } else {
+
+    if(battleRound.size() == 0) {
       // set up battles
       battleCount = 0;
       
@@ -1929,6 +1925,7 @@ void Scourge::playRound() {
       for(int i = 0; i < session->getCreatureCount(); i++) {
         if(!session->getCreature(i)->getStateMod(Constants::dead) && 
            map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+           map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
            (session->getCreature(i)->hasTarget() || 
             session->getCreature(i)->getAction() > -1)) {
           battle[battleCount++] = session->getCreature(i)->getBattle();
@@ -1941,15 +1938,15 @@ void Scourge::playRound() {
         for(int i = 0; i < party->getPartySize(); i++) {
           if(!party->getParty(i)->getStateMod(Constants::dead) && 
              !(party->getParty(i)->hasTarget() || 
-               party->getParty(i)->getAction() > -1) &&
-             party->getParty(i)->getSelX() > -1) {
+               party->getParty(i)->getAction() > -1)) {
             battle[battleCount++] = party->getParty(i)->getBattle();
           }
         }
         for(int i = 0; i < session->getCreatureCount(); i++) {
           if(!session->getCreature(i)->getStateMod(Constants::dead) && 
              !session->getCreature(i)->getTargetCreature() &&
-             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
+             map->isLocationVisible(session->getCreature(i)->getX(), session->getCreature(i)->getY()) &&
+             map->isLocationInLight(session->getCreature(i)->getX(), session->getCreature(i)->getY())) {
             battle[battleCount++] = session->getCreature(i)->getBattle();
           }
         }
@@ -1960,17 +1957,20 @@ void Scourge::playRound() {
         cerr << "++++++++++++++++++++++++++++++++++" << endl;
         cerr << "ROUND STARTS" << endl;
 
-        // enter non-group mode
-        if(!party->isPlayerOnly()) party->togglePlayerOnly();
+        groupButton->setVisible(false);
 
-        // in TB mode, pause before first player's turn
-        if(getUserConfiguration()->isBattleTurnBased() &&
-           !battleRound[battleTurn]->getCreature()->isMonster()) party->toggleRound(true);
-      
       } else {
 
         // not in battle
-        
+
+        // go back to real-time, group-mode
+        if(fromBattle) {
+          if(party->isPlayerOnly()) party->togglePlayerOnly();
+          party->setPlayer(0);
+          groupButton->setVisible(true);
+          party->setTargetCreature(NULL);
+        }
+       
         // change animation if needed
         for(int i = 0; i < party->getPartySize(); i++) {                            
           if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {

@@ -139,7 +139,7 @@ void Party::setPlayer(int n) {
   // init the rest of the party
   int count = 1;
   for(int i = 0; i < getPartySize(); i++) {
-	if(i != n) party[i]->setNextDontMove(player, count++);
+    if(i != n) party[i]->setNextDontMove(player, count++);
   }
 
   //  move = 0;
@@ -419,14 +419,14 @@ void Party::setFormation(int formation) {
   session->getGameAdapter()->setFormationUI(formation, !isPlayerOnly());
 }
 
-void Party::togglePlayerOnly() {
+void Party::togglePlayerOnly(bool keepTargets) {
   player_only = (player_only ? false : true);
   // in group mode everyone hunts the same creature
-  if(!player_only) {
-	for(int i = 0; i < getPartySize(); i++) {
-	  if(party[i] != player) 
-		party[i]->setTargetCreature(player->getTargetCreature());
-	}
+  if(!player_only && !keepTargets) {
+    for(int i = 0; i < getPartySize(); i++) {
+      if(party[i] != player) 
+        party[i]->setTargetCreature(player->getTargetCreature());
+    }
   }
   if(player_only)
     session->getMap()->addDescription(Constants::getMessage(Constants::SINGLE_MODE), 0.5f, 0.5f, 1.0f);

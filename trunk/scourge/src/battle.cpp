@@ -17,9 +17,9 @@
 
 #include "battle.h"
 
-#define DEBUG_BATTLE
-#define GOD_MODE 1
-#define MONSTER_IMORTALITY 1
+//#define DEBUG_BATTLE
+#define GOD_MODE 0
+#define MONSTER_IMORTALITY 0
 
 enum {
   NO_ACTION = 0,
@@ -48,13 +48,17 @@ Battle::Battle(Session *session, Creature *creature) {
   this->empty = false;
 
 
-
-  this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
-  this->ignore = false;
-  this->projectileHit = false;
+  reset();
 }
 
 Battle::~Battle() {
+}
+
+void Battle::reset() {
+  this->steps = 0;
+  this->ap = 10; // FIXME: should depend on dexterity, speed, etc.
+  this->projectileHit = false;
+  this->paused = false;
 }
 
 void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
@@ -201,12 +205,39 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
 bool Battle::fightTurn() {
 
   // done with this creature's turn
-  if(ignore || !ap) {
+  if(ap <= 0) {
+    reset();
     creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
     return true;
   }
 
   cerr << "TURN:" << getCreature()->getName() << endl;
+
+  // ---------------------------------------------
+  // go to single-player mode
+  if(!session->getParty()->isPlayerOnly()) 
+    session->getParty()->togglePlayerOnly(true);
+
+  // pause if this is a player's first step
+  if(!creature->isMonster() &&
+     !steps && 
+     !paused &&
+     session->getUserConfiguration()->isBattleTurnBased()) {
+    cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
+    
+    // center on player
+    session->getParty()->setPlayer(creature);
+    session->getMap()->refresh();
+    session->getMap()->center(creature->getX(), creature->getY(), true);
+    
+    // pause the game
+    session->getParty()->toggleRound(true);
+    paused = true;
+    return false;
+  }  
+  steps++;
+  paused = false;
+  // ---------------------------------------------
 
   dist = creature->getDistanceToTarget();
   item = creature->getBestWeapon(dist);
@@ -249,8 +280,9 @@ bool Battle::fightTurn() {
           creature->getShape()->setCurrentAnimation((int)MD2_ATTACK, true);	  
           ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
         } else {
+          cerr << "\t\tNo action." << endl;
           creature->getShape()->setCurrentAnimation((int)MD2_STAND, true);
-          return true;
+          ap--;
         }
       } else {
         creature->getShape()->setCurrentAnimation((int)MD2_RUN, true);
@@ -264,7 +296,6 @@ bool Battle::fightTurn() {
                              true);
         }
         creature->moveToLocator(session->getMap());
-        dist = creature->getDistanceToTarget();
         ap--;
       }
     } else {
@@ -291,6 +322,10 @@ bool Battle::fightTurn() {
                            creature->getTargetCreature()->getY(),
                            true);
         initTurn();
+      } else {
+        creature->setTargetCreature(NULL);
+        cerr << "\t\tCan't find new target." << endl;
+        return true;
       }
     }
   } else {
@@ -446,6 +481,23 @@ void Battle::launchProjectile() {
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
+  
+  Creature *oldTarget = proj->getCreature()->getTargetCreature();
+  proj->getCreature()->setTargetCreature(target);
+  Battle *battle = proj->getCreature()->getBattle();
+  if(proj->getItem()) {
+    battle->initItem(proj->getItem());
+  } else if(proj->getSpell()) {
+    battle->spell = proj->getSpell();
+  }
+  battle->hitWithItem();
+  proj->getCreature()->cancelTarget();
+  proj->getCreature()->setTargetCreature(oldTarget);
+
+
+
+
+  /*
   // configure a turn
   Creature *oldTarget = proj->getCreature()->getTargetCreature();
   proj->getCreature()->setTargetCreature(target);
@@ -463,6 +515,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   delete battle;
   proj->getCreature()->cancelTarget();
   proj->getCreature()->setTargetCreature(oldTarget);
+  */
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y) {
