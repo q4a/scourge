@@ -24,6 +24,8 @@
 #ifndef C3DSSHAPE_H
 #define C3DSSHAPE_H
 
+//#define DEBUG_3DS
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,6 +36,7 @@
 #include "constants.h"
 #include "glshape.h"
 #include "3ds.h"
+#include "shapepalette.h"
 
 using namespace std;
 
@@ -52,18 +55,19 @@ private:
   // We want the default drawing mode to be normal
   int g_ViewMode;
   float movex, movey, movez;
+  ShapePalette *shapePal;
 
 public: 
-	C3DSShape(char *file_name, float div,
-          GLuint texture[], int width, int depth, int height,
-          char *name,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
-
-	C3DSShape(char *file_name, float div,
-          GLuint texture[], int width, int depth, int height,
-          char *name, char **description, int descriptionCount,
-          Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
-	~C3DSShape();
+  C3DSShape(char *file_name, float div, ShapePalette *shapePal,
+			GLuint texture[], int width, int depth, int height,
+			char *name,
+			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+  
+  C3DSShape(char *file_name, float div, ShapePalette *shapePal,
+			GLuint texture[], int width, int depth, int height,
+			char *name, char **description, int descriptionCount,
+			Uint32 color, GLuint display_list, Uint8 shapePalIndex=0);
+  ~C3DSShape();
 
   void draw();
   
@@ -74,7 +78,7 @@ public:
   void endBlending();
 
 protected:
-  void commonInit(char *file_name, float div);
+  void commonInit(char *file_name, float div, ShapePalette *shapePal);
 };
 
 #endif

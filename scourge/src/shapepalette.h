@@ -42,7 +42,14 @@ private:
   GLShape *item_shapes[256];  
   GLuint display_list, creature_display_list_start, item_display_list_start, max_display_list;
   GLuint gui_texture;
-  GLuint textures[100]; // store textures
+  
+  typedef struct _Texture {
+	GLuint id;
+	char filename[80];
+  } Texture;
+
+  Texture textures[100]; // store textures
+  int texture_count;
   GLShape *shapeNameArray[256];
 
   GLuint ns_tex[3];
@@ -102,6 +109,8 @@ public:
   inline Sint16 getWallHeight() { return wallHeight; }
 
   inline GLuint getGuiTexture() { return gui_texture; }
+
+  GLuint findTextureByName(const char *filename);
 
 protected:
   GLuint loadGLTextures(char *fileName);

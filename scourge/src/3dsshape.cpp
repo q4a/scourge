@@ -17,24 +17,32 @@
   
 #include "3dsshape.h"
 
-C3DSShape::C3DSShape(char *file_name, float div,
+C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
                    GLuint texture[],
                    int width, int depth, int height,
                    char *name,
                    Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
   // passing 0 for texture causes glshape to not init
+#ifdef DEBUG_3DS
+  GLShape(texture, width, depth, height, name, color, display_list, shapePalIndex) {
+#else
   GLShape(0, width, depth, height, name, color, display_list, shapePalIndex) {
-  commonInit(file_name, div);    
+#endif
+  commonInit(file_name, div, shapePal);    
 }
 
-C3DSShape::C3DSShape(char *file_name, float div,
+C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
                    GLuint texture[],
                    int width, int depth, int height,
                    char *name, char **description, int descriptionCount,
                    Uint32 color, GLuint display_list, Uint8 shapePalIndex) :
   // passing 0 for texture causes glshape to not init
+#ifdef DEBUG_3DS
+  GLShape(texture, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
+#else
   GLShape(0, width, depth, height, name, description, descriptionCount, color, display_list, shapePalIndex) {
-  commonInit(file_name, div);    
+#endif
+  commonInit(file_name, div, shapePal);    
 }
 
 C3DSShape::~C3DSShape() {
@@ -51,10 +59,12 @@ C3DSShape::~C3DSShape() {
   }
 }
 
-void C3DSShape::commonInit(char *file_name, float div) {
+void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal) {
+  fprintf(stderr, "%s\n", file_name);
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
   this->div = div;
+  this->shapePal = shapePal;
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
@@ -69,10 +79,17 @@ void C3DSShape::commonInit(char *file_name, float div) {
   for(int i = 0; i < g_3DModel.numOfMaterials; i++) {
 	// Check to see if there is a file name to load in this material
 	if(strlen(g_3DModel.pMaterials[i].strFile) > 0) {
+
+
 	  // Use the name of the texture file to load the bitmap, with a texture ID (i).
 	  // We pass in our global texture array, the name of the texture, and an ID to reference it. 
 	  fprintf(stderr, "Loading texture: %s\n", g_3DModel.pMaterials[i].strFile);
-	  CreateTexture((GLuint*)g_Texture, g_3DModel.pMaterials[i].strFile, i);           
+	  //CreateTexture((GLuint*)g_Texture, g_3DModel.pMaterials[i].strFile, i);           
+
+
+	  // instead of loading the texture, get one of the already loaded textures
+	  g_Texture[i] = shapePal->findTextureByName(g_3DModel.pMaterials[i].strFile);
+	  fprintf(stderr, "\t%s\n", (g_Texture[i] ? "FOUND IT" : "NOT FOUND"));
 	}
 	// Set the texture ID for this material
 	g_3DModel.pMaterials[i].texureId = i;
@@ -97,21 +114,25 @@ void C3DSShape::commonInit(char *file_name, float div) {
       }
     }
   }
-  movex = maxx - minx;
-  movey = maxy - miny;
-  movez = maxz - minz;
+  fprintf(stderr, "x=(%f,%f) y=(%f,%f) z=(%f,%f)\n",
+		  minx, maxx, miny, maxy, minz, maxz);
+  movex = minx;
+  movey = miny;
+  movez = minz;
 }
 
 void C3DSShape::draw() {
 
-
-
-  //FIXME: fix size/position and color (why blue?)
-  //  GLShape::draw();
+#ifdef DEBUG_3DS
+  GLShape::draw();
+#endif
 
   glPushMatrix();
-  glScalef( div, div, div );
-  glTranslatef( -movex, movey, movez );
+  //  glScalef( div, div, div );
+  //  glTranslatef( -movex, -movey, -movez );
+  glTranslatef(-movex / 2.0f * div, 0.0f, 0.0f);
+  glTranslatef(0.0f, movey * div + (getDepth() / DIV), 0.0f);
+  glTranslatef(0.0f, 0.0f, -movez / 2.0f);
 
   // I am going to attempt to explain what is going on below up here as not to clutter the 
   // code below.  We have a model that has a certain amount of objects and textures.  We want 
@@ -186,7 +207,9 @@ void C3DSShape::draw() {
 		}
 		
 		// Pass in the current vertex of the object (Corner of current face)
-		glVertex3f(pObject->pVerts[ index ].x, pObject->pVerts[ index ].y, pObject->pVerts[ index ].z);
+		glVertex3f(pObject->pVerts[ index ].x * div, 
+				   pObject->pVerts[ index ].y * div, 
+				   pObject->pVerts[ index ].z * div);
 	  }
 	}
 	

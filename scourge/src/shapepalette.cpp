@@ -50,6 +50,25 @@ int ShapePalette::torchDescriptionCount = 3;
 
 ShapePalette::ShapePalette(){
 
+  // FIXME: cleaner notation for this
+  texture_count = 0;
+  strcpy(textures[texture_count++].filename, "front.bmp");
+  strcpy(textures[texture_count++].filename, "top.bmp");
+  strcpy(textures[texture_count++].filename, "side.bmp");
+  strcpy(textures[texture_count++].filename, "wood.bmp");
+  strcpy(textures[texture_count++].filename, "floor.bmp");
+  strcpy(textures[texture_count++].filename, "floor2.bmp");
+  strcpy(textures[texture_count++].filename, "woodtop.bmp");
+  strcpy(textures[texture_count++].filename, "fronttop.bmp");
+  strcpy(textures[texture_count++].filename, "light.bmp");
+  strcpy(textures[texture_count++].filename, "flame.bmp");
+  strcpy(textures[texture_count++].filename, "doorNS.bmp");
+  strcpy(textures[texture_count++].filename, "doorEW.bmp");
+  strcpy(textures[texture_count++].filename, "bookshelf.bmp");
+  strcpy(textures[texture_count++].filename, "chestfront.bmp");
+  strcpy(textures[texture_count++].filename, "chestside.bmp");
+  strcpy(textures[texture_count++].filename, "chesttop.bmp");
+
   // set up the cursor
   setupAlphaBlendedBMP("data/cursor.bmp", &cursor, &cursorImage);
 
@@ -196,28 +215,28 @@ void ShapePalette::initShapes() {
   ((GLShape*)shapes[Constants::ROOM_FLOOR_TILE_INDEX])->setSkipSide( 1 << GLShape::LEFT_RIGHT_SIDE );
 
 	shapes[Constants::LAMP_NORTH_INDEX] =
-    new GLTorch(notex, textures[9],
+    new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
                 Constants::LAMP_NORTH_INDEX, torchback, Constants::NORTH);
 	shapes[Constants::LAMP_SOUTH_INDEX] =
-    new GLTorch(notex, textures[9],
+    new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
                 Constants::LAMP_SOUTH_INDEX, torchback, Constants::SOUTH);
 	shapes[Constants::LAMP_WEST_INDEX] =
-    new GLTorch(notex, textures[9],
+    new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
                 Constants::LAMP_WEST_INDEX, torchback, Constants::WEST);
 	shapes[Constants::LAMP_EAST_INDEX] =
-    new GLTorch(notex, textures[9],
+    new GLTorch(notex, textures[9].id,
                 1, 1, 2,
                 "LAMP", torchDescription, torchDescriptionCount,
                 (debug ? 0xff0000ff : 0xf0f0ffff),
@@ -292,8 +311,8 @@ void ShapePalette::initShapes() {
   item_display_list_start = display_list + (count * 3);                                
 
 	item_shapes[Constants::SWORD_INDEX] =
-	  new C3DSShape("data/objects/sword.3ds", 0.3f,
-					notex, 2, 4, 1,
+	  new C3DSShape("data/objects/sword.3ds", 0.25f, this,
+					notex, 1, 3, 1,
 					"SWORD",
 					0xffffffff,
 					display_list + (count++ * 3), Constants::SWORD_INDEX);
@@ -326,26 +345,22 @@ void ShapePalette::initShapes() {
   max_display_list = display_list + (count * 3);
 }
 
+GLuint ShapePalette::findTextureByName(const char *filename) {
+  for(int i = 0; i < texture_count; i++) {
+	if(!strcmp(textures[i].filename, filename)) return textures[i].id;
+  }
+  return 0;
+}
+
 void ShapePalette::loadTextures() {
   gui_texture = loadGLTextures("data/gui.bmp");
 
-  textures[0] = loadGLTextures("data/front.bmp");
-  textures[1] = loadGLTextures("data/top.bmp");
-  textures[2] = loadGLTextures("data/side.bmp");
-  textures[3] = loadGLTextures("data/wood.bmp");
-  textures[4] = loadGLTextures("data/floor.bmp");
-  textures[5] = loadGLTextures("data/floor2.bmp");
-  textures[6] = loadGLTextures("data/woodtop.bmp");
-  textures[7] = loadGLTextures("data/fronttop.bmp");
-  textures[8] = loadGLTextures("data/light.bmp");
-  textures[9] = loadGLTextures("data/flame.bmp");
-  textures[10] = loadGLTextures("data/doorNS.bmp");
-  textures[11] = loadGLTextures("data/doorEW.bmp");
-  textures[12] = loadGLTextures("data/bookshelf.bmp");
-  textures[13] = loadGLTextures("data/chestfront.bmp");
-  textures[14] = loadGLTextures("data/chestside.bmp");
-  textures[15] = loadGLTextures("data/chesttop.bmp");
-  
+  char name[120];
+  for(int i = 0; i < texture_count; i++) {
+	strcpy(name, "data/");
+	strcat(name, textures[i].filename);
+	textures[i].id = loadGLTextures(name);
+  }  
 
   // set up the scourge
   cloud = loadGLTextures("data/cloud.bmp");
@@ -353,53 +368,53 @@ void ShapePalette::loadTextures() {
   torchback = loadGLTextures("data/torchback.bmp");
 
 
-  ns_tex[GLShape::FRONT_SIDE] = textures[0];
-  ns_tex[GLShape::TOP_SIDE] = textures[7];
-  ns_tex[GLShape::LEFT_RIGHT_SIDE] = textures[2];
+  ns_tex[GLShape::FRONT_SIDE] = textures[0].id;
+  ns_tex[GLShape::TOP_SIDE] = textures[7].id;
+  ns_tex[GLShape::LEFT_RIGHT_SIDE] = textures[2].id;
 
-  ew_tex[GLShape::FRONT_SIDE] = textures[2];
-  ew_tex[GLShape::TOP_SIDE] = textures[7];
-  ew_tex[GLShape::LEFT_RIGHT_SIDE] = textures[0];
+  ew_tex[GLShape::FRONT_SIDE] = textures[2].id;
+  ew_tex[GLShape::TOP_SIDE] = textures[7].id;
+  ew_tex[GLShape::LEFT_RIGHT_SIDE] = textures[0].id;
 
-  wood_tex[GLShape::FRONT_SIDE] = textures[3];
-  wood_tex[GLShape::TOP_SIDE] = textures[6];
-  wood_tex[GLShape::LEFT_RIGHT_SIDE] = textures[3];
+  wood_tex[GLShape::FRONT_SIDE] = textures[3].id;
+  wood_tex[GLShape::TOP_SIDE] = textures[6].id;
+  wood_tex[GLShape::LEFT_RIGHT_SIDE] = textures[3].id;
 
   floor_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
-  floor_tex[GLShape::TOP_SIDE] = textures[4];
+  floor_tex[GLShape::TOP_SIDE] = textures[4].id;
   floor_tex[GLShape::LEFT_RIGHT_SIDE] = 0; //textures[4];
 
   floor2_tex[GLShape::FRONT_SIDE] = 0; //textures[4];
-  floor2_tex[GLShape::TOP_SIDE] = textures[5];
+  floor2_tex[GLShape::TOP_SIDE] = textures[5].id;
   floor2_tex[GLShape::LEFT_RIGHT_SIDE] = 0; //textures[4];
 
-  lamptex[GLShape::FRONT_SIDE] = textures[8];
+  lamptex[GLShape::FRONT_SIDE] = textures[8].id;
   lamptex[GLShape::TOP_SIDE] = 0;
   lamptex[GLShape::LEFT_RIGHT_SIDE] = 0;
 
-  doorNStex[GLShape::FRONT_SIDE] = textures[10];
-  doorNStex[GLShape::TOP_SIDE] = textures[6];
-  doorNStex[GLShape::LEFT_RIGHT_SIDE] = textures[6];
+  doorNStex[GLShape::FRONT_SIDE] = textures[10].id;
+  doorNStex[GLShape::TOP_SIDE] = textures[6].id;
+  doorNStex[GLShape::LEFT_RIGHT_SIDE] = textures[6].id;
 
-  doorEWtex[GLShape::FRONT_SIDE] = textures[6];
-  doorEWtex[GLShape::TOP_SIDE] = textures[6];
-  doorEWtex[GLShape::LEFT_RIGHT_SIDE] = textures[11];
+  doorEWtex[GLShape::FRONT_SIDE] = textures[6].id;
+  doorEWtex[GLShape::TOP_SIDE] = textures[6].id;
+  doorEWtex[GLShape::LEFT_RIGHT_SIDE] = textures[11].id;
 
-  shelftex[GLShape::FRONT_SIDE] = textures[6];
-  shelftex[GLShape::TOP_SIDE] = textures[6];
-  shelftex[GLShape::LEFT_RIGHT_SIDE] = textures[12];
+  shelftex[GLShape::FRONT_SIDE] = textures[6].id;
+  shelftex[GLShape::TOP_SIDE] = textures[6].id;
+  shelftex[GLShape::LEFT_RIGHT_SIDE] = textures[12].id;
 
-  chesttex[GLShape::FRONT_SIDE] = textures[14];
-  chesttex[GLShape::TOP_SIDE] = textures[15];
-  chesttex[GLShape::LEFT_RIGHT_SIDE] = textures[13];
+  chesttex[GLShape::FRONT_SIDE] = textures[14].id;
+  chesttex[GLShape::TOP_SIDE] = textures[15].id;
+  chesttex[GLShape::LEFT_RIGHT_SIDE] = textures[13].id;
 
-  shelftex2[GLShape::FRONT_SIDE] = textures[12];
-  shelftex2[GLShape::TOP_SIDE] = textures[6];
-  shelftex2[GLShape::LEFT_RIGHT_SIDE] = textures[6];
+  shelftex2[GLShape::FRONT_SIDE] = textures[12].id;
+  shelftex2[GLShape::TOP_SIDE] = textures[6].id;
+  shelftex2[GLShape::LEFT_RIGHT_SIDE] = textures[6].id;
 
-  chesttex2[GLShape::FRONT_SIDE] = textures[13];
-  chesttex2[GLShape::TOP_SIDE] = textures[15];
-  chesttex2[GLShape::LEFT_RIGHT_SIDE] = textures[14];
+  chesttex2[GLShape::FRONT_SIDE] = textures[13].id;
+  chesttex2[GLShape::TOP_SIDE] = textures[15].id;
+  chesttex2[GLShape::LEFT_RIGHT_SIDE] = textures[14].id;
 
   
   notex[0] = 0;
