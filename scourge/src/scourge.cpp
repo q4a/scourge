@@ -2617,10 +2617,8 @@ void Scourge::createPartyUI() {
                         getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
                         Scourge::PARTY_GUI_WIDTH, 
                         Scourge::PARTY_GUI_HEIGHT, 
-                        version, 
-                        getShapePalette()->getGuiTexture(), false,
-                        Window::BASIC_WINDOW,
-                        getShapePalette()->getGuiTexture2() );
+                        version, false, Window::BASIC_WINDOW,
+                        "default" );
   cards = new CardContainer(mainWin);  
 
   roundButton = cards->createButton( 5, 0, 90, 20, "Real-Time", MAX_SIZE );
@@ -2659,25 +2657,7 @@ void Scourge::createPartyUI() {
     cards->addWidget( playerInfo[i], MAX_SIZE );
   }
 
-  /*
-  int messageListY = playerButtonY + playerButtonHeight + 5;
-  messageList = new ScrollingList( offsetX, messageListY, 
-                                   Scourge::PARTY_GUI_WIDTH - offsetX, 
-                                   PARTY_GUI_HEIGHT - messageListY - Window::BOTTOM_HEIGHT - Window::TOP_HEIGHT, 
-                                   getShapePalette()->getHighlightTexture() );
-  cards->addWidget( messageList, MAX_SIZE );
-  */
-
   cards->setActiveCard( MAX_SIZE );   
-
-
-  /*
-  inventoryButton = cards->createButton( 0, 0, 60, 25, "Party Info", MAX_SIZE );
-  endTurnButton = cards->createButton( 60, 0, 120, 25, "End Turn", MAX_SIZE );
-  optionsButton = cards->createButton( 0, 25,  60, 50, "Options", MAX_SIZE );
-  quitButton = cards->createButton( 60, 25,  120, 50, "Quit", MAX_SIZE );
-  roundButton = cards->createButton( 0, 50,  120, 75, "Real-Time", MAX_SIZE );
-  */
   
   //int lowerRowHeight = 20;
   /*
@@ -2760,9 +2740,12 @@ void Scourge::drawWidget(Widget *w) {
     glPushMatrix();
     glEnable( GL_TEXTURE_2D );
     glColor4f( 1, 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
+    if( p->getStateMod( Constants::dead ) ) {
+      glBindTexture( GL_TEXTURE_2D, getShapePalette()->getDeathPortraitTexture() );
+    } else {
+      glBindTexture( GL_TEXTURE_2D, getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
+    }
     int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
-    //glTranslatef( 5, 5, 0 );
     glBegin( GL_QUADS );
     glNormal3f( 0, 0, 1 );
     glTexCoord2f( 0, 0 );
@@ -2775,11 +2758,37 @@ void Scourge::drawWidget(Widget *w) {
     glVertex2i( 0, portraitSize );
     glEnd();
     glDisable( GL_TEXTURE_2D );
+
+    bool shade = false;
+//    if( p->getStateMod( Constants::dead ) ) {
+//      glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+//      shade = true;
+//    } else 
+    if( p->getStateMod( Constants::possessed ) ) {
+      glColor4f( 1.0f, 0, 0, 0.5f );
+      shade = true;
+    } else if( p->getStateMod( Constants::invisible ) ) {
+      glColor4f( 0, 0.75f, 1.0f, 0.5f );
+      shade = true;
+    }
+    if( shade ) {
+      glEnable( GL_BLEND );
+      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+      glBegin( GL_QUADS );
+      glVertex2i( 0, 0 );
+      glVertex2i( portraitSize, 0 );
+      glVertex2i( portraitSize, portraitSize );
+      glVertex2i( 0, portraitSize );
+      glEnd();
+      glDisable( GL_BLEND );
+    }
+
     glPopMatrix();
 
-    // FIXME: use theme colors
     Util::drawBar(5, 10, ((Scourge::PARTY_GUI_WIDTH - 120) / 4) - 10,
-                   (float)p->getHp(), (float)p->getMaxHp());
+                  (float)p->getHp(), (float)p->getMaxHp(), 
+                  -1, -1, -1, true,
+                  mainWin->getTheme() );
 
     // show stat mods
     glEnable(GL_TEXTURE_2D);

@@ -99,7 +99,8 @@ public:
 
   // draw a percentage bar
   static void drawBar(int x, int y, float barLength, float value, float maxValue,
-					  float red=-1, float green=-1, float blue=-1, float gradient=true);
+                      float red=-1, float green=-1, float blue=-1, float gradient=true, 
+                      GuiTheme *theme=NULL);
   
 };
 
