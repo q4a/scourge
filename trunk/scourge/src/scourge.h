@@ -197,6 +197,10 @@ public:
   void movePlayers();
   // move a creature
   void moveMonster(Creature *monster);
+
+  void toggleRound();
+  void togglePlayerOnly();
+
 };
 
 #endif

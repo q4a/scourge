@@ -19,6 +19,7 @@
 #define MONSTER_H
 
 #include "../constants.h"
+#include "rpgitem.h"
 
 /**
   *@author Gabor Torok
@@ -34,6 +35,8 @@ private:
   int level;
   Uint8 shapeIndex;
   char description[300];
+  RpgItem *weapon[10], *armor[10], *item[10]; // starting equipment
+  int money;
 
   static Monster *monsters[MAX_MONSTER_LEVEL][MAX_MONSTER_COUNT];
   static int monsterCount[MAX_MONSTER_LEVEL];

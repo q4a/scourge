@@ -68,6 +68,7 @@ class Creature {
   int selX, selY;
   int bestPathPos;
   vector<Location> bestPath;
+  Creature *targetCreature;
   
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
@@ -100,6 +101,9 @@ class Creature {
   inline bool isMonster() { return (monster ? TRUE : FALSE); }
   
   inline GLUquadric *getQuadric() { return quadric; }
+
+  inline void setTargetCreature(Creature *c) { targetCreature = c; }
+  inline Creature *getTargetCreature() { return targetCreature; }
   
   inline void setMotion(int motion) { this->motion = motion; }
   inline int getMotion() { return this->motion; }
@@ -160,7 +164,12 @@ class Creature {
   // return the equip index (inventory location) for an inventory index
   int getEquippedIndex(int index);
   bool isItemInInventory(Item *item);
+  // return the item at location Character::INVENTORY_LEFT_HAND, etc.
+  Item *getItemAtLocation(int location);
 
+  // return the best equipped weapon that works on this distance, 
+  // or NULL if none are available
+  Item *getBestWeapon(float dist);
 
   inline char *getName() { return name; }
   inline Character *getCharacter() { return character; }  
@@ -194,7 +203,7 @@ class Creature {
 
  protected:
   void commonInit();
-
+  void monsterInit();
 };
 
 

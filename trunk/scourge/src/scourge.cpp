@@ -123,6 +123,7 @@ void Scourge::startMission() {
   startRound = false;
   setPlayer(getParty(0));
   getPlayer()->moveTo(startx, starty, 0);
+  getPlayer()->setTargetCreature(NULL);
   map->setCreature(startx, starty, 0, getPlayer()); 
 
   // init the rest of the party
@@ -327,9 +328,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  setPlayer(3);
     }
     else if(ea == SET_PLAYER_ONLY){
-        player_only = (player_only ? false : true);
-		move = 0;
-		for(int i = 0; i < 4; i++) party[i]->setSelXY(-1, -1);
+	  togglePlayerOnly();
     }    
     else if(ea == BLEND_A){
         blendA++; if(blendA >= 11) blendA = 0;
@@ -429,7 +428,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         map->setZoomOut(false);
     }
 	else if(ea == START_ROUND) {
-	  startRound = true;
+	  toggleRound();
 	}
     break;
   default: break;
@@ -464,30 +463,47 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   Uint16 mapx, mapy, mapz;
   if(button == SDL_BUTTON_LEFT) {
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-
+	
 	// clicking on a creature
 	if(!movingItem && mapx < MAP_WIDTH) {
-		Location *loc = map->getLocation(mapx, mapy, mapz);
-		if(loc && loc->creature) {
-			if(loc->creature->isMonster()) {
-				// fight/talk/trade?
-			} else {
-				// select player
-				for(int i = 0; i < 4; i++) {
-					if(party[i] == loc->creature) {
-						setPlayer(i);
-						return;
-					}
-				}
+	  Location *loc = map->getLocation(mapx, mapy, mapz);
+	  if(loc && loc->creature) {
+		if(loc->creature->isMonster()) {
+		  // follow this creature
+		  player->setTargetCreature(loc->creature);
+		  if(!player_only) {
+			startRound = true;
+			for(int i = 0; i < 4; i++) 
+			  party[i]->setTargetCreature(loc->creature);
+		  }
+		  return;
+		} else {
+		  // select player
+		  for(int i = 0; i < 4; i++) {
+			if(party[i] == loc->creature) {
+			  setPlayer(i);
+			  return;
 			}
+		  }
 		}
+	  }
 	}	
 
+	// click on an item
 	if(mapx > MAP_WIDTH) getMapXYAtScreenXY(x, y, &mapx, &mapy);
 	if(useItem(mapx, mapy)) return;
+
+	// click on the map
 	getMapXYAtScreenXY(x, y, &mapx, &mapy);
 	player->setSelXY(mapx, mapy);
+	if(player_only) {
+	  player->setTargetCreature(NULL);
+	} else {
+	  for(int i = 0; i < 4; i++) party[i]->setTargetCreature(NULL);
+	}
 	if(!player_only) startRound = true;
+
+
   } else if(button == SDL_BUTTON_RIGHT) {
 	getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
 	if(mapx < MAP_WIDTH) {    
@@ -797,12 +813,25 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == player4Button) {
 	setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
   } else if(widget == groupButton) {
-	player_only = (player_only ? false : true);
-	for(int i = 0; i < 4; i++) party[i]->setSelXY(-1, -1);
+	togglePlayerOnly();
   } else if(widget == roundButton) {
-	startRound = true;
+	toggleRound();
   }
   return false;
+}
+
+void Scourge::toggleRound() {
+  move = 0;
+  startRound = (startRound ? false : true);
+}
+
+void Scourge::togglePlayerOnly() {
+  player_only = (player_only ? false : true);
+  move = 0;
+  for(int i = 0; i < 4; i++) {
+	party[i]->setSelXY(-1, -1);
+	party[i]->setTargetCreature(NULL);
+  }
 }
 
 void Scourge::createUI() {
@@ -823,7 +852,7 @@ void Scourge::createUI() {
   mainWin->addWidget((Widget*)optionsButton);
   quitButton = new Button( 0, 50,  100, 75, strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
-  roundButton = new Button( 0, 75,  100, 100, strdup("Start Round") );
+  roundButton = new Button( 0, 75,  100, 100, strdup("Start/Stop Round") );
   mainWin->addWidget((Widget*)roundButton);
 
 
@@ -856,6 +885,14 @@ void Scourge::createUI() {
 void Scourge::playRound() {
   // move the player's selX,selY in a direction as specified by keystroke
   handleKeyboardMovement();
+
+  // hound your targets
+  for(int i = 0; i < 4; i++) {
+	if(party[i]->getTargetCreature()) {
+	  party[i]->setSelXY(party[i]->getTargetCreature()->getX(),
+						 party[i]->getTargetCreature()->getY());
+	}
+  }
   
   // round starts if:
   // -in group mode a move was made
@@ -889,6 +926,33 @@ void Scourge::playRound() {
 		moveMonster(creatures[i]);
 	  }
 	}
+
+	// attack targeted monster if close enough
+	char message[200];
+	for(int i = 0; i < 4; i++) {
+	  if(party[i]->getTargetCreature()) {
+		float dist = Util::distance(party[i]->getX(), party[i]->getY(), 
+									party[i]->getShape()->getWidth(),
+									party[i]->getShape()->getDepth(),
+									party[i]->getTargetCreature()->getX(),
+									party[i]->getTargetCreature()->getY(),
+									party[i]->getTargetCreature()->getShape()->getWidth(),
+									party[i]->getTargetCreature()->getShape()->getDepth());
+		Item *item = party[i]->getBestWeapon(dist);
+		if(item) {
+		  sprintf(message, "%s attacks %s with %s!", 
+				  party[i]->getName(), 
+				  party[i]->getTargetCreature()->getName(),
+				  item->getRpgItem()->getName());
+		  map->addDescription(strdup(message));
+		} else if(dist <= 1.0f) {
+		  sprintf(message, "%s attacks %s with bare hands!", 
+				  party[i]->getName(), 
+				  party[i]->getTargetCreature()->getName());
+		  map->addDescription(strdup(message));		  
+		}
+	  }
+	}
   }
 }
 
@@ -918,6 +982,26 @@ void Scourge::handleKeyboardMovement() {
 	  getPlayer()->setSelXY(getPlayer()->getX() + 1, getPlayer()->getY());
 	else
 	  getPlayer()->setSelXY(getPlayer()->getSelX() + 1, getPlayer()->getSelY());
+  }
+
+  
+  
+  // attacking a creature
+  if(move) {
+	Location *loc = map->getLocation(player->getSelX(), player->getSelY(), 0);
+	if(loc && loc->creature && loc->creature->isMonster()) {
+	  if(!player_only) {
+		for(int i = 0; i < 4; i++) party[i]->setTargetCreature(loc->creature);
+	  } else {
+		player->setTargetCreature(loc->creature);
+	  }
+	} else {
+	  if(!player_only) {
+		for(int i = 0; i < 4; i++) party[i]->setTargetCreature(NULL);
+	  } else {
+		player->setTargetCreature(NULL);
+	  }
+	}
   }
 }
 
@@ -952,7 +1036,11 @@ void Scourge::movePlayers() {
 	// others follow the player
 	for(int t = 0; t < 4; t++) {
 	  if(party[t] != player) {
-		party[t]->follow(map);
+		if(party[t]->getTargetCreature()) {
+		  party[t]->moveToLocator(map, player_only);
+		} else {
+		  party[t]->follow(map);
+		}
 	  }
 	}	
   }
