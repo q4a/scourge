@@ -462,6 +462,21 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(scourge->getMultiplayerDialog()->isVisible()) {
     scourge->getMultiplayerDialog()->handleEvent(widget, event);
+    if(!scourge->getMultiplayerDialog()->isVisible()) {
+      if(scourge->getMultiplayerDialog()->getValue() == MultiplayerDialog::START_SERVER) {
+        value = MULTIPLAYER_START;
+        return true;
+      } else if(scourge->getMultiplayerDialog()->getValue() == MultiplayerDialog::JOIN_SERVER) {
+        if(!(strlen(scourge->getMultiplayerDialog()->getServerName()) &&
+             strlen(scourge->getMultiplayerDialog()->getServerPort()) &&
+             strlen(scourge->getMultiplayerDialog()->getUserName()))) {
+          scourge->showMessageDialog(Constants::getMessage(Constants::JOIN_SERVER_ERROR));
+        } else {
+          value = MULTIPLAYER_START;
+          return true;
+        }
+      }
+    }
     return false;
   }
 

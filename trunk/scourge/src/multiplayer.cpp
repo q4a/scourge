@@ -37,7 +37,7 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
   mainWin->createLabel( 20, 130, strdup("Server port:") );
   serverPort = mainWin->createTextField( 20, 135, 10 );
   mainWin->createLabel( 20, 170, strdup("Username:") );
-  serverPort = mainWin->createTextField( 20, 175, 30 );
+  userName = mainWin->createTextField( 20, 175, 30 );
   
   joinServer = mainWin->createButton( 20, 200, 160, 220, strdup("Join a game"), false );
 }
@@ -45,6 +45,9 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
 MultiplayerDialog::~MultiplayerDialog() {
   delete startServer;
   delete joinServer;
+  delete userName;
+  delete serverName;
+  delete serverPort;
   delete mainWin;
 }
 
@@ -54,6 +57,13 @@ bool MultiplayerDialog::handleEvent(SDL_Event *event) {
 
 bool MultiplayerDialog::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == mainWin->closeButton) mainWin->setVisible(false);
+  if(widget == startServer) {
+    value = START_SERVER;
+    hide();
+  } else if(widget == joinServer) {
+    value = JOIN_SERVER;
+    hide();
+  }
   return false;
 }
 
