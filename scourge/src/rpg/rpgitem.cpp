@@ -162,9 +162,6 @@ RpgItem *RpgItem::getRandomItem(int maxLevel) {
   return getRandomItemFromTypes(maxLevel, types, typeCount);
 }
 
-
-
-
 RpgItem *RpgItem::getRandomItemFromTypes(int maxLevel, int types[], int typeCount) {
 // levels are assumed to be 1-based
   if(maxLevel < 1) {

@@ -327,9 +327,9 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
 
     // some potions
     if(0 == (int)(4.0f * rand()/RAND_MAX))
-      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
+      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
     if(0 == (int)(4.0f * rand()/RAND_MAX))
-      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
+      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
     if(0 == (int)(4.0f * rand()/RAND_MAX))
       pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
 
@@ -439,8 +439,8 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Bastard sword")));
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Horned helmet")));
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Dagger")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Speed")));
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Coordination")));
@@ -450,8 +450,8 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Luck")));
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Piety")));
   pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Potion of Lore")));
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
-  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
+  pc[0]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
 
   pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Smallbow")));
   pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Apple")));
@@ -459,8 +459,8 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Mushroom")));
   pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Big egg")));
   pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Mutton meat")));
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
-  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
+  pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
   pc[1]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
 
   Item *item = session->newItem(RpgItem::getItemByName("Long sword"));
@@ -495,10 +495,10 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Long sword")));
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Wine barrel")));
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Mutton meat")));
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
-  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
+  pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
   pc[2]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));   
   
   // add some scrolls
@@ -516,11 +516,11 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Great sword")));
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Battleaxe")));
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Throwing axe")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
-  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Health potion")));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
+  pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Magic potion")));  
   pc[3]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
   pc[3]->setMp(500);
  

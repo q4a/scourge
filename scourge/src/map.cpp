@@ -854,6 +854,9 @@ void Map::draw() {
 
     if(session->getUserConfiguration()->getStencilbuf() &&
        session->getUserConfiguration()->getStencilBufInitialized()) {
+
+
+      // stencil and draw the floor
       //glDisable(GL_DEPTH_TEST);
       //glColorMask(0,0,0,0);
       glEnable(GL_STENCIL_TEST);

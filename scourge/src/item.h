@@ -46,13 +46,39 @@ class Item {
   Item *containedItems[MAX_CONTAINED_ITEMS];
   int containedItemCount;
   int currentCharges;
-  float weight;
   Spell *spell;
   char itemName[255];
   MagicAttrib *magic;
 
+
+
+
+
+  // Things that change with item level (override rpgitem values)
+  int level;
+  float weight; 
+  int price;
+  int action; // damage, defence, potion str.
+  int speed; // 0-100, 100-slowest, 0-fastest
+  int distance; // how far can it reach?
+  int maxCharges;
+  int duration;
+
+  // former magic attrib stuff
+  int magicLevel;
+  int bonus; // e.g.: sword +2
+  int damageMultiplier; // 2=double damage, 3=triple, etc.
+  char *monsterType; // if not NULL, damageMultiplier only for this type of monster.
+  MagicSchool *school; // magic damage by a school (or NULL if N/A)
+  Dice *magicDamage; 
+  bool cursed;
+  int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
+  bool stateModSet;
+  map<int, int> skillBonus;
+
+
 public:
-  Item(RpgItem *rpgItem);
+  Item(RpgItem *rpgItem, int level=1);
   ~Item();
 
   ItemInfo *save();
@@ -70,7 +96,6 @@ public:
   inline void setBlocking(bool b) { blocking = b; }
   inline int getCurrentCharges() { return currentCharges; }
   inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>rpgItem->getMaxCharges())n=rpgItem->getMaxCharges(); currentCharges = n; } 
-  inline float getWeight() { return weight; }
   inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
   inline void setSpell(Spell *spell) { this->spell = spell; sprintf(this->itemName, "Scroll of %s", spell->getName()); }
   inline Spell *getSpell() { return spell; }
@@ -98,6 +123,36 @@ public:
   void enchant(int level);
 
   inline MagicAttrib *getMagicAttrib() { return magic; }
+
+
+  // level-based attributes
+  inline int getLevel() { return level; }
+  inline float getWeight() { return weight; }
+  inline int getPrice() { return price; }
+  inline int getAction() { return action; }
+  inline int getSpeed() { return speed; }
+  inline int getDistance() { return distance; }
+  inline int getMaxCharges() { return maxCharges; }
+  inline int getDuration() { return duration; }
+
+  inline bool isMagicItem() { return ( magicLevel > -1 ); }
+  inline map<int,int> *getSkillBonusMap() { return &skillBonus; }
+  inline int getSkillBonus(int skill) { return (skillBonus.find(skill) == skillBonus.end() ? 0 : skillBonus[skill]); }
+  inline int getMagicLevel() { return magicLevel; }
+  inline int getBonus() { return bonus; }
+  inline int getDamageMultiplier() { return damageMultiplier; }
+  inline char *getMonsterType() { return monsterType; }
+  inline MagicSchool *getSchool() { return school; }
+  int rollMagicDamage();
+  inline int getMagicResistance() { return (7 * (getLevel() + getMagicLevel())); }
+  char *describeMagicDamage();
+  inline bool isCursed() { return cursed; }
+  inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
+  inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
+
+ protected:
+  void commonInit();
+
 };
 
 #endif

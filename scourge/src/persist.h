@@ -22,7 +22,7 @@
 
 class Session;
 
-#define PERSIST_VERSION 1
+#define PERSIST_VERSION 2
 
 typedef struct _DiceInfo {
   Uint32 version;
@@ -41,6 +41,7 @@ typedef struct _MagicAttribInfo {
 
 typedef struct _ItemInfo {
   Uint32 version;
+  Uint32 level;
   Uint8 rpgItem_name[255];
   Uint8 shape_name[255];
   Uint32 blocking, currentCharges, weight;

@@ -184,6 +184,7 @@ CreatureInfo *Persist::loadCreature(FILE *fp) {
 
 void Persist::saveItem( FILE *fp, ItemInfo *info ) {
   fwrite( &(info->version), sizeof(Uint32), 1, fp );
+  fwrite( &(info->level), sizeof(Uint32), 1, fp );
   fwrite( info->rpgItem_name, sizeof(Uint8), 255, fp );
   fwrite( info->shape_name, sizeof(Uint8), 255, fp );
   fwrite( &(info->blocking), sizeof(Uint32), 1, fp );
@@ -200,6 +201,7 @@ void Persist::saveItem( FILE *fp, ItemInfo *info ) {
 ItemInfo *Persist::loadItem( FILE *fp ) {
   ItemInfo *info = (ItemInfo*)malloc(sizeof(ItemInfo));
   fread( &(info->version), sizeof(Uint32), 1, fp );
+  fread( &(info->level), sizeof(Uint32), 1, fp );
   fread( info->rpgItem_name, sizeof(Uint8), 255, fp );
   fread( info->shape_name, sizeof(Uint8), 255, fp );
   fread( &(info->blocking), sizeof(Uint32), 1, fp );

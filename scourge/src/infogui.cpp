@@ -78,28 +78,54 @@ void InfoGui::describe() {
   item->getDetailedDescription(name);
   nameLabel->setText(name);
 
+  char tmp[1000];
+
   // detailed description
   strcpy(description, item->getRpgItem()->getLongDesc());
   strcat(description, "|");
 
-  char tmp[1000];
-  if(item->getMagicAttrib()) {
+  // basic info
+  sprintf(tmp, "Level: %d|", item->getLevel());
+  strcat( description, tmp );
+  sprintf(tmp, "Weight: %.2f|", item->getWeight());
+  strcat( description, tmp );
+  sprintf(tmp, "Price: %d|", item->getPrice());
+  strcat( description, tmp );
+  sprintf(tmp, "Action: %d|", item->getAction());
+  strcat( description, tmp );
+  sprintf(tmp, "Speed: %d|", item->getSpeed());
+  strcat( description, tmp );
+  sprintf(tmp, "Distance: %d|", item->getDistance());
+  strcat( description, tmp );
+  sprintf(tmp, "Max charges: %d|", item->getMaxCharges());
+  strcat( description, tmp );
+  sprintf(tmp, "Duration: %d|", item->getDuration());
+  strcat( description, tmp );
+
+
+
+  // DEBUG
+  infoDetailLevel = 100;
+  // DEBUG
+
+
+  if(item->isMagicItem()) {
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       sprintf(tmp, "|%d bonus to %s.", 
-              item->getMagicAttrib()->getBonus(),
+              item->getBonus(),
               (item->getRpgItem()->isWeapon() ? "attack and damage" : "armor points"));
       strcat(description, tmp);
     } 
-    if(item->getMagicAttrib()->getSchool() && 
+    if(item->getSchool() && 
        infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       if(item->getRpgItem()->isWeapon()) {
         sprintf(tmp, "|extra damage of %s %s magic.", 
-                item->getMagicAttrib()->describeMagicDamage(),
-                item->getMagicAttrib()->getSchool()->getName());
+                item->describeMagicDamage(),
+                item->getSchool()->getName());
       } else {
         sprintf(tmp, "|extra %d pts of %s magic resistance.", 
-                item->getMagicAttrib()->getMagicResistance(),
-                item->getMagicAttrib()->getSchool()->getName());
+                item->getMagicResistance(),
+                item->getSchool()->getName());
       }
       strcat(description, tmp);
     } 
@@ -107,7 +133,7 @@ void InfoGui::describe() {
       strcpy(tmp, "|Sets state mods:");
       bool found = false;
       for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-        if(item->getMagicAttrib()->isStateModSet(i)) {
+        if(item->isStateModSet(i)) {
           strcat(tmp, " ");
           strcat(tmp, Constants::STATE_NAMES[i]);
           found = true;
@@ -119,7 +145,7 @@ void InfoGui::describe() {
       strcpy(tmp, "|Protects from state mods:");
       bool found = false;
       for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-        if(item->getMagicAttrib()->isStateModProtected(i)) {
+        if(item->isStateModProtected(i)) {
           strcat(tmp, " ");
           strcat(tmp, Constants::STATE_NAMES[i]);
           found = true;
@@ -129,7 +155,7 @@ void InfoGui::describe() {
     } 
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       bool found = false;
-      map<int,int> *skillBonusMap = item->getMagicAttrib()->getSkillBonusMap();
+      map<int,int> *skillBonusMap = item->getSkillBonusMap();
       for(map<int, int>::iterator i=skillBonusMap->begin(); i!=skillBonusMap->end(); ++i) {
         int skill = i->first;
         int bonus = i->second;
