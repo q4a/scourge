@@ -36,9 +36,10 @@ MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
                    int width, int depth, int height,
                    char *name, int descriptionGroup,
                    Uint32 color, Uint8 shapePalIndex) :
-  GLShape(0, width, depth, height, name, descriptionGroup, color, 0, shapePalIndex) {
+  GLShape(0, width, depth, height, name, descriptionGroup, color, shapePalIndex) {
   commonInit(g_3DModel, textureId, div);    
-  debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, 0, shapePalIndex);
+  debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
+  debugShape->initialize();
 }
 
 MD2Shape::~MD2Shape() {

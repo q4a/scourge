@@ -20,7 +20,8 @@
 Effect::Effect(Session *session, ShapePalette *shapePal, int width, int height) {
   this->session = session;
   this->shapePal = shapePal;
-  this->shape = new GLShape(0, width, height, 1, NULL,0, 0, 0, 2000);
+  this->shape = new GLShape(0, width, height, 1, NULL,0, 0, 2000);
+  this->shape->initialize();
   this->deleteShape = true;
   commonInit();
 }
