@@ -184,9 +184,9 @@ void Scourge::startMission() {
   map->addDescription(Constants::getMessage(Constants::WELCOME));
   map->addDescription("----------------------------------");
   
-	// Initialize the map with a random dunegeon	
-	DungeonGenerator *dg = new DungeonGenerator(1);
-	Sint16 startx, starty;
+  // Initialize the map with a random dunegeon	
+  DungeonGenerator *dg = new DungeonGenerator(1);
+  Sint16 startx, starty;
   dg->toMap(map, &startx, &starty, shapePal);
 
   // position the players
@@ -213,6 +213,7 @@ void Scourge::startMission() {
   //  gui->removeWindow(topWin);
   mainWin->setVisible(false);
   delete map;
+  delete miniMap;
   delete dg;
 }
 

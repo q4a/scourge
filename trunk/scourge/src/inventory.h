@@ -29,6 +29,7 @@
 #include "rpg/pc.h"
 #include "gui/window.h"
 #include "gui/button.h"
+#include "gui/cardcontainer.h"
 
 /**
   *@author Gabor Torok
@@ -48,6 +49,13 @@ private:
 	Window *mainWin;
 	Button *player1Button, *player2Button, *player3Button, *player4Button;
 	Button *inventoryButton, *skillsButton, *spellsButton, *closeButton;
+	CardContainer *cards;
+
+	// inventory screen
+	Label *invEquipLabel[PlayerChar::INVENTORY_COUNT];
+	Button *invToButton[4];
+	Button *equipButton, *dropButton, *fixButton, *removeCurseButton;
+	Button *combineButton, *enchantButton, *identifyButton;
 
 protected:
 

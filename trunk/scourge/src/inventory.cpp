@@ -66,6 +66,70 @@ Inventory::Inventory(Scourge *scourge) {
 	closeButton = new Button( 420,0, 525, 30, "Close" );
 	mainWin->addWidget((Widget*)closeButton);
 
+	cards = new CardContainer(mainWin);
+
+	// inventory page
+	Label *label = new Label(115, 270, "Inventory:");
+	label->setColor( 0.8f, 0.2f, 0, 1 );
+	cards->addWidget(label, INVENTORY);
+	label = new Label(115, 45, "Equipped Items:");
+	label->setColor( 0.8f, 0.2f, 0, 1 );
+	cards->addWidget(label, INVENTORY);
+	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
+	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
+	  invEquipLabel[i] = new Label(300, 60 + (i * 15), (char *)(item ? item->getName() : ""));
+	  cards->addWidget(invEquipLabel[i], INVENTORY);
+	}
+	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
+	  label = new Label(115, 60 + (i * 15), PlayerChar::inventory_location[i]);
+	  cards->addWidget(label, INVENTORY);
+	}
+	/*
+    for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
+	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
+	  int location = scourge->getParty(selected)->getPC()->getEquippedIndex(t);
+	  sprintf(pcInvText[t], "%s (A:%d) (S:%d) (Q:%d) (W: %d) %s", 
+			  (location > -1 ? "<equipped> " : "                "),
+			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
+			  item->getName());
+    }
+	for(int t = scourge->getParty(selected)->getPC()->getInventoryCount(); 
+		t < MAX_INVENTORY_SIZE; t++) {
+	  strcpy(pcInvText[t], "");
+	}
+    scourge->getGui()->drawScrollingList(itemList, Constants::SKILL_COUNT, (const char**)pcInvText);
+	*/
+	
+	char name[80];
+	for(int i = 0; i < 4; i++) {
+	  sprintf(name, "to %s", scourge->getParty(i)->getPC()->getName());
+	  invToButton[i] = new Button( 420, 35 + (i * 30), 520, 35 + (i * 30) + 25, name );
+	  cards->addWidget( invToButton[i], INVENTORY );
+	}
+	equipButton = new Button( 420, 155, 520, 180, "Don/Doff" );
+	cards->addWidget(equipButton, INVENTORY);
+	dropButton = new Button( 420, 185, 520, 210, "Drop Item" );
+	cards->addWidget(dropButton, INVENTORY);
+	fixButton = new Button( 420, 215, 520, 240, "Fix Item" );
+	cards->addWidget(fixButton, INVENTORY);
+	removeCurseButton = new Button( 420, 245, 520, 270, "Remove Curse" );
+	cards->addWidget(removeCurseButton, INVENTORY);
+	combineButton = new Button( 420, 275, 520, 300, "Combine Item" );
+	cards->addWidget(combineButton, INVENTORY);
+	enchantButton = new Button( 420, 305, 520, 330, "Enchant Item" );
+	cards->addWidget(enchantButton, INVENTORY);
+	identifyButton = new Button( 420, 335, 520, 360, "Identify Item" );
+	cards->addWidget(identifyButton, INVENTORY);
+
+
+	label = new Label(115, 45, "Character Information");
+	label->setColor( 0.8f, 0.2f, 0, 1 );
+	cards->addWidget(label, CHARACTER);
+
+	label = new Label(115, 45, "Spellbook");
+	label->setColor( 0.8f, 0.2f, 0, 1 );
+	cards->addWidget(label, SPELL);
+
 	setSelectedPlayerAndMode(0, INVENTORY);
 }
 
@@ -124,6 +188,8 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   skillsButton->setSelected(selectedMode == CHARACTER);
   spellsButton->setSelected(selectedMode == SPELL);
   
+  // show only the ui elements belonging to the current mode
+  cards->setActiveCard(selectedMode);
 
   // arrange the gui
   /*
