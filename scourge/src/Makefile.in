@@ -61,6 +61,7 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CXX = @CXX@
+FREETYPE = @FREETYPE@
 HAVE_LIB = @HAVE_LIB@
 LIB = @LIB@
 LTLIB = @LTLIB@
