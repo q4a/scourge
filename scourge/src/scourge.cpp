@@ -626,10 +626,11 @@ void Scourge::setPartyMotion(int motion) {
 }
 
 void Scourge::setFormation(int formation) {
-	this->formation = formation;
-	for(int i = 0; i < 4; i++) {
-		party[i]->setFormation(formation);
-	}
+  this->formation = formation;
+  for(int i = 0; i < 4; i++) {
+	party[i]->setFormation(formation);
+  }
+  startRound = true;
 }
 
 bool Scourge::useItem(int x, int y) {
@@ -855,40 +856,40 @@ void Scourge::createUI() {
 void Scourge::playRound() {
   // move the player's selX,selY in a direction as specified by keystroke
   handleKeyboardMovement();
-
+  
   // round starts if:
   // -in group mode a move was made
   // -(or) the round was manually started
   if((!player_only && move) || startRound) {
-
-		// remember the players' positions
-		int oldX[4];
-		int oldY[4];
-		for(int i = 0; i < 4; i++) {
-			oldX[i] = party[i]->getX();
-			oldY[i] = party[i]->getY();
-		}
-
-		// move the party members
-		movePlayers();
-
-		// if any players moved, onto the next round
-		startRound = false;
-		for(int i = 0; i < 4; i++) {
-			if(oldX[i] != party[i]->getX() ||
-				 oldY[i] != party[i]->getY()) {
-				startRound = true;
-				break;
-			}
-		}
-
-		// move visible monsters
-		for(int i = 0; i < creatureCount; i++) {
-			if(map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
-				moveMonster(creatures[i]);
-			}
-		}
+	
+	// remember the players' positions
+	int oldX[4];
+	int oldY[4];
+	for(int i = 0; i < 4; i++) {
+	  oldX[i] = party[i]->getX();
+	  oldY[i] = party[i]->getY();
 	}
+	
+	// move the party members
+	movePlayers();
+	
+	// if any players moved, onto the next round
+	startRound = false;
+	for(int i = 0; i < 4; i++) {
+	  if(oldX[i] != party[i]->getX() ||
+		 oldY[i] != party[i]->getY()) {
+		startRound = true;
+		break;
+	  }
+	}
+	
+	// move visible monsters
+	for(int i = 0; i < creatureCount; i++) {
+	  if(map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY())) {
+		moveMonster(creatures[i]);
+	  }
+	}
+  }
 }
 
 // move the player in a direction as specified by keystroke

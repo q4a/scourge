@@ -89,6 +89,9 @@ class Map {
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
   unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+
+  float targetWidth, targetWidthDelta;
+  GLint lastTick;
   
   void drawGrid(SDL_Surface *surface);
   void debugGrid(SDL_Surface *surface);
