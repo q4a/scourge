@@ -98,6 +98,10 @@ class RpgItem {
   inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
   inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>maxCharges)n=maxCharges; currentCharges = n; } 
 
+  // FIXME: make this more specific to item
+  // e.g. multi-attack items, like sword of fireballs
+  inline bool isRangedWeapon() { return type == BOW; }
+  
   static RpgItem *getRandomItem(int level);
   static RpgItem *getRandomContainer();
   static RpgItem *getRandomContainerNS();

@@ -1451,31 +1451,54 @@ void Scourge::playRound() {
 	  }
 	}
 
-	// set up for battle
-	battleCount = 0;
+	// setup the current battle round
+	if(battleRound.size() == 0) {
 
-	// attack targeted monster if close enough
-	for(int i = 0; i < 4; i++) {
-	  if(!party[i]->getStateMod(Constants::dead) && 
-			 party[i]->getTargetCreature()) {								
-		battle[battleCount].creature = party[i];
-		battleCount++;
+	  // set up for battle
+	  battleCount = 0;
+	  
+	  // attack targeted monster if close enough
+	  for(int i = 0; i < 4; i++) {
+		if(!party[i]->getStateMod(Constants::dead) && 
+		   party[i]->getTargetCreature()) {								
+		  battle[battleCount++] = new Battle(this, party[i]);
+		}
+	  }
+	  for(int i = 0; i < creatureCount; i++) {
+		if(!creatures[i]->getStateMod(Constants::dead) && 
+		   map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
+		   creatures[i]->getTargetCreature()) {
+		  battle[battleCount++] = new Battle(this, creatures[i]);
+		}
+	  }
+	  
+	  // fight one round of the epic battle
+	  if(battleCount > 0) {
+		//fightBattle();
+		Battle::setupBattles(this, battle, battleCount, &battleRound);
+		battleTurn = 0;
+
+		cerr << "battleRound=" << battleRound.size() << endl;
 	  }
 	}
-	for(int i = 0; i < creatureCount; i++) {
-	  if(!creatures[i]->getStateMod(Constants::dead) && 
-		 map->isLocationVisible(creatures[i]->getX(), creatures[i]->getY()) &&
-		 creatures[i]->getTargetCreature()) {
-		battle[battleCount].creature = creatures[i];
-		battleCount++;
+
+	// fight a turn of the battle
+	if(battleRound.size() > 0) {
+	  cerr << "battleTurn=" << battleTurn << " battleRound=" << battleRound.size() << endl;
+	  if(battleTurn < battleRound.size()) {
+		Battle *battle = battleRound[battleTurn];
+		if(!battle->isEmpty()) {
+		  battle->fightTurn();
+		}
+		delete battle;
+		battleTurn++;
+	  } else {
+		battleRound.clear();
 	  }
 	}
-
-	// fight one round of the epic battle
-	if(battleCount > 0) fightBattle();
   }
 }
-
+/*
 // REFACTOR. Add rand() for a monster to give up fighting, implement damage special effects
 // implement damage, death (esp. character death), level up, containers (corpse w. items)
 void Scourge::fightBattle() {
@@ -1550,69 +1573,23 @@ void Scourge::fightBattle() {
 			  creature->getTargetCreature()->setMotion(Constants::MOTION_MOVE_TOWARDS);
 			  creature->getTargetCreature()->setTargetCreature(creature);
 			}
-			
-			// take a swing
-			int tohit = creature->getToHit(item);
-			int ac = creature->getTargetCreature()->getSkillModifiedArmor();
-			sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
-			map->addDescription(message);
-			if(tohit > ac) {
-			  
-			  // deal out the damage
-			  int damage = creature->getDamage(item);
-			  if(damage) {
-				sprintf(message, "...and hits! (toHit=%d vs. AC=%d) for %d points of damage", 
-						tohit, ac, damage);
-				map->addDescription(message, 1.0f, 0.5f, 0.5f);
-				
-				// target creature death
-				if(creature->getTargetCreature()->takeDamage(damage)) {				  
-				  creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
-				  sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
-				  map->addDescription(message, 1.0f, 0.5f, 0.5f);
-				  creatureDeath(creature->getTargetCreature());
 
-				  // add exp. points and money
-				  if(!creature->isMonster()) {
-					for(int i = 0; i < 4; i++) {
-					  bool b = party[i]->getStateMod(Constants::leveled);
-					  if(!party[i]->getStateMod(Constants::dead)) {
-						int n = party[i]->addExperience(creature->getTargetCreature());
-						if(n > 0) {
-						  sprintf(message, "%s gains %d experience points.", party[i]->getName(), n);
-						  map->addDescription(message);
-						  if(!b && party[i]->getStateMod(Constants::leveled)) {
-							sprintf(message, "%s gains a level!", party[i]->getName());
-							map->addDescription(message, 1.0f, 0.5f, 0.5f);
-						  }
-						}
-
-						n = party[i]->addMoney(creature->getTargetCreature());
-						if(n > 0) {
-						  sprintf(message, "%s finds %d coins!", party[i]->getName(), n);
-						  map->addDescription(message);
-						}
-					  }
-					}
-				  }
-				}
-			  } else {
-				sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 
-						tohit, ac);
-				map->addDescription(message);
-			  }
-			  
-			} else {
-			  // missed
-			  sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
+			// if this is a ranged weapon launch a projectile
+			if(item->getRpgItem()->isRangedWeapon()) {
+			  sprintf(message, "...%s shoots a projectile", creature->getName());
 			  map->addDescription(message);
+			  newProjectile(creature->getTargetCreature()->getX(),
+							creature->getTargetCreature()->getY(),
+							item);
+			} else {
+			  hitTarget();
 			}
+		  } else {
+			// out of range
+			creature->setSelXY(creature->getTargetCreature()->getX(),
+							   creature->getTargetCreature()->getY(),
+							   true);
 		  }
-		} else {
-		  // out of range
-		  creature->setSelXY(creature->getTargetCreature()->getX(),
-							 creature->getTargetCreature()->getY(),
-							 true);
 		}
 	  }
 	  // remove this creature from the turn
@@ -1626,6 +1603,64 @@ void Scourge::fightBattle() {
   }
 }
 
+void Scourge::hitWithItem(Creature *attacker, Creature *target, Item *item) {
+  // take a swing
+  int tohit = creature->getToHit(item);
+  int ac = target->getSkillModifiedArmor();
+  sprintf(message, "...%s defends with armor=%d", target->getName(), ac);
+  map->addDescription(message);
+  if(tohit > ac) {
+	
+	// deal out the damage
+	int damage = creature->getDamage(item);
+	if(damage) {
+	  sprintf(message, "...and hits! (toHit=%d vs. AC=%d) for %d points of damage", 
+			  tohit, ac, damage);
+	  map->addDescription(message, 1.0f, 0.5f, 0.5f);
+	  
+	  // target creature death
+	  if(target->takeDamage(damage)) {				  
+		creature->getShape()->setCurrentAnimation((int)MD2_TAUNT);  
+		sprintf(message, "...%s is killed!", target->getName());
+		map->addDescription(message, 1.0f, 0.5f, 0.5f);
+		creatureDeath(target);
+		
+		// add exp. points and money
+		if(!creature->isMonster()) {
+		  for(int i = 0; i < 4; i++) {
+			bool b = party[i]->getStateMod(Constants::leveled);
+			if(!party[i]->getStateMod(Constants::dead)) {
+			  int n = party[i]->addExperience(target);
+			  if(n > 0) {
+				sprintf(message, "%s gains %d experience points.", party[i]->getName(), n);
+				map->addDescription(message);
+				if(!b && party[i]->getStateMod(Constants::leveled)) {
+				  sprintf(message, "%s gains a level!", party[i]->getName());
+				  map->addDescription(message, 1.0f, 0.5f, 0.5f);
+				}
+			  }
+			  
+			  n = party[i]->addMoney(target);
+			  if(n > 0) {
+				sprintf(message, "%s finds %d coins!", party[i]->getName(), n);
+				map->addDescription(message);
+			  }
+			}
+		  }
+		}
+	  }
+	} else {
+	  sprintf(message, "...and hits! (toHit=%d vs. AC=%d) but causes no damage", 
+			  tohit, ac);
+	  map->addDescription(message);
+	}
+  } else {
+	// missed
+	sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
+	map->addDescription(message);
+  }
+}
+*/
 void Scourge::creatureDeath(Creature *creature) {
 	if(creature == player) {
 		if(!switchToNextLivePartyMember()) {
