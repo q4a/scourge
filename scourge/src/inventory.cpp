@@ -137,18 +137,68 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
   else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
-  return false;
+  else if(widget == dropButton) {
+	int itemIndex = invList->getSelectedLine();  
+	if(itemIndex > -1 && 
+	   scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
+	  RpgItem *item = scourge->getParty(selected)->getPC()->removeInventory(itemIndex);
+	  scourge->setMovingItem(item->getIndex(), 
+							 scourge->getParty(selected)->getX(), 
+							 scourge->getParty(selected)->getY(), 
+							 scourge->getParty(selected)->getZ());
+	  char message[120];
+	  sprintf(message, "%s drops %s.", 
+			  scourge->getParty(selected)->getPC()->getName(),
+			  item->getName());
+	  scourge->getMap()->addDescription(strdup(message));	  
+	  mainWin->setVisible(false);
+	}
+  } else if(widget == equipButton) {
+	int itemIndex = invList->getSelectedLine();  
+	if(itemIndex > -1 && 
+	   scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
+	  scourge->getParty(selected)->getPC()->equipInventory(itemIndex);
+	  // recreate list strings
+	  int oldLine = invList->getSelectedLine();
+	  setSelectedPlayerAndMode(selected, selectedMode);
+	  invList->setSelectedLine(oldLine);
+	}
+  } else if(widget == invToButton[0]) {
+	moveItemTo(0);
+  } else if(widget == invToButton[1]) {
+	moveItemTo(1);
+  } else if(widget == invToButton[2]) {
+	moveItemTo(2);
+  } else if(widget == invToButton[3]) {
+	moveItemTo(3);
   }
+  return false;
+}
+
+void Inventory::moveItemTo(int playerIndex) {
+  int itemIndex = invList->getSelectedLine();  
+  if(itemIndex > -1 && 
+	 scourge->getParty(selected)->getPC()->getInventoryCount() > itemIndex) {
+	if(playerIndex != selected) {
+	  scourge->getParty(playerIndex)->getPC()->
+		addInventory(scourge->getParty(selected)->getPC()->removeInventory(itemIndex));
+	  // recreate strings in list
+	  setSelectedPlayerAndMode(selected, selectedMode);
+	}
+  }
+}
 
 bool Inventory::handleEvent(SDL_Event *event) {
     switch(event->type) {
     case SDL_MOUSEBUTTONUP:
+	  /*
         if(event->button.button) {
             if(processMouseClick(event->button.x, event->button.y, event->button.button)) {
                 scourge->getGui()->popWindows();
                 return true;
             }
         }
+	  */
         break;     
     case SDL_KEYDOWN:
         switch(event->key.keysym.sym) {
@@ -186,8 +236,8 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     for(int t = 0; t < scourge->getParty(selected)->getPC()->getInventoryCount(); t++) {
 	  RpgItem *item = scourge->getParty(selected)->getPC()->getInventory(t);
 	  int location = scourge->getParty(selected)->getPC()->getEquippedIndex(t);
-	  sprintf(pcInvText[t], "%s (A:%d) (S:%d) (Q:%d) (W: %d) %s", 
-			  (location > -1 ? "<equipped> " : "                "),
+	  sprintf(pcInvText[t], "%s(A:%d,S:%d,Q:%d,W:%d) %s", 
+			  (location > -1 ? " *" : "   "),
 			  item->getAction(), item->getSpeed(), item->getQuality(), item->getWeight(),
 			  item->getName());
     }
@@ -197,6 +247,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	}
 	invList->setLines(scourge->getParty(selected)->getPC()->getInventoryCount(), 
 					  (const char **)pcInvText);
+	for(int i = 0; i < PlayerChar::INVENTORY_COUNT; i++) {
+	  RpgItem *item = scourge->getParty(selected)->getPC()->getEquippedInventory(i);
+	  invEquipLabel[i]->setText((char *)(item ? item->getName() : ""));
+	}
 	break;
   case SPELL:
 	break;
@@ -204,7 +258,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 	break;
   }
 }
-
+/*
 bool Inventory::processMouseClick(int x, int y, int button) {
     int region = scourge->getGui()->testActiveRegions(x, y);
     if(region == Constants::INV_PLAYER_0 || region == Constants::INV_PLAYER_1 ||
@@ -253,7 +307,7 @@ bool Inventory::processMouseClick(int x, int y, int button) {
 	}
     return false;
 }
-
+*/
 void Inventory::drawInventory() {
     glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
     drawParty();
@@ -332,7 +386,7 @@ void Inventory::drawParty() {
 	*/
   }      
 }
-
+/*
 void Inventory::drawModeButtons() {
   for(int i = 0; i < 4; i++) {
 	if(selectedMode == i) {
@@ -446,5 +500,5 @@ void Inventory::drawSpellInfo() {
 }
 void Inventory::drawLogInfo() {
 }
-
+*/
 

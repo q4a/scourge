@@ -24,7 +24,7 @@
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
-#include "gui.h"
+//#include "gui.h"
 #include "scourge.h"
 #include "rpg/pc.h"
 #include "gui/window.h"
@@ -39,7 +39,7 @@
 class Inventory : public SDLEventHandler,SDLScreenView {
 private:
     Scourge *scourge;
-    int win;
+	//    int win;
     int selected; // which player is selected?
     int selectedMode; // which mode is selected?
     enum mode {
@@ -73,15 +73,16 @@ public:
     void drawInventory();
 
 protected:
-    void createGui();
+	//    void createGui();
     void drawParty();
-    void drawModeButtons();
-    bool processMouseClick(int x, int y, int button);
-    void drawCharacterInfo();
-    void drawInventoryInfo();
-    void drawSpellInfo();
-    void drawLogInfo();
+	//    void drawModeButtons();
+	//    bool processMouseClick(int x, int y, int button);
+	//    void drawCharacterInfo();
+	//    void drawInventoryInfo();
+	//    void drawSpellInfo();
+	//    void drawLogInfo();
 	void setSelectedPlayerAndMode(int player, int mode);
+	void moveItemTo(int playerIndex);
 };
 
 #endif
