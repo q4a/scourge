@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = scourge_private.res
-OBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o $(RES)
-LINKOBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o $(RES)
+OBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o $(RES)
+LINKOBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o $(RES)
 LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:/GnuWin32/lib -lfreetype  
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/include/c++/3.3.1"  -I"C:/Dev-Cpp/include/c++/3.3.1/mingw32"  -I"C:/Dev-Cpp/include/c++/3.3.1/backward"  -I"C:/Dev-Cpp/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/Dev-Cpp/include" 
@@ -195,6 +195,48 @@ $(BIN): $(OBJ)
 
 ../src/freetype/FreeType.o: ../src/freetype/FreeType.cpp
 	$(CPP) -c ../src/freetype/FreeType.cpp -o ../src/freetype/FreeType.o $(CXXFLAGS)
+
+../src/net/broadcast.o: ../src/net/broadcast.cpp
+	$(CPP) -c ../src/net/broadcast.cpp -o ../src/net/broadcast.o $(CXXFLAGS)
+
+../src/net/client.o: ../src/net/client.cpp
+	$(CPP) -c ../src/net/client.cpp -o ../src/net/client.o $(CXXFLAGS)
+
+../src/net/clientinfo.o: ../src/net/clientinfo.cpp
+	$(CPP) -c ../src/net/clientinfo.cpp -o ../src/net/clientinfo.o $(CXXFLAGS)
+
+../src/net/commands.o: ../src/net/commands.cpp
+	$(CPP) -c ../src/net/commands.cpp -o ../src/net/commands.o $(CXXFLAGS)
+
+../src/net/gamestatehandler.o: ../src/net/gamestatehandler.cpp
+	$(CPP) -c ../src/net/gamestatehandler.cpp -o ../src/net/gamestatehandler.o $(CXXFLAGS)
+
+../src/net/server.o: ../src/net/server.cpp
+	$(CPP) -c ../src/net/server.cpp -o ../src/net/server.o $(CXXFLAGS)
+
+../src/net/tcputil.o: ../src/net/tcputil.cpp
+	$(CPP) -c ../src/net/tcputil.cpp -o ../src/net/tcputil.o $(CXXFLAGS)
+
+../src/net/testgamestatehandler.o: ../src/net/testgamestatehandler.cpp
+	$(CPP) -c ../src/net/testgamestatehandler.cpp -o ../src/net/testgamestatehandler.o $(CXXFLAGS)
+
+../src/gameadapter.o: ../src/gameadapter.cpp
+	$(CPP) -c ../src/gameadapter.cpp -o ../src/gameadapter.o $(CXXFLAGS)
+
+../src/multiplayer.o: ../src/multiplayer.cpp
+	$(CPP) -c ../src/multiplayer.cpp -o ../src/multiplayer.o $(CXXFLAGS)
+
+../src/netplay.o: ../src/netplay.cpp
+	$(CPP) -c ../src/netplay.cpp -o ../src/netplay.o $(CXXFLAGS)
+
+../src/session.o: ../src/session.cpp
+	$(CPP) -c ../src/session.cpp -o ../src/session.o $(CXXFLAGS)
+
+../src/gui/progress.o: ../src/gui/progress.cpp
+	$(CPP) -c ../src/gui/progress.cpp -o ../src/gui/progress.o $(CXXFLAGS)
+
+../src/gui/textfield.o: ../src/gui/textfield.cpp
+	$(CPP) -c ../src/gui/textfield.cpp -o ../src/gui/textfield.o $(CXXFLAGS)
 
 scourge_private.res: scourge_private.rc 
 	$(WINDRES) -i scourge_private.rc -I rc -o scourge_private.res -O coff 
