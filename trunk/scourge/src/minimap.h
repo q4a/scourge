@@ -18,9 +18,11 @@
 #ifndef MINIMAP_H
 #define MINIMAP_H
 
+#define MINI_MAP_X_SCALE 3
+#define MINI_MAP_Y_SCALE 3
 
-#define MINI_MAP_WIDTH MAP_WIDTH/3
-#define MINI_MAP_DEPTH MAP_DEPTH/3
+#define MINI_MAP_WIDTH MAP_WIDTH/MINI_MAP_X_SCALE
+#define MINI_MAP_DEPTH MAP_DEPTH/MINI_MAP_Y_SCALE
 
 // set to non-zero for debugging
 #define DEBUG_MINIMAP 0
@@ -53,20 +55,21 @@ typedef struct _MiniMapPoint {
  */
 class MiniMap {
  private:
-  
-  // Scale factors for transforming Map (x, y) to MiniMap (x, y)
-  float Sx;
-  float Sy;
-  
+    
   // Basic Idea : minimap is already filled but a point becomes visible only
   // if the party has reached it.
   MiniMapPoint pos[MINI_MAP_WIDTH][MINI_MAP_DEPTH];
   Scourge *scourge;  
   
+  // Determines the size of the minimap  
+  GLfloat zoomFactor;
+  
+  int mode;  // 0 : show structures : wall, doors and floor , 1: add monsters ... 
+  
   // Transform Map coordinates to MiniMap coordinates
   void toMiniMapCoord(int &x, int &y);   
   
-  int mode;  // 0 : show structures : wall, doors and floor , 1: add monsters ... 
+  
   
  public:
   MiniMap::MiniMap();
@@ -76,6 +79,8 @@ class MiniMap {
   // x, y are in *Map* coordinates
   void colorMiniMapPoint(int x, int y, Shape *shape);
   void eraseMiniMapPoint(int x, int y);
+  void zoomIn(GLfloat zoomFactor);
+  void zoomOut(GLfloat sdf);
   
   void draw(int xCoord, int yCoord);
   

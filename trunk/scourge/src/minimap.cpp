@@ -31,15 +31,11 @@ not discovered by the player yet.
 
 MiniMap :: MiniMap(Scourge *scourge){
     this->scourge = scourge;
+    zoomFactor = 1.0f; // default we see the entire minimap
     
     if(DEBUG_MINIMAP) fprintf(stderr, "Minimap constructor\n");
-  
-   /* Sx = float((float(MINI_MAP_WIDTH) / float(MAP_WIDTH)));
-    Sy = MINI_MAP_DEPTH / MAP_DEPTH; */ 
-    Sx = 1/3;
-    Sy = 1/3;   
-    
-    if(DEBUG_MINIMAP) fprintf(stderr, "mini map =( %d x %d ), scales : %2.2f, %2.2f\n", MINI_MAP_WIDTH, MINI_MAP_DEPTH, Sx, Sy);
+      
+    if(DEBUG_MINIMAP) fprintf(stderr, "mini map =( %d x %d )\n", MINI_MAP_WIDTH, MINI_MAP_DEPTH);
     for (int x = 0 ; x < MINI_MAP_WIDTH ; x++){
         for(int y = 0; y < MINI_MAP_DEPTH ; y++){
             pos[x][y].r = 0.0;
@@ -56,45 +52,69 @@ MiniMap :: ~MiniMap(){
 }
 
 void MiniMap :: draw(int xCoord, int yCoord){
-  int xPartyPos, yPartyPos;   
+  int xPartyPos, yPartyPos;        
   
-  glPushMatrix();
   glDisable(GL_DEPTH_TEST);
   glDisable( GL_TEXTURE_2D );        
-  glLoadIdentity();       
-  glTranslated(xCoord, yCoord, 100);
+  glPushMatrix();   
+  glLoadIdentity();            
+  glTranslatef(xCoord, yCoord, 100);   
+   
+  glPointSize(4.0f);
+  glBegin(GL_POINTS);  
+  glColor3f(1.0f, 1.0f, 0.0f);   	   	  	   	
+  glVertex2d(0.0f, 0.f);   	       	    
+  glEnd ();
+  glPointSize(1.0f);   
+      
+  glScalef(zoomFactor, zoomFactor, 1.0f);
 
   // Draw the map 
-  glBegin(GL_POINTS); 
+  glBegin(GL_QUADS);
+  //glBegin(GL_POINTS);
+  
   for (int x = 0 ; x < MINI_MAP_WIDTH; x++){
 	for(int y = 0; y < MINI_MAP_DEPTH; y++){
 	  if((pos[x][y].visible == true) && (pos[x][y].r != 0.0f)){
 		glColor3f(pos[x][y].r, pos[x][y].g, pos[x][y].b);
-		glVertex2d (xCoord + x , yCoord + y);
+        glVertex2d (x - 1.0f , y - 1.0f);
+    	glVertex2d (x - 1.0f , y);
+        glVertex2d (x , y);
+		glVertex2d (x , y - 1.0f);		
 	  }
 	}       
   }  
-  glEnd();     	
-    
+  glEnd(); 
+    	
+
   // Draw the position of the player  	
   xPartyPos = (int) scourge->getPlayer()->getX();
   yPartyPos = (int) scourge->getPlayer()->getY();   	
   toMiniMapCoord(xPartyPos, yPartyPos);
   glPointSize(4.0f);
-  glBegin(GL_POINTS);
+  glBegin(GL_POINTS);  
   glColor3f(1.0f, 0.0f, 0.0f);   	   	  	   	
-  glVertex2d(xCoord + xPartyPos, yCoord + yPartyPos);   	       	    
+  glVertex2d(xPartyPos, yPartyPos);   	       	    
   glEnd ();
-  glPointSize(1.0f);  
+  
+  glPointSize(1.0f);   
+  glPopMatrix();
+  
   glEnable(GL_DEPTH_TEST);
   glEnable (GL_TEXTURE_2D);
-  glPopMatrix();
 }
 
+void MiniMap :: zoomIn(GLfloat zoom){
+    this-> zoomFactor += 0.2f;
+}
+
+void MiniMap :: zoomOut(GLfloat zoom){
+    this-> zoomFactor -= 0.2f;
+}
 
 void MiniMap :: toMiniMapCoord(int &x, int &y){
-    x = x / 3;        
-    y = y / 3;
+    x = x / MINI_MAP_X_SCALE;        
+    y = y / MINI_MAP_Y_SCALE;
 }
 
 
@@ -163,8 +183,6 @@ void MiniMap :: colorMiniMapPoint(int x, int y, Shape *shape){
      else
      {
         if(DEBUG_MINIMAP) fprintf(stderr, "unknown shape\n");     
-/*        case Constants::DEBUG_INDEX:
-        case Constants::LOCATOR_INDEX:*/
      }
      
 }  
