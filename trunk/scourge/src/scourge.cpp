@@ -322,9 +322,9 @@ void Scourge::startMission() {
       }
     }
   }
-
+#ifdef HAVE_SDL_NET
   session->stopClientServer();
-
+#endif
   session->deleteCreaturesAndItems(false);
 
   // delete the party (w/o deleting the party ui)
@@ -2067,7 +2067,8 @@ void Scourge::moveMonster(Creature *monster) {
     // don't move when attacking
     return;
   } else {
-    if(battleRound.size() > 0) monster->getShape()->setCurrentAnimation((int)MD2_RUN);
+    //if(battleRound.size() > 0) monster->getShape()->setCurrentAnimation((int)MD2_RUN);
+    monster->getShape()->setCurrentAnimation((int)MD2_RUN);
   }
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
