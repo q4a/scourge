@@ -23,13 +23,6 @@ How to enhance it ? (or what will be done soon)
 - manage differents display mode of the minimap -> only walls and doors, add creatures...
 - handle mouse click on the minimap
 - dynamically free memory unused for pos[..][..]
-- to the very beginning, the minimap flicker on the top-left corner,
-this is because it is drawn a first time here. Solution : draw the first
-at the same place than asked by scourge.
-- the party is now a black pixel ???
-- the minimap sometimes disappear -> due to the center algorithm I think.
-- the focus on the minimap sometimes violently teleport itself -> same explanation.
-- the zoom sometimes zoom on something else than the party -> same explanation.
 - activate the "fog" 
 - put color in the shape to avoid tests during construction of the minimap
 
@@ -122,8 +115,8 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliqué a la texture
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_REPEAT); 
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
     glTexImage2D(
         GL_TEXTURE_2D, 0, GL_RGBA, textureSize, textureSize, 0,
         GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory
@@ -131,9 +124,8 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
              
     // Draw minimap a first time to screen with quads 
     glPushMatrix();   
-    glLoadIdentity(); 
-    /*glPushMatrix();   
-    glTranslatef(xCoord, yCoord, 100);  */ 
+    glLoadIdentity();    
+    glTranslatef(xCoord, yCoord, 100);  
     glBegin(GL_QUADS);      
     for (int x = 0 ; x < MINI_MAP_WIDTH; x++){
 	   for(int y = 0; y < MINI_MAP_DEPTH; y++){
@@ -146,11 +138,10 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
 	       }
 	   }       
     }    
-    glEnd(); 
-    //glPopMatrix();
+    glEnd();  
  
     // Copy to a texture
-    //glLoadIdentity();
+    glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     glCopyTexSubImage2D(
@@ -158,10 +149,10 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
 				0,      // MIPMAP level
 				0,      // x texture offset
 				0,      // y texture offset
-				0,      // x window coordinates
-				600 - textureSize,      // y window coordinates
-				128,    // width
-				128     // height
+				xCoord,                                 // x window coordinates
+				screenHeight - (yCoord +textureSize),   // y window coordinates
+				textureSize,    // width
+				textureSize     // height
 			); 
     if(DEBUG_MINIMAP){  
         fprintf(stderr, "Error during minimap texture building : %s\n", Util::getOpenGLError());          
@@ -191,26 +182,37 @@ void MiniMap :: draw(int xCoord, int yCoord){
     //updateFog(xPartyPos, yPartyPos);  
     glPushMatrix();   
     glLoadIdentity(); 
-  
+    
+    if(DEBUG_MINIMAP){
+        // Show scissor 
+        glBegin(GL_LINE_LOOP);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glVertex2d(xCoord, yCoord);
+        glVertex2d(xCoord + textureSize, yCoord);
+        glVertex2d(xCoord + textureSize, yCoord + textureSize + 1);
+        glVertex2d(xCoord, yCoord + textureSize + 1);
+        glEnd();
+    }
     // glScissor(x, y, width, height). (x, y) is the lower-left pixel. And y axis
     // is reversed.   
-    glScissor(xCoord, screenHeight - (yCoord + effectiveHeight), effectiveWidth + 5, effectiveHeight + 5); 
+    //glScissor(xCoord, screenHeight - (yCoord + effectiveHeight), effectiveWidth + 5, effectiveHeight + 5); 
+    glScissor(xCoord, screenHeight - (yCoord + textureSize), textureSize, textureSize); 
     glEnable(GL_SCISSOR_TEST); 
                  
     // Set origin to top-left pixel of minimap
     glTranslatef(xCoord, yCoord, 100);                                                                                                                          
   
-    if (zoomFactor > errorMargin){    
-        // minimap is too big : center it on player location ..       
+    // Translate minimap so that it is centered on party position if needed
+    if (zoomFactor > errorMargin){                 
         distX = (xPartyPos*zoomFactor-midX);
         if (distX < 0.0f) distX *=-1.0f;
         distY = (yPartyPos*zoomFactor-midY);
         if (distY < 0.0f) distY *=-1.0f;
                
-        if(xPartyPos > midX){
+        if(xPartyPos * zoomFactor > midX){
             distX *= -1.0f;
         }
-        if(yPartyPos > midY){
+        if(yPartyPos * zoomFactor > midY){
             distY *= -1.0f;
         }
         
@@ -219,8 +221,8 @@ void MiniMap :: draw(int xCoord, int yCoord){
         if( zoomFactor > 2.2)
             slowDown = 1.0f;
         else
-            slowDown = ((zoomFactor - 0.4)/2.0f)+0.2f;           
-        glTranslatef(distX * slowDown, distY * slowDown, 0);
+            slowDown = ((zoomFactor - 0.4)/2.0f)+0.2f;          
+        glTranslatef(distX * slowDown, distY * slowDown, 0); 
         
         if(DEBUG_MINIMAP) {
             fprintf(stderr, "zoom : %f    translating : %f, %f   mid (%f, %f),   partyPos (%d, %d)\n", zoomFactor, distX, distY, midX, midY, xPartyPos, yPartyPos); 
@@ -231,6 +233,7 @@ void MiniMap :: draw(int xCoord, int yCoord){
       glTranslatef(-5.0f, -5.0f, 0.0f);*/
     glScalef(zoomFactor, zoomFactor, 1.0f); 
     
+    // Draw the minimap using a texture
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     glBegin(GL_QUADS); 
@@ -244,7 +247,7 @@ void MiniMap :: draw(int xCoord, int yCoord){
     glTexCoord2i(0, 1);    
     glVertex2d(0, 0);     
     glEnd();       
-                
+    glDisable(GL_TEXTURE_2D);            
            
     // Draw the position of the player  	
     glPointSize(4.0f * zoomFactor);
