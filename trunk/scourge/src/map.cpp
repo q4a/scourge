@@ -24,8 +24,9 @@ Map::Map(Scourge *scourge){
   move = 0;
   selectMode = false;
   floorOnly = false;
-  itemCount = 0;
   selX = selY = selZ = MAP_WIDTH + 1;
+  oldLocatorPosX = oldLocatorPosY = oldLocatorPosZ = selZ;
+
 
   mapChanged = true;
 
@@ -150,11 +151,23 @@ void Map::drawLocator() {
         ypos2 = (((float)(selY - getY()) - (float)shape->getDepth()) / GLShape::DIV);
         zpos2 = (float)(0) / GLShape::DIV;
 
-        name = 0;
+		// don't move objects across walls
+		if(scourge->getMovingItem() && isWallBetween(selX, selY, 0, 
+													 scourge->getParty(0)->getX(),
+													 scourge->getParty(0)->getY(),
+													 0)) {
+		  xpos2 = oldLocatorPosX;
+		  ypos2 = oldLocatorPosY;
+		  zpos2 = oldLocatorPosZ;
+		}
 
+        name = 0;
         doDrawShape(xpos2, ypos2, zpos2, 
                     shape, 
                     name);
+		oldLocatorPosX = xpos2;
+		oldLocatorPosY = ypos2;
+		oldLocatorPosZ = zpos2;
     }
 }
 
@@ -532,30 +545,6 @@ void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
     }
 }
 
-void Map::addItem(Item *item, int x, int y, int z) {
-  items[itemCount].item = item;
-  items[itemCount].x = x;
-  items[itemCount].y = y;
-  items[itemCount].z = z;
-  itemCount++;
-  setItem(x, y, z, item);
-}
-
-Item *Map::getItem(Sint16 mapx, Sint16 mapy, Sint16 mapz) {
-  for(int i = 0; i < itemCount; i++) {
-    if(items[i].x <= mapx && items[i].x + items[i].item->getShape()->getWidth() > mapx &&
-       items[i].y >= mapy && items[i].y - items[i].item->getShape()->getDepth() < mapy &&
-       items[i].z == mapz) {
-      return items[i].item;
-    }
-  }
-  return NULL;
-}
-
-
-
-
-
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
 	if(shape) {
         mapChanged = true;
@@ -645,3 +634,58 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
   return item;
 }
 
+// FIXME: only uses x,y for now
+bool Map::isWallBetween(int x1, int y1, int z1,
+						int x2, int y2, int z2) {
+
+  if(x1 == x2 && y1 == y2) return isWall(x1, y1, z1);
+  if(x1 == x2) {
+	if(y1 > y2) SWAP(y1, y2);
+	for(int y = y1; y <= y2; y++) {
+	  if(isWall(x1, y, z1)) return true;
+	}
+	return false;
+  }
+  if(y1 == y2) {
+	if(x1 > x2) SWAP(x1, x2);
+	for(int x = x1; x <= x2; x++) {
+	  if(isWall(x, y1, z1)) return true;
+	}
+	return false;
+  }
+  
+
+  fprintf(stderr, "Checking for wall: from: %d,%d to %d,%d\n", x1, y1, x2, y2);
+  bool ret = false;
+  bool yDiffBigger = (abs(y2 - y1) > abs(x2 - x1));
+  float m = (float)(y2 - y1) / (float)(x2 - x1);
+  int steps = (yDiffBigger ? abs(y2 - y1) : abs(x2 - x1));
+  float x = x1;
+  float y = y1;
+  for(int i = 0; i < steps; i++) {
+	//	fprintf(stderr, "\tat=%f,%f\n", x, y);
+	if(isWall((int)x, (int)y, z1)) {
+	  fprintf(stderr, "wall at %f, %f\n", x, y);
+	  ret = true;
+	  break;
+	}
+	if(yDiffBigger) {
+	  if(y1 < y2) y += 1.0f;
+	  else y -= 1.0f;
+	  if(x1 < x2) x += 1.0f / abs(m);
+	  else x += -1.0f / abs(m);
+	} else {
+	  if(x1 < x2) x += 1.0f;
+	  else x -= 1.0f;
+	  if(y1 < y2) y += abs(m);
+	  else y += -1.0 * abs(m);
+	}
+  }
+  //  fprintf(stderr, "wall in between? %s\n", (ret ? "TRUE": "FALSE"));
+  return ret;
+}
+
+bool Map::isWall(int x, int y, int z) {
+  Location *loc = getLocation((int)x, (int)y, z);
+  return (loc && (!loc->item || loc->item->getShape() != loc->shape));
+}

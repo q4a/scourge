@@ -549,9 +549,9 @@ void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
 void Scourge::moveParty() {
     party[0]->moveToLocator(map);
     map->center(party[0]->getX(), party[0]->getY());
-    for(int i = 1; i < 4; i++) {
-        party[i]->follow(map);
-    }
+	for(int i = 1; i < 4; i++) {
+	  party[i]->follow(map);
+	}
 }
 
 void Scourge::setPartyMotion(int motion) {
@@ -635,12 +635,16 @@ bool Scourge::useDoor(Location *pos) {
 }
 
 bool Scourge::useItem() {
-    for(int x = party[0]->getX() - 2; x < party[0]->getX() + party[0]->getShape()->getWidth() + 2; x++) {
-        for(int y = party[0]->getY() + 2; y > party[0]->getY() - party[0]->getShape()->getDepth() - 2; y--) {
-            if(useItem(x, y)) return true;
-        }
-    }
-    return false;
+  for(int x = party[0]->getX() - 2; 
+	  x < party[0]->getX() + party[0]->getShape()->getWidth() + 2; 
+	  x++) {
+	for(int y = party[0]->getY() + 2; 
+		y > party[0]->getY() - party[0]->getShape()->getDepth() - 2; 
+		y--) {
+	  if(useItem(x, y)) return true;
+	}
+  }
+  return false;
 }
 
 Creature *Scourge::isPartyMember(Location *pos) {

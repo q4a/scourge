@@ -873,8 +873,6 @@ bool DungeonGenerator::isDoor(Map *map, ShapePalette *shapePal, int tx, int ty) 
 }
 
 void DungeonGenerator::addItem(Map *map, Item *item, Shape *shape, int x, int y) {
-  if(item) {
-	map->addItem(item, x, y, 0);    
-	shape = item->getShape();
-  } else map->setPosition(x, y, 0, shape);
+  if(item) map->setItem(x, y, 0, item);
+  else map->setPosition(x, y, 0, shape);
 }

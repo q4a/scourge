@@ -42,6 +42,8 @@ typedef struct _DrawLater {
   GLuint name;  
 } DrawLater;
 
+#define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
+
 /**
   *@author Gabor Torok
   */
@@ -62,14 +64,8 @@ private:
   float xpos, ypos, zpos;
   float xRotating, yRotating, zRotating;
   Uint16 selX, selY, selZ;
-
-  static const int MAX_ITEM_COUNT = 200;
-  typedef struct _ItemPos {
-    Item *item;
-    int x, y, z;
-  } ItemPos;
-  ItemPos items[MAX_ITEM_COUNT];
-  int itemCount;
+  float oldLocatorPosX, oldLocatorPosY, oldLocatorPosZ;
+  
 
   // on screen item descriptions
   int descriptionCount;
@@ -183,6 +179,9 @@ public:
 
 //  GLfloat getDistance(float xpos, float ypos, float zpos);
 
+  bool isWallBetween(int x1, int y1, int z1,
+						  int x2, int y2, int z2);
+
 protected:
   DrawLater later[100], stencil[1000], other[1000];
   int laterCount, stencilCount, otherCount;
@@ -192,6 +191,7 @@ protected:
   void setupShapes();
   void drawGround();
   void drawLocator();
+  bool isWall(int x, int y, int z);
 };
 
 #endif
