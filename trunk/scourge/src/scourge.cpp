@@ -2416,7 +2416,7 @@ void Scourge::fightProjectileHitTurn(Projectile *proj, int x, int y) {
 }
 
 void Scourge::createPartyUI() {
-  sprintf(version, "S.C.O.U.R.G.E. version %7.2f", SCOURGE_VERSION);
+  sprintf(version, "S.C.O.U.R.G.E. version %s", SCOURGE_VERSION);
   sprintf(min_version, "S.C.O.U.R.G.E.");
   mainWin = new Window( getSDLHandler(),
 						getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH, 

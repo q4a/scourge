@@ -233,7 +233,7 @@ void MainMenu::drawAfter() {
     glLoadIdentity();
     glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
     char version[100];
-    sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
+    sprintf(version, "Scourge version %s", SCOURGE_VERSION);
     scourge->getSDLHandler()->texPrint( 0, 0, version );
     glColor3f( 0.8, 0.75, 0.65 );
     int y = 14;
