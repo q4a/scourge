@@ -183,7 +183,7 @@ void SpellCaster::causeDamage() {
 
 void SpellCaster::setStateMod(int mod) {
   Creature *targets[100];
-  int radius = battle->getCreature()->getLevel() * 3;
+  int radius = battle->getCreature()->getLevel() * 2;
   if(radius > 15) radius = 15;
 
   // show radius effect
