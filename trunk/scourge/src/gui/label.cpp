@@ -53,7 +53,7 @@ void Label::drawWidget(Widget *parent) {
         y += lineHeight;
       }
     }
-    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::DEFAULT_FONT );
+    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
   }
 }
 

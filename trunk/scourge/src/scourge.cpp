@@ -3302,9 +3302,9 @@ void Scourge::drawInfos() {
     glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
     glColor4f( 1, 1, 1, 1 );
-    getSDLHandler()->setFontType( SDLHandler::MONO_FONT );
+    getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
     getSDLHandler()->texPrint( 0, 0, "%s", message->message );
-    getSDLHandler()->setFontType( SDLHandler::DEFAULT_FONT );
+    getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
     glPopMatrix();
   }
 }

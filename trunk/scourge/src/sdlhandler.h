@@ -95,14 +95,15 @@ private:
   // only do stencil buffer ops if this is true
   static bool stencilBufferUsed;
 
- public: 
+public: 
+
   enum {
-    DEFAULT_FONT=0,
-    MONO_FONT,
-    LARGE_FONT
+    SCOURGE_DEFAULT_FONT=0,
+    SCOURGE_MONO_FONT,
+    SCOURGE_LARGE_FONT
   };
 
-   bool dontUpdateScreen;
+  bool dontUpdateScreen;
 
   enum {
 	CURSOR_NORMAL=0,
