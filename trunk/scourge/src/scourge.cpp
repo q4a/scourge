@@ -341,7 +341,7 @@ void Scourge::drawView() {
     glColor3f( 1, 1, 1 );
     glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGuiWoodTexture() );
 
-    float TILE_W = 510 / 2.0f;
+    //    float TILE_W = 510 / 2.0f;
     float TILE_H = 270 / 2.0f; 
     
     glLoadIdentity();

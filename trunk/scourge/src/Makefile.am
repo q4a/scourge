@@ -1,7 +1,7 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
-LDADD = $(srcdir)/freetype/libScourgeFreeType.a $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a
+LDADD = $(srcdir)/freetype/libScourgeFreeType.a $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a $(srcdir)/net/libScourgeNet.a
 
-SUBDIRS = freetype gui rpg events
+SUBDIRS = freetype gui rpg events net
 
 bin_PROGRAMS = scourge
 

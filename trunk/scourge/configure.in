@@ -147,6 +147,17 @@ if test "x$enable_sdl" != "xno" ; then
 	    echo "*** SDL_mixer not found.  Configuring without audio support."
 	fi
 
+	dnl Check for SDL_net
+	AC_CHECK_LIB( SDL_net, SDLNet_Init, 
+		      have_SDL_net=yes, have_SDL_net=no )
+
+	if test "x$have_SDL_net" = "xyes" ; then 
+	    TR_CPPFLAGS="$TR_CPPFLAGS -DHAVE_SDL_NET=1" 
+	    TR_LIBS="$TR_LIBS -lSDL_net"
+	else
+	    echo "*** SDL_net not found.  Configuring without network support."
+	fi
+
 	LIBS="$saved_LIBS"
     else
 	echo "*** SDL not found.  Configuring without audio or joystick support."
@@ -429,4 +440,4 @@ CFLAGS="$CFLAGS $TR_CFLAGS"
 CXXFLAGS="$CXXFLAGS $TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
-AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile )
+AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile src/net/Makefile )

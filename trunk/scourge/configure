@@ -3156,6 +3156,55 @@ fi
 	    echo "*** SDL_mixer not found.  Configuring without audio support."
 	fi
 
+		echo $ac_n "checking for SDLNet_Init in -lSDL_net""... $ac_c" 1>&6
+echo "configure:3161: checking for SDLNet_Init in -lSDL_net" >&5
+ac_lib_var=`echo SDL_net'_'SDLNet_Init | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lSDL_net  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 3169 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char SDLNet_Init();
+
+int main() {
+SDLNet_Init()
+; return 0; }
+EOF
+if { (eval echo configure:3180: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  have_SDL_net=yes
+else
+  echo "$ac_t""no" 1>&6
+have_SDL_net=no 
+fi
+
+
+	if test "x$have_SDL_net" = "xyes" ; then 
+	    TR_CPPFLAGS="$TR_CPPFLAGS -DHAVE_SDL_NET=1" 
+	    TR_LIBS="$TR_LIBS -lSDL_net"
+	else
+	    echo "*** SDL_net not found.  Configuring without network support."
+	fi
+
 	LIBS="$saved_LIBS"
     else
 	echo "*** SDL not found.  Configuring without audio or joystick support."
@@ -3198,17 +3247,17 @@ saved_LIBS="$LIBS"
 
     
     echo $ac_n "checking for $GL_LIB_NAME library""... $ac_c" 1>&6
-echo "configure:3202: checking for $GL_LIB_NAME library" >&5
+echo "configure:3251: checking for $GL_LIB_NAME library" >&5
     LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME"
     cat > conftest.$ac_ext <<EOF
-#line 3205 "configure"
+#line 3254 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3212: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3261: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3226,17 +3275,17 @@ rm -f conftest*
     else
 	
 	echo $ac_n "checking for $GL_LIB_NAME library (with pthreads)""... $ac_c" 1>&6
-echo "configure:3230: checking for $GL_LIB_NAME library (with pthreads)" >&5
+echo "configure:3279: checking for $GL_LIB_NAME library (with pthreads)" >&5
 	LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME -lpthread"
 	cat > conftest.$ac_ext <<EOF
-#line 3233 "configure"
+#line 3282 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3240: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3289: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3265,17 +3314,17 @@ EOF
         for GL_LIB_NAME in $GL_LIB_LIST ; do
             
     echo $ac_n "checking for $GL_LIB_NAME library""... $ac_c" 1>&6
-echo "configure:3269: checking for $GL_LIB_NAME library" >&5
+echo "configure:3318: checking for $GL_LIB_NAME library" >&5
     LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME"
     cat > conftest.$ac_ext <<EOF
-#line 3272 "configure"
+#line 3321 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3279: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3328: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3293,17 +3342,17 @@ rm -f conftest*
     else
 	
 	echo $ac_n "checking for $GL_LIB_NAME library (with pthreads)""... $ac_c" 1>&6
-echo "configure:3297: checking for $GL_LIB_NAME library (with pthreads)" >&5
+echo "configure:3346: checking for $GL_LIB_NAME library (with pthreads)" >&5
 	LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME -lpthread"
 	cat > conftest.$ac_ext <<EOF
-#line 3300 "configure"
+#line 3349 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3307: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3356: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3342,17 +3391,17 @@ if test "x$have_GL" = "xno" -a "x$GL_LDOPTS" = "x" ; then
 
     
     echo $ac_n "checking for $GL_LIB_NAME library""... $ac_c" 1>&6
-echo "configure:3346: checking for $GL_LIB_NAME library" >&5
+echo "configure:3395: checking for $GL_LIB_NAME library" >&5
     LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME"
     cat > conftest.$ac_ext <<EOF
-#line 3349 "configure"
+#line 3398 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3356: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3405: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3370,17 +3419,17 @@ rm -f conftest*
     else
 	
 	echo $ac_n "checking for $GL_LIB_NAME library (with pthreads)""... $ac_c" 1>&6
-echo "configure:3374: checking for $GL_LIB_NAME library (with pthreads)" >&5
+echo "configure:3423: checking for $GL_LIB_NAME library (with pthreads)" >&5
 	LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME -lpthread"
 	cat > conftest.$ac_ext <<EOF
-#line 3377 "configure"
+#line 3426 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3384: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3433: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3409,17 +3458,17 @@ EOF
         for GL_LIB_NAME in $GL_LIB_LIST ; do
             
     echo $ac_n "checking for $GL_LIB_NAME library""... $ac_c" 1>&6
-echo "configure:3413: checking for $GL_LIB_NAME library" >&5
+echo "configure:3462: checking for $GL_LIB_NAME library" >&5
     LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME"
     cat > conftest.$ac_ext <<EOF
-#line 3416 "configure"
+#line 3465 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3423: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3472: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3437,17 +3486,17 @@ rm -f conftest*
     else
 	
 	echo $ac_n "checking for $GL_LIB_NAME library (with pthreads)""... $ac_c" 1>&6
-echo "configure:3441: checking for $GL_LIB_NAME library (with pthreads)" >&5
+echo "configure:3490: checking for $GL_LIB_NAME library (with pthreads)" >&5
 	LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME -lpthread"
 	cat > conftest.$ac_ext <<EOF
-#line 3444 "configure"
+#line 3493 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3451: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3500: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GL=yes
 else
@@ -3480,12 +3529,12 @@ fi
 for ac_func in glXGetProcAddressARB
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:3484: checking for $ac_func" >&5
+echo "configure:3533: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3489 "configure"
+#line 3538 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -3508,7 +3557,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:3512: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3561: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -3556,17 +3605,17 @@ saved_LIBS="$LIBS"
 
 
     echo $ac_n "checking for $GLU_LIB_NAME library""... $ac_c" 1>&6
-echo "configure:3560: checking for $GLU_LIB_NAME library" >&5
+echo "configure:3609: checking for $GLU_LIB_NAME library" >&5
     LIBS="$saved_LIBS $TR_LIBS -l$GLU_LIB_NAME"
     cat > conftest.$ac_ext <<EOF
-#line 3563 "configure"
+#line 3612 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3570: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3619: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GLU=yes
 else
@@ -3590,17 +3639,17 @@ EOF
     for GLU_LIB_NAME in $GLU_LIB_LIST ; do
         
     echo $ac_n "checking for $GLU_LIB_NAME library""... $ac_c" 1>&6
-echo "configure:3594: checking for $GLU_LIB_NAME library" >&5
+echo "configure:3643: checking for $GLU_LIB_NAME library" >&5
     LIBS="$saved_LIBS $TR_LIBS -l$GLU_LIB_NAME"
     cat > conftest.$ac_ext <<EOF
-#line 3597 "configure"
+#line 3646 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3604: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3653: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_GLU=yes
 else
@@ -3633,11 +3682,11 @@ saved_LIBS="$LIBS"
 saved_CPPFLAGS="$CPPFLAGS"
 
 echo $ac_n "checking for freetype-config library""... $ac_c" 1>&6
-echo "configure:3637: checking for freetype-config library" >&5
+echo "configure:3686: checking for freetype-config library" >&5
 # Extract the first word of "freetype-config", so it can be a program name with args.
 set dummy freetype-config; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:3641: checking for $ac_word" >&5
+echo "configure:3690: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_FREETYPE'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -3708,14 +3757,14 @@ saved_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$saved_CPPFLAGS $GL_CPPFLAGS $TR_CPPFLAGS"
 
     echo $ac_n "checking for GL/gl.h""... $ac_c" 1>&6
-echo "configure:3712: checking for GL/gl.h" >&5
+echo "configure:3761: checking for GL/gl.h" >&5
     cat > conftest.$ac_ext <<EOF
-#line 3714 "configure"
+#line 3763 "configure"
 #include "confdefs.h"
  #include <GL/gl.h> 
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:3719: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:3768: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -3740,14 +3789,14 @@ if test "x$have_gl_h" = "xno" -a "x$GL_CPPFLAGS" = "x" ; then
     CPPFLAGS="$saved_CPPFLAGS $GL_CPPFLAGS $TR_CPPFLAGS"
 
     echo $ac_n "checking for GL/gl.h""... $ac_c" 1>&6
-echo "configure:3744: checking for GL/gl.h" >&5
+echo "configure:3793: checking for GL/gl.h" >&5
     cat > conftest.$ac_ext <<EOF
-#line 3746 "configure"
+#line 3795 "configure"
 #include "confdefs.h"
  #include <GL/gl.h> 
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:3751: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:3800: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -3774,17 +3823,17 @@ if test "x$has_glx_get_proc" = "xyes" ; then
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:3778: checking for $ac_hdr" >&5
+echo "configure:3827: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3783 "configure"
+#line 3832 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:3788: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:3837: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -3823,17 +3872,17 @@ for ac_hdr in "GL/glext.h"
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:3827: checking for $ac_hdr" >&5
+echo "configure:3876: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3832 "configure"
+#line 3881 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:3837: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:3886: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -3872,9 +3921,9 @@ Place it in the directory /usr/include/GL.
 fi
 
 echo $ac_n "checking whether glext.h is recent enough""... $ac_c" 1>&6
-echo "configure:3876: checking whether glext.h is recent enough" >&5;
+echo "configure:3925: checking whether glext.h is recent enough" >&5;
 cat > conftest.$ac_ext <<EOF
-#line 3878 "configure"
+#line 3927 "configure"
 #include "confdefs.h"
 
 #include <GL/glext.h>
@@ -4035,7 +4084,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile  config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile src/net/Makefile  config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -4140,7 +4189,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile "}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile src/net/Makefile "}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
