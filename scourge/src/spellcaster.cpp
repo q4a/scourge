@@ -272,7 +272,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     // group spells only affect monsters (for now).
     if(spell->getTargetType() == GROUP_TARGET && !creature->isMonster()) continue;
 
-    Item *protectiveItem = NULL;
+    bool protectiveItem = false;
     if(!Constants::isStateModTransitionWanted(mod, setting)) {
 
       // roll for resistance
@@ -286,13 +286,10 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       }
 
       // check for magic item state mod protections
-      protectiveItem = creature->isProtectedAgainst(mod);
+      protectiveItem = creature->getProtectedStateMod(mod);
       if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
-        char tmp[255];
-        protectiveItem->getDetailedDescription(tmp);
-        sprintf(msg, "%s resists the spell with %s!", 
-                creature->getName(),
-                tmp);
+        sprintf(msg, "%s resists the spell with magic item!", 
+                creature->getName());
         battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
         continue;
       }
