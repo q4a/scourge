@@ -871,23 +871,6 @@ void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal) {
   free(ff);  
 }
 
-void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n) {
-	int x, y;
-	for(int i = 0; i < roomCount; i++) {
-		for(int r = 0; r < n; r++) {
-			for(int t = 0; t < 5; t++) { // 5 tries
-				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
-				bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
-				if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
-					Item *item = scourge->newItem(rpgItem);
-					addItem(scourge->getMap(), NULL, item, NULL, x, y);
-					break;
-				}
-			}
-		}
-	}
-}
-
 void DungeonGenerator::drawDoor(Map *map, ShapePalette *shapePal, 
 								Sint16 mapx, Sint16 mapy, int doorType) {
   switch(doorType) {
@@ -987,43 +970,81 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape, int *xpos, int 
   }	
 }
 
+void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n) {
+	int x, y;
+	for(int i = 0; i < roomCount; i++) {
+		for(int r = 0; r < n; r++) {
+			for(int t = 0; t < 5; t++) { // 5 tries
+				Shape *shape = scourge->getShapePalette()->getItemShape(rpgItem->getShapeIndex());
+				bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
+				if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+					Item *item = scourge->newItem(rpgItem);
+					addItem(scourge->getMap(), NULL, item, NULL, x, y);
+					break;
+				}
+			}
+		}
+	}
+}
+
 // return false if the creature won't fit in the room
 bool DungeonGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
 										 int *xpos, int *ypos,
 										 bool startMiddle) {
-  int startx = (startMiddle ? 
-				offset + (room[roomIndex].x + (room[roomIndex].w / 2)) * unitSide + unitOffset :
-				offset + room[roomIndex].x * unitSide + unitOffset);
-  int starty = (startMiddle ?
-				offset + (room[roomIndex].y + (room[roomIndex].h / 2)) * unitSide + unitOffset :
-				offset + room[roomIndex].y * unitSide + unitOffset);
-  for(int x = startx;
-	  x < offset + (room[roomIndex].x + room[roomIndex].w) * unitSide;
-	  x++) {
-	for(int y = starty;
-		y < offset + (room[roomIndex].y + room[roomIndex].h) * unitSide;
-		y++) {
-	  bool fits = map->shapeFits(shape, x, y, 0);
-	  if(fits) {
-		// find this location in ff list
-		for(int n = 0; n < ffCount; n++) {
-		  if(x == ff[n * 2] && y == ff[n * 2 + 1]) {
-			// remove from ff list
-			for(int i = n + 1; i < ffCount - 1; i++) {
-			  ff[i * 2] = ff[i * 2 + 2];
-			  ff[i * 2 + 1] = ff[ i * 2 + 3];
-			}
-			ffCount--;
-			break;
-		  }
-		}
-		*xpos = x;
-		*ypos = y;
-		return true;
-	  }
+
+  int startx = offset + room[roomIndex].x * unitSide + unitOffset;
+  int endx = offset + (room[roomIndex].x + room[roomIndex].w) * unitSide;
+  int starty = offset + room[roomIndex].y * unitSide + unitOffset;
+  int endy = offset + (room[roomIndex].y + room[roomIndex].h) * unitSide;
+
+  Sint16* fff = (Sint16*)malloc( 2 * sizeof(Sint16) * (endx - startx) * (endy - starty) );  
+
+  int count = 0;
+  for(int n = 0; n < ffCount; n++) {
+	if(ff[n * 2] >= startx && ff[n * 2] < endx &&
+	   ff[n * 2 + 1] >=starty && ff[n * 2 + 1] < endy) {
+	  fff[count * 2] = ff[n * 2];
+	  fff[count * 2 + 1] = ff[n * 2 + 1];
+	  count++;
 	}
   }
-  return false;
+
+  bool fits = false;
+  while(count > 0) {
+	int pos = (int)((float)count * rand() / RAND_MAX);
+	int x = fff[pos * 2];
+	int y = fff[pos * 2 + 1];
+	fits = map->shapeFits(shape, x, y, 0);
+	if(fits) {
+	  // find this location in ff list
+	  for(int n = 0; n < ffCount; n++) {
+		if(x == ff[n * 2] && y == ff[n * 2 + 1]) {
+		  ff[n * 2] = ff[(ffCount - 1) * 2];
+		  ff[n * 2 + 1] = ff[(ffCount - 1) * 2 + 1];
+		  /*
+		  // remove from ff list
+		  for(int i = n + 1; i < ffCount - 1; i++) {
+			ff[i * 2] = ff[i * 2 + 2];
+			ff[i * 2 + 1] = ff[ i * 2 + 3];
+		  }
+		  */
+		  ffCount--;
+		  break;
+		}
+	  }
+	  *xpos = x;
+	  *ypos = y;
+	  break;	  
+	} else {
+	  // "remove" this from fff (replace w. last element and decrement counter)
+	  fff[pos * 2] = fff[(count - 1) * 2];
+	  fff[pos * 2 + 1] = fff[(count - 1) * 2 + 1];
+	  count--;
+	}
+  }
+
+  free(fff);
+  return fits;
 }
 
 bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal, 
