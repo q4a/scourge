@@ -143,7 +143,6 @@ void Scourge::startMission() {
 	// create the map
   map = new Map(this);
 	miniMap = new MiniMap(this); 
-  //miniMap->show();
 	
 	// ready the party
 	party->startPartyOnMission();
@@ -227,7 +226,7 @@ void Scourge::startMission() {
 	closeAllContainerGuis();
 	if(inventory->isVisible()) inventory->hide();
 	if(board->boardWin->isVisible()) board->boardWin->setVisible(false);
-  //miniMap->hide();
+  miniMap->hide();
 	
 	// clean up after the mission
 	delete map;
@@ -309,9 +308,6 @@ Creature *Scourge::newCreature(Monster *monster) {
 }
 
 void Scourge::drawView() {
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-  glClearColor( 0, 0, 0, 1 );
-  glClearDepth( 1.0f );
 
   /*
   glPushMatrix();
@@ -347,6 +343,7 @@ void Scourge::drawView() {
       }
     }
     glDisable( GL_CULL_FACE );
+    glDisable( GL_SCISSOR_TEST );
   }
 
   map->drawDescriptions(messageList);
@@ -832,6 +829,8 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                            projection,
                            viewport,
                            &obj_x, &obj_y, &obj_z);
+
+    glDisable( GL_SCISSOR_TEST );
    
     if(res) {
         /*char buff[255];
@@ -1358,6 +1357,12 @@ void Scourge::setUILayout() {
   messageWin->move(0, 0);
   messageWin->setLocked(false);
   party->getWindow()->setLocked(false);
+  if(inventory->getWindow()->isLocked()) {
+    inventory->getWindow()->setVisible(false);
+    inventory->getWindow()->setLocked(false);
+  }
+  party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
+                           getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
   break;
   case Constants::GUI_LAYOUT_BOTTOM:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
@@ -1366,6 +1371,12 @@ void Scourge::setUILayout() {
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
   party->getWindow()->setLocked(true);
+  if(inventory->getWindow()->isLocked()) {
+    inventory->getWindow()->setVisible(false);
+    inventory->getWindow()->setLocked(false);
+  }
+  party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
+                         getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
   break;
   case Constants::GUI_LAYOUT_SIDE:
     messageList->resize(400, getSDLHandler()->getScreen()->h - (Window::SCREEN_GUTTER * 2 + 25));
@@ -1376,18 +1387,41 @@ void Scourge::setUILayout() {
   mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   messageWin->setLocked(true);
   party->getWindow()->setLocked(true);
+  party->getWindow()->move(400 + Window::SCREEN_GUTTER, 
+                           getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  if(inventory->getWindow()->isLocked()) {
+    inventory->getWindow()->setVisible(false);
+    inventory->getWindow()->setLocked(false);
+  }
+  break;
+  case Constants::GUI_LAYOUT_INVENTORY:
+    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+  messageWin->resize(width, PARTY_GUI_HEIGHT);
+  messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+  messageWin->setLocked(true);
+  party->getWindow()->setLocked(true);
+  inventory->getWindow()->setVisible(false);
+  inventory->getWindow()->move(0, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
+  inventory->getWindow()->setLocked(true);
+  inventory->getWindow()->setVisible(true);
+  party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
+                         getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  mapX = INVENTORY_WIDTH;
+  mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
+  mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
   break;
   }
 
   messageWin->setVisible(true);
 
-  // move the party gui
-  //party->getWindow()->resize(PARTY_GUI_WIDTH, PARTY_GUI_HEIGHT);
-  party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
-                           getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-
   // FIXME: resize map drawing area to remainder of screen.
   map->setViewArea(mapX, mapY, mapWidth, mapHeight);
+  if(getParty()->getPlayer()) {
+    getMap()->center(getParty()->getPlayer()->getX(),
+                     getParty()->getPlayer()->getY(), 
+                     true);
+  }
 }
 
 void Scourge::playRound() {                           

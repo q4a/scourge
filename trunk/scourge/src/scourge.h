@@ -174,6 +174,8 @@ public:
   static const int PARTY_GUI_WIDTH=500;
   static const int PARTY_GUI_HEIGHT=165;
   static const int PARTY_MIN_GUI_WIDTH=100;
+  static const int INVENTORY_WIDTH = 420;
+  static const int INVENTORY_HEIGHT = 505;
   
   static int blendA, blendB;
   static int blend[];
