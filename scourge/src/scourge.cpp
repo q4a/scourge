@@ -234,6 +234,16 @@ void Scourge::startMission() {
 	// hack to unfreeze animations, etc.
 	startRound = false;
 	toggleRound();
+
+	// show an info dialog
+	if(nextMission == -1) {
+	  sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
+	} else {
+	  sprintf(infoMessage, "Entering dungeon level %d", currentStory);
+	}
+	infoDialog->setVisible(true);
+	if(startRound) toggleRound();
+	
 	
 	// run mission
 	sdlHandler->mainLoop();
@@ -1102,6 +1112,11 @@ Creature *Scourge::isPartyMember(Location *pos) {
 
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
+  if(widget == infoButton) {
+	infoDialog->setVisible(false);
+	if(!startRound) toggleRound();
+  }
+
   if(containerGuiCount > 0) {
 	for(int i = 0; i < containerGuiCount; i++) {
 	  if(containerGui[i]->handleEvent(widget, event)) {
@@ -1281,21 +1296,35 @@ void Scourge::createUI() {
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
 
   boardWin = new Window( getSDLHandler(),
-												 (sdlHandler->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
-												 (sdlHandler->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
-												 BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
-												 strdup("Available Missions"), 
-												 getShapePalette()->getGuiTexture() );
-	missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
-	boardWin->addWidget(missionList);
-	missionDescriptionLabel = new Label(5, 210, strdup(""), 70);
-	boardWin->addWidget(missionDescriptionLabel);
-	playMission = new Button(5, 5, 105, 35, Constants::getMessage(Constants::PLAY_MISSION_LABEL));
-	boardWin->addWidget(playMission);
-	missionText = (char**)malloc(Board::MAX_AVAILABLE_MISSION_COUNT * sizeof(char*));
-	for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
-		missionText[i] = (char*)malloc(120 * sizeof(char));
-	}
+						 (sdlHandler->getScreen()->w - BOARD_GUI_WIDTH) / 2, 
+						 (sdlHandler->getScreen()->h - BOARD_GUI_HEIGHT) / 2, 
+						 BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
+						 strdup("Available Missions"), 
+						 getShapePalette()->getGuiTexture() );
+  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150);
+  boardWin->addWidget(missionList);
+  missionDescriptionLabel = new Label(5, 210, strdup(""), 70);
+  boardWin->addWidget(missionDescriptionLabel);
+  playMission = new Button(5, 5, 105, 35, Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+  boardWin->addWidget(playMission);
+  missionText = (char**)malloc(Board::MAX_AVAILABLE_MISSION_COUNT * sizeof(char*));
+  for(int i = 0; i < Board::MAX_AVAILABLE_MISSION_COUNT; i++) {
+	missionText[i] = (char*)malloc(120 * sizeof(char));
+  }
+
+  // FIXME: this should be in a generic class
+  w = 350;
+  h = 120;
+  infoDialog = new Window(getSDLHandler(),
+						  (getSDLHandler()->getScreen()->w/2) - (w/2), 
+						  (getSDLHandler()->getScreen()->h/2) - (h/2), 
+						  w, h,
+	 strdup("S.C.O.U.R.G.E. Message"), 
+	 getShapePalette()->getGuiTexture(), false);
+  infoButton = new Button( w/2 - 55, 50, w/2 + 55, 80, strdup("Ok") );
+  infoDialog->addWidget((Widget*)infoButton);
+  infoLabel = new Label(20, 20, infoMessage);
+  infoDialog->addWidget((Widget*)infoLabel);
 }
 
 
