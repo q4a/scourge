@@ -133,7 +133,7 @@ ShapePalette::ShapePalette(){
 }
 
 ShapePalette::~ShapePalette(){
-    for(int i =0; i < creature_models.size(); i++){
+    for(int i =0; i < (int)creature_models.size(); i++){
         delete creature_models[i];    
     }
 }

@@ -94,7 +94,7 @@ void Board::initMissions() {
 		// see if this mission has been chosen yet
 		// FIXME: use a vector-set combo instead for mission; something that supports [] and uniqueness
 		bool found = false;
-		for(int i = 0; i < missions.size(); i++) {
+		for(int i = 0; i < (int)missions.size(); i++) {
 			if(missions[i] == p) {
 				found = true;
 				break;

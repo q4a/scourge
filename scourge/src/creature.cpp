@@ -434,7 +434,7 @@ bool Creature::eatDrink(int index){
     //Item * item = getInventory(index);
     RpgItem * rpgItem = getInventory(index)->getRpgItem();
     int type;
-    float weight;
+    //float weight;
     
     type = rpgItem->getType();    
     if(type!=RpgItem::FOOD && type!=RpgItem::DRINK && type!=RpgItem::POTION){              

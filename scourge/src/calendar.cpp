@@ -78,7 +78,7 @@ bool Calendar::update(int gameSpeed){
     
     // look for scheduled events
     if(CALENDAR_DEBUG) cout << "nbScheduled events: " <<  scheduledEvents.size() << endl;
-    for(int i = 0 ; i < scheduledEvents.size(); i++){ 
+    for(int i = 0 ; i < (int)scheduledEvents.size(); i++){ 
         if(CALENDAR_DEBUG){      
             currentDate.print();        
             cout << " >= ";

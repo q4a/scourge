@@ -54,7 +54,7 @@ public:
   Event(Date eventDate);
   
   Event(); 
-  ~Event();
+  virtual ~Event();
   
   //virtual void execute()=0;
   virtual void execute() { cout << "Event.cpp : execute function should'nt be called by event base class!" << endl; }

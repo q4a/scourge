@@ -162,10 +162,10 @@ void CLoadMD2::ParseAnimations(t3DModel *pModel)
         int frameNum = 0;
         
         // Erase the frame numbers from the name
-        for(int j = 0; j < strName.length(); j++)
+        for(int j = 0; j < (int)strName.length(); j++)
         {
             // If the current index is a number and it's one of the last 2 characters 
-            if( isdigit(strName[j]) && j >= strName.length() - 2)
+            if( isdigit(strName[j]) && j >= (int)(strName.length() - 2))
             {                                
                 frameNum = atoi(&strName[j]);               
                 strName.erase(j, strName.length() - j);
