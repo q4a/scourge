@@ -25,6 +25,7 @@
 #include "rpg/character.h"
 #include "rpg/monster.h"
 #include "effect.h"
+#include "shape.h"
 
 class Creature;
 class Item;
@@ -40,19 +41,32 @@ class Projectile {
   Creature *creature;
   Creature *target;
   Item *item;
-  int sx, sy, ex, ey;
+  float sx, sy, ex, ey; 
+  float angle;
+  int q;
+  int cx, cy;
+  int steps;
+  Shape *shape;
 
   static map<Creature*, vector<Projectile*>*> projectiles;
   
  public:
-  Projectile(Creature *creature, Creature *target, Item *item);
+  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape);
   virtual ~Projectile();
 
   // return true when out of moves
   bool move();
 
+  inline float getX() { return sx; }
+  inline float getY() { return sy; }
+  inline Shape *getShape() { return shape; }
+
   static Projectile *addProjectile(Creature *creature, Creature *target, 
-								   Item *item, int maxProjectiles);
+								   Item *item, Shape *shape, 
+								   int maxProjectiles);
+  static void removeProjectile(Projectile *p);
+  static void moveProjectiles();
+  inline static map<Creature *, vector<Projectile*>*> *getProjectileMap() { return &projectiles; }
 
 };
 
