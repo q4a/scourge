@@ -183,7 +183,8 @@ void SpellCaster::causeDamage() {
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage(damage, 
                      spell->getAction() * creature->getLevel(), 
-                     spell->getEffect());
+                     spell->getEffect(),
+                     true);
 }
 
 void SpellCaster::setStateMod(int mod) {

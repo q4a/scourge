@@ -348,8 +348,50 @@ void Battle::castSpell() {
   // spell succeeds?
   // FIXME: use stats like IQ here to modify spell success rate...
   SpellCaster *sc = new SpellCaster(this, creature->getActionSpell(), false);
+
+  /* 
+    apply state_mods:
+    blessed, 
+	  empowered, 
+  	enraged, 
+  	ac_protected, 
+  	magic_protected, 
+    
+  	drunk, 
+    
+  	poisoned, 
+  	cursed, 
+  	possessed, 
+  	blinded, 
+  	charmed, 
+  	changed,
+  	overloaded,
+  */
+  float delta = 0.0f;
+  if(creature->getStateMod(Constants::blessed)) {
+    delta += (10.0f * rand()/RAND_MAX);
+  }
+  if(creature->getStateMod(Constants::empowered)) {
+    delta += (10.0f * rand()/RAND_MAX) + 5;
+  }
+  if(creature->getStateMod(Constants::enraged)) {
+    delta -= (10.0f * rand()/RAND_MAX);
+  }
+  if(creature->getStateMod(Constants::drunk)) {
+    delta += (14.0f * rand()/RAND_MAX) - 7;
+  }
+  if(creature->getStateMod(Constants::cursed)) {
+    delta += ((8.0f * rand()/RAND_MAX) + 7);
+  }
+  if(creature->getStateMod(Constants::blinded)) {
+    delta -= (10.0f * rand()/RAND_MAX);
+  }
+  if(creature->getStateMod(Constants::overloaded)) {
+    delta -= (8.0f * rand()/RAND_MAX);
+  }
+
   if(!projectileHit && 
-     (int)(100.0f * rand() / RAND_MAX) < creature->getActionSpell()->getFailureRate()) {
+     (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate()) {
     sc->spellFailed();
   } else {
 
@@ -457,11 +499,55 @@ void Battle::hitWithItem() {
   // take a swing
   int maxToHit;
   int tohit = creature->getToHit(item, &maxToHit);
+
+  /* 
+    apply state_mods:
+    blessed, 
+	  empowered, 
+  	enraged, 
+  	ac_protected, 
+  	magic_protected, 
+    
+  	drunk, 
+    
+  	poisoned, 
+  	cursed, 
+  	possessed, 
+  	blinded, 
+  	charmed, 
+  	changed,
+  	overloaded,
+  */
+  float delta = 0.0f;
+  if(creature->getStateMod(Constants::blessed)) {
+    delta += (15.0f * rand()/RAND_MAX);
+  }
+  if(creature->getStateMod(Constants::empowered)) {
+    delta += (15.0f * rand()/RAND_MAX) + 10;
+  }
+  if(creature->getStateMod(Constants::enraged)) {
+    delta -= (10.0f * rand()/RAND_MAX);
+  }
+  if(creature->getStateMod(Constants::drunk)) {
+    delta += (30.0f * rand()/RAND_MAX) - 15;
+  }
+  if(creature->getStateMod(Constants::cursed)) {
+    delta -= ((15.0f * rand()/RAND_MAX) + 10);
+  }
+  if(creature->getStateMod(Constants::blinded)) {
+    delta -= (15.0f * rand()/RAND_MAX);
+  }
+  if(creature->getStateMod(Constants::overloaded)) {
+    delta -= (10.0f * rand()/RAND_MAX);
+  }
+  int extra = (int)(((float)tohit / 100.0f) * delta);
+
   int ac = creature->getTargetCreature()->getSkillModifiedArmor();
   sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
   session->getMap()->addDescription(message);
-  sprintf(message, "...toHit=%d (max=%d) vs. AC=%d", tohit, maxToHit, ac);
+  sprintf(message, "...toHit=%d(%d) (max=%d) vs. AC=%d", tohit, extra, maxToHit, ac);
   session->getMap()->addDescription(message);
+  tohit += extra;
   if(tohit > ac) {
     // deal out the damage
     int maxDamage;
@@ -474,10 +560,72 @@ void Battle::hitWithItem() {
   }
 }
 
-void Battle::dealDamage(int damage, int maxDamage, int effect) {
+void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical) {
   if(damage) {  
-    sprintf(message, "...and hits! for %d (max=%d) points of damage", damage, maxDamage);
+
+    /* 
+      apply state_mods:
+      (Done here so it's used for spells too)
+      
+      blessed, 
+      empowered, 
+      enraged, 
+      ac_protected, 
+      magic_protected, 
+
+      drunk, 
+
+      poisoned, 
+      cursed, 
+      possessed, 
+      blinded, 
+      charmed, 
+      changed,
+      overloaded,
+    */
+    float delta = 0.0f;
+    if(creature->getStateMod(Constants::blessed)) {
+      delta += (10.0f * rand()/RAND_MAX);
+    }
+    if(creature->getStateMod(Constants::empowered)) {
+      delta += (10.0f * rand()/RAND_MAX) + 5;
+    }
+    if(creature->getStateMod(Constants::enraged)) {
+      delta += (10.0f * rand()/RAND_MAX) + 8;
+    }
+    if(creature->getStateMod(Constants::drunk)) {
+      delta += (14.0f * rand()/RAND_MAX) - 7;
+    }
+    if(creature->getStateMod(Constants::cursed)) {
+      delta -= ((10.0f * rand()/RAND_MAX) + 5);
+    }
+    if(creature->getStateMod(Constants::blinded)) {
+      delta -= (10.0f * rand()/RAND_MAX);
+    }
+    if(!magical && creature->getTargetCreature()->getStateMod(Constants::ac_protected)) {
+      delta -= (7.0f * rand()/RAND_MAX);
+    }
+    if(magical && creature->getTargetCreature()->getStateMod(Constants::magic_protected)) {
+      delta -= (7.0f * rand()/RAND_MAX);
+    }
+    if(creature->getTargetCreature()->getStateMod(Constants::blessed)) {
+      delta -= (5.0f * rand()/RAND_MAX);
+    }
+    if(creature->getTargetCreature()->getStateMod(Constants::cursed)) {
+      delta += (5.0f * rand()/RAND_MAX);
+    }
+    if(creature->getTargetCreature()->getStateMod(Constants::overloaded)) {
+      delta += (2.0f * rand()/RAND_MAX);
+    }
+    if(creature->getTargetCreature()->getStateMod(Constants::blinded)) {
+      delta += (2.0f * rand()/RAND_MAX);
+    }
+    int extra = (int)(((float)damage / 100.0f) * delta);
+
+    sprintf(message, "...and hits! for %d(%d) (max=%d) points of damage", damage, extra, maxDamage);
     session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+
+    damage += extra;
 
     // target creature death
     if(creature->getTargetCreature()->takeDamage(damage, effect)) {         

@@ -979,41 +979,6 @@ int Creature::getToHit(Item *weapon, int *maxToHit, int *rolledToHit) {
   
   // convert to 0-100 value
   int ret = (int)(score / 2.5f);
-
-  /* 
-    apply state_mods:
-    blessed, 
-	  empowered, 
-  	enraged, 
-  	ac_protected, 
-  	magic_protected, 
-    
-  	drunk, 
-    
-  	poisoned, 
-  	cursed, 
-  	possessed, 
-  	blinded, 
-  	charmed, 
-  	changed,
-  	overloaded,
-  */
-  if(getStateMod(Constants::blessed)) {
-    ret += (int)(15.0f * rand()/RAND_MAX);
-  } else if(getStateMod(Constants::empowered)) {
-    ret += ((int)(15.0f * rand()/RAND_MAX) + 10);
-  } else if(getStateMod(Constants::enraged)) {
-    ret -= (int)(10.0f * rand()/RAND_MAX);
-  } else if(getStateMod(Constants::drunk)) {
-    ret += (int)(30.0f * rand()/RAND_MAX) - 15;
-  } else if(getStateMod(Constants::cursed)) {
-    ret -= ((int)(15.0f * rand()/RAND_MAX) + 10);
-  } else if(getStateMod(Constants::blinded)) {
-    ret -= (int)(15.0f * rand()/RAND_MAX);
-  } else if(getStateMod(Constants::overloaded)) {
-    ret -= (int)(10.0f * rand()/RAND_MAX);
-  }
-  if(ret < 0) ret = 0;
   
   if(rolledToHit) *rolledToHit = ret;
   return ret;
@@ -1043,40 +1008,6 @@ int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
 
   // return the 70% of value + 30% random
   int ret = (int)((damage * .7) + ((damage * 0.3) * rand()/RAND_MAX));
-
-  /* 
-    apply state_mods:
-    blessed, 
-	  empowered, 
-  	enraged, 
-  	ac_protected, 
-  	magic_protected, 
-    
-  	drunk, 
-    
-  	poisoned, 
-  	cursed, 
-  	possessed, 
-  	blinded, 
-  	charmed, 
-  	changed,
-  	overloaded,
-  */
-  float delta = 0.0f;
-  if(getStateMod(Constants::blessed)) {
-    delta = (15.0f * rand()/RAND_MAX);
-  } else if(getStateMod(Constants::empowered)) {
-    delta = (15.0f * rand()/RAND_MAX) + 10;
-  } else if(getStateMod(Constants::enraged)) {
-    delta = (20.0f * rand()/RAND_MAX) + 15;
-  } else if(getStateMod(Constants::drunk)) {
-    delta = (30.0f * rand()/RAND_MAX) - 15;
-  } else if(getStateMod(Constants::cursed)) {
-    delta = -((15.0f * rand()/RAND_MAX) + 10);
-  } else if(getStateMod(Constants::blinded)) {
-    delta = -(15.0f * rand()/RAND_MAX);
-  }
-  ret += (int)(((float)ret / 100.0f) * delta);
 
   if(rolledDamage) *rolledDamage = ret;
   return ret;

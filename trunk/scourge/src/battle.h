@@ -103,7 +103,7 @@ class Battle {
   inline bool isEmpty() { return empty; }
   bool fightTurn();
 
-  void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW);
+  void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW, bool magical=false);
 
   inline Creature *getCreature() { return creature; }
   inline Session *getSession() { return session; }
