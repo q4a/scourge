@@ -875,9 +875,11 @@ bool Creature::takeDamage(int damage, int effect_type) {
   hp -= damage;
   // if creature dies start effect at its location
   if(hp > 0) startEffect(effect_type);
-  else scourge->getMap()->startEffect(getX(), getY(), getZ(), 
-                                      effect_type, (Constants::DAMAGE_DURATION * 4), 
-                                      getShape()->getWidth(), getShape()->getDepth());
+  else if(effect_type != Constants::EFFECT_GLOW) {
+    scourge->getMap()->startEffect(getX(), getY(), getZ(), 
+                                   effect_type, (Constants::DAMAGE_DURATION * 4), 
+                                   getShape()->getWidth(), getShape()->getDepth());
+  }
   return(hp <= 0);
 }
 

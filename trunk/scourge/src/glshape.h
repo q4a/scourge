@@ -61,6 +61,8 @@ private:
 
 	bool lightBlocking;
 
+  float xIconRot, yIconRot, zIconRot;
+
  protected:
   Uint32 color;
 
@@ -111,6 +113,8 @@ public:
   //inline void setupBlending() { glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA); }
   void setupBlending();
   inline void endBlending() { }
+  inline void setIconRotation(float x, float y, float z) { xIconRot = x; yIconRot = y; zIconRot = z; }
+  inline void applyIconRotation() { glRotatef(xIconRot, 1, 0, 0); glRotatef(yIconRot, 0, 1, 0); glRotatef(zIconRot, 0, 0, 1); }
 
 protected:
   GLfloat xrot, yrot, zrot;
