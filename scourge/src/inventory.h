@@ -105,7 +105,7 @@ private:
 	Button *missionButton;
 	ScrollingList *objectiveList;
 	char **objectiveText;
-	Color *missionColor;
+	Color *missionColor, *itemColor;
 
 public:
     Inventory(Scourge *scourge);
