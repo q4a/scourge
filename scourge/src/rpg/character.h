@@ -62,10 +62,12 @@ public:
   static map<string, Character*> character_class;
   static map<string, Character*> character_class_short;
   static map<string, int> character_index_short;
+  static vector<Character*> character_list;
   static void initCharacters();
   static Character *getCharacterByName(char *p) { string s = p; return character_class[s]; }
   static Character *getCharacterByShortName(char *p) { string s = p; return character_class_short[s]; }
   static int getCharacterIndexByShortName(char *p) {  string s = p; return character_index_short[s]; }
+  inline static Character *getRandomCharacter() { return character_list[(int)((float)character_list.size()*rand()/RAND_MAX)]; }
 
  protected:
   inline void setMinMaxSkill(int skill, int min, int max) { minSkill[skill] = min; maxSkill[skill] = max; }

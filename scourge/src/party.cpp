@@ -20,6 +20,8 @@
 
 Creature *Party::lastPlayer = NULL;
 
+#define RANDOM_PARTY 1
+
 Party::Party(Session *session) {
   this->session = session;
 
@@ -249,6 +251,131 @@ int Party::getTotalLevel() {
 void Party::createHardCodedParty(Session *session, Creature ***party, int *partySize) {
   int pcCount = 4;
   Creature **pc = (Creature**)malloc(sizeof(Creature*) * pcCount);
+
+#ifdef RANDOM_PARTY
+
+  int level = 1;
+  char names[4][80] = { "Alamont", "Barlett", "Corinus", "Dialante" };
+
+  for(int i = 0; i < pcCount; i++) {
+/*     
+    
+C:Ranger,ROGUE,/models/m1.bmp,10,2,12,400,RA
+C:Knight,FIGHTER,/models/m2.bmp,12,0,10,350,KN
+
+C:Tinkerer,ROGUE,/models/m1.bmp,7,4,10,300,TI
+C:Assassin,ROGUE,/models/m1.bmp,6,4,10,400,AS
+
+C:Arcanist,ROGUE,/models/m1.bmp,6,5,10,450,AR
+C:Loremaster,CLERIC,/models/m3.bmp,6,5,10,450,LO
+
+C:Conjurer,WIZARD,/models/m4.bmp,4,7,8,500,CO
+C:Summoner,WIZARD,/models/m4.bmp,4,7,8,500,SU
+
+C:Naturalist,CLERIC,/models/m3.bmp,5,7,9,450,NA
+C:Monk,CLERIC,/models/m3.bmp,6,6,10,400,MO
+    
+*/    
+    // Get a good mix of classes (with different graphics)
+    Character *c;
+    switch(i) {
+    case 0:
+    c = Character::getCharacterByName("Knight"); // always knight: it has sound... ;-)
+    break;
+    case 1:
+    if(0 == (int)(2.0f * rand()/RAND_MAX))
+      c = Character::getCharacterByName("Tinkerer");
+    else
+      c = Character::getCharacterByName("Assassin");
+    break;
+    case 2:
+    if(0 == (int)(2.0f * rand()/RAND_MAX))
+      c = Character::getCharacterByName("Conjurer");
+    else
+      c = Character::getCharacterByName("Summoner");
+    break;
+    default:
+    if(0 == (int)(2.0f * rand()/RAND_MAX))
+      c = Character::getCharacterByName("Naturalist");
+    else
+      c = Character::getCharacterByName("Monk");
+    }
+    pc[i] = new Creature(session, c, strdup(names[i]));
+    pc[i]->setLevel(level); 
+    pc[i]->setExp(0);
+    pc[i]->setHp();
+    pc[i]->setMp();
+    pc[i]->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
+    pc[i]->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
+
+    // compute starting skill levels
+    for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
+      int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
+      // basic skills
+      if(skill < Constants::SWORD_WEAPON) n = 20 + level * (int)(10.0 * rand()/RAND_MAX);
+      if(n > 99) n = 99;
+      if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
+        n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
+      pc[i]->setSkill(skill, n);
+    }
+
+    // add a weapon anyone can wield
+    int n = (int)(3.0f * rand()/RAND_MAX);
+    switch(n) {
+    case 0: pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Smallbow"))); break;
+    case 1: pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Short sword"))); break;
+    case 2: pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Dagger"))); break;
+    }
+    pc[i]->equipInventory(0);
+
+    // add some armor
+    if(0 == (int)(4.0f * rand()/RAND_MAX)) {
+      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Horned helmet")));
+      pc[i]->equipInventory(1);
+    }
+
+    // some potions
+    if(0 == (int)(4.0f * rand()/RAND_MAX))
+      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Minor health potion")));  
+    if(0 == (int)(4.0f * rand()/RAND_MAX))
+      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Minor magic potion")));  
+    if(0 == (int)(4.0f * rand()/RAND_MAX))
+      pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Liquid armor")));  
+
+    // some food
+    for(int t = 0; t < (int)(6.0f * rand()/RAND_MAX); t++) {
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Apple")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Bread")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Mushroom")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Big egg")));
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(session->newItem(RpgItem::getItemByName("Mutton meat")));
+    }
+
+    // some spells
+    if(pc[i]->getMaxMp() > 0) {
+      // useful spells
+      pc[i]->addSpell(Spell::getSpellByName("Flame of Azun"));
+      pc[i]->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
+      // attack spell
+      if(0 == (int)(2.0f * rand()/RAND_MAX))
+        pc[i]->addSpell(Spell::getSpellByName("Silent knives"));
+      else
+        pc[i]->addSpell(Spell::getSpellByName("Stinging light"));
+      // defensive spell
+      if(0 == (int)(2.0f * rand()/RAND_MAX))
+        pc[i]->addSpell(Spell::getSpellByName("Lesser healing touch"));
+      else
+        pc[i]->addSpell(Spell::getSpellByName("Body of stone"));
+    }
+  }
+  
+#else
+
   int level = 10;
 
   // FIXME: consider using newCreature here
@@ -421,6 +548,7 @@ void Party::createHardCodedParty(Session *session, Creature ***party, int *party
   pc[3]->addSpell(Spell::getSpellByName("Remove curse"));
   pc[3]->addSpell(Spell::getSpellByName("Enthrall fiend"));
   pc[3]->addSpell(Spell::getSpellByName("Break from possession"));
+#endif
 
   *party = pc;
   *partySize = pcCount;  
