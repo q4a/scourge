@@ -146,6 +146,8 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   bool mouseMoveScreen;
   Creature *targetSelectionFor;
 
+  int layoutMode;
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;
@@ -168,6 +170,10 @@ public:
 #define TOP_GUI_HEIGHT 100
 #define GUI_PLAYER_INFO_W 250
 #define GUI_PLAYER_INFO_H 350
+
+  static const int PARTY_GUI_WIDTH=500;
+  static const int PARTY_GUI_HEIGHT=165;
+  static const int PARTY_MIN_GUI_WIDTH=100;
   
   static int blendA, blendB;
   static int blend[];
@@ -264,6 +270,10 @@ public:
 	  Return the closest live player within the given radius or null if none can be found.
   */
   Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
+
+  void setUILayout();
+  void setUILayout(int mode);
+  int getLayoutMode() { return layoutMode; }
 
  protected:
   //  void fightBattle(); 

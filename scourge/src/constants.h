@@ -452,6 +452,16 @@ public:
 	ACTION_COUNT
   };
 
+  enum {
+    GUI_LAYOUT_ORIGINAL=0,
+    GUI_LAYOUT_BOTTOM,
+    GUI_LAYOUT_SIDE,
+    GUI_LAYOUT_INVENTORY,
+    
+    // must be last one
+    GUI_LAYOUT_COUNT
+  };
+
   // the speed when hand fighting is used instead of a weapon
   static const int HAND_WEAPON_SPEED = 10;
 

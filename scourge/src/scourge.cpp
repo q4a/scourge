@@ -42,6 +42,8 @@ Scourge::Scourge(int argc, char *argv[]){
   // in HQ map
   inHq = true;
   currentMission = NULL;
+
+  layoutMode = Constants::GUI_LAYOUT_ORIGINAL;
   
   isInfoShowing = true; // what is this?
   info_dialog_showing = false;
@@ -210,6 +212,8 @@ void Scourge::startMission() {
 	showMessageDialog(infoMessage);
 	info_dialog_showing = true;
 	
+  // set the map view
+  setUILayout();
 	
 	// run mission
 	sdlHandler->mainLoop();
@@ -463,7 +467,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
 	  return false;
 	}
 
-  
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
 	  if(exitConfirmationDialog->isVisible()) {
 		exitConfirmationDialog->setVisible(false);
@@ -1283,12 +1286,15 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
 // create the ui
 void Scourge::createUI() {
+  int width = 
+    getSDLHandler()->getScreen()->w - 
+    (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
   messageWin = new Window( getSDLHandler(),
-						   0, 0, 400, 120, 
+						   0, 0, width, PARTY_GUI_HEIGHT, 
 						   strdup("Messages"), 
 						   getShapePalette()->getGuiTexture(), false );
   messageWin->setBackground(0, 0, 0);
-  messageList = new ScrollingList(0, 0, 400, 95);
+  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25);
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
   messageWin->addWidget(messageList);
   // this has to be after addWidget
@@ -1311,6 +1317,56 @@ void Scourge::createUI() {
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
+}
+
+void Scourge::setUILayout(int mode) {
+  layoutMode = mode;
+  setUILayout();
+}
+
+void Scourge::setUILayout() {
+  int mapX = 0;
+  int mapY = 0;
+  int mapWidth = getSDLHandler()->getScreen()->w;
+  int mapHeight = getSDLHandler()->getScreen()->h;
+
+  // move the message gui
+  int width = 
+    getSDLHandler()->getScreen()->w -                 
+    (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
+
+  messageWin->setVisible(false);
+  switch(layoutMode) {
+  case Constants::GUI_LAYOUT_ORIGINAL:
+    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+  messageWin->resize(width, PARTY_GUI_HEIGHT);
+  messageWin->move(0, 0);
+  break;
+  case Constants::GUI_LAYOUT_BOTTOM:
+    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+  messageWin->resize(width, PARTY_GUI_HEIGHT);
+  messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+  mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+  break;
+  case Constants::GUI_LAYOUT_SIDE:
+    messageList->resize(400, getSDLHandler()->getScreen()->h - (Window::SCREEN_GUTTER * 2 + 25));
+  messageWin->resize(400, getSDLHandler()->getScreen()->h - (Window::SCREEN_GUTTER * 2));
+  messageWin->move(0, 0);
+  mapX = 400;
+  mapWidth = getSDLHandler()->getScreen()->w - 400;
+  mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT;
+  break;
+  }
+
+  messageWin->setVisible(true);
+
+  // move the party gui
+  //party->getWindow()->resize(PARTY_GUI_WIDTH, PARTY_GUI_HEIGHT);
+  party->getWindow()->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
+                           getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
+
+  // FIXME: resize map drawing area to remainder of screen.
+  map->setViewArea(mapX, mapY, mapWidth, mapHeight);
 }
 
 void Scourge::playRound() {                           

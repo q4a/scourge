@@ -522,8 +522,8 @@ void Window::showMessageDialog(SDLHandler *sdlHandler,
 void Window::move(int x, int y) {
   this->x = x; 
   this->y = y;
-  if(x< 5) this->x = 5;
-  if(y < 5) this->y = 5;
-  if(x >= sdlHandler->getScreen()->w - (w + 5)) this->x = sdlHandler->getScreen()->w - (w + 5 + 1);
-  if(y >= sdlHandler->getScreen()->h - (h + 5)) this->y = sdlHandler->getScreen()->h - (h + 5 + 1);
+  if(x< SCREEN_GUTTER) this->x = SCREEN_GUTTER;
+  if(y < SCREEN_GUTTER) this->y = SCREEN_GUTTER;
+  if(x >= sdlHandler->getScreen()->w - (w + SCREEN_GUTTER)) this->x = sdlHandler->getScreen()->w - (w + SCREEN_GUTTER + 1);
+  if(y >= sdlHandler->getScreen()->h - (h + SCREEN_GUTTER)) this->y = sdlHandler->getScreen()->h - (h + SCREEN_GUTTER + 1);
 }
