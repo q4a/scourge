@@ -102,6 +102,8 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				765CD2DB08199A320025096A,
+				765CD2DC08199A320025096A,
 				76B5F01A07F9133F00E1A8FA,
 				76B5F01B07F9133F00E1A8FA,
 				76DACCA007AFEE6E006B1419,
@@ -628,6 +630,10 @@
 		};
 		762AF824066D856300B92069 = {
 			children = (
+				765CD2E408199A6E0025096A,
+				765CD2E508199A6E0025096A,
+				765CD2E608199A6E0025096A,
+				765CD2E708199A6E0025096A,
 				76908E5707825F1400D1A3B2,
 				76908E5807825F1400D1A3B2,
 				769C1364076975730080F47F,
@@ -2012,6 +2018,96 @@
 			settings = {
 			};
 		};
+		765CD2DB08199A320025096A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = partyeditor.cpp;
+			path = ../../src/partyeditor.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		765CD2DC08199A320025096A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = partyeditor.h;
+			path = ../../src/partyeditor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		765CD2DD08199A320025096A = {
+			fileRef = 765CD2DB08199A320025096A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		765CD2DE08199A320025096A = {
+			fileRef = 765CD2DC08199A320025096A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		765CD2E408199A6E0025096A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = guitheme.cpp;
+			path = ../../src/gui/guitheme.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		765CD2E508199A6E0025096A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = guitheme.h;
+			path = ../../src/gui/guitheme.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		765CD2E608199A6E0025096A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = scrollinglabel.cpp;
+			path = ../../src/gui/scrollinglabel.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		765CD2E708199A6E0025096A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = scrollinglabel.h;
+			path = ../../src/gui/scrollinglabel.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		765CD2E808199A6E0025096A = {
+			fileRef = 765CD2E408199A6E0025096A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		765CD2E908199A6E0025096A = {
+			fileRef = 765CD2E508199A6E0025096A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		765CD2EA08199A6E0025096A = {
+			fileRef = 765CD2E608199A6E0025096A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		765CD2EB08199A6E0025096A = {
+			fileRef = 765CD2E708199A6E0025096A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		7674A65905D5F9EB00A583B9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -2988,6 +3084,9 @@
 				76908E5A07825F1400D1A3B2,
 				76DACCA307AFEE6E006B1419,
 				76B5F01D07F9133F00E1A8FA,
+				765CD2DE08199A320025096A,
+				765CD2E908199A6E0025096A,
+				765CD2EB08199A6E0025096A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3088,6 +3187,9 @@
 				76DACC9B07AFEC70006B1419,
 				76DACCA207AFEE6E006B1419,
 				76B5F01C07F9133F00E1A8FA,
+				765CD2DD08199A320025096A,
+				765CD2E808199A6E0025096A,
+				765CD2EA08199A6E0025096A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
