@@ -129,7 +129,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   Button *yesExitConfirm, *noExitConfirm;
   int movingX, movingY, movingZ;
   Item *movingItem;
-  bool needToCheckDropLocation;
+  bool needToCheckDropLocation, needToCheckPath;
   Uint16 move;
   GLint lastTick;
   int battleCount;
@@ -632,6 +632,7 @@ public:
   void moveCreatures();
 
   void checkForDropTarget();
+  void checkPath();
 };
 
 #endif
