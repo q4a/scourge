@@ -22,7 +22,6 @@
 #include "scourge.h"
 
 int main(int argc, char *argv[]) {
-
   if(argc >= 2 && !strcmp(argv[1], "--test-config")) {
 	cerr << "Configuration:" << endl;
 	char dir[300];

@@ -19,7 +19,7 @@
 #define CONSTANTS_H
 
 // from tuxracer
-#if defined ( __MWERKS__ ) || defined( _MSC_VER )
+#if defined ( __MWERKS__ ) || defined( _MSC_VER ) || defined( WIN32 )
 #   define NATIVE_WIN32_COMPILER 1
 #else
 /* Assume UNIX compatible by default */
@@ -70,8 +70,8 @@ using namespace std;
   Data and config dirs. Shamelessly borrowed from tuxracer.
  */
 #if defined( WIN32 )
-#  define CONFIG_DIR "scourge"
-#  define CONFIG_FILE "options.txt"
+#  define CONFIG_DIR "saved"
+#  define CONFIG_FILE "scourge.cfg"
 #else
 #  define CONFIG_DIR ".scourge"
 #  define CONFIG_FILE "options"
@@ -79,7 +79,7 @@ using namespace std;
 
 #ifndef DATA_DIR
 #  if defined( WIN32 )
-#    define DATA_DIR "."
+#    define DATA_DIR "./data"
 #  else
 #    define DATA_DIR "/usr/local/share/scourge"
 #  endif /* defined( WIN32 ) */
