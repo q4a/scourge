@@ -35,6 +35,8 @@ Window::Window(SDLHandler *sdlHandler,
   this->texture = texture;
   this->visible = false;
   this->widgetCount = 0;
+  this->dragging = false;
+  this->dragX = this->dragY = 0;
   addWindow(this);
 }
 
@@ -57,7 +59,7 @@ void Window::drawVisibleWindows() {
   }
 }
 
-void Window::handleEvent(SDL_Event *event, int x, int y) {
+void Window::delegateEvent(SDL_Event *event, int x, int y) {
   for(int i = 0; i < windowCount; i++) {
 	if(window[i]->isVisible()) {
 	  window[i]->handleWindowEvent(event, x, y);
@@ -66,10 +68,41 @@ void Window::handleEvent(SDL_Event *event, int x, int y) {
 }
 
 void Window::handleWindowEvent(SDL_Event *event, int x, int y) {
+  // handled by a component?
+  bool handled = false;
   for(int t = 0; t < widgetCount; t++) {
-	if(widget[t]->canHandle(sdlHandler, event, x - getX(), y - (getY() + TOP_HEIGHT)))
+	if(widget[t]->canHandle(sdlHandler, event, x - getX(), y - (getY() + TOP_HEIGHT))) {
 	  widget[t]->handleEvent(sdlHandler, event, x - getX(), y - (getY() + TOP_HEIGHT));
+	  handled = true;
+	}
   }
+  // see if the window wants it
+  if(!handled && canHandle(event, x, y))
+	handleEvent(event, x, y);
+}
+
+bool Window::canHandle(SDL_Event *event, int x, int y) {
+  return(dragging || 
+  		 (x >= getX() && x < getX() + w &&
+  		  y >= getY() && y < getY() + h));
+}
+
+void Window::handleEvent(SDL_Event *event, int x, int y) {
+  switch(event->type) {
+  case SDL_MOUSEMOTION:
+	if(dragging) move(x - dragX, y - dragY);
+	break;
+  case SDL_MOUSEBUTTONUP:
+	dragging = false;
+	break;
+  case SDL_MOUSEBUTTONDOWN:
+	dragging = true;
+	dragX = x - getX();
+	dragY = y - getY();
+	break;
+  }
+  // fire a dummy event, so the event it's not used by the map
+  sdlHandler->fireEvent(NULL, event);
 }
 
 void Window::addWidget(Widget *widget) {
@@ -91,6 +124,9 @@ void Window::removeWidget(Widget *widget) {
 */
 
 void Window::draw() {
+
+  glDisable( GL_DEPTH_TEST );
+
   glPushMatrix();
   glLoadIdentity( );
   glEnable( GL_TEXTURE_2D );
@@ -124,7 +160,7 @@ void Window::draw() {
 
   glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  glColor4f( 0.7f, 0.65f, 0.2f, 0.85f );
+  applyBackgroundColor();
   glBegin (GL_QUADS);
   glVertex2i (0, TOP_HEIGHT);
   glVertex2i (0, h - BOTTOM_HEIGHT);
@@ -134,7 +170,7 @@ void Window::draw() {
   glDisable( GL_BLEND );
 
   // add a border
-  glColor3f(1.0f, 0.6f, 0.3f);
+  applyBorderColor();
   glBegin(GL_LINES);
   glVertex2d(w, h);
   glVertex2d(0, h);
@@ -164,10 +200,20 @@ void Window::draw() {
   	glTranslated(x, y + TOP_HEIGHT, 0);
 
 
-	widget[i]->draw(sdlHandler);
+	widget[i]->draw(this);
   	glPopMatrix();
   }
 
   glEnable( GL_TEXTURE_2D );
   glPopMatrix();
+
+  glEnable( GL_DEPTH_TEST );
+}
+
+void Window::applyBorderColor() { 
+  glColor3f(0.8f, 0.5f, 0.2f); 
+}
+
+void Window::applyBackgroundColor(bool opaque) { 
+  glColor4f( 1, 0.75f, 0.45f, (opaque ? 1.0f : 0.85f) ); 
 }

@@ -768,6 +768,8 @@ void Map::addDescription(char *desc) {
 }
 
 void Map::drawDescriptions() {
+  glPushMatrix();
+  glLoadIdentity();
   glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
   int y = TOP_GUI_HEIGHT - 5;
   if(descriptionCount <= 5) y = descriptionCount * 15;
@@ -779,6 +781,7 @@ void Map::drawDescriptions() {
     y -= 15;
     index++;
   }
+  glPopMatrix();
 }
 
 void Map::handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button) {

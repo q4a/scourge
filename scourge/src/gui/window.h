@@ -47,6 +47,8 @@ class Window {
   SDLHandler *sdlHandler;
   Widget *widget[MAX_WIDGET];
   int widgetCount;
+  bool dragging;
+  int dragX, dragY;
 
   static Window *window[];
   static int windowCount;
@@ -54,7 +56,7 @@ class Window {
  public: 
   Window(SDLHandler *sdlHandler, int x, int y, int w, int h, const char *title, GLuint texture);
   ~Window();
-  
+
   inline int getX() { return x; }
   inline int getY() { return y; }
   inline int getWidth() { return w; }
@@ -63,17 +65,22 @@ class Window {
   inline void setVisible(bool b) { visible = b; }
   inline void move(int x, int y) { this->x = x; this->y = y; }
   inline void resize(int w, int h) { this->w = w; this->h = h; }
+  void applyBorderColor();
+  void applyBackgroundColor(bool opaque=false);
+  inline SDLHandler *getSDLHandler() { return sdlHandler; }
   void draw();
   
   void addWidget(Widget *widget);
   //  void removeWidget(Widget *widget);
   void handleWindowEvent(SDL_Event *event, int x, int y);
+  bool canHandle(SDL_Event *event, int x, int y);
+  void handleEvent(SDL_Event *event, int x, int y);
 
   // window management
   static void drawVisibleWindows();
   static void addWindow(Window *win);
   static void removeWindow(Window *win);
-  static void handleEvent(SDL_Event *event, int x, int y);
+  static void delegateEvent(SDL_Event *event, int x, int y);
   
 	
  protected:

@@ -18,3 +18,5 @@ $(TARGET): ${OBJS}
 clean:
 	rm -f $(TARGET) ${OBJS} core
 
+cleanui:
+	rm -f src/gui/*.o

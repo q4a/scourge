@@ -34,6 +34,8 @@
 #include "item.h"
 #include "rpg/pc.h"
 #include "rpg/character.h"
+#include "gui/window.h"
+#include "gui/button.h"
 
 using namespace std;
 
@@ -66,7 +68,24 @@ class Scourge : public SDLEventHandler,SDLScreenView {
   OptionsMenu *optionsMenu;
   Gui *gui;
   bool isInfoShowing;
-  int topWin;
+  //  int topWin;
+  Window *mainWin;
+  Button *inventoryButton;
+  Button *optionsButton;
+  Button *quitButton;
+
+  Button *diamondButton;
+  Button *staggeredButton;
+  Button *squareButton;
+  Button *rowButton;
+  Button *scoutButton;
+  Button *crossButton;
+  Button *player1Button;
+  Button *player2Button;
+  Button *player3Button;
+  Button *player4Button;
+  Button *groupButton;
+
   Inventory *inventory;
 
   int movingX, movingY, movingZ;

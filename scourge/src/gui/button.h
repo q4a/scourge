@@ -44,7 +44,7 @@ class Button : public Widget {
   void handleEvent(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
   bool canHandle(SDLHandler *sdlHandler, SDL_Event *event, int x, int y);
 
-  void drawWidget(SDLHandler *sdlHandler);
+  void drawWidget(Window *parent);
 };
 
 #endif

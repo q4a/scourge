@@ -35,7 +35,7 @@ class Label : public Widget {
   Label(int x, int y, char *text);
   ~Label();
   inline char *getText() { return text; }
-  void drawWidget(SDLHandler *sdlHandler);
+  void drawWidget(Window *parent);
 };
 
 #endif

@@ -29,8 +29,8 @@ Label::~Label() {
   free(text);
 }
 
-void Label::drawWidget(SDLHandler *sdlHandler) {
-  setGlColor();
-  sdlHandler->texPrint(0, 0, text);
+void Label::drawWidget(Window *parent) {
+  applyColor();
+  parent->getSDLHandler()->texPrint(0, 0, text);
 }
 
