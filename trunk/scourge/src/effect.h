@@ -32,10 +32,10 @@ class Session;
 class Effect {
 private:  
   ShapePalette *shapePal;
-  GLuint flameTex, ringTex;
+  GLuint flameTex, ringTex, rippleTex;
   GLShape *shape;
   bool deleteShape;
-  float ringRadius, ringRotate;
+  float ringRadius, ringRotate, rippleRadius, rippleAlpha;
   GLint lastTimeStamp;
   Session *session;
   
@@ -62,6 +62,7 @@ protected:
   void drawSwirl(bool proceed);
   void drawCastSpell(bool proceed);
   void drawRing(bool proceed);
+  void drawRipple(bool proceed);
   
   // particle management
   void createParticle(ParticleStruct **particle);

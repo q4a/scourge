@@ -925,7 +925,7 @@ void Map::draw() {
 
     }
 
-      // draw the water
+    // draw the water
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
@@ -1526,13 +1526,29 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
                       int effect_type, int duration, 
                       int width, int height) {
 
+  if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
+    cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
+    vector<EffectLocation*>::iterator e=currentEffects.begin();
+    for(int i = 0; i < (int)currentEffects.size(); i++) {
+      EffectLocation *effectLocation = currentEffects[i];
+      if(effectLocation) {
+        cerr << "pos=" << x << "," << y << "," << z << endl;
+      }
+    }
+    ((Creature*)NULL)->getName();
+  }
+
   // show an effect
   if(effect[x][y][z]) {
     if(effect[x][y][z]->isEffectOn() && 
        effect[x][y][z]->effectType == effect_type) {
       return;
     } else {
+      return;
+      /* FIXME: if we call removeeffect, it also needs to remove from currentEffects.
+      cerr << "*** Warning, removing effect w/o removing from currentEffects!" << endl;
       removeEffect(x, y, z);
+      */
     }
   }
 
@@ -1557,6 +1573,19 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
 }
 
 void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
+
+  if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
+    cerr << "*** REMOVEEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
+    vector<EffectLocation*>::iterator e=currentEffects.begin();
+    for(int i = 0; i < (int)currentEffects.size(); i++) {
+      EffectLocation *effectLocation = currentEffects[i];
+      if(effectLocation) {
+        cerr << "pos=" << x << "," << y << "," << z << endl;
+      }
+    }
+    ((Creature*)NULL)->getName();
+  }
+
   if(effect[x][y][z]) {
     if(effect[x][y][z]->effect) {
       delete effect[x][y][z]->effect;

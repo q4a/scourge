@@ -488,17 +488,18 @@ public:
 
   // special effect names
   enum {
-	EFFECT_FLAMES=0,
-	EFFECT_GLOW,
-	EFFECT_TELEPORT,
-	EFFECT_GREEN,
-	EFFECT_EXPLOSION,
-	EFFECT_SWIRL,
-	EFFECT_CAST_SPELL,
-  EFFECT_RING,
-
-	// must be last
-	EFFECT_COUNT
+    EFFECT_FLAMES=0,
+    EFFECT_GLOW,
+    EFFECT_TELEPORT,
+    EFFECT_GREEN,
+    EFFECT_EXPLOSION,
+    EFFECT_SWIRL,
+    EFFECT_CAST_SPELL,
+    EFFECT_RING,
+    EFFECT_RIPPLE,
+    
+    // must be last
+    EFFECT_COUNT
   };    
   static const int DAMAGE_DURATION = 500;
 
