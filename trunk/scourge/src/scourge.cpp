@@ -44,10 +44,10 @@ Scourge::Scourge(int argc, char *argv[]){
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
-	nextMission = -1;
-	// in HQ map
-	inHq = true;
-
+  nextMission = -1;
+  // in HQ map
+  inHq = true;
+  
   isInfoShowing = true;
 
   // new item and creature references
@@ -80,6 +80,7 @@ Scourge::Scourge(int argc, char *argv[]){
   battleCount = 0;  
   inventory = NULL;
   containerGuiCount = 0;
+  changingStory = false;
   
   for(int i = 0; i < 4; i++) party[i] = NULL;
 
@@ -139,156 +140,165 @@ Scourge::~Scourge(){
 }
 
 void Scourge::startMission() {
-
-	while(true) {
-
-  // add gui
-  mainWin->setVisible(true);
-  messageWin->setVisible(true);
   
-  // create the map
-  map = new Map(this);
-  miniMap = new MiniMap(this); 
-  
-  /*
-	cerr << "Before mission: " <<
-	" creatureCount=" << creatureCount << 
-	" itemCount=" << itemCount << endl;
-  */
-
-  // Start calendar and add thirst & hunger event scheduling
-  calendar->reset();
-  Event *e;  
-  Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
-  for(int i = 0; i < 4 ; i++){
+  while(true) {
+	
+	// add gui
+	mainWin->setVisible(true);
+	messageWin->setVisible(true);
+	
+	// create the map
+	map = new Map(this);
+	miniMap = new MiniMap(this); 
+	
+	/*
+	  cerr << "Before mission: " <<
+	  " creatureCount=" << creatureCount << 
+	  " itemCount=" << itemCount << endl;
+	*/
+	
+	// Start calendar and add thirst & hunger event scheduling
+	calendar->reset();
+	Event *e;  
+	Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
+	for(int i = 0; i < 4 ; i++){
    	  e = new ThirstHungerEvent(calendar->getCurrentDate(), d, party[i], this, Event::INFINITE_EXECUTIONS);
    	  calendar->scheduleEvent((Event*)e);   // It's important to cast!!
-  }
-
-  // position the players
-  player_only = false;
-  move = 0;
-  //startRound = true;
-  battleCount = 0;
-  partyDead = false;
-  containerGuiCount = 0;
-  lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
-  teleporting = false;
-  
+	}
+	
+	// position the players
+	player_only = false;
+	move = 0;
+	//startRound = true;
+	battleCount = 0;
+	partyDead = false;
+	containerGuiCount = 0;
+	lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
+	teleporting = false;
+	changingStory = false;
+	
 	// set player to be the first non-dead character
 	for(int i = 0; i < 4; i++) {
-		if(!party[i]->getStateMod(Constants::dead)) {
-			setPlayer(getParty(i));
-			break;
-		}
+	  if(!party[i]->getStateMod(Constants::dead)) {
+		setPlayer(getParty(i));
+		break;
+	  }
 	}
-  setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-  getPlayer()->setTargetCreature(NULL);
-
-  // init the rest of the party
-  for(int i = 1; i < 4; i++) {
-	getParty(i)->setNext(getPlayer(), i);
-	getParty(i)->setTargetCreature(NULL);
-  }
-
-
-
-  
+	setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+	getPlayer()->setTargetCreature(NULL);
+	
+	// init the rest of the party
+	for(int i = 1; i < 4; i++) {
+	  getParty(i)->setNext(getPlayer(), i);
+	  getParty(i)->setTargetCreature(NULL);
+	}
+	
+	
+	
+	
 	if(nextMission == -1) {
-
-		// in HQ map
-		inHq = true;
-
-		// init the missions board
-		board->initMissions();
-		
-		// display the HQ map
-		dg = new DungeonGenerator(this, 2); // level 2 is a big enough map for HQ_LOCATION... this is hacky
-		dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);
+	  
+	  // in HQ map
+	  inHq = true;
+	  
+	  // init the missions board
+	  board->initMissions();
+	  
+	  // display the HQ map
+	  dg = new DungeonGenerator(this, 2, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
+	  dg->toMap(map, getShapePalette(), DungeonGenerator::HQ_LOCATION);		
 	} else {
-		// in HQ map
-		inHq = false;
-
-		// Initialize the map with a random dunegeon	
-		dg = new DungeonGenerator(this, level);
-		dg->toMap(map, getShapePalette());
+	  // in HQ map
+	  inHq = false;
+	  
+	  // Initialize the map with a random dunegeon	
+	  const Mission *mission = board->getMission(nextMission);
+	  cerr << "Starting mission: level="  << mission->level << 
+		" stories=" << mission->dungeonStoryCount << 
+		" current story=" << currentStory << endl;
+	  dg = new DungeonGenerator(this, mission->level, 
+								(currentStory < mission->dungeonStoryCount - 1), 
+								(currentStory > 0));
+	  dg->toMap(map, getShapePalette());
 	}
- 
-  // center map on the player
-  map->center(player->getX(), player->getY());
-  
-  // Must be called after MiniMap has been built by dg->toMap() !!! 
-  miniMap->computeDrawValues();
-
-  // set to receive events here
-  sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
-
+	
+	// center map on the player
+	map->center(player->getX(), player->getY());
+	
+	// Must be called after MiniMap has been built by dg->toMap() !!! 
+	miniMap->computeDrawValues();
+	
+	// set to receive events here
+	sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+	
 	// hack to unfreeze animations, etc.
 	startRound = false;
 	toggleRound();
-
-  // run mission
-  sdlHandler->mainLoop();
-
-
-
-
-  // remove gui
-  mainWin->setVisible(false);
-  messageWin->setVisible(false);
-  closeAllContainerGuis();
-  if(inventory->isVisible()) inventory->hide();
+	
+	// run mission
+	sdlHandler->mainLoop();
+	
+	
+	
+	
+	// remove gui
+	mainWin->setVisible(false);
+	messageWin->setVisible(false);
+	closeAllContainerGuis();
+	if(inventory->isVisible()) inventory->hide();
 	if(boardWin->isVisible()) boardWin->setVisible(false);
-
-  // clean up after the mission
-  delete map;
-  delete miniMap;
-  delete dg;
-
-  // delete the items and creatures created for this mission
-  // (except items in inventory) 
-  for(int i = 0; i < itemCount; i++) {
-		bool inInventory = false;
-		for(int t = 0; t < 4; t++) {
-			if(getParty(t)->isItemInInventory(items[i])) {
-				inInventory = true;
-				break;
-			}
+	
+	// clean up after the mission
+	delete map;
+	delete miniMap;
+	delete dg;
+	
+	// delete the items and creatures created for this mission
+	// (except items in inventory) 
+	for(int i = 0; i < itemCount; i++) {
+	  bool inInventory = false;
+	  for(int t = 0; t < 4; t++) {
+		if(getParty(t)->isItemInInventory(items[i])) {
+		  inInventory = true;
+		  break;
 		}
-		if(!inInventory) {
-			delete items[i];
-			itemCount--;
-			for(int t = i; t < itemCount; t++) {
-				items[t] = items[t + 1];
-			}
-			i--;
+	  }
+	  if(!inInventory) {
+		delete items[i];
+		itemCount--;
+		for(int t = i; t < itemCount; t++) {
+		  items[t] = items[t + 1];
 		}
+		i--;
+	  }
 	}
 	for(int i = 0; i < creatureCount; i++) {
-		delete creatures[i];
+	  delete creatures[i];
 	}
 	creatureCount = 0;
 	/*
-	cerr << "After mission: " <<
-		" creatureCount=" << creatureCount << 
-		" itemCount=" << itemCount << endl;
-		*/
-
-
-	if(!inHq) {
-	  if(teleporting) {
-		// go back to HQ when coming from a mission	
-		nextMission = -1;
-	  } else {
-		break;
-	  }
-	} else if(nextMission == -1) {
+	  cerr << "After mission: " <<
+	  " creatureCount=" << creatureCount << 
+	  " itemCount=" << itemCount << endl;
+	*/
+	
+	
+	if(!changingStory) {
+	  if(!inHq) {
+		if(teleporting) {
+		  // go back to HQ when coming from a mission	
+		  nextMission = -1;
+		} else {
+		  break;
+		}
+	  } else if(nextMission == -1) {
 		// if quiting in HQ, exit loop
 		break;
+	  }
 	}
-
-
-	}
+	
+	
+  }
 }
 
 void Scourge::endMission() {
@@ -360,6 +370,11 @@ void Scourge::drawAfter() {
 
 bool Scourge::handleEvent(SDL_Event *event) {
   int ea;  
+
+  if(changingStory) {
+	endMission();
+	return true;
+  }
 
   if(containerGuiCount > 0) {
 	for(int i = 0; i < containerGuiCount; i++) {
@@ -899,6 +914,8 @@ bool Scourge::useItem(int x, int y, int z) {
 		if(useDoor(pos)) {
 			map->updateLightMap();
 			return true;
+		} else if(useGate(pos)) {
+			return true;
 		} else if(useBoard(pos)) {
 			return true;
 		} else if(useTeleporter(pos)) {
@@ -998,6 +1015,23 @@ void Scourge::dropItem(int x, int y) {
 	}
   }
   endItemDrag();
+}
+
+bool Scourge::useGate(Location *pos) {
+  for(int i = 0; i < 4; i++) {
+	if(!party[i]->getStateMod(Constants::dead)) {
+	  if(pos->shape == shapePal->getShape(Constants::STAIRS_UP_INDEX)) {
+		currentStory--;
+		changingStory = true;
+		return true;
+	  } else if(pos->shape == shapePal->getShape(Constants::STAIRS_DOWN_INDEX)) {
+		currentStory++;
+		changingStory = true;
+		return true;
+	  }
+	}
+  }
+  return false;
 }
 
 bool Scourge::useBoard(Location *pos) {
@@ -1148,6 +1182,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 		int selected = missionList->getSelectedLine();
 		if(selected != -1 && selected < board->getMissionCount()) {
 			nextMission = selected;
+			currentStory = 0;
 			endMission();
 			return true;
 		}

@@ -198,6 +198,16 @@ void C3DSShape::draw() {
 		
 		// Give OpenGL the normal for this vertex.
 		glNormal3f(pObject->pNormals[ index ].x, pObject->pNormals[ index ].y, pObject->pNormals[ index ].z);
+
+
+
+		/*
+		  TODO:
+		  Figure out how far the normal is from the shadow angle and apply multitexturing to this 
+		  triangle accordingly.
+		 */
+
+
 		
 		// If the object has a texture associated with it, give it a texture coordinate.
 		if(!useShadow) {

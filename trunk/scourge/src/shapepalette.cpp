@@ -383,7 +383,7 @@ void ShapePalette::initShapes() {
                 (debug ? 0xff0000ff : 0xf0f0ffff),
                 display_list + (count++ * 3),
                 Constants::TELEPORTER_BASE_INDEX);
-
+	/*
 	shapes[Constants::STAIRS_UP_INDEX] =
 	  new C3DSShape("data/objects/stairs.3ds", 2.0f, this,
 					notex, 7, 7, 10,
@@ -391,6 +391,25 @@ void ShapePalette::initShapes() {
 					0xffffffff,
 					display_list + (count++ * 3), Constants::STAIRS_UP_INDEX, 
 					3, 0);
+	*/
+
+
+
+
+	/* FIXME: use only 1 3ds shape and put moving up/down arrow above gate to indicate direction. */
+	shapes[Constants::STAIRS_UP_INDEX] =
+	  new C3DSShape("data/objects/gate.3ds", 2.0f, this,
+					notex, 6, 2, 10,
+					"STAIRS", stairsDescription, stairsDescriptionCount,
+					0xffffffff,
+					display_list + (count++ * 3), Constants::STAIRS_UP_INDEX);
+
+	shapes[Constants::STAIRS_DOWN_INDEX] =
+	  new C3DSShape("data/objects/gate.3ds", 2.0f, this,
+					notex, 6, 2, 10,
+					"STAIRS", stairsDescription, stairsDescriptionCount,
+					0xffffffff,
+					display_list + (count++ * 3), Constants::STAIRS_DOWN_INDEX);
 
 
 
