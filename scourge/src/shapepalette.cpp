@@ -516,13 +516,14 @@ void ShapePalette::loadTheme( WallTheme *theme ) {
 
     // create new shapes
     cerr << "*** Applying theme to shapes: ***" << endl;
+    GLShape::createDarkTexture( currentTheme );
     for(int i = 0; i < (int)themeShapes.size(); i++) {
       GLShape *shape = themeShapes[i];
       string ref = themeShapeRef[i];
       GLuint *textureGroup = currentTheme->getTextureGroup( ref );
       cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
         " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
-      shape->setTheme( textureGroup, currentTheme );
+      shape->setTexture( textureGroup );
     }
     cerr << "**********************************" << endl;
   }

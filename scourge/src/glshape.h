@@ -48,7 +48,6 @@ private:
   float xIconRot, yIconRot, zIconRot;
   GLuint displayListStart;
   bool initialized;
-  WallTheme *theme;
 
   struct surface *surfaces[5];
   enum { 
@@ -90,7 +89,8 @@ public:
 
   virtual void initialize();
 
-  void setTheme( GLuint *textureGroup, WallTheme *theme );
+  static void createDarkTexture( WallTheme *theme );
+  void setTexture( GLuint *textureGroup );
 
   inline void setSkipSide(int n) { skipside = n; }
   bool fitsInside(GLShape *smaller);  
@@ -125,7 +125,6 @@ public:
   GLfloat xpos, ypos, zpos, xpos2, ypos2, zpos2;
   void commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex);
   static struct surface *new_surface(float vertices[4][3]);
-  void createDarkTexture();
   void initSurfaces();
   void drawShadow();
   void createShadowList( GLuint listName );
