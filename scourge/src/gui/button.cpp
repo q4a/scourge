@@ -35,6 +35,7 @@ Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) :
   inside = false;
   this->highlight = highlight;
   this->glowing = false;
+  this->inverse = false;
 }
 
 Button::~Button() {
@@ -62,17 +63,31 @@ void Button::drawWidget(Widget *parent) {
   } else {
     applyBackgroundColor(true);
   }
+
   int n = ( theme->getButtonBackground() ? theme->getButtonBackground()->width : 0 );
-  glBegin(GL_QUADS);
-  glTexCoord2f(0, 0);
-  glVertex2d(n, n);
-  glTexCoord2f(0, 1);
-  glVertex2d(n, y2 - y - n);
-  glTexCoord2f(1, 1);
-  glVertex2d(x2 - x - n, y2 - y - n);
-  glTexCoord2f(1, 0);
-  glVertex2d(x2 - x - n, n);
-  glEnd();
+  if( inverse ) {
+    glBegin(GL_QUADS);
+    glTexCoord2f(1, 1);
+    glVertex2d(n, n);
+    glTexCoord2f(1, 0);
+    glVertex2d(n, y2 - y - n);    
+    glTexCoord2f(0, 0);
+    glVertex2d(x2 - x - n, y2 - y - n);
+    glTexCoord2f(0, 1);
+    glVertex2d(x2 - x - n, n);
+    glEnd();
+  } else {
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex2d(n, n);
+    glTexCoord2f(0, 1);
+    glVertex2d(n, y2 - y - n);
+    glTexCoord2f(1, 1);
+    glVertex2d(x2 - x - n, y2 - y - n);
+    glTexCoord2f(1, 0);
+    glVertex2d(x2 - x - n, n);
+    glEnd();
+  }
 
   if( n ) {
     glPushMatrix();
@@ -237,6 +252,7 @@ void Button::drawWidget(Widget *parent) {
 }
 
 bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
+  inverse = false;
   inside = isInside(x, y);
   if(inside) ((Window*)parent)->setLastWidget(this);
   // handle it
@@ -250,11 +266,13 @@ bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   }
   break;
   case SDL_MOUSEMOTION:
+  inverse = ( inside && event->motion.state == SDL_PRESSED );
 	break;
   case SDL_MOUSEBUTTONUP:
 	if(inside && toggle) selected = (selected ? false : true);
 	return inside;
   case SDL_MOUSEBUTTONDOWN:
+  inverse = inside;
 	break;
   default:
 	break;
