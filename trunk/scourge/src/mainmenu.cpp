@@ -47,11 +47,20 @@ MainMenu::MainMenu(Scourge *scourge){
 
   // The new style gui
 #ifndef AT_WORK
+
+#ifdef HAVE_SDL_NET
+  mainWin = new Window( scourge->getSDLHandler(),
+												50, 230, 270, 250, 
+												strdup("Main Menu"), 
+												scourge->getShapePalette()->getGuiTexture(),
+												false );
+#else
   mainWin = new Window( scourge->getSDLHandler(),
 												50, 230, 270, 220, 
 												strdup("Main Menu"), 
 												scourge->getShapePalette()->getGuiTexture(),
 												false );
+#endif
   
   char version[100];
   sprintf(version, "Scourge version %7.2f", SCOURGE_VERSION);
@@ -59,16 +68,27 @@ MainMenu::MainMenu(Scourge *scourge){
   label->setColor( 0, 0, 0, 1.0f );
   mainWin->addWidget((Widget*)label);
   
-  newGameButton = new Button( 10, 40, 260, 60, scourge->getShapePalette()->getHighlightTexture(), strdup("New Game") );
+  int y = 40;
+  newGameButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("New Game") );
   mainWin->addWidget((Widget*)newGameButton);
-  continueButton = new Button( 10, 70, 260, 90, scourge->getShapePalette()->getHighlightTexture(), strdup("Continue Game") );
+  y += 30;
+  continueButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Continue Game") );
   mainWin->addWidget((Widget*)continueButton);
-  optionsButton = new Button( 10, 100, 260, 120, scourge->getShapePalette()->getHighlightTexture(), strdup("Options") );
+  y += 30;
+#ifdef HAVE_SDL_NET
+  multiplayer = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Multiplayer") );
+  mainWin->addWidget((Widget*)multiplayer);
+  y += 30;
+#endif
+  optionsButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Options") );
   mainWin->addWidget((Widget*)optionsButton);
-  aboutButton = new Button( 10, 130, 260, 150, scourge->getShapePalette()->getHighlightTexture(), strdup("About") );
+  y += 30;
+  aboutButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("About") );
   mainWin->addWidget((Widget*)aboutButton);
-  quitButton = new Button( 10, 160, 260, 180, scourge->getShapePalette()->getHighlightTexture(), strdup("Quit") );
+  y += 30;
+  quitButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), strdup("Quit") );
   mainWin->addWidget((Widget*)quitButton);
+  y += 30;
 #else
   mainWin = new Window( scourge->getSDLHandler(),
 												50, 230, 5, 5, 
@@ -178,7 +198,7 @@ void MainMenu::drawView() {
 
   drawLogo();
 
-  glPopMatrix();
+  //glPopMatrix();
 #else
   glLoadIdentity();
   glTranslatef(0.0f,0.0f,-1.0f);
@@ -436,25 +456,33 @@ void MainMenu::drawWater() {
 bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(scourge->getOptionsMenu()->isVisible()) {
-	scourge->getOptionsMenu()->handleEvent(widget, event);
-	return false;
+    scourge->getOptionsMenu()->handleEvent(widget, event);
+    return false;
+  }
+
+  if(scourge->getMultiplayerDialog()->isVisible()) {
+    scourge->getMultiplayerDialog()->handleEvent(widget, event);
+    return false;
   }
 
   if(widget == newGameButton) {
-	value = NEW_GAME;
-	return true;
+    value = NEW_GAME;
+    return true;
   } else if(widget == continueButton) {
-	value = CONTINUE_GAME;
-	return true;
+    value = CONTINUE_GAME;
+    return true;
   } else if(widget == optionsButton) {
-	value = OPTIONS;
-	return true;
+    value = OPTIONS;
+    return true;
   } else if(widget == aboutButton) {
-	value = ABOUT;
-	return true;
+    value = ABOUT;
+    return true;
+  } else if(widget == multiplayer) {
+    value = MULTIPLAYER;
+    return true;
   } else if(widget == quitButton) {
-	value = QUIT;
-	return true;
+    value = QUIT;
+    return true;
   }
   return false;
 }
@@ -464,6 +492,11 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   if(scourge->getOptionsMenu()->isVisible()) {
 	scourge->getOptionsMenu()->handleEvent(event);
 	return false;
+  }
+
+  if(scourge->getMultiplayerDialog()->isVisible()) {
+    scourge->getMultiplayerDialog()->handleEvent(event);
+    return false;
   }
 
   switch(event->type) {
