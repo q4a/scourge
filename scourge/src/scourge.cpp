@@ -20,7 +20,7 @@
 
 #define MOUSE_ROT_DELTA 2
 
-#define BATTLES_ENABLED 0
+#define BATTLES_ENABLED 1
 
 #define DRAG_START_TOLERANCE 5
 

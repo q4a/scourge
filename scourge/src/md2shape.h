@@ -65,6 +65,8 @@ private:
   int currentFrame; 
   int animationWaiting; // memorizes one animation waiting to be played
   float angle;
+
+  bool debug;
   
   // To ensure that animations with few frames are played at least once entirely
   bool playedOnce; 
@@ -85,6 +87,8 @@ private:
 
 public:     
 	~MD2Shape();
+
+  inline void setDebug(bool b) { debug = b; }
 
   inline bool getAttackEffect() { return attackEffect; }
   inline void setAttackEffect(bool b) { attackEffect = b; }

@@ -413,6 +413,12 @@ class Creature {
   void recalcAggregateValues();
 
   bool gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug);
+
+  /**
+   * How big of a step to take.
+   * Use fps, speed and gamespeed to figure this out.
+   */
+  GLfloat getStep();
 };
 
 

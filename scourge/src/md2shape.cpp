@@ -52,6 +52,7 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   this->attackEffect = false;
   this->div = div; 
   this->textureId = textureId;
+  this->debug = false;
   
   // Animation stuff
   elapsedTime = 0.0f;
@@ -168,96 +169,93 @@ float MD2Shape::ReturnCurrentTime(int nextFrame)
 // This draws and animates the .md2 model by interpoloated key frame animation
 void MD2Shape::AnimateMD2Model()
 {
-    int *ptricmds ;
-    int nb;               
-        
-    tAnimationInfo *pAnim = &(g_3DModel->pAnimations[currentAnim]);
-    int nextFrame = (currentFrame + 1) % pAnim->endFrame;
-    
-    // MD2_STAND and MD2_TAUNT animations must be played only once 
-    if(nextFrame == 0){        
-      nextFrame =  pAnim->startFrame;
-      playedOnce = true;        
-      if(!(currentAnim == MD2_STAND || currentAnim == MD2_RUN)) {
-        if(animationWaiting == - 1){
-          setCurrentAnimation(MD2_STAND);
-        } else{
-          setCurrentAnimation(animationWaiting);
-          animationWaiting = -1;
-        }
-        setAttackEffect(false);
-      }
-    } 
+  int *ptricmds ;
+  int nb;               
 
-    // t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation    
-    float t = ReturnCurrentTime(nextFrame);
-                        
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    
-    // Compute interpolated vertices        
-    vect3d * currVertices, * nextVertices;    
-    currVertices = &g_3DModel->vertices[ g_3DModel->numVertices * currentFrame ];
-    nextVertices = &g_3DModel->vertices[ g_3DModel->numVertices * nextFrame ];
-    if(!pauseAnimation){    
-        for(int i = 0; i < g_3DModel->numVertices ; i++){
-            vect[i][0] = (currVertices[i][0] + t * (nextVertices[i][0] - currVertices[i][0])) * div;
-            vect[i][1] = (currVertices[i][1] + t * (nextVertices[i][1] - currVertices[i][1])) * div;
-            vect[i][2] = (currVertices[i][2] + t * (nextVertices[i][2] - currVertices[i][2])) * div;    
-        }
+  tAnimationInfo *pAnim = &(g_3DModel->pAnimations[currentAnim]);
+  int nextFrame = (currentFrame + 1) % pAnim->endFrame;
+
+  // MD2_STAND and MD2_TAUNT animations must be played only once 
+  if(nextFrame == 0){        
+    nextFrame =  pAnim->startFrame;
+    playedOnce = true;        
+    if(!(currentAnim == MD2_STAND || currentAnim == MD2_RUN)) {
+      if(animationWaiting == - 1){
+        setCurrentAnimation(MD2_STAND);
+      } else{
+        setCurrentAnimation(animationWaiting);
+        animationWaiting = -1;
+      }
+      setAttackEffect(false);
     }
-    else{
-        for(int i = 0; i < g_3DModel->numVertices ; i++){
-            vect[i][0] = currVertices[i][0]  * div;
-            vect[i][1] = currVertices[i][1]  * div;
-            vect[i][2] = currVertices[i][2]  * div;    
-        }    
+  }
+
+  // t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation    
+  float t = ReturnCurrentTime(nextFrame);
+
+  glBindTexture(GL_TEXTURE_2D, textureId);
+
+  // Compute interpolated vertices        
+  vect3d * currVertices, * nextVertices;    
+  currVertices = &g_3DModel->vertices[ g_3DModel->numVertices * currentFrame ];
+  nextVertices = &g_3DModel->vertices[ g_3DModel->numVertices * nextFrame ];
+  if(!pauseAnimation){    
+    for(int i = 0; i < g_3DModel->numVertices ; i++){
+      vect[i][0] = (currVertices[i][0] + t * (nextVertices[i][0] - currVertices[i][0])) * div;
+      vect[i][1] = (currVertices[i][1] + t * (nextVertices[i][1] - currVertices[i][1])) * div;
+      vect[i][2] = (currVertices[i][2] + t * (nextVertices[i][2] - currVertices[i][2])) * div;    
+    }
+  } else{
+    for(int i = 0; i < g_3DModel->numVertices ; i++){
+      vect[i][0] = currVertices[i][0]  * div;
+      vect[i][1] = currVertices[i][1]  * div;
+      vect[i][2] = currVertices[i][2]  * div;    
+    }    
+  }
+
+  /*
+  if(currentAnim != MD2_RUN) {
+    bool inAir = true;
+    float min = -1;
+    for(int i = 0; i < g_3DModel->numVertices; i++) {
+      if(min == -1 || vect[i][1] < min) min = vect[i][1];
+      if(vect[i][1] < 1.0f && vect[i][1] > -1.0f) {
+        inAir = false;
+        break;
+      }
+    }
+    if(inAir) {
+      cerr << getName() << " IN AIR. min=" << min << " currentAnim=" << currentAnim << " start=" << pAnim->startFrame << " end=" << pAnim->endFrame << " currentFrame=" << currentFrame << endl;
+    }
+  }
+  */
+
+  ptricmds = g_3DModel->pGlCommands;
+  nb = *(ptricmds);    
+  ptricmds++;
+  while(nb != 0){        
+    if( nb < 0 ){
+      glBegin( GL_TRIANGLE_FAN );
+      nb = -nb;
+    } else{
+      glBegin( GL_TRIANGLE_STRIP );
     }
 
-    /*
-    if(currentAnim != MD2_RUN) {
-      bool inAir = true;
-      float min = -1;
-      for(int i = 0; i < g_3DModel->numVertices; i++) {
-        if(min == -1 || vect[i][1] < min) min = vect[i][1];
-        if(vect[i][1] < 1.0f && vect[i][1] > -1.0f) {
-          inAir = false;
-          break;
-        }
-      }
-      if(inAir) {
-        cerr << getName() << " IN AIR. min=" << min << " currentAnim=" << currentAnim << " start=" << pAnim->startFrame << " end=" << pAnim->endFrame << " currentFrame=" << currentFrame << endl;
-      }
+    while(nb > 0){
+      // ptricmds[0]  :   s texture coordinate
+      // ptricmds[1]  :   t texture coordinate
+      // ptricmds[2]  :   vertex index to draw            
+      glTexCoord2f(((float *)ptricmds)[0], 1.0f - ((float *)ptricmds)[1]);            
+      glVertex3fv( vect[ ptricmds[2] ] );
+      nb--;
+      ptricmds+=3;            
     }
-    */
-            
-    ptricmds = g_3DModel->pGlCommands;
-    nb = *(ptricmds);    
+
+    glEnd();        
+    nb = *(ptricmds);
     ptricmds++;
-    while(nb != 0){        
-    
-        if( nb < 0 ){
-            glBegin( GL_TRIANGLE_FAN );
-            nb = -nb;
-        }
-        else{
-            glBegin( GL_TRIANGLE_STRIP );
-        }
-        
-        while(nb > 0){
-            // ptricmds[0]  :   s texture coordinate
-            // ptricmds[1]  :   t texture coordinate
-            // ptricmds[2]  :   vertex index to draw            
-            glTexCoord2f(((float *)ptricmds)[0], 1.0f - ((float *)ptricmds)[1]);            
-            glVertex3fv( vect[ ptricmds[2] ] );
-            nb--;
-            ptricmds+=3;            
-        }
-			
-        glEnd();        
-        nb = *(ptricmds);
-        ptricmds++;
-    }  
-}
+  }  
+}       
 
 
 void MD2Shape::setupBlending() { 
