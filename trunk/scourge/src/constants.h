@@ -487,6 +487,7 @@ public:
     DIVINE_MAGIC_ITEM
   };
   static const char *MAGIC_ITEM_NAMES[];
+  static const Color MAGIC_ITEM_COLOR[];
 
   // special effect names
   enum {

@@ -36,12 +36,12 @@ InfoGui::InfoGui(Scourge *scourge) {
 
   win->createLabel(10, 10, strdup("Name:"), Constants::RED_COLOR);
   strcpy(name, "");
-  nameLabel = new Label(10, 25, description, 50);
+  nameLabel = new Label(10, 25, description, 56);
   win->addWidget(nameLabel);
 
   win->createLabel(10, 80, strdup("Detailed Description:"), Constants::RED_COLOR);
   strcpy(description, "");
-  label = new Label(10, 95, description, 50);
+  label = new Label(10, 95, description, 56);
   win->addWidget(label);
 }
 
@@ -115,27 +115,48 @@ void InfoGui::describe() {
 
 
   // DEBUG
-  infoDetailLevel = 100;
+  //infoDetailLevel = 100;
   // DEBUG
 
 
   if(item->isMagicItem()) {
-    sprintf( tmp, "|Magic item level: %s|", Constants::MAGIC_ITEM_NAMES[ item->getMagicLevel() ] );
-    strcat( description, tmp );
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       sprintf(tmp, "|%d bonus to %s.", 
               item->getBonus(),
               (item->getRpgItem()->isWeapon() ? "attack and damage" : "armor points"));
       strcat(description, tmp);
     } 
+    if(item->getDamageMultiplier() > 1 && 
+       infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+      if( item->getDamageMultiplier() == 2 ) {
+        sprintf( tmp, "|Double damage");
+        strcat( description, tmp );
+      } else if( item->getDamageMultiplier() == 3 ) {
+        sprintf( tmp, "|Tripple damage");
+        strcat( description, tmp );
+      } else if( item->getDamageMultiplier() == 4 ) {
+        sprintf( tmp, "|Quad damage");
+        strcat( description, tmp );
+      } else if( item->getDamageMultiplier() > 4 ) {
+        sprintf( tmp, "|%dX damage", item->getDamageMultiplier());
+        strcat( description, tmp );
+      }
+      if( item->getMonsterType() ) {
+        sprintf( tmp, " vs. %s.", item->getMonsterType());
+        strcat( description, tmp );
+      } else {
+        sprintf( tmp, " vs. any creature.");
+        strcat( description, tmp );
+      }
+    }
     if(item->getSchool() && 
        infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
       if(item->getRpgItem()->isWeapon()) {
-        sprintf(tmp, "|extra damage of %s %s magic.", 
+        sprintf(tmp, "|Extra damage of %s %s magic.", 
                 item->describeMagicDamage(),
                 item->getSchool()->getName());
       } else {
-        sprintf(tmp, "|extra %d pts of %s magic resistance.", 
+        sprintf(tmp, "|Extra %d pts of %s magic resistance.", 
                 item->getMagicResistance(),
                 item->getSchool()->getName());
       }
