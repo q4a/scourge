@@ -78,3 +78,4 @@ scourge_SOURCES = \
 	party.h\
 	projectile.cpp\
 	projectile.h
+

@@ -3862,6 +3862,9 @@ fi
 
 
 
+case "$host" in
+*darwin*) LIBS="$LIBS -framework GLUT -noprebind";;
+*) 
     if test "x$with_glut_libs" = "x" ; then
 	GLUT_LDOPTS=""
     else
@@ -3872,22 +3875,22 @@ fi
 
     saved_LIBS="$LIBS"
 
-    GLUT_LIB_LIST="glut glut32"
+    GLUT_LIB_LIST="glut32 glut"
 
     for GLUT_LIB_NAME in $GLUT_LIB_LIST ; do
 	
 	echo $ac_n "checking for $GLUT_LIB_NAME library""... $ac_c" 1>&6
-echo "configure:3881: checking for $GLUT_LIB_NAME library" >&5
+echo "configure:3884: checking for $GLUT_LIB_NAME library" >&5
 	LIBS="$saved_LIBS $TR_LIBS $GLUT_LDOPTS -l$GLUT_LIB_NAME"
 	cat > conftest.$ac_ext <<EOF
-#line 3884 "configure"
+#line 3887 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:3891: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3894: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   have_glut_lib=yes
 else
@@ -3911,8 +3914,8 @@ rm -f conftest*
 
     LIBS="$saved_LIBS"
     TR_CPPFLAGS="$TR_CPPFLAGS -DHAVE_GLUT"
-    TR_LIBS="$TR_LIBS $GLUT_LDOPTS -l$GLUT_LIB_NAME"
-
+    TR_LIBS="$TR_LIBS $GLUT_LDOPTS -l$GLUT_LIB_NAME";;
+esac
 
 
 
@@ -3923,7 +3926,9 @@ if test "${with_glut_inc+set}" = set; then
 fi
 
 
-
+case "$host" in
+*darwin*) CPPFLAGS="$CPPFLAGS -framework GLUT";;
+*) 
     if test "x$with_glut_inc" = "x" ; then
 	GLUT_CPPFLAGS=""
     else
@@ -3934,17 +3939,17 @@ fi
     CPPFLAGS="$saved_CPPFLAGS $TR_CPPFLAGS $GLUT_CPPFLAGS"
     ac_safe=`echo "GL/glut.h" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for GL/glut.h""... $ac_c" 1>&6
-echo "configure:3938: checking for GL/glut.h" >&5
+echo "configure:3943: checking for GL/glut.h" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3943 "configure"
+#line 3948 "configure"
 #include "confdefs.h"
 #include <GL/glut.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:3948: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:3953: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -3973,7 +3978,7 @@ fi
 
     CPPFLAGS="$saved_CPPFLAGS"
     TR_CPPFLAGS="$TR_CPPFLAGS $GLUT_CPPFLAGS"
-
+esac
 
 
 
