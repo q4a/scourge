@@ -63,6 +63,9 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
     frameOnFullScreen = cards->createCheckbox(100, 200, 258, 220, "Frame map in fullscreen mode", GAME_SETTINGS);
     turnBasedBattle = cards->createCheckbox(100, 240, 258, 260, "Is battle turn-based?", GAME_SETTINGS);
     alwaysShowPath = cards->createCheckbox(100, 280, 258, 300, "Show path in TB battle?", GAME_SETTINGS);
+    tooltipEnabled = cards->createCheckbox(100, 320, 258, 340, "Show tooltips", GAME_SETTINGS);
+    tooltipInterval = new Slider(100, 360, 258, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 200, strdup("Tooltip Delay:"));
+    cards->addWidget(tooltipInterval, GAME_SETTINGS);
    
     // Video settings tabs        
     videoResolutionML = new MultipleLabel(100, 40, 300, 60, "Screen resolution", 100);
@@ -109,6 +112,8 @@ void OptionsMenu::loadGameSettings(){
     alwaysShowPath->setCheck(uc->getAlwaysShowPath());
     musicVolume->setValue(scourge->getUserConfiguration()->getMusicVolume());
     effectsVolume->setValue(scourge->getUserConfiguration()->getEffectsVolume());
+    tooltipEnabled->setCheck(uc->getTooltipEnabled());
+    tooltipInterval->setValue(scourge->getUserConfiguration()->getTooltipInterval());
 }
 
 // line i must correspond to engine action i if we want this scrolling list to work
@@ -274,8 +279,12 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     else if(widget == alwaysShowPath){
         uc ->setAlwaysShowPath(alwaysShowPath->isChecked());
         scourge->setShowPath(alwaysShowPath->isChecked());
-    }
-    else if(widget == videoResolutionML){
+    } else if(widget == tooltipEnabled){
+        uc ->setTooltipEnabled(tooltipEnabled->isChecked());
+        if( !( uc ->getTooltipEnabled() ) ) scourge->resetInfos();
+    } else if(widget == tooltipInterval){
+        uc->setTooltipInterval(tooltipInterval->getValue());
+    } else if(widget == videoResolutionML){
         string line, s1, s2;
         int end;
         line = videoResolutionML->getCurrentText();

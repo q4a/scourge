@@ -42,7 +42,9 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   font_initialized = false;
   debugStr = NULL;
   lastLeftClick = 0;
+  lastMouseMoveTime = SDL_GetTicks();
   isDoubleClick = false;
+  dontUpdateScreen = false;
 }
 
 SDLHandler::~SDLHandler(){
@@ -395,6 +397,7 @@ void SDLHandler::mainLoop() {
   Window::windowWasClosed = false;
   while(true) {    
     int eventCount = 0;  
+    Uint32 now = SDL_GetTicks();
     mouseIsMovingOverMap = false;
     while(SDL_PollEvent(&event) && (eventCount++) < 10) {
       isDoubleClick = false;
@@ -409,7 +412,10 @@ void SDLHandler::mainLoop() {
         mouseButton = event.button.button;
         mouseEvent = SDL_MOUSEMOTION;
         widget = Window::delegateEvent( &event, event.button.x, event.button.y );
-        if(!widget) mouseIsMovingOverMap = true;
+        if(!widget) {
+          mouseIsMovingOverMap = true;
+          lastMouseMoveTime = now;
+        }
         break;
       case SDL_MOUSEBUTTONUP:
         if(invertMouse) event.button.y = screen->h - event.button.y;
@@ -418,7 +424,6 @@ void SDLHandler::mainLoop() {
         mouseButton = event.button.button;
         mouseDragging = false;
         if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
-          Uint32 now = SDL_GetTicks();
           isDoubleClick = (now - lastLeftClick < DOUBLE_CLICK_INTERVAL && 
                            abs(lastMouseX - event.button.x) < DOUBLE_CLICK_TOLERANCE &&
                            abs(lastMouseY - event.button.y) < DOUBLE_CLICK_TOLERANCE);

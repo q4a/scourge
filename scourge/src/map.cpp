@@ -404,7 +404,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                                 chunkOffsetY) / GLShape::DIV;
       
       // frustum testing
-      frustum->CalculateFrustum();
+      //frustum->CalculateFrustum();
       if(useFrustum && 
          !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / GLShape::DIV)) 
         continue;
@@ -797,6 +797,7 @@ void Map::draw() {
 
 
   initMapView();
+  if( !selectMode ) frustum->CalculateFrustum();
   if(lightMapChanged) configureLightMap();
   // populate the shape arrays
   if(mapChanged) {
@@ -1246,6 +1247,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   }
   if(effect && later) {
     if(later->creature) {
+      // translate hack for md2 models... see: md2shape::draw()
       glTranslatef( 0, -1 / GLShape::DIV, 0 );
       later->creature->getEffect()->draw(later->creature->getEffectType(),
                                          later->creature->getDamageEffect());

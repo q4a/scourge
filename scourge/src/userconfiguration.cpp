@@ -192,6 +192,8 @@ UserConfiguration::UserConfiguration(){
     h = 600;
     shadows = 0;
     alwaysShowPath = true;
+    tooltipEnabled = true;
+    tooltipInterval = 50;
     
     // game settings
     gamespeed = 1;  // fast speed
@@ -443,6 +445,10 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set alwaysshowpath %s\n", alwaysShowPath ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set tooltipenabled %s\n", tooltipEnabled ? "true":"false");
+    writeFile(configFile, textLine);
+    sprintf(textLine, "set tooltipinterval %d\n", tooltipInterval );
+    writeFile(configFile, textLine);
     sprintf(textLine, "\n// Audio settings\n");
     writeFile(configFile, textLine);
     sprintf(textLine, "set soundenabled %s\n", soundEnabled ? "true" : "false");
@@ -520,7 +526,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
        s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
        s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle" ||
-       s1 == "soundenabled" || s1 == "alwaysshowpath" ){
+       s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" ){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -574,6 +580,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
       musicVolume = atoi(s2.c_str());
     } else if(s1 == "effectsvolume") {
       effectsVolume = atoi(s2.c_str());
+    } else if(s1 == "tooltipinterval") {
+      tooltipInterval = atoi(s2.c_str());
     } else if(s1 == "w"){
         w = atoi(s2.c_str());
     }
@@ -613,6 +621,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "alwaysshowpath" ) {
       alwaysShowPath = paramValue;
+    }
+    else if(s1 == "tooltipenabled" ) {
+      tooltipEnabled = paramValue;
     }
     else if(s1 == "gamespeed"){        
         gamespeed = atoi(s2.c_str());
@@ -1000,6 +1011,8 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set frameonfullscreen true" << endl;
   configFile << "set turnbasedbattle true" << endl;
   configFile << "set alwaysshowpath false" << endl;
+  configFile << "set tooltipenabled true" << endl;
+  configFile << "set tooltipinterval 50" << endl;
   configFile << "" << endl;
   configFile << "// Audio settings" << endl;
   configFile << "set soundenabled true" << endl;

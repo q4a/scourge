@@ -170,6 +170,8 @@ private:
   int h;  
   int shadows;
   bool alwaysShowPath;
+  bool tooltipEnabled;
+  int tooltipInterval;
   
   // game settings
   int gamespeed;
@@ -231,6 +233,8 @@ private:
   inline int getMusicVolume() { return musicVolume; }
   inline int getEffectsVolume() { return effectsVolume; }
   inline bool getAlwaysShowPath() { return alwaysShowPath; }
+  inline bool getTooltipEnabled() { return tooltipEnabled; }
+  inline int getTooltipInterval() { return tooltipInterval; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
@@ -255,6 +259,8 @@ private:
   inline void setMusicVolume(int n) { musicVolume = n; }
   inline void setEffectsVolume(int n) { effectsVolume = n; }
   inline void setAlwaysShowPath( bool b ) { alwaysShowPath = b; }
+  inline void setTooltipEnabled( bool b ) { tooltipEnabled = b; }
+  inline void setTooltipInterval( int n ) { tooltipInterval = n; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           

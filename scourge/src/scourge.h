@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 #include "constants.h"
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
@@ -97,6 +98,24 @@ class InfoGui;
 #define MAX_SIZE 0
 #define MIN_SIZE 1
 
+class InfoMessage {
+public:
+  char message[300];
+  void *obj;
+  int x, y, z;
+
+  InfoMessage( char *s, void *obj, int x, int y, int z ) {
+    strcpy( this->message, s );
+    this->obj = obj;
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
+
+  ~InfoMessage() {
+  }
+};
+
 /** 
   This is the main class of the game. It is a central place to put
   references to other objects, like the party, minimap, etc.
@@ -106,7 +125,7 @@ class InfoGui;
 class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
  private:
   Party *party;
-  Map *map;
+  Map *levelMap;
   MiniMap * miniMap;
   DungeonGenerator *dg;
 //  Scourge *scourge;
@@ -208,6 +227,9 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView  {
   GLUquadric *quadric;
   bool showPath;
 
+  bool needToCheckInfo;
+  map<InfoMessage *, Uint32> infos;
+
 protected:
   SDLHandler *sdlHandler;
   ShapePalette *shapePal;
@@ -292,7 +314,7 @@ public:
   /**
     @return the map.
   */
-  inline Map *getMap() { return map; }
+  inline Map *getMap() { return levelMap; }
   
   /**
     @return the MiniMap.
@@ -607,6 +629,8 @@ public:
 
   void showItemInfoUI(Item *item, int level);
 
+  void resetInfos();
+
  protected:
 
   void resetBattles();
@@ -635,6 +659,8 @@ public:
   void moveCreatures();
 
   void checkForDropTarget();
+  void checkForInfo();
+  void drawInfos();
 };
 
 #endif

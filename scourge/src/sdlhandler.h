@@ -96,6 +96,7 @@ private:
   static bool stencilBufferUsed;
 
  public: 
+   bool dontUpdateScreen;
 
   enum {
 	CURSOR_NORMAL=0,
@@ -111,6 +112,7 @@ private:
   Uint8 mouseButton, mouseEvent;
   bool mouseDragging;
   bool mouseIsMovingOverMap;
+  Uint32 lastMouseMoveTime;
   Uint32 lastLeftClick;
   bool isDoubleClick;
 
