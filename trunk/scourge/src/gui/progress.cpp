@@ -29,7 +29,7 @@ Progress::Progress(Scourge *scourge, int maxStatus, bool clearScreen, bool cente
 Progress::~Progress() {
 }
 
-void Progress::updateStatus(const char *message, bool updateScreen, int n, int max) {
+void Progress::updateStatus(const char *message, bool updateScreen, int n, int max, int alt) {
   if(n != -1) status = n;
   if(max != -1) maxStatus = max;
 
@@ -71,7 +71,8 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glColor4f(1, 1, 1, 1);
   if(message) scourge->getSDLHandler()->texPrint(20, 25, message);
   for (int i = 0; i < maxStatus; i++) {
-    if (i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
+    if( i < alt ) glColor4f(0.75f, 1.0f, 0.0f, 1);
+    else if(i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
     else glColor4f(0.5f, 0.5f, 0.5f, 1);
     glPushMatrix();
     if(updateScreen) glLoadIdentity();

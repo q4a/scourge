@@ -359,8 +359,10 @@ bool Creature::follow(Map *map) {
 }
 
 void Creature::findPath( int x, int y ) {
+  proposedX = x;
+  proposedY = y;
   Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
-                 x, y, 0, 
+                 proposedX, proposedY, 0, 
                  &proposedPath, session->getMap(), getShape());
 }
 
