@@ -17,7 +17,7 @@
 
 #include "map.h"
 
-#define DEBUG_MOUSE_POS
+//#define DEBUG_MOUSE_POS
 
 // only use 1 (disabled) or 0 (enabled)
 #define LIGHTMAP_ENABLED 1
