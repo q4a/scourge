@@ -40,6 +40,7 @@ class Client {
   int sendChatTCP(char *message);
   int sendPing();
   int sendRawTCP(char *s);
+  int sendCharacter(char *bytes, int length);
 
   inline void setGameStateHandler(GameStateHandler *gsh) { this->gsh = gsh; }
   inline GameStateHandler *getGameStateHandler() { return gsh; }

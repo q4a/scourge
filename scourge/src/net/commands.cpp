@@ -50,6 +50,12 @@ void Commands::buildPing(char *buff) {
   sprintf(buff, "PING,%d", getLastGameFrameReceived());
 }
 
+void Commands::buildCharacter(char *buff, char *bytes, int length) {
+  strcpy(buff, "CHAR");
+  memcpy(buff + 4, bytes, length);
+  buff[4 + length] = 0;
+}
+
 TestCommandInterpreter::TestCommandInterpreter() {
 }
 

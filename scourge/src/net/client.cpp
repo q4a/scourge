@@ -231,6 +231,12 @@ int Client::sendPing() {
   return sendRawTCP(message);
 }
 
+int Client::sendCharacter(char *bytes, int length) {
+  char message[1024];
+  commands->buildCharacter(message, bytes, length);
+  return sendRawTCP(message);
+}
+
 int Client::sendRawTCP(char *s) {
   // try to connect the first time
   if(!connected && !connect()) return 0;

@@ -127,6 +127,14 @@ void Creature::commonInit() {
   calculateExpOfNextLevel();
 }
 
+void Creature::save(char *buff, int *length) {
+  CreatureInfo info;
+  
+}
+
+void Creature::load(char *buff, int length) {
+}
+
 void Creature::calculateExpOfNextLevel() {
   if(isMonster()) return;
   expOfNextLevel = 0;

@@ -57,6 +57,7 @@ class Commands {
   static void buildLogin(char *buff, char *username);
   // not static!
   void buildPing(char *buff);
+  static void buildCharacter(char *buff, char *bytes, int length);
 };
 
 #endif
