@@ -318,7 +318,10 @@ void SDLHandler::setVideoMode( UserConfiguration * uc ) {
   /* Sets up OpenGL double buffering */
   if(uc->getDoublebuf()) 
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-  if(uc->getStencilbuf()) SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+  if(uc->getStencilbuf()) {
+		uc->setStencilBufInitialized(true);
+		SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+	}
 
   cout << "Setting video mode: " << uc->getW() << "x" << uc->getH() << "x" << uc->getBpp() << endl;
   
