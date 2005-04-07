@@ -27,7 +27,7 @@ On the other hand I've always liked the old-school isometric games like
 Exult or Woodward.
 
 [BuildPrepare]
-prepareBuild
+prepareBuild --disable-sdl_net
 
 [BuildUnprepare]
 unprepareBuild
@@ -41,9 +41,9 @@ EOF
 [Prepare]
 # Dependency checking
 require @libsdl.org/sdl 1.2
-# require @libsdl.org/sdl_net 1.2.8
-# require @libsdl.org/sdl_mixer 1.2
-# require @freetype.org/libfreetype 2.0
+#require @libsdl.org/sdl_net 1.2
+require @libsdl.org/sdl_mixer 1.2
+require @freetype.org/freetype2 2.0
 
 [Install]
 # Put your installation script here
