@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=0.10
+Type=Application
+Encoding=UTF-8
+Name=S.C.O.U.R.G.E.: Heroes of Lesser Renown
+Comment=A 3D, roguelike game of not quite epic proportions.
+TryExec=scourge
+Exec=scourge
+Categories=Game;RolePlaying
+Icon=scourge.png
+

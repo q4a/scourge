@@ -36,6 +36,8 @@ unprepareBuild
 import <<EOF
 $source_dir/src/scourge
 $source_dir/data
+$source_dir/assets/scourge.desktop
+$source_dir/assets/scourge.png
 EOF
 
 [Prepare]
@@ -49,7 +51,9 @@ require @freetype.org/freetype2 2.0
 # Put your installation script here
 installExe scourge
 installData data
-chmod -R 755 $PREFIX/share/data
+# chmod -R 755 $PREFIX/share/data
+installDesktop "Game/RolePlaying" scourge.desktop
+installIcon scourge.png
 
 [Uninstall]
 # Usually just the following line is enough to uninstall everything
