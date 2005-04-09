@@ -991,8 +991,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
          (abs(mx - willStartDragX) > DRAG_START_TOLERANCE ||
           abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
         // click on an item
-        Uint16 mapx, mapy, mapz;
-        getMapXYZAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy, &mapz);
+        Uint16 mapx = cursorMapX;
+        Uint16 mapy = cursorMapY;
+        Uint16 mapz = cursorMapZ;
         if(mapx > MAP_WIDTH) {
           getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
           mapz = 0;
@@ -1271,7 +1272,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     levelMap->setZRot(0);
   } else if(button == SDL_BUTTON_LEFT) {
 
-    //getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
     mapx = cursorMapX;
     mapy = cursorMapY;
     mapz = cursorMapZ;
@@ -1411,7 +1411,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	party->setSelXY( mapx, mapy );
 
   } else if(button == SDL_BUTTON_RIGHT) {
-    //getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
     describeLocation(cursorMapX, cursorMapY, cursorMapZ);
   }
 }        
@@ -3243,11 +3242,9 @@ void Scourge::checkForDropTarget() {
 
         // check location
         Location *dropTarget = NULL;
-        Uint16 mapx, mapy, mapz;
-        //getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
-        mapx = cursorMapX;
-        mapy = cursorMapY;
-        mapz = cursorMapZ;
+        Uint16 mapx = cursorMapX;
+        Uint16 mapy = cursorMapY;
+        Uint16 mapz = cursorMapZ;
         if(mapx < MAP_WIDTH) {
           dropTarget = levelMap->getLocation(mapx, mapy, mapz);
           if(!(dropTarget && 
@@ -3273,15 +3270,10 @@ void Scourge::showItemInfoUI(Item *item, int level) {
 void Scourge::checkForInfo() {
   Uint16 mapx, mapy, mapz;
 
-  // Hack: only call getMapXYZAtScreenXY once. Technically, 0 is never returned
-  // so use 0 for checking if it's been called...
-  mapx = 0;
-
   // change cursor when over a hostile creature
   if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
       sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ) {
     bool handled = false;
-    //getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
     mapx = cursorMapX;
     mapy = cursorMapY;
     mapz = cursorMapZ;
@@ -3304,11 +3296,9 @@ void Scourge::checkForInfo() {
       needToCheckInfo = false;
       
       // check location
-      Uint16 mapx, mapy, mapz;
-      //getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
-      mapx = cursorMapX;
-      mapy = cursorMapY;
-      mapz = cursorMapZ;
+      Uint16 mapx = cursorMapX;
+      Uint16 mapy = cursorMapY;
+      Uint16 mapz = cursorMapZ;
       if(mapx < MAP_WIDTH) {
         Location *pos = levelMap->getLocation(mapx, mapy, mapz);
         if( pos ) {
