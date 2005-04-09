@@ -92,6 +92,8 @@ private:
 
   char *debugStr;
 
+  bool attackCursor;
+
   // only do stencil buffer ops if this is true
   static bool stencilBufferUsed;
 
@@ -106,8 +108,9 @@ public:
   bool dontUpdateScreen;
 
   enum {
-	CURSOR_NORMAL=0,
-	CURSOR_CROSSHAIR
+    CURSOR_NORMAL=0,
+    CURSOR_CROSSHAIR,
+    CURSOR_ATTACK
   };  
 
   SDLHandler(ShapePalette *shapePal);

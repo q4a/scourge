@@ -231,9 +231,9 @@ public:
   SDL_Surface *tiles, *spells;
   GLubyte *tilesImage[20][20], *spellsImage[20][20];
   GLuint tilesTex[20][20], spellsTex[20][20];
-  SDL_Surface *cursor, *crosshair, *paperDoll;
-  GLubyte *cursorImage, *crosshairImage, *paperDollImage;
-  GLuint cursor_texture, crosshair_texture;
+  SDL_Surface *cursor, *crosshair, *attackCursor, *paperDoll;
+  GLubyte *cursorImage, *crosshairImage, *attackImage, *paperDollImage;
+  GLuint cursor_texture, crosshair_texture, attack_texture;
 
   SDL_Surface *logo;
   GLubyte *logoImage;   

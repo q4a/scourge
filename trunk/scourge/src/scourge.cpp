@@ -51,6 +51,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   needToCheckInfo = false;
   needToCheckDropLocation = true;
   nextMission = -1;
+  cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   // in HQ map
   inHq = true;
   showPath = config->getAlwaysShowPath();
@@ -385,6 +386,10 @@ void Scourge::drawView() {
   playRound();
 
   updatePartyUI();
+
+  if( getSDLHandler()->mouseIsMovingOverMap )
+    getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, 
+                        &cursorMapX, &cursorMapY, &cursorMapZ);
 
   checkForDropTarget();
   checkForInfo();
@@ -1219,6 +1224,7 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
   Uint16 mapx, mapy;
   getMapXYAtScreenXY(x, y, &mapx, &mapy);
 
+  // show path
   if( session->getUserConfiguration()->isBattleTurnBased() &&
       battleTurn < (int)battleRound.size() ) {
     Creature *c = battleRound[battleTurn]->getCreature();
@@ -1229,7 +1235,7 @@ void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
     }
   }
 
-  if(mapx < MAP_WIDTH) levelMap->handleMouseMove(mapx, mapy, 0);
+  if(mapx < MAP_WIDTH) levelMap->handleMouseMove( mapx, mapy, 0 );
 }
 
 void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
@@ -1265,7 +1271,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     levelMap->setZRot(0);
   } else if(button == SDL_BUTTON_LEFT) {
 
-    getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+    //getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+    mapx = cursorMapX;
+    mapy = cursorMapY;
+    mapz = cursorMapZ;
 
     // drop target?
     Location *dropTarget = NULL;
@@ -1402,8 +1411,8 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 	party->setSelXY( mapx, mapy );
 
   } else if(button == SDL_BUTTON_RIGHT) {
-    getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
-    describeLocation(mapx, mapy, mapz);
+    //getMapXYZAtScreenXY(x, y, &mapx, &mapy, &mapz);
+    describeLocation(cursorMapX, cursorMapY, cursorMapZ);
   }
 }        
 
@@ -3235,7 +3244,10 @@ void Scourge::checkForDropTarget() {
         // check location
         Location *dropTarget = NULL;
         Uint16 mapx, mapy, mapz;
-        getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
+        //getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
+        mapx = cursorMapX;
+        mapy = cursorMapY;
+        mapz = cursorMapZ;
         if(mapx < MAP_WIDTH) {
           dropTarget = levelMap->getLocation(mapx, mapy, mapz);
           if(!(dropTarget && 
@@ -3259,6 +3271,32 @@ void Scourge::showItemInfoUI(Item *item, int level) {
 }
 
 void Scourge::checkForInfo() {
+  Uint16 mapx, mapy, mapz;
+
+  // Hack: only call getMapXYZAtScreenXY once. Technically, 0 is never returned
+  // so use 0 for checking if it's been called...
+  mapx = 0;
+
+  // change cursor when over a hostile creature
+  if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
+      sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ) {
+    bool handled = false;
+    //getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
+    mapx = cursorMapX;
+    mapy = cursorMapY;
+    mapz = cursorMapZ;
+    if(mapx < MAP_WIDTH) {
+      Location *pos = levelMap->getLocation(mapx, mapy, mapz);    
+      if( pos && 
+          pos->creature && 
+          party->getPlayer()->canAttack( pos->creature ) ) {
+        sdlHandler->setCursorMode( SDLHandler::CURSOR_ATTACK );
+        handled = true;
+      }
+    }
+    if( !handled ) sdlHandler->setCursorMode( SDLHandler::CURSOR_NORMAL );
+  }  
+
   if( session->getUserConfiguration()->getTooltipEnabled() &&
       SDL_GetTicks() - getSDLHandler()->lastMouseMoveTime > 
       (Uint32)(session->getUserConfiguration()->getTooltipInterval() * 10) ) {
@@ -3267,7 +3305,10 @@ void Scourge::checkForInfo() {
       
       // check location
       Uint16 mapx, mapy, mapz;
-      getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
+      //getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, &mapx, &mapy, &mapz);
+      mapx = cursorMapX;
+      mapy = cursorMapY;
+      mapz = cursorMapZ;
       if(mapx < MAP_WIDTH) {
         Location *pos = levelMap->getLocation(mapx, mapy, mapz);
         if( pos ) {
