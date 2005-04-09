@@ -149,6 +149,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   ScrollingList *messageList;
   Button *yesExitConfirm, *noExitConfirm;
   int movingX, movingY, movingZ;
+  Uint16 cursorMapX, cursorMapY, cursorMapZ;
   Item *movingItem;
   bool needToCheckDropLocation;
   Uint16 move;

@@ -531,6 +531,8 @@ void ShapePalette::initialize() {
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
   crosshair_texture = loadGLTextureBGRA(crosshair, crosshairImage);
+  setupAlphaBlendedBMP("/attack.bmp", &attackCursor, &attackImage);
+  attack_texture = loadGLTextureBGRA(attackCursor, attackImage, GL_LINEAR);
   setupAlphaBlendedBMP("/paperdoll.bmp", &paperDoll, &paperDollImage);
 
   // set up the logo
