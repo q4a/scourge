@@ -60,7 +60,7 @@ Board::Board(Session *session) {
       fgetc( fp );
       // read the name
       n = Constants::readLine( name, fp );
-      cerr << "Creating story mission: " << name << endl;
+//      cerr << "Creating story mission: " << name << endl;
 
       // read the level and depth
       n = Constants::readLine( line, fp );
@@ -150,6 +150,7 @@ void Board::initMissions() {
     if( !mission->isStoryLine() && mission->isCompleted() ) {
       delete mission;
       availableMissions.erase(e);
+      e = availableMissions.begin();
     }
   }
 
@@ -266,7 +267,7 @@ MissionTemplate::~MissionTemplate() {
 
 Mission *MissionTemplate::createMission( Session *session, int level, int depth ) {
 
-  cerr << "*** Creating level " << level << " mission, using template: " << this->name << endl;
+//  cerr << "*** Creating level " << level << " mission, using template: " << this->name << endl;
 
   map<string, RpgItem*> items;
   map<string, Monster*> creatures;

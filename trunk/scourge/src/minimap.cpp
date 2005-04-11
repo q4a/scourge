@@ -185,9 +185,10 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
   }    
   glEnd();      
 
-  cerr << "building minimap texture: minX=" << minX << " minY=" << minY << 
-        " xCoord=" << xCoord << " yCoord=" << yCoord << " textureSizeW=" << textureSizeW <<
-        " textureSizeH=" << textureSizeH << " screenHeight=" << screenHeight << endl;
+  if(DEBUG_MINIMAP)
+      cerr << "building minimap texture: minX=" << minX << " minY=" << minY << 
+      " xCoord=" << xCoord << " yCoord=" << yCoord << " textureSizeW=" << textureSizeW <<
+      " textureSizeH=" << textureSizeH << " screenHeight=" << screenHeight << endl;
 
   // Copy to a texture
   glLoadIdentity();

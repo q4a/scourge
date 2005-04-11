@@ -186,7 +186,7 @@ void DungeonGenerator::initByLevel() {
 	dungeonLevel = MAX_DUNGEON_LEVEL - 1;
   }
 
-  cerr << "*** Creating dungeon level: " << dungeonLevel << " depth=" << depth << endl;
+//  cerr << "*** Creating dungeon level: " << dungeonLevel << " depth=" << depth << endl;
   
   this->width = levels[dungeonLevel][dgWIDTH];
   this->height = levels[dungeonLevel][dgHEIGHT];
@@ -756,7 +756,7 @@ void DungeonGenerator::constructMaze(int locationIndex) {
 void DungeonGenerator::updateStatus(const char *statusMessage) {
   progress->updateStatus(statusMessage);
   Uint32 now = SDL_GetTicks();
-  cerr << "+++ " << statusMessage << ". Previous task's time=" << (now - start) << endl;
+//  cerr << "+++ " << statusMessage << ". Previous task's time=" << (now - start) << endl;
   start = now;
 }
 
@@ -1192,7 +1192,7 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
               x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
               y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
               pedestal->getShape()->getHeight());
-      cerr << "*** Added mission item: " << item->getItemName() << " at: " << x << "," << y << endl;
+//      cerr << "*** Added mission item: " << item->getItemName() << " at: " << x << "," << y << endl;
     }
 
     // add mission creatures
@@ -1209,7 +1209,7 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
       getRandomLocation(map, creature->getShape(), &x, &y);    
       addItem(map, creature, NULL, NULL, x, y);
       creature->moveTo(x, y, 0);
-      cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
+//      cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
     }
   }
 }
@@ -1261,8 +1261,8 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
 
       if(monsterLevelTotal > totalLevel) {
         room[i].valueBonus++;
-        cerr << "Room " << i << " is guarded by badass monsters(tm). " << 
-          "Room's valueBonus=" << room[i].valueBonus << endl;
+//        cerr << "Room " << i << " is guarded by badass monsters(tm). " << 
+          //"Room's valueBonus=" << room[i].valueBonus << endl;
       }
     }
 
@@ -1301,7 +1301,7 @@ bool DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal,
     int x, y;
     getRandomLocation(map, scourge->getShapePalette()->findShapeByName("TELEPORTER"), &x, &y);
     if( x < MAP_WIDTH ) {
-      cerr << "teleporter at " << x << "," << y << endl;
+//      cerr << "teleporter at " << x << "," << y << endl;
       addItem(scourge->getMap(), NULL, NULL, 
               scourge->getShapePalette()->findShapeByName("TELEPORTER"), 
               x, y, 1);
@@ -1372,10 +1372,10 @@ void DungeonGenerator::lockLocation(Map *map, int mapx, int mapy) {
                       toint(scourge->getParty()->getPlayer()->getX()), 
                       toint(scourge->getParty()->getPlayer()->getY()));
     if( nx < MAP_WIDTH ) {
-      Location *pos = map->getLocation(mapx, mapy, 0);
-      cerr << "*** Locking " << pos->shape->getName() << ": " << 
-        mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << 
-        " with lever at: " << nx << "," << ny << " roomIndex=" << getRoomIndex(nx, ny) << endl;
+//      Location *pos = map->getLocation(mapx, mapy, 0);
+//      cerr << "*** Locking " << pos->shape->getName() << ": " << 
+//        mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << 
+//        " with lever at: " << nx << "," << ny << " roomIndex=" << getRoomIndex(nx, ny) << endl;
       // place the switch
       addItem(scourge->getMap(), NULL, NULL, lever, nx, ny, 0);
       // connect the switch and the door
@@ -1398,7 +1398,7 @@ void DungeonGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal,
     int y = offset + room[i].y * unitSide + room[i].h * ( unitSide / 2);
     if(!map->isPositionAccessible(x, y)) {
       room[i].valueBonus++;
-      cerr << "\tRoom " << i << " is locked. valueBonus=" << room[i].valueBonus << endl;
+//      cerr << "\tRoom " << i << " is locked. valueBonus=" << room[i].valueBonus << endl;
     } 
   }
 }
@@ -1770,7 +1770,7 @@ bool DungeonGenerator::coversDoor(Map *map, ShapePalette *shapePal,
 bool DungeonGenerator::isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken, int dir) {
   //cerr << "&&& isAccessible: x=" << x << " y=" << y << " fromX=" << fromX << " fromY=" << fromY << " dir=" << dir << endl;
   if(x == fromX && y == fromY) {
-    cerr << "&&& isAccessible is true in " << stepsTaken << " steps." << endl;
+//    cerr << "&&& isAccessible is true in " << stepsTaken << " steps." << endl;
     return true;
   }
   if(stepsTaken > MAX_STEPS) {

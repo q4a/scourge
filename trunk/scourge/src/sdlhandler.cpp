@@ -163,10 +163,10 @@ int SDLHandler::initGL( GLvoid ) {
 
     /* initialize opengl extensions */
 	if(Constants::multitexture) {
-	  fprintf(stderr, "BEFORE: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
+//	  fprintf(stderr, "BEFORE: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
 	  glSDLActiveTextureARB = 
 		(PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress ("glActiveTextureARB");
-	  fprintf(stderr, "AFTER: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
+//	  fprintf(stderr, "AFTER: glSDLActiveTextureARB=%u\n", glSDLActiveTextureARB);
 	  glSDLMultiTexCoord2fARB = 
 		(PFNGLMULTITEXCOORD2FARBPROC)SDL_GL_GetProcAddress ("glMultiTexCoord2fARB");
 	  glSDLMultiTexCoord2iARB = 

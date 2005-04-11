@@ -61,7 +61,7 @@ void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal, i
   char path[300];
   strcpy(path, rootDir);
   strcat(path, file_name);
-  fprintf(stderr, "Loading 3ds file: %s\n", path);
+//  fprintf(stderr, "Loading 3ds file: %s\n", path);
   g_Load3ds.Import3DS(&g_3DModel, path);         // Load our .3DS file into our model structure
 
   resolveTextures();
@@ -100,7 +100,7 @@ void C3DSShape::normalizeModel() {
       }
     }
   }
-  cerr << "min=(" << minx << "," << miny << "," << minz << ") max=(" << maxx << "," << maxy << "," << maxz << ")" << endl;
+  //cerr << "min=(" << minx << "," << miny << "," << minz << ") max=(" << maxx << "," << maxy << "," << maxz << ")" << endl;
 
   // normalize vertecies
   char tmp[80];
@@ -142,7 +142,7 @@ void C3DSShape::normalizeModel() {
   this->height = (int)(fh + 0.5f);
   if(this->height < 1) this->height = 1;
 
-  cerr << this->getName() << " width=" << width << " depth=" << depth << " height=" << height << endl;
+  //cerr << this->getName() << " width=" << width << " depth=" << depth << " height=" << height << endl;
 }
 
 void C3DSShape::resolveTextures() {
@@ -159,13 +159,13 @@ void C3DSShape::resolveTextures() {
 
       // Use the name of the texture file to load the bitmap, with a texture ID (i).
       // We pass in our global texture array, the name of the texture, and an ID to reference it. 
-      fprintf(stderr, "Loading texture: %s\n", g_3DModel.pMaterials[i].strFile);
+//      fprintf(stderr, "Loading texture: %s\n", g_3DModel.pMaterials[i].strFile);
       //CreateTexture((GLuint*)g_Texture, g_3DModel.pMaterials[i].strFile, i);           
 
 
       // instead of loading the texture, get one of the already loaded textures
       g_Texture[i] = shapePal->findTextureByName(g_3DModel.pMaterials[i].strFile);
-      fprintf(stderr, "\t%s\n", (g_Texture[i] ? "FOUND IT" : "NOT FOUND"));
+//      fprintf(stderr, "\t%s\n", (g_Texture[i] ? "FOUND IT" : "NOT FOUND"));
     }
     // Set the texture ID for this material
     g_3DModel.pMaterials[i].texureId = i;
@@ -202,7 +202,9 @@ void C3DSShape::preRenderLight() {
 
         // assertion
         if (angle < 0 || angle > 360) {
-          cerr << "Warning: angle=" << angle << " quadrant=" << q << endl;
+#ifdef DEBUG_3DS
+          cerr << "Warning: object: " << getName() << " angle=" << angle << " quadrant=" << q << endl;
+#endif
         }
 
         // these are not used
@@ -220,7 +222,9 @@ void C3DSShape::preRenderLight() {
 
         // assertion
         if (delta < 0 || delta > 180.0f) {
-          cerr << "WARNING: angle=" << angle << " delta=" << delta << endl;
+#ifdef DEBUG_3DS
+          cerr << "WARNING: object: " << getName() << " angle=" << angle << " delta=" << delta << endl;
+#endif
         }
 
         // reverse and convert to value between 0 and 1

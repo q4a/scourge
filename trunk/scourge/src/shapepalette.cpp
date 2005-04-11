@@ -44,8 +44,8 @@ WallTheme::~WallTheme() {
 }
 
 void WallTheme::load() {
-  cerr << "*** Loading theme: " << getName() << endl;
-  debug();
+//  cerr << "*** Loading theme: " << getName() << endl;
+//  debug();
   for(int ref = 0; ref < THEME_REF_COUNT; ref++) {
     for(int face = 0; face < faceCount[ ref ]; face++) {
       loadTextureGroup( ref, face, textures[ ref ][ face ] );
@@ -79,7 +79,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
 
 void WallTheme::unload() {
   char bmp[300];
-  cerr << "*** Dumping theme: " << getName() << endl;
+//  cerr << "*** Dumping theme: " << getName() << endl;
   for(map<string,GLuint>::iterator i=loadedTextures.begin(); i!=loadedTextures.end(); ++i) {
 	string s = i->first;
     GLuint id = i->second;
@@ -225,7 +225,7 @@ void ShapePalette::initialize() {
           string s = line + 1;
           list->push_back(s);
         }
-        cerr << "added " << count << " lines of description. # of description groups=" << descriptions.size() << endl;
+//        cerr << "added " << count << " lines of description. # of description groups=" << descriptions.size() << endl;
       }
 
     } else if(n == 'N') {
@@ -301,7 +301,7 @@ void ShapePalette::initialize() {
 
       // store the md2 model and info
       sprintf(path, "%s%s", rootDir, info->filename);
-      cerr << "Loading md2 model: " << path << " scale: " << info->scale << endl;
+//      cerr << "Loading md2 model: " << path << " scale: " << info->scale << endl;
       info->model = LoadMd2Model(path);
 
       // store it
@@ -313,7 +313,7 @@ void ShapePalette::initialize() {
       n = Constants::readLine(line, fp);
 
       int index = atoi(strtok(line, ","));
-      cerr << "options for shape, index=" << index << " size=" << shapeValueVector.size() << endl;
+//      cerr << "options for shape, index=" << index << " size=" << shapeValueVector.size() << endl;
 
       ShapeValues *sv = shapeValueVector[index];
       sv->skipSide = atoi(strtok(NULL, ","));
@@ -355,11 +355,11 @@ void ShapePalette::initialize() {
       }
 
       themes[themeCount++] = theme;
-      cerr << "&&& Added theme: " << theme->getName() << " count=" << themeCount << endl;
+//      cerr << "&&& Added theme: " << theme->getName() << " count=" << themeCount << endl;
     } else if( n == 'O' ) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
-      cerr << "*** Loading portrait: " << line << endl;
+//      cerr << "*** Loading portrait: " << line << endl;
       if( strstr( line, "death" ) ) deathPortraitTexture = loadGLTextures( line );
       else portraitTextures.push_back( loadGLTextures( line ) );
     } else if( n == 'M' ) {
@@ -387,13 +387,14 @@ void ShapePalette::initialize() {
 
   // create shapes
   for(int i = 0; i < (int)shapeValueVector.size(); i++) {
-    cerr << "Creating shape i=" << i << endl;
+//    cerr << "Creating shape i=" << i << endl;
     ShapeValues *sv = shapeValueVector[i];
+    /*
     cerr << "\t" <<
     " width=" << sv->width << 
     " depth=" << sv->depth << 
     " height=" << sv->height << endl;
-
+*/
     // Resolve the texture group.
     // For theme-based shapes, leave texture NULL, they will be resolved later.
     bool themeBasedShape = false;
@@ -505,7 +506,7 @@ void ShapePalette::initialize() {
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     sprintf(path, "/icons/i%d.bmp", i);
     GLuint icon = loadGLTextures(path);
-    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
+//    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
     if(icon) statModIcons[i] = icon;
   }
 
@@ -558,7 +559,7 @@ void ShapePalette::loadRandomTheme() {
 }
 
 void ShapePalette::loadTheme(const char *themeName) {
-  cerr << "*** Using theme: " << themeName << endl;
+//  cerr << "*** Using theme: " << themeName << endl;
 
   // find that theme!
   WallTheme *theme = NULL;
@@ -577,7 +578,7 @@ void ShapePalette::loadTheme(const char *themeName) {
 }
 
 void ShapePalette::loadTheme( WallTheme *theme ) {
-  cerr << "*** Using theme: " << theme->getName() << " current=" << (!currentTheme ? "null" : currentTheme->getName()) << endl;
+//  cerr << "*** Using theme: " << theme->getName() << " current=" << (!currentTheme ? "null" : currentTheme->getName()) << endl;
   if( ALWAYS_RELOAD_THEME || currentTheme != theme) {
 
     // unload the previous theme
@@ -589,14 +590,14 @@ void ShapePalette::loadTheme( WallTheme *theme ) {
     currentTheme->load();
 
     // apply theme to shapes
-    cerr << "*** Applying theme to shapes: ***" << endl;
+//    cerr << "*** Applying theme to shapes: ***" << endl;
     GLShape::createDarkTexture( currentTheme );
     for(int i = 0; i < (int)themeShapes.size(); i++) {
       GLShape *shape = themeShapes[i];
       string ref = themeShapeRef[i];
       GLuint *textureGroup = currentTheme->getTextureGroup( ref );
-      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
-        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
+//      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
+//        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
       shape->setTexture( textureGroup );
 
       // create extra shapes for variations
@@ -606,7 +607,7 @@ void ShapePalette::loadTheme( WallTheme *theme ) {
       }
     }
 
-    cerr << "**********************************" << endl;
+//    cerr << "**********************************" << endl;
   }
 }
 
@@ -649,7 +650,7 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name,
 
       char path[300];
       sprintf(path, "%s%s/tris.md2", rootDir, model_name);
-      cerr << "&&&&&&&&&& Loading md2 model: " << path << endl;
+//      cerr << "&&&&&&&&&& Loading md2 model: " << path << endl;
       model_info->model = LoadMd2Model(path);
       strcpy( model_info->name, model_name );
       model_info->scale = 1.0f;
@@ -683,9 +684,9 @@ GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name,
   if(creature_skins.find(skin) == creature_skins.end()){
     if(!session->getGameAdapter()->isHeadless()) {
       sprintf(path, "%s%s", rootDir, realSkinName);
-      cerr << "&&&&&&&&&& Loading texture: " << path << endl;
+//      cerr << "&&&&&&&&&& Loading texture: " << path << endl;
       CreateTexture(&skin_texture, path, 0);
-      cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
+      //cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
       creature_skins[skin] = skin_texture;
     }
   } else {
@@ -743,7 +744,7 @@ void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name,
   //	" count: " << loaded_skins[skin_texture] << endl;
   // unload texture if no more references
   if(loaded_skins[skin_texture] == 0) {
-    cerr << "&&&&&&&&&& Deleting texture: " << skin_texture << endl;
+//    cerr << "&&&&&&&&&& Deleting texture: " << skin_texture << endl;
     loaded_skins.erase(skin_texture);
     creature_skins.erase(skin);
     glDeleteTextures(1, &skin_texture);
@@ -754,7 +755,7 @@ void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name,
   Md2ModelInfo *model_info;
   if(creature_models.find(model) == creature_models.end()){
 	// this is ok. It could be an old-style model (or non-monster)
-    cerr << "&&&&&&&&&& Not unloading model: " << model << endl;
+//    cerr << "&&&&&&&&&& Not unloading model: " << model << endl;
     return;
   } else {
     model_info = creature_models[model];
@@ -768,7 +769,7 @@ void ShapePalette::decrementSkinRefCount(char *model_name, char *skin_name,
   loaded_models[model_info] = loaded_models[model_info] - 1;
   // unload model if no more references  
   if(loaded_models[model_info] == 0) {
-    cerr << "&&&&&&&&&& Deleting model: " << model << endl;
+//    cerr << "&&&&&&&&&& Deleting model: " << model << endl;
     loaded_models.erase(model_info);
     creature_models.erase(model);
 
@@ -835,9 +836,9 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
   SDL_Surface *TextureImage[1];
 
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-  fprintf(stderr, "Loading texture: %s\n", fn);
+//  fprintf(stderr, "Loading texture: %s\n", fn);
   if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
-    fprintf(stderr, "\tFound it. pitch=%d width=%d height=%d\n", (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+//    fprintf(stderr, "\tFound it. pitch=%d width=%d height=%d\n", (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
 
     Constants::checkTexture("ShapePalette::loadGLTextures", 
                             TextureImage[0]->w, TextureImage[0]->h);
@@ -861,9 +862,9 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
                       GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
   } else {
     texture[0] = 0;
-    fprintf(stderr, "\tNot found.\n");
+//    fprintf(stderr, "\tNot found.\n");
   }
-  fprintf(stderr, "\tStored texture at: %u\n", texture[0]);
+//  fprintf(stderr, "\tStored texture at: %u\n", texture[0]);
 
   /* Free up any memory we may have used */
   if( TextureImage[0] )
@@ -917,11 +918,11 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
 
   if(session->getGameAdapter()->isHeadless()) return;
 
-  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
+//  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
 
   *image = NULL;
   char fn[300];
-  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
+//  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
   strcpy(fn, rootDir);
   strcat(fn, filename);
   if(((*surface) = SDL_LoadBMP( fn ))) {
@@ -930,9 +931,9 @@ void ShapePalette::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
-            fn, width, height, (*surface)->format->BitsPerPixel,
-            (*surface)->format->BytesPerPixel, (*surface)->pitch);
+//    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
+//            fn, width, height, (*surface)->format->BitsPerPixel,
+//            (*surface)->format->BytesPerPixel, (*surface)->pitch);
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
 
@@ -965,7 +966,7 @@ void ShapePalette::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surfa
                                              int nred, int ngreen, int nblue ) {
   if(session->getGameAdapter()->isHeadless()) return;
   
-  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
+//  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
 
   //  *image = NULL;
   char fn[300];
@@ -977,12 +978,12 @@ void ShapePalette::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surfa
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
-            fn, width, height, (*surface)->format->BitsPerPixel,
-            (*surface)->format->BytesPerPixel, (*surface)->pitch);
+//    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
+//            fn, width, height, (*surface)->format->BitsPerPixel,
+//            (*surface)->format->BytesPerPixel, (*surface)->pitch);
 
-    fprintf( stderr, "*** w/tileWidth=%d h/tileHeight=%d\n",
-             ( width/tileWidth ), ( height/tileHeight ) );
+//    fprintf( stderr, "*** w/tileWidth=%d h/tileHeight=%d\n",
+//             ( width/tileWidth ), ( height/tileHeight ) );
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
     

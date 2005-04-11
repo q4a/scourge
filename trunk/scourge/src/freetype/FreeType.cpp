@@ -141,7 +141,7 @@ void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base ) {
 
 void freetype_font_data::init(const char * fname, unsigned int h) {
 
-  cerr << "FreeType: loading font: " << fname << " h=" << h << endl;
+//  cerr << "FreeType: loading font: " << fname << " h=" << h << endl;
 
 	//Allocate some memory to store the texture ids.
 	textures = new GLuint[128];

@@ -24,9 +24,9 @@ CLoadMD2::CLoadMD2()
 
 // delete all structures associated with this model
 void CLoadMD2::DeleteMD2( t3DModel *pModel ) {
-  cerr << "Deleting MD2 model: animations: " << pModel->pAnimations.size() << 
-	" materials: " << pModel->pMaterials.size() << 
-	" objects: " << pModel->pObject.size() << endl;
+  //cerr << "Deleting MD2 model: animations: " << pModel->pAnimations.size() << 
+//	" materials: " << pModel->pMaterials.size() << 
+	//" objects: " << pModel->pObject.size() << endl;
   pModel->pAnimations.clear();
   pModel->pMaterials.clear();
   pModel->pObject.clear();  

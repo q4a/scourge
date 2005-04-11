@@ -478,6 +478,7 @@ void GLShape::createDarkTexture( WallTheme *theme ) {
     lightmap_tex_num = lightmap_tex_num2 = 0;
   }  
 
+  /*
   cerr << "*** Creating multitexture overlay." << endl;
   if( theme ) {
     cerr << "*** theme=" << theme->getName() << 
@@ -489,6 +490,7 @@ void GLShape::createDarkTexture( WallTheme *theme ) {
   } else {
     cerr << "*** no theme." << endl;
   }
+  */
 
   // create the dark texture
   unsigned int i, j;

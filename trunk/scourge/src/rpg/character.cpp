@@ -52,9 +52,11 @@ void Character::initCharacters() {
       int level_progression = atoi(strtok(NULL, ","));
       strcpy(shortName, strtok(NULL, ","));
 
+      /*
       cerr << "adding character class: " << name << 
       " hp: " << hp << " mp: " << mp << " skill_bonus: " << 
       skill_bonus << " shortName=" << shortName << endl;
+      */
 
       last = new Character( strdup(name), hp, mp, skill_bonus, 
                             level_progression, strdup(shortName) );
@@ -131,7 +133,7 @@ Character::~Character(){
 }
 
 void Character::addSound(int type, char *file) {
-  cerr << "*** Adding sound=" << file << endl;
+  //cerr << "*** Adding sound=" << file << endl;
   string fileStr = file;
   vector<string> *sounds;
   if(soundMap.find(type) == soundMap.end()) {
@@ -139,7 +141,7 @@ void Character::addSound(int type, char *file) {
     soundMap[type] = sounds;
   } else sounds = soundMap[type];
   sounds->push_back(fileStr);
-  cerr << "\t*** Done." << endl;
+  //cerr << "\t*** Done." << endl;
 }
 
 const char *Character::getRandomSound(int type) {

@@ -1229,6 +1229,9 @@ void Map::drawShade() {
 
 }
 
+// vary this number from 0.001 - 3.0 to get tighter shading
+#define SHADE_LEVEL 1.0f
+
 void Map::createOverlayTexture() {
   // create the dark texture
   unsigned int i, j;
@@ -1239,7 +1242,9 @@ void Map::createOverlayTexture() {
       float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
       float id = (float)i - half;
       float jd = (float)j - half;
-      float dd = 255.0f - ((255.0f / (half * half / 1.2f)) * (id * id + jd * jd));
+      //float dd = 255.0f - ((255.0f / (half * half / 1.2f)) * (id * id + jd * jd));
+      
+      float dd = 255.0f - ((255.0f / (half * half / SHADE_LEVEL)) * (id * id + jd * jd));
       if(dd < 0.0f) dd = 0.0f;
       if(dd > 255.0f) dd = 255.0f;
       unsigned char d = (unsigned char)dd;

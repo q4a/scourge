@@ -115,10 +115,12 @@ class WallTheme {
     } else {
       strncpy( textures[themeRef][face], name, NAME_LENGTH - 1 ); 
       textures[themeRef][face][NAME_LENGTH - 1] = '\0';
+      /*
       cerr << 
         "\ttheme: " << getName() << 
         " texture: ref=" << themeRef << 
         " name=" << name << endl;
+      */        
     }
   }
   inline void setMultiTexRed( int index, GLfloat value ) { r[index] = value; }

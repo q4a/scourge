@@ -316,9 +316,9 @@ void Item::initItems(ShapePalette *shapePal) {
 
       // resolve strings
       int type_index = RpgItem::getTypeByName(type);    
-      cerr << "item: looking for shape: " << shape << endl;
+      //cerr << "item: looking for shape: " << shape << endl;
       int shape_index = shapePal->findShapeIndexByName(shape);
-      cerr << "\tindex=" << shape_index << endl;
+      //cerr << "\tindex=" << shape_index << endl;
       int skill_index = Constants::getSkillByName(skill);
       if(skill_index < 0) {
         if(strlen(skill)) cerr << "*** WARNING: cannot find skill: " << skill << endl;
@@ -334,7 +334,7 @@ void Item::initItems(ShapePalette *shapePal) {
             cerr << "*** WARNING: cannot find potion_skill: " << potionSkill << endl;
           }
         }
-        cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
+        //cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
       }
       if(distance < (int)Constants::MIN_DISTANCE) distance = (int)Constants::MIN_DISTANCE;
       last = new RpgItem(itemCount++, strdup(name), level, rareness, type_index, 
