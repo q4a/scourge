@@ -139,7 +139,7 @@ void MagicSchool::initMagic() {
 						SINGLE_TARGET : GROUP_TARGET);
 	  int speed = atoi(strtok(NULL, ","));
 	  int effect = Constants::getEffectByName(strtok(NULL, ","));
-      cerr << "*** looking up: " << s << " effect=" << effect << endl;
+      //cerr << "*** looking up: " << s << " effect=" << effect << endl;
 	  char *s = strtok(NULL, ",");
 	  bool creatureTarget = (strchr(s, 'C') != NULL);
 	  bool locationTarget = (strchr(s, 'L') != NULL);
@@ -157,10 +157,12 @@ void MagicSchool::initMagic() {
 
 	  Dice *action = new Dice(strdup(dice));
 
+      /*
 	  cerr << "adding spell: " << name << " level: " << level << " mp: " << mp << 
 		" exp: " << exp << " failureRate: " << failureRate << 
 		" action: " << action->toString() << " distance: " << distance << 
 		" targetType: " << targetType << endl;
+      */          
 	  
 	  currentSpell = new Spell( strdup(name), level, mp, exp, failureRate, 
 								action, distance, targetType, speed, effect, 
@@ -186,7 +188,7 @@ void MagicSchool::initMagic() {
 	  int resistSkill = Constants::getSkillByName(strtok(NULL, ","));
 
 
-	  cerr << "adding school: " << name << " provider deity: " << notes << " skill=" << skill << " resist skill=" << resistSkill << endl;
+	  //cerr << "adding school: " << name << " provider deity: " << notes << " skill=" << skill << " resist skill=" << resistSkill << endl;
 
 	  current = new MagicSchool( strdup(name), strdup(notes), skill, resistSkill );
 	  schools[schoolCount++] = current;

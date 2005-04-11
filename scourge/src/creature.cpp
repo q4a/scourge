@@ -240,7 +240,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
                             strdup((char*)info->name),
                             info->character_model_info_index);
   }
-  cerr << "*** LOAD: creature=" << info->name << endl;
+//  cerr << "*** LOAD: creature=" << info->name << endl;
   creature->setDeityIndex( info->deityIndex );
   creature->setHp( info->hp );
   creature->setMp( info->mp );
@@ -966,7 +966,7 @@ int Creature::doff(int index) {
       // handle magic attrib settings
       if(item->isMagicItem()) {
 
-        item->debugMagic("Doff: ");
+        //item->debugMagic("Doff: ");
 
         // set the good attributes
         for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {

@@ -289,7 +289,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     int radius = battle->getCreature()->getLevel() * 2;
     if(radius > 15) radius = 15;
     if(radius < 2) radius = 2;
-    cerr << "radius=" << radius << endl;
+//    cerr << "radius=" << radius << endl;
     // show radius effect
     battle->getSession()->getMap()->startEffect(battle->getCreature()->getTargetX(),
                                                 battle->getCreature()->getTargetY(),
@@ -304,7 +304,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
                          battle->getCreature()->getTargetY(),
                          radius,
                          targets);
-    cerr << "targetCount=" << targetCount << endl;
+//    cerr << "targetCount=" << targetCount << endl;
   } else {
     targets[targetCount++] = battle->getCreature()->getTargetCreature();
   }
@@ -350,7 +350,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     Event *e = creature->getStateModEvent(mod);
     if(creature->getStateMod(mod) == setting) {
       if(e) {
-        cerr << "Extending existing event." << endl;
+//        cerr << "Extending existing event." << endl;
         e->setNbExecutionsToDo(timeInMin);
       }
       continue;    
@@ -371,7 +371,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     
     // cancel existing event if any
     if(e) {
-      cerr << "Cancelling existing event." << endl;
+//      cerr << "Cancelling existing event." << endl;
       battle->getSession()->getParty()->getCalendar()->cancelEvent(e);
     }
 
@@ -381,7 +381,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       Calendar *cal = battle->getSession()->getParty()->getCalendar();
       //    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
       Date d(0, 1, 0, 0, 0, 0); 
-      cerr << "Creating new event." << endl;
+//      cerr << "Creating new event." << endl;
       e = new StateModExpirationEvent(cal->getCurrentDate(), 
                                              d, creature, mod, battle->getSession(), 
                                              timeInMin);
@@ -416,9 +416,9 @@ void SpellCaster::circleAttack() {
   if(radius > 15) radius = 15;
   if(radius < 2) radius = 2;
 
-  cerr << "selected radius=" << selectedRadius << " max radius=" << radius << endl;
+//  cerr << "selected radius=" << selectedRadius << " max radius=" << radius << endl;
   if( selectedRadius < radius ) radius = selectedRadius;
-  cerr << "radius=" << radius << endl;
+//  cerr << "radius=" << radius << endl;
 
   float sx = battle->getCreature()->getX() + ( battle->getCreature()->getShape()->getWidth() / 2.0f ); 
   float sy = battle->getCreature()->getY() - ( battle->getCreature()->getShape()->getDepth() / 2.0f );

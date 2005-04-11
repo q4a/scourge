@@ -189,8 +189,8 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
 }
 
 void GuiTheme::loadTextures( ShapePalette *shapePal ) {
-  cerr << "----------------------------------------" << endl;
-  cerr << "Loading gui theme: " << name << endl;
+//  cerr << "----------------------------------------" << endl;
+//  cerr << "Loading gui theme: " << name << endl;
   if( windowBack ) windowBack->loadTextures( shapePal );
   if( windowTop ) windowTop->loadTextures( shapePal );
   if( windowBorder ) windowBorder->loadTextures( shapePal );
@@ -200,12 +200,12 @@ void GuiTheme::loadTextures( ShapePalette *shapePal ) {
   if( buttonBorder ) buttonBorder->loadTextures( shapePal );
   if( listBackground ) listBackground->loadTextures( shapePal );
   if( inputBackground ) inputBackground->loadTextures( shapePal );
-  cerr << "Done loading gui theme: " << name << endl;
-  cerr << "----------------------------------------" << endl;
+//  cerr << "Done loading gui theme: " << name << endl;
+//  cerr << "----------------------------------------" << endl;
 }
 
 ThemeElement *GuiTheme::parseElement( char *line ) {
-  cerr << "parseElement: line=" << line << endl;
+//  cerr << "parseElement: line=" << line << endl;
   char *p = strtok( line, "," );
   if( p ) {
     ThemeElement *element = new ThemeElement();
@@ -243,7 +243,7 @@ ThemeElement *GuiTheme::parseElement( char *line ) {
 }
 
 Color *GuiTheme::parseColor( char *line ) {
-  cerr << "parseColor: line=" << line << endl;
+//  cerr << "parseColor: line=" << line << endl;
   char *p = strtok( line, "," );
   if( p ) {
 	Color *color = new Color();

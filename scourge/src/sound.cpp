@@ -103,18 +103,18 @@ void Sound::stopMusic(Mix_Music *music) {
 void Sound::loadSounds(UserConfiguration *userConfiguration) {
   if(!haveSound) return;
 
-  cerr << "Loading UI sounds..." << endl;
+//  cerr << "Loading UI sounds..." << endl;
   storeSound(0, Window::ROLL_OVER_SOUND);
   storeSound(0, Window::ACTION_SOUND);
   storeSound(0, Window::DROP_SUCCESS);
   storeSound(0, Window::DROP_FAILED);
 
-  cerr << "Loading battle sounds..." << endl;
+//  cerr << "Loading battle sounds..." << endl;
   for(int i = 0; i < Battle::getSoundCount(); i++) { 
     storeSound(0, Battle::getSound(i));
   }
 
-  cerr << "Loading character sounds..." << endl;
+//  cerr << "Loading character sounds..." << endl;
   for(map<string, Character*>::iterator i = Character::character_class.begin(); 
        i != Character::character_class.end(); ++i) {
     //Creature *creature = i->first;
@@ -129,7 +129,7 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
     }
   }
 
-  cerr << "Loading item sounds..." << endl;
+//  cerr << "Loading item sounds..." << endl;
   for(map<int, vector<string>*>::iterator i = Item::soundMap.begin(); 
        i != Item::soundMap.end(); ++i) {
     //Creature *creature = i->first;
@@ -140,7 +140,7 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
     }
   }
 
-  cerr << "Loading spell sounds..." << endl;
+//  cerr << "Loading spell sounds..." << endl;
   for(int i = 0; i < (int)MagicSchool::getMagicSchoolCount(); i++) {
     for(int t = 0; t < (int)MagicSchool::getMagicSchool(i)->getSpellCount(); t++) {
       storeSound(0, MagicSchool::getMagicSchool(i)->getSpell(t)->getSound());
@@ -168,7 +168,7 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
 
 void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
 							   UserConfiguration *userConfiguration ) {
-  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
+//  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
   if( m ) {
 	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
 	  vector<string> *v = i2->second;
@@ -182,7 +182,7 @@ void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m,
 }
 
 void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m ) {  
-  cerr << "Unloading monster sounds for " << monsterType << "..." << endl;
+//  cerr << "Unloading monster sounds for " << monsterType << "..." << endl;
   if( m ) {
 	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
 	  vector<string> *v = i2->second;
@@ -205,7 +205,7 @@ void Sound::storeSound(int type, const char *file) {
 	  } else {
 		sprintf(fn, "%s/%s", rootDir, file);
 	  }
-      cerr << "*** Loading sound file: " << fn << endl;
+//      cerr << "*** Loading sound file: " << fn << endl;
       Mix_Chunk *sample = Mix_LoadWAV(fn);
       if(!sample) {
         cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
@@ -222,7 +222,7 @@ void Sound::unloadSound( int type, const char *file ) {
   if(haveSound) {
     string fileStr = file;
     if(soundMap.find(fileStr) != soundMap.end()) {
-	  cerr << "*** Freeing sound: " << fileStr << endl;
+//	  cerr << "*** Freeing sound: " << fileStr << endl;
 	  Mix_Chunk *sample = soundMap[ fileStr ];
 	  Mix_FreeChunk( sample );
 	  soundMap.erase( fileStr );

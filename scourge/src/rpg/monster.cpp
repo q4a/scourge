@@ -103,11 +103,13 @@ void Monster::initMonsters() {
         scale = atof(p);
       }
 
+      /*
       cerr << "adding monster: " << name << " level: " << level << 
         " hp: " << hp << " mp: " << mp << " armor: " << armor << 
         " rareness: " << rareness << " scale=" << scale << 
         " speed=" << speed <<
         endl;
+        */
 
       vector<Monster*> *list = NULL;
       if(monsters.find(level) == monsters.end()) {

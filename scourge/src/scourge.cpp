@@ -26,7 +26,7 @@
 
 #define INFO_INTERVAL 3000
 
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -1034,7 +1034,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
 #ifdef DEBUG_KEYS
     if(event->key.keysym.sym == SDLK_l) {
-      cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
+//      cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
       return false;
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
@@ -1916,7 +1916,7 @@ void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
 	int x = ox + (int)( (float)( shape->getWidth() ) * rand() / RAND_MAX );
 	int y = oy - (int)( (float)( shape->getDepth() ) * rand() / RAND_MAX );
 	int z = 2 + (int)(( ( (float)( shape->getHeight() ) / 2.0f ) - 2.0f ) * rand() / RAND_MAX );
-	cerr << "starting effects at: " << x << "," << y << "," << z << endl;
+//	cerr << "starting effects at: " << x << "," << y << "," << z << endl;
 	levelMap->startEffect( x, y, z, Constants::EFFECT_DUST, 
 						   (GLuint)( (float)Constants::DAMAGE_DURATION / 2.0f ), 2, 2,
 						   (GLuint)((float)(i) / 4.0f * (float)Constants::DAMAGE_DURATION) );

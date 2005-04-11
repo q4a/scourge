@@ -93,9 +93,11 @@ RpgItem::~RpgItem() {
 
 void RpgItem::addItem(RpgItem *item, int width, int depth, int height) {
   // store the item
+    /*
   cerr << "adding item: " << item->name << 
 	" level=" << item->level << 
 	" type=" << item->type << endl;
+    */
   items[itemCount++] = item;
 
   // create the level map
