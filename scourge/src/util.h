@@ -82,6 +82,7 @@ public:
   static void normalize(float v[3]);
   static void cross_product(const float *v1, const float *v2, float *out);
   static void multiply_vector_by_matrix(const float m[9], float v[3]);
+  static void multiply_vector_by_matrix2(const float m[16], float v[4]);
   
   // Return a string containing the last OpenGL error.
   // Useful to debug strange OpenGL behaviors
@@ -107,6 +108,8 @@ public:
                        float red=-1, float green=-1, float blue=-1, float gradient=true, 
                        GuiTheme *theme=NULL, int layout=HORIZONTAL_LAYOUT );
   
+  inline static float distance2( float x, float y, float z ) { return ( x * x ) + ( y * y ) + ( z * z ); }
+
 };
 
 #endif

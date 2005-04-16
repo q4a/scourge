@@ -911,6 +911,7 @@ void Map::draw() {
 
 
 
+    /*
     // draw the creatures/objects/doors/etc.
     for(int i = 0; i < otherCount; i++) {
       if(selectedDropTarget && 
@@ -922,7 +923,8 @@ void Map::draw() {
       doDrawShape(&other[i]);
     }
     // draw the walls
-    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+    //for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+    */
 
     if(session->getUserConfiguration()->getStencilbuf() &&
        session->getUserConfiguration()->getStencilBufInitialized()) {
@@ -935,17 +937,6 @@ void Map::draw() {
       glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
       glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
       setupShapes(true, false);
-
-      /*
-      // draw the water
-      glEnable(GL_BLEND);  
-      glDepthMask(GL_FALSE);
-      //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      ((Scourge*)this->session->getGameAdapter())->setBlendFunc();
-      setupShapes(false, true);
-      glDepthMask(GL_TRUE);    
-      glDisable(GL_BLEND);
-      */
 
       // shadows
       if(session->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
@@ -1016,14 +1007,69 @@ void Map::draw() {
       glDisable(GL_BLEND);
       glEnable(GL_TEXTURE_2D);
     }
-    
-    // draw the blended walls
-    //glEnable(GL_BLEND);  
+
+    // draw the creatures/objects/doors/etc.
+    for(int i = 0; i < otherCount; i++) {
+      if(selectedDropTarget && 
+         ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
+          (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
+        colorAlreadySet = true;
+        glColor4f(0, 1, 1, 1);
+      }
+      doDrawShape(&other[i]);
+    }
+
+    // draw the walls
+    glEnable( GL_BLEND );
+    // 6,2 6,4 work well
+    // FIXME: blending walls have some artifacts that depth-sorting 
+    // is supposed to get rid of but that didn't work for me.
+    glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+    glDisable( GL_BLEND );
+
+
+
+
+    /*
+    // A failed attempt to draw items on top of walls
+    // blended objects 
+    glClear( GL_STENCIL_BUFFER_BIT );
+    //glDisable(GL_DEPTH_TEST);
+    glColorMask(0,0,0,0);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+    glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+
+    glClear( GL_DEPTH_BUFFER_BIT );
+    glColorMask(1,1,1,1);
+    glStencilFunc(GL_EQUAL, 1, 0xffffffff);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); 
+    //glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_DEPTH_TEST);
     //glDepthMask(GL_FALSE);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-    //glDepthMask(GL_TRUE);    
-    //glDisable(GL_BLEND);
+    //glEnable( GL_BLEND );
+    //glBlendFunc( GL_ONE_MINUS_DST_ALPHA, GL_ONE );
+    //session->getGameAdapter()->setBlendFunc();
+    // draw the creatures/objects/doors/etc.
+    for(int i = 0; i < otherCount; i++) {
+      if( other[i].item || other[i].creature ) {
+        colorAlreadySet = true;
+        glColor4f(0.5f, 0.5f, 0.5f, 0.3f);
+        doDrawShape(&other[i]);
+      }
+    }
+    //glDisable( GL_BLEND );
+    //glEnable(GL_TEXTURE_2D);
+    //glDepthMask(GL_TRUE);
+    //glEnable(GL_DEPTH_TEST);
+    glDisable(GL_STENCIL_TEST); 
+    */
+
+
+
+    
 
     // draw the effects
     glEnable(GL_TEXTURE_2D);
@@ -1277,9 +1323,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
   glPushMatrix();
   if(useShadow) {
-    // put shadow above the floor a little
-    glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
-    glMultMatrixf(shadowTransformMatrix);
+      // put shadow above the floor a little
+      glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
+      glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
     //glColor4f( 0, 0, 0, 0.5f );
@@ -1437,7 +1483,7 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
 /**
  * Initialize the map view (translater, rotate)
  */
-void Map::initMapView(bool ignoreRot) {
+void Map::initMapView( bool ignoreRot ) {
   glLoadIdentity();
 
   glTranslatef(viewX, viewY, 0);

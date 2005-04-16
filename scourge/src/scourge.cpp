@@ -1034,7 +1034,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
 #ifdef DEBUG_KEYS
     if(event->key.keysym.sym == SDLK_l) {
-//      cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
+      cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
       return false;
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
