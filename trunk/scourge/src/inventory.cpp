@@ -751,39 +751,6 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   }
 }
 
-/*
-// FIXME: this doesn't work: I can't get it to draw above the window
-void Inventory::drawInventory() {
-  // draw the characters on top of the UI
-  glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-  int h = 120;
-//  int y;  
-  for(int i = 0; i < 4; i++) {
-
-    // why do I need these 2 lines? Otherwise the models go behind the window
-    //	glDisable(GL_DEPTH_TEST);
-    //glEnable(GL_DEPTH_TEST);
-
-    glPushMatrix();
-    glLoadIdentity();
-
-//	cerr << "z=" << mainWin->getZ() << endl;
-    glTranslatef( mainWin->getX(), mainWin->getY() + Window::TOP_HEIGHT, mainWin->getZ() + 200 );
-    glTranslatef( 20, 10 + i * h + 90, 300);
-
-    glRotatef(90, 1, 0, 0);
-    glScalef(0.8, 0.8, 0.8);  
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 1, 1, 1, 1 );
-    mainWin->scissorToWindow();
-    scourge->getParty()->getParty(i)->draw();
-    glDisable( GL_SCISSOR_TEST );
-    glDisable( GL_TEXTURE_2D );
-    glPopMatrix();
-  }
-}
-*/
-
 void Inventory::receive(Widget *widget) {
   if(widget == paperDoll) {
     if(putItem() != -1) equipItem();

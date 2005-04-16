@@ -273,7 +273,7 @@ public:
   
   static int blendA, blendB;
   static int blend[];
-  static void setBlendFunc();
+  void setBlendFunc();
   
   Scourge(UserConfiguration *config);
   ~Scourge();
