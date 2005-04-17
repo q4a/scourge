@@ -123,6 +123,7 @@ public:
   inline void setDebugStr(char *s) { debugStr = s; }
   
   Uint16 mouseX, mouseY, lastMouseX, lastMouseY;
+  Uint16 mouseFocusX, mouseFocusY;
   Uint8 mouseButton, mouseEvent;
   bool mouseDragging;
   bool mouseIsMovingOverMap;
@@ -136,15 +137,7 @@ public:
 
   void setCursorMode(int n) { cursorMode = n; }
   int getCursorMode() { return cursorMode; }
-  inline void applyMouseOffset(int x, int y, int *newX, int *newY) {
-	if(cursorMode == CURSOR_NORMAL) {
-	  *newX = x;
-	  *newY = y;
-	} else {
-	  *newX = x + 24;
-	  *newY = y + 24;
-	}
-  }
+  void applyMouseOffset(int x, int y, int *newX, int *newY);
 
   /**
    * Add a new set of handlers and push the old ones on the stack.

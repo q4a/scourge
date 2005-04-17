@@ -1006,15 +1006,13 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
     break;
   case SDL_MOUSEBUTTONDOWN:
-    sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
     if(event->button.button) {
-      processGameMouseDown(mx, my, event->button.button);
+      processGameMouseDown(sdlHandler->mouseX, sdlHandler->mouseY, event->button.button);
     }
     break;  
   case SDL_MOUSEBUTTONUP:
-    sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
     if(event->button.button) {
-      processGameMouseClick(mx, my, event->button.button);
+      processGameMouseClick(sdlHandler->mouseX, sdlHandler->mouseY, event->button.button);
       if(teleporting && !exitConfirmationDialog->isVisible()) {
         exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
         party->toggleRound(true);
@@ -1071,8 +1069,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
       if( inventory->inStoreSpellMode() ) {
         inventory->setStoreSpellMode( false );
         return false;
-      }
-      if(exitConfirmationDialog->isVisible()) {
+      } else if( getTargetSelectionFor() ) {
+        // cancel target selection ( cross cursor )
+        getTargetSelectionFor()->cancelTarget();
+        setTargetSelectionFor( NULL );
+        return false;
+      } else if( exitConfirmationDialog->isVisible() ) {
         exitConfirmationDialog->setVisible(false);
       } else {
         party->toggleRound(true);
@@ -1262,9 +1264,8 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
   // don't drag if you haven't started yet
   willStartDrag = false;
 
-  char msg[80];
   Uint16 mapx, mapy, mapz;
-  Creature *c = getTargetSelectionFor();
+  //Creature *c = getTargetSelectionFor();
   if(button == SDL_BUTTON_MIDDLE) {
     mouseRot = false;
     levelMap->setXRot(0);
@@ -1296,23 +1297,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
       Location *loc = levelMap->getLocation(mapx, mapy, mapz);
       if(loc && loc->creature) {
         if(getTargetSelectionFor()) {
-
-          // make sure the selected action can target a creature
-          if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-             c->getActionSpell() &&
-             c->getActionSpell()->isCreatureTargetAllowed()) {
-
-            // assign this creature
-            c->setTargetCreature(loc->creature);
-            char msg[80];
-            sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
-            levelMap->addDescription(msg);       
-          } else {
-            sprintf(msg, "%s cancelled a pending action.", c->getName());
-            levelMap->addDescription(msg);
-          }
-          // turn off selection mode
-          setTargetSelectionFor(NULL);
+          handleTargetSelectionOfCreature( loc->creature );
           return;
         } else if(loc->creature->isMonster()) {
           // follow this creature
@@ -1336,36 +1321,10 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
       mapz = 0;
     }
 
-    // make sure the selected action can target an item
-    Creature *c = getTargetSelectionFor();
-    if(c) {
-
-      /*
-      // need this hack b/c of the whole messy dragging items bit...
-      if(movingItem) {
-        mapx = map->getSelX();
-        mapy = map->getSelY();
-        mapz = dropItem(map->getSelX(), map->getSelY());
-      }
-      */
-
+    if( getTargetSelectionFor() ) {
       Location *pos = levelMap->getLocation(mapx, mapy, mapz);
-      char msg[80];
       if(mapx < MAP_WIDTH && pos && pos->item) {
-        if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-           c->getActionSpell() &&
-           c->getActionSpell()->isItemTargetAllowed()) {
-
-          // assign this creature
-          c->setTargetItem(pos->x, pos->y, pos->z, pos->item);
-          sprintf(msg, "%s targeted %s.", c->getName(), pos->item->getRpgItem()->getName());
-          levelMap->addDescription(msg);       
-        } else {
-          sprintf(msg, "%s cancelled a pending action.", c->getName());
-          levelMap->addDescription(msg);
-        }
-        // turn off selection mode
-        setTargetSelectionFor(NULL);
+        handleTargetSelectionOfItem( pos->item, pos->x, pos->y, pos->z );
         return;
       }
     }
@@ -1376,44 +1335,88 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     getMapXYAtScreenXY(x, y, &mapx, &mapy);
 
     // make sure the selected action can target a location
-    if(c) {
-      if(c->getAction() == Constants::ACTION_CAST_SPELL &&
-         c->getActionSpell() &&
-         c->getActionSpell()->isLocationTargetAllowed()) {
-
-        // assign this creature
-        c->setTargetLocation(mapx, mapy, 0);
-        char msg[80];
-        sprintf(msg, "%s selected a target", c->getName());
-        levelMap->addDescription(msg);       
-      } else {
-        sprintf(msg, "%s cancelled a pending action.", c->getName());
-        levelMap->addDescription(msg);
-      }
-      // turn off selection mode
-      setTargetSelectionFor(NULL);
+    if( getTargetSelectionFor() ) {
+      handleTargetSelectionOfLocation( mapx, mapy, mapz );
       return;
     }
-
-    /*
-    // cancel target selection mode
-    // FIXME: handle item selection. e.g.: open door from afar, etc.
-    if(getTargetSelectionFor()) {
-    Creature *c = getTargetSelectionFor();
-    c->setAction(-1);
-    setTargetSelectionFor(NULL);
-    sprintf(msg, "%s cancelled a pending action.", c->getName());
-    map->addDescription(msg);
-    }
-    */
-
-	// Make party move to new location
-	party->setSelXY( mapx, mapy );
-
+    
+    // Make party move to new location
+    party->setSelXY( mapx, mapy );
+    
   } else if(button == SDL_BUTTON_RIGHT) {
     describeLocation(cursorMapX, cursorMapY, cursorMapZ);
   }
-}        
+}
+
+bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
+  bool ret = false;
+  char msg[80];
+  Creature *c = getTargetSelectionFor();
+  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+     c->getActionSpell() &&
+     c->getActionSpell()->isLocationTargetAllowed()) {
+
+    // assign this creature
+    c->setTargetLocation(mapx, mapy, 0);
+    char msg[80];
+    sprintf(msg, "%s selected a target", c->getName());
+    levelMap->addDescription(msg);       
+    ret = true;
+  } else {
+    sprintf(msg, "%s cancelled a pending action.", c->getName());
+    levelMap->addDescription(msg);
+  }
+  // turn off selection mode
+  setTargetSelectionFor(NULL);
+  return ret;
+}
+
+bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
+  bool ret = false;
+  char msg[80];
+  Creature *c = getTargetSelectionFor();
+  // make sure the selected action can target a creature
+  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+     c->getActionSpell() &&
+     c->getActionSpell()->isCreatureTargetAllowed()) {
+    
+    // assign this creature
+    c->setTargetCreature( potentialTarget );
+    char msg[80];
+    sprintf(msg, "%s will target %s", c->getName(), c->getTargetCreature()->getName());
+    levelMap->addDescription(msg);       
+    ret = true;
+  } else {
+    sprintf(msg, "%s cancelled a pending action.", c->getName());
+    levelMap->addDescription(msg);
+  }
+  // turn off selection mode
+  setTargetSelectionFor(NULL);
+  return ret;
+}
+
+bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
+  bool ret = false;
+  char msg[80];  
+  // make sure the selected action can target an item
+  Creature *c = getTargetSelectionFor();
+  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+     c->getActionSpell() &&
+     c->getActionSpell()->isItemTargetAllowed()) {
+    
+    // assign this creature
+    c->setTargetItem( x, y, z, item );
+    sprintf( msg, "%s targeted %s.", c->getName(), item->getRpgItem()->getName() );
+    levelMap->addDescription( msg );
+    ret = true;
+  } else {
+    sprintf( msg, "%s cancelled a pending action.", c->getName() );
+    levelMap->addDescription( msg );
+  }
+  // turn off selection mode
+  setTargetSelectionFor( NULL );
+  return ret;
+}
 
 void Scourge::describeLocation(int mapx, int mapy, int mapz) {
   char s[300];
@@ -2962,13 +2965,29 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
     party->setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
     */
   } else if(widget == playerInfo[0] ) {
-    setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+    if( getTargetSelectionFor() ) {
+      handleTargetSelectionOfCreature( getParty()->getParty( 0 ) );
+    } else {
+      setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
+    }
   } else if(widget == playerInfo[1] ) {
-    setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+    if( getTargetSelectionFor() ) {
+      handleTargetSelectionOfCreature( getParty()->getParty( 1 ) );
+    } else {
+      setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
+    }
   } else if(widget == playerInfo[2] ) {
-    setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+    if( getTargetSelectionFor() ) {
+      handleTargetSelectionOfCreature( getParty()->getParty( 2 ) );
+    } else {
+      setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
+    }
   } else if(widget == playerInfo[3] ) {
-    setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+    if( getTargetSelectionFor() ) {
+      handleTargetSelectionOfCreature( getParty()->getParty( 3 ) );
+    } else {
+      setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
+    }
   } else if(widget == groupButton && !inTurnBasedCombat()) {
     party->togglePlayerOnly();
   } else if(widget == roundButton) {

@@ -1468,16 +1468,20 @@ float Creature::getDistanceToTarget() {
                                getTargetCreature()->getX(), getTargetCreature()->getY(),
                                getTargetCreature()->getShape()->getWidth(), 
                                getTargetCreature()->getShape()->getDepth());
-  } else if(getTargetItem()) {
-    return Constants::distance(getX(),  getY(), 
-                               getShape()->getWidth(), getShape()->getDepth(),
-                               getTargetX(), getTargetY(),
-                               getTargetItem()->getShape()->getWidth(), 
-                               getTargetItem()->getShape()->getDepth());
+  } else if( getTargetX() || getTargetY() ) {
+    if(getTargetItem()) {
+      return Constants::distance(getX(),  getY(), 
+                                 getShape()->getWidth(), getShape()->getDepth(),
+                                 getTargetX(), getTargetY(),
+                                 getTargetItem()->getShape()->getWidth(), 
+                                 getTargetItem()->getShape()->getDepth());
+    } else {
+      return Constants::distance(getX(),  getY(), 
+                                 getShape()->getWidth(), getShape()->getDepth(),
+                                 getTargetX(), getTargetY(), 1, 1);
+    }
   } else {
-    return Constants::distance(getX(),  getY(), 
-                               getShape()->getWidth(), getShape()->getDepth(),
-                               getTargetX(), getTargetY(), 1, 1);
+    return 0.0f;
   }
 }
 

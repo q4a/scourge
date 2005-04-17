@@ -882,7 +882,7 @@ void Map::draw() {
     //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
     session->getGameAdapter()->setDebugStr(mapDebugStr);
   }
-  if(selectMode) {
+  if( selectMode ) {
     for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
     for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
   } else {  

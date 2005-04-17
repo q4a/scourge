@@ -658,6 +658,10 @@ public:
 
   void createParty( Creature **pc, int *partySize );
 
+  bool handleTargetSelectionOfCreature( Creature *potentialTarget );
+  bool handleTargetSelectionOfItem( Item *item, int x=0, int y=0, int z=0 );
+  bool handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 mapz );
+
  protected:
 
    void drawPortrait( Widget *w, Creature *p );
