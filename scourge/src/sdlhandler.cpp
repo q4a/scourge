@@ -18,6 +18,8 @@
 
 #include "sdlhandler.h"
 
+//#define DEBUG_MOUSE_FOCUS 1
+
 bool SDLHandler::stencilBufferUsed = false;
 
 // milllis
@@ -33,6 +35,7 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   fps = 0;
   screen = NULL;
   lastMouseX = lastMouseY = mouseX = mouseY = mouseButton = mouseEvent = 0;
+  mouseFocusX = mouseFocusY = 0;
   mouseDragging = false;
   mouseIsMovingOverMap = false;
   text = NULL;
@@ -389,6 +392,16 @@ bool SDLHandler::firedEventWaiting() {
   return storedEvent != NULL;
 }
 
+void SDLHandler::applyMouseOffset(int x, int y, int *newX, int *newY) {
+  if( cursorMode == CURSOR_CROSSHAIR ) {
+    mouseFocusX = mouseFocusY = 24;
+  } else {
+    mouseFocusX = mouseFocusY = 0;
+  }
+  *newX = x + mouseFocusX;
+  *newY = y + mouseFocusY;
+} 
+
 void SDLHandler::mainLoop() {
   /* whether or not the window is active */
   int isActive = TRUE;  
@@ -406,12 +419,12 @@ void SDLHandler::mainLoop() {
       switch( event.type ) {
       case SDL_MOUSEMOTION:
         if(invertMouse) event.motion.y = screen->h - event.motion.y;
-        //		applyMouseOffset(event.button.x, event.button.y, &mx, &my);
-        mouseX = event.motion.x;
-        mouseY = event.motion.y;          
+        applyMouseOffset(event.motion.x, event.motion.y, &mx, &my);
+        mouseX = mx;
+        mouseY = my;          
         mouseButton = event.button.button;
         mouseEvent = SDL_MOUSEMOTION;
-        widget = Window::delegateEvent( &event, event.button.x, event.button.y );
+        widget = Window::delegateEvent( &event, mouseX, mouseY );
         if(!widget) {
           mouseIsMovingOverMap = true;
           lastMouseMoveTime = now;
@@ -527,7 +540,7 @@ void SDLHandler::drawScreen() {
     glDisable(GL_CULL_FACE);
     glPushMatrix();
     glLoadIdentity();
-    glTranslatef( mouseX, mouseY, 0 );
+    glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
     glBindTexture( GL_TEXTURE_2D, 
                    cursorMode == CURSOR_NORMAL ? 
                    shapePal->cursor_texture :
@@ -546,11 +559,26 @@ void SDLHandler::drawScreen() {
     glTexCoord2f( 1, 0 );
     glVertex2f( shapePal->cursor->w, 0 );
     glEnd();
-
     glPopMatrix();
 
     glDisable( GL_ALPHA_TEST );
     glDisable(GL_TEXTURE_2D);
+
+#ifdef DEBUG_MOUSE_FOCUS
+    // cursor focus
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef( mouseX, mouseY, 0 );
+    glColor4f( 1, 1, 1, 1 );
+    glBegin( GL_QUADS );
+    glVertex2f( 0, 10 );
+    glVertex2f( 0, 0 );
+    glVertex2f( 10, 0 );
+    glVertex2f( 10, 10 );
+    glEnd();
+    glPopMatrix();
+#endif
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
   }

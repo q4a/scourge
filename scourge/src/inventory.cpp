@@ -322,7 +322,13 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
   else if(widget == missionButton)  setSelectedPlayerAndMode(selected, MISSION);
   else if(widget == partyButton) setSelectedPlayerAndMode(selected, PARTY);
-  else if(widget == infoButton || 
+  else if(widget == invList && scourge->getTargetSelectionFor() ) {
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1) {
+      Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
+      scourge->handleTargetSelectionOfItem( item );
+    }
+  } else if(widget == infoButton || 
           (widget == invList && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT)) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1) {

@@ -241,7 +241,7 @@ void Battle::initTurnStep() {
     }
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
-    if(debugBattle) cerr << "\tDistance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
+    if(debugBattle) cerr << "\tname=" << creature->getName() << " Distance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
   }
 }
 

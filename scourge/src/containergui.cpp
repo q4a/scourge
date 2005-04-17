@@ -107,6 +107,12 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
 	if(widget == win->closeButton || widget == closeButton) {
 		win->setVisible(false);
 		return true;
+  } else if(widget == list && scourge->getTargetSelectionFor() ) {
+    int itemIndex = list->getSelectedLine();  
+    if(itemIndex > -1) {
+      Item *item = container->getContainedItem(itemIndex);
+      scourge->handleTargetSelectionOfItem( item );
+    }
   } else if(widget == infoButton || 
             (widget == list && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT)) {
       int itemIndex = list->getSelectedLine();  
