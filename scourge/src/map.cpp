@@ -1019,7 +1019,7 @@ void Map::draw() {
      * called 4 times, not for every wall-piece. (+once for player)
      * 
      * To make it look better:
-     * 1. stencil out transparent wall sections when drawing water.
+     * (DONE) 1. stencil out transparent wall sections when drawing water.
      * 2. maybe: check walls for every party member, not just player?
      * 
      * Don't forget to turn off FORCE_WATER in dungeon generator.
@@ -1073,32 +1073,66 @@ void Map::draw() {
       
       // draw walls behind the player
       for( int i = 0; i < (int)behind.size(); i++ ) doDrawShape( &(behind[i]) );
-      
-      // draw walls blended in front of the player
-      // 6,2 6,4 work well
-      // FIXME: blending walls have some artifacts that depth-sorting 
-      // is supposed to get rid of but that didn't work for me.
+
+      // draw walls in front of the player and water effects
       glEnable( GL_BLEND );
       glDepthMask(GL_FALSE);        
-      glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-      for( int i = 0; i < (int)front.size(); i++ ) doDrawShape( &(front[i]) );
+      if( hasWater && 
+          session->getUserConfiguration()->getStencilbuf() &&
+          session->getUserConfiguration()->getStencilBufInitialized() ) {
+        
+        // stencil out the transparent walls (and draw them)
+        //glDisable(GL_DEPTH_TEST);
+        //glColorMask(0,0,0,0);
+        glClear( GL_STENCIL_BUFFER_BIT );
+        glEnable(GL_STENCIL_TEST);
+        glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+        glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+        // draw walls blended in front of the player
+        // 6,2 6,4 work well
+        // FIXME: blending walls have some artifacts that depth-sorting 
+        // is supposed to get rid of but that didn't work for me.
+        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+        for( int i = 0; i < (int)front.size(); i++ ) doDrawShape( &(front[i]) );
+
+        // draw the water (except where the transp. walls are)
+        glStencilFunc(GL_NOTEQUAL, 1, 0xffffffff);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); 
+        glDisable(GL_TEXTURE_2D);
+        glBlendFunc( GL_ONE, GL_SRC_COLOR );
+        setupShapes(false, true);
+        glEnable(GL_TEXTURE_2D);      
+                
+        glDisable(GL_STENCIL_TEST); 
+      } else {
+        // draw transp. walls and water w/o stencil buffer
+        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+        for( int i = 0; i < (int)front.size(); i++ ) doDrawShape( &(front[i]) );
+        if( hasWater ) {
+          glDisable(GL_TEXTURE_2D);
+          glBlendFunc( GL_ONE, GL_SRC_COLOR );
+          setupShapes(false, true);
+          glEnable(GL_TEXTURE_2D);      
+        }
+      }
       glDisable( GL_BLEND );
       glDepthMask(GL_TRUE);
-    } else {
-      // just draw the damn walls
-      for( int i = 0; i < stencilCount; i++ ) doDrawShape( &(stencil[i]) );
-    }
 
-    // draw water (has to come after walls to look good)
-    if( hasWater ) {
-      glEnable(GL_BLEND);  
-      glDepthMask(GL_FALSE);
-      glDisable(GL_TEXTURE_2D);
-      glBlendFunc( GL_ONE, GL_SRC_COLOR );
-      setupShapes(false, true);
-      glDisable(GL_BLEND);
-      glEnable(GL_TEXTURE_2D);      
-      glDepthMask(GL_TRUE);
+    } else {
+      // no player; just draw the damn walls
+      for( int i = 0; i < stencilCount; i++ ) doDrawShape( &(stencil[i]) );
+      
+      // draw water (has to come after walls to look good)
+      if( hasWater ) {
+        glEnable(GL_BLEND);  
+        glDepthMask(GL_FALSE);
+        glDisable(GL_TEXTURE_2D);
+        glBlendFunc( GL_ONE, GL_SRC_COLOR );
+        setupShapes(false, true);
+        glDisable(GL_BLEND);
+        glEnable(GL_TEXTURE_2D);      
+        glDepthMask(GL_TRUE);
+      }
     }
 
 
