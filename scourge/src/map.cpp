@@ -996,20 +996,11 @@ void Map::draw() {
 
     }
 
-    // draw the water
-    if( hasWater ) {
-      glDisable(GL_TEXTURE_2D);
-      glEnable(GL_BLEND);  
-      glDepthMask(GL_FALSE);
-      glBlendFunc( GL_ONE, GL_SRC_COLOR );
-      setupShapes(false, true);
-      glDepthMask(GL_TRUE);    
-      glDisable(GL_BLEND);
-      glEnable(GL_TEXTURE_2D);
-    }
-
     // draw the creatures/objects/doors/etc.
+    DrawLater *playerDrawLater = NULL;
     for(int i = 0; i < otherCount; i++) {
+      if( other[i].creature && other[i].creature == session->getParty()->getPlayer() ) 
+        playerDrawLater = &(other[i]);
       if(selectedDropTarget && 
          ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
           (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
@@ -1019,58 +1010,102 @@ void Map::draw() {
       doDrawShape(&other[i]);
     }
 
-    // draw the walls
-    glEnable( GL_BLEND );
-    // 6,2 6,4 work well
-    // FIXME: blending walls have some artifacts that depth-sorting 
-    // is supposed to get rid of but that didn't work for me.
-    glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-    glDisable( GL_BLEND );
 
 
+    /**
+     * To make this faster:
+     * 1. only calculate on mapChanged
+     * 2. keep map of calculations (key=xpos,ypos), gluProject only needs to be
+     * called 4 times, not for every wall-piece. (+once for player)
+     * 
+     * To make it look better:
+     * 1. stencil out transparent wall sections when drawing water.
+     * 2. maybe: check walls for every party member, not just player?
+     * 
+     * Don't forget to turn off FORCE_WATER in dungeon generator.
+     */
 
 
-    /*
-    // A failed attempt to draw items on top of walls
-    // blended objects 
-    glClear( GL_STENCIL_BUFFER_BIT );
-    //glDisable(GL_DEPTH_TEST);
-    glColorMask(0,0,0,0);
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-    glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-    for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
+    // draw the walls: walls in front of the player will be transparent
+    if( playerDrawLater ) {
+      GLdouble mm[16];
+      glGetDoublev( GL_MODELVIEW_MATRIX, mm );
+      GLdouble pm[16];
+      glGetDoublev( GL_PROJECTION_MATRIX, pm );
+      GLint vp[4];
+      glGetIntegerv( GL_VIEWPORT, vp );
 
-    glClear( GL_DEPTH_BUFFER_BIT );
-    glColorMask(1,1,1,1);
-    glStencilFunc(GL_EQUAL, 1, 0xffffffff);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); 
-    //glDisable(GL_TEXTURE_2D);
-    //glDisable(GL_DEPTH_TEST);
-    //glDepthMask(GL_FALSE);
-    //glEnable( GL_BLEND );
-    //glBlendFunc( GL_ONE_MINUS_DST_ALPHA, GL_ONE );
-    //session->getGameAdapter()->setBlendFunc();
-    // draw the creatures/objects/doors/etc.
-    for(int i = 0; i < otherCount; i++) {
-      if( other[i].item || other[i].creature ) {
-        colorAlreadySet = true;
-        glColor4f(0.5f, 0.5f, 0.5f, 0.3f);
-        doDrawShape(&other[i]);
+      GLdouble playerWinX, playerWinY, playerWinZ;
+      gluProject( playerDrawLater->xpos,
+                  playerDrawLater->ypos,
+                  0,
+                  mm, pm, vp,
+                  &playerWinX, &playerWinY, &playerWinZ );
+      
+      GLdouble objX, objY;
+      GLdouble wallWinX, wallWinY, wallWinZ;
+      vector<DrawLater> front, behind;
+      for(int i = 0; i < stencilCount; i++) {
+        /*
+          Since rooms are rectangular, we can do this hack... a wall horizontal 
+          wall piece will use the player's x coord. and its y coord.
+          A vertical one will use its X and the player's Y.
+          This is so that even if the wall extends below the player the entire
+          length has the same characteristics.
+        */
+        if( stencil[i].shape->getWidth() > stencil[i].shape->getDepth() ) {
+          objX = playerDrawLater->xpos;
+          objY = stencil[i].ypos;
+        } else {
+          objX = stencil[i].xpos;
+          objY = playerDrawLater->ypos;
+        }
+        gluProject( objX, objY, 0,
+                    mm, pm, vp,
+                    &wallWinX, &wallWinY, &wallWinZ );
+
+        if( wallWinY < playerWinY ) {
+          front.push_back( stencil[i] );
+        } else {
+          behind.push_back( stencil[i] );
+        }
       }
+      
+      // draw walls behind the player
+      for( int i = 0; i < (int)behind.size(); i++ ) doDrawShape( &(behind[i]) );
+      
+      // draw walls blended in front of the player
+      // 6,2 6,4 work well
+      // FIXME: blending walls have some artifacts that depth-sorting 
+      // is supposed to get rid of but that didn't work for me.
+      glEnable( GL_BLEND );
+      glDepthMask(GL_FALSE);        
+      glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+      for( int i = 0; i < (int)front.size(); i++ ) doDrawShape( &(front[i]) );
+      glDisable( GL_BLEND );
+      glDepthMask(GL_TRUE);
+    } else {
+      // just draw the damn walls
+      for( int i = 0; i < stencilCount; i++ ) doDrawShape( &(stencil[i]) );
     }
-    //glDisable( GL_BLEND );
-    //glEnable(GL_TEXTURE_2D);
-    //glDepthMask(GL_TRUE);
-    //glEnable(GL_DEPTH_TEST);
-    glDisable(GL_STENCIL_TEST); 
-    */
+
+    // draw water (has to come after walls to look good)
+    if( hasWater ) {
+      glEnable(GL_BLEND);  
+      glDepthMask(GL_FALSE);
+      glDisable(GL_TEXTURE_2D);
+      glBlendFunc( GL_ONE, GL_SRC_COLOR );
+      setupShapes(false, true);
+      glDisable(GL_BLEND);
+      glEnable(GL_TEXTURE_2D);      
+      glDepthMask(GL_TRUE);
+    }
+
+
 
 
 
     
-
     // draw the effects
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);  
