@@ -26,7 +26,7 @@
 
 #define INFO_INTERVAL 3000
 
-#define DEBUG_KEYS 1
+//#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -1147,48 +1147,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(ea == SET_NEXT_FORMATION_STOP){
       if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
       else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-//    } else if(ea == SET_X_ROT_PLUS){        
-//      levelMap->setXRot(5.0f);
-//    } else if(ea == SET_X_ROT_MINUS){
-//      levelMap->setXRot(-5.0f);
-    } else if(ea == SET_Y_ROT_PLUS){
-      levelMap->setYRot(5.0f);
-    } else if(ea == SET_Y_ROT_MINUS){
-      levelMap->setYRot(-5.0f);
-    } else if(ea == SET_Z_ROT_PLUS){
-      levelMap->setZRot(5.0f);
-    } else if(ea == SET_Z_ROT_MINUS){
-      levelMap->setZRot(-5.0f);
-//    } else if(ea == SET_X_ROT_PLUS_STOP){
-//      levelMap->setXRot(0.0f);
-//    } else if(ea == SET_X_ROT_MINUS_STOP){
-//      levelMap->setXRot(0.0f);
-    } else if(ea == SET_Y_ROT_PLUS_STOP){
-      levelMap->setYRot(0.0f);
-    } else if(ea == SET_Y_ROT_MINUS_STOP){
-      levelMap->setYRot(0.0f);
-    } else if(ea == SET_Z_ROT_PLUS_STOP){
-      levelMap->setZRot(0.0f);
-    } else if(ea == SET_Z_ROT_MINUS_STOP){
-      levelMap->setZRot(0.0f);
-//    } else if(ea == ADD_X_POS_PLUS){
-//      levelMap->addXPos(10.0f);
-//    } else if(ea == ADD_X_POS_MINUS){
-//      levelMap->addXPos(-10.0f);
-//    } else if(ea == ADD_Y_POS_PLUS){
-//      levelMap->addYPos(10.0f);
-//    } else if(ea == ADD_Y_POS_MINUS){
-//      levelMap->addYPos(-10.0f);
-//    } else if(ea == ADD_Z_POS_PLUS){
-//      levelMap->addZPos(10.0f);
-//    } else if(ea == ADD_Z_POS_MINUS){
-//      levelMap->addZPos(-10.0f);
     } else if(ea == MINIMAP_ZOOM_IN){
       miniMap->zoomIn();
     } else if(ea == MINIMAP_ZOOM_OUT){
       miniMap->zoomOut();
-    } else if(ea == MINIMAP_TOGGLE){
-      miniMap->toggle();
+//    } else if(ea == MINIMAP_TOGGLE){
+//      miniMap->toggle();
     } else if(ea == SET_ZOOM_IN){
       levelMap->setZoomIn(true);
     } else if(ea == SET_ZOOM_OUT){
@@ -1211,10 +1175,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
       setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
     } else if(ea == LAYOUT_2) {
       setUILayout(Constants::GUI_LAYOUT_BOTTOM);
-    } else if(ea == LAYOUT_3) {
-      setUILayout(Constants::GUI_LAYOUT_SIDE);
+//    } else if(ea == LAYOUT_3) {
+//      setUILayout(Constants::GUI_LAYOUT_SIDE);
     } else if(ea == LAYOUT_4) {
       setUILayout(Constants::GUI_LAYOUT_INVENTORY);
+    } else if( ea >= QUICK_SPELL_1 && ea <= QUICK_SPELL_12 ) {
+      quickSpellAction( ea - QUICK_SPELL_1 );
     }
     break;
   default: break;
@@ -3029,35 +2995,39 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
     }
     for( int t = 0; t < 12; t++ ) {
       if( widget == quickSpell[t] ) {
-        if( inventory->inStoreSpellMode() ) {
-          getParty()->getPlayer()->setQuickSpell( t, inventory->getStoreSpell() );
-          inventory->setStoreSpellMode( false );
-          if( inventory->isVisible() ) toggleInventoryWindow();
-        } else {
-          Creature *creature = getParty()->getPlayer();
-          Spell *spell = creature->getQuickSpell( t );
-          if( spell ) {
-            if(spell->getMp() > creature->getMp()) {
-              showMessageDialog("Not enough Magic Points to cast this spell!");
-            } else {
-              creature->setAction(Constants::ACTION_CAST_SPELL, 
-                                  NULL,
-                                  spell);
-              if(!spell->isPartyTargetAllowed()) {
-                setTargetSelectionFor(creature);
-              } else {
-                creature->setTargetCreature(creature);
-              }
-            }
-          } else {
-            inventory->showSpells();
-            if( !inventory->isVisible() ) toggleInventoryWindow();
-          }
-        }
+        quickSpellAction( t );
       }
     }
   }
   return false;
+}
+
+void Scourge::quickSpellAction( int index ) {
+  if( inventory->inStoreSpellMode() ) {
+    getParty()->getPlayer()->setQuickSpell( index, inventory->getStoreSpell() );
+    inventory->setStoreSpellMode( false );
+    if( inventory->isVisible() ) toggleInventoryWindow();
+  } else {
+    Creature *creature = getParty()->getPlayer();
+    Spell *spell = creature->getQuickSpell( index );
+    if( spell ) {
+      if(spell->getMp() > creature->getMp()) {
+        showMessageDialog("Not enough Magic Points to cast this spell!");
+      } else {
+        creature->setAction(Constants::ACTION_CAST_SPELL, 
+                            NULL,
+                            spell);
+        if(!spell->isPartyTargetAllowed()) {
+          setTargetSelectionFor(creature);
+        } else {
+          creature->setTargetCreature(creature);
+        }
+      }
+    } else {
+      inventory->showSpells();
+      if( !inventory->isVisible() ) toggleInventoryWindow();
+    }
+  }
 }
 
 void Scourge::refreshInventoryUI(int playerIndex) {

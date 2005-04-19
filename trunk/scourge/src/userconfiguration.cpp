@@ -29,37 +29,119 @@
 //        - default config if config file not there ??
 
 const char UserConfiguration::default_key[][20] = {
+
+  /*
+  SET_MOVE_DOWN = 0,
+  SET_MOVE_RIGHT,
+  SET_MOVE_UP,
+  SET_MOVE_LEFT,
+  */
+
+
   "down",
   "right",
   "up",
   "left",
+           
+/*    SET_PLAYER_0,
+    SET_PLAYER_1,
+    SET_PLAYER_2,
+    SET_PLAYER_3,
+    SET_PLAYER_ONLY,      
+*/    
+
   "1",
   "2",
   "3",
   "4",
   "0",
+
+/*    SHOW_INVENTORY, 
+    SHOW_OPTIONS_MENU,
+    SET_NEXT_FORMATION,
+*/    
+
   "i",
   "o",
   "f",
-  "a",
-  "s",
-  "z",
-  "x",
+
+/*
+    MINIMAP_ZOOM_IN,
+    MINIMAP_ZOOM_OUT,
+*/    
+
   "[+]",
   "[-]",
-  "l",
+
+/*    
+    SET_ZOOM_IN,     
+    SET_ZOOM_OUT,
+*/    
+
   "8",
   "9",
+   
+/*
+    TOGGLE_MAP_CENTER, 
+    INCREASE_GAME_SPEED, 
+    DECREASE_GAME_SPEED, 
+*/    
+
   "m",
   "j",
   "k",
+    
+//    START_ROUND, 
+
   "space",
+
+  /*
+    LAYOUT_1,
+    LAYOUT_2,
+    LAYOUT_4,
+*/    
+
+  "d",
+  "f",
+  "g",
+
+/*
+    SHOW_PATH,
+    SWITCH_COMBAT,
+*/    
+
+  "p",
+  "c",
+
+/*
+    QUICK_SPELL_1,
+    QUICK_SPELL_2,
+    QUICK_SPELL_3,      
+    QUICK_SPELL_4,      
+    QUICK_SPELL_5,      
+    QUICK_SPELL_6,      
+    QUICK_SPELL_7,      
+    QUICK_SPELL_8,      
+    QUICK_SPELL_9,      
+    QUICK_SPELL_10,      
+    QUICK_SPELL_11,      
+    QUICK_SPELL_12
+*/    
+
   "f1",
   "f2",
   "f3",
   "f4",
-  "p",
-  "f6"
+  "f5",
+  "f6",
+  "f7",
+  "f8",
+  "f9",
+  "f10",
+  "f11",
+  "f12"
+
+
 };
 
 // Must be exact copy of enums defined in userconfiguration.h
@@ -80,15 +162,9 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "SHOW_INVENTORY", 
     "SHOW_OPTIONS_MENU",
     "SET_NEXT_FORMATION",
-         
-    "SET_Y_ROT_PLUS",
-    "SET_Y_ROT_MINUS",    
-    "SET_Z_ROT_PLUS",        
-    "SET_Z_ROT_MINUS",         
-    
+
     "MINIMAP_ZOOM_IN",
     "MINIMAP_ZOOM_OUT",
-    "MINIMAP_TOGGLE",
     
     "SET_ZOOM_IN",     
     "SET_ZOOM_OUT",
@@ -101,11 +177,23 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
 
     "LAYOUT_1",
     "LAYOUT_2",
-    "LAYOUT_3",
     "LAYOUT_4",
 
     "SHOW_PATH",
-    "SWITCH_COMBAT"
+    "SWITCH_COMBAT",
+
+    "QUICK_SPELL_1",
+    "QUICK_SPELL_2",
+    "QUICK_SPELL_3",      
+    "QUICK_SPELL_4",      
+    "QUICK_SPELL_5",      
+    "QUICK_SPELL_6",      
+    "QUICK_SPELL_7",      
+    "QUICK_SPELL_8",      
+    "QUICK_SPELL_9",      
+    "QUICK_SPELL_10",      
+    "QUICK_SPELL_11",      
+    "QUICK_SPELL_12"
 };
 
 
@@ -141,21 +229,14 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     "Select player 1",
     "Select player 2",
     "Select player 3",
-    "Move only selected player",    
+    "Toggle group mode",    
     
     "Show inventory", 
     "Show options",
-    "Use item",
     "Choose next formation",
             
-    "Rotate map up",
-    "Rotate map down",    
-    "Rotate map right",        
-    "Rotate map left",       
-    
     "Zoom in minimap",
     "Zoom out minimap",
-    "Show/hide minimap",
     
     "Zoom in map",     
     "Zoom out map",
@@ -168,11 +249,24 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
 
     "Floating UI layout",
     "Bottom UI layout",
-    "Side UI layout",
     "Inventory UI layout",
     
     "Show path",
     "Switch combat mode",
+
+  "Quick Spell 1",
+  "Quick Spell 2",
+  "Quick Spell 3",      
+  "Quick Spell 4",      
+  "Quick Spell 5",      
+  "Quick Spell 6",      
+  "Quick Spell 7",      
+  "Quick Spell 8",      
+  "Quick Spell 9",      
+  "Quick Spell 10",      
+  "Quick Spell 11",      
+  "Quick Spell 12"
+
 };
 
 
@@ -349,6 +443,11 @@ void UserConfiguration::loadConfiguration(){
   delete configFile;    
 
   // set default bindings for unbound actions
+  if( !isCurrentVersion ) {
+    keyForEngineAction.clear();
+    keyDownBindings.clear();
+    keyUpBindings.clear();
+  }
   for( int i = 0; i < ENGINE_ACTION_COUNT; i++ ) {
     // if no bindings
     if( keyForEngineAction.find( i ) == keyForEngineAction.end() ) {

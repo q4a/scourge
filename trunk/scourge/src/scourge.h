@@ -694,6 +694,8 @@ public:
   void checkForDropTarget();
   void checkForInfo();
   void drawInfos();
+
+  void quickSpellAction( int index );
 };
 
 #endif
