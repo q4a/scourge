@@ -78,6 +78,7 @@ Map::Map(Session *session) {
   debugX = debugY = debugZ = -1;
   
   mapChanged = true;
+  resortShapes = true;
   
   descriptionCount = 0;
   descriptionsChanged = false;
@@ -187,6 +188,7 @@ void Map::reset() {
   //alwaysCenter = true;
   debugX = debugY = debugZ = -1;
   mapChanged = true;
+  resortShapes = true;
   
 //  descriptionCount = 0;
 //  descriptionsChanged = false;
@@ -312,7 +314,7 @@ void Map::move(int dir) {
 	//	cerr << "-------------------" << endl;
 	//	cerr << "x=" << x << " y=" << y << " zrot=" << z << endl;
 
-	mapChanged = true;
+	mapChanged = resortShapes = true;
 	float delta = (SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f);
 	if(dir & Constants::MOVE_DOWN) {
 	  mapx += delta * sin(zrad);
@@ -355,7 +357,7 @@ void Map::removeCurrentEffects() {
       decodeTripletKey(key, &x, &y, &z);
       currentEffectsMap.erase( i );
       removeEffect( x, y, z );
-      mapChanged = true;
+      resortShapes = mapChanged = true;
     }
   }
 
@@ -860,7 +862,10 @@ void Map::draw() {
   if(yrot >= 55 || yrot < 0) yrot = oldrot;
 
   oldrot = zrot;
-  if(zRotating != 0) zrot+=zRotating;
+  if(zRotating != 0) {
+    resortShapes = true;
+    zrot+=zRotating;
+  }
   if(zrot >= 360) zrot -= 360;
   if(zrot < 0) zrot = 360 + zrot;
 
@@ -909,22 +914,6 @@ void Map::draw() {
     }
 #endif
 
-
-
-    /*
-    // draw the creatures/objects/doors/etc.
-    for(int i = 0; i < otherCount; i++) {
-      if(selectedDropTarget && 
-         ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
-          (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
-        colorAlreadySet = true;
-        glColor4f(0, 1, 1, 1);
-      }
-      doDrawShape(&other[i]);
-    }
-    // draw the walls
-    //for(int i = 0; i < stencilCount; i++) doDrawShape(&stencil[i]);
-    */
 
     if(session->getUserConfiguration()->getStencilbuf() &&
        session->getUserConfiguration()->getStencilBufInitialized()) {
@@ -1012,67 +1001,16 @@ void Map::draw() {
 
 
 
-    /**
-     * To make this faster:
-     * 1. only calculate on mapChanged
-     * 2. keep map of calculations (key=xpos,ypos), gluProject only needs to be
-     * called 4 times, not for every wall-piece. (+once for player)
-     * 
-     * To make it look better:
-     * (DONE) 1. stencil out transparent wall sections when drawing water.
-     * 2. maybe: check walls for every party member, not just player?
-     * 
-     * Don't forget to turn off FORCE_WATER in dungeon generator.
-     */
-
-
     // draw the walls: walls in front of the player will be transparent
     if( playerDrawLater ) {
-      GLdouble mm[16];
-      glGetDoublev( GL_MODELVIEW_MATRIX, mm );
-      GLdouble pm[16];
-      glGetDoublev( GL_PROJECTION_MATRIX, pm );
-      GLint vp[4];
-      glGetIntegerv( GL_VIEWPORT, vp );
 
-      GLdouble playerWinX, playerWinY, playerWinZ;
-      gluProject( playerDrawLater->xpos,
-                  playerDrawLater->ypos,
-                  0,
-                  mm, pm, vp,
-                  &playerWinX, &playerWinY, &playerWinZ );
-      
-      GLdouble objX, objY;
-      GLdouble wallWinX, wallWinY, wallWinZ;
-      vector<DrawLater> front, behind;
-      for(int i = 0; i < stencilCount; i++) {
-        /*
-          Since rooms are rectangular, we can do this hack... a wall horizontal 
-          wall piece will use the player's x coord. and its y coord.
-          A vertical one will use its X and the player's Y.
-          This is so that even if the wall extends below the player the entire
-          length has the same characteristics.
-        */
-        if( stencil[i].shape->getWidth() > stencil[i].shape->getDepth() ) {
-          objX = playerDrawLater->xpos;
-          objY = stencil[i].ypos;
-        } else {
-          objX = stencil[i].xpos;
-          objY = playerDrawLater->ypos;
-        }
-        gluProject( objX, objY, 0,
-                    mm, pm, vp,
-                    &wallWinX, &wallWinY, &wallWinZ );
-
-        if( wallWinY < playerWinY ) {
-          front.push_back( stencil[i] );
-        } else {
-          behind.push_back( stencil[i] );
-        }
+      if( resortShapes ) {
+        sortShapes( playerDrawLater, stencil, stencilCount );
+        resortShapes = false;
       }
       
       // draw walls behind the player
-      for( int i = 0; i < (int)behind.size(); i++ ) doDrawShape( &(behind[i]) );
+      for( int i = 0; i < stencilCount; i++ ) if( !(stencil[i].inFront) ) doDrawShape( &(stencil[i]) );
 
       // draw walls in front of the player and water effects
       glEnable( GL_BLEND );
@@ -1093,7 +1031,7 @@ void Map::draw() {
         // FIXME: blending walls have some artifacts that depth-sorting 
         // is supposed to get rid of but that didn't work for me.
         glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-        for( int i = 0; i < (int)front.size(); i++ ) doDrawShape( &(front[i]) );
+        for( int i = 0; i < stencilCount; i++ ) if( stencil[i].inFront ) doDrawShape( &(stencil[i]) );
 
         // draw the water (except where the transp. walls are)
         glStencilFunc(GL_NOTEQUAL, 1, 0xffffffff);
@@ -1107,7 +1045,7 @@ void Map::draw() {
       } else {
         // draw transp. walls and water w/o stencil buffer
         glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-        for( int i = 0; i < (int)front.size(); i++ ) doDrawShape( &(front[i]) );
+        for( int i = 0; i < stencilCount; i++ ) if( stencil[i].inFront ) doDrawShape( &(stencil[i]) );
         if( hasWater ) {
           glDisable(GL_TEXTURE_2D);
           glBlendFunc( GL_ONE, GL_SRC_COLOR );
@@ -1207,6 +1145,58 @@ void Map::draw() {
 #endif
 
   glDisable( GL_SCISSOR_TEST );
+}
+
+void Map::sortShapes( DrawLater *playerDrawLater,
+                      DrawLater *shapes,
+                      int shapeCount ) {
+  GLdouble mm[16];
+  glGetDoublev( GL_MODELVIEW_MATRIX, mm );
+  GLdouble pm[16];
+  glGetDoublev( GL_PROJECTION_MATRIX, pm );
+  GLint vp[4];
+  glGetIntegerv( GL_VIEWPORT, vp );
+
+  GLdouble playerWinX, playerWinY, playerWinZ;
+  gluProject( playerDrawLater->xpos,
+              playerDrawLater->ypos,
+              0,
+              mm, pm, vp,
+              &playerWinX, &playerWinY, &playerWinZ );
+
+  char tmp[80];
+  map< string, bool > cache;
+  GLdouble objX, objY;
+  GLdouble wallWinX, wallWinY, wallWinZ;
+  for(int i = 0; i < shapeCount; i++) {
+    /*
+      Since rooms are rectangular, we can do this hack... a wall horizontal 
+      wall piece will use the player's x coord. and its y coord.
+      A vertical one will use its X and the player's Y.
+      This is so that even if the wall extends below the player the entire
+      length has the same characteristics.
+    */
+    if( shapes[i].shape->getWidth() > shapes[i].shape->getDepth() ) {
+      objX = playerDrawLater->xpos;
+      objY = shapes[i].ypos;
+    } else {
+      objX = shapes[i].xpos;
+      objY = playerDrawLater->ypos;
+    }
+    bool b;
+    sprintf( tmp, "%f,%f", objX, objY );
+    string key = tmp;
+    if( cache.find( key ) == cache.end() ) {
+      gluProject( objX, objY, 0,
+                  mm, pm, vp,
+                  &wallWinX, &wallWinY, &wallWinZ );
+      b = ( wallWinY < playerWinY );
+      cache[ key ] = b;
+    } else {
+      b = cache[ key ];
+    }
+    shapes[i].inFront = b;
+  }
 }
 
 void Map::drawProjectiles() {
@@ -1606,7 +1596,7 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
 
   // no need to actually move data
   if( x == nx && y == ny && z == nz ) {
-    mapChanged = true;
+    resortShapes = mapChanged = true;
     return NULL;
   }
 
@@ -1800,7 +1790,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   currentEffectsMap[ createTripletKey( x, y, z ) ] = effect[x][y][z];
 
   // need to do this to make sure effect shows up
-  mapChanged = true;
+  resortShapes = mapChanged = true;
 }
 
 void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
@@ -1840,7 +1830,7 @@ void Map::removeAllEffects() {
 
 void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
   if(shape) {
-    mapChanged = true;
+    resortShapes = mapChanged = true;
     //cerr << "FIXME: Map::setPosition" << endl;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
@@ -1872,7 +1862,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->x == x &&
      pos[x][y][z]->y == y &&
      pos[x][y][z]->z == z) {
-	mapChanged = true;
+	resortShapes = mapChanged = true;
     shape = pos[x][y][z]->shape;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
@@ -1892,7 +1882,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
   if(item) {
     if(item->getShape()) {
-	  mapChanged = true;
+	  resortShapes = mapChanged = true;
       for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
         for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {          
           for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
@@ -1921,7 +1911,7 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->x == x &&
      pos[x][y][z]->y == y &&
      pos[x][y][z]->z == z) {
-	mapChanged = true;
+	resortShapes = mapChanged = true;
 	item = pos[x][y][z]->item;
     for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
       for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {       
@@ -1966,7 +1956,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
   char message[120];  
   if(creature) {
     if(creature->getShape()) {
-	  mapChanged = true;
+	  resortShapes = mapChanged = true;
 	  while(true) {
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
 		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
@@ -2021,7 +2011,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
   if(creature && creature->getShape() &&
      p && p->creature &&
      p->x == ox && p->y == oy && p->z == oz) {
-    mapChanged = true;
+    resortShapes = mapChanged = true;
     
     // remove the old pos
     Location *tmp[MAP_UNIT][MAP_UNIT][MAP_UNIT];
@@ -2098,7 +2088,7 @@ Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->x == x &&
      pos[x][y][z]->y == y &&
      pos[x][y][z]->z == z) {
-	mapChanged = true;
+	resortShapes = mapChanged = true;
     creature = pos[x][y][z]->creature;
 	//    cout<<"width : "<< creature->getShape()->getWidth()<<endl;
 	//    cout<<"depth: "<< creature->getShape()->getDepth()<<endl;
