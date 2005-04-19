@@ -19,7 +19,7 @@
 
 #define LOCKED_DOOR_RAND 8.0f
 
-#define FORCE_WATER 1
+#define FORCE_WATER 0
 
 // raise the magic item level by 1 for every 3 levels (magic item level [0,1,2,3])
 #define MAGIC_ITEM_MUL 3

@@ -50,6 +50,7 @@ typedef struct _DrawLater {
   EffectLocation *effect;
   GLuint name;  
   Location *pos;
+  bool inFront;
 } DrawLater;
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
@@ -83,6 +84,7 @@ public:
 class Map {
  private:
   bool mapChanged;
+  bool resortShapes;
   float zoom;
   bool zoomIn, zoomOut;
   Sint16 x;
@@ -293,9 +295,11 @@ class Map {
 
   Location *Map::getDropLocation(Shape *shape, int x, int y, int z);
 
-  inline void updateLightMap() { lightMapChanged = true; }
+  inline void updateLightMap() { lightMapChanged = resortShapes = true; }
 
-  inline void refresh() { mapChanged = lightMapChanged = true; }
+  inline void refresh() { mapChanged = lightMapChanged = resortShapes = true; }
+
+  inline void refreshTransparency() { resortShapes = true; }
 
   void setViewArea(int x, int y, int w, int h);
   inline int getViewWidth() { return viewWidth; }
@@ -468,6 +472,10 @@ class Map {
   void drawWater();
 
   void removeCurrentEffects();
+
+  void sortShapes( DrawLater *playerDrawLater,
+                   DrawLater *shapes,
+                   int shapeCount );
 };
 
 #endif
