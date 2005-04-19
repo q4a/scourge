@@ -28,9 +28,6 @@
 
 using namespace std;
 
-// Max number of event binding for each engine action
-#define CONFIG_FILE_NAME "/saved/scourge.cfg"
-
 // Indice for the first debug engine action defined in engine_action_int
 //#define ENGINE_ACTION_DEBUG_IND 32
 
@@ -57,15 +54,9 @@ enum engine_action_int{
     SHOW_INVENTORY, 
     SHOW_OPTIONS_MENU,
     SET_NEXT_FORMATION,
-        
-    SET_Y_ROT_PLUS,
-    SET_Y_ROT_MINUS,    
-    SET_Z_ROT_PLUS,        
-    SET_Z_ROT_MINUS,         
-    
+           
     MINIMAP_ZOOM_IN,
     MINIMAP_ZOOM_OUT,
-    MINIMAP_TOGGLE,
     
     SET_ZOOM_IN,     
     SET_ZOOM_OUT,
@@ -78,12 +69,24 @@ enum engine_action_int{
 
     LAYOUT_1,
     LAYOUT_2,
-    LAYOUT_3,
     LAYOUT_4,
 
     SHOW_PATH,
     SWITCH_COMBAT,
-        
+
+    QUICK_SPELL_1,
+    QUICK_SPELL_2,
+    QUICK_SPELL_3,      
+    QUICK_SPELL_4,      
+    QUICK_SPELL_5,      
+    QUICK_SPELL_6,      
+    QUICK_SPELL_7,      
+    QUICK_SPELL_8,      
+    QUICK_SPELL_9,      
+    QUICK_SPELL_10,      
+    QUICK_SPELL_11,      
+    QUICK_SPELL_12,      
+
     // must be last
     ENGINE_ACTION_COUNT    
 };
