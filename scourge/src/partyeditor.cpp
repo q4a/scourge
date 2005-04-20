@@ -439,6 +439,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
 
       // testing
       pc[i]->addSpell(Spell::getSpellByName("Ring of Harm"));
+      pc[i]->addSpell(Spell::getSpellByName("Malice Storm"));
       pc[i]->setMp( 5000 );
 
     }

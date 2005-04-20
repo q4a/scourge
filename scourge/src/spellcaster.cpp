@@ -149,6 +149,8 @@ void SpellCaster::spellSucceeded() {
     viewInfo();
   } else if(!strcasecmp(spell->getName(), "Ring of Harm")) {
     circleAttack();
+  } else if(!strcasecmp(spell->getName(), "Malice Storm")) {
+    hailAttack();
   } else {
     // default
     cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
@@ -394,6 +396,73 @@ void SpellCaster::setStateMod(int mod, bool setting) {
 void SpellCaster::circleAttack() {
 
   int spellEffectSize = 2;
+  float sx, sy;
+  int radius = getRadius( spellEffectSize, &sx, &sy );
+
+  // walk around the circle
+  Creature *targets[100];
+  int targetCount = 0;
+  Creature *c = battle->getCreature()->getTargetCreature();
+  for( int angle = 0; angle < 360; angle += 10 ) {
+    int x = toint( sx + ( (float)radius * cos( Util::degreesToRadians( (float)angle ) ) ) );
+    int y = toint( sy - ( (float)radius * sin( Util::degreesToRadians( (float)angle ) ) ) );
+    if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
+//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
+      battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_DUST, 
+                                                   (Constants::DAMAGE_DURATION * 4), 
+                                                   spellEffectSize, spellEffectSize, 
+                                                   (GLuint)( angle * 5 ) );
+
+      targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, targets );
+      for( int i = 0; i < targetCount; i++ ) {
+        if( battle->getCreature()->canAttack( targets[ i ] ) ) {
+          battle->getCreature()->setTargetCreature( targets[ i ] );
+          causeDamage( (GLuint)( angle * 5 ) );
+        }
+      }
+    }
+  }
+  battle->getCreature()->setTargetCreature( c );
+}
+
+void SpellCaster::hailAttack() {
+
+  float sx, sy;
+  int spellEffectSize = 2;
+  int radius = getRadius( spellEffectSize, &sx, &sy );
+
+  // pick random locations in the circle
+  for( int i = 0; i < radius * 2 + 2; i++ ) {
+    int x = (int)( sx + (( (float)radius * 2.0f * rand()/RAND_MAX ) - radius) );
+    int y = (int)( sy - (( (float)radius * 2.0f * rand()/RAND_MAX ) - radius) );
+
+    if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
+      //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
+      battle->getSession()->getMap()->startEffect( x, y, 1, spell->getEffect(), 
+                                                   (Constants::DAMAGE_DURATION * 4), 
+                                                   spellEffectSize, spellEffectSize, 
+                                                   (GLuint)( i * 50 ) );
+    }
+  }
+
+  // select targets
+  Creature *targets[100];
+  int targetCount = 0;
+  Creature *c = battle->getCreature()->getTargetCreature();
+  targetCount = battle->getSession()->getMap()->getCreaturesInArea( toint( battle->getCreature()->getX() ), 
+                                                                    toint( battle->getCreature()->getY() ), 
+                                                                    radius, 
+                                                                    targets );
+  for( int i = 0; i < targetCount; i++ ) {
+    if( battle->getCreature()->canAttack( targets[ i ] ) ) {
+      battle->getCreature()->setTargetCreature( targets[ i ] );
+      causeDamage( (GLuint)( i * 50 ) );
+    }
+  }
+  battle->getCreature()->setTargetCreature( c );
+}
+
+int SpellCaster::getRadius( int spellEffectSize, float *sx, float *sy ) {
   int tw = 1;
   int td = 1;
   Location *pos = battle->getSession()->getMap()->getLocation( battle->getCreature()->getTargetX(), 
@@ -420,35 +489,14 @@ void SpellCaster::circleAttack() {
   if( selectedRadius < radius ) radius = selectedRadius;
 //  cerr << "radius=" << radius << endl;
 
-  float sx = battle->getCreature()->getX() + ( battle->getCreature()->getShape()->getWidth() / 2.0f ); 
-  float sy = battle->getCreature()->getY() - ( battle->getCreature()->getShape()->getDepth() / 2.0f );
+  *sx = battle->getCreature()->getX() + ( battle->getCreature()->getShape()->getWidth() / 2.0f ); 
+  *sy = battle->getCreature()->getY() - ( battle->getCreature()->getShape()->getDepth() / 2.0f );
 
   // show radius effect
-  battle->getSession()->getMap()->startEffect( toint(sx), toint(sy), 1, 
+  battle->getSession()->getMap()->startEffect( toint(*sx), toint(*sy), 1, 
                                                Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
                                                radius, radius );
-  // walk around the circle
-  Creature *targets[100];
-  int targetCount = 0;
-  Creature *c = battle->getCreature()->getTargetCreature();
-  for( int angle = 0; angle < 360; angle += 10 ) {
-    int x = toint( sx + ( (float)radius * cos( Util::degreesToRadians( (float)angle ) ) ) );
-    int y = toint( sy - ( (float)radius * sin( Util::degreesToRadians( (float)angle ) ) ) );
-    if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
-//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
-      battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_DUST, 
-                                                   (Constants::DAMAGE_DURATION * 4), 
-                                                   spellEffectSize, spellEffectSize, 
-                                                   (GLuint)( angle * 5 ) );
 
-      targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, targets );
-      for( int i = 0; i < targetCount; i++ ) {
-        if( battle->getCreature()->canAttack( targets[ i ] ) ) {
-          battle->getCreature()->setTargetCreature( targets[ i ] );
-          causeDamage( (GLuint)( angle * 5 ) );
-        }
-      }
-    }
-  }
-  battle->getCreature()->setTargetCreature( c );
+  return radius;
 }
+
