@@ -72,6 +72,10 @@ class SpellCaster {
   void causeDamage( GLuint delay=0 );
   void setStateMod(int mod, bool setting=true);
   void circleAttack();
+  void hailAttack();
+
+
+  int getRadius( int spellEffectSize, float *sx, float *sy );
 };
 
 #endif
