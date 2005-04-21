@@ -440,7 +440,7 @@ void SpellCaster::hailAttack() {
       //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
       battle->getSession()->getMap()->startEffect( x, y, 1, spell->getEffect(), 
                                                    (Constants::DAMAGE_DURATION * 4), 
-                                                   spellEffectSize, spellEffectSize, 
+                                                   1, 1, 
                                                    (GLuint)( i * 50 ) );
     }
   }
