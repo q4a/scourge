@@ -238,7 +238,7 @@ class Color {
   */
 
 typedef struct _ParticleStruct {
-  GLfloat x, y, z;
+  GLfloat x, y, z, startZ;
   GLint height;
   int life;
   GLfloat moveDelta;
@@ -246,6 +246,7 @@ typedef struct _ParticleStruct {
   int trail;
   float rotate;
   float zoom;
+  bool tail;
 } ParticleStruct;
 
 #define SINGLE_TARGET 0
@@ -527,7 +528,8 @@ public:
     EFFECT_CAST_SPELL,
     EFFECT_RING,
     EFFECT_RIPPLE,
-	EFFECT_DUST,
+    EFFECT_DUST,
+    EFFECT_HAIL,
     
     // must be last
     EFFECT_COUNT
