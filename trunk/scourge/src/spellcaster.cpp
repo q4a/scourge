@@ -43,42 +43,43 @@ SpellCaster::~SpellCaster() {
 
 void SpellCaster::spellFailed() {
   if(!spell) return;
-
+  
   // print patronizing message...
   battle->getSession()->getMap()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
-
+  
   // put code here for spells with something spectacular when they fail...
   // (fouled fireball decimates party, etc.)
   if(!strcasecmp(spell->getName(), "Burning stare") ||
-	 !strcasecmp(spell->getName(), "Silent knives") || 
-	 !strcasecmp(spell->getName(), "Stinging light")) {
-
-	Creature *tmpTarget;
-	if( battle->getCreature()->isMonster() || 
-		battle->getCreature()->getStateMod( Constants::possessed ) ) {
-	  tmpTarget = battle->getSession()->getClosestVisibleMonster(toint(battle->getCreature()->getX()), 
-																 toint(battle->getCreature()->getY()), 
-																 battle->getCreature()->getShape()->getWidth(),
-																 battle->getCreature()->getShape()->getDepth(),
-																 20);
-	} else {
-	  tmpTarget = battle->getSession()->getParty()->getClosestPlayer(toint(battle->getCreature()->getX()), 
-																	 toint(battle->getCreature()->getY()), 
-																	 battle->getCreature()->getShape()->getWidth(),
-																	 battle->getCreature()->getShape()->getDepth(),
-																	 20);
-	}
-	if( tmpTarget ) {
-	  char message[200];
-	  sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
-	  battle->getSession()->getMap()->addDescription( message, 1, 0.15f, 1 );
-	  Creature *oldTarget = battle->getCreature()->getTargetCreature();
-	  battle->getCreature()->setTargetCreature( tmpTarget );
-
-	  causeDamage();
-
-	  battle->getCreature()->setTargetCreature( oldTarget );
-	}
+     !strcasecmp(spell->getName(), "Silent knives") || 
+     !strcasecmp(spell->getName(), "Stinging light") ||
+     !strcasecmp(spell->getName(), "Unholy Decimator")) {
+    
+    Creature *tmpTarget;
+    if( battle->getCreature()->isMonster() || 
+        battle->getCreature()->getStateMod( Constants::possessed ) ) {
+      tmpTarget = battle->getSession()->getClosestVisibleMonster(toint(battle->getCreature()->getX()), 
+                                                                 toint(battle->getCreature()->getY()), 
+                                                                 battle->getCreature()->getShape()->getWidth(),
+                                                                 battle->getCreature()->getShape()->getDepth(),
+                                                                 20);
+    } else {
+      tmpTarget = battle->getSession()->getParty()->getClosestPlayer(toint(battle->getCreature()->getX()), 
+                                                                     toint(battle->getCreature()->getY()), 
+                                                                     battle->getCreature()->getShape()->getWidth(),
+                                                                     battle->getCreature()->getShape()->getDepth(),
+                                                                     20);
+    }
+    if( tmpTarget ) {
+      char message[200];
+      sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
+      battle->getSession()->getMap()->addDescription( message, 1, 0.15f, 1 );
+      Creature *oldTarget = battle->getCreature()->getTargetCreature();
+      battle->getCreature()->setTargetCreature( tmpTarget );
+      
+      causeDamage( 0, 0.5 );
+      
+      battle->getCreature()->setTargetCreature( oldTarget );
+    }
   }
 }
 
@@ -246,7 +247,7 @@ void SpellCaster::launchProjectile(int count, bool stopOnImpact) {
   }
 }
 
-void SpellCaster::causeDamage( GLuint delay ) {
+void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
   Creature *creature = battle->getCreature();
 
   // roll for the spell damage
@@ -254,6 +255,7 @@ void SpellCaster::causeDamage( GLuint delay ) {
   for(int i = 0; i < creature->getLevel(); i++) {
     damage += (int)((float)spell->getAction() * rand()/RAND_MAX);
   }
+  damage *= toint( mult );
 
   // check for resistance
   int resistance = creature->getTargetCreature()->getSkill(spell->getSchool()->getResistSkill());
