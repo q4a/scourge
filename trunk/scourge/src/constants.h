@@ -247,6 +247,8 @@ typedef struct _ParticleStruct {
   float rotate;
   float zoom;
   bool tail;
+  bool untilGround;
+  Color tailColor;
 } ParticleStruct;
 
 #define SINGLE_TARGET 0
@@ -530,6 +532,7 @@ public:
     EFFECT_RIPPLE,
     EFFECT_DUST,
     EFFECT_HAIL,
+    EFFECT_TOWER,
     
     // must be last
     EFFECT_COUNT
