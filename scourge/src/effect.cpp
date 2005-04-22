@@ -89,6 +89,8 @@ void Effect::draw(int effect, int startTime) {
     drawDust(proceed);
   } else if(effect == Constants::EFFECT_HAIL) {
     drawHail(proceed);
+  } else if(effect == Constants::EFFECT_TOWER) {
+    drawTower(proceed);
   } else {
     glowShape(proceed, startTime);
   }
@@ -269,6 +271,7 @@ void Effect::drawHail(bool proceed) {
       particle[i]->trail = 2;
       particle[i]->zoom = 4.0f;
       particle[i]->tail = true;
+      particle[i]->untilGround = true;
     } else if(proceed) {
       moveParticle(&(particle[i]));
     }
@@ -280,9 +283,62 @@ void Effect::drawHail(bool proceed) {
 	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
 	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
 	  if(c > 1) c = 1;
-      glColor4f( 0, c / 4.0f, 1.0f, 0.75 );
+    glColor4f( 0, c / 4.0f, 1.0f, 0.75 );
+    
+    particle[i]->tailColor.r = 0.15f;
+    particle[i]->tailColor.g = c / 3.0f;
+    particle[i]->tailColor.b = 0.85f;
+    particle[i]->tailColor.a = 0.5f;
 
 	  drawParticle(particle[i]);
+    }
+  }
+}
+
+void Effect::drawTower(bool proceed) {
+  // manage particles
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(&(particle[i]));
+      if( (i % 3) ) {
+        particle[i]->z = (int)(1.0f * rand()/RAND_MAX);
+        //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+        particle[i]->moveDelta = 0.15f;
+        particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+        particle[i]->maxLife = 5000;
+        particle[i]->trail = 2;
+        particle[i]->zoom = 1.5f;
+      } else {
+        particle[i]->z = (int)(2.0f * rand()/RAND_MAX);
+        particle[i]->moveDelta = 0.5f + (0.3f * rand()/RAND_MAX);
+        particle[i]->maxLife = 40000;
+        particle[i]->trail = 8;
+        particle[i]->zoom = 4.0f;
+        particle[i]->tail = true;
+      }
+    } else if(proceed) {
+      if( ( i % 3 ) ) {
+        particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
+      }
+      moveParticle(&(particle[i]));
+    }
+    
+    // draw it      
+    if(particle[i]) {            
+      
+      //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+      //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
+      float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+      if(c > 1) c = 1;
+      glColor4f( 1.0f, c / 4.0f, 0, 0.75 );
+      
+      particle[i]->tailColor.r = 0.85f;
+      particle[i]->tailColor.g = c / 3.0f;
+      particle[i]->tailColor.b = 0.15f;    
+      particle[i]->tailColor.a = 0.25f;
+      
+      drawParticle(particle[i]);
     }
   }
 }
@@ -443,6 +499,7 @@ void Effect::createParticle(ParticleStruct **particle) {
   (*particle)->rotate = 0.0f;
   (*particle)->zoom = 1.0f;
   (*particle)->tail = false;
+  (*particle)->untilGround = false;
 }
 
 void Effect::moveParticle(ParticleStruct **particle) {
@@ -450,7 +507,7 @@ void Effect::moveParticle(ParticleStruct **particle) {
   (*particle)->life++;
   (*particle)->z+=(*particle)->moveDelta;
   if((*particle)->z < 0 || (*particle)->z > MAP_VIEW_HEIGHT || 
-     (*particle)->life >= (*particle)->maxLife) {
+     (!((*particle)->untilGround) && (*particle)->life >= (*particle)->maxLife)) {
     delete((*particle));
     (*particle) = 0;
   }
@@ -488,6 +545,7 @@ void Effect::drawParticle(ParticleStruct *particle) {
     glScalef(particle->zoom, particle->zoom, particle->zoom);
     
     if( particle->tail ) {
+      glColor4f( particle->tailColor.r, particle->tailColor.g, particle->tailColor.b, particle->tailColor.a );
       //glDisable( GL_TEXTURE_2D );
       glBegin( GL_QUADS );
       // front

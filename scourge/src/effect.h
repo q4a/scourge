@@ -65,6 +65,7 @@ protected:
   void drawRipple(bool proceed);
   void drawDust(bool proceed);
   void drawHail(bool proceed);
+  void drawTower(bool proceed);
   
   // particle management
   void createParticle(ParticleStruct **particle);

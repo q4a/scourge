@@ -151,6 +151,8 @@ void SpellCaster::spellSucceeded() {
     circleAttack();
   } else if(!strcasecmp(spell->getName(), "Malice Storm")) {
     hailAttack();
+  } else if(!strcasecmp(spell->getName(), "Unholy Decimator")) {
+    causeDamage();
   } else {
     // default
     cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
@@ -438,7 +440,7 @@ void SpellCaster::hailAttack() {
 
     if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
       //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
-      battle->getSession()->getMap()->startEffect( x, y, 1, spell->getEffect(), 
+      battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_HAIL, 
                                                    (Constants::DAMAGE_DURATION * 4), 
                                                    1, 1, 
                                                    (GLuint)( i * 50 ) );
