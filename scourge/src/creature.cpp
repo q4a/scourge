@@ -1016,6 +1016,18 @@ Item *Creature::getEquippedInventory(int index) {
   return NULL;
 }
 
+bool Creature::isEquipped( Item *item ) {
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+    if(equipped[i] < MAX_INVENTORY_SIZE &&
+       inventory[ equipped[i] ] == item ) return true;
+  }
+  return false;
+}
+
+bool Creature::isEquipped( int inventoryIndex ) {
+  return( getEquippedIndex( inventoryIndex ) < MAX_INVENTORY_SIZE );
+}
+
 /**
    Get equipped index of inventory index. (Where is the item worn?)
 */
