@@ -126,6 +126,8 @@ class Party {
 
   void setParty(int count, Creature **creatures, int storylineIndex);
 
+  bool isEquipped( Item *item );
+
 protected:
   void resetPartyUI();
 };

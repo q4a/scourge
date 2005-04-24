@@ -529,3 +529,10 @@ void Party::restorePlayerSettings() {
   if(savedPlayerOnly != player_only) togglePlayerOnly();
 }
 
+bool Party::isEquipped( Item *item ) {
+  for( int i = 0; i < getPartySize(); i++ ) {
+    if( getParty(i)->isEquipped(item) ) return true;
+  }
+  return false;
+}
+

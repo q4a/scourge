@@ -232,6 +232,13 @@ void InfoGui::describe() {
         strcat(description, tmp);
       }
     } else missedSomething = true;
+    // cursed is hard to detect
+    if( item->isCursed() ) {
+      if( scourge->getParty()->isEquipped( item ) || 
+          infoDetailLevel > (int)(200.0f * rand()/RAND_MAX)) {
+        strcat(description, "|This item is cursed!");
+      }
+    }
   } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
     strcat(description, "|");
     strcat(description, item->getSpell()->getNotes());

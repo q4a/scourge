@@ -276,6 +276,8 @@ class Creature {
   bool isItemInInventory(Item *item);
   // return the item at location Character::INVENTORY_LEFT_HAND, etc.
   Item *getItemAtLocation(int location);
+  bool isEquipped( Item *item );
+  bool isEquipped( int inventoryIndex );
 
   // return the best equipped weapon that works on this distance, 
   // or NULL if none are available

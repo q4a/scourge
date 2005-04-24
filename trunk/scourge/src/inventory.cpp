@@ -768,6 +768,12 @@ void Inventory::receive(Widget *widget) {
 
 bool Inventory::startDrag(Widget *widget, int x, int y) {
   if(widget == invList) {
+    int itemIndex = invList->getSelectedLine();  
+    if( scourge->getParty()->getParty(selected)->isEquipped( itemIndex ) &&
+        scourge->getParty()->getParty(selected)->getInventory( itemIndex )->isCursed() ) {
+      scourge->showMessageDialog( "Can't remove cursed item!" );
+      return false;
+    }
     dropItem();
     return true;
   } else if(widget == paperDoll) {
@@ -775,13 +781,20 @@ bool Inventory::startDrag(Widget *widget, int x, int y) {
       // what's equiped at this inventory slot?
       Item *item = scourge->getParty()->getParty(selected)->getItemAtLocation((1 << (y / 16)));
       if(item) {
-        // find its index in the inventory
-        int index = scourge->getParty()->getParty(selected)->findInInventory(item);
-        // select it
-        invList->setSelectedLine(index);
-        // drop it
-        dropItem();
-        return true;
+        if( item->isCursed() ) {
+          scourge->showMessageDialog( "Can't remove cursed item!" );
+          return false;
+        } else {
+
+          // find its index in the inventory
+          int index = scourge->getParty()->getParty(selected)->findInInventory(item);
+          // select it
+          invList->setSelectedLine(index);
+          // drop it
+          dropItem();
+
+          return true;
+        }
       }
     }
   }
