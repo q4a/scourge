@@ -769,6 +769,8 @@ void Inventory::receive(Widget *widget) {
 bool Inventory::startDrag(Widget *widget, int x, int y) {
   if(widget == invList) {
     int itemIndex = invList->getSelectedLine();  
+    cerr << "equipped? " << scourge->getParty()->getParty(selected)->isEquipped( itemIndex ) << endl;
+    cerr << "cursed? " << scourge->getParty()->getParty(selected)->getInventory( itemIndex )->isCursed() << endl;
     if( scourge->getParty()->getParty(selected)->isEquipped( itemIndex ) &&
         scourge->getParty()->getParty(selected)->getInventory( itemIndex )->isCursed() ) {
       scourge->showMessageDialog( "Can't remove cursed item!" );

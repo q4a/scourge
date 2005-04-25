@@ -1025,7 +1025,24 @@ bool Creature::isEquipped( Item *item ) {
 }
 
 bool Creature::isEquipped( int inventoryIndex ) {
-  return( getEquippedIndex( inventoryIndex ) < MAX_INVENTORY_SIZE );
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+    if( equipped[i] == inventoryIndex ) return true;
+  }
+  return false;
+
+}
+
+bool Creature::removeCursedItems() {
+  bool found = false;
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+    if( equipped[i] < MAX_INVENTORY_SIZE &&
+        inventory[ equipped[i] ]->isCursed() ) {
+      found = true;
+      // not the most efficient way to do this, but it works...
+      doff( equipped[i] );
+    }
+  }
+  return found;
 }
 
 /**
