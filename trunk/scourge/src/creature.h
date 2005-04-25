@@ -278,6 +278,7 @@ class Creature {
   Item *getItemAtLocation(int location);
   bool isEquipped( Item *item );
   bool isEquipped( int inventoryIndex );
+  bool removeCursedItems();
 
   // return the best equipped weapon that works on this distance, 
   // or NULL if none are available

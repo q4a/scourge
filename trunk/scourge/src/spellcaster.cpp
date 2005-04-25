@@ -348,6 +348,13 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       }
     }
 
+    if(!strcasecmp(spell->getName(), "Remove curse")) {
+      // remove cursed items
+      if( creature->removeCursedItems() ) {
+        battle->getSession()->getMap()->addDescription( "Cursed items have been doffed.", 1, 0.15f, 1 );
+      }
+    }
+
     int timeInMin = 5 * battle->getCreature()->getLevel();
     if(protectiveItem) timeInMin /= 2;
     creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));  

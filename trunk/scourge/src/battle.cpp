@@ -745,6 +745,12 @@ void Battle::hitWithItem() {
   // deal out the damage
   int maxDamage;
   int damage = creature->getDamage(item, &maxDamage);
+
+  // cursed items
+  if( item && item->isCursed() ) {
+    session->getMap()->addDescription("...Using cursed item!");
+    damage -= ( damage / 3 );
+  }
   
   // special actions for very low tohits
   if( tohit < 2 && creature->getTargetCreature() ) {
