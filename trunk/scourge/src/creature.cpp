@@ -917,6 +917,9 @@ void Creature::equipInventory(int index) {
        equipped[i] == MAX_INVENTORY_SIZE) {
       equipped[i] = index;
 
+      // once worn, show if it's cursed
+      item->setShowCursed( true );
+
       // handle magic attrib settings
       if(item->isMagicItem()) {
 

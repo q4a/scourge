@@ -234,7 +234,7 @@ void InfoGui::describe() {
     } else missedSomething = true;
     // cursed is hard to detect
     if( item->isCursed() ) {
-      if( scourge->getParty()->isEquipped( item ) || 
+      if( item->getShowCursed() || 
           infoDetailLevel > (int)(200.0f * rand()/RAND_MAX)) {
         strcat(description, "|This item is cursed!");
       }
