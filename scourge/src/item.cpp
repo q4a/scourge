@@ -35,6 +35,7 @@ Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
   this->containedItemCount = 0;
   this->spell = NULL;
   this->containsMagicItem = false;
+  this->showCursed = false;
   sprintf(this->itemName, "%s", rpgItem->getName());
 
   commonInit( loading );
@@ -220,20 +221,25 @@ void Item::getDetailedDescription(char *s, bool precise){
   */
 
   if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
-    sprintf(s, "(L:%d) %s%s", 
+    sprintf(s, "(L:%d) %s%s%s", 
             getLevel(), 
+            ( isCursed() && getShowCursed() ? "*Cursed* " : "" ),
             (precise ? itemName : rpgItem->getShortDesc()),
             (session->getCurrentMission() && 
              session->getCurrentMission()->isMissionItem( this ) ? 
              " *Mission*" : ""));
   } else if(type == RpgItem::SCROLL) {
-    sprintf(s, "(L:%d) %s%s", getLevel(), itemName,
+    sprintf(s, "(L:%d) %s%s%s", 
+            getLevel(), 
+            ( isCursed() && getShowCursed() ? "*Cursed* " : "" ),
+            itemName,
             (session->getCurrentMission() && 
              session->getCurrentMission()->isMissionItem( this ) ? 
              " *Mission*" : ""));
   } else {
-    sprintf(s, "(L:%d) %s%s", 
+    sprintf(s, "(L:%d) %s%s%s", 
             getLevel(), 
+            ( isCursed() && getShowCursed() ? "*Cursed* " : "" ),
             (precise ? itemName : rpgItem->getShortDesc()),
             (session->getCurrentMission() && 
              session->getCurrentMission()->isMissionItem( this ) ? 

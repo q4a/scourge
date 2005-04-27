@@ -50,7 +50,7 @@ class Item {
   Spell *spell;
   char itemName[255];
   bool containsMagicItem;
-
+  bool showCursed;
 
 
 
@@ -101,6 +101,8 @@ public:
   inline void setSpell(Spell *spell) { this->spell = spell; sprintf(this->itemName, "Scroll of %s", spell->getName()); }
   inline Spell *getSpell() { return spell; }
 
+  inline void setShowCursed( bool b ) { showCursed = b; }
+  inline bool getShowCursed() { return showCursed; }
 
   void getDetailedDescription(char *s, bool precise=true);
   inline char *getItemName() { return itemName; }
