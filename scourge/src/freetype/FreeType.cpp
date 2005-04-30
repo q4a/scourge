@@ -18,7 +18,7 @@ inline int next_p2 ( int a )
 }
 
 ///Create a display list coresponding to the give character.
-void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base ) {
+void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base, int *charWidth ) {
 
 	//The first thing we do is get FreeType to render our character
 	//into a bitmap.  This actually requires a couple of FreeType commands:
@@ -132,12 +132,11 @@ void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base ) {
 	//increment the raster position as if we were a bitmap font.
 	//(only needed if you want to calculate text length)
 	//glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
+  *charWidth = face->glyph->advance.x >> 6;
 
 	//Finnish the display list
 	glEndList();
 }
-
-
 
 void freetype_font_data::init(const char * fname, unsigned int h) {
 
@@ -181,7 +180,7 @@ void freetype_font_data::init(const char * fname, unsigned int h) {
 
 	//This is where we actually create each of the fonts display lists.
 	for(unsigned char i=0;i<128;i++)
-		make_dlist(face,i,list_base,textures);
+		make_dlist(face,i,list_base,textures,&(width[i]));
 
 	//We don't need the face information now that the display
 	//lists have been created, so we free the assosiated resources.
@@ -277,5 +276,35 @@ void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, 
   glPopMatrix();
   if(!textureOn) glDisable(GL_TEXTURE_2D);
   glDisable(GL_BLEND);
+}
+
+
+
+
+
+
+int getTextLength(const freetype_font_data &ft_font, const char *fmt, ...)  {
+  char		text[256];								// Holds Our String
+  va_list		ap;										// Pointer To List Of Arguments
+      
+  if (fmt == NULL)									// If There's No Text
+    *text=0;											// Do Nothing
+  
+  else {
+    va_start(ap, fmt);									// Parses The String For Variables
+    vsprintf(text, fmt, ap);						// And Converts Symbols To Actual Numbers
+    va_end(ap);											// Results Are Stored In Text
+  }
+  
+  return getTextLength(ft_font, text);
+}           
+
+
+int getTextLengthSimple( const freetype_font_data &ft_font, char *text ) {
+  int size = 0;
+  for( unsigned char *p = (unsigned char*)text; *p; p++ ) {
+    size += ft_font.width[*p];
+  }
+  return size;
 }
 

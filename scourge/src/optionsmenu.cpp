@@ -162,14 +162,7 @@ void OptionsMenu::loadGameSettings(){
 
 // line i must correspond to engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
-    string line, s1, s2, s3; 
-    int i;
-    char spaces[MAX_CONTROLS_LINE_SIZE];
-    for(i = 0; i < MAX_CONTROLS_LINE_SIZE ; i++){
-        spaces[i] = ' ';
-    }
-    spaces[i] = '\0';
-    
+    int i;    
     if(controlLines) {  
         for(int i = 0; i < ENGINE_ACTION_COUNT ; i++){
             if( controlLines[i] ){
@@ -184,22 +177,12 @@ void OptionsMenu::loadControls(){
     nbControlLines = ENGINE_ACTION_COUNT;
     controlLines = (char **) malloc (nbControlLines *sizeof(char *));    
     for (i = 0; i < nbControlLines; i++){
-        //line = spaces;
-        s1 = uc->getEngineActionDescription(i);
-        s2 = uc->getEngineActionKeyName(i);              
-        /*for(j=0 ; j < 50 - s1.length(); j++){
-            s1.insert(s1.length(), " ");            
-        } */                       
-        
-        line = s1 + "           " + s2;         
-        /*line.replace(0, s1.length(), s1);
-        line.replace (70 - s2.length(), s2.length(), s2);*/
         controlLines[i] = (char *)malloc(MAX_CONTROLS_LINE_SIZE * sizeof(char));        
-        strcpy(controlLines[i], line.c_str());
-    }            
-    
+        sprintf( controlLines[i], "%s           %s", 
+                 uc->getEngineActionDescription(i),
+                 uc->getEngineActionKeyName(i) );
+    }                
     controlBindingsList->setLines(nbControlLines, (const char**) controlLines);       
-                   
 }
 
 void OptionsMenu::loadVideo(){    

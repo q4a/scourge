@@ -31,6 +31,7 @@
 #include "gui/button.h"
 #include "gui/cardcontainer.h"
 #include "gui/scrollinglist.h"
+#include "gui/scrollinglabel.h"
 #include "gui/draganddrop.h"
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
@@ -101,13 +102,18 @@ private:
 
 	// mission
 	char missionText[3000];
-	Label *missionDescriptionLabel;
+	ScrollingLabel *missionDescriptionLabel;
 	Button *missionButton;
 	ScrollingList *objectiveList;
 	char **objectiveText;
 	Color *missionColor, *itemColor;
   GLuint *itemIcon;
   Spell *storeSpell;
+
+  // party
+  char **formationText;
+  ScrollingList *formationList;
+  Button *layoutButton1, *layoutButton2, *layoutButton4;
 
 public:
     Inventory(Scourge *scourge);

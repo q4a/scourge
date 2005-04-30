@@ -28,6 +28,10 @@ Inventory::Inventory(Scourge *scourge) {
   this->scourge = scourge;
 
   // allocate strings for list
+  this->formationText = (char**)malloc(10 * sizeof(char*));
+  for(int i = 0; i < 10; i++) {
+    this->formationText[i] = (char*)malloc(120 * sizeof(char));
+  }
   this->itemColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   this->itemIcon = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
@@ -166,7 +170,7 @@ Inventory::Inventory(Scourge *scourge) {
   // -------------------------------------------
   // mission
   cards->createLabel(115, 10, "Current Mission", MISSION, Constants::RED_COLOR);
-  missionDescriptionLabel = new Label(115, 25, "", 50);
+  missionDescriptionLabel = new ScrollingLabel(115, 25, 295, 275, "");
   cards->addWidget(missionDescriptionLabel, MISSION);
   cards->createLabel(115, 320, "Mission Objectives", MISSION, Constants::RED_COLOR);
   objectiveList = new ScrollingList(115, 325, 295, 100, scourge->getShapePalette()->getHighlightTexture());
@@ -176,6 +180,24 @@ Inventory::Inventory(Scourge *scourge) {
 
   // -------------------------------------------
   // party
+  cards->createLabel( 115, 10, "Group formation:", PARTY );
+  formationList = new ScrollingList(115, 20, 295, 100, scourge->getShapePalette()->getHighlightTexture());
+  cards->addWidget(formationList, PARTY);
+  strcpy( formationText[0], "Diamond" );
+  strcpy( formationText[1], "Staggered" );
+  strcpy( formationText[2], "Square" );
+  strcpy( formationText[3], "Row" );
+  strcpy( formationText[4], "Scout" );
+  strcpy( formationText[5], "Cross" );
+  formationList->setLines( 6, (const char**)formationText );
+
+  cards->createLabel( 115, 145, "Interface Layout:", PARTY );
+  layoutButton1 = cards->createButton( 115, 155, 195, 175, "Floating", PARTY );
+  layoutButton1->setToggle( true );
+  layoutButton2 = cards->createButton( 200, 155, 280, 175, "Bottom", PARTY );
+  layoutButton2->setToggle( true );
+  layoutButton4 = cards->createButton( 285, 155, 365, 175, "Inventory", PARTY );
+  layoutButton4->setToggle( true );
 
   setSelectedPlayerAndMode(0, INVENTORY);
 }
@@ -519,7 +541,6 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       } else if(!item->getRpgItem()->isEnchantable()) {
         scourge->showMessageDialog("This item cannot be enchanted.");
       } else {
-
         Date now = scourge->getParty()->getCalendar()->getCurrentDate();
         if(now.isADayLater(creature->getLastEnchantDate())) {
           int level = (int)((float)creature->getSkill( Constants::ENCHANT_ITEM_SKILL ) * rand()/RAND_MAX);
@@ -543,6 +564,16 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         }
       }
     }
+  } else if( widget == formationList ) {
+    scourge->getParty()->setFormation( formationList->getSelectedLine() );
+  } else if(widget == layoutButton1) {
+    scourge->setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
+  } else if(widget == layoutButton2) {
+    scourge->setUILayout(Constants::GUI_LAYOUT_BOTTOM);
+  //} else if(widget == layoutButton3) {
+//    setUILayout(Constants::GUI_LAYOUT_SIDE);
+  } else if(widget == layoutButton4) {
+    scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
   }
   return false;
 }
@@ -591,6 +622,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 
   // arrange the gui
   int stateCount;
+  int objectiveCount = 0;
   Creature * selectedP = scourge->getParty()->getParty(selected);
   switch(selectedMode) {
   case CHARACTER:         
@@ -698,7 +730,6 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   case LOG:
     break;
   case MISSION:
-    int objectiveCount = 0;
     if(scourge->getSession()->getCurrentMission()) {
       sprintf(missionText, "%s:|Depth: %d out of %d.|%s", 
               scourge->getSession()->getCurrentMission()->getName(),
@@ -753,6 +784,11 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     objectiveList->setLines(objectiveCount, 
                             (const char **)objectiveText,
                             missionColor);
+    break;
+  case PARTY:
+    layoutButton1->setSelected( scourge->getLayoutMode() == Constants::GUI_LAYOUT_ORIGINAL );
+    layoutButton2->setSelected( scourge->getLayoutMode() == Constants::GUI_LAYOUT_BOTTOM );
+    layoutButton4->setSelected( scourge->getLayoutMode() == Constants::GUI_LAYOUT_INVENTORY );
     break;
   }
 }
