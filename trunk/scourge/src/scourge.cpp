@@ -2012,7 +2012,7 @@ void Scourge::createUI() {
 
   // FIXME: try to encapsulate this in a class...
   //  exitConfirmationDialog = NULL;
-  int w = 250;
+  int w = 400;
   int h = 120;
   exitConfirmationDialog = new Window(getSDLHandler(),
                                       (getSDLHandler()->getScreen()->w/2) - (w/2), 
@@ -2022,9 +2022,10 @@ void Scourge::createUI() {
                                       getShapePalette()->getGuiTexture(), false,
                                       Window::BASIC_WINDOW,
                                       getShapePalette()->getGuiTexture2());
-  yesExitConfirm = new Button( 40, 50, 110, 80, getShapePalette()->getHighlightTexture(), "Yes" );
+  int mx = w / 2;
+  yesExitConfirm = new Button( mx - 80, 50, mx - 10, 80, getShapePalette()->getHighlightTexture(), "Yes" );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
-  noExitConfirm = new Button( 140, 50, 210, 80, getShapePalette()->getHighlightTexture(), "No" );
+  noExitConfirm = new Button( mx + 10, 50, mx + 80, 80, getShapePalette()->getHighlightTexture(), "No" );
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
@@ -2493,9 +2494,9 @@ void Scourge::refreshContainerGui(Item *container) {
 void Scourge::showMessageDialog(char *message) {
   party->toggleRound(true);
   Window::showMessageDialog(getSDLHandler(), 
-							getSDLHandler()->getScreen()->w / 2 - 150,
+							getSDLHandler()->getScreen()->w / 2 - 200,
 							getSDLHandler()->getScreen()->h / 2 - 55,
-							300, 110, Constants::messages[Constants::SCOURGE_DIALOG][0],
+							400, 110, Constants::messages[Constants::SCOURGE_DIALOG][0],
 							getShapePalette()->getGuiTexture(),
 							message);
 }
@@ -2616,12 +2617,12 @@ void Scourge::createPartyUI() {
                         "default" );
   cards = new CardContainer(mainWin);  
 
-  roundButton = cards->createButton( 5, 0, 90, 20, "Real-Time", MAX_SIZE );
-  endTurnButton = cards->createButton( 5, 20, 90, 40, "End Turn", MAX_SIZE );
-  groupButton = cards->createButton( 5, 40,  90, 60, "Group Mode", MAX_SIZE );
-  inventoryButton = cards->createButton( 5, 60, 90, 80, "Party Info", MAX_SIZE );  
-  optionsButton = cards->createButton( 5, 80,  90, 100, "Options", MAX_SIZE );
-  quitButton = cards->createButton( 5, 100,  90, 120, "Quit", MAX_SIZE );
+  roundButton = cards->createButton( 5, 0, 90, 20, "Real-Time", 0 );
+  endTurnButton = cards->createButton( 5, 20, 90, 40, "End Turn", 0 );
+  groupButton = cards->createButton( 5, 40,  90, 60, "Group Mode", 0 );
+  inventoryButton = cards->createButton( 5, 60, 90, 80, "Party Info", 0 );  
+  optionsButton = cards->createButton( 5, 80,  90, 100, "Options", 0 );
+  quitButton = cards->createButton( 5, 100,  90, 120, "Quit", 0 );
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   roundButton->setToggle(true);
@@ -2641,60 +2642,21 @@ void Scourge::createPartyUI() {
     playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 20,  
                                 offsetX + playerButtonWidth * (i + 1) - 25, 20 + playerInfoHeight, 
                                 this, this );
-    cards->addWidget( playerInfo[i], MAX_SIZE );
+    cards->addWidget( playerInfo[i], 0 );
     playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,  
                                 offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight, 
                                 this, NULL, true );
-    cards->addWidget( playerHpMp[i], MAX_SIZE );
+    cards->addWidget( playerHpMp[i], 0 );
   }
   int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);
   for( int i = 0; i < 12; i++ ) {
     int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 10;
     quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, 20, 
                                 this, NULL, true );
-    cards->addWidget( quickSpell[i], MAX_SIZE );
+    cards->addWidget( quickSpell[i], 0 );
   }    
   
-  cards->setActiveCard( MAX_SIZE );   
-  
-  //int lowerRowHeight = 20;
-  /*
-  diamondButton = cards->createButton( 0, 75,  20, 75 + lowerRowHeight, "f1", MAX_SIZE );
-  diamondButton->setToggle(true);
-  staggeredButton = cards->createButton( 20, 75,  40, 75 + lowerRowHeight, "f2", MAX_SIZE );
-  staggeredButton->setToggle(true);
-  squareButton = cards->createButton( 40, 75,  60, 75 + lowerRowHeight, "f3", MAX_SIZE );
-  squareButton->setToggle(true);
-  rowButton = cards->createButton( 60, 75,  80, 75 + lowerRowHeight, "f4", MAX_SIZE );
-  rowButton->setToggle(true);
-  scoutButton = cards->createButton( 80, 75, 100, 75 + lowerRowHeight, "f5", MAX_SIZE );
-  scoutButton->setToggle(true);
-  crossButton = cards->createButton( 100, 75,  120, 75 + lowerRowHeight, "f6", MAX_SIZE );
-  crossButton->setToggle(true);
-  */
-
-  /*
-  groupButton = cards->createButton( 0, 75 + lowerRowHeight,  20, 75 + (lowerRowHeight * 2), "G", MAX_SIZE );
-  groupButton->setToggle(true);
-  groupButton->setSelected(true);
-  */
-  /*
-  calendarButton = cards->createButton( 20, 75 + lowerRowHeight, 120, 75 + (lowerRowHeight * 2), 
-							   party->getCalendar()->getCurrentDate().getDateString(), MAX_SIZE);      
-  */
-
-  //minButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), "-", MAX_SIZE );
-  //maxButton = cards->createButton( 0, 75 + (lowerRowHeight * 2), 20, 75 + (lowerRowHeight * 3), "+", MIN_SIZE );
-
-  /*
-  layoutButton1 = cards->createButton( 20, 75 + (lowerRowHeight * 2), 40, 75 + (lowerRowHeight * 3), "L1", MAX_SIZE );
-  layoutButton2 = cards->createButton( 40, 75 + (lowerRowHeight * 2), 60, 75 + (lowerRowHeight * 3), "L2", MAX_SIZE );
-  layoutButton3 = cards->createButton( 60, 75 + (lowerRowHeight * 2), 80, 75 + (lowerRowHeight * 3), "L3", MAX_SIZE );
-  layoutButton4 = cards->createButton( 80, 75 + (lowerRowHeight * 2), 100, 75 + (lowerRowHeight * 3), "L4", MAX_SIZE );
-  */
-
-  //minPartyInfo = new Canvas( 0, 0, Scourge::PARTY_MIN_GUI_WIDTH, 75 + (lowerRowHeight * 2), this );
-  //cards->addWidget( minPartyInfo, MIN_SIZE );
+  cards->setActiveCard( 0 );   
 }
 
 void Scourge::receive( Widget *widget ) {
@@ -2958,29 +2920,6 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
     party->togglePlayerOnly();
   } else if(widget == roundButton) {
     party->toggleRound();
-    /*
-  } else if(widget == minButton) {
-    cards->setActiveCard( MIN_SIZE );
-    mainWin->resize( Scourge::PARTY_MIN_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT );
-    oldX = mainWin->getX();
-    mainWin->move( (oldX < (getSDLHandler()->getScreen()->w / 2) - (Scourge::PARTY_GUI_WIDTH / 2) ? 
-                    0 : 
-                    getSDLHandler()->getScreen()->w - Scourge::PARTY_MIN_GUI_WIDTH), mainWin->getY() );
-    mainWin->setTitle( min_version );
-  } else if(widget == maxButton) {
-    cards->setActiveCard( MAX_SIZE );
-    mainWin->move( oldX, mainWin->getY() );
-    mainWin->resize( Scourge::PARTY_GUI_WIDTH, Scourge::PARTY_GUI_HEIGHT );
-    mainWin->setTitle( version );
-  } else if(widget == layoutButton1) {
-    setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
-  } else if(widget == layoutButton2) {
-    setUILayout(Constants::GUI_LAYOUT_BOTTOM);
-  } else if(widget == layoutButton3) {
-    setUILayout(Constants::GUI_LAYOUT_SIDE);
-  } else if(widget == layoutButton4) {
-    setUILayout(Constants::GUI_LAYOUT_INVENTORY);
-*/    
   } else {
     for( int t = 0; t < 4; t++ ) {
       if( widget == playerHpMp[t] ) {
@@ -3153,10 +3092,15 @@ void Scourge::createBoardUI() {
                         "wood" );
   missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150, getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
-  missionDescriptionLabel = new Label(5, 210, "", 67);
+  //missionDescriptionLabel = new Label(5, 210, "", 67);
+  missionDescriptionLabel = new ScrollingLabel( 5, 210, 
+                                                BOARD_GUI_WIDTH - 10, 
+                                                BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 210 - 10, "" );
   boardWin->addWidget(missionDescriptionLabel);
   playMission = new Button(5, 5, 105, 35, getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);
+  closeBoard = new Button(110, 5, 210, 35, getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::CLOSE_LABEL));
+  boardWin->addWidget(closeBoard);
 }
 
 void Scourge::updateBoardUI(int count, const char **missionText, Color *missionColor) {
@@ -3164,7 +3108,8 @@ void Scourge::updateBoardUI(int count, const char **missionText, Color *missionC
 }
 
 int Scourge::handleBoardEvent(Widget *widget, SDL_Event *event) {
-  if(widget == boardWin->closeButton) {
+  if(widget == boardWin->closeButton || 
+     widget == closeBoard) {
     boardWin->setVisible(false);
     return Board::EVENT_HANDLED;
   } else if(widget == missionList) {

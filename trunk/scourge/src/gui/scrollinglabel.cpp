@@ -52,7 +52,7 @@ void ScrollingLabel::setText( char *s ) {
   strncpy(text, ( s ? s : "" ), 3000); 
   text[2999] = '\0';
 
-  lineWidth = ( w - scrollerWidth - 20 ) / 6;
+  lineWidth = ( w - scrollerWidth - 20 ) / 8;
 
   // break text into a list
   lines.clear();

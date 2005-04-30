@@ -56,6 +56,7 @@
 #include "session.h"
 #include "infogui.h"
 #include "gui/guitheme.h"
+#include "gui/scrollinglabel.h"
 
 using namespace std;
 
@@ -90,15 +91,13 @@ class Progress;
 class GameAdapter;
 class InfoGui;
 class GuiTheme;
+class ScrollingLabel;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
 #define DEFAULT_IMAGES_DIR "default/"
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
-
-#define MAX_SIZE 0
-#define MIN_SIZE 1
 
 class InfoMessage {
 public:
@@ -197,29 +196,20 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   Button *optionsButton;
   Button *quitButton;
   Button *roundButton;
-  Button *calendarButton;
-  Button *diamondButton;
-  Button *staggeredButton;
-  Button *squareButton;
-  Button *rowButton;
-  Button *scoutButton;
-  Button *crossButton;
   Button *player1Button;
   Button *player2Button;
   Button *player3Button;
   Button *player4Button;
   Button *groupButton;
-  Button *minButton, *maxButton;
   CardContainer *cards;
   Canvas *minPartyInfo;
   Canvas *playerInfo[MAX_PARTY_SIZE], *playerHpMp[MAX_PARTY_SIZE];
   Canvas *quickSpell[12];
-  Button *layoutButton1, *layoutButton2, *layoutButton3, *layoutButton4;
 
   // board gui
   ScrollingList *missionList;
-  Label *missionDescriptionLabel;
-  Button *playMission;
+  ScrollingLabel *missionDescriptionLabel;
+  Button *playMission, *closeBoard;
   Window *boardWin;
 
   Progress *progress;
@@ -513,12 +503,6 @@ public:
     A helper method to show a message in a modal dialog.
   */
   void showMessageDialog(char *message);
-
-  /**
-    Set the group's walking formation.
-    @param formation One of the formation constants.
-  */
-  void setFormation(int formation);
 
   void togglePlayerOnly();
   

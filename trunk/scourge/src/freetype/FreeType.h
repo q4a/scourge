@@ -21,6 +21,7 @@ using namespace std;
 //This holds all of the information related to any
 //freetype font that we want to create.  
 struct freetype_font_data {
+  int width[128];
 	float h;			///< Holds the height of the font.
 	GLuint * textures;	///< Holds the texture id's 
 	GLuint list_base;	///< Holds the first display list id
@@ -38,6 +39,11 @@ struct freetype_font_data {
 //The current modelview matrix will also be applied to the text. 
 void freetype_print(const freetype_font_data &ft_font, float x, float y, const char *fmt, ...) ;
 void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, const char *str) ;
+int getTextLength(const freetype_font_data &ft_font, const char *fmt, ...);
+int getTextLengthSimple( const freetype_font_data &ft_font, char *text );
+inline int getCharWidth( const freetype_font_data &ft_font, char c ) {
+  return ft_font.width[ (unsigned char)c ];
+}
 
 
 #endif
