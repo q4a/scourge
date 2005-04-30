@@ -30,6 +30,7 @@
 #include "gui/button.h"
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
+#include "gui/scrollinglabel.h"
 
 class InfoGui : public WidgetView {
 
@@ -38,7 +39,8 @@ class InfoGui : public WidgetView {
   Item *item;
   Window *win;
   Button *openButton;
-  Label *label, *nameLabel;
+  ScrollingLabel *label;
+  Label *nameLabel;
   Canvas *image;
   int infoDetailLevel;
   char name[500], description[1000];

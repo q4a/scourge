@@ -693,7 +693,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   
   glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  int w = strlen( message ) * 7 + 4;
+  int w = strlen( message ) * 8 + 4;
   int h = 12;
   int x = -2;
   int y = -10;
