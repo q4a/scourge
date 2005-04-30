@@ -45,7 +45,7 @@ InfoGui::InfoGui(Scourge *scourge) {
 
   win->createLabel(10, 80, "Detailed Description:", Constants::RED_COLOR);
   strcpy(description, "");
-  label = new Label(10, 95, description, 56);
+  label = new ScrollingLabel( 10, 95, width - 20, by - 105, description );
   win->addWidget(label);
 }
 
