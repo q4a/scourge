@@ -220,7 +220,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   bool willStartDrag;
   int willStartDragX, willStartDragY;
   GLUquadric *quadric;
-  bool showPath;
 
   bool needToCheckInfo;
   map<InfoMessage *, Uint32> infos;
@@ -290,8 +289,6 @@ public:
 
   int getScreenWidth();
   int getScreenHeight();
-
-  inline void setShowPath( bool b ) { showPath = b; }
 
   /**
     @return the Board containing the available missions.

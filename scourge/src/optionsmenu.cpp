@@ -306,7 +306,7 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     }
     else if(widget == alwaysShowPath){
         uc ->setAlwaysShowPath(alwaysShowPath->isChecked());
-        scourge->setShowPath(alwaysShowPath->isChecked());
+        //scourge->setShowPath(alwaysShowPath->isChecked());
     } else if(widget == tooltipEnabled){
         uc ->setTooltipEnabled(tooltipEnabled->isChecked());
         if( !( uc ->getTooltipEnabled() ) ) scourge->resetInfos();
