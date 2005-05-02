@@ -90,6 +90,7 @@ void Creature::commonInit() {
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
   this->bestPathPos = 0;
+  this->proposedPathIndex = 0;
   this->inventory_count = 0;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
@@ -391,6 +392,7 @@ bool Creature::follow(Map *map) {
 void Creature::findPath( int x, int y ) {
   proposedX = x;
   proposedY = y;
+  proposedPathIndex = 1;
   Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
                  proposedX, proposedY, 0, 
                  &proposedPath, session->getMap(), getShape());
@@ -444,7 +446,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
   if(!(tx == px && ty == py)) {
     tx = px;
     ty = py;
-    bestPathPos = 1; // skip 0th position; it's the starting location
+    proposedPathIndex = bestPathPos = 1; // skip 0th position; it's the starting location
 //    cerr << "calling findPath!" << endl;
     Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
                    px, py, pz, &bestPath, session->getMap(), getShape());
@@ -559,6 +561,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         bestPathPos++;
+        proposedPathIndex++;
       }
       return true;
     } else {
@@ -585,7 +588,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 }
 
 void Creature::stopMoving() {
-  bestPathPos = (int)bestPath.size();
+  proposedPathIndex = bestPathPos = (int)bestPath.size();
   selX = selY = -1;
 }
 

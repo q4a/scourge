@@ -54,7 +54,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   // in HQ map
   inHq = true;
-  showPath = config->getAlwaysShowPath();
+  //showPath = config->getAlwaysShowPath();
 
   layoutMode = Constants::GUI_LAYOUT_BOTTOM;
   
@@ -545,7 +545,7 @@ void Scourge::drawAfter() {
     turnProgress->updateStatus(msg, false, 
                                c->getBattle()->getAP(), 
                                c->getBattle()->getStartingAP(),
-                               ( showPath ? c->getProposedPath()->size() : 0 ) );
+                               c->getProposedPath()->size() );
     glPopMatrix();
     //glPushAttrib(GL_ENABLE_BIT);
   }
@@ -587,7 +587,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   // show path
   if(player && 
      session->getUserConfiguration()->isBattleTurnBased() && 
-     battleTurn < (int)battleRound.size() && showPath ) {
+     battleTurn < (int)battleRound.size() ) {
     for( int i = creature->getProposedPathIndex(); 
          i < (int)creature->getProposedPath()->size() && 
          i <= creature->getBattle()->getAP(); i++) {
@@ -1085,11 +1085,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = userConfiguration->getEngineAction(event);    
-    if(ea == SHOW_PATH) {
-      showPath = true;
-    } else if(ea == SHOW_PATH_STOP) {
-      showPath = getUserConfiguration()->getAlwaysShowPath();
-    } else if(ea == SWITCH_COMBAT) {
+    if(ea == SWITCH_COMBAT) {
       getUserConfiguration()->setBattleTurnBased( getUserConfiguration()->isBattleTurnBased() ? false : true );
       char message[80];
       sprintf( message, "Combat is now %s.", ( getUserConfiguration()->isBattleTurnBased() ?
@@ -1192,18 +1188,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
 void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
   Uint16 mapx, mapy;
   getMapXYAtScreenXY(x, y, &mapx, &mapy);
-
-  // show path
-  if( session->getUserConfiguration()->isBattleTurnBased() &&
-      battleTurn < (int)battleRound.size() ) {
-    Creature *c = battleRound[battleTurn]->getCreature();
-    if( !c->isMonster() &&
-        !( c->getProposedX() == mapx && c->getProposedY() == mapy ) &&
-        showPath ) {
-      battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
-    }
-  }
-
   if(mapx < MAP_WIDTH) levelMap->handleMouseMove( mapx, mapy, 0 );
 }
 
@@ -1268,6 +1252,14 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
         } else if(loc->creature->isMonster()) {
           // follow this creature
           party->setTargetCreature(loc->creature);
+          // show path
+          if( inTurnBasedCombatPlayerTurn() ) {
+            battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
+            // start round
+            if( getSDLHandler()->isDoubleClick ) {
+              party->toggleRound( false );
+            }
+          }
           return;
         } else {
           // select player
@@ -1303,12 +1295,22 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     // make sure the selected action can target a location
     if( getTargetSelectionFor() ) {
       handleTargetSelectionOfLocation( mapx, mapy, mapz );
-      return;
+     return;
     }
+
+
     
     // Make party move to new location
     party->setSelXY( mapx, mapy );
-    
+
+    // start round
+    if( inTurnBasedCombatPlayerTurn() ) {
+      battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
+      if( getSDLHandler()->isDoubleClick ) {
+        party->toggleRound( false );
+      }
+    }
+
   } else if(button == SDL_BUTTON_RIGHT) {
     describeLocation(cursorMapX, cursorMapY, cursorMapZ);
   }

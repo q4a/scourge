@@ -79,7 +79,7 @@ class Creature {
   int index;
   int tx, ty;
   int selX, selY;
-  int proposedX, proposedY;
+  int proposedX, proposedY, proposedPathIndex;
   int bestPathPos;
   vector<Location> bestPath;
   vector<Location> proposedPath;
@@ -162,7 +162,7 @@ class Creature {
   inline int getPathIndex() { return bestPathPos; }
 
   inline vector<Location> *getProposedPath() { return &proposedPath; }
-  inline int getProposedPathIndex() { return 1; }
+  inline int getProposedPathIndex() { return proposedPathIndex; }
   inline int getProposedX() { return proposedX; }
   inline int getProposedY() { return proposedY; }
 
