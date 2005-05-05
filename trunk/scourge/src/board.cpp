@@ -20,7 +20,7 @@
 #include "creature.h"
 #include "session.h"
 
-#define DEBUG_MODE 1
+//#define DEBUG_MODE 1
 	
 /**
   *@author Gabor Torok
