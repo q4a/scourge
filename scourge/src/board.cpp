@@ -20,6 +20,7 @@
 #include "creature.h"
 #include "session.h"
 
+#define DEBUG_MODE 1
 	
 /**
   *@author Gabor Torok
@@ -191,6 +192,15 @@ void Board::initMissions() {
     Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
     availableMissions.push_back( mission );
   }  
+
+#ifdef DEBUG_MODE
+  // debug missions
+  for( int i = 1; i <= highest; i++ ) {
+    int templateIndex = (int)( (float)( templates.size() ) * rand()/RAND_MAX );
+    Mission *mission = templates[ templateIndex ]->createMission( session, i, 1 );
+    availableMissions.push_back( mission );
+  }
+#endif
 
   // init ui
   if(availableMissions.size()) {
