@@ -46,6 +46,7 @@ class Monster  {
   int baseArmor;
   int rareness;
   float scale;
+  bool npc;
   vector<RpgItem*> items;
   vector<Spell*> spells;
   map<string,int> skills;
@@ -55,8 +56,10 @@ class Monster  {
   static map<int, vector<string>*>* currentSoundMap;
   static vector<string> monsterTypes;
 
+  static vector<Monster*> npcs;
+
 public:
-  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale);
+  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc);
   ~Monster();
 
   static map<string, map<int, vector<string>*>*> soundMap;
@@ -80,6 +83,7 @@ public:
   inline void addSpell(Spell *spell) { spells.push_back(spell); }
   int getSkillLevel(const char *skillName);
   const char *getRandomSound(int type);
+  inline bool isNpc() { return npc; }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);
@@ -96,6 +100,7 @@ public:
 
   static const char *getRandomMonsterType();
   static const char *getMonsterType(char *type);
+  static const Monster *getRandomNpc();
 
  protected:
   static void addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap );
