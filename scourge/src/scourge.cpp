@@ -646,6 +646,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glColor4f(0, 1, 1, 0.5f);
   } else if(player) {
     glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+  } else if(creature->getMonster() && creature->getMonster()->isNpc()) {
+    glColor4f(0.75f, 1.0f, 0.0f, 0.5f);
   } else {
     glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
   }
@@ -2281,7 +2283,9 @@ bool Scourge::createBattleTurns() {
         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                     toint(session->getCreature(i)->getY())) &&
         levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
-                                    toint(session->getCreature(i)->getY()))) {
+                                    toint(session->getCreature(i)->getY())) &&
+        !(session->getCreature(i)->getMonster() && 
+          session->getCreature(i)->getMonster()->isNpc())) {
       bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                         session->getCreature(i)->getAction() > -1);
       // Don't start a round if this creature is unreachable by party. Otherwise
@@ -2423,7 +2427,9 @@ void Scourge::moveMonster(Creature *monster) {
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
     // attack the closest player
-    if( BATTLES_ENABLED && (int)(20.0f * rand()/RAND_MAX) == 0) {
+    if( !monster->getMonster()->isNpc() && 
+        BATTLES_ENABLED && 
+        (int)(20.0f * rand()/RAND_MAX) == 0) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement

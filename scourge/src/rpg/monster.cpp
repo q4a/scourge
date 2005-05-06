@@ -25,8 +25,9 @@ map<string, Monster*> Monster::monstersByName;
 map<string, map<int, vector<string>*>*> Monster::soundMap;
 map<int, vector<string>*>* Monster::currentSoundMap;
 vector<string> Monster::monsterTypes;
+vector<Monster*> Monster::npcs;
 
-Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale) {
+Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc) {
   this->type = type;
   this->level = level;
   this->hp = hp;
@@ -37,6 +38,7 @@ Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin,
   this->rareness = rareness;
   this->baseArmor = baseArmor;
   this->scale = scale;
+  this->npc = npc;
   sprintf(description, "FIXME: need a description");
 }
 
@@ -102,6 +104,10 @@ void Monster::initMonsters() {
       if(p) {
         scale = atof(p);
       }
+      bool npc = false;
+      p = strtok(NULL, ",");
+      if(p) npc = true;
+
 
       /*
       cerr << "adding monster: " << name << " level: " << level << 
@@ -111,22 +117,27 @@ void Monster::initMonsters() {
         endl;
         */
 
-      vector<Monster*> *list = NULL;
-      if(monsters.find(level) == monsters.end()) {
-        list = new vector<Monster*>();
-        monsters[level] = list;
-      } else {
-        list = monsters[level];
-      }
       Monster *m = new Monster( strdup(name), level, hp, mp, 
                                 strdup(model_name), strdup(skin_name), 
                                 rareness, speed, armor, 
-                                scale );
+                                scale, npc );
       last_monster = m;
-      list->push_back(last_monster);
-      string s = name;
-      monstersByName[s] = m;
+      if( npc ) {
+        npcs.push_back( m );
+      } else {
+        vector<Monster*> *list = NULL;
+        if(monsters.find(level) == monsters.end()) {
+          list = new vector<Monster*>();
+          monsters[level] = list;
+        } else {
+          list = monsters[level];
+        }
+        list->push_back(last_monster);
+        string s = name;
+        monstersByName[s] = m;
+      }
 
+      // store type and add sounds
       string typeStr = m->getModelName();
       bool found = false;
       for(int i = 0; i < (int)monsterTypes.size(); i++) {
@@ -136,17 +147,16 @@ void Monster::initMonsters() {
         }
       }
       if(!found) {
-		monsterTypes.push_back(typeStr);
-
-		string monsterType_str = m->getModelName();
-		if( soundMap.find( monsterType_str ) == soundMap.end() ) {
-		  currentSoundMap = new map<int, vector<string>*>();      
-		  soundMap[monsterType_str] = currentSoundMap;
-		} else {
-		  currentSoundMap = soundMap[monsterType_str];
-		}
-		addMd2Sounds( m->getModelName(), currentSoundMap );
-	  }
+        if( !npc ) monsterTypes.push_back(typeStr);
+        
+        if( soundMap.find( typeStr ) == soundMap.end() ) {
+          currentSoundMap = new map<int, vector<string>*>();      
+          soundMap[typeStr] = currentSoundMap;
+        } else {
+          currentSoundMap = soundMap[typeStr];
+        }
+        addMd2Sounds( m->getModelName(), currentSoundMap );
+      }      
     } else if(n == 'I' && last_monster) {
       // skip ':'
       fgetc(fp);
@@ -301,3 +311,9 @@ const char *Monster::getMonsterType(char *type) {
   }
   return NULL;
 }
+
+const Monster *Monster::getRandomNpc() {
+  int n = (int)((float)npcs.size()*rand()/RAND_MAX);
+  return npcs[n];
+}
+

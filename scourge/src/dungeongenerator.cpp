@@ -1284,6 +1284,41 @@ void DungeonGenerator::addMonsters(Map *map, ShapePalette *shapePal,
       addItem(map, creature, NULL, NULL, x, y);
       creature->moveTo(x, y, 0);
     }
+  } else {
+    // add npc-s
+    for(int i = 0; i < roomCount; i++) {
+      int areaCovered = 0;
+      // don't crowd the rooms
+      int roomAreaUsed = (int)(room[i].w * room[i].h * unitSide * 0.33f);
+      while(areaCovered < roomAreaUsed) {
+        Monster *monster = (Monster*)Monster::getRandomNpc();
+        //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
+        if(!monster) {
+          cerr << "Warning: no npc found!" << endl;
+          break;
+        }
+        GLShape *shape = 
+          scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
+                                                       monster->getSkinName(), 
+                                                       monster->getScale(),
+                                                       monster);
+        int x, y;
+        bool fits = getLocationInRoom(map, i, shape, &x, &y);
+        
+        if(fits) {
+          //fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
+          Creature *creature = scourge->getSession()->newCreature(monster, shape);
+          addItem(map, creature, NULL, NULL, x, y);
+          creature->moveTo(x, y, 0);
+          areaCovered += (creature->getShape()->getWidth() * 
+                          creature->getShape()->getDepth());
+        } else {
+          //fprintf(stderr, "\tmonster DOESN'T fit.\n");
+          delete shape;
+          break;
+        }
+      }
+    }
   }
 }
 
