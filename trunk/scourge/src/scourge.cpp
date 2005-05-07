@@ -26,7 +26,7 @@
 
 #define INFO_INTERVAL 3000
 
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -2427,13 +2427,18 @@ void Scourge::moveMonster(Creature *monster) {
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
     // attack the closest player
-    if( !monster->getMonster()->isNpc() && 
-        BATTLES_ENABLED && 
+    if( BATTLES_ENABLED && 
         (int)(20.0f * rand()/RAND_MAX) == 0) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement
       monster->move(monster->getDir(), levelMap);
+    }
+  } else if(monster->getMotion() == Constants::MOTION_STAND) {
+    if( (int)(40.0f * rand()/RAND_MAX) == 0) {
+      monster->setMotion(Constants::MOTION_LOITER);
+    } else {
+      monster->decideMonsterAction();
     }
   } else if(monster->hasTarget()) {
 #ifdef MONSTER_FLEE_IF_LOW_HP

@@ -330,6 +330,9 @@ void Creature::switchDirection(bool force) {
 bool Creature::move(Uint16 dir, Map *map) {
   if(character) return false;
 
+  // is monster (or npc) doing something else?
+  if( ((MD2Shape*)getShape())->getCurrentAnimation() != MD2_RUN ) return false;
+
   switchDirection(false);
 
   // a hack for runaway creatures
@@ -1434,64 +1437,76 @@ void Creature::followTarget() {
 void Creature::decideMonsterAction() {
   if(!isMonster()) return;
 
-  // does monster need to be healed?
-
-  // increase MP, AC or skill (via potion)?
-  Creature *p;
-  if(getStateMod(Constants::possessed)) {
-    p = session->getClosestVisibleMonster(toint(getX()), toint(getY()), 
-                                          getShape()->getWidth(),
-                                          getShape()->getDepth(),
-                                          20);
+  if( monster->isNpc() ) {
+    int n = (int)( 10.0f * rand()/RAND_MAX );
+    switch( n ) {
+    case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;
+    case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;
+    case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;
+    default : getShape()->setCurrentAnimation(MD2_STAND); break;
+    }
+    setMotion(Constants::MOTION_STAND);
   } else {
-    p = session->getParty()->getClosestPlayer(toint(getX()), toint(getY()), 
-                                              getShape()->getWidth(),
-                                              getShape()->getDepth(),
-                                              20);
-  }
-  if(p) {
-    float dist = Constants::distance(getX(),  getY(), 
-                                     getShape()->getWidth(), getShape()->getDepth(),
-                                     p->getX(), p->getY(),
-                                     p->getShape()->getWidth(), 
-                                     p->getShape()->getDepth());
-    
-    // can monster use magic?
-    if(getSpellCount()) {
 
-      /*              
-        FIXME:          
-                  
-        Other considerations:
-        -heal other monsters (by spell)?
-        -attack by spell?
-        -group attack vs. single target?
+    // does monster need to be healed?
+    
+    // increase MP, AC or skill (via potion)?
+    Creature *p;
+    if(getStateMod(Constants::possessed)) {
+      p = session->getClosestVisibleMonster(toint(getX()), toint(getY()), 
+                                            getShape()->getWidth(),
+                                            getShape()->getDepth(),
+                                            20);
+    } else {
+      p = session->getParty()->getClosestPlayer(toint(getX()), toint(getY()), 
+                                                getShape()->getWidth(),
+                                                getShape()->getDepth(),
+                                                20);
+    }
+    if(p) {
+      float dist = Constants::distance(getX(),  getY(), 
+                                       getShape()->getWidth(), getShape()->getDepth(),
+                                       p->getX(), p->getY(),
+                                       p->getShape()->getWidth(), 
+                                       p->getShape()->getDepth());
+      
+      // can monster use magic?
+      if(getSpellCount()) {
         
-        For now, just assume that monsters only know attack spells 
-        where the target can be a single creature. Later when spell
-        casting is smarter (by monsters) we'll need to implement some
-        way to classify spells (attack, help (hp+,ac+,etc.), group vs. 
-        single target, etc.)
-      */
-      for(int i = 0; i < getSpellCount(); i++) {
-        Spell *spell = getSpell(i);
-        if(spell->getMp() < getMp()) {
-          if((spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE) ||
-             (spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE)) {
-            setAction(Constants::ACTION_CAST_SPELL, 
-                      NULL,
-                      spell);
-            setMotion(Constants::MOTION_MOVE_TOWARDS);
-            setTargetCreature(p);
-            return;
+        /*                                                                                
+          FIXME:                                                                            
+                    
+          Other consid  erations:
+          -heal other monsters (by spell)?
+          -attack by spell?
+          -group attack vs. single target?
+        
+          For now, just assume that monsters only know attack spells 
+          where the target can be a single creature. Later when spell
+          casting is smarter (by monsters) we'll need to implement some
+          way to classify spells (attack, help (hp+,ac+,etc.), group vs. 
+          single target, etc.)
+        */
+        for(int i = 0; i < getSpellCount(); i++) {
+          Spell *spell = getSpell(i);
+          if(spell->getMp() < getMp()) {
+            if((spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE) ||
+               (spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE)) {
+              setAction(Constants::ACTION_CAST_SPELL, 
+                        NULL,
+                        spell);
+              setMotion(Constants::MOTION_MOVE_TOWARDS);
+              setTargetCreature(p);
+              return;
+            }
           }
         }
       }
-    }
 
-    // attack with item
-    setMotion(Constants::MOTION_MOVE_TOWARDS);
-    setTargetCreature(p);
+      // attack with item
+      setMotion(Constants::MOTION_MOVE_TOWARDS);
+      setTargetCreature(p);
+    }
   }
 }
 
