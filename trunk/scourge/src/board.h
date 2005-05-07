@@ -58,6 +58,18 @@ private:
   bool completed;
   bool storyLine;
 public:
+
+#define INTRO_PHRASE "_INTRO_"
+#define UNKNOWN_PHRASE "_UNKNOWN_"
+
+  static vector<string> intros;
+  static vector<string> unknownPhrases;
+  static map<string, string> conversations;
+
+  static char *getIntro();
+  static char *getAnswer( char *keyphrase );
+
+
   Mission( Board *board, int level, int depth, 
 		   char *name, char *description, 
 		   char *success, char *failure );

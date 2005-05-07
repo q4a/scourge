@@ -26,7 +26,7 @@
 
 #define INFO_INTERVAL 3000
 
-#define DEBUG_KEYS 1
+//#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -2422,7 +2422,9 @@ void Scourge::moveMonster(Creature *monster) {
     return;
   } else {
     //if(battleRound.size() > 0) monster->getShape()->setCurrentAnimation((int)MD2_RUN);
-    monster->getShape()->setCurrentAnimation((int)MD2_RUN);
+    monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER ? 
+                                              (int)MD2_RUN :
+                                              (int)MD2_STAND );
   }
 
   if(monster->getMotion() == Constants::MOTION_LOITER) {
