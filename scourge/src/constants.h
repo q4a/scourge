@@ -284,7 +284,8 @@ public:
   enum motion {
     MOTION_MOVE_TOWARDS=0,
     MOTION_MOVE_AWAY, // flee
-    MOTION_LOITER
+    MOTION_LOITER,
+    MOTION_STAND
   };
 
 // This stores the speed of the animation between each key frame for md2 models
