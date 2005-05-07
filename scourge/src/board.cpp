@@ -20,6 +20,10 @@
 #include "creature.h"
 #include "session.h"
 
+vector<string> Mission::intros;
+vector<string> Mission::unknownPhrases;
+map<string, string> Mission::conversations;
+
 //#define DEBUG_MODE 1
 	
 /**
@@ -42,7 +46,7 @@ Board::Board(Session *session) {
 
   Mission *current_mission = NULL;
   char name[255], line[255], description[2000], 
-    success[2000], failure[2000];
+    success[2000], failure[2000], keyphrase[80],answer[2000];
   int n = fgetc(fp);
   while(n != EOF) {
     if( n == 'M' ) {
@@ -104,7 +108,24 @@ Board::Board(Session *session) {
       n = Constants::readLine(line, fp);
       Monster *monster = Monster::getMonsterByName(line);
       current_mission->addCreature( monster );
-    
+
+    } else if(n == 'G') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+
+      strcpy( keyphrase, strtok( line, "," ) );
+      strcpy( answer, strtok( NULL, "," ) );
+
+      string ks = keyphrase;
+      string as = answer;
+
+      if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
+        Mission::intros.push_back( as );
+      } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
+        Mission::unknownPhrases.push_back( as );
+      } else {
+        Mission::conversations[ ks ] = as;
+      }
     } else {
       n = Constants::readLine(line, fp);
     }
@@ -460,3 +481,17 @@ void Mission::reset() {
   itemInstanceMap.clear();
   monsterInstanceMap.clear();
 }
+
+char *Mission::getIntro() {
+  return (char*)(intros[ (int)( (float)( intros.size() ) * rand()/RAND_MAX ) ].c_str());
+}
+
+char *Mission::getAnswer( char *keyphrase ) {
+  string ks = keyphrase;
+  if( conversations.find( ks ) != conversations.end() ) {
+    return (char*)(conversations[ ks ].c_str());
+  } else {
+    return (char*)(unknownPhrases[ (int)( (float)( unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
+  }
+}
+
