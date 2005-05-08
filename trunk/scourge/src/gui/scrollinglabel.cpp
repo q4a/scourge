@@ -45,6 +45,7 @@ ScrollingLabel::ScrollingLabel(int x, int y, int w, int h, char *text) : Widget(
 }
 
 ScrollingLabel::~ScrollingLabel() {
+  coloring.clear();
 }
 
 void ScrollingLabel::setText( char *s ) {
@@ -93,16 +94,16 @@ void ScrollingLabel::drawWidget(Widget *parent) {
     //    int ypos = ypos = textPos + (i + 1) * 15;
     //    ((Window*)parent)->getSDLHandler()->texPrint( scrollerWidth + 5, ypos, text, lineWidth );
 
-    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
+    //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
     int ypos;
     for(int i = 0; i < (int)lines.size(); i++) {
       ypos = textPos + (i + 1) * 15;
       // writing text is expensive, only print what's visible
       if(ypos >= 0 && ypos < getHeight()) {
-		((Window*)parent)->getSDLHandler()->texPrint( scrollerWidth + 5, ypos, lines[i].c_str() );
+        printLine( parent, scrollerWidth + 5, ypos, (char*)lines[i].c_str() );
       }
     }
-    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
+    //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
         
     glDisable( GL_SCISSOR_TEST );
   }
@@ -137,6 +138,40 @@ void ScrollingLabel::drawWidget(Widget *parent) {
   glVertex2d(scrollerWidth, scrollerY + scrollerHeight);
   glEnd();
   glLineWidth( 1.0f );
+}
+
+// FIXME: this could be used to delimit lines also. It's more exact...
+void ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
+  GuiTheme *theme = ((Window*)parent)->getTheme();
+  int xp = x;
+  
+  char *tmp = strdup( s );
+  char *p = strtok( tmp, " " );
+  int space = ((Window*)parent)->getSDLHandler()->textWidth( " " );
+  while( p ) {
+    if( coloring.find( *p ) != coloring.end() ) {
+      Color c = coloring[ *p ];
+      glColor4f( c.r, c.g, c.b, c.a );
+      p++;
+
+      // FIXME: store keyword found.
+
+    } else {
+      if( theme->getWindowText() ) {
+        glColor4f( theme->getWindowText()->r,
+                   theme->getWindowText()->g,
+                   theme->getWindowText()->b,
+                   theme->getWindowText()->a );
+      } else {
+        applyColor();
+      }
+    }
+    ((Window*)parent)->getSDLHandler()->texPrint( xp, y, p );
+    xp += ((Window*)parent)->getSDLHandler()->textWidth( p );
+    xp += space;
+    p = strtok( NULL, " " );
+  }
+  free( tmp );
 }
 
 bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {

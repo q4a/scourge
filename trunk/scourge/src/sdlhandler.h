@@ -166,6 +166,8 @@ public:
   inline void setFontType( int fontType ) { this->fontType = fontType; }
   inline int getFontType() { return fontType; }
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
+  int textWidth( const char *fmt, ... );
+  const freetype_font_data *getCurrentFont();
   void initFonts();
 
   GLvoid glPrint( const char *fmt, ... );

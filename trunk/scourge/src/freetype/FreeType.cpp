@@ -132,7 +132,7 @@ void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base, in
 	//increment the raster position as if we were a bitmap font.
 	//(only needed if you want to calculate text length)
 	//glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
-  *charWidth = face->glyph->advance.x >> 6;
+  *charWidth = (face->glyph->advance.x >> 6) + 1;
 
 	//Finnish the display list
 	glEndList();
@@ -296,7 +296,7 @@ int getTextLength(const freetype_font_data &ft_font, const char *fmt, ...)  {
     va_end(ap);											// Results Are Stored In Text
   }
   
-  return getTextLength(ft_font, text);
+  return getTextLengthSimple(ft_font, text);
 }           
 
 

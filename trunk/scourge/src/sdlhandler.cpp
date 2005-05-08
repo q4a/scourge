@@ -619,6 +619,38 @@ void SDLHandler::drawScreen() {
   }
 }
 
+const freetype_font_data *SDLHandler::getCurrentFont() {
+  freetype_font_data *p;
+  switch( fontType ) {
+  case SCOURGE_MONO_FONT:
+    p = &monoFont; break;
+  case SCOURGE_LARGE_FONT:
+    p = &largeFont; break;
+  default:
+    p = &font;
+  }
+  return (const freetype_font_data*)p;
+}
+
+int SDLHandler::textWidth( const char *fmt, ... ) {
+  char str[256]; // Holds our string
+  va_list ap;     // Pointer to our list of elements
+
+  // If there's no text, do nothing
+  if ( fmt == NULL ) return 0;
+
+  // Parses The String For Variables
+  va_start( ap, fmt );
+
+  // Converts Symbols To Actual Numbers
+  vsprintf( str, fmt, ap );
+  va_end( ap );
+
+  initFonts();
+
+  return getTextLengthSimple( *(getCurrentFont()), str );
+}
+
 void SDLHandler::texPrint(GLfloat x, GLfloat y, 
                           const char *fmt, ...) {
   if(!text) text = new TexturedText();
@@ -638,16 +670,7 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 
   initFonts();
 
-  freetype_font_data *p;
-  switch( fontType ) {
-  case SCOURGE_MONO_FONT:
-    p = &monoFont; break;
-  case SCOURGE_LARGE_FONT:
-    p = &largeFont; break;
-  default:
-    p = &font;
-  }
-  freetype_print_simple( *p, x, y, str );
+  freetype_print_simple( *(getCurrentFont()), x, y, str );
 }
 
 void SDLHandler::initFonts() {
