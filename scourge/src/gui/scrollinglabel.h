@@ -58,12 +58,16 @@ class ScrollingLabel : public Widget {
   // GLuint highlight;
   bool canGetFocusVar;
 
+  map<char, Color> coloring;
+
  public: 
 
    bool debug;
 
    ScrollingLabel(int x, int y, int w, int h, char *text );
    virtual ~ScrollingLabel();
+
+   inline void addColoring( char c, Color color ) { coloring[c]=color; }
 
    inline char *getText() { return text; }
    void setText(char *s);
@@ -93,6 +97,7 @@ class ScrollingLabel : public Widget {
   inline void setCanGetFocus(bool b) { this->canGetFocusVar = b; }
 
  private:
+   void printLine( Widget *parent, int x, int y, char *s );
   //  void selectLine(int x, int y);
   //  void drawIcon( int x, int y, GLuint icon );
 };

@@ -55,6 +55,7 @@
 #include "gameadapter.h"
 #include "session.h"
 #include "infogui.h"
+#include "conversationgui.h"
 #include "gui/guitheme.h"
 #include "gui/scrollinglabel.h"
 
@@ -90,6 +91,7 @@ class NetPlay;
 class Progress;
 class GameAdapter;
 class InfoGui;
+class ConversationGui;
 class GuiTheme;
 class ScrollingLabel;
 
@@ -144,6 +146,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   Inventory *inventory;
   Window *messageWin, *exitConfirmationDialog;
   InfoGui *infoGui;
+  ConversationGui *conversationGui;
   Label *exitLabel;
   ScrollingList *messageList;
   Button *yesExitConfirm, *noExitConfirm;
@@ -632,6 +635,8 @@ public:
   bool inTurnBasedCombatPlayerTurn();
 
   inline InfoGui *getInfoGui() { return infoGui; }
+
+  inline ConversationGui *getConversationGui() { return conversationGui; }
 
   void showItemInfoUI(Item *item, int level);
 

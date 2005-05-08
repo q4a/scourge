@@ -46,7 +46,7 @@ Board::Board(Session *session) {
 
   Mission *current_mission = NULL;
   char name[255], line[255], description[2000], 
-    success[2000], failure[2000], keyphrase[80],answer[2000];
+    success[2000], failure[2000], keyphrase[80],answer[4000];
   int n = fgetc(fp);
   while(n != EOF) {
     if( n == 'M' ) {
@@ -115,6 +115,12 @@ Board::Board(Session *session) {
 
       strcpy( keyphrase, strtok( line, "," ) );
       strcpy( answer, strtok( NULL, "," ) );
+
+      // Read lines that end with a \.
+      while( line[ strlen( line ) - 1 ] == '\\' ) {
+        n = Constants::readLine(line, fp);
+        strcat( answer, line );
+      }
 
       string ks = keyphrase;
       string as = answer;

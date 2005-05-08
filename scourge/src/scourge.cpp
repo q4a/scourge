@@ -187,6 +187,7 @@ Scourge::~Scourge(){
   delete miniMap;
   delete netPlay;
   delete infoGui;
+  delete conversationGui;
 }
 
 void Scourge::startMission() {
@@ -338,6 +339,7 @@ void Scourge::startMission() {
     miniMap->hide();
     netPlay->getWindow()->setVisible(false);
     infoGui->getWindow()->setVisible(false);
+    conversationGui->getWindow()->setVisible( false );
 
     resetBattles();
     
@@ -1252,14 +1254,19 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
           handleTargetSelectionOfCreature( loc->creature );
           return;
         } else if(loc->creature->isMonster()) {
-          // follow this creature
-          party->setTargetCreature(loc->creature);
-          // show path
-          if( inTurnBasedCombatPlayerTurn() ) {
-            battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
-            // start round
-            if( getSDLHandler()->isDoubleClick ) {
-              party->toggleRound( false );
+          if( loc->creature->getMonster()->isNpc() ) {
+            // start a conversation
+            conversationGui->start( loc->creature );
+          } else {
+            // follow this creature
+            party->setTargetCreature(loc->creature);
+            // show path
+            if( inTurnBasedCombatPlayerTurn() ) {
+              battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
+              // start round
+              if( getSDLHandler()->isDoubleClick ) {
+                party->toggleRound( false );
+              }
             }
           }
           return;
@@ -1961,6 +1968,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     infoGui->handleEvent(widget, event);
   }
 
+  if( conversationGui->getWindow()->isVisible() ) {
+    conversationGui->handleEvent( widget, event );
+  }
+
   // FIXME: this is hacky...
   if(handlePartyEvent(widget, event)) return true;
   int n = handleBoardEvent(widget, event);
@@ -1995,6 +2006,8 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 void Scourge::createUI() {
 
   infoGui = new InfoGui( this );
+
+  conversationGui = new ConversationGui( this );
 
   int width = 
     getSDLHandler()->getScreen()->w - 
