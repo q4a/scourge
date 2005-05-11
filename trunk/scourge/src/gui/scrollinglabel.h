@@ -31,6 +31,18 @@ using namespace std;
   *@author Gabor Torok
   */
 
+
+class WordClickedHandler {
+public:
+	WordClickedHandler() {
+  }
+
+	virtual ~WordClickedHandler() {
+  }
+
+  virtual void wordClicked( char *word ) = 0;
+};
+
 class ScrollingLabel : public Widget {
  protected:
   char text[3000];
@@ -60,12 +72,22 @@ class ScrollingLabel : public Widget {
 
   map<char, Color> coloring;
 
+  typedef struct _WordPos {
+    int x, y, w, h;
+    char word[255];
+  } WordPos;
+  WordPos wordPos[1000];
+  int wordPosCount;
+  WordClickedHandler *handler;
+
  public: 
 
    bool debug;
 
    ScrollingLabel(int x, int y, int w, int h, char *text );
    virtual ~ScrollingLabel();
+
+   inline void setWordClickedHandler( WordClickedHandler *handler ) { this->handler = handler; }
 
    inline void addColoring( char c, Color color ) { coloring[c]=color; }
 
@@ -98,6 +120,7 @@ class ScrollingLabel : public Widget {
 
  private:
    void printLine( Widget *parent, int x, int y, char *s );
+   int getWordPos( int x, int y );
   //  void selectLine(int x, int y);
   //  void drawIcon( int x, int y, GLuint icon );
 };

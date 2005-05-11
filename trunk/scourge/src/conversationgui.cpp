@@ -19,10 +19,9 @@
 
 ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
-  this->keyPhraseCount = 0;
 
   int width = 500;
-  int height = 400;
+  int height = 200;
 
   int x = (scourge->getSDLHandler()->getScreen()->w - width) / 2;
   int y = (scourge->getSDLHandler()->getScreen()->h - height) / 2;
@@ -30,7 +29,8 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::CONVERSATION_GUI_TITLE) );
 
   label = win->createLabel( 10, 13, "Talking to " );
-  answer = new ScrollingLabel( 10, 20, width - 20, height / 2, "" );
+  answer = new ScrollingLabel( 10, 20, width - 20, 100, "" );
+  answer->setWordClickedHandler( this );
   Color color;
   color.r = 1;
   color.g = 1;
@@ -39,25 +39,9 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   answer->addColoring( '$', color );
   win->addWidget( answer );
 
-  y = 20 + height/2 + 10;
-
-  keyPhrases = (char**)malloc(100 * sizeof(char*));
-  for(int i = 0; i < 100; i++) {
-    keyPhrases[i] = (char*)malloc(120 * sizeof(char));
-  }
-  keyPhraseList = new ScrollingList(10, y, 
-                                    width / 2, 
-                                    (height - 40) - y, 
-                                    scourge->getShapePalette()->getHighlightTexture() );
-  win->addWidget( keyPhraseList );
-
-  x = 20 + width / 2;
-  talkButton = win->createButton( x, y, 
-                                  width - 10, y + 20, 
-                                  "Talk About" );
-  closeButton = win->createButton( x, y + 20 + 10, 
-                                   width - 10, y + 20 + 30, 
-                                   "Close" );
+  x = 10;
+  y = 140;
+  closeButton = win->createButton( x, y, x + 100, y + 20, "Close" );
 
   win->setVisible( false );
 }
@@ -78,17 +62,15 @@ void ConversationGui::start(Creature *creature) {
   // pause the game
   scourge->getParty()->toggleRound( true );
   this->creature = creature;
-
   char tmp[ 80 ];
   sprintf( tmp, "Talking to %s", creature->getName() );
   label->setText( tmp );
-
   answer->setText( Mission::getIntro() );
-  keyPhraseCount = 0;
-
-  keyPhraseList->setLines( keyPhraseCount, (const char**)keyPhrases );
-
   win->setVisible( true );
 }
 
+void ConversationGui::wordClicked( char *word ) {
+  cerr << "Clicked: " << word << endl;
+  answer->setText( Mission::getAnswer( word ) );
+}
 

@@ -49,6 +49,7 @@ ScrollingLabel::~ScrollingLabel() {
 }
 
 void ScrollingLabel::setText( char *s ) {
+  wordPosCount = 0;
 
   strncpy(text, ( s ? s : "" ), 3000); 
   text[2999] = '\0';
@@ -70,6 +71,7 @@ void ScrollingLabel::setText( char *s ) {
 }
 
 void ScrollingLabel::drawWidget(Widget *parent) {
+  wordPosCount = 0;
   GuiTheme *theme = ((Window*)parent)->getTheme();
 
   // draw the text
@@ -149,14 +151,47 @@ void ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
   char *p = strtok( tmp, " " );
   int space = ((Window*)parent)->getSDLHandler()->textWidth( " " );
   while( p ) {
+    int wordWidth;
     if( coloring.find( *p ) != coloring.end() ) {
-      Color c = coloring[ *p ];
-      glColor4f( c.r, c.g, c.b, c.a );
+      
+      // ignore the lead char.
+      wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p + 1 );
+
+      // store word pos for lookup on click
+      wordPos[ wordPosCount ].x = xp;
+      wordPos[ wordPosCount ].y = y - 10;
+      wordPos[ wordPosCount ].w = wordWidth;
+      wordPos[ wordPosCount ].h = 10;
+      //strcpy( wordPos[ wordPosCount ].word, p );
+      // copy only valid characters
+      int c = 0;
+      for( int i = 0; i < (int)strlen( p ); i++ ) {
+        if( ( p[i] >= 'a' && p[i] <= 'z' ) ||
+            ( p[i] >= 'A' && p[i] <= 'Z' ) ||
+            ( p[i] >= '0' && p[i] <= '9' ) ||
+            p[i] == '-' || p[i] == '\'' ) wordPos[ wordPosCount ].word[ c++ ] = p[ i ];
+      }
+      wordPos[ wordPosCount ].word[ c++ ] = 0;
+
+      // Is the mouse over this word?
+      int tx = ((Window*)parent)->getSDLHandler()->mouseX - getX() - parent->getX();
+      int ty = ((Window*)parent)->getSDLHandler()->mouseY - getY() - parent->getY() - Window::TOP_HEIGHT;
+      if( wordPos[ wordPosCount ].x <= tx && 
+          wordPos[ wordPosCount ].x + wordPos[ wordPosCount ].w > tx &&
+          wordPos[ wordPosCount ].y <= ty && 
+          wordPos[ wordPosCount ].y + wordPos[ wordPosCount ].h > ty ) {
+        // FIXME: shouldn't be hard-coded
+        glColor4f( 1, 0, 1, 1 );
+      } else {
+        Color c = coloring[ *p ];
+        glColor4f( c.r, c.g, c.b, c.a );
+      }
+      wordPosCount++;
       p++;
-
-      // FIXME: store keyword found.
-
     } else {
+
+      wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p );
+
       if( theme->getWindowText() ) {
         glColor4f( theme->getWindowText()->r,
                    theme->getWindowText()->g,
@@ -167,7 +202,7 @@ void ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       }
     }
     ((Window*)parent)->getSDLHandler()->texPrint( xp, y, p );
-    xp += ((Window*)parent)->getSDLHandler()->textWidth( p );
+    xp += wordWidth;
     xp += space;
     p = strtok( NULL, " " );
   }
@@ -193,6 +228,11 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
       innerDrag = (selectedLine != -1);
       innerDragX = x;
       innerDragY = y;
+
+      if( handler ) {
+        int index = getWordPos( x, y );
+        if( index > -1 ) handler->wordClicked( wordPos[ index ].word );
+      }
     }
     break;
   }
@@ -204,6 +244,20 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
     scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
   }
   return false;
+}
+
+int ScrollingLabel::getWordPos( int x, int y ) {
+  int tx = x - getX();
+  int ty = y - getY();
+  //cerr << "wordPosCount=" << wordPosCount << " x=" << tx << " y=" << ty << endl;
+  for( int i = 0; i < wordPosCount; i++ ) {
+    //cerr << "\ti=" << i << " x=" << wordPos[ i ].x << " y=" << wordPos[ i ].y << endl;
+    if( wordPos[ i ].x <= tx && wordPos[ i ].x + wordPos[ i ].w > tx &&
+        wordPos[ i ].y <= ty && wordPos[ i ].y + wordPos[ i ].h > ty ) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 void ScrollingLabel::removeEffects(Widget *parent) {
