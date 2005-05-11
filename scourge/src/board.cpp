@@ -113,8 +113,10 @@ Board::Board(Session *session) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
 
-      strcpy( keyphrase, strtok( line, "," ) );
-      strcpy( answer, strtok( NULL, "," ) );
+      // find the first comma
+      char *p = strchr( line, ',' );
+      strcpy( answer, p + 1 );
+      strcpy( keyphrase, strtok( line, "," ) );     
 
       // Read lines that end with a \.
       while( line[ strlen( line ) - 1 ] == '\\' ) {

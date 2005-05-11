@@ -32,7 +32,7 @@
 #include "gui/widgetview.h"
 #include "gui/scrollinglabel.h"
 
-class ConversationGui {
+class ConversationGui : public WordClickedHandler {
 
  private:
   Scourge *scourge;
@@ -41,10 +41,7 @@ class ConversationGui {
 
   Label *label;
   ScrollingLabel *answer;
-  int keyPhraseCount;
-  char **keyPhrases;
-  ScrollingList *keyPhraseList;
-  Button *talkButton, *closeButton;
+  Button *closeButton;
   
  public:
   ConversationGui(Scourge *scourge);
@@ -55,6 +52,8 @@ class ConversationGui {
   inline Creature *getCreature() { return creature; }
   void start(Creature *creature);
   inline Window *getWindow() { return win; }
+
+  void wordClicked( char *word );
 };
 
 #endif
