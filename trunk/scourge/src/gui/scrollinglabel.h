@@ -41,6 +41,7 @@ public:
   }
 
   virtual void wordClicked( char *word ) = 0;
+  virtual void showingWord( char *word ) = 0;
 };
 
 class ScrollingLabel : public Widget {

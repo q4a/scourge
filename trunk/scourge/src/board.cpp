@@ -114,14 +114,20 @@ Board::Board(Session *session) {
       n = Constants::readLine(line, fp);
 
       // find the first comma
+      char last = line[ strlen( line ) - 1 ];
       char *p = strchr( line, ',' );
       strcpy( answer, p + 1 );
       strcpy( keyphrase, strtok( line, "," ) );     
 
       // Read lines that end with a \.
-      while( line[ strlen( line ) - 1 ] == '\\' ) {
+      int r = strlen( answer ) - 1;
+      while( last == '\\' ) {
+        answer[ r ] = ' ';
+        answer[ r + 1 ] = n;
+        answer[ r + 2 ] = '\0';
         n = Constants::readLine(line, fp);
         strcat( answer, line );
+        last = line[ strlen( line ) - 1 ];
       }
 
       string ks = keyphrase;

@@ -29,7 +29,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::CONVERSATION_GUI_TITLE) );
 
   label = win->createLabel( 10, 13, "Talking to " );
-  answer = new ScrollingLabel( 10, 20, width - 20, 100, "" );
+  answer = new ScrollingLabel( 10, 20, width - 150, 100, "" );
   answer->setWordClickedHandler( this );
   Color color;
   color.r = 1;
@@ -38,6 +38,14 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   color.a = 1;
   answer->addColoring( '$', color );
   win->addWidget( answer );
+
+  list = new ScrollingList( width - 120, 20, 100, 100, scourge->getShapePalette()->getHighlightTexture() );
+  win->addWidget( list );
+  words = (char**)malloc(MAX_WORDS * sizeof(char*));
+  for(int i = 0; i < MAX_WORDS; i++) {
+    words[i] = (char*)malloc(120 * sizeof(char));
+  }
+  wordCount = 0;
 
   x = 10;
   y = 140;
@@ -48,6 +56,10 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
 ConversationGui::~ConversationGui() {
   delete win;
+  for( int i = 0; i < MAX_WORDS; i++ ) {
+    free( words[i] );
+  }
+  free( words );
 }
 
 bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
@@ -70,7 +82,33 @@ void ConversationGui::start(Creature *creature) {
 }
 
 void ConversationGui::wordClicked( char *word ) {
-  cerr << "Clicked: " << word << endl;
+  //cerr << "Clicked: " << word << endl;
   answer->setText( Mission::getAnswer( word ) );
+
+  for( int i = 0; i < wordCount; i++ ) {
+    if( !strcmp( words[i], word ) ) {
+      // delete it
+      for( int t = i; t < wordCount - 1; i++ ) {
+        strcpy( words[t], words[t + 1] );
+        wordCount--;
+      }
+      list->setLines( wordCount, (const char**)words );
+      return;
+    }
+  }
 }
+
+void ConversationGui::showingWord( char *word ) {
+  for( int i = 0; i < wordCount; i++ ) {
+    if( !strcmp( words[i], word ) ) {
+      return;
+    }
+  }
+  // add new word
+  if( wordCount < MAX_WORDS ) {
+    strcpy( words[ wordCount++ ], word );
+    list->setLines( wordCount, (const char**)words );
+  }
+}
+
 

@@ -42,6 +42,10 @@ class ConversationGui : public WordClickedHandler {
   Label *label;
   ScrollingLabel *answer;
   Button *closeButton;
+  ScrollingList *list;
+  char **words;
+  int wordCount;
+  static const int MAX_WORDS = 1000;
   
  public:
   ConversationGui(Scourge *scourge);
@@ -54,6 +58,7 @@ class ConversationGui : public WordClickedHandler {
   inline Window *getWindow() { return win; }
 
   void wordClicked( char *word );
+  void showingWord( char *word );
 };
 
 #endif
