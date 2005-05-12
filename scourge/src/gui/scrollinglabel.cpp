@@ -188,6 +188,7 @@ void ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       }
       wordPosCount++;
       p++;
+      if( handler ) handler->showingWord( p );
     } else {
 
       wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p );
