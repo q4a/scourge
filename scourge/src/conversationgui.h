@@ -46,6 +46,7 @@ class ConversationGui : public WordClickedHandler {
   char **words;
   int wordCount;
   static const int MAX_WORDS = 1000;
+  TextField *entry;
   
  public:
   ConversationGui(Scourge *scourge);

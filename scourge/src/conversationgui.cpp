@@ -21,7 +21,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
 
   int width = 500;
-  int height = 200;
+  int height = 190;
 
   int x = (scourge->getSDLHandler()->getScreen()->w - width) / 2;
   int y = (scourge->getSDLHandler()->getScreen()->h - height) / 2;
@@ -39,7 +39,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   answer->addColoring( '$', color );
   win->addWidget( answer );
 
-  list = new ScrollingList( width - 120, 20, 100, 100, scourge->getShapePalette()->getHighlightTexture() );
+  list = new ScrollingList( width - 130, 20, 120, 100, scourge->getShapePalette()->getHighlightTexture() );
   win->addWidget( list );
   words = (char**)malloc(MAX_WORDS * sizeof(char*));
   for(int i = 0; i < MAX_WORDS; i++) {
@@ -47,8 +47,12 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   }
   wordCount = 0;
 
-  x = 10;
-  y = 140;
+  win->createLabel( 12, 140, "Talk about:" );
+  entry = new TextField( 90, 130, 25 );
+  win->addWidget( entry );
+
+  x = width - 110;
+  y = 130;
   closeButton = win->createButton( x, y, x + 100, y + 20, "Close" );
 
   win->setVisible( false );
@@ -66,6 +70,15 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   if( widget == win->closeButton || 
       widget == closeButton ) {
     win->setVisible(false);
+  } else if( widget == list ) {
+    int index = list->getSelectedLine();
+    if( index > -1 ) {
+      wordClicked( words[ index ] );
+    }
+  } else if( widget == entry && 
+             entry->getEventType() == TextField::EVENT_ACTION ) {
+    wordClicked( entry->getText() );
+    entry->clearText();
   }
   return false;
 }
@@ -88,10 +101,10 @@ void ConversationGui::wordClicked( char *word ) {
   for( int i = 0; i < wordCount; i++ ) {
     if( !strcmp( words[i], word ) ) {
       // delete it
-      for( int t = i; t < wordCount - 1; i++ ) {
+      for( int t = i; t < wordCount - 1; t++ ) {
         strcpy( words[t], words[t + 1] );
-        wordCount--;
       }
+      wordCount--;
       list->setLines( wordCount, (const char**)words );
       return;
     }

@@ -186,9 +186,9 @@ void ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
         Color c = coloring[ *p ];
         glColor4f( c.r, c.g, c.b, c.a );
       }
+      if( handler ) handler->showingWord( wordPos[ wordPosCount ].word );
       wordPosCount++;
       p++;
-      if( handler ) handler->showingWord( p );
     } else {
 
       wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p );
