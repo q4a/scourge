@@ -120,8 +120,9 @@ Board::Board(Session *session) {
       strcpy( keyphrase, strtok( line, "," ) );     
 
       // Read lines that end with a \.
-      int r = strlen( answer ) - 1;
+      int r;
       while( last == '\\' ) {
+        r = strlen( answer ) - 1;
         answer[ r ] = ' ';
         answer[ r + 1 ] = n;
         answer[ r + 2 ] = '\0';
