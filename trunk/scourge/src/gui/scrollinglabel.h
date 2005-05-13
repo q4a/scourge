@@ -120,7 +120,7 @@ class ScrollingLabel : public Widget {
   inline void setCanGetFocus(bool b) { this->canGetFocusVar = b; }
 
  private:
-   void printLine( Widget *parent, int x, int y, char *s );
+   char *printLine( Widget *parent, int x, int y, char *s );
    int getWordPos( int x, int y );
   //  void selectLine(int x, int y);
   //  void drawIcon( int x, int y, GLuint icon );

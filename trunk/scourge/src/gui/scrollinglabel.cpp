@@ -98,6 +98,15 @@ void ScrollingLabel::drawWidget(Widget *parent) {
 
     //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
     int ypos;
+
+    ypos = textPos + 15;
+    char *p = text;
+    while( p && *p ) {
+      p = printLine( parent, scrollerWidth + 5, ypos, p );
+      ypos += 15;
+    }
+
+    /*
     for(int i = 0; i < (int)lines.size(); i++) {
       ypos = textPos + (i + 1) * 15;
       // writing text is expensive, only print what's visible
@@ -105,6 +114,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
         printLine( parent, scrollerWidth + 5, ypos, (char*)lines[i].c_str() );
       }
     }
+    */
     //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
         
     glDisable( GL_SCISSOR_TEST );
@@ -142,15 +152,28 @@ void ScrollingLabel::drawWidget(Widget *parent) {
   glLineWidth( 1.0f );
 }
 
-// FIXME: this could be used to delimit lines also. It's more exact...
-void ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
+char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
   GuiTheme *theme = ((Window*)parent)->getTheme();
   int xp = x;
   
-  char *tmp = strdup( s );
-  char *p = strtok( tmp, " " );
+//  char *tmp = strdup( s );
+//  char *p = strtok( tmp, " " );
+
+
   int space = ((Window*)parent)->getSDLHandler()->textWidth( " " );
-  while( p ) {
+  char *wordEnd = strpbrk( s, " |" );  
+  char *p = s;
+  char tmp;
+  while( p && *p ) {
+
+    // create word starting at p
+    if( wordEnd ) {
+      tmp = *wordEnd;
+      *wordEnd = 0;
+    } else {
+      tmp = 0;
+    }
+
     int wordWidth;
     if( coloring.find( *p ) != coloring.end() ) {
       
@@ -202,12 +225,35 @@ void ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
         applyColor();
       }
     }
+
+    //cerr << "wordWidth=" << wordWidth << " xp=" << xp << " p=" << p << endl;
+
+    if( xp + wordWidth > getWidth() ) {
+      *wordEnd = tmp;
+      return p;
+    }
     ((Window*)parent)->getSDLHandler()->texPrint( xp, y, p );
+
+    // move caret
     xp += wordWidth;
     xp += space;
-    p = strtok( NULL, " " );
+
+    // move p past word end
+    if( !tmp ) return NULL;
+    *wordEnd = tmp;
+    p = wordEnd;
+
+    // end of line?
+    if( *p == '|' ) return p + 1;
+
+    // skip space
+    p++;
+
+    // find end of new word
+    wordEnd = strpbrk( p, " |" );
   }
-  free( tmp );
+//  free( tmp );
+  return NULL;
 }
 
 bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
