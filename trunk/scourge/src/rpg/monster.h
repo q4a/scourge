@@ -63,6 +63,7 @@ public:
   ~Monster();
 
   static map<string, map<int, vector<string>*>*> soundMap;
+  static map<string, Monster*> npcPos;
 
   inline float getScale() { return scale; }
   inline int getBaseArmor() { return baseArmor; }

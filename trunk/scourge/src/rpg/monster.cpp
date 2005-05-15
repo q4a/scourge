@@ -26,6 +26,7 @@ map<string, map<int, vector<string>*>*> Monster::soundMap;
 map<int, vector<string>*>* Monster::currentSoundMap;
 vector<string> Monster::monsterTypes;
 vector<Monster*> Monster::npcs;
+map<string, Monster*> Monster::npcPos;
 
 Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc) {
   this->type = type;
@@ -105,9 +106,20 @@ void Monster::initMonsters() {
         scale = atof(p);
       }
       bool npc = false;
+      int npcStartX = -1;
+      int npcStartY = -1;
       p = strtok(NULL, ",");
-      if(p) npc = true;
-
+      if(p) {
+        npc = true;
+        p = strtok( NULL, "," );
+        if(p) {
+          npcStartX = atoi(p);
+          p = strtok( NULL, "," );
+          if(p) {
+            npcStartY = atoi(p);
+          }
+        }
+      }
 
       /*
       cerr << "adding monster: " << name << " level: " << level << 
@@ -123,7 +135,14 @@ void Monster::initMonsters() {
                                 scale, npc );
       last_monster = m;
       if( npc ) {
-        npcs.push_back( m );
+        if( npcStartX > -1 && npcStartY > -1 ) {
+          char tmp[80];
+          sprintf( tmp, "%d,%d", npcStartX, npcStartY );
+          string pos = tmp;
+          npcPos[ pos ] = m;
+        } else {
+          npcs.push_back( m );
+        }
       } else {
         vector<Monster*> *list = NULL;
         if(monsters.find(level) == monsters.end()) {
@@ -133,9 +152,9 @@ void Monster::initMonsters() {
           list = monsters[level];
         }
         list->push_back(last_monster);
-        string s = name;
-        monstersByName[s] = m;
       }
+      string s = name;
+      monstersByName[s] = m;
 
       // store type and add sounds
       string typeStr = m->getModelName();

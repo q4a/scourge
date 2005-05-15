@@ -20,9 +20,14 @@
 #include "creature.h"
 #include "session.h"
 
+vector<string> NpcConversation::npc_intros;
+vector<string> NpcConversation::npc_unknownPhrases;
+map<string, string> NpcConversation::npc_conversations;
+
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
 map<string, string> Mission::conversations;
+map<Monster*,NpcConversation*> Mission::npcConversations;
 
 //#define DEBUG_MODE 1
 	
@@ -47,6 +52,7 @@ Board::Board(Session *session) {
   Mission *current_mission = NULL;
   char name[255], line[255], description[2000], 
     success[2000], failure[2000], keyphrase[80],answer[4000];
+  Monster *currentNpc = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
     if( n == 'M' ) {
@@ -113,23 +119,7 @@ Board::Board(Session *session) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
 
-      // find the first comma
-      char last = line[ strlen( line ) - 1 ];
-      char *p = strchr( line, ',' );
-      strcpy( answer, p + 1 );
-      strcpy( keyphrase, strtok( line, "," ) );     
-
-      // Read lines that end with a \.
-      int r;
-      while( last == '\\' ) {
-        r = strlen( answer ) - 1;
-        answer[ r ] = ' ';
-        answer[ r + 1 ] = n;
-        answer[ r + 2 ] = '\0';
-        n = Constants::readLine(line, fp);
-        strcat( answer, line );
-        last = line[ strlen( line ) - 1 ];
-      }
+      n = readConversationLine( fp, line, keyphrase, answer, n );
 
       string ks = keyphrase;
       string as = answer;
@@ -141,11 +131,65 @@ Board::Board(Session *session) {
       } else {
         Mission::conversations[ ks ] = as;
       }
+
+    } else if( n == 'P' ) {    
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      currentNpc = Monster::getMonsterByName( line );
+
+    } else if( n == 'V' && currentNpc ) {    
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+
+      n = readConversationLine( fp, line, keyphrase, answer, n );
+
+      string ks = keyphrase;
+      string as = answer;
+
+      NpcConversation *npcConv;
+      if( Mission::npcConversations.find( currentNpc ) == Mission::npcConversations.end() ) {
+        npcConv = new NpcConversation();
+        Mission::npcConversations[ currentNpc ] = npcConv;
+      } else {
+        npcConv = Mission::npcConversations[ currentNpc ];
+      }
+
+      if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
+        npcConv->npc_intros.push_back( as );
+      } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
+        npcConv->npc_unknownPhrases.push_back( as );
+      } else {
+        npcConv->npc_conversations[ ks ] = as;
+      }
+
     } else {
       n = Constants::readLine(line, fp);
     }
   }
   fclose(fp);
+}
+
+int Board::readConversationLine( FILE *fp, char *line,
+                                 char *keyphrase, char *answer,
+                                 int n ) {
+  // find the first comma
+  char last = line[ strlen( line ) - 1 ];
+  char *p = strchr( line, ',' );
+  strcpy( answer, p + 1 );
+  strcpy( keyphrase, strtok( line, "," ) );     
+
+  // Read lines that end with a \.
+  int r;
+  while( last == '\\' ) {
+    r = strlen( answer ) - 1;
+    answer[ r ] = ' ';
+    answer[ r + 1 ] = n;
+    answer[ r + 2 ] = '\0';
+    n = Constants::readLine(line, fp);
+    strcat( answer, line );
+    last = line[ strlen( line ) - 1 ];
+  }
+  return n;
 }
 
 Board::~Board() {
@@ -507,6 +551,30 @@ char *Mission::getAnswer( char *keyphrase ) {
     return (char*)(conversations[ ks ].c_str());
   } else {
     return (char*)(unknownPhrases[ (int)( (float)( unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
+  }
+}
+
+char *Mission::getIntro( Monster *npc ) {
+  if( npcConversations.find( npc ) == npcConversations.end() ) {
+    //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
+    return NULL;
+  }
+  NpcConversation *nc = npcConversations[ npc ];
+  return (char*)(nc->npc_intros[ (int)( (float)( nc->npc_intros.size() ) * rand()/RAND_MAX ) ].c_str());
+}
+
+char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
+  if( npcConversations.find( npc ) == npcConversations.end() ) {
+    cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
+    return NULL;
+  }
+  NpcConversation *nc = npcConversations[ npc ];
+
+  string ks = keyphrase;
+  if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
+    return (char*)(nc->npc_conversations[ ks ].c_str());
+  } else {
+    return (char*)(nc->npc_unknownPhrases[ (int)( (float)( nc->npc_unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
   }
 }
 

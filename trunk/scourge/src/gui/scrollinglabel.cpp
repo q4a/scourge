@@ -56,16 +56,10 @@ void ScrollingLabel::setText( char *s ) {
 
   lineWidth = ( w - scrollerWidth - 20 ) / 8;
 
-  // break text into a list
-  lines.clear();
-  breakText( text, lineWidth, &lines );
+  willSetScrollerHeight = true;
+  listHeight = 0;
+  scrollerHeight = 20;
 
-  listHeight = lines.size() * 15 + 5;
-  scrollerHeight = (listHeight <= getHeight() ? 
-					getHeight() : 
-					(getHeight() * getHeight()) / listHeight);
-  // set a min. height for scrollerHeight
-  if(scrollerHeight < 20) scrollerHeight = 20;
   // reset the scroller
   value = scrollerY = 0;
 }
@@ -99,22 +93,24 @@ void ScrollingLabel::drawWidget(Widget *parent) {
     //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
     int ypos;
 
+    int lineCount = 0;
     ypos = textPos + 15;
     char *p = text;
     while( p && *p ) {
       p = printLine( parent, scrollerWidth + 5, ypos, p );
       ypos += 15;
+      lineCount++;
     }
 
-    /*
-    for(int i = 0; i < (int)lines.size(); i++) {
-      ypos = textPos + (i + 1) * 15;
-      // writing text is expensive, only print what's visible
-      if(ypos >= 0 && ypos < getHeight()) {
-        printLine( parent, scrollerWidth + 5, ypos, (char*)lines[i].c_str() );
-      }
+    if( willSetScrollerHeight ) {
+      willSetScrollerHeight = 0;
+      listHeight = lineCount * 15 + 5;
+      scrollerHeight = (listHeight <= getHeight() ? 
+                        getHeight() : 
+                        (getHeight() * getHeight()) / listHeight);
+      // set a min. height for scrollerHeight
+      if(scrollerHeight < 20) scrollerHeight = 20;
     }
-    */
     //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
         
     glDisable( GL_SCISSOR_TEST );
@@ -163,6 +159,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
   int space = ((Window*)parent)->getSDLHandler()->textWidth( " " );
   char *wordEnd = strpbrk( s, " |" );  
   char *p = s;
+  char *word;
   char tmp;
   while( p && *p ) {
 
@@ -175,9 +172,8 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
     }
 
     int wordWidth;
-    if( coloring.find( *p ) != coloring.end() ) {
-      
-      // ignore the lead char.
+    if( coloring.find( *p ) != coloring.end() ) {      
+
       wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p + 1 );
 
       // store word pos for lookup on click
@@ -211,7 +207,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       }
       if( handler ) handler->showingWord( wordPos[ wordPosCount ].word );
       wordPosCount++;
-      p++;
+      word = p + 1;
     } else {
 
       wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p );
@@ -224,15 +220,17 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       } else {
         applyColor();
       }
+
+      word = p;
     }
 
     //cerr << "wordWidth=" << wordWidth << " xp=" << xp << " p=" << p << endl;
 
     if( xp + wordWidth > getWidth() ) {
-      *wordEnd = tmp;
+      if( tmp ) *wordEnd = tmp;
       return p;
     }
-    ((Window*)parent)->getSDLHandler()->texPrint( xp, y, p );
+    ((Window*)parent)->getSDLHandler()->texPrint( xp, y, word );
 
     // move caret
     xp += wordWidth;
