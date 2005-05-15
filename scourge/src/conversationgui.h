@@ -38,7 +38,7 @@ class ConversationGui : public WordClickedHandler {
   Scourge *scourge;
   Creature *creature;
   Window *win;
-
+  bool useCreature;
   Label *label;
   ScrollingLabel *answer;
   Button *closeButton;

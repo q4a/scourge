@@ -51,8 +51,14 @@ class ScrollingList : public Widget {
   GLuint highlight;
   bool canGetFocusVar;
   int lineHeight;
+  int eventType;
 
  public: 
+
+   enum {
+     EVENT_DRAG=0,
+     EVENT_ACTION
+   };
 
    bool debug;
 
@@ -67,6 +73,8 @@ class ScrollingList : public Widget {
   void setSelectedLine(int n);
 
   void drawWidget(Widget *parent);
+
+  inline int getEventType() { return eventType; }
 
   /**
 	 Return true, if the event activated this widget. (For example, button push, etc.)

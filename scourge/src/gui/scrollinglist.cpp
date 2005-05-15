@@ -236,6 +236,7 @@ void ScrollingList::selectLine(int x, int y) {
 }
 
 bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
+  eventType = EVENT_ACTION;
 	inside = (x >= getX() && x < getX() + scrollerWidth &&
 						y >= getY() + scrollerY && y < getY() + scrollerY + scrollerHeight);
 	switch(event->type) {
@@ -277,6 +278,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 			selectLine(x, y);
 			if(dragAndDropHandler) dragAndDropHandler->receive(this);
 		}
+    eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
 		innerDrag = false;
 		dragging = false;
 		return isInside(x, y);

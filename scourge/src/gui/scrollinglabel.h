@@ -57,6 +57,7 @@ class ScrollingLabel : public Widget {
   int value;
   int scrollerWidth, scrollerHeight;
   int listHeight;
+  bool willSetScrollerHeight;
   float alpha, alphaInc;
   GLint lastTick;
   bool inside;

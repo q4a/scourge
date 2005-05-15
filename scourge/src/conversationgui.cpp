@@ -70,7 +70,8 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   if( widget == win->closeButton || 
       widget == closeButton ) {
     win->setVisible(false);
-  } else if( widget == list ) {
+  } else if( widget == list && 
+             list->getEventType() == ScrollingList::EVENT_ACTION ) {
     int index = list->getSelectedLine();
     if( index > -1 ) {
       wordClicked( words[ index ] );
@@ -90,13 +91,24 @@ void ConversationGui::start(Creature *creature) {
   char tmp[ 80 ];
   sprintf( tmp, "Talking to %s", creature->getName() );
   label->setText( tmp );
-  answer->setText( Mission::getIntro() );
+  char *s = Mission::getIntro( creature->getMonster() );
+  useCreature = ( s ? true : false );
+  if( !s ) {
+    s = Mission::getIntro();
+  }
+  answer->setText( s );
   win->setVisible( true );
+  wordCount = 0;
+  list->setLines( wordCount, (const char**)words );
 }
 
 void ConversationGui::wordClicked( char *word ) {
   //cerr << "Clicked: " << word << endl;
-  answer->setText( Mission::getAnswer( word ) );
+  if( useCreature ) {
+    answer->setText( Mission::getAnswer( creature->getMonster(), word ) );
+  } else {
+    answer->setText( Mission::getAnswer( word ) );
+  }
 
   for( int i = 0; i < wordCount; i++ ) {
     if( !strcmp( words[i], word ) ) {

@@ -20,12 +20,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <map>
 #include "constants.h"
 #include "map.h"
 #include "creature.h"
 #include "shapepalette.h"
 #include "board.h"
 #include "gui/progress.h"
+
+using namespace std;
 
 // forward decl.
 class Map;

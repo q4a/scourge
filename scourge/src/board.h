@@ -39,6 +39,19 @@ class Board;
 #define BOARD_GUI_WIDTH 400
 #define BOARD_GUI_HEIGHT 400
 
+class NpcConversation {
+  public:
+
+    NpcConversation() {
+    }
+
+    ~NpcConversation() {
+    }
+
+    static vector<string> npc_intros;
+    static vector<string> npc_unknownPhrases;
+    static map<string, string> npc_conversations;    
+};
 
 class Mission {
 private:
@@ -65,9 +78,12 @@ public:
   static vector<string> intros;
   static vector<string> unknownPhrases;
   static map<string, string> conversations;
+  static map<Monster*,NpcConversation*> npcConversations;
 
   static char *getIntro();
   static char *getAnswer( char *keyphrase );
+  static char *getIntro( Monster *npc );
+  static char *getAnswer( Monster *npc, char *keyphrase );
 
 
   Mission( Board *board, int level, int depth, 
@@ -167,7 +183,7 @@ public:
 
   Board(Session *session);
   virtual ~Board();
-  
+
   void initMissions();
   void reset();
 
@@ -180,7 +196,9 @@ public:
 
  private:
   void freeListText();
-  
+  int readConversationLine( FILE *fp, char *line,
+                            char *keyphrase, char *answer,
+                            int n );  
 };
 
 #endif
