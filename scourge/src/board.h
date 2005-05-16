@@ -48,9 +48,9 @@ class NpcConversation {
     ~NpcConversation() {
     }
 
-    static vector<string> npc_intros;
-    static vector<string> npc_unknownPhrases;
-    static map<string, string> npc_conversations;    
+    vector<string> npc_intros;
+    vector<string> npc_unknownPhrases;
+    map<string, string> npc_conversations;    
 };
 
 class Mission {
