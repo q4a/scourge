@@ -546,7 +546,9 @@ void SDLHandler::drawScreen() {
                    shapePal->cursor_texture :
                    ( cursorMode == CURSOR_ATTACK ?
                      shapePal->attack_texture :
-                     shapePal->crosshair_texture ) );
+                     ( cursorMode == CURSOR_TALK ?
+                       shapePal->talk_texture :
+                       shapePal->crosshair_texture ) ) );
     glColor4f(1, 1, 1, 1);
     glBegin( GL_QUADS );
     glNormal3f( 0, 0, 1 );

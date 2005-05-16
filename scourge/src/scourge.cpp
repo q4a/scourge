@@ -3234,7 +3234,8 @@ void Scourge::checkForInfo() {
 
   // change cursor when over a hostile creature
   if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
-      sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ) {
+      sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
+      sdlHandler->getCursorMode() == SDLHandler::CURSOR_TALK ) {
     bool handled = false;
     mapx = cursorMapX;
     mapy = cursorMapY;
@@ -3244,7 +3245,9 @@ void Scourge::checkForInfo() {
       if( pos && 
           pos->creature && 
           party->getPlayer()->canAttack( pos->creature ) ) {
-        sdlHandler->setCursorMode( SDLHandler::CURSOR_ATTACK );
+        sdlHandler->setCursorMode( pos->creature->getMonster()->isNpc() ?
+                                   SDLHandler::CURSOR_TALK :
+                                   SDLHandler::CURSOR_ATTACK );
         handled = true;
       }
     }

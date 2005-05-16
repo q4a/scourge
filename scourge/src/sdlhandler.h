@@ -110,7 +110,8 @@ public:
   enum {
     CURSOR_NORMAL=0,
     CURSOR_CROSSHAIR,
-    CURSOR_ATTACK
+    CURSOR_ATTACK,
+    CURSOR_TALK
   };  
 
   SDLHandler(ShapePalette *shapePal);
