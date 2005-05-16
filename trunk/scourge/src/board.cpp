@@ -20,10 +20,6 @@
 #include "creature.h"
 #include "session.h"
 
-vector<string> NpcConversation::npc_intros;
-vector<string> NpcConversation::npc_unknownPhrases;
-map<string, string> NpcConversation::npc_conversations;
-
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
 map<string, string> Mission::conversations;
@@ -136,7 +132,6 @@ Board::Board(Session *session) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
       currentNpc = Monster::getMonsterByName( line );
-
     } else if( n == 'V' && currentNpc ) {    
       fgetc(fp);
       n = Constants::readLine(line, fp);
@@ -550,6 +545,7 @@ char *Mission::getAnswer( char *keyphrase ) {
   if( conversations.find( ks ) != conversations.end() ) {
     return (char*)(conversations[ ks ].c_str());
   } else {
+    cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
     return (char*)(unknownPhrases[ (int)( (float)( unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
   }
 }
@@ -574,6 +570,7 @@ char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
   if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
     return (char*)(nc->npc_conversations[ ks ].c_str());
   } else {
+    cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
     return (char*)(nc->npc_unknownPhrases[ (int)( (float)( nc->npc_unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
   }
 }
