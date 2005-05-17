@@ -120,6 +120,8 @@ public:
     return ( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() );
   }
 
+  void deleteItemMonsterInstances();
+
   inline bool isCompleted() { return completed; }
   inline void setCompleted( bool b ) { completed = b; }
   inline char *getName() { return name; }

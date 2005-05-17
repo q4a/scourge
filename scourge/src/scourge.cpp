@@ -26,7 +26,7 @@
 
 #define INFO_INTERVAL 3000
 
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -345,6 +345,10 @@ void Scourge::startMission() {
     
     // delete active projectiles
     Projectile::resetProjectiles();
+
+    // delete the mission level's item and monster instances
+    if( session->getCurrentMission() ) 
+      session->getCurrentMission()->deleteItemMonsterInstances();
 
     session->deleteCreaturesAndItems(true);
 
@@ -1041,7 +1045,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
       getMap()->refresh();
-    } else if(event->key.keysym.sym == SDLK_c && 
+    } else if(event->key.keysym.sym == SDLK_r && 
               getSession()->getCurrentMission() && 
               !getSession()->getCurrentMission()->isCompleted()) {
       getSession()->getCurrentMission()->setCompleted( true );

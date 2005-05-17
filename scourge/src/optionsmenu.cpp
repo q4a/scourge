@@ -89,8 +89,8 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   y += SPACING + MINOR_SPACING;
   turnBasedBattle = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Is battle turn-based?", GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  alwaysShowPath = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show path in TB battle?", GAME_SETTINGS);
-  y += SPACING + MINOR_SPACING;
+  //alwaysShowPath = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show path in TB battle?", GAME_SETTINGS);
+  //y += SPACING + MINOR_SPACING;
   tooltipEnabled = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show tooltips", GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
   tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 200, "Tooltip Delay:");
@@ -153,7 +153,7 @@ void OptionsMenu::loadGameSettings(){
     keepMapSize->setCheck(uc->getKeepMapSize());
     frameOnFullScreen->setCheck(uc->getFrameOnFullScreen());
     turnBasedBattle->setCheck(uc->isBattleTurnBased());
-    alwaysShowPath->setCheck(uc->getAlwaysShowPath());
+//    alwaysShowPath->setCheck(uc->getAlwaysShowPath());
     musicVolume->setValue(scourge->getUserConfiguration()->getMusicVolume());
     effectsVolume->setValue(scourge->getUserConfiguration()->getEffectsVolume());
     tooltipEnabled->setCheck(uc->getTooltipEnabled());

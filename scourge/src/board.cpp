@@ -247,12 +247,17 @@ void Board::initMissions() {
   float ave = ((float)sum / (float)session->getParty()->getPartySize() / 1.0f);
 
   // remove the storyline missions
-  for(vector<Mission*>::iterator e = availableMissions.begin(); e != availableMissions.end(); ++e) {
-    Mission *mission = *e;
+  for( int i = 0; i < (int)availableMissions.size(); i++ ) {
+    Mission *mission = availableMissions[ i ];
     if( mission->isStoryLine() ) {
-      availableMissions.erase( e );
+      // move the last element over the current storyline element
+      availableMissions[ i ] = availableMissions[ availableMissions.size() - 1 ];
+      availableMissions.pop_back();
+      // re-examine the current element
+      i--;
     }
   }
+
   // add the current storyline mission
   if( storylineMissions[ storylineIndex ]->getLevel() <= highest )
     availableMissions.push_back( storylineMissions[ storylineIndex ] );
@@ -410,11 +415,6 @@ void MissionTemplate::parseText( Session *session, int level,
         // FIXME: also copy text before and after the variable
         strcat( parsedText, item->getName() );
       } else if( strstr( varName, "creature" ) ) {
-
-        // FIXME: must ensure that there is only 1 such monster on this level!
-        // Either that or the mission monster must be marked somehow. (outline?)
-        // Items don't matter they're on pedestals.
-
         string s = varName;
         Monster *monster = NULL;
         if( creatures->find( s ) == creatures->end() ) {
@@ -475,10 +475,14 @@ Mission::~Mission() {
 }
 
 bool Mission::itemFound(Item *item) {
+//  cerr << "completed=" << completed << endl;
   if( !completed ) {
+    //cerr << "\titemInstanceMap.size()=" << itemInstanceMap.size() << endl;
     if( itemInstanceMap.find( item ) != itemInstanceMap.end() ) {
+      //cerr << "\t111" << endl;
       RpgItem *rpgItem = itemInstanceMap[ item ];
       if( items.find( rpgItem ) != items.end() ) {
+        //cerr << "\t222" << endl;
         items[ rpgItem ] = true;
         checkMissionCompleted();
       }
@@ -504,15 +508,21 @@ bool Mission::creatureSlain(Creature *creature) {
 
 void Mission::checkMissionCompleted() {
   completed = true;
+//  cerr << "checkMissionCompleted, items" << endl;
   for(map<RpgItem*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
+  //  cerr << "\titem" << i->first->getName() << endl;
     bool b = i->second;
+    //cerr << "\t\tb=" << b << endl;
     if( !b ) {
       completed = false;
       return;
     }
   }
+  //cerr << "checkMissionCompleted, monster" << endl;
   for(map<Monster*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
+    //cerr << "\tmonster" << i->first->getType() << endl;
     bool b = i->second;
+    //cerr << "\t\tb=" << b << endl;
     if( !b ) {
       completed = false;
       return;
@@ -532,6 +542,10 @@ void Mission::reset() {
     Monster *monster = i->first;
     creatures[ monster ] = false;
   }
+  deleteItemMonsterInstances();
+}
+
+void Mission::deleteItemMonsterInstances() {
   itemInstanceMap.clear();
   monsterInstanceMap.clear();
 }
