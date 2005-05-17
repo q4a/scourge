@@ -1174,8 +1174,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
 
 void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal, 
                                             bool preGenerated, int locationIndex) {
-  // add mission objects 
-  if(mission && !stairsDown) {
+  if(mission && !mission->isCompleted() && !stairsDown) {
 
     // mission objects are on a pedestal
     // and they are blocking so creatures can't get them
