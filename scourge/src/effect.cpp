@@ -424,10 +424,10 @@ void Effect::drawRing(bool proceed) {
   for(int i = 0; i < 2; i++) {
     glPushMatrix();
     glRotatef((i == 0 ? ringRotate : -ringRotate), 0, 0, 1);
-    float c = 0.5f;
-    glColor4f((c * rand()/RAND_MAX), 
-              0.7f - (c * rand()/RAND_MAX), 
-              1.0f, 0.35f);
+    float c = 0.15f;
+    glColor4f(0.85f + (c * rand()/RAND_MAX), 
+              1.0f - (c * rand()/RAND_MAX), 
+              1.0f, 0.7f);
     if(ringTex) glBindTexture( GL_TEXTURE_2D, ringTex );
     glScalef( n, n, n );
     glBegin( GL_QUADS );

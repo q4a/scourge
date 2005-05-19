@@ -1057,9 +1057,15 @@ bool Scourge::handleEvent(SDL_Event *event) {
       exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
       party->toggleRound(true);
       exitConfirmationDialog->setVisible(true);
-    } else if(event->key.keysym.sym == SDLK_g) {
+    } else if(event->key.keysym.sym == SDLK_u) {
+      cerr << "EFFECT!" << endl;
 //      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
-      party->startEffect( Constants::EFFECT_EXPLOSION, (Constants::DAMAGE_DURATION * 4));
+
+      levelMap->startEffect( toint(party->getPlayer()->getX()), 
+                             toint(party->getPlayer()->getY()), 1, 
+                             Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
+                             12, 12 );
+
     } else if(event->key.keysym.sym == SDLK_m) {
       Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
       return false;
