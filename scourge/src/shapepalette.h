@@ -83,6 +83,7 @@ class WallTheme {
     THEME_REF_DOOR_NS,
     THEME_REF_PASSAGE_FLOOR,
     THEME_REF_ROOM_FLOOR,
+    THEME_REF_HEADBOARD,
 
     // must be the last one
     THEME_REF_COUNT

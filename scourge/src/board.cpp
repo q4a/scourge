@@ -508,9 +508,9 @@ bool Mission::creatureSlain(Creature *creature) {
 
 void Mission::checkMissionCompleted() {
   completed = true;
-//  cerr << "checkMissionCompleted, items" << endl;
+  //cerr << "checkMissionCompleted, items" << endl;
   for(map<RpgItem*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
-  //  cerr << "\titem" << i->first->getName() << endl;
+    //cerr << "\titem" << i->first->getName() << endl;
     bool b = i->second;
     //cerr << "\t\tb=" << b << endl;
     if( !b ) {
