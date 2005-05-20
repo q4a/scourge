@@ -29,7 +29,8 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "door_ew",
   "door_ns",
   "passage_floor",
-  "room_floor"  
+  "room_floor",
+  "headboard"
 };
 
 WallTheme::WallTheme( char *name, ShapePalette *shapePal ) {
