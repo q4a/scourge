@@ -51,6 +51,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   needToCheckInfo = false;
   needToCheckDropLocation = true;
   nextMission = -1;
+  teleportFailure = false;
   cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   // in HQ map
   inHq = true;
@@ -301,6 +302,9 @@ void Scourge::startMission() {
     // show an info dialog
     if(nextMission == -1) {
       sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
+    } else if( teleportFailure ) {
+      teleportFailure = false;
+      sprintf(infoMessage, "Teleport spell failed!! Entering level %d", ( currentStory + 1 ));
     } else {
       sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
     }
@@ -355,6 +359,7 @@ void Scourge::startMission() {
     // delete map
     delete dg; dg = NULL;
 
+    cerr << "Mission end: changingStory=" << changingStory << " inHQ=" << inHq << " teleporting=" << teleporting << " nextMission=" << nextMission << endl;
     if(!changingStory) {
       if(!inHq) {
         if(teleporting) {
@@ -1053,10 +1058,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         board->storylineMissionCompleted( getSession()->getCurrentMission() );
       missionCompleted();
     } else if( event->key.keysym.sym == SDLK_t ) {
-      teleporting = true;
-      exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
-      party->toggleRound(true);
-      exitConfirmationDialog->setVisible(true);
+      teleport();
     } else if(event->key.keysym.sym == SDLK_u) {
       cerr << "EFFECT!" << endl;
 //      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
@@ -1941,39 +1943,39 @@ void Scourge::showExitConfirmationDialog() {
 bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
 
   if(widget == Window::message_button && info_dialog_showing) {
-	party->toggleRound(false);
-	info_dialog_showing = false;
-	party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
+    party->toggleRound(false);
+    info_dialog_showing = false;
+    party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
   }
-
+  
   if(containerGuiCount > 0) {
-	for(int i = 0; i < containerGuiCount; i++) {
-	  if(containerGui[i]->handleEvent(widget, event)) {
-		closeContainerGui(containerGui[i]);
-	  }
-	}
-	//	return false;
-  }
-
-  if(inventory->isVisible()) {
-	inventory->handleEvent(widget, event);
-	//	return false;
-  }
-
-  if(optionsMenu->isVisible()) {
-	optionsMenu->handleEvent(widget, event);
+    for(int i = 0; i < containerGuiCount; i++) {
+      if(containerGui[i]->handleEvent(widget, event)) {
+        closeContainerGui(containerGui[i]);
+      }
+    }
     //	return false;
   }
-
+  
+  if(inventory->isVisible()) {
+    inventory->handleEvent(widget, event);
+    //	return false;
+  }
+  
+  if(optionsMenu->isVisible()) {
+    optionsMenu->handleEvent(widget, event);
+    //	return false;
+  }
+  
   if(netPlay->getWindow()->isVisible()) {
     netPlay->handleEvent(widget, event);
   }
-
+  
   //if(multiplayer->isVisible()) {
-//    multiplayer->handleEvent(widget, event);
-    //return false;
+  //    multiplayer->handleEvent(widget, event);
+  //return false;
   //}
-
+  
   if(infoGui->getWindow()->isVisible()) {
     infoGui->handleEvent(widget, event);
   }
@@ -1987,27 +1989,27 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   int n = handleBoardEvent(widget, event);
   if(n == Board::EVENT_HANDLED) return false;
   else if(n == Board::EVENT_PLAY_MISSION) {
-	int selected = missionList->getSelectedLine();
-	if(selected != -1 && selected < board->getMissionCount()) {
-	  nextMission = selected;
-	  oldStory = currentStory = 0;
-	  endMission();
-	  return true;
-	}
+    int selected = missionList->getSelectedLine();
+    if(selected != -1 && selected < board->getMissionCount()) {
+      nextMission = selected;
+      oldStory = currentStory = 0;
+      endMission();
+      return true;
+    }
   }
   
   if(widget == yesExitConfirm) {
-	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
-	exitConfirmationDialog->setVisible(false);
-	endMission();
-	return true;
+    exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+    exitConfirmationDialog->setVisible(false);
+    endMission();
+    return true;
   } else if(widget == noExitConfirm) {
-	teleporting = false;
-	changingStory = false;
-	currentStory = oldStory;
-	exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
-	exitConfirmationDialog->setVisible(false);
-	return false;
+    teleporting = false;
+    changingStory = false;
+    currentStory = oldStory;
+    exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+    exitConfirmationDialog->setVisible(false);
+    return false;
   }
   return false;
 }
@@ -3354,5 +3356,29 @@ void Scourge::drawInfos() {
 
 void Scourge::createParty( Creature **pc, int *partySize ) { 
   mainMenu->createParty( pc, partySize ); 
+}
+
+void Scourge::teleport( bool toHQ ) {
+  if( toHQ ) {
+    if( !inHq ) {
+      teleporting = true;
+      exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+      party->toggleRound(true);
+      exitConfirmationDialog->setVisible(true);
+    } else {
+      this->showMessageDialog( "This spell has no effect here..." );
+    }
+  } else {
+    // teleport to a random mission
+    teleportFailure = true;
+    changingStory = true;
+    int selected = (int)( (float)( missionList->getLineCount() ) * rand() / RAND_MAX );
+    nextMission = selected;
+    oldStory = currentStory = 0;
+    endMission();
+    exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+    party->toggleRound(true);
+    exitConfirmationDialog->setVisible(true);
+  }
 }
 

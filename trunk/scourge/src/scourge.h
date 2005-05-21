@@ -140,6 +140,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   bool info_dialog_showing;
   Board *board;
   int nextMission;
+  bool teleportFailure;
   bool inHq;
   bool missionWillAwardExpPoints;
   char infoMessage[200];
@@ -647,6 +648,8 @@ public:
   bool handleTargetSelectionOfCreature( Creature *potentialTarget );
   bool handleTargetSelectionOfItem( Item *item, int x=0, int y=0, int z=0 );
   bool handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 mapz );
+
+  void Scourge::teleport( bool toHQ=true );
 
  protected:
 
