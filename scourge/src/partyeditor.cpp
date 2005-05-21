@@ -442,6 +442,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
       pc[i]->addSpell(Spell::getSpellByName("Malice Storm"));
       pc[i]->addSpell(Spell::getSpellByName("Unholy Decimator"));
       pc[i]->addSpell(Spell::getSpellByName("Remove curse"));
+      pc[i]->addSpell(Spell::getSpellByName("Teleportation"));
       pc[i]->setMp( 5000 );
 
     }

@@ -78,6 +78,7 @@ public:
   virtual inline double getFps() { return 0.0f; }
   virtual inline void createParty( Creature **pc, int *partySize ) {}
   virtual inline void setBlendFunc() {}
+  virtual inline void teleport( bool toHQ=true ) {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

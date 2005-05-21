@@ -80,6 +80,8 @@ void SpellCaster::spellFailed() {
       
       battle->getCreature()->setTargetCreature( oldTarget );
     }
+  } else if(!strcasecmp(spell->getName(), "Teleportation")) {
+    battle->getSession()->getGameAdapter()->teleport( false );
   }
 }
 
@@ -154,6 +156,8 @@ void SpellCaster::spellSucceeded() {
     hailAttack();
   } else if(!strcasecmp(spell->getName(), "Unholy Decimator")) {
     causeDamage();
+  } else if(!strcasecmp(spell->getName(), "Teleportation")) {
+    battle->getSession()->getGameAdapter()->teleport();
   } else {
     // default
     cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
