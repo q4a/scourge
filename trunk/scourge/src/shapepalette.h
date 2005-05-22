@@ -215,6 +215,8 @@ public:
   void initialize();
   GLuint loadSystemTexture( char *line );
 
+  void loadNpcPortraits();
+
   inline int getCharacterModelInfoCount() { return character_models.size(); }
   inline CharacterModelInfo *getCharacterModelInfo( int index ) { return character_models[ index ]; }
 

@@ -29,8 +29,12 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::CONVERSATION_GUI_TITLE) );
 
   label = win->createLabel( 10, 13, "Talking to " );
+
   int sy = 130;
-  answer = new ScrollingLabel( 10, sy, width - 150, 160, "" );
+  canvas = new Canvas( width - 130, 5, width - 10, sy - 10, this );
+  win->addWidget( canvas );
+  
+  answer = new ScrollingLabel( 10, 25, width - 150, 265, "" );
   answer->setWordClickedHandler( this );
   Color color;
   color.r = 1;
@@ -137,4 +141,31 @@ void ConversationGui::showingWord( char *word ) {
   }
 }
 
-
+void ConversationGui::drawWidget(Widget *w) {
+  if( w == canvas && creature && creature->getMonster() && 
+      creature->getMonster()->getPortraitTexture() ) {
+    //glEnable( GL_ALPHA_TEST );
+    //glAlphaFunc( GL_EQUAL, 0xff );
+    glEnable(GL_TEXTURE_2D);
+    glPushMatrix();
+    //    glTranslatef( x, y, 0 );
+    glBindTexture( GL_TEXTURE_2D, creature->getMonster()->getPortraitTexture() );
+    glColor4f(1, 1, 1, 1);
+    
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex3f( 0, 0, 0 );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( 0, canvas->getHeight(), 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex3f( canvas->getWidth(), canvas->getHeight(), 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( canvas->getWidth(), 0, 0 );
+    glEnd();
+    glPopMatrix();
+    
+    //glDisable( GL_ALPHA_TEST );
+    glDisable(GL_TEXTURE_2D);
+  }
+}

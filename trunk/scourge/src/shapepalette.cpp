@@ -1062,3 +1062,16 @@ GLuint ShapePalette::loadSystemTexture( char *line ) {
   }
   return id;
 }
+
+void ShapePalette::loadNpcPortraits() {
+  for( map<string, Monster*>::iterator i = Monster::monstersByName.begin(); 
+       i != Monster::monstersByName.end(); ++i ) {
+    Monster *m = i->second;
+    if( m->getPortrait() ) {
+      m->setPortraitTexture( this->loadGLTextures( m->getPortrait() ) );
+      if( !m->getPortraitTexture() ) {
+        cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
+      }
+    }
+  }
+}
