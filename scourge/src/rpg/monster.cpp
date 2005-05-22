@@ -28,7 +28,7 @@ vector<string> Monster::monsterTypes;
 vector<Monster*> Monster::npcs;
 map<string, Monster*> Monster::npcPos;
 
-Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc) {
+Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait) {
   this->type = type;
   this->level = level;
   this->hp = hp;
@@ -40,6 +40,8 @@ Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin,
   this->baseArmor = baseArmor;
   this->scale = scale;
   this->npc = npc;
+  this->portrait = portrait;
+  this->portraitTexture = 0;
   sprintf(description, "FIXME: need a description");
 }
 
@@ -81,14 +83,22 @@ void Monster::initMonsters() {
   //int itemCount = 0;
   Monster *last_monster = NULL;
   char name[255], model_name[255], skin_name[255];
-  char line[255];
+  char line[255], portrait[255];
   int n = fgetc(fp);
   while(n != EOF) {
     if(n == 'M') {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
-      n = Constants::readLine(name, fp);
+      n = Constants::readLine(line, fp);
+      strcpy( name, strtok( line, "," ) );
+      char *p = strtok( NULL, "," );
+      if( p ) {
+        strcpy( portrait, p );
+      } else {
+        strcpy( portrait, "" );
+      }
+
       n = Constants::readLine(line, fp);
 
       strcpy(model_name, strtok(line + 1, ","));
@@ -101,7 +111,7 @@ void Monster::initMonsters() {
       int speed = atoi(strtok(NULL, ","));
 
       float scale = 0.0f;
-      char *p = strtok(NULL, ",");
+      p = strtok(NULL, ",");
       if(p) {
         scale = atof(p);
       }
@@ -132,7 +142,8 @@ void Monster::initMonsters() {
       Monster *m = new Monster( strdup(name), level, hp, mp, 
                                 strdup(model_name), strdup(skin_name), 
                                 rareness, speed, armor, 
-                                scale, npc );
+                                scale, npc, 
+                                ( strlen( portrait ) ? strdup( portrait ) : NULL ) );
       last_monster = m;
       if( npc ) {
         if( npcStartX > -1 && npcStartY > -1 ) {

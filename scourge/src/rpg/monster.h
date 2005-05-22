@@ -47,23 +47,24 @@ class Monster  {
   int rareness;
   float scale;
   bool npc;
+  char *portrait;
+  GLuint portraitTexture;
   vector<RpgItem*> items;
   vector<Spell*> spells;
   map<string,int> skills;
 
   static map<int, vector<Monster*>* > monsters;
-  static map<string, Monster*> monstersByName;
   static map<int, vector<string>*>* currentSoundMap;
   static vector<string> monsterTypes;
-
   static vector<Monster*> npcs;
 
 public:
-  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc);
+  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait);
   ~Monster();
 
   static map<string, map<int, vector<string>*>*> soundMap;
   static map<string, Monster*> npcPos;
+  static map<string, Monster*> monstersByName;  
 
   inline float getScale() { return scale; }
   inline int getBaseArmor() { return baseArmor; }
@@ -85,6 +86,9 @@ public:
   int getSkillLevel(const char *skillName);
   const char *getRandomSound(int type);
   inline bool isNpc() { return npc; }
+  inline char *getPortrait() { return portrait; }
+  inline GLuint getPortraitTexture() { return portraitTexture; }
+  inline void setPortraitTexture( GLuint n ) { portraitTexture = n; }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);

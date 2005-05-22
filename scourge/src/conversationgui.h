@@ -32,7 +32,7 @@
 #include "gui/widgetview.h"
 #include "gui/scrollinglabel.h"
 
-class ConversationGui : public WordClickedHandler {
+class ConversationGui : public WordClickedHandler, WidgetView {
 
  private:
   Scourge *scourge;
@@ -47,6 +47,7 @@ class ConversationGui : public WordClickedHandler {
   int wordCount;
   static const int MAX_WORDS = 1000;
   TextField *entry;
+  Canvas *canvas;
   
  public:
   ConversationGui(Scourge *scourge);
@@ -60,6 +61,8 @@ class ConversationGui : public WordClickedHandler {
 
   void wordClicked( char *word );
   void showingWord( char *word );
+
+  void drawWidget(Widget *w);
 };
 
 #endif

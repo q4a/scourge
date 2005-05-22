@@ -85,6 +85,7 @@ void Session::initData() {
 
   // initialize the monsters (they use items, magic)
   Monster::initMonsters();
+  shapePal->loadNpcPortraits();
 
   adapter->initUpdate("Loading missions...");
 
