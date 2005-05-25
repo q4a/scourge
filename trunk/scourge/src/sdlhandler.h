@@ -99,6 +99,8 @@ private:
 
 public: 
 
+  static bool showDebugInfo;
+
   enum {
     SCOURGE_DEFAULT_FONT=0,
     SCOURGE_MONO_FONT,

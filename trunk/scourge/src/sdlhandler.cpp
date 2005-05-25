@@ -21,6 +21,7 @@
 //#define DEBUG_MOUSE_FOCUS 1
 
 bool SDLHandler::stencilBufferUsed = false;
+bool SDLHandler::showDebugInfo = false;
 
 // milllis
 #define DOUBLE_CLICK_INTERVAL 500
@@ -586,7 +587,7 @@ void SDLHandler::drawScreen() {
   }
 
 
-#ifdef SHOW_DEBUG_INFO
+if( showDebugInfo ) {
   glPushMatrix();
   glDisable( GL_DEPTH_TEST );
   glLoadIdentity();
@@ -601,7 +602,7 @@ void SDLHandler::drawScreen() {
   texPrint(400, 10, "FPS: %g %s", getFPS(), (debugStr ? debugStr : ""));
   glEnable( GL_DEPTH_TEST );
   glPopMatrix();
-#endif
+}
 
   /* Draw it to the screen */
   SDL_GL_SwapBuffers( );
