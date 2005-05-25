@@ -21,20 +21,20 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
 
   int width = 500;
-  int height = 350;
+  int height = 300;
 
   int x = (scourge->getSDLHandler()->getScreen()->w - width) / 2;
   int y = (scourge->getSDLHandler()->getScreen()->h - height) / 2;
 
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::CONVERSATION_GUI_TITLE) );
 
-  label = win->createLabel( 10, 13, "Talking to " );
+  label = win->createLabel( 10, 15, "Talking to " );
 
   int sy = 130;
   canvas = new Canvas( width - 130, 5, width - 10, sy - 10, this );
   win->addWidget( canvas );
   
-  answer = new ScrollingLabel( 10, 25, width - 150, 265, "" );
+  answer = new ScrollingLabel( 10, 25, width - 150, 215, "" );
   answer->setWordClickedHandler( this );
   Color color;
   color.r = 1;
@@ -44,7 +44,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   answer->addColoring( '$', color );
   win->addWidget( answer );
 
-  list = new ScrollingList( width - 130, sy, 120, 160, scourge->getShapePalette()->getHighlightTexture() );
+  list = new ScrollingList( width - 130, sy, 120, 110, scourge->getShapePalette()->getHighlightTexture() );
   win->addWidget( list );
   words = (char**)malloc(MAX_WORDS * sizeof(char*));
   for(int i = 0; i < MAX_WORDS; i++) {
@@ -52,7 +52,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   }
   wordCount = 0;
 
-  sy = 310;
+  sy = 260;
   win->createLabel( 12, sy, "Talk about:" );
   entry = new TextField( 90, sy - 10, 25 );
   win->addWidget( entry );

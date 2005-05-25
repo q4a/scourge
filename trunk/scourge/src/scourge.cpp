@@ -2982,7 +2982,7 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
 }
 
 void Scourge::quickSpellAction( int index ) {
-  if( inventory->inStoreSpellMode() ) {
+  if( inventory->inStoreSpellMode() ) {    
     getParty()->getPlayer()->setQuickSpell( index, inventory->getStoreSpell() );
     inventory->setStoreSpellMode( false );
     if( inventory->isVisible() ) toggleInventoryWindow();

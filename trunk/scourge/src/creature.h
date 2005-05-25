@@ -149,7 +149,15 @@ class Creature {
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
 
-  inline void setQuickSpell( int index, Spell *spell ) { quickSpell[ index ] = spell; }
+  inline void setQuickSpell( int index, Spell *spell ) { 
+    for( int i = 0; i < 12; i++ ) {
+      if( quickSpell[ i ] == spell ) {
+        // already stored
+        return;
+      }
+    }
+    quickSpell[ index ] = spell; 
+  }
   inline Spell *getQuickSpell( int index ) { return quickSpell[ index ]; }
 
   inline void setDeityIndex( int n ) { deityIndex = n; }
