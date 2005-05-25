@@ -939,7 +939,15 @@ void Inventory::refresh(int player) {
   skillList->setSelectedLine(oldSkillLine);
 }
 
+void Inventory::positionWindow() {
+  mainWin->move( scourge->getPartyWindow()->getX() + 
+                 scourge->getPartyWindow()->getWidth() - 
+                 mainWin->getWidth(),
+                 scourge->getPartyWindow()->getY() - mainWin->getHeight() );
+}                 
+
 void Inventory::show(bool animate) { 
+  positionWindow();
   mainWin->setVisible(true, animate); 
 
   // find selected player. FIXME: this is inefficient

@@ -649,7 +649,9 @@ public:
   bool handleTargetSelectionOfItem( Item *item, int x=0, int y=0, int z=0 );
   bool handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 mapz );
 
-  void Scourge::teleport( bool toHQ=true );
+  void teleport( bool toHQ=true );
+
+  inline Window *getPartyWindow() { return mainWin; }
 
  protected:
 
