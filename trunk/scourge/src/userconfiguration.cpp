@@ -304,6 +304,7 @@ UserConfiguration::UserConfiguration(){
     keepMapSize = true;
     frameOnFullScreen = true;
     turnBasedBattle = true;
+    ovalCutoutShown = true;
 
     // audio settings
     soundEnabled = true;
@@ -551,6 +552,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set frameonfullscreen %s\n", frameOnFullScreen ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set ovalcutoutshown %s\n", ovalCutoutShown ? "true":"false");
+    writeFile(configFile, textLine);
     sprintf(textLine, "set turnbasedbattle %s\n", turnBasedBattle ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set alwaysshowpath %s\n", alwaysShowPath ? "true":"false");
@@ -634,6 +637,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
        s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
        s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle" ||
+       s1 == "ovalcutoutshown" ||
        s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" ){
         if(s2 == "true"){
             paramValue = true;
@@ -724,6 +728,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "turnbasedbattle") {
       turnBasedBattle = paramValue;
+    } else if(s1 == "ovalcutoutshown") {
+      ovalCutoutShown = paramValue;
     } else if(s1 == "soundenabled") {
       soundEnabled = paramValue;
     }
@@ -1110,6 +1116,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set keepmapsize true" << endl;
   configFile << "set frameonfullscreen true" << endl;
   configFile << "set turnbasedbattle true" << endl;
+  configFile << "set ovalcutoutshown true" << endl;
   configFile << "set alwaysshowpath false" << endl;
   configFile << "set tooltipenabled true" << endl;
   configFile << "set tooltipinterval 50" << endl;
