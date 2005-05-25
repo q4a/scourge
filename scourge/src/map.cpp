@@ -1093,7 +1093,9 @@ void Map::draw() {
     for(int i = 0; i < damageCount; i++) {
       doDrawShape(&damage[i], 1);
     }
-    drawShade();
+    
+    if( session->getUserConfiguration()->isOvalCutoutShown() ) drawShade();
+
     glDisable(GL_BLEND);
 
     glDepthMask(GL_TRUE);    

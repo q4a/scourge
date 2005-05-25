@@ -167,6 +167,7 @@ private:
   bool keepMapSize;
   bool frameOnFullScreen;
   bool turnBasedBattle;
+  bool ovalCutoutShown;
 
   // was the stencil buf. initialized at start?
   bool stencilBufInitialized;
@@ -215,6 +216,7 @@ private:
   inline bool getKeepMapSize() { return keepMapSize; }
   inline bool getFrameOnFullScreen() { return frameOnFullScreen; }
   inline bool isBattleTurnBased() { return turnBasedBattle; }
+  inline bool isOvalCutoutShown() { return ovalCutoutShown; }
   inline int getSoundFreq() { return soundFreq; }
   inline bool isSoundEnabled() { return soundEnabled; }
   inline int getMusicVolume() { return musicVolume; }
@@ -241,6 +243,7 @@ private:
   inline void setKeepMapSize(int t) { keepMapSize = t; }
   inline void setFrameOnFullScreen(int t) { frameOnFullScreen = t; }
   inline void setBattleTurnBased(bool b) { turnBasedBattle = b; }
+  inline void setOvalCutoutShown(bool b) { ovalCutoutShown = b; }
   inline void setSoundFreq(int n) { soundFreq = n; }
   inline void setSoundEnabled(bool b) { soundEnabled = b; }
   inline void setMusicVolume(int n) { musicVolume = n; }

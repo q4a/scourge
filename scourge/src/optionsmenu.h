@@ -74,6 +74,7 @@ private:
   Checkbox * keepMapSize;
   Checkbox * frameOnFullScreen;
   Checkbox * turnBasedBattle;
+  Checkbox *ovalCutoutShown;
   Checkbox * alwaysShowPath;
   Checkbox *tooltipEnabled;
   Slider *tooltipInterval;
