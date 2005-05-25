@@ -2195,8 +2195,8 @@ void Scourge::setUILayout() {
     messageWin->setLocked(true);
     mainWin->setLocked(true);
     inventory->hide();
-    inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
-                                 getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
+    //inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
+                                 //getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
 //  inventory->getWindow()->setLocked(true);
     inventory->show(false);
     //mapX = INVENTORY_WIDTH;
@@ -2217,7 +2217,7 @@ void Scourge::setUILayout() {
   mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                 getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
   mainWin->setVisible( true, false );
-
+  inventory->positionWindow();
 
   // FIXME: resize levelMap drawing area to remainder of screen.
   levelMap->setViewArea(mapX, mapY, mapWidth, mapHeight);

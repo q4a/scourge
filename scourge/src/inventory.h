@@ -123,6 +123,7 @@ public:
   inline void setStoreSpellMode( bool b ) { storeSpellButton->setSelected( b ); if( !b ) storeSpell = NULL; }
   inline Spell *getStoreSpell() { return storeSpell; }
 
+  void positionWindow();
   void show(bool animate=true);
 	inline void hide() { mainWin->setVisible(false); }
 	inline bool isVisible() { return mainWin->isVisible(); }

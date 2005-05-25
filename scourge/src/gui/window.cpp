@@ -867,6 +867,7 @@ void Window::move(int x, int y) {
   if(y < SCREEN_GUTTER) this->y = SCREEN_GUTTER;
   if(x >= sdlHandler->getScreen()->w - (w + SCREEN_GUTTER)) this->x = sdlHandler->getScreen()->w - (w + SCREEN_GUTTER + 1);
   if(y >= sdlHandler->getScreen()->h - (h + SCREEN_GUTTER)) this->y = sdlHandler->getScreen()->h - (h + SCREEN_GUTTER + 1);
+  this->currentY = this->y;
 }
 
 void Window::setLastWidget(Widget *w) {
