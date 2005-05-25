@@ -106,8 +106,6 @@ using namespace std;
 
 // debug flags
 #define DEBUG_BATTLE 0
-// show fps info
-#define SHOW_DEBUG_INFO
 
 
 #define SCOURGE_VERSION "0.10"

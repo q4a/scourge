@@ -895,12 +895,17 @@ void Scourge::drawBorder() {
   //int gw = 128;
   //int gh = 96;
 
-  int gw = 115;
-  int gh = 81;
+  //int gw = 115;
+  //int gh = 81;
+
+  int gw = 240;
+  int gh = 64;
+
   glEnable( GL_ALPHA_TEST );
   glAlphaFunc( GL_NOTEQUAL, 0 );
   glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGargoyleTexture() );
 
+  /*
   glPushMatrix();
   glLoadIdentity();
   glTranslatef(10, -5, 0);
@@ -933,6 +938,41 @@ void Scourge::drawBorder() {
   glTexCoord2f (1, 0);      
   glVertex2i (gw, 0);
   glEnd();
+  */
+
+  glPushMatrix();
+  glLoadIdentity();
+  //glTranslatef(10, -5, 0);
+  //glRotatef(20, 0, 0, 1);
+  glBegin( GL_QUADS );
+  // top left
+  glTexCoord2f (0, 0);
+  glVertex2i (0, 0);
+  glTexCoord2f (0, 1);
+  glVertex2i (0, gh);
+  glTexCoord2f (1, 1);
+  glVertex2i (gw, gh);
+  glTexCoord2f (1, 0);      
+  glVertex2i (gw, 0);
+  glEnd();
+  glPopMatrix();
+
+  // top right
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef(w - gw, 0, 0);
+  //glRotatef(-20, 0, 0, 1);
+  glBegin( GL_QUADS );
+  glTexCoord2f (1, 0);
+  glVertex2i (0, 0);
+  glTexCoord2f (1, 1);
+  glVertex2i (0, gh);
+  glTexCoord2f (0, 1);
+  glVertex2i (gw, gh);
+  glTexCoord2f (0, 0);      
+  glVertex2i (gw, 0);
+  glEnd();
+
   glPopMatrix();
 
   //glEnable( GL_TEXTURE_2D );
@@ -1097,6 +1137,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
         exitConfirmationDialog->setVisible(true);
       }   
       return false;
+    } else if( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_BACKSPACE ) {
+      SDLHandler::showDebugInfo = ( SDLHandler::showDebugInfo ? 0 : 1 );
     }
 
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
