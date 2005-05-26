@@ -298,7 +298,7 @@ void Session::creatureDeath(Creature *creature) {
         Spell *spell = MagicSchool::getRandomSpell( creature->getLevel() );
         loot = newItem(RpgItem::getItemByName("Scroll"), creature->getLevel(), spell);
       } else {
-        loot = newItem( RpgItem::getRandomItem( 1 ), creature->getLevel() );
+        loot = newItem( RpgItem::getRandomItem( getGameAdapter()->getCurrentDepth() ), creature->getLevel() );
       }
       // make it contain all items, no matter what size
       item->addContainedItem( loot, true );

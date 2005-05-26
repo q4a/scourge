@@ -79,6 +79,7 @@ public:
   virtual inline void createParty( Creature **pc, int *partySize ) {}
   virtual inline void setBlendFunc() {}
   virtual inline void teleport( bool toHQ=true ) {}
+  virtual inline int getCurrentDepth() { return 0; }
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

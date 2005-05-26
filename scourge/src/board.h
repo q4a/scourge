@@ -157,7 +157,7 @@ public:
   ~MissionTemplate();
   Mission *createMission( Session *session, int level, int depth );
 private:
-  void parseText( Session *session, int level, 
+  void parseText( Session *session, int level, int depth,
                   char *text, char *parsedText,
                   map<string, RpgItem*> *items, 
                   map<string, Monster*> *creatures );

@@ -299,6 +299,7 @@ void Item::initItems(ShapePalette *shapePal) {
       int twohanded = 0;
       strcpy(shape, "");
       strcpy(skill, "");
+      int minDepth = 0;
       p = strtok(NULL, ",");    
       if(p) {
         strcpy(shape, p);
@@ -307,6 +308,10 @@ void Item::initItems(ShapePalette *shapePal) {
           inventory_location = atoi(p);
           twohanded = atoi(strtok(NULL, ","));
           strcpy(skill, strtok(NULL, ","));
+          p = strtok( NULL, "," );
+          if( p ) {
+            minDepth = atoi( p );
+          }
         }
       }
 
@@ -351,7 +356,7 @@ void Item::initItems(ShapePalette *shapePal) {
                          twohanded, 
                          (distance < (int)Constants::MIN_DISTANCE ? 
                           (int)Constants::MIN_DISTANCE : distance), 
-                         skill_index, maxCharges, potion_skill, potionTime, 
+                         skill_index, minDepth, maxCharges, potion_skill, potionTime, 
                          tileX - 1, tileY - 1);
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   

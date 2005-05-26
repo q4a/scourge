@@ -111,6 +111,8 @@ using namespace std;
 #define SCOURGE_VERSION "0.10"
 #define MAX_PARTY_SIZE 4
 
+// Max level depth per mission
+#define MAX_MISSION_DEPTH 10
 
 #define toint(x) (int)(x<0 ? (x - 0.5f) : (x + 0.5f))
 

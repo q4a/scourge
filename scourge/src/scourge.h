@@ -285,7 +285,7 @@ public:
   }
 
 
-  inline int getCurrentStory() { return currentStory; }
+  inline int getCurrentDepth() { return currentStory; }
 
   inline bool isHeadless() { return false; }
 
