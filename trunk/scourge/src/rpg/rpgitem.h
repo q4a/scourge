@@ -103,6 +103,7 @@ class RpgItem {
   int distance; // how far can it reach?
   int equip; // where can it be worn?
   int skill; // which skill to check when using the item
+  int minDepth; // 0-based min. depth where the item occurs
   int maxCharges;
   int potionSkill; // which skill does this potion effect?
   int potionTime;
@@ -112,7 +113,6 @@ class RpgItem {
 
   static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
   static map<string, const RpgItem *> itemsByName;
-  static vector<int> weapons;
   static vector<RpgItem*> containers;
   static vector<RpgItem*> containersNS;
 
@@ -151,7 +151,7 @@ class RpgItem {
   
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int maxCharges=0,
+		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int maxCharges=0,
 		  int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0);
   ~RpgItem();
 
@@ -175,6 +175,7 @@ class RpgItem {
   inline char *getLongDesc() { return desc; }  
   inline int getEquip() { return equip; }
   inline int getSkill() { return skill; } 
+  inline int getMinDepth() { return minDepth; }
   inline int getType() { return type; }
   inline int getPotionSkill() { return potionSkill; }
   inline bool getAcl(int index) { return (acl & (1 << index) ? true : false); }
@@ -191,8 +192,7 @@ class RpgItem {
 
   bool isEnchantable();
 
-  static RpgItem *getRandomItem(int level);
-  static RpgItem *getRandomEnchantableItem(int level);
+  static RpgItem *getRandomItem(int depth);
   static RpgItem *getRandomContainer();
   static RpgItem *getRandomContainerNS();
   inline static RpgItem *getItem(int index) { return items[index]; }

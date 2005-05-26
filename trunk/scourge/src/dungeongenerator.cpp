@@ -1112,7 +1112,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
                                 bool preGenerated, int locationIndex) {
   // add the items
   for(int i = 0; i < objectCount; i++) {
-    RpgItem *rpgItem = RpgItem::getRandomItem(1);
+    RpgItem *rpgItem = RpgItem::getRandomItem( depth );
     if(!rpgItem) {
       cerr << "Warning: no items found." << endl;
       break;
@@ -1151,7 +1151,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
     // some items
     int n = (int)(3.0f * rand() / RAND_MAX);
     for(int i = 0; i < n; i++) {
-      RpgItem *containedItem = RpgItem::getRandomItem(1);
+      RpgItem *containedItem = RpgItem::getRandomItem( depth );
       if(containedItem) 
         item->addContainedItem(scourge->getSession()->
                                newItem(containedItem, level), 

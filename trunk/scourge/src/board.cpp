@@ -266,7 +266,7 @@ void Board::initMissions() {
   while( availableMissions.size() < 5 ) {
     int level = (int)( ( ave + 2.0f ) * rand()/RAND_MAX ) - 4;
     if( level < 1 ) level = 1;
-    int depth =  (int)((float)level / 7.0f ) + 1 + (int)( 3.0f * rand()/RAND_MAX );
+    int depth =  (int)((float)level / (float)(MAX_MISSION_DEPTH - 3) ) + 1 + (int)( 3.0f * rand()/RAND_MAX );
     if( depth > 9 ) depth = 9;
     int templateIndex = (int)( (float)( templates.size() ) * rand()/RAND_MAX );
     Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
@@ -366,9 +366,9 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   char parsedDescription[2000];
   char s[2000];
   strcpy( s, name );
-  parseText( session, level, s, parsedName, &items, &creatures );
+  parseText( session, level, depth, s, parsedName, &items, &creatures );
   strcpy( s, description );
-  parseText( session, level, s, parsedDescription, &items, &creatures );
+  parseText( session, level, depth, s, parsedDescription, &items, &creatures );
   
   Mission *mission = new Mission( board, 
 								  level, depth, parsedName, parsedDescription, 
@@ -386,7 +386,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   return mission;
 }                                               
 
-void MissionTemplate::parseText( Session *session, int level, 
+void MissionTemplate::parseText( Session *session, int level, int depth,
                                  char *text, char *parsedText,
                                  map<string, RpgItem*> *items, 
                                  map<string, Monster*> *creatures ) {

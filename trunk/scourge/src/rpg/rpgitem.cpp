@@ -60,7 +60,7 @@ int RpgItem::enchantableTypeCount = 5;
 
 RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
 				 int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-				 int twohanded, int distance, int skill, int maxCharges, int potionSkill,
+				 int twohanded, int distance, int skill, int minDepth, int maxCharges, int potionSkill,
 				 int potionTime, int iconTileX, int iconTileY) {
   this->index = index;
   this->name = name;
@@ -79,6 +79,7 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
   this->twohanded = twohanded;
   this->distance = distance;
   this->skill = skill;
+  this->minDepth = minDepth;
   this->maxCharges = maxCharges;
   this->potionSkill = potionSkill;
   this->potionTime = potionTime;
@@ -93,36 +94,37 @@ RpgItem::~RpgItem() {
 
 void RpgItem::addItem(RpgItem *item, int width, int depth, int height) {
   // store the item
-    /*
-  cerr << "adding item: " << item->name << 
-	" level=" << item->level << 
-	" type=" << item->type << endl;
-    */
+  /*
+cerr << "adding item: " << item->name << 
+" level=" << item->level << 
+" type=" << item->type << endl;
+  */
   items[itemCount++] = item;
 
-  // create the level map
-  map<int, vector<const RpgItem*>*> *levelMap = NULL;
-  if(typesMap.find(item->type) != typesMap.end()){
-	levelMap = typesMap[(const int)(item->type)];
+  // Add item to type->depth maps
+  map<int, vector<const RpgItem*>*> *depthMap = NULL;
+  if (typesMap.find(item->type) != typesMap.end()) {
+    depthMap = typesMap[(const int)(item->type)];
   } else {
-	levelMap = new map<int, vector<const RpgItem*>*>();
-	typesMap[item->type] = levelMap;
+    depthMap = new map<int, vector<const RpgItem*>*>();
+    typesMap[item->type] = depthMap;
   }
   //  cerr << "\ttypesMap.size()=" << typesMap.size() << endl;
 
-  // get a non-pointer ref to the level map
-  //  map<int, vector<const RpgItem*>*> map = *typesMap[item->type];
-  // create the vector
-  vector<const RpgItem*> *list = NULL;
-  if(levelMap->find(item->level) != levelMap->end()) {
-	list = (*levelMap)[(const int)(item->level)];
-  } else {
-	list = new vector<const RpgItem*>();
-	(*levelMap)[item->level] = list;
+  // create the min depth map: Add item to every depth level >= item->getMinDepth()
+  for( int currentDepth = item->getMinDepth(); currentDepth < MAX_MISSION_DEPTH; currentDepth++ ) {
+    // create the vector
+    vector<const RpgItem*> *list = NULL;
+    if (depthMap->find( currentDepth ) != depthMap->end()) {
+      list = (*depthMap)[(const int)( currentDepth )];
+    } else {
+      list = new vector<const RpgItem*>();
+      (*depthMap)[ currentDepth ] = list;
+    }
+    //  cerr << "\tlevelMap.size()=" << levelMap->size() << endl;
+    list->push_back(item);
+    //  cerr << "\tlist.size()=" << list->size() << endl;
   }
-  //  cerr << "\tlevelMap.size()=" << levelMap->size() << endl;
-  list->push_back(item);
-  //  cerr << "\tlist.size()=" << list->size() << endl;
 
   // remember by name
   string s = item->name;
@@ -131,11 +133,11 @@ void RpgItem::addItem(RpgItem *item, int width, int depth, int height) {
 
   // HACK: do not include "corpse" as a valid container...
   // It should really have a container exclusion flag.
-  if(item->type == CONTAINER && strcmp(item->name, "Corpse"))  {
-    if(width >= depth) {
+  if (item->type == CONTAINER && strcmp(item->name, "Corpse")) {
+    if (width >= depth) {
       containersNS.push_back(item);
     }
-    if(width <= depth) {
+    if (width <= depth) {
       containers.push_back(item);
     }
   }
@@ -149,10 +151,6 @@ int RpgItem::getTypeByName(char *name) {
   exit(1);
 }
 
-RpgItem *RpgItem::getRandomEnchantableItem(int level) {
-  return getRandomItemFromTypes(level, enchantableTypes, enchantableTypeCount);
-}
-
 bool RpgItem::isEnchantable() {
   for(int i = 0; i < enchantableTypeCount; i++) {
     if(getType() == enchantableTypes[i]) return true;
@@ -160,27 +158,26 @@ bool RpgItem::isEnchantable() {
   return false;
 }
 
-RpgItem *RpgItem::getRandomItem(int maxLevel) {
+RpgItem *RpgItem::getRandomItem(int depth) {
   // item types found in the lying around a dungeon
   int types[] = { SWORD, AXE, BOW, MACE, ARMOR, FOOD, DRINK, POTION };
   int typeCount = 7;
-  return getRandomItemFromTypes(maxLevel, types, typeCount);
+  return getRandomItemFromTypes(depth, types, typeCount);
 }
 
-RpgItem *RpgItem::getRandomItemFromTypes(int maxLevel, int types[], int typeCount) {
-// levels are assumed to be 1-based
-  if(maxLevel < 1) {
-    cerr << "levels are assumed to be 1-based!!!" << endl;
-    exit(1);
-  }
+RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) {
 
-  // choose a random level up to maxLevel
-  int level = (int)((float)maxLevel * rand()/RAND_MAX) + 1;
+  if( depth < 0 ) depth = 0;
+  if( depth >= MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH - 1;
 
   int typeIndex = (int)((float)typeCount * rand()/RAND_MAX);
-  map<int, vector<const RpgItem*>*> *levelMap = typesMap[types[typeIndex]];
-  if(levelMap && levelMap->size()) {
-    vector<const RpgItem*> *list = (*levelMap)[level];
+  map<int, vector<const RpgItem*>*> *depthMap = typesMap[types[typeIndex]];
+  if(depthMap && depthMap->size()) {
+
+    // Select this depth's list of items. Since an item is on every list
+    // greater than equal to its min. depth, we don't have to roll for
+    // a depth value. (Eg.: a item w. minDepth=2 will be on lists 2-10.
+    vector<const RpgItem*> *list = (*depthMap)[depth];
 
     if(list && list->size()) {
 
@@ -194,7 +191,8 @@ RpgItem *RpgItem::getRandomItemFromTypes(int maxLevel, int types[], int typeCoun
       }
 
       int n = (int)((float)(rareList.size()) * rand()/RAND_MAX);
-      return(RpgItem*)rareList[n];
+      RpgItem *rpgItem = (RpgItem*)rareList[n];
+      return rpgItem;
     }
   }
   return NULL;
