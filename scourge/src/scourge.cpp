@@ -199,6 +199,8 @@ void Scourge::startMission() {
   // always start in hq
   nextMission = -1;
   inHq = true;
+
+  Mission *lastMission = NULL;
   
   while(true) {
 
@@ -251,6 +253,9 @@ void Scourge::startMission() {
     mouseMoveScreen = true;
     targetSelectionFor = NULL;  
 
+    // clear infoMessage
+    strcpy( infoMessage, "" );
+
     if(nextMission == -1) {
 
       missionWillAwardExpPoints = false;
@@ -258,7 +263,16 @@ void Scourge::startMission() {
       // in HQ map
       inHq = true;
 
-      // init the missions board
+      // store mission's outcome (mission may be deleted below)
+      if( lastMission ) {
+        sprintf( infoMessage, 
+                 ( lastMission->isCompleted() ? 
+                   lastMission->getSuccess() : 
+                   lastMission->getFailure() ) );
+        lastMission = NULL;
+      }
+
+      // init the missions board (this deletes completed missions)
       board->initMissions();
 
       // display the HQ map
@@ -299,18 +313,42 @@ void Scourge::startMission() {
     // hack to unfreeze animations, etc.
     party->forceStopRound();
 
-    // show an info dialog
-    if(nextMission == -1) {
-      sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
-    } else if( teleportFailure ) {
-      teleportFailure = false;
-      sprintf(infoMessage, "Teleport spell failed!! Entering level %d", ( currentStory + 1 ));
-    } else {
-      sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
+    // show an info dialog if infoMessage not already set with outcome of last mission
+    if( !strlen( infoMessage ) ) {
+      if(nextMission == -1) {
+        sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
+      } else if( teleportFailure ) {
+        teleportFailure = false;
+        sprintf(infoMessage, "Teleport spell failed!! Entering level %d", ( currentStory + 1 ));
+      } else {
+        sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
+      }
     }
-    showMessageDialog(infoMessage);
-    info_dialog_showing = true;
+    
+    // start a conversation with Uzudil
+    // FIXME: this will not show teleport effect...
+    if( nextMission == -1 ) {
+      
+      // FIXME hack code to find Uzudil.
+      Monster *m = Monster::getMonsterByName( "Uzudil the Hand" );
+      Creature *uzudil = NULL;
+      for( int i = 0; i < session->getCreatureCount(); i++ ) {
+        if( session->getCreature( i )->getMonster() == m ) {
+          uzudil = session->getCreature( i );
+          break;
+        }
+      }
 
+      if( !uzudil ) {
+        cerr << "*** Error: can't find Uzudil!" << endl;
+      }
+      conversationGui->start( uzudil, infoMessage, true );
+    } else {
+      // show infoMessage text
+      showMessageDialog(infoMessage);
+      info_dialog_showing = true;
+    }
+    
     // set the map view
     setUILayout();
 
@@ -355,6 +393,9 @@ void Scourge::startMission() {
       session->getCurrentMission()->deleteItemMonsterInstances();
 
     session->deleteCreaturesAndItems(true);
+
+    // remember the last mission
+    lastMission = session->getCurrentMission();
 
     // delete map
     delete dg; dg = NULL;
@@ -3411,6 +3452,10 @@ void Scourge::teleport( bool toHQ ) {
       this->showMessageDialog( "This spell has no effect here..." );
     }
   } else {
+    
+    // FIXME: teleport to a random level of the same mission!!!
+    // otherwise success/failure messages are screwed up
+    
     // teleport to a random mission
     teleportFailure = true;
     changingStory = true;
