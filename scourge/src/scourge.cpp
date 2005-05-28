@@ -269,6 +269,9 @@ void Scourge::startMission() {
                  ( lastMission->isCompleted() ? 
                    lastMission->getSuccess() : 
                    lastMission->getFailure() ) );
+
+        // fixme: also show amount of HP and $$$ gained in success message.
+
         lastMission = NULL;
       }
 
@@ -323,12 +326,15 @@ void Scourge::startMission() {
       } else {
         sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
       }
-    }
-    
-    // start a conversation with Uzudil
-    // FIXME: this will not show teleport effect...
-    if( nextMission == -1 ) {
+
+      // show infoMessage text
+      showMessageDialog(infoMessage);
+      info_dialog_showing = true;
+    } else {
       
+      // start a conversation with Uzudil
+      // FIXME: this will not show teleport effect...
+        
       // FIXME hack code to find Uzudil.
       Monster *m = Monster::getMonsterByName( "Uzudil the Hand" );
       Creature *uzudil = NULL;
@@ -338,17 +344,13 @@ void Scourge::startMission() {
           break;
         }
       }
-
+      
       if( !uzudil ) {
         cerr << "*** Error: can't find Uzudil!" << endl;
       }
-      conversationGui->start( uzudil, infoMessage, true );
-    } else {
-      // show infoMessage text
-      showMessageDialog(infoMessage);
-      info_dialog_showing = true;
+      conversationGui->start( uzudil, infoMessage, true );      
     }
-    
+      
     // set the map view
     setUILayout();
 
