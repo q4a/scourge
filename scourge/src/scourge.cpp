@@ -359,7 +359,7 @@ void Scourge::startMission() {
     // delete map
     delete dg; dg = NULL;
 
-    cerr << "Mission end: changingStory=" << changingStory << " inHQ=" << inHq << " teleporting=" << teleporting << " nextMission=" << nextMission << endl;
+    //cerr << "Mission end: changingStory=" << changingStory << " inHQ=" << inHq << " teleporting=" << teleporting << " nextMission=" << nextMission << endl;
     if(!changingStory) {
       if(!inHq) {
         if(teleporting) {
