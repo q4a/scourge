@@ -152,8 +152,10 @@ private:
   Board *board;
   char name[80];
   char description[2000];
+  char success[2000];
+  char failure[2000];
 public:
-  MissionTemplate( Board *board, char *name, char *description );
+  MissionTemplate( Board *board, char *name, char *description, char *success, char *failure );
   ~MissionTemplate();
   Mission *createMission( Session *session, int level, int depth );
 private:

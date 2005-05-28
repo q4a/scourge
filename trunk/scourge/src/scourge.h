@@ -143,7 +143,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   bool teleportFailure;
   bool inHq;
   bool missionWillAwardExpPoints;
-  char infoMessage[200];
+  char infoMessage[2000];
   Inventory *inventory;
   Window *messageWin, *exitConfirmationDialog;
   InfoGui *infoGui;

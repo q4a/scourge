@@ -89,19 +89,24 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   return false;
 }
 
-void ConversationGui::start(Creature *creature) {
-  // pause the game
-  scourge->getParty()->toggleRound( true );
-  this->creature = creature;
-  char tmp[ 80 ];
-  sprintf( tmp, "Talking to %s", creature->getName() );
-  label->setText( tmp );
+void ConversationGui::start( Creature *creature ) {
   char *s = Mission::getIntro( creature->getMonster() );
-  useCreature = ( s ? true : false );
+  bool useCreature = ( s ? true : false );
   if( !s ) {
     s = Mission::getIntro();
   }
-  answer->setText( s );
+  start( creature, s, useCreature );
+}
+
+void ConversationGui::start( Creature *creature, char *message, bool useCreature ) {
+  // pause the game
+  scourge->getParty()->toggleRound( true );
+  this->creature = creature;
+  this->useCreature = useCreature;
+  char tmp[ 80 ];
+  sprintf( tmp, "Talking to %s", creature->getName() );
+  label->setText( tmp );
+  answer->setText( message );
   win->setVisible( true );
   wordCount = 0;
   list->setLines( wordCount, (const char**)words );

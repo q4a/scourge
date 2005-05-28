@@ -61,7 +61,22 @@ Board::Board(Session *session) {
         if( strlen( description ) ) strcat( description, " " );
         strcat( description, line + 1 );
       }
-      templates.push_back( new MissionTemplate( this, name, description ) );
+
+      strcpy( success, "" );
+      while( n == 'Y' ) {
+        n = Constants::readLine( line, fp );
+        if( strlen( success ) ) strcat( success, " " );
+        strcat( success, line + 1 );
+      }
+
+      strcpy( failure, "" );
+      while( n == 'N' ) {
+        n = Constants::readLine( line, fp );
+        if( strlen( failure ) ) strcat( failure, " " );
+        strcat( failure, line + 1 );
+      }
+
+      templates.push_back( new MissionTemplate( this, name, description, success, failure ) );
     } else if( n == 'T' ) {
       // skip ':'
       fgetc( fp );
@@ -347,10 +362,12 @@ void Board::storylineMissionCompleted( Mission *mission ) {
 
 
 
-MissionTemplate::MissionTemplate( Board *board, char *name, char *description ) {
+MissionTemplate::MissionTemplate( Board *board, char *name, char *description, char *success, char *failure ) {
   this->board = board;
   strcpy( this->name, name );
   strcpy( this->description, description );
+  strcpy( this->success, success );
+  strcpy( this->failure, failure );
 }
 
 MissionTemplate::~MissionTemplate() {
@@ -365,16 +382,22 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
 
   char parsedName[80];
   char parsedDescription[2000];
+  char parsedSuccess[2000];
+  char parsedFailure[2000];
   char s[2000];
   strcpy( s, name );
   parseText( session, level, depth, s, parsedName, &items, &creatures );
   strcpy( s, description );
   parseText( session, level, depth, s, parsedDescription, &items, &creatures );
+  strcpy( s, success );
+  parseText( session, level, depth, s, parsedSuccess, &items, &creatures );
+  strcpy( s, failure );
+  parseText( session, level, depth, s, parsedFailure, &items, &creatures );
   
   Mission *mission = new Mission( board, 
-								  level, depth, parsedName, parsedDescription, 
-                                  "You have succeeded in your mission!", 
-                                  "You have failed to complete your mission" );
+                                  level, depth, parsedName, 
+                                  parsedDescription, parsedSuccess, 
+                                  parsedFailure );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
     RpgItem *item = i->second;
     mission->addItem( item );
