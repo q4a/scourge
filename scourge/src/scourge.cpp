@@ -3349,26 +3349,28 @@ void Scourge::checkForInfo() {
   Uint16 mapx, mapy, mapz;
 
   // change cursor when over a hostile creature
-  if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
-      sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
-      sdlHandler->getCursorMode() == SDLHandler::CURSOR_TALK ) {
-    bool handled = false;
-    mapx = cursorMapX;
-    mapy = cursorMapY;
-    mapz = cursorMapZ;
-    if(mapx < MAP_WIDTH) {
-      Location *pos = levelMap->getLocation(mapx, mapy, mapz);    
-      if( pos && 
-          pos->creature && 
-          party->getPlayer()->canAttack( pos->creature ) ) {
-        sdlHandler->setCursorMode( pos->creature->getMonster()->isNpc() ?
-                                   SDLHandler::CURSOR_TALK :
-                                   SDLHandler::CURSOR_ATTACK );
-        handled = true;
+  if( sdlHandler->mouseIsMovingOverMap ) {
+    if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
+        sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
+        sdlHandler->getCursorMode() == SDLHandler::CURSOR_TALK ) {
+      bool handled = false;
+      mapx = cursorMapX;
+      mapy = cursorMapY;
+      mapz = cursorMapZ;
+      if( mapx < MAP_WIDTH) {
+        Location *pos = levelMap->getLocation(mapx, mapy, mapz);    
+        if( pos && 
+            pos->creature && 
+            party->getPlayer()->canAttack( pos->creature ) ) {
+          sdlHandler->setCursorMode( pos->creature->getMonster()->isNpc() ?
+                                     SDLHandler::CURSOR_TALK :
+                                     SDLHandler::CURSOR_ATTACK );
+          handled = true;
+        }
       }
-    }
-    if( !handled ) sdlHandler->setCursorMode( SDLHandler::CURSOR_NORMAL );
-  }  
+      if( !handled ) sdlHandler->setCursorMode( SDLHandler::CURSOR_NORMAL );
+    }  
+  }
 
   if( session->getUserConfiguration()->getTooltipEnabled() &&
       SDL_GetTicks() - getSDLHandler()->lastMouseMoveTime > 
