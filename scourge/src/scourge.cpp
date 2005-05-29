@@ -270,8 +270,27 @@ void Scourge::startMission() {
                    lastMission->getSuccess() : 
                    lastMission->getFailure() ) );
 
-        // fixme: also show amount of HP and $$$ gained in success message.
-
+        if( lastMission->isCompleted() ) {
+          // Add XP points for making it back alive
+          char message[1000];
+          int exp = (lastMission->getLevel() + 1) * 100;
+          sprintf( message, "For returning alive, the party receives %d experience points. ", exp);
+          strcat( infoMessage, message );
+          
+          for(int i = 0; i < getParty()->getPartySize(); i++) {
+            bool b = getParty()->getParty(i)->getStateMod(Constants::leveled);
+            if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
+              int n = getParty()->getParty(i)->addExperience(exp);
+              if(n > 0) {
+                if(!b && getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+                  sprintf(message, "%s gains a level! ", getParty()->getParty(i)->getName());
+                  strcat( infoMessage, message );
+                }
+              }
+            }
+          }
+        }
+        
         lastMission = NULL;
       }
 
@@ -3444,27 +3463,21 @@ void Scourge::createParty( Creature **pc, int *partySize ) {
 }
 
 void Scourge::teleport( bool toHQ ) {
-  if( toHQ ) {
-    if( !inHq ) {
-      teleporting = true;
-      exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
-      party->toggleRound(true);
-      exitConfirmationDialog->setVisible(true);
-    } else {
-      this->showMessageDialog( "This spell has no effect here..." );
-    }
+  if( inHq || !session->getCurrentMission() ) {
+    this->showMessageDialog( "This spell has no effect here..." );
+  } else if( toHQ ) {
+    teleporting = true;
+    exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+    party->toggleRound(true);
+    exitConfirmationDialog->setVisible(true);
   } else {
-    
-    // FIXME: teleport to a random level of the same mission!!!
-    // otherwise success/failure messages are screwed up
-    
-    // teleport to a random mission
+    // teleport to a random depth within the same mission
     teleportFailure = true;
-    changingStory = true;
-    int selected = (int)( (float)( missionList->getLineCount() ) * rand() / RAND_MAX );
-    nextMission = selected;
-    oldStory = currentStory = 0;
-    endMission();
+
+		oldStory = currentStory;
+		currentStory = (int)( (float)( session->getCurrentMission()->getDepth() ) * rand() / RAND_MAX );
+		changingStory = true;
+
     exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);

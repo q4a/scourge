@@ -188,6 +188,8 @@ public:
   Board(Session *session);
   virtual ~Board();
 
+  inline Session *getSession() { return session; }
+
   void initMissions();
   void reset();
 
