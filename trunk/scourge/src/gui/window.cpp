@@ -863,12 +863,20 @@ void Window::showMessageDialog(SDLHandler *sdlHandler,
 // overridden so windows stay on screen and moving/rotating still works
 void Window::move(int x, int y) {
   this->x = x; 
-  this->y = y;
   if(x< SCREEN_GUTTER) this->x = SCREEN_GUTTER;
-  if(y < SCREEN_GUTTER) this->y = SCREEN_GUTTER;
   if(x >= sdlHandler->getScreen()->w - (w + SCREEN_GUTTER)) this->x = sdlHandler->getScreen()->w - (w + SCREEN_GUTTER + 1);
-  if(y >= sdlHandler->getScreen()->h - (h + SCREEN_GUTTER)) this->y = sdlHandler->getScreen()->h - (h + SCREEN_GUTTER + 1);
-  this->currentY = this->y;
+    
+  int newY = y;
+  if(y < SCREEN_GUTTER) newY = SCREEN_GUTTER;
+  if(y >= sdlHandler->getScreen()->h - (h + SCREEN_GUTTER)) newY = sdlHandler->getScreen()->h - (h + SCREEN_GUTTER + 1);
+
+  int diffY = newY - this->currentY;
+  this->currentY = newY;
+  if( animation == SLIDE_UP && this->y > this->currentY ) {
+    this->y -= diffY;
+  } else {
+    this->y = newY;
+  }
 }
 
 void Window::setLastWidget(Widget *w) {

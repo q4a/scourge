@@ -455,6 +455,9 @@ void Scourge::endMission() {
 
 void Scourge::drawView() {
 
+  // move inventory window with party window
+  inventory->positionWindow();
+
   // make a move (player, monsters, etc.)
   playRound();
 
@@ -2279,7 +2282,7 @@ void Scourge::setUILayout() {
   mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                 getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
   mainWin->setVisible( true, false );
-  inventory->positionWindow();
+  //inventory->positionWindow();
 
   // FIXME: resize levelMap drawing area to remainder of screen.
   levelMap->setViewArea(mapX, mapY, mapWidth, mapHeight);
