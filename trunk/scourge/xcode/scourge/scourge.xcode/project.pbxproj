@@ -102,6 +102,10 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				761F2FD808628EC600217FE1,
+				761F2FD908628EC600217FE1,
+				76DFC762084D692300AA9728,
+				76DFC763084D692300AA9728,
 				765CD2DB08199A320025096A,
 				765CD2DC08199A320025096A,
 				76B5F01A07F9133F00E1A8FA,
@@ -137,10 +141,10 @@
 				762AF803066D856300B92069,
 				762AF804066D856300B92069,
 				762AF805066D856300B92069,
-				762AF809066D856300B92069,
 				762AF80A066D856300B92069,
 				762AF80B066D856300B92069,
 				762AF80C066D856300B92069,
+				762AF809066D856300B92069,
 				762AF80D066D856300B92069,
 				762AF80E066D856300B92069,
 				762AF80F066D856300B92069,
@@ -327,6 +331,36 @@
 //762
 //763
 //764
+		761F2FD808628EC600217FE1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = conversationgui.cpp;
+			path = ../../src/conversationgui.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		761F2FD908628EC600217FE1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = conversationgui.h;
+			path = ../../src/conversationgui.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		761F2FDA08628EC600217FE1 = {
+			fileRef = 761F2FD808628EC600217FE1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		761F2FDB08628EC600217FE1 = {
+			fileRef = 761F2FD908628EC600217FE1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		762AF7FE066D856300B92069 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2951,6 +2985,36 @@
 			settings = {
 			};
 		};
+		76DFC762084D692300AA9728 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = prefix.c;
+			path = ../../src/prefix.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DFC763084D692300AA9728 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = prefix.h;
+			path = ../../src/prefix.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76DFC764084D692300AA9728 = {
+			fileRef = 76DFC762084D692300AA9728;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DFC765084D692300AA9728 = {
+			fileRef = 76DFC763084D692300AA9728;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //760
 //761
 //762
@@ -2987,8 +3051,8 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/sourceforge/scourge";
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "-DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1";
-				OTHER_CPLUSPLUSFLAGS = "-DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1";
+				OTHER_CFLAGS = "-DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -DENABLE_BINRELOC -DBR_PTHREAD=0";
+				OTHER_CPLUSPLUSFLAGS = "-DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -DENABLE_BINRELOC -DBR_PTHREAD=0";
 				OTHER_LDFLAGS = "-framework SDL -framework SDL_net -framework SDL_mixer -framework Foundation -framework AppKit -framework OpenGL -framework freetype";
 				PRODUCT_NAME = scourge;
 				SECTORDER_FLAGS = "";
@@ -3087,6 +3151,8 @@
 				765CD2DE08199A320025096A,
 				765CD2E908199A6E0025096A,
 				765CD2EB08199A6E0025096A,
+				76DFC765084D692300AA9728,
+				761F2FDB08628EC600217FE1,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3190,6 +3256,8 @@
 				765CD2DD08199A320025096A,
 				765CD2E808199A6E0025096A,
 				765CD2EA08199A6E0025096A,
+				76DFC764084D692300AA9728,
+				761F2FDA08628EC600217FE1,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

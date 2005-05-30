@@ -172,7 +172,8 @@ void InfoGui::describe() {
           strcat( description, tmp );
         }
         if( item->getMonsterType() ) {
-          sprintf( tmp, " vs. %s.", item->getMonsterType());
+          char *p = Monster::getDescriptiveType( item->getMonsterType() );
+          sprintf( tmp, " vs. %s.", ( p ? p : item->getMonsterType() ));
           strcat( description, tmp );
         } else {
           sprintf( tmp, " vs. any creature.");

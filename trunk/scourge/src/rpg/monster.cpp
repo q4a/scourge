@@ -27,9 +27,15 @@ map<int, vector<string>*>* Monster::currentSoundMap;
 vector<string> Monster::monsterTypes;
 vector<Monster*> Monster::npcs;
 map<string, Monster*> Monster::npcPos;
+map<string, string> Monster::modelToDescriptiveType;
 
-Monster::Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait) {
+Monster::Monster(char *type, char* descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait) {
   this->type = type;
+  if( descriptiveType ) {
+    string modelStr = model;
+    string descriptiveTypeStr = descriptiveType;
+    modelToDescriptiveType[ modelStr ] = descriptiveTypeStr;
+  }
   this->level = level;
   this->hp = hp;
   this->mp = mp;
@@ -139,11 +145,23 @@ void Monster::initMonsters() {
         endl;
         */
 
-      Monster *m = new Monster( strdup(name), level, hp, mp, 
-                                strdup(model_name), strdup(skin_name), 
-                                rareness, speed, armor, 
-                                scale, npc, 
-                                ( strlen( portrait ) ? strdup( portrait ) : NULL ) );
+      // HACK: for monster-s portrait is descriptive type
+      // for npc-s it's the portrait path.
+      Monster *m;
+      if( npc ) {
+        m = new Monster( strdup(name), NULL, level, hp, mp, 
+                         strdup(model_name), strdup(skin_name), 
+                         rareness, speed, armor, 
+                         scale, npc, 
+                         ( strlen( portrait ) ? strdup( portrait ) : NULL ) );
+      } else {
+        m = new Monster( strdup(name), 
+                         ( strlen( portrait ) ? strdup( portrait ) : NULL ),
+                         level, hp, mp, 
+                         strdup(model_name), strdup(skin_name), 
+                         rareness, speed, armor, 
+                         scale, npc, NULL );
+      }
       last_monster = m;
       if( npc ) {
         if( npcStartX > -1 && npcStartY > -1 ) {

@@ -3351,11 +3351,11 @@ void Scourge::showItemInfoUI(Item *item, int level) {
 void Scourge::checkForInfo() {
   Uint16 mapx, mapy, mapz;
 
-  // change cursor when over a hostile creature
-  if( sdlHandler->mouseIsMovingOverMap ) {
-    if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
-        sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
-        sdlHandler->getCursorMode() == SDLHandler::CURSOR_TALK ) {
+  // change cursor when over a hostile creature  
+  if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
+      sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
+      sdlHandler->getCursorMode() == SDLHandler::CURSOR_TALK ) {
+    if( sdlHandler->mouseIsMovingOverMap ) {
       bool handled = false;
       mapx = cursorMapX;
       mapy = cursorMapY;

@@ -142,7 +142,10 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
           break;
         }
       } else if(window[i]->isInside(x, y)) {
-        window[i]->getSDLHandler()->setCursorMode( SDLHandler::CURSOR_NORMAL );
+        if( window[i]->getSDLHandler()->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
+            window[i]->getSDLHandler()->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
+            window[i]->getSDLHandler()->getCursorMode() == SDLHandler::CURSOR_TALK )
+          window[i]->getSDLHandler()->setCursorMode( SDLHandler::CURSOR_NORMAL );
         if(maxz < window[i]->getZ()) {
           win = window[i];
           maxz = win->getZ();
