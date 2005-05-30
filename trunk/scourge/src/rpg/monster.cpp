@@ -345,9 +345,14 @@ int Monster::getSkillLevel(const char *skillName) {
   else return skills[skillStr];
 }
 
-const char *Monster::getRandomMonsterType() {
-  int n = (int)((float)monsterTypes.size()*rand()/RAND_MAX);
-  return monsterTypes[n].c_str();
+const char *Monster::getRandomMonsterType( int level ) {
+  Monster *m = getRandomMonster( level );
+  if( !m ) {
+    int n = (int)((float)monsterTypes.size()*rand()/RAND_MAX);
+    return monsterTypes[n].c_str();
+  } else {
+    return m->getType();
+  }
 }
 
 // this weird function is used on loading to avoid memory leaks...

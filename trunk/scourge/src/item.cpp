@@ -536,14 +536,14 @@ void Item::enchant( int newMagicLevel ) {
     bonus = (int)(1.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(2.0f * rand()/RAND_MAX) + 2;
-      monsterType = (char*)Monster::getRandomMonsterType();
+      monsterType = (char*)Monster::getRandomMonsterType( level );
     }
     break;
   case Constants::GREATER_MAGIC_ITEM:
     bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
-      monsterType = (char*)Monster::getRandomMonsterType();
+      monsterType = (char*)Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
@@ -562,7 +562,7 @@ void Item::enchant( int newMagicLevel ) {
     bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
-      monsterType = (char*)Monster::getRandomMonsterType();
+      monsterType = (char*)Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
