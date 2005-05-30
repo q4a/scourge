@@ -35,6 +35,7 @@ class Monster  {
 
  private:
   char *type;
+  char *descriptiveType;
   int hp;
   int mp;
   int level;
@@ -57,9 +58,10 @@ class Monster  {
   static map<int, vector<string>*>* currentSoundMap;
   static vector<string> monsterTypes;
   static vector<Monster*> npcs;
+  static map<string, string> modelToDescriptiveType;
 
 public:
-  Monster(char *type, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait);
+  Monster(char *type, char *descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait);
   ~Monster();
 
   static map<string, map<int, vector<string>*>*> soundMap;
@@ -71,6 +73,12 @@ public:
   inline int getRareness() { return rareness; }
   inline int getSpeed() { return speed; }
   inline char *getType() { return type; };
+  inline static char *getDescriptiveType( char *modelName ) {
+    string modelStr = modelName;
+    if( modelToDescriptiveType.find( modelStr ) == modelToDescriptiveType.end() ) 
+      return NULL;
+    else return (char*)( modelToDescriptiveType[ modelStr ].c_str() );
+  }
   inline int getHp() { return hp; }  
   inline int getMp() { return mp; }  
   inline int getLevel() { return level; }  
