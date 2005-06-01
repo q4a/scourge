@@ -186,10 +186,10 @@ const char *Constants::MAGIC_ITEM_NAMES[] = {
 };
 
 const Color *Constants::MAGIC_ITEM_COLOR[] = {
-  new Color( 0.2f, 0.85f, 0.3f, 1 ),
-  new Color( 0.2f, 0.3f, 0.85f, 1 ),
-  new Color( 0.85f, 0.2f, 0.3f, 1 ),
-  new Color( 0.85f, 0.2f, 0.85f, 1 )
+  new Color( 0.6f, 1, 0.7f, 1 ),
+  new Color( 0.6f, 0.7f, 1, 1 ),
+  new Color( 1, 0.6f, 0.7f, 1 ),
+  new Color( 1, 0.6f, 1, 1 )
 };
 
 const char *Constants::EFFECT_NAMES[] = {

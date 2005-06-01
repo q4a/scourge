@@ -24,7 +24,7 @@
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 15
+#define LEVEL 5
 
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
@@ -379,7 +379,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     
     // compute starting skill levels
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-      pc[i]->setSkill( t, info->skill[ t ] + info->skillMod[ t ] );
+      pc[i]->setSkill( t, info[i].skill[ t ] + info[i].skillMod[ t ] );
     }
     
     // add a weapon anyone can wield

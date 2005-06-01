@@ -182,7 +182,7 @@ void MD2Shape::setDir(int dir) {
 
 void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
   if(numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){
-    if(force || playedOnce){
+    if( ( force && currentAnim == MD2_RUN ) || playedOnce ){
       currentAnim = numAnim;                
       currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
       
@@ -240,11 +240,12 @@ void MD2Shape::AnimateMD2Model()
   tAnimationInfo *pAnim = &(g_3DModel->pAnimations[currentAnim]);
   int nextFrame = (currentFrame + 1) % pAnim->endFrame;
 
-  // MD2_STAND and MD2_TAUNT animations must be played only once 
+  // MD2_TAUNT animations must be played only once 
   if(nextFrame == 0){        
     nextFrame =  pAnim->startFrame;
     playedOnce = true;        
-    if(!(currentAnim == MD2_STAND || currentAnim == MD2_RUN)) {
+
+    if( !(currentAnim == MD2_STAND || currentAnim == MD2_RUN) ) {
       if(animationWaiting == - 1){
         setCurrentAnimation(MD2_STAND);
       } else{
