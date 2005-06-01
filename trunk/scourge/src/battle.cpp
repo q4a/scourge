@@ -238,6 +238,10 @@ void Battle::initTurnStep() {
       }
       // How many steps to wait before being able to use the weapon.
       weaponWait = (item ? item->getSpeed() : Constants::HAND_WEAPON_SPEED) * WEAPON_WAIT_MUL;
+      // Make turn-based mode a little snappier
+      if( session->getUserConfiguration()->isBattleTurnBased() ) {
+        weaponWait /= 2;
+      }
     }
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
