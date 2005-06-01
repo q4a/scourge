@@ -678,6 +678,7 @@ public:
 
   void moveProjectiles();
   bool fightCurrentBattleTurn();
+  void resetNonParticipantAnimation( Battle *battle );
   bool createBattleTurns();
   void resetUIAfterBattle();
   void moveCreatures();

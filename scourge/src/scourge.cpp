@@ -2337,7 +2337,7 @@ bool Scourge::fightCurrentBattleTurn() {
     }
     if( c == party->getPartySize() ) {
       for( int i = 0; i < party->getPartySize(); i++ ) {
-		if( Battle::debugBattle ) cerr << "*** Reset in scourge!" << endl;
+        if( Battle::debugBattle ) cerr << "*** Reset in scourge!" << endl;
         party->getParty(i)->getBattle()->reset();
       }
       roundOver = true;
@@ -2347,6 +2347,7 @@ bool Scourge::fightCurrentBattleTurn() {
       if( getUserConfiguration()->isBattleTurnBased() ) {
         // TB: fight the current battle turn only
         Battle *battle = battleRound[battleTurn];
+        resetNonParticipantAnimation( battle );
         if(battle->fightTurn()) {
           battleTurn++;
         }
@@ -2371,6 +2372,20 @@ bool Scourge::fightCurrentBattleTurn() {
     }
   }
   return false;
+}
+
+void Scourge::resetNonParticipantAnimation( Battle *battle ) {
+  // in TB battle reset animations of non-participants
+  for( int i = 0; i < session->getCreatureCount(); i++ ) {
+    if( session->getCreature( i ) != battle->getCreature() ) {
+      session->getCreature( i )->getShape()->setCurrentAnimation( (int)MD2_STAND, true );
+    }
+  }
+  for( int i = 0; i < getParty()->getPartySize(); i++ ) {
+    if( getParty()->getParty( i ) != battle->getCreature() ) {
+      getParty()->getParty( i )->getShape()->setCurrentAnimation( (int)MD2_STAND, true );
+    }
+  }
 }
 
 bool Scourge::createBattleTurns() {
@@ -2553,7 +2568,6 @@ void Scourge::moveMonster(Creature *monster) {
     // don't move when attacking
     return;
   } else {
-    //if(battleRound.size() > 0) monster->getShape()->setCurrentAnimation((int)MD2_RUN);
     monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER ? 
                                               (int)MD2_RUN :
                                               (int)MD2_STAND );
