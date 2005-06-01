@@ -26,7 +26,7 @@
 
 #define INFO_INTERVAL 3000
 
-#define DEBUG_KEYS 1
+//#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -948,13 +948,13 @@ void Scourge::drawBorder() {
 
   // bottom
   glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
-  glVertex2i (0, h - (int)TILE_H);
+  glVertex2i (0, h - (int)TILE_H + 3);
   glTexCoord2f (w/TILE_W, 0.0f);
-  glVertex2i (0, h);
+  glVertex2i (0, h + 3);
   glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (w, h);
+  glVertex2i (w, h + 3);
   glTexCoord2f (0.0f, TILE_H/TILE_H);      
-  glVertex2i (w, h - (int)TILE_H);
+  glVertex2i (w, h - (int)TILE_H + 3);
   glEnd();
 
   //int gw = 128;

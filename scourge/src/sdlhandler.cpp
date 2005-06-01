@@ -684,7 +684,7 @@ void SDLHandler::initFonts() {
     sprintf(s, "%s/VeraMono.ttf", rootDir);
     monoFont.init(s, 8);
     sprintf(s, "%s/Cas_antn.ttf", rootDir);
-    largeFont.init(s, 14);
+    largeFont.init(s, 18);
     font_initialized = true;
   }
 }
