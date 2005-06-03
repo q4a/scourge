@@ -922,14 +922,15 @@ void Scourge::drawBorder() {
   glVertex2i ((int)TILE_W, 0);
 
   // right
+  int gutter = 5;
   glTexCoord2f (TILE_W/TILE_W, 0.0f);
-  glVertex2i (w - (int)TILE_W, 0);
+  glVertex2i (w - (int)TILE_W + gutter, 0);
   glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
-  glVertex2i (w - (int)TILE_W, h);
+  glVertex2i (w - (int)TILE_W + gutter, h);
   glTexCoord2f (0.0f, h/TILE_H);
-  glVertex2i (w, h);
+  glVertex2i (w + gutter, h);
   glTexCoord2f (0.0f, 0.0f);      
-  glVertex2i (w, 0);
+  glVertex2i (w + gutter, 0);
   glEnd();
 
   TILE_W = 120.0f;
@@ -948,13 +949,13 @@ void Scourge::drawBorder() {
 
   // bottom
   glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
-  glVertex2i (0, h - (int)TILE_H + 3);
+  glVertex2i (0, h - (int)TILE_H + gutter);
   glTexCoord2f (w/TILE_W, 0.0f);
-  glVertex2i (0, h + 3);
+  glVertex2i (0, h + gutter);
   glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (w, h + 3);
+  glVertex2i (w, h + gutter);
   glTexCoord2f (0.0f, TILE_H/TILE_H);      
-  glVertex2i (w, h - (int)TILE_H + 3);
+  glVertex2i (w, h - (int)TILE_H + gutter);
   glEnd();
 
   //int gw = 128;
@@ -2427,6 +2428,8 @@ bool Scourge::createBattleTurns() {
   }
   for (int i = 0; i < session->getCreatureCount(); i++) {
     if (!session->getCreature(i)->getStateMod(Constants::dead) &&
+        session->getCreature(i)->getMonster() &&
+        !session->getCreature(i)->getMonster()->isNpc() &&
         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                     toint(session->getCreature(i)->getY())) &&
         levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
@@ -2475,6 +2478,8 @@ bool Scourge::createBattleTurns() {
     }
     for (int i = 0; i < session->getCreatureCount(); i++) {
       if (!session->getCreature(i)->getStateMod(Constants::dead) &&
+          session->getCreature(i)->getMonster() &&
+          !session->getCreature(i)->getMonster()->isNpc() &&
           levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                  toint(session->getCreature(i)->getY())) &&
           levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
