@@ -28,6 +28,7 @@
 #include "gui/window.h"
 #include "gui/label.h"
 #include "gui/button.h"
+#include <vector>
 
 /**
   *@author Gabor Torok
@@ -35,6 +36,27 @@
 
 class Scourge;
 class PartyEditor;
+
+using namespace std;
+
+typedef struct _MenuItemParticle {
+  int life;
+  float x, y;
+  int r, g, b;
+  float dir, step;
+  float zoom;
+} MenuItemParticle;
+
+typedef struct _MenuItem {
+  char text[80];
+  GLuint texture[1];
+  unsigned char *textureInMemory;
+  int x;
+  int y;
+  bool active;
+  int value;
+  MenuItemParticle particle[100];
+} MenuItem;
 
 class MainMenu : public SDLEventHandler,SDLScreenView {
 private:
@@ -47,6 +69,7 @@ private:
   Uint32 lastTick;
   int candleFlameX, candleFlameY;
   PartyEditor *partyEditor;
+  bool initTextures;
 
 #define MAX_LOGOS 100
   typedef struct _LogoSprite {
@@ -78,6 +101,10 @@ private:
 
   Window *newGameConfirm;
   Button *newGameConfirmOK, *newGameConfirmCancel;
+
+  static const char *menuText[];
+  static const int values[];
+  vector< MenuItem* > menuItemList;
   
 public:
 #define NEW_GAME 1
@@ -109,6 +136,8 @@ public:
   void drawClouds(bool moveClouds, bool flipped);
   void drawWater();
   void drawLogo();
+  void drawMenu();
+  void buildTextures();
   void addLogoSprite();
   void drawLogoSprites();
   void moveLogoSprites();

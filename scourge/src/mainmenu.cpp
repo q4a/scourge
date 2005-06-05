@@ -17,8 +17,6 @@
 
 #include "mainmenu.h"
 
-//#define AT_WORK
-
 #define LOGO_DELTA 0.05f
 #define LOGO_ROT_POS 30.0f
 #define LOGO_ROT_NEG 0
@@ -28,6 +26,20 @@
 #define PI 3.14159f
 
 #define WATER_HEIGHT 130
+
+#define MENU_ITEM_WIDTH 256
+#define MENU_ITEM_HEIGHT 32
+#define MENU_ITEM_ZOOM 1.5f
+#define MENU_ITEM_PARTICLE_ZOOM 1.1f
+#define MAX_PARTICLE_LIFE 50
+
+const char *MainMenu::menuText[] = { 
+  "New Game", "Continue Game", "Multiplayer Game", "Options", "About S.c.o.u.r.g.e.", "Quit", ""
+};
+
+const int MainMenu::values[] = {
+  NEW_GAME, CONTINUE_GAME, MULTIPLAYER, OPTIONS, ABOUT, QUIT, 0
+};
 
 MainMenu::MainMenu(Scourge *scourge){
   this->scourge = scourge;
@@ -51,6 +63,7 @@ MainMenu::MainMenu(Scourge *scourge){
   top = (scourge->getSDLHandler()->getScreen()->h - 600) / 2;
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
   lastTick = 0;
+  initTextures = false;
 
   starCount = 70;
   for(int i = 0; i < starCount; i++) {
@@ -58,8 +71,6 @@ MainMenu::MainMenu(Scourge *scourge){
     star[i].y = top + (int)( ((float)scourge->getSDLHandler()->getScreen()->h - (top * 2 + WATER_HEIGHT)) * rand()/RAND_MAX );
   }
   // The new style gui
-#ifndef AT_WORK
-
 #ifdef HAVE_SDL_NET
   /*
   mainWin = new Window( scourge->getSDLHandler(),
@@ -113,13 +124,6 @@ MainMenu::MainMenu(Scourge *scourge){
   quitButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Quit" );
   mainWin->addWidget((Widget*)quitButton);
   y += 30;
-#else
-  mainWin = new Window( scourge->getSDLHandler(),
-												50, 230, 5, 5, 
-												"", 
-												scourge->getShapePalette()->getGuiTexture(),
-												false );
-#endif
   
   int w = 250;
   int h = 120;
@@ -153,31 +157,10 @@ MainMenu::~MainMenu(){
 }
 
 void MainMenu::drawView() {
-
-  /*
-  if( partyEditor->isVisible() ) {
-    drawWater();
-
-    glDisable(GL_TEXTURE_2D);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_NOTEQUAL, 0);        
-    glPushMatrix();
-    glLoadIdentity( );                         
-    glPixelZoom( 1.0, -1.0 );
-    glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, top );
-    glDrawPixels(scourge->getShapePalette()->scourge->w, 
-                 scourge->getShapePalette()->scourge->h,
-                 GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImage);
-    glDisable(GL_ALPHA_TEST);
-    glPopMatrix();
-
-  } else {
-  */
-#ifndef AT_WORK
-
   if( !partyEditor->isVisible() ) {
+
+    drawMenu();
+
     // create a stencil for the water
     glDisable(GL_DEPTH_TEST);
     glColorMask(0,0,0,0);
@@ -240,23 +223,6 @@ void MainMenu::drawView() {
     drawLogo();
   }
 
-#else
-  glLoadIdentity();
-  glTranslatef(0.0f,0.0f,-1.0f);
-  glDisable(GL_CULL_FACE);
-  glColor4f(1, 1, 1, 1);
-  glBegin(GL_QUADS);
-  glVertex3f( 100, 100, 0 );
-  glVertex3f( 200, 100, 0 );
-  glVertex3f( 200, 200, 0 );
-  glVertex3f( 100, 200, 0 );
-  glEnd();
-  scourge->getSDLHandler()->texPrint(300, 300, "Hello world");
-#endif
-
-  //}
-
-
 
   /*
   // debug tile images
@@ -269,8 +235,6 @@ void MainMenu::drawView() {
     }
   }
   */
-
-
 
 
   glEnable( GL_TEXTURE_2D );
@@ -359,13 +323,168 @@ void MainMenu::drawAfter() {
 }
 
 void MainMenu::show() { 
-  mainWin->setVisible(true); 
+  //mainWin->setVisible(true); 
   partyEditor->reset();
 }
 
 void MainMenu::hide() { 
-  mainWin->setVisible(false); 
+  //mainWin->setVisible(false); 
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
+}
+
+void MainMenu::drawMenu() {
+
+  glDisable( GL_CULL_FACE );
+  if( !initTextures ) {
+    buildTextures();
+    initTextures = true;
+  }
+
+  float zoom = MENU_ITEM_ZOOM;
+  glEnable( GL_TEXTURE_2D );
+  for( int i = 0; i < (int)menuItemList.size(); i++ ) {
+    MenuItem *mi = menuItemList[i];
+    zoom = ( mi->active ? MENU_ITEM_ZOOM * 1.5f : MENU_ITEM_ZOOM );
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef( 50, top + 230 - ( mi->active ? 10 : 0 ) + i * 50, 0 );
+    glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
+    if( mi->active ) {
+      glColor4f( 1, 1, 0.8, 1 );
+    } else {
+      glColor4f( 1, 1, 1, 1 );
+    }
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 1 );
+    glVertex2f( 0, 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex2f( MENU_ITEM_WIDTH * zoom, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2f( MENU_ITEM_WIDTH * zoom, MENU_ITEM_HEIGHT * zoom );
+    glTexCoord2f( 0, 0 );
+    glVertex2f( 0, MENU_ITEM_HEIGHT * zoom );
+    glEnd();
+    glPopMatrix();
+  }
+
+  glEnable( GL_BLEND );
+  glDepthMask( GL_FALSE );
+  for( int t = 0; t < (int)menuItemList.size(); t++ ) {
+    MenuItem *mi = menuItemList[t];
+    if( mi->active ) {
+      for( int r = 0; r < 2; r++ ) {
+        if( r == 0 ) glBlendFunc( GL_DST_COLOR, GL_ONE );
+        else glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        for( int i = 0; i < 20; i++ ) {
+          if( !( mi->particle[i].life ) ) {
+            mi->particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
+            mi->particle[i].x = mi->particle[i].y = 0;
+            mi->particle[i].r = 200 + (int)( 40.0f * rand() / RAND_MAX );
+            mi->particle[i].g = 200 + (int)( 40.0f * rand() / RAND_MAX );
+            mi->particle[i].b = 150 + (int)( 40.0f * rand() / RAND_MAX );
+            mi->particle[i].dir = 10.0f * rand() / RAND_MAX;
+            mi->particle[i].zoom = 2.0f + ( 2.0f * rand() / RAND_MAX );
+            switch( (int)( 4.0f * rand() / RAND_MAX ) ) {
+            case 0: mi->particle[i].dir = 360.0f - mi->particle[i].dir; break;
+            case 1: mi->particle[i].dir = 180.0f - mi->particle[i].dir; break;
+            case 2: mi->particle[i].dir = 180.0f + mi->particle[i].dir; break;
+            //default: // do nothing
+            }
+            mi->particle[i].step = 4.0f * rand() / RAND_MAX;
+          }
+  
+          glPushMatrix();
+          glLoadIdentity();
+          glTranslatef( 80 + mi->particle[i].x, 
+                        top + 200 + t * 50 + mi->particle[i].y, 0 );
+          glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
+  
+          float a = (float)( MAX_PARTICLE_LIFE - mi->particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
+          //if( i == 0 ) cerr << "life=" << mi->particle[i].life << " a=" << a << endl;
+          glColor4f( (float)( mi->particle[i].r ) / 256.0f, 
+                     (float)( mi->particle[i].g ) / 256.0f, 
+                     (float)( mi->particle[i].b ) / 256.0f, 
+                     a / 2.0f );
+  
+          glBegin( GL_QUADS );
+          glNormal3f( 0, 0, 1 );
+          glTexCoord2f( 0, 1 );
+          glVertex2f( 0, 0 );
+          glTexCoord2f( 1, 1 );
+          glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, 0 );
+          glTexCoord2f( 1, 0 );
+          glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
+          glTexCoord2f( 0, 0 );
+          glVertex2f( 0, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
+          glEnd();
+          glPopMatrix();
+  
+          mi->particle[i].x += cos( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
+          mi->particle[i].y += sin( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
+          mi->particle[i].life++;
+          if( mi->particle[i].life >= MAX_PARTICLE_LIFE ) 
+            mi->particle[i].life = 0;
+        }
+      }
+    }
+  }
+  glDisable( GL_BLEND );  
+  glDepthMask( GL_TRUE );
+  glDisable( GL_TEXTURE_2D );
+}
+
+void MainMenu::buildTextures() {
+  scourge->getSDLHandler()->setFontType( SDLHandler::SCOURGE_LARGE_FONT );
+
+  int x = 50;
+  int y = top + 230;
+  //int width = scourge->getSDLHandler()->textWidth( mi->text );
+  int width = MENU_ITEM_WIDTH;
+  int height = MENU_ITEM_HEIGHT;
+
+  for( int i = 0; menuText[i][0]; i++ ) {
+
+#ifndef HAVE_SDL_NET
+    if( i == 2 ) continue;
+#endif
+
+    MenuItem *mi = new MenuItem();
+    mi->active = ( i == 0 ? true : false );
+    for( int t = 0; t < 20; t++ ) mi->particle[t].life = 0;
+    menuItemList.push_back( mi );
+    strcpy( mi->text, menuText[i] );
+    mi->value = values[i];
+    
+    // Create texture and copy minimap date from backbuffer on it    
+    mi->textureInMemory = (unsigned char *)malloc( width * height * 4 );
+    
+    glGenTextures(1, mi->texture);    
+    glBindTexture(GL_TEXTURE_2D, mi->texture[0]); 
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliquÿ a la texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
+                  GL_RGBA, GL_UNSIGNED_BYTE, mi->textureInMemory );
+
+    // Draw image
+    mi->x = x;
+    mi->y = y;
+    glColor4f( 1, 1, 1, 1 );
+    scourge->getSDLHandler()->texPrint( x, y, menuText[i] );
+    y += height;
+
+    // Copy to a texture
+    glLoadIdentity();
+    glEnable( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
+    glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 
+                      x, scourge->getSDLHandler()->getScreen()->h - ( y - 20 ), 
+                      width, height, 0 );
+  }
+  scourge->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
 }
 
 void MainMenu::drawLogo() {
@@ -701,7 +820,7 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
   if( widget == partyEditor->getCancelButton() ) {
     partyEditor->reset();
     partyEditor->setVisible( false );
-    mainWin->setVisible( true );
+    //mainWin->setVisible( true );
     return false;
   } else if( widget == partyEditor->getStartGameButton() ) {
     partyEditor->setVisible( false );
@@ -762,6 +881,7 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   }
   */
 
+  int line = -1;
   switch(event->type) {
   case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {
@@ -784,6 +904,20 @@ bool MainMenu::handleEvent(SDL_Event *event) {
 	  fprintf(stderr, "blend: a=%d b=%d\n", Scourge::blendA, Scourge::blendB);
 	}
 	break;
+  case SDL_MOUSEMOTION:
+  case SDL_MOUSEBUTTONUP:
+  if( event->motion.x >= 50 && event->motion.x < 400 ) {
+    line = ( event->motion.y - ( top + 240 ) ) / 50;
+  }
+  for( int i = 0; i < (int)menuItemList.size(); i++ ) {
+    MenuItem *mi = menuItemList[i];
+    mi->active = ( i == line );
+  }
+  if( event->type == SDL_MOUSEBUTTONUP && line > -1 ) {
+    value = menuItemList[ line ]->value;
+    return true;
+  }
+  break;
   default: break;  
   }  
   return false;
@@ -798,7 +932,7 @@ void MainMenu::showNewGameConfirmationDialog() {
 }
 
 void MainMenu::showPartyEditor() {
-  mainWin->setVisible( false );
+  //mainWin->setVisible( false );
   partyEditor->setVisible( true );
 }
 
