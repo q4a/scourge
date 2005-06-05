@@ -63,6 +63,7 @@ MainMenu::MainMenu(Scourge *scourge){
   top = (scourge->getSDLHandler()->getScreen()->h - 600) / 2;
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
   lastTick = 0;
+  lastTickMenu = 0;
   initTextures = false;
 
   starCount = 70;
@@ -159,7 +160,12 @@ MainMenu::~MainMenu(){
 void MainMenu::drawView() {
   if( !partyEditor->isVisible() ) {
 
-    drawMenu();
+    // control menu animation speed
+    Uint32 t = SDL_GetTicks();
+    if( t - lastTickMenu > 40 ) {
+      drawMenu();
+      lastTickMenu = t;
+    }
 
     // create a stencil for the water
     glDisable(GL_DEPTH_TEST);
