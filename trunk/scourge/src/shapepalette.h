@@ -244,6 +244,10 @@ public:
   GLubyte *logoImage;   
   GLuint logo_texture;
 
+  SDL_Surface *chain;
+  GLubyte *chainImage;   
+  GLuint chain_texture;
+
   SDL_Surface *scourge;
   GLubyte *scourgeImage;
 
