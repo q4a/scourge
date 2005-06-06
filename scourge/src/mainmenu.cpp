@@ -366,7 +366,7 @@ void MainMenu::drawMenu() {
     glTranslatef( 50, top + 230 - ( mi->active ? 10 : 0 ) + i * 50, 0 );
     glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
     if( mi->active ) {
-      glColor4f( 1, 1, 0.8, 1 );
+      glColor4f( 1, 0.6f, 0.5f, 1 );
     } else {
       glColor4f( 1, 1, 1, 1 );
     }
@@ -397,8 +397,8 @@ void MainMenu::drawMenu() {
             mi->particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
             mi->particle[i].x = mi->particle[i].y = 0;
             mi->particle[i].r = 200 + (int)( 40.0f * rand() / RAND_MAX );
-            mi->particle[i].g = 200 + (int)( 40.0f * rand() / RAND_MAX );
-            mi->particle[i].b = 150 + (int)( 40.0f * rand() / RAND_MAX );
+            mi->particle[i].g = 170 + (int)( 40.0f * rand() / RAND_MAX );
+            mi->particle[i].b = 80 + (int)( 40.0f * rand() / RAND_MAX );
             mi->particle[i].dir = 10.0f * rand() / RAND_MAX;
             mi->particle[i].zoom = 2.0f + ( 2.0f * rand() / RAND_MAX );
             switch( (int)( 4.0f * rand() / RAND_MAX ) ) {
