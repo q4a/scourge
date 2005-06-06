@@ -541,8 +541,16 @@ void ShapePalette::initialize() {
   setupAlphaBlendedBMP("/paperdoll.bmp", &paperDoll, &paperDollImage);
 
   // set up the logo
-  setupAlphaBlendedBMP("/logo.bmp", &logo, &logoImage);
-  logo_texture = loadGLTextures("/logo.bmp");
+  setupAlphaBlendedBMP("/logo2.bmp", &logo, &logoImage);
+  logo_texture = loadGLTextureBGRA(logo, logoImage, GL_LINEAR);
+  setupAlphaBlendedBMP("/chain.bmp", &chain, &chainImage);
+  chain_texture = loadGLTextureBGRA(chain, chainImage, GL_LINEAR);
+
+
+//  setupAlphaBlendedBMP("/logo2.bmp", &logo, &logoImage);
+//  logo_texture = loadGLTextures("/logo2.bmp");
+//  setupAlphaBlendedBMP("/chain.bmp", &chain, &chainImage);
+//  chain_texture = loadGLTextures("/chain.bmp");
 
   // set up the scourge
   setupAlphaBlendedBMP("/scourge.bmp", &scourge, &scourgeImage);

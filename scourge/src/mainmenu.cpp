@@ -53,7 +53,7 @@ MainMenu::MainMenu(Scourge *scourge){
 	cloud[i].speed = (int)(2.0 * rand()/RAND_MAX) + 1;
   }
 
-  logoRot = 0;
+  logoRot = -scourge->getShapePalette()->logo->h;
   logoRotDelta = LOGO_DELTA;
   logoTicks = 0;
   logoTicksDelta = 50;
@@ -225,9 +225,11 @@ void MainMenu::drawView() {
   glDisable(GL_ALPHA_TEST);
   glPopMatrix();
 
+  /*
   if( !partyEditor->isVisible() ) {
     drawLogo();
   }
+  */
 
 
   /*
@@ -245,9 +247,9 @@ void MainMenu::drawView() {
 
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
-}
+//}
 
-void MainMenu::drawAfter() {
+//void MainMenu::drawAfter() {
 
   if( partyEditor->isVisible() ) partyEditor->drawAfter();
 
@@ -326,10 +328,18 @@ void MainMenu::drawAfter() {
       }
     }
   }
+
+  if( !partyEditor->isVisible() && openingTop <= top ) {
+    drawLogo();
+  }
+}
+
+void MainMenu::drawAfter() {
 }
 
 void MainMenu::show() { 
   //mainWin->setVisible(true); 
+  logoRot = -scourge->getShapePalette()->logo->h;
   partyEditor->reset();
 }
 
@@ -495,6 +505,81 @@ void MainMenu::buildTextures() {
 
 void MainMenu::drawLogo() {
 
+
+  glEnable( GL_ALPHA_TEST );
+  glAlphaFunc( GL_EQUAL, 0xff );
+  glEnable( GL_TEXTURE_2D );
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( 70, logoRot, 500 );
+  float w = scourge->getShapePalette()->logo->w;
+  float h = scourge->getShapePalette()->logo->h;
+  glColor4f( 1, 1, 1, 1 );
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
+  glBegin( GL_QUADS );
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(w, h, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(w, 0, 0);
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, 0, 0);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, h, 0);
+  glEnd();
+  glPopMatrix();
+
+  for( int i = 0; i < 2; i++ ) {
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef( ( !i ? 100 : 
+                    70 + scourge->getShapePalette()->logo->w - 30 - 
+                    scourge->getShapePalette()->chain->w ), 
+                  logoRot - scourge->getShapePalette()->chain->h, 500 );
+    float w = scourge->getShapePalette()->chain->w;
+    float h = scourge->getShapePalette()->chain->h;
+    glColor4f( 1, 1, 1, 1 );
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->chain_texture );
+    glBegin( GL_QUADS );
+    glNormal3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f( 1.0f, 1.0f );
+    glVertex3f(w, h, 0);
+    glTexCoord2f( 1.0f, 0.0f );
+    glVertex3f(w, 0, 0);
+    glTexCoord2f( 0.0f, 0.0f );
+    glVertex3f(0, 0, 0);
+    glTexCoord2f( 0.0f, 1.0f );
+    glVertex3f(0, h, 0);
+    glEnd();
+    glPopMatrix();
+  }
+
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_ALPHA_TEST );
+
+
+
+  if( logoRot < 120 ) {
+    GLint t = SDL_GetTicks();
+    if(t - logoTicks > logoTicksDelta) {
+      logoTicks = t;
+      logoRot += 8;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*
   //  if((int)(5.0f * rand()/RAND_MAX) == 0) 
   addLogoSprite();
   drawLogoSprites();
@@ -579,7 +664,7 @@ void MainMenu::drawLogo() {
   glPopMatrix();
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_BLEND );
-
+  */
 }
 
 void MainMenu::addLogoSprite() {
