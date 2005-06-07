@@ -99,6 +99,10 @@ public:
   inline bool getAttackEffect() { return attackEffect; }
   inline void setAttackEffect(bool b) { attackEffect = b; }
 
+  // don't use these methods... they're a hack
+  void freeze();
+  void thaw();
+
   void setCurrentAnimation(int numAnim, bool force=false);
   inline int getCurrentAnimation() { return currentAnim; }
 

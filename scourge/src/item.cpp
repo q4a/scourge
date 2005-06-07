@@ -524,7 +524,7 @@ void Item::enchant( int newMagicLevel ) {
   int maxMagicLevel = level / 15;
   if( magicLevel > maxMagicLevel ) magicLevel = maxMagicLevel;
 
-  cursed = ( !((int)( 2.0f * rand() / RAND_MAX )) );
+  cursed = ( !((int)( 20.0f * rand() / RAND_MAX )) );
 
   // adjust the price
   price *= ( magicLevel + 2 );

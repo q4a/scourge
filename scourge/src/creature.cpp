@@ -674,6 +674,10 @@ void Creature::setNextDontMove(Creature *next, int index) {
   this->index = index;
 }
 
+float Creature::getMaxInventoryWeight() { 
+  return (float) getSkill(Constants::POWER) * 2.5f;
+}  
+
 bool Creature::addInventory(Item *item, bool force) { 
   if(inventory_count < MAX_INVENTORY_SIZE &&
      (force || !item->isBlocking() || 
