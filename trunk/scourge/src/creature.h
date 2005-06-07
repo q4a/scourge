@@ -260,7 +260,7 @@ class Creature {
   // get the item at the given equip-index (inventory location)
   float inventoryWeight;
   inline float getInventoryWeight() { return inventoryWeight;  }
-  inline float getMaxInventoryWeight() { return (float) getSkill(Constants::POWER) + 25.0f; }  
+  float getMaxInventoryWeight();
   Item *getEquippedInventory(int index);
   
   inline Item *getInventory(int index) { return inventory[index]; }

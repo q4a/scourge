@@ -180,6 +180,16 @@ void MD2Shape::setDir(int dir) {
   }
 }
 
+void MD2Shape::freeze() {
+  animationWaiting = currentAnim = MD2_STAND;
+  //playedOnce = false;
+}
+
+void MD2Shape::thaw() {
+  animationWaiting = currentAnim = MD2_RUN;
+  playedOnce = false;
+}
+
 void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
   if(numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){
     if( ( force && currentAnim == MD2_RUN ) || playedOnce ){

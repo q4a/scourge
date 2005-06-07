@@ -1985,7 +1985,7 @@ bool Scourge::useDoor(Location *pos) {
 	if( !blocker ) {
 
 	  // there is a chance that the door will be destroyed
-	  if( 0 == (int)( 10.0f * rand()/RAND_MAX ) ) {
+	  if( 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
 		destroyDoor( ox, oy, oldDoorShape );
 		levelMap->updateLightMap();
 	  } else {
@@ -1995,7 +1995,7 @@ bool Scourge::useDoor(Location *pos) {
 									 nx, ny, toint(party->getPlayer()->getZ()));
 	  }
 	  return true;
-	} else if( blocker->creature && blocker->creature->isMonster() ) {
+	} else if( blocker->creature && !( blocker->creature->isMonster() ) ) {
 	  // rollback if blocked by a player
 	  levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
 	  levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
@@ -2527,6 +2527,18 @@ void Scourge::resetUIAfterBattle() {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
     } else {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+    }
+  }
+  // animate monsters again after TB combat (see resetNonParticipantAnimation() )
+  for(int i = 0; i < session->getCreatureCount(); i++) {
+    if( !session->getCreature(i)->getStateMod( Constants::dead ) &&
+        !session->getCreature(i)->getMonster()->isNpc() ) {
+      session->getCreature(i)->setMotion( Constants::MOTION_LOITER );
+      // I hate doing this (calling thaw()) but there is no other nice way to
+      // stop monsters after a TB battle from standing. setCurrentAdnim(force) doesn't work.
+      // I really need to rewrite the animation code or not rely on the current animation
+      // in move(). It's very messy.
+      ((MD2Shape*)session->getCreature(i)->getShape())->thaw();
     }
   }
 }
