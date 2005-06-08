@@ -159,13 +159,8 @@ MainMenu::~MainMenu(){
 
 void MainMenu::drawView() {
   if( !partyEditor->isVisible() ) {
-
-    // control menu animation speed
-    Uint32 t = SDL_GetTicks();
-    if( t - lastTickMenu > 40 ) {
-      drawMenu();
-      lastTickMenu = t;
-    }
+    
+    drawMenu();
 
     // create a stencil for the water
     glDisable(GL_DEPTH_TEST);
@@ -206,6 +201,8 @@ void MainMenu::drawView() {
   if( !partyEditor->isVisible() ) {
     drawClouds(true, false);
   }
+  
+  
 
   // drawWater();
 
@@ -434,13 +431,7 @@ void MainMenu::drawMenu() {
           glTexCoord2f( 0, 0 );
           glVertex2f( 0, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
           glEnd();
-          glPopMatrix();
-  
-          mi->particle[i].x += cos( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
-          mi->particle[i].y += sin( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
-          mi->particle[i].life++;
-          if( mi->particle[i].life >= MAX_PARTICLE_LIFE ) 
-            mi->particle[i].life = 0;
+          glPopMatrix();  
         }
       }
     }
@@ -448,6 +439,25 @@ void MainMenu::drawMenu() {
   glDisable( GL_BLEND );  
   glDepthMask( GL_TRUE );
   glDisable( GL_TEXTURE_2D );
+  
+  
+  // move menu
+  Uint32 tt = SDL_GetTicks();
+  if( tt - lastTickMenu > 40 ) {
+    lastTickMenu = tt;
+    for( int t = 0; t < (int)menuItemList.size(); t++ ) {
+      MenuItem *mi = menuItemList[t];
+      for( int i = 0; i < 20; i++ ) {
+            
+        mi->particle[i].x += cos( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
+        mi->particle[i].y += sin( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
+        mi->particle[i].life++;
+        if( mi->particle[i].life >= MAX_PARTICLE_LIFE ) {
+          mi->particle[i].life = 0;
+        }
+      }
+    }
+  }
 }
 
 void MainMenu::buildTextures() {
@@ -1000,9 +1010,16 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   if( event->motion.x >= 50 && event->motion.x < 400 ) {
     line = ( event->motion.y - ( top + 240 ) ) / 50;
   }
+    bool oldActive;
   for( int i = 0; i < (int)menuItemList.size(); i++ ) {
     MenuItem *mi = menuItemList[i];
+    oldActive = mi->active;
     mi->active = ( i == line );
+    if( mi->active != oldActive ) {
+      for( int t = 0; t < 20; t++ ) {
+        mi->particle[t].life = 0;
+      }
+    }
   }
   if( event->type == SDL_MOUSEBUTTONUP && line > -1 ) {
     value = menuItemList[ line ]->value;
