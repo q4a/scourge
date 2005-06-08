@@ -598,7 +598,7 @@ float Constants::distance(float x1, float y1, float w1, float h1,
 }
 
 void Constants::checkTexture(char *message, int w, int h) {
-  int maxTextureSize;
+  GLint maxTextureSize;
   glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
   if( w > maxTextureSize || h > maxTextureSize) {
     cerr << "*****************************" << endl;
