@@ -77,7 +77,13 @@ GameAdapter *createGameAdapter(UserConfiguration *config) {
 int main(int argc, char *argv[]) {
 
   // init the rootdir via binreloc
+#ifdef ENABLE_BINRELOC  
   rootDir = (char*)BR_DATADIR( "/data" );
+#else
+  // for windows (binreloc doesn't compile in windows)
+  rootDir = (char*)malloc( 300 * sizeof( char ) );
+  strcpy( rootDir, "data" );
+#endif  
   cerr << "rootDir=" << rootDir << endl;
 
   // FIXME: for windows, if this doesn't work, try using DATA_DIR

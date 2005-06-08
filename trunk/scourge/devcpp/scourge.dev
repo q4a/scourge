@@ -1,7 +1,7 @@
 [Project]
 FileName=scourge.dev
 Name=scourge
-UnitCount=157
+UnitCount=159
 Type=0
 Ver=1
 ObjFiles=
@@ -10,9 +10,9 @@ Libs=
 PrivateResource=scourge_private.rc
 ResourceIncludes=
 MakeIncludes=
-Compiler=-g -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
-CppCompiler=-g -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
-Linker=-g -Wall -Wno-deprecated -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:\GnuWin32\lib -lfreetype -lSDL_mixer_@@_C:\Dev-Cpp\lib\SDL_net-1.2.5\lib\SDL_net.lib_@@_
+Compiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
+CppCompiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\_@@_
+Linker=-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -Wno-deprecated -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:\GnuWin32\lib -lfreetype -lSDL_mixer_@@_C:\Dev-Cpp\lib\SDL_net-1.2.5\lib\SDL_net.lib_@@_
 IsCpp=1
 Icon=scourge.ico
 ExeOutput=..
@@ -1611,6 +1611,26 @@ BuildCmd=
 FileName=..\src\gui\guitheme.cpp
 CompileCpp=1
 Folder=gui
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit159]
+FileName=..\src\conversationgui.cpp
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit158]
+FileName=..\src\conversationgui.h
+CompileCpp=1
+Folder=scourge
 Compile=1
 Link=1
 Priority=1000
