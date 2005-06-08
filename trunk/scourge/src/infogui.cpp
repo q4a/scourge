@@ -242,6 +242,9 @@ void InfoGui::describe() {
     }
   } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
     strcat(description, "|");
+    strcat(description, "School: ");
+    strcat(description, item->getSpell()->getSchool()->getName() );
+    strcat(description, "|");
     strcat(description, item->getSpell()->getNotes());
   }
 
