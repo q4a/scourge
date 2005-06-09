@@ -126,10 +126,19 @@ bool Battle::fightTurn() {
       nextTurn = weaponWait;
       if(debugBattle) cerr << "Carries over into next turn." << endl;
     }
+    // in TB battle, wait for the animations to end before ending turn
+    int a;
     if( session->getUserConfiguration()->isBattleTurnBased()) {
-      int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+      a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
       if( !( a == MD2_STAND || a == MD2_RUN )) {
         return false;
+      }
+      if( creature->getTargetCreature() && 
+          !creature->getTargetCreature()->getStateMod( Constants::dead ) ) {
+        a =((MD2Shape*)(creature->getTargetCreature()->getShape()))->getCurrentAnimation();
+        if( !( a == MD2_STAND || a == MD2_RUN )) {
+          return false;
+        }
       }
     }
     if( debugBattle ) cerr << "*** Reset 3" << endl;
