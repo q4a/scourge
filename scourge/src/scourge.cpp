@@ -2378,10 +2378,14 @@ bool Scourge::fightCurrentBattleTurn() {
 void Scourge::resetNonParticipantAnimation( Battle *battle ) {
   // in TB battle reset animations of non-participants
   for( int i = 0; i < session->getCreatureCount(); i++ ) {
-    ((MD2Shape*)session->getCreature(i)->getShape())->setPauseAnimation( session->getCreature( i ) != battle->getCreature() );
+    bool active = ( session->getCreature( i ) == battle->getCreature() ||
+                    session->getCreature( i ) == battle->getCreature()->getTargetCreature() );
+    ((MD2Shape*)session->getCreature(i)->getShape())->setPauseAnimation( !active );
   }
   for( int i = 0; i < getParty()->getPartySize(); i++ ) {
-    ((MD2Shape*)getParty()->getParty( i )->getShape())->setPauseAnimation( getParty()->getParty( i ) != battle->getCreature() );
+    bool active = ( getParty()->getParty( i ) == battle->getCreature() ||
+                    getParty()->getParty( i ) == battle->getCreature()->getTargetCreature() );
+    ((MD2Shape*)getParty()->getParty( i )->getShape())->setPauseAnimation( !active );
   }
 }
 

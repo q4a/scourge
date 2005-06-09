@@ -388,7 +388,10 @@ void MainMenu::drawMenu() {
     if( mi->active ) {
       for( int r = 0; r < 2; r++ ) {
         if( r == 0 ) glBlendFunc( GL_DST_COLOR, GL_ONE );
-        else glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
+        else {
+          // skip second phase for now...
+          continue; //glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
+        }
         for( int i = 0; i < 20; i++ ) {
           if( !( mi->particle[i].life ) ) {
             mi->particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
