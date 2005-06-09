@@ -23,6 +23,8 @@
  * --> expands br_locate to foobar_br_locate
  */
 
+#ifndef WIN32
+
 #ifndef _PREFIX_C_
 #define _PREFIX_C_
 
@@ -480,3 +482,5 @@ br_set_locate_fallback_func (br_locate_fallback_func func, void *data)
 #endif /* __cplusplus */
 
 #endif /* _PREFIX_C */
+
+#endif /* WIN32 */

@@ -2378,14 +2378,10 @@ bool Scourge::fightCurrentBattleTurn() {
 void Scourge::resetNonParticipantAnimation( Battle *battle ) {
   // in TB battle reset animations of non-participants
   for( int i = 0; i < session->getCreatureCount(); i++ ) {
-    if( session->getCreature( i ) != battle->getCreature() ) {
-      session->getCreature( i )->getShape()->setCurrentAnimation( (int)MD2_STAND, true );
-    }
+    ((MD2Shape*)session->getCreature(i)->getShape())->setPauseAnimation( session->getCreature( i ) != battle->getCreature() );
   }
   for( int i = 0; i < getParty()->getPartySize(); i++ ) {
-    if( getParty()->getParty( i ) != battle->getCreature() ) {
-      getParty()->getParty( i )->getShape()->setCurrentAnimation( (int)MD2_STAND, true );
-    }
+    ((MD2Shape*)getParty()->getParty( i )->getShape())->setPauseAnimation( getParty()->getParty( i ) != battle->getCreature() );
   }
 }
 
@@ -2523,6 +2519,7 @@ void Scourge::resetUIAfterBattle() {
   groupButton->setVisible(true);
   for(int i = 0; i < party->getPartySize(); i++) {
     party->getParty(i)->cancelTarget();
+    ((MD2Shape*)party->getParty(i)->getShape())->setPauseAnimation( false );
     if(party->getParty(i)->anyMovesLeft()) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
     } else {
@@ -2534,11 +2531,7 @@ void Scourge::resetUIAfterBattle() {
     if( !session->getCreature(i)->getStateMod( Constants::dead ) &&
         !session->getCreature(i)->getMonster()->isNpc() ) {
       session->getCreature(i)->setMotion( Constants::MOTION_LOITER );
-      // I hate doing this (calling thaw()) but there is no other nice way to
-      // stop monsters after a TB battle from standing. setCurrentAdnim(force) doesn't work.
-      // I really need to rewrite the animation code or not rely on the current animation
-      // in move(). It's very messy.
-      ((MD2Shape*)session->getCreature(i)->getShape())->thaw();
+      ((MD2Shape*)session->getCreature(i)->getShape())->setPauseAnimation( false );
     }
   }
 }

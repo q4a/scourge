@@ -13,6 +13,7 @@
  * NOTE: if you're using C++ and are getting "undefined reference
  * to br_*", try renaming prefix.c to prefix.cpp
  */
+#ifndef WIN32
 
 #ifndef _PREFIX_H_
 #define _PREFIX_H_
@@ -137,3 +138,5 @@ void br_set_locate_fallback_func (br_locate_fallback_func func, void *data);
 #endif /* __cplusplus */
 
 #endif /* _PREFIX_H_ */
+
+#endif /* WIN32 */
