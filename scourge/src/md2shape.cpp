@@ -54,6 +54,7 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   this->div = div; 
   this->textureId = textureId;
   this->debug = false;
+  frozen = false;
   
   // Animation stuff
   elapsedTime = 0.0f;
@@ -181,13 +182,11 @@ void MD2Shape::setDir(int dir) {
 }
 
 void MD2Shape::freeze() {
-  animationWaiting = currentAnim = MD2_STAND;
-  //playedOnce = false;
+  frozen = true;
 }
 
 void MD2Shape::thaw() {
-  animationWaiting = currentAnim = MD2_RUN;
-  playedOnce = false;
+  frozen = false;
 }
 
 void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
@@ -248,23 +247,27 @@ void MD2Shape::AnimateMD2Model()
   int nb;               
 
   tAnimationInfo *pAnim = &(g_3DModel->pAnimations[currentAnim]);
-  int nextFrame = (currentFrame + 1) % pAnim->endFrame;
+  int nextFrame;
+  if( frozen ) nextFrame = currentFrame % pAnim->endFrame;
+  else {
+    nextFrame = (currentFrame + 1) % pAnim->endFrame;
 
-  // MD2_TAUNT animations must be played only once 
-  if(nextFrame == 0){        
-    nextFrame =  pAnim->startFrame;
-    playedOnce = true;        
+    // MD2_TAUNT animations must be played only once 
+    if(nextFrame == 0){        
+        nextFrame =  pAnim->startFrame;
+        playedOnce = true;        
 
-    if( !(currentAnim == MD2_STAND || currentAnim == MD2_RUN) ) {
-      if(animationWaiting == - 1){
-        setCurrentAnimation(MD2_STAND);
-      } else{
-        setCurrentAnimation(animationWaiting);
-        animationWaiting = -1;
-      }
-      setAttackEffect(false);
+        if( !(currentAnim == MD2_STAND || currentAnim == MD2_RUN) ) {
+          if(animationWaiting == - 1){
+            setCurrentAnimation(MD2_STAND);
+          } else{
+            setCurrentAnimation(animationWaiting);
+            animationWaiting = -1;
+          }
+          setAttackEffect(false);
+        }
     }
-  }
+  }  
 
   // t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation    
   float t = ReturnCurrentTime(nextFrame);
