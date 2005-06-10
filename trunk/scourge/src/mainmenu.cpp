@@ -385,16 +385,15 @@ void MainMenu::drawMenu() {
   glDepthMask( GL_FALSE );
 
   glBlendFunc( GL_DST_COLOR, GL_ONE );
-  drawActiveMenuItem( 2.0f );
+  drawActiveMenuItem( 1.0f, 20 );
 
   //scourge->setBlendFunc();
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  drawActiveMenuItem( 4.0f );
+  drawActiveMenuItem( 4.0f, 5 );
 
   glDisable( GL_BLEND );  
   glDepthMask( GL_TRUE );
   glDisable( GL_TEXTURE_2D );
-  
   
   // move menu
   Uint32 tt = SDL_GetTicks();
@@ -415,11 +414,11 @@ void MainMenu::drawMenu() {
   }
 }
 
-void MainMenu::drawActiveMenuItem( float divisor ) {
+void MainMenu::drawActiveMenuItem( float divisor, int count ) {
   for( int t = 0; t < (int)menuItemList.size(); t++ ) {
     MenuItem *mi = menuItemList[t];
     if( mi->active ) {
-      for( int i = 0; i < 20; i++ ) {
+      for( int i = 0; i < count; i++ ) {
         if( !( mi->particle[i].life ) ) {
           mi->particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
           mi->particle[i].x = mi->particle[i].y = 0;

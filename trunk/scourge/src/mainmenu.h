@@ -137,7 +137,7 @@ public:
   void drawWater();
   void drawLogo();
   void drawMenu();
-  void drawActiveMenuItem( float divisor );
+  void drawActiveMenuItem( float divisor, int count );
   void buildTextures();
   void addLogoSprite();
   void drawLogoSprites();
