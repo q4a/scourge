@@ -387,10 +387,14 @@ void MainMenu::drawMenu() {
     MenuItem *mi = menuItemList[t];
     if( mi->active ) {
       for( int r = 0; r < 2; r++ ) {
-        if( r == 0 ) glBlendFunc( GL_DST_COLOR, GL_ONE );
-        else {
+        int z;
+        if( r == 0 ) {
+          glBlendFunc( GL_DST_COLOR, GL_ONE );
+          z = 100;
+        } else {
           // skip second phase for now...
-          continue; //glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
+          glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
+          z = 0;
         }
         for( int i = 0; i < 20; i++ ) {
           if( !( mi->particle[i].life ) ) {
@@ -426,13 +430,13 @@ void MainMenu::drawMenu() {
           glBegin( GL_QUADS );
           glNormal3f( 0, 0, 1 );
           glTexCoord2f( 0, 1 );
-          glVertex2f( 0, 0 );
+          glVertex3f( 0, 0, z );
           glTexCoord2f( 1, 1 );
-          glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, 0 );
+          glVertex3f( MENU_ITEM_WIDTH * mi->particle[i].zoom, 0, z );
           glTexCoord2f( 1, 0 );
-          glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
+          glVertex3f( MENU_ITEM_WIDTH * mi->particle[i].zoom, MENU_ITEM_HEIGHT * mi->particle[i].zoom, z );
           glTexCoord2f( 0, 0 );
-          glVertex2f( 0, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
+          glVertex3f( 0, MENU_ITEM_HEIGHT * mi->particle[i].zoom, z );
           glEnd();
           glPopMatrix();  
         }
