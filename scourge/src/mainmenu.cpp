@@ -383,66 +383,14 @@ void MainMenu::drawMenu() {
 
   glEnable( GL_BLEND );
   glDepthMask( GL_FALSE );
-  for( int t = 0; t < (int)menuItemList.size(); t++ ) {
-    MenuItem *mi = menuItemList[t];
-    if( mi->active ) {
-      for( int r = 0; r < 2; r++ ) {
-        int z;
-        if( r == 0 ) {
-          glBlendFunc( GL_DST_COLOR, GL_ONE );
-          z = 100;
-        } else {
-          // skip second phase for now...
-          glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
-          z = 0;
-        }
-        for( int i = 0; i < 20; i++ ) {
-          if( !( mi->particle[i].life ) ) {
-            mi->particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
-            mi->particle[i].x = mi->particle[i].y = 0;
-            mi->particle[i].r = 200 + (int)( 40.0f * rand() / RAND_MAX );
-            mi->particle[i].g = 170 + (int)( 40.0f * rand() / RAND_MAX );
-            mi->particle[i].b = 80 + (int)( 40.0f * rand() / RAND_MAX );
-            mi->particle[i].dir = 10.0f * rand() / RAND_MAX;
-            mi->particle[i].zoom = 2.0f + ( 2.0f * rand() / RAND_MAX );
-            switch( (int)( 4.0f * rand() / RAND_MAX ) ) {
-            case 0: mi->particle[i].dir = 360.0f - mi->particle[i].dir; break;
-            case 1: mi->particle[i].dir = 180.0f - mi->particle[i].dir; break;
-            case 2: mi->particle[i].dir = 180.0f + mi->particle[i].dir; break;
-            //default: // do nothing
-            }
-            mi->particle[i].step = 4.0f * rand() / RAND_MAX;
-          }
-  
-          glPushMatrix();
-          glLoadIdentity();
-          glTranslatef( 80 + mi->particle[i].x, 
-                        top + 200 + t * 50 + mi->particle[i].y, 0 );
-          glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
-  
-          float a = (float)( MAX_PARTICLE_LIFE - mi->particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
-          //if( i == 0 ) cerr << "life=" << mi->particle[i].life << " a=" << a << endl;
-          glColor4f( (float)( mi->particle[i].r ) / 256.0f, 
-                     (float)( mi->particle[i].g ) / 256.0f, 
-                     (float)( mi->particle[i].b ) / 256.0f, 
-                     a / ( 2.0f * ( r + 1 ) ) );
-  
-          glBegin( GL_QUADS );
-          glNormal3f( 0, 0, 1 );
-          glTexCoord2f( 0, 1 );
-          glVertex3f( 0, 0, z );
-          glTexCoord2f( 1, 1 );
-          glVertex3f( MENU_ITEM_WIDTH * mi->particle[i].zoom, 0, z );
-          glTexCoord2f( 1, 0 );
-          glVertex3f( MENU_ITEM_WIDTH * mi->particle[i].zoom, MENU_ITEM_HEIGHT * mi->particle[i].zoom, z );
-          glTexCoord2f( 0, 0 );
-          glVertex3f( 0, MENU_ITEM_HEIGHT * mi->particle[i].zoom, z );
-          glEnd();
-          glPopMatrix();  
-        }
-      }
-    }
-  }
+
+  glBlendFunc( GL_DST_COLOR, GL_ONE );
+  drawActiveMenuItem( 2.0f );
+
+  //scourge->setBlendFunc();
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  drawActiveMenuItem( 4.0f );
+
   glDisable( GL_BLEND );  
   glDepthMask( GL_TRUE );
   glDisable( GL_TEXTURE_2D );
@@ -462,6 +410,58 @@ void MainMenu::drawMenu() {
         if( mi->particle[i].life >= MAX_PARTICLE_LIFE ) {
           mi->particle[i].life = 0;
         }
+      }
+    }
+  }
+}
+
+void MainMenu::drawActiveMenuItem( float divisor ) {
+  for( int t = 0; t < (int)menuItemList.size(); t++ ) {
+    MenuItem *mi = menuItemList[t];
+    if( mi->active ) {
+      for( int i = 0; i < 20; i++ ) {
+        if( !( mi->particle[i].life ) ) {
+          mi->particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
+          mi->particle[i].x = mi->particle[i].y = 0;
+          mi->particle[i].r = 200 + (int)( 40.0f * rand() / RAND_MAX );
+          mi->particle[i].g = 170 + (int)( 40.0f * rand() / RAND_MAX );
+          mi->particle[i].b = 80 + (int)( 40.0f * rand() / RAND_MAX );
+          mi->particle[i].dir = 10.0f * rand() / RAND_MAX;
+          mi->particle[i].zoom = 2.0f + ( 2.0f * rand() / RAND_MAX );
+          switch( (int)( 4.0f * rand() / RAND_MAX ) ) {
+          case 0: mi->particle[i].dir = 360.0f - mi->particle[i].dir; break;
+          case 1: mi->particle[i].dir = 180.0f - mi->particle[i].dir; break;
+          case 2: mi->particle[i].dir = 180.0f + mi->particle[i].dir; break;
+          //default: // do nothing
+          }
+          mi->particle[i].step = 4.0f * rand() / RAND_MAX;
+        }
+        
+        glPushMatrix();
+        glLoadIdentity();
+        glTranslatef( 80 + mi->particle[i].x, 
+                      top + 200 + t * 50 + mi->particle[i].y, 0 );
+        glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
+        
+        float a = (float)( MAX_PARTICLE_LIFE - mi->particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
+        //if( i == 0 ) cerr << "life=" << mi->particle[i].life << " a=" << a << endl;
+        glColor4f( (float)( mi->particle[i].r ) / 256.0f, 
+                   (float)( mi->particle[i].g ) / 256.0f, 
+                   (float)( mi->particle[i].b ) / 256.0f, 
+                   a / divisor );
+        
+        glBegin( GL_QUADS );
+        glNormal3f( 0, 0, 1 );
+        glTexCoord2f( 0, 1 );
+        glVertex2f( 0, 0 );
+        glTexCoord2f( 1, 1 );
+        glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, 0 );
+        glTexCoord2f( 1, 0 );
+        glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
+        glTexCoord2f( 0, 0 );
+        glVertex2f( 0, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
+        glEnd();
+        glPopMatrix();  
       }
     }
   }
