@@ -321,8 +321,8 @@ class Creature {
   inline void setMp(int n) { mp = n; }
   inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; }
   inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
-  inline void setHp() { hp = getLevel() * getCharacter()->getStartingHp(); }
-  inline void setMp() { mp = getLevel() * getCharacter()->getStartingMp(); }
+  inline void setHp() { hp = ( getLevel() + 1 ) * getCharacter()->getStartingHp(); }
+  inline void setMp() { mp = ( getLevel() + 1 ) * getCharacter()->getStartingMp(); }
 
   bool incSkillMod(int index);
   bool decSkillMod(int index);
