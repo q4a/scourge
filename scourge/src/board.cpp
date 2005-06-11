@@ -262,9 +262,11 @@ void Board::initMissions() {
   float ave = ((float)sum / (float)session->getParty()->getPartySize() / 1.0f);
 
   // remove the storyline missions
+  // remove missions whose level is too low
   for( int i = 0; i < (int)availableMissions.size(); i++ ) {
     Mission *mission = availableMissions[ i ];
-    if( mission->isStoryLine() ) {
+    if( mission->isStoryLine() || 
+        mission->getLevel() < (int)( ave - 2.0f ) ) {
       // move the last element over the current storyline element
       availableMissions[ i ] = availableMissions[ availableMissions.size() - 1 ];
       availableMissions.pop_back();
@@ -280,7 +282,7 @@ void Board::initMissions() {
 
   // maintain a set of missions
   while( availableMissions.size() < 5 ) {
-    int level = (int)( ( ave + 2.0f ) * rand()/RAND_MAX ) - 4;
+    int level = (int)( ave + ( 4.0f * rand()/RAND_MAX ) ) - 2;
     if( level < 1 ) level = 1;
     int depth =  (int)((float)level / (float)(MAX_MISSION_DEPTH - 3) ) + 1 + (int)( 3.0f * rand()/RAND_MAX );
     if( depth > 9 ) depth = 9;

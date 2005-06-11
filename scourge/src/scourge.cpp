@@ -2844,6 +2844,11 @@ void Scourge::receive( Widget *widget ) {
       }
     }
     if( selected == -1 ) return;
+
+    // in TB combat only drop on current player
+    if( getParty()->getPlayer() != getParty()->getParty( selected ) &&
+        inTurnBasedCombat() ) return;
+
     getParty()->setPlayer( selected );
     inventory->receive( widget );
   }

@@ -250,6 +250,7 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   for(int i = 0; i < getCreatureCount(); i++) {
     if(!getCreature(i)->getStateMod(Constants::dead) && 
        !getCreature(i)->getStateMod(Constants::possessed) && 
+       !getCreature(i)->getMonster()->isNpc() &&
        map->isLocationVisible(toint(getCreature(i)->getX()), 
                               toint(getCreature(i)->getY())) &&
        map->isLocationInLight(toint(getCreature(i)->getX()), 

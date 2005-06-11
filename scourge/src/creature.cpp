@@ -302,6 +302,8 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
       creature->setQuickSpell( i, Spell::getSpellByName( (char*)info->quick_spell[ i ] ) );
   }
 
+  creature->calculateExpOfNextLevel();
+
   return creature;
 }
 
@@ -1160,6 +1162,9 @@ int Creature::getToHit(Item *weapon, int *maxToHit, int *rolledToHit) {
   }
   // so far the max score is 250
 
+  // add item's level
+  tohit += ( ( weapon ? weapon->getLevel() : getLevel() ) * 2.5f );
+
   if(maxToHit) *maxToHit = (int)(tohit / 2.5f);
 
   // roll it
@@ -1179,6 +1184,9 @@ int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
   float baseDamage = (weapon ? weapon->getAction() : 
                       (getSkill(Constants::POWER) / 10));
   damage = baseDamage;
+
+  // add the level of the weapon
+  damage += ( weapon ? weapon->getLevel() : getLevel() );
 
   // add strength proficiency (10% of strength=0-10 pts)
   damage += (float)getSkill(Constants::POWER) / 10.0f;
@@ -1250,7 +1258,7 @@ int Creature::getSkillModifiedArmor() {
                            item->getRpgItem()->getSkill() : 
                            Constants::HAND_DEFEND);
         float skill = (float)getSkill(skill_index);
-        int value = item->getAction();
+        int value = item->getAction() + item->getLevel();
 
         // add (value + ((skill-50)% of value)) to armor
         armor += value + (int)( (float)value * ((skill - 50.0f) / 100.0f) );
@@ -1311,11 +1319,13 @@ void Creature::monsterInit() {
   // set some skills
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
-    setSkill(i, ( n > 0 ? n : (int)((float)(10 * level) * rand()/RAND_MAX)) );
+    setSkill(i, ( n > 0 ? n : (int)((float)(8 * level) * rand()/RAND_MAX)) );
   }
   // equip starting inventory
+  int itemLevel = (int)( (float)getMonster()->getLevel() * 0.75f );
+  if( itemLevel < 1 ) itemLevel = 1;
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {
-    addInventory(session->newItem(getMonster()->getStartingItem(i)), true);
+    addInventory(session->newItem( getMonster()->getStartingItem(i), itemLevel ), true);
     equipInventory(inventory_count - 1);
   }
   // add spells
@@ -1327,8 +1337,14 @@ void Creature::monsterInit() {
   //startingHp = hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
   //startingMp = mp = 4 + (int)((float)(4.0f * level) * rand()/RAND_MAX);
 
-  startingHp = hp = monster->getHp() + (int)((float)(10.0f * level) * rand()/RAND_MAX);
-  startingMp = mp = monster->getMp() + (int)((float)(4.0f * level) * rand()/RAND_MAX);
+//  startingHp = hp = monster->getHp() + (int)((float)(10.0f * level) * rand()/RAND_MAX);
+//  startingMp = mp = monster->getMp() + (int)((float)(5.0f * level) * rand()/RAND_MAX);
+
+  float n = (float)( monster->getHp() * ( level + 2 ) );
+  startingHp = hp = (int)( n * 0.75f ) + (int)( ( n * 0.25f ) * rand()/RAND_MAX);
+
+  n = (float)( monster->getMp() * ( level + 2 ) );
+  startingMp = mp = (int)( n * 0.75f ) + (int)( ( n * 0.25f ) * rand()/RAND_MAX);
 }
 
 // only for characters: leveling up
@@ -1364,7 +1380,7 @@ int Creature::getMaxHp() {
   if(isMonster()) {
     return monster->getHp(); // FIXME: incorrect, see monsterInit()
   } else {
-    return(character->getStartingHp() * getLevel());
+    return(character->getStartingHp() * ( getLevel() + 1 ));
   }
 }
 
@@ -1372,7 +1388,7 @@ int Creature::getMaxMp() {
   if(isMonster()) {
     return monster->getMp(); // FIXME: incorrect, see monsterInit()
   } else {
-    return(character->getStartingMp() * getLevel());
+    return(character->getStartingMp() * ( getLevel() + 1 ));
   }
 }
 
@@ -1564,8 +1580,9 @@ GLfloat Creature::getStep() {
 }
 
 void Creature::getDetailedDescription(char *s) {
-  sprintf(s, "%s (Hp:%d M:%d A:%d)%s", 
+  sprintf(s, "%s (L:%d Hp:%d M:%d A:%d)%s", 
           getDescription(), 
+          getLevel(),
           getHp(),
           getMp(),
           getArmor(),
