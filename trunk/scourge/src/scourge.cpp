@@ -958,53 +958,12 @@ void Scourge::drawBorder() {
   glVertex2i (w, h - (int)TILE_H + gutter);
   glEnd();
 
-  //int gw = 128;
-  //int gh = 96;
-
-  //int gw = 115;
-  //int gh = 81;
-
-  int gw = 240;
+  int gw = 220;
   int gh = 64;
 
   glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glAlphaFunc( GL_GREATER, 0 );
   glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGargoyleTexture() );
-
-  /*
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef(10, -5, 0);
-  glRotatef(20, 0, 0, 1);
-  glBegin( GL_QUADS );
-  // top left
-  glTexCoord2f (1, 0);
-  glVertex2i (0, 0);
-  glTexCoord2f (1, 1);
-  glVertex2i (0, gh);
-  glTexCoord2f (0, 1);
-  glVertex2i (gw, gh);
-  glTexCoord2f (0, 0);      
-  glVertex2i (gw, 0);
-  glEnd();
-  glPopMatrix();
-
-  // top right
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef(w - (gw + 7), 35, 0);
-  glRotatef(-20, 0, 0, 1);
-  glBegin( GL_QUADS );
-  glTexCoord2f (0, 0);
-  glVertex2i (0, 0);
-  glTexCoord2f (0, 1);
-  glVertex2i (0, gh);
-  glTexCoord2f (1, 1);
-  glVertex2i (gw, gh);
-  glTexCoord2f (1, 0);      
-  glVertex2i (gw, 0);
-  glEnd();
-  */
 
   glPushMatrix();
   glLoadIdentity();
@@ -1016,9 +975,9 @@ void Scourge::drawBorder() {
   glVertex2i (0, 0);
   glTexCoord2f (0, 1);
   glVertex2i (0, gh);
-  glTexCoord2f (1, 1);
+  glTexCoord2f ((1.0f / gw) * (gw - 1), 1);
   glVertex2i (gw, gh);
-  glTexCoord2f (1, 0);      
+  glTexCoord2f ((1.0f / gw) * (gw - 1), 0);      
   glVertex2i (gw, 0);
   glEnd();
   glPopMatrix();
@@ -1029,9 +988,9 @@ void Scourge::drawBorder() {
   glTranslatef(w - gw, 0, 0);
   //glRotatef(-20, 0, 0, 1);
   glBegin( GL_QUADS );
-  glTexCoord2f (1, 0);
+  glTexCoord2f ((1.0f / gw) * (gw - 1), 0);
   glVertex2i (0, 0);
-  glTexCoord2f (1, 1);
+  glTexCoord2f ((1.0f / gw) * (gw - 1), 1);
   glVertex2i (0, gh);
   glTexCoord2f (0, 1);
   glVertex2i (gw, gh);

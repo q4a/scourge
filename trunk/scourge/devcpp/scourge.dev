@@ -1,7 +1,7 @@
 [Project]
 FileName=scourge.dev
 Name=scourge
-UnitCount=159
+UnitCount=161
 Type=0
 Ver=1
 ObjFiles=
@@ -1629,6 +1629,26 @@ BuildCmd=
 
 [Unit158]
 FileName=..\src\conversationgui.h
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit160]
+FileName=..\src\prefix.c
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit161]
+FileName=..\src\prefix.h
 CompileCpp=1
 Folder=scourge
 Compile=1
