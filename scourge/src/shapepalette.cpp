@@ -141,7 +141,7 @@ void ShapePalette::initialize() {
   SDL_Surface *tmpSurface = NULL;
   GLubyte *tmpImage = NULL;
   setupAlphaBlendedBMP("/dragon.bmp", &tmpSurface, &tmpImage);
-  gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
+  gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
