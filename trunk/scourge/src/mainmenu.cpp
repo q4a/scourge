@@ -385,10 +385,10 @@ void MainMenu::drawMenu() {
   //glDepthMask( GL_FALSE );
 
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  drawActiveMenuItem( 4.0f, 5 );
+  drawActiveMenuItem( 6.0f, 5 );
 
-//  glBlendFunc( GL_DST_COLOR, GL_ONE );
-  glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
+  glBlendFunc( GL_DST_COLOR, GL_ONE );
+  //glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
   //scourge->setBlendFunc();
   drawActiveMenuItem( 1.0f, 20 );
 
@@ -445,9 +445,9 @@ void MainMenu::drawActiveMenuItem( float divisor, int count ) {
         
         float a = (float)( MAX_PARTICLE_LIFE - mi->particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
         //if( i == 0 ) cerr << "life=" << mi->particle[i].life << " a=" << a << endl;
-        glColor4f( (float)( mi->particle[i].r ) / 256.0f, 
-                   (float)( mi->particle[i].g ) / 256.0f, 
-                   (float)( mi->particle[i].b ) / 256.0f, 
+        glColor4f( (float)( mi->particle[i].r ) / ( 256.0f * divisor ), 
+                   (float)( mi->particle[i].g ) / ( 256.0f * divisor ), 
+                   (float)( mi->particle[i].b ) / ( 256.0f * divisor ), 
                    a / divisor );
         
         glBegin( GL_QUADS );
