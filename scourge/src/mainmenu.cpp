@@ -382,17 +382,18 @@ void MainMenu::drawMenu() {
   }
 
   glEnable( GL_BLEND );
-  glDepthMask( GL_FALSE );
+  //glDepthMask( GL_FALSE );
 
-  glBlendFunc( GL_DST_COLOR, GL_ONE );
-  drawActiveMenuItem( 1.0f, 20 );
-
-  //scourge->setBlendFunc();
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   drawActiveMenuItem( 4.0f, 5 );
 
+//  glBlendFunc( GL_DST_COLOR, GL_ONE );
+  glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
+  //scourge->setBlendFunc();
+  drawActiveMenuItem( 1.0f, 20 );
+
   glDisable( GL_BLEND );  
-  glDepthMask( GL_TRUE );
+  //glDepthMask( GL_TRUE );
   glDisable( GL_TEXTURE_2D );
   
   // move menu
