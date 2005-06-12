@@ -65,7 +65,6 @@ private:
   int currentFrame; 
   int animationWaiting; // memorizes one animation waiting to be played
   float angle;
-  bool frozen;
 
   bool debug;
   
@@ -99,9 +98,6 @@ public:
 
   inline bool getAttackEffect() { return attackEffect; }
   inline void setAttackEffect(bool b) { attackEffect = b; }
-
-  void freeze();
-  void thaw();
 
   void setCurrentAnimation(int numAnim, bool force=false);
   inline int getCurrentAnimation() { return currentAnim; }
