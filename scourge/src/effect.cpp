@@ -145,8 +145,7 @@ void Effect::drawTeleport(bool proceed) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c / 2.0f, c, 1.0f, 0.5);
 
@@ -180,8 +179,7 @@ void Effect::drawGreen(bool proceed) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c / 4.0f, c, c / 4.0f, 0.15);
 
@@ -214,8 +212,7 @@ void Effect::drawExplosion(bool proceed) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c, c / 2.0f, c / 2.0f, 0.5);
 
@@ -248,8 +245,7 @@ void Effect::drawDust(bool proceed) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1.0f) c = 1.0f;
       glColor4f(c / 4.0f, c / 4.0f, c / 4.0f, 0.35);
 
@@ -280,8 +276,7 @@ void Effect::drawHail(bool proceed) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
     glColor4f( 0, c / 4.0f, 1.0f, 0.75 );
     
@@ -328,8 +323,7 @@ void Effect::drawTower(bool proceed) {
     if(particle[i]) {            
       
       //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-      //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-      float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+      float c = fabs(particle[i]->z - 8) / 8.0f;
       if(c > 1) c = 1;
       glColor4f( 1.0f, c / 4.0f, 0, 0.75 );
       
@@ -373,8 +367,7 @@ void Effect::drawSwirl(bool proceed) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c / 2.0f, c / 4.0f, c, 0.5);
 
@@ -402,8 +395,7 @@ void Effect::drawCastSpell(bool proceed) {
     // draw it      
     if(particle[i]) {            
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  //float c = ((float)abs(particle[i]->z - 8)) / 8.0f;
-	  float c = ((float)abs((int)(particle[i]->z - 8))) / 8.0f;
+	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
 
 	  //	  particle[i]->rotate += 5.0f;
@@ -520,7 +512,7 @@ void Effect::drawParticle(ParticleStruct *particle) {
   //float d = (float)(shape->getDepth() / GLShape::DIV) / 2.0;
   h = (float)(shape->getHeight() / GLShape::DIV) / 3.0f;
   if(h == 0) h = 0.25 / GLShape::DIV;
-  sh = ((float)( abs( particle->z - particle->startZ ) / GLShape::DIV) / 3.0f);
+  sh = ( fabs( particle->z - particle->startZ ) / GLShape::DIV) / 3.0f;
   if(h == 0) h = 0.25 / GLShape::DIV;
 
 
