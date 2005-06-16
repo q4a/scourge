@@ -155,6 +155,9 @@ void ShapePalette::initialize() {
     cerr << errMessage << endl;
     exit(1);
   }
+
+  strcpy( aboutText, "" );
+
   //int sum = 0;
   char path[300];
   char line[255];
@@ -176,6 +179,11 @@ void ShapePalette::initialize() {
 
       skillCount++;
 
+    } else if( n == 'A' ) {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      if( strlen( aboutText ) ) strcat( aboutText, " " );
+      strcat( aboutText, line );
     } else if(n == 'T') {
       // skip ':'
       fgetc(fp);
