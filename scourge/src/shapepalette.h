@@ -208,9 +208,13 @@ private:
   vector<GLuint> portraitTextures;
   GLuint deathPortraitTexture;
 
+  char aboutText[3000];
+
 public: 
   ShapePalette(Session *session);
   ~ShapePalette();
+
+  inline char *getAboutText() { return aboutText; }
 
   void initialize();
   GLuint loadSystemTexture( char *line );
@@ -254,7 +258,7 @@ public:
   GLuint cloud, candle, torchback, highlight;
 
   GLuint border, border2, gargoyle;
-       
+
   inline GLShape *getShape(int index) { return shapes[index]; }  
 
   inline Sint16 getUnitSide() { return unitSide; }

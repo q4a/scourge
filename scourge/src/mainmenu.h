@@ -28,6 +28,7 @@
 #include "gui/window.h"
 #include "gui/label.h"
 #include "gui/button.h"
+#include "gui/scrollinglabel.h"
 #include <vector>
 
 /**
@@ -70,6 +71,9 @@ private:
   int candleFlameX, candleFlameY;
   PartyEditor *partyEditor;
   bool initTextures;
+  Window *aboutDialog;
+  ScrollingLabel *aboutText;
+  Button *aboutOK;
 
 #define MAX_LOGOS 100
   typedef struct _LogoSprite {

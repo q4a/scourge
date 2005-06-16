@@ -152,6 +152,29 @@ MainMenu::MainMenu(Scourge *scourge){
 */  
 
   partyEditor = new PartyEditor( scourge );
+
+  
+  // about dialog
+  w = 500;
+  h = 300;
+  aboutDialog = new Window( scourge->getSDLHandler(),
+                            (scourge->getSDLHandler()->getScreen()->w/2) - (w/2), 
+                            (scourge->getSDLHandler()->getScreen()->h/2) - (h/2), 
+                            w, h,
+                            "About S.c.o.u.r.g.e.",
+                            scourge->getShapePalette()->getGuiTexture(), false);
+  aboutText = new ScrollingLabel( 10, 10, 
+                                  w - 20, 
+                                  h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 20 - 30, 
+                                  scourge->getShapePalette()->getAboutText() );
+  aboutDialog->addWidget( aboutText );
+  aboutOK = aboutDialog->createButton( (w/2) - 40, 
+                                       ( h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 30 ),
+                                       (w/2) + 40, 
+                                       ( h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 10 ), 
+                                       Constants::getMessage( Constants::OK_LABEL ) );
+  aboutDialog->setVisible( false );
+
 }
 
 MainMenu::~MainMenu(){
@@ -905,6 +928,13 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     partyEditor->handleEvent( widget, event );
   }
 
+  if( aboutDialog->isVisible() ) {
+    if( widget == aboutOK || widget == aboutDialog->closeButton ) {
+      aboutDialog->setVisible( false );
+    }
+    return false;
+  }
+
   if(scourge->getMultiplayerDialog()->isVisible()) {
     scourge->getMultiplayerDialog()->handleEvent(widget, event);
     if(!scourge->getMultiplayerDialog()->isVisible()) {
@@ -951,8 +981,10 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     value = OPTIONS;
     return true;
   } else if(widget == aboutButton) {
-    value = ABOUT;
-    return true;
+    cerr << "!!!" << endl;
+    aboutDialog->setVisible( true );
+    //value = ABOUT;
+    return false;
   } else if(widget == multiplayer) {
     value = MULTIPLAYER;
     return true;
@@ -964,6 +996,10 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 bool MainMenu::handleEvent(SDL_Event *event) {
+
+  if( aboutDialog->isVisible() ) {
+    return false;
+  }
 
   if(scourge->getOptionsMenu()->isVisible()) {
     scourge->getOptionsMenu()->handleEvent(event);
@@ -1030,7 +1066,14 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   }
   if( event->type == SDL_MOUSEBUTTONUP && line > -1 ) {
     value = menuItemList[ line ]->value;
-    return true;
+    if( value == ABOUT ) {
+      cerr << "!!!" << endl;
+      aboutDialog->setVisible( true );
+      //value = ABOUT;
+      return false;
+    } else {
+      return true;
+    }
   }
   break;
   default: break;  
