@@ -111,6 +111,7 @@ void Scourge::initUI() {
 
   // show the main menu
   mainMenu = new MainMenu(this);
+  mapEditor = new MapEditor( this );
   optionsMenu = new OptionsMenu(this);
   multiplayer = new MultiplayerDialog(this);
 
@@ -145,31 +146,43 @@ void Scourge::start() {
       
     if(value == NEW_GAME_START ||
        value == MULTIPLAYER_START ||
-       value == CONTINUE_GAME ) {
+       value == CONTINUE_GAME ||
+       value == EDITOR ) {
       mainMenu->hide();
       sdlHandler->getSound()->stopMusicMenu();
       
       initMainMenu = true;
       bool failed = false;
+
+      if( value == EDITOR ) {
+        glPushAttrib(GL_ENABLE_BIT);
+        
+        mapEditor->show();
+        sdlHandler->setHandlers((SDLEventHandler *)mapEditor, (SDLScreenView *)mapEditor);
+        sdlHandler->mainLoop();
+
+        glPopAttrib();
+      } else {
      
 #ifdef HAVE_SDL_NET
-      if(value == MULTIPLAYER_START) {
-        if(!initMultiplayer()) continue;
-      }
-#endif  
-
-      if(value == CONTINUE_GAME) {
-        if(!Persist::loadGame( session )) {
-          showMessageDialog( "Error loading game!" );
-          failed = true;
+        if(value == MULTIPLAYER_START) {
+          if(!initMultiplayer()) continue;
         }
-      }
+#endif  
+        
+        if(value == CONTINUE_GAME) {
+          if(!Persist::loadGame( session )) {
+            showMessageDialog( "Error loading game!" );
+            failed = true;
+          }
+        }
 
-      if( !failed ) {
-        // do this to fix slowness in mainmenu the second time around
-        glPushAttrib(GL_ENABLE_BIT);
-        startMission();
-        glPopAttrib();
+        if( !failed ) {
+          // do this to fix slowness in mainmenu the second time around
+          glPushAttrib(GL_ENABLE_BIT);
+          startMission();
+          glPopAttrib();
+        }
       }
     } else if(value == OPTIONS) {
       toggleOptionsWindow();

@@ -259,7 +259,11 @@ public:
 
   GLuint border, border2, gargoyle;
 
-  inline GLShape *getShape(int index) { return shapes[index]; }  
+  // 1-based!
+  inline GLShape *getShape(int index) { return shapes[index]; }
+
+  // 1-based!
+  inline int getShapeCount() { return shapeCount; }
 
   inline Sint16 getUnitSide() { return unitSide; }
   inline Sint16 getUnitOffset() { return unitOffset; }
