@@ -119,6 +119,7 @@ public:
 #define MULTIPLAYER 6
 #define MULTIPLAYER_START 7
 #define NEW_GAME_START 8
+#define EDITOR 9
 
   MainMenu(Scourge *scourge);
   ~MainMenu();

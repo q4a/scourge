@@ -42,6 +42,8 @@ scourge_SOURCES = \
 	mainmenu.h\
 	map.cpp\
 	map.h\
+	mapeditor.cpp\
+	mapeditor.h\
 	Md2.cpp\
 	Md2.h\
 	md2shape.cpp\

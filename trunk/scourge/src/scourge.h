@@ -31,6 +31,7 @@
 #include "dungeongenerator.h"
 #include "creature.h"
 #include "mainmenu.h"
+#include "mapeditor.h"
 #include "optionsmenu.h"
 #include "inventory.h"
 #include "item.h"
@@ -69,6 +70,7 @@ class DungeonGenerator;
 class ShapePalette;
 class Location;
 class MainMenu;
+class MapEditor;
 class OptionsMenu;
 class Inventory;
 class UserConfiguration;
@@ -133,6 +135,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   DungeonGenerator *dg;
 //  Scourge *scourge;
   int level;
+  MapEditor *mapEditor;
   MainMenu *mainMenu;
   OptionsMenu *optionsMenu;
   MultiplayerDialog *multiplayer;
@@ -358,6 +361,11 @@ public:
     @return the main menu
   */
   inline MainMenu *getMainMenu() { return mainMenu; }
+
+  /**
+    @return the map editor
+  */
+  inline MapEditor *getMapEditor() { return mapEditor; }
 
   /**
     @return the options menu
