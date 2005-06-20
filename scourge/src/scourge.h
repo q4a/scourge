@@ -71,6 +71,7 @@ class ShapePalette;
 class Location;
 class MainMenu;
 class MapEditor;
+class MapSettings;
 class OptionsMenu;
 class Inventory;
 class UserConfiguration;
@@ -131,6 +132,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
  private:
   Party *party;
   Map *levelMap;
+  MapSettings *mapSettings;
   MiniMap * miniMap;
   DungeonGenerator *dg;
 //  Scourge *scourge;
@@ -331,6 +333,8 @@ public:
     @return the map.
   */
   inline Map *getMap() { return levelMap; }
+
+  inline MapSettings *getMapSettings() { return mapSettings; }
   
   /**
     @return the MiniMap.

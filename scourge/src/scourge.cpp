@@ -98,6 +98,8 @@ void Scourge::initUI() {
 
   // for now pass map in
   this->levelMap = session->getMap();
+  mapSettings = new GameMapSettings();
+  levelMap->setMapSettings( mapSettings );
   miniMap = new MiniMap(this); 
 
   // create the mission board
@@ -3493,4 +3495,6 @@ void Scourge::teleport( bool toHQ ) {
     exitConfirmationDialog->setVisible(true);
   }
 }
+
+
 
