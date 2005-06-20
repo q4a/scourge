@@ -262,8 +262,7 @@ public:
   // 1-based!
   inline GLShape *getShape(int index) { return shapes[index]; }
 
-  // 1-based!
-  inline int getShapeCount() { return shapeCount; }
+  inline map<string, GLShape *> *getShapeMap() { return &shapeMap; }
 
   inline Sint16 getUnitSide() { return unitSide; }
   inline Sint16 getUnitOffset() { return unitOffset; }

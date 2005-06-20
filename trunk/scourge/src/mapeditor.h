@@ -30,18 +30,21 @@
 #include "gui/button.h"
 #include "gui/scrollinglabel.h"
 #include <vector>
+#include <map>
 
 /**
   *@author Gabor Torok
   */
 
 class Scourge;
+class MapSettings;
 
 using namespace std;
 
 class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
   Scourge *scourge;
+  MapSettings *mapSettings;
   
   // UI
   Window *mainWin;
@@ -66,8 +69,8 @@ public:
   bool handleEvent(SDL_Event *event);
   bool handleEvent(Widget *widget, SDL_Event *event);
 
-  inline void show() { mainWin->setVisible( true ); }
-  inline void hide() { mainWin->setVisible( false ); }
+  void show();
+  void hide();
   inline bool isVisible() { return mainWin->isVisible(); }
 };
 

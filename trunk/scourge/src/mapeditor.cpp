@@ -24,6 +24,8 @@
 MapEditor::MapEditor( Scourge *scourge ) {
   this->scourge = scourge;
 
+  mapSettings = new EditorMapSettings();
+
   int w = 200;
   mainWin = new Window( scourge->getSDLHandler(),
                         scourge->getScreenWidth() - w, 0,
@@ -37,20 +39,22 @@ MapEditor::MapEditor( Scourge *scourge ) {
   shapeList = new ScrollingList( 5, 50, w - 10, 150, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
-  shapeNames = (char**)malloc( ( scourge->getShapePalette()->getShapeCount() - 2 ) * 
-                               sizeof(char*) );
-  for(int i = 0; i < scourge->getShapePalette()->getShapeCount() - 2; i++) {
-    shapeNames[i] = (char*)malloc( 120 * sizeof(char) );
-    // shapes are 1-based!
-    strcpy( shapeNames[ i ], 
-            scourge->getShapePalette()->getShape( i + 1 )->getName() );
+  map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
+  shapeNames = (char**)malloc( shapeMap->size() * sizeof(char*) );
+  int count = 0;
+  for (map<string, GLShape*>::iterator i = shapeMap->begin(); i != shapeMap->end(); ++i ) {
+    string name = i->first;
+    char *p = (char*)name.c_str();
+    shapeNames[ count ] = (char*)malloc( 120 * sizeof(char) );
+    strcpy( shapeNames[ count ], p );
+    count++;
   }
-  shapeList->setLines( scourge->getShapePalette()->getShapeCount() - 2, 
-                       (const char**)shapeNames );
+  shapeList->setLines( shapeMap->size(), (const char**)shapeNames );
 }                                                                         
 
 MapEditor::~MapEditor() {
-  for(int i = 0; i < scourge->getShapePalette()->getShapeCount() - 2; i++) {
+  map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
+  for(int i = 0; i < (int)shapeMap->size(); i++) {
     free( shapeNames[ i ] );
   }
   free( shapeNames );
@@ -58,6 +62,10 @@ MapEditor::~MapEditor() {
 }
 
 void MapEditor::drawView() {
+  scourge->getMap()->draw();
+
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_SCISSOR_TEST );
 }
 
 void MapEditor::drawAfter() {
@@ -82,6 +90,18 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     return true;
   }
   return false;
+}
+
+void MapEditor::show() { 
+  scourge->getMap()->setMapSettings( mapSettings );
+  scourge->getMap()->reset();
+  scourge->getMap()->center( MAP_WIDTH / 2, MAP_DEPTH / 2, true );
+  mainWin->setVisible( true ); 
+}
+
+void MapEditor::hide() { 
+  mainWin->setVisible( false ); 
+  scourge->getMap()->setMapSettings( scourge->getMapSettings() );
 }
 
 

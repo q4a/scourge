@@ -41,6 +41,42 @@ class Creature;
 class Item;
 class Projectile;
 
+class MapSettings {
+
+public:
+  MapSettings() {
+  }
+
+  virtual ~MapSettings() {
+  }
+
+  virtual bool isLightMapEnabled() = 0;
+  virtual bool isGridShowing() = 0;
+  virtual bool isPlayerEnabled() = 0;
+};
+
+class GameMapSettings : public MapSettings {
+
+public:
+  GameMapSettings();
+  virtual ~GameMapSettings();
+
+  bool isLightMapEnabled();
+  bool isGridShowing();
+  bool isPlayerEnabled();
+};
+
+class EditorMapSettings : public MapSettings {
+
+public:
+  EditorMapSettings();
+  virtual ~EditorMapSettings();
+
+  bool isLightMapEnabled();
+  bool isGridShowing();
+  bool isPlayerEnabled();
+};
+
 typedef struct _DrawLater {
   float xpos, ypos, zpos;
   Shape *shape;
@@ -155,6 +191,8 @@ class Map {
 
   bool hasWater;
 
+  MapSettings *settings;
+
  public:
   bool useFrustum;
   static bool debugMd2Shapes;
@@ -163,6 +201,9 @@ class Map {
   ~Map();
 
   void reset();
+
+  inline void setMapSettings( MapSettings *settings ) { this->settings = settings; }
+  inline MapSettings *getMapSettings() { return settings; }
 
   inline bool getHasWater() { return hasWater; }
   inline void setHasWater(bool b) { hasWater = b; }

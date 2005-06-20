@@ -872,21 +872,31 @@ void Map::draw() {
 
   initMapView();
   if( !selectMode ) frustum->CalculateFrustum();
-  if(lightMapChanged) configureLightMap();
+  if( settings->isLightMapEnabled() ) {
+    if(lightMapChanged) configureLightMap();
+  }
   if( currentEffectsMap.size() ) removeCurrentEffects();
   // populate the shape arrays
   if(mapChanged) {
     int csx, cex, csy, cey;
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
-    sprintf(mapDebugStr, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
-            (int)currentEffectsMap.size(),
-            ( session->getParty()->getPlayer() ? toint(session->getParty()->getPlayer()->getX()) : -1 ),
-            ( session->getParty()->getPlayer() ? toint(session->getParty()->getPlayer()->getY()) : -1 ),
-            (useFrustum ? "*" : ""),
-            chunkCount, ((cex - csx)*(cey - csy)),
-            csx, cex, csy, cey, shapeCount);
-    //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
+    if( settings->isPlayerEnabled() ) {
+      sprintf(mapDebugStr, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+              (int)currentEffectsMap.size(),
+              ( session->getParty()->getPlayer() ? toint(session->getParty()->getPlayer()->getX()) : -1 ),
+              ( session->getParty()->getPlayer() ? toint(session->getParty()->getPlayer()->getY()) : -1 ),
+              (useFrustum ? "*" : ""),
+              chunkCount, ((cex - csx)*(cey - csy)),
+              csx, cex, csy, cey, shapeCount);
+      //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
+    } else {
+      sprintf(mapDebugStr, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+              (int)currentEffectsMap.size(),
+              (useFrustum ? "*" : ""),
+              chunkCount, ((cex - csx)*(cey - csy)),
+              csx, cex, csy, cey, shapeCount);
+    }
     session->getGameAdapter()->setDebugStr(mapDebugStr);
   }
   if( selectMode ) {
@@ -990,8 +1000,10 @@ void Map::draw() {
     // draw the creatures/objects/doors/etc.
     DrawLater *playerDrawLater = NULL;
     for(int i = 0; i < otherCount; i++) {
-      if( other[i].creature && other[i].creature == session->getParty()->getPlayer() ) 
-        playerDrawLater = &(other[i]);
+      if( settings->isPlayerEnabled() ) {
+        if( other[i].creature && other[i].creature == session->getParty()->getPlayer() ) 
+          playerDrawLater = &(other[i]);
+      }
       if(selectedDropTarget && 
          ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
           (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
@@ -1104,49 +1116,49 @@ void Map::draw() {
   }
   
   
-#ifdef DEBUG_RENDER
-  for(int i = 0; i < chunkCount; i++) {
-
-    float n = (float)MAP_UNIT / GLShape::DIV;
-
-    glDisable( GL_CULL_FACE );
-    glDisable( GL_TEXTURE_2D );
-    glPushMatrix();
-    glTranslatef( chunks[i].x, chunks[i].y, 0 );
-
-    glColor4f( 1,1,1,1 );
-    glBegin( GL_LINE_LOOP );
-    glVertex3f( 0, 0, 0 );
-    glVertex3f( n, 0, 0 );
-    glVertex3f( n, n, 0 );
-    glVertex3f( 0, n, 0 );
-    glEnd();
-    glBegin( GL_LINE_LOOP );
-    glVertex3f( 0, 0, n );
-    glVertex3f( n, 0, n );
-    glVertex3f( n, n, n );
-    glVertex3f( 0, n, n );
-    glEnd();
-
-    glColor4f( 0,1,1,1 );
-    glBegin( GL_LINE_LOOP );
-    glVertex3f( 0, 0, 0 );
-    glVertex3f( n, 0, 0 );
-    glVertex3f( n, 0, n );
-    glVertex3f( 0, 0, n );
-    glEnd();
-    glBegin( GL_LINE_LOOP );
-    glVertex3f( 0, n, 0 );
-    glVertex3f( n, n, 0 );
-    glVertex3f( n, n, n );
-    glVertex3f( 0, n, n );
-    glEnd();
-
-    glPopMatrix();
-    glEnable( GL_CULL_FACE );
-    glEnable( GL_TEXTURE_2D );
-  }
-#endif
+  if( settings->isGridShowing() ) {
+    for(int i = 0; i < chunkCount; i++) {
+      
+      float n = (float)MAP_UNIT / GLShape::DIV;
+      
+      glDisable( GL_CULL_FACE );
+      glDisable( GL_TEXTURE_2D );
+      glPushMatrix();
+      glTranslatef( chunks[i].x, chunks[i].y, 0 );
+      
+      glColor4f( 1,1,1,1 );
+      glBegin( GL_LINE_LOOP );
+      glVertex3f( 0, 0, 0 );
+      glVertex3f( n, 0, 0 );
+      glVertex3f( n, n, 0 );
+      glVertex3f( 0, n, 0 );
+      glEnd();
+      glBegin( GL_LINE_LOOP );
+      glVertex3f( 0, 0, n );
+      glVertex3f( n, 0, n );
+      glVertex3f( n, n, n );
+      glVertex3f( 0, n, n );
+      glEnd();
+      
+      glColor4f( 0,1,1,1 );
+      glBegin( GL_LINE_LOOP );
+      glVertex3f( 0, 0, 0 );
+      glVertex3f( n, 0, 0 );
+      glVertex3f( n, 0, n );
+      glVertex3f( 0, 0, n );
+      glEnd();
+      glBegin( GL_LINE_LOOP );
+      glVertex3f( 0, n, 0 );
+      glVertex3f( n, n, 0 );
+      glVertex3f( n, n, n );
+      glVertex3f( 0, n, n );
+      glEnd();
+      
+      glPopMatrix();
+      glEnable( GL_CULL_FACE );
+      glEnable( GL_TEXTURE_2D );
+    }
+  } 
 
   glDisable( GL_SCISSOR_TEST );
 }
@@ -2470,5 +2482,52 @@ bool Map::isLocationInLight(int x, int y) {
   int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
   int chunkY = (y - (MAP_OFFSET + 1)) / MAP_UNIT;
   return lightMap[chunkX][chunkY];
+}
+
+
+
+
+
+
+GameMapSettings::GameMapSettings() {
+}
+
+GameMapSettings::~GameMapSettings() {
+}
+
+bool GameMapSettings::isLightMapEnabled() {
+  return true;
+}
+
+bool GameMapSettings::isGridShowing() {
+  return false;
+}
+
+bool GameMapSettings::isPlayerEnabled() {
+  return true;
+}
+
+
+
+
+
+
+
+EditorMapSettings::EditorMapSettings() {
+}
+
+EditorMapSettings::~EditorMapSettings() {
+}
+
+bool EditorMapSettings::isLightMapEnabled() {
+  return false;
+}
+
+bool EditorMapSettings::isGridShowing() {
+  return true;
+}
+
+bool EditorMapSettings::isPlayerEnabled() {
+  return false;
 }
 
