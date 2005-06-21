@@ -45,6 +45,9 @@ class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
   Scourge *scourge;
   MapSettings *mapSettings;
+  bool mouseMoveScreen;
+  Uint16 move;
+  bool mouseRot, mouseZoom;
   
   // UI
   Window *mainWin;
@@ -72,6 +75,21 @@ public:
   void show();
   void hide();
   inline bool isVisible() { return mainWin->isVisible(); }
+
+protected:
+  /**
+    Set which direction to move in.
+    @param n is a bitfield. See constants for direction values.
+  */
+  inline void setMove(Uint16 n) { move |= n; };  
+  
+  /**
+    Stop moving in the given direction(s).
+    @param n is a bitfield. See constants for directions values.
+  */
+  inline void removeMove(Uint16 n) { move &= (0xffff - n); }
+
+
 };
 
 #endif
