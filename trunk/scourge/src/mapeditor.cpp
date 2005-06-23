@@ -17,8 +17,6 @@
 
 #include "mapeditor.h"
 
-#define MOUSE_ROT_DELTA 2
-
 /**
   *@author Gabor Torok
   */
@@ -27,8 +25,6 @@ MapEditor::MapEditor( Scourge *scourge ) {
   this->scourge = scourge;
 
   mapSettings = new EditorMapSettings();
-  mouseMoveScreen = true;
-  mouseZoom = mouseRot = false;
 
   int w = 200;
   mainWin = new Window( scourge->getSDLHandler(),
@@ -71,127 +67,23 @@ void MapEditor::drawView() {
   glDisable( GL_CULL_FACE );
   glDisable( GL_SCISSOR_TEST );
 
-  // cancel mouse-based map movement (middle button)
-  if(mouseRot) {
-    scourge->getMap()->setXRot(0);
-    scourge->getMap()->setYRot(0);
-    scourge->getMap()->setZRot(0);
-  }
-  if(mouseZoom) {
-    mouseZoom = false;
-    scourge->getMap()->setZoomIn(false);
-    scourge->getMap()->setZoomOut(false);
-  }
-
-  if(move) scourge->getMap()->move( move );
 }
 
 void MapEditor::drawAfter() {
 }
 
 bool MapEditor::handleEvent(SDL_Event *event) {
-  int ea;
-  int mx, my;
+
+  scourge->getMap()->handleEvent( event );
+
   switch(event->type) {
-  case SDL_MOUSEMOTION:
-    if(mouseRot) {
-      scourge->getMap()->setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
-      scourge->getMap()->setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
-    } else {
-      //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
-      mx = event->motion.x;
-      my = event->motion.y;
-      if(mx < 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_LEFT);
-      } else if(mx >= scourge->getSDLHandler()->getScreen()->w - 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_RIGHT);
-      } else if(my < 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_UP);
-      } else if(my >= scourge->getSDLHandler()->getScreen()->h - 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_DOWN);
-      } else {
-        if(mouseMoveScreen) {
-          mouseMoveScreen = false;
-          removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
-          removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
-          scourge->getMap()->setYRot(0.0f);
-          scourge->getMap()->setZRot(0.0f);
-        }
-      }
-    }
-    break;
-  case SDL_MOUSEBUTTONDOWN:
-  if( event->button.button ) {
-    if( event->button.button == SDL_BUTTON_MIDDLE ) {
-      mouseRot = true;
-    } if( event->button.button == SDL_BUTTON_WHEELUP ) {
-      mouseZoom = true;
-      scourge->getMap()->setZoomIn(false);
-      scourge->getMap()->setZoomOut(true);
-    } if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
-      mouseZoom = true;
-      scourge->getMap()->setZoomIn(true);
-      scourge->getMap()->setZoomOut(false);
-    }
-  }
-  break;  
-  case SDL_MOUSEBUTTONUP:
-  if( event->button.button ) {
-    if( event->button.button == SDL_BUTTON_MIDDLE ) {
-      mouseRot = false;
-      scourge->getMap()->setXRot(0);
-      scourge->getMap()->setYRot(0);
-      scourge->getMap()->setZRot(0);
-    }
-  } 
-  break;
-  case SDL_KEYDOWN:
   case SDL_KEYUP:
-    if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE) {
-      hide();
-      return true;
-    }
-    // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
-    ea = scourge->getUserConfiguration()->getEngineAction(event);    
-    if(ea == SET_MOVE_DOWN){        
-      setMove(Constants::MOVE_DOWN);
-    } else if(ea == SET_MOVE_UP){
-      setMove(Constants::MOVE_UP);
-    } else if(ea == SET_MOVE_RIGHT){
-      setMove(Constants::MOVE_RIGHT);
-    } else if(ea == SET_MOVE_LEFT){
-      setMove(Constants::MOVE_LEFT);
-    } else if(ea == SET_MOVE_DOWN_STOP){        
-      scourge->getMap()->setYRot(0.0f);
-      scourge->getMap()->setYRot(0);
-      removeMove(Constants::MOVE_DOWN);
-    } else if(ea == SET_MOVE_UP_STOP){
-      scourge->getMap()->setYRot(0.0f);
-      scourge->getMap()->setYRot(0);
-      removeMove(Constants::MOVE_UP);
-    } else if(ea == SET_MOVE_RIGHT_STOP){
-      scourge->getMap()->setYRot(0.0f);
-      scourge->getMap()->setZRot(0);
-      removeMove(Constants::MOVE_RIGHT);
-    } else if(ea == SET_MOVE_LEFT_STOP){
-      scourge->getMap()->setYRot(0.0f);
-      scourge->getMap()->setZRot(0);
-      removeMove(Constants::MOVE_LEFT);
-    } else if(ea == SET_ZOOM_IN){
-      scourge->getMap()->setZoomIn(true);
-    } else if(ea == SET_ZOOM_OUT){
-      scourge->getMap()->setZoomOut(true);
-    } else if(ea == SET_ZOOM_IN_STOP){
-      scourge->getMap()->setZoomIn(false);
-    } else if(ea == SET_ZOOM_OUT_STOP){
-      scourge->getMap()->setZoomOut(false);
-    }
-    break;
-    default: break;
+  if( event->key.keysym.sym == SDLK_ESCAPE ) {
+    hide();
+    return true;
+  }
+  break;
+  default: break;
   }
   return false;
 }

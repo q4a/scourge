@@ -52,7 +52,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   needToCheckDropLocation = true;
   nextMission = -1;
   teleportFailure = false;
-  cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
+//  cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   // in HQ map
   inHq = true;
   //showPath = config->getAlwaysShowPath();
@@ -65,7 +65,6 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   // we're not in target selection mode
   targetSelectionFor = NULL;
   
-  move = 0;
   battleCount = 0;  
   inventory = NULL;
   containerGuiCount = 0;
@@ -79,7 +78,6 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   resetBattles();
 
   turnProgress = new Progress(this, 10, false, false, false);
-  mouseZoom = mouseRot = false;
   willStartDrag = false;
   willStartDragX = willStartDragY = 0;
 }
@@ -259,13 +257,12 @@ void Scourge::startMission() {
     }
 
     // position the players
-    move = 0;
+    levelMap->resetMove();
     battleCount = 0;
     containerGuiCount = 0;
     lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
     teleporting = false;
     changingStory = false;
-    mouseMoveScreen = true;
     targetSelectionFor = NULL;  
 
     // clear infoMessage
@@ -465,7 +462,6 @@ void Scourge::endMission() {
     party->getParty(i)->setSelXY(-1, -1);   // stop moving
   }
   movingItem = NULL;          // stop moving items
-  //	move = 0;  
 }
 
 void Scourge::drawView() {
@@ -478,26 +474,14 @@ void Scourge::drawView() {
 
   updatePartyUI();
 
-  if( getSDLHandler()->mouseIsMovingOverMap )
-    getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, 
-                        &cursorMapX, &cursorMapY, &cursorMapZ);
+  //if( getSDLHandler()->mouseIsMovingOverMap )
+  //  getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, 
+  //                      &cursorMapX, &cursorMapY, &cursorMapZ);
 
   checkForDropTarget();
   checkForInfo();
 
   levelMap->draw();
-
-  // cancel mouse-based map movement (middle button)
-  if(mouseRot) {
-    levelMap->setXRot(0);
-    levelMap->setYRot(0);
-    levelMap->setZRot(0);
-  }
-  if(mouseZoom) {
-    mouseZoom = false;
-    levelMap->setZoomIn(false);
-    levelMap->setZoomOut(false);
-  }
 
   // the boards outside the map
   drawOutsideMap();
@@ -1047,46 +1031,24 @@ bool Scourge::handleEvent(SDL_Event *event) {
   //return false;
   //}
 
+  levelMap->handleEvent( event );
+
   int mx, my;
   switch(event->type) {
   case SDL_MOUSEMOTION:
-    if(mouseRot) {
-      levelMap->setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
-      levelMap->setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
-    } else {
-      //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+    if( !levelMap->isMouseRotating() ) {
+
       mx = event->motion.x;
       my = event->motion.y;
-      if(mx < 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_LEFT);
-      } else if(mx >= sdlHandler->getScreen()->w - 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_RIGHT);
-      } else if(my < 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_UP);
-      } else if(my >= sdlHandler->getScreen()->h - 10) {
-        mouseMoveScreen = true;
-        setMove(Constants::MOVE_DOWN);
-      } else {
-        if(mouseMoveScreen) {
-          mouseMoveScreen = false;
-          removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
-          removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
-          levelMap->setYRot(0.0f);
-          levelMap->setZRot(0.0f);
-        }
-      }
 
       // start the item drag
       if(willStartDrag && 
          (abs(mx - willStartDragX) > DRAG_START_TOLERANCE ||
           abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
         // click on an item
-        Uint16 mapx = cursorMapX;
-        Uint16 mapy = cursorMapY;
-        Uint16 mapz = cursorMapZ;
+        Uint16 mapx = levelMap->getCursorMapX();
+        Uint16 mapy = levelMap->getCursorMapY();
+        Uint16 mapz = levelMap->getCursorMapZ();
         if(mapx > MAP_WIDTH) {
           getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
           mapz = 0;
@@ -1190,30 +1152,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
                                                "Turn-based" :
                                                "Real-time" ) );
       levelMap->addDescription( message, 0, 1, 1 );
-    } else if(ea == SET_MOVE_DOWN){        
-      setMove(Constants::MOVE_DOWN);
-    } else if(ea == SET_MOVE_UP){
-      setMove(Constants::MOVE_UP);
-    } else if(ea == SET_MOVE_RIGHT){
-      setMove(Constants::MOVE_RIGHT);
-    } else if(ea == SET_MOVE_LEFT){
-      setMove(Constants::MOVE_LEFT);
-    } else if(ea == SET_MOVE_DOWN_STOP){        
-      levelMap->setYRot(0.0f);
-      levelMap->setYRot(0);
-      removeMove(Constants::MOVE_DOWN);
-    } else if(ea == SET_MOVE_UP_STOP){
-      levelMap->setYRot(0.0f);
-      levelMap->setYRot(0);
-      removeMove(Constants::MOVE_UP);
-    } else if(ea == SET_MOVE_RIGHT_STOP){
-      levelMap->setYRot(0.0f);
-      levelMap->setZRot(0);
-      removeMove(Constants::MOVE_RIGHT);
-    } else if(ea == SET_MOVE_LEFT_STOP){
-      levelMap->setYRot(0.0f);
-      levelMap->setZRot(0);
-      removeMove(Constants::MOVE_LEFT);
     } else if(ea == SET_PLAYER_0){
       setPlayer(0);
     } else if(ea == SET_PLAYER_1){
@@ -1247,14 +1185,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
       miniMap->zoomOut();
 //    } else if(ea == MINIMAP_TOGGLE){
 //      miniMap->toggle();
-    } else if(ea == SET_ZOOM_IN){
-      levelMap->setZoomIn(true);
-    } else if(ea == SET_ZOOM_OUT){
-      levelMap->setZoomOut(true);
-    } else if(ea == SET_ZOOM_IN_STOP){
-      levelMap->setZoomIn(false);
-    } else if(ea == SET_ZOOM_OUT_STOP){
-      levelMap->setZoomOut(false);
     } else if(ea == TOGGLE_MAP_CENTER){
       bool mc;
       mc = userConfiguration->getAlwaysCenterMap();
@@ -1286,7 +1216,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
 void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
   Uint16 mapx, mapy;
   getMapXYAtScreenXY(x, y, &mapx, &mapy);
-  if(mapx < MAP_WIDTH) levelMap->handleMouseMove( mapx, mapy, 0 );
+  levelMap->handleMouseMove( mapx, mapy, 0 );
 }
 
 void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
@@ -1295,16 +1225,6 @@ void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
     willStartDrag = true;
     willStartDragX = x;
     willStartDragY = y;
-  } if(button == SDL_BUTTON_MIDDLE) {
-    mouseRot = true;
-  } if(button == SDL_BUTTON_WHEELUP) {
-    mouseZoom = true;
-    levelMap->setZoomIn(false);
-    levelMap->setZoomOut(true);
-  } if(button == SDL_BUTTON_WHEELDOWN) {
-    mouseZoom = true;
-    levelMap->setZoomIn(true);
-    levelMap->setZoomOut(false);
   }
 }
 
@@ -1314,16 +1234,11 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
   Uint16 mapx, mapy, mapz;
   //Creature *c = getTargetSelectionFor();
-  if(button == SDL_BUTTON_MIDDLE) {
-    mouseRot = false;
-    levelMap->setXRot(0);
-    levelMap->setYRot(0);
-    levelMap->setZRot(0);
-  } else if(button == SDL_BUTTON_LEFT) {
+  if(button == SDL_BUTTON_LEFT) {
 
-    mapx = cursorMapX;
-    mapy = cursorMapY;
-    mapz = cursorMapZ;
+    mapx = levelMap->getCursorMapX();
+    mapy = levelMap->getCursorMapY();
+    mapz = levelMap->getCursorMapZ();
 
     // drop target?
     Location *dropTarget = NULL;
@@ -1415,7 +1330,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     }
 
   } else if(button == SDL_BUTTON_RIGHT) {
-    describeLocation(cursorMapX, cursorMapY, cursorMapZ);
+    describeLocation(levelMap->getCursorMapX(), levelMap->getCursorMapY(), levelMap->getCursorMapZ());
   }
 }
 
@@ -1567,17 +1482,14 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   glPopMatrix();
 }   
 
-void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
-                                  Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
-  /*
+void Scourge::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   // only do this if the mouse has moved some (optimization)
-  if(abs(lastX - x) < POSITION_SAMPLE_DELTA && abs(lastY - y) < POSITION_SAMPLE_DELTA) {
-    *mapx = lastMapX;
-    *mapy = lastMapY;
-    *mapz = lastMapZ;
-    return;
-  }
-  */
+//  if(abs(lastX - x) < POSITION_SAMPLE_DELTA && abs(lastY - y) < POSITION_SAMPLE_DELTA) {
+//    *mapx = lastMapX;
+//    *mapy = lastMapY;
+//    *mapz = lastMapZ;
+//    return;
+//  }
 
   GLuint buffer[512];
   GLint  hits, viewport[4];
@@ -1591,13 +1503,15 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
-  gluPickMatrix(x, viewport[3]-y, 1, 1, viewport);
+  gluPickMatrix(getSDLHandler()->mouseX, 
+                viewport[3] - getSDLHandler()->mouseY, 
+                1, 1, viewport);
   sdlHandler->setOrthoView();
 
   glMatrixMode(GL_MODELVIEW);
-  levelMap->selectMode = true;
+  //levelMap->selectMode = true;
   levelMap->draw();
-  levelMap->selectMode = false;
+  //levelMap->selectMode = false;
 
   glFlush();    
   hits = glRenderMode(GL_RENDER);
@@ -1641,8 +1555,8 @@ void Scourge::getMapXYZAtScreenXY(Uint16 x, Uint16 y,
   lastMapX = *mapx;
   lastMapY = *mapy;
   lastMapZ = *mapz;
-  lastX = x;
-  lastY = y;
+  lastX = getSDLHandler()->mouseX;
+  lastY = getSDLHandler()->mouseY;
 }
 
 void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
@@ -2269,9 +2183,6 @@ void Scourge::setUILayout() {
 }
 
 void Scourge::playRound() {                           
-  // move the levelMap
-  if(move) levelMap->move(move);
-
   if(targetSelectionFor) return;
  
   // is the game not paused?
@@ -3330,9 +3241,9 @@ void Scourge::checkForDropTarget() {
 
         // check location
         Location *dropTarget = NULL;
-        Uint16 mapx = cursorMapX;
-        Uint16 mapy = cursorMapY;
-        Uint16 mapz = cursorMapZ;
+        Uint16 mapx = levelMap->getCursorMapX();
+        Uint16 mapy = levelMap->getCursorMapY();
+        Uint16 mapz = levelMap->getCursorMapZ();
         if(mapx < MAP_WIDTH) {
           dropTarget = levelMap->getLocation(mapx, mapy, mapz);
           if(!(dropTarget && 
@@ -3364,9 +3275,9 @@ void Scourge::checkForInfo() {
       sdlHandler->getCursorMode() == SDLHandler::CURSOR_TALK ) {
     if( sdlHandler->mouseIsMovingOverMap ) {
       bool handled = false;
-      mapx = cursorMapX;
-      mapy = cursorMapY;
-      mapz = cursorMapZ;
+      mapx = levelMap->getCursorMapX();
+      mapy = levelMap->getCursorMapY();
+      mapz = levelMap->getCursorMapZ();
       if( mapx < MAP_WIDTH) {
         Location *pos = levelMap->getLocation(mapx, mapy, mapz);    
         if( pos && 
@@ -3389,9 +3300,9 @@ void Scourge::checkForInfo() {
       needToCheckInfo = false;
       
       // check location
-      Uint16 mapx = cursorMapX;
-      Uint16 mapy = cursorMapY;
-      Uint16 mapz = cursorMapZ;
+      Uint16 mapx = levelMap->getCursorMapX();
+      Uint16 mapy = levelMap->getCursorMapY();
+      Uint16 mapz = levelMap->getCursorMapZ();
       if(mapx < MAP_WIDTH) {
         Location *pos = levelMap->getLocation(mapx, mapy, mapz);
         if( pos ) {

@@ -157,10 +157,9 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   ScrollingList *messageList;
   Button *yesExitConfirm, *noExitConfirm;
   int movingX, movingY, movingZ;
-  Uint16 cursorMapX, cursorMapY, cursorMapZ;
+  //Uint16 cursorMapX, cursorMapY, cursorMapZ;
   Item *movingItem;
   bool needToCheckDropLocation;
-  Uint16 move;
   GLint lastTick;
   int battleCount;
   Battle *battle[MAX_BATTLE_COUNT];  
@@ -186,7 +185,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   vector<Battle *> battleRound;
   int battleTurn, rtStartTurn;
 
-  bool mouseMoveScreen;
   Creature *targetSelectionFor;
 
   int layoutMode;
@@ -224,7 +222,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   Progress *progress;
   bool inBattle;
   Progress *turnProgress;
-  bool mouseRot, mouseZoom;
 
   bool willStartDrag;
   int willStartDragX, willStartDragY;
@@ -239,7 +236,6 @@ protected:
 
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
-  void getMapXYZAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
   void processGameMouseMove(Uint16 x, Uint16 y);
   void describeLocation(int mapx, int mapy, int mapz);
@@ -304,18 +300,6 @@ public:
   */
   inline Board *getBoard() { return board; }
   
-  /**
-    Set which direction to move in.
-    @param n is a bitfield. See constants for direction values.
-  */
-  inline void setMove(Uint16 n) { move |= n; };  
-  
-  /**
-    Stop moving in the given direction(s).
-    @param n is a bitfield. See constants for directions values.
-  */
-  inline void removeMove(Uint16 n) { move &= (0xffff - n); }
-
   /**
 	  This method is called by the main loop to play a round. A round may consist of 
     a battle with multiple participants, someone drinking a potion, casting a spell, etc.
@@ -664,6 +648,11 @@ public:
   void teleport( bool toHQ=true );
 
   inline Window *getPartyWindow() { return mainWin; }
+
+  inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
+  inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }
+  inline Uint16 getMouseY() { return getSDLHandler()->mouseY; }
+  void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
 
  protected:
 

@@ -17,6 +17,8 @@
 
 #include "map.h"
 
+#define MOUSE_ROT_DELTA 2
+
 #define ZOOM_DELTA 1.2f
 //#define DEBUG_MOUSE_POS
 
@@ -53,6 +55,11 @@ const float Map::shadowTransformMatrix[16] = {
 Map::Map(Session *session) {
 
   hasWater = false;
+
+  cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
+
+  mouseMoveScreen = true;
+  mouseZoom = mouseRot = false;
 
   mapViewWidth = MVW;
   mapViewDepth = MVD;
@@ -286,7 +293,7 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
    -SHIFT + arrow keys / mouse at edge of screen: slow move map
    -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
  */
-void Map::move(int dir) {
+void Map::moveMap(int dir) {
   if(SDL_GetModState() & KMOD_CTRL) {
     float rot;
     if(SDL_GetModState() & KMOD_SHIFT){
@@ -822,6 +829,15 @@ void Map::setupPosition(int posX, int posY, int posZ,
 }
 
 void Map::draw() {
+
+  if( session->getGameAdapter()->isMouseIsMovingOverMap() && !selectMode ) {
+    // careful this calls draw() again!
+    selectMode = true;
+    session->getGameAdapter()->getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
+    selectMode = false;
+    //cerr << "x=" << cursorMapX << " y=" << cursorMapY << " z=" << cursorMapZ << endl;
+  }
+
   if(zoomIn) {
     if(zoom <= 0.5f) {
       zoomOut = false;
@@ -1161,6 +1177,20 @@ void Map::draw() {
   } 
 
   glDisable( GL_SCISSOR_TEST );
+
+  // cancel mouse-based map movement (middle button)
+  if( mouseRot ) {
+    setXRot( 0 );
+    setYRot( 0 );
+    setZRot( 0 );
+  }
+  if( mouseZoom ) {
+    mouseZoom = false;
+    setZoomIn( false );
+    setZoomOut( false );
+  }
+
+  if(move) moveMap( move );
 }
 
 void Map::sortShapes( DrawLater *playerDrawLater,
@@ -1963,7 +1993,7 @@ void Map::dropItemsAbove(int x, int y, int z, Item *item) {
 	}
   }
   for(int i = 0; i < count; i++) {
-	cerr << "item " << drop[i].item->getItemName() << " new z=" << drop[i].z << endl;
+	//cerr << "item " << drop[i].item->getItemName() << " new z=" << drop[i].z << endl;
 	setItem(drop[i].x, drop[i].y, drop[i].z, drop[i].item);
   }
 }
@@ -2204,9 +2234,9 @@ bool Map::isWallBetween(int x1, int y1, int z1,
 bool Map::isWall(int x, int y, int z) {
   Location *loc = getLocation((int)x, (int)y, z);
   return (loc && 
-		  (!loc->item || loc->item->getShape() != loc->shape) && 
-		  (!loc->creature || loc->creature->getShape() != loc->shape));
-}
+          (!loc->item || loc->item->getShape() != loc->shape) && 
+          (!loc->creature || loc->creature->getShape() != loc->shape));
+}                             
 
 // FIXME: only uses x, y for now
 bool Map::shapeFits(Shape *shape, int x, int y, int z) {
@@ -2484,8 +2514,107 @@ bool Map::isLocationInLight(int x, int y) {
   return lightMap[chunkX][chunkY];
 }
 
-
-
+void Map::handleEvent( SDL_Event *event ) {
+  int ea;
+  int mx, my;
+  switch(event->type) {
+  case SDL_MOUSEMOTION:
+    if(mouseRot) {
+      setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
+      setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
+    } else {
+      //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
+      mx = event->motion.x;
+      my = event->motion.y;
+      if(mx < 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_LEFT);
+      } else if(mx >= session->getGameAdapter()->getScreenWidth() - 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_RIGHT);
+      } else if(my < 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_UP);
+      } else if(my >= session->getGameAdapter()->getScreenHeight() - 10) {
+        mouseMoveScreen = true;
+        setMove(Constants::MOVE_DOWN);
+      } else {
+        if(mouseMoveScreen) {
+          mouseMoveScreen = false;
+          removeMove(Constants::MOVE_LEFT | Constants::MOVE_RIGHT);
+          removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
+          setYRot(0.0f);
+          setZRot(0.0f);
+        }
+      }
+    }
+    break;
+  case SDL_MOUSEBUTTONDOWN:
+  if( event->button.button ) {
+    if( event->button.button == SDL_BUTTON_MIDDLE ) {
+      mouseRot = true;
+    } if( event->button.button == SDL_BUTTON_WHEELUP ) {
+      mouseZoom = true;
+      setZoomIn(false);
+      setZoomOut(true);
+    } if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
+      mouseZoom = true;
+      setZoomIn(true);
+      setZoomOut(false);
+    }
+  }
+  break;  
+  case SDL_MOUSEBUTTONUP:
+  if( event->button.button ) {
+    if( event->button.button == SDL_BUTTON_MIDDLE ) {
+      mouseRot = false;
+      setXRot(0);
+      setYRot(0);
+      setZRot(0);
+    }
+  } 
+  break;
+  case SDL_KEYDOWN:
+  case SDL_KEYUP:
+    // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
+    ea = session->getUserConfiguration()->getEngineAction(event);    
+    if(ea == SET_MOVE_DOWN){        
+      setMove(Constants::MOVE_DOWN);
+    } else if(ea == SET_MOVE_UP){
+      setMove(Constants::MOVE_UP);
+    } else if(ea == SET_MOVE_RIGHT){
+      setMove(Constants::MOVE_RIGHT);
+    } else if(ea == SET_MOVE_LEFT){
+      setMove(Constants::MOVE_LEFT);
+    } else if(ea == SET_MOVE_DOWN_STOP){        
+      setYRot(0.0f);
+      setYRot(0);
+      removeMove(Constants::MOVE_DOWN);
+    } else if(ea == SET_MOVE_UP_STOP){
+      setYRot(0.0f);
+      setYRot(0);
+      removeMove(Constants::MOVE_UP);
+    } else if(ea == SET_MOVE_RIGHT_STOP){
+      setYRot(0.0f);
+      setZRot(0);
+      removeMove(Constants::MOVE_RIGHT);
+    } else if(ea == SET_MOVE_LEFT_STOP){
+      setYRot(0.0f);
+      setZRot(0);
+      removeMove(Constants::MOVE_LEFT);
+    } else if(ea == SET_ZOOM_IN){
+      setZoomIn(true);
+    } else if(ea == SET_ZOOM_OUT){
+      setZoomOut(true);
+    } else if(ea == SET_ZOOM_IN_STOP){
+      setZoomIn(false);
+    } else if(ea == SET_ZOOM_OUT_STOP){
+      setZoomOut(false);
+    }
+    break;
+    default: break;
+  }
+}
 
 
 

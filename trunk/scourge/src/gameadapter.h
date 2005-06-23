@@ -80,6 +80,10 @@ public:
   virtual inline void setBlendFunc() {}
   virtual inline void teleport( bool toHQ=true ) {}
   virtual inline int getCurrentDepth() { return 0; }
+  virtual inline bool isMouseIsMovingOverMap() { return false; }
+  virtual inline Uint16 getMouseX() { return 0; }
+  virtual inline Uint16 getMouseY() { return 0; }
+  virtual inline void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {}
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }
