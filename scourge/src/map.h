@@ -193,6 +193,12 @@ class Map {
 
   MapSettings *settings;
 
+  bool mouseMoveScreen;
+  Uint16 move;
+  bool mouseRot, mouseZoom;
+
+  Uint16 cursorMapX, cursorMapY, cursorMapZ;
+
  public:
   bool useFrustum;
   static bool debugMd2Shapes;
@@ -200,7 +206,19 @@ class Map {
   Map(Session *session);
   ~Map();
 
+  inline Uint16 getCursorMapX() { return cursorMapX; }
+  inline Uint16 getCursorMapY() { return cursorMapY; }
+  inline Uint16 getCursorMapZ() { return cursorMapZ; }
+
+  void handleEvent( SDL_Event *event );
+
   void reset();
+
+  inline void resetMove() { move = 0; }
+
+  inline bool isMouseRotating() { return mouseRot; }
+  inline bool isMouseZooming() { return mouseZoom; }
+  inline bool isMapMoving() { return move != 0; }
 
   inline void setMapSettings( MapSettings *settings ) { this->settings = settings; }
   inline MapSettings *getMapSettings() { return settings; }
@@ -319,7 +337,7 @@ class Map {
   inline Uint16 getSelY() { return selY; }
   inline Uint16 getSelZ() { return selZ; }
 
-  void move(int dir);
+  void moveMap(int dir);
 
   bool isWallBetweenShapes(int x1, int y1, int z1,
 						   Shape *shape1,
@@ -438,6 +456,19 @@ class Map {
   bool isPositionAccessible(int atX, int atY);
 
  protected:
+
+     /**
+    Set which direction to move in.
+    @param n is a bitfield. See constants for direction values.
+  */
+  inline void setMove(Uint16 n) { move |= n; };  
+  
+  /**
+    Stop moving in the given direction(s).
+    @param n is a bitfield. See constants for directions values.
+  */
+  inline void removeMove(Uint16 n) { move &= (0xffff - n); }
+
    // This assumes that MAP_WIDTH >= MAP_HEIGHT and that MAP_WIDTH^3 < 2^32.
    inline Uint32 createTripletKey(int x, int y, int z) {
      Uint32 key = 
@@ -517,6 +548,10 @@ class Map {
   void sortShapes( DrawLater *playerDrawLater,
                    DrawLater *shapes,
                    int shapeCount );
+
+  void getMapXYZAtScreenXY( Uint16 x, Uint16 y );
+
+  void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
 };
 
 #endif
