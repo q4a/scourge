@@ -236,7 +236,6 @@ protected:
 
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
-  void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
   void processGameMouseMove(Uint16 x, Uint16 y);
   void describeLocation(int mapx, int mapy, int mapz);
 
@@ -653,8 +652,11 @@ public:
   inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }
   inline Uint16 getMouseY() { return getSDLHandler()->mouseY; }
   void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
+  void getMapXYAtScreenXY(Uint16 *mapx, Uint16 *mapy);
 
  protected:
+
+   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
 
    void drawPortrait( Widget *w, Creature *p );
 

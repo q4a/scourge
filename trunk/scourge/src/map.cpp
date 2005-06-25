@@ -57,6 +57,8 @@ Map::Map(Session *session) {
   hasWater = false;
 
   cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
+  cursorFlatMapX = cursorFlatMapY = MAP_WIDTH + 1;
+  cursorChunkX = cursorChunkY = ( MAP_WIDTH / MAP_UNIT ) + 1;
 
   mouseMoveScreen = true;
   mouseZoom = mouseRot = false;
@@ -475,6 +477,8 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       // store this chunk
       chunks[chunkCount].x = chunkPosX;
       chunks[chunkCount].y = chunkPosY;
+      chunks[chunkCount].cx = chunkX;
+      chunks[chunkCount].cy = chunkY;
       chunkCount++;
       
             
@@ -834,6 +838,14 @@ void Map::draw() {
     // careful this calls draw() again!
     selectMode = true;
     session->getGameAdapter()->getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
+    if( cursorMapX > MAP_WIDTH ) {
+      session->getGameAdapter()->getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
+    } else {
+      cursorFlatMapX = cursorMapX;
+      cursorFlatMapY = cursorMapY;
+    }
+    cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+    cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
     selectMode = false;
     //cerr << "x=" << cursorMapX << " y=" << cursorMapY << " z=" << cursorMapZ << endl;
   }
@@ -1131,24 +1143,43 @@ void Map::draw() {
     drawProjectiles();
   }
   
+
+
   
   if( settings->isGridShowing() ) {
+
+    int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+    int chunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+//    int chunkStartX = ( chunkX * MAP_UNIT ) + MAP_OFFSET;
+//    int chunkStartY = ( chunkY * MAP_UNIT ) + MAP_OFFSET;
+
+    glDisable( GL_CULL_FACE );
+    glDisable( GL_TEXTURE_2D );
+
     for(int i = 0; i < chunkCount; i++) {
-      
+
       float n = (float)MAP_UNIT / GLShape::DIV;
       
-      glDisable( GL_CULL_FACE );
-      glDisable( GL_TEXTURE_2D );
       glPushMatrix();
       glTranslatef( chunks[i].x, chunks[i].y, 0 );
       
-      glColor4f( 1,1,1,1 );
+      if( chunks[i].cx == chunkX &&
+          chunks[i].cy == chunkY ) {
+        glColor4f( 0,1,0,1 );
+        glLineWidth( 5 );
+      } else {
+        glColor4f( 1,1,1,1 );
+        glLineWidth( 1 );
+      }
       glBegin( GL_LINE_LOOP );
       glVertex3f( 0, 0, 0 );
       glVertex3f( n, 0, 0 );
       glVertex3f( n, n, 0 );
       glVertex3f( 0, n, 0 );
       glEnd();
+
+      //glLineWidth( 1 );
+      //glColor4f( 1,1,1,1 );
       glBegin( GL_LINE_LOOP );
       glVertex3f( 0, 0, n );
       glVertex3f( n, 0, n );
@@ -1156,7 +1187,6 @@ void Map::draw() {
       glVertex3f( 0, n, n );
       glEnd();
       
-      glColor4f( 0,1,1,1 );
       glBegin( GL_LINE_LOOP );
       glVertex3f( 0, 0, 0 );
       glVertex3f( n, 0, 0 );
@@ -1171,9 +1201,25 @@ void Map::draw() {
       glEnd();
       
       glPopMatrix();
-      glEnable( GL_CULL_FACE );
-      glEnable( GL_TEXTURE_2D );
     }
+
+    glPushMatrix();
+
+    float xp = (float)(cursorFlatMapX - getX()) / GLShape::DIV;
+    float yp = ((float)(cursorFlatMapY - getY())) / GLShape::DIV;
+    float n = 1.0f / GLShape::DIV;
+    glColor4f( 1, 0.9f, 0.15f, 1 );
+    glTranslatef( xp, yp, 0 );
+    glBegin( GL_QUADS );
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( n, 0, 0 );
+    glVertex3f( n, n, 0 );
+    glVertex3f( 0, n, 0 );
+    glEnd();
+    glPopMatrix();
+
+    glEnable( GL_CULL_FACE );
+    glEnable( GL_TEXTURE_2D );
   } 
 
   glDisable( GL_SCISSOR_TEST );

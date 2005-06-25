@@ -73,6 +73,8 @@ public:
   void hide();
   inline bool isVisible() { return mainWin->isVisible(); }
 
+protected:
+  void processMouseMotion( Uint8 button );
 };
 
 #endif
