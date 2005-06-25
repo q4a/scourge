@@ -77,6 +77,9 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   scourge->getMap()->handleEvent( event );
 
   switch(event->type) {
+  case SDL_MOUSEMOTION:
+  processMouseMotion( event->motion.state );
+  break;
   case SDL_KEYUP:
   if( event->key.keysym.sym == SDLK_ESCAPE ) {
     hide();
@@ -108,4 +111,9 @@ void MapEditor::hide() {
   scourge->getMap()->setMapSettings( scourge->getMapSettings() );
 }
 
+void MapEditor::processMouseMotion( Uint8 button ) {
+  if( button == SDL_BUTTON_LEFT ) {
+    // draw the correct walls in this chunk
+  }
+}
 

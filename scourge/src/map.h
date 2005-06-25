@@ -197,7 +197,8 @@ class Map {
   Uint16 move;
   bool mouseRot, mouseZoom;
 
-  Uint16 cursorMapX, cursorMapY, cursorMapZ;
+  Uint16 cursorMapX, cursorMapY, cursorMapZ, cursorFlatMapX, cursorFlatMapY;
+  Uint16 cursorChunkX, cursorChunkY;
 
  public:
   bool useFrustum;
@@ -209,6 +210,12 @@ class Map {
   inline Uint16 getCursorMapX() { return cursorMapX; }
   inline Uint16 getCursorMapY() { return cursorMapY; }
   inline Uint16 getCursorMapZ() { return cursorMapZ; }
+
+  inline Uint16 getCursorFlatMapX() { return cursorFlatMapX; }
+  inline Uint16 getCursorFlatMapY() { return cursorFlatMapY; }
+
+  inline Uint16 getCursorChunkX() { return cursorChunkX; }
+  inline Uint16 getCursorChunkY() { return cursorChunkY; }
 
   void handleEvent( SDL_Event *event );
 
@@ -499,7 +506,11 @@ class Map {
    }
 
    CFrustum *frustum;
-   CVector3 chunks[100];
+   typedef struct _ChunkInfo {
+     float x, y;
+     int cx, cy;
+   } ChunkInfo;
+   ChunkInfo chunks[100];
    int chunkCount;
    DrawLater later[100], stencil[1000], other[1000], damage[1000];
    int laterCount, stencilCount, otherCount, damageCount;

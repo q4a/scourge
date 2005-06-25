@@ -84,6 +84,7 @@ public:
   virtual inline Uint16 getMouseX() { return 0; }
   virtual inline Uint16 getMouseY() { return 0; }
   virtual inline void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {}
+  virtual inline void getMapXYAtScreenXY(Uint16 *mapx, Uint16 *mapy) {} 
 
   // initialization events
   virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }

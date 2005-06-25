@@ -1214,9 +1214,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
 }
 
 void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
-  Uint16 mapx, mapy;
-  getMapXYAtScreenXY(x, y, &mapx, &mapy);
-  levelMap->handleMouseMove( mapx, mapy, 0 );
+  //Uint16 mapx, mapy;
+  //getMapXYAtScreenXY(x, y, &mapx, &mapy);
+  //levelMap->handleMouseMove( mapx, mapy, 0 );
+  levelMap->handleMouseMove( levelMap->getCursorFlatMapX(), 
+                             levelMap->getCursorFlatMapY(), 
+                             0 );
 }
 
 void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
@@ -1293,7 +1296,9 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
     // click on an item
     if(mapx > MAP_WIDTH) {
-      getMapXYAtScreenXY(x, y, &mapx, &mapy);
+      //getMapXYAtScreenXY(x, y, &mapx, &mapy);
+      mapx = levelMap->getCursorFlatMapX();
+      mapy = levelMap->getCursorFlatMapY();
       mapz = 0;
     }
 
@@ -1308,7 +1313,9 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     if(useItem(mapx, mapy, mapz)) return;
 
     // click on the levelMap
-    getMapXYAtScreenXY(x, y, &mapx, &mapy);
+    //getMapXYAtScreenXY(x, y, &mapx, &mapy);
+    mapx = levelMap->getCursorFlatMapX();
+    mapy = levelMap->getCursorFlatMapY();
 
     // make sure the selected action can target a location
     if( getTargetSelectionFor() ) {
@@ -1439,6 +1446,13 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
   }
 } 
 
+void Scourge::getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy ) {
+  getMapXYAtScreenXY( getSDLHandler()->mouseX, 
+                      getSDLHandler()->mouseY, 
+                      mapx, 
+                      mapy );
+}
+
 void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                                  Uint16 *mapx, Uint16 *mapy) {
   glPushMatrix();
@@ -1449,7 +1463,7 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   double obj_x, obj_y, obj_z;
   double win_x = (double)x;
   double win_y = (double)sdlHandler->getScreen()->h - y - 1;
-  double win_z = 0.0;
+  double win_z = 0.5f;
   
   double projection[16];
   double modelview[16];
