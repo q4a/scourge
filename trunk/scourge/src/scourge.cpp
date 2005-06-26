@@ -1057,7 +1057,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
         willStartDrag = false;
       }
 
-      processGameMouseMove(mx, my);  
     }
     break;
   case SDL_MOUSEBUTTONDOWN:
@@ -1211,15 +1210,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
   }
 
   return false;  
-}
-
-void Scourge::processGameMouseMove(Uint16 x, Uint16 y) {
-  //Uint16 mapx, mapy;
-  //getMapXYAtScreenXY(x, y, &mapx, &mapy);
-  //levelMap->handleMouseMove( mapx, mapy, 0 );
-  levelMap->handleMouseMove( levelMap->getCursorFlatMapX(), 
-                             levelMap->getCursorFlatMapY(), 
-                             0 );
 }
 
 void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
@@ -1626,7 +1616,7 @@ void Scourge::endItemDrag() {
 
 bool Scourge::useItem(int x, int y, int z) {
   if (movingItem) {
-    dropItem(levelMap->getSelX(), levelMap->getSelY());
+    dropItem(levelMap->getCursorFlatMapX(), levelMap->getCursorFlatMapY());
     return true;
   }
 
@@ -1680,7 +1670,7 @@ bool Scourge::getItem(Location *pos) {
 		levelMap->dropItemsAbove(x, y, z, movingItem);
 		// draw the item as 'selected'
 		levelMap->setSelectedDropTarget(NULL);
-		levelMap->handleMouseMove(movingX, movingY, movingZ);
+		//levelMap->handleMouseMove(movingX, movingY, movingZ);
 	  }
 	  return true;
     }

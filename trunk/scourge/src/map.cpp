@@ -79,8 +79,6 @@ Map::Map(Session *session) {
   mapx = mapy = 0.0f;
   selectMode = false;
   floorOnly = false;
-  selX = selY = selZ = MAP_WIDTH + 1;
-  oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
   useShadow = false;
   //alwaysCenter = true;
 
@@ -191,8 +189,6 @@ void Map::reset() {
   mapx = mapy = 0.0f;
   selectMode = false;
   floorOnly = false;
-  selX = selY = selZ = MAP_WIDTH + 1;
-  oldLocatorSelX = oldLocatorSelY = oldLocatorSelZ = selZ;
   useShadow = false;
   //alwaysCenter = true;
   debugX = debugY = debugZ = -1;
@@ -900,9 +896,7 @@ void Map::draw() {
 
   initMapView();
   if( !selectMode ) frustum->CalculateFrustum();
-  if( settings->isLightMapEnabled() ) {
-    if(lightMapChanged) configureLightMap();
-  }
+  if(lightMapChanged) configureLightMap();
   if( currentEffectsMap.size() ) removeCurrentEffects();
   // populate the shape arrays
   if(mapChanged) {
@@ -1208,13 +1202,14 @@ void Map::draw() {
     float xp = (float)(cursorFlatMapX - getX()) / GLShape::DIV;
     float yp = ((float)(cursorFlatMapY - getY())) / GLShape::DIV;
     float n = 1.0f / GLShape::DIV;
+    float m = 0.25f / GLShape::DIV;
     glColor4f( 1, 0.9f, 0.15f, 1 );
     glTranslatef( xp, yp, 0 );
     glBegin( GL_QUADS );
-    glVertex3f( 0, 0, 0 );
-    glVertex3f( n, 0, 0 );
-    glVertex3f( n, n, 0 );
-    glVertex3f( 0, n, 0 );
+    glVertex3f( 0, 0, m );
+    glVertex3f( n, 0, m );
+    glVertex3f( n, n, m );
+    glVertex3f( 0, n, m );
     glEnd();
     glPopMatrix();
 
@@ -1838,14 +1833,6 @@ void Map::drawDescriptions(ScrollingList *list) {
   */
 }
 
-void Map::handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
-  if(mapx < MAP_WIDTH) {
-	selX = mapx;
-	selY = mapy;
-	selZ = mapz;
-  }
-}     
-
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
                       int effect_type, GLuint duration, 
                       int width, int height, GLuint delay) {
@@ -2328,11 +2315,11 @@ void Map::configureLightMap() {
 
   // draw nothing at first
   for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-	for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
-	  lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
-	}
+    for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+      lightMap[x][y] = ( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ? 0 : 1 );
+    }
   }
-  if(!LIGHTMAP_ENABLED) return;
+  if( !( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ) ) return;
 
   int chunkX = (toint(session->getParty()->getPlayer()->getX()) + 
                 (session->getParty()->getPlayer()->getShape()->getWidth() / 2) - 

@@ -80,6 +80,9 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   case SDL_MOUSEMOTION:
   processMouseMotion( event->motion.state );
   break;
+  case SDL_MOUSEBUTTONDOWN:
+  processMouseMotion( event->button.button );
+  break;
   case SDL_KEYUP:
   if( event->key.keysym.sym == SDLK_ESCAPE ) {
     hide();
@@ -103,6 +106,7 @@ void MapEditor::show() {
   scourge->getMap()->setMapSettings( mapSettings );
   scourge->getMap()->reset();
   scourge->getMap()->center( MAP_WIDTH / 2, MAP_DEPTH / 2, true );
+  scourge->getShapePalette()->loadRandomTheme();
   mainWin->setVisible( true ); 
 }
 
@@ -114,6 +118,41 @@ void MapEditor::hide() {
 void MapEditor::processMouseMotion( Uint8 button ) {
   if( button == SDL_BUTTON_LEFT ) {
     // draw the correct walls in this chunk
+
+    int innerX = scourge->getMap()->getCursorFlatMapX() - 
+      ( scourge->getMap()->getCursorChunkX() * MAP_UNIT + MAP_OFFSET );
+    int innerY = scourge->getMap()->getCursorFlatMapY() - 
+      ( scourge->getMap()->getCursorChunkY() * MAP_UNIT + MAP_OFFSET );
+
+    int mapx = scourge->getMap()->getCursorChunkX() * MAP_UNIT + MAP_OFFSET;
+    int mapy = scourge->getMap()->getCursorChunkY() * MAP_UNIT + MAP_OFFSET;
+    
+    // find the region in the chunk
+    if( innerX < MAP_UNIT_OFFSET ) { 
+      // west
+      cerr << "west " << mapx << "," << mapy << " map:" << scourge->getMap()->getCursorFlatMapX() << "," << scourge->getMap()->getCursorFlatMapX() << endl;
+      scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0, 
+                                      scourge->getShapePalette()->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );               
+    } else if( innerY < MAP_UNIT_OFFSET ) { 
+      // north
+      cerr << "north " << mapx << "," << mapy << " map:" << scourge->getMap()->getCursorFlatMapX() << "," << scourge->getMap()->getCursorFlatMapX() << endl;
+      scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
+                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+    } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
+      // east
+      cerr << "east " << mapx << "," << mapy << " map:" << scourge->getMap()->getCursorFlatMapX() << "," << scourge->getMap()->getCursorFlatMapX() << endl;
+      scourge->getMap()->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0, 
+                                      scourge->getShapePalette()->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );               
+    } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
+      // south
+      cerr << "south " << mapx << "," << mapy << " map:" << scourge->getMap()->getCursorFlatMapX() << "," << scourge->getMap()->getCursorFlatMapX() << endl;
+      scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
+                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+    } else {
+      cerr << "floor " << mapx << "," << mapy << " map:" << scourge->getMap()->getCursorFlatMapX() << "," << scourge->getMap()->getCursorFlatMapX() << endl;
+      scourge->getMap()->setFloorPosition( mapx, mapy + MAP_UNIT, 
+                                           scourge->getShapePalette()->findShapeByName( "FLOOR_TILE", true ) );
+    }
   }
 }
 
