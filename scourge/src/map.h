@@ -144,7 +144,6 @@ class Map {
   float xrot, yrot, zrot;  
   float xpos, ypos, zpos;
   float xRotating, yRotating, zRotating;
-  Uint16 selX, selY, selZ, oldLocatorSelX, oldLocatorSelY, oldLocatorSelZ;
   float fShadowMatrix[16];
   //bool alwaysCenter;
   static const int X_CENTER_TOLERANCE = 8;
@@ -338,12 +337,6 @@ class Map {
   
   void drawDescriptions(ScrollingList *list);
   
-  void handleMouseMove(Uint16 mapx, Uint16 mapy, Uint16 mapz);
-  
-  inline Uint16 getSelX() { return selX; }
-  inline Uint16 getSelY() { return selY; }
-  inline Uint16 getSelZ() { return selZ; }
-
   void moveMap(int dir);
 
   bool isWallBetweenShapes(int x1, int y1, int z1,

@@ -236,7 +236,6 @@ protected:
 
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
-  void processGameMouseMove(Uint16 x, Uint16 y);
   void describeLocation(int mapx, int mapy, int mapz);
 
 
