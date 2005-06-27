@@ -133,50 +133,65 @@ void MapEditor::processMouseMotion( Uint8 button ) {
     
     // find the region in the chunk
     if( innerX < MAP_UNIT_OFFSET ) { 
-      addWestWall( mapx, mapy );
+      addEWWall( mapx, mapy, 1 ); // west
     } else if( innerY < MAP_UNIT_OFFSET ) { 
-      addNorthWall( mapx, mapy );
+      addNSWall( mapx, mapy, 1 ); // north
     } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      addEastWall( mapx, mapy );
+      addEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy, -1 ); // east
     } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      addSouthWall( mapx, mapy );
+      addNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, -1 ); // south
     } else {
       addFloor( mapx, mapy );
     }
   }
 }
 
-void MapEditor::addWestWall( Sint16 mapx, Sint16 mapy ) {
-  Location *pos = scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT / 2, 0 );
-  if( pos ) return;
+void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
+  if( scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT / 2, 0 ) ) return;
 
-  scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0, 
-                                  scourge->getShapePalette()->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );               
-}
-
-void MapEditor::addNorthWall( Sint16 mapx, Sint16 mapy ) {
-  Location *pos = scourge->getMap()->getLocation( mapx + MAP_UNIT / 2, mapy + MAP_UNIT_OFFSET, 0 );
-  if( pos ) return;
+  int check = mapx + dir * ( MAP_UNIT / 2 );
+  bool north = ( check >= 0 && check < MAP_WIDTH && 
+                 scourge->getMap()->getLocation( check, mapy - MAP_UNIT_OFFSET / 2, 0 ) );
+  bool south = ( check >= 0 && check < MAP_WIDTH && 
+                 scourge->getMap()->getLocation( check, mapy + MAP_UNIT - 1, 0 ) );
   
-  scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
-                                  scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+  if( !north && !south ) {
+    scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0, 
+                                    scourge->getShapePalette()->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+  } else if( !north ) {
+    scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0, 
+                                    scourge->getShapePalette()->findShapeByName( "EW_WALL_EXTRA", true ) );
+  } else if( !south ) {
+    scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, 0, 
+                                    scourge->getShapePalette()->findShapeByName( "EW_WALL_EXTRA", true ) );
+  } else {
+    scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, 0, 
+                                    scourge->getShapePalette()->findShapeByName( "EW_WALL", true ) );
+  }
 }
 
-void MapEditor::addEastWall( Sint16 mapx, Sint16 mapy ) {
-  Location *pos = scourge->getMap()->getLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, 
-                                                  mapy + MAP_UNIT / 2, 0 );
-  if( pos ) return;
+void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
+  if( scourge->getMap()->getLocation( mapx + MAP_UNIT / 2, mapy + MAP_UNIT_OFFSET, 0 ) ) return;
+  
+  int check = mapy + dir * ( MAP_UNIT / 2 );
+  bool west = ( check >= 0 && check < MAP_DEPTH && 
+                scourge->getMap()->getLocation( mapx, check, 0 ) );
+  bool east = ( check >= 0 && check < MAP_DEPTH && 
+                scourge->getMap()->getLocation( mapx + MAP_UNIT - 1, check, 0 ) );
 
-  scourge->getMap()->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0, 
-                                  scourge->getShapePalette()->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );               
-}
-
-void MapEditor::addSouthWall( Sint16 mapx, Sint16 mapy ) {
-  Location *pos = scourge->getMap()->getLocation( mapx + MAP_UNIT / 2, mapy + MAP_UNIT, 0 );
-  if( pos ) return;
-
-  scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0,
-                                  scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+  if( !east && !west ) {
+    scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
+                                    scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+  } else if( !west ) {
+    scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
+                                    scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA", true ) );
+  } else if( !east ) {
+    scourge->getMap()->setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0,
+                                    scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA", true ) );
+  } else {
+    scourge->getMap()->setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0,
+                                    scourge->getShapePalette()->findShapeByName( "NS_WALL", true ) );
+  }
 }
 
 void MapEditor::addFloor( Sint16 mapx, Sint16 mapy ) {
