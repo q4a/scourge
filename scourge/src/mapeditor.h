@@ -76,10 +76,8 @@ public:
 protected:
   void processMouseMotion( Uint8 button );
 
-  void addWestWall( Sint16 mapx, Sint16 mapy );
-  void addNorthWall( Sint16 mapx, Sint16 mapy );
-  void addEastWall( Sint16 mapx, Sint16 mapy );
-  void addSouthWall( Sint16 mapx, Sint16 mapy );
+  void addEWWall( Sint16 mapx, Sint16 mapy, int dir );
+  void addNSWall( Sint16 mapx, Sint16 mapy, int dir );
   void addFloor( Sint16 mapx, Sint16 mapy );
 };
 
