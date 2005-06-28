@@ -67,6 +67,38 @@ void MapEditor::drawView() {
   glDisable( GL_CULL_FACE );
   glDisable( GL_SCISSOR_TEST );
 
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_DEPTH_TEST );
+  glDisable( GL_TEXTURE_2D );
+  glPushMatrix();
+  glColor3f( 1, 0, 0 );
+  
+  glLoadIdentity();
+
+  scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d", 
+                                      scourge->getMap()->getCursorFlatMapX(), 
+                                      scourge->getMap()->getCursorFlatMapY(), 
+                                      scourge->getMap()->getCursorChunkX(), 
+                                      scourge->getMap()->getCursorChunkY() );
+  
+  glTranslatef( 50, 50, 0 );
+  glRotatef( scourge->getMap()->getZRot(), 0, 0, 1 );
+  
+  int n = 30;
+  glBegin( GL_LINES );
+  glVertex2f( 0, 0 );
+  glVertex2f( 0, n );
+
+  glVertex2f( 0, 0 );
+  glVertex2f( -n/2, n/2 );
+
+  glVertex2f( 0, 0 );
+  glVertex2f( n/2, n/2 );
+  glEnd();
+
+  glPopMatrix();
+
+
 }
 
 void MapEditor::drawAfter() {
@@ -106,7 +138,7 @@ void MapEditor::show() {
   scourge->getMap()->setMapSettings( mapSettings );
   scourge->getMap()->reset();
   scourge->getMap()->center( MAP_WIDTH / 2, MAP_DEPTH / 2, true );
-  scourge->getShapePalette()->loadRandomTheme();
+  scourge->getShapePalette()->loadTheme( "egypt" );
   mainWin->setVisible( true ); 
 }
 
@@ -133,15 +165,15 @@ void MapEditor::processMouseMotion( Uint8 button ) {
     
     // find the region in the chunk
     if( innerX < MAP_UNIT_OFFSET ) { 
-      addEWWall( mapx, mapy, 1 ); // west
+      addEWWall( mapx, mapy + 1, 1 ); // west
     } else if( innerY < MAP_UNIT_OFFSET ) { 
-      addNSWall( mapx, mapy, 1 ); // north
+      addNSWall( mapx, mapy + 1, 1 ); // north
     } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      addEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy, -1 ); // east
+      addEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + 1, -1 ); // east
     } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      addNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, -1 ); // south
+      addNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET + 1, -1 ); // south
     } else {
-      addFloor( mapx, mapy );
+      addFloor( mapx, mapy + 1 );
     }
   }
 }
@@ -151,17 +183,17 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
 
   int check = mapx + dir * ( MAP_UNIT / 2 );
   bool north = ( check >= 0 && check < MAP_WIDTH && 
-                 scourge->getMap()->getLocation( check, mapy - MAP_UNIT_OFFSET / 2, 0 ) );
+                 scourge->getMap()->getLocation( check, mapy + 1, 0 ) );
   bool south = ( check >= 0 && check < MAP_WIDTH && 
                  scourge->getMap()->getLocation( check, mapy + MAP_UNIT - 1, 0 ) );
   
   if( !north && !south ) {
     scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0, 
                                     scourge->getShapePalette()->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
-  } else if( !north ) {
+  } else if( !south ) {
     scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0, 
                                     scourge->getShapePalette()->findShapeByName( "EW_WALL_EXTRA", true ) );
-  } else if( !south ) {
+  } else if( !north ) {
     scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, 0, 
                                     scourge->getShapePalette()->findShapeByName( "EW_WALL_EXTRA", true ) );
   } else {
