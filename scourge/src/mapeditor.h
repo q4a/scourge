@@ -49,6 +49,10 @@ private:
   // UI
   Window *mainWin;
   Button *doneButton;
+  Button *wallButton;
+  Button *doorButton;
+  Button *eraseButton;
+  vector<Button *> toggleButtonList;
   
   ScrollingList *shapeList;
   char **shapeNames;
@@ -78,6 +82,8 @@ protected:
 
   void addEWWall( Sint16 mapx, Sint16 mapy, int dir );
   void addNSWall( Sint16 mapx, Sint16 mapy, int dir );
+  void removeEWWall( Sint16 mapx, Sint16 mapy, int dir );
+  void removeNSWall( Sint16 mapx, Sint16 mapy, int dir );
   void addFloor( Sint16 mapx, Sint16 mapy );
 };
 

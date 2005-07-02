@@ -33,10 +33,19 @@ MapEditor::MapEditor( Scourge *scourge ) {
                         "Map Editor", false, Window::BASIC_WINDOW,
                         GuiTheme::DEFAULT_THEME );
   mainWin->setVisible( false );
+  
   doneButton = mainWin->createButton( 5, 5, w - 10, 20, "Done" );
 
-  mainWin->createLabel( 5, 40, "Shapes:" );
-  shapeList = new ScrollingList( 5, 50, w - 10, 150, 
+  wallButton = mainWin->createButton( 5, 25, w - 10, 45, "Wall", true );
+  toggleButtonList.push_back( wallButton );
+  wallButton->setSelected( true );
+  doorButton = mainWin->createButton( 5, 50, w - 10, 70, "Door", true );
+  toggleButtonList.push_back( doorButton );
+  eraseButton = mainWin->createButton( 5, 75, w - 10, 95, "Erase", true );
+  toggleButtonList.push_back( eraseButton );
+
+  mainWin->createLabel( 5, 110, "Shapes:" );
+  shapeList = new ScrollingList( 5, 120, w - 10, 150, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
@@ -131,6 +140,20 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     hide();
     return true;
   }
+
+  int found = -1;
+  for( int i = 0; i < (int)toggleButtonList.size(); i++ ) {
+    if( toggleButtonList[ i ] == widget ) {
+      found = i;
+      break;
+    }
+  }
+  if( found > -1 ) {
+    for( int i = 0; i < (int)toggleButtonList.size(); i++ ) {
+      toggleButtonList[ i ]->setSelected( i == found );
+    }
+  }
+
   return false;
 }
 
@@ -165,13 +188,37 @@ void MapEditor::processMouseMotion( Uint8 button ) {
     
     // find the region in the chunk
     if( innerX < MAP_UNIT_OFFSET ) { 
-      addEWWall( mapx, mapy + 1, 1 ); // west
+      // west
+      if( wallButton->isSelected() ) {
+        addEWWall( mapx, mapy + 1, 1 );
+      } else if( eraseButton->isSelected() ) {
+        removeEWWall( mapx, mapy + 1, 1 );
+      } else if( doorButton->isSelected() ) {
+      }
     } else if( innerY < MAP_UNIT_OFFSET ) { 
-      addNSWall( mapx, mapy + 1, 1 ); // north
+      // north
+      if( wallButton->isSelected() ) {
+        addNSWall( mapx, mapy + 1, 1 ); 
+      } else if( eraseButton->isSelected() ) {
+        removeNSWall( mapx, mapy + 1, 1 ); 
+      } else if( doorButton->isSelected() ) {
+      }
     } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      addEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + 1, -1 ); // east
+      // east
+      if( wallButton->isSelected() ) {
+        addEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + 1, -1 );
+      } else if( eraseButton->isSelected() ) {
+        removeEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + 1, -1 );
+      } else if( doorButton->isSelected() ) {
+      }
     } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      addNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET + 1, -1 ); // south
+      // south
+      if( wallButton->isSelected() ) {
+        addNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET + 1, -1 ); 
+      } else if( eraseButton->isSelected() ) {
+        removeNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET + 1, -1 ); 
+      } else if( doorButton->isSelected() ) {
+      }
     } else {
       addFloor( mapx, mapy + 1 );
     }
@@ -299,5 +346,17 @@ void MapEditor::addFloor( Sint16 mapx, Sint16 mapy ) {
   if( scourge->getMap()->getFloorPosition( mapx, mapy + MAP_UNIT ) ) return;
   scourge->getMap()->setFloorPosition( mapx, mapy + MAP_UNIT, 
                                        scourge->getShapePalette()->findShapeByName( "FLOOR_TILE", true ) );
+}
+
+void MapEditor::removeEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
+  for( int y = 1; y <= MAP_UNIT; y++ ) {
+    scourge->getMap()->removePosition( mapx, mapy + y, 0 );
+  }
+}
+
+void MapEditor::removeNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
+  for( int x = 0; x < MAP_UNIT; x++ ) {
+    scourge->getMap()->removePosition( mapx + x, mapy + MAP_UNIT_OFFSET, 0 );
+  }
 }
 
