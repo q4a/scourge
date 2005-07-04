@@ -1149,6 +1149,10 @@ void Map::draw() {
 
     glDisable( GL_CULL_FACE );
     glDisable( GL_TEXTURE_2D );
+    
+    glEnable(GL_BLEND);  
+    glDepthMask(GL_FALSE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     for(int i = 0; i < chunkCount; i++) {
 
@@ -1172,6 +1176,7 @@ void Map::draw() {
       glVertex3f( 0, n, 0 );
       glEnd();
 
+      /*
       //glLineWidth( 1 );
       //glColor4f( 1,1,1,1 );
       glBegin( GL_LINE_LOOP );
@@ -1193,6 +1198,7 @@ void Map::draw() {
       glVertex3f( n, n, n );
       glVertex3f( 0, n, n );
       glEnd();
+      */
       
       glPopMatrix();
     }
@@ -1202,19 +1208,50 @@ void Map::draw() {
     float xp = (float)(cursorFlatMapX - getX()) / GLShape::DIV;
     float yp = ((float)(cursorFlatMapY - getY())) / GLShape::DIV;
     float n = 1.0f / GLShape::DIV;
-    float m = 0.25f / GLShape::DIV;
-    glColor4f( 1, 0.9f, 0.15f, 1 );
+    float m = 0.5f / GLShape::DIV;
+    float t = 16.0f / GLShape::DIV;
+    glColor4f( 1, 0.9f, 0.15f, 0.5f );
     glTranslatef( xp, yp, 0 );
     glBegin( GL_QUADS );
+    
     glVertex3f( 0, 0, m );
     glVertex3f( n, 0, m );
     glVertex3f( n, n, m );
     glVertex3f( 0, n, m );
+
+    glVertex3f( 0, 0, t );
+    glVertex3f( n, 0, t );
+    glVertex3f( n, n, t );
+    glVertex3f( 0, n, t );
+
+    glVertex3f( 0, 0, m );
+    glVertex3f( n, 0, m );
+    glVertex3f( n, 0, t );
+    glVertex3f( 0, 0, t );
+
+    glVertex3f( 0, n, m );
+    glVertex3f( n, n, m );
+    glVertex3f( n, n, t );
+    glVertex3f( 0, n, t );
+
+    glVertex3f( 0, 0, m );
+    glVertex3f( 0, n, m );
+    glVertex3f( 0, n, t );
+    glVertex3f( 0, 0, t );
+
+    glVertex3f( n, 0, m );
+    glVertex3f( n, n, m );
+    glVertex3f( n, n, t );
+    glVertex3f( n, 0, t );
+
     glEnd();
     glPopMatrix();
 
     glEnable( GL_CULL_FACE );
     glEnable( GL_TEXTURE_2D );
+
+    glDisable(GL_BLEND);  
+    glDepthMask(GL_TRUE);
   } 
 
   glDisable( GL_SCISSOR_TEST );
