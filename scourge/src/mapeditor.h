@@ -85,6 +85,8 @@ protected:
   void removeEWWall( Sint16 mapx, Sint16 mapy, int dir );
   void removeNSWall( Sint16 mapx, Sint16 mapy, int dir );
   void addFloor( Sint16 mapx, Sint16 mapy );
+
+  bool isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name );
 };
 
 #endif
