@@ -234,9 +234,11 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
 
     // see if EW_WALL to the north and south
     north = ( mapy - 1 >= 0 && 
-              scourge->getMap()->getLocation( mapx, mapy - 1, 0 ) );
+              scourge->getMap()->getLocation( mapx, mapy - 1, 0 ) &&
+              !scourge->getMap()->getLocation( mapx + dir * ( MAP_UNIT / 2 ), mapy + 1, 0 ) );
     south = ( mapy + MAP_UNIT + 1 < MAP_DEPTH && 
-              scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT + 1, 0 ) );
+              scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT + 1, 0 ) &&
+              !scourge->getMap()->getLocation( mapx + dir * ( MAP_UNIT / 2 ), mapy + MAP_UNIT - 1, 0 ) );
 
     // corner
     if( south ) {
@@ -285,7 +287,8 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
     // change north shape
     //cerr << "Looking north of EW_WALL map=" << mapx << "," << mapy << endl;
     if( isShape( mapx, mapy - MAP_UNIT_OFFSET, 0, "EW_WALL" ) &&
-        isShape( mapx, mapy, 0, "CORNER" ) ) {
+        isShape( mapx, mapy, 0, "CORNER" ) &&
+        !scourge->getMap()->getLocation( mapx + dir * ( MAP_UNIT / 2 ), mapy - 1, 0 ) ) {
       //cerr << "Success!" << endl;
       scourge->getMap()->removePosition( mapx, mapy - MAP_UNIT_OFFSET, 0 );
       scourge->getMap()->removePosition( mapx, mapy, 0 );
@@ -296,7 +299,8 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
 
     //cerr << "Looking north of EW_WALL_EXTRA map=" << mapx << "," << mapy << endl;
     if( isShape( mapx, mapy - MAP_UNIT_OFFSET, 0, "EW_WALL_EXTRA" ) &&
-               isShape( mapx, mapy, 0, "CORNER" ) ) {
+        isShape( mapx, mapy, 0, "CORNER" ) &&
+        !scourge->getMap()->getLocation( mapx + dir * ( MAP_UNIT / 2 ), mapy - 1, 0 ) ) {
       //cerr << "Success!" << endl;
       scourge->getMap()->removePosition( mapx, mapy - MAP_UNIT_OFFSET, 0 );
       scourge->getMap()->removePosition( mapx, mapy, 0 );
@@ -308,7 +312,8 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
     // change the south wall
     //cerr << "Looking south of EW_WALL map=" << mapx << "," << mapy << endl;
     if( isShape( mapx, mapy + MAP_UNIT + MAP_UNIT - MAP_UNIT_OFFSET, 0, "EW_WALL" ) &&
-        isShape( mapx, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0, "CORNER" ) ) {
+        isShape( mapx, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0, "CORNER" ) &&
+        !scourge->getMap()->getLocation( mapx + dir * ( MAP_UNIT / 2 ), mapy + MAP_UNIT + 1, 0 ) ) {
       //cerr << "Success!" << endl;
       scourge->getMap()->removePosition( mapx, mapy + MAP_UNIT + MAP_UNIT - MAP_UNIT_OFFSET, 0 );
       scourge->getMap()->removePosition( mapx, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0 );
@@ -319,7 +324,8 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
     }
     //cerr << "Looking south of EW_WALL_EXTRA map=" << mapx << "," << mapy << endl;
     if( isShape( mapx, mapy + MAP_UNIT + MAP_UNIT, 0, "EW_WALL_EXTRA" ) &&
-        isShape( mapx, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0, "CORNER" ) ) {
+        isShape( mapx, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0, "CORNER" ) &&
+        !scourge->getMap()->getLocation( mapx + dir * ( MAP_UNIT / 2 ), mapy + MAP_UNIT + 1, 0 ) ) {
       //cerr << "Success!" << endl;
       scourge->getMap()->removePosition( mapx, mapy + MAP_UNIT + MAP_UNIT, 0 );
       scourge->getMap()->removePosition( mapx, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0 );
