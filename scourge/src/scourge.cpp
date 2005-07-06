@@ -1472,8 +1472,12 @@ void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   glDisable( GL_SCISSOR_TEST );
   
   if(res) {
-    *mapx = levelMap->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
-    *mapy = levelMap->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
+    //*mapx = levelMap->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
+    //*mapy = levelMap->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
+
+    *mapx = levelMap->getX() + (Uint16)(((obj_x) * GLShape::DIV));
+    *mapy = levelMap->getY() + (Uint16)(((obj_y) * GLShape::DIV));
+
     //*mapz = (Uint16)0;
     //*mapz = (Uint16)(obj_z * GLShape::DIV);
     levelMap->debugX = *mapx;

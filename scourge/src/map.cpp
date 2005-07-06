@@ -834,12 +834,7 @@ void Map::draw() {
     // careful this calls draw() again!
     selectMode = true;
     session->getGameAdapter()->getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
-    if( cursorMapX > MAP_WIDTH ) {
-      session->getGameAdapter()->getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
-    } else {
-      cursorFlatMapX = cursorMapX;
-      cursorFlatMapY = cursorMapY;
-    }
+    session->getGameAdapter()->getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
     cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
     cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
     selectMode = false;
@@ -1146,8 +1141,7 @@ void Map::draw() {
 
     int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
     int chunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
-//    int chunkStartX = ( chunkX * MAP_UNIT ) + MAP_OFFSET;
-//    int chunkStartY = ( chunkY * MAP_UNIT ) + MAP_OFFSET;
+    float m = 0.5f / GLShape::DIV;
 
     glDisable( GL_CULL_FACE );
     glDisable( GL_TEXTURE_2D );
@@ -1161,7 +1155,7 @@ void Map::draw() {
       float n = (float)MAP_UNIT / GLShape::DIV;
       
       glPushMatrix();
-      glTranslatef( chunks[i].x, chunks[i].y, 0 );
+      glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f / GLShape::DIV ), 0 );
       
       if( chunks[i].cx == chunkX &&
           chunks[i].cy == chunkY ) {
@@ -1172,45 +1166,20 @@ void Map::draw() {
         glLineWidth( 1 );
       }
       glBegin( GL_LINE_LOOP );
-      glVertex3f( 0, 0, 0 );
-      glVertex3f( n, 0, 0 );
-      glVertex3f( n, n, 0 );
-      glVertex3f( 0, n, 0 );
+      glVertex3f( 0, 0, m );
+      glVertex3f( n, 0, m );
+      glVertex3f( n, n, m );
+      glVertex3f( 0, n, m );
       glEnd();
 
-      /*
-      //glLineWidth( 1 );
-      //glColor4f( 1,1,1,1 );
-      glBegin( GL_LINE_LOOP );
-      glVertex3f( 0, 0, n );
-      glVertex3f( n, 0, n );
-      glVertex3f( n, n, n );
-      glVertex3f( 0, n, n );
-      glEnd();
-      
-      glBegin( GL_LINE_LOOP );
-      glVertex3f( 0, 0, 0 );
-      glVertex3f( n, 0, 0 );
-      glVertex3f( n, 0, n );
-      glVertex3f( 0, 0, n );
-      glEnd();
-      glBegin( GL_LINE_LOOP );
-      glVertex3f( 0, n, 0 );
-      glVertex3f( n, n, 0 );
-      glVertex3f( n, n, n );
-      glVertex3f( 0, n, n );
-      glEnd();
-      */
-      
       glPopMatrix();
     }
 
     glPushMatrix();
 
     float xp = (float)(cursorFlatMapX - getX()) / GLShape::DIV;
-    float yp = ((float)(cursorFlatMapY - getY())) / GLShape::DIV;
+    float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / GLShape::DIV;
     float n = 1.0f / GLShape::DIV;
-    float m = 0.5f / GLShape::DIV;
     float t = 16.0f / GLShape::DIV;
     glColor4f( 1, 0.9f, 0.15f, 0.5f );
     glTranslatef( xp, yp, 0 );
