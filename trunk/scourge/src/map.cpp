@@ -1128,7 +1128,9 @@ void Map::draw() {
       doDrawShape(&damage[i], 1);
     }
     
-    if( session->getUserConfiguration()->isOvalCutoutShown() ) drawShade();
+    if( session->getUserConfiguration()->isOvalCutoutShown() &&
+        !settings->isGridShowing() ) 
+      drawShade();
 
     glDisable(GL_BLEND);
 
