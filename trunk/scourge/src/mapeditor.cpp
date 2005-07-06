@@ -84,11 +84,15 @@ void MapEditor::drawView() {
   
   glLoadIdentity();
 
-  scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d", 
+  Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX(), 
+                                                  scourge->getMap()->getCursorFlatMapY(),
+                                                  0 );
+  scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d Shape=%s", 
                                       scourge->getMap()->getCursorFlatMapX(), 
                                       scourge->getMap()->getCursorFlatMapY(), 
                                       scourge->getMap()->getCursorChunkX(), 
-                                      scourge->getMap()->getCursorChunkY() );
+                                      scourge->getMap()->getCursorChunkY(),
+                                      ( pos ? pos->shape->getName() : "NULL" ) );
   
   glTranslatef( 50, 50, 0 );
   glRotatef( scourge->getMap()->getZRot(), 0, 0, 1 );
@@ -223,6 +227,8 @@ void MapEditor::processMouseMotion( Uint8 button ) {
     } else {
       addFloor( mapx, mapy + 1 );
     }
+
+    blendCorners( mapx, mapy );
   }
 }
 
@@ -443,15 +449,15 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
 }
 
 bool MapEditor::isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name ) {
-  //cerr << "\ttesting map=" << mapx << "," << mapy << " looking for " << name;
+  cerr << "\ttesting map=" << mapx << "," << mapy << " looking for " << name;
   if( mapx >= 0 && mapx < MAP_WIDTH &&
       mapy >= 0 && mapy < MAP_DEPTH &&
       mapz >= 0 && mapz < MAP_VIEW_HEIGHT ) {
     Location *pos = pos = scourge->getMap()->getPosition( mapx, mapy, mapz );
-    //cerr << " found=" << ( !pos ? "NULL" : pos->shape->getName() ) << endl;
+    cerr << " found=" << ( !pos ? "NULL" : pos->shape->getName() ) << endl;
     return( pos && !strcmp( pos->shape->getName(), name ) );
   } else {
-    //cerr << " found nothing." << endl;
+    cerr << " found nothing." << endl;
     return false;
   }
 }
@@ -474,3 +480,19 @@ void MapEditor::removeNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
   }
 }
 
+void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
+  // check NW corner
+  cerr << "NW corner check: " << mapx << "," << mapy << endl;
+  if( isShape( mapx - 1, mapy + 1, 0, "CORNER" ) &&
+      isShape( mapx, mapy - 1, 0, "CORNER" ) &&
+      !scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT_OFFSET, 0 ) ) {
+    scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0, 
+                                    scourge->getShapePalette()->findShapeByName( "CORNER", true ) );
+  }
+
+  // check NE corner
+
+  // check SE corner
+
+  // check SW corner
+}
