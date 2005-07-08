@@ -20,6 +20,17 @@
 /**
   *@author Gabor Torok
   */
+  
+  
+/*
+  TODO:
+  - separate lists: items, creatures, interactive things, shapes
+  - before putting a shape down, check that it fits
+  - putting shapes down should use Map::isBlocked() to find Z
+  - when using "removePosition" make sure to call with shape's hotspot
+*/  
+  
+  
 
 MapEditor::MapEditor( Scourge *scourge ) {
   this->scourge = scourge;
@@ -41,9 +52,11 @@ MapEditor::MapEditor( Scourge *scourge ) {
   wallButton->setSelected( true );
   doorButton = mainWin->createButton( 5, 50, w - 10, 70, "Door", true );
   toggleButtonList.push_back( doorButton );
-  eraseButton = mainWin->createButton( 5, 75, w - 10, 95, "Erase", true );
-  toggleButtonList.push_back( eraseButton );
+  shapeButton = mainWin->createButton( 5, 75, w - 10, 95, "Shape", true );
+  toggleButtonList.push_back( shapeButton );
 
+
+  // Shapes:
   mainWin->createLabel( 5, 110, "Shapes:" );
   shapeList = new ScrollingList( 5, 120, w - 10, 150, 
                                  scourge->getShapePalette()->getHighlightTexture() );
@@ -212,16 +225,10 @@ void MapEditor::processMouseMotion( Uint8 button ) {
       mx = mapx;
       my = mapy + MAP_UNIT - MAP_UNIT_OFFSET;
       dir = Constants::SOUTH;
-    } else {
-      if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
-        removeFloor( mapx, mapy );
-      } else {
-        addFloor( mapx, mapy );
-      }
     }
 
     if( dir != -1 ) {
-      if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
+      if( button == SDL_BUTTON_RIGHT ) {
         removeWall( mx, my, dir ); 
       } else if( wallButton->isSelected() ) {
         addWall( mx, my, dir ); 
@@ -235,6 +242,21 @@ void MapEditor::processMouseMotion( Uint8 button ) {
           blendCorners( mapx + ( x * MAP_UNIT ), 
                         mapy + ( y * MAP_UNIT ) );
         }
+      }
+    } else if( shapeButton->isSelected() ) {
+      if( button == SDL_BUTTON_LEFT && 
+          shapeList->getSelectedLine() > -1 ) {
+        Shape *shape = scourge->getShapePalette()->
+          findShapeByName( shapeNames[ shapeList->getSelectedLine() ] );
+        scourge->getMap()->setPosition( xx, yy, 0, shape );
+      } else if( button == SDL_BUTTON_RIGHT ) {
+        scourge->getMap()->removePosition( xx, yy, 0 );
+      }
+    } else {
+      if( button == SDL_BUTTON_RIGHT ) {
+        removeFloor( mapx, mapy );
+      } else {
+        addFloor( mapx, mapy );
       }
     }
   }

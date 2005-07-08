@@ -52,6 +52,7 @@ private:
   Button *wallButton;
   Button *doorButton;
   Button *eraseButton;
+  Button *shapeButton;
   vector<Button *> toggleButtonList;
   
   ScrollingList *shapeList;
