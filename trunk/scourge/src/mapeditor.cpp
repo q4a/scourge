@@ -188,45 +188,30 @@ void MapEditor::processMouseMotion( Uint8 button ) {
     int innerX = xx - mapx;
     int innerY = yy - mapy;
 
-    
-
 //    cerr << "pos: " << mapx << "," << mapy << 
 //      " map:" << scourge->getMap()->getCursorFlatMapX() << "," << 
 //      scourge->getMap()->getCursorFlatMapX() << endl;
     
     // find the region in the chunk
+    int mx = -1;
+    int my = -1;
+    int dir = -1;
     if( innerX < MAP_UNIT_OFFSET ) { 
-      // west
-      if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
-        removeEWWall( mapx, mapy, 1 );
-      } else if( wallButton->isSelected() ) {
-        addEWWall( mapx, mapy, 1 );
-      } else if( doorButton->isSelected() ) {
-      }
+      mx = mapx;
+      my = mapy;
+      dir = Constants::WEST;
     } else if( innerY < MAP_UNIT_OFFSET ) { 
-      // north
-      if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
-        removeNSWall( mapx, mapy, 1 ); 
-      } else if( wallButton->isSelected() ) {
-        addNSWall( mapx, mapy, 1 ); 
-      } else if( doorButton->isSelected() ) {
-      }
+      mx = mapx;
+      my = mapy;
+      dir = Constants::NORTH;
     } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      // east
-      if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
-        removeEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy, -1 );
-      } else if( wallButton->isSelected() ) {
-        addEWWall( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy, -1 );
-      } else if( doorButton->isSelected() ) {
-      }
+      mx = mapx + MAP_UNIT - MAP_UNIT_OFFSET;
+      my = mapy;
+      dir = Constants::EAST;
     } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      // south
-      if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
-        removeNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, -1 ); 
-      } else if( wallButton->isSelected() ) {
-        addNSWall( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, -1 ); 
-      } else if( doorButton->isSelected() ) {
-      }
+      mx = mapx;
+      my = mapy + MAP_UNIT - MAP_UNIT_OFFSET;
+      dir = Constants::SOUTH;
     } else {
       if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
         removeFloor( mapx, mapy );
@@ -235,12 +220,106 @@ void MapEditor::processMouseMotion( Uint8 button ) {
       }
     }
 
-    // blend the corners
-    for( int x = -1; x <= 1; x++ ) {
-      for( int y = -1; y <= 1; y++ ) {
-        blendCorners( mapx + ( x * MAP_UNIT ), 
-                      mapy + ( y * MAP_UNIT ) );
+    if( dir != -1 ) {
+      if( button == SDL_BUTTON_RIGHT || eraseButton->isSelected() ) {
+        removeWall( mx, my, dir ); 
+      } else if( wallButton->isSelected() ) {
+        addWall( mx, my, dir ); 
+      } else if( doorButton->isSelected() ) {
+        addDoor( mx, my, dir );
       }
+
+      // blend the corners
+      for( int x = -1; x <= 1; x++ ) {
+        for( int y = -1; y <= 1; y++ ) {
+          blendCorners( mapx + ( x * MAP_UNIT ), 
+                        mapy + ( y * MAP_UNIT ) );
+        }
+      }
+    }
+  }
+}
+
+void MapEditor::addWall( Sint16 mapx, Sint16 mapy, int dir ) {
+  switch( dir ) {
+  case Constants::NORTH: addNSWall( mapx, mapy, 1 ); break;
+  case Constants::SOUTH: addNSWall( mapx, mapy, -1 ); break;
+  case Constants::WEST: addEWWall( mapx, mapy, 1 ); break;
+  case Constants::EAST: addEWWall( mapx, mapy, -1 ); break;
+  default: cerr << "*** addWall, Unknown dir=" << dir << endl;
+  }
+}
+
+void MapEditor::addDoor( Sint16 mapx, Sint16 mapy, int dir ) {
+  switch( dir ) {
+  case Constants::NORTH: addNSDoor( mapx, mapy, 1 ); break;
+  case Constants::SOUTH: addNSDoor( mapx, mapy, -1 ); break;
+  case Constants::WEST: addEWDoor( mapx, mapy, 1 ); break;
+  case Constants::EAST: addEWDoor( mapx, mapy, -1 ); break;
+  default: cerr << "*** addDoor, Unknown dir=" << dir << endl;
+  }
+}
+
+void MapEditor::removeWall( Sint16 mapx, Sint16 mapy, int dir ) {
+  switch( dir ) {
+  case Constants::NORTH: removeNSWall( mapx, mapy, 1 ); break;
+  case Constants::SOUTH: removeNSWall( mapx, mapy, -1 ); break;
+  case Constants::WEST: removeEWWall( mapx, mapy, 1 ); break;
+  case Constants::EAST: removeEWWall( mapx, mapy, -1 ); break;
+  default: cerr << "*** removeWall, Unknown dir=" << dir << endl;
+  }
+}
+
+void MapEditor::addEWDoor( Sint16 mapx, Sint16 mapy, int dir ) {
+  ShapePalette *shapePal = scourge->getShapePalette();
+  if( !scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT / 2, 0 ) ) {
+    scourge->getMap()->setPosition(mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, 
+                                   MAP_WALL_HEIGHT - 2, shapePal->findShapeByName("EW_DOOR_TOP"));
+    scourge->getMap()->setPosition(mapx, mapy + MAP_UNIT_OFFSET +  2, 
+                                   0, shapePal->findShapeByName("DOOR_SIDE"));
+    scourge->getMap()->setPosition(mapx, mapy + MAP_UNIT_OFFSET * 2 +  2, 
+                                   0, shapePal->findShapeByName("DOOR_SIDE"));
+    scourge->getMap()->setPosition(mapx + 1, mapy + MAP_UNIT - MAP_UNIT_OFFSET - 2, 
+                                   0, shapePal->findShapeByName("EW_DOOR"));
+    scourge->getMap()->setPosition(mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, 
+                                   0, shapePal->findShapeByName("DOOR_SIDE"));
+
+    // corners
+    if( !scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT_OFFSET, 0 ) ) {
+      scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0, 
+                                      shapePal->findShapeByName("CORNER"));
+    }
+    if( !scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT, 0 ) ) {
+      scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT, 0, 
+                                      shapePal->findShapeByName("CORNER"));
+    }
+  }
+}
+
+void MapEditor::addNSDoor( Sint16 mapx, Sint16 mapy, int dir ) {
+  ShapePalette *shapePal = scourge->getShapePalette();
+  if( !scourge->getMap()->getLocation( mapx + MAP_UNIT / 2, 
+                                       mapy + MAP_UNIT_OFFSET, 
+                                       0 ) ) {
+    scourge->getMap()->setPosition(mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 
+                                   MAP_WALL_HEIGHT - 2, shapePal->findShapeByName("NS_DOOR_TOP"));
+    scourge->getMap()->setPosition(mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 
+                                   0, shapePal->findShapeByName("DOOR_SIDE"));
+    scourge->getMap()->setPosition(mapx + MAP_UNIT_OFFSET * 2, mapy + MAP_UNIT_OFFSET - 1, 
+                                   0, shapePal->findShapeByName("NS_DOOR"));
+    scourge->getMap()->setPosition(mapx + MAP_UNIT - MAP_UNIT_OFFSET * 2, mapy + MAP_UNIT_OFFSET, 
+                                   0, shapePal->findShapeByName("DOOR_SIDE"));
+    scourge->getMap()->setPosition(mapx + MAP_UNIT - MAP_UNIT_OFFSET * 3, mapy + MAP_UNIT_OFFSET, 
+                                   0, shapePal->findShapeByName("DOOR_SIDE"));
+
+    // corners
+    if( !scourge->getMap()->getLocation( mapx, mapy + MAP_UNIT_OFFSET, 0 ) ) {
+      scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0, 
+                                      shapePal->findShapeByName("CORNER"));
+    }
+    if( !scourge->getMap()->getLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0 ) ) {
+      scourge->getMap()->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0, 
+                                      shapePal->findShapeByName("CORNER"));
     }
   }
 }
