@@ -80,6 +80,12 @@ public:
 protected:
   void processMouseMotion( Uint8 button );
 
+  void addWall( Sint16 mapx, Sint16 mapy, int dir );
+  void addDoor( Sint16 mapx, Sint16 mapy, int dir );
+  void removeWall( Sint16 mapx, Sint16 mapy, int dir );
+
+  void addEWDoor( Sint16 mapx, Sint16 mapy, int dir );
+  void addNSDoor( Sint16 mapx, Sint16 mapy, int dir );
   void addEWWall( Sint16 mapx, Sint16 mapy, int dir );
   void addNSWall( Sint16 mapx, Sint16 mapy, int dir );
   void removeEWWall( Sint16 mapx, Sint16 mapy, int dir );
