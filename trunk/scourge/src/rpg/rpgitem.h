@@ -200,6 +200,7 @@ class RpgItem {
   static int getTypeByName(char *name);
   static void addItem(RpgItem *item, int width, int depth, int height);
   static RpgItem *getItemByName(char *name);
+  inline static map<string, const RpgItem *> *getItemMap() { return &itemsByName; }
 
 protected:
   static RpgItem *getRandomItemFromTypes(int level, int types[], int typeCount);

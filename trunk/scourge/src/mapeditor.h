@@ -53,16 +53,13 @@ private:
   Button *doorButton;
   Button *eraseButton;
   Button *shapeButton;
+  Button *itemButton;
+  Button *creatureButton;
   vector<Button *> toggleButtonList;
   
-  ScrollingList *shapeList;
-  char **shapeNames;
-
-  ScrollingList *itemList;
-  char **itemNames;
-
-  ScrollingList *creatureList;
-  char **creatureNames;
+  // lists
+  ScrollingList *shapeList, *itemList, *creatureList;
+  char **shapeNames, **itemNames, **creatureNames;
   
 public:
 
