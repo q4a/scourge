@@ -28,9 +28,16 @@
   - before putting a shape down, check that it fits
   - putting shapes down should use Map::isBlocked() to find Z
   - when using "removePosition" make sure to call with shape's hotspot
+  - how to edit items/shapes?
+  - need to call ShapePalette::decrementSkinRefCount() when closing map?
 */  
   
-  
+bool contains( vector<Shape*> *seen, Shape *shape ) {
+  for( int i = 0; i < (int)seen->size(); i++ ) {
+    if( (*seen)[i] == shape ) return true;
+  }
+  return false;
+}
 
 MapEditor::MapEditor( Scourge *scourge ) {
   this->scourge = scourge;
@@ -52,24 +59,78 @@ MapEditor::MapEditor( Scourge *scourge ) {
   wallButton->setSelected( true );
   doorButton = mainWin->createButton( 5, 50, w - 10, 70, "Door", true );
   toggleButtonList.push_back( doorButton );
-  shapeButton = mainWin->createButton( 5, 75, w - 10, 95, "Shape", true );
+
+
+  // Lists
+  vector<Shape*> seen;
+
+  // items
+  itemButton = mainWin->createButton( 5, 110, w - 10, 130, "Item", true );
+  toggleButtonList.push_back( itemButton );
+  itemList = new ScrollingList( 5, 140, w - 10, 140, 
+                                scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( itemList );
+  map<string, const RpgItem *> *itemMap = RpgItem::getItemMap();
+  itemNames = (char**)malloc( itemMap->size() * sizeof(char*) );
+  int count = 0;
+  for (map<string, const RpgItem*>::iterator i = itemMap->begin(); 
+        i != itemMap->end(); ++i ) {
+    string name = i->first;
+    RpgItem *item = (RpgItem*)( i->second );
+    Shape *shape = scourge->getShapePalette()->getShape( item->getShapeIndex() );
+    seen.push_back( shape );
+    char *p = (char*)name.c_str();
+    itemNames[ count ] = (char*)malloc( 120 * sizeof(char) );
+    strcpy( itemNames[ count ], p );
+    count++;
+  }
+  itemList->setLines( itemMap->size(), (const char**)itemNames );
+
+  
+  // creatures
+  creatureButton = mainWin->createButton( 5, 260, w - 10, 280, "Creature", true );
+  toggleButtonList.push_back( creatureButton );
+  creatureList = new ScrollingList( 5, 290, w - 10, 140, 
+                                    scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( creatureList );
+  map<string, Monster*> *creatureMap = &(Monster::monstersByName);
+  creatureNames = (char**)malloc( creatureMap->size() * sizeof(char*) );
+  count = 0;
+  for (map<string, Monster*>::iterator i = creatureMap->begin(); 
+        i != creatureMap->end(); ++i ) {
+    string name = i->first;
+    Monster *monster = (Monster*)( i->second );
+    GLShape *shape = scourge->getSession()->getShapePalette()->
+      getCreatureShape(monster->getModelName(), 
+                       monster->getSkinName(), 
+                       monster->getScale(),
+                       monster);
+    seen.push_back( shape );
+    char *p = (char*)name.c_str();
+    creatureNames[ count ] = (char*)malloc( 120 * sizeof(char) );
+    strcpy( creatureNames[ count ], p );
+    count++;
+  }
+  creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
+
+  // shapes
+  shapeButton = mainWin->createButton( 5, 450, w - 10, 470, "Shape", true );
   toggleButtonList.push_back( shapeButton );
-
-
-  // Shapes:
-  mainWin->createLabel( 5, 110, "Shapes:" );
-  shapeList = new ScrollingList( 5, 120, w - 10, 150, 
+  shapeList = new ScrollingList( 5, 480, w - 10, 140, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
   shapeNames = (char**)malloc( shapeMap->size() * sizeof(char*) );
-  int count = 0;
+  count = 0;
   for (map<string, GLShape*>::iterator i = shapeMap->begin(); i != shapeMap->end(); ++i ) {
     string name = i->first;
-    char *p = (char*)name.c_str();
-    shapeNames[ count ] = (char*)malloc( 120 * sizeof(char) );
-    strcpy( shapeNames[ count ], p );
-    count++;
+    GLShape *shape = i->second;
+    if( !contains( &seen, shape ) ) {
+      char *p = (char*)name.c_str();
+      shapeNames[ count ] = (char*)malloc( 120 * sizeof(char) );
+      strcpy( shapeNames[ count ], p );
+      count++;
+    }
   }
   shapeList->setLines( shapeMap->size(), (const char**)shapeNames );
 }                                                                         
@@ -242,6 +303,29 @@ void MapEditor::processMouseMotion( Uint8 button ) {
           blendCorners( mapx + ( x * MAP_UNIT ), 
                         mapy + ( y * MAP_UNIT ) );
         }
+      }
+    } else if( creatureButton->isSelected() ) {
+      if( button == SDL_BUTTON_LEFT && 
+          creatureList->getSelectedLine() > -1 ) {
+        Monster *monster = Monster::getMonsterByName( creatureNames[ creatureList->getSelectedLine() ] );
+        GLShape *shape = scourge->getSession()->getShapePalette()->
+          getCreatureShape(monster->getModelName(), 
+                           monster->getSkinName(), 
+                           monster->getScale(),
+                           monster);
+        scourge->getMap()->setPosition( xx, yy, 0, shape );
+      } else if( button == SDL_BUTTON_RIGHT ) {
+        scourge->getMap()->removePosition( xx, yy, 0 );
+      }
+    } else if( itemButton->isSelected() ) {
+      if( button == SDL_BUTTON_LEFT && 
+          itemList->getSelectedLine() > -1 ) {
+        RpgItem *rpgItem = 
+          RpgItem::getItemByName( itemNames[ itemList->getSelectedLine() ] );
+        Shape *shape = scourge->getShapePalette()->getShape( rpgItem->getShapeIndex() );
+        scourge->getMap()->setPosition( xx, yy, 0, shape );
+      } else if( button == SDL_BUTTON_RIGHT ) {
+        scourge->getMap()->removePosition( xx, yy, 0 );
       }
     } else if( shapeButton->isSelected() ) {
       if( button == SDL_BUTTON_LEFT && 
