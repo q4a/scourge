@@ -63,11 +63,13 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   // Lists
   vector<Shape*> seen;
+  int h = 110;
+  int d = 170;
 
   // items
-  itemButton = mainWin->createButton( 5, 110, w - 10, 130, "Item", true );
+  itemButton = mainWin->createButton( 5, h, w - 10, h + 20, "Item", true );
   toggleButtonList.push_back( itemButton );
-  itemList = new ScrollingList( 5, 140, w - 10, 140, 
+  itemList = new ScrollingList( 5, h + 30, w - 10, 140, 
                                 scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( itemList );
   map<string, const RpgItem *> *itemMap = RpgItem::getItemMap();
@@ -85,12 +87,12 @@ MapEditor::MapEditor( Scourge *scourge ) {
     count++;
   }
   itemList->setLines( itemMap->size(), (const char**)itemNames );
-
+  h += d;
   
   // creatures
-  creatureButton = mainWin->createButton( 5, 260, w - 10, 280, "Creature", true );
+  creatureButton = mainWin->createButton( 5, h, w - 10, h + 20, "Creature", true );
   toggleButtonList.push_back( creatureButton );
-  creatureList = new ScrollingList( 5, 290, w - 10, 140, 
+  creatureList = new ScrollingList( 5, h + 30, w - 10, 140, 
                                     scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( creatureList );
   map<string, Monster*> *creatureMap = &(Monster::monstersByName);
@@ -112,11 +114,12 @@ MapEditor::MapEditor( Scourge *scourge ) {
     count++;
   }
   creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
+  h += d;
 
   // shapes
-  shapeButton = mainWin->createButton( 5, 450, w - 10, 470, "Shape", true );
+  shapeButton = mainWin->createButton( 5, h, w - 10, h + 20, "Shape", true );
   toggleButtonList.push_back( shapeButton );
-  shapeList = new ScrollingList( 5, 480, w - 10, 140, 
+  shapeList = new ScrollingList( 5, h + 30, w - 10, 140, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
@@ -133,6 +136,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
     }
   }
   shapeList->setLines( shapeMap->size(), (const char**)shapeNames );
+  h += d;
 }                                                                         
 
 MapEditor::~MapEditor() {
