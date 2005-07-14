@@ -291,6 +291,7 @@ class Map {
     
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
+  Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
   
   void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item);
   Item *removeItem(Sint16 x, Sint16 y, Sint16 z);

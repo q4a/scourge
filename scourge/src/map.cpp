@@ -1966,6 +1966,15 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
   return shape;
 }
 
+// like getLocation, you can specify any position in the shape to remove it.
+Shape *Map::removeLocation(Sint16 x, Sint16 y, Sint16 z) {
+  if(pos[x][y][z] && pos[x][y][z]->shape ) 
+    return removePosition( pos[x][y][z]->x,
+                           pos[x][y][z]->y,
+                           pos[x][y][z]->z );
+  else return NULL;
+}
+  
 void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
   if(item) {
     if(item->getShape()) {
