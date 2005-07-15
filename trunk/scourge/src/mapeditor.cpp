@@ -197,6 +197,15 @@ void MapEditor::drawAfter() {
 
 bool MapEditor::handleEvent(SDL_Event *event) {
 
+  scourge->getMap()->cursorWidth = scourge->getMap()->cursorDepth = 1;
+  scourge->getMap()->cursorHeight = MAP_WALL_HEIGHT;
+  GLShape *shape;
+  if( getShape( &shape ) ) {
+    scourge->getMap()->cursorWidth = shape->getWidth();
+    scourge->getMap()->cursorDepth = shape->getDepth();
+    scourge->getMap()->cursorHeight = shape->getHeight();
+  }
+
   scourge->getMap()->handleEvent( event );
 
   switch(event->type) {
@@ -252,10 +261,36 @@ void MapEditor::hide() {
   scourge->getMap()->setMapSettings( scourge->getMapSettings() );
 }
 
+bool MapEditor::getShape( GLShape **shape ) {
+  if( creatureButton->isSelected() && 
+      creatureList->getSelectedLine() > -1 ) {
+    Monster *monster = Monster::getMonsterByName( creatureNames[ creatureList->getSelectedLine() ] );
+    *shape = scourge->getSession()->getShapePalette()->
+      getCreatureShape(monster->getModelName(), 
+                       monster->getSkinName(), 
+                       monster->getScale(),
+                       monster);
+    return true;
+  } else if( itemButton->isSelected() &&
+             itemList->getSelectedLine() > -1 ) {
+    RpgItem *rpgItem = 
+      RpgItem::getItemByName( itemNames[ itemList->getSelectedLine() ] );
+    *shape = scourge->getShapePalette()->getShape( rpgItem->getShapeIndex() );
+    return true;
+  } else if( shapeButton->isSelected() && 
+             shapeList->getSelectedLine() > -1 ) {
+    *shape = scourge->getShapePalette()->
+      findShapeByName( shapeNames[ shapeList->getSelectedLine() ] );
+    return true;
+  } else {
+    return false;
+  }
+}
+
 void MapEditor::processMouseMotion( Uint8 button ) {
   if( button == SDL_BUTTON_LEFT || 
       button == SDL_BUTTON_RIGHT ) {
-    
+
     // draw the correct walls in this chunk
     int xx = scourge->getMap()->getCursorFlatMapX();
     int yy = scourge->getMap()->getCursorFlatMapY();
@@ -308,43 +343,20 @@ void MapEditor::processMouseMotion( Uint8 button ) {
                         mapy + ( y * MAP_UNIT ) );
         }
       }
-    } else if( creatureButton->isSelected() ) {
-      if( button == SDL_BUTTON_LEFT && 
-          creatureList->getSelectedLine() > -1 ) {
-        Monster *monster = Monster::getMonsterByName( creatureNames[ creatureList->getSelectedLine() ] );
-        GLShape *shape = scourge->getSession()->getShapePalette()->
-          getCreatureShape(monster->getModelName(), 
-                           monster->getSkinName(), 
-                           monster->getScale(),
-                           monster);
-        scourge->getMap()->setPosition( xx, yy, 0, shape );
-      } else if( button == SDL_BUTTON_RIGHT ) {
-        scourge->getMap()->removeLocation( xx, yy, 0 );
-      }
-    } else if( itemButton->isSelected() ) {
-      if( button == SDL_BUTTON_LEFT && 
-          itemList->getSelectedLine() > -1 ) {
-        RpgItem *rpgItem = 
-          RpgItem::getItemByName( itemNames[ itemList->getSelectedLine() ] );
-        Shape *shape = scourge->getShapePalette()->getShape( rpgItem->getShapeIndex() );
-        scourge->getMap()->setPosition( xx, yy, 0, shape );
-      } else if( button == SDL_BUTTON_RIGHT ) {
-        scourge->getMap()->removeLocation( xx, yy, 0 );
-      }
-    } else if( shapeButton->isSelected() ) {
-      if( button == SDL_BUTTON_LEFT && 
-          shapeList->getSelectedLine() > -1 ) {
-        Shape *shape = scourge->getShapePalette()->
-          findShapeByName( shapeNames[ shapeList->getSelectedLine() ] );
-        scourge->getMap()->setPosition( xx, yy, 0, shape );
-      } else if( button == SDL_BUTTON_RIGHT ) {
-        scourge->getMap()->removeLocation( xx, yy, 0 );
-      }
     } else {
-      if( button == SDL_BUTTON_RIGHT ) {
-        removeFloor( mapx, mapy );
+      GLShape *shape;
+      if( getShape( &shape ) ) {
+        if( button == SDL_BUTTON_LEFT ) {
+          if( shape ) scourge->getMap()->setPosition( xx, yy, 0, shape );
+        } else if( button == SDL_BUTTON_RIGHT ) {
+          scourge->getMap()->removeLocation( xx, yy, 0 );
+        }
       } else {
-        addFloor( mapx, mapy );
+        if( button == SDL_BUTTON_RIGHT ) {
+          removeFloor( mapx, mapy );
+        } else {
+          addFloor( mapx, mapy );
+        }
       }
     }
   }
@@ -662,13 +674,17 @@ void MapEditor::removeFloor( Sint16 mapx, Sint16 mapy ) {
 
 void MapEditor::removeEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
   for( int y = 1; y <= MAP_UNIT; y++ ) {
-    scourge->getMap()->removeLocation( mapx, mapy + y, 0 );
+    for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
+      scourge->getMap()->removeLocation( mapx + 1, mapy + y, z );
+    }
   }
 }
 
 void MapEditor::removeNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
   for( int x = 0; x < MAP_UNIT; x++ ) {
-    scourge->getMap()->removeLocation( mapx + x, mapy + MAP_UNIT_OFFSET, 0 );
+    for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
+      scourge->getMap()->removeLocation( mapx + x, mapy + MAP_UNIT_OFFSET - 1, z );
+    }
   }
 }
 

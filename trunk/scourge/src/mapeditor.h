@@ -77,6 +77,7 @@ public:
 
 protected:
   void processMouseMotion( Uint8 button );
+  bool getShape( GLShape **shape );
 
   void addWall( Sint16 mapx, Sint16 mapy, int dir );
   void addDoor( Sint16 mapx, Sint16 mapy, int dir );

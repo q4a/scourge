@@ -59,6 +59,9 @@ Map::Map(Session *session) {
   cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   cursorFlatMapX = cursorFlatMapY = MAP_WIDTH + 1;
   cursorChunkX = cursorChunkY = ( MAP_WIDTH / MAP_UNIT ) + 1;
+  cursorWidth = 1;
+  cursorDepth = 1;
+  cursorHeight = MAP_WALL_HEIGHT;
 
   mouseMoveScreen = true;
   mouseZoom = mouseRot = false;
@@ -1179,41 +1182,42 @@ void Map::draw() {
 
     float xp = (float)(cursorFlatMapX - getX()) / GLShape::DIV;
     float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / GLShape::DIV;
-    float n = 1.0f / GLShape::DIV;
-    float t = 16.0f / GLShape::DIV;
+    float cw = (float)cursorWidth / GLShape::DIV;
+    float cd = (float)cursorDepth / GLShape::DIV;
+    float ch = (float)cursorHeight / GLShape::DIV;
     glColor4f( 1, 0.9f, 0.15f, 0.5f );
     glTranslatef( xp, yp, 0 );
     glBegin( GL_QUADS );
     
     glVertex3f( 0, 0, m );
-    glVertex3f( n, 0, m );
-    glVertex3f( n, n, m );
-    glVertex3f( 0, n, m );
+    glVertex3f( cw, 0, m );
+    glVertex3f( cw, cd, m );
+    glVertex3f( 0, cd, m );
 
-    glVertex3f( 0, 0, t );
-    glVertex3f( n, 0, t );
-    glVertex3f( n, n, t );
-    glVertex3f( 0, n, t );
-
-    glVertex3f( 0, 0, m );
-    glVertex3f( n, 0, m );
-    glVertex3f( n, 0, t );
-    glVertex3f( 0, 0, t );
-
-    glVertex3f( 0, n, m );
-    glVertex3f( n, n, m );
-    glVertex3f( n, n, t );
-    glVertex3f( 0, n, t );
+    glVertex3f( 0, 0, ch );
+    glVertex3f( cw, 0, ch );
+    glVertex3f( cw, cd, ch );
+    glVertex3f( 0, cd, ch );
 
     glVertex3f( 0, 0, m );
-    glVertex3f( 0, n, m );
-    glVertex3f( 0, n, t );
-    glVertex3f( 0, 0, t );
+    glVertex3f( cw, 0, m );
+    glVertex3f( cw, 0, ch );
+    glVertex3f( 0, 0, ch );
 
-    glVertex3f( n, 0, m );
-    glVertex3f( n, n, m );
-    glVertex3f( n, n, t );
-    glVertex3f( n, 0, t );
+    glVertex3f( 0, cd, m );
+    glVertex3f( cw, cd, m );
+    glVertex3f( cw, cd, ch );
+    glVertex3f( 0, cd, ch );
+
+    glVertex3f( 0, 0, m );
+    glVertex3f( 0, cd, m );
+    glVertex3f( 0, cd, ch );
+    glVertex3f( 0, 0, ch );
+
+    glVertex3f( cw, 0, m );
+    glVertex3f( cw, cd, m );
+    glVertex3f( cw, cd, ch );
+    glVertex3f( cw, 0, ch );
 
     glEnd();
     glPopMatrix();
