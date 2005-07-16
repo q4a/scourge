@@ -1183,9 +1183,30 @@ void Map::draw() {
     float xp = (float)(cursorFlatMapX - getX()) / GLShape::DIV;
     float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / GLShape::DIV;
     float cw = (float)cursorWidth / GLShape::DIV;
-    float cd = (float)cursorDepth / GLShape::DIV;
+    float cd = -(float)cursorDepth / GLShape::DIV;
     float ch = (float)cursorHeight / GLShape::DIV;
-    glColor4f( 1, 0.9f, 0.15f, 0.5f );
+
+    float red = 1.0f;
+    float green = 0.9f;
+    float blue = 0.15f;
+    bool found = false;
+    if( cursorFlatMapX < MAP_WIDTH && cursorFlatMapY < MAP_DEPTH ) {
+      for( int xx = cursorFlatMapX; xx < cursorFlatMapX + cursorWidth; xx++ ) {
+        for( int yy = cursorFlatMapY; yy >= cursorFlatMapY - cursorDepth; yy-- ) {
+          for( int zz = 0; zz < cursorHeight; zz++ ) {
+            if( pos[xx][yy][zz] ) {
+              found = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if( found ) {
+      green = 0.15f;
+    }
+    
+    glColor4f( red, green, blue, 0.5f );
     glTranslatef( xp, yp, 0 );
     glBegin( GL_QUADS );
     

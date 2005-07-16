@@ -51,6 +51,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
                         "Map Editor", false, Window::BASIC_WINDOW,
                         GuiTheme::DEFAULT_THEME );
   mainWin->setVisible( false );
+  mainWin->setLocked( true );
   
   doneButton = mainWin->createButton( 5, 5, w - 10, 20, "Done" );
 
@@ -60,16 +61,20 @@ MapEditor::MapEditor( Scourge *scourge ) {
   doorButton = mainWin->createButton( 5, 50, w - 10, 70, "Door", true );
   toggleButtonList.push_back( doorButton );
 
+  mainWin->createLabel( 5, 87, "Name:" );
+  nameText = mainWin->createTextField( 60, 75, 10 );
+  loadButton = mainWin->createButton( 5, 100, ( w - 10 ) / 2, 120, "Load" );
+  saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, 100, w - 5, 120, "Save" );
 
   // Lists
   vector<Shape*> seen;
-  int h = 110;
-  int d = 170;
+  int h = 200;
+  int d = 150;
 
   // items
   itemButton = mainWin->createButton( 5, h, w - 10, h + 20, "Item", true );
   toggleButtonList.push_back( itemButton );
-  itemList = new ScrollingList( 5, h + 30, w - 10, 140, 
+  itemList = new ScrollingList( 5, h + 30, w - 10, 100, 
                                 scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( itemList );
   map<string, const RpgItem *> *itemMap = RpgItem::getItemMap();
@@ -92,7 +97,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   // creatures
   creatureButton = mainWin->createButton( 5, h, w - 10, h + 20, "Creature", true );
   toggleButtonList.push_back( creatureButton );
-  creatureList = new ScrollingList( 5, h + 30, w - 10, 140, 
+  creatureList = new ScrollingList( 5, h + 30, w - 10, 100, 
                                     scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( creatureList );
   map<string, Monster*> *creatureMap = &(Monster::monstersByName);
@@ -119,7 +124,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   // shapes
   shapeButton = mainWin->createButton( 5, h, w - 10, h + 20, "Shape", true );
   toggleButtonList.push_back( shapeButton );
-  shapeList = new ScrollingList( 5, h + 30, w - 10, 140, 
+  shapeList = new ScrollingList( 5, h + 30, w - 10, 100, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
@@ -245,6 +250,15 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     }
   }
 
+  char result[1000];
+  if( widget == saveButton ) {
+    saveMap( result );
+    scourge->showMessageDialog( result );
+  } else if( widget == loadButton ) {
+    loadMap( result );
+    scourge->showMessageDialog( result );
+  }
+
   return false;
 }
 
@@ -252,6 +266,9 @@ void MapEditor::show() {
   scourge->getMap()->setMapSettings( mapSettings );
   scourge->getMap()->reset();
   scourge->getMap()->center( MAP_WIDTH / 2, MAP_DEPTH / 2, true );
+  scourge->getMap()->setViewArea( 0, 0, 
+                                  mainWin->getX(), 
+                                  mainWin->getY() + mainWin->getHeight() );
   scourge->getShapePalette()->loadTheme( "egypt" );
   mainWin->setVisible( true ); 
 }
@@ -298,58 +315,63 @@ void MapEditor::processMouseMotion( Uint8 button ) {
     int mapx = scourge->getMap()->getCursorChunkX() * MAP_UNIT + MAP_OFFSET;
     int mapy = scourge->getMap()->getCursorChunkY() * MAP_UNIT + MAP_OFFSET;
 
-    int innerX = xx - mapx;
-    int innerY = yy - mapy;
-
-//    cerr << "pos: " << mapx << "," << mapy << 
-//      " map:" << scourge->getMap()->getCursorFlatMapX() << "," << 
-//      scourge->getMap()->getCursorFlatMapX() << endl;
-    
-    // find the region in the chunk
-    int mx = -1;
-    int my = -1;
-    int dir = -1;
-    if( innerX < MAP_UNIT_OFFSET ) { 
-      mx = mapx;
-      my = mapy;
-      dir = Constants::WEST;
-    } else if( innerY < MAP_UNIT_OFFSET ) { 
-      mx = mapx;
-      my = mapy;
-      dir = Constants::NORTH;
-    } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      mx = mapx + MAP_UNIT - MAP_UNIT_OFFSET;
-      my = mapy;
-      dir = Constants::EAST;
-    } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-      mx = mapx;
-      my = mapy + MAP_UNIT - MAP_UNIT_OFFSET;
-      dir = Constants::SOUTH;
-    }
-
-    if( dir != -1 ) {
-      if( button == SDL_BUTTON_RIGHT ) {
-        removeWall( mx, my, dir ); 
-      } else if( wallButton->isSelected() ) {
-        addWall( mx, my, dir ); 
-      } else if( doorButton->isSelected() ) {
-        addDoor( mx, my, dir );
-      }
-
-      // blend the corners
-      for( int x = -1; x <= 1; x++ ) {
-        for( int y = -1; y <= 1; y++ ) {
-          blendCorners( mapx + ( x * MAP_UNIT ), 
-                        mapy + ( y * MAP_UNIT ) );
+    GLShape *shape;
+    if( getShape( &shape ) ) {
+      if( button == SDL_BUTTON_LEFT ) {
+        if( shape ) scourge->getMap()->setPosition( xx, yy, 0, shape );
+      } else if( button == SDL_BUTTON_RIGHT ) {
+        for( int sx = 0; sx < shape->getWidth(); sx++ ) {
+          for( int sy = 0; sy < shape->getDepth(); sy++ ) {
+            scourge->getMap()->removeLocation( xx + sx, yy - sy, 0 );
+          }
         }
       }
     } else {
-      GLShape *shape;
-      if( getShape( &shape ) ) {
-        if( button == SDL_BUTTON_LEFT ) {
-          if( shape ) scourge->getMap()->setPosition( xx, yy, 0, shape );
-        } else if( button == SDL_BUTTON_RIGHT ) {
-          scourge->getMap()->removeLocation( xx, yy, 0 );
+
+      int innerX = xx - mapx;
+      int innerY = yy - mapy;
+      
+      //    cerr << "pos: " << mapx << "," << mapy << 
+      //      " map:" << scourge->getMap()->getCursorFlatMapX() << "," << 
+      //      scourge->getMap()->getCursorFlatMapX() << endl;
+      
+      // find the region in the chunk
+      int mx = -1;
+      int my = -1;
+      int dir = -1;
+      if( innerX < MAP_UNIT_OFFSET ) { 
+        mx = mapx;
+        my = mapy;
+        dir = Constants::WEST;
+      } else if( innerY < MAP_UNIT_OFFSET ) { 
+        mx = mapx;
+        my = mapy;
+        dir = Constants::NORTH;
+      } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
+        mx = mapx + MAP_UNIT - MAP_UNIT_OFFSET;
+        my = mapy;
+        dir = Constants::EAST;
+      } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
+        mx = mapx;
+        my = mapy + MAP_UNIT - MAP_UNIT_OFFSET;
+        dir = Constants::SOUTH;
+      }
+      
+      if( dir != -1 ) {
+        if( button == SDL_BUTTON_RIGHT ) {
+          removeWall( mx, my, dir ); 
+        } else if( wallButton->isSelected() ) {
+          addWall( mx, my, dir ); 
+        } else if( doorButton->isSelected() ) {
+          addDoor( mx, my, dir );
+        }
+        
+        // blend the corners
+        for( int x = -1; x <= 1; x++ ) {
+          for( int y = -1; y <= 1; y++ ) {
+            blendCorners( mapx + ( x * MAP_UNIT ), 
+                          mapy + ( y * MAP_UNIT ) );
+          }
         }
       } else {
         if( button == SDL_BUTTON_RIGHT ) {
@@ -357,7 +379,7 @@ void MapEditor::processMouseMotion( Uint8 button ) {
         } else {
           addFloor( mapx, mapy );
         }
-      }
+      }    
     }
   }
 }
@@ -876,3 +898,61 @@ bool MapEditor::isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name
     return false;
   }
 }
+
+bool doesPathExist( char *path ) {
+  return( !access( path, F_OK ) );
+  /*
+  Another way to do this is using "fstat"
+  #include <sys/stat.h>
+  */
+}
+
+void MapEditor::saveMap( char *result ) {
+
+  if( !strlen( nameText->getText() ) ) {
+    strcpy( result, "You need to name the map first." );
+    return;
+  }
+
+  char fn[300];
+  strcpy( fn, rootDir );
+  strcat( fn, "/maps" );
+  strcat( fn, nameText->getText() );
+  
+  // create the dir if needed
+  cerr << "Checking for path: " << fn << endl;
+  if( !doesPathExist( fn ) ) {
+    cerr << "\tPath doesn't exist. Creating it." << endl;
+  } else {
+    cerr << "\tPath exists." << endl;
+  }
+
+
+  sprintf( result, "Map saved: %s", nameText->getText() );
+}
+
+void MapEditor::loadMap( char *result ) {
+  if( !strlen( nameText->getText() ) ) {
+    strcpy( result, "Enter a name of a map to load." );
+    return;
+  }
+
+  char fn[300];
+  strcpy( fn, rootDir );
+  strcat( fn, "/maps" );
+  strcat( fn, nameText->getText() );
+  
+  // create the dir if needed
+  cerr << "Checking for path: " << fn << endl;
+  if( !doesPathExist( fn ) ) {
+    cerr << "\tPath doesn't exist. Creating it." << endl;
+    sprintf( result, "Can't find map: %s", nameText->getText() );
+    return;
+  } else {
+    cerr << "\tPath exists." << endl;
+  }
+
+
+  sprintf( result, "Map saved: %s", nameText->getText() );
+}
+
