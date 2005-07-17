@@ -252,10 +252,10 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 
   char result[1000];
   if( widget == saveButton ) {
-    saveMap( result );
+    scourge->getMap()->saveMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
   } else if( widget == loadButton ) {
-    loadMap( result );
+    scourge->getMap()->loadMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
   }
 
@@ -897,62 +897,5 @@ bool MapEditor::isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name
 //    cerr << " found nothing." << endl;
     return false;
   }
-}
-
-bool doesPathExist( char *path ) {
-  return( !access( path, F_OK ) );
-  /*
-  Another way to do this is using "fstat"
-  #include <sys/stat.h>
-  */
-}
-
-void MapEditor::saveMap( char *result ) {
-
-  if( !strlen( nameText->getText() ) ) {
-    strcpy( result, "You need to name the map first." );
-    return;
-  }
-
-  char fn[300];
-  strcpy( fn, rootDir );
-  strcat( fn, "/maps" );
-  strcat( fn, nameText->getText() );
-  
-  // create the dir if needed
-  cerr << "Checking for path: " << fn << endl;
-  if( !doesPathExist( fn ) ) {
-    cerr << "\tPath doesn't exist. Creating it." << endl;
-  } else {
-    cerr << "\tPath exists." << endl;
-  }
-
-
-  sprintf( result, "Map saved: %s", nameText->getText() );
-}
-
-void MapEditor::loadMap( char *result ) {
-  if( !strlen( nameText->getText() ) ) {
-    strcpy( result, "Enter a name of a map to load." );
-    return;
-  }
-
-  char fn[300];
-  strcpy( fn, rootDir );
-  strcat( fn, "/maps" );
-  strcat( fn, nameText->getText() );
-  
-  // create the dir if needed
-  cerr << "Checking for path: " << fn << endl;
-  if( !doesPathExist( fn ) ) {
-    cerr << "\tPath doesn't exist. Creating it." << endl;
-    sprintf( result, "Can't find map: %s", nameText->getText() );
-    return;
-  } else {
-    cerr << "\tPath exists." << endl;
-  }
-
-
-  sprintf( result, "Map saved: %s", nameText->getText() );
 }
 

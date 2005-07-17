@@ -86,6 +86,110 @@ bool Persist::loadGame(Session *session) {
   return true;
 }
 
+LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
+  LocationInfo *info = (LocationInfo*)malloc( sizeof( LocationInfo ) );
+
+  info->x = x;
+  info->y = y;
+  info->z = z;
+  
+  info->item = NULL;
+  info->creature = NULL;
+  info->shape_name[0] = 0;
+  info->floor_shape_name[0] = 0;
+
+  info->locked = 0;
+  info->key_x = 0;
+  info->key_y = 0;
+  info->key_z = 0;
+
+  return info;
+}
+
+void Persist::saveMap(FILE *fp, MapInfo *info) {
+  fwrite( &(info->version), sizeof(Uint32), 1, fp );
+  fwrite( &(info->start_x), sizeof(Uint16), 1, fp );
+  fwrite( &(info->start_y), sizeof(Uint16), 1, fp );
+  fwrite( &(info->pos_count), sizeof(Uint32), 1, fp );
+  for( int i = 0; i < (int)info->pos_count; i++ ) {
+    fwrite( &(info->pos[i]->x), sizeof(Uint16), 1, fp );
+    fwrite( &(info->pos[i]->y), sizeof(Uint16), 1, fp );
+    fwrite( &(info->pos[i]->z), sizeof(Uint16), 1, fp );
+    if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
+      fwrite( info->pos[i]->floor_shape_name, sizeof(Uint8), 255, fp );
+    } else {
+      fwrite( info->pos[i]->floor_shape_name, sizeof(Uint8), 1, fp );
+    }
+    if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
+      fwrite( info->pos[i]->shape_name, sizeof(Uint8), 255, fp );
+    } else {
+      fwrite( info->pos[i]->shape_name, sizeof(Uint8), 1, fp );
+    }
+    
+    Uint8 hasItem = ( info->pos[i]->item ? 1 : 0 );
+    fwrite( &(hasItem), sizeof(Uint8), 1, fp );
+    if( hasItem ) saveItem( fp, info->pos[i]->item );
+
+    Uint8 hasCreature = ( info->pos[i]->creature ? 1 : 0 );
+    fwrite( &(hasCreature), sizeof(Uint8), 1, fp );
+    if( hasCreature ) saveCreature( fp, info->pos[i]->creature );
+
+    fwrite( &(info->pos[i]->locked), sizeof(Uint8), 1, fp );
+    fwrite( &(info->pos[i]->key_x), sizeof(Uint16), 1, fp );
+    fwrite( &(info->pos[i]->key_y), sizeof(Uint16), 1, fp );
+    fwrite( &(info->pos[i]->key_z), sizeof(Uint16), 1, fp );
+  }
+}
+
+MapInfo *Persist::loadMap(FILE *fp) {
+  MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
+  fread( &(info->version), sizeof(Uint32), 1, fp );
+  fread( &(info->start_x), sizeof(Uint16), 1, fp );
+  fread( &(info->start_y), sizeof(Uint16), 1, fp );
+  fread( &(info->pos_count), sizeof(Uint32), 1, fp );
+  for( int i = 0; i < (int)info->pos_count; i++ ) {
+    info->pos[i] = (LocationInfo*)malloc(sizeof(LocationInfo));
+    fread( &(info->pos[i]->x), sizeof(Uint16), 1, fp );
+    fread( &(info->pos[i]->y), sizeof(Uint16), 1, fp );
+    fread( &(info->pos[i]->z), sizeof(Uint16), 1, fp );
+    
+    fread( info->pos[i]->floor_shape_name, sizeof(Uint8), 1, fp );
+    if( info->pos[i]->floor_shape_name[0] ) {
+      fread( info->pos[i]->floor_shape_name + 1, sizeof(Uint8), 254, fp );
+    }
+
+    fread( info->pos[i]->shape_name, sizeof(Uint8), 1, fp );
+    if( info->pos[i]->shape_name[0] ) {
+      fread( info->pos[i]->shape_name + 1, sizeof(Uint8), 254, fp );
+    }
+    
+    Uint8 hasItem;
+    fread( &(hasItem), sizeof(Uint8), 1, fp );
+    if( hasItem ) info->pos[i]->item = loadItem( fp );
+    else info->pos[i]->item = NULL;
+
+    Uint8 hasCreature;
+    fread( &(hasCreature), sizeof(Uint8), 1, fp );
+    if( hasCreature ) info->pos[i]->creature = loadCreature( fp );
+    else info->pos[i]->creature = NULL;
+
+    fread( &(info->pos[i]->locked), sizeof(Uint8), 1, fp );
+    fread( &(info->pos[i]->key_x), sizeof(Uint16), 1, fp );
+    fread( &(info->pos[i]->key_y), sizeof(Uint16), 1, fp );
+    fread( &(info->pos[i]->key_z), sizeof(Uint16), 1, fp );
+  }
+  return info;
+}
+
+void Persist::deleteMapInfo( MapInfo *info ) {
+  for( int i = 0; i < (int)info->pos_count; i++ ) {
+    if( info->pos[i]->item ) free( info->pos[i]->item );
+    if( info->pos[i]->creature ) free( info->pos[i]->creature );
+    free( info->pos[i] );
+  }
+  free( info );
+}
+
 void Persist::deleteCreatureInfo( CreatureInfo *info ) {
   for(int i = 0; i < (int)info->inventory_count; i++) {
     deleteItemInfo( info->inventory[i] );
