@@ -208,6 +208,9 @@ class Map {
   Map(Session *session);
   ~Map();
 
+  void saveMap( char *name, char *result );
+  void loadMap( char *name, char *result );
+
   inline Uint16 getCursorMapX() { return cursorMapX; }
   inline Uint16 getCursorMapY() { return cursorMapY; }
   inline Uint16 getCursorMapZ() { return cursorMapZ; }

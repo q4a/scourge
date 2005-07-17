@@ -89,11 +89,34 @@ typedef struct _CreatureInfo {
   Uint8 quick_spell[12][255];
 } CreatureInfo;
 
+typedef struct _LocationInfo {
+  Uint16 x, y, z;
+  Uint8 floor_shape_name[255];
+  Uint8 shape_name[255];
+  ItemInfo *item;
+  CreatureInfo *creature;
+  // door info
+  Uint8 locked;
+  Uint16 key_x, key_y, key_z;
+} LocationInfo;
+
+typedef struct _MapInfo {
+  Uint32 version;
+  Uint16 start_x, start_y;
+  Uint32 pos_count;
+  LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
+} MapInfo;
+
 class Persist {
 public:
   static bool doesSaveGameExist(Session *session);
   static bool saveGame(Session *session);
   static bool loadGame(Session *session);
+
+  static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
+  static void saveMap(FILE *fp, MapInfo *info);
+  static MapInfo *loadMap(FILE *fp);
+  static void deleteMapInfo( MapInfo *info );
 
 protected:
   static void saveCreature(FILE *fp, CreatureInfo *info);

@@ -96,9 +96,6 @@ protected:
   void removeFloor( Sint16 mapx, Sint16 mapy );
   void blendCorners( Sint16 mapx, Sint16 mapy );
   bool isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name );
-
-  void saveMap( char *result );
-  void loadMap( char *result );
 };
 
 #endif

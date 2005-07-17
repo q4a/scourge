@@ -2735,3 +2735,126 @@ bool EditorMapSettings::isPlayerEnabled() {
   return false;
 }
 
+
+
+
+
+void Map::saveMap( char *name, char *result ) {
+
+  if( !strlen( name ) ) {
+    strcpy( result, "You need to name the map first." );
+    return;
+  }
+
+  MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
+  info->version = PERSIST_VERSION;
+
+  // FIXME: use real values
+  info->start_x = getX();
+  info->start_y = getY();
+
+  info->pos_count = 0;
+  for( int x = 0; x < MAP_WIDTH; x++ ) {
+    for( int y = 0; y < MAP_DEPTH; y++ ) {
+
+      if( floorPositions[x][y] ) {
+        info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, 0 );
+        strncpy( (char*)(info->pos[ info->pos_count ]->floor_shape_name), 
+                 floorPositions[x][y]->getName(),
+                 254 );
+        info->pos[ info->pos_count ]->floor_shape_name[254] = 0;
+        info->pos_count++;
+      }
+
+      for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
+        if( pos[x][y][z] &&
+            pos[x][y][z]->x == x &&
+            pos[x][y][z]->y == y &&
+            pos[x][y][z]->z == z && 
+            !( pos[x][y][z]->creature && 
+               !(pos[x][y][z]->creature->getMonster() ) ) ) {
+
+          info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
+
+          if( pos[x][y][z]->item ) {
+            info->pos[ info->pos_count ]->item = pos[x][y][z]->item->save();
+          } else if( pos[x][y][z]->creature ) {
+            info->pos[ info->pos_count ]->creature = pos[x][y][z]->creature->save();
+          } else {
+            strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), 
+                     pos[x][y][z]->shape->getName(),
+                     254 );
+            info->pos[ info->pos_count ]->shape_name[254] = 0;
+          }
+
+          // FIXME: save door info also
+
+          info->pos_count++;
+        }
+      }
+    }
+  }
+
+  char fileName[300];
+  sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+
+  cerr << "saving map: " << fileName << endl;
+
+  FILE *fp = fopen( fileName, "wb" );
+  Persist::saveMap( fp, info );
+  fclose( fp );
+
+  Persist::deleteMapInfo( info );
+
+  sprintf( result, "Map saved: %s", name );
+}
+
+void Map::loadMap( char *name, char *result ) {
+  if( !strlen( name ) ) {
+    strcpy( result, "Enter a name of a map to load." );
+    return;
+  }
+
+  char fileName[300];
+  sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+  cerr << "loading map: " << fileName << endl;
+
+  FILE *fp = fopen( fileName, "rb" );
+  if( !fp ) {
+    sprintf( result, "Can't find map: %s", name );
+    return;
+  }
+  MapInfo *info = Persist::loadMap( fp );
+  fclose( fp );
+
+  // reset the map
+  reset();
+  
+  GLShape *shape;
+  for( int i = 0; i < (int)info->pos_count; i++ ) {
+    if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
+      shape = session->getShapePalette()->
+        findShapeByName( (char*)(info->pos[i]->floor_shape_name) );
+      setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
+    } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
+      shape = session->getShapePalette()->
+        findShapeByName( (char*)(info->pos[i]->shape_name) );
+      setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape );
+    } else if( info->pos[i]->item ) {
+      setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
+               Item::load( session, info->pos[i]->item ) );
+    } else if( info->pos[i]->creature ) {
+      setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
+                   Creature::load( session, info->pos[i]->creature ) );
+    }
+
+    // FIXME: handle door info 
+  }
+
+  this->center( info->start_x, info->start_y, true );
+
+  Persist::deleteMapInfo( info );
+
+  sprintf( result, "Map saved: %s", name );
+}
+
