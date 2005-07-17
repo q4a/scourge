@@ -63,6 +63,8 @@ private:
   // lists
   ScrollingList *shapeList, *itemList, *creatureList;
   char **shapeNames, **itemNames, **creatureNames;
+
+  map<Monster*,GLShape*> creatureOutlines;
   
 public:
 
@@ -80,7 +82,9 @@ public:
 
 protected:
   void processMouseMotion( Uint8 button );
-  bool getShape( GLShape **shape );
+  bool getShape( GLShape **shape,
+                 Item **item = NULL,
+                 Creature **creature = NULL );
 
   void addWall( Sint16 mapx, Sint16 mapy, int dir );
   void addDoor( Sint16 mapx, Sint16 mapy, int dir );

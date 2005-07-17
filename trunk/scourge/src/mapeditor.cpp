@@ -278,21 +278,38 @@ void MapEditor::hide() {
   scourge->getMap()->setMapSettings( scourge->getMapSettings() );
 }
 
-bool MapEditor::getShape( GLShape **shape ) {
+bool MapEditor::getShape( GLShape **shape, 
+                          Item **item, 
+                          Creature **creature ) {
+  *shape = NULL;
+  if( item ) *item = NULL;
+  if( creature ) *creature = NULL;
   if( creatureButton->isSelected() && 
       creatureList->getSelectedLine() > -1 ) {
     Monster *monster = Monster::getMonsterByName( creatureNames[ creatureList->getSelectedLine() ] );
-    *shape = scourge->getSession()->getShapePalette()->
-      getCreatureShape(monster->getModelName(), 
-                       monster->getSkinName(), 
-                       monster->getScale(),
-                       monster);
+    // cache creature shapes
+    if( creatureOutlines.find( monster ) == creatureOutlines.end() ) {
+      creatureOutlines[ monster ] = scourge->getSession()->getShapePalette()->
+        getCreatureShape(monster->getModelName(), 
+                         monster->getSkinName(), 
+                         monster->getScale(),
+                         monster);
+    }
+    *shape = creatureOutlines[ monster ];
+    if( creature ) {
+      cerr << "new creature" << endl;
+      *creature = scourge->getSession()->newCreature( monster, *shape );
+    }
     return true;
   } else if( itemButton->isSelected() &&
              itemList->getSelectedLine() > -1 ) {
     RpgItem *rpgItem = 
       RpgItem::getItemByName( itemNames[ itemList->getSelectedLine() ] );
     *shape = scourge->getShapePalette()->getShape( rpgItem->getShapeIndex() );
+    if( item ) {
+      cerr << "new item" << endl;
+      *item = scourge->getSession()->newItem( rpgItem, 1 );
+    }
     return true;
   } else if( shapeButton->isSelected() && 
              shapeList->getSelectedLine() > -1 ) {
@@ -316,71 +333,78 @@ void MapEditor::processMouseMotion( Uint8 button ) {
     int mapy = scourge->getMap()->getCursorChunkY() * MAP_UNIT + MAP_OFFSET;
 
     GLShape *shape;
-    if( getShape( &shape ) ) {
-      if( button == SDL_BUTTON_LEFT ) {
-        if( shape ) scourge->getMap()->setPosition( xx, yy, 0, shape );
-      } else if( button == SDL_BUTTON_RIGHT ) {
+    if( button == SDL_BUTTON_LEFT ) {
+      Item *item;
+      Creature *creature;
+      if( getShape( &shape, &item, &creature ) ) {
+        if( item ) scourge->getMap()->setItem( xx, yy, 0, item );
+        else if( creature ) scourge->getMap()->setCreature( xx, yy, 0, creature );
+        else if( shape ) scourge->getMap()->setPosition( xx, yy, 0, shape );
+        return;
+      }
+    } else if( button == SDL_BUTTON_RIGHT ) {
+      if( getShape( &shape ) ) {
         for( int sx = 0; sx < shape->getWidth(); sx++ ) {
           for( int sy = 0; sy < shape->getDepth(); sy++ ) {
             scourge->getMap()->removeLocation( xx + sx, yy - sy, 0 );
           }
         }
+        return;
+      }
+    }
+
+    int innerX = xx - mapx;
+    int innerY = yy - mapy;
+    
+    //    cerr << "pos: " << mapx << "," << mapy << 
+    //      " map:" << scourge->getMap()->getCursorFlatMapX() << "," << 
+    //      scourge->getMap()->getCursorFlatMapX() << endl;
+    
+    // find the region in the chunk
+    int mx = -1;
+    int my = -1;
+    int dir = -1;
+    if( innerX < MAP_UNIT_OFFSET ) { 
+      mx = mapx;
+      my = mapy;
+      dir = Constants::WEST;
+    } else if( innerY < MAP_UNIT_OFFSET ) { 
+      mx = mapx;
+      my = mapy;
+      dir = Constants::NORTH;
+    } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
+      mx = mapx + MAP_UNIT - MAP_UNIT_OFFSET;
+      my = mapy;
+      dir = Constants::EAST;
+    } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
+      mx = mapx;
+      my = mapy + MAP_UNIT - MAP_UNIT_OFFSET;
+      dir = Constants::SOUTH;
+    }
+    
+    if( dir != -1 ) {
+      if( button == SDL_BUTTON_RIGHT ) {
+        removeWall( mx, my, dir ); 
+      } else if( wallButton->isSelected() ) {
+        addWall( mx, my, dir ); 
+      } else if( doorButton->isSelected() ) {
+        addDoor( mx, my, dir );
+      }
+      
+      // blend the corners
+      for( int x = -1; x <= 1; x++ ) {
+        for( int y = -1; y <= 1; y++ ) {
+          blendCorners( mapx + ( x * MAP_UNIT ), 
+                        mapy + ( y * MAP_UNIT ) );
+        }
       }
     } else {
-
-      int innerX = xx - mapx;
-      int innerY = yy - mapy;
-      
-      //    cerr << "pos: " << mapx << "," << mapy << 
-      //      " map:" << scourge->getMap()->getCursorFlatMapX() << "," << 
-      //      scourge->getMap()->getCursorFlatMapX() << endl;
-      
-      // find the region in the chunk
-      int mx = -1;
-      int my = -1;
-      int dir = -1;
-      if( innerX < MAP_UNIT_OFFSET ) { 
-        mx = mapx;
-        my = mapy;
-        dir = Constants::WEST;
-      } else if( innerY < MAP_UNIT_OFFSET ) { 
-        mx = mapx;
-        my = mapy;
-        dir = Constants::NORTH;
-      } else if( innerX >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-        mx = mapx + MAP_UNIT - MAP_UNIT_OFFSET;
-        my = mapy;
-        dir = Constants::EAST;
-      } else if( innerY >= MAP_UNIT - MAP_UNIT_OFFSET ) {
-        mx = mapx;
-        my = mapy + MAP_UNIT - MAP_UNIT_OFFSET;
-        dir = Constants::SOUTH;
-      }
-      
-      if( dir != -1 ) {
-        if( button == SDL_BUTTON_RIGHT ) {
-          removeWall( mx, my, dir ); 
-        } else if( wallButton->isSelected() ) {
-          addWall( mx, my, dir ); 
-        } else if( doorButton->isSelected() ) {
-          addDoor( mx, my, dir );
-        }
-        
-        // blend the corners
-        for( int x = -1; x <= 1; x++ ) {
-          for( int y = -1; y <= 1; y++ ) {
-            blendCorners( mapx + ( x * MAP_UNIT ), 
-                          mapy + ( y * MAP_UNIT ) );
-          }
-        }
+      if( button == SDL_BUTTON_RIGHT ) {
+        removeFloor( mapx, mapy );
       } else {
-        if( button == SDL_BUTTON_RIGHT ) {
-          removeFloor( mapx, mapy );
-        } else {
-          addFloor( mapx, mapy );
-        }
-      }    
-    }
+        addFloor( mapx, mapy );
+      }
+    }    
   }
 }
 
