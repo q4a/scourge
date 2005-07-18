@@ -223,19 +223,16 @@ CreatureInfo *Creature::save() {
 
 Creature *Creature::load(Session *session, CreatureInfo *info) {
   Creature *creature = NULL;
-  // FIXME: figure out how/when to call session->newCreature, vs. new Creature()
-  // Maybe all creatures should be constructed via session->newCreature() but
-  // not destroyed in session->deleteCreaturesAndItems()?
   if(!strlen((char*)info->character_name)) {
-    cerr << "FIXME: Creature::load(): Loading monster: maybe call session->newCreature?" << endl;
-    ((Creature*)NULL)->getName(); // cause an error
-    /*
-    creature = new Creature(session, 
-                            Monster::getMonsterByName((char*)info->monster_name),
-                            strdup((char*)info->name));
-    */                            
+    
+    Monster *monster = Monster::getMonsterByName( (char*)info->monster_name );
+    GLShape *shape = session->getShapePalette()->
+      getCreatureShape( monster->getModelName(), 
+                        monster->getSkinName(), 
+                        monster->getScale(),
+                        monster );
+    creature = session->newCreature( monster, shape );
   } else {
-    // for now it's ok to call new Creature() for characters. This will change once we save NPC-s.
     creature = new Creature(session, 
                             Character::getCharacterByName((char*)info->character_name), 
                             strdup((char*)info->name),

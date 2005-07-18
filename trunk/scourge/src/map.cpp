@@ -1143,7 +1143,7 @@ void Map::draw() {
   if( settings->isGridShowing() ) {
 
     int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-    int chunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+    int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
     float m = 0.5f / GLShape::DIV;
 
     glDisable( GL_CULL_FACE );

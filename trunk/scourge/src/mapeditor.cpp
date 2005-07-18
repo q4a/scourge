@@ -170,12 +170,14 @@ void MapEditor::drawView() {
   Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX(), 
                                                   scourge->getMap()->getCursorFlatMapY(),
                                                   0 );
-  scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d Shape=%s", 
+  scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d Shape=%s Item=%s Creature=%s", 
                                       scourge->getMap()->getCursorFlatMapX(), 
                                       scourge->getMap()->getCursorFlatMapY(), 
                                       scourge->getMap()->getCursorChunkX(), 
                                       scourge->getMap()->getCursorChunkY(),
-                                      ( pos ? pos->shape->getName() : "NULL" ) );
+                                      ( pos ? pos->shape->getName() : "NULL" ),
+                                      ( pos && pos->item ? pos->item->getRpgItem()->getName() : "NULL" ),
+                                      ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
   
   glTranslatef( 50, 50, 0 );
   glRotatef( scourge->getMap()->getZRot(), 0, 0, 1 );
@@ -327,10 +329,13 @@ void MapEditor::processMouseMotion( Uint8 button ) {
 
     // draw the correct walls in this chunk
     int xx = scourge->getMap()->getCursorFlatMapX();
-    int yy = scourge->getMap()->getCursorFlatMapY();
+    int yy = scourge->getMap()->getCursorFlatMapY() - 1;
 
-    int mapx = scourge->getMap()->getCursorChunkX() * MAP_UNIT + MAP_OFFSET;
-    int mapy = scourge->getMap()->getCursorChunkY() * MAP_UNIT + MAP_OFFSET;
+    int mapx = ( ( xx - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+    int mapy = ( ( yy - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+
+    //int mapx = scourge->getMap()->getCursorChunkX() * MAP_UNIT + MAP_OFFSET;
+    //int mapy = scourge->getMap()->getCursorChunkY() * MAP_UNIT + MAP_OFFSET;
 
     GLShape *shape;
     if( button == SDL_BUTTON_LEFT ) {
