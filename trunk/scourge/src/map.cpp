@@ -2832,7 +2832,13 @@ void Map::loadMap( char *name, char *result ) {
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
-    if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
+    if( info->pos[i]->item ) {
+      setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
+               Item::load( session, info->pos[i]->item ) );
+    } else if( info->pos[i]->creature ) {
+      setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
+                   Creature::load( session, info->pos[i]->creature ) );
+    } else if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
       shape = session->getShapePalette()->
         findShapeByName( (char*)(info->pos[i]->floor_shape_name) );
       setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
@@ -2840,12 +2846,6 @@ void Map::loadMap( char *name, char *result ) {
       shape = session->getShapePalette()->
         findShapeByName( (char*)(info->pos[i]->shape_name) );
       setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape );
-    } else if( info->pos[i]->item ) {
-      setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
-               Item::load( session, info->pos[i]->item ) );
-    } else if( info->pos[i]->creature ) {
-      setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
-                   Creature::load( session, info->pos[i]->creature ) );
     }
 
     // FIXME: handle door info 
