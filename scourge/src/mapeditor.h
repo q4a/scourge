@@ -45,6 +45,10 @@ class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
   Scourge *scourge;
   MapSettings *mapSettings;
+
+  // map settings
+  int level, depth;
+
   
   // UI
   Window *mainWin;

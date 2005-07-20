@@ -192,6 +192,8 @@ class RpgItem {
 
   bool isEnchantable();
 
+  bool isContainer();
+
   static RpgItem *getRandomItem(int depth);
   static RpgItem *getRandomContainer();
   static RpgItem *getRandomContainerNS();
