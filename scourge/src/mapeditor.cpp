@@ -107,12 +107,14 @@ MapEditor::MapEditor( Scourge *scourge ) {
         i != creatureMap->end(); ++i ) {
     string name = i->first;
     Monster *monster = (Monster*)( i->second );
+    /*
     GLShape *shape = scourge->getSession()->getShapePalette()->
       getCreatureShape(monster->getModelName(), 
                        monster->getSkinName(), 
                        monster->getScale(),
                        monster);
     seen.push_back( shape );
+    */
     char *p = (char*)name.c_str();
     creatureNames[ count ] = (char*)malloc( 120 * sizeof(char) );
     strcpy( creatureNames[ count ], p );
@@ -256,9 +258,11 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   if( widget == saveButton ) {
     scourge->getMap()->saveMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
+    scourge->getParty()->toggleRound( false );
   } else if( widget == loadButton ) {
     scourge->getMap()->loadMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
+    scourge->getParty()->toggleRound( false );
   }
 
   return false;

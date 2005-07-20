@@ -47,6 +47,10 @@ MD2Shape::~MD2Shape() {
   delete [] vect;
 }
 
+void MD2Shape::setPauseAnimation(bool pause) { 
+  pauseAnimation = pause; 
+}
+
 void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   this->g_3DModel = g_3DModel;    
   g_ViewMode = GL_TRIANGLES;
