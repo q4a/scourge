@@ -42,6 +42,10 @@ bool contains( vector<Shape*> *seen, Shape *shape ) {
 MapEditor::MapEditor( Scourge *scourge ) {
   this->scourge = scourge;
 
+  // default map settings
+  level = 1;
+  depth = 0;
+
   mapSettings = new EditorMapSettings();
 
   int w = 200;
@@ -106,8 +110,8 @@ MapEditor::MapEditor( Scourge *scourge ) {
   for (map<string, Monster*>::iterator i = creatureMap->begin(); 
         i != creatureMap->end(); ++i ) {
     string name = i->first;
-    Monster *monster = (Monster*)( i->second );
     /*
+    Monster *monster = (Monster*)( i->second );
     GLShape *shape = scourge->getSession()->getShapePalette()->
       getCreatureShape(monster->getModelName(), 
                        monster->getSkinName(), 
@@ -314,7 +318,37 @@ bool MapEditor::getShape( GLShape **shape,
     *shape = scourge->getShapePalette()->getShape( rpgItem->getShapeIndex() );
     if( item ) {
       cerr << "new item" << endl;
-      *item = scourge->getSession()->newItem( rpgItem, 1 );
+      *item = scourge->getSession()->newItem( rpgItem, level );
+      // fill the container with random items
+      if( rpgItem->isContainer() ) {
+        // some items
+        int n = (int)(3.0f * rand() / RAND_MAX);
+        for(int i = 0; i < n; i++) {
+          RpgItem *containedItem = RpgItem::getRandomItem( depth );
+          if(containedItem) 
+            (*item)->addContainedItem(scourge->getSession()->
+                                      newItem(containedItem, level), 
+                                      true);
+        }
+        // some spells
+        if(!((int)(25.0f * rand() / RAND_MAX))) {
+          int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+          for(int i = 0; i < n; i++) {
+            Spell *spell = MagicSchool::getRandomSpell( level );
+            if( spell ) {
+              Item *scroll = scourge->getSession()->
+                newItem(RpgItem::getItemByName("Scroll"), level, spell);
+              (*item)->addContainedItem(scroll, true);
+            }
+          }
+        }
+
+        // print summary
+        cerr << "Container contents:" << endl;
+        for( int i = 0; i < (*item)->getContainedItemCount(); i++ ) {
+          cerr << "\t" << (*item)->getContainedItem( i )->getRpgItem()->getName() << endl;
+        }
+      }
     }
     return true;
   } else if( shapeButton->isSelected() && 

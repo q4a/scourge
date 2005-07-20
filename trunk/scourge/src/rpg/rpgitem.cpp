@@ -216,3 +216,14 @@ RpgItem *RpgItem::getItemByName(char *name) {
   //  cerr << "*** Looking for >" << s << "< found=" << item << endl;
   return item;
 }
+
+// warning: slow method (use in editor only)
+bool RpgItem::isContainer() {
+  for( int i = 0; i < (int)containers.size(); i++ ) {
+    if( containers[i] == this ) return true;
+  }
+  for( int i = 0; i < (int)containersNS.size(); i++ ) {
+    if( containersNS[i] == this ) return true;
+  }
+  return false;
+}
