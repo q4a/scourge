@@ -655,6 +655,8 @@ void ShapePalette::UnloadMd2Model( t3DModel *model ) {
 GLShape *ShapePalette::getCreatureShape(char *model_name, char *skin_name, 
 										float scale, Monster *monster) {
 
+  //cerr << "getCreatureShape: model_name=" << model_name << " skin=" << skin_name << endl;
+
   // find the model the old way
   Md2ModelInfo *model_info;
   char realSkinName[300];

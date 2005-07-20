@@ -112,7 +112,7 @@ public:
   bool drawLater();
   void setupBlending();
   void endBlending();  
-  inline void setPauseAnimation(bool pause) { pauseAnimation = pause; }
+  void setPauseAnimation(bool pause);
   inline GLuint getTextureId() { return textureId; }
   inline void setSkinName(char *s) { skin_name = s; }
   inline char *getSkinName() { return skin_name; }
