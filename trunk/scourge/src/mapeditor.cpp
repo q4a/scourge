@@ -223,7 +223,7 @@ bool MapEditor::handleEvent(SDL_Event *event) {
 
   switch(event->type) {
   case SDL_MOUSEMOTION:
-  processMouseMotion( event->motion.state );
+  //processMouseMotion( event->motion.state );
   break;
   case SDL_MOUSEBUTTONDOWN:
   processMouseMotion( event->button.button );
@@ -380,9 +380,13 @@ void MapEditor::processMouseMotion( Uint8 button ) {
       Item *item;
       Creature *creature;
       if( getShape( &shape, &item, &creature ) ) {
-        if( item ) scourge->getMap()->setItem( xx, yy, 0, item );
-        else if( creature ) scourge->getMap()->setCreature( xx, yy, 0, creature );
-        else if( shape ) scourge->getMap()->setPosition( xx, yy, 0, shape );
+
+        int newz = 0;
+        scourge->getMap()->isBlocked( xx, yy, 0, -1, -1, -1, shape, &newz );
+
+        if( item ) scourge->getMap()->setItem( xx, yy, newz, item );
+        else if( creature ) scourge->getMap()->setCreature( xx, yy, newz, creature );
+        else if( shape ) scourge->getMap()->setPosition( xx, yy, newz, shape );
         return;
       }
     } else if( button == SDL_BUTTON_RIGHT ) {
