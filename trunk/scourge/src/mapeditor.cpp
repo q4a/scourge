@@ -24,11 +24,7 @@
   
 /*
   TODO:
-  - separate lists: items, creatures, interactive things, shapes
-  - before putting a shape down, check that it fits
-  - putting shapes down should use Map::isBlocked() to find Z
-  - when using "removePosition" make sure to call with shape's hotspot
-  - how to edit items/shapes?
+  - ability to "name" item, shape, creature. Then text file can reference name.
   - need to call ShapePalette::decrementSkinRefCount() when closing map?
 */  
   
@@ -69,6 +65,29 @@ MapEditor::MapEditor( Scourge *scourge ) {
   nameText = mainWin->createTextField( 60, 75, 10 );
   loadButton = mainWin->createButton( 5, 100, ( w - 10 ) / 2, 120, "Load" );
   saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, 100, w - 5, 120, "Save" );
+
+  newButton = mainWin->createButton( 5, 125, w - 10, 145, "New Map" );
+
+  // new map ui
+  int nw = 450;
+  int nh = 140;
+  newMapWin = new Window( scourge->getSDLHandler(),
+                          40, 40, nw, nh,
+                          "Create a New Map", 
+                          false, 
+                          Window::BASIC_WINDOW,
+                          GuiTheme::DEFAULT_THEME );
+  newMapWin->setVisible( false );
+  newMapWin->setModal( true );
+  newMapWin->createLabel( 5, 20, "Map level (0-7):" );
+  levelText = newMapWin->createTextField( 150, 10, 20 );
+  newMapWin->createLabel( 5, 40, "Map depth (0-10):" );
+  depthText = newMapWin->createTextField( 150, 30, 20 );
+  newMapWin->createLabel( 5, 60, "Map theme:" );
+  themeText = newMapWin->createTextField( 150, 50, 20 );
+  int bw = nw / 4;
+  okButton = newMapWin->createButton( nw - bw * 2 - 10, 80, nw - bw - 5, 100, "OK" );
+  cancelButton = newMapWin->createButton( nw - bw, 80, nw - 5, 100, "Cancel" );
 
   // Lists
   vector<Shape*> seen;
@@ -284,6 +303,12 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getMap()->loadMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
     scourge->getParty()->toggleRound( false );
+  } else if( widget == newButton ) {
+    newMapWin->setVisible( true );
+  } else if( widget == okButton ) {
+    newMapWin->setVisible( false );
+  } else if( widget == cancelButton ) {
+    newMapWin->setVisible( false );
   }
 
   return false;

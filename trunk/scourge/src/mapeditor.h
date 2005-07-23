@@ -59,10 +59,18 @@ private:
   Button *shapeButton;
   Button *itemButton;
   Button *creatureButton;
+  Button *startPosButton;
   vector<Button *> toggleButtonList;
 
   TextField *nameText;
   Button *loadButton, *saveButton;
+  Button *newButton;
+
+  // new map gui
+  Window *newMapWin;
+  Button *cancelButton;
+  Button *okButton;
+  TextField *levelText, *depthText, *themeText;
   
   // lists
   ScrollingList *shapeList, *itemList, *creatureList;
