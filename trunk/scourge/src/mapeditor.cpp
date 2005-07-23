@@ -218,6 +218,23 @@ bool MapEditor::handleEvent(SDL_Event *event) {
     scourge->getMap()->cursorDepth = shape->getDepth();
     scourge->getMap()->cursorHeight = shape->getHeight();
   }
+  
+  // find the highest point under the cursor
+  int maxz = 0;
+  for( int gx = 0; gx < scourge->getMap()->cursorWidth; gx++ ) {
+    for( int gy = 0; gy < scourge->getMap()->cursorDepth; gy++ ) {
+      for( int i = MAP_VIEW_HEIGHT - 1; i >= 0; i-- ) {
+        if( scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX() + gx,
+                                            scourge->getMap()->getCursorFlatMapY() - gy, 
+                                            i ) &&
+            maxz < i ) {
+          maxz = i;
+        }
+      }
+    }
+  }
+  scourge->getMap()->cursorZ = ( maxz >= MAP_VIEW_HEIGHT - 1 ? 0 : maxz + 1 );
+  
 
   scourge->getMap()->handleEvent( event );
 
@@ -367,7 +384,7 @@ void MapEditor::processMouseMotion( Uint8 button ) {
 
     // draw the correct walls in this chunk
     int xx = scourge->getMap()->getCursorFlatMapX();
-    int yy = scourge->getMap()->getCursorFlatMapY() - 1;
+    int yy = scourge->getMap()->getCursorFlatMapY();
 
     int mapx = ( ( xx - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
     int mapy = ( ( yy - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
@@ -381,8 +398,7 @@ void MapEditor::processMouseMotion( Uint8 button ) {
       Creature *creature;
       if( getShape( &shape, &item, &creature ) ) {
 
-        int newz = 0;
-        scourge->getMap()->isBlocked( xx, yy, 0, -1, -1, -1, shape, &newz );
+        int newz = scourge->getMap()->cursorZ;
 
         if( item ) scourge->getMap()->setItem( xx, yy, newz, item );
         else if( creature ) scourge->getMap()->setCreature( xx, yy, newz, creature );
@@ -393,7 +409,9 @@ void MapEditor::processMouseMotion( Uint8 button ) {
       if( getShape( &shape ) ) {
         for( int sx = 0; sx < shape->getWidth(); sx++ ) {
           for( int sy = 0; sy < shape->getDepth(); sy++ ) {
-            scourge->getMap()->removeLocation( xx + sx, yy - sy, 0 );
+            for( int sz = 0; sz < MAP_VIEW_HEIGHT; sz++ ) {
+              scourge->getMap()->removeLocation( xx + sx, yy - sy, sz );
+            }
           }
         }
         return;

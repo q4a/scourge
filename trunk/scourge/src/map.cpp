@@ -62,6 +62,7 @@ Map::Map(Session *session) {
   cursorWidth = 1;
   cursorDepth = 1;
   cursorHeight = MAP_WALL_HEIGHT;
+  cursorZ = 0;
 
   mouseMoveScreen = true;
   mouseZoom = mouseRot = false;
@@ -1184,7 +1185,8 @@ void Map::draw() {
     float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / GLShape::DIV;
     float cw = (float)cursorWidth / GLShape::DIV;
     float cd = -(float)cursorDepth / GLShape::DIV;
-    float ch = (float)cursorHeight / GLShape::DIV;
+    m = ( cursorZ ? cursorZ : 0.5f ) / GLShape::DIV;
+    float ch = (float)( cursorHeight + cursorZ ) / GLShape::DIV;
 
     float red = 1.0f;
     float green = 0.9f;
@@ -1192,9 +1194,9 @@ void Map::draw() {
     bool found = false;
     if( cursorFlatMapX < MAP_WIDTH && cursorFlatMapY < MAP_DEPTH ) {
       for( int xx = cursorFlatMapX; xx < cursorFlatMapX + cursorWidth; xx++ ) {
-        for( int yy = cursorFlatMapY; yy >= cursorFlatMapY - cursorDepth; yy-- ) {
+        for( int yy = cursorFlatMapY - 1; yy >= cursorFlatMapY - cursorDepth; yy-- ) {
           for( int zz = 0; zz < cursorHeight; zz++ ) {
-            if( pos[xx][yy][zz] ) {
+            if( pos[xx][yy + 1][zz] ) {
               found = true;
               break;
             }
