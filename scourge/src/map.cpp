@@ -846,7 +846,7 @@ void Map::draw() {
   }
 
   if(zoomIn) {
-    if(zoom <= 0.5f) {
+    if(zoom <= settings->getMinZoomIn() ) {
       zoomOut = false;
     } else {
       zoom /= ZOOM_DELTA;
@@ -859,7 +859,7 @@ void Map::draw() {
       //mapChanged = true;
     }
   } else if(zoomOut) {
-    if(zoom >= 2.8f) {
+    if(zoom >= settings->getMaxZoomOut() ) {
       zoomOut = false;
     } else {
       zoom *= ZOOM_DELTA; 
@@ -882,7 +882,7 @@ void Map::draw() {
 
   oldrot = yrot;
   if(yRotating != 0) yrot+=yRotating;
-  if(yrot >= 55 || yrot < 0) yrot = oldrot;
+  if(yrot >= settings->getMaxYRot() || yrot < 0) yrot = oldrot;
 
   oldrot = zrot;
   if(zRotating != 0) {
@@ -2713,7 +2713,17 @@ bool GameMapSettings::isPlayerEnabled() {
   return true;
 }
 
+float GameMapSettings::getMinZoomIn() {
+  return 0.5f;
+}
 
+float GameMapSettings::getMaxZoomOut() {
+  return 2.8f;
+}
+
+float GameMapSettings::getMaxYRot() {
+  return 55.0f;
+}
 
 
 
@@ -2737,8 +2747,17 @@ bool EditorMapSettings::isPlayerEnabled() {
   return false;
 }
 
+float EditorMapSettings::getMinZoomIn() {
+  return 0.005f;
+}
 
+float EditorMapSettings::getMaxZoomOut() {
+  return 2.8f;
+}
 
+float EditorMapSettings::getMaxYRot() {
+  return 90.0f;
+}
 
 
 void Map::saveMap( char *name, char *result ) {

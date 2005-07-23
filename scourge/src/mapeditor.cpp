@@ -252,17 +252,15 @@ bool MapEditor::handleEvent(SDL_Event *event) {
       }
     }
   }
+  int editorZ = ( maxz >= MAP_VIEW_HEIGHT - 1 ? 0 : maxz );
   scourge->getMap()->cursorZ = ( maxz >= MAP_VIEW_HEIGHT - 1 ? 0 : maxz + 1 );
   
 
   scourge->getMap()->handleEvent( event );
 
   switch(event->type) {
-  case SDL_MOUSEMOTION:
-  //processMouseMotion( event->motion.state );
-  break;
   case SDL_MOUSEBUTTONDOWN:
-  processMouseMotion( event->button.button );
+  processMouseMotion( event->button.button, editorZ );
   break;
   case SDL_KEYUP:
   if( event->key.keysym.sym == SDLK_ESCAPE ) {
@@ -403,7 +401,7 @@ bool MapEditor::getShape( GLShape **shape,
   }
 }
 
-void MapEditor::processMouseMotion( Uint8 button ) {
+void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
   if( button == SDL_BUTTON_LEFT || 
       button == SDL_BUTTON_RIGHT ) {
 
@@ -422,12 +420,9 @@ void MapEditor::processMouseMotion( Uint8 button ) {
       Item *item;
       Creature *creature;
       if( getShape( &shape, &item, &creature ) ) {
-
-        int newz = scourge->getMap()->cursorZ;
-
-        if( item ) scourge->getMap()->setItem( xx, yy, newz, item );
-        else if( creature ) scourge->getMap()->setCreature( xx, yy, newz, creature );
-        else if( shape ) scourge->getMap()->setPosition( xx, yy, newz, shape );
+        if( item ) scourge->getMap()->setItem( xx, yy, editorZ, item );
+        else if( creature ) scourge->getMap()->setCreature( xx, yy, editorZ, creature );
+        else if( shape ) scourge->getMap()->setPosition( xx, yy, editorZ, shape );
         return;
       }
     } else if( button == SDL_BUTTON_RIGHT ) {

@@ -53,6 +53,9 @@ public:
   virtual bool isLightMapEnabled() = 0;
   virtual bool isGridShowing() = 0;
   virtual bool isPlayerEnabled() = 0;
+  virtual float getMinZoomIn() = 0;
+  virtual float getMaxZoomOut() = 0;
+  virtual float getMaxYRot() = 0;
 };
 
 class GameMapSettings : public MapSettings {
@@ -64,6 +67,9 @@ public:
   bool isLightMapEnabled();
   bool isGridShowing();
   bool isPlayerEnabled();
+  float getMinZoomIn();
+  float getMaxZoomOut();
+  float getMaxYRot();
 };
 
 class EditorMapSettings : public MapSettings {
@@ -75,6 +81,9 @@ public:
   bool isLightMapEnabled();
   bool isGridShowing();
   bool isPlayerEnabled();
+  float getMinZoomIn();
+  float getMaxZoomOut();
+  float getMaxYRot();
 };
 
 typedef struct _DrawLater {
