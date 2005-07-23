@@ -93,7 +93,7 @@ public:
   inline bool isVisible() { return mainWin->isVisible(); }
 
 protected:
-  void processMouseMotion( Uint8 button );
+  void processMouseMotion( Uint8 button, int editorZ );
   bool getShape( GLShape **shape,
                  Item **item = NULL,
                  Creature **creature = NULL );
