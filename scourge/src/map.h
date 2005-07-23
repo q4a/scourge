@@ -203,7 +203,7 @@ class Map {
   bool useFrustum;
   static bool debugMd2Shapes;
 
-  int cursorWidth, cursorDepth, cursorHeight;
+  int cursorWidth, cursorDepth, cursorHeight, cursorZ;
 
   Map(Session *session);
   ~Map();
