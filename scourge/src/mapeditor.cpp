@@ -17,6 +17,11 @@
 
 #include "mapeditor.h"
 
+char *floorTypeName[80] = { 
+  "FLOOR_TILE",
+  "ROOM_FLOOR_TILE"
+};
+
 /**
   *@author Gabor Torok
   */
@@ -67,6 +72,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, 100, w - 5, 120, "Save" );
 
   newButton = mainWin->createButton( 5, 125, w - 10, 145, "New Map" );
+  floorType = mainWin->createButton( 5, 150, w - 10, 170, floorTypeName[ 1 ], true );
 
   // new map ui
   int nw = 450;
@@ -252,8 +258,9 @@ bool MapEditor::handleEvent(SDL_Event *event) {
       }
     }
   }
-  int editorZ = ( maxz >= MAP_VIEW_HEIGHT - 1 ? 0 : maxz );
   scourge->getMap()->cursorZ = ( maxz >= MAP_VIEW_HEIGHT - 1 ? 0 : maxz + 1 );
+  int editorZ = scourge->getMap()->cursorZ;
+  if( !maxz ) editorZ = 0;
   
 
   scourge->getMap()->handleEvent( event );
@@ -305,8 +312,16 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     newMapWin->setVisible( true );
   } else if( widget == okButton ) {
     newMapWin->setVisible( false );
+
+    scourge->getMap()->reset();
+    scourge->getShapePalette()->loadTheme( (const char*)themeText->getText() );
+    this->level = atoi( levelText->getText() );
+    this->depth = atoi( depthText->getText() );
+
   } else if( widget == cancelButton ) {
     newMapWin->setVisible( false );
+  } else if( widget == floorType ) {
+    floorType->setLabel( floorTypeName[ floorType->isSelected() ? 0 : 1 ] );
   }
 
   return false;
@@ -407,7 +422,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
 
     // draw the correct walls in this chunk
     int xx = scourge->getMap()->getCursorFlatMapX();
-    int yy = scourge->getMap()->getCursorFlatMapY();
+    int yy = scourge->getMap()->getCursorFlatMapY() - 1;
 
     int mapx = ( ( xx - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
     int mapy = ( ( yy - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
@@ -420,17 +435,17 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
       Item *item;
       Creature *creature;
       if( getShape( &shape, &item, &creature ) ) {
-        if( item ) scourge->getMap()->setItem( xx, yy, editorZ, item );
-        else if( creature ) scourge->getMap()->setCreature( xx, yy, editorZ, creature );
-        else if( shape ) scourge->getMap()->setPosition( xx, yy, editorZ, shape );
+        if( item ) scourge->getMap()->setItem( xx, yy + 1, editorZ, item );
+        else if( creature ) scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
+        else if( shape ) scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
         return;
       }
     } else if( button == SDL_BUTTON_RIGHT ) {
       if( getShape( &shape ) ) {
         for( int sx = 0; sx < shape->getWidth(); sx++ ) {
           for( int sy = 0; sy < shape->getDepth(); sy++ ) {
-            for( int sz = 0; sz < MAP_VIEW_HEIGHT; sz++ ) {
-              scourge->getMap()->removeLocation( xx + sx, yy - sy, sz );
+            for( int sz = MAP_VIEW_HEIGHT - 1; sz >= 0; sz-- ) {
+              scourge->getMap()->removeLocation( xx + sx, yy - sy + 1, sz );
             }
           }
         }
@@ -445,6 +460,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     //      " map:" << scourge->getMap()->getCursorFlatMapX() << "," << 
     //      scourge->getMap()->getCursorFlatMapX() << endl;
     
+
     // find the region in the chunk
     int mx = -1;
     int my = -1;
@@ -635,6 +651,18 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
                      findShapeByName( "EW_WALL", true ) );
     }
 
+    // add a light
+    if((int) (100.0 * rand()/RAND_MAX) <= 25) {
+      cerr << "adding light" << endl;
+      scourge->getMap()->
+        setPosition(mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
+                    6, scourge->getShapePalette()->findShapeByName("LAMP_WEST", true));
+      scourge->getMap()->
+        setPosition(mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
+                    4, scourge->getShapePalette()->findShapeByName("LAMP_BASE", true));
+    }
+
+
     // change north chunk
     //cerr << "Looking north of EW_WALL map=" << mapx << "," << mapy << endl;
     if( isShape( mapx, mapy - MAP_UNIT_OFFSET, 0, "EW_WALL" ) &&
@@ -795,8 +823,11 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
 
 void MapEditor::addFloor( Sint16 mapx, Sint16 mapy ) {
   if( scourge->getMap()->getFloorPosition( mapx, mapy + MAP_UNIT ) ) return;
-  scourge->getMap()->setFloorPosition( mapx, mapy + MAP_UNIT, 
-                                       scourge->getShapePalette()->findShapeByName( "FLOOR_TILE", true ) );
+  scourge->getMap()->
+    setFloorPosition( mapx, mapy + MAP_UNIT, 
+                      scourge->getShapePalette()->
+                      findShapeByName( floorTypeName[ floorType->isSelected() ? 0 : 1 ], 
+                                       true ) );
 }
 
 void MapEditor::removeFloor( Sint16 mapx, Sint16 mapy ) {
