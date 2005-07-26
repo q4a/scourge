@@ -2748,7 +2748,7 @@ bool EditorMapSettings::isPlayerEnabled() {
 }
 
 float EditorMapSettings::getMinZoomIn() {
-  return 0.005f;
+  return 0.05f;
 }
 
 float EditorMapSettings::getMaxZoomOut() {
@@ -2773,6 +2773,9 @@ void Map::saveMap( char *name, char *result ) {
   // FIXME: use real values
   info->start_x = getX();
   info->start_y = getY();
+
+  strncpy( (char*)info->theme_name, session->getShapePalette()->getCurrentThemeName(), 254 );
+  info->theme_name[254] = 0;
 
   info->pos_count = 0;
   for( int x = 0; x < MAP_WIDTH; x++ ) {
@@ -2850,6 +2853,9 @@ void Map::loadMap( char *name, char *result ) {
 
   // reset the map
   reset();
+
+  // load the theme
+  session->getShapePalette()->loadTheme( (const char*)info->theme_name );
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {

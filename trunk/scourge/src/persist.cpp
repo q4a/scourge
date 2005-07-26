@@ -110,6 +110,7 @@ void Persist::saveMap(FILE *fp, MapInfo *info) {
   fwrite( &(info->version), sizeof(Uint32), 1, fp );
   fwrite( &(info->start_x), sizeof(Uint16), 1, fp );
   fwrite( &(info->start_y), sizeof(Uint16), 1, fp );
+  fwrite( info->theme_name, sizeof(Uint8), 255, fp );
   fwrite( &(info->pos_count), sizeof(Uint32), 1, fp );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     fwrite( &(info->pos[i]->x), sizeof(Uint16), 1, fp );
@@ -146,6 +147,7 @@ MapInfo *Persist::loadMap(FILE *fp) {
   fread( &(info->version), sizeof(Uint32), 1, fp );
   fread( &(info->start_x), sizeof(Uint16), 1, fp );
   fread( &(info->start_y), sizeof(Uint16), 1, fp );
+  fread( info->theme_name, sizeof(Uint8), 255, fp );
   fread( &(info->pos_count), sizeof(Uint32), 1, fp );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     info->pos[i] = (LocationInfo*)malloc(sizeof(LocationInfo));

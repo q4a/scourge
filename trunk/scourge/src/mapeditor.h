@@ -60,6 +60,7 @@ private:
   Button *itemButton;
   Button *creatureButton;
   Button *startPosButton;
+  Button *floorType;
   vector<Button *> toggleButtonList;
 
   TextField *nameText;

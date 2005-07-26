@@ -104,6 +104,7 @@ typedef struct _MapInfo {
   Uint32 version;
   Uint16 start_x, start_y;
   Uint32 pos_count;
+  Uint8 theme_name[255];
   LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
 } MapInfo;
 
