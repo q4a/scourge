@@ -74,6 +74,9 @@ MapEditor::MapEditor( Scourge *scourge ) {
   newButton = mainWin->createButton( 5, 125, w - 10, 145, "New Map" );
   floorType = mainWin->createButton( 5, 150, w - 10, 170, floorTypeName[ 1 ], true );
 
+  startPosButton = mainWin->createButton( 5, 175, w - 10, 195, "Starting Position", true );
+  toggleButtonList.push_back( startPosButton );
+
   // new map ui
   int nw = 450;
   int nh = 140;
@@ -424,6 +427,12 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     int xx = scourge->getMap()->getCursorFlatMapX();
     int yy = scourge->getMap()->getCursorFlatMapY() - 1;
 
+    if( startPosButton->isSelected() ) {
+      scourge->getMap()->startx = xx;
+      scourge->getMap()->starty = yy;
+      return;
+    }
+
     int mapx = ( ( xx - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
     int mapy = ( ( yy - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
 
@@ -653,13 +662,21 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
 
     // add a light
     if((int) (100.0 * rand()/RAND_MAX) <= 25) {
-      cerr << "adding light" << endl;
-      scourge->getMap()->
-        setPosition(mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
-                    6, scourge->getShapePalette()->findShapeByName("LAMP_WEST", true));
-      scourge->getMap()->
-        setPosition(mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
-                    4, scourge->getShapePalette()->findShapeByName("LAMP_BASE", true));
+      if( dir == 1 ) {
+        scourge->getMap()->
+          setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
+                       6, scourge->getShapePalette()->findShapeByName( "LAMP_WEST", true ) );
+        scourge->getMap()->
+          setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
+                       4, scourge->getShapePalette()->findShapeByName( "LAMP_BASE", true ) );
+      } else {
+        scourge->getMap()->
+          setPosition( mapx - 1, mapy + MAP_UNIT - 4, 
+                       6, scourge->getShapePalette()->findShapeByName("LAMP_EAST", true));
+        scourge->getMap()->
+          setPosition( mapx - 1, mapy + MAP_UNIT - 4, 
+                       4, scourge->getShapePalette()->findShapeByName("LAMP_BASE", true));
+      }
     }
 
 
@@ -776,6 +793,29 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
                                       scourge->getShapePalette()->findShapeByName( "NS_WALL", true ) );
     }
 
+    // Add a light
+    if((int) (100.0 * rand()/RAND_MAX) <= 25) {
+      if( dir == 1 ) {
+        scourge->getMap()->
+          setPosition(mapx + 4, mapy + MAP_UNIT_OFFSET + 1, 6, 
+                      scourge->getShapePalette()->findShapeByName( "LAMP_NORTH", true) );
+        scourge->getMap()->
+          setPosition(mapx + 4, mapy + MAP_UNIT_OFFSET + 1, 4, 
+                      scourge->getShapePalette()->findShapeByName("LAMP_BASE", true));
+      } else {
+        /*
+        See gltorch.cpp on why there aren't southern torches... <sigh>
+        cerr << "adding South light" << endl;
+        scourge->getMap()->
+          setPosition(mapx + 4, mapy, 6, 
+                      scourge->getShapePalette()->findShapeByName("LAMP_SOUTH", true));
+        scourge->getMap()->
+          setPosition(mapx + 4, mapy, 4, 
+                      scourge->getShapePalette()->findShapeByName("LAMP_BASE", true));
+
+        */
+      }
+    }
 
     // change west chunk
     if( isShape( mapx - MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0, "NS_WALL" ) &&

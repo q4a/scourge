@@ -56,6 +56,7 @@ Map::Map(Session *session) {
 
   hasWater = false;
 
+  startx = starty = 128;
   cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   cursorFlatMapX = cursorFlatMapY = MAP_WIDTH + 1;
   cursorChunkX = cursorChunkY = ( MAP_WIDTH / MAP_UNIT ) + 1;
@@ -1143,16 +1144,56 @@ void Map::draw() {
   
   if( settings->isGridShowing() ) {
 
-    int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-    int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
-    float m = 0.5f / GLShape::DIV;
-
     glDisable( GL_CULL_FACE );
     glDisable( GL_TEXTURE_2D );
     
     glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+    // draw the starting position
+    float xpos2 = (float)( this->startx - getX() ) / GLShape::DIV;
+    float ypos2 = (float)( this->starty - getY() - 1 ) / GLShape::DIV;
+    float zpos2 = 0.0f / GLShape::DIV;
+    float w = 5.0f /  GLShape::DIV;
+    float h = 12.0f /  GLShape::DIV;
+    if( useFrustum && 
+        frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / GLShape::DIV ) ) {
+      for( int i = 0; i < 2; i++ ) {
+        glPushMatrix();
+        glTranslatef( xpos2, ypos2, zpos2 );
+        if( i == 0 ) {
+          glColor4f( 1, 0, 0, 0.5f );
+          glBegin( GL_TRIANGLES );
+        } else {
+          glColor4f( 1, 0.7, 0, 0.5f );
+          glBegin( GL_LINE_LOOP );
+        }
+        
+        glVertex3f( 0, 0, 0 );
+        glVertex3f( -w, -w, h );
+        glVertex3f( w, -w, h );
+        
+        glVertex3f( 0, 0, 0 );
+        glVertex3f( -w, w, h );
+        glVertex3f( w, w, h );
+        
+        glVertex3f( 0, 0, 0 );
+        glVertex3f( -w, -w, h );
+        glVertex3f( -w, w, h );
+        
+        glVertex3f( 0, 0, 0 );
+        glVertex3f( w, -w, h );
+        glVertex3f( w, w, h );
+        
+        glEnd();
+        glPopMatrix();
+      }
+    }
+
+    int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+    int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
+    float m = 0.5f / GLShape::DIV;
 
     for(int i = 0; i < chunkCount; i++) {
 
@@ -2771,8 +2812,8 @@ void Map::saveMap( char *name, char *result ) {
   info->version = PERSIST_VERSION;
 
   // FIXME: use real values
-  info->start_x = getX();
-  info->start_y = getY();
+  info->start_x = startx;
+  info->start_y = starty;
 
   strncpy( (char*)info->theme_name, session->getShapePalette()->getCurrentThemeName(), 254 );
   info->theme_name[254] = 0;
@@ -2856,6 +2897,9 @@ void Map::loadMap( char *name, char *result ) {
 
   // load the theme
   session->getShapePalette()->loadTheme( (const char*)info->theme_name );
+
+  startx = info->start_x;
+  starty = info->start_y;
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
