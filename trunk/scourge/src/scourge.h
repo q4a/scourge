@@ -539,7 +539,7 @@ public:
   /**
     Enable "target" mode for a given creature. The cursor changes to a cross-hair.
   */
-  inline void setTargetSelectionFor(Creature *c) { targetSelectionFor = c; sdlHandler->setCursorMode(targetSelectionFor ? SDLHandler::CURSOR_CROSSHAIR : SDLHandler::CURSOR_NORMAL); }
+  inline void setTargetSelectionFor(Creature *c) { targetSelectionFor = c; sdlHandler->setCursorMode(targetSelectionFor ? Constants::CURSOR_CROSSHAIR : Constants::CURSOR_NORMAL); }
   
   /**
     @return who the current target mode is activated for. (ie. the spellcaster)

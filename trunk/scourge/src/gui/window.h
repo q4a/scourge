@@ -18,8 +18,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "../constants.h"
-#include "../sdlhandler.h"
+#include "gui.h"
 #include "widget.h"
 #include "button.h"
 #include "label.h"
@@ -31,7 +30,6 @@
   *@author Gabor Torok
   */
 
-class SDLHandler;
 class Widget;
 class Button;
 class Label;
@@ -49,7 +47,7 @@ class Window : public Widget {
 
   char title[255];
   GLuint texture, texture2;
-  SDLHandler *sdlHandler;
+  ScourgeGui *scourgeGui;
   Widget *widget[MAX_WIDGET];
   int tileWidth, tileHeight;
   int widgetCount;
@@ -99,11 +97,11 @@ class Window : public Widget {
   static const int BOTTOM_HEIGHT = 5;
   static const int SCREEN_GUTTER = 5;
 
-  Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, 
+  Window(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title=NULL, 
          GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW, 
          GLuint texture2=0);
 
-  Window( SDLHandler *sdlHandler, int x, int y, int w, int h, char *title=NULL, 
+  Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title=NULL, 
 		  bool hasCloseButton=true, int type=BASIC_WINDOW, const char *themeName=NULL );
 
   ~Window();
@@ -129,7 +127,7 @@ class Window : public Widget {
   inline bool isModal() { return modal; }
 
   void setVisible(bool b, bool animate=true);
-  inline SDLHandler *getSDLHandler() { return sdlHandler; }
+  inline ScourgeGui *getScourgeGui() { return scourgeGui; }
   void toTop();
   void toBottom();
 
@@ -169,17 +167,17 @@ class Window : public Widget {
 
   // static message dialog
   static Button *message_button; // so you can check for it in other classes
-  static void showMessageDialog(SDLHandler *sdlHandler, 
-  int x, int y, int w, int h, 
-  char *title, GLuint texture,
-  char *message, 
-  char *buttonLabel = Constants::messages[Constants::OK_LABEL][0]);
-
+  static void showMessageDialog(ScourgeGui *scourgeGui, 
+                                int x, int y, int w, int h, 
+                                char *title, GLuint texture,
+                                char *message, 
+                                char *buttonLabel = Constants::messages[Constants::OK_LABEL][0]);
+  
   void move(int x, int y);
 
   void setLastWidget(Widget *w);
  protected:
-  void commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type);
+  void commonInit(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type);
 };
 
 #endif

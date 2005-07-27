@@ -19,7 +19,7 @@
 #ifndef TEXTFIELD_H
 #define TEXTFIELD_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "window.h"
 #include "label.h"

@@ -560,18 +560,31 @@ public:
   static bool multitexture;	
 
   enum {
+    CURSOR_NORMAL=0,
+    CURSOR_CROSSHAIR,
+    CURSOR_ATTACK,
+    CURSOR_TALK
+  };
+
+  enum {
+    SCOURGE_DEFAULT_FONT=0,
+    SCOURGE_MONO_FONT,
+    SCOURGE_LARGE_FONT
+  };
+
+  enum {
     NO_SHADOWS=0,
     OBJECT_SHADOWS,
     ALL_SHADOWS
   };
 
   enum {
-	ACTION_NO_ACTION=-1,
-	ACTION_EAT_DRINK=0,
-	ACTION_CAST_SPELL,
-
-	// this must be the last one
-	ACTION_COUNT
+    ACTION_NO_ACTION=-1,
+    ACTION_EAT_DRINK=0,
+    ACTION_CAST_SPELL,
+    
+    // this must be the last one
+    ACTION_COUNT
   };
 
   enum {

@@ -42,7 +42,7 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   text = NULL;
   handlerCount = 0;
   invertMouse = false; 
-  cursorMode = CURSOR_NORMAL;
+  cursorMode = Constants::CURSOR_NORMAL;
   font_initialized = false;
   debugStr = NULL;
   lastLeftClick = 0;
@@ -394,7 +394,7 @@ bool SDLHandler::firedEventWaiting() {
 }
 
 void SDLHandler::applyMouseOffset(int x, int y, int *newX, int *newY) {
-  if( cursorMode == CURSOR_CROSSHAIR ) {
+  if( cursorMode == Constants::CURSOR_CROSSHAIR ) {
     mouseFocusX = mouseFocusY = 24;
   } else {
     mouseFocusX = mouseFocusY = 0;
@@ -543,11 +543,11 @@ void SDLHandler::drawScreen() {
     glLoadIdentity();
     glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
     glBindTexture( GL_TEXTURE_2D, 
-                   cursorMode == CURSOR_NORMAL ? 
+                   cursorMode == Constants::CURSOR_NORMAL ? 
                    shapePal->cursor_texture :
-                   ( cursorMode == CURSOR_ATTACK ?
+                   ( cursorMode == Constants::CURSOR_ATTACK ?
                      shapePal->attack_texture :
-                     ( cursorMode == CURSOR_TALK ?
+                     ( cursorMode == Constants::CURSOR_TALK ?
                        shapePal->talk_texture :
                        shapePal->crosshair_texture ) ) );
     glColor4f(1, 1, 1, 1);
@@ -625,9 +625,9 @@ if( showDebugInfo ) {
 const freetype_font_data *SDLHandler::getCurrentFont() {
   freetype_font_data *p;
   switch( fontType ) {
-  case SCOURGE_MONO_FONT:
+  case Constants::SCOURGE_MONO_FONT:
     p = &monoFont; break;
-  case SCOURGE_LARGE_FONT:
+  case Constants::SCOURGE_LARGE_FONT:
     p = &largeFont; break;
   default:
     p = &font;
@@ -745,9 +745,9 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
   
   glColor4f( 1, 1, 1, 1 );
-  setFontType( SDLHandler::SCOURGE_MONO_FONT );
+  setFontType( Constants::SCOURGE_MONO_FONT );
   texPrint( 0, 0, "%s", message );
-  setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
+  setFontType( Constants::SCOURGE_DEFAULT_FONT );
   glPopMatrix();
 }
 

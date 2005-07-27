@@ -18,7 +18,7 @@
 #ifndef SLIDER_H
 #define SLIDER_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "label.h"
 

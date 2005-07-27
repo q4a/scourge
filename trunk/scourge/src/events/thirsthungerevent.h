@@ -19,6 +19,7 @@
 #define THIRST_HUNGER_EVENT_H
 
 #include "../constants.h"
+#include "../scourge.h"
 #include "event.h"
 
 
