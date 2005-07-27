@@ -22,7 +22,6 @@
 #include <vector>
 #include "../constants.h"
 #include "character.h"
-#include "../persist.h"
 
 using namespace std;
 
