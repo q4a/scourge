@@ -213,6 +213,7 @@ class Map {
   static bool debugMd2Shapes;
 
   int cursorWidth, cursorDepth, cursorHeight, cursorZ;
+  int startx, starty;
 
   Map(Session *session);
   ~Map();
