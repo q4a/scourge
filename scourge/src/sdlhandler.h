@@ -30,6 +30,7 @@
 #include "userconfiguration.h"
 #include "freetype/FreeType.h"
 #include "sound.h"
+#include "gui/gui.h"
 
 class TexturedText;
 
@@ -56,7 +57,7 @@ class SDLEventHandler;
 class UserConfiguration;
 class Sound;
 
-class SDLHandler {
+class SDLHandler : public ScourgeGui {
 private:
   /* These are to calculate our fps */
   Sound *sound;
@@ -101,23 +102,10 @@ public:
 
   static bool showDebugInfo;
 
-  enum {
-    SCOURGE_DEFAULT_FONT=0,
-    SCOURGE_MONO_FONT,
-    SCOURGE_LARGE_FONT
-  };
-
   bool dontUpdateScreen;
 
-  enum {
-    CURSOR_NORMAL=0,
-    CURSOR_CROSSHAIR,
-    CURSOR_ATTACK,
-    CURSOR_TALK
-  };  
-
   SDLHandler(ShapePalette *shapePal);
-  ~SDLHandler();
+  virtual ~SDLHandler();
 
   void drawTooltip( float xpos2, float ypos2, float zpos2, 
                     float zrot, float yrot, 
@@ -133,6 +121,15 @@ public:
   Uint32 lastMouseMoveTime;
   Uint32 lastLeftClick;
   bool isDoubleClick;
+
+  // for ScourgeGui
+  inline Uint16 getMouseX() { return mouseX; }
+  inline Uint16 getMouseY() { return mouseY; }
+  inline void playSound( const char *name ) { getSound()->playSound( name ); }
+  inline int getScreenWidth() { return getScreen()->w; }
+  inline int getScreenHeight() { return getScreen()->h; }
+  inline GLuint getHighlightTexture() { return getShapePalette()->getHighlightTexture(); }
+  inline GLuint loadSystemTexture( char *line ) { return getShapePalette()->loadSystemTexture( line ); }
 
   void setOrthoView();
 
@@ -198,3 +195,4 @@ protected:
 };
 
 #endif
+

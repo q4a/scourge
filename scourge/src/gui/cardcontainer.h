@@ -18,7 +18,7 @@
 #ifndef CARD_CONTAINER_H
 #define CARD_CONTAINER_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "window.h"
 

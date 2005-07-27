@@ -18,6 +18,30 @@
 #ifndef GUI_GUI_H
 #define GUI_GUI_H
 
-#include "gui/window.h"
+#include "../constants.h"
+
+/**
+ * This is the only class thru which the gui interacts with the rest of scourge.
+ * It is important to keep this in mind so that:
+ * -the gui classes can be used by other apps
+ * -compilation is sped up (by not including things from outside of this dir.
+ */
+class ScourgeGui {
+public:
+  virtual void playSound( const char *file ) = 0;
+  virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) = 0;
+  virtual int textWidth( const char *fmt, ... ) = 0;
+  virtual int getScreenWidth() = 0;
+  virtual int getScreenHeight() = 0;
+  virtual void setCursorMode( int n ) = 0;
+  virtual int getCursorMode() = 0;
+  virtual GLuint getHighlightTexture() = 0;
+  virtual Uint16 getMouseX() = 0;
+  virtual Uint16 getMouseY() = 0;
+  virtual void drawTooltip( float xpos2, float ypos2, float zpos2, 
+                            float zrot, float yrot, char *message ) = 0;
+  virtual void setFontType( int fontType ) = 0;
+  virtual GLuint loadSystemTexture( char *line ) = 0;
+};                                    
 
 #endif

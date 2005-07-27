@@ -18,7 +18,7 @@
 #ifndef SCROLLING_LIST_H
 #define SCROLLING_LIST_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "button.h"
 #include "window.h"

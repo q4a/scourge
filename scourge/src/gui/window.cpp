@@ -40,12 +40,12 @@ Label *Window::message_label = NULL;
 Button *Window::message_button = NULL;
 bool Window::windowWasClosed = false;
 
-Window::Window( SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type, const char *themeName ) : Widget(x, y, w, h) {
+Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type, const char *themeName ) : Widget(x, y, w, h) {
   theme = GuiTheme::getThemeByName( themeName );
-  commonInit( sdlHandler, x, y, w, h, title, hasCloseButton, type );
+  commonInit( scourgeGui, x, y, w, h, title, hasCloseButton, type );
 }
 
-Window::Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, GLuint texture, bool hasCloseButton, int type, GLuint texture2) : Widget(x, y, w, h) {
+Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, GLuint texture, bool hasCloseButton, int type, GLuint texture2) : Widget(x, y, w, h) {
   theme = GuiTheme::getThemeByName( GuiTheme::DEFAULT_THEME );
   /*
   this->texture = texture;
@@ -54,14 +54,14 @@ Window::Window(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, 
   background.g = 0.85f;
   background.b = 0.5f;
   */
-  commonInit( sdlHandler, x, y, w, h, title, hasCloseButton, type );
+  commonInit( scourgeGui, x, y, w, h, title, hasCloseButton, type );
 }
 
-void Window::commonInit(SDLHandler *sdlHandler, int x, int y, int w, int h, char *title, bool hasCloseButton, int type) {
+void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type) {
   this->opening = false;
   this->animation = DEFAULT_ANIMATION;
   this->lastWidget = NULL;
-  this->sdlHandler = sdlHandler;
+  this->scourgeGui = scourgeGui;
   //  this->title = title;
   setTitle( title );
   this->visible = false;
@@ -142,10 +142,10 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
           break;
         }
       } else if(window[i]->isInside(x, y)) {
-        if( window[i]->getSDLHandler()->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
-            window[i]->getSDLHandler()->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
-            window[i]->getSDLHandler()->getCursorMode() == SDLHandler::CURSOR_TALK )
-          window[i]->getSDLHandler()->setCursorMode( SDLHandler::CURSOR_NORMAL );
+        if( window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_NORMAL || 
+            window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_ATTACK ||
+            window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_TALK )
+          window[i]->getScourgeGui()->setCursorMode( Constants::CURSOR_NORMAL );
         if(maxz < window[i]->getZ()) {
           win = window[i];
           maxz = win->getZ();
@@ -214,7 +214,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       message_dialog->setVisible(false);
     }
     if(w) {
-      if(w->hasSound()) sdlHandler->getSound()->playSound(Window::ACTION_SOUND);
+      if(w->hasSound()) scourgeGui->playSound(Window::ACTION_SOUND);
       return w;
     }
     
@@ -227,7 +227,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       if(closeButton->handleEvent(this, event, 
                                   x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
                                   y - (getY() + 3))) {
-        sdlHandler->getSound()->playSound(Window::ACTION_SOUND);
+        scourgeGui->playSound(Window::ACTION_SOUND);
         return closeButton;
       }
     }
@@ -603,9 +603,9 @@ void Window::drawWidget(Widget *parent) {
 	  glColor3f( 1, 1, 1 );
 	}
 #ifdef DEBUG_WINDOWS
-    sdlHandler->texPrint(10, topY + 13, "%s (%d)", title, getZ());
+    scourgeGui->texPrint(10, topY + 13, "%s (%d)", title, getZ());
 #else
-    sdlHandler->texPrint(10, topY + 13, "%s", title);
+    scourgeGui->texPrint(10, topY + 13, "%s", title);
 #endif
     glPopMatrix();
   }
@@ -675,7 +675,7 @@ void Window::drawWidget(Widget *parent) {
 Button *Window::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle){
   if(widgetCount < MAX_WIDGET){
     Button * theButton;
-    theButton = new Button(x1, y1, x2, y2, sdlHandler->getShapePalette()->getHighlightTexture(), label);
+    theButton = new Button(x1, y1, x2, y2, scourgeGui->getHighlightTexture(), label);
     theButton->setToggle(toggle);     
     addWidget((Widget *)theButton);
     return theButton;
@@ -709,7 +709,7 @@ Label * Window::createLabel(int x1, int x2, char * label, int color){
 Checkbox * Window::createCheckbox(int x1, int y1, int x2, int y2, char *label){
   if(widgetCount < MAX_WIDGET){
     Checkbox * theCheckbox;
-    theCheckbox = new Checkbox(x1, y1, x2, y2, sdlHandler->getShapePalette()->getHighlightTexture(), label);    
+    theCheckbox = new Checkbox(x1, y1, x2, y2, scourgeGui->getHighlightTexture(), label);    
     addWidget((Widget *)theCheckbox);      
     return theCheckbox;
   } else{
@@ -735,10 +735,10 @@ TextField *Window::createTextField(int x, int y, int numChars) {
 void Window::scissorToWindow( bool insideOnly ) {
   GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
   if( insideOnly ) {
-    glScissor(x, sdlHandler->getScreen()->h - (currentY + topY + openHeight + TOP_HEIGHT), 
+    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight + TOP_HEIGHT), 
               w, openHeight);  
   } else {
-    glScissor(x, sdlHandler->getScreen()->h - (currentY + topY + openHeight + 
+    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight + 
                                                TOP_HEIGHT + BOTTOM_HEIGHT), 
               w, openHeight + (TOP_HEIGHT + BOTTOM_HEIGHT));  
   }
@@ -836,7 +836,7 @@ void Window::prevWindowToTop() {
   // FIXME: implement me; harder than nextWindowToTop() b/c toTop reorders windows
 }
 
-void Window::showMessageDialog(SDLHandler *sdlHandler, 
+void Window::showMessageDialog(ScourgeGui *scourgeGui, 
                                int x, int y, int w, int h, 
                                char *title, GLuint texture,
                                char *message, 
@@ -846,7 +846,7 @@ void Window::showMessageDialog(SDLHandler *sdlHandler,
     return;
   }
   if(!message_dialog) {
-    message_dialog = new Window( sdlHandler,
+    message_dialog = new Window( scourgeGui,
                                  x, y, w, h, 
                                  title, 
                                  texture, false );
@@ -867,11 +867,11 @@ void Window::showMessageDialog(SDLHandler *sdlHandler,
 void Window::move(int x, int y) {
   this->x = x; 
   if(x< SCREEN_GUTTER) this->x = SCREEN_GUTTER;
-  if(x >= sdlHandler->getScreen()->w - (w + SCREEN_GUTTER)) this->x = sdlHandler->getScreen()->w - (w + SCREEN_GUTTER + 1);
+  if(x >= scourgeGui->getScreenWidth() - (w + SCREEN_GUTTER)) this->x = scourgeGui->getScreenWidth() - (w + SCREEN_GUTTER + 1);
     
   int newY = y;
   if(y < SCREEN_GUTTER) newY = SCREEN_GUTTER;
-  if(y >= sdlHandler->getScreen()->h - (h + SCREEN_GUTTER)) newY = sdlHandler->getScreen()->h - (h + SCREEN_GUTTER + 1);
+  if(y >= scourgeGui->getScreenHeight() - (h + SCREEN_GUTTER)) newY = scourgeGui->getScreenHeight() - (h + SCREEN_GUTTER + 1);
 
   int diffY = newY - this->currentY;
   this->currentY = newY;
@@ -885,7 +885,7 @@ void Window::move(int x, int y) {
 void Window::setLastWidget(Widget *w) {
   if(w != lastWidget) {
     lastWidget = w;
-    sdlHandler->getSound()->playSound(Window::ROLL_OVER_SOUND);
+    scourgeGui->playSound(Window::ROLL_OVER_SOUND);
   }
 }
 

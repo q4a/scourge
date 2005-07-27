@@ -69,7 +69,7 @@ void Button::drawWidget(Widget *parent) {
     } else {
       applyColor();      
     }
-    ((Window*)parent)->getSDLHandler()->texPrint(0, 0, label);
+    ((Window*)parent)->getScourgeGui()->texPrint(0, 0, label);
     glPopMatrix();
   }
 }

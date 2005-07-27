@@ -20,7 +20,7 @@
 
 
 #include <vector>
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "label.h"
 #include "button.h"

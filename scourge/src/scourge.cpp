@@ -77,7 +77,7 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   lastEffectOn = false;
   resetBattles();
 
-  turnProgress = new Progress(this, 10, false, false, false);
+  turnProgress = new Progress(this->getSDLHandler(), 10, false, false, false);
   willStartDrag = false;
   willStartDragX = willStartDragY = 0;
 }
@@ -92,7 +92,7 @@ void Scourge::initVideo(ShapePalette *shapePal) {
 
 void Scourge::initUI() {
   // init UI themes
-  GuiTheme::initThemes( shapePal );
+  GuiTheme::initThemes( getSDLHandler() );
 
   // for now pass map in
   this->levelMap = session->getMap();
@@ -3133,7 +3133,7 @@ void Scourge::togglePlayerOnlyUI(bool playerOnly) {
 
   // initialization events
 void Scourge::initStart(int statusCount, char *message) {
-  progress = new Progress(this, statusCount, true, true);
+  progress = new Progress(this->getSDLHandler(), statusCount, true, true);
   // Don't print text during startup. On windows this causes font corruption.
 //  progress->updateStatus(message);
   progress->updateStatus(NULL);
@@ -3278,9 +3278,9 @@ void Scourge::checkForInfo() {
   Uint16 mapx, mapy, mapz;
 
   // change cursor when over a hostile creature  
-  if( sdlHandler->getCursorMode() == SDLHandler::CURSOR_NORMAL || 
-      sdlHandler->getCursorMode() == SDLHandler::CURSOR_ATTACK ||
-      sdlHandler->getCursorMode() == SDLHandler::CURSOR_TALK ) {
+  if( sdlHandler->getCursorMode() == Constants::CURSOR_NORMAL || 
+      sdlHandler->getCursorMode() == Constants::CURSOR_ATTACK ||
+      sdlHandler->getCursorMode() == Constants::CURSOR_TALK ) {
     if( sdlHandler->mouseIsMovingOverMap ) {
       bool handled = false;
       mapx = levelMap->getCursorMapX();
@@ -3292,12 +3292,12 @@ void Scourge::checkForInfo() {
             pos->creature && 
             party->getPlayer()->canAttack( pos->creature ) ) {
           sdlHandler->setCursorMode( pos->creature->getMonster()->isNpc() ?
-                                     SDLHandler::CURSOR_TALK :
-                                     SDLHandler::CURSOR_ATTACK );
+                                     Constants::CURSOR_TALK :
+                                     Constants::CURSOR_ATTACK );
           handled = true;
         }
       }
-      if( !handled ) sdlHandler->setCursorMode( SDLHandler::CURSOR_NORMAL );
+      if( !handled ) sdlHandler->setCursorMode( Constants::CURSOR_NORMAL );
     }  
   }
 

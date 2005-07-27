@@ -23,6 +23,7 @@
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include "scourge.h"
+#include "creature.h"
 #include "text.h"
 #include "partyeditor.h"
 #include "gui/window.h"
@@ -35,6 +36,7 @@
   *@author Gabor Torok
   */
 
+class Creature;
 class Scourge;
 class PartyEditor;
 

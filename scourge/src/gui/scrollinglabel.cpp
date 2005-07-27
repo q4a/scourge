@@ -72,7 +72,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
-              ((Window*)parent)->getSDLHandler()->getScreen()->h - 
+              ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
               (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
               w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
@@ -156,7 +156,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
 //  char *p = strtok( tmp, " " );
 
 
-  int space = ((Window*)parent)->getSDLHandler()->textWidth( " " );
+  int space = ((Window*)parent)->getScourgeGui()->textWidth( " " );
   char *wordEnd = strpbrk( s, " |" );  
   char *p = s;
   char *word;
@@ -174,7 +174,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
     int wordWidth;
     if( coloring.find( *p ) != coloring.end() ) {      
 
-      wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p + 1 );
+      wordWidth = ((Window*)parent)->getScourgeGui()->textWidth( p + 1 );
 
       // store word pos for lookup on click
       wordPos[ wordPosCount ].x = xp;
@@ -193,8 +193,8 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       wordPos[ wordPosCount ].word[ c++ ] = 0;
 
       // Is the mouse over this word?
-      int tx = ((Window*)parent)->getSDLHandler()->mouseX - getX() - parent->getX();
-      int ty = ((Window*)parent)->getSDLHandler()->mouseY - getY() - parent->getY() - Window::TOP_HEIGHT;
+      int tx = ((Window*)parent)->getScourgeGui()->getMouseX() - getX() - parent->getX();
+      int ty = ((Window*)parent)->getScourgeGui()->getMouseY() - getY() - parent->getY() - Window::TOP_HEIGHT;
       if( wordPos[ wordPosCount ].x <= tx && 
           wordPos[ wordPosCount ].x + wordPos[ wordPosCount ].w > tx &&
           wordPos[ wordPosCount ].y <= ty && 
@@ -210,7 +210,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       word = p + 1;
     } else {
 
-      wordWidth = ((Window*)parent)->getSDLHandler()->textWidth( p );
+      wordWidth = ((Window*)parent)->getScourgeGui()->textWidth( p );
 
       if( theme->getWindowText() ) {
         glColor4f( theme->getWindowText()->r,
@@ -230,7 +230,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       if( tmp ) *wordEnd = tmp;
       return p;
     }
-    ((Window*)parent)->getSDLHandler()->texPrint( xp, y, word );
+    ((Window*)parent)->getScourgeGui()->texPrint( xp, y, word );
 
     // move caret
     xp += wordWidth;

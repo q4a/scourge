@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "guitheme.h"
-#include "../shapepalette.h"
 
 /**
   *@author Gabor Torok
@@ -65,7 +64,7 @@ GuiTheme::~GuiTheme() {
   if( selectedBorder ) delete selectedBorder;
 }
 
-void GuiTheme::initThemes( ShapePalette *shapePal ) {
+void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
   char errMessage[500];
   char s[200];
   sprintf(s, "%s/world/gui.txt", rootDir);
@@ -176,7 +175,7 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
       if( element ) theme->setSelectedBorder( element );
       else cerr << "Gui theme: " << name << " skipping selected border" << endl;
 
-      theme->loadTextures( shapePal );
+      theme->loadTextures( scourgeGui );
       
       string s = name;
       themes[name] = theme;
@@ -188,18 +187,18 @@ void GuiTheme::initThemes( ShapePalette *shapePal ) {
   fclose(fp);
 }
 
-void GuiTheme::loadTextures( ShapePalette *shapePal ) {
+void GuiTheme::loadTextures( ScourgeGui *scourgeGui ) {
 //  cerr << "----------------------------------------" << endl;
 //  cerr << "Loading gui theme: " << name << endl;
-  if( windowBack ) windowBack->loadTextures( shapePal );
-  if( windowTop ) windowTop->loadTextures( shapePal );
-  if( windowBorder ) windowBorder->loadTextures( shapePal );
-  if( buttonBackground ) buttonBackground->loadTextures( shapePal );
-  if( buttonSelectionBackground ) buttonSelectionBackground->loadTextures( shapePal );
-  if( buttonHighlight ) buttonHighlight->loadTextures( shapePal );
-  if( buttonBorder ) buttonBorder->loadTextures( shapePal );
-  if( listBackground ) listBackground->loadTextures( shapePal );
-  if( inputBackground ) inputBackground->loadTextures( shapePal );
+  if( windowBack ) windowBack->loadTextures( scourgeGui );
+  if( windowTop ) windowTop->loadTextures( scourgeGui );
+  if( windowBorder ) windowBorder->loadTextures( scourgeGui );
+  if( buttonBackground ) buttonBackground->loadTextures( scourgeGui );
+  if( buttonSelectionBackground ) buttonSelectionBackground->loadTextures( scourgeGui );
+  if( buttonHighlight ) buttonHighlight->loadTextures( scourgeGui );
+  if( buttonBorder ) buttonBorder->loadTextures( scourgeGui );
+  if( listBackground ) listBackground->loadTextures( scourgeGui );
+  if( inputBackground ) inputBackground->loadTextures( scourgeGui );
 //  cerr << "Done loading gui theme: " << name << endl;
 //  cerr << "----------------------------------------" << endl;
 }
@@ -257,11 +256,11 @@ Color *GuiTheme::parseColor( char *line ) {
   }
 }
 
-void ThemeElement::loadTextures( ShapePalette *shapePal ) {
-  texture = shapePal->loadSystemTexture( textureFileName );
-  if( strlen( north ) ) tex_north = shapePal->loadSystemTexture( north );
-  if( strlen( south ) ) tex_south = shapePal->loadSystemTexture( south );
-  if( strlen( east ) ) tex_east = shapePal->loadSystemTexture( east );
-  if( strlen( west ) ) tex_west = shapePal->loadSystemTexture( west );
+void ThemeElement::loadTextures( ScourgeGui *scourgeGui ) {
+  texture = scourgeGui->loadSystemTexture( textureFileName );
+  if( strlen( north ) ) tex_north = scourgeGui->loadSystemTexture( north );
+  if( strlen( south ) ) tex_south = scourgeGui->loadSystemTexture( south );
+  if( strlen( east ) ) tex_east = scourgeGui->loadSystemTexture( east );
+  if( strlen( west ) ) tex_west = scourgeGui->loadSystemTexture( west );
 }   
 

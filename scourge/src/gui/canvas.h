@@ -18,7 +18,7 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "widgetview.h"
 #include "draganddrop.h"

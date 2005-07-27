@@ -49,7 +49,7 @@ PartyEditor::PartyEditor(Scourge *scourge) {
   cards->setActiveCard( INTRO_TEXT );
 
   intro = new Label( 30, 100, 
-                     "You have arrived... as we knew you would. The sand swirls gently in the hourglass of time and reveals all. Sooner or later even the proudest realize that there is no more adventure to be had in the city of Horghh. But fear not! The S.C.O.U.R.G.E. Vermin Extermination Services Company takes good care of its employees. You will be payed in gold, fed nourishing gruel on most days and have access to the company training grounds and shops. Should you sustain injuries or a debilitating predicament (including but not limited to: poison, curses, possession or death ) our clerics will provide healing at a reduced cost. Positions fill up fast, but there are always some available (...) so sign up with a cheerful heart and a song in your step. Your past glories cannot possibly compare to the wonder and excitement that lies ahead in the ...uh.. sewers of your new vocation!", 94, SDLHandler::SCOURGE_LARGE_FONT, 24 );
+                     "You have arrived... as we knew you would. The sand swirls gently in the hourglass of time and reveals all. Sooner or later even the proudest realize that there is no more adventure to be had in the city of Horghh. But fear not! The S.C.O.U.R.G.E. Vermin Extermination Services Company takes good care of its employees. You will be payed in gold, fed nourishing gruel on most days and have access to the company training grounds and shops. Should you sustain injuries or a debilitating predicament (including but not limited to: poison, curses, possession or death ) our clerics will provide healing at a reduced cost. Positions fill up fast, but there are always some available (...) so sign up with a cheerful heart and a song in your step. Your past glories cannot possibly compare to the wonder and excitement that lies ahead in the ...uh.. sewers of your new vocation!", 94, Constants::SCOURGE_LARGE_FONT, 24 );
   cards->addWidget( intro, INTRO_TEXT );
   
 
@@ -72,7 +72,7 @@ PartyEditor::PartyEditor(Scourge *scourge) {
                               "Enter Head Quarters", OUTRO_TEXT );
 
   Label *outro = new Label( 30, 100, 
-                     "Good luck on your missions brave adventurers! Be sure to explore the S.C.O.U.R.G.E. head-quarters. You have all been given some basic gear but anything you find around the office is yours to keep or sell.||Remember, you are not only ridding a subterranian lair of unwanted vermin, you are also an integral part of the Corporation. The company, you see, is like a big family where everyone takes part in the daily chores. Our joint success can only be brought about by your... I mean, our, hard work. Now, some of you may regrettably meet your unfortunate end while on your travels, but rest assured, this risk has been considered in the S.C.O.U.R.G.E. business plan. Together we can't fail!", 94, SDLHandler::SCOURGE_LARGE_FONT, 24 );
+                     "Good luck on your missions brave adventurers! Be sure to explore the S.C.O.U.R.G.E. head-quarters. You have all been given some basic gear but anything you find around the office is yours to keep or sell.||Remember, you are not only ridding a subterranian lair of unwanted vermin, you are also an integral part of the Corporation. The company, you see, is like a big family where everyone takes part in the daily chores. Our joint success can only be brought about by your... I mean, our, hard work. Now, some of you may regrettably meet your unfortunate end while on your travels, but rest assured, this risk has been considered in the S.C.O.U.R.G.E. business plan. Together we can't fail!", 94, Constants::SCOURGE_LARGE_FONT, 24 );
   cards->addWidget( outro, OUTRO_TEXT );
 
 }
@@ -196,7 +196,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   // title
   char msg[80];
   sprintf( msg, "Create character %d out of %d", n - INTRO_TEXT, MAX_PARTY_SIZE );
-  Label *title = new Label( 30, 25, msg, 0, SDLHandler::SCOURGE_LARGE_FONT );
+  Label *title = new Label( 30, 25, msg, 0, Constants::SCOURGE_LARGE_FONT );
   cards->addWidget( title, n );
 
   // name

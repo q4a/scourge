@@ -17,8 +17,8 @@
 
 #include "progress.h"
 
-Progress::Progress(Scourge *scourge, int maxStatus, bool clearScreen, bool center, bool opaque) {
-  this->scourge = scourge;
+Progress::Progress(ScourgeGui *scourgeGui, int maxStatus, bool clearScreen, bool center, bool opaque) {
+  this->scourgeGui = scourgeGui;
   this->maxStatus = maxStatus;
   this->clearScreen = clearScreen;
   this->center = center;
@@ -55,7 +55,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   int height = 35 + h + 10;
 
   // display as % if too large
-  int maxWidth = scourge->getScreenWidth() - 50;
+  int maxWidth = scourgeGui->getScreenWidth() - 50;
   if( width >= maxWidth ) {
 	//	cerr << "BEFORE: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
 	//	maxStatus = (int)((float)( maxWidth - 20 ) / (float)w / 2.0f);
@@ -67,8 +67,8 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
 	//	cerr << "AFTER: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
   }
 
-  int x = (center ? scourge->getScreenWidth() / 2 - width / 2 : 0);
-  int y = (center ? scourge->getScreenHeight() / 2 - height / 2 : 0);
+  int x = (center ? scourgeGui->getScreenWidth() / 2 - width / 2 : 0);
+  int y = (center ? scourgeGui->getScreenHeight() / 2 - height / 2 : 0);
   glTranslatef( x, y, 0 );
 
   if(!opaque) {
@@ -85,7 +85,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);
-  if(message) scourge->getSDLHandler()->texPrint(20, 25, message);
+  if(message) scourgeGui->texPrint(20, 25, message);
   for (int i = 0; i < maxStatus; i++) {
     if( i < alt && i < status ) glColor4f(1, 0.4f, 0.0f, 1);
     else if(i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);

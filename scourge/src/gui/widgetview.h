@@ -18,7 +18,7 @@
 #ifndef WIDGETVIEW_H
 #define WIDGETVIEW_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 
 /**

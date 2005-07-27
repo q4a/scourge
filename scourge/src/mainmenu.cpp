@@ -491,7 +491,7 @@ void MainMenu::drawActiveMenuItem( float divisor, int count ) {
 }
 
 void MainMenu::buildTextures() {
-  scourge->getSDLHandler()->setFontType( SDLHandler::SCOURGE_LARGE_FONT );
+  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 
   int x = 50;
   int y = top + 230;
@@ -540,7 +540,7 @@ void MainMenu::buildTextures() {
                       x, scourge->getSDLHandler()->getScreen()->h - ( y - 20 ), 
                       width, height, 0 );
   }
-  scourge->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
+  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 }
 
 void MainMenu::drawLogo() {

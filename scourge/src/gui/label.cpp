@@ -33,7 +33,7 @@ Label::~Label() {
 
 void Label::drawWidget(Widget *parent) {
   if(text) {
-    ((Window*)parent)->getSDLHandler()->setFontType( fontType );
+    ((Window*)parent)->getScourgeGui()->setFontType( fontType );
     GuiTheme *theme = ((Window*)parent)->getTheme();
     if( theme->getWindowText() ) {
       glColor4f( theme->getWindowText()->r,
@@ -45,15 +45,15 @@ void Label::drawWidget(Widget *parent) {
     }
     if( lines.size() == 0 ) {
       // draw a single-line label
-      ((Window*)parent)->getSDLHandler()->texPrint(0, 0, text);
+      ((Window*)parent)->getScourgeGui()->texPrint(0, 0, text);
     } else {
       int y = 0;
       for( int i = 0; i < (int)lines.size(); i++ ) {
-        ((Window*)parent)->getSDLHandler()->texPrint( 0, y, lines[i].c_str() );
+        ((Window*)parent)->getScourgeGui()->texPrint( 0, y, lines[i].c_str() );
         y += lineHeight;
       }
     }
-    ((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
+    ((Window*)parent)->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
   }
 }
 

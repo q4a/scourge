@@ -162,7 +162,7 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth,
 
   doorCount = 0;
 
-  progress = new Progress(scourge, 17);
+  progress = new Progress(scourge->getSDLHandler(), 17);
 }
 
 DungeonGenerator::~DungeonGenerator(){

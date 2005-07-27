@@ -82,7 +82,7 @@ void ScrollingList::drawWidget(Widget *parent) {
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
-              ((Window*)parent)->getSDLHandler()->getScreen()->h - 
+              ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
               (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
               w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
@@ -139,7 +139,7 @@ void ScrollingList::drawWidget(Widget *parent) {
             applyColor();
           }
         }
-        ((Window*)parent)->getSDLHandler()->texPrint(scrollerWidth + (icons ? (lineHeight + 5) : 5), ypos, list[i]);
+        ((Window*)parent)->getScourgeGui()->texPrint(scrollerWidth + (icons ? (lineHeight + 5) : 5), ypos, list[i]);
       }
     }
 

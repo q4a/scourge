@@ -18,8 +18,7 @@
 #ifndef PROGRESS_H
 #define PROGRESS_H
 
-#include "../constants.h"
-#include "../scourge.h"
+#include "gui.h"
 
 using namespace std;
 	
@@ -28,7 +27,7 @@ using namespace std;
   */
 class Progress	{								
  private:
-  Scourge *scourge;
+  ScourgeGui *scourgeGui;
   int maxStatus;
   int status;
   bool clearScreen;
@@ -36,7 +35,7 @@ class Progress	{
   bool opaque;
  
  public:
-  Progress(Scourge *scourge, int maxStatus, bool clearScreen=false, bool center=false, bool opaque=true);
+  Progress(ScourgeGui *scourgeGui, int maxStatus, bool clearScreen=false, bool center=false, bool opaque=true);
   virtual ~Progress();  
   void updateStatus(const char *message, bool updateScreen=true, int status=-1, int maxStatus=-1, int altStatus=-1);
   inline void setStatus( int status ) { this->status = status; }

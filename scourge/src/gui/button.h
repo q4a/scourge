@@ -18,7 +18,7 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 
 /**

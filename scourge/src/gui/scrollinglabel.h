@@ -18,7 +18,7 @@
 #ifndef SCROLLING_LABEL_H
 #define SCROLLING_LABEL_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "button.h"
 #include "window.h"

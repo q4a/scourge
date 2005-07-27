@@ -18,7 +18,6 @@
 #include "widget.h"
 #include "window.h"
 #include "guitheme.h"
-#include "../sdlhandler.h"
 
 #define TOOLTIP_DELAY 500
 
@@ -383,8 +382,8 @@ void Widget::breakText( char *text, int lineWidth, vector<string> *lines ) {
 }
 
 void Widget::drawTooltip( Widget *parent ) {
-  int xpos = ((Window*)parent)->getSDLHandler()->mouseX -  parent->getX();
-  int ypos = ((Window*)parent)->getSDLHandler()->mouseY -  parent->getY() - Window::TOP_HEIGHT;
+  int xpos = ((Window*)parent)->getScourgeGui()->getMouseX() -  parent->getX();
+  int ypos = ((Window*)parent)->getScourgeGui()->getMouseY() -  parent->getY() - Window::TOP_HEIGHT;
   bool b = isInside( xpos, ypos );
 
   if( !( tooltipShowing && b ) ) {
@@ -399,6 +398,6 @@ void Widget::drawTooltip( Widget *parent ) {
     }
   }
   if( !tooltipShowing || !strlen( tooltip ) ) return;
-  ((Window*)parent)->getSDLHandler()->drawTooltip( xpos, ypos, 450, 0, 0, tooltip ); 
+  ((Window*)parent)->getScourgeGui()->drawTooltip( xpos, ypos, 450, 0, 0, tooltip ); 
 }
 

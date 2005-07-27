@@ -18,7 +18,7 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include <vector>
 

@@ -18,7 +18,7 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include "../constants.h"
+#include "gui.h"
 
 /**
   *@author Gabor Torok

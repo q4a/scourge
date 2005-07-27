@@ -18,7 +18,7 @@
 #ifndef GUI_THEME_H
 #define GUI_THEME_H
 
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include <map>
 
@@ -40,7 +40,7 @@ class ThemeElement {
   ThemeElement() {}
   ~ThemeElement() {}
 
-  void loadTextures( ShapePalette *shapePal );
+  void loadTextures( ScourgeGui *scourgeGui );
 };
 
 class GuiTheme {
@@ -72,7 +72,7 @@ public:
 
   static const char *DEFAULT_THEME;
 
-  static void initThemes( ShapePalette *shapePal );
+  static void initThemes( ScourgeGui *scourgeGui );
   static inline GuiTheme *getThemeByName( const char *name ) { 
 	string s = name; 
 	if( themes.find( s ) != themes.end() ) return themes[ s ]; 
@@ -104,7 +104,7 @@ public:
   static ThemeElement *parseElement( char *line );
   static Color *parseColor( char *line );
 
-  void loadTextures( ShapePalette *shapePal );
+  void loadTextures( ScourgeGui *scourgeGui );
   
   inline void setWindowBackground( ThemeElement *element ) { this->windowBack = element; }
   inline void setWindowTop( ThemeElement *element ) { this->windowTop = element; }

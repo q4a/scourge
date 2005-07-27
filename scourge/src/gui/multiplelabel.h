@@ -19,7 +19,7 @@
 #define MULTIPLE_LABEL_H
 
 #include <vector>
-#include "../constants.h"
+#include "gui.h"
 #include "widget.h"
 #include "label.h"
 
