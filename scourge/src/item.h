@@ -159,6 +159,11 @@ public:
   void commonInit( bool loading=false );
   float getRandomSum( float base, int count );
   void describeMagic(char *s, char *itemName);
+  
+  DiceInfo *saveDice( Dice *dice );
+  static DiceInfo *saveEmptyDice();
+  static Dice *loadDice( Session *session, DiceInfo *info );
+        
 };
 
 #endif

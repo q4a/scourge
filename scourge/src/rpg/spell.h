@@ -21,7 +21,6 @@
 #include <string>
 #include <vector>
 #include "../constants.h"
-#include "../persist.h"
 
 using namespace std;
 
@@ -44,10 +43,9 @@ public:
     n += mod;
     return(int)n;
   }
-
-  DiceInfo *save();
-  static DiceInfo *saveEmpty();
-  static Dice *load(Session *session, DiceInfo *info);
+  inline int getCount() { return count; }
+  inline int getSides() { return sides; }
+  inline int getMod() { return mod; }
 };
 
 class MagicSchool;

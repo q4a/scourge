@@ -75,7 +75,7 @@ ItemInfo *Item::save() {
   info->magicLevel = magicLevel;
   strcpy((char*)info->monster_type, (this->monsterType ? monsterType : ""));
   strcpy((char*)info->magic_school_name, (this->school ? school->getName() : ""));
-  info->magicDamage = (school ? magicDamage->save() : Dice::saveEmpty());
+  info->magicDamage = (school ? saveDice( magicDamage ) : saveEmptyDice());
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     info->stateMod[i] = this->stateMod[i];
   }
@@ -85,6 +85,30 @@ ItemInfo *Item::save() {
 
   return info;
 }
+
+DiceInfo *Item::saveDice( Dice *dice ) {
+  DiceInfo *info = (DiceInfo*)malloc(sizeof(DiceInfo));
+  info->version = PERSIST_VERSION;
+  info->count = dice->getCount();
+  info->sides = dice->getSides();
+  info->mod = dice->getMod();
+  return info;
+}
+
+DiceInfo *Item::saveEmptyDice() {
+  DiceInfo *info = (DiceInfo*)malloc(sizeof(DiceInfo));
+  info->version = PERSIST_VERSION;
+  info->count = 0;
+  info->sides = 0;
+  info->mod = 0;
+  return info;
+}
+
+Dice *Item::loadDice( Session *session, DiceInfo *info ) {
+  if( !info->count ) return NULL;
+  return new Dice( info->count, info->sides, info->mod );
+}
+
 
 /*
 ContainedItemInfo Item::saveContainedItems() {
@@ -128,7 +152,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
   // get a reference to the real string... (yuck)
   item->monsterType = (char*)Monster::getMonsterType( (char*)info->monster_type );
   item->school = MagicSchool::getMagicSchoolByName( (char*)info->magic_school_name );
-  item->magicDamage = Dice::load( session, info->magicDamage );
+  item->magicDamage = Item::loadDice( session, info->magicDamage );
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     item->stateMod[i] = info->stateMod[i];
   }
