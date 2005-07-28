@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "item.h"
-#include "session.h"
 
 map<int, vector<string> *> Item::soundMap;
 
