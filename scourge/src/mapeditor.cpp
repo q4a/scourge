@@ -80,7 +80,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   // new map ui
   int nw = 450;
-  int nh = 140;
+  int nh = 180;
   newMapWin = new Window( scourge->getSDLHandler(),
                           40, 40, nw, nh,
                           "Create a New Map", 
@@ -94,10 +94,24 @@ MapEditor::MapEditor( Scourge *scourge ) {
   newMapWin->createLabel( 5, 40, "Map depth (0-10):" );
   depthText = newMapWin->createTextField( 150, 30, 20 );
   newMapWin->createLabel( 5, 60, "Map theme:" );
-  themeText = newMapWin->createTextField( 150, 50, 20 );
+
+
+  themeList = new ScrollingList( 150, 50, 220, 60, 
+                                 scourge->getShapePalette()->getHighlightTexture() );
+  newMapWin->addWidget( themeList );
+  themeNames = (char**)malloc( scourge->getShapePalette()->getThemeCount() * 
+                               sizeof(char*) );
+  for( int i = 0; i < scourge->getShapePalette()->getThemeCount(); i++ ) {
+    themeNames[ i ] = (char*)malloc( 120 * sizeof(char) );
+    strcpy( themeNames[ i ], 
+            scourge->getShapePalette()->getThemeName( i ) );
+  }
+  themeList->setLines( scourge->getShapePalette()->getThemeCount(), 
+                       (const char**)themeNames );
+
   int bw = nw / 4;
-  okButton = newMapWin->createButton( nw - bw * 2 - 10, 80, nw - bw - 5, 100, "OK" );
-  cancelButton = newMapWin->createButton( nw - bw, 80, nw - 5, 100, "Cancel" );
+  okButton = newMapWin->createButton( nw - bw * 2 - 10, 120, nw - bw - 5, 140, "OK" );
+  cancelButton = newMapWin->createButton( nw - bw, 120, nw - 5, 140, "Cancel" );
 
   // Lists
   vector<Shape*> seen;
@@ -318,7 +332,9 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     newMapWin->setVisible( false );
 
     scourge->getMap()->reset();
-    scourge->getShapePalette()->loadTheme( (const char*)themeText->getText() );
+    int line = themeList->getSelectedLine();
+    if( line > -1 ) 
+      scourge->getShapePalette()->loadTheme( themeNames[ line ] );
     this->level = atoi( levelText->getText() );
     this->depth = atoi( depthText->getText() );
 

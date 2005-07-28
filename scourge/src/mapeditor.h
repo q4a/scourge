@@ -72,7 +72,9 @@ private:
   Window *newMapWin;
   Button *cancelButton;
   Button *okButton;
-  TextField *levelText, *depthText, *themeText;
+  TextField *levelText, *depthText;
+  ScrollingList *themeList;
+  char **themeNames;
   
   // lists
   ScrollingList *shapeList, *itemList, *creatureList;
