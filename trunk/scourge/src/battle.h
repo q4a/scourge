@@ -23,12 +23,6 @@
 #include <vector>
 #include "constants.h"
 #include "session.h"
-#include "render/map.h"
-#include "render/projectile.h"
-#include "creature.h"
-#include "rpg/character.h"
-#include "rpg/monster.h"
-#include "rpg/spell.h"
 #include "spellcaster.h"
 
 using namespace std;

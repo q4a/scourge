@@ -23,13 +23,14 @@
 #include <map>
 #include "constants.h"
 #include "scourge.h"
-#include "creature.h"
 #include "gui/window.h"
 #include "gui/widget.h"
 #include "gui/button.h"
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
 #include "gui/scrollinglabel.h"
+
+class Creature;
 
 class ConversationGui : public WordClickedHandler, WidgetView {
 

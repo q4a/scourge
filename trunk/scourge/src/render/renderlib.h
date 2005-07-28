@@ -1,5 +1,5 @@
 /***************************************************************************
-                          render.h  -  description
+                          renderlib.h  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,47 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef RENDER_H
-#define RENDER_H
+#ifndef RENDER_LIB_H
+#define RENDER_LIB_H
 
-// definitely outside of dir                    
-#include "../constants.h"
-#include "../session.h"
-#include "../shapepalette.h"
-#include "../persist.h"
-#include "../util.h"
-#include "../battle.h"
-             
-#include "../rpg/rpglib.h"
-
-#include "../events/potionexpirationevent.h"
-
-// could be moved into this dir                            
-#include "../shape.h"
-#include "../glshape.h"
-#include "../md2shape.h"
-
-// forward decl.
-class Session;
-class Spell;
-class MagicSchool;
-class Dice;
-class Monster;
-class Character;
-class Shape;
-
-
-/** 
- *@author Gabor Torok
- */
- 
- 
 /**
- * The class thru which this directory talks to the rest of the code.
- * Never include this file outside this dir. (use renderlib.h instead.)
+ * A way for external classes to this dir to get everything in one include file.
  */
-class Render {
-  public:
-};
+
+#include "../rpg/rpglib.h"
+#include "map.h"
+#include "item.h"
+#include "effect.h"
+#include "projectile.h"
+#include "location.h"
+#include "creature.h"
 
 #endif

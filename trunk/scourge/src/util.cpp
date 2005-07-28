@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "util.h"
-#include "render/location.h"
+#include "render/renderlib.h"
+
+#define MAX_CLOSED_NODES 50
 
 Util::Util(){
 }

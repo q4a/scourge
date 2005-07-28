@@ -25,8 +25,6 @@
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include "scourge.h"
-#include "rpg/character.h"
-#include "rpg/spell.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/cardcontainer.h"
@@ -35,13 +33,14 @@
 #include "gui/draganddrop.h"
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
-#include "creature.h"
 
 /**
   *@author Gabor Torok
   */
 
 class Creature;
+class Spell;
+class MagicSchool;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:

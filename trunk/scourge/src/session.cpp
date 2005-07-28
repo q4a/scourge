@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "session.h"
-#include "render/item.h"
+#include "render/renderlib.h"
 
 /**
  *@author Gabor Torok

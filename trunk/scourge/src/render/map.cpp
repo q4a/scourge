@@ -21,6 +21,7 @@
 #include "frustum.h"
 #include "projectile.h"
 #include "location.h"
+#include "creature.h"
 
 #define MOUSE_ROT_DELTA 2
 

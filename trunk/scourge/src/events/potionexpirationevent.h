@@ -19,7 +19,6 @@
 #define POTION_EXPIRATION_EVENT_H
 
 #include "../constants.h"
-#include "../creature.h"
 #include "event.h"
 
 

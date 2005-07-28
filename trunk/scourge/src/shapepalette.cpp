@@ -17,6 +17,7 @@
 
 #include "shapepalette.h"
 #include "session.h"
+#include "rpg/rpglib.h"
 
 #define ALWAYS_RELOAD_THEME 1
 

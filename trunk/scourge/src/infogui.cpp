@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "infogui.h"
+#include "render/renderlib.h"
 
 InfoGui::InfoGui(Scourge *scourge) {
   this->scourge = scourge;

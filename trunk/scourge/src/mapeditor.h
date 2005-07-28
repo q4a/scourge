@@ -39,6 +39,7 @@
 
 class Scourge;
 class MapSettings;
+class Creature;
 
 using namespace std;
 

@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <map>
 #include "constants.h"
-#include "creature.h"
 #include "shapepalette.h"
 #include "board.h"
 #include "gui/progress.h"

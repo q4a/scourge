@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "persist.h"
 #include "session.h"
+#include "render/renderlib.h"
 
 #define SAVE_FILE "savegame.dat"
 

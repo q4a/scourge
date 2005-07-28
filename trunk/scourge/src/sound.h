@@ -21,10 +21,8 @@
 #include <string>
 #include <map>
 #include "constants.h"
-#include "rpg/character.h"
 #include "gui/window.h"
 #include "userconfiguration.h"
-#include "rpg/spell.h"
 
 using namespace std;
 

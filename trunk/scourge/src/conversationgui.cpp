@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "conversationgui.h"
+#include "render/renderlib.h"
 
 ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;

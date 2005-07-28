@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "projectile.h"
+#include "map.h"
 #include "item.h"
+#include "creature.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
 map<Creature*, vector<Projectile*>*> Projectile::projectiles;
