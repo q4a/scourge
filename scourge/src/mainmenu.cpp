@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "mainmenu.h"
+#include "render/renderlib.h"
 
 #define LOGO_DELTA 0.05f
 #define LOGO_ROT_POS 30.0f

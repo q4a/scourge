@@ -25,6 +25,7 @@ class CFrustum;
 class Projectile;
 class Location;
 class EffectLocation;
+class Creature;
 
 using namespace std;
 

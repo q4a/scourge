@@ -14,4 +14,6 @@ libScourgeRender_a_SOURCES = \
 	effect.cpp\
 	effect.h\
 	item.cpp\
-	item.h
+	item.h\
+	creature.cpp\
+	creature.h

@@ -17,9 +17,7 @@
 
 #include "scourge.h"
 #include "events/thirsthungerevent.h"
-#include "render/projectile.h"
-#include "render/item.h"
-#include "render/location.h"
+#include "render/renderlib.h"
 
 #define MOUSE_ROT_DELTA 2
 

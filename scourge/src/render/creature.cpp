@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "creature.h"
-#include "render/location.h"
-#include "render/effect.h"
+#include "location.h"
+#include "effect.h"
+#include "map.h"
+#include "item.h"
 
 #define MOVE_DELAY 7
 
@@ -1589,4 +1591,12 @@ void Creature::getDetailedDescription(char *s) {
            session->getCurrentMission()->isMissionCreature( this ) ? 
            " *Mission*" : "" ) );
 }
-                                          
+
+void Creature::setHp() { 
+  hp = ( getLevel() + 1 ) * getCharacter()->getStartingHp(); 
+}
+
+void Creature::setMp() { 
+  mp = ( getLevel() + 1 ) * getCharacter()->getStartingMp(); 
+}
+

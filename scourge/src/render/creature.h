@@ -26,22 +26,10 @@
 #include <vector>    // STL for Vector
 #include <map>
 #include <algorithm> // STL for Heap
-#include "glshape.h"
-#include "md2shape.h"
-#include "session.h"
-#include "util.h"
-#include "rpg/character.h"
-#include "rpg/monster.h"
-#include "constants.h"
-//#include "effect.h"
-#include "events/potionexpirationevent.h"
-#include "rpg/spell.h"
-#include "persist.h"
-#include "battle.h"
+
+#include "render.h"
 
 using namespace std;
-
-#define MAX_CLOSED_NODES 50
 
 class Map;
 class Session;
@@ -320,8 +308,8 @@ class Creature {
   inline void setMp(int n) { mp = n; }
   inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; }
   inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
-  inline void setHp() { hp = ( getLevel() + 1 ) * getCharacter()->getStartingHp(); }
-  inline void setMp() { mp = ( getLevel() + 1 ) * getCharacter()->getStartingMp(); }
+  void setHp();
+  void setMp();
 
   bool incSkillMod(int index);
   bool decSkillMod(int index);

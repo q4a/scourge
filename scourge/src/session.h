@@ -22,12 +22,7 @@
 #include "userconfiguration.h"
 //#include "board.h"
 #include "party.h"
-#include "creature.h"
 #include "shape.h"
-#include "rpg/character.h"
-#include "rpg/monster.h"
-#include "rpg/rpgitem.h"
-#include "rpg/spell.h"
 #include "net/server.h"
 #include "net/client.h"
 #include "net/gamestatehandler.h"
@@ -48,6 +43,9 @@ class Item;
 class Creature;
 class GameAdapter;
 class UserConfiguration;
+class RpgItem;
+class Spell;
+class Monster;
 
 /**
  *@author Gabor Torok

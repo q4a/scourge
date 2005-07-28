@@ -16,8 +16,7 @@
  ***************************************************************************/
 
 #include "party.h"
-#include "rpg/rpgitem.h"
-#include "render/item.h"
+#include "render/renderlib.h"
 
 Creature *Party::lastPlayer = NULL;
 

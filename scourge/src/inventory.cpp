@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "inventory.h"
+#include "render/renderlib.h"
 
 /**
   *@author Gabor Torok

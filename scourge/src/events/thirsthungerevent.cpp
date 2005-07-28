@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "thirsthungerevent.h"
-#include "../creature.h"
+#include "../render/renderlib.h"
 
 ThirstHungerEvent::ThirstHungerEvent(Date currentDate, Date timeOut, Creature *c, Scourge * scourge, int nbExecutionsToDo):
 Event(currentDate, timeOut, nbExecutionsToDo)

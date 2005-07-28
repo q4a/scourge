@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "battle.h"
+#include "render/renderlib.h"
 
 #define GOD_MODE 0
 #define MONSTER_IMORTALITY 0

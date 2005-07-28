@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "glshape.h"
-#include "render/map.h"
+#include "render/renderlib.h"
 #include "shapepalette.h"
 
 class Map;

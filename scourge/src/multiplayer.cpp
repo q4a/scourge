@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "multiplayer.h"
+#include "render/renderlib.h"
 
 /**
   *@author Gabor Torok

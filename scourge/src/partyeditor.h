@@ -33,7 +33,6 @@
 #include "gui/cardcontainer.h"
 #include "gui/widgetview.h"
 #include "gui/scrollinglabel.h"
-#include "creature.h"
 
 /**
   *@author Gabor Torok

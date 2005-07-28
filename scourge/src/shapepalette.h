@@ -30,7 +30,6 @@
 #include "md2shape.h"
 #include "3dsshape.h"
 #include "Md2.h"
-#include "rpg/monster.h"
 
 using namespace std;
 
@@ -42,6 +41,7 @@ class GLShape;
 class GLTorch;
 class Session;
 class ShapePalette;
+class Monster;
 
 // temporary information when constructing shapes from a file
 typedef struct _ShapeValues {

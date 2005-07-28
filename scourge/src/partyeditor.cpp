@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "partyeditor.h"
+#include "render/renderlib.h"
 
 /**
   *@author Gabor Torok

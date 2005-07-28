@@ -18,8 +18,6 @@ scourge_SOURCES = \
 	calendar.h\
 	date.cpp\
 	date.h\
-	creature.cpp\
-	creature.h\
 	dungeongenerator.cpp\
 	dungeongenerator.h\
 	glshape.cpp\

@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "containergui.h"
-#include "render/item.h"
+#include "render/renderlib.h"
 
 ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->scourge = scourge;

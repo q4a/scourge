@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "mapeditor.h"
-#include "render/location.h"
+#include "render/renderlib.h"
 
 char *floorTypeName[80] = { 
   "FLOOR_TILE",

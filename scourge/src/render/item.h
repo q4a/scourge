@@ -91,9 +91,9 @@ public:
   inline bool isBlocking() { return blocking; }
   inline void setBlocking(bool b) { blocking = b; }
   inline int getCurrentCharges() { return currentCharges; }
-  inline void setCurrentCharges(int n) { if(n < 0)n=0; if(n>rpgItem->getMaxChargesRpg())n=rpgItem->getMaxChargesRpg(); currentCharges = n; } 
+  void setCurrentCharges(int n); 
   inline void setWeight(float f) { if(f < 0.0f)f=0.1f; weight=f; }
-  inline void setSpell(Spell *spell) { this->spell = spell; sprintf(this->itemName, "Scroll of %s", spell->getName()); }
+  void setSpell(Spell *spell);
   inline Spell *getSpell() { return spell; }
 
   inline void setShowCursed( bool b ) { showCursed = b; }

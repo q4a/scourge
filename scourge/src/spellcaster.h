@@ -23,11 +23,6 @@
 #include <vector>
 #include "constants.h"
 #include "session.h"
-#include "render/map.h"
-#include "render/projectile.h"
-#include "creature.h"
-#include "rpg/character.h"
-#include "rpg/monster.h"
 #include "battle.h"
 #include "calendar.h"
 #include "events/statemodexpirationevent.h"
@@ -39,8 +34,6 @@ using namespace std;
   */
 
 class Session;
-class Creature;
-class Projectile;
 class Battle;
 
 class SpellCaster {

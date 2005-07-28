@@ -16,8 +16,7 @@
  ***************************************************************************/
 
 #include "board.h"
-#include "render/item.h"
-#include "creature.h"
+#include "render/renderlib.h"
 #include "session.h"
 
 vector<string> Mission::intros;

@@ -22,9 +22,6 @@
 #include <string>
 #include "constants.h"
 #include "calendar.h"
-#include "rpg/character.h"
-#include "rpg/monster.h"
-#include "rpg/rpgitem.h"
 #include "events/thirsthungerevent.h"
 
 using namespace std;

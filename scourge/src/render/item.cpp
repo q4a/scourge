@@ -687,3 +687,16 @@ void Item::debugMagic(char *s) {
   }
   cerr << "-----------" << endl;
 }
+
+void Item::setCurrentCharges( int n ) { 
+  if( n < 0 ) n=0; 
+  if( n>rpgItem->getMaxChargesRpg() )
+    n = rpgItem->getMaxChargesRpg(); 
+  currentCharges = n; 
+} 
+
+void Item::setSpell( Spell *spell ) { 
+  this->spell = spell; 
+  sprintf( this->itemName, "Scroll of %s", spell->getName() ); 
+}
+
