@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "potionexpirationevent.h"
+#include "../render/item.h"
 
 PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, 
 											 Creature *c, Item *item, 

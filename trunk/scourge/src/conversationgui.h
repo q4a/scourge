@@ -23,7 +23,6 @@
 #include <map>
 #include "constants.h"
 #include "scourge.h"
-#include "item.h"
 #include "creature.h"
 #include "gui/window.h"
 #include "gui/widget.h"

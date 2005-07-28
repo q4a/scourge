@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <map>
 #include "constants.h"
-#include "map.h"
 #include "creature.h"
 #include "shapepalette.h"
 #include "board.h"
@@ -35,6 +34,8 @@ class Map;
 class Creature;
 class Mission;
 class Progress;
+class Item;
+class Scourge;
 
 #define DRAW_UNVISITED 0
 

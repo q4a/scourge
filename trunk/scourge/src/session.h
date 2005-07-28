@@ -20,10 +20,8 @@
 
 #include "constants.h"
 #include "userconfiguration.h"
-#include "map.h"
 //#include "board.h"
 #include "party.h"
-#include "item.h"
 #include "creature.h"
 #include "shape.h"
 #include "rpg/character.h"

@@ -18,16 +18,11 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "constants.h"
-#include "persist.h"
-#include "glshape.h"
-#include "shapepalette.h"
-#include "rpg/rpgitem.h"
-#include "rpg/spell.h"
+#include "render.h"
 #include <vector>
 
-class Scourge;
-class Session;
+//extern typedef struct _DiceInfo DiceInfo;
+//extern typedef struct _ItemInfo ItemInfo;
 
 /**
   *@author Gabor Torok

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "projectile.h"
+#include "item.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
 map<Creature*, vector<Projectile*>*> Projectile::projectiles;
@@ -315,10 +316,10 @@ void Projectile::removeProjectile(Projectile *p) {
   }
 }
 
-void Projectile::moveProjectiles(Scourge *scourge) {
+void Projectile::moveProjectiles(Session *session) {
   Uint32 t = SDL_GetTicks();
   if(lastProjectileTick == 0 || 
-     t - lastProjectileTick > (Uint32)(scourge->getUserConfiguration()->getGameSpeedTicks() / 50)) {
+     t - lastProjectileTick > (Uint32)(session->getUserConfiguration()->getGameSpeedTicks() / 50)) {
     lastProjectileTick = t;
 
     // draw the projectiles
@@ -355,7 +356,7 @@ void Projectile::moveProjectiles(Scourge *scourge) {
         }
       }
       */
-      scourge->getMap()->addDescription( "Projectile did not reach the target." );
+      session->getMap()->addDescription( "Projectile did not reach the target." );
       Projectile::removeProjectile(proj);
     }
   }

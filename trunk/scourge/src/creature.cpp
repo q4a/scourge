@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "creature.h"
+#include "render/location.h"
+#include "render/effect.h"
 
 #define MOVE_DELAY 7
 

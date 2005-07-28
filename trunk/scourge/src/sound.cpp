@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "sound.h"
 #include "battle.h"
+#include "render/item.h"
 
 Sound::Sound(UserConfiguration *userConfiguration) {
   haveSound = false;

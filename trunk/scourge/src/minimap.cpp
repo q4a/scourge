@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "minimap.h"
+#include "render/location.h"
 
 /*  
 How to enhance it ? (or what will be done soon)

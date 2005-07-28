@@ -18,10 +18,7 @@
 #ifndef EFFECT_H
 #define EFFECT_H
 
-#include "constants.h"
-#include "glshape.h"
-#include "shapepalette.h"
-#include "session.h"
+#include "render.h"
 
 /**
   *@author Gabor Torok

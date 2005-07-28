@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "spellcaster.h"
+#include "render/item.h"
+#include "render/location.h"
 
 /*
   In the future we can employ something more sophisticated than these if structures...

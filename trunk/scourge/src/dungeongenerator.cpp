@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "dungeongenerator.h"
+#include "render/item.h"
+#include "render/location.h"
+#include "scourge.h"
 
 #define LOCKED_DOOR_RAND 8.0f
 

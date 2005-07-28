@@ -24,7 +24,7 @@
 #include <map>
 #include "constants.h"
 #include "scourge.h"
-#include "item.h"
+#include "render/item.h"
 #include "gui/window.h"
 #include "gui/widget.h"
 #include "gui/button.h"

@@ -21,7 +21,6 @@
 #include <iostream>
 #include <string>
 #include "constants.h"
-#include "map.h"
 #include "calendar.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
@@ -31,6 +30,8 @@
 using namespace std;
 
 class Session;
+class Creature;
+class Item;
 
 class Party {
  private:

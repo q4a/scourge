@@ -1,10 +1,10 @@
 /***************************************************************************
-                          potionexpirationevent.h  -  description
+                          render.h  -  description
                              -------------------
-    begin                : Thu Apr 8 2004
-    copyright            : (C) 2004 by Gabor Torok
+    begin                : Sat May 3 2003
+    copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -15,39 +15,45 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef POTION_EXPIRATION_EVENT_H
-#define POTION_EXPIRATION_EVENT_H
+#ifndef RENDER_H
+#define RENDER_H
 
+// definitely outside of dir                    
 #include "../constants.h"
+#include "../session.h"
+#include "../shapepalette.h"
+#include "../persist.h"
+             
+#include "../rpg/character.h"
+#include "../rpg/monster.h"
+#include "../rpg/spell.h"
+#include "../rpg/rpgitem.h"
+
+// could be moved into this dir                            
+#include "../shape.h"
 #include "../creature.h"
-#include "event.h"
+#include "../glshape.h"
+
+// forward decl.
+class Session;
+class Creature;
+class Item;
+class Spell;
+class Monster;
+class Character;
+class Shape;
 
 
 /**
-  *@author Gabor Torok
-  */
-  
-class Creature;
-class Session;
-class Item;
-  
-class PotionExpirationEvent : public Event  {
-
-private:
-  Creature *creature;
-  int potionSkill;
-  int amount;
-  Session *session;
-
-public:
-
-  void execute();    
-  
-  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, Item *item, Session *session, int nbExecutionsToDo);  
-  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Session *session, int nbExecutionsToDo);
-  PotionExpirationEvent();
-  virtual ~PotionExpirationEvent();  
-  
+ *@author Gabor Torok
+ */
+ 
+ 
+/**
+ * The class thru which this directory talks to the rest of the code.
+ */
+class Render {
+  public:
 };
 
 #endif

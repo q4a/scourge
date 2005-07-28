@@ -18,28 +18,15 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "constants.h"
-#include "sdlhandler.h"
-#include "shape.h"
-#include "location.h"
-#include "dungeongenerator.h"
-#include "creature.h"
-#include "session.h"
-#include "item.h"
-#include "projectile.h"
-#include "gui/scrollinglist.h"
-#include "frustum.h"
+#include "render.h"
 
-using namespace std;
-
-// forward decl.
+class Item;
+class CFrustum;
+class Projectile;
 class Location;
 class EffectLocation;
-class DungeonGenerator;
-class Session;
-class Creature;
-class Item;
-class Projectile;
+
+using namespace std;
 
 class MapSettings {
 
@@ -218,6 +205,13 @@ class Map {
   Map(Session *session);
   ~Map();
 
+  // descriptions
+  inline bool didDescriptionsChange() { return descriptionsChanged; }
+  inline void setDescriptionsChanged( bool b ) { descriptionsChanged = b; }
+  inline int getDescriptionCount() { return descriptionCount; }
+  inline const char **getDesriptions() { return (const char **)descriptions; }
+  inline Color *getDesriptionColors() { return descriptionsColor; }
+
   void saveMap( char *name, char *result );
   void loadMap( char *name, char *result );
 
@@ -350,8 +344,6 @@ class Map {
   void initMapView(bool ignoreRot = false);
   
   void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f);
-  
-  void drawDescriptions(ScrollingList *list);
   
   void moveMap(int dir);
 
