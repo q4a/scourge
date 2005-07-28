@@ -27,26 +27,23 @@
 #include "sdlscreenview.h"
 #include "calendar.h"
 #include "minimap.h"
-#include "map.h"
+#include "render/map.h"
 #include "dungeongenerator.h"
 #include "creature.h"
 #include "mainmenu.h"
 #include "mapeditor.h"
 #include "optionsmenu.h"
 #include "inventory.h"
-#include "item.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
 #include "rpg/spell.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "userconfiguration.h"
-#include "effect.h"
 #include "containergui.h"
 #include "board.h"
 #include "battle.h"
 #include "party.h"
-#include "projectile.h"
 #include "multiplayer.h"
 #include "net/server.h"
 #include "net/client.h"
@@ -62,6 +59,7 @@
 
 using namespace std;
 
+class Item;
 class Creature;
 class Calendar;
 class MiniMap;
@@ -75,7 +73,6 @@ class MapSettings;
 class OptionsMenu;
 class Inventory;
 class UserConfiguration;
-class Effect;
 class DungeonGenerator;
 class Window;
 class ContainerGui;
@@ -690,6 +687,8 @@ public:
   void drawInfos();
 
   void quickSpellAction( int index );
+
+  void drawDescriptions(ScrollingList *list);
 };
 
 #endif

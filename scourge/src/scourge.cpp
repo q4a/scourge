@@ -17,6 +17,9 @@
 
 #include "scourge.h"
 #include "events/thirsthungerevent.h"
+#include "render/projectile.h"
+#include "render/item.h"
+#include "render/location.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -527,7 +530,7 @@ void Scourge::drawView() {
     glDisable( GL_SCISSOR_TEST );
   }
 
-  levelMap->drawDescriptions(messageList);
+  drawDescriptions(messageList);
 
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
@@ -545,6 +548,16 @@ void Scourge::drawView() {
         }
       }
     }
+  }
+}
+
+void Scourge::drawDescriptions(ScrollingList *list) {
+  if( levelMap->didDescriptionsChange()) {
+    levelMap->setDescriptionsChanged( false );
+    list->setLines( levelMap->getDescriptionCount(), 
+                    levelMap->getDesriptions(),
+                    levelMap->getDesriptionColors() );
+    list->setSelectedLine( levelMap->getDescriptionCount() - 1);
   }
 }
 
@@ -2196,7 +2209,7 @@ void Scourge::playRound() {
   // is the game not paused?
   if(party->isRealTimeMode()) {
     
-    Projectile::moveProjectiles(this);
+    Projectile::moveProjectiles(getSession());
 
     // fight battle turns
     bool fromBattle = false;

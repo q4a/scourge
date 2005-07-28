@@ -1,9 +1,9 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
-LDADD = $(srcdir)/freetype/libScourgeFreeType.a $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a $(srcdir)/net/libScourgeNet.a
+LDADD = $(srcdir)/freetype/libScourgeFreeType.a $(srcdir)/gui/libScourgeGui.a $(srcdir)/events/libScourgeEvents.a $(srcdir)/rpg/libScourgeRpg.a $(srcdir)/net/libScourgeNet.a $(srcdir)/render/libScourgeRender.a
 
 AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
 
-SUBDIRS = freetype gui rpg events net
+SUBDIRS = freetype gui rpg events net render
 
 bin_PROGRAMS = scourge
 
@@ -12,8 +12,6 @@ scourge_SOURCES = \
 	prefix.h\
 	constants.cpp\
 	constants.h\
-	frustum.cpp\
-	frustum.h\
 	persist.cpp\
 	persist.h\
 	calendar.cpp\
@@ -22,8 +20,6 @@ scourge_SOURCES = \
 	date.h\
 	creature.cpp\
 	creature.h\
-	effect.cpp\
-	effect.h\
 	dungeongenerator.cpp\
 	dungeongenerator.h\
 	glshape.cpp\
@@ -32,16 +28,10 @@ scourge_SOURCES = \
 	gltorch.h\
 	glteleporter.cpp\
 	glteleporter.h\
-	item.cpp\
-	item.h\
-	location.cpp\
-	location.h\
 	main.cpp\
 	main.h\
 	mainmenu.cpp\
 	mainmenu.h\
-	map.cpp\
-	map.h\
 	mapeditor.cpp\
 	mapeditor.h\
 	Md2.cpp\
@@ -102,8 +92,6 @@ scourge_SOURCES = \
 	battle.h\
 	party.cpp\
 	party.h\
-	projectile.cpp\
-	projectile.h\
 	spellcaster.cpp\
 	spellcaster.h
 

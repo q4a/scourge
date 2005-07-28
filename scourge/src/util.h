@@ -25,12 +25,13 @@
 #include <algorithm> // STL for Heap
 #include <string>
 #include "constants.h"
-#include "map.h"
+#include "gui/guitheme.h"
 
 using namespace std;
 
 class Map;
 class Location;
+class Shape;
 
 /**
   *@author Gabor Torok

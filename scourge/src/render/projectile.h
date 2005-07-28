@@ -20,17 +20,9 @@
 
 #include <map>
 #include <vector>
-#include "creature.h"
-#include "item.h"
-#include "rpg/character.h"
-#include "rpg/monster.h"
-#include "rpg/spell.h"
-#include "effect.h"
-#include "shape.h"
+#include "render.h"
 
-class Creature;
 class Item;
-class Spell;
 
 using namespace std;
 
@@ -89,7 +81,7 @@ class Projectile {
 								   Spell *spell, Shape *shape, 
 								   int maxProjectiles, bool stopOnImpact=true);
   static void removeProjectile(Projectile *p);
-  static void moveProjectiles(Scourge *scourge);
+  static void moveProjectiles(Session *session);
   inline static map<Creature *, vector<Projectile*>*> *getProjectileMap() { return &projectiles; }
   static void resetProjectiles();
   bool atTargetLocation();

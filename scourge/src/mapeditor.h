@@ -29,6 +29,7 @@
 #include "gui/label.h"
 #include "gui/button.h"
 #include "gui/scrollinglabel.h"
+#include "gui/scrollinglist.h"
 #include <vector>
 #include <map>
 

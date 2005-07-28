@@ -23,7 +23,6 @@
 #include "constants.h"
 #include "rpg/character.h"
 #include "gui/window.h"
-#include "item.h"
 #include "userconfiguration.h"
 #include "rpg/spell.h"
 

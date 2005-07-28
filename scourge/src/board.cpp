@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "board.h"
-#include "item.h"
+#include "render/item.h"
 #include "creature.h"
 #include "session.h"
 

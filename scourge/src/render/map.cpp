@@ -16,6 +16,11 @@
  ***************************************************************************/
 
 #include "map.h"
+#include "item.h"
+#include "effect.h"
+#include "frustum.h"
+#include "projectile.h"
+#include "location.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -1881,32 +1886,6 @@ void Map::addDescription(char *desc, float r, float g, float b) {
   }
 
   descriptionsChanged = true;
-}
-
-void Map::drawDescriptions(ScrollingList *list) {
-  if(descriptionsChanged) {
-    descriptionsChanged = false;
-    list->setLines(descriptionCount, (const char**)descriptions, descriptionsColor);
-    list->setSelectedLine(descriptionCount - 1);
-  }
-
-  /*
-  glPushMatrix();
-  glLoadIdentity();
-  //glColor4f(1.0f, 1.0f, 0.4f, 1.0f);
-  int y = TOP_GUI_HEIGHT - 5;
-  if(descriptionCount <= 5) y = descriptionCount * 15;
-  int index =  0;
-  while(y > 5 && index < descriptionCount) {    
-	glColor4f(descriptions[index].r, descriptions[index].g, descriptions[index].b, 1.0f);
-    glRasterPos2f( (float)5, (float)y );
-    scourge->getSDLHandler()->texPrint(5, y, "%s", descriptions[index].text);
-
-    y -= 15;
-    index++;
-  }
-  glPopMatrix();
-  */
 }
 
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 

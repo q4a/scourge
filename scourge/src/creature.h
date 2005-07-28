@@ -28,13 +28,12 @@
 #include <algorithm> // STL for Heap
 #include "glshape.h"
 #include "md2shape.h"
-#include "map.h"
 #include "session.h"
 #include "util.h"
 #include "rpg/character.h"
 #include "rpg/monster.h"
 #include "constants.h"
-#include "effect.h"
+//#include "effect.h"
 #include "events/potionexpirationevent.h"
 #include "rpg/spell.h"
 #include "persist.h"
@@ -187,7 +186,7 @@ class Creature {
   inline void setLastTurn(int n) { lastTurn = n; }
   inline int getLastTurn() { return lastTurn; }
 
-  inline bool isMonster() { return (monster ? TRUE : FALSE); }
+  inline bool isMonster() { return (monster ? true : false); }
   
   inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }

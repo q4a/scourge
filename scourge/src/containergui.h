@@ -22,12 +22,13 @@
 #include <string>
 #include "constants.h"
 #include "scourge.h"
-#include "item.h"
 #include "gui/window.h"
 #include "gui/widget.h"
 #include "gui/button.h"
 #include "gui/scrollinglist.h"
 #include "gui/draganddrop.h"
+
+class Item;
 
 class ContainerGui : public DragAndDropHandler {
 

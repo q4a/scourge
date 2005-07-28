@@ -28,10 +28,8 @@
 
 
 #include "constants.h"
-#include "location.h"
 #include "sdlhandler.h"
 #include "shape.h"
-#include "map.h"
 #include "dungeongenerator.h"
 #include "scourge.h"
 #include "math.h"

@@ -19,13 +19,9 @@
 #ifndef LOCATION_H
 #define LOCATION_H
 
-#include "shape.h"
-#include "item.h"
-#include "creature.h"
-#include "effect.h"
+#include "render.h"
 
-// forward decl.
-class Creature;
+class Item;
 class Effect;
 
 /**

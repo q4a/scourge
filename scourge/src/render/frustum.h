@@ -25,7 +25,7 @@ This code was originally written by:
 #ifndef FRUSTUM_H
 #define FRUSTUM_H
 
-#include "constants.h"
+#include "render.h"
 
 /**
   *@author Gabor Torok
