@@ -214,6 +214,9 @@ public:
   ShapePalette(Session *session);
   ~ShapePalette();
 
+  inline int getThemeCount() { return themeCount; }
+  inline char *getThemeName( int index ) { return themes[ index ]->getName(); }
+
   inline const char *getCurrentThemeName() { return (const char*)currentTheme->getName(); }
 
   inline char *getAboutText() { return aboutText; }

@@ -1160,8 +1160,8 @@ void Map::draw() {
     float xpos2 = (float)( this->startx - getX() ) / GLShape::DIV;
     float ypos2 = (float)( this->starty - getY() - 1 ) / GLShape::DIV;
     float zpos2 = 0.0f / GLShape::DIV;
-    float w = 5.0f /  GLShape::DIV;
-    float h = 12.0f /  GLShape::DIV;
+    float w = 2.0f /  GLShape::DIV;
+    float h = 4.0f /  GLShape::DIV;
     if( useFrustum && 
         frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / GLShape::DIV ) ) {
       for( int i = 0; i < 2; i++ ) {
@@ -1188,6 +1188,25 @@ void Map::draw() {
         glVertex3f( -w, w, h );
         
         glVertex3f( 0, 0, 0 );
+        glVertex3f( w, -w, h );
+        glVertex3f( w, w, h );
+
+
+
+
+        glVertex3f( 0, 0, h * 2 );
+        glVertex3f( -w, -w, h );
+        glVertex3f( w, -w, h );
+        
+        glVertex3f( 0, 0, h * 2 );
+        glVertex3f( -w, w, h );
+        glVertex3f( w, w, h );
+        
+        glVertex3f( 0, 0, h * 2 );
+        glVertex3f( -w, -w, h );
+        glVertex3f( -w, w, h );
+        
+        glVertex3f( 0, 0, h * 2 );
         glVertex3f( w, -w, h );
         glVertex3f( w, w, h );
         
