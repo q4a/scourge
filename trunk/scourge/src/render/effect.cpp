@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "effect.h"
+#include "glshape.h"
 
 Effect::Effect(Session *session, ShapePalette *shapePal, int width, int height) {
   this->session = session;

@@ -16,4 +16,22 @@ libScourgeRender_a_SOURCES = \
 	item.cpp\
 	item.h\
 	creature.cpp\
-	creature.h
+	creature.h\
+	shape.cpp\
+	shape.h\
+	glshape.cpp\
+	glshape.h\
+	gllocator.cpp\
+	gllocator.h\
+	gltorch.cpp\
+	gltorch.h\
+	glteleporter.cpp\
+	glteleporter.h\
+	Md2.cpp\
+	Md2.h\
+	md2shape.cpp\
+	md2shape.h\
+	3ds.cpp\
+	3ds.h\
+	3dsshape.cpp\
+	3dsshape.h

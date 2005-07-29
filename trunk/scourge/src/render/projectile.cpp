@@ -19,6 +19,7 @@
 #include "map.h"
 #include "item.h"
 #include "creature.h"
+#include "glshape.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
 map<Creature*, vector<Projectile*>*> Projectile::projectiles;

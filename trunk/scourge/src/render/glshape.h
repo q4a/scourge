@@ -18,7 +18,7 @@
 #ifndef GLSHAPE_H
 #define GLSHAPE_H
 
-#include "constants.h"
+#include "render.h"
 #include "shape.h"
 #include <vector>
 

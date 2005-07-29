@@ -229,7 +229,7 @@ class Creature {
   inline Uint16 getDir() { return dir; }
   inline void setDir(Uint16 dir) { this->dir = dir; }
   
-  inline void draw() { getShape()->draw(); }  
+  void draw();
     
   /**
 	 Used to move away from the player. Find the nearest corner of the map.

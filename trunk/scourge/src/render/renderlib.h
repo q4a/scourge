@@ -29,5 +29,13 @@
 #include "projectile.h"
 #include "location.h"
 #include "creature.h"
+#include "shape.h"
+#include "glshape.h"
+#include "gltorch.h"
+#include "glteleporter.h"
+#include "gllocator.h"
+#include "3dsshape.h"
+#include "md2shape.h"
+#include "Md2.h"
 
 #endif

@@ -22,6 +22,9 @@
 #include "projectile.h"
 #include "location.h"
 #include "creature.h"
+#include "shape.h"
+#include "glshape.h"
+#include "md2shape.h"
 
 #define MOUSE_ROT_DELTA 2
 

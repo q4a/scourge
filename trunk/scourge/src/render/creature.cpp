@@ -20,6 +20,9 @@
 #include "effect.h"
 #include "map.h"
 #include "item.h"
+#include "glshape.h"
+#include "md2shape.h"
+#include "Md2.h"
 
 #define MOVE_DELAY 7
 
@@ -1599,4 +1602,8 @@ void Creature::setHp() {
 void Creature::setMp() { 
   mp = ( getLevel() + 1 ) * getCharacter()->getStartingMp(); 
 }
+
+void Creature::draw() { 
+  getShape()->draw(); 
+}  
 

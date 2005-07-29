@@ -20,22 +20,12 @@ scourge_SOURCES = \
 	date.h\
 	dungeongenerator.cpp\
 	dungeongenerator.h\
-	glshape.cpp\
-	glshape.h\
-	gltorch.cpp\
-	gltorch.h\
-	glteleporter.cpp\
-	glteleporter.h\
 	main.cpp\
 	main.h\
 	mainmenu.cpp\
 	mainmenu.h\
 	mapeditor.cpp\
 	mapeditor.h\
-	Md2.cpp\
-	Md2.h\
-	md2shape.cpp\
-	md2shape.h\
 	netplay.cpp\
 	netplay.h\
 	containergui.cpp\
@@ -56,8 +46,6 @@ scourge_SOURCES = \
 	sdlhandler.h\
 	sdlscreenview.cpp\
 	sdlscreenview.h\
-	shape.cpp\
-	shape.h\
 	sound.cpp\
 	sound.h\
 	inventory.cpp\
@@ -68,14 +56,8 @@ scourge_SOURCES = \
 	util.h\
 	text.cpp\
 	text.h\
-	gllocator.cpp\
-	gllocator.h\
 	minimap.cpp\
 	minimap.h\
-	3ds.cpp\
-	3ds.h\
-	3dsshape.cpp\
-	3dsshape.h\
 	optionsmenu.cpp\
 	optionsmenu.h\
 	partyeditor.cpp\

@@ -38,7 +38,7 @@
 # include <vector>
 # include <map>
 
-#include "constants.h"
+#include "render.h"
 #include "glshape.h"
 
 class MD2Shape : public GLShape  {

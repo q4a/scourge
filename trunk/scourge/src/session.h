@@ -22,7 +22,6 @@
 #include "userconfiguration.h"
 //#include "board.h"
 #include "party.h"
-#include "shape.h"
 #include "net/server.h"
 #include "net/client.h"
 #include "net/gamestatehandler.h"
@@ -46,6 +45,7 @@ class UserConfiguration;
 class RpgItem;
 class Spell;
 class Monster;
+class GLShape;
 
 /**
  *@author Gabor Torok
