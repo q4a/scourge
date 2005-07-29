@@ -30,11 +30,6 @@
 
 #include "../events/potionexpirationevent.h"
 
-// could be moved into this dir                            
-#include "../shape.h"
-#include "../glshape.h"
-#include "../md2shape.h"
-
 // forward decl.
 class Session;
 class Spell;

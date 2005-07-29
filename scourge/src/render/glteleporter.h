@@ -18,7 +18,7 @@
 #ifndef GLTELEPORTER_H
 #define GLTELEPORTER_H
 
-#include "constants.h"
+#include "render.h"
 #include "glshape.h"
 
 /**

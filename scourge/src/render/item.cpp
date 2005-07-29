@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "item.h"
+#include "glshape.h"
 
 map<int, vector<string> *> Item::soundMap;
 

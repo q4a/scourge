@@ -33,10 +33,9 @@
 # include <string>
 # include <vector>
 
-#include "constants.h"
+#include "render.h"
 #include "glshape.h"
 #include "3ds.h"
-#include "shapepalette.h"
 
 using namespace std;
 

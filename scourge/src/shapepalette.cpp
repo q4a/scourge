@@ -18,6 +18,7 @@
 #include "shapepalette.h"
 #include "session.h"
 #include "rpg/rpglib.h"
+#include "render/renderlib.h"
 
 #define ALWAYS_RELOAD_THEME 1
 
@@ -640,6 +641,8 @@ char *ShapePalette::getRandomDescription(int descriptionGroup) {
   }
   return NULL;
 }
+
+CLoadMD2 g_LoadMd2; 
 
 t3DModel * ShapePalette::LoadMd2Model(char *file_name){
   t3DModel *t3d = new t3DModel;    

@@ -35,6 +35,7 @@ class Mission;
 class Progress;
 class Item;
 class Scourge;
+class Shape;
 
 #define DRAW_UNVISITED 0
 

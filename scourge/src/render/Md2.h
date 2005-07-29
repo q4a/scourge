@@ -1,7 +1,7 @@
 #ifndef _MD2_H
 #define _MD2_H
 
-#include "constants.h"
+#include "render.h"
 
 /**
  * Credit for this code is mainly due to:

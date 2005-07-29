@@ -22,14 +22,6 @@
 #include <vector>
 #include <map>
 #include "constants.h"
-#include "shape.h"
-#include "glshape.h"
-#include "gltorch.h"
-#include "glteleporter.h"
-#include "gllocator.h"
-#include "md2shape.h"
-#include "3dsshape.h"
-#include "Md2.h"
 
 using namespace std;
 
@@ -42,6 +34,7 @@ class GLTorch;
 class Session;
 class ShapePalette;
 class Monster;
+class CLoadMD2;
 
 // temporary information when constructing shapes from a file
 typedef struct _ShapeValues {
@@ -194,7 +187,6 @@ private:
   static ShapePalette *instance;
   
   // Md2 shapes
-  CLoadMD2 g_LoadMd2; 
   t3DModel * LoadMd2Model(char *file_name);
   void UnloadMd2Model( t3DModel *model );
 

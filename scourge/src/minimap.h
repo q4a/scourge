@@ -29,7 +29,6 @@
 
 #include "constants.h"
 #include "sdlhandler.h"
-#include "shape.h"
 #include "dungeongenerator.h"
 #include "scourge.h"
 #include "math.h"
@@ -41,7 +40,6 @@ using namespace std;
 
 // forward decl.
 class Shape;
-//class Map;
 class Scourge;
 class Util;
 class Location;
