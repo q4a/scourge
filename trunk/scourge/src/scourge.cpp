@@ -313,8 +313,24 @@ void Scourge::startMission() {
       // display the HQ map
       getSession()->setCurrentMission(NULL);
       missionWillAwardExpPoints = false;
-      dg = new DungeonGenerator(this, 2, 0, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
-      dg->toMap(levelMap, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
+      //dg = new DungeonGenerator(this, 2, 0, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
+      //dg->toMap(levelMap, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
+
+      dg = NULL;
+      char result[300];
+      levelMap->loadMap( "hq", result );
+      cerr << result << endl;
+
+      int xx = levelMap->startx;
+      int yy = levelMap->starty;
+      for( int t = 0; t < getParty()->getPartySize(); t++ ) {
+        getParty()->getParty(t)->moveTo( xx, yy, 0 );
+        getParty()->getParty(t)->setSelXY( -1, -1 );
+        if( !getParty()->getParty(t)->getStateMod( Constants::dead ) )
+          levelMap->setCreature( xx, yy, 0, getParty()->getParty(t) );
+        xx += getParty()->getParty(t)->getShape()->getWidth();
+      }
+
     } else {
       // in HQ map
       inHq = false;
@@ -336,8 +352,8 @@ void Scourge::startMission() {
 	
     // center map on the player
     levelMap->center(toint(party->getPlayer()->getX()), 
-                toint(party->getPlayer()->getY()),
-                true);
+                     toint(party->getPlayer()->getY()),
+                     true);
 
     // Must be called after MiniMap has been built by dg->toMap() !!! 
     //miniMap->computeDrawValues();
@@ -432,7 +448,10 @@ void Scourge::startMission() {
     lastMission = session->getCurrentMission();
 
     // delete map
-    delete dg; dg = NULL;
+    if( dg ) {
+      delete dg; 
+      dg = NULL;
+    }
 
     //cerr << "Mission end: changingStory=" << changingStory << " inHQ=" << inHq << " teleporting=" << teleporting << " nextMission=" << nextMission << endl;
     if(!changingStory) {
