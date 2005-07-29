@@ -21,6 +21,7 @@
 #include "constants.h"
 
 class Session;
+class File;
 
 #define PERSIST_VERSION 7
 
@@ -115,21 +116,21 @@ public:
   static bool loadGame(Session *session);
 
   static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
-  static void saveMap(FILE *fp, MapInfo *info);
-  static MapInfo *loadMap(FILE *fp);
+  static void saveMap( File *file, MapInfo *info );
+  static MapInfo *loadMap( File *file );
   static void deleteMapInfo( MapInfo *info );
 
 protected:
-  static void saveCreature(FILE *fp, CreatureInfo *info);
-  static CreatureInfo *loadCreature(FILE *fp);
+  static void saveCreature( File *file, CreatureInfo *info );
+  static CreatureInfo *loadCreature( File *file );
   static void deleteCreatureInfo( CreatureInfo *info );
 
-  static void saveItem(FILE *fp, ItemInfo *item);
-  static ItemInfo *loadItem(FILE *fp);
+  static void saveItem( File *file, ItemInfo *item );
+  static ItemInfo *loadItem( File *file );
   static void deleteItemInfo( ItemInfo *info );
 
-  static void saveDice( FILE *fp, DiceInfo *info );
-  static DiceInfo *loadDice(FILE *fp);
+  static void saveDice( File *file, DiceInfo *info );
+  static DiceInfo *loadDice( File *file );
   static void deleteDiceInfo( DiceInfo *info );
 };
 
