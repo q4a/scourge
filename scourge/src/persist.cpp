@@ -17,6 +17,7 @@
 #include "persist.h"
 #include "session.h"
 #include "render/renderlib.h"
+#include "io/file.h"
 
 #define SAVE_FILE "savegame.dat"
 
@@ -41,19 +42,19 @@ bool Persist::saveGame(Session *session) {
     cerr << "Error creating savegame file! path=" << path << endl;
     return false;
   }
+  File *file = new File( fp );
   Uint32 n = PERSIST_VERSION;
-  fwrite( &n, sizeof(Uint32), 1, fp );
+  file->write( &n );
   n = session->getBoard()->getStorylineIndex();
-  fwrite( &n, sizeof(Uint32), 1, fp );
+  file->write( &n );
   n = session->getParty()->getPartySize();
-  fwrite( &n, sizeof(Uint32), 1, fp );
+  file->write( &n );
   for(int i = 0; i < session->getParty()->getPartySize(); i++) {
     CreatureInfo *info = session->getParty()->getParty(i)->save();
-    Persist::saveCreature(fp, info);
+    Persist::saveCreature( file, info );
     deleteCreatureInfo( info );
   }
-  fclose( fp );
-
+  delete file;
   return true;
 }
 
@@ -64,18 +65,18 @@ bool Persist::loadGame(Session *session) {
   if(!fp) {
     return false;
   }
-
+  File *file = new File( fp );
   Uint32 n = PERSIST_VERSION;
-  fread( &n, sizeof(Uint32), 1, fp );
+  file->read( &n );
   if( n != PERSIST_VERSION ) {
     cerr << "Savegame file is old: ignoring data in file." << endl;
   } else {
     Uint32 storylineIndex;
-    fread( &storylineIndex, sizeof(Uint32), 1, fp );
-    fread( &n, sizeof(Uint32), 1, fp );
+    file->read( &storylineIndex );
+    file->read( &n );
     Creature *pc[MAX_PARTY_SIZE];
     for(int i = 0; i < (int)n; i++) {
-      CreatureInfo *info = Persist::loadCreature( fp );
+      CreatureInfo *info = Persist::loadCreature( file );
       pc[i] = session->getParty()->getParty(i)->load( session, info );
       deleteCreatureInfo( info );
     }
@@ -83,7 +84,7 @@ bool Persist::loadGame(Session *session) {
     // set the new party
     session->getParty()->setParty( n, pc, storylineIndex );
   }
-  fclose( fp );
+  delete file;
   return true;
 }
 
@@ -107,79 +108,79 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   return info;
 }
 
-void Persist::saveMap(FILE *fp, MapInfo *info) {
-  fwrite( &(info->version), sizeof(Uint32), 1, fp );
-  fwrite( &(info->start_x), sizeof(Uint16), 1, fp );
-  fwrite( &(info->start_y), sizeof(Uint16), 1, fp );
-  fwrite( info->theme_name, sizeof(Uint8), 255, fp );
-  fwrite( &(info->pos_count), sizeof(Uint32), 1, fp );
+void Persist::saveMap( File *file, MapInfo *info ) {
+  file->write( &(info->version) );
+  file->write( &(info->start_x) );
+  file->write( &(info->start_y) );
+  file->write( info->theme_name, 255 );
+  file->write( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
-    fwrite( &(info->pos[i]->x), sizeof(Uint16), 1, fp );
-    fwrite( &(info->pos[i]->y), sizeof(Uint16), 1, fp );
-    fwrite( &(info->pos[i]->z), sizeof(Uint16), 1, fp );
+    file->write( &(info->pos[i]->x) );
+    file->write( &(info->pos[i]->y) );
+    file->write( &(info->pos[i]->z) );
     if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
-      fwrite( info->pos[i]->floor_shape_name, sizeof(Uint8), 255, fp );
+      file->write( info->pos[i]->floor_shape_name, 255 );
     } else {
-      fwrite( info->pos[i]->floor_shape_name, sizeof(Uint8), 1, fp );
+      file->write( info->pos[i]->floor_shape_name );
     }
     if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
-      fwrite( info->pos[i]->shape_name, sizeof(Uint8), 255, fp );
+      file->write( info->pos[i]->shape_name, 255 );
     } else {
-      fwrite( info->pos[i]->shape_name, sizeof(Uint8), 1, fp );
+      file->write( info->pos[i]->shape_name );
     }
     
     Uint8 hasItem = ( info->pos[i]->item ? 1 : 0 );
-    fwrite( &(hasItem), sizeof(Uint8), 1, fp );
-    if( hasItem ) saveItem( fp, info->pos[i]->item );
+    file->write( &(hasItem) );
+    if( hasItem ) saveItem( file, info->pos[i]->item );
 
     Uint8 hasCreature = ( info->pos[i]->creature ? 1 : 0 );
-    fwrite( &(hasCreature), sizeof(Uint8), 1, fp );
-    if( hasCreature ) saveCreature( fp, info->pos[i]->creature );
+    file->write( &(hasCreature) );
+    if( hasCreature ) saveCreature( file, info->pos[i]->creature );
 
-    fwrite( &(info->pos[i]->locked), sizeof(Uint8), 1, fp );
-    fwrite( &(info->pos[i]->key_x), sizeof(Uint16), 1, fp );
-    fwrite( &(info->pos[i]->key_y), sizeof(Uint16), 1, fp );
-    fwrite( &(info->pos[i]->key_z), sizeof(Uint16), 1, fp );
+    file->write( &(info->pos[i]->locked) );
+    file->write( &(info->pos[i]->key_x) );
+    file->write( &(info->pos[i]->key_y) );
+    file->write( &(info->pos[i]->key_z) );
   }
 }
 
-MapInfo *Persist::loadMap(FILE *fp) {
+MapInfo *Persist::loadMap( File *file ) {
   MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
-  fread( &(info->version), sizeof(Uint32), 1, fp );
-  fread( &(info->start_x), sizeof(Uint16), 1, fp );
-  fread( &(info->start_y), sizeof(Uint16), 1, fp );
-  fread( info->theme_name, sizeof(Uint8), 255, fp );
-  fread( &(info->pos_count), sizeof(Uint32), 1, fp );
+  file->read( &(info->version) );
+  file->read( &(info->start_x) );
+  file->read( &(info->start_y) );
+  file->read( info->theme_name, 255 );
+  file->read( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     info->pos[i] = (LocationInfo*)malloc(sizeof(LocationInfo));
-    fread( &(info->pos[i]->x), sizeof(Uint16), 1, fp );
-    fread( &(info->pos[i]->y), sizeof(Uint16), 1, fp );
-    fread( &(info->pos[i]->z), sizeof(Uint16), 1, fp );
+    file->read( &(info->pos[i]->x) );
+    file->read( &(info->pos[i]->y) );
+    file->read( &(info->pos[i]->z) );
     
-    fread( info->pos[i]->floor_shape_name, sizeof(Uint8), 1, fp );
+    file->read( info->pos[i]->floor_shape_name );
     if( info->pos[i]->floor_shape_name[0] ) {
-      fread( info->pos[i]->floor_shape_name + 1, sizeof(Uint8), 254, fp );
+      file->read( info->pos[i]->floor_shape_name + 1, 254 );
     }
 
-    fread( info->pos[i]->shape_name, sizeof(Uint8), 1, fp );
+    file->read( info->pos[i]->shape_name );
     if( info->pos[i]->shape_name[0] ) {
-      fread( info->pos[i]->shape_name + 1, sizeof(Uint8), 254, fp );
+      file->read( info->pos[i]->shape_name + 1, 254 );
     }
     
     Uint8 hasItem;
-    fread( &(hasItem), sizeof(Uint8), 1, fp );
-    if( hasItem ) info->pos[i]->item = loadItem( fp );
+    file->read( &(hasItem) );
+    if( hasItem ) info->pos[i]->item = loadItem( file );
     else info->pos[i]->item = NULL;
 
     Uint8 hasCreature;
-    fread( &(hasCreature), sizeof(Uint8), 1, fp );
-    if( hasCreature ) info->pos[i]->creature = loadCreature( fp );
+    file->read( &(hasCreature) );
+    if( hasCreature ) info->pos[i]->creature = loadCreature( file );
     else info->pos[i]->creature = NULL;
 
-    fread( &(info->pos[i]->locked), sizeof(Uint8), 1, fp );
-    fread( &(info->pos[i]->key_x), sizeof(Uint16), 1, fp );
-    fread( &(info->pos[i]->key_y), sizeof(Uint16), 1, fp );
-    fread( &(info->pos[i]->key_z), sizeof(Uint16), 1, fp );
+    file->read( &(info->pos[i]->locked) );
+    file->read( &(info->pos[i]->key_x) );
+    file->read( &(info->pos[i]->key_y) );
+    file->read( &(info->pos[i]->key_z) );
   }
   return info;
 }
@@ -211,182 +212,182 @@ void Persist::deleteDiceInfo( DiceInfo *info ) {
   free( info );
 }
 
-void Persist::saveCreature(FILE *fp, CreatureInfo *info) {
-  fwrite( &(info->version), sizeof(Uint32), 1, fp );
-  fwrite( info->name, sizeof(Uint8), 255, fp );
-  fwrite( info->character_name, sizeof(Uint8), 255, fp );
-  fwrite( &info->character_model_info_index, sizeof(Uint32), 1, fp );  
-  fwrite( &info->deityIndex, sizeof(Uint32), 1, fp );  
-  fwrite( info->monster_name, sizeof(Uint8), 255, fp );
-  fwrite( &(info->hp), sizeof(Uint32), 1, fp );
-  fwrite( &(info->mp), sizeof(Uint32), 1, fp );
-  fwrite( &(info->exp), sizeof(Uint32), 1, fp );
-  fwrite( &(info->level), sizeof(Uint32), 1, fp );
-  fwrite( &(info->money), sizeof(Uint32), 1, fp );
-  fwrite( &(info->stateMod), sizeof(Uint32), 1, fp );
-  fwrite( &(info->protStateMod), sizeof(Uint32), 1, fp );
-  fwrite( &(info->x), sizeof(Uint32), 1, fp );
-  fwrite( &(info->y), sizeof(Uint32), 1, fp );
-  fwrite( &(info->z), sizeof(Uint32), 1, fp );
-  fwrite( &(info->dir), sizeof(Uint32), 1, fp );
-  fwrite( &(info->speed), sizeof(Uint32), 1, fp );
-  fwrite( &(info->motion), sizeof(Uint32), 1, fp );
-  fwrite( &(info->armor), sizeof(Uint32), 1, fp );
-  fwrite( &(info->bonusArmor), sizeof(Uint32), 1, fp );
-  fwrite( &(info->thirst), sizeof(Uint32), 1, fp );
-  fwrite( &(info->hunger), sizeof(Uint32), 1, fp );
-  fwrite( &(info->availableSkillPoints), sizeof(Uint32), 1, fp );
-  fwrite( info->skills, sizeof(Uint32), Constants::SKILL_COUNT, fp );
-  fwrite( info->skillMod, sizeof(Uint32), Constants::SKILL_COUNT, fp );
-  fwrite( info->skillBonus, sizeof(Uint32), Constants::SKILL_COUNT, fp );
-  fwrite( &info->portraitTextureIndex, sizeof(Uint32), 1, fp );
-  fwrite( &(info->inventory_count), sizeof(Uint32), 1, fp );
+void Persist::saveCreature( File *file, CreatureInfo *info ) {
+  file->write( &(info->version) );
+  file->write( info->name, 255 );
+  file->write( info->character_name, 255 );
+  file->write( &info->character_model_info_index );  
+  file->write( &info->deityIndex );  
+  file->write( info->monster_name, 255 );
+  file->write( &(info->hp) );
+  file->write( &(info->mp) );
+  file->write( &(info->exp) );
+  file->write( &(info->level) );
+  file->write( &(info->money) );
+  file->write( &(info->stateMod) );
+  file->write( &(info->protStateMod) );
+  file->write( &(info->x) );
+  file->write( &(info->y) );
+  file->write( &(info->z) );
+  file->write( &(info->dir) );
+  file->write( &(info->speed) );
+  file->write( &(info->motion) );
+  file->write( &(info->armor) );
+  file->write( &(info->bonusArmor) );
+  file->write( &(info->thirst) );
+  file->write( &(info->hunger) );
+  file->write( &(info->availableSkillPoints) );
+  file->write( info->skills, Constants::SKILL_COUNT );
+  file->write( info->skillMod, Constants::SKILL_COUNT );
+  file->write( info->skillBonus, Constants::SKILL_COUNT );
+  file->write( &info->portraitTextureIndex );
+  file->write( &(info->inventory_count) );
   for(int i = 0; i < (int)info->inventory_count; i++) {
-    saveItem( fp, info->inventory[i] );
+    saveItem( file, info->inventory[i] );
   }
-  fwrite( info->equipped, sizeof(Uint32), Constants::INVENTORY_COUNT, fp );
-  fwrite( &(info->spell_count), sizeof(Uint32), 1, fp );
+  file->write( info->equipped, Constants::INVENTORY_COUNT );
+  file->write( &(info->spell_count) );
   for(int i = 0; i < (int)info->spell_count; i++) {
-    fwrite( info->spell_name[i], sizeof(Uint8), 255, fp );
+    file->write( info->spell_name[i], 255 );
   }
   for(int i = 0; i < 12; i++ ) {
-    fwrite( info->quick_spell[i], sizeof(Uint8), 255, fp );
+    file->write( info->quick_spell[i], 255 );
   }
 }
 
-CreatureInfo *Persist::loadCreature(FILE *fp) {
+CreatureInfo *Persist::loadCreature( File *file ) {
   CreatureInfo *info = (CreatureInfo*)malloc(sizeof(CreatureInfo));
-  fread( &(info->version), sizeof(Uint32), 1, fp );
-  fread( info->name, sizeof(Uint8), 255, fp );
-  fread( info->character_name, sizeof(Uint8), 255, fp );
-  fread( &info->character_model_info_index, sizeof(Uint32), 1, fp );
-  fread( &info->deityIndex, sizeof(Uint32), 1, fp );
-  fread( info->monster_name, sizeof(Uint8), 255, fp );
-  fread( &(info->hp), sizeof(Uint32), 1, fp );
-  fread( &(info->mp), sizeof(Uint32), 1, fp );
-  fread( &(info->exp), sizeof(Uint32), 1, fp );
-  fread( &(info->level), sizeof(Uint32), 1, fp );
-  fread( &(info->money), sizeof(Uint32), 1, fp );
-  fread( &(info->stateMod), sizeof(Uint32), 1, fp );
-  fread( &(info->protStateMod), sizeof(Uint32), 1, fp );
-  fread( &(info->x), sizeof(Uint32), 1, fp );
-  fread( &(info->y), sizeof(Uint32), 1, fp );
-  fread( &(info->z), sizeof(Uint32), 1, fp );
-  fread( &(info->dir), sizeof(Uint32), 1, fp );
-  fread( &(info->speed), sizeof(Uint32), 1, fp );
-  fread( &(info->motion), sizeof(Uint32), 1, fp );
-  fread( &(info->armor), sizeof(Uint32), 1, fp );
-  fread( &(info->bonusArmor), sizeof(Uint32), 1, fp );
-  fread( &(info->thirst), sizeof(Uint32), 1, fp );
-  fread( &(info->hunger), sizeof(Uint32), 1, fp );
-  fread( &(info->availableSkillPoints), sizeof(Uint32), 1, fp );
-  fread( info->skills, sizeof(Uint32), Constants::SKILL_COUNT, fp );
-  fread( info->skillMod, sizeof(Uint32), Constants::SKILL_COUNT, fp );
-  fread( info->skillBonus, sizeof(Uint32), Constants::SKILL_COUNT, fp );
-  fread( &info->portraitTextureIndex, sizeof(Uint32), 1, fp );
-  fread( &(info->inventory_count), sizeof(Uint32), 1, fp );
+  file->read( &(info->version) );
+  file->read( info->name, 255 );
+  file->read( info->character_name, 255 );
+  file->read( &info->character_model_info_index );
+  file->read( &info->deityIndex );
+  file->read( info->monster_name, 255 );
+  file->read( &(info->hp) );
+  file->read( &(info->mp) );
+  file->read( &(info->exp) );
+  file->read( &(info->level) );
+  file->read( &(info->money) );
+  file->read( &(info->stateMod) );
+  file->read( &(info->protStateMod) );
+  file->read( &(info->x) );
+  file->read( &(info->y) );
+  file->read( &(info->z) );
+  file->read( &(info->dir) );
+  file->read( &(info->speed) );
+  file->read( &(info->motion) );
+  file->read( &(info->armor) );
+  file->read( &(info->bonusArmor) );
+  file->read( &(info->thirst) );
+  file->read( &(info->hunger) );
+  file->read( &(info->availableSkillPoints) );
+  file->read( info->skills, Constants::SKILL_COUNT );
+  file->read( info->skillMod, Constants::SKILL_COUNT );
+  file->read( info->skillBonus, Constants::SKILL_COUNT );
+  file->read( &info->portraitTextureIndex );
+  file->read( &(info->inventory_count) );
   for(int i = 0; i < (int)info->inventory_count; i++) {
-    info->inventory[i] = loadItem( fp );
+    info->inventory[i] = loadItem( file );
   }
-  fread( info->equipped, sizeof(Uint32), Constants::INVENTORY_COUNT, fp );
-  fread( &(info->spell_count), sizeof(Uint32), 1, fp );
+  file->read( info->equipped, Constants::INVENTORY_COUNT );
+  file->read( &(info->spell_count) );
   for(int i = 0; i < (int)info->spell_count; i++) {
-    fread( info->spell_name[i], sizeof(Uint8), 255, fp );
+    file->read( info->spell_name[i], 255 );
   }
   for(int i = 0; i < 12; i++ ) {
-    fread( info->quick_spell[i], sizeof(Uint8), 255, fp );
+    file->read( info->quick_spell[i], 255 );
   }
   return info;
 }
 
-void Persist::saveItem( FILE *fp, ItemInfo *info ) {
-  fwrite( &(info->version), sizeof(Uint32), 1, fp );
-  fwrite( &(info->level), sizeof(Uint32), 1, fp );
-  fwrite( info->rpgItem_name, sizeof(Uint8), 255, fp );
-  fwrite( info->shape_name, sizeof(Uint8), 255, fp );
-  fwrite( &(info->blocking), sizeof(Uint32), 1, fp );
-  fwrite( &(info->currentCharges), sizeof(Uint32), 1, fp );
-  fwrite( &(info->weight), sizeof(Uint32), 1, fp );
-  fwrite( &(info->quality), sizeof(Uint32), 1, fp );
-  fwrite( &(info->price), sizeof(Uint32), 1, fp );
-  fwrite( &(info->action), sizeof(Uint32), 1, fp );
-  fwrite( &(info->speed), sizeof(Uint32), 1, fp );
-  fwrite( &(info->distance), sizeof(Uint32), 1, fp );
-  fwrite( &(info->maxCharges), sizeof(Uint32), 1, fp );
-  fwrite( &(info->duration), sizeof(Uint32), 1, fp );
-  fwrite( info->spell_name, sizeof(Uint8), 255, fp );
-  fwrite( &(info->containedItemCount), sizeof(Uint32), 1, fp );
+void Persist::saveItem( File *file, ItemInfo *info ) {
+  file->write( &(info->version) );
+  file->write( &(info->level) );
+  file->write( info->rpgItem_name, 255 );
+  file->write( info->shape_name, 255 );
+  file->write( &(info->blocking) );
+  file->write( &(info->currentCharges) );
+  file->write( &(info->weight) );
+  file->write( &(info->quality) );
+  file->write( &(info->price) );
+  file->write( &(info->action) );
+  file->write( &(info->speed) );
+  file->write( &(info->distance) );
+  file->write( &(info->maxCharges) );
+  file->write( &(info->duration) );
+  file->write( info->spell_name, 255 );
+  file->write( &(info->containedItemCount) );
   for(int i = 0; i < (int)info->containedItemCount; i++) {
-    saveItem( fp, info->containedItems[i] );
+    saveItem( file, info->containedItems[i] );
   }
 
-  fwrite( &(info->bonus), sizeof(Uint32), 1, fp );
-  fwrite( &(info->damageMultiplier), sizeof(Uint32), 1, fp );
-  fwrite( &(info->cursed), sizeof(Uint32), 1, fp );
-  fwrite( &(info->magicLevel), sizeof(Uint32), 1, fp );
-  fwrite( info->monster_type, sizeof(Uint8), 255, fp );
-  fwrite( info->magic_school_name, sizeof(Uint8), 255, fp );
-  saveDice( fp, info->magicDamage );
+  file->write( &(info->bonus) );
+  file->write( &(info->damageMultiplier) );
+  file->write( &(info->cursed) );
+  file->write( &(info->magicLevel) );
+  file->write( info->monster_type, 255 );
+  file->write( info->magic_school_name, 255 );
+  saveDice( file, info->magicDamage );
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-    fwrite( &(info->stateMod[i]), sizeof(Uint8), 1, fp );
+    file->write( &(info->stateMod[i]) );
   }
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    fwrite( &(info->skillBonus[i]), sizeof(Uint8), 1, fp );
+    file->write( &(info->skillBonus[i]) );
   }
 }
 
-ItemInfo *Persist::loadItem( FILE *fp ) {
+ItemInfo *Persist::loadItem( File *file ) {
   ItemInfo *info = (ItemInfo*)malloc(sizeof(ItemInfo));
-  fread( &(info->version), sizeof(Uint32), 1, fp );
-  fread( &(info->level), sizeof(Uint32), 1, fp );
-  fread( info->rpgItem_name, sizeof(Uint8), 255, fp );
-  fread( info->shape_name, sizeof(Uint8), 255, fp );
-  fread( &(info->blocking), sizeof(Uint32), 1, fp );
-  fread( &(info->currentCharges), sizeof(Uint32), 1, fp );
-  fread( &(info->weight), sizeof(Uint32), 1, fp );
-  fread( &(info->quality), sizeof(Uint32), 1, fp );
-  fread( &(info->price), sizeof(Uint32), 1, fp );
-  fread( &(info->action), sizeof(Uint32), 1, fp );
-  fread( &(info->speed), sizeof(Uint32), 1, fp );
-  fread( &(info->distance), sizeof(Uint32), 1, fp );
-  fread( &(info->maxCharges), sizeof(Uint32), 1, fp );
-  fread( &(info->duration), sizeof(Uint32), 1, fp );
-  fread( info->spell_name, sizeof(Uint8), 255, fp );
-  fread( &(info->containedItemCount), sizeof(Uint32), 1, fp );
+  file->read( &(info->version) );
+  file->read( &(info->level) );
+  file->read( info->rpgItem_name, 255 );
+  file->read( info->shape_name, 255 );
+  file->read( &(info->blocking) );
+  file->read( &(info->currentCharges) );
+  file->read( &(info->weight) );
+  file->read( &(info->quality) );
+  file->read( &(info->price) );
+  file->read( &(info->action) );
+  file->read( &(info->speed) );
+  file->read( &(info->distance) );
+  file->read( &(info->maxCharges) );
+  file->read( &(info->duration) );
+  file->read( info->spell_name, 255 );
+  file->read( &(info->containedItemCount) );
   for(int i = 0; i < (int)info->containedItemCount; i++) {
-    info->containedItems[i] = loadItem( fp );
+    info->containedItems[i] = loadItem( file );
   }
 
-  fread( &(info->bonus), sizeof(Uint32), 1, fp );
-  fread( &(info->damageMultiplier), sizeof(Uint32), 1, fp );
-  fread( &(info->cursed), sizeof(Uint32), 1, fp );
-  fread( &(info->magicLevel), sizeof(Uint32), 1, fp );
-  fread( info->monster_type, sizeof(Uint8), 255, fp );
-  fread( info->magic_school_name, sizeof(Uint8), 255, fp );
-  info->magicDamage = loadDice( fp );
+  file->read( &(info->bonus) );
+  file->read( &(info->damageMultiplier) );
+  file->read( &(info->cursed) );
+  file->read( &(info->magicLevel) );
+  file->read( info->monster_type, 255 );
+  file->read( info->magic_school_name, 255 );
+  info->magicDamage = loadDice( file );
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-    fread( &(info->stateMod[i]), sizeof(Uint8), 1, fp );
+    file->read( &(info->stateMod[i]) );
   }
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    fread( &(info->skillBonus[i]), sizeof(Uint8), 1, fp );
+    file->read( &(info->skillBonus[i]) );
   }
 
   return info;
 }
 
-void Persist::saveDice( FILE *fp, DiceInfo *info ) {
-  fwrite( &(info->version), sizeof(Uint32), 1, fp );
-  fwrite( &(info->count), sizeof(Uint32), 1, fp );
-  fwrite( &(info->sides), sizeof(Uint32), 1, fp );
-  fwrite( &(info->mod), sizeof(Uint32), 1, fp );
+void Persist::saveDice( File *file, DiceInfo *info ) {
+  file->write( &(info->version) );
+  file->write( &(info->count) );
+  file->write( &(info->sides) );
+  file->write( &(info->mod) );
 }
 
-DiceInfo *Persist::loadDice( FILE *fp ) {
+DiceInfo *Persist::loadDice( File *file ) {
   DiceInfo *info = (DiceInfo*)malloc(sizeof(DiceInfo));
-  fread( &(info->version), sizeof(Uint32), 1, fp );
-  fread( &(info->count), sizeof(Uint32), 1, fp );
-  fread( &(info->sides), sizeof(Uint32), 1, fp );
-  fread( &(info->mod), sizeof(Uint32), 1, fp );
+  file->read( &(info->version) );
+  file->read( &(info->count) );
+  file->read( &(info->sides) );
+  file->read( &(info->mod) );
   return info;
 }
 
