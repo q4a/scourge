@@ -82,7 +82,11 @@ int main(int argc, char *argv[]) {
   rootDir = (char*)malloc( 300 * sizeof( char ) );
   strcpy( rootDir, "data" ); 
 #else
+#ifdef ENABLE_BINRELOC
   rootDir = (char*)BR_DATADIR( "/data" );
+#else
+  rootDir = DATA_DIR;
+#endif
 #endif  
   cerr << "rootDir=" << rootDir << endl;
 
