@@ -118,7 +118,8 @@ dnl --------------------------------------------------------------------------
 dnl Check for some common libraries
 dnl --------------------------------------------------------------------------
 AC_CHECK_LIB( dl, main, TR_LIBS="$TR_LIBS -ldl" )
-AC_CHECK_LIB(  m, main, TR_LIBS="$TR_LIBS -lm" )
+AC_CHECK_LIB( m, main, TR_LIBS="$TR_LIBS -lm" )
+AC_CHECK_LIB( z, deflate, TR_LIBS="$TR_LIBS -lz", AC_MSG_ERROR([Cannot find libz library]) )
 
 dnl --------------------------------------------------------------------------
 dnl Check for SDL
