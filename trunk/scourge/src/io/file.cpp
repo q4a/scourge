@@ -38,10 +38,9 @@ int File::write( Uint32 *n, int count ) {
     for( int i = 0; i < count; i++ ) {
       *( tmp32 + i ) = SDL_Swap32( *( n + i ) );
     }
-    int ret = SDL_RWwrite( rwops, tmp32, sizeof( Uint32 ), count );
-    return ret;
+    return write( tmp32, sizeof( Uint32 ), count );
   } else {
-    return SDL_RWwrite( rwops, n, sizeof( Uint32 ), count );
+    return write( n, sizeof( Uint32 ), count );
   }
 }
 
@@ -51,20 +50,19 @@ int File::write( Uint16 *n, int count ) {
     for( int i = 0; i < count; i++ ) {
       *( tmp16 + i ) = SDL_Swap16( *( n + i ) );
     }
-    int ret = SDL_RWwrite( rwops, tmp16, sizeof( Uint16 ), count );
-    return ret;
+    return write( tmp16, sizeof( Uint16 ), count );
   } else {
-    return SDL_RWwrite( rwops, n, sizeof( Uint16 ), count );
+    return write( n, sizeof( Uint16 ), count );
   }
 }
 
 int File::write( Uint8 *n, int count ) {
-  return SDL_RWwrite( rwops, n, sizeof( Uint8 ), count );
+  return write( n, sizeof( Uint8 ), count );
 }
 
 
 int File::read( Uint32 *n, int count ) {
-  int ret = SDL_RWread( rwops, n, sizeof( Uint32 ), count );
+  int ret = read( n, sizeof( Uint32 ), count );
   if( SDL_BYTEORDER	!= SCOURGE_BYTE_ORDER ) {
     for( int i = 0; i < count; i++ ) {
       *( n + i ) = SDL_Swap32( *( n + i ) );
@@ -74,7 +72,7 @@ int File::read( Uint32 *n, int count ) {
 }
 
 int File::read( Uint16 *n, int count ) {
-  int ret = SDL_RWread( rwops, n, sizeof( Uint16 ), count );
+  int ret = read( n, sizeof( Uint16 ), count );
   if( SDL_BYTEORDER	!= SCOURGE_BYTE_ORDER ) {
     for( int i = 0; i < count; i++ ) {
       *( n + i ) = SDL_Swap16( *( n + i ) );
@@ -84,11 +82,19 @@ int File::read( Uint16 *n, int count ) {
 }
 
 int File::read( Uint8 *n, int count ) {
-  return SDL_RWread( rwops, n, sizeof( Uint8 ), count );
+  return read( n, sizeof( Uint8 ), count );
 }
 
 void File::close() {
   // this closes fp too because rwops was created with 'autoclose'.
   SDL_RWclose( rwops );
+}
+
+int File::write( void *buff, size_t size, int count ) {
+  return SDL_RWwrite( rwops, buff, size, count );
+}
+
+int File::read( void *buff, size_t size, int count ) {
+  return SDL_RWread( rwops, buff, size, count );
 }
 

@@ -25,7 +25,7 @@
 #include "shape.h"
 #include "glshape.h"
 #include "md2shape.h"
-#include "../io/file.h"
+#include "../io/zipfile.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -2869,7 +2869,7 @@ void Map::saveMap( char *name, char *result ) {
   cerr << "saving map: " << fileName << endl;
 
   FILE *fp = fopen( fileName, "wb" );
-  File *file = new File( fp );
+  File *file = new ZipFile( fp );
   Persist::saveMap( file, info );
   delete file;
 
@@ -2893,7 +2893,7 @@ void Map::loadMap( char *name, char *result ) {
     sprintf( result, "Can't find map: %s", name );
     return;
   }
-  File *file = new File( fp );
+  File *file = new ZipFile( fp );
   MapInfo *info = Persist::loadMap( file );
   delete file;
 
