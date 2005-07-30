@@ -85,7 +85,8 @@ int main(int argc, char *argv[]) {
 #ifdef ENABLE_BINRELOC
   rootDir = (char*)BR_DATADIR( "/data" );
 #else
-  rootDir = DATA_DIR;
+  rootDir = (char*)malloc( 300 * sizeof( char ) );
+  strcpy( rootDir, DATA_DIR );
 #endif
 #endif  
   cerr << "rootDir=" << rootDir << endl;
@@ -96,10 +97,11 @@ int main(int argc, char *argv[]) {
   // Check to see if there's a local version of the data dir
   // (ie. we're running in the build folder and not in a distribution)
   char dir[300];
+  dir[0] = '\0';
   cerr << "app path: " << argv[0] << endl;
   findLocalResources(argv[0], dir);
   if(strlen(dir)) {
-    cerr << "*** Using local data dir. Not running a distribution." << endl;
+    cerr << "*** Using local data dir. Not running a distribution. dir=" << dir << endl;
     sprintf(rootDir, "%sdata", dir);
   }
   
