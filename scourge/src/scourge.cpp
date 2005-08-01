@@ -133,6 +133,7 @@ void Scourge::start() {
 
     sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
     sdlHandler->mainLoop();
+    session->deleteCreaturesAndItems( false );
 
     // evaluate results and start a missions
     int value = mainMenu->getValue();
