@@ -233,6 +233,10 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   if(!strlen((char*)info->character_name)) {
     
     Monster *monster = Monster::getMonsterByName( (char*)info->monster_name );
+    if( !monster ) {
+      cerr << "Error: can't find monster: " << (char*)info->monster_name << endl;
+      return NULL;
+    }
     GLShape *shape = session->getShapePalette()->
       getCreatureShape( monster->getModelName(), 
                         monster->getSkinName(), 

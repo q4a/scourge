@@ -27,6 +27,7 @@ File::File( FILE *fp ) {
 }
 
 File::~File() {
+  //cerr << "File destructor." << endl;
   close();
   free( tmp32 );
   free( tmp16 );
@@ -86,6 +87,7 @@ int File::read( Uint8 *n, int count ) {
 }
 
 void File::close() {
+  //cerr << "File::close()" << endl;
   // this closes fp too because rwops was created with 'autoclose'.
   SDL_RWclose( rwops );
 }
