@@ -64,10 +64,11 @@ ItemInfo *Item::save() {
   info->maxCharges = maxCharges;
   info->duration = duration;
   strcpy((char*)info->spell_name, (spell ? spell->getName() : ""));
-  info->containedItemCount = containedItemCount;
+  int realCount = 0;
   for(int i = 0; i < containedItemCount; i++) {
-    info->containedItems[i] = containedItems[i]->save();
+    if( containedItems[i] ) info->containedItems[realCount++] = containedItems[i]->save();
   }
+  info->containedItemCount = realCount;
 
   info->bonus = bonus;
   info->damageMultiplier = damageMultiplier;
@@ -126,7 +127,12 @@ Item *Item::load(Session *session, ItemInfo *info) {
   if( !strlen( (char*)info->rpgItem_name )) return NULL;
   Spell *spell = NULL;
   if( strlen((char*)info->spell_name) ) spell = Spell::getSpellByName( (char*)info->spell_name );
-  Item *item = session->newItem( RpgItem::getItemByName( (char*)info->rpgItem_name ), 
+  RpgItem *rpgItem = RpgItem::getItemByName( (char*)info->rpgItem_name );
+  if( !rpgItem ) {
+    cerr << "Error: can't find rpgItem with name:" << (char*)info->rpgItem_name << endl;
+    return NULL;
+  }
+  Item *item = session->newItem( rpgItem, 
                                  info->level, 
                                  spell,
                                  true);
@@ -141,9 +147,12 @@ Item *Item::load(Session *session, ItemInfo *info) {
   item->maxCharges = info->maxCharges;
   item->duration = info->duration;  
   item->containedItemCount = info->containedItemCount;
+  int realCount = 0;
   for(int i = 0; i < (int)info->containedItemCount; i++) {
-    item->containedItems[i] = Item::load( session, info->containedItems[i] );
+     Item *containedItem = Item::load( session, info->containedItems[i] );
+     if( containedItem ) item->containedItems[ realCount++ ] = containedItem;
   }
+  info->containedItemCount = realCount;
     
   item->bonus = info->bonus;
   item->damageMultiplier = info->damageMultiplier;

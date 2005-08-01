@@ -319,8 +319,9 @@ void Scourge::startMission() {
       dg = NULL;
       char result[300];
       levelMap->loadMap( "hq", result );
-      cerr << result << endl;
+      //cerr << result << endl;
 
+      // FIXME: make this a method and use formation
       int xx = levelMap->startx;
       int yy = levelMap->starty;
       for( int t = 0; t < getParty()->getPartySize(); t++ ) {

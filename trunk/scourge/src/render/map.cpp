@@ -2869,7 +2869,7 @@ void Map::saveMap( char *name, char *result ) {
   cerr << "saving map: " << fileName << endl;
 
   FILE *fp = fopen( fileName, "wb" );
-  File *file = new ZipFile( fp );
+  File *file = new ZipFile( fp, ZipFile::ZIP_WRITE );
   Persist::saveMap( file, info );
   delete file;
 
@@ -2893,7 +2893,7 @@ void Map::loadMap( char *name, char *result ) {
     sprintf( result, "Can't find map: %s", name );
     return;
   }
-  File *file = new ZipFile( fp );
+  File *file = new ZipFile( fp, ZipFile::ZIP_READ );
   MapInfo *info = Persist::loadMap( file );
   delete file;
 
@@ -2908,20 +2908,29 @@ void Map::loadMap( char *name, char *result ) {
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
-    if( info->pos[i]->item ) {
-      setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
-               Item::load( session, info->pos[i]->item ) );
-    } else if( info->pos[i]->creature ) {
-      setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, 
-                   Creature::load( session, info->pos[i]->creature ) );
-    } else if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
+
+    if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
       shape = session->getShapePalette()->
         findShapeByName( (char*)(info->pos[i]->floor_shape_name) );
-      setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
+      if( shape ) setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
+      else cerr << "Map::load failed to find floor shape: " << info->pos[i]->floor_shape_name <<
+        " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
+    }
+
+    if( info->pos[i]->item ) {
+      Item *item = Item::load( session, info->pos[i]->item );
+      if( item ) setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
+      else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
+    } else if( info->pos[i]->creature ) {
+      Creature *creature = Creature::load( session, info->pos[i]->creature );
+      if( creature ) setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
+      else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
       shape = session->getShapePalette()->
         findShapeByName( (char*)(info->pos[i]->shape_name) );
-      setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape );
+      if( shape ) setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape );
+      else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
+        " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     }
 
     // FIXME: handle door info 
@@ -2931,6 +2940,6 @@ void Map::loadMap( char *name, char *result ) {
 
   Persist::deleteMapInfo( info );
 
-  sprintf( result, "Map saved: %s", name );
+  sprintf( result, "Map loaded: %s", name );
 }
 
