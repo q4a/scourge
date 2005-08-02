@@ -78,7 +78,6 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   lastEffectOn = false;
   resetBattles();
 
-  turnProgress = new Progress(this->getSDLHandler(), 10, false, false, false);
   willStartDrag = false;
   willStartDragX = willStartDragY = 0;
 }
@@ -89,6 +88,7 @@ void Scourge::initVideo(ShapePalette *shapePal) {
   // Initialize the video mode
   sdlHandler = new SDLHandler(shapePal); 
   sdlHandler->setVideoMode(userConfiguration); 
+  turnProgress = new Progress(this->getSDLHandler(), 10, false, false, false);
 }
 
 void Scourge::initUI() {
