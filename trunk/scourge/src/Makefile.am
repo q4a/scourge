@@ -26,6 +26,8 @@ scourge_SOURCES = \
 	mainmenu.h\
 	mapeditor.cpp\
 	mapeditor.h\
+	mapwidget.cpp\
+	mapwidget.h\
 	netplay.cpp\
 	netplay.h\
 	containergui.cpp\
