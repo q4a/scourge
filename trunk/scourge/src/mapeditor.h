@@ -63,8 +63,9 @@ private:
   Button *creatureButton;
   Button *startPosButton;
   Button *floorType;
+  Button *mapButton;
   vector<Button *> toggleButtonList;
-
+                                                                                             
   TextField *nameText;
   Button *loadButton, *saveButton;
   Button *newButton;

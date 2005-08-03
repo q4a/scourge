@@ -18,6 +18,8 @@
 #include "scourge.h"
 #include "events/thirsthungerevent.h"
 #include "render/renderlib.h"
+#include "mapeditor.h"
+#include "sound.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -3447,5 +3449,15 @@ void Scourge::teleport( bool toHQ ) {
   }
 }
 
+void Scourge::playSound(const char *sound) { 
+  sdlHandler->getSound()->playSound(sound); 
+}
 
+void Scourge::loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
+  sdlHandler->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
+}
+
+void Scourge::unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
+  sdlHandler->getSound()->unloadMonsterSounds( type, soundMap );
+}
 

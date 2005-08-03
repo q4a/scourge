@@ -29,7 +29,6 @@
 #include "minimap.h"
 #include "dungeongenerator.h"
 #include "mainmenu.h"
-#include "mapeditor.h"
 #include "optionsmenu.h"
 #include "inventory.h"
 #include "gui/window.h"
@@ -567,15 +566,9 @@ public:
 
   inline double getFps() { return getSDLHandler()->getFPS(); }
 
-  inline void playSound(const char *sound) { sdlHandler->getSound()->playSound(sound); }
-
-  inline void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
-	sdlHandler->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
-  }
-
-  inline void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
-	sdlHandler->getSound()->unloadMonsterSounds( type, soundMap );
-  }
+  void playSound(const char *sound);
+  void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
+  void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
 
   inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 

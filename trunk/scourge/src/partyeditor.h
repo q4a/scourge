@@ -26,6 +26,7 @@
 #include "scourge.h"
 #include "userconfiguration.h"
 #include "util.h"
+#include "shapepalette.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/canvas.h"

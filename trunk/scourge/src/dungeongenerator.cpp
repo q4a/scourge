@@ -18,6 +18,9 @@
 #include "dungeongenerator.h"
 #include "render/renderlib.h"
 #include "scourge.h"
+#include "shapepalette.h"
+#include "board.h"
+#include "gui/progress.h"
 
 #define LOCKED_DOOR_RAND 8.0f
 
