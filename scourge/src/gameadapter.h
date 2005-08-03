@@ -19,9 +19,6 @@
 #define GAME_ADAPTER_H
 
 #include "constants.h"
-#include "userconfiguration.h"
-#include "shapepalette.h"
-//#include "map.h"
 
 class Party;
 class Map;
@@ -33,6 +30,8 @@ class Battle;
 class Shape;
 class Location;
 class Item;
+class ShapePalette;
+class UserConfiguration;
 
 class GameAdapter {
 protected:

@@ -202,9 +202,13 @@ private:
 
   char aboutText[3000];
 
+  GLuint mapGrid[6][5];
+
 public: 
   ShapePalette(Session *session);
   ~ShapePalette();
+
+  inline GLuint getMapGridTile( int x, int y ) { return mapGrid[ x ][ y ]; }
 
   inline int getThemeCount() { return themeCount; }
   inline char *getThemeName( int index ) { return themes[ index ]->getName(); }

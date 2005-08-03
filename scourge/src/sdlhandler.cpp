@@ -17,6 +17,14 @@
  ***************************************************************************/
 
 #include "sdlhandler.h"
+#include "constants.h"
+#include "shapepalette.h"
+#include "text.h"
+#include "gui/window.h"
+#include "userconfiguration.h"
+#include "sound.h"
+#include "sdleventhandler.h"
+#include "sdlscreenview.h"
 
 //#define DEBUG_MOUSE_FOCUS 1
 
@@ -846,4 +854,15 @@ void SDLHandler::testDrawView() {
     rquad -=0.15f;
 }
 
+GLuint SDLHandler::getHighlightTexture() { 
+  return getShapePalette()->getHighlightTexture(); 
+}
+
+GLuint SDLHandler::loadSystemTexture( char *line ) { 
+  return getShapePalette()->loadSystemTexture( line ); 
+}
+
+inline void SDLHandler::playSound( const char *name ) { 
+  getSound()->playSound( name ); 
+}
 

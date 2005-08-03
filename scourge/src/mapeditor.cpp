@@ -78,6 +78,8 @@ MapEditor::MapEditor( Scourge *scourge ) {
   startPosButton = mainWin->createButton( 5, 175, w - 10, 195, "Starting Position", true );
   toggleButtonList.push_back( startPosButton );
 
+  mapButton = mainWin->createButton( 5, 200, w - 10, 220, "Map Location" );
+
   // new map ui
   int nw = 450;
   int nh = 180;
@@ -115,7 +117,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   // Lists
   vector<Shape*> seen;
-  int h = 200;
+  int h = 240;
   int d = 150;
 
   // items

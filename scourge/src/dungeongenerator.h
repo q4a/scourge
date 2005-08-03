@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef DUNGEONGENERATOR_H
 #define DUNGEONGENERATOR_H
 
@@ -22,9 +21,6 @@
 #include <stdlib.h>
 #include <map>
 #include "constants.h"
-#include "shapepalette.h"
-#include "board.h"
-#include "gui/progress.h"
 
 using namespace std;
 
@@ -36,6 +32,11 @@ class Progress;
 class Item;
 class Scourge;
 class Shape;
+class RpgItem;
+class Monster;
+class Spell;
+class GLShape;
+class ShapePalette;
 
 #define DRAW_UNVISITED 0
 

@@ -19,6 +19,7 @@
 
 #include "inventory.h"
 #include "render/renderlib.h"
+#include "sound.h"
 
 /**
   *@author Gabor Torok

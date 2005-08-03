@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "optionsmenu.h" 
+#include "optionsmenu.h"
+#include "sound.h" 
 
 #define XPOS 10
 #define SPACING 18

@@ -147,6 +147,16 @@ void ShapePalette::initialize() {
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
+  // load map textures
+  char textureName[80];
+  for( int x = 0; x < 6; x++ ) {
+    for( int y = 0; y < 5; y++ ) {
+      sprintf( textureName, "/mapgrid/map%d-%d.bmp", x, y );
+      cerr << "loading: " << textureName << endl;
+      mapGrid[ x ][ y ] = loadGLTextures( textureName );
+    }
+  }
+
   // load the texture info
   char errMessage[500];
   char s[200];

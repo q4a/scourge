@@ -21,18 +21,16 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "constants.h"
-#include "sdleventhandler.h"
-#include "sdlscreenview.h"
-#include "shapepalette.h"
-#include "text.h"
-#include "gui/window.h"
-#include "userconfiguration.h"
-#include "freetype/FreeType.h"
-#include "sound.h"
 #include "gui/gui.h"
+#include "freetype/FreeType.h"
 
 class TexturedText;
+class Widget;
+class ShapePalette;                          
+class SDLEventHandler;
+class SDLScreenView;
+class UserConfiguration;
+class Sound;
 
 /**
   *@author Gabor Torok
@@ -51,11 +49,6 @@ class TexturedText;
 /* Define our booleans */
 #define TRUE  1
 #define FALSE 0
-
-class ShapePalette;                          
-class SDLEventHandler;
-class UserConfiguration;
-class Sound;
 
 class SDLHandler : public ScourgeGui {
 private:
@@ -125,11 +118,11 @@ public:
   // for ScourgeGui
   inline Uint16 getMouseX() { return mouseX; }
   inline Uint16 getMouseY() { return mouseY; }
-  inline void playSound( const char *name ) { getSound()->playSound( name ); }
+  void playSound( const char *name );
   inline int getScreenWidth() { return getScreen()->w; }
   inline int getScreenHeight() { return getScreen()->h; }
-  inline GLuint getHighlightTexture() { return getShapePalette()->getHighlightTexture(); }
-  inline GLuint loadSystemTexture( char *line ) { return getShapePalette()->loadSystemTexture( line ); }
+  GLuint getHighlightTexture();
+  GLuint loadSystemTexture( char *line );
 
   void setOrthoView();
 

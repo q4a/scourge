@@ -17,6 +17,8 @@
 
 #include "gameadapter.h"
 #include "session.h"
+#include "userconfiguration.h"
+#include "shapepalette.h"
 
 GameAdapter::GameAdapter(UserConfiguration *config) {
   this->userConfiguration = config;
