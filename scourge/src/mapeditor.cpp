@@ -17,6 +17,7 @@
 
 #include "mapeditor.h"
 #include "render/renderlib.h"
+#include "mapwidget.h"
 
 char *floorTypeName[80] = { 
   "FLOOR_TILE",
@@ -82,7 +83,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   // new map ui
   int nw = 450;
-  int nh = 180;
+  int nh = 400;
   newMapWin = new Window( scourge->getSDLHandler(),
                           40, 40, nw, nh,
                           "Create a New Map", 
@@ -111,9 +112,13 @@ MapEditor::MapEditor( Scourge *scourge ) {
   themeList->setLines( scourge->getShapePalette()->getThemeCount(), 
                        (const char**)themeNames );
 
+  newMapWin->createLabel( 5, 130, "Select map location: (click on map, drag to move)" );
+  mapWidget = new MapWidget( scourge, 5, 140, nw - 5, 335 );
+  newMapWin->addWidget( mapWidget );
+
   int bw = nw / 4;
-  okButton = newMapWin->createButton( nw - bw * 2 - 10, 120, nw - bw - 5, 140, "OK" );
-  cancelButton = newMapWin->createButton( nw - bw, 120, nw - 5, 140, "Cancel" );
+  okButton = newMapWin->createButton( nw - bw * 2 - 10, 345, nw - bw - 5, 365, "OK" );
+  cancelButton = newMapWin->createButton( nw - bw, 345, nw - 5, 365, "Cancel" );
 
   // Lists
   vector<Shape*> seen;

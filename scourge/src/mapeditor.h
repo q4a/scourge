@@ -40,6 +40,7 @@
 class Scourge;
 class MapSettings;
 class Creature;
+class MapWidget;
 
 using namespace std;
 
@@ -77,6 +78,7 @@ private:
   TextField *levelText, *depthText;
   ScrollingList *themeList;
   char **themeNames;
+  MapWidget *mapWidget;
   
   // lists
   ScrollingList *shapeList, *itemList, *creatureList;
