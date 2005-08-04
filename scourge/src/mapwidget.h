@@ -20,19 +20,21 @@
 
 #include "constants.h"
 #include "gui/widgetview.h"
-#include "gui/canvas.h"
+//#include "gui/canvas.h"
 
 /**
   *@author Gabor Torok
   */
 
 class Scourge;
+class Canvas;
 
 using namespace std;
 
-class MapWidget : public Canvas, WidgetView {
+class MapWidget : public WidgetView {
 private:
   Scourge *scourge;
+  Canvas *canvas;
   int selX, selY;
   
 public:
@@ -40,11 +42,13 @@ public:
   MapWidget( Scourge *scourge, int x, int y, int x2, int y2 );
   ~MapWidget();
 
-  bool handleEvent(SDL_Event *event);
+  void setPosition( int x, int y );
 
   inline void getSelection( int *x, int *y ) { *x = selX; *y = selY; }
 
   virtual void drawWidget(Widget *w);
+
+  inline Canvas *getCanvas() { return canvas; }
 };
 
 #endif

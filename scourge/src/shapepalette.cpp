@@ -149,8 +149,8 @@ void ShapePalette::initialize() {
 
   // load map textures
   char textureName[80];
-  for( int x = 0; x < 6; x++ ) {
-    for( int y = 0; y < 5; y++ ) {
+  for( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
+    for( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
       sprintf( textureName, "/mapgrid/map%d-%d.bmp", x, y );
       cerr << "loading: " << textureName << endl;
       mapGrid[ x ][ y ] = loadGLTextures( textureName );

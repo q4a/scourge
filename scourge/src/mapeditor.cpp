@@ -114,7 +114,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   newMapWin->createLabel( 5, 130, "Select map location: (click on map, drag to move)" );
   mapWidget = new MapWidget( scourge, 5, 140, nw - 5, 335 );
-  newMapWin->addWidget( mapWidget );
+  newMapWin->addWidget( mapWidget->getCanvas() );
 
   int bw = nw / 4;
   okButton = newMapWin->createButton( nw - bw * 2 - 10, 345, nw - bw - 5, 365, "OK" );
@@ -259,7 +259,6 @@ void MapEditor::drawAfter() {
 }
 
 bool MapEditor::handleEvent(SDL_Event *event) {
-
   scourge->getMap()->cursorWidth = scourge->getMap()->cursorDepth = 1;
   scourge->getMap()->cursorHeight = MAP_WALL_HEIGHT;
   GLShape *shape;
@@ -349,6 +348,9 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     newMapWin->setVisible( false );
   } else if( widget == floorType ) {
     floorType->setLabel( floorTypeName[ floorType->isSelected() ? 0 : 1 ] );
+  } else if( widget == mapWidget->getCanvas() ) {
+    mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
+                            scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
   }
 
   return false;
