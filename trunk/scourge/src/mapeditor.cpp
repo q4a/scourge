@@ -290,8 +290,15 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   scourge->getMap()->handleEvent( event );
 
   switch(event->type) {
+  case SDL_MOUSEMOTION:
+  if( event->motion.state == SDL_BUTTON_LEFT &&
+      newMapWin->isVisible() &&
+      mapWidget->getCanvas()->isInside( scourge->getMouseX(), scourge->getMouseY() ) ) {
+    mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
+                            scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
+  }
   case SDL_MOUSEBUTTONDOWN:
-  processMouseMotion( event->button.button, editorZ );
+  processMouseMotion( event->button.button, editorZ );  
   break;
   case SDL_KEYUP:
   if( event->key.keysym.sym == SDLK_ESCAPE ) {
@@ -349,8 +356,8 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == floorType ) {
     floorType->setLabel( floorTypeName[ floorType->isSelected() ? 0 : 1 ] );
   } else if( widget == mapWidget->getCanvas() ) {
-    mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
-                            scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
+//    mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
+//                            scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
   }
 
   return false;
