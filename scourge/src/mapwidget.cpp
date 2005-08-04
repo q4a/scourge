@@ -27,9 +27,12 @@
 #define MAP_GRID_WIDTH ( Constants::MAP_GRID_TILE_WIDTH * Constants::MAP_GRID_TILE_PIXEL_WIDTH )
 
 MapWidget::MapWidget( Scourge *scourge, int x, int y, int x2, int y2 ) {
-  selX = selY = 0;
   this->scourge = scourge;
-  this->canvas = new Canvas( x, y, x2, y2, this );
+  this->canvas = new Canvas( x, y, x2, y2, this, this );
+  oldSelX = oldSelY = selX = selY = 0;
+  oldx = oldy = 0;
+  dragging = false;
+  calculateValues();
 }
 
 MapWidget::~MapWidget() {
@@ -37,17 +40,40 @@ MapWidget::~MapWidget() {
 }
 
 void MapWidget::setPosition( int x, int y ) {
-  selX += ( x - ( canvas->getWidth() / 2 ) );
-  selY += ( y - ( canvas->getHeight() / 2 ) );
+  //cerr << "drag: " << x << "," << y << endl;
+  selX = oldSelX - ( x - oldx );
+  selY = oldSelY - ( y - oldy );
+
+  if( selX < 0 ) selX = 0;
+  if( selX >= MAP_GRID_WIDTH ) selX = MAP_GRID_WIDTH - 1;
+  
+  if( selY < 0 ) selY = 0;
+  if( selY >= MAP_GRID_HEIGHT ) selY = MAP_GRID_HEIGHT - 1;
+  
+  calculateValues();
 }
 
-void MapWidget::drawWidget(Widget *w) {
+void MapWidget::receive(Widget *widget) {
+  dragging = false;
+}
 
+bool MapWidget::startDrag(Widget *widget, int x, int y) {
+  if( !dragging ) {
+    oldx = x;
+    oldy = y;
+    oldSelX = selX;
+    oldSelY = selY;
+    dragging = true;
+  }
+  return true;
+}
+
+void MapWidget::calculateValues() { 
   // figure out what needs to show
-  int sx = selX - canvas->getWidth() / 2;
-  int sy = selY - canvas->getHeight() / 2;
-  int ex = selX + canvas->getWidth() / 2;
-  int ey = selY + canvas->getHeight() / 2;
+  int sx = selX;
+  int sy = selY;
+  int ex = selX + canvas->getWidth();
+  int ey = selY + canvas->getHeight();
 
   if( sx < 0 ) {
     ex = canvas->getWidth();
@@ -57,29 +83,34 @@ void MapWidget::drawWidget(Widget *w) {
     sy = 0;
     ey = canvas->getHeight();
   }
-  if( ex >= MAP_GRID_WIDTH ) {
+  if( ex > MAP_GRID_WIDTH ) {
     sx = MAP_GRID_WIDTH - canvas->getWidth();
     ex = MAP_GRID_WIDTH;
   }
-  if( ey >= MAP_GRID_HEIGHT ) {
-    sx = MAP_GRID_HEIGHT - canvas->getHeight();
-    ex = MAP_GRID_HEIGHT;
+  if( ey > MAP_GRID_HEIGHT ) {
+    sy = MAP_GRID_HEIGHT - canvas->getHeight();
+    ey = MAP_GRID_HEIGHT;
   }
 
-  int gx = sx / Constants::MAP_GRID_TILE_PIXEL_WIDTH;
-  int gy = sy / Constants::MAP_GRID_TILE_PIXEL_HEIGHT;
-  int tx = sx % Constants::MAP_GRID_TILE_PIXEL_WIDTH;
-  int ty = sy % Constants::MAP_GRID_TILE_PIXEL_HEIGHT;
+  gx = sx / Constants::MAP_GRID_TILE_PIXEL_WIDTH;
+  gy = sy / Constants::MAP_GRID_TILE_PIXEL_HEIGHT;
+  tx = sx % Constants::MAP_GRID_TILE_PIXEL_WIDTH;
+  ty = sy % Constants::MAP_GRID_TILE_PIXEL_HEIGHT;
 
   /*
   cerr << "pixel=" << sx << "-" << ex << " , " << sy << "-" << ey <<
-    " gx=" << gx << " gy=" << gy <<
-    " tx=" << tx << " ty=" << ty << endl;
+    " out of " << MAP_GRID_WIDTH << "," << MAP_GRID_HEIGHT <<
+    " starting tile=" << gx << "," << gy <<
+    " starting offset=-1 * (" << tx << "," << ty << ")" << endl;
   */
+}
 
+void MapWidget::drawWidget(Widget *w) {
   glEnable( GL_TEXTURE_2D );
-  for( int xx = 0; xx < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_WIDTH + 1; xx++ ) {
-    for( int yy = 0; yy < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_HEIGHT + 1; yy++ ) {
+  for( int xx = 0; xx < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_WIDTH + 2; xx++ ) {
+    if( gx + xx >= Constants::MAP_GRID_TILE_WIDTH ) continue;
+    for( int yy = 0; yy < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_HEIGHT + 2; yy++ ) {
+      if( gy + yy >= Constants::MAP_GRID_TILE_HEIGHT ) continue;
       glPushMatrix();
       int xp = xx * Constants::MAP_GRID_TILE_PIXEL_WIDTH - tx;
       int yp = yy * Constants::MAP_GRID_TILE_PIXEL_HEIGHT - ty;

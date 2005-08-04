@@ -280,8 +280,8 @@ public:
   static const int INVENTORY_COUNT = 14;
   static char inventory_location[][80];
 
-  static const int MAP_GRID_TILE_WIDTH = 5;
-  static const int MAP_GRID_TILE_HEIGHT = 4;
+  static const int MAP_GRID_TILE_WIDTH = 6;
+  static const int MAP_GRID_TILE_HEIGHT = 5;
   static const int MAP_GRID_TILE_PIXEL_WIDTH = 256;
   static const int MAP_GRID_TILE_PIXEL_HEIGHT = 256;
 
