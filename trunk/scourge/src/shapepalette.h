@@ -202,7 +202,7 @@ private:
 
   char aboutText[3000];
 
-  GLuint mapGrid[6][5];
+  GLuint mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
 
 public: 
   ShapePalette(Session *session);
