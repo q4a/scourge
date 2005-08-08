@@ -130,7 +130,7 @@ void MapWidget::drawWidgetContents(Widget *w) {
   glEnable( GL_TEXTURE_2D );
   for( int xx = 0; xx < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_WIDTH + 2; xx++ ) {
     if( gx + xx >= Constants::MAP_GRID_TILE_WIDTH ) continue;
-    for( int yy = 0; yy < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_HEIGHT + 2; yy++ ) {
+    for( int yy = 0; yy < canvas->getHeight() / Constants::MAP_GRID_TILE_PIXEL_HEIGHT + 2; yy++ ) {
       if( gy + yy >= Constants::MAP_GRID_TILE_HEIGHT ) continue;
       glPushMatrix();
       int xp = xx * Constants::MAP_GRID_TILE_PIXEL_WIDTH - tx;
