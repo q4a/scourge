@@ -45,6 +45,7 @@ Board::Board(Session *session) {
   }
 
   Mission *current_mission = NULL;
+  char type;
   char name[255], line[255], description[2000], 
     success[2000], failure[2000], keyphrase[80],answer[4000];
   Monster *currentNpc = NULL;
@@ -54,6 +55,8 @@ Board::Board(Session *session) {
       // skip ':'
       fgetc( fp );
       n = Constants::readLine( name, fp );
+      type = name[0];
+      strcpy( name, name + 2 );
       strcpy( description, "" );
       while( n == 'D' ) {
         n = Constants::readLine( line, fp );
@@ -75,7 +78,7 @@ Board::Board(Session *session) {
         strcat( failure, line + 1 );
       }
 
-      templates.push_back( new MissionTemplate( this, name, description, success, failure ) );
+      templates.push_back( new MissionTemplate( this, name, type, description, success, failure ) );
     } else if( n == 'T' ) {
       // skip ':'
       fgetc( fp );
@@ -331,7 +334,9 @@ void Board::initMissions() {
         missionColor[i].b = 0.0f;
       }
       if(i == 0) {
-        session->getGameAdapter()->setMissionDescriptionUI((char*)availableMissions[i]->getDescription());
+        session->getGameAdapter()->setMissionDescriptionUI((char*)availableMissions[i]->getDescription(),
+                                                           availableMissions[i]->getMapX(),
+                                                           availableMissions[i]->getMapY());
       }
     }
 
@@ -363,9 +368,10 @@ void Board::storylineMissionCompleted( Mission *mission ) {
 
 
 
-MissionTemplate::MissionTemplate( Board *board, char *name, char *description, char *success, char *failure ) {
+MissionTemplate::MissionTemplate( Board *board, char *name, char type, char *description, char *success, char *failure ) {
   this->board = board;
   strcpy( this->name, name );
+  this->mapType = type;
   strcpy( this->description, description );
   strcpy( this->success, success );
   strcpy( this->failure, failure );
@@ -406,6 +412,13 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   for(map<string, Monster*>::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
     Monster *monster = i->second;
     mission->addCreature( monster );
+  }
+
+  // put it on the map
+  int mapx, mapy;
+  if( session->getShapePalette()->
+      getRandomMapLocation( mapType, NULL, &mapx, &mapy ) ) {
+    mission->setMapXY( mapx, mapy );
   }
 
   return mission;
@@ -484,6 +497,7 @@ Mission::Mission( Board *board, int level, int depth,
   strcpy( this->failure, failure );
   this->completed = false;
   this->storyLine = false;
+  this->mapX = this->mapY = 0;
 
 //  cerr << "*** Created mission: " << getName() << endl;
 //  cerr << getDescription() << endl;

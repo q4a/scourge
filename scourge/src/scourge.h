@@ -88,6 +88,7 @@ class InfoGui;
 class ConversationGui;
 class GuiTheme;
 class ScrollingLabel;
+class MapWidget;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -209,6 +210,7 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   ScrollingLabel *missionDescriptionLabel;
   Button *playMission, *closeBoard;
   Window *boardWin;
+  MapWidget *mapWidget;
 
   Progress *progress;
   bool inBattle;
@@ -600,7 +602,7 @@ public:
 
   int handleBoardEvent(Widget *widget, SDL_Event *event);
 
-  void setMissionDescriptionUI(char *s);
+  void setMissionDescriptionUI(char *s, int mapx, int mapy);
 
   // move a creature
   void moveMonster(Creature *monster);

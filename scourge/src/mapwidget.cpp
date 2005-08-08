@@ -43,7 +43,9 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 	switch(event->type) {
 	case SDL_MOUSEMOTION:
   if( dragging ) {
-    setPosition( x, y );
+    selX = oldSelX - ( x - oldx );
+    selY = oldSelY - ( y - oldy );
+    calculateValues();
   }
   break;
   case SDL_MOUSEBUTTONUP:
@@ -51,6 +53,7 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   if( editable ) {
     markedX = selX + x - getX();
     markedY = selY + y - getY();
+    cerr << "mark at: " << markedX << "," << markedY << endl;
   }
   return isInside( x, y );
   case SDL_MOUSEBUTTONDOWN:
@@ -66,21 +69,22 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   return false;
 }
 
-void MapWidget::setPosition( int x, int y ) {
-  //cerr << "drag: " << x << "," << y << endl;
-  selX = oldSelX - ( x - oldx );
-  selY = oldSelY - ( y - oldy );
+void MapWidget::setSelection( int x, int y ) {
+  markedX = x;
+  markedY = y;
+  selX = x - getWidth() / 2;
+  selY = y - getHeight() / 2;
+  calculateValues();
+}
+
+void MapWidget::calculateValues() { 
 
   if( selX < 0 ) selX = 0;
   if( selX >= MAP_GRID_WIDTH ) selX = MAP_GRID_WIDTH - 1;
   
   if( selY < 0 ) selY = 0;
   if( selY >= MAP_GRID_HEIGHT ) selY = MAP_GRID_HEIGHT - 1;
-  
-  calculateValues();
-}
 
-void MapWidget::calculateValues() { 
   Canvas *canvas = this;
 
   // figure out what needs to show

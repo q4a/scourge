@@ -49,9 +49,8 @@ public:
   MapWidget( Scourge *scourge, Widget *parent, int x, int y, int x2, int y2, bool editable=true );
   ~MapWidget();
 
-  void setPosition( int x, int y );
-
   inline void getSelection( int *x, int *y ) { *x = markedX; *y = markedY; }
+  void setSelection( int x, int y );
 
   virtual void drawWidgetContents(Widget *w);
 
