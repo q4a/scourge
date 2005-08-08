@@ -26,9 +26,8 @@
 #define MAP_GRID_HEIGHT ( Constants::MAP_GRID_TILE_HEIGHT * Constants::MAP_GRID_TILE_PIXEL_HEIGHT )
 #define MAP_GRID_WIDTH ( Constants::MAP_GRID_TILE_WIDTH * Constants::MAP_GRID_TILE_PIXEL_WIDTH )
 
-MapWidget::MapWidget( Scourge *scourge, int x, int y, int x2, int y2 ) {
+MapWidget::MapWidget( Scourge *scourge, int x, int y, int x2, int y2 ) : Canvas(x, y, x2, y2, this) {
   this->scourge = scourge;
-  this->canvas = new Canvas( x, y, x2, y2, this, this );
   oldSelX = oldSelY = selX = selY = 0;
   oldx = oldy = 0;
   dragging = false;
@@ -36,7 +35,29 @@ MapWidget::MapWidget( Scourge *scourge, int x, int y, int x2, int y2 ) {
 }
 
 MapWidget::~MapWidget() {
-  delete canvas;
+}
+
+bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
+	switch(event->type) {
+	case SDL_MOUSEMOTION:
+  if( dragging ) {
+    setPosition( x, y );
+  }
+  break;
+  case SDL_MOUSEBUTTONUP:
+  dragging = false;
+  return isInside( x, y );
+  case SDL_MOUSEBUTTONDOWN:
+  if( isInside( x, y ) ) {
+    oldx = x;
+    oldy = y;
+    oldSelX = selX;
+    oldSelY = selY;
+    dragging = true;
+  }
+  break;
+  }
+  return false;
 }
 
 void MapWidget::setPosition( int x, int y ) {
@@ -53,22 +74,9 @@ void MapWidget::setPosition( int x, int y ) {
   calculateValues();
 }
 
-void MapWidget::receive(Widget *widget) {
-  dragging = false;
-}
-
-bool MapWidget::startDrag(Widget *widget, int x, int y) {
-  if( !dragging ) {
-    oldx = x;
-    oldy = y;
-    oldSelX = selX;
-    oldSelY = selY;
-    dragging = true;
-  }
-  return true;
-}
-
 void MapWidget::calculateValues() { 
+  Canvas *canvas = this;
+
   // figure out what needs to show
   int sx = selX;
   int sy = selY;
@@ -105,7 +113,10 @@ void MapWidget::calculateValues() {
   */
 }
 
-void MapWidget::drawWidget(Widget *w) {
+void MapWidget::drawWidgetContents(Widget *w) {
+  Canvas *canvas = this;
+
+
   glEnable( GL_TEXTURE_2D );
   for( int xx = 0; xx < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_WIDTH + 2; xx++ ) {
     if( gx + xx >= Constants::MAP_GRID_TILE_WIDTH ) continue;

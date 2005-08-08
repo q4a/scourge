@@ -20,22 +20,21 @@
 
 #include "constants.h"
 #include "gui/widgetview.h"
-#include "gui/draganddrop.h"
-//#include "gui/canvas.h"
+//#include "gui/draganddrop.h"
+#include "gui/canvas.h"
 
 /**
   *@author Gabor Torok
   */
 
 class Scourge;
-class Canvas;
+//class Canvas;
 
 using namespace std;
 
-class MapWidget : public WidgetView, DragAndDropHandler {
+class MapWidget : public Canvas, WidgetView {
 private:
   Scourge *scourge;
-  Canvas *canvas;
   int selX, selY;
   int oldSelX, oldSelY;
   int oldx, oldy;
@@ -51,21 +50,23 @@ public:
 
   inline void getSelection( int *x, int *y ) { *x = selX; *y = selY; }
 
-  virtual void drawWidget(Widget *w);
+  virtual void drawWidgetContents(Widget *w);
 
   /**
     The widget received a dragged item
   */
-  virtual void receive(Widget *widget);
+//  virtual void receive(Widget *widget);
 
   /**
 	 The widget initiated a drag
    * return true if there's something to drag at x,y
    */
-  virtual bool startDrag(Widget *widget, int x=0, int y=0);
+//  virtual bool startDrag(Widget *widget, int x=0, int y=0);
 
 
-  inline Canvas *getCanvas() { return canvas; }
+  inline Canvas *getCanvas() { return this; }
+
+  bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
 
 protected:
   void calculateValues();

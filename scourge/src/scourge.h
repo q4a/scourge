@@ -576,7 +576,7 @@ public:
 
   void fightProjectileHitTurn(Projectile *proj, int x, int y);
 
-  void drawWidget(Widget *w);
+  void drawWidgetContents(Widget *w);
 
   void resetPartyUI();
 

@@ -54,7 +54,7 @@ void Canvas::drawWidget(Widget *parent) {
     glEnable( GL_SCISSOR_TEST );
     
     glPushMatrix();
-    view->drawWidget(this);
+    view->drawWidgetContents(this);
     glPopMatrix();
     
     glDisable( GL_SCISSOR_TEST );

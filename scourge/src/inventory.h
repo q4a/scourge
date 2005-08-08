@@ -136,7 +136,7 @@ public:
 	void receive(Widget *widget);
 	bool startDrag(Widget *widget, int x=0, int y=0);
 
-	void drawWidget(Widget *w);
+	void drawWidgetContents(Widget *w);
 
   void showSpells();
   void showSkills();

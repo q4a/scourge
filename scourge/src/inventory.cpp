@@ -215,7 +215,7 @@ void Inventory::showSkills() {
   setSelectedPlayerAndMode( selected, CHARACTER );
 }
 
-void Inventory::drawWidget(Widget *w) {
+void Inventory::drawWidgetContents(Widget *w) {
   GuiTheme *theme = mainWin->getTheme();
   Creature *p = scourge->getParty()->getParty(selected);
 

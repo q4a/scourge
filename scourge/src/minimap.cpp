@@ -217,7 +217,7 @@ void MiniMap :: buildTexture(int xCoord, int yCoord){
 
 }
 
-void MiniMap::drawWidget(Widget *w) {
+void MiniMap::drawWidgetContents(Widget *w) {
   //	glDisable(GL_CULL_FACE);
   int xPartyPos, yPartyPos;     
   float distX, distY; 

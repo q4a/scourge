@@ -58,7 +58,7 @@ class InfoGui : public WidgetView {
   void setInfoDetailLevel(int level);
   inline Window *getWindow() { return win; }
 
-  void drawWidget(Widget *w);
+  void drawWidgetContents(Widget *w);
 
 protected:
   void describe();

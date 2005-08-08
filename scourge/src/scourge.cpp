@@ -2781,7 +2781,7 @@ void Scourge::receive( Widget *widget ) {
   }
 }     
 
-void Scourge::drawWidget(Widget *w) {
+void Scourge::drawWidgetContents(Widget *w) {
   for(int i = 0; i < party->getPartySize(); i++) {
     if(playerInfo[i] == w) {
       drawPortrait( w, party->getParty( i ) );
