@@ -62,7 +62,7 @@ public:
   virtual inline void togglePlayerOnlyUI(bool playerOnly) {}
   virtual inline void setPlayerUI(int index) {}
   virtual inline void updateBoardUI(int count, const char **missionText, Color *missionColor) {}
-  virtual inline void setMissionDescriptionUI(char *s) {}
+  virtual inline void setMissionDescriptionUI(char *s, int mapx, int mapy) {}
   virtual inline void missionCompleted() {}
   virtual inline void cancelBattle(Creature *creature) {}
   virtual inline void moveMonster(Creature *monster) {}

@@ -140,6 +140,13 @@ class WallTheme {
 };
   
 
+typedef struct _MapGridLocation {
+  char name[80];
+  int x, y;
+  bool random;
+  char type;
+} MapGridLocation;
+
 #define MAX_SYSTEM_TEXTURE_COUNT 1000
 
 class ShapePalette {
@@ -203,6 +210,7 @@ private:
   char aboutText[3000];
 
   GLuint mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
+  map<char, vector<MapGridLocation*>*> mapGridLocationByType;
 
 public: 
   ShapePalette(Session *session);
@@ -210,6 +218,18 @@ public:
 
   inline GLuint getMapGridTile( int x, int y ) { return mapGrid[ x ][ y ]; }
 
+  void initMapGrid();
+
+  /**
+   * Find a random location on the scourge map.
+   * @param type a char depicting an arbitrary map type (eg.: C-city, D-dungeon, etc.)
+   * @param name will point to the name of the location found
+   * @param x the x coordinate
+   * @param y the y coordinate
+   * @return true if a location of type was found.
+   */
+  bool getRandomMapLocation( char type, char **name, int *x, int *y );
+  
   inline int getThemeCount() { return themeCount; }
   inline char *getThemeName( int index ) { return themes[ index ]->getName(); }
 

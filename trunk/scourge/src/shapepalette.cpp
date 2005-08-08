@@ -148,14 +148,7 @@ void ShapePalette::initialize() {
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   // load map textures
-  char textureName[80];
-  for( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
-    for( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
-      sprintf( textureName, "/mapgrid/map%d-%d.bmp", x, y );
-      //cerr << "loading: " << textureName << endl;
-      mapGrid[ x ][ y ] = loadGLTextures( textureName );
-    }
-  }
+  initMapGrid();
 
   // load the texture info
   char errMessage[500];
@@ -1105,5 +1098,78 @@ void ShapePalette::loadNpcPortraits() {
         cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
       }
     }
+  }
+}
+
+void ShapePalette::initMapGrid() {
+  // load the textures
+  char textureName[80];
+  for( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
+    for( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
+      sprintf( textureName, "/mapgrid/map%d-%d.bmp", x, y );
+      //cerr << "loading: " << textureName << endl;
+      mapGrid[ x ][ y ] = loadGLTextures( textureName );
+    }
+  }
+
+  // load the locations
+  char errMessage[500];
+  char s[200];
+  sprintf(s, "%s/world/locations.txt", rootDir);
+  FILE *fp = fopen(s, "r");
+  if(!fp) {        
+    sprintf(errMessage, "Unable to find the file: %s!", s);
+    cerr << errMessage << endl;
+    exit(1);
+  }
+
+  char line[255];
+  int n = fgetc(fp);
+  while(n != EOF) {
+    if(n == 'L') {
+      // skip ':'
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+
+      MapGridLocation *loc = (MapGridLocation*)malloc( sizeof( MapGridLocation ) );
+      strcpy( loc->name, strtok( line, "," ) );
+      loc->x = atoi( strtok( NULL, "," ) );
+      loc->y = atoi( strtok( NULL, "," ) );
+      char *p = strtok( NULL, "," );
+      loc->type = *p;
+      loc->random = ( p[ 1 ] == 'R' );
+
+      if( mapGridLocationByType.find( loc->type ) == mapGridLocationByType.end() ) {
+        mapGridLocationByType[ loc->type ] = new vector<MapGridLocation*>();
+      }
+      mapGridLocationByType[ loc->type ]->push_back( loc );
+    } else {
+      // skip this line
+      n = Constants::readLine(line, fp);
+    }
+  }
+  fclose(fp);
+}
+
+/**
+ * Find a random location on the scourge map.
+ * @param type a char depicting an arbitrary map type (eg.: C-city, D-dungeon, etc.)
+ * @param name will point to the name of the location found
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @return true if a location of type was found.
+ */
+bool ShapePalette::getRandomMapLocation( char type, char **name, int *x, int *y ) {
+  if( mapGridLocationByType.find( type ) == mapGridLocationByType.end() ) {
+    return false;
+  } else {
+    vector<MapGridLocation*> *positions = mapGridLocationByType[ type ];
+    MapGridLocation *pos = (*positions)[ (int)( (float)(positions->size()) * rand() / RAND_MAX ) ];
+    if( name ) {
+      *name = pos->name;
+    }
+    *x = pos->x;
+    *y = pos->y;
+    return true;
   }
 }

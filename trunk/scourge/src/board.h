@@ -36,7 +36,7 @@ class Board;
   *@author Gabor Torok
   */
 	
-#define BOARD_GUI_WIDTH 400
+#define BOARD_GUI_WIDTH 600
 #define BOARD_GUI_HEIGHT 400
 
 class NpcConversation {
@@ -70,6 +70,8 @@ private:
   map<Creature*,Monster*> monsterInstanceMap;
   bool completed;
   bool storyLine;
+  // the mission's location on the map-grid
+  int mapX, mapY;
 public:
 
 #define INTRO_PHRASE "_INTRO_"
@@ -90,6 +92,10 @@ public:
 		   char *name, char *description, 
 		   char *success, char *failure );
   ~Mission();
+
+  inline int getMapX() { return mapX; }
+  inline int getMapY() { return mapY; }
+  inline void setMapXY( int x, int y ) { mapX = x; mapY = y; }
 
   inline void setStoryLine( bool b ) { storyLine = b; }
   inline bool isStoryLine() { return storyLine; }
@@ -151,11 +157,12 @@ class MissionTemplate {
 private:
   Board *board;
   char name[80];
+  char mapType;
   char description[2000];
   char success[2000];
   char failure[2000];
 public:
-  MissionTemplate( Board *board, char *name, char *description, char *success, char *failure );
+  MissionTemplate( Board *board, char *name, char mapType, char *description, char *success, char *failure );
   ~MissionTemplate();
   Mission *createMission( Session *session, int level, int depth );
 private:

@@ -20,6 +20,7 @@
 #include "render/renderlib.h"
 #include "mapeditor.h"
 #include "sound.h"
+#include "mapwidget.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -2672,7 +2673,7 @@ int Scourge::initMultiplayer() {
                          atoi(multiplayer->getServerPort()),
                          multiplayer->getUserName());
   }
-  Progress *progress = new Progress(this, 10);
+  Progress *progress = new Progress(this->getSDLHandler(), 10);
   progress->updateStatus("Connecting to server");
   if(!session->getClient()->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
@@ -3197,11 +3198,16 @@ void Scourge::createBoardUI() {
                         BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
                         "Available Missions", true, Window::SIMPLE_WINDOW,
                         "wood" );
-  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 10, 150, getShapePalette()->getHighlightTexture());
+  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 260, 150, getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
+  mapWidget = new MapWidget( this, boardWin, BOARD_GUI_WIDTH - 250, 40,
+                             BOARD_GUI_WIDTH - 10, 
+                             BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 10, 
+                             false );
+  boardWin->addWidget( mapWidget );
   //missionDescriptionLabel = new Label(5, 210, "", 67);
   missionDescriptionLabel = new ScrollingLabel( 5, 210, 
-                                                BOARD_GUI_WIDTH - 10, 
+                                                BOARD_GUI_WIDTH - 260, 
                                                 BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 210 - 10, "" );
   boardWin->addWidget(missionDescriptionLabel);
   playMission = new Button(5, 5, 105, 35, getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
@@ -3222,7 +3228,9 @@ int Scourge::handleBoardEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == missionList) {
     int selected = missionList->getSelectedLine();
     if(selected != -1 && selected < board->getMissionCount()) {
-      missionDescriptionLabel->setText((char*)(board->getMission(selected)->getDescription()));
+      Mission *mission = board->getMission(selected);
+      missionDescriptionLabel->setText((char*)(mission->getDescription()));
+      mapWidget->setSelection( mission->getMapX(), mission->getMapY() );
     }
     return Board::EVENT_HANDLED;
   } else if(widget == playMission) {
@@ -3235,8 +3243,9 @@ int Scourge::handleBoardEvent(Widget *widget, SDL_Event *event) {
   return -1;
 }
 
-void Scourge::setMissionDescriptionUI(char *s) {
+void Scourge::setMissionDescriptionUI(char *s, int mapx, int mapy) {
   missionDescriptionLabel->setText(s);
+  mapWidget->setSelection( mapx, mapy );
 }
 
 void Scourge::removeBattle(Battle *b) {
