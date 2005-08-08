@@ -147,7 +147,7 @@ void ConversationGui::showingWord( char *word ) {
   }
 }
 
-void ConversationGui::drawWidget(Widget *w) {
+void ConversationGui::drawWidgetContents(Widget *w) {
   if( w == canvas && creature && creature->getMonster() && 
       creature->getMonster()->getPortraitTexture() ) {
     //glEnable( GL_ALPHA_TEST );

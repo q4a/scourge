@@ -74,7 +74,7 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
   return false;
 }
 
-void InfoGui::drawWidget(Widget *w) {
+void InfoGui::drawWidgetContents(Widget *w) {
   if( w == image && item ) {
     glEnable( GL_ALPHA_TEST );
     glAlphaFunc( GL_EQUAL, 0xff );

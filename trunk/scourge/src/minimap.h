@@ -108,7 +108,7 @@ class MiniMap : public WidgetView {
   void updateFog(int a, int b); // gradually set the minimap visible for the player
   void buildTexture(int xCoord, int yCoord);
 
-  void drawWidget(Widget *w);
+  void drawWidgetContents(Widget *w);
   
   //void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);    
   

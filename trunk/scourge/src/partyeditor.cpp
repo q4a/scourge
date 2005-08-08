@@ -290,7 +290,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
                                     "Next", n );
 }
 
-void PartyEditor::drawWidget( Widget *w ) {
+void PartyEditor::drawWidgetContents( Widget *w ) {
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
     if( w == info[i].portrait ) {
       glPushMatrix();

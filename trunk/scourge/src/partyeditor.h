@@ -105,7 +105,7 @@ public:
   PartyEditor(Scourge *scourge);
   ~PartyEditor();
 
-  void drawWidget(Widget *w);
+  void drawWidgetContents(Widget *w);
   void drawAfter();
 
   inline bool isVisible() { return mainWin->isVisible(); }

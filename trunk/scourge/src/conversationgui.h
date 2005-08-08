@@ -63,7 +63,7 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   void wordClicked( char *word );
   void showingWord( char *word );
 
-  void drawWidget(Widget *w);
+  void drawWidgetContents(Widget *w);
 };
 
 #endif

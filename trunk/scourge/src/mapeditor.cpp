@@ -291,11 +291,13 @@ bool MapEditor::handleEvent(SDL_Event *event) {
 
   switch(event->type) {
   case SDL_MOUSEMOTION:
+  /*
   if( event->motion.state == SDL_BUTTON_LEFT &&
       newMapWin->isVisible() ) {
     mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
                             scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
   }
+  */
   case SDL_MOUSEBUTTONDOWN:
   processMouseMotion( event->button.button, editorZ );  
   break;

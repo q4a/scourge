@@ -31,7 +31,7 @@ class WidgetView {
   virtual ~WidgetView();
   
   /** Draw the widget. */
-  virtual void drawWidget(Widget *w) = 0;
+  virtual void drawWidgetContents(Widget *w) = 0;
 };
 
 #endif
