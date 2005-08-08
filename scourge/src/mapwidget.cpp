@@ -26,9 +26,11 @@
 #define MAP_GRID_HEIGHT ( Constants::MAP_GRID_TILE_HEIGHT * Constants::MAP_GRID_TILE_PIXEL_HEIGHT )
 #define MAP_GRID_WIDTH ( Constants::MAP_GRID_TILE_WIDTH * Constants::MAP_GRID_TILE_PIXEL_WIDTH )
 
-MapWidget::MapWidget( Scourge *scourge, int x, int y, int x2, int y2 ) : Canvas(x, y, x2, y2, this) {
+MapWidget::MapWidget( Scourge *scourge, Widget *parent, int x, int y, int x2, int y2, bool editable ) : Canvas(x, y, x2, y2, this) {
   this->scourge = scourge;
-  oldSelX = oldSelY = selX = selY = 0;
+  this->parent = parent;
+  this->editable = editable;
+  markedX = markedY = oldSelX = oldSelY = selX = selY = 0;
   oldx = oldy = 0;
   dragging = false;
   calculateValues();
@@ -46,6 +48,10 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   break;
   case SDL_MOUSEBUTTONUP:
   dragging = false;
+  if( editable ) {
+    markedX = selX + x - getX();
+    markedY = selY + y - getY();
+  }
   return isInside( x, y );
   case SDL_MOUSEBUTTONDOWN:
   if( isInside( x, y ) ) {
@@ -146,5 +152,51 @@ void MapWidget::drawWidgetContents(Widget *w) {
       glPopMatrix();
     }
   }  
+  glDisable( GL_TEXTURE_2D );
+
+  int shadowSize = 10;
+  glEnable( GL_BLEND );
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glBegin( GL_QUADS );
+  glColor4f( 0, 0, 0, 0.75f );
+  glVertex2f( 0, 0 );
+  glColor4f( 0.4f, 0.4f, 0.4f, 0.5f );
+  glVertex2f( getWidth(), 0 );
+  glVertex2f( getWidth(), shadowSize );
+  glColor4f( 0, 0, 0, 0.75f );
+  glVertex2f( 0, shadowSize );
+
+  glColor4f( 0, 0, 0, 0.75f );
+  glVertex2f( 0, shadowSize );
+  glVertex2f( shadowSize, shadowSize );
+  glColor4f( 0.4f, 0.4f, 0.4f, 0.5f );
+  glVertex2f( shadowSize, getHeight() );
+  glColor4f( 0, 0, 0, 0.75f );
+  glVertex2f( 0, getHeight() );
+  glEnd();
+  glDisable( GL_BLEND );
+
+  glPushMatrix();
+  glTranslatef( markedX - ( gx * Constants::MAP_GRID_TILE_PIXEL_WIDTH + tx ), 
+                markedY - ( gy * Constants::MAP_GRID_TILE_PIXEL_HEIGHT + ty ), 
+                0 );
+  glDisable( GL_TEXTURE_2D );
+  glColor4f( 1, 0, 0, 0 );
+  glBegin( GL_QUADS );
+  glVertex2f( 0, 0 );
+  glVertex2f( 10, 0 );
+  glVertex2f( 10, 10 );
+  glVertex2f( 0, 10 );
+  glEnd();
+  glColor4f( 0, 0, 0, 0 );
+  glBegin( GL_LINE_LOOP );
+  glVertex2f( 0, 0 );
+  glVertex2f( 10, 0 );
+  glVertex2f( 10, 10 );
+  glVertex2f( 0, 10 );
+  glEnd();  
+  glEnable( GL_TEXTURE_2D );
+  glPopMatrix();
 }
 

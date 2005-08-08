@@ -35,20 +35,23 @@ using namespace std;
 class MapWidget : public Canvas, WidgetView {
 private:
   Scourge *scourge;
+  Widget *parent;
+  int markedX, markedY;
   int selX, selY;
   int oldSelX, oldSelY;
   int oldx, oldy;
   int gx, gy, tx, ty;
   bool dragging;
+  bool editable;
   
 public:
 
-  MapWidget( Scourge *scourge, int x, int y, int x2, int y2 );
+  MapWidget( Scourge *scourge, Widget *parent, int x, int y, int x2, int y2, bool editable=true );
   ~MapWidget();
 
   void setPosition( int x, int y );
 
-  inline void getSelection( int *x, int *y ) { *x = selX; *y = selY; }
+  inline void getSelection( int *x, int *y ) { *x = markedX; *y = markedY; }
 
   virtual void drawWidgetContents(Widget *w);
 

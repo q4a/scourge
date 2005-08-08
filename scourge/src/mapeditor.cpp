@@ -113,7 +113,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
                        (const char**)themeNames );
 
   newMapWin->createLabel( 5, 130, "Select map location: (click on map, drag to move)" );
-  mapWidget = new MapWidget( scourge, 5, 140, nw - 5, 335 );
+  mapWidget = new MapWidget( scourge, newMapWin, 5, 140, nw - 5, 335 );
   newMapWin->addWidget( mapWidget->getCanvas() );
 
   int bw = nw / 4;
@@ -351,6 +351,7 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
       scourge->getShapePalette()->loadTheme( themeNames[ line ] );
     this->level = atoi( levelText->getText() );
     this->depth = atoi( depthText->getText() );
+    mapWidget->getSelection( &(scourge->getMap()->startx), &(scourge->getMap()->starty) );
 
   } else if( widget == cancelButton ) {
     newMapWin->setVisible( false );
