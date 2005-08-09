@@ -20,6 +20,8 @@
 
 #include "../constants.h"
 
+class Widget;
+
 /**
  * This is the only class thru which the gui interacts with the rest of scourge.
  * It is important to keep this in mind so that:
@@ -42,6 +44,8 @@ public:
                             float zrot, float yrot, char *message ) = 0;
   virtual void setFontType( int fontType ) = 0;
   virtual GLuint loadSystemTexture( char *line ) = 0;
+  virtual void unlockMouse() = 0;
+  virtual void lockMouse( Widget *widget ) = 0;
 };                                    
 
 #endif

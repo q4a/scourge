@@ -53,8 +53,8 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   if( editable ) {
     markedX = selX + x - getX();
     markedY = selY + y - getY();
-    cerr << "mark at: " << markedX << "," << markedY << endl;
   }
+  scourge->getSDLHandler()->unlockMouse();
   return isInside( x, y );
   case SDL_MOUSEBUTTONDOWN:
   if( isInside( x, y ) ) {
@@ -63,6 +63,7 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     oldSelX = selX;
     oldSelY = selY;
     dragging = true;
+    scourge->getSDLHandler()->lockMouse( this );
   }
   break;
   }

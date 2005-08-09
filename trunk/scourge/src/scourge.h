@@ -640,6 +640,9 @@ public:
   void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void getMapXYAtScreenXY(Uint16 *mapx, Uint16 *mapy);
 
+  virtual void unlockMouse() { getSDLHandler()->unlockMouse(); }
+  virtual void lockMouse( Widget *widget ) { getSDLHandler()->lockMouse( widget ); }
+
  protected:
 
    void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
