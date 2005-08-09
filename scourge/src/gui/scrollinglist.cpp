@@ -281,6 +281,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
     eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
 		innerDrag = false;
 		dragging = false;
+    //((Window*)parent)->getScourgeGui()->unlockMouse();
 		return isInside(x, y);
 	case SDL_MOUSEBUTTONDOWN:
 		if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
@@ -288,6 +289,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 			dragging = inside;
 			dragX = x - getX();
 			dragY = y - (scrollerY + getY());
+      //((Window*)parent)->getScourgeGui()->lockMouse( this );
 		} else if(isInside(x, y)) {
 			dragging = false;
 			selectLine(x, y);

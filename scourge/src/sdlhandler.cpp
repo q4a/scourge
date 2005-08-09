@@ -57,6 +57,8 @@ SDLHandler::SDLHandler(ShapePalette *shapePal){
   lastMouseMoveTime = SDL_GetTicks();
   isDoubleClick = false;
   dontUpdateScreen = false;
+  mouseLock = NULL;
+  willUnlockMouse = false;
 }
 
 SDLHandler::~SDLHandler(){
@@ -505,20 +507,27 @@ void SDLHandler::mainLoop() {
 
       bool res = false;
       if(widget) {
-        res = eventHandler->handleEvent(widget, &event);
-        // this is so that moving the cursor over a 
-        // window doesn't scroll the map forever
-        if( event.type == SDL_MOUSEMOTION ) {
-          res = eventHandler->handleEvent(&event);
+        if( !mouseLock || mouseLock == widget ) {
+          res = eventHandler->handleEvent(widget, &event);
+          // this is so that moving the cursor over a 
+          // window doesn't scroll the map forever
+          if( event.type == SDL_MOUSEMOTION ) {
+            res = eventHandler->handleEvent(&event);
+          }
         }
       } else {
-        res = eventHandler->handleEvent(&event);
+        if( !mouseLock ) res = eventHandler->handleEvent(&event);
       }
       if(res) {
         if(popHandlers()) {
           return;
         }
       }
+    }
+
+    if( willUnlockMouse ) {
+      mouseLock = NULL;
+      willUnlockMouse = false;
     }
 
     if(isActive) {

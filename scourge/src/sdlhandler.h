@@ -90,6 +90,10 @@ private:
 
   // only do stencil buffer ops if this is true
   static bool stencilBufferUsed;
+  
+  // mouse locking
+  Widget *mouseLock;
+  bool willUnlockMouse;
 
 public: 
 
@@ -99,6 +103,9 @@ public:
 
   SDLHandler(ShapePalette *shapePal);
   virtual ~SDLHandler();
+
+  inline void lockMouse( Widget *widget ) { mouseLock = widget; }
+  inline void unlockMouse() { willUnlockMouse = true; }
 
   void drawTooltip( float xpos2, float ypos2, float zpos2, 
                     float zrot, float yrot, 
