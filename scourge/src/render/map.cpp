@@ -170,6 +170,8 @@ Map::~Map(){
 
 void Map::reset() {
 
+  edited = false;
+  strcpy( this->name, "" );
   hasWater = false;
 
   // remove locking info
@@ -1139,7 +1141,8 @@ void Map::draw() {
     }
     
     if( session->getUserConfiguration()->isOvalCutoutShown() &&
-        !settings->isGridShowing() ) 
+        !settings->isGridShowing() &&
+        session->getCurrentMission() ) 
       drawShade();
 
     glDisable(GL_BLEND);
@@ -2878,14 +2881,18 @@ void Map::saveMap( char *name, char *result ) {
   sprintf( result, "Map saved: %s", name );
 }
 
-void Map::loadMap( char *name, char *result ) {
+void Map::loadMap( char *name, char *result, int depth ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
     return;
   }
 
   char fileName[300];
-  sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+  if( depth > 0 ) {
+    sprintf( fileName, "%s/maps/%s%d.map", rootDir, name, depth );
+  } else {
+    sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+  }
   cerr << "loading map: " << fileName << endl;
 
   FILE *fp = fopen( fileName, "rb" );
@@ -2903,8 +2910,13 @@ void Map::loadMap( char *name, char *result ) {
   // load the theme
   session->getShapePalette()->loadTheme( (const char*)info->theme_name );
 
-  startx = info->start_x;
-  starty = info->start_y;
+  if( depth == 0 || !(session->getParty()) ) {
+    startx = info->start_x;
+    starty = info->start_y;
+  } else {
+    startx = toint( session->getParty()->getPlayer()->getX() );
+    starty = toint( session->getParty()->getPlayer()->getY() );
+  }
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
@@ -2923,8 +2935,10 @@ void Map::loadMap( char *name, char *result ) {
       else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( info->pos[i]->creature ) {
       Creature *creature = Creature::load( session, info->pos[i]->creature );
-      if( creature ) setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
-      else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
+      if( creature ) {
+        setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
+        creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
+      } else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
       shape = session->getShapePalette()->
         findShapeByName( (char*)(info->pos[i]->shape_name) );
@@ -2939,6 +2953,12 @@ void Map::loadMap( char *name, char *result ) {
   this->center( info->start_x, info->start_y, true );
 
   Persist::deleteMapInfo( info );
+
+  // load map-related data from text file
+  Mission::loadMapData( (const char*)name );
+
+  edited = true;
+  strcpy( this->name, name );
 
   sprintf( result, "Map loaded: %s", name );
 }

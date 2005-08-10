@@ -72,6 +72,9 @@ class Window : public Widget {
   Widget *lastWidget;
   int animation;
 
+  static Window *mouseLockWindow;
+  static Widget *mouseLockWidget;
+
  public: 
 
   enum {
@@ -105,6 +108,8 @@ class Window : public Widget {
 		  bool hasCloseButton=true, int type=BASIC_WINDOW, const char *themeName=NULL );
 
   ~Window();
+
+  void setMouseLock( Widget *widget );
 
   inline void setAnimation( int a ) { animation = a; }
   inline int getAnimation() { return animation; }

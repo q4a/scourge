@@ -28,7 +28,8 @@ const char Window::DROP_FAILED[80] = "sound/equip/cant_equip.wav";
 int Window::windowCount = 0;
 Window *Window::window[MAX_WINDOW];
 Window *Window::currentWin = NULL;
-
+Window *Window::mouseLockWindow = NULL;
+Widget *Window::mouseLockWidget = NULL;
 /**
   *@author Gabor Torok
   */
@@ -127,6 +128,11 @@ void Window::drawVisibleWindows() {
 }
 
 Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
+
+  if( mouseLockWindow ) {
+    return mouseLockWindow->handleWindowEvent( event, x, y );
+  }
+
   // find the topmost window
   Window *win = NULL;
   int maxz = 0;
@@ -171,6 +177,14 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
 }
 
 Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
+
+  if( mouseLockWidget ) {
+    mouseLockWidget->
+      handleEvent( mouseLockWindow, event, 
+                   x - getX(), 
+                   y - ( getY() + TOP_HEIGHT ) );
+    return mouseLockWidget;
+  }
 
   if(dragging) {
     handleEvent(NULL, event, x, y);
@@ -889,3 +903,14 @@ void Window::setLastWidget(Widget *w) {
   }
 }
 
+void Window::setMouseLock( Widget *widget ) {
+  if( widget ) {
+    mouseLockWindow = this;
+    mouseLockWidget = widget;
+    getScourgeGui()->lockMouse( this );
+  } else {
+    mouseLockWindow = NULL;
+    mouseLockWidget = NULL;
+    getScourgeGui()->unlockMouse();
+  }
+}

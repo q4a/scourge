@@ -86,7 +86,10 @@ public:
   static char *getAnswer( char *keyphrase );
   static char *getIntro( Monster *npc );
   static char *getAnswer( Monster *npc, char *keyphrase );
-
+  /**
+   * Load extra data from text file alongside an edited map.
+   */
+  static void loadMapData( const char *name, int depth=0 );
 
   Mission( Board *board, int level, int depth, 
 		   char *name, char *description, 
@@ -150,6 +153,9 @@ public:
   bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
  private:
   void checkMissionCompleted();
+  static int readConversationLine( FILE *fp, char *line,
+                                   char *keyphrase, char *answer,
+                                   int n );  
 };
 
 
@@ -209,9 +215,6 @@ public:
 
  private:
   void freeListText();
-  int readConversationLine( FILE *fp, char *line,
-                            char *keyphrase, char *answer,
-                            int n );  
 };
 
 #endif

@@ -47,8 +47,9 @@ Board::Board(Session *session) {
   Mission *current_mission = NULL;
   char type;
   char name[255], line[255], description[2000], 
-    success[2000], failure[2000], keyphrase[80],answer[4000];
-  Monster *currentNpc = NULL;
+    success[2000], failure[2000];
+  //char keyphrase[80],answer[4000];
+  //Monster *currentNpc = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
     if( n == 'M' ) {
@@ -128,6 +129,7 @@ Board::Board(Session *session) {
       Monster *monster = Monster::getMonsterByName(line);
       current_mission->addCreature( monster );
 
+      /*
     } else if(n == 'G') {
       fgetc(fp);
       n = Constants::readLine(line, fp);
@@ -173,7 +175,7 @@ Board::Board(Session *session) {
       } else {
         npcConv->npc_conversations[ ks ] = as;
       }
-
+*/
     } else {
       n = Constants::readLine(line, fp);
     }
@@ -181,9 +183,9 @@ Board::Board(Session *session) {
   fclose(fp);
 }
 
-int Board::readConversationLine( FILE *fp, char *line,
-                                 char *keyphrase, char *answer,
-                                 int n ) {
+int Mission::readConversationLine( FILE *fp, char *line,
+                                   char *keyphrase, char *answer,
+                                   int n ) {
   // find the first comma
   char last = line[ strlen( line ) - 1 ];
   char *p = strchr( line, ',' );
@@ -643,5 +645,90 @@ char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
     return (char*)(nc->npc_unknownPhrases[ (int)( (float)( nc->npc_unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
   }
+}
+
+void Mission::loadMapData( const char *filename, int depth ) {
+
+  // clean up
+  intros.clear();
+  unknownPhrases.clear();
+  conversations.clear();
+  for (map<Monster*,NpcConversation*>::iterator i=npcConversations.begin(); i!=npcConversations.end(); ++i) {
+    NpcConversation *npcConversation = i->second;
+    delete npcConversation;
+  }
+  npcConversations.clear();
+
+
+  char errMessage[500];
+  char s[200];
+  if( depth > 0 ) {
+    sprintf( s, "%s/maps/%s%d.txt", rootDir, filename, depth );
+  } else {
+    sprintf( s, "%s/maps/%s.txt", rootDir, filename );
+  }
+  FILE *fp = fopen( s, "r" );
+  if(!fp) {        
+    sprintf(errMessage, "Unable to find the file: %s!", s);
+    cerr << errMessage << endl;
+    //exit(1);
+    return;
+  }
+
+  char line[255], keyphrase[80],answer[4000];
+  Monster *currentNpc = NULL;
+  int n = fgetc(fp);
+  while(n != EOF) {
+    if(n == 'G') {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+
+      n = readConversationLine( fp, line, keyphrase, answer, n );
+
+      string ks = keyphrase;
+      string as = answer;
+
+      if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
+        Mission::intros.push_back( as );
+      } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
+        Mission::unknownPhrases.push_back( as );
+      } else {
+        Mission::conversations[ ks ] = as;
+      }
+
+    } else if( n == 'P' ) {    
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      currentNpc = Monster::getMonsterByName( line );
+    } else if( n == 'V' && currentNpc ) {    
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+
+      n = readConversationLine( fp, line, keyphrase, answer, n );
+
+      string ks = keyphrase;
+      string as = answer;
+
+      NpcConversation *npcConv;
+      if( Mission::npcConversations.find( currentNpc ) == Mission::npcConversations.end() ) {
+        npcConv = new NpcConversation();
+        Mission::npcConversations[ currentNpc ] = npcConv;
+      } else {
+        npcConv = Mission::npcConversations[ currentNpc ];
+      }
+
+      if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
+        npcConv->npc_intros.push_back( as );
+      } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
+        npcConv->npc_unknownPhrases.push_back( as );
+      } else {
+        npcConv->npc_conversations[ ks ] = as;
+      }
+
+    } else {
+      n = Constants::readLine(line, fp);
+    }
+  }
+  fclose(fp);
 }
 

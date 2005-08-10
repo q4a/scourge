@@ -185,6 +185,8 @@ class Map {
   int mapViewWidth, mapViewDepth;
   char mapDebugStr[200];
 
+  char name[80];
+  bool edited; // is this a non-random (edited) map?
   bool hasWater;
 
   MapSettings *settings;
@@ -206,6 +208,9 @@ class Map {
   Map(Session *session);
   ~Map();
 
+  inline bool isEdited() { return edited; }
+  inline char *getName() { return name; }
+
   // descriptions
   inline bool didDescriptionsChange() { return descriptionsChanged; }
   inline void setDescriptionsChanged( bool b ) { descriptionsChanged = b; }
@@ -214,7 +219,7 @@ class Map {
   inline Color *getDesriptionColors() { return descriptionsColor; }
 
   void saveMap( char *name, char *result );
-  void loadMap( char *name, char *result );
+  void loadMap( char *name, char *result, int depth=0 );
 
   inline Uint16 getCursorMapX() { return cursorMapX; }
   inline Uint16 getCursorMapY() { return cursorMapY; }

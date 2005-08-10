@@ -322,7 +322,7 @@ void Scourge::startMission() {
 
       dg = NULL;
       char result[300];
-      levelMap->loadMap( "hq", result );
+      levelMap->loadMap( "hq", result, currentStory );
       //cerr << result << endl;
 
       // FIXME: make this a method and use formation
@@ -1794,20 +1794,20 @@ int Scourge::dropItem(int x, int y) {
 }
 
 bool Scourge::useGate(Location *pos) {
-  for(int i = 0; i < party->getPartySize(); i++) {
-	if(!party->getParty(i)->getStateMod(Constants::dead)) {
-	  if(pos->shape == shapePal->findShapeByName("GATE_UP")) {
-		oldStory = currentStory;
-		currentStory--;
-		changingStory = true;
-		return true;
-	  } else if(pos->shape == shapePal->findShapeByName("GATE_DOWN")) {
-		oldStory = currentStory;
-		currentStory++;
-		changingStory = true;
-		return true;
-	  }
-	}
+  for (int i = 0; i < party->getPartySize(); i++) {
+    if (!party->getParty(i)->getStateMod(Constants::dead)) {
+      if (pos->shape == shapePal->findShapeByName("GATE_UP")) {
+        oldStory = currentStory;
+        currentStory--;
+        changingStory = true;
+        return true;
+      } else if (pos->shape == shapePal->findShapeByName("GATE_DOWN")) {
+        oldStory = currentStory;
+        currentStory++;
+        changingStory = true;
+        return true;
+      }
+    }
   }
   return false;
 }

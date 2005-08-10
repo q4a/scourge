@@ -54,7 +54,7 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     markedX = selX + x - getX();
     markedY = selY + y - getY();
   }
-  scourge->getSDLHandler()->unlockMouse();
+  ((Window*)parent)->setMouseLock( NULL );  
   return isInside( x, y );
   case SDL_MOUSEBUTTONDOWN:
   if( isInside( x, y ) ) {
@@ -63,7 +63,7 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     oldSelX = selX;
     oldSelY = selY;
     dragging = true;
-    scourge->getSDLHandler()->lockMouse( this );
+    ((Window*)parent)->setMouseLock( this );
   }
   break;
   }
@@ -161,7 +161,8 @@ void MapWidget::drawWidgetContents(Widget *w) {
 
   int shadowSize = 10;
   glEnable( GL_BLEND );
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 
   glBegin( GL_QUADS );
   glColor4f( 0, 0, 0, 0.75f );
