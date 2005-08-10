@@ -219,7 +219,7 @@ class Map {
   inline Color *getDesriptionColors() { return descriptionsColor; }
 
   void saveMap( char *name, char *result );
-  void loadMap( char *name, char *result, int depth=0 );
+  void loadMap( char *name, char *result, int depth=0, bool changingStory=false );
 
   inline Uint16 getCursorMapX() { return cursorMapX; }
   inline Uint16 getCursorMapY() { return cursorMapY; }

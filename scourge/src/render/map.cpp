@@ -2881,7 +2881,7 @@ void Map::saveMap( char *name, char *result ) {
   sprintf( result, "Map saved: %s", name );
 }
 
-void Map::loadMap( char *name, char *result, int depth ) {
+void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
     return;
@@ -2910,7 +2910,9 @@ void Map::loadMap( char *name, char *result, int depth ) {
   // load the theme
   session->getShapePalette()->loadTheme( (const char*)info->theme_name );
 
-  if( depth == 0 || !(session->getParty()) ) {
+  // Start at the saved start pos. or where the party
+  // was on the last level if changing stories.
+  if( !changingStory || !(session->getParty()) ) {
     startx = info->start_x;
     starty = info->start_y;
   } else {
