@@ -2925,7 +2925,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
 
     if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
       shape = session->getShapePalette()->
-        findShapeByName( (char*)(info->pos[i]->floor_shape_name) );
+        findShapeByName( (char*)(info->pos[i]->floor_shape_name), true );
       if( shape ) setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
       else cerr << "Map::load failed to find floor shape: " << info->pos[i]->floor_shape_name <<
         " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
@@ -2943,7 +2943,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
       } else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
       shape = session->getShapePalette()->
-        findShapeByName( (char*)(info->pos[i]->shape_name) );
+        findShapeByName( (char*)(info->pos[i]->shape_name), true );
       if( shape ) setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape );
       else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
         " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
