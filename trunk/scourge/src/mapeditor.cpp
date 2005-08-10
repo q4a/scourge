@@ -223,18 +223,20 @@ void MapEditor::drawView() {
   
   glLoadIdentity();
 
-  Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX(), 
-                                                  scourge->getMap()->getCursorFlatMapY(),
-                                                  0 );
-  scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d Shape=%s Item=%s Creature=%s", 
-                                      scourge->getMap()->getCursorFlatMapX(), 
-                                      scourge->getMap()->getCursorFlatMapY(), 
-                                      scourge->getMap()->getCursorChunkX(), 
-                                      scourge->getMap()->getCursorChunkY(),
-                                      ( pos ? pos->shape->getName() : "NULL" ),
-                                      ( pos && pos->item ? pos->item->getRpgItem()->getName() : "NULL" ),
-                                      ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
-  
+  if( scourge->getMap()->getCursorFlatMapX() < MAP_WIDTH &&
+      scourge->getMap()->getCursorFlatMapY() < MAP_DEPTH ) {
+    Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX(), 
+                                                    scourge->getMap()->getCursorFlatMapY(),
+                                                    0 );
+    scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d Shape=%s Item=%s Creature=%s", 
+                                        scourge->getMap()->getCursorFlatMapX(), 
+                                        scourge->getMap()->getCursorFlatMapY(), 
+                                        scourge->getMap()->getCursorChunkX(), 
+                                        scourge->getMap()->getCursorChunkY(),
+                                        ( pos ? pos->shape->getName() : "NULL" ),
+                                        ( pos && pos->item ? pos->item->getRpgItem()->getName() : "NULL" ),
+                                        ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
+  }
   glTranslatef( 50, 50, 0 );
   glRotatef( scourge->getMap()->getZRot(), 0, 0, 1 );
   
