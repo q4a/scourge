@@ -267,7 +267,6 @@ void Scourge::startMission() {
     containerGuiCount = 0;
     lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
     teleporting = false;
-    changingStory = false;
     targetSelectionFor = NULL;  
 
     // clear infoMessage
@@ -322,7 +321,7 @@ void Scourge::startMission() {
 
       dg = NULL;
       char result[300];
-      levelMap->loadMap( "hq", result, currentStory );
+      levelMap->loadMap( "hq", result, currentStory, changingStory );
       //cerr << result << endl;
 
       // FIXME: make this a method and use formation
@@ -354,6 +353,8 @@ void Scourge::startMission() {
                                 getSession()->getCurrentMission());
       dg->toMap(levelMap, getShapePalette());
     }
+
+    changingStory = false;
 	
     // center map on the player
     levelMap->center(toint(party->getPlayer()->getX()), 
