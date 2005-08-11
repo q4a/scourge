@@ -95,10 +95,14 @@ class WallTheme {
   GLfloat r[MULTI_TEX_COUNT], g[MULTI_TEX_COUNT], b[MULTI_TEX_COUNT], intensity[MULTI_TEX_COUNT];
   bool smooth[MULTI_TEX_COUNT];
   ShapePalette *shapePal;
+  bool special;
 
  public:
   WallTheme( char *name, ShapePalette *shapePal );
   ~WallTheme();
+
+  inline void setSpecial( bool b ) { special = b; }
+  inline bool isSpecial() { return special; }
 
   inline void setFaceCount( int themeRef, int value ) { faceCount[ themeRef ] = value; }
   int getFaceCount( string themeRefName );
@@ -199,7 +203,8 @@ private:
 
   Session *session;
   WallTheme *themes[100];
-  int themeCount;
+  WallTheme *allThemes[100];
+  int themeCount, allThemeCount;
   WallTheme *currentTheme;
   vector<GLShape*> themeShapes;
   vector<string> themeShapeRef;
@@ -232,6 +237,10 @@ public:
   
   inline int getThemeCount() { return themeCount; }
   inline char *getThemeName( int index ) { return themes[ index ]->getName(); }
+
+  inline int getAllThemeCount() { return allThemeCount; }
+  inline char *getAllThemeName( int index ) { return allThemes[ index ]->getName(); }
+  inline bool isThemeSpecial( int index ) { return allThemes[ index ]->isSpecial(); }
 
   inline const char *getCurrentThemeName() { return (const char*)currentTheme->getName(); }
 

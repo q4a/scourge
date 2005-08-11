@@ -104,10 +104,12 @@ MapEditor::MapEditor( Scourge *scourge ) {
   newMapWin->addWidget( themeList );
   themeNames = (char**)malloc( scourge->getShapePalette()->getThemeCount() * 
                                sizeof(char*) );
-  for( int i = 0; i < scourge->getShapePalette()->getThemeCount(); i++ ) {
+  for( int i = 0; i < scourge->getShapePalette()->getAllThemeCount(); i++ ) {
     themeNames[ i ] = (char*)malloc( 120 * sizeof(char) );
     strcpy( themeNames[ i ], 
-            scourge->getShapePalette()->getThemeName( i ) );
+            scourge->getShapePalette()->getAllThemeName( i ) );
+    if( scourge->getShapePalette()->isThemeSpecial( i ) )
+      strcat( themeNames[i], "(S)" );
   }
   themeList->setLines( scourge->getShapePalette()->getThemeCount(), 
                        (const char**)themeNames );

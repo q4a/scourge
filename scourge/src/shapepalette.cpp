@@ -336,7 +336,14 @@ void ShapePalette::initialize() {
     } else if( n == 'H' ) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
+      bool special = false;
+      char *m = strrchr( line, ',' );
+      if( m ) {
+        *m = 0;
+        special = true;
+      }
       WallTheme *theme = new WallTheme( strdup(line), this );
+      theme->setSpecial( special );
       // read the shape ref-s
       for(int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++) {
         n = Constants::readLine(line, fp);
@@ -368,7 +375,10 @@ void ShapePalette::initialize() {
         theme->setMultiTexSmooth( i, ( atoi( p ) != 0 ) );
       }
 
-      themes[themeCount++] = theme;
+      if( !special ) {
+        themes[ themeCount++ ] = theme;
+      }
+      allThemes[ allThemeCount++ ] = theme;
 //      cerr << "&&& Added theme: " << theme->getName() << " count=" << themeCount << endl;
     } else if( n == 'O' ) {
       fgetc(fp);
@@ -588,9 +598,9 @@ void ShapePalette::loadTheme(const char *themeName) {
 
   // find that theme!
   WallTheme *theme = NULL;
-  for(int i = 0; i < themeCount; i++) {
-    if( !strcmp( themes[i]->getName(), themeName ) ) {
-      theme = themes[i];
+  for(int i = 0; i < allThemeCount; i++) {
+    if( !strcmp( allThemes[i]->getName(), themeName ) ) {
+      theme = allThemes[i];
       break;
     }
   }
