@@ -2962,6 +2962,19 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   edited = true;
   strcpy( this->name, name );
 
+  // place the party at the start
+  if( session->getParty() ) {
+    int xx = startx;
+    int yy = starty;
+    for( int t = 0; t < session->getParty()->getPartySize(); t++ ) {
+      session->getParty()->getParty(t)->moveTo( xx, yy, 0 );
+      session->getParty()->getParty(t)->setSelXY( -1, -1 );
+      if( !session->getParty()->getParty(t)->getStateMod( Constants::dead ) )
+        setCreature( xx, yy, 0, session->getParty()->getParty(t) );
+      xx += session->getParty()->getParty(t)->getShape()->getWidth();
+    }
+  }
+
   sprintf( result, "Map loaded: %s", name );
 }
 

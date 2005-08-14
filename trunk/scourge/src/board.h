@@ -58,6 +58,7 @@ private:
   Board *board;
   int level;
   int depth;
+  char mapName[80];
   char name[80];
   char description[2000];
   char success[2000];
@@ -93,7 +94,8 @@ public:
 
   Mission( Board *board, int level, int depth, 
 		   char *name, char *description, 
-		   char *success, char *failure );
+		   char *success, char *failure,
+		   char *mapName );
   ~Mission();
 
   inline int getMapX() { return mapX; }
@@ -138,7 +140,8 @@ public:
   inline char *getSuccess() { return success; }
   inline char *getFailure() { return failure; }
   inline int getLevel() { return level; }
-  inline int getDepth() { return depth; }  
+  inline int getDepth() { return depth; } 
+  inline char *getMapName() { return mapName; } 
   void reset();
 
   // these return true if the mission has been completed

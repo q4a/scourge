@@ -875,9 +875,9 @@ GLuint ShapePalette::loadGLTextures(char *filename) {
   SDL_Surface *TextureImage[1];
 
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-//  fprintf(stderr, "Loading texture: %s\n", fn);
+  //fprintf(stderr, "Loading texture: %s\n", fn);
   if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
-//    fprintf(stderr, "\tFound it. pitch=%d width=%d height=%d\n", (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+    //fprintf(stderr, "\tFound it. pitch=%d width=%d height=%d\n", (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
 
     Constants::checkTexture("ShapePalette::loadGLTextures", 
                             TextureImage[0]->w, TextureImage[0]->h);
