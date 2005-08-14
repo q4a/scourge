@@ -30,7 +30,7 @@
 
 #define INFO_INTERVAL 3000
 
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -219,7 +219,7 @@ void Scourge::startMission() {
   inHq = true;
 
   Mission *lastMission = NULL;
-  
+  char result[300];  
   while(true) {
 
     // add gui
@@ -320,20 +320,8 @@ void Scourge::startMission() {
       //dg->toMap(levelMap, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
 
       dg = NULL;
-      char result[300];
       levelMap->loadMap( "hq", result, currentStory, changingStory );
       //cerr << result << endl;
-
-      // FIXME: make this a method and use formation
-      int xx = levelMap->startx;
-      int yy = levelMap->starty;
-      for( int t = 0; t < getParty()->getPartySize(); t++ ) {
-        getParty()->getParty(t)->moveTo( xx, yy, 0 );
-        getParty()->getParty(t)->setSelXY( -1, -1 );
-        if( !getParty()->getParty(t)->getStateMod( Constants::dead ) )
-          levelMap->setCreature( xx, yy, 0, getParty()->getParty(t) );
-        xx += getParty()->getParty(t)->getShape()->getWidth();
-      }
 
     } else {
       // in HQ map
@@ -347,11 +335,18 @@ void Scourge::startMission() {
       " depth=" << getSession()->getCurrentMission()->getDepth() << 
       " current story=" << currentStory << endl;
 	  */
-      dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
-                                (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
-                                (currentStory > 0),
-                                getSession()->getCurrentMission());
-      dg->toMap(levelMap, getShapePalette());
+      if( getSession()->getCurrentMission()->getMapName() &&
+          strlen( getSession()->getCurrentMission()->getMapName() ) ) {
+        dg = NULL;
+        levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, currentStory, changingStory );
+        //cerr << result << endl;
+      } else {
+        dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
+                                  (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
+                                  (currentStory > 0),
+                                  getSession()->getCurrentMission());
+        dg->toMap(levelMap, getShapePalette());
+      }
     }
 
     changingStory = false;

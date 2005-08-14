@@ -102,7 +102,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   themeList = new ScrollingList( 150, 50, 220, 60, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   newMapWin->addWidget( themeList );
-  themeNames = (char**)malloc( scourge->getShapePalette()->getThemeCount() * 
+  themeNames = (char**)malloc( scourge->getShapePalette()->getAllThemeCount() * 
                                sizeof(char*) );
   for( int i = 0; i < scourge->getShapePalette()->getAllThemeCount(); i++ ) {
     themeNames[ i ] = (char*)malloc( 120 * sizeof(char) );
@@ -351,8 +351,12 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 
     scourge->getMap()->reset();
     int line = themeList->getSelectedLine();
-    if( line > -1 ) 
-      scourge->getShapePalette()->loadTheme( themeNames[ line ] );
+    if( line > -1 ) {
+      char *p = strdup( themeNames[ line ] );
+      if( !strcmp( p + strlen( p ) - 3, "(S)" ) ) *( p + strlen( p ) - 3 ) = 0;
+      scourge->getShapePalette()->loadTheme( p );
+      free( p );
+    }
     this->level = atoi( levelText->getText() );
     this->depth = atoi( depthText->getText() );
     mapWidget->getSelection( &(scourge->getMap()->startx), &(scourge->getMap()->starty) );
