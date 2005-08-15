@@ -37,7 +37,6 @@ Board::Board(Session *session) {
   char errMessage[500];
   char s[200];
   sprintf(s, "%s/world/missions.txt", rootDir);
-  cerr << "opening: " << s << endl;
   FILE *fp = fopen(s, "r");
   if(!fp) {        
     sprintf(errMessage, "Unable to find the file: %s!", s);
@@ -53,7 +52,6 @@ Board::Board(Session *session) {
   //Monster *currentNpc = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
-    cerr << "&&& n=" << ((char)n) << " int=" << ((int)n) << endl;
     if( n == 'M' ) {
       // skip ':'
       fgetc( fp );
@@ -87,7 +85,6 @@ Board::Board(Session *session) {
       fgetc( fp );
       // read the name
       n = Constants::readLine( name, fp );
-      cerr << "Creating story mission: " << name << endl;
 
       // read the level and depth
       n = Constants::readLine( line, fp );
@@ -95,7 +92,7 @@ Board::Board(Session *session) {
       int depth = atoi( strtok( NULL, ",") );
       char *p = strtok( NULL, "," );
       if( p ) strcpy( mapName, p );
-      cerr << "*** mapName=" << ( mapName ? mapName : "NULL" ) << endl;
+      else strcpy( mapName, "" );
 
       strcpy( description, "" );
       while( n == 'D' ) {
@@ -363,7 +360,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   Mission *mission = new Mission( board, 
                                   level, depth, parsedName, 
                                   parsedDescription, parsedSuccess, 
-                                  parsedFailure, NULL );
+                                  parsedFailure, NULL, mapType );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
     RpgItem *item = i->second;
     mission->addItem( item );
@@ -371,13 +368,6 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   for(map<string, Monster*>::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
     Monster *monster = i->second;
     mission->addCreature( monster );
-  }
-
-  // put it on the map
-  int mapx, mapy;
-  if( session->getShapePalette()->
-      getRandomMapLocation( mapType, NULL, &mapx, &mapy ) ) {
-    mission->setMapXY( mapx, mapy );
   }
 
   return mission;
@@ -445,9 +435,9 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
 
 
 Mission::Mission( Board *board, int level, int depth, 
-				  char *name, char *description, 
-				  char *success, char *failure,
-				  char *mapName ) {
+                  char *name, char *description, 
+                  char *success, char *failure,
+                  char *mapName, char mapType ) {
   this->board = board;
   this->level = level;
   this->depth = depth;
@@ -460,8 +450,16 @@ Mission::Mission( Board *board, int level, int depth,
   this->storyLine = false;
   this->mapX = this->mapY = 0;
 
-  cerr << "*** Created mission: " << getName() << endl;
-  cerr << "\tmap name=" << ( strlen( this->mapName ) ? mapName : "<random>" ) << endl;
+  // assign the map grid location
+  if( mapName && strlen( mapName ) ) {
+    char result[255];
+    board->getSession()->getMap()->loadMapLocation( mapName, result, &mapX, &mapY );
+  } else {
+    board->getSession()->getShapePalette()->getRandomMapLocation( mapType, NULL, &mapX, &mapY );
+  }
+  
+//  cerr << "*** Created mission: " << getName() << endl;
+//  cerr << "\tmap name=" << ( strlen( this->mapName ) ? mapName : "<random>" ) << endl;
 //  cerr << getDescription() << endl;
 //  cerr << "-----------------------" << endl;
 }

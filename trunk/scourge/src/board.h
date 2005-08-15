@@ -95,7 +95,7 @@ public:
   Mission( Board *board, int level, int depth, 
 		   char *name, char *description, 
 		   char *success, char *failure,
-		   char *mapName );
+		   char *mapName, char mapType='C' );
   ~Mission();
 
   inline int getMapX() { return mapX; }

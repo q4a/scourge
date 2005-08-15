@@ -112,6 +112,8 @@ void Persist::saveMap( File *file, MapInfo *info ) {
   file->write( &(info->version) );
   file->write( &(info->start_x) );
   file->write( &(info->start_y) );
+  file->write( &(info->grid_x) );
+  file->write( &(info->grid_y) );
   file->write( info->theme_name, 255 );
   file->write( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
@@ -144,11 +146,24 @@ void Persist::saveMap( File *file, MapInfo *info ) {
   }
 }
 
+// FIXME: reuse this in loadmap
+void Persist::loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY ) {
+  Uint32 i32;
+  Uint16 i16;
+  file->read( &i32 );
+  file->read( &i16 );
+  file->read( &i16 );
+  file->read( gridX );
+  file->read( gridY );
+}
+
 MapInfo *Persist::loadMap( File *file ) {
   MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
   file->read( &(info->version) );
   file->read( &(info->start_x) );
   file->read( &(info->start_y) );
+  file->read( &(info->grid_x) );
+  file->read( &(info->grid_y) );
   file->read( info->theme_name, 255 );
   file->read( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {

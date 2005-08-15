@@ -75,6 +75,7 @@ private:
   Window *newMapWin;
   Button *cancelButton;
   Button *okButton;
+  Button *applyButton;
   TextField *levelText, *depthText;
   ScrollingList *themeList;
   char **themeNames;
