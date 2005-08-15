@@ -204,6 +204,7 @@ class Map {
 
   int cursorWidth, cursorDepth, cursorHeight, cursorZ;
   int startx, starty;
+  int mapGridX, mapGridY;
 
   Map(Session *session);
   ~Map();
@@ -220,6 +221,7 @@ class Map {
 
   void saveMap( char *name, char *result );
   void loadMap( char *name, char *result, int depth=0, bool changingStory=false );
+  void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
 
   inline Uint16 getCursorMapX() { return cursorMapX; }
   inline Uint16 getCursorMapY() { return cursorMapY; }

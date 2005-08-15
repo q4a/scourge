@@ -321,6 +321,7 @@ void Scourge::startMission() {
 
       dg = NULL;
       levelMap->loadMap( "hq", result, currentStory, changingStory );
+      cerr << "***** hq" << endl;
       //cerr << result << endl;
 
     } else {
@@ -340,12 +341,14 @@ void Scourge::startMission() {
         dg = NULL;
         levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, currentStory, changingStory );
         //cerr << result << endl;
+        cerr << "***** " << getSession()->getCurrentMission()->getMapName() << endl;
       } else {
         dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
                                   (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
                                   (currentStory > 0),
                                   getSession()->getCurrentMission());
         dg->toMap(levelMap, getShapePalette());
+        cerr << "***** random" << endl;
       }
     }
 

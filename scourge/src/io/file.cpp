@@ -27,7 +27,7 @@ File::File( FILE *fp ) {
 }
 
 File::~File() {
-  //cerr << "File destructor." << endl;
+  //cerr << "in ~File()" << endl;
   close();
   free( tmp32 );
   free( tmp16 );

@@ -73,7 +73,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   loadButton = mainWin->createButton( 5, 100, ( w - 10 ) / 2, 120, "Load" );
   saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, 100, w - 5, 120, "Save" );
 
-  newButton = mainWin->createButton( 5, 125, w - 10, 145, "New Map" );
+  newButton = mainWin->createButton( 5, 125, w - 10, 145, "Map Properties" );
   floorType = mainWin->createButton( 5, 150, w - 10, 170, floorTypeName[ 1 ], true );
 
   startPosButton = mainWin->createButton( 5, 175, w - 10, 195, "Starting Position", true );
@@ -86,7 +86,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   int nh = 400;
   newMapWin = new Window( scourge->getSDLHandler(),
                           40, 40, nw, nh,
-                          "Create a New Map", 
+                          "Map Properties", 
                           false, 
                           Window::BASIC_WINDOW,
                           GuiTheme::DEFAULT_THEME );
@@ -118,8 +118,9 @@ MapEditor::MapEditor( Scourge *scourge ) {
   mapWidget = new MapWidget( scourge, newMapWin, 5, 140, nw - 5, 335 );
   newMapWin->addWidget( mapWidget->getCanvas() );
 
-  int bw = nw / 4;
-  okButton = newMapWin->createButton( nw - bw * 2 - 10, 345, nw - bw - 5, 365, "OK" );
+  int bw = nw / 6;
+  okButton = newMapWin->createButton( nw - bw * 3 - 10, 345, nw - bw * 2 - 5, 365, "New Map" );
+  applyButton = newMapWin->createButton( nw - bw * 2 + 5, 345, nw - bw - 5, 365, "Apply" );
   cancelButton = newMapWin->createButton( nw - bw, 345, nw - 5, 365, "Cancel" );
 
   // Lists
@@ -346,20 +347,30 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getParty()->toggleRound( false );
   } else if( widget == newButton ) {
     newMapWin->setVisible( true );
-  } else if( widget == okButton ) {
+    char tmp[1000];
+    sprintf( tmp, "%d", this->level );
+    levelText->setText( (const char*)tmp );
+    sprintf( tmp, "%d", this->depth );
+    depthText->setText( (const char*)tmp );
+    // FIXME: select theme!
+    cerr << "FIXME: select theme!" << endl;
+    mapWidget->setSelection( scourge->getMap()->mapGridX, scourge->getMap()->mapGridY );
+  } else if( widget == okButton || widget == applyButton ) {
     newMapWin->setVisible( false );
 
-    scourge->getMap()->reset();
-    int line = themeList->getSelectedLine();
-    if( line > -1 ) {
-      char *p = strdup( themeNames[ line ] );
-      if( !strcmp( p + strlen( p ) - 3, "(S)" ) ) *( p + strlen( p ) - 3 ) = 0;
-      scourge->getShapePalette()->loadTheme( p );
-      free( p );
+    if( widget == okButton ) {
+      scourge->getMap()->reset();
+      int line = themeList->getSelectedLine();
+      if( line > -1 ) {
+        char *p = strdup( themeNames[ line ] );
+        if( !strcmp( p + strlen( p ) - 3, "(S)" ) ) *( p + strlen( p ) - 3 ) = 0;
+        scourge->getShapePalette()->loadTheme( p );
+        free( p );
+      }
     }
     this->level = atoi( levelText->getText() );
     this->depth = atoi( depthText->getText() );
-    mapWidget->getSelection( &(scourge->getMap()->startx), &(scourge->getMap()->starty) );
+    mapWidget->getSelection( &(scourge->getMap()->mapGridX), &(scourge->getMap()->mapGridY) );
 
   } else if( widget == cancelButton ) {
     newMapWin->setVisible( false );
@@ -463,8 +474,9 @@ bool MapEditor::getShape( GLShape **shape,
 }
 
 void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
-  if( button == SDL_BUTTON_LEFT || 
-      button == SDL_BUTTON_RIGHT ) {
+  if( scourge->getSDLHandler()->mouseX < mainWin->getX() && 
+      ( button == SDL_BUTTON_LEFT || 
+        button == SDL_BUTTON_RIGHT ) ) {
 
     // draw the correct walls in this chunk
     int xx = scourge->getMap()->getCursorFlatMapX();

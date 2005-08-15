@@ -104,6 +104,7 @@ typedef struct _LocationInfo {
 typedef struct _MapInfo {
   Uint32 version;
   Uint16 start_x, start_y;
+  Uint16 grid_x, grid_y;
   Uint32 pos_count;
   Uint8 theme_name[255];
   LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
@@ -118,6 +119,7 @@ public:
   static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
   static void saveMap( File *file, MapInfo *info );
   static MapInfo *loadMap( File *file );
+  static void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );
   static void deleteMapInfo( MapInfo *info );
 
 protected:

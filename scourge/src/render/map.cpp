@@ -2817,9 +2817,11 @@ void Map::saveMap( char *name, char *result ) {
   MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
   info->version = PERSIST_VERSION;
 
-  // FIXME: use real values
   info->start_x = startx;
   info->start_y = starty;
+
+  info->grid_x = mapGridX;
+  info->grid_y = mapGridY;
 
   strncpy( (char*)info->theme_name, session->getShapePalette()->getCurrentThemeName(), 254 );
   info->theme_name[254] = 0;
@@ -2919,10 +2921,12 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
     startx = toint( session->getParty()->getPlayer()->getX() );
     starty = toint( session->getParty()->getPlayer()->getY() );
   }
+
+  mapGridX = info->grid_x;
+  mapGridY = info->grid_y;
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
-
     if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
       shape = session->getShapePalette()->
         findShapeByName( (char*)(info->pos[i]->floor_shape_name), true );
@@ -2976,5 +2980,35 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   }
 
   sprintf( result, "Map loaded: %s", name );
+}
+
+void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth ) {
+  Uint16 tmpX, tmpY;
+  if( !strlen( name ) ) {
+    strcpy( result, "Enter a name of a map to load." );
+    return;
+  }
+
+  char fileName[300];
+  if( depth > 0 ) {
+    sprintf( fileName, "%s/maps/%s%d.map", rootDir, name, depth );
+  } else {
+    sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+  }
+  cerr << "loading map header: " << fileName << endl;
+
+  FILE *fp = fopen( fileName, "rb" );
+  if( !fp ) {
+    sprintf( result, "Can't find map: %s", name );
+    return;
+  }
+  File *file = new ZipFile( fp, ZipFile::ZIP_READ );
+  Persist::loadMapHeader( file, &tmpX, &tmpY );
+  delete file;
+
+  *gridX = (int)tmpX;
+  *gridY = (int)tmpY;
+
+  sprintf( result, "Map header loaded: %s", name );
 }
 

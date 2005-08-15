@@ -160,3 +160,8 @@ void TextField::drawWidget(Widget *parent) {
   }
 }
 
+void TextField::setText( const char *s ) {
+  strncpy(text, ( s ? s : "" ), numChars); 
+  text[numChars - 1] = '\0';
+}
+

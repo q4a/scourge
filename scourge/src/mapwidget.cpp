@@ -50,7 +50,7 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   break;
   case SDL_MOUSEBUTTONUP:
   dragging = false;
-  if( editable ) {
+  if( editable && isInside( x, y ) ) {
     markedX = selX + x - getX();
     markedY = selY + y - getY();
   }
