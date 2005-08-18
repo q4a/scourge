@@ -499,47 +499,20 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       // FIXME: this works except it draws other doors on the same
       // chunk that should be hidden. To really fix it, we need to
       // keep track of which side of the chunk to draw.
+      Uint16 drawSide = 0;
       if(!lightMap[chunkX][chunkY]) {
         if(ground || water) continue;
         else {
-          // see if the door is next to a chunk in the light
-          bool found = false;
-          
           // look to the left
-          if(chunkX >= 1 && 
-             lightMap[chunkX - 1][chunkY]) {
-            posX = chunkX * MAP_UNIT + 1 + MAP_OFFSET;
-            posY = chunkY * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET + 1;
-            if(isDoor(posX, posY)) found = true;
-          }
+          if(chunkX >= 1 && lightMap[chunkX - 1][chunkY]) drawSide |= Constants::MOVE_LEFT;
           // look to the right
-          if(!found && 
-             chunkX + 1 < MAP_WIDTH / MAP_UNIT && 
-             lightMap[chunkX + 1][chunkY]) {
-            posX = (chunkX + 1) * MAP_UNIT - 1 + MAP_OFFSET;
-            posY = chunkY * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET + 1;
-            if(isDoor(posX, posY)) found = true;
-          }
+          if(chunkX + 1 < MAP_WIDTH / MAP_UNIT && lightMap[chunkX + 1][chunkY]) drawSide |= Constants::MOVE_RIGHT;
           // look above
-          if(!found &&
-             chunkY - 1 >= 0 && 
-             lightMap[chunkX][chunkY - 1]) {
-            posX = chunkX * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET;
-            posY = chunkY * MAP_UNIT + MAP_OFFSET + 1;
-            if(isDoor(posX, posY)) found = true;
-
-          }
+          if(chunkY - 1 >= 0 && lightMap[chunkX][chunkY - 1]) drawSide |= Constants::MOVE_UP;
           // look below
-          if(!found &&
-             chunkY + 1< MAP_DEPTH / MAP_UNIT &&
-             lightMap[chunkX][chunkY + 1]) {
-            posX = chunkX * MAP_UNIT + (MAP_UNIT / 2) + MAP_OFFSET;
-            posY = (chunkY + 1) * MAP_UNIT - 2 + MAP_OFFSET + 1;
-            if(isDoor(posX, posY)) found = true;
-          }
-
+          if(chunkY + 1< MAP_DEPTH / MAP_UNIT && lightMap[chunkX][chunkY + 1]) drawSide |= Constants::MOVE_DOWN;
           // if not, skip this chunk
-          if(!found) continue;
+          if(!drawSide) continue;
         }
       }
       
@@ -598,19 +571,17 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                  pos[posX][posY][zp]->z == zp) {
                 shape = pos[posX][posY][zp]->shape;
 
-                // FIXME: this draws more doors than needed... 
-                // it should use doorValue to figure out what needs to be drawn
-                if((!lightMap[chunkX][chunkY] && 
-                    (shape == session->getShapePalette()->findShapeByName("CORNER") ||
-                     shape == session->getShapePalette()->findShapeByName("NS_DOOR") ||
-                     shape == session->getShapePalette()->findShapeByName("EW_DOOR") ||
-                     shape == session->getShapePalette()->findShapeByName("NS_DOOR_TOP") ||
-                     shape == session->getShapePalette()->findShapeByName("EW_DOOR_TOP") ||
-                     shape == session->getShapePalette()->findShapeByName("DOOR_SIDE"))) ||
-                   (lightMap[chunkX][chunkY] && shape)) {
+                // is this shape visible on the edge an chunk in darkness?
+                bool lightEdge = 
+                  ( !lightMap[chunkX][chunkY] && shape && !pos[posX][posY][zp]->creature &&
+                    ( ( drawSide & Constants::MOVE_DOWN && yp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
+                      ( drawSide & Constants::MOVE_UP && yp <= MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
+                      ( drawSide & Constants::MOVE_LEFT && xp <= MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) ||
+                      ( drawSide & Constants::MOVE_RIGHT && xp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) )
+                    );
 
-
-                  if(pos[posX][posY][zp]->creature) {
+                if( shape && ( lightMap[chunkX][chunkY] || lightEdge ) ) {
+                  if( pos[posX][posY][zp]->creature ) {
 
                     if( debugMd2Shapes ) {
                       // debug
