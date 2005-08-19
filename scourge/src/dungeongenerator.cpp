@@ -21,6 +21,8 @@
 #include "shapepalette.h"
 #include "board.h"
 #include "gui/progress.h"
+#include "item.h"
+#include "creature.h"
 
 #define LOCKED_DOOR_RAND 8.0f
 

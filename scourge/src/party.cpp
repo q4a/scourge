@@ -17,6 +17,8 @@
 
 #include "party.h"
 #include "render/renderlib.h"
+#include "item.h"
+#include "creature.h"
 
 Creature *Party::lastPlayer = NULL;
 

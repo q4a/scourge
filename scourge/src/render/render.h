@@ -25,7 +25,7 @@
 #include "../persist.h"
 #include "../util.h"
 #include "../battle.h"
-             
+
 #include "../rpg/rpglib.h"
 
 #include "../events/potionexpirationevent.h"
@@ -38,7 +38,8 @@ class Dice;
 class Monster;
 class Character;
 class Shape;
-
+class Item;
+class Creature;
 
 /** 
  *@author Gabor Torok

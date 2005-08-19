@@ -14,10 +14,14 @@ scourge_SOURCES = \
 	constants.h\
 	persist.cpp\
 	persist.h\
+        creature.cpp\
+        creature.h\
 	calendar.cpp\
 	calendar.h\
 	date.cpp\
 	date.h\
+        item.cpp\
+        item.h\
 	dungeongenerator.cpp\
 	dungeongenerator.h\
 	main.cpp\

@@ -21,10 +21,6 @@
 
 #include <iostream>
 #include "constants.h"
-#include "sdlhandler.h"
-#include "sdleventhandler.h"
-#include "sdlscreenview.h"
-#include "scourge.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/cardcontainer.h"
@@ -41,6 +37,7 @@
 class Creature;
 class Spell;
 class MagicSchool;
+class Scourge;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:

@@ -24,11 +24,9 @@
 
 #include "../rpg/rpglib.h"
 #include "map.h"
-#include "item.h"
 #include "effect.h"
 #include "projectile.h"
 #include "location.h"
-#include "creature.h"
 #include "shape.h"
 #include "glshape.h"
 #include "gltorch.h"

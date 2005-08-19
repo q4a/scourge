@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "item.h"
-#include "glshape.h"
+#include "render/renderlib.h"
+#include "rpg/rpglib.h"
+#include "session.h"
 
 map<int, vector<string> *> Item::soundMap;
 

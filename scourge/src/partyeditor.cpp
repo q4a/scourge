@@ -17,6 +17,8 @@
 
 #include "partyeditor.h"
 #include "render/renderlib.h"
+#include "item.h"
+#include "creature.h"
 
 /**
   *@author Gabor Torok

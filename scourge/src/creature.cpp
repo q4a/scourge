@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "creature.h"
-#include "location.h"
-#include "effect.h"
-#include "map.h"
 #include "item.h"
-#include "glshape.h"
-#include "md2shape.h"
-#include "Md2.h"
+#include "rpg/rpglib.h"
+#include "render/renderlib.h"
+#include "session.h"
+#include "events/event.h"
+#include "events/potionexpirationevent.h"
+#include "events/statemodexpirationevent.h"
+#include "events/thirsthungerevent.h"
 
 #define MOVE_DELAY 7
 

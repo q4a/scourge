@@ -18,6 +18,11 @@
 #include "mapeditor.h"
 #include "render/renderlib.h"
 #include "mapwidget.h"
+#include "sdlhandler.h"
+#include "scourge.h"
+#include "partyeditor.h"
+#include "item.h"
+#include "creature.h"
 
 char *floorTypeName[80] = { 
   "FLOOR_TILE",

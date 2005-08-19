@@ -22,7 +22,6 @@
 #include <vector>
 #include "render.h"
 
-class Item;
 class Creature;
 
 using namespace std;

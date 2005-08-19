@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "infogui.h"
-#include "render/renderlib.h"
+#include "item.h"
+#include "shapepalette.h"
+#include "rpg/rpglib.h"
 
 InfoGui::InfoGui(Scourge *scourge) {
   this->scourge = scourge;
