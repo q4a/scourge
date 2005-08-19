@@ -26,15 +26,9 @@
 #define MINI_MAP_WIDTH MAP_WIDTH/MINI_MAP_X_SCALE
 #define MINI_MAP_DEPTH MAP_DEPTH/MINI_MAP_Y_SCALE
 
-
 #include "constants.h"
-#include "sdlhandler.h"
-#include "dungeongenerator.h"
-#include "scourge.h"
-#include "math.h"
-#include "gui/window.h"
-#include "gui/canvas.h"
 #include "gui/widgetview.h"
+#include "gui/window.h"
 
 using namespace std;
 
@@ -43,6 +37,7 @@ class Shape;
 class Scourge;
 class Util;
 class Location;
+class Canvas;
 
 typedef struct _MiniMapPoint {
     GLfloat r, g, b;
@@ -94,7 +89,7 @@ class MiniMap : public WidgetView {
   inline void show() { win->setVisible(true); }
   inline void hide() { win->setVisible(false); }
   inline Window *getWindow() { return win; }
-  inline void resize(int w, int h) { win->resize(w, h); canvas->resize(w, h - 25); }
+  void resize(int w, int h);
   
   // x, y are in *global Map* coordinates (see Map.h to know its size) 
   void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos);

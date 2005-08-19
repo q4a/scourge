@@ -17,6 +17,8 @@
 
 #include "spellcaster.h"
 #include "render/renderlib.h"
+#include "item.h"
+#include "creature.h"
 
 /*
   In the future we can employ something more sophisticated than these if structures...

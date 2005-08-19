@@ -17,8 +17,8 @@
 
 #include "projectile.h"
 #include "map.h"
-#include "item.h"
-#include "creature.h"
+#include "../item.h"
+#include "../creature.h"
 #include "glshape.h"
 
 Uint32 Projectile::lastProjectileTick = 0;

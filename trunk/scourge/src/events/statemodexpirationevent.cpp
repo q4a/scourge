@@ -18,6 +18,7 @@
 
 #include "statemodexpirationevent.h"
 #include "../render/renderlib.h"
+#include "../creature.h"
 
 StateModExpirationEvent::StateModExpirationEvent(Date currentDate, Date timeOut, Creature *c, 
                                                  int stateMod, Session *session, int nbExecutionsToDo) :

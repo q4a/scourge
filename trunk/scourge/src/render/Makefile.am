@@ -13,10 +13,6 @@ libScourgeRender_a_SOURCES = \
 	location.h\
 	effect.cpp\
 	effect.h\
-	item.cpp\
-	item.h\
-	creature.cpp\
-	creature.h\
 	shape.cpp\
 	shape.h\
 	glshape.cpp\

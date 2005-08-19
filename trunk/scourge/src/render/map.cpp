@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "map.h"
-#include "item.h"
 #include "effect.h"
 #include "frustum.h"
 #include "projectile.h"
 #include "location.h"
-#include "creature.h"
 #include "shape.h"
 #include "glshape.h"
 #include "md2shape.h"
+#include "../creature.h"
+#include "../item.h"
 #include "../io/zipfile.h"
 
 #define MOUSE_ROT_DELTA 2

@@ -22,7 +22,6 @@
 #include "render.h"
 
 class Creature;
-class Item;
 class Effect;
 
 /**

@@ -27,16 +27,25 @@
 #include <map>
 #include <algorithm> // STL for Heap
 
-#include "render.h"
+#include "constants.h"
+#include "persist.h"
+#include "date.h"
 
 using namespace std;
 
 class Map;
 class Session;
 class Effect;
-class Item;
 class Location;
 class Battle;
+class Monster;
+class Character;
+class RpgItem;
+class Spell;
+class GLShape;
+class Item;
+class Event;
+
 
 /**
   *@author Gabor Torok

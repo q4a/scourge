@@ -20,6 +20,12 @@
 #include "inventory.h"
 #include "render/renderlib.h"
 #include "sound.h"
+#include "sdlhandler.h"
+#include "sdleventhandler.h"
+#include "sdlscreenview.h"
+#include "scourge.h"
+#include "item.h"
+#include "creature.h"
 
 /**
   *@author Gabor Torok

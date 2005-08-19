@@ -20,7 +20,6 @@
 
 #include "render.h"
 
-class Item;
 class CFrustum;
 class Projectile;
 class Location;

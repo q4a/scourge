@@ -18,6 +18,8 @@
 #include "scourge.h"
 #include "events/thirsthungerevent.h"
 #include "render/renderlib.h"
+#include "item.h"
+#include "creature.h"
 #include "mapeditor.h"
 #include "sound.h"
 #include "mapwidget.h"

@@ -17,14 +17,10 @@
 
 #ifndef MAP_EDITOR_H
 #define MAP_EDITOR_H
-
 #include "constants.h"
-#include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
-#include "scourge.h"
 #include "text.h"
-#include "partyeditor.h"
 #include "gui/window.h"
 #include "gui/label.h"
 #include "gui/button.h"
@@ -41,6 +37,9 @@ class Scourge;
 class MapSettings;
 class Creature;
 class MapWidget;
+class Item;
+class Monster;
+class GLShape;
 
 using namespace std;
 

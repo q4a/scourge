@@ -17,6 +17,7 @@
 
 #include "multiplayer.h"
 #include "render/renderlib.h"
+#include "creature.h"
 
 /**
   *@author Gabor Torok

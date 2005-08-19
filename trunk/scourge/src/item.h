@@ -18,11 +18,20 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "render.h"
+#include "constants.h"
+#include "persist.h"
 #include <vector>
 
-//extern typedef struct _DiceInfo DiceInfo;
-//extern typedef struct _ItemInfo ItemInfo;
+class RpgItem;
+class Color;
+class GLShape;
+class Spell;
+class MagicSchool;
+class Dice;
+class Session;
+class ShapePalette;
+
+using namespace std;
 
 /**
   *@author Gabor Torok

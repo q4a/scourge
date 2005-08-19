@@ -18,6 +18,8 @@
 #include "containergui.h"
 #include "render/renderlib.h"
 #include "sound.h"
+#include "item.h"
+#include "creature.h"
 
 ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->scourge = scourge;

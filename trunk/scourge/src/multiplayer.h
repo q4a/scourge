@@ -33,6 +33,7 @@
 
 class Scourge;
 class Party;
+class Creature;
 
 class MultiplayerDialog {
 private:

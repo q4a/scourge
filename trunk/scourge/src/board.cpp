@@ -18,6 +18,8 @@
 #include "board.h"
 #include "render/renderlib.h"
 #include "session.h"
+#include "item.h"
+#include "creature.h"
 
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;

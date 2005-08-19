@@ -18,6 +18,7 @@
 #include "session.h"
 #include "render/renderlib.h"
 #include "io/file.h"
+#include "creature.h"
 
 #define SAVE_FILE "savegame.dat"
 

@@ -17,6 +17,13 @@
 
 #include "minimap.h"
 #include "render/renderlib.h"
+#include "sdlhandler.h"
+#include "dungeongenerator.h"
+#include "scourge.h"
+#include "math.h"
+#include "gui/canvas.h"
+#include "item.h"
+#include "creature.h"
 
 /*  
 How to enhance it ? (or what will be done soon)
@@ -452,3 +459,9 @@ void MiniMap :: eraseMiniMapPoint(int x, int y){
   pos[x][y].r = pos[x][y].g = pos[x][y].b = 0.0f;   
   mustBuildTexture = true;
 }
+
+void MiniMap::resize(int w, int h) { 
+  win->resize(w, h); 
+  canvas->resize(w, h - 25); 
+}
+
