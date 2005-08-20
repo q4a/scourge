@@ -22,11 +22,11 @@
 #include "glshape.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
-map<Creature*, vector<Projectile*>*> Projectile::projectiles;
+map<RenderedCreature*, vector<Projectile*>*> Projectile::projectiles;
 
 #define DELTA 1.0f
 
-Projectile::Projectile(Creature *creature, Creature *target, RenderedItem *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
+Projectile::Projectile(RenderedCreature *creature, RenderedCreature *target, RenderedItem *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
   this->ty = target->getY();
@@ -43,7 +43,7 @@ Projectile::Projectile(Creature *creature, Creature *target, RenderedItem *item,
   commonInit();
 }
 
-Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, 
+Projectile::Projectile(RenderedCreature *creature, RenderedCreature *target, Spell *spell, Shape *shape, 
                        float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
@@ -61,7 +61,7 @@ Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape
   commonInit();
 }
 
-Projectile::Projectile(Creature *creature, int x, int y, int w, int d, 
+Projectile::Projectile(RenderedCreature *creature, int x, int y, int w, int d, 
                        Spell *spell, Shape *shape, float parabolic, bool stopOnImpact) {
   this->creature = creature;
   this->tx = x;
@@ -206,7 +206,7 @@ void Projectile::calculateAngle() {
 }
 
 // return null if the projectile cannot be launched
-Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
+Projectile *Projectile::addProjectile(RenderedCreature *creature, RenderedCreature *target, 
                                       RenderedItem *item, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
   vector<Projectile*> *v;
@@ -223,7 +223,7 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
   return p;
 }
 
-Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
+Projectile *Projectile::addProjectile(RenderedCreature *creature, RenderedCreature *target, 
                                       Spell *spell, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
   vector<Projectile*> *v;
@@ -256,7 +256,7 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
   return p;
 }
 
-Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, int d, 
+Projectile *Projectile::addProjectile(RenderedCreature *creature, int x, int y, int w, int d, 
                                       Spell *spell, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
   vector<Projectile*> *v;
@@ -290,7 +290,7 @@ Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, i
 }
 
 void Projectile::resetProjectiles() {
-  for(map<Creature *, vector<Projectile*>*>::iterator i=projectiles.begin(); i!=projectiles.end(); ++i) {
+  for(map<RenderedCreature *, vector<Projectile*>*>::iterator i=projectiles.begin(); i!=projectiles.end(); ++i) {
     vector<Projectile*> *v = i->second;
     for(vector<Projectile*>::iterator e2=v->begin(); e2!=v->end(); ++e2) {
       Projectile *proj = *e2;  
@@ -328,9 +328,9 @@ void Projectile::moveProjectiles(Session *session) {
     // draw the projectiles
     vector<Projectile*> removedProjectiles;
 //        cerr << "Projectiles:" << endl;
-    map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
-    for(map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-      	  //Creature *creature = i->first;
+    map<RenderedCreature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
+    for(map<RenderedCreature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
+      	  //RenderedCreature *creature = i->first;
 //      	  cerr << "\tcreature: " << creature->getName() << endl;
       vector<Projectile*> *p = i->second;
       for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {

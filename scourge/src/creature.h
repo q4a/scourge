@@ -63,7 +63,6 @@ class Creature : public RenderedCreature {
   
  private:
   // gui information
-  GLfloat x, y, z;
   Creature *next;
   GLShape *shape;
   char *model_name, *skin_name;
@@ -225,10 +224,6 @@ class Creature : public RenderedCreature {
   bool moveToLocator(Map *map);
   void stopMoving();
   
-  inline void moveTo(GLfloat x, GLfloat y, GLfloat z) { this->x = x; this->y = y; this->z = z; }
-  inline GLfloat getX() { return x; }
-  inline GLfloat getY() { return y; }
-  inline GLfloat getZ() { return z; }
   inline char *getModelName() { return model_name; }
   inline char *getSkinName() { return skin_name; }
   inline GLShape *getShape() { return shape; }
@@ -409,7 +404,7 @@ class Creature : public RenderedCreature {
   // handling battle targets (which in the future may be more than targetCreature)
   inline bool hasTarget() { return targetCreature || targetItem || targetX || targetY || targetZ; }
   bool isTargetValid();
-  bool canAttack(Creature *creature);
+  bool canAttack(RenderedCreature *creature);
   void cancelTarget();
   void followTarget();
   //void makeTargetRetaliate();

@@ -1445,7 +1445,7 @@ bool Creature::isTargetValid() {
   return true;
 }
 
-bool Creature::canAttack(Creature *creature) {
+bool Creature::canAttack(RenderedCreature *creature) {
   // when attacking, attack the opposite kind (unless possessed)
   return (getStateMod(Constants::possessed) == 
           (isMonster() == creature->isMonster()));

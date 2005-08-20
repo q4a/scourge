@@ -34,7 +34,7 @@ public:
   Uint16 x, y, z;
   Shape *shape;
   RenderedItem *item;
-  Creature *creature;
+  RenderedCreature *creature;
 };
 
 class EffectLocation {

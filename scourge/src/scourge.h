@@ -574,7 +574,7 @@ public:
 
   inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 
-  void fightProjectileHitTurn(Projectile *proj, Creature *creature);
+  void fightProjectileHitTurn(Projectile *proj, RenderedCreature *creature);
 
   void fightProjectileHitTurn(Projectile *proj, int x, int y);
 
