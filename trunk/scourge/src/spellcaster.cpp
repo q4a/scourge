@@ -316,7 +316,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       getCreaturesInArea(battle->getCreature()->getTargetX(),
                          battle->getCreature()->getTargetY(),
                          radius,
-                         targets);
+                         (RenderedCreature**)targets);
 //    cerr << "targetCount=" << targetCount << endl;
   } else {
     targets[targetCount++] = battle->getCreature()->getTargetCreature();
@@ -431,7 +431,7 @@ void SpellCaster::circleAttack() {
                                                    spellEffectSize, spellEffectSize, 
                                                    (GLuint)( angle * 5 ) );
 
-      targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, targets );
+      targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, (RenderedCreature**)targets );
       for( int i = 0; i < targetCount; i++ ) {
         if( battle->getCreature()->canAttack( targets[ i ] ) ) {
           battle->getCreature()->setTargetCreature( targets[ i ] );
@@ -470,7 +470,7 @@ void SpellCaster::hailAttack() {
   targetCount = battle->getSession()->getMap()->getCreaturesInArea( toint( battle->getCreature()->getX() ), 
                                                                     toint( battle->getCreature()->getY() ), 
                                                                     radius, 
-                                                                    targets );
+                                                                    (RenderedCreature**)targets );
   for( int i = 0; i < targetCount; i++ ) {
     if( battle->getCreature()->canAttack( targets[ i ] ) ) {
       battle->getCreature()->setTargetCreature( targets[ i ] );

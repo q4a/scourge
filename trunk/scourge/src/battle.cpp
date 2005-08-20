@@ -632,9 +632,9 @@ void Battle::launchProjectile() {
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
   if(debugBattle) cerr << "*** Projectile hit (target): creature=" << proj->getCreature()->getName() << endl;  
-  Creature *oldTarget = proj->getCreature()->getTargetCreature();
-  proj->getCreature()->setTargetCreature(target);
-  Battle *battle = proj->getCreature()->getBattle();
+  Creature *oldTarget = ((Creature*)(proj->getCreature()))->getTargetCreature();
+  ((Creature*)(proj->getCreature()))->setTargetCreature(target);
+  Battle *battle = ((Creature*)(proj->getCreature()))->getBattle();
   battle->projectileHit = true;
   if(proj->getItem()) {
     //battle->initItem(proj->getItem());
@@ -649,16 +649,16 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   }
   battle->projectileHit = false;
   battle->spell = NULL;
-  proj->getCreature()->cancelTarget();
-  proj->getCreature()->setTargetCreature(oldTarget);
+  ((Creature*)(proj->getCreature()))->cancelTarget();
+  ((Creature*)(proj->getCreature()))->setTargetCreature(oldTarget);
   if(debugBattle) cerr << "*** Projectile hit ends." << endl;
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y) {
   if(debugBattle) cerr << "*** Projectile hit (x,y): creature=" << proj->getCreature()->getName() << endl;
   // configure a turn
-  proj->getCreature()->setTargetLocation(x, y, 0);
-  Battle *battle = proj->getCreature()->getBattle();
+  ((Creature*)(proj->getCreature()))->setTargetLocation(x, y, 0);
+  Battle *battle = ((Creature*)(proj->getCreature()))->getBattle();
   battle->projectileHit = true;
   if(proj->getItem()) {
     battle->item = ((Item*)(proj->getItem()));
@@ -671,7 +671,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   }
   battle->projectileHit = false;
   battle->spell = NULL;
-  proj->getCreature()->cancelTarget();
+  ((Creature*)(proj->getCreature()))->cancelTarget();
   if(debugBattle) cerr << "*** Projectile hit ends." << endl;
 }
 

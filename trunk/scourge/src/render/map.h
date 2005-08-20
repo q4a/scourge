@@ -24,7 +24,6 @@ class CFrustum;
 class Projectile;
 class Location;
 class EffectLocation;
-class Creature;
 
 using namespace std;
 
@@ -76,7 +75,7 @@ public:
 typedef struct _DrawLater {
   float xpos, ypos, zpos;
   Shape *shape;
-  Creature *creature;
+  RenderedCreature *creature;
   RenderedItem *item;
   Projectile *projectile;
   EffectLocation *effect;
@@ -312,18 +311,18 @@ class Map {
   void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item);
   RenderedItem *removeItem(Sint16 x, Sint16 y, Sint16 z);
   
-  void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature);
-  Creature *removeCreature(Sint16 x, Sint16 y, Sint16 z);
+  void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature);
+  RenderedCreature *removeCreature(Sint16 x, Sint16 y, Sint16 z);
   
   /**
    * if you can't move to this spot (blocked) returns the blocking shape,
    * otherwise returns NULL and moves the shape.
    */
   Location *moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir, 
-						 Creature *newCreature);
+						 RenderedCreature *newCreature);
   Location *moveCreature(Sint16 x, Sint16 y, Sint16 z, 
 						 Sint16 nx, Sint16 ny, Sint16 nz, 
-						 Creature *newCreature);
+						 RenderedCreature *newCreature);
   
   void setFloorPosition(Sint16 x, Sint16 y, Shape *shape);
   Shape *removeFloorPosition(Sint16 x, Sint16 y);
@@ -346,7 +345,7 @@ class Map {
   inline Shape *getFloorPosition(Sint16 x, Sint16 y) { if(x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH) return NULL; else return floorPositions[x][y]; }
   
   //void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);
-  void showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode);
+  void showCreatureInfo(RenderedCreature *creature, bool player, bool selected, bool groupMode);
   
   void initMapView(bool ignoreRot = false);
   
@@ -387,7 +386,7 @@ class Map {
    * Returns the number of creatures found. (0 if none.)
    * It's the caller responsibility to create the targets array.
   */
-  int getCreaturesInArea(int x, int y, int radius, Creature *targets[]);
+  int getCreaturesInArea(int x, int y, int radius, RenderedCreature *targets[]);
 
   bool isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz);
   void doDrawShape(DrawLater *later, int effect=0);
@@ -531,7 +530,7 @@ class Map {
   void setupShapes(bool ground, bool water, int *csx=NULL, int *cex=NULL, int *csy=NULL, int *cey=NULL);
   void setupPosition(int posX, int posY, int posZ,
                      float xpos2, float ypos2, float zpos2,
-                     Shape *shape, RenderedItem *item, Creature *creature, 
+                     Shape *shape, RenderedItem *item, RenderedCreature *creature, 
                      EffectLocation *effect);
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
@@ -558,7 +557,7 @@ class Map {
 
   void moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
                        Sint16 ox, Sint16 oy, Sint16 oz,
-                       Creature *creature);
+                       RenderedCreature *creature);
 
   void drawWater();
 

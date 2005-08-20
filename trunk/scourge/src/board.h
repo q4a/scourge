@@ -28,6 +28,7 @@ using namespace std;
 class RpgItem;
 class Monster;
 class Creature;
+class RenderedCreature;
 class Item;
 class Session;
 class Board;
@@ -127,8 +128,8 @@ public:
     return ( itemInstanceMap.find( item ) != itemInstanceMap.end() );
   }
 
-  inline bool isMissionCreature( Creature *creature ) {
-    return ( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() );
+  inline bool isMissionCreature( RenderedCreature *creature ) {
+    return ( monsterInstanceMap.find( (Creature*)creature ) != monsterInstanceMap.end() );
   }
 
   void deleteItemMonsterInstances();

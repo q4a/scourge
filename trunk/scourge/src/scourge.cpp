@@ -1289,15 +1289,15 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
       Location *loc = levelMap->getLocation(mapx, mapy, mapz);
       if(loc && loc->creature) {
         if(getTargetSelectionFor()) {
-          handleTargetSelectionOfCreature( loc->creature );
+          handleTargetSelectionOfCreature( ((Creature*)loc->creature) );
           return;
         } else if(loc->creature->isMonster()) {
-          if( loc->creature->getMonster()->isNpc() ) {
+          if( ((Creature*)(loc->creature))->getMonster()->isNpc() ) {
             // start a conversation
-            conversationGui->start( loc->creature );
+            conversationGui->start( ((Creature*)(loc->creature)) );
           } else {
             // follow this creature
-            party->setTargetCreature(loc->creature);
+            party->setTargetCreature( ((Creature*)(loc->creature)) );
             // show path
             if( inTurnBasedCombatPlayerTurn() ) {
               battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
@@ -1444,7 +1444,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
     Location *loc = levelMap->getPosition(mapx, mapy, mapz);
     if(loc) {
       char *description = NULL;
-      Creature *creature = loc->creature;
+      Creature *creature = ((Creature*)(loc->creature));
       //fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
       if(creature) {
         creature->getDetailedDescription(s);
@@ -1730,7 +1730,7 @@ int Scourge::dropItem(int x, int y) {
   bool replace = false;
   if(levelMap->getSelectedDropTarget()) {
     char message[120];
-    Creature *c = levelMap->getSelectedDropTarget()->creature;
+    Creature *c = ((Creature*)(levelMap->getSelectedDropTarget()->creature));
     if(c) {
       if(c->addInventory(movingItem)) {
         sprintf(message, "%s picks up %s.", 
@@ -2701,8 +2701,8 @@ int Scourge::getScreenHeight() {
   return getSDLHandler()->getScreen()->h;
 }
 
-void Scourge::fightProjectileHitTurn(Projectile *proj, Creature *creature) {
-  Battle::projectileHitTurn(getSession(), proj, creature);
+void Scourge::fightProjectileHitTurn(Projectile *proj, RenderedCreature *creature) {
+  Battle::projectileHitTurn(getSession(), proj, (Creature*)creature);
 }
 
 void Scourge::fightProjectileHitTurn(Projectile *proj, int x, int y) {
@@ -3335,7 +3335,7 @@ void Scourge::checkForInfo() {
         if( pos && 
             pos->creature && 
             party->getPlayer()->canAttack( pos->creature ) ) {
-          sdlHandler->setCursorMode( pos->creature->getMonster()->isNpc() ?
+          sdlHandler->setCursorMode( ((Creature*)(pos->creature))->getMonster()->isNpc() ?
                                      Constants::CURSOR_TALK :
                                      Constants::CURSOR_ATTACK );
           handled = true;
@@ -3362,7 +3362,7 @@ void Scourge::checkForInfo() {
           void *obj = NULL;
           if( pos->creature ) {
             obj = pos->creature;
-            pos->creature->getDetailedDescription(s);
+            ((Creature*)(pos->creature))->getDetailedDescription(s);
           } else if( pos->item ) {
             obj = pos->item;
             ((Item*)(pos->item))->getDetailedDescription(s);

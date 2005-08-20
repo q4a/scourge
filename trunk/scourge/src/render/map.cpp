@@ -746,7 +746,7 @@ void Map::drawWaterPosition(int posX, int posY,
 
 void Map::setupPosition(int posX, int posY, int posZ,
                         float xpos2, float ypos2, float zpos2,
-                        Shape *shape, RenderedItem *item, Creature *creature, 
+                        Shape *shape, RenderedItem *item, RenderedCreature *creature, 
                         EffectLocation *effect) {
 
   // This really doesn't make a difference unfortunately.
@@ -1369,10 +1369,10 @@ void Map::drawProjectiles() {
   // draw the projectiles
   DrawLater dl;
   vector<Projectile*> removedProjectiles;
-  map<Projectile*, Creature*> battleProjectiles;
-  map<Creature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
-  for (map<Creature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-    //Creature *creature = i->first;
+  map<Projectile*, RenderedCreature*> battleProjectiles;
+  map<RenderedCreature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
+  for (map<RenderedCreature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
+    //RenderedCreature *creature = i->first;
     vector<Projectile*> *p = i->second;
     for (vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
       Projectile *proj = *e;
@@ -1436,6 +1436,7 @@ void Map::drawProjectiles() {
         if( !blocked ) {
           cerr << "*** Warning: projectile didn't hit target ***" << endl;
           cerr << "Creature: " << proj->getCreature()->getName() << endl;
+          /*
           if( proj->getCreature()->getTargetCreature() ) {
             cerr << " target=" << proj->getCreature()->getTargetCreature()->getName() << " at: " << 
               proj->getCreature()->getTargetCreature()->getX() << "," <<
@@ -1445,6 +1446,7 @@ void Map::drawProjectiles() {
           } else {
             cerr << " no target." << endl;
           }
+          */
           proj->debug();
         }
 
@@ -1454,9 +1456,9 @@ void Map::drawProjectiles() {
   }
 
   // fight battles
-  for (map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
+  for (map<Projectile*, RenderedCreature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
     Projectile *proj = i->first;
-    Creature *creature = i->second;
+    RenderedCreature *creature = i->second;
     session->getGameAdapter()->fightProjectileHitTurn(proj, creature);
   }
 
@@ -1743,7 +1745,7 @@ void Map::initMapView( bool ignoreRot ) {
   glTranslatef( startx, starty, startz );
 }
 
-Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Creature *newCreature) {
+Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,RenderedCreature *newCreature) {
 	Sint16 nx = x;
 	Sint16 ny = y;
 	Sint16 nz = z;
@@ -1758,7 +1760,7 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,Creature *n
 
 Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, 
                             Sint16 nx, Sint16 ny, Sint16 nz,
-                            Creature *newCreature) {
+                            RenderedCreature *newCreature) {
 
   // no need to actually move data
   if( x == nx && y == ny && z == nz ) {
@@ -1892,7 +1894,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
-    ((Creature*)NULL)->getName();
+    ((RenderedCreature*)NULL)->getName();
   }
 
   // show an effect
@@ -1929,7 +1931,7 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** REMOVEEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
-    ((Creature*)NULL)->getName();
+    ((RenderedCreature*)NULL)->getName();
   }
 
   if(effect[x][y][z]) {
@@ -2093,7 +2095,7 @@ void Map::dropItemsAbove(int x, int y, int z, RenderedItem *item) {
   }
 }
 
-void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
+void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) {
   char message[120];  
   if(creature) {
     if(creature->getShape()) {
@@ -2147,7 +2149,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 
 void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
                           Sint16 ox, Sint16 oy, Sint16 oz,
-                          Creature *creature) {
+                          RenderedCreature *creature) {
   Location *p = pos[ox][oy][oz];
   if(creature && creature->getShape() &&
      p && p->creature &&
@@ -2222,8 +2224,8 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
   }
 }
 
-Creature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
-  Creature *creature = NULL;
+RenderedCreature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
+  RenderedCreature *creature = NULL;
   if(pos[x][y][z] &&
      pos[x][y][z]->creature &&
      pos[x][y][z]->x == x &&
@@ -2543,7 +2545,7 @@ void Map::drawCube(float x, float y, float z, float r) {
  * Returns the number of creatures found. (0 if none.)
  * It's the caller responsibility to create the targets array.
  */
-int Map::getCreaturesInArea(int x, int y, int radius, Creature *targets[]) {
+int Map::getCreaturesInArea(int x, int y, int radius, RenderedCreature *targets[]) {
   int count = 0;
   for(int xx = x - radius; xx < x + radius && xx < MAP_WIDTH; xx++) {
     for(int yy = y - radius; yy < y + radius && yy < MAP_DEPTH; yy++) {
@@ -2816,7 +2818,7 @@ void Map::saveMap( char *name, char *result ) {
             pos[x][y][z]->y == y &&
             pos[x][y][z]->z == z && 
             !( pos[x][y][z]->creature && 
-               !(pos[x][y][z]->creature->getMonster() ) ) ) {
+               !(pos[x][y][z]->creature->isMonster() ) ) ) {
 
           info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
 
@@ -2912,7 +2914,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
       if( item ) setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
       else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( info->pos[i]->creature ) {
-      Creature *creature = Creature::load( session, info->pos[i]->creature );
+      RenderedCreature *creature = session->getGameAdapter()->load( info->pos[i]->creature );
       if( creature ) {
         setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
         creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
