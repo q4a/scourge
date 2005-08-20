@@ -38,7 +38,6 @@ class Dice;
 class Monster;
 class Character;
 class Shape;
-class Item;
 class Creature;
 
 /** 

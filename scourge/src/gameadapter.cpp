@@ -19,6 +19,8 @@
 #include "session.h"
 #include "userconfiguration.h"
 #include "shapepalette.h"
+#include "item.h"
+#include "creature.h"
 
 GameAdapter::GameAdapter(UserConfiguration *config) {
   this->userConfiguration = config;
@@ -28,8 +30,13 @@ GameAdapter::~GameAdapter() {
   delete userConfiguration;
 }
 
+RenderedItem *GameAdapter::load( ItemInfo *info ) {
+  return Item::load( session, info );
+}
 
-
+RenderedCreature *GameAdapter::load( CreatureInfo *info ) {
+  return Creature::load( session, info );
+}
 
 ServerAdapter::ServerAdapter(UserConfiguration *config) : GameAdapter(config) {
 }

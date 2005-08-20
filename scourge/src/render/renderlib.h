@@ -35,5 +35,7 @@
 #include "3dsshape.h"
 #include "md2shape.h"
 #include "Md2.h"
+#include "rendereditem.h"
+#include "renderedcreature.h"
 
 #endif

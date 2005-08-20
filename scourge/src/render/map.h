@@ -77,7 +77,7 @@ typedef struct _DrawLater {
   float xpos, ypos, zpos;
   Shape *shape;
   Creature *creature;
-  Item *item;
+  RenderedItem *item;
   Projectile *projectile;
   EffectLocation *effect;
   GLuint name;  
@@ -309,8 +309,8 @@ class Map {
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
   Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
   
-  void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item);
-  Item *removeItem(Sint16 x, Sint16 y, Sint16 z);
+  void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item);
+  RenderedItem *removeItem(Sint16 x, Sint16 y, Sint16 z);
   
   void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature);
   Creature *removeCreature(Sint16 x, Sint16 y, Sint16 z);
@@ -380,7 +380,7 @@ class Map {
   inline int getViewHeight() { return viewHeight; }
 
   // drop items above this one
-  void dropItemsAbove(int x, int y, int z, Item *item);
+  void dropItemsAbove(int x, int y, int z, RenderedItem *item);
 
   /**
    * Find the creatures in this area and add them to the targets array.
@@ -531,7 +531,7 @@ class Map {
   void setupShapes(bool ground, bool water, int *csx=NULL, int *cex=NULL, int *csy=NULL, int *cey=NULL);
   void setupPosition(int posX, int posY, int posZ,
                      float xpos2, float ypos2, float zpos2,
-                     Shape *shape, Item *item, Creature *creature, 
+                     Shape *shape, RenderedItem *item, Creature *creature, 
                      EffectLocation *effect);
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,

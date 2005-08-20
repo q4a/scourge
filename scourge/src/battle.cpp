@@ -638,7 +638,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   battle->projectileHit = true;
   if(proj->getItem()) {
     //battle->initItem(proj->getItem());
-    battle->item = proj->getItem();
+    battle->item = ((Item*)(proj->getItem()));
     battle->hitWithItem();
   } else if(proj->getSpell()) {
 //    battle->spell = proj->getSpell();
@@ -661,7 +661,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   Battle *battle = proj->getCreature()->getBattle();
   battle->projectileHit = true;
   if(proj->getItem()) {
-    battle->item = proj->getItem();
+    battle->item = ((Item*)(proj->getItem()));
     battle->hitWithItem();
   } else if(proj->getSpell() && 
             proj->getSpell()->isLocationTargetAllowed()) {

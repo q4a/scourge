@@ -26,7 +26,7 @@ map<Creature*, vector<Projectile*>*> Projectile::projectiles;
 
 #define DELTA 1.0f
 
-Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
+Projectile::Projectile(Creature *creature, Creature *target, RenderedItem *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
   this->ty = target->getY();
@@ -207,7 +207,7 @@ void Projectile::calculateAngle() {
 
 // return null if the projectile cannot be launched
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
-                                      Item *item, Shape *shape, 
+                                      RenderedItem *item, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
   vector<Projectile*> *v;
   if(projectiles.find(creature) == projectiles.end()) {

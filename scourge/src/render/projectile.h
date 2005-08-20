@@ -35,7 +35,7 @@ class Projectile {
   Creature *creature, *target;
   float tx, ty;
   int tw, td;
-  Item *item;
+  RenderedItem *item;
   Spell *spell;
   float sx, sy, ex, ey; 
   float angle;
@@ -53,7 +53,7 @@ class Projectile {
   static Uint32 lastProjectileTick;
   
  public:
-  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
+  Projectile(Creature *creature, Creature *target, RenderedItem *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
   Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
   Projectile(Creature *creature, int x, int y, int w, int d, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
   virtual ~Projectile();
@@ -68,11 +68,11 @@ class Projectile {
   inline float getAngle() { return angle; }
   inline Shape *getShape() { return shape; }
   inline Creature *getCreature() { return creature; }
-  inline Item *getItem() { return item; }
+  inline RenderedItem *getItem() { return item; }
   inline Spell *getSpell() { return spell; }
 
   static Projectile *addProjectile(Creature *creature, Creature *target, 
-								   Item *item, Shape *shape, 
+								   RenderedItem *item, Shape *shape, 
 								   int maxProjectiles, bool stopOnImpact=true);
   static Projectile *addProjectile(Creature *creature, Creature *target, 
 								   Spell *spell, Shape *shape, 

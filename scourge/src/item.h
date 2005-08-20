@@ -20,6 +20,7 @@
 
 #include "constants.h"
 #include "persist.h"
+#include "render/rendereditem.h"
 #include <vector>
 
 class RpgItem;
@@ -41,7 +42,7 @@ using namespace std;
 
   */
 
-class Item {
+class Item : public RenderedItem {
  private:
   RpgItem *rpgItem;
   int shapeIndex;

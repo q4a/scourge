@@ -19,6 +19,7 @@
 #define GAME_ADAPTER_H
 
 #include "constants.h"
+#include "persist.h"
 
 class Party;
 class Map;
@@ -32,6 +33,8 @@ class Location;
 class Item;
 class ShapePalette;
 class UserConfiguration;
+class RenderedItem;
+class RenderedCreature;
 
 class GameAdapter {
 protected:
@@ -91,6 +94,10 @@ public:
   virtual inline void initEnd() { }
 
   virtual inline bool isHeadless() { return true; }
+
+  // project-specific castings
+  virtual RenderedItem *load( ItemInfo *info );
+  virtual RenderedCreature *load( CreatureInfo *info );
 };
 
 class ServerAdapter : public GameAdapter {

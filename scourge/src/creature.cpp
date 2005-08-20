@@ -689,6 +689,10 @@ float Creature::getMaxInventoryWeight() {
   return (float) getSkill(Constants::POWER) * 2.5f;
 }  
 
+void Creature::pickUpOnMap( RenderedItem *item ) {
+  addInventory( (Item*)item );
+}
+
 bool Creature::addInventory(Item *item, bool force) { 
   if(inventory_count < MAX_INVENTORY_SIZE &&
      (force || !item->isBlocking() || 

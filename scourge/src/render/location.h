@@ -21,8 +21,8 @@
 
 #include "render.h"
 
-class Creature;
 class Effect;
+class RenderedItem;
 
 /**
   *@author Gabor Torok
@@ -33,7 +33,7 @@ public:
   // shapes
   Uint16 x, y, z;
   Shape *shape;
-  Item *item;
+  RenderedItem *item;
   Creature *creature;
 };
 

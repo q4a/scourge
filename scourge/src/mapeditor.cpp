@@ -242,7 +242,7 @@ void MapEditor::drawView() {
                                         scourge->getMap()->getCursorChunkX(), 
                                         scourge->getMap()->getCursorChunkY(),
                                         ( pos ? pos->shape->getName() : "NULL" ),
-                                        ( pos && pos->item ? pos->item->getRpgItem()->getName() : "NULL" ),
+                                        ( pos && pos->item ? ((Item*)(pos->item))->getRpgItem()->getName() : "NULL" ),
                                         ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
   }
   glTranslatef( 50, 50, 0 );
