@@ -746,7 +746,7 @@ void Map::drawWaterPosition(int posX, int posY,
 
 void Map::setupPosition(int posX, int posY, int posZ,
                         float xpos2, float ypos2, float zpos2,
-                        Shape *shape, Item *item, Creature *creature, 
+                        Shape *shape, RenderedItem *item, Creature *creature, 
                         EffectLocation *effect) {
 
   // This really doesn't make a difference unfortunately.
@@ -2020,7 +2020,7 @@ Shape *Map::removeLocation(Sint16 x, Sint16 y, Sint16 z) {
   else return NULL;
 }
   
-void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
+void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item) {
   if(item) {
     if(item->getShape()) {
 	  resortShapes = mapChanged = true;
@@ -2045,8 +2045,8 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, Item *item) {
   }
 }
 
-Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
-  Item *item = NULL;
+RenderedItem *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
+  RenderedItem *item = NULL;
   if(pos[x][y][z] &&
      pos[x][y][z]->item &&
      pos[x][y][z]->x == x &&
@@ -2068,7 +2068,7 @@ Item *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
 }
 
 // drop items above this one
-void Map::dropItemsAbove(int x, int y, int z, Item *item) {
+void Map::dropItemsAbove(int x, int y, int z, RenderedItem *item) {
   int count = 0;
   Location drop[100];
   for(int tx = 0; tx < item->getShape()->getWidth(); tx++) {
@@ -2117,11 +2117,11 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, Creature *creature) {
 			  } else if(pos[x + xp][y - yp][z + zp]->item) {
 				// creature picks up non-blocking item (this is the only way to handle 
 				// non-blocking items. It's also very 'roguelike'.
-				Item *item = pos[x + xp][y - yp][z + zp]->item;
+				RenderedItem *item = pos[x + xp][y - yp][z + zp]->item;
 				removeItem(pos[x + xp][y - yp][z + zp]->x,
 						   pos[x + xp][y - yp][z + zp]->y,
 						   pos[x + xp][y - yp][z + zp]->z);
-				creature->addInventory(item, true);
+        creature->pickUpOnMap(item);
 				sprintf(message, "%s picks up %s.", 
 						creature->getName(), 
 						item->getItemName());
@@ -2182,11 +2182,11 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
             if(pos[newX][newY][newZ]->item) {
               // creature picks up non-blocking item (this is the only way to handle 
               // non-blocking items. It's also very 'roguelike'.)
-              Item *item = pos[newX][newY][newZ]->item;
+              RenderedItem *item = pos[newX][newY][newZ]->item;
               removeItem(pos[newX][newY][newZ]->x,
                          pos[newX][newY][newZ]->y,
                          pos[newX][newY][newZ]->z);
-              creature->addInventory(item, true);
+              creature->pickUpOnMap(item);
               sprintf(message, "%s picks up %s.", 
                       creature->getName(), 
                       item->getItemName());
@@ -2907,7 +2907,8 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
     }
 
     if( info->pos[i]->item ) {
-      Item *item = Item::load( session, info->pos[i]->item );
+      //Item *item = Item::load( session, info->pos[i]->item );
+      RenderedItem *item = session->getGameAdapter()->load( info->pos[i]->item );
       if( item ) setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
       else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( info->pos[i]->creature ) {

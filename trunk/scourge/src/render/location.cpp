@@ -17,6 +17,5 @@
  ***************************************************************************/
 
 #include "location.h"
-#include "effect.h"
-#include "../item.h"
-#include "../creature.h"
+
+

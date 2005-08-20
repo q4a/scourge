@@ -1277,7 +1277,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
         if(!(dropTarget && 
              (dropTarget->creature || 
               (dropTarget->item && 
-               dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
+               ((Item*)(dropTarget->item))->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
           dropTarget = NULL;
         }      
       }
@@ -1331,7 +1331,7 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     if( getTargetSelectionFor() ) {
       Location *pos = levelMap->getLocation(mapx, mapy, mapz);
       if(mapx < MAP_WIDTH && pos && pos->item) {
-        handleTargetSelectionOfItem( pos->item, pos->x, pos->y, pos->z );
+        handleTargetSelectionOfItem( ((Item*)(pos->item)), pos->x, pos->y, pos->z );
         return;
       }
     }
@@ -1450,7 +1450,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
         creature->getDetailedDescription(s);
         description = s;
       } else {
-        Item *item = loc->item;
+        Item *item = ((Item*)(loc->item));
         //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
         if( item ) {
           //item->getDetailedDescription(s, false);
@@ -1682,8 +1682,8 @@ bool Scourge::useItem(int x, int y, int z) {
         return true;
       } else if (useTeleporter(pos)) {
         return true;
-      } else if(pos && pos->item && pos->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-        openContainerGui(pos->item);      
+      } else if(pos && pos->item && ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER) {
+        openContainerGui(((Item*)(pos->item)));      
         return true;
       }
     }
@@ -1702,7 +1702,7 @@ bool Scourge::getItem(Location *pos) {
         movingX = pos->x;
         movingY = pos->y;
         movingZ = pos->z;
-        movingItem = pos->item;		
+        movingItem = ((Item*)(pos->item));		
 		int x = pos->x;
 		int y = pos->y;
 		int z = pos->z;
@@ -1744,8 +1744,8 @@ int Scourge::dropItem(int x, int y) {
         replace = true;
       }
     } else if(levelMap->getSelectedDropTarget()->item && 
-              levelMap->getSelectedDropTarget()->item->getRpgItem()->getType() == RpgItem::CONTAINER) {
-      if(!levelMap->getSelectedDropTarget()->item->addContainedItem(movingItem)) {
+              ((Item*)(levelMap->getSelectedDropTarget()->item))->getRpgItem()->getType() == RpgItem::CONTAINER) {
+      if(!((Item*)(levelMap->getSelectedDropTarget()->item))->addContainedItem(movingItem)) {
         showMessageDialog("The item won't fit in that container!");
         replace = true;
       } else {
@@ -1754,7 +1754,7 @@ int Scourge::dropItem(int x, int y) {
                 levelMap->getSelectedDropTarget()->item->getItemName());
         levelMap->addDescription(message);
         // if this container's gui is open, update it
-        refreshContainerGui(levelMap->getSelectedDropTarget()->item);
+        refreshContainerGui(((Item*)(levelMap->getSelectedDropTarget()->item)));
       }
     } else {
       replace = true;
@@ -3301,7 +3301,7 @@ void Scourge::checkForDropTarget() {
           if(!(dropTarget && 
                (dropTarget->creature || 
                 (dropTarget->item && 
-                 dropTarget->item->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
+                 ((Item*)(dropTarget->item))->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
             dropTarget = NULL;
           }      
         }
@@ -3365,7 +3365,7 @@ void Scourge::checkForInfo() {
             pos->creature->getDetailedDescription(s);
           } else if( pos->item ) {
             obj = pos->item;
-            pos->item->getDetailedDescription(s);
+            ((Item*)(pos->item))->getDetailedDescription(s);
           } else if( pos->shape ) {
             obj = pos->shape;
             strcpy( s, session->getShapePalette()->getRandomDescription( pos->shape->getDescriptionGroup() ) );

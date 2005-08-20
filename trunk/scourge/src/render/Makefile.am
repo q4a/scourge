@@ -3,6 +3,10 @@ INCLUDES = -I$(srcdir)
 noinst_LIBRARIES = libScourgeRender.a
 
 libScourgeRender_a_SOURCES = \
+	rendereditem.cpp\
+	rendereditem.h\
+	renderedcreature.cpp\
+	renderedcreature.h\
 	map.cpp\
 	map.h\
 	frustum.cpp\

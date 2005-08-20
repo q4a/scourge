@@ -30,6 +30,7 @@
 #include "constants.h"
 #include "persist.h"
 #include "date.h"
+#include "render/renderedcreature.h"
 
 using namespace std;
 
@@ -45,7 +46,7 @@ class Spell;
 class GLShape;
 class Item;
 class Event;
-
+class RenderedItem;
 
 /**
   *@author Gabor Torok
@@ -58,7 +59,7 @@ class Event;
 // how many times to attempt to move to range
 #define MAX_FAILED_MOVE_ATTEMPTS 10
 
-class Creature {
+class Creature : public RenderedCreature {
   
  private:
   // gui information
@@ -265,6 +266,7 @@ class Creature {
 	if(index < inventory_count) inventory[index] = item; 
   }
   // returns the index of the last item added
+  void pickUpOnMap( RenderedItem *item );
   bool addInventory(Item *item, bool force=false);
   Item *removeInventory(int index);  
   int findInInventory(Item *item);
