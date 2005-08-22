@@ -67,7 +67,7 @@ void Effect::draw(int effect, int startTime) {
   GLint t = SDL_GetTicks();
 
   bool proceed = (lastTimeStamp == 0 || 
-                  t - lastTimeStamp >= session->getUserConfiguration()->getGameSpeedTicks() / 2);
+                  t - lastTimeStamp >= session->getPreferences()->getGameSpeedTicks() / 2);
   if(proceed) lastTimeStamp = t;
 
   if(effect == Constants::EFFECT_FLAMES) {

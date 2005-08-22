@@ -29,7 +29,7 @@ class Widget;
 class ShapePalette;                          
 class SDLEventHandler;
 class SDLScreenView;
-class UserConfiguration;
+class Preferences;
 class Sound;
 
 /**
@@ -156,7 +156,7 @@ public:
   */
   inline SDLEventHandler *getEventHandler() { return eventHandler; }
    
-  void setVideoMode(UserConfiguration *uc);
+  void setVideoMode(Preferences *uc);
   char ** getVideoModes(int &nbModes);
   void mainLoop();
   void drawScreen();

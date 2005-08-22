@@ -35,7 +35,7 @@ bool Persist::doesSaveGameExist(Session *session) {
 }
 
 bool Persist::saveGame(Session *session) {
-  session->getUserConfiguration()->createConfigDir();
+  session->getPreferences()->createConfigDir();
   char path[300];
   get_file_name( path, 300, SAVE_FILE );
   FILE *fp = fopen( path, "wb" );

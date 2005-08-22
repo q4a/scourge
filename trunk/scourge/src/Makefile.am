@@ -10,6 +10,7 @@ bin_PROGRAMS = scourge
 scourge_SOURCES = \
 	prefix.c\
 	prefix.h\
+	preferences.h\
 	constants.cpp\
 	constants.h\
 	persist.cpp\

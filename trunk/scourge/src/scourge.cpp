@@ -116,7 +116,7 @@ void Scourge::initUI() {
   multiplayer = new MultiplayerDialog(this);
 
   // load character, item sounds
-  getSDLHandler()->getSound()->loadSounds(session->getUserConfiguration());
+  getSDLHandler()->getSound()->loadSounds( getUserConfiguration() );
 }
 
 void Scourge::start() {
@@ -526,7 +526,7 @@ void Scourge::drawView() {
       if(!party->getParty(i)->getStateMod(Constants::dead)) {
 
         bool player = party->getPlayer() == party->getParty(i);
-        if(session->getUserConfiguration()->isBattleTurnBased() && 
+        if( getUserConfiguration()->isBattleTurnBased() && 
            party->isRealTimeMode() && 
            battleTurn < (int)battleRound.size()) {
           player = (party->getParty(i) == battleRound[battleTurn]->getCreature());
@@ -690,7 +690,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
   // show path
   if(player && 
-     session->getUserConfiguration()->isBattleTurnBased() && 
+     getUserConfiguration()->isBattleTurnBased() && 
      battleTurn < (int)battleRound.size() ) {
     for( int i = creature->getProposedPathIndex(); 
          i < (int)creature->getProposedPath()->size() && 
@@ -1172,7 +1172,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
 
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
-    ea = userConfiguration->getEngineAction(event);    
+    ea = getUserConfiguration()->getEngineAction(event);    
     if(ea == SWITCH_COMBAT) {
       getUserConfiguration()->setBattleTurnBased( getUserConfiguration()->isBattleTurnBased() ? false : true );
       char message[80];
@@ -1215,8 +1215,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
 //      miniMap->toggle();
     } else if(ea == TOGGLE_MAP_CENTER){
       bool mc;
-      mc = userConfiguration->getAlwaysCenterMap();
-      userConfiguration->setAlwaysCenterMap(!mc);
+      mc = getUserConfiguration()->getAlwaysCenterMap();
+      getUserConfiguration()->setAlwaysCenterMap(!mc);
     } else if(ea == INCREASE_GAME_SPEED){
       addGameSpeed(-1);        
     } else if(ea == DECREASE_GAME_SPEED){
@@ -2332,8 +2332,8 @@ void Scourge::moveCreatures() {
 
 void Scourge::addGameSpeed(int speedFactor){
   char msg[80];
-  userConfiguration->setGameSpeedLevel(userConfiguration->getGameSpeedLevel() + speedFactor);
-  sprintf(msg, "Speed set to %d\n", userConfiguration->getGameSpeedTicks());
+  getUserConfiguration()->setGameSpeedLevel(getUserConfiguration()->getGameSpeedLevel() + speedFactor);
+  sprintf(msg, "Speed set to %d\n", getUserConfiguration()->getGameSpeedTicks());
   levelMap->addDescription(msg);
 }
 
@@ -3173,9 +3173,9 @@ void Scourge::checkForInfo() {
     }  
   }
 
-  if( session->getUserConfiguration()->getTooltipEnabled() &&
+  if( getUserConfiguration()->getTooltipEnabled() &&
       SDL_GetTicks() - getSDLHandler()->lastMouseMoveTime > 
-      (Uint32)(session->getUserConfiguration()->getTooltipInterval() * 10) ) {
+      (Uint32)( getUserConfiguration()->getTooltipInterval() * 10) ) {
     if(needToCheckInfo) {
       needToCheckInfo = false;
       

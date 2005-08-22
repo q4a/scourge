@@ -21,7 +21,7 @@
 #include "shapepalette.h"
 #include "text.h"
 #include "gui/window.h"
-#include "userconfiguration.h"
+#include "preferences.h"
 #include "sound.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
@@ -294,7 +294,7 @@ char **SDLHandler::getVideoModes(int &nbModes){
     return modesDescription;
 }
 
-void SDLHandler::setVideoMode( UserConfiguration * uc ) {  
+void SDLHandler::setVideoMode( Preferences * uc ) {  
   sound = NULL;
   
   /* this holds some info about our display */

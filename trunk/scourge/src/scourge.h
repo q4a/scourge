@@ -256,7 +256,7 @@ public:
   static int blend[];
   void setBlendFunc();
   
-  Scourge(UserConfiguration *config);
+  Scourge( UserConfiguration *config );
   ~Scourge();
 
   /**
@@ -589,6 +589,8 @@ public:
     return (battleTurn < (int)battleRound.size() && 
             getUserConfiguration()->isBattleTurnBased());
   }
+
+  inline UserConfiguration *getUserConfiguration() { return (UserConfiguration*)getPreferences(); }
 
   bool inTurnBasedCombatPlayerTurn();
 

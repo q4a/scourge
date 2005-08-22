@@ -19,7 +19,7 @@
 #define SESSION_H
 
 #include "constants.h"
-#include "userconfiguration.h"
+#include "preferences.h"
 //#include "board.h"
 #include "party.h"
 #include "net/server.h"
@@ -41,7 +41,7 @@ class Map;
 class Item;
 class Creature;
 class GameAdapter;
-class UserConfiguration;
+class Preferences;
 class RpgItem;
 class Spell;
 class Monster;
@@ -146,7 +146,7 @@ public:
   inline Map *getMap() { return map; }
   inline Board *getBoard() { return board; }
   inline Party *getParty() { return party; }
-  inline UserConfiguration *getUserConfiguration() { return getGameAdapter()->getUserConfiguration(); }
+  inline Preferences *getPreferences() { return getGameAdapter()->getPreferences(); }
   inline Mission *getCurrentMission() { return currentMission; }
   inline void setCurrentMission(Mission *mission) { currentMission = mission; }
 

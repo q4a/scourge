@@ -419,7 +419,7 @@ void Creature::setSelXY(int x, int y, bool force) {
   // play command sound
   if(x > -1 && 
      session->getParty()->getPlayer() == this && 
-     0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX) &&
+     0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
      !getStateMod(Constants::dead)) {
     session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
   }
@@ -1559,7 +1559,7 @@ void Creature::setExp() {
 
 GLfloat Creature::getStep() {
   GLfloat fps = session->getGameAdapter()->getFps();
-  GLfloat div = FPS_ONE + (float)(session->getUserConfiguration()->getGameSpeedLevel() * 3.0f);
+  GLfloat div = FPS_ONE + (float)(session->getPreferences()->getGameSpeedLevel() * 3.0f);
   if( fps < div ) return 0.8f;
   GLfloat step = 1.0f / ( fps / div  ); 
   if( getSpeed() <= 0 ) {
