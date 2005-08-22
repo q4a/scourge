@@ -120,7 +120,7 @@ public:
   
   @author Gabor Torok
 */ 
-class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler  {
+class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler {
  private:
   Party *party;
   Map *levelMap;
@@ -167,7 +167,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   GLint dragStartTime;
   static const int ACTION_CLICK_TIME = 200;
 
-  int lastMapX, lastMapY, lastMapZ, lastX, lastY;
   // how many pixels to wait between sampling 3d coordinates 
   // when dragging items (the more the faster)
   static const int POSITION_SAMPLE_DELTA = 10; 
@@ -224,9 +223,6 @@ class Scourge : public GameAdapter,SDLEventHandler,SDLScreenView,WidgetView,Drag
   map<InfoMessage *, Uint32> infos;
 
 protected:
-  SDLHandler *sdlHandler;
-  ShapePalette *shapePal;
-
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
   void describeLocation(int mapx, int mapy, int mapz);
@@ -279,12 +275,7 @@ public:
 
   inline int getCurrentDepth() { return currentStory; }
 
-  inline bool isHeadless() { return false; }
-
-  inline Session *getSession() { return session; }
-
-  int getScreenWidth();
-  int getScreenHeight();
+  //inline Session *getSession() { return session; }
 
   /**
     @return the Board containing the available missions.
@@ -448,17 +439,6 @@ public:
     back to startMission.
   */
   void endMission();
-
-  /**
-    @return the ShapePalette.
-  */
-  inline ShapePalette *getShapePalette() { return shapePal; }  
-
-  /**
-    @return the SDLHandler.
-  */
-  inline SDLHandler *getSDLHandler() { return sdlHandler; }
-   
   
   //void drawTopWindow();
 
@@ -562,17 +542,13 @@ public:
   void initUpdate(char *message);
   void initEnd();
 
-  void initVideo(ShapePalette *shapePal);
   void initUI();
   void start();
 
-  inline double getFps() { return getSDLHandler()->getFPS(); }
+  ShapePalette *getShapePalette();
 
-  void playSound(const char *sound);
   void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
   void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
-
-  inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 
   void fightProjectileHitTurn(Projectile *proj, RenderedCreature *creature);
 
@@ -634,18 +610,10 @@ public:
 
   inline Window *getPartyWindow() { return mainWin; }
 
-  inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
-  inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }
-  inline Uint16 getMouseY() { return getSDLHandler()->mouseY; }
-  void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
-  void getMapXYAtScreenXY(Uint16 *mapx, Uint16 *mapy);
-
   virtual void unlockMouse() { getSDLHandler()->unlockMouse(); }
   virtual void lockMouse( Widget *widget ) { getSDLHandler()->lockMouse( widget ); }
 
  protected:
-
-   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
 
    void drawPortrait( Widget *w, Creature *p );
 
@@ -653,7 +621,6 @@ public:
 
    int initMultiplayer();
 
-  void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
   void createUI();
   // change the player's selX,selY values as specified by keyboard movement
   void handleKeyboardMovement();  

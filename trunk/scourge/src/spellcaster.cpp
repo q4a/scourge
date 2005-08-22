@@ -174,9 +174,10 @@ void SpellCaster::viewInfo() {
   Item *item = creature->getTargetItem();
   creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));
   if(item) {
-    battle->getSession()->getGameAdapter()->showItemInfoUI( item, 
-                                                            creature->getSkill(Constants::IDENTIFY_ITEM_SKILL) +
-                                                            creature->getSkill(spell->getSchool()->getSkill()) );
+    if(!battle->getSession()->getGameAdapter()->isHeadless()) 
+      battle->getSession()->getGameAdapter()->showItemInfoUI( item, 
+                                                              creature->getSkill(Constants::IDENTIFY_ITEM_SKILL) +
+                                                              creature->getSkill(spell->getSchool()->getSkill()) );
   } else {
     cerr << "*** Warning: implement ole' taffy for non-item targets!" << endl;
   }

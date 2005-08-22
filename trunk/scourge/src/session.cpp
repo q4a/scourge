@@ -18,6 +18,9 @@
 #include "render/renderlib.h"
 #include "item.h"
 #include "creature.h"
+#include <iostream>
+#include <stdlib.h>
+#include <strings.h>
 
 /**
  *@author Gabor Torok
@@ -310,4 +313,102 @@ void Session::creatureDeath(Creature *creature) {
   }
   creature->setStateMod(Constants::dead, true);
 }                 
+
+int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
+  // init the rootdir via binreloc
+#ifdef WIN32
+  // for windows (binreloc doesn't compile in windows)
+  rootDir = (char*)malloc( 300 * sizeof( char ) );
+  strcpy( rootDir, "data" ); 
+#else
+#ifdef ENABLE_BINRELOC
+  rootDir = (char*)BR_DATADIR( "/data" );
+#else
+  rootDir = (char*)malloc( 300 * sizeof( char ) );
+  strcpy( rootDir, DATA_DIR );
+#endif
+#endif  
+  cerr << "rootDir=" << rootDir << endl;
+
+  // FIXME: for windows, if this doesn't work, try using DATA_DIR
+  // which is made by autoconf
+
+  // Check to see if there's a local version of the data dir
+  // (ie. we're running in the build folder and not in a distribution)
+  char dir[300];
+  dir[0] = '\0';
+  cerr << "app path: " << argv[0] << endl;
+  findLocalResources(argv[0], dir);
+  if(strlen(dir)) {
+    cerr << "*** Using local data dir. Not running a distribution. dir=" << dir << endl;
+    sprintf(rootDir, "%sdata", dir);
+  }
+  
+  // config check
+  if(argc >= 2 && !strcmp(argv[1], "--test-config")) {
+    cerr << "Configuration:" << endl;
+    char dir[300];
+    char file[500];
+    int dir_res = get_config_dir_name( dir, 300 );
+    int file_res = get_config_file_name( file, 500 );
+    cerr << "starting app: " << argv[0] << endl;
+    cerr << "rootDir=" << rootDir << 
+      "\nconfigDir=" << configDir << 
+      "\nconfigFile=" << CONFIG_FILE << 
+      "\ndir=" << dir << " dir_res=" << dir_res <<
+      "\nfile=" << file << " file_res=" << file_res <<	endl;
+    return 0;
+  }
+  
+  // do a final sanity check before running the game
+  if(!checkFile(rootDir, "/cursor.bmp")) {
+    cerr << "ERROR: check for files failed in data dir: " << rootDir << endl;
+    cerr << "Either install the data files at the above location, or rebuild with ./configure --with-data-dir=<new location> or run the game from the source distribution's main directory (the one that contains src,data,etc.)" << endl;
+    return 1;
+  }
+
+  Session *session = new Session( adapter );
+  session->initialize();
+  session->start();
+  
+  return EXIT_SUCCESS;
+}
+
+bool Session::checkFile(const char *dir, const char *file) {
+  char path[300];
+  strcpy(path, dir);
+  strcat(path, file);
+  //fprintf(stderr, "\tchecking path: %s\n", path);
+  bool ret = true;
+  FILE *fp = fopen(path, "rb");
+  if(!fp || ferror(fp)) ret = false;
+  if(fp) fclose(fp);
+  return ret;
+}
+
+// this function is used to be able to run scourge while developing
+void Session::findLocalResources(const char *appPath, char *dir) {
+  // Where are we running from?
+  strcpy(dir, appPath);	 
+  // Look in this and the parent dir for a 'data' folder
+  // ('i' has to count to at least 4 for OS X)
+  for(int i = 0; i < 10; i++) {
+    char *pp = strrchr(dir, '/');
+    char *p = strrchr(dir, SEPARATOR);
+    if(!p && !pp) {
+      dir[0] = '\0';
+      cerr << "*** Can't find local version of data dir. You're running a distribution." << endl;
+      return;
+    }
+    // Take whichever comes first. This is to solve a problem when running in
+    // mingw or cygwin. It may cause problems if the actual path has a \ or / in it.
+    if(pp > p) p = pp;
+    *(p + 1) = 0;
+    //	fprintf(stderr, "*** Looking at: dir=%s\n", dir);
+    if(checkFile(dir, "data/cursor.bmp")) return;
+    // remove the last separator
+    *(p) = 0;
+  }
+  dir[0] = '\0';
+}
 
