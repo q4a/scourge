@@ -17,19 +17,19 @@
 
 #include "gameadapter.h"
 #include "session.h"
-#include "userconfiguration.h"
+#include "preferences.h"
 #include "shapepalette.h"
 #include "item.h"
 #include "creature.h"
 #include "sound.h"
 #include "render/renderlib.h"
 
-GameAdapter::GameAdapter(UserConfiguration *config) {
-  this->userConfiguration = config;
+GameAdapter::GameAdapter( Preferences *config ) {
+  this->preferences = config;
 }
 
 GameAdapter::~GameAdapter() {
-  delete userConfiguration;
+  delete preferences;
 }
 
 RenderedItem *GameAdapter::load( ItemInfo *info ) {
@@ -40,7 +40,15 @@ RenderedCreature *GameAdapter::load( CreatureInfo *info ) {
   return Creature::load( session, info );
 }
 
-ServerAdapter::ServerAdapter(UserConfiguration *config) : GameAdapter(config) {
+RenderedCreature *GameAdapter::getPlayer() {
+  return (RenderedCreature*)(getSession()->getParty()->getPlayer());
+}
+
+RenderedCreature *GameAdapter::getParty( int index ) {
+  return (RenderedCreature*)(getSession()->getParty()->getParty( index ));
+}
+
+ServerAdapter::ServerAdapter( Preferences *config ) : GameAdapter( config ) {
 }
 
 ServerAdapter::~ServerAdapter() {
@@ -48,13 +56,13 @@ ServerAdapter::~ServerAdapter() {
 
 void ServerAdapter::start() {
 #ifdef HAVE_SDL_NET
-  session->runServer(userConfiguration->getPort());
+  session->runServer( preferences->getPort() );
 #endif
 }
 
 
 
-ClientAdapter::ClientAdapter(UserConfiguration *config) : GameAdapter(config) {
+ClientAdapter::ClientAdapter( Preferences *config ) : GameAdapter( config ) {
 }
 
 ClientAdapter::~ClientAdapter() {
@@ -62,16 +70,16 @@ ClientAdapter::~ClientAdapter() {
 
 void ClientAdapter::start() {
 #ifdef HAVE_SDL_NET
-  session->runClient(userConfiguration->getHost(), 
-                     userConfiguration->getPort(), 
-                     userConfiguration->getUserName());
+  session->runClient( preferences->getHost(), 
+                      preferences->getPort(), 
+                      preferences->getUserName() );
 #endif
 }                               
 
 
 
 
-SDLOpenGLAdapter::SDLOpenGLAdapter(UserConfiguration *config) : GameAdapter(config) {
+SDLOpenGLAdapter::SDLOpenGLAdapter( Preferences *config ) : GameAdapter( config ) {
   sdlHandler = NULL;
   //lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
 }
@@ -83,7 +91,7 @@ SDLOpenGLAdapter::~SDLOpenGLAdapter() {
 void SDLOpenGLAdapter::initVideo(ShapePalette *shapePal) {
   // Initialize the video mode
   sdlHandler = new SDLHandler(shapePal); 
-  sdlHandler->setVideoMode(userConfiguration); 
+  sdlHandler->setVideoMode( preferences ); 
 }
 
 void SDLOpenGLAdapter::getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy ) {

@@ -23,8 +23,8 @@
 #include "shape.h"
 #include "glshape.h"
 #include "md2shape.h"
-#include "../creature.h"
-#include "../item.h"
+#include "renderedcreature.h"
+#include "rendereditem.h"
 #include "../io/zipfile.h"
 
 #define MOUSE_ROT_DELTA 2
@@ -268,7 +268,7 @@ void Map::setViewArea(int x, int y, int w, int h) {
   viewHeight = h;
 
   float adjust = (float)viewWidth / 800.0f;
-  if(session->getUserConfiguration()->getKeepMapSize()) {
+  if(session->getPreferences()->getKeepMapSize()) {
     zoom = (float)session->getGameAdapter()->getScreenWidth() / (float)w;
   }
   xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
@@ -288,8 +288,8 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
                          ((float)viewHeight / 
                           (float)scourge->getSDLHandler()->getScreen()->h)) / 2.0f);
   */
-  if(session->getUserConfiguration()->getAlwaysCenterMap() || force) {
-	//  if(scourge->getUserConfiguration()->getAlwaysCenterMap() ||
+  if(session->getPreferences()->getAlwaysCenterMap() || force) {
+	//  if(scourge->getPreferences()->getAlwaysCenterMap() ||
 	//     abs(this->x - nx) > X_CENTER_TOLERANCE ||
 	//     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
     // relocate
@@ -321,7 +321,7 @@ void Map::moveMap(int dir) {
 	if(dir & Constants::MOVE_UP) setYRot(rot);
 	if(dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
 	if(dir & Constants::MOVE_LEFT) setZRot(rot);
-  } else if(!session->getUserConfiguration()->getAlwaysCenterMap()) {
+  } else if(!session->getPreferences()->getAlwaysCenterMap()) {
 	
 	// stop rotating (angle of rotation is kept)
 	setYRot(0);
@@ -889,8 +889,8 @@ void Map::draw() {
     if( settings->isPlayerEnabled() ) {
       sprintf(mapDebugStr, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
               (int)currentEffectsMap.size(),
-              ( session->getParty()->getPlayer() ? toint(session->getParty()->getPlayer()->getX()) : -1 ),
-              ( session->getParty()->getPlayer() ? toint(session->getParty()->getPlayer()->getY()) : -1 ),
+              ( session->getGameAdapter()->getPlayer() ? toint(session->getGameAdapter()->getPlayer()->getX()) : -1 ),
+              ( session->getGameAdapter()->getPlayer() ? toint(session->getGameAdapter()->getPlayer()->getY()) : -1 ),
               (useFrustum ? "*" : ""),
               chunkCount, ((cex - csx)*(cey - csy)),
               csx, cex, csy, cey, shapeCount);
@@ -932,8 +932,8 @@ void Map::draw() {
 #endif
 
 
-    if(session->getUserConfiguration()->getStencilbuf() &&
-       session->getUserConfiguration()->getStencilBufInitialized()) {
+    if(session->getPreferences()->getStencilbuf() &&
+       session->getPreferences()->getStencilBufInitialized()) {
 
 
       // stencil and draw the floor
@@ -945,7 +945,7 @@ void Map::draw() {
       setupShapes(true, false);
 
       // shadows
-      if(session->getUserConfiguration()->getShadows() >= Constants::OBJECT_SHADOWS) {
+      if(session->getPreferences()->getShadows() >= Constants::OBJECT_SHADOWS) {
         glStencilFunc(GL_EQUAL, 1, 0xffffffff);
         glStencilOp(GL_KEEP, GL_KEEP, GL_INCR); 
         glDisable(GL_TEXTURE_2D);
@@ -956,7 +956,7 @@ void Map::draw() {
         for(int i = 0; i < otherCount; i++) {
           doDrawShape(&other[i]);
         }
-        if(session->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
+        if(session->getPreferences()->getShadows() == Constants::ALL_SHADOWS) {
           for(int i = 0; i < stencilCount; i++) {
             doDrawShape(&stencil[i]);
           }
@@ -986,7 +986,7 @@ void Map::draw() {
       for(int i = 0; i < otherCount; i++) {
         doDrawShape(&other[i]);
       }
-      if(session->getUserConfiguration()->getShadows() == Constants::ALL_SHADOWS) {
+      if(session->getPreferences()->getShadows() == Constants::ALL_SHADOWS) {
         for(int i = 0; i < stencilCount; i++) {
           doDrawShape(&stencil[i]);
         }
@@ -1006,7 +1006,7 @@ void Map::draw() {
     DrawLater *playerDrawLater = NULL;
     for(int i = 0; i < otherCount; i++) {
       if( settings->isPlayerEnabled() ) {
-        if( other[i].creature && other[i].creature == session->getParty()->getPlayer() ) 
+        if( other[i].creature && other[i].creature == session->getGameAdapter()->getPlayer() ) 
           playerDrawLater = &(other[i]);
       }
       if(selectedDropTarget && 
@@ -1035,8 +1035,8 @@ void Map::draw() {
       glEnable( GL_BLEND );
       glDepthMask(GL_FALSE);        
       if( hasWater && 
-          session->getUserConfiguration()->getStencilbuf() &&
-          session->getUserConfiguration()->getStencilBufInitialized() ) {
+          session->getPreferences()->getStencilbuf() &&
+          session->getPreferences()->getStencilBufInitialized() ) {
         
         // stencil out the transparent walls (and draw them)
         //glDisable(GL_DEPTH_TEST);
@@ -1111,7 +1111,7 @@ void Map::draw() {
       doDrawShape(&damage[i], 1);
     }
     
-    if( session->getUserConfiguration()->isOvalCutoutShown() &&
+    if( session->getPreferences()->isOvalCutoutShown() &&
         !settings->isGridShowing() &&
         session->getCurrentMission() ) 
       drawShade();
@@ -2385,11 +2385,11 @@ void Map::configureLightMap() {
   }
   if( !( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ) ) return;
 
-  int chunkX = (toint(session->getParty()->getPlayer()->getX()) + 
-                (session->getParty()->getPlayer()->getShape()->getWidth() / 2) - 
+  int chunkX = (toint(session->getGameAdapter()->getPlayer()->getX()) + 
+                (session->getGameAdapter()->getPlayer()->getShape()->getWidth() / 2) - 
                 MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (toint(session->getParty()->getPlayer()->getY()) - 
-                (session->getParty()->getPlayer()->getShape()->getDepth() / 2) - 
+  int chunkY = (toint(session->getGameAdapter()->getPlayer()->getY()) - 
+                (session->getGameAdapter()->getPlayer()->getShape()->getDepth() / 2) - 
                 MAP_OFFSET) / MAP_UNIT;
 
   traceLight(chunkX, chunkY, lightMap, false);
@@ -2674,7 +2674,7 @@ void Map::handleEvent( SDL_Event *event ) {
   case SDL_KEYDOWN:
   case SDL_KEYUP:
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
-    ea = session->getUserConfiguration()->getEngineAction(event);    
+    ea = session->getPreferences()->getEngineAction(event);    
     if(ea == SET_MOVE_DOWN){        
       setMove(Constants::MOVE_DOWN);
     } else if(ea == SET_MOVE_UP){
@@ -2891,8 +2891,8 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
     startx = info->start_x;
     starty = info->start_y;
   } else {
-    startx = toint( session->getParty()->getPlayer()->getX() );
-    starty = toint( session->getParty()->getPlayer()->getY() );
+    startx = toint( session->getGameAdapter()->getPlayer()->getX() );
+    starty = toint( session->getGameAdapter()->getPlayer()->getY() );
   }
 
   mapGridX = info->grid_x;
@@ -2945,11 +2945,11 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
     int xx = startx;
     int yy = starty;
     for( int t = 0; t < session->getParty()->getPartySize(); t++ ) {
-      session->getParty()->getParty(t)->moveTo( xx, yy, 0 );
-      session->getParty()->getParty(t)->setSelXY( -1, -1 );
-      if( !session->getParty()->getParty(t)->getStateMod( Constants::dead ) )
-        setCreature( xx, yy, 0, session->getParty()->getParty(t) );
-      xx += session->getParty()->getParty(t)->getShape()->getWidth();
+      session->getGameAdapter()->getParty(t)->moveTo( xx, yy, 0 );
+      session->getGameAdapter()->getParty(t)->setSelXY( -1, -1 );
+      if( !session->getGameAdapter()->getParty(t)->getStateMod( Constants::dead ) )
+        setCreature( xx, yy, 0, session->getGameAdapter()->getParty(t) );
+      xx += session->getGameAdapter()->getParty(t)->getShape()->getWidth();
     }
   }
 

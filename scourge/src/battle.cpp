@@ -131,7 +131,7 @@ bool Battle::fightTurn() {
     }
     // in TB battle, wait for the animations to end before ending turn
     int a;
-    if( session->getUserConfiguration()->isBattleTurnBased()) {
+    if( session->getPreferences()->isBattleTurnBased()) {
       a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
       if( !( a == MD2_STAND || a == MD2_RUN )) {
         return false;
@@ -185,7 +185,7 @@ void Battle::endTurn() {
 
 bool Battle::pauseBeforePlayerTurn() {
   // go to single-player mode
-  if (session->getUserConfiguration()->isBattleTurnBased() &&
+  if (session->getPreferences()->isBattleTurnBased() &&
       !session->getParty()->isPlayerOnly()) {
     session->getParty()->togglePlayerOnly(true);
   }
@@ -193,7 +193,7 @@ bool Battle::pauseBeforePlayerTurn() {
   // pause if this is a player's first step
   if (!steps && 
       !paused &&
-      session->getUserConfiguration()->isBattleTurnBased()) {
+      session->getPreferences()->isBattleTurnBased()) {
     if(!creature->isMonster()) {
       if(debugBattle) cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
 
@@ -251,7 +251,7 @@ void Battle::initTurnStep() {
       // How many steps to wait before being able to use the weapon.
       weaponWait = (item ? item->getSpeed() : Constants::HAND_WEAPON_SPEED) * WEAPON_WAIT_MUL;
       // Make turn-based mode a little snappier
-      if( session->getUserConfiguration()->isBattleTurnBased() ) {
+      if( session->getPreferences()->isBattleTurnBased() ) {
         weaponWait /= 2;
       }
     }
@@ -349,7 +349,7 @@ void Battle::stepCloserToTarget() {
     if( creature->isMonster() ) {      
       ap--;  
     } else {
-      if( session->getUserConfiguration()->isBattleTurnBased() ) {
+      if( session->getPreferences()->isBattleTurnBased() ) {
         if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
       } else {
         ap--;
@@ -424,7 +424,7 @@ bool Battle::moveCreature() {
 
         // guess a new path
         creature->setSelXY( creature->getSelX(), creature->getSelY() );
-        if( session->getUserConfiguration()->isBattleTurnBased() ) {          
+        if( session->getPreferences()->isBattleTurnBased() ) {          
           if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
         } else {
           // is the below line needed?
@@ -498,7 +498,7 @@ bool Battle::selectNewTarget() {
     }
 
     // let the player override in TB mode
-    if( target && session->getUserConfiguration()->isBattleTurnBased() ) {
+    if( target && session->getPreferences()->isBattleTurnBased() ) {
       if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
     }
 
@@ -625,7 +625,7 @@ void Battle::launchProjectile() {
     // (like print message: can't launch projectile due to use of fixed-sized array in code?)
   }
   if(creature->isMonster() && 
-     0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX)) {
+     0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX)) {
     session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
   }
   session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount) );
@@ -688,7 +688,7 @@ void Battle::hitWithItem() {
 
     // play item sound
     if(creature->isMonster() && 
-       0 == (int)((float)(session->getUserConfiguration()->getSoundFreq()) * rand()/RAND_MAX)) {
+       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX)) {
       session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
     }
     session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
@@ -974,7 +974,7 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical, GLu
     if(creature->getTargetCreature()->takeDamage(damage, effect, delay)) {
       
       // only in RT mode... otherwise in TB mode character won't move
-      if( !session->getUserConfiguration()->isBattleTurnBased() )
+      if( !session->getPreferences()->isBattleTurnBased() )
         creature->getShape()->setCurrentAnimation((int)MD2_TAUNT); 
 
       sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
@@ -1031,8 +1031,8 @@ void Battle::initItem(Item *item) {
 
   // (!item) is a bare-hands attack		
   speed = (item ? item->getSpeed() : Constants::HAND_WEAPON_SPEED) * 
-          (session->getUserConfiguration()->getGameSpeedTicks() + 80);
-  //	(scourge->getUserConfiguration()->getGameSpeedTicks() + 80);
+          (session->getPreferences()->getGameSpeedTicks() + 80);
+  //	(scourge->getPreferences()->getGameSpeedTicks() + 80);
 
   creatureInitiative = creature->getInitiative(item);
 }

@@ -18,101 +18,19 @@
 #ifndef USER_CONFIGURATION_H
 #define USER_CONFIGURATION_H
 
-
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <map>
 #include "constants.h"
-//#include "util.h"
+#include "preferences.h"
 
 using namespace std;
-
-// Indice for the first debug engine action defined in engine_action_int
-//#define ENGINE_ACTION_DEBUG_IND 32
 
 // set to non-zero for debugging
 #define DEBUG_USER_CONFIG 0  
 
-// All engine action that can be binded
-// If you change this, ALSO change ENGINE_ACTION_NAMES in userconfiguration.cpp
-// AND update ENGINE_ACTION_DEBUG_IND (first indice of invisible engine actions)
-// AND add a corresponding bind line in config file (to have a default value)
-enum engine_action_int{
-    
-    SET_MOVE_DOWN = 0,
-    SET_MOVE_RIGHT,
-    SET_MOVE_UP,
-    SET_MOVE_LEFT,
-            
-    SET_PLAYER_0,
-    SET_PLAYER_1,
-    SET_PLAYER_2,
-    SET_PLAYER_3,
-    SET_PLAYER_ONLY,      
-    
-    SHOW_INVENTORY, 
-    SHOW_OPTIONS_MENU,
-    SET_NEXT_FORMATION,
-           
-    MINIMAP_ZOOM_IN,
-    MINIMAP_ZOOM_OUT,
-    
-    SET_ZOOM_IN,     
-    SET_ZOOM_OUT,
-    
-    TOGGLE_MAP_CENTER, 
-    INCREASE_GAME_SPEED, 
-    DECREASE_GAME_SPEED, 
-    
-    START_ROUND, 
-
-    LAYOUT_1,
-    LAYOUT_2,
-    LAYOUT_4,
-
-    SHOW_PATH,
-    SWITCH_COMBAT,
-
-    QUICK_SPELL_1,
-    QUICK_SPELL_2,
-    QUICK_SPELL_3,      
-    QUICK_SPELL_4,      
-    QUICK_SPELL_5,      
-    QUICK_SPELL_6,      
-    QUICK_SPELL_7,      
-    QUICK_SPELL_8,      
-    QUICK_SPELL_9,      
-    QUICK_SPELL_10,      
-    QUICK_SPELL_11,      
-    QUICK_SPELL_12,      
-
-    // must be last
-    ENGINE_ACTION_COUNT    
-};
-
-// All engine actions that have a corresponding keyup action
-// If you change this, ALSO change ENGINE_ACTION_UP_NAMES in userconfiguration.cpp
-enum engine_action_up_int{
-
-    SET_MOVE_DOWN_STOP = 500,   // Must be first
-    SET_MOVE_RIGHT_STOP, 
-    SET_MOVE_UP_STOP,
-    SET_MOVE_LEFT_STOP,
-    SET_Y_ROT_PLUS_STOP,
-    SET_Y_ROT_MINUS_STOP,    
-    SET_Z_ROT_PLUS_STOP,        
-    SET_Z_ROT_MINUS_STOP,
-    SET_ZOOM_IN_STOP,     
-    SET_ZOOM_OUT_STOP,
-    SHOW_PATH_STOP,
-    SET_NEXT_FORMATION_STOP,    
-    
-    // must be the last one
-    ENGINE_ACTION_UP_COUNT
-};
-
-class UserConfiguration{
+class UserConfiguration : public Preferences {
 
 private:
   static const char * ENGINE_ACTION_NAMES[];     
@@ -169,9 +87,6 @@ private:
   bool turnBasedBattle;
   bool ovalCutoutShown;
 
-  // was the stencil buf. initialized at start?
-  bool stencilBufInitialized;
-
   // audio settings
   bool soundEnabled;
   int soundFreq;
@@ -183,12 +98,6 @@ private:
   int port;
    
  public:
-
-  enum {
-    NONE = 0,
-    SERVER,
-    CLIENT
-  };
  
   UserConfiguration::UserConfiguration();
   UserConfiguration::~UserConfiguration();
@@ -273,9 +182,6 @@ private:
   
   void parseCommandLine(int argc, char *argv[]);  
   void setKeyForEngineAction(string keyName, int ea);
-
-  inline void setStencilBufInitialized(bool b) { stencilBufInitialized = b; }
-  inline bool getStencilBufInitialized() { return stencilBufInitialized; }
 
   inline int getStandAloneMode() { return standAloneMode; }
   inline char *getHost() { return host; }

@@ -36,7 +36,7 @@ private:
 #endif
 
 public:
-  Sound(UserConfiguration *userConfiguration);
+  Sound(Preferences *preferences);
   virtual ~Sound();
   
   inline void playMusicMenu() {
@@ -63,9 +63,9 @@ public:
 #endif
   }
 
-  void loadSounds(UserConfiguration *userConfiguration);
+  void loadSounds(Preferences *preferences);
   void loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
-						  UserConfiguration *userConfiguration );
+						  Preferences *preferences );
   void unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m );
 
   void storeSound(int type, const char *file);

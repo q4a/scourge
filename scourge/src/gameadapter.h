@@ -33,20 +33,20 @@ class Shape;
 class Location;
 class Item;
 class ShapePalette;
-class UserConfiguration;
+class Preferences;
 class RenderedItem;
 class RenderedCreature;
 
 class GameAdapter {
 protected:
-  UserConfiguration *userConfiguration;
+  Preferences *preferences;
   Session *session;
 
 public:
-  GameAdapter(UserConfiguration *config);
+  GameAdapter( Preferences *config );
   virtual ~GameAdapter();
 
-  inline UserConfiguration *getUserConfiguration() { return userConfiguration; }
+  inline Preferences *getPreferences() { return preferences; }
 
   inline void setSession(Session *session) { this->session = session; }
   inline Session *getSession() { return session; }
@@ -106,6 +106,8 @@ public:
   // project-specific castings
   virtual RenderedItem *load( ItemInfo *info );
   virtual RenderedCreature *load( CreatureInfo *info );
+  virtual RenderedCreature *getPlayer();
+  virtual RenderedCreature *getParty( int index );
 };
 
 class SDLOpenGLAdapter : public GameAdapter {
@@ -115,7 +117,7 @@ protected:
 
 public:
 
-  SDLOpenGLAdapter(UserConfiguration *config);
+  SDLOpenGLAdapter( Preferences *config );
   virtual ~SDLOpenGLAdapter();
 
   virtual void initVideo( ShapePalette *shapePal );
@@ -144,14 +146,14 @@ protected:
 
 class ServerAdapter : public GameAdapter {
 public:
-  ServerAdapter(UserConfiguration *config);
+  ServerAdapter( Preferences *config );
   virtual ~ServerAdapter();
   void start();
 };
 
 class ClientAdapter : public GameAdapter {
 public:
-  ClientAdapter(UserConfiguration *config);
+  ClientAdapter( Preferences *config );
   virtual ~ClientAdapter();
   void start();
 };

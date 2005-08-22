@@ -17,8 +17,8 @@
 
 #include "projectile.h"
 #include "map.h"
-#include "../item.h"
-#include "../creature.h"
+#include "renderedcreature.h"
+#include "rendereditem.h"
 #include "glshape.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
@@ -322,7 +322,7 @@ void Projectile::removeProjectile(Projectile *p) {
 void Projectile::moveProjectiles(Session *session) {
   Uint32 t = SDL_GetTicks();
   if(lastProjectileTick == 0 || 
-     t - lastProjectileTick > (Uint32)(session->getUserConfiguration()->getGameSpeedTicks() / 50)) {
+     t - lastProjectileTick > (Uint32)(session->getPreferences()->getGameSpeedTicks() / 50)) {
     lastProjectileTick = t;
 
     // draw the projectiles

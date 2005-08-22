@@ -20,10 +20,10 @@
 #include "item.h"
 #include "creature.h"
 
-Sound::Sound(UserConfiguration *userConfiguration) {
+Sound::Sound(Preferences *preferences) {
   haveSound = false;
 
-  if(userConfiguration->isSoundEnabled()) {
+  if(preferences->isSoundEnabled()) {
 #ifdef HAVE_SDL_MIXER
     if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024)) {
       cerr << "*** Error opening audio: " << Mix_GetError() << endl;
@@ -48,7 +48,7 @@ Sound::Sound(UserConfiguration *userConfiguration) {
         cerr << "\t" << Mix_GetError() << endl;
       }
 
-      setMusicVolume(userConfiguration->getMusicVolume());
+      setMusicVolume(preferences->getMusicVolume());
     }
 #endif
   }
@@ -103,7 +103,7 @@ void Sound::stopMusic(Mix_Music *music) {
 }
 #endif
 
-void Sound::loadSounds(UserConfiguration *userConfiguration) {
+void Sound::loadSounds(Preferences *preferences) {
   if(!haveSound) return;
 
 //  cerr << "Loading UI sounds..." << endl;
@@ -166,11 +166,11 @@ void Sound::loadSounds(UserConfiguration *userConfiguration) {
   }
   */  
 
-  setEffectsVolume(userConfiguration->getEffectsVolume());
+  setEffectsVolume(preferences->getEffectsVolume());
 }
 
 void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
-							   UserConfiguration *userConfiguration ) {
+							   Preferences *preferences ) {
 //  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
   if( m ) {
 	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
@@ -181,7 +181,7 @@ void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m,
 	  }
 	}
   }
-  setEffectsVolume(userConfiguration->getEffectsVolume());
+  setEffectsVolume(preferences->getEffectsVolume());
 }
 
 void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m ) {  
