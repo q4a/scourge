@@ -73,7 +73,8 @@ void Party::reset() {
     session->getGameAdapter()->createParty( party, &partySize );
   }
   player = party[0];
-  session->getGameAdapter()->resetPartyUI();
+  if(!session->getGameAdapter()->isHeadless()) 
+    session->getGameAdapter()->resetPartyUI();
 }
 
 void Party::resetMultiplayer(Creature *c) {
@@ -85,7 +86,8 @@ void Party::resetMultiplayer(Creature *c) {
   // upload your character to the server
   session->getClient()->sendCharacter(player->save());
 #endif
-  session->getGameAdapter()->resetPartyUI();
+  if(!session->getGameAdapter()->isHeadless()) 
+    session->getGameAdapter()->resetPartyUI();
 }
 
 // set player to be the first non-dead character
@@ -173,8 +175,10 @@ void Party::setPlayer(int n) {
   session->getMap()->center(toint(getPlayer()->getX()), toint(getPlayer()->getY()));
   
   session->getMap()->center(toint(player->getX()), toint(player->getY()), true);
-  session->getGameAdapter()->refreshInventoryUI(n);  
-  session->getGameAdapter()->setPlayerUI(n);
+  if(!session->getGameAdapter()->isHeadless()) {
+    session->getGameAdapter()->refreshInventoryUI(n);  
+    session->getGameAdapter()->setPlayerUI(n);
+  }
 
   // play selection sound
   if(lastPlayer != player) {
@@ -217,7 +221,8 @@ void Party::toggleRound() {
   // restart player stopping on un-pause
   if( startRound && playerMoved > 0 ) setPlayerMoved();
 
-  session->getGameAdapter()->toggleRoundUI(startRound);  
+  if(!session->getGameAdapter()->isHeadless()) 
+    session->getGameAdapter()->toggleRoundUI(startRound);  
 }
 
 void Party::setTargetCreature(Creature *creature) { 
@@ -493,7 +498,8 @@ void Party::setFormation(int formation) {
   player_only = false;
   playerMoved = 0;
   startRound = true;
-  session->getGameAdapter()->setFormationUI(formation, !isPlayerOnly());
+  if(!session->getGameAdapter()->isHeadless()) 
+    session->getGameAdapter()->setFormationUI(formation, !isPlayerOnly());
 }
 
 void Party::togglePlayerOnly(bool keepTargets) {
@@ -510,7 +516,8 @@ void Party::togglePlayerOnly(bool keepTargets) {
     session->getMap()->addDescription(Constants::getMessage(Constants::SINGLE_MODE), 0.5f, 0.5f, 1.0f);
   else
     session->getMap()->addDescription(Constants::getMessage(Constants::GROUP_MODE), 0.5f, 0.5f, 1.0f);
-  session->getGameAdapter()->togglePlayerOnlyUI(!isPlayerOnly());
+  if(!session->getGameAdapter()->isHeadless()) 
+    session->getGameAdapter()->togglePlayerOnlyUI(!isPlayerOnly());
 }
 
 void Party::savePlayerSettings() {

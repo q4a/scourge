@@ -24,6 +24,7 @@
 class RenderedItem;
 class Effect;
 class GLShape;
+class Session;
 
 /**
  * @author Gabor Torok
@@ -33,13 +34,16 @@ class GLShape;
 
 class RenderedCreature {
 protected:
+  Session *session;
   GLfloat x, y, z;
+  GLuint effectDuration;
+  GLuint damageEffectCounter;
+  Effect *effect;
+  int effectType;
 
 public:
-  RenderedCreature() { 
-    x = y = z = 0; 
-  }
-  virtual ~RenderedCreature() {}
+  RenderedCreature( Session *session );
+  virtual ~RenderedCreature();
 
   virtual inline GLfloat getX() { return x; }
   virtual inline GLfloat getY() { return y; }
@@ -55,13 +59,14 @@ public:
   virtual bool canAttack( RenderedCreature *creature ) = 0;
 
   // effects
-  virtual void startEffect( int effect_type, int duration = Constants::DAMAGE_DURATION, GLuint delay=0 ) = 0;
-  virtual void setEffectType(int n) = 0;
-  virtual int getEffectType() = 0;
-  virtual Effect *getEffect() = 0;
-  virtual int getDamageEffect() = 0;
-  virtual void resetDamageEffect() = 0;
-  virtual bool isEffectOn() = 0;
+  virtual Effect *getEffect();
+  virtual void startEffect( int effect_type, int duration = Constants::DAMAGE_DURATION, GLuint delay=0 );
+  virtual inline void setEffectType(int n) { this->effectType = n; }
+  virtual inline int getEffectType() { return effectType; }  
+  virtual inline int getDamageEffect() { return damageEffectCounter; }
+  virtual inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
+  virtual inline bool isEffectOn() { return (SDL_GetTicks() - damageEffectCounter < effectDuration ? true : false); }
+
 };
 
 

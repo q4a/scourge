@@ -111,11 +111,6 @@ class Creature : public RenderedCreature {
   static const int MAX_MOVE_RETRY = 15;
   int lastTurn;
 
-  GLuint effectDuration;
-  GLuint damageEffectCounter;
-  Effect *effect;
-  int effectType;
-
   vector<Spell*> spells;
   int action;
   Item *actionItem;
@@ -366,15 +361,6 @@ class Creature : public RenderedCreature {
   int addMoney(Creature *creature_killed);
 
   void getDetailedDescription(char *s);
-
-  // effects
-  void startEffect( int effect_type, int duration = Constants::DAMAGE_DURATION, GLuint delay=0 );
-  inline void setEffectType(int n) { this->effectType = n; }
-  inline int getEffectType() { return effectType; }  
-  inline Effect *getEffect() { return effect; }
-  inline int getDamageEffect() { return damageEffectCounter; }
-  inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
-  inline bool isEffectOn() { return (SDL_GetTicks() - damageEffectCounter < effectDuration ? true : false); }
 
   inline int getAvailableSkillPoints() { return availableSkillPoints; }
   inline void setAvailableSkillPoints(int n) { availableSkillPoints = n; }

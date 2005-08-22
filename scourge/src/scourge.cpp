@@ -49,7 +49,7 @@ void Scourge::setBlendFunc() {
     glBlendFunc(blend[blendA], blend[blendB]);
 }
 
-Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
+Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   lastTick = 0;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
@@ -87,16 +87,10 @@ Scourge::Scourge(UserConfiguration *config) : GameAdapter(config) {
   willStartDragX = willStartDragY = 0;
 }
 
-void Scourge::initVideo(ShapePalette *shapePal) {
-  this->shapePal = shapePal;
-
-  // Initialize the video mode
-  sdlHandler = new SDLHandler(shapePal); 
-  sdlHandler->setVideoMode(userConfiguration); 
-  turnProgress = new Progress(this->getSDLHandler(), 10, false, false, false);
-}
-
 void Scourge::initUI() {
+
+  turnProgress = new Progress(this->getSDLHandler(), 10, false, false, false);
+  
   // init UI themes
   GuiTheme::initThemes( getSDLHandler() );
 
@@ -122,7 +116,7 @@ void Scourge::initUI() {
   multiplayer = new MultiplayerDialog(this);
 
   // load character, item sounds
-  sdlHandler->getSound()->loadSounds(session->getUserConfiguration());
+  getSDLHandler()->getSound()->loadSounds(session->getUserConfiguration());
 }
 
 void Scourge::start() {
@@ -133,11 +127,11 @@ void Scourge::start() {
     if(initMainMenu) {
       initMainMenu = false;
       mainMenu->show();    
-      sdlHandler->getSound()->playMusicMenu();
+      getSDLHandler()->getSound()->playMusicMenu();
     }
 
-    sdlHandler->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
-    sdlHandler->mainLoop();
+    getSDLHandler()->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
+    getSDLHandler()->mainLoop();
     session->deleteCreaturesAndItems( false );
 
     // evaluate results and start a missions
@@ -156,7 +150,7 @@ void Scourge::start() {
        value == CONTINUE_GAME ||
        value == EDITOR ) {
       mainMenu->hide();
-      sdlHandler->getSound()->stopMusicMenu();
+      getSDLHandler()->getSound()->stopMusicMenu();
       
       initMainMenu = true;
       bool failed = false;
@@ -165,8 +159,8 @@ void Scourge::start() {
         glPushAttrib(GL_ENABLE_BIT);
         
         mapEditor->show();
-        sdlHandler->setHandlers((SDLEventHandler *)mapEditor, (SDLScreenView *)mapEditor);
-        sdlHandler->mainLoop();
+        getSDLHandler()->setHandlers((SDLEventHandler *)mapEditor, (SDLScreenView *)mapEditor);
+        getSDLHandler()->mainLoop();
 
         glPopAttrib();
       } else {
@@ -196,7 +190,7 @@ void Scourge::start() {
     } else if(value == MULTIPLAYER) {
       multiplayer->show();
     } else if(value == QUIT) {
-      sdlHandler->quit(0);
+      getSDLHandler()->quit(0);
     }
   }
 }
@@ -267,7 +261,6 @@ void Scourge::startMission() {
     levelMap->resetMove();
     battleCount = 0;
     containerGuiCount = 0;
-    lastMapX = lastMapY = lastMapZ = lastX = lastY = -1;
     teleporting = false;
     targetSelectionFor = NULL;  
 
@@ -319,7 +312,7 @@ void Scourge::startMission() {
       getSession()->setCurrentMission(NULL);
       missionWillAwardExpPoints = false;
       //dg = new DungeonGenerator(this, 2, 0, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
-      //dg->toMap(levelMap, getShapePalette(), DungeonGenerator::HQ_LOCATION);   
+      //dg->toMap(levelMap, getSession()->getShapePalette(), DungeonGenerator::HQ_LOCATION);   
 
       dg = NULL;
       levelMap->loadMap( "hq", result, currentStory, changingStory );
@@ -349,7 +342,7 @@ void Scourge::startMission() {
                                   (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
                                   (currentStory > 0),
                                   getSession()->getCurrentMission());
-        dg->toMap(levelMap, getShapePalette());
+        dg->toMap(levelMap, getSession()->getShapePalette());
         cerr << "***** random" << endl;
       }
     }
@@ -365,7 +358,7 @@ void Scourge::startMission() {
     //miniMap->computeDrawValues();
 
     // set to receive events here
-    sdlHandler->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+    getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
     // hack to unfreeze animations, etc.
     party->forceStopRound();
@@ -409,14 +402,14 @@ void Scourge::startMission() {
     setUILayout();
 
     // start the haunting tunes
-    if(inHq) sdlHandler->getSound()->playMusicMenu();
-    else sdlHandler->getSound()->playMusicDungeon();
+    if(inHq) getSDLHandler()->getSound()->playMusicMenu();
+    else getSDLHandler()->getSound()->playMusicDungeon();
 
     // run mission
-    sdlHandler->mainLoop();
+    getSDLHandler()->mainLoop();
 
     // stop the music
-    sdlHandler->getSound()->stopMusicDungeon();
+    getSDLHandler()->getSound()->stopMusicDungeon();
 
     // clean up after the mission
     resetInfos();
@@ -586,15 +579,15 @@ void Scourge::drawDescriptions(ScrollingList *list) {
 
 void Scourge::drawOutsideMap() {
   // cover the area outside the map
-  if(levelMap->getViewWidth() < sdlHandler->getScreen()->w || 
-     levelMap->getViewHeight() < sdlHandler->getScreen()->h) {
+  if(levelMap->getViewWidth() < getSDLHandler()->getScreen()->w || 
+     levelMap->getViewHeight() < getSDLHandler()->getScreen()->h) {
     //glPushAttrib( GL_ENABLE_BIT );
     glDisable( GL_CULL_FACE );
     glDisable( GL_DEPTH_TEST );
     glEnable( GL_TEXTURE_2D );
     glPushMatrix();
     glColor3f( 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGuiWoodTexture() );
+    glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getGuiWoodTexture() );
     
     //    float TILE_W = 510 / 2.0f;
     float TILE_H = 270 / 2.0f; 
@@ -604,12 +597,12 @@ void Scourge::drawOutsideMap() {
     glBegin( GL_QUADS );
     glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
-    glTexCoord2f( 0, sdlHandler->getScreen()->h / TILE_H );
-    glVertex2i( 0, sdlHandler->getScreen()->h );
-    glTexCoord2f( 1, sdlHandler->getScreen()->h / TILE_H );
-    glVertex2i( sdlHandler->getScreen()->w - levelMap->getViewWidth(), sdlHandler->getScreen()->h );
+    glTexCoord2f( 0, getSDLHandler()->getScreen()->h / TILE_H );
+    glVertex2i( 0, getSDLHandler()->getScreen()->h );
+    glTexCoord2f( 1, getSDLHandler()->getScreen()->h / TILE_H );
+    glVertex2i( getSDLHandler()->getScreen()->w - levelMap->getViewWidth(), getSDLHandler()->getScreen()->h );
     glTexCoord2f( 1, 0 );
-    glVertex2i( sdlHandler->getScreen()->w - levelMap->getViewWidth(), 0 );
+    glVertex2i( getSDLHandler()->getScreen()->w - levelMap->getViewWidth(), 0 );
     glEnd();
     
     glLoadIdentity();
@@ -811,7 +804,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
         glRotatef( (count * 30) + 180, 0, 0, 1 );
         glTranslatef( -7, -7, 0 );
 
-        GLuint icon = getShapePalette()->getStatModIcon(i);
+        GLuint icon = getSession()->getShapePalette()->getStatModIcon(i);
         if(icon) {
           glBindTexture( GL_TEXTURE_2D, icon );
         }
@@ -944,7 +937,7 @@ void Scourge::drawBorder() {
   float TILE_W = 20.0f;
   float TILE_H = 120.0f;
 
-  glBindTexture( GL_TEXTURE_2D, getShapePalette()->getBorderTexture() );
+  glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getBorderTexture() );
   glBegin( GL_QUADS );
   // left
   glTexCoord2f (0.0f, 0.0f);
@@ -970,7 +963,7 @@ void Scourge::drawBorder() {
 
   TILE_W = 120.0f;
   TILE_H = 20.0f;
-  glBindTexture( GL_TEXTURE_2D, getShapePalette()->getBorder2Texture() );
+  glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getBorder2Texture() );
   glBegin( GL_QUADS );
   // top
   glTexCoord2f (0.0f, 0.0f);
@@ -998,7 +991,7 @@ void Scourge::drawBorder() {
 
   glEnable( GL_ALPHA_TEST );
   glAlphaFunc( GL_GREATER, 0 );
-  glBindTexture( GL_TEXTURE_2D, getShapePalette()->getGargoyleTexture() );
+  glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getGargoyleTexture() );
 
   glPushMatrix();
   glLoadIdentity();
@@ -1097,12 +1090,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
     break;
   case SDL_MOUSEBUTTONDOWN:
     if(event->button.button) {
-      processGameMouseDown(sdlHandler->mouseX, sdlHandler->mouseY, event->button.button);
+      processGameMouseDown(getSDLHandler()->mouseX, getSDLHandler()->mouseY, event->button.button);
     }
     break;  
   case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
-      processGameMouseClick(sdlHandler->mouseX, sdlHandler->mouseY, event->button.button);
+      processGameMouseClick(getSDLHandler()->mouseX, getSDLHandler()->mouseY, event->button.button);
       if(teleporting && !exitConfirmationDialog->isVisible()) {
         exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
         party->toggleRound(true);
@@ -1472,163 +1465,6 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
   }
 } 
 
-void Scourge::getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy ) {
-  getMapXYAtScreenXY( getSDLHandler()->mouseX, 
-                      getSDLHandler()->mouseY, 
-                      mapx, 
-                      mapy );
-}
-
-void Scourge::getMapXYAtScreenXY(Uint16 x, Uint16 y,
-                                 Uint16 *mapx, Uint16 *mapy) {
-  glPushMatrix();
-  
-  // Initialize the scene w/o y rotation.
-  levelMap->initMapView(true);
-  
-  double obj_x, obj_y, obj_z;
-  double win_x = (double)x;
-  double win_y = (double)sdlHandler->getScreen()->h - y - 1;
-  double win_z = 0.5f;
-  
-  double projection[16];
-  double modelview[16];
-  GLint viewport[4];
-  
-  glGetDoublev(GL_PROJECTION_MATRIX, projection);
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  
-  int res = gluUnProject(win_x, win_y, win_z,
-                         modelview,
-                         projection,
-                         viewport,
-                         &obj_x, &obj_y, &obj_z);
-  
-  glDisable( GL_SCISSOR_TEST );
-  
-  if(res) {
-    //*mapx = levelMap->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
-    //*mapy = levelMap->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
-
-    *mapx = levelMap->getX() + (Uint16)(((obj_x) * GLShape::DIV));
-    *mapy = levelMap->getY() + (Uint16)(((obj_y) * GLShape::DIV));
-
-    //*mapz = (Uint16)0;
-    //*mapz = (Uint16)(obj_z * GLShape::DIV);
-    levelMap->debugX = *mapx;
-    levelMap->debugY = *mapy;
-    levelMap->debugZ = 0;
-  } else {
-    //*mapx = *mapy = *mapz = MAP_WIDTH + 1;
-    *mapx = *mapy = MAP_WIDTH + 1;
-  }
-  glPopMatrix();
-}   
-
-void Scourge::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
-  // only do this if the mouse has moved some (optimization)
-//  if(abs(lastX - x) < POSITION_SAMPLE_DELTA && abs(lastY - y) < POSITION_SAMPLE_DELTA) {
-//    *mapx = lastMapX;
-//    *mapy = lastMapY;
-//    *mapz = lastMapZ;
-//    return;
-//  }
-
-  GLuint buffer[512];
-  GLint  hits, viewport[4];
-
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  glSelectBuffer(512, buffer);
-  glRenderMode(GL_SELECT);
-  glInitNames();
-  glPushName(0);
-
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-  gluPickMatrix(getSDLHandler()->mouseX, 
-                viewport[3] - getSDLHandler()->mouseY, 
-                1, 1, viewport);
-  sdlHandler->setOrthoView();
-
-  glMatrixMode(GL_MODELVIEW);
-  //levelMap->selectMode = true;
-  levelMap->draw();
-  //levelMap->selectMode = false;
-
-  glFlush();    
-  hits = glRenderMode(GL_RENDER);
-  //cerr << "hits=" << hits << endl;
-  if(hits > 0) {           // If There Were More Than 0 Hits
-    int choose = buffer[4];         // Make Our Selection The First Object
-    int depth = buffer[1];          // Store How Far Away It Is
-
-    for(int loop = 0; loop < hits; loop++) {   // Loop Through All The Detected Hits
-
-      //            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
-      //                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
-      //                    buffer[loop*5+3],  buffer[loop*5+4]);
-      if(buffer[loop*5+4] > 0) {
-        decodeName(buffer[loop*5+4], mapx, mapy, mapz);
-      }
-
-      // If This Object Is Closer To Us Than The One We Have Selected
-      if(buffer[loop*5+1] < GLuint(depth)) {
-        choose = buffer[loop*5+4];        // Select The Closer Object
-        depth = buffer[loop*5+1];     // Store How Far Away It Is
-      }
-    }
-
-    //cerr << "choose=" << choose << endl;
-    decodeName(choose, mapx, mapy, mapz);
-  } else {
-    *mapx = *mapy = MAP_WIDTH + 1;
-  }
-
-  // Restore the projection matrix
-  glMatrixMode(GL_PROJECTION);
-  glPopMatrix();
-
-  // Go back to modelview for normal rendering
-  glMatrixMode(GL_MODELVIEW);
-
-  levelMap->debugX = *mapx;
-  levelMap->debugY = *mapy;
-  levelMap->debugZ = *mapz;
-  lastMapX = *mapx;
-  lastMapY = *mapy;
-  lastMapZ = *mapz;
-  lastX = getSDLHandler()->mouseX;
-  lastY = getSDLHandler()->mouseY;
-}
-
-void Scourge::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
-    char *s;
-    if(name > 0) {
-        // decode the encoded map coordinates
-        *mapz = name / (MAP_WIDTH * MAP_DEPTH);
-        if(*mapz > 0)
-            name %= (MAP_WIDTH * MAP_DEPTH);
-        *mapx = name % MAP_WIDTH;
-        *mapy = name / MAP_WIDTH;
-        Location *pos = levelMap->getPosition(*mapx, *mapy, 0);
-        if(pos) {
-            if(pos->shape) s = pos->shape->getName();
-            else if(pos->item && pos->item->getShape()) {
-                s = pos->item->getShape()->getName();
-            }
-        } else s = NULL;
-		//        fprintf(stderr, "\tmap coordinates: pos null=%s shape null=%s item null=%s %u,%u,%u name=%s\n", 
-		//                (pos ? "no" : "yes"), (pos && pos->shape ? "no" : "yes"), (pos && pos->item ? "no" : "yes"), *mapx, *mapy, *mapz, (s ? s : "NULL"));
-    } else {
-        *mapx = MAP_WIDTH + 1;
-        *mapy = 0;
-        *mapz = 0;
-		//        fprintf(stderr, "\t---\n");
-    }
-}
-
 void Scourge::startItemDragFromGui(Item *item) {
   movingX = -1;
   movingY = -1;
@@ -1797,12 +1633,12 @@ int Scourge::dropItem(int x, int y) {
 bool Scourge::useGate(Location *pos) {
   for (int i = 0; i < party->getPartySize(); i++) {
     if (!party->getParty(i)->getStateMod(Constants::dead)) {
-      if (pos->shape == shapePal->findShapeByName("GATE_UP")) {
+      if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_UP")) {
         oldStory = currentStory;
         currentStory--;
         changingStory = true;
         return true;
-      } else if (pos->shape == shapePal->findShapeByName("GATE_DOWN")) {
+      } else if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_DOWN")) {
         oldStory = currentStory;
         currentStory++;
         changingStory = true;
@@ -1814,7 +1650,7 @@ bool Scourge::useGate(Location *pos) {
 }
 
 bool Scourge::useBoard(Location *pos) {
-  if(pos->shape == shapePal->findShapeByName("BOARD")) {
+  if(pos->shape == getSession()->getShapePalette()->findShapeByName("BOARD")) {
     boardWin->setVisible(true);
     return true;
   }
@@ -1822,8 +1658,8 @@ bool Scourge::useBoard(Location *pos) {
 }
 
 bool Scourge::useTeleporter(Location *pos) {
-  if(pos->shape == shapePal->findShapeByName("TELEPORTER") ||
-     pos->shape == shapePal->findShapeByName("TELEPORTER_BASE")) {
+  if(pos->shape == getSession()->getShapePalette()->findShapeByName("TELEPORTER") ||
+     pos->shape == getSession()->getShapePalette()->findShapeByName("TELEPORTER_BASE")) {
     if(levelMap->isLocked(pos->x, pos->y, pos->z)) {
       levelMap->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
       return true;
@@ -1842,10 +1678,10 @@ bool Scourge::useTeleporter(Location *pos) {
 
 bool Scourge::useLever(Location *pos) {
   Shape *newShape = NULL;
-  if(pos->shape == shapePal->findShapeByName("SWITCH_OFF")) {
-    newShape = shapePal->findShapeByName("SWITCH_ON");
-  } else if(pos->shape == shapePal->findShapeByName("SWITCH_ON")) {
-    newShape = shapePal->findShapeByName("SWITCH_OFF");
+  if(pos->shape == getSession()->getShapePalette()->findShapeByName("SWITCH_OFF")) {
+    newShape = getSession()->getShapePalette()->findShapeByName("SWITCH_ON");
+  } else if(pos->shape == getSession()->getShapePalette()->findShapeByName("SWITCH_ON")) {
+    newShape = getSession()->getShapePalette()->findShapeByName("SWITCH_OFF");
   }
   if(newShape) {
     int keyX = pos->x;
@@ -1875,10 +1711,10 @@ bool Scourge::useLever(Location *pos) {
 bool Scourge::useDoor(Location *pos) {
   Shape *newDoorShape = NULL;
   Shape *oldDoorShape = pos->shape;
-  if(oldDoorShape == shapePal->findShapeByName("EW_DOOR")) {
-	newDoorShape = shapePal->findShapeByName("NS_DOOR");
-  } else if(oldDoorShape == shapePal->findShapeByName("NS_DOOR")) {
-	newDoorShape = shapePal->findShapeByName("EW_DOOR");
+  if(oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
+	newDoorShape = getSession()->getShapePalette()->findShapeByName("NS_DOOR");
+  } else if(oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR")) {
+	newDoorShape = getSession()->getShapePalette()->findShapeByName("EW_DOOR");
   }
   if(newDoorShape) {
 	int doorX = pos->x;
@@ -1893,10 +1729,10 @@ bool Scourge::useDoor(Location *pos) {
 											doorZ + pos->shape->getHeight());
 	//if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
 	//else cerr << "Nothing above!" << endl;
-	bool closed = ((pos->shape == shapePal->findShapeByName("EW_DOOR") &&
-					above && above->shape == shapePal->findShapeByName("EW_DOOR_TOP")) ||
-				   (pos->shape == shapePal->findShapeByName("NS_DOOR") &&
-					above && above->shape == shapePal->findShapeByName("NS_DOOR_TOP")) ?
+	bool closed = ((pos->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") &&
+					above && above->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR_TOP")) ||
+				   (pos->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") &&
+					above && above->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR_TOP")) ?
 				   true : false);
 	//cerr << "DOOR is closed? " << closed << endl;
 	if(closed && levelMap->isLocked(doorX, doorY, doorZ)) {
@@ -2067,11 +1903,11 @@ void Scourge::createUI() {
   messageWin = new Window( getSDLHandler(),
                            0, 0, width, PARTY_GUI_HEIGHT, 
                            "Messages", 
-                           getShapePalette()->getGuiTexture(), false,
+                           getSession()->getShapePalette()->getGuiTexture(), false,
                            Window::BASIC_WINDOW,
-                           getShapePalette()->getGuiTexture2() );
+                           getSession()->getShapePalette()->getGuiTexture2() );
   messageWin->setBackground(0, 0, 0);
-  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getShapePalette()->getHighlightTexture());
+  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getSession()->getShapePalette()->getHighlightTexture());
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
   messageList->setCanGetFocus( false );
   messageWin->addWidget(messageList);
@@ -2088,13 +1924,13 @@ void Scourge::createUI() {
                                       (getSDLHandler()->getScreen()->h/2) - (h/2), 
                                       w, h,
                                       "Leave level?", 
-                                      getShapePalette()->getGuiTexture(), false,
+                                      getSession()->getShapePalette()->getGuiTexture(), false,
                                       Window::BASIC_WINDOW,
-                                      getShapePalette()->getGuiTexture2());
+                                      getSession()->getShapePalette()->getGuiTexture2());
   int mx = w / 2;
-  yesExitConfirm = new Button( mx - 80, 50, mx - 10, 80, getShapePalette()->getHighlightTexture(), "Yes" );
+  yesExitConfirm = new Button( mx - 80, 50, mx - 10, 80, getSession()->getShapePalette()->getHighlightTexture(), "Yes" );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
-  noExitConfirm = new Button( mx + 10, 50, mx + 80, 80, getShapePalette()->getHighlightTexture(), "No" );
+  noExitConfirm = new Button( mx + 10, 50, mx + 80, 80, getSession()->getShapePalette()->getHighlightTexture(), "No" );
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
@@ -2601,13 +2437,13 @@ void Scourge::showMessageDialog(char *message) {
 							getSDLHandler()->getScreen()->w / 2 - 200,
 							getSDLHandler()->getScreen()->h / 2 - 55,
 							400, 110, Constants::messages[Constants::SCOURGE_DIALOG][0],
-							getShapePalette()->getGuiTexture(),
+							getSession()->getShapePalette()->getGuiTexture(),
 							message);
 }
 
 Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
   Window *win = new Window( getSDLHandler(), x, y, w, h, title, 
-							getShapePalette()->getGuiWoodTexture(),
+							getSession()->getShapePalette()->getGuiWoodTexture(),
 							true, Window::SIMPLE_WINDOW );
   win->setBackgroundTileHeight(96);
   win->setBorderColor( 0.5f, 0.2f, 0.1f );
@@ -2619,9 +2455,9 @@ Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
 
 Window *Scourge::createWindow(int x, int y, int w, int h, char *title) {
   Window *win = new Window( getSDLHandler(), x, y, w, h, title, 
-                            getShapePalette()->getGuiTexture(), 
+                            getSession()->getShapePalette()->getGuiTexture(), 
                             true, Window::BASIC_WINDOW,
-                            getShapePalette()->getGuiTexture2() );
+                            getSession()->getShapePalette()->getGuiTexture2() );
   return win;
 }
 
@@ -2692,14 +2528,6 @@ int Scourge::initMultiplayer() {
 
 
 #endif
-
-int Scourge::getScreenWidth() {
-  return getSDLHandler()->getScreen()->w;
-}
-
-int Scourge::getScreenHeight() {
-  return getSDLHandler()->getScreen()->h;
-}
 
 void Scourge::fightProjectileHitTurn(Projectile *proj, RenderedCreature *creature) {
   Battle::projectileHitTurn(getSession(), proj, (Creature*)creature);
@@ -2814,7 +2642,7 @@ void Scourge::drawWidgetContents(Widget *w) {
 			glEnable(GL_TEXTURE_2D);
 			glPushMatrix();
 			//    glTranslatef( x, y, 0 );
-			glBindTexture( GL_TEXTURE_2D, getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+			glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
 			glColor4f(1, 1, 1, 1);
 			
 			glBegin( GL_QUADS );
@@ -2849,9 +2677,9 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   glEnable( GL_TEXTURE_2D );
   glColor4f( 1, 1, 1, 1 );
   if( p->getStateMod( Constants::dead ) ) {
-    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getDeathPortraitTexture() );
+    glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getDeathPortraitTexture() );
   } else {
-    glBindTexture( GL_TEXTURE_2D, getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
+    glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
   }
   int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
   int offs = 15;
@@ -2911,7 +2739,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   int row = ( w->getWidth() / (int)n );
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     if(p->getStateMod(i)) {
-      GLuint icon = getShapePalette()->getStatModIcon(i);
+      GLuint icon = getSession()->getShapePalette()->getStatModIcon(i);
       if(icon) {
         glBindTexture( GL_TEXTURE_2D, icon );
       }
@@ -3199,7 +3027,7 @@ void Scourge::createBoardUI() {
                         BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT, 
                         "Available Missions", true, Window::SIMPLE_WINDOW,
                         "wood" );
-  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 260, 150, getShapePalette()->getHighlightTexture());
+  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 260, 150, getSession()->getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
   mapWidget = new MapWidget( this, boardWin, BOARD_GUI_WIDTH - 250, 40,
                              BOARD_GUI_WIDTH - 10, 
@@ -3211,9 +3039,9 @@ void Scourge::createBoardUI() {
                                                 BOARD_GUI_WIDTH - 260, 
                                                 BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 210 - 10, "" );
   boardWin->addWidget(missionDescriptionLabel);
-  playMission = new Button(5, 5, 105, 35, getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+  playMission = new Button(5, 5, 105, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);
-  closeBoard = new Button(110, 5, 210, 35, getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::CLOSE_LABEL));
+  closeBoard = new Button(110, 5, 210, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::CLOSE_LABEL));
   boardWin->addWidget(closeBoard);
 }
 
@@ -3322,10 +3150,10 @@ void Scourge::checkForInfo() {
   Uint16 mapx, mapy, mapz;
 
   // change cursor when over a hostile creature  
-  if( sdlHandler->getCursorMode() == Constants::CURSOR_NORMAL || 
-      sdlHandler->getCursorMode() == Constants::CURSOR_ATTACK ||
-      sdlHandler->getCursorMode() == Constants::CURSOR_TALK ) {
-    if( sdlHandler->mouseIsMovingOverMap ) {
+  if( getSDLHandler()->getCursorMode() == Constants::CURSOR_NORMAL || 
+      getSDLHandler()->getCursorMode() == Constants::CURSOR_ATTACK ||
+      getSDLHandler()->getCursorMode() == Constants::CURSOR_TALK ) {
+    if( getSDLHandler()->mouseIsMovingOverMap ) {
       bool handled = false;
       mapx = levelMap->getCursorMapX();
       mapy = levelMap->getCursorMapY();
@@ -3335,13 +3163,13 @@ void Scourge::checkForInfo() {
         if( pos && 
             pos->creature && 
             party->getPlayer()->canAttack( pos->creature ) ) {
-          sdlHandler->setCursorMode( ((Creature*)(pos->creature))->getMonster()->isNpc() ?
+          getSDLHandler()->setCursorMode( ((Creature*)(pos->creature))->getMonster()->isNpc() ?
                                      Constants::CURSOR_TALK :
                                      Constants::CURSOR_ATTACK );
           handled = true;
         }
       }
-      if( !handled ) sdlHandler->setCursorMode( Constants::CURSOR_NORMAL );
+      if( !handled ) getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
     }  
   }
 
@@ -3459,15 +3287,15 @@ void Scourge::teleport( bool toHQ ) {
   }
 }
 
-void Scourge::playSound(const char *sound) { 
-  sdlHandler->getSound()->playSound(sound); 
-}
-
 void Scourge::loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
-  sdlHandler->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
+  getSDLHandler()->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
 }
 
 void Scourge::unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
-  sdlHandler->getSound()->unloadMonsterSounds( type, soundMap );
+  getSDLHandler()->getSound()->unloadMonsterSounds( type, soundMap );
+}
+
+ShapePalette *Scourge::getShapePalette() {
+  return getSession()->getShapePalette();
 }
 

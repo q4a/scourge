@@ -46,7 +46,7 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3}}   // CROSS_FORMATION
 };
 
-Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) {
+Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) : RenderedCreature( session ) {
   this->session = session;
   this->character = character;
   this->monster = NULL;
@@ -66,7 +66,7 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   commonInit();  
 }
 
-Creature::Creature(Session *session, Monster *monster, GLShape *shape) {
+Creature::Creature(Session *session, Monster *monster, GLShape *shape) : RenderedCreature( session ) {
   this->session = session;
   this->character = NULL;
   this->monster = monster;
@@ -122,10 +122,6 @@ void Creature::commonInit() {
   this->moveRetrycount = 0;
   this->cornerX = this->cornerY = -1;
   this->lastTurn = 0;
-  this->damageEffectCounter = 0;
-  this->effectDuration = Constants::DAMAGE_DURATION;
-  this->effect = new Effect(session, session->getShapePalette(), shape);
-  this->effectType = Constants::EFFECT_FLAMES;
   this->facingDirection = Constants::MOVE_UP; // good init ?
   this->availableSkillPoints = 0;
   this->failedToMoveWithinRangeAttemptCount = 0;
@@ -151,7 +147,6 @@ Creature::~Creature(){
   if(this->character) free( name );
   session->getGameAdapter()->removeBattle(battle);
   delete battle;
-  delete effect;
   // do this before deleting the shape
   session->getShapePalette()->decrementSkinRefCount(model_name, skin_name, monster);
   delete shape;
@@ -1238,21 +1233,6 @@ bool Creature::takeDamage( int damage, int effect_type, GLuint delay ) {
                                     getShape()->getWidth(), getShape()->getDepth(), delay );
   }
   return(hp <= 0);
-}
-
-// FIXME: use delay param!
-void Creature::startEffect( int effect_type, int duration, GLuint delay ) {
-  // show an effect
-  if(isEffectOn() && effect_type == getEffectType()) {
-    return;
-  }  
-  effect->deleteParticles();
-  resetDamageEffect();
-  setEffectType(effect_type);
-  effectDuration = duration;
-
-  // need to do this to make sure effect shows up
-  session->getMap()->refresh();
 }
 
 /**

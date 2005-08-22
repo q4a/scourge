@@ -519,7 +519,8 @@ void Battle::castSpell() {
       creature->removeInventory(itemIndex);
       sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
       session->getMap()->addDescription(message);
-      session->getGameAdapter()->refreshInventoryUI();
+      if(!session->getGameAdapter()->isHeadless()) 
+        session->getGameAdapter()->refreshInventoryUI();
     } else {
       // scroll was removed from inventory before casting
       sprintf(message, "Couldn't find scroll, cancelled spell.");
@@ -1043,7 +1044,8 @@ void Battle::executeEatDrinkAction() {
     session->playSound( getRandomSound(potionSoundStart, potionSoundCount) );
     if(creature->eatDrink(creature->getActionItem())){
       creature->removeInventory(index);
-      session->getGameAdapter()->refreshInventoryUI();
+      if(!session->getGameAdapter()->isHeadless()) 
+        session->getGameAdapter()->refreshInventoryUI();
     }
   }
   // cancel action

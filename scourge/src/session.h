@@ -69,8 +69,21 @@ private:
   int itemCount;
   int creatureCount;
 
-public:
+  // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
+
+public:
+
+
+  /**
+   * The main method for a project to run a game.
+   * Pass in a GameAdapter implementation (eg.: Scourge class)
+   * @return the value when the game exits. You can return this
+   * from your main() function back to the os.
+   */
+  static int runGame( GameAdapter *adapter, int argc, char *argv[] );
+
+
   virtual ~Session();
 
   void initialize();
@@ -86,6 +99,11 @@ public:
   virtual void startClient(GameStateHandler *gsh, CommandInterpreter *ci, char *host, int port, char *username);
   virtual void stopClientServer();
 #endif
+
+  inline bool isMultiPlayerGame() { return multiplayerGame; }
+  inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
+  inline GameAdapter *getGameAdapter() { return adapter; }
+  inline void playSound(const char *sound) { getGameAdapter()->playSound(sound); }
 
   /**
     Creat a new item for use on this story. Calling this method instead of new Item()
@@ -118,29 +136,31 @@ public:
     @return the creature created.
   */
   virtual Creature *newCreature(Monster *monster, GLShape *shape);
+  inline int getCreatureCount() { return creatureCount; }
+  inline Creature *getCreature(int index) { return creatures[index]; }
+  inline int getItemCount() { return itemCount; }
+  inline Item *getItem(int index) { return newItems[index]; }
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
-  inline bool isMultiPlayerGame() { return multiplayerGame; }
-  inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
 
-  inline GameAdapter *getGameAdapter() { return adapter; }
   inline ShapePalette *getShapePalette() { return shapePal; }
   inline Map *getMap() { return map; }
   inline Board *getBoard() { return board; }
   inline Party *getParty() { return party; }
   inline UserConfiguration *getUserConfiguration() { return getGameAdapter()->getUserConfiguration(); }
-  inline int getCreatureCount() { return creatureCount; }
-  inline Creature *getCreature(int index) { return creatures[index]; }
-  inline int getItemCount() { return itemCount; }
-  inline Item *getItem(int index) { return newItems[index]; }
   inline Mission *getCurrentMission() { return currentMission; }
   inline void setCurrentMission(Mission *mission) { currentMission = mission; }
-  inline void playSound(const char *sound) { getGameAdapter()->playSound(sound); }
 
   virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
   virtual void creatureDeath(Creature *creature);
 
 protected:
   virtual void initData();
+
+private:
+  static bool checkFile(const char *dir, const char *file);
+  // used to run scourge with local resources
+  static void findLocalResources(const char *appPath, char *dir);
+
 };
 
 #endif

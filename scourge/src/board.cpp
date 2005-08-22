@@ -292,15 +292,17 @@ void Board::initMissions() {
         missionColor[i].b = 0.0f;
       }
       if(i == 0) {
-        session->getGameAdapter()->setMissionDescriptionUI((char*)availableMissions[i]->getDescription(),
-                                                           availableMissions[i]->getMapX(),
-                                                           availableMissions[i]->getMapY());
+        if(!session->getGameAdapter()->isHeadless()) 
+          session->getGameAdapter()->setMissionDescriptionUI((char*)availableMissions[i]->getDescription(),
+                                                             availableMissions[i]->getMapX(),
+                                                             availableMissions[i]->getMapY());
       }
     }
 
-    session->getGameAdapter()->updateBoardUI(availableMissions.size(), 
-                                             (const char**)missionText, 
-                                             missionColor);
+    if(!session->getGameAdapter()->isHeadless()) 
+      session->getGameAdapter()->updateBoardUI(availableMissions.size(), 
+                                               (const char**)missionText, 
+                                               missionColor);
   }
 }
 
