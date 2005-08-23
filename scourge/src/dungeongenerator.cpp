@@ -17,6 +17,7 @@
 
 #include "dungeongenerator.h"
 #include "render/renderlib.h"
+#include "rpg/rpglib.h"
 #include "scourge.h"
 #include "shapepalette.h"
 #include "board.h"

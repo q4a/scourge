@@ -17,6 +17,7 @@
 
 #include "containergui.h"
 #include "render/renderlib.h"
+#include "rpg/rpglib.h"
 #include "sound.h"
 #include "item.h"
 #include "creature.h"

@@ -16,18 +16,16 @@
  ***************************************************************************/
 
 #include "projectile.h"
-#include "map.h"
-#include "renderedcreature.h"
-#include "rendereditem.h"
-#include "glshape.h"
-#include "location.h"
+#include "render/renderlib.h"
+#include "rpg/rpglib.h"
+#include "creature.h"
+#include "item.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
-map<RenderedCreature*, vector<Projectile*>*> Projectile::projectiles;
 
 #define DELTA 1.0f
 
-Projectile::Projectile(RenderedCreature *creature, RenderedCreature *target, RenderedItem *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
+Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
   this->ty = target->getY();
@@ -44,7 +42,7 @@ Projectile::Projectile(RenderedCreature *creature, RenderedCreature *target, Ren
   commonInit();
 }
 
-Projectile::Projectile(RenderedCreature *creature, RenderedCreature *target, Spell *spell, Shape *shape, 
+Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, 
                        float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
@@ -62,7 +60,7 @@ Projectile::Projectile(RenderedCreature *creature, RenderedCreature *target, Spe
   commonInit();
 }
 
-Projectile::Projectile(RenderedCreature *creature, int x, int y, int w, int d, 
+Projectile::Projectile(Creature *creature, int x, int y, int w, int d, 
                        Spell *spell, Shape *shape, float parabolic, bool stopOnImpact) {
   this->creature = creature;
   this->tx = x;
@@ -207,9 +205,10 @@ void Projectile::calculateAngle() {
 }
 
 // return null if the projectile cannot be launched
-Projectile *Projectile::addProjectile(RenderedCreature *creature, RenderedCreature *target, 
-                                      RenderedItem *item, Shape *shape, 
+Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
+                                      Item *item, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
+  /*
   vector<Projectile*> *v;
   if(projectiles.find(creature) == projectiles.end()) {
     v = new vector<Projectile*>();
@@ -219,14 +218,17 @@ Projectile *Projectile::addProjectile(RenderedCreature *creature, RenderedCreatu
   }
   // for items this is the max number of proj.-s in the air
   if((int)v->size() > maxProjectiles) return NULL;
+  */
   Projectile *p = new Projectile(creature, target, item, shape, 0.0f, stopOnImpact);
-  v->push_back(p);
+  //v->push_back(p);
+  RenderedProjectile::addProjectile( p );
   return p;
 }
 
-Projectile *Projectile::addProjectile(RenderedCreature *creature, RenderedCreature *target, 
+Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
                                       Spell *spell, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
+  /*
   vector<Projectile*> *v;
   if(projectiles.find(creature) == projectiles.end()) {
     v = new vector<Projectile*>();
@@ -241,15 +243,21 @@ Projectile *Projectile::addProjectile(RenderedCreature *creature, RenderedCreatu
   // add a straight-flying projectile
   Projectile *p = new Projectile(creature, target, spell, shape, 0.0f, stopOnImpact, true);
   v->push_back(p);
+  */
+
+  Projectile *p = new Projectile(creature, target, spell, shape, 0.0f, stopOnImpact, true);
+  RenderedProjectile::addProjectile( p );
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      v->push_back(new Projectile(creature, target, spell, shape, r, stopOnImpact, true));
+      //v->push_back(new Projectile(creature, target, spell, shape, r, stopOnImpact, true));
+      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, shape, r, stopOnImpact, true ) );
     }
     if((i + 1) < maxProjectiles - 1) {
-      v->push_back(new Projectile(creature, target, spell, shape, -r, stopOnImpact, true));
+      //v->push_back(new Projectile(creature, target, spell, shape, -r, stopOnImpact, true));
+      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, shape, -r, stopOnImpact, true ) );
     }
     r += (r/2.0f);
   }
@@ -257,9 +265,10 @@ Projectile *Projectile::addProjectile(RenderedCreature *creature, RenderedCreatu
   return p;
 }
 
-Projectile *Projectile::addProjectile(RenderedCreature *creature, int x, int y, int w, int d, 
+Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, int d, 
                                       Spell *spell, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
+  /*
   vector<Projectile*> *v;
   if(projectiles.find(creature) == projectiles.end()) {
     v = new vector<Projectile*>();
@@ -269,55 +278,28 @@ Projectile *Projectile::addProjectile(RenderedCreature *creature, int x, int y, 
   }
   // FIXME: for spells, it's how many to launch at once...
   if((int)v->size() > maxProjectiles) return NULL;
-
+  */
 
   // add a straight-flying projectile
   Projectile *p = new Projectile(creature, x, y, w, d, spell, shape, 0.0f, stopOnImpact);
-  v->push_back(p);
+  //v->push_back(p);
+  RenderedProjectile::addProjectile( p );
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      v->push_back(new Projectile(creature, x, y, w, d, spell, shape, r, stopOnImpact));
+      //v->push_back(new Projectile(creature, x, y, w, d, spell, shape, r, stopOnImpact));
+      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, shape, r, stopOnImpact ) );
     }
     if((i + 1) < maxProjectiles - 1) {
-      v->push_back(new Projectile(creature, x, y, w, d, spell, shape, -r, stopOnImpact));
+      //v->push_back(new Projectile(creature, x, y, w, d, spell, shape, -r, stopOnImpact));
+      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, shape, -r, stopOnImpact ) );
     }
     r += (r/2.0f);
   }
 
   return p;
-}
-
-void Projectile::resetProjectiles() {
-  for(map<RenderedCreature *, vector<Projectile*>*>::iterator i=projectiles.begin(); i!=projectiles.end(); ++i) {
-    vector<Projectile*> *v = i->second;
-    for(vector<Projectile*>::iterator e2=v->begin(); e2!=v->end(); ++e2) {
-      Projectile *proj = *e2;  
-      delete proj;
-    }
-    delete v;
-    projectiles.erase(i);
-    continue;
-  }
-}
-
-void Projectile::removeProjectile(Projectile *p) {
-  //cerr << "removing projectile for " << p->creature->getName() << endl;
-  if(projectiles.find(p->creature) != projectiles.end()) {
-    vector<Projectile*> *v = projectiles[p->creature];
-    for(vector<Projectile*>::iterator e=v->begin(); e!=v->end(); ++e) {
-      Projectile *proj = *e;  
-      if(proj == p) {
-        v->erase(e);
-        if(v->size() == 0) {
-          projectiles.erase(p->creature);
-        }
-        return;
-      }
-    }
-  }
 }
 
 void Projectile::moveProjectiles(Session *session) {
@@ -327,27 +309,26 @@ void Projectile::moveProjectiles(Session *session) {
     lastProjectileTick = t;
 
 
-    map<Projectile*, RenderedCreature*> battleProjectiles;
+    map<Projectile*, Creature*> battleProjectiles;
 
     // draw the projectiles
     vector<Projectile*> removedProjectiles;
 //        cerr << "Projectiles:" << endl;
-    map<RenderedCreature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
-    for(map<RenderedCreature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
-      	  //RenderedCreature *creature = i->first;
-//      	  cerr << "\tcreature: " << creature->getName() << endl;
-      vector<Projectile*> *p = i->second;
-      for(vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
-        Projectile *proj = *e;
-//        	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+    for( map<RenderedCreature *, vector<RenderedProjectile*>*>::iterator i = getProjectileMap()->begin(); 
+         i != getProjectileMap()->end(); 
+         ++i ) {
+      vector<RenderedProjectile*> *p = i->second;
+      for(vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+        Projectile *proj = (Projectile*)(*e);
+        //        	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
         if(proj->move()) {
-//          cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
+          //          cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
           removedProjectiles.push_back(proj);
         }
-
+        
         // collision detection
         bool blocked = false;
-
+        
         // location target projectile hit
         if( proj->atTargetLocation() &&
             proj->getSpell() &&
@@ -365,7 +346,7 @@ void Projectile::moveProjectiles(Session *session) {
           if( loc->creature && 
               proj->getCreature()->canAttack( loc->creature ) ) {
             //               cerr << "PROJ: attacks creature, from=" << proj->getCreature()->getName() << endl;
-            battleProjectiles[ proj ] = loc->creature;
+            battleProjectiles[ proj ] = (Creature*)(loc->creature);
             blocked = true;
           } else if( proj->doesStopOnImpact() &&
                      ( ( loc->item && 
@@ -396,9 +377,9 @@ void Projectile::moveProjectiles(Session *session) {
     }
     
     // fight battles
-    for (map<Projectile*, RenderedCreature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
+    for (map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
       Projectile *proj = i->first;
-      RenderedCreature *creature = i->second;
+      Creature *creature = i->second;
       session->getGameAdapter()->fightProjectileHitTurn( proj, creature );
     }
 

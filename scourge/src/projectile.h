@@ -20,7 +20,12 @@
 
 #include <map>
 #include <vector>
-#include "render.h"
+#include "render/renderedprojectile.h"
+
+class Creature;
+class Item;
+class Spell;
+class Shape;
 
 using namespace std;
 
@@ -28,12 +33,12 @@ using namespace std;
   *@author Gabor Torok
   */
 
-class Projectile {
+class Projectile : public RenderedProjectile {
  private:
-  RenderedCreature *creature, *target;
+  Creature *creature, *target;
   float tx, ty;
   int tw, td;
-  RenderedItem *item;
+  Item *item;
   Spell *spell;
   float sx, sy, ex, ey; 
   float angle;
@@ -47,13 +52,12 @@ class Projectile {
   bool stopOnImpact;
   bool seeker;
 
-  static map<RenderedCreature*, vector<Projectile*>*> projectiles;
   static Uint32 lastProjectileTick;
   
  public:
-  Projectile(RenderedCreature *creature, RenderedCreature *target, RenderedItem *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
-  Projectile(RenderedCreature *creature, RenderedCreature *target, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
-  Projectile(RenderedCreature *creature, int x, int y, int w, int d, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
+  Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
+  Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
+  Projectile(Creature *creature, int x, int y, int w, int d, Spell *spell, Shape *shape, float parabolic=0.0f, bool stopOnImpact=true);
   virtual ~Projectile();
 
   inline bool doesStopOnImpact() { return stopOnImpact; }
@@ -65,25 +69,22 @@ class Projectile {
   inline float getY() { return sy; }
   inline float getAngle() { return angle; }
   inline Shape *getShape() { return shape; }
-  inline RenderedCreature *getCreature() { return creature; }
-  inline RenderedItem *getItem() { return item; }
+  inline RenderedCreature *getCreature() { return (RenderedCreature*)creature; }
+  inline Item *getItem() { return item; }
   inline Spell *getSpell() { return spell; }
 
-  static Projectile *addProjectile(RenderedCreature *creature, RenderedCreature *target, 
-								   RenderedItem *item, Shape *shape, 
+  static Projectile *addProjectile(Creature *creature, Creature *target, 
+								   Item *item, Shape *shape, 
 								   int maxProjectiles, bool stopOnImpact=true);
-  static Projectile *addProjectile(RenderedCreature *creature, RenderedCreature *target, 
+  static Projectile *addProjectile(Creature *creature, Creature *target, 
 								   Spell *spell, Shape *shape, 
 								   int maxProjectiles, bool stopOnImpact=true);
-  static Projectile *addProjectile(RenderedCreature *creature, int x, int y, int w, int d, 
+  static Projectile *addProjectile(Creature *creature, int x, int y, int w, int d, 
 								   Spell *spell, Shape *shape, 
 								   int maxProjectiles, bool stopOnImpact=true);
-  static void removeProjectile(Projectile *p);
   static void moveProjectiles(Session *session);
-  inline static map<RenderedCreature *, vector<Projectile*>*> *getProjectileMap() { return &projectiles; }
-  static void resetProjectiles();
   bool atTargetLocation();
-  void debug();
+  void debug();                                           
 
  protected:
   void commonInit();

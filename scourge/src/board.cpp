@@ -17,6 +17,7 @@
 
 #include "board.h"
 #include "render/renderlib.h"
+#include "rpg/rpglib.h"
 #include "session.h"
 #include "item.h"
 #include "creature.h"

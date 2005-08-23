@@ -21,7 +21,7 @@
 #include "render.h"
 
 class CFrustum;
-class Projectile;
+class RenderedProjectile;
 class Location;
 class EffectLocation;
 
@@ -77,7 +77,7 @@ typedef struct _DrawLater {
   Shape *shape;
   RenderedCreature *creature;
   RenderedItem *item;
-  Projectile *projectile;
+  RenderedProjectile *projectile;
   EffectLocation *effect;
   GLuint name;  
   Location *pos;

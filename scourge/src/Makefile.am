@@ -41,6 +41,8 @@ scourge_SOURCES = \
 	conversationgui.h\
 	infogui.cpp\
 	infogui.h\
+	projectile.cpp\
+	projectile.h\
 	session.cpp\
 	session.h\
 	gameadapter.cpp\

@@ -17,6 +17,7 @@
 
 #include "mapeditor.h"
 #include "render/renderlib.h"
+#include "rpg/rpglib.h"
 #include "mapwidget.h"
 #include "sdlhandler.h"
 #include "scourge.h"
