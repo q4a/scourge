@@ -18,7 +18,6 @@
 #include "gameadapter.h"
 #include "session.h"
 #include "preferences.h"
-#include "shapepalette.h"
 #include "item.h"
 #include "creature.h"
 #include "sound.h"
@@ -88,9 +87,9 @@ SDLOpenGLAdapter::~SDLOpenGLAdapter() {
   if( sdlHandler ) delete sdlHandler;
 }
 
-void SDLOpenGLAdapter::initVideo(ShapePalette *shapePal) {
+void SDLOpenGLAdapter::initVideo() {
   // Initialize the video mode
-  sdlHandler = new SDLHandler(shapePal); 
+  sdlHandler = new SDLHandler( this ); 
   sdlHandler->setVideoMode( preferences ); 
 }
 

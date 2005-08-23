@@ -18,7 +18,7 @@
 
 #include "sdlhandler.h"
 #include "constants.h"
-#include "shapepalette.h"
+#include "gameadapter.h"
 #include "text.h"
 #include "gui/window.h"
 #include "preferences.h"
@@ -36,9 +36,9 @@ bool SDLHandler::showDebugInfo = false;
 // pixel range 
 #define DOUBLE_CLICK_TOLERANCE 5
 
-SDLHandler::SDLHandler(ShapePalette *shapePal){
+SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   /* These are to calculate our fps */
-  this->shapePal = shapePal;
+  this->gameAdapter = gameAdapter;
   T0     = 0;
   Frames = 0;                       
   fps = 0;
@@ -536,6 +536,57 @@ void SDLHandler::mainLoop() {
   }
 }
 
+#define CURSOR_WIDTH 48
+#define CURSOR_HEIGHT 48
+
+void SDLHandler::drawCursor() {
+  // for cursor: do alpha bit testing
+  glEnable( GL_ALPHA_TEST );
+  glAlphaFunc( GL_EQUAL, 0xff );
+  glEnable(GL_TEXTURE_2D);
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_CULL_FACE);
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
+  glBindTexture( GL_TEXTURE_2D, 
+                 gameAdapter->getCursorTexture( cursorMode ) );
+  glColor4f(1, 1, 1, 1);
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 1, 1 );
+  glVertex2f( CURSOR_WIDTH, CURSOR_HEIGHT );
+  glTexCoord2f( 0, 1 );
+  glVertex2f( 0, CURSOR_HEIGHT );
+  glTexCoord2f( 0, 0 );
+  glVertex2f( 0, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex2f( CURSOR_WIDTH, 0 );
+  glEnd();
+  glPopMatrix();
+
+  glDisable( GL_ALPHA_TEST );
+  glDisable(GL_TEXTURE_2D);
+
+#ifdef DEBUG_MOUSE_FOCUS
+  // cursor focus
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( mouseX, mouseY, 0 );
+  glColor4f( 1, 1, 1, 1 );
+  glBegin( GL_QUADS );
+  glVertex2f( 0, 10 );
+  glVertex2f( 0, 0 );
+  glVertex2f( 10, 0 );
+  glVertex2f( 10, 10 );
+  glEnd();
+  glPopMatrix();
+#endif
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+}
+
 void SDLHandler::drawScreen() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   if(stencilBufferUsed) glClear( GL_STENCIL_BUFFER_BIT );
@@ -549,60 +600,7 @@ void SDLHandler::drawScreen() {
 
   screenView->drawAfter();
 
-  if(shapePal->cursorImage) {
-    // for cursor: do alpha bit testing
-    glEnable( GL_ALPHA_TEST );
-    glAlphaFunc( GL_EQUAL, 0xff );
-    glEnable(GL_TEXTURE_2D);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
-    glBindTexture( GL_TEXTURE_2D, 
-                   cursorMode == Constants::CURSOR_NORMAL ? 
-                   shapePal->cursor_texture :
-                   ( cursorMode == Constants::CURSOR_ATTACK ?
-                     shapePal->attack_texture :
-                     ( cursorMode == Constants::CURSOR_TALK ?
-                       shapePal->talk_texture :
-                       shapePal->crosshair_texture ) ) );
-    glColor4f(1, 1, 1, 1);
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 1, 1 );
-    glVertex2f( shapePal->cursor->w, shapePal->cursor->h );
-    glTexCoord2f( 0, 1 );
-    glVertex2f( 0, shapePal->cursor->h );
-    glTexCoord2f( 0, 0 );
-    glVertex2f( 0, 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex2f( shapePal->cursor->w, 0 );
-    glEnd();
-    glPopMatrix();
-
-    glDisable( GL_ALPHA_TEST );
-    glDisable(GL_TEXTURE_2D);
-
-#ifdef DEBUG_MOUSE_FOCUS
-    // cursor focus
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef( mouseX, mouseY, 0 );
-    glColor4f( 1, 1, 1, 1 );
-    glBegin( GL_QUADS );
-    glVertex2f( 0, 10 );
-    glVertex2f( 0, 0 );
-    glVertex2f( 10, 0 );
-    glVertex2f( 10, 10 );
-    glEnd();
-    glPopMatrix();
-#endif
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-  }
-
+  drawCursor();
 
 if( showDebugInfo ) {
   glPushMatrix();
@@ -864,11 +862,11 @@ void SDLHandler::testDrawView() {
 }
 
 GLuint SDLHandler::getHighlightTexture() { 
-  return getShapePalette()->getHighlightTexture(); 
+  return gameAdapter->getHighlightTexture(); 
 }
 
 GLuint SDLHandler::loadSystemTexture( char *line ) { 
-  return getShapePalette()->loadSystemTexture( line ); 
+  return gameAdapter->loadSystemTexture( line ); 
 }
 
 inline void SDLHandler::playSound( const char *name ) { 

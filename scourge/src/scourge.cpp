@@ -3299,3 +3299,24 @@ ShapePalette *Scourge::getShapePalette() {
   return getSession()->getShapePalette();
 }
 
+GLuint Scourge::getCursorTexture( int cursorMode ) {
+  switch( cursorMode ) {
+  case Constants::CURSOR_NORMAL: 
+    return getSession()->getShapePalette()->cursor_texture;
+  case Constants::CURSOR_ATTACK:
+    return getSession()->getShapePalette()->attack_texture;
+  case Constants::CURSOR_TALK:
+    return getSession()->getShapePalette()->talk_texture;
+  default:
+  return getSession()->getShapePalette()->crosshair_texture;
+  }
+}
+
+GLuint Scourge::getHighlightTexture() { 
+  return getShapePalette()->getHighlightTexture(); 
+}
+
+GLuint Scourge::loadSystemTexture( char *line ) { 
+  return getShapePalette()->loadSystemTexture( line ); 
+}
+
