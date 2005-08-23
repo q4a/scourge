@@ -26,7 +26,7 @@
 
 class TexturedText;
 class Widget;
-class ShapePalette;                          
+class GameAdapter;                          
 class SDLEventHandler;
 class SDLScreenView;
 class Preferences;
@@ -52,6 +52,8 @@ class Sound;
 
 class SDLHandler : public ScourgeGui {
 private:
+  GameAdapter *gameAdapter;
+
   /* These are to calculate our fps */
   Sound *sound;
   GLint T0, Frames;
@@ -61,7 +63,6 @@ private:
   SDLScreenView *screenView;
   /* Flags to pass to SDL_SetVideoMode */
   int videoFlags;
-  ShapePalette *shapePal;
   bool invertMouse;
   int cursorMode;
 
@@ -101,7 +102,7 @@ public:
 
   bool dontUpdateScreen;
 
-  SDLHandler(ShapePalette *shapePal);
+  SDLHandler( GameAdapter *gameAdapter );
   virtual ~SDLHandler();
 
   inline void lockMouse( Widget *widget ) { mouseLock = widget; }
@@ -181,8 +182,6 @@ public:
 
   void testDrawView();
 
-  inline ShapePalette *getShapePalette() { return shapePal; }
- 
   void quit( int returnCode );
 
   inline double getFPS() { return fps; }
@@ -192,6 +191,7 @@ protected:
     int resizeWindow( int width, int height );
     int initGL( GLvoid );  
     GLvoid buildFont( GLvoid );
+    void drawCursor();
 };
 
 #endif

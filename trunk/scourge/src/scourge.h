@@ -547,6 +547,8 @@ public:
 
   ShapePalette *getShapePalette();
 
+  GLuint getCursorTexture( int cursorMode );
+
   void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
   void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
 
@@ -614,6 +616,11 @@ public:
 
   virtual void unlockMouse() { getSDLHandler()->unlockMouse(); }
   virtual void lockMouse( Widget *widget ) { getSDLHandler()->lockMouse( widget ); }
+
+  GLuint getHighlightTexture();
+
+  GLuint loadSystemTexture( char *line );
+
 
  protected:
 

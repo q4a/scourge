@@ -19,7 +19,7 @@
 #define GAME_ADAPTER_H
 
 #include "constants.h"
-#include "persist.h"
+#include "../persist.h"
 #include "sdlhandler.h"
 
 class Party;
@@ -32,7 +32,6 @@ class Battle;
 class Shape;
 class Location;
 class Item;
-class ShapePalette;
 class Preferences;
 class RenderedItem;
 class RenderedCreature;
@@ -52,7 +51,7 @@ public:
   inline Session *getSession() { return session; }
 
   // general UI
-  virtual inline void initVideo(ShapePalette *shapePal) {}
+  virtual inline void initVideo() {}
   virtual inline void initUI() {}
   virtual inline void start() {}
   virtual inline int getScreenWidth() { return 0; }
@@ -102,6 +101,9 @@ public:
   virtual inline void updateBoardUI(int count, const char **missionText, Color *missionColor) {}
   virtual inline void setMissionDescriptionUI(char *s, int mapx, int mapy) {}
   virtual inline void showItemInfoUI(Item *item, int level) {}
+  virtual inline GLuint getCursorTexture( int cursorMode ) { return 0; }
+  virtual inline GLuint getHighlightTexture() { return 0; }
+  virtual inline GLuint loadSystemTexture( char *line ) { return 0; }
 
   // project-specific castings
   virtual RenderedItem *load( ItemInfo *info );
@@ -120,7 +122,7 @@ public:
   SDLOpenGLAdapter( Preferences *config );
   virtual ~SDLOpenGLAdapter();
 
-  virtual void initVideo( ShapePalette *shapePal );
+  virtual void initVideo();
   virtual inline SDLHandler *getSDLHandler() { return sdlHandler; }
 
   virtual inline int getScreenWidth() { return getSDLHandler()->getScreen()->w; }

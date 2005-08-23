@@ -57,7 +57,7 @@ void Session::initialize() {
   Constants::initConstants();
   shapePal = new ShapePalette(this);
   adapter->setSession(this);
-  adapter->initVideo(shapePal);
+  adapter->initVideo();
   initData();  
 }
 
@@ -67,11 +67,11 @@ void Session::start() {
 
 void Session::initData() {
 
+  
+  // move all this down to scourge
   adapter->initStart(7, "Loading shapes...");
 
   shapePal->initialize();
-
-  map = new Map(this);
 
   adapter->initUpdate("Loading characters...");
 
@@ -105,9 +105,17 @@ void Session::initData() {
 
   adapter->initUpdate("Initializing...");
 
+  
+  
+  
+  
+  
+  map = new Map(this);
+  
   adapter->initUI();
 
   adapter->initEnd();
+
 }
 
 void Session::quit(int value) {

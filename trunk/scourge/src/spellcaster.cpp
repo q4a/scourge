@@ -19,6 +19,10 @@
 #include "render/renderlib.h"
 #include "item.h"
 #include "creature.h"
+#include "events/event.h"
+#include "events/potionexpirationevent.h"
+#include "events/statemodexpirationevent.h"
+#include "calendar.h"
 
 /*
   In the future we can employ something more sophisticated than these if structures...

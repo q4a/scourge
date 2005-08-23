@@ -23,29 +23,11 @@
 #include "../session.h"
 #include "../shapepalette.h"
 #include "../persist.h"
-#include "../util.h"
-#include "../battle.h"
-
-#include "../rpg/rpglib.h"
-
-#include "../events/potionexpirationevent.h"
-
-// forward decl.
-class Session;
-class Spell;
-class MagicSchool;
-class Dice;
-class Monster;
-class Character;
-class Shape;
-class Creature;
+#include "../rpg/spell.h"
 
 /** 
  *@author Gabor Torok
- */
- 
- 
-/**
+ * 
  * The class thru which this directory talks to the rest of the code.
  * Never include this file outside this dir. (use renderlib.h instead.)
  */

@@ -24,8 +24,6 @@
 #include "constants.h"
 #include "session.h"
 #include "battle.h"
-#include "calendar.h"
-#include "events/statemodexpirationevent.h"
 
 using namespace std;
 

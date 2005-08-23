@@ -1368,8 +1368,6 @@ void Map::sortShapes( DrawLater *playerDrawLater,
 void Map::drawProjectiles() {
   // draw the projectiles
   DrawLater dl;
-  vector<Projectile*> removedProjectiles;
-  map<Projectile*, RenderedCreature*> battleProjectiles;
   map<RenderedCreature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
   for (map<RenderedCreature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
     //RenderedCreature *creature = i->first;
@@ -1400,71 +1398,7 @@ void Map::drawProjectiles() {
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
       }
-
-      // collision detection
-      bool blocked = false;
-
-      // location target projectile hit
-      if(proj->atTargetLocation() &&
-         proj->getSpell() &&
-         proj->getSpell()->isLocationTargetAllowed()) {
-//        cerr << "PROJ: reached target, from=" << proj->getCreature()->getName() << endl;                                
-        session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());        
-        blocked = true;
-      }
-
-      Location *loc = getLocation(toint(proj->getX()), toint(proj->getY()), 0);
-      if(loc) {
-        if(loc->creature && 
-           proj->getCreature()->canAttack(loc->creature)) {
-          //               cerr << "PROJ: attacks creature, from=" << proj->getCreature()->getName() << endl;
-          battleProjectiles[proj] = loc->creature;
-          blocked = true;
-        } else if(proj->doesStopOnImpact() &&
-                  ((loc->item && loc->item->getShape()->getHeight() >= 6) ||
-                   (!loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6))) {
-          //               cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
-          // hit something
-          blocked = true;
-        }
-      }
-
-      // remove finished projectiles
-      if( blocked || proj->atTargetLocation() ) {
-        
-        // DEBUG INFO
-        if( !blocked ) {
-          cerr << "*** Warning: projectile didn't hit target ***" << endl;
-          cerr << "Creature: " << proj->getCreature()->getName() << endl;
-          /*
-          if( proj->getCreature()->getTargetCreature() ) {
-            cerr << " target=" << proj->getCreature()->getTargetCreature()->getName() << " at: " << 
-              proj->getCreature()->getTargetCreature()->getX() << "," <<
-              proj->getCreature()->getTargetCreature()->getY() << " " <<
-              " shape: " << proj->getCreature()->getTargetCreature()->getShape()->getWidth() << "," <<
-              proj->getCreature()->getTargetCreature()->getShape()->getHeight() << endl;
-          } else {
-            cerr << " no target." << endl;
-          }
-          */
-          proj->debug();
-        }
-
-        removedProjectiles.push_back(proj);
-      }
     }
-  }
-
-  // fight battles
-  for (map<Projectile*, RenderedCreature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
-    Projectile *proj = i->first;
-    RenderedCreature *creature = i->second;
-    session->getGameAdapter()->fightProjectileHitTurn(proj, creature);
-  }
-
-  // remove projectiles
-  for (vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
-    Projectile::removeProjectile(*e);
   }
 }
 

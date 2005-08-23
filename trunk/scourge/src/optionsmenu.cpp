@@ -96,7 +96,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   //y += SPACING + MINOR_SPACING;
   tooltipEnabled = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show tooltips", GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 200, "Tooltip Delay:");
+  tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 200, "Tooltip Delay:");
   cards->addWidget(tooltipInterval, GAME_SETTINGS);
    
   // Video settings tabs        
@@ -139,10 +139,10 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   
   // audio
   y = YPOS;
-  musicVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, "Music Volume:");
+  musicVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 128, "Music Volume:");
   cards->addWidget(musicVolume, AUDIO);
   y += SPACING + MINOR_SPACING + 15;
-  effectsVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getSDLHandler()->getShapePalette()->getHighlightTexture(), 0, 128, "Effects Volume:");
+  effectsVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 128, "Effects Volume:");
   cards->addWidget(effectsVolume, AUDIO);
   
   selectedMode = GAME_SETTINGS;

@@ -20,6 +20,7 @@
 #include "renderedcreature.h"
 #include "rendereditem.h"
 #include "glshape.h"
+#include "location.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
 map<RenderedCreature*, vector<Projectile*>*> Projectile::projectiles;
@@ -325,6 +326,9 @@ void Projectile::moveProjectiles(Session *session) {
      t - lastProjectileTick > (Uint32)(session->getPreferences()->getGameSpeedTicks() / 50)) {
     lastProjectileTick = t;
 
+
+    map<Projectile*, RenderedCreature*> battleProjectiles;
+
     // draw the projectiles
     vector<Projectile*> removedProjectiles;
 //        cerr << "Projectiles:" << endl;
@@ -340,27 +344,71 @@ void Projectile::moveProjectiles(Session *session) {
 //          cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
           removedProjectiles.push_back(proj);
         }
+
+        // collision detection
+        bool blocked = false;
+
+        // location target projectile hit
+        if( proj->atTargetLocation() &&
+            proj->getSpell() &&
+            proj->getSpell()->isLocationTargetAllowed()) {
+          //        cerr << "PROJ: reached target, from=" << proj->getCreature()->getName() << endl;                                
+          session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());        
+          blocked = true;
+        }
+        
+        Location *loc = 
+          session->getMap()->getLocation( toint(proj->getX()), 
+                                          toint(proj->getY()), 
+                                          0);
+        if(loc) {
+          if( loc->creature && 
+              proj->getCreature()->canAttack( loc->creature ) ) {
+            //               cerr << "PROJ: attacks creature, from=" << proj->getCreature()->getName() << endl;
+            battleProjectiles[ proj ] = loc->creature;
+            blocked = true;
+          } else if( proj->doesStopOnImpact() &&
+                     ( ( loc->item && 
+                         loc->item->getShape()->getHeight() >= 6 ) ||
+                       ( !loc->creature && 
+                         !loc->item && loc->shape && 
+                         loc->shape->getHeight() >= 6 ) ) ) {
+            //               cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
+            // hit something
+            blocked = true;
+          }
+        }
+        
+        // remove finished projectiles
+        if( blocked || proj->atTargetLocation() ) {
+          
+          // DEBUG INFO
+          if( !blocked ) {
+            cerr << "*** Warning: projectile didn't hit target ***" << endl;
+            cerr << "Creature: " << proj->getCreature()->getName() << endl;
+            proj->debug();
+          }
+          
+          removedProjectiles.push_back( proj );
+        }
+
       }
     }
+    
+    // fight battles
+    for (map<Projectile*, RenderedCreature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
+      Projectile *proj = i->first;
+      RenderedCreature *creature = i->second;
+      session->getGameAdapter()->fightProjectileHitTurn( proj, creature );
+    }
+
     // remove projectiles
 //    cerr << "Checking targets:" << endl;
     for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
       Projectile *proj = *e;
-//      cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
-      
-      /*
-      // a location-bound projectile reached its target
-      if(!proj->doesStopOnImpact()) {
-        if(proj->atTargetLocation() &&
-           proj->getSpell() &&
-           proj->getSpell()->isLocationTargetAllowed()) {
-          cerr << "PROJECTILE ATTACK: from projectile: target location based." << endl;
-          Battle::projectileHitTurn(scourge->getSession(), proj, (int)proj->getX(), (int)proj->getY());
-        }
-      }
-      */
       session->getMap()->addDescription( "Projectile did not reach the target." );
       Projectile::removeProjectile(proj);
     }
   }
 }
+
