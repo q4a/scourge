@@ -10,8 +10,8 @@ libScourgeRender_a_SOURCES = \
 	map.h\
 	frustum.cpp\
 	frustum.h\
-	projectile.cpp\
-	projectile.h\
+	renderedprojectile.cpp\
+	renderedprojectile.h\
 	location.cpp\
 	location.h\
 	effect.cpp\

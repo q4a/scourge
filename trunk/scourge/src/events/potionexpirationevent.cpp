@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "potionexpirationevent.h"
+#include "../rpg/rpglib.h"
 #include "../render/renderlib.h"
 #include "../item.h"
 #include "../creature.h"

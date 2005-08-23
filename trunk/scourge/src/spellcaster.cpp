@@ -23,6 +23,8 @@
 #include "events/potionexpirationevent.h"
 #include "events/statemodexpirationevent.h"
 #include "calendar.h"
+#include "rpg/rpglib.h"
+#include "projectile.h"
 
 /*
   In the future we can employ something more sophisticated than these if structures...

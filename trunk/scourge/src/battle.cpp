@@ -17,7 +17,9 @@
 
 #include "battle.h"
 #include "render/renderlib.h"
+#include "rpg/rpglib.h"
 #include "item.h"
+#include "projectile.h"
 #include "creature.h"
 
 #define GOD_MODE 0

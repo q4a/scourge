@@ -18,11 +18,11 @@
 #include "map.h"
 #include "effect.h"
 #include "frustum.h"
-#include "projectile.h"
 #include "location.h"
 #include "shape.h"
 #include "glshape.h"
 #include "md2shape.h"
+#include "renderedprojectile.h"
 #include "renderedcreature.h"
 #include "rendereditem.h"
 #include "../io/zipfile.h"
@@ -1368,12 +1368,13 @@ void Map::sortShapes( DrawLater *playerDrawLater,
 void Map::drawProjectiles() {
   // draw the projectiles
   DrawLater dl;
-  map<RenderedCreature *, vector<Projectile*>*> *proj = Projectile::getProjectileMap();
-  for (map<RenderedCreature *, vector<Projectile*>*>::iterator i=proj->begin(); i!=proj->end(); ++i) {
+  for( map<RenderedCreature*, vector<RenderedProjectile*>*>::iterator i = RenderedProjectile::getProjectileMap()->begin(); 
+       i != RenderedProjectile::getProjectileMap()->end(); 
+       ++i ) {
     //RenderedCreature *creature = i->first;
-    vector<Projectile*> *p = i->second;
-    for (vector<Projectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
-      Projectile *proj = *e;
+    vector<RenderedProjectile*> *p = i->second;
+    for (vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+      RenderedProjectile *proj = *e;
 
       // draw it
       dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
@@ -1387,13 +1388,15 @@ void Map::drawProjectiles() {
       dl.name = 0;
       dl.pos = NULL;
 
-      if (proj->getSpell()) {
+      //if( proj->getSpell() ) {
+      if( proj->getShape()->drawLater() ) {
         glEnable(GL_BLEND);
         glDepthMask(GL_FALSE);
         proj->getShape()->setupBlending();
       }
       doDrawShape(&dl);
-      if (proj->getSpell()) {
+      //if( proj->getSpell() ) {
+      if( proj->getShape()->drawLater() ) {
         proj->getShape()->endBlending();
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);

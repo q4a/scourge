@@ -22,10 +22,9 @@
  * A way for external classes to this dir to get everything in one include file.
  */
 
-#include "../rpg/rpglib.h"
+//#include "../rpg/rpglib.h"
 #include "map.h"
 #include "effect.h"
-#include "projectile.h"
 #include "location.h"
 #include "shape.h"
 #include "glshape.h"
@@ -37,5 +36,6 @@
 #include "Md2.h"
 #include "rendereditem.h"
 #include "renderedcreature.h"
+#include "renderedprojectile.h"
 
 #endif

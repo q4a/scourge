@@ -23,7 +23,6 @@
 #include "../session.h"
 #include "../shapepalette.h"
 #include "../persist.h"
-#include "../rpg/spell.h"
 
 /** 
  *@author Gabor Torok

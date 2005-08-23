@@ -17,6 +17,7 @@
 
 #include "partyeditor.h"
 #include "render/renderlib.h"
+#include "rpg/rpglib.h"
 #include "item.h"
 #include "creature.h"
 
