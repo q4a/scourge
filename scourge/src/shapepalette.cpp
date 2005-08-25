@@ -122,8 +122,8 @@ ShapePalette::~ShapePalette() {
 int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
 
   // call super
-  n = Shapes::interpretShapesLine( fp, n );
-  if( n != -1 ) return n;
+  int super = Shapes::interpretShapesLine( fp, n );
+  if( super != -1 ) return super;
 
   char line[255];
   if(n == 'S') {
