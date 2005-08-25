@@ -20,6 +20,7 @@
 #include "../render/renderlib.h"
 #include "../item.h"
 #include "../creature.h"
+#include "../session.h"
 
 PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, 
 											 Creature *c, Item *item, 

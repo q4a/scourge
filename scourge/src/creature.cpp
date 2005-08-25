@@ -46,7 +46,7 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3}}   // CROSS_FORMATION
 };
 
-Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) : RenderedCreature( session ) {
+Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = character;
   this->monster = NULL;
@@ -66,7 +66,7 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   commonInit();  
 }
 
-Creature::Creature(Session *session, Monster *monster, GLShape *shape) : RenderedCreature( session ) {
+Creature::Creature(Session *session, Monster *monster, GLShape *shape) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = NULL;
   this->monster = monster;

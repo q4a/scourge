@@ -24,24 +24,26 @@
   *@author Gabor Torok
   */
   
-class Session;
+class Preferences;
+class Shapes;
+class GLShape;
 
 class Effect {
 private:  
-  ShapePalette *shapePal;
+  Preferences *preferences;
+  Shapes *shapePal;
   GLuint flameTex, ringTex, rippleTex;
   GLShape *shape;
   bool deleteShape;
   float ringRadius, ringRotate, rippleRadius, rippleAlpha;
   GLint lastTimeStamp;
-  Session *session;
   
   static const int PARTICLE_COUNT = 30;
   ParticleStruct *particle[PARTICLE_COUNT];
 
 public:
-  Effect(Session *session, ShapePalette *shapePal, GLShape *shape);
-  Effect(Session *session, ShapePalette *shapePal, int width, int height);
+  Effect( Preferences *preferences, Shapes *shapePal, GLShape *shape );
+  Effect( Preferences *preferences, Shapes *shapePal, int width, int height );
   ~Effect();
   
   void deleteParticles();

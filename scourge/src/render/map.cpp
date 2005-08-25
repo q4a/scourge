@@ -20,11 +20,13 @@
 #include "frustum.h"
 #include "location.h"
 #include "shape.h"
+#include "shapes.h"
 #include "glshape.h"
 #include "md2shape.h"
 #include "renderedprojectile.h"
 #include "renderedcreature.h"
 #include "rendereditem.h"
+#include "mapadapter.h"
 #include "../io/zipfile.h"
 
 #define MOUSE_ROT_DELTA 2
@@ -62,7 +64,7 @@ const float Map::shadowTransformMatrix[16] = {
 	0.5f, -0.5f, 0, 0,
 	0, 0, 0, 1 };
 
-Map::Map(Session *session) {
+Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   hasWater = false;
 
@@ -85,7 +87,9 @@ Map::Map(Session *session) {
   frustum = new CFrustum();
   useFrustum = true;
 
-  this->session = session;  
+  this->adapter = adapter;
+  this->preferences = preferences;  
+  this->shapes = shapes;
   // only use 1 (disabled) or 0 (enabled)
   LIGHTMAP_ENABLED=1;
   zoom = 1.0f;
@@ -113,8 +117,8 @@ Map::Map(Session *session) {
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
   setViewArea(0, 0, 
-              session->getGameAdapter()->getScreenWidth(), 
-              session->getGameAdapter()->getScreenHeight());
+              adapter->getScreenWidth(), 
+              adapter->getScreenHeight());
 
   float adjust = (float)viewWidth / 800.0f;
   this->xpos = (float)(viewWidth) / 2.0f / adjust;
@@ -221,8 +225,8 @@ void Map::reset() {
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
   setViewArea(0, 0, 
-              session->getGameAdapter()->getScreenWidth(), 
-              session->getGameAdapter()->getScreenHeight());
+              adapter->getScreenWidth(), 
+              adapter->getScreenHeight());
 
   float adjust = (float)viewWidth / 800.0f;
   this->xpos = (float)(viewWidth) / 2.0f / adjust;
@@ -268,8 +272,8 @@ void Map::setViewArea(int x, int y, int w, int h) {
   viewHeight = h;
 
   float adjust = (float)viewWidth / 800.0f;
-  if(session->getPreferences()->getKeepMapSize()) {
-    zoom = (float)session->getGameAdapter()->getScreenWidth() / (float)w;
+  if( preferences->getKeepMapSize() ) {
+    zoom = (float)adapter->getScreenWidth() / (float)w;
   }
   xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
   ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
@@ -288,7 +292,7 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
                          ((float)viewHeight / 
                           (float)scourge->getSDLHandler()->getScreen()->h)) / 2.0f);
   */
-  if(session->getPreferences()->getAlwaysCenterMap() || force) {
+  if( preferences->getAlwaysCenterMap() || force ) {
 	//  if(scourge->getPreferences()->getAlwaysCenterMap() ||
 	//     abs(this->x - nx) > X_CENTER_TOLERANCE ||
 	//     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
@@ -321,7 +325,7 @@ void Map::moveMap(int dir) {
 	if(dir & Constants::MOVE_UP) setYRot(rot);
 	if(dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
 	if(dir & Constants::MOVE_LEFT) setZRot(rot);
-  } else if(!session->getPreferences()->getAlwaysCenterMap()) {
+  } else if( !preferences->getAlwaysCenterMap() ) {
 	
 	// stop rotating (angle of rotation is kept)
 	setYRot(0);
@@ -818,11 +822,11 @@ void Map::setupPosition(int posX, int posY, int posZ,
 
 void Map::draw() {
 
-  if( session->getGameAdapter()->isMouseIsMovingOverMap() && !selectMode ) {
+  if( adapter->isMouseIsMovingOverMap() && !selectMode ) {
     // careful this calls draw() again!
     selectMode = true;
-    session->getGameAdapter()->getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
-    session->getGameAdapter()->getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
+    adapter->getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
+    adapter->getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
     cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
     cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
     selectMode = false;
@@ -889,8 +893,8 @@ void Map::draw() {
     if( settings->isPlayerEnabled() ) {
       sprintf(mapDebugStr, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
               (int)currentEffectsMap.size(),
-              ( session->getGameAdapter()->getPlayer() ? toint(session->getGameAdapter()->getPlayer()->getX()) : -1 ),
-              ( session->getGameAdapter()->getPlayer() ? toint(session->getGameAdapter()->getPlayer()->getY()) : -1 ),
+              ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
+              ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
               (useFrustum ? "*" : ""),
               chunkCount, ((cex - csx)*(cey - csy)),
               csx, cex, csy, cey, shapeCount);
@@ -902,7 +906,7 @@ void Map::draw() {
               chunkCount, ((cex - csx)*(cey - csy)),
               csx, cex, csy, cey, shapeCount);
     }
-    session->getGameAdapter()->setDebugStr(mapDebugStr);
+    adapter->setDebugStr(mapDebugStr);
   }
   if( selectMode ) {
     for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
@@ -916,7 +920,7 @@ void Map::draw() {
     if(debugX < MAP_WIDTH && debugX >= 0) {
       DrawLater later2;
 
-      later2.shape = session->getShapePalette()->findShapeByName("LAMP_BASE");
+      later2.shape = shapes->findShapeByName("LAMP_BASE");
 
       later2.xpos = ((float)(debugX - getX()) / GLShape::DIV);
       later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
@@ -932,8 +936,8 @@ void Map::draw() {
 #endif
 
 
-    if(session->getPreferences()->getStencilbuf() &&
-       session->getPreferences()->getStencilBufInitialized()) {
+    if( preferences->getStencilbuf() &&
+        preferences->getStencilBufInitialized() ) {
 
 
       // stencil and draw the floor
@@ -945,7 +949,7 @@ void Map::draw() {
       setupShapes(true, false);
 
       // shadows
-      if(session->getPreferences()->getShadows() >= Constants::OBJECT_SHADOWS) {
+      if( preferences->getShadows() >= Constants::OBJECT_SHADOWS ) {
         glStencilFunc(GL_EQUAL, 1, 0xffffffff);
         glStencilOp(GL_KEEP, GL_KEEP, GL_INCR); 
         glDisable(GL_TEXTURE_2D);
@@ -956,7 +960,7 @@ void Map::draw() {
         for(int i = 0; i < otherCount; i++) {
           doDrawShape(&other[i]);
         }
-        if(session->getPreferences()->getShadows() == Constants::ALL_SHADOWS) {
+        if( preferences->getShadows() == Constants::ALL_SHADOWS ) {
           for(int i = 0; i < stencilCount; i++) {
             doDrawShape(&stencil[i]);
           }
@@ -1006,7 +1010,7 @@ void Map::draw() {
     DrawLater *playerDrawLater = NULL;
     for(int i = 0; i < otherCount; i++) {
       if( settings->isPlayerEnabled() ) {
-        if( other[i].creature && other[i].creature == session->getGameAdapter()->getPlayer() ) 
+        if( other[i].creature && other[i].creature == adapter->getPlayer() ) 
           playerDrawLater = &(other[i]);
       }
       if(selectedDropTarget && 
@@ -1035,8 +1039,8 @@ void Map::draw() {
       glEnable( GL_BLEND );
       glDepthMask(GL_FALSE);        
       if( hasWater && 
-          session->getPreferences()->getStencilbuf() &&
-          session->getPreferences()->getStencilBufInitialized() ) {
+          preferences->getStencilbuf() &&
+          preferences->getStencilBufInitialized() ) {
         
         // stencil out the transparent walls (and draw them)
         //glDisable(GL_DEPTH_TEST);
@@ -1111,10 +1115,16 @@ void Map::draw() {
       doDrawShape(&damage[i], 1);
     }
     
-    if( session->getPreferences()->isOvalCutoutShown() &&
+    if( preferences->isOvalCutoutShown() &&
+        !settings->isGridShowing() ) {
+    /*      
+        FIXME:
+    if( preferences->isOvalCutoutShown() &&
         !settings->isGridShowing() &&
         session->getCurrentMission() ) 
+    */        
       drawShade();
+    }
 
     glDisable(GL_BLEND);
 
@@ -1524,7 +1534,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
   // encode this shape's map location in its name
   glPushName( name );
-  //glPushName( (GLuint)((GLShape*)shape)->getShapePalIndex() );
   if(shape) {
     ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
     ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
@@ -1563,8 +1572,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     }
     
     // outline mission creatures
-    if( session->getCurrentMission() &&
-        session->getCurrentMission()->isMissionCreature( later->creature ) ) {
+    if( adapter->isMissionCreature( later->creature ) ) {
+    //if( session->getCurrentMission() &&
+        //session->getCurrentMission()->isMissionCreature( later->creature ) ) {
       shape->outline( 0.15f, 0.15f, 0.4f );
     }
 
@@ -1623,9 +1633,9 @@ bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
   glPopMatrix();
   
   if(res) {
-    win_y = session->getGameAdapter()->getScreenHeight() - win_y;
-    return (win_x >= 0 && win_x < session->getGameAdapter()->getScreenWidth() &&
-            win_y >= 0 && win_y < session->getGameAdapter()->getScreenHeight());
+    win_y = adapter->getScreenHeight() - win_y;
+    return (win_x >= 0 && win_x < adapter->getScreenWidth() &&
+            win_y >= 0 && win_y < adapter->getScreenHeight());
   } return false;
 }
 
@@ -1652,7 +1662,7 @@ void Map::initMapView( bool ignoreRot ) {
 
   glTranslatef(viewX, viewY, 0);
   glScissor(viewX, 
-            session->getGameAdapter()->getScreenHeight() - (viewY + viewHeight),
+            adapter->getScreenHeight() - (viewY + viewHeight),
             viewWidth, viewHeight);
   glEnable( GL_SCISSOR_TEST );
 
@@ -1719,7 +1729,7 @@ void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
   for(int xp = 0; xp < shape->getWidth(); xp++) {
     for(int yp = 0; yp < shape->getDepth(); yp++) {
-      session->getGameAdapter()->colorMiniMapPoint(x + xp, y - yp, shape);
+      adapter->colorMiniMapPoint(x + xp, y - yp, shape);
     }
   }
   WaterTile *w = (WaterTile*)malloc(sizeof(WaterTile));
@@ -1741,7 +1751,7 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???       
-        session->getGameAdapter()->eraseMiniMapPoint(x, y);
+        adapter->eraseMiniMapPoint(x, y);
       }
     }
   }
@@ -1847,9 +1857,9 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   if(!effect[x][y][z]) {
     effect[x][y][z] = new EffectLocation();
   }
-  effect[x][y][z]->effect = new Effect(session,
-                                       session->getShapePalette(), 
-                                       width, height);
+  effect[x][y][z]->effect = new Effect( preferences,
+                                        shapes, 
+                                        width, height );
   effect[x][y][z]->effect->deleteParticles();
   effect[x][y][z]->resetDamageEffect();
   effect[x][y][z]->effectType = effect_type;
@@ -1920,7 +1930,7 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
     }
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
-        session->getGameAdapter()->colorMiniMapPoint(x + xp, y - yp, shape, pos[x + xp][y - yp][0]);
+        adapter->colorMiniMapPoint(x + xp, y - yp, shape, pos[x + xp][y - yp][0]);
       }
     }
   }
@@ -1938,7 +1948,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???
-        session->getGameAdapter()->eraseMiniMapPoint(x + xp, y - yp);
+        adapter->eraseMiniMapPoint(x + xp, y - yp);
         for(int zp = 0; zp < shape->getHeight(); zp++) {
             //cerr <<"remove pos " << x + xp << "," << y - yp << "," << z + zp<<endl;
 		  delete pos[x + xp][y - yp][z + zp];
@@ -2322,11 +2332,11 @@ void Map::configureLightMap() {
   }
   if( !( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ) ) return;
 
-  int chunkX = (toint(session->getGameAdapter()->getPlayer()->getX()) + 
-                (session->getGameAdapter()->getPlayer()->getShape()->getWidth() / 2) - 
+  int chunkX = (toint(adapter->getPlayer()->getX()) + 
+                (adapter->getPlayer()->getShape()->getWidth() / 2) - 
                 MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (toint(session->getGameAdapter()->getPlayer()->getY()) - 
-                (session->getGameAdapter()->getPlayer()->getShape()->getDepth() / 2) - 
+  int chunkY = (toint(adapter->getPlayer()->getY()) - 
+                (adapter->getPlayer()->getShape()->getDepth() / 2) - 
                 MAP_OFFSET) / MAP_UNIT;
 
   traceLight(chunkX, chunkY, lightMap, false);
@@ -2514,8 +2524,8 @@ bool Map::isDoor(int tx, int ty) {
 }
 
 bool Map::isDoor(Shape *shape) {
-  return(shape == session->getShapePalette()->findShapeByName("EW_DOOR") ||
-         shape == session->getShapePalette()->findShapeByName("NS_DOOR"));
+  return(shape == shapes->findShapeByName("EW_DOOR") ||
+         shape == shapes->findShapeByName("NS_DOOR"));
 }
 
 void Map::setLocked(int doorX, int doorY, int doorZ, bool value) {
@@ -2523,7 +2533,7 @@ void Map::setLocked(int doorX, int doorY, int doorZ, bool value) {
   Location *p = pos[doorX][doorY][doorZ];
   for(int xp = 0; xp < p->shape->getWidth(); xp++) {
     for(int yp = 0; yp < p->shape->getDepth(); yp++) {
-      session->getGameAdapter()->colorMiniMapPoint(doorX + xp, 
+      adapter->colorMiniMapPoint(doorX + xp, 
                                                    doorY - yp, 
                                                    p->shape, 
                                                    p);
@@ -2563,13 +2573,13 @@ void Map::handleEvent( SDL_Event *event ) {
       if(mx < 10) {
         mouseMoveScreen = true;
         setMove(Constants::MOVE_LEFT);
-      } else if(mx >= session->getGameAdapter()->getScreenWidth() - 10) {
+      } else if(mx >= adapter->getScreenWidth() - 10) {
         mouseMoveScreen = true;
         setMove(Constants::MOVE_RIGHT);
       } else if(my < 10) {
         mouseMoveScreen = true;
         setMove(Constants::MOVE_UP);
-      } else if(my >= session->getGameAdapter()->getScreenHeight() - 10) {
+      } else if(my >= adapter->getScreenHeight() - 10) {
         mouseMoveScreen = true;
         setMove(Constants::MOVE_DOWN);
       } else {
@@ -2611,7 +2621,7 @@ void Map::handleEvent( SDL_Event *event ) {
   case SDL_KEYDOWN:
   case SDL_KEYUP:
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
-    ea = session->getPreferences()->getEngineAction(event);    
+    ea = preferences->getEngineAction(event);    
     if(ea == SET_MOVE_DOWN){        
       setMove(Constants::MOVE_DOWN);
     } else if(ea == SET_MOVE_UP){
@@ -2733,7 +2743,7 @@ void Map::saveMap( char *name, char *result ) {
   info->grid_x = mapGridX;
   info->grid_y = mapGridY;
 
-  strncpy( (char*)info->theme_name, session->getShapePalette()->getCurrentThemeName(), 254 );
+  strncpy( (char*)info->theme_name, shapes->getCurrentThemeName(), 254 );
   info->theme_name[254] = 0;
 
   info->pos_count = 0;
@@ -2820,16 +2830,17 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   reset();
 
   // load the theme
-  session->getShapePalette()->loadTheme( (const char*)info->theme_name );
+  shapes->loadTheme( (const char*)info->theme_name );
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
-  if( !changingStory || !(session->getParty()) ) {
+  //if( !changingStory || !(session->getParty()) ) {
+  if( !changingStory || !( adapter->hasParty() ) ) {
     startx = info->start_x;
     starty = info->start_y;
   } else {
-    startx = toint( session->getGameAdapter()->getPlayer()->getX() );
-    starty = toint( session->getGameAdapter()->getPlayer()->getY() );
+    startx = toint( adapter->getPlayer()->getX() );
+    starty = toint( adapter->getPlayer()->getY() );
   }
 
   mapGridX = info->grid_x;
@@ -2838,7 +2849,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
-      shape = session->getShapePalette()->
+      shape = shapes->
         findShapeByName( (char*)(info->pos[i]->floor_shape_name), true );
       if( shape ) setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
       else cerr << "Map::load failed to find floor shape: " << info->pos[i]->floor_shape_name <<
@@ -2847,17 +2858,17 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
 
     if( info->pos[i]->item ) {
       //Item *item = Item::load( session, info->pos[i]->item );
-      RenderedItem *item = session->getGameAdapter()->load( info->pos[i]->item );
+      RenderedItem *item = adapter->load( info->pos[i]->item );
       if( item ) setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
       else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( info->pos[i]->creature ) {
-      RenderedCreature *creature = session->getGameAdapter()->load( info->pos[i]->creature );
+      RenderedCreature *creature = adapter->load( info->pos[i]->creature );
       if( creature ) {
         setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
         creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
       } else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
-      shape = session->getShapePalette()->
+      shape = shapes->
         findShapeByName( (char*)(info->pos[i]->shape_name), true );
       if( shape ) setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape );
       else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
@@ -2872,21 +2883,23 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   Persist::deleteMapInfo( info );
 
   // load map-related data from text file
-  Mission::loadMapData( (const char*)name );
+  //Mission::loadMapData( (const char*)name );
+  adapter->loadMapData( (const char*)name );
 
   edited = true;
   strcpy( this->name, name );
 
   // place the party at the start
-  if( session->getParty() ) {
+  if( adapter->hasParty() ) {
+  //if( session->getParty() ) {
     int xx = startx;
     int yy = starty;
-    for( int t = 0; t < session->getParty()->getPartySize(); t++ ) {
-      session->getGameAdapter()->getParty(t)->moveTo( xx, yy, 0 );
-      session->getGameAdapter()->getParty(t)->setSelXY( -1, -1 );
-      if( !session->getGameAdapter()->getParty(t)->getStateMod( Constants::dead ) )
-        setCreature( xx, yy, 0, session->getGameAdapter()->getParty(t) );
-      xx += session->getGameAdapter()->getParty(t)->getShape()->getWidth();
+    for( int t = 0; t < adapter->getPartySize(); t++ ) {
+      adapter->getParty(t)->moveTo( xx, yy, 0 );
+      adapter->getParty(t)->setSelXY( -1, -1 );
+      if( !adapter->getParty(t)->getStateMod( Constants::dead ) )
+        setCreature( xx, yy, 0, adapter->getParty(t) );
+      xx += adapter->getParty(t)->getShape()->getWidth();
     }
   }
 

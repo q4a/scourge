@@ -111,7 +111,7 @@ void Session::initData() {
   
   
   
-  map = new Map(this);
+  map = new Map( adapter, adapter->getPreferences(), getShapePalette() );
   
   adapter->initUI();
 

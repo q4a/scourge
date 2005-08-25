@@ -24,6 +24,7 @@
 
 //#include "../rpg/rpglib.h"
 #include "map.h"
+#include "mapadapter.h"
 #include "effect.h"
 #include "location.h"
 #include "shape.h"
@@ -37,5 +38,6 @@
 #include "rendereditem.h"
 #include "renderedcreature.h"
 #include "renderedprojectile.h"
+#include "shapes.h"
 
 #endif

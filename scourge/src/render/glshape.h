@@ -35,8 +35,6 @@ struct surface {
   //	float s_dist, t_dist;
 };
 
-class ShapePalette;
-
 class GLShape : public Shape  {
 private:
   /**

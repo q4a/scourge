@@ -24,6 +24,16 @@ class CFrustum;
 class RenderedProjectile;
 class Location;
 class EffectLocation;
+class Shape;
+class RenderedCreature;
+class RenderedItem;
+class RenderedProjectile;
+class GLShape;
+class Shapes;
+class MapAdapter;
+class Location;
+class Effect;
+
 
 using namespace std;
 
@@ -114,6 +124,10 @@ public:
  */
 class Map {
  private:
+   MapAdapter *adapter;
+   Preferences *preferences;
+   Shapes *shapes;
+
   bool mapChanged;
   bool resortShapes;
   float zoom;
@@ -132,8 +146,7 @@ class Map {
     float step[WATER_TILE_X][WATER_TILE_Y];
     Uint32 lastTime[WATER_TILE_X][WATER_TILE_Y];
   } WaterTile;
-  map<Uint32, WaterTile*> water;
-  Session *session;
+  map<Uint32, WaterTile*> water;  
   bool debugGridFlag;
   bool drawGridFlag;
   float xrot, yrot, zrot;  
@@ -204,7 +217,7 @@ class Map {
   int startx, starty;
   int mapGridX, mapGridY;
 
-  Map(Session *session);
+  Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
 
   inline bool isEdited() { return edited; }

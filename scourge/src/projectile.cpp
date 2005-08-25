@@ -20,6 +20,7 @@
 #include "rpg/rpglib.h"
 #include "creature.h"
 #include "item.h"
+#include "session.h"
 
 Uint32 Projectile::lastProjectileTick = 0;
 

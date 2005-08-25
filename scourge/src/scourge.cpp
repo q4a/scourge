@@ -25,6 +25,7 @@
 #include "mapeditor.h"
 #include "sound.h"
 #include "mapwidget.h"
+#include "session.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -3302,16 +3303,7 @@ ShapePalette *Scourge::getShapePalette() {
 }
 
 GLuint Scourge::getCursorTexture( int cursorMode ) {
-  switch( cursorMode ) {
-  case Constants::CURSOR_NORMAL: 
-    return getSession()->getShapePalette()->cursor_texture;
-  case Constants::CURSOR_ATTACK:
-    return getSession()->getShapePalette()->attack_texture;
-  case Constants::CURSOR_TALK:
-    return getSession()->getShapePalette()->talk_texture;
-  default:
-  return getSession()->getShapePalette()->crosshair_texture;
-  }
+  return session->getShapePalette()->getCursorTexture( cursorMode );
 }
 
 GLuint Scourge::getHighlightTexture() { 

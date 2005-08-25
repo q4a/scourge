@@ -22,6 +22,7 @@
 #include <vector>
 #include <map>
 #include "constants.h"
+#include "render/shapes.h"
 
 using namespace std;
 
@@ -32,117 +33,8 @@ using namespace std;
 class GLShape;
 class GLTorch;
 class Session;
-class ShapePalette;
 class Monster;
 class CLoadMD2;
-
-// temporary information when constructing shapes from a file
-typedef struct _ShapeValues {
-  char textureGroupIndex[100]; // index or theme ref.
-  int width, height, depth;
-  char name[100];
-  int descriptionIndex;
-  long color;
-  int skipSide, stencil, blocksLight;
-  int torch;
-  char m3ds_name[100];
-  float m3ds_scale;
-  int teleporter;
-  float xrot, yrot, zrot;
-} ShapeValues;
-
-typedef struct _Md2ModelInfo {
-  t3DModel *model;
-  char name[100];
-  char filename[100];
-  float scale;
-} Md2ModelInfo;
-
-typedef struct _CharacterModelInfo {
-  char model_name[100];
-  char skin_name[300]; 
-  float scale;
-} CharacterModelInfo;
-
-#define MAX_TEXTURE_COUNT 10
-class WallTheme {
- public:
-
-  // types of theme section references
-  enum {
-    THEME_REF_WALL,
-    THEME_REF_CORNER,
-    THEME_REF_DOOR_EW,
-    THEME_REF_DOOR_NS,
-    THEME_REF_PASSAGE_FLOOR,
-    THEME_REF_ROOM_FLOOR,
-    THEME_REF_HEADBOARD,
-
-    // must be the last one
-    THEME_REF_COUNT
-  };
-  static char themeRefName[THEME_REF_COUNT][40];
-  static const int MULTI_TEX_COUNT = 2;
-
- private:
-  static const int NAME_LENGTH = 40;
-  char *name;
-  char textures[THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH]; // holds the text of a theme
-  GLuint textureGroup[THEME_REF_COUNT][MAX_TEXTURE_COUNT];
-  int faceCount[THEME_REF_COUNT];
-  map<string,GLuint> loadedTextures;
-  map<string,int> themeRefMap;
-  GLfloat r[MULTI_TEX_COUNT], g[MULTI_TEX_COUNT], b[MULTI_TEX_COUNT], intensity[MULTI_TEX_COUNT];
-  bool smooth[MULTI_TEX_COUNT];
-  ShapePalette *shapePal;
-  bool special;
-
- public:
-  WallTheme( char *name, ShapePalette *shapePal );
-  ~WallTheme();
-
-  inline void setSpecial( bool b ) { special = b; }
-  inline bool isSpecial() { return special; }
-
-  inline void setFaceCount( int themeRef, int value ) { faceCount[ themeRef ] = value; }
-  int getFaceCount( string themeRefName );
-
-  inline void addTextureName(int themeRef, int face, const char *name) { 
-    if( themeRef < 0 || themeRef > THEME_REF_COUNT ) {
-      cerr << "*** Error: theme ref is out of bounds: theme=" << getName() << endl;
-    } else {
-      strncpy( textures[themeRef][face], name, NAME_LENGTH - 1 ); 
-      textures[themeRef][face][NAME_LENGTH - 1] = '\0';
-      /*
-      cerr << 
-        "\ttheme: " << getName() << 
-        " texture: ref=" << themeRef << 
-        " name=" << name << endl;
-      */        
-    }
-  }
-  inline void setMultiTexRed( int index, GLfloat value ) { r[index] = value; }
-  inline void setMultiTexGreen( int index, GLfloat value ) { g[index] = value; }
-  inline void setMultiTexBlue( int index, GLfloat value ) { b[index] = value; }
-  inline void setMultiTexInt( int index, GLfloat value ) { intensity[index] = value; }
-  inline void setMultiTexSmooth( int index, bool value ) { smooth[index] = value; }
-
-  inline GLfloat getMultiTexRed( int index ) { return r[index]; }
-  inline GLfloat getMultiTexGreen( int index ) { return g[index]; }
-  inline GLfloat getMultiTexBlue( int index ) { return b[index]; }
-  inline GLfloat getMultiTexInt( int index ) { return intensity[index]; }
-  inline bool getMultiTexSmooth( int index ) { return smooth[index]; }
-
-  GLuint *getTextureGroup( string themeRefName );
-  inline char *getName() { return name; }
-  void load();
-  void unload();
-
- protected:
-  void loadTextureGroup( int ref, int face, char *texture );
-  void debug();
-};
-  
 
 typedef struct _MapGridLocation {
   char name[80];
@@ -151,64 +43,14 @@ typedef struct _MapGridLocation {
   char type;
 } MapGridLocation;
 
-#define MAX_SYSTEM_TEXTURE_COUNT 1000
-
-class ShapePalette {
+class ShapePalette : public Shapes {
 private:
-  GLShape *shapes[256];
-  map<string, GLShape *> shapeMap;
-  int shapeCount;
-  GLuint gui_texture, gui_wood_texture, paper_doll_texture, gui_texture2, ripple_texture;
+  int skillCount;
+  GLuint gui_texture, gui_wood_texture, paper_doll_texture, gui_texture2;
   map<int, GLuint> statModIcons;
-  
-  typedef struct _Texture {
-	GLuint id;
-	char filename[80];
-  } Texture;
-
-  Texture textures[ MAX_SYSTEM_TEXTURE_COUNT ]; // store textures
-  int texture_count;
-  GLShape *shapeNameArray[256];
-
-  // native texture groups
-  GLuint textureGroup[100][3];
-  int textureGroupCount;
-
-  GLuint md2_tex[6];
-
-  // how big to make the walls
-  const static Sint16 unitSide = MAP_UNIT;
-  const static Sint16 unitOffset = MAP_UNIT_OFFSET;
-  const static Sint16 wallHeight = MAP_WALL_HEIGHT;
-
-  // shape descriptions
-  vector<vector<string>*> descriptions;
-
-  // temp. shape data
-  vector<ShapeValues*> shapeValueVector;
-
-  // md2 data
-  map<string, Md2ModelInfo*> old_creature_models; 
-  map<string, GLuint> creature_skins;
-  map<GLuint, int> loaded_skins;
-  map<string, Md2ModelInfo*> creature_models;
-  map<Md2ModelInfo*, int> loaded_models;
-  vector<CharacterModelInfo*> character_models;
-
-  static ShapePalette *instance;
-  
-  // Md2 shapes
-  t3DModel * LoadMd2Model(char *file_name);
-  void UnloadMd2Model( t3DModel *model );
 
   Session *session;
-  WallTheme *themes[100];
-  WallTheme *allThemes[100];
-  int themeCount, allThemeCount;
-  WallTheme *currentTheme;
-  vector<GLShape*> themeShapes;
-  vector<string> themeShapeRef;
-
+  
   vector<GLuint> portraitTextures;
   GLuint deathPortraitTexture;
 
@@ -218,7 +60,7 @@ private:
   map<char, vector<MapGridLocation*>*> mapGridLocationByType;
 
 public: 
-  ShapePalette(Session *session);
+  ShapePalette( Session *session );
   ~ShapePalette();
 
   inline GLuint getMapGridTile( int x, int y ) { return mapGrid[ x ][ y ]; }
@@ -235,44 +77,23 @@ public:
    */
   bool getRandomMapLocation( char type, char **name, int *x, int *y );
   
-  inline int getThemeCount() { return themeCount; }
-  inline char *getThemeName( int index ) { return themes[ index ]->getName(); }
-
-  inline int getAllThemeCount() { return allThemeCount; }
-  inline char *getAllThemeName( int index ) { return allThemes[ index ]->getName(); }
-  inline bool isThemeSpecial( int index ) { return allThemes[ index ]->isSpecial(); }
-
-  inline const char *getCurrentThemeName() { return (const char*)currentTheme->getName(); }
-
   inline char *getAboutText() { return aboutText; }
 
   void initialize();
-  GLuint loadSystemTexture( char *line );
 
   void loadNpcPortraits();
 
-  inline int getCharacterModelInfoCount() { return character_models.size(); }
-  inline CharacterModelInfo *getCharacterModelInfo( int index ) { return character_models[ index ]; }
-
-  void loadTheme( WallTheme *theme );
-  void loadTheme( const char *name );
-  void loadRandomTheme();
-
   GLuint formationTexIndex;
-  inline GLuint getTexture(int index) { return textures[index].id; }
 
   inline GLuint getStatModIcon(int statModIndex) { if(statModIcons.find(statModIndex) == statModIcons.end()) return (GLuint)0; else return statModIcons[statModIndex]; }
-
-  // singleton
-  inline static ShapePalette *getInstance() { return instance; }
 
   // cursor
   SDL_Surface *tiles, *spells;
   GLubyte *tilesImage[20][20], *spellsImage[20][20];
   GLuint tilesTex[20][20], spellsTex[20][20];
-  SDL_Surface *cursor, *crosshair, *attackCursor, *talkCursor, *paperDoll;
-  GLubyte *cursorImage, *crosshairImage, *attackImage, *talkImage, *paperDollImage;
-  GLuint cursor_texture, crosshair_texture, attack_texture, talk_texture;
+  SDL_Surface *paperDoll;
+  GLubyte *paperDollImage;
+  GLuint talk_texture;
 
   SDL_Surface *logo;
   GLubyte *logoImage;   
@@ -286,52 +107,31 @@ public:
   GLubyte *scourgeImage;
 
   GLuint cloud, candle, torchback, highlight;
-
   GLuint border, border2, gargoyle;
 
-  // 1-based!
-  inline GLShape *getShape(int index) { return shapes[index]; }
-
-  inline map<string, GLShape *> *getShapeMap() { return &shapeMap; }
-
-  inline Sint16 getUnitSide() { return unitSide; }
-  inline Sint16 getUnitOffset() { return unitOffset; }
-  inline Sint16 getWallHeight() { return wallHeight; }
-
-  inline GLuint getRippleTexture() { return ripple_texture; }
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
   inline GLuint getPaperDollTexture() { return paper_doll_texture; }
+  inline GLuint getHighlightTexture() { return highlight; }
   inline GLuint getBorderTexture() { return border; }
   inline GLuint getBorder2Texture() { return border2; }
   inline GLuint getGargoyleTexture() { return gargoyle; }
-  inline GLuint getHighlightTexture() { return highlight; }
+
 
   inline int getPortraitCount() { return portraitTextures.size(); }
   inline GLuint getPortraitTexture( int index ) { return portraitTextures[ index ]; }
   inline GLuint getDeathPortraitTexture() { return deathPortraitTexture; }
 
-  GLuint findTextureByName(const char *filename);
-  GLShape *findShapeByName(const char *name, bool variation=false);
-  int findShapeIndexByName(const char *name);
-  
   // Md2 shapes
   GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f, 
-							Monster *monster=NULL);
+                            Monster *monster=NULL);
   void decrementSkinRefCount(char *model_name, char *skin_name, 
-							 Monster *monster=NULL);
-
-  char *getRandomDescription(int descriptionGroup);
-
-  GLuint loadGLTextures(char *fileName);
+                             Monster *monster=NULL);
 
 protected:
-  GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
-  GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, int gl_scale=GL_NEAREST);
-  void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0);
-  void setupAlphaBlendedBMPGrid(char *filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
-  void swap(unsigned char & a, unsigned char & b);
+  virtual int interpretShapesLine( FILE *fp, int n );
 };
 
 #endif
+
