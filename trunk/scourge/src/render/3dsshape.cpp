@@ -20,8 +20,9 @@
 #define LIGHT_ANGLE 135.0f
   
 #include "3dsshape.h"
+#include "shapes.h"
 
-C3DSShape::C3DSShape(char *file_name, float div, ShapePalette *shapePal, 
+C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal, 
 					 GLuint texture[],
 					 char *name, int descriptionGroup,
 					 Uint32 color, Uint8 shapePalIndex,
@@ -48,7 +49,7 @@ C3DSShape::~C3DSShape() {
   glDeleteLists( displayListStart, 2 );
 }
 
-void C3DSShape::commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety) {
+void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, int offsetx, int offsety) {
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
   this->div = div;

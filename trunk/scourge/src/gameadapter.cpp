@@ -31,6 +31,25 @@ GameAdapter::~GameAdapter() {
   delete preferences;
 }
 
+bool GameAdapter::isMissionCreature( RenderedCreature *creature ) {
+  if( !getSession()->getCurrentMission() ) return false;
+  return( getSession()->getCurrentMission()->isMissionCreature( creature ) );
+}
+
+bool GameAdapter::hasParty() {
+  return( getSession()->getParty() != NULL );
+}
+
+int GameAdapter::getPartySize() {
+  return( getSession()->getParty() == NULL ? 
+          0 : 
+          getSession()->getParty()->getPartySize() );
+}
+
+void GameAdapter::loadMapData( const char *name ) {
+  Mission::loadMapData( (const char*)name );
+}
+
 RenderedItem *GameAdapter::load( ItemInfo *info ) {
   return Item::load( session, info );
 }

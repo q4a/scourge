@@ -19,8 +19,9 @@
 #define GAME_ADAPTER_H
 
 #include "constants.h"
-#include "../persist.h"
+#include "persist.h"
 #include "sdlhandler.h"
+#include "render/mapadapter.h"
 
 class Party;
 class Map;
@@ -36,7 +37,7 @@ class Preferences;
 class RenderedItem;
 class RenderedCreature;
 
-class GameAdapter {
+class GameAdapter : public MapAdapter {
 protected:
   Preferences *preferences;
   Session *session;
@@ -104,6 +105,11 @@ public:
   virtual inline GLuint getCursorTexture( int cursorMode ) { return 0; }
   virtual inline GLuint getHighlightTexture() { return 0; }
   virtual inline GLuint loadSystemTexture( char *line ) { return 0; }
+
+  virtual bool isMissionCreature( RenderedCreature *creature );
+  virtual bool hasParty();
+  virtual int getPartySize();
+  virtual void loadMapData( const char *name );
 
   // project-specific castings
   virtual RenderedItem *load( ItemInfo *info );

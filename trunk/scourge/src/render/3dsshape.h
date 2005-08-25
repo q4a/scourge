@@ -39,6 +39,8 @@
 
 using namespace std;
 
+class Shapes;
+
 typedef unsigned char BYTE;
 
 class C3DSShape : public GLShape  {
@@ -54,14 +56,14 @@ private:
   // We want the default drawing mode to be normal
   int g_ViewMode;
   float movex, movey, movez;
-  ShapePalette *shapePal;
+  Shapes *shapePal;
   int offsetx, offsety;
   GLShape *debugShape;
   GLuint displayListStart;
   bool initialized;
 
 public:   
-  C3DSShape(char *file_name, float div, ShapePalette *shapePal,
+  C3DSShape(char *file_name, float div, Shapes *shapePal,
 			GLuint texture[], char *name, int descriptionGroup,
 			Uint32 color, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
   ~C3DSShape();
@@ -77,7 +79,7 @@ public:
   void endBlending();
 
 protected:
-  void commonInit(char *file_name, float div, ShapePalette *shapePal, int offsetx, int offsety);
+  void commonInit(char *file_name, float div, Shapes *shapePal, int offsetx, int offsety);
   void preRenderLight();
   void resolveTextures();
   void normalizeModel();

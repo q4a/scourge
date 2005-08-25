@@ -18,8 +18,12 @@
 #include "effect.h"
 #include "map.h"
 
-RenderedCreature::RenderedCreature( Session *session ) {
-  this->session = session;
+RenderedCreature::RenderedCreature( Preferences *preferences, 
+                                    Shapes *shapes, 
+                                    Map *levelMap ) {
+  this->preferences = preferences;
+  this->shapes = shapes;
+  this->levelMap = levelMap;
   x = y = z = 0; 
   damageEffectCounter = 0;
   effectDuration = Constants::DAMAGE_DURATION;
@@ -42,15 +46,13 @@ void RenderedCreature::startEffect( int effect_type, int duration, GLuint delay 
   effectDuration = duration;
 
   // need to do this to make sure effect shows up
-  session->getMap()->refresh();
+  levelMap->refresh();
 }
 
 Effect *RenderedCreature::getEffect() {
   if( !effect ) {
     effect = 
-      new Effect( session, 
-                  session->getShapePalette(), 
-                  getShape() );
+      new Effect( preferences, shapes, getShape() );
   }
   return effect;
 }

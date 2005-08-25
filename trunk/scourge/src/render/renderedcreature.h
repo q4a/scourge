@@ -18,13 +18,13 @@
 #ifndef RENDERED_CREATURE_H
 #define RENDERED_CREATURE_H
 
-#include "../constants.h"
-#include "../persist.h"
+#include "render.h"
 
 class RenderedItem;
 class Effect;
 class GLShape;
-class Session;
+class Shapes;
+class Map;
 
 /**
  * @author Gabor Torok
@@ -34,15 +34,19 @@ class Session;
 
 class RenderedCreature {
 protected:
-  Session *session;
   GLfloat x, y, z;
   GLuint effectDuration;
   GLuint damageEffectCounter;
   Effect *effect;
   int effectType;
+  Preferences *preferences;
+  Shapes *shapes;
+  Map *levelMap;
 
 public:
-  RenderedCreature( Session *session );
+  RenderedCreature( Preferences *preferences, 
+                    Shapes *shapes, 
+                    Map *levelMap );
   virtual ~RenderedCreature();
 
   virtual inline GLfloat getX() { return x; }

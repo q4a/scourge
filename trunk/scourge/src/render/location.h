@@ -23,6 +23,8 @@
 
 class Effect;
 class RenderedItem;
+class Shape;
+class RenderedCreature;
 
 /**
   *@author Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          render.h  -  description
+                          mapadapter.cpp  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,22 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef RENDER_H
-#define RENDER_H
+#include "mapadapter.h"
 
-// definitely outside of dir                    
-#include "../constants.h"
-#include "../persist.h"
-#include "../preferences.h"
+MapAdapter::MapAdapter() {
+}
 
-/** 
- *@author Gabor Torok
- * 
- * The class thru which this directory talks to the rest of the code.
- * Never include this file outside this dir. (use renderlib.h instead.)
- */
-class Render {
-  public:
-};
+MapAdapter::~MapAdapter() {
+}
 
-#endif

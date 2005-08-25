@@ -27,7 +27,10 @@ using namespace std;
 /**
  * @author Gabor Torok
  * 
-  */
+ */
+
+class RenderedCreature;
+class Shape;
 
 class RenderedProjectile {
 protected:
