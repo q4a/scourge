@@ -496,10 +496,6 @@ void Scourge::drawView() {
 
   updatePartyUI();
 
-  //if( getSDLHandler()->mouseIsMovingOverMap )
-  //  getMapXYZAtScreenXY(getSDLHandler()->mouseX, getSDLHandler()->mouseY, 
-  //                      &cursorMapX, &cursorMapY, &cursorMapZ);
-
   checkForDropTarget();
   checkForInfo();
 
@@ -1082,7 +1078,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         Uint16 mapy = levelMap->getCursorMapY();
         Uint16 mapz = levelMap->getCursorMapZ();
         if(mapx > MAP_WIDTH) {
-          getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
+          levelMap->getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
           mapz = 0;
         }
         startItemDrag(mapx, mapy, mapz);
@@ -1318,7 +1314,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
     // click on an item
     if(mapx > MAP_WIDTH) {
-      //getMapXYAtScreenXY(x, y, &mapx, &mapy);
       mapx = levelMap->getCursorFlatMapX();
       mapy = levelMap->getCursorFlatMapY();
       mapz = 0;
@@ -1335,7 +1330,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     if(useItem(mapx, mapy, mapz)) return;
 
     // click on the levelMap
-    //getMapXYAtScreenXY(x, y, &mapx, &mapy);
     mapx = levelMap->getCursorFlatMapX();
     mapy = levelMap->getCursorFlatMapY();
 

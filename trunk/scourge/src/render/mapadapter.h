@@ -34,6 +34,8 @@ public:
 
   virtual int getScreenWidth() = 0;
   virtual int getScreenHeight() = 0;
+  virtual Uint16 getMouseX() = 0;
+  virtual Uint16 getMouseY() = 0;
   virtual bool isMouseIsMovingOverMap() = 0;
   virtual RenderedCreature *getPlayer() = 0;
   virtual void setDebugStr(char *s) = 0;
@@ -47,10 +49,10 @@ public:
   virtual RenderedCreature *load( CreatureInfo *info ) = 0;
   virtual void loadMapData( const char *name ) = 0;
 
-  // FIXME: should these be internal to render?
-  virtual void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) = 0;
-  virtual void getMapXYAtScreenXY(Uint16 *mapx, Uint16 *mapy) = 0;
-
+  /**
+   * Set up the opengl view.
+   */
+  virtual void setView() = 0;
 };
 
 #endif
