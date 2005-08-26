@@ -375,6 +375,8 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
     cerr << "Either install the data files at the above location, or rebuild with ./configure --with-data-dir=<new location> or run the game from the source distribution's main directory (the one that contains src,data,etc.)" << endl;
     return 1;
   }
+  
+  cerr << "Starting session, using rootDir=" << rootDir << endl;
 
   Session *session = new Session( adapter );
   session->initialize();
