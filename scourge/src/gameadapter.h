@@ -61,8 +61,6 @@ public:
   virtual inline bool isMouseIsMovingOverMap() { return false; }
   virtual inline Uint16 getMouseX() { return 0; }
   virtual inline Uint16 getMouseY() { return 0; }
-  virtual inline void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {}
-  virtual inline void getMapXYAtScreenXY(Uint16 *mapx, Uint16 *mapy) {} 
 
   // debug
   virtual inline void setDebugStr(char *s) {}
@@ -111,6 +109,11 @@ public:
   virtual int getPartySize();
   virtual void loadMapData( const char *name );
 
+  /**
+   * Set up the opengl view.
+   */
+  virtual void setView() {}
+
   // project-specific castings
   virtual RenderedItem *load( ItemInfo *info );
   virtual RenderedCreature *load( CreatureInfo *info );
@@ -135,20 +138,21 @@ public:
   virtual inline int getScreenHeight() { return getSDLHandler()->getScreen()->h; }
   virtual void playSound(const char *sound);
 
-  inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
-  inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }
-  inline Uint16 getMouseY() { return getSDLHandler()->mouseY; }
-  virtual void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
-  virtual void getMapXYAtScreenXY(Uint16 *mapx, Uint16 *mapy);
+  virtual inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
+  virtual inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }
+  virtual inline Uint16 getMouseY() { return getSDLHandler()->mouseY; }
 
   inline double getFps() { return getSDLHandler()->getFPS(); }
   inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 
   virtual inline bool isHeadless() { return false; }
 
+  /**
+   * Set up the opengl view.
+   */
+  virtual void setView() { getSDLHandler()->setOrthoView(); }
+
 protected:
-  void getMapXYAtScreenXY(Uint16 x, Uint16 y,
-                          Uint16 *mapx, Uint16 *mapy);
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
 };
 

@@ -482,6 +482,8 @@ class Map {
   void configureAccessMap(int fromX, int fromY);
   bool isPositionAccessible(int atX, int atY);
 
+  void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
+
  protected:
 
      /**
@@ -580,9 +582,10 @@ class Map {
                    DrawLater *shapes,
                    int shapeCount );
 
-  void getMapXYZAtScreenXY( Uint16 x, Uint16 y );
-
+  void getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy );
+  void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
+
 };
 
 #endif
