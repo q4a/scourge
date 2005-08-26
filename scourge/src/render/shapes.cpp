@@ -139,6 +139,7 @@ void Shapes::initialize() {
   char errMessage[500];
   char s[200];
   sprintf(s, "%s/world/shapes.txt", rootDir);
+  cerr << "*** rootDir=" << rootDir << "\n*** s=" << s << endl;
   FILE *fp = fopen(s, "r");
   if(!fp) {        
     sprintf(errMessage, "Unable to find the file: %s!", s);
