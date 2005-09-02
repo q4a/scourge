@@ -150,9 +150,10 @@ void TradeDialog::render( const Widget *widget, const Item *item, int bufferSize
   char s[ 120 ];
   ((Item*)item)->getDetailedDescription( s );
   float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::LEADERSHIP ) );
-  // level-based mark-up is already included
+  // level-based mark-up is already included and price is randomized
   int price = ((Item*)item)->getPrice();
-  int percentage = (int)( (float)price * ( ( 100.0f - skill ) * random() / RAND_MAX ) / 100.0f * 0.5f );
+  // 25% variance based on leadership skill.
+  int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
   int total = price + ( widget == listA ? ( -1 * percentage ) : percentage );
   prices[ (Item*)item ] = total;
   sprintf( (char*)buffer, "$%d %s", total, s );
