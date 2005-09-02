@@ -354,6 +354,13 @@ class Creature : public RenderedCreature {
 
   int addExperience(int exp);
 
+  /**
+   * Add experience and show message in map window. Also shows
+   * message if creature leveled up. Use generally for party
+   * characters only.
+   */
+  int addExperienceWithMessage( int exp );
+
   // get angle to target creature
   float getTargetAngle();
 
