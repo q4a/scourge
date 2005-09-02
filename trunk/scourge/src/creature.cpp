@@ -696,11 +696,12 @@ bool Creature::addInventory(Item *item, bool force) {
     inventory[inventory_count++] = item;
     inventoryWeight += item->getWeight(); 
 
-    if(item->getWeight() + inventoryWeight > 
-       getMaxInventoryWeight()) {
-      char msg[80];
-      sprintf(msg, "%s is overloaded.", getName());
-      session->getMap()->addDescription(msg);            
+    if(item->getWeight() + inventoryWeight > getMaxInventoryWeight()) {
+      if( !isMonster() ) {
+        char msg[80];
+        sprintf(msg, "%s is overloaded.", getName());
+        session->getMap()->addDescription(msg);
+      }
       setStateMod(Constants::overloaded, true);
     }
 
@@ -734,9 +735,11 @@ Item *Creature::removeInventory(int index) {
     item = inventory[index];
     inventoryWeight -= item->getWeight();
     if(getStateMod(Constants::overloaded) && inventoryWeight < getMaxInventoryWeight()) {
-      char msg[80];
-      sprintf(msg, "%s is not overloaded anymore.", getName());
-      session->getMap()->addDescription(msg);            
+      if( !isMonster() ) {
+        char msg[80];
+        sprintf(msg, "%s is not overloaded anymore.", getName());
+        session->getMap()->addDescription(msg);
+      }
       setStateMod(Constants::overloaded, false);
     }
     for(int i = index; i < inventory_count - 1; i++) {
@@ -1281,18 +1284,45 @@ int Creature::addExperience(Creature *creature_killed) {
   return addExperience(delta);
 }
 
-// add n exp points
-// only called for characters
+/**
+ * Add n exp points. Only called for characters
+ * Note that n can be a negative number. (eg.: failure to steal)
+ */
 int Creature::addExperience(int delta) {
-  exp += delta;
+  int n = delta;
+  exp += n;
+  if( exp < 0 ) {
+    n = exp;
+    exp = 0;
+  }
 
   // level up? (mark as state, with graphic over character)
   if(exp >= expOfNextLevel && !getStateMod(Constants::leveled)) {
     setStateMod(Constants::leveled, true);
     availableSkillPoints = character->getSkillBonus();
   }
+  return n;
+}
 
-  return delta;
+int Creature::addExperienceWithMessage( int exp ) {
+  int n = 0;
+  if( !getStateMod( Constants::dead ) ) {
+    char message[120];
+    bool b = getStateMod( Constants::leveled );
+    n = addExperience( exp );
+    if( n > 0 ) {
+      sprintf( message, "%s gains %d experience points.", getName(), n );
+      session->getMap()->addDescription( message );
+      if( !b && getStateMod( Constants::leveled ) ) {
+        sprintf( message, "%s gains a level!", getName() );
+        session->getMap()->addDescription( message, 1.0f, 0.5f, 0.5f );
+      }
+    } else if( n < 0 ) {
+      sprintf( message, "%s looses %d experience points!", getName(), -n );
+      session->getMap()->addDescription( message, 1.0f, 0.05f, 0.05f );
+    }
+  }
+  return n;
 }
 
 // add money after a creature is killed

@@ -20,10 +20,13 @@ tradedialog.cpp  -  description
 #include "item.h"
 #include "gui/window.h"
 #include "rpg/rpglib.h"
+#include "render/renderlib.h"
 
 #define AVAILABLE_COINS "Available Coins:"
 #define TOTAL "Selected Total:"
 #define SELECTED_COINS "Selected Coins:"
+#define STEAL_SUCCESS "You succesfully burgled the items!"
+#define STEAL_FAILURE "Your burgling attempt failed. Items and ex. were confiscated."
 
 TradeDialog::TradeDialog( Scourge *scourge ) {
   this->scourge = scourge;
@@ -223,6 +226,22 @@ void TradeDialog::sell() {
   scourge->showMessageDialog( "Selected items sold." );
 }
 
+/**
+ * Steal the selected items from an npc.
+ * 
+ * To steal successfully, you must roll a higher number on stealing+(luck/4) than
+ * your oppoonent's (stealing/2)+(coordination/2)+(luck/4). The roll is made for
+ * every item. 
+ * 
+ * Experience is awarded as follows:
+ * If your max roll is larger, then you get your max roll minus the difference between
+ * your max rolls. (So the closer your numbers are the harder the roll so less is taken 
+ * away.)
+ * If your max roll is smaller or equal to your victim's max roll (you took a real risk)
+ * you get the sum of the two max rolls.)
+ * 
+ * FIXME: larger items should be harder to steal.
+ */
 void TradeDialog::steal() {
   if( !validateInventory() ) {
     scourge->showMessageDialog( "Inventories changed." );
@@ -235,17 +254,76 @@ void TradeDialog::steal() {
     return;
   }
   
+  float steal = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::STEALING ) );
+  float luck = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::LUCK ) );
+
+  float stealB = (float)( creature->getSkill( Constants::STEALING ) );
+  float coordinationB = (float)( creature->getSkill( Constants::COORDINATION ) );
+  float luckB = (float)( creature->getSkill( Constants::LUCK ) );
+
+  int price = 0;
+  int exp = 0;
   bool success = true;
   for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
-    //Item *item = listB->getSelectedItem( i );
-    float steal = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::STEALING ) );
-    float luck = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::LUCK ) );
-    success = ( ( ( steal + ( luck / 2.0f ) ) * rand() / RAND_MAX ) > 50.0f ? true : false );
-    if( !success ) break;
+    float maxA = steal + ( luck / 4.0f );
+    float valueA = maxA - ( ( maxA / 4.0f ) * rand() / RAND_MAX );
+    float maxB = ( stealB / 2.0f ) + ( coordinationB / 2.0f ) + ( luckB / 4.0f );
+    float valueB = maxB - ( ( maxB / 4.0f ) * rand() / RAND_MAX );
+    if( success ) {
+      success = ( valueA > valueB ? true : false );
+    }
+    exp += (int)( maxA > maxB ? 
+                  maxA - ( maxA - maxB ) : 
+                  maxA + maxB );
+    price += prices[ listB->getSelectedItem( i ) ];
   }
   
-  // FIXME:
-  scourge->showMessageDialog( success ? (char*)"FIXME: Success" : (char*)"FIXME: Failed" );
+  char *p;
+  if( success ) {
+    // move items
+    for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
+      Item *item = listB->getSelectedItem( i );
+      creature->removeInventory( creature->findInInventory( item ) );
+      scourge->getParty()->getPlayer()->addInventory( item, true );
+    }
+
+    // add experience (gain level, etc.)
+    scourge->getParty()->getPlayer()->addExperienceWithMessage( exp );
+
+    p = STEAL_SUCCESS;
+  } else {
+    // remove experience
+    scourge->getParty()->getPlayer()->addExperienceWithMessage( -exp );
+
+    // remove money
+    int money = 
+      ( scourge->getParty()->getPlayer()->getMoney() >= price ? 
+        price : 
+        scourge->getParty()->getPlayer()->getMoney() );
+    price -= money;
+    scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - money );
+    char s[ 255 ];
+    sprintf( s, "%s looses %d coins!", scourge->getParty()->getPlayer()->getName(), money );
+    scourge->getMap()->addDescription( s, 1, 0.05f, 0.05f );
+
+    // remove some items
+    for( int i = 0; i < scourge->getParty()->getPlayer()->getInventoryCount(); i++ ) {
+      Item *item = scourge->getParty()->getPlayer()->getInventory( i );
+      if( price - prices[ item ] > 0 ) {
+        scourge->getParty()->getPlayer()->removeInventory( i );
+        creature->addInventory( item, true );
+        price -= prices[ item ];
+        sprintf( s, "Item confiscated: %s", item->getRpgItem()->getName() );
+        scourge->getMap()->addDescription( s, 1, 0.05f, 0.05f );
+      }
+    }
+
+    p = STEAL_FAILURE;
+  }
+
+  updateUI();
+  scourge->refreshInventoryUI();
+  scourge->showMessageDialog( p );
 }
 
 bool TradeDialog::validateInventory() {

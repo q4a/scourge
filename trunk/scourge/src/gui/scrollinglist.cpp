@@ -315,8 +315,10 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if(!dragging && isInside(x, y)) {
-			selectLine( x, y, ( SDL_GetModState() & KMOD_SHIFT ) );
-			if(dragAndDropHandler) dragAndDropHandler->receive(this);
+			selectLine( x, y, 
+                  ( ( SDL_GetModState() & KMOD_SHIFT ) ||
+                    ( SDL_GetModState() & KMOD_CTRL ) ) );
+      if(dragAndDropHandler) dragAndDropHandler->receive(this);
 		}
     eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
 		innerDrag = false;
