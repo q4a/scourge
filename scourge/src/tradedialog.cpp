@@ -245,7 +245,7 @@ void TradeDialog::steal() {
   }
   
   // FIXME:
-  scourge->showMessageDialog( success ? "FIXME: Success" : "FIXME: Failed" );
+  scourge->showMessageDialog( success ? (char*)"FIXME: Success" : (char*)"FIXME: Failed" );
 }
 
 bool TradeDialog::validateInventory() {

@@ -82,5 +82,9 @@ scourge_SOURCES = \
 	party.cpp\
 	party.h\
 	spellcaster.cpp\
-	spellcaster.h
+	spellcaster.h\
+	itemlist.cpp\
+	itemlist.h\
+	tradedialog.cpp\
+	tradedialog.h
 
