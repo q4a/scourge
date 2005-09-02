@@ -19,6 +19,10 @@
 #include "render/renderlib.h"
 #include "rpg/rpglib.h"
 #include "creature.h"
+#include "tradedialog.h"
+
+#define TRADE_WORD "trade"
+#define TRAIN_WORD "train"
 
 ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
@@ -57,12 +61,14 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   sy = 260;
   win->createLabel( 12, sy, "Talk about:" );
-  entry = new TextField( 90, sy - 10, 25 );
+  entry = new TextField( 90, sy - 10, 15 );
   win->addWidget( entry );
 
-  x = width - 110;
-  closeButton = win->createButton( x, sy - 10, x + 100, sy - 10 + 20, "Close" );
-
+  x = width - 200;
+  trainButton = win->createButton( x, sy - 10, x + 60, sy - 10 + 20, "Train" );
+  tradeButton = win->createButton( x + 65, sy - 10, x + 125, sy - 10 + 20, "Trade" );
+  closeButton = win->createButton( x + 130, sy - 10, x + 190, sy - 10 + 20, "Close" );
+  
   win->setVisible( false );
 }
 
@@ -77,7 +83,7 @@ ConversationGui::~ConversationGui() {
 bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   if( widget == win->closeButton || 
       widget == closeButton ) {
-    win->setVisible(false);
+    hide();
   } else if( widget == list && 
              list->getEventType() == ScrollingList::EVENT_ACTION ) {
     int index = list->getSelectedLine();
@@ -88,6 +94,10 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
              entry->getEventType() == TextField::EVENT_ACTION ) {
     wordClicked( entry->getText() );
     entry->clearText();
+  } else if( widget == tradeButton ) {
+    scourge->getTradeDialog()->setCreature( creature );
+  } else if( widget == trainButton ) {
+    scourge->showMessageDialog( "FIXME: train-dialog" );
   }
   return false;
 }
@@ -118,6 +128,8 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
 void ConversationGui::wordClicked( char *word ) {
   //cerr << "Clicked: " << word << endl;
   if( useCreature ) {
+    if( !strcmp( word, TRADE_WORD ) ) openTradeDialog( creature );
+    else if( !strcmp( word, TRAIN_WORD ) ) openTrainDialog( creature );
     answer->setText( Mission::getAnswer( creature->getMonster(), word ) );
   } else {
     answer->setText( Mission::getAnswer( word ) );
@@ -176,4 +188,15 @@ void ConversationGui::drawWidgetContents(Widget *w) {
     //glDisable( GL_ALPHA_TEST );
     glDisable(GL_TEXTURE_2D);
   }
+}
+
+void ConversationGui::openTradeDialog( Creature *creature ) {
+  scourge->getTradeDialog()->setCreature( creature );
+}
+
+void ConversationGui::openTrainDialog( Creature *creature ) {
+}
+
+void ConversationGui::hide() {
+  win->setVisible( false );
 }

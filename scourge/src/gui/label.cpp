@@ -25,6 +25,7 @@ Label::Label(int x, int y, char *text, int lineWidth, int fontType, int lineHeig
   this->lineWidth = lineWidth;
   this->fontType = fontType;
   this->lineHeight = lineHeight;
+  this->specialColor = false;
   setText( text);
 }
 
@@ -35,7 +36,7 @@ void Label::drawWidget(Widget *parent) {
   if(text) {
     ((Window*)parent)->getScourgeGui()->setFontType( fontType );
     GuiTheme *theme = ((Window*)parent)->getTheme();
-    if( theme->getWindowText() ) {
+    if( !specialColor && theme->getWindowText() ) {
       glColor4f( theme->getWindowText()->r,
                  theme->getWindowText()->g,
                  theme->getWindowText()->b,

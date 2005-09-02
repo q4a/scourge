@@ -89,6 +89,7 @@ class ConversationGui;
 class GuiTheme;
 class ScrollingLabel;
 class MapWidget;
+class TradeDialog;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -221,6 +222,8 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
 
   bool needToCheckInfo;
   map<InfoMessage *, Uint32> infos;
+  
+  TradeDialog *tradeDialog;
 
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
@@ -621,7 +624,8 @@ public:
 
   GLuint loadSystemTexture( char *line );
 
-
+  inline TradeDialog *getTradeDialog() { return tradeDialog; }
+  
  protected:
 
    void drawPortrait( Widget *w, Creature *p );

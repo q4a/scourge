@@ -152,12 +152,14 @@ char *Constants::messages[][80] = {
   { "You're not experienced enough to equip it yet." },
   { "Change key" },
   { "Waiting for new key (Esc to cancel)" },
-  { "Conversation" }
+  { "Conversation" },
+  { "Trade" },
+  { "Train" }
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1
+  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines
