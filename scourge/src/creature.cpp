@@ -46,7 +46,7 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3}}   // CROSS_FORMATION
 };
 
-Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
+Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index, bool loaded) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = character;
   this->monster = NULL;
@@ -61,12 +61,13 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
+  this->loaded = loaded;
   this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->scale);
 //  if( !strcmp( name, "Alamont" ) ) ((MD2Shape*)shape)->setDebug( true );
   commonInit();  
 }
 
-Creature::Creature(Session *session, Monster *monster, GLShape *shape) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
+Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool loaded) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = NULL;
   this->monster = monster;
@@ -79,6 +80,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->armor = monster->getBaseArmor();
   this->bonusArmor=0;
   this->shape = shape;
+  this->loaded = loaded;
   commonInit();
   monsterInit();
 }
@@ -226,6 +228,7 @@ CreatureInfo *Creature::save() {
 
 Creature *Creature::load(Session *session, CreatureInfo *info) {
   Creature *creature = NULL;
+
   if(!strlen((char*)info->character_name)) {
     
     Monster *monster = Monster::getMonsterByName( (char*)info->monster_name );
@@ -238,12 +241,13 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
                         monster->getSkinName(), 
                         monster->getScale(),
                         monster );
-    creature = session->newCreature( monster, shape );
+    creature = session->newCreature( monster, shape, true );
   } else {
-    creature = new Creature(session, 
-                            Character::getCharacterByName((char*)info->character_name), 
-                            strdup((char*)info->name),
-                            info->character_model_info_index);
+    creature = new Creature( session, 
+                             Character::getCharacterByName((char*)info->character_name), 
+                             strdup((char*)info->name),
+                             info->character_model_info_index,
+                             true );
   }
 //  cerr << "*** LOAD: creature=" << info->name << endl;
   creature->setDeityIndex( info->deityIndex );
@@ -1337,6 +1341,12 @@ int Creature::addMoney(Creature *creature_killed) {
 
 void Creature::monsterInit() {
 
+  // edited maps saved all this stuff already
+  if( loaded ) {
+    //cerr << "Skipping monsterInit(): creature was loaded" << endl;
+    return;
+  }
+
   this->level = monster->getLevel();
 
   // set some skills
@@ -1344,13 +1354,37 @@ void Creature::monsterInit() {
     int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
     setSkill(i, ( n > 0 ? n : (int)((float)(8 * level) * rand()/RAND_MAX)) );
   }
+
   // equip starting inventory
   int itemLevel = (int)( (float)getMonster()->getLevel() * 0.75f );
   if( itemLevel < 1 ) itemLevel = 1;
+  //cerr << "Adding starting items:" << getMonster()->getStartingItemCount() << endl;
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {
-    addInventory(session->newItem( getMonster()->getStartingItem(i), itemLevel ), true);
+    Item *item = session->newItem( getMonster()->getStartingItem(i), itemLevel );
+    //cerr << "\t" << item->getRpgItem()->getName() << endl;
+    addInventory( item, true );
     equipInventory(inventory_count - 1);
   }
+
+  // add some loot
+  int nn = (int)( 5.0f * rand()/RAND_MAX ) + 3;
+  //cerr << "Adding loot:" << nn << endl;
+  for( int i = 0; i < nn; i++ ) {
+    Item *loot;
+    if( 0 == (int)( 10.0f * rand()/RAND_MAX ) ) {
+      Spell *spell = MagicSchool::getRandomSpell( getLevel() );
+      loot = session->newItem( RpgItem::getItemByName("Scroll"), 
+                               getLevel(), 
+                               spell );
+    } else {
+      loot = session->newItem( RpgItem::getRandomItem( session->getGameAdapter()->getCurrentDepth() ), 
+                               getLevel() );
+    }
+    //cerr << "\t" << loot->getRpgItem()->getName() << endl;
+    // make it contain all items, no matter what size
+    addInventory( loot, true );
+  }
+
   // add spells
   for(int i = 0; i < getMonster()->getStartingSpellCount(); i++) {
     addSpell(getMonster()->getStartingSpell(i));

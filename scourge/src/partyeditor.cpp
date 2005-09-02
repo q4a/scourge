@@ -369,7 +369,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     if( !s || !strlen( s ) ) s = names[i];
     int index = info[i].charType->getSelectedLine();  
     Character *c = Character::character_list[ index ];
-    pc[i] = new Creature( scourge->getSession(), c, strdup( s ), info[i].modelIndex );
+    pc[i] = new Creature( scourge->getSession(), c, strdup( s ), info[i].modelIndex, false );
     pc[i]->setDeityIndex( info[i].deityType->getSelectedLine() );
     pc[i]->setLevel( LEVEL ); 
     pc[i]->setExp(0);

@@ -135,7 +135,7 @@ public:
     @param monster the monster template to use for the new creature.
     @return the creature created.
   */
-  virtual Creature *newCreature(Monster *monster, GLShape *shape);
+  virtual Creature *newCreature( Monster *monster, GLShape *shape, bool loaded=false );
   inline int getCreatureCount() { return creatureCount; }
   inline Creature *getCreature(int index) { return creatures[index]; }
   inline int getItemCount() { return itemCount; }
