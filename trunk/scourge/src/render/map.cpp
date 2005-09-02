@@ -2829,6 +2829,8 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   // reset the map
   reset();
 
+  edited = true;
+
   // load the theme
   shapes->loadTheme( (const char*)info->theme_name );
 
@@ -2885,8 +2887,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   // load map-related data from text file
   //Mission::loadMapData( (const char*)name );
   adapter->loadMapData( (const char*)name );
-
-  edited = true;
+  
   strcpy( this->name, name );
 
   // place the party at the start
