@@ -41,7 +41,7 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   bool useCreature;
   Label *label;
   ScrollingLabel *answer;
-  Button *closeButton;
+  Button *closeButton, *tradeButton, *trainButton;
   ScrollingList *list;
   char **words;
   int wordCount;
@@ -59,11 +59,18 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   void start(Creature *creature);
   void start(Creature *creature, char *message, bool useCreature);
   inline Window *getWindow() { return win; }
+  void hide();
 
   void wordClicked( char *word );
   void showingWord( char *word );
 
   void drawWidgetContents(Widget *w);
+  
+protected:
+    
+  void openTradeDialog( Creature *creature );
+  void openTrainDialog( Creature *creature );
+    
 };
 
 #endif

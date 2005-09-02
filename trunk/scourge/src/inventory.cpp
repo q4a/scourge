@@ -27,6 +27,7 @@
 #include "scourge.h"
 #include "item.h"
 #include "creature.h"
+#include "tradedialog.h"
 
 /**
   *@author Gabor Torok
@@ -814,6 +815,11 @@ void Inventory::receive(Widget *widget) {
 }
 
 bool Inventory::startDrag(Widget *widget, int x, int y) {
+  if( scourge->getTradeDialog()->getWindow()->isVisible() ) {
+    scourge->showMessageDialog( "Can't change inventory while trading." );
+    return false;
+  }
+  
   if(widget == invList) {
     int itemIndex = invList->getSelectedLine();  
 //    cerr << "equipped? " << scourge->getParty()->getParty(selected)->isEquipped( itemIndex ) << endl;

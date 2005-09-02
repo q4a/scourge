@@ -43,7 +43,8 @@ class ScrollingList : public Widget {
   int scrollerY;
   bool dragging;
   int dragX, dragY;
-  int selectedLine;
+  int *selectedLine;
+  int selectedLineCount;
   DragAndDropHandler *dragAndDropHandler;
   bool innerDrag;
   int innerDragX, innerDragY;
@@ -52,6 +53,7 @@ class ScrollingList : public Widget {
   bool canGetFocusVar;
   int lineHeight;
   int eventType;
+  bool allowMultipleSelection;
 
  public: 
 
@@ -65,12 +67,26 @@ class ScrollingList : public Widget {
   ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL, int lineHeight=15);
   virtual ~ScrollingList();
 
+  inline void setAllowMultipleSelection( bool b ) { allowMultipleSelection = b; }
+  inline bool getAllowMultipleSelection() { return allowMultipleSelection; }
   inline int getLineCount() { return count; }
   void setLines(int count, const char *s[], const Color *colors=NULL, const GLuint *icon=NULL);
   inline const char *getLine(int index) { return list[index]; }
 
-  inline int getSelectedLine() { return selectedLine; }
-  void setSelectedLine(int n);
+  inline int getSelectedLine() { return ( selectedLine ? selectedLine[ 0 ] : -1 ); }
+  void setSelectedLine( int n );
+  inline bool isSelected( int line ) { 
+    if( !selectedLine ) {
+      return false; 
+    } else {
+      for( int i = 0; i < selectedLineCount; i++ ) {
+        if( selectedLine[i] == line ) return true; 
+      }
+    }
+    return false; 
+  }
+  inline int getSelectedLineCount() { return selectedLineCount; }
+  inline int getSelectedLine( int index ) { return selectedLine[ index ]; }
 
   void drawWidget(Widget *parent);
 
@@ -92,7 +108,7 @@ class ScrollingList : public Widget {
   inline void setCanGetFocus(bool b) { this->canGetFocusVar = b; }
 
  private:
-  void selectLine(int x, int y);
+  void selectLine(int x, int y, bool addToSelection = false );
   void drawIcon( int x, int y, GLuint icon );
 };
 

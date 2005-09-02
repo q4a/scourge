@@ -34,7 +34,8 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   scrollerY = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
-  selectedLine = -1;
+  selectedLine = NULL;
+  selectedLineCount = 0;
   scrollerHeight = h;
   this->dragAndDropHandler = dragAndDropHandler;
   this->lineHeight = lineHeight;
@@ -46,9 +47,11 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   highlightBorders = false;
   debug = false;
   canGetFocusVar = Widget::canGetFocus();
+  allowMultipleSelection = false;
 }
 
 ScrollingList::~ScrollingList() {
+  if( selectedLine ) free( selectedLine );
 }
 
 void ScrollingList::setLines(int count, const char *s[], const Color *colors, const GLuint *icons) { 
@@ -64,7 +67,16 @@ void ScrollingList::setLines(int count, const char *s[], const Color *colors, co
   if(scrollerHeight < 20) scrollerHeight = 20;
   // reset the scroller
   value = scrollerY = 0;
-  selectedLine = (list && count ? 0 : -1);
+//  selectedLine = (list && count ? 0 : -1);
+  selectedLineCount = 0;
+  if( selectedLine ) {
+    free( selectedLine );
+    selectedLine = NULL;
+  }
+  if( count > 0 ) {
+    selectedLine = (int*)malloc( count * sizeof( int ) );
+    selectedLine[ 0 ] = 0;
+  }
 }
 
 void ScrollingList::drawWidget(Widget *parent) {
@@ -88,7 +100,8 @@ void ScrollingList::drawWidget(Widget *parent) {
     glEnable( GL_SCISSOR_TEST );
 
     // highlight the selected line
-    if(selectedLine > -1) {
+    //if(selectedLine > -1) {
+    if( selectedLine ) {
       if( theme->getSelectionBackground() ) {
         glColor4f( theme->getSelectionBackground()->color.r,
                    theme->getSelectionBackground()->color.g,
@@ -97,12 +110,14 @@ void ScrollingList::drawWidget(Widget *parent) {
       } else {
         applySelectionColor();
       }
-      glBegin( GL_QUADS );
-      glVertex2d(scrollerWidth, textPos + (selectedLine * lineHeight) + 3);
-      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * lineHeight + 5));
-      glVertex2d(w, textPos + ((selectedLine + 1) * lineHeight + 5));
-      glVertex2d(w, textPos + (selectedLine * lineHeight) + 3);
-      glEnd();
+      for( int i = 0; i < selectedLineCount; i++ ) {
+        glBegin( GL_QUADS );
+        glVertex2d(scrollerWidth, textPos + (selectedLine[i] * lineHeight) + 5);
+        glVertex2d(scrollerWidth, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
+        glVertex2d(w, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
+        glVertex2d(w, textPos + (selectedLine[i] * lineHeight) + 5);
+        glEnd();
+      }
     }
 
     // draw the contents
@@ -124,7 +139,7 @@ void ScrollingList::drawWidget(Widget *parent) {
       if( ypos >= 0 && ypos < getHeight() + lineHeight ) {
         if(icons) drawIcon( scrollerWidth + 5, ypos - (lineHeight - 5), icons[i] );
         if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
-        else if( i == selectedLine && theme->getSelectionText() ) {
+        else if( isSelected( i ) && theme->getSelectionText() ) {
           glColor4f( theme->getSelectionText()->r,
                      theme->getSelectionText()->g,
                      theme->getSelectionText()->b,
@@ -143,7 +158,8 @@ void ScrollingList::drawWidget(Widget *parent) {
       }
     }
 
-    if(selectedLine > -1) {
+    //if(selectedLine > -1) {
+    if( selectedLine ) {
       if( theme->getButtonBorder() ) {
         glColor4f( theme->getButtonBorder()->color.r,
                    theme->getButtonBorder()->color.g,
@@ -152,12 +168,14 @@ void ScrollingList::drawWidget(Widget *parent) {
       } else {
         applyBorderColor();
       }
-      glBegin(GL_LINES);
-      glVertex2d(scrollerWidth, textPos + (selectedLine * lineHeight) + 3);
-      glVertex2d(w, textPos + (selectedLine * lineHeight) + 3);
-      glVertex2d(scrollerWidth, textPos + ((selectedLine + 1) * lineHeight + 5));
-      glVertex2d(w, textPos + ((selectedLine + 1) * lineHeight + 5));
-      glEnd();
+      for( int i = 0; i < selectedLineCount; i++ ) {
+        glBegin(GL_LINES);
+        glVertex2d(scrollerWidth, textPos + (selectedLine[i] * lineHeight) + 5);
+        glVertex2d(w, textPos + (selectedLine[i] * lineHeight) + 5);
+        glVertex2d(scrollerWidth, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
+        glVertex2d(w, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
+        glEnd();
+      }
     }
 
     glDisable( GL_SCISSOR_TEST );
@@ -226,12 +244,28 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
   glDisable(GL_TEXTURE_2D);
 }
 
-void ScrollingList::selectLine(int x, int y) {
+void ScrollingList::selectLine(int x, int y, bool addToSelection) {
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
-  int oldLine = selectedLine;
-  selectedLine = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
-  if(!list || count == 0 || selectedLine < 0 || selectedLine >= count) {
-    selectedLine = oldLine;
+  int n = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
+  if( list && count && n >= 0 && n < count ) {
+    if( addToSelection && allowMultipleSelection ) {
+      // if already selected, de-select.
+      for( int i = 0; i < selectedLineCount; i++ ) {
+        if( selectedLine[ i ] == n ) {
+          for( int t = i; t < selectedLineCount - 1; t++ ) {
+            selectedLine[ t ] = selectedLine[ t + 1 ];
+          }
+          selectedLineCount--;
+          return;
+        }
+      }
+      // add to selection
+      selectedLine[ selectedLineCount++ ] = n;
+    } else {
+      // set as selection
+      selectedLineCount = 0;
+      selectedLine[ selectedLineCount++ ] = n;
+    }
   }
 }
 
@@ -251,14 +285,20 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
   case SDL_KEYUP:
   if(hasFocus()) {
     if(event->key.keysym.sym == SDLK_UP) {
+      /*
+       FIXME!
       if(selectedLine) {
         setSelectedLine(selectedLine - 1);
       }
+       */
       return true;
     } else if(event->key.keysym.sym == SDLK_DOWN) {
+      /*
+       FIXME
       if(selectedLine < count - 1) {
         setSelectedLine(selectedLine + 1);
       }
+       */
       return true;
     }
   }
@@ -275,7 +315,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if(!dragging && isInside(x, y)) {
-			selectLine(x, y);
+			selectLine( x, y, ( SDL_GetModState() & KMOD_SHIFT ) );
 			if(dragAndDropHandler) dragAndDropHandler->receive(this);
 		}
     eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
@@ -292,8 +332,8 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
       //((Window*)parent)->getScourgeGui()->lockMouse( this );
 		} else if(isInside(x, y)) {
 			dragging = false;
-			selectLine(x, y);
-			innerDrag = (selectedLine != -1);
+			//if( event->button.button == SDL_BUTTON_RIGHT ) selectLine( x, y, ( SDL_GetModState() & KMOD_SHIFT ) );
+			innerDrag = ( selectedLine );
 			innerDragX = x;
 			innerDragY = y;
 		}
@@ -314,12 +354,14 @@ void ScrollingList::removeEffects(Widget *parent) {
   inside = false;
 }
 
-void ScrollingList::setSelectedLine(int line) { 
-  selectedLine = (line < count ? line : count - 1);
+void ScrollingList::setSelectedLine(int line) {
+  if( !selectedLine ) return;
+  selectedLine[ 0 ] = (line < count ? line : count - 1);
+  selectedLineCount = 1;
 
   // fixme: should check if line is already visible
   if(listHeight > getHeight()) {
-    value = (int)(((float)(selectedLine + 1) / (float)count) * 100.0f);
+    value = (int)(((float)(selectedLine[0] + 1) / (float)count) * 100.0f);
     if(value < 0)	value = 0;
     if(value > 100)	value = 100;
     scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);

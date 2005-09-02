@@ -37,6 +37,7 @@ class Label : public Widget {
      int fontType;
      int lineHeight;
      vector<string> lines;
+     bool specialColor;
 
  public: 
      Label(int x, int y, char *text=NULL, int lineWidth=0, int fontType=0, int lineHeight=15);

@@ -26,6 +26,7 @@
 #include "sound.h"
 #include "mapwidget.h"
 #include "session.h"
+#include "tradedialog.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -53,6 +54,7 @@ void Scourge::setBlendFunc() {
 }
 
 Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
+  oldStory = currentStory = 0;
   lastTick = 0;
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
@@ -206,6 +208,7 @@ Scourge::~Scourge(){
   delete netPlay;
   delete infoGui;
   delete conversationGui;
+  delete tradeDialog;
 }
 
 void Scourge::startMission() {
@@ -433,7 +436,8 @@ void Scourge::startMission() {
     miniMap->hide();
     netPlay->getWindow()->setVisible(false);
     infoGui->getWindow()->setVisible(false);
-    conversationGui->getWindow()->setVisible( false );
+    conversationGui->hide();
+    tradeDialog->getWindow()->setVisible( false );
 
     resetBattles();
     
@@ -1857,6 +1861,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     conversationGui->handleEvent( widget, event );
   }
 
+  if( tradeDialog->getWindow()->isVisible() ) {
+    tradeDialog->handleEvent( widget, event );
+  }
+
   // FIXME: this is hacky...
   if(handlePartyEvent(widget, event)) return true;
   int n = handleBoardEvent(widget, event);
@@ -1893,6 +1901,7 @@ void Scourge::createUI() {
   infoGui = new InfoGui( this );
 
   conversationGui = new ConversationGui( this );
+  tradeDialog = new TradeDialog( this );
 
   int width = 
     getSDLHandler()->getScreen()->w - 
@@ -2940,6 +2949,7 @@ void Scourge::setPlayer(int n) {
 }
 
 void Scourge::setPlayerUI(int index) {
+  if( tradeDialog->getWindow()->isVisible() ) tradeDialog->updateUI();
 }
 
 void Scourge::toggleRoundUI(bool startRound) {
@@ -3266,6 +3276,7 @@ void Scourge::teleport( bool toHQ ) {
   if( inHq || !session->getCurrentMission() ) {
     this->showMessageDialog( "This spell has no effect here..." );
   } else if( toHQ ) {
+    oldStory = currentStory = 0;
     teleporting = true;
     exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
     party->toggleRound(true);
