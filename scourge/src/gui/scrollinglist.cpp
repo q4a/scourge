@@ -244,20 +244,24 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
   glDisable(GL_TEXTURE_2D);
 }
 
-void ScrollingList::selectLine(int x, int y, bool addToSelection) {
+void ScrollingList::selectLine( int x, int y, bool addToSelection, bool mouseDown ) {
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   int n = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
   if( list && count && n >= 0 && n < count ) {
     if( addToSelection && allowMultipleSelection ) {
-      // if already selected, de-select.
+      // is it already selected?
       for( int i = 0; i < selectedLineCount; i++ ) {
         if( selectedLine[ i ] == n ) {
-          for( int t = i; t < selectedLineCount - 1; t++ ) {
-            selectedLine[ t ] = selectedLine[ t + 1 ];
-          }
-          selectedLineCount--;
+          
+//          if( mouseDown ) {
+            for( int t = i; t < selectedLineCount - 1; t++ ) {
+              selectedLine[ t ] = selectedLine[ t + 1 ];
+            }
+            selectedLineCount--;
+//          }
+
           return;
-        }
+        }        
       }
       // add to selection
       selectedLine[ selectedLineCount++ ] = n;
@@ -315,9 +319,12 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if(!dragging && isInside(x, y)) {
+      /*
 			selectLine( x, y, 
                   ( ( SDL_GetModState() & KMOD_SHIFT ) ||
-                    ( SDL_GetModState() & KMOD_CTRL ) ) );
+                    ( SDL_GetModState() & KMOD_CTRL ) ),
+                  false );
+      */                  
       if(dragAndDropHandler) dragAndDropHandler->receive(this);
 		}
     eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
@@ -334,7 +341,10 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
       //((Window*)parent)->getScourgeGui()->lockMouse( this );
 		} else if(isInside(x, y)) {
 			dragging = false;
-			//if( event->button.button == SDL_BUTTON_RIGHT ) selectLine( x, y, ( SDL_GetModState() & KMOD_SHIFT ) );
+			selectLine( x, y, 
+                  ( ( SDL_GetModState() & KMOD_SHIFT ) ||
+                    ( SDL_GetModState() & KMOD_CTRL ) ), 
+                  true );
 			innerDrag = ( selectedLine );
 			innerDragX = x;
 			innerDragY = y;

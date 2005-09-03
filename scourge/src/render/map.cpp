@@ -580,7 +580,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                   ( !lightMap[chunkX][chunkY] && shape && !pos[posX][posY][zp]->creature &&
                     ( ( drawSide & Constants::MOVE_DOWN && yp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
                       ( drawSide & Constants::MOVE_UP && yp <= MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
-                      ( drawSide & Constants::MOVE_LEFT && xp <= MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) ||
+                      ( drawSide & Constants::MOVE_LEFT && xp < MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) ||
                       ( drawSide & Constants::MOVE_RIGHT && xp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) )
                     );
 

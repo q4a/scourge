@@ -809,6 +809,17 @@ void Inventory::receive(Widget *widget) {
   if(widget == paperDoll) {
     if(putItem() != -1) equipItem();
   } else {
+
+    /*
+    for(int i = 0; i < scourge->getParty()->getPartySize(); i++) {
+      if(scourge->getParty()->getPlayer() == scourge->getParty()->getParty(i)) {
+        n = i;
+        //break;
+      }
+    }
+    setSelectedPlayerAndMode(n, selectedMode);
+    */
+
     // don't check for widget, it may be party member portrait.
     putItem();
   }

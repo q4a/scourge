@@ -108,7 +108,7 @@ class ScrollingList : public Widget {
   inline void setCanGetFocus(bool b) { this->canGetFocusVar = b; }
 
  private:
-  void selectLine(int x, int y, bool addToSelection = false );
+  void selectLine(int x, int y, bool addToSelection = false, bool mouseDown=false );
   void drawIcon( int x, int y, GLuint icon );
 };
 
