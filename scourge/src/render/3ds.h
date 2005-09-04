@@ -17,7 +17,7 @@ using namespace std;
 
 //>------ Main Chunks
 #define OBJECTINFO    0x3D3D                // This gives the version of the mesh and is found right before the material and object information
-#define VERSION       0x0002                // This gives the version of the .3ds file
+#define SCOURGE_3DS_VERSION       0x0002                // This gives the version of the .3ds file
 #define EDITKEYFRAME  0xB000                // This is the header for all of the key frame info
 
 //>------ sub defines of OBJECTINFO

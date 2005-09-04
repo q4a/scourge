@@ -92,6 +92,7 @@ public:
    * Load extra data from text file alongside an edited map.
    */
   static void loadMapData( const char *name, int depth=0 );
+  static void saveMapData( const char *name );
 
   Mission( Board *board, int level, int depth, 
 		   char *name, char *description, 

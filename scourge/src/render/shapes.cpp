@@ -124,13 +124,12 @@ void WallTheme::debug() {
 Shapes::Shapes( bool headless ){
   texture_count = 0;
   textureGroupCount = 0;
-  themeCount = 0;
+  themeCount = allThemeCount = 0;
   currentTheme = NULL;
   this->headless = headless;
 }
 
 void Shapes::initialize() {
-  cerr << "Shapes: 1" << endl;
   // load textures
   ripple_texture = loadGLTextures("/ripple.bmp");
   torchback = loadGLTextures("/torchback.bmp");
@@ -147,10 +146,6 @@ void Shapes::initialize() {
     exit(1);
   }
 
-  strcpy( aboutText, "" );
-
-  cerr << "Shapes: 2" << endl;
-
   //int sum = 0;
   char line[255];  
   int n = fgetc(fp);
@@ -161,8 +156,6 @@ void Shapes::initialize() {
     }
   }
   fclose(fp);
-
-  cerr << "Shapes: 3" << endl;
 
   // resolve texture groups
   for(int i = 0; i < textureGroupCount; i++) {
@@ -250,8 +243,6 @@ void Shapes::initialize() {
   // remember the number of shapes
   shapeCount = (int)shapeValueVector.size() + 1;
 
-  cerr << "Shapes: 4" << endl;
-
   // clean up temp. shape objects 
   // FIXME: do we need to free the vector's elements?
   if(shapeValueVector.size()) shapeValueVector.erase(shapeValueVector.begin(), 
@@ -274,8 +265,6 @@ void Shapes::initialize() {
   shapeMap[nameStr] = shapes[shapeCount];
   shapeCount++;
 
-  cerr << "Shapes: 5" << endl;
-  
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
@@ -284,8 +273,6 @@ void Shapes::initialize() {
   attack_texture = loadGLTextureBGRA(attackCursor, attackImage, GL_LINEAR);
   setupAlphaBlendedBMP("/talk.bmp", &talkCursor, &talkImage);
   talk_texture = loadGLTextureBGRA(talkCursor, talkImage, GL_LINEAR);
-
-  cerr << "Shapes: 6" << endl;
 }
 
 Shapes::~Shapes(){
@@ -296,13 +283,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   char path[300];
   char line[255];  
 
-  if( n == 'A' ) {
-    fgetc(fp);
-    n = Constants::readLine(line, fp);
-    if( strlen( aboutText ) ) strcat( aboutText, " " );
-    strcat( aboutText, line );
-    return n;
-  } else if(n == 'T') {
+  if(n == 'T') {
     // skip ':'
     fgetc(fp);
     n = Constants::readLine(line, fp);
@@ -440,6 +421,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   } else if( n == 'H' ) {
     fgetc(fp);
     n = Constants::readLine(line, fp);
+    //cerr << "theme: " << line << " allThemeCount=" << allThemeCount << endl;
     bool special = false;
     char *m = strrchr( line, ',' );
     if( m ) {

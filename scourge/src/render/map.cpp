@@ -2800,6 +2800,8 @@ void Map::saveMap( char *name, char *result ) {
 
   Persist::deleteMapInfo( info );
 
+  adapter->saveMapData( (const char*)name );
+
   sprintf( result, "Map saved: %s", name );
 }
 
@@ -2890,17 +2892,72 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   
   strcpy( this->name, name );
 
-  // place the party at the start
+  /* 
+    FIXME: Place the party at the start. This code attempts to find a place
+    for the party near the gate (which was set in Scourge::useGate.) Need to 
+    find a better AI solution as this code can place the party outside the walls.
+    For now always leave "whitespace" around gates in edited levels.
+  */
   if( adapter->hasParty() ) {
-  //if( session->getParty() ) {
     int xx = startx;
     int yy = starty;
+    int ox = xx;
+    int oy = yy;
+    int dir = Constants::MOVE_UP;
+    int r = 6;
     for( int t = 0; t < adapter->getPartySize(); t++ ) {
+      if( !adapter->getParty(t)->getStateMod( Constants::dead ) ) {
+        xx = ox;
+        yy = oy;
+        r = 6;
+        while( true ) {
+          // can player fit here?
+          if( !isBlocked( xx, yy, 0, 0, 0, 0, adapter->getParty(t)->getShape(), NULL ) ) {
+            //cerr << "Placed party member: " << t << " at: " << xx << "," << yy << endl;
+            adapter->getParty(t)->moveTo( xx, yy, 0 );
+            adapter->getParty(t)->setSelXY( xx, yy );
+            setCreature( xx, yy, 0, adapter->getParty(t) );
+            break;
+          }
+
+          // try radially around the player
+          switch( dir ) {
+          case Constants::MOVE_UP:
+            yy--; 
+          if( yy <= MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_RIGHT;
+          break;
+          case Constants::MOVE_RIGHT:
+            xx++; 
+          if( xx >= MAP_WIDTH - MAP_OFFSET || abs( ox - xx ) > r ) dir = Constants::MOVE_DOWN;
+          break;
+          case Constants::MOVE_DOWN:
+            yy++; 
+          if( yy >= MAP_DEPTH - MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_LEFT;
+          break;
+          case Constants::MOVE_LEFT:
+            xx--; 
+          if( xx <= MAP_OFFSET || abs( ox - xx ) > r ) {
+            dir = Constants::MOVE_UP;
+            r += adapter->getParty(t)->getShape()->getWidth();
+          }
+          break;
+          }
+
+          /*
+          cerr << "...trying to place party member: " << t << 
+            " at: " << xx << "," << yy << 
+            " dir: " << dir << " r: " << r << endl;
+          */            
+        }
+      }
+      
+      /*
       adapter->getParty(t)->moveTo( xx, yy, 0 );
       adapter->getParty(t)->setSelXY( -1, -1 );
       if( !adapter->getParty(t)->getStateMod( Constants::dead ) )
         setCreature( xx, yy, 0, adapter->getParty(t) );
       xx += adapter->getParty(t)->getShape()->getWidth();
+      */
     }
   }
 

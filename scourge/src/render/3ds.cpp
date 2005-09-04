@@ -134,7 +134,7 @@ void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
         // Check the chunk ID
         switch (m_CurrentChunk->ID)
         {
-        case VERSION:                           // This holds the version of the file
+        case SCOURGE_3DS_VERSION:                           // This holds the version of the file
             // This chunk has an unsigned short that holds the file version.
             // Since there might be new additions to the 3DS file format in 4.0,
             // we give a warning to that problem.

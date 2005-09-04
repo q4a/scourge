@@ -695,3 +695,34 @@ void Mission::loadMapData( const char *filename, int depth ) {
   fclose(fp);
 }
 
+void Mission::saveMapData( const char *name ) {
+  /*
+    // Save map object infos in txt file (npc data, etc.)
+  // First, read the txt file to see what's already saved
+  sprintf( fileName, "%s/maps/%s.txt", rootDir, name );
+  cerr << "Updating txt file: " << fileName << endl;
+  FILE *fp = fopen( fileName, "rt" );
+  if(!fp) {        
+    sprintf( result, "Unable to find the file: %s!", s);
+    return;
+  }
+  char line[255];
+  int n = fgetc(fp);
+  while( n != EOF ) {
+    if(n == 'N') {
+      // skip ':'
+      fgetc(fp);
+      // read the rest of the line
+      n = Constants::readLine(name, fp);
+
+      // read npc info and sort into groups: unknown, known
+
+    } else {
+      n = Constants::readLine(line, fp);
+    }
+  }
+  fclose(fp);
+
+  // append to txt file the new npc info
+  */
+}
