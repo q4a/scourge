@@ -48,6 +48,7 @@ public:
   virtual RenderedItem *load( ItemInfo *info ) = 0;
   virtual RenderedCreature *load( CreatureInfo *info ) = 0;
   virtual void loadMapData( const char *name ) = 0;
+  virtual void saveMapData( const char *name ) = 0;
 
   /**
    * Set up the opengl view.

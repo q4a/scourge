@@ -192,8 +192,6 @@ protected:
   vector<GLShape*> themeShapes;
   vector<string> themeShapeRef;
 
-  char aboutText[3000];
-  
   // cursor
   SDL_Surface *cursor, *crosshair, *attackCursor, *talkCursor, *paperDoll;
   GLubyte *cursorImage, *crosshairImage, *attackImage, *talkImage, *paperDollImage;
@@ -212,8 +210,6 @@ public:
   inline bool isThemeSpecial( int index ) { return allThemes[ index ]->isSpecial(); }
 
   inline const char *getCurrentThemeName() { return (const char*)currentTheme->getName(); }
-
-  inline char *getAboutText() { return aboutText; }
 
   virtual void initialize();
   GLuint loadSystemTexture( char *line );

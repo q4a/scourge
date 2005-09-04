@@ -108,7 +108,7 @@ using namespace std;
 #define DEBUG_BATTLE 0
 
 
-#define SCOURGE_VERSION "0.10"
+#define SCOURGE_VERSION "0.11"
 #define MAX_PARTY_SIZE 4
 
 // Max level depth per mission

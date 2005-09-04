@@ -108,6 +108,7 @@ public:
   virtual bool hasParty();
   virtual int getPartySize();
   virtual void loadMapData( const char *name );
+  virtual void saveMapData( const char *name );
 
   /**
    * Set up the opengl view.

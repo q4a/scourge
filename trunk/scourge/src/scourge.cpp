@@ -1639,11 +1639,15 @@ bool Scourge::useGate(Location *pos) {
         oldStory = currentStory;
         currentStory--;
         changingStory = true;
+        // move the creature to the gate so it will be near it on the next level
+        party->getParty(i)->moveTo( pos->x, pos->y, pos->z );
         return true;
       } else if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_DOWN")) {
         oldStory = currentStory;
         currentStory++;
         changingStory = true;
+        // move the creature to the gate so it will be near it on the next level
+        party->getParty(i)->moveTo( pos->x, pos->y, pos->z );
         return true;
       }
     }

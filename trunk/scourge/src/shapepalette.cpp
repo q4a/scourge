@@ -21,10 +21,6 @@
 #include "render/renderlib.h"
 
 ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
-  texture_count = 0;
-  textureGroupCount = 0;
-  themeCount = 0;
-  currentTheme = NULL;
   this->session = session;
   skillCount = 0;
 }
@@ -32,8 +28,6 @@ ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter
 void ShapePalette::initialize() {
   // call "super"
   Shapes::initialize();
-
-  cerr << "ShapePalette: 1" << endl;
 
   // load textures
   gui_texture = loadGLTextures("/gui.bmp");
@@ -52,12 +46,8 @@ void ShapePalette::initialize() {
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
-  cerr << "ShapePalette: 2" << endl;
-
   // load map textures
   initMapGrid();
-
-  cerr << "ShapePalette: 3" << endl;
 
   // FIXME: do something with these...
   formationTexIndex = texture_count;
@@ -67,8 +57,6 @@ void ShapePalette::initialize() {
   strcpy(textures[texture_count++].filename, "formation4.bmp");
   strcpy(textures[texture_count++].filename, "formation5.bmp");
   strcpy(textures[texture_count++].filename, "formation6.bmp");
-
-  cerr << "ShapePalette: 4" << endl;
 
   // load the status modifier icons
   char path[ 255 ];
@@ -109,8 +97,6 @@ void ShapePalette::initialize() {
   setupAlphaBlendedBMP("/scourge.bmp", &scourge, &scourgeImage);
 
   gui_wood_texture = this->findTextureByName("gui-wood.bmp");
-
-  cerr << "ShapePalette: 5" << endl;
 }
 
 ShapePalette::~ShapePalette() {

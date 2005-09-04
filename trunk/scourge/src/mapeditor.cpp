@@ -117,7 +117,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
     if( scourge->getShapePalette()->isThemeSpecial( i ) )
       strcat( themeNames[i], "(S)" );
   }
-  themeList->setLines( scourge->getShapePalette()->getThemeCount(), 
+  themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), 
                        (const char**)themeNames );
 
   newMapWin->createLabel( 5, 130, "Select map location: (click on map, drag to move)" );
@@ -505,9 +505,13 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
       Item *item;
       Creature *creature;
       if( getShape( &shape, &item, &creature ) ) {
-        if( item ) scourge->getMap()->setItem( xx, yy + 1, editorZ, item );
-        else if( creature ) scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
-        else if( shape ) scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
+        if( item ) {
+          scourge->getMap()->setItem( xx, yy + 1, editorZ, item );
+        } else if( creature ) {
+          scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
+        } else if( shape ) {
+          scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
+        }
         return;
       }
     } else if( button == SDL_BUTTON_RIGHT ) {
