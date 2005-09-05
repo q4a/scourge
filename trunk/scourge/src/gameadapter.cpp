@@ -47,11 +47,11 @@ int GameAdapter::getPartySize() {
 }
 
 void GameAdapter::loadMapData( const char *name ) {
-  Mission::loadMapData( name );
+  Mission::loadMapData( this, name );
 }
 
 void GameAdapter::saveMapData( const char *name ) {
-  Mission::saveMapData( name );
+  Mission::saveMapData( this, name );
 }
 
 RenderedItem *GameAdapter::load( ItemInfo *info ) {

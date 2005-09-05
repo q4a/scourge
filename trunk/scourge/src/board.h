@@ -32,6 +32,7 @@ class RenderedCreature;
 class Item;
 class Session;
 class Board;
+class GameAdapter;
 
 /**
   *@author Gabor Torok
@@ -52,6 +53,18 @@ class NpcConversation {
     vector<string> npc_intros;
     vector<string> npc_unknownPhrases;
     map<string, string> npc_conversations;    
+};
+
+/**
+ * Extra info associated with npc-s on an edited level.
+ */
+class NpcInfo {
+public:
+  int x, y, level, type;
+  char *name, *subtype;
+
+  NpcInfo( int x, int y, char *name, int level, char *type, char *subtype );
+  ~NpcInfo();
 };
 
 class Mission {
@@ -83,6 +96,7 @@ public:
   static vector<string> unknownPhrases;
   static map<string, string> conversations;
   static map<Monster*,NpcConversation*> npcConversations;
+  static map<string, NpcInfo*> npcInfos;
 
   static char *getIntro();
   static char *getAnswer( char *keyphrase );
@@ -91,8 +105,8 @@ public:
   /**
    * Load extra data from text file alongside an edited map.
    */
-  static void loadMapData( const char *name, int depth=0 );
-  static void saveMapData( const char *name );
+  static void loadMapData( GameAdapter *adapter, const char *name, int depth=0 );
+  static void saveMapData( GameAdapter *adapter, const char *name, int depth=0 );
 
   Mission( Board *board, int level, int depth, 
 		   char *name, char *description, 
@@ -157,10 +171,14 @@ public:
   Monster *getCreature( int index ) { return creatureList[ index ]; }
   bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
  private:
-  void checkMissionCompleted();
-  static int readConversationLine( FILE *fp, char *line,
-                                   char *keyphrase, char *answer,
-                                   int n );  
+   static FILE *openMapDataFile( const char *filename, const char *mode, int depth );
+   static NpcInfo *getNpcInfo( int x, int y );
+   static string getNpcInfoKey( int x, int y );
+
+   void checkMissionCompleted();
+   static int readConversationLine( FILE *fp, char *line,
+                                    char *keyphrase, char *answer,
+                                    int n );  
 };
 
 

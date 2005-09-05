@@ -200,6 +200,10 @@ const char *Constants::EFFECT_NAMES[] = {
   "EFFECT_HAIL", "EFFECT_TOWER"
 };
 
+const char *Constants::npcTypeName[] = {
+  "commoner", "merchant", "healer", "sage", "trainer"
+};
+
 /*
 float Constants::textColor[][4]={{0.8f, 0.2f, 0.0f, 0.0f},
                            {0.0f, 0.2f, 0.0f, 0.0f}

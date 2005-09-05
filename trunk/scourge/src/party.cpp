@@ -50,7 +50,8 @@ void Party::deleteParty() {
       delete party[i];
       party[i] = NULL;
     }
-  }  
+  }
+  partySize = 0;
   lastPlayer = NULL;
 }
 

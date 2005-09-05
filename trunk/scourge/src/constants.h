@@ -615,6 +615,20 @@ public:
     SOUND_TYPE_COUNT
   };
 
+  // npc types
+  enum {
+    NPC_TYPE_COMMONER=0,
+    NPC_TYPE_MERCHANT,
+    NPC_TYPE_HEALER,
+    NPC_TYPE_SAGE,
+    NPC_TYPE_TRAINER,
+
+    // must be the last one
+    NPC_TYPE_COUNT
+  };
+
+  static const char *npcTypeName[];
+
   // the speed when hand fighting is used instead of a weapon
   static const int HAND_WEAPON_SPEED = 10;
 

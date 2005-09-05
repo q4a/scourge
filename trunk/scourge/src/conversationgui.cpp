@@ -20,6 +20,7 @@
 #include "rpg/rpglib.h"
 #include "creature.h"
 #include "tradedialog.h"
+#include "board.h"
 
 #define TRADE_WORD "trade"
 #define TRAIN_WORD "train"
@@ -67,6 +68,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   x = width - 200;
   trainButton = win->createButton( x, sy - 10, x + 60, sy - 10 + 20, "Train" );
   tradeButton = win->createButton( x + 65, sy - 10, x + 125, sy - 10 + 20, "Trade" );
+  tradeButton->setVisible( false );
   closeButton = win->createButton( x + 130, sy - 10, x + 190, sy - 10 + 20, "Close" );
   
   win->setVisible( false );
@@ -123,6 +125,8 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
   win->setVisible( true );
   wordCount = 0;
   list->setLines( wordCount, (const char**)words );
+  tradeButton->setVisible( creature->getNpcInfo() &&
+                           creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT );
 }
 
 void ConversationGui::wordClicked( char *word ) {
