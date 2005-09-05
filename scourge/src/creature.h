@@ -284,7 +284,7 @@ class Creature : public RenderedCreature {
   // or NULL if none are available
   Item *getBestWeapon(float dist);  
 
-  inline void setNpcInfo( NpcInfo *npcInfo ) { this->npcInfo = npcInfo; }
+  void setNpcInfo( NpcInfo *npcInfo );
   inline NpcInfo *getNpcInfo() { return npcInfo; }
 
 
