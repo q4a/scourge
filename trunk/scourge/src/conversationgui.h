@@ -41,13 +41,18 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   bool useCreature;
   Label *label;
   ScrollingLabel *answer;
-  Button *closeButton, *tradeButton, *trainButton;
+  
   ScrollingList *list;
   char **words;
   int wordCount;
   static const int MAX_WORDS = 1000;
   TextField *entry;
   Canvas *canvas;
+
+  Button *closeButton, *tradeButton, *trainButton;
+  Button *identifyButton, *uncurseItemButton, *rechargeButton;
+  Button *healButton, *donateButton;
+  CardContainer *cards;
   
  public:
   ConversationGui(Scourge *scourge);

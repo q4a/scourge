@@ -1660,3 +1660,9 @@ void Creature::draw() {
   getShape()->draw(); 
 }  
 
+void Creature::setNpcInfo( NpcInfo *npcInfo ) { 
+  this->npcInfo = npcInfo; 
+  this->name = npcInfo->name;
+  sprintf( description, "You see %s", npcInfo->name );
+}
+

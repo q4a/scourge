@@ -29,7 +29,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
 
   int width = 500;
-  int height = 300;
+  int height = 320;
 
   int x = (scourge->getSDLHandler()->getScreen()->w - width) / 2;
   int y = (scourge->getSDLHandler()->getScreen()->h - height) / 2;
@@ -61,15 +61,38 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   wordCount = 0;
 
   sy = 260;
-  win->createLabel( 12, sy, "Talk about:" );
-  entry = new TextField( 90, sy - 10, 15 );
+  win->createLabel( 9, sy, "Talk about:" );
+  entry = new TextField( 80, sy - 10, 28 );
   win->addWidget( entry );
 
-  x = width - 200;
-  trainButton = win->createButton( x, sy - 10, x + 60, sy - 10 + 20, "Train" );
-  tradeButton = win->createButton( x + 65, sy - 10, x + 125, sy - 10 + 20, "Trade" );
-  tradeButton->setVisible( false );
-  closeButton = win->createButton( x + 130, sy - 10, x + 190, sy - 10 + 20, "Close" );
+  y = sy + 10;
+  x = width - 70;
+  closeButton = win->createButton( x, y, x + 60, y + 20, "Close" );
+
+  cards = new CardContainer( win );
+  x = 10;
+
+  // commoner
+  cards->createLabel( x, y + 13, "Commoner: No services", Constants::NPC_TYPE_COMMONER );
+
+  // sage
+  cards->createLabel( x, y + 13, "Sage:", Constants::NPC_TYPE_SAGE );  
+  identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, "Identify Item", Constants::NPC_TYPE_SAGE );
+  uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, "Remove Curse", Constants::NPC_TYPE_SAGE );
+  rechargeButton = cards->createButton( x + 280, y, x + 380, y + 20, "Recharge Item", Constants::NPC_TYPE_SAGE );
+
+  // healer
+  cards->createLabel( x, y + 13, "Healer:", Constants::NPC_TYPE_HEALER );  
+  healButton = cards->createButton( x + 70, y, x + 170, y + 20, "Healing", Constants::NPC_TYPE_HEALER );
+  donateButton = cards->createButton( x + 175, y, x + 275, y + 20, "Donate", Constants::NPC_TYPE_HEALER );
+
+  // trainer
+  cards->createLabel( x, y + 13, "Trainer:", Constants::NPC_TYPE_TRAINER );  
+  trainButton = cards->createButton( x + 70, y, x + 170, y + 20, "Train", Constants::NPC_TYPE_TRAINER );
+
+  // merchant
+  cards->createLabel( x, y + 13, "Merchant:", Constants::NPC_TYPE_MERCHANT );  
+  tradeButton = cards->createButton( x + 70, y, x + 170, y + 20, "Trade", Constants::NPC_TYPE_MERCHANT );
   
   win->setVisible( false );
 }
@@ -100,7 +123,18 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getTradeDialog()->setCreature( creature );
   } else if( widget == trainButton ) {
     scourge->showMessageDialog( "FIXME: train-dialog" );
+  } else if( widget == identifyButton ) {
+    scourge->showMessageDialog( "FIXME: identify item-dialog" );
+  } else if( widget == uncurseItemButton ) {
+    scourge->showMessageDialog( "FIXME: remove curse-dialog" );
+  } else if( widget == rechargeButton ) {
+    scourge->showMessageDialog( "FIXME: recharge wand-dialog" );
+  } else if( widget == healButton ) {
+    scourge->showMessageDialog( "FIXME: heal-dialog" );
+  } else if( widget == donateButton ) {
+    scourge->showMessageDialog( "FIXME: donate to church-dialog" );
   }
+
   return false;
 }
 
@@ -125,8 +159,9 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
   win->setVisible( true );
   wordCount = 0;
   list->setLines( wordCount, (const char**)words );
-  tradeButton->setVisible( creature->getNpcInfo() &&
-                           creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT );
+
+  // show the correct buttons
+  cards->setActiveCard( creature->getNpcInfo() ? creature->getNpcInfo()->type : Constants::NPC_TYPE_COMMONER );
 }
 
 void ConversationGui::wordClicked( char *word ) {
