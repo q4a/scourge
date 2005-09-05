@@ -47,6 +47,7 @@ class GLShape;
 class Item;
 class Event;
 class RenderedItem;
+class NpcInfo;
 
 /**
   *@author Gabor Torok
@@ -127,6 +128,8 @@ class Creature : public RenderedCreature {
 
   Spell *quickSpell[12];
   bool loaded;
+
+  NpcInfo *npcInfo;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -280,6 +283,10 @@ class Creature : public RenderedCreature {
   // return the best equipped weapon that works on this distance, 
   // or NULL if none are available
   Item *getBestWeapon(float dist);  
+
+  inline void setNpcInfo( NpcInfo *npcInfo ) { this->npcInfo = npcInfo; }
+  inline NpcInfo *getNpcInfo() { return npcInfo; }
+
 
   inline char *getName() { return name; }
   inline Character *getCharacter() { return character; }  

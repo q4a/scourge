@@ -19,6 +19,7 @@
 #include "render/renderlib.h"
 #include "rpg/rpglib.h"
 #include "session.h"
+#include "gameadapter.h"
 #include "item.h"
 #include "creature.h"
 
@@ -26,6 +27,7 @@ vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
 map<string, string> Mission::conversations;
 map<Monster*,NpcConversation*> Mission::npcConversations;
+map<string, NpcInfo*> Mission::npcInfos;
 
 //#define DEBUG_MODE 1
 	
@@ -610,9 +612,14 @@ char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
   }
 }
 
-void Mission::loadMapData( const char *filename, int depth ) {
+void Mission::loadMapData( GameAdapter *adapter, const char *filename, int depth ) {
 
   // clean up
+  for( map<string,NpcInfo*>::iterator i=npcInfos.begin(); i!=npcInfos.end(); ++i) {
+    NpcInfo *npcInfo = i->second;
+    delete npcInfo;
+  }
+  npcInfos.clear();
   intros.clear();
   unknownPhrases.clear();
   conversations.clear();
@@ -623,22 +630,12 @@ void Mission::loadMapData( const char *filename, int depth ) {
   npcConversations.clear();
 
 
-  char errMessage[500];
-  char s[200];
-  if( depth > 0 ) {
-    sprintf( s, "%s/maps/%s%d.txt", rootDir, filename, depth );
-  } else {
-    sprintf( s, "%s/maps/%s.txt", rootDir, filename );
-  }
-  FILE *fp = fopen( s, "r" );
-  if(!fp) {        
-    sprintf(errMessage, "Unable to find the file: %s!", s);
-    cerr << errMessage << endl;
-    //exit(1);
-    return;
-  }
+  FILE *fp = openMapDataFile( filename, "r", depth );
+  if( !fp ) return;
 
   char line[255], keyphrase[80],answer[4000];
+  int x, y, level;
+  char npcName[255], npcType[255], npcSubType[255];
   Monster *currentNpc = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
@@ -687,7 +684,41 @@ void Mission::loadMapData( const char *filename, int depth ) {
       } else {
         npcConv->npc_conversations[ ks ] = as;
       }
+    } else if( n == 'N' ) { 
+      fgetc( fp );
+      n = Constants::readLine(line, fp);
 
+      x = atoi( strtok( line, "," ) );
+      y = atoi( strtok( NULL, "," ) );
+      strcpy( npcName, strtok( NULL, "," ) );
+      level = atoi( strtok( NULL, "," ) );
+      strcpy( npcType, strtok( NULL, "," ) );
+      char *p = strtok( NULL, "," );
+      strcpy( npcSubType, ( p ? p : "" ) );
+
+      // store npc info
+      string key = getNpcInfoKey( x,y );
+      NpcInfo *npcInfo = 
+        new NpcInfo( x, y, 
+                     strdup( npcName ), 
+                     level, 
+                     strdup( npcType ), 
+                     ( strlen( npcSubType ) ? 
+                       strdup( npcSubType ) : 
+                       NULL ) );
+      npcInfos[ key ] = npcInfo;
+
+      // Assign to creature
+      Location *pos = adapter->getSession()->getMap()->getLocation( x, y, 0 );
+      if( !( pos && 
+             pos->creature && 
+             pos->creature->isMonster() && 
+             ((Creature*)(pos->creature))->getMonster()->isNpc() ) ) {
+        cerr << "Error: npc definition in " << filename << 
+          " doesn't point to an npc. Line: " << line << endl;
+      } else {
+        ((Creature*)(pos->creature))->setNpcInfo( npcInfo );
+      }
     } else {
       n = Constants::readLine(line, fp);
     }
@@ -695,34 +726,90 @@ void Mission::loadMapData( const char *filename, int depth ) {
   fclose(fp);
 }
 
-void Mission::saveMapData( const char *name ) {
-  /*
-    // Save map object infos in txt file (npc data, etc.)
-  // First, read the txt file to see what's already saved
-  sprintf( fileName, "%s/maps/%s.txt", rootDir, name );
-  cerr << "Updating txt file: " << fileName << endl;
-  FILE *fp = fopen( fileName, "rt" );
-  if(!fp) {        
-    sprintf( result, "Unable to find the file: %s!", s);
-    return;
-  }
+NpcInfo *Mission::getNpcInfo( int x, int y ) {
+  string key = getNpcInfoKey( x,y );
+  return( npcInfos.find( key ) == npcInfos.end() ? NULL : npcInfos[ key ] );
+}
+
+string Mission::getNpcInfoKey( int x, int y ) {
   char line[255];
-  int n = fgetc(fp);
-  while( n != EOF ) {
-    if(n == 'N') {
-      // skip ':'
-      fgetc(fp);
-      // read the rest of the line
-      n = Constants::readLine(name, fp);
+  sprintf( line, "%d,%d", x, y );
+  string key = line;
+  return key;
+}
 
-      // read npc info and sort into groups: unknown, known
+FILE *Mission::openMapDataFile( const char *filename, const char *mode, int depth ) {
+  char errMessage[500];
+  char s[200];
+  if( depth > 0 ) {
+    sprintf( s, "%s/maps/%s%d.txt", rootDir, filename, depth );
+  } else {
+    sprintf( s, "%s/maps/%s.txt", rootDir, filename );
+  }
+  FILE *fp = fopen( s, mode );
+  if(!fp) {        
+    sprintf( errMessage, "Unable to find the file: %s!", s );
+    cerr << errMessage << endl;
+    //exit(1);
+    return NULL;
+  }
+  return fp;
+}
 
-    } else {
-      n = Constants::readLine(line, fp);
+void Mission::saveMapData( GameAdapter *adapter, const char *filename, int depth ) {
+  // find new npc-s
+  int total = 0;
+  vector< Creature* > newNpcs;
+  for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
+    Creature *creature = adapter->getSession()->getCreature( i );
+    if( creature->getMonster()->isNpc() ) {
+      total++;
+      if( !getNpcInfo( toint( creature->getX() ), toint( creature->getY() ) ) ) {
+        newNpcs.push_back( creature );
+      }
     }
   }
-  fclose(fp);
 
   // append to txt file the new npc info
-  */
+  if( newNpcs.size() > 0 ) {
+    cerr << "Saving npcInfos: " << newNpcs.size() << " out of " << total << endl;
+    FILE *fp = openMapDataFile( filename, "a", depth );
+    if( !fp ) return;
+    fprintf( fp, "# Unknown npc-s found:\n" );
+    fprintf( fp, "# Key:\n" );
+    fprintf( fp, "#   N:x,y,name,level,type[,subtype]\n\n" );
+    for( int i = 0; i < (int)newNpcs.size(); i++ ) {
+      Creature *creature = newNpcs[ i ];
+      fprintf( fp, "N:%d,%d,%s,1,commoner\n", 
+               toint( creature->getX() ), 
+               toint( creature->getY() ), 
+               creature->getMonster()->getType() );
+    }
+    fclose( fp );
+  }
 }
+
+NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype ) {
+  this->x = x;
+  this->y = y;
+  this->name = name;
+  this->level = level;
+  this->type = -1;
+  for( int i = 0; i < Constants::NPC_TYPE_COUNT; i++ ) {
+    if( !strcmp( type, Constants::npcTypeName[ i ] ) ) {
+      this->type = i;
+      break;
+    }
+  }
+  if( this->type == -1 ) {
+    cerr << "Error: npc type " << type << " is not known. Setting it to commoner." << endl;
+    this->type = 0;
+  }
+  this->subtype = subtype;
+}
+
+NpcInfo::~NpcInfo() {
+  delete name;
+  if( subtype ) delete subtype;
+}
+
