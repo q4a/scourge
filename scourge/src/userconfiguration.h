@@ -86,6 +86,7 @@ private:
   bool frameOnFullScreen;
   bool turnBasedBattle;
   bool ovalCutoutShown;
+  bool outlineInteractiveItems;
 
   // audio settings
   bool soundEnabled;
@@ -126,6 +127,7 @@ private:
   inline bool getFrameOnFullScreen() { return frameOnFullScreen; }
   inline bool isBattleTurnBased() { return turnBasedBattle; }
   inline bool isOvalCutoutShown() { return ovalCutoutShown; }
+  inline bool isOutlineInteractiveItems() { return outlineInteractiveItems; }
   inline int getSoundFreq() { return soundFreq; }
   inline bool isSoundEnabled() { return soundEnabled; }
   inline int getMusicVolume() { return musicVolume; }
@@ -153,6 +155,7 @@ private:
   inline void setFrameOnFullScreen(int t) { frameOnFullScreen = t; }
   inline void setBattleTurnBased(bool b) { turnBasedBattle = b; }
   inline void setOvalCutoutShown(bool b) { ovalCutoutShown = b; }
+  inline void setOutlineInteractiveItems(bool b) { outlineInteractiveItems = b; }
   inline void setSoundFreq(int n) { soundFreq = n; }
   inline void setSoundEnabled(bool b) { soundEnabled = b; }
   inline void setMusicVolume(int n) { musicVolume = n; }

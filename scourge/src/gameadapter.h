@@ -109,6 +109,7 @@ public:
   virtual int getPartySize();
   virtual void loadMapData( const char *name );
   virtual void saveMapData( const char *name );
+  virtual inline Color *getOutlineColor( Location *pos ) { return NULL; }
 
   /**
    * Set up the opengl view.

@@ -225,6 +225,8 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   
   TradeDialog *tradeDialog;
 
+  Color *outlineColor;
+
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
@@ -275,6 +277,11 @@ public:
     return false;
   }
 
+  /**
+   * If the current location is interactive, return the outline color. 
+   * Return NULL otherwise.
+   */
+  Color *getOutlineColor( Location *pos );
 
   inline int getCurrentDepth() { return currentStory; }
 

@@ -30,6 +30,7 @@ private:
   char *name;
   int descriptionGroup;  
   bool stencil;
+  Color *outlineColor;
 
 protected:
   int width, height, depth;
@@ -39,10 +40,10 @@ public:
 	Shape(Shape *shape);
 	virtual ~Shape();
 
-    /**
-       Call this once before the shape is to be displayed.
-     */
-    virtual inline void intialize() { }
+  /**
+    Call this once before the shape is to be displayed.
+  */
+  virtual inline void intialize() { }
 
   /**
     The widht (x) of the shape-block's base
@@ -82,6 +83,8 @@ public:
   inline void setStencil(bool b) { stencil = b; }
   inline bool isStencil() { return stencil; }
 
+  inline void setOutlineColor( Color *color ) { this->outlineColor = color; }
+  inline Color *getOutlineColor() { return this->outlineColor; }
 
 };
 

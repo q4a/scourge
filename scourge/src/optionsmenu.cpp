@@ -92,6 +92,8 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   y += SPACING + MINOR_SPACING;
   ovalCutoutShown = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Shadow overlay?", GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
+  outlineInteractiveItems = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Outline items?", GAME_SETTINGS);
+  y += SPACING + MINOR_SPACING;
   //alwaysShowPath = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show path in TB battle?", GAME_SETTINGS);
   //y += SPACING + MINOR_SPACING;
   tooltipEnabled = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show tooltips", GAME_SETTINGS);
@@ -157,6 +159,7 @@ void OptionsMenu::loadGameSettings(){
     frameOnFullScreen->setCheck(uc->getFrameOnFullScreen());
     turnBasedBattle->setCheck(uc->isBattleTurnBased());
     ovalCutoutShown->setCheck( uc->isOvalCutoutShown() );
+    outlineInteractiveItems->setCheck( uc->isOutlineInteractiveItems() );
 //    alwaysShowPath->setCheck(uc->getAlwaysShowPath());
     musicVolume->setValue(scourge->getUserConfiguration()->getMusicVolume());
     effectsVolume->setValue(scourge->getUserConfiguration()->getEffectsVolume());
@@ -310,6 +313,9 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     }
     else if(widget == ovalCutoutShown){
         uc ->setOvalCutoutShown(ovalCutoutShown->isChecked());
+    }
+    else if(widget == outlineInteractiveItems){
+        uc ->setOutlineInteractiveItems(outlineInteractiveItems->isChecked());
     }
     else if(widget == alwaysShowPath){
         uc ->setAlwaysShowPath(alwaysShowPath->isChecked());

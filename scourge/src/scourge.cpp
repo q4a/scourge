@@ -63,6 +63,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   needToCheckDropLocation = true;
   nextMission = -1;
   teleportFailure = false;
+  outlineColor = new Color( 0.7f, 0.7f, 0.85f, 0.5f );
 //  cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   // in HQ map
   inHq = true;
@@ -1069,6 +1070,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
   int mx, my;
   switch(event->type) {
   case SDL_MOUSEMOTION:
+    
     if( !levelMap->isMouseRotating() ) {
 
       mx = event->motion.x;
@@ -1089,7 +1091,6 @@ bool Scourge::handleEvent(SDL_Event *event) {
         startItemDrag(mapx, mapy, mapz);
         willStartDrag = false;
       }
-
     }
     break;
   case SDL_MOUSEBUTTONDOWN:
@@ -3167,7 +3168,8 @@ void Scourge::checkForInfo() {
   // change cursor when over a hostile creature  
   if( getSDLHandler()->getCursorMode() == Constants::CURSOR_NORMAL || 
       getSDLHandler()->getCursorMode() == Constants::CURSOR_ATTACK ||
-      getSDLHandler()->getCursorMode() == Constants::CURSOR_TALK ) {
+      getSDLHandler()->getCursorMode() == Constants::CURSOR_TALK ||
+      getSDLHandler()->getCursorMode() == Constants::CURSOR_USE ) {
     if( getSDLHandler()->mouseIsMovingOverMap ) {
       bool handled = false;
       mapx = levelMap->getCursorMapX();
@@ -3175,13 +3177,17 @@ void Scourge::checkForInfo() {
       mapz = levelMap->getCursorMapZ();
       if( mapx < MAP_WIDTH) {
         Location *pos = levelMap->getLocation(mapx, mapy, mapz);    
-        if( pos && 
-            pos->creature && 
-            party->getPlayer()->canAttack( pos->creature ) ) {
-          getSDLHandler()->setCursorMode( ((Creature*)(pos->creature))->getMonster()->isNpc() ?
-                                     Constants::CURSOR_TALK :
-                                     Constants::CURSOR_ATTACK );
-          handled = true;
+        if( pos ) {
+          if( pos->creature && 
+              party->getPlayer()->canAttack( pos->creature ) ) {
+            getSDLHandler()->setCursorMode( ((Creature*)(pos->creature))->getMonster()->isNpc() ?
+                                            Constants::CURSOR_TALK :
+                                            Constants::CURSOR_ATTACK );
+            handled = true;
+          } else if( getOutlineColor( pos ) ) {
+            getSDLHandler()->setCursorMode( Constants::CURSOR_USE );
+            handled = true;
+          }
         }
       }
       if( !handled ) getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
@@ -3327,3 +3333,18 @@ GLuint Scourge::loadSystemTexture( char *line ) {
   return getShapePalette()->loadSystemTexture( line ); 
 }
 
+// check for interactive items.
+Color *Scourge::getOutlineColor( Location *pos ) {
+  return( pos->creature || pos->item ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "SWITCH_OFF" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "SWITCH_ON" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "EW_DOOR" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "NS_DOOR" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_UP" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_DOWN" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "BOARD" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "TELEPORTER_BASE" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "TELEPORTER" ) ? 
+          outlineColor :
+          NULL );
+}
