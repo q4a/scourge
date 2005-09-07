@@ -30,6 +30,7 @@ ScrollingList( x, y, width, height, scourge->getShapePalette()->getHighlightText
   this->itemRenderer = itemRenderer;
   this->creature = creature;
   this->container = NULL;
+  this->filter = NULL;
 
   color = (Color*)malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
   name = (char**)malloc( MAX_INVENTORY_SIZE * sizeof( char* ) );
@@ -48,53 +49,66 @@ ItemList::~ItemList() {
   free( icon );
 }
 
-void ItemList::setCreature( Creature *creature ) {
+void ItemList::setCreature( Creature *creature, set<int> *filter ) {
   this->creature = creature;
   this->container = NULL;
+  this->filter = filter;
+  this->items.clear();
   commonInit();
 }
 
-void ItemList::setContainer( Item *container ) {
+void ItemList::setContainer( Item *container, set<int> *filter ) {
   this->container = container;
   this->creature = NULL;
+  this->filter = filter;
+  this->items.clear();
   commonInit();
 }
 
 void ItemList::commonInit() {
   char s[120];
+  int count = 0;
   for(int t = 0; t < getItemCount(); t++) {
     Item *item = getItem( t );
+
+    // if there is a non-empty filter, it should contain this type of item
+    if( filter && filter->size() && 
+        filter->find( item->getRpgItem()->getType() ) == filter->end() ) {
+      continue;
+    }
+
+    items.push_back( item );
+
     if( itemRenderer ) {
-      itemRenderer->render( this, item, 120, (const char *)name[ t ] );
+      itemRenderer->render( this, item, 120, (const char *)name[ count ] );
     } else {
       item->getDetailedDescription( s );
       //sprintf( itemA[t], "%s %s", ( creature->getEquippedIndex(t) > -1 ? "(E)" : "" ), s );
-      sprintf( name[ t ], "%s", s );
+      sprintf( name[ count ], "%s", s );
     }
     if( !item->isMagicItem() ) {
       if( win->getTheme()->getWindowText() ) {
-        color[t].r = win->getTheme()->getWindowText()->r;
-        color[t].g = win->getTheme()->getWindowText()->g;
-        color[t].b = win->getTheme()->getWindowText()->b;
+        color[count].r = win->getTheme()->getWindowText()->r;
+        color[count].g = win->getTheme()->getWindowText()->g;
+        color[count].b = win->getTheme()->getWindowText()->b;
       } else {
-        color[t].r = 0;
-        color[t].g = 0;
-        color[t].b = 0;
+        color[count].r = 0;
+        color[count].g = 0;
+        color[count].b = 0;
       }
     } else {
-      color[t].r = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->r;
-      color[t].g = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->g;
-      color[t].b = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->b;
+      color[count].r = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->r;
+      color[count].g = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->g;
+      color[count].b = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->b;
     }
-    color[t].a = 1;
-    icon[t] = scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ];
+    color[count].a = 1;
+    icon[count] = scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ];
+    count++;
   }    
-  for(int t = getItemCount(); t < MAX_INVENTORY_SIZE; t++) {
+  for(int t = count; t < MAX_INVENTORY_SIZE; t++) {
     strcpy( name[t], "" );
   }  
-  setLines( creature->getInventoryCount(), 
-                  (const char **)name,
-                  color, icon );
+  setLines( count, (const char **)name, color, icon );
   //setSelectedLine( 0 );
 }
 

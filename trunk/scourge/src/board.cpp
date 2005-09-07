@@ -805,11 +805,28 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
     cerr << "Error: npc type " << type << " is not known. Setting it to commoner." << endl;
     this->type = 0;
   }
-  this->subtype = subtype;
+  
+  if( subtype ) {
+    char s[255];
+    strcpy( s, subtype );
+    char *p = strtok( s, ";" );
+    while( p ) {
+      if( this->type == Constants::NPC_TYPE_MERCHANT ) {
+        // subtype is an RpgItem type
+        this->subtype.insert( RpgItem::getTypeByName( p ) );
+      } else if( this->type == Constants::NPC_TYPE_TRAINER ) {
+        // subtype is a skill
+        this->subtype.insert( Constants::getSkillByName( p ) );
+      } else {
+        break;
+      }
+      p = strtok( NULL, ";" );
+    }
+    delete subtype;
+  }
 }
 
 NpcInfo::~NpcInfo() {
   delete name;
-  if( subtype ) delete subtype;
 }
 
