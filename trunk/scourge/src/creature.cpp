@@ -1677,15 +1677,22 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
     for( set<int>::iterator e = npcInfo->getSubtype()->begin(); e != npcInfo->getSubtype()->end(); ++e ) {
       types[ typeCount++ ] = *e;
     }
+
+    // equip merchants at the party's level
+    int level = ( session->getParty() ? 
+                  toint(((float)(session->getParty()->getTotalLevel())) / ((float)(session->getParty()->getPartySize()))) : 
+                  getLevel() );
+    if( level < 0 ) level = 1;
+
     // add some loot
     int nn = (int)( 5.0f * rand()/RAND_MAX ) + 3;
     //cerr << "Adding loot:" << nn << endl;
     for( int i = 0; i < nn; i++ ) {
       Item *loot;
       if( npcInfo->isSubtype( RpgItem::SCROLL ) ) {
-        Spell *spell = MagicSchool::getRandomSpell( getLevel() );
+        Spell *spell = MagicSchool::getRandomSpell( level );
         loot = session->newItem( RpgItem::getItemByName("Scroll"), 
-                                 getLevel(), 
+                                 level, 
                                  spell );
       } else {
         loot = 
@@ -1693,7 +1700,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
             RpgItem::getRandomItemFromTypes( session->getGameAdapter()->
                                              getCurrentDepth(), 
                                              types, typeCount ), 
-            getLevel() );
+            level );
       }
       //cerr << "\t" << loot->getRpgItem()->getName() << endl;
       // make it contain all items, no matter what size
