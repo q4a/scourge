@@ -493,8 +493,9 @@ void Item::commonInit( bool loading ) {
   weight = rpgItem->getWeightRpg();
   quality = rpgItem->getQualityRpg();
 
-  price = rpgItem->getPriceRpg() + 
-    (int)getRandomSum( (float)(rpgItem->getPriceRpg() / 2), level / 2 );
+  int basePrice = ( this->spell ? this->spell->getExp() : rpgItem->getPriceRpg() );
+  price = basePrice + 
+    (int)getRandomSum( (float)(basePrice / 2), level );
 
   action = (int)getRandomSum( (float)(rpgItem->getActionRpg()), level / 2 );  
 
