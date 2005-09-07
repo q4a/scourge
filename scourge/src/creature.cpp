@@ -1664,5 +1664,42 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
   this->npcInfo = npcInfo; 
   this->name = npcInfo->name;
   sprintf( description, "You see %s", npcInfo->name );
+
+  // for merchants, re-create inventory with the correct types
+  if( npcInfo->type == Constants::NPC_TYPE_MERCHANT ) {
+    // drop everything beyond the basic inventory
+    for( int i = getMonster()->getStartingItemCount(); i < this->getInventoryCount(); i++ ) {
+      this->removeInventory( getMonster()->getStartingItemCount() );
+    }
+    
+    int types[ npcInfo->getSubtype()->size() ];
+    int typeCount = 0;
+    for( set<int>::iterator e = npcInfo->getSubtype()->begin(); e != npcInfo->getSubtype()->end(); ++e ) {
+      types[ typeCount++ ] = *e;
+    }
+    // add some loot
+    int nn = (int)( 5.0f * rand()/RAND_MAX ) + 3;
+    //cerr << "Adding loot:" << nn << endl;
+    for( int i = 0; i < nn; i++ ) {
+      Item *loot;
+      if( npcInfo->isSubtype( RpgItem::SCROLL ) ) {
+        Spell *spell = MagicSchool::getRandomSpell( getLevel() );
+        loot = session->newItem( RpgItem::getItemByName("Scroll"), 
+                                 getLevel(), 
+                                 spell );
+      } else {
+        loot = 
+          session->newItem( 
+            RpgItem::getRandomItemFromTypes( session->getGameAdapter()->
+                                             getCurrentDepth(), 
+                                             types, typeCount ), 
+            getLevel() );
+      }
+      //cerr << "\t" << loot->getRpgItem()->getName() << endl;
+      // make it contain all items, no matter what size
+      addInventory( loot, true );
+    }
+  }
+    
 }
 

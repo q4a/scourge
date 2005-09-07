@@ -20,12 +20,15 @@ itemlist.h  -  description
 
 #include "constants.h"
 #include "gui/scrollinglist.h"
+#include <set>
 
 class Scourge;
 class Creature;
 class Item;
 class Window;
 class Label;
+
+using namespace std;
 
 /**
 Add arbitrary rendering to displaying items in the list. For example, the trade 
@@ -54,6 +57,8 @@ private:
   Item *container;
   Window *win;
   ItemRenderer *itemRenderer;
+  set<int> *filter;
+  vector<Item*> items;
   
 	char **name;
 	Color *color;
@@ -63,9 +68,9 @@ public:
   ItemList( Scourge *scourge, Window *win, int x, int y, int width, int height, ItemRenderer *itemRenderer = NULL );
   ~ItemList();
   
-  void setCreature( Creature *creature );
+  void setCreature( Creature *creature, set<int> *filter = NULL );
   inline Creature *getCreature() { return creature; }
-  void setContainer( Item *container );
+  void setContainer( Item *container, set<int> *filter = NULL );
   inline Item *getContainer() { return container; }
   
   char *getName();
@@ -76,7 +81,7 @@ public:
 
   inline Item *getSelectedItem( int index ) { 
     if( index < 0 || index >= getSelectedLineCount() ) return NULL;
-    return getItem( getSelectedLine( index ) );
+    return items[ getSelectedLine( index ) ];
   }
   
 protected:

@@ -57,10 +57,10 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   
   coinAvailA = win->createLabel( 5, 260, AVAILABLE_COINS );
   coinTradeA = win->createLabel( 5, 280, "$0" );
-  coinReset = win->createButton( 135, 270, 160, 290, "Clr" );
-  coinPlusA = win->createButton( 165, 270, 195, 290, "+1" );
-  coinMinusA = win->createButton( 200, 270, 230, 290, "-1" );
-  coinRest = win->createButton( 235, 270, 265, 290, "Diff" );
+  coinReset = win->createButton( 180, 270, 210, 290, "Clr" );
+  coinPlusA = win->createButton( 215, 270, 245, 290, "+1" );
+  coinMinusA = win->createButton( 250, 270, 280, 290, "-1" );
+  coinRest = win->createButton( 285, 270, 315, 290, "Diff" );
 }
 
 TradeDialog::~TradeDialog() {
@@ -76,9 +76,9 @@ void TradeDialog::setCreature( Creature *creature ) {
 void TradeDialog::updateUI() {
   prices.clear();  
   labelA->setText( scourge->getParty()->getPlayer()->getName() );
-  listA->setCreature( scourge->getParty()->getPlayer() );
+  listA->setCreature( scourge->getParty()->getPlayer(), creature->getNpcInfo()->getSubtype() );
   labelB->setText( creature->getName() );
-  listB->setCreature( creature );
+  listB->setCreature( creature, creature->getNpcInfo()->getSubtype() );
   tradeA = 0;
   updateLabels();
 }

@@ -194,6 +194,7 @@ class RpgItem {
   bool isContainer();
 
   static RpgItem *getRandomItem(int depth);
+  static RpgItem *getRandomItemFromTypes(int level, int types[], int typeCount);
   static RpgItem *getRandomContainer();
   static RpgItem *getRandomContainerNS();
   inline static RpgItem *getItem(int index) { return items[index]; }
@@ -202,9 +203,7 @@ class RpgItem {
   static void addItem(RpgItem *item, int width, int depth, int height);
   static RpgItem *getItemByName(char *name);
   inline static map<string, const RpgItem *> *getItemMap() { return &itemsByName; }
-
-protected:
-  static RpgItem *getRandomItemFromTypes(int level, int types[], int typeCount);
+  
 };
 
 #endif

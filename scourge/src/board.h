@@ -22,6 +22,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <set>
 
 using namespace std;
 
@@ -61,10 +62,14 @@ class NpcConversation {
 class NpcInfo {
 public:
   int x, y, level, type;
-  char *name, *subtype;
+  char *name;
+  set<int> subtype;
 
   NpcInfo( int x, int y, char *name, int level, char *type, char *subtype );
   ~NpcInfo();
+
+  inline int isSubtype( int value ) { return( subtype.find( value ) != subtype.end() ); }
+  inline set<int> *getSubtype() { return &subtype; }
 };
 
 class Mission {
