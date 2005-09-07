@@ -51,6 +51,12 @@ public:
   virtual void saveMapData( const char *name ) = 0;
 
   /**
+   * What color to outline this location with? If NULL is returned
+   * the location is not outlined.
+   */
+  virtual Color *getOutlineColor( Location *pos ) = 0;
+
+  /**
    * Set up the opengl view.
    */
   virtual void setView() = 0;

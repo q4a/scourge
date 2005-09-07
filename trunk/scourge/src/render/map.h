@@ -183,6 +183,7 @@ class Map {
   map<Uint32, Uint32> keyToDoor;
 
   int LIGHTMAP_ENABLED;
+  int lastOutlinedX, lastOutlinedY, lastOutlinedZ;
 
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;

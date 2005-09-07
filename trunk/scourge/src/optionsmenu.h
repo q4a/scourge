@@ -75,6 +75,7 @@ private:
   Checkbox * frameOnFullScreen;
   Checkbox * turnBasedBattle;
   Checkbox *ovalCutoutShown;
+  Checkbox *outlineInteractiveItems;
   Checkbox * alwaysShowPath;
   Checkbox *tooltipEnabled;
   Slider *tooltipInterval;

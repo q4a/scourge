@@ -37,6 +37,7 @@ public:
   Shape *shape;
   RenderedItem *item;
   RenderedCreature *creature;
+  Color *outlineColor;
 };
 
 class EffectLocation {

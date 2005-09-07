@@ -93,7 +93,6 @@ public:
   GLuint tilesTex[20][20], spellsTex[20][20];
   SDL_Surface *paperDoll;
   GLubyte *paperDollImage;
-  GLuint talk_texture;
 
   SDL_Surface *logo;
   GLubyte *logoImage;   

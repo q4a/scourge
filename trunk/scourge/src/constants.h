@@ -570,7 +570,8 @@ public:
     CURSOR_NORMAL=0,
     CURSOR_CROSSHAIR,
     CURSOR_ATTACK,
-    CURSOR_TALK
+    CURSOR_TALK,
+    CURSOR_USE
   };
 
   enum {

@@ -76,6 +76,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   cursorDepth = 1;
   cursorHeight = MAP_WALL_HEIGHT;
   cursorZ = 0;
+  lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
 
   mouseMoveScreen = true;
   mouseZoom = mouseRot = false;
@@ -215,6 +216,7 @@ void Map::reset() {
   debugX = debugY = debugZ = -1;
   mapChanged = true;
   resortShapes = true;
+  lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
   
 //  descriptionCount = 0;
 //  descriptionsChanged = false;
@@ -1578,6 +1580,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       shape->outline( 0.15f, 0.15f, 0.4f );
     }
 
+    if( later && later->pos && 
+        later->pos->outlineColor ) 
+      shape->outline( later->pos->outlineColor );
     shape->draw();
   } else if( later && later->item && !useShadow ) {
     
@@ -1587,11 +1592,17 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       shape->outline( 0.8f, 0.8f, 0.3f );
     }
 
+    if( later && later->pos && 
+        later->pos->outlineColor ) 
+      shape->outline( later->pos->outlineColor );
     shape->draw();
 
     
 
   } else {
+    if( later && later->pos && 
+        later->pos->outlineColor ) 
+      shape->outline( later->pos->outlineColor );
     shape->draw();
   }
   glPopName();
@@ -2112,6 +2123,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
           int oldY = oy - yp;
           int oldZ = oz + zp;
           tmp[xp][yp][zp] = pos[oldX][oldY][oldZ];
+          tmp[xp][yp][zp]->outlineColor = NULL;
           pos[oldX][oldY][oldZ] = NULL;
           if(!(tmp[xp][yp][zp])) cerr << "*** tmp is null!" << endl;
         }
@@ -2559,6 +2571,16 @@ bool Map::isLocationInLight(int x, int y) {
 }
 
 void Map::handleEvent( SDL_Event *event ) {
+
+  // turn off outlining
+  if( lastOutlinedX < MAP_WIDTH ) {
+    Location *pos = getLocation( lastOutlinedX, lastOutlinedY, lastOutlinedZ );
+    if( pos ) {
+      pos->outlineColor = NULL;
+      lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
+    }
+  }
+
   int ea;
   int mx, my;
   switch(event->type) {
@@ -2589,6 +2611,22 @@ void Map::handleEvent( SDL_Event *event ) {
           removeMove(Constants::MOVE_UP | Constants::MOVE_DOWN);
           setYRot(0.0f);
           setZRot(0.0f);
+        }
+      }
+      
+      // highlight the item under the mouse if it's useable
+      if( getCursorMapX() < MAP_WIDTH ) {
+        Location *pos = getLocation( getCursorMapX(),
+                                     getCursorMapY(),
+                                     getCursorMapZ() );
+        if( pos && preferences->isOutlineInteractiveItems() ) {
+          Color *color = adapter->getOutlineColor( pos );
+          if( color ) {
+            pos->outlineColor = color;
+            lastOutlinedX = pos->x;
+            lastOutlinedY = pos->y;
+            lastOutlinedZ = pos->z;
+          }
         }
       }
     }
