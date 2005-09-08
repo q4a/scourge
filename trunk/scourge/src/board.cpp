@@ -746,6 +746,7 @@ FILE *Mission::openMapDataFile( const char *filename, const char *mode, int dept
   } else {
     sprintf( s, "%s/maps/%s.txt", rootDir, filename );
   }
+  cerr << "*** Opening: " << s << " in mode: " << mode << endl;
   FILE *fp = fopen( s, mode );
   if(!fp) {        
     sprintf( errMessage, "Unable to find the file: %s!", s );
