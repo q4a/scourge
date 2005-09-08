@@ -63,7 +63,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   needToCheckDropLocation = true;
   nextMission = -1;
   teleportFailure = false;
-  outlineColor = new Color( 0.7f, 0.7f, 0.85f, 0.5f );
+  outlineColor = new Color( 0.3f, 0.3f, 0.5f, 0.5f );
 //  cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   // in HQ map
   inHq = true;
@@ -3335,7 +3335,10 @@ GLuint Scourge::loadSystemTexture( char *line ) {
 
 // check for interactive items.
 Color *Scourge::getOutlineColor( Location *pos ) {
-  return( pos->creature || pos->item ||
+  return( pos->item ||
+
+          // FIXME: this info should be in property file (shape is interactive or not)
+
           pos->shape == getSession()->getShapePalette()->findShapeByName( "SWITCH_OFF" ) ||
           pos->shape == getSession()->getShapePalette()->findShapeByName( "SWITCH_ON" ) ||
           pos->shape == getSession()->getShapePalette()->findShapeByName( "EW_DOOR" ) ||
@@ -3343,8 +3346,7 @@ Color *Scourge::getOutlineColor( Location *pos ) {
           pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_UP" ) ||
           pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_DOWN" ) ||
           pos->shape == getSession()->getShapePalette()->findShapeByName( "BOARD" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "TELEPORTER_BASE" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "TELEPORTER" ) ? 
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "TELEPORTER_BASE" ) ? 
           outlineColor :
           NULL );
 }

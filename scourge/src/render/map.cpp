@@ -1581,7 +1581,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     }
 
     if( later && later->pos && 
-        later->pos->outlineColor ) 
+        later->pos->outlineColor &&
+        !useShadow ) 
       shape->outline( later->pos->outlineColor );
     shape->draw();
   } else if( later && later->item && !useShadow ) {
@@ -1593,7 +1594,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     }
 
     if( later && later->pos && 
-        later->pos->outlineColor ) 
+        later->pos->outlineColor &&
+        !useShadow ) 
       shape->outline( later->pos->outlineColor );
     shape->draw();
 
@@ -1601,7 +1603,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
   } else {
     if( later && later->pos && 
-        later->pos->outlineColor ) 
+        later->pos->outlineColor &&
+        !useShadow ) 
       shape->outline( later->pos->outlineColor );
     shape->draw();
   }
@@ -2838,6 +2841,7 @@ void Map::saveMap( char *name, char *result ) {
 
   Persist::deleteMapInfo( info );
 
+  sprintf( fileName, "%s/maps/%s.txt", rootDir, name );
   adapter->saveMapData( (const char*)name );
 
   sprintf( result, "Map saved: %s", name );
