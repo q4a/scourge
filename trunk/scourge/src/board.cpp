@@ -612,7 +612,7 @@ char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
   }
 }
 
-void Mission::loadMapData( GameAdapter *adapter, const char *filename, int depth ) {
+void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
 
   // clean up
   for( map<string,NpcInfo*>::iterator i=npcInfos.begin(); i!=npcInfos.end(); ++i) {
@@ -630,7 +630,7 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename, int depth
   npcConversations.clear();
 
 
-  FILE *fp = openMapDataFile( filename, "r", depth );
+  FILE *fp = openMapDataFile( filename, "r" );
   if( !fp ) return;
 
   char line[255], keyphrase[80],answer[4000];
@@ -738,26 +738,33 @@ string Mission::getNpcInfoKey( int x, int y ) {
   return key;
 }
 
-FILE *Mission::openMapDataFile( const char *filename, const char *mode, int depth ) {
-  char errMessage[500];
+FILE *Mission::openMapDataFile( const char *filename, const char *mode ) {
+
+  // Create the text file name from the map file name.
   char s[200];
-  if( depth > 0 ) {
-    sprintf( s, "%s/maps/%s%d.txt", rootDir, filename, depth );
+  strncpy( s, filename, 200 );
+  char *p = strrchr( s, '.' );
+  if( p && 
+      strlen( p ) >= 4 && 
+      !strncmp( p, ".map", 4 ) ) {
+    strcpy( p, ".txt" );
   } else {
-    sprintf( s, "%s/maps/%s.txt", rootDir, filename );
+    strcat( s, ".txt" );
   }
+
+  // Open the file
   cerr << "*** Opening: " << s << " in mode: " << mode << endl;
   FILE *fp = fopen( s, mode );
   if(!fp) {        
+    char errMessage[500];
     sprintf( errMessage, "Unable to find the file: %s!", s );
     cerr << errMessage << endl;
-    //exit(1);
     return NULL;
   }
   return fp;
 }
 
-void Mission::saveMapData( GameAdapter *adapter, const char *filename, int depth ) {
+void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
   // find new npc-s
   int total = 0;
   vector< Creature* > newNpcs;
@@ -774,8 +781,15 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename, int depth
   // append to txt file the new npc info
   if( newNpcs.size() > 0 ) {
     cerr << "Saving npcInfos: " << newNpcs.size() << " out of " << total << endl;
-    FILE *fp = openMapDataFile( filename, "a", depth );
+    FILE *fp = openMapDataFile( filename, "a" );
     if( !fp ) return;
+
+    // Are there default conversation elements?
+    if( Mission::intros.size() == 0 ) 
+      fprintf( fp, "G:_INTRO_,Welcome weary adventurer!.\n" );
+    if( Mission::unknownPhrases.size() == 0 ) 
+      fprintf( fp, "G:_UNKNOWN_,Uh, I don't know anything about that...\n" );
+
     fprintf( fp, "# Unknown npc-s found:\n" );
     fprintf( fp, "# Key:\n" );
     fprintf( fp, "#   N:x,y,name,level,type[,subtype]\n\n" );

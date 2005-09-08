@@ -2841,8 +2841,7 @@ void Map::saveMap( char *name, char *result ) {
 
   Persist::deleteMapInfo( info );
 
-  sprintf( fileName, "%s/maps/%s.txt", rootDir, name );
-  adapter->saveMapData( (const char*)name );
+  adapter->saveMapData( (const char*)fileName );
 
   sprintf( result, "Map saved: %s", name );
 }
@@ -2930,7 +2929,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
 
   // load map-related data from text file
   //Mission::loadMapData( (const char*)name );
-  adapter->loadMapData( (const char*)name );
+  adapter->loadMapData( (const char*)fileName );
   
   strcpy( this->name, name );
 

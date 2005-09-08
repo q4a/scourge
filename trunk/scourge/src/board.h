@@ -109,9 +109,18 @@ public:
   static char *getAnswer( Monster *npc, char *keyphrase );
   /**
    * Load extra data from text file alongside an edited map.
+   * "fileName" in this case is the name of the .map binary file 
+   * that was loaded.
    */
-  static void loadMapData( GameAdapter *adapter, const char *name, int depth=0 );
-  static void saveMapData( GameAdapter *adapter, const char *name, int depth=0 );
+  static void loadMapData( GameAdapter *adapter, const char *fileName );
+
+  /**
+   * Append extra data (npc info, etc.) to a text file alongside an edited map.
+   * "fileName" in this case is the name of the .map binary file 
+   * that was loaded. A file will only be created if one doesn't already
+   * exist.
+   */
+  static void saveMapData( GameAdapter *adapter, const char *fileName );
 
   Mission( Board *board, int level, int depth, 
 		   char *name, char *description, 
@@ -176,7 +185,7 @@ public:
   Monster *getCreature( int index ) { return creatureList[ index ]; }
   bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
  private:
-   static FILE *openMapDataFile( const char *filename, const char *mode, int depth );
+   static FILE *openMapDataFile( const char *filename, const char *mode );
    static NpcInfo *getNpcInfo( int x, int y );
    static string getNpcInfoKey( int x, int y );
 

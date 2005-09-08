@@ -323,7 +323,6 @@ void Scourge::startMission() {
 
       dg = NULL;
       levelMap->loadMap( "hq", result, currentStory, changingStory );
-      cerr << "***** hq" << endl;
       //cerr << result << endl;
 
     } else {
