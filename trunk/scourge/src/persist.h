@@ -20,7 +20,6 @@
 
 #include "constants.h"
 
-class Session;
 class File;
 
 #define PERSIST_VERSION 7
@@ -112,21 +111,17 @@ typedef struct _MapInfo {
 
 class Persist {
 public:
-  static bool doesSaveGameExist(Session *session);
-  static bool saveGame(Session *session);
-  static bool loadGame(Session *session);
-
   static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
   static void saveMap( File *file, MapInfo *info );
   static MapInfo *loadMap( File *file );
   static void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );
   static void deleteMapInfo( MapInfo *info );
 
-protected:
   static void saveCreature( File *file, CreatureInfo *info );
   static CreatureInfo *loadCreature( File *file );
   static void deleteCreatureInfo( CreatureInfo *info );
 
+protected:
   static void saveItem( File *file, ItemInfo *item );
   static ItemInfo *loadItem( File *file );
   static void deleteItemInfo( ItemInfo *info );

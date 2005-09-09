@@ -15,79 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "persist.h"
-#include "session.h"
 #include "render/renderlib.h"
 #include "io/file.h"
-#include "creature.h"
-
-#define SAVE_FILE "savegame.dat"
-
-bool Persist::doesSaveGameExist(Session *session) {
-  char path[300];
-  get_file_name( path, 300, SAVE_FILE );
-  FILE *fp = fopen( path, "rb" );
-  bool ret = false;
-  if(fp) {
-    ret = true;
-    fclose( fp );
-  }
-  return ret;
-}
-
-bool Persist::saveGame(Session *session) {
-  session->getPreferences()->createConfigDir();
-  char path[300];
-  get_file_name( path, 300, SAVE_FILE );
-  FILE *fp = fopen( path, "wb" );
-  if(!fp) {
-    cerr << "Error creating savegame file! path=" << path << endl;
-    return false;
-  }
-  File *file = new File( fp );
-  Uint32 n = PERSIST_VERSION;
-  file->write( &n );
-  n = session->getBoard()->getStorylineIndex();
-  file->write( &n );
-  n = session->getParty()->getPartySize();
-  file->write( &n );
-  for(int i = 0; i < session->getParty()->getPartySize(); i++) {
-    CreatureInfo *info = session->getParty()->getParty(i)->save();
-    Persist::saveCreature( file, info );
-    deleteCreatureInfo( info );
-  }
-  delete file;
-  return true;
-}
-
-bool Persist::loadGame(Session *session) {
-  char path[300];
-  get_file_name( path, 300, SAVE_FILE );
-  FILE *fp = fopen( path, "rb" );
-  if(!fp) {
-    return false;
-  }
-  File *file = new File( fp );
-  Uint32 n = PERSIST_VERSION;
-  file->read( &n );
-  if( n != PERSIST_VERSION ) {
-    cerr << "Savegame file is old: ignoring data in file." << endl;
-  } else {
-    Uint32 storylineIndex;
-    file->read( &storylineIndex );
-    file->read( &n );
-    Creature *pc[MAX_PARTY_SIZE];
-    for(int i = 0; i < (int)n; i++) {
-      CreatureInfo *info = Persist::loadCreature( file );
-      pc[i] = session->getParty()->getParty(i)->load( session, info );
-      deleteCreatureInfo( info );
-    }
-
-    // set the new party
-    session->getParty()->setParty( n, pc, storylineIndex );
-  }
-  delete file;
-  return true;
-}
 
 LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   LocationInfo *info = (LocationInfo*)malloc( sizeof( LocationInfo ) );
