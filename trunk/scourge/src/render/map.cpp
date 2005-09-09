@@ -80,6 +80,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   mouseMoveScreen = true;
   mouseZoom = mouseRot = false;
+  move = 0;
 
   mapViewWidth = MVW;
   mapViewDepth = MVD;

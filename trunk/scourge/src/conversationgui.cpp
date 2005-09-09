@@ -20,10 +20,12 @@
 #include "rpg/rpglib.h"
 #include "creature.h"
 #include "tradedialog.h"
+#include "healdialog.h"
 #include "board.h"
 
 #define TRADE_WORD "trade"
 #define TRAIN_WORD "train"
+#define HEAL_WORD "heal"
 
 ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
@@ -130,7 +132,7 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == rechargeButton ) {
     scourge->showMessageDialog( "FIXME: recharge wand-dialog" );
   } else if( widget == healButton ) {
-    scourge->showMessageDialog( "FIXME: heal-dialog" );
+    scourge->getHealDialog()->setCreature( creature );
   } else if( widget == donateButton ) {
     scourge->showMessageDialog( "FIXME: donate to church-dialog" );
   }
@@ -167,8 +169,9 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
 void ConversationGui::wordClicked( char *word ) {
   //cerr << "Clicked: " << word << endl;
   if( useCreature ) {
-    if( !strcmp( word, TRADE_WORD ) ) openTradeDialog( creature );
-    else if( !strcmp( word, TRAIN_WORD ) ) openTrainDialog( creature );
+    if( !strcmp( word, TRADE_WORD ) ) scourge->getTradeDialog()->setCreature( creature );
+    else if( !strcmp( word, HEAL_WORD ) ) scourge->getHealDialog()->setCreature( creature );
+    else if( !strcmp( word, TRAIN_WORD ) ) scourge->showMessageDialog( "FIXME: train-dialog" );
     answer->setText( Mission::getAnswer( creature->getMonster(), word ) );
   } else {
     answer->setText( Mission::getAnswer( word ) );
@@ -227,13 +230,6 @@ void ConversationGui::drawWidgetContents(Widget *w) {
     //glDisable( GL_ALPHA_TEST );
     glDisable(GL_TEXTURE_2D);
   }
-}
-
-void ConversationGui::openTradeDialog( Creature *creature ) {
-  scourge->getTradeDialog()->setCreature( creature );
-}
-
-void ConversationGui::openTrainDialog( Creature *creature ) {
 }
 
 void ConversationGui::hide() {

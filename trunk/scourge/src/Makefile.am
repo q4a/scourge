@@ -86,5 +86,7 @@ scourge_SOURCES = \
 	itemlist.cpp\
 	itemlist.h\
 	tradedialog.cpp\
-	tradedialog.h
+	tradedialog.h\
+	healdialog.cpp\
+	healdialog.h
 

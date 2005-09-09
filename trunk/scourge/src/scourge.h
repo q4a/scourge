@@ -90,6 +90,7 @@ class GuiTheme;
 class ScrollingLabel;
 class MapWidget;
 class TradeDialog;
+class HealDialog;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -224,6 +225,7 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   map<InfoMessage *, Uint32> infos;
   
   TradeDialog *tradeDialog;
+  HealDialog *healDialog;
 
   Color *outlineColor;
 
@@ -632,6 +634,7 @@ public:
   GLuint loadSystemTexture( char *line );
 
   inline TradeDialog *getTradeDialog() { return tradeDialog; }
+  inline HealDialog *getHealDialog() { return healDialog; }
   
  protected:
 

@@ -118,12 +118,14 @@ class Battle {
   static inline int getSoundCount() { return handheldSwishSoundCount + bowSwishSoundCount + potionSoundCount; }
   static inline char *getSound(int index) { return sound[index]; }
 
+  void castSpell( bool alwaysSucceeds = false );
+
  protected:
   void launchProjectile();
   //void initTurn();
   void hitWithItem();
   void initItem(Item *item);
-  void castSpell();
+  
   void executeEatDrinkAction();
   // return true if game paused
   bool pauseBeforePlayerTurn();

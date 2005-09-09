@@ -67,17 +67,27 @@ class Spell {
   MagicSchool *school;  
   bool creatureTarget, locationTarget, itemTarget, partyTarget;
   int iconTileX, iconTileY;
+  bool friendly;
+  int stateModPrereq;
 
   static map<string, Spell*> spellMap;
 
  public:
 
   Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
-		int distance, int targetType, int speed, int effect, bool creatureTarget, 
-		bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
-		int iconTileX, int iconTileY);
+        int distance, int targetType, int speed, int effect, bool creatureTarget, 
+        bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
+        int iconTileX, int iconTileY, bool friendly, int stateModPrereq );
   ~Spell();
 
+  inline bool isFriendly() { return friendly; }
+  inline bool hasStateModPrereq() { return( stateModPrereq != -1 ); }
+  inline int getStateModPrereq() { 
+    return( stateModPrereq < -1 ? 
+            ( -stateModPrereq ) - 2 : // potion skill
+            stateModPrereq ); // regular state mod
+  }
+  inline bool isStateModPrereqAPotionSkill() { return( stateModPrereq < -1 ); }
   inline int getIconTileX() { return iconTileX; }
   inline int getIconTileY() { return iconTileY; }
   inline char *getName() { return name; }

@@ -508,7 +508,7 @@ bool Battle::selectNewTarget() {
   }
 }
 
-void Battle::castSpell() {
+void Battle::castSpell( bool alwaysSucceeds ) {
   // use up some MP (not when using a scroll)
   if(!creature->getActionItem()) {
     int n = creature->getMp() - creature->getActionSpell()->getMp();
@@ -587,8 +587,9 @@ void Battle::castSpell() {
   }
 
 
-  if(!projectileHit && 
-     (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate()) {
+  if( !alwaysSucceeds &&
+      !projectileHit && 
+      (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate() ) {
     sc->spellFailed();
   } else {
 

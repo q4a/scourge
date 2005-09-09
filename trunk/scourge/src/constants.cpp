@@ -154,12 +154,13 @@ char *Constants::messages[][80] = {
   { "Waiting for new key (Esc to cancel)" },
   { "Conversation" },
   { "Trade" },
-  { "Train" }
+  { "Train" },
+  { "Healing Services" }
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines
@@ -238,7 +239,16 @@ int Constants::getRandomBasicSkill() {
 int Constants::getPotionSkillByName(char *p) {
   if(!p || !strlen(p)) return -1;
   for(int i = 0; i < POTION_SKILL_COUNT; i++) {
-	if(!strcmp(p, POTION_SKILL_NAMES[i])) return (-2 - i);
+    if(!strcmp(p, POTION_SKILL_NAMES[i])) return (-2 - i);
+  }
+  return -1;
+}
+
+// return -1 on failure, 0+ on success
+int Constants::getStateModByName( const char *p ) {
+  if(!p || !strlen(p)) return -1;
+  for(int i = 0; i < STATE_MOD_COUNT; i++) {
+    if(!strcmp(p, STATE_NAMES[i])) return i;
   }
   return -1;
 }

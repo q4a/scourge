@@ -70,12 +70,6 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   void showingWord( char *word );
 
   void drawWidgetContents(Widget *w);
-  
-protected:
-    
-  void openTradeDialog( Creature *creature );
-  void openTrainDialog( Creature *creature );
-    
 };
 
 #endif
