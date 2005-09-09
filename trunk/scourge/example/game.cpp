@@ -17,18 +17,25 @@
 #include "game.h"
 
 Game::Game( Preferences *preferences, MapAdapter *adapter ) {
+  // Create the shapes object. This is how we access the shapes.txt properties file.
   shapes = new Shapes( false );
+
+  // Actually load some shapes
+  shapes->initialize();
+  cerr << "Shapes loaded: " << shapes->getShapeCount() << endl;
+
+  // Use a random wall theme.
+  shapes->loadRandomTheme();
+
+  // Create a map.
   levelMap = new Map( adapter, preferences, shapes );
   
-  // For now use the editor settings so we can see a grid
+  // For now use the editor settings because we have no player.
   //MapSettings *mapSettings = new GameMapSettings();
   MapSettings *mapSettings = new EditorMapSettings();
   levelMap->setMapSettings( mapSettings );
 
-  // load some shapes
-  shapes->initialize();
-  cerr << "Shapes loaded: " << shapes->getShapeCount() << endl;
-
+  // Fill map with random shapes.
   createMap();
 }
 
@@ -48,9 +55,6 @@ void Game::handleEvent( SDL_Event *event ) {
 
 // Create a random map
 void Game::createMap() {  
-
-  // use a random wall theme
-  shapes->loadRandomTheme();
 
   // clean the map
   levelMap->reset();
@@ -72,7 +76,5 @@ void Game::createMap() {
 
   // center someplace reasonable
   levelMap->center( MAP_WIDTH / 2, MAP_DEPTH / 2, true );
-
-  levelMap->refresh();
 }
 
