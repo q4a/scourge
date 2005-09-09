@@ -29,6 +29,7 @@ Graphics::Graphics() {
   fps=0;
   videoFlags=0;
   mouseX = mouseY = 0;
+  mouseMovingOverMap = true;
 }
 
 Graphics::~Graphics() {
@@ -285,13 +286,15 @@ void Graphics::mainLoop( Game *game ) {
   bool isActive = true;  
   SDL_Event event;
   while(true) {    
-    int eventCount = 0;  
+    int eventCount = 0;
+    mouseMovingOverMap = false;
     while( SDL_PollEvent( &event ) && 
            ( eventCount++ ) < 10 ) {
       switch( event.type ) {
       case SDL_MOUSEMOTION:
         mouseX = event.motion.x;
         mouseY = event.motion.y;
+        mouseMovingOverMap = true;
         break;
       case SDL_ACTIVEEVENT:
         /* Something's happend with our focus

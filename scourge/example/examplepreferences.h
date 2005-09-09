@@ -80,6 +80,7 @@ public:
    * Convert the sdl event to an engine action (see preferences.h for the enum).
    * This conversion is needed so you can map keys to different actions.
    * Here I only listed the values used by the map.
+   * Return -1 for unknown events.
    */
   virtual inline int getEngineAction( SDL_Event *event ) { 
     switch( event->type ) {
@@ -107,7 +108,7 @@ public:
       break;
     default: break;
     }
-    return 0;
+    return -1;
   }
   
   virtual inline void createConfigDir() { cerr << "Implement me: createConfigDir()." << endl; }

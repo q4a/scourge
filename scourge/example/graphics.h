@@ -31,6 +31,7 @@ private:
   double fps;
   int videoFlags;
   Uint16 mouseX, mouseY;
+  bool mouseMovingOverMap;
 
 public:
   Graphics();
@@ -44,7 +45,7 @@ public:
   virtual inline int getScreenHeight() { return lastHeight; }
   virtual inline Uint16 getMouseX() { return mouseX; }
   virtual inline Uint16 getMouseY() { return mouseY; }
-  virtual inline bool isMouseIsMovingOverMap() { return true; }
+  virtual inline bool isMouseIsMovingOverMap() { return mouseMovingOverMap; }
   virtual inline RenderedCreature *getPlayer() { return NULL; }
   virtual inline void setDebugStr(char *s) { 
     //cerr << s << endl; 
