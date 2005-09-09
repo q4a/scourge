@@ -59,8 +59,16 @@ void Game::createMap() {
   // clean the map
   levelMap->reset();
 
+  for( int x = MAP_OFFSET; x < MAP_WIDTH - MAP_OFFSET; x += MAP_UNIT ) {
+    for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET; y += MAP_UNIT ) {
+      levelMap->
+        setFloorPosition( x, y, 
+                          shapes->findShapeByName( ( (int)( 2.0f * rand()/RAND_MAX ) == 0 ? "FLOOR_TILE" : "ROOM_FLOOR_TILE" ), true ) );
+    }
+  }
+
   // put down some random shapes
-  for( int i = 0; i < 5000; i++ ) {
+  for( int i = 0; i < 2500; i++ ) {
     int x = (int)( (float)( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) * 
                    rand() / RAND_MAX ) + MAP_OFFSET;
     int y = (int)( (float)( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) * 

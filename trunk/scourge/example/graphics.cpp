@@ -29,7 +29,7 @@ Graphics::Graphics() {
   fps=0;
   videoFlags=0;
   mouseX = mouseY = 0;
-  mouseMovingOverMap = true;
+  mouseMovingOverMap = false;
 }
 
 Graphics::~Graphics() {
