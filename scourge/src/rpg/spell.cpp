@@ -125,10 +125,30 @@ void MagicSchool::initMagic() {
 	  int iconTileX = atoi( strtok( NULL, "," ) ) - 1;
 	  int iconTileY = atoi( strtok( NULL, "," ) ) - 1;
 
+    // Friendly/Hostile marker
+    char *fh = strtok( NULL, "," );
+    bool friendly = false;
+    int stateModPrereq = -1;
+    if( fh ) {
+      friendly = ( *fh == 'F' );
+      char *prereq = strtok( NULL, "," );
+      if( prereq ) {
+        // is it a potion state mod?
+        int n = Constants::getPotionSkillByName( prereq );
+        if( n == -1 ) {
+          n = Constants::getStateModByName( (const char*)prereq );
+        }
+        stateModPrereq = n;
+        if( stateModPrereq == -1 ) {
+          cerr << "Error: spell=" << name << endl;
+          cerr << "\tCan't understand prereq for spell: " << prereq << endl;
+        }
+      }
+    }
 
 	  if(!current) {
-		cerr << "*** ignoring spell: " << name << " because no school of magic was specified." << endl;
-		continue;
+      cerr << "*** ignoring spell: " << name << " because no school of magic was specified." << endl;
+      continue;
 	  }
 
 
@@ -142,9 +162,10 @@ void MagicSchool::initMagic() {
       */          
 	  
 	  currentSpell = new Spell( strdup(name), level, mp, exp, failureRate, 
-								action, distance, targetType, speed, effect, 
-								creatureTarget, locationTarget, itemTarget, partyTarget,
-								current, iconTileX, iconTileY );
+                              action, distance, targetType, speed, effect, 
+                              creatureTarget, locationTarget, itemTarget, partyTarget,
+                              current, iconTileX, iconTileY, 
+                              friendly, stateModPrereq );
 	  current->addSpell( currentSpell );
 	} else if( n == 'W' && currentSpell ) {
 	  fgetc(fp);
@@ -196,7 +217,7 @@ Spell *MagicSchool::getRandomSpell(int level) {
 Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
 			 int distance, int targetType, int speed, int effect, bool creatureTarget, 
 			 bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
-			 int iconTileX, int iconTileY) {
+			 int iconTileX, int iconTileY, bool friendly, int stateModPrereq ) {
   this->name = name;
   this->sound = NULL;
   this->level = level;
@@ -215,6 +236,8 @@ Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *acti
   this->school = school;
   this->iconTileX = iconTileX;
   this->iconTileY = iconTileY;
+  this->friendly = friendly;
+  this->stateModPrereq = stateModPrereq;
 
   strcpy(this->notes, "");
 

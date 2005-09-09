@@ -417,6 +417,7 @@ public:
   CONVERSATION_GUI_TITLE,
   TRADE_DIALOG_TITLE,
   TRAIN_DIALOG_TITLE,
+  HEAL_DIALOG_TITLE,
 
 	// last one
 	MESSAGE_COUNT
@@ -513,6 +514,8 @@ public:
 	STATE_MOD_COUNT
   };
   static const char *STATE_NAMES[];
+  // return -1 on failure, 0+ on success
+  static int getStateModByName( const char *p );
   static vector<int> goodStateMod, badStateMod;
   static int getRandomGoodStateMod();
   static int getRandomBadStateMod();

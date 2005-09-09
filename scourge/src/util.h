@@ -111,6 +111,8 @@ public:
   
   inline static float distance2( float x, float y, float z ) { return ( x * x ) + ( y * y ) + ( z * z ); }
 
+  static float getRandomSum( float base, int count, float div=3.0f );
+
 };
 
 #endif

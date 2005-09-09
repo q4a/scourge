@@ -535,3 +535,12 @@ void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
   glPopMatrix();
 }
 
+float Util::getRandomSum( float base, int count, float div ) {
+  float sum = 0;
+  float third = base / div;
+  for( int i = 0; i < ( count < 1 ? 1 : count ); i++ ) {
+    sum += ( ( third * rand()/RAND_MAX ) + ( base - third ) );
+  }
+  return sum;
+}
+

@@ -476,15 +476,6 @@ bool Item::decrementCharges(){
 
 
 
-float Item::getRandomSum( float base, int count ) {
-  float sum = 0;
-  float third = base / 3.0f;
-  for( int i = 0; i < ( count < 1 ? 1 : count ); i++ ) {
-    sum += ( ( third * rand()/RAND_MAX ) + ( base - third ) );
-  }
-  return sum;
-}
-
 void Item::commonInit( bool loading ) {
 
   // --------------
@@ -495,12 +486,12 @@ void Item::commonInit( bool loading ) {
 
   int basePrice = ( this->spell ? this->spell->getExp() : rpgItem->getPriceRpg() );
   price = basePrice + 
-    (int)getRandomSum( (float)(basePrice / 2), level );
+    (int)Util::getRandomSum( (float)(basePrice / 2), level );
 
-  action = (int)getRandomSum( (float)(rpgItem->getActionRpg()), level / 2 );  
+  action = (int)Util::getRandomSum( (float)(rpgItem->getActionRpg()), level / 2 );  
 
   if( rpgItem->getSpeedRpg() ) {
-    speed = rpgItem->getSpeedRpg() - (int)getRandomSum( 1, level / 7 );
+    speed = rpgItem->getSpeedRpg() - (int)Util::getRandomSum( 1, level / 7 );
     if( speed < 3 ) speed = 3;
   } else {
     speed = rpgItem->getSpeedRpg();
@@ -508,17 +499,17 @@ void Item::commonInit( bool loading ) {
 
   if( rpgItem->getDistanceRpg() > Constants::MIN_DISTANCE ) {
     distance = rpgItem->getDistanceRpg() + 
-      (int)getRandomSum( 2, level / 2 );
+      (int)Util::getRandomSum( 2, level / 2 );
   } else distance = rpgItem->getDistanceRpg();
 
   if( rpgItem->getMaxChargesRpg() ) {
     maxCharges = rpgItem->getMaxChargesRpg() + 
-      (int)getRandomSum( (float)(rpgItem->getMaxChargesRpg() / 2), level / 2 );
+      (int)Util::getRandomSum( (float)(rpgItem->getMaxChargesRpg() / 2), level / 2 );
   } else maxCharges = rpgItem->getMaxChargesRpg();
 
   if( rpgItem->getDurationRpg() ) {
     duration = rpgItem->getDurationRpg() + 
-      (int)getRandomSum( (float)( rpgItem->getDurationRpg() / 2 ), level / 2 );
+      (int)Util::getRandomSum( (float)( rpgItem->getDurationRpg() / 2 ), level / 2 );
   } else duration = rpgItem->getDurationRpg();
 
 
