@@ -62,7 +62,8 @@ void Game::createMap() {
     int y = (int)( (float)( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) * 
                    rand() / RAND_MAX ) + MAP_OFFSET;
     int z = 0;
-    int index = (int)( (float)( shapes->getShapeCount() - 2 ) * rand() / RAND_MAX ) + 1;
+    int index = (int)( (float)( shapes->getShapeCount() - 2 ) * 
+                       rand() / RAND_MAX ) + 1;
     Shape *shape = shapes->getShape( index );
     if( !levelMap->isBlocked( x, y, z, -1, -1, -1, shape ) ) {
       levelMap->setPosition( x, y, z, shape );
