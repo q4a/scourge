@@ -669,6 +669,11 @@ public:
   void quickSpellAction( int index );
 
   void drawDescriptions(ScrollingList *list);
+
+  bool doesSaveGameExist(Session *session);
+  bool saveGame(Session *session);
+  bool loadGame(Session *session);
+
 };
 
 #endif

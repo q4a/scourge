@@ -27,6 +27,7 @@
 #include "mapwidget.h"
 #include "session.h"
 #include "tradedialog.h"
+#include "io/file.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -37,6 +38,8 @@
 #define INFO_INTERVAL 3000
 
 #define DEBUG_KEYS 1
+
+#define SAVE_FILE "savegame.dat"
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
@@ -143,7 +146,7 @@ void Scourge::start() {
     // evaluate results and start a missions
     int value = mainMenu->getValue();
     if(value == NEW_GAME) {
-      if(Persist::doesSaveGameExist( session )) {
+      if(doesSaveGameExist( session )) {
         mainMenu->showNewGameConfirmationDialog();
       } else {
         mainMenu->showPartyEditor();
@@ -178,7 +181,7 @@ void Scourge::start() {
 #endif  
         
         if(value == CONTINUE_GAME) {
-          if(!Persist::loadGame( session )) {
+          if(!loadGame( session )) {
             showMessageDialog( "Error loading game!" );
             failed = true;
           }
@@ -259,7 +262,7 @@ void Scourge::startMission() {
 
     // save the party
     if(!session->isMultiPlayerGame()) {
-      if(!Persist::saveGame(session)) {
+      if(!saveGame(session)) {
         showMessageDialog( "Error saving game!" );
       }
     }
@@ -3349,3 +3352,71 @@ Color *Scourge::getOutlineColor( Location *pos ) {
           outlineColor :
           NULL );
 }
+
+bool Scourge::doesSaveGameExist(Session *session) {
+  char path[300];
+  get_file_name( path, 300, SAVE_FILE );
+  FILE *fp = fopen( path, "rb" );
+  bool ret = false;
+  if(fp) {
+    ret = true;
+    fclose( fp );
+  }
+  return ret;
+}
+
+bool Scourge::saveGame(Session *session) {
+  session->getPreferences()->createConfigDir();
+  char path[300];
+  get_file_name( path, 300, SAVE_FILE );
+  FILE *fp = fopen( path, "wb" );
+  if(!fp) {
+    cerr << "Error creating savegame file! path=" << path << endl;
+    return false;
+  }
+  File *file = new File( fp );
+  Uint32 n = PERSIST_VERSION;
+  file->write( &n );
+  n = session->getBoard()->getStorylineIndex();
+  file->write( &n );
+  n = session->getParty()->getPartySize();
+  file->write( &n );
+  for(int i = 0; i < session->getParty()->getPartySize(); i++) {
+    CreatureInfo *info = session->getParty()->getParty(i)->save();
+    Persist::saveCreature( file, info );
+    Persist::deleteCreatureInfo( info );
+  }
+  delete file;
+  return true;
+}
+
+bool Scourge::loadGame(Session *session) {
+  char path[300];
+  get_file_name( path, 300, SAVE_FILE );
+  FILE *fp = fopen( path, "rb" );
+  if(!fp) {
+    return false;
+  }
+  File *file = new File( fp );
+  Uint32 n = PERSIST_VERSION;
+  file->read( &n );
+  if( n != PERSIST_VERSION ) {
+    cerr << "Savegame file is old: ignoring data in file." << endl;
+  } else {
+    Uint32 storylineIndex;
+    file->read( &storylineIndex );
+    file->read( &n );
+    Creature *pc[MAX_PARTY_SIZE];
+    for(int i = 0; i < (int)n; i++) {
+      CreatureInfo *info = Persist::loadCreature( file );
+      pc[i] = session->getParty()->getParty(i)->load( session, info );
+      Persist::deleteCreatureInfo( info );
+    }
+
+    // set the new party
+    session->getParty()->setParty( n, pc, storylineIndex );
+  }
+  delete file;
+  return true;
+}
+

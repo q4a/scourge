@@ -225,6 +225,7 @@ public:
 
   // 1-based!
   inline GLShape *getShape(int index) { return shapes[index]; }
+  inline int getShapeCount() { return shapeCount; }
 
   inline map<string, GLShape *> *getShapeMap() { return &shapeMap; }
 

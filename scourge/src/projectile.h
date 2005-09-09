@@ -26,6 +26,7 @@ class Creature;
 class Item;
 class Spell;
 class Shape;
+class Session;
 
 using namespace std;
 
