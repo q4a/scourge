@@ -28,10 +28,12 @@ class ExamplePreferences : public Preferences {
 
 private:
   int bpp;
+  bool useStencilBuffer;
    
 public:
    
-  ExamplePreferences::ExamplePreferences() {
+  ExamplePreferences::ExamplePreferences( bool useStencilBuffer ) {
+    this->useStencilBuffer = useStencilBuffer;
     bpp = -1;
   }
   virtual ExamplePreferences::~ExamplePreferences() {
@@ -46,12 +48,12 @@ public:
   virtual inline bool getForce_swsurf() { return false; }
   virtual inline bool getHwaccel() { return true; }
   virtual inline bool getTest() { return false; }
-  virtual inline bool getStencilbuf() { return false; }
+  virtual inline bool getStencilbuf() { return useStencilBuffer; }
   virtual inline bool getMultitexturing() { return true; }
   virtual inline int getBpp() { return this->bpp; } // sdl will guess it
   virtual inline int getW() { return 640; }
   virtual inline int getH() { return 480; }
-  virtual inline int getShadows() { return 0; }
+  virtual inline int getShadows() { return( useStencilBuffer ? 2 : 0 ); }
   virtual inline int getGameSpeedLevel() { return 0; }
   virtual inline bool getAlwaysCenterMap() { return false; }
   virtual inline bool getKeepMapSize() { return false; }

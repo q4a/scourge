@@ -825,13 +825,16 @@ void Map::setupPosition(int posX, int posY, int posZ,
 void Map::draw() {
 
   if( adapter->isMouseIsMovingOverMap() && !selectMode ) {
-    // careful this calls draw() again!
+    // save mapChanged (fixes bug where map won't draw initially)
+    bool b = mapChanged;
     selectMode = true;
+    // careful this calls draw() again!
     getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
     getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
     cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
     cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
     selectMode = false;
+    mapChanged = b;
     //cerr << "x=" << cursorMapX << " y=" << cursorMapY << " z=" << cursorMapZ << endl;
   }
 

@@ -38,8 +38,8 @@ else
 EXTRA_CFLAGS = -g
 endif
 
-CC=g++
-CXX=g++
+CC=gcc
+CXX=gcc
 CXXFLAGS=${SCOURGE_CFLAGS} ${SDL_CFLAGS} ${GL_CFLAGS} ${EXTRA_CFLAGS} -Wall
 LDFLAGS=-Wall ${SDL_LIBS} ${GL_LIBS}
 # Executable name must match first .o file's base-name.

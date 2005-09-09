@@ -22,15 +22,16 @@
 int main( int argc, char *argv[] ) {
 
   // where is our data dir?
-  if( argc < 2 ) {
-    cerr << "Usage: ./main <path to data dir>" << endl;
+  if( argc < 3 ) {
+    cerr << "Usage: ./main <true|false to use stencil buffer> <path to data dir>" << endl;
     exit( 1 );
   }
-  rootDir = strdup( argv[ 1 ] );
+  bool useStencilBuffer = ( !strcmp( argv[1], "true" ) );
+  rootDir = strdup( argv[ 2 ] );
 
   // Set up the graphics and preferences
   Graphics *graphics = new Graphics();
-  Preferences *pref = new ExamplePreferences();
+  Preferences *pref = new ExamplePreferences( useStencilBuffer );
   graphics->setVideoMode( pref );
 
   // Run the game
