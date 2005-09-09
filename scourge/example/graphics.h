@@ -46,7 +46,9 @@ public:
   virtual inline Uint16 getMouseY() { return mouseY; }
   virtual inline bool isMouseIsMovingOverMap() { return true; }
   virtual inline RenderedCreature *getPlayer() { return NULL; }
-  virtual inline void setDebugStr(char *s) { cerr << s << endl; }
+  virtual inline void setDebugStr(char *s) { 
+    //cerr << s << endl; 
+  }
   virtual inline bool isMissionCreature( RenderedCreature *creature ) { return false; }
   virtual inline void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL) {}
   virtual inline void eraseMiniMapPoint(int x, int y) {}

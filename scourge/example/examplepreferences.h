@@ -110,9 +110,7 @@ public:
     return 0;
   }
   
-  virtual inline void createConfigDir() { 
-    //cerr << "Implement me: createConfigDir()." << endl; 
-  }
+  virtual inline void createConfigDir() { cerr << "Implement me: createConfigDir()." << endl; }
 };
 
 #endif
