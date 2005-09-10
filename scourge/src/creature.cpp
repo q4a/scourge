@@ -1435,7 +1435,7 @@ void Creature::applySkillMod() {
 
 int Creature::getMaxHp() {
   if(isMonster()) {
-    return monster->getHp(); // FIXME: incorrect, see monsterInit()
+    return startingHp;
   } else {
     return(character->getStartingHp() * ( getLevel() + 1 ));
   }
@@ -1443,7 +1443,7 @@ int Creature::getMaxHp() {
 
 int Creature::getMaxMp() {
   if(isMonster()) {
-    return monster->getMp(); // FIXME: incorrect, see monsterInit()
+    return startingMp;
   } else {
     return(character->getStartingMp() * ( getLevel() + 1 ));
   }
@@ -1517,9 +1517,14 @@ bool Creature::isWithPrereq( Spell *spell ) {
   if( spell->isStateModPrereqAPotionSkill() ) {
     switch( spell->getStateModPrereq() ) {
     case Constants::HP:
-      return( getMaxHp() - getHp() <= (int)( (float)( getMaxHp() ) * 0.25f ) ? true : false );
+      //cerr << "\tisWithPrereq: " << getName() << " max hp=" << getMaxHp() << " hp=" << getHp() << endl;
+      return( getHp() <= (int)( (float)( getMaxHp() ) * 0.25f ) ? 
+              true : 
+              false );
     case Constants::MP:
-      return( getMaxMp() - getMp() <= (int)( (float)( getMaxMp() ) * 0.25f ) ? true : false );
+      return( getMp() <= (int)( (float)( getMaxMp() ) * 0.25f ) ? 
+              true : 
+              false );
     case Constants::AC:
       return( getSkillModifiedArmor() < 10 ? true : false ); // fixme...
     default: return false;
@@ -1543,12 +1548,16 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
     }
   } else {
     for( int i = 0; i < session->getCreatureCount(); i++ ) {
-      if( session->getCreature( i )->isWithPrereq( spell ) ) 
+      if( session->getCreature( i )->isWithPrereq( spell ) &&
+          session->getCreature( i )->isMonster() &&
+          !session->getCreature( i )->getMonster()->isNpc() ) 
         possibleTargets.push_back( session->getCreature( i ) );
     }
   }
 
-  // which one is in range?
+  // find the closest one that is closer than 20 spaces away.
+  Creature *closest = NULL;
+  float closestDist = 0;
   for( int i = 0; i < (int)possibleTargets.size(); i++ ) {
     Creature *p = possibleTargets[ i ];
     float dist = 
@@ -1557,13 +1566,12 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
                            p->getX(), p->getY(),
                            p->getShape()->getWidth(), 
                            p->getShape()->getDepth() );
-    if( ( spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE ) ||
-        ( spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE ) ) {
-      return p;
+    if( !closest || dist < closestDist ) {
+      closest = p;
+      closestDist = dist;
     }
   }
-
-  return NULL;
+  return( closest && closestDist < 20.0f ? closest : NULL );
 }                                             
 
 // FIXME: make this more intelligent: potions, spells, scrolls, etc.
@@ -1583,23 +1591,31 @@ void Creature::decideMonsterAction() {
 
     // try to heal someone
     Creature *p;
+    //bool hasHealingSpells = false;
     for(int i = 0; i < getSpellCount(); i++) {
       Spell *spell = getSpell(i);
       // can it be cast and is it a "friendly" (healing) spell?
       if( spell->getMp() < getMp() && 
           spell->isFriendly() && 
           spell->hasStateModPrereq() ) {
+        //hasHealingSpells = true;
+        //cerr << "Looking to heal a creature:" << endl;
         p = findClosestTargetWithPrereq( spell );
         if( p ) {
+          //cerr << "\t*** Selected: " << p->getName() << endl;
           setAction(Constants::ACTION_CAST_SPELL, 
                     NULL,
                     spell);
           setMotion(Constants::MOTION_MOVE_TOWARDS);
           setTargetCreature(p);
           return;
+        } else {
+          //cerr << "\t*** Selected: NONE." << endl;
         }
       }
     }
+    // FIXME: for debugging only!
+    //if( hasHealingSpells ) return;
     
     // try to attack someone
     if(getStateMod(Constants::possessed)) {
