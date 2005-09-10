@@ -1510,6 +1510,62 @@ void Creature::followTarget() {
            true);
 }
 
+/**
+ * Does the spell's prerequisite apply to this creature?
+ */
+bool Creature::isWithPrereq( Spell *spell ) {
+  if( spell->isStateModPrereqAPotionSkill() ) {
+    switch( spell->getStateModPrereq() ) {
+    case Constants::HP:
+      return( getMaxHp() - getHp() <= (int)( (float)( getMaxHp() ) * 0.25f ) ? true : false );
+    case Constants::MP:
+      return( getMaxMp() - getMp() <= (int)( (float)( getMaxMp() ) * 0.25f ) ? true : false );
+    case Constants::AC:
+      return( getSkillModifiedArmor() < 10 ? true : false ); // fixme...
+    default: return false;
+    }
+  } else {
+    return getStateMod( spell->getStateModPrereq() );
+  }
+}
+
+Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
+
+  // is it self?
+  if( isWithPrereq( spell ) ) return this;
+
+  // who are the possible targets?
+  vector<Creature*> possibleTargets;
+  if( getStateMod( Constants::possessed ) ) {
+    for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+      if( session->getParty()->getParty( i )->isWithPrereq( spell ) )
+        possibleTargets.push_back( session->getParty()->getParty( i ) );
+    }
+  } else {
+    for( int i = 0; i < session->getCreatureCount(); i++ ) {
+      if( session->getCreature( i )->isWithPrereq( spell ) ) 
+        possibleTargets.push_back( session->getCreature( i ) );
+    }
+  }
+
+  // which one is in range?
+  for( int i = 0; i < (int)possibleTargets.size(); i++ ) {
+    Creature *p = possibleTargets[ i ];
+    float dist = 
+      Constants::distance( getX(),  getY(), 
+                           getShape()->getWidth(), getShape()->getDepth(),
+                           p->getX(), p->getY(),
+                           p->getShape()->getWidth(), 
+                           p->getShape()->getDepth() );
+    if( ( spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE ) ||
+        ( spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE ) ) {
+      return p;
+    }
+  }
+
+  return NULL;
+}                                             
+
 // FIXME: make this more intelligent: potions, spells, scrolls, etc.
 void Creature::decideMonsterAction() {
   if(!isMonster()) return;
@@ -1525,10 +1581,27 @@ void Creature::decideMonsterAction() {
     setMotion(Constants::MOTION_STAND);
   } else {
 
-    // does monster need to be healed?
-    
-    // increase MP, AC or skill (via potion)?
+    // try to heal someone
     Creature *p;
+    for(int i = 0; i < getSpellCount(); i++) {
+      Spell *spell = getSpell(i);
+      // can it be cast and is it a "friendly" (healing) spell?
+      if( spell->getMp() < getMp() && 
+          spell->isFriendly() && 
+          spell->hasStateModPrereq() ) {
+        p = findClosestTargetWithPrereq( spell );
+        if( p ) {
+          setAction(Constants::ACTION_CAST_SPELL, 
+                    NULL,
+                    spell);
+          setMotion(Constants::MOTION_MOVE_TOWARDS);
+          setTargetCreature(p);
+          return;
+        }
+      }
+    }
+    
+    // try to attack someone
     if(getStateMod(Constants::possessed)) {
       p = session->getClosestVisibleMonster(toint(getX()), toint(getY()), 
                                             getShape()->getWidth(),
@@ -1541,11 +1614,12 @@ void Creature::decideMonsterAction() {
                                                 20);
     }
     if(p) {
-      float dist = Constants::distance(getX(),  getY(), 
-                                       getShape()->getWidth(), getShape()->getDepth(),
-                                       p->getX(), p->getY(),
-                                       p->getShape()->getWidth(), 
-                                       p->getShape()->getDepth());
+      float dist = 
+        Constants::distance(getX(),  getY(), 
+                            getShape()->getWidth(), getShape()->getDepth(),
+                            p->getX(), p->getY(),
+                            p->getShape()->getWidth(), 
+                            p->getShape()->getDepth());
       
       // can monster use magic?
       if(getSpellCount()) {
@@ -1566,7 +1640,7 @@ void Creature::decideMonsterAction() {
         */
         for(int i = 0; i < getSpellCount(); i++) {
           Spell *spell = getSpell(i);
-          if(spell->getMp() < getMp()) {
+          if( spell->getMp() < getMp() ) {
             if((spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE) ||
                (spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE)) {
               setAction(Constants::ACTION_CAST_SPELL, 

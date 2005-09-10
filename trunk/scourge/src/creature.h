@@ -411,7 +411,8 @@ class Creature : public RenderedCreature {
   //void makeTargetRetaliate();
   void decideMonsterAction();
   float getDistanceToTarget();
-
+  bool isWithPrereq( Spell *spell );
+  Creature *findClosestTargetWithPrereq( Spell *spell );
 
   inline void setStateModEvent(int mod, Event *event) { stateModEventMap[mod] = event; }
   inline Event *getStateModEvent(int mod) { return(stateModEventMap.find(mod) == stateModEventMap.end() ? NULL : stateModEventMap[mod]); }
