@@ -155,12 +155,13 @@ char *Constants::messages[][80] = {
   { "Conversation" },
   { "Trade" },
   { "Train" },
-  { "Healing Services" }
+  { "Healing Services" },
+  { "Donate to Temple" }
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines

@@ -127,6 +127,7 @@ class MagicSchool {
   char deityDescription[3000];
   int skill, resistSkill;
   vector<Spell*> spells;
+  vector<string> lowDonate, neutralDonate, highDonate;
 
   static MagicSchool *schools[10];
   static int schoolCount;
@@ -152,8 +153,13 @@ class MagicSchool {
   static Spell *getRandomSpell(int level);
   static MagicSchool *getMagicSchoolByName( char *s ) { string name = s; return (schoolMap.find(name) == schoolMap.end() ? NULL : schoolMap[name]); }
 
+  const char *getLowDonateMessage();
+  const char *getNeutralDonateMessage();
+  const char *getHighDonateMessage();
+
  protected:
   inline void addSpell( Spell *spell ) { spells.push_back( spell ); }
+  const char *getRandomString( vector<string> *v );
 };
 
 #endif

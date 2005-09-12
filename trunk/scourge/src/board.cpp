@@ -822,6 +822,10 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
   }
   
   if( subtype ) {
+    // store as a string
+    this->subtypeStr = subtype;
+    
+    // parse for some npc types
     char s[255];
     strcpy( s, subtype );
     char *p = strtok( s, ";" );
@@ -837,7 +841,6 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
       }
       p = strtok( NULL, ";" );
     }
-    delete subtype;
   }
 }
 

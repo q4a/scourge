@@ -195,11 +195,39 @@ void MagicSchool::initMagic() {
   } else if( n == 'G' && current ) {
     n = Constants::readLine(line, fp);
     current->addToDeityDescription( line + 1 );
+  } else if( n == 'L' && current ) {
+    fgetc(fp);
+	  n = Constants::readLine(line, fp);
+    current->lowDonate.push_back( line );
+  } else if( n == 'N' && current ) {
+    fgetc(fp);
+	  n = Constants::readLine(line, fp);
+    current->neutralDonate.push_back( line );
+  } else if( n == 'H' && current ) {
+    fgetc(fp);
+	  n = Constants::readLine(line, fp);
+    current->highDonate.push_back( line );  
 	} else {
 	  n = Constants::readLine(line, fp);
-	}
+  }
   }
   fclose(fp);
+}
+
+const char *MagicSchool::getRandomString( vector<string> *v ) {
+  return (*v)[ (int)( (float)( v->size() ) * rand()/RAND_MAX ) ].c_str();
+}
+
+const char *MagicSchool::getLowDonateMessage() {
+  return getRandomString( &lowDonate );
+}
+
+const char *MagicSchool::getNeutralDonateMessage() {
+  return getRandomString( &neutralDonate );
+}
+
+const char *MagicSchool::getHighDonateMessage() {
+  return getRandomString( &highDonate );
 }
 
 Spell *MagicSchool::getRandomSpell(int level) {
