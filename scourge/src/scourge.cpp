@@ -28,6 +28,7 @@
 #include "session.h"
 #include "tradedialog.h"
 #include "healdialog.h"
+#include "donatedialog.h"
 #include "io/file.h"
 
 #define MOUSE_ROT_DELTA 2
@@ -215,6 +216,7 @@ Scourge::~Scourge(){
   delete conversationGui;
   delete tradeDialog;
   delete healDialog;
+  delete donateDialog;
 }
 
 void Scourge::startMission() {
@@ -444,6 +446,7 @@ void Scourge::startMission() {
     conversationGui->hide();
     tradeDialog->getWindow()->setVisible( false );
     healDialog->getWindow()->setVisible( false );
+    donateDialog->getWindow()->setVisible( false );
 
     resetBattles();
     
@@ -1880,6 +1883,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     healDialog->handleEvent( widget, event );
   }
 
+  if( donateDialog->getWindow()->isVisible() ) {
+    donateDialog->handleEvent( widget, event );
+  }
+
   // FIXME: this is hacky...
   if(handlePartyEvent(widget, event)) return true;
   int n = handleBoardEvent(widget, event);
@@ -1918,6 +1925,7 @@ void Scourge::createUI() {
   conversationGui = new ConversationGui( this );
   tradeDialog = new TradeDialog( this );
   healDialog = new HealDialog( this );
+  donateDialog = new DonateDialog( this );
 
   int width = 
     getSDLHandler()->getScreen()->w - 
@@ -2970,6 +2978,7 @@ void Scourge::setPlayer(int n) {
 void Scourge::setPlayerUI(int index) {
   if( tradeDialog->getWindow()->isVisible() ) tradeDialog->updateUI();
   if( healDialog->getWindow()->isVisible() ) healDialog->updateUI();
+  if( donateDialog->getWindow()->isVisible() ) donateDialog->updateUI();
 }
 
 void Scourge::toggleRoundUI(bool startRound) {

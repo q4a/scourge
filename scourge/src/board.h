@@ -64,6 +64,7 @@ public:
   int x, y, level, type;
   char *name;
   set<int> subtype;
+  char *subtypeStr;
 
   NpcInfo( int x, int y, char *name, int level, char *type, char *subtype );
   ~NpcInfo();

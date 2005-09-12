@@ -21,6 +21,7 @@
 #include "creature.h"
 #include "tradedialog.h"
 #include "healdialog.h"
+#include "donatedialog.h"
 #include "board.h"
 
 #define TRADE_WORD "trade"
@@ -134,7 +135,7 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == healButton ) {
     scourge->getHealDialog()->setCreature( creature );
   } else if( widget == donateButton ) {
-    scourge->showMessageDialog( "FIXME: donate to church-dialog" );
+    scourge->getDonateDialog()->setCreature( creature );
   }
 
   return false;
