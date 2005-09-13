@@ -30,6 +30,7 @@
 #include "healdialog.h"
 #include "donatedialog.h"
 #include "io/file.h"
+#include "texteffect.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -96,6 +97,8 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 
   willStartDrag = false;
   willStartDragX = willStartDragY = 0;
+  textEffect = NULL;
+  textEffectTimer = 0;
 }
 
 void Scourge::initUI() {
@@ -568,6 +571,16 @@ void Scourge::drawView() {
 
   drawBorder();
 
+  // draw the current text effect
+  if( textEffect ) {
+    if( SDL_GetTicks() - textEffectTimer < 5000 ) {
+      textEffect->draw();
+    } else {
+      delete textEffect;
+      textEffect = NULL;
+    }
+  }
+
   // Hack: A container window may have been closed by hitting the Esc. button.
   if(Window::windowWasClosed) {
     if(containerGuiCount > 0) {
@@ -645,6 +658,7 @@ bool Scourge::inTurnBasedCombatPlayerTurn() {
 }         
 
 void Scourge::drawAfter() {
+
   drawDraggedItem();
 
   // draw turn info
@@ -1128,7 +1142,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
 
 #ifdef DEBUG_KEYS
     if(event->key.keysym.sym == SDLK_l) {
-      cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
+      //cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
+
+      //party->getPlayer()->addExperience( 1000 );
+      session->creatureDeath( party->getPlayer() );
+
       return false;
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
@@ -3438,3 +3456,16 @@ bool Scourge::loadGame(Session *session) {
   return true;
 }
 
+bool Scourge::startTextEffect( char *message ) {
+  if( !textEffect ) {
+    int x = getScreenWidth() / 2 - ( strlen( message ) / 2 * 18 );
+    int y = getScreenHeight() / 2 - 50;
+    //cerr << "x=" << x << " y=" << y << endl;
+    textEffect = new TextEffect( this, x, y, message );
+    textEffect->setActive( true );
+    textEffectTimer = SDL_GetTicks();
+    return true;
+  } else {
+    return false;
+  }
+}

@@ -306,6 +306,12 @@ void Session::creatureDeath(Creature *creature) {
     item->addContainedItem(creature->removeInventory(0), true);
   }
   creature->setStateMod(Constants::dead, true);
+
+  if( !( creature->isMonster() ) ) {
+    char message[255];
+    sprintf( message, "  %s dies!", creature->getName() );
+    getGameAdapter()->startTextEffect( message );
+  }
 }                 
 
 int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {

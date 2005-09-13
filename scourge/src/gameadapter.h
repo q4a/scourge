@@ -121,6 +121,8 @@ public:
   virtual RenderedCreature *load( CreatureInfo *info );
   virtual RenderedCreature *getPlayer();
   virtual RenderedCreature *getParty( int index );
+
+  virtual inline bool startTextEffect( char *message ) { return false; }
 };
 
 class SDLOpenGLAdapter : public GameAdapter {
