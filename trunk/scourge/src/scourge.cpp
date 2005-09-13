@@ -349,14 +349,14 @@ void Scourge::startMission() {
         dg = NULL;
         levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, currentStory, changingStory );
         //cerr << result << endl;
-        cerr << "***** " << getSession()->getCurrentMission()->getMapName() << endl;
+        //cerr << "***** " << getSession()->getCurrentMission()->getMapName() << endl;
       } else {
         dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
                                   (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
                                   (currentStory > 0),
                                   getSession()->getCurrentMission());
         dg->toMap(levelMap, getSession()->getShapePalette());
-        cerr << "***** random" << endl;
+        //cerr << "***** random" << endl;
       }
     }
 
@@ -2144,7 +2144,8 @@ bool Scourge::fightCurrentBattleTurn() {
         // TB: fight the current battle turn only
         Battle *battle = battleRound[battleTurn];
         resetNonParticipantAnimation( battle );
-        if(battle->fightTurn()) {
+
+        if( battle->fightTurn() ) {
           battleTurn++;
         }
         roundOver = ( battleTurn >= (int)battleRound.size() );
@@ -2228,9 +2229,8 @@ bool Scourge::createBattleTurns() {
         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                     toint(session->getCreature(i)->getY())) &&
         levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
-                                    toint(session->getCreature(i)->getY())) &&
-        !(session->getCreature(i)->getMonster() && 
-          session->getCreature(i)->getMonster()->isNpc())) {
+                                    toint(session->getCreature(i)->getY()))) {
+
       bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                         session->getCreature(i)->getAction() > -1);
       // Don't start a round if this creature is unreachable by party. Otherwise
@@ -2354,7 +2354,7 @@ void Scourge::moveCreatures() {
   for(int i = 0; i < session->getCreatureCount(); i++) {
     if(!session->getCreature(i)->getStateMod(Constants::dead) && 
        levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
-                              toint(session->getCreature(i)->getY()))) {
+                                   toint(session->getCreature(i)->getY()))) {
       moveMonster(session->getCreature(i));
     }
   }

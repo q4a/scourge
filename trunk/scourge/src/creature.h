@@ -410,6 +410,12 @@ class Creature : public RenderedCreature {
   void followTarget();
   //void makeTargetRetaliate();
   void decideMonsterAction();
+
+  /**
+   * Try to heal someone; returns true if someone was found.
+   */
+  bool castHealingSpell();
+
   float getDistanceToTarget();
   bool isWithPrereq( Spell *spell );
   Creature *findClosestTargetWithPrereq( Spell *spell );

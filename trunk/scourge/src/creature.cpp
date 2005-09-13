@@ -1543,14 +1543,16 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
   vector<Creature*> possibleTargets;
   if( getStateMod( Constants::possessed ) ) {
     for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-      if( session->getParty()->getParty( i )->isWithPrereq( spell ) )
+      if( session->getParty()->getParty( i )->isWithPrereq( spell ) &&
+          !session->getParty()->getParty( i )->getStateMod( Constants::dead ) )
         possibleTargets.push_back( session->getParty()->getParty( i ) );
     }
   } else {
     for( int i = 0; i < session->getCreatureCount(); i++ ) {
       if( session->getCreature( i )->isWithPrereq( spell ) &&
           session->getCreature( i )->isMonster() &&
-          !session->getCreature( i )->getMonster()->isNpc() ) 
+          !session->getCreature( i )->getMonster()->isNpc() &&
+          !session->getCreature( i )->getStateMod( Constants::dead ) ) 
         possibleTargets.push_back( session->getCreature( i ) );
     }
   }
@@ -1574,7 +1576,42 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
   return( closest && closestDist < 20.0f ? closest : NULL );
 }                                             
 
-// FIXME: make this more intelligent: potions, spells, scrolls, etc.
+/**
+ * Try to heal someone; returns true if someone was found.
+ */
+bool Creature::castHealingSpell() {
+  if( !isMonster() ) return false;
+
+  // are we in the middle of casting a healing spell already?
+  //if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
+
+  // try to heal someone
+  for(int i = 0; i < getSpellCount(); i++) {
+    Spell *spell = getSpell(i);
+    // can it be cast and is it a "friendly" (healing) spell?
+    if( spell->getMp() < getMp() && 
+        spell->isFriendly() && 
+        spell->hasStateModPrereq() ) {
+      //cerr << "Looking to heal a creature:" << endl;
+      Creature *p = findClosestTargetWithPrereq( spell );
+      if( p ) {
+
+        // is this needed?
+        // getBattle()->reset();
+
+        //cerr << "\t*** Selected: " << p->getName() << endl;
+        setAction(Constants::ACTION_CAST_SPELL, 
+                  NULL,
+                  spell);
+        setMotion(Constants::MOTION_MOVE_TOWARDS);
+        setTargetCreature(p);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 void Creature::decideMonsterAction() {
   if(!isMonster()) return;
 
@@ -1589,40 +1626,15 @@ void Creature::decideMonsterAction() {
     setMotion(Constants::MOTION_STAND);
   } else {
 
-    // try to heal someone
-    Creature *p;
-    //bool hasHealingSpells = false;
-    for(int i = 0; i < getSpellCount(); i++) {
-      Spell *spell = getSpell(i);
-      // can it be cast and is it a "friendly" (healing) spell?
-      if( spell->getMp() < getMp() && 
-          spell->isFriendly() && 
-          spell->hasStateModPrereq() ) {
-        //hasHealingSpells = true;
-        //cerr << "Looking to heal a creature:" << endl;
-        p = findClosestTargetWithPrereq( spell );
-        if( p ) {
-          //cerr << "\t*** Selected: " << p->getName() << endl;
-          setAction(Constants::ACTION_CAST_SPELL, 
-                    NULL,
-                    spell);
-          setMotion(Constants::MOTION_MOVE_TOWARDS);
-          setTargetCreature(p);
-          return;
-        } else {
-          //cerr << "\t*** Selected: NONE." << endl;
-        }
-      }
-    }
-    // FIXME: for debugging only!
-    //if( hasHealingSpells ) return;
+    if( castHealingSpell() ) return;
     
     // try to attack someone
+    Creature *p;
     if(getStateMod(Constants::possessed)) {
       p = session->getClosestVisibleMonster(toint(getX()), toint(getY()), 
-                                            getShape()->getWidth(),
-                                            getShape()->getDepth(),
-                                            20);
+                                                      getShape()->getWidth(),
+                                                      getShape()->getDepth(),
+                                                      20);
     } else {
       p = session->getParty()->getClosestPlayer(toint(getX()), toint(getY()), 
                                                 getShape()->getWidth(),
@@ -1639,24 +1651,9 @@ void Creature::decideMonsterAction() {
       
       // can monster use magic?
       if(getSpellCount()) {
-        
-        /*                                                                                
-          FIXME:                                                                            
-                    
-          Other consid  erations:
-          -heal other monsters (by spell)?
-          -attack by spell?
-          -group attack vs. single target?
-        
-          For now, just assume that monsters only know attack spells 
-          where the target can be a single creature. Later when spell
-          casting is smarter (by monsters) we'll need to implement some
-          way to classify spells (attack, help (hp+,ac+,etc.), group vs. 
-          single target, etc.)
-        */
         for(int i = 0; i < getSpellCount(); i++) {
           Spell *spell = getSpell(i);
-          if( spell->getMp() < getMp() ) {
+          if( spell->getMp() < getMp() && !( spell->isFriendly() ) ) {
             if((spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE) ||
                (spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE)) {
               setAction(Constants::ACTION_CAST_SPELL, 

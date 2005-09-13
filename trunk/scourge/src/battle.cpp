@@ -166,12 +166,12 @@ bool Battle::fightTurn() {
   }
 
   if(creature->hasTarget() && 
-     creature->isTargetValid()) {
+     creature->isTargetValid()) {    
     if(dist < range) {
       executeAction();
     } else {
       stepCloserToTarget();
-    }
+    }    
   } else {
     moveCreature();
   }
@@ -264,6 +264,16 @@ void Battle::initTurnStep() {
 }
 
 void Battle::executeAction() {
+  // try to heal someone
+  if( !creature->getActionSpell() ) {
+    if( creature->castHealingSpell() ) {
+      if(debugBattle) cerr << "Stopping executeAction: Creature: " << creature->getName() << 
+        " will heal " << creature->getTargetCreature()->getName() << endl;
+      weaponWait = 0;
+      return;
+    }
+  }
+
   ap--;
   if(weaponWait > 0) {
     weaponWait--;
@@ -285,6 +295,16 @@ void Battle::executeAction() {
 }
 
 void Battle::stepCloserToTarget() {
+  // try to heal someone
+  if( !creature->getActionSpell() ) {
+    if( creature->castHealingSpell() ) {
+      if(debugBattle) cerr << "Stopping stepCloserToTarget: Creature: " << creature->getName() << 
+        " will heal " << creature->getTargetCreature()->getName() << endl;
+      weaponWait = 0;
+      return;
+    }
+  }
+
   // out of range: take 1 step closer
 
   // re-select the best weapon
