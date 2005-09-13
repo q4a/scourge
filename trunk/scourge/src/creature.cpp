@@ -1304,6 +1304,9 @@ int Creature::addExperience(int delta) {
   if(exp >= expOfNextLevel && !getStateMod(Constants::leveled)) {
     setStateMod(Constants::leveled, true);
     availableSkillPoints = character->getSkillBonus();
+    char message[255];
+    sprintf( message, "  %s levels up!", getName() );
+    session->getGameAdapter()->startTextEffect( message );
   }
   return n;
 }

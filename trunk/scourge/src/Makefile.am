@@ -90,5 +90,7 @@ scourge_SOURCES = \
 	healdialog.cpp\
 	healdialog.h\
 	donatedialog.cpp\
-	donatedialog.h
+	donatedialog.h\
+	texteffect.cpp\
+	texteffect.h
 

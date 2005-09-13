@@ -92,6 +92,7 @@ class MapWidget;
 class TradeDialog;
 class HealDialog;
 class DonateDialog;
+class TextEffect;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -230,6 +231,8 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   DonateDialog *donateDialog;
 
   Color *outlineColor;
+  TextEffect *textEffect;
+  GLint textEffectTimer;
 
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
@@ -638,6 +641,8 @@ public:
   inline TradeDialog *getTradeDialog() { return tradeDialog; }
   inline HealDialog *getHealDialog() { return healDialog; }
   inline DonateDialog *getDonateDialog() { return donateDialog; }
+
+  bool startTextEffect( char *message );
   
  protected:
 
@@ -679,7 +684,6 @@ public:
   bool doesSaveGameExist(Session *session);
   bool saveGame(Session *session);
   bool loadGame(Session *session);
-
 };
 
 #endif
