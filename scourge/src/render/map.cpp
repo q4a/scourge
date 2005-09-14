@@ -2897,6 +2897,14 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
+
+    if( info->pos[i]->x >= MAP_WIDTH ||
+        info->pos[i]->y >= MAP_DEPTH ||
+        info->pos[i]->z >= MAP_VIEW_HEIGHT ) {
+      cerr << "*** Skipping invalid map location: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
+      continue;
+    }
+
     if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
       shape = shapes->
         findShapeByName( (char*)(info->pos[i]->floor_shape_name), true );
@@ -2906,7 +2914,6 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
     }
 
     if( info->pos[i]->item ) {
-      //Item *item = Item::load( session, info->pos[i]->item );
       RenderedItem *item = adapter->load( info->pos[i]->item );
       if( item ) setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
       else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
@@ -2926,13 +2933,11 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
 
     // FIXME: handle door info 
   }
-
   this->center( info->start_x, info->start_y, true );
 
   Persist::deleteMapInfo( info );
 
   // load map-related data from text file
-  //Mission::loadMapData( (const char*)name );
   adapter->loadMapData( (const char*)fileName );
   
   strcpy( this->name, name );
@@ -3005,7 +3010,6 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
       */
     }
   }
-
   sprintf( result, "Map loaded: %s", name );
 }
 

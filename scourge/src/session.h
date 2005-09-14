@@ -18,6 +18,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+#include <vector>
 #include "constants.h"
 #include "preferences.h"
 //#include "board.h"
@@ -64,10 +65,8 @@ private:
 #endif
   bool multiplayerGame;
   Mission *currentMission;
-  Item *newItems[500];
-  Creature *creatures[500];
-  int itemCount;
-  int creatureCount;
+  vector<Item*> newItems;
+  vector<Creature*> creatures;
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -136,9 +135,9 @@ public:
     @return the creature created.
   */
   virtual Creature *newCreature( Monster *monster, GLShape *shape, bool loaded=false );
-  inline int getCreatureCount() { return creatureCount; }
+  inline int getCreatureCount() { return creatures.size(); }
   inline Creature *getCreature(int index) { return creatures[index]; }
-  inline int getItemCount() { return itemCount; }
+  inline int getItemCount() { return newItems.size(); }
   inline Item *getItem(int index) { return newItems[index]; }
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
 
