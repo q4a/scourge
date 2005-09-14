@@ -828,6 +828,7 @@ void Map::draw() {
   if( adapter->isMouseIsMovingOverMap() && !selectMode ) {
     // save mapChanged (fixes bug where map won't draw initially)
     bool b = mapChanged;
+    mapChanged = false;
     selectMode = true;
     // careful this calls draw() again!
     getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
@@ -1326,7 +1327,7 @@ void Map::draw() {
     setZoomOut( false );
   }
 
-  if(move) moveMap( move );
+  if( move && !selectMode ) moveMap( move );
 }
 
 void Map::sortShapes( DrawLater *playerDrawLater,
