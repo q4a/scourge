@@ -2480,7 +2480,7 @@ void Scourge::refreshContainerGui(Item *container) {
 }
 
 void Scourge::showMessageDialog(char *message) {
-  party->toggleRound(true);
+  if( party && party->getPartySize() ) party->toggleRound(true);
   Window::showMessageDialog(getSDLHandler(), 
 							getSDLHandler()->getScreen()->w / 2 - 200,
 							getSDLHandler()->getScreen()->h / 2 - 55,
