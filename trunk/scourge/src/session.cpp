@@ -36,13 +36,12 @@ Session::Session(GameAdapter *adapter) {
   server = NULL;
   client = NULL;
 #endif
-  // new item and creature references
-  itemCount = creatureCount = 0;
   multiplayerGame = false;
   currentMission = NULL;
 }
 
 Session::~Session() {
+  deleteCreaturesAndItems();
   if(shapePal) delete shapePal;
   if(party) delete party;
   if(board) delete board;
@@ -202,28 +201,29 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
     itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
   }
   if( itemLevel < 1 ) itemLevel = 1;
-  newItems[itemCount] = new Item(this, rpgItem, itemLevel, loading);
-  if(spell) newItems[itemCount]->setSpell(spell);
-  itemCount++;
-  return newItems[itemCount - 1];
+  Item *item = new Item(this, rpgItem, itemLevel, loading);
+  if(spell) item->setSpell(spell);
+  newItems.push_back( item );
+  return item;
 }
 
 // creatures created for the mission
 Creature *Session::newCreature(Monster *monster, GLShape *shape, bool loaded) {
-  creatures[creatureCount++] = new Creature(this, monster, shape, loaded);
-  return creatures[creatureCount - 1];
+  Creature *c = new Creature(this, monster, shape, loaded);
+  creatures.push_back( c );
+  return c;
 }
 
 void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   // delete the items and creatures created for this mission
   // (except items in inventory) 
   if(!missionItemsOnly) {
-    for(int i = 0; i < itemCount; i++) {
+    for(int i = 0; i < (int)newItems.size(); i++) {
       delete newItems[i];
     }
-    itemCount = 0;
+    newItems.clear();
   } else {
-    for(int i = 0; i < itemCount; i++) {
+    for(int i = 0; i < (int)newItems.size(); i++) {
       bool inInventory = false;
       for(int t = 0; t < getParty()->getPartySize(); t++) {
         if(getParty()->getParty(t)->isItemInInventory(newItems[i])) {
@@ -233,19 +233,18 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
       }
       if(!inInventory) {
         delete newItems[i];
-        itemCount--;
-        for(int t = i; t < itemCount; t++) {
+        for(int t = i; t < (int)newItems.size(); t++) {
           newItems[t] = newItems[t + 1];
         }
+        newItems.pop_back();
         i--;
       }
     }
   }
-  for(int i = 0; i < creatureCount; i++) {
+  for(int i = 0; i < (int)creatures.size(); i++) {
     delete creatures[i];
-	creatures[i] = NULL;
   }
-  creatureCount = 0;
+  creatures.clear();
 
   /*
   cerr << "***************************************" << endl;

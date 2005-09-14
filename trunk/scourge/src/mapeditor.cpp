@@ -346,11 +346,11 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   if( widget == saveButton ) {
     scourge->getMap()->saveMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
-    scourge->getParty()->toggleRound( false );
+//    scourge->getParty()->toggleRound( false );
   } else if( widget == loadButton ) {
     scourge->getMap()->loadMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
-    scourge->getParty()->toggleRound( false );
+//    scourge->getParty()->toggleRound( false );
   } else if( widget == newButton ) {
     newMapWin->setVisible( true );
     char tmp[1000];
