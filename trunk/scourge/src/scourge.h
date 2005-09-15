@@ -234,6 +234,8 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   TextEffect *textEffect;
   GLint textEffectTimer;
 
+  Location *gatepos;
+
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
