@@ -143,6 +143,8 @@ void Creature::commonInit() {
   calculateExpOfNextLevel();
   this->battle = new Battle(session, this);
   lastEnchantDate.setDate(-1, -1, -1, -1, -1, -1);
+
+  this->npcInfo = NULL;
 }
 
 Creature::~Creature(){
