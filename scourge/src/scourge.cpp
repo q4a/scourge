@@ -1150,8 +1150,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
     if(event->key.keysym.sym == SDLK_l) {
       //cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
 
-      //party->getPlayer()->addExperience( 1000 );
-      session->creatureDeath( party->getPlayer() );
+      party->getPlayer()->addExperience( 1000 );
+      //session->creatureDeath( party->getPlayer() );
 
       return false;
     } else if(event->key.keysym.sym == SDLK_f) {

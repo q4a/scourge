@@ -19,13 +19,14 @@
 #define TRAIN_DIALOG_H
 
 #include "constants.h"
-#include <map>
+#include <vector>
 
 class Scourge;
 class Creature;
 class Window;
 class Label;
 class ScrollingLabel;
+class ScrollingList;
 class Widget;
 class Button;
 class TextField;
@@ -38,9 +39,14 @@ private:
   Creature *creature;
   Window *win;
   
-  Label *creatureLabel, *pointsLabel;
-  ScrollingLabel *result;
+  Label *creatureLabel, *pointsLabel, *coinsLabel;
+  ScrollingLabel *result, *description;
   Button *closeButton, *applyButton;
+  ScrollingList *skillList;
+
+  int cost;
+  char **skillText;
+  vector<int> skills;
 
 public:
   TrainDialog( Scourge *scourge );
@@ -51,7 +57,7 @@ public:
   void handleEvent( Widget *widget, SDL_Event *event );
   
 protected:
-  void train();
+  void train( int skill );
 };
 
 #endif
