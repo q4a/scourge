@@ -301,7 +301,7 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   scourge->getMap()->handleEvent( event );
 
   switch(event->type) {
-  case SDL_MOUSEMOTION:
+  //case SDL_MOUSEMOTION:
   /*
   if( event->motion.state == SDL_BUTTON_LEFT &&
       newMapWin->isVisible() ) {
@@ -309,7 +309,7 @@ bool MapEditor::handleEvent(SDL_Event *event) {
                             scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
   }
   */
-  case SDL_MOUSEBUTTONDOWN:
+  case SDL_MOUSEBUTTONUP:
   processMouseMotion( event->button.button, editorZ );  
   break;
   case SDL_KEYUP:

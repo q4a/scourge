@@ -167,7 +167,7 @@ class Window : public Widget {
   static Widget *delegateEvent(SDL_Event *event, int x, int y);
   static void toTop(Window *win);
   static void toBottom(Window *win);
-  static void nextWindowToTop();
+  static void nextWindowToTop( bool includeLocked = true );
   static void prevWindowToTop();
 
   // static message dialog

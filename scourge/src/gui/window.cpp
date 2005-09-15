@@ -286,6 +286,9 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     return true;
   } else if(event->key.keysym.sym == SDLK_ESCAPE && closeButton && !isLocked()) {
     setVisible(false);
+    // raise the next unlocked window
+    currentWin = NULL;
+    nextWindowToTop( false );
     return true;
   } else {
     return false;
@@ -822,7 +825,7 @@ void Window::toBottom(Window *win) {
   }
 }
 
-void Window::nextWindowToTop() {
+void Window::nextWindowToTop( bool includeLocked ) {
   bool next = false;
   
   for(int i = 0; i < windowCount; i++) {
@@ -832,14 +835,16 @@ void Window::nextWindowToTop() {
       return;
     }
   }
-  
+
   for(int t = 0; t < 2; t++) {
     for(int i = 0; i < windowCount; i++) {
-      if(window[i]->isVisible() && next) {
+      if( window[i]->isVisible() && 
+          next && 
+          ( includeLocked || !( window[i]->isLocked() ) ) ) {
         currentWin = window[i];
         currentWin->toTop();
         return;
-      } else if(currentWin == NULL || currentWin == window[i]) {
+      } else if( !currentWin || currentWin == window[i]) {
         next = true;
       }
     }
