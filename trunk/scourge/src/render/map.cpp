@@ -1584,11 +1584,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
         //session->getCurrentMission()->isMissionCreature( later->creature ) ) {
       shape->outline( 0.15f, 0.15f, 0.4f );
     }
-
-    if( later && later->pos && 
-        later->pos->outlineColor &&
-        !useShadow ) 
-      shape->outline( later->pos->outlineColor );
     shape->draw();
   } else if( later && later->item && !useShadow ) {
     
@@ -1944,6 +1939,7 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
           pos[x + xp][y - yp][z + zp]->x = x;
           pos[x + xp][y - yp][z + zp]->y = y;
           pos[x + xp][y - yp][z + zp]->z = z;
+          pos[x + xp][y - yp][z + zp]->outlineColor = NULL;
         }
       }
     }
@@ -2001,11 +1997,12 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item) {
             }
 
             pos[x + xp][y - yp][z + zp]->item = item;
-			pos[x + xp][y - yp][z + zp]->shape = item->getShape();
-			pos[x + xp][y - yp][z + zp]->creature = NULL;
+            pos[x + xp][y - yp][z + zp]->shape = item->getShape();
+            pos[x + xp][y - yp][z + zp]->creature = NULL;
             pos[x + xp][y - yp][z + zp]->x = x;
             pos[x + xp][y - yp][z + zp]->y = y;
             pos[x + xp][y - yp][z + zp]->z = z;
+            pos[x + xp][y - yp][z + zp]->outlineColor = NULL;
           }
         }
       }
@@ -2071,39 +2068,40 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
 		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
 			for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
 			  //			  cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
-			  if(!pos[x + xp][y - yp][z + zp]) {
-                if(!USE_LOC_CACHE || nbPosCache < 0){
-				  //                    cerr << " no cache available!" << endl;
-				    pos[x + xp][y - yp][z + zp] = new Location();
-                }
-                else{
-				  //                    cerr << " cache number : " << nbPosCache << endl;
-                    pos[x + xp][y - yp][z + zp] = posCache[nbPosCache];
-                    //posCache[nbPosCache] = NULL;
-                    nbPosCache--;
-                }
-			  } else if(pos[x + xp][y - yp][z + zp]->item) {
-				// creature picks up non-blocking item (this is the only way to handle 
-				// non-blocking items. It's also very 'roguelike'.
-				RenderedItem *item = pos[x + xp][y - yp][z + zp]->item;
-				removeItem(pos[x + xp][y - yp][z + zp]->x,
-						   pos[x + xp][y - yp][z + zp]->y,
-						   pos[x + xp][y - yp][z + zp]->z);
-        creature->pickUpOnMap(item);
-				sprintf(message, "%s picks up %s.", 
-						creature->getName(), 
-						item->getItemName());
-				addDescription(message);				
-				// since the above will have removed some locations, try adding the creature again
-				continue;
-			  }
-			  pos[x + xp][y - yp][z + zp]->item = NULL;
-			  pos[x + xp][y - yp][z + zp]->shape = creature->getShape();
-			  pos[x + xp][y - yp][z + zp]->creature = creature;
-			  pos[x + xp][y - yp][z + zp]->x = x;
-			  pos[x + xp][y - yp][z + zp]->y = y;
-			  pos[x + xp][y - yp][z + zp]->z = z;
-			  //creature->moveTo(x, y, z);
+        if(!pos[x + xp][y - yp][z + zp]) {
+          if(!USE_LOC_CACHE || nbPosCache < 0){
+            //                    cerr << " no cache available!" << endl;
+            pos[x + xp][y - yp][z + zp] = new Location();
+          }
+          else{
+            //                    cerr << " cache number : " << nbPosCache << endl;
+            pos[x + xp][y - yp][z + zp] = posCache[nbPosCache];
+            //posCache[nbPosCache] = NULL;
+            nbPosCache--;
+          }
+        } else if(pos[x + xp][y - yp][z + zp]->item) {
+          // creature picks up non-blocking item (this is the only way to handle 
+          // non-blocking items. It's also very 'roguelike'.
+          RenderedItem *item = pos[x + xp][y - yp][z + zp]->item;
+          removeItem(pos[x + xp][y - yp][z + zp]->x,
+                     pos[x + xp][y - yp][z + zp]->y,
+                     pos[x + xp][y - yp][z + zp]->z);
+          creature->pickUpOnMap(item);
+          sprintf(message, "%s picks up %s.", 
+                  creature->getName(), 
+                  item->getItemName());
+          addDescription(message);				
+          // since the above will have removed some locations, try adding the creature again
+          continue;
+        }
+        pos[x + xp][y - yp][z + zp]->item = NULL;
+        pos[x + xp][y - yp][z + zp]->shape = creature->getShape();
+        pos[x + xp][y - yp][z + zp]->creature = creature;
+        pos[x + xp][y - yp][z + zp]->x = x;
+        pos[x + xp][y - yp][z + zp]->y = y;
+        pos[x + xp][y - yp][z + zp]->z = z;
+        pos[x + xp][y - yp][z + zp]->outlineColor = NULL;
+        //creature->moveTo(x, y, z);
 			}
 		  }
 		}
@@ -2184,6 +2182,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
           pos[newX][newY][newZ]->x = nx;
           pos[newX][newY][newZ]->y = ny;
           pos[newX][newY][newZ]->z = nz;
+          pos[newX][newY][newZ]->outlineColor = NULL;
         }
       }
     }
