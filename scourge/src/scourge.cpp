@@ -99,6 +99,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   willStartDragX = willStartDragY = 0;
   textEffect = NULL;
   textEffectTimer = 0;
+  gatepos = NULL;
 }
 
 void Scourge::initUI() {
@@ -280,6 +281,7 @@ void Scourge::startMission() {
     containerGuiCount = 0;
     teleporting = false;
     targetSelectionFor = NULL;  
+    gatepos = NULL;
 
     // clear infoMessage
     strcpy( infoMessage, "" );
@@ -1666,15 +1668,13 @@ bool Scourge::useGate(Location *pos) {
         oldStory = currentStory;
         currentStory--;
         changingStory = true;
-        // move the creature to the gate so it will be near it on the next level
-        party->getParty(i)->moveTo( pos->x, pos->y, pos->z );
+        gatepos = pos;
         return true;
       } else if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_DOWN")) {
         oldStory = currentStory;
         currentStory++;
         changingStory = true;
-        // move the creature to the gate so it will be near it on the next level
-        party->getParty(i)->moveTo( pos->x, pos->y, pos->z );
+        gatepos = pos;
         return true;
       }
     }
@@ -1923,8 +1923,18 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
     exitConfirmationDialog->setVisible(false);
     endMission();
+    // move the creature to the gate so it will be near it on the next level
+    if( gatepos ) {
+      for (int i = 0; i < party->getPartySize(); i++) {
+        if (!party->getParty(i)->getStateMod(Constants::dead)) {
+          party->getParty(i)->moveTo( gatepos->x, gatepos->y, gatepos->z );
+        }
+      }
+      gatepos = NULL;
+    }
     return true;
   } else if(widget == noExitConfirm) {
+    gatepos = NULL;
     teleporting = false;
     changingStory = false;
     currentStory = oldStory;
