@@ -226,6 +226,7 @@ Scourge::~Scourge(){
 void Scourge::startMission() {
 
   // set up some cross-mission objects
+  oldStory = currentStory = 0;
   bool resetParty = true;
   
   // always start in hq
