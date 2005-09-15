@@ -92,5 +92,7 @@ scourge_SOURCES = \
 	donatedialog.cpp\
 	donatedialog.h\
 	texteffect.cpp\
-	texteffect.h
+	texteffect.h\
+	traindialog.cpp\
+	traindialog.h
 

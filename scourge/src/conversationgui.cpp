@@ -22,6 +22,7 @@
 #include "tradedialog.h"
 #include "healdialog.h"
 #include "donatedialog.h"
+#include "traindialog.h"
 #include "board.h"
 
 #define TRADE_WORD "trade"
@@ -125,7 +126,7 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == tradeButton ) {
     scourge->getTradeDialog()->setCreature( creature );
   } else if( widget == trainButton ) {
-    scourge->showMessageDialog( "FIXME: train-dialog" );
+    scourge->getTrainDialog()->setCreature( creature );
   } else if( widget == identifyButton ) {
     scourge->showMessageDialog( "FIXME: identify item-dialog" );
   } else if( widget == uncurseItemButton ) {
