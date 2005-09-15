@@ -93,6 +93,7 @@ class TradeDialog;
 class HealDialog;
 class DonateDialog;
 class TextEffect;
+class TrainDialog;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -229,6 +230,7 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   TradeDialog *tradeDialog;
   HealDialog *healDialog;
   DonateDialog *donateDialog;
+  TrainDialog *trainDialog;
 
   Color *outlineColor;
   TextEffect *textEffect;
@@ -643,6 +645,7 @@ public:
   inline TradeDialog *getTradeDialog() { return tradeDialog; }
   inline HealDialog *getHealDialog() { return healDialog; }
   inline DonateDialog *getDonateDialog() { return donateDialog; }
+  inline TrainDialog *getTrainDialog() { return trainDialog; }
 
   bool startTextEffect( char *message );
   

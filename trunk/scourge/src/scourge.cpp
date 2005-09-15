@@ -29,6 +29,7 @@
 #include "tradedialog.h"
 #include "healdialog.h"
 #include "donatedialog.h"
+#include "traindialog.h"
 #include "io/file.h"
 #include "texteffect.h"
 
@@ -221,6 +222,7 @@ Scourge::~Scourge(){
   delete tradeDialog;
   delete healDialog;
   delete donateDialog;
+  delete trainDialog;
 }
 
 void Scourge::startMission() {
@@ -453,6 +455,7 @@ void Scourge::startMission() {
     tradeDialog->getWindow()->setVisible( false );
     healDialog->getWindow()->setVisible( false );
     donateDialog->getWindow()->setVisible( false );
+    trainDialog->getWindow()->setVisible( false );
 
     resetBattles();
     
@@ -1906,6 +1909,10 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     donateDialog->handleEvent( widget, event );
   }
 
+  if( trainDialog->getWindow()->isVisible() ) {
+    trainDialog->handleEvent( widget, event );
+  }
+
   // FIXME: this is hacky...
   if(handlePartyEvent(widget, event)) return true;
   int n = handleBoardEvent(widget, event);
@@ -1955,6 +1962,7 @@ void Scourge::createUI() {
   tradeDialog = new TradeDialog( this );
   healDialog = new HealDialog( this );
   donateDialog = new DonateDialog( this );
+  trainDialog = new TrainDialog( this );
 
   int width = 
     getSDLHandler()->getScreen()->w - 
@@ -3008,6 +3016,7 @@ void Scourge::setPlayerUI(int index) {
   if( tradeDialog->getWindow()->isVisible() ) tradeDialog->updateUI();
   if( healDialog->getWindow()->isVisible() ) healDialog->updateUI();
   if( donateDialog->getWindow()->isVisible() ) donateDialog->updateUI();
+  if( trainDialog->getWindow()->isVisible() ) trainDialog->updateUI();
 }
 
 void Scourge::toggleRoundUI(bool startRound) {
