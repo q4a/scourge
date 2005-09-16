@@ -2800,6 +2800,12 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   glColor3f( 1, 1, 1 );
   getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
 
+  // show if has available points
+  if( p->getAvailableSkillPoints() > 0 ) {
+    glColor3f( 1, 1, 0 );
+    getSDLHandler()->texPrint( 5, 22, "PTS" );
+  }
+
   // show stat mods
   glEnable(GL_TEXTURE_2D);
   glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
