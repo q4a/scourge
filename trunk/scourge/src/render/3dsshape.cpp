@@ -153,6 +153,7 @@ void C3DSShape::resolveTextures() {
   // Otherwise, the material just holds the color information and we don't need to load a texture.
 
   // Go through all the materials
+  //cerr << "3ds model: " << this->getName() << endl;
   for (int i = 0; i < g_3DModel.numOfMaterials; i++) {
     // Check to see if there is a file name to load in this material
     if (strlen(g_3DModel.pMaterials[i].strFile) > 0) {
@@ -166,7 +167,7 @@ void C3DSShape::resolveTextures() {
 
       // instead of loading the texture, get one of the already loaded textures
       g_Texture[i] = shapePal->findTextureByName(g_3DModel.pMaterials[i].strFile);
-//      fprintf(stderr, "\t%s\n", (g_Texture[i] ? "FOUND IT" : "NOT FOUND"));
+      //cerr << "\tTexture: " << g_3DModel.pMaterials[i].strFile << " found? " << g_Texture[i] << endl;
     }
     // Set the texture ID for this material
     g_3DModel.pMaterials[i].texureId = i;
