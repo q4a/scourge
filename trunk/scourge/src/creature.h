@@ -108,6 +108,7 @@ class Creature : public RenderedCreature {
   int armor, bonusArmor;
   int moveRetrycount;
   int availableSkillPoints;
+  int usedSkillPoints;
   
   static const int MAX_MOVE_RETRY = 15;
   int lastTurn;
@@ -379,6 +380,8 @@ class Creature : public RenderedCreature {
 
   inline int getAvailableSkillPoints() { return availableSkillPoints; }
   inline void setAvailableSkillPoints(int n) { availableSkillPoints = n; }
+  inline int getUsedSkillPoints() { return usedSkillPoints; }
+  inline void setUsedSkillPoints( int n ) { usedSkillPoints = n; }
   
   int getMaxProjectileCount(Item *item);
 
