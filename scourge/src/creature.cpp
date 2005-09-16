@@ -125,7 +125,7 @@ void Creature::commonInit() {
   this->cornerX = this->cornerY = -1;
   this->lastTurn = 0;
   this->facingDirection = Constants::MOVE_UP; // good init ?
-  this->availableSkillPoints = 0;
+  this->availableSkillPoints = this->usedSkillPoints = 0;
   this->failedToMoveWithinRangeAttemptCount = 0;
   this->action = Constants::ACTION_NO_ACTION;
   this->actionItem = NULL;
@@ -270,12 +270,15 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   creature->setThirst( info->thirst );
   creature->setHunger( info->hunger );
   creature->setAvailableSkillPoints( info->availableSkillPoints );
+  int used = 0;
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     creature->setSkill( i, info->skills[i] );
     creature->skillMod[i] = info->skillMod[i];
+    used += creature->skillMod[i];
     // info->skillBonus: can't be used until calendar is also persisted
     //creature->setSkillBonus( i, info->skillBonus[i] );
   }
+  creature->setUsedSkillPoints( used );
   
   // stateMod and protStateMod not useful until calendar is also persisted
   //creature->stateMod = info->stateMod;
@@ -1418,6 +1421,7 @@ bool Creature::incSkillMod(int index) {
      getSkill(index) + skillMod[index] >= character->getMaxSkillLevel(index)) return false;
   availableSkillPoints--;
   skillMod[index]++;
+  usedSkillPoints++;
   return true;
 }
 
@@ -1425,6 +1429,7 @@ bool Creature::decSkillMod(int index) {
   if(!skillMod[index]) return false;
   availableSkillPoints++;
   skillMod[index]--;
+  usedSkillPoints--;
   return true;
 }
 
@@ -1432,7 +1437,8 @@ void Creature::applySkillMod() {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     setSkill(i, getSkill(i) + skillMod[i]);
     skillMod[i] = 0;
-  }  
+  }
+  usedSkillPoints = 0;
 }
 
 int Creature::getMaxHp() {
