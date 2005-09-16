@@ -509,7 +509,7 @@ public:
 	invisible,
 	overloaded,
 	dead,
-	leveled,
+	asleep,
 	
 	// must be last
 	STATE_MOD_COUNT

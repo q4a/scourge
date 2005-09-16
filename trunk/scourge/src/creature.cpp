@@ -282,7 +282,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   //creature->protStateMod = info->protStateMod;
   // these two don't req. events:
   if(info->stateMod & (1 << Constants::dead)) creature->setStateMod(Constants::dead, true);
-  if(info->stateMod & (1 << Constants::leveled)) creature->setStateMod(Constants::leveled, true);
+  //if(info->stateMod & (1 << Constants::leveled)) creature->setStateMod(Constants::leveled, true);
 
   // inventory
   //creature->inventory_count = info->inventory_count;
@@ -1302,10 +1302,13 @@ int Creature::addExperience(int delta) {
     exp = 0;
   }
 
-  // level up? (mark as state, with graphic over character)
-  if(exp >= expOfNextLevel && !getStateMod(Constants::leveled)) {
-    setStateMod(Constants::leveled, true);
-    availableSkillPoints = character->getSkillBonus();
+  // level up?
+  if(exp >= expOfNextLevel) {
+    level++;
+    hp += character->getStartingHp();
+    mp += character->getStartingMp();
+    calculateExpOfNextLevel();
+    availableSkillPoints += character->getSkillBonus();
     char message[255];
     sprintf( message, "  %s levels up!", getName() );
     session->getGameAdapter()->startTextEffect( message );
@@ -1317,12 +1320,12 @@ int Creature::addExperienceWithMessage( int exp ) {
   int n = 0;
   if( !getStateMod( Constants::dead ) ) {
     char message[120];
-    bool b = getStateMod( Constants::leveled );
+    int oldLevel = level;
     n = addExperience( exp );
     if( n > 0 ) {
       sprintf( message, "%s gains %d experience points.", getName(), n );
       session->getMap()->addDescription( message );
-      if( !b && getStateMod( Constants::leveled ) ) {
+      if( oldLevel != level ) {
         sprintf( message, "%s gains a level!", getName() );
         session->getMap()->addDescription( message, 1.0f, 0.5f, 0.5f );
       }
@@ -1429,13 +1432,7 @@ void Creature::applySkillMod() {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     setSkill(i, getSkill(i) + skillMod[i]);
     skillMod[i] = 0;
-  }
-  level++;
-  hp += character->getStartingHp();
-  mp += character->getStartingMp();
-  setStateMod(Constants::leveled, false);
-  availableSkillPoints = 0;
-  calculateExpOfNextLevel();
+  }  
 }
 
 int Creature::getMaxHp() {

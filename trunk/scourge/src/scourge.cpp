@@ -311,11 +311,11 @@ void Scourge::startMission() {
           strcat( infoMessage, message );
           
           for(int i = 0; i < getParty()->getPartySize(); i++) {
-            bool b = getParty()->getParty(i)->getStateMod(Constants::leveled);
+            int level = getParty()->getParty(i)->getLevel();
             if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
               int n = getParty()->getParty(i)->addExperience(exp);
               if(n > 0) {
-                if(!b && getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+                if( level != getParty()->getParty(i)->getLevel() ) {
                   sprintf(message, "%s gains a level! ", getParty()->getParty(i)->getName());
                   strcat( infoMessage, message );
                 }
@@ -2546,13 +2546,13 @@ void Scourge::missionCompleted() {
     levelMap->addDescription(message, 0, 1, 1);
     
     for(int i = 0; i < getParty()->getPartySize(); i++) {
-      bool b = getParty()->getParty(i)->getStateMod(Constants::leveled);
+      int level = getParty()->getParty(i)->getLevel();
       if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
         int n = getParty()->getParty(i)->addExperience(exp);
         if(n > 0) {
           // sprintf(message, "%s gains %d experience points.", getParty()->getParty(i)->getName(), n);
           // getMap()->addDescription(message);
-          if(!b && getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+          if( level != getParty()->getParty(i)->getLevel() ) {
             sprintf(message, "%s gains a level!", getParty()->getParty(i)->getName());
             getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
           }

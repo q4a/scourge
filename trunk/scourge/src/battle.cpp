@@ -615,13 +615,13 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 
     // get exp for casting the spell
     if(!creature->isMonster()) {
-      bool b = creature->getStateMod(Constants::leveled);
+      int level = creature->getLevel();
       if(!creature->getStateMod(Constants::dead)) {
         int n = creature->addExperience(creature->getActionSpell()->getExp());
         if(n > 0) {
           sprintf(message, "%s gains %d experience points.", creature->getName(), n);
           session->getMap()->addDescription(message);
-          if(!b && creature->getStateMod(Constants::leveled)) {
+          if( level != creature->getLevel() ) {
             sprintf(message, "%s gains a level!", creature->getName());
             session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
           }
@@ -1014,13 +1014,13 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical, GLu
 
         // FIXME: try to move to party.cpp
         for(int i = 0; i < session->getParty()->getPartySize(); i++) {
-          bool b = session->getParty()->getParty(i)->getStateMod(Constants::leveled);
+          int level = session->getParty()->getParty(i)->getLevel();
           if(!session->getParty()->getParty(i)->getStateMod(Constants::dead)) {
             int n = session->getParty()->getParty(i)->addExperience(creature->getTargetCreature());
             if(n > 0) {
               sprintf(message, "%s gains %d experience points.", session->getParty()->getParty(i)->getName(), n);
               session->getMap()->addDescription(message);
-              if(!b && session->getParty()->getParty(i)->getStateMod(Constants::leveled)) {
+              if( level != session->getParty()->getParty(i)->getLevel() ) {
                 sprintf(message, "%s gains a level!", session->getParty()->getParty(i)->getName());
                 session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
               }

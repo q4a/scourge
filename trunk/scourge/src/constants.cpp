@@ -179,7 +179,7 @@ const char *Constants::POTION_SKILL_NAMES[] = {
 const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
   "drunk", "poisoned", "cursed", "possessed", "blinded", "paralysed", "invisible", 
-  "overloaded", "dead", "leveled"
+  "overloaded", "dead", "asleep"
 };
 
 vector<int> Constants::goodStateMod;
