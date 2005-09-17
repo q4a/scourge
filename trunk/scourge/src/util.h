@@ -113,6 +113,8 @@ public:
 
   static float getRandomSum( float base, int count, float div=3.0f );
 
+  static char *toLowerCase( char *s );
+
 };
 
 #endif
