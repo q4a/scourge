@@ -397,26 +397,26 @@ void MiniMap::colorMiniMapPoint(int x, int y, Shape *shape, Location *location){
     }
   }
 
-  if ((shape == scourge->getShapePalette()->findShapeByName("EW_WALL")) ||
-      (shape == scourge->getShapePalette()->findShapeByName("EW_WALL_EXTRA")) ||
-      (shape == scourge->getShapePalette()->findShapeByName("EW_WALL_TWO_EXTRAS"))||
-      (shape == scourge->getShapePalette()->findShapeByName("NS_WALL"))||
-      (shape == scourge->getShapePalette()->findShapeByName("NS_WALL_EXTRA"))||
-      (shape == scourge->getShapePalette()->findShapeByName("NS_WALL_TWO_EXTRAS"))) {
+  if( isSameShape( shape, "EW_WALL" ) ||
+      isSameShape( shape, "EW_WALL_EXTRA" ) ||
+      isSameShape( shape, "EW_WALL_TWO_EXTRAS" )||
+      isSameShape( shape, "NS_WALL" )||
+      isSameShape( shape, "NS_WALL_EXTRA" )||
+      isSameShape( shape, "NS_WALL_TWO_EXTRAS" ) ) {
     if (DEBUG_MINIMAP) fprintf(stderr, "wall\n");
     pos[x][y].r = 0.5f; //gray
     pos[x][y].g = 0.5f;
     pos[x][y].b = 0.5f;
-  } else if((shape == scourge->getShapePalette()->findShapeByName("CORNER"))) {
+  } else if( isSameShape( shape, "CORNER" ) ) {
     if (DEBUG_MINIMAP) fprintf(stderr, "corner\n");
     pos[x][y].r = 0.3f; // dark gray
     pos[x][y].g = 0.3f;
     pos[x][y].b = 0.3f;
-  } else if((shape == scourge->getShapePalette()->findShapeByName("DOOR_SIDE")) ||
-            (shape == scourge->getShapePalette()->findShapeByName("EW_DOOR")) ||
-            (shape == scourge->getShapePalette()->findShapeByName("EW_DOOR_TOP"))||
-            (shape == scourge->getShapePalette()->findShapeByName("NS_DOOR"))||
-            (shape == scourge->getShapePalette()->findShapeByName("NS_DOOR_TOP"))) {
+  } else if( isSameShape( shape, "DOOR_SIDE" ) ||
+             isSameShape( shape, "EW_DOOR" ) ||
+             isSameShape( shape, "EW_DOOR_TOP" ) ||
+             isSameShape( shape, "NS_DOOR" ) ||
+             isSameShape( shape, "NS_DOOR_TOP" ) ) {
     if (DEBUG_MINIMAP) fprintf(stderr, "door\n");
     Location *p = scourge->getMap()->getLocation(mapx, mapy, 0);
     if (p && scourge->getMap()->isLocked(p->x, p->y, p->z)) {
@@ -428,21 +428,21 @@ void MiniMap::colorMiniMapPoint(int x, int y, Shape *shape, Location *location){
       pos[x][y].g = 0.8f;
       pos[x][y].b = 0.8f;
     }
-  } else if((shape == scourge->getShapePalette()->findShapeByName("FLOOR_TILE"))) {
+  } else if( isSameShape( shape, "FLOOR_TILE" ) ) {
     if (DEBUG_MINIMAP) fprintf(stderr, "floor\n");
     pos[x][y].r = 0.3f; //braun
     pos[x][y].g = 0.17f;
     pos[x][y].b = 0.05f;
-  } else if ((shape == scourge->getShapePalette()->findShapeByName("ROOM_FLOOR_TILE"))) {
+  } else if ( isSameShape( shape, "ROOM_FLOOR_TILE" ) ) {
     if (DEBUG_MINIMAP) fprintf(stderr, "room\n");
     pos[x][y].r = 0.7f; //braun
     pos[x][y].g = 0.5f;
     pos[x][y].b = 0.1f;
-  } else if((shape == scourge->getShapePalette()->findShapeByName("LAMP_NORTH")) ||
-            (shape == scourge->getShapePalette()->findShapeByName("LAMP_SOUTH"))||
-            (shape == scourge->getShapePalette()->findShapeByName("LAMP_WEST"))||
-            (shape == scourge->getShapePalette()->findShapeByName("LAMP_EAST"))||
-            (shape == scourge->getShapePalette()->findShapeByName("LAMP_BASE"))) {
+  } else if( isSameShape( shape, "LAMP_NORTH" ) ||
+             isSameShape( shape, "LAMP_SOUTH" ) ||
+             isSameShape( shape, "LAMP_WEST" ) ||
+             isSameShape( shape, "LAMP_EAST" ) ||
+             isSameShape( shape, "LAMP_BASE" ) ) {
     if (DEBUG_MINIMAP) fprintf(stderr, "lamp\n");
     pos[x][y].r = 0.8f; //yellow
     pos[x][y].g = 0.8f;
@@ -463,5 +463,15 @@ void MiniMap :: eraseMiniMapPoint(int x, int y){
 void MiniMap::resize(int w, int h) { 
   win->resize(w, h); 
   canvas->resize(w, h - 25); 
+}
+
+/**
+ * Returns true if the given shape is the same as the one given by the name.
+ * Handles shape variations.
+ */
+bool MiniMap::isSameShape( Shape *shape, const char *name ) {
+  return( ((GLShape*)shape)->getShapePalIndex() == 
+          scourge->getShapePalette()->findShapeByName( name )->getShapePalIndex() ?
+          true : false );
 }
 

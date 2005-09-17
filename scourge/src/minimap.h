@@ -108,6 +108,7 @@ class MiniMap : public WidgetView {
   //void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);    
   
  protected:
+   bool isSameShape( Shape *shape, const char *name );
   
 };
 
