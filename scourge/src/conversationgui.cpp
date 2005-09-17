@@ -28,6 +28,7 @@
 #define TRADE_WORD "trade"
 #define TRAIN_WORD "train"
 #define HEAL_WORD "heal"
+#define DONATE_WORD "donate"
 
 ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
@@ -169,11 +170,27 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
 }
 
 void ConversationGui::wordClicked( char *word ) {
+
+  // convert to lower case
+  Util::toLowerCase( word );
   //cerr << "Clicked: " << word << endl;
+
+  if( creature ) {
+    if( !strcmp( word, TRADE_WORD ) &&
+        creature->getNpcInfo() &&
+        creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT ) scourge->getTradeDialog()->setCreature( creature );
+    else if( !strcmp( word, HEAL_WORD ) &&
+             creature->getNpcInfo() &&
+             creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getHealDialog()->setCreature( creature );
+    else if( !strcmp( word, TRAIN_WORD ) &&
+             creature->getNpcInfo() &&
+             creature->getNpcInfo()->type == Constants::NPC_TYPE_TRAINER ) scourge->getTrainDialog()->setCreature( creature );
+    else if( !strcmp( word, DONATE_WORD ) &&
+             creature->getNpcInfo() &&
+             creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getDonateDialog()->setCreature( creature );
+  }
+
   if( useCreature ) {
-    if( !strcmp( word, TRADE_WORD ) ) scourge->getTradeDialog()->setCreature( creature );
-    else if( !strcmp( word, HEAL_WORD ) ) scourge->getHealDialog()->setCreature( creature );
-    else if( !strcmp( word, TRAIN_WORD ) ) scourge->showMessageDialog( "FIXME: train-dialog" );
     answer->setText( Mission::getAnswer( creature->getMonster(), word ) );
   } else {
     answer->setText( Mission::getAnswer( word ) );

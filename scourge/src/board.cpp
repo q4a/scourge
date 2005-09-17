@@ -653,7 +653,8 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
       } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
         Mission::unknownPhrases.push_back( as );
       } else {
-        Mission::conversations[ ks ] = as;
+        string lower = Util::toLowerCase( keyphrase );
+        Mission::conversations[ lower ] = as;
       }
 
     } else if( n == 'P' ) {    
@@ -682,7 +683,8 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
       } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
         npcConv->npc_unknownPhrases.push_back( as );
       } else {
-        npcConv->npc_conversations[ ks ] = as;
+        string lower = Util::toLowerCase( keyphrase );
+        npcConv->npc_conversations[ lower ] = as;
       }
     } else if( n == 'N' ) { 
       fgetc( fp );

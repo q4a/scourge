@@ -544,3 +544,11 @@ float Util::getRandomSum( float base, int count, float div ) {
   return sum;
 }
 
+char *Util::toLowerCase( char *s ) {
+  char *p = s;
+  while( *p ) {
+    if( *p >= 'A' && *p <= 'Z' ) *p = *p - 'A' + 'a';
+    p++;
+  }
+  return s;
+}
