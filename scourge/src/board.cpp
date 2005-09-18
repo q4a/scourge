@@ -633,9 +633,9 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
   FILE *fp = openMapDataFile( filename, "r" );
   if( !fp ) return;
 
-  char line[255], keyphrase[80],answer[4000];
+  char line[1000], keyphrase[80],answer[4000];
   int x, y, level;
-  char npcName[255], npcType[255], npcSubType[255];
+  char npcName[255], npcType[255], npcSubType[1000];
   Monster *currentNpc = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
