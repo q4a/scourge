@@ -25,8 +25,10 @@
 
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
-map<string, string> Mission::conversations;
-map<Monster*,NpcConversation*> Mission::npcConversations;
+map<string, int> Mission::conversations;
+vector<string> Mission::answers;
+
+map<Monster*, NpcConversation*> Mission::npcConversations;
 map<string, NpcInfo*> Mission::npcInfos;
 
 //#define DEBUG_MODE 1
@@ -142,14 +144,19 @@ Board::Board(Session *session) {
   fclose(fp);
 }
 
-int Mission::readConversationLine( FILE *fp, char *line,
-                                   char *keyphrase, char *answer,
-                                   int n ) {
+int Mission::readConversationLine( FILE *fp, char *line, int n,
+                                   vector<string> *intros,
+                                   vector<string> *unknownPhrases,
+                                   map<string, int> *conversations,
+                                   vector<string> *answers ) {
+
   // find the first comma
+  char keyphrase[80], answer[4000];
   char last = line[ strlen( line ) - 1 ];
-  char *p = strchr( line, ',' );
+  char *p = strchr( line, ';' );
   strcpy( answer, p + 1 );
-  strcpy( keyphrase, strtok( line, "," ) );     
+  strcpy( keyphrase, strtok( line, ";" ) );   
+  //cerr << "1: keyphrase=" << keyphrase << endl;
 
   // Read lines that end with a \.
   int r;
@@ -162,6 +169,27 @@ int Mission::readConversationLine( FILE *fp, char *line,
     strcat( answer, line );
     last = line[ strlen( line ) - 1 ];
   }
+
+  string ks = keyphrase;
+  string as = answer;
+
+  if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
+    intros->push_back( as );
+  } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
+    unknownPhrases->push_back( as );
+  } else {
+    char tmp[80];
+    p = strtok( keyphrase, "," );
+    while( p ) {
+      //cerr << "\t2: p=" << p << endl;
+      strcpy( tmp, p );
+      string lower = Util::toLowerCase( tmp );
+      (*conversations)[ lower ] = answers->size();
+      p = strtok( NULL, "," );
+    }
+    answers->push_back( as );
+  }
+
   return n;
 }
 
@@ -580,7 +608,7 @@ char *Mission::getIntro() {
 char *Mission::getAnswer( char *keyphrase ) {
   string ks = keyphrase;
   if( conversations.find( ks ) != conversations.end() ) {
-    return (char*)(conversations[ ks ].c_str());
+    return (char*)( answers[ conversations[ ks ] ].c_str());
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
     return (char*)(unknownPhrases[ (int)( (float)( unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
@@ -605,7 +633,7 @@ char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
 
   string ks = keyphrase;
   if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
-    return (char*)(nc->npc_conversations[ ks ].c_str());
+    return (char*)( nc->npc_answers[ nc->npc_conversations[ ks ] ].c_str());
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
     return (char*)(nc->npc_unknownPhrases[ (int)( (float)( nc->npc_unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
@@ -623,6 +651,7 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
   intros.clear();
   unknownPhrases.clear();
   conversations.clear();
+  answers.clear();
   for (map<Monster*,NpcConversation*>::iterator i=npcConversations.begin(); i!=npcConversations.end(); ++i) {
     NpcConversation *npcConversation = i->second;
     delete npcConversation;
@@ -633,7 +662,7 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
   FILE *fp = openMapDataFile( filename, "r" );
   if( !fp ) return;
 
-  char line[1000], keyphrase[80],answer[4000];
+  char line[1000];
   int x, y, level;
   char npcName[255], npcType[255], npcSubType[1000];
   Monster *currentNpc = NULL;
@@ -643,20 +672,11 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
 
-      n = readConversationLine( fp, line, keyphrase, answer, n );
-
-      string ks = keyphrase;
-      string as = answer;
-
-      if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
-        Mission::intros.push_back( as );
-      } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
-        Mission::unknownPhrases.push_back( as );
-      } else {
-        string lower = Util::toLowerCase( keyphrase );
-        Mission::conversations[ lower ] = as;
-      }
-
+      n = readConversationLine( fp, line, n, 
+                                &Mission::intros, 
+                                &Mission::unknownPhrases,
+                                &Mission::conversations,
+                                &Mission::answers );
     } else if( n == 'P' ) {    
       fgetc(fp);
       n = Constants::readLine(line, fp);
@@ -664,11 +684,6 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
     } else if( n == 'V' && currentNpc ) {    
       fgetc(fp);
       n = Constants::readLine(line, fp);
-
-      n = readConversationLine( fp, line, keyphrase, answer, n );
-
-      string ks = keyphrase;
-      string as = answer;
 
       NpcConversation *npcConv;
       if( Mission::npcConversations.find( currentNpc ) == Mission::npcConversations.end() ) {
@@ -678,14 +693,11 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
         npcConv = Mission::npcConversations[ currentNpc ];
       }
 
-      if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
-        npcConv->npc_intros.push_back( as );
-      } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
-        npcConv->npc_unknownPhrases.push_back( as );
-      } else {
-        string lower = Util::toLowerCase( keyphrase );
-        npcConv->npc_conversations[ lower ] = as;
-      }
+      n = readConversationLine( fp, line, n, 
+                                &npcConv->npc_intros, 
+                                &npcConv->npc_unknownPhrases,
+                                &npcConv->npc_conversations,
+                                &npcConv->npc_answers );
     } else if( n == 'N' ) { 
       fgetc( fp );
       n = Constants::readLine(line, fp);

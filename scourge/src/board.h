@@ -53,7 +53,8 @@ class NpcConversation {
 
     vector<string> npc_intros;
     vector<string> npc_unknownPhrases;
-    map<string, string> npc_conversations;    
+    map<string, int> npc_conversations;    
+    vector<string> npc_answers;    
 };
 
 /**
@@ -100,7 +101,8 @@ public:
 
   static vector<string> intros;
   static vector<string> unknownPhrases;
-  static map<string, string> conversations;
+  static map<string, int> conversations;
+  static vector<string> answers;
   static map<Monster*,NpcConversation*> npcConversations;
   static map<string, NpcInfo*> npcInfos;
 
@@ -191,9 +193,11 @@ public:
    static string getNpcInfoKey( int x, int y );
 
    void checkMissionCompleted();
-   static int readConversationLine( FILE *fp, char *line,
-                                    char *keyphrase, char *answer,
-                                    int n );  
+   static int readConversationLine( FILE *fp, char *line, int n,
+                                    vector<string> *intros,
+                                    vector<string> *unknownPhrases,
+                                    map<string, int> *conversations,
+                                    vector<string> *answers );  
 };
 
 
