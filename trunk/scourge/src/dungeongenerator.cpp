@@ -60,84 +60,6 @@ const int DungeonGenerator::levels[][9] = {
   { 31, 31,   3, 5, 25,    6,  7,  7,     35 }
 };
 
-/**
-   Pre-generated maps:
-   x,y,w,h,
-   starting coord
-   roomCount,
-   roomDimensions: x,y,w,h,furnish(0,1)
-   map: #-room, +-floor, nsew-doors (by facing)
- */
-const MapLocation DungeonGenerator::location[] = {
-  { 
-	0,0,5,12,
-	{ 
-		{2*unitSide+16, unitSide+4}, 
-	  {2*unitSide+12, unitSide+9}, 
-		{2*unitSide+18, unitSide+9}, 
-		{2*unitSide+16, unitSide+13} 
-	},
-	false,
-	5,
-	{
-	  {2,0,2,4,0},
-	  {0,5,2,3,1}, 
-	  {3,5,2,3,1}, 
-	  {0,9,2,3,1}, 
-	  {3,9,2,3,1}
-	},
-	{ 
-	  "  ## ",
-	  "  ## ",
-	  "  ## ",
-	  "  s# ",
-	  "  +  ",
-	  "##+##",
-	  "#e+w#",
-	  "s# #s",
-	  "+   +",
-	  "n# #n",
-	  "#e+w#",
-	  "## ##" 
-	},
-	25, 
-	{
-	  { "BOARD", 2*unitSide+11, unitSide + 1, 0 },
-
-
-		{ "COLUMN", 2*unitSide+3, unitSide, 0 },
-		{ "COLUMN", 2*unitSide+26, unitSide, 0 },
-		{ "COLUMN", 2*unitSide+3, unitSide+8, 0 },
-		{ "COLUMN", 2*unitSide+26, unitSide+8, 0 },
-		{ "COLUMN", 2*unitSide+3, unitSide+16, 0 },
-		{ "COLUMN", 2*unitSide+26, unitSide+16, 0 },
-		{ "COLUMN", 2*unitSide+3, unitSide+24, 0 },
-		{ "COLUMN", 2*unitSide+26, unitSide+24, 0 },
-		{ "COLUMN", 2*unitSide+3, unitSide+32, 0 },
-		{ "COLUMN", 2*unitSide+26, unitSide+32, 0 },
-		{ "COLUMN", 2*unitSide+3, unitSide+40, 0 },
-		{ "COLUMN", 2*unitSide+26, unitSide+40, 0 },
-
-	  { "BRAZIER", 2*unitSide+8, unitSide+7, 2 },
-	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+8, 0 },		
-	  { "BRAZIER", 2*unitSide+23, unitSide+7, 2 },
-	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+8, 0 },
-
-	  { "BRAZIER", 2*unitSide+8, unitSide+15, 2 },
-	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+16, 0 },
-	  { "BRAZIER", 2*unitSide+23, unitSide+15, 2 },
-	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+16, 0 },
-
-	  { "BRAZIER", 2*unitSide+8, unitSide+23, 2 },
-	  { "BRAZIER_BASE", 2*unitSide+7, unitSide+24, 0 },
-	  { "BRAZIER", 2*unitSide+23, unitSide+23, 2 },
-	  { "BRAZIER_BASE", 2*unitSide+22, unitSide+24, 0 }
-
-
-	}
-  }
-};
-
 DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth, 
                                    bool stairsDown, bool stairsUp, Mission *mission){
   this->scourge = scourge;
@@ -650,117 +572,6 @@ void DungeonGenerator::printMaze() {
   printf("---------------------------------------\n");
 }
 
-// draw a pre-rendered location on the map
-void DungeonGenerator::constructMaze(int locationIndex) {
-  // create the rooms
-  roomCount = location[locationIndex].roomCount;
-  for(int i = 0; i < location[locationIndex].roomCount; i++) {
-	room[i].x = location[locationIndex].roomDimension[i][0];
-	room[i].y = location[locationIndex].roomDimension[i][1];
-	room[i].w = location[locationIndex].roomDimension[i][2];
-	room[i].h = location[locationIndex].roomDimension[i][3];
-  room[i].valueBonus = 0;
-  }
-
-  // turn location into nodes
-  for(int y = 0; y < location[locationIndex].h; y++) {
-	for(int x = 0; x < location[locationIndex].w; x++) {
-	  char c = location[locationIndex].map[y][x];
-	  int nx = location[locationIndex].x + x;
-	  int ny = location[locationIndex].y + y;
-	  if(nx >= width || ny >= height) {
-		cerr << "Warning: location doesn't fit on map! location:" << 
-		  location[locationIndex].w << "," << location[locationIndex].h << 
-		  " map:" << width << "," << height << endl;
-		continue;
-	  }
-	  switch(c) {
-	  case '#': case 'n': case 's': case 'e': case 'w': nodes[nx][ny] = ROOM; break;
-	  case '+': nodes[nx][ny] = PASSAGE; break;
-	  default: nodes[nx][ny] = UNVISITED;
-	  }
-	  // open every side for now
-	  if(nodes[nx][ny] != UNVISITED) nodes[nx][ny] |= (N_PASS | S_PASS | W_PASS | E_PASS);
-	  // add door
-	}
-  }
-
-  // build walls
-  for(int y = 0; y < location[locationIndex].h; y++) {
-	for(int x = 0; x < location[locationIndex].w; x++) {
-	  char c = location[locationIndex].map[y][x];
-	  int nx = location[locationIndex].x + x;
-	  int ny = location[locationIndex].y + y;
-	  if(nx >= width || ny >= height) {
-		cerr << "Warning: location doesn't fit on map! location:" << 
-		  location[locationIndex].w << "," << location[locationIndex].h << 
-		  " map:" << width << "," << height << endl;
-		continue;
-	  }
-	  switch(c) {
-	  case '#': case '+':
-		break;
-	  case 'n': 
-		nodes[nx][ny] |= N_DOOR; 
-		break;
-	  case 's': 
-		nodes[nx][ny] |= S_DOOR; 
-		break;
-	  case 'e': 
-		nodes[nx][ny] |= E_DOOR; 
-		break;
-	  case 'w': 
-		nodes[nx][ny] |= W_DOOR; 
-		break;
-	  }
-	}
-  }
-
-  // seal off some walls
-  for(int y = 0; y < location[locationIndex].h; y++) {
-	for(int x = 0; x < location[locationIndex].w; x++) {
-	  //char c = location[locationIndex].map[y][x];
-	  int nx = location[locationIndex].x + x;
-	  int ny = location[locationIndex].y + y;
-	  if(nx >= width || ny >= height) {
-		cerr << "Warning: location doesn't fit on map! location:" << 
-		  location[locationIndex].w << "," << location[locationIndex].h << 
-		  " map:" << width << "," << height << endl;
-		continue;
-	  }
-	  if(nodes[nx][ny] != UNVISITED) {
-		if(!(nodes[nx][ny] & W_DOOR) &&
-		   (!nx || nodes[nx - 1][ny] == UNVISITED || 
-			((nodes[nx][ny] & ROOM) && !(nodes[nx - 1][ny] & ROOM)) || 
-			(!(nodes[nx][ny] & ROOM) && (nodes[nx - 1][ny] & ROOM) && !(nodes[nx - 1][ny] & E_DOOR)))) {
-		  nodes[nx][ny] &= (0xffff - W_PASS);
-		}
-		if(!(nodes[nx][ny] & E_DOOR) && 
-		   (nx >= width - 1 || nodes[nx + 1][ny] == UNVISITED || 
-			((nodes[nx][ny] & ROOM) && !(nodes[nx + 1][ny] & ROOM)) || 
-			(!(nodes[nx][ny] & ROOM) && (nodes[nx + 1][ny] & ROOM) && !(nodes[nx + 1][ny] & W_DOOR)))) {
-		  nodes[nx][ny] &= (0xffff - E_PASS);
-		}
-		if(!(nodes[nx][ny] & N_DOOR) && 
-		   (!ny || nodes[nx][ny - 1] == UNVISITED ||
-			((nodes[nx][ny] & ROOM) && !(nodes[nx][ny - 1] & ROOM)) || 
-			(!(nodes[nx][ny] & ROOM) && (nodes[nx][ny - 1] & ROOM) && !(nodes[nx][ny - 1] & S_DOOR)))) {
-		  nodes[nx][ny] &= (0xffff - N_PASS);
-		}
-		if(!(nodes[nx][ny] & S_DOOR) && 
-		   (ny >= height - 1 || nodes[nx][ny + 1] == UNVISITED || 
-			((nodes[nx][ny] & ROOM) && !(nodes[nx][ny + 1] & ROOM)) || 
-			(!(nodes[nx][ny] & ROOM) && (nodes[nx][ny + 1] & ROOM) && !(nodes[nx][ny + 1] & N_DOOR)))) {
-		  nodes[nx][ny] &= (0xffff - S_PASS);
-		}
-	  }
-	}
-  }
-
-  // other settings
-  monsters = location[locationIndex].monsters;
-}
-
 void DungeonGenerator::updateStatus(const char *statusMessage) {
   progress->updateStatus(statusMessage);
   Uint32 now = SDL_GetTicks();
@@ -768,44 +579,35 @@ void DungeonGenerator::updateStatus(const char *statusMessage) {
   start = now;
 }
 
-void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal, int locationIndex) {	 
+void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal) {	 
   start = SDL_GetTicks();
 
   updateStatus(MESSAGE);
   //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
   
-  bool preGenerated = (locationIndex);
-  locationIndex--;
+  generateMaze();
+  //  printMaze();  
   
-  // generate the maze
-  if(!preGenerated) {
-    generateMaze();
-    //  printMaze();  
+  makeSparse();
+  //  printMaze();
     
-    makeSparse();
-    //  printMaze();
+  makeLoops();
+  //  printMaze();
     
-    makeLoops();
-    //  printMaze();
+  makeRooms();
+  //  printMaze();
     
-    makeRooms();
-    //  printMaze();
-    
-  } else {
-    constructMaze(locationIndex);
-  }
   updateStatus(MESSAGE);
     
   // loop until successfully drawn nodes onto map
   int status = progress->getStatus();
-  while( !drawNodesOnMap(map, shapePal, preGenerated, locationIndex) ) {
+  while( !drawNodesOnMap(map, shapePal) ) {
     // reset the progress
     progress->setStatus( status );
   }
 }
 
-void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal, 
-                                  bool preGenerated, int locationIndex) {
+void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
   // add shapes to map
   Sint16 mapx, mapy;
   for(Sint16 x = 0; x < width; x++) {    
@@ -980,8 +782,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::removeColumns(Map *map, ShapePalette *shapePal, 
-                                     bool preGenerated, int locationIndex) {
+void DungeonGenerator::removeColumns(Map *map, ShapePalette *shapePal) {
   // Remove 'columns' from rooms
   for(int roomIndex = 0; roomIndex < roomCount; roomIndex++) {
     int startx = offset + (room[roomIndex].x * unitSide) + unitOffset;
@@ -996,14 +797,12 @@ void DungeonGenerator::removeColumns(Map *map, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal, 
-                                     bool preGenerated, int locationIndex) {
+void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal) {
   int x = 0;
   int y = 0;
   RpgItem *rpgItem;
   // add the containers
   for(int i = 0; i < roomCount; i++) {
-    if(preGenerated && location[locationIndex].roomDimension[i][4] == 0) continue;
     for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
       rpgItem = RpgItem::getRandomContainer();
       if(rpgItem) {
@@ -1053,8 +852,7 @@ void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal,
   }
 }
 
-bool DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal, 
-                                 bool preGenerated, int locationIndex) {
+bool DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal) {
   // add stairs for multi-level missions
   if(stairsUp) {
     bool done = false;
@@ -1094,30 +892,7 @@ bool DungeonGenerator::addStairs(Map *map, ShapePalette *shapePal,
   return true;
 }
 
-void DungeonGenerator::addPregeneratedShapes(Map *map, ShapePalette *shapePal, 
-                                             bool preGenerated, int locationIndex) {
-  // add pre-generated shapes first
-  for(int i = 0; i < location[locationIndex].shapeCount; i++) {
-    int mapx = location[locationIndex].shapePosition[i].x + offset;
-    int mapy = location[locationIndex].shapePosition[i].y + offset;
-    map->setPosition(mapx, mapy, location[locationIndex].shapePosition[i].z, 
-                     shapePal->findShapeByName(location[locationIndex].shapePosition[i].name));
-    /*
-    // find and remove this location from ff list (replace w. last entry and decr. counter)
-    for(int n = 0; n < ffCount; n++) {
-      if(mapx == ff[n * 2] && mapy == ff[n * 2 + 1]) {
-        ff[n * 2] = ff[(ffCount - 1) * 2];
-        ff[n * 2 + 1] = ff[(ffCount - 1) * 2 + 1];
-        ffCount--;
-        break;
-      }
-    }
-    */
-  }
-}
-
-void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
-                                bool preGenerated, int locationIndex) {
+void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal) {
   // add the items
   for(int i = 0; i < objectCount; i++) {
     RpgItem *rpgItem = RpgItem::getRandomItem( depth );
@@ -1180,8 +955,7 @@ void DungeonGenerator::addItems(Map *map, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal, 
-                                            bool preGenerated, int locationIndex) {
+void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
   if(mission && !mission->isCompleted() && !stairsDown) {
 
     // mission objects are on a pedestal
@@ -1221,8 +995,7 @@ void DungeonGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal, 
-                                   bool preGenerated, int locationIndex) {
+void DungeonGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
   // add monsters in every room
   if(monsters) {
     int totalLevel = scourge->getParty()->getTotalLevel();
@@ -1351,15 +1124,13 @@ void DungeonGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal, 
-                                    bool preGenerated, int locationIndex) {
+void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
   // add tables, chairs, etc.
-  addItemsInRoom(RpgItem::getItemByName("Table"), 1, preGenerated, locationIndex);
-  addItemsInRoom(RpgItem::getItemByName("Chair"), 2, preGenerated, locationIndex);  
+  addItemsInRoom(RpgItem::getItemByName("Table"), 1);
+  addItemsInRoom(RpgItem::getItemByName("Chair"), 2);  
 }
 
-bool DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal, 
-                                      bool preGenerated, int locationIndex) {
+bool DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
   int teleportersAdded = 0;
   for(int teleporterCount = 0; teleporterCount < 3; teleporterCount++) {
     int x, y;
@@ -1380,8 +1151,7 @@ bool DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal,
   return (teleportersAdded > 0);
 }
 
-void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal, 
-                                bool preGenerated, int locationIndex) {
+void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal) {
   // add the party in the first room
   // FIXME: what happens if the party doesn't fit in the room?
   //  for(int i = 0; i < roomCount; i++) {
@@ -1389,18 +1159,12 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
   for(int t = 0; t < scourge->getParty()->getPartySize(); t++) {
     if(scourge->getParty()->getParty(t)->getStateMod(Constants::dead)) continue;
     bool fits;
-    if(preGenerated && location[locationIndex].start[t][0] > 0) {
-      fits = true;
-      x = location[locationIndex].start[t][0] + offset;
-      y = location[locationIndex].start[t][1] + offset;
-    } else {
-      fits = 
+    fits = 
       getLocationInRoom(map, 
                         0,
                         scourge->getParty()->getParty(t)->getShape(), 
                         &x, &y,
                         true);
-    }
     if(fits) {
       addItem(map, scourge->getParty()->getParty(t), NULL, NULL, x, y);
       scourge->getParty()->getParty(t)->moveTo(x, y, 0);
@@ -1409,8 +1173,7 @@ void DungeonGenerator::addParty(Map *map, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::lockDoors(Map *map, ShapePalette *shapePal, 
-                                 bool preGenerated, int locationIndex) {
+void DungeonGenerator::lockDoors(Map *map, ShapePalette *shapePal) {
   // lock some doors
   for(int i = 0; i < doorCount; i++) {
     Sint16 mapx = door[i][0];
@@ -1452,8 +1215,7 @@ void DungeonGenerator::lockLocation(Map *map, int mapx, int mapy) {
   }
 }
 
-void DungeonGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal, 
-                                           bool preGenerated, int locationIndex) {
+void DungeonGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal) {
   // see which rooms are locked
   map->configureAccessMap(toint(scourge->getParty()->getPlayer()->getX()), 
                           toint(scourge->getParty()->getPlayer()->getY()));
@@ -1467,8 +1229,7 @@ void DungeonGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal,
   }
 }
 
-void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal, 
-                                          bool preGenerated, int locationIndex) {
+void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal) {
   // Collapse the free space and put objects in the available spots
   ff = (Sint16*)malloc( 2 * sizeof(Sint16) * MAP_WIDTH * MAP_DEPTH );
   if(!ff) {
@@ -1493,89 +1254,71 @@ void DungeonGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal,
   } 
 }
 
-void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal, 
-                                          bool preGenerated, int locationIndex) {
+void DungeonGenerator::deleteFreeSpaceMap(Map *map, ShapePalette *shapePal) {
   // free empty space container
   free(ff);  
 }
 
-bool DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal, 
-                                      bool preGenerated, int locationIndex) {
+bool DungeonGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
 
   bool ret = true;
 
   // flooded map?
   map->setHasWater( FORCE_WATER || 
-                    ( !preGenerated && 
-                      0 == (int)(5.0f * rand()/RAND_MAX) ) );
+                    0 == (int)(5.0f * rand()/RAND_MAX) );
 
   updateStatus("Loading theme");
-  if(preGenerated) {
-    shapePal->loadTheme( "HQ" );
-  } else {
-    shapePal->loadRandomTheme();
-  }
+  shapePal->loadRandomTheme();
 
   updateStatus("Drawing walls");
-  drawBasics(map, shapePal, preGenerated, locationIndex);
+  drawBasics(map, shapePal);
   
   updateStatus("Fixing rooms");
-  removeColumns(map, shapePal, preGenerated, locationIndex);
-
-  updateStatus("Adding pre-generated shapes");
-  if(preGenerated) {
-    addPregeneratedShapes(map, shapePal, preGenerated, locationIndex);
-  }
+  removeColumns(map, shapePal);
 
   updateStatus("Compressing free space");
-  createFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
+  createFreeSpaceMap(map, shapePal);
    
   updateStatus("Adding containers");
-  addContainers(map, shapePal, preGenerated, locationIndex);  
+  addContainers(map, shapePal);  
 
   updateStatus("Adding gates");
-  if(!preGenerated) {
-    if( !addStairs(map, shapePal, preGenerated, locationIndex) ) {
-      ret = false;
-      goto cleanup;
-    }
+  if( !addStairs(map, shapePal) ) {
+    ret = false;
+    goto cleanup;
   }
 
   updateStatus("Adding party");
-  addParty(map, shapePal, preGenerated, locationIndex);
+  addParty(map, shapePal);
 
   // add a teleporters
   updateStatus("Adding teleporters");
-  if(!preGenerated) {
-    if( !addTeleporters(map, shapePal, preGenerated, locationIndex) ) {
-      ret = false;
-      goto cleanup;
-    }
+  if( !addTeleporters(map, shapePal) ) {
+    ret = false;
+    goto cleanup;
   }
 
   updateStatus("Locking doors and chests");
-  lockDoors(map, shapePal, preGenerated, locationIndex);
+  lockDoors(map, shapePal);
 
   updateStatus("Calculating room values");
-  calculateRoomValues(map, shapePal, preGenerated, locationIndex);
+  calculateRoomValues(map, shapePal);
 
   updateStatus("Adding mission objectives");
-  if(!preGenerated) {
-    addMissionObjectives(map, shapePal, preGenerated, locationIndex);
-  }
+  addMissionObjectives(map, shapePal);
 
   updateStatus("Adding monsters");
-  addMonsters(map, shapePal, preGenerated, locationIndex);
+  addMonsters(map, shapePal);
 
   updateStatus("Adding items");
-  addItems(map, shapePal, preGenerated, locationIndex);
+  addItems(map, shapePal);
 
   updateStatus("Adding furniture");
-  addFurniture(map, shapePal, preGenerated, locationIndex);
+  addFurniture(map, shapePal);
 
 cleanup:
   updateStatus("Cleaning up");
-  deleteFreeSpaceMap(map, shapePal, preGenerated, locationIndex);
+  deleteFreeSpaceMap(map, shapePal);
 
   return ret;
 }
@@ -1725,11 +1468,9 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape,
   } 
 }
 
-void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n, 
-                                      bool preGenerated, int locationIndex) {
+void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n) {
   int x, y;
   for(int i = 0; i < roomCount; i++) {
-    if(preGenerated && !location[locationIndex].roomDimension[i][4]) continue;
     for(int r = 0; r < n; r++) {
       for(int t = 0; t < 5; t++) { // 5 tries
         Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
