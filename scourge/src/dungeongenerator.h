@@ -40,23 +40,6 @@ class ShapePalette;
 
 #define DRAW_UNVISITED 0
 
-// a pre-rendered map location
-typedef struct _ShapePosition {
-  char name[80];
-  int x, y, z;
-} ShapePosition;
-
-typedef struct _MapLocation {
-  int x, y, w, h;
-  int start[4][2]; // party starting coordinates
-  bool monsters;
-  int roomCount;
-  Uint16 roomDimension[20][5];
-  char *map[MAP_WIDTH];
-  int shapeCount;            // how many shapes
-  ShapePosition shapePosition[100]; // shapes: shape_index, x, y, z (x,y,z in map coordinates)
-} MapLocation;
-
 /**
   *@author Gabor Torok
   */
@@ -149,8 +132,6 @@ private:
 
   Scourge *scourge;
 
-  static const MapLocation location[];
-
   const static int MAX_DOOR_COUNT = 500;
   int doorCount;
   int door[MAX_DOOR_COUNT][2];
@@ -165,38 +146,29 @@ private:
 
 public: 
 
-  // pre-rendered location index
-  enum {
-	HQ_LOCATION = 1,
-
-	// must be the last one
-	LOCATION_COUNT
-  };
-  
   DungeonGenerator(Scourge *scourge, int level, int depth, bool stairsDown, bool stairsUp, Mission *mission = NULL);
   ~DungeonGenerator();
 
-  void toMap(Map *map, ShapePalette *shapePal, int location=0);
+  void toMap(Map *map, ShapePalette *shapePal);
 
 protected:
 
   // used by toMap
-  void drawBasics(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void removeColumns(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addContainers(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  bool addStairs(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addPregeneratedShapes(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addItems(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addMissionObjectives(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addMonsters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addFurniture(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  bool addTeleporters(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void addParty(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void lockDoors(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void drawBasics(Map *map, ShapePalette *shapePal);
+  void removeColumns(Map *map, ShapePalette *shapePal);
+  void addContainers(Map *map, ShapePalette *shapePal);
+  bool addStairs(Map *map, ShapePalette *shapePal);
+  void addItems(Map *map, ShapePalette *shapePal);
+  void addMissionObjectives(Map *map, ShapePalette *shapePal);
+  void addMonsters(Map *map, ShapePalette *shapePal);
+  void addFurniture(Map *map, ShapePalette *shapePal);
+  bool addTeleporters(Map *map, ShapePalette *shapePal);
+  void addParty(Map *map, ShapePalette *shapePal);
+  void lockDoors(Map *map, ShapePalette *shapePal);
   void lockLocation(Map *map, int mapx, int mapy);
-  void createFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
-  void calculateRoomValues(Map *map, ShapePalette *shapePal, bool preGenerated, int locationIndex);
+  void createFreeSpaceMap(Map *map, ShapePalette *shapePal);
+  void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);
+  void calculateRoomValues(Map *map, ShapePalette *shapePal);
 
   void initByLevel();
   void generateMaze();
@@ -204,11 +176,7 @@ protected:
   void makeLoops();
   void makeRooms();
 
-  // construct a pre-rendered location
-  void constructMaze(int location);
-
-  bool drawNodesOnMap(Map *map, ShapePalette *shapePal, 
-                      bool preGenerated, int locationIndex);
+  bool drawNodesOnMap(Map *map, ShapePalette *shapePal);
 
   /**
     Return a random location in the maze that has not been visited yet.
@@ -247,7 +215,7 @@ protected:
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
   
-  void addItemsInRoom(RpgItem *rpgItem, int n, bool preGenerated, int locationIndex);
+  void addItemsInRoom(RpgItem *rpgItem, int n);
   
   bool addShapeInARoom(int shapeIndex);
 

@@ -2850,10 +2850,10 @@ void Map::saveMap( char *name, char *result ) {
   sprintf( result, "Map saved: %s", name );
 }
 
-void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
+bool Map::loadMap( char *name, char *result, int depth, bool changingStory, bool fromRandom ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
-    return;
+    return false;
   }
 
   char fileName[300];
@@ -2862,12 +2862,12 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
   } else {
     sprintf( fileName, "%s/maps/%s.map", rootDir, name );
   }
-  cerr << "loading map: " << fileName << endl;
+  cerr << "Looking for map: " << fileName << endl;
 
   FILE *fp = fopen( fileName, "rb" );
   if( !fp ) {
     sprintf( result, "Can't find map: %s", name );
-    return;
+    return false;
   }
   File *file = new ZipFile( fp, ZipFile::ZIP_READ );
   MapInfo *info = Persist::loadMap( file );
@@ -2883,8 +2883,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
-  //if( !changingStory || !(session->getParty()) ) {
-  if( !changingStory || !( adapter->hasParty() ) ) {
+  if( !changingStory || !( adapter->hasParty() ) || fromRandom ) {
     startx = info->start_x;
     starty = info->start_y;
   } else {
@@ -3011,6 +3010,7 @@ void Map::loadMap( char *name, char *result, int depth, bool changingStory ) {
     }
   }
   sprintf( result, "Map loaded: %s", name );
+  return true;
 }
 
 void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth ) {

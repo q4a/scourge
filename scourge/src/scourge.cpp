@@ -352,19 +352,23 @@ void Scourge::startMission() {
       " depth=" << getSession()->getCurrentMission()->getDepth() << 
       " current story=" << currentStory << endl;
 	  */
+      bool loaded = false;
       if( getSession()->getCurrentMission()->getMapName() &&
           strlen( getSession()->getCurrentMission()->getMapName() ) ) {
+        // try to load the edited map
         dg = NULL;
-        levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, currentStory, changingStory );
+        loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, currentStory, changingStory, !(levelMap->isEdited()) );
         //cerr << result << endl;
         //cerr << "***** " << getSession()->getCurrentMission()->getMapName() << endl;
-      } else {
+      } 
+
+      // if no edited map is found, make a random map
+      if( !loaded ) {
         dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
                                   (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
                                   (currentStory > 0),
                                   getSession()->getCurrentMission());
         dg->toMap(levelMap, getSession()->getShapePalette());
-        //cerr << "***** random" << endl;
       }
     }
 
