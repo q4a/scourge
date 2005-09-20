@@ -33,9 +33,10 @@ class Progress	{
   bool clearScreen;
   bool center;
   bool opaque;
+  GLuint texture;
  
  public:
-  Progress(ScourgeGui *scourgeGui, int maxStatus, bool clearScreen=false, bool center=false, bool opaque=true);
+  Progress(ScourgeGui *scourgeGui, GLuint texture, int maxStatus, bool clearScreen=false, bool center=false, bool opaque=true);
   virtual ~Progress();  
   void updateStatus(const char *message, bool updateScreen=true, int status=-1, int maxStatus=-1, int altStatus=-1);
   inline void setStatus( int status ) { this->status = status; }

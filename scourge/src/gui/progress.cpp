@@ -17,8 +17,9 @@
 
 #include "progress.h"
 
-Progress::Progress(ScourgeGui *scourgeGui, int maxStatus, bool clearScreen, bool center, bool opaque) {
+Progress::Progress(ScourgeGui *scourgeGui, GLuint texture, int maxStatus, bool clearScreen, bool center, bool opaque) {
   this->scourgeGui = scourgeGui;
+  this->texture = texture;
   this->maxStatus = maxStatus;
   this->clearScreen = clearScreen;
   this->center = center;
