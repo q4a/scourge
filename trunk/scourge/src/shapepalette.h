@@ -82,6 +82,7 @@ public:
   
   inline char *getAboutText() { return aboutText; }
 
+  void preInitialize();
   void initialize();
 
   void loadNpcPortraits();

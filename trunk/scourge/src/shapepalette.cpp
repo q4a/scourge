@@ -25,6 +25,15 @@ ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter
   skillCount = 0;
 }
 
+void ShapePalette::preInitialize() {
+  SDL_Surface *tmpSurface = NULL;
+  GLubyte *tmpImage = NULL;
+  setupAlphaBlendedBMP("/process.bmp", &tmpSurface, &tmpImage);
+  progressTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
+  if(tmpImage) free(tmpImage);
+  if(tmpSurface) SDL_FreeSurface( tmpSurface );
+}
+
 void ShapePalette::initialize() {
   // call "super"
   Shapes::initialize();
@@ -44,11 +53,6 @@ void ShapePalette::initialize() {
   GLubyte *tmpImage = NULL;
   setupAlphaBlendedBMP("/dragon.bmp", &tmpSurface, &tmpImage);
   gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
-  if(tmpImage) free(tmpImage);
-  if(tmpSurface) SDL_FreeSurface( tmpSurface );
-
-  setupAlphaBlendedBMP("/process.bmp", &tmpSurface, &tmpImage);
-  progressTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 

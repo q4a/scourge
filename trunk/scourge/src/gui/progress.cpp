@@ -17,6 +17,11 @@
 
 #include "progress.h"
 
+#define TEXTURE_BUFFER_LEFT 60
+#define TEXTURE_BUFFER_RIGHT 65
+#define TEXTURE_BUFFER_TOP 10
+#define TEXTURE_BUFFER_BOTTOM 0
+
 Progress::Progress(ScourgeGui *scourgeGui, GLuint texture, int maxStatus, bool clearScreen, bool center, bool opaque) {
   this->scourgeGui = scourgeGui;
   this->texture = texture;
@@ -49,6 +54,16 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glDisable( GL_CULL_FACE );
   glDisable( GL_TEXTURE_2D );
 
+  /* for testing opacity only
+  glColor4f( 1,1,1,1 );
+  glBegin( GL_QUADS );
+  glVertex2f( 0, 0 );
+  glVertex2f( 600, 0 );
+  glVertex2f( 600, 600 );
+  glVertex2f( 0, 600 );
+  glEnd();
+  */
+
   int w = 10;  
   int h = 20;
 
@@ -68,21 +83,41 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
 	//	cerr << "AFTER: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
   }
 
-  int x = (center ? scourgeGui->getScreenWidth() / 2 - width / 2 : 0);
-  int y = (center ? scourgeGui->getScreenHeight() / 2 - height / 2 : 0);
+  int x = (center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture ? TEXTURE_BUFFER_LEFT : 0 ));
+  int y = (center ? scourgeGui->getScreenHeight() / 2 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
   glTranslatef( x, y, 0 );
 
   if(!opaque) {
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
-  glColor4f( 0.25f, 0.20f, 0.15f, 0.8f );
-  glBegin( GL_QUADS );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( 0, height, 0);
-  glVertex3f( width, height, 0 );
-  glVertex3f( width, 0, 0 );
-  glEnd();
+  if( texture ) {
+    glEnable( GL_TEXTURE_2D );
+    glEnable( GL_ALPHA_TEST );
+    glAlphaFunc( GL_GREATER, 0 );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glColor4f( 1, 1, 1, 0.8f );
+    glBegin( GL_QUADS );
+    glTexCoord2f( 0, 0 );
+    glVertex3f( -TEXTURE_BUFFER_LEFT, -TEXTURE_BUFFER_TOP, 0 );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( -TEXTURE_BUFFER_LEFT, height + TEXTURE_BUFFER_BOTTOM, 0);
+    glTexCoord2f( 1, 1 );
+    glVertex3f( width + TEXTURE_BUFFER_RIGHT, height + TEXTURE_BUFFER_BOTTOM, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( width + TEXTURE_BUFFER_RIGHT, -TEXTURE_BUFFER_TOP, 0 );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+    glDisable( GL_ALPHA_TEST );
+  } else {
+    glColor4f( 0.25f, 0.20f, 0.15f, 0.8f );
+    glBegin( GL_QUADS );
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( 0, height, 0);
+    glVertex3f( width, height, 0 );
+    glVertex3f( width, 0, 0 );
+    glEnd();
+  }
   glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);

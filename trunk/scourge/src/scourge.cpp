@@ -105,7 +105,8 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 
 void Scourge::initUI() {
 
-  turnProgress = new Progress(this->getSDLHandler(), getSession()->getShapePalette()->getProgressTexture(),
+  turnProgress = new Progress(this->getSDLHandler(), 
+                              0, // no texture
                               10, false, false, false);
   
   // init UI themes
@@ -3088,6 +3089,7 @@ void Scourge::togglePlayerOnlyUI(bool playerOnly) {
 
   // initialization events
 void Scourge::initStart(int statusCount, char *message) {
+  getSession()->getShapePalette()->preInitialize();
   progress = new Progress(this->getSDLHandler(), getSession()->getShapePalette()->getProgressTexture(), statusCount, true, true);
   // Don't print text during startup. On windows this causes font corruption.
 //  progress->updateStatus(message);
