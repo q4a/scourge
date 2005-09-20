@@ -1170,6 +1170,12 @@ bool Scourge::handleEvent(SDL_Event *event) {
       missionCompleted();
     } else if( event->key.keysym.sym == SDLK_t ) {
       teleport();
+    } else if( event->key.keysym.sym == SDLK_y ) {
+      getBoard()->setStorylineIndex( getBoard()->getStorylineIndex() + 1 );
+      cerr << "Incremented storyline index to " << getBoard()->getStorylineIndex() << endl;
+    } else if( event->key.keysym.sym == SDLK_u ) {
+      getBoard()->setStorylineIndex( getBoard()->getStorylineIndex() - 1 );
+      cerr << "Decremented storyline index to " << getBoard()->getStorylineIndex() << endl;
     } else if(event->key.keysym.sym == SDLK_u) {
       cerr << "EFFECT!" << endl;
 //      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
