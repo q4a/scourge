@@ -338,6 +338,8 @@ void Board::initMissions() {
 }
 
 void Board::setStorylineIndex( int n ) {
+  if( n < 0 ) n = 0;
+  if( n > (int)storylineMissions.size() ) n = (int)storylineMissions.size();
   storylineIndex = n;
   for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
     storylineMissions[i]->setCompleted( i < storylineIndex ? true : false );
