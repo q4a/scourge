@@ -130,15 +130,19 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   }
   
   if( highlight ) {
-    for( int i = 0; i < 2; i++ ) {
+    for( int i = 0; i < 3; i++ ) {
+      if( i == 2 && alt <= 0 ) continue;
       glPushMatrix();
       if(updateScreen) glLoadIdentity();
       glTranslatef( x + 20, y + 35, 0 );
-      if( i == 0 ) glColor4f( 0.5f, 0.5f, 0.5f, 0.8f );
-      else glColor4f( 1, 0, 0, 0.8f );
+      switch( i ) {
+      case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
+      case 1: glColor4f( 1, 0, 0, 0.8f ); break;
+      case 2: glColor4f( 1, 0.4f, 0, 0.8f ); break;
+      }
       Widget::drawBorderedTexture( highlight, 
                                    -HIGHLIGHT_BORDER, 0, 
-                                   HIGHLIGHT_BORDER + ( i == 0 ? maxStatus : status ) * ( w + gap ), 
+                                   HIGHLIGHT_BORDER + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ), 
                                    h, HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 120 );
       glPopMatrix();
     }
