@@ -53,7 +53,7 @@ private:
   
   vector<GLuint> portraitTextures;
   GLuint deathPortraitTexture;
-  GLuint progressTexture;
+  GLuint progressTexture, progressHighlightTexture;
 
   char aboutText[3000];
 
@@ -65,6 +65,7 @@ public:
   ~ShapePalette();
 
   inline GLuint getProgressTexture() { return progressTexture; }
+  inline GLuint getProgressHighlightTexture() { return progressHighlightTexture; }
 
   inline GLuint getMapGridTile( int x, int y ) { return mapGrid[ x ][ y ]; }
 

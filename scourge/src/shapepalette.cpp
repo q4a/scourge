@@ -33,6 +33,13 @@ void ShapePalette::preInitialize() {
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
+  setupAlphaBlendedBMP("/bar.bmp", &tmpSurface, &tmpImage);
+  progressHighlightTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
+  if(tmpImage) free(tmpImage);
+  if(tmpSurface) SDL_FreeSurface( tmpSurface );
+
+
+
   highlight = loadGLTextures("/highlight.bmp");
 }
 
