@@ -106,7 +106,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 void Scourge::initUI() {
 
   turnProgress = new Progress(this->getSDLHandler(), 
-                              0, // no texture
+                              getSession()->getShapePalette()->getProgressTexture(),
                               10, false, false, false);
   
   // init UI themes
