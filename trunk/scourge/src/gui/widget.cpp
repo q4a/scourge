@@ -401,3 +401,97 @@ void Widget::drawTooltip( Widget *parent ) {
   ((Window*)parent)->getScourgeGui()->drawTooltip( xpos, ypos, 450, 0, 0, tooltip ); 
 }
 
+/**
+ * Draw a rectangle with a texture, such that only the middle of the texture
+ * is stretched.
+ * 
+ * texture the texture to use
+ * x,y,w,h the dimensions of the quad
+ * left,right the size of the border area
+ * textureWidth the size of the texture used
+ * 
+ * 3 quads will be drawn like this:
+ * +--+-----+--+
+ * |  |     |  |
+ * |A |  B  |C |
+ * |  |     |  |
+ * +--+-----+--+
+ * 
+ * The texture is only stretched on quad B. This assumes that 
+ * the height changes of the quad is not as important as stretching
+ * it horizontally. This is generally true for buttons, progress bars, etc.
+ */
+void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int height, 
+                                  int left, int right, int textureWidth ) {
+  
+  glEnable( GL_TEXTURE_2D );
+  glEnable( GL_ALPHA_TEST );    
+  glAlphaFunc( GL_GREATER, 0 );
+  glBindTexture( GL_TEXTURE_2D, texture );
+  
+  glPushMatrix();
+  glTranslatef( x, y, 0 );
+  glBegin( GL_QUADS );
+
+  // quad A
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, height, 0);
+  glTexCoord2f( (float)left / (float)textureWidth, 1 );
+  glVertex3f( left, height, 0 );
+  glTexCoord2f( (float)left / (float)textureWidth, 0 );
+  glVertex3f( left, 0, 0 );
+
+  // quad B
+  glTexCoord2f( (float)left / (float)textureWidth, 0 );
+  glVertex3f( left, 0, 0 );
+  glTexCoord2f( (float)left / (float)textureWidth, 1 );
+  glVertex3f( left, height, 0);
+  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+  glVertex3f( width - right, height, 0 );
+  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+  glVertex3f( width - right, 0, 0 );
+
+  // quad C
+  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+  glVertex3f( width - right, 0, 0 );
+  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+  glVertex3f( width - right, height, 0);
+  glTexCoord2f( 1, 1 );
+  glVertex3f( width, height, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( width, 0, 0 );
+
+  glEnd();
+
+  /* debugging only
+  glDisable( GL_TEXTURE_2D );
+  glColor4f( 1, 0, 0, 1 );
+  glBegin( GL_LINE_LOOP );
+  
+  // quad A
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( 0, height, 0);
+  glVertex3f( left, height, 0 );
+  glVertex3f( left, 0, 0 );
+
+  // quad B
+  glVertex3f( left, 0, 0 );
+  glVertex3f( left, height, 0);
+  glVertex3f( width - right, height, 0 );
+  glVertex3f( width - right, 0, 0 );
+
+  // quad C
+  glVertex3f( width - right, 0, 0 );
+  glVertex3f( width - right, height, 0);
+  glVertex3f( width, height, 0 );
+  glVertex3f( width, 0, 0 );
+  
+  glEnd();
+  */
+
+  glPopMatrix();
+
+}
+

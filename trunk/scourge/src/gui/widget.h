@@ -121,6 +121,9 @@ class Widget {
 
   void drawTooltip( Widget *parent );
 
+  static void drawBorderedTexture( GLuint texture, int x, int y, int w, int h, 
+                                   int left, int right, int textureWidth );
+
  protected:
   bool debug;
   virtual void drawButton( Widget *parent, int x, int y, int x2, int y2, 
