@@ -17,10 +17,9 @@
 
 #include "progress.h"
 
-#define TEXTURE_BUFFER_LEFT 60
-#define TEXTURE_BUFFER_RIGHT 65
 #define TEXTURE_BUFFER_TOP 10
 #define TEXTURE_BUFFER_BOTTOM 0
+#define TEXTURE_BORDER 100
 
 Progress::Progress(ScourgeGui *scourgeGui, GLuint texture, int maxStatus, bool clearScreen, bool center, bool opaque) {
   this->scourgeGui = scourgeGui;
@@ -83,7 +82,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
 	//	cerr << "AFTER: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
   }
 
-  int x = (center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture ? TEXTURE_BUFFER_LEFT : 0 ));
+  int x = (center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture ? TEXTURE_BORDER : 0 ));
   int y = (center ? scourgeGui->getScreenHeight() / 2 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
   glTranslatef( x, y, 0 );
 
@@ -98,6 +97,8 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
     glBindTexture( GL_TEXTURE_2D, texture );
     glColor4f( 1, 1, 1, 0.8f );
     glBegin( GL_QUADS );
+
+    /*
     glTexCoord2f( 0, 0 );
     glVertex3f( -TEXTURE_BUFFER_LEFT, -TEXTURE_BUFFER_TOP, 0 );
     glTexCoord2f( 0, 1 );
@@ -106,9 +107,59 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
     glVertex3f( width + TEXTURE_BUFFER_RIGHT, height + TEXTURE_BUFFER_BOTTOM, 0 );
     glTexCoord2f( 1, 0 );
     glVertex3f( width + TEXTURE_BUFFER_RIGHT, -TEXTURE_BUFFER_TOP, 0 );
+    */
+    
+    glTexCoord2f( 0, 0 );
+    glVertex3f( -TEXTURE_BORDER, -TEXTURE_BUFFER_TOP, 0 );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( -TEXTURE_BORDER, height + TEXTURE_BUFFER_BOTTOM, 0);
+    glTexCoord2f( (float)TEXTURE_BORDER / 256.0f, 1 );
+    glVertex3f( 0, height + TEXTURE_BUFFER_BOTTOM, 0 );
+    glTexCoord2f( (float)TEXTURE_BORDER / 256.0f, 0 );
+    glVertex3f( 0, -TEXTURE_BUFFER_TOP, 0 );
+
+    glTexCoord2f( (float)TEXTURE_BORDER / 256.0f, 0 );
+    glVertex3f( 0, -TEXTURE_BUFFER_TOP, 0 );
+    glTexCoord2f( (float)TEXTURE_BORDER / 256.0f, 1 );
+    glVertex3f( 0, height + TEXTURE_BUFFER_BOTTOM, 0);
+    glTexCoord2f( 1.0f - ((float)TEXTURE_BORDER / 256.0f), 1 );
+    glVertex3f( width, height + TEXTURE_BUFFER_BOTTOM, 0 );
+    glTexCoord2f( 1.0f - ((float)TEXTURE_BORDER / 256.0f), 0 );
+    glVertex3f( width, -TEXTURE_BUFFER_TOP, 0 );
+
+    glTexCoord2f( 1.0f - ((float)TEXTURE_BORDER / 256.0f), 0 );
+    glVertex3f( width, -TEXTURE_BUFFER_TOP, 0 );
+    glTexCoord2f( 1.0f - ((float)TEXTURE_BORDER / 256.0f), 1 );
+    glVertex3f( width, height + TEXTURE_BUFFER_BOTTOM, 0);
+    glTexCoord2f( 1, 1 );
+    glVertex3f( width + TEXTURE_BORDER, height + TEXTURE_BUFFER_BOTTOM, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( width + TEXTURE_BORDER, -TEXTURE_BUFFER_TOP, 0 );
+
     glEnd();
     glDisable( GL_TEXTURE_2D );
     glDisable( GL_ALPHA_TEST );
+
+    /* debugging only
+    glColor4f( 1, 0, 0, 1 );
+    glBegin( GL_LINE_LOOP );
+    glVertex3f( -TEXTURE_BORDER, -TEXTURE_BUFFER_TOP, 0 );
+    glVertex3f( -TEXTURE_BORDER, height + TEXTURE_BUFFER_BOTTOM, 0);
+    glVertex3f( 0, height + TEXTURE_BUFFER_BOTTOM, 0 );
+    glVertex3f( 0, -TEXTURE_BUFFER_TOP, 0 );
+
+    glVertex3f( 0, -TEXTURE_BUFFER_TOP, 0 );
+    glVertex3f( 0, height + TEXTURE_BUFFER_BOTTOM, 0);
+    glVertex3f( width, height + TEXTURE_BUFFER_BOTTOM, 0 );
+    glVertex3f( width, -TEXTURE_BUFFER_TOP, 0 );
+
+    glVertex3f( width, -TEXTURE_BUFFER_TOP, 0 );
+    glVertex3f( width, height + TEXTURE_BUFFER_BOTTOM, 0);
+    glVertex3f( width + TEXTURE_BORDER, height + TEXTURE_BUFFER_BOTTOM, 0 );
+    glVertex3f( width + TEXTURE_BORDER, -TEXTURE_BUFFER_TOP, 0 );
+    glEnd();
+    */
+
   } else {
     glColor4f( 0.25f, 0.20f, 0.15f, 0.8f );
     glBegin( GL_QUADS );
