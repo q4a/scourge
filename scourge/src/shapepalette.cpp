@@ -32,6 +32,8 @@ void ShapePalette::preInitialize() {
   progressTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
+
+  highlight = loadGLTextures("/highlight.bmp");
 }
 
 void ShapePalette::initialize() {
@@ -44,7 +46,6 @@ void ShapePalette::initialize() {
   paper_doll_texture = loadGLTextures("/paperdoll.bmp");
   cloud = loadGLTextures("/cloud.bmp");
   candle = loadGLTextures("/candle.bmp");
-  highlight = loadGLTextures("/highlight.bmp");
 
   border = loadGLTextures("/border.bmp");
   border2 = loadGLTextures("/border2.bmp");

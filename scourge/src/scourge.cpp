@@ -106,7 +106,9 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 void Scourge::initUI() {
 
   turnProgress = new Progress(this->getSDLHandler(), 
-                              getSession()->getShapePalette()->getProgressTexture(),
+                              //getSession()->getShapePalette()->getProgressTexture(),
+                              0, // no texture
+                              getSession()->getShapePalette()->highlight,
                               10, false, false, false);
   
   // init UI themes
@@ -2589,7 +2591,7 @@ int Scourge::initMultiplayer() {
                          atoi(multiplayer->getServerPort()),
                          multiplayer->getUserName());
   }
-  Progress *progress = new Progress(this->getSDLHandler(), 10, getSession()->getShapePalette()->getProgressTexture() );
+  Progress *progress = new Progress(this->getSDLHandler(), 10, getSession()->getShapePalette()->getProgressTexture(), getSession()->getShapePalette()->highlight );
   progress->updateStatus("Connecting to server");
   if(!session->getClient()->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
@@ -3090,7 +3092,10 @@ void Scourge::togglePlayerOnlyUI(bool playerOnly) {
   // initialization events
 void Scourge::initStart(int statusCount, char *message) {
   getSession()->getShapePalette()->preInitialize();
-  progress = new Progress(this->getSDLHandler(), getSession()->getShapePalette()->getProgressTexture(), statusCount, true, true);
+  progress = new Progress(this->getSDLHandler(), 
+                          getSession()->getShapePalette()->getProgressTexture(), 
+                          getSession()->getShapePalette()->highlight,
+                          statusCount, true, true);
   // Don't print text during startup. On windows this causes font corruption.
 //  progress->updateStatus(message);
   progress->updateStatus(NULL);
