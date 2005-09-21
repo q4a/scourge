@@ -94,7 +94,8 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth,
 
   progress = new Progress(scourge->getSDLHandler(), 
                           scourge->getSession()->getShapePalette()->getProgressTexture(),
-                          17 );
+                          scourge->getSession()->getShapePalette()->highlight,
+                          17, false, true );
 }
 
 DungeonGenerator::~DungeonGenerator(){

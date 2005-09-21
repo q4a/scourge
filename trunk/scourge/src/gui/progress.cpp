@@ -21,9 +21,11 @@
 #define TEXTURE_BUFFER_BOTTOM 0
 #define TEXTURE_BORDER 100
 
-Progress::Progress(ScourgeGui *scourgeGui, GLuint texture, int maxStatus, bool clearScreen, bool center, bool opaque) {
+Progress::Progress(ScourgeGui *scourgeGui, GLuint texture, GLuint highlight, 
+                   int maxStatus, bool clearScreen, bool center, bool opaque) {
   this->scourgeGui = scourgeGui;
   this->texture = texture;
+  this->highlight = highlight;
   this->maxStatus = maxStatus;
   this->clearScreen = clearScreen;
   this->center = center;
@@ -64,32 +66,41 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   */
 
   int w = 10;  
-  int h = 20;
+  int h = 18;
+  int gap = 3;
 
-  int width = maxStatus * 2 * w + 20;
+  int width = maxStatus *  ( w + gap ) + 20;
   int height = 35 + h + 10;
 
   // display as % if too large
   int maxWidth = scourgeGui->getScreenWidth() - 50;
   if( width >= maxWidth ) {
-	//	cerr << "BEFORE: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
-	//	maxStatus = (int)((float)( maxWidth - 20 ) / (float)w / 2.0f);
-	maxStatus = (int)((float)( maxStatus * maxWidth ) / (float)width);
-	status = (int)((float)( status * maxWidth ) / (float)width);
-	if( alt > -1 )
-	  alt = (int)((float)( alt * maxWidth ) / (float)width);
-	width = maxWidth;
-	//	cerr << "AFTER: width=" << width << " maxStatus=" << maxStatus << " status=" << status << endl;
+    maxStatus = (int)((float)( maxStatus * maxWidth ) / (float)width);
+    status = (int)((float)( status * maxWidth ) / (float)width);
+    if( alt > -1 )
+      alt = (int)((float)( alt * maxWidth ) / (float)width);
+    width = maxWidth;
   }
 
   int x = (center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture ? TEXTURE_BORDER : 0 ));
-  int y = (center ? scourgeGui->getScreenHeight() / 2 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
+  int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
   glTranslatef( x, y, 0 );
 
   if(!opaque) {
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
+
+  if( message && texture ) {
+    glColor4f( 0, 0, 0, 0.5f );
+    glBegin( GL_QUADS );
+    glVertex3f( -TEXTURE_BORDER + 30, 10, 0 );
+    glVertex3f( -TEXTURE_BORDER + 30, 35, 0);
+    glVertex3f( width + TEXTURE_BORDER - 30, 35, 0 );
+    glVertex3f( width + TEXTURE_BORDER - 30, 10, 0 );
+    glEnd();
+  }
+
   if( texture ) {
     glEnable( GL_TEXTURE_2D );
     glEnable( GL_ALPHA_TEST );
@@ -172,23 +183,33 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);
-  if(message) scourgeGui->texPrint(20, 25, message);
+  if(message) {
+    scourgeGui->texPrint(20, 25, message);
+  }
+  if( highlight ) {
+    glEnable( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, highlight );
+  }
   for (int i = 0; i < maxStatus; i++) {
     if( i < alt && i < status ) glColor4f(1, 0.4f, 0.0f, 1);
     else if(i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
     else glColor4f(0.5f, 0.5f, 0.5f, 1);
     glPushMatrix();
     if(updateScreen) glLoadIdentity();
-    glTranslatef( x + i * 2 * w + 20, y + 35, 0 );
+    glTranslatef( x + i * ( w + gap ) + 20, y + 35, 0 );
     glBegin( GL_QUADS );
+    if( highlight ) glTexCoord2d( 0, 0 );
     glVertex3f( 0, 0, 0 );
+    if( highlight ) glTexCoord2d( 0, 1 );
     glVertex3f( 0, h, 0 );
+    if( highlight ) glTexCoord2d( 1, 1 );
     glVertex3f( w, h, 0 );
+    if( highlight ) glTexCoord2d( 1, 0 );
     glVertex3f( w, 0, 0 );
     glEnd();
     glPopMatrix();
   }
-
+  glDisable( GL_TEXTURE_2D );
   /* Draw it to the screen */
   if(updateScreen) SDL_GL_SwapBuffers( );
   status++;
