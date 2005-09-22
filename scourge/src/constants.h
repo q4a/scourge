@@ -259,6 +259,15 @@ typedef struct _ParticleStruct {
 
 #define MAX_LEVEL 100
 
+class StatusReport {
+public:
+  StatusReport() {
+  }
+  virtual ~StatusReport() {
+  }
+  virtual void updateStatus( int status, int maxStatus, const char *message=NULL ) = 0;
+};
+
 class Constants {
 public:
 

@@ -340,7 +340,7 @@ void Scourge::startMission() {
       //dg->toMap(levelMap, getSession()->getShapePalette(), DungeonGenerator::HQ_LOCATION);   
 
       dg = NULL;
-      levelMap->loadMap( "hq", result, currentStory, changingStory );
+      levelMap->loadMap( "hq", result, this, currentStory, changingStory );
       //cerr << result << endl;
 
     } else {
@@ -360,7 +360,7 @@ void Scourge::startMission() {
           strlen( getSession()->getCurrentMission()->getMapName() ) ) {
         // try to load the edited map
         dg = NULL;
-        loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, currentStory, changingStory, !(levelMap->isEdited()) );
+        loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, this, currentStory, changingStory, !(levelMap->isEdited()) );
         //cerr << result << endl;
         //cerr << "***** " << getSession()->getCurrentMission()->getMapName() << endl;
       } 
@@ -3109,6 +3109,11 @@ void Scourge::initUpdate(char *message) {
 
 void Scourge::initEnd() {
   delete progress;
+  // re-create progress bar for map loading (recreate with different options)
+  progress = new Progress(this->getSDLHandler(), 
+                          getSession()->getShapePalette()->getProgressTexture(), 
+                          getSession()->getShapePalette()->getProgressHighlightTexture(),
+                          20, false, true);
 }
 
 void Scourge::createBoardUI() {
@@ -3512,4 +3517,8 @@ bool Scourge::startTextEffect( char *message ) {
   } else {
     return false;
   }
+}
+
+void Scourge::updateStatus( int status, int maxStatus, const char *message ) {
+  progress->updateStatus( message, true, status, maxStatus );
 }

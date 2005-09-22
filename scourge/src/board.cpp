@@ -802,9 +802,9 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
 
     // Are there default conversation elements?
     if( Mission::intros.size() == 0 ) 
-      fprintf( fp, "G:_INTRO_,Welcome weary adventurer!.\n" );
+      fprintf( fp, "G:_INTRO_;Welcome weary adventurer!.\n" );
     if( Mission::unknownPhrases.size() == 0 ) 
-      fprintf( fp, "G:_UNKNOWN_,Uh, I don't know anything about that...\n" );
+      fprintf( fp, "G:_UNKNOWN_;Uh, I don't know anything about that...\n" );
 
     fprintf( fp, "# Unknown npc-s found:\n" );
     fprintf( fp, "# Key:\n" );
