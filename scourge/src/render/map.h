@@ -118,7 +118,6 @@ public:
 #define WATER_TILE_X 8
 #define WATER_TILE_Y 8
 
-
 /**
  *@author Gabor Torok
  */
@@ -232,7 +231,7 @@ class Map {
   inline Color *getDesriptionColors() { return descriptionsColor; }
 
   void saveMap( char *name, char *result );
-  bool loadMap( char *name, char *result, int depth=0, bool changingStory=false, bool fromRandom=false );
+  bool loadMap( char *name, char *result, StatusReport *report=NULL, int depth=0, bool changingStory=false, bool fromRandom=false );
   void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
 
   inline Uint16 getCursorMapX() { return cursorMapX; }
