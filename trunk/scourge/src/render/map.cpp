@@ -2850,7 +2850,7 @@ void Map::saveMap( char *name, char *result ) {
   sprintf( result, "Map saved: %s", name );
 }
 
-bool Map::loadMap( char *name, char *result, int depth, bool changingStory, bool fromRandom ) {
+bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bool changingStory, bool fromRandom ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
     return false;
@@ -2869,9 +2869,12 @@ bool Map::loadMap( char *name, char *result, int depth, bool changingStory, bool
     sprintf( result, "Can't find map: %s", name );
     return false;
   }
+  if( report ) report->updateStatus( 0, 4 );
   File *file = new ZipFile( fp, ZipFile::ZIP_READ );
   MapInfo *info = Persist::loadMap( file );
   delete file;
+
+  if( report ) report->updateStatus( 1, 4 );
 
   // reset the map
   reset();
@@ -2880,6 +2883,8 @@ bool Map::loadMap( char *name, char *result, int depth, bool changingStory, bool
 
   // load the theme
   shapes->loadTheme( (const char*)info->theme_name );
+
+  if( report ) report->updateStatus( 2, 4 );
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
@@ -2935,6 +2940,8 @@ bool Map::loadMap( char *name, char *result, int depth, bool changingStory, bool
   this->center( info->start_x, info->start_y, true );
 
   Persist::deleteMapInfo( info );
+
+  if( report ) report->updateStatus( 3, 4 );
 
   // load map-related data from text file
   adapter->loadMapData( (const char*)fileName );

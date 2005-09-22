@@ -488,16 +488,45 @@ void Scourge::startMission() {
     if(!changingStory) {
       if(!inHq) {
         if(teleporting) {
-          // go back to HQ when coming from a mission	
-          oldStory = currentStory = 0;
-          nextMission = -1;
+
+
+          /* 
+            When on the lower levels of a named mission, teleport to level 0 
+            of the mission. Otherwise go back to HQ when coming from a mission.
+          */
+          if( getSession()->getCurrentMission() ) {
+            cerr << "current mission " << getSession()->getCurrentMission()->getMapName() << endl;
+          } else {
+            cerr << "no mission" << endl;
+          }
+          if( getSession()->getCurrentMission() &&
+              getSession()->getCurrentMission()->getMapName() &&
+              strlen( getSession()->getCurrentMission()->getMapName() ) &&
+              currentStory > 0 ) {
+            cerr << "\tgoing to level 0" << endl;
+            // to 0-th depth in edited map
+            oldStory = currentStory;
+            currentStory = 0;
+            changingStory = true;
+      //      gatepos = pos;
+          } else {
+            cerr << "\tgoing to hq" << endl;
+            // to HQ
+            oldStory = currentStory = 0;
+            nextMission = -1;
+          }
+
+
+
+//          nextMission = -1;
+//          oldStory = currentStory = 0;          
         } else {
           break;
         }
       } else if(nextMission == -1) {
         // if quiting in HQ, exit loop
         break;
-      }
+      }// otherwise go back to HQ when coming from a mission	
     }
   }
 #ifdef HAVE_SDL_NET
@@ -3377,7 +3406,7 @@ void Scourge::teleport( bool toHQ ) {
   if( inHq || !session->getCurrentMission() ) {
     this->showMessageDialog( "This spell has no effect here..." );
   } else if( toHQ ) {
-    oldStory = currentStory = 0;
+    //oldStory = currentStory = 0;
     teleporting = true;
     exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
     party->toggleRound(true);

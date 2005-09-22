@@ -113,7 +113,7 @@ char *Constants::messages[][80] = {
   { "Drag items to/from the list, Right click for info" },
   { "Play Mission" },
   { "Do you really want to exit this mission?" },
-  { "Exit mission and teleport back to base?" },
+  { "Teleport back to base?" },
   { "OK" },
   { "Cancel" },
   { "Yes" },
