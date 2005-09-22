@@ -18,8 +18,6 @@
 #include "progress.h"
 #include "widget.h"
 
-#define TEXTURE_BUFFER_TOP 10
-#define TEXTURE_BUFFER_BOTTOM 0
 #define TEXTURE_BORDER 100
 #define HIGHLIGHT_BORDER 24
 
@@ -44,7 +42,8 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
 
   glPushAttrib( GL_ENABLE_BIT );
   
-  if(updateScreen) glLoadIdentity();
+  //if(updateScreen) 
+    glLoadIdentity();
 
   if(clearScreen) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
@@ -68,7 +67,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   */
 
   int w = 10;  
-  int h = 18;
+  int h = 22;
   int gap = 3;
 
   int width = maxStatus *  ( w + gap ) + 20;
@@ -85,14 +84,16 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   }
 
   int x = (center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture ? TEXTURE_BORDER : 0 ));
-  int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
+  //int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
+  int y = 0;
   glTranslatef( x, y, 0 );
 
   if(!opaque) {
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
-
+  
+  /*
   if( message && texture ) {
     glColor4f( 0, 0, 0, 0.5f );
     glBegin( GL_QUADS );
@@ -102,13 +103,15 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
     glVertex3f( width + TEXTURE_BORDER - 30, 10, 0 );
     glEnd();
   }
+  */
 
   if( texture ) {
     glColor4f( 1, 1, 1, 0.8f );
     Widget::drawBorderedTexture( texture, 
-                                 -TEXTURE_BORDER, -TEXTURE_BUFFER_TOP, 
+                                 -TEXTURE_BORDER, 
+                                 0,
                                  width + ( 2 * TEXTURE_BORDER ), 
-                                 height + TEXTURE_BUFFER_TOP + TEXTURE_BUFFER_BOTTOM, 
+                                 60,
                                  TEXTURE_BORDER, TEXTURE_BORDER, 
                                  256 );
     glDisable( GL_TEXTURE_2D );
@@ -133,17 +136,18 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
     for( int i = 0; i < 3; i++ ) {
       if( i == 2 && alt <= 0 ) continue;
       glPushMatrix();
-      if(updateScreen) glLoadIdentity();
-      glTranslatef( x + 20, y + 35, 0 );
+      //if(updateScreen) 
+        glLoadIdentity();
+      glTranslatef( x + 10, y + 31, 0 );
       switch( i ) {
       case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
-      case 1: glColor4f( 1, 0, 0, 0.8f ); break;
+      case 1: glColor4f( 1, 1, 1, 0.8f ); break;
       case 2: glColor4f( 1, 0.4f, 0, 0.8f ); break;
       }
       Widget::drawBorderedTexture( highlight, 
                                    -HIGHLIGHT_BORDER, 0, 
-                                   HIGHLIGHT_BORDER + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ), 
-                                   h, HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 120 );
+                                   HIGHLIGHT_BORDER * 2 + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ), 
+                                   22, HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
       glPopMatrix();
     }
   } else {
@@ -152,7 +156,8 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
       else if(i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
       else glColor4f(0.5f, 0.5f, 0.5f, 1);
       glPushMatrix();
-      if(updateScreen) glLoadIdentity();
+      //if(updateScreen) 
+        glLoadIdentity();
       glTranslatef( x + i * ( w + gap ) + 20, y + 35, 0 );
       glBegin( GL_QUADS );
       if( highlight ) glTexCoord2d( 0, 0 );
