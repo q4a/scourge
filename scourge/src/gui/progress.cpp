@@ -93,84 +93,39 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
   
-  /*
-  if( message && texture ) {
-    glColor4f( 0, 0, 0, 0.5f );
-    glBegin( GL_QUADS );
-    glVertex3f( -TEXTURE_BORDER + 30, 10, 0 );
-    glVertex3f( -TEXTURE_BORDER + 30, 35, 0);
-    glVertex3f( width + TEXTURE_BORDER - 30, 35, 0 );
-    glVertex3f( width + TEXTURE_BORDER - 30, 10, 0 );
-    glEnd();
-  }
-  */
-
-  if( texture ) {
-    glColor4f( 1, 1, 1, 0.8f );
-    Widget::drawBorderedTexture( texture, 
-                                 -TEXTURE_BORDER, 
-                                 0,
-                                 width + ( 2 * TEXTURE_BORDER ), 
-                                 60,
-                                 TEXTURE_BORDER, TEXTURE_BORDER, 
-                                 256 );
-    glDisable( GL_TEXTURE_2D );
-    glDisable( GL_ALPHA_TEST );
-  } else {
-    glColor4f( 0.25f, 0.20f, 0.15f, 0.8f );
-    glBegin( GL_QUADS );
-    glVertex3f( 0, 0, 0 );
-    glVertex3f( 0, height, 0);
-    glVertex3f( width, height, 0 );
-    glVertex3f( width, 0, 0 );
-    glEnd();
-  }
+  glColor4f( 1, 1, 1, 0.8f );
+  Widget::drawBorderedTexture( texture, 
+                               -TEXTURE_BORDER, 
+                               0,
+                               width + ( 2 * TEXTURE_BORDER ), 
+                               60,
+                               TEXTURE_BORDER, TEXTURE_BORDER, 
+                               256 );
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_ALPHA_TEST );
   glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);
-  if(message) {
-    scourgeGui->texPrint(20, 25, message);
-  }
+  if(message) scourgeGui->texPrint(20, 25, message);
   
-  if( highlight ) {
-    for( int i = 0; i < 3; i++ ) {
-      if( i == 2 && alt <= 0 ) continue;
-      glPushMatrix();
-      //if(updateScreen) 
-        glLoadIdentity();
-      glTranslatef( x + 10, y + 31, 0 );
-      switch( i ) {
-      case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
-      case 1: glColor4f( 1, 1, 1, 0.8f ); break;
-      case 2: glColor4f( 1, 0.4f, 0, 0.8f ); break;
-      }
-      Widget::drawBorderedTexture( highlight, 
-                                   -HIGHLIGHT_BORDER, 0, 
-                                   HIGHLIGHT_BORDER * 2 + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ), 
-                                   22, HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
-      glPopMatrix();
+  for( int i = 0; i < 3; i++ ) {
+    if( i == 2 && alt <= 0 ) continue;
+    glPushMatrix();
+    //if(updateScreen) 
+    glLoadIdentity();
+    glTranslatef( x + 10, y + 34, 0 );
+    switch( i ) {
+    case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
+    case 1: glColor4f( 1, 1, 1, 0.8f ); break;
+    case 2: glColor4f( 1, 0.4f, 0, 0.8f ); break;
     }
-  } else {
-    for (int i = 0; i < maxStatus; i++) {
-      if( i < alt && i < status ) glColor4f(1, 0.4f, 0.0f, 1);
-      else if(i < status) glColor4f(0.7f, 0.10f, 0.15f, 1);
-      else glColor4f(0.5f, 0.5f, 0.5f, 1);
-      glPushMatrix();
-      //if(updateScreen) 
-        glLoadIdentity();
-      glTranslatef( x + i * ( w + gap ) + 20, y + 35, 0 );
-      glBegin( GL_QUADS );
-      if( highlight ) glTexCoord2d( 0, 0 );
-      glVertex3f( 0, 0, 0 );
-      if( highlight ) glTexCoord2d( 0, 1 );
-      glVertex3f( 0, h, 0 );
-      if( highlight ) glTexCoord2d( 1, 1 );
-      glVertex3f( w, h, 0 );
-      if( highlight ) glTexCoord2d( 1, 0 );
-      glVertex3f( w, 0, 0 );
-      glEnd();
-      glPopMatrix();
-    }
+    Widget::drawBorderedTexture( highlight, 
+                                 -HIGHLIGHT_BORDER, 0, 
+                                 HIGHLIGHT_BORDER * 2 + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ), 
+                                 //22, 
+                                 18,
+                                 HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
+    glPopMatrix();
   }
   glDisable( GL_TEXTURE_2D );
   /* Draw it to the screen */
