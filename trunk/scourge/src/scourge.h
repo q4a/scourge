@@ -125,7 +125,7 @@ public:
   
   @author Gabor Torok
 */ 
-class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler {
+class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler,StatusReport {
  private:
   Party *party;
   Map *levelMap;
@@ -274,6 +274,8 @@ public:
   
   Scourge( UserConfiguration *config );
   ~Scourge();
+
+  void updateStatus( int status, int maxStatus, const char *message=NULL );
 
   /**
     The widget received a dragged item
