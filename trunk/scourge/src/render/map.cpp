@@ -2869,12 +2869,12 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
     sprintf( result, "Can't find map: %s", name );
     return false;
   }
-  if( report ) report->updateStatus( 0, 4 );
+  if( report ) report->updateStatus( 0, 7, "Loading map" );
   File *file = new ZipFile( fp, ZipFile::ZIP_READ );
   MapInfo *info = Persist::loadMap( file );
   delete file;
 
-  if( report ) report->updateStatus( 1, 4 );
+  if( report ) report->updateStatus( 1, 7, "Loading theme" );
 
   // reset the map
   reset();
@@ -2884,7 +2884,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
   // load the theme
   shapes->loadTheme( (const char*)info->theme_name );
 
-  if( report ) report->updateStatus( 2, 4 );
+  if( report ) report->updateStatus( 2, 7, "Starting map" );
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
@@ -2898,6 +2898,8 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
 
   mapGridX = info->grid_x;
   mapGridY = info->grid_y;
+
+  if( report ) report->updateStatus( 3, 7, "Initializing map" );
   
   GLShape *shape;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
@@ -2937,16 +2939,20 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
 
     // FIXME: handle door info 
   }
+  if( report ) report->updateStatus( 4, 7, "Finishing map" );
+
   this->center( info->start_x, info->start_y, true );
 
   Persist::deleteMapInfo( info );
 
-  if( report ) report->updateStatus( 3, 4 );
+  if( report ) report->updateStatus( 5, 7, "Loading creatures" );
 
   // load map-related data from text file
   adapter->loadMapData( (const char*)fileName );
   
   strcpy( this->name, name );
+
+  if( report ) report->updateStatus( 6, 7, "Starting party" );
 
   /* 
     FIXME: Place the party at the start. This code attempts to find a place
