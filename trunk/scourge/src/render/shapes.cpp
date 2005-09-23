@@ -757,6 +757,20 @@ int Shapes::findShapeIndexByName(const char *name) {
   return shapeMap[s]->getShapePalIndex();
 }
 
+bool isPowerOfTwo( GLuint n ) {
+  //cerr << "n=" << n << endl;
+  if( !n ) return false;
+  if( n == 1 ) return true;
+  int count = 0;
+  for( int i = 0; i < 8; i++ ) {
+    GLuint shifted = (GLuint)( n >> i );
+    count += ( shifted & 1 );
+    //cerr << "\tshifted=" << shifted << " &=" << ( shifted & 1 ) << " count=" << count << endl;
+    if( count > 1 ) return false;
+  }
+  return true;
+}
+
 /* function to load in bitmap as a GL texture */
 GLuint Shapes::loadGLTextures(char *filename) {
 
@@ -772,9 +786,13 @@ GLuint Shapes::loadGLTextures(char *filename) {
   SDL_Surface *TextureImage[1];
 
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-  //fprintf(stderr, "Loading texture: %s\n", fn);
   if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
-    //fprintf(stderr, "\tFound it. pitch=%d width=%d height=%d\n", (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+
+    if( !isPowerOfTwo( TextureImage[0]->w ) ||
+        !isPowerOfTwo( TextureImage[0]->h ) ) {
+      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
+              fn, (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+    }
 
     Constants::checkTexture("Shapes::loadGLTextures", 
                             TextureImage[0]->w, TextureImage[0]->h);
@@ -856,7 +874,7 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
 
 //  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
 
-  *image = NULL;
+  GLubyte *p = NULL;
   char fn[300];
 //  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
   strcpy(fn, rootDir);
@@ -867,13 +885,16 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-//    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
-//            fn, width, height, (*surface)->format->BitsPerPixel,
-//            (*surface)->format->BytesPerPixel, (*surface)->pitch);
+    if( !isPowerOfTwo( width ) ||
+        !isPowerOfTwo( height ) ) {
+      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
+              fn, width, height, (*surface)->format->BitsPerPixel,
+              (*surface)->format->BytesPerPixel, (*surface)->pitch);
+    }
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
 
-    (*image) = (unsigned char*)malloc(width * height * 4);
+    p = (GLubyte*)malloc(width * height * 4 * sizeof( GLubyte ));
     int count = 0;
     int c = 0;
     unsigned char r,g,b;
@@ -885,14 +906,16 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
       g = data[c++];
       b = data[c++];
 
-      (*image)[count++] = r;
-      (*image)[count++] = g;
-      (*image)[count++] = b;
+      p[count++] = r;
+      p[count++] = g;
+      p[count++] = b;
       //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
       //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
-      (*image)[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+      p[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
     }
   }
+
+  (*image) = p;
 }
 
 void Shapes::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surface, 

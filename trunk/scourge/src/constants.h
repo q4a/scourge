@@ -670,8 +670,6 @@ public:
   inline static float toAngle(float rad) {
 	return (180.0f * rad) / 3.14159;
   }
-
-  static bool doesPathExist( char *path );
 };
 
 // This is our 3D point class.  This will be used to store the vertices of our model.
