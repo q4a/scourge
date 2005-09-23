@@ -67,11 +67,11 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   */
 
   int w = 10;  
-  int h = 22;
+//  int h = 22;
   int gap = 3;
 
   int width = maxStatus *  ( w + gap ) + 20;
-  int height = 35 + h + 10;
+//  int height = 35 + h + 10;
 
   // display as % if too large
   int maxWidth = scourgeGui->getScreenWidth() - 50;
@@ -106,14 +106,14 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);
-  if(message) scourgeGui->texPrint(20, 25, message);
+  if(message) scourgeGui->texPrint(0, 22, message);
   
   for( int i = 0; i < 3; i++ ) {
     if( i == 2 && alt <= 0 ) continue;
     glPushMatrix();
     //if(updateScreen) 
     glLoadIdentity();
-    glTranslatef( x + 10, y + 34, 0 );
+    glTranslatef( x + 10, y + 32, 0 );
     switch( i ) {
     case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
     case 1: glColor4f( 1, 1, 1, 0.8f ); break;
@@ -123,7 +123,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
                                  -HIGHLIGHT_BORDER, 0, 
                                  HIGHLIGHT_BORDER * 2 + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ), 
                                  //22, 
-                                 18,
+                                 20,
                                  HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
     glPopMatrix();
   }
