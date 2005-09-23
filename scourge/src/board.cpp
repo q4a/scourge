@@ -62,9 +62,9 @@ Board::Board(Session *session) {
     if( n == 'M' ) {
       // skip ':'
       fgetc( fp );
-      n = Constants::readLine( name, fp );
-      type = name[0];
-      strcpy( name, name + 2 );
+      n = Constants::readLine( line, fp );
+      type = line[0];
+      strcpy( name, line + 2 );
       strcpy( description, "" );
       while( n == 'D' ) {
         n = Constants::readLine( line, fp );

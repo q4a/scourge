@@ -673,11 +673,3 @@ void Constants::initConstants() {
   Constants::badStateMod.push_back( Constants::paralysed );
 }
 
-bool Constants::doesPathExist( char *path ) {
-  return( !access( path, F_OK ) );
-  /*
-  Another way to do this is using "fstat"
-  #include <sys/stat.h>
-  */
-}
-
