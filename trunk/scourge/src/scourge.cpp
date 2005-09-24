@@ -248,7 +248,9 @@ void Scourge::startMission() {
     if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
 
     // create the map
+    cerr << "Starting to reset map..." << endl;
     levelMap->reset();
+    cerr << "\tMap reset is done." << endl;    
 
     // do this only once
     if(resetParty) {
@@ -267,14 +269,16 @@ void Scourge::startMission() {
 
       resetParty = false;
     }
-
+    cerr << "Minimap reset" << endl;
     miniMap->reset();
     miniMap->show();
 
     // ready the party
+    cerr << "Party reset" << endl;    
     party->startPartyOnMission();
 
     // save the party
+    cerr << "Saving party" << endl;
     if(!session->isMultiPlayerGame()) {
       if(!saveGame(session)) {
         showMessageDialog( "Error saving game!" );
@@ -282,6 +286,7 @@ void Scourge::startMission() {
     }
 
     // position the players
+    cerr << "Calling resetMove" << endl;    
     levelMap->resetMove();
     battleCount = 0;
     containerGuiCount = 0;
@@ -294,6 +299,7 @@ void Scourge::startMission() {
 
     if(nextMission == -1) {
 
+      cerr << "Showing Uzudil's message" << endl;        
       missionWillAwardExpPoints = false;
 
       // in HQ map
@@ -331,6 +337,7 @@ void Scourge::startMission() {
       }
 
       // init the missions board (this deletes completed missions)
+      cerr << "Initializing board" << endl;
       board->initMissions();
 
       // display the HQ map
