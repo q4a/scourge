@@ -5,9 +5,9 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = scourge_private.res
-OBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o ../src/sound.o ../src/persist.o ../src/infogui.o ../src/gui/slider.o ../src/frustum.o ../src/gui/scrollinglabel.o ../src/partyeditor.o ../src/gui/guitheme.o ../src/conversationgui.o ../src/prefix.o $(RES)
-LINKOBJ  = ../src/3ds.o ../src/3dsshape.o ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/effect.o ../src/gllocator.o ../src/glshape.o ../src/glteleporter.o ../src/gltorch.o ../src/inventory.o ../src/item.o ../src/location.o ../src/main.o ../src/mainmenu.o ../src/map.o ../src/Md2.o ../src/md2shape.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shape.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o ../src/sound.o ../src/persist.o ../src/infogui.o ../src/gui/slider.o ../src/frustum.o ../src/gui/scrollinglabel.o ../src/partyeditor.o ../src/gui/guitheme.o ../src/conversationgui.o ../src/prefix.o $(RES)
-LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -Wno-deprecated -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:/GnuWin32/lib -lfreetype -lSDL_mixer C:/Dev-Cpp/lib/SDL_net-1.2.5/lib/SDL_net.lib  
+OBJ  = ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/inventory.o ../src/item.o ../src/main.o ../src/mainmenu.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o ../src/sound.o ../src/persist.o ../src/infogui.o ../src/gui/slider.o ../src/gui/scrollinglabel.o ../src/partyeditor.o ../src/gui/guitheme.o ../src/conversationgui.o ../src/prefix.o ../src/render/3ds.o ../src/render/3dsshape.o ../src/render/effect.o ../src/render/frustum.o ../src/render/gllocator.o ../src/render/glshape.o ../src/render/glteleporter.o ../src/render/gltorch.o ../src/render/location.o ../src/render/map.o ../src/render/mapadapter.o ../src/render/Md2.o ../src/render/md2shape.o ../src/render/renderedcreature.o ../src/render/renderedprojectile.o ../src/render/shape.o ../src/render/shapes.o ../src/io/file.o ../src/io/zipfile.o ../src/donatedialog.o ../src/healdialog.o ../src/itemlist.o ../src/mapeditor.o ../src/mapwidget.o ../src/texteffect.o ../src/tradedialog.o ../src/traindialog.o $(RES)
+LINKOBJ  = ../src/battle.o ../src/board.o ../src/calendar.o ../src/constants.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/inventory.o ../src/item.o ../src/main.o ../src/mainmenu.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/freetype/FreeType.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o ../src/sound.o ../src/persist.o ../src/infogui.o ../src/gui/slider.o ../src/gui/scrollinglabel.o ../src/partyeditor.o ../src/gui/guitheme.o ../src/conversationgui.o ../src/prefix.o ../src/render/3ds.o ../src/render/3dsshape.o ../src/render/effect.o ../src/render/frustum.o ../src/render/gllocator.o ../src/render/glshape.o ../src/render/glteleporter.o ../src/render/gltorch.o ../src/render/location.o ../src/render/map.o ../src/render/mapadapter.o ../src/render/Md2.o ../src/render/md2shape.o ../src/render/renderedcreature.o ../src/render/renderedprojectile.o ../src/render/shape.o ../src/render/shapes.o ../src/io/file.o ../src/io/zipfile.o ../src/donatedialog.o ../src/healdialog.o ../src/itemlist.o ../src/mapeditor.o ../src/mapwidget.o ../src/texteffect.o ../src/tradedialog.o ../src/traindialog.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -Wno-deprecated -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:/GnuWin32/lib -lfreetype -lSDL_mixer -lz C:/Dev-Cpp/lib/SDL_net-1.2.5/lib/SDL_net.lib  
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/include/c++/3.3.1"  -I"C:/Dev-Cpp/include/c++/3.3.1/mingw32"  -I"C:/Dev-Cpp/include/c++/3.3.1/backward"  -I"C:/Dev-Cpp/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/Dev-Cpp/include" 
 BIN  = ../scourge.exe
@@ -24,12 +24,6 @@ clean: clean-custom
 
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o "..\scourge.exe" $(LIBS)
-
-../src/3ds.o: ../src/3ds.cpp
-	$(CPP) -c ../src/3ds.cpp -o ../src/3ds.o $(CXXFLAGS)
-
-../src/3dsshape.o: ../src/3dsshape.cpp
-	$(CPP) -c ../src/3dsshape.cpp -o ../src/3dsshape.o $(CXXFLAGS)
 
 ../src/battle.o: ../src/battle.cpp
 	$(CPP) -c ../src/battle.cpp -o ../src/battle.o $(CXXFLAGS)
@@ -55,44 +49,17 @@ $(BIN): $(OBJ)
 ../src/dungeongenerator.o: ../src/dungeongenerator.cpp
 	$(CPP) -c ../src/dungeongenerator.cpp -o ../src/dungeongenerator.o $(CXXFLAGS)
 
-../src/effect.o: ../src/effect.cpp
-	$(CPP) -c ../src/effect.cpp -o ../src/effect.o $(CXXFLAGS)
-
-../src/gllocator.o: ../src/gllocator.cpp
-	$(CPP) -c ../src/gllocator.cpp -o ../src/gllocator.o $(CXXFLAGS)
-
-../src/glshape.o: ../src/glshape.cpp
-	$(CPP) -c ../src/glshape.cpp -o ../src/glshape.o $(CXXFLAGS)
-
-../src/glteleporter.o: ../src/glteleporter.cpp
-	$(CPP) -c ../src/glteleporter.cpp -o ../src/glteleporter.o $(CXXFLAGS)
-
-../src/gltorch.o: ../src/gltorch.cpp
-	$(CPP) -c ../src/gltorch.cpp -o ../src/gltorch.o $(CXXFLAGS)
-
 ../src/inventory.o: ../src/inventory.cpp
 	$(CPP) -c ../src/inventory.cpp -o ../src/inventory.o $(CXXFLAGS)
 
 ../src/item.o: ../src/item.cpp
 	$(CPP) -c ../src/item.cpp -o ../src/item.o $(CXXFLAGS)
 
-../src/location.o: ../src/location.cpp
-	$(CPP) -c ../src/location.cpp -o ../src/location.o $(CXXFLAGS)
-
 ../src/main.o: ../src/main.cpp
 	$(CPP) -c ../src/main.cpp -o ../src/main.o $(CXXFLAGS)
 
 ../src/mainmenu.o: ../src/mainmenu.cpp
 	$(CPP) -c ../src/mainmenu.cpp -o ../src/mainmenu.o $(CXXFLAGS)
-
-../src/map.o: ../src/map.cpp
-	$(CPP) -c ../src/map.cpp -o ../src/map.o $(CXXFLAGS)
-
-../src/Md2.o: ../src/Md2.cpp
-	$(CPP) -c ../src/Md2.cpp -o ../src/Md2.o $(CXXFLAGS)
-
-../src/md2shape.o: ../src/md2shape.cpp
-	$(CPP) -c ../src/md2shape.cpp -o ../src/md2shape.o $(CXXFLAGS)
 
 ../src/minimap.o: ../src/minimap.cpp
 	$(CPP) -c ../src/minimap.cpp -o ../src/minimap.o $(CXXFLAGS)
@@ -117,9 +84,6 @@ $(BIN): $(OBJ)
 
 ../src/sdlscreenview.o: ../src/sdlscreenview.cpp
 	$(CPP) -c ../src/sdlscreenview.cpp -o ../src/sdlscreenview.o $(CXXFLAGS)
-
-../src/shape.o: ../src/shape.cpp
-	$(CPP) -c ../src/shape.cpp -o ../src/shape.o $(CXXFLAGS)
 
 ../src/shapepalette.o: ../src/shapepalette.cpp
 	$(CPP) -c ../src/shapepalette.cpp -o ../src/shapepalette.o $(CXXFLAGS)
@@ -250,9 +214,6 @@ $(BIN): $(OBJ)
 ../src/gui/slider.o: ../src/gui/slider.cpp
 	$(CPP) -c ../src/gui/slider.cpp -o ../src/gui/slider.o $(CXXFLAGS)
 
-../src/frustum.o: ../src/frustum.cpp
-	$(CPP) -c ../src/frustum.cpp -o ../src/frustum.o $(CXXFLAGS)
-
 ../src/gui/scrollinglabel.o: ../src/gui/scrollinglabel.cpp
 	$(CPP) -c ../src/gui/scrollinglabel.cpp -o ../src/gui/scrollinglabel.o $(CXXFLAGS)
 
@@ -267,6 +228,87 @@ $(BIN): $(OBJ)
 
 ../src/prefix.o: ../src/prefix.c
 	$(CPP) -c ../src/prefix.c -o ../src/prefix.o $(CXXFLAGS)
+
+../src/render/3ds.o: ../src/render/3ds.cpp
+	$(CPP) -c ../src/render/3ds.cpp -o ../src/render/3ds.o $(CXXFLAGS)
+
+../src/render/3dsshape.o: ../src/render/3dsshape.cpp
+	$(CPP) -c ../src/render/3dsshape.cpp -o ../src/render/3dsshape.o $(CXXFLAGS)
+
+../src/render/effect.o: ../src/render/effect.cpp
+	$(CPP) -c ../src/render/effect.cpp -o ../src/render/effect.o $(CXXFLAGS)
+
+../src/render/frustum.o: ../src/render/frustum.cpp
+	$(CPP) -c ../src/render/frustum.cpp -o ../src/render/frustum.o $(CXXFLAGS)
+
+../src/render/gllocator.o: ../src/render/gllocator.cpp
+	$(CPP) -c ../src/render/gllocator.cpp -o ../src/render/gllocator.o $(CXXFLAGS)
+
+../src/render/glshape.o: ../src/render/glshape.cpp
+	$(CPP) -c ../src/render/glshape.cpp -o ../src/render/glshape.o $(CXXFLAGS)
+
+../src/render/glteleporter.o: ../src/render/glteleporter.cpp
+	$(CPP) -c ../src/render/glteleporter.cpp -o ../src/render/glteleporter.o $(CXXFLAGS)
+
+../src/render/gltorch.o: ../src/render/gltorch.cpp
+	$(CPP) -c ../src/render/gltorch.cpp -o ../src/render/gltorch.o $(CXXFLAGS)
+
+../src/render/location.o: ../src/render/location.cpp
+	$(CPP) -c ../src/render/location.cpp -o ../src/render/location.o $(CXXFLAGS)
+
+../src/render/map.o: ../src/render/map.cpp
+	$(CPP) -c ../src/render/map.cpp -o ../src/render/map.o $(CXXFLAGS)
+
+../src/render/mapadapter.o: ../src/render/mapadapter.cpp
+	$(CPP) -c ../src/render/mapadapter.cpp -o ../src/render/mapadapter.o $(CXXFLAGS)
+
+../src/render/Md2.o: ../src/render/Md2.cpp
+	$(CPP) -c ../src/render/Md2.cpp -o ../src/render/Md2.o $(CXXFLAGS)
+
+../src/render/md2shape.o: ../src/render/md2shape.cpp
+	$(CPP) -c ../src/render/md2shape.cpp -o ../src/render/md2shape.o $(CXXFLAGS)
+
+../src/render/renderedcreature.o: ../src/render/renderedcreature.cpp
+	$(CPP) -c ../src/render/renderedcreature.cpp -o ../src/render/renderedcreature.o $(CXXFLAGS)
+
+../src/render/renderedprojectile.o: ../src/render/renderedprojectile.cpp
+	$(CPP) -c ../src/render/renderedprojectile.cpp -o ../src/render/renderedprojectile.o $(CXXFLAGS)
+
+../src/render/shape.o: ../src/render/shape.cpp
+	$(CPP) -c ../src/render/shape.cpp -o ../src/render/shape.o $(CXXFLAGS)
+
+../src/render/shapes.o: ../src/render/shapes.cpp
+	$(CPP) -c ../src/render/shapes.cpp -o ../src/render/shapes.o $(CXXFLAGS)
+
+../src/io/file.o: ../src/io/file.cpp
+	$(CPP) -c ../src/io/file.cpp -o ../src/io/file.o $(CXXFLAGS)
+
+../src/io/zipfile.o: ../src/io/zipfile.cpp
+	$(CPP) -c ../src/io/zipfile.cpp -o ../src/io/zipfile.o $(CXXFLAGS)
+
+../src/donatedialog.o: ../src/donatedialog.cpp
+	$(CPP) -c ../src/donatedialog.cpp -o ../src/donatedialog.o $(CXXFLAGS)
+
+../src/healdialog.o: ../src/healdialog.cpp
+	$(CPP) -c ../src/healdialog.cpp -o ../src/healdialog.o $(CXXFLAGS)
+
+../src/itemlist.o: ../src/itemlist.cpp
+	$(CPP) -c ../src/itemlist.cpp -o ../src/itemlist.o $(CXXFLAGS)
+
+../src/mapeditor.o: ../src/mapeditor.cpp
+	$(CPP) -c ../src/mapeditor.cpp -o ../src/mapeditor.o $(CXXFLAGS)
+
+../src/mapwidget.o: ../src/mapwidget.cpp
+	$(CPP) -c ../src/mapwidget.cpp -o ../src/mapwidget.o $(CXXFLAGS)
+
+../src/texteffect.o: ../src/texteffect.cpp
+	$(CPP) -c ../src/texteffect.cpp -o ../src/texteffect.o $(CXXFLAGS)
+
+../src/tradedialog.o: ../src/tradedialog.cpp
+	$(CPP) -c ../src/tradedialog.cpp -o ../src/tradedialog.o $(CXXFLAGS)
+
+../src/traindialog.o: ../src/traindialog.cpp
+	$(CPP) -c ../src/traindialog.cpp -o ../src/traindialog.o $(CXXFLAGS)
 
 scourge_private.res: scourge_private.rc 
 	$(WINDRES) -i scourge_private.rc -I rc -o scourge_private.res -O coff 
