@@ -483,7 +483,8 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
 }
 
 void Shapes::loadRandomTheme() {
-  loadTheme( themes[ (int)( (float)(themeCount - 1) * rand()/RAND_MAX ) + 1 ] );
+  //loadTheme( themes[ (int)( (float)(themeCount - 1) * rand()/RAND_MAX ) + 1 ] );
+  loadTheme( themes[ (int)( (float)themeCount * rand()/RAND_MAX ) ] );
 }
 
 void Shapes::loadTheme(const char *themeName) {
