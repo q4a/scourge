@@ -63,9 +63,11 @@ const float Map::shadowTransformMatrix[16] = {
 	0, 1, 0, 0,
 	0.5f, -0.5f, 0, 0,
 	0, 0, 0, 1 };
+	
+MapMemoryManager *Map::mapMemoryManager = new MapMemoryManager();
 
 Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
-
+  
   hasWater = false;
 
   startx = starty = 128;
@@ -175,17 +177,22 @@ Map::~Map(){
 }
 
 void Map::reset() {
-
+  cerr << "reset 1" << endl;
   edited = false;
   strcpy( this->name, "" );
   hasWater = false;
 
+  cerr << "reset 2" << endl;
   // remove locking info
   clearLocked();
 
+  cerr << "reset 3" << endl;
   // remove area effects
   removeAllEffects();
+  
+  cerr << "reset 4" << endl;  
   // clear map
+  set<Location*> deleted;
   for(int xp = 0; xp < MAP_WIDTH; xp++) {
     for(int yp = 0; yp < MAP_DEPTH; yp++) {
       if( floorPositions[xp][yp] ) {
@@ -197,15 +204,20 @@ void Map::reset() {
       }
       for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
         if(pos[xp][yp][zp]) {
-          delete pos[xp][yp][zp];
+          Location *p = pos[xp][yp][zp];
+          if( deleted.find( p ) == deleted.end() ) deleted.insert( p );
           pos[xp][yp][zp] = NULL;
         }
       }
     }
   }
+  for( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
+    Location *p = *i;
+    mapMemoryManager->deleteLocation( p );
+  }  
   water.clear();
 
-
+  cerr << "reset 5" << endl;
   zoom = 1.0f;
   zoomIn = zoomOut = false;
   x = y = 0;
@@ -239,6 +251,8 @@ void Map::reset() {
   this->debugGridFlag = false;
   this->drawGridFlag = false;
   
+  cerr << "reset 6" << endl;  
+  
   // initialize shape graph of "in view shapes"
   for(int x = 0; x < MAP_WIDTH; x++) {
 	for(int y = 0; y < MAP_DEPTH; y++) {
@@ -255,6 +269,7 @@ void Map::reset() {
   //}
   //nbPosCache = -1;
 
+  cerr << "reset 7" << endl;
   // initialize the lightmap
   for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
     for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
@@ -1870,12 +1885,14 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   }
 
   if(!effect[x][y][z]) {
-    effect[x][y][z] = new EffectLocation();
+    effect[x][y][z] = mapMemoryManager->newEffectLocation( preferences, shapes, width, height );
   }
+  /*
   effect[x][y][z]->effect = new Effect( preferences,
                                         shapes, 
                                         width, height );
   effect[x][y][z]->effect->deleteParticles();
+  */
   effect[x][y][z]->resetDamageEffect();
   effect[x][y][z]->effectType = effect_type;
   effect[x][y][z]->effectDuration = duration;
@@ -1897,11 +1914,14 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
   }
 
   if(effect[x][y][z]) {
+    /*
     if(effect[x][y][z]->effect) {
       delete effect[x][y][z]->effect;
       effect[x][y][z]->effect = NULL;
     }
     delete effect[x][y][z];
+    */
+    mapMemoryManager->deleteEffectLocation( effect[x][y][z] );
     effect[x][y][z] = NULL;
   }
 }
@@ -1911,11 +1931,14 @@ void Map::removeAllEffects() {
     for( int y = 0; y < MAP_DEPTH; y++ ) {
       for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
         if( effect[x][y][z] ) {
+          /*
           if(effect[x][y][z]->effect) {
             delete effect[x][y][z]->effect;
             effect[x][y][z]->effect = NULL;
           }
           delete effect[x][y][z];
+          */
+          mapMemoryManager->deleteEffectLocation( effect[x][y][z] );
           effect[x][y][z] = NULL;
         }
       }
@@ -1928,11 +1951,15 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
   if(shape) {
     resortShapes = mapChanged = true;
     //cerr << "FIXME: Map::setPosition" << endl;
+    Location *p = NULL;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
-        for(int zp = 0; zp < shape->getHeight(); zp++) {          
+        for(int zp = 0; zp < shape->getHeight(); zp++) {
+          if( !p ) {
+            p = mapMemoryManager->newLocation();
+          }
           if(!pos[x + xp][y - yp][z + zp]) {
-            pos[x + xp][y - yp][z + zp] = new Location();
+            pos[x + xp][y - yp][z + zp] = p;
           }
           pos[x + xp][y - yp][z + zp]->shape = shape;
           pos[x + xp][y - yp][z + zp]->item = NULL;
@@ -1961,17 +1988,22 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	resortShapes = mapChanged = true;
     shape = pos[x][y][z]->shape;
+    set<Location*> deleted;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???
         adapter->eraseMiniMapPoint(x + xp, y - yp);
         for(int zp = 0; zp < shape->getHeight(); zp++) {
-            //cerr <<"remove pos " << x + xp << "," << y - yp << "," << z + zp<<endl;
-		  delete pos[x + xp][y - yp][z + zp];
-		  pos[x + xp][y - yp][z + zp] = NULL;          
+          Location *p = pos[x + xp][y - yp][z + zp];
+          if( deleted.find(p) == deleted.end() ) deleted.insert( p );
+          pos[x + xp][y - yp][z + zp] = NULL;          
         }
       }
     }
+    for( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
+      Location *p = *i;
+      mapMemoryManager->deleteLocation( p );
+    }  
   }
   return shape;
 }
@@ -1989,12 +2021,15 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item) {
   if(item) {
     if(item->getShape()) {
 	  resortShapes = mapChanged = true;
+	  Location *p = NULL;
       for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
         for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {          
           for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
-			
+            if( !p ) {
+              p = mapMemoryManager->newLocation();
+            }  
             if(!pos[x + xp][y - yp][z + zp]) {
-              pos[x + xp][y - yp][z + zp] = new Location();
+              pos[x + xp][y - yp][z + zp] = p;
             }
 
             pos[x + xp][y - yp][z + zp]->item = item;
@@ -2020,15 +2055,20 @@ RenderedItem *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	resortShapes = mapChanged = true;
 	item = pos[x][y][z]->item;
+	set<Location *> deleted;
     for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
       for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {       
         for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
-		  
-		  delete pos[x + xp][y - yp][z + zp];
-		  pos[x + xp][y - yp][z + zp] = NULL;		
+          Location *p = pos[x + xp][y - yp][z + zp];
+          if( deleted.find( p ) == deleted.end() ) deleted.insert( p );
+          pos[x + xp][y - yp][z + zp] = NULL;		
         }
       }
     }
+     for( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
+      Location *p = *i;
+      mapMemoryManager->deleteLocation( p );
+    }  
   }
   return item;
 }
@@ -2065,21 +2105,14 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
     if(creature->getShape()) {
 	  resortShapes = mapChanged = true;
 	  while(true) {
+    Location *p = NULL;
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
 		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
 			for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
 			  //			  cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
+			  if( !p ) p = mapMemoryManager->newLocation();
         if(!pos[x + xp][y - yp][z + zp]) {
-          if(!USE_LOC_CACHE || nbPosCache < 0){
-            //                    cerr << " no cache available!" << endl;
-            pos[x + xp][y - yp][z + zp] = new Location();
-          }
-          else{
-            //                    cerr << " cache number : " << nbPosCache << endl;
-            pos[x + xp][y - yp][z + zp] = posCache[nbPosCache];
-            //posCache[nbPosCache] = NULL;
-            nbPosCache--;
-          }
+          pos[x + xp][y - yp][z + zp] = p;
         } else if(pos[x + xp][y - yp][z + zp]->item) {
           // creature picks up non-blocking item (this is the only way to handle 
           // non-blocking items. It's also very 'roguelike'.
@@ -2200,28 +2233,20 @@ RenderedCreature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	resortShapes = mapChanged = true;
     creature = pos[x][y][z]->creature;
-	//    cout<<"width : "<< creature->getShape()->getWidth()<<endl;
-	//    cout<<"depth: "<< creature->getShape()->getDepth()<<endl;
-	//    cout<<"height: "<< creature->getShape()->getHeight()<<endl;
+	  set<Location *> deleted;
     for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
       for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
         for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-		  //            cerr <<"deleting pos " << x + xp << "," << y - yp << "," << z + zp;
-            if(!USE_LOC_CACHE || nbPosCache >= MAX_POS_CACHE - 1){
-			  //                cerr << " no cache available!" << endl;
-                delete pos[x + xp][y - yp][z + zp];
-                pos[x + xp][y - yp][z + zp] = NULL;
-            }
-            else{
-                nbPosCache++;
-				//                cerr << " cache number : " << nbPosCache << endl;
-                posCache[nbPosCache] = pos[x + xp][y - yp][z + zp];
-                pos[x + xp][y - yp][z + zp] = NULL;
-                
-            }
+          Location *p = pos[x + xp][y - yp][z + zp];
+          if( deleted.find( p ) == deleted.end() ) deleted.insert( p );
+          pos[x + xp][y - yp][z + zp] = NULL;
         }
       }
     }
+    for( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
+      Location *p = *i;
+      mapMemoryManager->deleteLocation( p );
+    }  
   }
   return creature;
 }
@@ -3217,3 +3242,105 @@ void Map::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
     }
 }
 
+/**
+  Maxsize of 0 means unlimited size cache.
+*/
+MapMemoryManager::MapMemoryManager( int maxSize ) {
+  this->maxSize = maxSize;
+  this->accessCount = 0;
+  this->usedCount = 0;
+  // make room for at least this many pointers
+  unused.reserve( 200000 );
+  
+  this->usedEffectCount = 0;  
+  unusedEffect.reserve( 50000 );  
+}
+  
+MapMemoryManager::~MapMemoryManager() {
+  for( int i = 0; i < (int)unused.size(); i++ ) {
+    delete unused[i];
+  }
+  unused.clear();
+  for( int i = 0; i < (int)unusedEffect.size(); i++ ) {
+    delete unusedEffect[i];
+  }
+  unusedEffect.clear();  
+}
+  
+Location *MapMemoryManager::newLocation() {
+  Location *pos;
+  if( unused.size() ) {
+    pos = unused[ unused.size() - 1 ];
+    unused.pop_back();
+  } else {
+    pos = new Location();
+  }    
+  usedCount++;
+
+  printStatus();
+    
+  // reset it
+  pos->x = pos->y = pos->z = 0;
+  pos->shape = NULL;
+  pos->item = NULL;
+  pos->creature = NULL;
+  pos->outlineColor = NULL;
+  
+  return pos;
+}
+
+EffectLocation *MapMemoryManager::newEffectLocation( Preferences *preferences, Shapes *shapes, int width, int height ) {
+  EffectLocation *pos;
+  if( unusedEffect.size() ) {
+    pos = unusedEffect[ unusedEffect.size() - 1 ];
+    unusedEffect.pop_back();
+    pos->effect->reset();
+  } else {
+    pos = new EffectLocation();
+    pos->effect = new Effect( preferences, shapes, 4, 4 );
+    pos->effect->deleteParticles();    
+  }    
+  usedEffectCount++;
+
+  printStatus();
+    
+  // reset it
+  pos->x = pos->y = pos->z = 0;
+  pos->effectDuration = 0;
+  pos->damageEffectCounter = 0;
+  pos->effectType = 0;
+  pos->effectDelay = 0;
+  
+  return pos;
+}
+  
+void MapMemoryManager::deleteLocation( Location *pos ) {
+  if( !maxSize || (int)unused.size() < maxSize ) {
+    unused.push_back( pos );
+  } else {
+    delete pos;
+  }
+  usedCount--;  
+  printStatus();
+}
+
+void MapMemoryManager::deleteEffectLocation( EffectLocation *pos ) {
+  if( !maxSize || (int)unusedEffect.size() < maxSize ) {
+    unusedEffect.push_back( pos );
+  } else {
+    delete pos;
+  }
+  usedEffectCount--;  
+  printStatus();
+}
+
+void MapMemoryManager::printStatus() {
+  if( ++accessCount > 5000 ) {
+      cerr << "Map size: " << usedCount << " Kb:" << ( (float)(sizeof(Location)*usedCount)/1024.0f ) <<
+      " Cache: " << unused.size() << " Kb:" << ( (float)(sizeof(Location)*unused.size())/1024.0f ) << endl;
+      cerr << "Effect size: " << usedEffectCount << " Kb:" << ( (float)(sizeof(EffectLocation)*usedEffectCount)/1024.0f ) <<
+      " Cache: " << unusedEffect.size() << " Kb:" << ( (float)(sizeof(EffectLocation)*unusedEffect.size())/1024.0f ) << endl;
+      accessCount = 0;
+  }
+}
+  
