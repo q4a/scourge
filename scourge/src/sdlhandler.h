@@ -131,6 +131,7 @@ public:
   inline int getScreenHeight() { return getScreen()->h; }
   GLuint getHighlightTexture();
   GLuint loadSystemTexture( char *line );
+  void allWindowsClosed();
 
   void setOrthoView();
 

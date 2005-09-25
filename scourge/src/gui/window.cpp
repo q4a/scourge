@@ -782,7 +782,18 @@ void Window::setVisible(bool b, bool animate) {
   } else {
     y = currentY;
     windowWasClosed = true;
-    nextWindowToTop();
+    nextWindowToTop( false );
+
+    // Any windows open?
+    bool found = false;
+    for( int i = 0; i < Window::windowCount; i++ ) {
+      if( Window::window[i]->isVisible() && 
+          !Window::window[i]->isLocked() ) {
+        found = true;
+        break;
+      }
+    }
+    if( !found ) scourgeGui->allWindowsClosed();
   }
 }
 

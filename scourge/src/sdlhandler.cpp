@@ -25,6 +25,8 @@
 #include "sound.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
+#include "session.h"
+#include "party.h"
 
 //#define DEBUG_MOUSE_FOCUS 1
 
@@ -506,6 +508,11 @@ void SDLHandler::mainLoop() {
       break;
       }
 
+      // Show pointer over widgets unless casting a spell
+      if( !mouseIsMovingOverMap &&
+          getCursorMode() != Constants::CURSOR_CROSSHAIR ) 
+        setCursorMode( Constants::CURSOR_NORMAL );
+
       bool res = false;
       if(widget) {
         if( !mouseLock || mouseLock == widget ) {
@@ -872,5 +879,9 @@ GLuint SDLHandler::loadSystemTexture( char *line ) {
 
 inline void SDLHandler::playSound( const char *name ) { 
   getSound()->playSound( name ); 
+}
+
+void SDLHandler::allWindowsClosed() {
+  gameAdapter->getSession()->getParty()->toggleRound( false );
 }
 
