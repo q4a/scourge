@@ -28,6 +28,16 @@ Effect::Effect( Preferences *preferences, Shapes *shapePal, int width, int heigh
   commonInit();
 }
 
+void Effect::reset() {
+  if( !deleteShape ) {
+    cerr << "ERROR: Effect::reset() should only be called when the shape is created internally in the effect class!" << endl;
+    // cause a segfault (so you can debug the stacktrace)
+    ((Effect*)NULL)->getShape();
+  }  
+  deleteParticles();
+  commonInit();
+}  
+
 Effect::Effect( Preferences *preferences, Shapes *shapePal, GLShape *shape ) {
   this->preferences = preferences;
   this->shapePal = shapePal;

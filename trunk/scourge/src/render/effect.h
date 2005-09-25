@@ -46,6 +46,8 @@ public:
   Effect( Preferences *preferences, Shapes *shapePal, int width, int height );
   ~Effect();
   
+  void reset();
+  
   void deleteParticles();
   void draw(int effect, int startTime);
 

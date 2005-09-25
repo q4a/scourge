@@ -19,6 +19,8 @@
 #define MAP_H
 
 #include "render.h"
+#include <vector>
+#include <set>
 
 class CFrustum;
 class RenderedProjectile;
@@ -113,6 +115,27 @@ public:
   }
 };
 
+class MapMemoryManager {
+  private:
+    vector<Location*> unused;
+    vector<EffectLocation*> unusedEffect;
+    int maxSize;
+    int accessCount;
+    int usedCount, usedEffectCount;
+  public:
+    /**
+        Maxsize of 0 means unlimited size cache.
+    */
+    MapMemoryManager( int maxSize=0 );
+    ~MapMemoryManager();
+    Location *newLocation();
+    void deleteLocation( Location *pos );
+    EffectLocation *newEffectLocation( Preferences *preferences, Shapes *shapes, int width, int height );
+    void deleteEffectLocation( EffectLocation *pos );    
+  private:
+    void printStatus();
+};  
+
 
 // how many water points per 1 floor tile
 #define WATER_TILE_X 8
@@ -126,7 +149,7 @@ class Map {
    MapAdapter *adapter;
    Preferences *preferences;
    Shapes *shapes;
-
+   static MapMemoryManager *mapMemoryManager;
   bool mapChanged;
   bool resortShapes;
   float zoom;
