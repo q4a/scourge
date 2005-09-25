@@ -46,6 +46,7 @@ public:
   virtual GLuint loadSystemTexture( char *line ) = 0;
   virtual void unlockMouse() = 0;
   virtual void lockMouse( Widget *widget ) = 0;
+  virtual void allWindowsClosed() = 0;
 };                                    
 
 #endif

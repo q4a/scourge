@@ -177,20 +177,20 @@ Map::~Map(){
 }
 
 void Map::reset() {
-  cerr << "reset 1" << endl;
+  //cerr << "reset 1" << endl;
   edited = false;
   strcpy( this->name, "" );
   hasWater = false;
 
-  cerr << "reset 2" << endl;
+  //cerr << "reset 2" << endl;
   // remove locking info
   clearLocked();
 
-  cerr << "reset 3" << endl;
+  //cerr << "reset 3" << endl;
   // remove area effects
   removeAllEffects();
   
-  cerr << "reset 4" << endl;  
+  //cerr << "reset 4" << endl;  
   // clear map
   set<Location*> deleted;
   for(int xp = 0; xp < MAP_WIDTH; xp++) {
@@ -217,7 +217,7 @@ void Map::reset() {
   }  
   water.clear();
 
-  cerr << "reset 5" << endl;
+  //cerr << "reset 5" << endl;
   zoom = 1.0f;
   zoomIn = zoomOut = false;
   x = y = 0;
@@ -251,7 +251,7 @@ void Map::reset() {
   this->debugGridFlag = false;
   this->drawGridFlag = false;
   
-  cerr << "reset 6" << endl;  
+  //cerr << "reset 6" << endl;  
   
   // initialize shape graph of "in view shapes"
   for(int x = 0; x < MAP_WIDTH; x++) {
@@ -269,7 +269,7 @@ void Map::reset() {
   //}
   //nbPosCache = -1;
 
-  cerr << "reset 7" << endl;
+  //cerr << "reset 7" << endl;
   // initialize the lightmap
   for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
     for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
