@@ -982,7 +982,6 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     value = OPTIONS;
     return true;
   } else if(widget == aboutButton) {
-    cerr << "!!!" << endl;
     aboutDialog->setVisible( true );
     //value = ABOUT;
     return false;
@@ -1069,7 +1068,6 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   if( event->type == SDL_MOUSEBUTTONUP && line > -1 ) {
     value = menuItemList[ line ]->value;
     if( value == ABOUT ) {
-      cerr << "!!!" << endl;
       aboutDialog->setVisible( true );
       //value = ABOUT;
       return false;
