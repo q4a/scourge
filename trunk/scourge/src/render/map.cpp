@@ -1138,7 +1138,7 @@ void Map::draw() {
       doDrawShape(&damage[i], 1);
     }
     
-    if( preferences->isOvalCutoutShown() &&
+    if( adapter->isLevelShaded() &&
         !settings->isGridShowing() ) {
     /*      
         FIXME:
