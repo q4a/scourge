@@ -60,6 +60,11 @@ public:
    * Set up the opengl view.
    */
   virtual void setView() = 0;
+
+  /**
+   * Is the oval cutout shown over the map?
+   */
+  virtual bool isLevelShaded() = 0;
 };
 
 #endif
