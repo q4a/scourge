@@ -54,25 +54,34 @@ AM_BINRELOC
 dnl --------------------------------------------------------------------------
 dnl General options
 dnl --------------------------------------------------------------------------
+
+
 TR_CPPFLAGS=""
-TR_CFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
-TR_CXXFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
+TR_CFLAGS="$CFLAGS"
+TR_CXXFLAGS="$CXXFLAGS"
 TR_LIBS=""
 
-case "$host" in
-i*86-*-*) TR_CFLAGS="$TR_CFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";
-          TR_CXXFLAGS="$TR_CXXFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";;
-alpha*-*-linux-*) TR_CFLAGS="$TR_CFLAGS -mieee";;
-esac
+dnl Only override CXXFLAGS and CFLAGS if not already defined
+if test "x$CXXFLAGS" = "x" -a "x$CFLAGS" = "x" ; then
+	TR_CPPFLAGS=""
+	TR_CFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
+	TR_CXXFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
+	TR_LIBS=""
 
-AC_ARG_ENABLE(debug,     [  --enable-debug          Produce an executable with debugging symbols], 
-			 [TR_CFLAGS="-g -Wall -Wno-deprecated -fno-inline"; TR_CXXFLAGS="-g -Wall -Wno-deprecated -fno-inline"],
-			 [TR_CPPFLAGS="$TR_CPPFLAGS -DTUXRACER_NO_ASSERT=1"])
+	case "$host" in
+	i*86-*-*) TR_CFLAGS="$TR_CFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";
+		TR_CXXFLAGS="$TR_CXXFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";;
+	alpha*-*-linux-*) TR_CFLAGS="$TR_CFLAGS -mieee";;
+	esac
 
-AC_ARG_ENABLE(pedantic,  [  --enable-pedantic       Enable -pedantic (and -ansi for C) when compiling], TR_CFLAGS="$TR_CFLAGS -ansi -pedantic"; TR_CXXFLAGS="$TR_CXXFLAGS -pedantic")
+	AC_ARG_ENABLE(debug,     [  --enable-debug          Produce an executable with debugging symbols], 
+				[TR_CFLAGS="-g -Wall -Wno-deprecated -fno-inline"; TR_CXXFLAGS="-g -Wall -Wno-deprecated -fno-inline"],
+				[TR_CPPFLAGS="$TR_CPPFLAGS"])
 
-AC_ARG_ENABLE(profile,[  --enable-profile        Produce a profiled executable],  [TR_CFLAGS="$TR_CFLAGS -pg"; TR_CXXFLAGS="$TR_CXXFLAGS -pg"])
+	AC_ARG_ENABLE(pedantic,  [  --enable-pedantic       Enable -pedantic (and -ansi for C) when compiling], TR_CFLAGS="$TR_CFLAGS -ansi -pedantic"; TR_CXXFLAGS="$TR_CXXFLAGS -pedantic")
 
+	AC_ARG_ENABLE(profile,[  --enable-profile        Produce a profiled executable],  [TR_CFLAGS="$TR_CFLAGS -pg"; TR_CXXFLAGS="$TR_CXXFLAGS -pg"])
+fi
 
 dnl --------------------------------------------------------------------------
 dnl Check if compiling for Win32
@@ -464,8 +473,8 @@ AC_SUBST(TR_CXXFLAGS)
 AC_SUBST(TR_LIBS)
 
 CPPFLAGS="$CPPFLAGS $TR_CPPFLAGS"
-CFLAGS="$CFLAGS $TR_CFLAGS"
-CXXFLAGS="$CXXFLAGS $TR_CXXFLAGS"
+CFLAGS="$TR_CFLAGS"
+CXXFLAGS="$TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
 AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile src/net/Makefile src/render/Makefile src/io/Makefile autopackage/default.apspec )
