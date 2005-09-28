@@ -1248,7 +1248,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
         return false;
       } else if( exitConfirmationDialog->isVisible() ) {
         exitConfirmationDialog->setVisible(false);
-      } else {
+      } else if( !Window::anyFloatingWindowsOpen() ) {
         party->toggleRound(true);
         exitConfirmationDialog->setVisible(true);
       }   

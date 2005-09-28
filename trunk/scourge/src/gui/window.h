@@ -169,6 +169,7 @@ class Window : public Widget {
   static void toBottom(Window *win);
   static void nextWindowToTop( bool includeLocked = true );
   static void prevWindowToTop();
+  static bool anyFloatingWindowsOpen();
 
   // static message dialog
   static Button *message_button; // so you can check for it in other classes

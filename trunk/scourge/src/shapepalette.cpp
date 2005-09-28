@@ -50,7 +50,7 @@ void ShapePalette::initialize() {
   // load textures
   gui_texture = loadGLTextures("/gui.bmp");
   gui_texture2 = loadGLTextures("/gui2.bmp");
-  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
+//  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
   cloud = loadGLTextures("/cloud.bmp");
   candle = loadGLTextures("/candle.bmp");
 

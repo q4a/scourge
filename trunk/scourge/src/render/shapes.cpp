@@ -789,8 +789,9 @@ GLuint Shapes::loadGLTextures(char *filename) {
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
   if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
 
-    if( !isPowerOfTwo( TextureImage[0]->w ) ||
-        !isPowerOfTwo( TextureImage[0]->h ) ) {
+    if( TextureImage[0]->w != TextureImage[0]->h && 
+        ( !isPowerOfTwo( TextureImage[0]->w ) ||
+          !isPowerOfTwo( TextureImage[0]->h ) ) ) {
       fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
               fn, (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
     }
@@ -886,8 +887,9 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    if( !isPowerOfTwo( width ) ||
-        !isPowerOfTwo( height ) ) {
+    if( width != height && 
+        ( !isPowerOfTwo( width ) ||
+          !isPowerOfTwo( height ) ) ) {
       fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
               fn, width, height, (*surface)->format->BitsPerPixel,
               (*surface)->format->BytesPerPixel, (*surface)->pitch);

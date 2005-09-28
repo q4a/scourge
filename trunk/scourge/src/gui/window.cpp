@@ -195,9 +195,20 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
   bool systemKeyPressed = false;
   if(event->type == SDL_KEYUP || event->type == SDL_KEYDOWN) {
     switch(event->key.keysym.sym) {
-    case SDLK_ESCAPE: case SDLK_TAB:
-        systemKeyPressed = true;
-        break;
+    case SDLK_ESCAPE: 
+    // select an open, non-locked window with a close button to close
+    if( !currentWin || currentWin->isLocked() || !(currentWin->closeButton) ) {
+      for( int i = 0; i < windowCount; i++ ) {
+        if( !window[i]->isLocked() && window[i]->closeButton && window[i]->isVisible() ) {
+          currentWin = window[i];
+          currentWin->toTop();
+          break;
+        }
+      }
+    }
+    systemKeyPressed = true; break;
+    case SDLK_TAB:
+        systemKeyPressed = true; break;
     default:
         break;
     }
@@ -785,16 +796,20 @@ void Window::setVisible(bool b, bool animate) {
     nextWindowToTop( false );
 
     // Any windows open?
-    bool found = false;
-    for( int i = 0; i < Window::windowCount; i++ ) {
-      if( Window::window[i]->isVisible() && 
-          !Window::window[i]->isLocked() ) {
-        found = true;
-        break;
-      }
-    }
-    if( !found ) scourgeGui->allWindowsClosed();
+    if( !anyFloatingWindowsOpen() ) scourgeGui->allWindowsClosed();
   }
+}
+
+bool Window::anyFloatingWindowsOpen() {
+  bool found = false;
+  for( int i = 0; i < Window::windowCount; i++ ) {
+    if( Window::window[i]->isVisible() && 
+        !Window::window[i]->isLocked() ) {
+      found = true;
+      break;
+    }
+  }
+  return found;
 }
 
 void Window::toTop() {
