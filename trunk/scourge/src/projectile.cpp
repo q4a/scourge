@@ -26,6 +26,9 @@ Uint32 Projectile::lastProjectileTick = 0;
 
 #define DELTA 1.0f
 
+// Uncomment line below for debug trace
+//#define DEBUG_MOVEMENT 1
+
 Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
@@ -101,8 +104,8 @@ Projectile::~Projectile() {
 }
 
 bool Projectile::atTargetLocation() {
-  return ( fabs( ex - sx ) <= DELTA &&
-           fabs( ey - sy ) <= DELTA );
+  return ( fabs( ex - sx ) <= 1.0f + DELTA &&
+           fabs( ey - sy ) <= 1.0f + DELTA );
 /*
   return( toint(ex) == toint(sx) && 
           toint(ey) == toint(sy) );
@@ -133,7 +136,7 @@ bool Projectile::move() {
 
     
   // return true to let this class handle the attack
-  if(steps++ >= maxDist) return true;
+  if( steps++ >= maxDist + 2 ) return true;
 
 
   float oldAngle = angle;
@@ -211,19 +214,7 @@ void Projectile::calculateAngle() {
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
                                       Item *item, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
-  /*
-  vector<Projectile*> *v;
-  if(projectiles.find(creature) == projectiles.end()) {
-    v = new vector<Projectile*>();
-    projectiles[creature] = v;
-  } else {
-    v = projectiles[creature];
-  }
-  // for items this is the max number of proj.-s in the air
-  if((int)v->size() > maxProjectiles) return NULL;
-  */
   Projectile *p = new Projectile(creature, target, item, shape, 0.0f, stopOnImpact);
-  //v->push_back(p);
   RenderedProjectile::addProjectile( p );
   return p;
 }
@@ -231,23 +222,6 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
                                       Spell *spell, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
-  /*
-  vector<Projectile*> *v;
-  if(projectiles.find(creature) == projectiles.end()) {
-    v = new vector<Projectile*>();
-    projectiles[creature] = v;
-  } else {
-    v = projectiles[creature];
-  }
-  // FIXME: for spells, it's how many to launch at once...
-  if((int)v->size() > maxProjectiles) return NULL;
-
-
-  // add a straight-flying projectile
-  Projectile *p = new Projectile(creature, target, spell, shape, 0.0f, stopOnImpact, true);
-  v->push_back(p);
-  */
-
   Projectile *p = new Projectile(creature, target, spell, shape, 0.0f, stopOnImpact, true);
   RenderedProjectile::addProjectile( p );
 
@@ -255,11 +229,9 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      //v->push_back(new Projectile(creature, target, spell, shape, r, stopOnImpact, true));
       RenderedProjectile::addProjectile( new Projectile( creature, target, spell, shape, r, stopOnImpact, true ) );
     }
     if((i + 1) < maxProjectiles - 1) {
-      //v->push_back(new Projectile(creature, target, spell, shape, -r, stopOnImpact, true));
       RenderedProjectile::addProjectile( new Projectile( creature, target, spell, shape, -r, stopOnImpact, true ) );
     }
     r += (r/2.0f);
@@ -271,32 +243,17 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
 Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, int d, 
                                       Spell *spell, Shape *shape, 
                                       int maxProjectiles, bool stopOnImpact) {
-  /*
-  vector<Projectile*> *v;
-  if(projectiles.find(creature) == projectiles.end()) {
-    v = new vector<Projectile*>();
-    projectiles[creature] = v;
-  } else {
-    v = projectiles[creature];
-  }
-  // FIXME: for spells, it's how many to launch at once...
-  if((int)v->size() > maxProjectiles) return NULL;
-  */
-
   // add a straight-flying projectile
   Projectile *p = new Projectile(creature, x, y, w, d, spell, shape, 0.0f, stopOnImpact);
-  //v->push_back(p);
   RenderedProjectile::addProjectile( p );
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      //v->push_back(new Projectile(creature, x, y, w, d, spell, shape, r, stopOnImpact));
       RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, shape, r, stopOnImpact ) );
     }
     if((i + 1) < maxProjectiles - 1) {
-      //v->push_back(new Projectile(creature, x, y, w, d, spell, shape, -r, stopOnImpact));
       RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, shape, -r, stopOnImpact ) );
     }
     r += (r/2.0f);
@@ -317,17 +274,24 @@ void Projectile::moveProjectiles(Session *session) {
 
     // draw the projectiles
     vector<Projectile*> removedProjectiles;
+#ifdef DEBUG_MOVEMENT 
     cerr << "Projectiles:" << endl;
+#endif
     for( map<RenderedCreature *, vector<RenderedProjectile*>*>::iterator i = getProjectileMap()->begin(); 
          i != getProjectileMap()->end(); 
          ++i ) {
       vector<RenderedProjectile*> *p = i->second;
       for(vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
         Projectile *proj = (Projectile*)(*e);
+#ifdef DEBUG_MOVEMENT 
         cerr << "\t\tprojectile at: (" << proj->getX() << "," << proj->getY() << 
-          ") target: (" << proj->ex << "," << proj->ey << ")" << endl;
+          ") target: (" << proj->ex << "," << proj->ey << ")" << 
+          " target creature: " << ( proj->target ? proj->target->getName() : "NULL" ) << endl;
+#endif
         if(proj->move()) {
+#ifdef DEBUG_MOVEMENT 
           cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
+#endif
           session->getMap()->addDescription( "Projectile did not reach the target (max steps)." );
           removedProjectiles.push_back(proj);
         }
@@ -339,17 +303,42 @@ void Projectile::moveProjectiles(Session *session) {
         if( proj->atTargetLocation() ) {
           if( proj->getSpell() &&
               proj->getSpell()->isLocationTargetAllowed()) {
+#ifdef DEBUG_MOVEMENT 
             cerr << "PROJ: reached location target, from=" << proj->getCreature()->getName() << endl;                                
+#endif
             session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());        
             blocked = true;
           } else if( proj->target ) {
-            cerr << "PROJ: attacks target creature, from=" << proj->getCreature()->getName() << endl;
-            battleProjectiles[ proj ] = proj->target;
-            blocked = true;
-          }
-        } else {
 
-          // proj stopped, due to something else
+            bool b = SDLHandler::intersects( toint( proj->ex ), toint( proj->ey ), 
+                                             toint( 1 + DELTA ), toint( 1 + DELTA ),
+                                             toint( proj->target->getX() ), toint( proj->target->getY() ),
+                                             proj->target->getShape()->getWidth(),
+                                             proj->target->getShape()->getHeight() );
+#ifdef DEBUG_MOVEMENT             
+            cerr << "PROJ: checking intersection of " << 
+              "proj: (" << toint( proj->ex ) << "," << toint( proj->ey ) << "," << 
+              toint( 1 + DELTA ) << "," << toint( 1 + DELTA ) << 
+              " and creature: " << toint( proj->target->getX() ) << "," << toint( proj->target->getY() ) << 
+              "," << proj->target->getShape()->getWidth() << "," << proj->target->getShape()->getHeight() <<
+              " intersects? " << b << endl;
+#endif            
+            if( b ) {
+#ifdef DEBUG_MOVEMENT 
+              cerr << "PROJ: attacks target creature, from=" << proj->getCreature()->getName() << endl;
+#endif
+              battleProjectiles[ proj ] = proj->target;
+              blocked = true;
+#ifdef DEBUG_MOVEMENT 
+            } else {
+              cerr << "PROJ: target creature moved?" << endl;
+#endif
+            }
+          }
+        } 
+
+        // proj stopped, due to something else
+        if( !blocked ) {
 
           Location *loc = 
             session->getMap()->getLocation( toint(proj->getX()), 
@@ -358,7 +347,9 @@ void Projectile::moveProjectiles(Session *session) {
           if(loc) {
             if( loc->creature && 
                 proj->getCreature()->canAttack( loc->creature ) ) {
-              cerr << "PROJ: attacks non-target creature, from=" << proj->getCreature()->getName() << endl;
+#ifdef DEBUG_MOVEMENT 
+              cerr << "PROJ: attacks non-target creature: " << loc->creature->getName() << ", from=" << proj->getCreature()->getName() << endl;
+#endif
               battleProjectiles[ proj ] = (Creature*)(loc->creature);
               blocked = true;
             } else if( proj->doesStopOnImpact() &&
@@ -367,7 +358,9 @@ void Projectile::moveProjectiles(Session *session) {
                          ( !loc->creature && 
                            !loc->item && loc->shape && 
                            loc->shape->getHeight() >= 6 ) ) ) {
+#ifdef DEBUG_MOVEMENT 
               cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
+#endif
               // hit something
               session->getMap()->addDescription( "Projectile did not reach the target (blocked)." );
               blocked = true;
@@ -378,12 +371,14 @@ void Projectile::moveProjectiles(Session *session) {
         // remove finished projectiles
         if( blocked || proj->atTargetLocation() ) {
           
+#ifdef DEBUG_MOVEMENT 
           // DEBUG INFO
           if( !blocked ) {
             cerr << "*** Warning: projectile didn't hit target ***" << endl;
             cerr << "Creature: " << proj->getCreature()->getName() << endl;
             proj->debug();
           }
+#endif
           
           removedProjectiles.push_back( proj );
         }

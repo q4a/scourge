@@ -174,8 +174,11 @@ public:
 
   GLvoid glPrint( const char *fmt, ... );
 
+  static bool intersects( int x, int y, int w, int h,
+                          int x2, int y2, int w2, int h2 );
   static bool intersects(SDL_Rect *r1, SDL_Rect *r2);
   static bool sectionIntersects(int a1, int a2, int b1, int b2);
+
 
   inline double getFps() { return fps; }
 
