@@ -46,7 +46,8 @@ typedef struct _MapGridLocation {
 class ShapePalette : public Shapes {
 private:
   int skillCount;
-  GLuint gui_texture, gui_wood_texture, paper_doll_texture, gui_texture2;
+  //GLuint paper_doll_texture;
+  GLuint gui_texture, gui_wood_texture, gui_texture2;
   map<int, GLuint> statModIcons;
 
   Session *session;
@@ -116,7 +117,7 @@ public:
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
-  inline GLuint getPaperDollTexture() { return paper_doll_texture; }
+  //inline GLuint getPaperDollTexture() { return paper_doll_texture; }
   inline GLuint getHighlightTexture() { return highlight; }
   inline GLuint getBorderTexture() { return border; }
   inline GLuint getBorder2Texture() { return border2; }

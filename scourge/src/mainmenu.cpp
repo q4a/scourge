@@ -600,13 +600,43 @@ void MainMenu::drawLogo() {
 
 
 
-  if( logoRot < 120 ) {
-    GLint t = SDL_GetTicks();
-    if(t - logoTicks > logoTicksDelta) {
+  GLint t = SDL_GetTicks();
+  if(t - logoTicks > logoTicksDelta) {
+    if( logoRot < 120 ) {
       logoTicks = t;
       logoRot += 8;
     }
+    candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + (int)(4.0 * rand()/RAND_MAX) - 4;
+    candleFlameY = top + 385 + (int)(4.0 * rand()/RAND_MAX) - 4;
   }
+
+  // draw candle flame
+  glEnable( GL_TEXTURE_2D );
+  glEnable(GL_BLEND);  
+  glBlendFunc(GL_SRC_COLOR, GL_ONE);
+  //setBlendFunc();
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->candle );
+  glColor4f( 0.7, 0.7, 0.3, 0.5 );
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( candleFlameX, candleFlameY, 0 ); 
+  w = 64;
+  h = 64;
+  glBegin( GL_QUADS );
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(w, h, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(w, 0, 0);
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, 0, 0);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, h, 0);
+  glEnd();
+  glPopMatrix();
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_BLEND );
+
 
 
 
