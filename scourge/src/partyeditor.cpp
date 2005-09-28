@@ -28,7 +28,7 @@
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 12
+#define LEVEL 1
 
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;

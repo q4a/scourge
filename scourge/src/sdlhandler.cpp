@@ -723,6 +723,17 @@ bool SDLHandler::intersects(SDL_Rect *a, SDL_Rect *b) {
         ? true : false);
 }
 
+bool SDLHandler::intersects( int x, int y, int w, int h,
+                             int x2, int y2, int w2, int h2 ) {
+  SDL_Rect ra = {
+    x, y, w, h
+  };
+  SDL_Rect rb = {
+    x2, y2, w2, h2
+  };
+  return intersects( &ra, &rb );
+}
+
 void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2, 
                               float zrot, float yrot, 
                               char *message) {
