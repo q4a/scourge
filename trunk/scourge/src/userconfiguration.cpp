@@ -88,8 +88,8 @@ const char UserConfiguration::default_key[][20] = {
 */    
 
   "m",
-  "j",
   "k",
+  "l",
     
 //    START_ROUND, 
 
@@ -101,16 +101,14 @@ const char UserConfiguration::default_key[][20] = {
     LAYOUT_4,
 */    
 
-  "d",
-  "f",
   "g",
+  "h",
+  "j",
 
 /*
-    SHOW_PATH,
     SWITCH_COMBAT,
 */    
 
-  "p",
   "c",
 
 /*
@@ -179,7 +177,6 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     "LAYOUT_2",
     "LAYOUT_4",
 
-    "SHOW_PATH",
     "SWITCH_COMBAT",
 
     "QUICK_SPELL_1",
@@ -211,7 +208,6 @@ const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
     "SET_Z_ROT_MINUS",
     "SET_ZOOM_IN",     
     "SET_ZOOM_OUT",
-    "SHOW_PATH",
     "SET_NEXT_FORMATION"
     
 };
@@ -251,7 +247,6 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     "Bottom UI layout",
     "Inventory UI layout",
     
-    "Show path",
     "Switch combat mode",
 
   "Quick Spell 1",
@@ -1080,25 +1075,18 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind o show_options_menu" << endl;
   configFile << "bind u use_item" << endl;
   configFile << "bind f set_next_formation" << endl;
-  configFile << "bind a set_y_rot_plus" << endl;
-  configFile << "bind s set_y_rot_minus" << endl;
-  configFile << "bind z set_z_rot_plus" << endl;
-  configFile << "bind x set_z_rot_minus" << endl;
   configFile << "bind [+] minimap_zoom_in" << endl;
   configFile << "bind [-] minimap_zoom_out" << endl;
-  configFile << "bind l minimap_toggle" << endl;
   configFile << "bind 8 set_zoom_in" << endl;
   configFile << "bind 9 set_zoom_out" << endl;
   configFile << "bind m toggle_map_center" << endl;
-  configFile << "bind j increase_game_speed" << endl;
-  configFile << "bind k decrease_game_speed" << endl;
+  configFile << "bind k increase_game_speed" << endl;
+  configFile << "bind l decrease_game_speed" << endl;
   configFile << "bind space start_round" << endl;
-  configFile << "bind f1 layout_1" << endl;
-  configFile << "bind f2 layout_2" << endl;
-  configFile << "bind f3 layout_3" << endl;
-  configFile << "bind f4 layout_4" << endl;
-  configFile << "bind p show_path" << endl;
-  configFile << "bind f6 switch_combat" << endl;
+  configFile << "bind g layout_1" << endl;
+  configFile << "bind h layout_2" << endl;
+  configFile << "bind j layout_4" << endl;
+  configFile << "bind c switch_combat" << endl;
   configFile << "" << endl;
   configFile << "// Video settings" << endl;
   configFile << "set fullscreen true" << endl;

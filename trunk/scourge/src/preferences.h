@@ -60,7 +60,6 @@ enum engine_action_int{
     LAYOUT_2,
     LAYOUT_4,
 
-    SHOW_PATH,
     SWITCH_COMBAT,
 
     QUICK_SPELL_1,
@@ -94,7 +93,6 @@ enum engine_action_up_int{
     SET_Z_ROT_MINUS_STOP,
     SET_ZOOM_IN_STOP,     
     SET_ZOOM_OUT_STOP,
-    SHOW_PATH_STOP,
     SET_NEXT_FORMATION_STOP,    
     
     // must be the last one
