@@ -101,10 +101,12 @@ Projectile::~Projectile() {
 }
 
 bool Projectile::atTargetLocation() {
-
+  return ( fabs( ex - sx ) <= DELTA &&
+           fabs( ey - sy ) <= DELTA );
+/*
   return( toint(ex) == toint(sx) && 
           toint(ey) == toint(sy) );
-
+*/
   /*
   int dx = abs(toint(ex - sx));
   int dy = abs(toint(ey - sy));
@@ -309,55 +311,67 @@ void Projectile::moveProjectiles(Session *session) {
      t - lastProjectileTick > (Uint32)(session->getPreferences()->getGameSpeedTicks() / 50)) {
     lastProjectileTick = t;
 
+    if( getProjectileMap()->size() == 0 ) return;
 
     map<Projectile*, Creature*> battleProjectiles;
 
     // draw the projectiles
     vector<Projectile*> removedProjectiles;
-//        cerr << "Projectiles:" << endl;
+    cerr << "Projectiles:" << endl;
     for( map<RenderedCreature *, vector<RenderedProjectile*>*>::iterator i = getProjectileMap()->begin(); 
          i != getProjectileMap()->end(); 
          ++i ) {
       vector<RenderedProjectile*> *p = i->second;
       for(vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
         Projectile *proj = (Projectile*)(*e);
-        //        	    cerr << "\t\tprojectile at: " << proj->getX() << "," << proj->getY() << endl;
+        cerr << "\t\tprojectile at: (" << proj->getX() << "," << proj->getY() << 
+          ") target: (" << proj->ex << "," << proj->ey << ")" << endl;
         if(proj->move()) {
-          //          cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
+          cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
+          session->getMap()->addDescription( "Projectile did not reach the target (max steps)." );
           removedProjectiles.push_back(proj);
         }
         
         // collision detection
         bool blocked = false;
         
-        // location target projectile hit
-        if( proj->atTargetLocation() &&
-            proj->getSpell() &&
-            proj->getSpell()->isLocationTargetAllowed()) {
-          //        cerr << "PROJ: reached target, from=" << proj->getCreature()->getName() << endl;                                
-          session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());        
-          blocked = true;
-        }
-        
-        Location *loc = 
-          session->getMap()->getLocation( toint(proj->getX()), 
-                                          toint(proj->getY()), 
-                                          0);
-        if(loc) {
-          if( loc->creature && 
-              proj->getCreature()->canAttack( loc->creature ) ) {
-            //               cerr << "PROJ: attacks creature, from=" << proj->getCreature()->getName() << endl;
-            battleProjectiles[ proj ] = (Creature*)(loc->creature);
+        // proj reached the target
+        if( proj->atTargetLocation() ) {
+          if( proj->getSpell() &&
+              proj->getSpell()->isLocationTargetAllowed()) {
+            cerr << "PROJ: reached location target, from=" << proj->getCreature()->getName() << endl;                                
+            session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());        
             blocked = true;
-          } else if( proj->doesStopOnImpact() &&
-                     ( ( loc->item && 
-                         loc->item->getShape()->getHeight() >= 6 ) ||
-                       ( !loc->creature && 
-                         !loc->item && loc->shape && 
-                         loc->shape->getHeight() >= 6 ) ) ) {
-            //               cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
-            // hit something
+          } else if( proj->target ) {
+            cerr << "PROJ: attacks target creature, from=" << proj->getCreature()->getName() << endl;
+            battleProjectiles[ proj ] = proj->target;
             blocked = true;
+          }
+        } else {
+
+          // proj stopped, due to something else
+
+          Location *loc = 
+            session->getMap()->getLocation( toint(proj->getX()), 
+                                            toint(proj->getY()), 
+                                            0);
+          if(loc) {
+            if( loc->creature && 
+                proj->getCreature()->canAttack( loc->creature ) ) {
+              cerr << "PROJ: attacks non-target creature, from=" << proj->getCreature()->getName() << endl;
+              battleProjectiles[ proj ] = (Creature*)(loc->creature);
+              blocked = true;
+            } else if( proj->doesStopOnImpact() &&
+                       ( ( loc->item && 
+                           loc->item->getShape()->getHeight() >= 6 ) ||
+                         ( !loc->creature && 
+                           !loc->item && loc->shape && 
+                           loc->shape->getHeight() >= 6 ) ) ) {
+              cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
+              // hit something
+              session->getMap()->addDescription( "Projectile did not reach the target (blocked)." );
+              blocked = true;
+            }
           }
         }
         
@@ -385,10 +399,8 @@ void Projectile::moveProjectiles(Session *session) {
     }
 
     // remove projectiles
-//    cerr << "Checking targets:" << endl;
     for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
       Projectile *proj = *e;
-      session->getMap()->addDescription( "Projectile did not reach the target." );
       Projectile::removeProjectile(proj);
     }
   }
