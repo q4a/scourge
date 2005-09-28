@@ -846,6 +846,8 @@ void Map::draw() {
   if( adapter->isMouseIsMovingOverMap() && !selectMode ) {
     // save mapChanged (fixes bug where map won't draw initially)
     bool b = mapChanged;
+    //bool b2 = resortShapes;
+    //resortShapes = false;
 //    mapChanged = false;
     selectMode = true;
     // careful this calls draw() again!
@@ -855,6 +857,7 @@ void Map::draw() {
     cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
     selectMode = false;
     mapChanged = b;
+    //resortShapes = b2;
     //cerr << "x=" << cursorMapX << " y=" << cursorMapY << " z=" << cursorMapZ << endl;
   }
 
@@ -907,8 +910,7 @@ void Map::draw() {
 
 
   initMapView();
-  //if( !selectMode ) 
-  frustum->CalculateFrustum();
+  if( !selectMode ) frustum->CalculateFrustum();
   if(lightMapChanged) configureLightMap();
   if( currentEffectsMap.size() ) removeCurrentEffects();
   // populate the shape arrays
