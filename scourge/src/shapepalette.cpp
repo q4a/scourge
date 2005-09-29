@@ -23,6 +23,7 @@
 ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
   this->session = session;
   skillCount = 0;
+  strcpy( aboutText, "" );
 }
 
 void ShapePalette::preInitialize() {

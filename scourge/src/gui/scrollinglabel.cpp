@@ -53,7 +53,7 @@ void ScrollingLabel::setText( char *s ) {
 
   strncpy(text, ( s ? s : "" ), 3000); 
   text[2999] = '\0';
-
+  
   lineWidth = ( w - scrollerWidth - 20 ) / 8;
 
   willSetScrollerHeight = true;
@@ -97,7 +97,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
     ypos = textPos + 15;
     char *p = text;
     while( p && *p ) {
-      p = printLine( parent, scrollerWidth + 5, ypos, p );
+      p = printLine( parent, scrollerWidth + 5, ypos, p );    
       ypos += 15;
       lineCount++;
     }
