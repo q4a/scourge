@@ -41,7 +41,7 @@
 
 #define INFO_INTERVAL 3000
 
-#define DEBUG_KEYS 1
+//#define DEBUG_KEYS 1
 
 #define SAVE_FILE "savegame.dat"
 
