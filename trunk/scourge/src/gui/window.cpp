@@ -793,7 +793,7 @@ void Window::setVisible(bool b, bool animate) {
   } else {
     y = currentY;
     windowWasClosed = true;
-    nextWindowToTop( false );
+    nextWindowToTop();
 
     // Any windows open?
     if( !anyFloatingWindowsOpen() ) scourgeGui->allWindowsClosed();
@@ -864,9 +864,7 @@ void Window::nextWindowToTop( bool includeLocked ) {
 
   for(int t = 0; t < 2; t++) {
     for(int i = 0; i < windowCount; i++) {
-      if( window[i]->isVisible() && 
-          next && 
-          ( includeLocked || !( window[i]->isLocked() ) ) ) {
+      if( window[i]->isVisible() && next ) {
         currentWin = window[i];
         currentWin->toTop();
         return;
