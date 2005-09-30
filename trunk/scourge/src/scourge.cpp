@@ -3170,6 +3170,7 @@ void Scourge::createBoardUI() {
                         "wood" );
   missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 260, 150, getSession()->getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
+  boardWin->createLabel( BOARD_GUI_WIDTH - 250, 35, "Drag map to look around." );
   mapWidget = new MapWidget( this, boardWin, BOARD_GUI_WIDTH - 250, 40,
                              BOARD_GUI_WIDTH - 10, 
                              BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 10, 
