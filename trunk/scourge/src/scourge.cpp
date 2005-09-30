@@ -242,6 +242,8 @@ void Scourge::startMission() {
   char result[300];  
   while(true) {
 
+    oldStory = currentStory;
+
     // add gui
     mainWin->setVisible(true);
     messageWin->setVisible(true);
@@ -3558,3 +3560,10 @@ bool Scourge::startTextEffect( char *message ) {
 void Scourge::updateStatus( int status, int maxStatus, const char *message ) {
   progress->updateStatus( message, true, status, maxStatus );
 }
+
+bool Scourge::isLevelShaded() {
+  // don't shade the first depth of and edited map (incl. hq)
+  return( !( getSession()->getMap()->isEdited() && oldStory == 0 ) && 
+          getSession()->getPreferences()->isOvalCutoutShown() );
+}                                                               
+

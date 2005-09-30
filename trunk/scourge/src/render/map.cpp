@@ -158,7 +158,6 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   lightMapChanged = true;  
   colorAlreadySet = false;
   selectedDropTarget = NULL;
-  
 
   createOverlayTexture();
 
@@ -1143,16 +1142,9 @@ void Map::draw() {
       doDrawShape(&damage[i], 1);
     }
     
-    if( adapter->isLevelShaded() &&
-        !settings->isGridShowing() ) {
-    /*      
-        FIXME:
-    if( preferences->isOvalCutoutShown() &&
-        !settings->isGridShowing() &&
-        session->getCurrentMission() ) 
-    */        
+    if( adapter->isLevelShaded() && 
+        !settings->isGridShowing() )
       drawShade();
-    }
 
     glDisable(GL_BLEND);
 

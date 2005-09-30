@@ -116,7 +116,7 @@ public:
    */
   virtual void setView() {}
 
-  virtual bool isLevelShaded();
+  virtual bool isLevelShaded() { return false; }
 
   // project-specific castings
   virtual RenderedItem *load( ItemInfo *info );
