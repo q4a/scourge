@@ -275,6 +275,8 @@ public:
   Scourge( UserConfiguration *config );
   ~Scourge();
 
+  bool isLevelShaded();
+
   void updateStatus( int status, int maxStatus, const char *message=NULL );
 
   /**
@@ -650,7 +652,7 @@ public:
   inline TrainDialog *getTrainDialog() { return trainDialog; }
 
   bool startTextEffect( char *message );
-  
+
  protected:
 
    void drawPortrait( Widget *w, Creature *p );

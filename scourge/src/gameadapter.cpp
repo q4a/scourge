@@ -70,14 +70,6 @@ RenderedCreature *GameAdapter::getParty( int index ) {
   return (RenderedCreature*)(getSession()->getParty()->getParty( index ));
 }
 
-bool GameAdapter::isLevelShaded() {
-  // don't shade the first depth of and edited map (incl. hq)
-  return( !( getSession()->getMap()->isEdited() && 
-             ( getSession()->getCurrentMission() == NULL ||
-               getSession()->getCurrentMission()->getDepth() == 0 ) ) &&
-          preferences->isOvalCutoutShown() );
-}                                                               
-
 ServerAdapter::ServerAdapter( Preferences *config ) : GameAdapter( config ) {
 }
 
