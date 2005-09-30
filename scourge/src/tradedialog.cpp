@@ -34,7 +34,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   
   win = 
     scourge->createWindow( 50, 50, 
-                           605, 320, 
+                           605, 340, 
                            Constants::getMessage( Constants::TRADE_DIALOG_TITLE ) );
   //win->setModal( true );
   labelA = win->createLabel( 5, 15, "" );
@@ -53,7 +53,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   stealButton = win->createButton( 535, 60, 600, 80, "Steal" );  
   infoButtonB = win->createButton( 535, 85, 600, 105, "Info" );
 
-  closeButton = win->createButton( 535, 270, 600, 290, "Close" );
+  closeButton = win->createButton( 535, 290, 600, 310, "Close" );
   
   coinAvailA = win->createLabel( 5, 260, AVAILABLE_COINS );
   coinTradeA = win->createLabel( 5, 280, "$0" );
@@ -61,6 +61,8 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   coinPlusA = win->createButton( 215, 270, 245, 290, "+1" );
   coinMinusA = win->createButton( 250, 270, 280, 290, "-1" );
   coinRest = win->createButton( 285, 270, 315, 290, "Diff" );
+
+  win->createLabel( 5, 305, "Shift+click to select multiple items, right click to get info." );
 }
 
 TradeDialog::~TradeDialog() {
