@@ -3525,7 +3525,9 @@ bool Scourge::loadGame(Session *session) {
   Uint32 n = PERSIST_VERSION;
   file->read( &n );
   if( n != PERSIST_VERSION ) {
-    cerr << "Savegame file is old: ignoring data in file." << endl;
+    cerr << "Savegame file is old (v" << n << " vs. current v" << PERSIST_VERSION << "): ignoring data in file." << endl;
+    delete file;
+    return false;
   } else {
     Uint32 storylineIndex;
     file->read( &storylineIndex );
