@@ -62,6 +62,7 @@ public:
   virtual inline void saveMapData( const char *name ) { }
   virtual inline Color *getOutlineColor( Location *pos ) { return NULL; }
   virtual inline void setView() { setPerspective(); }
+  virtual bool isLevelShaded() { return false; }
 
 private:
   void quit( int returnCode );
