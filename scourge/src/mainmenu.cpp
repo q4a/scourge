@@ -1095,7 +1095,7 @@ bool MainMenu::handleEvent(SDL_Event *event) {
       }
     }
   }
-  if( event->type == SDL_MOUSEBUTTONUP && line > -1 ) {
+  if( event->type == SDL_MOUSEBUTTONUP && line > -1 && line < (int)menuItemList.size() ) {
     value = menuItemList[ line ]->value;
     if( value == ABOUT ) {
       aboutDialog->setVisible( true );

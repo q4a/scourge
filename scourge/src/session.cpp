@@ -314,20 +314,22 @@ void Session::creatureDeath(Creature *creature) {
 }                 
 
 int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
+
+  // Only allocate once. (May leak some mem. but saves a lot of headaches.)
+  rootDir = (char*)malloc( 300 * sizeof( char ) );
+  
   // init the rootdir via binreloc
 #ifdef WIN32
   // for windows (binreloc doesn't compile in windows)
-  rootDir = (char*)malloc( 300 * sizeof( char ) );
   strcpy( rootDir, "data" ); 
 #else
 #ifdef ENABLE_BINRELOC
-  rootDir = (char*)BR_DATADIR( "/data" );
+//  rootDir = (char*)BR_DATADIR( "/data" );
+  strcpy( root, (char*)BR_DATADIR( "/data" ) );
 #else
-  rootDir = (char*)malloc( 300 * sizeof( char ) );
   strcpy( rootDir, DATA_DIR );
 #endif
 #endif  
-  cerr << "rootDir=" << rootDir << endl;
 
   // FIXME: for windows, if this doesn't work, try using DATA_DIR
   // which is made by autoconf
