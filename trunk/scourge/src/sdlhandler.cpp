@@ -380,12 +380,6 @@ void SDLHandler::setVideoMode( Preferences * uc ) {
   SDL_ShowCursor(SDL_DISABLE);
   SDL_WM_SetCaption("Scourge", NULL);
   
-  /* for Mac OS X in windowed mode, invert the mouse. SDL bug. */
-#ifdef __APPLE__
-  if(!uc->getFullscreen())
-	invertMouse = true;
-#endif	 
-
   // initialize sound support
   sound = new Sound(uc);
   
@@ -893,6 +887,9 @@ inline void SDLHandler::playSound( const char *name ) {
 }
 
 void SDLHandler::allWindowsClosed() {
-  gameAdapter->getSession()->getParty()->toggleRound( false );
+  if( gameAdapter->getSession()->getParty() &&
+      gameAdapter->getSession()->getParty()->getPartySize() > 0 ) {
+    gameAdapter->getSession()->getParty()->toggleRound( false );
+  }
 }
 

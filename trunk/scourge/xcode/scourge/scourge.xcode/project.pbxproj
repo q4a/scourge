@@ -25,10 +25,10 @@
 //104
 		1058C7A0FEA54F0111CA2CBB = {
 			children = (
+				76A24E3B09142AA700ABEBF7,
 				769C136F07697A460080F47F,
 				76C9735A07389F6300462FAD,
 				76C9735B07389F6300462FAD,
-				76C9735C07389F6300462FAD,
 				7674A65905D5F9EB00A583B9,
 				1058C7A1FEA54F0111CA2CBB,
 			);
@@ -111,6 +111,14 @@
 				761CF69A08E264EB00DCC558,
 				761CF68708E264DB00DCC558,
 				761CF68808E264DB00DCC558,
+				769D585D09140D6000AF852C,
+				769D585E09140D6000AF852C,
+				769D585F09140D6000AF852C,
+				769D586009140D6000AF852C,
+				769D586109140D6000AF852C,
+				769D586209140D6000AF852C,
+				769D586309140D6000AF852C,
+				769D586409140D6000AF852C,
 				761CF68908E264DB00DCC558,
 				761CF68A08E264DB00DCC558,
 				761CF68B08E264DB00DCC558,
@@ -3180,6 +3188,140 @@
 			settings = {
 			};
 		};
+		769D585D09140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = donatedialog.cpp;
+			path = ../../src/donatedialog.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D585E09140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = donatedialog.h;
+			path = ../../src/donatedialog.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D585F09140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = healdialog.cpp;
+			path = ../../src/healdialog.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D586009140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = healdialog.h;
+			path = ../../src/healdialog.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D586109140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = texteffect.cpp;
+			path = ../../src/texteffect.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D586209140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = texteffect.h;
+			path = ../../src/texteffect.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D586309140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = traindialog.cpp;
+			path = ../../src/traindialog.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D586409140D6000AF852C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = traindialog.h;
+			path = ../../src/traindialog.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		769D586509140D6000AF852C = {
+			fileRef = 769D585D09140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		769D586609140D6000AF852C = {
+			fileRef = 769D585E09140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		769D586709140D6000AF852C = {
+			fileRef = 769D585F09140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		769D586809140D6000AF852C = {
+			fileRef = 769D586009140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		769D586909140D6000AF852C = {
+			fileRef = 769D586109140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		769D586A09140D6000AF852C = {
+			fileRef = 769D586209140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		769D586B09140D6000AF852C = {
+			fileRef = 769D586309140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		769D586C09140D6000AF852C = {
+			fileRef = 769D586409140D6000AF852C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76A24E3B09142AA700ABEBF7 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = SDL.framework;
+			path = ../../../../Library/Frameworks/SDL.framework;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76A24EAD09142AF100ABEBF7 = {
+			fileRef = 76A24E3B09142AA700ABEBF7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		76B08E7C07697E8600A4D021 = {
 			fileRef = 769C136F07697A460080F47F;
 			isa = PBXBuildFile;
@@ -3202,14 +3344,6 @@
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
-		76C9735C07389F6300462FAD = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = SDL.framework;
-			path = /Users/gabortorok/Library/Frameworks/SDL.framework;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
 		76C9735D07389F6300462FAD = {
 			fileRef = 76C9735A07389F6300462FAD;
 			isa = PBXBuildFile;
@@ -3222,21 +3356,15 @@
 			settings = {
 			};
 		};
-		76C9735F07389F6300462FAD = {
-			fileRef = 76C9735C07389F6300462FAD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		76C973E90738A1FD00462FAD = {
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				76A24EAD09142AF100ABEBF7,
 				76B08E7C07697E8600A4D021,
 				76C973F70738A22200462FAD,
 				76C973F80738A22200462FAD,
-				76C973F90738A22200462FAD,
 			);
 			isa = PBXCopyFilesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3249,12 +3377,6 @@
 		};
 		76C973F80738A22200462FAD = {
 			fileRef = 76C9735B07389F6300462FAD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		76C973F90738A22200462FAD = {
-			fileRef = 76C9735C07389F6300462FAD;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -3459,8 +3581,8 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/sourceforge/scourge";
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "-DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -DENABLE_BINRELOC -DBR_PTHREAD=0";
-				OTHER_CPLUSPLUSFLAGS = "-DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -DENABLE_BINRELOC -DBR_PTHREAD=0";
+				OTHER_CFLAGS = "-DHAVE_SDL_MIXER=1";
+				OTHER_CPLUSPLUSFLAGS = "-DHAVE_SDL_MIXER=1";
 				OTHER_LDFLAGS = "-framework SDL -framework SDL_net -framework SDL_mixer -framework Foundation -framework AppKit -framework OpenGL -framework freetype -lz";
 				PRODUCT_NAME = scourge;
 				SECTORDER_FLAGS = "";
@@ -3576,6 +3698,10 @@
 				761CF6A508E2650F00DCC558,
 				7618EAC508E3B54500CB900E,
 				7618ECB508E5BE5D00CB900E,
+				769D586609140D6000AF852C,
+				769D586809140D6000AF852C,
+				769D586A09140D6000AF852C,
+				769D586C09140D6000AF852C,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3691,6 +3817,10 @@
 				761CF6A408E2650F00DCC558,
 				7618EAD408E3B63B00CB900E,
 				7618ECB408E5BE5D00CB900E,
+				769D586509140D6000AF852C,
+				769D586709140D6000AF852C,
+				769D586909140D6000AF852C,
+				769D586B09140D6000AF852C,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3702,7 +3832,6 @@
 				7674A65B05D5F9EB00A583B9,
 				76C9735D07389F6300462FAD,
 				76C9735E07389F6300462FAD,
-				76C9735F07389F6300462FAD,
 				769C137007697A460080F47F,
 			);
 			isa = PBXFrameworksBuildPhase;
