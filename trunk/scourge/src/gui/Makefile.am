@@ -1,5 +1,7 @@
 INCLUDES = -I$./..
 
+AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
+
 noinst_LIBRARIES = libScourgeGui.a
 
 libScourgeGui_a_SOURCES = \

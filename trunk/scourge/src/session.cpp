@@ -325,7 +325,7 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 #else
 #ifdef ENABLE_BINRELOC
 //  rootDir = (char*)BR_DATADIR( "/data" );
-  strcpy( root, (char*)BR_DATADIR( "/data" ) );
+  strcpy( rootDir, (char*)BR_DATADIR( "/data" ) );
 #else
   strcpy( rootDir, DATA_DIR );
 #endif
