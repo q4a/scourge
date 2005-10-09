@@ -32,6 +32,7 @@
 #include "traindialog.h"
 #include "io/file.h"
 #include "texteffect.h"
+#include "sqbinding/sqbinding.h"
 
 #define MOUSE_ROT_DELTA 2
 
@@ -139,6 +140,9 @@ void Scourge::initUI() {
 }
 
 void Scourge::start() {
+
+  squirrel = new SqBinding( getSession() );
+
   this->quadric = gluNewQuadric();
   bool initMainMenu = true;
   while(true) {
@@ -215,6 +219,7 @@ void Scourge::start() {
 }
 
 Scourge::~Scourge(){
+  delete squirrel;
   delete mainMenu;
   delete optionsMenu;
   delete multiplayer;
@@ -229,6 +234,8 @@ Scourge::~Scourge(){
 }
 
 void Scourge::startMission() {
+
+  squirrel->startGame();
 
   // set up some cross-mission objects
   oldStory = currentStory = 0;
@@ -547,6 +554,8 @@ void Scourge::startMission() {
 
   // delete the party (w/o deleting the party ui)
   party->deleteParty();
+
+  squirrel->endGame();
 }
 
 void Scourge::endMission() {
