@@ -75,7 +75,51 @@ void SqBinding::endGame() {
 }
 
 
+void SqBinding::loadMapScript( char *name ) {
+  char filename[3000];
+  sprintf( filename, "%s/maps/%s.nut", rootDir, name );
+  compile( (const char*)filename );
+}
 
+bool SqBinding::startLevel() {
+  //int ret = -1;
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC("startLevel"), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushobject( vm, refGame );
+    sq_call( vm, 2, 0 ); //calls the function
+    //sq_getinteger( v, -1, &ret );
+    ret = true;
+  } else {
+    cerr << "Can't find function startLevel()." << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;  
+}     
+
+bool SqBinding::endLevel() {
+  //int ret = -1;
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC("endLevel"), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushobject( vm, refGame );
+    sq_call( vm, 2, 0 ); //calls the function
+    //sq_getinteger( v, -1, &ret );
+    ret = true;
+  } else {
+    cerr << "Can't find function endLevel()." << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;  
+}
 
 
 
