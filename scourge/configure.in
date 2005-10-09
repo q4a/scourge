@@ -477,4 +477,4 @@ CFLAGS="$TR_CFLAGS"
 CXXFLAGS="$TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
-AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile src/net/Makefile src/render/Makefile src/io/Makefile autopackage/default.apspec )
+AC_OUTPUT(Makefile src/Makefile src/gui/Makefile src/rpg/Makefile src/events/Makefile src/freetype/Makefile src/net/Makefile src/render/Makefile src/io/Makefile src/squirrel/Makefile src/sqstdlib/Makefile src/sqbinding/Makefile autopackage/default.apspec )

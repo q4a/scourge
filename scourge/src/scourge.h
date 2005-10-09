@@ -94,6 +94,7 @@ class HealDialog;
 class DonateDialog;
 class TextEffect;
 class TrainDialog;
+class SqBinding;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -238,6 +239,8 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
 
   Location *gatepos;
 
+  SqBinding *squirrel;
+
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
@@ -274,6 +277,8 @@ public:
   
   Scourge( UserConfiguration *config );
   ~Scourge();
+
+  inline SqBinding *getSquirrel() { return squirrel; }
 
   bool isLevelShaded();
 
