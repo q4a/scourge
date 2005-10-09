@@ -46,6 +46,9 @@
 
 #define SAVE_FILE "savegame.dat"
 
+#define HQ_MAP_NAME "hq"
+#define RANDOM_MAP_NAME "random"
+
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
 // good for debugging blending
@@ -247,6 +250,7 @@ void Scourge::startMission() {
 
   Mission *lastMission = NULL;
   char result[300];  
+  char *scriptName;
   while(true) {
 
     oldStory = currentStory;
@@ -356,7 +360,8 @@ void Scourge::startMission() {
       //dg->toMap(levelMap, getSession()->getShapePalette(), DungeonGenerator::HQ_LOCATION);   
 
       dg = NULL;
-      levelMap->loadMap( "hq", result, this, currentStory, changingStory );
+      levelMap->loadMap( HQ_MAP_NAME, result, this, currentStory, changingStory );
+      scriptName = HQ_MAP_NAME;
       //cerr << result << endl;
 
     } else {
@@ -377,6 +382,7 @@ void Scourge::startMission() {
         // try to load the edited map
         dg = NULL;
         loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, this, currentStory, changingStory, !(levelMap->isEdited()) );
+        scriptName = getSession()->getCurrentMission()->getMapName();
         //cerr << result << endl;
         //cerr << "***** " << getSession()->getCurrentMission()->getMapName() << endl;
       } 
@@ -388,6 +394,7 @@ void Scourge::startMission() {
                                   (currentStory > 0),
                                   getSession()->getCurrentMission());
         dg->toMap(levelMap, getSession()->getShapePalette());
+        scriptName = RANDOM_MAP_NAME;
       }
     }
 
@@ -400,6 +407,8 @@ void Scourge::startMission() {
 
     // Must be called after MiniMap has been built by dg->toMap() !!! 
     //miniMap->computeDrawValues();
+
+    squirrel->loadMapScript( scriptName );
 
     // set to receive events here
     getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
@@ -451,6 +460,8 @@ void Scourge::startMission() {
 
     // run mission
     getSDLHandler()->mainLoop();
+
+    squirrel->endLevel();
 
     // stop the music
     getSDLHandler()->getSound()->stopMusicDungeon();
@@ -1920,6 +1931,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == Window::message_button && info_dialog_showing) {
     party->toggleRound(false);
     info_dialog_showing = false;
+    squirrel->startLevel();
     party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
   }
   

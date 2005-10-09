@@ -102,6 +102,11 @@ public:
   void startGame();
   void endGame();
 
+  void loadMapScript( char *name );
+  bool startLevel();
+  bool endLevel();
+
+
 protected:
   bool compile( const char *filename );
   bool createClass( SquirrelClassDecl *cd );
