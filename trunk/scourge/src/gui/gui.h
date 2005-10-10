@@ -47,6 +47,7 @@ public:
   virtual void unlockMouse() = 0;
   virtual void lockMouse( Widget *widget ) = 0;
   virtual void allWindowsClosed() = 0;
+  virtual void blockEvent() = 0;
 };                                    
 
 #endif

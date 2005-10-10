@@ -42,7 +42,7 @@
 
 #define INFO_INTERVAL 3000
 
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 
 #define SAVE_FILE "savegame.dat"
 
@@ -144,7 +144,7 @@ void Scourge::initUI() {
 
 void Scourge::start() {
 
-  squirrel = new SqBinding( getSession() );
+  squirrel = new SqBinding( getSession(), this );
 
   this->quadric = gluNewQuadric();
   bool initMainMenu = true;
@@ -1254,6 +1254,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(event->key.keysym.sym == SDLK_b) {
       Battle::debugBattle = ( Battle::debugBattle ? false : true );
       return false;
+    } else if(event->key.keysym.sym == SDLK_s) {
+      squirrelWin->setVisible( squirrelWin->isVisible() ? false : true );
     }
 #endif
 
@@ -2023,6 +2025,14 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
     exitConfirmationDialog->setVisible(false);
     return false;
+  } else if( widget == squirrelRun ||
+             widget == squirrelText ) {
+    squirrelLabel->appendText( "> " );
+    squirrelLabel->appendText( squirrelText->getText() );
+    squirrelLabel->appendText( "|" );
+    squirrel->compileBuffer( squirrelText->getText() );
+    squirrelText->clearText();
+    squirrelLabel->appendText( "|" );
   }
   return false;
 }
@@ -2075,6 +2085,19 @@ void Scourge::createUI() {
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
+
+  squirrelWin = new Window( getSDLHandler(), 0, 0, 550, 200, "Squirrel Console", 
+                            getSession()->getShapePalette()->getGuiTexture(), true,
+                            Window::BASIC_WINDOW, getSession()->getShapePalette()->getGuiTexture2() );
+  squirrelLabel = new ScrollingLabel( 0, 0, 550, 145, "" );
+  squirrelLabel->setCanGetFocus( false );
+  squirrelWin->addWidget( squirrelLabel );
+  squirrelText = new TextField( 5, 150, 60 );
+  squirrelWin->addWidget( squirrelText );
+  squirrelRun = squirrelWin->createButton( 500, 150, 545, 170, "Run" );
+#ifdef DEBUG_KEYS
+  squirrelWin->setVisible( true );
+#endif
 }
 
 void Scourge::setUILayout(int mode) {
@@ -3593,3 +3616,13 @@ bool Scourge::isLevelShaded() {
           getSession()->getPreferences()->isOvalCutoutShown() );
 }                                                               
 
+void Scourge::printToConsole( const char *s ) {
+  // replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
+  char *p = strpbrk( s, "\n\r" );
+  while( p ) {
+    *p = '|';
+    if( !*(p + 1) ) break;
+    p = strpbrk( p + 1, "\n\r" );
+  }
+  squirrelLabel->appendText( s );
+}

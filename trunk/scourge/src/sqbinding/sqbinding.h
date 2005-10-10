@@ -25,6 +25,7 @@
 #include "../squirrel/squirrel.h"
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
+#include "consoleprinter.h"
 
 using namespace std;
 
@@ -95,8 +96,10 @@ private:
   SqGame *game;
 
 public:
-  SqBinding( Session *session );
+  SqBinding( Session *session, ConsolePrinter *consolePrinter = NULL );
   ~SqBinding();
+
+  static ConsolePrinter *consolePrinterRef;
 
   // events
   void startGame();
@@ -106,6 +109,7 @@ public:
   bool startLevel();
   bool endLevel();
 
+  void compileBuffer( const char *s );
 
 protected:
   bool compile( const char *filename );

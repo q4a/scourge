@@ -96,6 +96,8 @@ private:
   Widget *mouseLock;
   bool willUnlockMouse;
 
+  bool willBlockEvent;
+
 public: 
 
   static bool showDebugInfo;
@@ -104,6 +106,8 @@ public:
 
   SDLHandler( GameAdapter *gameAdapter );
   virtual ~SDLHandler();
+
+  inline void blockEvent() { willBlockEvent = true; }
 
   inline void lockMouse( Widget *widget ) { mouseLock = widget; }
   inline void unlockMouse() { willUnlockMouse = true; }

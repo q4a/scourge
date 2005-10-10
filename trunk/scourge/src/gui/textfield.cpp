@@ -45,22 +45,12 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   if(inside) {
     switch( event->type ) {
     case SDL_KEYUP:
+    ((Window*)parent)->getScourgeGui()->blockEvent();
     return true;
     case SDL_KEYDOWN:
+    ((Window*)parent)->getScourgeGui()->blockEvent();
     if(event->key.keysym.sym == SDLK_RETURN) {
       eventType = EVENT_ACTION;
-    } else if(event->key.keysym.sym >= SDLK_SPACE && event->key.keysym.sym <= SDLK_z && 
-              maxPos < numChars) {
-      for(int i = maxPos; i > pos; i--) {
-        text[i] = text[i - 1];
-      }
-      if( SDL_GetModState() & KMOD_SHIFT ) {
-        text[pos] = ( 'A' - 'a' ) + event->key.keysym.sym;
-      } else {
-        text[pos] = event->key.keysym.sym;
-      }
-      pos++;
-      maxPos++;
     } else if((event->key.keysym.sym == SDLK_BACKSPACE && pos > 0) ||
               (event->key.keysym.sym == SDLK_DELETE && pos < maxPos)) {
       for(int i = (event->key.keysym.sym == SDLK_BACKSPACE ? pos - 1 : pos); i < maxPos - 1; i++) {
@@ -76,7 +66,48 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
       pos = 0;
     } else if(event->key.keysym.sym == SDLK_END) {
       pos = maxPos;
-    }
+    } else if( maxPos < numChars && 
+               event->key.keysym.sym > SDLK_ESCAPE &&
+               event->key.keysym.sym < SDLK_UP ) {
+      for(int i = maxPos; i > pos; i--) {
+        text[i] = text[i - 1];
+      }
+      if( SDL_GetModState() & KMOD_SHIFT ) {
+        if( event->key.keysym.sym >= SDLK_a && event->key.keysym.sym <= SDLK_z ) {
+          text[pos] = ( 'A' - 'a' ) + event->key.keysym.sym;
+        } else {
+          // FIXME: US-keyboard definitions of keys
+          switch( event->key.keysym.sym ) {
+          case SDLK_LEFTBRACKET : text[pos] = '{'; break;
+          case SDLK_RIGHTBRACKET : text[pos] = '}'; break;
+          case SDLK_SEMICOLON : text[pos] = ':'; break;
+          case SDLK_QUOTE : text[pos] = '"'; break;
+          case SDLK_COMMA : text[pos] = '<'; break;
+          case SDLK_PERIOD : text[pos] = '>'; break;
+          case SDLK_SLASH : text[pos] = '?'; break;
+          case SDLK_BACKSLASH : text[pos] = '|'; break;
+          case SDLK_BACKQUOTE : text[pos] = '~'; break;
+          case SDLK_1 : text[pos] = '!'; break;
+          case SDLK_2 : text[pos] = '@'; break;
+          case SDLK_3 : text[pos] = '#'; break;
+          case SDLK_4 : text[pos] = '$'; break;
+          case SDLK_5 : text[pos] = '%'; break;
+          case SDLK_6 : text[pos] = '^'; break;
+          case SDLK_7 : text[pos] = '&'; break;
+          case SDLK_8 : text[pos] = '*'; break;
+          case SDLK_9 : text[pos] = '('; break;
+          case SDLK_0 : text[pos] = ')'; break;
+          case SDLK_MINUS : text[pos] = '_'; break;
+          case SDLK_EQUALS : text[pos] = '+'; break;
+          default: text[pos] = event->key.keysym.sym;
+          }
+        }
+      } else {
+        text[pos] = event->key.keysym.sym;
+      }
+      pos++;
+      maxPos++;
+    } else 
     return true;
     default:
     break;

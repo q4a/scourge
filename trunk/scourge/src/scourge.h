@@ -50,6 +50,7 @@
 #include "conversationgui.h"
 #include "gui/guitheme.h"
 #include "gui/scrollinglabel.h"
+#include "sqbinding/consoleprinter.h"
 
 using namespace std;
 
@@ -126,7 +127,7 @@ public:
   
   @author Gabor Torok
 */ 
-class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler,StatusReport {
+class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler,StatusReport,ConsolePrinter {
  private:
   Party *party;
   Map *levelMap;
@@ -240,6 +241,10 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   Location *gatepos;
 
   SqBinding *squirrel;
+  Window *squirrelWin;
+  ScrollingLabel *squirrelLabel;
+  TextField *squirrelText;
+  Button *squirrelRun;
 
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
@@ -281,6 +286,8 @@ public:
   inline SqBinding *getSquirrel() { return squirrel; }
 
   bool isLevelShaded();
+
+  void printToConsole( const char *s );
 
   void updateStatus( int status, int maxStatus, const char *message=NULL );
 

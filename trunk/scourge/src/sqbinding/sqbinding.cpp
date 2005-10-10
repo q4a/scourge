@@ -22,10 +22,12 @@
 #include "../squirrel/sqstdaux.h"
 
 #ifdef SQUNICODE
-#define scvprintf vwprintf
+#define scvprintf vswprintf
 #else
-#define scvprintf vprintf
+#define scvprintf vsnprintf
 #endif
+
+ConsolePrinter *SqBinding::consolePrinterRef = NULL;
 
 /**
  * A simple print function. Later replace this by printing in the console.
@@ -33,12 +35,18 @@
 void printfunc(HSQUIRRELVM v, const SQChar *s, ...) {
   va_list arglist;
   va_start(arglist, s);
-  scvprintf(s, arglist);
+  char buff[1000];
+  scvprintf( buff, 1000, s, arglist );  
+  buff[999] = '\0';
   va_end(arglist);
+  if( SqBinding::consolePrinterRef ) SqBinding::consolePrinterRef->printToConsole( (const char*)buff );  
+  else cerr << "CONSOLE:" << buff << endl;
 }
 
-SqBinding::SqBinding( Session *session ) {
+SqBinding::SqBinding( Session *session, ConsolePrinter *consolePrinter ) {
   this->session = session;
+  if( consolePrinter ) SqBinding::consolePrinterRef = consolePrinter;
+
   cerr << "Initializing squirrel vm" << endl;
   vm = sq_open(1024); //creates a VM with initial stack size 1024
 
@@ -123,6 +131,20 @@ bool SqBinding::endLevel() {
 
 
 
+void SqBinding::compileBuffer( const char *s ) {
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  if( SQ_SUCCEEDED( sq_compilebuffer( vm, 
+                                      _SC( s ), 
+                                      strlen( s ), 
+                                      _SC( "tmp" ), 
+                                      (SQBool)true ) ) ) {
+    // execute it
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_call( vm, 1, 0 ); //calls the function
+    // ignore the return value
+  }
+  sq_settop( vm, top ); //restores the original stack size
+}
                         
 bool SqBinding::compile( const char *filename ) {
   // compile a module
