@@ -61,6 +61,7 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   dontUpdateScreen = false;
   mouseLock = NULL;
   willUnlockMouse = false;
+  willBlockEvent = false;
 }
 
 SDLHandler::~SDLHandler(){
@@ -506,6 +507,12 @@ void SDLHandler::mainLoop() {
       if( !mouseIsMovingOverMap &&
           getCursorMode() != Constants::CURSOR_CROSSHAIR ) 
         setCursorMode( Constants::CURSOR_NORMAL );
+
+      // swallow this event
+      if( willBlockEvent ) {
+        willBlockEvent = false; 
+        continue;
+      } 
 
       bool res = false;
       if(widget) {

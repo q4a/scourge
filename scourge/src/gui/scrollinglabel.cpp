@@ -51,8 +51,30 @@ ScrollingLabel::~ScrollingLabel() {
 void ScrollingLabel::setText( char *s ) {
   wordPosCount = 0;
 
-  strncpy(text, ( s ? s : "" ), 3000); 
-  text[2999] = '\0';
+  strncpy( text, ( s ? s : "" ), TEXT_SIZE ); 
+  text[ TEXT_SIZE - 1 ] = '\0';
+  
+  lineWidth = ( w - scrollerWidth - 20 ) / 8;
+
+  willSetScrollerHeight = true;
+  listHeight = 0;
+  scrollerHeight = 20;
+
+  // reset the scroller
+  value = scrollerY = 0;
+}
+
+void ScrollingLabel::appendText( const char *s ) {
+  int len = strlen( text );
+  int slen = strlen( s );
+  if( len + slen >= TEXT_SIZE - 1 ) {
+    int extra = len + slen - ( TEXT_SIZE - 1 );
+    for( int i = extra; i < len; i++ ) text[ i - extra ] = text[ i ];
+    text[ len - extra ] = '\0';
+  }
+  strcat( text, s );
+
+  text[ TEXT_SIZE - 1 ] = '\0';
   
   lineWidth = ( w - scrollerWidth - 20 ) / 8;
 

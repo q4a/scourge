@@ -46,7 +46,8 @@ public:
 
 class ScrollingLabel : public Widget {
  protected:
-  char text[3000];
+   static const int TEXT_SIZE = 3000;
+  char text[ TEXT_SIZE ];
   int lineWidth;
   vector<string> lines;
 
@@ -95,6 +96,11 @@ class ScrollingLabel : public Widget {
 
    inline char *getText() { return text; }
    void setText(char *s);
+
+   /**
+    * Append text by scrolling off the top if it won't fit in the buffer.
+    */
+   void appendText( const char *s );
 
    //  inline int getLineCount() { return count; }
    //  void setLines(int count, const char *s[], const Color *colors=NULL, const GLuint *icon=NULL);
