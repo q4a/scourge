@@ -244,7 +244,7 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   Window *squirrelWin;
   ScrollingLabel *squirrelLabel;
   TextField *squirrelText;
-  Button *squirrelRun;
+  Button *squirrelRun, *squirrelClear;
 
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);

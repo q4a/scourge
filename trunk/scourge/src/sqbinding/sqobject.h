@@ -32,6 +32,7 @@ public:
   virtual ~SqObject() {
   }
 
+  virtual const char *getInstanceName() = 0;
   virtual const char *getClassName() = 0;
   virtual SquirrelClassDecl *getClassDeclaration() = 0;
 

@@ -239,6 +239,9 @@ Scourge::~Scourge(){
 void Scourge::startMission() {
 
   squirrel->startGame();
+#ifdef DEBUG_KEYS
+  squirrelWin->setVisible( true );
+#endif
 
   // set up some cross-mission objects
   oldStory = currentStory = 0;
@@ -566,6 +569,9 @@ void Scourge::startMission() {
   // delete the party (w/o deleting the party ui)
   party->deleteParty();
 
+#ifdef DEBUG_KEYS
+  squirrelWin->setVisible( false );
+#endif
   squirrel->endGame();
 }
 
@@ -2033,6 +2039,8 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     squirrel->compileBuffer( squirrelText->getText() );
     squirrelText->clearText();
     squirrelLabel->appendText( "|" );
+  } else if( widget == squirrelClear ) {
+    squirrelLabel->setText( "" );
   }
   return false;
 }
@@ -2086,18 +2094,16 @@ void Scourge::createUI() {
   exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
 
-  squirrelWin = new Window( getSDLHandler(), 0, 0, 550, 200, "Squirrel Console", 
+  squirrelWin = new Window( getSDLHandler(), 5, 0, getSDLHandler()->getScreen()->w - 10, 200, "Squirrel Console", 
                             getSession()->getShapePalette()->getGuiTexture(), true,
                             Window::BASIC_WINDOW, getSession()->getShapePalette()->getGuiTexture2() );
-  squirrelLabel = new ScrollingLabel( 0, 0, 550, 145, "" );
+  squirrelLabel = new ScrollingLabel( 5, 0, getSDLHandler()->getScreen()->w - 20, 145, "" );
   squirrelLabel->setCanGetFocus( false );
   squirrelWin->addWidget( squirrelLabel );
-  squirrelText = new TextField( 5, 150, 60 );
+  squirrelText = new TextField( 5, 150, 100 );
   squirrelWin->addWidget( squirrelText );
-  squirrelRun = squirrelWin->createButton( 500, 150, 545, 170, "Run" );
-#ifdef DEBUG_KEYS
-  squirrelWin->setVisible( true );
-#endif
+  squirrelRun = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 100, 150, getSDLHandler()->getScreen()->w - 10, 170, "Run" );
+  squirrelClear = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 200, 150, getSDLHandler()->getScreen()->w - 110, 170, "Clear" );
 }
 
 void Scourge::setUILayout(int mode) {

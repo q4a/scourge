@@ -56,6 +56,7 @@ void ScrollingLabel::setText( char *s ) {
   
   lineWidth = ( w - scrollerWidth - 20 ) / 8;
 
+  willScrollToBottom = false;
   willSetScrollerHeight = true;
   listHeight = 0;
   scrollerHeight = 20;
@@ -79,6 +80,7 @@ void ScrollingLabel::appendText( const char *s ) {
   lineWidth = ( w - scrollerWidth - 20 ) / 8;
 
   willSetScrollerHeight = true;
+  willScrollToBottom = true;
   listHeight = 0;
   scrollerHeight = 20;
 
@@ -132,6 +134,12 @@ void ScrollingLabel::drawWidget(Widget *parent) {
                         (getHeight() * getHeight()) / listHeight);
       // set a min. height for scrollerHeight
       if(scrollerHeight < 20) scrollerHeight = 20;
+
+      if( willScrollToBottom ) {
+        willScrollToBottom = false;
+        value = 100;
+        scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+      }
     }
     //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
         

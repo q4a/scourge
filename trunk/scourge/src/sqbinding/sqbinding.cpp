@@ -75,11 +75,20 @@ SqBinding::~SqBinding() {
 void SqBinding::startGame() {
   // Create a game instance (root squirrel object)
   instantiateClass( _SC( game->getClassName() ), &refGame );
+  // and bind it as a global variable
+  sq_pushstring( vm, _SC( game->getInstanceName() ), -1 );
+  sq_pushobject( vm, refGame );
+  if( SQ_FAILED( sq_createslot( vm, -3 ) ) ) {
+    cerr << "Unable to create object \"" << game->getInstanceName() << "\" slot." << endl;
+  }
 }
 
 void SqBinding::endGame() {
   // release ref.
-  sq_release( vm, &refGame );
+  sq_release( vm, &refGame );  
+  // remove the global scourgeGame variable
+  sq_pushstring( vm, _SC( game->getInstanceName() ), -1 );
+  sq_deleteslot( vm, -1, (SQBool)false );
 }
 
 
@@ -97,8 +106,8 @@ bool SqBinding::startLevel() {
   sq_pushstring( vm, _SC("startLevel"), -1 );
   if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
     sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
-    sq_pushobject( vm, refGame );
-    sq_call( vm, 2, 0 ); //calls the function
+    //sq_pushobject( vm, refGame );
+    sq_call( vm, 1, 0 ); //calls the function
     //sq_getinteger( v, -1, &ret );
     ret = true;
   } else {
@@ -117,8 +126,8 @@ bool SqBinding::endLevel() {
   sq_pushstring( vm, _SC("endLevel"), -1 );
   if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
     sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
-    sq_pushobject( vm, refGame );
-    sq_call( vm, 2, 0 ); //calls the function
+    //sq_pushobject( vm, refGame );
+    sq_call( vm, 1, 0 ); //calls the function
     //sq_getinteger( v, -1, &ret );
     ret = true;
   } else {
