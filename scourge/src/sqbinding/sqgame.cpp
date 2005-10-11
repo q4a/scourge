@@ -22,7 +22,8 @@ const char *SqGame::className = "ScourgeGame";
 ScriptClassMemberDecl SqGame::members[] = {
   { "_typeof", SqGame::_game_typeof, 1, 0 },
   { "constructor", SqGame::_constructor, 0, 0 },
-  { "doSomething", SqGame::_doSomething, 0, 0 },
+  { "getVersion", SqGame::_getVersion, 0, 0 },
+  { "getRootDir", SqGame::_getRootDir, 0, 0 },
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members };
@@ -45,8 +46,13 @@ int SqGame::_constructor( HSQUIRRELVM vm ) {
   return 0; // no values returned
 }
 
-int SqGame::_doSomething( HSQUIRRELVM v) {
-  cerr << "in " << SqGame::className << "::doSomething()" << endl;
-  return 0; // no values returned
+int SqGame::_getVersion( HSQUIRRELVM vm ) {
+  sq_pushstring( vm, _SC( SCOURGE_VERSION ), -1 );
+  return 1;
+}
+
+int SqGame::_getRootDir( HSQUIRRELVM vm ) {
+  sq_pushstring( vm, _SC( rootDir ), -1 );
+  return 1;
 }
 

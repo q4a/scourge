@@ -36,6 +36,7 @@ public:
   SqGame();
   ~SqGame();
 
+  inline const char *getInstanceName() { return "scourgeGame"; }
   inline const char *getClassName() { return SqGame::className; }
   inline SquirrelClassDecl *getClassDeclaration() { return &SqGame::classDecl; }
 
@@ -43,7 +44,8 @@ public:
   // Static callback methods to ScourgeGame squirrel object member functions.
   static int _game_typeof( HSQUIRRELVM vm );
   static int _constructor( HSQUIRRELVM vm );
-  static int _doSomething( HSQUIRRELVM v);
+  static int _getVersion( HSQUIRRELVM vm );
+  static int _getRootDir( HSQUIRRELVM vm );
 };
 
 #endif
