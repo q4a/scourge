@@ -52,8 +52,24 @@ int SqCreature::_getName( HSQUIRRELVM vm ) {
 
 
   // FIXME: retrieve the CREATURE_ID_TOKEN from the "this" object (param 1) and use it to find the Creature*.
+  int index;
+  int top = sq_gettop( vm );
+  cerr << "_getName, 1, top=" << sq_gettop( vm ) << endl;
   //HSQOBJECT object;
-//  sq_getstackobj( vm, 1, &object );
+  //sq_getstackobj( vm, 1, &object );
+  sq_pushstring( vm, _SC( CREATURE_ID_TOKEN ), -1 );
+  cerr << "_getName, 2, top=" << sq_gettop( vm ) << endl;
+  if( SQ_FAILED( sq_get( vm, -2 ) ) ) {
+    cerr << "Failed to get creature-token in _getName(). Using index 0 instead." << endl;
+    index = 0;
+  }
+  cerr << "_getName, 3, top=" << sq_gettop( vm ) << endl;
+  sq_getinteger( vm, -1, &index );
+  sq_settop( vm, top );
+  cerr << "_getName, 4, top=" << sq_gettop( vm ) << endl;
+  cerr << "index=" << index << endl;
+
+
 
 
   /*
