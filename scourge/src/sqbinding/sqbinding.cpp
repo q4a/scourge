@@ -16,7 +16,9 @@
  ***************************************************************************/
 #include "sqbinding.h"
 #include "../session.h"
+#include "../creature.h"
 #include "sqgame.h"
+#include "sqcreature.h"
 #include "../squirrel/squirrel.h"
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
@@ -28,6 +30,8 @@
 #endif
 
 ConsolePrinter *SqBinding::consolePrinterRef = NULL;
+Session *SqBinding::sessionRef = NULL;
+SqBinding *SqBinding::binding = NULL;
 
 /**
  * A simple print function. Later replace this by printing in the console.
@@ -44,10 +48,11 @@ void printfunc(HSQUIRRELVM v, const SQChar *s, ...) {
 }
 
 SqBinding::SqBinding( Session *session, ConsolePrinter *consolePrinter ) {
-  this->session = session;
+  SqBinding::sessionRef = this->session = session;
   if( consolePrinter ) SqBinding::consolePrinterRef = consolePrinter;
+  if( !binding ) SqBinding::binding = this;
 
-  cerr << "Initializing squirrel vm" << endl;
+  if( DEBUG_SQUIRREL ) cerr << "Initializing squirrel vm" << endl;
   vm = sq_open(1024); //creates a VM with initial stack size 1024
 
   sqstd_seterrorhandlers( vm );
@@ -58,10 +63,19 @@ SqBinding::SqBinding( Session *session, ConsolePrinter *consolePrinter ) {
   // push the root table(were the globals of the script will be stored)
   sq_pushroottable( vm );
 
-  // Define some squirrel classes
-  cerr << "Creating ScourgeGame class" << endl;
-  game = new SqGame();
+  // Define some squirrel classes:
+
+  // the root class 
+  game = new SqGame();  
   createClass( game->getClassDeclaration() );
+
+  // the creature class
+  creature = new SqCreature();
+  createClass( creature->getClassDeclaration() );
+
+  // create a slot to hold the creature id.
+  createClassMember( creature->getClassName(), CREATURE_ID_TOKEN, -2 );
+  
 }
 
 SqBinding::~SqBinding() {
@@ -81,10 +95,30 @@ void SqBinding::startGame() {
   if( SQ_FAILED( sq_createslot( vm, -3 ) ) ) {
     cerr << "Unable to create object \"" << game->getInstanceName() << "\" slot." << endl;
   }
+
+  // create the party
+  if( DEBUG_SQUIRREL ) cerr << "Creating party:" << endl;
+  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+    if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), &(refParty[i]) ) ) ) {
+
+      // Set a token in the class so we can resolve the squirrel instance to a native creature.
+      // Negative numbers are party members, 0 and pos. ones are monsters.
+      setObjectValue( refParty[i], CREATURE_ID_TOKEN, -1 * ( i + 1 ) );
+
+      if( DEBUG_SQUIRREL ) cerr << "\tSuccess: i=" << i << endl;
+    } else {
+      if( DEBUG_SQUIRREL ) cerr << "\tFailed: i=" << i << endl;
+    }
+  }
 }
 
 void SqBinding::endGame() {
-  // release ref.
+  // release party references
+  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+    sq_release( vm, &(refParty[ i ]) );  
+  }
+
+  // release game ref.
   sq_release( vm, &refGame );  
   // remove the global scourgeGame variable
   sq_pushstring( vm, _SC( game->getInstanceName() ), -1 );
@@ -157,35 +191,15 @@ void SqBinding::compileBuffer( const char *s ) {
                         
 bool SqBinding::compile( const char *filename ) {
   // compile a module
-  cerr << "Compiling file:" << filename << endl;
+  if( DEBUG_SQUIRREL ) cerr << "Compiling file:" << filename << endl;
   if( SQ_SUCCEEDED( sqstd_dofile( vm, _SC( filename ), 0, 1 ) ) ) {
-    cerr << "\tSuccess." << endl;
-    /*
-    callSayHello( v, _SC( "Gabor" ) );
-    int value = 3;
-    cerr << "someOtherFunction(" << value << ")=" << callSomeOtherFunction( v, value ) << endl;
-    
-    // callback
-    SomeClass *sc = new SomeClass();
-    register_global_func( v, print_args, "print_args" );
-    register_global_func( v, SomeClass::square, "square" );
-    callCallbackToC( v );
-    
-    // create a class accessible by squirrel
-    CreateClass(v, &(__Scourge_decl));
-    
-    // create a userpointer
-    HSQOBJECT scourgeObj;
-    CreateNativeClassInstance(v,_SC( "Scourge" ), &scourgeObj );
-    
-    callCallbackToObj( v, scourgeObj );
-    */
+    if( DEBUG_SQUIRREL ) cerr << "\tSuccess." << endl;
     return true;
   } else {
-    cerr << "Failed to compile file." << endl;
+    cerr << "Failed to compile file:" << filename << endl;
     return false;
   }
-}   
+}
 
 bool SqBinding::createClass( SquirrelClassDecl *cd ) {
   int n = 0;
@@ -261,4 +275,37 @@ bool SqBinding::instantiateClass( const SQChar *classname,
   
   return true;
 }   
+
+bool SqBinding::createClassMember( const char *classname, const char *key, int value ) {  
+  int oldtop = sq_gettop( vm );
+  sq_pushroottable( vm );
+  sq_pushstring( vm, classname, -1 );
+  if( SQ_FAILED( sq_rawget( vm, -2 ) ) ) {
+    sq_settop( vm, oldtop );
+    cerr << "Error getting class " << classname << endl;
+    return false;
+  }
+  sq_pushstring( vm, _SC( key ), -1 );
+  sq_pushinteger( vm, value );
+  if( SQ_FAILED( sq_createslot( vm, -3 ) ) ) {
+    cerr << "Unable to create member slot:" << key << endl;
+  }
+//  sq_pop( vm, -1 );
+  sq_settop( vm, oldtop );
+  return true;
+}
+
+bool SqBinding::setObjectValue( HSQOBJECT object, const char *key, int value ) {
+  bool ret = true;
+  int top = sq_gettop( vm );
+  sq_pushobject( vm, object );
+  sq_pushstring( vm, _SC( key ), -1 );
+  sq_pushinteger( vm, value );
+  if( SQ_FAILED( sq_set( vm, -3 ) ) ) {
+    cerr << "Unable to set object member:" << key << " to " << value << endl;
+    ret = false;
+  }
+  sq_settop( vm, top );
+  return ret;
+}
 
