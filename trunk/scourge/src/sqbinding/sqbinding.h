@@ -35,6 +35,7 @@ using namespace std;
 
 class Session;
 class SqGame;
+class SqCreature;
 
 /**
  * A squirrel member function declaration.
@@ -81,6 +82,9 @@ struct ScriptNamespaceDecl  {
   const ScriptClassMemberDecl *delegate;
 };
 
+#define DEBUG_SQUIRREL 1
+#define CREATURE_ID_TOKEN "scourge_creature_id"
+
 /**
    Scourge object bindings to squirrel.
  */
@@ -89,17 +93,21 @@ private:
   Session *session;
   HSQUIRRELVM vm;
   
-  // Squirrel object references
-  HSQOBJECT refGame;
-
-  // Native objects backing squirrel objects
+  // Native objects backing squirrel objects (squirrel class definitions).
   SqGame *game;
+  SqCreature *creature;
 
 public:
   SqBinding( Session *session, ConsolePrinter *consolePrinter = NULL );
   ~SqBinding();
 
   static ConsolePrinter *consolePrinterRef;
+  static Session *sessionRef;
+  static SqBinding *binding;
+
+  // Squirrel object references
+  HSQOBJECT refGame;
+  HSQOBJECT refParty[MAX_PARTY_SIZE];
 
   // events
   void startGame();
@@ -118,6 +126,12 @@ protected:
                          HSQOBJECT *obj 
                          //,SQRELEASEHOOK hook 
                          );
+  bool createClassMember( const char *classname, 
+                          const char *key, 
+                          int value );
+  bool setObjectValue( HSQOBJECT object, 
+                       const char *key, 
+                       int value );
 
 };
 

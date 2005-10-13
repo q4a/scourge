@@ -9,5 +9,7 @@ libSqbinding_a_SOURCES = \
 	sqbinding.h\
 	sqobject.h\
 	sqgame.cpp\
-	sqgame.h
+	sqgame.h\
+	sqcreature.cpp\
+	sqcreature.h
 

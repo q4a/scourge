@@ -238,7 +238,6 @@ Scourge::~Scourge(){
 
 void Scourge::startMission() {
 
-  squirrel->startGame();
 #ifdef DEBUG_KEYS
   squirrelWin->setVisible( true );
 #endif
@@ -282,6 +281,8 @@ void Scourge::startMission() {
       if(!inventory) {
         inventory = new Inventory(this);
       }
+
+      squirrel->startGame();
 
       resetParty = false;
     }
