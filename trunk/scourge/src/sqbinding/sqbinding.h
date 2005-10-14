@@ -83,7 +83,13 @@ struct ScriptNamespaceDecl  {
 };
 
 #define DEBUG_SQUIRREL 1
-#define CREATURE_ID_TOKEN "scourge_creature_id"
+#define SCOURGE_ID_TOKEN "scourge_creature_id"
+
+#define GET_OBJECT(x)   SQUserPointer up;\
+  if( !SqBinding::getObjectValue( vm, SCOURGE_ID_TOKEN, &up ) ) {\
+    return sq_throwerror( vm, _SC( "Can't find userpointer." ) );\
+  }\
+  x object = (x)up;
 
 /**
    Scourge object bindings to squirrel.
