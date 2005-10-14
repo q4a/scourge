@@ -74,7 +74,7 @@ SqBinding::SqBinding( Session *session, ConsolePrinter *consolePrinter ) {
   createClass( creature->getClassDeclaration() );
 
   // create a slot to hold the creature id.
-  createClassMember( creature->getClassName(), CREATURE_ID_TOKEN, -2 );
+  createClassMember( creature->getClassName(), SCOURGE_ID_TOKEN, -2 );
   
 }
 
@@ -102,7 +102,7 @@ void SqBinding::startGame() {
     if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), &(refParty[i]) ) ) ) {
       // Set a token in the class so we can resolve the squirrel instance to a native creature.
       // The value is the address of the native creature object.
-      setObjectValue( refParty[i], CREATURE_ID_TOKEN, session->getParty()->getParty(i) );
+      setObjectValue( refParty[i], SCOURGE_ID_TOKEN, session->getParty()->getParty(i) );
     }
   }
 }

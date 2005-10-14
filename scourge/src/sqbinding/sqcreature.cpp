@@ -20,12 +20,6 @@
 
 using namespace std;
 
-#define GET_CREATURE   SQUserPointer up;\
-  if( !SqBinding::getObjectValue( vm, CREATURE_ID_TOKEN, &up ) ) {\
-    return sq_throwerror( vm, _SC( "Can't find userpointer." ) );\
-  }\
-  Creature *creature = (Creature*)up;
-
 const char *SqCreature::className = "Creature";
 ScriptClassMemberDecl SqCreature::members[] = {
   { "_typeof", SqCreature::_squirrel_typeof, 1, 0 },
@@ -73,114 +67,114 @@ int SqCreature::_constructor( HSQUIRRELVM vm ) {
 // ===========================================================================
 // Member methods
 int SqCreature::_getName( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushstring( vm, _SC( ((Creature*)creature)->getName() ), -1 );
+  GET_OBJECT(Creature*)
+  sq_pushstring( vm, _SC( object->getName() ), -1 );
   return 1;
 }
 
 int SqCreature::_getLevel( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getLevel() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getLevel() ) );
   return 1;
 }
 
 int SqCreature::_getExpOfNextLevel( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getExpOfNextLevel() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getExpOfNextLevel() ) );
   return 1;
 }
 
 int SqCreature::_getExp( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getExp() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getExp() ) );
   return 1;
 }
 
 int SqCreature::_getMoney( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getMoney() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getMoney() ) );
   return 1;
 }
 
 int SqCreature::_getHp( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getHp() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getHp() ) );
   return 1;
 }
 
 int SqCreature::_getStartingHp( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getStartingHp() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getStartingHp() ) );
   return 1;
 }
 
 int SqCreature::_getMaxHp( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getMaxHp() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getMaxHp() ) );
   return 1;
 }
 
 int SqCreature::_getMp( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getMp() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getMp() ) );
   return 1;
 }
 
 int SqCreature::_getStartingMp( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getStartingMp() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getStartingMp() ) );
   return 1;
 }
 
 int SqCreature::_getMaxMp( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getMaxMp() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getMaxMp() ) );
   return 1;
 }
 
 int SqCreature::_getThirst( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getThirst() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getThirst() ) );
   return 1;
 }
 
 int SqCreature::_getHunger( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getHunger() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getHunger() ) );
   return 1;
 }
 
 int SqCreature::_getSkill( HSQUIRRELVM vm ) {
-  GET_CREATURE
+  GET_OBJECT(Creature*)
     cerr << "FIXME: getSkill() need index." << endl;
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getSkill( 0 ) ) );
+  sq_pushinteger( vm, _SC( object->getSkill( 0 ) ) );
   return 1;
 }
 
 int SqCreature::_getStateMod( HSQUIRRELVM vm ) {
-  GET_CREATURE
+  GET_OBJECT(Creature*)
     cerr << "FIXME: getStateMod() need index." << endl;
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getStateMod( 0 ) ) );
+  sq_pushinteger( vm, _SC( object->getStateMod( 0 ) ) );
   return 1;
 }
 
 
 int SqCreature::_getProtectedStateMod( HSQUIRRELVM vm ) {
-  GET_CREATURE
+  GET_OBJECT(Creature*)
     cerr << "FIXME: getProtectedStateMod() need index." << endl;
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getProtectedStateMod( 0 ) ) );
+  sq_pushinteger( vm, _SC( object->getProtectedStateMod( 0 ) ) );
   return 1;
 }
 
 
 int SqCreature::_getArmor( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getStateMod( 0 ) ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getStateMod( 0 ) ) );
   return 1;
 }
 
 int SqCreature::_getSkillModifiedArmor( HSQUIRRELVM vm ) {
-  GET_CREATURE
-  sq_pushinteger( vm, _SC( ((Creature*)creature)->getSkillModifiedArmor() ) );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getSkillModifiedArmor() ) );
   return 1;
 }
