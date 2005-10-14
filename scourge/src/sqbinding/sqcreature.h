@@ -47,6 +47,26 @@ public:
 
   // general
   static int _getName( HSQUIRRELVM vm );
+//  inline Character *getCharacter() { return character; }  
+//  inline Monster *getMonster() { return monster; }  
+  static int _getLevel( HSQUIRRELVM vm );
+  static int _getExpOfNextLevel( HSQUIRRELVM vm );
+  static int _getExp( HSQUIRRELVM vm );
+  static int _getMoney( HSQUIRRELVM vm );
+  static int _getHp( HSQUIRRELVM vm );
+  static int _getStartingHp( HSQUIRRELVM vm );
+  static int _getMaxHp( HSQUIRRELVM vm );
+  static int _getMp( HSQUIRRELVM vm );
+  static int _getStartingMp( HSQUIRRELVM vm );
+  static int _getMaxMp( HSQUIRRELVM vm );
+  static int _getThirst( HSQUIRRELVM vm );
+  static int _getHunger( HSQUIRRELVM vm );
+  static int _getSkill( HSQUIRRELVM vm );
+  static int _getStateMod( HSQUIRRELVM vm );
+  static int _getProtectedStateMod( HSQUIRRELVM vm );
+  static int _getArmor( HSQUIRRELVM vm );
+  static int _getSkillModifiedArmor( HSQUIRRELVM vm );
+
 };
 
 #endif
