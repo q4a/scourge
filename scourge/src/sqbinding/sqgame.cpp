@@ -113,18 +113,13 @@ void printArgs( HSQUIRRELVM v ) {
 }
 
 int SqGame::_getPartyMember( HSQUIRRELVM vm ) {
-  printArgs( vm );
-
   int partyIndex;
   if( SQ_FAILED( sq_getinteger( vm, 2, &partyIndex ) ) ) {
-    cerr << "*** Error: Can't get party index in _getPartyMember. Using 0 instead." << endl;
-    partyIndex = 0;
+    return sq_throwerror( vm, _SC( "Can't get party index in _getPartyMember." ) );
   }
   if( partyIndex < 0 || partyIndex > SqBinding::sessionRef->getParty()->getPartySize() ) {
-    cerr << "*** Error: party index of " << partyIndex << " is out of range. Using 0 instead." << endl;
-    partyIndex = 0;
+    return sq_throwerror( vm, _SC( "Party index is out of range." ) );
   }
-  if( DEBUG_SQUIRREL ) cerr << "partyIndex=" << partyIndex << endl;
 
   sq_pushobject( vm, SqBinding::binding->refParty[ partyIndex ] );
   return 1;

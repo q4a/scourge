@@ -119,6 +119,8 @@ public:
 
   void compileBuffer( const char *s );
 
+  static bool getObjectValue( HSQUIRRELVM vm, const char *key, void **ptr );
+
 protected:
   bool compile( const char *filename );
   bool createClass( SquirrelClassDecl *cd );
@@ -131,7 +133,7 @@ protected:
                           int value );
   bool setObjectValue( HSQOBJECT object, 
                        const char *key, 
-                       int value );
+                       void *ptr );
 
 };
 

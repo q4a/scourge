@@ -100,14 +100,9 @@ void SqBinding::startGame() {
   if( DEBUG_SQUIRREL ) cerr << "Creating party:" << endl;
   for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
     if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), &(refParty[i]) ) ) ) {
-
       // Set a token in the class so we can resolve the squirrel instance to a native creature.
-      // Negative numbers are party members, 0 and pos. ones are monsters.
-      setObjectValue( refParty[i], CREATURE_ID_TOKEN, -1 * ( i + 1 ) );
-
-      if( DEBUG_SQUIRREL ) cerr << "\tSuccess: i=" << i << endl;
-    } else {
-      if( DEBUG_SQUIRREL ) cerr << "\tFailed: i=" << i << endl;
+      // The value is the address of the native creature object.
+      setObjectValue( refParty[i], CREATURE_ID_TOKEN, session->getParty()->getParty(i) );
     }
   }
 }
@@ -295,15 +290,30 @@ bool SqBinding::createClassMember( const char *classname, const char *key, int v
   return true;
 }
 
-bool SqBinding::setObjectValue( HSQOBJECT object, const char *key, int value ) {
+bool SqBinding::setObjectValue( HSQOBJECT object, const char *key, void *ptr ) {
   bool ret = true;
   int top = sq_gettop( vm );
   sq_pushobject( vm, object );
   sq_pushstring( vm, _SC( key ), -1 );
-  sq_pushinteger( vm, value );
+  sq_pushuserpointer( vm, (SQUserPointer)ptr );
+  //sq_pushinteger( vm, value );
   if( SQ_FAILED( sq_set( vm, -3 ) ) ) {
-    cerr << "Unable to set object member:" << key << " to " << value << endl;
+    cerr << "Unable to set object member:" << key << " to " << ptr << endl;
     ret = false;
+  }
+  sq_settop( vm, top );
+  return ret;
+}
+
+bool SqBinding::getObjectValue( HSQUIRRELVM vm, const char *key, void **ptr ) {
+  bool ret = false;
+  int top = sq_gettop( vm );
+  sq_pushstring( vm, _SC( key ), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) {
+//    SQUserPointer creature;
+//    sq_getuserpointer( vm, -1, &creature );
+    sq_getuserpointer( vm, -1, (SQUserPointer*)ptr );
+    ret = true;
   }
   sq_settop( vm, top );
   return ret;

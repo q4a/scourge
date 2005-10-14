@@ -48,41 +48,11 @@ int SqCreature::_constructor( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_getName( HSQUIRRELVM vm ) {
-  cerr << "*** FIXME: name should come from creature object ref ('this' param)." << endl;
-
-
-  // FIXME: retrieve the CREATURE_ID_TOKEN from the "this" object (param 1) and use it to find the Creature*.
-  int index;
-  int top = sq_gettop( vm );
-  cerr << "_getName, 1, top=" << sq_gettop( vm ) << endl;
-  //HSQOBJECT object;
-  //sq_getstackobj( vm, 1, &object );
-  sq_pushstring( vm, _SC( CREATURE_ID_TOKEN ), -1 );
-  cerr << "_getName, 2, top=" << sq_gettop( vm ) << endl;
-  if( SQ_FAILED( sq_get( vm, -2 ) ) ) {
-    cerr << "Failed to get creature-token in _getName(). Using index 0 instead." << endl;
-    index = 0;
+  SQUserPointer creature;
+  if( SqBinding::getObjectValue( vm, CREATURE_ID_TOKEN, &creature ) ) {
+    sq_pushstring( vm, _SC( ((Creature*)creature)->getName() ), -1 );
+    return 1;
+  } else {
+    return sq_throwerror( vm, _SC( "Can't find userpointer." ) );
   }
-  cerr << "_getName, 3, top=" << sq_gettop( vm ) << endl;
-  sq_getinteger( vm, -1, &index );
-  sq_settop( vm, top );
-  cerr << "_getName, 4, top=" << sq_gettop( vm ) << endl;
-  cerr << "index=" << index << endl;
-
-
-
-
-  /*
-  Creature *creature = ( SqGame::partyToCreatureMap.find( object ) != 
-                         SqGame::partyToCreatureMap.end() ? 
-                         SqGame::partyToCreatureMap[ object ] :
-                         NULL );
-  sq_pushstring( vm, ( creature ? creature->getName() : "Null" ), -1 );
-  return 1;
-  */
-
-  sq_pushstring( vm, _SC( "Alamont" ), -1 );
-  return 1;
-
-  return 0;
 }
