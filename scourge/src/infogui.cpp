@@ -20,6 +20,8 @@
 #include "shapepalette.h"
 #include "rpg/rpglib.h"
 
+using namespace std;
+
 InfoGui::InfoGui(Scourge *scourge) {
   this->scourge = scourge;
 
@@ -131,7 +133,7 @@ void InfoGui::describe() {
     sprintf(tmp, "Speed: %d|", item->getSpeed());
     strcat( description, tmp );
   }
-  if( item->getDistance() > Constants::MIN_DISTANCE ) {
+  if( item->getDistance() > MIN_DISTANCE ) {
     sprintf(tmp, "Distance: %d|", item->getDistance());
     strcat( description, tmp );
   }

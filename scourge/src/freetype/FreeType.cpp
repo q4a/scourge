@@ -8,6 +8,8 @@
 //Include our header file.
 #include "FreeType.h"
 
+using namespace std;
+
 ///This function gets the first power of 2 >= the
 ///int that we pass it.
 inline int next_p2 ( int a )

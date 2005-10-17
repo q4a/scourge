@@ -22,8 +22,6 @@
 #include <vector>
 #include "render.h"
 
-using namespace std;
-
 /**
  * @author Gabor Torok
  * 
@@ -34,7 +32,7 @@ class Shape;
 
 class RenderedProjectile {
 protected:
-  static map<RenderedCreature*, vector<RenderedProjectile*>*> projectiles;
+  static std::map<RenderedCreature*, std::vector<RenderedProjectile*>*> projectiles;
   
  public:
    RenderedProjectile();
@@ -46,7 +44,7 @@ protected:
    virtual Shape *getShape() = 0;
    virtual RenderedCreature *getCreature() = 0;
 
-   inline static map<RenderedCreature *, vector<RenderedProjectile*>*> *getProjectileMap() { return &projectiles; }
+   inline static std::map<RenderedCreature *, std::vector<RenderedProjectile*>*> *getProjectileMap() { return &projectiles; }
    static void resetProjectiles();
    static void removeProjectile( RenderedProjectile *p );
 

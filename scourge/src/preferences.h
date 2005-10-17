@@ -21,8 +21,6 @@
 
 #include "constants.h"
 
-using namespace std;
-
 // All engine action that can be binded
 // If you change this, ALSO change ENGINE_ACTION_NAMES in userconfiguration.cpp
 // AND update ENGINE_ACTION_DEBUG_IND (first indice of invisible engine actions)

@@ -25,6 +25,8 @@
 #include "traindialog.h"
 #include "board.h"
 
+using namespace std;
+
 #define TRADE_WORD "trade"
 #define TRAIN_WORD "train"
 #define HEAL_WORD "heal"

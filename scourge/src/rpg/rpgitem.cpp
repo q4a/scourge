@@ -18,6 +18,8 @@
 #include "spell.h"
 #include "monster.h"
 
+using namespace std;
+
 
 /**
    These basic objects are enhanced by adding magical capabilities.

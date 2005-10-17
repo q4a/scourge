@@ -17,6 +17,8 @@
  
 #include "userconfiguration.h"
 
+using namespace std;
+
 #ifndef WIN32
 #include <sys/stat.h>
 #include <unistd.h>

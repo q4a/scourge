@@ -18,6 +18,8 @@
 #include "mainmenu.h"
 #include "render/renderlib.h"
 
+using namespace std;
+
 #define LOGO_DELTA 0.05f
 #define LOGO_ROT_POS 30.0f
 #define LOGO_ROT_NEG 0

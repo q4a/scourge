@@ -21,6 +21,8 @@
 #include "item.h"
 #include "creature.h"
 
+using namespace std;
+
 Sound::Sound(Preferences *preferences) {
   haveSound = false;
 

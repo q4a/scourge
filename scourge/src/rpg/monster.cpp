@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "monster.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

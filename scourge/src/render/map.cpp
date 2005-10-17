@@ -29,6 +29,8 @@
 #include "mapadapter.h"
 #include "../io/zipfile.h"
 
+using namespace std;
+
 #define MOUSE_ROT_DELTA 2
 
 #define ZOOM_DELTA 1.2f
@@ -498,14 +500,14 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       
       // remember the chunk's starting pos.
       float chunkPosX = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                chunkOffsetX) / GLShape::DIV;
+                                chunkOffsetX) / DIV;
       float chunkPosY = (float)((chunkY - chunkStartY) * MAP_UNIT + 
-                                chunkOffsetY) / GLShape::DIV;
+                                chunkOffsetY) / DIV;
       
       // frustum testing
       //frustum->CalculateFrustum();
       if(useFrustum && 
-         !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / GLShape::DIV)) 
+         !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / DIV)) 
         continue;
 
       // store this chunk
@@ -553,10 +555,10 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
             shape = floorPositions[posX][posY];
             if(shape) {
               xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                              xp + chunkOffsetX) / GLShape::DIV;
+                              xp + chunkOffsetX) / DIV;
               ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
                               shape->getDepth() +
-                              yp + chunkOffsetY) / GLShape::DIV;
+                              yp + chunkOffsetY) / DIV;
 
               if( water ) {
                 drawWaterPosition(posX, posY,
@@ -574,11 +576,11 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                  effect[posX][posY][zp] &&
                  !effect[posX][posY][zp]->isInDelay() ) {
                 xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                xp + chunkOffsetX) / GLShape::DIV;
+                                xp + chunkOffsetX) / DIV;
                 ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
                                 1 + 
-                                yp + chunkOffsetY) / GLShape::DIV;
-                zpos2 = (float)(zp) / GLShape::DIV;
+                                yp + chunkOffsetY) / DIV;
+                zpos2 = (float)(zp) / DIV;
 
                 setupPosition(posX, posY, zp,
                               xpos2, ypos2, zpos2,
@@ -607,11 +609,11 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                     if( debugMd2Shapes ) {
                       // debug
                       xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                      xp + chunkOffsetX) / GLShape::DIV;
+                                      xp + chunkOffsetX) / DIV;
                       ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
                                       shape->getDepth() + 
-                                      yp + chunkOffsetY) / GLShape::DIV;
-                      zpos2 = (float)(zp) / GLShape::DIV;
+                                      yp + chunkOffsetY) / DIV;
+                      zpos2 = (float)(zp) / DIV;
                       setupPosition(posX, posY, zp,
                                     xpos2, ypos2, zpos2,
                                     ((MD2Shape*)pos[posX][posY][zp]->shape)->getDebugShape(), 
@@ -620,27 +622,27 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                     }
 
 
-                    //xpos2 = (pos[posX][posY][zp]->creature->getX() - (GLfloat)getX()) / GLShape::DIV;
-                    //ypos2 = (pos[posX][posY][zp]->creature->getY() - (GLfloat)getY() - (GLfloat)(shape->getDepth())) / GLShape::DIV;
+                    //xpos2 = (pos[posX][posY][zp]->creature->getX() - (GLfloat)getX()) / DIV;
+                    //ypos2 = (pos[posX][posY][zp]->creature->getY() - (GLfloat)getY() - (GLfloat)(shape->getDepth())) / DIV;
 
                     float xdiff = ( pos[posX][posY][zp]->creature->getX() - (float)(toint(pos[posX][posY][zp]->creature->getX())));
                     float ydiff = ( pos[posX][posY][zp]->creature->getY() - (float)(toint(pos[posX][posY][zp]->creature->getY())));
                     xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                     xp + chunkOffsetX +
-                                    xdiff ) / GLShape::DIV;
+                                    xdiff ) / DIV;
                     ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
                                     shape->getDepth() + 
                                     yp + chunkOffsetY + 
-                                    ydiff ) / GLShape::DIV;
+                                    ydiff ) / DIV;
 
                   } else {
                     xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                    xp + chunkOffsetX) / GLShape::DIV;
+                                    xp + chunkOffsetX) / DIV;
                     ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
                                     shape->getDepth() + 
-                                    yp + chunkOffsetY) / GLShape::DIV;
+                                    yp + chunkOffsetY) / DIV;
                   }
-                  zpos2 = (float)(zp) / GLShape::DIV;
+                  zpos2 = (float)(zp) / DIV;
 
                   setupPosition(posX, posY, zp,
                                 xpos2, ypos2, zpos2,
@@ -685,8 +687,8 @@ void Map::drawWaterPosition(int posX, int posY,
   if( water.find( key ) != water.end() ) {
     glDisable( GL_CULL_FACE );
     
-    float sx = ( (float)MAP_UNIT / (float)WATER_TILE_X ) / GLShape::DIV;
-    float sy = ( (float)MAP_UNIT / (float)WATER_TILE_Y ) / GLShape::DIV;
+    float sx = ( (float)MAP_UNIT / (float)WATER_TILE_X ) / DIV;
+    float sy = ( (float)MAP_UNIT / (float)WATER_TILE_Y ) / DIV;
     
     int xp = 0;
     int yp = 0;
@@ -730,7 +732,7 @@ void Map::drawWaterPosition(int posX, int posY,
         }
 
         float zz = ( w ? w->z[xx][yy] : 0.0f );
-        float sz = ( WATER_HEIGHT + zz ) / GLShape::DIV;
+        float sz = ( WATER_HEIGHT + zz ) / DIV;
         glColor4f( 0.3f + ( zz / 30.0f ), 
                    0.25f + ( zz / 10.0f ), 
                    0.17f + ( zz / 15.0f ), 
@@ -949,9 +951,9 @@ void Map::draw() {
 
       later2.shape = shapes->findShapeByName("LAMP_BASE");
 
-      later2.xpos = ((float)(debugX - getX()) / GLShape::DIV);
-      later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
-      later2.zpos = (float)(debugZ) / GLShape::DIV;
+      later2.xpos = ((float)(debugX - getX()) / DIV);
+      later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / DIV);
+      later2.zpos = (float)(debugZ) / DIV;
 
       later2.item = NULL;
       later2.creature = NULL;
@@ -1166,13 +1168,13 @@ void Map::draw() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     // draw the starting position
-    float xpos2 = (float)( this->startx - getX() ) / GLShape::DIV;
-    float ypos2 = (float)( this->starty - getY() - 1 ) / GLShape::DIV;
-    float zpos2 = 0.0f / GLShape::DIV;
-    float w = 2.0f /  GLShape::DIV;
-    float h = 4.0f /  GLShape::DIV;
+    float xpos2 = (float)( this->startx - getX() ) / DIV;
+    float ypos2 = (float)( this->starty - getY() - 1 ) / DIV;
+    float zpos2 = 0.0f / DIV;
+    float w = 2.0f /  DIV;
+    float h = 4.0f /  DIV;
     if( useFrustum && 
-        frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / GLShape::DIV ) ) {
+        frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / DIV ) ) {
       for( int i = 0; i < 2; i++ ) {
         glPushMatrix();
         glTranslatef( xpos2, ypos2, zpos2 );
@@ -1226,14 +1228,14 @@ void Map::draw() {
 
     int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
     int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
-    float m = 0.5f / GLShape::DIV;
+    float m = 0.5f / DIV;
 
     for(int i = 0; i < chunkCount; i++) {
 
-      float n = (float)MAP_UNIT / GLShape::DIV;
+      float n = (float)MAP_UNIT / DIV;
       
       glPushMatrix();
-      glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f / GLShape::DIV ), 0 );
+      glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f / DIV ), 0 );
       
       if( chunks[i].cx == chunkX &&
           chunks[i].cy == chunkY ) {
@@ -1255,12 +1257,12 @@ void Map::draw() {
 
     glPushMatrix();
 
-    float xp = (float)(cursorFlatMapX - getX()) / GLShape::DIV;
-    float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / GLShape::DIV;
-    float cw = (float)cursorWidth / GLShape::DIV;
-    float cd = -(float)cursorDepth / GLShape::DIV;
-    m = ( cursorZ ? cursorZ : 0.5f ) / GLShape::DIV;
-    float ch = (float)( cursorHeight + cursorZ ) / GLShape::DIV;
+    float xp = (float)(cursorFlatMapX - getX()) / DIV;
+    float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / DIV;
+    float cw = (float)cursorWidth / DIV;
+    float cd = -(float)cursorDepth / DIV;
+    m = ( cursorZ ? cursorZ : 0.5f ) / DIV;
+    float ch = (float)( cursorHeight + cursorZ ) / DIV;
 
     float red = 1.0f;
     float green = 0.9f;
@@ -1405,10 +1407,10 @@ void Map::drawProjectiles() {
       RenderedProjectile *proj = *e;
 
       // draw it
-      dl.xpos = ((proj->getX() - (float)getX()) / GLShape::DIV);
-      //		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / GLShape::DIV);
-      dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / GLShape::DIV);
-      dl.zpos = (float)(7) / GLShape::DIV;
+      dl.xpos = ((proj->getX() - (float)getX()) / DIV);
+      //		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / DIV);
+      dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / DIV);
+      dl.zpos = (float)(7) / DIV;
       dl.shape = proj->getShape();
       dl.creature = NULL;
       dl.item = NULL;
@@ -1516,7 +1518,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   glPushMatrix();
   if(useShadow) {
       // put shadow above the floor a little
-      glTranslatef( xpos2, ypos2, 0.26f / GLShape::DIV);
+      glTranslatef( xpos2, ypos2, 0.26f / DIV);
       glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
@@ -1561,10 +1563,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   if(effect && later) {
     if(later->creature) {
       // translate hack for md2 models... see: md2shape::draw()
-      //glTranslatef( 0, -1 / GLShape::DIV, 0 );
+      //glTranslatef( 0, -1 / DIV, 0 );
       later->creature->getEffect()->draw(later->creature->getEffectType(),
                                          later->creature->getDamageEffect());
-      //glTranslatef( 0, 1 / GLShape::DIV, 0 );
+      //glTranslatef( 0, 1 / DIV, 0 );
     } else if(later->effect) {
       later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
@@ -1634,10 +1636,10 @@ bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
   // Initialize the scene w/o y rotation.
   initMapView(true);
   
-  double obj_x = (mapx - getX() + 1) / GLShape::DIV;
-  double obj_y = (mapy - getY() - 2) / GLShape::DIV;
+  double obj_x = (mapx - getX() + 1) / DIV;
+  double obj_y = (mapy - getY() - 2) / DIV;
   double obj_z = 0.0f;
-  //double obj_z = mapz / GLShape::DIV;
+  //double obj_z = mapz / DIV;
   double win_x, win_y, win_z;
   
   double projection[16];
@@ -1666,9 +1668,9 @@ bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
 
 /*
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
-  float xpos2 = ((float)(mapx - getX()) / GLShape::DIV);
-  float ypos2 = ((float)(mapy - getY()) / GLShape::DIV);
-  float zpos2 = (float)(mapz) / GLShape::DIV;
+  float xpos2 = ((float)(mapx - getX()) / DIV);
+  float ypos2 = ((float)(mapy - getY()) / DIV);
+  float zpos2 = (float)(mapz) / DIV;
   glTranslatef( xpos2, ypos2, zpos2 + 100);
 
   //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -1707,11 +1709,11 @@ void Map::initMapView( bool ignoreRot ) {
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   glTranslatef( 0, 0, this->zpos);  
 
-  //  float startx = -(((float)mapViewWidth + (mapx - (float)x)) / 2.0) / GLShape::DIV;
-  //  float starty = -(((float)mapViewDepth + (mapy - (float)y)) / 2.0) / GLShape::DIV;
-  float startx = -((float)mapViewWidth / 2.0 + (mapx - (float)x)) / GLShape::DIV;
-  float starty = -((float)mapViewDepth / 2.0 + (mapy - (float)y)) / GLShape::DIV;
-  //float startz = -(float)(MAP_VIEW_HEIGHT) / GLShape::DIV;
+  //  float startx = -(((float)mapViewWidth + (mapx - (float)x)) / 2.0) / DIV;
+  //  float starty = -(((float)mapViewDepth + (mapy - (float)y)) / 2.0) / DIV;
+  float startx = -((float)mapViewWidth / 2.0 + (mapx - (float)x)) / DIV;
+  float starty = -((float)mapViewDepth / 2.0 + (mapy - (float)y)) / DIV;
+  //float startz = -(float)(MAP_VIEW_HEIGHT) / DIV;
   float startz = 0.0;
 
   glTranslatef( startx, starty, startz );
@@ -3114,14 +3116,14 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   glDisable( GL_SCISSOR_TEST );
   
   if(res) {
-    //*mapx = levelMap->getX() + (Uint16)(((obj_x) * GLShape::DIV)) - 1;
-    //*mapy = levelMap->getY() + (Uint16)(((obj_y) * GLShape::DIV)) + 2;
+    //*mapx = levelMap->getX() + (Uint16)(((obj_x) * DIV)) - 1;
+    //*mapy = levelMap->getY() + (Uint16)(((obj_y) * DIV)) + 2;
 
-    *mapx = getX() + (Uint16)(((obj_x) * GLShape::DIV));
-    *mapy = getY() + (Uint16)(((obj_y) * GLShape::DIV));
+    *mapx = getX() + (Uint16)(((obj_x) * DIV));
+    *mapy = getY() + (Uint16)(((obj_y) * DIV));
 
     //*mapz = (Uint16)0;
-    //*mapz = (Uint16)(obj_z * GLShape::DIV);
+    //*mapz = (Uint16)(obj_z * DIV);
     debugX = *mapx;
     debugY = *mapy;
     debugZ = 0;

@@ -29,8 +29,6 @@
 #include "net/commands.h"
 #include "gameadapter.h"
 
-using namespace std;
-
 #ifdef HAVE_SDL_NET
 class Server;
 class Client;
@@ -65,8 +63,8 @@ private:
 #endif
   bool multiplayerGame;
   Mission *currentMission;
-  vector<Item*> newItems;
-  vector<Creature*> creatures;
+  std::vector<Item*> newItems;
+  std::vector<Creature*> creatures;
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);

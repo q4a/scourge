@@ -17,6 +17,8 @@
 
 #include "character.h"
 
+using namespace std;
+
 map<string, Character*> Character::character_class;
 map<string, Character*> Character::character_class_short;
 map<string, int> Character::character_index_short;

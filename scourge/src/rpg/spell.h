@@ -22,8 +22,6 @@
 #include <vector>
 #include "../constants.h"
 
-using namespace std;
-
 class Dice {
 private:
   char *s;
@@ -70,7 +68,7 @@ class Spell {
   bool friendly;
   int stateModPrereq;
 
-  static map<string, Spell*> spellMap;
+  static std::map<std::string, Spell*> spellMap;
 
  public:
 
@@ -126,12 +124,12 @@ class MagicSchool {
   char *deity;
   char deityDescription[3000];
   int skill, resistSkill;
-  vector<Spell*> spells;
-  vector<string> lowDonate, neutralDonate, highDonate;
+  std::vector<Spell*> spells;
+  std::vector<std::string> lowDonate, neutralDonate, highDonate;
 
   static MagicSchool *schools[10];
   static int schoolCount;
-  static map<string, MagicSchool*> schoolMap;
+  static std::map<std::string, MagicSchool*> schoolMap;
 
  public:
   MagicSchool(char *name, char *deity, int skill, int resistSkill);
@@ -151,7 +149,7 @@ class MagicSchool {
   inline static int getMagicSchoolCount() { return schoolCount; }
   inline static MagicSchool *getMagicSchool( int index ) { return schools[index]; }
   static Spell *getRandomSpell(int level);
-  static MagicSchool *getMagicSchoolByName( char *s ) { string name = s; return (schoolMap.find(name) == schoolMap.end() ? NULL : schoolMap[name]); }
+  static MagicSchool *getMagicSchoolByName( char *s ) { std::string name = s; return (schoolMap.find(name) == schoolMap.end() ? NULL : schoolMap[name]); }
 
   const char *getLowDonateMessage();
   const char *getNeutralDonateMessage();
@@ -159,7 +157,7 @@ class MagicSchool {
 
  protected:
   inline void addSpell( Spell *spell ) { spells.push_back( spell ); }
-  const char *getRandomString( vector<string> *v );
+  const char *getRandomString( std::vector<std::string> *v );
 };
 
 #endif

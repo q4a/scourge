@@ -28,8 +28,6 @@ class Spell;
 class Shape;
 class Session;
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */

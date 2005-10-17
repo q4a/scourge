@@ -20,6 +20,8 @@
 #include "rpg/rpglib.h"
 #include "render/renderlib.h"
 
+using namespace std;
+
 ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
   this->session = session;
   skillCount = 0;

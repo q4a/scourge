@@ -76,15 +76,15 @@ public:
   virtual inline void removeBattle(Battle *battle) {}
   virtual inline void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL) {}
   virtual inline void eraseMiniMapPoint(int x, int y) {}
-  virtual inline void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {}
-  virtual inline void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {}
+  virtual inline void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
+  virtual inline void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
   virtual inline void createParty( Creature **pc, int *partySize ) {}
   virtual inline void teleport( bool toHQ=true ) {}
   virtual inline int getCurrentDepth() { return 0; }
 
   // initialization status events
-  virtual inline void initStart(int statusCount, char *message) { cerr << message << endl; }
-  virtual inline void initUpdate(char *message) { cerr << message << endl; }
+  virtual inline void initStart(int statusCount, char *message) { std::cerr << message << std::endl; }
+  virtual inline void initUpdate(char *message) { std::cerr << message << std::endl; }
   virtual inline void initEnd() { }
   
   virtual inline bool isHeadless() { return true; }

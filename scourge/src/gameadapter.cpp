@@ -23,6 +23,8 @@
 #include "sound.h"
 #include "render/renderlib.h"
 
+using namespace std;
+
 GameAdapter::GameAdapter( Preferences *config ) {
   this->preferences = config;
 }

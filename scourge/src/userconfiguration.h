@@ -25,8 +25,6 @@
 #include "constants.h"
 #include "preferences.h"
 
-using namespace std;
-
 // set to non-zero for debugging
 #define DEBUG_USER_CONFIG 0  
 
@@ -43,22 +41,22 @@ private:
   bool configurationChanged; 
   
   // mappings to speed-up search processing
-  map<string, int> keyDownBindings;      // string keyName -> int ea
-  map<string, int> keyUpBindings;        // string keyName -> int ea
-  map<Uint8, int> mouseDownBindings;     // uint8 mouseButton -> int ea
-  map<Uint8, int> mouseUpBindings;       // uint8 mouseButton -> int ea 
-  map<string, int> engineActionUpNumber; // string ea -> int ea
-  map<string, int> engineActionNumber;   // string ea -> int ea
-  map<int, string> keyForEngineAction;   // int ea -> string keyName
-  map<int, string> engineActionName;     // int ea -> string ea  
+  std::map<std::string, int> keyDownBindings;      // string keyName -> int ea
+  std::map<std::string, int> keyUpBindings;        // string keyName -> int ea
+  std::map<Uint8, int> mouseDownBindings;     // uint8 mouseButton -> int ea
+  std::map<Uint8, int> mouseUpBindings;       // uint8 mouseButton -> int ea 
+  std::map<std::string, int> engineActionUpNumber; // string ea -> int ea
+  std::map<std::string, int> engineActionNumber;   // string ea -> int ea
+  std::map<int, std::string> keyForEngineAction;   // int ea -> string keyName
+  std::map<int, std::string> engineActionName;     // int ea -> string ea  
        
   // return next word from string or empty string
-  string getNextWord(const string theInput, int fromPos, int &endWord);
+  std::string getNextWord(const std::string theInput, int fromPos, int &endWord);
   
   // replace " " by "_" in a string
-  string replaceSpaces(string s);
+  std::string replaceSpaces(std::string s);
   
-  void writeFile(ofstream *fileOut, char *text);  
+  void writeFile(std::ofstream *fileOut, char *text);  
   
   // engine variables (video settings) 
   bool fullscreen;
@@ -175,16 +173,16 @@ private:
   void saveConfiguration(); 
   
   // Associate SDL events to an engine action    
-  void bind(string s1, string s2, int lineNumber);
+  void bind(std::string s1, std::string s2, int lineNumber);
   
   // Read in engine variables from file
-  void set (string s1, string s2, int lineNumber); 
+  void set(std::string s1, std::string s2, int lineNumber); 
   
   // returns the action to do for this event
   int getEngineAction(SDL_Event *event); 
   
   void parseCommandLine(int argc, char *argv[]);  
-  void setKeyForEngineAction(string keyName, int ea);
+  void setKeyForEngineAction(std::string keyName, int ea);
 
   inline int getStandAloneMode() { return standAloneMode; }
   inline char *getHost() { return host; }

@@ -17,6 +17,8 @@
 
 #include "sdlscreenview.h"
 
+using namespace std;
+
 SDLScreenView::SDLScreenView(){
 }
 SDLScreenView::~SDLScreenView(){

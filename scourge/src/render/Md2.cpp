@@ -13,6 +13,8 @@
 #include "Md2.h"
 #include <math.h>
 #include <string>
+
+using namespace std;
  
 // Initializes the md2 structures
 CLoadMD2::CLoadMD2()

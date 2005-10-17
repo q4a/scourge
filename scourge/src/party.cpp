@@ -21,6 +21,8 @@
 #include "item.h"
 #include "creature.h"
 
+using namespace std;
+
 Creature *Party::lastPlayer = NULL;
 
 //#define RANDOM_PARTY 1

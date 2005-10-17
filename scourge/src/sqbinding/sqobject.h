@@ -20,8 +20,6 @@
 
 #include "sqbinding.h"
 
-using namespace std;
-
 /**
  * The interface all squirrel objects implement.
  */

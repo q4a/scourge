@@ -22,6 +22,8 @@ tradedialog.cpp  -  description
 #include "rpg/rpglib.h"
 #include "render/renderlib.h"
 
+using namespace std;
+
 #define AVAILABLE_COINS "Available Coins:"
 #define TOTAL "Selected Total:"
 #define SELECTED_COINS "Selected Coins:"

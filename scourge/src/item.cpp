@@ -20,6 +20,8 @@
 #include "rpg/rpglib.h"
 #include "session.h"
 
+using namespace std;
+
 map<int, vector<string> *> Item::soundMap;
 
 Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
@@ -382,15 +384,15 @@ void Item::initItems(ShapePalette *shapePal) {
         }
         //cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
       }
-      if(distance < (int)Constants::MIN_DISTANCE) distance = (int)Constants::MIN_DISTANCE;
+      if(distance < (int)MIN_DISTANCE) distance = (int)MIN_DISTANCE;
       last = new RpgItem(itemCount++, strdup(name), level, rareness, type_index, 
                          weight, price, 100, 
                          action, speed, strdup(long_description), 
                          strdup(short_description), 
                          inventory_location, shape_index, 
                          twohanded, 
-                         (distance < (int)Constants::MIN_DISTANCE ? 
-                          (int)Constants::MIN_DISTANCE : distance), 
+                         (distance < (int)MIN_DISTANCE ? 
+                          (int)MIN_DISTANCE : distance), 
                          skill_index, minDepth, maxCharges, potion_skill, potionTime, 
                          tileX - 1, tileY - 1);
       GLShape *s = shapePal->findShapeByName(shape);
@@ -497,7 +499,7 @@ void Item::commonInit( bool loading ) {
     speed = rpgItem->getSpeedRpg();
   }
 
-  if( rpgItem->getDistanceRpg() > Constants::MIN_DISTANCE ) {
+  if( rpgItem->getDistanceRpg() > MIN_DISTANCE ) {
     distance = rpgItem->getDistanceRpg() + 
       (int)Util::getRandomSum( 2, level / 2 );
   } else distance = rpgItem->getDistanceRpg();

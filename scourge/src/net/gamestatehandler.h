@@ -3,8 +3,6 @@
 
 #include "../constants.h"
 
-using namespace std;
-
 class GameStateHandler {
  public:
   GameStateHandler();

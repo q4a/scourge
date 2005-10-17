@@ -4,10 +4,14 @@
 #include "../constants.h"
 #include "../persist.h"
 
-using namespace std;
-
 class CommandInterpreter {
  public:
+   CommandInterpreter() {
+   }
+
+   virtual ~CommandInterpreter() {
+   }
+
   virtual void chat(char *message) = 0;
   virtual void logout() = 0;
   virtual void ping(int frame) = 0;

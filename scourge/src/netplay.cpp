@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "netplay.h"
+
+using namespace std;
   
 NetPlay::NetPlay(Scourge *scourge) {
   this->scourge = scourge;

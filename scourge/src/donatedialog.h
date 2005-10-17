@@ -30,8 +30,6 @@ class Widget;
 class Button;
 class TextField;
 
-using namespace std;
-
 class DonateDialog {
 private:
   Scourge *scourge;

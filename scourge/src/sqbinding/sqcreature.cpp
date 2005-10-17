@@ -37,7 +37,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "getMaxMp", SqCreature::_getMaxMp, 0, 0 },
   { "getThirst", SqCreature::_getThirst, 0, 0 },
   { "getHunger", SqCreature::_getHunger, 0, 0 },
-  { "getSkill", SqCreature::_getSkill, 0, 0 },
+  { "getSkill", SqCreature::_getSkill, SQ_MATCHTYPEMASKSTRING, "xn" },
   { "getStateMod", SqCreature::_getStateMod, 0, 0 },
   { "getProtectedStateMod", SqCreature::_getProtectedStateMod, 0, 0 },
   { "getArmor", SqCreature::_getArmor, 0, 0 },
@@ -145,6 +145,7 @@ int SqCreature::_getHunger( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_getSkill( HSQUIRRELVM vm ) {
+  SqBinding::printArgs( vm );
   GET_OBJECT(Creature*)
     cerr << "FIXME: getSkill() need index." << endl;
   sq_pushinteger( vm, _SC( object->getSkill( 0 ) ) );

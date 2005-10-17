@@ -25,8 +25,6 @@
 #include "draganddrop.h"
 #include <vector>
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */
@@ -49,7 +47,7 @@ class ScrollingLabel : public Widget {
    static const int TEXT_SIZE = 3000;
   char text[ TEXT_SIZE ];
   int lineWidth;
-  vector<string> lines;
+  std::vector<std::string> lines;
 
   //  int count;
   //  const char **list;
@@ -73,7 +71,7 @@ class ScrollingLabel : public Widget {
   // GLuint highlight;
   bool canGetFocusVar;
 
-  map<char, Color> coloring;
+  std::map<char, Color> coloring;
 
   typedef struct _WordPos {
     int x, y, w, h;

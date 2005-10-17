@@ -29,6 +29,8 @@
 #include "Md2.h"
 #include "md2shape.h"
 
+using namespace std;
+
 //#define DEBUG_MD2 1
 
 MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,

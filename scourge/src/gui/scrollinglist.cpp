@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "scrollinglist.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

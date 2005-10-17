@@ -30,8 +30,6 @@
 class Scourge;
 //class Canvas;
 
-using namespace std;
-
 class MapWidget : public Canvas, WidgetView {
 private:
   Scourge *scourge;

@@ -22,8 +22,6 @@
 #include "widget.h"
 #include <map>
 
-using namespace std;
-
 class ShapePalette;
 
 /**
@@ -64,20 +62,20 @@ private:
   Color *selectionText;
   ThemeElement *selectedBorder;
 
-  static map<string, GuiTheme*> themes;
+  static std::map<std::string, GuiTheme*> themes;
 
 public: 
   GuiTheme( char *name );
-  ~GuiTheme();
+  virtual ~GuiTheme();
 
   static const char *DEFAULT_THEME;
 
   static void initThemes( ScourgeGui *scourgeGui );
   static inline GuiTheme *getThemeByName( const char *name ) { 
-	string s = name; 
+	std::string s = name; 
 	if( themes.find( s ) != themes.end() ) return themes[ s ]; 
 	else {
-	  cerr << "*** error: can't find theme: " << s << endl;
+	  std::cerr << "*** error: can't find theme: " << s << std::endl;
 	  return NULL; 
 	}
   }

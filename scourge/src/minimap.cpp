@@ -25,6 +25,8 @@
 #include "item.h"
 #include "creature.h"
 
+using namespace std;
+
 /*  
 How to enhance it ? (or what will be done soon)
 

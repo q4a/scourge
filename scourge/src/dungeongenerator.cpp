@@ -25,6 +25,8 @@
 #include "item.h"
 #include "creature.h"
 
+using namespace std;
+
 #define LOCKED_DOOR_RAND 8.0f
 
 #define FORCE_WATER 0

@@ -25,6 +25,8 @@
 #include "gui/scrollinglabel.h"
 #include "gui/scrollinglist.h"
 
+using namespace std;
+
 #define POINTS_AVAILABLE "Points Available:"
 #define COINS_AVAILABLE "Coins Available:"
 

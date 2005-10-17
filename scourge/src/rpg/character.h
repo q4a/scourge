@@ -23,8 +23,6 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */
@@ -35,11 +33,11 @@ private:
   int startingHp, startingMp, skill_bonus, level_progression;
   char description[3000];
   char *shortName;
-  map<int, int> maxSkill;
-  map<int, int> minSkill;
+  std::map<int, int> maxSkill;
+  std::map<int, int> minSkill;
 
 public:
-  map<int, vector<string>*> soundMap;
+  std::map<int, std::vector<std::string>*> soundMap;
 
   Character(char *name, int startingHp, int startingMp, int skill_bonus, int level_progression, char *shortName);
   ~Character();
@@ -56,14 +54,14 @@ public:
   void addSound(int type, char *file);
   const char *getRandomSound(int type);
 
-  static map<string, Character*> character_class;
-  static map<string, Character*> character_class_short;
-  static map<string, int> character_index_short;
-  static vector<Character*> character_list;
+  static std::map<std::string, Character*> character_class;
+  static std::map<std::string, Character*> character_class_short;
+  static std::map<std::string, int> character_index_short;
+  static std::vector<Character*> character_list;
   static void initCharacters();
-  static Character *getCharacterByName(char *p) { string s = p; return character_class[s]; }
-  static Character *getCharacterByShortName(char *p) { string s = p; return character_class_short[s]; }
-  static int getCharacterIndexByShortName(char *p) {  string s = p; return character_index_short[s]; }
+  static Character *getCharacterByName(char *p) { std::string s = p; return character_class[s]; }
+  static Character *getCharacterByShortName(char *p) { std::string s = p; return character_class_short[s]; }
+  static int getCharacterIndexByShortName(char *p) {  std::string s = p; return character_index_short[s]; }
   inline static Character *getRandomCharacter() { return character_list[(int)((float)character_list.size()*rand()/RAND_MAX)]; }
 
  protected:

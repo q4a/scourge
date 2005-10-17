@@ -25,8 +25,6 @@
 #include "session.h"
 #include "spellcaster.h"
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */
@@ -81,7 +79,7 @@ class Battle {
   /**
 	 This method sets up and creates battle turns (Battle objects) in order of initiative.
    */
-  static void setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns);
+  static void setupBattles(Session *session, Battle *battle[], int count, std::vector<Battle *> *turns);
 
   /**
 	 Call these when a projectile weapon finally hits.

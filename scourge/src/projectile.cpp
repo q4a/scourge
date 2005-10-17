@@ -22,6 +22,8 @@
 #include "item.h"
 #include "session.h"
 
+using namespace std;
+
 Uint32 Projectile::lastProjectileTick = 0;
 
 #define DELTA 1.0f

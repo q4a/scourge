@@ -18,6 +18,8 @@
 #include "glshape.h"
 #include "shapes.h"
 
+using namespace std;
+
 class Map;
 
 // poor man's dynamic lightmaps: shaded sides

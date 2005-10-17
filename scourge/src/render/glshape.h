@@ -22,7 +22,7 @@
 #include "shape.h"
 #include <vector>
 
-using namespace std;
+#define DIV 0.06f
 
 class WallTheme;
 
@@ -49,7 +49,7 @@ private:
   float xIconRot, yIconRot, zIconRot;
   GLuint displayListStart;
   bool initialized;
-  vector<GLShape*> variationShape;
+  std::vector<GLShape*> variationShape;
   int variationTextureIndex;
 
   struct surface *surfaces[5];
@@ -67,7 +67,6 @@ private:
   Uint32 color;
   
  public:
-  static const float DIV = 0.06f;
   static const int FRONT_SIDE = 0;
   static const int TOP_SIDE = 1;
   static const int LEFT_RIGHT_SIDE = 2;  

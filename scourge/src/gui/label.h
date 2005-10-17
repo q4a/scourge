@@ -22,8 +22,6 @@
 #include "widget.h"
 #include <vector>
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */
@@ -36,7 +34,7 @@ class Label : public Widget {
 	 int lineWidth;
      int fontType;
      int lineHeight;
-     vector<string> lines;
+     std::vector<std::string> lines;
      bool specialColor;
 
  public: 

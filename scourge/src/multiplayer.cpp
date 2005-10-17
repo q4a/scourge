@@ -20,6 +20,8 @@
 #include "rpg/rpglib.h"
 #include "creature.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

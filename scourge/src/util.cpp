@@ -18,6 +18,8 @@
 #include "util.h"
 #include "render/renderlib.h"
 
+using namespace std;
+
 #define MAX_CLOSED_NODES 50
 
 Util::Util(){

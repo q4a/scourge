@@ -22,8 +22,6 @@
 #include <map>
 #include "constants.h"
 
-using namespace std;
-
 // forward decl.
 class Map;
 class Creature;
@@ -136,11 +134,11 @@ private:
   int doorCount;
   int door[MAX_DOOR_COUNT][2];
 
-  vector<Item*> containers;
-  vector<int> containerX;
-  vector<int> containerY;
-  vector<int> teleporterX;
-  vector<int> teleporterY;
+  std::vector<Item*> containers;
+  std::vector<int> containerX;
+  std::vector<int> containerY;
+  std::vector<int> teleporterX;
+  std::vector<int> teleporterY;
 
   Uint32 start;
 

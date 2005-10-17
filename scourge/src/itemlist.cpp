@@ -23,6 +23,8 @@ itemlist.cpp  -  description
 #include "gui/scrollinglist.h"
 #include "gui/label.h"
 
+using namespace std;
+
 ItemList::ItemList( Scourge *scourge, Window *win, int x, int y, int width, int height, ItemRenderer *itemRenderer ) : 
 ScrollingList( x, y, width, height, scourge->getShapePalette()->getHighlightTexture(), NULL, 30 ) {
   this->scourge = scourge;

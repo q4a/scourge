@@ -4,8 +4,6 @@
 
 #include "../constants.h"
 
-using namespace std;
-
 // since broadcasting doesn't appear to work in SDL_net, this is disabled
 #define ENABLE_BROADCASTING 0
 

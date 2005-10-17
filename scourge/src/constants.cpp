@@ -17,6 +17,8 @@
 
 #include "constants.h"
 
+using namespace std;
+
 char Constants::inventory_location[][80] = {
   "head",
   "neck",

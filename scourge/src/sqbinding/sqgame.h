@@ -24,8 +24,6 @@
 
 class Creature;
 
-using namespace std;
-
 /**
  * The topmost squirrel object in the Scourge object hierarchy.
  */

@@ -23,6 +23,8 @@
 #include "item.h"
 #include "creature.h"
 
+using namespace std;
+
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
 map<string, int> Mission::conversations;

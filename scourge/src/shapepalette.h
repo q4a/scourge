@@ -24,8 +24,6 @@
 #include "constants.h"
 #include "render/shapes.h"
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */
@@ -48,18 +46,18 @@ private:
   int skillCount;
   //GLuint paper_doll_texture;
   GLuint gui_texture, gui_wood_texture, gui_texture2;
-  map<int, GLuint> statModIcons;
+  std::map<int, GLuint> statModIcons;
 
   Session *session;
   
-  vector<GLuint> portraitTextures;
+  std::vector<GLuint> portraitTextures;
   GLuint deathPortraitTexture;
   GLuint progressTexture, progressHighlightTexture;
 
   char aboutText[3000];
 
   GLuint mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
-  map<char, vector<MapGridLocation*>*> mapGridLocationByType;
+  std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
 
 public: 
   ShapePalette( Session *session );

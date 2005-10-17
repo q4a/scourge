@@ -24,8 +24,6 @@
 #include <string>
 #include <set>
 
-using namespace std;
-
 class RpgItem;
 class Monster;
 class Creature;
@@ -51,10 +49,10 @@ class NpcConversation {
     ~NpcConversation() {
     }
 
-    vector<string> npc_intros;
-    vector<string> npc_unknownPhrases;
-    map<string, int> npc_conversations;    
-    vector<string> npc_answers;    
+    std::vector<std::string> npc_intros;
+    std::vector<std::string> npc_unknownPhrases;
+    std::map<std::string, int> npc_conversations;    
+    std::vector<std::string> npc_answers;    
 };
 
 /**
@@ -64,14 +62,14 @@ class NpcInfo {
 public:
   int x, y, level, type;
   char *name;
-  set<int> subtype;
+  std::set<int> subtype;
   char *subtypeStr;
 
   NpcInfo( int x, int y, char *name, int level, char *type, char *subtype );
   ~NpcInfo();
 
   inline int isSubtype( int value ) { return( subtype.find( value ) != subtype.end() ); }
-  inline set<int> *getSubtype() { return &subtype; }
+  inline std::set<int> *getSubtype() { return &subtype; }
 };
 
 class Mission {
@@ -84,12 +82,12 @@ private:
   char description[2000];
   char success[2000];
   char failure[2000];
-  map<RpgItem*, bool> items;
-  vector<RpgItem*> itemList;
-  map<Monster*, bool> creatures;
-  vector<Monster*> creatureList;
-  map<Item*,RpgItem*> itemInstanceMap;
-  map<Creature*,Monster*> monsterInstanceMap;
+  std::map<RpgItem*, bool> items;
+  std::vector<RpgItem*> itemList;
+  std::map<Monster*, bool> creatures;
+  std::vector<Monster*> creatureList;
+  std::map<Item*,RpgItem*> itemInstanceMap;
+  std::map<Creature*,Monster*> monsterInstanceMap;
   bool completed;
   bool storyLine;
   // the mission's location on the map-grid
@@ -99,12 +97,12 @@ public:
 #define INTRO_PHRASE "_INTRO_"
 #define UNKNOWN_PHRASE "_UNKNOWN_"
 
-  static vector<string> intros;
-  static vector<string> unknownPhrases;
-  static map<string, int> conversations;
-  static vector<string> answers;
-  static map<Monster*,NpcConversation*> npcConversations;
-  static map<string, NpcInfo*> npcInfos;
+  static std::vector<std::string> intros;
+  static std::vector<std::string> unknownPhrases;
+  static std::map<std::string, int> conversations;
+  static std::vector<std::string> answers;
+  static std::map<Monster*,NpcConversation*> npcConversations;
+  static std::map<std::string, NpcInfo*> npcInfos;
 
   static char *getIntro();
   static char *getAnswer( char *keyphrase );
@@ -190,14 +188,14 @@ public:
  private:
    static FILE *openMapDataFile( const char *filename, const char *mode );
    static NpcInfo *getNpcInfo( int x, int y );
-   static string getNpcInfoKey( int x, int y );
+   static std::string getNpcInfoKey( int x, int y );
 
    void checkMissionCompleted();
    static int readConversationLine( FILE *fp, char *line, int n,
-                                    vector<string> *intros,
-                                    vector<string> *unknownPhrases,
-                                    map<string, int> *conversations,
-                                    vector<string> *answers );  
+                                    std::vector<std::string> *intros,
+                                    std::vector<std::string> *unknownPhrases,
+                                    std::map<std::string, int> *conversations,
+                                    std::vector<std::string> *answers );  
 };
 
 
@@ -216,8 +214,8 @@ public:
 private:
   void parseText( Session *session, int level, int depth,
                   char *text, char *parsedText,
-                  map<string, RpgItem*> *items, 
-                  map<string, Monster*> *creatures );
+                  std::map<std::string, RpgItem*> *items, 
+                  std::map<std::string, Monster*> *creatures );
 };
 
 
@@ -226,11 +224,11 @@ private:
 class Board	{								
  private:
   Session *session;
-  vector<MissionTemplate *> templates;
-  vector<Mission*> storylineMissions;
+  std::vector<MissionTemplate *> templates;
+  std::vector<Mission*> storylineMissions;
   int storylineIndex;
 
-  vector<Mission*> availableMissions;
+  std::vector<Mission*> availableMissions;
 
   char **missionText;
   Color *missionColor;

@@ -129,7 +129,7 @@ class Widget {
   virtual void drawButton( Widget *parent, int x, int y, int x2, int y2, 
                            bool toggle, bool selected, bool inverse, 
                            bool glowing, bool inside );
-  void breakText( char *text, int lineWidth, vector<string> *lines );
+  void breakText( char *text, int lineWidth, std::vector<std::string> *lines );
 };
 
 #endif

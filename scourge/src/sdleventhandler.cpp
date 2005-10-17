@@ -17,6 +17,8 @@
 
 #include "sdleventhandler.h"
 
+using namespace std;
+
 SDLEventHandler::SDLEventHandler(){
 }
 SDLEventHandler::~SDLEventHandler(){

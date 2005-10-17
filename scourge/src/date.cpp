@@ -17,6 +17,8 @@
 
 #include "date.h"
 
+using namespace std;
+
 int Date::dayInMonth[13] = {
     0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };

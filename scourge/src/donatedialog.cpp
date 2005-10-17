@@ -24,6 +24,8 @@
 #include "gui/textfield.h"
 #include "gui/scrollinglabel.h"
 
+using namespace std;
+
 #define COINS_AVAILABLE "Coins Available:"
 
 DonateDialog::DonateDialog( Scourge *scourge ) {

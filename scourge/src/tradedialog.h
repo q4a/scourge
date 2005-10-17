@@ -29,15 +29,13 @@ class Label;
 class Widget;
 class Item;
 
-using namespace std;
-
 class TradeDialog : public ItemRenderer {
 private:
   Scourge *scourge;
   Creature *creature;
   Window *win;
   int tradeA, tradeB;
-  map<Item*, int> prices;
+  std::map<Item*, int> prices;
   
   Label *labelA, *labelB;
   Label *totalA, *totalB;

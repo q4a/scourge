@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <strings.h>
 
+using namespace std;
+
 /**
  *@author Gabor Torok
  */

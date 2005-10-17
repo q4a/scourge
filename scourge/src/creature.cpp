@@ -25,6 +25,8 @@
 #include "events/statemodexpirationevent.h"
 #include "events/thirsthungerevent.h"
 
+using namespace std;
+
 #define MOVE_DELAY 7
 
 // at this fps, the players step 1 square                     
@@ -1662,8 +1664,8 @@ void Creature::decideMonsterAction() {
         for(int i = 0; i < getSpellCount(); i++) {
           Spell *spell = getSpell(i);
           if( spell->getMp() < getMp() && !( spell->isFriendly() ) ) {
-            if((spell->getDistance() == 1 && dist <= Constants::MIN_DISTANCE) ||
-               (spell->getDistance() > 1 && dist > Constants::MIN_DISTANCE)) {
+            if((spell->getDistance() == 1 && dist <= MIN_DISTANCE) ||
+               (spell->getDistance() > 1 && dist > MIN_DISTANCE)) {
               setAction(Constants::ACTION_CAST_SPELL, 
                         NULL,
                         spell);

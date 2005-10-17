@@ -29,8 +29,6 @@
   *@author Gabor Torok
   */
 
-using namespace std;
-  
 class Monster  {
 
  private:
@@ -50,23 +48,23 @@ class Monster  {
   bool npc;
   char *portrait;
   GLuint portraitTexture;
-  vector<RpgItem*> items;
-  vector<Spell*> spells;
-  map<string,int> skills;
+  std::vector<RpgItem*> items;
+  std::vector<Spell*> spells;
+  std::map<std::string,int> skills;
 
-  static map<int, vector<Monster*>* > monsters;
-  static map<int, vector<string>*>* currentSoundMap;
-  static vector<string> monsterTypes;
-  static vector<Monster*> npcs;
-  static map<string, string> modelToDescriptiveType;
+  static std::map<int, std::vector<Monster*>* > monsters;
+  static std::map<int, std::vector<std::string>*>* currentSoundMap;
+  static std::vector<std::string> monsterTypes;
+  static std::vector<Monster*> npcs;
+  static std::map<std::string, std::string> modelToDescriptiveType;
 
 public:
   Monster(char *type, char *descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait);
   ~Monster();
 
-  static map<string, map<int, vector<string>*>*> soundMap;
-  static map<string, Monster*> npcPos;
-  static map<string, Monster*> monstersByName;  
+  static std::map<std::string, std::map<int, std::vector<std::string>*>*> soundMap;
+  static std::map<std::string, Monster*> npcPos;
+  static std::map<std::string, Monster*> monstersByName;  
 
   inline float getScale() { return scale; }
   inline int getBaseArmor() { return baseArmor; }
@@ -74,7 +72,7 @@ public:
   inline int getSpeed() { return speed; }
   inline char *getType() { return type; };
   inline static char *getDescriptiveType( char *modelName ) {
-    string modelStr = modelName;
+    std::string modelStr = modelName;
     if( modelToDescriptiveType.find( modelStr ) == modelToDescriptiveType.end() ) 
       return NULL;
     else return (char*)( modelToDescriptiveType[ modelStr ].c_str() );
@@ -101,7 +99,7 @@ public:
   static void initMonsters();
   static Monster *getRandomMonster(int level);
   static Monster *getMonsterByName(char *name);  
-  static map<int, vector<string>*>* getSoundMap( char *monsterType );
+  static std::map<int, std::vector<std::string>*>* getSoundMap( char *monsterType );
 
   /**
    * Finds the index of a monster or a monster by an index:
@@ -116,11 +114,11 @@ public:
   static const Monster *getRandomNpc();
 
  protected:
-  static void addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap );
+  static void addMd2Sounds( char *model_name, std::map<int, std::vector<std::string>*>* currentSoundMap );
   /**
    * add a coma-delimited list of sound files
    */
-  static void addSound( int type, char *line, map<int, vector<string>*>* currentSoundMap );
+  static void addSound( int type, char *line, std::map<int, std::vector<std::string>*>* currentSoundMap );
 
 };
 

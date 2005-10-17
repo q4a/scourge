@@ -75,8 +75,6 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #   include <sys/stat.h>
 #endif
 
-using namespace std;
-
 #ifdef WIN32
 #define SEPARATOR '\\'
 #else
@@ -258,6 +256,8 @@ typedef struct _ParticleStruct {
 #define MAX_CONTAINED_ITEMS 100
 
 #define MAX_LEVEL 100
+
+#define MIN_DISTANCE 1.0f
 
 class StatusReport {
 public:
@@ -526,7 +526,7 @@ public:
   static const char *STATE_NAMES[];
   // return -1 on failure, 0+ on success
   static int getStateModByName( const char *p );
-  static vector<int> goodStateMod, badStateMod;
+  static std::vector<int> goodStateMod, badStateMod;
   static int getRandomGoodStateMod();
   static int getRandomBadStateMod();
   static bool isStateModTransitionWanted(int mod, bool setting);
@@ -645,8 +645,6 @@ public:
 
   // the speed when hand fighting is used instead of a weapon
   static const int HAND_WEAPON_SPEED = 10;
-
-  static const float MIN_DISTANCE = 1.0f;
 
   Constants();
   ~Constants();
@@ -776,9 +774,9 @@ struct t3DModel
     float movex;                        // Needed to draw the model
     float movey;
     float movez;
-    vector<tAnimationInfo> pAnimations; // The list of animations 
-    vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)    
-    vector<t3DObject> pObject;          // The object list for our model (frames)
+    std::vector<tAnimationInfo> pAnimations; // The list of animations 
+    std::vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)    
+    std::vector<t3DObject> pObject;          // The object list for our model (frames)
     vect3d *vertices;                   // All vertices for every frame of the model
     int numVertices;                    // The number of vertices (constant for each frame)
     int *pGlCommands;                   // The glCommands used to draw the model faster

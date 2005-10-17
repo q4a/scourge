@@ -25,8 +25,6 @@ class Shape;
 class Location;
 class RenderedItem;
 
-using namespace std;
-
 class MapAdapter {
 public:
   MapAdapter();

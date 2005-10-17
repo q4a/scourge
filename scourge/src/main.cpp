@@ -22,6 +22,8 @@
 #include "session.h"
 #include "scourge.h"
 
+using namespace std;
+
 GameAdapter *createGameAdapter(UserConfiguration *config) {
   GameAdapter *adapter;
   if(config->getStandAloneMode() == UserConfiguration::SERVER) {
