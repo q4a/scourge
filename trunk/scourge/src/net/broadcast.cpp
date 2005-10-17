@@ -1,6 +1,8 @@
 #ifdef HAVE_SDL_NET
 #include "broadcast.h"
 
+using namespace std;
+
 #define SIGNAL_PREFIX "SCOURGE,"
 
 Broadcast::Broadcast(int serverPort) {

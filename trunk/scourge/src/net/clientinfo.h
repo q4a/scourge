@@ -37,8 +37,8 @@ class ClientInfo : public CommandInterpreter {
   bool threadRunning;
   SDL_Thread *thread;
   SDL_mutex *mutex;
-  queue<Message*> messageQueue;
-  map<int,Uint32> lagMap;
+  std::queue<Message*> messageQueue;
+  std::map<int,Uint32> lagMap;
   Commands *commands;
   CreatureInfo* characterInfo;
   
@@ -74,7 +74,7 @@ class ClientInfo : public CommandInterpreter {
   inline SDL_mutex *getMutex() { return mutex; }
   inline TCPsocket getSocket() { return socket; }
   inline bool isThreadRunning() { return threadRunning && !dead; }
-  inline queue<Message*> *getMessageQueue() { return &messageQueue; }
+  inline std::queue<Message*> *getMessageQueue() { return &messageQueue; }
   inline Commands *getCommands() { return commands; }
 };
 

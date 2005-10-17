@@ -1,6 +1,8 @@
 #ifdef HAVE_SDL_NET
 #include "clientinfo.h"
 
+using namespace std;
+
 #define DEBUG_CLIENT_INFO 0
 
 ClientInfo::ClientInfo(Server *server, TCPsocket socket, int id, char *username) {
