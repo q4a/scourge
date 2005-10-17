@@ -16,8 +16,6 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
-
 //This holds all of the information related to any
 //freetype font that we want to create.  
 struct freetype_font_data {

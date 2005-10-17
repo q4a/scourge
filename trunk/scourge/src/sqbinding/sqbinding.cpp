@@ -23,6 +23,8 @@
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
 
+using namespace std;
+
 #ifdef SQUNICODE
 #define scvprintf vswprintf
 #else
@@ -234,7 +236,7 @@ bool SqBinding::instantiateClass( const SQChar *classname,
                                   HSQOBJECT *obj 
                                   //,SQRELEASEHOOK hook 
                                   ) {
-  SQUserPointer ud;
+  SQUserPointer ud = NULL;
   int oldtop = sq_gettop( vm );
   sq_pushroottable( vm );
   sq_pushstring( vm, classname, -1 );
@@ -317,5 +319,53 @@ bool SqBinding::getObjectValue( HSQUIRRELVM vm, const char *key, void **ptr ) {
   }
   sq_settop( vm, top );
   return ret;
+}
+
+void SqBinding::printArgs( HSQUIRRELVM v ) {
+  SQInteger nargs = sq_gettop(v); //number of arguments
+  for(SQInteger n=1;n<=nargs;n++) {
+    printf("arg %d is ",n);
+    switch(sq_gettype(v,n)) {
+    case OT_NULL:
+    printf("null");        
+    break;
+    case OT_INTEGER:
+    printf("integer");
+    break;
+    case OT_FLOAT:
+    printf("float");
+    break;
+    case OT_STRING:
+    printf("string");
+    break;    
+    case OT_TABLE:
+    printf("table");
+    break;
+    case OT_ARRAY:
+    printf("array");
+    break;
+    case OT_USERDATA:
+    printf("userdata");
+    break;
+    case OT_CLOSURE:        
+    printf("closure(function)");    
+    break;
+    case OT_NATIVECLOSURE:
+    printf("native closure(C function)");
+    break;
+    case OT_GENERATOR:
+    printf("generator");
+    break;
+    case OT_USERPOINTER:
+    printf("userpointer");
+    break;
+    case OT_INSTANCE:
+    printf( "object instance" );
+    break;
+    default:
+    cerr << "invalid param" << endl; //throws an exception
+    }
+  }
+  printf("\n");
 }
 

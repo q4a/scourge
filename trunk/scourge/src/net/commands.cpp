@@ -1,5 +1,7 @@
 #include "commands.h"
 
+using namespace std;                         
+                         
 Commands::Commands(CommandInterpreter *ci) {
   this->ci = ci;
   this->lastGameFrameReceived = 0;

@@ -30,6 +30,12 @@ class Widget;
  */
 class ScourgeGui {
 public:
+  ScourgeGui() {
+  }
+
+  virtual ~ScourgeGui() {
+  }
+
   virtual void playSound( const char *file ) = 0;
   virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) = 0;
   virtual int textWidth( const char *fmt, ... ) = 0;

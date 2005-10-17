@@ -19,6 +19,8 @@
 #include "window.h"
 #include "guitheme.h"
 
+using namespace std;
+
 #define TOOLTIP_DELAY 500
 
 /**

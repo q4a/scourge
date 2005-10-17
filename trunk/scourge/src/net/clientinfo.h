@@ -9,8 +9,6 @@
 #include "tcputil.h"
 #include "commands.h"
 
-using namespace std;
-
 int clientInfoLoop(void *data);
 
 class Server;

@@ -52,8 +52,6 @@
 #include "gui/scrollinglabel.h"
 #include "sqbinding/consoleprinter.h"
 
-using namespace std;
-
 class Item;
 class Creature;
 class Calendar;
@@ -180,7 +178,7 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
 
   bool teleporting;
   
-  vector<Battle *> battleRound;
+  std::vector<Battle *> battleRound;
   int battleTurn, rtStartTurn;
 
   Creature *targetSelectionFor;
@@ -227,7 +225,7 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   GLUquadric *quadric;
 
   bool needToCheckInfo;
-  map<InfoMessage *, Uint32> infos;
+  std::map<InfoMessage *, Uint32> infos;
   
   TradeDialog *tradeDialog;
   HealDialog *healDialog;
@@ -586,8 +584,8 @@ public:
 
   GLuint getCursorTexture( int cursorMode );
 
-  void loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
-  void unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap );
+  void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
+  void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
 
   void fightProjectileHitTurn(Projectile *proj, RenderedCreature *creature);
 

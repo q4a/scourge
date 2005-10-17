@@ -21,8 +21,6 @@
 #include "sqbinding.h"
 #include "sqobject.h"
 
-using namespace std;
-
 /**
  * The topmost squirrel object in the Scourge object hierarchy.
  */

@@ -37,8 +37,6 @@
 #include "glshape.h"
 #include "3ds.h"
 
-using namespace std;
-
 class Shapes;
 
 typedef unsigned char BYTE;

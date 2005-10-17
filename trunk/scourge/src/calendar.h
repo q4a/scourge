@@ -46,7 +46,7 @@ class Calendar {
   GLint lastTick; 
   bool timeFrozen; 
   
-  vector<Event*> scheduledEvents;  
+  std::vector<Event*> scheduledEvents;  
   
  public:
  

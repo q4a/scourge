@@ -23,8 +23,6 @@
 #include <vector>
 #include <map>
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */
@@ -87,8 +85,8 @@ class WallTheme {
   char textures[THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH]; // holds the text of a theme
   GLuint textureGroup[THEME_REF_COUNT][MAX_TEXTURE_COUNT];
   int faceCount[THEME_REF_COUNT];
-  map<string,GLuint> loadedTextures;
-  map<string,int> themeRefMap;
+  std::map<std::string,GLuint> loadedTextures;
+  std::map<std::string,int> themeRefMap;
   GLfloat r[MULTI_TEX_COUNT], g[MULTI_TEX_COUNT], b[MULTI_TEX_COUNT], intensity[MULTI_TEX_COUNT];
   bool smooth[MULTI_TEX_COUNT];
   Shapes *shapePal;
@@ -102,11 +100,11 @@ class WallTheme {
   inline bool isSpecial() { return special; }
 
   inline void setFaceCount( int themeRef, int value ) { faceCount[ themeRef ] = value; }
-  int getFaceCount( string themeRefName );
+  int getFaceCount( std::string themeRefName );
 
   inline void addTextureName(int themeRef, int face, const char *name) { 
     if( themeRef < 0 || themeRef > THEME_REF_COUNT ) {
-      cerr << "*** Error: theme ref is out of bounds: theme=" << getName() << endl;
+      std::cerr << "*** Error: theme ref is out of bounds: theme=" << getName() << std::endl;
     } else {
       strncpy( textures[themeRef][face], name, NAME_LENGTH - 1 ); 
       textures[themeRef][face][NAME_LENGTH - 1] = '\0';
@@ -130,7 +128,7 @@ class WallTheme {
   inline GLfloat getMultiTexInt( int index ) { return intensity[index]; }
   inline bool getMultiTexSmooth( int index ) { return smooth[index]; }
 
-  GLuint *getTextureGroup( string themeRefName );
+  GLuint *getTextureGroup( std::string themeRefName );
   inline char *getName() { return name; }
   void load();
   void unload();
@@ -148,7 +146,7 @@ class Shapes {
 protected:
   bool headless;
   GLShape *shapes[256];
-  map<string, GLShape *> shapeMap;
+  std::map<std::string, GLShape *> shapeMap;
   int shapeCount;
   
   typedef struct _Texture {
@@ -172,25 +170,25 @@ protected:
   const static Sint16 wallHeight = MAP_WALL_HEIGHT;
 
   // shape descriptions
-  vector<vector<string>*> descriptions;
+  std::vector<std::vector<std::string>*> descriptions;
 
   // temp. shape data
-  vector<ShapeValues*> shapeValueVector;
+  std::vector<ShapeValues*> shapeValueVector;
 
   // md2 data
-  map<string, Md2ModelInfo*> old_creature_models; 
-  map<string, GLuint> creature_skins;
-  map<GLuint, int> loaded_skins;
-  map<string, Md2ModelInfo*> creature_models;
-  map<Md2ModelInfo*, int> loaded_models;
-  vector<CharacterModelInfo*> character_models;
+  std::map<std::string, Md2ModelInfo*> old_creature_models; 
+  std::map<std::string, GLuint> creature_skins;
+  std::map<GLuint, int> loaded_skins;
+  std::map<std::string, Md2ModelInfo*> creature_models;
+  std::map<Md2ModelInfo*, int> loaded_models;
+  std::vector<CharacterModelInfo*> character_models;
 
   WallTheme *themes[100];
   WallTheme *allThemes[100];
   int themeCount, allThemeCount;
   WallTheme *currentTheme;
-  vector<GLShape*> themeShapes;
-  vector<string> themeShapeRef;
+  std::vector<GLShape*> themeShapes;
+  std::vector<std::string> themeShapeRef;
 
   // cursor
   SDL_Surface *cursor, *crosshair, *attackCursor, *talkCursor, *useCursor;
@@ -227,7 +225,7 @@ public:
   inline GLShape *getShape(int index) { return shapes[index]; }
   inline int getShapeCount() { return shapeCount; }
 
-  inline map<string, GLShape *> *getShapeMap() { return &shapeMap; }
+  inline std::map<std::string, GLShape *> *getShapeMap() { return &shapeMap; }
 
   inline Sint16 getUnitSide() { return unitSide; }
   inline Sint16 getUnitOffset() { return unitOffset; }

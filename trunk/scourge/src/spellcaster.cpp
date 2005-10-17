@@ -26,6 +26,8 @@
 #include "rpg/rpglib.h"
 #include "projectile.h"
 
+using namespace std;
+
 /*
   In the future we can employ something more sophisticated than these if structures...
  */

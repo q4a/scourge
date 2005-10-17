@@ -28,8 +28,6 @@ class Item;
 class Window;
 class Label;
 
-using namespace std;
-
 /**
 Add arbitrary rendering to displaying items in the list. For example, the trade 
  dialog displays the item's price next to the name.
@@ -57,8 +55,8 @@ private:
   Item *container;
   Window *win;
   ItemRenderer *itemRenderer;
-  set<int> *filter;
-  vector<Item*> items;
+  std::set<int> *filter;
+  std::vector<Item*> items;
   
 	char **name;
 	Color *color;
@@ -68,9 +66,9 @@ public:
   ItemList( Scourge *scourge, Window *win, int x, int y, int width, int height, ItemRenderer *itemRenderer = NULL );
   ~ItemList();
   
-  void setCreature( Creature *creature, set<int> *filter = NULL );
+  void setCreature( Creature *creature, std::set<int> *filter = NULL );
   inline Creature *getCreature() { return creature; }
-  void setContainer( Item *container, set<int> *filter = NULL );
+  void setContainer( Item *container, std::set<int> *filter = NULL );
   inline Item *getContainer() { return container; }
   
   char *getName();

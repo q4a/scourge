@@ -27,6 +27,7 @@
 #include <string.h>
 #include "text.h"
 
+using namespace std;
 
 TexturedText::TexturedText() {
     useLuminanceAlpha = 0;

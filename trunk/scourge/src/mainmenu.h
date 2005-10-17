@@ -39,8 +39,6 @@ class Creature;
 class Scourge;
 class PartyEditor;
 
-using namespace std;
-
 typedef struct _MenuItemParticle {
   int life;
   float x, y;
@@ -109,7 +107,7 @@ private:
 
   static const char *menuText[];
   static const int values[];
-  vector< MenuItem* > menuItemList;
+  std::vector< MenuItem* > menuItemList;
   
 public:
 #define NEW_GAME 1

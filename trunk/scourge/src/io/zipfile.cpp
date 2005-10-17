@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "zipfile.h"
 
+using namespace std;
+
 //#define DEBUG_ZIP 1
 
 #ifdef DEBUG_ZIP  

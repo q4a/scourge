@@ -28,6 +28,8 @@
 #include "session.h"
 #include "party.h"
 
+using namespace std;
+
 //#define DEBUG_MOUSE_FOCUS 1
 
 bool SDLHandler::stencilBufferUsed = false;
@@ -740,9 +742,9 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
                               char *message) {
 /*
   InfoMessage *message = i->first;
-  xpos2 = ((float)(message->x - levelMap->getX()) / GLShape::DIV);
-  ypos2 = ((float)(message->y - levelMap->getY()) / GLShape::DIV);
-  zpos2 = ((float)(message->z) / GLShape::DIV);
+  xpos2 = ((float)(message->x - levelMap->getX()) / DIV);
+  ypos2 = ((float)(message->y - levelMap->getY()) / DIV);
+  zpos2 = ((float)(message->z) / DIV);
 */  
   
   glPushMatrix();

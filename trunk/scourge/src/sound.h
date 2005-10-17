@@ -24,15 +24,13 @@
 #include "gui/window.h"
 #include "userconfiguration.h"
 
-using namespace std;
-
 class Sound {
 private:
   bool haveSound;
 #ifdef HAVE_SDL_MIXER
   Mix_Music *menuMusic;
   Mix_Music *dungeonMusic;
-  map<string, Mix_Chunk*> soundMap;
+  std::map<std::string, Mix_Chunk*> soundMap;
 #endif
 
 public:
@@ -64,9 +62,9 @@ public:
   }
 
   void loadSounds(Preferences *preferences);
-  void loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
+  void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m, 
 						  Preferences *preferences );
-  void unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m );
+  void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );
 
   void storeSound(int type, const char *file);
   void unloadSound( int type, const char *file );

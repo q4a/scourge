@@ -23,8 +23,6 @@
 #include "../constants.h"
 #include "character.h"
 
-using namespace std;
-
 /*
  * Remember to change isWeaponItem=, getRandomEnchantableItem, 
  * getRandomItem, getRandomContainer, getRandomContainerNS
@@ -110,10 +108,10 @@ class RpgItem {
   bool isWeaponItem;
   int iconTileX, iconTileY;
 
-  static map<int, map<int, vector<const RpgItem*>*>*> typesMap;
-  static map<string, const RpgItem *> itemsByName;
-  static vector<RpgItem*> containers;
-  static vector<RpgItem*> containersNS;
+  static std::map<int, std::map<int, std::vector<const RpgItem*>*>*> typesMap;
+  static std::map<std::string, const RpgItem *> itemsByName;
+  static std::vector<RpgItem*> containers;
+  static std::vector<RpgItem*> containersNS;
 
  public:
 
@@ -202,7 +200,7 @@ class RpgItem {
   static int getTypeByName(char *name);
   static void addItem(RpgItem *item, int width, int depth, int height);
   static RpgItem *getItemByName(char *name);
-  inline static map<string, const RpgItem *> *getItemMap() { return &itemsByName; }
+  inline static std::map<std::string, const RpgItem *> *getItemMap() { return &itemsByName; }
   
 };
 

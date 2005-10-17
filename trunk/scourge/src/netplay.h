@@ -24,8 +24,6 @@
 #include "net/gamestatehandler.h"
 #include "net/commands.h"
 
-using namespace std;
-
 
 /** 
   @author Gabor Torok

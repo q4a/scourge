@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "cardcontainer.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

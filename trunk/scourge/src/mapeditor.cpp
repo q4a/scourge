@@ -25,6 +25,8 @@
 #include "item.h"
 #include "creature.h"
 
+using namespace std;
+
 char *floorTypeName[80] = { 
   "FLOOR_TILE",
   "ROOM_FLOOR_TILE"
@@ -1135,7 +1137,7 @@ bool MapEditor::isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name
   if( mapx >= 0 && mapx < MAP_WIDTH &&
       mapy >= 0 && mapy < MAP_DEPTH &&
       mapz >= 0 && mapz < MAP_VIEW_HEIGHT ) {
-    Location *pos = pos = scourge->getMap()->getLocation( mapx, mapy, mapz );
+    Location *pos = scourge->getMap()->getLocation( mapx, mapy, mapz );
 //    cerr << " found=" << ( !pos ? "NULL" : pos->shape->getName() ) << endl;
     return( pos && !strcmp( pos->shape->getName(), name ) );
   } else {

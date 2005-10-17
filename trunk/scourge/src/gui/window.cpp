@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "window.h"
 
+using namespace std;
+
 #define OPEN_STEPS 10
 
 const char Window::ROLL_OVER_SOUND[80] = "sound/ui/roll.wav";

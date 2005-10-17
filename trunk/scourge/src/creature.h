@@ -32,8 +32,6 @@
 #include "date.h"
 #include "render/renderedcreature.h"
 
-using namespace std;
-
 class Map;
 class Session;
 class Effect;
@@ -78,14 +76,14 @@ class Creature : public RenderedCreature {
   int selX, selY;
   int proposedX, proposedY, proposedPathIndex;
   int bestPathPos;
-  vector<Location> bestPath;
-  vector<Location> proposedPath;
+  std::vector<Location> bestPath;
+  std::vector<Location> proposedPath;
   Creature *targetCreature;
   int targetX, targetY, targetZ;
   Item *targetItem;
   Sint16 cornerX, cornerY;
   bool arrived; // true if no particular destination set for this creature
-  map<int, Event*> stateModEventMap;
+  std::map<int, Event*> stateModEventMap;
   GLfloat angle, wantedAngle, angleStep;
   int portraitTextureIndex;
   
@@ -113,7 +111,7 @@ class Creature : public RenderedCreature {
   static const int MAX_MOVE_RETRY = 15;
   int lastTurn;
 
-  vector<Spell*> spells;
+  std::vector<Spell*> spells;
   int action;
   Item *actionItem;
   Spell *actionSpell;
@@ -162,10 +160,10 @@ class Creature : public RenderedCreature {
   inline void setPortraitTextureIndex( int n ) { this->portraitTextureIndex = n; }
   inline int getPortraitTextureIndex() { return portraitTextureIndex; }
 
-  inline vector<Location> *getPath() { return &bestPath; }
+  inline std::vector<Location> *getPath() { return &bestPath; }
   inline int getPathIndex() { return bestPathPos; }
 
-  inline vector<Location> *getProposedPath() { return &proposedPath; }
+  inline std::vector<Location> *getProposedPath() { return &proposedPath; }
   inline int getProposedPathIndex() { return proposedPathIndex; }
   inline int getProposedX() { return proposedX; }
   inline int getProposedY() { return proposedY; }

@@ -18,6 +18,8 @@
 #include "optionsmenu.h"
 #include "sound.h" 
 
+using namespace std;
+
 #define XPOS 10
 #define SPACING 18
 #define MINOR_SPACING 4

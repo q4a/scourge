@@ -29,6 +29,8 @@
 #include "creature.h"
 #include "tradedialog.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

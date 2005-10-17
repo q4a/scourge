@@ -34,7 +34,7 @@ class MultipleLabel : public Widget {
  private:
   int x2, y2;
   int dynWidth;
-  vector<char *> vText;
+  std::vector<char *> vText;
   Label *staticLabel;
   Label *dynamicLabel;
   bool inside;

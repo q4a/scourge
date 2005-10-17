@@ -41,8 +41,6 @@ class Item;
 class Monster;
 class GLShape;
 
-using namespace std;
-
 class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
   Scourge *scourge;
@@ -64,7 +62,7 @@ private:
   Button *startPosButton;
   Button *floorType;
   Button *mapButton;
-  vector<Button *> toggleButtonList;
+  std::vector<Button *> toggleButtonList;
                                                                                              
   TextField *nameText;
   Button *loadButton, *saveButton;
@@ -84,7 +82,7 @@ private:
   ScrollingList *shapeList, *itemList, *creatureList;
   char **shapeNames, **itemNames, **creatureNames;
 
-  map<Monster*,GLShape*> creatureOutlines;
+  std::map<Monster*,GLShape*> creatureOutlines;
   
 public:
 

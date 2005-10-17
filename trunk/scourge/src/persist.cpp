@@ -18,6 +18,8 @@
 #include "render/renderlib.h"
 #include "io/file.h"
 
+using namespace std;
+
 LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   LocationInfo *info = (LocationInfo*)malloc( sizeof( LocationInfo ) );
 

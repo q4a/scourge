@@ -22,6 +22,8 @@
 #include "projectile.h"
 #include "creature.h"
 
+using namespace std;
+
 #define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
 #define WEAPON_WAIT_MUL 5
@@ -235,7 +237,7 @@ void Battle::initTurnStep() {
   if(weaponWait <= 0) {
     if(debugBattle) cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
     if(creature->getActionSpell()) {
-      range = Constants::MIN_DISTANCE;
+      range = MIN_DISTANCE;
       range = creature->getActionSpell()->getDistance();
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = creature->getActionSpell()->getSpeed() * WEAPON_WAIT_MUL;
@@ -243,7 +245,7 @@ void Battle::initTurnStep() {
       if(debugBattle) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
       item = creature->getBestWeapon(dist);
-      range = Constants::MIN_DISTANCE;
+      range = MIN_DISTANCE;
       if(item) range = item->getDistance();
       if(item) {
         if(debugBattle) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;

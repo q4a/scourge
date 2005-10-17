@@ -24,8 +24,6 @@
 #include "calendar.h"
 #include "events/thirsthungerevent.h"
 
-using namespace std;
-
 class Session;
 class Creature;
 class Item;

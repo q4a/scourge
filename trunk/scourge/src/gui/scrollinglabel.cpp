@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "scrollinglabel.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

@@ -10,8 +10,6 @@
 #include "testgamestatehandler.h"
 #include "broadcast.h"
 
-using namespace std;
-
 int serverLoop(void *data);
 
 class ClientInfo;

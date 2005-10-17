@@ -32,8 +32,6 @@ class Dice;
 class Session;
 class ShapePalette;
 
-using namespace std;
-
 /**
   *@author Gabor Torok
 
@@ -80,7 +78,7 @@ class Item : public RenderedItem {
   bool cursed;
   int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
   bool stateModSet;
-  map<int, int> skillBonus;
+  std::map<int, int> skillBonus;
   Session *session;
 
 public:
@@ -91,7 +89,7 @@ public:
   //ContainedItemInfo saveContainedItems();
   static Item *load(Session *session, ItemInfo *info);
 
-  static map<int, vector<string> *> soundMap;
+  static std::map<int, std::vector<std::string> *> soundMap;
   
   inline Color *getColor() { return color; }
   inline void setColor(Color *c) { color = c; }
@@ -144,7 +142,7 @@ public:
   inline int getQuality() { return quality; }
 
   inline bool isMagicItem() { return ( magicLevel > -1 ); }
-  inline map<int,int> *getSkillBonusMap() { return &skillBonus; }
+  inline std::map<int,int> *getSkillBonusMap() { return &skillBonus; }
   inline int getSkillBonus(int skill) { return (skillBonus.find(skill) == skillBonus.end() ? 0 : skillBonus[skill]); }
   inline int getMagicLevel() { return magicLevel; }
   inline int getBonus() { return bonus; }

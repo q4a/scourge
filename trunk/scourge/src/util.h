@@ -27,8 +27,6 @@
 #include "constants.h"
 #include "gui/guitheme.h"
 
-using namespace std;
-
 class Map;
 class Location;
 class Shape;
@@ -36,6 +34,8 @@ class Shape;
 /**
   *@author Gabor Torok
   */
+
+#define PI 3.14159
 
 /**
   A path class used by A* algorithm
@@ -61,8 +61,6 @@ public:
   // todo: make #ifdefs for this
   const static char PATH_SEPARATOR = '/';
   
-private:
-  const static float PI = 3.14159;
 public: 
 	Util();
 	~Util();
@@ -76,7 +74,7 @@ public:
 
   static void findPath(Sint16 sx, Sint16 sy, Sint16 sz,
                 Sint16 dx, Sint16 dy, Sint16 dz,
-                vector<Location> *pVector, Map *map, Shape *shape);
+                std::vector<Location> *pVector, Map *map, Shape *shape);
 
   // some math functions
   static float dot_product(float v1[3], float v2[3]);
@@ -90,7 +88,7 @@ public:
   static char * getOpenGLError();
   	
   // Returns next word from the given position  					
-  static string getNextWord(const string theInput, int fromPos, int &endWord);
+  static std::string getNextWord(const std::string theInput, int fromPos, int &endWord);
 
   // get the angle between two shapes (x,y,width,depth)
   static float getAngle(float sx, float sy, float sw, float sd,

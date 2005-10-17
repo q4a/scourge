@@ -10,8 +10,6 @@
 
 #include "render.h"
 
-using namespace std;
-
 //>------ Primary Chunk, at the beginning of each file
 #define PRIMARY       0x4D4D
 

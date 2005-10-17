@@ -19,6 +19,8 @@
 #include "glshape.h"
 #include "shapes.h"
 
+using namespace std;
+
 Effect::Effect( Preferences *preferences, Shapes *shapePal, int width, int height ) {
   this->preferences = preferences;
   this->shapePal = shapePal;
@@ -356,10 +358,10 @@ void Effect::drawSwirl(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) +
-		(((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) * cos(angle);
-	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) +
-		(((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) * sin(angle);
+	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / DIV) +
+		(((float)(shape->getWidth()) / 2.0f) / DIV) * cos(angle);
+	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / DIV) +
+		(((float)(shape->getDepth()) / 2.0f) / DIV) * sin(angle);
 	  particle[i]->z = 1;
 	  particle[i]->moveDelta = 0.15f;
 	  particle[i]->rotate = angle;
@@ -368,10 +370,10 @@ void Effect::drawSwirl(bool proceed) {
     } else if(proceed) {
 	  particle[i]->zoom += 0.01f;
 	  particle[i]->rotate += 5.0f;
-	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) + 
-		(((float)(shape->getWidth()) / 2.0f) / GLShape::DIV) * cos(particle[i]->rotate);
-	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) +
-		(((float)(shape->getDepth()) / 2.0f) / GLShape::DIV) * sin(particle[i]->rotate);
+	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / DIV) + 
+		(((float)(shape->getWidth()) / 2.0f) / DIV) * cos(particle[i]->rotate);
+	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / DIV) +
+		(((float)(shape->getDepth()) / 2.0f) / DIV) * sin(particle[i]->rotate);
 	  moveParticle(&(particle[i]));
     }
 
@@ -422,7 +424,7 @@ void Effect::drawCastSpell(bool proceed) {
 
 void Effect::drawRing(bool proceed) {
 
-  float r = ringRadius / GLShape::DIV;
+  float r = ringRadius / DIV;
 
   float n = (0.05f * rand()/RAND_MAX) + 1.0f;
   for(int i = 0; i < 2; i++) {
@@ -457,8 +459,8 @@ void Effect::drawRing(bool proceed) {
 
 void Effect::drawRipple(bool proceed) {
 
-  float r = rippleRadius / GLShape::DIV;
-  float z = 0.3f / GLShape::DIV;
+  float r = rippleRadius / DIV;
+  float z = 0.3f / DIV;
 
   glDisable( GL_CULL_FACE );
   glPushMatrix();
@@ -490,8 +492,8 @@ void Effect::drawRipple(bool proceed) {
 void Effect::createParticle(ParticleStruct **particle) {
   // create a new particle
   *particle = new ParticleStruct();
-  (*particle)->x = ((float)(shape->getWidth() / GLShape::DIV) * rand()/RAND_MAX);
-  (*particle)->y = ((float)(shape->getDepth() / GLShape::DIV) * rand()/RAND_MAX);
+  (*particle)->x = ((float)(shape->getWidth() / DIV) * rand()/RAND_MAX);
+  (*particle)->y = ((float)(shape->getDepth() / DIV) * rand()/RAND_MAX);
   //  (*particle)->z = (int)(6.0 * rand()/RAND_MAX) + 10;
   (*particle)->z = (int)(0.8 * rand()/RAND_MAX);
   (*particle)->startZ = (*particle)->z;
@@ -520,12 +522,12 @@ void Effect::moveParticle(ParticleStruct **particle) {
 void Effect::drawParticle(ParticleStruct *particle) {
   float w, h, sh;
 
-  w = (float)(shape->getWidth() / GLShape::DIV) / 4.0f;
-  //float d = (float)(shape->getDepth() / GLShape::DIV) / 2.0;
-  h = (float)(shape->getHeight() / GLShape::DIV) / 3.0f;
-  if(h == 0) h = 0.25 / GLShape::DIV;
-  sh = ( fabs( particle->z - particle->startZ ) / GLShape::DIV) / 3.0f;
-  if(h == 0) h = 0.25 / GLShape::DIV;
+  w = (float)(shape->getWidth() / DIV) / 4.0f;
+  //float d = (float)(shape->getDepth() / DIV) / 2.0;
+  h = (float)(shape->getHeight() / DIV) / 3.0f;
+  if(h == 0) h = 0.25 / DIV;
+  sh = ( fabs( particle->z - particle->startZ ) / DIV) / 3.0f;
+  if(h == 0) h = 0.25 / DIV;
 
 
   for(int i = 0; i < particle->trail; i++) {
@@ -533,7 +535,7 @@ void Effect::drawParticle(ParticleStruct *particle) {
     
     // position the particle
     //  GLfloat z = (float)(particle->z * h) / 10.0;
-    GLfloat z = (particle->z + i) / GLShape::DIV;
+    GLfloat z = (particle->z + i) / DIV;
     glTranslatef( particle->x, particle->y, z );  
     
     // rotate each particle to face viewer

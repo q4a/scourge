@@ -34,6 +34,8 @@
 #include "texteffect.h"
 #include "sqbinding/sqbinding.h"
 
+using namespace std;
+
 #define MOUSE_ROT_DELTA 2
 
 #define BATTLES_ENABLED 1
@@ -94,7 +96,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   changingStory = false;  
 
   targetWidth = 0.0f;
-  targetWidthDelta = 0.05f / GLShape::DIV;
+  targetWidthDelta = 0.05f / DIV;
   lastTargetTick = SDL_GetTicks();
 
   lastEffectOn = false;
@@ -773,9 +775,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   glDisable( GL_CULL_FACE );
 
   // draw circle
-  double w = ((double)(creature->getShape()->getWidth()) / 2.0f) / GLShape::DIV;
-  double d = (((double)(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / GLShape::DIV;
-  double s = 0.35f / GLShape::DIV;
+  double w = ((double)(creature->getShape()->getWidth()) / 2.0f) / DIV;
+  double d = (((double)(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
+  double s = 0.35f / DIV;
 
   float xpos2, ypos2, zpos2;
 
@@ -804,9 +806,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
          i <= creature->getBattle()->getAP(); i++) {
       Location pos = (*(creature->getProposedPath()))[i];
       glColor4f(1, 0.4f, 0.0f, 0.5f);
-      xpos2 = ((float)(pos.x - levelMap->getX()) / GLShape::DIV);
-      ypos2 = ((float)(pos.y - levelMap->getY()) / GLShape::DIV);
-      zpos2 = 0.0f / GLShape::DIV;  
+      xpos2 = ((float)(pos.x - levelMap->getX()) / DIV);
+      ypos2 = ((float)(pos.y - levelMap->getY()) / DIV);
+      zpos2 = 0.0f / DIV;  
       glPushMatrix();
       glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
       gluDisk(quadric, 0, 4, 12, 1);
@@ -821,9 +823,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
        creature->getSelY() == toint(creature->getY())) ) {
     // draw target
     glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
-    xpos2 = ((float)(creature->getSelX() - levelMap->getX()) / GLShape::DIV);
-    ypos2 = ((float)(creature->getSelY() - levelMap->getY()) / GLShape::DIV);
-    zpos2 = 0.0f / GLShape::DIV;  
+    xpos2 = ((float)(creature->getSelX() - levelMap->getX()) / DIV);
+    ypos2 = ((float)(creature->getSelY() - levelMap->getY()) / DIV);
+    zpos2 = 0.0f / DIV;  
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
@@ -833,13 +835,13 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
   // red for attack target
   if(player && creature->getTargetCreature()) {
-    double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / GLShape::DIV;
-    double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / GLShape::DIV;
-    //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / GLShape::DIV;
+    double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / DIV;
+    double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
+    //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / DIV;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
-    xpos2 = ((float)(creature->getTargetCreature()->getX() - levelMap->getX()) / GLShape::DIV);
-    ypos2 = ((float)(creature->getTargetCreature()->getY() - levelMap->getY()) / GLShape::DIV);
-    zpos2 = 0.0f / GLShape::DIV;  
+    xpos2 = ((float)(creature->getTargetCreature()->getX() - levelMap->getX()) / DIV);
+    ypos2 = ((float)(creature->getTargetCreature()->getY() - levelMap->getY()) / DIV);
+    zpos2 = 0.0f / DIV;  
     glPushMatrix();
     //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
     glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
@@ -847,9 +849,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glPopMatrix();
   }
 
-  xpos2 = (creature->getX() - (float)(levelMap->getX())) / GLShape::DIV;
-  ypos2 = (creature->getY() - (float)(levelMap->getY())) / GLShape::DIV;
-  zpos2 = creature->getZ() / GLShape::DIV;  
+  xpos2 = (creature->getX() - (float)(levelMap->getX())) / DIV;
+  ypos2 = (creature->getY() - (float)(levelMap->getY())) / DIV;
+  zpos2 = creature->getZ() / DIV;  
 
   if(creature->getAction() != Constants::ACTION_NO_ACTION) {
     glColor4f(0, 0.7, 1, 0.5f);
@@ -881,7 +883,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
         /* DEBUG
         glPushMatrix();
-        glTranslatef( xpos2, ypos2 - ( w * 2.0f ) - ( 1.0f / GLShape::DIV ), zpos2 + 5);
+        glTranslatef( xpos2, ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ), zpos2 + 5);
         glColor4f( 1, 1, 1, 1 );
         glBegin( GL_LINES );
         glVertex3f( 0, 0, 0 );
@@ -902,7 +904,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
         glPushMatrix();
         glTranslatef( xpos2 + w, 
-                      ypos2 - ( w * 2.0f ) - ( 1.0f / GLShape::DIV ) + w, 
+                      ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ) + w, 
                       zpos2 + 5);
         float angle = -(count * 30) - (levelMap->getZRot() + 180);
         
@@ -1004,9 +1006,9 @@ void Scourge::drawDraggedItem() {
 	  selZ = oldLocatorSelZ;
 	}
 	
-	xpos2 = ((float)(selX - getX()) / GLShape::DIV);
-	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / GLShape::DIV);
-	zpos2 = (float)(selZ) / GLShape::DIV;
+	xpos2 = ((float)(selX - getX()) / DIV);
+	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / DIV);
+	zpos2 = (float)(selZ) / DIV;
 	
 	doDrawShape(xpos2, ypos2, zpos2, shape, 0);
 
@@ -3450,9 +3452,9 @@ void Scourge::drawInfos() {
   for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
 
     InfoMessage *message = i->first;
-    xpos2 = ((float)(message->x - levelMap->getX()) / GLShape::DIV);
-    ypos2 = ((float)(message->y - levelMap->getY()) / GLShape::DIV);
-    zpos2 = ((float)(message->z) / GLShape::DIV);
+    xpos2 = ((float)(message->x - levelMap->getX()) / DIV);
+    ypos2 = ((float)(message->y - levelMap->getY()) / DIV);
+    zpos2 = ((float)(message->z) / DIV);
 
     getSDLHandler()->drawTooltip( xpos2, ypos2, zpos2, 
                                   -( levelMap->getZRot() ),

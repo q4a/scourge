@@ -99,7 +99,7 @@ private:
   int step;
   Uint32 lastTick;
   float zrot;
-  map<CharacterModelInfo*, GLShape*> shapes;
+  std::map<CharacterModelInfo*, GLShape*> shapes;
   
 public:
   PartyEditor(Scourge *scourge);

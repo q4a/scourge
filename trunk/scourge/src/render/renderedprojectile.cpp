@@ -19,6 +19,8 @@
 #include "renderedcreature.h"
 #include "shape.h"
 
+using namespace std;
+
 map<RenderedCreature*, vector<RenderedProjectile*>*> RenderedProjectile::projectiles;
 
 RenderedProjectile::RenderedProjectile() {

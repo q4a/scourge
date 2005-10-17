@@ -14,8 +14,6 @@
  *   http://tfc.duke.free.fr/us/tutorials/models/md2.htm 
  */ 
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */

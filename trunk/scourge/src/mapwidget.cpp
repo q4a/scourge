@@ -19,6 +19,8 @@
 #include "scourge.h"
 #include "gui/canvas.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

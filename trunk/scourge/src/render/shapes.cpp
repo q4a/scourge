@@ -23,6 +23,8 @@
 #include "md2shape.h"
 #include "Md2.h"
 
+using namespace std;
+
 #define ALWAYS_RELOAD_THEME 1
 
 //#define VARIATION_BASE 10.0f

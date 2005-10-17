@@ -17,6 +17,8 @@
 
 #include "guitheme.h"
 
+using namespace std;
+
 /**
   *@author Gabor Torok
   */

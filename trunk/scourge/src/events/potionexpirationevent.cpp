@@ -22,6 +22,8 @@
 #include "../creature.h"
 #include "../session.h"
 
+using namespace std;
+
 PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, 
 											 Creature *c, Item *item, 
 											 Session *session, int nbExecutionsToDo) : 

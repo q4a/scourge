@@ -16,6 +16,8 @@
 # include <math.h>
 #include "3ds.h"
 
+using namespace std;
+
 // This file handles all of the code needed to load a .3DS file.
 // Basically, how it works is, you load a chunk, then you check
 // the chunk ID.  Depending on the chunk ID, you load the information

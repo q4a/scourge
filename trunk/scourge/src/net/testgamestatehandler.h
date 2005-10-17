@@ -4,8 +4,6 @@
 #include "../constants.h"
 #include "gamestatehandler.h"
 
-using namespace std;
-
 class TestGameStateHandler : public GameStateHandler {
  private:
   char state[1024];

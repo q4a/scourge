@@ -25,8 +25,6 @@
 #include "session.h"
 #include "battle.h"
 
-using namespace std;
-
 /**
   *@author Gabor Torok
   */

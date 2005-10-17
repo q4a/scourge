@@ -31,8 +31,6 @@ class Widget;
 class Button;
 class TextField;
 
-using namespace std;
-
 class TrainDialog {
 private:
   Scourge *scourge;
@@ -46,7 +44,7 @@ private:
 
   int cost;
   char **skillText;
-  vector<int> skills;
+  std::vector<int> skills;
 
 public:
   TrainDialog( Scourge *scourge );

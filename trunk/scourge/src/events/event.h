@@ -58,7 +58,7 @@ public:
   virtual ~Event();
   
   //virtual void execute()=0;
-  virtual void execute() { cout << "Event.cpp : execute function should'nt be called by event base class!" << endl; }
+  virtual void execute() { std::cout << "Event.cpp : execute function should'nt be called by event base class!" << std::endl; }
   
   // this is called before the event is deleted (It's only called once.)
   virtual void executeBeforeDelete() { }

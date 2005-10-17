@@ -22,6 +22,8 @@
 #include "item.h"
 #include "creature.h"
 
+using namespace std;
+
 ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   this->scourge = scourge;
   this->container = container;

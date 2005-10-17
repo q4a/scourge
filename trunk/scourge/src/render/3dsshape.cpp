@@ -22,6 +22,8 @@
 #include "3dsshape.h"
 #include "shapes.h"
 
+using namespace std;
+
 C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal, 
 					 GLuint texture[],
 					 char *name, int descriptionGroup,
@@ -277,7 +279,7 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
       //if (!isShadow) glColor3ub(255, 255, 255);
     } 
 
-    float c[3];
+    float c[3] = { 0.0f, 0.0f, 0.0f };
 
     // This determines if we are in wireframe or normal mode
     glBegin(g_ViewMode);                    // Begin drawing with our selected mode (triangles or lines)

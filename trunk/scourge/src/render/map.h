@@ -37,8 +37,6 @@ class Location;
 class Effect;
 
 
-using namespace std;
-
 class MapSettings {
 
 public:
@@ -117,8 +115,8 @@ public:
 
 class MapMemoryManager {
   private:
-    vector<Location*> unused;
-    vector<EffectLocation*> unusedEffect;
+    std::vector<Location*> unused;
+    std::vector<EffectLocation*> unusedEffect;
     int maxSize;
     int accessCount;
     int usedCount, usedEffectCount;
@@ -168,7 +166,7 @@ class Map {
     float step[WATER_TILE_X][WATER_TILE_Y];
     Uint32 lastTime[WATER_TILE_X][WATER_TILE_Y];
   } WaterTile;
-  map<Uint32, WaterTile*> water;  
+  std::map<Uint32, WaterTile*> water;  
   bool debugGridFlag;
   bool drawGridFlag;
   float xrot, yrot, zrot;  
@@ -200,9 +198,9 @@ class Map {
   Location *selectedDropTarget;
 
   int accessMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
-  map<Uint32, bool> locked;
-  map<Uint32, Uint32> doorToKey;
-  map<Uint32, Uint32> keyToDoor;
+  std::map<Uint32, bool> locked;
+  std::map<Uint32, Uint32> doorToKey;
+  std::map<Uint32, Uint32> keyToDoor;
 
   int LIGHTMAP_ENABLED;
   int lastOutlinedX, lastOutlinedY, lastOutlinedZ;
@@ -559,7 +557,7 @@ class Map {
    int chunkCount;
    DrawLater later[100], stencil[1000], other[1000], damage[1000];
    int laterCount, stencilCount, otherCount, damageCount;
-   map<Uint32, EffectLocation*> currentEffectsMap;
+   std::map<Uint32, EffectLocation*> currentEffectsMap;
   
   /**
 	 If 'ground' is true, it draws the ground layer.

@@ -30,8 +30,6 @@
 #include "gui/widgetview.h"
 #include "gui/window.h"
 
-using namespace std;
-
 // forward decl.
 class Shape;
 class Scourge;
