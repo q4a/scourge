@@ -2,6 +2,8 @@
 
 #include "client.h"
 
+using namespace std;
+
 // 0 or less is retry forever
 #define RETRY_COUNT 10
 

@@ -1,6 +1,8 @@
 #ifdef HAVE_SDL_NET
 #include "tcputil.h"
 
+using namespace std;
+
 // receive a buffer from a TCP socket with error checking
 // this function handles the memory, so it can't use any [] arrays
 // returns 0 on any errors, or a valid char* on success

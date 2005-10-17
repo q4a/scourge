@@ -2,6 +2,8 @@
 
 #include "server.h"
 
+using namespace std;
+
 #define DEBUG_SERVER 0
 
 Server::Server(int port) {

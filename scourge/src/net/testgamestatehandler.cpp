@@ -1,5 +1,7 @@
 #include "testgamestatehandler.h"
 
+using namespace std;
+
 TestGameStateHandler::TestGameStateHandler() {
   strcpy(state, "xyzabcdef");
 }
