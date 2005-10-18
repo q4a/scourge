@@ -106,7 +106,7 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #define DEBUG_BATTLE 0
 
 
-#define SCOURGE_VERSION "0.11"
+#define SCOURGE_VERSION "0.12"
 #define MAX_PARTY_SIZE 4
 
 // Max level depth per mission
