@@ -34,6 +34,8 @@
 class Session;
 class SqGame;
 class SqCreature;
+class SqMission;
+class SqItem;
 
 /**
  * A squirrel member function declaration.
@@ -100,6 +102,8 @@ private:
   // Native objects backing squirrel objects (squirrel class definitions).
   SqGame *game;
   SqCreature *creature;
+  SqMission *mission;
+  SqItem *item;
 
 public:
   SqBinding( Session *session, ConsolePrinter *consolePrinter = NULL );
@@ -112,6 +116,9 @@ public:
   // Squirrel object references
   HSQOBJECT refGame;
   HSQOBJECT refParty[MAX_PARTY_SIZE];
+  HSQOBJECT refMission;
+  std::vector<HSQOBJECT*> refCreature;
+  std::vector<HSQOBJECT*> refItem;
 
   // events
   void startGame();
@@ -128,6 +135,7 @@ public:
   static void printArgs( HSQUIRRELVM v );
 
 protected:
+  bool callNoArgMethod( const char *name );
   bool compile( const char *filename );
   bool createClass( SquirrelClassDecl *cd );
   bool instantiateClass( const SQChar *classname, 

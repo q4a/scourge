@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqgame.h  -  description
+                          sqmission.h  -  description
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok
@@ -15,19 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef SQGAME_H
-#define SQGAME_H
+#ifndef SQMISSION_H
+#define SQMISSION_H
 
 #include "sqbinding.h"
 #include "sqobject.h"
 #include <map>
 
-class Creature;
-
 /**
  * The topmost squirrel object in the Scourge object hierarchy.
  */
-class SqGame : public SqObject {
+class SqMission : public SqObject {
 private:
   static const char *className;
   static SquirrelClassDecl classDecl;
@@ -36,12 +34,12 @@ private:
   
 
 public:
-  SqGame();
-  ~SqGame();
+  SqMission();
+  ~SqMission();
 
-  inline const char *getInstanceName() { return "scourgeGame"; }
-  inline const char *getClassName() { return SqGame::className; }
-  inline SquirrelClassDecl *getClassDeclaration() { return &SqGame::classDecl; }
+  inline const char *getInstanceName() { return "mission"; }
+  inline const char *getClassName() { return SqMission::className; }
+  inline SquirrelClassDecl *getClassDeclaration() { return &SqMission::classDecl; }
 
   // ===========================================================================
   // Static callback methods to ScourgeGame squirrel object member functions.
@@ -49,15 +47,11 @@ public:
   static int _constructor( HSQUIRRELVM vm );
 
   // general
-  static int _getVersion( HSQUIRRELVM vm );
-  static int _getRootDir( HSQUIRRELVM vm );
+  static int _getCreatureCount( HSQUIRRELVM vm );
+  static int _getCreature( HSQUIRRELVM vm );
 
-  // party-related
-  static int _getPartySize( HSQUIRRELVM vm );
-  static int _getPartyMember( HSQUIRRELVM vm );
-
-  static int _getMission( HSQUIRRELVM vm );
-
+  static int _getItemCount( HSQUIRRELVM vm );
+  static int _getItem( HSQUIRRELVM vm );
 };
 
 #endif

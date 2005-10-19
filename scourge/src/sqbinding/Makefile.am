@@ -11,5 +11,9 @@ libSqbinding_a_SOURCES = \
 	sqgame.cpp\
 	sqgame.h\
 	sqcreature.cpp\
-	sqcreature.h
+	sqcreature.h\
+	sqmission.cpp\
+	sqmission.h\
+	sqitem.cpp\
+	sqitem.h
 
