@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqgame.h  -  description
+                          sqcreature.h  -  description
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok
@@ -15,49 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef SQGAME_H
-#define SQGAME_H
+#ifndef SQITEM_H
+#define SQITEM_H
 
 #include "sqbinding.h"
 #include "sqobject.h"
-#include <map>
 
-class Creature;
-
-/**
- * The topmost squirrel object in the Scourge object hierarchy.
- */
-class SqGame : public SqObject {
+class SqItem : public SqObject {
 private:
   static const char *className;
   static SquirrelClassDecl classDecl;
   static ScriptClassMemberDecl members[];
 
-  
-
 public:
-  SqGame();
-  ~SqGame();
+  SqItem();
+  ~SqItem();
 
-  inline const char *getInstanceName() { return "scourgeGame"; }
-  inline const char *getClassName() { return SqGame::className; }
-  inline SquirrelClassDecl *getClassDeclaration() { return &SqGame::classDecl; }
+  inline const char *getInstanceName() { return "Item"; }
+  inline const char *getClassName() { return SqItem::className; }
+  inline SquirrelClassDecl *getClassDeclaration() { return &SqItem::classDecl; }
 
   // ===========================================================================
-  // Static callback methods to ScourgeGame squirrel object member functions.
+  // Static callback methods to Creature squirrel object member functions.
   static int _squirrel_typeof( HSQUIRRELVM vm );
   static int _constructor( HSQUIRRELVM vm );
 
   // general
-  static int _getVersion( HSQUIRRELVM vm );
-  static int _getRootDir( HSQUIRRELVM vm );
-
-  // party-related
-  static int _getPartySize( HSQUIRRELVM vm );
-  static int _getPartyMember( HSQUIRRELVM vm );
-
-  static int _getMission( HSQUIRRELVM vm );
-
+  static int _getName( HSQUIRRELVM vm );
 };
 
 #endif

@@ -26,6 +26,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "getRootDir", SqGame::_getRootDir, 0, 0 },
   { "getPartySize", SqGame::_getPartySize, 0, 0 },
   { "getPartyMember", SqGame::_getPartyMember, 0, 0 },
+  { "getMission", SqGame::_getMission, 0, 0 },
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members };
@@ -74,3 +75,9 @@ int SqGame::_getPartyMember( HSQUIRRELVM vm ) {
   sq_pushobject( vm, SqBinding::binding->refParty[ partyIndex ] );
   return 1;
 }
+
+int SqGame::_getMission( HSQUIRRELVM vm ) {
+  sq_pushobject( vm, SqBinding::binding->refMission );
+  return 1;
+}
+

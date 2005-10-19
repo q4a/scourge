@@ -19,6 +19,8 @@
 #include "../creature.h"
 #include "sqgame.h"
 #include "sqcreature.h"
+#include "sqmission.h"
+#include "sqitem.h"
 #include "../squirrel/squirrel.h"
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
@@ -74,10 +76,16 @@ SqBinding::SqBinding( Session *session, ConsolePrinter *consolePrinter ) {
   // the creature class
   creature = new SqCreature();
   createClass( creature->getClassDeclaration() );
-
-  // create a slot to hold the creature id.
+  // create a slot to hold the Creature* pointer.
   createClassMember( creature->getClassName(), SCOURGE_ID_TOKEN, -2 );
-  
+
+  mission = new SqMission();
+  createClass( mission->getClassDeclaration() );
+
+  item = new SqItem();
+  createClass( item->getClassDeclaration() );
+  // create a slot to hold the Item* pointer.
+  createClassMember( item->getClassName(), SCOURGE_ID_TOKEN, -2 );
 }
 
 SqBinding::~SqBinding() {
@@ -130,11 +138,84 @@ void SqBinding::loadMapScript( char *name ) {
 }
 
 bool SqBinding::startLevel() {
+
+  // create the Mission
+  if( DEBUG_SQUIRREL ) cerr << "Creating mission:" << endl;
+  if( SQ_FAILED( instantiateClass( _SC( mission->getClassName() ), &refMission ) ) ) {
+    cerr << "Failed to instantiate mission object." << endl;
+  }
+
+  // create the creatures of the level
+  if( DEBUG_SQUIRREL ) cerr << "Creating level's creatures:" << endl;  
+  HSQOBJECT *obj;
+  for( int i = 0; i < session->getCreatureCount(); i++ ) {
+    obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
+    if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), obj ) ) ) {
+      // Set a token in the class so we can resolve the squirrel instance to a native creature.
+      // The value is the address of the native creature object.
+      setObjectValue( *obj, SCOURGE_ID_TOKEN, session->getCreature(i) );
+      refCreature.push_back( obj );
+    } else {
+      cerr << "Unable instantiate class: " << creature->getClassName() << endl;
+    }
+  }
+
+  // create the items of the level
+  if( DEBUG_SQUIRREL ) cerr << "Creating level's items:" << endl;  
+  for( int i = 0; i < session->getItemCount(); i++ ) {
+    obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
+    if( SQ_SUCCEEDED( instantiateClass( _SC( item->getClassName() ), obj ) ) ) {
+      // Set a token in the class so we can resolve the squirrel instance to a native creature.
+      // The value is the address of the native creature object.
+      setObjectValue( *(obj), SCOURGE_ID_TOKEN, session->getItem(i) );
+      refItem.push_back( obj );
+    } else {
+      cerr << "Unable instantiate class: " << creature->getClassName() << endl;
+    }
+  }
+
+  return callNoArgMethod( "startLevel" );
+}     
+
+bool SqBinding::endLevel() {
+  
+  //int ret = -1;
+  bool ret = callNoArgMethod( "endLevel" );
+
+  // destroy the creatures of the level
+  for( int i = 0; i < session->getCreatureCount(); i++ ) {
+    sq_release( vm, refCreature[ i ] );
+    free( refCreature[ i ] );
+    refCreature[ i ] = NULL;
+  }
+  refCreature.clear();
+
+  // destroy the items of the level
+  for( int i = 0; i < session->getItemCount(); i++ ) {
+    sq_release( vm, refItem[ i ] );
+    free( refItem[ i ] );
+    refItem[ i ] = NULL;
+  }
+  refItem.clear();
+
+  // destroy the mission
+  sq_release( vm, &refMission );
+
+  return ret;  
+}
+
+
+
+
+
+
+
+bool SqBinding::callNoArgMethod( const char *name ) {
   //int ret = -1;
   bool ret;
   int top = sq_gettop( vm ); //saves the stack size before the call
   sq_pushroottable( vm ); //pushes the global table
-  sq_pushstring( vm, _SC("startLevel"), -1 );
+  sq_pushstring( vm, _SC( name ), -1 );
   if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
     sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
     //sq_pushobject( vm, refGame );
@@ -146,30 +227,8 @@ bool SqBinding::startLevel() {
     ret = false;
   }
   sq_settop( vm, top ); //restores the original stack size
-  return ret;  
-}     
-
-bool SqBinding::endLevel() {
-  //int ret = -1;
-  bool ret;
-  int top = sq_gettop( vm ); //saves the stack size before the call
-  sq_pushroottable( vm ); //pushes the global table
-  sq_pushstring( vm, _SC("endLevel"), -1 );
-  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
-    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
-    //sq_pushobject( vm, refGame );
-    sq_call( vm, 1, 0 ); //calls the function
-    //sq_getinteger( v, -1, &ret );
-    ret = true;
-  } else {
-    cerr << "Can't find function endLevel()." << endl;
-    ret = false;
-  }
-  sq_settop( vm, top ); //restores the original stack size
-  return ret;  
+  return ret;
 }
-
-
 
 void SqBinding::compileBuffer( const char *s ) {
   int top = sq_gettop( vm ); //saves the stack size before the call
