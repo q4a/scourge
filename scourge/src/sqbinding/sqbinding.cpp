@@ -75,17 +75,13 @@ SqBinding::SqBinding( Session *session, ConsolePrinter *consolePrinter ) {
 
   // the creature class
   creature = new SqCreature();
-  createClass( creature->getClassDeclaration() );
-  // create a slot to hold the Creature* pointer.
-  createClassMember( creature->getClassName(), SCOURGE_ID_TOKEN, -2 );
+  createClass( creature->getClassDeclaration(), SCOURGE_ID_TOKEN );
 
   mission = new SqMission();
   createClass( mission->getClassDeclaration() );
 
   item = new SqItem();
-  createClass( item->getClassDeclaration() );
-  // create a slot to hold the Item* pointer.
-  createClassMember( item->getClassName(), SCOURGE_ID_TOKEN, -2 );
+  createClass( item->getClassDeclaration(), SCOURGE_ID_TOKEN );
 }
 
 SqBinding::~SqBinding() {
@@ -179,7 +175,6 @@ bool SqBinding::startLevel() {
 
 bool SqBinding::endLevel() {
   
-  //int ret = -1;
   bool ret = callNoArgMethod( "endLevel" );
 
   // destroy the creatures of the level
@@ -257,7 +252,7 @@ bool SqBinding::compile( const char *filename ) {
   }
 }
 
-bool SqBinding::createClass( SquirrelClassDecl *cd ) {
+bool SqBinding::createClass( SquirrelClassDecl *cd, const char *key ) {
   int n = 0;
   int oldtop = sq_gettop( vm );
   sq_pushroottable( vm );
@@ -288,6 +283,12 @@ bool SqBinding::createClass( SquirrelClassDecl *cd ) {
   }
   sq_createslot( vm, -3 );
   sq_pop( vm, 1 );
+
+  // create a slot to hold the Creature* pointer.
+  if( key ) {
+    createClassMember( cd->name, key, -2 );
+  }
+
   return true;
 }
 

@@ -137,7 +137,7 @@ public:
 protected:
   bool callNoArgMethod( const char *name );
   bool compile( const char *filename );
-  bool createClass( SquirrelClassDecl *cd );
+  bool createClass( SquirrelClassDecl *cd, const char *key = NULL );
   bool instantiateClass( const SQChar *classname, 
                          HSQOBJECT *obj 
                          //,SQRELEASEHOOK hook 
