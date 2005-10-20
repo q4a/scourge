@@ -125,6 +125,9 @@ public:
   virtual RenderedCreature *getParty( int index );
 
   virtual inline bool startTextEffect( char *message ) { return false; }
+
+  // squirrel console
+  virtual void printToConsole( const char *s ) { std::cerr << s << std::endl; }
 };
 
 class SDLOpenGLAdapter : public GameAdapter {

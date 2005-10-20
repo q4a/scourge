@@ -83,7 +83,7 @@ struct ScriptNamespaceDecl  {
 };
 
 #define DEBUG_SQUIRREL 1
-#define SCOURGE_ID_TOKEN "scourge_creature_id"
+#define SCOURGE_ID_TOKEN "scourge_id"
 
 #define GET_OBJECT(x)   SQUserPointer up;\
   if( !SqBinding::getObjectValue( vm, SCOURGE_ID_TOKEN, &up ) ) {\
@@ -106,10 +106,9 @@ private:
   SqItem *item;
 
 public:
-  SqBinding( Session *session, ConsolePrinter *consolePrinter = NULL );
+  SqBinding( Session *session );
   ~SqBinding();
 
-  static ConsolePrinter *consolePrinterRef;
   static Session *sessionRef;
   static SqBinding *binding;
 
@@ -134,9 +133,10 @@ public:
 
   static void printArgs( HSQUIRRELVM v );
 
+  bool compile( const char *filename );
+
 protected:
   bool callNoArgMethod( const char *name );
-  bool compile( const char *filename );
   bool createClass( SquirrelClassDecl *cd, const char *key = NULL );
   bool instantiateClass( const SQChar *classname, 
                          HSQOBJECT *obj 

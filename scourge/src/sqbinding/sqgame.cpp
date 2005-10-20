@@ -26,7 +26,11 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "getRootDir", SqGame::_getRootDir, 0, 0 },
   { "getPartySize", SqGame::_getPartySize, 0, 0 },
   { "getPartyMember", SqGame::_getPartyMember, 0, 0 },
+  { "getSkillCount", SqGame::_getSkillCount, 0, 0 },
+  { "getSkillName", SqGame::_getSkillName, 0, 0 },
   { "getMission", SqGame::_getMission, 0, 0 },
+  { "getStateModCount", SqGame::_getStateModCount, 0, 0 },
+  { "getStateModName", SqGame::_getStateModName, 0, 0 },
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members };
@@ -78,6 +82,42 @@ int SqGame::_getPartyMember( HSQUIRRELVM vm ) {
 
 int SqGame::_getMission( HSQUIRRELVM vm ) {
   sq_pushobject( vm, SqBinding::binding->refMission );
+  return 1;
+}
+
+int SqGame::_getSkillCount( HSQUIRRELVM vm ) {
+  sq_pushinteger( vm, Constants::SKILL_COUNT );
+  return 1;
+}
+
+int SqGame::_getSkillName( HSQUIRRELVM vm ) {
+  int index;
+  if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get index in getSkillName." ) );
+  }
+  if( index < 0 || index >= Constants::SKILL_COUNT  ) {
+    return sq_throwerror( vm, _SC( "Party index is out of range." ) );
+  }
+
+  sq_pushstring( vm, _SC( Constants::SKILL_NAMES[ index ] ), -1 );
+  return 1;
+}
+
+int SqGame::_getStateModCount( HSQUIRRELVM vm ) {
+  sq_pushinteger( vm, Constants::STATE_MOD_COUNT );
+  return 1;
+}
+
+int SqGame::_getStateModName( HSQUIRRELVM vm ) {
+  int index;
+  if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get index in getSkillName." ) );
+  }
+  if( index < 0 || index >= Constants::STATE_MOD_COUNT  ) {
+    return sq_throwerror( vm, _SC( "Party index is out of range." ) );
+  }
+
+  sq_pushstring( vm, _SC( Constants::STATE_NAMES[ index ] ), -1 );
   return 1;
 }
 

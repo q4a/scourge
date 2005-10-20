@@ -145,9 +145,6 @@ void Scourge::initUI() {
 }
 
 void Scourge::start() {
-
-  squirrel = new SqBinding( getSession(), this );
-
   this->quadric = gluNewQuadric();
   bool initMainMenu = true;
   while(true) {
@@ -224,7 +221,6 @@ void Scourge::start() {
 }
 
 Scourge::~Scourge(){
-  delete squirrel;
   delete mainMenu;
   delete optionsMenu;
   delete multiplayer;
@@ -284,7 +280,7 @@ void Scourge::startMission() {
         inventory = new Inventory(this);
       }
 
-      squirrel->startGame();
+      getSession()->getSquirrel()->startGame();
 
       resetParty = false;
     }
@@ -414,7 +410,7 @@ void Scourge::startMission() {
     // Must be called after MiniMap has been built by dg->toMap() !!! 
     //miniMap->computeDrawValues();
 
-    squirrel->loadMapScript( scriptName );
+    getSession()->getSquirrel()->loadMapScript( scriptName );
 
     // set to receive events here
     getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
@@ -467,7 +463,7 @@ void Scourge::startMission() {
     // run mission
     getSDLHandler()->mainLoop();
 
-    squirrel->endLevel();
+    getSession()->getSquirrel()->endLevel();
 
     // stop the music
     getSDLHandler()->getSound()->stopMusicDungeon();
@@ -575,7 +571,7 @@ void Scourge::startMission() {
 #ifdef DEBUG_KEYS
   squirrelWin->setVisible( false );
 #endif
-  squirrel->endGame();
+  getSession()->getSquirrel()->endGame();
 }
 
 void Scourge::endMission() {
@@ -1942,7 +1938,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == Window::message_button && info_dialog_showing) {
     party->toggleRound(false);
     info_dialog_showing = false;
-    squirrel->startLevel();
+    getSession()->getSquirrel()->startLevel();
     party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
   }
   
@@ -2039,7 +2035,7 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     squirrelLabel->appendText( "> " );
     squirrelLabel->appendText( squirrelText->getText() );
     squirrelLabel->appendText( "|" );
-    squirrel->compileBuffer( squirrelText->getText() );
+    getSession()->getSquirrel()->compileBuffer( squirrelText->getText() );
     squirrelText->clearText();
     squirrelLabel->appendText( "|" );
   } else if( widget == squirrelClear ) {

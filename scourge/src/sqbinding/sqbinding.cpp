@@ -33,7 +33,6 @@ using namespace std;
 #define scvprintf vsnprintf
 #endif
 
-ConsolePrinter *SqBinding::consolePrinterRef = NULL;
 Session *SqBinding::sessionRef = NULL;
 SqBinding *SqBinding::binding = NULL;
 
@@ -47,13 +46,12 @@ void printfunc(HSQUIRRELVM v, const SQChar *s, ...) {
   scvprintf( buff, 1000, s, arglist );  
   buff[999] = '\0';
   va_end(arglist);
-  if( SqBinding::consolePrinterRef ) SqBinding::consolePrinterRef->printToConsole( (const char*)buff );  
+  if( SqBinding::sessionRef ) SqBinding::sessionRef->getGameAdapter()->printToConsole( (const char*)buff );  
   else cerr << "CONSOLE:" << buff << endl;
 }
 
-SqBinding::SqBinding( Session *session, ConsolePrinter *consolePrinter ) {
+SqBinding::SqBinding( Session *session ) {
   SqBinding::sessionRef = this->session = session;
-  if( consolePrinter ) SqBinding::consolePrinterRef = consolePrinter;
   if( !binding ) SqBinding::binding = this;
 
   if( DEBUG_SQUIRREL ) cerr << "Initializing squirrel vm" << endl;
@@ -125,6 +123,18 @@ void SqBinding::endGame() {
   sq_pushstring( vm, _SC( game->getInstanceName() ), -1 );
   sq_deleteslot( vm, -1, (SQBool)false );
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void SqBinding::loadMapScript( char *name ) {
