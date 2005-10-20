@@ -45,6 +45,7 @@ class RpgItem;
 class Spell;
 class Monster;
 class GLShape;
+class SqBinding;
 
 /**
  *@author Gabor Torok
@@ -65,6 +66,7 @@ private:
   Mission *currentMission;
   std::vector<Item*> newItems;
   std::vector<Creature*> creatures;
+  SqBinding *squirrel;
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -149,6 +151,8 @@ public:
 
   virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
   virtual void creatureDeath(Creature *creature);
+
+  inline SqBinding *getSquirrel() { return squirrel; }
 
 protected:
   virtual void initData();

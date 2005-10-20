@@ -19,6 +19,8 @@
 #include "rpg/rpglib.h"
 #include "item.h"
 #include "creature.h"
+#include "sqbinding/sqbinding.h"
+#include "specialskill.h"
 #include <iostream>
 #include <stdlib.h>
 #include <strings.h>
@@ -40,9 +42,11 @@ Session::Session(GameAdapter *adapter) {
 #endif
   multiplayerGame = false;
   currentMission = NULL;
+  squirrel = NULL;
 }
 
 Session::~Session() {
+  if( squirrel ) delete squirrel;
   deleteCreaturesAndItems();
   if(shapePal) delete shapePal;
   if(party) delete party;
@@ -69,7 +73,6 @@ void Session::start() {
 
 void Session::initData() {
 
-  
   // move all this down to scourge
   adapter->initStart(7, "Loading shapes...");
 
@@ -104,6 +107,12 @@ void Session::initData() {
 
   // do this before the inventory and optionsdialog (so Z is less than of those)
   party = new Party(this);
+
+  adapter->initUpdate("Starting Squirrel VM...");
+  squirrel = new SqBinding( this );
+
+  adapter->initUpdate("Initializing Special Skills...");
+  SpecialSkill::initSkills( this );
 
   adapter->initUpdate("Initializing...");
 
