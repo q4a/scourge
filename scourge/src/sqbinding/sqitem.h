@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqcreature.h  -  description
+                          sqitem.h  -  description
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok
@@ -42,6 +42,28 @@ public:
 
   // general
   static int _getName( HSQUIRRELVM vm );
+  static int _getLevel( HSQUIRRELVM vm );
+  static int _getWeight( HSQUIRRELVM vm );
+  static int _getPrice( HSQUIRRELVM vm );
+  static int _getAction( HSQUIRRELVM vm );
+  static int _getSpeed( HSQUIRRELVM vm );
+  static int _getDistance( HSQUIRRELVM vm );
+  static int _getMaxCharges( HSQUIRRELVM vm );
+  static int _getDuration( HSQUIRRELVM vm );
+  static int _getQuality( HSQUIRRELVM vm );
+  static int _isMagicItem( HSQUIRRELVM vm );
+  static int _getSkillBonus( HSQUIRRELVM vm );
+  static int _getMagicLevel( HSQUIRRELVM vm );
+  static int _getBonus( HSQUIRRELVM vm );
+  static int _getDamageMultiplier( HSQUIRRELVM vm );
+  static int _getMonsterType( HSQUIRRELVM vm );
+  static int _getSchool( HSQUIRRELVM vm );
+  static int _getMagicResistance( HSQUIRRELVM vm );
+  static int _describeMagicDamage( HSQUIRRELVM vm );
+  static int _isCursed( HSQUIRRELVM vm );
+  static int _isStateModSet( HSQUIRRELVM vm );
+  static int _isStateModProtected( HSQUIRRELVM vm );
+
 };
 
 #endif
