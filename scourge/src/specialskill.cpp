@@ -48,7 +48,7 @@ void SpecialSkill::initSkills( Session *session ) {
     exit(1);
   }
 
-  int type, event;
+  int type, event, iconTileX, iconTileY;
   char name[255], line[255], description[2000], 
     prereq[255], action[255];
   int n = fgetc(fp);
@@ -58,9 +58,12 @@ void SpecialSkill::initSkills( Session *session ) {
       fgetc( fp );
       n = Constants::readLine( name, fp );
       n = Constants::readLine( line, fp );
-      strcpy( prereq, line + 2 );
+      strcpy( prereq, line + 1 );
+
+      type = SpecialSkill::SKILL_TYPE_AUTOMATIC;
+      event = SpecialSkill::SKILL_EVENT_DEFENSE;
       n = Constants::readLine( line, fp );
-      char *p = strtok( line + 2, "," );
+      char *p = strtok( line + 1, "," );
       if( p ) {
         switch(*p) {
         case 'A': type = SpecialSkill::SKILL_TYPE_AUTOMATIC; break;
@@ -69,23 +72,36 @@ void SpecialSkill::initSkills( Session *session ) {
                 type = SpecialSkill::SKILL_TYPE_MANUAL;
         }
         p = strtok( NULL, "," );
-        switch(*p) {
-        case 'D': event = SpecialSkill::SKILL_EVENT_DEFENSE; break;
-        case 'T': type = SpecialSkill::SKILL_EVENT_TO_HIT; break;
-        case 'A': type = SpecialSkill::SKILL_EVENT_DAMAGE; break;
-        case 'S': type = SpecialSkill::SKILL_EVENT_STATE_MOD; break;
-        default: cerr << "Unknown special skill event: " << (*p) << endl;
-                type = SpecialSkill::SKILL_EVENT_DAMAGE;
+        if( p ) {
+          switch(*p) {
+          case 'D': event = SpecialSkill::SKILL_EVENT_DEFENSE; break;
+          case 'T': event = SpecialSkill::SKILL_EVENT_TO_HIT; break;
+          case 'A': event = SpecialSkill::SKILL_EVENT_DAMAGE; break;
+          case 'S': event = SpecialSkill::SKILL_EVENT_STATE_MOD; break;
+          default: cerr << "Unknown special skill event: " << (*p) << endl;
+          event = SpecialSkill::SKILL_EVENT_DAMAGE;
+          }
         }
       }
+
       n = Constants::readLine( line, fp );
-      strcpy( action, line + 2 );
+      strcpy( action, line + 1 );
+
+      iconTileX = iconTileY = 1;
+      n = Constants::readLine( line, fp );      
+      p = strtok( line + 1, "," );
+      if( p ) {
+        iconTileX = atoi( p );
+        p = strtok( NULL, "," );
+        if( p ) iconTileY = atoi( p );
+      }
+
       strcpy( description, "" );
       while( true ) {
         n = Constants::readLine( line, fp );
         if( line[0] == 'D' ) {
           if( strlen( description ) ) strcat( description, " " );
-          strcat( description, line + 2 );
+          strcat( description, line + 1 );
         } else {
           break;
         }
@@ -99,7 +115,9 @@ void SpecialSkill::initSkills( Session *session ) {
                           type, 
                           event,
                           prereq, 
-                          action );
+                          action,
+                          iconTileX,
+                          iconTileY );
       skills.push_back( ss );
       string nameStr = name;
       skillsByName[ nameStr ] = ss;
@@ -116,7 +134,9 @@ SpecialSkill::SpecialSkill( Session *session,
                             int type,
                             int event,
                             const char *squirrelFuncPrereq,
-                            const char *squirrelFuncAction ) {
+                            const char *squirrelFuncAction,
+                            int iconTileX,
+                            int iconTileY ) {
   this->session = session;
   this->name = name;
   this->description = description;
@@ -124,6 +144,8 @@ SpecialSkill::SpecialSkill( Session *session,
   this->event = event;
   this->squirrelFuncPrereq = squirrelFuncPrereq;
   this->squirrelFuncAction = squirrelFuncAction;
+  this->iconTileX = iconTileX;
+  this->iconTileY = iconTileY;
 }
 
 SpecialSkill::~SpecialSkill() {

@@ -38,6 +38,7 @@ private:
   int type, event;
   const char *squirrelFuncPrereq;
   const char *squirrelFuncAction;
+  int iconTileX, iconTileY;
 
 public:
   enum {
@@ -65,7 +66,9 @@ public:
                 int type,
                 int event,
                 const char *squirrelFuncPrereq,
-                const char *squirrelFuncAction );
+                const char *squirrelFuncAction,
+                int iconTileX,
+                int iconTileY );
   virtual ~SpecialSkill();
 
   inline Session *getSession() { return session; }
@@ -75,6 +78,8 @@ public:
   inline const char *getSquirrelFunctionAction() { return squirrelFuncAction; }
   inline int getType() { return type; }
   inline int getEvent() { return event; }
+  inline int getIconX() { return iconTileX; }
+  inline int getIconY() { return iconTileY; }
 };
 
 #endif
