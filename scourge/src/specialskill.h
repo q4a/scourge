@@ -35,7 +35,7 @@ private:
   Session *session;
   const char *name;
   const char *description;
-  int type;
+  int type, event;
   const char *squirrelFuncPrereq;
   const char *squirrelFuncAction;
 
@@ -44,6 +44,14 @@ public:
     SKILL_TYPE_AUTOMATIC,
     SKILL_TYPE_MANUAL,
     SKILL_TYPE_COUNT
+  };
+
+  enum {
+    SKILL_EVENT_DEFENSE,
+    SKILL_EVENT_TO_HIT,
+    SKILL_EVENT_DAMAGE,
+    SKILL_EVENT_STATE_MOD,
+    SKILL_EVENT_COUNT
   };
 
   static std::vector<SpecialSkill*> skills;
@@ -55,6 +63,7 @@ public:
                 const char *name, 
                 const char *description, 
                 int type,
+                int event,
                 const char *squirrelFuncPrereq,
                 const char *squirrelFuncAction );
   virtual ~SpecialSkill();
@@ -65,6 +74,7 @@ public:
   inline const char *getSquirrelFunctionPrereq() { return squirrelFuncPrereq; }
   inline const char *getSquirrelFunctionAction() { return squirrelFuncAction; }
   inline int getType() { return type; }
+  inline int getEvent() { return event; }
 };
 
 #endif

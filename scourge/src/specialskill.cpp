@@ -48,7 +48,7 @@ void SpecialSkill::initSkills( Session *session ) {
     exit(1);
   }
 
-  int type;
+  int type, event;
   char name[255], line[255], description[2000], 
     prereq[255], action[255];
   int n = fgetc(fp);
@@ -60,7 +60,24 @@ void SpecialSkill::initSkills( Session *session ) {
       n = Constants::readLine( line, fp );
       strcpy( prereq, line + 2 );
       n = Constants::readLine( line, fp );
-      type = atoi( line + 2 );
+      char *p = strtok( line + 2, "," );
+      if( p ) {
+        switch(*p) {
+        case 'A': type = SpecialSkill::SKILL_TYPE_AUTOMATIC; break;
+        case 'M': type = SpecialSkill::SKILL_TYPE_MANUAL; break;
+        default: cerr << "Unknown special skill type: " << (*p) << endl;
+                type = SpecialSkill::SKILL_TYPE_MANUAL;
+        }
+        p = strtok( NULL, "," );
+        switch(*p) {
+        case 'D': event = SpecialSkill::SKILL_EVENT_DEFENSE; break;
+        case 'T': type = SpecialSkill::SKILL_EVENT_TO_HIT; break;
+        case 'A': type = SpecialSkill::SKILL_EVENT_DAMAGE; break;
+        case 'S': type = SpecialSkill::SKILL_EVENT_STATE_MOD; break;
+        default: cerr << "Unknown special skill event: " << (*p) << endl;
+                type = SpecialSkill::SKILL_EVENT_DAMAGE;
+        }
+      }
       n = Constants::readLine( line, fp );
       strcpy( action, line + 2 );
       strcpy( description, "" );
@@ -80,6 +97,7 @@ void SpecialSkill::initSkills( Session *session ) {
                           name, 
                           description, 
                           type, 
+                          event,
                           prereq, 
                           action );
       skills.push_back( ss );
@@ -96,12 +114,14 @@ SpecialSkill::SpecialSkill( Session *session,
                             const char *name, 
                             const char *description, 
                             int type,
+                            int event,
                             const char *squirrelFuncPrereq,
                             const char *squirrelFuncAction ) {
   this->session = session;
   this->name = name;
   this->description = description;
   this->type = type;
+  this->event = event;
   this->squirrelFuncPrereq = squirrelFuncPrereq;
   this->squirrelFuncAction = squirrelFuncAction;
 }
