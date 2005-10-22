@@ -38,6 +38,7 @@ class Creature;
 class Spell;
 class MagicSchool;
 class Scourge;
+class SpecialSkill;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:
@@ -45,12 +46,12 @@ private:
     int selected; // which player is selected?
     int selectedMode; // which mode is selected?
     enum mode {
-	  INVENTORY = 0, CHARACTER, SPELL, LOG, MISSION, PARTY
+	  INVENTORY = 0, CHARACTER, SPELL, SPECIAL, LOG, MISSION, PARTY
     };    
 
 	// UI
 	Window *mainWin;
-	Button *inventoryButton, *skillsButton, *spellsButton, *partyButton, *closeButton;
+	Button *inventoryButton, *skillsButton, *spellsButton, *specialButton, *partyButton, *closeButton;
 	CardContainer *cards;
 
 	// inventory screen
@@ -74,6 +75,13 @@ private:
 	char **schoolText;
 	char **spellText;
 	GLuint *spellIcons;
+
+	// special skills ui
+	Button *useSpecialButton, *storeSpecialButton;
+	ScrollingList *specialList;
+	Label *specialDescriptionLabel;
+	char **specialText;
+	GLuint *specialIcons;
 
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *hpLabel, *mpLabel;
@@ -137,6 +145,7 @@ public:
 
   void showSpells();
   void showSkills();
+  void showSpecial();
 
 protected:
 	void setSelectedPlayerAndMode(int player, int mode);
@@ -148,6 +157,8 @@ protected:
 	void showMemorizedSpellsInSchool(Creature *creature, MagicSchool *school);
 	void showSpellDescription(Spell *spell);
 	Spell *getSelectedSpell();
+  void showSpecialDescription(SpecialSkill *special);
+  SpecialSkill *getSelectedSpecial();
 };
 
 #endif

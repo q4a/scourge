@@ -98,10 +98,10 @@ void ShapePalette::initialize() {
   }
 
   // set up the spell tiles
-  setupAlphaBlendedBMPGrid( "/spells.bmp", &spells, spellsImage, 20, 5, 
+  setupAlphaBlendedBMPGrid( "/spells.bmp", &spells, spellsImage, 20, 18, 
 							32, 32, 71, 108, 108, 80, 80, 80 );
   for( int x = 0; x < 20; x++ ) {
-    for( int y = 0; y < 5; y++ ) {
+    for( int y = 0; y < 18; y++ ) {
       spellsTex[x][y] = loadGLTextureBGRA( 32, 32, spellsImage[x][y], GL_LINEAR );
     }
   }

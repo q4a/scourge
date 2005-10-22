@@ -28,6 +28,7 @@
 #include "item.h"
 #include "creature.h"
 #include "tradedialog.h"
+#include "specialskill.h"
 
 using namespace std;
 
@@ -35,6 +36,8 @@ using namespace std;
   *@author Gabor Torok
   */
 
+
+#define START_OF_SECOND_BUTTON_SET 140
 
 Inventory::Inventory(Scourge *scourge) {
   this->scourge = scourge;
@@ -78,6 +81,11 @@ Inventory::Inventory(Scourge *scourge) {
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->spellText[i] = (char*)malloc(120 * sizeof(char));
   }
+  this->specialText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  this->specialIcons = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
+  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    this->specialText[i] = (char*)malloc(120 * sizeof(char));
+  }
   selected = selectedMode = 0;
 
   // construct UI
@@ -97,6 +105,8 @@ Inventory::Inventory(Scourge *scourge) {
   skillsButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Skills", true);
   yy += buttonHeight;
   spellsButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Spells", true);
+  yy += buttonHeight;
+  specialButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Capabilities", true);
   yy += buttonHeight;
   missionButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Mission", true);
   yy += buttonHeight;
@@ -124,7 +134,7 @@ Inventory::Inventory(Scourge *scourge) {
   paperDoll = new Canvas(115, 175, 411, 206 + (Constants::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
 
-  yy = 120;
+  yy = START_OF_SECOND_BUTTON_SET;
   equipButton    = cards->createButton( 0, yy, 105, yy + buttonHeight, "Don/Doff", INVENTORY);
   yy+=buttonHeight;
   openButton     = cards->createButton( 0, yy, 105, yy + buttonHeight, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY ); 
@@ -174,10 +184,29 @@ Inventory::Inventory(Scourge *scourge) {
   cards->createLabel(115, 310, "Spell notes:", SPELL, Constants::RED_COLOR);
   spellDescriptionLabel = new Label(115, 325, "", 50);
   cards->addWidget(spellDescriptionLabel, SPELL);
-  castButton = cards->createButton( 0, 120, 105, 140, "Cast", SPELL);
-  storeSpellButton = cards->createButton( 0, 140, 105, 160, "Store", SPELL, true);
+
+  yy = START_OF_SECOND_BUTTON_SET;
+  castButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Cast", SPELL);
+  yy+=buttonHeight;
+  storeSpellButton = cards->createButton( 0, yy + buttonHeight, 105, 160, "Store", SPELL, true);
+  yy+=buttonHeight;
   storeSpell = NULL;
 
+  // -------------------------------------------
+  // special skills
+  cards->createLabel(115, 10, "Special Capabilities", SPECIAL, Constants::RED_COLOR);
+  specialList = new ScrollingList(115, 15, 400, 100, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
+  cards->addWidget(specialList, SPECIAL);
+  cards->createLabel(115, 310, "Capability Description:", SPECIAL, Constants::RED_COLOR);
+  specialDescriptionLabel = new Label(115, 325, "", 50);
+  cards->addWidget(specialDescriptionLabel, SPECIAL);
+
+  yy = START_OF_SECOND_BUTTON_SET;
+  useSpecialButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Use", SPECIAL);
+  yy += buttonHeight;
+  storeSpecialButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Store", SPECIAL, true);
+  yy += buttonHeight;
+  //storeSpell = NULL;
 
   // -------------------------------------------
   // mission
@@ -219,6 +248,10 @@ Inventory::~Inventory() {
 
 void Inventory::showSpells() {
   setSelectedPlayerAndMode( selected, SPELL );
+}
+
+void Inventory::showSpecial() {
+  setSelectedPlayerAndMode( selected, SPECIAL );
 }
 
 void Inventory::showSkills() {
@@ -357,6 +390,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == inventoryButton) setSelectedPlayerAndMode(selected, INVENTORY);
   else if(widget == skillsButton) setSelectedPlayerAndMode(selected, CHARACTER);
   else if(widget == spellsButton) setSelectedPlayerAndMode(selected, SPELL);
+  else if(widget == specialButton) setSelectedPlayerAndMode(selected, SPECIAL);
   else if(widget == missionButton)  setSelectedPlayerAndMode(selected, MISSION);
   else if(widget == partyButton) setSelectedPlayerAndMode(selected, PARTY);
   else if(widget == invList && scourge->getTargetSelectionFor() ) {
@@ -470,6 +504,13 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 //  } else if( widget == quickSpell ) {
     //Spell *spell = getSelectedSpell();
     //if(spell) creature->setQuickSpell( 0, spell );
+  } else if(widget == specialList) {
+    SpecialSkill *special = getSelectedSpecial();
+    if(special) showSpecialDescription(special);
+  } else if(widget == storeSpecialButton) {
+    cerr << "FIXME: storeSpecialButton";
+  } else if(widget == useSpecialButton) {
+    cerr << "FIXME: useSpecialButton";
   } else if( widget == storeSpellButton ) {
     if( storeSpellButton->isSelected() ) {
       storeSpell = getSelectedSpell();
@@ -629,6 +670,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   inventoryButton->setSelected(selectedMode == INVENTORY);
   skillsButton->setSelected(selectedMode == CHARACTER);
   spellsButton->setSelected(selectedMode == SPELL);
+  specialButton->setSelected(selectedMode == SPECIAL);
   missionButton->setSelected(selectedMode == MISSION);
   partyButton->setSelected(selectedMode == PARTY);
 
@@ -741,6 +783,19 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     }
     schoolList->setLines(MagicSchool::getMagicSchoolCount(), 
                          (const char**)schoolText);
+    break;
+  case SPECIAL:
+    for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
+      SpecialSkill *ss = SpecialSkill::getSpecialSkill(t);   
+      sprintf(specialText[t], "%s (%s)", 
+              ss->getName(), 
+              (ss->getType() == SpecialSkill::SKILL_TYPE_AUTOMATIC ? "A" : "M"));
+      specialIcons[t] = scourge->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ];
+    }
+    specialList->setLines(SpecialSkill::getSpecialSkillCount(), 
+                          (const char**)specialText,
+                          NULL,
+                          specialIcons);
     break;
   case LOG:
     break;
@@ -1039,3 +1094,18 @@ void Inventory::showMemorizedSpellsInSchool(Creature *creature, MagicSchool *sch
 void Inventory::showSpellDescription(Spell *spell) {
   spellDescriptionLabel->setText((char*)(spell->getNotes() ? spell->getNotes() : ""));
 }
+
+SpecialSkill *Inventory::getSelectedSpecial() {
+  //Creature *creature = scourge->getParty()->getParty(selected);
+  SpecialSkill *ss = NULL;
+  int n = specialList->getSelectedLine();
+  if(n != -1 && n < SpecialSkill::getSpecialSkillCount()) {
+    ss = SpecialSkill::getSpecialSkill(n);
+  }
+  return ss;
+}
+
+void Inventory::showSpecialDescription(SpecialSkill *ss) {
+  specialDescriptionLabel->setText((char*)(ss->getDescription() ? ss->getDescription() : ""));
+}
+

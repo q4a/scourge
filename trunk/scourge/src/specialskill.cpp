@@ -87,35 +87,34 @@ void SpecialSkill::initSkills( Session *session ) {
       n = Constants::readLine( line, fp );
       strcpy( action, line + 1 );
 
-      iconTileX = iconTileY = 1;
+      iconTileX = iconTileY = 0;
       n = Constants::readLine( line, fp );      
       p = strtok( line + 1, "," );
       if( p ) {
-        iconTileX = atoi( p );
+        iconTileX = atoi( p ) - 1;
+        if( iconTileX < 0 ) iconTileX = 0;
         p = strtok( NULL, "," );
-        if( p ) iconTileY = atoi( p );
+        if( p ) iconTileY = atoi( p ) - 1;
+        if( iconTileY < 0 ) iconTileY = 0;
       }
 
+
       strcpy( description, "" );
-      while( true ) {
+      while( n == 'D' ) {
         n = Constants::readLine( line, fp );
-        if( line[0] == 'D' ) {
-          if( strlen( description ) ) strcat( description, " " );
-          strcat( description, line + 1 );
-        } else {
-          break;
-        }
+        if( strlen( description ) ) strcat( description, " " );
+        strcat( description, line + 1 );
       }
       
       cerr << "Storing special skill: " << name << " (" << prereq << "," << action << ")" << endl;
       SpecialSkill *ss = 
         new SpecialSkill( session, 
-                          name, 
-                          description, 
+                          strdup( name ), 
+                          strdup( description ), 
                           type, 
                           event,
-                          prereq, 
-                          action,
+                          strdup( prereq ), 
+                          strdup( action ),
                           iconTileX,
                           iconTileY );
       skills.push_back( ss );
