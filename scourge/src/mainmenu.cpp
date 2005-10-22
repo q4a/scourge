@@ -26,7 +26,7 @@ using namespace std;
 #define LOGO_ZOOM 0.8f
 
 #define LOGO_SPRITE_DELTA 1.0f
-#define PI 3.14159f
+//#define PI 3.14159f
 
 #define WATER_HEIGHT 130
 

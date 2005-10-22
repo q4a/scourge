@@ -25,6 +25,7 @@
 //#include <conio.h>   // for getch
 #include <vector>    // STL for Vector
 #include <map>
+#include <set>
 #include <algorithm> // STL for Heap
 
 #include "constants.h"
@@ -46,6 +47,7 @@ class Item;
 class Event;
 class RenderedItem;
 class NpcInfo;
+class SpecialSkill;
 
 /**
   *@author Gabor Torok
@@ -129,6 +131,8 @@ class Creature : public RenderedCreature {
   bool loaded;
 
   NpcInfo *npcInfo;
+
+  std::set<SpecialSkill*> specialSkills;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -142,6 +146,9 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Character *character, char *name, int character_model_info_index, bool loaded);
   Creature(Session *session, Monster *monster, GLShape *shape, bool loaded);
   ~Creature();
+
+  inline void addSpecialSkill( SpecialSkill *ss ) { specialSkills.insert( ss ); }
+  inline void removeSpecialSkill( SpecialSkill *ss ) { specialSkills.erase( ss ); }
 
   inline void setQuickSpell( int index, Spell *spell ) { 
     for( int i = 0; i < 12; i++ ) {

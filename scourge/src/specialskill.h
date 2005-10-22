@@ -58,6 +58,16 @@ public:
   static std::vector<SpecialSkill*> skills;
   static std::map<std::string,SpecialSkill*> skillsByName;
 
+  inline static SpecialSkill *findByName( const char *name ) {
+    std::string s = name;
+    SpecialSkill *ss = ( skillsByName.find( s ) == skillsByName.end() ? NULL : skillsByName[ s ] );
+    if( !ss ) std::cerr << "*** Error can't find special skill: " << name << std::endl;
+    return ss;
+  }
+
+  inline static int getSpecialSkillCount() { return skills.size(); }
+  inline static SpecialSkill *getSpecialSkill( int index ) { return skills[ index ]; }
+
   static void initSkills( Session *session );
 
   SpecialSkill( Session *session, 
@@ -78,8 +88,8 @@ public:
   inline const char *getSquirrelFunctionAction() { return squirrelFuncAction; }
   inline int getType() { return type; }
   inline int getEvent() { return event; }
-  inline int getIconX() { return iconTileX; }
-  inline int getIconY() { return iconTileY; }
+  inline int getIconTileX() { return iconTileX; }
+  inline int getIconTileY() { return iconTileY; }
 };
 
 #endif
