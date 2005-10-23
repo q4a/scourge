@@ -36,6 +36,8 @@ class SqGame;
 class SqCreature;
 class SqMission;
 class SqItem;
+class Creature;
+class Item;
 
 /**
  * A squirrel member function declaration.
@@ -117,7 +119,10 @@ public:
   HSQOBJECT refParty[MAX_PARTY_SIZE];
   HSQOBJECT refMission;
   std::vector<HSQOBJECT*> refCreature;
+  std::map<Creature*,HSQOBJECT*> creatureMap; 
+  std::map<Creature*,HSQOBJECT*> partyMap; 
   std::vector<HSQOBJECT*> refItem;
+  std::map<Item*,HSQOBJECT*> itemMap;
 
   // events
   void startGame();
@@ -134,6 +139,11 @@ public:
   static void printArgs( HSQUIRRELVM v );
 
   bool compile( const char *filename );
+
+  bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
+  HSQOBJECT *getCreatureRef( Creature *creature );
+  HSQOBJECT *getItemRef( Item *item );
+
 
 protected:
   bool callNoArgMethod( const char *name );

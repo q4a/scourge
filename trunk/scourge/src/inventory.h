@@ -82,6 +82,7 @@ private:
 	ScrollingLabel *specialDescriptionLabel;
 	char **specialText;
 	GLuint *specialIcons;
+  Color *specialColor;
 
 	// character info screen
 	Label *nameAndClassLabel, *levelLabel, *hpLabel, *mpLabel;

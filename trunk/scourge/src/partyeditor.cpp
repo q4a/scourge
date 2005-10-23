@@ -31,7 +31,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 10
+#define LEVEL 1
 
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
@@ -452,9 +452,6 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
         pc[i]->addSpell(Spell::getSpellByName("Remove curse"));
         pc[i]->addSpell(Spell::getSpellByName("Teleportation"));
         pc[i]->setMp( 5000 );
-
-        pc[i]->addSpecialSkill( SpecialSkill::findByName( "Superior toughness" ) );
-        pc[i]->addSpecialSkill( SpecialSkill::findByName( "Missile Defense" ) );
       }
     }
   }
