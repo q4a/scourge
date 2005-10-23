@@ -31,8 +31,8 @@ class Checkbox;
 
 class CardContainer {
  protected:
-  static const int MAX_CARDS = 10;
-  static const int MAX_WIDGETS = 100;
+  static const int MAX_CARDS = 20;
+  static const int MAX_WIDGETS = 1000;
   
   Widget *containedWidget[MAX_CARDS][MAX_WIDGETS];
   int cardCount;

@@ -21,18 +21,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "constants.h"
+#include "../constants.h"
+#include "../storable.h"
 
 /**
   *@author Gabor Torok
   */
 
-class Session;
-class Battle;
-
-class SpecialSkill {
+class SpecialSkill : public Storable {
 private:
-  Session *session;
   const char *name;
   const char *description;
   int type, event;
@@ -68,10 +65,9 @@ public:
   inline static int getSpecialSkillCount() { return skills.size(); }
   inline static SpecialSkill *getSpecialSkill( int index ) { return skills[ index ]; }
 
-  static void initSkills( Session *session );
+  static void initSkills();
 
-  SpecialSkill( Session *session, 
-                const char *name, 
+  SpecialSkill( const char *name, 
                 const char *description, 
                 int type,
                 int event,
@@ -81,7 +77,8 @@ public:
                 int iconTileY );
   virtual ~SpecialSkill();
 
-  inline Session *getSession() { return session; }
+  inline int getStorableType() { return Storable::SPECIAL_STORABLE; }
+
   inline const char *getName() { return name; }
   inline const char *getDescription() { return description; }
   inline const char *getSquirrelFunctionPrereq() { return squirrelFuncPrereq; }

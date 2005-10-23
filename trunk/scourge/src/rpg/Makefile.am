@@ -12,4 +12,6 @@ libScourgeRpg_a_SOURCES = \
 	monster.cpp\
 	monster.h\
 	spell.cpp\
-	spell.h
+	spell.h\
+	specialskill.cpp\
+	specialskill.h

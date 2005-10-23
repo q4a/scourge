@@ -80,6 +80,14 @@ SqBinding::SqBinding( Session *session ) {
 
   item = new SqItem();
   createClass( item->getClassDeclaration(), SCOURGE_ID_TOKEN );
+
+  // compile some static scripts:
+  // Special skills
+  char s[200];
+  sprintf(s, "%s/world/skills.nut", rootDir);
+  if( !compile( s ) ) {
+    cerr << "Error: *** Unable to compile special skills code: " << s << endl;
+  }
 }
 
 SqBinding::~SqBinding() {

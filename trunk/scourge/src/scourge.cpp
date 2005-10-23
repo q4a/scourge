@@ -33,6 +33,7 @@
 #include "io/file.h"
 #include "texteffect.h"
 #include "sqbinding/sqbinding.h"
+#include "storable.h"
 
 using namespace std;
 
@@ -2807,31 +2808,31 @@ void Scourge::drawWidgetContents(Widget *w) {
       for(int i = 0; i < party->getPartySize(); i++) {
         if( party->getParty( i ) == getParty()->getPlayer() ) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {
-			Spell *spell = getParty()->getPlayer()->getQuickSpell( t );
-      w->setTooltip( spell->getName() );
-			glEnable( GL_ALPHA_TEST );
-			glAlphaFunc( GL_EQUAL, 0xff );
-			glEnable(GL_TEXTURE_2D);
-			glPushMatrix();
-			//    glTranslatef( x, y, 0 );
-			glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
-			glColor4f(1, 1, 1, 1);
-			
-			glBegin( GL_QUADS );
-			glNormal3f( 0, 0, 1 );
-			glTexCoord2f( 0, 0 );
-			glVertex3f( 0, 0, 0 );
-			glTexCoord2f( 0, 1 );
-			glVertex3f( 0, w->getHeight(), 0 );
-			glTexCoord2f( 1, 1 );
-			glVertex3f( w->getWidth(), w->getHeight(), 0 );
-			glTexCoord2f( 1, 0 );
-			glVertex3f( w->getWidth(), 0, 0 );
-			glEnd();
-			glPopMatrix();
-			
-			glDisable( GL_ALPHA_TEST );
-			glDisable(GL_TEXTURE_2D);
+            Storable *storable = getParty()->getPlayer()->getQuickSpell( t );
+            w->setTooltip( (char*)(storable->getName()) );
+            glEnable( GL_ALPHA_TEST );
+            glAlphaFunc( GL_EQUAL, 0xff );
+            glEnable(GL_TEXTURE_2D);
+            glPushMatrix();
+            //    glTranslatef( x, y, 0 );
+            glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
+            glColor4f(1, 1, 1, 1);
+            
+            glBegin( GL_QUADS );
+            glNormal3f( 0, 0, 1 );
+            glTexCoord2f( 0, 0 );
+            glVertex3f( 0, 0, 0 );
+            glTexCoord2f( 0, 1 );
+            glVertex3f( 0, w->getHeight(), 0 );
+            glTexCoord2f( 1, 1 );
+            glVertex3f( w->getWidth(), w->getHeight(), 0 );
+            glTexCoord2f( 1, 0 );
+            glVertex3f( w->getWidth(), 0, 0 );
+            glEnd();
+            glPopMatrix();
+            
+            glDisable( GL_ALPHA_TEST );
+            glDisable(GL_TEXTURE_2D);
           }
           return;
         }
@@ -3058,28 +3059,39 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
 
 void Scourge::quickSpellAction( int index ) {
   if( inventory->inStoreSpellMode() ) {    
-    getParty()->getPlayer()->setQuickSpell( index, inventory->getStoreSpell() );
+    getParty()->getPlayer()->setQuickSpell( index, inventory->getStorable() );
     inventory->setStoreSpellMode( false );
     if( inventory->isVisible() ) toggleInventoryWindow();
   } else {
     Creature *creature = getParty()->getPlayer();
-    Spell *spell = creature->getQuickSpell( index );
-    if( spell ) {
-      if(spell->getMp() > creature->getMp()) {
-        showMessageDialog("Not enough Magic Points to cast this spell!");
+    Storable *storable = creature->getQuickSpell( index );
+    if( storable ) {
+      if( storable->getStorableType() == Storable::SPELL_STORABLE ) {
+        executeQuickSpell( (Spell*)storable );
+      } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
+        cerr << "IMPLEMENT ME: use capability" << endl;
       } else {
-        creature->setAction(Constants::ACTION_CAST_SPELL, 
-                            NULL,
-                            spell);
-        if(!spell->isPartyTargetAllowed()) {
-          setTargetSelectionFor(creature);
-        } else {
-          creature->setTargetCreature(creature);
-        }
+        cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
       }
     } else {
       inventory->showSpells();
       if( !inventory->isVisible() ) toggleInventoryWindow();
+    }
+  }
+}
+
+void Scourge::executeQuickSpell( Spell *spell ) {
+  Creature *creature = getParty()->getPlayer();
+  if(spell->getMp() > creature->getMp()) {
+    showMessageDialog("Not enough Magic Points to cast this spell!");
+  } else {
+    creature->setAction(Constants::ACTION_CAST_SPELL, 
+                        NULL,
+                        spell);
+    if(!spell->isPartyTargetAllowed()) {
+      setTargetSelectionFor(creature);
+    } else {
+      creature->setTargetCreature(creature);
     }
   }
 }

@@ -1,5 +1,3 @@
-
-
 /***************************************************************************
                           inventory.cpp  -  description
                              -------------------
@@ -94,11 +92,12 @@ Inventory::Inventory(Scourge *scourge) {
                         scourge->getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT - 
                         Scourge::INVENTORY_HEIGHT - Window::SCREEN_GUTTER,
                         Scourge::INVENTORY_WIDTH, Scourge::INVENTORY_HEIGHT,
-                        "Party Information", false, Window::SIMPLE_WINDOW, "default" );
+                        "", false, Window::SIMPLE_WINDOW, "default" );
   mainWin->setLocked( true );
   mainWin->setAnimation( Window::SLIDE_UP );
 
   int buttonHeight = 20;
+  int descriptionHeight = 100;
   int yy = 0;
   inventoryButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Inventory", true);
   yy += buttonHeight;
@@ -152,7 +151,7 @@ Inventory::Inventory(Scourge *scourge) {
 
   // -------------------------------------------
   // character info
-  nameAndClassLabel = cards->createLabel(115, 10, NULL, CHARACTER, Constants::RED_COLOR);
+  cards->createLabel(115, 10, "Character stats:", CHARACTER, Constants::RED_COLOR);
   attrCanvas     = new Canvas( 115, 15, 405, 115, this );
   cards->addWidget( attrCanvas, CHARACTER );
 
@@ -182,23 +181,23 @@ Inventory::Inventory(Scourge *scourge) {
   spellList = new ScrollingList(115, 140, 290, 150, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
   cards->addWidget(spellList, SPELL);
   cards->createLabel(115, 310, "Spell notes:", SPELL, Constants::RED_COLOR);
-  spellDescriptionLabel = new Label(115, 325, "", 50);
+  spellDescriptionLabel = new ScrollingLabel( 115, 325, 290, descriptionHeight, "" );
   cards->addWidget(spellDescriptionLabel, SPELL);
 
   yy = START_OF_SECOND_BUTTON_SET;
   castButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Cast", SPELL);
   yy+=buttonHeight;
-  storeSpellButton = cards->createButton( 0, yy + buttonHeight, 105, 160, "Store", SPELL, true);
+  storeSpellButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Store", SPELL, true);
   yy+=buttonHeight;
-  storeSpell = NULL;
+  storable = NULL;
 
   // -------------------------------------------
   // special skills
   cards->createLabel(115, 10, "Special Capabilities", SPECIAL, Constants::RED_COLOR);
-  specialList = new ScrollingList(115, 15, 400, 100, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
+  specialList = new ScrollingList(115, 15, 290, 280, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
   cards->addWidget(specialList, SPECIAL);
   cards->createLabel(115, 310, "Capability Description:", SPECIAL, Constants::RED_COLOR);
-  specialDescriptionLabel = new Label(115, 325, "", 50);
+  specialDescriptionLabel = new ScrollingLabel( 115, 325, 290, descriptionHeight, "" );
   cards->addWidget(specialDescriptionLabel, SPECIAL);
 
   yy = START_OF_SECOND_BUTTON_SET;
@@ -508,16 +507,25 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     SpecialSkill *special = getSelectedSpecial();
     if(special) showSpecialDescription(special);
   } else if(widget == storeSpecialButton) {
-    cerr << "FIXME: storeSpecialButton";
+    if( storeSpecialButton->isSelected() ) {
+      storable = getSelectedSpecial();
+      if( !storable ) {
+        storeSpecialButton->setSelected( false );
+      }
+    }
   } else if(widget == useSpecialButton) {
     cerr << "FIXME: useSpecialButton";
   } else if( widget == storeSpellButton ) {
+    cerr << "111" << endl;
     if( storeSpellButton->isSelected() ) {
-      storeSpell = getSelectedSpell();
-      if( !storeSpell ) {
+      cerr << "222" << endl;
+      storable = getSelectedSpell();
+      if( !storable ) {
+        cerr << "333" << endl;
         storeSpellButton->setSelected( false );
       }
     }
+    cerr << "444" << endl;
   } else if(widget == castButton) {
     Spell *spell = getSelectedSpell();
     if(spell) {
@@ -681,19 +689,20 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   int stateCount;
   int objectiveCount = 0;
   Creature * selectedP = scourge->getParty()->getParty(selected);
+
+  sprintf(nameAndClassStr, "%s, %s (level %d) (%s)", 
+          selectedP->getName(), 
+          selectedP->getCharacter()->getName(), 
+          selectedP->getLevel(),
+          MagicSchool::getMagicSchool(selectedP->getDeityIndex())->getDeity());
+  //nameAndClassLabel->setText(nameAndClassStr);  
+  mainWin->setTitle( nameAndClassStr );
+
   switch(selectedMode) {
   case CHARACTER:         
 
     sprintf(skillsStr, "Skills: (Available points: %d)", selectedP->getAvailableSkillPoints());
     skillLabel->setText( skillsStr );
-
-
-    sprintf(nameAndClassStr, "%s, %s (level %d) (%s)", 
-            selectedP->getName(), 
-            selectedP->getCharacter()->getName(), 
-            selectedP->getLevel(),
-            MagicSchool::getMagicSchool(selectedP->getDeityIndex())->getDeity());
-    nameAndClassLabel->setText(nameAndClassStr);  
 
     stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {

@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include "../constants.h"
+#include "../storable.h"
 
 class Dice {
 private:
@@ -48,7 +49,7 @@ public:
 
 class MagicSchool;
 
-class Spell {
+class Spell : public Storable {
  private:
   char *name;
   char *sound;
@@ -78,6 +79,8 @@ class Spell {
         int iconTileX, int iconTileY, bool friendly, int stateModPrereq );
   ~Spell();
 
+  inline int getStorableType() { return Storable::SPELL_STORABLE; }
+
   inline bool isFriendly() { return friendly; }
   inline bool hasStateModPrereq() { return( stateModPrereq != -1 ); }
   inline int getStateModPrereq() { 
@@ -88,7 +91,7 @@ class Spell {
   inline bool isStateModPrereqAPotionSkill() { return( stateModPrereq < -1 ); }
   inline int getIconTileX() { return iconTileX; }
   inline int getIconTileY() { return iconTileY; }
-  inline char *getName() { return name; }
+  inline const char *getName() { return (const char*)name; }
   inline int getAction() { return action->roll(); }
   inline int getLevel()  { return level; }
   inline int getMp() { return mp; }
