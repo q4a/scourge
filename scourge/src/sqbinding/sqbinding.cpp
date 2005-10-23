@@ -17,6 +17,8 @@
 #include "sqbinding.h"
 #include "../session.h"
 #include "../creature.h"
+#include "../item.h"
+#include "../rpg/rpglib.h"
 #include "sqgame.h"
 #include "sqcreature.h"
 #include "sqmission.h"
@@ -115,6 +117,7 @@ void SqBinding::startGame() {
       // Set a token in the class so we can resolve the squirrel instance to a native creature.
       // The value is the address of the native creature object.
       setObjectValue( refParty[i], SCOURGE_ID_TOKEN, session->getParty()->getParty(i) );
+      partyMap[ session->getParty()->getParty(i) ] = &(refParty[i]);
     }
   }
 }
@@ -124,6 +127,7 @@ void SqBinding::endGame() {
   for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
     sq_release( vm, &(refParty[ i ]) );  
   }
+  partyMap.clear();
 
   // release game ref.
   sq_release( vm, &refGame );  
@@ -169,6 +173,7 @@ bool SqBinding::startLevel() {
       // The value is the address of the native creature object.
       setObjectValue( *obj, SCOURGE_ID_TOKEN, session->getCreature(i) );
       refCreature.push_back( obj );
+      creatureMap[ session->getCreature(i) ] = obj;
     } else {
       cerr << "Unable instantiate class: " << creature->getClassName() << endl;
     }
@@ -183,6 +188,7 @@ bool SqBinding::startLevel() {
       // The value is the address of the native creature object.
       setObjectValue( *(obj), SCOURGE_ID_TOKEN, session->getItem(i) );
       refItem.push_back( obj );
+      itemMap[ session->getItem(i) ] = obj;
     } else {
       cerr << "Unable instantiate class: " << creature->getClassName() << endl;
     }
@@ -202,6 +208,7 @@ bool SqBinding::endLevel() {
     refCreature[ i ] = NULL;
   }
   refCreature.clear();
+  creatureMap.clear();
 
   // destroy the items of the level
   for( int i = 0; i < session->getItemCount(); i++ ) {
@@ -210,6 +217,7 @@ bool SqBinding::endLevel() {
     refItem[ i ] = NULL;
   }
   refItem.clear();
+  itemMap.clear();
 
   // destroy the mission
   sq_release( vm, &refMission );
@@ -219,9 +227,50 @@ bool SqBinding::endLevel() {
 
 
 
+HSQOBJECT *SqBinding::getCreatureRef( Creature *creature ) {
+  if( creatureMap.find( creature ) != creatureMap.end() ) {
+    return creatureMap[ creature ];
+  } else if( partyMap.find( creature ) != partyMap.end() ) {
+    return partyMap[ creature ];
+  } else {
+    // this could be b/c the objects aren't created yet
+    //if( DEBUG_SQUIRREL ) cerr << "*** Warning: can't find squirrel object for creature: " << creature->getName() << endl;
+    return NULL;
+  }
+}
 
+HSQOBJECT *SqBinding::getItemRef( Item *item ) {
+  if( itemMap.find( item ) != itemMap.end() ) {
+    return itemMap[ item ];
+  } else {
+    // this could be b/c the objects aren't created yet
+    //if( DEBUG_SQUIRREL ) cerr << "*** Warning: can't find squirrel object for item: " << item->getRpgItem()->getName() << endl;
+    return NULL;
+  }
+}
 
-
+bool SqBinding::callBoolMethod( const char *name, 
+                                HSQOBJECT *param, 
+                                bool *result ) {
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC( name ), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushobject( vm, *param );
+    sq_call( vm, 2, 1 ); //calls the function
+    SQBool sqres;
+    sq_getbool( vm, -1, &sqres );
+    *result = (bool)sqres;
+    ret = true;
+  } else {
+    cerr << "Can't find function " << name << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;
+}
 
 bool SqBinding::callNoArgMethod( const char *name ) {
   //int ret = -1;

@@ -24,6 +24,7 @@
 #include "events/potionexpirationevent.h"
 #include "events/statemodexpirationevent.h"
 #include "events/thirsthungerevent.h"
+#include "sqbinding/sqbinding.h"
 
 using namespace std;
 
@@ -147,6 +148,8 @@ void Creature::commonInit() {
   lastEnchantDate.setDate(-1, -1, -1, -1, -1, -1);
 
   this->npcInfo = NULL;
+
+  evalSpecialSkills();
 }
 
 Creature::~Creature(){
@@ -318,6 +321,8 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   }
 
   creature->calculateExpOfNextLevel();
+
+  creature->evalSpecialSkills();
 
   return creature;
 }
@@ -1318,6 +1323,9 @@ int Creature::addExperience(int delta) {
     sprintf( message, "  %s levels up!", getName() );
     session->getGameAdapter()->startTextEffect( message );
   }
+
+  evalSpecialSkills();
+
   return n;
 }
 
@@ -1804,6 +1812,41 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
       addInventory( loot, true );
     }
   }
-    
+}
+
+void Creature::evalSpecialSkills() {
+  if( !isMonster() ) cerr << "In Creature::evalSpecialSkills for " << getName() << endl;
+  specialSkills.clear();
+  HSQOBJECT *param = session->getSquirrel()->getCreatureRef( this );
+  if( param ) {
+    bool result;
+    for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
+      SpecialSkill *ss = SpecialSkill::getSpecialSkill(t);
+      session->getSquirrel()->
+        callBoolMethod( ss->getSquirrelFunctionPrereq(),
+                        param,
+                        &result );
+      if( result ) {
+        specialSkills.insert( ss );
+      }
+    }
+  }
+}
+
+void Creature::setSkill(int index, int value) { 
+  skills[index] = value; 
+  evalSpecialSkills();
+}
+
+void Creature::setStateMod(int mod, bool setting) { 
+  if(setting) stateMod |= (1 << mod);  
+  else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
+  evalSpecialSkills();
+}
+
+void Creature::setProtectedStateMod(int mod, bool setting) { 
+  if(setting) protStateMod |= (1 << mod);  
+  else protStateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
+  evalSpecialSkills();
 }
 

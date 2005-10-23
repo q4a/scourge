@@ -148,8 +148,8 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Monster *monster, GLShape *shape, bool loaded);
   ~Creature();
 
-  inline void addSpecialSkill( SpecialSkill *ss ) { specialSkills.insert( ss ); }
-  inline void removeSpecialSkill( SpecialSkill *ss ) { specialSkills.erase( ss ); }
+  void evalSpecialSkills();
+  inline bool hasSpecialSkill( SpecialSkill *ss ) { return specialSkills.find(ss) != specialSkills.end(); }
 
   inline void setQuickSpell( int index, Storable *storable ) { 
     for( int i = 0; i < 12; i++ ) {
@@ -331,17 +331,11 @@ class Creature : public RenderedCreature {
   bool decSkillMod(int index);
   void applySkillMod();
   inline int getSkillMod(int index) { return skillMod[index]; }
-  inline void setSkill(int index, int value) { skills[index] = value; }
+  void setSkill(int index, int value);
   inline void setSkillBonus(int index, int value) { skillBonus[index] = value; }
   inline int getSkillBonus(int index) { return skillBonus[index]; }
-  inline void setStateMod(int mod, bool setting) { 
-    if(setting) stateMod |= (1 << mod);  
-    else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
-  }
-  inline void setProtectedStateMod(int mod, bool setting) { 
-    if(setting) protStateMod |= (1 << mod);  
-    else protStateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
-  }
+  void setStateMod(int mod, bool setting);
+  void setProtectedStateMod(int mod, bool setting);
 
   // return the initiative for a battle round (0-10), the lower the faster the attack
   // the method can return negative numbers if the weapon skill is very high (-10 to 10)

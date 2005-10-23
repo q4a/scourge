@@ -79,6 +79,7 @@ Inventory::Inventory(Scourge *scourge) {
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->spellText[i] = (char*)malloc(120 * sizeof(char));
   }
+  this->specialColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   this->specialText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   this->specialIcons = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
@@ -800,10 +801,19 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
               ss->getName(), 
               (ss->getType() == SpecialSkill::SKILL_TYPE_AUTOMATIC ? "A" : "M"));
       specialIcons[t] = scourge->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ];
+      if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {
+        specialColor[t].r = 1;
+        specialColor[t].g = 1;
+        specialColor[t].b = 1;
+      } else {
+        specialColor[t].r = 0.5f;
+        specialColor[t].g = 0.5f;
+        specialColor[t].b = 0.5f;
+      }
     }
     specialList->setLines(SpecialSkill::getSpecialSkillCount(), 
                           (const char**)specialText,
-                          NULL,
+                          specialColor,
                           specialIcons);
     break;
   case LOG:
