@@ -103,7 +103,5 @@ scourge_SOURCES = \
 	texteffect.cpp\
 	texteffect.h\
 	traindialog.cpp\
-	traindialog.h\
-	specialskill.cpp\
-	specialskill.h
+	traindialog.h
 

@@ -74,7 +74,7 @@ void Session::start() {
 void Session::initData() {
 
   // move all this down to scourge
-  adapter->initStart(7, "Loading shapes...");
+  adapter->initStart(9, "Loading shapes...");
 
   shapePal->initialize();
 
@@ -112,7 +112,7 @@ void Session::initData() {
   squirrel = new SqBinding( this );
 
   adapter->initUpdate("Initializing Special Skills...");
-  SpecialSkill::initSkills( this );
+  SpecialSkill::initSkills();
 
   adapter->initUpdate("Initializing...");
 

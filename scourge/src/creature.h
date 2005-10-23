@@ -32,6 +32,7 @@
 #include "persist.h"
 #include "date.h"
 #include "render/renderedcreature.h"
+#include "storable.h"
 
 class Map;
 class Session;
@@ -127,7 +128,7 @@ class Creature : public RenderedCreature {
   int character_model_info_index;
   int deityIndex;
 
-  Spell *quickSpell[12];
+  Storable *quickSpell[12];
   bool loaded;
 
   NpcInfo *npcInfo;
@@ -150,16 +151,16 @@ class Creature : public RenderedCreature {
   inline void addSpecialSkill( SpecialSkill *ss ) { specialSkills.insert( ss ); }
   inline void removeSpecialSkill( SpecialSkill *ss ) { specialSkills.erase( ss ); }
 
-  inline void setQuickSpell( int index, Spell *spell ) { 
+  inline void setQuickSpell( int index, Storable *storable ) { 
     for( int i = 0; i < 12; i++ ) {
-      if( quickSpell[ i ] == spell ) {
+      if( quickSpell[ i ] == storable ) {
         // already stored
         return;
       }
     }
-    quickSpell[ index ] = spell; 
+    quickSpell[ index ] = storable; 
   }
-  inline Spell *getQuickSpell( int index ) { return quickSpell[ index ]; }
+  inline Storable *getQuickSpell( int index ) { return quickSpell[ index ]; }
 
   inline void setDeityIndex( int n ) { deityIndex = n; }
   inline int getDeityIndex() { return deityIndex; }

@@ -1,4 +1,3 @@
-
 /***************************************************************************
                           inventory.h  -  description
                              -------------------
@@ -39,6 +38,7 @@ class Spell;
 class MagicSchool;
 class Scourge;
 class SpecialSkill;
+class Storable;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:
@@ -71,7 +71,7 @@ private:
 	Button *castButton, *storeSpellButton;
 	ScrollingList *schoolList;
 	ScrollingList *spellList;
-	Label *spellDescriptionLabel;
+	ScrollingLabel *spellDescriptionLabel;
 	char **schoolText;
 	char **spellText;
 	GLuint *spellIcons;
@@ -79,7 +79,7 @@ private:
 	// special skills ui
 	Button *useSpecialButton, *storeSpecialButton;
 	ScrollingList *specialList;
-	Label *specialDescriptionLabel;
+	ScrollingLabel *specialDescriptionLabel;
 	char **specialText;
 	GLuint *specialIcons;
 
@@ -112,7 +112,7 @@ private:
 	char **objectiveText;
 	Color *missionColor, *itemColor;
   GLuint *itemIcon;
-  Spell *storeSpell;
+  Storable *storable;
 
   // party
   char **formationText;
@@ -123,9 +123,16 @@ public:
     Inventory(Scourge *scourge);
 	~Inventory();
 
-  inline bool inStoreSpellMode() { return storeSpellButton->isSelected(); }
-  inline void setStoreSpellMode( bool b ) { storeSpellButton->setSelected( b ); if( !b ) storeSpell = NULL; }
-  inline Spell *getStoreSpell() { return storeSpell; }
+  inline bool inStoreSpellMode() { 
+    return ( storeSpellButton->isSelected() || 
+             storeSpecialButton->isSelected() ); 
+    }
+  inline void setStoreSpellMode( bool b ) { 
+    storeSpellButton->setSelected( b ); 
+    storeSpecialButton->setSelected( b ); 
+    if( !b ) storable = NULL;
+  }
+  inline Storable *getStorable() { return storable; }
 
   void positionWindow();
   void show(bool animate=true);

@@ -1,10 +1,10 @@
 /***************************************************************************
-                          rpglib.h  -  description
+                          storable.h  -  description
                              -------------------
-    begin                : Sat May 3 2003
-    copyright            : (C) 2003 by Gabor Torok
+    begin                : Sat Oct 22 2005
+    copyright            : (C) 2005 by Gabor Torok
     email                : cctorok@yahoo.com
-***************************************************************************/
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -15,17 +15,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef RPG_LIB_H
-#define RPG_LIB_H
+#ifndef STORABLE_H
+#define STORABLE_H
+
+#include "constants.h"
 
 /**
- * A way for external classes to this dir to get everything in one include file.
+ * @author Gabor Torok
+ * 
+ * Describes an object that can be referenced by the quick-spell buttons.
+ * A spell or special capability.
+ * 
  */
+class Storable {
 
-#include "character.h"
-#include "monster.h"
-#include "rpgitem.h"
-#include "spell.h"
-#include "specialskill.h"
+public:
+  Storable() {
+  }
+
+  virtual ~Storable() {
+  }
+
+  enum {
+    SPELL_STORABLE=0,
+    SPECIAL_STORABLE
+  };
+
+  virtual const char *getName() = 0;
+  virtual int getIconTileX() = 0;
+  virtual int getIconTileY() = 0;
+  virtual int getStorableType() = 0;
+};
 
 #endif
+

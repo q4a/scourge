@@ -692,6 +692,7 @@ public:
   void drawInfos();
 
   void quickSpellAction( int index );
+  void executeQuickSpell( Spell *spell );
 
   void drawDescriptions(ScrollingList *list);
 

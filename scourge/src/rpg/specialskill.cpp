@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "specialskill.h"
-#include "session.h"
-#include "sqbinding/sqbinding.h"
 
 /**
   *@author Gabor Torok
@@ -27,19 +25,10 @@ using namespace std;
 vector<SpecialSkill*> SpecialSkill::skills;
 map<string,SpecialSkill*> SpecialSkill::skillsByName;
 
-void SpecialSkill::initSkills( Session *session ) {
-
-  // compile the squirrel file for special skills
-  char s[200];
-  sprintf(s, "%s/world/skills.nut", rootDir);
-  if( !session->getSquirrel()->compile( s ) ) {
-    cerr << "Error: *** Unable to compile special skills code: " << s << endl;
-  } else {
-    cerr << "Successfully compiled " << s << endl;
-  }
-
+void SpecialSkill::initSkills() {
   // Load the special skills
   char errMessage[500];
+  char s[200];
   sprintf(s, "%s/world/skills.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
@@ -108,8 +97,7 @@ void SpecialSkill::initSkills( Session *session ) {
       
       cerr << "Storing special skill: " << name << " (" << prereq << "," << action << ")" << endl;
       SpecialSkill *ss = 
-        new SpecialSkill( session, 
-                          strdup( name ), 
+        new SpecialSkill( strdup( name ), 
                           strdup( description ), 
                           type, 
                           event,
@@ -127,8 +115,7 @@ void SpecialSkill::initSkills( Session *session ) {
   fclose(fp);
 }
 
-SpecialSkill::SpecialSkill( Session *session, 
-                            const char *name, 
+SpecialSkill::SpecialSkill( const char *name, 
                             const char *description, 
                             int type,
                             int event,
@@ -136,7 +123,6 @@ SpecialSkill::SpecialSkill( Session *session,
                             const char *squirrelFuncAction,
                             int iconTileX,
                             int iconTileY ) {
-  this->session = session;
   this->name = name;
   this->description = description;
   this->type = type;
