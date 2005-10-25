@@ -44,7 +44,18 @@ public:
   virtual const char *getName() = 0;
   virtual int getIconTileX() = 0;
   virtual int getIconTileY() = 0;
+
+  /**
+   * Returns the xyz_STORABLE subtype from the enum in this class.
+   * I know this is lame, but rpg classes should be stateless and have
+   * no logic.
+   */
   virtual int getStorableType() = 0;
+
+  /**
+   * Returns null if storable or an error message.
+   */
+  virtual const char *isStorable() = 0;
 };
 
 #endif

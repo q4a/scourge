@@ -1815,7 +1815,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 }
 
 void Creature::evalSpecialSkills() {
-  if( !isMonster() ) cerr << "In Creature::evalSpecialSkills for " << getName() << endl;
+  //if( !isMonster() ) cerr << "In Creature::evalSpecialSkills for " << getName() << endl;
   specialSkills.clear();
   HSQOBJECT *param = session->getSquirrel()->getCreatureRef( this );
   if( param ) {

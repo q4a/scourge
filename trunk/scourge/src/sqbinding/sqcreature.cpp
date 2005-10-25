@@ -38,8 +38,9 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "getThirst", SqCreature::_getThirst, 0, 0 },
   { "getHunger", SqCreature::_getHunger, 0, 0 },
   { "getSkill", SqCreature::_getSkill, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "getStateMod", SqCreature::_getStateMod, 0, 0 },
-  { "getProtectedStateMod", SqCreature::_getProtectedStateMod, 0, 0 },
+  { "getSkillByName", SqCreature::_getSkillByName, SQ_MATCHTYPEMASKSTRING, "xs" },
+  { "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn" },
   { "getArmor", SqCreature::_getArmor, 0, 0 },
   { "getSkillModifiedArmor", SqCreature::_getSkillModifiedArmor, 0, 0 },
   { 0,0,0,0 } // terminator
@@ -145,25 +146,52 @@ int SqCreature::_getHunger( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_getSkill( HSQUIRRELVM vm ) {
-  SqBinding::printArgs( vm );
+//  SqBinding::printArgs( vm );
+  int index;
+  if( SQ_FAILED( sq_getinteger( vm, -1, &index ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get index from stack in _getSkill." ) );
+  }
+  sq_poptop( vm );
   GET_OBJECT(Creature*)
-    cerr << "FIXME: getSkill() need index." << endl;
-  sq_pushinteger( vm, _SC( object->getSkill( 0 ) ) );
+  sq_pushinteger( vm, _SC( object->getSkill( index ) ) );
+  return 1;
+}
+
+int SqCreature::_getSkillByName( HSQUIRRELVM vm ) {
+//  SqBinding::printArgs( vm );
+  const char *tmp;
+  if( SQ_FAILED( sq_getstring( vm, -1, &tmp ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get name from stack in _getSkillByName." ) );
+  }
+  char name[80];
+  strcpy( name, tmp );
+  sq_poptop( vm );
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, _SC( object->getSkill( Constants::getSkillByName( (char*)name ) ) ) );
   return 1;
 }
 
 int SqCreature::_getStateMod( HSQUIRRELVM vm ) {
+  int index;
+  if( SQ_FAILED( sq_getinteger( vm, -1, &index ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get index from stack in _getStateMod." ) );
+  }
+  sq_poptop( vm );
   GET_OBJECT(Creature*)
-    cerr << "FIXME: getStateMod() need index." << endl;
-  sq_pushinteger( vm, _SC( object->getStateMod( 0 ) ) );
+  sq_pushinteger( vm, _SC( object->getStateMod( index ) ) );
   return 1;
 }
 
 
 int SqCreature::_getProtectedStateMod( HSQUIRRELVM vm ) {
+  int index;
+  if( SQ_FAILED( sq_getinteger( vm, -1, &index ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get index from stack in _getProtectedStateMod." ) );
+  }
+  sq_poptop( vm );
   GET_OBJECT(Creature*)
     cerr << "FIXME: getProtectedStateMod() need index." << endl;
-  sq_pushinteger( vm, _SC( object->getProtectedStateMod( 0 ) ) );
+  sq_pushinteger( vm, _SC( object->getProtectedStateMod( index ) ) );
   return 1;
 }
 

@@ -78,6 +78,11 @@ public:
   virtual ~SpecialSkill();
 
   inline int getStorableType() { return Storable::SPECIAL_STORABLE; }
+  inline const char *isStorable() { 
+    return( getType() == SKILL_TYPE_MANUAL ? 
+            NULL :
+            "Only 'manual' capabilities can be stored." ); 
+  }
 
   inline const char *getName() { return name; }
   inline const char *getDescription() { return description; }
