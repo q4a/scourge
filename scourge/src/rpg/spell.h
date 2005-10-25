@@ -80,6 +80,7 @@ class Spell : public Storable {
   ~Spell();
 
   inline int getStorableType() { return Storable::SPELL_STORABLE; }
+  inline const char *isStorable() { return NULL; }
 
   inline bool isFriendly() { return friendly; }
   inline bool hasStateModPrereq() { return( stateModPrereq != -1 ); }

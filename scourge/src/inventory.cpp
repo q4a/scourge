@@ -195,7 +195,8 @@ Inventory::Inventory(Scourge *scourge) {
   // -------------------------------------------
   // special skills
   cards->createLabel(115, 10, "Special Capabilities", SPECIAL, Constants::RED_COLOR);
-  specialList = new ScrollingList(115, 15, 290, 280, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
+  cards->createLabel(115, 25, "(If grayed-out, you don't have the capability.)", SPECIAL, Constants::RED_COLOR);
+  specialList = new ScrollingList(115, 30, 290, 265, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
   cards->addWidget(specialList, SPECIAL);
   cards->createLabel(115, 310, "Capability Description:", SPECIAL, Constants::RED_COLOR);
   specialDescriptionLabel = new ScrollingLabel( 115, 325, 290, descriptionHeight, "" );
@@ -510,6 +511,11 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == storeSpecialButton) {
     if( storeSpecialButton->isSelected() ) {
       storable = getSelectedSpecial();
+      const char *p = storable->isStorable();
+      if( p ) {
+        scourge->showMessageDialog( (char*)p );
+        storable = NULL;
+      }
       if( !storable ) {
         storeSpecialButton->setSelected( false );
       }
@@ -517,16 +523,17 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == useSpecialButton) {
     cerr << "FIXME: useSpecialButton";
   } else if( widget == storeSpellButton ) {
-    cerr << "111" << endl;
     if( storeSpellButton->isSelected() ) {
-      cerr << "222" << endl;
       storable = getSelectedSpell();
+      const char *p = storable->isStorable();
+      if( p ) {
+        scourge->showMessageDialog( (char*)p );
+        storable = NULL;
+      }
       if( !storable ) {
-        cerr << "333" << endl;
         storeSpellButton->setSelected( false );
       }
     }
-    cerr << "444" << endl;
   } else if(widget == castButton) {
     Spell *spell = getSelectedSpell();
     if(spell) {
