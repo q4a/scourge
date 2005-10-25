@@ -65,6 +65,7 @@ public:
   static int _getProtectedStateMod( HSQUIRRELVM vm );
   static int _getArmor( HSQUIRRELVM vm );
   static int _getSkillModifiedArmor( HSQUIRRELVM vm );
+  static int _isOfClass( HSQUIRRELVM vm );
 
 };
 
