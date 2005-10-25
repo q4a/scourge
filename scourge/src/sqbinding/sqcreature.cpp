@@ -17,6 +17,7 @@
 #include "sqcreature.h"
 #include "../session.h"
 #include "../creature.h"
+#include "../rpg/rpglib.h"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn" },
   { "getArmor", SqCreature::_getArmor, 0, 0 },
   { "getSkillModifiedArmor", SqCreature::_getSkillModifiedArmor, 0, 0 },
+  { "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs" },
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqCreature::classDecl = { SqCreature::className, 0, members };
@@ -205,5 +207,20 @@ int SqCreature::_getArmor( HSQUIRRELVM vm ) {
 int SqCreature::_getSkillModifiedArmor( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
   sq_pushinteger( vm, _SC( object->getSkillModifiedArmor() ) );
+  return 1;
+}
+
+int SqCreature::_isOfClass( HSQUIRRELVM vm ) {
+  const char *tmp;
+  if( SQ_FAILED( sq_getstring( vm, -1, &tmp ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get name from stack in _isOfClass." ) );
+  }
+  char name[80];
+  strcpy( name, tmp );
+  sq_poptop( vm );
+  GET_OBJECT(Creature*)
+  SQBool b = ( object->getCharacter() && 
+               !strcmp( object->getCharacter()->getName(), name ) );
+  sq_pushbool( vm, b );
   return 1;
 }
