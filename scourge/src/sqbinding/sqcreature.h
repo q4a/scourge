@@ -43,7 +43,7 @@ public:
   static int _squirrel_typeof( HSQUIRRELVM vm );
   static int _constructor( HSQUIRRELVM vm );
 
-  // general
+  // getters
   static int _getName( HSQUIRRELVM vm );
 //  inline Character *getCharacter() { return character; }  
 //  inline Monster *getMonster() { return monster; }  
@@ -65,9 +65,22 @@ public:
   static int _getProtectedStateMod( HSQUIRRELVM vm );
   static int _getArmor( HSQUIRRELVM vm );
   static int _getSkillModifiedArmor( HSQUIRRELVM vm );
+
+  // other
   static int _isOfClass( HSQUIRRELVM vm );
 
+  // setters
+  static int _setLevel( HSQUIRRELVM vm );
+  static int _setExp( HSQUIRRELVM vm );
+  static int _setMoney( HSQUIRRELVM vm );
+  static int _setHp( HSQUIRRELVM vm );
+  static int _setMp( HSQUIRRELVM vm );
+  static int _setThirst( HSQUIRRELVM vm );
+  static int _setHunger( HSQUIRRELVM vm );
+  static int _setSkill( HSQUIRRELVM vm );
+  static int _setSkillByName( HSQUIRRELVM vm );
+  static int _setStateMod( HSQUIRRELVM vm );
+  static int _setProtectedStateMod( HSQUIRRELVM vm );
 };
-
 #endif
 

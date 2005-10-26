@@ -92,6 +92,13 @@ struct ScriptNamespaceDecl  {
     return sq_throwerror( vm, _SC( "Can't find userpointer." ) );\
   }\
   x object = (x)up;
+  
+#define GET_STRING(__str_) const char *__tmp_;\
+  if( SQ_FAILED( sq_getstring( vm, -1, &__tmp_ ) ) ) {\
+    return sq_throwerror( vm, _SC( "Can't get string from stack." ) );\
+  }\
+  char *__str_ = strdup( __tmp_ );\
+  sq_poptop( vm );
 
 /**
    Scourge object bindings to squirrel.

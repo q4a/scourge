@@ -3081,10 +3081,10 @@ void Scourge::quickSpellAction( int index ) {
       if( storable->getStorableType() == Storable::SPELL_STORABLE ) {
         executeQuickSpell( (Spell*)storable );
       } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
-        const char *err = 
+        char *err = 
           creature->useSpecialSkill( (SpecialSkill*)storable, true );
         if( err ) {
-          showMessageDialog( (char*)err );
+          showMessageDialog( err );
         }
       } else {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;

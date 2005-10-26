@@ -25,6 +25,7 @@ const char *SqCreature::className = "Creature";
 ScriptClassMemberDecl SqCreature::members[] = {
   { "_typeof", SqCreature::_squirrel_typeof, 1, 0 },
   { "constructor", SqCreature::_constructor, 0, 0 },
+  
   { "getName", SqCreature::_getName, 0, 0 },
   { "getLevel", SqCreature::_getLevel, 0, 0 },
   { "getExpOfNextLevel", SqCreature::_getExpOfNextLevel, 0, 0 },
@@ -44,7 +45,21 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn" },
   { "getArmor", SqCreature::_getArmor, 0, 0 },
   { "getSkillModifiedArmor", SqCreature::_getSkillModifiedArmor, 0, 0 },
-  { "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs" },
+
+  { "setLevel", SqCreature::_setLevel, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "setExp", SqCreature::_setExp, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "setMoney", SqCreature::_setMoney, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "setHp", SqCreature::_setHp, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "setMp", SqCreature::_setMp, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "setThirst", SqCreature::_setThirst, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "setHunger", SqCreature::_setHunger, SQ_MATCHTYPEMASKSTRING, "xn" },
+  { "setSkill", SqCreature::_setSkill, SQ_MATCHTYPEMASKSTRING, "xnn" },
+  { "setSkillByName", SqCreature::_setSkillByName, SQ_MATCHTYPEMASKSTRING, "xsn" },
+  { "setStateMod", SqCreature::_setStateMod, SQ_MATCHTYPEMASKSTRING, "xnb" },
+  { "setProtectedStateMod", SqCreature::_setProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xnb" },
+
+  { "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs" },  
+
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqCreature::classDecl = { SqCreature::className, 0, members };
@@ -211,16 +226,56 @@ int SqCreature::_getSkillModifiedArmor( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_isOfClass( HSQUIRRELVM vm ) {
-  const char *tmp;
-  if( SQ_FAILED( sq_getstring( vm, -1, &tmp ) ) ) {
-    return sq_throwerror( vm, _SC( "Can't get name from stack in _isOfClass." ) );
-  }
-  char name[80];
-  strcpy( name, tmp );
-  sq_poptop( vm );
+  GET_STRING(name)
   GET_OBJECT(Creature*)
   SQBool b = ( object->getCharacter() && 
                !strcmp( object->getCharacter()->getName(), name ) );
   sq_pushbool( vm, b );
+  free( name );
   return 1;
 }
+
+int SqCreature::_setLevel( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setExp( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setMoney( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setHp( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setMp( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setThirst( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setHunger( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setSkill( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setSkillByName( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
+  return 0;
+}
+
+int SqCreature::_setProtectedStateMod( HSQUIRRELVM vm ) {
+  return 0;
+}
+

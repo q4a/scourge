@@ -1833,14 +1833,14 @@ void Creature::evalSpecialSkills() {
   }
 }
 
-const char *Creature::useSpecialSkill( SpecialSkill *specialSkill, 
+char *Creature::useSpecialSkill( SpecialSkill *specialSkill, 
                                        bool manualOnly ) {
   if( !hasSpecialSkill( specialSkill ) ) {
-    return "You don't meet the prerequisites for this capability.";
+    return Constants::getMessage( Constants::UNMET_CAPABILITY_PREREQ_ERROR );
   } else if( manualOnly && 
              specialSkill->getType() != 
              SpecialSkill::SKILL_TYPE_MANUAL ) {
-    return "This is not a manual skill.";
+    return Constants::getMessage( Constants::CANNOT_USE_AUTO_CAPABILITY_ERROR );
   }
   HSQOBJECT *param = session->getSquirrel()->getCreatureRef( this );
   if( param ) {
