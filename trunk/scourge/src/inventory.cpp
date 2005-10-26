@@ -519,7 +519,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
           storable = NULL;
         }
         if( !creature->hasSpecialSkill( (SpecialSkill*)storable ) ) {
-          scourge->showMessageDialog( "You don't meet the prerequisites for this capability." );
+          scourge->showMessageDialog( Constants::getMessage( Constants::UNMET_CAPABILITY_PREREQ_ERROR ) );
           storable = NULL;
         }
       }
@@ -530,10 +530,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == useSpecialButton) {
     storable = getSelectedSpecial();
     if( storable ) {
-      const char *err = 
+      char *err = 
         creature->useSpecialSkill( (SpecialSkill*)storable, true );
       if( err ) {
-        scourge->showMessageDialog( (char*)err );
+        scourge->showMessageDialog( err );
       } else {
         // set this as a quickspell if there is space
         for( int i = 0; i < 12; i++ ) {
