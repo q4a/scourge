@@ -3081,7 +3081,11 @@ void Scourge::quickSpellAction( int index ) {
       if( storable->getStorableType() == Storable::SPELL_STORABLE ) {
         executeQuickSpell( (Spell*)storable );
       } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
-        cerr << "IMPLEMENT ME: use capability" << endl;
+        const char *err = 
+          creature->useSpecialSkill( (SpecialSkill*)storable, true );
+        if( err ) {
+          showMessageDialog( (char*)err );
+        }
       } else {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
       }

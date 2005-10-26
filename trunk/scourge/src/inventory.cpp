@@ -27,6 +27,7 @@
 #include "creature.h"
 #include "tradedialog.h"
 #include "specialskill.h"
+#include "sqbinding/sqbinding.h"
 
 using namespace std;
 
@@ -511,24 +512,47 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == storeSpecialButton) {
     if( storeSpecialButton->isSelected() ) {
       storable = getSelectedSpecial();
-      const char *p = storable->isStorable();
-      if( p ) {
-        scourge->showMessageDialog( (char*)p );
-        storable = NULL;
+      if( storable ) {
+        const char *p = storable->isStorable();
+        if( p ) {
+          scourge->showMessageDialog( (char*)p );
+          storable = NULL;
+        }
+        if( !creature->hasSpecialSkill( (SpecialSkill*)storable ) ) {
+          scourge->showMessageDialog( "You don't meet the prerequisites for this capability." );
+          storable = NULL;
+        }
       }
       if( !storable ) {
         storeSpecialButton->setSelected( false );
       }
     }
   } else if(widget == useSpecialButton) {
-    cerr << "FIXME: useSpecialButton";
+    storable = getSelectedSpecial();
+    if( storable ) {
+      const char *err = 
+        creature->useSpecialSkill( (SpecialSkill*)storable, true );
+      if( err ) {
+        scourge->showMessageDialog( (char*)err );
+      } else {
+        // set this as a quickspell if there is space
+        for( int i = 0; i < 12; i++ ) {
+          if( !creature->getQuickSpell( i ) ) {
+            creature->setQuickSpell( i, storable );
+            break;
+          }
+        }
+      }
+    }
   } else if( widget == storeSpellButton ) {
     if( storeSpellButton->isSelected() ) {
       storable = getSelectedSpell();
-      const char *p = storable->isStorable();
-      if( p ) {
-        scourge->showMessageDialog( (char*)p );
-        storable = NULL;
+      if( storable ) {
+        const char *p = storable->isStorable();
+        if( p ) {
+          scourge->showMessageDialog( (char*)p );
+          storable = NULL;
+        }
       }
       if( !storable ) {
         storeSpellButton->setSelected( false );

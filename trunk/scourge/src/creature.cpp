@@ -1833,6 +1833,27 @@ void Creature::evalSpecialSkills() {
   }
 }
 
+const char *Creature::useSpecialSkill( SpecialSkill *specialSkill, 
+                                       bool manualOnly ) {
+  if( !hasSpecialSkill( specialSkill ) ) {
+    return "You don't meet the prerequisites for this capability.";
+  } else if( manualOnly && 
+             specialSkill->getType() != 
+             SpecialSkill::SKILL_TYPE_MANUAL ) {
+    return "This is not a manual skill.";
+  }
+  HSQOBJECT *param = session->getSquirrel()->getCreatureRef( this );
+  if( param ) {
+    session->getSquirrel()->
+      callNoArgMethod( specialSkill->getSquirrelFunctionAction(), 
+                       param );
+    return NULL;
+  } else {
+    cerr << "*** Error: can't find squarrel reference for creature: " << getName() << endl;
+    return NULL;
+  }
+}
+
 void Creature::setSkill(int index, int value) { 
   skills[index] = value; 
   evalSpecialSkills();
