@@ -150,6 +150,8 @@ class Creature : public RenderedCreature {
 
   void evalSpecialSkills();
   inline bool hasSpecialSkill( SpecialSkill *ss ) { return specialSkills.find(ss) != specialSkills.end(); }
+  const char *useSpecialSkill( SpecialSkill *specialSkill, 
+                               bool manualOnly );
 
   inline void setQuickSpell( int index, Storable *storable ) { 
     for( int i = 0; i < 12; i++ ) {

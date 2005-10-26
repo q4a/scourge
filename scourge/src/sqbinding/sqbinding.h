@@ -141,12 +141,11 @@ public:
   bool compile( const char *filename );
 
   bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
+  bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
   HSQOBJECT *getCreatureRef( Creature *creature );
   HSQOBJECT *getItemRef( Item *item );
 
-
 protected:
-  bool callNoArgMethod( const char *name );
   bool createClass( SquirrelClassDecl *cd, const char *key = NULL );
   bool instantiateClass( const SQChar *classname, 
                          HSQOBJECT *obj 
