@@ -202,7 +202,7 @@ bool SqBinding::endLevel() {
   bool ret = callNoArgMethod( "endLevel" );
 
   // destroy the creatures of the level
-  for( int i = 0; i < session->getCreatureCount(); i++ ) {
+  for( int i = 0; i < (int)refCreature.size(); i++ ) {
     sq_release( vm, refCreature[ i ] );
     free( refCreature[ i ] );
     refCreature[ i ] = NULL;
@@ -211,7 +211,7 @@ bool SqBinding::endLevel() {
   creatureMap.clear();
 
   // destroy the items of the level
-  for( int i = 0; i < session->getItemCount(); i++ ) {
+  for( int i = 0; i < (int)refItem.size(); i++ ) {
     sq_release( vm, refItem[ i ] );
     free( refItem[ i ] );
     refItem[ i ] = NULL;

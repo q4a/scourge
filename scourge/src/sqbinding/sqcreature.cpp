@@ -163,37 +163,21 @@ int SqCreature::_getHunger( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_getSkill( HSQUIRRELVM vm ) {
-//  SqBinding::printArgs( vm );
-  int index;
-  if( SQ_FAILED( sq_getinteger( vm, -1, &index ) ) ) {
-    return sq_throwerror( vm, _SC( "Can't get index from stack in _getSkill." ) );
-  }
-  sq_poptop( vm );
-  GET_OBJECT(Creature*)
+  GET_INT( index )
+  GET_OBJECT( Creature* )
   sq_pushinteger( vm, _SC( object->getSkill( index ) ) );
   return 1;
 }
 
 int SqCreature::_getSkillByName( HSQUIRRELVM vm ) {
-//  SqBinding::printArgs( vm );
-  const char *tmp;
-  if( SQ_FAILED( sq_getstring( vm, -1, &tmp ) ) ) {
-    return sq_throwerror( vm, _SC( "Can't get name from stack in _getSkillByName." ) );
-  }
-  char name[80];
-  strcpy( name, tmp );
-  sq_poptop( vm );
-  GET_OBJECT(Creature*)
+  GET_STRING( name, 80 )
+  GET_OBJECT( Creature* )
   sq_pushinteger( vm, _SC( object->getSkill( Constants::getSkillByName( (char*)name ) ) ) );
   return 1;
 }
 
 int SqCreature::_getStateMod( HSQUIRRELVM vm ) {
-  int index;
-  if( SQ_FAILED( sq_getinteger( vm, -1, &index ) ) ) {
-    return sq_throwerror( vm, _SC( "Can't get index from stack in _getStateMod." ) );
-  }
-  sq_poptop( vm );
+  GET_INT( index )
   GET_OBJECT(Creature*)
   sq_pushinteger( vm, _SC( object->getStateMod( index ) ) );
   return 1;
@@ -201,11 +185,7 @@ int SqCreature::_getStateMod( HSQUIRRELVM vm ) {
 
 
 int SqCreature::_getProtectedStateMod( HSQUIRRELVM vm ) {
-  int index;
-  if( SQ_FAILED( sq_getinteger( vm, -1, &index ) ) ) {
-    return sq_throwerror( vm, _SC( "Can't get index from stack in _getProtectedStateMod." ) );
-  }
-  sq_poptop( vm );
+  GET_INT( index )
   GET_OBJECT(Creature*)
     cerr << "FIXME: getProtectedStateMod() need index." << endl;
   sq_pushinteger( vm, _SC( object->getProtectedStateMod( index ) ) );
@@ -226,56 +206,100 @@ int SqCreature::_getSkillModifiedArmor( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_isOfClass( HSQUIRRELVM vm ) {
-  GET_STRING(name)
-  GET_OBJECT(Creature*)
+  GET_STRING( name, 80 )
+  GET_OBJECT( Creature* )
   SQBool b = ( object->getCharacter() && 
                !strcmp( object->getCharacter()->getName(), name ) );
   sq_pushbool( vm, b );
-  free( name );
   return 1;
 }
 
 int SqCreature::_setLevel( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setLevel( n );
   return 0;
 }
 
 int SqCreature::_setExp( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setExp( n );
   return 0;
 }
 
 int SqCreature::_setMoney( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setMoney( n );
   return 0;
 }
 
 int SqCreature::_setHp( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+
+  // show an effect if there is a change
+  if( n > object->getHp() ) {
+    object->startEffect( Constants::EFFECT_SWIRL, ( Constants::DAMAGE_DURATION * 4 ) );
+  } else if( n < object->getHp() ) {
+    object->startEffect( Constants::EFFECT_GLOW, ( Constants::DAMAGE_DURATION * 4 ) );
+  }
+
+  object->setHp( n );
   return 0;
 }
 
 int SqCreature::_setMp( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setMp( n );
   return 0;
 }
 
 int SqCreature::_setThirst( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setThirst( n );
   return 0;
 }
 
 int SqCreature::_setHunger( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setHunger( n );
   return 0;
 }
 
 int SqCreature::_setSkill( HSQUIRRELVM vm ) {
+  GET_INT( index );
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setSkill( index, n );
   return 0;
 }
 
 int SqCreature::_setSkillByName( HSQUIRRELVM vm ) {
+  GET_STRING( name, 80 );
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setSkill( Constants::getSkillByName( (char*)name ), n );
   return 0;
 }
 
 int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
+  GET_INT( index );
+  GET_BOOL( b );
+  GET_OBJECT( Creature* )
+  object->setStateMod( index, b );
   return 0;
 }
 
 int SqCreature::_setProtectedStateMod( HSQUIRRELVM vm ) {
+  GET_INT( index );
+  GET_BOOL( b );
+  GET_OBJECT( Creature* )
+  object->setProtectedStateMod( index, b );
   return 0;
 }
 

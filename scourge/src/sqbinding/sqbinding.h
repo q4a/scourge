@@ -93,13 +93,27 @@ struct ScriptNamespaceDecl  {
   }\
   x object = (x)up;
   
-#define GET_STRING(__str_) const char *__tmp_;\
+#define GET_STRING(__str_,__len_) const char *__tmp_;\
   if( SQ_FAILED( sq_getstring( vm, -1, &__tmp_ ) ) ) {\
     return sq_throwerror( vm, _SC( "Can't get string from stack." ) );\
   }\
-  char *__str_ = strdup( __tmp_ );\
+  char __str_[__len_];\
+  strncpy( __str_, __tmp_, __len_ );\
+  __str_[__len_ - 1] = '\0';\
+  sq_poptop( vm );
+  
+#define GET_INT(__n_) int __n_;\
+  if( SQ_FAILED( sq_getinteger( vm, -1, &__n_ ) ) ) {\
+    return sq_throwerror( vm, _SC( "Can't get int from stack." ) );\
+  }\
   sq_poptop( vm );
 
+#define GET_BOOL(__n_) SQBool __tmp_;\
+  if( SQ_FAILED( sq_getbool( vm, -1, &__tmp_ ) ) ) {\
+    return sq_throwerror( vm, _SC( "Can't get bool from stack." ) );\
+  }\
+  bool __n_ = ( __tmp_ > 0 ? true : false );\
+  sq_poptop( vm );
 /**
    Scourge object bindings to squirrel.
  */
