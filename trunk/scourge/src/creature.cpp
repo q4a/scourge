@@ -316,8 +316,14 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   }
 
   for( int i = 0; i < 12; i++ ) {
-    if( strlen( (char*)info->quick_spell[ i ] ) )
-      creature->setQuickSpell( i, Spell::getSpellByName( (char*)info->quick_spell[ i ] ) );
+    if( strlen( (char*)info->quick_spell[ i ] ) ) {
+      Spell *spell = Spell::getSpellByName( (char*)info->quick_spell[ i ] );
+      if( spell ) creature->setQuickSpell( i, spell );
+      else {
+        SpecialSkill *special = SpecialSkill::findByName( (char*)info->quick_spell[ i ] );
+        if( special ) creature->setQuickSpell( i, special );
+      }
+    }
   }
 
   creature->calculateExpOfNextLevel();

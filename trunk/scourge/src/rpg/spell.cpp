@@ -281,8 +281,8 @@ Spell::~Spell() {
 Spell *Spell::getSpellByName(char *name) {
   string s = name;
   if(spellMap.find(s) == spellMap.end()) {
-	cerr << "ERROR: can't find spell: " << name << endl;
-	exit(1);
+    cerr << "Warning: can't find spell: " << name << endl;
+    return NULL;
   }
   return spellMap[s];
 }
