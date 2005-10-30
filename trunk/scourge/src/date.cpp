@@ -46,6 +46,35 @@ Date::Date(int sec, int min, int hour, int day, int month, int year){
     setDate(sec, min, hour, day, month, year);           
 }
 
+Date::Date( char *shortString ) {
+  char *p = strdup( shortString );
+  
+  char *q = strtok( p, "/" );
+  this->year = atoi( q );
+
+  q = strtok( NULL, "/" );
+  this->month = atoi( q );
+
+  q = strtok( NULL, "/" );
+  this->day = atoi( q );
+
+  q = strtok( NULL, "/" );
+  this->hour = atoi( q );
+
+  q = strtok( NULL, "/" );
+  this->min = atoi( q );
+
+  q = strtok( NULL, "/" );
+  this->sec = atoi( q );
+
+  free( p );
+}
+
+char *Date::getShortString() {
+  sprintf( shortString, "%d/%d/%d/%d/%d/%d", year, month, day, hour, min, sec );
+  return shortString;
+}
+
 void Date::setDate(int s, int m, int h, int day, int month, int year){
     this->sec = s;      
     this->min = m;    

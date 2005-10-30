@@ -1227,6 +1227,9 @@ bool Scourge::handleEvent(SDL_Event *event) {
       //session->creatureDeath( party->getPlayer() );
 
       return false;
+    } else if(event->key.keysym.sym == SDLK_d) {
+      // add a day
+      getSession()->getParty()->getCalendar()->addADay();
     } else if(event->key.keysym.sym == SDLK_f) {
       getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
       getMap()->refresh();
@@ -3650,12 +3653,16 @@ bool Scourge::isLevelShaded() {
 }                                                               
 
 void Scourge::printToConsole( const char *s ) {
-  // replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
-  char *p = strpbrk( s, "\n\r" );
-  while( p ) {
-    *p = '|';
-    if( !*(p + 1) ) break;
-    p = strpbrk( p + 1, "\n\r" );
+  if( squirrelLabel ) {
+    // replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
+    char *p = strpbrk( s, "\n\r" );
+    while( p ) {
+      *p = '|';
+      if( !*(p + 1) ) break;
+      p = strpbrk( p + 1, "\n\r" );
+    }
+    squirrelLabel->appendText( s );
+  } else {
+    cerr << s << endl;
   }
-  squirrelLabel->appendText( s );
 }

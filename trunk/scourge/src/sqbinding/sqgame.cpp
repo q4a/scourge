@@ -17,6 +17,7 @@
 #include "sqgame.h"
 #include "../session.h"
 #include "../creature.h"
+#include "../date.h"
 
 const char *SqGame::className = "ScourgeGame";
 ScriptClassMemberDecl SqGame::members[] = {
@@ -31,6 +32,11 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "getMission", SqGame::_getMission, 0, 0 },
   { "getStateModCount", SqGame::_getStateModCount, 0, 0 },
   { "getStateModName", SqGame::_getStateModName, 0, 0 },
+  { "getDateString", SqGame::_getDateString, 0, 0 },
+  { "isADayLater", SqGame::_isADayLater, 0, 0 },
+  { "getValue", SqGame::_getValue, 0, 0 },
+  { "setValue", SqGame::_setValue, 0, 0 },
+  { "eraseValue", SqGame::_eraseValue, 0, 0 },
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members };
@@ -119,5 +125,42 @@ int SqGame::_getStateModName( HSQUIRRELVM vm ) {
 
   sq_pushstring( vm, _SC( Constants::STATE_NAMES[ index ] ), -1 );
   return 1;
+}
+
+int SqGame::_getDateString( HSQUIRRELVM vm ) {
+  sq_pushstring( vm, _SC( SqBinding::sessionRef->getParty()->
+                          getCalendar()->getCurrentDate().
+                          getShortString() ), 
+                 -1 );
+  return 1;
+}
+
+int SqGame::_isADayLater( HSQUIRRELVM vm ) {
+  GET_STRING( dateShortString, 80 )
+  Date *d = new Date( dateShortString );
+  sq_pushbool( vm, ( SqBinding::sessionRef->getParty()->
+                     getCalendar()->getCurrentDate().
+                     isADayLater( *d ) ? 1 : 0 ) );
+  delete d;
+  return 1;
+}
+
+int SqGame::_getValue( HSQUIRRELVM vm ) {
+  GET_STRING( key, 80 )
+  sq_pushstring( vm, _SC( SqBinding::binding->getValue( key ) ), -1 );
+  return 1;
+}
+
+int SqGame::_setValue( HSQUIRRELVM vm ) {
+  GET_STRING( value, 80 );
+  GET_STRING( key, 80 )
+  SqBinding::binding->setValue( key, value );
+  return 0;
+}
+
+int SqGame::_eraseValue( HSQUIRRELVM vm ) {
+  GET_STRING( key, 80 )
+  SqBinding::binding->eraseValue( key );
+  return 0;
 }
 
