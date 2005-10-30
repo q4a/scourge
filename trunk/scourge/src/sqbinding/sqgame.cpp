@@ -18,6 +18,7 @@
 #include "../session.h"
 #include "../creature.h"
 #include "../date.h"
+#include "../render/renderlib.h"
 
 const char *SqGame::className = "ScourgeGame";
 ScriptClassMemberDecl SqGame::members[] = {
@@ -37,6 +38,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "getValue", SqGame::_getValue, 0, 0 },
   { "setValue", SqGame::_setValue, 0, 0 },
   { "eraseValue", SqGame::_eraseValue, 0, 0 },
+  { "printMessage", SqGame::_printMessage, 0, 0 },
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members };
@@ -161,6 +163,12 @@ int SqGame::_setValue( HSQUIRRELVM vm ) {
 int SqGame::_eraseValue( HSQUIRRELVM vm ) {
   GET_STRING( key, 80 )
   SqBinding::binding->eraseValue( key );
+  return 0;
+}
+
+int SqGame::_printMessage( HSQUIRRELVM vm ) {
+  GET_STRING( message, 80 )
+  SqBinding::sessionRef->getMap()->addDescription( message, 1, 0, 1 );
   return 0;
 }
 
