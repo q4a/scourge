@@ -60,6 +60,14 @@ class Calendar {
 
   // return date by value to avoid modification by other classes
   inline Date getCurrentDate() { return currentDate; }
+  inline void addADay() {
+    currentDate.setDate( currentDate.getSec(), 
+                         currentDate.getMin(), 
+                         currentDate.getHour(), 
+                         currentDate.getDay() + 1, 
+                         currentDate.getMonth(), 
+                         currentDate.getYear() );
+  }
     
   Calendar();
   ~Calendar();

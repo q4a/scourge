@@ -87,19 +87,24 @@ struct ScriptNamespaceDecl  {
 #define DEBUG_SQUIRREL 1
 #define SCOURGE_ID_TOKEN "scourge_id"
 
-#define GET_OBJECT(x)   SQUserPointer up;\
-  if( !SqBinding::getObjectValue( vm, SCOURGE_ID_TOKEN, &up ) ) {\
-    return sq_throwerror( vm, _SC( "Can't find userpointer." ) );\
-  }\
-  x object = (x)up;
+#define GET_OBJECT(x) x object;\
+  {\
+    SQUserPointer up;\
+    if( !SqBinding::getObjectValue( vm, SCOURGE_ID_TOKEN, &up ) ) {\
+      return sq_throwerror( vm, _SC( "Can't find userpointer." ) );\
+    }\
+    object = (x)up;\
+  }
   
-#define GET_STRING(__str_,__len_) const char *__tmp_;\
-  if( SQ_FAILED( sq_getstring( vm, -1, &__tmp_ ) ) ) {\
-    return sq_throwerror( vm, _SC( "Can't get string from stack." ) );\
+#define GET_STRING(__str_,__len_) char __str_[__len_];\
+  {\
+    const char *__tmp_;\
+    if( SQ_FAILED( sq_getstring( vm, -1, &__tmp_ ) ) ) {\
+      return sq_throwerror( vm, _SC( "Can't get string from stack." ) );\
+    }\
+    strncpy( __str_, __tmp_, __len_ );\
+    __str_[__len_ - 1] = '\0';\
   }\
-  char __str_[__len_];\
-  strncpy( __str_, __tmp_, __len_ );\
-  __str_[__len_ - 1] = '\0';\
   sq_poptop( vm );
   
 #define GET_INT(__n_) int __n_;\
@@ -108,12 +113,16 @@ struct ScriptNamespaceDecl  {
   }\
   sq_poptop( vm );
 
-#define GET_BOOL(__n_) SQBool __tmp_;\
-  if( SQ_FAILED( sq_getbool( vm, -1, &__tmp_ ) ) ) {\
-    return sq_throwerror( vm, _SC( "Can't get bool from stack." ) );\
-  }\
-  bool __n_ = ( __tmp_ > 0 ? true : false );\
-  sq_poptop( vm );
+#define GET_BOOL(__n_) bool __n_;\
+  {\
+    SQBool __tmp_;\
+    if( SQ_FAILED( sq_getbool( vm, -1, &__tmp_ ) ) ) {\
+      return sq_throwerror( vm, _SC( "Can't get bool from stack." ) );\
+    }\
+    __n_ = ( __tmp_ > 0 ? true : false );\
+    sq_poptop( vm );\
+  }
+  
 /**
    Scourge object bindings to squirrel.
  */
@@ -144,6 +153,34 @@ public:
   std::map<Creature*,HSQOBJECT*> partyMap; 
   std::vector<HSQOBJECT*> refItem;
   std::map<Item*,HSQOBJECT*> itemMap;
+  std::map<std::string, std::string> values;
+
+  inline void setValue( char *key, char *value ) {
+    std::string skey = key;
+    std::string svalue = value;
+    values[ skey ] = svalue;
+
+    // debug
+    std::cerr << "SqBinding::setValue size=" << values.size() << std::endl; 
+    for( std::map<std::string,std::string>::iterator i = values.begin(); i != values.end(); ++i ) {
+      std::string k = i->first;
+      std::string v = i->second;
+      std::cerr << "\t" << k << "=" << v << std::endl;
+    }
+    std::cerr << "============================================" << std::endl;
+    // end of debug
+  }
+
+  inline char *getValue( char *key ) {
+    std::string skey = key;
+    if( values.find( skey ) == values.end() ) return NULL;
+    return (char*)( values[ skey ].c_str() );
+  }
+
+  inline void eraseValue( char *key ) {
+    std::string skey = key;
+    if( values.find( skey ) != values.end() ) values.erase( skey );
+  }
 
   // events
   void startGame();

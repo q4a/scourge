@@ -26,6 +26,7 @@
 #include "../squirrel/squirrel.h"
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
+#include "../squirrel/sqstdmath.h"
 
 using namespace std;
 
@@ -66,6 +67,9 @@ SqBinding::SqBinding( Session *session ) {
 
   // push the root table(were the globals of the script will be stored)
   sq_pushroottable( vm );
+
+  // init the math lib
+  sqstd_register_mathlib( vm );
 
   // Define some squirrel classes:
 
