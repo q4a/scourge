@@ -17,6 +17,7 @@
 
 #include "scourge.h"
 #include "events/thirsthungerevent.h"
+#include "events/reloadevent.h"
 #include "render/renderlib.h"
 #include "rpg/rpglib.h"
 #include "item.h"
@@ -275,6 +276,15 @@ void Scourge::startMission() {
         party->reset();
       }
       party->getCalendar()->reset(true); // reset the time
+
+      // Schedule an event to keep reloading scripts if they change on disk
+      Date d(15, 0, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+      Calendar *cal = getSession()->getParty()->getCalendar();
+      Event *event = new ReloadEvent( cal->getCurrentDate(), 
+                                      d, 
+                                      Event::INFINITE_EXECUTIONS,
+                                      getSession() );
+      cal->scheduleEvent( event );
 
       // inventory needs the party
       if(!inventory) {

@@ -136,6 +136,7 @@ private:
   SqCreature *creature;
   SqMission *mission;
   SqItem *item;
+  char lastMapScriptFileName[3000];
 
 public:
   SqBinding( Session *session );
@@ -154,6 +155,7 @@ public:
   std::vector<HSQOBJECT*> refItem;
   std::map<Item*,HSQOBJECT*> itemMap;
   std::map<std::string, std::string> values;
+  std::map<std::string,time_t> loadedScripts;
 
   inline void setValue( char *key, char *value ) {
     std::string skey = key;
@@ -203,7 +205,13 @@ public:
   HSQOBJECT *getCreatureRef( Creature *creature );
   HSQOBJECT *getItemRef( Item *item );
 
+  void reloadScripts();
+
 protected:
+  void registerScript( char *file );
+  void unregisterScript( char *file );
+  time_t getLastModTime( char *file );
+
   bool createClass( SquirrelClassDecl *cd, const char *key = NULL );
   bool instantiateClass( const SQChar *classname, 
                          HSQOBJECT *obj 

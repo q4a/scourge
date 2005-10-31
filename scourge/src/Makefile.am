@@ -1,14 +1,14 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
 LDADD = $(srcdir)/freetype/libScourgeFreeType.a \
 	$(srcdir)/gui/libScourgeGui.a \
-	$(srcdir)/events/libScourgeEvents.a \
 	$(srcdir)/rpg/libScourgeRpg.a \
 	$(srcdir)/net/libScourgeNet.a \
 	$(srcdir)/render/libScourgeRender.a \
 	$(srcdir)/io/libScourgeIo.a \
 	$(srcdir)/sqbinding/libSqbinding.a \
 	$(srcdir)/sqstdlib/libSqstdlib.a \
-	$(srcdir)/squirrel/libSquirrel.a
+	$(srcdir)/squirrel/libSquirrel.a \
+	$(srcdir)/events/libScourgeEvents.a
 
 AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
 

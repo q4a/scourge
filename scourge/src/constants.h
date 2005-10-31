@@ -63,7 +63,7 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #include <queue>
 #include <map>
 #include <iostream>
-
+#include <errno.h>
 
 #if defined( COMPILER_IS_UNIX_COMPATIBLE )
 #   include <unistd.h>
