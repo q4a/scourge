@@ -49,6 +49,7 @@ using namespace std;
 #define DEBUG_KEYS 1
 
 #define SAVE_FILE "savegame.dat"
+#define VALUES_FILE "values.dat"
 
 #define HQ_MAP_NAME "hq"
 #define RANDOM_MAP_NAME "random"
@@ -3583,58 +3584,91 @@ bool Scourge::doesSaveGameExist(Session *session) {
 
 bool Scourge::saveGame(Session *session) {
   session->getPreferences()->createConfigDir();
-  char path[300];
-  get_file_name( path, 300, SAVE_FILE );
-  FILE *fp = fopen( path, "wb" );
-  if(!fp) {
-    cerr << "Error creating savegame file! path=" << path << endl;
-    return false;
+  
+  {
+    char path[300];
+    get_file_name( path, 300, SAVE_FILE );
+    FILE *fp = fopen( path, "wb" );
+    if(!fp) {
+      cerr << "Error creating savegame file! path=" << path << endl;
+      return false;
+    }
+    File *file = new File( fp );
+    Uint32 n = PERSIST_VERSION;
+    file->write( &n );
+    n = session->getBoard()->getStorylineIndex();
+    file->write( &n );
+    n = session->getParty()->getPartySize();
+    file->write( &n );
+    for(int i = 0; i < session->getParty()->getPartySize(); i++) {
+      CreatureInfo *info = session->getParty()->getParty(i)->save();
+      Persist::saveCreature( file, info );
+      Persist::deleteCreatureInfo( info );
+    }
+    delete file;
   }
-  File *file = new File( fp );
-  Uint32 n = PERSIST_VERSION;
-  file->write( &n );
-  n = session->getBoard()->getStorylineIndex();
-  file->write( &n );
-  n = session->getParty()->getPartySize();
-  file->write( &n );
-  for(int i = 0; i < session->getParty()->getPartySize(); i++) {
-    CreatureInfo *info = session->getParty()->getParty(i)->save();
-    Persist::saveCreature( file, info );
-    Persist::deleteCreatureInfo( info );
+
+  {
+    char path[300];
+    get_file_name( path, 300, VALUES_FILE );
+    FILE *fp = fopen( path, "wb" );
+    if(!fp) {
+      cerr << "Error creating values file! path=" << path << endl;
+      return false;
+    }
+    File *file = new File( fp );
+    getSession()->getSquirrel()->saveValues( file );
+    delete file;
   }
-  delete file;
+
   return true;
 }
 
 bool Scourge::loadGame(Session *session) {
-  char path[300];
-  get_file_name( path, 300, SAVE_FILE );
-  FILE *fp = fopen( path, "rb" );
-  if(!fp) {
-    return false;
-  }
-  File *file = new File( fp );
-  Uint32 n = PERSIST_VERSION;
-  file->read( &n );
-  if( n != PERSIST_VERSION ) {
-    cerr << "Savegame file is old (v" << n << " vs. current v" << PERSIST_VERSION << "): ignoring data in file." << endl;
-    delete file;
-    return false;
-  } else {
-    Uint32 storylineIndex;
-    file->read( &storylineIndex );
+  {
+    char path[300];
+    get_file_name( path, 300, SAVE_FILE );
+    FILE *fp = fopen( path, "rb" );
+    if(!fp) {
+      return false;
+    }
+    File *file = new File( fp );
+    Uint32 n = PERSIST_VERSION;
     file->read( &n );
-    Creature *pc[MAX_PARTY_SIZE];
-    for(int i = 0; i < (int)n; i++) {
-      CreatureInfo *info = Persist::loadCreature( file );
-      pc[i] = session->getParty()->getParty(i)->load( session, info );
-      Persist::deleteCreatureInfo( info );
+    if( n != PERSIST_VERSION ) {
+      cerr << "Savegame file is old (v" << n << " vs. current v" << PERSIST_VERSION << "): ignoring data in file." << endl;
+      delete file;
+      return false;
+    } else {
+      Uint32 storylineIndex;
+      file->read( &storylineIndex );
+      file->read( &n );
+      Creature *pc[MAX_PARTY_SIZE];
+      for(int i = 0; i < (int)n; i++) {
+        CreatureInfo *info = Persist::loadCreature( file );
+        pc[i] = session->getParty()->getParty(i)->load( session, info );
+        Persist::deleteCreatureInfo( info );
+      }
+      
+      // set the new party
+      session->getParty()->setParty( n, pc, storylineIndex );
+
+      delete file;
     }
 
-    // set the new party
-    session->getParty()->setParty( n, pc, storylineIndex );
+    {
+      char path[300];
+      get_file_name( path, 300, VALUES_FILE );
+      FILE *fp = fopen( path, "rb" );
+      if( fp ) {
+        File *file = new File( fp );
+        getSession()->getSquirrel()->loadValues( file );
+        delete file;
+      } else {
+        cerr << "*** Warning: can't find values file." << endl;
+      }
+    }
   }
-  delete file;
   return true;
 }
 

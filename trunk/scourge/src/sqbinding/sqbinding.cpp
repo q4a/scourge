@@ -27,6 +27,7 @@
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
 #include "../squirrel/sqstdmath.h"
+#include "../io/file.h"
 
 using namespace std;
 
@@ -550,5 +551,35 @@ time_t SqBinding::getLastModTime( char *file ) {
     return 0;
   }
   return buf.st_mtime;
+}
+
+void SqBinding::saveValues( File *file ) {
+  std::cerr << "SqBinding::setValue size=" << values.size() << std::endl; 
+  Uint32 n;
+  for( std::map<std::string,std::string>::iterator i = values.begin(); i != values.end(); ++i ) {
+    std::string k = i->first;
+    std::string v = i->second;
+
+    n = (Uint32)k.size() + 1;
+    file->write( &n );
+    file->write( (Uint8*)( k.c_str() ), n );
+
+    n = (Uint32)v.size() + 1;
+    file->write( &n );
+    file->write( (Uint8*)( v.c_str() ), n );
+  }
+}
+
+void SqBinding::loadValues( File *file ) {
+  char k[255], v[255];
+  Uint32 size;
+  values.clear();
+  while( true ) {
+    if( file->read( &size ) < 1 ) break;
+    file->read( (Uint8*)k, size );
+    file->read( &size );
+    file->read( (Uint8*)v, size );
+    setValue( k, v );
+  }
 }
 
