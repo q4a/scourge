@@ -38,6 +38,7 @@ class SqMission;
 class SqItem;
 class Creature;
 class Item;
+class File;
 
 /**
  * A squirrel member function declaration.
@@ -183,6 +184,8 @@ public:
     std::string skey = key;
     if( values.find( skey ) != values.end() ) values.erase( skey );
   }
+  void saveValues( File *file );
+  void loadValues( File *file );
 
   // events
   void startGame();
