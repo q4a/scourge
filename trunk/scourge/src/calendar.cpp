@@ -19,7 +19,7 @@
 
 using namespace std;
 
-//#define CALENDAR_DEBUG 1
+#define CALENDAR_DEBUG 0
 
 Calendar *Calendar::instance = NULL;
 

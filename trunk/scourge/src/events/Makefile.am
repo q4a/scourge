@@ -10,4 +10,6 @@ libScourgeEvents_a_SOURCES = \
 	potionexpirationevent.cpp\
 	potionexpirationevent.h\
 	statemodexpirationevent.cpp\
-	statemodexpirationevent.h
+	statemodexpirationevent.h\
+	reloadevent.cpp\
+	reloadevent.h

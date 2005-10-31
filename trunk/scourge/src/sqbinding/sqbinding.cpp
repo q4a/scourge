@@ -94,6 +94,7 @@ SqBinding::SqBinding( Session *session ) {
   if( !compile( s ) ) {
     cerr << "Error: *** Unable to compile special skills code: " << s << endl;
   }
+  registerScript( s );
 }
 
 SqBinding::~SqBinding() {
@@ -157,6 +158,10 @@ void SqBinding::loadMapScript( char *name ) {
   char filename[3000];
   sprintf( filename, "%s/maps/%s.nut", rootDir, name );
   compile( (const char*)filename );
+  
+  // register this script and remember it
+  strcpy( lastMapScriptFileName, filename );
+  registerScript( filename );
 }
 
 bool SqBinding::startLevel() {
@@ -225,6 +230,8 @@ bool SqBinding::endLevel() {
 
   // destroy the mission
   sq_release( vm, &refMission );
+
+  unregisterScript( lastMapScriptFileName );
 
   return ret;  
 }
@@ -501,5 +508,47 @@ void SqBinding::printArgs( HSQUIRRELVM v ) {
     }
   }
   printf("\n");
+}
+
+void SqBinding::registerScript( char *file ) { 
+  std::string fileString = file;    
+  loadedScripts[ fileString ] = getLastModTime( file );
+}
+
+void SqBinding::unregisterScript( char *file ) {
+  std::string fileString = file;    
+  if( loadedScripts.find( fileString ) != loadedScripts.end() ) {
+    loadedScripts.erase( fileString );
+  }
+}
+
+void SqBinding::reloadScripts() {
+  cerr << "Checking loaded scripts" << endl;
+  for( map<string,time_t>::iterator i = loadedScripts.begin(); 
+       i != loadedScripts.end(); ++i ) {
+    string file = i->first;
+    time_t lastMod = i->second;
+    cerr << "Checking file: " << file << endl;
+    time_t newLastMod = getLastModTime( (char*)file.c_str() );
+    if( lastMod != newLastMod ) {
+      cerr << "\tReloading!" << endl;
+      if( compile( file.c_str() ) ) {
+        loadedScripts[ file ] = newLastMod;
+      } else {
+        cerr << "Error: *** Unable to compile special skills code: " << file << endl;
+      }
+    }
+  }
+  cerr << "----------------------" << endl;
+}
+
+time_t SqBinding::getLastModTime( char *file ) {
+  struct stat buf;
+  int err = stat( file, &buf );
+  if( err ) {
+    cerr << "Error while looking  at file " << file << ": " << strerror( errno ) << " (" << errno << ")" << endl;
+    return 0;
+  }
+  return buf.st_mtime;
 }
 
