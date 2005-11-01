@@ -605,6 +605,7 @@ public:
     ACTION_NO_ACTION=-1,
     ACTION_EAT_DRINK=0,
     ACTION_CAST_SPELL,
+    ACTION_SPECIAL,
     
     // this must be the last one
     ACTION_COUNT

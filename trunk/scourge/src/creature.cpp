@@ -133,6 +133,7 @@ void Creature::commonInit() {
   this->action = Constants::ACTION_NO_ACTION;
   this->actionItem = NULL;
   this->actionSpell = NULL;
+  this->actionSkill = NULL;
   this->preActionTargetCreature = NULL;
   this->angle = this->wantedAngle = this->angleStep = 0;
   this->portraitTextureIndex = 0;
@@ -919,10 +920,12 @@ void Creature::usePotion(Item *item) {
 
 void Creature::setAction(int action, 
                          Item *item, 
-                         Spell *spell) {
+                         Spell *spell,
+                         SpecialSkill *skill) {
   this->action = action;
   this->actionItem = item;
   this->actionSpell = spell;
+  this->actionSkill = skill;
   preActionTargetCreature = getTargetCreature();  
   // zero the clock
   setLastTurn(0);
@@ -936,6 +939,10 @@ void Creature::setAction(int action,
   case Constants::ACTION_CAST_SPELL:
     this->battle->invalidate();
     sprintf(msg, "%s will cast %s.", getName(), spell->getName());
+    break;
+  case Constants::ACTION_SPECIAL:
+    this->battle->invalidate();
+    sprintf(msg, "%s will use capability %s.", getName(), skill->getName());
     break;
   case Constants::ACTION_NO_ACTION:
     // no-op

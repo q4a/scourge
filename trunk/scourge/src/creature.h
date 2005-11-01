@@ -43,6 +43,7 @@ class Monster;
 class Character;
 class RpgItem;
 class Spell;
+class SpecialSkill;
 class GLShape;
 class Item;
 class Event;
@@ -118,6 +119,7 @@ class Creature : public RenderedCreature {
   int action;
   Item *actionItem;
   Spell *actionSpell;
+  SpecialSkill *actionSkill;
   Creature *preActionTargetCreature;
 
   int moveCount;
@@ -400,10 +402,11 @@ class Creature : public RenderedCreature {
   inline int getSpellCount() { return (int)spells.size(); }
   inline Spell *getSpell(int index) { return spells[index]; }
 
-  void setAction(int action, Item *item=NULL, Spell *spell=NULL);
+  void setAction(int action, Item *item=NULL, Spell *spell=NULL, SpecialSkill *skill=NULL);
   inline int getAction() { return action; }
   inline Item *getActionItem() { return actionItem; }
   inline Spell *getActionSpell() { return actionSpell; }
+  inline SpecialSkill *getActionSkill() { return actionSkill; }
 
 
 

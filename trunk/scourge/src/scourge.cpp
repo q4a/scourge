@@ -3095,11 +3095,7 @@ void Scourge::quickSpellAction( int index ) {
       if( storable->getStorableType() == Storable::SPELL_STORABLE ) {
         executeQuickSpell( (Spell*)storable );
       } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
-        char *err = 
-          creature->useSpecialSkill( (SpecialSkill*)storable, true );
-        if( err ) {
-          showMessageDialog( err );
-        }
+        executeSpecialSkill( (SpecialSkill*)storable );
       } else {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
       }
@@ -3108,6 +3104,23 @@ void Scourge::quickSpellAction( int index ) {
       if( !inventory->isVisible() ) toggleInventoryWindow();
     }
   }
+}
+
+void Scourge::executeSpecialSkill( SpecialSkill *skill ) {
+  Creature *creature = getSession()->getParty()->getPlayer();
+  creature->
+    setAction( Constants::ACTION_SPECIAL, 
+               NULL,
+               NULL,
+               skill );
+  creature->setTargetCreature(creature);
+  /*
+  char *err = 
+    creature->useSpecialSkill( (SpecialSkill*)storable, true );
+  if( err ) {
+    showMessageDialog( err );
+  }
+  */
 }
 
 void Scourge::executeQuickSpell( Spell *spell ) {

@@ -92,6 +92,10 @@ public:
   inline int getEvent() { return event; }
   inline int getIconTileX() { return iconTileX; }
   inline int getIconTileY() { return iconTileY; }
+
+  // FIXME: read these from skills.txt
+  inline int getSpeed() { return 3; }
+  inline int getDistance() { return 10; }
 };
 
 #endif

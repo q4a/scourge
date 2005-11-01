@@ -693,6 +693,7 @@ public:
 
   void quickSpellAction( int index );
   void executeQuickSpell( Spell *spell );
+  void executeSpecialSkill( SpecialSkill *skill );
 
   void drawDescriptions(ScrollingList *list);
 
