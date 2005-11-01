@@ -118,6 +118,8 @@ class Battle {
 
   void castSpell( bool alwaysSucceeds = false );
 
+  void useSkill();
+
  protected:
   void launchProjectile();
   //void initTurn();

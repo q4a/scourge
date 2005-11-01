@@ -154,7 +154,8 @@ bool Battle::fightTurn() {
   }
 
   // waiting to cast a spell?
-  if(creature->getAction() == Constants::ACTION_CAST_SPELL) {
+  if( creature->getAction() == Constants::ACTION_CAST_SPELL || 
+      creature->getAction() == Constants::ACTION_SPECIAL ) {
     creature->startEffect(Constants::EFFECT_CAST_SPELL, 
                           Constants::DAMAGE_DURATION * 4);
   }
@@ -236,7 +237,14 @@ void Battle::initTurnStep() {
   // select the best weapon only once
   if(weaponWait <= 0) {
     if(debugBattle) cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
-    if(creature->getActionSpell()) {
+    if( creature->getActionSkill() ) {
+      //range = MIN_DISTANCE;
+      range = creature->getActionSkill()->getDistance();
+      if(nextTurn > 0) weaponWait = nextTurn;
+      else weaponWait = creature->getActionSkill()->getSpeed() * WEAPON_WAIT_MUL;
+      nextTurn = 0;
+      if(debugBattle) cerr << "\tUsing capability: " << creature->getActionSkill()->getName() << endl;
+    } else if(creature->getActionSpell()) {
       range = MIN_DISTANCE;
       range = creature->getActionSpell()->getDistance();
       if(nextTurn > 0) weaponWait = nextTurn;
@@ -284,7 +292,9 @@ void Battle::executeAction() {
 
   // attack
   if(debugBattle) cerr << "\t\t *** Attacking." << endl;
-  if(creature->getActionSpell()) {
+  if( creature->getActionSkill() ) {
+    useSkill();
+  } else if(creature->getActionSpell()) {
     // casting a spell for the first time
     castSpell();
   } else if(item && item->getRpgItem()->isRangedWeapon()) {
@@ -528,6 +538,25 @@ bool Battle::selectNewTarget() {
 
     return ( target ? true : false );
   }
+}
+
+void Battle::useSkill() {
+  sprintf(message, "%s uses capability %s!", 
+          creature->getName(), 
+          creature->getActionSkill()->getName());
+  session->getMap()->addDescription(message, 1, 0.15f, 1);
+  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
+
+  char *err = 
+    creature->useSpecialSkill( creature->getActionSkill(), 
+                               true );
+  if( err ) {
+    session->getMap()->addDescription( err, 1, 0, 0 );
+    //showMessageDialog( err );
+  }
+
+  // cancel action
+  creature->cancelTarget();
 }
 
 void Battle::castSpell( bool alwaysSucceeds ) {

@@ -529,20 +529,25 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     }
   } else if(widget == useSpecialButton) {
     storable = getSelectedSpecial();
-    if( storable ) {
-      char *err = 
-        creature->useSpecialSkill( (SpecialSkill*)storable, true );
-      if( err ) {
-        scourge->showMessageDialog( err );
-      } else {
-        // set this as a quickspell if there is space
-        for( int i = 0; i < 12; i++ ) {
-          if( !creature->getQuickSpell( i ) ) {
-            creature->setQuickSpell( i, storable );
-            break;
-          }
+    if( storable && 
+        ((SpecialSkill*)storable)->getType() == SpecialSkill::SKILL_TYPE_MANUAL ) {
+
+      creature->
+        setAction( Constants::ACTION_SPECIAL, 
+                   NULL,
+                   NULL,
+                   (SpecialSkill*)storable );
+      creature->setTargetCreature(creature);
+
+      // set this as a quickspell if there is space
+      for( int i = 0; i < 12; i++ ) {
+        if( !creature->getQuickSpell( i ) ) {
+          creature->setQuickSpell( i, storable );
+          break;
         }
       }
+
+      if(!mainWin->isLocked()) mainWin->setVisible(false);
     }
   } else if( widget == storeSpellButton ) {
     if( storeSpellButton->isSelected() ) {
