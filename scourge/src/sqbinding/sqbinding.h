@@ -207,6 +207,8 @@ public:
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
   HSQOBJECT *getCreatureRef( Creature *creature );
   HSQOBJECT *getItemRef( Item *item );
+  void setGlobalVariable( char *name, float value );
+  float getGlobalVariable( char *name );
 
   void reloadScripts();
 

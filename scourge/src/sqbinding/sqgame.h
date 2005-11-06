@@ -72,6 +72,7 @@ public:
   static int _eraseValue( HSQUIRRELVM vm );
 
   static int _printMessage( HSQUIRRELVM vm );
+  static int _reloadNuts( HSQUIRRELVM vm );
 
 
 };
