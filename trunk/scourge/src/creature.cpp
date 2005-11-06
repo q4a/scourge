@@ -28,6 +28,8 @@
 
 using namespace std;
 
+//#define DEBUG_CAPABILITIES
+
 #define MOVE_DELAY 7
 
 // at this fps, the players step 1 square                     
@@ -1240,6 +1242,11 @@ int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
     damage += (damage * ((skill - 50) / 100.0f) );
   }
 
+  // apply any attack enhancing capabilities
+  damage += applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
+                                         "damage",
+                                         damage );  
+
   if(maxDamage) *maxDamage = (int)damage;
 
   // return the 70% of value + 30% random
@@ -1253,6 +1260,14 @@ int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
  take some damage
 */
 bool Creature::takeDamage( int damage, int effect_type, GLuint delay ) {
+
+  // apply any attack enhancing capabilities
+  float d = (float)damage;
+  d += applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DEFENSE,
+                                    "damage",
+                                    d );
+  damage = (int)d;
+
   hp -= damage;
   // if creature dies start effect at its location
   if(hp > 0) {
@@ -1846,8 +1861,55 @@ void Creature::evalSpecialSkills() {
   }
 }
 
+void Creature::setSkill(int index, int value) { 
+  skills[index] = value; 
+  evalSpecialSkills();
+}
+
+void Creature::setStateMod(int mod, bool setting) { 
+  if(setting) stateMod |= (1 << mod);  
+  else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
+  evalSpecialSkills();
+}
+
+void Creature::setProtectedStateMod(int mod, bool setting) { 
+  if(setting) protStateMod |= (1 << mod);  
+  else protStateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
+  evalSpecialSkills();
+}
+
+float Creature::applyAutomaticSpecialSkills( int event, 
+                                           char *varName,
+                                           float varValue ) {
+#ifdef DEBUG_CAPABILITIES
+  cerr << "Using automatic capabilities for event type: " << event << endl;
+#endif
+  for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
+    SpecialSkill *skill = SpecialSkill::getSpecialSkill(t);   
+    if( skill->getEvent() == event &&
+        skill->getType() == SpecialSkill::SKILL_TYPE_AUTOMATIC &&
+        hasSpecialSkill( skill ) ) {
+#ifdef DEBUG_CAPABILITIES
+      cerr << "\tusing capability: " << skill->getName() << 
+        " and setting var: " << 
+        varName << "=" << varValue << endl;
+#endif
+      session->getSquirrel()->setGlobalVariable( varName, varValue );
+      useSpecialSkill( skill, false );
+      varValue = session->getSquirrel()->getGlobalVariable( varName );
+#ifdef DEBUG_CAPABILITIES
+      cerr << "\t\tgot back " << varValue << endl;
+#endif
+    }
+  }
+#ifdef DEBUG_CAPABILITIES
+  cerr << "final value=" << varValue << " ===============================" << endl;
+#endif
+  return varValue;
+}
+
 char *Creature::useSpecialSkill( SpecialSkill *specialSkill, 
-                                       bool manualOnly ) {
+                                 bool manualOnly ) {
   if( !hasSpecialSkill( specialSkill ) ) {
     return Constants::getMessage( Constants::UNMET_CAPABILITY_PREREQ_ERROR );
   } else if( manualOnly && 
@@ -1865,22 +1927,5 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
     cerr << "*** Error: can't find squarrel reference for creature: " << getName() << endl;
     return NULL;
   }
-}
-
-void Creature::setSkill(int index, int value) { 
-  skills[index] = value; 
-  evalSpecialSkills();
-}
-
-void Creature::setStateMod(int mod, bool setting) { 
-  if(setting) stateMod |= (1 << mod);  
-  else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
-  evalSpecialSkills();
-}
-
-void Creature::setProtectedStateMod(int mod, bool setting) { 
-  if(setting) protStateMod |= (1 << mod);  
-  else protStateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 
-  evalSpecialSkills();
 }
 

@@ -154,7 +154,10 @@ class Creature : public RenderedCreature {
   inline bool hasSpecialSkill( SpecialSkill *ss ) { return specialSkills.find(ss) != specialSkills.end(); }
   char *useSpecialSkill( SpecialSkill *specialSkill, 
                          bool manualOnly );
-
+  float applyAutomaticSpecialSkills( int event, 
+                                     char *varName,
+                                     float value );
+  
   inline void setQuickSpell( int index, Storable *storable ) { 
     for( int i = 0; i < 12; i++ ) {
       if( quickSpell[ i ] == storable ) {

@@ -279,7 +279,7 @@ void Scourge::startMission() {
       party->getCalendar()->reset(true); // reset the time
 
       // Schedule an event to keep reloading scripts if they change on disk
-      Date d(15, 0, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+      Date d(0, 5, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
       Calendar *cal = getSession()->getParty()->getCalendar();
       Event *event = new ReloadEvent( cal->getCurrentDate(), 
                                       d, 

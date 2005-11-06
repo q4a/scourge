@@ -583,3 +583,29 @@ void SqBinding::loadValues( File *file ) {
   }
 }
 
+void SqBinding::setGlobalVariable( char *name, float value ) {
+  int oldtop = sq_gettop( vm );
+  sq_pushroottable( vm );
+  sq_pushstring( vm, _SC( name ), -1 );
+  sq_pushfloat( vm, value );
+  if( SQ_FAILED( sq_createslot( vm, -3 ) ) ) {
+    cerr << "Unable to create global var slot:" << name << endl;
+  }
+//  sq_pop( vm, -1 );
+  sq_settop( vm, oldtop );
+}
+
+float SqBinding::getGlobalVariable( char *name ) {
+  float value;
+  int oldtop = sq_gettop( vm );
+  sq_pushroottable( vm );
+  sq_pushstring( vm, _SC( name ), -1 );
+  if( SQ_FAILED( sq_get( vm, -2 ) ) ) {
+    cerr << "Unable to create global var slot:" << name << endl;
+  }
+  sq_getfloat( vm, -1, &value );
+//  sq_pop( vm, -1 );
+  sq_settop( vm, oldtop );
+  return value;
+}
+

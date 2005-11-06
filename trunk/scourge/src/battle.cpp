@@ -1117,4 +1117,3 @@ char *Battle::getRandomSound(int start, int count) {
   else return NULL;
 }
 
-

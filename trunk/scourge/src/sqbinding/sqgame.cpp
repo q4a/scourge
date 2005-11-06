@@ -39,6 +39,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "setValue", SqGame::_setValue, 0, 0 },
   { "eraseValue", SqGame::_eraseValue, 0, 0 },
   { "printMessage", SqGame::_printMessage, 0, 0 },
+  { "reloadNuts", SqGame::_reloadNuts, 0, 0 },
   { 0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members };
@@ -169,6 +170,11 @@ int SqGame::_eraseValue( HSQUIRRELVM vm ) {
 int SqGame::_printMessage( HSQUIRRELVM vm ) {
   GET_STRING( message, 80 )
   SqBinding::sessionRef->getMap()->addDescription( message, 1, 0, 1 );
+  return 0;
+}
+
+int SqGame::_reloadNuts( HSQUIRRELVM vm ) {
+  SqBinding::binding->reloadScripts();
   return 0;
 }
 
