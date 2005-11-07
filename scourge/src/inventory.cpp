@@ -530,7 +530,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == useSpecialButton) {
     storable = getSelectedSpecial();
     if( storable && 
-        ((SpecialSkill*)storable)->getType() == SpecialSkill::SKILL_TYPE_MANUAL ) {
+        ((SpecialSkill*)storable)->getType() == SpecialSkill::SKILL_TYPE_MANUAL &&
+        creature->hasSpecialSkill((SpecialSkill*)storable) ) {
 
       creature->
         setAction( Constants::ACTION_SPECIAL, 

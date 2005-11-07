@@ -22,27 +22,30 @@
 
 const char *SqGame::className = "ScourgeGame";
 ScriptClassMemberDecl SqGame::members[] = {
-  { "_typeof", SqGame::_squirrel_typeof, 1, 0 },
-  { "constructor", SqGame::_constructor, 0, 0 },
-  { "getVersion", SqGame::_getVersion, 0, 0 },
-  { "getRootDir", SqGame::_getRootDir, 0, 0 },
-  { "getPartySize", SqGame::_getPartySize, 0, 0 },
-  { "getPartyMember", SqGame::_getPartyMember, 0, 0 },
-  { "getSkillCount", SqGame::_getSkillCount, 0, 0 },
-  { "getSkillName", SqGame::_getSkillName, 0, 0 },
-  { "getMission", SqGame::_getMission, 0, 0 },
-  { "getStateModCount", SqGame::_getStateModCount, 0, 0 },
-  { "getStateModName", SqGame::_getStateModName, 0, 0 },
-  { "getDateString", SqGame::_getDateString, 0, 0 },
-  { "isADayLater", SqGame::_isADayLater, 0, 0 },
-  { "getValue", SqGame::_getValue, 0, 0 },
-  { "setValue", SqGame::_setValue, 0, 0 },
-  { "eraseValue", SqGame::_eraseValue, 0, 0 },
-  { "printMessage", SqGame::_printMessage, 0, 0 },
-  { "reloadNuts", SqGame::_reloadNuts, 0, 0 },
-  { 0,0,0,0 } // terminator
+  { "void", "_typeof", SqGame::_squirrel_typeof, 1, 0, "" },
+  { "void", "constructor", SqGame::_constructor, 0, 0, "" },
+  { "string", "getVersion", SqGame::_getVersion, 0, 0, "Get the game's version." },
+  { "string", "getRootDir", SqGame::_getRootDir, 0, 0, "Get the game's data directory." },
+  { "int", "getPartySize", SqGame::_getPartySize, 0, 0, "Get the number of party members." },
+  { "Creature", "getPartyMember", SqGame::_getPartyMember, 0, 0, "Get one of the party member's creature objects. The first param is the index of the party member." },
+  { "int", "getSkillCount", SqGame::_getSkillCount, 0, 0, "Get the number of skills in the game." },
+  { "string", "getSkillName", SqGame::_getSkillName, 0, 0, "Get the given skill's name. The first param is the index of the skill." },
+  { "Mission", "getMission", SqGame::_getMission, 0, 0, "Get the current mission object." },
+  { "int", "getStateModCount", SqGame::_getStateModCount, 0, 0, "Return the number of state modifiers in the game." },
+  { "string", "getStateModName", SqGame::_getStateModName, 2, "xn", "Get the given state mod's name. The first param is the index of the state mod." },
+  { "string", "getDateString", SqGame::_getDateString, 0, 0, "Get the current game date. It is returned in the game's date format: (yyyy/m/d/h/m/s)" },
+  { "bool", "isADayLater", SqGame::_isADayLater, 2, "xs", "Is the given date a day later than the current game date? The first parameter is a date in game date format. (yyyy/m/d/h/m/s)" },
+  { "string", "getValue", SqGame::_getValue, 2, "xs", "Get the value associated with a given key from the value map. The first parameter is the key." },
+  { "void", "setValue", SqGame::_setValue, 3, "xss", "Add a new or set an existing key and its value in the value map. The first parameter is the key, the second is its value." },
+  { "void", "eraseValue", SqGame::_eraseValue, 2, "xs", "Remove a key and its value from the value map. The first parameter is the key to be removed." },
+  { "void", "printMessage", SqGame::_printMessage, 2, "xs", "Print a message in the scourge message window. The resulting message will always be displayed in a lovely shade of purple." },
+  { "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files." },
+  { "void", "documentSOM", SqGame::_documentSOM, 2, "xs", "Produce this documentation. The first argument is the location where the html files will be placed." },
+  { 0,0,0,0,0 } // terminator
 };
-SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members };
+SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
+  "The root of the SOM. At the start of the game, a global variable named scourgeGame\
+  is created. All other scourge classes are referenced from this object." };
 
 SqGame::SqGame() {
 }
@@ -175,6 +178,13 @@ int SqGame::_printMessage( HSQUIRRELVM vm ) {
 
 int SqGame::_reloadNuts( HSQUIRRELVM vm ) {
   SqBinding::binding->reloadScripts();
+  return 0;
+}
+
+int SqGame::_documentSOM( HSQUIRRELVM vm ) {
+  GET_STRING( path, 255 )
+  if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/api/som" );
+  SqBinding::binding->documentSOM( path );
   return 0;
 }
 

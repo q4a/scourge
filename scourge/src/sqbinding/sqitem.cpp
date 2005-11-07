@@ -23,33 +23,34 @@ using namespace std;
 
 const char *SqItem::className = "Item";
 ScriptClassMemberDecl SqItem::members[] = {
-  { "_typeof", SqItem::_squirrel_typeof, 1, 0 },
-  { "constructor", SqItem::_constructor, 0, 0 },
-  { "getName", SqItem::_getName, 0, 0 },
-  { "getLevel", SqItem::_getLevel, 0, 0 },
-  { "getWeight", SqItem::_getWeight, 0, 0 },
-  { "getPrice", SqItem::_getPrice, 0, 0 },
-  { "getAction", SqItem::_getAction, 0, 0 },
-  { "getSpeed", SqItem::_getAction, 0, 0 },
-  { "getDistance", SqItem::_getDistance, 0, 0 },
-  { "getMaxCharges", SqItem::_getMaxCharges, 0, 0 },
-  { "getDuration", SqItem::_getDuration, 0, 0 },
-  { "getQuality", SqItem::_getQuality, 0, 0 },
-  { "isMagicItem", SqItem::_isMagicItem, 0, 0 },
-  { "getSkillBonus", SqItem::_getSkillBonus, 0, 0 },
-  { "getMagicLevel", SqItem::_getMagicLevel, 0, 0 },
-  { "getBonus", SqItem::_getBonus, 0, 0 },
-  { "getDamageMultiplier", SqItem::_getDamageMultiplier, 0, 0 },
-  { "getMonsterType", SqItem::_getMonsterType, 0, 0 },
-  { "getSchool", SqItem::_getSchool, 0, 0 },
-  { "getMagicResistance", SqItem::_getMagicResistance, 0, 0 },
-  { "describeMagicDamage", SqItem::_describeMagicDamage, 0, 0 },
-  { "isCursed", SqItem::_isCursed, 0, 0 },
-  { "isStateModSet", SqItem::_isStateModSet, 0, 0 },
-  { "isStateModProtected", SqItem::_isStateModProtected, 0, 0 },
-  { 0,0,0,0 } // terminator
+  { "void", "_typeof", SqItem::_squirrel_typeof, 1, 0, "" },
+  { "void", "constructor", SqItem::_constructor, 0, 0, "" },
+  { "string", "getName", SqItem::_getName, 0, 0, "" },
+  { "int", "getLevel", SqItem::_getLevel, 0, 0, "" },
+  { "int", "getWeight", SqItem::_getWeight, 0, 0, "" },
+  { "int", "getPrice", SqItem::_getPrice, 0, 0, "" },
+  { "int", "getAction", SqItem::_getAction, 0, 0, "" },
+  { "int", "getSpeed", SqItem::_getAction, 0, 0, "" },
+  { "int", "getDistance", SqItem::_getDistance, 0, 0, "" },
+  { "int", "getMaxCharges", SqItem::_getMaxCharges, 0, 0, "" },
+  { "int", "getDuration", SqItem::_getDuration, 0, 0, "" },
+  { "int", "getQuality", SqItem::_getQuality, 0, 0, "" },
+  { "int", "isMagicItem", SqItem::_isMagicItem, 0, 0, "" },
+  { "int", "getSkillBonus", SqItem::_getSkillBonus, 0, 0, "" },
+  { "int", "getMagicLevel", SqItem::_getMagicLevel, 0, 0, "" },
+  { "int", "getBonus", SqItem::_getBonus, 0, 0, "" },
+  { "int", "getDamageMultiplier", SqItem::_getDamageMultiplier, 0, 0, "" },
+  { "int", "getMonsterType", SqItem::_getMonsterType, 0, 0, "" },
+  { "string", "getSchool", SqItem::_getSchool, 0, 0, "" },
+  { "int", "getMagicResistance", SqItem::_getMagicResistance, 0, 0, "" },
+  { "string", "describeMagicDamage", SqItem::_describeMagicDamage, 0, 0, "" },
+  { "bool", "isCursed", SqItem::_isCursed, 0, 0, "" },
+  { "bool", "isStateModSet", SqItem::_isStateModSet, 0, 0, "" },
+  { "bool", "isStateModProtected", SqItem::_isStateModProtected, 0, 0, "" },
+  { 0,0,0,0,0 } // terminator
 };
-SquirrelClassDecl SqItem::classDecl = { SqItem::className, 0, members };
+SquirrelClassDecl SqItem::classDecl = { SqItem::className, 0, members,
+  "Information about a scourge item." };
 
 SqItem::SqItem() {
 }

@@ -7,6 +7,7 @@ noinst_LIBRARIES = libSqbinding.a
 libSqbinding_a_SOURCES = \
 	sqbinding.cpp\
 	sqbinding.h\
+	sqobject.cpp\
 	sqobject.h\
 	sqgame.cpp\
 	sqgame.h\
