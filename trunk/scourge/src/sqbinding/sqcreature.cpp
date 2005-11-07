@@ -23,46 +23,47 @@ using namespace std;
 
 const char *SqCreature::className = "Creature";
 ScriptClassMemberDecl SqCreature::members[] = {
-  { "_typeof", SqCreature::_squirrel_typeof, 1, 0 },
-  { "constructor", SqCreature::_constructor, 0, 0 },
+  { "void", "_typeof", SqCreature::_squirrel_typeof, 1, 0, "" },
+  { "void", "constructor", SqCreature::_constructor, 0, 0, "" },
   
-  { "getName", SqCreature::_getName, 0, 0 },
-  { "getLevel", SqCreature::_getLevel, 0, 0 },
-  { "getExpOfNextLevel", SqCreature::_getExpOfNextLevel, 0, 0 },
-  { "getExp", SqCreature::_getExp, 0, 0 },
-  { "getMoney", SqCreature::_getMoney, 0, 0 },
-  { "getHp", SqCreature::_getHp, 0, 0 },
-  { "getStartingHp", SqCreature::_getStartingHp, 0, 0 },
-  { "getMaxHp", SqCreature::_getMaxHp, 0, 0 },
-  { "getMp", SqCreature::_getMp, 0, 0 },
-  { "getStartingMp", SqCreature::_getStartingMp, 0, 0 },
-  { "getMaxMp", SqCreature::_getMaxMp, 0, 0 },
-  { "getThirst", SqCreature::_getThirst, 0, 0 },
-  { "getHunger", SqCreature::_getHunger, 0, 0 },
-  { "getSkill", SqCreature::_getSkill, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "getSkillByName", SqCreature::_getSkillByName, SQ_MATCHTYPEMASKSTRING, "xs" },
-  { "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "getArmor", SqCreature::_getArmor, 0, 0 },
-  { "getSkillModifiedArmor", SqCreature::_getSkillModifiedArmor, 0, 0 },
+  { "string", "getName", SqCreature::_getName, 0, 0, "" },
+  { "int", "getLevel", SqCreature::_getLevel, 0, 0, "" },
+  { "int", "getExpOfNextLevel", SqCreature::_getExpOfNextLevel, 0, 0, "" },
+  { "int", "getExp", SqCreature::_getExp, 0, 0, "" },
+  { "int", "getMoney", SqCreature::_getMoney, 0, 0, "" },
+  { "int", "getHp", SqCreature::_getHp, 0, 0, "" },
+  { "int", "getStartingHp", SqCreature::_getStartingHp, 0, 0, "" },
+  { "int", "getMaxHp", SqCreature::_getMaxHp, 0, 0, "" },
+  { "int", "getMp", SqCreature::_getMp, 0, 0, "" },
+  { "int", "getStartingMp", SqCreature::_getStartingMp, 0, 0, "" },
+  { "int", "getMaxMp", SqCreature::_getMaxMp, 0, 0, "" },
+  { "int", "getThirst", SqCreature::_getThirst, 0, 0, "" },
+  { "int", "getHunger", SqCreature::_getHunger, 0, 0, "" },
+  { "int", "getSkill", SqCreature::_getSkill, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "int", "getSkillByName", SqCreature::_getSkillByName, SQ_MATCHTYPEMASKSTRING, "xs", "" },
+  { "int", "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "int", "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "int", "getArmor", SqCreature::_getArmor, 0, 0, "" },
+  { "int", "getSkillModifiedArmor", SqCreature::_getSkillModifiedArmor, 0, 0, "" },
 
-  { "setLevel", SqCreature::_setLevel, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "setExp", SqCreature::_setExp, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "setMoney", SqCreature::_setMoney, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "setHp", SqCreature::_setHp, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "setMp", SqCreature::_setMp, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "setThirst", SqCreature::_setThirst, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "setHunger", SqCreature::_setHunger, SQ_MATCHTYPEMASKSTRING, "xn" },
-  { "setSkill", SqCreature::_setSkill, SQ_MATCHTYPEMASKSTRING, "xnn" },
-  { "setSkillByName", SqCreature::_setSkillByName, SQ_MATCHTYPEMASKSTRING, "xsn" },
-  { "setStateMod", SqCreature::_setStateMod, SQ_MATCHTYPEMASKSTRING, "xnb" },
-  { "setProtectedStateMod", SqCreature::_setProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xnb" },
+  { "void", "setLevel", SqCreature::_setLevel, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "setExp", SqCreature::_setExp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "setMoney", SqCreature::_setMoney, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "setHp", SqCreature::_setHp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "setMp", SqCreature::_setMp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "setThirst", SqCreature::_setThirst, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "setHunger", SqCreature::_setHunger, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "setSkill", SqCreature::_setSkill, SQ_MATCHTYPEMASKSTRING, "xnn", "" },
+  { "void", "setSkillByName", SqCreature::_setSkillByName, SQ_MATCHTYPEMASKSTRING, "xsn", "" },
+  { "void", "setStateMod", SqCreature::_setStateMod, SQ_MATCHTYPEMASKSTRING, "xnb", "" },
+  { "void", "setProtectedStateMod", SqCreature::_setProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xnb", "" },
 
-  { "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs" },  
+  { "bool", "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs", "" },  
 
-  { 0,0,0,0 } // terminator
+  { 0,0,0,0,0 } // terminator
 };
-SquirrelClassDecl SqCreature::classDecl = { SqCreature::className, 0, members };
+SquirrelClassDecl SqCreature::classDecl = { SqCreature::className, 0, members, 
+  "Information about a scourge creature (monster, player or npc.)" };
 
 SqCreature::SqCreature() {
 }

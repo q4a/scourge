@@ -44,10 +44,12 @@ class File;
  * A squirrel member function declaration.
  */
 struct ScriptClassMemberDecl  {
+  const char *returnType;
   const SQChar *name;
   SQFUNCTION func;
   int params;
   const SQChar *typemask;
+  const char *description;
 };
 
 /**
@@ -57,6 +59,7 @@ struct SquirrelClassDecl  {
   const SQChar *name;
   const SQChar *base;
   const ScriptClassMemberDecl *members;
+  const char *description;
 };  
 
 /**
@@ -211,6 +214,7 @@ public:
   float getGlobalVariable( char *name );
 
   void reloadScripts();
+  void documentSOM( char *path );
 
 protected:
   void registerScript( char *file );

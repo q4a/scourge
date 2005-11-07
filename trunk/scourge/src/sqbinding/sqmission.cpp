@@ -23,15 +23,16 @@ using namespace std;
 
 const char *SqMission::className = "Mission";
 ScriptClassMemberDecl SqMission::members[] = {
-  { "_typeof", SqMission::_squirrel_typeof, 1, 0 },
-  { "constructor", SqMission::_constructor, 0, 0 },
-  { "getCreatureCount", SqMission::_getCreatureCount, 0, 0 },
-  { "getCreature", SqMission::_getCreature, 0, 0 },
-  { "getItemCount", SqMission::_getItemCount, 0, 0 },
-  { "getItem", SqMission::_getItem, 0, 0 },
-{ 0,0,0,0 } // terminator
+  { "void", "_typeof", SqMission::_squirrel_typeof, 1, 0, "" },
+  { "void", "constructor", SqMission::_constructor, 0, 0, "" },
+  { "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "" },
+  { "Creature", "getCreature", SqMission::_getCreature, 0, 0, "" },
+  { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "" },
+  { "Item", "getItem", SqMission::_getItem, 0, 0, "" },
+  { 0,0,0,0,0 } // terminator
 };
-SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members };
+SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
+  "Information about the currently used map." };
 
 SqMission::SqMission() {
 }

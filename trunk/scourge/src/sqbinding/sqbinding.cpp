@@ -28,6 +28,7 @@
 #include "../squirrel/sqstdaux.h"
 #include "../squirrel/sqstdmath.h"
 #include "../io/file.h"
+#include <set>
 
 using namespace std;
 
@@ -607,5 +608,28 @@ float SqBinding::getGlobalVariable( char *name ) {
 //  sq_pop( vm, -1 );
   sq_settop( vm, oldtop );
   return value;
+}
+
+void SqBinding::documentSOM( char *path ) {
+  set<SqObject*> objects;
+
+  objects.insert( new SqGame() );
+  objects.insert( new SqMission() );
+  objects.insert( new SqCreature() );
+  objects.insert( new SqItem() );
+
+  set<string> names;
+  for( set<SqObject*>::iterator e = objects.begin();
+       e != objects.end(); ++e ) {
+    SqObject *object = *e;
+    string s = object->getClassName();
+    names.insert( s );
+  }
+
+  for( set<SqObject*>::iterator e = objects.begin();
+       e != objects.end(); ++e ) {
+    SqObject *object = *e;
+    object->documentSOM( path, &names );
+  }
 }
 
