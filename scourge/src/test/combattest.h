@@ -37,6 +37,7 @@ public:
 
 protected:
   static bool fight( char *path,
+                     char *filename,
                      Session *session, 
                      Creature *attacker, 
                      Item *weapon,
@@ -51,6 +52,7 @@ protected:
                           Creature *c, 
                           char *itemName, 
                           int itemLevel );
+  static void computeHighLow( int value, int *sum, int *low, int *high );
 };
 
 #endif
