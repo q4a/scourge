@@ -53,6 +53,8 @@ void Character::initCharacters() {
       int skill_bonus =  atoi(strtok(NULL, ","));
       int level_progression = atoi(strtok(NULL, ","));
       strcpy(shortName, strtok(NULL, ","));
+      float baseAttackBonus = (float)atof( strtok( NULL, "," ) );
+      int extraAttackLevel = atoi(strtok(NULL, ","));
 
       /*
       cerr << "adding character class: " << name << 
@@ -61,7 +63,8 @@ void Character::initCharacters() {
       */
 
       last = new Character( strdup(name), hp, mp, skill_bonus, 
-                            level_progression, strdup(shortName) );
+                            level_progression, strdup(shortName),
+                            baseAttackBonus, extraAttackLevel );
       string s = name;
       character_class[s] = last;
       string s2 = shortName;
@@ -121,13 +124,16 @@ void Character::addSounds(int type, char *line, Character *c) {
 }
 
 Character::Character(char *name, int startingHp, int startingMp, 
-                     int skill_bonus, int level_progression, char *shortName ) {  
+                     int skill_bonus, int level_progression, char *shortName,
+                     float baseAttackBonus, int extraAttackLevel ) {  
   this->name = name;
   this->startingHp = startingHp;
   this->startingMp = startingMp;
   this->skill_bonus = skill_bonus;
   this->level_progression = level_progression;
   this->shortName = shortName;
+  this->baseAttackBonus = baseAttackBonus;
+  this->extraAttackLevel = extraAttackLevel;
   strcpy(description, "");
 }
 

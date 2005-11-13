@@ -55,29 +55,44 @@ CombatTest::~CombatTest() {
 }
 
 bool CombatTest::executeTests( Session *session, char *path ) {
+  vector<Creature*> creatures;
   vector<Item*> items;
   
   // -----------------------------------------------------------
   // The attacker
   Creature *attacker = createCharacter( session, "RA", "Attacker", 1 );
+  creatures.push_back( attacker );
   Item *weapon = equipItem( session, attacker, "Dirk", 1 );
   items.push_back( weapon );
   
   // The defender
   Creature *defender = createCharacter( session, "RA", "Defender", 1 );
+  creatures.push_back( defender );
   items.push_back( equipItem( session, defender, "Horned helmet", 1 ) );
   items.push_back( equipItem( session, defender, "Leather Armor", 1 ) );
 
-  // fight!
+  // Test all weapons vs. leather armor
   bool ret = true;
   char filename[80];
   for( int i = 0; i < RpgItem::itemCount; i++ ) {
     if( !RpgItem::getItem( i )->isWeapon() ) continue;
     attacker->removeInventory( 0 );
-    Item *weapon = equipItem( session, attacker, RpgItem::getItem( i )->getName(), 1 );
+    weapon = equipItem( session, attacker, RpgItem::getItem( i )->getName(), 1 );
     items.push_back( weapon );
-    sprintf( filename, "%s.html", RpgItem::getItem( i )->getName() );
+    sprintf( filename, "weapon_%s.html", RpgItem::getItem( i )->getName() );
     if( !fight( path, filename, session, attacker, weapon, defender ) ) break;
+  }
+
+  // Test all character classes with long sword vs. leather armor
+  weapon = equipItem( session, attacker, "Long sword", 1 );
+  items.push_back( weapon );
+  for( int i = 0; i < (int)Character::character_list.size(); i++ ) {
+    Creature *c = createCharacter( session, Character::character_list[i]->getShortName(), "Defender", 1 );
+    creatures.push_back( c );
+    items.push_back( equipItem( session, c, "Horned helmet", 1 ) );
+    items.push_back( equipItem( session, c, "Leather Armor", 1 ) );
+    sprintf( filename, "character_%s.html", Character::character_list[i]->getName() );
+    if( !fight( path, filename, session, attacker, weapon, c ) ) break;
   }
 
   // cleanup
@@ -85,8 +100,11 @@ bool CombatTest::executeTests( Session *session, char *path ) {
     Item *item = items[ i ];
     delete item;
   }
-  delete attacker;
-  delete defender;
+  for( int i = 0; i < (int)creatures.size(); i++ ) {
+    Creature *creature = creatures[ i ];
+    delete creature;
+  }
+  
 
   return ret;
 }
@@ -132,36 +150,45 @@ bool CombatTest::fight( char *path,
   }
   fprintf( fp, "</tr>\n" );
 
-  int sum=0, low=0, high=0;
-  double ave;
+  float sum=0, low=0, high=0, ave, ATKave;
   for( int attackLevel = 1; attackLevel < SHOW_MAX_LEVEL; attackLevel++ ) {
     attacker->setLevel( attackLevel );
-    fprintf( fp, "<tr><td>%d</td>\n", attackLevel );
+    fprintf( fp, "<tr><td>%d<br>\n", attackLevel );
+
+    // -------------------------------------------------
+    // Attack roll
+    sum = low = high = 0;
+    for( int i = 0; i < count; i++ ) {
+      computeHighLow( attacker->getAttackRoll( weapon ),
+                      &sum, &low, &high );
+    }
+    ATKave = sum / ((double)count);
+    fprintf( fp, "ATK:%.2f/%.2f/%.2f</td>\n", low, high, ATKave );
+    // -------------------------------------------------
 
     for( int defendLevel = 1; defendLevel < SHOW_MAX_LEVEL; defendLevel++ ) {
       defender->setLevel( defendLevel );
       fprintf( fp, "<td bgcolor=%s>", ( defendLevel == attackLevel ? "gray" : "white" ) );
 
-      sum = low = high = 0;
-      for( int i = 0; i < count; i++ ) {
-        computeHighLow( attacker->getToHit( weapon ),
-                        &sum, &low, &high );
-      }
-      ave = ((double)sum) / ((double)count);
-      fprintf( fp, "ATK:<span style='background: %s'>%d/%d/%.2f</span><br>\
-               AC :%d/<b>%d</b><br>\n",
-               ( ave > (double)(defender->getSkillModifiedArmor()) ? "green" : "red" ),
-               low, high, ave,
-               defender->getArmor(), defender->getSkillModifiedArmor() );
+      // -------------------------------------------------
+      // Armor class
+      float armor, shield, skillBonus, armorPenalty, shieldPenalty;
+      float ac = defender->getAC( &armor, &shield, &skillBonus, &armorPenalty, &shieldPenalty );
+      fprintf( fp, "AC :<span style='background: %s'><b>%.2f</b>(ARM:%.2f,SLD:%.2f,BON:%.2f,AP:%.2f,SP:%.2f)</span><br>\n",
+               ( ATKave < ac ? "green" : "red" ), ac,
+               armor, shield, skillBonus, armorPenalty, shieldPenalty );
 
+      // -------------------------------------------------
+      // Damage roll
       sum = low = high = 0;
       for( int i = 0; i < count; i++ ) {
         computeHighLow( attacker->getDamage( weapon ),
                         &sum, &low, &high );
       }
-      ave = ((double)sum) / ((double)count);
-      fprintf( fp, "DAM:%d/%d/%.2f\n",
+      ave = sum / ((double)count);
+      fprintf( fp, "DAM:%.2f/%.2f/%.2f\n",
                low, high, ave );
+      // -------------------------------------------------
 
       fprintf( fp, "</td>" );
     }
@@ -187,7 +214,7 @@ bool CombatTest::fight( char *path,
   return true;
 }
 
-void CombatTest::computeHighLow( int value, int *sum, int *low, int *high ) {
+void CombatTest::computeHighLow( float value, float *sum, float *low, float *high ) {
   if( !(*high) ) {
     *low = *high = value;
   } else if( value > *high ) {
@@ -243,78 +270,9 @@ Creature *CombatTest::createCharacter( Session *session,
   
   // set skill levels to 50%
   for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-    c->setSkill( t, ( t < 8 ? 10 : 50 ) );
+    c->setSkill( t, MAX_SKILL / 2 );
   }
   
-  /*
-    // add a weapon anyone can wield
-    int n = (int)(4.0f * rand()/RAND_MAX);
-    switch(n) {
-    case 0: c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow"))); break;
-    case 1: c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"))); break;
-    case 2: c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"))); break;
-    case 3: c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"))); break;
-    }
-    c->equipInventory(0);
-    */
-    
-    /*
-    // add some armor
-    if(0 == (int)(4.0f * rand()/RAND_MAX)) {
-      c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet")));
-      c->equipInventory(1);
-    }
-    
-    // some potions
-    if(0 == (int)(4.0f * rand()/RAND_MAX))
-      c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion")));  
-    if(0 == (int)(4.0f * rand()/RAND_MAX))
-      c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion")));  
-    if(0 == (int)(4.0f * rand()/RAND_MAX))
-      c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor")));  
-    
-    // some food
-    for(int t = 0; t < (int)(6.0f * rand()/RAND_MAX); t++) {
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Apple")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Bread")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-      c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mushroom")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Big egg")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        c->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mutton meat")));
-    }
-    
-    // some spells
-    if(c->getMaxMp() > 0) {
-      // useful spells
-      c->addSpell(Spell::getSpellByName("Flame of Azun"));
-      c->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
-      // attack spell
-      if(0 == (int)(2.0f * rand()/RAND_MAX))
-        c->addSpell(Spell::getSpellByName("Silent knives"));
-      else
-        c->addSpell(Spell::getSpellByName("Stinging light"));
-      // defensive spell
-      if(0 == (int)(2.0f * rand()/RAND_MAX))
-        c->addSpell(Spell::getSpellByName("Lesser healing touch"));
-      else
-        c->addSpell(Spell::getSpellByName("Body of stone"));
-
-
-      // testing
-      if( LEVEL > 1 ) {
-        c->addSpell(Spell::getSpellByName("Ring of Harm"));
-        c->addSpell(Spell::getSpellByName("Malice Storm"));
-        c->addSpell(Spell::getSpellByName("Unholy Decimator"));
-        c->addSpell(Spell::getSpellByName("Remove curse"));
-        c->addSpell(Spell::getSpellByName("Teleportation"));
-        c->setMp( 5000 );
-      }
-    }
-    */
   return c;
 }
 

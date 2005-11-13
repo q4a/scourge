@@ -50,6 +50,10 @@ Monster::Monster(char *type, char* descriptiveType, int level, int hp, int mp, c
   this->npc = npc;
   this->portrait = portrait;
   this->portraitTexture = 0;
+
+  // approximate the base attack bonus: magic users get less than warriors
+  baseAttackBonus = ( !mp ? 1.0f : 0.75f );
+
   sprintf(description, "FIXME: need a description");
 }
 
