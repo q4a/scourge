@@ -30,6 +30,8 @@ GameAdapter *createGameAdapter(UserConfiguration *config) {
     adapter = new ServerAdapter(config);
   } else if(config->getStandAloneMode() == UserConfiguration::CLIENT) {
     adapter = new ClientAdapter(config);
+  } else if( config->getStandAloneMode() == UserConfiguration::TEST ) {
+    adapter = new GameAdapter( config );
   } else {
     adapter = new Scourge(config);
   }

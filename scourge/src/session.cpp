@@ -21,6 +21,7 @@
 #include "creature.h"
 #include "sqbinding/sqbinding.h"
 #include "specialskill.h"
+#include "test/combattest.h"
 #include <iostream>
 #include <stdlib.h>
 #include <strings.h>
@@ -383,6 +384,18 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 
   Session *session = new Session( adapter );
   session->initialize();
+  if(argc >= 2 && !strcmp(argv[1], "--run-tests")) {
+    char *path = ( argc >= 3 ? 
+                   argv[2] : 
+                   (char*)"/home/gabor/sourceforge/scourge/api/tests" );
+    if( CombatTest::executeTests( session, path ) ) {
+      cout << "Tests were succesfully written to: " << path << endl;
+      return 0;
+    } else {
+      cerr << "Error while running tests." << endl;
+      return 1;
+    }
+  }
   session->start();
   
   return EXIT_SUCCESS;
