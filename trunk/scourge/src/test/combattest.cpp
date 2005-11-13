@@ -27,6 +27,7 @@ using namespace std;
   *@author Gabor Torok
   */
 
+#define SHOW_MAX_LEVEL 20
 #define HTML_PREFIX "<html><head><title>%s</title><style>\
 BODY { \
   background: white;\
@@ -36,8 +37,8 @@ BODY { \
   color: black;\
 }\
 TD { \
-  font-size: 9pt; \
-  FONT-FAMILY: Arial, Helvetica, sans-serif; \
+  font-size: 8pt; \
+  FONT-FAMILY: Monospace, Courier, sans-serif; \
 }\
 TH { \
   font-size: 9pt; \
@@ -56,6 +57,7 @@ CombatTest::~CombatTest() {
 bool CombatTest::executeTests( Session *session, char *path ) {
   vector<Item*> items;
   
+  // -----------------------------------------------------------
   // The attacker
   Creature *attacker = createCharacter( session, "RA", "Attacker", 1 );
   Item *weapon = equipItem( session, attacker, "Dirk", 1 );
@@ -67,7 +69,16 @@ bool CombatTest::executeTests( Session *session, char *path ) {
   items.push_back( equipItem( session, defender, "Leather Armor", 1 ) );
 
   // fight!
-  bool ret = fight( path, session, attacker, weapon, defender );
+  bool ret = true;
+  char filename[80];
+  for( int i = 0; i < RpgItem::itemCount; i++ ) {
+    if( !RpgItem::getItem( i )->isWeapon() ) continue;
+    attacker->removeInventory( 0 );
+    Item *weapon = equipItem( session, attacker, RpgItem::getItem( i )->getName(), 1 );
+    items.push_back( weapon );
+    sprintf( filename, "%s.html", RpgItem::getItem( i )->getName() );
+    if( !fight( path, filename, session, attacker, weapon, defender ) ) break;
+  }
 
   // cleanup
   for( int i = 0; i < (int)items.size(); i++ ) {
@@ -85,6 +96,7 @@ bool CombatTest::executeTests( Session *session, char *path ) {
 
 
 bool CombatTest::fight( char *path,
+                        char *filename,
                         Session *session, 
                         Creature *attacker, 
                         Item *weapon,
@@ -92,12 +104,13 @@ bool CombatTest::fight( char *path,
                         int count ) {
 
   char file[300];
-  sprintf( file, "%s/combat-test.html", path );
+  sprintf( file, "%s/%s", path, filename );
   FILE *fp = fopen( file, "w" );
   if( !fp ) {
     cerr << "Unable to open file: " << file << endl;
     return false;
   }
+  cout << "...creating file: " << file << endl;
 
   attacker->setTargetCreature( defender );
 
@@ -112,37 +125,47 @@ bool CombatTest::fight( char *path,
            defender->getCharacter()->getName() );
   fprintf( fp, "<a href=\"#details\">Character details...</a><br><br>");
 
-  fprintf( fp, "<table border=1><tr><th>Level</th>\
-           <th colspan=3>Attack Roll</th>\
-           <th colspan=2>Armor Class</th><tr>\n" );
-  fprintf( fp, "<tr><th>&nbsp;</th>\
-           <th>min</th><th>max</th><th>avg</th>\
-           <th>Base AC</th><th>Skill-mod AC</th></tr>\n" );
-  for( int level = 1; level < 50; level++ ) {
-    attacker->setLevel( level );
-    defender->setLevel( level );
+  fprintf( fp, "<b>Attacker</b> vert., <b>Defender</b> horiz.<br>\n" );
+  fprintf( fp, "<table border=1><tr><td>&nbsp;</td>\n" );
+  for( int defendLevel = 1; defendLevel < SHOW_MAX_LEVEL; defendLevel++ ) {
+    fprintf( fp, "<td>%d</td>", defendLevel );
+  }
+  fprintf( fp, "</tr>\n" );
 
-    int sum=0, low=0, high=0;
-    for( int i = 0; i < count; i++ ) {
-      int attackRoll = attacker->getToHit( weapon );
-      if( !high ) {
-        low = high = attackRoll;
-      } else if( attackRoll > high ) {
-        high = attackRoll;
-      } else if( attackRoll < low ) {
-        low = attackRoll;
+  int sum=0, low=0, high=0;
+  double ave;
+  for( int attackLevel = 1; attackLevel < SHOW_MAX_LEVEL; attackLevel++ ) {
+    attacker->setLevel( attackLevel );
+    fprintf( fp, "<tr><td>%d</td>\n", attackLevel );
+
+    for( int defendLevel = 1; defendLevel < SHOW_MAX_LEVEL; defendLevel++ ) {
+      defender->setLevel( defendLevel );
+      fprintf( fp, "<td bgcolor=%s>", ( defendLevel == attackLevel ? "gray" : "white" ) );
+
+      sum = low = high = 0;
+      for( int i = 0; i < count; i++ ) {
+        computeHighLow( attacker->getToHit( weapon ),
+                        &sum, &low, &high );
       }
-      sum += attackRoll;
+      ave = ((double)sum) / ((double)count);
+      fprintf( fp, "ATK:<span style='background: %s'>%d/%d/%.2f</span><br>\
+               AC :%d/<b>%d</b><br>\n",
+               ( ave > (double)(defender->getSkillModifiedArmor()) ? "green" : "red" ),
+               low, high, ave,
+               defender->getArmor(), defender->getSkillModifiedArmor() );
+
+      sum = low = high = 0;
+      for( int i = 0; i < count; i++ ) {
+        computeHighLow( attacker->getDamage( weapon ),
+                        &sum, &low, &high );
+      }
+      ave = ((double)sum) / ((double)count);
+      fprintf( fp, "DAM:%d/%d/%.2f\n",
+               low, high, ave );
+
+      fprintf( fp, "</td>" );
     }
-    double ave = ((double)sum) / ((double)count);
-    fprintf( fp, "<tr><td>%d</td>\
-             <td bgcolor=%s>%d</td><td bgcolor=%s>%d</td><td bgcolor=%s>%.2f</td>\
-             <td>%d</td><td>%d</td></tr>\n",
-             level,
-             ( low > defender->getSkillModifiedArmor() ? "green" : "red" ), low, 
-             ( high > defender->getSkillModifiedArmor() ? "green" : "red" ), high,
-             ( ave > (double)(defender->getSkillModifiedArmor()) ? "green" : "red" ), ave,
-             defender->getArmor(), defender->getSkillModifiedArmor() );
+    fprintf( fp, "</tr>\n" );
   }
   fprintf( fp, "</table><br>\n" );
   
@@ -162,6 +185,17 @@ bool CombatTest::fight( char *path,
 
   fclose( fp );
   return true;
+}
+
+void CombatTest::computeHighLow( int value, int *sum, int *low, int *high ) {
+  if( !(*high) ) {
+    *low = *high = value;
+  } else if( value > *high ) {
+    *high = value;
+  } else if( value < *low ) {
+    *low = value;
+  }
+  *sum += value;
 }
 
 void CombatTest::printInventory( FILE *fp, Creature *creature ) {  
