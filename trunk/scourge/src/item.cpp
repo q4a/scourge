@@ -361,6 +361,8 @@ void Item::initItems(ShapePalette *shapePal) {
       n = Constants::readLine(line, fp);
       int tileX = atoi( strtok( line + 1, "," ) );
       int tileY = atoi( strtok( NULL, "," ) );
+      char *bonusSkillStr = strtok( NULL, "," );
+      int maxBonusSkill = ( bonusSkillStr ? atoi( bonusSkillStr ) : -1 );
 
       // resolve strings
       int type_index = RpgItem::getTypeByName(type);    
@@ -385,16 +387,16 @@ void Item::initItems(ShapePalette *shapePal) {
         //cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
       }
       if(distance < (int)MIN_DISTANCE) distance = (int)MIN_DISTANCE;
-      last = new RpgItem(itemCount++, strdup(name), level, rareness, type_index, 
-                         weight, price, 100, 
-                         action, speed, strdup(long_description), 
-                         strdup(short_description), 
-                         inventory_location, shape_index, 
-                         twohanded, 
-                         (distance < (int)MIN_DISTANCE ? 
-                          (int)MIN_DISTANCE : distance), 
-                         skill_index, minDepth, maxCharges, potion_skill, potionTime, 
-                         tileX - 1, tileY - 1);
+      last = new RpgItem( itemCount++, strdup(name), level, rareness, type_index, 
+                          weight, price, 100, 
+                          action, speed, strdup(long_description), 
+                          strdup(short_description), 
+                          inventory_location, shape_index, 
+                          twohanded, 
+                          (distance < (int)MIN_DISTANCE ? 
+                           (int)MIN_DISTANCE : distance), 
+                          skill_index, minDepth, maxCharges, potion_skill, potionTime, 
+                          tileX - 1, tileY - 1, maxBonusSkill );
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   
     } else if(n == 'A' && last) {

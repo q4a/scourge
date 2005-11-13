@@ -52,7 +52,7 @@ protected:
                           Creature *c, 
                           char *itemName, 
                           int itemLevel );
-  static void computeHighLow( int value, int *sum, int *low, int *high );
+  static void computeHighLow( float value, float *sum, float *low, float *high );
 };
 
 #endif

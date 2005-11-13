@@ -63,6 +63,8 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->speed = 5; // start neutral speed
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
   this->armor=0;
+  this->shield=0;
+  this->maxCoordBonus = 0;
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
@@ -83,6 +85,8 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool load
   this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
+  this->shield = 0;
+  this->maxCoordBonus = 0;
   this->bonusArmor=0;
   this->shape = shape;
   this->loaded = loaded;
@@ -193,6 +197,8 @@ CreatureInfo *Creature::save() {
   info->speed = speed;
   info->motion = motion;
   info->armor = armor;
+  //  info->shield = shield;
+  // info->maxCoordBonus = maxCoordBonus;
   info->bonusArmor = bonusArmor;
   info->bonusArmor = 0;
   info->thirst = thirst;
@@ -1140,11 +1146,19 @@ Item *Creature::getItemAtLocation(int location) {
 void Creature::recalcAggregateValues() {
   // calculate the armor (0-100, 100-total protection)
   armor = (monster ? monster->getBaseArmor() : 0);
+  shield = 0;
+  maxCoordBonus = -1;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] != MAX_INVENTORY_SIZE) {
       Item *item = inventory[equipped[i]];
-      if(item->getRpgItem()->getType() == RpgItem::ARMOR) {
+      if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
         armor += item->getAction();
+        if( item->getRpgItem()->getMaxSkillBonus() > maxCoordBonus ) 
+          maxCoordBonus = item->getRpgItem()->getMaxSkillBonus();
+      } else if( item->getRpgItem()->getType() == RpgItem::SHIELD ) {
+        shield += item->getAction();
+        if( item->getRpgItem()->getMaxSkillBonus() > maxCoordBonus ) 
+          maxCoordBonus = item->getRpgItem()->getMaxSkillBonus();
       }
     }
   }
@@ -1927,5 +1941,101 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
     cerr << "*** Error: can't find squarrel reference for creature: " << getName() << endl;
     return NULL;
   }
+}
+
+
+/**
+ * Fixme: 
+ * -currently, extra attacks are not used.
+ * -weapon level is not used
+ */
+float Creature::getAttackRoll(Item *weapon, float *maxToHit, float *penalty) {
+  float roll = 20.0f * rand() / RAND_MAX;
+  if( isMonster() ) {
+    // Add the base attack bonus
+    roll += ( monster->getBaseAttackBonus() * getLevel() );
+  } else {
+    // Add the base attack bonus
+    roll += ( character->getBaseAttackBonus() * getLevel() );
+  }
+
+  // Add the skill modifier ( power or coord. for ranged weapons )
+  roll +=
+    getAbilityModifier( 
+      Constants::getSkillByName( 
+        weapon && weapon->getRpgItem()->isRangedWeapon() ? 
+        (char*)"COORDINATION" : 
+        (char*)"POWER" ) );
+
+  // FIXME: d20 rules also add: size mod and range penalty for ranged weapons
+
+  if( maxToHit ) *maxToHit = roll;
+
+  // Apply weapon proficiency: -4 max penalty if not proficient
+  int profSkillIndex = ( weapon ? 
+                         weapon->getRpgItem()->getSkill() : 
+                         Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
+  float p = getProficiencyPenalty( profSkillIndex );
+  roll -= p;
+  if( penalty ) *penalty = p;
+  
+  if( roll < 0.0f ) roll = 0.0f;
+
+  return roll;
+}
+
+float Creature::getDamageRoll(Item *weapon, float *maxToHit, float *rolledToHit) {
+  return 0;
+}
+
+float Creature::getAC( float *armorP, float *shieldP, float *skillBonusP, 
+                       float *armorPenaltyP, float *shieldPenaltyP ) {
+  float skillBonus = getAbilityModifier( Constants::getSkillByName( "COORDINATION" ) );
+  if( maxCoordBonus > -1 && skillBonus > maxCoordBonus ) 
+    skillBonus = (float)maxCoordBonus;
+
+  float ac = ( MAX_SKILL / 4.0f ) + armor + shield + skillBonus;
+
+  // fixme: d20 rules also use size modifier
+
+  if( armorP ) *armorP = armor;
+  if( shieldP ) *shieldP = shield;
+  if( skillBonusP ) *skillBonusP = skillBonus;
+
+  // apply armor proficiency penalty
+  if( armor > 0 ) {
+    float p = 
+      getProficiencyPenalty( Constants::getSkillByName( "ARMOR_DEFEND" ) );
+    ac -= p;
+    if( armorPenaltyP ) *armorPenaltyP = p;
+  }
+
+  // apply shield proficiency penalty
+  if( shield > 0 ) {
+    float p = 
+      getProficiencyPenalty( Constants::getSkillByName( "SHIELD_DEFEND" ) );
+    ac -= p;
+    if( shieldPenaltyP ) *shieldPenaltyP = p;
+  }
+  
+  if( ac < 0.0f ) ac = 0.0f;
+
+  return ac;
+}
+
+float Creature::getProficiencyPenalty( int skill ) {
+  float penalty = 
+    PROFICIENCY_MAX_PENALTY - 
+    ( ( PROFICIENCY_MAX_PENALTY * getSkill( skill ) ) / 
+      MAX_SKILL );
+  if( penalty > PROFICIENCY_MAX_PENALTY ) 
+    penalty = PROFICIENCY_MAX_PENALTY;
+  return penalty;
+}
+
+float Creature::getAbilityModifier( int skill ) {
+  // function divined from table: 
+  // http://www.d20srd.org/srd/theBasics.htm#tableAbilityModifiersandBonusSpells
+  return( getSkill( skill ) / 2.0f - 5.0f );
 }
 

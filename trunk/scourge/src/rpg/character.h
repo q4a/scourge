@@ -31,6 +31,8 @@ class Character  {
 private:
   char *name;
   int startingHp, startingMp, skill_bonus, level_progression;
+  float baseAttackBonus;
+  int extraAttackLevel;
   char description[3000];
   char *shortName;
   std::map<int, int> maxSkill;
@@ -39,7 +41,7 @@ private:
 public:
   std::map<int, std::vector<std::string>*> soundMap;
 
-  Character(char *name, int startingHp, int startingMp, int skill_bonus, int level_progression, char *shortName);
+  Character( char *name, int startingHp, int startingMp, int skill_bonus, int level_progression, char *shortName, float baseAttackBonus, int extraAttackLevel );
   ~Character();
 
   inline char *getName() { return name; };
@@ -48,6 +50,8 @@ public:
   inline int getStartingMp() { return startingMp; }  
   inline int getSkillBonus() { return skill_bonus; }  
   inline int getLevelProgression() { return level_progression; }  
+  inline float getBaseAttackBonus() { return baseAttackBonus; }
+  inline int getExtraAttackLevel() { return extraAttackLevel; }
   inline char *getDescription() { return description; }
   inline int getMaxSkillLevel(int skill) { if(maxSkill.find(skill) == maxSkill.end()) return 100; else return maxSkill[skill]; }
   inline int getMinSkillLevel(int skill) { if(minSkill.find(skill) == minSkill.end()) return 0; else return minSkill[skill]; }

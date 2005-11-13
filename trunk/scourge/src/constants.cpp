@@ -231,8 +231,9 @@ char *Constants::getMessage(int index) {
 int Constants::getSkillByName(char *p) {
   if(!p || !strlen(p)) return -1;
   for(int i = 0; i < SKILL_COUNT; i++) {
-	if(!strcmp(p, SKILL_NAMES[i])) return i;
+    if(!strcmp(p, SKILL_NAMES[i])) return i;
   }
+  cerr << "*** Warning: Can't find skill named: " << p << endl;
   return -1;
 }
 

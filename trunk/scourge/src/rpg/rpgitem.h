@@ -107,6 +107,7 @@ class RpgItem {
   GLuint acl; // 1 bit per character class
   bool isWeaponItem;
   int iconTileX, iconTileY;
+  int maxSkillBonus; // max coord. bonus applied to armor and shields
 
   static std::map<int, std::map<int, std::vector<const RpgItem*>*>*> typesMap;
   static std::map<std::string, const RpgItem *> itemsByName;
@@ -116,28 +117,29 @@ class RpgItem {
  public:
 
   enum itemTypes {
-	SWORD=0,
-	AXE,
-	BOW,
+    SWORD=0,
+    AXE,
+    BOW,
     MACE,
-	CONTAINER,
-	ARMOR,
-	FOOD,
-	DRINK,
-	POTION,
-	OTHER,
-	MISSION,
-  SCROLL,
+    CONTAINER,
+    ARMOR,
+    FOOD,
+    DRINK,
+    POTION,
+    OTHER,
+    MISSION,
+    SCROLL,
+    SHIELD,
 	
-	// must be last
-	ITEM_TYPE_COUNT
+    // must be last
+    ITEM_TYPE_COUNT
   };
   static char itemTypeStr[ITEM_TYPE_COUNT][40];
 
   enum twoHandedType {
-	NOT_TWO_HANDED=0,
-	ONLY_TWO_HANDED,
-	OPTIONAL_TWO_HANDED
+    NOT_TWO_HANDED=0,
+    ONLY_TWO_HANDED,
+    OPTIONAL_TWO_HANDED
   };
 
   static RpgItem *items[1000];
@@ -147,9 +149,10 @@ class RpgItem {
   static int enchantableTypeCount;
   
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
-		  int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-		  int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int maxCharges=0,
-		  int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0);
+          int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
+          int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int maxCharges=0,
+          int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0,
+          int maxSkillBonus=-1);
   ~RpgItem();
 
 
@@ -182,6 +185,7 @@ class RpgItem {
   inline bool isWeapon() { return this->isWeaponItem; }
   inline int getIconTileX() { return this->iconTileX; }
   inline int getIconTileY() { return this->iconTileY; }
+  inline int getMaxSkillBonus() { return this->maxSkillBonus; }
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs

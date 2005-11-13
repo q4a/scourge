@@ -107,7 +107,7 @@ class Creature : public RenderedCreature {
   char description[300];
   GLint lastTick;
   int speed;
-  int armor, bonusArmor;
+  int armor, bonusArmor, shield, maxCoordBonus;
   int moveRetrycount;
   int availableSkillPoints;
   int usedSkillPoints;
@@ -433,6 +433,16 @@ class Creature : public RenderedCreature {
 
   inline void setStateModEvent(int mod, Event *event) { stateModEventMap[mod] = event; }
   inline Event *getStateModEvent(int mod) { return(stateModEventMap.find(mod) == stateModEventMap.end() ? NULL : stateModEventMap[mod]); }
+
+
+  // new d20-style combat
+  float getAttackRoll(Item *weapon, float *maxToHit=NULL, float *rolledToHit=NULL);
+  float getDamageRoll(Item *weapon, float *maxToHit=NULL, float *rolledToHit=NULL);
+  float getAC( float *armorP=NULL, float *shieldP=NULL, float *skillBonusP=NULL, 
+               float *armorPenaltyP=NULL, float *shieldPenaltyP=NULL );
+
+  float getProficiencyPenalty( int skill );
+  float getAbilityModifier( int skill );
 
  protected:
 

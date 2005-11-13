@@ -48,6 +48,7 @@ class Monster  {
   bool npc;
   char *portrait;
   GLuint portraitTexture;
+  float baseAttackBonus;
   std::vector<RpgItem*> items;
   std::vector<Spell*> spells;
   std::map<std::string,int> skills;
@@ -95,6 +96,7 @@ public:
   inline char *getPortrait() { return portrait; }
   inline GLuint getPortraitTexture() { return portraitTexture; }
   inline void setPortraitTexture( GLuint n ) { portraitTexture = n; }
+  inline float getBaseAttackBonus() { return baseAttackBonus; }
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);
