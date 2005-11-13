@@ -108,7 +108,8 @@ public:
   enum {
     NONE = 0,
     SERVER,
-    CLIENT
+    CLIENT,
+    TEST
   };
  
   Preferences::Preferences() {

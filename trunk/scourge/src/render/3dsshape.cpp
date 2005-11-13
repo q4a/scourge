@@ -31,8 +31,10 @@ C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal,
 					 int offsetx, int offsety) :
 	GLShape(0, 1, 1, 1, name, descriptionGroup, color, shapePalIndex) {
 	commonInit(file_name, div, shapePal, offsetx, offsety);
+#ifdef DEBUG_3DS
   debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
+#endif
 }
 
 C3DSShape::~C3DSShape() {

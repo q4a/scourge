@@ -25,10 +25,10 @@ const char *SqMission::className = "Mission";
 ScriptClassMemberDecl SqMission::members[] = {
   { "void", "_typeof", SqMission::_squirrel_typeof, 1, 0, "" },
   { "void", "constructor", SqMission::_constructor, 0, 0, "" },
-  { "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "" },
-  { "Creature", "getCreature", SqMission::_getCreature, 0, 0, "" },
-  { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "" },
-  { "Item", "getItem", SqMission::_getItem, 0, 0, "" },
+  { "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "Get the number of monsters and npc-s on this level." },
+  { "Creature", "getCreature", SqMission::_getCreature, 0, 0, "Return a reference to a monster or npc on this level. These references are only valid while on this map." },
+  { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
+  { "Item", "getItem", SqMission::_getItem, 0, 0, "Returns a reference to an item on this level. These references are only valid while on this map." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,

@@ -235,7 +235,7 @@ void Shapes::initialize() {
       string s = ( sv->textureGroupIndex + 6 );
       themeShapeRef.push_back( s );
     } else {
-      shapes[(i + 1)]->initialize();
+      if( !headless ) shapes[(i + 1)]->initialize();
     }
 
     string s = sv->name;
@@ -262,7 +262,7 @@ void Shapes::initialize() {
   shapes[shapeCount]->setSkipSide(false);
   shapes[shapeCount]->setStencil(false);
   shapes[shapeCount]->setLightBlocking(false);  
-  shapes[shapeCount]->initialize();
+  if( !headless ) shapes[shapeCount]->initialize();
   string nameStr = shapes[shapeCount]->getName();
   shapeMap[nameStr] = shapes[shapeCount];
   shapeCount++;
@@ -529,7 +529,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
       GLuint *textureGroup = currentTheme->getTextureGroup( ref );
 //      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
 //        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
-      shape->setTexture( textureGroup );
+      if( !headless ) shape->setTexture( textureGroup );
 
       // create extra shapes for variations
       shape->deleteVariationShapes();
@@ -833,6 +833,7 @@ GLuint Shapes::loadGLTextures(char *filename) {
 
 /* function to load in bitmap as a GL texture */
 GLuint Shapes::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
+  if( headless ) return 0;
   return loadGLTextureBGRA( surface->w, surface->h, image, glscale );
 }
 

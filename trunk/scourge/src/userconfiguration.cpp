@@ -760,44 +760,44 @@ int UserConfiguration::getGameSpeedTicks(){
 
 void UserConfiguration::parseCommandLine(int argc, char *argv[]){
   bool printusage;
-  
+
   printusage = false;
-  
-  
+
+
   // interpret command line args
-  for(int i = 1; i < argc; i++) {
-	if(strstr(argv[i], "--bpp") == argv[i]) {	  
-	  bpp = atoi(argv[i] + 5);
-	  if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
-		printf("Error: bad bpp=%d\n", bpp);
-		printusage = true;
-	  }      
-	} else if(strstr(argv[i], "--width") == argv[i]) {	  
-	  w = atoi(argv[i] + 7);
-	  if(!w) {
-		printf("Error: bad width=%s\n", argv[i] + 7);
-		printusage = true;
-	  }     	  
-	} else if(strstr(argv[i], "--height") == argv[i]) {	  
-	  h = atoi(argv[i] + 8);
-	  if(!h) {
-		printf("Error: bad height=%s\n", argv[i] + 8);
-		printusage = true;
-	  }	   
-	} else if(strstr(argv[i], "--shadow") == argv[i]) {	  
-	  shadows = atoi(argv[i] + 8);	  
-      if(!(shadows == 0 || shadows == 1 || shadows == 2)) {
-          printf("Error: bad shadow mode: %d\n", shadows);
-          printusage = true;
-      }       
-	} else if(!strcmp(argv[i], "--version")) {
-	  printf("Scourge, version %s\n", SCOURGE_VERSION);
-	  exit(0);
+  for (int i = 1; i < argc; i++) {
+    if (strstr(argv[i], "--bpp") == argv[i]) {
+      bpp = atoi(argv[i] + 5);
+      if (!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
+        printf("Error: bad bpp=%d\n", bpp);
+        printusage = true;
+      }
+    } else if (strstr(argv[i], "--width") == argv[i]) {
+      w = atoi(argv[i] + 7);
+      if (!w) {
+        printf("Error: bad width=%s\n", argv[i] + 7);
+        printusage = true;
+      }
+    } else if (strstr(argv[i], "--height") == argv[i]) {
+      h = atoi(argv[i] + 8);
+      if (!h) {
+        printf("Error: bad height=%s\n", argv[i] + 8);
+        printusage = true;
+      }
+    } else if (strstr(argv[i], "--shadow") == argv[i]) {
+      shadows = atoi(argv[i] + 8);    
+      if (!(shadows == 0 || shadows == 1 || shadows == 2)) {
+        printf("Error: bad shadow mode: %d\n", shadows);
+        printusage = true;
+      }
+    } else if (!strcmp(argv[i], "--version")) {
+      printf("Scourge, version %s\n", SCOURGE_VERSION);
+      exit(0);
 #ifdef HAVE_SDL_NET
-    } else if(!strncmp(argv[i], "--server", 8)) {
+    } else if (!strncmp(argv[i], "--server", 8)) {
       standAloneMode = SERVER;
       port = atoi(argv[i] + 8);
-    } else if(!strncmp(argv[i], "--client", 8)) {
+    } else if (!strncmp(argv[i], "--client", 8)) {
       char *p = strdup(argv[i] + 8);
       host = strdup(strtok(p, ":"));
       port = atoi(strtok(NULL, ","));
@@ -807,61 +807,66 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
       //free(userName);
       free(p);
 #endif
-	} else if(!strcmp(argv[i], "--test")) {
-	  test = true;
-  } else if(!strcmp(argv[i], "--nosound")) {
-    soundEnabled = false;
-	} else if(argv[i][0] == '-' && argv[i][1] != '-') {
-	  for(int t = 1; t < (int)strlen(argv[i]); t++) {
-		switch(argv[i][t]) {
-		case 'h': case '?': printusage = true; break;
-		case 'f': fullscreen = false; break;
-		case 'd': doublebuf = false; break;
-		case 'p': hwpal = false; break;
-		case 'r': resizeable = false; break;
-		case 'H': force_hwsurf = true; break;
-		case 'S': force_swsurf = true; break;
-		case 'a': hwaccel = false; break;
-		case 's': stencilbuf = false; break;
-		case 'm': Constants::multitexture = false; break;
-		}
-	  }
-	} else {
-	  printusage = true;
-	}
+    } else if (!strcmp(argv[i], "--test")) {
+      test = true;
+    } else if (!strcmp(argv[i], "--nosound")) {
+      soundEnabled = false;
+    } else if (argv[i][0] == '-' && argv[i][1] != '-') {
+      for (int t = 1; t < (int)strlen(argv[i]); t++) {
+        switch (argv[i][t]) {
+        case 'h':
+        case '?': printusage = true; break;
+        case 'f': fullscreen = false; break;
+        case 'd': doublebuf = false; break;
+        case 'p': hwpal = false; break;
+        case 'r': resizeable = false; break;
+        case 'H': force_hwsurf = true; break;
+        case 'S': force_swsurf = true; break;
+        case 'a': hwaccel = false; break;
+        case 's': stencilbuf = false; break;
+        case 'm': Constants::multitexture = false; break;
+        }
+      }
+    } else if( !strcmp(argv[i], "--run-tests") ) {
+      // this is ok
+      standAloneMode = TEST;
+    } else {
+      printusage = true;
+    }
   }
 
-  if(printusage) {
-	printf("S.C.O.U.R.G.E.: Heroes of Lesser Renown\n");
-	printf("A 3D, roguelike game of not quite epic proportions.\n\n");
-	printf("Usage:\n");
-	printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
-	printf("version: %s\n", SCOURGE_VERSION);
+  if (printusage) {
+    printf("S.C.O.U.R.G.E.: Heroes of Lesser Renown\n");
+    printf("A 3D, roguelike game of not quite epic proportions.\n\n");
+    printf("Usage:\n");
+    printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
+    printf("version: %s\n", SCOURGE_VERSION);
 #ifdef HAVE_SDL_NET
     printf("[Multiplayer support]\n");
 #endif
 #ifdef HAVE_SDL_MIXER
     printf("[Sound support]\n");
 #endif
-	printf("\nOptions:\n");
-	printf("\tf - disable fullscreen mode\n");
-	printf("\td - disable double buffering\n");
-	printf("\tp - disable hardware palette\n");
-	printf("\tr - disable resizable window\n");
-	printf("\tH - force hardware surface\n");
-	printf("\tS - force software surface\n");
-	printf("\ta - disable hardware acceleration\n");
-	printf("\th,?,--help - show this info\n");
-	printf("\ts - disable stencil buffer\n");
-	printf("\tm - disable multitexturing\n");
-	printf("\t--test - list card's supported video modes\n");
-	printf("\t--test-config - print out the file configuration and exit\n");
-	printf("\t--version - print the build version\n");
-	printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
-	printf("\t--widthXX - use XX pixels for the screen width\n");
-	printf("\t--heightXX - use XX pixels for the screen height\n");
+    printf("\nOptions:\n");
+    printf("\tf - disable fullscreen mode\n");
+    printf("\td - disable double buffering\n");
+    printf("\tp - disable hardware palette\n");
+    printf("\tr - disable resizable window\n");
+    printf("\tH - force hardware surface\n");
+    printf("\tS - force software surface\n");
+    printf("\ta - disable hardware acceleration\n");
+    printf("\th,?,--help - show this info\n");
+    printf("\ts - disable stencil buffer\n");
+    printf("\tm - disable multitexturing\n");
+    printf("\t--test - list card's supported video modes\n");
+    printf("\t--test-config - print out the file configuration and exit\n");
+    printf("\t--run-tests [path] - run internal tests of the rpg engine and save the result in html in the $path dir\n");
+    printf("\t--version - print the build version\n");
+    printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
+    printf("\t--widthXX - use XX pixels for the screen width\n");
+    printf("\t--heightXX - use XX pixels for the screen height\n");
     printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
-	printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
+    printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
 #ifdef HAVE_SDL_NET
     printf("Multiplayer options:\n");
     printf("\t--serverPORT - run a standalone server w/o a ui on PORT\n");
@@ -871,8 +876,8 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
     printf("Sound options:\n");
     printf("\t--nosound - run without sound\n");
 #endif
-	exit(0);
-  }   
+    exit(0);
+  }
 } 
 
 

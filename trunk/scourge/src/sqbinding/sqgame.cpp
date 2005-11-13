@@ -19,6 +19,7 @@
 #include "../creature.h"
 #include "../date.h"
 #include "../render/renderlib.h"
+#include "../test/combattest.h"
 
 const char *SqGame::className = "ScourgeGame";
 ScriptClassMemberDecl SqGame::members[] = {
@@ -39,8 +40,9 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "void", "setValue", SqGame::_setValue, 3, "xss", "Add a new or set an existing key and its value in the value map. The first parameter is the key, the second is its value." },
   { "void", "eraseValue", SqGame::_eraseValue, 2, "xs", "Remove a key and its value from the value map. The first parameter is the key to be removed." },
   { "void", "printMessage", SqGame::_printMessage, 2, "xs", "Print a message in the scourge message window. The resulting message will always be displayed in a lovely shade of purple." },
-  { "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files." },
+  { "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files. The game engine will also do this for you automatically every 5 game minutes." },
   { "void", "documentSOM", SqGame::_documentSOM, 2, "xs", "Produce this documentation. The first argument is the location where the html files will be placed." },
+  { "void", "runTests", SqGame::_runTests, 2, "xs", "Run internal tests of the rpg combat engine. Results are saved in path given as param to runTests()." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -185,6 +187,13 @@ int SqGame::_documentSOM( HSQUIRRELVM vm ) {
   GET_STRING( path, 255 )
   if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/api/som" );
   SqBinding::binding->documentSOM( path );
+  return 0;
+}
+
+int SqGame::_runTests( HSQUIRRELVM vm ) {
+  GET_STRING( path, 255 )
+  if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/api/tests" );
+  CombatTest::executeTests( SqBinding::sessionRef, path );
   return 0;
 }
 

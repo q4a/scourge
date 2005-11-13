@@ -8,11 +8,13 @@ LDADD = $(srcdir)/freetype/libScourgeFreeType.a \
 	$(srcdir)/sqbinding/libSqbinding.a \
 	$(srcdir)/sqstdlib/libSqstdlib.a \
 	$(srcdir)/squirrel/libSquirrel.a \
-	$(srcdir)/events/libScourgeEvents.a
+	$(srcdir)/events/libScourgeEvents.a \
+	$(srcdir)/test/libScourgeTest.a
+	
 
 AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
 
-SUBDIRS = freetype gui rpg events net render io squirrel sqstdlib sqbinding
+SUBDIRS = freetype gui test rpg events net render io squirrel sqstdlib sqbinding
 
 bin_PROGRAMS = scourge
 

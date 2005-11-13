@@ -74,7 +74,7 @@ public:
   static int _printMessage( HSQUIRRELVM vm );
   static int _reloadNuts( HSQUIRRELVM vm );
   static int _documentSOM( HSQUIRRELVM vm );
-
+  static int _runTests( HSQUIRRELVM vm );
 
 };
 
