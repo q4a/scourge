@@ -186,6 +186,7 @@ class RpgItem {
   inline int getIconTileX() { return this->iconTileX; }
   inline int getIconTileY() { return this->iconTileY; }
   inline int getMaxSkillBonus() { return this->maxSkillBonus; }
+  inline int getTwoHanded() { return this->twohanded; }
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs

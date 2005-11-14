@@ -1943,13 +1943,24 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
   }
 }
 
-
 /**
+ * ============================================================
+ * ============================================================
+ * 
+ * New battle system calls, loosely inspired by the d20 system.
+ * 
+ * ============================================================
+ * ============================================================
+ * 
  * Fixme: 
  * -currently, extra attacks are not used.
  * -weapon level is not used
+ *
+ * move here from battle.cpp:
+ * -critical hits (2x,3x,damage,etc.)  
+ * -conditions modifiers
  */
-float Creature::getAttackRoll(Item *weapon, float *maxToHit, float *penalty) {
+float Creature::getAttackRoll( Item *weapon, float *penalty ) {
   float roll = 20.0f * rand() / RAND_MAX;
   if( isMonster() ) {
     // Add the base attack bonus
@@ -1969,8 +1980,6 @@ float Creature::getAttackRoll(Item *weapon, float *maxToHit, float *penalty) {
 
   // FIXME: d20 rules also add: size mod and range penalty for ranged weapons
 
-  if( maxToHit ) *maxToHit = roll;
-
   // Apply weapon proficiency: -4 max penalty if not proficient
   int profSkillIndex = ( weapon ? 
                          weapon->getRpgItem()->getSkill() : 
@@ -1984,8 +1993,44 @@ float Creature::getAttackRoll(Item *weapon, float *maxToHit, float *penalty) {
   return roll;
 }
 
-float Creature::getDamageRoll(Item *weapon, float *maxToHit, float *rolledToHit) {
-  return 0;
+#define HAND_ATTACK_DAMAGE 8
+
+float Creature::getDamageRoll( Item *weapon, float *penalty ) {
+
+  float damage = (float)( weapon ? weapon->getAction() : HAND_ATTACK_DAMAGE ) *
+    rand() / RAND_MAX;
+
+  // apply skill mod
+  if( weapon || weapon->getRpgItem()->isRangedWeapon() ) {
+    // power penalty for ranged weapons
+    // FIXME: needs penalty setting per weapon
+  } else {
+
+    bool isUsedTwoHanded =
+      ( weapon && 
+        weapon->getRpgItem()->getTwoHanded() != RpgItem::NOT_TWO_HANDED &&
+        !( getEquippedInventory( Constants::INVENTORY_LEFT_HAND ) &&
+           getEquippedInventory( Constants::INVENTORY_RIGHT_HAND ) ) );
+
+    // power bonus for melee attacks (1.5x if two-handed)
+    damage += 
+      ( getAbilityModifier( Constants::getSkillByName( "POWER" ) ) * 
+        ( isUsedTwoHanded ? 1.5f : 1.0f ) );
+        
+  }
+
+  // proficiency penalty
+  int profSkillIndex = ( weapon ? 
+                         weapon->getRpgItem()->getSkill() : 
+                         Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
+  float p = getProficiencyPenalty( profSkillIndex );
+  damage -= p;
+  if( penalty ) *penalty = p;
+
+  // min. amount of damage
+  if( damage < 1.0f ) damage = 1.0f;
+
+  return damage;
 }
 
 float Creature::getAC( float *armorP, float *shieldP, float *skillBonusP, 

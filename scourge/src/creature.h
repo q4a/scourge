@@ -436,8 +436,8 @@ class Creature : public RenderedCreature {
 
 
   // new d20-style combat
-  float getAttackRoll(Item *weapon, float *maxToHit=NULL, float *rolledToHit=NULL);
-  float getDamageRoll(Item *weapon, float *maxToHit=NULL, float *rolledToHit=NULL);
+  float getAttackRoll(Item *weapon, float *penalty=NULL);
+  float getDamageRoll(Item *weapon, float *penalty=NULL);
   float getAC( float *armorP=NULL, float *shieldP=NULL, float *skillBonusP=NULL, 
                float *armorPenaltyP=NULL, float *shieldPenaltyP=NULL );
 
