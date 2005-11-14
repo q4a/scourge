@@ -1953,8 +1953,8 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
  * ============================================================
  * 
  * Fixme: 
- * -currently, extra attacks are not used.
- * -weapon level is not used
+ * -currently, extra attacks are not used. (use SPEED skill to eval?)
+ * -weapon level is not used (should be used like an ability modifier)
  *
  * move here from battle.cpp:
  * -critical hits (2x,3x,damage,etc.)  
