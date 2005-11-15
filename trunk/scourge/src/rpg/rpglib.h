@@ -23,10 +23,7 @@
  */
 
 // The max value of a skill under normal circumstances. 
-#define MAX_SKILL 20
-
-// the max penalty for using items w/o enough skill
-#define PROFICIENCY_MAX_PENALTY 4.0f
+#define MAX_SKILL 100
             
 #include "character.h"
 #include "monster.h"

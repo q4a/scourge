@@ -36,53 +36,6 @@ class MagicSchool;
 class Spell;
 class RpgItem;
 
-/*
-class MagicAttrib {
-private:
-  int bonus; // e.g.: sword +2
-  int damageMultiplier; // 2=double damage, 3=triple, etc.
-  char *monsterType; // if not NULL, damageMultiplier only for this type of monster.
-  MagicSchool *school; // magic damage by a school (or NULL if N/A)
-  Dice *magicDamage; 
-  bool cursed;
-  int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
-  int level;
-  bool stateModSet;
-  map<int, int> skillBonus;
-
-public:
-  MagicAttrib();
-  ~MagicAttrib();
-
-  MagicAttribInfo *save();
-  static MagicAttribInfo *saveEmpty();
-  static MagicAttrib *load(Session *session, MagicAttribInfo *info);
-
-  inline map<int,int> *getSkillBonusMap() { return &skillBonus; }
-  inline int getSkillBonus(int skill) { return (skillBonus.find(skill) == skillBonus.end() ? 0 : skillBonus[skill]); }
-  inline int getLevel() { return level; }
-  inline int getBonus() { return bonus; }
-  inline int getDamageMultiplier() { return damageMultiplier; }
-  inline char *getMonsterType() { return monsterType; }
-  inline MagicSchool *getSchool() { return school; }
-  int rollMagicDamage();
-  inline int getMagicResistance() { return (7 * getLevel()); }
-  char *describeMagicDamage();
-  inline bool isCursed() { return cursed; }
-  inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
-  inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
-  void debug(char *s, RpgItem *item);
-
-   //Create a magic attribute obj. depending on the level.
-   //(0=lesser,1=greater,2=champion,3=divine)
-  void enchant(int level, bool isWeapon);
-
-   //Write the description of this item into buffer s.
-   //S has to be large enough to hold the description. (~255 chars)
-  void describe(char *s, char *itemName);
-};
-*/
-
 class RpgItem {
  private:
 
@@ -93,7 +46,7 @@ class RpgItem {
   int type;
   float weight; 
   int price, quality;
-  int action; // damage, defence, potion str.
+  Dice *action; // damage, defence, potion str.
   int speed; // 0-100, 100-slowest, 0-fastest
   int shape_index;
   int twohanded;
@@ -130,6 +83,7 @@ class RpgItem {
     MISSION,
     SCROLL,
     SHIELD,
+    POLE,
 	
     // must be last
     ITEM_TYPE_COUNT
@@ -149,7 +103,7 @@ class RpgItem {
   static int enchantableTypeCount;
   
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
-          int action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
+          Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
           int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int maxCharges=0,
           int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0,
           int maxSkillBonus=-1);
@@ -160,7 +114,6 @@ class RpgItem {
   inline int getLevelRpg()  { return level; }  
   inline float getWeightRpg() { return weight; }
   inline int getPriceRpg() { return price; }
-  inline int getActionRpg() { return action; }
   inline int getSpeedRpg() { return speed; }
   inline int getDistanceRpg() { return distance; }
   inline int getMaxChargesRpg() { return maxCharges; }
@@ -187,6 +140,7 @@ class RpgItem {
   inline int getIconTileY() { return this->iconTileY; }
   inline int getMaxSkillBonus() { return this->maxSkillBonus; }
   inline int getTwoHanded() { return this->twohanded; }
+  inline Dice *getAction() { return this->action; }
 
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs

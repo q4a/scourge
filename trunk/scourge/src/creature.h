@@ -107,7 +107,8 @@ class Creature : public RenderedCreature {
   char description[300];
   GLint lastTick;
   int speed;
-  int armor, bonusArmor, shield, maxCoordBonus;
+  int armor, bonusArmor;
+  float avgArmorLevel;
   int moveRetrycount;
   int availableSkillPoints;
   int usedSkillPoints;
@@ -435,14 +436,13 @@ class Creature : public RenderedCreature {
   inline Event *getStateModEvent(int mod) { return(stateModEventMap.find(mod) == stateModEventMap.end() ? NULL : stateModEventMap[mod]); }
 
 
-  // new d20-style combat
-  float getAttackRoll(Item *weapon, float *penalty=NULL);
-  float getDamageRoll(Item *weapon, float *penalty=NULL);
-  float getAC( float *armorP=NULL, float *shieldP=NULL, float *skillBonusP=NULL, 
-               float *armorPenaltyP=NULL, float *shieldPenaltyP=NULL );
-
-  float getProficiencyPenalty( int skill );
-  float getAbilityModifier( int skill );
+  // new Christie-style battle system
+  float getACPercent( float *totalP=NULL, float *skillP=NULL );
+  float getAttackPercent( Item *weapon, 
+                          float *totalP=NULL, 
+                          float *skillP=NULL,
+                          float *itemLevelP=NULL,
+                          float *levelDiffP=NULL );
 
  protected:
 

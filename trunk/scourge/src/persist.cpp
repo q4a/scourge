@@ -257,7 +257,6 @@ void Persist::saveItem( File *file, ItemInfo *info ) {
   file->write( &(info->weight) );
   file->write( &(info->quality) );
   file->write( &(info->price) );
-  file->write( &(info->action) );
   file->write( &(info->speed) );
   file->write( &(info->distance) );
   file->write( &(info->maxCharges) );
@@ -294,7 +293,6 @@ ItemInfo *Persist::loadItem( File *file ) {
   file->read( &(info->weight) );
   file->read( &(info->quality) );
   file->read( &(info->price) );
-  file->read( &(info->action) );
   file->read( &(info->speed) );
   file->read( &(info->distance) );
   file->read( &(info->maxCharges) );
