@@ -98,7 +98,9 @@ int SqItem::_getPrice( HSQUIRRELVM vm ) {
 
 int SqItem::_getAction( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
-  sq_pushinteger( vm, object->getAction() );
+  sq_pushinteger( vm, ( object->getRpgItem()->isWeapon() ? 
+                        object->getRpgItem()->getAction()->roll() :
+                        object->getRpgItem()->getAction()->getMod() ) );
   return 1;
 }
 

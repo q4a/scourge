@@ -158,66 +158,79 @@ bool CombatTest::fight( char *path,
 
   fprintf( fp, "<table><tr>\n" );
 
-  float sum=0, low=0, high=0, ave, ATKave;
+  int atkOriginalLevel = attacker->getLevel();
+  int defOriginalLevel = defender->getLevel();
+
+  float total, skill, itemLevel, levelDiff;
+  float sum=0, low=0, high=0, ATKave;
   for( int n = 0; n < SHOW_MAX_LEVEL; n++ ) {
 
-    if( n && !( n % 5 ) ) {
+    if( n && !( n % 3 ) ) {
       fprintf( fp, "</tr><tr>" );
     }
 
     int attackLevel = n + 1;
     attacker->setLevel( attackLevel );
-    fprintf( fp, "<td><div style='background: gray; color: white;'>Level: %d</div>\n", attackLevel );
+    // adjust the skills
+    setMinSkills( attacker );
+    fprintf( fp, "<td><div style='background: gray; color: white;'>Attacker's Level: %d</div>\n", attackLevel );
 
-    // -------------------------------------------------
-    // Attack roll
-    sum = low = high = 0;
-    for( int i = 0; i < count; i++ ) {
-      computeHighLow( attacker->getAttackRoll( weapon ),
-                      &sum, &low, &high );
+    for( int i = 0; i < 2; i++ ) {
+
+      defender->setLevel( !i ? 1 : attacker->getLevel() );
+      setMinSkills( defender );
+      fprintf( fp, "<div style='background: gray; color: white;'>Defender's Level: %d</div>\n", defender->getLevel() );
+
+      // -------------------------------------------------
+      // Attack roll
+      sum = low = high = 0;
+      attacker->getAttackPercent( weapon, &total, &skill, &itemLevel, &levelDiff );
+      fprintf( fp, "ATK max:<b>%.2f</b> (%.2f %% %.2f, IL:%.2f LD:%.2f)<br>\n", 
+               (( total / 100.0f ) * skill ), total, skill, itemLevel, levelDiff );
+      for( int i = 0; i < count; i++ ) {
+        computeHighLow( attacker->getAttackPercent( weapon ),
+                        &sum, &low, &high );
+      }
+      ATKave = sum / ((double)count);
+      fprintf( fp, "ATK roll: <b>%.2f</b>(%.2f - %.2f)<br>\n", 
+               ATKave, low, high );
+      // -------------------------------------------------
+      
+      // -------------------------------------------------
+      // Armor class at level 1
+      float ac = defender->getACPercent( &total, &skill );
+      fprintf( fp , "AC: <span style='background: %s'><b>%.2f</b></span>\
+               (%.2f %% %.2f)<br>\n",
+               ( ATKave > ac ? "red" : "green" ),
+               ac, total, skill );
+      // -------------------------------------------------
     }
-    ATKave = sum / ((double)count);
-    fprintf( fp, "ATK:<b>%.2f</b> (%.2f - %.2f)<br>\n", ATKave, low, high );
-    // -------------------------------------------------
-
-    // -------------------------------------------------
-    // Armor class
-    float armor, shield, skillBonus, armorPenalty, shieldPenalty;
-    float ac = defender->getAC( &armor, &shield, &skillBonus, &armorPenalty, &shieldPenalty );
-    fprintf( fp, "AC :<span style='background: %s'><b>%.2f</b></span>\
-             (ARM:%.2f,SLD:%.2f,BON:%.2f<br>\n\
-             AP:%.2f,SP:%.2f)<br>\n",
-             ( ATKave < ac ? "green" : "red" ), ac,
-             armor, shield, skillBonus, armorPenalty, shieldPenalty );
-
-    // -------------------------------------------------
-    // Damage roll
-    sum = low = high = 0;
-    for( int i = 0; i < count; i++ ) {
-      computeHighLow( attacker->getDamageRoll( weapon ),
-                      &sum, &low, &high );
-    }
-    ave = sum / ((double)count);
-    fprintf( fp, "DAM:<b>%.2f</b> (%.2f - %.2f)\n",
-             ave, low, high );
-    // -------------------------------------------------
 
     fprintf( fp, "</td>" );
     fprintf( fp, "\n" );
   }
   fprintf( fp, "</tr></table><br>\n" );
+
+  // reset
+  attacker->setLevel( atkOriginalLevel );
+  defender->setLevel( defOriginalLevel );
+  // adjust the skills
+  setMinSkills( attacker );
+  setMinSkills( defender );
   
   fprintf( fp, "<br><a name=\"details\"></a><b>Character details:</b>" );
   fprintf( fp, "<table><tr><td style='border: none;' valign=top>" );
-  fprintf( fp, "Attacker: <b>%s</b> with %s(%d)<br>\n",
+  fprintf( fp, "Attacker: <b>%s</b> with %s(%d)<br>Level: %d<br>\n",
            attacker->getCharacter()->getName(),
            weapon->getRpgItem()->getName(),
-           weapon->getLevel() );
+           weapon->getLevel(),
+           attacker->getLevel() );
   printInventory( fp, attacker );
   
   fprintf( fp, "</td><td style='border: none;' valign=top>" );
-  fprintf( fp, "Defender: <b>%s</b><br>\n",
-           defender->getCharacter()->getName() );
+  fprintf( fp, "Defender: <b>%s</b><br>Level: %d<br>\n",
+           defender->getCharacter()->getName(),
+           defender->getLevel() );
   printInventory( fp, defender );
   fprintf( fp, "</td></tr></table>" );
 
@@ -237,7 +250,8 @@ void CombatTest::computeHighLow( float value, float *sum, float *low, float *hig
 }
 
 void CombatTest::printInventory( FILE *fp, Creature *creature ) {  
-  fprintf( fp, "<b>Skills:</b><table><tr><td>Name</td><td>Value</td><td>Abiliy Mod</td></tr>\n" );
+  fprintf( fp, "<b>Skills:</b><table><tr><td>Name</td>\
+           <td>Value</td><td>MIN-MAX</td></tr>\n" );
   char color[20];
   for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
 
@@ -249,23 +263,22 @@ void CombatTest::printInventory( FILE *fp, Creature *creature ) {
 
     fprintf( fp, "<tr><td><b>%s</b></td>\
              <td bgcolor=%s>%d</td>", 
-             Constants::SKILL_NAMES[ i ], color, n );
-    if( i < 8 ) {
-      fprintf( fp, "<td>%.2f</td>", creature->getAbilityModifier( i ) );
-    } else {
-      fprintf( fp, "<td style='border: none;'>&nbsp;</td>" );
-    }
+             Constants::SKILL_NAMES[ i ], color, n );    
+
+    fprintf( fp, "<td>%d - %d</td>",
+             creature->getCharacter()->getMinSkillLevel( i ),
+             creature->getCharacter()->getMaxSkillLevel( i ) );
+
     fprintf( fp, "</tr>\n" );
   }
   fprintf( fp, "</table>\n" );
 
   fprintf( fp, "<b>Inventory:</b><ul>\n" );
   for( int i = 0; i < creature->getInventoryCount(); i++ ) {
-    fprintf( fp, "<li>%s(%d) A:%d MAX BONUS:%d %s<br>\n", 
+    fprintf( fp, "<li>%s(%d) A:%s %s<br>\n", 
              creature->getInventory( i )->getRpgItem()->getName(),
              creature->getInventory( i )->getLevel(),
-             creature->getInventory( i )->getAction(),
-             creature->getInventory( i )->getRpgItem()->getMaxSkillBonus(),
+             creature->getInventory( i )->getRpgItem()->getAction()->toString(),
              ( creature->isEquipped( i ) ? "<i>Equipped</i>" : "" ) );
   }
   fprintf( fp, "</ul>\n" );
@@ -295,12 +308,22 @@ Creature *CombatTest::createCharacter( Session *session,
   // assign portraits
   //c->setPortraitTextureIndex( info[i].portraitIndex );
   
-  // set skill levels to 50%
-  for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-    c->setSkill( t, MAX_SKILL / 2 );
-  }
+  setMinSkills( c );
   
   return c;
+}
+
+void CombatTest::setMinSkills( Creature *c ) {
+  // starting skills
+  Character *character = c->getCharacter();
+  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    int n = character->getMinSkillLevel(i) + 
+      c->getLevel() * character->getSkillBonus();
+    if(n > 99) n = 99;
+    if(n > character->getMaxSkillLevel( i )) 
+      n = character->getMaxSkillLevel( i );
+    c->setSkill( i, n );
+  }
 }
 
 Item *CombatTest::equipItem( Session *session, 

@@ -61,7 +61,6 @@ class Item : public RenderedItem {
   int level;
   float weight; 
   int price;
-  int action; // damage, defence, potion str.
   int speed; // 0-100, 100-slowest, 0-fastest
   int distance; // how far can it reach?
   int maxCharges;
@@ -134,7 +133,6 @@ public:
   inline int getLevel() { return level; }
   inline float getWeight() { return weight; }
   inline int getPrice() { return price; }
-  inline int getAction() { return action; }
   inline int getSpeed() { return speed; }
   inline int getDistance() { return distance; }
   inline int getMaxCharges() { return maxCharges; }

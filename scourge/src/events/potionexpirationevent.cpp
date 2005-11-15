@@ -30,7 +30,7 @@ PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut,
   Event(currentDate, timeOut, nbExecutionsToDo) {
     this->creature = c;
 	this->potionSkill = item->getRpgItem()->getPotionSkill();
-	this->amount = item->getAction();
+	this->amount = item->getRpgItem()->getAction()->getMod();
     this->session = session;
   }
 

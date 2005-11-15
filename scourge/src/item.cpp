@@ -62,7 +62,6 @@ ItemInfo *Item::save() {
   info->weight = (Uint32)(weight * 100);
   info->quality = quality;
   info->price = price;
-  info->action = action;
   info->speed = speed;
   info->distance = distance;
   info->maxCharges = maxCharges;
@@ -145,7 +144,6 @@ Item *Item::load(Session *session, ItemInfo *info) {
   item->weight = (float)(info->weight) / 100.0f;
   item->quality = info->quality;
   item->price = info->price;
-  item->action = info->action;
   item->speed = info->speed;
   item->distance = info->distance;
   item->maxCharges = info->maxCharges;
@@ -309,15 +307,14 @@ void Item::initItems(ShapePalette *shapePal) {
       // read the rest of the line
       n = Constants::readLine(name, fp);
       n = Constants::readLine(line, fp);
-      int level = atoi(strtok(line + 1, ","));
-      int rareness = atoi(strtok(NULL, ","));
+      int rareness = atoi(strtok(line + 1, ","));
       char *p = strtok(NULL, ",");
-      int action = 0;
+      char *action = NULL;
       int speed = 0;
       int distance = 0;
       int maxCharges = 0;
       if(p) {
-        action = atoi(p);
+        action = strdup(p);
         speed = atoi(strtok(NULL, ","));
         distance = atoi(strtok(NULL, ","));
         maxCharges = atoi(strtok(NULL, ","));
@@ -387,9 +384,10 @@ void Item::initItems(ShapePalette *shapePal) {
         //cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
       }
       if(distance < (int)MIN_DISTANCE) distance = (int)MIN_DISTANCE;
-      last = new RpgItem( itemCount++, strdup(name), level, rareness, type_index, 
+      last = new RpgItem( itemCount++, strdup(name), 1, rareness, type_index, 
                           weight, price, 100, 
-                          action, speed, strdup(long_description), 
+                          ( action && strlen( action ) ? new Dice( action ) : NULL ), 
+                          speed, strdup(long_description), 
                           strdup(short_description), 
                           inventory_location, shape_index, 
                           twohanded, 
@@ -492,7 +490,7 @@ void Item::commonInit( bool loading ) {
   price = basePrice + 
     (int)Util::getRandomSum( (float)(basePrice / 2), level );
 
-  action = (int)Util::getRandomSum( (float)(rpgItem->getActionRpg()), level / 2 );  
+  //action = (int)Util::getRandomSum( (float)(rpgItem->getActionRpg()), level / 2 );  
 
   if( rpgItem->getSpeedRpg() ) {
     speed = rpgItem->getSpeedRpg() - (int)Util::getRandomSum( 1, level / 7 );

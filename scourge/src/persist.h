@@ -22,7 +22,7 @@
 
 class File;
 
-#define PERSIST_VERSION 8
+#define PERSIST_VERSION 9
 
 typedef struct _DiceInfo {
   Uint32 version;
@@ -37,7 +37,6 @@ typedef struct _ItemInfo {
   Uint32 blocking, currentCharges, weight;
   Uint32 quality;
   Uint32 price;
-  Uint32 action;
   Uint32 speed;
   Uint32 distance;
   Uint32 maxCharges;

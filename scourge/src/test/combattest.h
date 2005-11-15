@@ -53,6 +53,7 @@ protected:
                           char *itemName, 
                           int itemLevel );
   static void computeHighLow( float value, float *sum, float *low, float *high );
+  static void setMinSkills( Creature *c );
 };
 
 #endif

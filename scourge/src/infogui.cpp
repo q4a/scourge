@@ -125,8 +125,8 @@ void InfoGui::describe() {
   strcat( description, tmp );
   sprintf(tmp, "Price: %d|", item->getPrice());
   strcat( description, tmp );
-  if( item->getAction() ) {
-    sprintf(tmp, "Action: %d|", item->getAction());
+  if( item->getRpgItem()->getAction() ) {
+    sprintf(tmp, "Action: %s|", item->getRpgItem()->getAction()->toString() );
     strcat( description, tmp );
   }
   if( item->getSpeed() > 0 ) {

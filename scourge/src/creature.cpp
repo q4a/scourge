@@ -63,8 +63,7 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->speed = 5; // start neutral speed
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
   this->armor=0;
-  this->shield=0;
-  this->maxCoordBonus = 0;
+  this->avgArmorLevel = 0;
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
@@ -85,8 +84,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool load
   this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
-  this->shield = 0;
-  this->maxCoordBonus = 0;
+  this->avgArmorLevel = 0;
   this->bonusArmor=0;
   this->shape = shape;
   this->loaded = loaded;
@@ -197,8 +195,6 @@ CreatureInfo *Creature::save() {
   info->speed = speed;
   info->motion = motion;
   info->armor = armor;
-  //  info->shield = shield;
-  // info->maxCoordBonus = maxCoordBonus;
   info->bonusArmor = bonusArmor;
   info->bonusArmor = 0;
   info->thirst = thirst;
@@ -871,7 +867,7 @@ void Creature::usePotion(Item *item) {
   if(skill < 0) {
     switch(-skill - 2) {
     case Constants::HP:
-      n = item->getAction();
+      n = item->getRpgItem()->getAction()->getMod();
       if(n + getHp() > getMaxHp())
         n = getMaxHp() - getHp();
       setHp(getHp() + n);
@@ -880,7 +876,7 @@ void Creature::usePotion(Item *item) {
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::MP:
-      n = item->getAction();
+      n = item->getRpgItem()->getAction()->getMod();
       if(n + getMp() > getMaxMp())
         n = getMaxMp() - getMp();
       setMp(getMp() + n);
@@ -890,7 +886,7 @@ void Creature::usePotion(Item *item) {
       return;
     case Constants::AC:
       {
-        bonusArmor += item->getAction();
+        bonusArmor += item->getRpgItem()->getAction()->getMod();
         recalcAggregateValues();
         sprintf(msg, "%s feels impervious to damage!", getName());
         session->getMap()->addDescription(msg, 0.2f, 1, 1);
@@ -910,7 +906,7 @@ void Creature::usePotion(Item *item) {
       return;
     }
   } else {
-    skillBonus[skill] += item->getAction();
+    skillBonus[skill] += item->getRpgItem()->getAction()->getMod();
     //	recalcAggregateValues();
     sprintf(msg, "%s feels at peace.", getName());
     session->getMap()->addDescription(msg, 0.2f, 1, 1);
@@ -1146,23 +1142,19 @@ Item *Creature::getItemAtLocation(int location) {
 void Creature::recalcAggregateValues() {
   // calculate the armor (0-100, 100-total protection)
   armor = (monster ? monster->getBaseArmor() : 0);
-  shield = 0;
-  maxCoordBonus = -1;
+  int armorLevel=0, armorCount=0;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] != MAX_INVENTORY_SIZE) {
       Item *item = inventory[equipped[i]];
       if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
-        armor += item->getAction();
-        if( item->getRpgItem()->getMaxSkillBonus() > maxCoordBonus ) 
-          maxCoordBonus = item->getRpgItem()->getMaxSkillBonus();
-      } else if( item->getRpgItem()->getType() == RpgItem::SHIELD ) {
-        shield += item->getAction();
-        if( item->getRpgItem()->getMaxSkillBonus() > maxCoordBonus ) 
-          maxCoordBonus = item->getRpgItem()->getMaxSkillBonus();
+        armor += item->getRpgItem()->getAction()->getMod();
+        armorLevel += item->getLevel();
+        armorCount++;
       }
     }
   }
   armor += bonusArmor;
+  avgArmorLevel = ( !armorCount ? 0 : (float)armorLevel / (float)armorCount );
 }
 
 Item *Creature::getBestWeapon(float dist) {
@@ -1237,7 +1229,7 @@ int Creature::getToHit(Item *weapon, int *maxToHit, int *rolledToHit) {
 int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
   float damage = 0.0f;
   // get the base damage
-  float baseDamage = (weapon ? weapon->getAction() : 
+  float baseDamage = (weapon ? weapon->getRpgItem()->getAction()->roll() : 
                       (getSkill(Constants::POWER) / 10));
   damage = baseDamage;
 
@@ -1312,7 +1304,7 @@ int Creature::getSkillModifiedArmor() {
                            item->getRpgItem()->getSkill() : 
                            Constants::HAND_DEFEND);
         float skill = (float)getSkill(skill_index);
-        int value = item->getAction() + item->getLevel();
+        int value = item->getRpgItem()->getAction()->getMod() + item->getLevel();
 
         // add (value + ((skill-50)% of value)) to armor
         armor += value + (int)( (float)value * ((skill - 50.0f) / 100.0f) );
@@ -1943,11 +1935,21 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
   }
 }
 
+
+
+
+
+
 /**
  * ============================================================
  * ============================================================
  * 
- * New battle system calls, loosely inspired by the d20 system.
+ * New battle system calls
+ * 
+ * damage=attack_roll - ac
+ * attack_roll=(item_action + item_level + max(0,level-target_level)) % skill
+ * ac=(armor_total + avg_armor_level) % skill
+ * skill=avg. of ability skill (power,coord, etc.), item skill, luck
  * 
  * ============================================================
  * ============================================================
@@ -1960,127 +1962,75 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
  * -critical hits (2x,3x,damage,etc.)  
  * -conditions modifiers
  */
-float Creature::getAttackRoll( Item *weapon, float *penalty ) {
-  float roll = 20.0f * rand() / RAND_MAX;
-  if( isMonster() ) {
-    // Add the base attack bonus
-    roll += ( monster->getBaseAttackBonus() * getLevel() );
-  } else {
-    // Add the base attack bonus
-    roll += ( character->getBaseAttackBonus() * getLevel() );
+
+// 1 item level equals this many character levels in combat
+#define ITEM_LEVEL_DIVISOR 8.0f
+
+// base weapon damage of an attack with bare hands
+#define HAND_ATTACK_DAMAGE Dice(1,8,0)
+
+float Creature::getACPercent( float *totalP, float *skillP ) {
+  int count = 1;
+  float skill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
+  if( armor ) {
+    skill += getSkill( Constants::getSkillByName( "ARMOR_DEFEND" ) );
+    count++;
   }
+  skill /= (float)count;
 
-  // Add the skill modifier ( power or coord. for ranged weapons )
-  roll +=
-    getAbilityModifier( 
-      Constants::getSkillByName( 
-        weapon && weapon->getRpgItem()->isRangedWeapon() ? 
-        (char*)"COORDINATION" : 
-        (char*)"POWER" ) );
+  skill += ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+  if( skillP ) *skillP = skill;
 
-  // FIXME: d20 rules also add: size mod and range penalty for ranged weapons
+  float itemLevel = ( avgArmorLevel - 1 ) / ITEM_LEVEL_DIVISOR;
+  if( itemLevel < 0 ) itemLevel = 0;
 
-  // Apply weapon proficiency: -4 max penalty if not proficient
-  int profSkillIndex = ( weapon ? 
-                         weapon->getRpgItem()->getSkill() : 
-                         Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
-  float p = getProficiencyPenalty( profSkillIndex );
-  roll -= p;
-  if( penalty ) *penalty = p;
-  
-  if( roll < 0.0f ) roll = 0.0f;
+  float ac = ( armor + itemLevel );
+  if( totalP ) *totalP = ac;
 
-  return roll;
+  return( ( ac / 100.0f ) * skill );
 }
 
-#define HAND_ATTACK_DAMAGE 8
+float Creature::getAttackPercent( Item *weapon, 
+                                  float *totalP, 
+                                  float *skillP,
+                                  float *itemLevelP,
+                                  float *levelDiffP ) {
+  float skill = 
+    getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
+              Constants::getSkillByName( "COORDINATION" ) :
+              Constants::getSkillByName( "POWER" ) ) +
+    getSkill( weapon ? 
+              weapon->getRpgItem()->getSkill() :
+              Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
+  skill /= 2.0f;
 
-float Creature::getDamageRoll( Item *weapon, float *penalty ) {
+  skill += ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+  if( skillP ) *skillP = skill;
 
-  float damage = (float)( weapon ? weapon->getAction() : HAND_ATTACK_DAMAGE ) *
-    rand() / RAND_MAX;
+  float itemLevel = 
+    ( ( weapon ?
+        weapon->getLevel() : 
+        getLevel() / 10.0f ) - 1 ) / ITEM_LEVEL_DIVISOR;
+  if( itemLevel < 0 ) itemLevel = 0;
+  if( itemLevelP ) *itemLevelP = itemLevel;
 
-  // apply skill mod
-  if( weapon || weapon->getRpgItem()->isRangedWeapon() ) {
-    // power penalty for ranged weapons
-    // FIXME: needs penalty setting per weapon
-  } else {
+  float levelDiff = 
+    ( getTargetCreature() && getTargetCreature()->getLevel() < getLevel() ?
+      getLevel() - getTargetCreature()->getLevel() :
+      0 );
+  if( levelDiffP ) *levelDiffP = levelDiff;
 
-    bool isUsedTwoHanded =
-      ( weapon && 
-        weapon->getRpgItem()->getTwoHanded() != RpgItem::NOT_TWO_HANDED &&
-        !( getEquippedInventory( Constants::INVENTORY_LEFT_HAND ) &&
-           getEquippedInventory( Constants::INVENTORY_RIGHT_HAND ) ) );
+  float total = 
+    ( weapon ? 
+      weapon->getRpgItem()->getAction()->roll() : 
+      HAND_ATTACK_DAMAGE.roll() ) +
+    itemLevel +
+    levelDiff;
+  if( totalP ) *totalP = total;
 
-    // power bonus for melee attacks (1.5x if two-handed)
-    damage += 
-      ( getAbilityModifier( Constants::getSkillByName( "POWER" ) ) * 
-        ( isUsedTwoHanded ? 1.5f : 1.0f ) );
-        
-  }
+  // apply percent
+  total = ( ( total / 100.0f ) * skill );
 
-  // proficiency penalty
-  int profSkillIndex = ( weapon ? 
-                         weapon->getRpgItem()->getSkill() : 
-                         Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
-  float p = getProficiencyPenalty( profSkillIndex );
-  damage -= p;
-  if( penalty ) *penalty = p;
-
-  // min. amount of damage
-  if( damage < 1.0f ) damage = 1.0f;
-
-  return damage;
-}
-
-float Creature::getAC( float *armorP, float *shieldP, float *skillBonusP, 
-                       float *armorPenaltyP, float *shieldPenaltyP ) {
-  float skillBonus = getAbilityModifier( Constants::getSkillByName( "COORDINATION" ) );
-  if( maxCoordBonus > -1 && skillBonus > maxCoordBonus ) 
-    skillBonus = (float)maxCoordBonus;
-
-  float ac = ( MAX_SKILL / 4.0f ) + armor + shield + skillBonus;
-
-  // fixme: d20 rules also use size modifier
-
-  if( armorP ) *armorP = armor;
-  if( shieldP ) *shieldP = shield;
-  if( skillBonusP ) *skillBonusP = skillBonus;
-
-  // apply armor proficiency penalty
-  if( armor > 0 ) {
-    float p = 
-      getProficiencyPenalty( Constants::getSkillByName( "ARMOR_DEFEND" ) );
-    ac -= p;
-    if( armorPenaltyP ) *armorPenaltyP = p;
-  }
-
-  // apply shield proficiency penalty
-  if( shield > 0 ) {
-    float p = 
-      getProficiencyPenalty( Constants::getSkillByName( "SHIELD_DEFEND" ) );
-    ac -= p;
-    if( shieldPenaltyP ) *shieldPenaltyP = p;
-  }
-  
-  if( ac < 0.0f ) ac = 0.0f;
-
-  return ac;
-}
-
-float Creature::getProficiencyPenalty( int skill ) {
-  float penalty = 
-    PROFICIENCY_MAX_PENALTY - 
-    ( ( PROFICIENCY_MAX_PENALTY * getSkill( skill ) ) / 
-      MAX_SKILL );
-  if( penalty > PROFICIENCY_MAX_PENALTY ) 
-    penalty = PROFICIENCY_MAX_PENALTY;
-  return penalty;
-}
-
-float Creature::getAbilityModifier( int skill ) {
-  // function divined from table: 
-  // http://www.d20srd.org/srd/theBasics.htm#tableAbilityModifiersandBonusSpells
-  return( getSkill( skill ) / 2.0f - 5.0f );
+  return total;
 }
 
