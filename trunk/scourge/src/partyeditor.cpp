@@ -390,19 +390,25 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     }
     
     // add a weapon anyone can wield
-    int n = (int)(4.0f * rand()/RAND_MAX);
+    int n = (int)(5.0f * rand()/RAND_MAX);
     switch(n) {
     case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow"))); break;
     case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"))); break;
     case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"))); break;
     case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"))); break;
+    case 4: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff"))); break;
     }
-    pc[i]->equipInventory(0);
+    int invIndex = 0;
+    pc[i]->equipInventory( invIndex++ );
     
     // add some armor
     if(0 == (int)(4.0f * rand()/RAND_MAX)) {
       pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet")));
-      pc[i]->equipInventory(1);
+      pc[i]->equipInventory( invIndex++ );
+    }
+    if(0 == (int)(3.0f * rand()/RAND_MAX)) {
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler")));
+      pc[i]->equipInventory( invIndex++ );
     }
     
     // some potions
