@@ -165,7 +165,7 @@ bool RpgItem::isEnchantable() {
 
 RpgItem *RpgItem::getRandomItem(int depth) {
   // item types found in the lying around a dungeon
-  int types[] = { SWORD, AXE, BOW, MACE, ARMOR, FOOD, DRINK, POTION, SHIELD, POLE };
+  int types[] = { SWORD, AXE, BOW, MACE, ARMOR, FOOD, DRINK, POTION, POLE };
   int typeCount = 9;
   return getRandomItemFromTypes(depth, types, typeCount);
 }

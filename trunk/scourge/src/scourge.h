@@ -658,6 +658,8 @@ public:
 
   bool startTextEffect( char *message );
 
+  static bool testLoadGame(Session *session);
+
  protected:
 
    void drawPortrait( Widget *w, Creature *p );
@@ -698,7 +700,7 @@ public:
   void drawDescriptions(ScrollingList *list);
 
   bool doesSaveGameExist(Session *session);
-  bool saveGame(Session *session);
+  bool saveGame(Session *session);  
   bool loadGame(Session *session);
 };
 

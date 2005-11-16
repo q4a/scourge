@@ -395,6 +395,7 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
       cerr << "Error while running tests." << endl;
       return 1;
     }
+    return 0;
   }
   session->start();
   

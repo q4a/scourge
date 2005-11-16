@@ -21,9 +21,6 @@
 /**
  * A way for external classes to this dir to get everything in one include file.
  */
-
-// The max value of a skill under normal circumstances. 
-#define MAX_SKILL 100
             
 #include "character.h"
 #include "monster.h"
