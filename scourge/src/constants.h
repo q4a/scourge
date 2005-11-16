@@ -320,14 +320,17 @@ public:
 // How big is the on-screen view. Should be calculated.
 #define MAP_VIEW_HEIGHT 16
 
-  // How big is 1 map chunk
+// How big is 1 map chunk
 #define MAP_UNIT 16
 #define MAP_UNIT_OFFSET 2
 #define MAP_WALL_HEIGHT 12
 
-  // How far from the edge to start drawing in map
+// How far from the edge to start drawing in map
 #define MAP_OFFSET 80
-  
+
+// The max value of a skill under normal circumstances. 
+#define MAX_SKILL 100
+
 // define some active region labels
   enum {
 	INV_PLAYER_0 = 0,

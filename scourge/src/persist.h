@@ -24,6 +24,8 @@ class File;
 
 #define PERSIST_VERSION 9
 
+#define OLDEST_HANDLED_VERSION 7
+
 typedef struct _DiceInfo {
   Uint32 version;
   Uint32 count, sides, mod;
