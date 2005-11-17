@@ -2802,11 +2802,8 @@ void Scourge::receive( Widget *widget ) {
     if( getParty()->getPlayer() != getParty()->getParty( selected ) &&
         inTurnBasedCombat() ) return;
 
-    cerr << "scourge::receive 1: " << getParty()->getPlayer()->getName() << endl;
     getParty()->setPlayer( selected );
-    cerr << "scourge::receive 2: " << getParty()->getPlayer()->getName() << endl;
     inventory->receive( widget );
-    cerr << "scourge::receive 3: " << getParty()->getPlayer()->getName() << endl;
   }
 }     
 

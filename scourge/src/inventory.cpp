@@ -1039,6 +1039,31 @@ void Inventory::equipItem() {
       scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
       return;
     }
+    
+    // two handed weapon violations
+    if( item->getRpgItem()->getEquip() & Constants::INVENTORY_LEFT_HAND ||
+        item->getRpgItem()->getEquip() & Constants::INVENTORY_RIGHT_HAND ) {
+      Item *leftHandWeapon = 
+        scourge->getParty()->getParty(selected)->
+        getItemAtLocation( Constants::INVENTORY_LEFT_HAND );
+      Item *rightHandWeapon = 
+        scourge->getParty()->getParty(selected)->
+        getItemAtLocation( Constants::INVENTORY_RIGHT_HAND );
+      bool bothHandsFree = 
+        !( leftHandWeapon || rightHandWeapon );
+      bool holdsTwoHandedWeapon =
+        ( ( leftHandWeapon && leftHandWeapon->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) ||
+          ( rightHandWeapon && rightHandWeapon->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) );
+      
+      if( holdsTwoHandedWeapon ||
+          ( !bothHandsFree && 
+            item->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) ) {
+        scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_TWO_HANDED_VIOLATION));
+        scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+        return;
+      }
+    }
+
     scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
     // recreate list strings
     refresh();
