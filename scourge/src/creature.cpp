@@ -1956,11 +1956,14 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
  * 
  * Fixme: 
  * -currently, extra attacks are not used. (use SPEED skill to eval?)
- * -weapon level is not used (should be used like an ability modifier)
+ * -magic item armor
+ * -automatic capabilities
  *
  * move here from battle.cpp:
  * -critical hits (2x,3x,damage,etc.)  
  * -conditions modifiers
+ * 
+ * ** Look in old methods and battle.cpp for more info
  */
 
 // 1 item level equals this many character levels in combat
@@ -1970,10 +1973,15 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 #define HAND_ATTACK_DAMAGE Dice(1,8,0)
 
 float Creature::getACPercent( float *totalP, float *skillP ) {
+
+  float armor, armorSkillBonus, avgArmorLevel;
+  calcArmor( &armor, &armorSkillBonus, &avgArmorLevel );
+               
   int count = 1;
   float skill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
-  if( armor ) {
+  if( armor > 0 ) {
     skill += getSkill( Constants::getSkillByName( "ARMOR_DEFEND" ) );
+    skill += armorSkillBonus;
     count++;
   }
   skill /= (float)count;
@@ -1987,7 +1995,38 @@ float Creature::getACPercent( float *totalP, float *skillP ) {
   float ac = ( armor + itemLevel );
   if( totalP ) *totalP = ac;
 
-  return( ( ac / 100.0f ) * skill );
+  // apply the skill
+  ac = ( ( ac / 100.0f ) * skill );
+
+  return ac;
+}
+
+void Creature::calcArmor( float *armorP, 
+                          float *armorSkillBonusP, 
+                          float *avgArmorLevelP ) {
+  float armor = (monster ? monster->getBaseArmor() : 0);
+  float armorSkillBonus = 0;
+  int armorLevel=0, armorCount=0;
+  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+    if( equipped[i] != MAX_INVENTORY_SIZE ) {
+      Item *item = inventory[equipped[i]];
+      if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
+        armor += item->getRpgItem()->getAction()->getMod();
+        if( item->isMagicItem() ) {
+          armor += item->getBonus();
+          armorSkillBonus += item->getSkillBonus();
+        }
+        armorLevel += item->getLevel();
+        armorCount++;
+      }
+    }
+  }
+  armor += bonusArmor;
+
+  // return results
+  *armorP = armor;
+  *armorSkillBonusP = armorSkillBonus;
+  *avgArmorLevel = ( !armorCount ? 0 : (float)armorLevel / (float)armorCount );
 }
 
 float Creature::getAttackPercent( Item *weapon, 
@@ -2028,7 +2067,7 @@ float Creature::getAttackPercent( Item *weapon,
     levelDiff;
   if( totalP ) *totalP = total;
 
-  // apply percent
+  // apply skill
   total = ( ( total / 100.0f ) * skill );
 
   return total;
