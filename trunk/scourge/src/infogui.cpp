@@ -145,7 +145,18 @@ void InfoGui::describe() {
     sprintf(tmp, "Duration: %d|", item->getDuration());
     strcat( description, tmp );
   }
-
+  switch( item->getRpgItem()->getTwoHanded() ) {
+  case RpgItem::ONLY_TWO_HANDED: 
+    sprintf( tmp, "Two handed weapon.|" );
+  strcat( description, tmp );
+  break;
+  case RpgItem::OPTIONAL_TWO_HANDED:
+    sprintf( tmp, "Optionally handed weapon.|" );
+  strcat( description, tmp );
+  break;
+  default:
+    break;
+  }
 
 
   // DEBUG
