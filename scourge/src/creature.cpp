@@ -1974,14 +1974,13 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 
 float Creature::getACPercent( float *totalP, float *skillP ) {
 
-  float armor, armorSkillBonus, avgArmorLevel;
-  calcArmor( &armor, &armorSkillBonus, &avgArmorLevel );
+  float armor, avgArmorLevel;
+  calcArmor( &armor, &avgArmorLevel );
                
   int count = 1;
   float skill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
   if( armor > 0 ) {
     skill += getSkill( Constants::getSkillByName( "ARMOR_DEFEND" ) );
-    skill += armorSkillBonus;
     count++;
   }
   skill /= (float)count;
@@ -2002,10 +2001,8 @@ float Creature::getACPercent( float *totalP, float *skillP ) {
 }
 
 void Creature::calcArmor( float *armorP, 
-                          float *armorSkillBonusP, 
                           float *avgArmorLevelP ) {
   float armor = (monster ? monster->getBaseArmor() : 0);
-  float armorSkillBonus = 0;
   int armorLevel=0, armorCount=0;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if( equipped[i] != MAX_INVENTORY_SIZE ) {
@@ -2014,7 +2011,6 @@ void Creature::calcArmor( float *armorP,
         armor += item->getRpgItem()->getAction()->getMod();
         if( item->isMagicItem() ) {
           armor += item->getBonus();
-          armorSkillBonus += item->getSkillBonus();
         }
         armorLevel += item->getLevel();
         armorCount++;
@@ -2025,8 +2021,9 @@ void Creature::calcArmor( float *armorP,
 
   // return results
   *armorP = armor;
-  *armorSkillBonusP = armorSkillBonus;
-  *avgArmorLevel = ( !armorCount ? 0 : (float)armorLevel / (float)armorCount );
+  *avgArmorLevelP = ( armorCount > 0 ? 
+                      (float)armorLevel / (float)armorCount :
+                      0.0f );
 }
 
 float Creature::getAttackPercent( Item *weapon, 
