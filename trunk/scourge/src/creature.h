@@ -449,6 +449,7 @@ class Creature : public RenderedCreature {
                           bool *adjustedForLowProficiency=NULL );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
+  float rollMagicDamagePercent( Item *item );
 
  protected:
 

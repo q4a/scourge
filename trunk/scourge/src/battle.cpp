@@ -27,6 +27,7 @@ using namespace std;
 #define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
 #define WEAPON_WAIT_MUL 5
+#define MIN_FUMBLE_RANGE 4.0f
 
 bool Battle::debugBattle = false;
 
@@ -762,30 +763,189 @@ void Battle::prepareToHitMessage() {
   }
 }
 
+/**
+ * Special actions for very low attack roll. If the attack roll
+ * is below 10% of the max and the attack range is greater than 4pts,
+ * roll to see if there is a fumble.
+ */
+bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
+  if( max - min >= MIN_FUMBLE_RANGE && 
+      creature->getTargetCreature() &&
+      attack - min < ( ( ( max - min ) / 100.0f ) * 10.0f ) ) {
+    if( 0 == (int)( 3.0f * rand() / RAND_MAX ) ) {
+      Creature *tmpTarget;
+      if( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) {
+        tmpTarget = session->
+          getClosestVisibleMonster( toint(creature->getX()), 
+                                    toint(creature->getY()), 
+                                    creature->getShape()->getWidth(),
+                                    creature->getShape()->getDepth(),
+                                    20 );
+      } else {
+        tmpTarget = session->getParty()->
+          getClosestPlayer( toint(creature->getX()), 
+                            toint(creature->getY()), 
+                            creature->getShape()->getWidth(),
+                            creature->getShape()->getDepth(),
+                            20 );
+      }
+      if( tmpTarget ) {
+        // play item sound
+        if(item) session->playSound(item->getRandomSound());
+        sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
+        session->getMap()->addDescription( message );
+        Creature *oldTarget = creature->getTargetCreature();
+        creature->setTargetCreature( tmpTarget );
+        dealDamage( ( MIN_FUMBLE_RANGE * rand() / RAND_MAX ) + 
+                    ( MIN_FUMBLE_RANGE / 2.0f ) );
+        creature->setTargetCreature( oldTarget );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void Battle::applyHighAttackRoll( float *damage, float attack, float min, float max ) {
+  float percent = ( attack - min ) / ( ( max - min ) / 100.0f );
+  // special actions for very high tohits
+  if( max - min >= MIN_FUMBLE_RANGE && 
+      percent > 95 ) {
+    int mul = (int)( 8.0f * rand()/RAND_MAX );
+    switch( mul ) {
+    case 2:
+    strcpy(message, "...precise hit: double damage!");
+    session->getMap()->addDescription(message);
+    (*damage) *= mul;
+    break;
+
+    case 3:
+    strcpy(message, "...precise hit: tripple damage!");
+    session->getMap()->addDescription(message);
+    (*damage) *= mul;
+    break;
+
+    case 4:
+    strcpy(message, "...precise hit: quad damage!");
+    session->getMap()->addDescription(message);
+    (*damage) *= mul;
+    break;
+
+    case 0:
+    if( percent >= 98 ) {
+      strcpy(message, "...precise hit: instant kill!");
+      session->getMap()->addDescription(message);
+      (*damage) = 1000;
+    }
+    break;
+
+    default:
+    break;
+    }
+  }
+}
+
+void Battle::applyMagicItemDamage( float *damage ) {
+  // magical weapons
+  if( item && item->isMagicItem() ) {
+    int mul = 1;
+    if( item->getMonsterType() && creature->getTargetCreature() && 
+        !strcmp( item->getMonsterType(), 
+                 creature->getTargetCreature()->getModelName() ) ) {
+      mul = item->getDamageMultiplier();
+    } else if( !item->getMonsterType() ) {
+      mul = item->getDamageMultiplier();
+    }
+    if( mul < 1 ) mul = 1;
+    if( mul == 2 ) {
+      strcpy( message, "...double damage!" );
+      session->getMap()->addDescription( message );
+    } else if( mul == 3 ) {
+      strcpy( message, "...triple damage!" );
+      session->getMap()->addDescription( message );
+    } else if( mul == 4 ) {
+      strcpy( message, "...quad damage!" );
+      session->getMap()->addDescription( message );
+    } else if( mul > 4 ) {
+      sprintf( message, "...%d-times damage!", mul );
+      session->getMap()->addDescription( message );
+    }
+    (*damage) *= mul;
+  }
+}
+
+float Battle::applyMagicItemSpellDamage() {
+  // magical damage
+  if( item && 
+      item->isMagicItem() && 
+      item->getSchool() &&
+      creature->getTargetCreature() && 
+      creature->isTargetValid() ) {
+    
+    // roll for the spell damage
+    float damage = creature->rollMagicDamagePercent( item );
+
+    // check for resistance
+    int resistance = 
+      creature->getTargetCreature()->
+      getSkill( item->getSchool()->getResistSkill() );
+
+    // reduce the magic attack by the resistance %.
+    damage -= (damage / 100.0f) * (float)resistance;
+    if( damage < 0 ) damage = 0;
+
+    char msg[200];
+    sprintf( msg, "...%s attacks %s with %s magic.", 
+             creature->getName(), 
+             creature->getTargetCreature()->getName(),
+             item->getSchool()->getShortName() );
+    getSession()->getMap()->addDescription( msg, 1, 0.15f, 1 );
+    if( resistance > 0 ) {
+      sprintf( msg, "%s resists the magic with %d.", 
+               creature->getTargetCreature()->getName(),
+               resistance );
+      getSession()->getMap()->addDescription( msg, 1, 0.15f, 1 );
+    }
+    
+    return damage;
+  }
+  return -1.0f;
+}
+
 void Battle::hitWithItem() {
   prepareToHitMessage();
 
 
   float total, max, min, skill, itemLevel, levelDiff;
+  bool adjustedForLowProf;
   float attack = 
     creature->getAttackPercent( item, 
                                 &max, 
                                 &min,
                                 &skill, 
                                 &itemLevel, 
-                                &levelDiff );
+                                &levelDiff,
+                                &adjustedForLowProf );
   float delta = creature->getAttackerStateModPercent();
   float extra = ( attack / 100.0f ) * delta;
   attack += extra;
 
-  sprintf(message, "...%s attacks with %s for %.2f points.", 
-          creature->getName(), 
-          ( item ? item->getRpgItem()->getName() : "bare hands" ),
-          attack );
+  sprintf(message, "...%s attacks for %.2f points.", 
+          creature->getName(), attack );
   session->getMap()->addDescription(message);
-  sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,LD:%.2f,EX:%.2f)",
-          max, min, skill, itemLevel, levelDiff, extra );
+  sprintf(message, "...(%sMI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,LD:%.2f,EX:%.2f)",
+          ( adjustedForLowProf ? "**" : "" ),
+          min, max, skill, itemLevel, levelDiff, extra );
   session->getMap()->addDescription(message);
+
+  // cursed items
+  if( item && item->isCursed() ) {
+    session->getMap()->addDescription("...Using cursed item!");
+    attack -= ( attack / 3.0f );
+  }
+
+  // very low attack rolls
+  if( handleLowAttackRoll( attack, min, max ) ) return;
 
 
   float ac = creature->getTargetCreature()->
@@ -800,208 +960,34 @@ void Battle::hitWithItem() {
 
 
   float damage = ( ac > attack ? 0 : attack - ac );
-  dealDamage( damage );
-}
-
-/*
-void Battle::hitWitItem_oldStuff() {
-  // take a swing
-  int maxToHit;
-  int tohit = creature->getToHit(item, &maxToHit);
-
-//     apply state_mods:
-//     blessed,
-//     empowered,
-//     enraged,
-//     ac_protected,
-//     magic_protected,
-//
-//     drunk,
-//
-//     poisoned,
-//     cursed,
-//     possessed,
-//     blinded,
-//     charmed,
-//     changed,
-//     overloaded,
-  float delta = 0.0f;
-  if(creature->getStateMod(Constants::blessed)) {
-    delta += (15.0f * rand()/RAND_MAX);
-  }
-  if(creature->getStateMod(Constants::empowered)) {
-    delta += (15.0f * rand()/RAND_MAX) + 10;
-  }
-  if(creature->getStateMod(Constants::enraged)) {
-    delta -= (10.0f * rand()/RAND_MAX);
-  }
-  if(creature->getStateMod(Constants::drunk)) {
-    delta += (30.0f * rand()/RAND_MAX) - 15;
-  }
-  if(creature->getStateMod(Constants::cursed)) {
-    delta -= ((15.0f * rand()/RAND_MAX) + 10);
-  }
-  if(creature->getStateMod(Constants::blinded)) {
-    delta -= (15.0f * rand()/RAND_MAX);
-  }
-  if(creature->getStateMod(Constants::overloaded)) {
-    delta -= (10.0f * rand()/RAND_MAX);
-  }
-  if(creature->getStateMod(Constants::invisible)) {
-    delta += (5.0f * rand()/RAND_MAX) + 5;
-  }
-  int extra = (int)(((float)tohit / 100.0f) * delta) + 
-    (item && item->isMagicItem() ? ( item->getLevel() * item->getBonus() ) : 0);
-
-  int ac = creature->getTargetCreature()->getSkillModifiedArmor();
-  sprintf(message, "...%s defends with armor=%d", creature->getTargetCreature()->getName(), ac);
-  session->getMap()->addDescription(message);
-  sprintf(message, "...toHit=%d(%d) (max=%d) vs. AC=%d", tohit, extra, maxToHit, ac);
-  session->getMap()->addDescription(message);
-  tohit += extra;
-
-  // deal out the damage
-  int maxDamage;
-  int damage = creature->getDamage(item, &maxDamage);
-
-  // cursed items
-  if( item && item->isCursed() ) {
-    session->getMap()->addDescription("...Using cursed item!");
-    damage -= ( damage / 3 );
-  }
-  
-  // special actions for very low tohits
-  if ( tohit < 2 && creature->getTargetCreature() ) {
-    if ( 0 == (int)( 3.0f * rand() / RAND_MAX ) ) {
-      Creature *tmpTarget;
-      if ( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) {
-        tmpTarget = session->getClosestVisibleMonster(toint(creature->getX()), 
-                                                      toint(creature->getY()), 
-                                                      creature->getShape()->getWidth(),
-                                                      creature->getShape()->getDepth(),
-                                                      20);
-      } else {
-        tmpTarget = session->getParty()->getClosestPlayer(toint(creature->getX()), 
-                                                          toint(creature->getY()), 
-                                                          creature->getShape()->getWidth(),
-                                                          creature->getShape()->getDepth(),
-                                                          20);
-      }
-      if ( tmpTarget ) {
-        // play item sound
-        if (item) session->playSound(item->getRandomSound());
-
-        sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
-        session->getMap()->addDescription( message );
-        Creature *oldTarget = creature->getTargetCreature();
-        creature->setTargetCreature( tmpTarget );
-        dealDamage(damage, maxDamage);
-        creature->setTargetCreature( oldTarget );
-        return;
-      }
-    }
-  }
-
-  if (tohit > ac) {
-
+  if( damage > 0 ) {
     // play item sound
-    if (item) session->playSound(item->getRandomSound());
+    if( item ) session->playSound( item->getRandomSound() );
 
-    // magical weapons
-    if (item && item->isMagicItem()) {
-      damage += ( item->getLevel() * item->getBonus() );
-      int mul = 1;
-      if (item->getMonsterType() && creature->getTargetCreature() && 
-          !strcmp(item->getMonsterType(), creature->getTargetCreature()->getModelName())) {
-        mul = item->getDamageMultiplier();
-      } else if (!item->getMonsterType()) {
-        mul = item->getDamageMultiplier();
-      }
-      if (mul < 1) mul = 1;
-      if (mul == 2) {
-        strcpy(message, "...double damage!");
-        session->getMap()->addDescription(message);
-      } else if (mul == 3) {
-        strcpy(message, "...triple damage!");
-        session->getMap()->addDescription(message);
-      } else if (mul == 4) {
-        strcpy(message, "...quad damage!");
-        session->getMap()->addDescription(message);
-      } else if (mul > 4) {
-        sprintf(message, "...%d-times damage!", mul);
-        session->getMap()->addDescription(message);
-      }
-      damage *= mul;
-    }
+    applyMagicItemDamage( &damage );
 
-    // special actions for very high tohits
-    if ( tohit > 97 ) {
-      int mul = (int)( 8.0f * rand()/RAND_MAX );
-      if ( mul == 2 ) {
-        strcpy(message, "...precise hit: double damage!");
-        session->getMap()->addDescription(message);
-        damage *= mul;
-      } else if ( mul == 3 ) {
-        strcpy(message, "...precise hit: tripple damage!");
-        session->getMap()->addDescription(message);
-        damage *= mul;
-      } else if ( mul == 4 ) {
-        strcpy(message, "...precise hit: quad damage!");
-        session->getMap()->addDescription(message);
-        damage *= mul;
-      } else if ( mul == 0 && tohit >= 99 ) {
-        strcpy(message, "...precise hit: instant kill!");
-        session->getMap()->addDescription(message);
-        damage = 1000;
-      }
-    }
+    applyHighAttackRoll( &damage, attack, min, max );
 
-    dealDamage(damage, maxDamage);
-  } else {
-    // missed
-    sprintf(message, "...and misses! (toHit=%d vs. AC=%d)", tohit, ac);
-    session->getMap()->addDescription(message);
   }
 
-  // magical damage
-  if (item && item->isMagicItem() && item->getSchool() &&
-      creature->getTargetCreature() && creature->isTargetValid()) {
+  dealDamage( damage );
 
-    // roll for the spell damage
-    int damage = (int)((float)item->rollMagicDamage() * rand()/RAND_MAX);
-
-    // check for resistance
-    int resistance = creature->getTargetCreature()->getSkill(item->getSchool()->getResistSkill());
-    damage -= (int)(((float)damage / 100.0f) * resistance);
-
-    char msg[200];
-    sprintf(msg, "%s attacks %s with %s magic.", 
-            creature->getName(), 
-            creature->getTargetCreature()->getName(),
-            item->getSchool()->getShortName());
-    getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
-    if (resistance > 0) {
-      sprintf(msg, "%s resists the magic with %d.", 
-              creature->getTargetCreature()->getName(),
-              resistance);
-      getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
+  if( damage > 0 ) {
+    // apply extra spell-like damage of magic items
+    float spellDamage = applyMagicItemSpellDamage();
+    if( spellDamage > -1 ) {
+      dealDamage( damage, Constants::EFFECT_GREEN, true );
     }
-
-    // cause damage, kill creature, gain levels, etc.
-    dealDamage(damage, 
-               item->rollMagicDamage(), 
-               Constants::EFFECT_GREEN,
-               true);
   }
 }
-*/
+
 void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {
   if( damage > 0 ) {
 
     // also affects spell attacks
     float delta = creature->getDefenderStateModPercent(magical);
     float extra = ((float)damage / 100.0f) * delta;
-    sprintf(message, "...and hits for %.2f(%d) points of damage", damage, extra );
+    sprintf(message, "...and hits for %.2f(%.2f) points of damage", damage, extra );
     session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
     damage += extra;
 
