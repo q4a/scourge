@@ -161,7 +161,8 @@ bool CombatTest::fight( char *path,
   int atkOriginalLevel = attacker->getLevel();
   int defOriginalLevel = defender->getLevel();
 
-  float total, skill, itemLevel, levelDiff;
+  float total, skill, itemLevel, levelDiff, max, min;
+  bool adjustedForLowProficiency;
   float sum=0, low=0, high=0, ATKave;
   for( int n = 0; n < SHOW_MAX_LEVEL; n++ ) {
 
@@ -184,9 +185,10 @@ bool CombatTest::fight( char *path,
       // -------------------------------------------------
       // Attack roll
       sum = low = high = 0;
-      attacker->getAttackPercent( weapon, &total, &skill, &itemLevel, &levelDiff );
-      fprintf( fp, "ATK max:<b>%.2f</b> (%.2f %% %.2f, IL:%.2f LD:%.2f)<br>\n", 
-               (( total / 100.0f ) * skill ), total, skill, itemLevel, levelDiff );
+      attacker->getAttackPercent( weapon, &max, &min, &skill, &itemLevel, &levelDiff, &adjustedForLowProficiency );
+      fprintf( fp, "ATK range:%s<b>%.2f - %.2f</b> (%% %.2f, IL:%.2f LD:%.2f)<br>\n", 
+               ( adjustedForLowProficiency ? "**" : "" ),
+               min, max, skill, itemLevel, levelDiff );
       for( int i = 0; i < count; i++ ) {
         computeHighLow( attacker->getAttackPercent( weapon ),
                         &sum, &low, &high );

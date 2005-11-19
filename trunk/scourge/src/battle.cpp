@@ -730,7 +730,12 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   if(debugBattle) cerr << "*** Projectile hit ends." << endl;
 }
 
-void Battle::hitWithItem() {
+
+
+/**
+ * Message to user about battle turn.
+ */
+void Battle::prepareToHitMessage() {
   if(item) {
     sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
             creature->getName(), 
@@ -755,29 +760,71 @@ void Battle::hitWithItem() {
     session->getMap()->addDescription(message);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
   }
+}
 
+void Battle::hitWithItem() {
+  prepareToHitMessage();
+
+
+  float total, max, min, skill, itemLevel, levelDiff;
+  float attack = 
+    creature->getAttackPercent( item, 
+                                &max, 
+                                &min,
+                                &skill, 
+                                &itemLevel, 
+                                &levelDiff );
+  float delta = creature->getAttackerStateModPercent();
+  float extra = ( attack / 100.0f ) * delta;
+  attack += extra;
+
+  sprintf(message, "...%s attacks with %s for %.2f points.", 
+          creature->getName(), 
+          ( item ? item->getRpgItem()->getName() : "bare hands" ),
+          attack );
+  session->getMap()->addDescription(message);
+  sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,LD:%.2f,EX:%.2f)",
+          max, min, skill, itemLevel, levelDiff, extra );
+  session->getMap()->addDescription(message);
+
+
+  float ac = creature->getTargetCreature()->
+    getACPercent( &total, 
+                  &skill );
+  sprintf(message, "...%s blocks %.2f points", 
+          creature->getTargetCreature()->getName(), ac);
+  session->getMap()->addDescription(message);
+  sprintf(message, "...(TO:%.2f,SK:%.2f)",
+          total, skill );
+  session->getMap()->addDescription(message);
+
+
+  float damage = ( ac > attack ? 0 : attack - ac );
+  dealDamage( damage );
+}
+
+/*
+void Battle::hitWitItem_oldStuff() {
   // take a swing
   int maxToHit;
   int tohit = creature->getToHit(item, &maxToHit);
 
-  /* 
-    apply state_mods:
-    blessed, 
-	  empowered, 
-  	enraged, 
-  	ac_protected, 
-  	magic_protected, 
-    
-  	drunk, 
-    
-  	poisoned, 
-  	cursed, 
-  	possessed, 
-  	blinded, 
-  	charmed, 
-  	changed,
-  	overloaded,
-  */
+//     apply state_mods:
+//     blessed,
+//     empowered,
+//     enraged,
+//     ac_protected,
+//     magic_protected,
+//
+//     drunk,
+//
+//     poisoned,
+//     cursed,
+//     possessed,
+//     blinded,
+//     charmed,
+//     changed,
+//     overloaded,
   float delta = 0.0f;
   if(creature->getStateMod(Constants::blessed)) {
     delta += (15.0f * rand()/RAND_MAX);
@@ -947,72 +994,15 @@ void Battle::hitWithItem() {
                true);
   }
 }
+*/
+void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {
+  if( damage > 0 ) {
 
-void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical, GLuint delay ) {
-  if(damage) {  
-
-    /* 
-      apply state_mods:
-      (Done here so it's used for spells too)
-      
-      blessed, 
-      empowered, 
-      enraged, 
-      ac_protected, 
-      magic_protected, 
-
-      drunk, 
-
-      poisoned, 
-      cursed, 
-      possessed, 
-      blinded, 
-      charmed, 
-      changed,
-      overloaded,
-    */
-    float delta = 0.0f;
-    if(creature->getStateMod(Constants::blessed)) {
-      delta += (10.0f * rand()/RAND_MAX);
-    }
-    if(creature->getStateMod(Constants::empowered)) {
-      delta += (10.0f * rand()/RAND_MAX) + 5;
-    }
-    if(creature->getStateMod(Constants::enraged)) {
-      delta += (10.0f * rand()/RAND_MAX) + 8;
-    }
-    if(creature->getStateMod(Constants::drunk)) {
-      delta += (14.0f * rand()/RAND_MAX) - 7;
-    }
-    if(creature->getStateMod(Constants::cursed)) {
-      delta -= ((10.0f * rand()/RAND_MAX) + 5);
-    }
-    if(creature->getStateMod(Constants::blinded)) {
-      delta -= (10.0f * rand()/RAND_MAX);
-    }
-    if(!magical && creature->getTargetCreature()->getStateMod(Constants::ac_protected)) {
-      delta -= (7.0f * rand()/RAND_MAX);
-    }
-    if(magical && creature->getTargetCreature()->getStateMod(Constants::magic_protected)) {
-      delta -= (7.0f * rand()/RAND_MAX);
-    }
-    if(creature->getTargetCreature()->getStateMod(Constants::blessed)) {
-      delta -= (5.0f * rand()/RAND_MAX);
-    }
-    if(creature->getTargetCreature()->getStateMod(Constants::cursed)) {
-      delta += (5.0f * rand()/RAND_MAX);
-    }
-    if(creature->getTargetCreature()->getStateMod(Constants::overloaded)) {
-      delta += (2.0f * rand()/RAND_MAX);
-    }
-    if(creature->getTargetCreature()->getStateMod(Constants::blinded)) {
-      delta += (2.0f * rand()/RAND_MAX);
-    }
-    int extra = (int)(((float)damage / 100.0f) * delta);
-
-    sprintf(message, "...and hits! for %d(%d) (max=%d) points of damage", damage, extra, maxDamage);
+    // also affects spell attacks
+    float delta = creature->getDefenderStateModPercent(magical);
+    float extra = ((float)damage / 100.0f) * delta;
+    sprintf(message, "...and hits for %.2f(%d) points of damage", damage, extra );
     session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-
     damage += extra;
 
     // play hit sound
@@ -1025,7 +1015,7 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical, GLu
     }
 
     // target creature death
-    if(creature->getTargetCreature()->takeDamage(damage, effect, delay)) {
+    if(creature->getTargetCreature()->takeDamage( toint( damage ), effect, delay)) {
       
       // only in RT mode... otherwise in TB mode character won't move
       if( !session->getPreferences()->isBattleTurnBased() )
@@ -1075,7 +1065,7 @@ void Battle::dealDamage(int damage, int maxDamage, int effect, bool magical, GLu
       }
     }
   } else {
-    sprintf(message, "...and hits! but causes no damage");
+    sprintf(message, "...and causes no damage");
     session->getMap()->addDescription(message);
   }
 }

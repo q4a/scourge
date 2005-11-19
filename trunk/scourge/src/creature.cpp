@@ -2009,10 +2009,9 @@ void Creature::calcArmor( float *armorP,
       Item *item = inventory[equipped[i]];
       if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
         armor += item->getRpgItem()->getAction()->getMod();
-        if( item->isMagicItem() ) {
-          armor += item->getBonus();
-        }
-        armorLevel += item->getLevel();
+        armorLevel += 
+          ( item->getLevel() + 
+            ( item->isMagicItem() ? item->getBonus() : 0 ) );
         armorCount++;
       }
     }
@@ -2026,11 +2025,15 @@ void Creature::calcArmor( float *armorP,
                       0.0f );
 }
 
+#define MAX_RANDOM_DAMAGE 2.0f
+
 float Creature::getAttackPercent( Item *weapon, 
-                                  float *totalP, 
+                                  float *maxP,
+                                  float *minP, 
                                   float *skillP,
                                   float *itemLevelP,
-                                  float *levelDiffP ) {
+                                  float *levelDiffP,
+                                  bool *adjustedForLowProficiency ) {
   float skill = 
     getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
               Constants::getSkillByName( "COORDINATION" ) :
@@ -2045,7 +2048,8 @@ float Creature::getAttackPercent( Item *weapon,
 
   float itemLevel = 
     ( ( weapon ?
-        weapon->getLevel() : 
+        weapon->getLevel() + 
+        ( weapon->isMagicItem() ? weapon->getBonus() : 0 ) : 
         getLevel() / 10.0f ) - 1 ) / ITEM_LEVEL_DIVISOR;
   if( itemLevel < 0 ) itemLevel = 0;
   if( itemLevelP ) *itemLevelP = itemLevel;
@@ -2056,17 +2060,157 @@ float Creature::getAttackPercent( Item *weapon,
       0 );
   if( levelDiffP ) *levelDiffP = levelDiff;
 
-  float total = 
+  float max = 
     ( weapon ? 
-      weapon->getRpgItem()->getAction()->roll() : 
-      HAND_ATTACK_DAMAGE.roll() ) +
+      weapon->getRpgItem()->getAction()->getMax() : 
+      HAND_ATTACK_DAMAGE.getMax() ) +
     itemLevel +
     levelDiff;
-  if( totalP ) *totalP = total;
+  max = ( ( max / 100.0f ) * skill );
 
-  // apply skill
-  total = ( ( total / 100.0f ) * skill );
+  float min = 
+    ( weapon ? 
+      weapon->getRpgItem()->getAction()->getMin() : 
+      HAND_ATTACK_DAMAGE.getMin() ) +
+    itemLevel +
+    levelDiff;
+  min = ( ( min / 100.0f ) * skill );
+  
+  // reporting
+  if( maxP ) *maxP = max;
+  if( minP ) *minP = min;
+                                                                 
+  float total;
+  if( max < MAX_RANDOM_DAMAGE ) {
+    // Special handling for very low proficiency: low random attacks
+    total = MAX_RANDOM_DAMAGE * rand() / RAND_MAX + min;
+    if( maxP ) *maxP = MAX_RANDOM_DAMAGE + min;
+    if( adjustedForLowProficiency ) *adjustedForLowProficiency = true;
+  } else {
+    total = 
+      ( weapon ? 
+        weapon->getRpgItem()->getAction()->roll() : 
+        HAND_ATTACK_DAMAGE.roll() ) +
+      itemLevel +
+      levelDiff;
+    // apply skill
+    total = ( ( total / 100.0f ) * skill );
+    if( adjustedForLowProficiency ) *adjustedForLowProficiency = false;
+  }
 
   return total;
 }
 
+/**
+ * Apply this to the damage caused to the defender.
+ */
+float Creature::getDefenderStateModPercent( bool magical ) {
+    /* 
+      apply state_mods:
+      (Done here so it's used for spells too)
+      
+      blessed, 
+      empowered, 
+      enraged, 
+      ac_protected, 
+      magic_protected, 
+
+      drunk, 
+
+      poisoned, 
+      cursed, 
+      possessed, 
+      blinded, 
+      charmed, 
+      changed,
+      overloaded,
+    */
+    float delta = 0.0f;
+    if(getStateMod(Constants::blessed)) {
+      delta += (10.0f * rand()/RAND_MAX);
+    }
+    if(getStateMod(Constants::empowered)) {
+      delta += (10.0f * rand()/RAND_MAX) + 5;
+    }
+    if(getStateMod(Constants::enraged)) {
+      delta += (10.0f * rand()/RAND_MAX) + 8;
+    }
+    if(getStateMod(Constants::drunk)) {
+      delta += (14.0f * rand()/RAND_MAX) - 7;
+    }
+    if(getStateMod(Constants::cursed)) {
+      delta -= ((10.0f * rand()/RAND_MAX) + 5);
+    }
+    if(getStateMod(Constants::blinded)) {
+      delta -= (10.0f * rand()/RAND_MAX);
+    }
+    if(!magical && getTargetCreature()->getStateMod(Constants::ac_protected)) {
+      delta -= (7.0f * rand()/RAND_MAX);
+    }
+    if(magical && getTargetCreature()->getStateMod(Constants::magic_protected)) {
+      delta -= (7.0f * rand()/RAND_MAX);
+    }
+    if(getTargetCreature()->getStateMod(Constants::blessed)) {
+      delta -= (5.0f * rand()/RAND_MAX);
+    }
+    if(getTargetCreature()->getStateMod(Constants::cursed)) {
+      delta += (5.0f * rand()/RAND_MAX);
+    }
+    if(getTargetCreature()->getStateMod(Constants::overloaded)) {
+      delta += (2.0f * rand()/RAND_MAX);
+    }
+    if(getTargetCreature()->getStateMod(Constants::blinded)) {
+      delta += (2.0f * rand()/RAND_MAX);
+    }
+    return delta;
+}
+
+/**
+ * Apply this to the attack roll.
+ */
+float Creature::getAttackerStateModPercent() {
+  /* 
+    apply state_mods:
+    blessed, 
+	  empowered, 
+  	enraged, 
+  	ac_protected, 
+  	magic_protected, 
+    
+  	drunk, 
+    
+  	poisoned, 
+  	cursed, 
+  	possessed, 
+  	blinded, 
+  	charmed, 
+  	changed,
+  	overloaded,
+  */
+  float delta = 0.0f;
+  if(getStateMod(Constants::blessed)) {
+    delta += (15.0f * rand()/RAND_MAX);
+  }
+  if(getStateMod(Constants::empowered)) {
+    delta += (15.0f * rand()/RAND_MAX) + 10;
+  }
+  if(getStateMod(Constants::enraged)) {
+    delta -= (10.0f * rand()/RAND_MAX);
+  }
+  if(getStateMod(Constants::drunk)) {
+    delta += (30.0f * rand()/RAND_MAX) - 15;
+  }
+  if(getStateMod(Constants::cursed)) {
+    delta -= ((15.0f * rand()/RAND_MAX) + 10);
+  }
+  if(getStateMod(Constants::blinded)) {
+    delta -= (15.0f * rand()/RAND_MAX);
+  }
+  if(getStateMod(Constants::overloaded)) {
+    delta -= (10.0f * rand()/RAND_MAX);
+  }
+  if(getStateMod(Constants::invisible)) {
+    delta += (5.0f * rand()/RAND_MAX) + 5;
+  }
+  return delta;
+}

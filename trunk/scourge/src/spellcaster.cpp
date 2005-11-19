@@ -267,15 +267,15 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
   Creature *creature = battle->getCreature();
 
   // roll for the spell damage
-  int damage = 0;
+  float damage = 0;
   for(int i = 0; i < creature->getLevel(); i++) {
-    damage += (int)((float)spell->getAction() * rand()/RAND_MAX);
+    damage += ((float)spell->getAction() * rand()/RAND_MAX);
   }
-  damage *= toint( mult );
+  damage *= mult;
 
   // check for resistance
   int resistance = creature->getTargetCreature()->getSkill(spell->getSchool()->getResistSkill());
-  damage -= (int)(((float)damage / 100.0f) * resistance);
+  damage -= (((float)damage / 100.0f) * resistance);
 
   char msg[200];
   sprintf(msg, "%s attacks %s with %s.", 
@@ -292,7 +292,7 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
 
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage( damage, 
-                      spell->getAction() * creature->getLevel(), 
+                      //spell->getAction() * creature->getLevel(), 
                       spell->getEffect(),
                       true, delay );
 }

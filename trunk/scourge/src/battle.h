@@ -106,7 +106,7 @@ class Battle {
   inline bool isEmpty() { return empty; }
   bool fightTurn();
 
-  void dealDamage(int damage, int maxDamage, int effect=Constants::EFFECT_GLOW, bool magical=false, GLuint delay=0 );
+  void dealDamage( float damage, int effect=Constants::EFFECT_GLOW, bool magical=false, GLuint delay=0 );
 
   inline Creature *getCreature() { return creature; }
   inline Session *getSession() { return session; }
@@ -124,6 +124,7 @@ class Battle {
   void launchProjectile();
   //void initTurn();
   void hitWithItem();
+  void prepareToHitMessage();
   void initItem(Item *item);
   
   void executeEatDrinkAction();
