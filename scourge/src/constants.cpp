@@ -176,6 +176,7 @@ PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
 char *Constants::SKILL_NAMES[ Constants::SKILL_COUNT ];
 char *Constants::SKILL_DESCRIPTION[ Constants::SKILL_COUNT ];
+map<string,int> Constants::skillNameMap;
 
 const char *Constants::POTION_SKILL_NAMES[] = {
   "HP", "MP", "AC" 
@@ -230,12 +231,29 @@ char *Constants::getMessage(int index) {
 }
 
 int Constants::getSkillByName(char *p) {
+  if( !p || !strlen(p) ) return -1;
+
+  if( !skillNameMap.size() ) {
+    for(int i = 0; i < SKILL_COUNT; i++) {
+      string s = SKILL_NAMES[i];
+      skillNameMap[ s ] = i;
+    }
+  }
+  string key = p;
+  if( skillNameMap.find( key ) == skillNameMap.end() ) {
+    cerr << "*** Warning: Can't find skill named: " << p << endl;
+    return -1;
+  }
+  return skillNameMap[ key ];
+
+  /*
   if(!p || !strlen(p)) return -1;
   for(int i = 0; i < SKILL_COUNT; i++) {
     if(!strcmp(p, SKILL_NAMES[i])) return i;
   }
   cerr << "*** Warning: Can't find skill named: " << p << endl;
   return -1;
+  */
 }
 
 int Constants::getRandomBasicSkill() {

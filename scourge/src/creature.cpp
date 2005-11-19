@@ -2214,3 +2214,9 @@ float Creature::getAttackerStateModPercent() {
   }
   return delta;
 }
+
+float Creature::rollMagicDamagePercent( Item *item ) {
+  float itemLevel = ( item->getLevel() - 1 ) / ITEM_LEVEL_DIVISOR;
+  return item->rollMagicDamage() + itemLevel;
+}
+

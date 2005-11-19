@@ -124,6 +124,10 @@ class Battle {
   void launchProjectile();
   //void initTurn();
   void hitWithItem();
+  float applyMagicItemSpellDamage();
+  void applyMagicItemDamage( float *damage );
+  void applyHighAttackRoll( float *damage, float attack, float min, float max );
+  bool handleLowAttackRoll( float attack, float min, float max );
   void prepareToHitMessage();
   void initItem(Item *item);
   

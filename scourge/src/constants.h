@@ -495,6 +495,7 @@ public:
   };
   static char *SKILL_NAMES[];
   static char *SKILL_DESCRIPTION[];
+  static std::map<std::string,int> skillNameMap;
   static int getSkillByName(char *p);
   static int getRandomBasicSkill();
 
