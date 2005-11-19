@@ -42,6 +42,8 @@ public:
     n += mod;
     return(int)n;
   }
+  inline int getMax() { return count * sides + mod; }
+  inline int getMin() { return count + mod; }
   inline int getCount() { return count; }
   inline int getSides() { return sides; }
   inline int getMod() { return mod; }

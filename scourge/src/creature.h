@@ -441,10 +441,14 @@ class Creature : public RenderedCreature {
   void calcArmor( float *armorP, 
                   float *avgArmorLevelP );
   float getAttackPercent( Item *weapon, 
-                          float *totalP=NULL, 
+                          float *maxP=NULL, 
+                          float *minP=NULL, 
                           float *skillP=NULL,
                           float *itemLevelP=NULL,
-                          float *levelDiffP=NULL );
+                          float *levelDiffP=NULL,
+                          bool *adjustedForLowProficiency=NULL );
+  float getAttackerStateModPercent();
+  float getDefenderStateModPercent( bool magical );
 
  protected:
 
