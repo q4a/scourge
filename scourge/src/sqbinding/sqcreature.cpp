@@ -43,8 +43,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "int", "getSkillByName", SqCreature::_getSkillByName, SQ_MATCHTYPEMASKSTRING, "xs", "Same as getSkill() but instead of an index, the skill is referenced by name. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
   { "int", "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value if the state-mod is in effect for this character. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
   { "int", "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value indicating if the character is protected from the given state mod. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
-  { "int", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn.)" },
-  { "int", "getSkillModifiedArmor", SqCreature::_getSkillModifiedArmor, 0, 0, "Return the armor value (armor worn) as modified by the appropriate skills." },
+  { "float", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn modified by skills.)" },  
 
   { "void", "setLevel", SqCreature::_setLevel, SQ_MATCHTYPEMASKSTRING, "xn", "" },
   { "void", "setExp", SqCreature::_setExp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
@@ -196,13 +195,7 @@ int SqCreature::_getProtectedStateMod( HSQUIRRELVM vm ) {
 
 int SqCreature::_getArmor( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getStateMod( 0 ) ) );
-  return 1;
-}
-
-int SqCreature::_getSkillModifiedArmor( HSQUIRRELVM vm ) {
-  GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getSkillModifiedArmor() ) );
+  sq_pushfloat( vm, _SC( object->getACPercent() ) );
   return 1;
 }
 

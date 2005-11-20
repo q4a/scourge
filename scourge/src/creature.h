@@ -107,8 +107,10 @@ class Creature : public RenderedCreature {
   char description[300];
   GLint lastTick;
   int speed;
-  int armor, bonusArmor;
-  float avgArmorLevel;
+  float armor;
+  int bonusArmor;
+  bool armorChanged;
+  float lastArmor, lastArmorLevel, lastArmorSkill;
   int moveRetrycount;
   int availableSkillPoints;
   int usedSkillPoints;
@@ -348,20 +350,7 @@ class Creature : public RenderedCreature {
   // return the initiative for a battle round (0-10), the lower the faster the attack
   // the method can return negative numbers if the weapon skill is very high (-10 to 10)
   int getInitiative(Item *weapon, Spell *spell=NULL);
-
-  // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
-  //int getToHit(Item *weapon, int *maxToHit=NULL, int *rolledToHit=NULL);
-
-  // get the armor value of the creature (0-100) (this is the max armor)
-  inline int getArmor() { return armor; }
-
-  // get the armor as modified by each item's assc. skill
-  int getSkillModifiedArmor();
   
-  // return the damage as:
-  // rand(weapon + power + (skill - 50 % weapon))
-  //int getDamage(Item *weapon, int *maxDamage=NULL, int *rolledDamage=NULL);
-
   // take damage
   // return true if the creature dies
   bool takeDamage( float damage, int effect_type = Constants::EFFECT_GLOW, GLuint delay=0 );

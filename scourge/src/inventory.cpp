@@ -367,7 +367,9 @@ void Inventory::drawWidgetContents(Widget *w) {
     scourge->getSDLHandler()->texPrint(5, y + 15, s);
     sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
     scourge->getSDLHandler()->texPrint(5, y + 30, s);
-    sprintf(s, "AC: %d (%d)", p->getSkillModifiedArmor(), p->getArmor());
+    float totalArmor, skilledArmor;
+    skilledArmor = p->getACPercent( &totalArmor );
+    sprintf(s, "AC: %.2f (%.2f)", skilledArmor, totalArmor );
     scourge->getSDLHandler()->texPrint(5, y + 45, s);
     sprintf(s, "Thirst: %d (10)", p->getThirst());
     scourge->getSDLHandler()->texPrint(5, y + 60, s);
@@ -377,7 +379,7 @@ void Inventory::drawWidgetContents(Widget *w) {
     Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false, theme );
     Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp(), -1, -1, -1, true, theme );
     Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false, theme );
-    Util::drawBar( 160, y + 42, 120, (float)p->getSkillModifiedArmor(), (float)p->getArmor(), 0.45f, 0.65f, 1.0f, false, theme );
+    Util::drawBar( 160, y + 42, 120, skilledArmor, totalArmor, 0.45f, 0.65f, 1.0f, false, theme );
     Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
     Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
   }
