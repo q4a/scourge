@@ -63,7 +63,7 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->speed = 5; // start neutral speed
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
   this->armor=0;
-  this->avgArmorLevel = 0;
+  this->armorChanged = true;
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
@@ -84,7 +84,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool load
   this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
-  this->avgArmorLevel = 0;
+  this->armorChanged = true;
   this->bonusArmor=0;
   this->shape = shape;
   this->loaded = loaded;
@@ -96,6 +96,7 @@ void Creature::commonInit() {
 
   ((MD2Shape*)shape)->setCreatureSpeed( speed );
 
+  lastArmor = lastArmorLevel = lastArmorSkill = 0;
   for( int i = 0; i < 12; i++ ) quickSpell[ i ] = NULL;
   this->lastMove = 0;
   this->moveCount = 0;
@@ -194,9 +195,9 @@ CreatureInfo *Creature::save() {
   info->dir = dir;
   info->speed = speed;
   info->motion = motion;
-  info->armor = armor;
+  info->armor = 0;
   info->bonusArmor = bonusArmor;
-  info->bonusArmor = 0;
+  //info->bonusArmor = 0;
   info->thirst = thirst;
   info->hunger = hunger;
   info->availableSkillPoints = availableSkillPoints;
@@ -1140,6 +1141,8 @@ Item *Creature::getItemAtLocation(int location) {
 
 // calculate the aggregate values based on equipped items
 void Creature::recalcAggregateValues() {
+  armorChanged = true;
+  /*
   // calculate the armor (0-100, 100-total protection)
   armor = (monster ? monster->getBaseArmor() : 0);
   int armorLevel=0, armorCount=0;
@@ -1155,6 +1158,7 @@ void Creature::recalcAggregateValues() {
   }
   armor += bonusArmor;
   avgArmorLevel = ( !armorCount ? 0 : (float)armorLevel / (float)armorCount );
+  */
 }
 
 Item *Creature::getBestWeapon(float dist) {
@@ -1207,69 +1211,6 @@ int Creature::getMaxProjectileCount(Item *item) {
   return n;
 }
 
-/*
-// roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
-int Creature::getToHit(Item *weapon, int *maxToHit, int *rolledToHit) {
-  float tohit = getSkill(Constants::COORDINATION) + getSkill(Constants::LUCK) / 2;
-  if(weapon && weapon->getRpgItem()->getSkill() > -1) {
-    tohit += getSkill(weapon->getRpgItem()->getSkill());
-  } else {
-    tohit += getSkill(Constants::HAND_TO_HAND_COMBAT);
-  }
-  // so far the max score is 250
-
-  // add item's level
-  tohit += ( ( weapon ? weapon->getLevel() : getLevel() ) * 2.5f );
-
-  if(maxToHit) *maxToHit = (int)(tohit / 2.5f);
-
-  // roll it
-  float score = (tohit * rand()/RAND_MAX);
-  
-  // convert to 0-100 value
-  int ret = (int)(score / 2.5f);
-  
-  if(rolledToHit) *rolledToHit = ret;
-  return ret;
-}
-
-// return the damage as:
-int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
-  float damage = 0.0f;
-  // get the base damage
-  float baseDamage = (weapon ? weapon->getRpgItem()->getAction()->roll() : 
-                      (getSkill(Constants::POWER) / 10));
-  damage = baseDamage;
-
-  // add the level of the weapon
-  damage += ( weapon ? weapon->getLevel() : getLevel() );
-
-  // add strength proficiency (10% of strength=0-10 pts)
-  damage += (float)getSkill(Constants::POWER) / 10.0f;
-
-  float skill = (weapon && weapon->getRpgItem()->getSkill() > -1 ?
-                 getSkill(weapon->getRpgItem()->getSkill()) :
-                 getSkill(Constants::HAND_TO_HAND_COMBAT));
-  
-  // add 50% of value, more via skill proficiency
-  if(skill > 50.0f) {
-    damage += (damage * ((skill - 50) / 100.0f) );
-  }
-
-  // apply any attack enhancing capabilities
-  damage += applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
-                                         "damage",
-                                         damage );  
-
-  if(maxDamage) *maxDamage = (int)damage;
-
-  // return the 70% of value + 30% random
-  int ret = (int)((damage * .7) + ((damage * 0.3) * rand()/RAND_MAX));
-
-  if(rolledDamage) *rolledDamage = ret;
-  return ret;
-}
-*/
 /**
  take some damage
 */
@@ -1298,6 +1239,7 @@ bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
    Get the total value of armor worn and roll for the skill of each piece.
    Monsters' base armor is not rolled (ie. they're experts in using their natural armor.)
  */
+/*
 int Creature::getSkillModifiedArmor() {
   // calculate the armor (0-100, 100-total protection)
   int armor = (monster ? monster->getBaseArmor() : 0);
@@ -1324,6 +1266,7 @@ int Creature::getSkillModifiedArmor() {
   }
   return armor;
 }
+*/
 
 // add exp after killing a creature
 // only called for characters
@@ -1584,7 +1527,7 @@ bool Creature::isWithPrereq( Spell *spell ) {
               true : 
               false );
     case Constants::AC:
-      return( getSkillModifiedArmor() < 10 ? true : false ); // fixme...
+      return( getACPercent() < 10 ? true : false ); // fixme...
     default: return false;
     }
   } else {
@@ -1782,12 +1725,12 @@ GLfloat Creature::getStep() {
 }
 
 void Creature::getDetailedDescription(char *s) {
-  sprintf(s, "%s (L:%d Hp:%d M:%d A:%d)%s", 
+  sprintf(s, "%s (L:%d Hp:%d M:%d A:%.2f)%s", 
           getDescription(), 
           getLevel(),
           getHp(),
           getMp(),
-          getArmor(),
+          getACPercent(),
           (session->getCurrentMission() && 
            session->getCurrentMission()->isMissionCreature( this ) ? 
            " *Mission*" : "" ) );
@@ -1979,57 +1922,68 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 #define HAND_ATTACK_DAMAGE Dice(1,8,0)
 
 float Creature::getACPercent( float *totalP, float *skillP ) {
-
-  float armor, avgArmorLevel, avgArmorSkill;
-  calcArmor( &armor, &avgArmorLevel, &avgArmorSkill );               
+  float ac, avgArmorLevel, avgArmorSkill;
+  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill );               
+    
   if( skillP ) *skillP = avgArmorSkill;
-
+  
   float itemLevel = ( avgArmorLevel - 1 ) / ITEM_LEVEL_DIVISOR;
   if( itemLevel < 0 ) itemLevel = 0;
-
-  float ac = ( armor + itemLevel );
-  if( totalP ) *totalP = ac;
-
+  
+  armor = ( ac + itemLevel );
+  if( totalP ) *totalP = armor;
+  
   // apply the skill
-  ac = ( ( ac / 100.0f ) * avgArmorSkill );
-
-  return ac;
+  armor = ( ( armor / 100.0f ) * avgArmorSkill );
+    
+  return armor;
 }
 
 void Creature::calcArmor( float *armorP, 
                           float *avgArmorLevelP,
                           float *avgArmorSkillP ) {
-  float armor = (monster ? monster->getBaseArmor() : 0);
-  int armorLevel=0, armorCount=0;
-  int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
-  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-    if( equipped[i] != MAX_INVENTORY_SIZE ) {
-      Item *item = inventory[equipped[i]];
-      if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
-        armor += item->getRpgItem()->getAction()->getMod();
-        armorLevel += 
-          ( item->getLevel() + 
-            ( item->isMagicItem() ? item->getBonus() : 0 ) );
-        armorSkill += 
-          ( item->getRpgItem()->getSkill() > -1 ? 
-            item->getRpgItem()->getSkill() :
-            Constants::getSkillByName( "HAND_DEFEND" ) );
-        armorCount++;
+  if( !armorChanged ) {
+    *armorP = lastArmor;
+    *avgArmorLevelP = lastArmorLevel;
+    *avgArmorSkillP = lastArmorSkill;
+  } else {
+    float armor = (monster ? monster->getBaseArmor() : 0);
+    int armorLevel=0, armorCount=0;
+    int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
+    for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+      if( equipped[i] != MAX_INVENTORY_SIZE ) {
+        Item *item = inventory[equipped[i]];
+        if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
+          armor += item->getRpgItem()->getAction()->getMod();
+          armorLevel += 
+            ( item->getLevel() + 
+              ( item->isMagicItem() ? item->getBonus() : 0 ) );
+          armorSkill += 
+            ( item->getRpgItem()->getSkill() > -1 ? 
+              item->getRpgItem()->getSkill() :
+              Constants::getSkillByName( "HAND_DEFEND" ) );
+          armorCount++;
+        }
       }
     }
-  }
-  armor += bonusArmor;
+    armor += bonusArmor;
+    
+    // return results
+    *armorP = armor;
+    *avgArmorLevelP = ( armorCount > 0 ? 
+                        (float)armorLevel / (float)armorCount :
+                        0.0f );
+    *avgArmorSkillP = ( armorCount > 0 ? 
+                        (float)armorSkill / (float)armorCount :
+                        (float)armorSkill );
+    (*avgArmorSkillP) += 
+      ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
 
-  // return results
-  *armorP = armor;
-  *avgArmorLevelP = ( armorCount > 0 ? 
-                      (float)armorLevel / (float)armorCount :
-                      0.0f );
-  *avgArmorSkillP = ( armorCount > 0 ? 
-                      (float)armorSkill / (float)armorCount :
-                      (float)armorSkill );
-  (*avgArmorSkillP) += 
-    ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+    lastArmor = *armorP;
+    lastArmorLevel = *avgArmorLevelP;
+    lastArmorSkill = *avgArmorSkillP;
+    armorChanged = false;
+  }
 }
 
 #define MAX_RANDOM_DAMAGE 2.0f
