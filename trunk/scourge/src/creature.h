@@ -350,7 +350,7 @@ class Creature : public RenderedCreature {
   int getInitiative(Item *weapon, Spell *spell=NULL);
 
   // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
-  int getToHit(Item *weapon, int *maxToHit=NULL, int *rolledToHit=NULL);
+  //int getToHit(Item *weapon, int *maxToHit=NULL, int *rolledToHit=NULL);
 
   // get the armor value of the creature (0-100) (this is the max armor)
   inline int getArmor() { return armor; }
@@ -360,11 +360,11 @@ class Creature : public RenderedCreature {
   
   // return the damage as:
   // rand(weapon + power + (skill - 50 % weapon))
-  int getDamage(Item *weapon, int *maxDamage=NULL, int *rolledDamage=NULL);
+  //int getDamage(Item *weapon, int *maxDamage=NULL, int *rolledDamage=NULL);
 
   // take damage
   // return true if the creature dies
-  bool takeDamage( int damage, int effect_type = Constants::EFFECT_GLOW, GLuint delay=0 );
+  bool takeDamage( float damage, int effect_type = Constants::EFFECT_GLOW, GLuint delay=0 );
 
   // returns exp gained
   int addExperience(Creature *creature_killed);
@@ -439,7 +439,8 @@ class Creature : public RenderedCreature {
   // new Christie-style battle system
   float getACPercent( float *totalP=NULL, float *skillP=NULL );
   void calcArmor( float *armorP, 
-                  float *avgArmorLevelP );
+                  float *avgArmorLevelP,
+                  float *avgArmorSkillP );
   float getAttackPercent( Item *weapon, 
                           float *maxP=NULL, 
                           float *minP=NULL, 

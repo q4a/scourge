@@ -1158,12 +1158,19 @@ void Creature::recalcAggregateValues() {
 }
 
 Item *Creature::getBestWeapon(float dist) {
-  Item *item = getItemAtLocation(Constants::INVENTORY_RIGHT_HAND);
-  if(item && item->getDistance() >= dist) return item;
-  item = getItemAtLocation(Constants::INVENTORY_LEFT_HAND);
-  if(item && item->getDistance() >= dist) return item;
-  item = getItemAtLocation(Constants::INVENTORY_WEAPON_RANGED);
-  if(item && item->getDistance() >= dist) return item;
+  int location[] = { 
+    Constants::INVENTORY_RIGHT_HAND,
+    Constants::INVENTORY_LEFT_HAND,
+    Constants::INVENTORY_WEAPON_RANGED,
+    -1
+  };
+  for( int i = 0; location[i] > -1; i++ ) {
+    Item *item = getItemAtLocation( location[i] );
+    if(item && 
+       item->getRpgItem()->isWeapon() && 
+       item->getDistance() >= dist) 
+      return item;
+  }
   return NULL;
 }
 
@@ -1200,6 +1207,7 @@ int Creature::getMaxProjectileCount(Item *item) {
   return n;
 }
 
+/*
 // roll the die for the toHit number. returns a value between 0(total miss) - 100(best hit)
 int Creature::getToHit(Item *weapon, int *maxToHit, int *rolledToHit) {
   float tohit = getSkill(Constants::COORDINATION) + getSkill(Constants::LUCK) / 2;
@@ -1261,20 +1269,18 @@ int Creature::getDamage(Item *weapon, int *maxDamage, int *rolledDamage) {
   if(rolledDamage) *rolledDamage = ret;
   return ret;
 }
-
+*/
 /**
  take some damage
 */
-bool Creature::takeDamage( int damage, int effect_type, GLuint delay ) {
+bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
 
   // apply any attack enhancing capabilities
-  float d = (float)damage;
-  d += applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DEFENSE,
-                                    "damage",
-                                    d );
-  damage = (int)d;
+  damage += applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DEFENSE,
+                                         "damage",
+                                         damage );
 
-  hp -= damage;
+  hp -= toint( damage );
   // if creature dies start effect at its location
   if(hp > 0) {
     startEffect(effect_type);
@@ -1974,19 +1980,9 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 
 float Creature::getACPercent( float *totalP, float *skillP ) {
 
-  float armor, avgArmorLevel;
-  calcArmor( &armor, &avgArmorLevel );
-               
-  int count = 1;
-  float skill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
-  if( armor > 0 ) {
-    skill += getSkill( Constants::getSkillByName( "ARMOR_DEFEND" ) );
-    count++;
-  }
-  skill /= (float)count;
-
-  skill += ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
-  if( skillP ) *skillP = skill;
+  float armor, avgArmorLevel, avgArmorSkill;
+  calcArmor( &armor, &avgArmorLevel, &avgArmorSkill );               
+  if( skillP ) *skillP = avgArmorSkill;
 
   float itemLevel = ( avgArmorLevel - 1 ) / ITEM_LEVEL_DIVISOR;
   if( itemLevel < 0 ) itemLevel = 0;
@@ -1995,15 +1991,17 @@ float Creature::getACPercent( float *totalP, float *skillP ) {
   if( totalP ) *totalP = ac;
 
   // apply the skill
-  ac = ( ( ac / 100.0f ) * skill );
+  ac = ( ( ac / 100.0f ) * avgArmorSkill );
 
   return ac;
 }
 
 void Creature::calcArmor( float *armorP, 
-                          float *avgArmorLevelP ) {
+                          float *avgArmorLevelP,
+                          float *avgArmorSkillP ) {
   float armor = (monster ? monster->getBaseArmor() : 0);
   int armorLevel=0, armorCount=0;
+  int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if( equipped[i] != MAX_INVENTORY_SIZE ) {
       Item *item = inventory[equipped[i]];
@@ -2012,6 +2010,10 @@ void Creature::calcArmor( float *armorP,
         armorLevel += 
           ( item->getLevel() + 
             ( item->isMagicItem() ? item->getBonus() : 0 ) );
+        armorSkill += 
+          ( item->getRpgItem()->getSkill() > -1 ? 
+            item->getRpgItem()->getSkill() :
+            Constants::getSkillByName( "HAND_DEFEND" ) );
         armorCount++;
       }
     }
@@ -2023,6 +2025,11 @@ void Creature::calcArmor( float *armorP,
   *avgArmorLevelP = ( armorCount > 0 ? 
                       (float)armorLevel / (float)armorCount :
                       0.0f );
+  *avgArmorSkillP = ( armorCount > 0 ? 
+                      (float)armorSkill / (float)armorCount :
+                      (float)armorSkill );
+  (*avgArmorSkillP) += 
+    ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
 }
 
 #define MAX_RANDOM_DAMAGE 2.0f

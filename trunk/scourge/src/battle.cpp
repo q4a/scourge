@@ -1056,6 +1056,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
   }
 }
 
+/*
 void Battle::initItem(Item *item) {
   this->item = item;
 
@@ -1066,6 +1067,7 @@ void Battle::initItem(Item *item) {
 
   creatureInitiative = creature->getInitiative(item);
 }
+*/
 
 void Battle::executeEatDrinkAction() {
   // is it still in the inventory?
