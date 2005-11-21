@@ -443,6 +443,7 @@ class Creature : public RenderedCreature {
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );
   float getMaxAP();
+  char *canEquipItem( Item *item, bool interactive = true );
 
  protected:
 

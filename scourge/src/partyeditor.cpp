@@ -212,8 +212,9 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   cards->addWidget( info->name, n );
 
   // deity
+  int deityHeight = 100;
   cards->createLabel( 30, 80, "Chosen Deity:", n, Constants::RED_COLOR );
-  info->deityType = new ScrollingList( 30, 90, 150, 150, scourge->getShapePalette()->getHighlightTexture() );
+  info->deityType = new ScrollingList( 30, 90, 150, deityHeight, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->deityType, n );
   info->deityTypeStr = (char**)malloc( MagicSchool::getMagicSchoolCount() * sizeof(char*));
   for(int i = 0; i < MagicSchool::getMagicSchoolCount(); i++) {
@@ -224,13 +225,15 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
   info->deityType->setSelectedLine( deityIndex );
 
-  info->deityTypeDescription = new ScrollingLabel( 190, 90, col2X - 10 - 190, 150, 
+  info->deityTypeDescription = new ScrollingLabel( 190, 90, col2X - 10 - 190, deityHeight, 
                                                    MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
   cards->addWidget( info->deityTypeDescription, n );
   
   // character type
-  cards->createLabel( 30, 260, "Character Type:", n, Constants::RED_COLOR );
-  info->charType = new ScrollingList( 30, 270, 150, 170, scourge->getShapePalette()->getHighlightTexture() );
+  int charTypeHeight = 150;
+  int charTypeY = 110 + deityHeight;
+  cards->createLabel( 30, charTypeY, "Character Type:", n, Constants::RED_COLOR );
+  info->charType = new ScrollingList( 30, charTypeY + 10, 150, charTypeHeight, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->charType, n );
   info->charTypeStr = (char**)malloc( Character::character_list.size() * sizeof(char*));
   for(int i = 0; i < (int)Character::character_list.size(); i++) {
@@ -240,7 +243,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->charType->setLines( (int)Character::character_list.size(), (const char**)info->charTypeStr );
   int charIndex = (int)( (float)( Character::character_list.size() ) * rand()/RAND_MAX );
   info->charType->setSelectedLine( charIndex );
-  info->charTypeDescription = new ScrollingLabel( 190, 270, col2X - 10 - 190, 170, 
+  info->charTypeDescription = new ScrollingLabel( 190, charTypeY + 10, col2X - 10 - 190, charTypeHeight, 
                                                   Character::character_list[charIndex]->getDescription() );
   cards->addWidget( info->charTypeDescription, n );
 

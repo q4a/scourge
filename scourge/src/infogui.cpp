@@ -23,6 +23,20 @@
 
 using namespace std;
 
+typedef struct _ColorMark {
+  char c;
+  Color color;
+} ColorMark;
+
+ColorMark colors[] = {
+  { '%', Color( 1, 0, 0 ) },
+  { '^', Color( 0, 1, 0 ) },
+  { '&', Color( 0, 1, 1 ) },
+
+  { 0, Color( 0, 0, 0 ) }
+};
+
+
 InfoGui::InfoGui(Scourge *scourge) {
   this->scourge = scourge;
 
@@ -52,6 +66,9 @@ InfoGui::InfoGui(Scourge *scourge) {
   win->createLabel(10, 80, "Detailed Description:", Constants::RED_COLOR);
   strcpy(description, "");
   label = new ScrollingLabel( 10, 95, width - 20, by - 105, description );
+  for( int i = 0; colors[i].c; i++ ) {
+    label->addColoring( colors[i].c, colors[i].color );
+  }
   win->addWidget(label);
 }
 
@@ -160,18 +177,27 @@ void InfoGui::describe() {
   }
   
   if( item->getRpgItem()->isWeapon() ) {
-    sprintf( tmp, "Attacks per round (APR) for each player:.|(" );
+    sprintf( tmp, "Attack Info for each player:.|" );
     strcat( description, tmp );
+    float max, min;
     for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
-      sprintf( tmp, "%.2f%s",  
-               scourge->getSession()->getParty()->
-               getParty(i)->getAttacksPerRound( item ),
-               (i < scourge->getSession()->getParty()->getPartySize() - 1 ? 
-                ", " : "" ) );
+      char *err = 
+        ( scourge->getSession()->getParty()->getParty( i )->isEquipped(item) ? 
+          NULL :
+          scourge->getSession()->getParty()->getParty( i )->
+          canEquipItem( item, false ) );
+      if( !err ) {
+        scourge->getSession()->getParty()->getParty( i )->
+          getAttackPercent( item, &max, &min );
+        sprintf( tmp, "#%d ^ATK: %.2f - %.2f (%.2f APR)|", 
+                 ( i + 1 ), min, max, 
+                 scourge->getSession()->getParty()->getParty( i )->
+                 getAttacksPerRound( item ) );
+      } else {
+        sprintf( tmp, "#%d %%ATK: %s|", ( i + 1 ), err );
+      }
       strcat( description, tmp );
     }
-    sprintf( tmp, ")|" );
-    strcat( description, tmp );
   }
 
 
