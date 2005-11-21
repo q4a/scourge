@@ -2189,3 +2189,58 @@ float Creature::getAttacksPerRound( Item *item ) {
   return( getMaxAP() / (float)( Battle::getWeaponSpeed( item ) ) );
 }
 
+char *Creature::canEquipItem( Item *item, bool interactive ) {
+  Character *character = getCharacter();
+  if( character ) {
+/*
+cerr << "RA=" << Character::getCharacterIndexByShortName("RA") <<
+  " KN=" << Character::getCharacterIndexByShortName("KN") <<
+  " TI=" << Character::getCharacterIndexByShortName("TI") << 
+  " AS=" << Character::getCharacterIndexByShortName("AS") << 
+  " AR=" << Character::getCharacterIndexByShortName("AR") << 
+  " LO=" << Character::getCharacterIndexByShortName("LO") << 
+  " CO=" << Character::getCharacterIndexByShortName("CO") << 
+  " SU=" << Character::getCharacterIndexByShortName("SU") << 
+  " NA=" << Character::getCharacterIndexByShortName("NA") << 
+  " MO=" << Character::getCharacterIndexByShortName("MO") << 
+  " this=" << character->getShortName() << "=" << Character::getCharacterIndexByShortName(character->getShortName()) <<
+  " item=" << item->getRpgItem()->getName() << 
+  " acl=" << item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName())) << 
+  " all acl=" << item->getRpgItem()->getAllAcl() << endl;
+*/
+
+    if(!item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName()))) {
+      //scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_ACL_VIOLATION));
+      //scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+      return Constants::getMessage(Constants::ITEM_ACL_VIOLATION);
+    }
+    if( item->getLevel() > getLevel() ) {
+      //scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_LEVEL_VIOLATION));
+      //scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+      return Constants::getMessage(Constants::ITEM_LEVEL_VIOLATION);
+    }
+  }
+
+  // two handed weapon violations
+  if( item->getRpgItem()->getEquip() & Constants::INVENTORY_LEFT_HAND ||
+      item->getRpgItem()->getEquip() & Constants::INVENTORY_RIGHT_HAND ) {
+    Item *leftHandWeapon = getItemAtLocation( Constants::INVENTORY_LEFT_HAND );
+    Item *rightHandWeapon = getItemAtLocation( Constants::INVENTORY_RIGHT_HAND );
+    bool bothHandsFree = !( leftHandWeapon || rightHandWeapon );
+    bool holdsTwoHandedWeapon =
+      ( ( leftHandWeapon && leftHandWeapon->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) ||
+        ( rightHandWeapon && rightHandWeapon->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) );
+
+    if( holdsTwoHandedWeapon ||
+        ( !bothHandsFree && 
+          item->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) ) {
+      if( interactive ) {
+        //scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_TWO_HANDED_VIOLATION));
+        //scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+      }
+      return Constants::getMessage(Constants::ITEM_TWO_HANDED_VIOLATION);
+    }
+  }
+  return NULL;
+}
+
