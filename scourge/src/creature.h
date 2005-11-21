@@ -327,7 +327,8 @@ class Creature : public RenderedCreature {
   inline bool getProtectedStateMod(int mod) { return (protStateMod & (1 << mod) ? true : false); }  
 
   inline void setName(char *s) { name = s; }
-  inline void setCharacter(Character *c) { character = c; }  
+  inline void replaceName( char *s ) { free( name ); name = s; }
+  void setCharacter(Character *c);
   inline void setLevel(int n) { level = n; }
   void setExp();
   inline void setExp(int n) { exp = n; }

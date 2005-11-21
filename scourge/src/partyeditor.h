@@ -21,7 +21,7 @@
 #include <string.h>
 #include "constants.h"
 #include "gui/widgetview.h"
-
+                         
 /**
   *@author Gabor Torok
   */
