@@ -21,6 +21,20 @@
 #include "item.h"
 #include "creature.h"
 #include "specialskill.h"
+#include "characterinfo.h"
+#include "sdlhandler.h"
+#include "sdleventhandler.h"
+#include "sdlscreenview.h"
+#include "scourge.h"
+#include "userconfiguration.h"
+#include "util.h"
+#include "gui/window.h"
+#include "gui/button.h"
+#include "gui/canvas.h"
+#include "gui/scrollinglist.h"
+#include "gui/cardcontainer.h"
+#include "gui/scrollinglabel.h"
+#include "shapepalette.h"
 
 using namespace std;
 
@@ -32,6 +46,9 @@ using namespace std;
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
 #define LEVEL 1
+
+// this is here to compile faster (otherwise shapepalette needs to be incl.)
+std::map<CharacterModelInfo*, GLShape*> shapes;
 
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
@@ -68,8 +85,17 @@ PartyEditor::PartyEditor(Scourge *scourge) {
                                  "Ready to exterminate", INTRO_TEXT );
 
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
+    tmp[ i ] = NULL;
     createCharUI( 1 + i, &( info[ i ] ) );
   }
+  createParty( (Creature**)tmp, NULL, false );
+  for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
+    info[i].detailsInfo->setCreature( mainWin, tmp[i] );
+    cerr << "i=" << i << " inventory count=" << tmp[i]->getInventoryCount() << endl;
+    if( tmp[i]->getInventoryCount() ) 
+      cerr << "\titem=" << tmp[i]->getInventory(0)->getRpgItem()->getName() << endl;
+  }
+  saveUI( (Creature**)tmp );
 
   toLastChar = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
                                     w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
@@ -85,6 +111,12 @@ PartyEditor::PartyEditor(Scourge *scourge) {
 }
 
 PartyEditor::~PartyEditor() {
+  for( int i = 0; i < 4; i++ ) {
+    if( tmp[ i ] ) {
+      delete tmp[ i ];
+      tmp[ i ] = NULL;
+    }
+  }
   deleteLoadedShapes();
 }
 
@@ -130,6 +162,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
             info[i].charTypeDescription->setText( character->getDescription() );
             rollSkills( &( info[ i ] ) );
             updateUI( &( info[ i ] ) );
+            saveUI( (Creature**)tmp );
           }
         } 
       } else if( widget == info[i].deityType ) {
@@ -137,26 +170,32 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
         if( index > -1 ) {
           MagicSchool *school = MagicSchool::getMagicSchool( index );
           if( school ) info[i].deityTypeDescription->setText( school->getDeityDescription() );
+          saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].prevPortrait ) {
         if( info[i].portraitIndex > 0 ) {
           info[i].portraitIndex--;
+          saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].nextPortrait ) {
         if( info[i].portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
           info[i].portraitIndex++;
+          saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].prevModel ) {
         if( info[i].modelIndex > 0 ) {
           info[i].modelIndex--;
+          saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].nextModel ) {
         if( info[i].modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
           info[i].modelIndex++;
+          saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].skillRerollButton ) {
         rollSkills( &( info[ i ] ) );
         updateUI( &( info[ i ] ) );
+        saveUI( (Creature**)tmp );
       } else if( widget == info[i].skillAddButton && info[i].availableSkillMod ) {
         int n = info[i].skills->getSelectedLine();
         Character *c = Character::character_list[ info->charType->getSelectedLine() ];
@@ -168,6 +207,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
           info[ i ].availableSkillMod--;
           info[ i ].skillMod[ n ]++;
           updateUI( &( info[ i ] ) );
+          saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].skillSubButton && info[i].availableSkillMod < AVAILABLE_SKILL_POINTS ) {
         int n = info[i].skills->getSelectedLine();
@@ -181,6 +221,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
           info[ i ].availableSkillMod++;
           info[ i ].skillMod[ n ]--;
           updateUI( &( info[ i ] ) );
+          saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].skills ) {
         info[i].skillDescription->setText( Constants::SKILL_DESCRIPTION[ info[i].skills->getSelectedLine() ] );
@@ -212,7 +253,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   cards->addWidget( info->name, n );
 
   // deity
-  int deityHeight = 100;
+  int deityHeight = 80;
   cards->createLabel( 30, 80, "Chosen Deity:", n, Constants::RED_COLOR );
   info->deityType = new ScrollingList( 30, 90, 150, deityHeight, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->deityType, n );
@@ -230,7 +271,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   cards->addWidget( info->deityTypeDescription, n );
   
   // character type
-  int charTypeHeight = 150;
+  int charTypeHeight = 120;
   int charTypeY = 110 + deityHeight;
   cards->createLabel( 30, charTypeY, "Character Type:", n, Constants::RED_COLOR );
   info->charType = new ScrollingList( 30, charTypeY + 10, 150, charTypeHeight, scourge->getShapePalette()->getHighlightTexture() );
@@ -246,6 +287,13 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->charTypeDescription = new ScrollingLabel( 190, charTypeY + 10, col2X - 10 - 190, charTypeHeight, 
                                                   Character::character_list[charIndex]->getDescription() );
   cards->addWidget( info->charTypeDescription, n );
+
+  // details 
+  info->detailsInfo = new CharacterInfoUI( scourge );
+  info->detailsCanvas = new Canvas( 30, charTypeY + 10 + charTypeHeight + 10, 
+                                    180 + col2X - 190, charTypeY + 10 + charTypeHeight + 10 + 175, 
+                                    info->detailsInfo );
+  cards->addWidget( info->detailsCanvas, n );  
 
   // portrait
   info->portrait = new Canvas( w - PORTRAIT_SIZE - 10, 10, w - 10, 10 + PORTRAIT_SIZE, this );
@@ -290,12 +338,11 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->skills->setSelectedLine( 0 );
   info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
 
-
-  info->back = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
-                                    w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
+  info->back = cards->createButton( w - w / 4 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                    w - w / 4 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Back", n );
-  info->next = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
-                                    w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
+  info->next = cards->createButton( w - w / 4 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                    w - w / 4 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Next", n );
 }
 
@@ -363,7 +410,7 @@ void PartyEditor::drawWidgetContents( Widget *w ) {
 void PartyEditor::drawAfter() {
 }   
       
-void PartyEditor::createParty( Creature **pc, int *partySize ) {
+void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInventory ) {
 
   deleteLoadedShapes();
 
@@ -375,14 +422,106 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     if( !s || !strlen( s ) ) s = names[i];
     int index = info[i].charType->getSelectedLine();  
     Character *c = Character::character_list[ index ];
-    pc[i] = new Creature( scourge->getSession(), c, strdup( s ), info[i].modelIndex, false );
-    pc[i]->setDeityIndex( info[i].deityType->getSelectedLine() );
+    pc[i] = new Creature( scourge->getSession(), c, 
+                          strdup( s ), 
+                          info[i].modelIndex, false );
     pc[i]->setLevel( LEVEL ); 
     pc[i]->setExp(0);
     pc[i]->setHp();
     pc[i]->setMp();
     pc[i]->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
     pc[i]->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
+        
+    if( addRandomInventory ) {
+      // add a weapon anyone can wield
+      int n = (int)(5.0f * rand()/RAND_MAX);
+      switch(n) {
+      case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow")), true); break;
+      case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword")), true); break;
+      case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger")), true); break;
+      case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"))); break;
+      case 4: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff")), true); break;
+      }
+      int invIndex = 0;
+      pc[i]->equipInventory( invIndex++ );
+  
+      // add some armor
+      if(0 == (int)(4.0f * rand()/RAND_MAX)) {
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet")), true);
+        pc[i]->equipInventory( invIndex++ );
+      }
+      if(0 == (int)(3.0f * rand()/RAND_MAX)) {
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler")), true);
+        pc[i]->equipInventory( invIndex++ );
+      }
+      
+      // some potions
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion")), true);  
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion")), true);  
+      if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor")), true);  
+      
+      // some food
+      for(int t = 0; t < (int)(6.0f * rand()/RAND_MAX); t++) {
+        if(0 == (int)(4.0f * rand()/RAND_MAX))
+          pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Apple")), true);
+        if(0 == (int)(4.0f * rand()/RAND_MAX))
+          pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Bread")), true);
+        if(0 == (int)(4.0f * rand()/RAND_MAX))
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mushroom")), true);
+        if(0 == (int)(4.0f * rand()/RAND_MAX))
+          pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Big egg")), true);
+        if(0 == (int)(4.0f * rand()/RAND_MAX))
+          pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mutton meat")), true);
+      }
+      
+      // some spells
+      if(pc[i]->getMaxMp() > 0) {
+        // useful spells
+        pc[i]->addSpell(Spell::getSpellByName("Flame of Azun"));
+        pc[i]->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
+        // attack spell
+        if(0 == (int)(2.0f * rand()/RAND_MAX))
+          pc[i]->addSpell(Spell::getSpellByName("Silent knives"));
+        else
+          pc[i]->addSpell(Spell::getSpellByName("Stinging light"));
+        // defensive spell
+        if(0 == (int)(2.0f * rand()/RAND_MAX))
+          pc[i]->addSpell(Spell::getSpellByName("Lesser healing touch"));
+        else
+          pc[i]->addSpell(Spell::getSpellByName("Body of stone"));
+  
+  
+        // testing
+        if( LEVEL > 1 ) {
+          pc[i]->addSpell(Spell::getSpellByName("Ring of Harm"));
+          pc[i]->addSpell(Spell::getSpellByName("Malice Storm"));
+          pc[i]->addSpell(Spell::getSpellByName("Unholy Decimator"));
+          pc[i]->addSpell(Spell::getSpellByName("Remove curse"));
+          pc[i]->addSpell(Spell::getSpellByName("Teleportation"));
+          pc[i]->setMp( 5000 );
+        }
+      }
+    }
+  }
+
+  saveUI( pc );
+
+  if( partySize ) *partySize = pcCount;
+}
+
+/**
+ * Save the moving parts into the creature. Should also save
+ * the choice of character but that is baked into the Creature
+ * constructor. Its significance is handled thru min/max skill 
+ * values which are saved here.
+ */
+void PartyEditor::saveUI( Creature **pc ) {
+  for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
+    // deity
+    pc[i]->setDeityIndex( info[i].deityType->getSelectedLine() );
     
     // assign portraits
     pc[i]->setPortraitTextureIndex( info[i].portraitIndex );
@@ -391,81 +530,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize ) {
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
       pc[i]->setSkill( t, info[i].skill[ t ] + info[i].skillMod[ t ] );
     }
-    
-    // add a weapon anyone can wield
-    int n = (int)(5.0f * rand()/RAND_MAX);
-    switch(n) {
-    case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow"))); break;
-    case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"))); break;
-    case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"))); break;
-    case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"))); break;
-    case 4: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff"))); break;
-    }
-    int invIndex = 0;
-    pc[i]->equipInventory( invIndex++ );
-    
-    // add some armor
-    if(0 == (int)(4.0f * rand()/RAND_MAX)) {
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet")));
-      pc[i]->equipInventory( invIndex++ );
-    }
-    if(0 == (int)(3.0f * rand()/RAND_MAX)) {
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler")));
-      pc[i]->equipInventory( invIndex++ );
-    }
-    
-    // some potions
-    if(0 == (int)(4.0f * rand()/RAND_MAX))
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion")));  
-    if(0 == (int)(4.0f * rand()/RAND_MAX))
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion")));  
-    if(0 == (int)(4.0f * rand()/RAND_MAX))
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor")));  
-    
-    // some food
-    for(int t = 0; t < (int)(6.0f * rand()/RAND_MAX); t++) {
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Apple")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Bread")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mushroom")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Big egg")));
-      if(0 == (int)(4.0f * rand()/RAND_MAX))
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mutton meat")));
-    }
-    
-    // some spells
-    if(pc[i]->getMaxMp() > 0) {
-      // useful spells
-      pc[i]->addSpell(Spell::getSpellByName("Flame of Azun"));
-      pc[i]->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
-      // attack spell
-      if(0 == (int)(2.0f * rand()/RAND_MAX))
-        pc[i]->addSpell(Spell::getSpellByName("Silent knives"));
-      else
-        pc[i]->addSpell(Spell::getSpellByName("Stinging light"));
-      // defensive spell
-      if(0 == (int)(2.0f * rand()/RAND_MAX))
-        pc[i]->addSpell(Spell::getSpellByName("Lesser healing touch"));
-      else
-        pc[i]->addSpell(Spell::getSpellByName("Body of stone"));
-
-
-      // testing
-      if( LEVEL > 1 ) {
-        pc[i]->addSpell(Spell::getSpellByName("Ring of Harm"));
-        pc[i]->addSpell(Spell::getSpellByName("Malice Storm"));
-        pc[i]->addSpell(Spell::getSpellByName("Unholy Decimator"));
-        pc[i]->addSpell(Spell::getSpellByName("Remove curse"));
-        pc[i]->addSpell(Spell::getSpellByName("Teleportation"));
-        pc[i]->setMp( 5000 );
-      }
-    }
   }
-
-  *partySize = pcCount;
 }
 
 void PartyEditor::rollSkills( CharacterInfo *info ) {
@@ -514,4 +579,12 @@ void PartyEditor::updateUI( CharacterInfo *info ) {
   char msg[80];
   sprintf( msg, "Remaining skill points: %d", info->availableSkillMod );
   info->skillLabel->setText( msg );
+}
+
+bool PartyEditor::isVisible() { 
+  return mainWin->isVisible(); 
+}
+
+void PartyEditor::setVisible( bool b ) { 
+  mainWin->setVisible( b ); 
 }

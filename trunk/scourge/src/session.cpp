@@ -22,6 +22,7 @@
 #include "sqbinding/sqbinding.h"
 #include "specialskill.h"
 #include "test/combattest.h"
+#include "shapepalette.h"
 #include <iostream>
 #include <stdlib.h>
 #include <strings.h>

@@ -22,6 +22,7 @@
 #include "gameadapter.h"
 #include "item.h"
 #include "creature.h"
+#include "shapepalette.h"
 
 using namespace std;
 

@@ -20,20 +20,7 @@
 
 #include <string.h>
 #include "constants.h"
-#include "sdlhandler.h"
-#include "sdleventhandler.h"
-#include "sdlscreenview.h"
-#include "scourge.h"
-#include "userconfiguration.h"
-#include "util.h"
-#include "shapepalette.h"
-#include "gui/window.h"
-#include "gui/button.h"
-#include "gui/canvas.h"
-#include "gui/scrollinglist.h"
-#include "gui/cardcontainer.h"
 #include "gui/widgetview.h"
-#include "gui/scrollinglabel.h"
 
 /**
   *@author Gabor Torok
@@ -42,6 +29,15 @@
 class Creature;
 class Scourge;
 class UserConfiguration;
+class CharacterInfoUI;
+class Window;
+class Button;
+class Canvas;
+class ScrollingList;
+class ScrollingLabel;
+class CardContainer;
+class TextField;
+class Label;
 
 typedef struct _CharacterInfo {
   TextField *name;
@@ -53,6 +49,9 @@ typedef struct _CharacterInfo {
   ScrollingList *deityType;
   ScrollingLabel *deityTypeDescription;
   char **deityTypeStr;
+
+  CharacterInfoUI *detailsInfo;
+  Canvas *detailsCanvas;
   
   Canvas *portrait;
   Button *nextPortrait;
@@ -98,8 +97,8 @@ private:
   CharacterInfo info[ MAX_PARTY_SIZE ];
   int step;
   Uint32 lastTick;
-  float zrot;
-  std::map<CharacterModelInfo*, GLShape*> shapes;
+  float zrot;  
+  Creature *tmp[4];
   
 public:
   PartyEditor(Scourge *scourge);
@@ -108,19 +107,20 @@ public:
   void drawWidgetContents(Widget *w);
   void drawAfter();
 
-  inline bool isVisible() { return mainWin->isVisible(); }
-  inline void setVisible( bool b ) { mainWin->setVisible( b ); }
-  inline Widget *getStartGameButton() { return done; }
-  inline Widget *getCancelButton() { return cancel; }
+  bool isVisible();
+  void setVisible( bool b );
+  inline Button *getStartGameButton() { return done; }
+  inline Button *getCancelButton() { return cancel; }
   void reset();
   void handleEvent( Widget *widget, SDL_Event *event );
-  void createParty( Creature **pc, int *partySize );
+  void createParty( Creature **pc, int *partySize=NULL, bool addRandomInventory=true );
 
  protected:
   void createCharUI( int step, CharacterInfo *info );
   void deleteLoadedShapes();
   void rollSkills( CharacterInfo *info );
   void updateUI( CharacterInfo *info );
+  void saveUI( Creature **pc );
 };
 
 #endif

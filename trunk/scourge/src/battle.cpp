@@ -21,6 +21,7 @@
 #include "item.h"
 #include "projectile.h"
 #include "creature.h"
+#include "shapepalette.h"
 
 using namespace std;
 

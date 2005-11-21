@@ -19,6 +19,7 @@
 #include "render/renderlib.h"
 #include "rpg/rpglib.h"
 #include "session.h"
+#include "shapepalette.h"
 
 using namespace std;
 

@@ -25,6 +25,7 @@
 #include "calendar.h"
 #include "rpg/rpglib.h"
 #include "projectile.h"
+#include "shapepalette.h"
 
 using namespace std;
 

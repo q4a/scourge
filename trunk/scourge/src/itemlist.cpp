@@ -22,6 +22,7 @@ itemlist.cpp  -  description
 #include "gui/window.h"
 #include "gui/scrollinglist.h"
 #include "gui/label.h"
+#include "shapepalette.h"
 
 using namespace std;
 

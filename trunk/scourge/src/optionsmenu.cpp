@@ -17,6 +17,7 @@
 
 #include "optionsmenu.h"
 #include "sound.h" 
+#include "shapepalette.h"
 
 using namespace std;
 

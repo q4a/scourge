@@ -24,6 +24,7 @@
 #include "donatedialog.h"
 #include "traindialog.h"
 #include "board.h"
+#include "shapepalette.h"
 
 using namespace std;
 
