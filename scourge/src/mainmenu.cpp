@@ -17,6 +17,15 @@
 
 #include "mainmenu.h"
 #include "render/renderlib.h"
+#include "sdlhandler.h"
+#include "scourge.h"
+#include "text.h"
+#include "partyeditor.h"
+#include "gui/window.h"
+#include "gui/label.h"
+#include "gui/button.h"
+#include "gui/scrollinglabel.h"
+#include "shapepalette.h"
 
 using namespace std;
 
@@ -1128,5 +1137,9 @@ void MainMenu::showPartyEditor() {
 
 void MainMenu::createParty( Creature **pc, int *partySize ) { 
   partyEditor->createParty( pc, partySize ); 
+}
+
+bool MainMenu::isVisible() { 
+  return mainWin->isVisible(); 
 }
 

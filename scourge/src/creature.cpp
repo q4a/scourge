@@ -20,6 +20,7 @@
 #include "rpg/rpglib.h"
 #include "render/renderlib.h"
 #include "session.h"
+#include "shapepalette.h"
 #include "events/event.h"
 #include "events/potionexpirationevent.h"
 #include "events/statemodexpirationevent.h"

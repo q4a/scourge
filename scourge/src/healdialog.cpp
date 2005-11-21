@@ -23,6 +23,7 @@
 #include "gui/button.h"
 #include "gui/scrollinglist.h"
 #include "gui/scrollinglabel.h"
+#include "shapepalette.h"
 
 #define COINS_AVAILABLE "Coins Available:"
 

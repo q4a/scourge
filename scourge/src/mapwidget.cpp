@@ -18,6 +18,7 @@
 #include "mapwidget.h"
 #include "scourge.h"
 #include "gui/canvas.h"
+#include "shapepalette.h"
 
 using namespace std;
 

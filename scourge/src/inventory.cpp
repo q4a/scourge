@@ -29,6 +29,7 @@
 #include "specialskill.h"
 #include "sqbinding/sqbinding.h"
 #include "characterinfo.h"
+#include "shapepalette.h"
 
 using namespace std;
 

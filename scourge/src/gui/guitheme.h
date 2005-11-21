@@ -22,8 +22,6 @@
 #include "widget.h"
 #include <map>
 
-class ShapePalette;
-
 /**
   *@author Gabor Torok
   */

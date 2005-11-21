@@ -19,16 +19,8 @@
 #define MAINMENU_H
 
 #include "constants.h"
-#include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
-#include "scourge.h"
-#include "text.h"
-#include "partyeditor.h"
-#include "gui/window.h"
-#include "gui/label.h"
-#include "gui/button.h"
-#include "gui/scrollinglabel.h"
 #include <vector>
 
 /**
@@ -38,6 +30,10 @@
 class Creature;
 class Scourge;
 class PartyEditor;
+class Window;
+class Label;
+class Button;
+class ScrollingLabel;
 
 typedef struct _MenuItemParticle {
   int life;
@@ -132,7 +128,7 @@ public:
 
   void show();
   void hide();
-  inline bool isVisible() { return mainWin->isVisible(); }
+  bool isVisible();
   void showPartyEditor();
   void createParty( Creature **pc, int *partySize );
 

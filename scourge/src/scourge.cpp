@@ -35,6 +35,7 @@
 #include "texteffect.h"
 #include "sqbinding/sqbinding.h"
 #include "storable.h"
+#include "shapepalette.h"
 
 using namespace std;
 
