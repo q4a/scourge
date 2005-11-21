@@ -49,6 +49,7 @@ using namespace std;
 
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
 std::map<CharacterModelInfo*, GLShape*> shapes;
+char names[4][80] = { "Alamont", "Barlett", "Corinus", "Dialante" };
 
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
@@ -238,7 +239,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   int h = 600;
   
   //  int col2X = ( scourge->getScreenWidth() > 800 ? 500 : 350 );
-  int skillColWidth = 240;
+  int skillColWidth = 290;
   int col2X = w - PORTRAIT_SIZE - 20 - skillColWidth;
 
   // title
@@ -253,7 +254,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   cards->addWidget( info->name, n );
 
   // deity
-  int deityHeight = 80;
+  int deityHeight = 100;
   cards->createLabel( 30, 80, "Chosen Deity:", n, Constants::RED_COLOR );
   info->deityType = new ScrollingList( 30, 90, 150, deityHeight, scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->deityType, n );
@@ -271,7 +272,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   cards->addWidget( info->deityTypeDescription, n );
   
   // character type
-  int charTypeHeight = 120;
+  int charTypeHeight = 160;
   int charTypeY = 110 + deityHeight;
   cards->createLabel( 30, charTypeY, "Character Type:", n, Constants::RED_COLOR );
   info->charType = new ScrollingList( 30, charTypeY + 10, 150, charTypeHeight, scourge->getShapePalette()->getHighlightTexture() );
@@ -287,13 +288,6 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->charTypeDescription = new ScrollingLabel( 190, charTypeY + 10, col2X - 10 - 190, charTypeHeight, 
                                                   Character::character_list[charIndex]->getDescription() );
   cards->addWidget( info->charTypeDescription, n );
-
-  // details 
-  info->detailsInfo = new CharacterInfoUI( scourge );
-  info->detailsCanvas = new Canvas( 30, charTypeY + 10 + charTypeHeight + 10, 
-                                    180 + col2X - 190, charTypeY + 10 + charTypeHeight + 10 + 175, 
-                                    info->detailsInfo );
-  cards->addWidget( info->detailsCanvas, n );  
 
   // portrait
   info->portrait = new Canvas( w - PORTRAIT_SIZE - 10, 10, w - 10, 10 + PORTRAIT_SIZE, this );
@@ -316,10 +310,18 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
                                          w - 10, 80 + PORTRAIT_SIZE + MODEL_SIZE, 
                                          "    >>", n );
 
+  // details 
+  int detailsHeight = 130;
+  info->detailsInfo = new CharacterInfoUI( scourge );
+  info->detailsCanvas = new Canvas( col2X, 10, col2X + skillColWidth, 10 + detailsHeight, info->detailsInfo );
+  cards->addWidget( info->detailsCanvas, n );  
+
   // skills
   int buttonWidth =  skillColWidth / 3;
-  info->skillLabel = cards->createLabel( col2X, 30, "Remaining skill points:", n, Constants::RED_COLOR );
-  info->skills = new ScrollingList( col2X, 40, skillColWidth, 260, scourge->getShapePalette()->getHighlightTexture() );
+  info->skillLabel = cards->createLabel( col2X, 30 + detailsHeight, "Remaining skill points:", n, Constants::RED_COLOR );
+  info->skills = new ScrollingList( col2X, 30 + detailsHeight + 5, 
+                                    skillColWidth, 310 - ( 30 + detailsHeight + 5 + 10 ),
+                                    scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( info->skills, n );
   info->skillAddButton = cards->createButton( col2X, 310, col2X + buttonWidth - 5, 330, " + ", n );
   info->skillRerollButton = cards->createButton( col2X + buttonWidth, 310, col2X + buttonWidth * 2 - 5, 330, " Reroll ", n );
@@ -415,7 +417,6 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
   deleteLoadedShapes();
 
   int pcCount = 4;
-  char names[4][80] = { "Alamont", "Barlett", "Corinus", "Dialante" };
 
   for( int i = 0; i < pcCount; i++ ) {
     char *s = info[i].name->getText();
@@ -513,13 +514,28 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
 }
 
 /**
- * Save the moving parts into the creature. Should also save
- * the choice of character but that is baked into the Creature
- * constructor. Its significance is handled thru min/max skill 
- * values which are saved here.
+ * Save the moving parts into the creature.
  */
 void PartyEditor::saveUI( Creature **pc ) {
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
+
+    // name
+    char *s = info[i].name->getText();
+    if( !s || !strlen( s ) ) s = names[i];
+    pc[i]->replaceName( strdup( s ) );
+
+    // character type
+    int index = info[i].charType->getSelectedLine();  
+    Character *c = Character::character_list[ index ];
+    pc[i]->setCharacter( c );
+    pc[i]->setLevel( LEVEL ); 
+    pc[i]->setExp(0);
+    pc[i]->setHp();
+    pc[i]->setMp();
+
+    // model and portrait
+    // (not saved b/c it makes no difference to the rpg values.)
+
     // deity
     pc[i]->setDeityIndex( info[i].deityType->getSelectedLine() );
     

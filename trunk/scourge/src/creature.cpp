@@ -2191,7 +2191,6 @@ float Creature::getAttacksPerRound( Item *item ) {
 }
 
 char *Creature::canEquipItem( Item *item, bool interactive ) {
-  Character *character = getCharacter();
   if( character ) {
 /*
 cerr << "RA=" << Character::getCharacterIndexByShortName("RA") <<
@@ -2243,5 +2242,10 @@ cerr << "RA=" << Character::getCharacterIndexByShortName("RA") <<
     }
   }
   return NULL;
+}
+
+void Creature::setCharacter( Character *c ) {
+  assert( !isMonster() );
+  character = c;
 }
 

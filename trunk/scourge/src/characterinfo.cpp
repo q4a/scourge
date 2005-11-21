@@ -86,29 +86,31 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   Item *ranged = p->getItemAtLocation( Constants::INVENTORY_WEAPON_RANGED );
 
   int yy = 105;
-  if( !left && !right ) {
+  bool hasWeapon = false;
+  if( left && left->getRpgItem()->isWeapon() ) {
+    p->getAttackPercent( left, &max, &min );
+    sprintf(s, "ATK: %.2f - %.2f (%.2f APR) %s", 
+            min, max, p->getAttacksPerRound( left ),
+            left->getRpgItem()->getName() );
+    scourge->getSDLHandler()->texPrint(5, y + yy, s);
+    yy += 15;
+    hasWeapon = true;
+  } 
+  if( right && right->getRpgItem()->isWeapon() ) {
+    p->getAttackPercent( left, &max, &min );
+    sprintf(s, "ATK: %.2f - %.2f (%.2f APR) %s", 
+            min, max, p->getAttacksPerRound( right ),
+            right->getRpgItem()->getName() );
+    scourge->getSDLHandler()->texPrint(5, y + yy, s);
+    yy += 15;
+    hasWeapon = true;
+  }
+  if( !hasWeapon ) {
     p->getAttackPercent( NULL, &max, &min );
     sprintf(s, "ATK: %.2f - %.2f (%.2f APR) Bare Hands", 
             min, max, p->getAttacksPerRound( NULL ) );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
-  } else {
-    if( left && left->getRpgItem()->isWeapon() ) {
-      p->getAttackPercent( left, &max, &min );
-      sprintf(s, "ATK: %.2f - %.2f (%.2f APR) %s", 
-              min, max, p->getAttacksPerRound( left ),
-              left->getRpgItem()->getName() );
-      scourge->getSDLHandler()->texPrint(5, y + yy, s);
-      yy += 15;
-    } 
-    if( right && right->getRpgItem()->isWeapon() ) {
-      p->getAttackPercent( left, &max, &min );
-      sprintf(s, "ATK: %.2f - %.2f (%.2f APR) %s", 
-              min, max, p->getAttacksPerRound( right ),
-              right->getRpgItem()->getName() );
-      scourge->getSDLHandler()->texPrint(5, y + yy, s);
-      yy += 15;
-    } 
   }
   if( ranged ) {
     p->getAttackPercent( left, &max, &min );
