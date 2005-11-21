@@ -120,6 +120,8 @@ class Battle {
 
   void useSkill();
 
+  static int getWeaponSpeed( Item *item );
+
  protected:
   void launchProjectile();
   //void initTurn();

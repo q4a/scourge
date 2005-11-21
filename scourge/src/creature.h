@@ -301,6 +301,8 @@ class Creature : public RenderedCreature {
   // or NULL if none are available
   Item *getBestWeapon(float dist);  
 
+  float getAttacksPerRound( Item *item = NULL );
+
   void setNpcInfo( NpcInfo *npcInfo );
   inline NpcInfo *getNpcInfo() { return npcInfo; }
 
@@ -440,6 +442,7 @@ class Creature : public RenderedCreature {
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );
+  float getMaxAP();
 
  protected:
 

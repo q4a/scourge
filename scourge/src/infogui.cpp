@@ -17,6 +17,7 @@
 
 #include "infogui.h"
 #include "item.h"
+#include "creature.h"
 #include "shapepalette.h"
 #include "rpg/rpglib.h"
 
@@ -156,6 +157,21 @@ void InfoGui::describe() {
   break;
   default:
     break;
+  }
+  
+  if( item->getRpgItem()->isWeapon() ) {
+    sprintf( tmp, "Attacks per round (APR) for each player:.|(" );
+    strcat( description, tmp );
+    for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
+      sprintf( tmp, "%.2f%s",  
+               scourge->getSession()->getParty()->
+               getParty(i)->getAttacksPerRound( item ),
+               (i < scourge->getSession()->getParty()->getPartySize() - 1 ? 
+                ", " : "" ) );
+      strcat( description, tmp );
+    }
+    sprintf( tmp, ")|" );
+    strcat( description, tmp );
   }
 
 

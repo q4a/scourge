@@ -88,7 +88,7 @@ Battle::~Battle() {
 void Battle::reset() {
   if(debugBattle) cerr << "*** reset: creature=" << creature->getName() << endl;
   this->steps = 0;
-  this->startingAp = this->ap = 30 + (creature->getSkill(Constants::COORDINATION) / 5);
+  this->startingAp = this->ap = toint( creature->getMaxAP() );
   this->projectileHit = false;
   this->paused = false;
   this->weaponWait = 0;
@@ -262,7 +262,7 @@ void Battle::initTurnStep() {
         if(debugBattle) cerr << "\tUsing bare hands." << endl;
       }
       // How many steps to wait before being able to use the weapon.
-      weaponWait = (item ? item->getSpeed() : Constants::HAND_WEAPON_SPEED) * WEAPON_WAIT_MUL;
+      weaponWait = getWeaponSpeed( item );
       // Make turn-based mode a little snappier
       if( session->getPreferences()->isBattleTurnBased() ) {
         weaponWait /= 2;
@@ -1093,5 +1093,12 @@ char *Battle::getRandomSound(int start, int count) {
   if(count)
     return sound[start + (int)((float)(count) * rand()/RAND_MAX)];
   else return NULL;
+}
+
+int Battle::getWeaponSpeed( Item *item ) {
+  return ( item ? 
+           item->getSpeed() : 
+           Constants::HAND_WEAPON_SPEED ) * 
+    WEAPON_WAIT_MUL;
 }
 
