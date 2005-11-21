@@ -2181,3 +2181,11 @@ float Creature::rollMagicDamagePercent( Item *item ) {
   return item->rollMagicDamage() + itemLevel;
 }
 
+float Creature::getMaxAP() { 
+  return 30.0f + ( (float)( getSkill( Constants::COORDINATION ) ) / 5.0f ); 
+}
+
+float Creature::getAttacksPerRound( Item *item ) {
+  return( getMaxAP() / (float)( Battle::getWeaponSpeed( item ) ) );
+}
+

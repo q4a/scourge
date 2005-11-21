@@ -28,6 +28,7 @@
 #include "tradedialog.h"
 #include "specialskill.h"
 #include "sqbinding/sqbinding.h"
+#include "characterinfo.h"
 
 using namespace std;
 
@@ -154,20 +155,24 @@ Inventory::Inventory(Scourge *scourge) {
   // -------------------------------------------
   // character info
   cards->createLabel(115, 10, "Character stats:", CHARACTER, Constants::RED_COLOR);
-  attrCanvas     = new Canvas( 115, 15, 405, 115, this );
+  charInfoUI = new CharacterInfoUI( scourge );
+  int canvasHeight = 175;
+  attrCanvas     = new Canvas( 115, 15, 405, canvasHeight, charInfoUI );
   cards->addWidget( attrCanvas, CHARACTER );
 
-  cards->createLabel(115, 130, "Current State:", CHARACTER, Constants::RED_COLOR);
-  stateList = new ScrollingList(115, 135, 140, 70, scourge->getShapePalette()->getHighlightTexture());
+  int skillY = canvasHeight + 15;
+  cards->createLabel(115, skillY, "Current State:", CHARACTER, Constants::RED_COLOR);
+  stateList = new ScrollingList(115, skillY + 5, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(stateList, CHARACTER);
   
-  cards->createLabel(265, 130, "Protected States:", CHARACTER, Constants::RED_COLOR);
-  protStateList = new ScrollingList(265, 135, 140, 70, scourge->getShapePalette()->getHighlightTexture());
+  cards->createLabel(265, skillY, "Protected States:", CHARACTER, Constants::RED_COLOR);
+  protStateList = new ScrollingList(265, skillY + 5, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(protStateList, CHARACTER);
 
+  skillY += 85;
   strcpy(skillsStr, "Skills:");
-  skillLabel = cards->createLabel(115, 220, skillsStr, CHARACTER, Constants::RED_COLOR);
-  skillList = new ScrollingList(115, 225, 290, 180, scourge->getShapePalette()->getHighlightTexture());
+  skillLabel = cards->createLabel(115, skillY, skillsStr, CHARACTER, Constants::RED_COLOR);
+  skillList = new ScrollingList(115, skillY + 5, 290, 405 - ( skillY + 5 ), scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(skillList, CHARACTER);
   skillAddButton = cards->createButton( 115, 410, 200, 410 + buttonHeight, " + ", CHARACTER);
   skillSubButton = cards->createButton( 320, 410, 405, 410 + buttonHeight, " - ", CHARACTER);
@@ -262,7 +267,7 @@ void Inventory::showSkills() {
 
 void Inventory::drawWidgetContents(Widget *w) {
   GuiTheme *theme = mainWin->getTheme();
-  Creature *p = scourge->getParty()->getParty(selected);
+  //Creature *p = scourge->getParty()->getParty(selected);
 
   if(w == paperDoll) {
     float x = 125;
@@ -336,52 +341,6 @@ void Inventory::drawWidgetContents(Widget *w) {
       if(!item) continue;
       scourge->getSDLHandler()->texPrint( x + 5, (i + 1) * 16 - 4, item->getItemName());
     }
-
-  } else {
-    int y = 15;
-    char s[80];
-    sprintf(s, "Exp: %u(%u)", p->getExp(), p->getExpOfNextLevel());
-    //if(p->getStateMod(Constants::leveled)) {
-    if( p->getAvailableSkillPoints() > 0 ) {
-      glColor4f( 1.0f, 0.2f, 0.0f, 1.0f );
-    } else {
-      if( theme->getWindowText() ) {
-        glColor4f( theme->getWindowText()->r,
-                   theme->getWindowText()->g,
-                   theme->getWindowText()->b,
-                   theme->getWindowText()->a );
-      } else {
-        w->applyColor();
-      }
-    }
-    scourge->getSDLHandler()->texPrint(5, y, s);
-    if( theme->getWindowText() ) {
-      glColor4f( theme->getWindowText()->r,
-                 theme->getWindowText()->g,
-                 theme->getWindowText()->b,
-                 theme->getWindowText()->a );
-    } else {
-      w->applyColor();
-    }
-    sprintf(s, "HP: %d (%d)", p->getHp(), p->getMaxHp());
-    scourge->getSDLHandler()->texPrint(5, y + 15, s);
-    sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
-    scourge->getSDLHandler()->texPrint(5, y + 30, s);
-    float totalArmor, skilledArmor;
-    skilledArmor = p->getACPercent( &totalArmor );
-    sprintf(s, "AC: %.2f (%.2f)", skilledArmor, totalArmor );
-    scourge->getSDLHandler()->texPrint(5, y + 45, s);
-    sprintf(s, "Thirst: %d (10)", p->getThirst());
-    scourge->getSDLHandler()->texPrint(5, y + 60, s);
-    sprintf(s, "Hunger: %d (10)", p->getHunger());
-    scourge->getSDLHandler()->texPrint(5, y + 75, s);
-
-    Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false, theme );
-    Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp(), -1, -1, -1, true, theme );
-    Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false, theme );
-    Util::drawBar( 160, y + 42, 120, skilledArmor, totalArmor, 0.45f, 0.65f, 1.0f, false, theme );
-    Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
-    Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
   }
 }
 
@@ -737,6 +696,8 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
           MagicSchool::getMagicSchool(selectedP->getDeityIndex())->getDeity());
   //nameAndClassLabel->setText(nameAndClassStr);  
   mainWin->setTitle( nameAndClassStr );
+
+  charInfoUI->setCreature( mainWin, selectedP );
 
   switch(selectedMode) {
   case CHARACTER:         

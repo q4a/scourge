@@ -39,6 +39,7 @@ class MagicSchool;
 class Scourge;
 class SpecialSkill;
 class Storable;
+class CharacterInfoUI;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:
@@ -104,6 +105,7 @@ private:
 	char skillsStr[80];
 	char armorStr[80];
 	Canvas *attrCanvas;
+  CharacterInfoUI *charInfoUI;
 
 	// mission
 	char missionText[3000];
