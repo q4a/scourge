@@ -330,11 +330,21 @@ void Battle::stepCloserToTarget() {
   if(debugBattle) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
     if(debugBattle) cerr << "\t\t\tto target creature: " << creature->getTargetCreature()->getName() << endl;
+
+    // has the target creature moved?
+    int tx = toint(creature->getTargetCreature()->getX());
+    int tw = creature->getTargetCreature()->getShape()->getWidth();
+    int ty = toint(creature->getTargetCreature()->getY());
+    int th = creature->getTargetCreature()->getShape()->getDepth();
+    if( !( creature->getSelX() >= tx && creature->getSelX() < tx + tw &&
+           creature->getSelY() <= ty && creature->getSelY() > ty - th ) ) {
+/*
     int tx = toint(creature->getTargetCreature()->getX() + 
                    creature->getTargetCreature()->getShape()->getWidth() / 2);
     int ty = toint(creature->getTargetCreature()->getY() - 
                    creature->getTargetCreature()->getShape()->getDepth() / 2);
     if(!(creature->getSelX() == tx && creature->getSelY() == ty)) {
+*/    
       creature->setSelXY(tx, ty, true);
     }
   } else if(!(creature->getSelX() == creature->getTargetX() &&
@@ -515,19 +525,13 @@ bool Battle::selectNewTarget() {
   // select a new target
   if (creature->isMonster()) {    
     cerr << "*** Error Battle::selectNewTarget should not be called for monsters." << endl;
-//    creature->cancelTarget();
-//    moveCreature();
     return false;
   } else {
     // select a new target
     Creature *target = getAvailableTarget();
     if (target) {
       if(debugBattle) cerr << "\tSelected new target: " << target->getName() << endl;
-      creature->setTargetCreature(target);
-      creature->setSelXY(toint(creature->getTargetCreature()->getX()),
-                         toint(creature->getTargetCreature()->getY()),
-                         true);
-      //initTurn();
+      creature->setTargetCreature(target, true);
     } else {
       creature->setTargetCreature(NULL);
       if(debugBattle) cerr << "\t\tCan't find new target." << endl;

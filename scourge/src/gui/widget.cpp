@@ -48,9 +48,16 @@ Widget::Widget(int x, int y, int w, int h) {
   strcpy( tooltip, "" );
   tooltipTicks = 0;
   tooltipShowing = false;
+  invalid = true;
+  displayList = glGenLists( 1 );
+  if( !displayList ) {
+    cerr << "*** Error: couldn't generate display list for gui." << endl;
+    exit(1);
+  }
 }
 
 Widget::~Widget() {
+  glDeleteLists( displayList, 1 );
 }
 
 void Widget::draw(Widget *parent) {
@@ -81,7 +88,13 @@ void Widget::draw(Widget *parent) {
     glEnd();
     glLineWidth( 1.0f );
   }
-  drawWidget(parent);
+  //if( invalid ) {
+    //glNewList( displayList, GL_COMPILE );
+    drawWidget(parent);
+    //glEndList();
+    //invalid = false;
+  //}
+  //glCallList( displayList );
 }
 
 bool Widget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {

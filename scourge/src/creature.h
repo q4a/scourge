@@ -78,10 +78,8 @@ class Creature : public RenderedCreature {
   int index;
   int tx, ty;
   int selX, selY;
-  int proposedX, proposedY, proposedPathIndex;
   int bestPathPos;
   std::vector<Location> bestPath;
-  std::vector<Location> proposedPath;
   Creature *targetCreature;
   int targetX, targetY, targetZ;
   Item *targetItem;
@@ -181,11 +179,6 @@ class Creature : public RenderedCreature {
   inline std::vector<Location> *getPath() { return &bestPath; }
   inline int getPathIndex() { return bestPathPos; }
 
-  inline std::vector<Location> *getProposedPath() { return &proposedPath; }
-  inline int getProposedPathIndex() { return proposedPathIndex; }
-  inline int getProposedX() { return proposedX; }
-  inline int getProposedY() { return proposedY; }
-
   inline int getCharacterModelInfoIndex() { return character_model_info_index; }
 
   inline void setLastEnchantDate(Date date) { lastEnchantDate = date; }
@@ -204,7 +197,7 @@ class Creature : public RenderedCreature {
   inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }
   inline int getTargetZ() { if(targetCreature) return toint(targetCreature->getZ()); else return targetZ; }
-  void setTargetCreature(Creature *c);
+  void setTargetCreature( Creature *c, bool findPath=false );
   inline Creature *getTargetCreature() { return targetCreature; }
   inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
   inline void getTargetLocation(int *x, int *y, int *z) { *x = targetX; *y = targetY; *z = targetZ; }

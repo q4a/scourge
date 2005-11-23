@@ -764,10 +764,10 @@ void Scourge::drawAfter() {
             c->getName(),
             c->getBattle()->getAP(),
             c->getBattle()->getStartingAP());
-    turnProgress->updateStatus(msg, false, 
+    turnProgress->updateStatus(msg, false,     
                                c->getBattle()->getAP(), 
                                c->getBattle()->getStartingAP(),
-                               c->getProposedPath()->size() );
+                               c->getPath()->size() );
     glPopMatrix();
     //glPushAttrib(GL_ENABLE_BIT);
   }
@@ -810,10 +810,11 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   if(player && 
      getUserConfiguration()->isBattleTurnBased() && 
      battleTurn < (int)battleRound.size() ) {
-    for( int i = creature->getProposedPathIndex(); 
-         i < (int)creature->getProposedPath()->size() && 
+    for( int i = creature->getPathIndex(); 
+         i < (int)creature->getPath()->size() && 
          i <= creature->getBattle()->getAP(); i++) {
-      Location pos = (*(creature->getProposedPath()))[i];
+      Location pos = (*(creature->getPath()))[i];
+
       glColor4f(1, 0.4f, 0.0f, 0.5f);
       xpos2 = ((float)(pos.x - levelMap->getX()) / DIV);
       ypos2 = ((float)(pos.y - levelMap->getY()) / DIV);
@@ -1426,7 +1427,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
             party->setTargetCreature( ((Creature*)(loc->creature)) );
             // show path
             if( inTurnBasedCombatPlayerTurn() ) {
-              battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
               // start round
               if( getSDLHandler()->isDoubleClick ) {
                 party->toggleRound( false );
@@ -1480,7 +1480,6 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
     // start round
     if( inTurnBasedCombatPlayerTurn() ) {
-      battleRound[battleTurn]->getCreature()->findPath( mapx, mapy );
       if( getSDLHandler()->isDoubleClick ) {
         party->toggleRound( false );
       }
