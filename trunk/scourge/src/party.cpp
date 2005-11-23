@@ -232,10 +232,10 @@ void Party::toggleRound() {
 
 void Party::setTargetCreature(Creature *creature) { 
   if(player_only) {
-    player->setTargetCreature(creature);
+    player->setTargetCreature(creature, true);
   } else {
     for(int i = 0; i < getPartySize(); i++) {
-      party[i]->setTargetCreature(creature); 
+      party[i]->setTargetCreature(creature, true); 
     }
   }
 }
@@ -243,51 +243,51 @@ void Party::setTargetCreature(Creature *creature) {
 void Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
   getPlayer()->setSelXY(mapx, mapy);
   // if player stopping not set, set it
-  if( getPlayerMoved() == 0 ) setPlayerMoved();
-  if(isPlayerOnly()) {
-	getPlayer()->cancelTarget();
+  if ( getPlayerMoved() == 0 ) setPlayerMoved();
+  if (isPlayerOnly()) {
+    getPlayer()->cancelTarget();
   } else {
-	for(int i = 0; i < getPartySize(); i++) {
-	  if(!getParty(i)->getStateMod(Constants::dead)) {
-		getParty(i)->cancelTarget();
-		if(getParty(i) != getPlayer()) {
-		  // if already moving, don't stop
-		  if( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
-		  getParty(i)->follow( session->getMap() );
-		}
-	  }
-	}
+    for (int i = 0; i < getPartySize(); i++) {
+      if (!getParty(i)->getStateMod(Constants::dead)) {
+        getParty(i)->cancelTarget();
+        if (getParty(i) != getPlayer()) {
+          // if already moving, don't stop
+          if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
+          getParty(i)->follow( session->getMap() );
+        }
+      }
+    }
   }
 }
 
 void Party::movePlayers() {   
-  if(player_only) {	
-	// move everyone
-	for(int i = 0; i < getPartySize(); i++) {
-	  if(!party[i]->getStateMod(Constants::dead)) {
-		party[i]->moveToLocator(session->getMap());
-	  }
-	}
-	// center on player
-	session->getMap()->center(toint(player->getX()), toint(player->getY()));
+  if (player_only) {
+    // move everyone
+    for (int i = 0; i < getPartySize(); i++) {
+      if (!party[i]->getStateMod(Constants::dead)) {
+        party[i]->moveToLocator(session->getMap());
+      }
+    }
+    // center on player
+    session->getMap()->center(toint(player->getX()), toint(player->getY()));
   } else {
-	// In group mode:
-	
-	// move the leader
-	if(!player->getStateMod(Constants::dead)) {
-	  player->moveToLocator(session->getMap());
-	  session->getMap()->center(toint(player->getX()), toint(player->getY()));
-	}
+    // In group mode:
 
-	// others follow the player
-	if( playerMoved == 0 || SDL_GetTicks() - playerMoved > PARTY_FOLLOW_INTERVAL ) {
-	  playerMoved = 0;
-	  for(int t = 0; t < getPartySize(); t++) {
-		if(!party[t]->getStateMod(Constants::dead) && party[t] != player) {
-		  party[t]->moveToLocator(session->getMap());
-		}
-	  }
-	}
+    // move the leader
+    if (!player->getStateMod(Constants::dead)) {
+      player->moveToLocator(session->getMap());
+      session->getMap()->center(toint(player->getX()), toint(player->getY()));
+    }
+
+    // others follow the player
+    if ( playerMoved == 0 || SDL_GetTicks() - playerMoved > PARTY_FOLLOW_INTERVAL ) {
+      playerMoved = 0;
+      for (int t = 0; t < getPartySize(); t++) {
+        if (!party[t]->getStateMod(Constants::dead) && party[t] != player) {
+          party[t]->moveToLocator(session->getMap());
+        }
+      }
+    }
   }
 }
 

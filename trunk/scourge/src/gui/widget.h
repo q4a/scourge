@@ -42,11 +42,16 @@ class Widget {
   char tooltip[255];
   GLuint tooltipTicks;
   bool tooltipShowing;
+  GLuint displayList;
+  bool invalid;
 
  public: 
   Widget(int x, int y, int w, int h);
   virtual ~Widget();
   virtual void draw(Widget *parent);
+
+  inline void invalidate() { this->invalid = true; }
+  inline bool isInvalid() { return this->invalid; }
 
   virtual inline int getX() { return x; }
   virtual inline int getY() { return y; }

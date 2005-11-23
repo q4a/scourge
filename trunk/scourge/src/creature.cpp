@@ -109,7 +109,6 @@ void Creature::commonInit() {
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
   this->bestPathPos = 0;
-  this->proposedPathIndex = 0;
   this->inventory_count = 0;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
@@ -427,15 +426,6 @@ bool Creature::follow(Map *map) {
   return true; 
 }
 
-void Creature::findPath( int x, int y ) {
-  proposedX = x;
-  proposedY = y;
-  proposedPathIndex = 1;
-  Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
-                 proposedX, proposedY, 0, 
-                 &proposedPath, session->getMap(), getShape());
-}
-
 void Creature::setSelXY(int x, int y, bool force) { 
   selX = x; 
   selY = y; 
@@ -452,10 +442,24 @@ void Creature::setSelXY(int x, int y, bool force) {
      !getStateMod(Constants::dead)) {
     session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
   }
+
+  // find the path
+  tx = selX;
+  ty = selY;
+  bestPathPos = 1; // skip 0th position; it's the starting location
+  Util::findPath( toint(getX()), toint(getY()), toint(getZ()), 
+                  selX, selY, 0, 
+                  &bestPath, 
+                  session->getMap(), 
+                  getShape() );
+
 }
 
-void Creature::setTargetCreature(Creature *c) { 
+void Creature::setTargetCreature( Creature *c, bool findPath ) { 
   targetCreature = c; 
+  if( findPath ) {
+    setSelXY( toint( c->getX() ), toint( c->getY() ) );
+  }
 }
 
 bool Creature::moveToLocator(Map *map) {
@@ -479,17 +483,6 @@ bool Creature::moveToLocator(Map *map) {
 }
 
 bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
-
-  // If the target moved, get the best path to the location
-  if(!(tx == px && ty == py)) {
-    tx = px;
-    ty = py;
-    proposedPathIndex = bestPathPos = 1; // skip 0th position; it's the starting location
-//    cerr << "calling findPath!" << endl;
-    Util::findPath(toint(getX()), toint(getY()), toint(getZ()), 
-                   px, py, pz, &bestPath, session->getMap(), getShape());
-  }
-
   int a = ((MD2Shape*)getShape())->getCurrentAnimation();
   if((int)bestPath.size() > bestPathPos && a != MD2_TAUNT ) {
 
@@ -599,7 +592,6 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
       moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         bestPathPos++;
-        proposedPathIndex++;
       }
       return true;
     } else {
@@ -626,7 +618,7 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 }
 
 void Creature::stopMoving() {
-  proposedPathIndex = bestPathPos = (int)bestPath.size();
+  bestPathPos = (int)bestPath.size();
   selX = selY = -1;
 }
 
