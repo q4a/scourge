@@ -60,7 +60,7 @@ public:
   virtual char *getName() = 0;
   virtual bool isMonster() = 0;
   virtual CreatureInfo *save() = 0;
-  virtual bool canAttack( RenderedCreature *creature ) = 0;
+  virtual bool canAttack( RenderedCreature *creature, int *cursor=NULL ) = 0;
   virtual bool setSelXY( int x, int y, bool force=false ) = 0;
 
   // effects

@@ -3399,6 +3399,7 @@ void Scourge::checkForInfo() {
   // change cursor when over a hostile creature  
   if( getSDLHandler()->getCursorMode() == Constants::CURSOR_NORMAL || 
       getSDLHandler()->getCursorMode() == Constants::CURSOR_ATTACK ||
+      getSDLHandler()->getCursorMode() == Constants::CURSOR_RANGED ||
       getSDLHandler()->getCursorMode() == Constants::CURSOR_TALK ||
       getSDLHandler()->getCursorMode() == Constants::CURSOR_USE ) {
     if( getSDLHandler()->mouseIsMovingOverMap ) {
@@ -3409,11 +3410,13 @@ void Scourge::checkForInfo() {
       if( mapx < MAP_WIDTH) {
         Location *pos = levelMap->getLocation(mapx, mapy, mapz);    
         if( pos ) {
+          int cursor;
           if( pos->creature && 
-              party->getPlayer()->canAttack( pos->creature ) ) {
+              party->getPlayer()->canAttack( pos->creature, &cursor ) ) {
             getSDLHandler()->setCursorMode( ((Creature*)(pos->creature))->getMonster()->isNpc() ?
                                             Constants::CURSOR_TALK :
-                                            Constants::CURSOR_ATTACK );
+                                            cursor );
+                                            //Constants::CURSOR_ATTACK );
             handled = true;
           } else if( getOutlineColor( pos ) ) {
             getSDLHandler()->setCursorMode( Constants::CURSOR_USE );

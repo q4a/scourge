@@ -279,6 +279,8 @@ void Shapes::initialize() {
   use_texture = loadGLTextureBGRA(useCursor, useImage, GL_LINEAR);
   setupAlphaBlendedBMP("/forbidden.bmp", &forbiddenCursor, &forbiddenImage);
   forbidden_texture = loadGLTextureBGRA(forbiddenCursor, forbiddenImage, GL_LINEAR);
+  setupAlphaBlendedBMP("/ranged.bmp", &rangedCursor, &rangedImage);
+  ranged_texture = loadGLTextureBGRA(rangedCursor, rangedImage, GL_LINEAR);
 }
 
 Shapes::~Shapes(){
@@ -1038,6 +1040,8 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
     return use_texture;
   case Constants::CURSOR_FORBIDDEN:
     return forbidden_texture;
+  case Constants::CURSOR_RANGED:
+    return ranged_texture;
   default:
   return crosshair_texture;
   }

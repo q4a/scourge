@@ -1499,10 +1499,19 @@ bool Creature::isTargetValid() {
   return true;
 }
 
-bool Creature::canAttack(RenderedCreature *creature) {
+bool Creature::canAttack(RenderedCreature *creature, int *cursor) {
   // when attacking, attack the opposite kind (unless possessed)
-  return (getStateMod(Constants::possessed) == 
-          (isMonster() == creature->isMonster()));
+  bool ret = (getStateMod(Constants::possessed) == 
+              (isMonster() == creature->isMonster()));
+  if( ret && cursor ) {
+    float dist = getDistanceToTarget( creature );
+    Item *item = getBestWeapon( dist );
+    *cursor = ( !item ? Constants::CURSOR_NORMAL :
+                ( item->getRpgItem()->isRangedWeapon() ? 
+                  Constants::CURSOR_RANGED : 
+                  Constants::CURSOR_ATTACK ) );
+  }
+  return ret;
 }
 
 void Creature::cancelTarget() {
@@ -1684,7 +1693,14 @@ void Creature::decideMonsterAction() {
   }
 }
 
-float Creature::getDistanceToTarget() {
+float Creature::getDistanceToTarget( RenderedCreature *creature ) {
+  if( creature ) {
+    return Constants::distance(getX(),  getY(), 
+                               getShape()->getWidth(), getShape()->getDepth(),
+                               creature->getX(), creature->getY(),
+                               creature->getShape()->getWidth(), 
+                               creature->getShape()->getDepth());
+  }
   if(!hasTarget()) return 0.0f;
   if(getTargetCreature()) {
     return Constants::distance(getX(),  getY(), 

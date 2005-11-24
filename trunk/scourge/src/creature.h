@@ -405,7 +405,7 @@ class Creature : public RenderedCreature {
   // handling battle targets (which in the future may be more than targetCreature)
   inline bool hasTarget() { return targetCreature || targetItem || targetX || targetY || targetZ; }
   bool isTargetValid();
-  bool canAttack(RenderedCreature *creature);
+  bool canAttack(RenderedCreature *creature, int *cursor=NULL);
   void cancelTarget();
   void followTarget();
   //void makeTargetRetaliate();
@@ -416,7 +416,7 @@ class Creature : public RenderedCreature {
    */
   bool castHealingSpell();
 
-  float getDistanceToTarget();
+  float getDistanceToTarget( RenderedCreature *creature=NULL );
   bool isWithPrereq( Spell *spell );
   Creature *findClosestTargetWithPrereq( Spell *spell );
 
