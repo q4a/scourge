@@ -27,7 +27,7 @@ using namespace std;
 
 #define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
-#define WEAPON_WAIT_MUL 5
+#define WEAPON_WAIT_MUL 9
 #define MIN_FUMBLE_RANGE 4.0f
 
 bool Battle::debugBattle = false;
@@ -100,7 +100,7 @@ void Battle::reset() {
 
 void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
   // for now put all battles into the vector
-  // FIXME: need to order by initiative
+  // need to order by initiative
   for(int i = 0; i < count; i++) {
     // reset for the first time
     // (to avoid whack skill numbers for un-initialized creatures.)
@@ -109,8 +109,28 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
       battle[i]->reset();
       battle[i]->needsReset = false;
     }
-    turns->push_back(battle[i]);
+    bool handled = false;
+    for( vector<Battle*>::iterator e = turns->begin(); e != turns->end(); ++e ) {
+      Battle *b = *e;
+      if( b->getCreature()->getInitiative() > battle[i]->getCreature()->getInitiative() ) {
+        turns->insert( e, battle[i] );
+        handled = true;
+        break;
+      }
+    }
+    if( !handled ) turns->push_back(battle[i]);
   }
+  
+  cerr << "Battle order:" << endl;
+  for( vector<Battle*>::iterator e = turns->begin(); e != turns->end(); ++e ) {
+    Battle *b = *e;
+    cerr << "\t" << b->getCreature()->getName() << 
+      " INIT:" << b->getCreature()->getInitiative() << 
+      " speed:" << b->getCreature()->getSkill( Constants::SPEED ) <<
+      endl;
+  }
+  cerr << "-----------------------------------" << endl;
+
 }                 
 
 bool Battle::fightTurn() {

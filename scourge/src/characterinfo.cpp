@@ -78,6 +78,8 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint(5, y + 75, s);
   sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP() ) );
   scourge->getSDLHandler()->texPrint(5, y + 90, s);
+  sprintf(s, "Initiative: %d", creature->getInitiative() );
+  scourge->getSDLHandler()->texPrint( 5, y + 105, s );
 
   float max, min;
 
@@ -85,7 +87,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   Item *right = p->getItemAtLocation( Constants::INVENTORY_RIGHT_HAND );
   Item *ranged = p->getItemAtLocation( Constants::INVENTORY_WEAPON_RANGED );
 
-  int yy = 105;
+  int yy = 120;
   bool hasWeapon = false;
   if( left && left->getRpgItem()->isWeapon() ) {
     p->getAttackPercent( left, &max, &min );

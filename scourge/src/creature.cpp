@@ -426,7 +426,12 @@ bool Creature::follow(Map *map) {
   return true; 
 }
 
-void Creature::setSelXY(int x, int y, bool force) { 
+bool Creature::setSelXY(int x, int y, bool force) { 
+  int oldSelX = selX;
+  int oldSelY = selY;
+  int oldtx = tx;
+  int oldty = ty;
+
   selX = x; 
   selY = y; 
   moveRetrycount = 0; 
@@ -434,14 +439,6 @@ void Creature::setSelXY(int x, int y, bool force) {
   //if(force) {
     tx = ty = -1;
   //}
-  
-  // play command sound
-  if(x > -1 && 
-     session->getParty()->getPlayer() == this && 
-     0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
-     !getStateMod(Constants::dead)) {
-    session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
-  }
 
   // find the path
   tx = selX;
@@ -453,6 +450,37 @@ void Creature::setSelXY(int x, int y, bool force) {
                   session->getMap(), 
                   getShape() );
 
+  // Does the path lead to the destination?
+  bool ret = false;
+  if( bestPath.size() > 1 ) {
+    Location last = bestPath[ bestPath.size() - 1 ];
+    ret = ( last.x == selX &&
+            last.y == selY );
+
+    /**
+     * For pc-s cancel the move.
+     */
+    if( !ret && character ) {
+      bestPathPos = 1;
+      bestPath.clear();
+
+      selX = oldSelX;
+      selY = oldSelY;
+      tx = oldtx;
+      ty = oldty;
+    }
+  }
+
+  if( ret ) {
+    // play command sound
+    if(x > -1 && 
+       session->getParty()->getPlayer() == this && 
+       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
+       !getStateMod(Constants::dead)) {
+      session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
+    }
+  }
+  return ret;
 }
 
 void Creature::setTargetCreature( Creature *c, bool findPath ) { 
@@ -1171,26 +1199,13 @@ Item *Creature::getBestWeapon(float dist) {
   return NULL;
 }
 
-// return the initiative for a battle round (0-10), the lower the faster the attack
-// the method can return negative numbers if the weapon skill is very high (-10 to 10)
-int Creature::getInitiative(Item *weapon, Spell *spell) {
+// return the initiative for a battle round, the lower the faster the attack
+int Creature::getInitiative() {
   // use the speed skill
   float speed = getSkill(Constants::SPEED);
-  // roll for half the luck
-  speed += (getSkill(Constants::LUCK / 2) * rand()/RAND_MAX);
-  if(spell) {
-    speed -= spell->getSpeed();
-    speed += getSkill(spell->getSchool()->getSkill());
-  } else if(weapon) {
-    // add weapon speed (bare hand attack is the fastest, unless weapon skill is very good)
-    speed -= weapon->getSpeed();
-    if(weapon->getRpgItem()->getSkill() > -1)
-      speed += getSkill(weapon->getRpgItem()->getSkill());
-  }
-  // at this point a score of 150 is the fastest and 0 is the slowest
-
-  // convert to 0-10 and flip (so 10 is the slowest)
-  return(10 - (int)(speed / 15.0f));
+  // roll for luck
+  speed += (getSkill(Constants::LUCK / 10) * rand()/RAND_MAX);
+  return toint( speed );
 }
 
 // return number of projectiles that can be launched simultaniously

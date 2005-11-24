@@ -1476,7 +1476,9 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
     
     // Make party move to new location
-    party->setSelXY( mapx, mapy );
+    if( !party->setSelXY( mapx, mapy ) ) {
+      getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN );
+    }
 
     // start round
     if( inTurnBasedCombatPlayerTurn() ) {

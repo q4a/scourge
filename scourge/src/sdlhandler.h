@@ -98,6 +98,8 @@ private:
 
   bool willBlockEvent;
 
+  Uint32 forbiddenTimer;
+
 public: 
 
   static bool showDebugInfo;
@@ -141,7 +143,7 @@ public:
 
   inline Sound *getSound() { return sound; }
 
-  void setCursorMode(int n) { cursorMode = n; }
+  void setCursorMode(int n);
   int getCursorMode() { return cursorMode; }
   void applyMouseOffset(int x, int y, int *newX, int *newY);
 

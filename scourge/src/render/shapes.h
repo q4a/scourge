@@ -191,9 +191,9 @@ protected:
   std::vector<std::string> themeShapeRef;
 
   // cursor
-  SDL_Surface *cursor, *crosshair, *attackCursor, *talkCursor, *useCursor;
-  GLubyte *cursorImage, *crosshairImage, *attackImage, *talkImage, *useImage;
-  GLuint cursor_texture, crosshair_texture, attack_texture, talk_texture, use_texture;
+  SDL_Surface *cursor, *crosshair, *attackCursor, *talkCursor, *useCursor, *forbiddenCursor;
+  GLubyte *cursorImage, *crosshairImage, *attackImage, *talkImage, *useImage, *forbiddenImage;
+  GLuint cursor_texture, crosshair_texture, attack_texture, talk_texture, use_texture, forbidden_texture;
   GLuint ripple_texture, torchback;
 
 public: 

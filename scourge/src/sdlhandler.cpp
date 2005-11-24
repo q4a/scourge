@@ -30,6 +30,8 @@
 
 using namespace std;
 
+#define FORBIDDEN_CURSOR_TIME 2000
+
 //#define DEBUG_MOUSE_FOCUS 1
 
 bool SDLHandler::stencilBufferUsed = false;
@@ -64,6 +66,7 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   mouseLock = NULL;
   willUnlockMouse = false;
   willBlockEvent = false;
+  forbiddenTimer = 0;
 }
 
 SDLHandler::~SDLHandler(){
@@ -506,6 +509,11 @@ void SDLHandler::mainLoop() {
       }
 
       // Show pointer over widgets unless casting a spell
+      if( getCursorMode() == Constants::CURSOR_FORBIDDEN &&
+          SDL_GetTicks() - forbiddenTimer > FORBIDDEN_CURSOR_TIME ) {
+        setCursorMode( Constants::CURSOR_NORMAL );        
+      }
+
       if( !mouseIsMovingOverMap &&
           getCursorMode() != Constants::CURSOR_CROSSHAIR ) 
         setCursorMode( Constants::CURSOR_NORMAL );
@@ -899,6 +907,13 @@ void SDLHandler::allWindowsClosed() {
   if( gameAdapter->getSession()->getParty() &&
       gameAdapter->getSession()->getParty()->getPartySize() > 0 ) {
     gameAdapter->getSession()->getParty()->toggleRound( false );
+  }
+}
+
+void SDLHandler::setCursorMode(int n) { 
+  cursorMode = n; 
+  if( cursorMode == Constants::CURSOR_FORBIDDEN ) {
+    forbiddenTimer = SDL_GetTicks();
   }
 }
 
