@@ -348,7 +348,7 @@ class Creature : public RenderedCreature {
   void setProtectedStateMod(int mod, bool setting);
 
   // return the initiative for a battle round, the lower the faster the attack
-  int getInitiative();
+  int getInitiative( int *max=NULL );
   
   // take damage
   // return true if the creature dies

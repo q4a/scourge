@@ -112,7 +112,7 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
     bool handled = false;
     for( vector<Battle*>::iterator e = turns->begin(); e != turns->end(); ++e ) {
       Battle *b = *e;
-      if( b->getCreature()->getInitiative() > battle[i]->getCreature()->getInitiative() ) {
+      if( b->getCreature()->getInitiative() < battle[i]->getCreature()->getInitiative() ) {
         turns->insert( e, battle[i] );
         handled = true;
         break;
@@ -121,6 +121,7 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
     if( !handled ) turns->push_back(battle[i]);
   }
   
+  /*
   cerr << "Battle order:" << endl;
   for( vector<Battle*>::iterator e = turns->begin(); e != turns->end(); ++e ) {
     Battle *b = *e;
@@ -130,7 +131,7 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
       endl;
   }
   cerr << "-----------------------------------" << endl;
-
+  */
 }                 
 
 bool Battle::fightTurn() {

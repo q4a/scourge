@@ -78,7 +78,9 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint(5, y + 75, s);
   sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP() ) );
   scourge->getSDLHandler()->texPrint(5, y + 90, s);
-  sprintf(s, "Initiative: %d", creature->getInitiative() );
+  int initiative;
+  creature->getInitiative( &initiative );
+  sprintf(s, "Initiative: %d", initiative );
   scourge->getSDLHandler()->texPrint( 5, y + 105, s );
 
   float max, min;
