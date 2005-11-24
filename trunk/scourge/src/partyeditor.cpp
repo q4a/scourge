@@ -311,7 +311,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
                                          "    >>", n );
 
   // details 
-  int detailsHeight = 130;
+  int detailsHeight = 145;
   info->detailsInfo = new CharacterInfoUI( scourge );
   info->detailsCanvas = new Canvas( col2X, 10, col2X + skillColWidth, 10 + detailsHeight, info->detailsInfo );
   cards->addWidget( info->detailsCanvas, n );  

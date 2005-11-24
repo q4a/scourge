@@ -240,8 +240,10 @@ void Party::setTargetCreature(Creature *creature) {
   }
 }
 
-void Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
-  getPlayer()->setSelXY(mapx, mapy);
+bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
+  bool possible = getPlayer()->setSelXY(mapx, mapy);
+  if( !possible ) return false;
+
   // if player stopping not set, set it
   if ( getPlayerMoved() == 0 ) setPlayerMoved();
   if (isPlayerOnly()) {
@@ -258,6 +260,7 @@ void Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
       }
     }
   }
+  return true;
 }
 
 void Party::movePlayers() {   

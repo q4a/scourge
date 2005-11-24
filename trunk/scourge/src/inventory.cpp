@@ -157,7 +157,7 @@ Inventory::Inventory(Scourge *scourge) {
   // character info
   cards->createLabel(115, 10, "Character stats:", CHARACTER, Constants::RED_COLOR);
   charInfoUI = new CharacterInfoUI( scourge );
-  int canvasHeight = 175;
+  int canvasHeight = 190;
   attrCanvas     = new Canvas( 115, 15, 405, canvasHeight, charInfoUI );
   cards->addWidget( attrCanvas, CHARACTER );
 

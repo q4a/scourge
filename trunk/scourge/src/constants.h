@@ -592,7 +592,8 @@ public:
     CURSOR_CROSSHAIR,
     CURSOR_ATTACK,
     CURSOR_TALK,
-    CURSOR_USE
+    CURSOR_USE,
+    CURSOR_FORBIDDEN
   };
 
   enum {

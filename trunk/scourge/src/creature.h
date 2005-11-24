@@ -250,7 +250,11 @@ class Creature : public RenderedCreature {
   */
   void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
   
-  void setSelXY(int x, int y, bool force=false);
+  /**
+   * Set where to move the creature. 
+   * Returns true if the move is possible, false otherwise.
+   */
+  bool setSelXY(int x, int y, bool force=false);
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
   void findPath( int x, int y );
@@ -343,9 +347,8 @@ class Creature : public RenderedCreature {
   void setStateMod(int mod, bool setting);
   void setProtectedStateMod(int mod, bool setting);
 
-  // return the initiative for a battle round (0-10), the lower the faster the attack
-  // the method can return negative numbers if the weapon skill is very high (-10 to 10)
-  int getInitiative(Item *weapon, Spell *spell=NULL);
+  // return the initiative for a battle round, the lower the faster the attack
+  int getInitiative();
   
   // take damage
   // return true if the creature dies
