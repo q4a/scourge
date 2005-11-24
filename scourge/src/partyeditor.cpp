@@ -92,9 +92,6 @@ PartyEditor::PartyEditor(Scourge *scourge) {
   createParty( (Creature**)tmp, NULL, false );
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
     info[i].detailsInfo->setCreature( mainWin, tmp[i] );
-    cerr << "i=" << i << " inventory count=" << tmp[i]->getInventoryCount() << endl;
-    if( tmp[i]->getInventoryCount() ) 
-      cerr << "\titem=" << tmp[i]->getInventory(0)->getRpgItem()->getName() << endl;
   }
   saveUI( (Creature**)tmp );
 

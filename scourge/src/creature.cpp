@@ -1200,11 +1200,12 @@ Item *Creature::getBestWeapon(float dist) {
 }
 
 // return the initiative for a battle round, the lower the faster the attack
-int Creature::getInitiative() {
+int Creature::getInitiative( int *max ) {
   // use the speed skill
-  float speed = getSkill(Constants::SPEED);
+  float speed = getSkill(Constants::SPEED) / 5.0f;
+  if( max ) *max = toint( speed );
   // roll for luck
-  speed += (getSkill(Constants::LUCK / 10) * rand()/RAND_MAX);
+  speed += ( ( getSkill(Constants::LUCK) / 10.0f ) * rand()/RAND_MAX );
   return toint( speed );
 }
 
