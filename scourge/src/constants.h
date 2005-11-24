@@ -593,7 +593,8 @@ public:
     CURSOR_ATTACK,
     CURSOR_TALK,
     CURSOR_USE,
-    CURSOR_FORBIDDEN
+    CURSOR_FORBIDDEN,
+    CURSOR_RANGED
   };
 
   enum {
