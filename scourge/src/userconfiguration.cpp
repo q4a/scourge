@@ -303,6 +303,7 @@ UserConfiguration::UserConfiguration(){
     turnBasedBattle = true;
     ovalCutoutShown = true;
     outlineInteractiveItems = true;
+    combatInfoDetail = 0;
 
     // audio settings
     soundEnabled = true;
@@ -554,6 +555,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set outlineinteractiveitems %s\n", outlineInteractiveItems ? "true":"false");
     writeFile(configFile, textLine);
+    sprintf(textLine, "set combatinfodetail %d\n", combatInfoDetail );
+    writeFile(configFile, textLine);
     sprintf(textLine, "set turnbasedbattle %s\n", turnBasedBattle ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set alwaysshowpath %s\n", alwaysShowPath ? "true":"false");
@@ -699,8 +702,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "h"){
         h = atoi(s2.c_str());
-    }
-    else if(s1 == "shadows"){        
+    } else if(s1 == "combatinfodetail"){        
+      combatInfoDetail = atoi(s2.c_str());
+    } else if(s1 == "shadows"){        
         shadows = atoi(s2.c_str());
         if(!(shadows == 0 || 
            shadows == 1 || 
@@ -1118,6 +1122,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set turnbasedbattle true" << endl;
   configFile << "set ovalcutoutshown true" << endl;
   configFile << "set outlineinteractiveitems true" << endl;
+  configFile << "set combatinfodetail 0" << endl;
   configFile << "set alwaysshowpath false" << endl;
   configFile << "set tooltipenabled true" << endl;
   configFile << "set tooltipinterval 50" << endl;

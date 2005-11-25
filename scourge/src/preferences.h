@@ -139,6 +139,7 @@ public:
   virtual bool isBattleTurnBased() = 0;
   virtual bool isOvalCutoutShown() = 0;
   virtual bool isOutlineInteractiveItems() = 0;
+  virtual int getCombatInfoDetail() = 0;
   virtual int getSoundFreq() = 0;
   virtual bool isSoundEnabled() = 0;
   virtual int getMusicVolume() = 0;

@@ -972,10 +972,12 @@ void Battle::hitWithItem() {
   sprintf(message, "...%s attacks for %.2f points.", 
           creature->getName(), attack );
   session->getMap()->addDescription(message);
-  sprintf(message, "...(%sMI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,LD:%.2f,EX:%.2f)",
-          ( adjustedForLowProf ? "**" : "" ),
-          min, max, skill, itemLevel, levelDiff, extra );
-  session->getMap()->addDescription(message);
+  if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+    sprintf(message, "...(%sMI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,LD:%.2f,EX:%.2f)",
+            ( adjustedForLowProf ? "**" : "" ),
+            min, max, skill, itemLevel, levelDiff, extra );
+    session->getMap()->addDescription(message);
+  }
 
   // cursed items
   if( item && item->isCursed() ) {
@@ -993,9 +995,11 @@ void Battle::hitWithItem() {
   sprintf(message, "...%s blocks %.2f points", 
           creature->getTargetCreature()->getName(), ac);
   session->getMap()->addDescription(message);
-  sprintf(message, "...(TO:%.2f,SK:%.2f)",
-          total, skill );
-  session->getMap()->addDescription(message);
+  if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+    sprintf(message, "...(TO:%.2f,SK:%.2f)",
+            total, skill );
+    session->getMap()->addDescription(message);
+  }
 
 
   float damage = ( ac > attack ? 0 : attack - ac );
