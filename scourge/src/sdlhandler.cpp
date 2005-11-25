@@ -910,9 +910,9 @@ void SDLHandler::allWindowsClosed() {
   }
 }
 
-void SDLHandler::setCursorMode(int n) { 
+void SDLHandler::setCursorMode(int n, bool useTimer) { 
   cursorMode = n; 
-  if( cursorMode == Constants::CURSOR_FORBIDDEN ) {
+  if( cursorMode == Constants::CURSOR_FORBIDDEN && useTimer ) {
     forbiddenTimer = SDL_GetTicks();
   }
 }

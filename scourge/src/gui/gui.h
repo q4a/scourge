@@ -41,7 +41,7 @@ public:
   virtual int textWidth( const char *fmt, ... ) = 0;
   virtual int getScreenWidth() = 0;
   virtual int getScreenHeight() = 0;
-  virtual void setCursorMode( int n ) = 0;
+  virtual void setCursorMode( int n, bool useTimer=false ) = 0;
   virtual int getCursorMode() = 0;
   virtual GLuint getHighlightTexture() = 0;
   virtual Uint16 getMouseX() = 0;

@@ -143,7 +143,7 @@ public:
 
   inline Sound *getSound() { return sound; }
 
-  void setCursorMode(int n);
+  void setCursorMode(int n, bool useTimer=false );
   int getCursorMode() { return cursorMode; }
   void applyMouseOffset(int x, int y, int *newX, int *newY);
 
