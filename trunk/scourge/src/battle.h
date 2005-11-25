@@ -122,6 +122,8 @@ class Battle {
 
   static int getWeaponSpeed( Item *item );
 
+  int calculateRange( Item *item=NULL );
+
  protected:
   void launchProjectile();
   //void initTurn();

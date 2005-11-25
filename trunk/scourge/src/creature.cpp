@@ -1506,10 +1506,14 @@ bool Creature::canAttack(RenderedCreature *creature, int *cursor) {
   if( ret && cursor ) {
     float dist = getDistanceToTarget( creature );
     Item *item = getBestWeapon( dist );
-    *cursor = ( !item ? Constants::CURSOR_NORMAL :
-                ( item->getRpgItem()->isRangedWeapon() ? 
-                  Constants::CURSOR_RANGED : 
-                  Constants::CURSOR_ATTACK ) );
+    if( dist <= getBattle()->calculateRange( item ) ) {
+      *cursor = ( !item ? Constants::CURSOR_NORMAL :
+                  ( item->getRpgItem()->isRangedWeapon() ? 
+                    Constants::CURSOR_RANGED : 
+                    Constants::CURSOR_ATTACK ) );
+    } else {
+      *cursor = Constants::CURSOR_FORBIDDEN;
+    }
   }
   return ret;
 }

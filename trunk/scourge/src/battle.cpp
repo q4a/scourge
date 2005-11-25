@@ -254,30 +254,43 @@ bool Battle::pauseBeforePlayerTurn() {
   return false;
 }
 
+int Battle::calculateRange( Item *item ) {
+  int range;
+  if( creature->getActionSkill() ) {
+    //range = MIN_DISTANCE;
+    range = creature->getActionSkill()->getDistance();
+  } else if(creature->getActionSpell()) {
+    //range = MIN_DISTANCE;
+    range = creature->getActionSpell()->getDistance();
+  } else {
+    range = MIN_DISTANCE;
+    if(item) range = item->getDistance();
+  }
+  return range;
+}
+
 void Battle::initTurnStep() {
   dist = creature->getDistanceToTarget();
 
   // select the best weapon only once
   if(weaponWait <= 0) {
     if(debugBattle) cerr << "*** initTurnStep, creature=" << creature->getName() << " wait=" << weaponWait << " nextTurn=" << nextTurn << endl;
+
     if( creature->getActionSkill() ) {
-      //range = MIN_DISTANCE;
-      range = creature->getActionSkill()->getDistance();
+      range = calculateRange();
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = creature->getActionSkill()->getSpeed() * WEAPON_WAIT_MUL;
       nextTurn = 0;
       if(debugBattle) cerr << "\tUsing capability: " << creature->getActionSkill()->getName() << endl;
     } else if(creature->getActionSpell()) {
-      range = MIN_DISTANCE;
-      range = creature->getActionSpell()->getDistance();
+      range = calculateRange();
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = creature->getActionSpell()->getSpeed() * WEAPON_WAIT_MUL;
       nextTurn = 0;
       if(debugBattle) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
       item = creature->getBestWeapon(dist);
-      range = MIN_DISTANCE;
-      if(item) range = item->getDistance();
+      range = calculateRange( item );
       if(item) {
         if(debugBattle) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
       } else {
