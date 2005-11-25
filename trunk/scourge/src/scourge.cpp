@@ -2509,10 +2509,13 @@ void Scourge::moveCreatures() {
     if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
       ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
-    } else if(party->getParty(i)->anyMovesLeft())
+    } else if( party->getParty(i)->anyMovesLeft() && 
+               ( !party->getPlayerMoved() || 
+                 party->getParty(i) == party->getPlayer() ) ) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
-    else 
+    } else {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
+    }
   }
 
   // move the party members
