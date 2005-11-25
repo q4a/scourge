@@ -113,7 +113,7 @@ private:
 	Button *missionButton;
 	ScrollingList *objectiveList;
 	char **objectiveText;
-	Color *missionColor, *itemColor;
+	Color *missionColor, *itemColor, *schoolColors;
   GLuint *itemIcon;
   Storable *storable;
 

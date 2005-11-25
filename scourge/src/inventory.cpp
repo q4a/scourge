@@ -48,6 +48,7 @@ Inventory::Inventory(Scourge *scourge) {
   for(int i = 0; i < 10; i++) {
     this->formationText[i] = (char*)malloc(120 * sizeof(char));
   }
+  this->schoolColors = (Color*)malloc( MagicSchool::getMagicSchoolCount() * sizeof( Color ) );
   this->itemColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   this->pcInvText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   this->itemIcon = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
@@ -788,12 +789,24 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     for(int t = 0; t < MagicSchool::getMagicSchoolCount(); t++) {
       MagicSchool *school = MagicSchool::getMagicSchool(t);   
       sprintf(schoolText[t], "%s (%s)", school->getName(), school->getDeity());
+      bool found = false;
+      for( int r = 0; r < school->getSpellCount(); r++ ) {
+        if( scourge->getParty()->getParty(selected)->isSpellMemorized( school->getSpell( r ) ) ) {
+          found = true;
+          break;
+        }
+      }
+      schoolColors[t].r = 1;
+      schoolColors[t].g = 1;
+      schoolColors[t].b = ( found ? 0 : 1 );
+      schoolColors[t].a = 1;
       if(t == 0) {
         showMemorizedSpellsInSchool(scourge->getParty()->getParty(selected), school);
       }
     }
     schoolList->setLines(MagicSchool::getMagicSchoolCount(), 
-                         (const char**)schoolText);
+                         (const char**)schoolText, 
+                         schoolColors);
     break;
   case SPECIAL:
     for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
