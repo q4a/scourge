@@ -249,13 +249,13 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
   if (isPlayerOnly()) {
     getPlayer()->cancelTarget();
   } else {
-    for (int i = 0; i < getPartySize(); i++) {
-      if (!getParty(i)->getStateMod(Constants::dead)) {
+    for( int i = 0; i < getPartySize(); i++ ) {
+      if( !getParty(i)->getStateMod( Constants::dead ) ) {
         getParty(i)->cancelTarget();
-        if (getParty(i) != getPlayer()) {
+        if( getParty(i) != getPlayer() ) {
           // if already moving, don't stop
           if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
-          getParty(i)->follow( session->getMap() );
+          getParty( i )->follow( session->getMap() );
         }
       }
     }
@@ -287,6 +287,12 @@ void Party::movePlayers() {
       playerMoved = 0;
       for (int t = 0; t < getPartySize(); t++) {
         if (!party[t]->getStateMod(Constants::dead) && party[t] != player) {
+          // If the non-leader is done moving try to follow again.
+          // This will be a no-op in follow() if we're close enough.
+          if( !getParty(t)->anyMovesLeft() ) {
+            getParty( t )->follow( session->getMap() );
+          }
+          // actually take a step
           party[t]->moveToLocator(session->getMap());
         }
       }
