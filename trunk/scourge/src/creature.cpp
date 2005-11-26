@@ -422,11 +422,20 @@ bool Creature::follow(Map *map) {
   // find out where the creature should be relative to the formation
   Sint16 px, py, pz;
   getFormationPosition(&px, &py, &pz);
-  setSelXY(px, py);
+  float dist = 
+    Constants::distance( getX(),  getY(), 
+                         getShape()->getWidth(), getShape()->getDepth(),
+                         (float)px, (float)py,
+                         getShape()->getWidth(), getShape()->getDepth() );
+  // only rethink the path if we're far away
+  if( dist > 7 ) {
+    // When following don't cancel impossible moves. Get as close as possible.
+    setSelXY( px, py, false );
+  }
   return true; 
 }
 
-bool Creature::setSelXY(int x, int y, bool force) { 
+bool Creature::setSelXY(int x, int y, bool cancelIfNotPossible) { 
   int oldSelX = selX;
   int oldSelY = selY;
   int oldtx = tx;
@@ -436,9 +445,7 @@ bool Creature::setSelXY(int x, int y, bool force) {
   selY = y; 
   moveRetrycount = 0; 
   setMotion(Constants::MOTION_MOVE_TOWARDS);   
-  //if(force) {
-    tx = ty = -1;
-  //}
+  tx = ty = -1;
 
   // find the path
   tx = selX;
@@ -460,7 +467,7 @@ bool Creature::setSelXY(int x, int y, bool force) {
     /**
      * For pc-s cancel the move.
      */
-    if( !ret && character ) {
+    if( !ret && character && cancelIfNotPossible ) {
       bestPathPos = 1;
       bestPath.clear();
 
@@ -1528,12 +1535,6 @@ void Creature::cancelTarget() {
   preActionTargetCreature = NULL;
   setAction(Constants::ACTION_NO_ACTION);
   if(isMonster()) setMotion(Constants::MOTION_LOITER);     
-}
-
-void Creature::followTarget() {
-  setSelXY(getTargetX(),
-           getTargetY(),
-           true);
 }
 
 /**

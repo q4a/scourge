@@ -379,15 +379,13 @@ void Battle::stepCloserToTarget() {
                    creature->getTargetCreature()->getShape()->getDepth() / 2);
     if(!(creature->getSelX() == tx && creature->getSelY() == ty)) {
 */    
-      creature->setSelXY(tx, ty, true);
+      creature->setSelXY(tx, ty );
     }
   } else if(!(creature->getSelX() == creature->getTargetX() &&
               creature->getSelY() == creature->getTargetY())) {
     if(debugBattle) cerr << "\t\t\tto target location: " << creature->getTargetX() <<
       creature->getTargetY() << endl;
-    creature->setSelXY(creature->getTargetX(),
-                       creature->getTargetY(),
-                       true);
+    creature->setSelXY(creature->getTargetX(), creature->getTargetY() );
   }
 
   // wait for animation to end

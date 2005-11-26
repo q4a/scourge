@@ -254,7 +254,7 @@ class Creature : public RenderedCreature {
    * Set where to move the creature. 
    * Returns true if the move is possible, false otherwise.
    */
-  bool setSelXY(int x, int y, bool force=false);
+  bool setSelXY(int x, int y, bool cancelIfNotPossible=true);
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
   void findPath( int x, int y );
@@ -407,7 +407,6 @@ class Creature : public RenderedCreature {
   bool isTargetValid();
   bool canAttack(RenderedCreature *creature, int *cursor=NULL);
   void cancelTarget();
-  void followTarget();
   //void makeTargetRetaliate();
   void decideMonsterAction();
 
