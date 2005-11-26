@@ -17,11 +17,13 @@
 
 #include "effect.h"
 #include "glshape.h"
+#include "map.h"
 #include "shapes.h"
 
 using namespace std;
 
-Effect::Effect( Preferences *preferences, Shapes *shapePal, int width, int height ) {
+Effect::Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, int width, int height ) {
+  this->levelMap = levelMap;
   this->preferences = preferences;
   this->shapePal = shapePal;
   this->shape = new GLShape(0, width, height, 1, NULL,0, 0, 2000);
@@ -40,7 +42,8 @@ void Effect::reset() {
   commonInit();
 }  
 
-Effect::Effect( Preferences *preferences, Shapes *shapePal, GLShape *shape ) {
+Effect::Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, GLShape *shape ) {
+  this->levelMap = levelMap;
   this->preferences = preferences;
   this->shapePal = shapePal;
   this->shape = shape;
@@ -123,19 +126,26 @@ void Effect::drawFlames(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
-	  createParticle(&(particle[i]));
+      createParticle(&(particle[i]));
+      particle[i]->zoom = 1.4f;
+      particle[i]->tail = true;
     } else if(proceed) {
-	  moveParticle(&(particle[i]));
+      moveParticle(&(particle[i]));
     }
-
+    
     // draw it      
     if(particle[i]) {            
-
-	  float gg = 1 - ((float)particle[i]->life / 3.0f);
-	  if(gg < 0) gg = 0;
+      
+      float gg = 1 - ((float)particle[i]->life / 3.0f);
+      if(gg < 0) gg = 0;
       glColor4f(1, gg, 1, 0.5);
-	  
-	  drawParticle(particle[i]);
+
+      particle[i]->tailColor.r = 1;
+      particle[i]->tailColor.g = gg;
+      particle[i]->tailColor.b = 1;
+      particle[i]->tailColor.a = 0.5f;
+      
+      drawParticle(particle[i]);
     }
   }
 }
@@ -146,24 +156,31 @@ void Effect::drawTeleport(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 7.0f;
-	  particle[i]->moveDelta = 0.3f + (0.3f * rand()/RAND_MAX);
-	  if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
-	  particle[i]->maxLife = 10000;
-	  particle[i]->trail = 4;
+      particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 7.0f;
+      particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+      if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
+      particle[i]->maxLife = 10000;
+      particle[i]->trail = 4;
+      particle[i]->zoom = 1.4f;
+      particle[i]->tail = true;
     } else if(proceed) {
-	  moveParticle(&(particle[i]));
+      moveParticle(&(particle[i]));
     }
-
+    
     // draw it      
     if(particle[i]) {            
-
-	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  float c = fabs(particle[i]->z - 8) / 8.0f;
-	  if(c > 1) c = 1;
+      
+      //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+      float c = fabs(particle[i]->z - 8) / 8.0f;
+      if(c > 1) c = 1;
       glColor4f(c / 2.0f, c, 1.0f, 0.5);
 
-	  drawParticle(particle[i]);
+      particle[i]->tailColor.r = c / 2.0f;
+      particle[i]->tailColor.g = c;
+      particle[i]->tailColor.b = 1;
+      particle[i]->tailColor.a = 0.5f;
+      
+      drawParticle(particle[i]);
     }
   }
 }
@@ -539,9 +556,10 @@ void Effect::drawParticle(ParticleStruct *particle) {
     glTranslatef( particle->x, particle->y, z );  
     
     // rotate each particle to face viewer
-    glRotatef(-shape->getZRot(), 0.0f, 0.0f, 1.0f);
-    // FIXME: maybe use -(map->getYRot()) instead below
-    glRotatef(-(90.0 + shape->getYRot()), 1.0f, 0.0f, 0.0f);      
+    //glRotatef(-shape->getZRot(), 0.0f, 0.0f, 1.0f);
+    //glRotatef(-( 90 + shape->getYRot() ), 1.0f, 0.0f, 0.0f);      
+    glRotatef(-levelMap->getZRot(), 0.0f, 0.0f, 1.0f);
+    glRotatef(-levelMap->getYRot(), 1.0f, 0.0f, 0.0f);      
     
     if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
     
@@ -556,6 +574,7 @@ void Effect::drawParticle(ParticleStruct *particle) {
       //glDisable( GL_TEXTURE_2D );
       glBegin( GL_QUADS );
       // front
+      /*
       glNormal3f(0.0f, 1.0f, 0.0f);
       if(flameTex) glTexCoord2f( 1.0f, 1.0f );
       glVertex3f(w/2.0f, 0, -sh);
@@ -565,10 +584,23 @@ void Effect::drawParticle(ParticleStruct *particle) {
       glVertex3f(-w/2.0f, 0, 0);
       if(flameTex) glTexCoord2f( 1.0f, 0.0f );
       glVertex3f(w/2.0f, 0, 0);  
+      */
+
+      glNormal3f(0.0f, 1.0f, 0.0f);
+      if(flameTex) glTexCoord2f( 1.0f, 1.0f );
+      glVertex2f(w/2.0f, -sh );
+      if(flameTex) glTexCoord2f( 0.0f, 1.0f );
+      glVertex2f(-w/2.0f, -sh );
+      if(flameTex) glTexCoord2f( 0.0f, 0.0f );
+      glVertex2f(-w/2.0f, 0 );
+      if(flameTex) glTexCoord2f( 1.0f, 0.0f );
+      glVertex2f(w/2.0f, 0 );  
+
       glEnd();    
       //glEnable( GL_TEXTURE_2D );
     }
       
+    /*
     glBegin( GL_QUADS );
     // front
     glNormal3f(0.0f, 1.0f, 0.0f);
@@ -580,7 +612,21 @@ void Effect::drawParticle(ParticleStruct *particle) {
     glVertex3f(-w/2.0f, 0, h/2.0f);
     if(flameTex) glTexCoord2f( 1.0f, 0.0f );
     glVertex3f(w/2.0f, 0, h/2.0f);  
-    glEnd();    
+    glEnd();
+    */
+
+
+    glBegin( GL_QUADS );
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
+    glVertex2f(w/2.0f, -h/2.0f);
+    if(flameTex) glTexCoord2f( 0.0f, 1.0f );
+    glVertex2f(-w/2.0f, -h/2.0f );
+    if(flameTex) glTexCoord2f( 0.0f, 0.0f );
+    glVertex2f(-w/2.0f, h/2.0f );
+    if(flameTex) glTexCoord2f( 1.0f, 0.0f );
+    glVertex2f(w/2.0f, h/2.0f );  
+    glEnd();
     
     // reset the model_view matrix
     glPopMatrix();

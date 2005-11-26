@@ -113,6 +113,8 @@ public:
   }
 };
 
+class Map;
+
 class MapMemoryManager {
   private:
     std::vector<Location*> unused;
@@ -128,7 +130,7 @@ class MapMemoryManager {
     ~MapMemoryManager();
     Location *newLocation();
     void deleteLocation( Location *pos );
-    EffectLocation *newEffectLocation( Preferences *preferences, Shapes *shapes, int width, int height );
+    EffectLocation *newEffectLocation( Map *map, Preferences *preferences, Shapes *shapes, int width, int height );
     void deleteEffectLocation( EffectLocation *pos );    
   private:
     void printStatus();

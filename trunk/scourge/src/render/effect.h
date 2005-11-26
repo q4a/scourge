@@ -27,9 +27,11 @@
 class Preferences;
 class Shapes;
 class GLShape;
+class Map;
 
 class Effect {
 private:  
+  Map *levelMap;
   Preferences *preferences;
   Shapes *shapePal;
   GLuint flameTex, ringTex, rippleTex;
@@ -42,8 +44,8 @@ private:
   ParticleStruct *particle[PARTICLE_COUNT];
 
 public:
-  Effect( Preferences *preferences, Shapes *shapePal, GLShape *shape );
-  Effect( Preferences *preferences, Shapes *shapePal, int width, int height );
+  Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, GLShape *shape );
+  Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, int width, int height );
   ~Effect();
   
   void reset();

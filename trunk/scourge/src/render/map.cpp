@@ -1882,7 +1882,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   }
 
   if(!effect[x][y][z]) {
-    effect[x][y][z] = mapMemoryManager->newEffectLocation( preferences, shapes, width, height );
+    effect[x][y][z] = mapMemoryManager->newEffectLocation( this, preferences, shapes, width, height );
   }
   /*
   effect[x][y][z]->effect = new Effect( preferences,
@@ -3286,7 +3286,7 @@ Location *MapMemoryManager::newLocation() {
   return pos;
 }
 
-EffectLocation *MapMemoryManager::newEffectLocation( Preferences *preferences, Shapes *shapes, int width, int height ) {
+EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *preferences, Shapes *shapes, int width, int height ) {
   EffectLocation *pos;
   if( unusedEffect.size() ) {
     pos = unusedEffect[ unusedEffect.size() - 1 ];
@@ -3294,7 +3294,7 @@ EffectLocation *MapMemoryManager::newEffectLocation( Preferences *preferences, S
     pos->effect->reset();
   } else {
     pos = new EffectLocation();
-    pos->effect = new Effect( preferences, shapes, 4, 4 );
+    pos->effect = new Effect( theMap, preferences, shapes, 4, 4 );
     pos->effect->deleteParticles();    
   }    
   usedEffectCount++;

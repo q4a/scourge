@@ -53,7 +53,7 @@ void RenderedCreature::startEffect( int effect_type, int duration, GLuint delay 
 Effect *RenderedCreature::getEffect() {
   if( !effect ) {
     effect = 
-      new Effect( preferences, shapes, getShape() );
+      new Effect( levelMap, preferences, shapes, getShape() );
   }
   return effect;
 }

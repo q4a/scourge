@@ -1313,14 +1313,18 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if( event->key.keysym.sym == SDLK_u ) {
       getBoard()->setStorylineIndex( getBoard()->getStorylineIndex() - 1 );
       cerr << "Decremented storyline index to " << getBoard()->getStorylineIndex() << endl;
-    } else if(event->key.keysym.sym == SDLK_u) {
+    } else if(event->key.keysym.sym == SDLK_p) {
       cerr << "EFFECT!" << endl;
 //      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
 
-      levelMap->startEffect( toint(party->getPlayer()->getX()), 
-                             toint(party->getPlayer()->getY()), 1, 
-                             Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
-                             12, 12 );
+      party->getPlayer()->startEffect( (int)( (float)Constants::EFFECT_COUNT * rand() / RAND_MAX ), 
+                                       (Constants::DAMAGE_DURATION * 4) );
+/*                                                                                           */
+/*       levelMap->startEffect( toint(party->getPlayer()->getX()),                           */
+/*                              toint(party->getPlayer()->getY()), 1,                        */
+/*                              (int)( (float)Constants::EFFECT_COUNT * rand() / RAND_MAX ), */
+/*                              (Constants::DAMAGE_DURATION * 4),                            */
+/*                              12, 12 );                                                    */
 
     } else if(event->key.keysym.sym == SDLK_m) {
       Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
