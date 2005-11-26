@@ -263,7 +263,7 @@ int Battle::calculateRange( Item *item ) {
     //range = MIN_DISTANCE;
     range = creature->getActionSpell()->getDistance();
   } else {
-    range = MIN_DISTANCE;
+    range = (int)MIN_DISTANCE;
     if(item) range = item->getDistance();
   }
   return range;
@@ -1025,7 +1025,7 @@ void Battle::hitWithItem() {
 }
 
 void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {
-  if( damage > 0 ) {
+  if( toint( damage ) > 0 ) {
 
     // also affects spell attacks
     float delta = creature->getDefenderStateModPercent(magical);

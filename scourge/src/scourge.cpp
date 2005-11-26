@@ -811,8 +811,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
      getUserConfiguration()->isBattleTurnBased() && 
      battleTurn < (int)battleRound.size() ) {
     for( int i = creature->getPathIndex(); 
-         i < (int)creature->getPath()->size() && 
-         i <= creature->getBattle()->getAP(); i++) {
+         i < (int)creature->getPath()->size(); i++) {
       Location pos = (*(creature->getPath()))[i];
 
       glColor4f(1, 0.4f, 0.0f, 0.5f);
@@ -945,10 +944,63 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glDisable(GL_TEXTURE_2D);
   }
 
+  glPushMatrix();
   //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
   glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
   if(groupMode || player || creature->isMonster()) 
     gluDisk(quadric, w - s, w, 12, 1);
+  glPopMatrix();
+
+  // draw recent damages
+  glEnable(GL_TEXTURE_2D);
+  getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+
+
+  // show recent damages
+  glDisable(GL_DEPTH_TEST);
+  const float maxPos = 10.0f;
+  const Uint32 posSpeed = 70;
+  const float posDelta = 0.3f;
+  for( int i = 0; i < creature->getRecentDamageCount(); i++ ) {
+    DamagePos *dp = creature->getRecentDamage( i );
+    xpos2 = ((float)( creature->getX() + 
+                      creature->getShape()->getWidth() / 2 - 
+                      levelMap->getX()) / DIV);
+    ypos2 = ((float)( creature->getY() - 
+                      creature->getShape()->getDepth() / 2 - 
+                      levelMap->getY()) / DIV);
+    zpos2 = ( (float)(creature->getShape()->getHeight() * 1.25f) + dp->pos ) / DIV;  
+    glPushMatrix();
+    //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
+    glTranslatef( xpos2, ypos2, zpos2 );
+    // rotate each particle to face viewer
+    glRotatef( -( levelMap->getZRot() ), 0.0f, 0.0f, 1.0f);
+    glRotatef( -levelMap->getYRot(), 1.0f, 0.0f, 0.0f);      
+
+    float alpha = (float)( maxPos - dp->pos ) / ( maxPos * 0.75f );
+    if( player ) {
+      glColor4f(1.0f, 1.0f, 0, alpha );
+    } else {
+      glColor4f(0.75f, 0.75f, 0.75f, alpha );
+    }
+    getSDLHandler()->texPrint( 0, 0, "%d", dp->damage );
+    
+    glPopMatrix();
+    
+    Uint32 now = SDL_GetTicks();
+    if( now - dp->lastTime >= posSpeed ) {
+      dp->pos += posDelta;
+      dp->lastTime = now;
+      if( dp->pos >= maxPos ) {
+        creature->removeRecentDamage( i );
+        i--;
+      }
+    }
+  }
+  glDisable(GL_TEXTURE_2D);
+  getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+  glEnable(GL_DEPTH_TEST);
+
 
   glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );

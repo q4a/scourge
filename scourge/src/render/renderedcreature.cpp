@@ -29,6 +29,7 @@ RenderedCreature::RenderedCreature( Preferences *preferences,
   effectDuration = Constants::DAMAGE_DURATION;
   effect = NULL;
   effectType = Constants::EFFECT_FLAMES;
+  recentDamagesCount = 0;
 }
 
 RenderedCreature::~RenderedCreature() {
@@ -55,5 +56,26 @@ Effect *RenderedCreature::getEffect() {
       new Effect( preferences, shapes, getShape() );
   }
   return effect;
+}
+
+bool RenderedCreature::addRecentDamage( int damage ) { 
+if( recentDamagesCount < MAX_RECENT_DAMAGE - 1 ) {
+  recentDamages[ recentDamagesCount ].damage = damage;
+    recentDamages[ recentDamagesCount ].pos = 0.0f;
+    recentDamages[ recentDamagesCount ].lastTime = SDL_GetTicks();
+    recentDamagesCount++;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void RenderedCreature::removeRecentDamage( int i ) {
+  for( int t = i; t < recentDamagesCount - 1; t++ ) {
+    recentDamages[ t ].damage = recentDamages[ t + 1 ].damage;
+    recentDamages[ t ].pos = recentDamages[ t + 1 ].pos;
+    recentDamages[ t ].lastTime = recentDamages[ t + 1 ].lastTime;
+  }
+  recentDamagesCount--;
 }
 

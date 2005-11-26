@@ -32,6 +32,14 @@ class Map;
  * A creature rendered on the map.
  */
 
+typedef struct _DamagePos {
+  int damage;
+  float pos;
+  Uint32 lastTime;
+} DamagePos;
+
+#define MAX_RECENT_DAMAGE 100
+
 class RenderedCreature {
 protected:
   GLfloat x, y, z;
@@ -41,7 +49,9 @@ protected:
   int effectType;
   Preferences *preferences;
   Shapes *shapes;
-  Map *levelMap;
+  Map *levelMap;  
+  DamagePos recentDamages[MAX_RECENT_DAMAGE];
+  int recentDamagesCount;
 
 public:
   RenderedCreature( Preferences *preferences, 
@@ -53,6 +63,11 @@ public:
   virtual inline GLfloat getY() { return y; }
   virtual inline GLfloat getZ() { return z; }
   virtual inline void moveTo(GLfloat x, GLfloat y, GLfloat z) { this->x = x; this->y = y; this->z = z; }
+  
+  virtual inline int getRecentDamageCount() { return recentDamagesCount; }
+  virtual inline DamagePos *getRecentDamage(int i) { return &(recentDamages[i]); }
+  virtual bool addRecentDamage( int damage );
+  virtual void removeRecentDamage( int i );
 
   virtual bool getStateMod(int mod) = 0;
   virtual void pickUpOnMap( RenderedItem *item ) = 0;
