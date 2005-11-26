@@ -540,6 +540,7 @@ void Effect::drawParticle(ParticleStruct *particle) {
     
     // rotate each particle to face viewer
     glRotatef(-shape->getZRot(), 0.0f, 0.0f, 1.0f);
+    // FIXME: maybe use -(map->getYRot()) instead below
     glRotatef(-(90.0 + shape->getYRot()), 1.0f, 0.0f, 0.0f);      
     
     if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );

@@ -1230,7 +1230,10 @@ bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
                                          "damage",
                                          damage );
 
-  hp -= toint( damage );
+  int intDamage = toint( damage );
+  addRecentDamage( intDamage );
+
+  hp -= intDamage;
   // if creature dies start effect at its location
   if(hp > 0) {
     startEffect(effect_type);
