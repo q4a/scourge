@@ -70,7 +70,7 @@ class Party {
 
   inline Creature *getPlayer() { return player; }
 
-  void setPlayer(int n);
+  void setPlayer(int n, bool updateui=true);
 
   void setPartyMotion(int motion);
   

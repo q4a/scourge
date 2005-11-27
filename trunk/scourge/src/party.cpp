@@ -165,7 +165,7 @@ bool Party::switchToNextLivePartyMember() {
 	return res;
 }
 
-void Party::setPlayer(int n) {
+void Party::setPlayer(int n, bool updateui) {
   player = party[n];
   player->setNextDontMove(NULL, 0);
   //  player->setSelXY(-1, -1); // don't move
@@ -175,21 +175,23 @@ void Party::setPlayer(int n) {
     if(i != n) party[i]->setNextDontMove(player, count++);
   }
 
-  //  move = 0;
-  session->getMap()->refresh();
-  session->getMap()->center(toint(getPlayer()->getX()), toint(getPlayer()->getY()));
-  
-  session->getMap()->center(toint(player->getX()), toint(player->getY()), true);
-  if(!session->getGameAdapter()->isHeadless()) {
-    session->getGameAdapter()->refreshInventoryUI(n);  
-    session->getGameAdapter()->setPlayerUI(n);
-  }
+  if( updateui ) {
+    //  move = 0;
+    session->getMap()->refresh();
+    session->getMap()->center(toint(getPlayer()->getX()), toint(getPlayer()->getY()));
+    
+    session->getMap()->center(toint(player->getX()), toint(player->getY()), true);
+    if(!session->getGameAdapter()->isHeadless()) {
+      session->getGameAdapter()->refreshInventoryUI(n);  
+      session->getGameAdapter()->setPlayerUI(n);
+    }
 
-  // play selection sound
-  if(lastPlayer != player) {
-    if(lastPlayer && !player->getStateMod(Constants::dead))
-      session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
-    lastPlayer = player;          
+    // play selection sound
+    if(lastPlayer != player) {
+      if(lastPlayer && !player->getStateMod(Constants::dead))
+        session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
+      lastPlayer = player;          
+    }
   }
 }
 
@@ -256,9 +258,11 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
     bool possible = c->setSelXY(mapx, mapy);
     if( possible ) {
 
-      // select this player as the new leader
+      // select this player as the new leader temporarily
+      Creature *oldPlayer = getPlayer();
       if( i > -1 ) {
-        setPlayer( i );
+        setPlayer( i, false );
+        //cerr << "*** Temporarily setting new leader." << endl;
       }
 
       // if player stopping not set, set it
@@ -273,6 +277,15 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
               // if already moving, don't stop
               if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
               getParty( i )->follow( session->getMap() );
+            }
+          }
+        }
+        // reset the player
+        if( getPlayer() != oldPlayer ) {
+          for( int i = 0; i < getPartySize(); i++ ) {
+            if( getParty(i) == oldPlayer ) {
+              setPlayer( i, false );
+              break;
             }
           }
         }
