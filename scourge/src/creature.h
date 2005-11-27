@@ -240,6 +240,7 @@ class Creature : public RenderedCreature {
   inline int getFormation() { return formation; }
   void setNext(Creature *next, int index);
   void setNextDontMove(Creature *next, int index);
+  Creature *getNext() { return next; }
   inline Uint16 getDir() { return dir; }
   inline void setDir(Uint16 dir) { this->dir = dir; }
   
