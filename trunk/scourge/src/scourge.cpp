@@ -1364,6 +1364,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
     ea = getUserConfiguration()->getEngineAction(event);    
     if(ea == SWITCH_COMBAT) {
+      resetBattles();
       getUserConfiguration()->setBattleTurnBased( getUserConfiguration()->isBattleTurnBased() ? false : true );
       char message[80];
       sprintf( message, "Combat is now %s.", ( getUserConfiguration()->isBattleTurnBased() ?
@@ -3407,7 +3408,12 @@ void Scourge::eraseMiniMapPoint(int x, int y) {
 
 void Scourge::resetBattles() {
   // delete battle references
-  if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
+  if(battleRound.size()) {
+    for( int i = 0; i < (int)battleRound.size(); i++ ) {
+      battleRound[i]->reset();
+    }
+    battleRound.erase(battleRound.begin(), battleRound.end());
+  }
   for(int i = 0; i < MAX_BATTLE_COUNT; i++) {
     battle[i] = NULL;
   }

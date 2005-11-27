@@ -43,7 +43,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
                         100, 170, 280, 320, 
                         "Options", 
                         scourge->getShapePalette()->getGuiTexture(),
-                        false, Window::BASIC_WINDOW,
+                        true, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2());
     
   int x = 0;
@@ -281,8 +281,10 @@ void OptionsMenu::setSelectedMode(){
 
 
 bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {    
-    if(widget == mainWin->closeButton) scourge->toggleOptionsWindow();
-    else if(widget == gameSettingsButton) {
+    if(widget == mainWin->closeButton) {
+      scourge->toggleOptionsWindow();
+      return true;
+    } else if(widget == gameSettingsButton) {
         selectedMode = GAME_SETTINGS;        
     }  
     else if(widget == videoButton) {
