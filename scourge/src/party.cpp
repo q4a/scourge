@@ -240,27 +240,47 @@ void Party::setTargetCreature(Creature *creature) {
   }
 }
 
+/**
+ * Move the party someplace.
+ * If in group mode and the selected player can't move to the desired
+ * location, pick someone else from the group who can make the move.
+ */
 bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
-  bool possible = getPlayer()->setSelXY(mapx, mapy);
-  if( !possible ) return false;
+  for( int i = -1; i < ( isPlayerOnly() ? 0 : getPartySize() ); i++ ) {
+    Creature *c = ( i == -1 ? getPlayer() : getParty(i) );
+    if( i > -1 && 
+        ( c == getPlayer() ||
+          c->getStateMod( Constants::dead ) ) ) 
+      continue;
 
-  // if player stopping not set, set it
-  if ( getPlayerMoved() == 0 ) setPlayerMoved();
-  if (isPlayerOnly()) {
-    getPlayer()->cancelTarget();
-  } else {
-    for( int i = 0; i < getPartySize(); i++ ) {
-      if( !getParty(i)->getStateMod( Constants::dead ) ) {
-        getParty(i)->cancelTarget();
-        if( getParty(i) != getPlayer() ) {
-          // if already moving, don't stop
-          if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
-          getParty( i )->follow( session->getMap() );
+    bool possible = c->setSelXY(mapx, mapy);
+    if( possible ) {
+
+      // select this player as the new leader
+      if( i > -1 ) {
+        setPlayer( i );
+      }
+
+      // if player stopping not set, set it
+      if( getPlayerMoved() == 0 ) setPlayerMoved();
+      if( isPlayerOnly() ) {
+        getPlayer()->cancelTarget();
+      } else {
+        for( int i = 0; i < getPartySize(); i++ ) {
+          if( !getParty(i)->getStateMod( Constants::dead ) ) {
+            getParty(i)->cancelTarget();
+            if( getParty(i) != getPlayer() ) {
+              // if already moving, don't stop
+              if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
+              getParty( i )->follow( session->getMap() );
+            }
+          }
         }
       }
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
 void Party::movePlayers() {   

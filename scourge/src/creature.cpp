@@ -451,6 +451,7 @@ bool Creature::setSelXY(int x, int y, bool cancelIfNotPossible) {
   tx = selX;
   ty = selY;
   bestPathPos = 1; // skip 0th position; it's the starting location
+  //cerr << getName() << " findPath" << endl;
   Util::findPath( toint(getX()), toint(getY()), toint(getZ()), 
                   selX, selY, 0, 
                   &bestPath, 
