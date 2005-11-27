@@ -379,13 +379,13 @@ void Battle::stepCloserToTarget() {
                    creature->getTargetCreature()->getShape()->getDepth() / 2);
     if(!(creature->getSelX() == tx && creature->getSelY() == ty)) {
 */    
-      creature->setSelXY(tx, ty );
+      creature->setSelXY( tx, ty, false );
     }
   } else if(!(creature->getSelX() == creature->getTargetX() &&
               creature->getSelY() == creature->getTargetY())) {
     if(debugBattle) cerr << "\t\t\tto target location: " << creature->getTargetX() <<
       creature->getTargetY() << endl;
-    creature->setSelXY(creature->getTargetX(), creature->getTargetY() );
+    creature->setSelXY(creature->getTargetX(), creature->getTargetY(), false );
   }
 
   // wait for animation to end
@@ -422,7 +422,7 @@ void Battle::stepCloserToTarget() {
     }
       
     // guess a new path
-    creature->setSelXY( creature->getSelX(), creature->getSelY() );
+    creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
 
     if( creature->isMonster() ) {      
       ap--;  
@@ -501,7 +501,7 @@ bool Battle::moveCreature() {
         }
 
         // guess a new path
-        creature->setSelXY( creature->getSelX(), creature->getSelY() );
+        creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
         if( session->getPreferences()->isBattleTurnBased() ) {          
           if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
         } else {
