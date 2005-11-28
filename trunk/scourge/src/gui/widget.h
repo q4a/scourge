@@ -127,7 +127,8 @@ class Widget {
   void drawTooltip( Widget *parent );
 
   static void drawBorderedTexture( GLuint texture, int x, int y, int w, int h, 
-                                   int left, int right, int textureWidth );
+                                   int left, int right, int textureWidth, 
+                                   bool inverse=false );
 
  protected:
   bool debug;
