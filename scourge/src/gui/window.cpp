@@ -485,7 +485,6 @@ void Window::drawWidget(Widget *parent) {
     glEnd ();
 
   } 
-
   // HACK: blend window if top color's a < 1.0f
   if(!isModal()) {
     if( theme->getWindowTop() && 

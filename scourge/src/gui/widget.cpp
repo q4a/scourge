@@ -124,9 +124,11 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
   }
 
   int n = 0;
+  GLuint tex;
   if(toggle && selected) {
     if( theme->getButtonSelectionBackground() ) {
       glEnable( GL_TEXTURE_2D );
+      tex = theme->getButtonSelectionBackground()->texture;
       glBindTexture( GL_TEXTURE_2D, theme->getButtonSelectionBackground()->texture );
       glColor4f( theme->getButtonSelectionBackground()->color.r,
                  theme->getButtonSelectionBackground()->color.g,
@@ -138,6 +140,7 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
     }
   } else if( theme->getButtonBackground() ) {
     glEnable( GL_TEXTURE_2D );
+    tex = theme->getButtonBackground()->texture;
     glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->texture );
     glColor4f( theme->getButtonBackground()->color.r, 
                theme->getButtonBackground()->color.g, 
@@ -437,7 +440,7 @@ void Widget::drawTooltip( Widget *parent ) {
  * it horizontally. This is generally true for buttons, progress bars, etc.
  */
 void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int height, 
-                                  int left, int right, int textureWidth ) {
+                                  int left, int right, int textureWidth, bool inverse ) {
   
   glEnable( GL_TEXTURE_2D );
   glEnable( GL_ALPHA_TEST );    
@@ -447,37 +450,67 @@ void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int h
   glPushMatrix();
   glTranslatef( x, y, 0 );
   glBegin( GL_QUADS );
-
-  // quad A
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, 0 );
-  glTexCoord2f( 0, 1 );
-  glVertex3f( 0, height, 0);
-  glTexCoord2f( (float)left / (float)textureWidth, 1 );
-  glVertex3f( left, height, 0 );
-  glTexCoord2f( (float)left / (float)textureWidth, 0 );
-  glVertex3f( left, 0, 0 );
-
-  // quad B
-  glTexCoord2f( (float)left / (float)textureWidth, 0 );
-  glVertex3f( left, 0, 0 );
-  glTexCoord2f( (float)left / (float)textureWidth, 1 );
-  glVertex3f( left, height, 0);
-  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
-  glVertex3f( width - right, height, 0 );
-  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
-  glVertex3f( width - right, 0, 0 );
-
-  // quad C
-  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
-  glVertex3f( width - right, 0, 0 );
-  glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
-  glVertex3f( width - right, height, 0);
-  glTexCoord2f( 1, 1 );
-  glVertex3f( width, height, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( width, 0, 0 );
-
+  if( inverse ) {
+    // quad A
+    glTexCoord2f( (float)left / (float)textureWidth, 1 );
+    glVertex3f( 0, 0, 0 );
+    glTexCoord2f( (float)left / (float)textureWidth, 0 );
+    glVertex3f( 0, height, 0);
+    glTexCoord2f( 0, 0 );    
+    glVertex3f( left, height, 0 );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( left, 0, 0 );
+  
+    // quad B
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glVertex3f( left, 0, 0 );
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glVertex3f( left, height, 0);
+    glTexCoord2f( (float)left / (float)textureWidth, 0 );    
+    glVertex3f( width - right, height, 0 );
+    glTexCoord2f( (float)left / (float)textureWidth, 1 );    
+    glVertex3f( width - right, 0, 0 );
+  
+    // quad C
+    glTexCoord2f( 1, 1 );
+    glVertex3f( width - right, 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( width - right, height, 0);
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glVertex3f( width, height, 0 );
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glVertex3f( width, 0, 0 );
+  } else {
+    // quad A
+    glTexCoord2f( 0, 0 );
+    glVertex3f( 0, 0, 0 );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( 0, height, 0);
+    glTexCoord2f( (float)left / (float)textureWidth, 1 );
+    glVertex3f( left, height, 0 );
+    glTexCoord2f( (float)left / (float)textureWidth, 0 );
+    glVertex3f( left, 0, 0 );
+  
+    // quad B
+    glTexCoord2f( (float)left / (float)textureWidth, 0 );
+    glVertex3f( left, 0, 0 );
+    glTexCoord2f( (float)left / (float)textureWidth, 1 );
+    glVertex3f( left, height, 0);
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glVertex3f( width - right, height, 0 );
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glVertex3f( width - right, 0, 0 );
+  
+    // quad C
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glVertex3f( width - right, 0, 0 );
+    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glVertex3f( width - right, height, 0);
+    glTexCoord2f( 1, 1 );
+    glVertex3f( width, height, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( width, 0, 0 );
+  }
   glEnd();
 
   /* debugging only
