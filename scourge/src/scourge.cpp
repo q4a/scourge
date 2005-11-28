@@ -620,17 +620,17 @@ void Scourge::drawView() {
 
     // creatures first
     for(int i = 0; i < session->getCreatureCount(); i++) {
-      if(!session->getCreature(i)->getStateMod(Constants::dead) && 
-         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
-                                toint(session->getCreature(i)->getY())) &&
-         levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
-                                toint(session->getCreature(i)->getY()))) {
+      //if(!session->getCreature(i)->getStateMod(Constants::dead) && 
+      if( levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
+                                      toint(session->getCreature(i)->getY())) &&
+          levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
+                                      toint(session->getCreature(i)->getY()))) {
         showCreatureInfo(session->getCreature(i), false, false, false);
       }
     }
     // party next so red target circle shows over gray
     for(int i = 0; i < party->getPartySize(); i++) {
-      if(!party->getParty(i)->getStateMod(Constants::dead)) {
+      //if(!party->getParty(i)->getStateMod(Constants::dead)) {
 
         bool player = party->getPlayer() == party->getParty(i);
         if( getUserConfiguration()->isBattleTurnBased() && 
@@ -638,13 +638,12 @@ void Scourge::drawView() {
            battleTurn < (int)battleRound.size()) {
           player = (party->getParty(i) == battleRound[battleTurn]->getCreature());
         }
-
         showCreatureInfo(party->getParty(i), 
                          player, 
                          (levelMap->getSelectedDropTarget() && 
                           levelMap->getSelectedDropTarget()->creature == party->getParty(i)),
                          !party->isPlayerOnly());
-      }
+    //}
     }
 
     drawInfos();
@@ -807,9 +806,10 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   // show path
-  if(player && 
-     getUserConfiguration()->isBattleTurnBased() && 
-     battleTurn < (int)battleRound.size() ) {
+  if( !creature->getStateMod( Constants::dead ) &&
+      player && 
+      getUserConfiguration()->isBattleTurnBased() && 
+      battleTurn < (int)battleRound.size() ) {
     for( int i = creature->getPathIndex(); 
          i < (int)creature->getPath()->size(); i++) {
       Location pos = (*(creature->getPath()))[i];
@@ -826,10 +826,11 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   // Yellow for move creature target
-  if(player && creature->getSelX() > -1 && 
-     !creature->getTargetCreature() &&
-     !(creature->getSelX() == toint(creature->getX()) && 
-       creature->getSelY() == toint(creature->getY())) ) {
+  if( !creature->getStateMod( Constants::dead ) &&
+      player && creature->getSelX() > -1 && 
+      !creature->getTargetCreature() &&
+      !(creature->getSelX() == toint(creature->getX()) && 
+        creature->getSelY() == toint(creature->getY())) ) {
     // draw target
     glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getSelX() - levelMap->getX()) / DIV);
@@ -843,7 +844,10 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   // red for attack target
-  if(player && creature->getTargetCreature()) {
+  if( !creature->getStateMod( Constants::dead ) && 
+      player && 
+      creature->getTargetCreature() && 
+      !creature->getTargetCreature()->getStateMod( Constants::dead ) ) {
     double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / DIV;
     double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
     //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / DIV;
@@ -875,7 +879,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   // draw state mods
-  if(groupMode || player || creature->isMonster()) {
+  if( !creature->getStateMod( Constants::dead ) && 
+      ( groupMode || player || creature->isMonster() )) {
     glEnable(GL_TEXTURE_2D);
     int n = 16;
     //float x = 0.0f;
@@ -944,12 +949,14 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glDisable(GL_TEXTURE_2D);
   }
 
-  glPushMatrix();
-  //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-  glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
-  if(groupMode || player || creature->isMonster()) 
-    gluDisk(quadric, w - s, w, 12, 1);
-  glPopMatrix();
+  if( !creature->getStateMod( Constants::dead ) ) {
+    glPushMatrix();
+    //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
+    glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
+    if( groupMode || player || creature->isMonster() ) 
+      gluDisk(quadric, w - s, w, 12, 1);
+    glPopMatrix();
+  }
 
   // draw recent damages
   glEnable(GL_TEXTURE_2D);
@@ -978,10 +985,10 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glRotatef( -levelMap->getYRot(), 1.0f, 0.0f, 0.0f);      
 
     float alpha = (float)( maxPos - dp->pos ) / ( maxPos * 0.75f );
-    if( player ) {
-      glColor4f(1.0f, 1.0f, 0, alpha );
-    } else {
+    if( creature->isMonster() ) {
       glColor4f(0.75f, 0.75f, 0.75f, alpha );
+    } else {
+      glColor4f(1.0f, 1.0f, 0, alpha );
     }
     getSDLHandler()->texPrint( 0, 0, "%d", dp->damage );
     
