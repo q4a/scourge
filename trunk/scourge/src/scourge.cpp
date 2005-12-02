@@ -73,7 +73,7 @@ void Scourge::setBlendFunc() {
 Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   oldStory = currentStory = 0;
   lastTick = 0;
-  messageWin = NULL;
+//  messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
   needToCheckInfo = false;
@@ -261,7 +261,7 @@ void Scourge::startMission() {
 
     // add gui
     mainWin->setVisible(true);
-    messageWin->setVisible(true);
+//    messageWin->setVisible(true);
     if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
 
     // create the map
@@ -486,7 +486,7 @@ void Scourge::startMission() {
 
     // remove gui
     mainWin->setVisible(false);
-    messageWin->setVisible(false);
+//    messageWin->setVisible(false);
     closeAllContainerGuis();
     if(inventory->isVisible()) {
       inventory->hide();
@@ -652,7 +652,7 @@ void Scourge::drawView() {
     glDisable( GL_SCISSOR_TEST );
   }
 
-  drawDescriptions(messageList);
+  //drawDescriptions(messageList);
 
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
@@ -2151,20 +2151,20 @@ void Scourge::createUI() {
   int width = 
     getSDLHandler()->getScreen()->w - 
     (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
-  messageWin = new Window( getSDLHandler(),
-                           0, 0, width, PARTY_GUI_HEIGHT, 
-                           "Messages", 
-                           getSession()->getShapePalette()->getGuiTexture(), false,
-                           Window::BASIC_WINDOW,
-                           getSession()->getShapePalette()->getGuiTexture2() );
-  messageWin->setBackground(0, 0, 0);
-  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getSession()->getShapePalette()->getHighlightTexture());
-  messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
-  messageList->setCanGetFocus( false );
-  messageWin->addWidget(messageList);
+//  messageWin = new Window( getSDLHandler(),
+//                           0, 0, width, PARTY_GUI_HEIGHT, 
+//                           "Messages", 
+//                           getSession()->getShapePalette()->getGuiTexture(), false,
+//                           Window::BASIC_WINDOW,
+//                           getSession()->getShapePalette()->getGuiTexture2() );
+//  messageWin->setBackground(0, 0, 0);
+//  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getSession()->getShapePalette()->getHighlightTexture());
+//  messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
+//  messageList->setCanGetFocus( false );
+//  messageWin->addWidget(messageList);
   // this has to be after addWidget
-  messageList->setBackground( 1, 0.75f, 0.45f );
-  messageList->setSelectionColor( 0.25f, 0.25f, 0.25f );
+//  messageList->setBackground( 1, 0.75f, 0.45f );
+//  messageList->setSelectionColor( 0.25f, 0.25f, 0.25f );
 
   // FIXME: try to encapsulate this in a class...
   //  exitConfirmationDialog = NULL;
@@ -2217,14 +2217,14 @@ void Scourge::setUILayout() {
   (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
 
   mainWin->setVisible( false );
-  messageWin->setVisible(false);
+//  messageWin->setVisible(false);
   miniMap->getWindow()->setVisible(false);
   switch(layoutMode) {
   case Constants::GUI_LAYOUT_ORIGINAL:
-    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
-    messageWin->resize(width, PARTY_GUI_HEIGHT);
-    messageWin->move(getSDLHandler()->getScreen()->w - width, 0);
-    messageWin->setLocked(false);
+//    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+//    messageWin->resize(width, PARTY_GUI_HEIGHT);
+//    messageWin->move(getSDLHandler()->getScreen()->w - width, 0);
+//    messageWin->setLocked(false);
     mainWin->setLocked(false);
     miniMap->getWindow()->setLocked(false);
     miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
@@ -2238,11 +2238,11 @@ void Scourge::setUILayout() {
     break;
 
   case Constants::GUI_LAYOUT_BOTTOM:
-    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
-    messageWin->resize(width, PARTY_GUI_HEIGHT);
-    messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
+//    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+//    messageWin->resize(width, PARTY_GUI_HEIGHT);
+//    messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
     mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;
-    messageWin->setLocked(true);
+//    messageWin->setLocked(true);
     mainWin->setLocked(true);
     miniMap->getWindow()->setLocked(true);
     miniMap->getWindow()->move(0,
@@ -2258,10 +2258,10 @@ void Scourge::setUILayout() {
     break;
 
   case Constants::GUI_LAYOUT_SIDE:
-    messageList->resize(PARTY_GUI_WIDTH, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT + 25));
-    messageWin->resize(PARTY_GUI_WIDTH, 
-                       getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT));
-    messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,  MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER);
+//    messageList->resize(PARTY_GUI_WIDTH, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT + 25));
+//    messageWin->resize(PARTY_GUI_WIDTH, 
+//                       getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT));
+//    messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,  MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER);
     miniMap->getWindow()->setLocked(true);
     miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
     miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
@@ -2269,7 +2269,7 @@ void Scourge::setUILayout() {
     mapX = 0;
     mapWidth = getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH;
     mapHeight = getSDLHandler()->getScreen()->h;
-    messageWin->setLocked(true);
+//    messageWin->setLocked(true);
     mainWin->setLocked(true);
 //  if(inventory->getWindow()->isLocked()) {
     inventory->hide();
@@ -2280,15 +2280,15 @@ void Scourge::setUILayout() {
     break;
 
   case Constants::GUI_LAYOUT_INVENTORY:
-    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
-    messageWin->resize(width, PARTY_GUI_HEIGHT);
-    messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
+//    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+//    messageWin->resize(width, PARTY_GUI_HEIGHT);
+//    messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
     miniMap->getWindow()->setLocked(true);
     miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
     int h = getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER * 2);
     miniMap->resize(MINIMAP_WINDOW_WIDTH, (h > MINIMAP_WINDOW_HEIGHT ? MINIMAP_WINDOW_HEIGHT : h));
     mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;
-    messageWin->setLocked(true);
+//    messageWin->setLocked(true);
     mainWin->setLocked(true);
     inventory->hide();
     //inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH, 
@@ -2307,7 +2307,7 @@ void Scourge::setUILayout() {
   inventoryButton->setSelected( inventory->isVisible() );
   optionsButton->setSelected( optionsMenu->isVisible() );
 
-  messageWin->setVisible(true, false);
+//  messageWin->setVisible(true, false);
   miniMap->getWindow()->setVisible(true, false);
 
   mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
