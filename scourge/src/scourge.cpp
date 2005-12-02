@@ -2885,11 +2885,15 @@ void Scourge::drawWidgetContents(Widget *w) {
       Creature *p = party->getParty( i );
       Util::drawBar( 10, 5, 90,
                      (float)p->getHp(), (float)p->getMaxHp(), 
-                     -1, -1, -1, true, mainWin->getTheme(), 
+                     -1, -1, -1, true, 
+                     NULL,
+                     //mainWin->getTheme(), 
                      Util::VERTICAL_LAYOUT );
       Util::drawBar( 17, 5, 90,
                      (float)p->getMp(), (float)p->getMaxMp(), 
-                     0, 0, 1, false, mainWin->getTheme(), 
+                     0, 0, 1, false, 
+                     NULL,
+                     //mainWin->getTheme(), 
                      Util::VERTICAL_LAYOUT );
       return;
     }

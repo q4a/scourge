@@ -81,6 +81,8 @@ class ScrollingLabel : public Widget {
   int wordPosCount;
   WordClickedHandler *handler;
 
+  std::map< std::string, int > textWidthCache;
+
  public: 
 
    bool debug;
@@ -117,6 +119,8 @@ class ScrollingLabel : public Widget {
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
 
   void removeEffects(Widget *parent);
+
+  int getTextWidth( Widget *parent, const char *s );  
 
   // don't play sound when the value changes
   virtual inline bool hasSound() { return false; }
