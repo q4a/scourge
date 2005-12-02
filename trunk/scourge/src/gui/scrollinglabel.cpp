@@ -51,6 +51,8 @@ ScrollingLabel::~ScrollingLabel() {
 }
 
 void ScrollingLabel::setText( char *s ) {
+  textWidthCache.clear();
+
   wordPosCount = 0;
 
   strncpy( text, ( s ? s : "" ), TEXT_SIZE ); 
@@ -188,7 +190,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
 //  char *p = strtok( tmp, " " );
 
 
-  int space = ((Window*)parent)->getScourgeGui()->textWidth( " " );
+  int space = getTextWidth( parent, " " );
   char *wordEnd = strpbrk( s, " |" );  
   char *p = s;
   char *word;
@@ -206,7 +208,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
     int wordWidth;
     if( coloring.find( *p ) != coloring.end() ) {      
 
-      wordWidth = ((Window*)parent)->getScourgeGui()->textWidth( p + 1 );
+      wordWidth = getTextWidth( parent, p + 1 );
 
       // store word pos for lookup on click
       wordPos[ wordPosCount ].x = xp;
@@ -242,7 +244,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       word = p + 1;
     } else {
 
-      wordWidth = ((Window*)parent)->getScourgeGui()->textWidth( p );
+      wordWidth = getTextWidth( parent, p );
 
       if( theme->getWindowText() ) {
         glColor4f( theme->getWindowText()->r,
@@ -339,5 +341,17 @@ int ScrollingLabel::getWordPos( int x, int y ) {
 
 void ScrollingLabel::removeEffects(Widget *parent) {
   inside = false;
+}
+
+int ScrollingLabel::getTextWidth( Widget *parent, const char *s ) {
+  string str = s;
+  int n;
+  if( textWidthCache.find( str ) == textWidthCache.end() ) {
+    n = ((Window*)parent)->getScourgeGui()->textWidth( s );
+    textWidthCache[ str ] = n;
+  } else {
+    n = textWidthCache[ str ];
+  }
+  return n;
 }
 

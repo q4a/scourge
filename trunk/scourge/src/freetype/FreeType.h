@@ -16,6 +16,12 @@
 #include <string>
 #include <iostream>
 
+//#define USE_OGLFT
+
+#ifdef USE_OGLFT
+#include "OGLFT.h"
+#endif
+
 //This holds all of the information related to any
 //freetype font that we want to create.  
 struct freetype_font_data {
@@ -23,6 +29,9 @@ struct freetype_font_data {
 	float h;			///< Holds the height of the font.
 	GLuint * textures;	///< Holds the texture id's 
 	GLuint list_base;	///< Holds the first display list id
+#ifdef USE_OGLFT
+  OGLFT::Face *face;
+#endif
 
 	//The init function will create a font of
 	//of the height h from the file fname.

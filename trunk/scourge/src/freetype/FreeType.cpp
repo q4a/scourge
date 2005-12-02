@@ -142,6 +142,28 @@ void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base, in
 
 void freetype_font_data::init(const char * fname, unsigned int h) {
 
+#ifdef USE_OGLFT
+  face = new OGLFT::TranslucentTexture( fname, h );
+  //face = new OGLFT::MonochromeTexture( fname, h );
+
+  // Always check to make sure the face was properly constructed
+  if( face == 0 || !face->isValid() ) {
+    cerr << "Could not construct face from " << fname << endl;
+    return;
+  }
+
+  // Set the face color to red
+  face->setForegroundColor( 1., 1., 1. );
+
+  // For the raster styles, it is essential that the pixel store
+  // unpacking alignment be set to 1
+  glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+
+  // Set the window's background color
+  //glClearColor( .75, .75, .75, 1. );
+#endif  
+
+
 //  cerr << "FreeType: loading font: " << fname << " h=" << h << endl;
 
 	//Allocate some memory to store the texture ids.
@@ -251,10 +273,19 @@ void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, 
   // slow on mac os X
   //	glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
 	glMatrixMode(GL_MODELVIEW);
-    bool textureOn = glIsEnabled(GL_TEXTURE_2D);
+  bool textureOn = glIsEnabled(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+
+
+#ifdef USE_OGLFT
+  glPushMatrix();
+  glTranslatef(x, y, 0);
+  glRotatef(180, 1, 0, 0);
+  ft_font.face->draw( 0, 0, str );
+  glPopMatrix();
+#else
 	glListBase(font);
 
 	//This is where the text display actually happens.
@@ -276,6 +307,7 @@ void freetype_print_simple(const freetype_font_data &ft_font, float x, float y, 
   glCallLists(strlen(str), GL_UNSIGNED_BYTE, str);
 
   glPopMatrix();
+#endif
   if(!textureOn) glDisable(GL_TEXTURE_2D);
   glDisable(GL_BLEND);
 }
@@ -303,10 +335,14 @@ int getTextLength(const freetype_font_data &ft_font, const char *fmt, ...)  {
 
 
 int getTextLengthSimple( const freetype_font_data &ft_font, char *text ) {
+#ifdef USE_OGLFT
+  return toint( ft_font.face->measure( text ).advance_.dx_ );
+#else
   int size = 0;
   for( unsigned char *p = (unsigned char*)text; *p; p++ ) {
     size += ft_font.width[*p];
   }
   return size;
+#endif
 }
 

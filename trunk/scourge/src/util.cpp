@@ -476,7 +476,8 @@ void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
                theme->getWindowBorder()->color.b,
                theme->getWindowBorder()->color.a );
   } else {
-    glColor3f( 0.8f, 0.5f, 0.2f );
+    //glColor3f( 0.8f, 0.5f, 0.2f );
+    glColor3f( 0, 0, 0 );
   }
   //glColor3f( 1, 0.75f, 0.45f );
   glBegin( GL_LINES );
