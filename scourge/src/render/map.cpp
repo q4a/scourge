@@ -1864,7 +1864,8 @@ void Map::addDescription(char *desc, float r, float g, float b) {
 
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
                       int effect_type, GLuint duration, 
-                      int width, int height, GLuint delay) {
+                      int width, int height, GLuint delay, 
+                      bool forever) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
@@ -1894,6 +1895,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->effectType = effect_type;
   effect[x][y][z]->effectDuration = duration;
   effect[x][y][z]->effectDelay = delay;
+  effect[x][y][z]->forever = forever;
   effect[x][y][z]->x = x;
   effect[x][y][z]->y = y;
   effect[x][y][z]->z = z;
@@ -1973,6 +1975,13 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
         adapter->colorMiniMapPoint(x + xp, y - yp, shape, pos[x + xp][y - yp][0]);
       }
     }
+    if( ((GLShape*)shape)->getEffectType() > -1 && 
+        !effect[x][y][z] ) {
+      startEffect( x + 1, y - shape->getDepth() + 1, z, 
+                   ((GLShape*)shape)->getEffectType(),
+                   0, shape->getWidth() - 1, shape->getDepth() - 1, 
+                   0, true );
+    }
   }
 }
 
@@ -1990,6 +1999,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???
         adapter->eraseMiniMapPoint(x + xp, y - yp);
+        removeEffect(x + xp, y - yp, z );
         for(int zp = 0; zp < shape->getHeight(); zp++) {
           Location *p = pos[x + xp][y - yp][z + zp];
           if( deleted.find(p) == deleted.end() ) deleted.insert( p );

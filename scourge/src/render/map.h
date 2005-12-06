@@ -335,10 +335,10 @@ class Map {
   
   void center(Sint16 x, Sint16 y, bool force=false);
 
-  void startEffect(Sint16 x, Sint16 y, Sint16 z, 
-                   int effect_type, GLuint duration = Constants::DAMAGE_DURATION,
-                   int width=1, int height=1,
-				   GLuint delay = 0);
+  void startEffect( Sint16 x, Sint16 y, Sint16 z, 
+                    int effect_type, GLuint duration = Constants::DAMAGE_DURATION,
+                    int width=1, int height=1,
+                    GLuint delay = 0, bool forever = false );
     
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
