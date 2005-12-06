@@ -25,6 +25,7 @@
 #define DIV 0.06f
 
 class WallTheme;
+class Effect;
 
 /**
   *@author Gabor Torok
@@ -62,6 +63,8 @@ private:
   };
 
 #define LIGHTMAP_SIZE 16
+
+  int effectType;
 
  protected:
   Uint32 color;
@@ -128,6 +131,9 @@ public:
 
   virtual void setCurrentAnimation (int numAnim, bool force=false);      
   virtual void setPauseAnimation(bool pause);
+
+  virtual inline int getEffectType() { return effectType; }
+  virtual inline void setEffectType( int n ) { effectType = n; }
   
  protected:
   bool locked;

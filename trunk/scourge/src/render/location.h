@@ -48,6 +48,7 @@ public:
   Effect *effect;
   int effectType;
   GLuint effectDelay;
+  bool forever;
 
   // effects
   inline void setEffectType(int n) { this->effectType = n; }
@@ -56,7 +57,7 @@ public:
   inline int getDamageEffect() { return damageEffectCounter; }
   inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
   inline bool isEffectOn() { 
-	return (SDL_GetTicks() - damageEffectCounter < effectDuration + effectDelay ? true : false); 
+    return ( forever || SDL_GetTicks() - damageEffectCounter < effectDuration + effectDelay ? true : false ); 
   }
   inline bool isInDelay() {
 	return (SDL_GetTicks() - damageEffectCounter < effectDelay ? true : false); 

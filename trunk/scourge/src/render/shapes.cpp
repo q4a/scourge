@@ -238,6 +238,9 @@ void Shapes::initialize() {
       if( !headless ) shapes[(i + 1)]->initialize();
     }
 
+    // set the effect
+    shapes[ ( i + 1 ) ]->setEffectType( sv->effectType );
+
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
   }
@@ -388,6 +391,18 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
       sv->zrot = atof(strtok(NULL, ","));
     }
 
+    sv->effectType = -1;
+    if( n == 'E' ) {
+      fgetc( fp );
+      n = Constants::readLine(line, fp);
+      for(int i = 0; i < Constants::EFFECT_COUNT; i++) {
+        if( !strcmp( line, Constants::EFFECT_NAMES[ i ] ) ) {
+          sv->effectType = i;
+          break;
+        }
+      }
+    }
+
     // store it for now
     shapeValueVector.push_back(sv);
     return n;
@@ -483,7 +498,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     strcpy( cmi->skin_name, strtok( NULL, "," ) );
     cmi->scale = atof( strtok( NULL, "," ) );
     character_models.push_back( cmi );
-    return n;
+    return n;  
   }
   return -1;
 }

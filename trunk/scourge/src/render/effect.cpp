@@ -26,7 +26,7 @@ Effect::Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, int w
   this->levelMap = levelMap;
   this->preferences = preferences;
   this->shapePal = shapePal;
-  this->shape = new GLShape(0, width, height, 1, NULL,0, 0, 2000);
+  this->shape = new GLShape(0, width, height, width, NULL,0, 0, 2000);
   this->shape->initialize();
   this->deleteShape = true;
   commonInit();
@@ -195,7 +195,7 @@ void Effect::drawGreen(bool proceed) {
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0.15f;
 	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
-	  particle[i]->maxLife = 5000;
+	  particle[i]->maxLife = 50;
 	  particle[i]->trail = 2;
 	  particle[i]->zoom = 1.5f;
     } else if(proceed) {
@@ -564,7 +564,7 @@ void Effect::drawParticle(ParticleStruct *particle) {
     if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
     
     // rotate particles
-    glRotatef( particle->rotate, 0, 1, 0 );
+    glRotatef( particle->rotate, 0, 0, 1 );
     
     // zoom
     glScalef(particle->zoom, particle->zoom, particle->zoom);
