@@ -187,7 +187,7 @@ void Effect::drawTeleport(bool proceed) {
 
 void Effect::drawGreen(bool proceed) {
   // manage particles
-  for(int i = 0; i < PARTICLE_COUNT; i++) {
+  for(int i = 0; i < PARTICLE_COUNT / 4; i++) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
@@ -195,9 +195,9 @@ void Effect::drawGreen(bool proceed) {
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0.15f;
 	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
-	  particle[i]->maxLife = 50;
+	  particle[i]->maxLife = toint( 30.0f * rand() / RAND_MAX ) + 20;
 	  particle[i]->trail = 2;
-	  particle[i]->zoom = 1.5f;
+	  particle[i]->zoom = ( 2.0f * rand() / RAND_MAX ) + 1.0f;
     } else if(proceed) {
 	  particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
 
@@ -210,9 +210,19 @@ void Effect::drawGreen(bool proceed) {
     if(particle[i]) {            
 
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-	  float c = fabs(particle[i]->z - 8) / 8.0f;
-	  if(c > 1) c = 1;
-      glColor4f(c / 4.0f, c, c / 4.0f, 0.15);
+      float max = particle[i]->maxLife / 4;
+      float c = 1.0f;
+      if( particle[i]->life <= max ) {
+        c = (float)( particle[i]->life ) / max;
+      } else if( particle[i]->life > particle[i]->maxLife - max ) {
+        c = (float)( particle[i]->maxLife - particle[i]->life ) / max;
+      }
+      //float c = (float)( particle[i]->maxLife - particle[i]->life ) / (float)(particle[i]->maxLife);
+      glColor4f( 0.15f, 1, 0.15f, 0.2f * c );
+      
+	  //float c = fabs(particle[i]->z - 8) / 8.0f;
+	  //if(c > 1) c = 1;
+    //glColor4f(c / 4.0f, c, c / 4.0f, 0.15);
 
 	  drawParticle(particle[i]);
     }

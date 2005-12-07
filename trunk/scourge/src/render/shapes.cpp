@@ -239,7 +239,9 @@ void Shapes::initialize() {
     }
 
     // set the effect
-    shapes[ ( i + 1 ) ]->setEffectType( sv->effectType );
+    shapes[ ( i + 1 ) ]->setEffectType( sv->effectType, 
+                                        sv->effectWidth, sv->effectDepth, sv->effectHeight, 
+                                        sv->effectX, sv->effectY, sv->effectZ );
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
@@ -395,11 +397,20 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     if( n == 'E' ) {
       fgetc( fp );
       n = Constants::readLine(line, fp);
+      char *p = strtok( line, "," );
       for(int i = 0; i < Constants::EFFECT_COUNT; i++) {
-        if( !strcmp( line, Constants::EFFECT_NAMES[ i ] ) ) {
+        if( !strcmp( p, Constants::EFFECT_NAMES[ i ] ) ) {
           sv->effectType = i;
           break;
         }
+      }
+      if( sv->effectType > -1 ) {
+        sv->effectWidth = atoi( strtok( NULL, "," ) );
+        sv->effectDepth = atoi( strtok( NULL, "," ) );
+        sv->effectHeight = atoi( strtok( NULL, "," ) );
+        sv->effectX = atoi( strtok( NULL, "," ) );
+        sv->effectY = atoi( strtok( NULL, "," ) );
+        sv->effectZ = atoi( strtok( NULL, "," ) );
       }
     }
 

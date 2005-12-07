@@ -45,6 +45,8 @@ typedef struct _ShapeValues {
   int teleporter;
   float xrot, yrot, zrot;
   int effectType;
+  int effectWidth, effectDepth, effectHeight;
+  int effectX, effectY, effectZ;
 } ShapeValues;
 
 typedef struct _Md2ModelInfo {

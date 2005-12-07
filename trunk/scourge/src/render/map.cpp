@@ -1975,12 +1975,20 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
         adapter->colorMiniMapPoint(x + xp, y - yp, shape, pos[x + xp][y - yp][0]);
       }
     }
-    if( ((GLShape*)shape)->getEffectType() > -1 && 
-        !effect[x][y][z] ) {
-      startEffect( x + 1, y - shape->getDepth() + 1, z, 
-                   ((GLShape*)shape)->getEffectType(),
-                   0, shape->getWidth() - 1, shape->getDepth() - 1, 
-                   0, true );
+    if( ((GLShape*)shape)->getEffectType() > -1 ) {
+
+      int ex = x + ((GLShape*)shape)->getEffectX();
+      int ey = y - shape->getDepth() - ((GLShape*)shape)->getEffectY();
+      int ez = z + ((GLShape*)shape)->getEffectZ();
+
+      if( !effect[ex][ey][ez] ) {
+        startEffect( ex, ey, ez,
+                     ((GLShape*)shape)->getEffectType(),
+                     0, 
+                     ((GLShape*)shape)->getEffectWidth(), 
+                     ((GLShape*)shape)->getEffectDepth(), 
+                     0, true );
+      }
     }
   }
 }
@@ -1994,12 +2002,17 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
      pos[x][y][z]->z == z) {
 	resortShapes = mapChanged = true;
     shape = pos[x][y][z]->shape;
+    if( ((GLShape*)shape)->getEffectType() > -1 ) {
+      int ex = x + ((GLShape*)shape)->getEffectX();
+      int ey = y - shape->getDepth() - ((GLShape*)shape)->getEffectY();
+      int ez = z + ((GLShape*)shape)->getEffectZ();
+      removeEffect( ex, ey, ez );
+    }
     set<Location*> deleted;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         // fixme : is it good or not to erase the minimap too ???
         adapter->eraseMiniMapPoint(x + xp, y - yp);
-        removeEffect(x + xp, y - yp, z );
         for(int zp = 0; zp < shape->getHeight(); zp++) {
           Location *p = pos[x + xp][y - yp][z + zp];
           if( deleted.find(p) == deleted.end() ) deleted.insert( p );
@@ -3304,7 +3317,8 @@ EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *p
     pos->effect->reset();
   } else {
     pos = new EffectLocation();
-    pos->effect = new Effect( theMap, preferences, shapes, 4, 4 );
+    //pos->effect = new Effect( theMap, preferences, shapes, 4, 4 );
+    pos->effect = new Effect( theMap, preferences, shapes, width, height );
     pos->effect->deleteParticles();    
   }    
   usedEffectCount++;
