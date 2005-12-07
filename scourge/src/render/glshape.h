@@ -65,6 +65,8 @@ private:
 #define LIGHTMAP_SIZE 16
 
   int effectType;
+  int effectWidth, effectDepth, effectHeight;
+  int effectX, effectY, effectZ;
 
  protected:
   Uint32 color;
@@ -133,7 +135,21 @@ public:
   virtual void setPauseAnimation(bool pause);
 
   virtual inline int getEffectType() { return effectType; }
-  virtual inline void setEffectType( int n ) { effectType = n; }
+  virtual inline int getEffectWidth() { return effectWidth; }
+  virtual inline int getEffectDepth() { return effectDepth; }
+  virtual inline int getEffectHeight() { return effectHeight; }
+  virtual inline int getEffectX() { return effectX; }
+  virtual inline int getEffectY() { return effectY; }
+  virtual inline int getEffectZ() { return effectZ; }
+  virtual inline void setEffectType( int n, int w, int d, int h, int x, int y, int z ) { 
+    effectType = n; 
+    effectWidth = w;
+    effectDepth = d;
+    effectHeight = h;
+    effectX = x;
+    effectY = y;
+    effectZ = z;
+  }
   
  protected:
   bool locked;
