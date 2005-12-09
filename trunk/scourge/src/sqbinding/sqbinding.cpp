@@ -293,9 +293,6 @@ bool SqBinding::callBoolMethod( const char *name,
 }
 
 bool SqBinding::callMapPosMethod( const char *name, int x, int y, int z ) {
-
-  cerr << "callMapPosMethod: x=" << x << " y=" << y << " z=" << z << endl;
-
   bool ret;
   int top = sq_gettop( vm ); //saves the stack size before the call
   sq_pushroottable( vm ); //pushes the global table

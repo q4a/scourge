@@ -67,7 +67,7 @@ Dice::~Dice() {
 
 
 
-MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill) {
+MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill, float red, float green, float blue) {
   this->name = name;
   this->shortName = strdup(name);
   shortName = strtok(shortName, " ");
@@ -75,6 +75,9 @@ MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill) {
   strcpy( this->deityDescription, "" );
   this->skill = skill;
   this->resistSkill = resistSkill;
+  this->red = red;
+  this->green = green;
+  this->blue = blue;
 }
 
 MagicSchool::~MagicSchool() {
@@ -186,11 +189,14 @@ void MagicSchool::initMagic() {
 	  strcpy(notes, strtok(NULL, ","));
 	  int skill = Constants::getSkillByName(strtok(NULL, ","));
 	  int resistSkill = Constants::getSkillByName(strtok(NULL, ","));
+    float red = (float)strtod( strtok(NULL, ","), NULL );
+    float green = (float)strtod( strtok(NULL, ","), NULL );
+    float blue = (float)strtod( strtok(NULL, ","), NULL );
 
 
 	  //cerr << "adding school: " << name << " provider deity: " << notes << " skill=" << skill << " resist skill=" << resistSkill << endl;
 
-	  current = new MagicSchool( strdup(name), strdup(notes), skill, resistSkill );
+	  current = new MagicSchool( strdup(name), strdup(notes), skill, resistSkill, red, green, blue );
 	  schools[schoolCount++] = current;
     string nameStr = name;
     schoolMap[nameStr] = current;

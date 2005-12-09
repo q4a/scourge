@@ -31,6 +31,7 @@ private:
   int descriptionGroup;  
   bool stencil;
   Color *outlineColor;
+  bool interactive;
 
 protected:
   int width, height, depth;
@@ -85,6 +86,9 @@ public:
 
   inline void setOutlineColor( Color *color ) { this->outlineColor = color; }
   inline Color *getOutlineColor() { return this->outlineColor; }
+
+  virtual inline void setInteractive( bool b ) { interactive = b; }
+  virtual inline bool isInteractive() { return interactive; }
 
 };
 
