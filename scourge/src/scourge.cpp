@@ -1714,6 +1714,8 @@ bool Scourge::useItem(int x, int y, int z) {
         return true;
       } else if (useTeleporter(pos)) {
         return true;
+      } else if( usePool( pos ) ) {
+        return true;
       } else if(pos && pos->item && ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER) {
         openContainerGui(((Item*)(pos->item)));      
         return true;
@@ -1850,6 +1852,14 @@ bool Scourge::useGate(Location *pos) {
 bool Scourge::useBoard(Location *pos) {
   if(pos->shape == getSession()->getShapePalette()->findShapeByName("BOARD")) {
     boardWin->setVisible(true);
+    return true;
+  }
+  return false;
+}
+
+bool Scourge::usePool( Location *pos ) {
+  if(pos->shape == getSession()->getShapePalette()->findShapeByName("POOL")) {
+    session->getSquirrel()->callMapPosMethod( "usePool", pos->x, pos->y, pos->z );
     return true;
   }
   return false;
@@ -3656,6 +3666,7 @@ Color *Scourge::getOutlineColor( Location *pos ) {
           pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_UP" ) ||
           pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_DOWN" ) ||
           pos->shape == getSession()->getShapePalette()->findShapeByName( "BOARD" ) ||
+          pos->shape == getSession()->getShapePalette()->findShapeByName( "POOL" ) ||
           pos->shape == getSession()->getShapePalette()->findShapeByName( "TELEPORTER_BASE" ) ? 
           outlineColor :
           NULL );

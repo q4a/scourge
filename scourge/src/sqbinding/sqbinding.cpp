@@ -97,6 +97,13 @@ SqBinding::SqBinding( Session *session ) {
     cerr << "Error: *** Unable to compile special skills code: " << s << endl;
   }
   registerScript( s );
+
+  // map interaction
+  sprintf(s, "%s/world/map.nut", rootDir);
+  if( !compile( s ) ) {
+    cerr << "Error: *** Unable to compile map interaction code: " << s << endl;
+  }
+  registerScript( s );
 }
 
 SqBinding::~SqBinding() {
@@ -276,6 +283,29 @@ bool SqBinding::callBoolMethod( const char *name,
     SQBool sqres;
     sq_getbool( vm, -1, &sqres );
     *result = (bool)sqres;
+    ret = true;
+  } else {
+    cerr << "Can't find function " << name << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;
+}
+
+bool SqBinding::callMapPosMethod( const char *name, int x, int y, int z ) {
+
+  cerr << "callMapPosMethod: x=" << x << " y=" << y << " z=" << z << endl;
+
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC( name ), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushinteger( vm, x );
+    sq_pushinteger( vm, y );
+    sq_pushinteger( vm, z );
+    sq_call( vm, 4, 0 ); //calls the function
     ret = true;
   } else {
     cerr << "Can't find function " << name << endl;

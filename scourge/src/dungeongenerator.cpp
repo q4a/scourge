@@ -1131,8 +1131,15 @@ void DungeonGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
 
 void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
   // add tables, chairs, etc.
-  addItemsInRoom(RpgItem::getItemByName("Table"), 1);
-  addItemsInRoom(RpgItem::getItemByName("Chair"), 2);  
+  addItemsInEveryRoom(RpgItem::getItemByName("Table"), 1);
+  addItemsInEveryRoom(RpgItem::getItemByName("Chair"), 2);  
+
+  // add some magic pools
+  for( int i = 0; i < roomCount; i++ ) {
+    if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
+      addShapeInRoom( scourge->getShapePalette()->findShapeByName("POOL"), i );
+    }
+  }
 }
 
 bool DungeonGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
@@ -1473,37 +1480,45 @@ void DungeonGenerator::getRandomLocation(Map *map, Shape *shape,
   } 
 }
 
-void DungeonGenerator::addItemsInRoom(RpgItem *rpgItem, int n) {
-  int x, y;
+void DungeonGenerator::addItemsInEveryRoom( RpgItem *rpgItem, int n ) {
   for(int i = 0; i < roomCount; i++) {
-    for(int r = 0; r < n; r++) {
-      for(int t = 0; t < 5; t++) { // 5 tries
-        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-        bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
-        if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
-          Item *item = scourge->getSession()->newItem(rpgItem);
-          addItem(scourge->getMap(), NULL, item, NULL, x, y);
-          break;
-        }
+    addItemsInRoom(rpgItem, n, i );
+  }
+}
+
+void DungeonGenerator::addItemsInRoom( RpgItem *rpgItem, int n, int room ) {
+  int x, y;
+  for(int r = 0; r < n; r++) {
+    for(int t = 0; t < 5; t++) { // 5 tries
+      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+      bool fits = getLocationInRoom(scourge->getMap(), room, shape, &x, &y);
+      if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+        Item *item = scourge->getSession()->newItem(rpgItem);
+        addItem(scourge->getMap(), NULL, item, NULL, x, y);
+        break;
       }
     }
   }
 }
 
-bool DungeonGenerator::addShapeInARoom(int shapeIndex) {
-	int x, y;
+bool DungeonGenerator::addShapeInARoom( Shape *shape ) {
 	for(int tt = 0; tt < 5; tt++) { // 5 room tries
-		int i = (int)(roomCount * rand() / RAND_MAX);	
-		for(int t = 0; t < 5; t++) { // 5 tries
-			Shape *shape = scourge->getShapePalette()->getShape(shapeIndex);
-			bool fits = getLocationInRoom(scourge->getMap(), i, shape, &x, &y);
-			if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
-				addItem(scourge->getMap(), NULL, NULL, shape, x, y);
-				return true;
-			}
-		}
+		int room = (int)(roomCount * rand() / RAND_MAX);	
+    if( addShapeInRoom( shape, room ) ) return true;
 	}
 	return false;
+}
+
+bool DungeonGenerator::addShapeInRoom( Shape *shape, int room ) {
+  int x, y;
+  for(int t = 0; t < 5; t++) { // 5 tries
+    bool fits = getLocationInRoom(scourge->getMap(), room, shape, &x, &y);
+    if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+      addItem(scourge->getMap(), NULL, NULL, shape, x, y);
+      return true;
+    }
+  }
+  return false;
 }
 
 // return false if the creature won't fit in the room

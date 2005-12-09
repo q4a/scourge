@@ -256,6 +256,7 @@ protected:
   bool useBoard(Location *pos);
   bool useTeleporter(Location *pos);
   bool useGate(Location *pos);
+  bool usePool( Location *pos );
 
 public:
 #define TOP_GUI_WIDTH 400

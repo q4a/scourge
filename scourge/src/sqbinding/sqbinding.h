@@ -208,6 +208,7 @@ public:
 
   bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
+  bool callMapPosMethod( const char *name, int x, int y, int z );
   HSQOBJECT *getCreatureRef( Creature *creature );
   HSQOBJECT *getItemRef( Item *item );
   void setGlobalVariable( char *name, float value );
