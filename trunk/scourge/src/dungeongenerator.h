@@ -213,9 +213,11 @@ protected:
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
   
-  void addItemsInRoom(RpgItem *rpgItem, int n);
+  void addItemsInEveryRoom(RpgItem *rpgItem, int n);
+  void addItemsInRoom(RpgItem *rpgItem, int n, int room );
   
-  bool addShapeInARoom(int shapeIndex);
+  bool addShapeInARoom( Shape *shape );
+  bool addShapeInRoom( Shape *shape, int room );
 
   void getRandomDeadEndLocation(int *x, int *y, GLShape *shape, Map *map);
 
