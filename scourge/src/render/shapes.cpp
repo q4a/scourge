@@ -243,6 +243,8 @@ void Shapes::initialize() {
                                         sv->effectWidth, sv->effectDepth, sv->effectHeight, 
                                         sv->effectX, sv->effectY, sv->effectZ );
 
+    shapes[ ( i + 1 ) ]->setInteractive( sv->interactive );
+
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
   }
@@ -412,6 +414,13 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
         sv->effectY = atoi( strtok( NULL, "," ) );
         sv->effectZ = atoi( strtok( NULL, "," ) );
       }
+    }
+
+    sv->interactive = false;
+    if( n == 'I' ) {
+      fgetc( fp );
+      n = Constants::readLine(line, fp);
+      if( line[0] == '1' ) sv->interactive = true;
     }
 
     // store it for now

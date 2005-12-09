@@ -3655,21 +3655,7 @@ GLuint Scourge::loadSystemTexture( char *line ) {
 
 // check for interactive items.
 Color *Scourge::getOutlineColor( Location *pos ) {
-  return( pos->item ||
-
-          // FIXME: this info should be in property file (shape is interactive or not)
-
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "SWITCH_OFF" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "SWITCH_ON" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "EW_DOOR" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "NS_DOOR" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_UP" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "GATE_DOWN" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "BOARD" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "POOL" ) ||
-          pos->shape == getSession()->getShapePalette()->findShapeByName( "TELEPORTER_BASE" ) ? 
-          outlineColor :
-          NULL );
+  return( pos->item || pos->shape->isInteractive() ? outlineColor : NULL );
 }
 
 bool Scourge::doesSaveGameExist(Session *session) {

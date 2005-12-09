@@ -47,6 +47,7 @@ typedef struct _ShapeValues {
   int effectType;
   int effectWidth, effectDepth, effectHeight;
   int effectX, effectY, effectZ;
+  bool interactive;
 } ShapeValues;
 
 typedef struct _Md2ModelInfo {
