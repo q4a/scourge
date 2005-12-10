@@ -1865,7 +1865,7 @@ void Map::addDescription(char *desc, float r, float g, float b) {
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
                       int effect_type, GLuint duration, 
                       int width, int height, GLuint delay, 
-                      bool forever) {
+                      bool forever, DisplayInfo *di) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
@@ -1900,6 +1900,8 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->y = y;
   effect[x][y][z]->z = z;
   currentEffectsMap[ createTripletKey( x, y, z ) ] = effect[x][y][z];
+
+  effect[x][y][z]->effect->setDisplayInfo( di );
 
   // need to do this to make sure effect shows up
   resortShapes = mapChanged = true;
@@ -1946,7 +1948,7 @@ void Map::removeAllEffects() {
   currentEffectsMap.clear();
 }
 
-void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
+void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di) {
   if(shape) {
     resortShapes = mapChanged = true;
     //cerr << "FIXME: Map::setPosition" << endl;
@@ -1987,7 +1989,7 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape) {
                      0, 
                      ((GLShape*)shape)->getEffectWidth(), 
                      ((GLShape*)shape)->getEffectDepth(), 
-                     0, true );
+                     0, true, di );
       }
     }
   }

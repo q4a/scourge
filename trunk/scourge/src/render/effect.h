@@ -19,6 +19,7 @@
 #define EFFECT_H
 
 #include "render.h"
+#include "location.h"
 
 /**
   *@author Gabor Torok
@@ -43,12 +44,17 @@ private:
   static const int PARTICLE_COUNT = 30;
   ParticleStruct *particle[PARTICLE_COUNT];
 
+  DisplayInfo di;
+  bool diWasSet;
+
 public:
   Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, GLShape *shape );
   Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, int width, int height );
   ~Effect();
   
   void reset();
+
+  void setDisplayInfo( DisplayInfo *di );
   
   void deleteParticles();
   void draw(int effect, int startTime);
