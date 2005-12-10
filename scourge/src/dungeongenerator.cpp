@@ -1135,9 +1135,18 @@ void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
   addItemsInEveryRoom(RpgItem::getItemByName("Chair"), 2);  
 
   // add some magic pools
+  DisplayInfo di;
   for( int i = 0; i < roomCount; i++ ) {
     if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
-      addShapeInRoom( scourge->getShapePalette()->findShapeByName("POOL"), i );
+      MagicSchool *ms = MagicSchool::getRandomSchool();
+      di.red = ms->getDeityRed();
+      di.green = ms->getDeityGreen();
+      di.blue = ms->getDeityBlue();
+      Location *pos = addShapeInRoom( scourge->getShapePalette()->findShapeByName("POOL"), i, &di );
+      if( pos ) {
+        // store pos->deity in scourge
+        scourge->addDeityLocation( pos, ms );
+      }
     }
   }
 }
@@ -1509,16 +1518,16 @@ bool DungeonGenerator::addShapeInARoom( Shape *shape ) {
 	return false;
 }
 
-bool DungeonGenerator::addShapeInRoom( Shape *shape, int room ) {
+Location *DungeonGenerator::addShapeInRoom( Shape *shape, int room, DisplayInfo *di ) {
   int x, y;
   for(int t = 0; t < 5; t++) { // 5 tries
     bool fits = getLocationInRoom(scourge->getMap(), room, shape, &x, &y);
     if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
-      addItem(scourge->getMap(), NULL, NULL, shape, x, y);
-      return true;
+      addItem(scourge->getMap(), NULL, NULL, shape, x, y, 0, di );
+      return scourge->getMap()->getLocation( x, y, 0 );
     }
   }
-  return false;
+  return NULL;
 }
 
 // return false if the creature won't fit in the room
@@ -1635,10 +1644,15 @@ bool DungeonGenerator::isAccessible(Map *map, int x, int y, int fromX, int fromY
   return isAccessible(map, x, y, fromX, fromY, stepsTaken + 1, dir);
 }
 
-void DungeonGenerator::addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z) {
+void DungeonGenerator::addItem(Map *map, 
+                               Creature *creature, 
+                               Item *item, 
+                               Shape *shape, 
+                               int x, int y, int z, 
+                               DisplayInfo *di) {
   if(creature) map->setCreature(x, y, z, creature);
   else if(item) map->setItem(x, y, z, item);
-  else map->setPosition(x, y, z, shape);
+  else map->setPosition(x, y, z, shape, di);
   // remember the containers
   if(item && item->getRpgItem()->getType() == RpgItem::CONTAINER) {
     containers.push_back(item);

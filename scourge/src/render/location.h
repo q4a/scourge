@@ -30,6 +30,29 @@ class RenderedCreature;
   *@author Gabor Torok
   */
 
+// extra display information
+class DisplayInfo {
+public:
+  GLfloat red, green, blue;
+
+  DisplayInfo() {
+    reset();
+  }
+  ~DisplayInfo() {
+  }
+
+  inline void reset() { red = green = blue = 1.0f; }
+  inline void copy( DisplayInfo *di ) { 
+    if( di ) {
+      red = di->red; 
+      green = di->green; 
+      blue = di->blue; 
+    } else {
+      reset();
+    }
+  }
+};
+
 class Location {
 public:
   // shapes

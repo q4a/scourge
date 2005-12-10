@@ -160,6 +160,7 @@ class MagicSchool {
   inline static MagicSchool *getMagicSchool( int index ) { return schools[index]; }
   static Spell *getRandomSpell(int level);
   static MagicSchool *getMagicSchoolByName( char *s ) { std::string name = s; return (schoolMap.find(name) == schoolMap.end() ? NULL : schoolMap[name]); }
+  static MagicSchool *getRandomSchool() { return getMagicSchool( (int)( (float)schoolCount * rand() / RAND_MAX ) ); }
 
   const char *getLowDonateMessage();
   const char *getNeutralDonateMessage();

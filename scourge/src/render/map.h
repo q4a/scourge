@@ -35,7 +35,7 @@ class Shapes;
 class MapAdapter;
 class Location;
 class Effect;
-
+class DisplayInfo;
 
 class MapSettings {
 
@@ -338,9 +338,10 @@ class Map {
   void startEffect( Sint16 x, Sint16 y, Sint16 z, 
                     int effect_type, GLuint duration = Constants::DAMAGE_DURATION,
                     int width=1, int height=1,
-                    GLuint delay = 0, bool forever = false );
+                    GLuint delay = 0, bool forever = false,
+                    DisplayInfo *di=NULL );
     
-  void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape);
+  void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di=NULL);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
   Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
   

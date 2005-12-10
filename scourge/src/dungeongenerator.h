@@ -35,6 +35,8 @@ class Monster;
 class Spell;
 class GLShape;
 class ShapePalette;
+class DisplayInfo;
+class Location;
 
 #define DRAW_UNVISITED 0
 
@@ -208,7 +210,7 @@ protected:
   static const int MAX_STEPS = 10000;
   bool isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken=0, int dir=DIR_N);
 
-  void addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z = 0);
+  void addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z = 0, DisplayInfo *di=NULL);
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
 				Sint16 mapx, Sint16 mapy, int doorType);
@@ -217,7 +219,7 @@ protected:
   void addItemsInRoom(RpgItem *rpgItem, int n, int room );
   
   bool addShapeInARoom( Shape *shape );
-  bool addShapeInRoom( Shape *shape, int room );
+  Location *addShapeInRoom( Shape *shape, int room, DisplayInfo *di=NULL );
 
   void getRandomDeadEndLocation(int *x, int *y, GLShape *shape, Map *map);
 

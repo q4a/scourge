@@ -63,6 +63,15 @@ void Effect::commonInit() {
   ringRadius = 0.25f;
   ringRotate = 0.0f;
   lastTimeStamp = 0;
+
+  // reset the display info
+  di.reset();
+  diWasSet = false;
+}
+
+void Effect::setDisplayInfo( DisplayInfo *di ) {
+  this->di.copy( di );    
+  diWasSet = true;
 }
 
 Effect::~Effect() {
@@ -191,25 +200,24 @@ void Effect::drawGreen(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->z = (int)(1.0f * rand()/RAND_MAX);
-	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
-	  particle[i]->moveDelta = 0.15f;
-	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
-	  particle[i]->maxLife = toint( 30.0f * rand() / RAND_MAX ) + 20;
-	  particle[i]->trail = 2;
-	  particle[i]->zoom = ( 2.0f * rand() / RAND_MAX ) + 1.0f;
+      particle[i]->z = (int)(1.0f * rand()/RAND_MAX);
+      //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+      particle[i]->moveDelta = 0.15f;
+      particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+      particle[i]->maxLife = toint( 30.0f * rand() / RAND_MAX ) + 20;
+      particle[i]->trail = 2;
+      particle[i]->zoom = ( 2.0f * rand() / RAND_MAX ) + 1.0f;
     } else if(proceed) {
-	  particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
+      particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
 
-	  // this causes an explosion!
-	  //particle[i]->zoom += 0.3f;
-	  moveParticle(&(particle[i]));
+      // this causes an explosion!
+      //particle[i]->zoom += 0.3f;
+      moveParticle(&(particle[i]));
     }
 
     // draw it      
     if(particle[i]) {            
 
-	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
       float max = particle[i]->maxLife / 4;
       float c = 1.0f;
       if( particle[i]->life <= max ) {
@@ -217,14 +225,13 @@ void Effect::drawGreen(bool proceed) {
       } else if( particle[i]->life > particle[i]->maxLife - max ) {
         c = (float)( particle[i]->maxLife - particle[i]->life ) / max;
       }
-      //float c = (float)( particle[i]->maxLife - particle[i]->life ) / (float)(particle[i]->maxLife);
-      glColor4f( 0.15f, 1, 0.15f, 0.2f * c );
-      
-	  //float c = fabs(particle[i]->z - 8) / 8.0f;
-	  //if(c > 1) c = 1;
-    //glColor4f(c / 4.0f, c, c / 4.0f, 0.15);
+      if( !diWasSet ) {
+        glColor4f( 0.15f, 1, 0.15f, 0.2f * c );
+      } else {
+        glColor4f( di.red, di.green, di.blue, 0.2f * c );
+      }
 
-	  drawParticle(particle[i]);
+      drawParticle(particle[i]);
     }
   }
 }

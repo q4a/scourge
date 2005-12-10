@@ -92,6 +92,7 @@ class HealDialog;
 class DonateDialog;
 class TextEffect;
 class TrainDialog;
+class MagicSchool;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -241,6 +242,8 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   TextField *squirrelText;
   Button *squirrelRun, *squirrelClear;
 
+  std::map<Location*, MagicSchool*> deityLocation;
+
 protected:
   void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
   void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
@@ -278,6 +281,15 @@ public:
   
   Scourge( UserConfiguration *config );
   ~Scourge();
+
+  inline void addDeityLocation( Location *pos, MagicSchool *ms ) { deityLocation[pos] = ms; }
+  inline MagicSchool *getDeityLocation( Location *pos ) {
+    if( deityLocation.find( pos ) != deityLocation.end() ) {
+      return deityLocation[ pos ];
+    } else {
+      return NULL;
+    }
+  }
 
   bool isLevelShaded();
 
