@@ -3853,3 +3853,9 @@ void Scourge::printToConsole( const char *s ) {
     cerr << s << endl;
   }
 }
+
+char *Scourge::getDeityLocation( Location *pos ) {
+  MagicSchool *ms = getMagicSchoolLocation( pos );
+  return( ms ? ms->getDeity() : NULL );
+}
+

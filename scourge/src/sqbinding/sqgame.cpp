@@ -21,6 +21,8 @@
 #include "../render/renderlib.h"
 #include "../test/combattest.h"
 
+using namespace std;
+
 const char *SqGame::className = "ScourgeGame";
 ScriptClassMemberDecl SqGame::members[] = {
   { "void", "_typeof", SqGame::_squirrel_typeof, 1, 0, "" },
@@ -29,6 +31,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "string", "getRootDir", SqGame::_getRootDir, 0, 0, "Get the game's data directory." },
   { "int", "getPartySize", SqGame::_getPartySize, 0, 0, "Get the number of party members." },
   { "Creature", "getPartyMember", SqGame::_getPartyMember, 0, 0, "Get one of the party member's creature objects. The first param is the index of the party member." },
+  { "Creature", "getPlayer", SqGame::_getPlayer, 0, 0, "Get the currently selected character." },
   { "int", "getSkillCount", SqGame::_getSkillCount, 0, 0, "Get the number of skills in the game." },
   { "string", "getSkillName", SqGame::_getSkillName, 0, 0, "Get the given skill's name. The first param is the index of the skill." },
   { "Mission", "getMission", SqGame::_getMission, 0, 0, "Get the current mission object." },
@@ -43,6 +46,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files. The game engine will also do this for you automatically every 5 game minutes." },
   { "void", "documentSOM", SqGame::_documentSOM, 2, "xs", "Produce this documentation. The first argument is the location where the html files will be placed." },
   { "void", "runTests", SqGame::_runTests, 2, "xs", "Run internal tests of the rpg combat engine. Results are saved in path given as param to runTests()." },
+  { "string", "getDeityLocation", SqGame::_getDeityLocation, 4, "xnnn", "Get the deity whose presense is bound to this location (like an altar). Results the name of the deity." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -92,6 +96,17 @@ int SqGame::_getPartyMember( HSQUIRRELVM vm ) {
 
   sq_pushobject( vm, SqBinding::binding->refParty[ partyIndex ] );
   return 1;
+}
+
+int SqGame::_getPlayer( HSQUIRRELVM vm ) {
+  for( int i = 0; i < SqBinding::sessionRef->getParty()->getPartySize(); i++ ) {
+    if( SqBinding::sessionRef->getParty()->getParty(i) == 
+        SqBinding::sessionRef->getParty()->getPlayer() ) {
+      sq_pushobject( vm, SqBinding::binding->refParty[ i ] );
+      return 1;
+    }
+  }
+  return sq_throwerror( vm, _SC( "Player is not set." ) );
 }
 
 int SqGame::_getMission( HSQUIRRELVM vm ) {
@@ -195,5 +210,26 @@ int SqGame::_runTests( HSQUIRRELVM vm ) {
   if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/api/tests" );
   CombatTest::executeTests( SqBinding::sessionRef, path );
   return 0;
+}
+
+int SqGame::_getDeityLocation( HSQUIRRELVM vm ) {
+  GET_INT(z)
+  GET_INT(y)
+  GET_INT(x)
+
+  cerr << "SqGame::_getDeityLocation, x=" << x << " y=" << y << " z=" << z << endl;
+
+  Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
+  if( pos ) {
+    char *deity = SqBinding::sessionRef->getGameAdapter()->getDeityLocation( pos );
+    if( deity ) {
+      sq_pushstring( vm, _SC( deity ), -1 );
+      return 1;
+    } else {
+      return sq_throwerror( vm, _SC( "No deity bound to this location." ) );
+    }
+  } else {
+    return sq_throwerror( vm, _SC( "Location not found." ) );
+  }
 }
 

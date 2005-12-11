@@ -55,6 +55,9 @@ public:
   // party-related
   static int _getPartySize( HSQUIRRELVM vm );
   static int _getPartyMember( HSQUIRRELVM vm );
+  static int _getPlayer( HSQUIRRELVM vm );
+
+  static int _getDeityLocation( HSQUIRRELVM vm );
 
   static int _getMission( HSQUIRRELVM vm );
 

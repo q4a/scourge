@@ -49,6 +49,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "void", "setExp", SqCreature::_setExp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
   { "void", "setMoney", SqCreature::_setMoney, SQ_MATCHTYPEMASKSTRING, "xn", "" },
   { "void", "setHp", SqCreature::_setHp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
+  { "void", "takeDamage", SqCreature::_takeDamage, SQ_MATCHTYPEMASKSTRING, "xf", "" },
   { "void", "setMp", SqCreature::_setMp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
   { "void", "setThirst", SqCreature::_setThirst, SQ_MATCHTYPEMASKSTRING, "xn", "" },
   { "void", "setHunger", SqCreature::_setHunger, SQ_MATCHTYPEMASKSTRING, "xn", "" },
@@ -57,7 +58,11 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "void", "setStateMod", SqCreature::_setStateMod, SQ_MATCHTYPEMASKSTRING, "xnb", "" },
   { "void", "setProtectedStateMod", SqCreature::_setProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xnb", "" },
 
+  // character methods
   { "bool", "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs", "Returns a boolean if the character is of the character class given in the argument. This function is slow because it does a string compare on the class's name." },  
+  { "string", "getDeity", SqCreature::_getDeity, 0, 0, "Return the character's chosen deity's name." },
+
+  // monster methods
 
   { 0,0,0,0,0 } // terminator
 };
@@ -239,8 +244,14 @@ int SqCreature::_setHp( HSQUIRRELVM vm ) {
   } else if( n < object->getHp() ) {
     object->startEffect( Constants::EFFECT_GLOW, ( Constants::DAMAGE_DURATION * 4 ) );
   }
-
   object->setHp( n );
+  return 0;
+}
+
+int SqCreature::_takeDamage( HSQUIRRELVM vm ) {
+  GET_FLOAT( n );
+  GET_OBJECT( Creature* )
+  object->takeDamage( n );
   return 0;
 }
 
@@ -295,5 +306,16 @@ int SqCreature::_setProtectedStateMod( HSQUIRRELVM vm ) {
   GET_OBJECT( Creature* )
   object->setProtectedStateMod( index, b );
   return 0;
+}
+
+int SqCreature::_getDeity( HSQUIRRELVM vm ) {
+  GET_OBJECT(Creature*)
+
+  int di = object->getDeityIndex();
+  if( di < 0 ) {
+    return sq_throwerror( vm, "Creature has no deity." );
+  }
+  sq_pushstring( vm, _SC( MagicSchool::getMagicSchool( di )->getDeity() ), -1 );
+  return 1;
 }
 
