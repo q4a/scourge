@@ -116,6 +116,12 @@ struct ScriptNamespaceDecl  {
     return sq_throwerror( vm, _SC( "Can't get int from stack." ) );\
   }\
   sq_poptop( vm );
+  
+#define GET_FLOAT(__n_) float __n_;\
+  if( SQ_FAILED( sq_getfloat( vm, -1, &__n_ ) ) ) {\
+    return sq_throwerror( vm, _SC( "Can't get float from stack." ) );\
+  }\
+  sq_poptop( vm );
 
 #define GET_BOOL(__n_) bool __n_;\
   {\

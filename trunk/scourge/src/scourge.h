@@ -283,7 +283,8 @@ public:
   ~Scourge();
 
   inline void addDeityLocation( Location *pos, MagicSchool *ms ) { deityLocation[pos] = ms; }
-  inline MagicSchool *getDeityLocation( Location *pos ) {
+  char *getDeityLocation( Location *pos );
+  inline MagicSchool *getMagicSchoolLocation( Location *pos ) {
     if( deityLocation.find( pos ) != deityLocation.end() ) {
       return deityLocation[ pos ];
     } else {

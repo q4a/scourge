@@ -67,12 +67,14 @@ public:
 
   // other
   static int _isOfClass( HSQUIRRELVM vm );
+  static int _getDeity( HSQUIRRELVM vm );
 
   // setters
   static int _setLevel( HSQUIRRELVM vm );
   static int _setExp( HSQUIRRELVM vm );
   static int _setMoney( HSQUIRRELVM vm );
   static int _setHp( HSQUIRRELVM vm );
+  static int _takeDamage( HSQUIRRELVM vm );
   static int _setMp( HSQUIRRELVM vm );
   static int _setThirst( HSQUIRRELVM vm );
   static int _setHunger( HSQUIRRELVM vm );

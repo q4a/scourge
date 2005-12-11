@@ -88,6 +88,8 @@ public:
   virtual inline void initEnd() { }
   
   virtual inline bool isHeadless() { return true; }
+
+  virtual inline char *getDeityLocation( Location *pos ) { return NULL; }
   
   // UI methods. Only call these if isHeadless() is false.
   virtual inline void resetPartyUI() {}

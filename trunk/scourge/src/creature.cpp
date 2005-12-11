@@ -31,6 +31,9 @@ using namespace std;
 
 //#define DEBUG_CAPABILITIES
 
+#define GOD_MODE 0
+#define MONSTER_IMORTALITY 0
+
 #define MOVE_DELAY 7
 
 // at this fps, the players step 1 square                     
@@ -142,6 +145,7 @@ void Creature::commonInit() {
   this->preActionTargetCreature = NULL;
   this->angle = this->wantedAngle = this->angleStep = 0;
   this->portraitTextureIndex = 0;
+  this->deityIndex = -1;
 
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -1232,11 +1236,10 @@ int Creature::getMaxProjectileCount(Item *item) {
  take some damage
 */
 bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
-
   // apply any attack enhancing capabilities
-  damage += applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DEFENSE,
-                                         "damage",
-                                         damage );
+  damage = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DEFENSE,
+                                        "damage",
+                                        damage );
 
   int intDamage = toint( damage );
   addRecentDamage( intDamage );
@@ -1252,7 +1255,15 @@ bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
                                     effect_type, (Constants::DAMAGE_DURATION * 4), 
                                     getShape()->getWidth(), getShape()->getDepth(), delay );
   }
-  return(hp <= 0);
+
+  // creature death here so it can be used from script
+  if( hp <= 0 ) {
+    if( ( isMonster() && !MONSTER_IMORTALITY ) || !GOD_MODE )
+      session->creatureDeath( this );
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**

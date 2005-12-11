@@ -25,8 +25,6 @@
 
 using namespace std;
 
-#define GOD_MODE 0
-#define MONSTER_IMORTALITY 0
 #define WEAPON_WAIT_MUL 9
 #define MIN_FUMBLE_RANGE 4.0f
 
@@ -1050,11 +1048,6 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 
       sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-
-      if((creature->getTargetCreature()->isMonster() && 
-          !MONSTER_IMORTALITY) || 
-         !GOD_MODE)
-        session->creatureDeath(creature->getTargetCreature());
 
       // add exp. points and money
       if(!creature->isMonster()) {
