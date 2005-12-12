@@ -45,7 +45,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 1
+#define LEVEL 10
 
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
 std::map<CharacterModelInfo*, GLShape*> shapes;
@@ -499,6 +499,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
           pc[i]->addSpell(Spell::getSpellByName("Unholy Decimator"));
           pc[i]->addSpell(Spell::getSpellByName("Remove curse"));
           pc[i]->addSpell(Spell::getSpellByName("Teleportation"));
+          pc[i]->addSpell(Spell::getSpellByName("Recall to life"));
           pc[i]->setMp( 5000 );
         }
       }

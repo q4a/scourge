@@ -168,6 +168,8 @@ void SpellCaster::spellSucceeded() {
     hailAttack();
   } else if(!strcasecmp(spell->getName(), "Unholy Decimator")) {
     causeDamage();
+  } else if(!strcasecmp(spell->getName(), "Recall to life" )) {
+    resurrect();
   } else if(!strcasecmp(spell->getName(), "Teleportation")) {
     battle->getSession()->getGameAdapter()->teleport();
   } else {
@@ -296,6 +298,16 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
                       //spell->getAction() * creature->getLevel(), 
                       spell->getEffect(),
                       true, delay );
+}
+
+void SpellCaster::resurrect() {
+  for( int i = 0; i < battle->getSession()->getParty()->getPartySize(); i++ ) {
+    if( battle->getSession()->getParty()->getParty(i)->getStateMod( Constants::dead ) ) {
+      battle->getSession()->getParty()->getParty(i)->
+        resurrect( toint( battle->getCreature()->getX() ),
+                   toint( battle->getCreature()->getY() ) );
+    }
+  }
 }
 
 void SpellCaster::setStateMod(int mod, bool setting) {

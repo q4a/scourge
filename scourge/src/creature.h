@@ -355,6 +355,8 @@ class Creature : public RenderedCreature {
   // return true if the creature dies
   bool takeDamage( float damage, int effect_type = Constants::EFFECT_GLOW, GLuint delay=0 );
 
+  void resurrect( int rx, int ry );
+
   // returns exp gained
   int addExperience(Creature *creature_killed);
 

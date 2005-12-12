@@ -59,6 +59,7 @@ class SpellCaster {
   void setStateMod(int mod, bool setting=true);
   void circleAttack();
   void hailAttack();
+  void resurrect();
 
 
   int getRadius( int spellEffectSize, float *sx, float *sy );

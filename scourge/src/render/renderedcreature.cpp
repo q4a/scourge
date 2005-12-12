@@ -17,6 +17,7 @@
 #include "renderedcreature.h"
 #include "effect.h"
 #include "map.h"
+#include "glshape.h"
 
 RenderedCreature::RenderedCreature( Preferences *preferences, 
                                     Shapes *shapes, 
@@ -77,5 +78,53 @@ void RenderedCreature::removeRecentDamage( int i ) {
     recentDamages[ t ].lastTime = recentDamages[ t + 1 ].lastTime;
   }
   recentDamagesCount--;
+}
+
+void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
+  int dir = Constants::MOVE_UP;
+  int ox = startx;
+  int oy = starty;
+  int xx = ox;
+  int yy = oy;
+  int r = 6;
+  // potential inf. loop?
+  // it assumes there is free space "somewhere" on this map...
+  while( true ) {
+    // can player fit here?
+    if( !levelMap->isBlocked( xx, yy, 0, 0, 0, 0, getShape(), NULL ) ) {
+      //cerr << "Placed party member: " << t << " at: " << xx << "," << yy << endl;
+      moveTo( xx, yy, 0 );
+      setSelXY( xx, yy );
+      levelMap->setCreature( xx, yy, 0, this );
+
+      if( finalX ) *finalX = xx;
+      if( finalY ) *finalY = yy;
+
+      return;
+    }
+
+    // try radially around the player
+    switch( dir ) {
+    case Constants::MOVE_UP:
+      yy--; 
+    if( yy <= MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_RIGHT;
+    break;
+    case Constants::MOVE_RIGHT:
+      xx++; 
+    if( xx >= MAP_WIDTH - MAP_OFFSET || abs( ox - xx ) > r ) dir = Constants::MOVE_DOWN;
+    break;
+    case Constants::MOVE_DOWN:
+      yy++; 
+    if( yy >= MAP_DEPTH - MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_LEFT;
+    break;
+    case Constants::MOVE_LEFT:
+      xx--; 
+    if( xx <= MAP_OFFSET || abs( ox - xx ) > r ) {
+      dir = Constants::MOVE_UP;
+      r += getShape()->getWidth();
+    }
+    break;
+    }
+  }
 }
 

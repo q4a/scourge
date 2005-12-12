@@ -87,6 +87,8 @@ public:
   virtual inline void resetDamageEffect() { damageEffectCounter = SDL_GetTicks(); }
   virtual inline bool isEffectOn() { return (SDL_GetTicks() - damageEffectCounter < effectDuration ? true : false); }
 
+  virtual void findPlace( int x, int y, int *finalX=NULL, int *finalY=NULL );
+
 };
 
 

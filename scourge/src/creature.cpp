@@ -1266,38 +1266,18 @@ bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
   }
 }
 
-/**
-   Get the total value of armor worn and roll for the skill of each piece.
-   Monsters' base armor is not rolled (ie. they're experts in using their natural armor.)
- */
-/*
-int Creature::getSkillModifiedArmor() {
-  // calculate the armor (0-100, 100-total protection)
-  int armor = (monster ? monster->getBaseArmor() : 0);
-  armor += bonusArmor;
-  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-    if(equipped[i] != MAX_INVENTORY_SIZE) {
-      Item *item = inventory[equipped[i]];
-      if(item->getRpgItem()->getType() == RpgItem::ARMOR) {
-        int skill_index = (item->getRpgItem()->getSkill() > -1 ? 
-                           item->getRpgItem()->getSkill() : 
-                           Constants::HAND_DEFEND);
-        float skill = (float)getSkill(skill_index);
-        int value = item->getRpgItem()->getAction()->getMod() + item->getLevel();
+void Creature::resurrect( int rx, int ry ) {
+  setStateMod( Constants::dead, false );
+  setHp( (int)( 3.0f * rand() / RAND_MAX ) + 1 );
+  
+  findPlace( rx, ry );
 
-        // add (value + ((skill-50)% of value)) to armor
-        armor += value + (int)( (float)value * ((skill - 50.0f) / 100.0f) );
-        
-        // magic armor?
-        if(item->isMagicItem()) {
-          armor += ( item->getLevel() * item->getBonus() );
-        }
-      }
-    }
-  }
-  return armor;
+  startEffect( Constants::EFFECT_TELEPORT, ( Constants::DAMAGE_DURATION * 4 ) );
+
+  char msg[120];
+  sprintf( msg, "%s is raised from the dead!", getName() );
+  session->getMap()->addDescription( msg, 0, 1, 1 );
 }
-*/
 
 // add exp after killing a creature
 // only called for characters
