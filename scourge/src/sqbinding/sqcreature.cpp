@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "sqcreature.h"
+#include "../events/statemodexpirationevent.h"
+#include "../render/map.h"
 #include "../session.h"
 #include "../creature.h"
 #include "../rpg/rpglib.h"
@@ -188,7 +190,6 @@ int SqCreature::_getStateMod( HSQUIRRELVM vm ) {
   return 1;
 }
 
-
 int SqCreature::_getProtectedStateMod( HSQUIRRELVM vm ) {
   GET_INT( index )
   GET_OBJECT(Creature*)
@@ -293,16 +294,70 @@ int SqCreature::_setSkillByName( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
-  GET_INT( index );
-  GET_BOOL( b );
+  GET_BOOL( setting )
+  GET_INT( mod )
   GET_OBJECT( Creature* )
-  object->setStateMod( index, b );
+
+  cerr << "Setting: mod=" << Constants::STATE_NAMES[ mod ] << " to " << setting << endl;
+
+  char msg[200];
+  bool protectiveItem = false;
+  if( !Constants::isStateModTransitionWanted( mod, setting ) ) {
+    // check for magic item state mod protections
+    protectiveItem = object->getProtectedStateMod(mod);
+    if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
+      sprintf(msg, "%s resists the spell with magic item!", 
+              object->getName());
+      SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);    
+      return 0;
+    }
+  }
+
+  int timeInMin = 5 * object->getLevel();
+  if(protectiveItem) timeInMin /= 2;
+  object->startEffect( Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4) );
+
+  // extend expiration event somehow if condition already exists
+  Event *e = object->getStateModEvent(mod);
+  if( object->getStateMod(mod) == setting ) {
+    if( e ) {
+      //        cerr << "Extending existing event." << endl;
+      e->setNbExecutionsToDo( timeInMin );
+    }
+    return 0;
+  }
+  object->setStateMod( mod, setting );
+    
+  if(setting) {
+    sprintf( msg, "%s is %s.", object->getName(), Constants::STATE_NAMES[ mod ] );
+  } else {
+    sprintf(msg, "%s is not %s any more.", object->getName(), Constants::STATE_NAMES[ mod ] );
+  }
+  SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);
+  
+  // cancel existing event if any
+  if( e ) {
+//      cerr << "Cancelling existing event." << endl;
+    SqBinding::sessionRef->getParty()->getCalendar()->cancelEvent( e );
+  }
+
+  if( setting ) {
+    // add calendar event to remove condition            
+    // (format : sec, min, hours, days, months, years)
+    Calendar *cal = SqBinding::sessionRef->getParty()->getCalendar();
+    //    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
+    Date d( 0, 1, 0, 0, 0, 0 ); 
+//      cerr << "Creating new event." << endl;
+    e = new StateModExpirationEvent( cal->getCurrentDate(), d, object, mod, SqBinding::sessionRef, timeInMin);
+    cal->scheduleEvent( (Event*)e );   // It's important to cast!!
+    object->setStateModEvent( mod, e );
+  }
   return 0;
 }
 
 int SqCreature::_setProtectedStateMod( HSQUIRRELVM vm ) {
-  GET_INT( index );
-  GET_BOOL( b );
+  GET_BOOL( b )
+  GET_INT( index )
   GET_OBJECT( Creature* )
   object->setProtectedStateMod( index, b );
   return 0;

@@ -66,6 +66,7 @@ public:
 
   static int _getStateModCount( HSQUIRRELVM vm );
   static int _getStateModName( HSQUIRRELVM vm );
+  static int _getStateModByName( HSQUIRRELVM vm );
 
   static int _getDateString( HSQUIRRELVM vm );
   static int _isADayLater( HSQUIRRELVM vm );
