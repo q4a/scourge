@@ -1534,7 +1534,7 @@ bool Creature::canAttack(RenderedCreature *creature, int *cursor) {
                     Constants::CURSOR_RANGED : 
                     Constants::CURSOR_ATTACK ) );
     } else {
-      *cursor = Constants::CURSOR_FORBIDDEN;
+      *cursor = Constants::CURSOR_NORMAL;
     }
   }
   return ret;
