@@ -501,6 +501,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
           pc[i]->addSpell(Spell::getSpellByName("Teleportation"));
           pc[i]->addSpell(Spell::getSpellByName("Recall to life"));
           pc[i]->setMp( 5000 );
+          pc[i]->setMoney( 10000 );
         }
       }
     }
