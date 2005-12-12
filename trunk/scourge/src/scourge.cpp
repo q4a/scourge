@@ -1292,7 +1292,10 @@ bool Scourge::handleEvent(SDL_Event *event) {
     // DEBUG ------------------------------------
 
 #ifdef DEBUG_KEYS
-    if(event->key.keysym.sym == SDLK_l) {
+    if(event->key.keysym.sym == SDLK_d) {
+      party->getPlayer()->takeDamage( 1000 );
+      return false;
+    } else if(event->key.keysym.sym == SDLK_l) {
       //cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
 
       party->getPlayer()->addExperience( 1000 );
