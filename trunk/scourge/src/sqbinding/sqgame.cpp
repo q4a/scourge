@@ -37,6 +37,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "Mission", "getMission", SqGame::_getMission, 0, 0, "Get the current mission object." },
   { "int", "getStateModCount", SqGame::_getStateModCount, 0, 0, "Return the number of state modifiers in the game." },
   { "string", "getStateModName", SqGame::_getStateModName, 2, "xn", "Get the given state mod's name. The first param is the index of the state mod." },
+  { "int", "getStateModByName", SqGame::_getStateModByName, 2, "xs", "Get the index of the state given in the param to this function." },
   { "string", "getDateString", SqGame::_getDateString, 0, 0, "Get the current game date. It is returned in the game's date format: (yyyy/m/d/h/m/s)" },
   { "bool", "isADayLater", SqGame::_isADayLater, 2, "xs", "Is the given date a day later than the current game date? The first parameter is a date in game date format. (yyyy/m/d/h/m/s)" },
   { "string", "getValue", SqGame::_getValue, 2, "xs", "Get the value associated with a given key from the value map. The first parameter is the key." },
@@ -149,6 +150,15 @@ int SqGame::_getStateModName( HSQUIRRELVM vm ) {
   sq_pushstring( vm, _SC( Constants::STATE_NAMES[ index ] ), -1 );
   return 1;
 }
+
+int SqGame::_getStateModByName( HSQUIRRELVM vm ) {
+  GET_STRING( stateModName, 40 );
+  int n = Constants::getStateModByName( stateModName );
+  if( n < 0 ) return sq_throwerror( vm, _SC( "No state mod by that name." ) );
+  sq_pushinteger( vm, n );
+  return 1;
+}
+
 
 int SqGame::_getDateString( HSQUIRRELVM vm ) {
   sq_pushstring( vm, _SC( SqBinding::sessionRef->getParty()->
