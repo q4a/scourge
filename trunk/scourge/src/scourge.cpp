@@ -2976,7 +2976,20 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   glDisable( GL_TEXTURE_2D );
 
   bool shade = false;
-  if( p->getStateMod( Constants::possessed ) ) {
+  if( inTurnBasedCombat() ) {
+    bool found = false;
+    for( int i = battleTurn; i < (int)battleRound.size(); i++ ) {
+      if( battleRound[i]->getCreature() == p ) {
+        found = true;
+        break;
+      }
+    }
+    // already had a turn in battle
+    if( !found ) {
+      glColor4f( 0, 0, 0, 0.75f );
+      shade = true;
+    }
+  } else if( p->getStateMod( Constants::possessed ) ) {
     glColor4f( 1.0f, 0, 0, 0.5f );
     shade = true;
   } else if( p->getStateMod( Constants::invisible ) ) {
