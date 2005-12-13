@@ -1952,12 +1952,12 @@ float Creature::getACPercent( float *totalP, float *skillP ) {
     
   if( skillP ) *skillP = avgArmorSkill;
   
-  float itemLevel = ( avgArmorLevel - 1 ) / ITEM_LEVEL_DIVISOR;
+  float itemLevel = avgArmorLevel - 1;
   if( itemLevel < 0 ) itemLevel = 0;
   
-  armor = ( ac + itemLevel );
+  armor = ac + itemLevel;
   if( totalP ) *totalP = armor;
-  
+    
   // apply the skill
   armor = ( ( armor / 100.0f ) * avgArmorSkill );
     
@@ -2033,33 +2033,25 @@ float Creature::getAttackPercent( Item *weapon,
   if( skillP ) *skillP = skill;
 
   float itemLevel = 
-    ( ( weapon ?
-        weapon->getLevel() + 
-        ( weapon->isMagicItem() ? weapon->getBonus() : 0 ) : 
-        getLevel() / 10.0f ) - 1 ) / ITEM_LEVEL_DIVISOR;
+    ( weapon ? weapon->getLevel() + ( weapon->isMagicItem() ? weapon->getBonus() : 0 ) : 
+      getLevel() ) - 
+    1;
+
   if( itemLevel < 0 ) itemLevel = 0;
   if( itemLevelP ) *itemLevelP = itemLevel;
-
-  float levelDiff = 
-    ( getTargetCreature() && getTargetCreature()->getLevel() < getLevel() ?
-      getLevel() - getTargetCreature()->getLevel() :
-      0 );
-  if( levelDiffP ) *levelDiffP = levelDiff;
 
   float max = 
     ( weapon ? 
       weapon->getRpgItem()->getAction()->getMax() : 
       HAND_ATTACK_DAMAGE.getMax() ) +
-    itemLevel +
-    levelDiff;
+    itemLevel;
   max = ( ( max / 100.0f ) * skill );
 
   float min = 
     ( weapon ? 
       weapon->getRpgItem()->getAction()->getMin() : 
       HAND_ATTACK_DAMAGE.getMin() ) +
-    itemLevel +
-    levelDiff;
+    itemLevel;
   min = ( ( min / 100.0f ) * skill );
   
   // reporting
@@ -2067,22 +2059,23 @@ float Creature::getAttackPercent( Item *weapon,
   if( minP ) *minP = min;
                                                                  
   float total;
+  /*
   if( max < MAX_RANDOM_DAMAGE ) {
     // Special handling for very low proficiency: low random attacks
     total = MAX_RANDOM_DAMAGE * rand() / RAND_MAX + min;
     if( maxP ) *maxP = MAX_RANDOM_DAMAGE + min;
     if( adjustedForLowProficiency ) *adjustedForLowProficiency = true;
   } else {
+  */
     total = 
       ( weapon ? 
         weapon->getRpgItem()->getAction()->roll() : 
         HAND_ATTACK_DAMAGE.roll() ) +
-      itemLevel +
-      levelDiff;
+      itemLevel;
     // apply skill
     total = ( ( total / 100.0f ) * skill );
     if( adjustedForLowProficiency ) *adjustedForLowProficiency = false;
-  }
+  //}
 
   return total;
 }
