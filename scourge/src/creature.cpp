@@ -29,6 +29,8 @@
 
 using namespace std;
 
+#define MIN_SKILL_LEVEL 20
+
 //#define DEBUG_CAPABILITIES
 
 #define GOD_MODE 0
@@ -1365,18 +1367,22 @@ void Creature::monsterInit() {
   this->level = monster->getLevel();
 
   // set some skills
+  //cerr << "monster=" << monster->getType() << " level=" << getLevel() << endl;
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
-    setSkill(i, ( n > 0 ? n : (int)((float)(8 * level) * rand()/RAND_MAX)) );
+    if( n > 0 ) {
+      setSkill( i, n );
+    } else {
+      setSkill( i, rollStartingSkill( getLevel() ) );
+    }
+    //cerr << "\t" << Constants::SKILL_NAMES[i] << "=" << getSkill(i) << ", " << getLevelAdjustedSkill(i) << endl;
   }
 
   // equip starting inventory
-  int itemLevel = (int)( (float)getMonster()->getLevel() * 0.75f );
-  if( itemLevel < 1 ) itemLevel = 1;
-  //cerr << "Adding starting items:" << getMonster()->getStartingItemCount() << endl;
-  for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {
+  for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {  
+    int itemLevel = getMonster()->getLevel() + (int)( ( 3.0f * rand() / RAND_MAX ) - 1.5f );
+    if( itemLevel < 1 ) itemLevel = 1;
     Item *item = session->newItem( getMonster()->getStartingItem(i), itemLevel );
-    //cerr << "\t" << item->getRpgItem()->getName() << endl;
     addInventory( item, true );
     equipInventory(inventory_count - 1);
   }
@@ -1957,11 +1963,13 @@ float Creature::getACPercent( float *totalP, float *skillP ) {
   
   armor = ac + itemLevel;
   if( totalP ) *totalP = armor;
+  
+  float n = ( ac * rand() / RAND_MAX ) + itemLevel;
     
   // apply the skill
   armor = ( ( armor / 100.0f ) * avgArmorSkill );
     
-  return armor;
+  return( ( n / 100.0f ) * avgArmorSkill );
 }
 
 void Creature::calcArmor( float *armorP, 
@@ -1974,7 +1982,7 @@ void Creature::calcArmor( float *armorP,
   } else {
     float armor = (monster ? monster->getBaseArmor() : 0);
     int armorLevel=0, armorCount=0;
-    int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
+    int armorSkill = getLevelAdjustedSkill( Constants::getSkillByName( "COORDINATION" ) );
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
@@ -1983,10 +1991,9 @@ void Creature::calcArmor( float *armorP,
           armorLevel += 
             ( item->getLevel() + 
               ( item->isMagicItem() ? item->getBonus() : 0 ) );
-          armorSkill += 
-            ( item->getRpgItem()->getSkill() > -1 ? 
-              item->getRpgItem()->getSkill() :
-              Constants::getSkillByName( "HAND_DEFEND" ) );
+          armorSkill += getLevelAdjustedSkill( item->getRpgItem()->getSkill() > -1 ? 
+                                               item->getRpgItem()->getSkill() :
+                                               Constants::getSkillByName( "HAND_DEFEND" ) );
           armorCount++;
         }
       }
@@ -2002,7 +2009,7 @@ void Creature::calcArmor( float *armorP,
                         (float)armorSkill / (float)armorCount :
                         (float)armorSkill );
     (*avgArmorSkillP) += 
-      ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+      ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
 
     lastArmor = *armorP;
     lastArmorLevel = *avgArmorLevelP;
@@ -2021,15 +2028,15 @@ float Creature::getAttackPercent( Item *weapon,
                                   float *levelDiffP,
                                   bool *adjustedForLowProficiency ) {
   float skill = 
-    getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
-              Constants::getSkillByName( "COORDINATION" ) :
-              Constants::getSkillByName( "POWER" ) ) +
-    getSkill( weapon ? 
-              weapon->getRpgItem()->getSkill() :
-              Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
+    getLevelAdjustedSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
+                           Constants::getSkillByName( "COORDINATION" ) :
+                           Constants::getSkillByName( "POWER" ) ) +
+    getLevelAdjustedSkill( weapon ? 
+                           weapon->getRpgItem()->getSkill() :
+                           Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
   skill /= 2.0f;
 
-  skill += ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+  skill += ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
   if( skillP ) *skillP = skill;
 
   float itemLevel = 
@@ -2058,26 +2065,28 @@ float Creature::getAttackPercent( Item *weapon,
   if( maxP ) *maxP = max;
   if( minP ) *minP = min;
                                                                  
-  float total;
-  /*
-  if( max < MAX_RANDOM_DAMAGE ) {
-    // Special handling for very low proficiency: low random attacks
-    total = MAX_RANDOM_DAMAGE * rand() / RAND_MAX + min;
-    if( maxP ) *maxP = MAX_RANDOM_DAMAGE + min;
-    if( adjustedForLowProficiency ) *adjustedForLowProficiency = true;
-  } else {
-  */
-    total = 
-      ( weapon ? 
-        weapon->getRpgItem()->getAction()->roll() : 
-        HAND_ATTACK_DAMAGE.roll() ) +
-      itemLevel;
-    // apply skill
-    total = ( ( total / 100.0f ) * skill );
-    if( adjustedForLowProficiency ) *adjustedForLowProficiency = false;
-  //}
-
+  float total = ( max - min ) * rand() / RAND_MAX + min;
+  if( adjustedForLowProficiency ) *adjustedForLowProficiency = false;
+  
   return total;
+}
+
+/**
+ * @return a % of skill level, taking into account the creature's level.
+ */
+int Creature::getLevelAdjustedSkill( int skill ) {
+  float max = (float)MIN_SKILL_LEVEL + ( ((float)getLevel()) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL );
+  float one = max / 100.0f;
+  return(int)( (float)( getSkill( skill ) ) / one ); 
+}
+
+/** 
+ * Roll a reasonable stating skill level.
+ */
+int Creature::rollStartingSkill( int level ) {
+  float f = ((float)level) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL;
+  return (int)( (float)MIN_SKILL_LEVEL * ( 0.5f + ( 0.5f * rand() / RAND_MAX ) ) + 
+                ( f / 2.0f + ( ( f / 2.0f ) * rand() / RAND_MAX ) ) );
 }
 
 /**

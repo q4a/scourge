@@ -45,7 +45,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 10
+#define LEVEL 1
 
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
 std::map<CharacterModelInfo*, GLShape*> shapes;
@@ -552,12 +552,11 @@ void PartyEditor::rollSkills( CharacterInfo *info ) {
   info->availableSkillMod = AVAILABLE_SKILL_POINTS;
   Character *c = Character::character_list[ info->charType->getSelectedLine() ];
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    int n = c->getMinSkillLevel(i) + LEVEL * (int)(10.0 * rand()/RAND_MAX);
-    // basic skills
-    if(i < Constants::SWORD_WEAPON) n = 20 + LEVEL * (int)(10.0 * rand()/RAND_MAX);
-    if(n > 99) n = 99;
-    if(n > c->getMaxSkillLevel( i )) 
-      n = c->getMaxSkillLevel( i );
+
+    int n = Creature::rollStartingSkill( LEVEL );
+
+    if( n < c->getMinSkillLevel( i ) ) n = c->getMinSkillLevel( i );
+    if( n > c->getMaxSkillLevel( i ) ) n = c->getMaxSkillLevel( i );
     info->skill[ i ] = n;
     info->skillMod[ i ] = 0;
   }  
