@@ -102,6 +102,7 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				768B7B6C095012C90077FD12,
 				7688A67B0926E1F700AB1291,
 				7688A6760926E1EA00AB1291,
 				7688A6710926E1DC00AB1291,
@@ -114,6 +115,8 @@
 				761CF69A08E264EB00DCC558,
 				761CF68708E264DB00DCC558,
 				761CF68808E264DB00DCC558,
+				768B7B62095012A10077FD12,
+				768B7B63095012A10077FD12,
 				769D585D09140D6000AF852C,
 				769D585E09140D6000AF852C,
 				769D585F09140D6000AF852C,
@@ -1307,6 +1310,8 @@
 		};
 		762AF817066D856300B92069 = {
 			children = (
+				768B7B8B095013640077FD12,
+				768B7B8C095013640077FD12,
 				76419B070738973300CD6008,
 				76419B080738973300CD6008,
 				76419B090738973300CD6008,
@@ -1649,6 +1654,8 @@
 		};
 		762AF84B066D856300B92069 = {
 			children = (
+				768B7B98095013BD0077FD12,
+				768B7B99095013BD0077FD12,
 				761CF67F08E2645500DCC558,
 				76419B280738975E00CD6008,
 				76419B290738975E00CD6008,
@@ -2736,6 +2743,11 @@
 		};
 		7688A67B0926E1F700AB1291 = {
 			children = (
+				768B7BA4095014270077FD12,
+				768B7BA5095014270077FD12,
+				768B7BA6095014270077FD12,
+				768B7B7C095013380077FD12,
+				768B7B7D095013380077FD12,
 				7688A67F0926E23700AB1291,
 				7688A6800926E23700AB1291,
 				7688A6810926E23700AB1291,
@@ -3541,6 +3553,211 @@
 		};
 		7688A7010926E27600AB1291 = {
 			fileRef = 7688A6DE0926E27600AB1291;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B62095012A10077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = characterinfo.cpp;
+			path = ../../src/characterinfo.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B63095012A10077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = characterinfo.h;
+			path = ../../src/characterinfo.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B64095012A10077FD12 = {
+			fileRef = 768B7B62095012A10077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B65095012A10077FD12 = {
+			fileRef = 768B7B63095012A10077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B6C095012C90077FD12 = {
+			children = (
+				768B7B70095012ED0077FD12,
+				768B7B71095012ED0077FD12,
+			);
+			isa = PBXGroup;
+			name = test;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		768B7B70095012ED0077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = combattest.cpp;
+			path = ../../src/test/combattest.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B71095012ED0077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = combattest.h;
+			path = ../../src/test/combattest.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B72095012ED0077FD12 = {
+			fileRef = 768B7B70095012ED0077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B73095012ED0077FD12 = {
+			fileRef = 768B7B71095012ED0077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B7C095013380077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = sqmission.cpp;
+			path = ../../src/sqbinding/sqmission.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B7D095013380077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = sqmission.h;
+			path = ../../src/sqbinding/sqmission.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B7E095013380077FD12 = {
+			fileRef = 768B7B7C095013380077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B7F095013380077FD12 = {
+			fileRef = 768B7B7D095013380077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B8B095013640077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = reloadevent.cpp;
+			path = ../../src/events/reloadevent.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B8C095013640077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = reloadevent.h;
+			path = ../../src/events/reloadevent.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B8D095013640077FD12 = {
+			fileRef = 768B7B8B095013640077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B8E095013640077FD12 = {
+			fileRef = 768B7B8C095013640077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B98095013BD0077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = specialskill.cpp;
+			path = ../../src/rpg/specialskill.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B99095013BD0077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = specialskill.h;
+			path = ../../src/rpg/specialskill.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7B9A095013BD0077FD12 = {
+			fileRef = 768B7B98095013BD0077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7B9B095013BD0077FD12 = {
+			fileRef = 768B7B99095013BD0077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7BA4095014270077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = sqitem.cpp;
+			path = ../../src/sqbinding/sqitem.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7BA5095014270077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = sqitem.h;
+			path = ../../src/sqbinding/sqitem.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7BA6095014270077FD12 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = sqobject.cpp;
+			path = ../../src/sqbinding/sqobject.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		768B7BA7095014270077FD12 = {
+			fileRef = 768B7BA4095014270077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7BA8095014270077FD12 = {
+			fileRef = 768B7BA5095014270077FD12;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		768B7BA9095014270077FD12 = {
+			fileRef = 768B7BA6095014270077FD12;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -4607,6 +4824,12 @@
 				7688A6FE0926E27600AB1291,
 				7688A6FF0926E27600AB1291,
 				7688A7010926E27600AB1291,
+				768B7B65095012A10077FD12,
+				768B7B73095012ED0077FD12,
+				768B7B7F095013380077FD12,
+				768B7B8E095013640077FD12,
+				768B7B9B095013BD0077FD12,
+				768B7BA8095014270077FD12,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4749,6 +4972,13 @@
 				7688A6F20926E27600AB1291,
 				7688A6FB0926E27600AB1291,
 				7688A7000926E27600AB1291,
+				768B7B64095012A10077FD12,
+				768B7B72095012ED0077FD12,
+				768B7B7E095013380077FD12,
+				768B7B8D095013640077FD12,
+				768B7B9A095013BD0077FD12,
+				768B7BA7095014270077FD12,
+				768B7BA9095014270077FD12,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

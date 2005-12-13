@@ -27,7 +27,7 @@ using namespace std;
   *@author Gabor Torok
   */
 
-#define SHOW_MAX_LEVEL 50
+#define SHOW_MAX_LEVEL MAX_LEVEL
 #define HTML_PREFIX "<html><head><title>%s</title><style>\
 BODY { \
   background: white;\
