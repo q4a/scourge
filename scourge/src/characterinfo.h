@@ -54,6 +54,9 @@ public:
   /** Draw the widget. */
   virtual void drawWidgetContents( Widget *w );
 
+private:
+  char *getAPRDescription( Creature *p, Item *item, char *buff );
+
 };
 
 #endif

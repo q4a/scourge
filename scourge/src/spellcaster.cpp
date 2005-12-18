@@ -452,7 +452,6 @@ void SpellCaster::circleAttack() {
                                                    (Constants::DAMAGE_DURATION * 4), 
                                                    spellEffectSize, spellEffectSize, 
                                                    (GLuint)( angle * 5 ) );
-
       targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, (RenderedCreature**)targets );
       for( int i = 0; i < targetCount; i++ ) {
         if( battle->getCreature()->canAttack( targets[ i ] ) ) {

@@ -731,10 +731,18 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 
 
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-      sprintf(skillLine[t], "%d(%d) - %s", 
-              selectedP->getSkill(t), 
-              selectedP->getSkillMod(t), 
-              Constants::SKILL_NAMES[t]);
+      if( scourge->getSession()->getPreferences()->getCombatInfoDetail() > 0 ) {
+        sprintf(skillLine[t], "%d(%d)(A:%d) - %s", 
+                selectedP->getSkill(t), 
+                selectedP->getSkillMod(t), 
+                selectedP->getLevelAdjustedSkill(t),
+                Constants::SKILL_NAMES[t]);
+      } else {
+        sprintf(skillLine[t], "%d(%d) - %s", 
+                selectedP->getSkill(t), 
+                selectedP->getSkillMod(t), 
+                Constants::SKILL_NAMES[t]);
+      }
     }
     skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
     break;

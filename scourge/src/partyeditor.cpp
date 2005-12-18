@@ -45,7 +45,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 1
+#define LEVEL 6
 
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
 std::map<CharacterModelInfo*, GLShape*> shapes;
@@ -434,32 +434,32 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
       // add a weapon anyone can wield
       int n = (int)(5.0f * rand()/RAND_MAX);
       switch(n) {
-      case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow")), true); break;
-      case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword")), true); break;
-      case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger")), true); break;
-      case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"))); break;
-      case 4: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff")), true); break;
+      case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow"), LEVEL ), true); break;
+      case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"), LEVEL ), true); break;
+      case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"), LEVEL ), true); break;
+      case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"), LEVEL )); break;
+      case 4: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff"), LEVEL ), true); break;
       }
       int invIndex = 0;
       pc[i]->equipInventory( invIndex++ );
   
       // add some armor
       if(0 == (int)(4.0f * rand()/RAND_MAX)) {
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet")), true);
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet"), LEVEL ), true);
         pc[i]->equipInventory( invIndex++ );
       }
       if(0 == (int)(3.0f * rand()/RAND_MAX)) {
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler")), true);
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler"), LEVEL ), true);
         pc[i]->equipInventory( invIndex++ );
       }
       
       // some potions
       if(0 == (int)(4.0f * rand()/RAND_MAX))
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion")), true);  
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion"), LEVEL ), true);  
       if(0 == (int)(4.0f * rand()/RAND_MAX))
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion")), true);  
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion"), LEVEL ), true);  
       if(0 == (int)(4.0f * rand()/RAND_MAX))
-        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor")), true);  
+        pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor"), LEVEL ), true);  
       
       // some food
       for(int t = 0; t < (int)(6.0f * rand()/RAND_MAX); t++) {
@@ -530,7 +530,8 @@ void PartyEditor::saveUI( Creature **pc ) {
     pc[i]->setLevel( LEVEL ); 
     pc[i]->setExp(0);
     pc[i]->setHp();
-    pc[i]->setMp();
+    if( LEVEL > 1 ) pc[i]->setMp( 5000 );
+    else pc[i]->setMp();
 
     // model and portrait
     // (not saved b/c it makes no difference to the rpg values.)

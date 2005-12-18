@@ -68,20 +68,24 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint(5, y + 15, s);
   sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
   scourge->getSDLHandler()->texPrint(5, y + 30, s);
-  float totalArmor, skilledArmor;
-  skilledArmor = p->getACPercent( &totalArmor );
-  sprintf(s, "AC: %.2f (%.2f)", skilledArmor, totalArmor );
-  scourge->getSDLHandler()->texPrint(5, y + 45, s);
   sprintf(s, "Thirst: %d (10)", p->getThirst());
-  scourge->getSDLHandler()->texPrint(5, y + 60, s);
+  scourge->getSDLHandler()->texPrint(5, y + 45, s);
   sprintf(s, "Hunger: %d (10)", p->getHunger());
-  scourge->getSDLHandler()->texPrint(5, y + 75, s);
+  scourge->getSDLHandler()->texPrint(5, y + 60, s);
   sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP() ) );
-  scourge->getSDLHandler()->texPrint(5, y + 90, s);
+  scourge->getSDLHandler()->texPrint(5, y + 75, s);
+
+
   int initiative;
   creature->getInitiative( &initiative );
   sprintf(s, "Initiative: %d", initiative );
-  scourge->getSDLHandler()->texPrint( 5, y + 105, s );
+  scourge->getSDLHandler()->texPrint( 5, y + 90, s );
+
+  float totalArmor;
+  p->getACPercent( &totalArmor );
+  sprintf(s, "AC: %.2f", totalArmor );
+  scourge->getSDLHandler()->texPrint(5, y + 105, s);
+
 
   float max, min;
 
@@ -89,21 +93,22 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   Item *right = p->getItemAtLocation( Constants::INVENTORY_RIGHT_HAND );
   Item *ranged = p->getItemAtLocation( Constants::INVENTORY_WEAPON_RANGED );
 
+  char buff[80];
   int yy = 120;
   bool hasWeapon = false;
   if( left && left->getRpgItem()->isWeapon() ) {
     p->getAttackPercent( left, &max, &min );
-    sprintf(s, "ATK: %.2f - %.2f (%.2f APR) %s", 
-            min, max, p->getAttacksPerRound( left ),
+    sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
+            min, max, getAPRDescription(p, left, buff),
             left->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
     hasWeapon = true;
   } 
   if( right && right->getRpgItem()->isWeapon() ) {
-    p->getAttackPercent( left, &max, &min );
-    sprintf(s, "ATK: %.2f - %.2f (%.2f APR) %s", 
-            min, max, p->getAttacksPerRound( right ),
+    p->getAttackPercent( right, &max, &min );
+    sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
+            min, max, getAPRDescription(p, right, buff),
             right->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
@@ -111,15 +116,15 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   }
   if( !hasWeapon ) {
     p->getAttackPercent( NULL, &max, &min );
-    sprintf(s, "ATK: %.2f - %.2f (%.2f APR) Bare Hands", 
-            min, max, p->getAttacksPerRound( NULL ) );
+    sprintf(s, "ATK: %.2f - %.2f (%s) Bare Hands", 
+            min, max, getAPRDescription(p, NULL, buff) );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
   }
   if( ranged ) {
-    p->getAttackPercent( left, &max, &min );
-    sprintf(s, "ATK: %.2f - %.2f (%.2f APR) %s", 
-            min, max, p->getAttacksPerRound( ranged ),
+    p->getAttackPercent( ranged, &max, &min );
+    sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
+            min, max, getAPRDescription(p, ranged, buff),
             ranged->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
@@ -128,9 +133,18 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false, theme );
   Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp(), -1, -1, -1, true, theme );
   Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 42, 120, skilledArmor, totalArmor, 0.45f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 57, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 72, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 87, 120, (float)p->getBattle()->getAP(), p->getMaxAP(), 0.45f, 0.65f, 1.0f, false, theme );
+  Util::drawBar( 160, y + 42, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
+  Util::drawBar( 160, y + 57, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
+  Util::drawBar( 160, y + 72, 120, (float)p->getBattle()->getAP(), p->getMaxAP(), 0.45f, 0.65f, 1.0f, false, theme );
+}
+
+char *CharacterInfoUI::getAPRDescription( Creature *p, Item *item, char *buff ) {
+  float apr = p->getAttacksPerRound( item );
+  if( apr >= 1.0f ) {
+    sprintf( buff, "%.2f APR", apr );
+  } else {
+    sprintf( buff, "per %.2f R", ( 100.0f / (apr * 100.0f) ) );
+  }
+  return buff;
 }
 

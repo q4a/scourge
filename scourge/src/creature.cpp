@@ -1373,14 +1373,14 @@ void Creature::monsterInit() {
     if( n > 0 ) {
       setSkill( i, n );
     } else {
-      setSkill( i, rollStartingSkill( getLevel() ) );
+      setSkill( i, rollStartingSkill( getLevel(), true ) );
     }
     //cerr << "\t" << Constants::SKILL_NAMES[i] << "=" << getSkill(i) << ", " << getLevelAdjustedSkill(i) << endl;
   }
 
   // equip starting inventory
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {  
-    int itemLevel = getMonster()->getLevel() + (int)( ( 3.0f * rand() / RAND_MAX ) - 1.5f );
+    int itemLevel = getMonster()->getLevel() - (int)( ( 2.0f * rand() / RAND_MAX ) );
     if( itemLevel < 1 ) itemLevel = 1;
     Item *item = session->newItem( getMonster()->getStartingItem(i), itemLevel );
     addInventory( item, true );
@@ -1411,18 +1411,12 @@ void Creature::monsterInit() {
     addSpell(getMonster()->getStartingSpell(i));
   }
 
-  // add some hp
-  //startingHp = hp = 4 + (int)((float)(10.0f * level) * rand()/RAND_MAX);
-  //startingMp = mp = 4 + (int)((float)(4.0f * level) * rand()/RAND_MAX);
-
-//  startingHp = hp = monster->getHp() + (int)((float)(10.0f * level) * rand()/RAND_MAX);
-//  startingMp = mp = monster->getMp() + (int)((float)(5.0f * level) * rand()/RAND_MAX);
-
+  // add some hp and mp
   float n = (float)( monster->getHp() * ( level + 2 ) );
-  startingHp = hp = (int)( n * 0.75f ) + (int)( ( n * 0.25f ) * rand()/RAND_MAX);
+  startingHp = hp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
 
   n = (float)( monster->getMp() * ( level + 2 ) );
-  startingMp = mp = (int)( n * 0.75f ) + (int)( ( n * 0.25f ) * rand()/RAND_MAX);
+  startingMp = mp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
 }
 
 // only for characters: leveling up
@@ -1950,9 +1944,9 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 #define ITEM_LEVEL_DIVISOR 8.0f
 
 // base weapon damage of an attack with bare hands
-#define HAND_ATTACK_DAMAGE Dice(1,8,0)
+#define HAND_ATTACK_DAMAGE Dice(1,4,0)
 
-float Creature::getACPercent( float *totalP, float *skillP ) {
+float Creature::getACPercent( float *totalP, float *skillP, float vsDamage ) {
   float ac, avgArmorLevel, avgArmorSkill;
   calcArmor( &ac, &avgArmorLevel, &avgArmorSkill );               
     
@@ -1963,12 +1957,23 @@ float Creature::getACPercent( float *totalP, float *skillP ) {
   
   armor = ac + itemLevel;
   if( totalP ) *totalP = armor;
+
+  // roll the armor ( weighted roll: low values are less likely)  
+  float n;
+  if( ( 4.0f * rand() / RAND_MAX ) > 1.0f ) {
+    n = ( ( armor / 2.0f ) * rand() / RAND_MAX ) + ( armor / 2.0f );
+  } else {
+    n = armor * rand() / RAND_MAX;
+  }
   
-  float n = ( ac * rand() / RAND_MAX ) + itemLevel;
-    
   // apply the skill
   armor = ( ( armor / 100.0f ) * avgArmorSkill );
-    
+
+  // negative feedback: for monsters only, allow hits now and then
+  if( monster && vsDamage > 0 && 3.0f * rand() / RAND_MAX < 1.0f ) {
+    return ( vsDamage / 2.0f * rand() / RAND_MAX );
+  }
+
   return( ( n / 100.0f ) * avgArmorSkill );
 }
 
@@ -2041,8 +2046,7 @@ float Creature::getAttackPercent( Item *weapon,
 
   float itemLevel = 
     ( weapon ? weapon->getLevel() + ( weapon->isMagicItem() ? weapon->getBonus() : 0 ) : 
-      getLevel() ) - 
-    1;
+      getLevel() ) - 1;
 
   if( itemLevel < 0 ) itemLevel = 0;
   if( itemLevelP ) *itemLevelP = itemLevel;
@@ -2065,7 +2069,8 @@ float Creature::getAttackPercent( Item *weapon,
   if( maxP ) *maxP = max;
   if( minP ) *minP = min;
                                                                  
-  float total = ( max - min ) * rand() / RAND_MAX + min;
+  float total = min;
+  if( max - min > 0 ) total +=  ( max - min ) * rand() / RAND_MAX;
   if( adjustedForLowProficiency ) *adjustedForLowProficiency = false;
   
   return total;
@@ -2082,11 +2087,21 @@ int Creature::getLevelAdjustedSkill( int skill ) {
 
 /** 
  * Roll a reasonable stating skill level.
+ * Monsters are made less powerful than PC-s. 
+ * This can be changed by specifying monster skill values in creatures.txt.
  */
-int Creature::rollStartingSkill( int level ) {
+int Creature::rollStartingSkill( int level, bool isMonster ) {
   float f = ((float)level) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL;
-  return (int)( (float)MIN_SKILL_LEVEL * ( 0.5f + ( 0.5f * rand() / RAND_MAX ) ) + 
-                ( f / 2.0f + ( ( f / 2.0f ) * rand() / RAND_MAX ) ) );
+  if( isMonster ) {
+    // 50-100 ofmin and 0-50 of f
+    return (int)( (float)MIN_SKILL_LEVEL - 
+                  ( MIN_SKILL_LEVEL * ( 0.5f * rand() / RAND_MAX ) ) + 
+                  ( f * 0.5f * rand() / RAND_MAX ) );
+  } else {
+    // 100 ofmin and 50-100 of f
+    return (int)( (float)MIN_SKILL_LEVEL + 
+                  f * 0.5 + ( f * 0.5f * rand() / RAND_MAX ) );
+  }
 }
 
 /**
