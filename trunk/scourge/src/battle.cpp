@@ -773,12 +773,21 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
  */
 void Battle::prepareToHitMessage() {
   if(item) {
-    sprintf(message, "%s attacks %s with %s! (I:%d,S:%d)", 
-            creature->getName(), 
-            creature->getTargetCreature()->getName(),
-            item->getItemName(),
-            creatureInitiative, speed);
-    session->getMap()->addDescription(message);
+    if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+      sprintf(message, "%s(%d) attacks %s(%d) with %s(%d)!", 
+              creature->getName(), 
+              creature->getLevel(),
+              creature->getTargetCreature()->getName(),
+              creature->getTargetCreature()->getLevel(),
+              item->getItemName(),
+              item->getLevel() );
+    } else {
+      sprintf( message, "%s attacks %s with %s!", 
+               creature->getName(), 
+               creature->getTargetCreature()->getName(),
+               item->getItemName() );
+    }
+      session->getMap()->addDescription(message);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
 
     // play item sound
@@ -789,10 +798,9 @@ void Battle::prepareToHitMessage() {
     session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
 
   } else {
-    sprintf(message, "%s attacks %s with bare hands! (I:%d,S:%d)", 
-            creature->getName(), 
-            creature->getTargetCreature()->getName(),
-            creatureInitiative, speed);
+    sprintf( message, "%s attacks %s with bare hands!", 
+             creature->getName(), 
+             creature->getTargetCreature()->getName() );
     session->getMap()->addDescription(message);
     ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
   }
@@ -986,8 +994,8 @@ void Battle::hitWithItem() {
 
 
   float ac = creature->getTargetCreature()->
-    getACPercent( &total, 
-                  &skill );
+    getACPercent( &total, &skill, attack );
+
   sprintf(message, "...%s blocks %.2f points", 
           creature->getTargetCreature()->getName(), ac);
   session->getMap()->addDescription(message);
