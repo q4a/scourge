@@ -2080,9 +2080,17 @@ float Creature::getAttackPercent( Item *weapon,
  * @return a % of skill level, taking into account the creature's level.
  */
 int Creature::getLevelAdjustedSkill( int skill ) {
-  float max = (float)MIN_SKILL_LEVEL + ( ((float)getLevel()) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL );
-  float one = max / 100.0f;
-  return(int)( (float)( getSkill( skill ) ) / one ); 
+  float total = (float)MIN_SKILL_LEVEL + ( ((float)getLevel()) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL );
+  float one = total / 100.0f;
+  int value = (int)( (float)( getSkill( skill ) ) / one ); 
+
+  if( character ) {
+    int min = character->getMinSkillLevel( skill );
+    if( value < min ) return min;
+    int max = character->getMaxSkillLevel( skill );
+    if( value > max ) return max;
+  }
+  return value;
 }
 
 /** 
