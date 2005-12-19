@@ -72,19 +72,19 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint(5, y + 45, s);
   sprintf(s, "Hunger: %d (10)", p->getHunger());
   scourge->getSDLHandler()->texPrint(5, y + 60, s);
-  sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP() ) );
+  sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP( true ) ) );
   scourge->getSDLHandler()->texPrint(5, y + 75, s);
 
 
   glColor4f( 0, 1, 1, 1 );
   int initiative;
-  creature->getInitiative( &initiative );
+  creature->getInitiative( &initiative, true );
   sprintf(s, "Initiative: %d", initiative );
   scourge->getSDLHandler()->texPrint( 5, y + 90, s );
 
   glColor4f( 0, 1, 0.25f, 1 );
   float totalArmor;
-  p->getACPercent( &totalArmor );
+  p->getACPercent( &totalArmor, NULL, -1, true );
   sprintf(s, "DEF: %.2f", totalArmor );
   scourge->getSDLHandler()->texPrint(5, y + 105, s);
 
@@ -100,7 +100,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   int yy = 120;
   bool hasWeapon = false;
   if( left && left->getRpgItem()->isWeapon() ) {
-    p->getAttackPercent( left, &max, &min );
+    p->getAttackPercent( left, &max, &min, NULL, NULL, true );
     sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
             min, max, getAPRDescription(p, left, buff),
             left->getRpgItem()->getName() );
@@ -109,7 +109,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     hasWeapon = true;
   } 
   if( right && right->getRpgItem()->isWeapon() ) {
-    p->getAttackPercent( right, &max, &min );
+    p->getAttackPercent( right, &max, &min, NULL, NULL, true );
     sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
             min, max, getAPRDescription(p, right, buff),
             right->getRpgItem()->getName() );
@@ -118,14 +118,14 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     hasWeapon = true;
   }
   if( !hasWeapon ) {
-    p->getAttackPercent( NULL, &max, &min );
+    p->getAttackPercent( NULL, &max, &min, NULL, NULL, true );
     sprintf(s, "ATK: %.2f - %.2f (%s) Bare Hands", 
             min, max, getAPRDescription(p, NULL, buff) );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
   }
   if( ranged ) {
-    p->getAttackPercent( ranged, &max, &min );
+    p->getAttackPercent( ranged, &max, &min, NULL, NULL, true );
     sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
             min, max, getAPRDescription(p, ranged, buff),
             ranged->getRpgItem()->getName() );

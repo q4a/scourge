@@ -959,16 +959,13 @@ void Battle::hitWithItem() {
   prepareToHitMessage();
 
 
-  float total, max, min, skill, itemLevel, levelDiff;
-  bool adjustedForLowProf;
+  float total, max, min, skill, itemLevel;
   float attack = 
     creature->getAttackPercent( item, 
                                 &max, 
                                 &min,
                                 &skill, 
-                                &itemLevel, 
-                                &levelDiff,
-                                &adjustedForLowProf );
+                                &itemLevel );
   float delta = creature->getAttackerStateModPercent();
   float extra = ( attack / 100.0f ) * delta;
   attack += extra;
@@ -977,9 +974,8 @@ void Battle::hitWithItem() {
           creature->getName(), attack );
   session->getMap()->addDescription(message);
   if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-    sprintf(message, "...(%sMI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,LD:%.2f,EX:%.2f)",
-            ( adjustedForLowProf ? "**" : "" ),
-            min, max, skill, itemLevel, levelDiff, extra );
+    sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,EX:%.2f)",
+            min, max, skill, itemLevel, extra );
     session->getMap()->addDescription(message);
   }
 

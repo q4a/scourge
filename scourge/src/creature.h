@@ -320,7 +320,7 @@ class Creature : public RenderedCreature {
   int getMaxMp();
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
-  inline int getSkill(int index) { return skills[index] + skillBonus[index]; }
+  inline int getSkill(int index, bool includeSkillMod=false) { return ( includeSkillMod ? skillMod[index] : 0 ) + skills[index] + skillBonus[index]; }
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
   inline bool getProtectedStateMod(int mod) { return (protStateMod & (1 << mod) ? true : false); }  
 
@@ -349,7 +349,7 @@ class Creature : public RenderedCreature {
   void setProtectedStateMod(int mod, bool setting);
 
   // return the initiative for a battle round, the lower the faster the attack
-  int getInitiative( int *max=NULL );
+  int getInitiative( int *max=NULL, bool includeSkillMod=false );
   
   // take damage
   // return true if the creature dies
@@ -427,23 +427,23 @@ class Creature : public RenderedCreature {
 
 
   // new Christie-style battle system
-  float getACPercent( float *totalP=NULL, float *skillP=NULL, float vsDamage=-1 );
+  float getACPercent( float *totalP=NULL, float *skillP=NULL, float vsDamage=-1, bool includeSkillMod=false );
   void calcArmor( float *armorP, 
                   float *avgArmorLevelP,
-                  float *avgArmorSkillP );
+                  float *avgArmorSkillP,
+                  bool includeSkillMod=false );
   float getAttackPercent( Item *weapon, 
                           float *maxP=NULL, 
                           float *minP=NULL, 
                           float *skillP=NULL,
                           float *itemLevelP=NULL,
-                          float *levelDiffP=NULL,
-                          bool *adjustedForLowProficiency=NULL );
-  int getLevelAdjustedSkill( int skill );
+                          bool includeSkillMod=false );
+  int getLevelAdjustedSkill( int skill, bool includeSkillMod=false );
   static int rollStartingSkill( int level, bool isMonster=false );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );
-  float getMaxAP();
+  float getMaxAP( bool includeSkillMod = false );
   char *canEquipItem( Item *item, bool interactive = true );
 
  protected:
