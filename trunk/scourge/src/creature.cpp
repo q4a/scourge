@@ -2284,10 +2284,8 @@ cerr << "RA=" << Character::getCharacterIndexByShortName("RA") <<
         ( !bothHandsFree && 
           item->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) ) {
       if( interactive ) {
-        //scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_TWO_HANDED_VIOLATION));
-        //scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
+        return Constants::getMessage(Constants::ITEM_TWO_HANDED_VIOLATION);
       }
-      return Constants::getMessage(Constants::ITEM_TWO_HANDED_VIOLATION);
     }
   }
   return NULL;
