@@ -45,7 +45,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 6
+#define LEVEL 10
 
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
 std::map<CharacterModelInfo*, GLShape*> shapes;
@@ -91,7 +91,7 @@ PartyEditor::PartyEditor(Scourge *scourge) {
   }
   createParty( (Creature**)tmp, NULL, false );
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
-    info[i].detailsInfo->setCreature( mainWin, tmp[i] );
+    info[i].detailsInfo->setCreature( mainWin, tmp[i] );    
   }
   saveUI( (Creature**)tmp );
 
@@ -159,7 +159,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
           if( character ) {
             info[i].charTypeDescription->setText( character->getDescription() );
             rollSkills( &( info[ i ] ) );
-            updateUI( &( info[ i ] ) );
+//            updateUI( &( info[ i ] ), i );
             saveUI( (Creature**)tmp );
           }
         } 
@@ -192,7 +192,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
         }
       } else if( widget == info[i].skillRerollButton ) {
         rollSkills( &( info[ i ] ) );
-        updateUI( &( info[ i ] ) );
+//        updateUI( &( info[ i ] ), i );
         saveUI( (Creature**)tmp );
       } else if( widget == info[i].skillAddButton && info[i].availableSkillMod ) {
         int n = info[i].skills->getSelectedLine();
@@ -204,7 +204,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
             newValue <= 99 ) {
           info[ i ].availableSkillMod--;
           info[ i ].skillMod[ n ]++;
-          updateUI( &( info[ i ] ) );
+//          updateUI( &( info[ i ] ), i );
           saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].skillSubButton && info[i].availableSkillMod < AVAILABLE_SKILL_POINTS ) {
@@ -218,7 +218,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
             info[ i ].skillMod[ n ] ) {
           info[ i ].availableSkillMod++;
           info[ i ].skillMod[ n ]--;
-          updateUI( &( info[ i ] ) );
+//          updateUI( &( info[ i ] ), i );
           saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].skills ) {
@@ -333,7 +333,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
     info->skillLine[i] = (char*)malloc(120 * sizeof(char));
   }
-  updateUI( info );
+  updateUI( info, n - 1 );
   info->skills->setSelectedLine( 0 );
   info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
 
@@ -546,6 +546,8 @@ void PartyEditor::saveUI( Creature **pc ) {
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
       pc[i]->setSkill( t, info[i].skill[ t ] + info[i].skillMod[ t ] );
     }
+
+    updateUI( &( info[i] ), i );
   }
 }
 
@@ -563,7 +565,7 @@ void PartyEditor::rollSkills( CharacterInfo *info ) {
   }  
 }
 
-void PartyEditor::updateUI( CharacterInfo *info ) {
+void PartyEditor::updateUI( CharacterInfo *info, int index ) {
   for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
 
     if( info->skillMod[i] ) {
@@ -582,13 +584,36 @@ void PartyEditor::updateUI( CharacterInfo *info ) {
       }
     }
 
-    sprintf(info->skillLine[i], "%d(%d) - %s", 
-            info->skill[ i ], 
-            info->skillMod[ i ], 
-            Constants::SKILL_NAMES[i] );
+    if( tmp[ index ] ) {
+      int adj = tmp[ index ]->getLevelAdjustedSkill( i );
+      bool isMax = adj == tmp[ index ]->getCharacter()->getMaxSkillLevel( i );
+      bool isMin = adj == tmp[ index ]->getCharacter()->getMinSkillLevel( i );
+      sprintf(info->skillLine[i], "%d(%d)(%%%d%s) - %s", 
+              info->skill[ i ], 
+              info->skillMod[ i ], 
+              adj,
+              ( isMax ? " MAX" : ( isMin ? " MIN" : "" ) ),
+              Constants::SKILL_NAMES[i] );
+      if( isMax ) {
+        info->skillColor[i].r = 0;
+        info->skillColor[i].g = 0.75f;
+        info->skillColor[i].b = 1;
+      } else if( isMin ) {
+        info->skillColor[i].r = 0;
+        info->skillColor[i].g = 1;
+        info->skillColor[i].b = 0.75f;
+      }
+    } else {
+      sprintf(info->skillLine[i], "%d(%d)(%%0) - %s", 
+              info->skill[ i ], 
+              info->skillMod[ i ], 
+              Constants::SKILL_NAMES[i] );
+    }
   }
   int line = info->skills->getSelectedLine();
-  info->skills->setLines( Constants::SKILL_COUNT, (const char**)info->skillLine, info->skillColor );
+  info->skills->setLines( Constants::SKILL_COUNT, 
+                          (const char**)info->skillLine, 
+                          info->skillColor );
   info->skills->setSelectedLine( line );
 
   char msg[80];

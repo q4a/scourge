@@ -56,6 +56,7 @@ Inventory::Inventory(Scourge *scourge) {
     this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
   }
   this->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
+  this->skillColor = (Color*)malloc( Constants::SKILL_COUNT * sizeof( Color ) );
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     this->skillLine[i] = (char*)malloc(120 * sizeof(char));
   }
@@ -731,20 +732,32 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 
 
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-      if( scourge->getSession()->getPreferences()->getCombatInfoDetail() > 0 ) {
-        sprintf(skillLine[t], "%d(%d)(A:%d) - %s", 
-                selectedP->getSkill(t), 
-                selectedP->getSkillMod(t), 
-                selectedP->getLevelAdjustedSkill(t),
-                Constants::SKILL_NAMES[t]);
+      int adj = selectedP->getLevelAdjustedSkill(t);
+      bool isMax = adj == selectedP->getCharacter()->getMaxSkillLevel( t );
+      bool isMin = adj == selectedP->getCharacter()->getMinSkillLevel( t );
+      sprintf(skillLine[t], "%d(%d)(%%%d%s) - %s", 
+              selectedP->getSkill(t), 
+              selectedP->getSkillMod(t), 
+              adj,
+              ( isMax ? " MAX" : ( isMin ? " MIN" : "" ) ),
+              Constants::SKILL_NAMES[t]);
+      if( isMax ) {
+        skillColor[t].r = 0;
+        skillColor[t].g = 0.75f;
+        skillColor[t].b = 1;
+      } else if( isMin ) {
+        skillColor[t].r = 0;
+        skillColor[t].g = 1;
+        skillColor[t].b = 0.75f;
       } else {
-        sprintf(skillLine[t], "%d(%d) - %s", 
-                selectedP->getSkill(t), 
-                selectedP->getSkillMod(t), 
-                Constants::SKILL_NAMES[t]);
+        skillColor[t].r = 1;
+        skillColor[t].g = 1;
+        skillColor[t].b = 1;
       }
     }
-    skillList->setLines(Constants::SKILL_COUNT, (const char**)skillLine);
+    skillList->setLines( Constants::SKILL_COUNT, 
+                         (const char**)skillLine, 
+                         (const Color*)skillColor );
     break;
 
   case INVENTORY:

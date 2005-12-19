@@ -119,7 +119,7 @@ public:
   void createCharUI( int step, CharacterInfo *info );
   void deleteLoadedShapes();
   void rollSkills( CharacterInfo *info );
-  void updateUI( CharacterInfo *info );
+  void updateUI( CharacterInfo *info, int index );
   void saveUI( Creature **pc );
 };
 
