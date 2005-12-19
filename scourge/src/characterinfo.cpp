@@ -76,17 +76,20 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint(5, y + 75, s);
 
 
+  glColor4f( 0, 1, 1, 1 );
   int initiative;
   creature->getInitiative( &initiative );
   sprintf(s, "Initiative: %d", initiative );
   scourge->getSDLHandler()->texPrint( 5, y + 90, s );
 
+  glColor4f( 0, 1, 0.25f, 1 );
   float totalArmor;
   p->getACPercent( &totalArmor );
-  sprintf(s, "AC: %.2f", totalArmor );
+  sprintf(s, "DEF: %.2f", totalArmor );
   scourge->getSDLHandler()->texPrint(5, y + 105, s);
 
 
+  glColor4f( 1, 0.35f, 0, 1 );
   float max, min;
 
   Item *left = p->getItemAtLocation( Constants::INVENTORY_LEFT_HAND );
