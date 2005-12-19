@@ -1214,12 +1214,12 @@ Item *Creature::getBestWeapon(float dist) {
 }
 
 // return the initiative for a battle round, the lower the faster the attack
-int Creature::getInitiative( int *max ) {
+int Creature::getInitiative( int *max, bool includeSkillMod ) {
   // use the speed skill
-  float speed = getSkill(Constants::SPEED) / 5.0f;
+  float speed = getSkill(Constants::SPEED, includeSkillMod) / 5.0f;
   if( max ) *max = toint( speed );
   // roll for luck
-  speed += ( ( getSkill(Constants::LUCK) / 10.0f ) * rand()/RAND_MAX );
+  speed += ( ( getSkill(Constants::LUCK, includeSkillMod) / 10.0f ) * rand()/RAND_MAX );
   return toint( speed );
 }
 
@@ -1946,7 +1946,7 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 // base weapon damage of an attack with bare hands
 #define HAND_ATTACK_DAMAGE Dice(1,4,0)
 
-float Creature::getACPercent( float *totalP, float *skillP, float vsDamage ) {
+float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, bool includeSkillMod ) {
   float ac, avgArmorLevel, avgArmorSkill;
   calcArmor( &ac, &avgArmorLevel, &avgArmorSkill );               
     
@@ -1979,7 +1979,8 @@ float Creature::getACPercent( float *totalP, float *skillP, float vsDamage ) {
 
 void Creature::calcArmor( float *armorP, 
                           float *avgArmorLevelP,
-                          float *avgArmorSkillP ) {
+                          float *avgArmorSkillP,
+                          bool includeSkillMod ) {
   if( !armorChanged ) {
     *armorP = lastArmor;
     *avgArmorLevelP = lastArmorLevel;
@@ -1987,7 +1988,7 @@ void Creature::calcArmor( float *armorP,
   } else {
     float armor = (monster ? monster->getBaseArmor() : 0);
     int armorLevel=0, armorCount=0;
-    int armorSkill = getLevelAdjustedSkill( Constants::getSkillByName( "COORDINATION" ) );
+    int armorSkill = getLevelAdjustedSkill( Constants::getSkillByName( "COORDINATION" ), includeSkillMod );
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
@@ -1998,7 +1999,8 @@ void Creature::calcArmor( float *armorP,
               ( item->isMagicItem() ? item->getBonus() : 0 ) );
           armorSkill += getLevelAdjustedSkill( item->getRpgItem()->getSkill() > -1 ? 
                                                item->getRpgItem()->getSkill() :
-                                               Constants::getSkillByName( "HAND_DEFEND" ) );
+                                               Constants::getSkillByName( "HAND_DEFEND" ), 
+                                               includeSkillMod );
           armorCount++;
         }
       }
@@ -2014,7 +2016,7 @@ void Creature::calcArmor( float *armorP,
                         (float)armorSkill / (float)armorCount :
                         (float)armorSkill );
     (*avgArmorSkillP) += 
-      ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+      ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
 
     lastArmor = *armorP;
     lastArmorLevel = *avgArmorLevelP;
@@ -2030,18 +2032,17 @@ float Creature::getAttackPercent( Item *weapon,
                                   float *minP, 
                                   float *skillP,
                                   float *itemLevelP,
-                                  float *levelDiffP,
-                                  bool *adjustedForLowProficiency ) {
+                                  bool includeSkillMod ) {
   float skill = 
     getLevelAdjustedSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
                            Constants::getSkillByName( "COORDINATION" ) :
-                           Constants::getSkillByName( "POWER" ) ) +
+                           Constants::getSkillByName( "POWER" ), includeSkillMod ) +
     getLevelAdjustedSkill( weapon ? 
                            weapon->getRpgItem()->getSkill() :
-                           Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
+                           Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ), includeSkillMod );
   skill /= 2.0f;
 
-  skill += ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+  skill += ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
   if( skillP ) *skillP = skill;
 
   float itemLevel = 
@@ -2071,7 +2072,6 @@ float Creature::getAttackPercent( Item *weapon,
                                                                  
   float total = min;
   if( max - min > 0 ) total +=  ( max - min ) * rand() / RAND_MAX;
-  if( adjustedForLowProficiency ) *adjustedForLowProficiency = false;
   
   return total;
 }
@@ -2079,10 +2079,10 @@ float Creature::getAttackPercent( Item *weapon,
 /**
  * @return a % of skill level, taking into account the creature's level.
  */
-int Creature::getLevelAdjustedSkill( int skill ) {
+int Creature::getLevelAdjustedSkill( int skill, bool includeSkillMod ) {
   float total = (float)MIN_SKILL_LEVEL + ( ((float)getLevel()) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL );
   float one = total / 100.0f;
-  int value = (int)( (float)( getSkill( skill ) ) / one ); 
+  int value = (int)( (float)( getSkill( skill, includeSkillMod ) ) / one ); 
 
   if( character ) {
     int min = character->getMinSkillLevel( skill );
@@ -2231,8 +2231,8 @@ float Creature::rollMagicDamagePercent( Item *item ) {
   return item->rollMagicDamage() + itemLevel;
 }
 
-float Creature::getMaxAP() { 
-  return 30.0f + ( (float)( getSkill( Constants::COORDINATION ) ) / 5.0f ); 
+float Creature::getMaxAP( bool includeSkillMod ) { 
+  return 30.0f + ( (float)( getSkill( Constants::COORDINATION, includeSkillMod ) ) / 5.0f ); 
 }
 
 float Creature::getAttacksPerRound( Item *item ) {
