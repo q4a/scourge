@@ -90,6 +90,7 @@ private:
 	Label *thirstLabel, *hungerLabel, *skillLabel, *armorLabel;	
 	//int stateCount;
 	char **stateLine, **skillLine;
+  Color *skillColor;
 	GLuint *icons;
   char **protStateLine;
 	GLuint *protIcons;
