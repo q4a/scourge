@@ -85,7 +85,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   glColor4f( 0, 1, 0.25f, 1 );
   float totalArmor;
   p->getACPercent( &totalArmor, NULL, -1, true );
-  sprintf(s, "DEF: %.2f", totalArmor );
+  sprintf(s, "DEF: %d", toint( totalArmor ) );
   scourge->getSDLHandler()->texPrint(5, y + 105, s);
 
 
@@ -101,34 +101,53 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   bool hasWeapon = false;
   if( left && left->getRpgItem()->isWeapon() ) {
     p->getAttackPercent( left, &max, &min, NULL, NULL, true );
-    sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
-            min, max, getAPRDescription(p, left, buff),
-            left->getRpgItem()->getName() );
+    if( toint( max ) > toint( min ) ) 
+      sprintf(s, "ATK: %d - %d (%s) %s", 
+              toint( min ), toint( max ), getAPRDescription(p, left, buff),
+              left->getRpgItem()->getName() );
+    else
+      sprintf(s, "ATK: %d (%s) %s", 
+              toint( min ), getAPRDescription(p, left, buff),
+              left->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
     hasWeapon = true;
   } 
   if( right && right->getRpgItem()->isWeapon() ) {
     p->getAttackPercent( right, &max, &min, NULL, NULL, true );
-    sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
-            min, max, getAPRDescription(p, right, buff),
-            right->getRpgItem()->getName() );
+    if( toint( max ) > toint( min ) ) 
+      sprintf(s, "ATK: %d - %d (%s) %s", 
+              toint( min ), toint( max ), getAPRDescription(p, right, buff),
+              right->getRpgItem()->getName() );
+    else
+      sprintf(s, "ATK: %d (%s) %s", 
+              toint( min ), getAPRDescription(p, right, buff),
+              right->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
     hasWeapon = true;
   }
   if( !hasWeapon ) {
     p->getAttackPercent( NULL, &max, &min, NULL, NULL, true );
-    sprintf(s, "ATK: %.2f - %.2f (%s) Bare Hands", 
-            min, max, getAPRDescription(p, NULL, buff) );
+    if( toint( max ) > toint( min ) ) 
+      sprintf(s, "ATK: %d - %d (%s) Bare Hands", 
+              toint( min ), toint( max ), getAPRDescription(p, NULL, buff) );
+    else
+      sprintf(s, "ATK: %d (%s) Bare Hands", 
+              toint( min ), getAPRDescription(p, NULL, buff) );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
   }
   if( ranged ) {
     p->getAttackPercent( ranged, &max, &min, NULL, NULL, true );
-    sprintf(s, "ATK: %.2f - %.2f (%s) %s", 
-            min, max, getAPRDescription(p, ranged, buff),
-            ranged->getRpgItem()->getName() );
+    if( toint( max ) > toint( min ) ) 
+      sprintf(s, "ATK: %d - %d (%s) %s", 
+              toint( min ), toint( max ), getAPRDescription(p, ranged, buff),
+              ranged->getRpgItem()->getName() );
+    else
+      sprintf(s, "ATK: %d (%s) %s", 
+              toint( min ), getAPRDescription(p, ranged, buff),
+              ranged->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
   }

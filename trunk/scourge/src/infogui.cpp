@@ -32,10 +32,8 @@ ColorMark colors[] = {
   { '%', Color( 1, 0, 0 ) },
   { '^', Color( 0, 1, 0 ) },
   { '&', Color( 0, 1, 1 ) },
-
   { 0, Color( 0, 0, 0 ) }
 };
-
 
 InfoGui::InfoGui(Scourge *scourge) {
   this->scourge = scourge;
@@ -69,6 +67,7 @@ InfoGui::InfoGui(Scourge *scourge) {
   for( int i = 0; colors[i].c; i++ ) {
     label->addColoring( colors[i].c, colors[i].color );
   }
+  label->setInteractive( false );
   win->addWidget(label);
 }
 
@@ -127,6 +126,7 @@ void InfoGui::drawWidgetContents(Widget *w) {
 void InfoGui::describe() {
   // describe item
   if(!item) return;
+
   item->getDetailedDescription(name);
   nameLabel->setText(name);
 
@@ -189,10 +189,16 @@ void InfoGui::describe() {
       if( !err ) {
         scourge->getSession()->getParty()->getParty( i )->
           getAttackPercent( item, &max, &min );
-        sprintf( tmp, "#%d ^ATK: %.2f - %.2f (%.2f APR)|", 
-                 ( i + 1 ), min, max, 
-                 scourge->getSession()->getParty()->getParty( i )->
-                 getAttacksPerRound( item ) );
+        if( toint( max ) > toint( min ) )
+          sprintf( tmp, "#%d ^ATK: %d - %d (%.2f APR)|", 
+                   ( i + 1 ), toint( min ), toint( max ), 
+                   scourge->getSession()->getParty()->getParty( i )->
+                   getAttacksPerRound( item ) );
+        else
+          sprintf( tmp, "#%d ^ATK: %d (%.2f APR)|", 
+                   ( i + 1 ), toint( min ), 
+                   scourge->getSession()->getParty()->getParty( i )->
+                   getAttacksPerRound( item ) );
       } else {
         sprintf( tmp, "#%d %%ATK: %s|", ( i + 1 ), err );
       }
@@ -204,8 +210,6 @@ void InfoGui::describe() {
   // DEBUG
   //infoDetailLevel = 100;
   // DEBUG
-
-
   bool missedSomething = false;
   if(item->isMagicItem()) {
     if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {

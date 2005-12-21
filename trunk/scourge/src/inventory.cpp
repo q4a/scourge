@@ -732,7 +732,19 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 
 
     for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-      int adj = selectedP->getLevelAdjustedSkill(t);
+
+      if( selectedP->getSkillMod( t ) > 0 ) {
+        skillColor[t].r = 0;
+        skillColor[t].g = 1;
+        skillColor[t].b = 0;
+      } else {
+        skillColor[t].r = 1;
+        skillColor[t].g = 1;
+        skillColor[t].b = 1;
+      }
+
+
+      int adj = selectedP->getLevelAdjustedSkill( t, true );
       bool isMax = adj == selectedP->getCharacter()->getMaxSkillLevel( t );
       bool isMin = adj == selectedP->getCharacter()->getMinSkillLevel( t );
       sprintf(skillLine[t], "%d(%d)(%%%d%s) - %s", 
@@ -749,10 +761,6 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
         skillColor[t].r = 0;
         skillColor[t].g = 1;
         skillColor[t].b = 0.75f;
-      } else {
-        skillColor[t].r = 1;
-        skillColor[t].g = 1;
-        skillColor[t].b = 1;
       }
     }
     skillList->setLines( Constants::SKILL_COUNT, 
