@@ -45,7 +45,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 10
+#define LEVEL 1
 
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
 std::map<CharacterModelInfo*, GLShape*> shapes;

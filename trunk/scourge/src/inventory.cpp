@@ -370,9 +370,19 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1) {
       Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
-      scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill(Constants::IDENTIFY_ITEM_SKILL) );
+      scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
       if(!scourge->getInfoGui()->getWindow()->isVisible()) 
         scourge->getInfoGui()->getWindow()->setVisible( true );
+    }
+  } else if( widget == paperDoll && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+    int invLocation = ( scourge->getSDLHandler()->mouseY - paperDoll->getY() - mainWin->getY() ) / 16 - 1;
+    if( invLocation >= 0 && invLocation < Constants::INVENTORY_COUNT ) {
+      Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory( invLocation );
+      if( item ) {
+        scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
+        if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
+          scourge->getInfoGui()->getWindow()->setVisible( true );
+      }
     }
   } else if(widget == openButton) {
     int itemIndex = invList->getSelectedLine();  
