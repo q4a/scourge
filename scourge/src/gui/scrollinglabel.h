@@ -83,12 +83,16 @@ class ScrollingLabel : public Widget {
 
   std::map< std::string, int > textWidthCache;
 
+  bool interactive;
+
  public: 
 
    bool debug;
 
    ScrollingLabel(int x, int y, int w, int h, char *text );
    virtual ~ScrollingLabel();
+
+   inline void setInteractive( bool interactive ) { this->interactive = interactive; }
 
    inline void setWordClickedHandler( WordClickedHandler *handler ) { this->handler = handler; }
 

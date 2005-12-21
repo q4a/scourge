@@ -1921,7 +1921,7 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
  * New battle system calls
  * 
  * damage=attack_roll - ac
- * attack_roll=(item_action + item_level + max(0,level-target_level)) % skill
+ * attack_roll=(item_action + item_level) % skill
  * ac=(armor_total + avg_armor_level) % skill
  * skill=avg. of ability skill (power,coord, etc.), item skill, luck
  * 

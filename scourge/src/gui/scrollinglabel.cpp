@@ -43,6 +43,7 @@ ScrollingLabel::ScrollingLabel(int x, int y, int w, int h, char *text) : Widget(
   //  this->highlight = highlight;
   // highlightBorders = false;
   canGetFocusVar = Widget::canGetFocus();
+  interactive = true;
   setText( text );
 }
 
@@ -229,7 +230,8 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       // Is the mouse over this word?
       int tx = ((Window*)parent)->getScourgeGui()->getMouseX() - getX() - parent->getX();
       int ty = ((Window*)parent)->getScourgeGui()->getMouseY() - getY() - parent->getY() - Window::TOP_HEIGHT;
-      if( wordPos[ wordPosCount ].x <= tx && 
+      if( interactive &&
+          wordPos[ wordPosCount ].x <= tx && 
           wordPos[ wordPosCount ].x + wordPos[ wordPosCount ].w > tx &&
           wordPos[ wordPosCount ].y <= ty && 
           wordPos[ wordPosCount ].y + wordPos[ wordPosCount ].h > ty ) {
