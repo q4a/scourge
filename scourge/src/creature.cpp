@@ -1526,7 +1526,7 @@ void Creature::cancelTarget() {
   if(preActionTargetCreature) setTargetCreature(preActionTargetCreature);
   preActionTargetCreature = NULL;
   setAction(Constants::ACTION_NO_ACTION);
-  if(isMonster()) setMotion(Constants::MOTION_LOITER);     
+  if(isMonster()) setMotion(Constants::MOTION_LOITER);
 }
 
 /**
