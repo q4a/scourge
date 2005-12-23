@@ -296,13 +296,13 @@ void Inventory::drawWidgetContents(Widget *w) {
     }
 
     ShapePalette *shapePal = scourge->getShapePalette();
-//    glEnable(GL_ALPHA_TEST);
-    //glAlphaFunc(GL_NOTEQUAL, 0);        
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_NOTEQUAL, 0);        
     glPixelZoom( 1.0, -1.0 );
     glRasterPos2f( 1, 1 );
     glDrawPixels(shapePal->paperDoll->w, shapePal->paperDoll->h,
                  GL_BGRA, GL_UNSIGNED_BYTE, shapePal->paperDollImage);
-    //glDisable(GL_ALPHA_TEST);
+    glDisable(GL_ALPHA_TEST);
 
     if( theme->getButtonBorder() ) {
       glColor4f( theme->getButtonBorder()->color.r,
