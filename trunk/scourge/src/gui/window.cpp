@@ -153,6 +153,7 @@ Widget *Window::delegateEvent(SDL_Event *event, int x, int y) {
         if( window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_NORMAL || 
             window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_ATTACK ||
             window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_RANGED ||
+            window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_MOVE ||
             window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_TALK )
           window[i]->getScourgeGui()->setCursorMode( Constants::CURSOR_NORMAL );
         if(maxz < window[i]->getZ()) {

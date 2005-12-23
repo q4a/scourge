@@ -3501,6 +3501,7 @@ void Scourge::checkForInfo() {
   if( getSDLHandler()->getCursorMode() == Constants::CURSOR_NORMAL || 
       getSDLHandler()->getCursorMode() == Constants::CURSOR_ATTACK ||
       getSDLHandler()->getCursorMode() == Constants::CURSOR_RANGED ||
+      getSDLHandler()->getCursorMode() == Constants::CURSOR_MOVE ||
       getSDLHandler()->getCursorMode() == Constants::CURSOR_TALK ||
       getSDLHandler()->getCursorMode() == Constants::CURSOR_USE ) {
     if( getSDLHandler()->mouseIsMovingOverMap ) {
