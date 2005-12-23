@@ -737,6 +737,8 @@ void Map::drawWaterPosition(int posX, int posY,
                    0.25f + ( zz / 10.0f ), 
                    0.17f + ( zz / 15.0f ), 
                    0.5f );
+
+
         glVertex3f( (float)xp * sx, (float)yp * sy, sz );
 
         switch( i ) {

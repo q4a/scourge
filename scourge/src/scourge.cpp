@@ -1223,9 +1223,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
     }
   }
 
-  if(inventory->isVisible()) {
-    inventory->handleEvent(event);
-    //	return false;
+  if(inventory->isVisible() && inventory->handleEvent(event) ) {
+    return false;
   }
 
   if(optionsMenu->isVisible()) {
