@@ -59,12 +59,8 @@ void Party::deleteParty() {
 }
 
 void Party::reset() {
-  // Init the party; hard code for now                 
-  // This will be replaced by a call to the character builder which either
-  // loads or creates the party.
   deleteParty();
   if(loadedCount) {
-//    cerr << "*** Using loaded party!" << endl;
     for(int i = 0; i < loadedCount; i++) {
       party[i] = loadedParty[i];
     }
@@ -73,7 +69,6 @@ void Party::reset() {
     session->getBoard()->setStorylineIndex( storylineIndex );
     storylineIndex = 0;
   } else {
-//    cerr << "*** Creating new party!" << endl;
     //createHardCodedParty(session, party, &partySize);  
     session->getGameAdapter()->createParty( party, &partySize );
   }

@@ -593,6 +593,8 @@ void Battle::useSkill() {
 
   // cancel action
   creature->cancelTarget();
+  // also cancel path
+  creature->setSelXY( -1, -1 );
 }
 
 void Battle::castSpell( bool alwaysSucceeds ) {
@@ -615,6 +617,8 @@ void Battle::castSpell( bool alwaysSucceeds ) {
       sprintf(message, "Couldn't find scroll, cancelled spell.");
       session->getMap()->addDescription(message);
       creature->cancelTarget();
+      // also cancel path
+      creature->setSelXY( -1, -1 );
       return;
     }
   }
@@ -702,6 +706,9 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 
   // cancel action
   creature->cancelTarget();
+  // also cancel path
+  creature->setSelXY( -1, -1 );
+
 }
 
 void Battle::launchProjectile() {
@@ -742,6 +749,8 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   battle->spell = NULL;
   ((Creature*)(proj->getCreature()))->cancelTarget();
   ((Creature*)(proj->getCreature()))->setTargetCreature(oldTarget);
+  // also cancel path
+  ((Creature*)(proj->getCreature()))->setSelXY( -1, -1 );
   if(debugBattle) cerr << "*** Projectile hit ends." << endl;
 }
 
@@ -763,6 +772,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   battle->projectileHit = false;
   battle->spell = NULL;
   ((Creature*)(proj->getCreature()))->cancelTarget();
+  ((Creature*)(proj->getCreature()))->setSelXY( -1, -1 );
   if(debugBattle) cerr << "*** Projectile hit ends." << endl;
 }
 
@@ -1120,6 +1130,7 @@ void Battle::executeEatDrinkAction() {
   }
   // cancel action
   creature->cancelTarget();
+  creature->setSelXY( -1, -1 );
 }
 
 void Battle::invalidate() {

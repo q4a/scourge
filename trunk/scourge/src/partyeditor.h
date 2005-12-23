@@ -121,6 +121,10 @@ public:
   void rollSkills( CharacterInfo *info );
   void updateUI( CharacterInfo *info, int index );
   void saveUI( Creature **pc );
+  void addStartingInventory( Creature **pc, int partySize );
+  void setCharType( int pcIndex, int charIndex );
+  void setDeityType( int pcIndex, int deityIndex );
+
 };
 
 #endif
