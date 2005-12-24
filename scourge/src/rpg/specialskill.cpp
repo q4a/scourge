@@ -50,7 +50,7 @@ void SpecialSkill::initSkills() {
       strcpy( prereq, line + 1 );
 
       type = SpecialSkill::SKILL_TYPE_AUTOMATIC;
-      event = SpecialSkill::SKILL_EVENT_DEFENSE;
+      event = SpecialSkill::SKILL_EVENT_ARMOR;
       n = Constants::readLine( line, fp );
       char *p = strtok( line + 1, "," );
       if( p ) {
@@ -63,12 +63,9 @@ void SpecialSkill::initSkills() {
         p = strtok( NULL, "," );
         if( p ) {
           switch(*p) {
-          case 'D': event = SpecialSkill::SKILL_EVENT_DEFENSE; break;
-          case 'T': event = SpecialSkill::SKILL_EVENT_TO_HIT; break;
-          case 'A': event = SpecialSkill::SKILL_EVENT_DAMAGE; break;
-          case 'S': event = SpecialSkill::SKILL_EVENT_STATE_MOD; break;
+          case 'A': event = SpecialSkill::SKILL_EVENT_ARMOR; break;
           default: cerr << "Unknown special skill event: " << (*p) << endl;
-          event = SpecialSkill::SKILL_EVENT_DAMAGE;
+          event = SpecialSkill::SKILL_EVENT_ARMOR;
           }
         }
       }

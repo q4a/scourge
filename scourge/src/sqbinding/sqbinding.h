@@ -148,6 +148,8 @@ private:
   SqItem *item;
   char lastMapScriptFileName[3000];
 
+  static Item *currentWeapon;
+
 public:
   SqBinding( Session *session );
   ~SqBinding();
@@ -222,6 +224,9 @@ public:
 
   void reloadScripts();
   void documentSOM( char *path );
+  
+  inline static void setCurrentWeapon( Item *item ) { currentWeapon = item; }
+  inline static Item *getCurrentWeapon() { return currentWeapon; }
 
 protected:
   void registerScript( char *file );

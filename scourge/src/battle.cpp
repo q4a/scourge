@@ -873,7 +873,7 @@ void Battle::applyHighAttackRoll( float *damage, float attack, float min, float 
     break;
 
     case 3:
-    strcpy(message, "...precise hit: tripple damage!");
+    strcpy(message, "...precise hit: triple damage!");
     session->getMap()->addDescription(message);
     (*damage) *= mul;
     break;
@@ -1000,7 +1000,7 @@ void Battle::hitWithItem() {
 
 
   float ac = creature->getTargetCreature()->
-    getACPercent( &total, &skill, attack );
+    getACPercent( &total, &skill, attack, item );
 
   sprintf(message, "...%s blocks %.2f points", 
           creature->getTargetCreature()->getName(), ac);

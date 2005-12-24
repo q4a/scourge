@@ -84,7 +84,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 
   glColor4f( 0, 1, 0.25f, 1 );
   float totalArmor;
-  p->getACPercent( &totalArmor, NULL, -1, true );
+  p->getACPercent( &totalArmor, NULL, -1, NULL, true );
   sprintf(s, "DEF: %d", toint( totalArmor ) );
   scourge->getSDLHandler()->texPrint(5, y + 105, s);
 
