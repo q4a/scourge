@@ -61,6 +61,8 @@ public:
   static int _getHunger( HSQUIRRELVM vm );
   static int _getSkill( HSQUIRRELVM vm );
   static int _getSkillByName( HSQUIRRELVM vm );
+  static int _getSkillPercent( HSQUIRRELVM vm );
+  static int _getSkillByNamePercent( HSQUIRRELVM vm );
   static int _getStateMod( HSQUIRRELVM vm );
   static int _getProtectedStateMod( HSQUIRRELVM vm );
   static int _getArmor( HSQUIRRELVM vm );  

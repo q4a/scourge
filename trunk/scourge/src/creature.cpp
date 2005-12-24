@@ -2078,6 +2078,13 @@ float Creature::getAttackPercent( Item *weapon,
                                                                  
   float total = min;
   if( max - min > 0 ) total +=  ( max - min ) * rand() / RAND_MAX;
+
+  if( !includeSkillMod ) {
+    // apply damage enhancing capabilities
+    session->getSquirrel()->setCurrentWeapon( weapon );
+    total = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
+                                         "damage", total );
+  }
   
   return total;
 }

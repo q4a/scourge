@@ -64,6 +64,7 @@ public:
   static int _isStateModSet( HSQUIRRELVM vm );
   static int _isStateModProtected( HSQUIRRELVM vm );
   static int _isRanged( HSQUIRRELVM vm );
+  static int _getSkill( HSQUIRRELVM vm );
 };
 
 #endif

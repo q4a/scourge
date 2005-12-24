@@ -46,6 +46,7 @@ public:
 
   enum {
     SKILL_EVENT_ARMOR,
+    SKILL_EVENT_DAMAGE,
     SKILL_EVENT_COUNT
   };
 

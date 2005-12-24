@@ -84,7 +84,7 @@ void Character::initCharacters() {
       int min = 0;
       if(strcmp(p, "*")) min = atoi(p);
       p = strtok(NULL, ",");
-      int max = 100;
+      int max = 1000;
       if(strcmp(p, "*")) max = atoi(p);
       int skill = Constants::getSkillByName(name);
       if(skill < 0) {

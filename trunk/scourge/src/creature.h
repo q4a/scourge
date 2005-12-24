@@ -330,11 +330,11 @@ class Creature : public RenderedCreature {
   inline void setLevel(int n) { level = n; }
   void setExp();
   inline void setExp(int n) { exp = n; }
-  inline void setMoney(int n) { money = n; }
-  inline void setHp(int n) { hp = n; }
-  inline void setMp(int n) { mp = n; }
-  inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; }
-  inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; } 
+  inline void setMoney(int n) { money = n; evalSpecialSkills(); }
+  inline void setHp(int n) { hp = n; evalSpecialSkills(); }
+  inline void setMp(int n) { mp = n; evalSpecialSkills(); }
+  inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; evalSpecialSkills(); }
+  inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; evalSpecialSkills(); } 
   void setHp();
   void setMp();
 
