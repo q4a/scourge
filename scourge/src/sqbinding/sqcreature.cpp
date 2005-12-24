@@ -41,8 +41,10 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "int", "getMaxMp", SqCreature::_getMaxMp, 0, 0, "The total amount of magic-points for this character. (If completely restored.)" },
   { "int", "getThirst", SqCreature::_getThirst, 0, 0, "A value between 0-10 indicating how thristy the character is. 0-most, 10-least thirsty." },
   { "int", "getHunger", SqCreature::_getHunger, 0, 0, "A value between 0-10 indicating how hungry the character is. 0-most, 10-least hungry." },
-  { "int", "getSkill", SqCreature::_getSkill, SQ_MATCHTYPEMASKSTRING, "xn", "A 0-100 percentage value for the given skill index. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
+  { "int", "getSkill", SqCreature::_getSkill, SQ_MATCHTYPEMASKSTRING, "xn", "The point value for the given skill index. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
   { "int", "getSkillByName", SqCreature::_getSkillByName, SQ_MATCHTYPEMASKSTRING, "xs", "Same as getSkill() but instead of an index, the skill is referenced by name. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
+  { "int", "getSkillPercent", SqCreature::_getSkillPercent, SQ_MATCHTYPEMASKSTRING, "xn", "A 0-100 percentage value for the given skill index. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
+  { "int", "getSkillByNamePercent", SqCreature::_getSkillByNamePercent, SQ_MATCHTYPEMASKSTRING, "xs", "Same as getSkill() but instead of an index, the skill is referenced by name. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
   { "int", "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value if the state-mod is in effect for this character. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
   { "int", "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value indicating if the character is protected from the given state mod. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
   { "float", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn modified by skills.)" },  
@@ -180,6 +182,20 @@ int SqCreature::_getSkillByName( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 )
   GET_OBJECT( Creature* )
   sq_pushinteger( vm, _SC( object->getSkill( Constants::getSkillByName( (char*)name ) ) ) );
+  return 1;
+}
+
+int SqCreature::_getSkillPercent( HSQUIRRELVM vm ) {
+  GET_INT( index )
+  GET_OBJECT( Creature* )
+  sq_pushinteger( vm, _SC( object->getLevelAdjustedSkill( index ) ) );
+  return 1;
+}
+
+int SqCreature::_getSkillByNamePercent( HSQUIRRELVM vm ) {
+  GET_STRING( name, 80 )
+  GET_OBJECT( Creature* )
+  sq_pushinteger( vm, _SC( object->getLevelAdjustedSkill( Constants::getSkillByName( (char*)name ) ) ) );
   return 1;
 }
 

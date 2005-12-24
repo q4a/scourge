@@ -48,6 +48,7 @@ ScriptClassMemberDecl SqItem::members[] = {
   { "bool", "isStateModSet", SqItem::_isStateModSet, 0, 0, "" },
   { "bool", "isStateModProtected", SqItem::_isStateModProtected, 0, 0, "" },
   { "bool", "isRanged", SqItem::_isRanged, 0, 0, "" },
+  { "int", "getSkill", SqItem::_getSkill, 0, 0, "Get the skill exercised by this weapon. The return value of this function can be passed to Creature.getSkill() as the parameter." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqItem::classDecl = { SqItem::className, 0, members,
@@ -211,6 +212,12 @@ int SqItem::_isStateModProtected( HSQUIRRELVM vm ) {
 int SqItem::_isRanged( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
   sq_pushbool( vm, object->getRpgItem()->isRangedWeapon() );
+  return 1;
+}
+
+int SqItem::_getSkill( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getSkill() );
   return 1;
 }
 

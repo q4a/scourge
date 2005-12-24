@@ -64,6 +64,7 @@ void SpecialSkill::initSkills() {
         if( p ) {
           switch(*p) {
           case 'A': event = SpecialSkill::SKILL_EVENT_ARMOR; break;
+          case 'D': event = SpecialSkill::SKILL_EVENT_DAMAGE; break;
           default: cerr << "Unknown special skill event: " << (*p) << endl;
           event = SpecialSkill::SKILL_EVENT_ARMOR;
           }
