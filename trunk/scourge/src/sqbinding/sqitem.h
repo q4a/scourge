@@ -63,7 +63,7 @@ public:
   static int _isCursed( HSQUIRRELVM vm );
   static int _isStateModSet( HSQUIRRELVM vm );
   static int _isStateModProtected( HSQUIRRELVM vm );
-
+  static int _isRanged( HSQUIRRELVM vm );
 };
 
 #endif

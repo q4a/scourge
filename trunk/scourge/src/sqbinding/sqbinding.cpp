@@ -40,6 +40,7 @@ using namespace std;
 
 Session *SqBinding::sessionRef = NULL;
 SqBinding *SqBinding::binding = NULL;
+Item *SqBinding::currentWeapon = NULL;
 
 /**
  * A simple print function. Later replace this by printing in the console.

@@ -47,6 +47,7 @@ ScriptClassMemberDecl SqItem::members[] = {
   { "bool", "isCursed", SqItem::_isCursed, 0, 0, "" },
   { "bool", "isStateModSet", SqItem::_isStateModSet, 0, 0, "" },
   { "bool", "isStateModProtected", SqItem::_isStateModProtected, 0, 0, "" },
+  { "bool", "isRanged", SqItem::_isRanged, 0, 0, "" },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqItem::classDecl = { SqItem::className, 0, members,
@@ -204,6 +205,12 @@ int SqItem::_isStateModProtected( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
   cerr << "FIXME: isStateModProtected() need index." << endl;
   sq_pushbool( vm, object->isStateModProtected( 1 ) );
+  return 1;
+}
+
+int SqItem::_isRanged( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushbool( vm, object->getRpgItem()->isRangedWeapon() );
   return 1;
 }
 

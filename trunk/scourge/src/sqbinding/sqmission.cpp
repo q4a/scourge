@@ -29,6 +29,7 @@ ScriptClassMemberDecl SqMission::members[] = {
   { "Creature", "getCreature", SqMission::_getCreature, 0, 0, "Return a reference to a monster or npc on this level. These references are only valid while on this map." },
   { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
   { "Item", "getItem", SqMission::_getItem, 0, 0, "Returns a reference to an item on this level. These references are only valid while on this map." },
+  { "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -87,3 +88,11 @@ int SqMission::_getItem( HSQUIRRELVM vm ) {
   return 1;
 }
 
+int SqMission::_getCurrentWeapon( HSQUIRRELVM vm ) {
+  if( SqBinding::getCurrentWeapon() ) {
+    sq_pushobject( vm, *( SqBinding::binding->getItemRef( SqBinding::getCurrentWeapon() ) ) );
+  } else {
+    sq_pushnull( vm );
+  }
+  return 1;
+}

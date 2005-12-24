@@ -1238,11 +1238,6 @@ int Creature::getMaxProjectileCount(Item *item) {
  take some damage
 */
 bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
-  // apply any attack enhancing capabilities
-  damage = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DEFENSE,
-                                        "damage",
-                                        damage );
-
   int intDamage = toint( damage );
   addRecentDamage( intDamage );
 
@@ -1946,9 +1941,9 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 // base weapon damage of an attack with bare hands
 #define HAND_ATTACK_DAMAGE Dice(1,4,0)
 
-float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, bool includeSkillMod ) {
+float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item *vsWeapon, bool includeSkillMod ) {
   float ac, avgArmorLevel, avgArmorSkill;
-  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill );               
+  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill );
     
   if( skillP ) *skillP = avgArmorSkill;
   
@@ -1974,7 +1969,16 @@ float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, bool
     return ( vsDamage / 2.0f * rand() / RAND_MAX );
   }
 
-  return( ( n / 100.0f ) * avgArmorSkill );
+  float ret = ( ( n / 100.0f ) * avgArmorSkill );
+
+  // apply any armor enhancing capabilities
+  if( vsDamage > 0 ) {
+    session->getSquirrel()->setCurrentWeapon( vsWeapon );
+    ret = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_ARMOR,
+                                       "armor", ret );
+  }
+
+  return ret;
 }
 
 void Creature::calcArmor( float *armorP, 
@@ -1986,7 +1990,9 @@ void Creature::calcArmor( float *armorP,
     *avgArmorLevelP = lastArmorLevel;
     *avgArmorSkillP = lastArmorSkill;
   } else {
-    float armor = (monster ? monster->getBaseArmor() : 0);
+    float armor = (monster ? monster->getBaseArmor() : 
+                   ( getSkill( Constants::getSkillByName( "COORDINATION" ) ) +
+                     getSkill( Constants::getSkillByName( "SPEED" ) ) ) / 25.0f );
     int armorLevel=0, armorCount=0;
     int armorSkill = getLevelAdjustedSkill( Constants::getSkillByName( "COORDINATION" ), includeSkillMod );
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
