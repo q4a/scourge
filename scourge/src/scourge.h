@@ -284,6 +284,8 @@ public:
 
   inline bool isInHQ() { return inHq; }
 
+  inline Window *getSquirrelConsole() { return squirrelWin; }
+
   inline void addDeityLocation( Location *pos, MagicSchool *ms ) { deityLocation[pos] = ms; }
   char *getDeityLocation( Location *pos );
   inline MagicSchool *getMagicSchoolLocation( Location *pos ) {
