@@ -28,6 +28,7 @@
 #include "../squirrel/sqstdaux.h"
 #include "../squirrel/sqstdmath.h"
 #include "../io/file.h"
+#include "../render/map.h"
 #include <set>
 
 using namespace std;
@@ -164,18 +165,7 @@ void SqBinding::endGame() {
 
 
 
-void SqBinding::loadMapScript( char *name ) {
-  char filename[3000];
-  sprintf( filename, "%s/maps/%s.nut", rootDir, name );
-  compile( (const char*)filename );
-  
-  // register this script and remember it
-  strcpy( lastMapScriptFileName, filename );
-  registerScript( filename );
-}
-
 bool SqBinding::startLevel() {
-
   // create the Mission
   if( DEBUG_SQUIRREL ) cerr << "Creating mission:" << endl;
   if( SQ_FAILED( instantiateClass( _SC( mission->getClassName() ), &refMission ) ) ) {
@@ -213,12 +203,13 @@ bool SqBinding::startLevel() {
     }
   }
 
-  return callNoArgMethod( "startLevel" );
+  bool ret = callMapMethod( "enterMap", session->getMap()->getName() );
+  return ret;
 }     
 
 bool SqBinding::endLevel() {
   
-  bool ret = callNoArgMethod( "endLevel" );
+  bool ret = callMapMethod( "exitMap", session->getMap()->getName() );
 
   // destroy the creatures of the level
   for( int i = 0; i < (int)refCreature.size(); i++ ) {
@@ -240,8 +231,6 @@ bool SqBinding::endLevel() {
 
   // destroy the mission
   sq_release( vm, &refMission );
-
-  unregisterScript( lastMapScriptFileName );
 
   return ret;  
 }
@@ -327,6 +316,25 @@ bool SqBinding::callNoArgMethod( const char *name, HSQOBJECT *param ) {
     } else {
       sq_call( vm, 1, 0 ); //calls the function
     }
+    ret = true;
+  } else {
+    cerr << "Can't find function " << name << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;
+}
+
+bool SqBinding::callMapMethod( const char *name, const char *mapName ) {
+  //int ret = -1;
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC( name ), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushstring( vm, mapName, -1 );
+    sq_call( vm, 2, 0 ); //calls the function
     ret = true;
   } else {
     cerr << "Can't find function " << name << endl;
