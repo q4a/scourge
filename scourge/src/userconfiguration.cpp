@@ -304,6 +304,7 @@ UserConfiguration::UserConfiguration(){
     ovalCutoutShown = true;
     outlineInteractiveItems = true;
     combatInfoDetail = 0;
+    monsterToughness = 0;
 
     // audio settings
     soundEnabled = true;
@@ -545,6 +546,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set gamespeed %d  // 0 : fastest, 4 : slowest\n", gamespeed);
     writeFile(configFile, textLine);
+    sprintf(textLine, "set monstertoughness %d  // 0 : easy, 2 : toughest\n", monsterToughness);
+    writeFile(configFile, textLine);
     sprintf(textLine, "set centermap %s\n", centermap ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set keepmapsize %s\n", keepMapSize ? "true":"false");
@@ -744,6 +747,11 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "tooltipenabled" ) {
       tooltipEnabled = paramValue;
+    }
+    else if(s1 == "monstertoughness" ) {
+      monsterToughness = atoi(s2.c_str());
+      if( monsterToughness < 0 ) monsterToughness = 0;
+      if( monsterToughness > 2 ) monsterToughness = 2;
     }
     else if(s1 == "gamespeed"){        
         gamespeed = atoi(s2.c_str());
@@ -1116,6 +1124,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "" << endl;
   configFile << "// Game settings" << endl;
   configFile << "set gamespeed 2  // 0 : fastest, 4 : slowest" << endl;
+  configFile << "set monstertoughness 0  // 0 : easy, 2 : toughest" << endl;
   configFile << "set centermap false" << endl;
   configFile << "set keepmapsize true" << endl;
   configFile << "set frameonfullscreen true" << endl;

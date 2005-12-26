@@ -587,7 +587,7 @@ void PartyEditor::rollSkills( CharacterInfo *info ) {
   Character *c = Character::character_list[ info->charType->getSelectedLine() ];
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
 
-    int n = Creature::rollStartingSkill( LEVEL );
+    int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL );
 
     if( n < c->getMinSkillLevel( i ) ) n = c->getMinSkillLevel( i );
     if( n > c->getMaxSkillLevel( i ) ) n = c->getMaxSkillLevel( i );

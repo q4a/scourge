@@ -57,6 +57,23 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3}}   // CROSS_FORMATION
 };
 
+// Describes monster toughness in general
+typedef struct _MonsterToughness {
+  float minSkillBase, maxSkillBase;
+  float minSkillF, maxSkillF;
+  float minHpMpBase, maxHpMpBase;
+  float armorMisfuction;
+} MonsterToughness;
+
+// goes from not very tough to tough 
+MonsterToughness monsterToughness[] = {
+  {  .5f,  1,    0,  .5f,   .7f,      1,  .33f },
+  { .75f,  1, .25f, .75f,  .75f,      1,  .15f },
+  { .75f,  1,  .5f,    1,  .75f,  1.25f,   .5f }
+};
+
+#define roll(min, max) ( ( ( max - min ) * rand() / RAND_MAX ) + min )
+
 Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index, bool loaded) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = character;
@@ -1368,7 +1385,7 @@ void Creature::monsterInit() {
     if( n > 0 ) {
       setSkill( i, n );
     } else {
-      setSkill( i, rollStartingSkill( getLevel(), true ) );
+      setSkill( i, rollStartingSkill( session, getLevel(), true ) );
     }
     //cerr << "\t" << Constants::SKILL_NAMES[i] << "=" << getSkill(i) << ", " << getLevelAdjustedSkill(i) << endl;
   }
@@ -1408,10 +1425,14 @@ void Creature::monsterInit() {
 
   // add some hp and mp
   float n = (float)( monster->getHp() * ( level + 2 ) );
-  startingHp = hp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
+  //startingHp = hp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
+  startingHp = hp = (int)( n * roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
+                                     monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
 
   n = (float)( monster->getMp() * ( level + 2 ) );
-  startingMp = mp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
+  //startingMp = mp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
+  startingMp = mp = (int)( n * roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
+                                     monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
 }
 
 // only for characters: leveling up
@@ -1974,7 +1995,9 @@ float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item
   armor = ( ( armor / 100.0f ) * avgArmorSkill );
 
   // negative feedback: for monsters only, allow hits now and then
-  if( monster && vsDamage > 0 && 3.0f * rand() / RAND_MAX < 1.0f ) {
+  if( monster && vsDamage > 0 && 
+      ( rand() / RAND_MAX < monsterToughness[ session->getPreferences()->getMonsterToughness() ].armorMisfuction ) ) {
+      // 3.0f * rand() / RAND_MAX < 1.0f ) {
     return ( vsDamage / 2.0f * rand() / RAND_MAX );
   }
 
@@ -2120,13 +2143,19 @@ int Creature::getLevelAdjustedSkill( int skill, bool includeSkillMod ) {
  * Monsters are made less powerful than PC-s. 
  * This can be changed by specifying monster skill values in creatures.txt.
  */
-int Creature::rollStartingSkill( int level, bool isMonster ) {
+int Creature::rollStartingSkill( Session *session, int level, bool isMonster ) {
   float f = ((float)level) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL;
   if( isMonster ) {
     // 50-100 ofmin and 0-50 of f
-    return (int)( (float)MIN_SKILL_LEVEL - 
-                  ( MIN_SKILL_LEVEL * ( 0.5f * rand() / RAND_MAX ) ) + 
-                  ( f * 0.5f * rand() / RAND_MAX ) );
+    return (int)
+    ( ( (float)MIN_SKILL_LEVEL * 
+        roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minSkillBase,
+              monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxSkillBase ) ) +
+      ( f * roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minSkillF,
+                  monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxSkillF ) ) );
+//    return (int)( (float)MIN_SKILL_LEVEL - 
+//                  ( MIN_SKILL_LEVEL * ( 0.5f * rand() / RAND_MAX ) ) + 
+//                  ( f * 0.5f * rand() / RAND_MAX ) );
   } else {
     // 100 ofmin and 50-100 of f
     return (int)( (float)MIN_SKILL_LEVEL + 
