@@ -122,6 +122,7 @@ private:
   char **formationText;
   ScrollingList *formationList;
   Button *layoutButton1, *layoutButton2, *layoutButton4;
+  Button *squirrelWindow;
 
 public:
     Inventory(Scourge *scourge);

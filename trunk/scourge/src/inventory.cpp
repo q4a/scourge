@@ -250,6 +250,9 @@ Inventory::Inventory(Scourge *scourge) {
   layoutButton4 = cards->createButton( 285, 155, 365, 175, "Inventory", PARTY );
   layoutButton4->setToggle( true );
 
+  squirrelWindow = cards->createButton( 115, 180, 215, 200, "Show Console", PARTY, true );
+  squirrelWindow->setToggle( scourge->getSquirrelConsole()->isVisible() );
+
   setSelectedPlayerAndMode(0, INVENTORY);
 }
 
@@ -650,6 +653,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 //    setUILayout(Constants::GUI_LAYOUT_SIDE);
   } else if(widget == layoutButton4) {
     scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
+  } else if( widget == squirrelWindow ) {
+    scourge->getSquirrelConsole()->setVisible( squirrelWindow->isToggle() );
   }
   return false;
 }

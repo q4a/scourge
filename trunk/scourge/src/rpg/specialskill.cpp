@@ -93,7 +93,7 @@ void SpecialSkill::initSkills() {
         strcat( description, line + 1 );
       }
       
-      cerr << "Storing special skill: " << name << " (" << prereq << "," << action << ")" << endl;
+      //cerr << "Storing special skill: " << name << " (" << prereq << "," << action << ")" << endl;
       SpecialSkill *ss = 
         new SpecialSkill( strdup( name ), 
                           strdup( description ), 
