@@ -153,6 +153,9 @@ Inventory::Inventory(Scourge *scourge) {
   enchantButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Enchant", INVENTORY );
   yy+=buttonHeight;
   infoButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Info", INVENTORY );
+  yy+=buttonHeight;
+  poolButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Pool Money", INVENTORY );
+
 
 
   // -------------------------------------------
@@ -251,7 +254,7 @@ Inventory::Inventory(Scourge *scourge) {
   layoutButton4->setToggle( true );
 
   squirrelWindow = cards->createButton( 115, 180, 215, 200, "Show Console", PARTY, true );
-  squirrelWindow->setToggle( scourge->getSquirrelConsole()->isVisible() );
+  squirrelWindow->setSelected( scourge->getSquirrelConsole()->isVisible() );
 
   setSelectedPlayerAndMode(0, INVENTORY);
 }
@@ -377,6 +380,18 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       if(!scourge->getInfoGui()->getWindow()->isVisible()) 
         scourge->getInfoGui()->getWindow()->setVisible( true );
     }
+  } else if( widget == poolButton ) {
+    for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
+      Creature *c = scourge->getSession()->getParty()->getParty(i);
+      if( c != creature ) {
+        creature->setMoney( creature->getMoney() + c->getMoney() );
+        c->setMoney( 0 );
+      }
+    }
+    char msg[120];
+    sprintf( msg, "Party members give all their money to %s.", creature->getName() );
+    scourge->getMap()->addDescription( msg );
+    refresh();
   } else if( widget == paperDoll && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
     int invLocation = ( scourge->getSDLHandler()->mouseY - paperDoll->getY() - mainWin->getY() ) / 16 - 1;
     if( invLocation >= 0 && invLocation < Constants::INVENTORY_COUNT ) {
@@ -654,7 +669,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == layoutButton4) {
     scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
   } else if( widget == squirrelWindow ) {
-    scourge->getSquirrelConsole()->setVisible( squirrelWindow->isToggle() );
+    scourge->getSquirrelConsole()->setVisible( squirrelWindow->isSelected() );
   }
   return false;
 }
@@ -1075,8 +1090,8 @@ void Inventory::refresh(int player) {
   int oldLine = invList->getSelectedLine();
   int oldSkillLine = skillList->getSelectedLine();
   setSelectedPlayerAndMode(player, selectedMode);
-  invList->setSelectedLine(oldLine);
-  skillList->setSelectedLine(oldSkillLine);
+  if( oldLine >= 0 ) invList->setSelectedLine(oldLine);
+  if( oldSkillLine >= 0 ) skillList->setSelectedLine(oldSkillLine);
 }
 
 void Inventory::positionWindow() {

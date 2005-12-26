@@ -64,7 +64,7 @@ private:
 
 	Button *equipButton, *fixButton, *removeCurseButton, *skillAddButton, *skillSubButton;
 	Button *combineButton, *enchantButton, *identifyButton, *openButton, *levelUpButton;
-	Button *eatDrinkButton, *castScrollButton, *transcribeButton, *infoButton;
+	Button *eatDrinkButton, *castScrollButton, *transcribeButton, *infoButton, *poolButton;
 	ScrollingList *invList;
 	char **pcInvText;
 
