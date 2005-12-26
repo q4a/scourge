@@ -174,6 +174,7 @@ public:
     std::string svalue = value;
     values[ skey ] = svalue;
 
+    /*
     // debug
     std::cerr << "SqBinding::setValue size=" << values.size() << std::endl; 
     for( std::map<std::string,std::string>::iterator i = values.begin(); i != values.end(); ++i ) {
@@ -183,6 +184,7 @@ public:
     }
     std::cerr << "============================================" << std::endl;
     // end of debug
+    */
   }
 
   inline char *getValue( char *key ) {
@@ -202,7 +204,6 @@ public:
   void startGame();
   void endGame();
 
-  void loadMapScript( char *name );
   bool startLevel();
   bool endLevel();
 
@@ -217,6 +218,7 @@ public:
   bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
   bool callMapPosMethod( const char *name, int x, int y, int z );
+  bool callMapMethod( const char *name, const char *mapName );
   HSQOBJECT *getCreatureRef( Creature *creature );
   HSQOBJECT *getItemRef( Item *item );
   void setGlobalVariable( char *name, float value );

@@ -423,8 +423,6 @@ void Scourge::startMission() {
     // Must be called after MiniMap has been built by dg->toMap() !!! 
     //miniMap->computeDrawValues();
 
-    getSession()->getSquirrel()->loadMapScript( scriptName );
-
     // set to receive events here
     getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
