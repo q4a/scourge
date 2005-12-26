@@ -546,12 +546,12 @@ void Item::enchant( int newMagicLevel ) {
   magicLevel = newMagicLevel;
 
   // item level caps the magic level:
-  // 0-15: lesser
-  // 16-30: greater
-  // 31-45: champion
-  // 45+ : divine
+  // 0-9: lesser
+  // 10-19: greater
+  // 20-29: champion
+  // 39+ : divine
   // This is so low level items won't be too powerful.
-  int maxMagicLevel = level / 15;
+  int maxMagicLevel = level / 10;
   if( magicLevel > maxMagicLevel ) magicLevel = maxMagicLevel;
 
   cursed = ( !((int)( 20.0f * rand() / RAND_MAX )) );

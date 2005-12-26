@@ -1540,7 +1540,16 @@ bool Creature::isWithPrereq( Spell *spell ) {
               true : 
               false );
     case Constants::AC:
-      return( getACPercent() < 10 ? true : false ); // fixme...
+      /*
+      Even if needed only cast it 1 out of 4 times.
+      Really need some AI here to remember if the spell helped or not. (or some way
+      to predict if casting a spell will help.) Otherwise the monster keeps casting
+      Body of Stone to no effect.
+      Also: 10 should not be hard-coded...
+      */
+      return( getACPercent() < 10 ? 
+              ( (int)( 4.0f * rand() / RAND_MAX ) == 0 ? true : false ) : 
+              false ); 
     default: return false;
     }
   } else {
@@ -1557,16 +1566,16 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
   vector<Creature*> possibleTargets;
   if( getStateMod( Constants::possessed ) ) {
     for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-      if( session->getParty()->getParty( i )->isWithPrereq( spell ) &&
-          !session->getParty()->getParty( i )->getStateMod( Constants::dead ) )
+      if( !session->getParty()->getParty( i )->getStateMod( Constants::dead ) &&
+          session->getParty()->getParty( i )->isWithPrereq( spell ) )
         possibleTargets.push_back( session->getParty()->getParty( i ) );
     }
   } else {
     for( int i = 0; i < session->getCreatureCount(); i++ ) {
-      if( session->getCreature( i )->isWithPrereq( spell ) &&
-          session->getCreature( i )->isMonster() &&
+      if( session->getCreature( i )->isMonster() &&
           !session->getCreature( i )->getMonster()->isNpc() &&
-          !session->getCreature( i )->getStateMod( Constants::dead ) ) 
+          !session->getCreature( i )->getStateMod( Constants::dead ) &&
+          session->getCreature( i )->isWithPrereq( spell ) ) 
         possibleTargets.push_back( session->getCreature( i ) );
     }
   }
