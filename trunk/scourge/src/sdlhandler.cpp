@@ -904,10 +904,12 @@ inline void SDLHandler::playSound( const char *name ) {
 }
 
 void SDLHandler::allWindowsClosed() {
+  /*
   if( gameAdapter->getSession()->getParty() &&
       gameAdapter->getSession()->getParty()->getPartySize() > 0 ) {
     gameAdapter->getSession()->getParty()->toggleRound( false );
   }
+  */
 }
 
 void SDLHandler::setCursorMode(int n, bool useTimer) { 

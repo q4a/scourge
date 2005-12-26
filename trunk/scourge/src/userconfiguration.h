@@ -96,6 +96,7 @@ private:
   int standAloneMode;
   char *host, *userName;
   int port;
+  int monsterToughness;
    
  public:
  
@@ -135,6 +136,7 @@ private:
   inline bool getAlwaysShowPath() { return alwaysShowPath; }
   inline bool getTooltipEnabled() { return tooltipEnabled; }
   inline int getTooltipInterval() { return tooltipInterval; }
+  inline int getMonsterToughness() { return monsterToughness; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
@@ -164,6 +166,7 @@ private:
   inline void setAlwaysShowPath( bool b ) { alwaysShowPath = b; }
   inline void setTooltipEnabled( bool b ) { tooltipEnabled = b; }
   inline void setTooltipInterval( int n ) { tooltipInterval = n; }
+  inline void setMonsterToughness( int n ) { monsterToughness = n; }
   
   // return gameSpeed in ticks
   int getGameSpeedTicks();           

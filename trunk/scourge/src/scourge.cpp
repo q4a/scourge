@@ -257,7 +257,7 @@ void Scourge::startMission() {
   char *scriptName;
   while(true) {
 
-    oldStory = currentStory;
+    oldStory = currentStory;    
 
     // add gui
     mainWin->setVisible(true);

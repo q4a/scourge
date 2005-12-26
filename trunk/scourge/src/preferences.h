@@ -152,6 +152,7 @@ public:
   virtual char *getHost() = 0;
   virtual char *getUserName() = 0;
   virtual int getPort() = 0;
+  virtual int getMonsterToughness() = 0;
 
   virtual void setBpp(int t) = 0;
 
