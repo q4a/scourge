@@ -78,6 +78,9 @@ void ScrollingList::setLines(int count, const char *s[], const Color *colors, co
   if( count > 0 ) {
     selectedLine = (int*)malloc( count * sizeof( int ) );
     selectedLine[ 0 ] = 0;
+// ***********************
+    selectedLineCount = 1;
+// ***********************
   }
 }
 
