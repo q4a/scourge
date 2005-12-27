@@ -208,7 +208,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
       count++;
     }
   }
-  shapeList->setLines( shapeMap->size(), (const char**)shapeNames );
+  shapeList->setLines( count, (const char**)shapeNames );
   h += d;
 }                                                                         
 
