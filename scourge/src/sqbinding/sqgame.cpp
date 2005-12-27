@@ -210,7 +210,7 @@ int SqGame::_reloadNuts( HSQUIRRELVM vm ) {
 
 int SqGame::_documentSOM( HSQUIRRELVM vm ) {
   GET_STRING( path, 255 )
-  if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/api/som" );
+  if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/som" );
   SqBinding::binding->documentSOM( path );
   return 0;
 }
