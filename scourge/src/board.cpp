@@ -135,10 +135,14 @@ Board::Board(Session *session) {
       RpgItem *item = RpgItem::getItemByName(line);
       current_mission->addItem( item );
     
-    } else if(n == 'M' && current_mission) {
+    } else if(n == 'C' && current_mission) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
       Monster *monster = Monster::getMonsterByName(line);
+      if( !monster ) {
+        cerr << "*** Error: can't find mission monster \"" << line << "\"." << endl;
+        exit( 1 );
+      }
       current_mission->addCreature( monster );
     } else {
       n = Constants::readLine(line, fp);
@@ -532,14 +536,21 @@ bool Mission::itemFound(Item *item) {
 }
 
 bool Mission::creatureSlain(Creature *creature) {
+  cerr << "Mission::creatureSlain 1" << endl;
   if( !completed ) {
+    cerr << "Mission::creatureSlain 2" << endl;
     if( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() ) {
+      cerr << "Mission::creatureSlain 3" << endl;
       Monster *monster = monsterInstanceMap[ creature ];
+      cerr << "Mission::creatureSlain 4" << endl;
       if( creatures.find( monster ) != creatures.end() ) {
+        cerr << "Mission::creatureSlain 5" << endl;
         creatures[ monster ] = true;
+        cerr << "Mission::creatureSlain 6" << endl;
         checkMissionCompleted();
       }
     }
+    cerr << "Mission::creatureSlain 7" << endl;
     return isCompleted();
   }
   return false;
@@ -547,21 +558,21 @@ bool Mission::creatureSlain(Creature *creature) {
 
 void Mission::checkMissionCompleted() {
   completed = true;
-  //cerr << "checkMissionCompleted, items" << endl;
+  cerr << "checkMissionCompleted, items" << endl;
   for(map<RpgItem*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
-    //cerr << "\titem" << i->first->getName() << endl;
+    cerr << "\titem" << i->first->getName() << endl;
     bool b = i->second;
-    //cerr << "\t\tb=" << b << endl;
+    cerr << "\t\tb=" << b << endl;
     if( !b ) {
       completed = false;
       return;
     }
   }
-  //cerr << "checkMissionCompleted, monster" << endl;
+  cerr << "checkMissionCompleted, monster" << endl;
   for(map<Monster*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
-    //cerr << "\tmonster" << i->first->getType() << endl;
+    cerr << "\tmonster" << i->first->getType() << endl;
     bool b = i->second;
-    //cerr << "\t\tb=" << b << endl;
+    cerr << "\t\tb=" << b << endl;
     if( !b ) {
       completed = false;
       return;
