@@ -2938,6 +2938,9 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
+  cerr << "changingStory=" << ( changingStory ? "true" : "false" ) << 
+    " adapter->hasParty()=" << ( adapter->hasParty() ? "true" : "false" ) <<
+    " fromRandom=" << ( fromRandom ? "true" : "false" ) << endl;
   if( !changingStory || !( adapter->hasParty() ) || fromRandom ) {
     startx = info->start_x;
     starty = info->start_y;

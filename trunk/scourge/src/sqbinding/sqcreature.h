@@ -70,6 +70,7 @@ public:
   // other
   static int _isOfClass( HSQUIRRELVM vm );
   static int _getDeity( HSQUIRRELVM vm );
+  static int _startConversation( HSQUIRRELVM vm );
 
   // setters
   static int _setLevel( HSQUIRRELVM vm );

@@ -678,6 +678,8 @@ public:
 
   static bool testLoadGame(Session *session);
 
+  void startConversation( RenderedCreature *creature );
+
  protected:
 
    void drawPortrait( Widget *w, Creature *p );

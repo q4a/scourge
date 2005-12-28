@@ -3513,7 +3513,7 @@ void Scourge::checkForInfo() {
           int cursor;
           if( pos->creature && 
               party->getPlayer()->canAttack( pos->creature, &cursor ) ) {
-            getSDLHandler()->setCursorMode( ((Creature*)(pos->creature))->getMonster()->isNpc() ?
+            getSDLHandler()->setCursorMode( ((Creature*)(pos->creature))->isMonster() && ((Creature*)(pos->creature))->getMonster()->isNpc() ?
                                             Constants::CURSOR_TALK :
                                             cursor );
                                             //Constants::CURSOR_ATTACK );
@@ -3871,5 +3871,9 @@ void Scourge::printToConsole( const char *s ) {
 char *Scourge::getDeityLocation( Location *pos ) {
   MagicSchool *ms = getMagicSchoolLocation( pos );
   return( ms ? ms->getDeity() : NULL );
+}
+
+void Scourge::startConversation( RenderedCreature *creature ) {
+  conversationGui->start( (Creature*)creature );
 }
 

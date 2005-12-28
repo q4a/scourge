@@ -298,6 +298,14 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
 }
 
 void Session::creatureDeath(Creature *creature) {
+
+  bool result;
+  squirrel->callBoolMethod( "creatureDeath", 
+                            squirrel->getCreatureRef( creature ), 
+                            &result );
+  // FIXME: not used currently
+  //if( !result ) return;
+
   if(creature == party->getPlayer()) {
     party->switchToNextLivePartyMember();
   }

@@ -66,7 +66,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "bool", "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs", "Returns a boolean if the character is of the character class given in the argument. This function is slow because it does a string compare on the class's name." },  
   { "string", "getDeity", SqCreature::_getDeity, 0, 0, "Return the character's chosen deity's name." },
 
-  // monster methods
+  { "void", "startConversation", SqCreature::_startConversation, 0, 0, "Start a conversation with this creature." },
 
   { 0,0,0,0,0 } // terminator
 };
@@ -390,3 +390,8 @@ int SqCreature::_getDeity( HSQUIRRELVM vm ) {
   return 1;
 }
 
+int SqCreature::_startConversation( HSQUIRRELVM vm ) {
+  GET_OBJECT(Creature*)
+  SqBinding::sessionRef->getGameAdapter()->startConversation( object );
+  return 0;
+}

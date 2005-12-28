@@ -130,6 +130,8 @@ public:
 
   // squirrel console
   virtual void printToConsole( const char *s ) { std::cerr << s << std::endl; }
+
+  virtual void startConversation( RenderedCreature *creature ) {}
 };
 
 class SDLOpenGLAdapter : public GameAdapter {
