@@ -266,6 +266,7 @@ void Scourge::startMission() {
 
     // create the map
     //cerr << "Starting to reset map..." << endl;
+    bool fromRandomMap = !( levelMap->isEdited() );
     levelMap->reset();
     //cerr << "\tMap reset is done." << endl;    
 
@@ -386,20 +387,60 @@ void Scourge::startMission() {
       // Initialize the map with a random dunegeon	
       getSession()->setCurrentMission(board->getMission(nextMission));
       missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
-	  /*
-      cerr << "Starting mission: level="  << getSession()->getCurrentMission()->getLevel() << 
-      " depth=" << getSession()->getCurrentMission()->getDepth() << 
-      " current story=" << currentStory << endl;
-	  */
       bool loaded = false;
       if( getSession()->getCurrentMission()->getMapName() &&
           strlen( getSession()->getCurrentMission()->getMapName() ) ) {
         // try to load the edited map
         dg = NULL;
-        loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), result, this, currentStory, changingStory, !(levelMap->isEdited()) );
+        bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
+        if( lastLevel ) {
+          vector< RenderedItem* > items;
+          vector< RenderedCreature* > creatures;
+          loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), 
+                                      result, 
+                                      this, 
+                                      currentStory, 
+                                      changingStory, 
+                                      fromRandomMap,
+                                      &items,
+                                      &creatures );
+          
+          // add item/creature instances if last level (this is special handling for edited levels)
+          set<int> used;
+          for( int i = 0; i < (int)items.size(); i++ ) {
+            Item *item = (Item*)( items[i] );
+            for( int t = 0; t < (int)getSession()->getCurrentMission()->getItemCount(); t++ ) {
+              if( getSession()->getCurrentMission()->getItem( t ) == item->getRpgItem() &&
+                  used.find( t ) == used.end() ) {
+                getSession()->getCurrentMission()->
+                  addItemInstance( item, item->getRpgItem() );
+                used.insert( t );
+              }
+            }
+          }
+          used.clear();
+          for( int i = 0; i < (int)creatures.size(); i++ ) {
+            Creature *creature = (Creature*)( creatures[i] );
+            if( creature->getMonster() ) {
+              for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
+                if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
+                    used.find( t ) == used.end() ) {
+                  getSession()->getCurrentMission()->
+                    addCreatureInstanceMap( creature, creature->getMonster() );
+                  used.insert( t );
+                }
+              }
+            }
+          }
+        } else {
+          loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(), 
+                                      result, 
+                                      this, 
+                                      currentStory, 
+                                      changingStory, 
+                                      fromRandomMap );
+        }
         scriptName = getSession()->getCurrentMission()->getMapName();
-        //cerr << result << endl;
-        //cerr << "***** " << getSession()->getCurrentMission()->getMapName() << endl;
       } 
 
       // if no edited map is found, make a random map

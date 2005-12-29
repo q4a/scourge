@@ -88,7 +88,7 @@ struct ScriptNamespaceDecl  {
   const ScriptClassMemberDecl *delegate;
 };
 
-#define DEBUG_SQUIRREL 1
+#define DEBUG_SQUIRREL 0
 #define SCOURGE_ID_TOKEN "scourge_id"
 
 #define GET_OBJECT(x) x object;\
