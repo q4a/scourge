@@ -254,7 +254,10 @@ class Map {
   inline Color *getDesriptionColors() { return descriptionsColor; }
 
   void saveMap( char *name, char *result );
-  bool loadMap( char *name, char *result, StatusReport *report=NULL, int depth=0, bool changingStory=false, bool fromRandom=false );
+  bool loadMap( char *name, char *result, StatusReport *report=NULL, int depth=0, 
+                bool changingStory=false, bool fromRandom=false, 
+                std::vector< RenderedItem* > *items=NULL, 
+                std::vector< RenderedCreature* > *creatures=NULL );
   void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
 
   inline Uint16 getCursorMapX() { return cursorMapX; }

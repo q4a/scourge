@@ -2900,7 +2900,7 @@ void Map::saveMap( char *name, char *result ) {
   sprintf( result, "Map saved: %s", name );
 }
 
-bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bool changingStory, bool fromRandom ) {
+bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bool changingStory, bool fromRandom, vector< RenderedItem* > *items, vector< RenderedCreature* > *creatures ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
     return false;
@@ -2938,9 +2938,6 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
-  cerr << "changingStory=" << ( changingStory ? "true" : "false" ) << 
-    " adapter->hasParty()=" << ( adapter->hasParty() ? "true" : "false" ) <<
-    " fromRandom=" << ( fromRandom ? "true" : "false" ) << endl;
   if( !changingStory || !( adapter->hasParty() ) || fromRandom ) {
     startx = info->start_x;
     starty = info->start_y;
@@ -2974,13 +2971,16 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
 
     if( info->pos[i]->item ) {
       RenderedItem *item = adapter->load( info->pos[i]->item );
-      if( item ) setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
-      else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
+      if( item ) {
+        setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
+        if( items ) items->push_back(  item );
+      } else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( info->pos[i]->creature ) {
       RenderedCreature *creature = adapter->load( info->pos[i]->creature );
       if( creature ) {
         setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
         creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
+        if( creatures ) creatures->push_back(  creature );
       } else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
       shape = shapes->

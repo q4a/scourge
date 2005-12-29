@@ -536,21 +536,14 @@ bool Mission::itemFound(Item *item) {
 }
 
 bool Mission::creatureSlain(Creature *creature) {
-  cerr << "Mission::creatureSlain 1" << endl;
   if( !completed ) {
-    cerr << "Mission::creatureSlain 2" << endl;
     if( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() ) {
-      cerr << "Mission::creatureSlain 3" << endl;
       Monster *monster = monsterInstanceMap[ creature ];
-      cerr << "Mission::creatureSlain 4" << endl;
       if( creatures.find( monster ) != creatures.end() ) {
-        cerr << "Mission::creatureSlain 5" << endl;
         creatures[ monster ] = true;
-        cerr << "Mission::creatureSlain 6" << endl;
         checkMissionCompleted();
       }
     }
-    cerr << "Mission::creatureSlain 7" << endl;
     return isCompleted();
   }
   return false;
@@ -558,21 +551,15 @@ bool Mission::creatureSlain(Creature *creature) {
 
 void Mission::checkMissionCompleted() {
   completed = true;
-  cerr << "checkMissionCompleted, items" << endl;
   for(map<RpgItem*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
-    cerr << "\titem" << i->first->getName() << endl;
     bool b = i->second;
-    cerr << "\t\tb=" << b << endl;
     if( !b ) {
       completed = false;
       return;
     }
   }
-  cerr << "checkMissionCompleted, monster" << endl;
   for(map<Monster*, bool >::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
-    cerr << "\tmonster" << i->first->getType() << endl;
     bool b = i->second;
-    cerr << "\t\tb=" << b << endl;
     if( !b ) {
       completed = false;
       return;
