@@ -45,8 +45,10 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   if(inside) {
     switch( event->type ) {
     case SDL_KEYUP:
-    if(event->key.keysym.sym != SDLK_RETURN) {
-      ((Window*)parent)->getScourgeGui()->blockEvent();
+    if(event->key.keysym.sym == SDLK_RETURN) {
+      eventType = EVENT_ACTION;
+    } else {
+      ((Window*)parent)->getScourgeGui()->blockEvent();      
     }
     return true;
     case SDL_KEYDOWN:
