@@ -153,8 +153,12 @@ void Monster::initMonsters() {
 
       // HACK: for monster-s portrait is descriptive type
       // for npc-s it's the portrait path.
+      // FIXME: Hack hacked... if it has .bmp it's a portrait...
+      // this is needed b/c Mycotharsius is a monster w. a portrait.
+      // Argh. Clean this up!
       Monster *m;
-      if( npc ) {
+      if( strlen( portrait ) && strcasestr( portrait, ".bmp" ) ) {      
+      //if( npc ) {
         m = new Monster( strdup(name), NULL, level, hp, mp, 
                          strdup(model_name), strdup(skin_name), 
                          rareness, speed, armor, 
