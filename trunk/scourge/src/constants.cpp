@@ -241,7 +241,9 @@ int Constants::getSkillByName(char *p) {
   }
   string key = p;
   if( skillNameMap.find( key ) == skillNameMap.end() ) {
-    cerr << "*** Warning: Can't find skill named: " << p << endl;
+    if( getPotionSkillByName( p ) == -1 ) {
+      cerr << "*** Warning: Can't find skill named: " << p << endl;
+    }
     return -1;
   }
   return skillNameMap[ key ];
