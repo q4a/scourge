@@ -377,7 +377,18 @@ void Battle::stepCloserToTarget() {
                    creature->getTargetCreature()->getShape()->getDepth() / 2);
     if(!(creature->getSelX() == tx && creature->getSelY() == ty)) {
 */    
-      creature->setSelXY( tx, ty, false );
+
+      // Try to move to the target creature.
+      // For monsters, if this is not possible, select a new target (once in a while).
+      if( !creature->setSelXY( tx, ty, false ) &&
+          creature->isMonster() &&
+          1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
+        creature->cancelTarget();
+        creature->decideMonsterAction();
+        ap--;
+        cerr << "*** selecting new target" << endl;
+        return;
+      }
     }
   } else if(!(creature->getSelX() == creature->getTargetX() &&
               creature->getSelY() == creature->getTargetY())) {
