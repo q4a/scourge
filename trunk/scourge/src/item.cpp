@@ -163,6 +163,8 @@ Item *Item::load(Session *session, ItemInfo *info) {
   item->magicLevel = info->magicLevel;
   // get a reference to the real string... (yuck)
   item->monsterType = (char*)Monster::getMonsterType( (char*)info->monster_type );
+  // turn off "vs. any creature"
+  if( !item->getMonsterType() ) item->damageMultiplier = 1;
   item->school = MagicSchool::getMagicSchoolByName( (char*)info->magic_school_name );
   item->magicDamage = Item::loadDice( session, info->magicDamage );
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
@@ -616,7 +618,7 @@ void Item::enchant( int newMagicLevel ) {
     bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(4.0f * rand()/RAND_MAX) + 2;
-      monsterType = NULL;
+      monsterType = (char*)Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
@@ -644,6 +646,9 @@ void Item::enchant( int newMagicLevel ) {
   default:
     cerr << "*** Error: unknown magic level: " << magicLevel << endl;
   }
+
+  // turn off "vs. any creature"
+  if( !monsterType ) damageMultiplier = 1;
 
   describeMagic(itemName, rpgItem->getName());
 }

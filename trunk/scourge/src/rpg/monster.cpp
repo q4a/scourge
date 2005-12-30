@@ -128,11 +128,13 @@ void Monster::initMonsters() {
         scale = atof(p);
       }
       bool npc = false;
+      bool special = false;
       int npcStartX = -1;
       int npcStartY = -1;
       p = strtok(NULL, ",");
       if(p) {
-        npc = true;
+        npc = ( strstr( p, "npc" ) ? true : false );
+        special = ( strstr( p, "special" ) ? true : false );
         p = strtok( NULL, "," );
         if(p) {
           npcStartX = atoi(p);
@@ -153,12 +155,8 @@ void Monster::initMonsters() {
 
       // HACK: for monster-s portrait is descriptive type
       // for npc-s it's the portrait path.
-      // FIXME: Hack hacked... if it has .bmp it's a portrait...
-      // this is needed b/c Mycotharsius is a monster w. a portrait.
-      // Argh. Clean this up!
       Monster *m;
-      if( strlen( portrait ) && strcasestr( portrait, ".bmp" ) ) {      
-      //if( npc ) {
+      if( npc || special ) {
         m = new Monster( strdup(name), NULL, level, hp, mp, 
                          strdup(model_name), strdup(skin_name), 
                          rareness, speed, armor, 
@@ -182,6 +180,9 @@ void Monster::initMonsters() {
         } else {
           npcs.push_back( m );
         }
+      } else if( special ) {
+        // don't add to random monsters list
+        // these are placed monsters like Mycotharsius.
       } else {
         vector<Monster*> *list = NULL;
         if(monsters.find(level) == monsters.end()) {
