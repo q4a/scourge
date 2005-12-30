@@ -33,7 +33,7 @@ using namespace std;
 
 //#define DEBUG_CAPABILITIES
 
-#define GOD_MODE 1
+#define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
 
 #define MOVE_DELAY 7

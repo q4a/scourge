@@ -386,7 +386,9 @@ void Battle::stepCloserToTarget() {
         creature->cancelTarget();
         creature->decideMonsterAction();
         ap--;
-        cerr << "*** selecting new target" << endl;
+        if(debugBattle) 
+          cerr << "*** " << creature->getName() << 
+          " selecting new target" << endl;
         return;
       }
     }
