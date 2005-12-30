@@ -1383,7 +1383,12 @@ void Creature::monsterInit() {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
     if( n > 0 ) {
-      setSkill( i, n );
+      // assume n is given in %. Convert to point value.
+      float value = (float)MIN_SKILL_LEVEL + 
+        ( (float)(getLevel()) * 
+          ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL );
+      value *= ( (float)n / 100.0f );
+      setSkill( i, toint( value ) );
     } else {
       setSkill( i, rollStartingSkill( session, getLevel(), true ) );
     }
