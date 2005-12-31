@@ -20,7 +20,6 @@
 #include "rpg/rpglib.h"
 #include "item.h"
 #include "creature.h"
-#include "specialskill.h"
 #include "characterinfo.h"
 #include "sdlhandler.h"
 #include "sdleventhandler.h"

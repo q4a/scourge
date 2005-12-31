@@ -100,7 +100,9 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #  endif /* defined( WIN32 ) */
 #endif
 
-
+#ifndef assert
+  #define assert(x) x;
+#endif
 
 // debug flags
 #define DEBUG_BATTLE 0
