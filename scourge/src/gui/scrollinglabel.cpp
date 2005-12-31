@@ -42,6 +42,7 @@ ScrollingLabel::ScrollingLabel(int x, int y, int w, int h, char *text) : Widget(
   //  this->icons = NULL;
   //  this->highlight = highlight;
   // highlightBorders = false;
+  this->handler = NULL;
   canGetFocusVar = Widget::canGetFocus();
   interactive = true;
   setText( text );

@@ -581,6 +581,9 @@ void SqBinding::reloadScripts() {
 }
 
 time_t SqBinding::getLastModTime( char *file ) {
+#ifdef WIN32
+  return 0;
+#else  
   struct stat buf;
   int err = stat( file, &buf );
   if( err ) {
@@ -588,6 +591,7 @@ time_t SqBinding::getLastModTime( char *file ) {
     return 0;
   }
   return buf.st_mtime;
+#endif  
 }
 
 void SqBinding::saveValues( File *file ) {
