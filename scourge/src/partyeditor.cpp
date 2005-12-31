@@ -618,7 +618,7 @@ void PartyEditor::updateUI( CharacterInfo *info, int index ) {
       int adj = tmp[ index ]->getLevelAdjustedSkill( i );
       bool isMax = adj == tmp[ index ]->getCharacter()->getMaxSkillLevel( i );
       bool isMin = adj == tmp[ index ]->getCharacter()->getMinSkillLevel( i );
-      sprintf(info->skillLine[i], "%d(%d)(%%%d%s) - %s", 
+      sprintf(info->skillLine[i], "%d(%d)(%d %% %s) - %s", 
               info->skill[ i ], 
               info->skillMod[ i ], 
               adj,

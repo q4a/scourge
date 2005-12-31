@@ -56,7 +56,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Controls", true);           
 
   x = 10;
-  saveButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, "Save to file", false);      
+  saveButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, "Save", false);      
   x += BUTTON_WIDTH + MINOR_SPACING;
   closeButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, "Close", false);      
   

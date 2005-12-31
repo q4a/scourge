@@ -776,7 +776,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       int adj = selectedP->getLevelAdjustedSkill( t, true );
       bool isMax = adj == selectedP->getCharacter()->getMaxSkillLevel( t );
       bool isMin = adj == selectedP->getCharacter()->getMinSkillLevel( t );
-      sprintf(skillLine[t], "%d(%d)(%% %d %s) - %s", 
+      sprintf(skillLine[t], "%d(%d)(%d %% %s) - %s", 
               selectedP->getSkill(t), 
               selectedP->getSkillMod(t), 
               adj,
