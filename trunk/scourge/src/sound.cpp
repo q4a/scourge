@@ -245,8 +245,9 @@ void Sound::playSound(const char *file) {
     string fileStr = file;
     if(soundMap.find(fileStr) != soundMap.end()) {
       if(Mix_PlayChannel(-1, soundMap[fileStr], 0) == -1) {
-        cerr << "*** Error playing WAV file: " << fileStr << endl;
-        cerr << "\t" << Mix_GetError() << endl;
+        // commented out; happens too often
+        //cerr << "*** Error playing WAV file: " << fileStr << endl;
+        //cerr << "\t" << Mix_GetError() << endl;
       }
     }
   }
