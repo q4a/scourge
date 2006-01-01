@@ -214,7 +214,8 @@ void Sound::storeSound(int type, const char *file) {
 //      cerr << "*** Loading sound file: " << fn << endl;
       Mix_Chunk *sample = Mix_LoadWAV(fn);
       if(!sample) {
-        cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
+        // commented out; happens too often to be meaningful
+        // cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
       } else {
         soundMap[fileStr] = sample;
       }
