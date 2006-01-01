@@ -215,8 +215,6 @@ void TextEffect::buildTextures() {
   scourge->getSDLHandler()->texPrint( x, y, text );
   //y += height;
   
-  cerr << "buildTexture: x=" << x << " y=" << ( y - 20 ) << endl;
-
   // Copy to a texture
   glLoadIdentity();
   glEnable( GL_TEXTURE_2D );

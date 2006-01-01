@@ -1106,8 +1106,6 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
         // end of FIXME
 
         // see if this is a mission objective
-        cerr << "session->getCurrentMission()=" << ( session->getCurrentMission() ? "true" : "false" ) <<
-          " creature->getTargetCreature()->getMonster()=" << creature->getTargetCreature()->getMonster() << endl;
         if(session->getCurrentMission() && 
            creature->getTargetCreature()->getMonster() &&
            session->getCurrentMission()->creatureSlain(creature->getTargetCreature())) {

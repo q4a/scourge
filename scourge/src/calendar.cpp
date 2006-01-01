@@ -90,6 +90,8 @@ bool Calendar::update(int gameSpeed){
         
     if(t - lastTick >= 1000){               
         lastTick = t;
+        setTimeMultiplicator(1);
+        /*
         switch(gameSpeed){
             case 0 : setTimeMultiplicator(60); break;
             case 1 : setTimeMultiplicator(15); break;
@@ -97,6 +99,7 @@ bool Calendar::update(int gameSpeed){
             case 3 : setTimeMultiplicator(2); break;
             case 4 : setTimeMultiplicator(1); break;
         }
+        */
         currentDate.addSeconds(timeMultiplicator);                       
     }        
     
