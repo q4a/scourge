@@ -587,3 +587,11 @@ bool Party::isEquipped( Item *item ) {
   return false;
 }
 
+void Party::regainMp() {
+  for( int i = 0; i < getPartySize(); i++ ) {
+    if( getParty( i )->getStartingMp() > 0 &&
+        getParty( i )->getMp() < getParty( i )->getMaxMp() ) {
+      getParty( i )->setMp( getParty( i )->getMp() + 1 );
+    }
+  }
+}

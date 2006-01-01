@@ -31,14 +31,22 @@ class ReloadEvent : public Event  {
 
 private:
   Session *session;
+  int mode;
 
 public:
 
+  enum {
+    MODE_RELOAD_SCRIPTS=0,
+    MODE_REGAIN_POINTS
+  };
+
   void execute();    
   
-  ReloadEvent(Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session);  
+  ReloadEvent(Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session, int mode);  
   ReloadEvent();
   virtual ~ReloadEvent();  
+
+  inline const char *getName() { return "ReloadEvent"; }
   
 };
 

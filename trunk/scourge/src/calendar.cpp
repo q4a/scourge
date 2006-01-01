@@ -52,6 +52,14 @@ void Calendar::scheduleEvent(Event *e){
     if(scheduledEvents.size() < MAX_SCHEDULED_EVENTS){
           scheduledEvents.push_back(e);          
     }
+/*
+    cerr << "Calendar events:" << endl;
+    for( int i = 0; i < (int)scheduledEvents.size(); i++ ) {
+      Event *event = scheduledEvents[ i ];
+      cerr << "\tevent=" << event->getName() << endl;
+    }
+    cerr << "--------------------------------------" << endl;
+*/    
 }
 
 // FIXME: O(n)

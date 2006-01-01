@@ -280,14 +280,31 @@ void Scourge::startMission() {
       }
       party->getCalendar()->reset(true); // reset the time
 
-      // Schedule an event to keep reloading scripts if they change on disk
-      Date d(0, 5, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+      // re-add party events (hack)
+      resetPartyUI();
+
       Calendar *cal = getSession()->getParty()->getCalendar();
-      Event *event = new ReloadEvent( cal->getCurrentDate(), 
-                                      d, 
-                                      Event::INFINITE_EXECUTIONS,
-                                      getSession() );
-      cal->scheduleEvent( event );
+      {
+        // Schedule an event to keep reloading scripts if they change on disk
+        Date d(0, 5, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+        Event *event = new ReloadEvent( cal->getCurrentDate(), 
+                                        d, 
+                                        Event::INFINITE_EXECUTIONS,
+                                        getSession(),
+                                        ReloadEvent::MODE_RELOAD_SCRIPTS );
+        cal->scheduleEvent( event );
+      }
+
+      {
+        // Schedule an event to regain MP now and then
+        Date d(30, 0, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+        Event *event = new ReloadEvent( cal->getCurrentDate(), 
+                                        d, 
+                                        Event::INFINITE_EXECUTIONS,
+                                        getSession(),
+                                        ReloadEvent::MODE_REGAIN_POINTS );
+        cal->scheduleEvent( event );
+      }
 
       // inventory needs the party
       if(!inventory) {
@@ -3137,7 +3154,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 
 void Scourge::resetPartyUI() {
   Event *e;  
-  Date d(0, 0, 6, 0, 0, 0); // 6 hours (format : sec, min, hours, days, months, years)
+  Date d(0, 0, 1, 0, 0, 0); // 2 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < party->getPartySize() ; i++){
     e = new ThirstHungerEvent(party->getCalendar()->getCurrentDate(), d, party->getParty(i), this, Event::INFINITE_EXECUTIONS);
     party->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!

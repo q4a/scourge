@@ -561,15 +561,15 @@ void SqBinding::unregisterScript( char *file ) {
 }
 
 void SqBinding::reloadScripts() {
-  cerr << "Checking loaded scripts" << endl;
+  if( DEBUG_SQUIRREL ) cerr << "Checking loaded scripts" << endl;
   for( map<string,time_t>::iterator i = loadedScripts.begin(); 
        i != loadedScripts.end(); ++i ) {
     string file = i->first;
     time_t lastMod = i->second;
-    cerr << "Checking file: " << file << endl;
+    if( DEBUG_SQUIRREL ) cerr << "Checking file: " << file << endl;
     time_t newLastMod = getLastModTime( (char*)file.c_str() );
     if( lastMod != newLastMod ) {
-      cerr << "\tReloading!" << endl;
+      if( DEBUG_SQUIRREL ) cerr << "\tReloading!" << endl;
       if( compile( file.c_str() ) ) {
         loadedScripts[ file ] = newLastMod;
       } else {
@@ -577,7 +577,7 @@ void SqBinding::reloadScripts() {
       }
     }
   }
-  cerr << "----------------------" << endl;
+  if( DEBUG_SQUIRREL ) cerr << "----------------------" << endl;
 }
 
 time_t SqBinding::getLastModTime( char *file ) {
@@ -595,7 +595,7 @@ time_t SqBinding::getLastModTime( char *file ) {
 }
 
 void SqBinding::saveValues( File *file ) {
-  std::cerr << "SqBinding::setValue size=" << values.size() << std::endl; 
+  //std::cerr << "SqBinding::setValue size=" << values.size() << std::endl; 
   Uint32 n;
   for( std::map<std::string,std::string>::iterator i = values.begin(); i != values.end(); ++i ) {
     std::string k = i->first;

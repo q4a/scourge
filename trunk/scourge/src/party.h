@@ -55,6 +55,8 @@ class Party {
   Party(Session *session);
   virtual ~Party();
 
+  void regainMp();
+
   inline Uint32 getPlayerMoved() { return playerMoved; }
   inline void setPlayerMoved() { playerMoved = SDL_GetTicks(); }
   inline void clearPlayerMoved() { playerMoved = 0; }
