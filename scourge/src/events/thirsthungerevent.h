@@ -43,6 +43,8 @@ public:
   ThirstHungerEvent(Date currentDate, Date timeOut, Creature *c, Scourge *scourge, int nbExecutionsToDo);  
   ThirstHungerEvent();
   virtual ~ThirstHungerEvent();  
+
+  inline const char *getName() { return "ThirstHungerEvent"; }
   
 };
 

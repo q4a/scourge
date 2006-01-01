@@ -31,8 +31,9 @@ void ThirstHungerEvent::execute(){
     char buff[255];  
     
     if(creature -> getStateMod(Constants::dead)){
-        // Don't need this event anymore    
-        scheduleDeleteEvent();        
+      // FIXME: needs testing. I commented it out in case the player is resurrected.
+      // Don't need this event anymore          
+      //scheduleDeleteEvent();        
         return;
     }
     
@@ -68,7 +69,7 @@ void ThirstHungerEvent::execute(){
         sprintf(buff, "%s dies from lack of water.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
         scourge->getSession()->creatureDeath(creature);
-        scheduleDeleteEvent();
+        //scheduleDeleteEvent(); // see resurrection note above
         return; // no need to go further        
     }        
     
@@ -97,7 +98,7 @@ void ThirstHungerEvent::execute(){
         sprintf(buff, "%s dies from starvation.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
         scourge->getSession()->creatureDeath(creature); 
-        scheduleDeleteEvent();       
+        //scheduleDeleteEvent(); // see resurrection note above
     }                  
 }
 

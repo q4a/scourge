@@ -55,7 +55,8 @@ void StateModExpirationEvent::executeBeforeDelete() {
   // Don't need this event anymore    
   scheduleDeleteEvent();        
   
-  if(creature->getStateMod(Constants::dead)) return;
+  if( creature->getStateMod(Constants::dead) ||
+      !( creature->getStateMod( stateMod ) ) ) return;
   
   creature->setStateMod(stateMod, false);
   

@@ -45,6 +45,8 @@ public:
   StateModExpirationEvent(Date currentDate, Date timeOut, Creature *c, int stateMod, Session *session, int nbExecutionsToDo);
   StateModExpirationEvent();
   virtual ~StateModExpirationEvent();  
+
+  inline const char *getName() { return "StateModExpirationEvent"; }
   
 };
 

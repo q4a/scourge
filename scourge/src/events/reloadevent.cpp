@@ -17,14 +17,25 @@
 #include "reloadevent.h"
 #include "../session.h"
 #include "../sqbinding/sqbinding.h"
+#include "../party.h"
 
-ReloadEvent::ReloadEvent(Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session) : 
+using namespace std;
+
+ReloadEvent::ReloadEvent(Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session, int mode) : 
 Event(currentDate, timeOut, nbExecutionsToDo) {
   this->session = session;
+  this->mode = mode;
 }
 
 void ReloadEvent::execute(){
-  session->getSquirrel()->reloadScripts();
+  switch( mode ) {
+  case MODE_RELOAD_SCRIPTS:
+  session->getSquirrel()->reloadScripts(); break;
+  case MODE_REGAIN_POINTS:
+  session->getParty()->regainMp(); break;
+  default:
+  cerr << "Unknown mode " << mode << " in ReloadEvent." << endl;
+  }
 }
 
 ReloadEvent::~ReloadEvent(){

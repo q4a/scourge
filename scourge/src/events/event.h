@@ -75,6 +75,8 @@ public:
   Date getTimeOut()   { return timeOut;   }
   void setEventDate(Date d) { eventDate = d; }   
   void scheduleDeleteEvent();
+
+  virtual inline const char *getName() = 0;
   
   
 };
