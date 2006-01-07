@@ -665,6 +665,8 @@ void Scourge::drawView() {
 
   levelMap->draw();
 
+  drawMiniMap();
+
   // the boards outside the map
   drawOutsideMap();
 
@@ -737,6 +739,87 @@ void Scourge::drawView() {
       }
     }
   }
+}
+
+#define MINI_MAP_OFFSET 100
+#define MINI_MAP_SIZE 60
+#define MINI_MAP_BLOCK 4
+
+void Scourge::drawMiniMap() {
+  //Creature *c = session->getParty()->getPlayer();
+
+  int sx = levelMap->getX() + 75 - ( MINI_MAP_SIZE / 2 );
+  int sy = levelMap->getY() + 75 - ( MINI_MAP_SIZE / 2 );
+  int ex = sx + MINI_MAP_SIZE;
+  int ey = sy + MINI_MAP_SIZE;
+
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_DEPTH_TEST );
+  glDisable( GL_TEXTURE_2D );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+ 
+  glPushMatrix();  
+  glLoadIdentity();
+  glTranslatef( MINI_MAP_OFFSET, MINI_MAP_OFFSET, 0 );
+  glTranslatef( MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
+  glRotatef( levelMap->getZRot(), 0, 0, 1 );
+  glTranslatef( -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
+  
+  // outline
+  glColor4f( 1, 1, 1, 0.5f );
+  glBegin( GL_LINE_LOOP );
+  glVertex2f( 0, 0 );
+  glVertex2f( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+  glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+  glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+  glEnd();
+
+  // naive method: draw each block
+  for( int x = sx; x < ex; x++ ) {
+    if( x < 0 || x >= MAP_WIDTH ) continue;
+    for( int y = sy; y < ey; y++ ) {
+      if( y < 0 || y >= MAP_DEPTH ) continue;
+      Location *pos = levelMap->getLocation( x, y, 0 );
+      if( pos && pos->shape ) {
+        if( pos->creature ) {
+          if( pos->creature->isMonster() ) {
+            if( ((Creature*)pos->creature)->getMonster()->isNpc() ) {
+              glColor4f( 1, 1, 0, 0.5f );
+            } else {
+              glColor4f( 1, 0, 0, 0.5f );
+            }
+          } else {
+            if( pos->creature == session->getParty()->getPlayer() ) {
+              glColor4f( 1, 0, 1, 0.5f );
+            } else {
+              glColor4f( 0, 1, 0, 0.5f );
+            }
+          }
+        } else if( pos->item ) {
+          glColor4f( 0, 0, 1, 0.5f );
+        } else {
+          glColor4f( 1, 1, 1, 0.5f );
+        }
+        glBegin( GL_QUADS );
+        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ), 
+                    ( ( y - sy ) * MINI_MAP_BLOCK ) );
+        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ), 
+                    ( ( y - sy ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK );
+        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK, 
+                    ( ( y - sy ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK );
+        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK, 
+                    ( ( y - sy ) * MINI_MAP_BLOCK ) );
+        glEnd();
+      }
+    }
+  }
+
+  glPopMatrix();
+  glDisable( GL_BLEND );
+  glEnable( GL_CULL_FACE );
+  glEnable( GL_DEPTH_TEST );
+  glEnable( GL_TEXTURE_2D );
 }
 
 void Scourge::drawDescriptions(ScrollingList *list) {

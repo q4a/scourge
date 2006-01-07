@@ -722,6 +722,8 @@ public:
   bool doesSaveGameExist(Session *session);
   bool saveGame(Session *session);  
   bool loadGame(Session *session);
+
+  void drawMiniMap();
 };
 
 #endif
