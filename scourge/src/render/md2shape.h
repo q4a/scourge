@@ -122,6 +122,9 @@ public:
     if(a >= 360.0f) a -= 360.0f;
     this->angle = a; 
   }
+  inline float getAngle() {
+    return angle;
+  }
 
   // Factory method to create shape. It computes the dimensions and normalizes the
   // model's points.
