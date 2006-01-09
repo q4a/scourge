@@ -151,6 +151,8 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Monster *monster, GLShape *shape, bool loaded);
   ~Creature();
 
+  inline GLfloat getAngle() { return angle; }
+
   void evalSpecialSkills();
   inline bool hasSpecialSkill( SpecialSkill *ss ) { return specialSkills.find(ss) != specialSkills.end(); }
   char *useSpecialSkill( SpecialSkill *specialSkill, 

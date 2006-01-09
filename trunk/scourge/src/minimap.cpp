@@ -158,7 +158,7 @@ void MiniMap::prepare() {
   for( int x = 0; x < MAP_WIDTH; x++ ) {
     for( int y = 0; y < MAP_DEPTH; y++ ) {
       Location *pos = scourge->getSession()->getMap()->getLocation( x, y, 0 );
-      if( pos && pos->shape && !( pos->item ) && !( pos->creature ) ) {
+      if( pos && pos->shape && !pos->shape->isInteractive() && !( pos->item ) && !( pos->creature ) ) {
         glColor3f( 1, 1, 1 );
         glBegin( GL_QUADS );
         glVertex2f( x, MAP_DEPTH - y );
@@ -228,46 +228,41 @@ void MiniMap::drawMap() {
   glTranslatef( -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
 
 
-  // static background
-  // Draw the minimap using a texture
+
+  // static background: draw as a texture
   glPushMatrix();
-//  glTranslatef( -( sx ) * MINI_MAP_BLOCK, 
-//                -( sy ) * MINI_MAP_BLOCK, 0 );
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
 
   float w = MINI_MAP_SIZE * MINI_MAP_BLOCK;
   float h = MINI_MAP_SIZE * MINI_MAP_BLOCK;
 
-  float tw = (float)(512 * w) / (float)MAP_WIDTH;
-  float th = (float)(512 * h) / (float)MAP_DEPTH;
-
-  float tx = (float)( ( sx ) * tw ) / (float)MAP_WIDTH;
-  float ty = (float)( sy * th ) / (float)MAP_DEPTH;
-  float tex = (float)( ( sx + MINI_MAP_SIZE ) * tw ) / (float)MAP_WIDTH;
-  float tey = (float)( ( sy + MINI_MAP_SIZE ) * th ) / (float)MAP_DEPTH;
-  //cerr << "w=" << w << " tx=" << tx << " h=" << h << " ty=" << ty << endl;
-
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, texture[0]);
+  // map to percentage of the total size
+  float div = textureSizeW;
+  // if texture size < map_width we need this for y b/c it's upside down. 
+  // x is fine; it starts at 0.
+  float yoffs = MAP_DEPTH - div;   
+  float tsx = sx / div;
+  float tsy = ( sy - yoffs ) / div;
+  float tex = ( sx + MINI_MAP_SIZE ) / div;
+  float tey = ( sy - yoffs + MINI_MAP_SIZE ) / div;
+  
   glBegin(GL_QUADS); 
   glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
-  glTexCoord2f( tx/tw, tey/th );
-
+  glTexCoord2f( tsx, tey );
   glVertex2d( 0, h ); 
-  glTexCoord2f( tex/tw, tey/th );
-
+  glTexCoord2f( tex, tey );
   glVertex2d( w, h ); 
-  glTexCoord2f( tex/tw, ty/th );
-
+  glTexCoord2f( tex, tsy );
   glVertex2d( w, 0 ); 
-  glTexCoord2f( tx/tw, ty/th );
-
+  glTexCoord2f( tsx, tsy );
   glVertex2d( 0, 0 );     
   glEnd();       
   glDisable(GL_TEXTURE_2D); 
   glPopMatrix();
   
   // outline
-  glColor4f( 1, 1, 1, 0.5f );
+  glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
   glBegin( GL_LINE_LOOP );
   glVertex2f( 0, 0 );
   glVertex2f( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
@@ -281,7 +276,8 @@ void MiniMap::drawMap() {
     for( int y = sy; y < ey; y++ ) {
       if( y < 0 || y >= MAP_DEPTH ) continue;
       Location *pos = scourge->getSession()->getMap()->getLocation( x, y, 0 );
-      if( pos && ( pos->creature || pos->item ) ) {
+      if( pos && ( pos->creature || pos->item || 
+                   ( pos->shape && pos->shape->isInteractive() ) ) ) {
         if( pos->creature ) {
           if( pos->creature->isMonster() ) {
             if( ((Creature*)pos->creature)->getMonster()->isNpc() ) {
@@ -296,22 +292,36 @@ void MiniMap::drawMap() {
               glColor4f( 0, 1, 0, 0.5f );
             }
           }
-        } else if( pos->item ) {
-          glColor4f( 0, 0, 1, 0.5f );
+          
+          glPushMatrix();
+          float width = pos->creature->getShape()->getWidth() / 2.0f * MINI_MAP_BLOCK;
+          glTranslatef( ( pos->creature->getX() - sx ) * MINI_MAP_BLOCK + width, 
+                        ( pos->creature->getY() - sy ) * MINI_MAP_BLOCK - width,
+                        0 );
+          glRotatef( ((MD2Shape*)pos->creature->getShape())->getAngle(), 0, 0, 1 );
+          glBegin( GL_TRIANGLES );
+          glVertex2f( width, width );
+          glVertex2f( -width, width );
+          glVertex2f( 0, -width );
+          glEnd();
+          glPopMatrix();
         } else {
-          //glColor4f( 1, 1, 1, 0.5f );
-          cerr << "*** error in MiniMap::drawMap." << endl;
+          if( pos->item ) {
+            glColor4f( 0, 0, 1, 0.5f );
+          } else {
+            glColor4f( 1, 0.7f, 0, 0.5f );
+          }
+
+          float xp = ( x - sx ) * MINI_MAP_BLOCK;
+          float yp = ( y - sy ) * MINI_MAP_BLOCK;
+
+          glBegin( GL_QUADS );
+          glVertex2f( xp, yp );
+          glVertex2f( xp, yp + MINI_MAP_BLOCK );
+          glVertex2f( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
+          glVertex2f( xp + MINI_MAP_BLOCK, yp );
+          glEnd();
         }
-        glBegin( GL_QUADS );
-        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ), 
-                    ( ( y - sy ) * MINI_MAP_BLOCK ) );
-        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ), 
-                    ( ( y - sy ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK );
-        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK, 
-                    ( ( y - sy ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK );
-        glVertex2f( ( ( x - sx ) * MINI_MAP_BLOCK ) + MINI_MAP_BLOCK, 
-                    ( ( y - sy ) * MINI_MAP_BLOCK ) );
-        glEnd();
       }
     }
   }
