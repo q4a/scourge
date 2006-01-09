@@ -84,6 +84,10 @@ class MiniMap : public WidgetView {
 
   void reset();
 
+
+  void prepare();
+  void drawMap();
+
   inline void show() { win->setVisible(true); }
   inline void hide() { win->setVisible(false); }
   inline Window *getWindow() { return win; }
