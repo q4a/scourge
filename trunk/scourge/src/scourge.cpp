@@ -317,7 +317,6 @@ void Scourge::startMission() {
     }
     //cerr << "Minimap reset" << endl;
     miniMap->reset();
-    //miniMap->show();
 
     // ready the party
     //cerr << "Party reset" << endl;    
@@ -478,9 +477,6 @@ void Scourge::startMission() {
                      toint(party->getPlayer()->getY()),
                      true);
 
-    // Must be called after MiniMap has been built by dg->toMap() !!! 
-    //miniMap->computeDrawValues();
-
     // set to receive events here
     getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
@@ -553,7 +549,6 @@ void Scourge::startMission() {
       optionsButton->setSelected( false );
     }
     if(boardWin->isVisible()) boardWin->setVisible(false);
-    //miniMap->hide();
     netPlay->getWindow()->setVisible(false);
     infoGui->getWindow()->setVisible(false);
     conversationGui->hide();
@@ -714,8 +709,6 @@ void Scourge::drawView() {
 
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
-
-  //miniMap->buildTexture(0, 0);
 
   drawBorder();
 
@@ -1465,12 +1458,8 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(ea == SET_NEXT_FORMATION_STOP){
       if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
       else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-    } else if(ea == MINIMAP_ZOOM_IN){
-//      miniMap->zoomIn();
-    } else if(ea == MINIMAP_ZOOM_OUT){
-//      miniMap->zoomOut();
-//    } else if(ea == MINIMAP_TOGGLE){
-//      miniMap->toggle();
+    } else if(ea == MINIMAP_ZOOM_IN || ea == MINIMAP_ZOOM_OUT){
+      miniMap->setShowMiniMap( miniMap->isMiniMapShown() ? false : true );
     } else if(ea == TOGGLE_MAP_CENTER){
       bool mc;
       mc = getUserConfiguration()->getAlwaysCenterMap();
@@ -2288,7 +2277,6 @@ void Scourge::setUILayout() {
 
   mainWin->setVisible( false );
   messageWin->setVisible(false);
-//  miniMap->getWindow()->setVisible(false);
   switch(layoutMode) {
   case Constants::GUI_LAYOUT_ORIGINAL:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
@@ -2296,9 +2284,6 @@ void Scourge::setUILayout() {
     messageWin->move(getSDLHandler()->getScreen()->w - width, 0);
     messageWin->setLocked(false);
     mainWin->setLocked(false);
-//    miniMap->getWindow()->setLocked(false);
-//    miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
-//    miniMap->getWindow()->move(0, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER));
 //  if(inventory->getWindow()->isLocked()) {
     inventory->hide();
 //    inventory->getWindow()->setLocked(false);
@@ -2314,10 +2299,6 @@ void Scourge::setUILayout() {
     mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;
     messageWin->setLocked(true);
     mainWin->setLocked(true);
-//    miniMap->getWindow()->setLocked(true);
-//    miniMap->getWindow()->move(0,
-//                               getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER + Window::SCREEN_GUTTER));
-//    miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
 //  if(inventory->getWindow()->isLocked()) {
     //inventory->getWindow()->setVisible(false);
     inventory->hide();
@@ -2332,9 +2313,6 @@ void Scourge::setUILayout() {
     messageWin->resize(PARTY_GUI_WIDTH, 
                        getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT));
     messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,  MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER);
-//    miniMap->getWindow()->setLocked(true);
-//    miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
-//    miniMap->resize(MINIMAP_WINDOW_WIDTH, MINIMAP_WINDOW_HEIGHT);
     //mapX = 400;
     mapX = 0;
     mapWidth = getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH;
@@ -2353,10 +2331,6 @@ void Scourge::setUILayout() {
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
     messageWin->resize(width, PARTY_GUI_HEIGHT);
     messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
-//    miniMap->getWindow()->setLocked(true);
-//    miniMap->getWindow()->move(getSDLHandler()->getScreen()->w - MINIMAP_WINDOW_WIDTH, 0);
-//    int h = getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER * 2);
-//    miniMap->resize(MINIMAP_WINDOW_WIDTH, (h > MINIMAP_WINDOW_HEIGHT ? MINIMAP_WINDOW_HEIGHT : h));
     mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;
     messageWin->setLocked(true);
     mainWin->setLocked(true);
@@ -2378,7 +2352,6 @@ void Scourge::setUILayout() {
   optionsButton->setSelected( optionsMenu->isVisible() );
 
   messageWin->setVisible(true, false);
-//  miniMap->getWindow()->setVisible(true, false);
 
   mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                 getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
@@ -3490,14 +3463,6 @@ void Scourge::removeBattle(Battle *b) {
       return;
     }
   }
-}
-
-void Scourge::colorMiniMapPoint(int x, int y, Shape *shape, Location *pos) { 
-//  miniMap->colorMiniMapPoint(x, y, shape, pos); 
-}
-
-void Scourge::eraseMiniMapPoint(int x, int y) { 
-//  miniMap->eraseMiniMapPoint(x,y); 
 }
 
 void Scourge::resetBattles() {

@@ -38,8 +38,6 @@ public:
   virtual RenderedCreature *getPlayer() = 0;
   virtual void setDebugStr(char *s) = 0;
   virtual bool isMissionCreature( RenderedCreature *creature ) = 0;
-  virtual void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL) = 0;
-  virtual void eraseMiniMapPoint(int x, int y) = 0;
   virtual bool hasParty() = 0;
   virtual int getPartySize() = 0;
   virtual RenderedCreature *getParty( int index ) = 0;

@@ -74,8 +74,6 @@ public:
   virtual inline void cancelBattle(Creature *creature) {}
   virtual inline void moveMonster(Creature *monster) {}
   virtual inline void removeBattle(Battle *battle) {}
-  virtual inline void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL) {}
-  virtual inline void eraseMiniMapPoint(int x, int y) {}
   virtual inline void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
   virtual inline void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
   virtual inline void createParty( Creature **pc, int *partySize ) {}
