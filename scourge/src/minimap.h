@@ -45,38 +45,18 @@ typedef struct _MiniMapPoint {
 /**
  *@author Daroth-U
  */
-class MiniMap : public WidgetView {
- private:
+class MiniMap {
+private:
     
-  // Basic Idea : minimap is already filled but a point becomes visible only
-  // if the party has reached it.
-  MiniMapPoint pos[MINI_MAP_WIDTH][MINI_MAP_DEPTH];
   Scourge *scourge;  
   
-	Window *win;
-  Canvas *canvas;
-  
-  GLfloat zoomFactor;   // Determines the zoom factor of the minimap   
-  int mode;             // 0 : show structures : wall, doors and floor , 1: add monsters ... 
   bool showMiniMap;     // true : draw it, false : don't draw the minimap
-  int screenHeight;     // Needed for glScissor used in MiniMap::Draw()
-  
   // Texture that will hold the minimap
   int textureSizeH, textureSizeW;   
   GLuint texture[1];
   unsigned char * textureInMemory;
   bool mustBuildTexture;   
-  
-  // Real width and height of minimap in pixels (i.e. : without insignificant
-  // pixels at the bottom or at the right side) including a little marge.
-  int effectiveWidth, effectiveHeight; 
-  int maxX, maxY;
-  int minX, minY;
-  float midX, midY;  
-  
-  // Transform Map coordinates to MiniMap coordinates
-  void toMiniMapCoord(int &x, int &y);       
-  
+    
  public:
   MiniMap::MiniMap();
   MiniMap::~MiniMap();
@@ -84,33 +64,11 @@ class MiniMap : public WidgetView {
 
   void reset();
 
-
   void prepare();
   void drawMap();
 
-  inline void show() { win->setVisible(true); }
-  inline void hide() { win->setVisible(false); }
-  inline Window *getWindow() { return win; }
-  void resize(int w, int h);
-  
-  // x, y are in *global Map* coordinates (see Map.h to know its size) 
-  void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos);
-  void eraseMiniMapPoint(int x, int y);
-  void zoomIn();
-  void zoomOut();
-  
-  bool checkInside(int a, int b); 
-  inline void toggle(){showMiniMap = !showMiniMap;} 
-  void computeDrawValues(); // needed before drawing the minimap
-  void updateFog(int a, int b); // gradually set the minimap visible for the player
-  void buildTexture(int xCoord, int yCoord);
-
-  void drawWidgetContents(Widget *w);
-  
-  //void handleMouseClick(Uint16 mapx, Uint16 mapy, Uint16 mapz, Uint8 button);    
-  
- protected:
-   bool isSameShape( Shape *shape, const char *name );
+  inline void setShowMiniMap( bool b ) { showMiniMap = b; }
+  inline bool isMiniMapShown() { return showMiniMap; }
   
 };
 

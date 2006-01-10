@@ -355,9 +355,6 @@ public:
   */
   inline MiniMap *getMiniMap() { return miniMap; }
 
-  void colorMiniMapPoint(int x, int y, Shape *shape, Location *pos=NULL);
-  void eraseMiniMapPoint(int x, int y);
-
   /** 
     When dropping an item from the inventory this method sets up the parameters so
     the cursor can drag it around the screen and eventually deposit it at a location

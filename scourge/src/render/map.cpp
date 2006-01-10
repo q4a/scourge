@@ -1756,11 +1756,6 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
-  for(int xp = 0; xp < shape->getWidth(); xp++) {
-    for(int yp = 0; yp < shape->getDepth(); yp++) {
-      adapter->colorMiniMapPoint(x + xp, y - yp, shape);
-    }
-  }
   WaterTile *w = (WaterTile*)malloc(sizeof(WaterTile));
   for( int xp = 0; xp < WATER_TILE_X; xp++ ) {
     for( int yp = 0; yp < WATER_TILE_Y; yp++ ) {
@@ -1777,12 +1772,6 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
   if(floorPositions[x][y]) {
     shape = floorPositions[x][y];
     floorPositions[x][y] = 0;
-    for(int xp = 0; xp < shape->getWidth(); xp++) {
-      for(int yp = 0; yp < shape->getDepth(); yp++) {
-        // fixme : is it good or not to erase the minimap too ???       
-        adapter->eraseMiniMapPoint(x, y);
-      }
-    }
   }
   Uint32 key = createPairKey(x, y);
   if( water.find(key) != water.end() ) {
@@ -1974,11 +1963,6 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *d
         }
       }
     }
-    for(int xp = 0; xp < shape->getWidth(); xp++) {
-      for(int yp = 0; yp < shape->getDepth(); yp++) {
-        adapter->colorMiniMapPoint(x + xp, y - yp, shape, pos[x + xp][y - yp][0]);
-      }
-    }
     if( ((GLShape*)shape)->getEffectType() > -1 ) {
 
       int ex = x + ((GLShape*)shape)->getEffectX();
@@ -2015,8 +1999,6 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
     set<Location*> deleted;
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
-        // fixme : is it good or not to erase the minimap too ???
-        adapter->eraseMiniMapPoint(x + xp, y - yp);
         for(int zp = 0; zp < shape->getHeight(); zp++) {
           Location *p = pos[x + xp][y - yp][z + zp];
           if( deleted.find(p) == deleted.end() ) deleted.insert( p );
@@ -2600,14 +2582,6 @@ bool Map::isDoor(Shape *shape) {
 void Map::setLocked(int doorX, int doorY, int doorZ, bool value) {
   locked[createTripletKey(doorX, doorY, doorZ)] = value;
   Location *p = pos[doorX][doorY][doorZ];
-  for(int xp = 0; xp < p->shape->getWidth(); xp++) {
-    for(int yp = 0; yp < p->shape->getDepth(); yp++) {
-      adapter->colorMiniMapPoint(doorX + xp, 
-                                                   doorY - yp, 
-                                                   p->shape, 
-                                                   p);
-    }
-  }
 }
 
 int Map::toggleLightMap() {
