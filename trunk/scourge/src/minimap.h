@@ -55,12 +55,13 @@ private:
   int textureSizeH, textureSizeW;   
   GLuint texture[1];
   unsigned char * textureInMemory;
-  bool mustBuildTexture;   
+  bool mustBuildTexture;
+  bool directMode;
     
  public:
   MiniMap::MiniMap();
   MiniMap::~MiniMap();
-  MiniMap(Scourge *scourge);
+  MiniMap( Scourge *scourge, bool directMode = false );
 
   void reset();
 

@@ -210,6 +210,8 @@ MapEditor::MapEditor( Scourge *scourge ) {
   }
   shapeList->setLines( count, (const char**)shapeNames );
   h += d;
+
+  miniMap = new MiniMap( scourge, true ); 
 }                                                                         
 
 MapEditor::~MapEditor() {
@@ -219,10 +221,13 @@ MapEditor::~MapEditor() {
   }
   free( shapeNames );
   delete mainWin;
+  delete miniMap;
 }
 
 void MapEditor::drawView() {
   scourge->getMap()->draw();
+
+  miniMap->drawMap();
 
   glDisable( GL_CULL_FACE );
   glDisable( GL_SCISSOR_TEST );
@@ -319,8 +324,12 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   if( event->key.keysym.sym == SDLK_ESCAPE ) {
     hide();
     return true;
+  } else if( event->key.keysym.sym == SDLK_KP_PLUS ||
+             event->key.keysym.sym == SDLK_KP_MINUS ) {
+    miniMap->setShowMiniMap( miniMap->isMiniMapShown() ? false : true );
+    return false;
   }
-  break;
+  break;  
   default: break;
   }
   return false;
@@ -353,6 +362,7 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == loadButton ) {
     scourge->getMap()->loadMap( nameText->getText(), result );
     scourge->showMessageDialog( result );
+    miniMap->reset();
 //    scourge->getParty()->toggleRound( false );
   } else if( widget == newButton ) {
     newMapWin->setVisible( true );
