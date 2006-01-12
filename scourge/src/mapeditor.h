@@ -26,6 +26,7 @@
 #include "gui/button.h"
 #include "gui/scrollinglabel.h"
 #include "gui/scrollinglist.h"
+#include "minimap.h"
 #include <vector>
 #include <map>
 
@@ -40,6 +41,7 @@ class MapWidget;
 class Item;
 class Monster;
 class GLShape;
+class MiniMap;
 
 class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
@@ -83,6 +85,8 @@ private:
   char **shapeNames, **itemNames, **creatureNames;
 
   std::map<Monster*,GLShape*> creatureOutlines;
+
+  MiniMap * miniMap;
   
 public:
 

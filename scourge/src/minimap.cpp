@@ -34,10 +34,11 @@ using namespace std;
 #define MINI_MAP_SIZE 60
 #define MINI_MAP_BLOCK 4
 
-MiniMap :: MiniMap(Scourge *scourge){
+MiniMap :: MiniMap( Scourge *scourge, bool directMode ){
     this->scourge = scourge;
+    this->directMode = directMode;
     showMiniMap = true;                 
-    textureSizeH = textureSizeW = 0;
+    textureSizeH = textureSizeW = 512;
     textureInMemory = NULL;
     mustBuildTexture = true;
 }
@@ -53,15 +54,12 @@ void MiniMap::reset() {
     // delete the overlay texture
     glDeleteTextures(1, texture);
   }          
-  showMiniMap = true;            
-  textureSizeH = textureSizeW = 0;
+  //showMiniMap = true;            
   textureInMemory = NULL;
   mustBuildTexture = true;
 }
 
 void MiniMap::prepare() {
-  textureSizeH = 512;
-  textureSizeW = 512;
 
   // Create texture and copy minimap date from backbuffer on it    
   textureInMemory = (unsigned char *) malloc( textureSizeW * textureSizeH * 4);    
@@ -85,8 +83,8 @@ void MiniMap::prepare() {
  
   glPushMatrix();  
   glLoadIdentity();
-  for( int x = 0; x < MAP_WIDTH; x++ ) {
-    for( int y = 0; y < MAP_DEPTH; y++ ) {
+  for( int x = 0; x < textureSizeW; x++ ) {
+    for( int y = 0; y < textureSizeH; y++ ) {
       glColor3f( 0, 0, 0 );
       glBegin( GL_QUADS );
       glVertex2f( x, y );
@@ -96,16 +94,16 @@ void MiniMap::prepare() {
       glEnd();
     }
   }
-  for( int x = 0; x < MAP_WIDTH; x++ ) {
-    for( int y = 0; y < MAP_DEPTH; y++ ) {
-      Location *pos = scourge->getSession()->getMap()->getLocation( x, y, 0 );
+  for( int x = 0; x < textureSizeW; x++ ) {
+    for( int y = 0; y < textureSizeH; y++ ) {
+      Location *pos = scourge->getSession()->getMap()->getLocation( x + MAP_OFFSET, y + MAP_OFFSET, 0 );
       if( pos && pos->shape && !pos->shape->isInteractive() && !( pos->item ) && !( pos->creature ) ) {
         glColor3f( 1, 1, 1 );
         glBegin( GL_QUADS );
-        glVertex2f( x, MAP_DEPTH - y );
-        glVertex2f( x, MAP_DEPTH - (y + 1) );
-        glVertex2f( x + 1, MAP_DEPTH - (y + 1) );
-        glVertex2f( x + 1, MAP_DEPTH - y );
+        glVertex2f( x, textureSizeH - y );
+        glVertex2f( x, textureSizeH - (y + 1) );
+        glVertex2f( x + 1, textureSizeH - (y + 1) );
+        glVertex2f( x + 1, textureSizeH - y );
         glEnd();
       }
     }
@@ -140,18 +138,22 @@ void MiniMap::prepare() {
 }
 
 void MiniMap::drawMap() {
-
+  if( !directMode ) {
+    if( mustBuildTexture ) {
+      mustBuildTexture = false;
+      prepare();
+    }
+  }
   if( !showMiniMap ) return;
 
-  if( mustBuildTexture ) {
-    mustBuildTexture = false;
-    prepare();
-  }
-
   int sx = scourge->getSession()->getMap()->getX() + 75 - ( MINI_MAP_SIZE / 2 );
+  if( sx < MAP_OFFSET ) sx = MAP_OFFSET;
   int sy = scourge->getSession()->getMap()->getY() + 75 - ( MINI_MAP_SIZE / 2 );
+  if( sy < MAP_OFFSET ) sy = MAP_OFFSET;
   int ex = sx + MINI_MAP_SIZE;
+  if( ex > textureSizeW ) ex = textureSizeW;
   int ey = sy + MINI_MAP_SIZE;
+  if( ey > textureSizeH ) ey = textureSizeW;
 
   glDisable( GL_CULL_FACE );
   glDisable( GL_DEPTH_TEST );
@@ -167,39 +169,40 @@ void MiniMap::drawMap() {
   glTranslatef( -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
 
 
-
-  // static background: draw as a texture
-  glPushMatrix();
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, texture[0]);
-
-  float w = MINI_MAP_SIZE * MINI_MAP_BLOCK;
-  float h = MINI_MAP_SIZE * MINI_MAP_BLOCK;
-
-  // map to percentage of the total size
-  float div = textureSizeW;
-  // if texture size < map_width we need this for y b/c it's upside down. 
-  // x is fine; it starts at 0.
-  float yoffs = MAP_DEPTH - div;   
-  float tsx = sx / div;
-  float tsy = ( sy - yoffs ) / div;
-  float tex = ( sx + MINI_MAP_SIZE ) / div;
-  float tey = ( sy - yoffs + MINI_MAP_SIZE ) / div;
-  
-  glBegin(GL_QUADS); 
-  glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
-  glTexCoord2f( tsx, tey );
-  glVertex2d( 0, h ); 
-  glTexCoord2f( tex, tey );
-  glVertex2d( w, h ); 
-  glTexCoord2f( tex, tsy );
-  glVertex2d( w, 0 ); 
-  glTexCoord2f( tsx, tsy );
-  glVertex2d( 0, 0 );     
-  glEnd();       
-  glDisable(GL_TEXTURE_2D); 
-  glPopMatrix();
-
+  if( !directMode ) {
+    // static background: draw as a texture
+    glPushMatrix();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    
+    float w = MINI_MAP_SIZE * MINI_MAP_BLOCK;
+    float h = MINI_MAP_SIZE * MINI_MAP_BLOCK;
+    
+    // map to percentage of the total size
+    float div = textureSizeW;
+    // if texture size < map_width we need this for y b/c it's upside down. 
+    // x is fine; it starts at 0.
+    float yoffs = MAP_OFFSET + textureSizeH - div;   
+    float tsx = ( sx - MAP_OFFSET ) / div;
+    float tsy = ( sy - yoffs ) / div;
+    float tex = ( sx - MAP_OFFSET + MINI_MAP_SIZE ) / div;
+    float tey = ( sy - yoffs + MINI_MAP_SIZE ) / div;
+    
+    glBegin(GL_QUADS); 
+    glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+    glTexCoord2f( tsx, tey );
+    glVertex2d( 0, h ); 
+    glTexCoord2f( tex, tey );
+    glVertex2d( w, h ); 
+    glTexCoord2f( tex, tsy );
+    glVertex2d( w, 0 ); 
+    glTexCoord2f( tsx, tsy );
+    glVertex2d( 0, 0 );     
+    glEnd();       
+    glDisable(GL_TEXTURE_2D); 
+    glPopMatrix();
+  }
+    
   // North marker
   glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
   glBegin( GL_TRIANGLES );
@@ -232,34 +235,39 @@ void MiniMap::drawMap() {
       if( y < 0 || y >= MAP_DEPTH ) continue;
       Location *pos = scourge->getSession()->getMap()->getLocation( x, y, 0 );
       if( pos && ( pos->creature || pos->item || 
-                   ( pos->shape && pos->shape->isInteractive() ) ) ) {
+                   ( pos->shape && 
+                     ( directMode || pos->shape->isInteractive() ) ) ) ) {
         if( pos->creature ) {
-          if( pos->creature->isMonster() ) {
-            if( ((Creature*)pos->creature)->getMonster()->isNpc() ) {
-              glColor4f( 1, 1, 0, 0.5f );
-            } else {
-              glColor4f( 1, 0, 0, 0.5f );
-            }
-          } else {
-            if( pos->creature == scourge->getSession()->getParty()->getPlayer() ) {
-              glColor4f( 1, 0, 1, 0.5f );
-            } else {
-              glColor4f( 0, 1, 0, 0.5f );
-            }
-          }
-          
-          glPushMatrix();
+          float mapSize = MINI_MAP_SIZE * MINI_MAP_BLOCK;
           float width = pos->creature->getShape()->getWidth() / 2.0f * MINI_MAP_BLOCK;
-          glTranslatef( ( pos->creature->getX() - sx ) * MINI_MAP_BLOCK + width, 
-                        ( pos->creature->getY() - sy ) * MINI_MAP_BLOCK - width,
-                        0 );
-          glRotatef( ((MD2Shape*)pos->creature->getShape())->getAngle(), 0, 0, 1 );
-          glBegin( GL_TRIANGLES );
-          glVertex2f( width, width );
-          glVertex2f( -width, width );
-          glVertex2f( 0, -width );
-          glEnd();
-          glPopMatrix();
+          float cx =  ( pos->creature->getX() - sx ) * MINI_MAP_BLOCK + width;
+          float cy = ( pos->creature->getY() - sy ) * MINI_MAP_BLOCK - width;
+          // clip to minimap
+          if( cx - width > 0 && cx + width < mapSize &&
+              cy - width > 0 && cy + width < mapSize ) {
+            if( pos->creature->isMonster() ) {
+              if( ((Creature*)pos->creature)->getMonster()->isNpc() ) {
+                glColor4f( 1, 1, 0, 0.5f );
+              } else {
+                glColor4f( 1, 0, 0, 0.5f );
+              }
+            } else {
+              if( pos->creature == scourge->getSession()->getParty()->getPlayer() ) {
+                glColor4f( 1, 0, 1, 0.5f );
+              } else {
+                glColor4f( 0, 1, 0, 0.5f );
+              }
+            }
+            glPushMatrix();          
+            glTranslatef( cx, cy, 0 );
+            glRotatef( ((MD2Shape*)pos->creature->getShape())->getAngle(), 0, 0, 1 );
+            glBegin( GL_TRIANGLES );
+            glVertex2f( width, width );
+            glVertex2f( -width, width );
+            glVertex2f( 0, -width );
+            glEnd();
+            glPopMatrix();
+          }
         } else {
           if( pos->item ) {
             glColor4f( 0, 0, 1, 0.5f );
