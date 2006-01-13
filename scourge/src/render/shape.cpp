@@ -25,6 +25,7 @@ Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup)
   this->descriptionGroup = descriptionGroup;
   this->stencil = false;
   this->outlineColor = NULL;
+  interactive = false;
 }
 
 Shape::Shape(Shape *shape) {
@@ -34,6 +35,7 @@ Shape::Shape(Shape *shape) {
   this->name = shape->getName();
   this->descriptionGroup = shape->getDescriptionGroup();
   this->outlineColor = NULL;
+  interactive = false;
 }
 
 Shape::~Shape(){
