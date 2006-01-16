@@ -46,6 +46,7 @@ class Spell;
 class Monster;
 class GLShape;
 class SqBinding;
+class ShapePalette;
 
 /**
  *@author Gabor Torok

@@ -63,13 +63,9 @@ const int DungeonGenerator::levels[][9] = {
 };
 
 DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth, 
-                                   bool stairsDown, bool stairsUp, Mission *mission){
-  this->scourge = scourge;
-  this->level = level;
-  this->depth = depth;
-  this->stairsUp = stairsUp;
-  this->stairsDown = stairsDown;
-  this->mission = mission;
+                                   bool stairsDown, bool stairsUp, Mission *mission) : 
+TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 17 ) {
+
 
   initByLevel();  
   
@@ -93,16 +89,9 @@ DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth,
   visited = (int*)new int[notVisitedCount];
 
   doorCount = 0;
-
-  progress = new Progress(scourge->getSDLHandler(), 
-                          scourge->getSession()->getShapePalette()->getProgressTexture(),
-                          scourge->getSession()->getShapePalette()->getProgressHighlightTexture(),
-                          17, false, true );
 }
 
 DungeonGenerator::~DungeonGenerator(){
-  delete progress;
-
   for(int i = 0; i < width; i++) {
     free(nodes[i]);
   }
@@ -577,16 +566,7 @@ void DungeonGenerator::printMaze() {
   printf("---------------------------------------\n");
 }
 
-void DungeonGenerator::updateStatus(const char *statusMessage) {
-  progress->updateStatus(statusMessage);
-  Uint32 now = SDL_GetTicks();
-//  cerr << "+++ " << statusMessage << ". Previous task's time=" << (now - start) << endl;
-  start = now;
-}
-
-void DungeonGenerator::toMap(Map *map, ShapePalette *shapePal) {	 
-  start = SDL_GetTicks();
-
+void DungeonGenerator::generate( Map *map, ShapePalette *shapePal ) {
   updateStatus(MESSAGE);
   //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
   

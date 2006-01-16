@@ -36,6 +36,9 @@
 #include "sqbinding/sqbinding.h"
 #include "storable.h"
 #include "shapepalette.h"
+#include "terraingenerator.h"
+#include "cavemaker.h"
+#include "dungeongenerator.h"
 
 using namespace std;
 
@@ -252,6 +255,7 @@ void Scourge::startMission() {
   nextMission = -1;
   inHq = true;
 
+  TerrainGenerator *dg = NULL;
   Mission *lastMission = NULL;
   char result[300];  
   char *scriptName;
@@ -388,8 +392,6 @@ void Scourge::startMission() {
       // display the HQ map
       getSession()->setCurrentMission(NULL);
       missionWillAwardExpPoints = false;
-      //dg = new DungeonGenerator(this, 2, 0, false, false); // level 2 is a big enough map for HQ_LOCATION... this is hacky
-      //dg->toMap(levelMap, getSession()->getShapePalette(), DungeonGenerator::HQ_LOCATION);   
 
       dg = NULL;
       levelMap->loadMap( HQ_MAP_NAME, result, this, currentStory, changingStory );

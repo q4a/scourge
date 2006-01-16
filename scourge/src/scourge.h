@@ -27,7 +27,6 @@
 #include "sdlscreenview.h"
 #include "calendar.h"
 #include "minimap.h"
-#include "dungeongenerator.h"
 #include "mainmenu.h"
 #include "optionsmenu.h"
 #include "inventory.h"
@@ -65,7 +64,6 @@ class MapSettings;
 class OptionsMenu;
 class Inventory;
 class UserConfiguration;
-class DungeonGenerator;
 class Window;
 class ContainerGui;
 class Board;
@@ -130,8 +128,6 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   Map *levelMap;
   MapSettings *mapSettings;
   MiniMap * miniMap;
-  DungeonGenerator *dg;
-//  Scourge *scourge;
   int level;
   MapEditor *mapEditor;
   MainMenu *mainMenu;
