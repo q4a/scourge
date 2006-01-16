@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <map>
 #include "constants.h"
+#include "terraingenerator.h"
 
 // forward decl.
 class Map;
@@ -44,7 +45,7 @@ class Location;
   *@author Gabor Torok
   */
 
-class DungeonGenerator {
+class DungeonGenerator : public TerrainGenerator {
 private:
 
   static const char MESSAGE[];
@@ -60,8 +61,6 @@ private:
          dgOBJECTCOUNT };
   static const int levels[][9];
 
-  int level;
-  int depth;
   int width;
   int height;
   int curvyness; // the lower this number the more random the maze
@@ -75,9 +74,6 @@ private:
   int roomMaxHeight;
   int objectCount;
   int monsters;
-  bool stairsDown, stairsUp;
-  Mission *mission;
-  Progress *progress;
 
   Sint16 *ff;
   int ffCount;
@@ -130,8 +126,6 @@ private:
   const static Sint16 unitSide = MAP_UNIT;
   const static Sint16 wallHeight = MAP_WALL_HEIGHT;   
 
-  Scourge *scourge;
-
   const static int MAX_DOOR_COUNT = 500;
   int doorCount;
   int door[MAX_DOOR_COUNT][2];
@@ -142,14 +136,12 @@ private:
   std::vector<int> teleporterX;
   std::vector<int> teleporterY;
 
-  Uint32 start;
-
 public: 
 
   DungeonGenerator(Scourge *scourge, int level, int depth, bool stairsDown, bool stairsUp, Mission *mission = NULL);
-  ~DungeonGenerator();
+  virtual ~DungeonGenerator();
 
-  void toMap(Map *map, ShapePalette *shapePal);
+  virtual void generate( Map *map, ShapePalette *shapePal );
 
 protected:
 
@@ -224,8 +216,6 @@ protected:
   void getRandomDeadEndLocation(int *x, int *y, GLShape *shape, Map *map);
 
   int getRoomIndex(int x, int y);
-
-  void updateStatus(const char *statusMessage);
 
 };
 

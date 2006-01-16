@@ -34,6 +34,10 @@ scourge_SOURCES = \
 	date.h\
         item.cpp\
         item.h\
+	terraingenerator.cpp\
+	terraingenerator.h\
+	cavemaker.cpp\
+	cavemaker.h\
 	dungeongenerator.cpp\
 	dungeongenerator.h\
 	main.cpp\
