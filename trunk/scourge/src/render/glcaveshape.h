@@ -45,7 +45,9 @@ public:
     DIR_NE,
     DIR_SE,
     DIR_SW,
-    DIR_NW
+    DIR_NW,
+    DIR_CROSS_NW,
+    DIR_CROSS_NE
   };
 
   static char *names[];

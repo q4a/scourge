@@ -73,6 +73,16 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 #define setCaveFloorShape(map,shapePal,x,y,index) ( map->setFloorPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), shapePal->findShapeByName( GLCaveShape::names[index] ) ) )
 
 void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
+  Shape *block = shapePal->findShapeByName( GLCaveShape::names[8] );
+  for( int x = 0; x < MAP_WIDTH - CAVE_CHUNK_SIZE; x+=CAVE_CHUNK_SIZE ) {
+    for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH - CAVE_CHUNK_SIZE; y+=CAVE_CHUNK_SIZE ) {
+      if( x < MAP_OFFSET || y < CAVE_CHUNK_SIZE || 
+          x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+        map->setPosition( x, y, 0, block );
+      }
+    }
+  }
+
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
       if( node[x][y].wall ) {
@@ -80,7 +90,13 @@ void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
             isWall( x + 1, y ) &&
             isWall( x, y - 1 ) &&
             isWall( x, y + 1 ) ) {
-          if( !isWall( x - 1, y - 1 ) ) {
+          if( !isWall( x - 1, y - 1 ) &&
+              !isWall( x + 1, y + 1 ) ) {
+            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_CROSS_NW );
+          } else if( !isWall( x + 1, y - 1 ) &&
+                     !isWall( x - 1, y + 1 ) ) {
+            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_CROSS_NE );
+          } else if( !isWall( x - 1, y - 1 ) ) {
             setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_NW );
           } else if( !isWall( x + 1, y - 1 ) ) { 
             setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_NE );

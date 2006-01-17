@@ -40,7 +40,9 @@ char *GLCaveShape::inverseNames[] = {
   "CAVE_INV_NE",
   "CAVE_INV_SE",
   "CAVE_INV_SW",
-  "CAVE_INV_NW"
+  "CAVE_INV_NW",
+  "CAVE_INV_CROSS_NW",
+  "CAVE_INV_CROSS_NE"
 };
 
 float shade[] = {
@@ -179,37 +181,55 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
   glVertex3f( 0, d, h );
   glVertex3f( 0, 0, 0 );
   break;
+  case DIR_CROSS_NW:
+  glVertex3f( w, 0, h );
+  glVertex3f( 0, d, h );
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( w, 0, h );
+  glVertex3f( 0, d, h );
+  glVertex3f( w, d, 0 );
+  break;
+  case DIR_CROSS_NE:
+  glVertex3f( 0, 0, h );
+  glVertex3f( w, d, h );
+  glVertex3f( w, 0, 0 );
+  glVertex3f( 0, 0, h );
+  glVertex3f( w, d, h );
+  glVertex3f( 0, d, 0 );
+  break;
   default:
-  cerr << "bad dir for corner shape: " << dir << endl;
+  cerr << "bad dir for inverse shape: " << dir << endl;
   }
   glEnd();
 
-  // roof
-  glColor4f( 0.5f, 0.35f, 0.15f, 1 );
-  glBegin( GL_TRIANGLES );
-  switch( dir ) {
-  case DIR_NE:
-  glVertex3f( 0, 0, h );
-  glVertex3f( w, d, h );
-  glVertex3f( 0, d, h );
-  break;
-  case DIR_SE:
-  glVertex3f( w, 0, h );
-  glVertex3f( 0, d, h );
-  glVertex3f( 0, 0, h );
-  break;
-  case DIR_SW:
-  glVertex3f( 0, 0, h );
-  glVertex3f( w, d, h );
-  glVertex3f( w, 0, h );
-  break;
-  case DIR_NW:
-  glVertex3f( w, 0, h );
-  glVertex3f( 0, d, h );
-  glVertex3f( w, d, h );
-  break;
-  default:
-  cerr << "bad dir for corner shape: " << dir << endl;
+  if( !( dir == DIR_CROSS_NE || dir == DIR_CROSS_NW ) ) {
+    // roof
+    glColor4f( 0.5f, 0.35f, 0.15f, 1 );
+    glBegin( GL_TRIANGLES );
+    switch( dir ) {
+    case DIR_NE:
+    glVertex3f( 0, 0, h );
+    glVertex3f( w, d, h );
+    glVertex3f( 0, d, h );
+    break;
+    case DIR_SE:
+    glVertex3f( w, 0, h );
+    glVertex3f( 0, d, h );
+    glVertex3f( 0, 0, h );
+    break;
+    case DIR_SW:
+    glVertex3f( 0, 0, h );
+    glVertex3f( w, d, h );
+    glVertex3f( w, 0, h );
+    break;
+    case DIR_NW:
+    glVertex3f( w, 0, h );
+    glVertex3f( 0, d, h );
+    glVertex3f( w, d, h );
+    break;
+    default:
+    cerr << "bad dir for inverse shape: " << dir << endl;
+    }
   }
   glEnd();
 }

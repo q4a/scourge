@@ -360,6 +360,41 @@ void Shapes::initialize() {
     shapeCount++;
   }
 
+  {
+    shapes[shapeCount] = 
+      new GLCaveShape( textureGroup[ 0 ], 
+                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                       strdup( GLCaveShape::inverseNames[ GLCaveShape::DIR_CROSS_NE ] ), 
+                       shapeCount,
+                       GLCaveShape::MODE_INV, 
+                       GLCaveShape::DIR_CROSS_NE );
+    shapes[shapeCount]->setSkipSide(false);
+    shapes[shapeCount]->setStencil(true);
+    shapes[shapeCount]->setLightBlocking(true);  
+    //if( !headless ) shapes[shapeCount]->initialize();
+    string nameStr = shapes[shapeCount]->getName();
+    shapeMap[nameStr] = shapes[shapeCount];
+    shapeCount++;
+  }
+
+  {
+    shapes[shapeCount] = 
+      new GLCaveShape( textureGroup[ 0 ], 
+                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                       strdup( GLCaveShape::inverseNames[ GLCaveShape::DIR_CROSS_NW ] ), 
+                       shapeCount,
+                       GLCaveShape::MODE_INV, 
+                       GLCaveShape::DIR_CROSS_NW );
+    shapes[shapeCount]->setSkipSide(false);
+    shapes[shapeCount]->setStencil(true);
+    shapes[shapeCount]->setLightBlocking(true);  
+    //if( !headless ) shapes[shapeCount]->initialize();
+    string nameStr = shapes[shapeCount]->getName();
+    shapeMap[nameStr] = shapes[shapeCount];
+    shapeCount++;
+  }
+
+
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
