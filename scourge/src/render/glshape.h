@@ -92,7 +92,7 @@ public:
           char *name, int descriptionGroup,
           Uint32 color, Uint8 shapePalIndex=0);
   
-  ~GLShape();  
+  virtual ~GLShape();  
 
   virtual void initialize();
 

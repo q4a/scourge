@@ -30,6 +30,7 @@
 #include "shape.h"
 #include "glshape.h"
 #include "gltorch.h"
+#include "glcaveshape.h"
 #include "glteleporter.h"
 #include "gllocator.h"
 #include "3dsshape.h"

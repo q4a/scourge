@@ -22,6 +22,7 @@
 #include "3dsshape.h"
 #include "md2shape.h"
 #include "Md2.h"
+#include "glcaveshape.h"
 
 using namespace std;
 
@@ -248,7 +249,6 @@ void Shapes::initialize() {
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
   }
-
   // remember the number of shapes
   shapeCount = (int)shapeValueVector.size() + 1;
 
@@ -273,6 +273,92 @@ void Shapes::initialize() {
   string nameStr = shapes[shapeCount]->getName();
   shapeMap[nameStr] = shapes[shapeCount];
   shapeCount++;
+
+  // add cave shapes (1 per dimension, flat and corner each)
+  for( int i = 0; i < 4; i++ ) {
+    {
+      shapes[shapeCount] = 
+        new GLCaveShape( textureGroup[ 0 ], 
+                         CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                         strdup( GLCaveShape::names[ i ] ), 
+                         shapeCount,
+                         GLCaveShape::MODE_FLAT, 
+                         GLCaveShape::DIR_N + i );
+      shapes[shapeCount]->setSkipSide(false);
+      shapes[shapeCount]->setStencil(true);
+      shapes[shapeCount]->setLightBlocking(true);  
+      //if( !headless ) shapes[shapeCount]->initialize();
+      string nameStr = shapes[shapeCount]->getName();
+      shapeMap[nameStr] = shapes[shapeCount];
+      shapeCount++;
+    }
+
+    {
+      shapes[shapeCount] = 
+        new GLCaveShape( textureGroup[ 0 ], 
+                         CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                         strdup( GLCaveShape::names[ GLCaveShape::DIR_NE + i ] ), 
+                         shapeCount,
+                         GLCaveShape::MODE_CORNER, 
+                         GLCaveShape::DIR_NE + i );
+      shapes[shapeCount]->setSkipSide(false);
+      shapes[shapeCount]->setStencil(true);
+      shapes[shapeCount]->setLightBlocking(true);  
+      //if( !headless ) shapes[shapeCount]->initialize();
+      string nameStr = shapes[shapeCount]->getName();
+      shapeMap[nameStr] = shapes[shapeCount];
+      shapeCount++;
+    }
+
+    {
+      shapes[shapeCount] = 
+        new GLCaveShape( textureGroup[ 0 ], 
+                         CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                         strdup( GLCaveShape::inverseNames[ GLCaveShape::DIR_NE + i ] ), 
+                         shapeCount,
+                         GLCaveShape::MODE_INV, 
+                         GLCaveShape::DIR_NE + i );
+      shapes[shapeCount]->setSkipSide(false);
+      shapes[shapeCount]->setStencil(true);
+      shapes[shapeCount]->setLightBlocking(true);  
+      //if( !headless ) shapes[shapeCount]->initialize();
+      string nameStr = shapes[shapeCount]->getName();
+      shapeMap[nameStr] = shapes[shapeCount];
+      shapeCount++;
+    }
+  }
+
+  {
+    shapes[shapeCount] = 
+      new GLCaveShape( textureGroup[ 0 ], 
+                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                       strdup( GLCaveShape::names[ 8 ] ), 
+                       shapeCount,
+                       GLCaveShape::MODE_BLOCK, 0 );
+    shapes[shapeCount]->setSkipSide(false);
+    shapes[shapeCount]->setStencil(true);
+    shapes[shapeCount]->setLightBlocking(true);  
+    //if( !headless ) shapes[shapeCount]->initialize();
+    string nameStr = shapes[shapeCount]->getName();
+    shapeMap[nameStr] = shapes[shapeCount];
+    shapeCount++;
+  }
+
+  {
+    shapes[shapeCount] = 
+      new GLCaveShape( textureGroup[ 0 ], 
+                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                       strdup( GLCaveShape::names[ 9 ] ), 
+                       shapeCount,
+                       GLCaveShape::MODE_FLOOR, 0 );
+    shapes[shapeCount]->setSkipSide(false);
+    shapes[shapeCount]->setStencil(false);
+    shapes[shapeCount]->setLightBlocking(false);  
+    //if( !headless ) shapes[shapeCount]->initialize();
+    string nameStr = shapes[shapeCount]->getName();
+    shapeMap[nameStr] = shapes[shapeCount];
+    shapeCount++;
+  }
 
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);

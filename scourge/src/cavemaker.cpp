@@ -26,14 +26,13 @@
 
 using namespace std;
   
-#define CAVE_CHUNK_SIZE 10
-  
 CaveMaker::CaveMaker( Scourge *scourge, int level, int depth, 
                       bool stairsDown, bool stairsUp, 
                       Mission *mission) :
 TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 10 ) {
   this->w = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
   this->h = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
+  cerr << "CaveMaker: size=" << w << "x" << h << endl;
   this->roomCounter = 0;
   this->biggestRoom = 0;
   node = (NodePoint**)malloc( w * sizeof( NodePoint* ) );
@@ -62,18 +61,81 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
   removeSingles();
 
+  print();
 
   drawOnMap( map, shapePal );
 }
 
 
-
+#define isWall(x,y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].wall )
+#define setCaveShape(map,shapePal,x,y,index) ( map->setPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), 0, shapePal->findShapeByName( GLCaveShape::names[index] ) ) )
+#define setCaveShapeInv(map,shapePal,x,y,index) ( map->setPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), 0, shapePal->findShapeByName( GLCaveShape::inverseNames[index ] ) ) )
+#define setCaveFloorShape(map,shapePal,x,y,index) ( map->setFloorPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), shapePal->findShapeByName( GLCaveShape::names[index] ) ) )
 
 void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
+  for( int x = 0; x < w; x++ ) {
+    for( int y = 0; y < h; y++ ) {
+      if( node[x][y].wall ) {
+        if( isWall( x - 1, y ) &&
+            isWall( x + 1, y ) &&
+            isWall( x, y - 1 ) &&
+            isWall( x, y + 1 ) ) {
+          if( !isWall( x - 1, y - 1 ) ) {
+            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_NW );
+          } else if( !isWall( x + 1, y - 1 ) ) { 
+            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_NE );
+          } else if( !isWall( x - 1, y + 1 ) ) {
+            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_SW );
+          } else if( !isWall( x + 1, y + 1 ) ) {
+            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_SE );
+          } else {
+            setCaveShape( map, shapePal, x, y, 8 );
+          }
+        } else {
+          if( !isWall( x - 1, y ) ) {
+            if( isWall( x, y - 1 ) &&
+                isWall( x, y + 1 ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_W );
+            } else if( isWall( x, y - 1 ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SW );
+            } else {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NW );
+            }
+          } else if( !isWall( x + 1, y ) ) {
+            if( isWall( x, y - 1 ) &&
+                isWall( x, y + 1 ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_E );
+            } else if( isWall( x, y - 1 ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SE );
+            } else {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NE );
+            }
+          } else if( !isWall( x, y - 1 ) ) {
+            if( isWall( x - 1, y ) &&
+                isWall( x + 1, y ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_N );
+            } else if( isWall( x - 1, y ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NE );
+            } else {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NW );
+            }
+          } else if( !isWall( x, y + 1 ) ) {
+            if( isWall( x - 1, y ) &&
+                isWall( x + 1, y ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_S );
+            } else if( isWall( x - 1, y ) ) {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SE );
+            } else {
+              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SW );
+            }
+          }
+        }
+      } else {
+        setCaveFloorShape( map, shapePal, x, y, 9 );
+      }
+    }
+  }
 }
-
-
-
 
 void CaveMaker::randomize() {
   for( int x = 0; x < w; x++ ) {
@@ -212,7 +274,7 @@ void CaveMaker::connectPoints( int sx, int sy, int ex, int ey, bool isBiggestRoo
       // to target!
       if( sx < ex ) sx++;
       else if( sx > ex ) sx--;
-      if( sy < ey ) sy++;
+      else if( sy < ey ) sy++;
       else if( sy > ey ) sy--;
     }
     node[sx][sy].wall = false;
