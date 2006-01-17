@@ -463,10 +463,16 @@ void Scourge::startMission() {
 
       // if no edited map is found, make a random map
       if( !loaded ) {
+        /*
         dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
                                   (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
                                   (currentStory > 0),
                                   getSession()->getCurrentMission());
+        */
+        dg = new CaveMaker(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
+                           (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
+                           (currentStory > 0),
+                           getSession()->getCurrentMission());
         dg->toMap(levelMap, getSession()->getShapePalette());
         scriptName = RANDOM_MAP_NAME;
       }

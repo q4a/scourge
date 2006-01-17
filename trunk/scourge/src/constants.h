@@ -330,6 +330,9 @@ public:
 // How far from the edge to start drawing in map
 #define MAP_OFFSET 80
 
+// cave chunk size
+#define CAVE_CHUNK_SIZE 8
+
 // The max value of a skill under normal circumstances. 
 #define MAX_SKILL 100
 

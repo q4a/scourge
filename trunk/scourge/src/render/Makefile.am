@@ -26,6 +26,8 @@ libScourgeRender_a_SOURCES = \
 	shape.h\
 	glshape.cpp\
 	glshape.h\
+	glcaveshape.cpp\
+	glcaveshape.h\
 	gllocator.cpp\
 	gllocator.h\
 	gltorch.cpp\

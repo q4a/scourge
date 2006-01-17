@@ -97,7 +97,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   this->preferences = preferences;  
   this->shapes = shapes;
   // only use 1 (disabled) or 0 (enabled)
-  LIGHTMAP_ENABLED=1;
+  LIGHTMAP_ENABLED=0;
   zoom = 1.0f;
   zoomIn = zoomOut = false;
   x = y = 0;
@@ -2581,7 +2581,7 @@ bool Map::isDoor(Shape *shape) {
 
 void Map::setLocked(int doorX, int doorY, int doorZ, bool value) {
   locked[createTripletKey(doorX, doorY, doorZ)] = value;
-  Location *p = pos[doorX][doorY][doorZ];
+  //Location *p = pos[doorX][doorY][doorZ];
 }
 
 int Map::toggleLightMap() {
