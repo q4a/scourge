@@ -275,125 +275,15 @@ void Shapes::initialize() {
   shapeCount++;
 
   // add cave shapes (1 per dimension, flat and corner each)
-  for( int i = 0; i < 4; i++ ) {
-    {
-      shapes[shapeCount] = 
-        new GLCaveShape( textureGroup[ 0 ], 
-                         CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                         strdup( GLCaveShape::names[ i ] ), 
-                         shapeCount,
-                         GLCaveShape::MODE_FLAT, 
-                         GLCaveShape::DIR_N + i );
-      shapes[shapeCount]->setSkipSide(false);
-      shapes[shapeCount]->setStencil(true);
-      shapes[shapeCount]->setLightBlocking(true);  
-      //if( !headless ) shapes[shapeCount]->initialize();
-      string nameStr = shapes[shapeCount]->getName();
-      shapeMap[nameStr] = shapes[shapeCount];
-      shapeCount++;
-    }
-
-    {
-      shapes[shapeCount] = 
-        new GLCaveShape( textureGroup[ 0 ], 
-                         CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                         strdup( GLCaveShape::names[ GLCaveShape::DIR_NE + i ] ), 
-                         shapeCount,
-                         GLCaveShape::MODE_CORNER, 
-                         GLCaveShape::DIR_NE + i );
-      shapes[shapeCount]->setSkipSide(false);
-      shapes[shapeCount]->setStencil(true);
-      shapes[shapeCount]->setLightBlocking(true);  
-      //if( !headless ) shapes[shapeCount]->initialize();
-      string nameStr = shapes[shapeCount]->getName();
-      shapeMap[nameStr] = shapes[shapeCount];
-      shapeCount++;
-    }
-
-    {
-      shapes[shapeCount] = 
-        new GLCaveShape( textureGroup[ 0 ], 
-                         CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                         strdup( GLCaveShape::inverseNames[ GLCaveShape::DIR_NE + i ] ), 
-                         shapeCount,
-                         GLCaveShape::MODE_INV, 
-                         GLCaveShape::DIR_NE + i );
-      shapes[shapeCount]->setSkipSide(false);
-      shapes[shapeCount]->setStencil(true);
-      shapes[shapeCount]->setLightBlocking(true);  
-      //if( !headless ) shapes[shapeCount]->initialize();
-      string nameStr = shapes[shapeCount]->getName();
-      shapeMap[nameStr] = shapes[shapeCount];
-      shapeCount++;
-    }
-  }
-
-  {
-    shapes[shapeCount] = 
-      new GLCaveShape( textureGroup[ 0 ], 
-                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                       strdup( GLCaveShape::names[ 8 ] ), 
-                       shapeCount,
-                       GLCaveShape::MODE_BLOCK, 0 );
-    shapes[shapeCount]->setSkipSide(false);
-    shapes[shapeCount]->setStencil(true);
-    shapes[shapeCount]->setLightBlocking(true);  
-    //if( !headless ) shapes[shapeCount]->initialize();
+  cerr << "BEFORE adding cave shapes: " << shapeCount << endl;
+  GLCaveShape::initShapes( textureGroup[0], shapeCount );  
+  for( int i = 0; i < GLCaveShape::CAVE_INDEX_COUNT; i++ ) {
+    shapes[shapeCount] = GLCaveShape::getShape(i);
     string nameStr = shapes[shapeCount]->getName();
     shapeMap[nameStr] = shapes[shapeCount];
     shapeCount++;
   }
-
-  {
-    shapes[shapeCount] = 
-      new GLCaveShape( textureGroup[ 0 ], 
-                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                       strdup( GLCaveShape::names[ 9 ] ), 
-                       shapeCount,
-                       GLCaveShape::MODE_FLOOR, 0 );
-    shapes[shapeCount]->setSkipSide(false);
-    shapes[shapeCount]->setStencil(false);
-    shapes[shapeCount]->setLightBlocking(false);  
-    //if( !headless ) shapes[shapeCount]->initialize();
-    string nameStr = shapes[shapeCount]->getName();
-    shapeMap[nameStr] = shapes[shapeCount];
-    shapeCount++;
-  }
-
-  {
-    shapes[shapeCount] = 
-      new GLCaveShape( textureGroup[ 0 ], 
-                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                       strdup( GLCaveShape::inverseNames[ GLCaveShape::DIR_CROSS_NE ] ), 
-                       shapeCount,
-                       GLCaveShape::MODE_INV, 
-                       GLCaveShape::DIR_CROSS_NE );
-    shapes[shapeCount]->setSkipSide(false);
-    shapes[shapeCount]->setStencil(true);
-    shapes[shapeCount]->setLightBlocking(true);  
-    //if( !headless ) shapes[shapeCount]->initialize();
-    string nameStr = shapes[shapeCount]->getName();
-    shapeMap[nameStr] = shapes[shapeCount];
-    shapeCount++;
-  }
-
-  {
-    shapes[shapeCount] = 
-      new GLCaveShape( textureGroup[ 0 ], 
-                       CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                       strdup( GLCaveShape::inverseNames[ GLCaveShape::DIR_CROSS_NW ] ), 
-                       shapeCount,
-                       GLCaveShape::MODE_INV, 
-                       GLCaveShape::DIR_CROSS_NW );
-    shapes[shapeCount]->setSkipSide(false);
-    shapes[shapeCount]->setStencil(true);
-    shapes[shapeCount]->setLightBlocking(true);  
-    //if( !headless ) shapes[shapeCount]->initialize();
-    string nameStr = shapes[shapeCount]->getName();
-    shapeMap[nameStr] = shapes[shapeCount];
-    shapeCount++;
-  }
-
+  cerr << "AFTER adding cave shapes: " << shapeCount << endl;
 
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);

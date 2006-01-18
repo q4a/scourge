@@ -68,17 +68,15 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
 
 #define isWall(x,y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].wall )
-#define setCaveShape(map,shapePal,x,y,index) ( map->setPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), 0, shapePal->findShapeByName( GLCaveShape::names[index] ) ) )
-#define setCaveShapeInv(map,shapePal,x,y,index) ( map->setPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), 0, shapePal->findShapeByName( GLCaveShape::inverseNames[index ] ) ) )
-#define setCaveFloorShape(map,shapePal,x,y,index) ( map->setFloorPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), shapePal->findShapeByName( GLCaveShape::names[index] ) ) )
+#define setCaveShape(map,x,y,index) ( map->setPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), 0, GLCaveShape::getShape(index) ) )
+#define setCaveFloorShape(map,x,y,index) ( map->setFloorPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), GLCaveShape::getShape(index) ) )
 
 void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
-  Shape *block = shapePal->findShapeByName( GLCaveShape::names[8] );
   for( int x = 0; x < MAP_WIDTH - CAVE_CHUNK_SIZE; x+=CAVE_CHUNK_SIZE ) {
     for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH - CAVE_CHUNK_SIZE; y+=CAVE_CHUNK_SIZE ) {
       if( x < MAP_OFFSET || y < CAVE_CHUNK_SIZE || 
           x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
-        map->setPosition( x, y, 0, block );
+        map->setPosition( x, y, 0, GLCaveShape::getShape( GLCaveShape::CAVE_INDEX_BLOCK ) );
       }
     }
   }
@@ -92,62 +90,62 @@ void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
             isWall( x, y + 1 ) ) {
           if( !isWall( x - 1, y - 1 ) &&
               !isWall( x + 1, y + 1 ) ) {
-            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_CROSS_NW );
+            setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_CROSS_NW );
           } else if( !isWall( x + 1, y - 1 ) &&
                      !isWall( x - 1, y + 1 ) ) {
-            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_CROSS_NE );
+            setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_CROSS_NE );
           } else if( !isWall( x - 1, y - 1 ) ) {
-            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_NW );
+            setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_INV_NW );
           } else if( !isWall( x + 1, y - 1 ) ) { 
-            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_NE );
+            setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_INV_NE );
           } else if( !isWall( x - 1, y + 1 ) ) {
-            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_SW );
+            setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_INV_SW );
           } else if( !isWall( x + 1, y + 1 ) ) {
-            setCaveShapeInv( map, shapePal, x, y, GLCaveShape::DIR_SE );
+            setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_INV_SE );
           } else {
-            setCaveShape( map, shapePal, x, y, 8 );
+            setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_BLOCK );
           }
         } else {
           if( !isWall( x - 1, y ) ) {
             if( isWall( x, y - 1 ) &&
                 isWall( x, y + 1 ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_W );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_W );
             } else if( isWall( x, y - 1 ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SW );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SW );
             } else {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NW );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NW );
             }
           } else if( !isWall( x + 1, y ) ) {
             if( isWall( x, y - 1 ) &&
                 isWall( x, y + 1 ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_E );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_E );
             } else if( isWall( x, y - 1 ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SE );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SE );
             } else {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NE );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NE );
             }
           } else if( !isWall( x, y - 1 ) ) {
             if( isWall( x - 1, y ) &&
                 isWall( x + 1, y ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_N );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_N );
             } else if( isWall( x - 1, y ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NE );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NE );
             } else {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_NW );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NW );
             }
           } else if( !isWall( x, y + 1 ) ) {
             if( isWall( x - 1, y ) &&
                 isWall( x + 1, y ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_S );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_S );
             } else if( isWall( x - 1, y ) ) {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SE );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SE );
             } else {
-              setCaveShape( map, shapePal, x, y, GLCaveShape::DIR_SW );
+              setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SW );
             }
           }
         }
       } else {
-        setCaveFloorShape( map, shapePal, x, y, 9 );
+        setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
       }
     }
   }
