@@ -27,8 +27,6 @@ private:
   int mode;
   int dir;
 
-public:
-
   enum {
     MODE_FLAT=0,
     MODE_CORNER,
@@ -51,7 +49,10 @@ public:
   };
 
   static char *names[];
-  static char *inverseNames[];
+
+  static GLCaveShape *GLCaveShape::shapes[];
+
+public:
 
   GLCaveShape( GLuint texture[],
                int width, int depth, int height, 
@@ -60,6 +61,29 @@ public:
   virtual ~GLCaveShape();
 
   void draw();
+
+  enum {
+    CAVE_INDEX_N=0,
+    CAVE_INDEX_E,
+    CAVE_INDEX_S,
+    CAVE_INDEX_W,
+    CAVE_INDEX_NE,
+    CAVE_INDEX_SE,
+    CAVE_INDEX_SW,
+    CAVE_INDEX_NW,
+    CAVE_INDEX_INV_NE,
+    CAVE_INDEX_INV_SE,
+    CAVE_INDEX_INV_SW,
+    CAVE_INDEX_INV_NW,
+    CAVE_INDEX_CROSS_NW,
+    CAVE_INDEX_CROSS_NE,
+    CAVE_INDEX_BLOCK,
+    CAVE_INDEX_FLOOR,
+
+    CAVE_INDEX_COUNT
+  };
+  static void initShapes( GLuint texture[], int shapeCount );
+  static inline GLCaveShape *getShape( int index ) { return shapes[ index ]; }
 
 protected:
   void drawFlat( float w, float h, float d );
