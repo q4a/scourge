@@ -112,8 +112,10 @@ void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_W );
             } else if( isWall( x, y - 1 ) ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SW );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             } else {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NW );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             }
           } else if( !isWall( x + 1, y ) ) {
             if( isWall( x, y - 1 ) &&
@@ -121,8 +123,10 @@ void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_E );
             } else if( isWall( x, y - 1 ) ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SE );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             } else {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NE );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             }
           } else if( !isWall( x, y - 1 ) ) {
             if( isWall( x - 1, y ) &&
@@ -130,8 +134,10 @@ void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_N );
             } else if( isWall( x - 1, y ) ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NE );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             } else {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_NW );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             }
           } else if( !isWall( x, y + 1 ) ) {
             if( isWall( x - 1, y ) &&
@@ -139,8 +145,10 @@ void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_S );
             } else if( isWall( x - 1, y ) ) {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SE );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             } else {
               setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_SW );
+              setCaveFloorShape( map, x, y, GLCaveShape::CAVE_INDEX_FLOOR );
             }
           }
         }
@@ -214,6 +222,8 @@ bool CaveMaker::canReach( int sx, int sy, int ex, int ey ) {
 
 void CaveMaker::findRooms() {
   biggestRoom = roomCounter = 0;
+  room[0].size = 0;
+  room[0].x = room[0].y = 0;
   while( true ) {
     // find the first empty space of an unclaimed room
     int sx, sy;
@@ -255,6 +265,8 @@ void CaveMaker::findRooms() {
     }
 
     roomCounter++;      
+    room[roomCounter].size = 0;
+    room[roomCounter].x = room[roomCounter].y = 0;
   }
 }
 

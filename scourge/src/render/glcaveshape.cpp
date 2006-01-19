@@ -54,6 +54,14 @@ float shade[] = {
 //  0.125f, 0.375f, 0.625f, 0.875f
 };
 
+/*
+ const float Map::shadowTransformMatrix[16] = { 
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0.75f, -0.25f, 0, 0,
+	0, 0, 0, 1 };
+*/
+
 GLCaveShape::GLCaveShape( GLuint texture[],
                           int width, int depth, int height, 
                           char *name, int index, 
@@ -75,6 +83,14 @@ void GLCaveShape::draw() {
 
   glDisable( GL_CULL_FACE );
 
+  bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+  if( !useShadow ) {
+    glEnable( GL_TEXTURE_2D );
+//    glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
+
+    // FIXME: implement real normal-based shading (like in C3DSShape)    
+  }
+
   switch( mode ) {
   case MODE_FLAT: drawFlat( w, h, d ); break;
   case MODE_CORNER: drawCorner( w, h, d ); break;
@@ -84,34 +100,58 @@ void GLCaveShape::draw() {
   default: cerr << "Unknown cave_shape mode: " << mode << endl;
   }
 
+
+  if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+  //useShadow = false;
+
 }
 
 void GLCaveShape::drawFlat( float w, float h, float d ) {
-  glColor4f( shade[dir], shade[dir], shade[dir], 1 );
+  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
   glBegin( GL_QUADS );
   switch( dir ) {
   case DIR_S:
+  glNormal3f( 0, -1, 0 );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
   break;
   case DIR_N:
+  glNormal3f( 0, 1, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
   break;
   case DIR_E:
+  glNormal3f( 1, 0, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( w, 0, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, d, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( 0, d, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, 0, h );
   break;
   case DIR_W:
+  glNormal3f( -1, 0, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
   break;
   default:
@@ -121,29 +161,43 @@ void GLCaveShape::drawFlat( float w, float h, float d ) {
 }
 
 void GLCaveShape::drawCorner( float w, float h, float d ) {  
-  drawFloor( w, h, d );
-
-  glColor4f( shade[dir], shade[dir], shade[dir], 1 );
+  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
   glBegin( GL_TRIANGLES );
   switch( dir ) {
   case DIR_NE:
+  glNormal3f( 1, -1, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, 0 );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
   break;
   case DIR_SE:
+  glNormal3f( 1, 1, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, 0 );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
   break;
   case DIR_SW:
+  glNormal3f( -1, 1, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
   break;
   case DIR_NW:
+  glNormal3f( -1, -1, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, 0 );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
   break;
   default:
@@ -153,43 +207,77 @@ void GLCaveShape::drawCorner( float w, float h, float d ) {
 }
 
 void GLCaveShape::drawInverse( float w, float h, float d ) {  
-  glColor4f( shade[dir], shade[dir], shade[dir], 1 );
+  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
   glBegin( GL_TRIANGLES );
   switch( dir ) {
   case DIR_NE:
+  glNormal3f( 1, -1, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, 0 );
   break;
   case DIR_SE:
+  glNormal3f( 1, 1, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, 0 );
   break;
   case DIR_SW:
+  glNormal3f( -1, 1, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, 0 );
   break;
   case DIR_NW:
+  glNormal3f( -1, -1, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
   break;
   case DIR_CROSS_NW:
+  glNormal3f( -1, -1, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+
+  glNormal3f( 1, 1, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, 0 );
   break;
   case DIR_CROSS_NE:
+  glNormal3f( 1, -1, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, 0 );
+
+  glNormal3f( -1, 1, 0 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, 0 );
   break;
   default:
@@ -197,29 +285,45 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
   }
   glEnd();
 
-  if( !( dir == DIR_CROSS_NE || dir == DIR_CROSS_NW ) ) {
+  if( !( useShadow || dir == DIR_CROSS_NE || dir == DIR_CROSS_NW ) ) {
     // roof
-    glColor4f( 0.5f, 0.35f, 0.15f, 1 );
+    glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
     glBegin( GL_TRIANGLES );
     switch( dir ) {
     case DIR_NE:
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
     glVertex3f( 0, 0, h );
+    glTexCoord2f( 1, 1 );
     glVertex3f( w, d, h );
+    glTexCoord2f( 0, 1 );
     glVertex3f( 0, d, h );
     break;
     case DIR_SE:
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 1, 0 );
     glVertex3f( w, 0, h );
+    glTexCoord2f( 0, 1 );
     glVertex3f( 0, d, h );
+    glTexCoord2f( 0, 0 );
     glVertex3f( 0, 0, h );
     break;
     case DIR_SW:
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
     glVertex3f( 0, 0, h );
+    glTexCoord2f( 1, 1 );
     glVertex3f( w, d, h );
+    glTexCoord2f( 1, 0 );
     glVertex3f( w, 0, h );
     break;
     case DIR_NW:
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 1, 0 );
     glVertex3f( w, 0, h );
+    glTexCoord2f( 0, 1 );
     glVertex3f( 0, d, h );
+    glTexCoord2f( 1, 1 );
     glVertex3f( w, d, h );
     break;
     default:
@@ -230,22 +334,38 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
 }
 
 void GLCaveShape::drawBlock( float w, float h, float d ) {
+  if( useShadow ) return;
+
+  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
   glBegin( GL_QUADS );
-  glColor4f( 0.5f, 0.35f, 0.15f, 1 );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
+  glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
+  glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
   glEnd();
 }
 
 void GLCaveShape::drawFloor( float w, float h, float d ) {
+  if( useShadow ) return;
+
+  // FIXME: use separate floor texture
+  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
+  glColor3f( 1, 0.7f, 0.7f );
   glBegin( GL_QUADS );
-  glColor4f( 0.25f, 0.15f, 0.05f, 1 );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( 0, d, 0 );
-  glVertex3f( w, d, 0 );
-  glVertex3f( w, 0, 0 );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, d, h );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, h );
   glEnd();
 }
 
@@ -253,6 +373,10 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 GLCaveShape *GLCaveShape::shapes[ CAVE_INDEX_COUNT ];
 
 void GLCaveShape::initShapes( GLuint texture[], int shapeCount ) {  
+
+  cerr << "GLCaveShape::initShapes, tex=" << texture[0] << "," << 
+    texture[1] << "," << texture[2] << endl;
+
   shapes[CAVE_INDEX_N] = 
     new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_N ] ), shapeCount++,
@@ -316,14 +440,19 @@ void GLCaveShape::initShapes( GLuint texture[], int shapeCount ) {
                      strdup( names[ CAVE_INDEX_BLOCK ] ), shapeCount++,
                      MODE_BLOCK, 0 );
   shapes[CAVE_INDEX_FLOOR] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, 0,
                      strdup( names[ CAVE_INDEX_FLOOR ] ), shapeCount++,
                      MODE_FLOOR, 0 );
 
   for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
     shapes[i]->setSkipSide(false);
-    shapes[i]->setStencil( i != CAVE_INDEX_FLOOR ? true : false );
-    shapes[i]->setLightBlocking( i != CAVE_INDEX_FLOOR ? true : false );  
+    if( i < CAVE_INDEX_BLOCK ) {
+      shapes[i]->setStencil( true );
+      shapes[i]->setLightBlocking( true );
+    } else {
+      shapes[i]->setStencil( false );
+      shapes[i]->setLightBlocking( false );
+    }
     //if( !headless ) shapes[i]->initialize();
   }
 }

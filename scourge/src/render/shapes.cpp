@@ -275,7 +275,6 @@ void Shapes::initialize() {
   shapeCount++;
 
   // add cave shapes (1 per dimension, flat and corner each)
-  cerr << "BEFORE adding cave shapes: " << shapeCount << endl;
   GLCaveShape::initShapes( textureGroup[0], shapeCount );  
   for( int i = 0; i < GLCaveShape::CAVE_INDEX_COUNT; i++ ) {
     shapes[shapeCount] = GLCaveShape::getShape(i);
@@ -283,7 +282,6 @@ void Shapes::initialize() {
     shapeMap[nameStr] = shapes[shapeCount];
     shapeCount++;
   }
-  cerr << "AFTER adding cave shapes: " << shapeCount << endl;
 
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);

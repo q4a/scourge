@@ -37,7 +37,7 @@ struct surface {
 };
 
 class GLShape : public Shape  {
-private:
+protected:
   /**
     Represents an array of 3 addresses for textures. If tex[i]==NULL, no texture is given,
     only a color.
