@@ -393,9 +393,25 @@ void Scourge::startMission() {
       getSession()->setCurrentMission(NULL);
       missionWillAwardExpPoints = false;
 
+
+      cerr << "**************************************" << endl;
+      cerr << "**************************************" << endl;
+      cerr << "**************************************" << endl;
+      cerr << "FIXME: HQ is disabled for cave testing." << endl;
+      /*
       dg = NULL;
       levelMap->loadMap( HQ_MAP_NAME, result, this, currentStory, changingStory );
       scriptName = HQ_MAP_NAME;
+      */
+
+      dg = new CaveMaker( this, 1, 1, false, false, NULL );
+      dg->toMap(levelMap, getSession()->getShapePalette());
+      scriptName = RANDOM_MAP_NAME;
+
+      cerr << "**************************************" << endl;
+      cerr << "**************************************" << endl;
+      cerr << "**************************************" << endl;
+
       //cerr << result << endl;
 
     } else {

@@ -63,7 +63,8 @@ bool Map::debugMd2Shapes = false;
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
-	0.5f, -0.5f, 0, 0,
+//	0.5f, -0.5f, 0, 0,
+  0.75f, -0.25f, 0, 0,
 	0, 0, 0, 1 };
 	
 MapMemoryManager *Map::mapMemoryManager = new MapMemoryManager();
