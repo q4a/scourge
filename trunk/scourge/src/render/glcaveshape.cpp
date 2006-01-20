@@ -123,35 +123,35 @@ void GLCaveShape::drawFlat( float w, float h, float d ) {
   break;
   case DIR_N:
   glNormal3f( 0, 1, 0 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, 0 );
-  glTexCoord2f( 1, 1 );
-  glVertex3f( w, d, h );
   glTexCoord2f( 0, 1 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( w, 0, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, d, h );
   break;
   case DIR_E:
   glNormal3f( 1, 0, 0 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, 0, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, d, 0 );
-  glTexCoord2f( 1, 1 );
-  glVertex3f( 0, d, h );
   glTexCoord2f( 0, 1 );
+  glVertex3f( w, 0, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( w, d, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( 0, d, h );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
   break;
   case DIR_W:
   glNormal3f( -1, 0, 0 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, 0 );
   glTexCoord2f( 0, 1 );
-  glVertex3f( 0, d, 0 );
+  glVertex3f( 0, 0, 0 );
   glTexCoord2f( 1, 1 );
-  glVertex3f( w, d, h );
+  glVertex3f( 0, d, 0 );
   glTexCoord2f( 1, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0, 0 );
   glVertex3f( w, 0, h );
   break;
   default:
@@ -166,38 +166,38 @@ void GLCaveShape::drawCorner( float w, float h, float d ) {
   switch( dir ) {
   case DIR_NE:
   glNormal3f( 1, -1, 0 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, 0 );
   glTexCoord2f( 1, 1 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 1 );  
   glVertex3f( w, d, 0 );
-  glTexCoord2f( 0, 1 );
+  glTexCoord2f( 0.5f, 0 );
   glVertex3f( 0, d, h );
   break;
   case DIR_SE:
   glNormal3f( 1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, 0 );
   glTexCoord2f( 0, 1 );
+  glVertex3f( w, 0, 0 );
+  glTexCoord2f( 1, 1 );
   glVertex3f( 0, d, 0 );
-  glTexCoord2f( 0, 0 );
+  glTexCoord2f( 0.5f, 0 );
   glVertex3f( 0, 0, h );
   break;
   case DIR_SW:
   glNormal3f( -1, 1, 0 );
-  glTexCoord2f( 0, 0 );
+  glTexCoord2f( 0, 1 );  
   glVertex3f( 0, 0, 0 );
   glTexCoord2f( 1, 1 );
   glVertex3f( w, d, 0 );
-  glTexCoord2f( 1, 0 );
+  glTexCoord2f( 0.5f, 0 );
   glVertex3f( w, 0, h );
   break;
   case DIR_NW:
   glNormal3f( -1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, 0 );
   glTexCoord2f( 0, 1 );
-  glVertex3f( 0, d, 0 );
+  glVertex3f( w, 0, 0 );
   glTexCoord2f( 1, 1 );
+  glVertex3f( 0, d, 0 );  
+  glTexCoord2f( 0.5f, 0 );
   glVertex3f( w, d, h );
   break;
   default:
@@ -212,72 +212,72 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
   switch( dir ) {
   case DIR_NE:
   glNormal3f( 1, -1, 0 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 1, 1 );
-  glVertex3f( w, d, h );
   glTexCoord2f( 1, 0 );
+  glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0.5f, 1 );
   glVertex3f( w, 0, 0 );
   break;
   case DIR_SE:
   glNormal3f( 1, 1, 0 );
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 1 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, d, h );
-  glTexCoord2f( 1, 1 );
+  glTexCoord2f( 0.5f, 1 );
   glVertex3f( w, d, 0 );
   break;
   case DIR_SW:
   glNormal3f( -1, 1, 0 );
-  glTexCoord2f( 0, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( 0, 0, h );
-  glTexCoord2f( 1, 1 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( w, d, h );
-  glTexCoord2f( 0, 1 );
+  glTexCoord2f( 0.5f, 1 );
   glVertex3f( 0, d, 0 );
   break;
   case DIR_NW:
   glNormal3f( -1, -1, 0 );
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 1 );
+  glTexCoord2f( 0, 0 );  
   glVertex3f( 0, d, h );
-  glTexCoord2f( 0, 0 );
+  glTexCoord2f( 0.5f, 1 );
   glVertex3f( 0, 0, 0 );
   break;
   case DIR_CROSS_NW:
   glNormal3f( -1, -1, 0 );
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 1 );
+  glTexCoord2f( 0, 0 );  
   glVertex3f( 0, d, h );
-  glTexCoord2f( 0, 0 );
+  glTexCoord2f( 0.5f, 1 );
   glVertex3f( 0, 0, 0 );
-
+  
   glNormal3f( 1, 1, 0 );
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 1 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( 0, d, h );
-  glTexCoord2f( 1, 1 );
-  glVertex3f( w, d, 0 );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( w, d, 0 );;
   break;
   case DIR_CROSS_NE:
   glNormal3f( 1, -1, 0 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 1, 1 );
-  glVertex3f( w, d, h );
   glTexCoord2f( 1, 0 );
+  glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0.5f, 1 );
   glVertex3f( w, 0, 0 );
 
   glNormal3f( -1, 1, 0 );
-  glTexCoord2f( 0, 0 );
+  glTexCoord2f( 1, 0 );
   glVertex3f( 0, 0, h );
-  glTexCoord2f( 1, 1 );
+  glTexCoord2f( 0, 0 );
   glVertex3f( w, d, h );
-  glTexCoord2f( 0, 1 );
+  glTexCoord2f( 0.5f, 1 );
   glVertex3f( 0, d, 0 );
   break;
   default:
