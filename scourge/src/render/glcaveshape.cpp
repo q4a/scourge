@@ -39,19 +39,16 @@ char *GLCaveShape::names[] = {
 };
 
 float shade[] = {
-  0.875f,
-  0.875f,
-  0.625f,
-  0.625f,
-  1,
-  0.75f,
+  0.5f,
   0.5f,
   0.75f,
+  0.75f,
+  0.4f,
+  0.65f,
+  1.0f,
+  0.65f,
   1,
   1
-
-//  0.25f, 0.5f, 0.75f, 1,
-//  0.125f, 0.375f, 0.625f, 0.875f
 };
 
 /*
@@ -86,9 +83,6 @@ void GLCaveShape::draw() {
   bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   if( !useShadow ) {
     glEnable( GL_TEXTURE_2D );
-//    glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
-
-    // FIXME: implement real normal-based shading (like in C3DSShape)    
   }
 
   switch( mode ) {
@@ -107,6 +101,8 @@ void GLCaveShape::draw() {
 }
 
 void GLCaveShape::drawFlat( float w, float h, float d ) {
+  // FIXME: implement real normal-based shading (like in C3DSShape)    
+  if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
   glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
   glBegin( GL_QUADS );
   switch( dir ) {
@@ -161,6 +157,8 @@ void GLCaveShape::drawFlat( float w, float h, float d ) {
 }
 
 void GLCaveShape::drawCorner( float w, float h, float d ) {  
+  // FIXME: implement real normal-based shading (like in C3DSShape)    
+  if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
   glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
   glBegin( GL_TRIANGLES );
   switch( dir ) {
@@ -207,85 +205,8 @@ void GLCaveShape::drawCorner( float w, float h, float d ) {
 }
 
 void GLCaveShape::drawInverse( float w, float h, float d ) {  
-  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
-  glBegin( GL_TRIANGLES );
-  switch( dir ) {
-  case DIR_NE:
-  glNormal3f( 1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, 0, 0 );
-  break;
-  case DIR_SE:
-  glNormal3f( 1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, d, 0 );
-  break;
-  case DIR_SW:
-  glNormal3f( -1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, d, 0 );
-  break;
-  case DIR_NW:
-  glNormal3f( -1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );  
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, 0, 0 );
-  break;
-  case DIR_CROSS_NW:
-  glNormal3f( -1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );  
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, 0, 0 );
-  
-  glNormal3f( 1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, d, 0 );;
-  break;
-  case DIR_CROSS_NE:
-  glNormal3f( 1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, 0, 0 );
 
-  glNormal3f( -1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, d, 0 );
-  break;
-  default:
-  cerr << "bad dir for inverse shape: " << dir << endl;
-  }
-  glEnd();
-
-  if( !( useShadow || dir == DIR_CROSS_NE || dir == DIR_CROSS_NW ) ) {
+    if( !( useShadow || dir == DIR_CROSS_NE || dir == DIR_CROSS_NW ) ) {
     // roof
     glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
     glBegin( GL_TRIANGLES );
@@ -329,8 +250,92 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
     default:
     cerr << "bad dir for inverse shape: " << dir << endl;
     }
+    glEnd();
   }
-  glEnd();
+
+  // FIXME: implement real normal-based shading (like in C3DSShape)    
+  if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
+  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
+  glBegin( GL_TRIANGLES );
+  switch( dir ) {
+  case DIR_NE:
+  glNormal3f( 1, -1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( w, 0, 0 );
+  break;
+  case DIR_SE:
+  glNormal3f( 1, 1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( w, d, 0 );
+  break;
+  case DIR_SW:
+  glNormal3f( -1, 1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( 0, d, 0 );
+  break;
+  case DIR_NW:
+  glNormal3f( -1, -1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 0 );  
+  glVertex3f( 0, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( 0, 0, 0 );
+  break;
+  case DIR_CROSS_NW:
+  if( !useShadow ) glColor3f( shade[ DIR_NW ], shade[ DIR_NW ], shade[ DIR_NW ] );
+  glNormal3f( -1, -1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 0 );  
+  glVertex3f( 0, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( 0, 0, 0 );
+  
+  if( !useShadow ) glColor3f( shade[ DIR_SE ], shade[ DIR_SE ], shade[ DIR_SE ] );
+  glNormal3f( 1, 1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( w, d, 0 );;
+  break;
+  case DIR_CROSS_NE:
+  if( !useShadow ) glColor3f( shade[ DIR_NE ], shade[ DIR_NE ], shade[ DIR_NE ] );
+  glNormal3f( 1, -1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( w, 0, 0 );
+
+  if( !useShadow ) glColor3f( shade[ DIR_SW ], shade[ DIR_SW ], shade[ DIR_SW ] );
+  glNormal3f( -1, 1, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( 0, 0, h );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( w, d, h );
+  glTexCoord2f( 0.5f, 1 );
+  glVertex3f( 0, d, 0 );
+  break;
+  default:
+  cerr << "bad dir for inverse shape: " << dir << endl;
+  }
+  glEnd();  
 }
 
 void GLCaveShape::drawBlock( float w, float h, float d ) {
@@ -355,7 +360,7 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 
   // FIXME: use separate floor texture
   glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
-  glColor3f( 1, 0.7f, 0.7f );
+  if( !useShadow ) glColor3f( 1, 0.7f, 0.7f );
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
