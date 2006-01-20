@@ -317,14 +317,22 @@ void CaveMaker::connectRooms() {
   }
 }
 
-// remove sharp edges
+// Remove sharp edges because these don't render well. 
+// Another option is to draw stalagmites instead of wall.
 void CaveMaker::removeSingles() {
-  for( int x = 1; x < w - 1; x++ ) {
-    for( int y = 1; y < h - 1; y++ ) {
-      if( node[x][y].wall && 
-          ( ( !(node[x + 1][y].wall) && !(node[x - 1][y].wall) ) ||
-            ( !(node[x][y + 1].wall) && !(node[x][y - 1].wall) ) ) ) {
-        node[x][y].wall = false;
+  bool hasSingles = true;
+  while( hasSingles ) {
+    hasSingles = false;
+    for( int x = 1; x < w - 1; x++ ) {
+      for( int y = 1; y < h - 1; y++ ) {
+        if( node[x][y].wall && 
+            ( ( !(node[x + 1][y].wall) && !(node[x - 1][y].wall) ) ||
+              ( !(node[x][y + 1].wall) && !(node[x][y - 1].wall) ) ||
+              ( !(node[x + 1][y - 1].wall) && !(node[x - 1][y + 1].wall) ) ||
+              ( !(node[x - 1][y - 1].wall) && !(node[x + 1][y + 1].wall) ) ) ) {
+          node[x][y].wall = false;
+          hasSingles = true;
+        }
       }
     }
   }
