@@ -42,6 +42,8 @@
 
 using namespace std;
 
+//#define CAVE_TEST 1
+
 #define MOUSE_ROT_DELTA 2
 
 #define BATTLES_ENABLED 1
@@ -263,11 +265,12 @@ void Scourge::startMission() {
 
     oldStory = currentStory;    
 
+#ifndef CAVE_TEST
     // add gui
     mainWin->setVisible(true);
     messageWin->setVisible(true);
     if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
-
+#endif
     // create the map
     //cerr << "Starting to reset map..." << endl;
     bool fromRandomMap = !( levelMap->isEdited() );
@@ -394,23 +397,15 @@ void Scourge::startMission() {
       missionWillAwardExpPoints = false;
 
 
-      cerr << "**************************************" << endl;
-      cerr << "**************************************" << endl;
-      cerr << "**************************************" << endl;
-      cerr << "FIXME: HQ is disabled for cave testing." << endl;
-      /*
-      dg = NULL;
-      levelMap->loadMap( HQ_MAP_NAME, result, this, currentStory, changingStory );
-      scriptName = HQ_MAP_NAME;
-      */
-
+#ifdef CAVE_TEST
       dg = new CaveMaker( this, 1, 1, false, false, NULL );
       dg->toMap(levelMap, getSession()->getShapePalette());
       scriptName = RANDOM_MAP_NAME;
-
-      cerr << "**************************************" << endl;
-      cerr << "**************************************" << endl;
-      cerr << "**************************************" << endl;
+#else
+      dg = NULL;
+      levelMap->loadMap( HQ_MAP_NAME, result, this, currentStory, changingStory );
+      scriptName = HQ_MAP_NAME;
+#endif
 
       //cerr << result << endl;
 
@@ -517,7 +512,7 @@ void Scourge::startMission() {
       } else {
         sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
       }
-
+      
       // show infoMessage text
       showMessageDialog(infoMessage);
       info_dialog_showing = true;
@@ -541,10 +536,10 @@ void Scourge::startMission() {
       }
       conversationGui->start( uzudil, infoMessage, true );      
     }
-      
+#ifndef CAVE_TEST      
     // set the map view
     setUILayout();
-
+#endif
     // start the haunting tunes
     if(inHq) getSDLHandler()->getSound()->playMusicMenu();
     else getSDLHandler()->getSound()->playMusicDungeon();

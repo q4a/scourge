@@ -22,10 +22,16 @@
 #include "glshape.h"
 #include <vector>
 
+class Shapes;
+
 class GLCaveShape : public GLShape {
 private:
   int mode;
   int dir;
+  Shapes *shapes;
+  GLuint *wallTextureGroup;
+  GLuint *topTextureGroup;
+  GLuint *floorTextureGroup;
 
   enum {
     MODE_FLAT=0,
@@ -50,15 +56,30 @@ private:
 
   static char *names[];
 
-  static GLCaveShape *GLCaveShape::shapes[];
+  static GLCaveShape *GLCaveShape::shapeList[];
+  
+  typedef struct _CavePoint {
+    CVector3 vertex;
+    CVector2 tex;
+  } CavePoint;
+  
+  typedef struct _CaveFace {
+    std::vector<CavePoint> points;
+    CVector3 normal;
+    GLfloat shade;
+  } CaveFace;
+
+  CaveFace face;
 
 public:
 
-  GLCaveShape( GLuint texture[],
+  GLCaveShape( Shapes *shapes, GLuint texture[],
                int width, int depth, int height, 
                char *name, int index, 
                int mode, int dir );
   virtual ~GLCaveShape();
+
+  virtual void initialize();
 
   void draw();
 
@@ -82,8 +103,9 @@ public:
 
     CAVE_INDEX_COUNT
   };
-  static void initShapes( GLuint texture[], int shapeCount );
-  static inline GLCaveShape *getShape( int index ) { return shapes[ index ]; }
+  static void createShapes( GLuint texture[], int shapeCount, Shapes *shapes );
+  static void initializeShapes();
+  static inline GLCaveShape *getShape( int index ) { return shapeList[ index ]; }
 
 protected:
   void drawFlat( float w, float h, float d );

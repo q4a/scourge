@@ -100,6 +100,7 @@ class Party {
   void startPartyOnMission();
 
   void setFirstLivePlayer();
+  int getFirstLivePlayer();
 
   void followTargets();
 

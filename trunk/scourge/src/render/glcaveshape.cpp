@@ -51,24 +51,28 @@ float shade[] = {
   1
 };
 
-/*
- const float Map::shadowTransformMatrix[16] = { 
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-	0.75f, -0.25f, 0, 0,
-	0, 0, 0, 1 };
-*/
-
-GLCaveShape::GLCaveShape( GLuint texture[],
+GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
                           char *name, int index, 
                           int mode, int dir ) :
 GLShape( texture, width, depth, height, name, 0, color, index ) {
+  this->shapes = shapes;
   this->mode = mode;
   this->dir = dir;
 }
 
 GLCaveShape::~GLCaveShape() {
+}
+
+void GLCaveShape::initialize() {
+  assert( shapes->getCurrentTheme() &&
+          shapes->getCurrentTheme()->isCave() );
+  string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ];
+  wallTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+  ref = WallTheme::themeRefName[ WallTheme::THEME_REF_CORNER ];
+  topTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+  ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
+  floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
 }
 
 void GLCaveShape::draw() {
@@ -103,7 +107,7 @@ void GLCaveShape::draw() {
 void GLCaveShape::drawFlat( float w, float h, float d ) {
   // FIXME: implement real normal-based shading (like in C3DSShape)    
   if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
-  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
+  glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::FRONT_SIDE ] );
   glBegin( GL_QUADS );
   switch( dir ) {
   case DIR_S:
@@ -159,7 +163,7 @@ void GLCaveShape::drawFlat( float w, float h, float d ) {
 void GLCaveShape::drawCorner( float w, float h, float d ) {  
   // FIXME: implement real normal-based shading (like in C3DSShape)    
   if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
-  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
+  glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::FRONT_SIDE ] );
   glBegin( GL_TRIANGLES );
   switch( dir ) {
   case DIR_NE:
@@ -208,7 +212,7 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
 
     if( !( useShadow || dir == DIR_CROSS_NE || dir == DIR_CROSS_NW ) ) {
     // roof
-    glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
+    glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::TOP_SIDE ] );
     glBegin( GL_TRIANGLES );
     switch( dir ) {
     case DIR_NE:
@@ -255,7 +259,7 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
 
   // FIXME: implement real normal-based shading (like in C3DSShape)    
   if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
-  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::FRONT_SIDE ] );
+  glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::FRONT_SIDE ] );
   glBegin( GL_TRIANGLES );
   switch( dir ) {
   case DIR_NE:
@@ -341,7 +345,7 @@ void GLCaveShape::drawInverse( float w, float h, float d ) {
 void GLCaveShape::drawBlock( float w, float h, float d ) {
   if( useShadow ) return;
 
-  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
+  glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::TOP_SIDE ] );
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
@@ -359,8 +363,7 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
   if( useShadow ) return;
 
   // FIXME: use separate floor texture
-  glBindTexture( GL_TEXTURE_2D, tex[ GLShape::TOP_SIDE ] );
-  if( !useShadow ) glColor3f( 1, 0.7f, 0.7f );
+  glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::TOP_SIDE ] );
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
@@ -375,90 +378,91 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 }
 
 
-GLCaveShape *GLCaveShape::shapes[ CAVE_INDEX_COUNT ];
+GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 
-void GLCaveShape::initShapes( GLuint texture[], int shapeCount ) {  
-
-  cerr << "GLCaveShape::initShapes, tex=" << texture[0] << "," << 
-    texture[1] << "," << texture[2] << endl;
-
-  shapes[CAVE_INDEX_N] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes ) {  
+  shapeList[CAVE_INDEX_N] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_N ] ), shapeCount++,
                      MODE_FLAT, DIR_N );
-  shapes[CAVE_INDEX_E] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_E] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_E ] ), shapeCount++,
                      MODE_FLAT, DIR_E );
-  shapes[CAVE_INDEX_S] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_S] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_S ] ), shapeCount++,
                      MODE_FLAT, DIR_S );
-  shapes[CAVE_INDEX_W] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_W] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_W ] ), shapeCount++,
                      MODE_FLAT, DIR_W );
-  shapes[CAVE_INDEX_NE] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_NE] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_NE ] ), shapeCount++,
                      MODE_CORNER, DIR_NE );
-  shapes[CAVE_INDEX_SE] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_SE] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_SE ] ), shapeCount++,
                      MODE_CORNER, DIR_SE );
-  shapes[CAVE_INDEX_SW] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_SW] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_SW ] ), shapeCount++,
                      MODE_CORNER, DIR_SW );
-  shapes[CAVE_INDEX_NW] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_NW] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_NW ] ), shapeCount++,
                      MODE_CORNER, DIR_NW );
-  shapes[CAVE_INDEX_INV_NE] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_INV_NE] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_INV_NE ] ), shapeCount++,
                      MODE_INV, DIR_NE );
-  shapes[CAVE_INDEX_INV_SE] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_INV_SE] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_INV_SE ] ), shapeCount++,
                      MODE_INV, DIR_SE );
-  shapes[CAVE_INDEX_INV_SW] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_INV_SW] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_INV_SW ] ), shapeCount++,
                      MODE_INV, DIR_SW );
-  shapes[CAVE_INDEX_INV_NW] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_INV_NW] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_INV_NW ] ), shapeCount++,
                      MODE_INV, DIR_NW );
-  shapes[CAVE_INDEX_CROSS_NE] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+  shapeList[CAVE_INDEX_CROSS_NE] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ DIR_CROSS_NE ] ), shapeCount++,
                      MODE_INV, DIR_CROSS_NE );
-  shapes[CAVE_INDEX_CROSS_NW] = 
-    new GLCaveShape( texture, 
+  shapeList[CAVE_INDEX_CROSS_NW] = 
+    new GLCaveShape( shapes, texture, 
                      CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ DIR_CROSS_NW ] ), shapeCount++,
                      MODE_INV, DIR_CROSS_NW );
-  shapes[CAVE_INDEX_BLOCK] = 
-    new GLCaveShape( texture,
+  shapeList[CAVE_INDEX_BLOCK] = 
+    new GLCaveShape( shapes, texture,
                      CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
                      strdup( names[ CAVE_INDEX_BLOCK ] ), shapeCount++,
                      MODE_BLOCK, 0 );
-  shapes[CAVE_INDEX_FLOOR] = 
-    new GLCaveShape( texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, 0,
+  shapeList[CAVE_INDEX_FLOOR] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, 0,
                      strdup( names[ CAVE_INDEX_FLOOR ] ), shapeCount++,
                      MODE_FLOOR, 0 );
 
   for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
-    shapes[i]->setSkipSide(false);
+    shapeList[i]->setSkipSide(false);
     if( i < CAVE_INDEX_BLOCK ) {
-      shapes[i]->setStencil( true );
-      shapes[i]->setLightBlocking( true );
+      shapeList[i]->setStencil( false );
+      shapeList[i]->setLightBlocking( true );
     } else {
-      shapes[i]->setStencil( false );
-      shapes[i]->setLightBlocking( false );
+      shapeList[i]->setStencil( false );
+      shapeList[i]->setLightBlocking( false );
     }
-    //if( !headless ) shapes[i]->initialize();
   }
 }
 
+void GLCaveShape::initializeShapes() {
+  for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
+    //if( !headless ) 
+      shapeList[i]->initialize();
+  }
+}

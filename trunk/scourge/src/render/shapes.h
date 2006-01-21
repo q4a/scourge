@@ -95,6 +95,7 @@ class WallTheme {
   bool smooth[MULTI_TEX_COUNT];
   Shapes *shapePal;
   bool special;
+  bool cave;
 
  public:
   WallTheme( char *name, Shapes *shapePal );
@@ -102,6 +103,9 @@ class WallTheme {
 
   inline void setSpecial( bool b ) { special = b; }
   inline bool isSpecial() { return special; }
+
+  inline void setCave( bool b ) { cave = b; }
+  inline bool isCave() { return cave; }
 
   inline void setFaceCount( int themeRef, int value ) { faceCount[ themeRef ] = value; }
   int getFaceCount( std::string themeRefName );
@@ -187,9 +191,9 @@ protected:
   std::map<Md2ModelInfo*, int> loaded_models;
   std::vector<CharacterModelInfo*> character_models;
 
-  WallTheme *themes[100];
+  WallTheme *themes[100], *caveThemes[100];
   WallTheme *allThemes[100];
-  int themeCount, allThemeCount;
+  int themeCount, allThemeCount, caveThemeCount;
   WallTheme *currentTheme;
   std::vector<GLShape*> themeShapes;
   std::vector<std::string> themeShapeRef;
@@ -212,6 +216,7 @@ public:
   inline bool isThemeSpecial( int index ) { return allThemes[ index ]->isSpecial(); }
 
   inline const char *getCurrentThemeName() { return (const char*)currentTheme->getName(); }
+  inline WallTheme* getCurrentTheme() { return currentTheme; }
 
   virtual void initialize();
   GLuint loadSystemTexture( char *line );
@@ -222,6 +227,7 @@ public:
   void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );
   void loadRandomTheme();
+  void loadRandomCaveTheme();
 
   inline GLuint getTexture(int index) { return textures[index].id; }
 

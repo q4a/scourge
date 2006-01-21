@@ -101,6 +101,15 @@ void Party::setFirstLivePlayer() {
   }
 }
 
+int Party::getFirstLivePlayer() {
+  for(int i = 0; i < getPartySize(); i++) {
+    if(!party[i]->getStateMod(Constants::dead)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 void Party::startPartyOnMission() {
   // Start calendar and add thirst & hunger event scheduling
   calendar->reset(false);

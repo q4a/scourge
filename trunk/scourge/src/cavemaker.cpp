@@ -61,9 +61,7 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
   removeSingles();
 
-  print();
-
-  drawOnMap( map, shapePal );
+  //print();
 }
 
 
@@ -71,7 +69,10 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 #define setCaveShape(map,x,y,index) ( map->setPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), 0, GLCaveShape::getShape(index) ) )
 #define setCaveFloorShape(map,x,y,index) ( map->setFloorPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), GLCaveShape::getShape(index) ) )
 
-void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
+bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
+
+  shapePal->loadRandomCaveTheme();
+
   for( int x = 0; x < MAP_WIDTH - CAVE_CHUNK_SIZE; x+=CAVE_CHUNK_SIZE ) {
     for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH - CAVE_CHUNK_SIZE; y+=CAVE_CHUNK_SIZE ) {
       if( x < MAP_OFFSET || y < CAVE_CHUNK_SIZE || 
@@ -157,6 +158,8 @@ void CaveMaker::drawOnMap( Map *map, ShapePalette *shapePal ) {
       }
     }
   }
+
+  return true;
 }
 
 void CaveMaker::randomize() {
@@ -348,6 +351,29 @@ void CaveMaker::print() {
   cerr << endl << "Rooms:" << endl;
   for( int i = 0; i < roomCounter; i++ ) {
     cerr << "\tsize=" << room[i].size << ( i == biggestRoom ? " (biggest)" : "" ) << endl;
+  }
+}
+
+void CaveMaker::addFurniture(Map *map, ShapePalette *shapePal) {
+  // add tables, chairs, etc.
+  addItemsInEveryRoom( RpgItem::getItemByName("Table"), 5 );
+  addItemsInEveryRoom( RpgItem::getItemByName("Chair"), 15 );  
+
+  // add some magic pools
+  DisplayInfo di;
+  for( int i = 0; i < 8; i++ ) {
+    if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
+      MagicSchool *ms = MagicSchool::getRandomSchool();
+      di.red = ms->getDeityRed();
+      di.green = ms->getDeityGreen();
+      di.blue = ms->getDeityBlue();
+
+      Location *pos = addShapeInRoom( scourge->getShapePalette()->findShapeByName("POOL"), 0, &di );
+      if( pos ) {
+        // store pos->deity in scourge
+        scourge->addDeityLocation( pos, ms );
+      }
+    }
   }
 }
 
