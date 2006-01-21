@@ -70,7 +70,7 @@ public:
              Mission *mission);
   virtual ~CaveMaker();
 
-  virtual void generate( Map *map, ShapePalette *shapePal );
+  
 
 protected:
   void randomize();
@@ -84,7 +84,11 @@ protected:
   void generate();
   void print();
 
-  void drawOnMap( Map *map, ShapePalette *shapePal );
+  virtual bool drawNodes( Map *map, ShapePalette *shapePal );
+
+  virtual void generate( Map *map, ShapePalette *shapePal );
+
+  virtual void addFurniture(Map *map, ShapePalette *shapePal);
 
 };
 

@@ -64,19 +64,19 @@ void WallTheme::load() {
 
 void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
   char path[300], bmp[300];  
-  if( texture ) {
+  if ( texture && strcmp( texture, "null" ) ) {
     string s = texture;
     GLuint id;
-    if( loadedTextures.find(s) == loadedTextures.end() ) {
+    if ( loadedTextures.find(s) == loadedTextures.end() ) {
 
-	  // see if it's a system texture (no need to double load it)
-	  sprintf( bmp, "%s.bmp", texture );
-	  id = shapePal->findTextureByName( bmp );
-	  if( id == 0 ) {
-		sprintf( path, "/%s", bmp );
-		id = shapePal->loadGLTextures(path);
-		loadedTextures[s] = id;
-	  }
+      // see if it's a system texture (no need to double load it)
+      sprintf( bmp, "%s.bmp", texture );
+      id = shapePal->findTextureByName( bmp );
+      if ( id == 0 ) {
+        sprintf( path, "/%s", bmp );
+        id = shapePal->loadGLTextures(path);
+        loadedTextures[s] = id;
+      }
     } else {
       id = loadedTextures[s];
     }
@@ -89,16 +89,16 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
 void WallTheme::unload() {
   char bmp[300];
 //  cerr << "*** Dumping theme: " << getName() << endl;
-  for(map<string,GLuint>::iterator i=loadedTextures.begin(); i!=loadedTextures.end(); ++i) {
-	string s = i->first;
+  for (map<string,GLuint>::iterator i=loadedTextures.begin(); i!=loadedTextures.end(); ++i) {
+    string s = i->first;
     GLuint id = i->second;
 
-	// don't delete system textures!
-	sprintf( bmp, "%s.bmp", s.c_str() );
-	id = shapePal->findTextureByName( bmp );
-	if( id == 0 ) {
-	  glDeleteTextures( 1, &id );
-	}
+    // don't delete system textures!
+    sprintf( bmp, "%s.bmp", s.c_str() );
+    id = shapePal->findTextureByName( bmp );
+    if ( id == 0 ) {
+      glDeleteTextures( 1, &id );
+    }
   }
   loadedTextures.clear();
 }
@@ -127,7 +127,7 @@ void WallTheme::debug() {
 Shapes::Shapes( bool headless ){
   texture_count = 0;
   textureGroupCount = 0;
-  themeCount = allThemeCount = 0;
+  themeCount = allThemeCount = caveThemeCount = 0;
   currentTheme = NULL;
   this->headless = headless;
 }
@@ -275,7 +275,7 @@ void Shapes::initialize() {
   shapeCount++;
 
   // add cave shapes (1 per dimension, flat and corner each)
-  GLCaveShape::initShapes( textureGroup[0], shapeCount );  
+  GLCaveShape::createShapes( textureGroup[0], shapeCount, this );  
   for( int i = 0; i < GLCaveShape::CAVE_INDEX_COUNT; i++ ) {
     shapes[shapeCount] = GLCaveShape::getShape(i);
     string nameStr = shapes[shapeCount]->getName();
@@ -475,15 +475,20 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   } else if( n == 'H' ) {
     fgetc(fp);
     n = Constants::readLine(line, fp);
-    //cerr << "theme: " << line << " allThemeCount=" << allThemeCount << endl;
     bool special = false;
+    bool cave = false;
     char *m = strrchr( line, ',' );
     if( m ) {
+      special = ( *( m + 1 ) == 'S' ? true : false );
+      cave = ( *( m + 1 ) == 'C' ? true : false );
       *m = 0;
-      special = true;
     }
+
+//    cerr << "theme: " << line << " special=" << special << " cave=" << cave << endl;
+
     WallTheme *theme = new WallTheme( strdup(line), this );
     theme->setSpecial( special );
+    theme->setCave( cave );
     // read the shape ref-s
     for(int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++) {
       n = Constants::readLine(line, fp);
@@ -515,8 +520,10 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
       theme->setMultiTexSmooth( i, ( atoi( p ) != 0 ) );
     }
 
-    if( !special ) {
+    if( !special && !cave ) {
       themes[ themeCount++ ] = theme;
+    } else if( cave ) {
+      caveThemes[ caveThemeCount++ ] = theme;
     }
     allThemes[ allThemeCount++ ] = theme;
     return n;
@@ -532,6 +539,11 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     return n;  
   }
   return -1;
+}
+
+void Shapes::loadRandomCaveTheme() {
+  loadTheme( caveThemes[ (int)( (float)caveThemeCount * rand()/RAND_MAX ) ] );
+  GLCaveShape::initializeShapes();
 }
 
 void Shapes::loadRandomTheme() {
@@ -570,25 +582,26 @@ void Shapes::loadTheme( WallTheme *theme ) {
     currentTheme = (WallTheme*)theme;
     currentTheme->load();
 
-    // apply theme to shapes
-//    cerr << "*** Applying theme to shapes: ***" << endl;
-    GLShape::createDarkTexture( currentTheme );
-    for(int i = 0; i < (int)themeShapes.size(); i++) {
-      GLShape *shape = themeShapes[i];
-      string ref = themeShapeRef[i];
-      GLuint *textureGroup = currentTheme->getTextureGroup( ref );
-//      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
-//        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
-      if( !headless ) shape->setTexture( textureGroup );
-
-      // create extra shapes for variations
-      shape->deleteVariationShapes();
-      for( int i = 3; i < currentTheme->getFaceCount( ref ); i++ ) {
-        shape->createVariationShape( i, textureGroup );
-      }
+    if( !currentTheme->isCave() ) {
+      // apply theme to shapes
+      //    cerr << "*** Applying theme to shapes: ***" << endl;
+      GLShape::createDarkTexture( currentTheme );
+      for(int i = 0; i < (int)themeShapes.size(); i++) {
+        GLShape *shape = themeShapes[i];
+        string ref = themeShapeRef[i];
+        GLuint *textureGroup = currentTheme->getTextureGroup( ref );
+        //      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
+        //        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
+        if( !headless ) shape->setTexture( textureGroup );
+  
+        // create extra shapes for variations
+        shape->deleteVariationShapes();
+        for( int i = 3; i < currentTheme->getFaceCount( ref ); i++ ) {
+          shape->createVariationShape( i, textureGroup );
+        }
+      }  
+      //    cerr << "**********************************" << endl;
     }
-
-//    cerr << "**********************************" << endl;
   }
 }
 

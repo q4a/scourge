@@ -48,14 +48,6 @@ class Location;
 class DungeonGenerator : public TerrainGenerator {
 private:
 
-  static const char MESSAGE[];
-
-  typedef struct _Room {
-    int x, y, w, h;
-    int valueBonus;
-  } Room;
-  Room room[20];
-
   enum { dgWIDTH = 0, dgHEIGHT, dgCURVYNESS, dgSPARSENESS,
          dgLOOPYNESS, dgROOMCOUNT, dgROOMMAXWIDTH, dgROOMMAXHEIGHT,
          dgOBJECTCOUNT };
@@ -69,21 +61,9 @@ private:
   int notVisitedCount, visitedCount;
   int *notVisited, *visited;
   int loopyness; // 0-100 % value of whether or not to make a dead-end into a loop
-  int roomCount;
-  int roomMaxWidth;
-  int roomMaxHeight;
-  int objectCount;
-  int monsters;
 
-  Sint16 *ff;
-  int ffCount;
-
-  // directions
-  const static int DIR_N = 0;
-  const static int DIR_E = 1;
-  const static int DIR_S = 2;
-  const static int DIR_W = 3;
-  const static int DIR_COUNT = 4;
+  int dirCount;
+  int dirs[DIR_COUNT];
 
   // coridors
   const static Uint16 UNVISITED = 0x0000;
@@ -103,13 +83,8 @@ private:
 
   const static Uint16 EMPTY_ROOM = ROOM + N_PASS + S_PASS + E_PASS + W_PASS;
 
-  const static Sint16 offset = MAP_OFFSET;
-
   const static Sint16 torches = 25; // % of time there's a torch
   const static Sint16 randomDoors = 20; // % chance of a random door
-
-  int dirCount;
-  int dirs[DIR_COUNT];
 
   // shapes used to draw in the map
   const static Uint8 VERT_SHORT = 1;
@@ -120,22 +95,6 @@ private:
   const static Uint8 HORIZ_SHORT2 = 6;
   const static Uint8 EMPTY_SHAPE = 7;
   
-  const static bool debug = false;
-
-  const static Sint16 unitOffset = MAP_UNIT_OFFSET;
-  const static Sint16 unitSide = MAP_UNIT;
-  const static Sint16 wallHeight = MAP_WALL_HEIGHT;   
-
-  const static int MAX_DOOR_COUNT = 500;
-  int doorCount;
-  int door[MAX_DOOR_COUNT][2];
-
-  std::vector<Item*> containers;
-  std::vector<int> containerX;
-  std::vector<int> containerY;
-  std::vector<int> teleporterX;
-  std::vector<int> teleporterY;
-
 public: 
 
   DungeonGenerator(Scourge *scourge, int level, int depth, bool stairsDown, bool stairsUp, Mission *mission = NULL);
@@ -148,19 +107,6 @@ protected:
   // used by toMap
   void drawBasics(Map *map, ShapePalette *shapePal);
   void removeColumns(Map *map, ShapePalette *shapePal);
-  void addContainers(Map *map, ShapePalette *shapePal);
-  bool addStairs(Map *map, ShapePalette *shapePal);
-  void addItems(Map *map, ShapePalette *shapePal);
-  void addMissionObjectives(Map *map, ShapePalette *shapePal);
-  void addMonsters(Map *map, ShapePalette *shapePal);
-  void addFurniture(Map *map, ShapePalette *shapePal);
-  bool addTeleporters(Map *map, ShapePalette *shapePal);
-  void addParty(Map *map, ShapePalette *shapePal);
-  void lockDoors(Map *map, ShapePalette *shapePal);
-  void lockLocation(Map *map, int mapx, int mapy);
-  void createFreeSpaceMap(Map *map, ShapePalette *shapePal);
-  void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);
-  void calculateRoomValues(Map *map, ShapePalette *shapePal);
 
   void initByLevel();
   void generateMaze();
@@ -168,7 +114,7 @@ protected:
   void makeLoops();
   void makeRooms();
 
-  bool drawNodesOnMap(Map *map, ShapePalette *shapePal);
+  bool drawNodes(Map *map, ShapePalette *shapePal);
 
   /**
     Return a random location in the maze that has not been visited yet.
@@ -192,30 +138,14 @@ protected:
 
   int getScore(int x, int y, int rw, int rh);                        
 
-  void getRandomLocation(Map *map, Shape *shape, int *x, int *y, bool accessible=false, int fromX=0, int fromY=0);
-
-  bool getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
-						 int *xpos, int *ypos, bool startMiddle=false);
-  
-  bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y);
-
-  static const int MAX_STEPS = 10000;
-  bool isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken=0, int dir=DIR_N);
-
-  void addItem(Map *map, Creature *creature, Item *item, Shape *shape, int x, int y, int z = 0, DisplayInfo *di=NULL);
-
   void drawDoor(Map *map, ShapePalette *shapePal, 
-				Sint16 mapx, Sint16 mapy, int doorType);
-  
-  void addItemsInEveryRoom(RpgItem *rpgItem, int n);
-  void addItemsInRoom(RpgItem *rpgItem, int n, int room );
-  
-  bool addShapeInARoom( Shape *shape );
-  Location *addShapeInRoom( Shape *shape, int room, DisplayInfo *di=NULL );
+      Sint16 mapx, Sint16 mapy, int doorType);
 
-  void getRandomDeadEndLocation(int *x, int *y, GLShape *shape, Map *map);
+  virtual void addFurniture(Map *map, ShapePalette *shapePal);
 
-  int getRoomIndex(int x, int y);
+  virtual void addContainers(Map *map, ShapePalette *shapePal);
+
+
 
 };
 
