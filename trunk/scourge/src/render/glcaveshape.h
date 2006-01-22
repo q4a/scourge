@@ -89,7 +89,7 @@ private:
 
   static GLCaveShape *GLCaveShape::shapeList[];
 
-  static std::vector<CVector3> points;
+  static std::vector<CVector3*> points;
   static std::vector<std::vector<CaveFace*>*> polys;
 
 public:
@@ -130,14 +130,12 @@ public:
 
 protected:
   void drawFaces();
-  void drawFlat( float w, float h, float d );
-  void drawCorner( float w, float h, float d );
-  void drawInverse( float w, float h, float d );
   void drawBlock( float w, float h, float d );
   void drawFloor( float w, float h, float d );
 
 private:
   static void removeDupPoints();
+  static void dividePolys();
 };
 
 #endif
