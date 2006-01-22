@@ -24,6 +24,36 @@
 
 class Shapes;
 
+class CaveFace {
+public:
+  int p1, p2, p3; // point indexes
+  GLfloat tex[3][2]; // texture coordinates per point
+  enum {
+    WALL=0,
+    TOP,
+    FLOOR
+  };
+  int textureType;
+
+  CaveFace( int p1, int p2, int p3, 
+            GLfloat u1, GLfloat v1, GLfloat u2, GLfloat v2, GLfloat u3, GLfloat v3,
+            int textureType ) {
+    this->p1 = p1;
+    this->p2 = p2;
+    this->p3 = p3;
+    tex[0][0] = u1;
+    tex[0][1] = v1;
+    tex[1][0] = u2;
+    tex[1][1] = v2;
+    tex[2][0] = u3;
+    tex[2][1] = v3;
+    this->textureType = textureType;
+  }
+
+  ~CaveFace() {
+  }
+};
+
 class GLCaveShape : public GLShape {
 private:
   int mode;
@@ -32,6 +62,7 @@ private:
   GLuint *wallTextureGroup;
   GLuint *topTextureGroup;
   GLuint *floorTextureGroup;
+  int caveIndex;
 
   enum {
     MODE_FLAT=0,
@@ -57,26 +88,16 @@ private:
   static char *names[];
 
   static GLCaveShape *GLCaveShape::shapeList[];
-  
-  typedef struct _CavePoint {
-    CVector3 vertex;
-    CVector2 tex;
-  } CavePoint;
-  
-  typedef struct _CaveFace {
-    std::vector<CavePoint> points;
-    CVector3 normal;
-    GLfloat shade;
-  } CaveFace;
 
-  CaveFace face;
+  static std::vector<CVector3> points;
+  static std::vector<std::vector<CaveFace*>*> polys;
 
 public:
 
   GLCaveShape( Shapes *shapes, GLuint texture[],
                int width, int depth, int height, 
                char *name, int index, 
-               int mode, int dir );
+               int mode, int dir, int caveIndex );
   virtual ~GLCaveShape();
 
   virtual void initialize();
@@ -108,11 +129,15 @@ public:
   static inline GLCaveShape *getShape( int index ) { return shapeList[ index ]; }
 
 protected:
+  void drawFaces();
   void drawFlat( float w, float h, float d );
   void drawCorner( float w, float h, float d );
   void drawInverse( float w, float h, float d );
   void drawBlock( float w, float h, float d );
   void drawFloor( float w, float h, float d );
+
+private:
+  static void removeDupPoints();
 };
 
 #endif

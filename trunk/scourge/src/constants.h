@@ -687,6 +687,13 @@ public:
   }
 };
 
+class CVector5
+{
+public:
+    float x, y, z, u, v;
+};
+
+
 // This is our 3D point class.  This will be used to store the vertices of our model.
 class CVector3 
 {
