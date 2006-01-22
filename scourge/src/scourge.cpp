@@ -42,7 +42,7 @@
 
 using namespace std;
 
-//#define CAVE_TEST 1
+#define CAVE_TEST 1
 
 #define MOUSE_ROT_DELTA 2
 

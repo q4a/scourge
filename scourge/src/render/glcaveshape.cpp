@@ -51,7 +51,7 @@ float shade[] = {
   1
 };
 
-vector<CVector3> GLCaveShape::points;
+vector<CVector3*> GLCaveShape::points;
 vector<vector<CaveFace*>*> GLCaveShape::polys;
 
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
@@ -98,7 +98,7 @@ void GLCaveShape::draw() {
   case MODE_CORNER: drawFaces(); break;
   case MODE_BLOCK: drawBlock( w, h, d ); break;
   case MODE_FLOOR: drawFloor( w, h, d ); break;
-  case MODE_INV: drawInverse( w, h, d ); break;
+  case MODE_INV: drawFaces(); break;
   default: cerr << "Unknown cave_shape mode: " << mode << endl;
   }
 
@@ -128,158 +128,22 @@ void GLCaveShape::drawFaces() {
     }
     glBegin( GL_TRIANGLES );
     
-    CVector3 xyz = points[ p->p1 ];
+    
     if( p->tex[0][0] > -1 ) glTexCoord2f( p->tex[0][0], p->tex[0][1] );
-    glVertex3f( xyz.x, xyz.y, xyz.z );
+    CVector3 *xyz = points[ p->p1 ];
+    glVertex3f( xyz->x, xyz->y, xyz->z );
 
-    xyz = points[ p->p2 ];
+    
     if( p->tex[1][0] > -1 ) glTexCoord2f( p->tex[1][0], p->tex[1][1] );
-    glVertex3f( xyz.x, xyz.y, xyz.z );
+    xyz = points[ p->p2 ];
+    glVertex3f( xyz->x, xyz->y, xyz->z );
 
-    xyz = points[ p->p3 ];
+    
     if( p->tex[2][0] > -1 ) glTexCoord2f( p->tex[2][0], p->tex[2][1] );
-    glVertex3f( xyz.x, xyz.y, xyz.z );
+    xyz = points[ p->p3 ];
+    glVertex3f( xyz->x, xyz->y, xyz->z );
     glEnd();
   }
-}
-
-void GLCaveShape::drawFlat( float w, float h, float d ) {
-}
-
-void GLCaveShape::drawCorner( float w, float h, float d ) {  
-}
-
-void GLCaveShape::drawInverse( float w, float h, float d ) {  
-  if( !( useShadow || dir == DIR_CROSS_NE || dir == DIR_CROSS_NW ) ) {
-    // roof
-    glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::TOP_SIDE ] );
-    glBegin( GL_TRIANGLES );
-    switch( dir ) {
-    case DIR_NE:
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex3f( 0, 0, h );
-    glTexCoord2f( 1, 1 );
-    glVertex3f( w, d, h );
-    glTexCoord2f( 0, 1 );
-    glVertex3f( 0, d, h );
-    break;
-    case DIR_SE:
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 1, 0 );
-    glVertex3f( w, 0, h );
-    glTexCoord2f( 0, 1 );
-    glVertex3f( 0, d, h );
-    glTexCoord2f( 0, 0 );
-    glVertex3f( 0, 0, h );
-    break;
-    case DIR_SW:
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex3f( 0, 0, h );
-    glTexCoord2f( 1, 1 );
-    glVertex3f( w, d, h );
-    glTexCoord2f( 1, 0 );
-    glVertex3f( w, 0, h );
-    break;
-    case DIR_NW:
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 1, 0 );
-    glVertex3f( w, 0, h );
-    glTexCoord2f( 0, 1 );
-    glVertex3f( 0, d, h );
-    glTexCoord2f( 1, 1 );
-    glVertex3f( w, d, h );
-    break;
-    default:
-    cerr << "bad dir for inverse shape: " << dir << endl;
-    }
-    glEnd();
-  }
-
-  // FIXME: implement real normal-based shading (like in C3DSShape)    
-  if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
-  glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::FRONT_SIDE ] );
-  glBegin( GL_TRIANGLES );
-  switch( dir ) {
-  case DIR_NE:
-  glNormal3f( 1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, 0, 0 );
-  break;
-  case DIR_SE:
-  glNormal3f( 1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, d, 0 );
-  break;
-  case DIR_SW:
-  glNormal3f( -1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, d, 0 );
-  break;
-  case DIR_NW:
-  glNormal3f( -1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );  
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, 0, 0 );
-  break;
-  case DIR_CROSS_NW:
-  if( !useShadow ) glColor3f( shade[ DIR_NW ], shade[ DIR_NW ], shade[ DIR_NW ] );
-  glNormal3f( -1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );  
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, 0, 0 );
-  
-  if( !useShadow ) glColor3f( shade[ DIR_SE ], shade[ DIR_SE ], shade[ DIR_SE ] );
-  glNormal3f( 1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, d, 0 );;
-  break;
-  case DIR_CROSS_NE:
-  if( !useShadow ) glColor3f( shade[ DIR_NE ], shade[ DIR_NE ], shade[ DIR_NE ] );
-  glNormal3f( 1, -1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( w, 0, 0 );
-
-  if( !useShadow ) glColor3f( shade[ DIR_SW ], shade[ DIR_SW ], shade[ DIR_SW ] );
-  glNormal3f( -1, 1, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( 0, 0, h );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( w, d, h );
-  glTexCoord2f( 0.5f, 1 );
-  glVertex3f( 0, d, 0 );
-  break;
-  default:
-  cerr << "bad dir for inverse shape: " << dir << endl;
-  }
-  glEnd();  
 }
 
 void GLCaveShape::drawBlock( float w, float h, float d ) {
@@ -318,14 +182,14 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 }
 
 void GLCaveShape::removeDupPoints() {
-  vector<CVector3> newPoints;
+  vector<CVector3*> newPoints;
   for( int i = 0; i < (int)points.size(); i++ ) {
-    CVector3 v = points[i];
+    CVector3 *v = points[i];
     
     bool copyPoint = true;
     for( int t = 0; t < (int)newPoints.size(); t++ ) {
-      CVector3 v2 = newPoints[t];
-      if( v.x == v2.x && v.y == v2.y && v.z == v2.z ) {
+      CVector3 *v2 = newPoints[t];
+      if( v->x == v2->x && v->y == v2->y && v->z == v2->z ) {
         copyPoint = false;
         for( int r = 0; r < (int)polys.size(); r++ ) {
           vector<CaveFace*> *face = polys[r];
@@ -339,7 +203,16 @@ void GLCaveShape::removeDupPoints() {
       }
     }
 
-    if( copyPoint ) newPoints.push_back( v );
+    if( copyPoint ) {
+      CVector3 *nv = new CVector3();
+      nv->x = v->x;
+      nv->y = v->y;
+      nv->z = v->z;
+      newPoints.push_back( nv );
+    }
+  }
+  for( int i = 0; i < (int)points.size(); i++ ) {
+    delete points[i];
   }
   points.clear();
   for( int i = 0; i < (int)newPoints.size(); i++ ) {
@@ -347,11 +220,15 @@ void GLCaveShape::removeDupPoints() {
   }
 }
 
+void GLCaveShape::dividePolys() {
+  
+}
+
 GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 
 #define _point(_x,_y,_z) ( {\
-  CVector3 v;\
-  v.x=_x; v.y=_y; v.z=_z;\
+  CVector3 *v = new CVector3();\
+  v->x=_x; v->y=_y; v->z=_z;\
   points.push_back( v );\
 } )
 #define _poly(_index,_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt) ( {\
@@ -426,8 +303,80 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   _point( w, d, h );
   _poly( CAVE_INDEX_NW, 25, 26, 27, 0, 1, 1, 1, 0.5f, 0, CaveFace::WALL );
 
+  // DIR_NE inverse top
+  _point( 0, 0, h );
+  _point( w, d, h );
+  _point( 0, d, h );
+  _poly( CAVE_INDEX_INV_NE, 28, 29, 30, 0, 0, 1, 1, 0, 1, CaveFace::TOP );
+
+  // DIR_SE inverse top
+  _point( w, 0, h );
+  _point( 0, d, h );
+  _point( 0, 0, h );
+  _poly( CAVE_INDEX_INV_SE, 31, 32, 33, 1, 0, 0, 1, 0, 0, CaveFace::TOP );
+    
+  // DIR_SW  inverse top
+  _point( 0, 0, h );
+  _point( w, d, h );
+  _point( w, 0, h );
+  _poly( CAVE_INDEX_INV_SW, 34, 35, 36, 0, 0, 1, 1, 1, 0, CaveFace::TOP );
+    
+  // DIR_NW  inverse top
+  _point( w, 0, h );
+  _point( 0, d, h );
+  _point( w, d, h );
+  _poly( CAVE_INDEX_INV_NW, 37, 38, 39, 1, 0, 0, 1, 1, 1, CaveFace::TOP );
+
+  // DIR_NE inverse side
+  _point( 0, 0, h );
+  _point( w, d, h );
+  _point( w, 0, 0 );
+  _poly( CAVE_INDEX_INV_NE, 40, 41, 42, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+  
+  // DIR_SE inverse side
+  _point( w, 0, h );
+  _point( 0, d, h );
+  _point( w, d, 0 );
+  _poly( CAVE_INDEX_INV_SE, 43, 44, 45, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+  
+  // DIR_SW inverse side
+  _point( 0, 0, h );
+  _point( w, d, h );
+  _point( 0, d, 0 );
+  _poly( CAVE_INDEX_INV_SW, 46, 47, 48, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+  
+  // DIR_NW inverse side
+  _point( w, 0, h );
+  _point( 0, d, h );
+  _point( 0, 0, 0 );
+  _poly( CAVE_INDEX_INV_NW, 49, 50, 51, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+  
+  // DIR_CROSS_NW inverse side
+  _point( w, 0, h );
+  _point( 0, d, h );
+  _point( 0, 0, 0 );
+  _poly( CAVE_INDEX_CROSS_NW, 52, 53, 54, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+
+  _point( w, 0, h );
+  _point( 0, d, h );
+  _point( w, d, 0 );
+  _poly( CAVE_INDEX_CROSS_NW, 55, 56, 57, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+  
+  // DIR_CROSS_NE inverse side
+  _point( 0, 0, h );
+  _point( w, d, h );
+  _point( w, 0, 0 );
+  _poly( CAVE_INDEX_CROSS_NE, 58, 59, 60, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+
+  _point( 0, 0, h );
+  _point( w, d, h );
+  _point( 0, d, 0 );
+  _poly( CAVE_INDEX_CROSS_NE, 61, 62, 63, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
+
   // Remove dup. points: this creates a triangle mesh
   removeDupPoints();
+
+  dividePolys();
 
 
   shapeList[CAVE_INDEX_N] = 
