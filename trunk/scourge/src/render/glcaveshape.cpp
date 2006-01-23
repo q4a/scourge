@@ -54,6 +54,8 @@ float shade[] = {
 vector<CVector3*> GLCaveShape::points;
 vector<vector<CaveFace*>*> GLCaveShape::polys;
 
+//#define DEBUG 1
+
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
                           char *name, int index, 
@@ -112,6 +114,7 @@ void GLCaveShape::drawFaces() {
   vector<CaveFace*>* face = polys[ caveIndex ];
   if( !face ) cerr << "Can't find face for shape: " << 
     getName() << " caveIndex=" << caveIndex << endl;
+#ifndef DEBUG
   for( int i = 0; i < (int)face->size(); i++ ) {
     CaveFace *p = (*face)[i];
     if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
@@ -144,6 +147,32 @@ void GLCaveShape::drawFaces() {
     glVertex3f( xyz->x, xyz->y, xyz->z );
     glEnd();
   }
+#else
+  if( useShadow ) return;
+  glDisable( GL_TEXTURE_2D );
+  for( int i = 0; i < (int)face->size(); i++ ) {
+    CaveFace *p = (*face)[i];
+    glColor3f( 1, 1, 0 );
+    glBegin( GL_LINE_LOOP );
+    
+    
+    if( p->tex[0][0] > -1 ) glTexCoord2f( p->tex[0][0], p->tex[0][1] );
+    CVector3 *xyz = points[ p->p1 ];
+    glVertex3f( xyz->x, xyz->y, xyz->z );
+
+    
+    if( p->tex[1][0] > -1 ) glTexCoord2f( p->tex[1][0], p->tex[1][1] );
+    xyz = points[ p->p2 ];
+    glVertex3f( xyz->x, xyz->y, xyz->z );
+
+    
+    if( p->tex[2][0] > -1 ) glTexCoord2f( p->tex[2][0], p->tex[2][1] );
+    xyz = points[ p->p3 ];
+    glVertex3f( xyz->x, xyz->y, xyz->z );
+    glEnd();
+  }
+  glEnable( GL_TEXTURE_2D );
+#endif
 }
 
 void GLCaveShape::drawBlock( float w, float h, float d ) {
@@ -220,8 +249,95 @@ void GLCaveShape::removeDupPoints() {
   }
 }
 
-void GLCaveShape::dividePolys() {
+CVector3 *GLCaveShape::divideSegment( CVector3 *v1, CVector3 *v2 ) {
+  CVector3 *v = new CVector3();
+  v->x = ( v1->x + v2->x ) / 2.0f;
+  v->y = ( v1->y + v2->y ) / 2.0f;
+  v->z = ( v1->z + v2->z ) / 2.0f;
+  return v;
+}
+
+void GLCaveShape::bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 ) {
+  /* bulge:
+    1. find the base points where z is the same
+    2. bulge in the x,y direction:
+    2.1 away from third point if third.z > base.z
+    2.2 towards third point if third.z < base.z
+    2.3 (optional) bulge one of the base points more (eg.: where x or y is greater)
+  */
+  CVector3 *b1, *b2, *a;
+  if( n1->z == n2->z ) {
+    b1 = n1;
+    b2 = n2;
+    a = n3;
+  } else if( n1->z == n3->z ) {
+    b1 = n1;
+    b2 = n3;
+    a = n2;
+  } else {
+    b1 = n2;
+    b2 = n3;
+    a = n1;
+  }
   
+  // this is bad: it should find the orthogonal vector and move along that line
+  if( a->z < b1->z ) {
+    if( b1->x == b2->x ) b1->x = b2->x = a->x;
+    else if( b1->y == b2->y ) b1->y = b2->y = a->y;
+  } else {
+    //if( b1->x == b2->x ) b1->x = b2->x = a->x;
+    //else if( b1->y == b2->y ) b1->y = b2->y = a->y;
+  }
+
+}
+
+void GLCaveShape::dividePolys() {
+  for( int i = 0; i < (int)polys.size(); i++ ) {
+    vector<CaveFace*> *v = polys[i];
+    int originalSize = (int)v->size();
+    for( int t = 0; t < originalSize; t++ ) {
+      CaveFace *face = (*v)[t];
+      
+      // create new points
+      int index = points.size();
+      CVector3 *n1 = divideSegment( points[face->p1], points[face->p2] );
+      CVector3 *n2 = divideSegment( points[face->p2], points[face->p3] );
+      CVector3 *n3 = divideSegment( points[face->p3], points[face->p1] );
+
+      bulgePoints( n1, n2, n3 );
+
+      points.push_back( n1 );
+      points.push_back( n2 );
+      points.push_back( n3 );
+
+      // 3 new triangles
+      v->push_back( new CaveFace( face->p1, index, index + 2, 
+                                  face->tex[0][0], face->tex[0][1],
+                                  ( face->tex[0][0] + face->tex[1][0] ) / 2.0f, ( face->tex[0][1] + face->tex[1][1] ) / 2.0f, 
+                                  ( face->tex[0][0] + face->tex[2][0] ) / 2.0f, ( face->tex[0][1] + face->tex[2][1] ) / 2.0f, 
+                                  face->textureType ) );
+      v->push_back( new CaveFace( index, face->p2, index + 1, 
+                                  ( face->tex[0][0] + face->tex[1][0] ) / 2.0f, ( face->tex[0][1] + face->tex[1][1] ) / 2.0f, 
+                                  face->tex[1][0], face->tex[1][1],
+                                  ( face->tex[1][0] + face->tex[2][0] ) / 2.0f, ( face->tex[1][1] + face->tex[2][1] ) / 2.0f, 
+                                  face->textureType ) );
+      v->push_back( new CaveFace( index + 2, index + 1, face->p3,
+                                  ( face->tex[0][0] + face->tex[2][0] ) / 2.0f, ( face->tex[0][1] + face->tex[2][1] ) / 2.0f, 
+                                  ( face->tex[1][0] + face->tex[2][0] ) / 2.0f, ( face->tex[1][1] + face->tex[2][1] ) / 2.0f, 
+                                  face->tex[2][0], face->tex[2][1],
+                                  face->textureType ) );
+      // the middle one replaces the current face
+      face->p1 = index;
+      face->p2 = index + 1;
+      face->p3 = index + 2;
+      face->tex[0][0] = ( face->tex[0][0] + face->tex[1][0] ) / 2.0f;
+      face->tex[0][1] = ( face->tex[0][1] + face->tex[1][1] ) / 2.0f;
+      face->tex[1][0] = ( face->tex[1][0] + face->tex[2][0] ) / 2.0f;
+      face->tex[1][1] = ( face->tex[1][1] + face->tex[2][1] ) / 2.0f;
+      face->tex[2][0] = ( face->tex[0][0] + face->tex[2][0] ) / 2.0f;
+      face->tex[2][1] = ( face->tex[0][1] + face->tex[2][1] ) / 2.0f;
+    }
+  }
 }
 
 GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
@@ -252,8 +368,8 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   _point( w, d, 0 );
   _point( w, 0, h );
   _point( 0, 0, h );  
-  _poly( CAVE_INDEX_S, 0, 1, 2, 0, 1, 1, 1, 1, 0, CaveFace::WALL );  
-  _poly( CAVE_INDEX_S, 0, 2, 3, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
+  _poly( CAVE_INDEX_S, 0, 2, 1, 0, 1, 1, 1, 1, 0, CaveFace::WALL );  
+  _poly( CAVE_INDEX_S, 0, 3, 2, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
 
   // DIR_N flat
   _point( 0, 0, 0 );
@@ -374,9 +490,15 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   _poly( CAVE_INDEX_CROSS_NE, 61, 62, 63, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
 
   // Remove dup. points: this creates a triangle mesh
+  cerr << "BEFORE 1: " << points.size() << endl;
   removeDupPoints();
+  cerr << "AFTER 1: " << points.size() << endl;
 
   dividePolys();
+
+  cerr << "BEFORE 2: " << points.size() << endl;
+  //removeDupPoints();
+  cerr << "AFTER 2: " << points.size() << endl;
 
 
   shapeList[CAVE_INDEX_N] = 
