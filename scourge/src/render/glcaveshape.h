@@ -136,6 +136,8 @@ protected:
 private:
   static void removeDupPoints();
   static void dividePolys();
+  static CVector3 *divideSegment( CVector3 *v1, CVector3 *v2 );
+  static void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
 };
 
 #endif
