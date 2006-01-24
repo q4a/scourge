@@ -812,5 +812,6 @@ typedef unsigned char byte;
 extern void ComputeNormals(t3DModel *pModel);
 extern void CreateTexture(GLuint textureArray[],char *strFileName,int textureID);
 extern void swap(unsigned char & a, unsigned char & b);
+extern void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal );
 
 #endif
