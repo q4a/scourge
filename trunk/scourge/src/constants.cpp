@@ -397,6 +397,23 @@ CVector3 Normalize(CVector3 vNormal)
 /////
 ///////////////////////////////// COMPUTER NORMALS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
+void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal ) {
+  CVector3 vVector1, vVector2, vNormal;
+  
+  // Now let's calculate the face normals (Get 2 vectors and find the cross product of those 2)
+  
+  vVector1 = Vector( *p1, *p3 );      // Get the vector of the polygon (we just need 2 sides for the normal)
+  vVector2 = Vector( *p3, *p2 );      // Get a second vector of the polygon
+  
+  vNormal  = Cross( vVector1, vVector2 );       // Return the cross product of the 2 vectors (normalize vector, but not a unit vector)
+  //pTempNormals[i] = vNormal;                  // Save the un-normalized normal for the vertex normals
+  vNormal  = Normalize(vNormal);              // Normalize the cross product to give us the polygons normal
+  
+  normal->x = vNormal.x;
+  normal->y = vNormal.y;
+  normal->z = vNormal.z;
+}
+
 void ComputeNormals(t3DModel *pModel)
 {
     CVector3 vVector1, vVector2, vNormal, vPoly[3];

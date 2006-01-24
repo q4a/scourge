@@ -54,7 +54,7 @@ float shade[] = {
 vector<CVector3*> GLCaveShape::points;
 vector<vector<CaveFace*>*> GLCaveShape::polys;
 
-//#define DEBUG 1
+#define DEBUG 1
 
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
@@ -114,7 +114,14 @@ void GLCaveShape::drawFaces() {
   vector<CaveFace*>* face = polys[ caveIndex ];
   if( !face ) cerr << "Can't find face for shape: " << 
     getName() << " caveIndex=" << caveIndex << endl;
-#ifndef DEBUG
+#ifdef DEBUG
+  for( int t = 0; t < 2; t++ ) {
+    if( useShadow ) return;
+    if( t == 1 ) {
+      glDisable( GL_TEXTURE_2D );
+      glDisable( GL_DEPTH_TEST );
+    }
+#endif
   for( int i = 0; i < (int)face->size(); i++ ) {
     CaveFace *p = (*face)[i];
     if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
@@ -129,9 +136,11 @@ void GLCaveShape::drawFaces() {
       glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::TOP_SIDE ] );
     break;
     }
+#ifdef DEBUG
+    glBegin( t == 0 ? GL_TRIANGLES : GL_LINE_LOOP );
+#else
     glBegin( GL_TRIANGLES );
-    
-    
+#endif    
     if( p->tex[0][0] > -1 ) glTexCoord2f( p->tex[0][0], p->tex[0][1] );
     CVector3 *xyz = points[ p->p1 ];
     glVertex3f( xyz->x, xyz->y, xyz->z );
@@ -147,37 +156,15 @@ void GLCaveShape::drawFaces() {
     glVertex3f( xyz->x, xyz->y, xyz->z );
     glEnd();
   }
-#else
-  if( useShadow ) return;
-  glDisable( GL_TEXTURE_2D );
-  for( int i = 0; i < (int)face->size(); i++ ) {
-    CaveFace *p = (*face)[i];
-    glColor3f( 1, 1, 0 );
-    glBegin( GL_LINE_LOOP );
-    
-    
-    if( p->tex[0][0] > -1 ) glTexCoord2f( p->tex[0][0], p->tex[0][1] );
-    CVector3 *xyz = points[ p->p1 ];
-    glVertex3f( xyz->x, xyz->y, xyz->z );
-
-    
-    if( p->tex[1][0] > -1 ) glTexCoord2f( p->tex[1][0], p->tex[1][1] );
-    xyz = points[ p->p2 ];
-    glVertex3f( xyz->x, xyz->y, xyz->z );
-
-    
-    if( p->tex[2][0] > -1 ) glTexCoord2f( p->tex[2][0], p->tex[2][1] );
-    xyz = points[ p->p3 ];
-    glVertex3f( xyz->x, xyz->y, xyz->z );
-    glEnd();
+#ifdef DEBUG
   }
   glEnable( GL_TEXTURE_2D );
+  glEnable( GL_DEPTH_TEST );
 #endif
 }
 
 void GLCaveShape::drawBlock( float w, float h, float d ) {
   if( useShadow ) return;
-
   glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::TOP_SIDE ] );
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
@@ -194,8 +181,6 @@ void GLCaveShape::drawBlock( float w, float h, float d ) {
 
 void GLCaveShape::drawFloor( float w, float h, float d ) {
   if( useShadow ) return;
-
-  // FIXME: use separate floor texture
   glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::TOP_SIDE ] );
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
@@ -258,13 +243,11 @@ CVector3 *GLCaveShape::divideSegment( CVector3 *v1, CVector3 *v2 ) {
 }
 
 void GLCaveShape::bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 ) {
-  /* bulge:
-    1. find the base points where z is the same
-    2. bulge in the x,y direction:
-    2.1 away from third point if third.z > base.z
-    2.2 towards third point if third.z < base.z
-    2.3 (optional) bulge one of the base points more (eg.: where x or y is greater)
-  */
+
+  // don't warp the top
+  if( n1->z == n2->z && n2->z == n3->z ) return;
+
+  // find the base points where z is the same
   CVector3 *b1, *b2, *a;
   if( n1->z == n2->z ) {
     b1 = n1;
@@ -279,14 +262,29 @@ void GLCaveShape::bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 ) {
     b2 = n3;
     a = n1;
   }
+
+
+  // find the points' normal
+  CVector3 normal;
+  findNormal( n1, n2, n3, &normal );  
   
-  // this is bad: it should find the orthogonal vector and move along that line
-  if( a->z < b1->z ) {
-    if( b1->x == b2->x ) b1->x = b2->x = a->x;
-    else if( b1->y == b2->y ) b1->y = b2->y = a->y;
-  } else {
-    //if( b1->x == b2->x ) b1->x = b2->x = a->x;
-    //else if( b1->y == b2->y ) b1->y = b2->y = a->y;
+  float f = 2.0f / DIV;
+  // move base points along normal
+  if( a->z == 0 ) {
+    // move the anchor out if on bottom
+    a->x += f * normal.x;
+    a->y += f * normal.y;
+  }
+
+  // for flat shapes only, pull out the middle point
+  if( toint( normal.x ) == 0 || toint( normal.y ) == 0 ) {
+    if( b1->x == a->x || b1->y == a->y ) {
+      b1->x += f * normal.x;
+      b1->y += f * normal.y;
+    } else {
+      b2->x += f * normal.x;
+      b2->y += f * normal.y;
+    }
   }
 
 }
@@ -297,6 +295,8 @@ void GLCaveShape::dividePolys() {
     int originalSize = (int)v->size();
     for( int t = 0; t < originalSize; t++ ) {
       CaveFace *face = (*v)[t];
+      if( points[face->p1]->z == points[face->p2]->z &&
+          points[face->p2]->z == points[face->p3]->z ) continue;
       
       // create new points
       int index = points.size();
@@ -362,27 +362,27 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
     polys.push_back( new vector<CaveFace*>() );
   }
 
-  // store the points
+  // store the points: note, that the order matters! (when calc. normals)
   // DIR_S flat
-  _point( 0, d, 0 );
-  _point( w, d, 0 );
   _point( w, 0, h );
+  _point( w, d, 0 );
+  _point( 0, d, 0 );
   _point( 0, 0, h );  
   _poly( CAVE_INDEX_S, 0, 2, 1, 0, 1, 1, 1, 1, 0, CaveFace::WALL );  
   _poly( CAVE_INDEX_S, 0, 3, 2, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
 
   // DIR_N flat
-  _point( 0, 0, 0 );
-  _point( w, 0, 0 );
   _point( w, d, h );
+  _point( w, 0, 0 );
+  _point( 0, 0, 0 );
   _point( 0, d, h );
   _poly( CAVE_INDEX_N, 4, 5, 6, 0, 1, 1, 1, 1, 0, CaveFace::WALL );
   _poly( CAVE_INDEX_N, 4, 6, 7, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
 
   // DIR_E flat
-  _point( w, 0, 0 );
-  _point( w, d, 0 );
   _point( 0, d, h );
+  _point( w, d, 0 );
+  _point( w, 0, 0 );
   _point( 0, 0, h );
   _poly( CAVE_INDEX_E, 8, 9, 10, 0, 1, 1, 1, 1, 0, CaveFace::WALL );
   _poly( CAVE_INDEX_E, 8, 10, 11, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
@@ -396,15 +396,15 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   _poly( CAVE_INDEX_W, 12, 14, 15, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
 
   // DIR_NE corner
-  _point( 0, 0, 0 );
-  _point( w, d, 0 );
   _point( 0, d, h );
+  _point( w, d, 0 );
+  _point( 0, 0, 0 );
   _poly( CAVE_INDEX_NE, 16, 17, 18, 1, 1, 0, 1, 0.5f, 0, CaveFace::WALL );
 
   // DIR_SE corner
-  _point( w, 0, 0 );
-  _point( 0, d, 0 );
   _point( 0, 0, h );
+  _point( 0, d, 0 );
+  _point( w, 0, 0 );
   _poly( CAVE_INDEX_SE, 19, 20, 21, 0, 1, 1, 1, 0.5f, 0, CaveFace::WALL );
   
   // DIR_SW corner
@@ -452,19 +452,19 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   // DIR_SE inverse side
   _point( w, 0, h );
   _point( 0, d, h );
-  _point( w, d, 0 );
+  _point( w, d, 0 );  
   _poly( CAVE_INDEX_INV_SE, 43, 44, 45, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_SW inverse side
-  _point( 0, 0, h );
-  _point( w, d, h );
   _point( 0, d, 0 );
+  _point( w, d, h );
+  _point( 0, 0, h );
   _poly( CAVE_INDEX_INV_SW, 46, 47, 48, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_NW inverse side
-  _point( w, 0, h );
-  _point( 0, d, h );
   _point( 0, 0, 0 );
+  _point( 0, d, h );
+  _point( w, 0, h );
   _poly( CAVE_INDEX_INV_NW, 49, 50, 51, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_CROSS_NW inverse side
