@@ -30,9 +30,15 @@ CaveMaker::CaveMaker( Scourge *scourge, int level, int depth,
                       bool stairsDown, bool stairsUp, 
                       Mission *mission) :
 TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 10 ) {
-  this->w = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
-  this->h = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
-  cerr << "CaveMaker: size=" << w << "x" << h << endl;
+  //int dungeonLevel = level / 8;
+             int dungeonLevel = 8;
+  this->w = 25 + dungeonLevel * 4;
+  this->h = 25 + dungeonLevel * 4;
+  int maxw = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
+  int maxh = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
+  if( this->w > maxw ) this->w = maxw;
+  if( this->h > maxh ) this->h = maxh;
+  cerr << "CaveMaker: dungeonLevel=" << dungeonLevel << " size=" << w << "x" << h << endl;
   this->roomCounter = 0;
   this->biggestRoom = 0;
   node = (NodePoint**)malloc( w * sizeof( NodePoint* ) );
@@ -61,17 +67,28 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
   removeSingles();
 
-  //print();
+  addIslands();
+
+  growCellsIsland();
+
+  addIslandLand();
+
+  print();
 }
 
 
 #define isWall(x,y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].wall )
+#define isIsland(x,y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].island )
 #define setCaveShape(map,x,y,index) ( map->setPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), 0, GLCaveShape::getShape(index) ) )
 #define setCaveFloorShape(map,x,y,index) ( map->setFloorPosition( MAP_OFFSET + (x * CAVE_CHUNK_SIZE), MAP_OFFSET + ( (y + 1) * CAVE_CHUNK_SIZE ), GLCaveShape::getShape(index) ) )
 
 bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
 
   shapePal->loadRandomCaveTheme();
+
+  string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
+  GLuint *floorTextureGroup = shapePal->getCurrentTheme()->getTextureGroup( ref );
+  map->setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 
   for( int x = 0; x < MAP_WIDTH - CAVE_CHUNK_SIZE; x+=CAVE_CHUNK_SIZE ) {
     for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH - CAVE_CHUNK_SIZE; y+=CAVE_CHUNK_SIZE ) {
@@ -162,10 +179,115 @@ bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
   return true;
 }
 
+#define DIST 4
+
+void CaveMaker::addIslands() {
+  for( int x = 0; x < w; x++ ) {
+    for( int y = 0; y < h; y++ ) {
+      // does it qualify?
+      if( !node[x][y].wall ) {
+        bool test = true;
+        for( int i = 0; i < DIST; i++ ) {
+          if( isWall( x + i, y ) ||
+              isWall( x - i, y ) ||
+              isWall( x, y + i ) ||
+              isWall( x, y - i ) ||
+              isWall( x + i, y + i ) ||
+              isWall( x - i, y + i ) ||
+              isWall( x + i, y - i ) ||
+              isWall( x - i, y - i ) ) {
+            test = false;          
+          }
+        }
+        if( test ) node[x][y].island = true;        
+      }
+    }
+  }
+  for( int x = 0; x < w; x++ ) {
+    for( int y = 0; y < h; y++ ) {
+      if( node[x][y].island && 0 == (int)( 5.0f * rand() / RAND_MAX ) ) {
+        node[x][y].island = false;
+      }
+    }
+  }
+}
+
+void CaveMaker::growCellsIsland() {
+  for( int x = 1; x < w - 1; x++ ) {
+    for( int y = 1; y < h - 1; y++ ) {
+
+      // count the neighbors
+      int count = 0;
+      if( node[x-1][y-1].island ) count++;
+      if( node[x  ][y-1].island ) count++;
+      if( node[x+1][y-1].island ) count++;
+      if( node[x-1][y  ].island ) count++;
+      if( node[x+1][y  ].island ) count++;
+      if( node[x-1][y+1].island ) count++;
+      if( node[x  ][y+1].island ) count++;
+      if( node[x+1][y+1].island ) count++;
+
+      // 4-5 rule (<4 starves, >5 lives)
+      if( count < 4 ) {
+        node[x][y].island = false;
+      }
+      if( count > 5 ) {
+        node[x][y].island = true;
+      }
+    }
+  }
+}
+
+#define RIVER 3
+
+/**
+ * Create "rivers". This code uses a hack:
+ * it uses node.wall to track where the land will be.
+ */
+void CaveMaker::addIslandLand() {
+  for( int x = 0; x < w; x++ ) {
+    for( int y = 0; y < h; y++ ) {
+      // does it qualify?
+      if( node[x][y].island ) {
+        bool test = true;
+        for( int i = 0; i < RIVER; i++ ) {
+          if( !isIsland( x + i, y ) ||
+              !isIsland( x - i, y ) ||
+              !isIsland( x, y + i ) ||
+              !isIsland( x, y - i ) ||
+              !isIsland( x + i, y + i ) ||
+              !isIsland( x - i, y + i ) ||
+              !isIsland( x + i, y - i ) ||
+              !isIsland( x - i, y - i ) ) {
+            test = false;          
+          }
+        }
+        if( test ) node[x][y].wall = true;
+      }
+    }
+  }
+  
+  growCellsIsland();
+
+  // now make sure that every land within an island is accesible
+
+
+  // convert to land
+  for( int x = 0; x < w; x++ ) {
+    for( int y = 0; y < h; y++ ) {
+      if( node[x][y].island && node[x][y].wall ) {
+        node[x][y].island = node[x][y].wall = false;
+      }
+    }
+  }
+  
+}
+
 void CaveMaker::randomize() {
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
       node[x][y].wall = true;
+      node[x][y].island = false;
       node[x][y].room = -1;
     }
   }
@@ -344,7 +466,7 @@ void CaveMaker::removeSingles() {
 void CaveMaker::print() {
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
-      cerr << ( node[x][y].wall ? "X" : " " );
+      cerr << ( node[x][y].wall ? "X" : ( node[x][y].island ? "+" : " " ) );
     }
     cerr << endl;
   }

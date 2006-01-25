@@ -232,6 +232,9 @@ class Map {
   Uint16 cursorMapX, cursorMapY, cursorMapZ, cursorFlatMapX, cursorFlatMapY;
   Uint16 cursorChunkX, cursorChunkY;
 
+  int floorTexWidth, floorTexHeight;
+  GLuint floorTex;
+
  public:
   bool useFrustum;
   static bool debugMd2Shapes;
@@ -242,6 +245,8 @@ class Map {
 
   Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
+
+  inline void setFloor( int tw, int th, GLuint texture ) { floorTexWidth = tw; floorTexHeight = th; floorTex = texture; }
 
   inline bool isEdited() { return edited; }
   inline char *getName() { return name; }

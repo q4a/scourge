@@ -112,6 +112,9 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   
   mapChanged = true;
   resortShapes = true;
+
+  floorTexWidth = floorTexHeight = 0;
+  floorTex = 0;
   
   descriptionCount = 0;
   descriptionsChanged = false;
@@ -232,6 +235,8 @@ void Map::reset() {
   mapChanged = true;
   resortShapes = true;
   lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
+  floorTexWidth = floorTexHeight = 0;
+  floorTex = 0;
   
 //  descriptionCount = 0;
 //  descriptionsChanged = false;
@@ -978,7 +983,33 @@ void Map::draw() {
       glEnable(GL_STENCIL_TEST);
       glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
       glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-      setupShapes(true, false);
+      
+      // cave floor
+      if( floorTexWidth > 0 ) {
+        //float xpos2 = (float)(getX() - mapViewWidth / 2) / DIV;
+        //float ypos2 = (float)(getY() - mapViewDepth / 2) / DIV;
+        float w = (float)( mapViewWidth ) / DIV;
+        float d = (float)( mapViewDepth ) / DIV;
+        glEnable( GL_TEXTURE_2D );
+        glColor4f(1, 1, 1, 0.9f);
+        glBindTexture( GL_TEXTURE_2D, floorTex );
+        glPushMatrix();
+        //glTranslatef( xpos2, ypos2, 0.0f);        
+        glBegin( GL_QUADS );
+        glNormal3f( 0, 0, 1 );
+        glTexCoord2f( getX() * DIV, getY() * DIV );
+        glVertex3f( 0, 0, 0 );
+        glTexCoord2f( getX() * DIV, ( getY() + mapViewDepth ) * DIV );
+        glVertex3f( 0, d, 0 );
+        glTexCoord2f( ( getX() + mapViewWidth ) * DIV, ( getY() + mapViewDepth ) * DIV );
+        glVertex3f( w, d, 0 );
+        glTexCoord2f( ( getX() + mapViewWidth ) * DIV, getY() * DIV );
+        glVertex3f( w, 0, 0 );
+        glEnd();
+        glPopMatrix();
+      } else {
+        setupShapes(true, false);
+      }
 
       // shadows
       if( preferences->getShadows() >= Constants::OBJECT_SHADOWS ) {
