@@ -54,7 +54,10 @@ float shade[] = {
 vector<CVector3*> GLCaveShape::points;
 vector<vector<CaveFace*>*> GLCaveShape::polys;
 
-#define DEBUG 1
+//#define DEBUG 1
+
+#define LIGHT_ANGLE_HORIZ 125.0f
+#define LIGHT_ANGLE_VERT 45.0f
 
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
@@ -88,11 +91,11 @@ void GLCaveShape::draw() {
   float h = (float)height / DIV;
   if (h == 0) h = 0.25 / DIV;
 
-  glDisable( GL_CULL_FACE );
-
   bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   if( !useShadow ) {
     glEnable( GL_TEXTURE_2D );
+    glEnable( GL_CULL_FACE );
+    glCullFace( GL_BACK );
   }
 
   switch( mode ) {
@@ -107,6 +110,8 @@ void GLCaveShape::draw() {
 
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
   //useShadow = false;
+
+  glDisable( GL_CULL_FACE );
 
 }
 
@@ -124,7 +129,9 @@ void GLCaveShape::drawFaces() {
 #endif
   for( int i = 0; i < (int)face->size(); i++ ) {
     CaveFace *p = (*face)[i];
-    if( !useShadow ) glColor3f( shade[ dir ], shade[ dir ], shade[ dir ] );
+    if( !useShadow ) {
+      glColor3f( p->shade, p->shade, p->shade );
+    }
     switch( p->textureType ) {
     case CaveFace::WALL:
       glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::FRONT_SIDE ] );
@@ -195,6 +202,93 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
   glEnd();
 }
 
+void GLCaveShape::calculateNormals() {
+  for( int i = 0; i < (int)polys.size(); i++ ) {
+    vector<CaveFace*> *face = polys[i];
+    for( int t = 0; t < (int)face->size(); t++ ) {
+      CaveFace *cf = (*face)[t];
+      findNormal( points[cf->p1], 
+                  points[cf->p2], 
+                  points[cf->p3], 
+                  &(cf->normal) );  
+    }
+  }
+}
+
+void GLCaveShape::calculateLight() {
+  for( int i = 0; i < (int)polys.size(); i++ ) {
+    vector<CaveFace*> *face = polys[i];
+    for( int t = 0; t < (int)face->size(); t++ ) {
+      CaveFace *cf = (*face)[t];
+
+      if( points[cf->p1]->z == points[cf->p2]->z &&
+          points[cf->p2]->z == points[cf->p3]->z ) continue;
+
+
+      // Simple light rendering:
+      // need the normal as mapped on the xy plane
+      // it's degree is the intensity of light it gets
+      float lightAngle;
+      cf->shade = 0;
+      for( int a = 0; a < 2; a++ ) {
+        float x = (cf->normal.x == 0 ? 0.01f : cf->normal.x);
+        float y;
+        if( a == 0 ) {
+          y = cf->normal.y;          
+          lightAngle = LIGHT_ANGLE_HORIZ;
+        } else {
+          y = cf->normal.z;          
+          lightAngle = LIGHT_ANGLE_VERT;
+        }
+        float rad = atan(y / x);
+        float angle = (180.0f * rad) / 3.14159;
+        
+        // read about the arctan problem: 
+        // http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
+        int q = 1;
+        if (x < 0) {     // Quadrant 2 & 3
+          q = ( y >= 0 ? 2 : 3);
+          angle += 180;
+        } else if (y < 0) { // Quadrant 4
+          q = 4;
+          angle += 360;
+        }
+        
+        // calculate the angle distance from the light
+        float delta = 0;
+        if (angle > lightAngle && angle < lightAngle + 180.0f) {
+          delta = angle - lightAngle;
+        } else {
+          if (angle < lightAngle) angle += 360.0f;
+          delta = (360 + lightAngle) - angle;
+        }
+        
+        // reverse and convert to value between 0.2 and 1
+        delta = 1.0f - ( 0.8f * (delta / 180.0f) );
+        
+        // store the value
+        if( a == 0 ) {
+          cf->shade = delta;
+        } else {
+          cf->shade += delta / 10.0f;
+        }
+      }
+    }
+  }
+}
+
+void GLCaveShape::updatePointIndexes( int oldIndex, int newIndex ) {
+  for( int i = 0; i < (int)polys.size(); i++ ) {
+    vector<CaveFace*> *face = polys[i];
+    for( int t = 0; t < (int)face->size(); t++ ) {
+      CaveFace *cf = (*face)[t];
+      if( cf->p1 == oldIndex ) cf->p1 = newIndex;
+      if( cf->p2 == oldIndex ) cf->p2 = newIndex;
+      if( cf->p3 == oldIndex ) cf->p3 = newIndex;
+    }
+  }
+}
+
 void GLCaveShape::removeDupPoints() {
   vector<CVector3*> newPoints;
   for( int i = 0; i < (int)points.size(); i++ ) {
@@ -203,17 +297,11 @@ void GLCaveShape::removeDupPoints() {
     bool copyPoint = true;
     for( int t = 0; t < (int)newPoints.size(); t++ ) {
       CVector3 *v2 = newPoints[t];
-      if( v->x == v2->x && v->y == v2->y && v->z == v2->z ) {
+      if( v->x == v2->x && 
+          v->y == v2->y && 
+          v->z == v2->z ) {
         copyPoint = false;
-        for( int r = 0; r < (int)polys.size(); r++ ) {
-          vector<CaveFace*> *face = polys[r];
-          for( int g = 0; g < (int)face->size(); g++ ) {
-            CaveFace *cf = (*face)[g];
-            if( cf->p1 == i ) cf->p1 = t;
-            if( cf->p2 == i ) cf->p2 = t;
-            if( cf->p3 == i ) cf->p3 = t;
-          }
-        }
+        updatePointIndexes( i, t );
       }
     }
 
@@ -223,6 +311,7 @@ void GLCaveShape::removeDupPoints() {
       nv->y = v->y;
       nv->z = v->z;
       newPoints.push_back( nv );
+      updatePointIndexes( i, newPoints.size() - 1 );
     }
   }
   for( int i = 0; i < (int)points.size(); i++ ) {
@@ -286,7 +375,6 @@ void GLCaveShape::bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 ) {
       b2->y += f * normal.y;
     }
   }
-
 }
 
 void GLCaveShape::dividePolys() {
@@ -368,8 +456,8 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   _point( w, d, 0 );
   _point( 0, d, 0 );
   _point( 0, 0, h );  
-  _poly( CAVE_INDEX_S, 0, 2, 1, 0, 1, 1, 1, 1, 0, CaveFace::WALL );  
-  _poly( CAVE_INDEX_S, 0, 3, 2, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
+  _poly( CAVE_INDEX_S, 0, 2, 1, 0, 1, 1, 0, 1, 1, CaveFace::WALL );  
+  _poly( CAVE_INDEX_S, 0, 3, 2, 0, 1, 0, 0, 1, 0, CaveFace::WALL );
 
   // DIR_N flat
   _point( w, d, h );
@@ -423,13 +511,13 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   _point( 0, 0, h );
   _point( w, d, h );
   _point( 0, d, h );
-  _poly( CAVE_INDEX_INV_NE, 28, 29, 30, 0, 0, 1, 1, 0, 1, CaveFace::TOP );
+  _poly( CAVE_INDEX_INV_NE, 30, 29, 28, 0, 1, 1, 1, 0, 0, CaveFace::TOP );
 
   // DIR_SE inverse top
   _point( w, 0, h );
   _point( 0, d, h );
   _point( 0, 0, h );
-  _poly( CAVE_INDEX_INV_SE, 31, 32, 33, 1, 0, 0, 1, 0, 0, CaveFace::TOP );
+  _poly( CAVE_INDEX_INV_SE, 33, 32, 31, 0, 0, 0, 1, 1, 0, CaveFace::TOP );
     
   // DIR_SW  inverse top
   _point( 0, 0, h );
@@ -497,8 +585,12 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   dividePolys();
 
   cerr << "BEFORE 2: " << points.size() << endl;
-  //removeDupPoints();
+  removeDupPoints();
   cerr << "AFTER 2: " << points.size() << endl;
+
+  calculateNormals();
+
+  calculateLight();
 
 
   shapeList[CAVE_INDEX_N] = 

@@ -50,7 +50,7 @@ private:
   int w, h;
 
   typedef struct _NodePoint {
-    bool wall;
+    bool wall, island;
     int room;
     bool seen;
   } NodePoint;
@@ -83,6 +83,9 @@ protected:
   void removeSingles();
   void generate();
   void print();
+  void addIslands();
+  void growCellsIsland();
+  void addIslandLand();
 
   virtual bool drawNodes( Map *map, ShapePalette *shapePal );
 

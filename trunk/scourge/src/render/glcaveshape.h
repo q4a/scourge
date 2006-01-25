@@ -27,6 +27,7 @@ class Shapes;
 class CaveFace {
 public:
   int p1, p2, p3; // point indexes
+  CVector3 normal;
   GLfloat tex[3][2]; // texture coordinates per point
   enum {
     WALL=0,
@@ -34,6 +35,7 @@ public:
     FLOOR
   };
   int textureType;
+  GLfloat shade;
 
   CaveFace( int p1, int p2, int p3, 
             GLfloat u1, GLfloat v1, GLfloat u2, GLfloat v2, GLfloat u3, GLfloat v3,
@@ -48,6 +50,8 @@ public:
     tex[2][0] = u3;
     tex[2][1] = v3;
     this->textureType = textureType;
+    this->normal.x = this->normal.y = this->normal.z = 0;
+    this->shade = 1;
   }
 
   ~CaveFace() {
@@ -135,9 +139,12 @@ protected:
 
 private:
   static void removeDupPoints();
+  static void updatePointIndexes( int oldIndex, int newIndex );
   static void dividePolys();
   static CVector3 *divideSegment( CVector3 *v1, CVector3 *v2 );
   static void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
+  static void calculateNormals();
+  static void calculateLight();
 };
 
 #endif
