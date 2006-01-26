@@ -165,6 +165,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   colorAlreadySet = false;
   selectedDropTarget = NULL;
 
+  fog.reset();
+
   createOverlayTexture();
 
   addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
@@ -286,6 +288,8 @@ void Map::reset() {
   lightMapChanged = true;  
   colorAlreadySet = false;
   selectedDropTarget = NULL;
+
+  fog.reset();
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -326,6 +330,7 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
     this->y = ny;
 	this->mapx = nx;
 	this->mapy = ny;
+  //fog.visit( x, y );
   }
 }
 
@@ -338,63 +343,64 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
    -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
  */
 void Map::moveMap(int dir) {
-  if(SDL_GetModState() & KMOD_CTRL) {
+  if (SDL_GetModState() & KMOD_CTRL) {
     float rot;
-    if(SDL_GetModState() & KMOD_SHIFT){
-        rot = 1.5f;
+    if (SDL_GetModState() & KMOD_SHIFT) {
+      rot = 1.5f;
+    } else {
+      rot = 5.0f;
     }
-    else{
-        rot = 5.0f;
+    if (dir & Constants::MOVE_DOWN) setYRot(-1.0f * rot);
+    if (dir & Constants::MOVE_UP) setYRot(rot);
+    if (dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
+    if (dir & Constants::MOVE_LEFT) setZRot(rot);
+  } else if ( !preferences->getAlwaysCenterMap() ) {
+
+    // stop rotating (angle of rotation is kept)
+    setYRot(0);
+    setZRot(0);
+
+    // normalize z rot to 0-359
+    float z = getZRot();
+    if (z < 0) z += 360;
+    if (z >= 360) z -= 360;
+    float zrad = Constants::toRadians(z);
+
+    //	cerr << "-------------------" << endl;
+    //	cerr << "x=" << x << " y=" << y << " zrot=" << z << endl;
+
+    mapChanged = resortShapes = true;
+    float delta = (SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f);
+    if (dir & Constants::MOVE_DOWN) {
+      mapx += delta * sin(zrad);
+      mapy += delta * cos(zrad);
     }
-    if(dir & Constants::MOVE_DOWN) setYRot(-1.0f * rot);
-	if(dir & Constants::MOVE_UP) setYRot(rot);
-	if(dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
-	if(dir & Constants::MOVE_LEFT) setZRot(rot);
-  } else if( !preferences->getAlwaysCenterMap() ) {
-	
-	// stop rotating (angle of rotation is kept)
-	setYRot(0);
-	setZRot(0);
+    if (dir & Constants::MOVE_UP) {
+      mapx += delta * -sin(zrad);
+      mapy += delta * -cos(zrad);
+    }
+    if (dir & Constants::MOVE_LEFT) {
+      mapx += delta * -cos(zrad);
+      mapy += delta * sin(zrad);
+    }
+    if (dir & Constants::MOVE_RIGHT) {
+      mapx += delta * cos(zrad);
+      mapy += delta * -sin(zrad);
+    }
 
-	// normalize z rot to 0-359
-	float z = getZRot();
-	if(z < 0) z += 360;
-	if(z >= 360) z -= 360;
-	float zrad = Constants::toRadians(z);
+    //	cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
 
-	//	cerr << "-------------------" << endl;
-	//	cerr << "x=" << x << " y=" << y << " zrot=" << z << endl;
+    if (mapy > MAP_DEPTH - mapViewDepth) mapy = MAP_DEPTH - mapViewDepth;
+    if (mapy < 0) mapy = 0;
+    if (mapx > MAP_WIDTH - mapViewWidth) mapx = MAP_WIDTH - mapViewWidth;
+    if (mapx < 0) mapx = 0;
+    //	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
 
-	mapChanged = resortShapes = true;
-	float delta = (SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f);
-	if(dir & Constants::MOVE_DOWN) {
-	  mapx += delta * sin(zrad);
-	  mapy += delta * cos(zrad);
-	}
-	if(dir & Constants::MOVE_UP) {
-	  mapx += delta * -sin(zrad);
-	  mapy += delta * -cos(zrad);
-	}
-	if(dir & Constants::MOVE_LEFT) {
-	  mapx += delta * -cos(zrad);
-	  mapy += delta * sin(zrad);
-	}
-	if(dir & Constants::MOVE_RIGHT) {
-	  mapx += delta * cos(zrad);
-	  mapy += delta * -sin(zrad);
-	}
+    x = (int)rint(mapx);
+    y = (int)rint(mapy);
+    //	cerr << "FINAL: x=" << x << " y=" << y << endl;
 
-	//	cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
-
-	if(mapy > MAP_DEPTH - mapViewDepth) mapy = MAP_DEPTH - mapViewDepth;
-	if(mapy < 0) mapy = 0;
-	if(mapx > MAP_WIDTH - mapViewWidth) mapx = MAP_WIDTH - mapViewWidth;
-	if(mapx < 0) mapx = 0;
-	//	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
-
-	x = (int)rint(mapx);
-	y = (int)rint(mapy);
-	//	cerr << "FINAL: x=" << x << " y=" << y << endl;
+    //fog.visit( x, y );
   }
 }
 
@@ -547,7 +553,6 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       
       for(int yp = 0; yp < MAP_UNIT; yp++) {
         for(int xp = 0; xp < MAP_UNIT; xp++) {
-
           /**
            In scourge, shape coordinates are given by their
            left-bottom corner. So the +1 for posY moves the
@@ -1182,6 +1187,9 @@ void Map::draw() {
         !settings->isGridShowing() )
       drawShade();
 
+    // draw the fog of war
+    fog.draw( getX(), getY(), MVW, MVD );    
+
     glDisable(GL_BLEND);
 
     glDepthMask(GL_TRUE);    
@@ -1548,6 +1556,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
   // slow on mac os X:
   // glPushAttrib(GL_ENABLE_BIT);
+  
+  bool fogClear = ( later && later->pos ? 
+                    fog.getValue( later->pos->x, later->pos->y ) == Fog::FOG_CLEAR :
+                    true );
 
   glPushMatrix();
   if(useShadow) {
@@ -1578,8 +1590,12 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
                   later->pos->z)) {
         glColor4f(1, 0.3f, 0.3f, 1.0f);
       } else {
-        //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
-        glColor4f(1, 1, 1, 0.9f);
+        if( !fogClear ) {
+          glColor4f(1, 1, 1, 0.2f);
+        } else {
+          //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+          glColor4f(1, 1, 1, 0.9f);
+        }
       }
     }
   }
@@ -1594,7 +1610,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     if(later && later->pos) ((GLShape*)shape)->setLocked(isLocked(later->pos->x, later->pos->y, 0));
     else ((GLShape*)shape)->setLocked(false);
   }
-  if(effect && later) {
+  if( fogClear && effect && later ) {
     if(later->creature) {
       // translate hack for md2 models... see: md2shape::draw()
       //glTranslatef( 0, -1 / DIV, 0 );
@@ -1605,7 +1621,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
     }
-  } else if(later && later->projectile) {
+  } else if( fogClear && later && later->projectile ) {
     // orient and draw the projectile
     float f = later->projectile->getAngle() + 90;
     if(f < 0) f += 360;
@@ -1618,7 +1634,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
     }
     later->projectile->getShape()->draw();
-  } else if(later && later->creature && !useShadow) {
+  } else if( fogClear && later && later->creature && !useShadow ) {
     if(later->creature->getStateMod(Constants::invisible)) {
       glColor4f(0.3, 0.8f, 1.0f, 1.0f);    
     } else if(later->creature->getStateMod(Constants::possessed)) {
@@ -1632,7 +1648,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       shape->outline( 0.15f, 0.15f, 0.4f );
     }
     shape->draw();
-  } else if( later && later->item && !useShadow ) {
+  } else if( fogClear && later && later->item && !useShadow ) {
     
     if( later->item->isMagicItem() ) {
       shape->outline( Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ] );
@@ -2142,6 +2158,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
   if(creature) {
     if(creature->getShape()) {
 	  resortShapes = mapChanged = true;
+    if( creature == adapter->getPlayer() ) fog.visit( x, y );
 	  while(true) {
     Location *p = NULL;
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
@@ -2207,6 +2224,8 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
         }
       }
     }
+
+    if( creature == adapter->getPlayer() ) fog.visit( nx, ny );
 
     // pick up any items in the way
     char message[120];
