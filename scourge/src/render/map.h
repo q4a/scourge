@@ -19,6 +19,7 @@
 #define MAP_H
 
 #include "render.h"
+#include "fog.h"
 #include <vector>
 #include <set>
 
@@ -206,6 +207,8 @@ class Map {
 
   int LIGHTMAP_ENABLED;
   int lastOutlinedX, lastOutlinedY, lastOutlinedZ;
+
+  Fog fog;
 
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
