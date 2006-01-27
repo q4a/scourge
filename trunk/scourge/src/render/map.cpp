@@ -330,7 +330,6 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
     this->y = ny;
 	this->mapx = nx;
 	this->mapy = ny;
-  //fog.visit( x, y );
   }
 }
 
@@ -400,7 +399,6 @@ void Map::moveMap(int dir) {
     y = (int)rint(mapy);
     //	cerr << "FINAL: x=" << x << " y=" << y << endl;
 
-    //fog.visit( x, y );
   }
 }
 
@@ -1188,7 +1186,7 @@ void Map::draw() {
       drawShade();
 
     // draw the fog of war
-    fog.draw( getX(), getY(), MVW, MVD );    
+    fog.draw( getX(), getY(), MVW, MVD, frustum );
 
     glDisable(GL_BLEND);
 
@@ -1552,14 +1550,30 @@ void Map::doDrawShape(DrawLater *later, int effect) {
 
 void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, 
 					  GLuint name, int effect, DrawLater *later) {
+
+  // fog test
+  // FIXME: projectiles and effects not handled well
+  int fogValue = Fog::FOG_CLEAR;
+  if( later ) {
+    Shape *shape = 
+      ( later->creature ? 
+        later->creature->getShape() :
+        ( later->projectile ? NULL :
+          ( later->item ? later->item->getShape() :
+            ( later->effect ? NULL :
+            later->shape ) ) ) );
+    if( shape ) {
+      fogValue = 
+        fog.getVisibility( later->pos->x, later->pos->y, shape );
+    }
+  }
+  if( later && later->creature && fogValue != Fog::FOG_CLEAR ) return;
+  else if( fogValue == Fog::FOG_UNVISITED ) return;
+    
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
   // slow on mac os X:
   // glPushAttrib(GL_ENABLE_BIT);
-  
-  bool fogClear = ( later && later->pos ? 
-                    fog.getValue( later->pos->x, later->pos->y ) == Fog::FOG_CLEAR :
-                    true );
 
   glPushMatrix();
   if(useShadow) {
@@ -1590,12 +1604,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
                   later->pos->z)) {
         glColor4f(1, 0.3f, 0.3f, 1.0f);
       } else {
-        if( !fogClear ) {
-          glColor4f(1, 1, 1, 0.2f);
-        } else {
-          //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
-          glColor4f(1, 1, 1, 0.9f);
-        }
+        //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
+        glColor4f(1, 1, 1, 0.9f);
       }
     }
   }
@@ -1610,8 +1620,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     if(later && later->pos) ((GLShape*)shape)->setLocked(isLocked(later->pos->x, later->pos->y, 0));
     else ((GLShape*)shape)->setLocked(false);
   }
-  if( fogClear && effect && later ) {
-    if(later->creature) {
+  if( effect && later ) {
+    if( later->creature ) {
       // translate hack for md2 models... see: md2shape::draw()
       //glTranslatef( 0, -1 / DIV, 0 );
       later->creature->getEffect()->draw(later->creature->getEffectType(),
@@ -1621,7 +1631,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
     }
-  } else if( fogClear && later && later->projectile ) {
+  } else if( later && later->projectile ) {
     // orient and draw the projectile
     float f = later->projectile->getAngle() + 90;
     if(f < 0) f += 360;
@@ -1634,7 +1644,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
     }
     later->projectile->getShape()->draw();
-  } else if( fogClear && later && later->creature && !useShadow ) {
+  } else if( later && later->creature && !useShadow ) {
     if(later->creature->getStateMod(Constants::invisible)) {
       glColor4f(0.3, 0.8f, 1.0f, 1.0f);    
     } else if(later->creature->getStateMod(Constants::possessed)) {
@@ -1648,7 +1658,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       shape->outline( 0.15f, 0.15f, 0.4f );
     }
     shape->draw();
-  } else if( fogClear && later && later->item && !useShadow ) {
+  } else if( later && later->item && !useShadow ) {
     
     if( later->item->isMagicItem() ) {
       shape->outline( Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ] );
