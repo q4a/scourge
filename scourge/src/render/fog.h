@@ -20,6 +20,8 @@
 
 #include "../constants.h"
 
+class CFrustum;                
+class Shape;
 
 class Fog {
 private:
@@ -39,7 +41,8 @@ public:
   int getValue( int mapx, int mapy );
   void visit( int mapx, int mapy );
   void reset();
-  void draw( int sx, int sy, int w, int h );
+  void draw( int sx, int sy, int w, int h, CFrustum *frustum );
+  int getVisibility( int xp, int yp, Shape *shape );
 };
 
 #endif

@@ -17,6 +17,7 @@
 
 #include "fog.h"
 #include "glshape.h"
+#include "frustum.h"
 
 using namespace std;
 
@@ -59,40 +60,56 @@ void Fog::visit( int mapx, int mapy ) {
   }
 }
 
-void Fog::draw( int sx, int sy, int w, int h ) {
+void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_CULL_FACE );    
-  //glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
   glDisable(GL_DEPTH_TEST);
-  //glDisable( GL_TEXTURE_2D );
   glBlendFunc(GL_DST_COLOR, GL_ZERO);
-  //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  for( int x = sx; x < sx + w; x += FOG_CHUNK_SIZE ) {
-    for( int y = sy; y < sy + h; y += FOG_CHUNK_SIZE ) {
-      int v = getValue( x, y );
-      if( v == FOG_CLEAR ) {
-        continue;
-      } else if( v == FOG_UNVISITED ) {
-        glColor4f( 0, 0, 0, 0 );
-      } else if( v == FOG_VISITED ) {
-        glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+  
+  int fx = sx / FOG_CHUNK_SIZE;
+  int fy = sy / FOG_CHUNK_SIZE;
+  int fw = w / FOG_CHUNK_SIZE;
+  int fh = h / FOG_CHUNK_SIZE;
+  float nn = FOG_CHUNK_SIZE / DIV;
+  int ox = sx % FOG_CHUNK_SIZE;
+  int oy = sy % FOG_CHUNK_SIZE;
+
+  for( int x = 0; x < fw; x ++ ) {
+    for( int y = 0; y < fh; y ++ ) {
+      int v = fog[ fx + x ][ fy + y ];
+      switch( v ) {
+      case FOG_CLEAR: continue;
+      case FOG_UNVISITED: glColor4f( 0, 0, 0, 0 ); break;
+      case FOG_VISITED:glColor4f( 0.5f, 0.5f, 0.5f, 0.5f ); break;
       }
-      glPushMatrix();    
-      float xpos2 = (float)(x - sx) / DIV;
-      float ypos2 = (float)(y - sy) / DIV;
-      //float zpos2 = 16.0f / DIV;
-      float zpos2 = 0;
-      glTranslatef( xpos2, ypos2, zpos2 );
+      
+      float xp = (float)( x * FOG_CHUNK_SIZE - ox ) / DIV;
+      float yp = (float)( y * FOG_CHUNK_SIZE - oy ) / DIV;
+
+      if( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) ) continue;
+
       glBegin( GL_QUADS );
-      glVertex2f( 0, 0 );
-      glVertex2f( 0, FOG_CHUNK_SIZE / DIV );
-      glVertex2f( FOG_CHUNK_SIZE / DIV, FOG_CHUNK_SIZE / DIV );
-      glVertex2f( FOG_CHUNK_SIZE / DIV, 0 );
+      glVertex2f( xp,      yp );
+      glVertex2f( xp,      yp + nn );
+      glVertex2f( xp + nn, yp + nn );
+      glVertex2f( xp + nn, yp );
       glEnd();
-      glPopMatrix();
     }
   }
+
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
+}
+
+int Fog::getVisibility( int xp, int yp, Shape *shape ) {
+  int v = FOG_UNVISITED;
+  for( int x = 0; x < shape->getWidth(); x++ ) {
+    for( int y = 0; y < shape->getDepth(); y++ ) {
+      int vv = getValue( xp + x, yp - y );
+      if( vv == FOG_CLEAR ) return FOG_CLEAR;
+      else if( vv == FOG_VISITED ) v = vv;
+    }
+  }
+  return v;
 }
 
