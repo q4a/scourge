@@ -22,10 +22,13 @@
 
 class CFrustum;                
 class Shape;
+class Map;
 
 class Fog {
 private:
   int fog[MAP_WIDTH][MAP_DEPTH];
+  Map *map;
+  GLuint texture;
 
 public:
 
@@ -35,7 +38,7 @@ public:
     FOG_CLEAR
   };
 
-  Fog();
+  Fog( Map *map, GLuint texture );
   ~Fog();
 
   int getValue( int mapx, int mapy );
@@ -43,6 +46,10 @@ public:
   void reset();
   void draw( int sx, int sy, int w, int h, CFrustum *frustum );
   int getVisibility( int xp, int yp, Shape *shape );
+protected:
+  void getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
+                    GLdouble *screenx, GLdouble *screeny );
+  int getHighestZ( int sx, int sy, int w, int h );
 };
 
 #endif

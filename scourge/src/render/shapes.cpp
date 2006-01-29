@@ -283,6 +283,9 @@ void Shapes::initialize() {
     shapeCount++;
   }
 
+  setupAlphaBlendedBMP("/fog.bmp", &fog, &fogImage);
+  fogTexture = loadGLTextureBGRA(fog, fogImage, GL_LINEAR);
+
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
   setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);

@@ -72,7 +72,11 @@ int Scourge::blend[] = {
 };
 
 void Scourge::setBlendFunc() {
-    glBlendFunc(blend[blendA], blend[blendB]);
+  glBlendFunc(blend[blendA], blend[blendB]);
+}
+
+void Scourge::setBlendFuncStatic() {
+  glBlendFunc(blend[blendA], blend[blendB]);
 }
 
 Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
