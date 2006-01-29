@@ -204,6 +204,10 @@ protected:
   GLuint cursor_texture, crosshair_texture, attack_texture, talk_texture, use_texture, forbidden_texture, ranged_texture, move_texture;
   GLuint ripple_texture, torchback;
 
+  SDL_Surface *fog;
+  GLubyte *fogImage;
+  GLuint fogTexture;
+
 public: 
   Shapes( bool headless );
   virtual ~Shapes();
@@ -223,6 +227,8 @@ public:
 
   inline int getCharacterModelInfoCount() { return character_models.size(); }
   inline CharacterModelInfo *getCharacterModelInfo( int index ) { return character_models[ index ]; }
+
+  inline GLuint getFogTexture() { return fogTexture; }
 
   void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );

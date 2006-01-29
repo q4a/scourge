@@ -27,6 +27,7 @@
 #include "renderedcreature.h"
 #include "rendereditem.h"
 #include "mapadapter.h"
+#include "fog.h"
 #include "../io/zipfile.h"
 
 using namespace std;
@@ -165,9 +166,10 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   colorAlreadySet = false;
   selectedDropTarget = NULL;
 
-  fog.reset();
-
   createOverlayTexture();
+
+  fog = new Fog( this, shapes->getFogTexture() );
+  //fog->reset();
 
   addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
@@ -181,6 +183,7 @@ Map::~Map(){
   // delete the overlay texture
   glDeleteTextures(1, (GLuint*)&overlay_tex);
   delete frustum;
+  delete fog;
 }
 
 void Map::reset() {
@@ -289,7 +292,7 @@ void Map::reset() {
   colorAlreadySet = false;
   selectedDropTarget = NULL;
 
-  fog.reset();
+  fog->reset();
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -1186,7 +1189,7 @@ void Map::draw() {
       drawShade();
 
     // draw the fog of war
-    fog.draw( getX(), getY(), MVW, MVD, frustum );
+    fog->draw( getX(), getY(), MVW, MVD, frustum );
 
     glDisable(GL_BLEND);
 
@@ -1564,7 +1567,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
             later->shape ) ) ) );
     if( shape ) {
       fogValue = 
-        fog.getVisibility( later->pos->x, later->pos->y, shape );
+        fog->getVisibility( later->pos->x, later->pos->y, shape );
     }
   }
   if( later && later->creature && fogValue != Fog::FOG_CLEAR ) return;
@@ -2168,7 +2171,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
   if(creature) {
     if(creature->getShape()) {
 	  resortShapes = mapChanged = true;
-    if( creature == adapter->getPlayer() ) fog.visit( x, y );
+    if( creature == adapter->getPlayer() ) fog->visit( x, y );
 	  while(true) {
     Location *p = NULL;
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
@@ -2235,7 +2238,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
       }
     }
 
-    if( creature == adapter->getPlayer() ) fog.visit( nx, ny );
+    if( creature == adapter->getPlayer() ) fog->visit( nx, ny );
 
     // pick up any items in the way
     char message[120];

@@ -19,7 +19,6 @@
 #define MAP_H
 
 #include "render.h"
-#include "fog.h"
 #include <vector>
 #include <set>
 
@@ -37,6 +36,7 @@ class MapAdapter;
 class Location;
 class Effect;
 class DisplayInfo;
+class Fog;
 
 class MapSettings {
 
@@ -208,7 +208,7 @@ class Map {
   int LIGHTMAP_ENABLED;
   int lastOutlinedX, lastOutlinedY, lastOutlinedZ;
 
-  Fog fog;
+  Fog *fog;
 
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
@@ -248,6 +248,10 @@ class Map {
 
   Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
+
+  inline MapAdapter *getAdapter() { return adapter; }
+
+  inline Shapes *getShapes() { return shapes; }
 
   inline void setFloor( int tw, int th, GLuint texture ) { floorTexWidth = tw; floorTexHeight = th; floorTex = texture; }
 
