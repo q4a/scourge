@@ -38,10 +38,12 @@ using namespace std;
 Fog::Fog( Map *map, GLuint texture ) {
   this->map = map;
   this->texture = texture;
+  this->quadric = gluNewQuadric();
   reset();
 }
 
 Fog::~Fog() {
+  gluDeleteQuadric( quadric );
 }
 
 void Fog::reset() {
@@ -61,7 +63,9 @@ void Fog::visit( int mapx, int mapy ) {
   int fy = mapy / FOG_CHUNK_SIZE;
   for( int x = 0; x < FOG_WIDTH; x++ ) {
     for( int y = 0; y < FOG_DEPTH; y++ ) {
-      if( abs( x - fx ) <= 4 && abs( y - fy ) <= 4 ) {
+      double d = (double)( ( fx - x ) * ( fx - x) ) + 
+        (double)( ( fy - y ) * ( fy - y ) );
+      if( d <= 25.0f ) {
         fog[x][y] = FOG_CLEAR;
       } else if( fog[x][y] == FOG_CLEAR ) {
         fog[x][y] = FOG_VISITED;
@@ -101,10 +105,6 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       float zp = (float)( z ) / DIV;
 
       if( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) ) continue;
-
-      // translate to screen coordinates
-//      Uint16 sx, sy;
-//      getScreenXY( (Uint16)xp, (Uint16)yp, &sx, &sy, map );
 
       // get all screen points of the bounding box; draw bounding rectangle on screen
       float obj[20][3] = {
@@ -172,58 +172,61 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
     }
   }
 
+
+
+
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_CULL_FACE );    
   glDisable(GL_DEPTH_TEST);
-  glBlendFunc(GL_DST_COLOR, GL_ZERO);
   
-  //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  //Scourge::setBlendFuncStatic();
-  //glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_EQUAL, 0xff );
+  //glBindTexture( GL_TEXTURE_2D, texture );
   
+  // stencil buffer
   glClear( GL_STENCIL_BUFFER_BIT );
   glEnable(GL_STENCIL_TEST);
   glStencilFunc(GL_EQUAL, 0, 0xffffffff);
   glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
 
-  //glBindTexture( GL_TEXTURE_2D, texture );
+  glEnable( GL_BLEND );
+  glBlendFunc(GL_DST_COLOR, GL_ZERO);
+  glColor4f( 0.65f, 0.45f, 0.60f, 0.5f);
+
+
   glPushMatrix();
   glLoadIdentity();
   for( int t = 0; t < 2; t++ ) {
+    if( t == 1 ) {
+      glDisable( GL_STENCIL_TEST );
+      glDisable( GL_BLEND );
+      glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
+    }
     for( int i = 0; i < pCount; i++ ) {
   
-      if( t == 0 && f[i] != FOG_UNVISITED ) continue;
-      else if( t == 1 && f[i] != FOG_VISITED ) continue;
+      if( t == 1 && f[i] != FOG_UNVISITED ) continue;
+      else if( t == 0 && f[i] != FOG_VISITED ) continue;
       
-      switch( f[i] ) {
-      case FOG_CLEAR: continue;
-      //case FOG_UNVISITED: glColor4f( 0.2f, 0.2f, 0.2f, 0.2f ); break;
-      //case FOG_VISITED:glColor4f( 0.5f, 0.5f, 0.5f, 0.5f ); break;
-      case FOG_UNVISITED: glColor4f( 0, 0, 0, 0.05f); break;
-      case FOG_VISITED:  glColor4f( 0.5f, 0.5f, 0.5f, 0.5f); break;
-      }
-
       GLfloat x = p[i][0];
       GLfloat y = p[i][1];
       GLfloat w = p[i][2];
       GLfloat h = p[i][3];
 
-      glBegin( GL_QUADS );
-      //glTexCoord2f( 0, 0 );
-      glVertex2f( x, y );
-      //glTexCoord2f( 0, 1 );
-      glVertex2f( x, y + h );
-      //glTexCoord2f( 1, 1 );
-      glVertex2f( x + w, y + h );
-      //glTexCoord2f( 1, 0 );
-      glVertex2f( x + w, y );
-      glEnd();
-      
+      if( e[i] ) {
+        // 1 big circle
+        glTranslatef( x + w/2, y + h/2, 0 );
+        gluDisk( quadric, 0, w, 8, 1);
+        glTranslatef( -(x + w/2), -(y + h/2), 0 );
+      } else {
+        glBegin( GL_QUADS );
+        glVertex2f( x, y );
+        glVertex2f( x, y + h );
+        glVertex2f( x + w, y + h );
+        glVertex2f( x + w, y );
+        glEnd();
+      }
+
     }
   }
   glPopMatrix();
-  glDisable(GL_STENCIL_TEST);
 
 #ifdef DEBUG_FOG 
   glLoadIdentity();               
@@ -240,8 +243,8 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   glEnable( GL_BLEND );
 #endif              
 
+  glEnable( GL_BLEND );
   glEnable(GL_TEXTURE_2D);
-  //glDisable( GL_ALPHA_TEST );
   glEnable(GL_DEPTH_TEST);
 }
 

@@ -29,6 +29,7 @@ private:
   int fog[MAP_WIDTH][MAP_DEPTH];
   Map *map;
   GLuint texture;
+  GLUquadric *quadric;
 
 public:
 
