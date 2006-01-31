@@ -130,6 +130,11 @@ public:
   virtual void printToConsole( const char *s ) { std::cerr << s << std::endl; }
 
   virtual void startConversation( RenderedCreature *creature ) {}
+
+  virtual bool intersects( int x, int y, int w, int h,
+                           int x2, int y2, int w2, int h2 ) {
+    return false;
+  }
 };
 
 class SDLOpenGLAdapter : public GameAdapter {
@@ -162,6 +167,9 @@ public:
    * Set up the opengl view.
    */
   virtual void setView() { getSDLHandler()->setOrthoView(); }
+
+  bool intersects( int x, int y, int w, int h,
+                   int x2, int y2, int w2, int h2 );
 
 protected:
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);

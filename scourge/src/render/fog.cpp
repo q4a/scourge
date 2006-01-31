@@ -34,15 +34,21 @@ using namespace std;
 #define FOG_WIDTH ( MAP_WIDTH / FOG_CHUNK_SIZE )
 #define FOG_DEPTH ( MAP_DEPTH / FOG_CHUNK_SIZE )
 
+#define ER 118
+#define EG 110
+#define EB 130
+
 
 Fog::Fog( Map *map, GLuint texture ) {
   this->map = map;
   this->texture = texture;
   this->quadric = gluNewQuadric();
+  createOverlayTexture();
   reset();
 }
 
 Fog::~Fog() {
+  glDeleteTextures(1, (GLuint*)&overlay_tex);
   gluDeleteQuadric( quadric );
 }
 
@@ -83,6 +89,9 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   int ox = sx % FOG_CHUNK_SIZE;
   int oy = sy % FOG_CHUNK_SIZE;
 
+  GLfloat minLightX, minLightY, maxLightX, maxLightY;
+  minLightX = minLightY = 2000;
+  maxLightX = maxLightY = 0;
   bool e[1000];
   int f[1000];
   GLfloat p[1000][4];
@@ -90,12 +99,8 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   for( int x = 0; x < fw; x ++ ) {
     for( int y = 0; y < fh; y ++ ) {
       int v = fog[ fx + x ][ fy + y ];
-      switch( v ) {
-      case FOG_CLEAR: continue;
-      case FOG_UNVISITED: glColor4f( 1, 1, 1, 0.05f); break;
-      case FOG_VISITED:  glColor4f( 1, 1, 1, 0.5f); break;
-      }
-      
+      if( v == FOG_VISITED ) continue;
+
       float xp = (float)( x * FOG_CHUNK_SIZE - ox ) / DIV;
       float yp = (float)( y * FOG_CHUNK_SIZE - oy ) / DIV;
       int z = getHighestZ( ( fx + x ) * FOG_CHUNK_SIZE, 
@@ -104,6 +109,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
                            FOG_CHUNK_SIZE );
       float zp = (float)( z ) / DIV;
 
+      // FIXME: we should check 2d inclusion in screen rect instead
       if( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) ) continue;
 
       // get all screen points of the bounding box; draw bounding rectangle on screen
@@ -142,11 +148,20 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
         GLdouble scx, scy;
         getScreenXY( (GLdouble)obj[i][0], (GLdouble)obj[i][1], (GLdouble)obj[i][2], 
                      &scx, &scy );
-        if( scx < minScX ) minScX = (GLfloat)scx;
-        if( scx > maxScX ) maxScX = (GLfloat)scx;
-        if( scy < minScY ) minScY = (GLfloat)scy;
-        if( scy > maxScY ) maxScY = (GLfloat)scy;
+        if( v == FOG_CLEAR ) {
+          if( scx < minLightX ) minLightX = (GLfloat)scx;
+          if( scx > maxLightX ) maxLightX = (GLfloat)scx;
+          if( scy < minLightY ) minLightY = (GLfloat)scy;
+          if( scy > maxLightY ) maxLightY = (GLfloat)scy;
+        } else {
+          if( scx < minScX ) minScX = (GLfloat)scx;
+          if( scx > maxScX ) maxScX = (GLfloat)scx;
+          if( scy < minScY ) minScY = (GLfloat)scy;
+          if( scy > maxScY ) maxScY = (GLfloat)scy;
+        }
       }
+
+      if( v == FOG_CLEAR ) continue;
 
       f[pCount] = v;
       p[pCount][0] = minScX;
@@ -155,15 +170,10 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       p[pCount][3] = maxScY - minScY;
 
       e[pCount] = false;
-      if( //v != fog[ fx + x - 1 ][ fy + y - 1 ] ||
-          v != fog[ fx + x ][ fy + y - 1 ] ||
-          //v != fog[ fx + x + 1 ][ fy + y - 1 ] ||
+      if( v != fog[ fx + x ][ fy + y - 1 ] ||
           v != fog[ fx + x - 1 ][ fy + y ] ||
           v != fog[ fx + x + 1 ][ fy + y ] ||
-          //v != fog[ fx + x - 1 ][ fy + y + 1 ] ||
-          v != fog[ fx + x ][ fy + y + 1 ] //||
-          //v != fog[ fx + x + 1 ][ fy + y + 1 ] 
-          ) {
+          v != fog[ fx + x ][ fy + y + 1 ] ) {
         e[pCount] = true;
       }
 
@@ -174,6 +184,8 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 
 
+  // ***************************
+  // DRAW IT!
 
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_CULL_FACE );    
@@ -181,50 +193,102 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   
   //glBindTexture( GL_TEXTURE_2D, texture );
   
-  // stencil buffer
-  glClear( GL_STENCIL_BUFFER_BIT );
-  glEnable(GL_STENCIL_TEST);
-  glStencilFunc(GL_EQUAL, 0, 0xffffffff);
-  glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-
   glEnable( GL_BLEND );
   glBlendFunc(GL_DST_COLOR, GL_ZERO);
-  glColor4f( 0.65f, 0.45f, 0.60f, 0.5f);
-
+//  glColor4f( 0.65f, 0.45f, 0.60f, 0.5f);
+  glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, 0.5f);
 
   glPushMatrix();
   glLoadIdentity();
-  for( int t = 0; t < 2; t++ ) {
-    if( t == 1 ) {
-      glDisable( GL_STENCIL_TEST );
-      glDisable( GL_BLEND );
-      glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
-    }
-    for( int i = 0; i < pCount; i++ ) {
+
+  // draw a gray rect.
+  if( map->getAdapter()->
+      intersects( 0, 0, 
+                  map->getAdapter()->getScreenWidth(), 
+                  map->getAdapter()->getScreenHeight(), 
+                  (int)minLightX, (int)minLightY, 
+                  (int)( maxLightX - minLightX ), 
+                  (int)( maxLightY - minLightY ) ) ) {
+    
+    
+    glBegin( GL_QUADS );
+    
+    glVertex2f( 0, 0 );
+    glVertex2f( 0, minLightY );
+    glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
+    glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
+
+    glVertex2f( 0, maxLightY );
+    glVertex2f( 0, map->getAdapter()->getScreenHeight() );
+    glVertex2f( map->getAdapter()->getScreenWidth(), map->getAdapter()->getScreenHeight() );
+    glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
+
+    glVertex2f( 0, minLightY );
+    glVertex2f( 0, maxLightY );
+    glVertex2f( minLightX, maxLightY );
+    glVertex2f( minLightX, minLightY );
+
+    glVertex2f( maxLightX, minLightY );
+    glVertex2f( maxLightX, maxLightY );
+    glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
+    glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
+
+    glEnd();
   
-      if( t == 1 && f[i] != FOG_UNVISITED ) continue;
-      else if( t == 0 && f[i] != FOG_VISITED ) continue;
-      
-      GLfloat x = p[i][0];
-      GLfloat y = p[i][1];
-      GLfloat w = p[i][2];
-      GLfloat h = p[i][3];
+    
+    // draw the light circle
+    glEnable( GL_TEXTURE_2D );
+    glLoadIdentity();  
+    glColor4f( 1, 1, 1, 0.5f);
+    
+    glBindTexture( GL_TEXTURE_2D, overlay_tex );
+    glBegin( GL_QUADS );
+    //  glNormal3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f( 0.0f, 0.0f );
+    glVertex2f( minLightX, minLightY );
+    glTexCoord2f( 0.0f, 1.0f );
+    glVertex2f( minLightX, maxLightY );
+    glTexCoord2f( 1.0f, 1.0f );
+    glVertex2f( maxLightX, maxLightY );
+    glTexCoord2f( 1.0f, 0.0f );
+    glVertex2f( maxLightX, minLightY );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+  } else {
+    glBegin( GL_QUADS );
+    glVertex2f( 0, 0 );
+    glVertex2f( 0, map->getAdapter()->getScreenHeight() );
+    glVertex2f( map->getAdapter()->getScreenWidth(), 
+                map->getAdapter()->getScreenHeight() );
+    glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
+    glEnd();
+  }
 
-      if( e[i] ) {
-        // 1 big circle
-        glTranslatef( x + w/2, y + h/2, 0 );
-        gluDisk( quadric, 0, w, 8, 1);
-        glTranslatef( -(x + w/2), -(y + h/2), 0 );
-      } else {
-        glBegin( GL_QUADS );
-        glVertex2f( x, y );
-        glVertex2f( x, y + h );
-        glVertex2f( x + w, y + h );
-        glVertex2f( x + w, y );
-        glEnd();
-      }
 
+
+  glLoadIdentity();
+  glDisable( GL_BLEND );
+  glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
+  for( int i = 0; i < pCount; i++ ) {
+    GLfloat x = p[i][0];
+    GLfloat y = p[i][1];
+    GLfloat w = p[i][2];
+    GLfloat h = p[i][3];
+
+    if( e[i] ) {
+      // 1 big circle
+      glTranslatef( x + w/2, y + h/2, 0 );
+      gluDisk( quadric, 0, w, 8, 1);
+      glTranslatef( -(x + w/2), -(y + h/2), 0 );
+    } else {
+      glBegin( GL_QUADS );
+      glVertex2f( x, y );
+      glVertex2f( x, y + h );
+      glVertex2f( x + w, y + h );
+      glVertex2f( x + w, y );
+      glEnd();
     }
+
   }
   glPopMatrix();
 
@@ -296,5 +360,62 @@ int Fog::getVisibility( int xp, int yp, Shape *shape ) {
     }
   }
   return v;
+}
+
+// vary this number from 0.001 - 3.0 to get tighter shading
+#define SHADE_LEVEL 1.0f
+
+void Fog::createOverlayTexture() {
+
+  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+  int minP = 50;
+
+  // create the dark texture
+  glGenTextures(1, (GLuint*)&overlay_tex);
+  for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
+    for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
+      
+      float id = (float)i - half;
+      float jd = (float)j - half;
+
+      // the distance
+      float dist = sqrt( id * id + jd * jd );
+
+      // the distance as a percent of the max distance
+      float percent = dist / ( sqrt( half * half ) / 100.0f );
+
+      int r, g, b;
+      if( percent < minP ) {
+        r = 0xff;
+        g = 0xff;
+        b = 0xff;
+      } else {        
+        r = 0xff - 
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - ER ) / (float)( 100 - minP ) ) );
+        if( r < ER ) r = ER;
+        g = 0xff - 
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - EG ) / (float)( 100 - minP ) ) );
+        if( g < EG ) g = EG;
+        b = 0xff - 
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - EB ) / (float)( 100 - minP ) ) );
+        if( b < EB ) b = EB;
+      }
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
+    }
+  }
+  glBindTexture(GL_TEXTURE_2D, overlay_tex);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
+			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
 }
 
