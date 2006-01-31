@@ -31,6 +31,10 @@ private:
   GLuint texture;
   GLUquadric *quadric;
 
+#define OVERLAY_SIZE 16
+  GLuint overlay_tex;
+  unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+
 public:
 
   enum {
@@ -51,6 +55,7 @@ protected:
   void getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
                     GLdouble *screenx, GLdouble *screeny );
   int getHighestZ( int sx, int sy, int w, int h );
+  void createOverlayTexture();
 };
 
 #endif

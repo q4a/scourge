@@ -1554,24 +1554,13 @@ void Map::doDrawShape(DrawLater *later, int effect) {
 void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, 
 					  GLuint name, int effect, DrawLater *later) {
 
-  // fog test
-  // FIXME: projectiles and effects not handled well
-  int fogValue = Fog::FOG_CLEAR;
-  if( later ) {
-    Shape *shape = 
-      ( later->creature ? 
-        later->creature->getShape() :
-        ( later->projectile ? NULL :
-          ( later->item ? later->item->getShape() :
-            ( later->effect ? NULL :
-            later->shape ) ) ) );
-    if( shape ) {
-      fogValue = 
-        fog->getVisibility( later->pos->x, later->pos->y, shape );
-    }
+  // fog test for creatures
+  if( later && later->creature && 
+      fog->getVisibility( later->pos->x, 
+                          later->pos->y, 
+                          later->creature->getShape() ) != Fog::FOG_CLEAR ) {
+    return;
   }
-  if( later && later->creature && fogValue != Fog::FOG_CLEAR ) return;
-  else if( fogValue == Fog::FOG_UNVISITED ) return;
     
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 

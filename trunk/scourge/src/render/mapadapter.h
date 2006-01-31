@@ -61,6 +61,12 @@ public:
    * Is the oval cutout shown over the map?
    */
   virtual bool isLevelShaded() = 0;
+
+  /**
+   * Rectangle intersection test.
+   */
+  virtual bool intersects( int x, int y, int w, int h,
+                           int x2, int y2, int w2, int h2 ) = 0;
 };
 
 #endif
