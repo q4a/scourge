@@ -496,10 +496,14 @@ Mission::Mission( Board *board, int level, int depth,
 
   // assign the map grid location
   if( mapName && strlen( mapName ) ) {
+    edited = true;
     char result[255];
     board->getSession()->getMap()->loadMapLocation( mapName, result, &mapX, &mapY );
   } else {
-    board->getSession()->getShapePalette()->getRandomMapLocation( mapType, NULL, &mapX, &mapY );
+    edited = false;
+    char *s;
+    board->getSession()->getShapePalette()->getRandomMapLocation( mapType, &s, &mapX, &mapY );
+    strcpy( this->mapName, s );
   }
   
 //  cerr << "*** Created mission: " << getName() << endl;

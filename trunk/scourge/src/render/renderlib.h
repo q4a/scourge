@@ -40,5 +40,6 @@
 #include "renderedcreature.h"
 #include "renderedprojectile.h"
 #include "shapes.h"
+#include "maprenderhelper.h"
 
 #endif

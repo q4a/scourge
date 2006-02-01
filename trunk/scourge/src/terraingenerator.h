@@ -37,7 +37,7 @@ class GLShape;
 class ShapePalette;
 class DisplayInfo;
 class Location;
-
+class MapRenderHelper;
 
 #define MESSAGE "Assembling Dungeon Level"
 
@@ -126,6 +126,8 @@ protected:
 
   // transfer the in-memory map to the displayed map
   virtual bool drawNodes( Map *map, ShapePalette *shapePal ) = 0;
+
+  virtual MapRenderHelper *getMapRenderHelper() = 0;
 
   
   virtual void addContainers(Map *map, ShapePalette *shapePal);

@@ -93,6 +93,8 @@ protected:
 
   virtual void addFurniture(Map *map, ShapePalette *shapePal);
 
+  virtual MapRenderHelper *getMapRenderHelper();
+
 };
 
 #endif

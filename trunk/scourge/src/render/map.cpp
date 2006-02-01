@@ -27,8 +27,8 @@
 #include "renderedcreature.h"
 #include "rendereditem.h"
 #include "mapadapter.h"
-#include "fog.h"
 #include "../io/zipfile.h"
+#include "maprenderhelper.h"
 
 using namespace std;
 
@@ -166,10 +166,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   colorAlreadySet = false;
   selectedDropTarget = NULL;
 
-  createOverlayTexture();
-
-  fog = new Fog( this, shapes->getFogTexture() );
-  //fog->reset();
+  helper = NULL;
 
   addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
@@ -180,10 +177,8 @@ Map::~Map(){
   // delete the descriptions
   for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
     free(descriptions[i]);
-  // delete the overlay texture
-  glDeleteTextures(1, (GLuint*)&overlay_tex);
   delete frustum;
-  delete fog;
+  if( helper ) delete helper;
 }
 
 void Map::reset() {
@@ -292,7 +287,7 @@ void Map::reset() {
   colorAlreadySet = false;
   selectedDropTarget = NULL;
 
-  fog->reset();
+  if( helper ) helper->reset();
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -1184,12 +1179,8 @@ void Map::draw() {
       doDrawShape(&damage[i], 1);
     }
     
-    if( adapter->isLevelShaded() && 
-        !settings->isGridShowing() )
-      drawShade();
-
-    // draw the fog of war
-    fog->draw( getX(), getY(), MVW, MVD, frustum );
+    // draw the fog of war or shading
+    helper->draw( getX(), getY(), MVW, MVD );
 
     glDisable(GL_BLEND);
 
@@ -1478,75 +1469,6 @@ void Map::drawProjectiles() {
   }
 }
 
-void Map::drawShade() {
-  glPushMatrix();
-  glLoadIdentity();
-
-  glTranslatef(viewX, viewY, 0);
-
-  //  glDisable(GL_BLEND);
-  glDisable(GL_DEPTH_TEST);
-  //glDisable( GL_TEXTURE_2D );
-  glBlendFunc(GL_DST_COLOR, GL_ZERO);
-  //scourge->setBlendFunc();
-
-  glColor4f( 1, 1, 1, 0.5f);
-
-  glBindTexture( GL_TEXTURE_2D, overlay_tex );
-  glBegin( GL_QUADS );
-  //  glNormal3f(0.0f, 1.0f, 0.0f);
-  glTexCoord2f( 0.0f, 0.0f );
-  glVertex3f(0, 0, 0);
-  glTexCoord2f( 0.0f, 1.0f );
-  glVertex3f(0, 
-             viewHeight, 0);
-  glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(viewWidth, viewHeight, 0);
-  glTexCoord2f( 1.0f, 0.0f );
-  glVertex3f(viewWidth, 0, 0);
-  glEnd();
-
-  //glEnable( GL_TEXTURE_2D );
-  glEnable(GL_DEPTH_TEST);
-  glPopMatrix();
-
-}
-
-// vary this number from 0.001 - 3.0 to get tighter shading
-#define SHADE_LEVEL 1.0f
-
-void Map::createOverlayTexture() {
-  // create the dark texture
-  unsigned int i, j;
-  glGenTextures(1, (GLuint*)&overlay_tex);
-//  float tmp = 0.7f;
-  for(i = 0; i < OVERLAY_SIZE; i++) {
-    for(j = 0; j < OVERLAY_SIZE; j++) {
-      float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
-      float id = (float)i - half;
-      float jd = (float)j - half;
-      //float dd = 255.0f - ((255.0f / (half * half / 1.2f)) * (id * id + jd * jd));
-      
-      float dd = 255.0f - ((255.0f / (half * half / SHADE_LEVEL)) * (id * id + jd * jd));
-      if(dd < 0.0f) dd = 0.0f;
-      if(dd > 255.0f) dd = 255.0f;
-      unsigned char d = (unsigned char)dd;
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = d;
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = d;
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = d;
-    }
-  }
-  glBindTexture(GL_TEXTURE_2D, overlay_tex);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
-			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
-}
-
 void Map::doDrawShape(DrawLater *later, int effect) {
     doDrawShape(later->xpos, later->ypos, later->zpos, later->shape, later->name, effect, later);
 }
@@ -1556,9 +1478,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
   // fog test for creatures
   if( later && later->creature && 
-      fog->getVisibility( later->pos->x, 
+      !helper->isVisible( later->pos->x, 
                           later->pos->y, 
-                          later->creature->getShape() ) != Fog::FOG_CLEAR ) {
+                          later->creature->getShape() ) ) {
     return;
   }
     
@@ -2160,7 +2082,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
   if(creature) {
     if(creature->getShape()) {
 	  resortShapes = mapChanged = true;
-    if( creature == adapter->getPlayer() ) fog->visit( x, y );
+    if( creature == adapter->getPlayer() ) helper->visit( x, y );
 	  while(true) {
     Location *p = NULL;
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
@@ -2227,7 +2149,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
       }
     }
 
-    if( creature == adapter->getPlayer() ) fog->visit( nx, ny );
+    if( creature == adapter->getPlayer() ) helper->visit( nx, ny );
 
     // pick up any items in the way
     char message[120];
@@ -2956,6 +2878,9 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
   // reset the map
   reset();
 
+  // it's a room-type map
+  setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
+
   edited = true;
 
   // load the theme
@@ -3349,3 +3274,8 @@ void MapMemoryManager::printStatus() {
   }
 }
   
+void Map::setMapRenderHelper( MapRenderHelper *helper ) {
+  this->helper = helper;
+  this->helper->setMap( this );
+  LIGHTMAP_ENABLED = this->helper->isLightMapEnabled();
+}

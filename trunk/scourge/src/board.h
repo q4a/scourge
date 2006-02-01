@@ -78,6 +78,7 @@ private:
   int level;
   int depth;
   char mapName[80];
+  bool edited;
   char name[80];
   char description[2000];
   char success[2000];
@@ -173,6 +174,7 @@ public:
   inline int getLevel() { return level; }
   inline int getDepth() { return depth; } 
   inline char *getMapName() { return mapName; } 
+  inline bool isEdited() { return edited; }
   void reset();
 
   // these return true if the mission has been completed

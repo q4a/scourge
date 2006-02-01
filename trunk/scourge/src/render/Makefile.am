@@ -12,6 +12,8 @@ libScourgeRender_a_SOURCES = \
 	renderedcreature.h\
 	fog.cpp\
 	fog.h\
+	maprenderhelper.cpp\
+	maprenderhelper.h\
 	map.cpp\
 	map.h\
 	mapadapter.cpp\
