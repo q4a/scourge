@@ -38,6 +38,7 @@ class GLShape;
 class ShapePalette;
 class DisplayInfo;
 class Location;
+class MapRenderHelper;
 
 #define DRAW_UNVISITED 0
 
@@ -145,8 +146,8 @@ protected:
 
   virtual void addContainers(Map *map, ShapePalette *shapePal);
 
-
-
+  virtual MapRenderHelper *getMapRenderHelper();
+  
 };
 
 #endif

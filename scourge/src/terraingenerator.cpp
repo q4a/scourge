@@ -45,6 +45,17 @@ TerrainGenerator::TerrainGenerator( Scourge *scourge,
                           scourge->getSession()->getShapePalette()->getProgressHighlightTexture(),
                           progressSteps, false, true );
 
+  // reasonable defaults
+  doorCount = 0;
+  roomCount = 1;
+  room[0].x = room[0].y = 0;
+  room[0].w = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) / MAP_UNIT;
+  room[0].h = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) / MAP_UNIT;
+  room[0].valueBonus = 0;
+  roomMaxWidth = 0;
+  roomMaxHeight = 0;
+  objectCount = 50;
+  monsters = true;
 }
 
 TerrainGenerator::~TerrainGenerator() {
@@ -60,17 +71,8 @@ void TerrainGenerator::updateStatus(const char *statusMessage) {
 
 void TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {	 
 
-  // reasonable defaults
-  doorCount = 0;
-  roomCount = 1;
-  room[0].x = room[0].y = 0;
-  room[0].w = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) / MAP_UNIT;
-  room[0].h = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) / MAP_UNIT;
-  room[0].valueBonus = 0;
-  roomMaxWidth = 0;
-  roomMaxHeight = 0;
-  objectCount = 50;
-  monsters = true;
+  // set the renderer helper for this type of map
+  map->setMapRenderHelper( getMapRenderHelper() );
 
   start = SDL_GetTicks();
   generate( map, shapePal );
@@ -83,7 +85,6 @@ void TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {
     // reset the progress
     progress->setStatus( status );
   }
-
 }
 
 bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
@@ -364,7 +365,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
                                                      monster->getScale(),
 													 monster);
       Creature *creature = scourge->getSession()->newCreature(monster, shape);
-      int x, y;
+      int x, y;                           
       getRandomLocation(levelMap, creature->getShape(), &x, &y);
       addItem(levelMap, creature, NULL, NULL, x, y);
       creature->moveTo(x, y, 0);

@@ -36,7 +36,7 @@ class MapAdapter;
 class Location;
 class Effect;
 class DisplayInfo;
-class Fog;
+class MapRenderHelper;
 
 class MapSettings {
 
@@ -208,11 +208,7 @@ class Map {
   int LIGHTMAP_ENABLED;
   int lastOutlinedX, lastOutlinedY, lastOutlinedZ;
 
-  Fog *fog;
-
-#define OVERLAY_SIZE 16
-  GLuint overlay_tex;
-  unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+  MapRenderHelper *helper;
 
   static int dir_index[];
   
@@ -249,9 +245,16 @@ class Map {
   Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
 
+  void setMapRenderHelper( MapRenderHelper *helper );
+  inline MapRenderHelper *getMapRenderHelper() { return helper; }
+
   inline MapAdapter *getAdapter() { return adapter; }
 
   inline Shapes *getShapes() { return shapes; }
+
+  inline MapSettings *getSettings() { return settings; }
+
+  inline CFrustum *getFrustum() { return frustum; }
 
   inline void setFloor( int tw, int th, GLuint texture ) { floorTexWidth = tw; floorTexHeight = th; floorTex = texture; }
 
@@ -598,13 +601,9 @@ class Map {
   void traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors);
   bool isLocationBlocked(int x, int y, int z, bool onlyLockedDoors);
 
-  void drawShade();
-
   void drawProjectiles();
 
   void drawCube(float x, float y, float z, float r);
-
-  void createOverlayTexture();    
 
   void removeEffect(Sint16 x, Sint16 y, Sint16 z);
   void removeAllEffects();

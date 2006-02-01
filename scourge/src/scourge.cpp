@@ -42,7 +42,7 @@
 
 using namespace std;
 
-#define CAVE_TEST 1
+//#define CAVE_TEST 1
 
 #define MOUSE_ROT_DELTA 2
 
@@ -421,8 +421,7 @@ void Scourge::startMission() {
       getSession()->setCurrentMission(board->getMission(nextMission));
       missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
       bool loaded = false;
-      if( getSession()->getCurrentMission()->getMapName() &&
-          strlen( getSession()->getCurrentMission()->getMapName() ) ) {
+      if( getSession()->getCurrentMission()->isEdited() ) {
         // try to load the edited map
         dg = NULL;
         bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
@@ -478,16 +477,17 @@ void Scourge::startMission() {
 
       // if no edited map is found, make a random map
       if( !loaded ) {
-        /*
-        dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
-                                  (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
-                                  (currentStory > 0),
-                                  getSession()->getCurrentMission());
-        */
-        dg = new CaveMaker(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
-                           (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
-                           (currentStory > 0),
-                           getSession()->getCurrentMission());
+        if( strstr( getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
+          dg = new CaveMaker(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
+                             (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
+                             (currentStory > 0),
+                             getSession()->getCurrentMission());
+        } else {
+          dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), currentStory, 
+                                    (currentStory < getSession()->getCurrentMission()->getDepth() - 1), 
+                                    (currentStory > 0),
+                                    getSession()->getCurrentMission());
+        }
         dg->toMap(levelMap, getSession()->getShapePalette());
         scriptName = RANDOM_MAP_NAME;
       }
@@ -618,8 +618,7 @@ void Scourge::startMission() {
             cerr << "no mission" << endl;
           }
           if( getSession()->getCurrentMission() &&
-              getSession()->getCurrentMission()->getMapName() &&
-              strlen( getSession()->getCurrentMission()->getMapName() ) &&
+              getSession()->getCurrentMission()->isEdited() &&
               currentStory > 0 ) {
             cerr << "\tgoing to level 0" << endl;
             // to 0-th depth in edited map

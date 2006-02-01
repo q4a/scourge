@@ -30,8 +30,7 @@ CaveMaker::CaveMaker( Scourge *scourge, int level, int depth,
                       bool stairsDown, bool stairsUp, 
                       Mission *mission) :
 TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 10 ) {
-  //int dungeonLevel = level / 8;
-             int dungeonLevel = 8;
+  int dungeonLevel = level / 8;
   this->w = 25 + dungeonLevel * 4;
   this->h = 25 + dungeonLevel * 4;
   int maxw = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
@@ -73,7 +72,7 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
   addIslandLand();
 
-  print();
+//  print();
 }
 
 
@@ -497,5 +496,9 @@ void CaveMaker::addFurniture(Map *map, ShapePalette *shapePal) {
       }
     }
   }
+}
+
+MapRenderHelper *CaveMaker::getMapRenderHelper() {
+  return MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ];
 }
 

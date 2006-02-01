@@ -951,3 +951,8 @@ void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal) {
     }
   }
 }
+
+MapRenderHelper *DungeonGenerator::getMapRenderHelper() {
+  return MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ];
+}
+

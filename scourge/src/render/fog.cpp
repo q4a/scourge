@@ -29,15 +29,22 @@ using namespace std;
 
 //#define DEBUG_FOG 1
 
+// how many map spaces in a fog chunk
 #define FOG_CHUNK_SIZE 4
 
 #define FOG_WIDTH ( MAP_WIDTH / FOG_CHUNK_SIZE )
 #define FOG_DEPTH ( MAP_DEPTH / FOG_CHUNK_SIZE )
 
+// color of transparent fog
 #define ER 118
 #define EG 110
 #define EB 130
 
+#define DARK_R 0.05f
+#define DARK_G 0.04f
+#define DARK_B 0.055f
+
+#define LAMP_RADIUS_SQUARED 36.0f
 
 Fog::Fog( Map *map, GLuint texture ) {
   this->map = map;
@@ -71,7 +78,7 @@ void Fog::visit( int mapx, int mapy ) {
     for( int y = 0; y < FOG_DEPTH; y++ ) {
       double d = (double)( ( fx - x ) * ( fx - x) ) + 
         (double)( ( fy - y ) * ( fy - y ) );
-      if( d <= 25.0f ) {
+      if( d <= LAMP_RADIUS_SQUARED ) {
         fog[x][y] = FOG_CLEAR;
       } else if( fog[x][y] == FOG_CLEAR ) {
         fog[x][y] = FOG_VISITED;
@@ -265,10 +272,11 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   }
 
 
-
+  // draw the dark (unvisited) fog
   glLoadIdentity();
   glDisable( GL_BLEND );
-  glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
+  //glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
+  glColor3f( DARK_R, DARK_G, DARK_B );
   for( int i = 0; i < pCount; i++ ) {
     GLfloat x = p[i][0];
     GLfloat y = p[i][1];
@@ -368,6 +376,7 @@ int Fog::getVisibility( int xp, int yp, Shape *shape ) {
 void Fog::createOverlayTexture() {
 
   float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+  int maxP = 75;
   int minP = 50;
 
   // create the dark texture
@@ -389,18 +398,22 @@ void Fog::createOverlayTexture() {
         r = 0xff;
         g = 0xff;
         b = 0xff;
+      } else if( percent >= maxP ) {
+        r = ER;
+        g = EG;
+        b = EB;
       } else {        
         r = 0xff - 
           (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - ER ) / (float)( 100 - minP ) ) );
+                 ( (float)( 0xff - ER ) / (float)( maxP - minP ) ) );
         if( r < ER ) r = ER;
         g = 0xff - 
           (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - EG ) / (float)( 100 - minP ) ) );
+                 ( (float)( 0xff - EG ) / (float)( maxP - minP ) ) );
         if( g < EG ) g = EG;
         b = 0xff - 
           (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - EB ) / (float)( 100 - minP ) ) );
+                 ( (float)( 0xff - EB ) / (float)( maxP - minP ) ) );
         if( b < EB ) b = EB;
       }
       overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
