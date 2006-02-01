@@ -473,7 +473,24 @@ bool TerrainGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
   return (teleportersAdded > 0);
 }
 
+/**
+ * Add the party somewhere near the middle of the first room.
+ * See warning notes on this approach in findPlace() and loadMap() 
+ * descriptions.
+ */
 void TerrainGenerator::addParty(Map *map, ShapePalette *shapePal) {
+  int xx = MAP_OFFSET + ( room[0].x + room[0].w / 2 ) * MAP_UNIT;
+  int yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;
+  int nx, ny;
+  for( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
+    if( !scourge->getParty()->getParty(r)->getStateMod( Constants::dead ) ) {
+      scourge->getParty()->getParty(r)->findPlace( xx, yy, &nx, &ny );
+      xx = nx;
+      yy = ny;
+    }
+  }
+
+  /*
   int n = scourge->getParty()->getFirstLivePlayer();
   if( n > -1 ) {
     int x, y;
@@ -504,6 +521,7 @@ void TerrainGenerator::addParty(Map *map, ShapePalette *shapePal) {
       cerr << "*** Error: Can't add party!!!" << endl;
     }
   }
+  */
 }
 
 void TerrainGenerator::lockDoors(Map *map, ShapePalette *shapePal) {

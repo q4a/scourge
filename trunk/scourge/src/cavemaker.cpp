@@ -44,6 +44,19 @@ TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 10 ) {
   for( int x = 0; x < w; x++ ) {
     node[ x ] = (NodePoint*)malloc( h * sizeof( NodePoint ) );
   }
+
+  // reasonable defaults
+  TerrainGenerator::doorCount = 0;
+  TerrainGenerator::roomCount = 1;
+  TerrainGenerator::room[0].x = room[0].y = 0;
+  TerrainGenerator::room[0].w = ( this->w * CAVE_CHUNK_SIZE ) / MAP_UNIT;
+  TerrainGenerator::room[0].h = ( this->h * CAVE_CHUNK_SIZE ) / MAP_UNIT;
+  TerrainGenerator::room[0].valueBonus = 0;
+  TerrainGenerator::roomMaxWidth = 0;
+  TerrainGenerator::roomMaxHeight = 0;
+  TerrainGenerator::objectCount = 7 + dungeonLevel * 5;
+  TerrainGenerator::monsters = true;
+
 }
 
 CaveMaker::~CaveMaker() {
