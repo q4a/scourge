@@ -353,6 +353,9 @@ void Item::initItems(ShapePalette *shapePal) {
       char *bonusSkillStr = strtok( NULL, "," );
       int maxBonusSkill = ( bonusSkillStr ? atoi( bonusSkillStr ) : -1 );
 
+      // FIXME: finish this
+      //special.push_back( new Item( 
+
       cerr << "FIXME: do something with special item: " << name << endl;
 
     } else if( n == 'I' ) {
