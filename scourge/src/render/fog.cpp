@@ -40,9 +40,18 @@ using namespace std;
 #define EG 110
 #define EB 130
 
-#define DARK_R 0.05f
-#define DARK_G 0.04f
-#define DARK_B 0.055f
+//#define DARK_R 0.05f
+//#define DARK_G 0.04f
+//#define DARK_B 0.055f
+
+#define DARK_R 0.0f
+#define DARK_G 0.0f
+#define DARK_B 0.0f
+
+// inverse color of dark shade
+#define SR (int)( 255.0f * DARK_R )
+#define SG (int)( 255.0f * DARK_G )
+#define SB (int)( 255.0f * DARK_B )
 
 #define LAMP_RADIUS_SQUARED 36.0f
 
@@ -51,11 +60,13 @@ Fog::Fog( Map *map, GLuint texture ) {
   this->texture = texture;
   this->quadric = gluNewQuadric();
   createOverlayTexture();
+  createShadeTexture();
   reset();
 }
 
 Fog::~Fog() {
   glDeleteTextures(1, (GLuint*)&overlay_tex);
+  glDeleteTextures(1, (GLuint*)&shade_tex);
   gluDeleteQuadric( quadric );
 }
 
@@ -284,10 +295,36 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
     GLfloat h = p[i][3];
 
     if( e[i] ) {
+
+      glEnable( GL_TEXTURE_2D );
+      glEnable( GL_BLEND );
+      glBlendFunc(GL_DST_COLOR, GL_ZERO);
+      glColor4f( 1, 1, 1, 0.5f );
+      glBindTexture( GL_TEXTURE_2D, shade_tex );
+      glBegin( GL_QUADS );
+      glTexCoord2f( 0, 0 );
+      glVertex2f( x - ( w / 2), y - ( h / 2 ) );
+      //glVertex2f( x, y );
+      glTexCoord2f( 0, 1 );
+      glVertex2f( x - ( w / 2), y + h + ( h / 2 ) );
+      //glVertex2f( x, y + h );
+      glTexCoord2f( 1, 1 );
+      glVertex2f( x + w + ( w / 2), y + h + ( h / 2 ) );
+      //glVertex2f( x + w, y + h );
+      glTexCoord2f( 1, 0 );
+      glVertex2f( x + w + ( w / 2), y - ( h / 2 ) );
+      //glVertex2f( x + w, y );
+      glEnd();
+      glDisable( GL_BLEND );
+      glDisable( GL_TEXTURE_2D );
+      glColor3f( DARK_R, DARK_G, DARK_B );
+
+      /*
       // 1 big circle
       glTranslatef( x + w/2, y + h/2, 0 );
       gluDisk( quadric, 0, w, 8, 1);
       glTranslatef( -(x + w/2), -(y + h/2), 0 );
+      */
     } else {
       glBegin( GL_QUADS );
       glVertex2f( x, y );
@@ -370,9 +407,6 @@ int Fog::getVisibility( int xp, int yp, Shape *shape ) {
   return v;
 }
 
-// vary this number from 0.001 - 3.0 to get tighter shading
-#define SHADE_LEVEL 1.0f
-
 void Fog::createOverlayTexture() {
 
   float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
@@ -430,5 +464,64 @@ void Fog::createOverlayTexture() {
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
 			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
+}
+
+void Fog::createShadeTexture() {
+
+  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+  int maxP = 90;
+  int minP = 70;
+
+  // create the dark texture
+  glGenTextures(1, (GLuint*)&shade_tex);
+  for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
+    for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
+      
+      float id = (float)i - half;
+      float jd = (float)j - half;
+
+      // the distance
+      float dist = sqrt( id * id + jd * jd );
+
+      // the distance as a percent of the max distance
+      float percent = dist / ( sqrt( half * half ) / 100.0f );
+
+      int r, g, b;
+      if( percent < minP ) {
+        r = SR;
+        g = SG;
+        b = SB;
+      } else if( percent >= maxP ) {
+        r = 0xff;
+        g = 0xff;
+        b = 0xff;
+      } else {        
+        r = SR + 
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - SR ) / (float)( maxP - minP ) ) );
+        if( r > 0xff ) r = 0xff;
+        g = SG +
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - SG ) / (float)( maxP - minP ) ) );
+        if( g > 0xff ) g = 0xff;
+        b = SB +
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - SB ) / (float)( maxP - minP ) ) );
+        if( b > 0xff ) b = 0xff;
+      }
+      shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
+      shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
+      shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
+    }
+  }
+  glBindTexture(GL_TEXTURE_2D, shade_tex);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
+			   GL_RGB, GL_UNSIGNED_BYTE, shade_data);
 }
 

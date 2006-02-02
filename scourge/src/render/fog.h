@@ -35,6 +35,9 @@ private:
   GLuint overlay_tex;
   unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
 
+  GLuint shade_tex;
+  unsigned char shade_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+
 public:
 
   enum {
@@ -56,6 +59,7 @@ protected:
                     GLdouble *screenx, GLdouble *screeny );
   int getHighestZ( int sx, int sy, int w, int h );
   void createOverlayTexture();
+  void createShadeTexture();
 };
 
 #endif
