@@ -231,6 +231,10 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   // (except items in inventory) 
   if(!missionItemsOnly) {
     for(int i = 0; i < (int)newItems.size(); i++) {
+      if( newItems[i]->isSpecial() ) {
+        // put special item back into play
+        special.erase( newItems[i]->getRpgItem() );
+      }
       delete newItems[i];
     }
     newItems.clear();
@@ -244,6 +248,10 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
         }
       }
       if(!inInventory) {
+        if( newItems[i]->isSpecial() ) {
+          // put special item back into play
+          special.erase( newItems[i]->getRpgItem() );
+        }
         delete newItems[i];
         for(int t = i; t < (int)newItems.size(); t++) {
           newItems[t] = newItems[t + 1];
@@ -280,7 +288,8 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
        map->isLocationVisible(toint(getCreature(i)->getX()), 
                               toint(getCreature(i)->getY())) &&
        map->isLocationInLight(toint(getCreature(i)->getX()), 
-                              toint(getCreature(i)->getY())) &&
+                              toint(getCreature(i)->getY()),
+                              getCreature(i)->getShape()) &&
        getCreature(i)->isMonster()) {
       float dist = Constants::distance(x, y, w, h,
                                        getCreature(i)->getX(),

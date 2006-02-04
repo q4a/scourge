@@ -32,6 +32,8 @@
 
 using namespace std;
 
+#define USE_LIGHTING 1
+
 #define MOUSE_ROT_DELTA 2
 
 #define ZOOM_DELTA 1.2f
@@ -1180,7 +1182,9 @@ void Map::draw() {
     }
     
     // draw the fog of war or shading
+#ifdef USE_LIGHTING
     helper->draw( getX(), getY(), MVW, MVD );
+#endif
 
     glDisable(GL_BLEND);
 
@@ -1574,7 +1578,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     shape->draw();
   } else if( later && later->item && !useShadow ) {
     
-    if( later->item->isMagicItem() ) {
+    if( later->item->isSpecial() ) {
+      shape->outline( Constants::SPECIAL_ITEM_COLOR );
+    } else if( later->item->isMagicItem() ) {
       shape->outline( Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ] );
     } else if( later->item->getContainsMagicItem() ) {
       shape->outline( 0.8f, 0.8f, 0.3f );
@@ -2570,10 +2576,11 @@ bool Map::isLocationVisible(int x, int y) {
           y >= getY() && y < getY() + mapViewDepth);
 }
 
-bool Map::isLocationInLight(int x, int y) {
+bool Map::isLocationInLight( int x, int y, Shape *shape ) {
   int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
   int chunkY = (y - (MAP_OFFSET + 1)) / MAP_UNIT;
-  return lightMap[chunkX][chunkY];
+  if( !lightMap[chunkX][chunkY] ) return false;
+  return helper->isVisible( x, y, shape );
 }
 
 void Map::handleEvent( SDL_Event *event ) {

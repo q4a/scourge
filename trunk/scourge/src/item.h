@@ -140,6 +140,7 @@ public:
   inline int getQuality() { return quality; }
 
   inline bool isMagicItem() { return ( magicLevel > -1 ); }
+  bool isSpecial();
   inline std::map<int,int> *getSkillBonusMap() { return &skillBonus; }
   inline int getSkillBonus(int skill) { return (skillBonus.find(skill) == skillBonus.end() ? 0 : skillBonus[skill]); }
   inline int getMagicLevel() { return magicLevel; }

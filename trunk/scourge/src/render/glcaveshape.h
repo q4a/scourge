@@ -73,7 +73,8 @@ private:
     MODE_CORNER,
     MODE_BLOCK,
     MODE_FLOOR,
-    MODE_INV
+    MODE_INV,
+    MODE_LAVA
   };
 
   enum {
@@ -95,6 +96,12 @@ private:
 
   static std::vector<CVector3*> points;
   static std::vector<std::vector<CaveFace*>*> polys;
+
+#define OVERLAY_SIZE 16
+  static GLuint overlay_tex;
+  static unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+
+  static void createOverlayTexture();
 
 public:
 
@@ -125,6 +132,7 @@ public:
     CAVE_INDEX_CROSS_NE,
     CAVE_INDEX_BLOCK,
     CAVE_INDEX_FLOOR,
+    CAVE_INDEX_LAVA,
 
     CAVE_INDEX_COUNT
   };
@@ -132,10 +140,13 @@ public:
   static void initializeShapes();
   static inline GLCaveShape *getShape( int index ) { return shapeList[ index ]; }
 
+
+
 protected:
   void drawFaces();
   void drawBlock( float w, float h, float d );
   void drawFloor( float w, float h, float d );
+  void drawLava( float w, float h, float d );
 
 private:
   static void removeDupPoints();

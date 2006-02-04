@@ -35,21 +35,12 @@ char *GLCaveShape::names[] = {
   "CAVE_INDEX_CROSS_NW",
   "CAVE_INDEX_CROSS_NE",
   "CAVE_INDEX_BLOCK",
-  "CAVE_INDEX_FLOOR"
+  "CAVE_INDEX_FLOOR",
+  "CAVE_INDEX_LAVA"
 };
 
-float shade[] = {
-  0.5f,
-  0.5f,
-  0.75f,
-  0.75f,
-  0.4f,
-  0.65f,
-  1.0f,
-  0.65f,
-  1,
-  1
-};
+GLuint GLCaveShape::overlay_tex;
+unsigned char GLCaveShape::overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
 
 vector<CVector3*> GLCaveShape::points;
 vector<vector<CaveFace*>*> GLCaveShape::polys;
@@ -104,6 +95,7 @@ void GLCaveShape::draw() {
   case MODE_BLOCK: drawBlock( w, h, d ); break;
   case MODE_FLOOR: drawFloor( w, h, d ); break;
   case MODE_INV: drawFaces(); break;
+  case MODE_LAVA: drawLava( w, h, d ); break;
   default: cerr << "Unknown cave_shape mode: " << mode << endl;
   }
 
@@ -200,6 +192,47 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, h );
   glEnd();
+}
+
+void GLCaveShape::drawLava( float w, float h, float d ) {
+  if( useShadow ) return;
+  glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::FRONT_SIDE ] );
+  GLfloat n = 0.25 / DIV;
+  glColor4f( 1, 0, 0, 1 );
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, n );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, d, n );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( w, d, n );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, n );
+  glEnd();
+
+  /*
+  glEnable( GL_BLEND );
+  glEnable( GL_BLEND );
+  glBlendFunc(GL_DST_COLOR, GL_ZERO);
+//  glColor4f( 0.65f, 0.45f, 0.60f, 0.5f);
+  glColor4f( 1, 1, 1, 0.5f);
+  glBindTexture( GL_TEXTURE_2D, GLCaveShape::overlay_tex );
+  n = 0.5 / DIV;
+  glColor4f( 1, 0, 0, 1 );
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, n );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, d, n );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( w, d, n );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, n );
+  glEnd();
+  glDisable( GL_BLEND );
+  */
 }
 
 void GLCaveShape::calculateNormals() {
@@ -441,6 +474,8 @@ GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 
 void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes ) {
 
+  createOverlayTexture();
+
   float w = (float)CAVE_CHUNK_SIZE / DIV;
   float d = (float)CAVE_CHUNK_SIZE / DIV;
   float h = (float)MAP_WALL_HEIGHT / DIV; // fixme: for floor it should be 0
@@ -578,15 +613,11 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   _poly( CAVE_INDEX_CROSS_NE, 61, 62, 63, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
 
   // Remove dup. points: this creates a triangle mesh
-  cerr << "BEFORE 1: " << points.size() << endl;
   removeDupPoints();
-  cerr << "AFTER 1: " << points.size() << endl;
 
   dividePolys();
 
-  cerr << "BEFORE 2: " << points.size() << endl;
   removeDupPoints();
-  cerr << "AFTER 2: " << points.size() << endl;
 
   calculateNormals();
 
@@ -659,10 +690,14 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
     new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, 0,
                      strdup( names[ CAVE_INDEX_FLOOR ] ), shapeCount++,
                      MODE_FLOOR, 0, CAVE_INDEX_FLOOR );
+  shapeList[CAVE_INDEX_LAVA] = 
+    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                     strdup( names[ CAVE_INDEX_LAVA ] ), shapeCount++,
+                     MODE_LAVA, 0, CAVE_INDEX_LAVA );
 
   for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
     shapeList[i]->setSkipSide(false);
-    if( i < CAVE_INDEX_BLOCK ) {
+    if( i < CAVE_INDEX_BLOCK || i > CAVE_INDEX_FLOOR ) {
       shapeList[i]->setStencil( false );
       shapeList[i]->setLightBlocking( true );
     } else {
@@ -678,3 +713,67 @@ void GLCaveShape::initializeShapes() {
       shapeList[i]->initialize();
   }
 }
+
+#define ER 0
+#define EG 0
+#define EB 0
+
+void GLCaveShape::createOverlayTexture() {
+
+  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+  int maxP = 75;
+  int minP = 50;
+
+  // create the dark texture
+  glGenTextures(1, (GLuint*)&overlay_tex);
+  for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
+    for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
+      
+      float id = (float)i - half;
+      float jd = (float)j - half;
+
+      // the distance
+      float dist = sqrt( id * id + jd * jd );
+
+      // the distance as a percent of the max distance
+      float percent = dist / ( sqrt( half * half ) / 100.0f );
+
+      int r, g, b;
+      if( percent < minP ) {
+        r = 0xff;
+        g = 0xff;
+        b = 0xff;
+      } else if( percent >= maxP ) {
+        r = ER;
+        g = EG;
+        b = EB;
+      } else {        
+        r = 0xff - 
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - ER ) / (float)( maxP - minP ) ) );
+        if( r < ER ) r = ER;
+        g = 0xff - 
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - EG ) / (float)( maxP - minP ) ) );
+        if( g < EG ) g = EG;
+        b = 0xff - 
+          (int)( (float)( percent - minP ) * 
+                 ( (float)( 0xff - EB ) / (float)( maxP - minP ) ) );
+        if( b < EB ) b = EB;
+      }
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
+      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
+    }
+  }
+  glBindTexture(GL_TEXTURE_2D, overlay_tex);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
+			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
+}
+
