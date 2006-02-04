@@ -402,7 +402,7 @@ void Scourge::startMission() {
 
 
 #ifdef CAVE_TEST
-      dg = new CaveMaker( this, 1, 1, false, false, NULL );
+      dg = new CaveMaker( this, 4, 1, false, false, NULL );
       dg->toMap(levelMap, getSession()->getShapePalette());
       scriptName = RANDOM_MAP_NAME;
 #else
@@ -417,7 +417,7 @@ void Scourge::startMission() {
       // in HQ map
       inHq = false;
 
-      // Initialize the map with a random dunegeon	
+      // Initialize the map with a random dungeon	
       getSession()->setCurrentMission(board->getMission(nextMission));
       missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
       bool loaded = false;
@@ -699,7 +699,8 @@ void Scourge::drawView() {
       if( levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                       toint(session->getCreature(i)->getY())) &&
           levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
-                                      toint(session->getCreature(i)->getY()))) {
+                                      toint(session->getCreature(i)->getY()),
+                                      session->getCreature(i)->getShape())) {
         showCreatureInfo(session->getCreature(i), false, false, false);
       }
     }
@@ -2508,7 +2509,8 @@ bool Scourge::createBattleTurns() {
       bool visible = ( levelMap->isLocationVisible(toint(party->getParty(i)->getX()), 
                                                    toint(party->getParty(i)->getY())) &&
                        levelMap->isLocationInLight(toint(party->getParty(i)->getX()), 
-                                                   toint(party->getParty(i)->getY())));
+                                                   toint(party->getParty(i)->getY()),
+                                                   party->getParty(i)->getShape()));
       if( hasTarget ) {
         if( party->getParty(i)->isTargetValid() && visible ) {
           if( Battle::debugBattle ) cerr << "*** init party target" << endl;
@@ -2526,7 +2528,8 @@ bool Scourge::createBattleTurns() {
         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                     toint(session->getCreature(i)->getY())) &&
         levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
-                                    toint(session->getCreature(i)->getY()))) {
+                                    toint(session->getCreature(i)->getY()),
+                                    session->getCreature(i)->getShape())) {
 
       bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                         session->getCreature(i)->getAction() > -1);
@@ -2556,7 +2559,8 @@ bool Scourge::createBattleTurns() {
       bool visible = ( levelMap->isLocationVisible(toint(party->getParty(i)->getX()), 
                                               toint(party->getParty(i)->getY())) &&
                        levelMap->isLocationInLight(toint(party->getParty(i)->getX()), 
-                                              toint(party->getParty(i)->getY())));
+                                                   toint(party->getParty(i)->getY()),
+                                                   party->getParty(i)->getShape()));
       if( visible && !party->getParty(i)->getStateMod(Constants::dead) ) {
         bool found = false;
         for( int t = 0; t < battleCount; t++ ) {
@@ -2575,7 +2579,8 @@ bool Scourge::createBattleTurns() {
           levelMap->isLocationVisible(toint(session->getCreature(i)->getX()), 
                                  toint(session->getCreature(i)->getY())) &&
           levelMap->isLocationInLight(toint(session->getCreature(i)->getX()), 
-                                 toint(session->getCreature(i)->getY()))) {
+                                      toint(session->getCreature(i)->getY()),
+                                      session->getCreature(i)->getShape())) {
         bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
                           session->getCreature(i)->getAction() > -1);
         if (!hasTarget || (hasTarget && !session->getCreature(i)->isTargetValid())) {

@@ -533,7 +533,8 @@ Creature *Battle::getAvailablePartyTarget() {
     bool visible = ( session->getMap()->isLocationVisible(toint(session->getParty()->getParty(i)->getX()), 
                                                           toint(session->getParty()->getParty(i)->getY())) &&
                      session->getMap()->isLocationInLight(toint(session->getParty()->getParty(i)->getX()), 
-                                                          toint(session->getParty()->getParty(i)->getY())));
+                                                          toint(session->getParty()->getParty(i)->getY()),
+                                                          session->getParty()->getParty(i)->getShape()));
     if( visible && !session->getParty()->getParty(i)->getStateMod(Constants::dead) ) {
       Creature *c = session->getParty()->getParty(i)->getBattle()->getAvailableTarget();
       if( c ) return c;

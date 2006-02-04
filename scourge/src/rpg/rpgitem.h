@@ -54,6 +54,7 @@ class RpgItem {
   int equip; // where can it be worn?
   int skill; // which skill to check when using the item
   int minDepth; // 0-based min. depth where the item occurs
+  int minLevel; // if >0 the item is "special" and only one instance exists
   int maxCharges;
   int potionSkill; // which skill does this potion effect?
   int potionTime;
@@ -66,6 +67,10 @@ class RpgItem {
   static std::map<std::string, const RpgItem *> itemsByName;
   static std::vector<RpgItem*> containers;
   static std::vector<RpgItem*> containersNS;
+
+  // linear for now... if there are too many of these we can organize them 
+  // in a type->depth map.
+  static std::vector<RpgItem*> special;
 
  public:
 
@@ -104,7 +109,8 @@ class RpgItem {
   
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
           Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-          int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int maxCharges=0,
+          int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int minLevel=0, 
+          int maxCharges=0,
           int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0,
           int maxSkillBonus=-1);
   ~RpgItem();
@@ -129,6 +135,8 @@ class RpgItem {
   inline int getEquip() { return equip; }
   inline int getSkill() { return skill; } 
   inline int getMinDepth() { return minDepth; }
+  inline int getMinLevel() { return minLevel; }
+  inline bool isSpecial() { return( minLevel > 0 ); }
   inline int getType() { return type; }
   inline int getPotionSkill() { return potionSkill; }
   inline bool getAcl(int index) { return (acl & (1 << index) ? true : false); }
@@ -160,6 +168,8 @@ class RpgItem {
   static void addItem(RpgItem *item, int width, int depth, int height);
   static RpgItem *getItemByName(char *name);
   inline static std::map<std::string, const RpgItem *> *getItemMap() { return &itemsByName; }
+  inline static int getSpecialCount() { return special.size(); }
+  inline static RpgItem *getSpecial( int index ) { return special[index]; }
   
 };
 

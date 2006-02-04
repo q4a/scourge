@@ -553,6 +553,7 @@ public:
   };
   static const char *MAGIC_ITEM_NAMES[];
   static const Color *MAGIC_ITEM_COLOR[];
+  static const Color *SPECIAL_ITEM_COLOR;
 
   // special effect names
   enum {

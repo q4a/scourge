@@ -201,17 +201,12 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
 void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
   // add the items
   for(int i = 0; i < objectCount; i++) {
-    RpgItem *rpgItem = RpgItem::getRandomItem( depth );
-    if(!rpgItem) {
-      cerr << "Warning: no items found." << endl;
-      break;
+    Item *item = createRandomItem();
+    if( item ) {
+      int x, y;
+      getRandomLocation(map, item->getShape(), &x, &y);
+      addItem(map, NULL, item, NULL, x, y);
     }
-    // Make a random level object
-    Item *item = 
-      scourge->getSession()->newItem(rpgItem, level);
-    int x, y;
-    getRandomLocation(map, item->getShape(), &x, &y);
-    addItem(map, NULL, item, NULL, x, y);
   }
 
   // add some scrolls with spells
@@ -240,11 +235,10 @@ void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
     // some items
     int n = (int)(3.0f * rand() / RAND_MAX);
     for(int i = 0; i < n; i++) {
-      RpgItem *containedItem = RpgItem::getRandomItem( depth );
-      if(containedItem) 
-        item->addContainedItem(scourge->getSession()->
-                               newItem(containedItem, level), 
-                               true);
+      Item *containedItem = createRandomItem();
+      if( containedItem ) {
+        item->addContainedItem(containedItem, true);
+      }
     }
     // some spells
     if(!((int)(25.0f * rand() / RAND_MAX))) {
@@ -259,6 +253,31 @@ void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
       }
     }
   }
+}
+
+Item *TerrainGenerator::createRandomItem() {
+  // special items
+  for( int i = 0; i < RpgItem::getSpecialCount(); i++ ) {
+    RpgItem *rpgItem = RpgItem::getSpecial( i );
+    if( rpgItem->getMinLevel() >= level &&
+        rpgItem->getMinDepth() >= depth &&
+        !( scourge->getSession()->getSpecialItem( rpgItem ) ) &&
+        0 == (int)( (float)rpgItem->getRareness() * rand() / RAND_MAX ) ) {
+      // set loading to true so the level is exact and the item is not enchanted
+      Item *item = scourge->getSession()->newItem( rpgItem, level, NULL, true );
+      scourge->getSession()->setSpecialItem( rpgItem, item );
+      return item;
+    }
+  }
+
+  // general items
+  RpgItem *rpgItem = RpgItem::getRandomItem( depth );
+  if(!rpgItem) {
+    cerr << "Warning: no items found." << endl;
+    return NULL;
+  }
+  // Make a random level object
+  return scourge->getSession()->newItem(rpgItem, level);
 }
 
 void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {

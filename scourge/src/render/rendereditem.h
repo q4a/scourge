@@ -36,6 +36,7 @@ public:
 
   virtual GLShape *getShape() = 0;
   virtual bool isMagicItem() = 0;
+  virtual bool isSpecial() = 0;
   virtual int getMagicLevel() = 0;
   virtual bool getContainsMagicItem() = 0;
   virtual bool isBlocking() = 0;

@@ -333,7 +333,7 @@ class Map {
 
   bool isLocationVisible(int x, int y);
 
-  bool isLocationInLight(int x, int y);
+  bool isLocationInLight(int x, int y, Shape *shape);
     
   void draw();
 

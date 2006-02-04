@@ -169,6 +169,7 @@ protected:
   
   int getRoomIndex(int x, int y);
 
+  Item *createRandomItem();
   
 };
 

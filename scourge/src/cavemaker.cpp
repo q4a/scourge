@@ -85,7 +85,7 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
   addIslandLand();
 
-//  print();
+  print();
 }
 
 
@@ -113,7 +113,9 @@ bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
 
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
-      if( node[x][y].wall ) {
+      if( node[x][y].island ) {
+        setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_LAVA );
+      } else if( node[x][y].wall ) {
         if( isWall( x - 1, y ) &&
             isWall( x + 1, y ) &&
             isWall( x, y - 1 ) &&

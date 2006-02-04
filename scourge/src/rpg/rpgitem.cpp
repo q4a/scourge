@@ -39,6 +39,7 @@ map<int, map<int, vector<const RpgItem*>*>*> RpgItem::typesMap;
 map<string, const RpgItem *> RpgItem::itemsByName;
 vector<RpgItem*> RpgItem::containers;
 vector<RpgItem*> RpgItem::containersNS; 
+vector<RpgItem*> RpgItem::special;
 
 int RpgItem::itemCount = 0;
 
@@ -64,7 +65,8 @@ int RpgItem::enchantableTypeCount = 5;
 
 RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
                  Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-                 int twohanded, int distance, int skill, int minDepth, int maxCharges, int potionSkill,
+                 int twohanded, int distance, int skill, int minDepth, int minLevel, 
+                 int maxCharges, int potionSkill,
                  int potionTime, int iconTileX, int iconTileY, int maxSkillBonus) {
   this->index = index;
   this->name = name;
@@ -84,6 +86,7 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
   this->distance = distance;
   this->skill = skill;
   this->minDepth = minDepth;
+  this->minLevel = minLevel;
   this->maxCharges = maxCharges;
   this->potionSkill = potionSkill;
   this->potionTime = potionTime;
@@ -106,29 +109,33 @@ cerr << "adding item: " << item->name <<
   */
   items[itemCount++] = item;
 
-  // Add item to type->depth maps
-  map<int, vector<const RpgItem*>*> *depthMap = NULL;
-  if (typesMap.find(item->type) != typesMap.end()) {
-    depthMap = typesMap[(const int)(item->type)];
-  } else {
-    depthMap = new map<int, vector<const RpgItem*>*>();
-    typesMap[item->type] = depthMap;
-  }
-  //  cerr << "\ttypesMap.size()=" << typesMap.size() << endl;
-
-  // create the min depth map: Add item to every depth level >= item->getMinDepth()
-  for( int currentDepth = item->getMinDepth(); currentDepth < MAX_MISSION_DEPTH; currentDepth++ ) {
-    // create the vector
-    vector<const RpgItem*> *list = NULL;
-    if (depthMap->find( currentDepth ) != depthMap->end()) {
-      list = (*depthMap)[(const int)( currentDepth )];
+  if( !item->isSpecial() ) {
+    // Add item to type->depth maps
+    map<int, vector<const RpgItem*>*> *depthMap = NULL;
+    if (typesMap.find(item->type) != typesMap.end()) {
+      depthMap = typesMap[(const int)(item->type)];
     } else {
-      list = new vector<const RpgItem*>();
-      (*depthMap)[ currentDepth ] = list;
+      depthMap = new map<int, vector<const RpgItem*>*>();
+      typesMap[item->type] = depthMap;
     }
-    //  cerr << "\tlevelMap.size()=" << levelMap->size() << endl;
-    list->push_back(item);
-    //  cerr << "\tlist.size()=" << list->size() << endl;
+    //  cerr << "\ttypesMap.size()=" << typesMap.size() << endl;
+  
+    // create the min depth map: Add item to every depth level >= item->getMinDepth()
+    for( int currentDepth = item->getMinDepth(); currentDepth < MAX_MISSION_DEPTH; currentDepth++ ) {
+      // create the vector
+      vector<const RpgItem*> *list = NULL;
+      if (depthMap->find( currentDepth ) != depthMap->end()) {
+        list = (*depthMap)[(const int)( currentDepth )];
+      } else {
+        list = new vector<const RpgItem*>();
+        (*depthMap)[ currentDepth ] = list;
+      }
+      //  cerr << "\tlevelMap.size()=" << levelMap->size() << endl;
+      list->push_back(item);
+      //  cerr << "\tlist.size()=" << list->size() << endl;
+    }
+  } else {
+    special.push_back( item );
   }
 
   // remember by name

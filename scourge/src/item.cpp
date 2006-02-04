@@ -305,60 +305,7 @@ void Item::initItems(ShapePalette *shapePal) {
   RpgItem *last = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
-    if( n == 'N' ) {
-      // skip ':'
-      fgetc(fp);
-      
-      // name of special item
-      n = Constants::readLine(name, fp);
-
-      // what type of object?
-      n = Constants::readLine(type, fp);
-
-      // stats
-      n = Constants::readLine(line, fp);
-      int rareness = atoi(strtok(line + 1, ","));
-      char *p = strtok(NULL, ",");
-      char *action = NULL;
-      int speed = 0;
-      int distance = 0;
-      int maxCharges = 0;
-      if(p) {
-        action = strdup(p);
-        speed = atoi(strtok(NULL, ","));
-        distance = atoi(strtok(NULL, ","));
-        maxCharges = atoi(strtok(NULL, ","));
-        p = strtok(NULL, ",");
-        if(p) strcpy(potionSkill, p);
-        else strcpy(potionSkill, "");
-        p = strtok(NULL, ",");
-        potionTime = (p ? atoi(p) : 0);
-      }
-
-      // level and depth
-      n = Constants::readLine(line, fp);
-      int level = atoi( strtok( line + 1, "," ) );
-      int depth = atoi( strtok( NULL, "," ) );
-
-      // descriptions
-      for( int i = 0; i < 4; i++ ) {
-        n = Constants::readLine(line, fp);
-        strcpy(specialDescription[i], line + 1);
-      }
-
-      // icon
-      n = Constants::readLine(line, fp);
-      int tileX = atoi( strtok( line + 1, "," ) );
-      int tileY = atoi( strtok( NULL, "," ) );
-      char *bonusSkillStr = strtok( NULL, "," );
-      int maxBonusSkill = ( bonusSkillStr ? atoi( bonusSkillStr ) : -1 );
-
-      // FIXME: finish this
-      //special.push_back( new Item( 
-
-      cerr << "FIXME: do something with special item: " << name << endl;
-
-    } else if( n == 'I' ) {
+    if( n == 'I' ) {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
@@ -391,6 +338,7 @@ void Item::initItems(ShapePalette *shapePal) {
       strcpy(shape, "");
       strcpy(skill, "");
       int minDepth = 0;
+      int minLevel = 0;
       p = strtok(NULL, ",");    
       if(p) {
         strcpy(shape, p);
@@ -402,6 +350,10 @@ void Item::initItems(ShapePalette *shapePal) {
           p = strtok( NULL, "," );
           if( p ) {
             minDepth = atoi( p );
+            p = strtok( NULL, "," );
+            if( p ) {
+              minLevel = atoi( p );
+            }
           }
         }
       }
@@ -450,7 +402,8 @@ void Item::initItems(ShapePalette *shapePal) {
                           twohanded, 
                           (distance < (int)MIN_DISTANCE ? 
                            (int)MIN_DISTANCE : distance), 
-                          skill_index, minDepth, maxCharges, potion_skill, potionTime, 
+                          skill_index, minDepth, minLevel, 
+                          maxCharges, potion_skill, potionTime, 
                           tileX - 1, tileY - 1, maxBonusSkill );
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   
@@ -724,6 +677,10 @@ void Item::describeMagic(char *s, char *itemName) {
     sprintf(tmp, " of %s magic", school->getShortName());
     strcat(s, tmp);
   }
+}
+
+bool Item::isSpecial() { 
+  return getRpgItem()->isSpecial(); 
 }
 
 int Item::rollMagicDamage() { 

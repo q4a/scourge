@@ -68,6 +68,7 @@ private:
   std::vector<Item*> newItems;
   std::vector<Creature*> creatures;
   SqBinding *squirrel;
+  std::map<RpgItem*, Item*> special;
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -154,6 +155,12 @@ public:
   virtual void creatureDeath(Creature *creature);
 
   inline SqBinding *getSquirrel() { return squirrel; }
+
+  inline void setSpecialItem( RpgItem *rpgItem, Item *item ) { special[ rpgItem ] = item; }
+  inline Item *getSpecialItem( RpgItem *rpgItem ) {
+    if( special.find( rpgItem ) == special.end() ) return NULL;
+    else return special[ rpgItem ];
+  }
 
 protected:
   virtual void initData();
