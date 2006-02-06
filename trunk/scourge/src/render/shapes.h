@@ -150,6 +150,18 @@ class WallTheme {
 #define MAX_SYSTEM_TEXTURE_COUNT 1000
 
 class Shapes {
+public:
+  enum {
+  STENCIL_SIDE=0,
+  STENCIL_TWO_SIDES,
+  STENCIL_U,
+  STENCIL_ALL,
+  STENCIL_OUTSIDE_TURN,
+  STENCIL_INSIDE_TURN,
+  STENCIL_TURNS,
+
+  STENCIL_COUNT
+};
 
 protected:
   bool headless;
@@ -204,13 +216,16 @@ protected:
   GLuint cursor_texture, crosshair_texture, attack_texture, talk_texture, use_texture, forbidden_texture, ranged_texture, move_texture;
   GLuint ripple_texture, torchback;
 
-  SDL_Surface *fog;
-  GLubyte *fogImage;
-  GLuint fogTexture;
+  // stencils for lava
+  SDL_Surface *stencil[ STENCIL_COUNT ];
+  GLubyte *stencilImage[ STENCIL_COUNT ];
 
 public: 
   Shapes( bool headless );
   virtual ~Shapes();
+
+  inline SDL_Surface *getStencilSurface( int index ) { return stencil[ index ]; }
+  inline GLubyte *getStencilImage( int index ) { return stencilImage[ index ]; }
   
   inline int getThemeCount() { return themeCount; }
   inline char *getThemeName( int index ) { return themes[ index ]->getName(); }
@@ -227,8 +242,6 @@ public:
 
   inline int getCharacterModelInfoCount() { return character_models.size(); }
   inline CharacterModelInfo *getCharacterModelInfo( int index ) { return character_models[ index ]; }
-
-  inline GLuint getFogTexture() { return fogTexture; }
 
   void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );
@@ -275,6 +288,7 @@ protected:
   virtual int interpretShapesLine( FILE *fp, int n );
   t3DModel *LoadMd2Model(char *file_name);
   void UnloadMd2Model( t3DModel *model );
+  void loadStencil( char *filename, int index );
 };
 
 #endif

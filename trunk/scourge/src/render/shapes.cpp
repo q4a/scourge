@@ -283,8 +283,14 @@ void Shapes::initialize() {
     shapeCount++;
   }
 
-  setupAlphaBlendedBMP("/fog.bmp", &fog, &fogImage);
-  fogTexture = loadGLTextureBGRA(fog, fogImage, GL_LINEAR);
+  // load the lava stencils
+  loadStencil( "/cave/stencil1.bmp", STENCIL_SIDE );
+  loadStencil( "/cave/stencil2.bmp", STENCIL_TWO_SIDES );
+  loadStencil( "/cave/stencil3.bmp", STENCIL_U );
+  loadStencil( "/cave/stencil4.bmp", STENCIL_ALL );
+  loadStencil( "/cave/stencil5.bmp", STENCIL_OUTSIDE_TURN );
+  loadStencil( "/cave/stencil6.bmp", STENCIL_TURNS );
+  loadStencil( "/cave/stencil7.bmp", STENCIL_INSIDE_TURN );
 
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
@@ -546,7 +552,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
 
 void Shapes::loadRandomCaveTheme() {
   loadTheme( caveThemes[ (int)( (float)caveThemeCount * rand()/RAND_MAX ) ] );
-  GLCaveShape::initializeShapes();
+  GLCaveShape::initializeShapes( this );
 }
 
 void Shapes::loadRandomTheme() {
@@ -936,6 +942,50 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
   b    = temp;
 
   return;
+}
+
+void Shapes::loadStencil( char *filename, int index ) {
+  if( headless ) return;
+
+  GLubyte *p = NULL;
+  char fn[300];
+//  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
+  strcpy(fn, rootDir);
+  strcat(fn, filename);
+  if( ( stencil[ index ] = SDL_LoadBMP( fn ) ) != NULL ) {
+
+    // Rearrange the pixelData
+    int width  = stencil[ index ]->w;
+    int height = stencil[ index ]->h;
+
+    if( width != height && 
+        ( !isPowerOfTwo( width ) ||
+          !isPowerOfTwo( height ) ) ) {
+      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
+              fn, width, height, 
+              stencil[ index ]->format->BitsPerPixel,
+              stencil[ index ]->format->BytesPerPixel, 
+              stencil[ index ]->pitch);
+    }
+
+    unsigned char * data = (unsigned char *)(stencil[ index ]->pixels);         // the pixel data
+
+    p = (GLubyte*)malloc( width * height * sizeof( GLubyte ));
+    int count = 0;
+    int c = 0;
+    unsigned char r,g,b;
+    // the following lines extract R,G and B values from any bitmap
+    for(int i = 0; i < width * height; ++i) {
+      if(i > 0 && i % width == 0)
+        c += (  stencil[ index ]->pitch - ( width * stencil[ index ]->format->BytesPerPixel ) );
+      r = data[c++];
+      g = data[c++];
+      b = data[c++];
+
+      p[count++] = ( r || g || b ? 1 : 0 );
+    }
+  }
+  stencilImage[ index ] = p;
 }
 
 void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, 

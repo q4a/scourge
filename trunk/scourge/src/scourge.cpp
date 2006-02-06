@@ -402,7 +402,7 @@ void Scourge::startMission() {
 
 
 #ifdef CAVE_TEST
-      dg = new CaveMaker( this, 4, 1, false, false, NULL );
+      dg = new CaveMaker( this, 50, 1, false, false, NULL );
       dg->toMap(levelMap, getSession()->getShapePalette());
       scriptName = RANDOM_MAP_NAME;
 #else

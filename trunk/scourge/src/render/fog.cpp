@@ -55,10 +55,8 @@ using namespace std;
 
 #define LAMP_RADIUS_SQUARED 36.0f
 
-Fog::Fog( Map *map, GLuint texture ) {
+Fog::Fog( Map *map ) {
   this->map = map;
-  this->texture = texture;
-  this->quadric = gluNewQuadric();
   createOverlayTexture();
   createShadeTexture();
   reset();
@@ -67,7 +65,6 @@ Fog::Fog( Map *map, GLuint texture ) {
 Fog::~Fog() {
   glDeleteTextures(1, (GLuint*)&overlay_tex);
   glDeleteTextures(1, (GLuint*)&shade_tex);
-  gluDeleteQuadric( quadric );
 }
 
 void Fog::reset() {
@@ -318,13 +315,6 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       glDisable( GL_BLEND );
       glDisable( GL_TEXTURE_2D );
       glColor3f( DARK_R, DARK_G, DARK_B );
-
-      /*
-      // 1 big circle
-      glTranslatef( x + w/2, y + h/2, 0 );
-      gluDisk( quadric, 0, w, 8, 1);
-      glTranslatef( -(x + w/2), -(y + h/2), 0 );
-      */
     } else {
       glBegin( GL_QUADS );
       glVertex2f( x, y );
