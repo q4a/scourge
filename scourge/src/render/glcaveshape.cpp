@@ -36,7 +36,31 @@ char *GLCaveShape::names[] = {
   "CAVE_INDEX_CROSS_NE",
   "CAVE_INDEX_BLOCK",
   "CAVE_INDEX_FLOOR",
-  "CAVE_INDEX_LAVA"
+  "LAVA_SIDE_W",
+  "LAVA_SIDE_E",
+  "LAVA_SIDE_N",
+  "LAVA_SIDE_S",
+  "LAVA_SIDES_EW",
+  "LAVA_SIDES_NS",
+  "LAVA_INSIDE_TURN_NW",
+  "LAVA_INSIDE_TURN_NE",
+  "LAVA_INSIDE_TURN_SE",
+  "LAVA_INSIDE_TURN_SW",
+  "LAVA_OUTSIDE_TURN_NW",
+  "LAVA_OUTSIDE_TURN_NE",
+  "LAVA_OUTSIDE_TURN_SE",
+  "LAVA_OUTSIDE_TURN_SW",
+  "LAVA_TURNS_NW",
+  "LAVA_TURNS_NE",
+  "LAVA_TURNS_SE",
+  "LAVA_TURNS_SW",
+  "LAVA_U_N",
+  "LAVA_U_E",
+  "LAVA_U_S",
+  "LAVA_U_W",
+  "LAVA_ALL",
+  "LAVA_NONE",
+
 };
 
 GLuint GLCaveShape::overlay_tex;
@@ -50,15 +74,19 @@ vector<vector<CaveFace*>*> GLCaveShape::polys;
 #define LIGHT_ANGLE_HORIZ 125.0f
 #define LIGHT_ANGLE_VERT 45.0f
 
+GLuint GLCaveShape::lavaTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+unsigned char *GLCaveShape::lavaData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
                           char *name, int index, 
-                          int mode, int dir, int caveIndex ) :
+                          int mode, int dir, int caveIndex, int lavaIndex ) :
 GLShape( texture, width, depth, height, name, 0, color, index ) {
   this->shapes = shapes;
   this->mode = mode;
   this->dir = dir;
   this->caveIndex = caveIndex;
+  this->lavaIndex = lavaIndex;
 }
 
 GLCaveShape::~GLCaveShape() {
@@ -196,7 +224,19 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 
 void GLCaveShape::drawLava( float w, float h, float d ) {
   if( useShadow ) return;
-  glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::FRONT_SIDE ] );
+  if( lavaIndex == LAVA_NONE ) {
+    glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::FRONT_SIDE ] );
+  } else {
+    //glEnable( GL_BLEND );
+    //glBlendFunc(GL_DST_COLOR, GL_ZERO);
+    //glBlendFunc(GL_SRC_COLOR, GL_ONE);
+    //glBlendFunc(GL_DST_ALPHA, GL_ONE);
+
+    glEnable( GL_ALPHA_TEST );
+    glAlphaFunc( GL_GREATER, 0x00 );
+
+    glBindTexture( GL_TEXTURE_2D, lavaTex[ lavaIndex ] );
+  }
   GLfloat n = 0.25 / DIV;
   glColor4f( 1, 0, 0, 1 );
   glBegin( GL_QUADS );
@@ -210,6 +250,8 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, n );
   glEnd();
+  //glDisable( GL_BLEND );
+  glDisable( GL_ALPHA_TEST );
 
   /*
   glEnable( GL_BLEND );
@@ -474,6 +516,11 @@ GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 
 void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes ) {
 
+  for( int i = 0; i < CAVE_INDEX_COUNT - LAVA_SIDE_W; i++ ) {
+    lavaTex[i] = 0;
+    lavaData[i] = (GLubyte*)malloc( 4 * 256 * 256 );
+  }
+
   createOverlayTexture();
 
   float w = (float)CAVE_CHUNK_SIZE / DIV;
@@ -690,11 +737,14 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
     new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, 0,
                      strdup( names[ CAVE_INDEX_FLOOR ] ), shapeCount++,
                      MODE_FLOOR, 0, CAVE_INDEX_FLOOR );
-  shapeList[CAVE_INDEX_LAVA] = 
-    new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                     strdup( names[ CAVE_INDEX_LAVA ] ), shapeCount++,
-                     MODE_LAVA, 0, CAVE_INDEX_LAVA );
 
+  for( int i = LAVA_SIDE_W; i < CAVE_INDEX_COUNT; i++ ) {
+    shapeList[i] = 
+      new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+                       strdup( names[ i ] ), shapeCount++,
+                       MODE_LAVA, 0, i, i - LAVA_SIDE_W );
+  }
+    
   for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
     shapeList[i]->setSkipSide(false);
     if( i < CAVE_INDEX_BLOCK || i > CAVE_INDEX_FLOOR ) {
@@ -707,11 +757,85 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   }
 }
 
-void GLCaveShape::initializeShapes() {
+void GLCaveShape::initializeShapes( Shapes *shapes ) {
   for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
     //if( !headless ) 
       shapeList[i]->initialize();
   }
+  
+  // create lava textures
+  createLavaTexture( LAVA_SIDE_W, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 0 );
+  createLavaTexture( LAVA_SIDE_E, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 180 );
+  createLavaTexture( LAVA_SIDE_N, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 90 );
+  createLavaTexture( LAVA_SIDE_S, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 270 );
+
+  createLavaTexture( LAVA_SIDES_EW, shapes->getStencilImage( Shapes::STENCIL_TWO_SIDES ), 0 );
+  createLavaTexture( LAVA_SIDES_NS, shapes->getStencilImage( Shapes::STENCIL_TWO_SIDES ), 90 );
+
+  createLavaTexture( LAVA_INSIDE_TURN_NW, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 0 );
+  createLavaTexture( LAVA_INSIDE_TURN_NE, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 90 );
+  createLavaTexture( LAVA_INSIDE_TURN_SE, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 180 );
+  createLavaTexture( LAVA_INSIDE_TURN_SW, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 270 );
+
+  createLavaTexture( LAVA_OUTSIDE_TURN_NW, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 0 );
+  createLavaTexture( LAVA_OUTSIDE_TURN_NE, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 90 );
+  createLavaTexture( LAVA_OUTSIDE_TURN_SE, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 180 );
+  createLavaTexture( LAVA_OUTSIDE_TURN_SW, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 270 );
+
+  createLavaTexture( LAVA_TURNS_NW, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 0 );
+  createLavaTexture( LAVA_TURNS_NE, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 90 );
+  createLavaTexture( LAVA_TURNS_SE, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 180 );
+  createLavaTexture( LAVA_TURNS_SW, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 270 );
+
+  createLavaTexture( LAVA_U_N, shapes->getStencilImage( Shapes::STENCIL_U ), 0 );
+  createLavaTexture( LAVA_U_E, shapes->getStencilImage( Shapes::STENCIL_U ), 90 );
+  createLavaTexture( LAVA_U_S, shapes->getStencilImage( Shapes::STENCIL_U ), 180 );
+  createLavaTexture( LAVA_U_W, shapes->getStencilImage( Shapes::STENCIL_U ), 270 );
+
+  createLavaTexture( LAVA_ALL, shapes->getStencilImage( Shapes::STENCIL_ALL ), 0 );
+}
+
+void GLCaveShape::createLavaTexture( int index, GLubyte *stencil, int rot ) {
+  if( lavaTex[ index - LAVA_SIDE_W ] ) {
+    //free( lavaData[ index ] );
+    glDeleteTextures( 1, &( lavaTex[ index - LAVA_SIDE_W ] ) );
+  }
+  glGenTextures(1, (GLuint*)&( lavaTex[ index - LAVA_SIDE_W ] ));
+  for( int x = 0; x < 256; x++ ) {
+    for( int y = 0; y < 256; y++ ) {
+      bool b;
+      switch( rot ) {
+      case 90: b = ( stencil[ ( 256 - x ) + y * 256 ] ); break;
+      case 180: b = ( stencil[ ( 256 - x ) + ( 256 - y ) * 256 ] ); break;
+      case 270: b = ( stencil[ x + ( 256 - y ) * 256 ] ); break;
+      default: b = ( stencil[ x + y * 256 ] ); break;
+      }
+
+      if( b ) {
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = (GLubyte)0xff;
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = (GLubyte)0x00;
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = (GLubyte)0x00;
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = (GLubyte)0xff;
+      } else {
+        // copy ground?
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = (GLubyte)0x00;
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = (GLubyte)0x00;
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = (GLubyte)0x00;
+        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = (GLubyte)0x00;
+      }
+    }
+  }
+
+  glBindTexture( GL_TEXTURE_2D, lavaTex[ index - LAVA_SIDE_W ] );
+  glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+  glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+  glTexImage2D( GL_TEXTURE_2D, 0, 4, 256, 256, 0, 
+               GL_RGBA, GL_UNSIGNED_BYTE, lavaData[ index - LAVA_SIDE_W ] );
+
 }
 
 #define ER 0

@@ -28,8 +28,6 @@ class Fog {
 private:
   int fog[MAP_WIDTH][MAP_DEPTH];
   Map *map;
-  GLuint texture;
-  GLUquadric *quadric;
 
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
@@ -46,7 +44,7 @@ public:
     FOG_CLEAR
   };
 
-  Fog( Map *map, GLuint texture );
+  Fog( Map *map );
   ~Fog();
 
   int getValue( int mapx, int mapy );

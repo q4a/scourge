@@ -113,8 +113,67 @@ bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
 
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
-      if( node[x][y].island ) {
-        setCaveShape( map, x, y, GLCaveShape::CAVE_INDEX_LAVA );
+      if( isIsland( x, y ) ) {
+        int lavaIndex = GLCaveShape::LAVA_NONE;
+
+        if( isIsland( x - 1, y ) &&
+            isIsland( x + 1, y ) &&
+            isIsland( x, y - 1 ) &&
+            isIsland( x, y + 1 ) ) {
+          lavaIndex = GLCaveShape::LAVA_NONE;
+        } else if( !isIsland( x - 1, y ) &&
+                   isIsland( x + 1, y ) &&
+                   isIsland( x, y - 1 ) &&
+                   isIsland( x, y + 1 ) ) {
+          lavaIndex = GLCaveShape::LAVA_SIDE_W;
+        } else if( isIsland( x - 1, y ) &&
+                   !isIsland( x + 1, y ) &&
+                   isIsland( x, y - 1 ) &&
+                   isIsland( x, y + 1 ) ) {
+          lavaIndex = GLCaveShape::LAVA_SIDE_E;
+        } else if( isIsland( x - 1, y ) &&
+                   isIsland( x + 1, y ) &&
+                   !isIsland( x, y - 1 ) &&
+                   isIsland( x, y + 1 ) ) {
+          lavaIndex = GLCaveShape::LAVA_SIDE_N;
+        } else if( isIsland( x - 1, y ) &&
+                   isIsland( x + 1, y ) &&
+                   isIsland( x, y - 1 ) &&
+                   !isIsland( x, y + 1 ) ) {
+          lavaIndex = GLCaveShape::LAVA_SIDE_S;
+        } else if( isIsland( x - 1, y ) &&
+                   isIsland( x, y - 1 ) ) {
+          if( isIsland( x - 1, y - 1 ) ) {
+            lavaIndex = GLCaveShape::LAVA_OUTSIDE_TURN_SE;
+          } else {
+            lavaIndex = GLCaveShape::LAVA_INSIDE_TURN_NW;
+          }
+        } else if( isIsland( x + 1, y ) &&
+                   isIsland( x, y - 1 ) ) {
+          if( isIsland( x + 1, y - 1 ) ) {
+            lavaIndex = GLCaveShape::LAVA_OUTSIDE_TURN_SW;
+          } else {
+            lavaIndex = GLCaveShape::LAVA_INSIDE_TURN_NE;
+          }
+        } else if( isIsland( x - 1, y ) &&
+                   isIsland( x, y + 1 ) ) {
+          if( isIsland( x - 1, y + 1 ) ) {
+            lavaIndex = GLCaveShape::LAVA_OUTSIDE_TURN_NE;
+          } else {
+            lavaIndex = GLCaveShape::LAVA_INSIDE_TURN_SW;
+          }
+        } else if( isIsland( x + 1, y ) &&
+                   isIsland( x, y + 1 ) ) {
+          if( isIsland( x + 1, y + 1 ) ) {
+            lavaIndex = GLCaveShape::LAVA_OUTSIDE_TURN_NW;
+          } else {
+            lavaIndex = GLCaveShape::LAVA_INSIDE_TURN_SE;
+          }
+        }
+
+
+
+        setCaveShape( map, x, y, lavaIndex ); 
       } else if( node[x][y].wall ) {
         if( isWall( x - 1, y ) &&
             isWall( x + 1, y ) &&
