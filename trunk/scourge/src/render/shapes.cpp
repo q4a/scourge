@@ -46,10 +46,15 @@ WallTheme::WallTheme( char *name, Shapes *shapePal ) {
   this->shapePal = shapePal;
   for(int i = 0; i < THEME_REF_COUNT; i++)
     themeRefMap[ themeRefName[i] ] = i;
+  lavaData = NULL;
 }
 
 WallTheme::~WallTheme() {
   unload();
+  if( lavaData ) {
+    free( lavaData );
+    lavaData = NULL;
+  }
 }
 
 void WallTheme::load() {
@@ -71,9 +76,17 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
 
       // see if it's a system texture (no need to double load it)
       sprintf( bmp, "%s.bmp", texture );
+      sprintf( path, "/%s", bmp );
+
+      // keep lava texture data
+      if( isCave() && 
+          ref == THEME_REF_PASSAGE_FLOOR && 
+          face == GLShape::FRONT_SIDE ) {
+        shapePal->getBMPData( path, &lavaData );
+      }
+
       id = shapePal->findTextureByName( bmp );
       if ( id == 0 ) {
-        sprintf( path, "/%s", bmp );
         id = shapePal->loadGLTextures(path);
         loadedTextures[s] = id;
       }
@@ -845,6 +858,70 @@ bool isPowerOfTwo( GLuint n ) {
   }
   return true;
 }
+
+GLuint Shapes::getBMPData( char *filename, GLubyte **buf ) {
+
+  if( headless ) return 0;
+
+  char fn[300];
+  strcpy(fn, rootDir);
+  strcat(fn, filename);
+
+  cerr << "loading lava data: " << fn << endl;
+
+  /* Create storage space for the texture */
+  SDL_Surface *TextureImage[1];
+
+  /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
+  if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
+
+    if( TextureImage[0]->w != TextureImage[0]->h && 
+        ( !isPowerOfTwo( TextureImage[0]->w ) ||
+          !isPowerOfTwo( TextureImage[0]->h ) ) ) {
+      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
+              fn, (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+    }
+
+    Constants::checkTexture("Shapes::loadGLTextures", 
+                            TextureImage[0]->w, TextureImage[0]->h);
+
+    cerr << "\tdim=" << TextureImage[0]->w << "," << TextureImage[0]->h << endl;
+
+    int width = TextureImage[0]->w;
+    int height = TextureImage[0]->h;
+
+    unsigned char * data = (unsigned char *)(TextureImage[0]->pixels);         // the pixel data
+
+    //if( *buf ) free( *buf );
+    if( !( *buf ) )
+      *buf = (GLubyte*)malloc( 3 * width * height * sizeof( GLubyte ));
+    int count = 0;
+    int c = 0;
+    unsigned char r,g,b;
+    // the following lines extract R,G and B values from any bitmap
+    for(int i = 0; i < width * height; ++i) {
+      if(i > 0 && i % width == 0)
+        c += (  TextureImage[0]->pitch - ( width * TextureImage[0]->format->BytesPerPixel ) );
+      r = data[c++];
+      g = data[c++];
+      b = data[c++];
+
+      (*buf)[count++] = b;
+      (*buf)[count++] = g;
+      (*buf)[count++] = r;
+    }
+
+  } else {
+    cerr << "Unable to load " << fn << endl;
+  }
+
+  /* Free up any memory we may have used */
+  if( TextureImage[0] )
+    SDL_FreeSurface( TextureImage[0] );
+
+  return 1;
+}
+
 
 /* function to load in bitmap as a GL texture */
 GLuint Shapes::loadGLTextures(char *filename) {

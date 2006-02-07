@@ -96,10 +96,13 @@ class WallTheme {
   Shapes *shapePal;
   bool special;
   bool cave;
+  GLubyte *lavaData;
 
  public:
   WallTheme( char *name, Shapes *shapePal );
   ~WallTheme();
+
+  inline GLubyte *getLavaData() { return lavaData; }
 
   inline void setSpecial( bool b ) { special = b; }
   inline bool isSpecial() { return special; }
@@ -269,6 +272,8 @@ public:
   char *getRandomDescription(int descriptionGroup);
 
   GLuint loadGLTextures(char *fileName);
+
+  GLuint getBMPData( char *filename, GLubyte **buf );
 
   // Md2 shapes
   virtual GLShape *getCreatureShape( char *model_name, 

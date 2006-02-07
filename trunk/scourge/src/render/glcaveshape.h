@@ -186,7 +186,7 @@ private:
   static void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
   static void calculateNormals();
   static void calculateLight();
-  static void createLavaTexture( int index, GLubyte *stencil, int rot );
+  static void createLavaTexture( Shapes *shapes, int index, GLubyte *stencil, int rot );
 };
 
 #endif
