@@ -789,9 +789,9 @@ void GLCaveShape::createLavaTexture( Shapes *shapes, int index, GLubyte *stencil
     for( int y = 0; y < 256; y++ ) {
       bool b;
       switch( rot ) {
-      case 270: b = ( stencil[ ( x * 256 ) + ( 256 - y ) ] ); break;
-      case 180: b = ( stencil[ ( 256 - x ) + ( ( 256 - y ) * 256 ) ] ); break;
-      case 90: b = ( stencil[ ( ( 256 - x ) * 256 ) + y ] ); break;
+      case 270: b = ( stencil[ ( x * 256 ) + ( 255 - y ) ] ); break;
+      case 180: b = ( stencil[ ( 255 - x ) + ( ( 255 - y ) * 256 ) ] ); break;
+      case 90: b = ( stencil[ ( ( 255 - x ) * 256 ) + y ] ); break;
       default: b = ( stencil[ x + y * 256 ] ); break;
       }
 
