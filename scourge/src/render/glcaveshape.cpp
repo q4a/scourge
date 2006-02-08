@@ -17,9 +17,6 @@
 #include "glcaveshape.h"
 #include "shapes.h"
 
-// FIXME: remove after testing
-#include "../scourge.h"
-
 using namespace std;
 
 char *GLCaveShape::names[] = {
@@ -79,14 +76,6 @@ unsigned char *GLCaveShape::lavaData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
 GLuint GLCaveShape::glowTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
 unsigned char *GLCaveShape::glowData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
 
-Uint32 glowTick = 0;
-#define GLOW_SPEED 200
-GLfloat glowLevel = 0.9f;
-int glowDir = 1;
-#define GLOW_DELTA 0.07
-#define GLOW_LOW 0.7f
-#define GLOW_HIGH 1.0f
-
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
                           char *name, int index, 
@@ -114,14 +103,6 @@ void GLCaveShape::initialize() {
 }
 
 void GLCaveShape::draw() {
-
-  Uint32 t = SDL_GetTicks();
-  if( t - glowTick > GLOW_SPEED ) {
-    glowTick = t;
-    if( glowLevel + glowDir * GLOW_DELTA < GLOW_LOW ) glowDir = 1;
-    else if( glowLevel + glowDir * GLOW_DELTA > GLOW_HIGH ) glowDir = -1;
-    glowLevel += glowDir * GLOW_DELTA;
-  }
 
   float w = (float)width / DIV;
   float d = (float)depth / DIV;
@@ -263,30 +244,6 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, n );
   glEnd();
-
-  /*
-  if( lavaIndex + LAVA_SIDE_W != LAVA_NONE ) {
-    glEnable( GL_BLEND );
-    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glBlendFunc(GL_DST_COLOR, GL_ZERO);
-    //glBlendFunc(GL_SRC_COLOR, GL_ONE);
-    //glBlendFunc(GL_DST_ALPHA, GL_ONE);
-    glBindTexture( GL_TEXTURE_2D, glowTex[ lavaIndex ] );
-    glColor4f( glowLevel, glowLevel, glowLevel, glowLevel );
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex3f( 0, 0, n );
-    glTexCoord2f( 0, 1 );
-    glVertex3f( 0, d, n );
-    glTexCoord2f( 1, 1 );
-    glVertex3f( w, d, n );
-    glTexCoord2f( 1, 0 );
-    glVertex3f( w, 0, n );
-    glEnd();
-    glDisable( GL_BLEND );
-  }
-  */
 
 //  glDisable( GL_BLEND );
   glDisable( GL_ALPHA_TEST );
