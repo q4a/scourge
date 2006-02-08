@@ -297,13 +297,10 @@ void Shapes::initialize() {
   }
 
   // load the lava stencils
-  loadStencil( "/cave/stencil1.bmp", STENCIL_SIDE );
-  loadStencil( "/cave/stencil2.bmp", STENCIL_TWO_SIDES );
-  loadStencil( "/cave/stencil3.bmp", STENCIL_U );
-  loadStencil( "/cave/stencil4.bmp", STENCIL_ALL );
-  loadStencil( "/cave/stencil5.bmp", STENCIL_OUTSIDE_TURN );
-  loadStencil( "/cave/stencil6.bmp", STENCIL_TURNS );
-  loadStencil( "/cave/stencil7.bmp", STENCIL_INSIDE_TURN );
+  loadStencil( "/cave/stencil-side.bmp", STENCIL_SIDE );
+  loadStencil( "/cave/stencil-u.bmp", STENCIL_U );
+  loadStencil( "/cave/stencil-all.bmp", STENCIL_ALL );
+  loadStencil( "/cave/stencil-turn.bmp", STENCIL_OUTSIDE_TURN );
 
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
