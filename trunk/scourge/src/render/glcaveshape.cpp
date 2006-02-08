@@ -756,6 +756,9 @@ void GLCaveShape::initializeShapes( Shapes *shapes ) {
   createLavaTexture( shapes, LAVA_U_S, shapes->getStencilImage( Shapes::STENCIL_U ), 180 );
   createLavaTexture( shapes, LAVA_U_W, shapes->getStencilImage( Shapes::STENCIL_U ), 270 );
 
+  createLavaTexture( shapes, LAVA_SIDES_EW, shapes->getStencilImage( Shapes::STENCIL_SIDES ), 0 );
+  createLavaTexture( shapes, LAVA_SIDES_NS, shapes->getStencilImage( Shapes::STENCIL_SIDES ), 90 );
+
   createLavaTexture( shapes, LAVA_ALL, shapes->getStencilImage( Shapes::STENCIL_ALL ), 0 );
 }
 
