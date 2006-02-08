@@ -147,6 +147,8 @@ public:
     LAVA_U_E,
     LAVA_U_S,
     LAVA_U_W,
+    LAVA_SIDES_NS,
+    LAVA_SIDES_EW,
     LAVA_ALL,
     LAVA_NONE,
 

@@ -152,6 +152,12 @@ bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
                    isIsland( x, y - 1 ) &&
                    !isIsland( x, y + 1 ) ) {
           lavaIndex = GLCaveShape::LAVA_SIDE_S;
+        } else if( isIsland( x + 1, y ) &&
+                   isIsland( x - 1, y ) ) {
+          lavaIndex = GLCaveShape::LAVA_SIDES_NS;
+        } else if( isIsland( x, y + 1 ) &&
+                   isIsland( x, y - 1 ) ) {
+          lavaIndex = GLCaveShape::LAVA_SIDES_EW;
         } else if( isIsland( x - 1, y ) &&
                    isIsland( x, y - 1 ) ) {
           lavaIndex = GLCaveShape::LAVA_OUTSIDE_TURN_SE;

@@ -301,6 +301,7 @@ void Shapes::initialize() {
   loadStencil( "/cave/stencil-u.bmp", STENCIL_U );
   loadStencil( "/cave/stencil-all.bmp", STENCIL_ALL );
   loadStencil( "/cave/stencil-turn.bmp", STENCIL_OUTSIDE_TURN );
+  loadStencil( "/cave/stencil-sides.bmp", STENCIL_SIDES );
 
   setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
