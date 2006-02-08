@@ -82,17 +82,28 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
   removeSingles();
 
+
+
+
   // add lava/rivers
+  cerr << "=============================================" << endl;
+  phase = 2;
+  for( int x = 0; x < w; x++ ) {
+    for( int y = 0; y < h; y++ ) {
+      node[x][y].seen = false;
+      node[x][y].room = -1;
+    }
+  }
+
   addIslands();
 
   growCellsIsland();
 
   addIslandLand();
 
-  phase = 2;
   findRooms();
 
-  print();
+  //print();
 
   connectRooms();
 
@@ -282,7 +293,6 @@ void CaveMaker::addIslands() {
         }
         if( test ) {
           node[x][y].island = true;        
-          node[x][y].room = -1;
         }
       }
     }
@@ -314,10 +324,10 @@ void CaveMaker::growCellsIsland() {
       // 4-5 rule (<4 starves, >5 lives)
       if( count < 4 ) {
         node[x][y].island = false;
+        node[x][y].room = -1;
       }
       if( count > 5 ) {
         node[x][y].island = true;
-        node[x][y].room = -1;
       }
     }
   }
@@ -359,6 +369,7 @@ void CaveMaker::addIslandLand() {
     for( int y = 0; y < h; y++ ) {
       if( node[x][y].island && node[x][y].wall ) {
         node[x][y].island = node[x][y].wall = false;
+        node[x][y].room = -1;
       }
     }
   }
@@ -419,7 +430,9 @@ void CaveMaker::setSeen( bool b ) {
 bool CaveMaker::canReach( int sx, int sy, int ex, int ey ) {
   if( sx == ex && sy == ey ) return true;
   if( sx > w - 1 || sx < 1 || sy > h - 1 || sy < 1 ||
-      node[sx][sy].seen || node[sx][sy].wall || node[sx][sy].island ) return false;
+      node[sx][sy].seen || 
+      node[sx][sy].wall || 
+      node[sx][sy].island ) return false;
   node[sx][sy].seen = true;
   return( canReach( sx + 1, sy, ex, ey ) || 
           canReach( sx - 1, sy, ex, ey ) ||
@@ -427,30 +440,21 @@ bool CaveMaker::canReach( int sx, int sy, int ex, int ey ) {
           canReach( sx, sy - 1, ex, ey ) ? true : false );
 }
 
-void CaveMaker::findRooms() {
-
-  /*
-  for( int x = 0; x < w; x++ ) {
-    for( int y = 0; y < h; y++ ) {
-      node[x][y].seen = false;
-      node[x][y].room = -1;
-    }
-  }
-  */
-
+void CaveMaker::findRooms() {  
 
   biggestRoom = roomCounter = 0;
   room[0].size = 0;
   room[0].x = room[0].y = 0;
+
   while( true ) {
     // find the first empty space of an unclaimed room
     int sx, sy;
     sx = sy = -1;
     for( int x = 1; x < w - 1; x++ ) {
       for( int y = 1; y < h - 1; y++ ) {
-        if( !( node[x][y].wall ) &&
-            !( node[x][y].island ) &&
-            node[x][y].room == -1 ) {
+        if( node[x][y].room == -1 &&
+            !node[x][y].wall &&
+            !node[x][y].island ) {
           sx = x;
           sy = y;
           break;
@@ -460,7 +464,7 @@ void CaveMaker::findRooms() {
     
     // if no more free space, we're done
     if( sx == -1 ) break;
-    
+    cerr << "\tsx=" << sx << "," << sy << endl;
     assert( roomCounter < MAX_ROOM_COUNT );
     
     // mark this spot
@@ -484,9 +488,11 @@ void CaveMaker::findRooms() {
       }
     }
 
-    roomCounter++;      
-    room[roomCounter].size = 0;
-    room[roomCounter].x = room[roomCounter].y = 0;
+    if( room[roomCounter].x > 0 && room[roomCounter].y > 0 ) {
+      roomCounter++;      
+      room[roomCounter].size = 0;
+      room[roomCounter].x = room[roomCounter].y = 0;
+    }
   }
 }
 
@@ -531,7 +537,9 @@ void CaveMaker::connectRooms() {
   // connect each room to the center of the map (except the room at the center)
   int cx = w / 2;
   int cy = h / 2;
+  cerr << "connectRooms: " << roomCounter << endl;
   for( int i = 0; i < roomCounter; i++ ) {
+    cerr << "\tpt=" << room[i].x << "," << room[i].y << endl;
     connectPoints( room[i].x, room[i].y, cx, cy, 
                    ( i == biggestRoom ? true : false ) );
   }

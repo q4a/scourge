@@ -17,6 +17,9 @@
 #include "glcaveshape.h"
 #include "shapes.h"
 
+// FIXME: remove after testing
+#include "../scourge.h"
+
 using namespace std;
 
 char *GLCaveShape::names[] = {
@@ -63,9 +66,6 @@ char *GLCaveShape::names[] = {
 
 };
 
-GLuint GLCaveShape::overlay_tex;
-unsigned char GLCaveShape::overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
-
 vector<CVector3*> GLCaveShape::points;
 vector<vector<CaveFace*>*> GLCaveShape::polys;
 
@@ -76,6 +76,16 @@ vector<vector<CaveFace*>*> GLCaveShape::polys;
 
 GLuint GLCaveShape::lavaTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
 unsigned char *GLCaveShape::lavaData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+GLuint GLCaveShape::glowTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+unsigned char *GLCaveShape::glowData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+
+Uint32 glowTick = 0;
+#define GLOW_SPEED 200
+GLfloat glowLevel = 0.9f;
+int glowDir = 1;
+#define GLOW_DELTA 0.07
+#define GLOW_LOW 0.7f
+#define GLOW_HIGH 1.0f
 
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
@@ -104,6 +114,14 @@ void GLCaveShape::initialize() {
 }
 
 void GLCaveShape::draw() {
+
+  Uint32 t = SDL_GetTicks();
+  if( t - glowTick > GLOW_SPEED ) {
+    glowTick = t;
+    if( glowLevel + glowDir * GLOW_DELTA < GLOW_LOW ) glowDir = 1;
+    else if( glowLevel + glowDir * GLOW_DELTA > GLOW_HIGH ) glowDir = -1;
+    glowLevel += glowDir * GLOW_DELTA;
+  }
 
   float w = (float)width / DIV;
   float d = (float)depth / DIV;
@@ -225,21 +243,15 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 void GLCaveShape::drawLava( float w, float h, float d ) {
   if( useShadow ) return;
   glEnable( GL_TEXTURE_2D );
-  if( lavaIndex + LAVA_SIDE_W == LAVA_NONE ) {
-    glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::FRONT_SIDE ] );
-  } else {
-    //glEnable( GL_BLEND );
-    //glBlendFunc(GL_DST_COLOR, GL_ZERO);
-    //glBlendFunc(GL_SRC_COLOR, GL_ONE);
-    //glBlendFunc(GL_DST_ALPHA, GL_ONE);
-
+//  if( lavaIndex + LAVA_SIDE_W == LAVA_NONE ) {
+//    glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::FRONT_SIDE ] );
+//  } else {
     glEnable( GL_ALPHA_TEST );
     glAlphaFunc( GL_GREATER, 0x00 );
 
     glBindTexture( GL_TEXTURE_2D, lavaTex[ lavaIndex ] );
-  }
+//  }
   GLfloat n = 0.05 / DIV;
-  //glColor4f( 1, 1, 1, 1 );
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
@@ -251,7 +263,32 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
   glTexCoord2f( 1, 0 );
   glVertex3f( w, 0, n );
   glEnd();
-  //glDisable( GL_BLEND );
+
+  /*
+  if( lavaIndex + LAVA_SIDE_W != LAVA_NONE ) {
+    glEnable( GL_BLEND );
+    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glBlendFunc(GL_DST_COLOR, GL_ZERO);
+    //glBlendFunc(GL_SRC_COLOR, GL_ONE);
+    //glBlendFunc(GL_DST_ALPHA, GL_ONE);
+    glBindTexture( GL_TEXTURE_2D, glowTex[ lavaIndex ] );
+    glColor4f( glowLevel, glowLevel, glowLevel, glowLevel );
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex3f( 0, 0, n );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( 0, d, n );
+    glTexCoord2f( 1, 1 );
+    glVertex3f( w, d, n );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( w, 0, n );
+    glEnd();
+    glDisable( GL_BLEND );
+  }
+  */
+
+//  glDisable( GL_BLEND );
   glDisable( GL_ALPHA_TEST );
 }
 
@@ -497,8 +534,6 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
     lavaTex[i] = 0;
     lavaData[i] = (GLubyte*)malloc( 4 * 256 * 256 );
   }
-
-  createOverlayTexture();
 
   float w = (float)CAVE_CHUNK_SIZE / DIV;
   float d = (float)CAVE_CHUNK_SIZE / DIV;
@@ -759,6 +794,8 @@ void GLCaveShape::initializeShapes( Shapes *shapes ) {
   createLavaTexture( shapes, LAVA_SIDES_EW, shapes->getStencilImage( Shapes::STENCIL_SIDES ), 0 );
   createLavaTexture( shapes, LAVA_SIDES_NS, shapes->getStencilImage( Shapes::STENCIL_SIDES ), 90 );
 
+  createLavaTexture( shapes, LAVA_NONE, NULL, 0 );
+
   createLavaTexture( shapes, LAVA_ALL, shapes->getStencilImage( Shapes::STENCIL_ALL ), 0 );
 }
 
@@ -771,132 +808,55 @@ void GLCaveShape::createLavaTexture( Shapes *shapes, int index, GLubyte *stencil
     glDeleteTextures( 1, &( lavaTex[ index - LAVA_SIDE_W ] ) );
   }
   glGenTextures(1, (GLuint*)&( lavaTex[ index - LAVA_SIDE_W ] ));
+
   for( int x = 0; x < 256; x++ ) {
     for( int y = 0; y < 256; y++ ) {
-      GLubyte b;
-      switch( rot ) {
-      case 270: b = ( stencil[ ( x * 256 ) + ( 255 - y ) ] ); break;
-      case 180: b = ( stencil[ ( 255 - x ) + ( ( 255 - y ) * 256 ) ] ); break;
-      case 90: b = ( stencil[ ( ( 255 - x ) * 256 ) + y ] ); break;
-      default: b = ( stencil[ x + y * 256 ] ); break;
+      GLubyte sb;
+      if( stencil ) {
+        switch( rot ) {
+        case 270: sb = ( stencil[ ( x * 256 ) + ( 255 - y ) ] ); break;
+        case 180: sb = ( stencil[ ( 255 - x ) + ( ( 255 - y ) * 256 ) ] ); break;
+        case 90: sb = ( stencil[ ( ( 255 - x ) * 256 ) + y ] ); break;
+        default: sb = ( stencil[ x + y * 256 ] ); break;
+        }
+      } else {
+        sb = 2;
       }
 
-      switch( b ) {
+      int p = ( ( 3 * x ) + ( y * 256 * 3 ) );
+      GLubyte r = ( lavaThemeData ? lavaThemeData[ p + 0 ] : (GLubyte)0xff );
+      GLubyte g = ( lavaThemeData ? lavaThemeData[ p + 1 ] : (GLubyte)0x00 );
+      GLubyte b = ( lavaThemeData ? lavaThemeData[ p + 2 ] : (GLubyte)0x00 );
+
+      switch( sb ) {
       case 2:
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
-        ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 0 ] : 
-          (GLubyte)0xff );
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
-        ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 1 ] : 
-          (GLubyte)0x00 );
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
-        ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 2 ] : 
-          (GLubyte)0x00 );
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
-        (GLubyte)0xff;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = r;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = g;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = b;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = (GLubyte)0xff;
       break;
       case 1:
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
-        (GLubyte)0x00;
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
-        (GLubyte)0x00;
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
-        (GLubyte)0x00;
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
-        (GLubyte)0xff;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = (GLubyte)0xff;
       break;
       default:
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
-        (GLubyte)0x00;
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
-        (GLubyte)0x00;
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
-        (GLubyte)0x00;
-      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
-        (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = (GLubyte)0x00;
       }
     }
   }
 
   glBindTexture( GL_TEXTURE_2D, lavaTex[ index - LAVA_SIDE_W ] );
   glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  
-  
-  //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-  //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-
   glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
   glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, 
                GL_RGBA, GL_UNSIGNED_BYTE, lavaData[ index - LAVA_SIDE_W ] );
 
-}
-
-#define ER 0
-#define EG 0
-#define EB 0
-
-void GLCaveShape::createOverlayTexture() {
-
-  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
-  int maxP = 75;
-  int minP = 50;
-
-  // create the dark texture
-  glGenTextures(1, (GLuint*)&overlay_tex);
-  for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
-    for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
-      
-      float id = (float)i - half;
-      float jd = (float)j - half;
-
-      // the distance
-      float dist = sqrt( id * id + jd * jd );
-
-      // the distance as a percent of the max distance
-      float percent = dist / ( sqrt( half * half ) / 100.0f );
-
-      int r, g, b;
-      if( percent < minP ) {
-        r = 0xff;
-        g = 0xff;
-        b = 0xff;
-      } else if( percent >= maxP ) {
-        r = ER;
-        g = EG;
-        b = EB;
-      } else {        
-        r = 0xff - 
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - ER ) / (float)( maxP - minP ) ) );
-        if( r < ER ) r = ER;
-        g = 0xff - 
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - EG ) / (float)( maxP - minP ) ) );
-        if( g < EG ) g = EG;
-        b = 0xff - 
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - EB ) / (float)( maxP - minP ) ) );
-        if( b < EB ) b = EB;
-      }
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
-    }
-  }
-  glBindTexture(GL_TEXTURE_2D, overlay_tex);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
-			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
 }
 
