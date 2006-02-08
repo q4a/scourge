@@ -57,6 +57,8 @@ TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 10 ) {
   TerrainGenerator::objectCount = 7 + dungeonLevel * 5;
   TerrainGenerator::monsters = true;
 
+  phase = 1;
+
 }
 
 CaveMaker::~CaveMaker() {
@@ -73,17 +75,26 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
     growCells();
   }
 
+  phase = 1;
   findRooms();
 
   connectRooms();
 
   removeSingles();
 
+  // add lava/rivers
   addIslands();
 
   growCellsIsland();
 
   addIslandLand();
+
+  phase = 2;
+  findRooms();
+
+  print();
+
+  connectRooms();
 
   print();
 }
@@ -164,9 +175,6 @@ bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
         } else {
           lavaIndex = GLCaveShape::LAVA_ALL;
         }
-
-
-
         setCaveShape( map, x, y, lavaIndex ); 
       } else if( node[x][y].wall ) {
         if( isWall( x - 1, y ) &&
@@ -266,7 +274,10 @@ void CaveMaker::addIslands() {
             test = false;          
           }
         }
-        if( test ) node[x][y].island = true;        
+        if( test ) {
+          node[x][y].island = true;        
+          node[x][y].room = -1;
+        }
       }
     }
   }
@@ -300,6 +311,7 @@ void CaveMaker::growCellsIsland() {
       }
       if( count > 5 ) {
         node[x][y].island = true;
+        node[x][y].room = -1;
       }
     }
   }
@@ -335,9 +347,6 @@ void CaveMaker::addIslandLand() {
   }
   
   growCellsIsland();
-
-  // now make sure that every land within an island is accesible
-
 
   // convert to land
   for( int x = 0; x < w; x++ ) {
@@ -404,7 +413,7 @@ void CaveMaker::setSeen( bool b ) {
 bool CaveMaker::canReach( int sx, int sy, int ex, int ey ) {
   if( sx == ex && sy == ey ) return true;
   if( sx > w - 1 || sx < 1 || sy > h - 1 || sy < 1 ||
-      node[sx][sy].seen || node[sx][sy].wall ) return false;
+      node[sx][sy].seen || node[sx][sy].wall || node[sx][sy].island ) return false;
   node[sx][sy].seen = true;
   return( canReach( sx + 1, sy, ex, ey ) || 
           canReach( sx - 1, sy, ex, ey ) ||
@@ -413,6 +422,17 @@ bool CaveMaker::canReach( int sx, int sy, int ex, int ey ) {
 }
 
 void CaveMaker::findRooms() {
+
+  /*
+  for( int x = 0; x < w; x++ ) {
+    for( int y = 0; y < h; y++ ) {
+      node[x][y].seen = false;
+      node[x][y].room = -1;
+    }
+  }
+  */
+
+
   biggestRoom = roomCounter = 0;
   room[0].size = 0;
   room[0].x = room[0].y = 0;
@@ -422,7 +442,8 @@ void CaveMaker::findRooms() {
     sx = sy = -1;
     for( int x = 1; x < w - 1; x++ ) {
       for( int y = 1; y < h - 1; y++ ) {
-        if( !(node[x][y].wall) &&
+        if( !( node[x][y].wall ) &&
+            !( node[x][y].island ) &&
             node[x][y].room == -1 ) {
           sx = x;
           sy = y;
@@ -442,7 +463,8 @@ void CaveMaker::findRooms() {
     // now find all other points that can reach this point
     for( int x = 1; x < w - 1; x++ ) {
       for( int y = 1; y < h - 1; y++ ) {
-        if( !(node[x][y].wall) &&
+        if( !( node[x][y].wall ) &&
+            !( node[x][y].island ) &&
             node[x][y].room == -1 ) {
           setSeen( false );
           if( canReach( x, y, sx, sy ) ) {
@@ -471,7 +493,7 @@ void CaveMaker::connectPoints( int sx, int sy, int ex, int ey, bool isBiggestRoo
   while( !( canReach( sx, sy, ex, ey ) ||
             ( !isBiggestRoom && node[sx][sy].room == biggestRoom ) ) ) {
     bool toTarget = true;
-    if( 1.0f * rand() / RAND_MAX < 0.3f ) {
+    if( phase == 1 && 1.0f * rand() / RAND_MAX < 0.3f ) {
       // meander
       int ox = sx;
       int oy = sy;
@@ -495,7 +517,7 @@ void CaveMaker::connectPoints( int sx, int sy, int ex, int ey, bool isBiggestRoo
       else if( sy < ey ) sy++;
       else if( sy > ey ) sy--;
     }
-    node[sx][sy].wall = false;
+    node[sx][sy].wall = node[sx][sy].island = false;
   }
 }
 
@@ -525,6 +547,14 @@ void CaveMaker::removeSingles() {
           node[x][y].wall = false;
           hasSingles = true;
         }
+        if( node[x][y].island && 
+            ( ( !(node[x + 1][y].island) && !(node[x - 1][y].island) ) ||
+              ( !(node[x][y + 1].island) && !(node[x][y - 1].island) ) ||
+              ( !(node[x + 1][y - 1].island) && !(node[x - 1][y + 1].island) ) ||
+              ( !(node[x - 1][y - 1].island) && !(node[x + 1][y + 1].island) ) ) ) {
+          node[x][y].island = false;
+          hasSingles = true;
+        }
       }
     }
   }
@@ -533,7 +563,10 @@ void CaveMaker::removeSingles() {
 void CaveMaker::print() {
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
-      cerr << ( node[x][y].wall ? "X" : ( node[x][y].island ? "+" : " " ) );
+      cerr << ( node[x][y].wall ? 'X' : 
+                ( node[x][y].island ? '+' : 
+                  //(char)( '0' + node[x][y].room ) ) );
+                  ' ' ) );
     }
     cerr << endl;
   }
