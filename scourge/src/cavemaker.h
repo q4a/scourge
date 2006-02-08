@@ -48,6 +48,7 @@ class Location;
 class CaveMaker : public TerrainGenerator {
 private:
   int w, h;
+  int phase;
 
   typedef struct _NodePoint {
     bool wall, island;

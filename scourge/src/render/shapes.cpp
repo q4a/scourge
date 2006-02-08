@@ -1052,11 +1052,12 @@ void Shapes::loadStencil( char *filename, int index ) {
     for(int i = 0; i < width * height; ++i) {
       if(i > 0 && i % width == 0)
         c += (  stencil[ index ]->pitch - ( width * stencil[ index ]->format->BytesPerPixel ) );
-      r = data[c++];
-      g = data[c++];
       b = data[c++];
+      g = data[c++];
+      r = data[c++];
 
-      p[count++] = ( r || g || b ? 1 : 0 );
+      p[count++] = ( !( r || g || b ) ? 0 : 
+                     ( !( g || b ) ? 1 : 2 ) );
     }
   }
   stencilImage[ index ] = p;

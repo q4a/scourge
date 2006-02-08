@@ -493,9 +493,6 @@ GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 } )
 
 void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes ) {
-
-  cerr << "GLCaveShape::createShapes" << endl;
-
   for( int i = 0; i < CAVE_INDEX_COUNT - LAVA_SIDE_W; i++ ) {
     lavaTex[i] = 0;
     lavaData[i] = (GLubyte*)malloc( 4 * 256 * 256 );
@@ -744,7 +741,6 @@ void GLCaveShape::initializeShapes( Shapes *shapes ) {
   }
   
   // create lava textures
-  cerr << "Creating lava textures" << endl;
   createLavaTexture( shapes, LAVA_SIDE_W, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 0 );
   createLavaTexture( shapes, LAVA_SIDE_E, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 180 );
   createLavaTexture( shapes, LAVA_SIDE_N, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 90 );
@@ -774,7 +770,7 @@ void GLCaveShape::createLavaTexture( Shapes *shapes, int index, GLubyte *stencil
   glGenTextures(1, (GLuint*)&( lavaTex[ index - LAVA_SIDE_W ] ));
   for( int x = 0; x < 256; x++ ) {
     for( int y = 0; y < 256; y++ ) {
-      bool b;
+      GLubyte b;
       switch( rot ) {
       case 270: b = ( stencil[ ( x * 256 ) + ( 255 - y ) ] ); break;
       case 180: b = ( stencil[ ( 255 - x ) + ( ( 255 - y ) * 256 ) ] ); break;
@@ -782,28 +778,39 @@ void GLCaveShape::createLavaTexture( Shapes *shapes, int index, GLubyte *stencil
       default: b = ( stencil[ x + y * 256 ] ); break;
       }
 
-      if( b ) {
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
-          ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 0 ] : 
-            (GLubyte)0xff );
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
-          ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 1 ] : 
-            (GLubyte)0x00 );
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
-          ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 2 ] : 
-            (GLubyte)0x00 );
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
-          (GLubyte)0xff;
-      } else {
-        // copy ground?
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
-          (GLubyte)0x00;
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
-          (GLubyte)0x00;
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
-          (GLubyte)0x00;
-        lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
-          (GLubyte)0x00;
+      switch( b ) {
+      case 2:
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
+        ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 0 ] : 
+          (GLubyte)0xff );
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
+        ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 1 ] : 
+          (GLubyte)0x00 );
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
+        ( lavaThemeData ? lavaThemeData[ ( ( 3 * x ) + ( y * 256 * 3 ) ) + 2 ] : 
+          (GLubyte)0x00 );
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
+        (GLubyte)0xff;
+      break;
+      case 1:
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
+        (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
+        (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
+        (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
+        (GLubyte)0xff;
+      break;
+      default:
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 
+        (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 1 ] = 
+        (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 2 ] = 
+        (GLubyte)0x00;
+      lavaData[ index - LAVA_SIDE_W ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 3 ] = 
+        (GLubyte)0x00;
       }
     }
   }
