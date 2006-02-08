@@ -98,12 +98,6 @@ private:
   static std::vector<CVector3*> points;
   static std::vector<std::vector<CaveFace*>*> polys;
 
-#define OVERLAY_SIZE 16
-  static GLuint overlay_tex;
-  static unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
-
-  static void createOverlayTexture();
-
 public:
 
   GLCaveShape( Shapes *shapes, GLuint texture[],
@@ -157,6 +151,8 @@ public:
 
   static GLuint lavaTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
   static unsigned char *lavaData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+  static GLuint glowTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+  static unsigned char *glowData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
 
   static void createShapes( GLuint texture[], int shapeCount, Shapes *shapes );
   static void initializeShapes( Shapes *shapes );
