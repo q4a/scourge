@@ -750,23 +750,10 @@ void GLCaveShape::initializeShapes( Shapes *shapes ) {
   createLavaTexture( shapes, LAVA_SIDE_N, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 90 );
   createLavaTexture( shapes, LAVA_SIDE_S, shapes->getStencilImage( Shapes::STENCIL_SIDE ), 270 );
 
-  createLavaTexture( shapes, LAVA_SIDES_EW, shapes->getStencilImage( Shapes::STENCIL_TWO_SIDES ), 0 );
-  createLavaTexture( shapes, LAVA_SIDES_NS, shapes->getStencilImage( Shapes::STENCIL_TWO_SIDES ), 90 );
-
-  createLavaTexture( shapes, LAVA_INSIDE_TURN_NW, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 0 );
-  createLavaTexture( shapes, LAVA_INSIDE_TURN_NE, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 90 );
-  createLavaTexture( shapes, LAVA_INSIDE_TURN_SE, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 180 );
-  createLavaTexture( shapes, LAVA_INSIDE_TURN_SW, shapes->getStencilImage( Shapes::STENCIL_INSIDE_TURN ), 270 );
-
   createLavaTexture( shapes, LAVA_OUTSIDE_TURN_NW, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 0 );
   createLavaTexture( shapes, LAVA_OUTSIDE_TURN_NE, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 90 );
   createLavaTexture( shapes, LAVA_OUTSIDE_TURN_SE, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 180 );
   createLavaTexture( shapes, LAVA_OUTSIDE_TURN_SW, shapes->getStencilImage( Shapes::STENCIL_OUTSIDE_TURN ), 270 );
-
-  createLavaTexture( shapes, LAVA_TURNS_NW, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 0 );
-  createLavaTexture( shapes, LAVA_TURNS_NE, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 90 );
-  createLavaTexture( shapes, LAVA_TURNS_SE, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 180 );
-  createLavaTexture( shapes, LAVA_TURNS_SW, shapes->getStencilImage( Shapes::STENCIL_TURNS ), 270 );
 
   createLavaTexture( shapes, LAVA_U_N, shapes->getStencilImage( Shapes::STENCIL_U ), 0 );
   createLavaTexture( shapes, LAVA_U_E, shapes->getStencilImage( Shapes::STENCIL_U ), 90 );
