@@ -502,12 +502,8 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
   int posX, posY;
   float xpos2, ypos2, zpos2;
   for(int chunkX = chunkStartX; chunkX < chunkEndX; chunkX++) {
-    if(chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT) continue;
     for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
-      if(chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT) continue;
-      
-      
-      
+
       // remember the chunk's starting pos.
       float chunkPosX = (float)((chunkX - chunkStartX) * MAP_UNIT + 
                                 chunkOffsetX) / DIV;
@@ -519,6 +515,33 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       if(useFrustum && 
          !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / DIV)) 
         continue;
+
+
+      // FIXME: works but slow. Use 1 polygon instead (like floor)
+      // special cave edge code
+      if( !( ground || water ) && 
+          floorTexWidth > 0 && 
+          ( chunkX < 0 || chunkY < 0 ) ) {
+        for( int yp = CAVE_CHUNK_SIZE; yp < MAP_UNIT + CAVE_CHUNK_SIZE; yp += CAVE_CHUNK_SIZE ) {
+          for( int xp = 0; xp < MAP_UNIT; xp += CAVE_CHUNK_SIZE ) {
+            xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+                            xp + chunkOffsetX) / DIV;
+            ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+                            CAVE_CHUNK_SIZE + 
+                            yp + chunkOffsetY) / DIV;     
+            setupPosition( 0, CAVE_CHUNK_SIZE, 0,
+                           xpos2, ypos2, 0,
+                           pos[0][CAVE_CHUNK_SIZE][0]->shape, NULL, NULL, 
+                           NULL );
+          }
+        }
+      }
+
+      if( chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT ||
+          chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT ) continue;
+
+
+
 
       // store this chunk
       chunks[chunkCount].x = chunkPosX;
