@@ -37,7 +37,6 @@ TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 10 ) {
   int maxh = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) / CAVE_CHUNK_SIZE;
   if( this->w > maxw ) this->w = maxw;
   if( this->h > maxh ) this->h = maxh;
-  cerr << "CaveMaker: dungeonLevel=" << dungeonLevel << " size=" << w << "x" << h << endl;
   this->roomCounter = 0;
   this->biggestRoom = 0;
   node = (NodePoint**)malloc( w * sizeof( NodePoint* ) );
@@ -86,7 +85,6 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
 
   // add lava/rivers
-  cerr << "=============================================" << endl;
   phase = 2;
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
@@ -107,7 +105,9 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
   connectRooms();
 
-  print();
+  removeSingles();
+
+  //print();
 }
 
 
@@ -124,10 +124,10 @@ bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
   GLuint *floorTextureGroup = shapePal->getCurrentTheme()->getTextureGroup( ref );
   map->setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 
-  for( int x = 0; x < MAP_WIDTH - CAVE_CHUNK_SIZE; x+=CAVE_CHUNK_SIZE ) {
-    for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH - CAVE_CHUNK_SIZE; y+=CAVE_CHUNK_SIZE ) {
-      if( x < MAP_OFFSET || y < CAVE_CHUNK_SIZE || 
-          x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+  for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH; y += CAVE_CHUNK_SIZE ) {
+    for( int x = 0; x < MAP_WIDTH - CAVE_CHUNK_SIZE; x += CAVE_CHUNK_SIZE ) {
+      if( x < MAP_OFFSET || x >= MAP_OFFSET + w * CAVE_CHUNK_SIZE ||
+          y < MAP_OFFSET + CAVE_CHUNK_SIZE || y >= MAP_OFFSET + ( h + 1 ) * CAVE_CHUNK_SIZE) {
         map->setPosition( x, y, 0, GLCaveShape::getShape( GLCaveShape::CAVE_INDEX_BLOCK ) );
       }
     }
@@ -464,7 +464,6 @@ void CaveMaker::findRooms() {
     
     // if no more free space, we're done
     if( sx == -1 ) break;
-    cerr << "\tsx=" << sx << "," << sy << endl;
     assert( roomCounter < MAX_ROOM_COUNT );
     
     // mark this spot
@@ -537,9 +536,7 @@ void CaveMaker::connectRooms() {
   // connect each room to the center of the map (except the room at the center)
   int cx = w / 2;
   int cy = h / 2;
-  cerr << "connectRooms: " << roomCounter << endl;
   for( int i = 0; i < roomCounter; i++ ) {
-    cerr << "\tpt=" << room[i].x << "," << room[i].y << endl;
     connectPoints( room[i].x, room[i].y, cx, cy, 
                    ( i == biggestRoom ? true : false ) );
   }
@@ -561,6 +558,7 @@ void CaveMaker::removeSingles() {
           node[x][y].wall = false;
           hasSingles = true;
         }
+        /*
         if( node[x][y].island && 
             ( ( !(node[x + 1][y].island) && !(node[x - 1][y].island) ) ||
               ( !(node[x][y + 1].island) && !(node[x][y - 1].island) ) ||
@@ -569,6 +567,7 @@ void CaveMaker::removeSingles() {
           node[x][y].island = false;
           hasSingles = true;
         }
+        */
       }
     }
   }
