@@ -824,6 +824,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
     damage[damageCount].projectile = NULL;
     damage[damageCount].name = name;
     damage[damageCount].pos = getLocation(posX, posY, posZ);
+    damage[damageCount].inFront = false;
     damageCount++;
 
     // don't draw shape if it's an area effect
@@ -841,6 +842,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
     stencil[stencilCount].effect = NULL;
     stencil[stencilCount].name = name;
     stencil[stencilCount].pos = getLocation(posX, posY, posZ);
+    stencil[stencilCount].inFront = false;
     stencilCount++;
   } else if(!shape->isStencil()) {
     bool invisible = (creature && creature->getStateMod(Constants::invisible));
@@ -855,6 +857,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
       other[otherCount].effect = NULL;
       other[otherCount].name = name;
       other[otherCount].pos = getLocation(posX, posY, posZ);
+      other[otherCount].inFront = false;
       otherCount++;
     }
     if(shape->drawLater() || invisible) {
@@ -868,6 +871,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
       later[laterCount].effect = NULL;
       later[laterCount].name = name;
       later[laterCount].pos = getLocation(posX, posY, posZ);
+      later[laterCount].inFront = false;
       laterCount++;
     }
   }
@@ -1012,6 +1016,9 @@ void Map::draw() {
       
       // cave floor
       if( floorTexWidth > 0 ) {
+
+        GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
+
         //float xpos2 = (float)(getX() - mapViewWidth / 2) / DIV;
         //float ypos2 = (float)(getY() - mapViewDepth / 2) / DIV;
         float w = (float)( mapViewWidth ) / DIV;
@@ -1023,13 +1030,13 @@ void Map::draw() {
         //glTranslatef( xpos2, ypos2, 0.0f);        
         glBegin( GL_QUADS );
         glNormal3f( 0, 0, 1 );
-        glTexCoord2f( getX() * DIV, getY() * DIV );
+        glTexCoord2f( getX() * DIV * ratio, getY() * DIV * ratio );
         glVertex3f( 0, 0, 0 );
-        glTexCoord2f( getX() * DIV, ( getY() + mapViewDepth ) * DIV );
+        glTexCoord2f( getX() * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
         glVertex3f( 0, d, 0 );
-        glTexCoord2f( ( getX() + mapViewWidth ) * DIV, ( getY() + mapViewDepth ) * DIV );
+        glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
         glVertex3f( w, d, 0 );
-        glTexCoord2f( ( getX() + mapViewWidth ) * DIV, getY() * DIV );
+        glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, getY() * DIV * ratio );
         glVertex3f( w, 0, 0 );
         glEnd();
         glPopMatrix();
@@ -1095,9 +1102,17 @@ void Map::draw() {
 
     }
 
+    // draw lava flows
+    for(int i = 0; i < otherCount; i++) {
+      if( other[i].shape->isFlatCaveshape() ) {
+        doDrawShape(&other[i]);
+      }
+    }
+
     // draw the creatures/objects/doors/etc.
     DrawLater *playerDrawLater = NULL;
     for(int i = 0; i < otherCount; i++) {
+      if( other[i].shape->isFlatCaveshape() ) continue;
       if( settings->isPlayerEnabled() ) {
         if( other[i].creature && other[i].creature == adapter->getPlayer() ) 
           playerDrawLater = &(other[i]);
@@ -1116,7 +1131,7 @@ void Map::draw() {
     // draw the walls: walls in front of the player will be transparent
     if( playerDrawLater ) {
 
-      if( resortShapes ) {
+      if( floorTexWidth == 0 && resortShapes ) {
         sortShapes( playerDrawLater, stencil, stencilCount );
         resortShapes = false;
       }

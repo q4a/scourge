@@ -96,13 +96,14 @@ class WallTheme {
   Shapes *shapePal;
   bool special;
   bool cave;
-  GLubyte *lavaData;
+  GLubyte *lavaData, *floorData;
 
  public:
   WallTheme( char *name, Shapes *shapePal );
   ~WallTheme();
 
   inline GLubyte *getLavaData() { return lavaData; }
+  inline GLubyte *getFloorData() { return floorData; }
 
   inline void setSpecial( bool b ) { special = b; }
   inline bool isSpecial() { return special; }
@@ -220,6 +221,7 @@ protected:
   // stencils for lava
   SDL_Surface *stencil[ STENCIL_COUNT ];
   GLubyte *stencilImage[ STENCIL_COUNT ];
+  GLuint stencilTex[ STENCIL_COUNT ];
 
 public: 
   Shapes( bool headless );
@@ -227,6 +229,7 @@ public:
 
   inline SDL_Surface *getStencilSurface( int index ) { return stencil[ index ]; }
   inline GLubyte *getStencilImage( int index ) { return stencilImage[ index ]; }
+  inline GLuint getStencilTex( int index ) { return stencilTex[ index ]; }
   
   inline int getThemeCount() { return themeCount; }
   inline char *getThemeName( int index ) { return themes[ index ]->getName(); }
