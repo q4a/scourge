@@ -208,6 +208,8 @@ void Session::stopClientServer() {
 #endif
 
 Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) {
+  // don't randomize special items
+  if( rpgItem->isSpecial() ) loading = true;
   int itemLevel = level;
   if( !loading ) {
     itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;

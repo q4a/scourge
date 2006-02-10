@@ -47,6 +47,7 @@ WallTheme::WallTheme( char *name, Shapes *shapePal ) {
   for(int i = 0; i < THEME_REF_COUNT; i++)
     themeRefMap[ themeRefName[i] ] = i;
   lavaData = NULL;
+  floorData = NULL;
 }
 
 WallTheme::~WallTheme() {
@@ -54,6 +55,10 @@ WallTheme::~WallTheme() {
   if( lavaData ) {
     free( lavaData );
     lavaData = NULL;
+  }
+  if( floorData ) {
+    free( floorData );
+    floorData = NULL;
   }
 }
 
@@ -83,6 +88,11 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
           ref == THEME_REF_PASSAGE_FLOOR && 
           face == GLShape::FRONT_SIDE ) {
         shapePal->getBMPData( path, &lavaData );
+      }
+      if( isCave() && 
+          ref == THEME_REF_PASSAGE_FLOOR && 
+          face == GLShape::TOP_SIDE ) {
+        shapePal->getBMPData( path, &floorData );
       }
 
       id = shapePal->findTextureByName( bmp );
@@ -1022,6 +1032,8 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 void Shapes::loadStencil( char *filename, int index ) {
   if( headless ) return;
 
+  stencilTex[ index ] = loadGLTextures( filename );
+
   GLubyte *p = NULL;
   char fn[300];
 //  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
@@ -1058,7 +1070,7 @@ void Shapes::loadStencil( char *filename, int index ) {
       r = data[c++];
 
       p[count++] = ( !( r || g || b ) ? 0 : 
-                     ( !( g || b ) ? 1 : 2 ) );
+                     ( r == 0xff && g == 0xff && b == 0xff ? 2 : 1 ) );
     }
   }
   stencilImage[ index ] = p;

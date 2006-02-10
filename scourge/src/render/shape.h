@@ -90,6 +90,7 @@ public:
   virtual inline void setInteractive( bool b ) { interactive = b; }
   virtual inline bool isInteractive() { return interactive; }
 
+  virtual inline bool isFlatCaveshape() { return false; }
 };
 
 #endif
