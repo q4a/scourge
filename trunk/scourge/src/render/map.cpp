@@ -32,7 +32,7 @@
 
 using namespace std;
 
-//#define USE_LIGHTING 1
+#define USE_LIGHTING 1
 
 #define MOUSE_ROT_DELTA 2
 

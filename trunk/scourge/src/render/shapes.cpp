@@ -1032,8 +1032,6 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 void Shapes::loadStencil( char *filename, int index ) {
   if( headless ) return;
 
-  stencilTex[ index ] = loadGLTextures( filename );
-
   GLubyte *p = NULL;
   char fn[300];
 //  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);

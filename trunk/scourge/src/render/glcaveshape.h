@@ -67,7 +67,6 @@ private:
   GLuint *topTextureGroup;
   GLuint *floorTextureGroup;
   int caveIndex;
-  int lavaIndex;
   int stencilIndex;
   int stencilAngle;
 
@@ -106,7 +105,6 @@ public:
                int width, int depth, int height, 
                char *name, int index, 
                int mode, int dir, int caveIndex, 
-               int lavaIndex=0,
                int stencilIndex=0, int stencilAngle=0 );
   virtual ~GLCaveShape();
 
@@ -154,10 +152,8 @@ public:
     CAVE_INDEX_COUNT
   };
 
-  static GLuint lavaTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
-  static unsigned char *lavaData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
-  static GLuint floorTex[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
-  static unsigned char *floorData[ CAVE_INDEX_COUNT - LAVA_SIDE_W ];
+  static GLuint floorTex[];
+  static unsigned char *floorData[];
 
   static void createShapes( GLuint texture[], int shapeCount, Shapes *shapes );
   static void initializeShapes( Shapes *shapes );
@@ -179,8 +175,8 @@ private:
   static void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
   static void calculateNormals();
   static void calculateLight();
-  static void createLavaTexture( Shapes *shapes, int index, int stencilIndex, int rot );
   static void createFloorTexture( Shapes *shapes, int stencilIndex );  
+  static void createLavaTexture( int index, int stencilIndex, int rot );
 };
 
 #endif

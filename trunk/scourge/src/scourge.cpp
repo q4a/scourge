@@ -42,7 +42,7 @@
 
 using namespace std;
 
-#define CAVE_TEST 1
+//#define CAVE_TEST 1
 
 #define MOUSE_ROT_DELTA 2
 
@@ -833,14 +833,22 @@ void Scourge::drawAfter() {
     glTranslatef( 20, 20, 0 );
     Creature *c = battleRound[battleTurn]->getCreature();
     char msg[80];
-    sprintf(msg, "%s %d/%d", 
-            c->getName(),
-            c->getBattle()->getAP(),
-            c->getBattle()->getStartingAP());
-    turnProgress->updateStatus(msg, false,     
-                               c->getBattle()->getAP(), 
-                               c->getBattle()->getStartingAP(),
-                               c->getPath()->size() );
+    if( c->getPath()->size() > 0 ) {
+      sprintf( msg, "%s %d/%d (cost %d)",
+               c->getName(),
+               c->getBattle()->getAP(),
+               c->getBattle()->getStartingAP(),
+               c->getPath()->size() );
+    } else {
+      sprintf( msg, "%s %d/%d", 
+               c->getName(),
+               c->getBattle()->getAP(),
+               c->getBattle()->getStartingAP() );
+    }
+    turnProgress->updateStatus( msg, false,     
+                                c->getBattle()->getAP(), 
+                                c->getBattle()->getStartingAP(),
+                                c->getPath()->size() );
     glPopMatrix();
     //glPushAttrib(GL_ENABLE_BIT);
   }
