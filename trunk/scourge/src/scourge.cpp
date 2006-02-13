@@ -922,6 +922,15 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
     gluDisk(quadric, w - targetWidth, w, 12, 1);
+
+    if( inTurnBasedCombat() ) {
+      char cost[40];
+      sprintf( cost, "Move: %d", creature->getPath()->size() );
+      getSDLHandler()->drawTooltip( 0, 0, 0, 
+                                    -( levelMap->getZRot() ),
+                                    -( levelMap->getYRot() ),
+                                    cost );
+    }
     glPopMatrix();
   }
 
@@ -941,6 +950,19 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
     glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
     gluDisk(quadric, tw - targetWidth, tw, 12, 1);
+
+    if( inTurnBasedCombatPlayerTurn() ) {
+      char cost[40];
+      if( getParty()->getPlayer()->getBattle()->describeAttack( creature->getTargetCreature(), cost ) ) {
+        glDisable( GL_DEPTH_TEST );
+        getSDLHandler()->drawTooltip( 0, 0, 0, 
+                                      -( levelMap->getZRot() ),
+                                      -( levelMap->getYRot() ),
+                                      cost );
+        glEnable( GL_DEPTH_TEST );
+      }
+    }
+
     glPopMatrix();
   }
 
@@ -1035,8 +1057,21 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
-    if( groupMode || player || creature->isMonster() ) 
+    if( groupMode || player || creature->isMonster() ) { 
       gluDisk(quadric, w - s, w, 12, 1);
+
+      if( inTurnBasedCombatPlayerTurn() ) {
+        char cost[40];
+        if( getParty()->getPlayer()->getBattle()->describeAttack( creature, cost ) ) {
+          glDisable( GL_DEPTH_TEST );
+          getSDLHandler()->drawTooltip( 0, 0, 0, 
+                                        -( levelMap->getZRot() ),
+                                        -( levelMap->getYRot() ),
+                                        cost );
+          glEnable( GL_DEPTH_TEST );
+        }
+      }
+    }
     glPopMatrix();
   }
 
