@@ -313,7 +313,7 @@ void Battle::executeAction() {
     if( creature->castHealingSpell() ) {
       if(debugBattle) cerr << "Stopping executeAction: Creature: " << creature->getName() << 
         " will heal " << creature->getTargetCreature()->getName() << endl;
-      weaponWait = 0;
+      weaponWait = nextTurn = 0;
       return;
     }
   }
@@ -323,6 +323,9 @@ void Battle::executeAction() {
     weaponWait--;
     if(weaponWait > 0) return;
   }
+
+  // don't carry to next turn
+  nextTurn = 0;
 
   // attack
   if(debugBattle) cerr << "\t\t *** Attacking." << endl;
@@ -346,7 +349,7 @@ void Battle::stepCloserToTarget() {
     if( creature->castHealingSpell() ) {
       if(debugBattle) cerr << "Stopping stepCloserToTarget: Creature: " << creature->getName() << 
         " will heal " << creature->getTargetCreature()->getName() << endl;
-      weaponWait = 0;
+      weaponWait = nextTurn = 0;
       return;
     }
   }
@@ -354,7 +357,7 @@ void Battle::stepCloserToTarget() {
   // out of range: take 1 step closer
 
   // re-select the best weapon
-  weaponWait = 0;
+  weaponWait = nextTurn = 0;
 
   // Set the movement mode; otherwise character won't move
   creature->getShape()->setCurrentAnimation((int)MD2_RUN);
@@ -1071,7 +1074,6 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 
     // target creature death
     if(creature->getTargetCreature()->takeDamage( toint( damage ), effect, delay)) {
-      
       // only in RT mode... otherwise in TB mode character won't move
       if( !session->getPreferences()->isBattleTurnBased() )
         creature->getShape()->setCurrentAnimation((int)MD2_TAUNT); 
@@ -1167,40 +1169,63 @@ int Battle::getWeaponSpeed( Item *item ) {
     WEAPON_WAIT_MUL;
 }
 
-bool Battle::describeAttack( Creature *target, char *buff ) {
-  bool sameTarget = ( creature->getTargetCreature() == target );
-  if( sameTarget && nextTurn > 0 ) {
-    sprintf( buff, "%s: %d", ( item ? item->getRpgItem()->getName() : "Bare Hands" ), nextTurn );
-    return true;
-  } else {
+bool Battle::describeAttack( Creature *target, char *buff, bool includeActions ) {
 
-    if( !target || !creature->canAttack( target ) ) return false;
-  
-    Creature *tmp = creature->getTargetCreature();
-    creature->setTargetCreature( target );
-    float dist = creature->getDistanceToTarget();
-    Item *item = creature->getBestWeapon(dist);
-    creature->setTargetCreature( tmp );
-  
-    // out of range
-    if( !item && dist > MIN_DISTANCE ) {
-      if( sameTarget ) {
-        sprintf( buff, "Out of Range. Move: %d", creature->getPath()->size() );
-      } else {
-        sprintf( buff, "Out of Range" );
-      }
+  initTurnStep();
+
+  // info for the player?
+  if( includeActions && session->getParty()->getPlayer() == creature ) {
+    if( creature->getAction() == Constants::ACTION_CAST_SPELL ) {
+      sprintf( buff, "%s: %d", 
+               creature->getActionSpell()->getName(), 
+               ( nextTurn > 0 ? nextTurn : weaponWait ) );
+      return true;
+    } else if( creature->getAction() == Constants::ACTION_EAT_DRINK ) {
+      sprintf( buff, "%s: %d", 
+               creature->getActionItem()->getRpgItem()->getName(),
+               ( nextTurn > 0 ? nextTurn : weaponWait ) );
+      return true;
+    } else if( creature->getAction() == Constants::ACTION_SPECIAL ) {
+      sprintf( buff, "%s: %d", 
+               creature->getActionSkill()->getName(), 
+               ( nextTurn > 0 ? nextTurn : weaponWait ) );
       return true;
     }
+  }
+
+  // info for the target
+  bool sameTarget = ( creature->getTargetCreature() == target );
+  if( !target || !creature->canAttack( target ) ) return false;
   
-    // How many steps to wait before being able to use the weapon.
-    int weaponWait = getWeaponSpeed( item );
-    if( session->getPreferences()->isBattleTurnBased() ) {
-      weaponWait /= 2;
+  Creature *tmp = NULL;
+  if( !sameTarget ) {
+    tmp = creature->getTargetCreature();
+    creature->setTargetCreature( target );
+  }
+  float dist = creature->getDistanceToTarget();
+  Item *item = creature->getBestWeapon(dist);
+  if( !sameTarget ) creature->setTargetCreature( tmp );
+  
+  // out of range
+  if( !item && dist > MIN_DISTANCE ) {
+    if( sameTarget ) {
+      sprintf( buff, "Out of Range. Move: %d", creature->getPath()->size() );
+    } else {
+      sprintf( buff, "Out of Range" );
     }
-  
-    sprintf( buff, "%s: %d", ( item ? item->getRpgItem()->getName() : "Bare Hands" ), weaponWait );
-  
     return true;
   }
+  
+  // How many steps to wait before being able to use the weapon.
+  int weaponWait = getWeaponSpeed( item );
+  if( session->getPreferences()->isBattleTurnBased() ) {
+    weaponWait /= 2;
+  }
+  
+  sprintf( buff, "%s: %d", 
+           ( item ? item->getRpgItem()->getName() : "Bare Hands" ), 
+           ( sameTarget && nextTurn > 0 ? nextTurn : weaponWait ) );
+  
+  return true;
 }
 

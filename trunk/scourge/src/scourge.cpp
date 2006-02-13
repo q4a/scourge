@@ -923,7 +923,9 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
     gluDisk(quadric, w - targetWidth, w, 12, 1);
 
-    if( inTurnBasedCombat() ) {
+    // in TB mode and paused?
+    if( inTurnBasedCombat() &&
+        !( party->isRealTimeMode() ) ) {
       char cost[40];
       sprintf( cost, "Move: %d", creature->getPath()->size() );
       getSDLHandler()->drawTooltip( 0, 0, 0, 
@@ -951,9 +953,11 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
     gluDisk(quadric, tw - targetWidth, tw, 12, 1);
 
-    if( inTurnBasedCombatPlayerTurn() ) {
+    // in TB mode, player's turn and paused?
+      if( inTurnBasedCombatPlayerTurn() &&
+          !( party->isRealTimeMode() ) ) {
       char cost[40];
-      if( getParty()->getPlayer()->getBattle()->describeAttack( creature->getTargetCreature(), cost ) ) {
+      if( getParty()->getPlayer()->getBattle()->describeAttack( creature->getTargetCreature(), cost, false ) ) {
         glDisable( GL_DEPTH_TEST );
         getSDLHandler()->drawTooltip( 0, 0, 0, 
                                       -( levelMap->getZRot() ),
@@ -1060,16 +1064,18 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     if( groupMode || player || creature->isMonster() ) { 
       gluDisk(quadric, w - s, w, 12, 1);
 
-      if( inTurnBasedCombatPlayerTurn() ) {
+      // in TB mode, player's turn and paused?
+      if( inTurnBasedCombatPlayerTurn() &&
+          !( party->isRealTimeMode() ) ) {
         char cost[40];
-        if( getParty()->getPlayer()->getBattle()->describeAttack( creature, cost ) ) {
-          glDisable( GL_DEPTH_TEST );
+        glDisable( GL_DEPTH_TEST );
+        if( getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, player ) ) {
           getSDLHandler()->drawTooltip( 0, 0, 0, 
                                         -( levelMap->getZRot() ),
                                         -( levelMap->getYRot() ),
                                         cost );
-          glEnable( GL_DEPTH_TEST );
         }
+        glEnable( GL_DEPTH_TEST );
       }
     }
     glPopMatrix();
