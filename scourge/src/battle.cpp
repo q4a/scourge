@@ -1167,3 +1167,40 @@ int Battle::getWeaponSpeed( Item *item ) {
     WEAPON_WAIT_MUL;
 }
 
+bool Battle::describeAttack( Creature *target, char *buff ) {
+  bool sameTarget = ( creature->getTargetCreature() == target );
+  if( sameTarget && nextTurn > 0 ) {
+    sprintf( buff, "%s: %d", ( item ? item->getRpgItem()->getName() : "Bare Hands" ), nextTurn );
+    return true;
+  } else {
+
+    if( !target || !creature->canAttack( target ) ) return false;
+  
+    Creature *tmp = creature->getTargetCreature();
+    creature->setTargetCreature( target );
+    float dist = creature->getDistanceToTarget();
+    Item *item = creature->getBestWeapon(dist);
+    creature->setTargetCreature( tmp );
+  
+    // out of range
+    if( !item && dist > MIN_DISTANCE ) {
+      if( sameTarget ) {
+        sprintf( buff, "Out of Range. Move: %d", creature->getPath()->size() );
+      } else {
+        sprintf( buff, "Out of Range" );
+      }
+      return true;
+    }
+  
+    // How many steps to wait before being able to use the weapon.
+    int weaponWait = getWeaponSpeed( item );
+    if( session->getPreferences()->isBattleTurnBased() ) {
+      weaponWait /= 2;
+    }
+  
+    sprintf( buff, "%s: %d", ( item ? item->getRpgItem()->getName() : "Bare Hands" ), weaponWait );
+  
+    return true;
+  }
+}
+
