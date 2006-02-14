@@ -300,7 +300,6 @@ void Item::initItems(ShapePalette *shapePal) {
   int itemCount = 0, potionTime = 0;
   char name[255], type[255], shape[255], skill[255], potionSkill[255];
   char long_description[500], short_description[120];
-  char specialDescription[4][500];
   char line[255];
   RpgItem *last = NULL;
   int n = fgetc(fp);

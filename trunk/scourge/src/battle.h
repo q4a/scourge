@@ -124,7 +124,7 @@ class Battle {
 
   int calculateRange( Item *item=NULL );
 
-  bool describeAttack( Creature *target, char *buff, bool includeActions );
+  bool describeAttack( Creature *target, char *buff, Color *color, bool includeActions );
 
  protected:
   void launchProjectile();

@@ -1169,7 +1169,7 @@ int Battle::getWeaponSpeed( Item *item ) {
     WEAPON_WAIT_MUL;
 }
 
-bool Battle::describeAttack( Creature *target, char *buff, bool includeActions ) {
+bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool includeActions ) {
 
   initTurnStep();
 
@@ -1179,16 +1179,25 @@ bool Battle::describeAttack( Creature *target, char *buff, bool includeActions )
       sprintf( buff, "%s: %d", 
                creature->getActionSpell()->getName(), 
                ( nextTurn > 0 ? nextTurn : weaponWait ) );
+      color->r = 0.6f;
+      color->g = 0.1f;
+      color->b = 0.6f;
       return true;
     } else if( creature->getAction() == Constants::ACTION_EAT_DRINK ) {
       sprintf( buff, "%s: %d", 
                creature->getActionItem()->getRpgItem()->getName(),
                ( nextTurn > 0 ? nextTurn : weaponWait ) );
+      color->r = 0;
+      color->g = 0.6f;
+      color->b = 0;
       return true;
     } else if( creature->getAction() == Constants::ACTION_SPECIAL ) {
       sprintf( buff, "%s: %d", 
                creature->getActionSkill()->getName(), 
                ( nextTurn > 0 ? nextTurn : weaponWait ) );
+      color->r = 0;
+      color->g = 0.3f;
+      color->b = 0.6f;
       return true;
     }
   }
@@ -1209,8 +1218,14 @@ bool Battle::describeAttack( Creature *target, char *buff, bool includeActions )
   // out of range
   if( !item && dist > MIN_DISTANCE ) {
     if( sameTarget ) {
+      color->r = 0.5f;
+      color->g = 0.2f;
+      color->b = 0;
       sprintf( buff, "Out of Range. Move: %d", creature->getPath()->size() );
     } else {
+      color->r = 0.3f;
+      color->g = 0.3f;
+      color->b = 0.3f;
       sprintf( buff, "Out of Range" );
     }
     return true;
@@ -1225,7 +1240,9 @@ bool Battle::describeAttack( Creature *target, char *buff, bool includeActions )
   sprintf( buff, "%s: %d", 
            ( item ? item->getRpgItem()->getName() : "Bare Hands" ), 
            ( sameTarget && nextTurn > 0 ? nextTurn : weaponWait ) );
-  
+   color->r = 0.6f;
+   color->g = 0;
+   color->b = 0;
   return true;
 }
 

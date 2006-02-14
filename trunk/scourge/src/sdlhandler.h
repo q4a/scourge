@@ -116,7 +116,8 @@ public:
 
   void drawTooltip( float xpos2, float ypos2, float zpos2, 
                     float zrot, float yrot, 
-                    char *message );
+                    char *message,
+                    float r=0, float g=0.15f, float b=0.05f );
 
   inline void setDebugStr(char *s) { debugStr = s; }
   
