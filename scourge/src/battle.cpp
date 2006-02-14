@@ -1218,10 +1218,22 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
   // out of range
   if( !item && dist > MIN_DISTANCE ) {
     if( sameTarget ) {
-      color->r = 0.5f;
-      color->g = 0.2f;
-      color->b = 0;
-      sprintf( buff, "Out of Range. Move: %d", creature->getPath()->size() );
+      if( creature->getAction() == Constants::ACTION_CAST_SPELL ) {
+        sprintf( buff, "Targeted" );
+        color->r = 0.6f;
+        color->g = 0.1f;
+        color->b = 0.6f;
+      } else if( creature->getAction() == Constants::ACTION_SPECIAL ) {
+        sprintf( buff, "Targeted" );
+        color->r = 0;
+        color->g = 0.3f;
+        color->b = 0.6f;
+      } else {
+        color->r = 0.5f;
+        color->g = 0.2f;
+        color->b = 0;
+        sprintf( buff, "Out of Range. Move: %d", creature->getPath()->size() );
+      }
     } else {
       color->r = 0.3f;
       color->g = 0.3f;

@@ -954,9 +954,11 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
     gluDisk(quadric, tw - targetWidth, tw, 12, 1);
 
+    /*
     // in TB mode, player's turn and paused?
       if( inTurnBasedCombatPlayerTurn() &&
-          !( party->isRealTimeMode() ) ) {
+          !( party->isRealTimeMode() ) &&
+          getParty()->getPlayer()->getAction() == Constants::ACTION_NO_ACTION ) {
       char cost[40];
       Color color;
       if( getParty()->getPlayer()->getBattle()->describeAttack( creature->getTargetCreature(), cost, &color, false ) ) {
@@ -969,6 +971,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
         glEnable( GL_DEPTH_TEST );
       }
     }
+    */
 
     glPopMatrix();
   }
