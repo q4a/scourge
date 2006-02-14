@@ -931,7 +931,8 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
       getSDLHandler()->drawTooltip( 0, 0, 0, 
                                     -( levelMap->getZRot() ),
                                     -( levelMap->getYRot() ),
-                                    cost );
+                                    cost,
+                                    0.5f, 0.2f, 0.0f );
     }
     glPopMatrix();
   }
@@ -957,12 +958,14 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
       if( inTurnBasedCombatPlayerTurn() &&
           !( party->isRealTimeMode() ) ) {
       char cost[40];
-      if( getParty()->getPlayer()->getBattle()->describeAttack( creature->getTargetCreature(), cost, false ) ) {
+      Color color;
+      if( getParty()->getPlayer()->getBattle()->describeAttack( creature->getTargetCreature(), cost, &color, false ) ) {
         glDisable( GL_DEPTH_TEST );
         getSDLHandler()->drawTooltip( 0, 0, 0, 
                                       -( levelMap->getZRot() ),
                                       -( levelMap->getYRot() ),
-                                      cost );
+                                      cost,
+                                      color.r, color.g, color.b );
         glEnable( GL_DEPTH_TEST );
       }
     }
@@ -1068,14 +1071,16 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
       if( inTurnBasedCombatPlayerTurn() &&
           !( party->isRealTimeMode() ) ) {
         char cost[40];
-        glDisable( GL_DEPTH_TEST );
-        if( getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, player ) ) {
+        Color color;
+        if( getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, &color, player ) ) {
+          glDisable( GL_DEPTH_TEST );
           getSDLHandler()->drawTooltip( 0, 0, 0, 
                                         -( levelMap->getZRot() ),
                                         -( levelMap->getYRot() ),
-                                        cost );
+                                        cost, 
+                                        color.r, color.g, color.b );
+          glEnable( GL_DEPTH_TEST );
         }
-        glEnable( GL_DEPTH_TEST );
       }
     }
     glPopMatrix();
@@ -3670,8 +3675,11 @@ void Scourge::checkForInfo() {
             }
             if( !found ) {
               InfoMessage *message = 
-                new InfoMessage( s, obj, pos->x, pos->y, 
-                                 pos->z + pos->shape->getHeight() );
+                new InfoMessage( s, obj, 
+                                 pos->x + pos->shape->getWidth() / 2, 
+                                 pos->y - 1 - pos->shape->getDepth() / 2, 
+                                 pos->z + pos->shape->getHeight() / 2 );
+                                 //pos->z + pos->shape->getHeight() );
               infos[ message ] = SDL_GetTicks();
             }
           }

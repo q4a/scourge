@@ -47,7 +47,9 @@ public:
   virtual Uint16 getMouseX() = 0;
   virtual Uint16 getMouseY() = 0;
   virtual void drawTooltip( float xpos2, float ypos2, float zpos2, 
-                            float zrot, float yrot, char *message ) = 0;
+                            float zrot, float yrot, 
+                            char *message,
+                            float r=0, float g=0.15f, float b=0.05f ) = 0;
   virtual void setFontType( int fontType ) = 0;
   virtual GLuint loadSystemTexture( char *line ) = 0;
   virtual void unlockMouse() = 0;

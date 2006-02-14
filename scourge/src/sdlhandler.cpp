@@ -747,47 +747,47 @@ bool SDLHandler::intersects( int x, int y, int w, int h,
 
 void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2, 
                               float zrot, float yrot, 
-                              char *message) {
-/*
-  InfoMessage *message = i->first;
-  xpos2 = ((float)(message->x - levelMap->getX()) / DIV);
-  ypos2 = ((float)(message->y - levelMap->getY()) / DIV);
-  zpos2 = ((float)(message->z) / DIV);
-*/  
-  
-  glPushMatrix();
-  glTranslatef( xpos2, ypos2, zpos2 );
-  //glRotatef( -( levelMap->getZRot() ), 0.0f, 0.0f, 1.0f );
-  //glRotatef( -( levelMap->getYRot() ), 1.0f, 0.0f, 0.0f );
-  glRotatef( zrot, 0.0f, 0.0f, 1.0f );
-  glRotatef( yrot, 1.0f, 0.0f, 0.0f );
-  
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+                              char *message,
+                              float r, float g, float b ) {
   int w = strlen( message ) * 8 + 4;
   int h = 12;
   int x = -2;
   int y = -10;
+
+  glPushMatrix();
+  glTranslatef( xpos2, ypos2, zpos2 );
+  glRotatef( zrot, 0.0f, 0.0f, 1.0f );
+  glRotatef( yrot, 1.0f, 0.0f, 0.0f );
   
-  glColor4f( 0, 0.15f, 0.05f, 0.5 );
+  glDisable( GL_CULL_FACE );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );  
+  
+  //glColor4f( 0, 0.15f, 0.05f, 0.5 );
+  glColor4f( r, g, b, 0.5f );
   glBegin( GL_QUADS );
   glVertex2f( x + w, y );
   glVertex2f( x, y  );
   glVertex2f( x, y + h );
   glVertex2f( x + w, y + h );
   glEnd();
-  glDisable( GL_BLEND );
-  
-  glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-  glColor4f( 0, 0.4f, 0.15f, 0.5 );
-  glBegin( GL_QUADS );
-  glVertex2f( x + w, y );
-  glVertex2f( x, y  );
-  glVertex2f( x, y + h );
-  glVertex2f( x + w, y + h );
+  glBegin( GL_TRIANGLES );
+  glVertex2f( x, y + h - 5 );
+  glVertex2f( x - 5, y + h + 5 );
+  glVertex2f( x + 5, y + h );
   glEnd();
   glDisable( GL_BLEND );
-  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+  //glColor4f( 0, 0.4f, 0.15f, 0.5 );
+  glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.5f );
+  glBegin( GL_LINE_LOOP );
+  glVertex2f( x + w, y );
+  glVertex2f( x, y  );
+  glVertex2f( x, y + h - 5 );
+  glVertex2f( x - 5, y + h + 5 );
+  glVertex2f( x + 5, y + h );  
+  glVertex2f( x + w, y + h );
+  glEnd();
   
   glColor4f( 1, 1, 1, 1 );
   setFontType( Constants::SCOURGE_MONO_FONT );
