@@ -328,8 +328,12 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
     // relocate
     this->x = nx;
     this->y = ny;
-	this->mapx = nx;
-	this->mapy = ny;
+    this->mapx = nx;
+    this->mapy = ny;
+    // update fog of war
+    if( helper ) {
+      helper->visit( x, y );
+    }
   }
 }
 

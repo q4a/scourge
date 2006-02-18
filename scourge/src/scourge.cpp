@@ -2453,6 +2453,11 @@ bool Scourge::fightCurrentBattleTurn() {
 
     // end of battle if party has no-one to attack
     bool roundOver = false;
+
+
+
+    // *****************************************
+    // This is the code that needs to be fixed for cave TB combat:
     int c = 0;
     for( int i = 0; i < party->getPartySize(); i++ ) {
       if( party->getParty(i)->getAction() == Constants::ACTION_NO_ACTION && 
@@ -2467,6 +2472,10 @@ bool Scourge::fightCurrentBattleTurn() {
       }
       roundOver = true;
     }
+    // *****************************************
+
+
+
 
     if( !roundOver ) {
       if( getUserConfiguration()->isBattleTurnBased() ) {
@@ -2538,10 +2547,7 @@ bool Scourge::createBattleTurns() {
       bool hasTarget = (party->getParty(i)->hasTarget() || 
                         party->getParty(i)->getAction() > -1);
       bool visible = ( levelMap->isLocationVisible(toint(party->getParty(i)->getX()), 
-                                                   toint(party->getParty(i)->getY())) &&
-                       levelMap->isLocationInLight(toint(party->getParty(i)->getX()), 
-                                                   toint(party->getParty(i)->getY()),
-                                                   party->getParty(i)->getShape()));
+                                                   toint(party->getParty(i)->getY())) );
       if( hasTarget ) {
         if( party->getParty(i)->isTargetValid() && visible ) {
           if( Battle::debugBattle ) cerr << "*** init party target" << endl;
@@ -2588,10 +2594,7 @@ bool Scourge::createBattleTurns() {
     // add other movement
     for (int i = 0; i < party->getPartySize(); i++) {
       bool visible = ( levelMap->isLocationVisible(toint(party->getParty(i)->getX()), 
-                                              toint(party->getParty(i)->getY())) &&
-                       levelMap->isLocationInLight(toint(party->getParty(i)->getX()), 
-                                                   toint(party->getParty(i)->getY()),
-                                                   party->getParty(i)->getShape()));
+                                              toint(party->getParty(i)->getY())) );
       if( visible && !party->getParty(i)->getStateMod(Constants::dead) ) {
         bool found = false;
         for( int t = 0; t < battleCount; t++ ) {

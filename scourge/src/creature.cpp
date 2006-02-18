@@ -2355,8 +2355,8 @@ void Creature::setCharacter( Character *c ) {
 
 // does the path end in the target creature
 bool Creature::isPathToTargetCreature() {
-  if( !( bestPath.size() ) || !getTargetCreature() ) return false;
+  if( bestPath.size() <= 0 || !getTargetCreature() ) return false;
   Location pos = bestPath[ bestPath.size() - 1 ];
   Location *mapPos = session->getMap()->getLocation( pos.x, pos.y, 0 );
-  return( mapPos->creature == getTargetCreature() );
+  return( mapPos && mapPos->creature == getTargetCreature() );
 }
