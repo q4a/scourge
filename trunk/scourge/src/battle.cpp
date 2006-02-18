@@ -1242,7 +1242,8 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
       color->r = 0.3f;
       color->g = 0.3f;
       color->b = 0.3f;
-      sprintf( buff, "Out of Range" );
+      // could still be in range for spell or skill
+      sprintf( buff, ( range >= dist ? "In Range" : "Out of Range" ) );
     }
     return true;
   }
