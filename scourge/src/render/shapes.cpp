@@ -159,6 +159,13 @@ void Shapes::initialize() {
   // load textures
   ripple_texture = loadGLTextures("/ripple.bmp");
   torchback = loadGLTextures("/torchback.bmp");
+  
+  SDL_Surface *area;
+  GLubyte *areaImage;
+  setupAlphaBlendedBMP("/area.bmp", &area, &areaImage);
+  areaTex = loadGLTextureBGRA(area, areaImage, GL_LINEAR);
+  //areaTex = loadGLTextures("/area.bmp");
+
 
   // load the texture info
   char errMessage[500];

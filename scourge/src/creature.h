@@ -151,6 +151,8 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Monster *monster, GLShape *shape, bool loaded);
   ~Creature();
 
+  bool isPathToTargetCreature();
+
   inline GLfloat getAngle() { return angle; }
 
   void evalSpecialSkills();
