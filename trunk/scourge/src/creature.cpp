@@ -517,7 +517,8 @@ bool Creature::setSelXY(int x, int y, bool cancelIfNotPossible) {
 void Creature::setTargetCreature( Creature *c, bool findPath ) { 
   targetCreature = c; 
   if( findPath ) {
-    setSelXY( toint( c->getX() ), toint( c->getY() ) );
+    setSelXY( toint( c->getX() + ( c->getShape()->getWidth() / 2 ) ), 
+              toint( c->getY() - ( c->getShape()->getDepth() / 2 ) ) );
   }
 }
 
@@ -2352,3 +2353,10 @@ void Creature::setCharacter( Character *c ) {
   character = c;
 }
 
+// does the path end in the target creature
+bool Creature::isPathToTargetCreature() {
+  if( !( bestPath.size() ) || !getTargetCreature() ) return false;
+  Location pos = bestPath[ bestPath.size() - 1 ];
+  Location *mapPos = session->getMap()->getLocation( pos.x, pos.y, 0 );
+  return( mapPos->creature == getTargetCreature() );
+}

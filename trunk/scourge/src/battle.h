@@ -126,6 +126,8 @@ class Battle {
 
   bool describeAttack( Creature *target, char *buff, Color *color, bool includeActions );
 
+  inline float getRange() { return range; }
+
  protected:
   void launchProjectile();
   //void initTurn();

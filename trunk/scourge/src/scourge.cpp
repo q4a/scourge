@@ -42,7 +42,8 @@
 
 using namespace std;
 
-//#define CAVE_TEST 1
+#define CAVE_TEST 1
+#define CAVE_TEST_LEVEL 4
 
 #define MOUSE_ROT_DELTA 2
 
@@ -402,7 +403,7 @@ void Scourge::startMission() {
 
 
 #ifdef CAVE_TEST
-      dg = new CaveMaker( this, 50, 1, false, false, NULL );
+      dg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, false, false, NULL );
       dg->toMap(levelMap, getSession()->getShapePalette());
       scriptName = RANDOM_MAP_NAME;
 #else
@@ -954,25 +955,6 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
     gluDisk(quadric, tw - targetWidth, tw, 12, 1);
 
-    /*
-    // in TB mode, player's turn and paused?
-      if( inTurnBasedCombatPlayerTurn() &&
-          !( party->isRealTimeMode() ) &&
-          getParty()->getPlayer()->getAction() == Constants::ACTION_NO_ACTION ) {
-      char cost[40];
-      Color color;
-      if( getParty()->getPlayer()->getBattle()->describeAttack( creature->getTargetCreature(), cost, &color, false ) ) {
-        glDisable( GL_DEPTH_TEST );
-        getSDLHandler()->drawTooltip( 0, 0, 0, 
-                                      -( levelMap->getZRot() ),
-                                      -( levelMap->getYRot() ),
-                                      cost,
-                                      color.r, color.g, color.b );
-        glEnable( GL_DEPTH_TEST );
-      }
-    }
-    */
-
     glPopMatrix();
   }
 
@@ -1073,6 +1055,38 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
       // in TB mode, player's turn and paused?
       if( inTurnBasedCombatPlayerTurn() &&
           !( party->isRealTimeMode() ) ) {
+
+        // draw the range
+        if( player ) {
+          //glDisable( GL_DEPTH_TEST );
+
+          float range = getParty()->getPlayer()->getBattle()->getRange();
+          float n = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f ) / DIV;
+
+          glPushMatrix();
+          glTranslatef( -( n / 2 ), -( n / 2 ), 0 );
+          glEnable( GL_BLEND );
+          //glBlendFunc( GL_DST_COLOR, GL_ZERO );
+          glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+          glEnable( GL_TEXTURE_2D );
+          glBindTexture( GL_TEXTURE_2D, getShapePalette()->getAreaTexture() );
+          glColor4f( 0.85f, 0.25f, 0.15f, 0.4f );
+          glBegin( GL_QUADS );
+          glNormal3f( 0, 0, 1 );
+          glTexCoord2f( 0, 0 );
+          glVertex3f( 0, 0, 0 );
+          glTexCoord2f( 0, 1 );
+          glVertex3f( 0, n, 0 );
+          glTexCoord2f( 1, 1 );
+          glVertex3f( n, n, 0 );
+          glTexCoord2f( 1, 0 );
+          glVertex3f( n, 0, 0 );
+          glEnd();
+          glDisable( GL_TEXTURE_2D );
+          glPopMatrix();
+          //glEnable( GL_DEPTH_TEST );
+        }
+
         char cost[40];
         Color color;
         if( getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, &color, player ) ) {
@@ -1176,47 +1190,6 @@ void Scourge::drawDraggedItem() {
     levelMap->doDrawShape( &later );
     glPopMatrix();
   }
-
-
-  /*
-  float xpos2, ypos2, zpos2;  
-  Shape *shape = NULL;  
-
-  if(selX >= getX() && selX < getX() + MAP_VIEW_WIDTH &&
-	 selY >= getY() && selY < getY() + MAP_VIEW_DEPTH &&
-	 selZ < MAP_VIEW_HEIGHT &&
-	 scourge->getMovingItem()) {
-
-	shape = scourge->getMovingItem()->getShape();	
-	int newz = selZ;
-	Location *dropLoc = isBlocked(selX, selY, selZ, -1, -1, -1, shape, &newz);
-	selZ = newz;
-
-	// only let drop on other creatures and containers
-	// unfortunately I have to call isWallBetween(), so objects aren't dragged behind walls
-	// this makes moving items slow
-	if(dropLoc || 
-	   (oldLocatorSelX < MAP_WIDTH && 
-		isWallBetween(selX, selY, selZ, 
-					  oldLocatorSelX, 
-					  oldLocatorSelY, 
-					  oldLocatorSelZ))) {
-	  selX = oldLocatorSelX;
-	  selY = oldLocatorSelY;
-	  selZ = oldLocatorSelZ;
-	}
-	
-	xpos2 = ((float)(selX - getX()) / DIV);
-	ypos2 = (((float)(selY - getY() - 1) - (float)shape->getDepth()) / DIV);
-	zpos2 = (float)(selZ) / DIV;
-	
-	doDrawShape(xpos2, ypos2, zpos2, shape, 0);
-
-	oldLocatorSelX = selX;
-	oldLocatorSelY = selY;
-	oldLocatorSelZ = selZ;
-  }
-  */
 }
 
 void Scourge::drawBorder() {
@@ -1488,6 +1461,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
       } else if( getTargetSelectionFor() ) {
         // cancel target selection ( cross cursor )
         getTargetSelectionFor()->cancelTarget();
+        getTargetSelectionFor()->getBattle()->reset();
         setTargetSelectionFor( NULL );
         return false;
       } else if( exitConfirmationDialog->isVisible() ) {

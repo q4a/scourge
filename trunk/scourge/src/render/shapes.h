@@ -222,6 +222,8 @@ protected:
   SDL_Surface *stencil[ STENCIL_COUNT ];
   GLubyte *stencilImage[ STENCIL_COUNT ];
 
+  GLuint areaTex;
+
 public: 
   Shapes( bool headless );
   virtual ~Shapes();
@@ -263,6 +265,7 @@ public:
   inline Sint16 getWallHeight() { return wallHeight; }
 
   inline GLuint getRippleTexture() { return ripple_texture; }
+  inline GLuint getAreaTexture() { return areaTex; }
 
   GLuint findTextureByName(const char *filename);
   GLShape *findShapeByName(const char *name, bool variation=false);
