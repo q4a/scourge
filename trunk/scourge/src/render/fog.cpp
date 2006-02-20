@@ -21,6 +21,7 @@
 #include "map.h"
 #include "location.h"
 #include "mapadapter.h"
+#include "renderedcreature.h"
 
 // FIXME: remove this later
 #include "../scourge.h"
@@ -71,6 +72,7 @@ void Fog::reset() {
   for( int x = 0; x < FOG_WIDTH; x++ ) {
     for( int y = 0; y < FOG_DEPTH; y++ ) {
       fog[x][y] = FOG_UNVISITED;
+      players[x][y].clear();
     }
   }
 }
@@ -79,20 +81,38 @@ int Fog::getValue( int mapx, int mapy ) {
   return fog[mapx / FOG_CHUNK_SIZE][mapy / FOG_CHUNK_SIZE]; 
 }
 
-void Fog::visit( int mapx, int mapy ) {
-  int fx = mapx / FOG_CHUNK_SIZE;
-  int fy = mapy / FOG_CHUNK_SIZE;
+void Fog::visit( RenderedCreature *player ) {
   for( int x = 0; x < FOG_WIDTH; x++ ) {
     for( int y = 0; y < FOG_DEPTH; y++ ) {
+      
+      int fx = toint( player->getX() / FOG_CHUNK_SIZE );
+      int fy = toint( player->getY() / FOG_CHUNK_SIZE );
+
       double d = (double)( ( fx - x ) * ( fx - x) ) + 
         (double)( ( fy - y ) * ( fy - y ) );
       if( d <= LAMP_RADIUS_SQUARED ) {
         fog[x][y] = FOG_CLEAR;
+        players[x][y].insert( player );
       } else if( fog[x][y] == FOG_CLEAR ) {
-        fog[x][y] = FOG_VISITED;
+        players[x][y].erase( player );
+        if( !( players[x][y].size() ) ) {
+          fog[x][y] = FOG_VISITED;
+        }
       }
     }
   }
+}     
+
+int Fog::getVisibility( int xp, int yp, Shape *shape ) {
+  int v = FOG_UNVISITED;
+  for( int x = 0; x < shape->getWidth(); x++ ) {
+    for( int y = 0; y < shape->getDepth(); y++ ) {
+      int vv = getValue( xp + x, yp - y );
+      if( vv == FOG_CLEAR ) return FOG_CLEAR;
+      else if( vv == FOG_VISITED ) v = vv;
+    }
+  }
+  return v;
 }
 
 void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {  
@@ -163,7 +183,10 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
         GLdouble scx, scy;
         getScreenXY( (GLdouble)obj[i][0], (GLdouble)obj[i][1], (GLdouble)obj[i][2], 
                      &scx, &scy );
-        if( v == FOG_CLEAR ) {
+
+        // only show light area for current player
+        if( v == FOG_CLEAR &&
+            players[ fx + x ][ fy + y ].find( map->getAdapter()->getPlayer() ) != players[ fx + x ][ fy + y ].end() ) {
           if( scx < minLightX ) minLightX = (GLfloat)scx;
           if( scx > maxLightX ) maxLightX = (GLfloat)scx;
           if( scy < minLightY ) minLightY = (GLfloat)scy;
@@ -383,18 +406,6 @@ void Fog::getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
   if(!res) {
     *screenx = *screeny = 2000;
   }
-}
-
-int Fog::getVisibility( int xp, int yp, Shape *shape ) {
-  int v = FOG_UNVISITED;
-  for( int x = 0; x < shape->getWidth(); x++ ) {
-    for( int y = 0; y < shape->getDepth(); y++ ) {
-      int vv = getValue( xp + x, yp - y );
-      if( vv == FOG_CLEAR ) return FOG_CLEAR;
-      else if( vv == FOG_VISITED ) v = vv;
-    }
-  }
-  return v;
 }
 
 void Fog::createOverlayTexture() {

@@ -19,14 +19,17 @@
 #define FOG_H
 
 #include "../constants.h"
+#include <set>
 
 class CFrustum;                
 class Shape;
 class Map;
+class RenderedCreature;
 
 class Fog {
 private:
   int fog[MAP_WIDTH][MAP_DEPTH];
+  std::set<RenderedCreature *> players[MAP_WIDTH][MAP_DEPTH];
   Map *map;
 
 #define OVERLAY_SIZE 16
@@ -48,7 +51,7 @@ public:
   ~Fog();
 
   int getValue( int mapx, int mapy );
-  void visit( int mapx, int mapy );
+  void visit( RenderedCreature *player );
   void reset();
   void draw( int sx, int sy, int w, int h, CFrustum *frustum );
   int getVisibility( int xp, int yp, Shape *shape );

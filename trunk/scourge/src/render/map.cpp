@@ -330,10 +330,6 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
     this->y = ny;
     this->mapx = nx;
     this->mapy = ny;
-    // update fog of war
-    if( helper ) {
-      helper->visit( x, y );
-    }
   }
 }
 
@@ -2130,7 +2126,8 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
   if(creature) {
     if(creature->getShape()) {
 	  resortShapes = mapChanged = true;
-    if( creature == adapter->getPlayer() ) helper->visit( x, y );
+    
+    if( !creature->isMonster() ) helper->visit( creature );
 	  while(true) {
     Location *p = NULL;
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
@@ -2197,7 +2194,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
       }
     }
 
-    if( creature == adapter->getPlayer() ) helper->visit( nx, ny );
+    if( !creature->isMonster() ) helper->visit( creature );
 
     // pick up any items in the way
     char message[120];
