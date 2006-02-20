@@ -23,6 +23,7 @@
 class Fog;
 class Shape;
 class Map;
+class  RenderedCreature;
 
 /**
  * Used to handle map-type-specific rendering, for example light.
@@ -51,7 +52,7 @@ public:
   inline virtual void reset() {}
   inline virtual void draw( int x, int y, int w, int h ) {}
   inline virtual bool isVisible( int x, int y, Shape *shape ) { return true; }
-  inline virtual void visit( int x, int y ) {}
+  inline virtual void visit( RenderedCreature *creature ) {}
   inline virtual bool isLightMapEnabled() { return true; }
 };
 
@@ -66,7 +67,7 @@ public:
   virtual void reset();
   virtual void draw( int x, int y, int w, int h );
   virtual bool isVisible( int x, int y, Shape *shape );
-  virtual void visit( int x, int y );
+  virtual void visit( RenderedCreature *creature );
   inline virtual bool isLightMapEnabled() { return false; }
 };
 

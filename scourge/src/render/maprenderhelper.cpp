@@ -59,8 +59,8 @@ bool CaveRenderHelper::isVisible( int x, int y, Shape *shape ) {
   return( fog->getVisibility( x, y, shape ) == Fog::FOG_CLEAR );
 }
 
-void CaveRenderHelper::visit( int x, int y ) {
-  fog->visit( x, y );
+void CaveRenderHelper::visit( RenderedCreature *creature ) {
+  fog->visit( creature );
 }
   
 
