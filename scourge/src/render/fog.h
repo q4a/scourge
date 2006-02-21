@@ -52,6 +52,7 @@ public:
 
   int getValue( int mapx, int mapy );
   void visit( RenderedCreature *player );
+  void hideDeadParty();
   void reset();
   void draw( int sx, int sy, int w, int h, CFrustum *frustum );
   int getVisibility( int xp, int yp, Shape *shape );

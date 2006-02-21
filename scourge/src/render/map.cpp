@@ -3324,4 +3324,6 @@ void Map::setMapRenderHelper( MapRenderHelper *helper ) {
   this->helper = helper;
   this->helper->setMap( this );
   LIGHTMAP_ENABLED = this->helper->isLightMapEnabled();
+  //lightMapChanged = true;
 }
+

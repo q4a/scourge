@@ -183,6 +183,23 @@ bool Battle::fightTurn() {
 
   if(pauseBeforePlayerTurn()) return false;
 
+  // in TB combat, light the nearest player
+  if( creature->isMonster() && session->getPreferences()->isBattleTurnBased() ) {
+    Creature *p = session->getParty()->getClosestPlayer( toint( creature->getX() ), 
+                                                         toint( creature->getY() ), 
+                                                         creature->getShape()->getWidth(),
+                                                         creature->getShape()->getDepth(),
+                                                         20 );
+    if( p ) {
+      for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+        if( p == session->getParty()->getParty(i) &&
+            p != session->getParty()->getPlayer() ) {
+          session->getParty()->setPlayer( i );
+        }
+      }
+    }
+  }
+
   initTurnStep();
 
   if(creature->getAction() == Constants::ACTION_EAT_DRINK) {

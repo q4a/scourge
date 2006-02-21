@@ -101,7 +101,26 @@ void Fog::visit( RenderedCreature *player ) {
       }
     }
   }
-}     
+}
+
+void Fog::hideDeadParty() {
+  for( int i = 0; i < map->getAdapter()->getPartySize(); i++ ) {
+    if( map->getAdapter()->getParty(i)->getStateMod( Constants::dead ) ) {
+      for( int x = 0; x < FOG_WIDTH; x++ ) {
+        for( int y = 0; y < FOG_DEPTH; y++ ) {
+          int fx = toint( map->getAdapter()->getParty(i)->getX() / FOG_CHUNK_SIZE );
+          int fy = toint( map->getAdapter()->getParty(i)->getY() / FOG_CHUNK_SIZE );
+          if( fog[x][y] == FOG_CLEAR ) {
+            players[x][y].erase( map->getAdapter()->getParty(i) );
+            if( !( players[x][y].size() ) ) {
+              fog[x][y] = FOG_VISITED;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 int Fog::getVisibility( int xp, int yp, Shape *shape ) {
   int v = FOG_UNVISITED;
@@ -302,7 +321,6 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
     glEnd();
   }
 
-
   // draw the dark (unvisited) fog
   glLoadIdentity();
   glDisable( GL_BLEND );
@@ -346,7 +364,6 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       glVertex2f( x + w, y );
       glEnd();
     }
-
   }
   glPopMatrix();
 
