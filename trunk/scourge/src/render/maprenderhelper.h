@@ -53,6 +53,7 @@ public:
   inline virtual void draw( int x, int y, int w, int h ) {}
   inline virtual bool isVisible( int x, int y, Shape *shape ) { return true; }
   inline virtual void visit( RenderedCreature *creature ) {}
+  inline virtual void hideDeadParty() {}
   inline virtual bool isLightMapEnabled() { return true; }
 };
 
@@ -68,6 +69,7 @@ public:
   virtual void draw( int x, int y, int w, int h );
   virtual bool isVisible( int x, int y, Shape *shape );
   virtual void visit( RenderedCreature *creature );
+  virtual void hideDeadParty();
   inline virtual bool isLightMapEnabled() { return false; }
 };
 

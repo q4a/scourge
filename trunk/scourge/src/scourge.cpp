@@ -42,7 +42,7 @@
 
 using namespace std;
 
-#define CAVE_TEST 1
+//#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
 
 #define MOUSE_ROT_DELTA 2
@@ -2500,6 +2500,8 @@ bool Scourge::fightCurrentBattleTurn() {
     if( roundOver ) {
       rtStartTurn = battleTurn = 0;
       if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
+
+      getMap()->getMapRenderHelper()->hideDeadParty();
       
       if(Battle::debugBattle) cerr << "ROUND ENDS" << endl;
       if(Battle::debugBattle) cerr << "----------------------------------" << endl;

@@ -62,6 +62,10 @@ bool CaveRenderHelper::isVisible( int x, int y, Shape *shape ) {
 void CaveRenderHelper::visit( RenderedCreature *creature ) {
   fog->visit( creature );
 }
+
+void CaveRenderHelper::hideDeadParty() {
+  fog->hideDeadParty();
+}
   
 
 
