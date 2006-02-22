@@ -30,6 +30,7 @@
 class Map;
 class Location;
 class Shape;
+class Creature;
 
 /**
   *@author Gabor Torok
@@ -74,7 +75,7 @@ public:
 
   static void findPath(Sint16 sx, Sint16 sy, Sint16 sz,
                 Sint16 dx, Sint16 dy, Sint16 dz,
-                std::vector<Location> *pVector, Map *map, Shape *shape);
+                std::vector<Location> *pVector, Map *map, Creature *creature );
 
   // some math functions
   static float dot_product(float v1[3], float v2[3]);
@@ -112,6 +113,9 @@ public:
   static float getRandomSum( float base, int count, float div=3.0f );
 
   static char *toLowerCase( char *s );
+
+protected:
+  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Creature *creature, Map *map );
 
 };
 

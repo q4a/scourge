@@ -17,10 +17,11 @@
 
 #include "util.h"
 #include "render/renderlib.h"
+#include "creature.h"
 
 using namespace std;
 
-#define MAX_CLOSED_NODES 50
+#define MAX_CLOSED_NODES 120
 
 Util::Util(){
 }
@@ -71,11 +72,11 @@ void Util::rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle) {
 //           If the child node was NOT on OPEN or CLOSED, add it to OPEN.
 //
 ///////////////////////////////////////////////////////////
-void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
-                    Sint16 dx, Sint16 dy, Sint16 dz,
-                    vector<Location> *pVector,
-                    Map *map,
-                    Shape *shape) {
+void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
+                     Sint16 dx, Sint16 dy, Sint16 dz,
+                     vector<Location> *pVector,
+                     Map *map,
+                     Creature *creature ) {
   vector<CPathNode> OPEN;                 // STL Vectors chosen because of rapid
   vector<CPathNode> CLOSED;               // insertions/deletions at back,
   vector<CPathNode> PATH;                 // and Direct access to any element.
@@ -155,26 +156,17 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
           (Node.y >= 0) && (Node.y < MAP_DEPTH)) {
         // Determine cost of distance travelled
 
-        // If location is obstruction
-        if(map->isBlocked(Node.x, Node.y, sz,
-                          sx, sy, sz, shape)) { 
 
-          // If this is the final location, try to run into it.
-          // This is used for battle mainly.
-          // Note: if it still doesn't work, use intersects( shape, pos->shape ) instead.
-          Location *pos = map->getLocation( Node.x, Node.y, sz );
-          if( pos && pos->shape && 
-              pos->x <= dx + ( shape->getWidth() / 2 ) && pos->x + pos->shape->getWidth() >= dx + ( shape->getWidth() / 2 ) &&
-              pos->y >= dy - ( shape->getDepth() / 2 ) && pos->y - pos->shape->getDepth() <= dy - ( shape->getDepth() / 2 ) ) {
-            //cerr << "&&&& !!! " << endl;
-            Node.gone = BestNode.gone + 1;
-          } else {          
-            Node.gone = 1000;
-          }
+        // If this is the final location, try to run into it.
+        // This is used for battle mainly.
+        // Note: if it still doesn't work, use intersects( shape, pos->shape ) instead.
+        Location *pos = map->getLocation( Node.x, Node.y, sz );
+        if( isBlocked( Node.x, Node.y, sx, sy, creature, map ) ) {
+          Node.gone = 1000;
         } else {
           Node.gone = BestNode.gone + 1;
         }
-
+        
         // Determine the Heuristic.  Probably the most crucial aspect
         // Heuristic by Simple Euclidian method
         // Node.heuristic = ((dx - Node.x)*(dx - Node.x)) + ((dy - Node.y)*(dy - Node.y));
@@ -184,6 +176,7 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
         int Orthogonal = abs(DX - DY);
         int Diagonal = abs(((DX + DY) - Orthogonal)/2);
         Node.heuristic = Diagonal + Orthogonal + DX + DY;
+        //Node.heuristic = (int)( sqrt( DX * DX + DY * DY ) );
 
         // The A* formula
         Node.f = Node.gone + Node.heuristic;
@@ -279,6 +272,22 @@ void Util::findPath(Sint16 sx, Sint16 sy, Sint16 sz,
   }
 }
 
+// a simpler/quicker 2D version of Map::isBlocked()
+bool Util::isBlocked( Sint16 x, Sint16 y,
+                      Sint16 shapeX, Sint16 shapeY, 
+                      Creature *creature, Map *map ) {
+  for( int sx = 0; sx < creature->getShape()->getWidth(); sx++ ) {
+    for( int sy = 0; sy < creature->getShape()->getDepth(); sy++ ) {
+      Location *loc = map->getLocation( x + sx, y - sy, 0 );
+      if( loc && 
+          !( ( loc->creature && loc->creature == creature->getTargetCreature() ) ||
+             ( loc->shape && loc->x == shapeX && loc->y == shapeY ) ) ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 ///////////////////////////////////////////////////////////
 // Needed because the template doesn't know what a PathNode is

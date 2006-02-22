@@ -139,9 +139,11 @@ void Party::followTargets() {
   for(int i = 0; i < getPartySize(); i++) {
 	if(!party[i]->getStateMod(Constants::dead) && 
 	   party[i]->getTargetCreature()) {
-	  party[i]->setSelXY(toint(party[i]->getTargetCreature()->getX()),
-                       toint(party[i]->getTargetCreature()->getY()));
-	}
+	  party[i]->setSelXY(toint( party[i]->getTargetCreature()->getX() +
+                              party[i]->getTargetCreature()->getShape()->getWidth() / 2 ),
+                       toint( party[i]->getTargetCreature()->getY() -
+                              party[i]->getTargetCreature()->getShape()->getDepth() / 2 ));
+  }
   }
 }
 

@@ -399,10 +399,9 @@ void Battle::stepCloserToTarget() {
 */    
 
       // Try to move to the target creature.
-      // For monsters, if this is not possible, select a new target (once in a while).
-      if( !creature->setSelXY( tx, ty, false ) &&
-          creature->isMonster() &&
-          1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
+      // For monsters, if this is not possible, select a new target.
+      if( !creature->setSelXY( tx + tw / 2, ty - th / 2, false ) &&
+          creature->isMonster() ) {
         creature->cancelTarget();
         creature->decideMonsterAction();
         ap--;
@@ -452,8 +451,10 @@ void Battle::stepCloserToTarget() {
       }
     }
       
-    // guess a new path
-    creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
+    // guess a new path (once in a while)
+    if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
+      creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
+    }
 
     if( creature->isMonster() ) {      
       ap--;  
@@ -532,7 +533,9 @@ bool Battle::moveCreature() {
         }
 
         // guess a new path
-        creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
+        if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
+          creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
+        }
         if( session->getPreferences()->isBattleTurnBased() ) {          
           if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
         } else {
