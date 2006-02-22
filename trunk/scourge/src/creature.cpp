@@ -479,7 +479,7 @@ bool Creature::setSelXY(int x, int y, bool cancelIfNotPossible) {
                   selX, selY, 0, 
                   &bestPath, 
                   session->getMap(), 
-                  getShape() );
+                  this );
 
   // Does the path lead to the destination?
   bool ret = false;

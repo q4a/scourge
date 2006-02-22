@@ -750,9 +750,9 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
                               char *message,
                               float r, float g, float b ) {
   int w = strlen( message ) * 8 + 4;
-  int h = 12;
+  int h = 20;
   int x = -2;
-  int y = -10;
+  int y = -14;
 
   glPushMatrix();
   glTranslatef( xpos2, ypos2, zpos2 );
@@ -779,15 +779,23 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   glDisable( GL_BLEND );
 
   //glColor4f( 0, 0.4f, 0.15f, 0.5 );
-  glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.5f );
-  glBegin( GL_LINE_LOOP );
-  glVertex2f( x + w, y );
-  glVertex2f( x, y  );
-  glVertex2f( x, y + h - 5 );
-  glVertex2f( x - 5, y + h + 5 );
-  glVertex2f( x + 5, y + h );  
-  glVertex2f( x + w, y + h );
-  glEnd();
+  for( int i = 0; i < 2; i++ ) {
+    if( !i ) {
+      glLineWidth( 3.0f );
+      glColor4f( 0, 0, 0, 0 );
+    } else {
+      glLineWidth( 1.0f );
+      glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.5f );
+    }
+    glBegin( GL_LINE_LOOP );
+    glVertex2f( x + w, y );
+    glVertex2f( x, y  );
+    glVertex2f( x, y + h - 5 );
+    glVertex2f( x - 5, y + h + 5 );
+    glVertex2f( x + 5, y + h );  
+    glVertex2f( x + w, y + h );
+    glEnd();
+  }
   
   glColor4f( 1, 1, 1, 1 );
   setFontType( Constants::SCOURGE_MONO_FONT );
