@@ -517,8 +517,26 @@ bool Creature::setSelXY(int x, int y, bool cancelIfNotPossible) {
 void Creature::setTargetCreature( Creature *c, bool findPath ) { 
   targetCreature = c; 
   if( findPath ) {
-    setSelXY( toint( c->getX() + ( c->getShape()->getWidth() / 2 ) ), 
-              toint( c->getY() - ( c->getShape()->getDepth() / 2 ) ) );
+    if( !setSelXY( toint( c->getX() + ( (float)c->getShape()->getWidth() / 2.0f ) ), 
+                   toint( c->getY() - ( (float)c->getShape()->getDepth() / 2.0f ) ),
+                   false ) ) {
+      // FIXME: should mark target somehow. Path alg. cannot reach it; blocked by something.
+      // Keep the target creature anyway.
+      if( session->getPreferences()->isBattleTurnBased() ) {
+        //cerr << "Can't find path to target creature, checking bounds." << endl;
+        for( int xx = 0; xx < targetCreature->getShape()->getWidth(); xx++ ) {
+          for( int yy = 0; yy < targetCreature->getShape()->getDepth(); yy++ ) {
+            if( setSelXY( toint( c->getX() + xx ), toint( c->getY() - yy ) ) ) {
+              //cerr << "...found a way!" << endl;
+              return;
+            }
+          }
+        }
+        //cerr << "...no path was found." << endl;
+        session->getMap()->addDescription( "Can't find path to target. Sorry!" );
+        session->getGameAdapter()->setCursorMode( Constants::CURSOR_FORBIDDEN );
+      }
+    }
   }
 }
 

@@ -42,6 +42,8 @@
 
 using namespace std;
 
+//#define BASE_DEBUG 1
+
 //#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
 
@@ -1011,7 +1013,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
         glEnd();
         glPopMatrix();
         */
-
+       
         glPushMatrix();
         glTranslatef( xpos2 + w, 
                       ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ) + w, 
@@ -1046,6 +1048,26 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
   }
 
   if( !creature->getStateMod( Constants::dead ) ) {
+
+#ifdef BASE_DEBUG
+    // base debug
+    glDisable( GL_DEPTH_TEST );
+    glDisable( GL_CULL_FACE );
+    glPushMatrix();
+    glColor4f( 1, 1, 1, 1 );
+    glTranslatef( xpos2, ypos2, zpos2 + 5 );
+    glBegin( GL_LINE_LOOP );
+    glVertex2f( 0, 0 );
+    glVertex2f( w * 2, w * 2 );
+    glVertex2f( w * 2, 0 );
+    glVertex2f( 0, w * 2 );
+    glEnd();
+    char debugMessage[80];
+    sprintf( debugMessage, "w: %d", creature->getShape()->getWidth() );
+    getSDLHandler()->texPrint( 0, 0, debugMessage );
+    glPopMatrix();
+#endif
+
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);

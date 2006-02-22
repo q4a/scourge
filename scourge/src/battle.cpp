@@ -400,7 +400,8 @@ void Battle::stepCloserToTarget() {
 
       // Try to move to the target creature.
       // For monsters, if this is not possible, select a new target.
-      if( !creature->setSelXY( tx + tw / 2, ty - th / 2, false ) &&
+      if( !creature->setSelXY( toint( tx + (float)tw / 2.0f ), 
+                               toint( ty - (float)th / 2.0f ), false ) &&
           creature->isMonster() ) {
         creature->cancelTarget();
         creature->decideMonsterAction();

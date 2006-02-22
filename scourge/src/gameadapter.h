@@ -61,6 +61,7 @@ public:
   virtual inline bool isMouseIsMovingOverMap() { return false; }
   virtual inline Uint16 getMouseX() { return 0; }
   virtual inline Uint16 getMouseY() { return 0; }
+  virtual inline void setCursorMode( int cursor, bool useTimer=false ) {}
 
   // debug
   virtual inline void setDebugStr(char *s) {}
@@ -149,6 +150,7 @@ public:
 
   virtual void initVideo();
   virtual inline SDLHandler *getSDLHandler() { return sdlHandler; }
+  virtual inline void setCursorMode( int cursor, bool useTimer=false ) { sdlHandler->setCursorMode( cursor, useTimer ); }
 
   virtual inline int getScreenWidth() { return getSDLHandler()->getScreen()->w; }
   virtual inline int getScreenHeight() { return getSDLHandler()->getScreen()->h; }

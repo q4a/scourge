@@ -377,6 +377,10 @@ MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div
   // make it a square
   if(fw > fd) fd = fw;
   else fw = fd;
+
+  // make it a min size (otherwise pathing has issues)
+  if( fw < 3 ) fw = 3;
+  if( fd < 3 ) fd = 3;
     
   // set the shape's dimensions
   width = (int)( fw + ( (float)((int)fw) == fw ? 0 : 1 ) );
