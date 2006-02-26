@@ -93,6 +93,7 @@ class Creature : public RenderedCreature {
   Item *inventory[MAX_INVENTORY_SIZE];
   int inventory_count;
   int equipped[Constants::INVENTORY_COUNT];
+  int preferredWeapon;
 
   // character information
   char *name;
@@ -272,12 +273,15 @@ class Creature : public RenderedCreature {
   inline float getInventoryWeight() { return inventoryWeight;  }
   float getMaxInventoryWeight();
   Item *getEquippedInventory(int index);
+  bool isEquippedWeapon(int index);
   
   inline Item *getInventory(int index) { return inventory[index]; }
   inline int getInventoryCount() { return inventory_count; }
   inline void setInventory(int index, Item *item) { 
-	if(index < inventory_count) inventory[index] = item; 
+    if(index < inventory_count) inventory[index] = item; 
   }
+  inline int getPreferredWeapon() { return preferredWeapon; }
+  inline void setPreferredWeapon( int n ) { preferredWeapon = n; }
   // returns the index of the last item added
   void pickUpOnMap( RenderedItem *item );
   bool addInventory(Item *item, bool force=false);
