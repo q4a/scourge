@@ -99,7 +99,7 @@ class Battle {
   Battle(Session *session, Creature *creature);
   ~Battle();
 
-  void reset();
+  void reset( bool keepPaused = false );
   Creature *getAvailableTarget();
   Creature *getAvailablePartyTarget();
 

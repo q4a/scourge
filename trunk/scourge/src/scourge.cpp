@@ -3322,18 +3322,30 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
   } else {
     for( int t = 0; t < 4; t++ ) {
       if( widget == playerHpMp[t] ) {
-        inventory->showSkills();
-        if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
-          getParty()->setPlayer( t );
-          if( !inventory->isVisible() ) toggleInventoryWindow();
-        } else {
-          toggleInventoryWindow();
+        if( !inTurnBasedCombat() || 
+            ( inTurnBasedCombat() &&
+              battleRound[battleTurn]->getCreature() == getParty()->getParty( t ) ) ) {
+          inventory->showSkills();
+          if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
+            getParty()->setPlayer( t );
+            if( !inventory->isVisible() ) toggleInventoryWindow();
+          } else {
+            toggleInventoryWindow();
+          }
         }
       } else if( widget == playerWeapon[t] ) {
-        if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
-          getParty()->setPlayer( t );
+        if( !inTurnBasedCombat() || 
+            ( inTurnBasedCombat() &&
+              battleRound[battleTurn]->getCreature() == getParty()->getParty( t ) ) ) {
+          if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
+            getParty()->setPlayer( t );
+          }
+          if( getParty()->getPlayer()->nextPreferredWeapon() ) {
+            // reset but don't pause again
+            getParty()->getPlayer()->getBattle()->reset( true );
+          }
+          if( inventory->isVisible() ) inventory->refresh();
         }
-        getParty()->getPlayer()->nextPreferredWeapon();
       }
     }
     for( int t = 0; t < 12; t++ ) {
