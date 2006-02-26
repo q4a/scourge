@@ -68,12 +68,10 @@ const char UserConfiguration::default_key[][20] = {
   "f",
 
 /*
-    MINIMAP_ZOOM_IN,
-    MINIMAP_ZOOM_OUT,
+    TOGGLE_MINIMAP,
 */    
 
   "[+]",
-  "[-]",
 
 /*    
     SET_ZOOM_IN,     
@@ -114,6 +112,11 @@ const char UserConfiguration::default_key[][20] = {
   "c",
 
 /*
+  NEXT_WEAPON,
+*/
+  "]",
+
+/*
     QUICK_SPELL_1,
     QUICK_SPELL_2,
     QUICK_SPELL_3,      
@@ -148,51 +151,52 @@ const char UserConfiguration::default_key[][20] = {
 // (except for ENGINE_ACTION_COUNT)
 const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
     
-    "SET_MOVE_DOWN",
-    "SET_MOVE_RIGHT",
-    "SET_MOVE_UP",
-    "SET_MOVE_LEFT",
-            
-    "SET_PLAYER_0",
-    "SET_PLAYER_1",
-    "SET_PLAYER_2",
-    "SET_PLAYER_3",
-    "SET_PLAYER_ONLY",
-     
-    "SHOW_INVENTORY", 
-    "SHOW_OPTIONS_MENU",
-    "SET_NEXT_FORMATION",
-
-    "MINIMAP_ZOOM_IN",
-    "MINIMAP_ZOOM_OUT",
+  "SET_MOVE_DOWN",
+  "SET_MOVE_RIGHT",
+  "SET_MOVE_UP",
+  "SET_MOVE_LEFT",
+  
+  "SET_PLAYER_0",
+  "SET_PLAYER_1",
+  "SET_PLAYER_2",
+  "SET_PLAYER_3",
+  "SET_PLAYER_ONLY",
+  
+  "SHOW_INVENTORY", 
+  "SHOW_OPTIONS_MENU",
+  "SET_NEXT_FORMATION",
+  
+  "TOGGLE_MINIMAP",
+  
+  "SET_ZOOM_IN",     
+  "SET_ZOOM_OUT",
+  
+  "TOGGLE_MAP_CENTER",    
+  "INCREASE_GAME_SPEED", 
+  "DECREASE_GAME_SPEED", 
     
-    "SET_ZOOM_IN",     
-    "SET_ZOOM_OUT",
-    
-    "TOGGLE_MAP_CENTER",    
-    "INCREASE_GAME_SPEED", 
-    "DECREASE_GAME_SPEED", 
-    
-    "START_ROUND",
-
-    "LAYOUT_1",
-    "LAYOUT_2",
-    "LAYOUT_4",
-
-    "SWITCH_COMBAT",
-
-    "QUICK_SPELL_1",
-    "QUICK_SPELL_2",
-    "QUICK_SPELL_3",      
-    "QUICK_SPELL_4",      
-    "QUICK_SPELL_5",      
-    "QUICK_SPELL_6",      
-    "QUICK_SPELL_7",      
-    "QUICK_SPELL_8",      
-    "QUICK_SPELL_9",      
-    "QUICK_SPELL_10",      
-    "QUICK_SPELL_11",      
-    "QUICK_SPELL_12"
+  "START_ROUND",
+  
+  "LAYOUT_1",
+  "LAYOUT_2",
+  "LAYOUT_4",
+  
+  "SWITCH_COMBAT",
+  
+  "NEXT_WEAPON",
+  
+  "QUICK_SPELL_1",
+  "QUICK_SPELL_2",
+  "QUICK_SPELL_3",      
+  "QUICK_SPELL_4",      
+  "QUICK_SPELL_5",      
+  "QUICK_SPELL_6",      
+  "QUICK_SPELL_7",      
+  "QUICK_SPELL_8",      
+  "QUICK_SPELL_9",      
+  "QUICK_SPELL_10",      
+  "QUICK_SPELL_11",      
+  "QUICK_SPELL_12"
 };
 
 
@@ -200,57 +204,58 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
 // (without the "_STOP" and except for ENGINE_ACTION_UP_COUNT)
 const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
 
-    "SET_MOVE_DOWN",     
-    "SET_MOVE_RIGHT",
-    "SET_MOVE_UP",
-    "SET_MOVE_LEFT",
-    "SET_Y_ROT_PLUS",
-    "SET_Y_ROT_MINUS",    
-    "SET_Z_ROT_PLUS",        
-    "SET_Z_ROT_MINUS",
-    "SET_ZOOM_IN",     
-    "SET_ZOOM_OUT",
-    "SET_NEXT_FORMATION"
-    
+  "SET_MOVE_DOWN",     
+  "SET_MOVE_RIGHT",
+  "SET_MOVE_UP",
+  "SET_MOVE_LEFT",
+  "SET_Y_ROT_PLUS",
+  "SET_Y_ROT_MINUS",    
+  "SET_Z_ROT_PLUS",        
+  "SET_Z_ROT_MINUS",
+  "SET_ZOOM_IN",     
+  "SET_ZOOM_OUT",
+  "SET_NEXT_FORMATION"
+  
 };
 
 
 
 const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
     
-    "Scroll map south",
-    "Scroll map north",
-    "Scroll map east",
-    "Scroll map west",
-            
-    "Select player 0",
-    "Select player 1",
-    "Select player 2",
-    "Select player 3",
-    "Toggle group mode",    
-    
-    "Show inventory", 
-    "Show options",
-    "Choose next formation",
-            
-    "Zoom in minimap",
-    "Zoom out minimap",
-    
-    "Zoom in map",     
-    "Zoom out map",
-    
-    "Always center map",
-    "Increase game speed", 
-    "Decrease game speed",
-    
-    "Start next round",
-
-    "Floating UI layout",
-    "Bottom UI layout",
-    "Inventory UI layout",
-    
-    "Switch combat mode",
-
+  "Scroll map south",
+  "Scroll map north",
+  "Scroll map east",
+  "Scroll map west",
+  
+  "Select player 0",
+  "Select player 1",
+  "Select player 2",
+  "Select player 3",
+  "Toggle group mode",    
+  
+  "Show inventory", 
+  "Show options",
+  "Choose next formation",
+  
+  "Toggle minimap",
+  
+  "Zoom in map",     
+  "Zoom out map",
+  
+  "Always center map",
+  "Increase game speed", 
+  "Decrease game speed",
+  
+  "Start next round",
+  
+  "Floating UI layout",
+  "Bottom UI layout",
+  "Inventory UI layout",
+  
+  "Switch combat mode",
+  
+  "Switch to next weapon",
+  
   "Quick Spell 1",
   "Quick Spell 2",
   "Quick Spell 3",      
@@ -1094,8 +1099,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind o show_options_menu" << endl;
   configFile << "bind u use_item" << endl;
   configFile << "bind f set_next_formation" << endl;
-  configFile << "bind [+] minimap_zoom_in" << endl;
-  configFile << "bind [-] minimap_zoom_out" << endl;
+  configFile << "bind [+] toggle_minimap" << endl;
   configFile << "bind 8 set_zoom_in" << endl;
   configFile << "bind 9 set_zoom_out" << endl;
   configFile << "bind m toggle_map_center" << endl;
@@ -1106,6 +1110,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind h layout_2" << endl;
   configFile << "bind j layout_4" << endl;
   configFile << "bind c switch_combat" << endl;
+  configFile << "bind ] next_weapon" << endl;
   configFile << "" << endl;
   configFile << "// Video settings" << endl;
   configFile << "set fullscreen true" << endl;

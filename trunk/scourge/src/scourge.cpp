@@ -1534,8 +1534,14 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(ea == SET_NEXT_FORMATION_STOP){
       if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
       else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-    } else if(ea == MINIMAP_ZOOM_IN || ea == MINIMAP_ZOOM_OUT){
+    } else if(ea == TOGGLE_MINIMAP ){
       miniMap->setShowMiniMap( miniMap->isMiniMapShown() ? false : true );
+    } else if( ea == NEXT_WEAPON && getParty()->getPlayer() ) {
+      if( getParty()->getPlayer()->nextPreferredWeapon() ) {
+        // reset but don't pause again
+        getParty()->getPlayer()->getBattle()->reset( true );
+      }
+      if( inventory->isVisible() ) inventory->refresh();
     } else if(ea == TOGGLE_MAP_CENTER){
       bool mc;
       mc = getUserConfiguration()->getAlwaysCenterMap();
