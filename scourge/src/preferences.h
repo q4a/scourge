@@ -27,74 +27,75 @@
 // AND add a corresponding bind line in config file (to have a default value)
 enum engine_action_int{
     
-    SET_MOVE_DOWN = 0,
-    SET_MOVE_RIGHT,
-    SET_MOVE_UP,
-    SET_MOVE_LEFT,
-            
-    SET_PLAYER_0,
-    SET_PLAYER_1,
-    SET_PLAYER_2,
-    SET_PLAYER_3,
-    SET_PLAYER_ONLY,      
-    
-    SHOW_INVENTORY, 
-    SHOW_OPTIONS_MENU,
-    SET_NEXT_FORMATION,
-           
-    MINIMAP_ZOOM_IN,
-    MINIMAP_ZOOM_OUT,
-    
-    SET_ZOOM_IN,     
-    SET_ZOOM_OUT,
-    
-    TOGGLE_MAP_CENTER, 
-    INCREASE_GAME_SPEED, 
-    DECREASE_GAME_SPEED, 
-    
-    START_ROUND, 
-
-    LAYOUT_1,
-    LAYOUT_2,
-    LAYOUT_4,
-
-    SWITCH_COMBAT,
-
-    QUICK_SPELL_1,
-    QUICK_SPELL_2,
-    QUICK_SPELL_3,      
-    QUICK_SPELL_4,      
-    QUICK_SPELL_5,      
-    QUICK_SPELL_6,      
-    QUICK_SPELL_7,      
-    QUICK_SPELL_8,      
-    QUICK_SPELL_9,      
-    QUICK_SPELL_10,      
-    QUICK_SPELL_11,      
-    QUICK_SPELL_12,      
-
-    // must be last
-    ENGINE_ACTION_COUNT    
+  SET_MOVE_DOWN = 0,
+  SET_MOVE_RIGHT,
+  SET_MOVE_UP,
+  SET_MOVE_LEFT,
+  
+  SET_PLAYER_0,
+  SET_PLAYER_1,
+  SET_PLAYER_2,
+  SET_PLAYER_3,
+  SET_PLAYER_ONLY,      
+  
+  SHOW_INVENTORY, 
+  SHOW_OPTIONS_MENU,
+  SET_NEXT_FORMATION,
+  
+  TOGGLE_MINIMAP,
+  
+  SET_ZOOM_IN,     
+  SET_ZOOM_OUT,
+  
+  TOGGLE_MAP_CENTER, 
+  INCREASE_GAME_SPEED, 
+  DECREASE_GAME_SPEED, 
+  
+  START_ROUND, 
+  
+  LAYOUT_1,
+  LAYOUT_2,
+  LAYOUT_4,
+  
+  SWITCH_COMBAT,
+  
+  NEXT_WEAPON,
+  
+  QUICK_SPELL_1,
+  QUICK_SPELL_2,
+  QUICK_SPELL_3,      
+  QUICK_SPELL_4,      
+  QUICK_SPELL_5,      
+  QUICK_SPELL_6,      
+  QUICK_SPELL_7,      
+  QUICK_SPELL_8,      
+  QUICK_SPELL_9,      
+  QUICK_SPELL_10,      
+  QUICK_SPELL_11,      
+  QUICK_SPELL_12,      
+  
+  // must be last
+  ENGINE_ACTION_COUNT    
 };
 
 // All engine actions that have a corresponding keyup action
 // If you change this, ALSO change ENGINE_ACTION_UP_NAMES in userconfiguration.cpp
 enum engine_action_up_int{
 
-    SET_MOVE_DOWN_STOP = 500,   // Must be first
-    SET_MOVE_RIGHT_STOP, 
-    SET_MOVE_UP_STOP,
-    SET_MOVE_LEFT_STOP,
-    SET_Y_ROT_PLUS_STOP,
-    SET_Y_ROT_MINUS_STOP,    
-    SET_Z_ROT_PLUS_STOP,        
-    SET_Z_ROT_MINUS_STOP,
-    SET_ZOOM_IN_STOP,     
-    SET_ZOOM_OUT_STOP,
-    SET_NEXT_FORMATION_STOP,    
+  SET_MOVE_DOWN_STOP = 500,   // Must be first
+  SET_MOVE_RIGHT_STOP, 
+  SET_MOVE_UP_STOP,
+  SET_MOVE_LEFT_STOP,
+  SET_Y_ROT_PLUS_STOP,
+  SET_Y_ROT_MINUS_STOP,    
+  SET_Z_ROT_PLUS_STOP,        
+  SET_Z_ROT_MINUS_STOP,
+  SET_ZOOM_IN_STOP,     
+  SET_ZOOM_OUT_STOP,
+  SET_NEXT_FORMATION_STOP,    
     
-    // must be the last one
-    ENGINE_ACTION_UP_COUNT
+  // must be the last one
+  ENGINE_ACTION_UP_COUNT
 };
 
 class Preferences {
