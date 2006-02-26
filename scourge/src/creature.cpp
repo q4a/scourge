@@ -1258,6 +1258,13 @@ bool Creature::nextPreferredWeapon() {
 }
 
 Item *Creature::getBestWeapon(float dist) {
+
+  // for TB combat for players, respect the current weapon
+  if( session->getPreferences()->isBattleTurnBased() &&
+      !isMonster() ) {
+    return( preferredWeapon > -1 ? getItemAtLocation( preferredWeapon ) : NULL );
+  }
+
   int location[] = { 
     Constants::INVENTORY_RIGHT_HAND,
     Constants::INVENTORY_LEFT_HAND,

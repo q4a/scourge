@@ -84,12 +84,12 @@ Battle::Battle(Session *session, Creature *creature) {
 Battle::~Battle() {
 }
 
-void Battle::reset() {
+void Battle::reset( bool keepPaused ) {
   if(debugBattle) cerr << "*** reset: creature=" << creature->getName() << endl;
   this->steps = 0;
   this->startingAp = this->ap = toint( creature->getMaxAP() );
   this->projectileHit = false;
-  this->paused = false;
+  if( !keepPaused ) this->paused = false;
   this->weaponWait = 0;
   this->range = 0.0f;
   creature->getShape()->setCurrentAnimation((int)MD2_STAND);
@@ -1237,7 +1237,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
   if( !sameTarget ) creature->setTargetCreature( tmp );
   
   // out of range
-  if( !item && dist > MIN_DISTANCE ) {
+  if( ( !item || item->getDistance() < dist ) && dist > MIN_DISTANCE ) {
     if( sameTarget ) {
       if( creature->getAction() == Constants::ACTION_CAST_SPELL ) {
         sprintf( buff, "Targeted" );
