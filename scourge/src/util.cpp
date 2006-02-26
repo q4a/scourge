@@ -154,13 +154,8 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
 
       if ((Node.x >= 0) && (Node.x < MAP_WIDTH) &&
           (Node.y >= 0) && (Node.y < MAP_DEPTH)) {
+        
         // Determine cost of distance travelled
-
-
-        // If this is the final location, try to run into it.
-        // This is used for battle mainly.
-        // Note: if it still doesn't work, use intersects( shape, pos->shape ) instead.
-        Location *pos = map->getLocation( Node.x, Node.y, sz );
         if( isBlocked( Node.x, Node.y, sx, sy, creature, map ) ) {
           Node.gone = 1000;
         } else {

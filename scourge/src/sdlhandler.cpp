@@ -764,7 +764,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );  
   
   //glColor4f( 0, 0.15f, 0.05f, 0.5 );
-  glColor4f( r, g, b, 0.5f );
+  glColor4f( r, g, b, 0.8f );
   glBegin( GL_QUADS );
   glVertex2f( x + w, y );
   glVertex2f( x, y  );
@@ -785,7 +785,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
       glColor4f( 0, 0, 0, 0 );
     } else {
       glLineWidth( 1.0f );
-      glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.5f );
+      glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.8f );
     }
     glBegin( GL_LINE_LOOP );
     glVertex2f( x + w, y );

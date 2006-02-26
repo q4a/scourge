@@ -132,6 +132,7 @@ void Creature::commonInit() {
   this->selX = this->selY = -1;
   this->bestPathPos = 0;
   this->inventory_count = 0;
+  this->preferredWeapon = -1;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
@@ -1147,6 +1148,12 @@ Item *Creature::getEquippedInventory(int index) {
   return NULL;
 }
 
+bool Creature::isEquippedWeapon( int location ) {
+  Item *item = getItemAtLocation( location );
+  return( item && item->getRpgItem()->isWeapon() );
+}
+
+
 bool Creature::isEquipped( Item *item ) {
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] < MAX_INVENTORY_SIZE &&
@@ -1213,23 +1220,23 @@ Item *Creature::getItemAtLocation(int location) {
 // calculate the aggregate values based on equipped items
 void Creature::recalcAggregateValues() {
   armorChanged = true;
-  /*
-  // calculate the armor (0-100, 100-total protection)
-  armor = (monster ? monster->getBaseArmor() : 0);
-  int armorLevel=0, armorCount=0;
-  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-    if(equipped[i] != MAX_INVENTORY_SIZE) {
-      Item *item = inventory[equipped[i]];
-      if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
-        armor += item->getRpgItem()->getAction()->getMod();
-        armorLevel += item->getLevel();
-        armorCount++;
+
+  // try to select a new preferred weapon if needed.
+  if( preferredWeapon == -1 || !isEquippedWeapon( preferredWeapon ) ) {
+    int values[] = { 
+      Constants::INVENTORY_LEFT_HAND, 
+      Constants::INVENTORY_RIGHT_HAND, 
+      Constants::INVENTORY_WEAPON_RANGED,
+      -1
+    };
+    preferredWeapon = -1;
+    for( int i = 0; values[ i ] > -1; i++ ) {
+      if( isEquippedWeapon( values[ i ] ) ) {
+        preferredWeapon = values[ i ];
+        break;
       }
     }
   }
-  armor += bonusArmor;
-  avgArmorLevel = ( !armorCount ? 0 : (float)armorLevel / (float)armorCount );
-  */
 }
 
 Item *Creature::getBestWeapon(float dist) {

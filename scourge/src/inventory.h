@@ -68,6 +68,9 @@ private:
 	ScrollingList *invList;
 	char **pcInvText;
 
+  int preferredWeaponLocation[3];
+  Button *preferredWeaponButton[3];
+
 	// spell ui
 	Button *castButton, *storeSpellButton;
 	ScrollingList *schoolList;

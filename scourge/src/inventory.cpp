@@ -154,8 +154,29 @@ Inventory::Inventory(Scourge *scourge) {
   infoButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Info", INVENTORY );
   yy+=buttonHeight;
   poolButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Pool Money", INVENTORY );
+  yy+=buttonHeight;
 
-
+  yy+=5;
+  cards->createLabel( 3, yy + 14, "Selected Weapon:", INVENTORY );
+  yy+=buttonHeight;
+  preferredWeaponLocation[0] = Constants::INVENTORY_LEFT_HAND;
+  preferredWeaponLocation[1] = Constants::INVENTORY_RIGHT_HAND;
+  preferredWeaponLocation[2] = Constants::INVENTORY_WEAPON_RANGED;
+  preferredWeaponButton[ 0 ] = 
+    cards->createButton( 0, yy, 105, yy + buttonHeight, "Left hand", 
+                         INVENTORY, true );
+  preferredWeaponButton[ 0 ]->setSelected( false );
+  yy+=buttonHeight;
+  preferredWeaponButton[ 1 ] = 
+    cards->createButton( 0, yy, 105, yy + buttonHeight, "Right hand", 
+                         INVENTORY, true );
+  preferredWeaponButton[ 1 ]->setSelected( false );
+  yy+=buttonHeight;
+  preferredWeaponButton[ 2 ] = 
+    cards->createButton( 0, yy, 105, yy + buttonHeight, "Ranged", 
+                         INVENTORY, true );
+  preferredWeaponButton[ 2 ]->setSelected( false );
+  yy+=buttonHeight;
 
   // -------------------------------------------
   // character info
@@ -669,7 +690,28 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
   } else if( widget == squirrelWindow ) {
     scourge->getSquirrelConsole()->setVisible( squirrelWindow->isSelected() );
-  }
+  } else if( widget == preferredWeaponButton[ 0 ] ) {
+    if( creature->isEquippedWeapon( Constants::INVENTORY_LEFT_HAND ) ) {
+      creature->setPreferredWeapon( Constants::INVENTORY_LEFT_HAND );
+    }
+    preferredWeaponButton[0]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_LEFT_HAND );
+    preferredWeaponButton[1]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_RIGHT_HAND );
+    preferredWeaponButton[2]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_WEAPON_RANGED );
+  } else if( widget == preferredWeaponButton[ 1 ] ) {
+    if( creature->isEquippedWeapon( Constants::INVENTORY_RIGHT_HAND ) ) {
+      creature->setPreferredWeapon( Constants::INVENTORY_RIGHT_HAND );
+    }
+    preferredWeaponButton[0]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_LEFT_HAND );
+    preferredWeaponButton[1]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_RIGHT_HAND );
+    preferredWeaponButton[2]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_WEAPON_RANGED );
+  } else if( widget == preferredWeaponButton[ 2 ] ) {
+    if( creature->isEquippedWeapon( Constants::INVENTORY_WEAPON_RANGED ) ) {
+      creature->setPreferredWeapon( Constants::INVENTORY_WEAPON_RANGED );
+    }
+    preferredWeaponButton[0]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_LEFT_HAND );
+    preferredWeaponButton[1]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_RIGHT_HAND );
+    preferredWeaponButton[2]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_WEAPON_RANGED );
+  } 
   return false;
 }
 
@@ -835,6 +877,12 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
                       (const char **)pcInvText,
                       itemColor, 
                       itemIcon);
+    preferredWeaponButton[ 0 ]->
+      setSelected( selectedP->getPreferredWeapon() == Constants::INVENTORY_LEFT_HAND );
+    preferredWeaponButton[ 1 ]->
+      setSelected( selectedP->getPreferredWeapon() == Constants::INVENTORY_RIGHT_HAND );
+    preferredWeaponButton[ 2 ]->
+      setSelected( selectedP->getPreferredWeapon() == Constants::INVENTORY_WEAPON_RANGED );
     /*
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = selectedP->getEquippedInventory(i);

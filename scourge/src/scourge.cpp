@@ -2969,9 +2969,13 @@ void Scourge::createPartyUI() {
                                 this, this );
     cards->addWidget( playerInfo[i], 0 );
     playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,  
-                                offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight, 
+                                offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight - 25, 
                                 this, NULL, true );
     cards->addWidget( playerHpMp[i], 0 );
+    playerWeapon[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20 + playerInfoHeight - 25,  
+                                  offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight, 
+                                  this, NULL, true );
+    cards->addWidget( playerWeapon[i], 0 );
   }
   int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);
   for( int i = 0; i < 12; i++ ) {
@@ -3011,18 +3015,58 @@ void Scourge::drawWidgetContents(Widget *w) {
       return;
     } else if( playerHpMp[i] == w ) {
       Creature *p = party->getParty( i );
-      Util::drawBar( 10, 5, 90,
+      char msg[80];
+      sprintf( msg, "HP:%d(%d) MP:%d(%d)", 
+               p->getHp(), p->getMaxHp(),
+               p->getMp(), p->getMaxMp() );
+      w->setTooltip( msg );
+      Util::drawBar( 10, 5, 65,
                      (float)p->getHp(), (float)p->getMaxHp(), 
                      -1, -1, -1, true, 
                      NULL,
                      //mainWin->getTheme(), 
                      Util::VERTICAL_LAYOUT );
-      Util::drawBar( 17, 5, 90,
+      Util::drawBar( 17, 5, 65,
                      (float)p->getMp(), (float)p->getMaxMp(), 
                      0, 0, 1, false, 
                      NULL,
                      //mainWin->getTheme(), 
                      Util::VERTICAL_LAYOUT );
+      return;
+    } else if( playerWeapon[i] == w ) {
+      // draw the current weapon
+      if( party->getParty( i )->getPreferredWeapon() > -1 ) {
+        Item *item = party->getParty( i )->getItemAtLocation( party->getParty( i )->getPreferredWeapon() );
+        if(item && 
+           item->getRpgItem()->isWeapon() ) {
+          char msg[80];
+          sprintf( msg, "Current Weapon: %s", item->getRpgItem()->getName() );
+          w->setTooltip( msg );
+          glEnable( GL_TEXTURE_2D );
+          glEnable( GL_ALPHA_TEST );
+          glAlphaFunc( GL_EQUAL, 0xff );
+          glBindTexture( GL_TEXTURE_2D, 
+                         getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+          glColor4f(1, 1, 1, 1);
+          int n = 25;
+          glPushMatrix();
+          //glTranslatef( 0, 5, 0 );
+          glBegin( GL_QUADS );
+          glNormal3f( 0, 0, 1 );
+          glTexCoord2f( 0, 0 );
+          glVertex3f( 0, 0, 0 );
+          glTexCoord2f( 0, 1 );
+          glVertex3f( 0, n, 0 );
+          glTexCoord2f( 1, 1 );
+          glVertex3f( n, n, 0 );
+          glTexCoord2f( 1, 0 );
+          glVertex3f( n, 0, 0 );
+          glEnd();
+          glDisable( GL_ALPHA_TEST );
+          glDisable( GL_TEXTURE_2D );
+          glPopMatrix();
+        }
+      }
       return;
     }
   }

@@ -201,7 +201,7 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   Button *groupButton;
   CardContainer *cards;
   Canvas *minPartyInfo;
-  Canvas *playerInfo[MAX_PARTY_SIZE], *playerHpMp[MAX_PARTY_SIZE];
+  Canvas *playerInfo[MAX_PARTY_SIZE], *playerHpMp[MAX_PARTY_SIZE], *playerWeapon[MAX_PARTY_SIZE];
   Canvas *quickSpell[12];
 
   // board gui
