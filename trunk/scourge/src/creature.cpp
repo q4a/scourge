@@ -1239,6 +1239,24 @@ void Creature::recalcAggregateValues() {
   }
 }
 
+bool Creature::nextPreferredWeapon() {
+  int pos = preferredWeapon;
+  for( int i = 0; i < 4; i++ ) {
+    switch( pos ) {
+    case Constants::INVENTORY_LEFT_HAND: pos = Constants::INVENTORY_RIGHT_HAND; break;
+    case Constants::INVENTORY_RIGHT_HAND: pos = Constants::INVENTORY_WEAPON_RANGED; break;
+    case Constants::INVENTORY_WEAPON_RANGED: pos = -1; break;
+    case -1: pos = Constants::INVENTORY_LEFT_HAND; break;
+    }
+    if( pos == -1 || isEquippedWeapon( pos ) ) {
+      preferredWeapon = pos;
+      return true;
+    }
+  }
+  preferredWeapon = -1;
+  return false;
+}
+
 Item *Creature::getBestWeapon(float dist) {
   int location[] = { 
     Constants::INVENTORY_RIGHT_HAND,
