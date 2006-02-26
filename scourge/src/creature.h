@@ -282,6 +282,7 @@ class Creature : public RenderedCreature {
   }
   inline int getPreferredWeapon() { return preferredWeapon; }
   inline void setPreferredWeapon( int n ) { preferredWeapon = n; }
+  bool nextPreferredWeapon();
   // returns the index of the last item added
   void pickUpOnMap( RenderedItem *item );
   bool addInventory(Item *item, bool force=false);
@@ -452,7 +453,7 @@ class Creature : public RenderedCreature {
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );
   float getMaxAP( bool includeSkillMod = false );
-  char *canEquipItem( Item *item, bool interactive = true );
+  char *canEquipItem( Item *item, bool interactive = true );  
 
  protected:
 

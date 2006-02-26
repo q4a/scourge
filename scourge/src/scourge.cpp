@@ -3035,11 +3035,13 @@ void Scourge::drawWidgetContents(Widget *w) {
       return;
     } else if( playerWeapon[i] == w ) {
       // draw the current weapon
-      if( party->getParty( i )->getPreferredWeapon() > -1 ) {
+      char msg[80];
+      if( party->getParty( i )->getPreferredWeapon() == -1 ) {
+        w->setTooltip( "Current Weapon: Bare Hands" );
+      } else {
         Item *item = party->getParty( i )->getItemAtLocation( party->getParty( i )->getPreferredWeapon() );
         if(item && 
            item->getRpgItem()->isWeapon() ) {
-          char msg[80];
           sprintf( msg, "Current Weapon: %s", item->getRpgItem()->getName() );
           w->setTooltip( msg );
           glEnable( GL_TEXTURE_2D );
@@ -3327,6 +3329,11 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
         } else {
           toggleInventoryWindow();
         }
+      } else if( widget == playerWeapon[t] ) {
+        if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
+          getParty()->setPlayer( t );
+        }
+        getParty()->getPlayer()->nextPreferredWeapon();
       }
     }
     for( int t = 0; t < 12; t++ ) {
