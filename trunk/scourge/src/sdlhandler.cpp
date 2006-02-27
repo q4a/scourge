@@ -754,6 +754,33 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   int x = -2;
   int y = -14;
 
+  // only for widget tooltips: see if it hangs off the screen
+  bool right = false;
+  if( zrot == 0 && yrot == 0 ) {
+    // do gluProject b/c parent window coordinates aren't part of xpos2.
+    GLdouble screenx, screeny, screenz;
+    double projection[16];
+    double modelview[16];
+    GLint viewport[4];
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    int res = gluProject(xpos2 + w + x, 0, 0,
+                         modelview,
+                         projection,
+                         viewport,
+                         &screenx, &screeny, &screenz);
+    if( res && screenx > getScreenWidth() ) {
+      xpos2 -= ( w + x );
+      right = true;
+    }
+  }
+
+  // for widget tooltips only (hence the check for zrot/yrot)
+  if( zrot == 0 && yrot == 0 && xpos2 + w + x > screen->w ) {
+    
+  }
+
   glPushMatrix();
   glTranslatef( xpos2, ypos2, zpos2 );
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
@@ -772,9 +799,15 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   glVertex2f( x + w, y + h );
   glEnd();
   glBegin( GL_TRIANGLES );
-  glVertex2f( x, y + h - 5 );
-  glVertex2f( x - 5, y + h + 5 );
-  glVertex2f( x + 5, y + h );
+  if( right ) {
+    glVertex2f( x + w, y + h - 5 );
+    glVertex2f( x + w + 5, y + h + 5 );
+    glVertex2f( x + w - 5, y + h );
+  } else {
+    glVertex2f( x, y + h - 5 );
+    glVertex2f( x - 5, y + h + 5 );
+    glVertex2f( x + 5, y + h );
+  }
   glEnd();
   glDisable( GL_BLEND );
 
@@ -788,12 +821,21 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
       glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.8f );
     }
     glBegin( GL_LINE_LOOP );
-    glVertex2f( x + w, y );
-    glVertex2f( x, y  );
-    glVertex2f( x, y + h - 5 );
-    glVertex2f( x - 5, y + h + 5 );
-    glVertex2f( x + 5, y + h );  
-    glVertex2f( x + w, y + h );
+    if( right ) {
+      glVertex2f( x + w, y );
+      glVertex2f( x, y  );
+      glVertex2f( x, y + h  );
+      glVertex2f( x + w - 5, y + h  );
+      glVertex2f( x + w + 5, y + h + 5  );
+      glVertex2f( x + w, y + h - 5  );
+    } else {
+      glVertex2f( x + w, y );
+      glVertex2f( x, y  );
+      glVertex2f( x, y + h - 5 );
+      glVertex2f( x - 5, y + h + 5 );
+      glVertex2f( x + 5, y + h );  
+      glVertex2f( x + w, y + h );
+    }
     glEnd();
   }
   
