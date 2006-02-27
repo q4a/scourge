@@ -259,8 +259,8 @@ Item *TerrainGenerator::createRandomItem() {
   // special items
   for( int i = 0; i < RpgItem::getSpecialCount(); i++ ) {
     RpgItem *rpgItem = RpgItem::getSpecial( i );
-    if( rpgItem->getMinLevel() >= level &&
-        rpgItem->getMinDepth() >= depth &&
+    if( rpgItem->getMinLevel() <= level &&
+        rpgItem->getMinDepth() <= depth &&
         !( scourge->getSession()->getSpecialItem( rpgItem ) ) &&
         0 == (int)( (float)rpgItem->getRareness() * rand() / RAND_MAX ) ) {
       // set loading to true so the level is exact and the item is not enchanted
