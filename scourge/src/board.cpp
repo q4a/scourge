@@ -304,9 +304,10 @@ void Board::initMissions() {
     missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
     for(int i = 0; i < (int)availableMissions.size(); i++) {
       missionText[i] = (char*)malloc(120 * sizeof(char));
-      sprintf(missionText[i], "L:%d, S:%d, %s%s", 
+      sprintf(missionText[i], "L:%d, S:%d, %s %s%s", 
               availableMissions[i]->getLevel(), 
               availableMissions[i]->getDepth(), 
+              ( strstr( availableMissions[i]->getMapName(), "caves" ) ? "(CAVE)" : "" ),
               availableMissions[i]->getName(),
               (availableMissions[i]->isCompleted() ? "(completed)" : ""));
       missionColor[i].r = 1.0f;

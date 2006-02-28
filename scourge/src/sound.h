@@ -26,6 +26,8 @@
 
 class Sound {
 private:
+  int menuMusicIndex;
+  int dungeonMusicIndex;
   bool haveSound;
 #ifdef HAVE_SDL_MIXER
   Mix_Music *menuMusic;
@@ -71,7 +73,9 @@ public:
   void playSound(const char *file);
 
   void setMusicVolume(int volume);
-  void Sound::setEffectsVolume(int volume);
+  void setEffectsVolume(int volume);
+
+  void selectMusic( Preferences *preferences );
 
 protected:
 #ifdef HAVE_SDL_MIXER

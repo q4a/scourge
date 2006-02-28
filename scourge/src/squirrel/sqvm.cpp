@@ -1195,7 +1195,7 @@ bool SQVM::Set(const SQObjectPtr &self,const SQObjectPtr &key,const SQObjectPtr 
 		if(CallMetaMethod(_delegable(self),MT_SET,3,t)) return true;
 		}
 		break;
-	case OT_ARRAY:
+  case OT_ARRAY:
 		if(!sq_isnumeric(key)) {Raise_Error(_SC("indexing %s with %s"),GetTypeName(self),GetTypeName(key)); return false; }
 		return _array(self)->Set(tointeger(key),val);
 	default:
@@ -1263,7 +1263,7 @@ bool SQVM::NewSlot(const SQObjectPtr &self,const SQObjectPtr &key,const SQObject
 			}
 		}
 		break;
-	default:
+  default:
 		Raise_Error(_SC("indexing %s with %s"),GetTypeName(self),GetTypeName(key));
 		return false;
 		break;

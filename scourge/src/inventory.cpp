@@ -303,8 +303,10 @@ void Inventory::drawWidgetContents(Widget *w) {
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory(i);
       if(item) {
-
-        if( theme->getSelectionBackground() ) {
+        if( ( 1 << i ) == 
+            scourge->getParty()->getParty(selected)->getPreferredWeapon() ) {
+          glColor4f( 0.05f, 0.35f, 0.5f, 1 );
+        } else if( theme->getSelectionBackground() ) {
           glColor4f( theme->getSelectionBackground()->color.r,
                      theme->getSelectionBackground()->color.g,
                      theme->getSelectionBackground()->color.b,
@@ -366,7 +368,7 @@ void Inventory::drawWidgetContents(Widget *w) {
                    theme->getWindowText()->a );
       } else {
         w->applyColor();
-      }
+      }      
       if(!item) continue;
       scourge->getSDLHandler()->texPrint( x + 5, (i + 1) * 16 - 4, item->getItemName());
     }

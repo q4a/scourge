@@ -674,6 +674,8 @@ public:
 
   void startConversation( RenderedCreature *creature );
 
+  void drawItemIcon( Item *item, int size=25 );
+
  protected:
 
    void drawPortrait( Widget *w, Creature *p );

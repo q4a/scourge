@@ -613,7 +613,7 @@ void MainMenu::drawLogo() {
 
   GLint t = SDL_GetTicks();
   if(t - logoTicks > logoTicksDelta) {
-    if( logoRot < 120 ) {
+    if( logoRot < 120 - ( ( 1024 - scourge->getScreenHeight() ) / 4 ) ) {
       logoTicks = t;
       logoRot += 8;
     }

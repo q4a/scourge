@@ -548,6 +548,7 @@ void Scourge::startMission() {
     setUILayout();
 #endif
     // start the haunting tunes
+    getSDLHandler()->getSound()->selectMusic( getPreferences() );
     if(inHq) getSDLHandler()->getSound()->playMusicMenu();
     else getSDLHandler()->getSound()->playMusicDungeon();
 
@@ -1190,27 +1191,13 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 
 void Scourge::drawDraggedItem() {
   if(getMovingItem()) {
+    glDisable( GL_DEPTH_TEST );
     glPushMatrix();
     glLoadIdentity();	
-    glTranslatef( getSDLHandler()->mouseX, getSDLHandler()->mouseY, 500);
-    glRotatef( getMap()->getXRot(), 0.0f, 1.0f, 0.0f );  
-    glRotatef( getMap()->getYRot(), 1.0f, 0.0f, 0.0f );  
-    glRotatef( getMap()->getZRot(), 0.0f, 0.0f, 1.0f );
-
-    DrawLater later;
-    later.xpos = 0;
-    later.ypos = 0;
-    later.zpos = 0;
-    later.shape = getMovingItem()->getShape();
-    later.creature = NULL;
-    later.item = getMovingItem();
-    later.projectile = NULL;
-    later.effect = NULL;
-    later.name = 0;
-    later.pos = NULL;
-
-    levelMap->doDrawShape( &later );
+    glTranslatef( getSDLHandler()->mouseX - 25, getSDLHandler()->mouseY - 25, 500);
+    drawItemIcon( getMovingItem(), 32 );
     glPopMatrix();
+    glEnable( GL_DEPTH_TEST );
   }
 }
 
@@ -3050,29 +3037,7 @@ void Scourge::drawWidgetContents(Widget *w) {
            item->getRpgItem()->isWeapon() ) {
           sprintf( msg, "Current Weapon: %s", item->getRpgItem()->getName() );
           w->setTooltip( msg );
-          glEnable( GL_TEXTURE_2D );
-          glEnable( GL_ALPHA_TEST );
-          glAlphaFunc( GL_EQUAL, 0xff );
-          glBindTexture( GL_TEXTURE_2D, 
-                         getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
-          glColor4f(1, 1, 1, 1);
-          int n = 25;
-          glPushMatrix();
-          //glTranslatef( 0, 5, 0 );
-          glBegin( GL_QUADS );
-          glNormal3f( 0, 0, 1 );
-          glTexCoord2f( 0, 0 );
-          glVertex3f( 0, 0, 0 );
-          glTexCoord2f( 0, 1 );
-          glVertex3f( 0, n, 0 );
-          glTexCoord2f( 1, 1 );
-          glVertex3f( n, n, 0 );
-          glTexCoord2f( 1, 0 );
-          glVertex3f( n, 0, 0 );
-          glEnd();
-          glDisable( GL_ALPHA_TEST );
-          glDisable( GL_TEXTURE_2D );
-          glPopMatrix();
+          drawItemIcon( item );
         }
       }
       return;
@@ -3114,11 +3079,35 @@ void Scourge::drawWidgetContents(Widget *w) {
         }
       }
     }
-  }
-  
+  }  
 
   cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
   return;
+}
+
+void Scourge::drawItemIcon( Item *item, int n ) {
+  glEnable( GL_TEXTURE_2D );
+  glEnable( GL_ALPHA_TEST );
+  glAlphaFunc( GL_EQUAL, 0xff );
+  glBindTexture( GL_TEXTURE_2D, 
+                 getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+  glColor4f(1, 1, 1, 1);
+  glPushMatrix();
+  //glTranslatef( 0, 5, 0 );
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, n, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( n, n, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( n, 0, 0 );
+  glEnd();
+  glDisable( GL_ALPHA_TEST );
+  glDisable( GL_TEXTURE_2D );
+  glPopMatrix();
 }
 
 void Scourge::drawPortrait( Widget *w, Creature *p ) {

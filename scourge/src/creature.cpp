@@ -1082,6 +1082,20 @@ void Creature::equipInventory(int index) {
         // refresh map for invisibility, etc.
         session->getMap()->refresh();
       }
+
+      // call script
+      HSQOBJECT *creatureParam = 
+        session->getSquirrel()->getCreatureRef( this );
+      HSQOBJECT *itemParam = 
+        session->getSquirrel()->getItemRef( item );
+      if( creatureParam && itemParam ) {
+        session->getSquirrel()->
+          callTwoArgMethod( "equipItem", 
+                            creatureParam, 
+                            itemParam );
+      }
+
+      // recalc current weapon
       recalcAggregateValues();
       return;
     }
@@ -1130,6 +1144,19 @@ int Creature::doff(int index) {
         session->getMap()->refresh();
       }
 
+      // call script
+      HSQOBJECT *creatureParam = 
+        session->getSquirrel()->getCreatureRef( this );
+      HSQOBJECT *itemParam = 
+        session->getSquirrel()->getItemRef( item );
+      if( creatureParam && itemParam ) {
+        session->getSquirrel()->
+          callTwoArgMethod( "doffItem", 
+                            creatureParam, 
+                            itemParam );
+      }
+
+      // recalc current weapon
       recalcAggregateValues();
       return 1;
     }
