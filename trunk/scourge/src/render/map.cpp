@@ -325,6 +325,7 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
 	//  if(scourge->getPreferences()->getAlwaysCenterMap() ||
 	//     abs(this->x - nx) > X_CENTER_TOLERANCE ||
 	//     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
+
     // relocate
     this->x = nx;
     this->y = ny;
@@ -1727,11 +1728,15 @@ void Map::initMapView( bool ignoreRot ) {
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   glTranslatef( 0, 0, this->zpos);  
 
-  //  float startx = -(((float)mapViewWidth + (mapx - (float)x)) / 2.0) / DIV;
-  //  float starty = -(((float)mapViewDepth + (mapy - (float)y)) / 2.0) / DIV;
-  float startx = -((float)mapViewWidth / 2.0 + (mapx - (float)x)) / DIV;
-  float starty = -((float)mapViewDepth / 2.0 + (mapy - (float)y)) / DIV;
-  //float startz = -(float)(MAP_VIEW_HEIGHT) / DIV;
+  // adjust for centered-map movement
+  float xdiff = 0;
+  float ydiff = 0;
+  if( preferences->getAlwaysCenterMap() && adapter->getPlayer() ) {
+    xdiff = ( adapter->getPlayer()->getX() - (float)(toint(adapter->getPlayer()->getX())));
+    ydiff = ( adapter->getPlayer()->getY() - (float)(toint(adapter->getPlayer()->getY())));
+  }
+  float startx = -( (float)mapViewWidth / 2.0 + ( mapx - (float)x + xdiff ) ) / DIV;
+  float starty = -( (float)mapViewDepth / 2.0 + ( mapy - (float)y + ydiff ) ) / DIV;
   float startz = 0.0;
 
   glTranslatef( startx, starty, startz );

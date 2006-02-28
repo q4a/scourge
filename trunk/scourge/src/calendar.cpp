@@ -90,7 +90,7 @@ bool Calendar::update(int gameSpeed){
         
     if(t - lastTick >= 1000){               
         lastTick = t;
-        setTimeMultiplicator(1);
+        setTimeMultiplicator( 24 ); // 1 game day = 1 hr
         /*
         switch(gameSpeed){
             case 0 : setTimeMultiplicator(60); break;
@@ -100,7 +100,8 @@ bool Calendar::update(int gameSpeed){
             case 4 : setTimeMultiplicator(1); break;
         }
         */
-        currentDate.addSeconds(timeMultiplicator);                       
+        currentDate.addSeconds(timeMultiplicator);
+        if( CALENDAR_DEBUG ) cerr << "time: " << currentDate.getDateString() << endl;
     }        
     
     // look for scheduled events
@@ -113,7 +114,7 @@ bool Calendar::update(int gameSpeed){
             cout << " ? ";        
         }  
         // eventDate >= currentDate ?
-        if( !(currentDate.isInferiorTo(scheduledEvents[i]->getEventDate())) ){
+        if( !( currentDate.isInferiorTo( scheduledEvents[i]->getEventDate() ) ) ){
             if(CALENDAR_DEBUG) cout<< " Yes " << endl;            
             if(!scheduledEvents[i]->isCancelEventSet())
               scheduledEvents[i]->execute();
@@ -133,9 +134,9 @@ bool Calendar::update(int gameSpeed){
                 if(CALENDAR_DEBUG) cout << " Yes" << endl;
                 Date d;
                 d = e->getEventDate();
-                d.addDate(e->getTimeOut());                
-                e -> setEventDate(d);
-                scheduleEvent(e);
+                d.addDate( e->getTimeOut() );                
+                e->setEventDate( d );
+                scheduleEvent( e );
             }
             else{
                 // Don't need this event anymore

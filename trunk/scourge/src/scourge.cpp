@@ -300,7 +300,7 @@ void Scourge::startMission() {
       Calendar *cal = getSession()->getParty()->getCalendar();
       {
         // Schedule an event to keep reloading scripts if they change on disk
-        Date d(0, 5, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+        Date d(0, 0, 1, 0, 0, 0); // (format : sec, min, hours, days, months, years)
         Event *event = new ReloadEvent( cal->getCurrentDate(), 
                                         d, 
                                         Event::INFINITE_EXECUTIONS,
@@ -311,7 +311,7 @@ void Scourge::startMission() {
 
       {
         // Schedule an event to regain MP now and then
-        Date d(30, 0, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+        Date d(0, 3, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
         Event *event = new ReloadEvent( cal->getCurrentDate(), 
                                         d, 
                                         Event::INFINITE_EXECUTIONS,
@@ -672,7 +672,6 @@ void Scourge::endMission() {
 }
 
 void Scourge::drawView() {
-
   // move inventory window with party window
   inventory->positionWindow();
 
@@ -2924,7 +2923,7 @@ void Scourge::fightProjectileHitTurn(Projectile *proj, int x, int y) {
 }
 
 void Scourge::createPartyUI() {
-  sprintf(version, "S.C.O.U.R.G.E. version %s", SCOURGE_VERSION);
+  sprintf(version, "S.C.O.U.R.G.E. v%s", SCOURGE_VERSION);
   sprintf(min_version, "S.C.O.U.R.G.E.");
   mainWin = new Window( getSDLHandler(),
                         getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH, 
@@ -3417,12 +3416,15 @@ void Scourge::refreshInventoryUI() {
 }
 
 void Scourge::updatePartyUI() {
-  // update current date variables and see if scheduled events have occured  
-  /*
-  if(party->getCalendar()->update(getUserConfiguration()->getGameSpeedLevel())){
-    calendarButton->setLabel(party->getCalendar()->getCurrentDate().getDateString());        
+
+  // FIXME: for now, just print the date.
+  // Expect a spanky new date ui soon. (complete with moon phases, etc.)
+  if( getParty()->getCalendar()->update( getUserConfiguration()->getGameSpeedLevel() ) ){
+    sprintf( version, "S.C.O.U.R.G.E. v%s %s", SCOURGE_VERSION, 
+             getParty()->getCalendar()->getCurrentDate().getDateString() );
+    mainWin->setTitle( version );
   }
-  */
+
   // refresh levelMap if any party member's effect is on
   bool effectOn = false;
   for(int i = 0; i < party->getPartySize(); i++) {

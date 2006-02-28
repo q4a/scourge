@@ -1844,7 +1844,7 @@ void Creature::setExp() {
 
 GLfloat Creature::getStep() {
   GLfloat fps = session->getGameAdapter()->getFps();
-  GLfloat div = FPS_ONE + (float)(session->getPreferences()->getGameSpeedLevel() * 3.0f);
+  GLfloat div = FPS_ONE + (float)( ( 4 - session->getPreferences()->getGameSpeedLevel() ) * 3.0f);
   if( fps < div ) return 0.8f;
   GLfloat step = 1.0f / ( fps / div  ); 
   if( getSpeed() <= 0 ) {
