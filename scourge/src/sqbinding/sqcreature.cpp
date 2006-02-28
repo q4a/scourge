@@ -362,7 +362,7 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
     // (format : sec, min, hours, days, months, years)
     Calendar *cal = SqBinding::sessionRef->getParty()->getCalendar();
     //    cerr << Constants::STATE_NAMES[mod] << " will expire in " << timeInMin << " minutes." << endl;
-    Date d( 0, 1, 0, 0, 0, 0 ); 
+    Date d( 0, 15, 0, 0, 0, 0 ); 
 //      cerr << "Creating new event." << endl;
     e = new StateModExpirationEvent( cal->getCurrentDate(), d, object, mod, SqBinding::sessionRef, timeInMin);
     cal->scheduleEvent( (Event*)e );   // It's important to cast!!
