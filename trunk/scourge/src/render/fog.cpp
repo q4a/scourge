@@ -37,9 +37,13 @@ using namespace std;
 #define FOG_DEPTH ( MAP_DEPTH / FOG_CHUNK_SIZE )
 
 // color of transparent fog
-#define ER 118
-#define EG 110
-#define EB 130
+//#define ER 118
+//#define EG 110
+//#define EB 130
+
+#define ER 85
+#define EG 80
+#define EB 150
 
 //#define DARK_R 0.05f
 //#define DARK_G 0.04f

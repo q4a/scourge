@@ -23,6 +23,9 @@
 
 using namespace std;
 
+#define MENU_MUSIC_COUNT 2.0f
+#define DUNGEON_MUSIC_COUNT 2.0f
+
 Sound::Sound(Preferences *preferences) {
   haveSound = false;
 
@@ -35,23 +38,9 @@ Sound::Sound(Preferences *preferences) {
       haveSound = true;
     }
 
+    menuMusicIndex = dungeonMusicIndex = -1;
     if(haveSound) {
-      char fn[300];
-      sprintf(fn, "%s/sound/menu.ogg", rootDir);
-      menuMusic = Mix_LoadMUS(fn);
-      if(!menuMusic) {
-        cerr << "*** Error: couldn't load music: " << fn << endl;
-        cerr << "\t" << Mix_GetError() << endl;
-      }
-
-      sprintf(fn, "%s/sound/dungeon.ogg", rootDir);
-      dungeonMusic = Mix_LoadMUS(fn);
-      if(!dungeonMusic) {
-        cerr << "*** Error: couldn't load music: " << fn << endl;
-        cerr << "\t" << Mix_GetError() << endl;
-      }
-
-      setMusicVolume(preferences->getMusicVolume());
+      selectMusic( preferences );
     }
 #endif
   }
@@ -62,8 +51,12 @@ Sound::~Sound() {
   if(haveSound) {
     // delete music
     if(menuMusic) {
-      Mix_FreeMusic(menuMusic);
+      Mix_FreeMusic( menuMusic );
       menuMusic = NULL;
+    }
+    if( dungeonMusic ) {
+      Mix_FreeMusic( dungeonMusic );
+      dungeonMusic = NULL;
     }
     // delete sounds
     for(map<string, Mix_Chunk*>::iterator i=soundMap.begin(); i != soundMap.end(); ++i) {
@@ -76,6 +69,61 @@ Sound::~Sound() {
     Mix_CloseAudio();
   }
 #endif
+}
+
+// randomly select menu and dungeon music
+void Sound::selectMusic( Preferences *preferences ) {
+#ifdef HAVE_SDL_MIXER
+  int n = (int)( (float)MENU_MUSIC_COUNT * rand() / RAND_MAX );
+  if( menuMusicIndex != n ) {
+    menuMusicIndex = n;
+
+    // unload the current one
+    if(menuMusic) {
+      Mix_FreeMusic( menuMusic );
+      menuMusic = NULL;
+    }
+
+    // load the new one
+    char fn[300];
+    if( menuMusicIndex == 0 ) {
+      sprintf( fn, "%s/sound/menu.ogg", rootDir );
+    } else {
+      sprintf( fn, "%s/sound/menu%d.ogg", rootDir, menuMusicIndex );
+    }
+    menuMusic = Mix_LoadMUS( fn );
+    if( !menuMusic ) {
+      cerr << "*** Error: couldn't load music: " << fn << endl;
+      cerr << "\t" << Mix_GetError() << endl;
+    }
+  }
+
+  n = (int)( (float)DUNGEON_MUSIC_COUNT * rand() / RAND_MAX );
+  if( dungeonMusicIndex != n ) {
+    dungeonMusicIndex = n;
+
+    // unload the current one
+    if( dungeonMusic ) {
+      Mix_FreeMusic( dungeonMusic );
+      dungeonMusic = NULL;
+    }
+
+    // load the new one
+    char fn[300];
+    if( dungeonMusicIndex == 0 ) {
+      sprintf( fn, "%s/sound/dungeon.ogg", rootDir );
+    } else {
+      sprintf( fn, "%s/sound/dungeon%d.ogg", rootDir, dungeonMusicIndex );
+    }
+    dungeonMusic = Mix_LoadMUS( fn );
+    if( !dungeonMusic ) {
+      cerr << "*** Error: couldn't load music: " << fn << endl;
+      cerr << "\t" << Mix_GetError() << endl;
+    }
+  }
+
+  setMusicVolume( preferences->getMusicVolume() );
+#endif  
 }
 
 #ifdef HAVE_SDL_MIXER

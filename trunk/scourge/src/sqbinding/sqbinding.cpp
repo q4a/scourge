@@ -282,6 +282,27 @@ bool SqBinding::callBoolMethod( const char *name,
   return ret;
 }
 
+bool SqBinding::callTwoArgMethod( const char *name,
+                                  HSQOBJECT *param1,
+                                  HSQOBJECT *param2 ) {
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC( name ), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushobject( vm, *param1 );
+    sq_pushobject( vm, *param2 );
+    sq_call( vm, 3, 0 ); //calls the function
+    ret = true;
+  } else {
+    cerr << "Can't find function " << name << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;
+}
+
 bool SqBinding::callMapPosMethod( const char *name, int x, int y, int z ) {
   bool ret;
   int top = sq_gettop( vm ); //saves the stack size before the call
@@ -570,11 +591,14 @@ void SqBinding::reloadScripts() {
     time_t newLastMod = getLastModTime( (char*)file.c_str() );
     if( lastMod != newLastMod ) {
       if( DEBUG_SQUIRREL ) cerr << "\tReloading!" << endl;
+      // not sure why I need to push the root table here... 
+      sq_pushroottable( vm );
       if( compile( file.c_str() ) ) {
         loadedScripts[ file ] = newLastMod;
       } else {
         cerr << "Error: *** Unable to compile special skills code: " << file << endl;
       }
+      sq_pop( vm, 1 ); //pops the root table
     }
   }
   if( DEBUG_SQUIRREL ) cerr << "----------------------" << endl;
