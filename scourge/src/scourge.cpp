@@ -2468,10 +2468,7 @@ bool Scourge::fightCurrentBattleTurn() {
     // end of battle if party has no-one to attack
     bool roundOver = false;
 
-
-
-    // *****************************************
-    // This is the code that needs to be fixed for cave TB combat:
+    // Cancel combat when all party members have nothing to attack.
     int c = 0;
     for( int i = 0; i < party->getPartySize(); i++ ) {
       if( party->getParty(i)->getAction() == Constants::ACTION_NO_ACTION && 
@@ -2483,13 +2480,14 @@ bool Scourge::fightCurrentBattleTurn() {
       for( int i = 0; i < party->getPartySize(); i++ ) {
         if( Battle::debugBattle ) cerr << "*** Reset in scourge!" << endl;
         party->getParty(i)->getBattle()->reset();
+        /* cancel a target in case it's too far away
+          (getAvailableTarget only looks 20 paces away)
+          the alternative is to scan the entire map...
+        */
+        party->getParty(i)->cancelTarget();
       }
       roundOver = true;
     }
-    // *****************************************
-
-
-
 
     if( !roundOver ) {
       if( getUserConfiguration()->isBattleTurnBased() ) {
