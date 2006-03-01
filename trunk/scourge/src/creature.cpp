@@ -1084,16 +1084,7 @@ void Creature::equipInventory(int index) {
       }
 
       // call script
-      HSQOBJECT *creatureParam = 
-        session->getSquirrel()->getCreatureRef( this );
-      HSQOBJECT *itemParam = 
-        session->getSquirrel()->getItemRef( item );
-      if( creatureParam && itemParam ) {
-        session->getSquirrel()->
-          callTwoArgMethod( "equipItem", 
-                            creatureParam, 
-                            itemParam );
-      }
+      if( !monster ) session->getSquirrel()->callItemEvent( this, item, "equipItem" );
 
       // recalc current weapon
       recalcAggregateValues();
@@ -1145,16 +1136,7 @@ int Creature::doff(int index) {
       }
 
       // call script
-      HSQOBJECT *creatureParam = 
-        session->getSquirrel()->getCreatureRef( this );
-      HSQOBJECT *itemParam = 
-        session->getSquirrel()->getItemRef( item );
-      if( creatureParam && itemParam ) {
-        session->getSquirrel()->
-          callTwoArgMethod( "doffItem", 
-                            creatureParam, 
-                            itemParam );
-      }
+      if( !monster ) session->getSquirrel()->callItemEvent( this, item, "doffItem" );
 
       // recalc current weapon
       recalcAggregateValues();
@@ -1284,28 +1266,36 @@ bool Creature::nextPreferredWeapon() {
   return false;
 }
 
-Item *Creature::getBestWeapon(float dist) {
+Item *Creature::getBestWeapon( float dist, bool callScript ) {
+
+  Item *ret = NULL;
 
   // for TB combat for players, respect the current weapon
   if( session->getPreferences()->isBattleTurnBased() &&
       !isMonster() ) {
-    return( preferredWeapon > -1 ? getItemAtLocation( preferredWeapon ) : NULL );
+    ret = ( preferredWeapon > -1 ? getItemAtLocation( preferredWeapon ) : NULL );
+  } else {
+    int location[] = { 
+      Constants::INVENTORY_RIGHT_HAND,
+      Constants::INVENTORY_LEFT_HAND,
+      Constants::INVENTORY_WEAPON_RANGED,
+      -1
+    };  
+    for( int i = 0; location[i] > -1; i++ ) {
+      Item *item = getItemAtLocation( location[i] );
+      if(item && 
+         item->getRpgItem()->isWeapon() && 
+         item->getDistance() >= dist) {
+        ret = item;
+        break;
+      }
+    }
+  }
+  if( !monster && ret && callScript ) {
+    session->getSquirrel()->callItemEvent( this, ret, "startBattleWithItem" );
   }
 
-  int location[] = { 
-    Constants::INVENTORY_RIGHT_HAND,
-    Constants::INVENTORY_LEFT_HAND,
-    Constants::INVENTORY_WEAPON_RANGED,
-    -1
-  };
-  for( int i = 0; location[i] > -1; i++ ) {
-    Item *item = getItemAtLocation( location[i] );
-    if(item && 
-       item->getRpgItem()->isWeapon() && 
-       item->getDistance() >= dist) 
-      return item;
-  }
-  return NULL;
+  return ret;
 }
 
 // return the initiative for a battle round, the lower the faster the attack
@@ -2056,7 +2046,7 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 
 float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item *vsWeapon, bool includeSkillMod ) {
   float ac, avgArmorLevel, avgArmorSkill;
-  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill );
+  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill, false, ( vsDamage > 0 ? true : false ) );
     
   if( skillP ) *skillP = avgArmorSkill;
   
@@ -2099,7 +2089,8 @@ float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item
 void Creature::calcArmor( float *armorP, 
                           float *avgArmorLevelP,
                           float *avgArmorSkillP,
-                          bool includeSkillMod ) {
+                          bool includeSkillMod,
+                          bool callScript ) {
   if( !armorChanged ) {
     *armorP = lastArmor;
     *avgArmorLevelP = lastArmorLevel;
@@ -2114,6 +2105,7 @@ void Creature::calcArmor( float *armorP,
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
         if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
+          if( callScript && !monster ) session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
           armor += item->getRpgItem()->getAction()->getMod();
           armorLevel += 
             ( item->getLevel() + 
@@ -2199,6 +2191,7 @@ float Creature::getAttackPercent( Item *weapon,
     session->getSquirrel()->setCurrentWeapon( weapon );
     total = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
                                          "damage", total );
+    if( weapon && !monster ) session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
   }
   
   return total;

@@ -306,7 +306,7 @@ class Creature : public RenderedCreature {
 
   // return the best equipped weapon that works on this distance, 
   // or NULL if none are available
-  Item *getBestWeapon(float dist);  
+  Item *getBestWeapon( float dist, bool callScript=false );  
 
   float getAttacksPerRound( Item *item = NULL );
 
@@ -440,7 +440,8 @@ class Creature : public RenderedCreature {
   void calcArmor( float *armorP, 
                   float *avgArmorLevelP,
                   float *avgArmorSkillP,
-                  bool includeSkillMod=false );
+                  bool includeSkillMod=false,
+                  bool callScript=false );
   float getAttackPercent( Item *weapon, 
                           float *maxP=NULL, 
                           float *minP=NULL, 

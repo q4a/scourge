@@ -244,7 +244,10 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
   glDisable(GL_DEPTH_TEST);
 
   // draw the lava
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::FRONT_SIDE ] );
+  glColor4f(  1, 1, 1, 0.75f );
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0 + lavaTexX, 0 + lavaTexY );
@@ -256,6 +259,7 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
   glTexCoord2f( 1 + lavaTexX, 0 + lavaTexY );
   glVertex3f( w, 0, n );
   glEnd();
+  glDisable( GL_BLEND );
 
   if( stencilIndex > -1 ) {
     glEnable( GL_ALPHA_TEST );
