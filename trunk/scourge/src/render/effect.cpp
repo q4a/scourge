@@ -79,6 +79,12 @@ Effect::~Effect() {
   deleteParticles();
 }
 
+void Effect::setSize( int width, int height ) {
+  if( !deleteShape ) return;
+  delete shape;
+  shape = new GLShape(0, width, height, width, NULL,0, 0, 2000);
+}
+
 void Effect::deleteParticles() {
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(particle[i]) {

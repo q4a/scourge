@@ -54,6 +54,8 @@ public:
   
   void reset();
 
+  void setSize( int width, int height );
+
   void setDisplayInfo( DisplayInfo *di );
   
   void deleteParticles();

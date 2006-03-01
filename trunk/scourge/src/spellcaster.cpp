@@ -502,6 +502,9 @@ void SpellCaster::hailAttack() {
 }
 
 int SpellCaster::getRadius( int spellEffectSize, float *sx, float *sy ) {
+
+  //cerr << "target x=" << battle->getCreature()->getTargetX() << "," << battle->getCreature()->getTargetY() << endl;
+
   int tw = 1;
   int td = 1;
   Location *pos = battle->getSession()->getMap()->getLocation( battle->getCreature()->getTargetX(), 
@@ -523,10 +526,10 @@ int SpellCaster::getRadius( int spellEffectSize, float *sx, float *sy ) {
   int radius = battle->getCreature()->getLevel() * 2;
   if(radius > 15) radius = 15;
   if(radius < 2) radius = 2;
-
-//  cerr << "selected radius=" << selectedRadius << " max radius=" << radius << endl;
+  
+  //cerr << "selected radius=" << selectedRadius << " max radius=" << radius << endl;
   if( selectedRadius < radius ) radius = selectedRadius;
-//  cerr << "radius=" << radius << endl;
+  //cerr << "radius=" << radius << endl;
 
   *sx = battle->getCreature()->getX() + ( battle->getCreature()->getShape()->getWidth() / 2.0f ); 
   *sy = battle->getCreature()->getY() - ( battle->getCreature()->getShape()->getDepth() / 2.0f );

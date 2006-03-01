@@ -1885,18 +1885,9 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   }
 
   // show an effect
-  if(effect[x][y][z]) {
-    if(effect[x][y][z]->isEffectOn() && 
-       effect[x][y][z]->effectType == effect_type) {
-      return;
-    } else {
-      return;
-    }
-  }
+  if(effect[x][y][z]) return;
 
-  if(!effect[x][y][z]) {
-    effect[x][y][z] = mapMemoryManager->newEffectLocation( this, preferences, shapes, width, height );
-  }
+  effect[x][y][z] = mapMemoryManager->newEffectLocation( this, preferences, shapes, width, height );
   /*
   effect[x][y][z]->effect = new Effect( preferences,
                                         shapes, 
@@ -1911,6 +1902,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->x = x;
   effect[x][y][z]->y = y;
   effect[x][y][z]->z = z;
+  effect[x][y][z]->effect->setSize( width, height );
   currentEffectsMap[ createTripletKey( x, y, z ) ] = effect[x][y][z];
 
   effect[x][y][z]->effect->setDisplayInfo( di );
