@@ -200,7 +200,7 @@ bool Battle::fightTurn() {
     }
   }
 
-  initTurnStep();
+  initTurnStep( true );
 
   if(creature->getAction() == Constants::ACTION_EAT_DRINK) {
     executeEatDrinkAction();
@@ -284,7 +284,7 @@ int Battle::calculateRange( Item *item ) {
   return range;
 }
 
-void Battle::initTurnStep() {
+void Battle::initTurnStep( bool callScript ) {
   dist = creature->getDistanceToTarget();
 
   // select the best weapon only once
@@ -304,7 +304,7 @@ void Battle::initTurnStep() {
       nextTurn = 0;
       if(debugBattle) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
-      item = creature->getBestWeapon(dist);
+      item = creature->getBestWeapon(dist, callScript );      
       range = calculateRange( item );
       if(item) {
         if(debugBattle) cerr << "\tUsing item: " << item->getRpgItem()->getName() << " ap=" << ap << endl;
@@ -1007,7 +1007,6 @@ float Battle::applyMagicItemSpellDamage() {
 
 void Battle::hitWithItem() {
   prepareToHitMessage();
-
 
   float total, max, min, skill, itemLevel;
   float attack = 

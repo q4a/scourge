@@ -33,6 +33,8 @@
 
 using namespace std;
 
+#define DEBUG_SQUIRREL 0
+
 #ifdef SQUNICODE
 #define scvprintf vswprintf
 #else
@@ -280,6 +282,19 @@ bool SqBinding::callBoolMethod( const char *name,
   }
   sq_settop( vm, top ); //restores the original stack size
   return ret;
+}
+
+bool SqBinding::callItemEvent( Creature *creature, 
+                               Item *item, 
+                               const char *function ) {
+  HSQOBJECT *creatureParam = getCreatureRef( creature );
+  HSQOBJECT *itemParam = getItemRef( item );
+  if( creatureParam && itemParam ) {
+    return callTwoArgMethod( function, 
+                             creatureParam, 
+                             itemParam );
+  }
+  return false;
 }
 
 bool SqBinding::callTwoArgMethod( const char *name,

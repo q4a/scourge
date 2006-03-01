@@ -142,7 +142,7 @@ class Battle {
   void executeEatDrinkAction();
   // return true if game paused
   bool pauseBeforePlayerTurn();
-  void initTurnStep();
+  void initTurnStep( bool callScript=false );
   void executeAction();
   void stepCloserToTarget();
   bool selectNewTarget();
