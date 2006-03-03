@@ -89,6 +89,9 @@ public:
 
   virtual void findPlace( int x, int y, int *finalX=NULL, int *finalY=NULL );
 
+protected:
+  bool canReach( int startx, int starty, int firstx, int firsty, int xx, int yy, std::map<int,bool> *seen );
+
 };
 
 

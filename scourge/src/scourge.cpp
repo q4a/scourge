@@ -2148,17 +2148,17 @@ bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
     info_dialog_showing = false;
     getSession()->getSquirrel()->startLevel();
     // re-eval the special skills
-    cerr << "Evaluating special skills at level's start" << endl;
-    Uint32 t = SDL_GetTicks();
+    //cerr << "Evaluating special skills at level's start" << endl;
+    //Uint32 t = SDL_GetTicks();
     for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
       session->getParty()->getParty(i)->evalSpecialSkills();
     }
     for( int i = 0; i < session->getCreatureCount(); i++ ) {
       session->getCreature(i)->evalSpecialSkills();
     }
-    cerr << "\tIt took: " << 
-      ( ((float)( SDL_GetTicks() - t ) / 1000.0f ) ) << 
-      " seconds." << endl;
+//    cerr << "\tIt took: " << 
+//      ( ((float)( SDL_GetTicks() - t ) / 1000.0f ) ) << 
+//      " seconds." << endl;
     party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
   }
   
