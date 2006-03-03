@@ -18,6 +18,9 @@
 #include "effect.h"
 #include "map.h"
 #include "glshape.h"
+#include <map>
+
+using namespace std;
 
 RenderedCreature::RenderedCreature( Preferences *preferences, 
                                     Shapes *shapes, 
@@ -80,6 +83,9 @@ void RenderedCreature::removeRecentDamage( int i ) {
   recentDamagesCount--;
 }
 
+/**
+ * This can be a pretty slow method...
+ */
 void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
   int dir = Constants::MOVE_UP;
   int ox = startx;
@@ -89,9 +95,14 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
   int r = 6;
   // potential inf. loop?
   // it assumes there is free space "somewhere" on this map...
+  map<int,bool> seen;
   while( true ) {
+
+    seen.clear();
+
     // can player fit here?
-    if( !levelMap->isBlocked( xx, yy, 0, 0, 0, 0, getShape(), NULL ) ) {
+    if( !levelMap->isBlocked( xx, yy, 0, 0, 0, 0, getShape(), NULL ) && 
+        canReach( startx, starty, startx, starty, xx, yy, &seen ) ) {
       //cerr << "Placed party member: " << t << " at: " << xx << "," << yy << endl;
       moveTo( xx, yy, 0 );
       setSelXY( xx, yy );
@@ -102,6 +113,7 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
 
       return;
     }
+    //if( seen.size() ) cerr << "seen size=" << seen.size() << " pos=" << xx << "," << yy << " r=" << r << endl;
 
     // try radially around the player
     switch( dir ) {
@@ -126,5 +138,33 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
     break;
     }
   }
+}
+
+/**
+ *  This method makes sure that players are not placed outside of walls
+ * it ensures that their proposed location is reachable from the original
+ * location w/o going thru walls.
+ */
+bool RenderedCreature::canReach( int startx, int starty, int firstx, int firsty, int xx, int yy, map<int,bool> *seen ) {
+  if( startx == xx && starty == yy ) return true;
+  if( startx < 0 || startx >= MAP_WIDTH || starty < 0 || starty >= MAP_DEPTH ) return false;
+
+  int pos = startx + starty * MAP_WIDTH;
+  if( seen->find( pos ) != seen->end() ) return false;
+  (*seen)[ pos ] = true;
+
+  Location *location = levelMap->getLocation( startx, starty, 0 );
+  if( location && 
+      !( location->item || location->creature ) &&
+      !( location->x == firstx && location->y == firsty ) &&
+      !( location->x == xx && location->y == yy ) ) {
+    return false;
+  }
+
+  if( canReach( startx - 1, starty, firstx, firsty, xx, yy, seen ) ) return true;
+  if( canReach( startx + 1, starty, firstx, firsty, xx, yy, seen ) ) return true;
+  if( canReach( startx, starty - 1, firstx, firsty, xx, yy, seen ) ) return true;
+  if( canReach( startx, starty + 1, firstx, firsty, xx, yy, seen ) ) return true;
+  return false;
 }
 
