@@ -65,6 +65,11 @@ using namespace std;
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
 
+Uint32 areaTicks = 0;
+#define AREA_SPEED 50
+GLfloat areaRot = 0.0f;
+#define AREA_ROT_DELTA 0.2f
+
 // good for debugging blending
 int Scourge::blendA = 2;
 int Scourge::blendB = 6;     // 3
@@ -1086,7 +1091,15 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
           float n = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f ) / DIV;
 
           glPushMatrix();
+          
+          Uint32 t = SDL_GetTicks();
+          if( areaTicks == 0 || t - areaTicks >= AREA_SPEED ) {
+            areaRot += AREA_ROT_DELTA;
+            if( areaRot >= 360.0f ) areaRot -= 360.0f;
+          }
+          glRotatef( areaRot, 0, 0, 1 );
           glTranslatef( -( n / 2 ), -( n / 2 ), 0 );
+
           glEnable( GL_BLEND );
           //glBlendFunc( GL_DST_COLOR, GL_ZERO );
           glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
