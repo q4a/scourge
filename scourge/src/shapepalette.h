@@ -111,6 +111,7 @@ public:
 
   GLuint cloud, candle, torchback, highlight;
   GLuint border, border2, gargoyle;
+  GLuint minimap, minimapMask;
 
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
@@ -120,6 +121,8 @@ public:
   inline GLuint getBorderTexture() { return border; }
   inline GLuint getBorder2Texture() { return border2; }
   inline GLuint getGargoyleTexture() { return gargoyle; }
+  inline GLuint getMinimapTexture() { return minimap; }
+  inline GLuint getMinimapMaskTexture() { return minimapMask; }
 
 
   inline int getPortraitCount() { return portraitTextures.size(); }

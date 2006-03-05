@@ -146,6 +146,10 @@ void MiniMap::drawMap() {
   }
   if( !showMiniMap ) return;
 
+  bool useStencil = 
+    ( scourge->getPreferences()->getStencilbuf() && 
+      scourge->getPreferences()->getStencilBufInitialized() );
+
   int sx = scourge->getSession()->getMap()->getX() + 75 - ( MINI_MAP_SIZE / 2 );
   if( sx < MAP_OFFSET ) sx = MAP_OFFSET;
   int sy = scourge->getSession()->getMap()->getY() + 75 - ( MINI_MAP_SIZE / 2 );
@@ -158,16 +162,52 @@ void MiniMap::drawMap() {
   glDisable( GL_CULL_FACE );
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
  
   glPushMatrix();  
   glLoadIdentity();
-  glTranslatef( MINI_MAP_OFFSET, MINI_MAP_OFFSET, 0 );
+  glTranslatef( MINI_MAP_OFFSET - ( useStencil ? 70 : 0 ), MINI_MAP_OFFSET - ( useStencil ? 50 : 0 ), 0 );
   glTranslatef( MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
   glRotatef( scourge->getSession()->getMap()->getZRot(), 0, 0, 1 );
   glTranslatef( -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
 
+  if( useStencil ) {
+    glClear( GL_STENCIL_BUFFER_BIT );
+    glColorMask( 0, 0, 0, 0 );
+    glEnable( GL_STENCIL_TEST );
+    glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+    glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+
+    glPushMatrix();
+    glDisable(GL_BLEND);
+    glEnable( GL_ALPHA_TEST );
+    glAlphaFunc( GL_EQUAL, 0xff );
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapMaskTexture() );
+    glColor4f( 1, 1, 1, 1 );
+    glBegin( GL_QUADS );   
+    glTexCoord2f( 0, 1 );
+    glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
+    glTexCoord2f( 1, 1 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
+    glTexCoord2f( 1, 0 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
+    glTexCoord2f( 0, 0 );
+    glVertex2d( 0, 0 );     
+    glEnd();       
+    glDisable(GL_TEXTURE_2D); 
+    glDisable( GL_ALPHA_TEST );
+    glEnable(GL_BLEND);
+    glPopMatrix();
+
+    glColorMask( 1, 1, 1, 1 );
+    glStencilFunc( GL_EQUAL, 1, 0xffffffff );
+    glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ); 
+    glDepthMask( GL_FALSE );
+  }
+
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
   if( !directMode ) {
     // static background: draw as a texture
@@ -204,29 +244,31 @@ void MiniMap::drawMap() {
   }
     
   // North marker
-  glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
-  glBegin( GL_TRIANGLES );
-  glVertex2f( 0, 0 );
-  glVertex2f( 30, 0 );
-  glVertex2f( 0, 30 );
-  glEnd();
-  glPushMatrix();
-  glRotatef( -45, 0, 0, 1 );
-  glTranslatef( -7, 20, 0 );
-  glScalef( 1.5f, 1.5f, 1.5f );
-  glColor4f( 1, 1, 1, 0.5f );
-  scourge->getSDLHandler()->texPrint( 0, 0, "N" );
-  glScalef( 1, 1, 1 );
-  glPopMatrix();
-  
-  // outline  
-  glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
-  glBegin( GL_LINE_LOOP );
-  glVertex2f( 0, 0 );
-  glVertex2f( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-  glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-  glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
-  glEnd();
+  if( !useStencil ) {
+    glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+    glBegin( GL_TRIANGLES );
+    glVertex2f( 0, 0 );
+    glVertex2f( 30, 0 );
+    glVertex2f( 0, 30 );
+    glEnd();
+    glPushMatrix();
+    glRotatef( -45, 0, 0, 1 );
+    glTranslatef( -7, 20, 0 );
+    glScalef( 1.5f, 1.5f, 1.5f );
+    glColor4f( 1, 1, 1, 0.5f );
+    scourge->getSDLHandler()->texPrint( 0, 0, "N" );
+    glScalef( 1, 1, 1 );
+    glPopMatrix();
+    
+    // outline  
+    glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+    glBegin( GL_LINE_LOOP );
+    glVertex2f( 0, 0 );
+    glVertex2f( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+    glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+    glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+    glEnd();
+  }
 
   // naive method: draw each block
   for( int x = sx; x < ex; x++ ) {
@@ -287,6 +329,34 @@ void MiniMap::drawMap() {
         }
       }
     }
+  }
+
+  if( useStencil ) {
+    glDepthMask( GL_TRUE );
+    glDisable(GL_STENCIL_TEST);
+
+    // the cutout  
+    glPushMatrix();
+    glDisable(GL_BLEND);
+    glEnable( GL_ALPHA_TEST );
+    glAlphaFunc( GL_EQUAL, 0xff );
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapTexture() );
+    glColor4f( 1, 1, 1, 1 );
+    glBegin( GL_QUADS );   
+    glTexCoord2f( 0, 1 );
+    glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
+    glTexCoord2f( 1, 1 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
+    glTexCoord2f( 1, 0 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
+    glTexCoord2f( 0, 0 );
+    glVertex2d( 0, 0 );     
+    glEnd();       
+    glDisable(GL_TEXTURE_2D); 
+    glDisable( GL_ALPHA_TEST );
+    glEnable(GL_BLEND);
+    glPopMatrix();
   }
 
   glPopMatrix();

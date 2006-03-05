@@ -67,6 +67,20 @@ void ShapePalette::initialize() {
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
+  tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP("/minimap.bmp", &tmpSurface, &tmpImage);
+  minimap = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
+  if(tmpImage) free(tmpImage);
+  if(tmpSurface) SDL_FreeSurface( tmpSurface );
+
+  tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP("/minimask.bmp", &tmpSurface, &tmpImage);
+  minimapMask = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
+  if(tmpImage) free(tmpImage);
+  if(tmpSurface) SDL_FreeSurface( tmpSurface );
+
   // load map textures
   initMapGrid();
 
