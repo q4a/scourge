@@ -1072,7 +1072,7 @@ void Map::draw() {
       glDisable(GL_STENCIL_TEST); 
     } else {
       // draw the ground  
-      setupShapes(true, false);
+      setupShapes(true, false);             
 
       /*
       // -------------------------------------------
@@ -1222,7 +1222,7 @@ void Map::draw() {
     
     // draw the fog of war or shading
 #ifdef USE_LIGHTING
-    helper->draw( getX(), getY(), MVW, MVD );
+    if( helper ) helper->draw( getX(), getY(), MVW, MVD );
 #endif
 
     glDisable(GL_BLEND);
@@ -1520,7 +1520,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 					  GLuint name, int effect, DrawLater *later) {
 
   // fog test for creatures
-  if( later && later->creature && 
+  if( helper && later && later->creature && 
       !helper->isVisible( later->pos->x, 
                           later->pos->y, 
                           later->creature->getShape() ) ) {
@@ -2124,7 +2124,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
     if(creature->getShape()) {
 	  resortShapes = mapChanged = true;
     
-    if( !creature->isMonster() ) helper->visit( creature );
+    if( helper && !creature->isMonster() ) helper->visit( creature );
 	  while(true) {
     Location *p = NULL;
 		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
@@ -2191,7 +2191,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
       }
     }
 
-    if( !creature->isMonster() ) helper->visit( creature );
+    if( helper && !creature->isMonster() ) helper->visit( creature );
 
     // pick up any items in the way
     char message[120];
@@ -2616,7 +2616,7 @@ bool Map::isLocationInLight( int x, int y, Shape *shape ) {
   int chunkX = (x - MAP_OFFSET) / MAP_UNIT;
   int chunkY = (y - (MAP_OFFSET + 1)) / MAP_UNIT;
   if( !lightMap[chunkX][chunkY] ) return false;
-  return helper->isVisible( x, y, shape );
+  return ( helper && helper->isVisible( x, y, shape ) );
 }
 
 void Map::handleEvent( SDL_Event *event ) {

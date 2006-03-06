@@ -44,7 +44,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 5
+#define LEVEL 10
 
 typedef struct _Preset {
   char name[80];
@@ -363,11 +363,11 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   info->skills->setSelectedLine( 0 );
   info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
 
-  info->back = cards->createButton( w - w / 4 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
-                                    w - w / 4 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
+  info->back = cards->createButton( w - w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                    w - w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Back", n );
-  info->next = cards->createButton( w - w / 4 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
-                                    w - w / 4 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
+  info->next = cards->createButton( w - w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+                                    w - w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Next", n );
 }
 
@@ -537,6 +537,8 @@ void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
         pc[i]->addSpell(Spell::getSpellByName("Recall to life"));
         pc[i]->setMp( 5000 );
         pc[i]->setMoney( 10000 );
+
+        if( i == 0 ) pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Brand of Iconoclast")), true);
       }
     }
   }
