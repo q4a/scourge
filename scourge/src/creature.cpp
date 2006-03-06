@@ -2105,7 +2105,12 @@ void Creature::calcArmor( float *armorP,
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
         if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
-          if( callScript && !monster ) session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
+          if( callScript && !monster ) {
+            session->getSquirrel()->setGlobalVariable( "armor", armor );
+            session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
+            armor = session->getSquirrel()->getGlobalVariable( "armor" );
+
+          }
           armor += item->getRpgItem()->getAction()->getMod();
           armorLevel += 
             ( item->getLevel() + 
@@ -2191,7 +2196,10 @@ float Creature::getAttackPercent( Item *weapon,
     session->getSquirrel()->setCurrentWeapon( weapon );
     total = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
                                          "damage", total );
-    if( weapon && !monster ) session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
+    if( weapon && !monster )
+      session->getSquirrel()->setGlobalVariable( "damage", total );
+      session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
+      total = session->getSquirrel()->getGlobalVariable( "damage" );
   }
   
   return total;

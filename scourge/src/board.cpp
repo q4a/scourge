@@ -144,6 +144,10 @@ Board::Board(Session *session) {
         exit( 1 );
       }
       current_mission->addCreature( monster );
+    } else if(n == 'S' && current_mission) {
+      fgetc(fp);
+      n = Constants::readLine(line, fp);
+      current_mission->setSpecial( line );
     } else {
       n = Constants::readLine(line, fp);
     }
@@ -307,7 +311,8 @@ void Board::initMissions() {
       sprintf(missionText[i], "L:%d, S:%d, %s %s%s", 
               availableMissions[i]->getLevel(), 
               availableMissions[i]->getDepth(), 
-              ( strstr( availableMissions[i]->getMapName(), "caves" ) ? "(CAVE)" : "" ),
+              ( availableMissions[i]->isStoryLine() ? "(STORY)" : 
+                ( strstr( availableMissions[i]->getMapName(), "caves" ) ? "(CAVE)" : "" ) ),
               availableMissions[i]->getName(),
               (availableMissions[i]->isCompleted() ? "(completed)" : ""));
       missionColor[i].r = 1.0f;
@@ -494,6 +499,7 @@ Mission::Mission( Board *board, int level, int depth,
   this->completed = false;
   this->storyLine = false;
   this->mapX = this->mapY = 0;
+  this->special[0] = '\0';
 
   // assign the map grid location
   if( mapName && strlen( mapName ) ) {
@@ -794,7 +800,8 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
     Creature *creature = adapter->getSession()->getCreature( i );
     if( creature->getMonster()->isNpc() ) {
       total++;
-      if( !getNpcInfo( toint( creature->getX() ), toint( creature->getY() ) ) ) {
+      if( toint( creature->getX() ) && toint( creature->getY() ) &&
+          !getNpcInfo( toint( creature->getX() ), toint( creature->getY() ) ) ) {
         newNpcs.push_back( creature );
       }
     }

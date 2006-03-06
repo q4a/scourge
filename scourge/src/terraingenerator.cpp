@@ -265,7 +265,6 @@ Item *TerrainGenerator::createRandomItem() {
         0 == (int)( (float)rpgItem->getRareness() * rand() / RAND_MAX ) ) {
       // set loading to true so the level is exact and the item is not enchanted
       Item *item = scourge->getSession()->newItem( rpgItem, level, NULL );
-      scourge->getSession()->setSpecialItem( rpgItem, item );
       return item;
     }
   }

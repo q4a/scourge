@@ -218,6 +218,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
   Item *item = new Item(this, rpgItem, itemLevel, loading);
   if(spell) item->setSpell(spell);
   newItems.push_back( item );
+  if( rpgItem->isSpecial() ) setSpecialItem( rpgItem, item );
   return item;
 }
 

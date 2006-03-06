@@ -93,6 +93,7 @@ private:
   bool storyLine;
   // the mission's location on the map-grid
   int mapX, mapY;
+  char special[80];
 public:
 
 #define INTRO_PHRASE "_INTRO_"
@@ -125,14 +126,17 @@ public:
   static void saveMapData( GameAdapter *adapter, const char *fileName );
 
   Mission( Board *board, int level, int depth, 
-		   char *name, char *description, 
-		   char *success, char *failure,
-		   char *mapName, char mapType='C' );
+           char *name, char *description, 
+           char *success, char *failure,
+           char *mapName, char mapType='C' );
   ~Mission();
 
   inline int getMapX() { return mapX; }
   inline int getMapY() { return mapY; }
   inline void setMapXY( int x, int y ) { mapX = x; mapY = y; }
+  inline bool isSpecial() { return ( strlen( special ) ? true : false ); }
+  inline char *getSpecial() { return special; }
+  inline void setSpecial( char *s ) { strncpy( special, s, 79 ); special[79]='\0'; }
 
   inline void setStoryLine( bool b ) { storyLine = b; }
   inline bool isStoryLine() { return storyLine; }

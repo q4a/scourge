@@ -101,7 +101,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
                           GuiTheme::DEFAULT_THEME );
   newMapWin->setVisible( false );
   newMapWin->setModal( true );
-  newMapWin->createLabel( 5, 20, "Map level (0-7):" );
+  newMapWin->createLabel( 5, 20, "Map level (0-50):" );
   levelText = newMapWin->createTextField( 150, 10, 20 );
   newMapWin->createLabel( 5, 40, "Map depth (0-10):" );
   depthText = newMapWin->createTextField( 150, 30, 20 );
