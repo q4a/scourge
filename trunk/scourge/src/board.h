@@ -191,18 +191,20 @@ public:
   int getCreatureCount() { return (int)creatureList.size(); }
   Monster *getCreature( int index ) { return creatureList[ index ]; }
   bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
- private:
-   static FILE *openMapDataFile( const char *filename, const char *mode );
-   static NpcInfo *getNpcInfo( int x, int y );
-   static std::string getNpcInfoKey( int x, int y );
 
-   void checkMissionCompleted();
-   static int readConversationLine( FILE *fp, char *line, int n,
-                                    std::vector<std::string> *intros,
-                                    std::vector<std::string> *unknownPhrases,
-                                    std::map<std::string, int> *conversations,
-                                    std::vector<std::string> *answers );  
-};
+private:
+  static void loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly=false );
+  static FILE *openMapDataFile( const char *filename, const char *mode );
+  static NpcInfo *getNpcInfo( int x, int y );
+  static std::string getNpcInfoKey( int x, int y );
+  
+  void checkMissionCompleted();
+  static int readConversationLine( FILE *fp, char *line, int n,
+                                   std::vector<std::string> *intros,
+                                   std::vector<std::string> *unknownPhrases,
+                                   std::map<std::string, int> *conversations,
+                                   std::vector<std::string> *answers );  
+};                                  
 
 
 class MissionTemplate {

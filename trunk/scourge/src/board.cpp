@@ -672,7 +672,38 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
   }
   npcConversations.clear();
 
+  // read general conversation from level 0.
+  char dup[300];
+  strcpy( dup, filename );
+  char *p = strrchr( dup, '.' );
+  if( p ) {
+    char c = *( p - 1 );
+    if( c >= '1' && c <= '9' ) {
+      char *q = p - 1;
+      //cerr << "..." << endl;
+      while( true ) {
+        //cerr << "\tq=" << q << endl;
+        if( q <= dup ) {
+          q = NULL;
+          break;
+        } else if( !( *q >= '1' && *q <= '9' ) ) {
+          break;
+        }
+        q--;
+      }
+      if( q ) {
+        *( q + 1 ) = 0;
+        strcat( dup, ".map" );
+        loadMapDataFile( adapter, dup, true );
+      }
+    }
+  }
 
+  // read the level's data
+  loadMapDataFile( adapter, filename );
+}
+
+void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly ) {
   FILE *fp = openMapDataFile( filename, "r" );
   if( !fp ) return;
 
@@ -691,61 +722,65 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
                                 &Mission::unknownPhrases,
                                 &Mission::conversations,
                                 &Mission::answers );
-    } else if( n == 'P' ) {    
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      currentNpc = Monster::getMonsterByName( line );
-    } else if( n == 'V' && currentNpc ) {    
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-
-      NpcConversation *npcConv;
-      if( Mission::npcConversations.find( currentNpc ) == Mission::npcConversations.end() ) {
-        npcConv = new NpcConversation();
-        Mission::npcConversations[ currentNpc ] = npcConv;
+    } else if( !generalOnly ) {
+      if( n == 'P' ) {
+        fgetc(fp);
+        n = Constants::readLine(line, fp);
+        currentNpc = Monster::getMonsterByName( line );
+      } else if( n == 'V' && currentNpc ) {    
+        fgetc(fp);
+        n = Constants::readLine(line, fp);
+  
+        NpcConversation *npcConv;
+        if( Mission::npcConversations.find( currentNpc ) == Mission::npcConversations.end() ) {
+          npcConv = new NpcConversation();
+          Mission::npcConversations[ currentNpc ] = npcConv;
+        } else {
+          npcConv = Mission::npcConversations[ currentNpc ];
+        }
+  
+        n = readConversationLine( fp, line, n, 
+                                  &npcConv->npc_intros, 
+                                  &npcConv->npc_unknownPhrases,
+                                  &npcConv->npc_conversations,
+                                  &npcConv->npc_answers );
+      } else if( n == 'N' ) { 
+        fgetc( fp );
+        n = Constants::readLine(line, fp);
+  
+        x = atoi( strtok( line, "," ) );
+        y = atoi( strtok( NULL, "," ) );
+        strcpy( npcName, strtok( NULL, "," ) );
+        level = atoi( strtok( NULL, "," ) );
+        strcpy( npcType, strtok( NULL, "," ) );
+        char *p = strtok( NULL, "," );
+        strcpy( npcSubType, ( p ? p : "" ) );
+  
+        // store npc info
+        string key = getNpcInfoKey( x,y );
+        NpcInfo *npcInfo = 
+          new NpcInfo( x, y, 
+                       strdup( npcName ), 
+                       level, 
+                       strdup( npcType ), 
+                       ( strlen( npcSubType ) ? 
+                         strdup( npcSubType ) : 
+                         NULL ) );
+        npcInfos[ key ] = npcInfo;
+  
+        // Assign to creature
+        Location *pos = adapter->getSession()->getMap()->getLocation( x, y, 0 );
+        if( !( pos && 
+               pos->creature && 
+               pos->creature->isMonster() && 
+               ((Creature*)(pos->creature))->getMonster()->isNpc() ) ) {
+          cerr << "Error: npc definition in " << filename << 
+            " doesn't point to an npc. Line: " << line << endl;
+        } else {
+          ((Creature*)(pos->creature))->setNpcInfo( npcInfo );
+        }
       } else {
-        npcConv = Mission::npcConversations[ currentNpc ];
-      }
-
-      n = readConversationLine( fp, line, n, 
-                                &npcConv->npc_intros, 
-                                &npcConv->npc_unknownPhrases,
-                                &npcConv->npc_conversations,
-                                &npcConv->npc_answers );
-    } else if( n == 'N' ) { 
-      fgetc( fp );
-      n = Constants::readLine(line, fp);
-
-      x = atoi( strtok( line, "," ) );
-      y = atoi( strtok( NULL, "," ) );
-      strcpy( npcName, strtok( NULL, "," ) );
-      level = atoi( strtok( NULL, "," ) );
-      strcpy( npcType, strtok( NULL, "," ) );
-      char *p = strtok( NULL, "," );
-      strcpy( npcSubType, ( p ? p : "" ) );
-
-      // store npc info
-      string key = getNpcInfoKey( x,y );
-      NpcInfo *npcInfo = 
-        new NpcInfo( x, y, 
-                     strdup( npcName ), 
-                     level, 
-                     strdup( npcType ), 
-                     ( strlen( npcSubType ) ? 
-                       strdup( npcSubType ) : 
-                       NULL ) );
-      npcInfos[ key ] = npcInfo;
-
-      // Assign to creature
-      Location *pos = adapter->getSession()->getMap()->getLocation( x, y, 0 );
-      if( !( pos && 
-             pos->creature && 
-             pos->creature->isMonster() && 
-             ((Creature*)(pos->creature))->getMonster()->isNpc() ) ) {
-        cerr << "Error: npc definition in " << filename << 
-          " doesn't point to an npc. Line: " << line << endl;
-      } else {
-        ((Creature*)(pos->creature))->setNpcInfo( npcInfo );
+        n = Constants::readLine(line, fp);
       }
     } else {
       n = Constants::readLine(line, fp);
