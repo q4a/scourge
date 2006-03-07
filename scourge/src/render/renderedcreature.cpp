@@ -86,6 +86,8 @@ void RenderedCreature::removeRecentDamage( int i ) {
 /**
  * This can be a pretty slow method...
  */
+#define FIND_PLACE_LIMIT 100
+
 void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
   int dir = Constants::MOVE_UP;
   int ox = startx;
@@ -93,11 +95,13 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
   int xx = ox;
   int yy = oy;
   int r = 6;
-  // potential inf. loop?
+  
+  if( finalX ) *finalX = -1;
+  if( finalY ) *finalY = -1;  
+  
   // it assumes there is free space "somewhere" on this map...
   map<int,bool> seen;
-  while( true ) {
-
+  for( int count = 0; count < FIND_PLACE_LIMIT; count++ ) {
     seen.clear();
 
     // can player fit here?

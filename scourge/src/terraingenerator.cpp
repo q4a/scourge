@@ -104,7 +104,10 @@ bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   }
 
   updateStatus("Adding party");
-  addParty(map, shapePal);
+  if( !addParty( map, shapePal ) ) {
+    ret = false;
+    goto cleanup;
+  }
   
   // add a teleporters
   updateStatus("Adding teleporters");
@@ -496,50 +499,19 @@ bool TerrainGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
  * See warning notes on this approach in findPlace() and loadMap() 
  * descriptions.
  */
-void TerrainGenerator::addParty(Map *map, ShapePalette *shapePal) {
+bool TerrainGenerator::addParty(Map *map, ShapePalette *shapePal) {
   int xx = MAP_OFFSET + ( room[0].x + room[0].w / 2 ) * MAP_UNIT;
   int yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;
   int nx, ny;
   for( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
     if( !scourge->getParty()->getParty(r)->getStateMod( Constants::dead ) ) {
       scourge->getParty()->getParty(r)->findPlace( xx, yy, &nx, &ny );
+      if( nx == -1 && ny == -1 ) return false;
       xx = nx;
       yy = ny;
     }
   }
-
-  /*
-  int n = scourge->getParty()->getFirstLivePlayer();
-  if( n > -1 ) {
-    int x, y;
-    bool fits;
-    fits = 
-      getLocationInRoom(map, 
-                        0,
-                        scourge->getParty()->getParty(n)->getShape(), 
-                        &x, &y,
-                        true);
-    if(fits) {
-      addItem(map, scourge->getParty()->getParty(n), NULL, NULL, x, y);
-      scourge->getParty()->getParty(n)->moveTo(x, y, 0);
-      scourge->getParty()->getParty(n)->setSelXY(-1,-1);
-
-      // add the others nearby
-      int xx = x;
-      int yy = y;
-      int nx, ny;
-      for( int r = n + 1; r < scourge->getParty()->getPartySize(); r++ ) {
-        if( !scourge->getParty()->getParty(r)->getStateMod( Constants::dead ) ) {
-          scourge->getParty()->getParty(r)->findPlace( xx, yy, &nx, &ny );
-          xx = nx;
-          yy = ny;
-        }
-      }
-    } else {
-      cerr << "*** Error: Can't add party!!!" << endl;
-    }
-  }
-  */
+  return true;
 }
 
 void TerrainGenerator::lockDoors(Map *map, ShapePalette *shapePal) {

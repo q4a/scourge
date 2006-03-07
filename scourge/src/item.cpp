@@ -398,9 +398,7 @@ void Item::initItems(ShapePalette *shapePal) {
                           speed, strdup(long_description), 
                           strdup(short_description), 
                           inventory_location, shape_index, 
-                          twohanded, 
-                          (distance < (int)MIN_DISTANCE ? 
-                           (int)MIN_DISTANCE : distance), 
+                          twohanded, distance, 
                           skill_index, minDepth, minLevel, 
                           maxCharges, potion_skill, potionTime, 
                           tileX - 1, tileY - 1, maxBonusSkill );
@@ -508,19 +506,19 @@ void Item::commonInit( bool loading ) {
     speed = rpgItem->getSpeedRpg();
   }
 
-  if( rpgItem->getDistanceRpg() > MIN_DISTANCE ) {
+  if( rpgItem->isRangedWeapon() ) {
     distance = rpgItem->getDistanceRpg() + 
-      (int)Util::getRandomSum( 2, level / 2 );
+      (int)Util::getRandomSum( 1, level / 4 );
   } else distance = rpgItem->getDistanceRpg();
 
   if( rpgItem->getMaxChargesRpg() ) {
     maxCharges = rpgItem->getMaxChargesRpg() + 
-      (int)Util::getRandomSum( (float)(rpgItem->getMaxChargesRpg() / 2), level / 2 );
+      (int)Util::getRandomSum( (float)(rpgItem->getMaxChargesRpg() / 2), level / 4 );
   } else maxCharges = rpgItem->getMaxChargesRpg();
 
   if( rpgItem->getDurationRpg() ) {
     duration = rpgItem->getDurationRpg() + 
-      (int)Util::getRandomSum( (float)( rpgItem->getDurationRpg() / 2 ), level / 2 );
+      (int)Util::getRandomSum( (float)( rpgItem->getDurationRpg() / 2 ), level / 4 );
   } else duration = rpgItem->getDurationRpg();
 
 
