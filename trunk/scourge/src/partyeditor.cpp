@@ -233,8 +233,9 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
       }
     }
   }
-  if( oldStep != step ) cards->setActiveCard( step );
-
+  if( oldStep != step ) {
+    cards->setActiveCard( step );
+  }
 }
 
 void PartyEditor::setCharType( int pcIndex, int charIndex ) {

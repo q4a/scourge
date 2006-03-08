@@ -28,6 +28,8 @@ Creature *Party::lastPlayer = NULL;
 
 //#define RANDOM_PARTY 1
 
+//#define TEST_POSSESSION 1
+
 #define PARTY_FOLLOW_INTERVAL 1500
 
 Party::Party(Session *session) {
@@ -73,6 +75,17 @@ void Party::reset() {
     session->getGameAdapter()->createParty( party, &partySize );
   }
   player = party[0];
+
+#ifdef TEST_POSSESSION
+  cerr << "****************************" << endl;
+  cerr << "****************************" << endl;
+  cerr << "Warning: possession testing is turned on." << endl;
+  cerr << "****************************" << endl;
+  cerr << "****************************" << endl;
+  if( partySize > 2 && party[2] ) party[2]->setStateMod( Constants::possessed, true );
+  if( partySize > 3 && party[3] ) party[3]->setStateMod( Constants::possessed, true );
+#endif 
+
   if(!session->getGameAdapter()->isHeadless()) 
     session->getGameAdapter()->resetPartyUI();
 }

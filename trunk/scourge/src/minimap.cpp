@@ -30,7 +30,8 @@
 using namespace std;
 
 #define DEBUG_MINIMAP 0
-#define MINI_MAP_OFFSET 100
+#define MINI_MAP_OFFSET_X 30
+#define MINI_MAP_OFFSET_Y 50
 #define MINI_MAP_SIZE 60
 #define MINI_MAP_BLOCK 4
 
@@ -166,7 +167,7 @@ void MiniMap::drawMap() {
  
   glPushMatrix();  
   glLoadIdentity();
-  glTranslatef( MINI_MAP_OFFSET - ( useStencil ? 70 : 0 ), MINI_MAP_OFFSET - ( useStencil ? 50 : 0 ), 0 );
+  glTranslatef( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0 );
   glTranslatef( MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
   glRotatef( scourge->getSession()->getMap()->getZRot(), 0, 0, 1 );
   glTranslatef( -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
