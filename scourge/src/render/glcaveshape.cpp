@@ -747,7 +747,9 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
 
   for( int i = LAVA_SIDE_W; i < CAVE_INDEX_COUNT; i++ ) {
     shapeList[i] = 
-      new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
+      new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, 
+                       1,
+                       //MAP_WALL_HEIGHT,
                        strdup( names[ i ] ), shapeCount++,
                        MODE_LAVA, 0, i );
   }
