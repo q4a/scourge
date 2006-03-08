@@ -28,6 +28,8 @@ using namespace std;
 #define WEAPON_WAIT_MUL 9
 #define MIN_FUMBLE_RANGE 4.0f
 
+#define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) )
+
 bool Battle::debugBattle = false;
 
 char *Battle::sound[] = {
@@ -142,7 +144,7 @@ bool Battle::fightTurn() {
   // are we alive?
   if(!creature || creature->getStateMod(Constants::dead) ||
      (creature->getAction() == Constants::ACTION_NO_ACTION &&
-      !creature->isMonster() && !getAvailablePartyTarget()) ) {
+      !IS_AUTO_CONTROL( creature ) && !getAvailablePartyTarget()) ) {
 	if( debugBattle ) cerr << "*** Reset 2" << endl;
     reset();
     return true;
@@ -184,7 +186,7 @@ bool Battle::fightTurn() {
   if(pauseBeforePlayerTurn()) return false;
 
   // in TB combat, light the nearest player
-  if( creature->isMonster() && session->getPreferences()->isBattleTurnBased() ) {
+  if( IS_AUTO_CONTROL( creature ) && session->getPreferences()->isBattleTurnBased() ) {
     Creature *p = session->getParty()->getClosestPlayer( toint( creature->getX() ), 
                                                          toint( creature->getY() ), 
                                                          creature->getShape()->getWidth(),
@@ -237,7 +239,7 @@ bool Battle::pauseBeforePlayerTurn() {
   if (!steps && 
       !paused &&
       session->getPreferences()->isBattleTurnBased()) {
-    if(!creature->isMonster()) {
+    if(!IS_AUTO_CONTROL( creature )) {
       if(debugBattle) cerr << "Pausing for round start. Turn: " << creature->getName() << endl;
 
       // center on player
@@ -402,7 +404,7 @@ void Battle::stepCloserToTarget() {
       // For monsters, if this is not possible, select a new target.
       if( !creature->setSelXY( toint( tx + (float)tw / 2.0f ), 
                                toint( ty - (float)th / 2.0f ), false ) &&
-          creature->isMonster() ) {
+          IS_AUTO_CONTROL( creature ) ) {
         creature->cancelTarget();
         creature->decideMonsterAction();
         ap--;
@@ -457,7 +459,7 @@ void Battle::stepCloserToTarget() {
       creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
     }
 
-    if( creature->isMonster() ) {      
+    if( IS_AUTO_CONTROL( creature ) ) {      
       ap--;  
     } else {
       if( session->getPreferences()->isBattleTurnBased() ) {
@@ -483,7 +485,7 @@ bool Battle::moveCreature() {
 
   GLfloat oldX = creature->getX();
   GLfloat oldY = creature->getY();
-  if(creature->isMonster()) {
+  if( IS_AUTO_CONTROL( creature ) ) {
     session->getGameAdapter()->moveMonster(creature);
     if( !( toint(oldX) == toint(creature->getX()) &&
            toint(oldY) == toint(creature->getY()) ) ) {
@@ -591,7 +593,7 @@ Creature *Battle::getAvailableTarget() {
 
 bool Battle::selectNewTarget() {
   // select a new target
-  if (creature->isMonster()) {    
+  if( IS_AUTO_CONTROL( creature ) ) {    
     cerr << "*** Error Battle::selectNewTarget should not be called for monsters." << endl;
     return false;
   } else {
@@ -632,7 +634,7 @@ void Battle::useSkill() {
   // cancel action
   creature->cancelTarget();
   // also cancel path
-  if( !( creature->isMonster() ) ) creature->setSelXY( -1, -1 );
+  if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
 }
 
 void Battle::castSpell( bool alwaysSucceeds ) {
@@ -656,7 +658,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
       session->getMap()->addDescription(message);
       creature->cancelTarget();
       // also cancel path
-      if( !( creature->isMonster() ) ) creature->setSelXY( -1, -1 );
+      if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
       return;
     }
   }
@@ -723,7 +725,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
   } else {
 
     // get exp for casting the spell
-    if(!creature->isMonster()) {
+    if( !IS_AUTO_CONTROL( creature ) ) {
       int level = creature->getLevel();
       if(!creature->getStateMod(Constants::dead)) {
         int n = creature->addExperience(creature->getActionSpell()->getExp());
@@ -745,7 +747,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
   // cancel action
   creature->cancelTarget();
   // also cancel path
-  if( !( creature->isMonster() ) ) creature->setSelXY( -1, -1 );
+  if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
 
 }
 
@@ -788,7 +790,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   ((Creature*)(proj->getCreature()))->cancelTarget();
   ((Creature*)(proj->getCreature()))->setTargetCreature(oldTarget);
   // also cancel path
-  if( !( ((Creature*)(proj->getCreature()))->isMonster() ) ) 
+  if( !IS_AUTO_CONTROL( ((Creature*)(proj->getCreature())) ) ) 
     ((Creature*)(proj->getCreature()))->setSelXY( -1, -1 );
   if(debugBattle) cerr << "*** Projectile hit ends." << endl;
 }
@@ -811,7 +813,7 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
   battle->projectileHit = false;
   battle->spell = NULL;
   ((Creature*)(proj->getCreature()))->cancelTarget();
-  if( !( ((Creature*)(proj->getCreature()))->isMonster() ) ) 
+  if( !IS_AUTO_CONTROL( ((Creature*)(proj->getCreature())) ) ) 
     ((Creature*)(proj->getCreature()))->setSelXY( -1, -1 );
   if(debugBattle) cerr << "*** Projectile hit ends." << endl;
 }
@@ -867,7 +869,7 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
       attack - min < ( ( ( max - min ) / 100.0f ) * 10.0f ) ) {
     if( 0 == (int)( 3.0f * rand() / RAND_MAX ) ) {
       Creature *tmpTarget;
-      if( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) {
+      if( IS_AUTO_CONTROL( creature ) ) {
         tmpTarget = session->
           getClosestVisibleMonster( toint(creature->getX()), 
                                     toint(creature->getY()), 
@@ -1102,7 +1104,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
       // add exp. points and money
-      if(!creature->isMonster()) {
+      if( !IS_AUTO_CONTROL( creature ) ) {
 
 
         // FIXME: try to move to party.cpp
@@ -1168,7 +1170,7 @@ void Battle::executeEatDrinkAction() {
   }
   // cancel action
   creature->cancelTarget();
-  if( !( creature->isMonster() ) ) creature->setSelXY( -1, -1 );
+  if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
 }
 
 void Battle::invalidate() {

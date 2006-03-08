@@ -882,7 +882,7 @@ GLuint Shapes::getBMPData( char *filename, GLubyte **buf ) {
   strcpy(fn, rootDir);
   strcat(fn, filename);
 
-  cerr << "loading lava data: " << fn << endl;
+//  cerr << "loading lava data: " << fn << endl;
 
   /* Create storage space for the texture */
   SDL_Surface *TextureImage[1];
@@ -900,7 +900,7 @@ GLuint Shapes::getBMPData( char *filename, GLubyte **buf ) {
     Constants::checkTexture("Shapes::loadGLTextures", 
                             TextureImage[0]->w, TextureImage[0]->h);
 
-    cerr << "\tdim=" << TextureImage[0]->w << "," << TextureImage[0]->h << endl;
+//    cerr << "\tdim=" << TextureImage[0]->w << "," << TextureImage[0]->h << endl;
 
     int width = TextureImage[0]->w;
     int height = TextureImage[0]->h;

@@ -257,9 +257,9 @@ Scourge::~Scourge(){
 
 void Scourge::startMission() {
 
-#ifdef DEBUG_KEYS
-  squirrelWin->setVisible( true );
-#endif
+//#ifdef DEBUG_KEYS
+//  squirrelWin->setVisible( true );
+//#endif
 
   // set up some cross-mission objects
   oldStory = currentStory = 0;
@@ -277,12 +277,11 @@ void Scourge::startMission() {
 
     oldStory = currentStory;    
 
-#ifndef CAVE_TEST
     // add gui
     mainWin->setVisible(true);
     messageWin->setVisible(true);
     if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
-#endif
+    
     // create the map
     //cerr << "Starting to reset map..." << endl;
     bool fromRandomMap = !( levelMap->isEdited() );
@@ -548,10 +547,8 @@ void Scourge::startMission() {
       }
       conversationGui->start( uzudil, infoMessage, true );      
     }
-#ifndef CAVE_TEST      
     // set the map view
     setUILayout();
-#endif
     // start the haunting tunes
     getSDLHandler()->getSound()->selectMusic( getPreferences() );
     if(inHq) getSDLHandler()->getSound()->playMusicMenu();
@@ -663,9 +660,9 @@ void Scourge::startMission() {
   // delete the party (w/o deleting the party ui)
   party->deleteParty();
 
-#ifdef DEBUG_KEYS
-  squirrelWin->setVisible( false );
-#endif
+//#ifdef DEBUG_KEYS
+//  squirrelWin->setVisible( false );
+//#endif
   getSession()->getSquirrel()->endGame();
 }
 
@@ -1612,19 +1609,20 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
         if(getTargetSelectionFor()) {
           handleTargetSelectionOfCreature( ((Creature*)loc->creature) );
           return;
-        } else if(loc->creature->isMonster()) {
-          if( ((Creature*)(loc->creature))->getMonster()->isNpc() ) {
-            // start a conversation
-            conversationGui->start( ((Creature*)(loc->creature)) );
-          } else {
-            // follow this creature
-            party->setTargetCreature( ((Creature*)(loc->creature)) );
-            // show path
-            if( inTurnBasedCombatPlayerTurn() ) {
-              // start round
-              if( getSDLHandler()->isDoubleClick ) {
-                party->toggleRound( false );
-              }
+        } else if( loc->creature->isMonster() &&
+                   ((Creature*)(loc->creature))->getMonster()->isNpc() ) {
+          // start a conversation
+          conversationGui->start( ((Creature*)(loc->creature)) );
+          return;
+        } else if( loc->creature->isMonster() || 
+                   loc->creature->getStateMod( Constants::possessed ) ) {
+          // follow this creature
+          party->setTargetCreature( ((Creature*)(loc->creature)) );
+          // show path
+          if( inTurnBasedCombatPlayerTurn() ) {
+            // start round
+            if( getSDLHandler()->isDoubleClick ) {
+              party->toggleRound( false );
             }
           }
           return;
@@ -2560,8 +2558,9 @@ bool Scourge::createBattleTurns() {
   for( int i = 0; i < party->getPartySize(); i++ ) {
     if( !party->getParty(i)->getStateMod(Constants::dead) ) {
       // possessed creature attacks fellows...
-      if(party->getParty(i)->getTargetCreature() && 
-         party->getParty(i)->getStateMod(Constants::possessed)) {
+//      if(party->getParty(i)->getTargetCreature() && 
+//         party->getParty(i)->getStateMod(Constants::possessed)) {
+      if( party->getParty(i)->getStateMod( Constants::possessed ) ) {
         Creature *target = session->getParty()->getClosestPlayer(toint(party->getParty(i)->getX()), 
                                                                  toint(party->getParty(i)->getY()), 
                                                                  party->getParty(i)->getShape()->getWidth(),
@@ -3145,6 +3144,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   glDisable( GL_TEXTURE_2D );
 
   bool shade = false;
+  bool darker = false;
   if( inTurnBasedCombat() ) {
     bool found = false;
     for( int i = battleTurn; i < (int)battleRound.size(); i++ ) {
@@ -3157,21 +3157,24 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
     if( !found ) {
       glColor4f( 0, 0, 0, 0.75f );
       shade = true;
+      darker = true;
     }
-  } else if( p->getStateMod( Constants::possessed ) ) {
-    glColor4f( 1.0f, 0, 0, 0.5f );
+  }
+
+  if( p->getStateMod( Constants::possessed ) ) {
+    glColor4f( ( darker ? 0.5f : 1.0f ), 0, 0, 0.5f );
     shade = true;
   } else if( p->getStateMod( Constants::invisible ) ) {
-    glColor4f( 0, 0.75f, 1.0f, 0.5f );
+    glColor4f( 0, ( darker ? 0.375f : 0.75f ), ( darker ? 0.5f : 1.0f ), 0.5f );
     shade = true;
   } else if( p->getStateMod( Constants::poisoned ) ) {
-    glColor4f( 1, 0.75f, 0, 0.5f );
+    glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.375f : 0.75f ), 0, 0.5f );
     shade = true;
   } else if( p->getStateMod( Constants::blinded ) ) {
-    glColor4f( 1, 1, 1, 0.5f );
+    glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), 0.5f );
     shade = true;
   } else if( p->getStateMod( Constants::cursed ) ) {
-    glColor4f( 0.75, 0, 0.75f, 0.5f );
+    glColor4f( ( darker ? 0.375f : 0.75f ), 0, ( darker ? 0.375f : 0.75f ), 0.5f );
     shade = true;
   }
   if( shade ) {

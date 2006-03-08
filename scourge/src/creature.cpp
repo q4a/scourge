@@ -1592,8 +1592,24 @@ bool Creature::isTargetValid() {
 
 bool Creature::canAttack(RenderedCreature *creature, int *cursor) {
   // when attacking, attack the opposite kind (unless possessed)
-  bool ret = (getStateMod(Constants::possessed) == 
-              (isMonster() == creature->isMonster()));
+  bool ret;
+  if( isMonster() ) {
+    if( !getStateMod( Constants::possessed ) ) {
+      ret = ( ( !creature->isMonster() && !creature->getStateMod(Constants::possessed) ) ||
+              ( creature->isMonster() && creature->getStateMod(Constants::possessed) ) );
+    } else {
+      ret = ( ( !creature->isMonster() && creature->getStateMod(Constants::possessed) ) ||
+              ( creature->isMonster() && !creature->getStateMod(Constants::possessed) ) );
+    }
+  } else {
+    if( !getStateMod( Constants::possessed ) ) {
+      ret = ( ( creature->isMonster() && !creature->getStateMod(Constants::possessed) ) ||
+              ( !creature->isMonster() && creature->getStateMod(Constants::possessed) ) );
+    } else {
+      ret = ( ( !creature->isMonster() && !creature->getStateMod(Constants::possessed) ) ||
+              ( creature->isMonster() && creature->getStateMod(Constants::possessed) ) );
+    }
+  }
   if( ret && cursor ) {
     float dist = getDistanceToTarget( creature );
     Item *item = getBestWeapon( dist );
@@ -1730,9 +1746,18 @@ bool Creature::castHealingSpell() {
 }
 
 void Creature::decideMonsterAction() {
-  if(!isMonster()) return;
+  if( !( isMonster() || getStateMod( Constants::possessed ) ) ) return;
 
-  if( monster->isNpc() ) {
+  if( !isMonster() && getStateMod( Constants::possessed ) ) {
+    Creature *p = 
+      session->getParty()->getClosestPlayer( toint(getX()), toint(getY()), 
+                                             getShape()->getWidth(),
+                                             getShape()->getDepth(),
+                                             20 );
+    // attack with item
+    setMotion(Constants::MOTION_MOVE_TOWARDS);
+    setTargetCreature(p);
+  } else if( monster->isNpc() ) {
     int n = (int)( 10.0f * rand()/RAND_MAX );
     switch( n ) {
     case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;
