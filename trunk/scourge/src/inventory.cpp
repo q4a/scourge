@@ -200,9 +200,18 @@ Inventory::Inventory(Scourge *scourge) {
   skillLabel = cards->createLabel(115, skillY, skillsStr, CHARACTER, Constants::RED_COLOR);
   skillList = new ScrollingList(115, skillY + 5, 290, 405 - ( skillY + 5 ), scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(skillList, CHARACTER);
-  skillAddButton = cards->createButton( 115, 410, 200, 410 + buttonHeight, " + ", CHARACTER);
-  skillSubButton = cards->createButton( 320, 410, 405, 410 + buttonHeight, " - ", CHARACTER);
-  levelUpButton = cards->createButton( 205, 410, 315, 410 + buttonHeight, "Apply Points", CHARACTER);
+
+  yy = START_OF_SECOND_BUTTON_SET;
+  skillAddButton = cards->createButton( 0, yy, 105, yy + buttonHeight, " + ", CHARACTER);
+  yy+=buttonHeight;
+  skillSubButton = cards->createButton( 0, yy, 105, yy + buttonHeight, " - ", CHARACTER);
+  yy+=buttonHeight;
+  levelUpButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Apply Points", CHARACTER);
+  yy+=buttonHeight;
+
+  //skillAddButton = cards->createButton( 115, 410, 200, 410 + buttonHeight, " + ", CHARACTER);
+  //skillSubButton = cards->createButton( 320, 410, 405, 410 + buttonHeight, " - ", CHARACTER);
+  //levelUpButton = cards->createButton( 205, 410, 315, 410 + buttonHeight, "Apply Points", CHARACTER);
 
 
   // -------------------------------------------
