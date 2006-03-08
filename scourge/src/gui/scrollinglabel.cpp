@@ -261,7 +261,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       word = p;
     }
 
-    //cerr << "wordWidth=" << wordWidth << " xp=" << xp << " p=" << p << endl;
+    //cerr << "wordWidth=" << wordWidth << " xp=" << xp << " p=" << p << " width=" << getWidth() << " tmp=" << ( tmp ? tmp : '*' ) << endl;    
 
     if( xp + wordWidth > getWidth() ) {
       if( tmp ) *wordEnd = tmp;
