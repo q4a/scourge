@@ -56,6 +56,8 @@ public:
   // battle-related (maybe move this to another class?)
   static int _getCurrentWeapon( HSQUIRRELVM vm );
 
+  static int _isCompleted( HSQUIRRELVM vm );
+
 };
 
 #endif

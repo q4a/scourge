@@ -685,6 +685,16 @@ void Scourge::drawView() {
   checkForDropTarget();
   checkForInfo();
 
+  // in TB combat, center map when monster's turn
+  levelMap->setMapCenterCreature( NULL );
+  if( inTurnBasedCombat() ) {
+    Creature *c = battleRound[battleTurn]->getCreature();
+    if( c->isMonster() || c->getStateMod( Constants::possessed ) ) {
+      levelMap->setMapCenterCreature( c );
+      levelMap->center( toint( c->getX() ), toint( c->getY() ), true );
+    }
+  }
+
   levelMap->draw();
 
   miniMap->drawMap();

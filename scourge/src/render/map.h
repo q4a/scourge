@@ -234,6 +234,8 @@ class Map {
   int floorTexWidth, floorTexHeight;
   GLuint floorTex;
 
+  RenderedCreature *mapCenterCreature;
+
  public:
   bool useFrustum;
   static bool debugMd2Shapes;
@@ -244,6 +246,9 @@ class Map {
 
   Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
+
+  inline void setMapCenterCreature( RenderedCreature *c ) { mapCenterCreature = c; }
+  inline RenderedCreature *getMapCenterCreature() { return mapCenterCreature; }
 
   void setMapRenderHelper( MapRenderHelper *helper );
   inline MapRenderHelper *getMapRenderHelper() { return helper; }
