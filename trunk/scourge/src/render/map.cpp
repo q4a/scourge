@@ -118,6 +118,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   floorTexWidth = floorTexHeight = 0;
   floorTex = 0;
+
+  mapCenterCreature = NULL;
   
   descriptionCount = 0;
   descriptionsChanged = false;
@@ -239,6 +241,7 @@ void Map::reset() {
   lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
   floorTexWidth = floorTexHeight = 0;
   floorTex = 0;
+  mapCenterCreature = NULL;
   
 //  descriptionCount = 0;
 //  descriptionsChanged = false;
@@ -1731,9 +1734,13 @@ void Map::initMapView( bool ignoreRot ) {
   // adjust for centered-map movement
   float xdiff = 0;
   float ydiff = 0;
-  if( preferences->getAlwaysCenterMap() && adapter->getPlayer() ) {
-    xdiff = ( adapter->getPlayer()->getX() - (float)(toint(adapter->getPlayer()->getX())));
-    ydiff = ( adapter->getPlayer()->getY() - (float)(toint(adapter->getPlayer()->getY())));
+  
+  if( preferences->getAlwaysCenterMap() || mapCenterCreature ) {
+    RenderedCreature *c = ( mapCenterCreature ? mapCenterCreature : adapter->getPlayer() );
+    if( c ) {
+      xdiff = ( c->getX() - (float)( toint( c->getX() ) ) );
+      ydiff = ( c->getY() - (float)( toint( c->getY() ) ) );
+    }
   }
   float startx = -( (float)mapViewWidth / 2.0 + ( mapx - (float)x + xdiff ) ) / DIV;
   float starty = -( (float)mapViewDepth / 2.0 + ( mapy - (float)y + ydiff ) ) / DIV;

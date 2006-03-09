@@ -284,6 +284,43 @@ bool SqBinding::callBoolMethod( const char *name,
   return ret;
 }
 
+bool SqBinding::callConversationMethod( const char *name, 
+                                        Creature *creature, 
+                                        const char *word, 
+                                        char *answer ) {
+
+  strcpy( answer, "" );
+
+  HSQOBJECT *creatureParam = getCreatureRef( creature );
+  if( !creatureParam ) {
+    cerr << "Can't find creature ref in callConversationMethod." << endl;
+    return false;
+  }
+
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC( name ), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushobject( vm, *creatureParam );
+    sq_pushstring( vm, _SC( word ), -1 );
+    sq_call( vm, 3, 1 ); //calls the function    
+    const SQChar *sqres = NULL;
+    sq_getstring( vm, -1, &sqres );
+    if( sqres ) {
+      strcpy( answer, (char*)sqres );
+      cerr << "Got answer!" << endl;
+    }
+    ret = true;    
+  } else {
+    cerr << "Can't find function " << name << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;
+}
+
 bool SqBinding::callItemEvent( Creature *creature, 
                                Item *item, 
                                const char *function ) {

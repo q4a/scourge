@@ -220,6 +220,7 @@ public:
   bool callItemEvent( Creature *creature, Item *item, const char *function );
   bool callMapPosMethod( const char *name, int x, int y, int z );
   bool callMapMethod( const char *name, const char *mapName );
+  bool callConversationMethod( const char *name, Creature *creature, const char *word, char *answer );
   HSQOBJECT *getCreatureRef( Creature *creature );
   HSQOBJECT *getItemRef( Item *item );
   void setGlobalVariable( char *name, float value );

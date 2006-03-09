@@ -25,6 +25,7 @@
 #include "traindialog.h"
 #include "board.h"
 #include "shapepalette.h"
+#include "sqbinding/sqbinding.h"
 
 using namespace std;
 
@@ -178,25 +179,35 @@ void ConversationGui::wordClicked( char *word ) {
   Util::toLowerCase( word );
   //cerr << "Clicked: " << word << endl;
 
-  if( creature ) {
-    if( !strcmp( word, TRADE_WORD ) &&
-        creature->getNpcInfo() &&
-        creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT ) scourge->getTradeDialog()->setCreature( creature );
-    else if( !strcmp( word, HEAL_WORD ) &&
-             creature->getNpcInfo() &&
-             creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getHealDialog()->setCreature( creature );
-    else if( !strcmp( word, TRAIN_WORD ) &&
-             creature->getNpcInfo() &&
-             creature->getNpcInfo()->type == Constants::NPC_TYPE_TRAINER ) scourge->getTrainDialog()->setCreature( creature );
-    else if( !strcmp( word, DONATE_WORD ) &&
-             creature->getNpcInfo() &&
-             creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getDonateDialog()->setCreature( creature );
-  }
-
-  if( useCreature ) {
-    answer->setText( Mission::getAnswer( creature->getMonster(), word ) );
+  // try to get the answer from script
+  char answerStr[255];
+  scourge->getSession()->getSquirrel()->
+    callConversationMethod( "converse", creature, (const char*)word, answerStr );
+  cerr << "answer len=" << strlen( answerStr ) << endl;
+  if( !strlen( answerStr ) ) {
+    // Get the answer the usual way
+    if( creature ) {
+      if( !strcmp( word, TRADE_WORD ) &&
+          creature->getNpcInfo() &&
+          creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT ) scourge->getTradeDialog()->setCreature( creature );
+      else if( !strcmp( word, HEAL_WORD ) &&
+               creature->getNpcInfo() &&
+               creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getHealDialog()->setCreature( creature );
+      else if( !strcmp( word, TRAIN_WORD ) &&
+               creature->getNpcInfo() &&
+               creature->getNpcInfo()->type == Constants::NPC_TYPE_TRAINER ) scourge->getTrainDialog()->setCreature( creature );
+      else if( !strcmp( word, DONATE_WORD ) &&
+               creature->getNpcInfo() &&
+               creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getDonateDialog()->setCreature( creature );
+    }
+  
+    if( useCreature ) {
+      answer->setText( Mission::getAnswer( creature->getMonster(), word ) );
+    } else {
+      answer->setText( Mission::getAnswer( word ) );
+    }
   } else {
-    answer->setText( Mission::getAnswer( word ) );
+    answer->setText( answerStr );
   }
 
   for( int i = 0; i < wordCount; i++ ) {
