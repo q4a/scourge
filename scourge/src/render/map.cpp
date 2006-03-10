@@ -32,12 +32,13 @@
 
 using namespace std;
 
+//#define DEBUG_MOUSE_POS 1
+
 #define USE_LIGHTING 1
 
 #define MOUSE_ROT_DELTA 2
 
 #define ZOOM_DELTA 1.2f
-//#define DEBUG_MOUSE_POS
 
 // set to 1 when location cache works
 #define USE_LOC_CACHE 0
@@ -126,7 +127,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
 	descriptions[i] = (char*)malloc(120 * sizeof(char));
   
-  this->xrot = 0.0f; // if 0, artifacts appear
+  this->xrot = 0.0f;
   this->yrot = 30.0f;
   this->zrot = 45.0f;
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
@@ -246,7 +247,7 @@ void Map::reset() {
 //  descriptionCount = 0;
 //  descriptionsChanged = false;
   
-  this->xrot = 0.0f; // if 0, artifacts appear
+  this->xrot = 0.0f;
   this->yrot = 30.0f;
   this->zrot = 45.0f;
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
@@ -886,50 +887,18 @@ void Map::draw() {
   // must move map before calling getMapXY(Z)AtScreenXY!
   if( move && !selectMode ) moveMap( move );
 
-  if( adapter->isMouseIsMovingOverMap() && !selectMode ) {
-    // save mapChanged (fixes bug where map won't draw initially)
-    bool b = mapChanged;
-    //bool b2 = resortShapes;
-    //resortShapes = false;
-//    mapChanged = false;
-    selectMode = true;
-    // careful this calls draw() again!
-    getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
-    getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
-    cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-    cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
-    selectMode = false;
-    mapChanged = b;
-    //resortShapes = b2;
-    //cerr << "x=" << cursorMapX << " y=" << cursorMapY << " z=" << cursorMapZ << endl;
-  }
-
   if(zoomIn) {
     if(zoom <= settings->getMinZoomIn() ) {
       zoomOut = false;
     } else {
       zoom /= ZOOM_DELTA;
-      //      // FIXME:
-      //mapViewWidth = mapViewDepth = (int)(100.0f / zoom);
-      //center(x + mapViewWidth / 2,
-      //       y + mapViewDepth / 2, 
-      //       true);
-
-      //mapChanged = true;
     }
+    mapChanged = true;
   } else if(zoomOut) {
     if(zoom >= settings->getMaxZoomOut() ) {
       zoomOut = false;
     } else {
       zoom *= ZOOM_DELTA; 
-      
-      // FIXME:
-      //mapViewWidth = mapViewDepth = (int)(100.0f / zoom);
-      //center(x + mapViewWidth / 2,
-      //       y + mapViewDepth / 2, 
-      //       true);
-
-      //mapChanged = true;
     }
   }
 
@@ -951,13 +920,24 @@ void Map::draw() {
   if(zrot >= 360) zrot -= 360;
   if(zrot < 0) zrot = 360 + zrot;
 
+  if( !selectMode ) initMapView();
 
-  initMapView();
+  // find cursor location on map (for named shapes)
+  if( adapter->isMouseIsMovingOverMap() && !selectMode ) {
+    // save mapChanged (fixes bug where map won't draw initially)
+    bool b = mapChanged;
+    selectMode = true;    
+    // careful this calls draw() again!    
+    getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
+    selectMode = false;
+    mapChanged = b;
+  }
+  
   if( !selectMode ) frustum->CalculateFrustum();
-  if(lightMapChanged) configureLightMap();
+  if( lightMapChanged ) configureLightMap();
   if( currentEffectsMap.size() ) removeCurrentEffects();
   // populate the shape arrays
-  if(mapChanged) {
+  if( mapChanged ) {
     int csx, cex, csy, cey;
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
@@ -987,23 +967,26 @@ void Map::draw() {
 
 
 #ifdef DEBUG_MOUSE_POS
-    // debugging mouse position
-    if(debugX < MAP_WIDTH && debugX >= 0) {
-      DrawLater later2;
+  // debugging mouse position
+    DrawLater later2;
+    later2.shape = shapes->findShapeByName("LAMP_BASE");
+    later2.xpos = ((float)(cursorFlatMapX - getX()) / DIV);
+    later2.ypos = ((float)(cursorFlatMapY - getY()) / DIV);
+    later2.zpos = (float)(0) / DIV;
+    later2.item = NULL;
+    later2.creature = NULL;
+    later2.projectile = NULL;
+    later2.name = 0;
+    later2.pos = NULL;
+    later2.effect = NULL;
+    later2.inFront = false;
+    doDrawShape(&later2);
 
-      later2.shape = shapes->findShapeByName("LAMP_BASE");
-
-      later2.xpos = ((float)(debugX - getX()) / DIV);
-      later2.ypos = (((float)(debugY - getY() - 1) - (float)((later2.shape)->getDepth())) / DIV);
-      later2.zpos = (float)(debugZ) / DIV;
-
-      later2.item = NULL;
-      later2.creature = NULL;
-      later2.projectile = NULL;
-      later2.name = 0;
-      later2.pos = NULL;
-      doDrawShape(&later2);
-    }
+    //later2.shape = shapes->findShapeByName("LAMP_BASE");
+    //later2.xpos = ((float)(debugX - getX()) / DIV);
+    //later2.ypos = ((float)(debugY - getY()) / DIV);
+    //later2.zpos = (float)(debugZ) / DIV;
+    //doDrawShape(&later2);
 #endif
 
 
@@ -1234,10 +1217,7 @@ void Map::draw() {
 
     drawProjectiles();
   }
-  
-
-
-  
+    
   if( settings->isGridShowing() ) {
 
     glDisable( GL_CULL_FACE );
@@ -1407,6 +1387,11 @@ void Map::draw() {
     glDisable(GL_BLEND);  
     glDepthMask(GL_TRUE);
   } 
+
+  // find the map floor coordinate (must be done after drawing is complete)
+  getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );    
+  cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+  cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 
   glDisable( GL_SCISSOR_TEST );
 
@@ -1714,7 +1699,6 @@ void Map::initMapView( bool ignoreRot ) {
             adapter->getScreenHeight() - (viewY + viewHeight),
             viewWidth, viewHeight);
   glEnable( GL_SCISSOR_TEST );
-
   // adjust for screen size
   float adjust = (float)viewWidth / 800.0f;
   glScalef(adjust, adjust, adjust);
@@ -1724,11 +1708,11 @@ void Map::initMapView( bool ignoreRot ) {
   // translate the camera and rotate
   // the offsets ensure that the center of rotation is under the player
   glTranslatef( this->xpos, this->ypos, 0);  
-  glRotatef( xrot, 0.0f, 1.0f, 0.0f );
-  if(!ignoreRot) {
-      glRotatef( yrot, 1.0f, 0.0f, 0.0f );  
-  }  
-  glRotatef( zrot, 0.0f, 0.0f, 1.0f );
+  if( !ignoreRot ) {
+    glRotatef( xrot, 0.0f, 1.0f, 0.0f );
+    glRotatef( yrot, 1.0f, 0.0f, 0.0f );  
+    glRotatef( zrot, 0.0f, 0.0f, 1.0f );
+  }
   glTranslatef( 0, 0, this->zpos);  
 
   // adjust for centered-map movement
@@ -3071,20 +3055,18 @@ void Map::getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy ) {
 
 void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                              Uint16 *mapx, Uint16 *mapy) {
-  glPushMatrix();
-  
-  // Initialize the scene w/o y rotation.
-  initMapView(true);
-  
   double obj_x, obj_y, obj_z;
   double win_x = (double)x;
-  double win_y = (double)adapter->getScreenHeight() - y - 1;
-  double win_z = 0.5f;
+  double win_y = (double)( adapter->getScreenHeight() - y );
   
+  // get the depth buffer value
+  float win_z;
+  glReadPixels( (int)win_x, (int)win_y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &win_z );
+
   double projection[16];
   double modelview[16];
   GLint viewport[4];
-  
+
   glGetDoublev(GL_PROJECTION_MATRIX, projection);
   glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
   glGetIntegerv(GL_VIEWPORT, viewport);
@@ -3095,25 +3077,16 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y,
                          viewport,
                          &obj_x, &obj_y, &obj_z);
   
-  glDisable( GL_SCISSOR_TEST );
-  
   if(res) {
-    //*mapx = levelMap->getX() + (Uint16)(((obj_x) * DIV)) - 1;
-    //*mapy = levelMap->getY() + (Uint16)(((obj_y) * DIV)) + 2;
-
-    *mapx = getX() + (Uint16)(((obj_x) * DIV));
-    *mapy = getY() + (Uint16)(((obj_y) * DIV));
-
-    //*mapz = (Uint16)0;
-    //*mapz = (Uint16)(obj_z * DIV);
-    debugX = *mapx;
-    debugY = *mapy;
-    debugZ = 0;
+    *mapx = getX() + (Uint16)( obj_x * DIV );
+    *mapy = getY() + (Uint16)( obj_y * DIV );
+    
+    debugX = getX() + (int)( obj_x * DIV );
+    debugY = getY() + (int)( obj_y * DIV );
+    debugZ = (int)( obj_z * DIV );
   } else {
-    //*mapx = *mapy = *mapz = MAP_WIDTH + 1;
     *mapx = *mapy = MAP_WIDTH + 1;
   }
-  glPopMatrix();
 }   
 
 void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
@@ -3183,9 +3156,11 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   // Go back to modelview for normal rendering
   glMatrixMode(GL_MODELVIEW);
 
+  /*
   debugX = *mapx;
   debugY = *mapy;
   debugZ = *mapz;
+  */
   /*
   lastMapX = *mapx;
   lastMapY = *mapy;
