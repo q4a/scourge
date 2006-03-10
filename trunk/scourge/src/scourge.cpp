@@ -1493,6 +1493,11 @@ bool Scourge::handleEvent(SDL_Event *event) {
         setTargetSelectionFor( NULL );
         return false;
       } else if( exitConfirmationDialog->isVisible() ) {
+        gatepos = NULL;
+        teleporting = false;
+        changingStory = false;
+        currentStory = oldStory;
+        exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
         exitConfirmationDialog->setVisible(false);
       } else if( !Window::anyFloatingWindowsOpen() ) {
         party->toggleRound(true);
@@ -1675,10 +1680,9 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
      return;
     }
 
-
-    
     // Make party move to new location
-    if( !party->setSelXY( mapx, mapy ) ) {
+    if( !party->setSelXY( mapx - ( getParty()->getPlayer()->getShape()->getWidth() / 2),
+                          mapy + 1 + ( getParty()->getPlayer()->getShape()->getHeight() / 2) ) ) {
       getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN, true );
     }
 
