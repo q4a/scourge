@@ -1001,8 +1001,8 @@ void Map::draw() {
       glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
       glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
       
-      // cave floor
-      if( floorTexWidth > 0 ) {
+      // cave floor and map editor bottom (so cursor shows)
+      if( settings->isGridShowing() || floorTexWidth > 0 ) {
 
         GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
 
@@ -1010,9 +1010,14 @@ void Map::draw() {
         //float ypos2 = (float)(getY() - mapViewDepth / 2) / DIV;
         float w = (float)( mapViewWidth ) / DIV;
         float d = (float)( mapViewDepth ) / DIV;
-        glEnable( GL_TEXTURE_2D );
-        glColor4f(1, 1, 1, 0.9f);
-        glBindTexture( GL_TEXTURE_2D, floorTex );
+        if( settings->isGridShowing() ) {
+          glDisable( GL_TEXTURE_2D );
+          glColor4f( 0, 0, 0, 0.9f );
+        } else {
+          glEnable( GL_TEXTURE_2D );
+          glColor4f(1, 1, 1, 0.9f);
+          glBindTexture( GL_TEXTURE_2D, floorTex );
+        }
         glPushMatrix();
         //glTranslatef( xpos2, ypos2, 0.0f);        
         glBegin( GL_QUADS );
@@ -1027,6 +1032,11 @@ void Map::draw() {
         glVertex3f( w, 0, 0 );
         glEnd();
         glPopMatrix();
+
+        // show floor in map editor
+        if( settings->isGridShowing() ) {
+          setupShapes(true, false);
+        }
       } else {
         setupShapes(true, false);
       }
@@ -1217,7 +1227,12 @@ void Map::draw() {
 
     drawProjectiles();
   }
-    
+
+  // find the map floor coordinate (must be done after drawing is complete)
+  getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );    
+  cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+  cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+
   if( settings->isGridShowing() ) {
 
     glDisable( GL_CULL_FACE );
@@ -1387,11 +1402,6 @@ void Map::draw() {
     glDisable(GL_BLEND);  
     glDepthMask(GL_TRUE);
   } 
-
-  // find the map floor coordinate (must be done after drawing is complete)
-  getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );    
-  cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-  cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 
   glDisable( GL_SCISSOR_TEST );
 

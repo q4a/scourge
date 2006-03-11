@@ -1209,7 +1209,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
 }
 
 void Scourge::drawDraggedItem() {
-  if(getMovingItem()) {
+  if( getMovingItem() ) {
     glDisable( GL_DEPTH_TEST );
     glPushMatrix();
     glLoadIdentity();	
@@ -1217,6 +1217,54 @@ void Scourge::drawDraggedItem() {
     drawItemIcon( getMovingItem(), 32 );
     glPopMatrix();
     glEnable( GL_DEPTH_TEST );
+
+    /*
+    // draw it's base on the map
+    if( getSDLHandler()->mouseIsMovingOverMap &&
+        levelMap->getCursorFlatMapX() < MAP_WIDTH &&
+        levelMap->getCursorFlatMapY() < MAP_WIDTH ) {
+
+      glEnable( GL_DEPTH_TEST );
+      glDepthMask( GL_FALSE );
+      glEnable( GL_BLEND );
+      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+      glDisable( GL_CULL_FACE );
+      glPushMatrix();
+  
+      levelMap->initMapView();
+  
+      glColor4f( 0, 0.15f, 0.5f, 0.5f );
+      float xpos2 = ((float)( levelMap->getCursorFlatMapX() - levelMap->getX() ) / DIV );
+      float ypos2 = ((float)( levelMap->getCursorFlatMapY() - levelMap->getY() - 1 ) / DIV );
+      float zpos2 = 0.3 / DIV;
+          
+      glTranslatef( xpos2, ypos2, zpos2 );
+  
+      float w = getMovingItem()->getShape()->getWidth() / DIV;
+      float d = getMovingItem()->getShape()->getDepth() / DIV;
+      
+      glBegin( GL_QUADS );
+      glVertex3f( 0, -d, 0 );
+      glVertex3f( 0, 0, 0 );
+      glVertex3f( w, 0, 0 );
+      glVertex3f( w, -d, 0 );
+      glEnd();
+      glDisable( GL_BLEND );
+      glBegin( GL_LINE_LOOP );
+      glVertex3f( 0, -d, 0 );
+      glVertex3f( 0, 0, 0 );
+      glVertex3f( w, 0, 0 );
+      glVertex3f( w, -d, 0 );
+      glEnd();
+  
+      glPopMatrix();
+      glDisable( GL_CULL_FACE );
+      glDisable( GL_SCISSOR_TEST );
+      glDepthMask(GL_TRUE);
+      glDisable( GL_BLEND );
+      glEnable( GL_CULL_FACE );
+    }
+    */
   }
 }
 
@@ -1681,8 +1729,9 @@ void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     }
 
     // Make party move to new location
-    if( !party->setSelXY( mapx - ( getParty()->getPlayer()->getShape()->getWidth() / 2),
-                          mapy + 1 + ( getParty()->getPlayer()->getShape()->getHeight() / 2) ) ) {
+    int xx = mapx - ( getParty()->getPlayer()->getShape()->getWidth() / 2);
+    int yy = mapy + 1 + ( getParty()->getPlayer()->getShape()->getHeight() / 2);
+    if( !party->setSelXY( xx, yy ) ) {
       getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN, true );
     }
 
