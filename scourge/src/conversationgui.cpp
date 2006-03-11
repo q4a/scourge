@@ -183,7 +183,6 @@ void ConversationGui::wordClicked( char *word ) {
   char answerStr[255];
   scourge->getSession()->getSquirrel()->
     callConversationMethod( "converse", creature, (const char*)word, answerStr );
-  cerr << "answer len=" << strlen( answerStr ) << endl;
   if( !strlen( answerStr ) ) {
     // Get the answer the usual way
     if( creature ) {
