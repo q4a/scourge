@@ -57,6 +57,7 @@ public:
   static int _getCurrentWeapon( HSQUIRRELVM vm );
 
   static int _isCompleted( HSQUIRRELVM vm );
+  static int _setCompleted( HSQUIRRELVM vm );
 
 };
 
