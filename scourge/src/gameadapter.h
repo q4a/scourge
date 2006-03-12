@@ -112,6 +112,8 @@ public:
   virtual void saveMapData( const char *name );
   virtual inline Color *getOutlineColor( Location *pos ) { return NULL; }
 
+  virtual inline void completeCurrentMission() {}
+
   /**
    * Set up the opengl view.
    */

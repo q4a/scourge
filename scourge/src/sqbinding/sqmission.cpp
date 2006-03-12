@@ -27,6 +27,7 @@ ScriptClassMemberDecl SqMission::members[] = {
   { "void", "_typeof", SqMission::_squirrel_typeof, 1, 0, "" },
   { "void", "constructor", SqMission::_constructor, 0, 0, "" },
   { "bool", "isCompleted", SqMission::_isCompleted, 0, 0, "" },
+  { "void", "setCompleted", SqMission::_setCompleted, 0, 0, "Mark the current mission as completed." },
   { "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "Get the number of monsters and npc-s on this level." },
   { "Creature", "getCreature", SqMission::_getCreature, 0, 0, "Return a reference to a monster or npc on this level. These references are only valid while on this map." },
   { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
@@ -103,6 +104,11 @@ int SqMission::_isCompleted( HSQUIRRELVM vm ) {
   sq_pushbool( vm, ( SqBinding::sessionRef->getCurrentMission() && 
                      SqBinding::sessionRef->getCurrentMission()->isCompleted() ? 
                      true : false ) );
+  return 1;
+}
+
+int SqMission::_setCompleted( HSQUIRRELVM vm ) {
+  SqBinding::sessionRef->getGameAdapter()->completeCurrentMission();
   return 1;
 }
 

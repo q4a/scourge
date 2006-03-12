@@ -1490,10 +1490,7 @@ bool Scourge::handleEvent(SDL_Event *event) {
     } else if(event->key.keysym.sym == SDLK_r && 
               getSession()->getCurrentMission() && 
               !getSession()->getCurrentMission()->isCompleted()) {
-      getSession()->getCurrentMission()->setCompleted( true );
-      if( getSession()->getCurrentMission()->isStoryLine() )
-        board->storylineMissionCompleted( getSession()->getCurrentMission() );
-      missionCompleted();
+      completeCurrentMission();
     } else if( event->key.keysym.sym == SDLK_t ) {
       teleport();
     } else if( event->key.keysym.sym == SDLK_y ) {
@@ -4125,5 +4122,12 @@ char *Scourge::getDeityLocation( Location *pos ) {
 
 void Scourge::startConversation( RenderedCreature *creature ) {
   conversationGui->start( (Creature*)creature );
+}
+
+void Scourge::completeCurrentMission() {
+  getSession()->getCurrentMission()->setCompleted( true );
+  if( getSession()->getCurrentMission()->isStoryLine() )
+    board->storylineMissionCompleted( getSession()->getCurrentMission() );
+  missionCompleted();
 }
 

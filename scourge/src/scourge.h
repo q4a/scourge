@@ -676,6 +676,8 @@ public:
 
   void drawItemIcon( Item *item, int size=25 );
 
+  virtual void completeCurrentMission();
+
  protected:
 
    void drawPortrait( Widget *w, Creature *p );
