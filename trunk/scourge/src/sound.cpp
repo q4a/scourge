@@ -39,6 +39,7 @@ Sound::Sound(Preferences *preferences) {
     }
 
     menuMusicIndex = dungeonMusicIndex = -1;
+    menuMusic = dungeonMusic = NULL;
     if(haveSound) {
       selectMusic( preferences );
     }
