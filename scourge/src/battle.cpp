@@ -1260,7 +1260,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
       color->g = 0.2f;
       color->b = 0;
       if( creature->isPathToTargetCreature() ) {
-        sprintf( buff, "Out of Range. Move: %d", creature->getPath()->size() );
+        sprintf( buff, "Out of Range. Move: %d", (int)( creature->getPath()->size() ) );
       } else {
         sprintf( buff, "Out of Range" );
       }

@@ -115,6 +115,10 @@
 				761CF69A08E264EB00DCC558,
 				761CF68708E264DB00DCC558,
 				761CF68808E264DB00DCC558,
+				7685B97609C49FC50086296A,
+				7685B97709C49FC50086296A,
+				7685B97809C49FC50086296A,
+				7685B97909C49FC50086296A,
 				768B7B62095012A10077FD12,
 				768B7B63095012A10077FD12,
 				769D585D09140D6000AF852C,
@@ -392,6 +396,12 @@
 		};
 		761CF5FC08E2633E00DCC558 = {
 			children = (
+				7685B99A09C4A3D00086296A,
+				7685B99B09C4A3D00086296A,
+				7685B99C09C4A3D00086296A,
+				7685B99D09C4A3D00086296A,
+				7685B98509C4A0020086296A,
+				7685B98609C4A0020086296A,
 				761CF60008E2638800DCC558,
 				761CF60108E2638800DCC558,
 				761CF60208E2638800DCC558,
@@ -2680,6 +2690,156 @@
 			settings = {
 			};
 		};
+		7685B97609C49FC50086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = cavemaker.cpp;
+			path = ../../src/cavemaker.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B97709C49FC50086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = cavemaker.h;
+			path = ../../src/cavemaker.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B97809C49FC50086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = terraingenerator.cpp;
+			path = ../../src/terraingenerator.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B97909C49FC50086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = terraingenerator.h;
+			path = ../../src/terraingenerator.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B97A09C49FC50086296A = {
+			fileRef = 7685B97609C49FC50086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B97B09C49FC50086296A = {
+			fileRef = 7685B97709C49FC50086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B97C09C49FC50086296A = {
+			fileRef = 7685B97809C49FC50086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B97D09C49FC50086296A = {
+			fileRef = 7685B97909C49FC50086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B98509C4A0020086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = glcaveshape.cpp;
+			path = ../../src/render/glcaveshape.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B98609C4A0020086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = glcaveshape.h;
+			path = ../../src/render/glcaveshape.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B98709C4A0020086296A = {
+			fileRef = 7685B98509C4A0020086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B98809C4A0020086296A = {
+			fileRef = 7685B98609C4A0020086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B99A09C4A3D00086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = fog.cpp;
+			path = ../../src/render/fog.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B99B09C4A3D00086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = fog.h;
+			path = ../../src/render/fog.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B99C09C4A3D00086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = maprenderhelper.cpp;
+			path = ../../src/render/maprenderhelper.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B99D09C4A3D00086296A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = maprenderhelper.h;
+			path = ../../src/render/maprenderhelper.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7685B99E09C4A3D00086296A = {
+			fileRef = 7685B99A09C4A3D00086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B99F09C4A3D00086296A = {
+			fileRef = 7685B99B09C4A3D00086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B9A009C4A3D00086296A = {
+			fileRef = 7685B99C09C4A3D00086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7685B9A109C4A3D00086296A = {
+			fileRef = 7685B99D09C4A3D00086296A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		7688A6710926E1DC00AB1291 = {
 			children = (
 				7688A6BC0926E27600AB1291,
@@ -4673,6 +4833,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/sourceforge/scourge";
 				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "-DHAVE_SDL_MIXER=1";
 				OTHER_CPLUSPLUSFLAGS = "-DHAVE_SDL_MIXER=1";
 				OTHER_LDFLAGS = "-framework SDL -framework SDL_net -framework SDL_mixer -framework Foundation -framework AppKit -framework OpenGL -framework freetype -lz";
@@ -4830,6 +4991,11 @@
 				768B7B8E095013640077FD12,
 				768B7B9B095013BD0077FD12,
 				768B7BA8095014270077FD12,
+				7685B97B09C49FC50086296A,
+				7685B97D09C49FC50086296A,
+				7685B98809C4A0020086296A,
+				7685B99F09C4A3D00086296A,
+				7685B9A109C4A3D00086296A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4979,6 +5145,11 @@
 				768B7B9A095013BD0077FD12,
 				768B7BA7095014270077FD12,
 				768B7BA9095014270077FD12,
+				7685B97A09C49FC50086296A,
+				7685B97C09C49FC50086296A,
+				7685B98709C4A0020086296A,
+				7685B99E09C4A3D00086296A,
+				7685B9A009C4A3D00086296A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

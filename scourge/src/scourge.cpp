@@ -55,7 +55,7 @@ using namespace std;
 
 #define INFO_INTERVAL 3000
 
-#define DEBUG_KEYS 1
+//#define DEBUG_KEYS 1
 
 #define SAVE_FILE "savegame.dat"
 #define VALUES_FILE "values.dat"
@@ -290,12 +290,17 @@ void Scourge::startMission() {
 
     // do this only once
     if(resetParty) {
+      // clear the board
       board->reset();
+      // clear the current mission (otherwise weird crashes later)
+      getSession()->setCurrentMission(NULL);
+      // reset the party
       if(session->isMultiPlayerGame()) {
         party->resetMultiplayer(multiplayer->getCreature());
       } else {
         party->reset();
       }
+      // reset the calendar
       party->getCalendar()->reset(true); // reset the time
 
       // re-add party events (hack)
@@ -360,6 +365,7 @@ void Scourge::startMission() {
     // clear infoMessage
     strcpy( infoMessage, "" );
 
+    bool mapCreated = true;
     if(nextMission == -1) {
 
       //cerr << "Showing Uzudil's message" << endl;        
@@ -410,7 +416,7 @@ void Scourge::startMission() {
 
 #ifdef CAVE_TEST
       dg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, false, false, NULL );
-      dg->toMap(levelMap, getSession()->getShapePalette());
+      mapCreated = dg->toMap( levelMap, getSession()->getShapePalette() );
       scriptName = RANDOM_MAP_NAME;
 #else
       dg = NULL;
@@ -495,73 +501,75 @@ void Scourge::startMission() {
                                     (currentStory > 0),
                                     getSession()->getCurrentMission());
         }
-        dg->toMap(levelMap, getSession()->getShapePalette());
+        mapCreated = dg->toMap(levelMap, getSession()->getShapePalette());
         scriptName = RANDOM_MAP_NAME;
       }
     }
+    if( mapCreated ) {
+      changingStory = false;
+    
+      // center map on the player
+      levelMap->center(toint(party->getPlayer()->getX()), 
+                       toint(party->getPlayer()->getY()),
+                       true);
 
-    changingStory = false;
-	
-    // center map on the player
-    levelMap->center(toint(party->getPlayer()->getX()), 
-                     toint(party->getPlayer()->getY()),
-                     true);
+      // set to receive events here
+      getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
-    // set to receive events here
-    getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+      // hack to unfreeze animations, etc.
+      party->forceStopRound();
 
-    // hack to unfreeze animations, etc.
-    party->forceStopRound();
-
-    // show an info dialog if infoMessage not already set with outcome of last mission
-    if( !strlen( infoMessage ) ) {
-      if(nextMission == -1) {
-        sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
-      } else if( teleportFailure ) {
-        teleportFailure = false;
-        sprintf(infoMessage, "Teleport spell failed!! Entering level %d", ( currentStory + 1 ));
-      } else {
-        sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
-      }
-      
-      // show infoMessage text
-      showMessageDialog(infoMessage);
-      info_dialog_showing = true;
-    } else {
-      
-      // start a conversation with Uzudil
-      // FIXME: this will not show teleport effect...
-        
-      // FIXME hack code to find Uzudil.
-      Monster *m = Monster::getMonsterByName( "Uzudil the Hand" );
-      Creature *uzudil = NULL;
-      for( int i = 0; i < session->getCreatureCount(); i++ ) {
-        if( session->getCreature( i )->getMonster() == m ) {
-          uzudil = session->getCreature( i );
-          break;
+      // show an info dialog if infoMessage not already set with outcome of last mission
+      if( !strlen( infoMessage ) ) {
+        if(nextMission == -1) {
+          sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
+        } else if( teleportFailure ) {
+          teleportFailure = false;
+          sprintf(infoMessage, "Teleport spell failed!! Entering level %d", ( currentStory + 1 ));
+        } else {
+          sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
         }
+        
+        // show infoMessage text
+        showMessageDialog(infoMessage);
+        info_dialog_showing = true;
+      } else {
+        
+        // start a conversation with Uzudil
+        // FIXME: this will not show teleport effect...
+          
+        // FIXME hack code to find Uzudil.
+        Monster *m = Monster::getMonsterByName( "Uzudil the Hand" );
+        Creature *uzudil = NULL;
+        for( int i = 0; i < session->getCreatureCount(); i++ ) {
+          if( session->getCreature( i )->getMonster() == m ) {
+            uzudil = session->getCreature( i );
+            break;
+          }
+        }
+        
+        if( !uzudil ) {
+          cerr << "*** Error: can't find Uzudil!" << endl;
+        }
+        conversationGui->start( uzudil, infoMessage, true );      
       }
-      
-      if( !uzudil ) {
-        cerr << "*** Error: can't find Uzudil!" << endl;
-      }
-      conversationGui->start( uzudil, infoMessage, true );      
+      // set the map view
+      setUILayout();
+      // start the haunting tunes
+      getSDLHandler()->getSound()->selectMusic( getPreferences() );
+      if(inHq) getSDLHandler()->getSound()->playMusicMenu();
+      else getSDLHandler()->getSound()->playMusicDungeon();
+
+      // run mission
+      getSDLHandler()->mainLoop();
+
+      getSession()->getSquirrel()->endLevel();
+
+      // stop the music
+      getSDLHandler()->getSound()->stopMusicDungeon();
+    } else {
+      showMessageDialog( "Error #666: Failed to create map." );
     }
-    // set the map view
-    setUILayout();
-    // start the haunting tunes
-    getSDLHandler()->getSound()->selectMusic( getPreferences() );
-    if(inHq) getSDLHandler()->getSound()->playMusicMenu();
-    else getSDLHandler()->getSound()->playMusicDungeon();
-
-    // run mission
-    getSDLHandler()->mainLoop();
-
-    getSession()->getSquirrel()->endLevel();
-
-    // stop the music
-    getSDLHandler()->getSound()->stopMusicDungeon();
-
     // clean up after the mission
     resetInfos();
 
@@ -601,7 +609,7 @@ void Scourge::startMission() {
 
     // remember the last mission
     lastMission = session->getCurrentMission();
-
+    
     // delete map
     if( dg ) {
       delete dg; 
@@ -853,7 +861,7 @@ void Scourge::drawAfter() {
                c->getName(),
                c->getBattle()->getAP(),
                c->getBattle()->getStartingAP(),
-               c->getPath()->size() );
+               (int)( c->getPath()->size() ) );
     } else {
       sprintf( msg, "%s %d/%d", 
                c->getName(),
@@ -942,7 +950,7 @@ void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, b
     if( inTurnBasedCombat() &&
         !( party->isRealTimeMode() ) ) {
       char cost[40];
-      sprintf( cost, "Move: %d", creature->getPath()->size() );
+      sprintf( cost, "Move: %d", (int)(creature->getPath()->size()) );
       getSDLHandler()->drawTooltip( 0, 0, 0, 
                                     -( levelMap->getZRot() ),
                                     -( levelMap->getYRot() ),
