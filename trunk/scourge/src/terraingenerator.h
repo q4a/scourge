@@ -109,7 +109,7 @@ public:
                     int progressSteps );
   virtual ~TerrainGenerator();
 
-  void toMap( Map *map, ShapePalette *shapePal );
+  bool toMap( Map *map, ShapePalette *shapePal );
 
   
 

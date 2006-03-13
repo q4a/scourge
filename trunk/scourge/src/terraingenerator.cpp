@@ -69,7 +69,7 @@ void TerrainGenerator::updateStatus(const char *statusMessage) {
   start = now;
 }
 
-void TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {	 
+bool TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {	 
 
   // set the renderer helper for this type of map
   map->setMapRenderHelper( getMapRenderHelper() );
@@ -81,10 +81,12 @@ void TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {
     
   // loop until successfully drawn nodes onto map
   int status = progress->getStatus();
-  while( !drawNodesOnMap(map, shapePal) ) {
+  for( int i = 0; i < 5; i++ ) {
+    if( drawNodesOnMap(map, shapePal) ) return true;
     // reset the progress
     progress->setStatus( status );
   }
+  return false;
 }
 
 bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
