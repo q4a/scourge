@@ -1,0 +1,180 @@
+##########################################################
+# Templated missions
+# Key:
+# M:type,mission template name
+# D:description (multi-line)
+# where "type" is a char from locations.txt
+#
+
+M:D,Quest for the lost ${item1}
+D:One of our returning clients, has managed to loose his ${item1},
+D:somewhere in the bowels of his now abandoned lair. Your
+D:job is to fetch this object and bring it back here.
+D:Our client (a magic user of sorts) has promised a handsome
+D:reward. He also noted that the item is more important
+D:than it appears and is therefore under the protection of
+D:an entity you may not wish to disappoint...
+Y:Excellent job! Our client told me to pass on his warm thanks
+Y:to you for recovering his lost ${item1}.
+N:Remember, you still haven't found the ${item1}!
+
+M:C,Seek out the ${item1}
+D:A new client with an unhealthy look in his eyes
+D:requested that we retrieve his lost ${item1}.
+D:Apparently, the object is quite valuable. What makes his case
+D:unusually interesting is that everyone who has gazed upon this $item1
+D:has gone mad. If you should meet some of these unfortunate souls while
+D:on your mission, do dispatch them quickly.
+Y:Many thanks for completing this mission. One more unsavory client is off
+Y:our backs for now, happy with his recovered ${item1}.
+N:Please complete this mission quickly! Remember, you're looking for
+N:the ${item1}.
+
+M:C,Haunted monastery: kill ${creature1}
+D:Should you accept this mission, you would be asked to
+D:teleport into a haunted monastery nearby and neutralize some monsters.
+D:In particular, our client wishes for you to terminate the ${creature1}
+D:which has taken residence on its lowest level underground. Should you...
+D:er, die, while on your mission, your belongings will be transfered to
+D:the Corporation. (In fact your items will be inventoried while you are
+D:away.) Best of luck, and no need to sign the timesheets this time.
+Y:I can't believe you managed to complete this mission... er... I mean
+Y:I never had any doubts at all! ${creature1} is a tough opponent.
+N:Ah, so you're still alive and at it... Good! Remember you're out
+N:to slay ${creature1}.
+
+M:D,A vampire's quest: eliminate ${creature1}
+D:A vampiric client delivered and urgent request to exterminate the 
+D:pests in the underground structures of her forest castle. She is 
+D:most interested in acertaining that the ${creature1} is removed and is
+D:paying in real gold for this job to be done. She has agreed to not
+D:haunt the premises while this work is underway as long as you are done
+D:by nightfall.
+Y:Finished just in time! Good job! ${creature1} must have been hard to defeat.
+N:The time draws near when our vampiric client must return to his domain.
+N:Trust me you won't want to be around him, so get on with killing {$creature1}.
+
+
+##########################################################
+# Storyline missions
+#
+# Key:
+#   T:Mission title
+#   S:level,stories,[ mapname ]
+#   S:description (multi-line)
+#   I:required items in level (multi-line)
+#   C:required creatures in level (multi-line)
+#   Y:success text
+#   N:failure text
+#
+# Note: edited map names must be of the format: name[1,2,...n] where level 0 is always 'name', level 1 is 'name1', etc.
+#
+# ***************************************************************
+# ***************************************************************
+# Remember to update BOOKS.TXT if the name of a mission changes!!
+# ***************************************************************
+# ***************************************************************
+
+T:Chapter 1: Greasy porkchops with turned milk 
+S:2,3
+D:Early this morning a tall and obviously non-human creature stood waiting for
+D:me at headquarters. It's gaze shifted nervously from side to side as it
+D:recounted the tale of his master's lost wand. It seems, his master working
+D:late one night conjured up a creature he could not control. While 
+D:wrestling with the demon, he managed to entrap himself and the creature
+D:in the dimension of Excrutiating Nausia. Between fits of gurgling 
+D:regurgitation he asks that we retrieve and bring him his Wand of Nausiation.
+D:He believes its power can be reversed and used to extricate himself from
+D:this situation. I believe we can make a powerful friend here if your mission
+D:succeeds!
+Y:Thanks to your heroic efforts $Sabien (the hapless wizard) is safely at home
+Y:again! He vows to "do something grand" for us in the near future.
+Y:Actually, this worries me far more than most missions we accept...
+N:Remember to find the wand for $Sabien! He is an important client and
+N:he's in deep trouble at the moment.
+I:Wand of Nausiation
+
+T:Chapter 2: Maw of the Grizzled Beast!
+S:4,4
+D:Perhaps you remember Sabien the wizard whom we rescued from the dimension
+D:of Excrutiating Nausia. It seems he is in trouble again, this time he has
+D:been kidnapped by a maruding group that calls himself the Order of the
+D:Grizzled Pony. While it is unclear why a group of aimless highwaymen would
+D:trouble themselves with kidnapping the aged magic user, he asks that we
+D:pay the Order off from his treasure chest and keep the rest of the money as
+D:our payment. Unfortunately for us, the chest is in Sabien's other workshop
+D:and is guarded by hordes of monsters. Good luck!
+Y:The mysterious $Order (which it turns out is composed entirly of dwarven 
+Y:poets) has accepted the payment and let $Sabien go. I have a feeling 
+Y:this won't be our last dealing with the $Order!
+N:Please hurry and rescure $Sabien! The $Order of the Grizzled Pony is a
+N:a group of dwarven poets... they keep sending me threats... their letters
+N:rhyme and the poetry is $awful!
+I:Treasure Chest
+
+T:Chapter 3: The Mysterious Benefactor
+S:5,2
+D:Sabien the wizard sent word that while he was being held by the Order of
+D:the Grizzled Pony, he overheard a conversation. He asked us to enter
+D:the Order's now abandoned lair and search for clues regarding who or what
+D:their mysterious benefactor is. The tunnels used by these dwarven terrorist
+D:poets should now be empty as their recitals were moved elsewhere.
+D:Of course no cozy underground dwelling stays empty for
+D:long... who knows what creatures moved in to replace the dwarves. At any
+D:rate your job is turn up documents, maps or other clues that might shed
+D:light on who the Order works for.
+Y:Boots of $Mycotharsius and a map of the $Abyss?! This does not sound good... Ask $Melathor about 
+Y:information on $Mycotharsius. As far as I know he's long been dead. Killed
+Y:in a battle by his own greed for evil magic. He cannot possibly be behind
+Y:the $Order... unless... unless the he's joined forces again with an Abyssal
+Y:being. $Melathor should know more about this.
+N:$Sabien is still waiting for any info you can dig up about the $Order.
+N:He needs to know who the dwarves are working for.
+I:Boots of Mycotharsius
+I:Abyssal Map
+
+T:Chapter 4: Among the Groez-Duil
+S:6,3,thuzgol
+D:You must travel to Thuzgol the city of the mountain dwarves, or the Groez-Duil as
+D:they call themselves. Once there, look up my old mentor Orhithales and show
+D:him the map you recovered from the lair of Order of the Grizzled Pony. If
+D:time permits, ask around about Mycotharsius and the Order. However, this is 
+D:a more delicate operation than you may think. Be careful in your dealings with
+D:the Groez-Duil, as among them the Order is thought of as mystic heroes,
+D:legends from the golden age of the dwarves. Orhithales you can trust. He understands
+D:the true nature of the Order and he might be able to shed light on their connection
+D:to Mycotharsius.
+Y:Dragonscale armor?! I have not see one of these since the $end of the $Guards of the
+Y:Realm. I'll have to think about what to make of this... Good work nevertheless! It's
+Y:good to hear from $Orhithales again! We were quite close for a long time, perhaps he
+Y:told you.
+N:Remember to journey to $Thuzgol and talk to $Orhithales.
+I:Dragonscale armor
+
+T:Chapter 5: A brief visit with Mycotharsius
+S:8,4,tower
+D:Our agents have located Mycotharsius in the cellars of a peaceful monastery
+D:called the "the Tower", near the city of Orn. You must journey here and confront him. Before ridding
+D:the world of him for good, find out as much as you can about why he hired
+D:the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid however,
+D:that his failures made Mycotharsius quite Mad. Therefore if all he can offer
+D:is giberish, try to look around his lair for clues.
+Y:Good job, defeating $Mycotharsius! Now we know why $Sabien was kidnapped by the $Order!
+Y:I sent Sabien the map of the $Abyss you found earlier and next you must visit him to
+Y:ask how we can find $Mothrazu. I fear the end of all civilization may be bad for business...
+Y:I marked Sabien's lair on the map posted on the mission board.
+N:You still have to journey to the monastery of the Tower and defeat $Mycotharsius.
+C:Mycotharsius the Mad
+
+T:Chapter 6: Sabien's Revelations
+S:10,3,library
+D:You must call upon our old friend Sabien. He already knows the purpose of your visit,
+D:because I sent him the map fragment of the Abyss you found earlier. Be sure to ask
+D:him to explain its connection to Mothrazu. Additionally, try to get whatever information
+D:you can about the Guards of the Realm. Remember that Sabien was abducted by agents
+D:of Mothrazu before, so he is a key figure in solving this mystery whether he knows it or not.
+Y:Interesting... so $Sabien claims $Mothrazu is trying to enter the $Abyss? I have
+Y:read the notes he sent me and marked the location of the next $token on the $board.
+N:Have you traveled to see $Sabien yet? I marked his library on the $board.
+S:Talk to Sabien
+
