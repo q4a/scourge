@@ -320,7 +320,7 @@ void Scourge::startMission() {
 
       {
         // Schedule an event to regain MP now and then
-        Date d(0, 3, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+        Date d(0, 10, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
         Event *event = new ReloadEvent( cal->getCurrentDate(), 
                                         d, 
                                         Event::INFINITE_EXECUTIONS,
@@ -3336,7 +3336,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 
 void Scourge::resetPartyUI() {
   Event *e;  
-  Date d(0, 0, 1, 0, 0, 0); // 2 hours (format : sec, min, hours, days, months, years)
+  Date d(0, 0, 4, 0, 0, 0); // 2 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < party->getPartySize() ; i++){
     e = new ThirstHungerEvent(party->getCalendar()->getCurrentDate(), d, party->getParty(i), this, Event::INFINITE_EXECUTIONS);
     party->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
