@@ -214,7 +214,7 @@ void SpellCaster::increaseAC() {
   int n = spell->getAction();
   n += (int)((((float)n / 100.0f) * power) * rand()/RAND_MAX);
 
-  int timeInMin = 2 * creature->getLevel();
+  int timeInMin = 15 + ( creature->getLevel() / 2 );
 
   //  cerr << "increaseAC: points=" << n << " time=" << timeInMin << " min-s." << endl;
 
