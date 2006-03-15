@@ -1,0 +1,1097 @@
+# Textures and shapes
+# keys:
+# A:About screen text
+# T:texture file name
+# G:texture group (used for 'native' shapes): front,top,left-right
+# D:descriptions (first line=count)
+# N:native shape (box) lines: 
+#    texture-group or theme reference: theme,xyz where 'xyz' is one of these:
+#       wall,corner,door_ew,door_ns,passage_floor,room_floor
+#    dimensions
+#    name
+#    description group
+#    color
+#
+# P:shape options
+#   shape index
+#   skip side: 
+#     none=0
+#     FRONT_SIDE = 1;
+#     TOP_SIDE = 2;
+#     LEFT_RIGHT_SIDE = 4;  
+#   stencil: 0,1
+#   light blocking: 0,1
+# shape subtypes:
+# 3: 3ds object (lines: file, scale)
+# 2: md2 object (lines: name, file, scale)
+# T: torch (NORTH=0, EAST, SOUTH, WEST, NONE)
+# L: teleporter
+# [R: x,y,z] (optional: angles to rotate in inventory screen)
+# H: dungeon theme (see comments below)
+# E: (optional) effect_name from Constants::EFFECT_NAMES,w,d,h,x,y,z
+# I: interactive icon (0,1)
+#
+# Character Portraits:
+# O:filename
+#
+# Character models:
+# M:model-dir,skin (file in model-dir),scale
+#
+# Skill descriptions: (order is important: see constants.h)
+# S:name,description
+
+# Character portraits
+O:/portraits/m1.bmp
+O:/portraits/m2.bmp
+O:/portraits/m3.bmp
+O:/portraits/m4.bmp
+O:/portraits/m5.bmp
+O:/portraits/w1.bmp
+O:/portraits/w2.bmp
+O:/portraits/w3.bmp
+O:/portraits/w4.bmp
+O:/portraits/w5.bmp
+O:/portraits/death.bmp
+
+# Character models
+M:/models/character/blade,blade.bmp,2.0
+M:/models/character/pknight,knight.bmp,1.5
+M:/models/character/pknight,evil.bmp,1.5
+M:/models/character/pknight,ctf_b.bmp,1.5
+M:/models/character/pknight,ctf_r.bmp,1.5
+#M:/models/character/darkness,Darkness.bmp,1.5
+M:/models/character/darkness,estacado.bmp,1.5
+#M:/models/character/darkness,Morf.bmp,1.5
+#M:/models/character/darkness,ctf_b.bmp,1.5
+#M:/models/character/darkness,ctf_g.bmp,1.5
+M:/models/character/darkness,ctf_r.bmp,1.5
+M:/models/character/shinju,shinju.bmp,2.0
+M:/models/character/shinju,shinju_black.bmp,2.0
+M:/models/character/shinju,sunghi_blackhair.bmp,2.0
+M:/models/character/shinju,sunghi_redhair.bmp,2.0
+M:/models/character/sydney,sydney.bmp,1.7
+M:/models/character/sydney,ctf_b.bmp,1.7
+M:/models/character/sydney,ctf_r.bmp,1.7
+M:/models/character/yohko,Yohko.bmp,2.0
+M:/models/character/yohko,ctf_b.bmp,2.0
+#M:/models/character/yohko,ctf_r.bmp,2.0
+
+# Skill descriptions
+S:SPEED,Speed determines how fast the character is able to cast a spell or swing a sword.
+S:COORDINATION,More coordinated characters are able to deflect more damage using armor.
+S:POWER,The higher a character's power the more damage his/her attach will cause.
+S:IQ,A character with higher IQ is better suited to spellcasting.
+S:LEADERSHIP,Leadership determines bartering power and rallies your troops in battle.
+S:LUCK,Luck affects almost all aspects of gameplay from spellcasting to unlocking doors.
+S:PIETY,A pieous character follows his/her deity's wishes more closely.
+S:LORE,Using lore a character is able identify items more easily and understand new concepts.
+
+S:SWORD_WEAPON,This skill is used when fighting using a sword-type weapon.
+S:AXE_WEAPON,This skill is used when fighting using an axe-type weapon.
+S:BOW_WEAPON,This skill is used when fighting using a bow-type weapon.
+S:MACE_WEAPON,This skill is used when fighting using an axe-type weapon.
+S:POLE_WEAPON,This skill is used when fighting using an polearm-type weapon.
+S:HAND_TO_HAND_COMBAT,This skill is used when fighting with bare hands.
+
+S:SHIELD_DEFEND,This skill is used when using a shield to deflect an attack.
+S:ARMOR_DEFEND,This skill is used when using armor to deflect an attack.
+S:WEAPON_DEFEND,This skill is used when using a weapon to deflect an attack.
+S:HAND_DEFEND,This skill is used when using bare hands to deflect an attack.
+
+S:NATURE_MAGIC,This skill describes your proficiency with spells from the school of nature.
+S:AWARENESS_MAGIC,This skill describes your proficiency with spells from the school of awareness.
+S:LIFE_AND_DEATH_MAGIC,This skill describes your proficiency with spells from the school of life and death.
+S:HISTORY_MAGIC,This skill describes your proficiency with spells from the school of history.
+S:DECEIT_MAGIC,This skill describes your proficiency with spells from the school of deceit.
+S:CONFRONTATION_MAGIC,	This skill describes your proficiency with spells from the school of confrontation.
+  
+S:RESIST_NATURE_MAGIC,Having this skill helps you resist spells from the school of nature.
+S:RESIST_AWARENESS_MAGIC,Having this skill helps you resist spells from the school of awareness.
+S:RESIST_LIFE_AND_DEATH_MAGIC,Having this skill helps you resist spells from the school of life and death.
+S:RESIST_HISTORY_MAGIC,Having this skill helps you resist spells from the school of history.
+S:RESIST_DECEIT_MAGIC,Having this skill helps you resist spells from the school of deceit.
+S:RESIST_CONFRONTATION_MAGIC,Having this skill helps you resist spells from the school of confrontation.
+
+S:OPEN_LOCK,A character with this skill can open locked doors better.
+S:FIND_TRAP,This skill helps you avoid falling into traps.
+S:FIND_SECRET_DOOR,This skill lets you find secret doors.
+S:MOVE_UNDETECTED,With the aid of this skill you can move without your enemies detecting you.
+S:STEALING,The higher you progress in this still the better you're able to lift items from merchants.
+
+S:ENCHANT_ITEM,Your proficiency with this skill determines how well you create enchanted items.
+S:IDENTIFY_ITEM,This skill measures your ability to identify new items.
+S:IDENTIFY_CREATURE,This skill measures your ability to identify new creatures.
+
+
+T:front.bmp
+T:top.bmp
+T:side.bmp
+T:wood.bmp
+T:top.bmp
+T:copper.bmp
+T:woodtop.bmp
+T:fronttop.bmp
+T:light.bmp
+T:flame.bmp
+T:doorNS.bmp
+T:doorEW.bmp
+T:bookshelf.bmp
+T:chestfront.bmp
+T:chestside.bmp
+T:chesttop.bmp
+T:marble.bmp
+T:metal.bmp
+T:ring2.bmp
+T:iron.bmp
+T:gui-wood.bmp
+T:map.bmp
+T:darkui.bmp
+#T:floor4.bmp
+T:litewood.bmp
+T:brick.bmp
+
+# This is "old-school". It's only used for "native" objects: chest, bookcase, etc.
+# Walls, floors and doors now use themes (much more flexible; see below)
+G:0,7,2
+G:2,7,0
+G:3,6,3
+G:3,16,3
+G:0,4,0
+G:0,17,0
+G:0,5,0
+G:8,0,0
+G:10,6,6
+G:6,6,11
+G:6,6,12
+G:14,15,13
+G:12,6,6
+G:13,15,14
+G:0,0,0
+
+# Wall theme lines: 
+#   name[,S] 
+#   wall, 
+#   corner, 
+#   door_ew, 
+#   door_ns, 
+#   passage_floor, 
+#   room_floor
+#   headboard
+#   "purple" multi-texture: r,g,b,intensity,smooth(1|0)
+#   same as above, but for the "dark" multi-texture value
+#
+# Names of textures don't include .bmp.
+# "S" next to name means the theme is special and cannot be used by random maps
+# "C" next to name means, it's a cave theme (currently only wall and passage floor are used)
+# Each entry is 3 required textures: front,top,side,
+# followed by up to 7 variant textures. Variants for walls
+# will be displayed on the sides and for floors on the top
+# texture.
+#
+# You can specify a texture multiple times, it's only loaded once.
+
+# HQ must be the 0th theme.
+H:HQ,S
+H:wall,walltop,wall,wallv1
+H:corner,woodtop,corner
+H:metal,metal,door2NS
+H:door2NS,metal,metal
+H:floor4,floor4,floor4,floor4v1
+H:floor5,floor5,floor5,floor5v1
+H:corner,woodtop,corner
+H:0.6,0.4,0.8,0.7,1
+H:0.5,0.6,0.8,0.8,1
+
+# Default cave theme
+H:Cave,C
+H:cave/default/sup074,cave/default/sup016, cave/default/sup074,cave/default/sup075,cave/default/sup076
+H:null,null,null
+H:null,null,null
+H:null,null,null
+H:cave/default/lava2,cave/default/sup082,cave/default/sup082
+H:null,null,null
+H:null,null,null
+H:0.25,0.25,0.25,0.75,0
+H:0.25,0.25,0.25,0.75,0
+
+H:Cave2,C
+H:cave/default/sup074,cave/default/sup082,cave/default/sup074
+H:null,null,null
+H:null,null,null
+H:null,null,null
+H:cave/default/lava3,cave/default/sup044,cave/default/sup044
+H:null,null,null
+H:null,null,null
+H:0.25,0.25,0.25,0.75,0
+H:0.25,0.25,0.25,0.75,0
+
+H:Cave3,C
+H:cave/default/sup106,cave/default/sup007,cave/default/sup106
+H:null,null,null
+H:null,null,null
+H:null,null,null
+H:cave/default/water,cave/default/sue094,cave/default/sue094
+H:null,null,null
+H:null,null,null
+H:0.25,0.25,0.25,0.75,0
+H:0.25,0.25,0.25,0.75,0
+
+H:Cave4,C
+H:cave/default/nie051,cave/default/nie039,cave/default/nie051
+H:null,null,null
+H:null,null,null
+H:null,null,null
+H:cave/default/water2,cave/default/nie041,cave/default/nie041
+H:null,null,null
+H:null,null,null
+H:0.25,0.25,0.25,0.75,0
+H:0.25,0.25,0.25,0.75,0
+
+H:Gurrea1,S
+H:themes/gurrea1/wall,themes/gurrea1/headboard,themes/gurrea1/wall,themes/gurrea1/wall1,themes/gurrea1/wall2,themes/gurrea1/wall3
+H:themes/gurrea1/corner,themes/gurrea1/cornertop,themes/gurrea1/corner
+H:metal,metal,themes/gurrea1/door
+H:themes/gurrea1/door,metal,metal
+H:themes/gurrea1/passage,themes/gurrea1/passage,themes/gurrea1/passage,themes/gurrea1/passage2
+H:themes/gurrea1/floor,themes/gurrea1/floor,themes/gurrea1/floor,themes/gurrea1/floor1,themes/gurrea1/floor2
+H:themes/gurrea1/headboard,themes/gurrea1/headboard,themes/gurrea1/headboard
+H:0.7,0.55,0.9,0.7,1
+H:0.7,0.8,0.9,0.8,1
+
+H:Gurrea2
+H:themes/gurrea2/wall,themes/gurrea2/top,themes/gurrea2/wall
+H:themes/gurrea2/corner,themes/gurrea2/cornertop,themes/gurrea2/corner
+H:metal,metal,themes/gurrea2/door
+H:themes/gurrea2/door,metal,metal
+H:themes/gurrea2/passage,themes/gurrea2/passage,themes/gurrea2/passage
+H:themes/gurrea2/floor,themes/gurrea2/floor,themes/gurrea2/floor
+H:themes/gurrea2/top,themes/gurrea2/top,themes/gurrea2/top
+H:0.7,0.55,0.9,0.7,1
+H:0.7,0.8,0.9,0.8,1
+
+H:Default
+H:front,fronttop,front,frontv1,frontv2
+H:wood,woodtop,wood
+H:woodtop,woodtop,doorEW
+H:doorNS,woodtop,woodtop
+H:floor2,floor2,floor2,floor2v1,floor2v2
+H:floor,floor,floor,floorv1
+H:wood,woodtop,wood
+H:0.8,0.4,1.0,0.95,0
+H:0.5,0.6,0.8,0.8,0
+
+H:GreenWall
+H:wall2,fronttop,wall2,wall2v1,wall2v2
+H:wood,woodtop,wood
+H:woodtop,woodtop,doorEW
+H:doorNS,woodtop,woodtop
+H:floor6,floor6,floor6,floor6v1
+H:floor3,floor3,floor3
+H:wood,woodtop,wood
+H:0.8,0.4,1.0,0.95,1
+H:0.5,0.6,0.8,0.8,1
+
+H:BlueBrick
+H:brick,fronttop,brick,brickv1
+H:wood,woodtop,wood
+H:woodtop,woodtop,doorEW
+H:doorNS,woodtop,woodtop
+H:floor7,floor7,floor7,floor7v1
+H:brickfloor,brickfloor,brickfloor,brickfloorv1
+H:wood,woodtop,wood
+H:0.7,0.4,0.75,0.95,1
+H:0.5,0.6,0.8,0.8,1
+
+H:wb-dragoon
+H:themes/wb-dragoon/muro03a,themes/wb-dragoon/suelo07b,themes/wb-dragoon/muro03a,themes/wb-dragoon/maderos01,themes/wb-dragoon/maderos1
+H:themes/wb-dragoon/pilarcem16a,woodtop,themes/wb-dragoon/pilarcem16a
+H:woodtop,woodtop,doorEW
+H:doorNS,woodtop,woodtop
+H:themes/wb-dragoon/ncob01,themes/wb-dragoon/ncob01,themes/wb-dragoon/ncob01,themes/wb-dragoon/kd3
+H:themes/egypt1/block01b,themes/egypt1/block01b,themes/egypt1/block01b,themes/egypt1/marker1bb,themes/egypt1/marker1bg
+H:themes/egypt3/lig_b064-01c,themes/wb-dragoon/suelo07b,themes/egypt3/lig_b064-01c
+H:0.8,0.6,1.0,0.95,1
+H:0.5,0.6,0.8,0.8,1
+
+H:egypt
+H:themes/egypt5/stone01b,themes/egypt3/lig_b064-01c,themes/egypt5/stone01b,themes/egypt5/stone02b
+H:themes/egypt3/lig_128-05w1,themes/egypt3/lig_032-04w2,themes/egypt3/lig_128-05w1
+H:metal,metal,themes/egypt1/solidgrate2a
+H:themes/egypt1/solidgrate2a,metal,metal
+H:themes/wb-dragoon/piedra1t1,themes/wb-dragoon/piedra1t1,themes/wb-dragoon/piedra1t1
+H:themes/egypt1/block08c,themes/egypt1/block08c,themes/egypt1/block08c,themes/egypt1/block08a,themes/egypt1/block09a
+H:themes/wb-dragoon/suelo07b,themes/egypt3/lig_b064-01c,themes/wb-dragoon/suelo07b
+H:0.7,0.55,0.9,0.7,1
+H:0.7,0.8,0.9,0.8,1
+
+
+# Descriptions
+D:3
+D:Pale weeds grow over these ancient walls
+D:The walls crumble with age, yet appear sturdy
+D:Dark limestone walls mark these corridors
+
+D:3
+D:It appears to be a thick wooden door
+D:A dungeon door made of wood
+D:The aged oak door is scarred by knife points and torch flame
+
+D:2
+D:The door frames seem to be made of some hard wood
+D:The wood around the doors is reinforced by metal nails
+
+D:3
+D:A torch blazes nearby
+D:The light is firmly attached to the wall, you cannot get it
+D:It is a burning torch
+
+D:3
+D:A large wooden board that describes available missions
+D:Click on the board to learn about your missions
+D:The corporate 'brains' of S.C.O.U.R.G.E. inc.
+
+D:2
+D:A burning brazier
+D:A brazier radiates heat nearby
+
+D:2
+D:You see a shining marble column
+D:The column supports the ceiling
+
+D:3
+D:This teleporter is here courtesy of the management
+D:This teleporter can take you back to headquarters
+D:It is a teleporter
+
+D:3
+D:These stairs lead to another level
+D:Stairs leading into darkness
+D:You see a flight of stairs
+
+D:3
+D:It's a rusty lever.
+D:It is best to leave that alone.
+D:Touch it: it may add new germs to your collection.
+
+D:2
+D:It's a calm pool of liquid radiating energy.
+D:It appears to be a shallow pool of liquid.
+
+# unitside=16
+# unitoffset=2
+# wallheight=12
+
+# Constants::EW_WALL_INDEX
+N:theme,wall
+N:2,12,12
+N:EW_WALL
+N:0
+N:ac8060ff
+
+# Constants::EW_WALL_EXTRA_INDEX
+N:theme,wall
+N:2,14,12
+N:EW_WALL_EXTRA
+N:0
+N:ac8060ff
+
+# Constants::EW_WALL_TWO_EXTRAS_INDEX
+N:theme,wall
+N:2,16,12
+N:EW_WALL_TWO_EXTRAS
+N:0
+N:ac8060ff
+
+# Constants::NS_WALL_INDEX
+N:theme,wall
+N:12,2,12
+N:NS_WALL
+N:0
+N:ac8060ff
+
+# Constants::NS_WALL_EXTRA_INDEX
+N:theme,wall
+N:14,2,12
+N:NS_WALL_EXTRA
+N:0
+N:ac8060ff
+
+# Constants::NS_WALL_TWO_EXTRAS_INDEX
+N:theme,wall
+N:16,2,12
+N:NS_WALL_TWO_EXTRAS
+N:0
+N:ac8060ff
+
+# P:shape options
+#   shape index
+#   skip side: (none=0, FRONT_SIDE = 1, TOP_SIDE = 2, LEFT_RIGHT_SIDE = 4)
+#   stencil: 0,1
+#   light blocking: 0,1
+P:0,1,1,1
+P:1,1,1,1
+P:2,1,1,1
+P:3,4,1,1
+P:4,4,1,1
+P:5,4,1,1
+
+# Constants::CORNER_INDEX
+N:theme,corner
+N:2,2,12
+N:CORNER
+N:0
+N:ac8060ff
+
+# Constants::DOOR_SIDE_INDEX
+N:theme,corner
+N:2,2,10
+N:DOOR_SIDE
+N:2
+N:aa6633ff
+
+# Constants::EW_DOOR_INDEX
+N:theme,door_ew
+N:1,6,10
+N:EW_DOOR
+N:1
+N:aa6633ff
+I:1
+
+# Constants::EW_DOOR_TOP_INDEX
+N:theme,headboard
+N:2,12,2
+N:EW_DOOR_TOP
+N:2
+N:aa6633ff
+
+# Constants::NS_DOOR_INDEX
+N:theme,door_ns
+N:6,1,10
+N:NS_DOOR
+N:1
+N:aa6633ff
+I:1
+
+# Constants::NS_DOOR_TOP_INDEX
+N:theme,headboard
+N:12,2,2
+N:NS_DOOR_TOP
+N:2
+N:aa6633ff
+
+P:8,0,0,1
+P:10,0,0,1
+
+# Constants::FLOOR_TILE_INDEX
+N:theme,passage_floor
+N:16,16,0
+N:FLOOR_TILE
+N:0
+N:806040ff
+
+# Constants::ROOM_FLOOR_TILE_INDEX
+N:theme,room_floor
+N:16,16,0
+N:ROOM_FLOOR_TILE
+N:0
+N:a08040ff
+
+# Constants::ROOM2_FLOOR_TILE_INDEX
+#N:theme,room_floor
+#N:16,16,0
+#N:ROOM2_FLOOR_TILE
+#N:0
+#N:a08040ff
+
+P:12,5,0,0
+P:13,5,0,0
+#P:14,5,0,0
+
+# Constants::LAMP_NORTH_INDEX
+N:14
+N:1,1,2
+N:LAMP_NORTH
+N:3
+N:ffffffff
+T:0
+
+# Constants::LAMP_SOUTH_INDEX
+N:14
+N:1,1,2
+N:LAMP_SOUTH
+N:3
+N:ffffffff
+T:2
+
+# Constants::LAMP_WEST_INDEX
+N:14
+N:1,1,2
+N:LAMP_WEST
+N:3
+N:ffffffff
+T:3
+
+# Constants::LAMP_EAST_INDEX
+N:14
+N:1,1,2
+N:LAMP_EAST
+N:3
+N:ffffffff
+T:1
+
+# Constants::LAMP_BASE_INDEX
+#N:2
+#N:1,1,2
+#N:LAMP_BASE
+#N:3
+#N:f0f0ffff
+N:2
+N:1,1,2
+N:LAMP_BASE
+N:3
+N:ffffffff
+3:/objects/torch.3ds
+3:0.7
+
+
+# Constants::EMPTY_SHAPE_INDEX
+N:2
+N:1,1,1
+N:EMPTY_SHAPE
+N:3
+N:ffffffff
+
+# board.3ds
+N:14,
+N:1,1,1
+N:BOARD
+N:4
+N:ffffffff
+3:/objects/board.3ds
+3:1.2
+I:1
+
+# Constants::BRAZIER_INDEX]
+N:14
+N:3,3,3
+N:BRAZIER
+N:5
+N:e820ffff
+T:5
+
+# Constants::BRAZIER_BASE_INDEX
+#N:2
+#N:3,3,1
+#N:BRAZIER_BASE
+#N:5
+#N:f0f0ffff
+N:14
+N:1,1,1
+N:BRAZIER_BASE
+N:5
+N:ffffffff
+3:/objects/brazier.3ds
+3:1.0
+
+
+# column.3ds
+N:14
+N:1,1,1
+N:COLUMN
+N:6
+N:ffffffff
+3:/objects/column.3ds
+3:1.7
+
+# streetlight.3ds
+N:14
+N:1,1,1
+N:STREETLIGHT
+N:6
+N:ffffffff
+3:/objects/streetlight.3ds
+3:1.7
+
+# desk.3ds
+N:14
+N:1,1,1
+N:DESK
+N:6
+N:ffffffff
+3:/objects/desk.3ds
+3:1.7
+
+# bench.3ds
+N:14
+N:1,1,1
+N:BENCH
+N:6
+N:ffffffff
+3:/objects/bench.3ds
+3:1.7
+
+# bed.3ds
+N:14
+N:1,1,1
+N:BED
+N:6
+N:ffffffff
+3:/objects/bed.3ds
+3:1.75
+
+# stove.3ds
+N:14
+N:1,1,1
+N:STOVE
+N:6
+N:ffffffff
+3:/objects/stove.3ds
+3:1.25
+
+# Constants::TELEPORTER_INDEX
+N:2
+N:3,3,14
+N:TELEPORTER
+N:7
+N:0020ffff
+L:1
+
+# Constants::TELEPORTER_BASE_INDEX
+N:3
+N:3,3,1
+N:TELEPORTER_BASE
+N:7
+N:f0f0ffff
+I:1
+
+# gate-up.3ds
+N:14
+N:1,1,1
+N:GATE_UP
+N:8
+N:ffffffff
+3:/objects/gate-up.3ds
+3:2.0
+I:1
+
+# gate-down.3ds
+N:14
+N:1,1,1
+N:GATE_DOWN
+N:8
+N:ffffffff
+3:/objects/gate-down.3ds
+3:2.0
+I:1
+
+N:14
+N:1,1,1
+N:DAGGER
+N:0
+N:ffffffff
+3:/objects/sword.3ds
+3:0.25
+
+N:14
+N:1,1,1
+N:SWORD
+N:0
+N:ffffffff
+3:/objects/sword2.3ds
+3:0.4
+
+# Constants::AXE_INDEX
+N:14
+N:1,1,1
+N:AXE
+N:0
+N:ffffffff
+3:/objects/axe.3ds
+3:0.4
+
+# Constants::MACE_INDEX
+N:14
+N:1,1,1
+N:MACE
+N:0
+N:ffffffff
+3:/objects/mace.3ds
+3:0.4
+
+N:14
+N:1,1,1
+N:POLE
+N:0
+N:ffffffff
+3:/objects/staff.3ds
+3:0.5
+
+# Constants::BOOKSHELF_INDEX
+N:10
+N:2,5,7
+N:BOOKSHELF
+N:0
+N:0000ffff
+
+# Constants::CHEST_INDEX
+N:11
+N:2,3,2
+N:CHEST
+N:0
+N:ffaa80ff
+
+# Constants::BOOKSHELF2_INDEX
+N:12
+N:5,2,7
+N:BOOKSHELF2
+N:0
+N:0000ffff
+
+# Constants::CHEST2_INDEX
+N:13
+N:3,2,2
+N:CHEST2
+N:0
+N:ffaa80ff
+
+N:14
+N:1,1,1
+N:BARREL
+N:0
+N:ffffffff
+3:/objects/barrel.3ds
+3:0.9
+
+N:14
+N:1,1,1
+N:CRATE
+N:0
+N:ffffffff
+3:/objects/crate.3ds
+3:1.2
+
+N:14
+N:1,1,1
+N:VASE
+N:0
+N:ffffffff
+3:/objects/vase.3ds
+3:1.0
+
+N:14
+N:1,1,1
+N:COMMODE
+N:0
+N:ffffffff
+3:/objects/commode.3ds
+3:1.0
+
+# Constants::CORPSE_INDEX
+N:14
+N:1,1,1
+N:CORPSE
+N:0
+N:ffffffff
+3:/objects/corpse.3ds
+3:0.65
+
+# Constants::TABLE_INDEX
+N:14
+N:1,1,1
+N:TABLE
+N:0
+N:ffffffff
+3:/objects/table.3ds
+3:1.3
+
+# Constants::CHAIR_INDEX
+N:14
+N:1,1,1
+N:CHAIR
+N:0
+N:ffffffff
+3:/objects/chair.3ds
+3:0.8
+
+N:14
+N:1,1,1
+N:PLANT
+N:0
+N:ffffffff
+3:/objects/plant.3ds
+3:0.8
+
+# Constants::BOW_INDEX
+N:14
+N:1,1,1
+N:BOW
+N:0
+N:ffffffff
+3:/objects/bow.3ds
+3:0.65
+
+# Constants::BOTTLE_INDEX
+N:14
+N:1,1,1
+N:BOTTLE
+N:0
+N:ffffffff
+3:/objects/bottle.3ds
+3:0.5
+
+# Constants::MEAT_INDEX
+N:14
+N:1,1,1
+N:MEAT
+N:0
+N:ffffffff
+3:/objects/meat.3ds
+3:0.3
+
+# Constants::APPLE_INDEX
+N:14
+N:1,1,1
+N:APPLE
+N:0
+N:ffffffff
+3:/objects/apple.3ds
+3:0.3
+
+# Constants::MUSHROOM_INDEX
+N:14
+N:1,1,1
+N:MUSHROOM
+N:0
+N:ffffffff
+3:/objects/mushroom.3ds
+3:0.3
+
+# Constants::BREAD_INDEX
+N:14
+N:1,1,1
+N:BREAD
+N:0
+N:ffffffff
+3:/objects/bread.3ds
+3:0.3
+
+# Constants::EGG_INDEX
+N:14
+N:1,1,1
+N:EGG
+N:0
+N:ffffffff
+3:/objects/egg.3ds
+3:0.3
+
+# Constants::ARROW_INDEX
+N:14
+N:1,1,1
+N:ARROW
+N:0
+N:ffffffff
+3:/objects/arrow.3ds
+3:0.5
+
+# Constants::HELMET_INDEX
+N:14
+N:1,1,1
+N:HELMET
+N:0
+N:ffffffff
+3:/objects/helmet.3ds
+3:0.25
+R:90,0,0
+
+N:14
+N:1,1,1
+N:ARMOR
+N:0
+N:ffffffff
+3:/objects/armor.3ds
+3:0.5
+#R:90,0,0
+
+N:14
+N:1,1,1
+N:SHIELD
+N:0
+N:ffffffff
+3:/objects/shield.3ds
+3:1.0
+
+N:14
+N:1,1,1
+N:AMULET
+N:0
+N:ffffffff
+3:/objects/amulet.3ds
+3:0.5
+#R:90,0,0
+
+N:14
+N:1,1,1
+N:BOOTS
+N:0
+N:ffffffff
+3:/objects/boots.3ds
+3:0.5
+#R:90,0,0
+
+# Constants::WAND_INDEX
+N:14
+N:1,1,1
+N:WAND
+N:0
+N:ffffffff
+3:/objects/wand.3ds
+3:0.25
+
+# Constants::PEDESTAL_INDEX
+N:14
+N:1,1,1
+N:PEDESTAL
+N:0
+N:ffffffff
+3:/objects/pedestal.3ds
+3:0.45
+
+# Constants::TCHEST_INDEX
+N:14
+N:1,1,1
+N:TCHEST
+N:0
+N:ffffffff
+3:/objects/tchest.3ds
+3:0.4
+
+# Constants::POTION_INDEX
+N:14
+N:1,1,1
+N:POTION
+N:0
+N:ffffffff
+3:/objects/potion.3ds
+3:0.25
+
+# Constants::SCROLL_INDEX
+N:14
+N:1,1,1
+N:SCROLL
+N:0
+N:ffffffff
+3:/objects/scroll.3ds
+3:0.40
+
+# off switch
+N:14
+N:1,1,1
+N:SWITCH_OFF
+N:9
+N:ffffffff
+3:/objects/offswitch.3ds
+3:0.7
+I:1
+
+# off switch
+N:14
+N:1,1,1
+N:SWITCH_ON
+N:9
+N:ffffffff
+3:/objects/onswitch.3ds
+3:0.7
+I:1
+
+# pool
+N:14
+N:1,1,1
+N:POOL
+N:10
+N:ffffffff
+3:/objects/pool.3ds
+3:1.0
+E:EFFECT_GREEN,3,3,0,1,-2,2
+I:1
+
+# map
+N:14
+N:1,1,1
+N:MAP
+N:9
+N:ffffffff
+3:/objects/map.3ds
+3:0.4
+
+# md2 models
+# old-style declarations. See creatures.txt for new way.
+2:BUGGERLING
+2:/models/m5.md2
+2:1.2
+
+2:SLIME
+2:/models/m6.md2
+2:1.2
+
+2:BAUUL
+2:/models/m7.md2
+2:1.2
+
+2:HYDRALISK
+2:/models/m8.md2
+2:1.2
+
+2:BRAWN
+2:/models/m9.md2
+2:1.2
+
+2:PHANTOM
+2:/models/m10.md2
+2:2
+
+2:RAPTOR
+2:/models/m11.md2
+2:2
+
+2:FAIRY
+2:/models/m12.md2
+2:2
+
+2:COBRA
+2:/models/m13.md2
+2:2
+
+
+A:Welcome to the world of S.c.o.u.r.g.e.||S.c.o.u.r.g.e. is a rogue-like rpg that lets you
+A:control a group of four brave heroes. While working for a dungeon janitorial services company they
+A:become unwilling participants in an effort to stop a mysterious force from wiping out
+A:humanity. Boring you say? But wait, there is more! Your stay at the S.c.o.u.r.g.e. head-
+A:quarters is generously detailed in 3d! You will travel to strange and exotic underground
+A:locations! The randomly generated maps ensure the game's infinite replayability. There is
+A:music, effects, a, a... a plot! You will encounter, speak, trade with, and occasionally
+A:dispatch a large number of npc-s and monsters. Blood-curdling combat will unfold in either
+A:frantic real-time or thoughtful turn-based presentation.||So
+A:stay a while... hunker down for adventure in the true underworld. The noxious fumes and 
+A:psychadelic molds from the very walls of the crypts below the city of Horghh await.||
+A:Credits and miscellany:|
+A:-----------------------|
+A:Code and artwork by Uzudil|
+A:Music by Toofan|
+A:More coding by daroth-u|
+A:Web/cvs and other services by sourceforge.net|
+A:Additional 3d objects by |
+A:Enforcement of the law by Mormuth the Hairy|
+A:Dwarven poetry by the Order of the Grizzled Pony|
+A:Quake models from polycount|
+A:Textures by the wadfather|
+A:(see README file for details on contributions.)|
+A:Playtesting and mostly civil encouragement by many at happypenguin.org|
+A:Additional testing and general hazing from the very helpful members of rpgcodex.com|
+A:Many happy interruptions in bugfixing by Abe|
+
+
+
+
+
+
+

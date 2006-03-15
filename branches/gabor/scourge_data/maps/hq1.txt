@@ -1,0 +1,19 @@
+# general conversation is inherited from hq.txt
+
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+# healers
+N:158,229,Muzilin the healer,3,healer,Nature
+N:103,205,Remor the Golden,4,healer,Divine Awareness
+N:153,207,Marad,5,healer,Life and Death
+
+# trainers
+N:119,233,Sir Erithol the Knight,3,trainer,COORDINATION;POWER;SWORD_WEAPON;AXE_WEAPON;BOW_WEAPON;MACE_WEAPON;HAND_TO_HAND_COMBAT;SHIELD_DEFEND;ARMOR_DEFEND;WEAPON_DEFEND;HAND_DEFEND
+N:172,222,Almojn of Aladur,3,trainer,IQ;PIETY;NATURE_MAGIC;AWARENESS_MAGIC;LIFE_AND_DEATH_MAGIC;HISTORY_MAGIC;DECEIT_MAGIC;CONFRONTATION_MAGIC;RESIST_NATURE_MAGIC;RESIST_AWARENESS_MAGIC;RESIST_LIFE_AND_DEATH_MAGIC;RESIST_HISTORY_MAGIC;RESIST_DECEIT_MAGIC;RESIST_CONFRONTATION_MAGIC
+
+# commoners
+N:201,206,Raminor,1,commoner
+N:202,228,Magril,1,commoner
+N:213,220,Simane of Aladur,1,commoner
