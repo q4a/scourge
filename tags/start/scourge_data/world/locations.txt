@@ -1,0 +1,46 @@
+# Locations of relevant places on the scourge map.
+# Key:
+# L:name,x,y,type[R]
+#
+# where "type" is arbitrary, it's used by mission templates to map to a 
+# type of map location. Some examples are:
+# C - city
+# F - forest
+# M - mountains
+# P - plains
+# W - ocean/water
+# H - hills
+# D - dungeon
+# An 'R' is added if the place can be used for random missions
+#
+# TODO:Add more locations!
+
+L:caves,425,57,DR
+L:caves,303,292,DR
+L:caves,155,495,DR
+L:caves,771,547,DR
+L:caves,920,384,DR
+L:caves,1420,492,DR
+L:caves,290,762,DR
+L:caves,1147,1147,DR
+L:caves,574,866,DR
+L:caves,216,1170,DR
+
+L:Arthel,382,327,CR
+L:Urimel,339,535,CR
+L:Gormoril,745,105,CR
+L:Grimvil,947,205,C
+L:Barmondel,1293,316,CR
+L:Farmondel,1417,264,C
+L:Horghh,1350,638,CR
+L:Orn,887,663,CR
+L:Emeril,116,766,C
+L:Thuzgol,624,803,C
+L:Urtep,1172,899,CR
+L:Olman,1175,951,CR
+L:Minat,1082,981,C
+L:Allovium,819,881,C
+L:Nederian,863,1140,CR
+L:Argol,305,1007,CR
+L:Balfian,518,1156,C
+

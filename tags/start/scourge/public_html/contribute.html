@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>S.C.O.U.R.G.E.</title>
+    <link rel=StyleSheet href="scourge.css" type="text/css">
+  </head>
+  <body>
+
+<span class=invertBlock>Tech specs</span>
+<div class=block>
+S.C.O.U.R.G.E. uses <a href="http://www.libsdl.org">SDL</a>, <a href="http://www.opengl.org">OpenGL</a> and <a href="http://www.opengl.org/resources/libraries/glut.html">GLUT</a>.
+(It only uses GLUT to print text... hopefully this dependency will go away soon.)
+The code is written in C++.<br>
+I have compiled and ran it on Windows, Linux (Mandrake 9.2) and the Mac OS X. See the <a href="build.html">builds</a> page or try the pre-compiled <a href="download.html">binaries</a>.
+<br>
+<br>
+Below is some of the planned work for the game. Feel free to <a href="mailto:cctorok@yahoo.com">contact me</a> if you're interested.
+</div>
+<br>
+
+<span class=invertBlock>TO DO: Performance/General</span>
+<div class=block>
+-Instead of OpenGL lights, use texture mapped shapes around torches. (Make them wobble...)<br>
+-For the "dark, underground atmosphere", try an overhead stencil?<br>
+-Dynamically figure out MAP_VIEW_WIDTH and depth, to only draw as much of the map as needed (not they're constants)<br>
+-Remove glut dependency<br>
+-Add ability to run in a diff. video mode.<br>
+</div>
+<br>
+
+<span class=invertBlock>TO DO: Gameplay</span>
+<div class=block>
+-A group creator/editor<br>
+-Inventory UI (incl. spells, log, etc.)<br>
+-Mini/Auto map<br>
+-NPC-s that can trade and converse<br>
+-Enemies (Md2 models)<br>
+-Objects (3ds, milkshape, etc. code)<br>
+-Containers (bookshelves, chests, etc.)<br>
+-Traps<br>
+-Stairs (multi-level dungeons)<br>
+-Save/load game<br>
+-Network play<br>
+-General game options<br>
+</div>
+<br>
+
+<span class=invertBlock>TO DO: Creative</span>
+<div class=block>
+-Create our own Md2 models (lower poly count)<br>
+-Music & sounds<br>
+-Create objects, furniture, torches, etc.<br>
+-Maybe create multiple wall decorations so we can have diff. looking dungeons.<br>
+-Some randomness in wall texture<br>
+-Storyline?
+</div>
+<br>
+
+<span class=invertBlock>Other Help</span>
+<div class=block>
+-Compile binaries for other architectures/OS-s (BeOS, etc.)<br>
+-Test on other video-cards
+-better makefile... CMAKE or gnu (automake, etc.)
+-get cross-compilation (linux->windows) to work
+</div>
+<br>
+
+
+</body>
+</html>
