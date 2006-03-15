@@ -192,13 +192,13 @@ G:0,0,0
 
 # HQ must be the 0th theme.
 H:HQ,S
-H:wall,walltop,wall,wallv1
-H:corner,woodtop,corner
-H:metal,metal,door2NS
-H:door2NS,metal,metal
-H:floor4,floor4,floor4,floor4v1
-H:floor5,floor5,floor5,floor5v1
-H:corner,woodtop,corner
+H:textures/wall,textures/walltop,textures/wall,textures/wallv1
+H:textures/corner,textures/woodtop,textures/corner
+H:textures/metal,textures/metal,textures/door2NS
+H:textures/door2NS,textures/metal,textures/metal
+H:textures/floor4,textures/floor4,textures/floor4,textures/floor4v1
+H:textures/floor5,textures/floor5,textures/floor5,textures/floor5v1
+H:textures/corner,textures/woodtop,textures/corner
 H:0.6,0.4,0.8,0.7,1
 H:0.5,0.6,0.8,0.8,1
 
@@ -270,35 +270,35 @@ H:0.7,0.55,0.9,0.7,1
 H:0.7,0.8,0.9,0.8,1
 
 H:Default
-H:front,fronttop,front,frontv1,frontv2
-H:wood,woodtop,wood
-H:woodtop,woodtop,doorEW
-H:doorNS,woodtop,woodtop
-H:floor2,floor2,floor2,floor2v1,floor2v2
-H:floor,floor,floor,floorv1
-H:wood,woodtop,wood
+H:textures/front,textures/fronttop,textures/front,textures/frontv1,textures/frontv2
+H:textures/wood,textures/woodtop,textures/wood
+H:textures/woodtop,textures/woodtop,textures/doorEW
+H:textures/doorNS,textures/woodtop,textures/woodtop
+H:textures/floor2,textures/floor2,textures/floor2,textures/floor2v1,textures/floor2v2
+H:textures/floor,textures/floor,textures/floor,textures/floorv1
+H:textures/wood,textures/woodtop,textures/wood
 H:0.8,0.4,1.0,0.95,0
 H:0.5,0.6,0.8,0.8,0
 
 H:GreenWall
-H:wall2,fronttop,wall2,wall2v1,wall2v2
-H:wood,woodtop,wood
-H:woodtop,woodtop,doorEW
-H:doorNS,woodtop,woodtop
-H:floor6,floor6,floor6,floor6v1
-H:floor3,floor3,floor3
-H:wood,woodtop,wood
+H:textures/wall2,textures/fronttop,textures/wall2,textures/wall2v1,textures/wall2v2
+H:textures/wood,textures/woodtop,textures/wood
+H:textures/woodtop,textures/woodtop,textures/doorEW
+H:textures/doorNS,textures/woodtop,textures/woodtop
+H:textures/floor6,textures/floor6,textures/floor6,textures/floor6v1
+H:textures/floor3,textures/floor3,textures/floor3
+H:textures/wood,textures/woodtop,textures/wood
 H:0.8,0.4,1.0,0.95,1
 H:0.5,0.6,0.8,0.8,1
 
 H:BlueBrick
-H:brick,fronttop,brick,brickv1
-H:wood,woodtop,wood
-H:woodtop,woodtop,doorEW
-H:doorNS,woodtop,woodtop
-H:floor7,floor7,floor7,floor7v1
-H:brickfloor,brickfloor,brickfloor,brickfloorv1
-H:wood,woodtop,wood
+H:textures/brick,textures/fronttop,textures/brick,textures/brickv1
+H:textures/wood,textures/woodtop,textures/wood
+H:textures/woodtop,textures/woodtop,textures/doorEW
+H:textures/doorNS,textures/woodtop,textures/woodtop
+H:textures/floor7,textures/floor7,textures/floor7,textures/floor7v1
+H:textures/brickfloor,textures/brickfloor,textures/brickfloor,textures/brickfloorv1
+H:textures/wood,textures/woodtop,textures/wood
 H:0.7,0.4,0.75,0.95,1
 H:0.5,0.6,0.8,0.8,1
 
