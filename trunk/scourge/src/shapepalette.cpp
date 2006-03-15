@@ -31,19 +31,19 @@ ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter
 void ShapePalette::preInitialize() {
   SDL_Surface *tmpSurface = NULL;
   GLubyte *tmpImage = NULL;
-  setupAlphaBlendedBMP("/process.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/process.bmp", &tmpSurface, &tmpImage);
   progressTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
-  setupAlphaBlendedBMP("/bar.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/bar.bmp", &tmpSurface, &tmpImage);
   progressHighlightTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
 
 
-  highlight = loadGLTextures("/highlight.bmp");
+  highlight = loadGLTextures("/textures/highlight.bmp");
 }
 
 void ShapePalette::initialize() {
@@ -51,32 +51,32 @@ void ShapePalette::initialize() {
   Shapes::initialize();
 
   // load textures
-  gui_texture = loadGLTextures("/gui.bmp");
-  gui_texture2 = loadGLTextures("/gui2.bmp");
+  gui_texture = loadGLTextures("/textures/gui.bmp");
+  gui_texture2 = loadGLTextures("/textures/gui2.bmp");
 //  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
-  cloud = loadGLTextures("/cloud.bmp");
-  candle = loadGLTextures("/candle.bmp");
+  cloud = loadGLTextures("/textures/cloud.bmp");
+  candle = loadGLTextures("/textures/candle.bmp");
 
-  border = loadGLTextures("/border.bmp");
-  border2 = loadGLTextures("/border2.bmp");
+  border = loadGLTextures("/textures/border.bmp");
+  border2 = loadGLTextures("/textures/border2.bmp");
   SDL_Surface *tmpSurface = NULL;
   
   GLubyte *tmpImage = NULL;
-  setupAlphaBlendedBMP("/dragon.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/dragon.bmp", &tmpSurface, &tmpImage);
   gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP("/minimap.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/minimap.bmp", &tmpSurface, &tmpImage);
   minimap = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP("/minimask.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/minimask.bmp", &tmpSurface, &tmpImage);
   minimapMask = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
@@ -86,12 +86,12 @@ void ShapePalette::initialize() {
 
   // FIXME: do something with these...
   formationTexIndex = texture_count;
-  strcpy(textures[texture_count++].filename, "formation1.bmp");
-  strcpy(textures[texture_count++].filename, "formation2.bmp");
-  strcpy(textures[texture_count++].filename, "formation3.bmp");
-  strcpy(textures[texture_count++].filename, "formation4.bmp");
-  strcpy(textures[texture_count++].filename, "formation5.bmp");
-  strcpy(textures[texture_count++].filename, "formation6.bmp");
+  strcpy(textures[texture_count++].filename, "textures/formation1.bmp");
+  strcpy(textures[texture_count++].filename, "textures/formation2.bmp");
+  strcpy(textures[texture_count++].filename, "textures/formation3.bmp");
+  strcpy(textures[texture_count++].filename, "textures/formation4.bmp");
+  strcpy(textures[texture_count++].filename, "textures/formation5.bmp");
+  strcpy(textures[texture_count++].filename, "textures/formation6.bmp");
 
   // load the status modifier icons
   char path[ 255 ];
@@ -103,7 +103,7 @@ void ShapePalette::initialize() {
   }
 
   // set up the inventory tiles
-  setupAlphaBlendedBMPGrid( "/tiles.bmp", &tiles, tilesImage, 20, 18, 
+  setupAlphaBlendedBMPGrid( "/textures/tiles.bmp", &tiles, tilesImage, 20, 18, 
 							32, 32, 71, 108, 108, 80, 80, 80 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
@@ -112,7 +112,7 @@ void ShapePalette::initialize() {
   }
 
   // set up the spell tiles
-  setupAlphaBlendedBMPGrid( "/spells.bmp", &spells, spellsImage, 20, 18, 
+  setupAlphaBlendedBMPGrid( "/textures/spells.bmp", &spells, spellsImage, 20, 18, 
 							32, 32, 71, 108, 108, 80, 80, 80 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
@@ -120,16 +120,16 @@ void ShapePalette::initialize() {
     }
   }
   
-  setupAlphaBlendedBMP("/paperdoll.bmp", &paperDoll, &paperDollImage);
+  setupAlphaBlendedBMP("/textures/paperdoll.bmp", &paperDoll, &paperDollImage);
 
   // set up the logo
-  setupAlphaBlendedBMP("/logo2.bmp", &logo, &logoImage);
+  setupAlphaBlendedBMP("/textures/logo2.bmp", &logo, &logoImage);
   logo_texture = loadGLTextureBGRA(logo, logoImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/chain.bmp", &chain, &chainImage);
+  setupAlphaBlendedBMP("/textures/chain.bmp", &chain, &chainImage);
   chain_texture = loadGLTextureBGRA(chain, chainImage, GL_LINEAR);
 
   // set up the scourge
-  setupAlphaBlendedBMP("/scourge.bmp", &scourge, &scourgeImage);
+  setupAlphaBlendedBMP("/textures/scourge.bmp", &scourge, &scourgeImage);
 
   gui_wood_texture = this->findTextureByName("gui-wood.bmp");
 }

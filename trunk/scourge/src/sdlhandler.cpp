@@ -19,7 +19,6 @@
 #include "sdlhandler.h"
 #include "constants.h"
 #include "gameadapter.h"
-#include "text.h"
 #include "gui/window.h"
 #include "preferences.h"
 #include "sound.h"
@@ -53,7 +52,6 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   mouseFocusX = mouseFocusY = 0;
   mouseDragging = false;
   mouseIsMovingOverMap = false;
-  text = NULL;
   handlerCount = 0;
   invertMouse = false; 
   cursorMode = Constants::CURSOR_NORMAL;
@@ -690,8 +688,6 @@ int SDLHandler::textWidth( const char *fmt, ... ) {
 
 void SDLHandler::texPrint(GLfloat x, GLfloat y, 
                           const char *fmt, ...) {
-  if(!text) text = new TexturedText();
-
   char str[256]; // Holds our string
   va_list ap;     // Pointer to our list of elements
 
@@ -713,11 +709,11 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 void SDLHandler::initFonts() {
   if(!font_initialized) {
     char s[200];
-    sprintf(s, "%s/Vera.ttf", rootDir);
+    sprintf(s, "%s/fonts/Vera.ttf", rootDir);
     font.init(s, 8);
-    sprintf(s, "%s/VeraMono.ttf", rootDir);
+    sprintf(s, "%s/fonts/VeraMono.ttf", rootDir);
     monoFont.init(s, 8);
-    sprintf(s, "%s/Cas_antn.ttf", rootDir);
+    sprintf(s, "%s/fonts/Cas_antn.ttf", rootDir);
     largeFont.init(s, 18);
     font_initialized = true;
   }

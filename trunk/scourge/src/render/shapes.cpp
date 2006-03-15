@@ -157,12 +157,12 @@ Shapes::Shapes( bool headless ){
 
 void Shapes::initialize() {
   // load textures
-  ripple_texture = loadGLTextures("/ripple.bmp");
-  torchback = loadGLTextures("/torchback.bmp");
+  ripple_texture = loadGLTextures("/textures/ripple.bmp");
+  torchback = loadGLTextures("/textures/torchback.bmp");
   
   SDL_Surface *area;
   GLubyte *areaImage;
-  setupAlphaBlendedBMP("/area.bmp", &area, &areaImage);
+  setupAlphaBlendedBMP("/textures/area.bmp", &area, &areaImage);
   areaTex = loadGLTextureBGRA(area, areaImage, GL_LINEAR);
   //areaTex = loadGLTextures("/area.bmp");
 
@@ -320,21 +320,21 @@ void Shapes::initialize() {
   loadStencil( "/cave/stencil-turn.bmp", STENCIL_OUTSIDE_TURN );
   loadStencil( "/cave/stencil-sides.bmp", STENCIL_SIDES );
 
-  setupAlphaBlendedBMP("/cursor.bmp", &cursor, &cursorImage);
+  setupAlphaBlendedBMP("/textures/cursor.bmp", &cursor, &cursorImage);
   cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/crosshair.bmp", &crosshair, &crosshairImage);
+  setupAlphaBlendedBMP("/textures/crosshair.bmp", &crosshair, &crosshairImage);
   crosshair_texture = loadGLTextureBGRA(crosshair, crosshairImage);
-  setupAlphaBlendedBMP("/attack.bmp", &attackCursor, &attackImage);
+  setupAlphaBlendedBMP("/textures/attack.bmp", &attackCursor, &attackImage);
   attack_texture = loadGLTextureBGRA(attackCursor, attackImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/talk.bmp", &talkCursor, &talkImage);
+  setupAlphaBlendedBMP("/textures/talk.bmp", &talkCursor, &talkImage);
   talk_texture = loadGLTextureBGRA(talkCursor, talkImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/use.bmp", &useCursor, &useImage);
+  setupAlphaBlendedBMP("/textures/use.bmp", &useCursor, &useImage);
   use_texture = loadGLTextureBGRA(useCursor, useImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/forbidden.bmp", &forbiddenCursor, &forbiddenImage);
+  setupAlphaBlendedBMP("/textures/forbidden.bmp", &forbiddenCursor, &forbiddenImage);
   forbidden_texture = loadGLTextureBGRA(forbiddenCursor, forbiddenImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/ranged.bmp", &rangedCursor, &rangedImage);
+  setupAlphaBlendedBMP("/textures/ranged.bmp", &rangedCursor, &rangedImage);
   ranged_texture = loadGLTextureBGRA(rangedCursor, rangedImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/move.bmp", &moveCursor, &moveImage);
+  setupAlphaBlendedBMP("/textures/move.bmp", &moveCursor, &moveImage);
   move_texture = loadGLTextureBGRA( moveCursor, moveImage, GL_LINEAR);
 }
 
@@ -1225,7 +1225,7 @@ GLuint Shapes::loadSystemTexture( char *line ) {
   if( !id ) {
     char path[300];
     strcpy( textures[texture_count].filename, line );
-    sprintf( path, "/%s", textures[texture_count].filename );
+    sprintf( path, "/textures/%s", textures[texture_count].filename );
     // load the texture
     id = textures[ texture_count ].id = loadGLTextures( path );
     texture_count++;
