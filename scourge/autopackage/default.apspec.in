@@ -9,7 +9,7 @@ Packager: Gabor Torok <gabortorok@users.sourceforge.net>
 Summary: Scourge is a 3d roguelike game
 URL: http://scourge.sf.net
 License: GNU General Public License, Version 2
-SoftwareVersion: 0.13
+SoftwareVersion: 0.14
 AutopackageTarget: 1.0
 
 # Only uncomment InterfaceVersion if your package exposes interfaces to other software,
@@ -35,7 +35,7 @@ unprepareBuild
 [Imports]
 import <<EOF
 $source_dir/src/scourge
-$source_dir/data
+$source_dir/../scourge_data
 $source_dir/assets/scourge.desktop
 $source_dir/assets/scourge.png
 EOF
@@ -50,11 +50,12 @@ require @freetype.org/freetype2 2.0
 [Install]
 # Put your installation script here
 installExe scourge
-installData data
-# chmod -R 755 $PREFIX/share/data
+installData scourge_data
+# chmod -R 755 $PREFIX/share/scourge_data
 installDesktop "Game/RolePlaying" scourge.desktop
 installIcon scourge.png
 
 [Uninstall]
 # Usually just the following line is enough to uninstall everything
 uninstallFromLog
+
