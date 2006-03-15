@@ -24,7 +24,6 @@
 #include "gui/gui.h"
 #include "freetype/FreeType.h"
 
-class TexturedText;
 class Widget;
 class GameAdapter;                          
 class SDLEventHandler;
@@ -69,8 +68,6 @@ private:
   // rotation for test draw view
   GLfloat rtri, rquad;
   int lastWidth, lastHeight;
-
-  TexturedText *text;
 
   SDLEventHandler *eventHandlers[10];
   SDLScreenView *screenViews[10];

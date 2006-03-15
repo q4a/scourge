@@ -92,9 +92,11 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #  define CONFIG_FILE "options"
 #endif /* defined( WIN32 ) */
 
+#define DATA_DIR_NAME "scourge_data"
+
 #ifndef DATA_DIR
 #  if defined( WIN32 )
-#    define DATA_DIR "./data"
+#    define DATA_DIR "./"DATA_DIR_NAME
 #  else
 #    define DATA_DIR "/usr/local/share/scourge"
 #  endif /* defined( WIN32 ) */
