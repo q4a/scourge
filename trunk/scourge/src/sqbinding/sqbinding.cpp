@@ -23,17 +23,17 @@
 #include "sqcreature.h"
 #include "sqmission.h"
 #include "sqitem.h"
+#include "sqspell.h"
 #include "../squirrel/squirrel.h"
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
 #include "../squirrel/sqstdmath.h"
 #include "../io/file.h"
 #include "../render/map.h"
+#include "../debug.h"
 #include <set>
 
 using namespace std;
-
-#define DEBUG_SQUIRREL 0
 
 #ifdef SQUNICODE
 #define scvprintf vswprintf
@@ -93,6 +93,9 @@ SqBinding::SqBinding( Session *session ) {
   item = new SqItem();
   createClass( item->getClassDeclaration(), SCOURGE_ID_TOKEN );
 
+  spell = new SqSpell();
+  createClass( spell->getClassDeclaration(), SCOURGE_ID_TOKEN );
+
   // compile some static scripts:
   // Special skills
   char s[200];
@@ -138,6 +141,27 @@ void SqBinding::startGame() {
       partyMap[ session->getParty()->getParty(i) ] = &(refParty[i]);
     }
   }
+
+  // create spells
+  if( DEBUG_SQUIRREL ) cerr << "Creating spells:" << endl;  
+  HSQOBJECT *obj;
+  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+    MagicSchool *ms = MagicSchool::getMagicSchool( i );
+    for( int t = 0; t < ms->getSpellCount(); t++ ) {
+      obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
+      if( SQ_SUCCEEDED( instantiateClass( _SC( spell->getClassName() ), obj ) ) ) {
+        // Set a token in the class so we can resolve the squirrel instance to a native creature.
+        // The value is the address of the native creature object.
+        setObjectValue( *obj, SCOURGE_ID_TOKEN, ms->getSpell( t ) );
+        refSpell.push_back( obj );
+        spellMap[ ms->getSpell( t ) ] = obj;
+      } else {
+        cerr << "Unable instantiate class: " << spell->getClassName() << endl;
+      }
+    }
+  }
+
+
 }
 
 void SqBinding::endGame() {
@@ -146,6 +170,15 @@ void SqBinding::endGame() {
     sq_release( vm, &(refParty[ i ]) );  
   }
   partyMap.clear();
+
+  // destroy the spell references
+  for( int i = 0; i < (int)refSpell.size(); i++ ) {
+    sq_release( vm, refSpell[ i ] );
+    free( refSpell[ i ] );
+    refSpell[ i ] = NULL;
+  }
+  refSpell.clear();
+  spellMap.clear();
 
   // release game ref.
   sq_release( vm, &refGame );  
@@ -261,6 +294,16 @@ HSQOBJECT *SqBinding::getItemRef( Item *item ) {
   }
 }
 
+HSQOBJECT *SqBinding::getSpellRef( Spell *spell ) {
+  if( spellMap.find( spell ) != spellMap.end() ) {
+    return spellMap[ spell ];
+  } else {
+    // this could be b/c the objects aren't created yet
+    //if( DEBUG_SQUIRREL ) cerr << "*** Warning: can't find squirrel object for item: " << item->getRpgItem()->getName() << endl;
+    return NULL;
+  }
+}
+
 bool SqBinding::callBoolMethod( const char *name, 
                                 HSQOBJECT *param, 
                                 bool *result ) {
@@ -310,7 +353,6 @@ bool SqBinding::callConversationMethod( const char *name,
     sq_getstring( vm, -1, &sqres );
     if( sqres ) {
       strcpy( answer, (char*)sqres );
-      cerr << "Got answer!" << endl;
     }
     ret = true;    
   } else {
@@ -330,6 +372,19 @@ bool SqBinding::callItemEvent( Creature *creature,
     return callTwoArgMethod( function, 
                              creatureParam, 
                              itemParam );
+  }
+  return false;
+}
+
+bool SqBinding::callSpellEvent( Creature *creature, 
+                                Spell *spell, 
+                                const char *function ) {
+  HSQOBJECT *creatureParam = getCreatureRef( creature );
+  HSQOBJECT *spellParam = getSpellRef( spell );
+  if( creatureParam && spellParam ) {
+    return callTwoArgMethod( function, 
+                             creatureParam, 
+                             spellParam );
   }
   return false;
 }
@@ -705,11 +760,21 @@ void SqBinding::setGlobalVariable( char *name, float value ) {
   sq_pushroottable( vm );
   sq_pushstring( vm, _SC( name ), -1 );
   sq_pushfloat( vm, value );
+  bool success = true;
   if( SQ_FAILED( sq_createslot( vm, -3 ) ) ) {
-    cerr << "Unable to create global var slot:" << name << endl;
+    success = false;
   }
 //  sq_pop( vm, -1 );
   sq_settop( vm, oldtop );
+  if( !success ) {
+    // maybe it exists already... try to set it
+    sq_pushroottable( vm );
+    sq_pushstring( vm, _SC( name ), -1 );
+    sq_pushfloat( vm, value );
+    if( SQ_FAILED( sq_set( vm, -3 ) ) ) {
+      cerr << "Unable to create global var slot or set value for:" << name << endl;
+    }
+  }
 }
 
 float SqBinding::getGlobalVariable( char *name ) {
@@ -718,7 +783,7 @@ float SqBinding::getGlobalVariable( char *name ) {
   sq_pushroottable( vm );
   sq_pushstring( vm, _SC( name ), -1 );
   if( SQ_FAILED( sq_get( vm, -2 ) ) ) {
-    cerr << "Unable to create global var slot:" << name << endl;
+    cerr << "Unable to get global var slot:" << name << endl;
   }
   sq_getfloat( vm, -1, &value );
 //  sq_pop( vm, -1 );

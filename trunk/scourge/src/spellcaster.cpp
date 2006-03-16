@@ -26,6 +26,7 @@
 #include "rpg/rpglib.h"
 #include "projectile.h"
 #include "shapepalette.h"
+#include "sqbinding/sqbinding.h"
 
 using namespace std;
 
@@ -292,6 +293,11 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
             resistance);
     battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
   }
+
+  // script spell resistance
+  battle->getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
+  battle->getSession()->getSquirrel()->callSpellEvent( creature, spell, "spellDamageHandler" );
+  damage = battle->getSession()->getSquirrel()->getGlobalVariable( "damage" );
 
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage( damage, 

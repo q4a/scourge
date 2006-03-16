@@ -39,23 +39,15 @@
 #include "terraingenerator.h"
 #include "cavemaker.h"
 #include "dungeongenerator.h"
+#include "debug.h"
 
 using namespace std;
 
-//#define BASE_DEBUG 1
-
-//#define CAVE_TEST 1
-#define CAVE_TEST_LEVEL 4
-
 #define MOUSE_ROT_DELTA 2
-
-#define BATTLES_ENABLED 1
 
 #define DRAG_START_TOLERANCE 5
 
 #define INFO_INTERVAL 3000
-
-//#define DEBUG_KEYS 1
 
 #define SAVE_FILE "savegame.dat"
 #define VALUES_FILE "values.dat"
@@ -257,9 +249,9 @@ Scourge::~Scourge(){
 
 void Scourge::startMission() {
 
-//#ifdef DEBUG_KEYS
-//  squirrelWin->setVisible( true );
-//#endif
+#ifdef DEBUG_SQUIRREL
+  squirrelWin->setVisible( true );
+#endif
 
   // set up some cross-mission objects
   oldStory = currentStory = 0;
@@ -668,9 +660,9 @@ void Scourge::startMission() {
   // delete the party (w/o deleting the party ui)
   party->deleteParty();
 
-//#ifdef DEBUG_KEYS
-//  squirrelWin->setVisible( false );
-//#endif
+#ifdef DEBUG_SQUIRREL
+  squirrelWin->setVisible( false );
+#endif
   getSession()->getSquirrel()->endGame();
 }
 

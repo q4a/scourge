@@ -26,15 +26,13 @@
 #include "events/statemodexpirationevent.h"
 #include "events/thirsthungerevent.h"
 #include "sqbinding/sqbinding.h"
+#include "debug.h"
 
 using namespace std;
 
 #define MIN_SKILL_LEVEL 20
 
 //#define DEBUG_CAPABILITIES
-
-#define GOD_MODE 0
-#define MONSTER_IMORTALITY 0
 
 #define MOVE_DELAY 7
 
@@ -2332,6 +2330,9 @@ float Creature::getDefenderStateModPercent( bool magical ) {
     }
     if(getTargetCreature()->getStateMod(Constants::blinded)) {
       delta += (2.0f * rand()/RAND_MAX);
+    }
+    if(getTargetCreature()->getStateMod(Constants::invisible)) {
+      delta -= (10.0f * rand()/RAND_MAX);
     }
     return delta;
 }

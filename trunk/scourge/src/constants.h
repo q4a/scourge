@@ -106,10 +106,6 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
   #define assert(x) x;
 #endif
 
-// debug flags
-#define DEBUG_BATTLE 0
-
-
 #define SCOURGE_VERSION "0.14"
 #define MAX_PARTY_SIZE 4
 

@@ -36,8 +36,10 @@ class SqGame;
 class SqCreature;
 class SqMission;
 class SqItem;
+class SqSpell;
 class Creature;
 class Item;
+class Spell;
 class File;
 
 /**
@@ -145,6 +147,7 @@ private:
   SqCreature *creature;
   SqMission *mission;
   SqItem *item;
+  SqSpell *spell;
   char lastMapScriptFileName[3000];
 
   static Item *currentWeapon;
@@ -165,6 +168,8 @@ public:
   std::map<Creature*,HSQOBJECT*> partyMap; 
   std::vector<HSQOBJECT*> refItem;
   std::map<Item*,HSQOBJECT*> itemMap;
+  std::vector<HSQOBJECT*> refSpell;
+  std::map<Spell*,HSQOBJECT*> spellMap;
   std::map<std::string, std::string> values;
   std::map<std::string,time_t> loadedScripts;
 
@@ -218,11 +223,13 @@ public:
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
   bool callTwoArgMethod( const char *name, HSQOBJECT *param1, HSQOBJECT *param2 );
   bool callItemEvent( Creature *creature, Item *item, const char *function );
+  bool callSpellEvent( Creature *creature, Spell *spell, const char *function );
   bool callMapPosMethod( const char *name, int x, int y, int z );
   bool callMapMethod( const char *name, const char *mapName );
   bool callConversationMethod( const char *name, Creature *creature, const char *word, char *answer );
   HSQOBJECT *getCreatureRef( Creature *creature );
   HSQOBJECT *getItemRef( Item *item );
+  HSQOBJECT *getSpellRef( Spell *spell );
   void setGlobalVariable( char *name, float value );
   float getGlobalVariable( char *name );
 
