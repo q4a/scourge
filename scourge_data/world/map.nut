@@ -159,21 +159,42 @@ function startBattleWithItem( creature, item ) {
 
 // assume the global var "damage" is defined as for skills
 function useItemInAttack( creature, item ) {
-  if( item.getName() == "Brand of Iconoclast" && 
-      creature.getTargetCreature() != null &&
-      creature.getTargetCreature().getMaxMp() > 0 ) {
-    scourgeGame.printMessage( "...Brand of Iconoclast growls in a low tone..." );
-    delta <- ( damage / 100.0 ) * 10.0;
-    damage += delta;
-    if( delta.tointeger() > 0 ) {
-      scourgeGame.printMessage( "...damage is increased by " + delta.tointeger() +
-                                "pts!" );
-    }
+  if( item.getName() == "Brand of Iconoclast" ) {
+    useBrandOfIconoclast( creature, item );
   }
 }
 
 // assume the global var "armor" is defined as for skills
 function useItemInDefense( creature, item ) {
+  print( "useItemInDefense, item=" + item.getName() + "\n" ); 
+}
+
+// assume the global var "damage" exists and contains the current amount of 
+// damage caused by this weapon to attacker.getTargetCreature()
+// Change the value of damage to be more or less depending on items (etc)
+// held/equipped by the attacker or the target.
+// 
+// Note: item can be null if attack is with bare hands
+function damageHandler( attacker, item ) {
+  if( attacker.getTargetCreature() != null ) {
+    equippedItem <- attacker.getTargetCreature().getItemAtLocation( 4 );
+    if( equippedItem != null ) {
+      if( equippedItem.getName() == "Cloak of Safe Passage" ) damageHandlerCloakSafePass( attacker, item );
+    }
+  }
+}
+
+// assume the global var "spellDamage" exists and contains the current amount of 
+// damage caused by this spell to caster.getTargetCreature()
+// Change the value of spellDamage to be more or less depending on items (etc)
+// held/equipped by the caster or the target.
+function spellDamageHandler( caster, spell ) {
+  if( caster.getTargetCreature() != null ) {
+    item <- caster.getTargetCreature().getItemAtLocation( 4 );
+    if( item != null ) {
+      if( item.getName() == "Cloak of Hateful Vengeance" ) spellDamageHandlerCloakHateVen( caster, spell );
+    }
+  }
 }
 
 
@@ -203,5 +224,60 @@ function converse( creature, question ) {
   }
 
   return null;
+}
+
+// =============================================================
+// Specific item handling
+function useBrandOfIconoclast( creature, item ) {
+  if( creature.getTargetCreature() != null &&
+      creature.getTargetCreature().getMaxMp() > 0 ) {
+    scourgeGame.printMessage( "...Brand of Iconoclast growls in a low tone..." );
+    delta <- ( damage / 100.0 ) * 10.0;
+    damage += delta;
+    if( delta.tointeger() > 0 ) {
+      scourgeGame.printMessage( "...damage is increased by " + delta.tointeger() +
+                                "pts!" );
+    }
+  }
+}
+
+// spell damage reduction when wearing the Cloak of Vengeance
+function spellDamageHandlerCloakHateVen( caster, spell ) {
+  if( spell.getDeity() == "Unamoin" && damage > 0 ) {
+    
+    delta <- ( damage / 100.0 ) * 15.0;
+    damage += delta;
+    if( delta.tointeger() > 0 ) {
+      scourgeGame.printMessage( "...damage is reduced by " + delta.tointeger() +
+                                "pts! (Cloak of Hateful Vengeance)" );
+    }
+
+    incrementCloakHateVenUse( caster.getTargetCreature() );
+  }
+}
+
+function incrementCloakHateVenUse( target ) {  
+  key <- encodeKeyForCreature( target, "CloakOfHatefulVengeance" );
+  value <- scourgeGame.getValue( key );
+  if( value == null ) numValue <- 0;
+  else numValue <- value.tointeger();
+  numValue++;
+  if( numValue >= 100 ) {
+    // FIXME: do something... cloak of hateful vengeance was used 100 times
+    scourgeGame.printMessage( "FIXME: do something! Cloak of Hateful Vengeance was used 100 times." );
+  }
+  print( "Cloak of hateful vengeance was used " + numValue + " times.\n" );
+  scourgeGame.setValue( key, numValue.tostring() );
+}
+
+function damageHandlerCloakSafePass( attacker, item ) {
+  if( damage > 0 ) {
+    delta <- ( damage / 100.0 ) * 10.0;
+    damage += delta;
+    if( delta.tointeger() > 0 ) {
+      scourgeGame.printMessage( "...damage is reduced by " + delta.tointeger() +
+                                "pts! (Cloak of Safe Passage)" );
+    }
+  }
 }
 

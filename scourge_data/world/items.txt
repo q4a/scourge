@@ -450,6 +450,20 @@ I:The lightweight cloth keeps you warm (and ready to party) but does not protect
 I:A white bedsheet that's been made into robes.
 I:12,6
 
+I:Traveling cloak
+I:10,1,0,0,0
+I:ARMOR,2.5,15,ARMOR,4,0,ARMOR_DEFEND
+I:A much worn and slept-in traveling garmet which looks to also have served as an item of personal hygiene.
+I:A worn brownish cloak.
+I:17,8
+
+I:Heavy woodland cloak
+I:7,2,0,0,0
+I:ARMOR,2.5,15,ARMOR,4,0,ARMOR_DEFEND
+I:A travel cloak of quality workmanship. It looks to actually stave off the cold of the outdoors.
+I:A heavy-weight traveling cloak.
+I:18,8
+
 I:Robes of the Sorcerer
 I:9,1,0,0,0
 I:ARMOR,4,25,ARMOR,8,0,ARMOR_DEFEND,2
@@ -962,12 +976,16 @@ I:A map that seems to radiate evil.
 I:10,11
 
 
-
+# rareness,[,action(damage,etc.),speed,distance,maxCharges,[potionSkill,[potionTimeInMinutes]]]
+# type,weight,price[,shape_index,[inventory_location,twohanded,skill[,min_depth[,min_level]]]]
 
 # Special items (only one exists in the world)
 # Special items are special b/c of the min_level on the second row.
 # For special items, rareness is reversed (ie. the bigger the number the more rare)
 # ( for example: rareness=10 means 1 in 10 chance of seeing it)
+
+# Named weapons
+# ---------------------------
 I:Brand of Iconoclast
 I:5,2d3+2,5,0,0
 I:SWORD,0.3,30200,SWORD,48,0,SWORD_WEAPON,2,4
@@ -976,16 +994,19 @@ I:This bastard sword seems to glow with an unhealthy shine.
 I:7,1
 A:*-,RA+,KN+,TI+,AS+
 
+# Named capes
+# ---------------------------
+I:Cloak of Safe Passage
+I:2,1,0,0,0
+I:ARMOR,2.5,12500,ARMOR,4,0,ARMOR_DEFEND,1,7
+I:These blue robes blend its wearer into nearby shadows, granting an invisibility-like protection.
+I:You have to look carefully to notice this blue cloak.
+I:19,8
 
-
-# what is maxSkillBonus?!
-
-
-
-#I:Cloak of Drake
-#I:7,2,0,0,0
-#I:ARMOR,8,50,ARMOR,8,0,ARMOR_DEFEND,3
-#I:These robes are cleverly padded to protect its frail wearer a little longer in battle.
-#I:These robes seem to be padded on the inside.
-#I:14,6,7
+I:Cloak of Hateful Vengeance
+I:3,2,0,0,0
+I:ARMOR,2.5,22320,ARMOR,4,0,ARMOR_DEFEND,2,9
+I:Infused with the hateful spirit of Unamoin, this cloak assists its wearer in combat, but at a price...
+I:These red robes radiate palpaeble dread.
+I:20,8
 
