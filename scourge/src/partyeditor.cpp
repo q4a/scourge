@@ -34,6 +34,7 @@
 #include "gui/cardcontainer.h"
 #include "gui/scrollinglabel.h"
 #include "shapepalette.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -44,7 +45,7 @@ using namespace std;
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 #define AVAILABLE_SKILL_POINTS 30
-#define LEVEL 1
+#define LEVEL STARTING_PARTY_LEVEL
 
 typedef struct _Preset {
   char name[80];
@@ -545,7 +546,11 @@ void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
         pc[i]->setMp( 5000 );
         pc[i]->setMoney( 10000 );
 
-        if( i == 0 ) pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Brand of Iconoclast")), true);
+        if( i == 0 ) {
+          for( int t = 0; t < RpgItem::getSpecialCount(); t++ ) {
+            pc[i]->addInventory( scourge->getSession()->newItem( RpgItem::getSpecial( t ) ), true );
+          }
+        }
       }
     }
   }

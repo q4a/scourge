@@ -30,7 +30,7 @@ ScriptClassMemberDecl SqItem::members[] = {
   { "int", "getWeight", SqItem::_getWeight, 0, 0, "" },
   { "int", "getPrice", SqItem::_getPrice, 0, 0, "" },
   { "int", "getAction", SqItem::_getAction, 0, 0, "" },
-  { "int", "getSpeed", SqItem::_getAction, 0, 0, "" },
+  { "int", "getSpeed", SqItem::_getSpeed, 0, 0, "" },
   { "int", "getDistance", SqItem::_getDistance, 0, 0, "" },
   { "int", "getMaxCharges", SqItem::_getMaxCharges, 0, 0, "If the item has charges (eg. wand) return how many it started with." },
   { "int", "getDuration", SqItem::_getDuration, 0, 0, "" },

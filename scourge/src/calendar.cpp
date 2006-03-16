@@ -16,10 +16,9 @@
  ***************************************************************************/
 
 #include "calendar.h"
+#include "debug.h"
 
 using namespace std;
-
-#define CALENDAR_DEBUG 0
 
 Calendar *Calendar::instance = NULL;
 

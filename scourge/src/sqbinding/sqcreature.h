@@ -72,6 +72,7 @@ public:
   static int _getDeity( HSQUIRRELVM vm );
   static int _startConversation( HSQUIRRELVM vm );
   static int _getTargetCreature( HSQUIRRELVM vm );
+  static int _getItemAtLocation( HSQUIRRELVM vm );
 
   // setters
   static int _setLevel( HSQUIRRELVM vm );

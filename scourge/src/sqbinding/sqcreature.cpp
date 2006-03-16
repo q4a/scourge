@@ -66,6 +66,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "bool", "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs", "Returns a boolean if the character is of the character class given in the argument. This function is slow because it does a string compare on the class's name." },  
   { "string", "getDeity", SqCreature::_getDeity, 0, 0, "Return the character's chosen deity's name." },
   { "Creature", "getTargetCreature", SqCreature::_getTargetCreature, 0, 0, "Return the creature's target creature of NULL if there isn't one." },
+  { "Item", "getItemAtLocation", SqCreature::_getItemAtLocation, SQ_MATCHTYPEMASKSTRING, "xn", "Return the item currently equipped at the specified location. (location is left-hand, right-hand, etc.)" },
 
   { "void", "startConversation", SqCreature::_startConversation, 0, 0, "Start a conversation with this creature." },
 
@@ -400,7 +401,34 @@ int SqCreature::_startConversation( HSQUIRRELVM vm ) {
 int SqCreature::_getTargetCreature( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
   if( object->getTargetCreature() ) {
-    sq_pushobject( vm, *(SqBinding::binding->creatureMap[object->getTargetCreature()]) );
+    if( object->getTargetCreature()->isMonster() ) {
+      sq_pushobject( vm, *(SqBinding::binding->creatureMap[object->getTargetCreature()]) );
+    } else {
+      bool found = false;
+      for( int i = 0; i < SqBinding::sessionRef->getParty()->getPartySize(); i++ ) {
+        if( object->getTargetCreature() == SqBinding::sessionRef->getParty()->getParty( i ) ) {
+          sq_pushobject( vm, SqBinding::binding->refParty[ i ] );
+          found = true;
+          break;
+        }
+      }
+      if( !found ) {
+        cerr << "SqCreature::_getTargetCreature did not find party member: " << object->getTargetCreature()->getName() << endl;
+        sq_pushnull( vm );
+      }
+    }
+  } else {
+    sq_pushnull( vm );
+  }
+  return 1;
+}
+
+int SqCreature::_getItemAtLocation( HSQUIRRELVM vm ) {
+  GET_INT( location )
+  GET_OBJECT(Creature*)
+  Item *item = object->getItemAtLocation( location );
+  if( item ) {
+    sq_pushobject( vm, *(SqBinding::binding->itemMap[ item ]) );
   } else {
     sq_pushnull( vm );
   }

@@ -22,6 +22,8 @@
 #include "projectile.h"
 #include "creature.h"
 #include "shapepalette.h"
+#include "debug.h"
+#include "sqbinding/sqbinding.h"
 
 using namespace std;
 
@@ -30,7 +32,7 @@ using namespace std;
 
 #define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) )
 
-bool Battle::debugBattle = false;
+bool Battle::debugBattle = DEBUG_BATTLE;
 
 char *Battle::sound[] = {
   "sound/weapon-swish/handheld/sw1.wav",
@@ -1062,6 +1064,13 @@ void Battle::hitWithItem() {
 
     applyHighAttackRoll( &damage, attack, min, max );
 
+  }
+
+  // item attack event handler
+  if( item ) {
+    getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
+    getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
+    damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
   }
 
   dealDamage( damage );

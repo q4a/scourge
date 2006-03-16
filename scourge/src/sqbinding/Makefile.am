@@ -16,5 +16,7 @@ libSqbinding_a_SOURCES = \
 	sqmission.cpp\
 	sqmission.h\
 	sqitem.cpp\
-	sqitem.h
+	sqitem.h\
+	sqspell.cpp\
+	sqspell.h
 
