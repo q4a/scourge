@@ -53,12 +53,12 @@ InfoGui::InfoGui(Scourge *scourge) {
   win->addWidget((Widget*)openButton);
   
   int n = 48;
-  image = new Canvas( width - n - 10, 10, width - 10, 10 + n, this );
+  image = new Canvas( width - n - 10, 15, width - 10, 15 + n, this );
   win->addWidget( image );
 
   win->createLabel(10, 10, "Name:", Constants::RED_COLOR);
   strcpy(name, "");
-  nameLabel = new Label(10, 25, name, 56);
+  nameLabel = new ScrollingLabel(10, 15, width - n - 25, 50, name );
   win->addWidget(nameLabel);
 
   win->createLabel(10, 80, "Detailed Description:", Constants::RED_COLOR);

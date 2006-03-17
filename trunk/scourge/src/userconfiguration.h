@@ -100,8 +100,8 @@ private:
    
  public:
  
-  UserConfiguration::UserConfiguration();
-  UserConfiguration::~UserConfiguration();
+  UserConfiguration();
+  ~UserConfiguration();
   
   const char * getEngineActionDescription(int i);  
   const char * getEngineActionKeyName(int i);      

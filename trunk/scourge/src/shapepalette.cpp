@@ -155,6 +155,10 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
     char *p = strtok( line, "," );
     Constants::SKILL_NAMES[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
     strcpy( Constants::SKILL_NAMES[ skillCount ], p );
+
+    p = strtok( NULL, "," );
+    Constants::SKILL_SYMBOL[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
+    strcpy( Constants::SKILL_SYMBOL[ skillCount ], p );
     
     p = strtok( NULL, "," );
     Constants::SKILL_DESCRIPTION[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );

@@ -546,6 +546,19 @@ void Item::commonInit( bool loading ) {
   else if( n < 50 ) enchant( Constants::LESSER_MAGIC_ITEM );
 }
 
+/**
+ * TODO:
+ * magic item name like this:
+ * Lesser Shortbow of the [adj][noun]
+ * where, 
+ *   adj: is the magic school: ice, fire, astral, etc.
+ *   noun: is the skill: dragon, boar, giant, etc.
+ * maybe also add state-mods and multipliers into the name-game.
+ * 
+ * The biggest bang for the buck is to auto-generate "named" items instead of manually
+ * creating them...
+ * 
+ */
 void Item::enchant( int newMagicLevel ) {
   if( magicLevel != -1 ) return;
 
@@ -573,6 +586,13 @@ void Item::enchant( int newMagicLevel ) {
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(2.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType( level );
+    }
+    n = (int)(3.0f * rand()/RAND_MAX) + 2;
+    for(int i = 0; i < n; i++) {
+      int skill = Constants::getRandomBasicSkill();
+      if(skillBonus.find(skill) == skillBonus.end()) {
+        skillBonus[skill] = (int)(5.0f * rand()/RAND_MAX) + 1;
+      }
     }
     break;
   case Constants::GREATER_MAGIC_ITEM:
@@ -657,23 +677,64 @@ void Item::enchant( int newMagicLevel ) {
   describeMagic(itemName, rpgItem->getName());
 }
 
+// max about 30 points (must be deterministic)
+int Item::getMagicResistance() { 
+  return( 3 * ( ( getLevel() / 10 ) + getMagicLevel() ) ); 
+}
+
 void Item::describeMagic(char *s, char *itemName) {
   // e.g.: Lesser broadsword + 3 of nature magic
   char tmp[80];
-  strcpy(s, Constants::MAGIC_ITEM_NAMES[magicLevel]);
-  if(stateModSet) {
-    strcat(s, " protective");
+
+  // Lesser, Greater, etc.
+  strcpy( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
+
+  // Protective if stateMods are changed
+  if( stateModSet ) {
+    strcat( s, " Protective" );
   }
+
+  // Slaying if there is a multiplier
+  if( damageMultiplier > 1 ) {
+    strcat( s, " Slaying" );
+  }
+
+  // the item's name
   strcat(s, " ");
   strcat(s, itemName);
+  
+  // the bonus
   if(bonus > 0) {
     sprintf(tmp, " (+%d)", bonus);
     strcat(s, tmp);
   }
-  if(school) {
-    sprintf(tmp, " of %s magic", school->getShortName());
-    strcat(s, tmp);
-  }
+  
+  // Describe the item.
+  // (this code has to be deterministic b/c it's called by 'load' also)
+  if( skillBonus.size() > 0 ) {
+    strcat( s, " of the " );
+
+    // use state_mod or magic school as the adjective
+    // e.g.: of the [ice|dire|planar|etc] Boar
+    if( school ) {
+      sprintf( tmp, "%s ", school->getSymbol() );
+      strcat( s, tmp );
+    } else if( stateModSet ) {
+      for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
+        if( stateMod[ i ] > 0 ) {
+          sprintf( tmp, "%s ", Constants::STATE_SYMBOLS[ i ] );
+          strcat( s, tmp );
+          break;
+        }
+      }
+    }
+
+    // use the first skill as the noun
+    map<int,int>::iterator i = skillBonus.begin();
+    int skill = i->first;
+    sprintf( tmp, "%s", Constants::SKILL_SYMBOL[ skill ] );
+    strcat( s, tmp );
+  }  
 }
 
 bool Item::isSpecial() { 

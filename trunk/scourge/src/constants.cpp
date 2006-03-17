@@ -175,6 +175,7 @@ PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
 char *Constants::SKILL_NAMES[ Constants::SKILL_COUNT ];
+char *Constants::SKILL_SYMBOL[ Constants::SKILL_COUNT ];
 char *Constants::SKILL_DESCRIPTION[ Constants::SKILL_COUNT ];
 map<string,int> Constants::skillNameMap;
 
@@ -186,6 +187,11 @@ const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
   "drunk", "poisoned", "cursed", "possessed", "blinded", "paralysed", "invisible", 
   "overloaded", "dead", "asleep"
+};
+const char *Constants::STATE_SYMBOLS[] = {
+  "Air", "Earth", "Fire", "Stone", "Water",
+  "Jelly", "Ice", "Planar", "Astral", "Dire", "Cave", "Hidden", 
+  "Spirit", "Mist", "Quiet"
 };
 
 vector<int> Constants::goodStateMod;

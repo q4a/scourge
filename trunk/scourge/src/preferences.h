@@ -113,10 +113,10 @@ public:
     TEST
   };
  
-  Preferences::Preferences() {
+  Preferences() {
     stencilBufInitialized = false;
   }
-  virtual Preferences::~Preferences() {}
+  virtual ~Preferences() {}
   
   // engine variables
   virtual bool getFullscreen() = 0;

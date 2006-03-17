@@ -234,7 +234,6 @@ C:Loremaster,6,5,4,450,LO,0.6,10
 D:A Loremaster is a keeper of tales from forgotten times. Part singer and storyteller, part magician of folklore 
 D:and part researcher of dusty tomes from ancient libraries. Thus, loremasters are competent in diverse subjects from 
 D:archeology to fighting demons. Their most dominant skills are Lore and IQ.
-D:The principal skills are IQ, Coordination and Lore.
 S:SPEED,5,*
 S:COORDINATION,15,*
 S:POWER,10,*
@@ -270,7 +269,6 @@ D:beard (in the case of men and some women) and pointy hat. Conjurors keep immen
 D:constantly in mind. Some regard them as persons of holy disposition because of their magical abilities, however 
 D:nothing could be farther from the truth! When casting spells, most magicians try to remain inconspicuous from 
 D:the deities. The most useful traits of conjuror are IQ and Luck.
-D:The principal skills are IQ, Coordination and Lore.
 S:SPEED,5,*
 S:COORDINATION,15,*
 S:POWER,5,*
@@ -301,7 +299,11 @@ S:MOVE_UNDETECTED,*,60
 S:STEALING,*,70
 
 C:Summoner,4,7,3,500,SU,0.5,12
-D:Need description for the summoner
+D:A summoner is gains magical abilities by making pacts with paranormal entities. Magical comes
+D:naturally to these beings but they usually lack a foothold in the material realm. A summoner will
+D:perform services to the etherial being in return for the ability to cast spells. All summoners
+D:good or evil serve an unearthly being. Usually they find it a good idea to keep this alignment
+D:hidden until such time that the pact comes to an end.
 S:SPEED,10,*
 S:COORDINATION,15,*
 S:POWER,10,*
@@ -332,7 +334,10 @@ S:MOVE_UNDETECTED,*,60
 S:STEALING,*,70
 
 C:Naturalist,5,7,4,450,NA,0.7,8
-D:Need description for the naturalist
+D:Some herbs you found made you ill, while others healed your wounds. Being a naturalist is
+D:dangerous business but if you have a good memory, the payoff is worth it. Some naturalists
+D:also have a blend of alchemical and ranger-like abilities with the addition to be able to
+D:cast simple (usually from the school of Nature) spells.
 S:SPEED,10,*
 S:COORDINATION,15,*
 S:POWER,10,*
@@ -363,7 +368,9 @@ S:MOVE_UNDETECTED,*,70
 S:STEALING,*,80
 
 C:Monk,6,6,6,400,MO,0.8,8
-D:Need description for the monk
+D:Your fanatical devotion to your deity overshadows your need to acquire material goods. Most
+D:monks traditionally beg for their food and make their own clothing. You also forego the 
+D:use of melee weaponry, specializing instead in unarmed combat and the divine focus of the bow.
 S:SPEED,20,*
 S:COORDINATION,25,*
 S:POWER,20,*
@@ -374,7 +381,7 @@ S:PIETY,30,*
 S:LORE,15,*
 S:SWORD_WEAPON,*,20
 S:AXE_WEAPON,*,20
-S:BOW_WEAPON,*,20
+S:BOW_WEAPON,10,*
 S:MACE_WEAPON,*,40
 S:POLE_WEAPON,20,70
 S:HAND_TO_HAND_COMBAT,30,*

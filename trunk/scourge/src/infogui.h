@@ -41,7 +41,7 @@ class InfoGui : public WidgetView {
   Window *win;
   Button *openButton;
   ScrollingLabel *label;
-  Label *nameLabel;
+  ScrollingLabel *nameLabel;
   Canvas *image;
   int infoDetailLevel;
   char name[500], description[1000];

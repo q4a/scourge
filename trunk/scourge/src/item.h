@@ -149,7 +149,7 @@ public:
   inline char *getMonsterType() { return monsterType; }
   inline MagicSchool *getSchool() { return school; }
   int rollMagicDamage();
-  inline int getMagicResistance() { return (7 * (getLevel() + getMagicLevel())); }
+  int getMagicResistance();
   char *describeMagicDamage();
   inline bool isCursed() { return cursed; }
   inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }

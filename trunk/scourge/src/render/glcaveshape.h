@@ -94,7 +94,7 @@ private:
 
   static char *names[];
 
-  static GLCaveShape *GLCaveShape::shapeList[];
+  static GLCaveShape *shapeList[];
 
   static std::vector<CVector3*> points;
   static std::vector<std::vector<CaveFace*>*> polys;
