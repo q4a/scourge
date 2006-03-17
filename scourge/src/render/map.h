@@ -368,10 +368,10 @@ class Map {
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
   Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
   
-  void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item);
+  void setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item);
   RenderedItem *removeItem(Sint16 x, Sint16 y, Sint16 z);
   
-  void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature);
+  void setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature);
   RenderedCreature *removeCreature(Sint16 x, Sint16 y, Sint16 z);
   
   /**
@@ -426,7 +426,7 @@ class Map {
   // like shapefits, but returns the blocking location or, NULL if there's nothing there
   Location *getBlockingLocation(Shape *shape, int x, int y, int z);
 
-  Location *Map::getDropLocation(Shape *shape, int x, int y, int z);
+  Location *getDropLocation(Shape *shape, int x, int y, int z);
 
   inline void updateLightMap() { lightMapChanged = resortShapes = true; }
 
@@ -455,7 +455,7 @@ class Map {
            DrawLater *later=NULL);
 
   bool isDoor(int x, int y);
-  bool Map::isDoor(Shape *shape);
+  bool isDoor(Shape *shape);
 
   // ====================================================================
   // Locked doors/chests code

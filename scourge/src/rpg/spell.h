@@ -130,6 +130,7 @@ class MagicSchool {
   char *deity;
   char deityDescription[3000];
   float red, green, blue;
+  char *symbol;
   int skill, resistSkill;
   std::vector<Spell*> spells;
   std::vector<std::string> lowDonate, neutralDonate, highDonate;
@@ -139,7 +140,7 @@ class MagicSchool {
   static std::map<std::string, MagicSchool*> schoolMap;
 
  public:
-  MagicSchool(char *name, char *deity, int skill, int resistSkill, float red, float green, float blue);
+  MagicSchool(char *name, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol);
   ~MagicSchool();
 
   inline char *getName() { return name; }
@@ -154,6 +155,7 @@ class MagicSchool {
   inline float getDeityRed() { return red; }
   inline float getDeityGreen() { return green; }
   inline float getDeityBlue() { return blue; }
+  inline char *getSymbol() { return symbol; }
 
   static void initMagic();
   inline static int getMagicSchoolCount() { return schoolCount; }

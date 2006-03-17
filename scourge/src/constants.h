@@ -497,6 +497,7 @@ public:
     SKILL_COUNT
   };
   static char *SKILL_NAMES[];
+  static char *SKILL_SYMBOL[];
   static char *SKILL_DESCRIPTION[];
   static std::map<std::string,int> skillNameMap;
   static int getSkillByName(char *p);
@@ -535,6 +536,7 @@ public:
 	STATE_MOD_COUNT
   };
   static const char *STATE_NAMES[];
+  static const char *STATE_SYMBOLS[];
   // return -1 on failure, 0+ on success
   static int getStateModByName( const char *p );
   static std::vector<int> goodStateMod, badStateMod;

@@ -59,8 +59,8 @@ private:
   bool directMode;
     
  public:
-  MiniMap::MiniMap();
-  MiniMap::~MiniMap();
+  MiniMap();
+  ~MiniMap();
   MiniMap( Scourge *scourge, bool directMode = false );
 
   void reset();

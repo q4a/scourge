@@ -50,6 +50,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   debug = false;
   canGetFocusVar = Widget::canGetFocus();
   allowMultipleSelection = false;
+  tooltipLine = -1;
 }
 
 ScrollingList::~ScrollingList() {
@@ -249,10 +250,19 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
   glDisable(GL_TEXTURE_2D);
 }
 
-void ScrollingList::selectLine( int x, int y, bool addToSelection, bool mouseDown ) {
+int ScrollingList::getLineAtPoint( int x, int y ) {
   int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
   int n = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
   if( list && count && n >= 0 && n < count ) {
+    return n;
+  } else {
+    return -1;
+  }
+}
+
+void ScrollingList::selectLine( int x, int y, bool addToSelection, bool mouseDown ) {
+  int n = getLineAtPoint( x, y );
+  if( n > -1 ) {
     if( addToSelection && allowMultipleSelection ) {
       // is it already selected?
       for( int i = 0; i < selectedLineCount; i++ ) {
@@ -321,6 +331,14 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 			dragAndDropHandler->startDrag(this);
 		}
     highlightBorders = (isInside(x, y) && dragAndDropHandler);
+      
+    tooltipLine = getLineAtPoint( x, y );
+    if( tooltipLine > -1 && 
+        ((Window*)parent)->getScourgeGui()->textWidth( list[ tooltipLine ] ) > getWidth() - scrollerWidth ) {
+      setTooltip( (char*)(list[ tooltipLine ]) );
+    } else {
+      setTooltip( "" );
+    }
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if(!dragging && isInside(x, y)) {

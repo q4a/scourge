@@ -37,7 +37,7 @@
 #define MONSTER_IMORTALITY 0
                        
 // partyeditor.cpp (if non-1, defaults are added)
-#define STARTING_PARTY_LEVEL 10
+#define STARTING_PARTY_LEVEL 50
 
 // scourge.cpp                     
 //#define CAVE_TEST 1

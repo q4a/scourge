@@ -54,6 +54,7 @@ class ScrollingList : public Widget {
   int lineHeight;
   int eventType;
   bool allowMultipleSelection;
+  int tooltipLine;
 
  public: 
 
@@ -107,9 +108,11 @@ class ScrollingList : public Widget {
   inline bool canGetFocus() { return canGetFocusVar; }
   inline void setCanGetFocus(bool b) { this->canGetFocusVar = b; }
 
+  int getLineAtPoint( int x, int y );
+
  private:
   void selectLine(int x, int y, bool addToSelection = false, bool mouseDown=false );
-  void drawIcon( int x, int y, GLuint icon );
+  void drawIcon( int x, int y, GLuint icon );  
 };
 
 #endif
