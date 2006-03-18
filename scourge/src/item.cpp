@@ -543,6 +543,11 @@ void Item::commonInit( bool loading ) {
       (int)Util::getRandomSum( (float)( rpgItem->getDurationRpg() / 2 ), level / 4 );
   } else duration = rpgItem->getDurationRpg();
 
+  // assign a spell to the item
+  if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell ) {
+    this->spell = MagicSchool::getRandomSpell( 1 );
+    price += (int)Util::getRandomSum( (float)(basePrice / 2), this->spell->getLevel() );
+  }
 
   // --------------
   // magic attribs
@@ -568,19 +573,6 @@ void Item::commonInit( bool loading ) {
   else if( n < 50 ) enchant( Constants::LESSER_MAGIC_ITEM );
 }
 
-/**
- * TODO:
- * magic item name like this:
- * Lesser Shortbow of the [adj][noun]
- * where, 
- *   adj: is the magic school: ice, fire, astral, etc.
- *   noun: is the skill: dragon, boar, giant, etc.
- * maybe also add state-mods and multipliers into the name-game.
- * 
- * The biggest bang for the buck is to auto-generate "named" items instead of manually
- * creating them...
- * 
- */
 void Item::enchant( int newMagicLevel ) {
   if( magicLevel != -1 ) return;
 
@@ -615,7 +607,7 @@ void Item::enchant( int newMagicLevel ) {
       if(skillBonus.find(skill) == skillBonus.end()) {
         skillBonus[skill] = (int)(5.0f * rand()/RAND_MAX) + 1;
       }
-    }
+    }    
     break;
   case Constants::GREATER_MAGIC_ITEM:
     bonus = (int)(2.0f * rand()/RAND_MAX) + 1;

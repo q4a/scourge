@@ -37,7 +37,7 @@
 #define MONSTER_IMORTALITY 0
                        
 // partyeditor.cpp (if non-1, defaults are added)
-#define STARTING_PARTY_LEVEL 50
+#define STARTING_PARTY_LEVEL 10
 
 // scourge.cpp                     
 //#define CAVE_TEST 1
@@ -48,8 +48,7 @@
 //#define BASE_DEBUG 1
 
 // sqbinding.cpp                        
-//#define DEBUG_SQUIRREL 0
-#define DEBUG_SQUIRREL 1
+#define DEBUG_SQUIRREL 0
 
 #endif
 

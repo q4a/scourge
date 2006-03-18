@@ -134,7 +134,7 @@ void InfoGui::describe() {
 
   // detailed description
   strcpy(description, item->getRpgItem()->getLongDesc());
-  strcat(description, "|");
+  strcat(description, "||");
 
   // basic info
   sprintf(tmp, "Level: %d|", item->getLevel());
@@ -156,8 +156,14 @@ void InfoGui::describe() {
     strcat( description, tmp );
   }
   if( item->getMaxCharges() > 0 ) {
-    sprintf(tmp, "Max charges: %d|", item->getMaxCharges());
+    sprintf(tmp, "Charges: %d(%d)|", item->getCurrentCharges(), item->getMaxCharges() );
     strcat( description, tmp );
+    if( item->getSpell() ) {
+      sprintf( tmp, "Spell: %s|", item->getSpell()->getName() );
+      strcat( description, tmp );
+      sprintf( tmp, "%s|", item->getSpell()->getNotes() );
+      strcat( description, tmp );
+    }
   }
   if( item->getDuration() > 0 ) {
     sprintf(tmp, "Duration: %d|", item->getDuration());
