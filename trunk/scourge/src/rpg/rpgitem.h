@@ -36,6 +36,11 @@ class MagicSchool;
 class Spell;
 class RpgItem;
 
+typedef struct _ItemType {
+  char name[40];
+  bool isWeapon, isArmor, isRandom, isRanged, hasSpell, isEnchantable;
+} ItemType;
+
 class RpgItem {
  private:
 
@@ -74,26 +79,31 @@ class RpgItem {
 
  public:
 
-  enum itemTypes {
-    SWORD=0,
-    AXE,
-    BOW,
-    MACE,
-    CONTAINER,
-    ARMOR,
-    FOOD,
-    DRINK,
-    POTION,
-    OTHER,
-    MISSION,
-    SCROLL,
-    SHIELD,
-    POLE,
-	
-    // must be last
-    ITEM_TYPE_COUNT
-  };
-  static char itemTypeStr[ITEM_TYPE_COUNT][40];
+   enum {
+     SWORD=0,
+     AXE,
+     BOW,
+     MACE,
+     CONTAINER,
+     ARMOR,
+     FOOD,
+     DRINK,
+     POTION,
+     OTHER,
+     MISSION,
+     SCROLL,
+     POLE,
+     WAND,
+     RING,
+     AMULET,
+     STAFF,
+
+     ITEM_TYPE_COUNT
+   };
+
+  static std::vector<ItemType> itemTypes;
+  static int randomTypes[ITEM_TYPE_COUNT];
+  static int randomTypeCount;
 
   enum twoHandedType {
     NOT_TWO_HANDED=0,
@@ -104,9 +114,6 @@ class RpgItem {
   static RpgItem *items[1000];
   static int itemCount;
 
-  static int enchantableTypes[];
-  static int enchantableTypeCount;
-  
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
           Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
           int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int minLevel=0, 

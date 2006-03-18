@@ -25,14 +25,6 @@ using namespace std;
    These basic objects are enhanced by adding magical capabilities.
  */
 
-/*
- * FIXME: Make this property-driven
- *
- * Remember to change isWeaponItem=, getRandomEnchantableItem, 
- * getRandomItem
- * 
- * when adding a new item or type.
- */
 RpgItem *RpgItem::items[1000];
 
 map<int, map<int, vector<const RpgItem*>*>*> RpgItem::typesMap;
@@ -40,28 +32,10 @@ map<string, const RpgItem *> RpgItem::itemsByName;
 vector<RpgItem*> RpgItem::containers;
 vector<RpgItem*> RpgItem::containersNS; 
 vector<RpgItem*> RpgItem::special;
-
 int RpgItem::itemCount = 0;
-
-char RpgItem::itemTypeStr[ITEM_TYPE_COUNT][40] = {
-  "SWORD",
-  "AXE",
-  "BOW",
-  "MACE",
-  "CONTAINER",
-  "ARMOR",
-  "FOOD",
-  "DRINK",
-  "POTION",
-  "OTHER",
-  "MISSION",
-  "SCROLL",
-  "SHIELD",
-  "POLE",
-};
-
-int RpgItem::enchantableTypes[] = { SWORD, AXE, BOW, MACE, ARMOR };
-int RpgItem::enchantableTypeCount = 5;
+std::vector<ItemType> RpgItem::itemTypes;
+int RpgItem::randomTypes[ITEM_TYPE_COUNT];
+int RpgItem::randomTypeCount = 0;
 
 RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
                  Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
@@ -91,7 +65,7 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
   this->potionSkill = potionSkill;
   this->potionTime = potionTime;
   this->acl = (GLuint)0xffff; // all on
-  this->isWeaponItem = ( type == SWORD || type == AXE || type == BOW || type == MACE || type == POLE );
+  this->isWeaponItem = itemTypes[ type ].isWeapon;
   this->iconTileX = iconTileX;
   this->iconTileY = iconTileY;
   this->maxSkillBonus = maxSkillBonus;
@@ -118,7 +92,7 @@ cerr << "adding item: " << item->name <<
       depthMap = new map<int, vector<const RpgItem*>*>();
       typesMap[item->type] = depthMap;
     }
-    //  cerr << "\ttypesMap.size()=" << typesMap.size() << endl;
+    //cerr << "\ttypesMap.size()=" << typesMap.size() << " type=" << item->type << " (" << itemTypes[item->type].name << ")" << endl;
   
     // create the min depth map: Add item to every depth level >= item->getMinDepth()
     for( int currentDepth = item->getMinDepth(); currentDepth < MAX_MISSION_DEPTH; currentDepth++ ) {
@@ -156,34 +130,30 @@ cerr << "adding item: " << item->name <<
 }
 
 int RpgItem::getTypeByName(char *name) {
-  for(int i = 0; i < ITEM_TYPE_COUNT; i++) {
-	if(!strcmp(itemTypeStr[i], name)) return i;
+  for( int i = 0; i < (int)itemTypes.size(); i++ ) {
+    if( !strcmp( itemTypes[ i ].name, name ) ) return i;
   }
-  cerr << "Can't find type >" << name << endl;
+  cerr << "Can't find type >" << name << "< in " << itemTypes.size() << endl;
+  for( int i = 0; i < (int)itemTypes.size(); i++ ) {
+    cerr << "\t" << itemTypes[ i ].name << endl;
+  }
   exit(1);
 }
 
 bool RpgItem::isEnchantable() {
-  for(int i = 0; i < enchantableTypeCount; i++) {
-    if(getType() == enchantableTypes[i]) return true;
-  }
-  return false;
+  return( itemTypes[ type ].isEnchantable );
 }
 
 RpgItem *RpgItem::getRandomItem(int depth) {
-  // item types found in the lying around a dungeon
-  int types[] = { SWORD, AXE, BOW, MACE, ARMOR, FOOD, DRINK, POTION, POLE };
-  int typeCount = 9;
-  return getRandomItemFromTypes(depth, types, typeCount);
+  return getRandomItemFromTypes( depth, randomTypes, randomTypeCount );
 }
 
 RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) {
-
   if( depth < 0 ) depth = 0;
   if( depth >= MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH - 1;
 
   int typeIndex = (int)((float)typeCount * rand()/RAND_MAX);
-  map<int, vector<const RpgItem*>*> *depthMap = typesMap[types[typeIndex]];
+  map<int, vector<const RpgItem*>*> *depthMap = typesMap[types[typeIndex]];  
   if(depthMap && depthMap->size()) {
 
     // Select this depth's list of items. Since an item is on every list
@@ -231,12 +201,6 @@ RpgItem *RpgItem::getItemByName(char *name) {
 
 // warning: slow method (use in editor only)
 bool RpgItem::isContainer() {
-  for( int i = 0; i < (int)containers.size(); i++ ) {
-    if( containers[i] == this ) return true;
-  }
-  for( int i = 0; i < (int)containersNS.size(); i++ ) {
-    if( containersNS[i] == this ) return true;
-  }
-  return false;
+  return( type == CONTAINER ? true : false );
 }
 

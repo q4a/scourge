@@ -304,7 +304,29 @@ void Item::initItems(ShapePalette *shapePal) {
   RpgItem *last = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
-    if( n == 'I' ) {
+    if( n == 'T' ) {
+      // skip ':'
+      fgetc(fp);
+      n = Constants::readLine( line, fp );
+      ItemType itemType;
+      strcpy( itemType.name, strtok( line, "," ) );
+      char *p = strtok( NULL, "," );
+      itemType.isWeapon = ( p && *p == '1' ? true : false );
+      p = strtok( NULL, "," );
+      itemType.isArmor = ( p && *p == '1' ? true : false );
+      p = strtok( NULL, "," );
+      itemType.isRandom = ( p && *p == '1' ? true : false );
+      p = strtok( NULL, "," );
+      itemType.isRanged = ( p && *p == '1' ? true : false );
+      p = strtok( NULL, "," );
+      itemType.hasSpell = ( p && *p == '1' ? true : false );
+      p = strtok( NULL, "," );
+      itemType.isEnchantable = ( p && *p == '1' ? true : false );
+      RpgItem::itemTypes.push_back( itemType );
+      if( itemType.isRandom ) {
+        RpgItem::randomTypes[ RpgItem::randomTypeCount++ ] = RpgItem::itemTypes.size() - 1;
+      }
+    } else if( n == 'I' ) {
       // skip ':'
       fgetc(fp);
       // read the rest of the line

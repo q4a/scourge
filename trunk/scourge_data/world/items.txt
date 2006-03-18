@@ -48,6 +48,30 @@
 # MO Monk
 # * All
 
+
+
+# Item types: (must match enum in rpgitem.h)
+# name,isWeapon,isArmor,isRandom,isRanged,hasSpell,isEnchantable
+# Don't change the order, just add new ones at the end
+T:SWORD,1,0,1,0,0,1
+T:AXE,1,0,1,0,0,1
+T:BOW,1,0,1,1,0,1
+T:MACE,1,0,1,0,0,1
+T:CONTAINER,0,0,0,0,0,0
+T:ARMOR,0,1,1,0,0,1
+T:FOOD,0,0,1,0,0,0
+T:DRINK,0,0,1,0,0,0
+T:POTION,0,0,1,0,0,0
+T:OTHER,0,0,0,0,0,0
+T:MISSION,0,0,0,0,0,0
+T:SCROLL,0,0,0,0,0,0
+T:POLE,1,0,1,0,0,1
+T:WAND,0,0,1,0,1,0
+T:RING,0,0,1,0,1,1
+T:AMULET,0,0,1,0,1,1
+T:STAFF,1,0,1,0,1,1
+
+
 ##################################################################
 ##################################################################
 ##################################################################
@@ -323,6 +347,202 @@ I:Need description
 I:3,1
 A:*-,KN+,RA+,AS+,TI+
 
+
+##################################################################
+##################################################################
+##################################################################
+# Rechargeable Magic Items
+
+######################
+# Wands: action is wand's enchantability (higher the better)
+I:Blue opal wand
+I:5,1,0,0,10
+I:WAND,0.12,120,WAND,48,0,COORDINATION
+I:A short bluish stone casts a pale light from the end of this wand.
+I:A simple wand with a blue opal affixed to its top.
+I:5,17
+
+I:Golden spiral wand
+I:5,2,0,0,12
+I:WAND,0.2,250,WAND,48,0,COORDINATION
+I:Two wooden threads lackered in gold twine to form the handle of this wand.
+I:A wand covered in gold paint
+I:4,17
+
+I:Scepter of the Dwarven Kings
+I:4,3,0,0,15
+I:WAND,0.3,610,WAND,48,0,COORDINATION,1
+I:This heavy golden wand bears the symbol of an ancient dwarven kingdom. Created as much as a symbol of reign as to store potent magic.
+I:A large wand bears a strange symbol
+I:20,16
+
+I:Urgle's claw
+I:3,4,0,0,25
+I:WAND,0.3,610,WAND,48,0,COORDINATION,2
+I:Rumor has it the troll mystic Urgle locked some of his essence in this strange looking wand.
+I:A gray wand that bears the likeness of a hook or a claw.
+I:16,16
+
+I:Romanoff's Final Rebuke
+I:2,5,0,0,20
+I:WAND,0.5,1250,WAND,48,0,COORDINATION,3
+I:Romanoff the vampiric ranger assassin met his end when battling a goblin mage wielding this strange wand.
+I:A reddish wand with a shrunken humanoid skull at its top.
+I:18,16
+
+I:The wand of the Secret Flame
+I:2,6,0,0,15
+I:WAND,0.65,3200,WAND,48,0,COORDINATION,4
+I:This wand's presence strikes you like a sudden gust of cold wind. A strange voice whispers tidings of chaos in your ear.
+I:A white wand whose many branches end in hooked bloody claws.
+I:3,17
+
+######################
+# Rings: action is ring's enchantability (higher the better)
+#
+I:Dwarven steel ring
+I:5,1,0,0,10
+I:RING,0.05,50,POTION,7680,0,IQ
+I:This grayish-blue steel ring is favored by the dwarven miners of Thuzgol.
+I:An unadorned gray steel ring
+I:12,11
+
+I:Elven leaf ring
+I:4,2,0,0,10
+I:RING,0.05,75,POTION,7680,0,IQ
+I:A green ring adorned by a leaf motif that runs around both its inner and outer sides.
+I:A green ring with leaves etched on its surface.
+I:16,11
+
+I:Orc war-ring
+I:3,3,0,0,15
+I:RING,0.05,170,POTION,7680,0,IQ,1
+I:This red ring has clearly seen its share of action. Its surface is marred by countless chips and dings.
+I:A red ring that looks like it was used in place of a knife.
+I:16,11
+
+I:Ceremonial ring of Count Uluf
+I:3,4,0,0,15
+I:RING,0.05,500,POTION,7680,0,IQ,2
+I:This gold ring with bright green stone was worn by Count Uluf the late Court Astronomer.
+I:A small gold ring with a green gem.
+I:9,12
+
+I:Zarnan's Sealer
+I:2,5,0,0,15
+I:RING,0.05,1200,POTION,7680,0,IQ,3
+I:A strange sygil is etched into the precious gem embedded in the mouth of a dragon on top of this ring.
+I:This ring is clearly a seal of some sort.
+I:10,12
+
+I:Ring of Arthel's Pride
+I:1,6,0,0,20
+I:RING,0.05,2500,POTION,7680,0,IQ,4
+I:This powerful ring was one of the few crafted by the elven jewelers of Arthel.
+I:A blue metal ring with a sparkling stone.
+I:11,12
+
+######################
+# Amulets: action is amulets's enchantability (higher the better)
+#
+I:Crystal amulet
+I:5,1,0,0,10
+I:AMULET,0.05,50,AMULET,2,0,PIETY
+I:Needs description
+I:Needs description
+I:20,12
+
+I:Talizman of the Sun
+I:5,2,0,0,10
+I:AMULET,0.05,250,AMULET,2,0,PIETY
+I:Needs description
+I:Needs description
+I:2,13
+
+I:Amulet of Dhiki the Forest Spirit
+I:4,3,0,0,10
+I:AMULET,0.05,550,AMULET,2,0,PIETY
+I:Needs description
+I:Needs description
+I:3,13
+
+I:Amulet of Watcher
+I:4,4,0,0,12
+I:AMULET,0.05,1300,AMULET,2,0,PIETY,1
+I:Needs description
+I:Needs description
+I:5,13
+
+I:Amulet of Guiding Hand
+I:3,5,0,0,15
+I:AMULET,0.05,2560,AMULET,2,0,PIETY,2
+I:Needs description
+I:Needs description
+I:4,13
+
+I:Token of Ragnar
+I:2,6,0,0,15
+I:AMULET,0.05,5150,AMULET,2,0,PIETY,3
+I:Needs description
+I:Needs description
+I:11,13
+
+I:Amulet of Shielding Aura
+I:1,6,0,0,20
+I:AMULET,0.05,7200,AMULET,2,0,PIETY,4
+I:Needs description
+I:Needs description
+I:9,13
+
+######################
+# Staffs: action is staff's enchantability (higher the better)
+# A staff acts like a quarterstaff when used as a weapon
+#
+
+# rareness,[,action(damage,etc.),speed,distance,maxCharges,[potionSkill,[potionTimeInMinutes]]]
+# type,weight,price[,shape_index,[inventory_location,twohanded,skill[,min_depth[,min_level]]]]
+
+I:Wooden Staff
+I:5,1,0,0,10
+I:STAFF,1.0,50,POLE,48,1,LEADERSHIP
+I:Need description
+I:Need description
+I:16,9
+
+I:Snake Staff
+I:4,2,0,0,10
+I:STAFF,1.0,250,POLE,48,1,LEADERSHIP
+I:Need description
+I:Need description
+I:17,9
+
+I:Staff of Zordok the Round
+I:4,3,0,0,15
+I:STAFF,1.0,600,POLE,48,1,LEADERSHIP,1
+I:Need description
+I:Need description
+I:18,9
+
+I:Staff of Resentful Thoughts
+I:3,4,0,0,15
+I:STAFF,1.0,1500,POLE,48,1,LEADERSHIP,2
+I:Need description
+I:Need description
+I:19,9
+
+I:Staff of the Magus
+I:2,5,0,0,20
+I:STAFF,1.0,3200,POLE,48,1,LEADERSHIP,3
+I:Need description
+I:Need description
+I:20,9
+
+I:Horned Staff of the Shade
+I:1,6,0,0,20
+I:STAFF,1.0,7520,POLE,48,1,LEADERSHIP,4
+I:Need description
+I:Need description
+I:3,10
 
 ##################################################################
 ##################################################################
