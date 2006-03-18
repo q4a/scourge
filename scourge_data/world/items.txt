@@ -295,55 +295,55 @@ A:*-,KN+,RA+,AS+
 I:Quarter Staff
 I:10,1d6,5,2,0
 I:POLE,1.0,20,POLE,48,1,POLE_WEAPON
-I:Need description
-I:Need description
+I:This long wooden pole serves both as a walking stick and fighting staff.
+I:A long wood pole.
 I:15,1
 
 I:Javelin
-I:8,2d4,6,2,0
+I:8,2d4,6,4,0
 I:POLE,1.2,50,POLE,48,2,POLE_WEAPON
-I:Need description
-I:Need description
+I:This lightweight lance is well balanced. Experienced fighters can hurl it at great distances.
+I:A finely crafted, lightweight lance.
 I:6,4
 A:*-,KN+,AS+,RA+,TI+,AR+,LO+
 
 I:Longspear
 I:7,3d3,7,2,0
 I:POLE,2.3,85,POLE,48,1,POLE_WEAPON,1
-I:Need description
-I:Need description
+I:Forged in the ice-caverns of the ancient troll halls of Gormoril (not a masterpiece of precision) this iron lance is made for a large fighter.
+I:A rough iron pole with a sharpened tip.
 I:7,4
 A:*-,KN+,AS+,RA+,TI+,AR+,LO+
 
 I:Trident
 I:7,4d3,8,2,0
 I:POLE,2.8,120,POLE,48,1,POLE_WEAPON,2
-I:Need description
-I:Need description
+I:An ancient long reaching weapon of a gladitorial history. This trident bears the symbol of the sea-lords of Urtap.
+I:A long metal pole with three barbed prongs.
 I:10,4
 A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 
 I:Halberd
 I:7,4d3+1,9,2,0
 I:POLE,3.5,150,POLE,48,1,POLE_WEAPON,3
-I:Need description
-I:Need description
+I:This weapon was once held by the royal guard of the late king Haladil.
+I:A long pole with an axe blade at its top.
 I:8,4
 A:*-,KN+,RA+,AS+
 
 I:War-scythe
 I:7,4d4+2,8,2,0
 I:POLE,4.0,220,POLE,48,1,POLE_WEAPON,4
-I:Need description
-I:Need description
+I:A reaping scythe strengthened and sharpened for more than just crops.
+I:A wicked curved blade atop a simple wooden pole.
 I:9,4
 A:*-,KN+,RA+
 
-I:scythe of Milmoril
+I:Scythe of Milmoril
 I:7,4d4+3,6,2,0
 I:POLE,4.0,220,POLE,48,1,POLE_WEAPON,4
-I:Need description
-I:Need description
+I:The dryad lich Milmoril needs no introduction. This long black scythe with the saw-blade and bone handle was her choice weapon.
+I:A large black scythe of excellent (if evil) workmanship.
 I:3,1
 A:*-,KN+,RA+,AS+,TI+
 
@@ -448,50 +448,50 @@ I:11,12
 I:Crystal amulet
 I:5,1,0,0,10
 I:AMULET,0.05,50,AMULET,2,0,PIETY
-I:Needs description
-I:Needs description
+I:A cheap mountain quartz is framed in copper on a strip of leather.
+I:A clear stone adorns this necklace.
 I:20,12
 
 I:Talizman of the Sun
 I:5,2,0,0,10
 I:AMULET,0.05,250,AMULET,2,0,PIETY
-I:Needs description
-I:Needs description
+I:The full face of the red sun smiles reassuringly from its golden chain.
+I:A golden necklace with a carving of the sun.
 I:2,13
 
 I:Amulet of Dhiki the Forest Spirit
 I:4,3,0,0,10
 I:AMULET,0.05,550,AMULET,2,0,PIETY
-I:Needs description
-I:Needs description
+I:The mysterious forest spirit Dhiki is the patron entity of the Torunga people who crafted this amulet in her likeness.
+I:A green stone shines in this amulet.
 I:3,13
 
 I:Amulet of Watcher
 I:4,4,0,0,12
 I:AMULET,0.05,1300,AMULET,2,0,PIETY,1
-I:Needs description
-I:Needs description
+I:A mysterious single eye peers embedded in purple stone, hanging from a silver chain.
+I:The eye of this amulet watches you.
 I:5,13
 
 I:Amulet of Guiding Hand
 I:3,5,0,0,15
 I:AMULET,0.05,2560,AMULET,2,0,PIETY,2
-I:Needs description
-I:Needs description
+I:A healing hand faces palm out on the pendant of this hanging talizman.
+I:A talizman with the etching of a hand.
 I:4,13
 
 I:Token of Ragnar
 I:2,6,0,0,15
 I:AMULET,0.05,5150,AMULET,2,0,PIETY,3
-I:Needs description
-I:Needs description
+I:Ragnar the dwarven usurper is portrayed on this rare hanging charm.
+I:A picture of a dwarven warrior shows on this amulet.
 I:11,13
 
 I:Amulet of Shielding Aura
 I:1,6,0,0,20
 I:AMULET,0.05,7200,AMULET,2,0,PIETY,4
-I:Needs description
-I:Needs description
+I:When near you feel a calming sensation emanate from the stone of this talizman.
+I:This rare amulet has a calming feel to it.
 I:9,13
 
 ######################
@@ -505,43 +505,43 @@ I:9,13
 I:Wooden Staff
 I:5,1,0,0,10
 I:STAFF,1.0,50,POLE,48,1,LEADERSHIP
-I:Need description
-I:Need description
+I:A simple wooden staff, yet tendrils of magic intrigue your senses.
+I:A simple wooden staff.
 I:16,9
 
 I:Snake Staff
 I:4,2,0,0,10
 I:STAFF,1.0,250,POLE,48,1,LEADERSHIP
-I:Need description
-I:Need description
+I:The snake worshipping halfling mages of Orn crafted this steel staff.
+I:A metal staff with the leering head of a cobra.
 I:17,9
 
-I:Staff of Zordok the Round
+I:Staff of Zordok the Clumsy
 I:4,3,0,0,15
 I:STAFF,1.0,600,POLE,48,1,LEADERSHIP,1
-I:Need description
-I:Need description
+I:The tale of Zordok is one of caution. It's rumored, the hapless lizzard mage managed to trap himself in a staff such as this one.
+I:The wooden staff emits quiet whimpering noises when held.
 I:18,9
 
 I:Staff of Resentful Thoughts
 I:3,4,0,0,15
 I:STAFF,1.0,1500,POLE,48,1,LEADERSHIP,2
-I:Need description
-I:Need description
+I:Don't pick up this staff. Get Zoran's instead... yes, Zoran's staff is much better made.
+I:A staff made of a gray wood.
 I:19,9
 
 I:Staff of the Magus
 I:2,5,0,0,20
 I:STAFF,1.0,3200,POLE,48,1,LEADERSHIP,3
-I:Need description
-I:Need description
+I:Magical runes run the entire length of this staff. It is unmistakeably to be used for something magical.
+I:A black staff with golden runes.
 I:20,9
 
 I:Horned Staff of the Shade
 I:1,6,0,0,20
 I:STAFF,1.0,7520,POLE,48,1,LEADERSHIP,4
-I:Need description
-I:Need description
+I:Pure evil eminates from the horned skull head set atop this staff. The ornamental top appears to suggest you rid yourself of your party members.
+I:A red pole with a horned skull attached to its top.
 I:3,10
 
 ##################################################################
