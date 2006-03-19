@@ -111,6 +111,7 @@ void MagicSchool::initMagic() {
 
 	  // name, level, mana, exp, failure rate, action, distance, single/group target, notes
 	  strcpy(name, strtok(line, ","));
+    strcpy( symbol, strtok(NULL, ",") );
 	  int level =  atoi(strtok(NULL, ","));
 	  int mp =  atoi(strtok(NULL, ","));
 	  int exp =  atoi(strtok(NULL, ","));
@@ -167,7 +168,7 @@ void MagicSchool::initMagic() {
 		" targetType: " << targetType << endl;
       */          
 	  
-	  currentSpell = new Spell( strdup(name), level, mp, exp, failureRate, 
+	  currentSpell = new Spell( strdup(name), strdup( symbol ), level, mp, exp, failureRate, 
                               action, distance, targetType, speed, effect, 
                               creatureTarget, locationTarget, itemTarget, partyTarget,
                               current, iconTileX, iconTileY, 
@@ -252,11 +253,12 @@ Spell *MagicSchool::getRandomSpell(int level) {
 
 
 
-Spell::Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
+Spell::Spell(char *name, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
 			 int distance, int targetType, int speed, int effect, bool creatureTarget, 
 			 bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
 			 int iconTileX, int iconTileY, bool friendly, int stateModPrereq ) {
   this->name = name;
+  this->symbol = symbol;
   this->sound = NULL;
   this->level = level;
   this->mp = mp;

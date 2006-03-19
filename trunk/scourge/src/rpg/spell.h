@@ -70,17 +70,19 @@ class Spell : public Storable {
   int iconTileX, iconTileY;
   bool friendly;
   int stateModPrereq;
+  char *symbol;
 
   static std::map<std::string, Spell*> spellMap;
 
  public:
 
-  Spell(char *name, int level, int mp, int exp, int failureRate, Dice *action, 
+  Spell(char *name, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
         int distance, int targetType, int speed, int effect, bool creatureTarget, 
         bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
         int iconTileX, int iconTileY, bool friendly, int stateModPrereq );
   ~Spell();
 
+  inline char *getSymbol() { return symbol; }
   inline int getStorableType() { return Storable::SPELL_STORABLE; }
   inline const char *isStorable() { return NULL; }
 
