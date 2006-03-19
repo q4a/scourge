@@ -716,20 +716,23 @@ void Item::describeMagic(char *s, char *itemName) {
   }
 
   // Lesser, Greater, etc.
-  if( magicLevel > -1 ) strcat( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
+  if( magicLevel > -1 ) {
+    strcat( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
 
-  // Protective if stateMods are changed
-  if( stateModSet ) {
-    strcat( s, " Protective" );
-  }
-
-  // Slaying if there is a multiplier
-  if( damageMultiplier > 1 ) {
-    strcat( s, " Slaying" );
+    // Protective if stateMods are changed
+    if( stateModSet ) {
+      strcat( s, " Protective" );
+    }
+  
+    // Slaying if there is a multiplier
+    if( damageMultiplier > 1 ) {
+      strcat( s, " Slaying" );
+    }
+      
+    strcat(s, " ");
   }
 
   // the item's name
-  strcat(s, " ");
   strcat(s, itemName);
   
   // the bonus
