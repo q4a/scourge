@@ -302,7 +302,7 @@ I:15,1
 I:Javelin
 I:8,2d4,6,4,0
 I:POLE,1.2,50,POLE,48,2,POLE_WEAPON
-I:This lightweight lance is well balanced. Experienced fighters can hurl it at great distances.
+I:A mid-range weapon of precision and finesse, the javelin grew in popularity as a court hunting weapon under Haladil.
 I:A finely crafted, lightweight lance.
 I:6,4
 A:*-,KN+,AS+,RA+,TI+,AR+,LO+
@@ -604,55 +604,55 @@ I:1,9
 I:Buckler
 I:10,1,0,0,0
 I:ARMOR,2,15,SHIELD,48,0,SHIELD_DEFEND
-I:Need description
-I:Need description
+I:I'm sure the couple flimsy boards held together by cat-gut will provide tons of life-saving cover in battle. On the positive side, at least it's a small, manuverable shield.
+I:A small home-made wooden shield.
 I:12,8
 
 I:Wooden Shield
 I:10,2,0,0,0
 I:ARMOR,5,22,SHIELD,48,0,SHIELD_DEFEND
-I:Need description
-I:Need description
+I:The shield's hard wood is dried and flame toughened. It is covered in martial colors and someone jokingly painted a bulls-eye on it.
+I:A well-made, sturdy wooden shield.
 I:11,8
 A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 
 I:Steel Shield
 I:10,3,0,0,0
 I:ARMOR,8,60,SHIELD,48,0,SHIELD_DEFEND,1
-I:Need description
-I:Need description
+I:This triangular metal shield would be a boon to adventuring knight, if not for the the countless dents and rust-spots that cover its surface.
+I:A triangular metal shield.
 I:15,8
 A:*-,KN+,RA+,TI+,AS+
 
 I:Ornate Dragon Shield
 I:10,2,0,0,0
 I:ARMOR,8,45,SHIELD,48,0,SHIELD_DEFEND,1
-I:Need description
-I:Need description
+I:A symbolic, painted dragon roars to life on this shield, as if to only remind its wearer of the absolute futility of carrying it against an actual one.
+I:A metal shield covered with the painting of an ornate dragon.
 I:10,8
 A:*-,KN+,RA+,TI+,AS+
 
 I:Cavalry Shield
 I:10,3,0,0,0
 I:ARMOR,10,60,SHIELD,48,0,SHIELD_DEFEND,2
-I:Need description
-I:Need description
+I:A heavy duty cavalry shield, designed to withstand an impact by the lance of a horse-mounted rider, charging at full speed. Judging by the gaping whole in its center, it failed to do so last time.
+I:A heavy metal shield.
 I:14,8
 A:*-,KN+,RA+
 
 I:Trollhide Shield
 I:10,2,0,0,0
 I:ARMOR,7,30,SHIELD,48,0,SHIELD_DEFEND,2
-I:Need description
-I:Need description
+I:A shield cleverly constructed from the cured hide of a mountain troll. These were especially popular during the dwarven-troll war when each side used such handiwork to idle away the time between squirmishes.
+I:A gray shield featuring advanced troll-hide technology.
 I:13,8
 A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 
 I:Shield of the Golden Lotus
 I:10,3,0,0,0
 I:ARMOR,3.5,230,SHIELD,48,0,SHIELD_DEFEND,3
-I:Need description
-I:Need description
+I:If one is smitten due to a lack of protective cover, will anyone hear of the tragedy? In order for such paradox to not come to pass, the clerics of Minirmuir created these divine shields.
+I:A shield exhibiting golden harmony and unperturbable peace.
 I:16,8
 A:*-,KN+
 
