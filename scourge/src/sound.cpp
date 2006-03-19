@@ -23,8 +23,7 @@
 
 using namespace std;
 
-#define MENU_MUSIC_COUNT 2.0f
-#define DUNGEON_MUSIC_COUNT 2.0f
+#define MISSION_MUSIC_COUNT 4.0f
 
 Sound::Sound(Preferences *preferences) {
   haveSound = false;
@@ -38,8 +37,8 @@ Sound::Sound(Preferences *preferences) {
       haveSound = true;
     }
 
-    menuMusicIndex = dungeonMusicIndex = -1;
-    menuMusic = dungeonMusic = NULL;
+    missionMusicIndex = -1;
+    menuMusic = hqMusic = missionMusic = NULL;
     if(haveSound) {
       selectMusic( preferences );
     }
@@ -55,9 +54,13 @@ Sound::~Sound() {
       Mix_FreeMusic( menuMusic );
       menuMusic = NULL;
     }
-    if( dungeonMusic ) {
-      Mix_FreeMusic( dungeonMusic );
-      dungeonMusic = NULL;
+    if(hqMusic) {
+      Mix_FreeMusic(hqMusic);
+      hqMusic = NULL;
+    }
+    if(missionMusic) {
+      Mix_FreeMusic(missionMusic);
+      missionMusic = NULL;
     }
     // delete sounds
     for(map<string, Mix_Chunk*>::iterator i=soundMap.begin(); i != soundMap.end(); ++i) {
@@ -72,59 +75,52 @@ Sound::~Sound() {
 #endif
 }
 
-// randomly select menu and dungeon music
+// randomly select mission music, load others if needed
 void Sound::selectMusic( Preferences *preferences ) {
 #ifdef HAVE_SDL_MIXER
-  int n = (int)( (float)MENU_MUSIC_COUNT * rand() / RAND_MAX );
-  if( menuMusicIndex != n ) {
-    menuMusicIndex = n;
-
-    // unload the current one
-    if(menuMusic) {
-      Mix_FreeMusic( menuMusic );
-      menuMusic = NULL;
-    }
-
-    // load the new one
-    char fn[300];
-    if( menuMusicIndex == 0 ) {
-      sprintf( fn, "%s/sound/menu.ogg", rootDir );
-    } else {
-      sprintf( fn, "%s/sound/menu%d.ogg", rootDir, menuMusicIndex );
-    }
-    menuMusic = Mix_LoadMUS( fn );
-    if( !menuMusic ) {
+   // load fixed musics if needed
+   if(!menuMusic) {
+     char fn[300];
+     sprintf(fn, "%s/sound/music/menu.ogg", rootDir);
+     menuMusic = Mix_LoadMUS(fn);
+     if( !menuMusic ) {
       cerr << "*** Error: couldn't load music: " << fn << endl;
       cerr << "\t" << Mix_GetError() << endl;
-    }
-  }
+     }
+   }
+   if(!hqMusic) {
+     char fn[300];
+     sprintf(fn, "%s/sound/music/headquarter.ogg", rootDir);
+     hqMusic = Mix_LoadMUS(fn);
+     if( !hqMusic ) {
+      cerr << "*** Error: couldn't load music: " << fn << endl;
+      cerr << "\t" << Mix_GetError() << endl;
+     }
+   }
 
-  n = (int)( (float)DUNGEON_MUSIC_COUNT * rand() / RAND_MAX );
-  if( dungeonMusicIndex != n ) {
-    dungeonMusicIndex = n;
+  //selects mission music
+  int n = (int)( (float)MISSION_MUSIC_COUNT * rand() / RAND_MAX)+1;
+  if(missionMusicIndex != n ) {
+    missionMusicIndex = n;
 
     // unload the current one
-    if( dungeonMusic ) {
-      Mix_FreeMusic( dungeonMusic );
-      dungeonMusic = NULL;
+    if(missionMusic) {
+      Mix_FreeMusic(missionMusic);
+      missionMusic = NULL;
     }
 
     // load the new one
     char fn[300];
-    if( dungeonMusicIndex == 0 ) {
-      sprintf( fn, "%s/sound/dungeon.ogg", rootDir );
-    } else {
-      sprintf( fn, "%s/sound/dungeon%d.ogg", rootDir, dungeonMusicIndex );
-    }
-    dungeonMusic = Mix_LoadMUS( fn );
-    if( !dungeonMusic ) {
+    sprintf( fn, "%s/sound/music/track%02d.ogg", rootDir, missionMusicIndex);
+    missionMusic = Mix_LoadMUS( fn );
+    if( !missionMusic ) {
       cerr << "*** Error: couldn't load music: " << fn << endl;
       cerr << "\t" << Mix_GetError() << endl;
     }
   }
 
   setMusicVolume( preferences->getMusicVolume() );
-#endif  
+#endif
 }
 
 #ifdef HAVE_SDL_MIXER
@@ -136,12 +132,12 @@ void Sound::playMusic(Mix_Music *music) {
   }
 }
 
-void Sound::stopMusic(Mix_Music *music) {
-  if(haveSound && music) {
+void Sound::stopMusic() {
+  if(haveSound) {
     if(!Mix_FadeOutMusic(3000)) {
       cerr << "*** Error stopping music: " << Mix_GetError() << endl;
       // force stop music
-      Mix_HaltMusic();      
+      Mix_HaltMusic();
     } else {
       /*
       while(Mix_PlayingMusic()) {
@@ -165,12 +161,12 @@ void Sound::loadSounds(Preferences *preferences) {
   storeSound(0, Window::DROP_FAILED);
 
 //  cerr << "Loading battle sounds..." << endl;
-  for(int i = 0; i < Battle::getSoundCount(); i++) { 
+  for(int i = 0; i < Battle::getSoundCount(); i++) {
     storeSound(0, Battle::getSound(i));
   }
 
 //  cerr << "Loading character sounds..." << endl;
-  for(map<string, Character*>::iterator i = Character::character_class.begin(); 
+  for(map<string, Character*>::iterator i = Character::character_class.begin();
        i != Character::character_class.end(); ++i) {
     //Creature *creature = i->first;
     Character *c = i->second;
@@ -185,7 +181,7 @@ void Sound::loadSounds(Preferences *preferences) {
   }
 
 //  cerr << "Loading item sounds..." << endl;
-  for(map<int, vector<string>*>::iterator i = Item::soundMap.begin(); 
+  for(map<int, vector<string>*>::iterator i = Item::soundMap.begin();
        i != Item::soundMap.end(); ++i) {
     //Creature *creature = i->first;
     vector<string> *v = i->second;
@@ -204,10 +200,10 @@ void Sound::loadSounds(Preferences *preferences) {
 
   /*
   cerr << "Loading monster sounds..." << endl;
-  for(map<string, map<int, vector<string>*>*>::iterator i = Monster::soundMap.begin(); 
+  for(map<string, map<int, vector<string>*>*>::iterator i = Monster::soundMap.begin();
       i != Monster::soundMap.end(); ++i) {
     map<int, vector<string>*> *m = i->second;
-    for(map<int, vector<string>*>::iterator i2 = m->begin(); 
+    for(map<int, vector<string>*>::iterator i2 = m->begin();
         i2 != m->end(); ++i2) {
       vector<string> *v = i2->second;
       for(int i = 0; i < (int)v->size(); i++) {
@@ -216,12 +212,12 @@ void Sound::loadSounds(Preferences *preferences) {
       }
     }
   }
-  */  
+  */
 
   setEffectsVolume(preferences->getEffectsVolume());
 }
 
-void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
+void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m,
 							   Preferences *preferences ) {
 //  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
   if( m ) {
@@ -236,7 +232,7 @@ void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m,
   setEffectsVolume(preferences->getEffectsVolume());
 }
 
-void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m ) {  
+void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m ) {
 //  cerr << "Unloading monster sounds for " << monsterType << "..." << endl;
   if( m ) {
 	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
@@ -284,7 +280,7 @@ void Sound::unloadSound( int type, const char *file ) {
 	  soundMap.erase( fileStr );
 	}
   }
-#endif 
+#endif
 }
 
 void Sound::playSound(const char *file) {
@@ -319,3 +315,4 @@ void Sound::setEffectsVolume(int volume) {
   }
 #endif
 }
+

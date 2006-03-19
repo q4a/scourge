@@ -26,45 +26,43 @@
 
 class Sound {
 private:
-  int menuMusicIndex;
-  int dungeonMusicIndex;
+  int missionMusicIndex;
   bool haveSound;
 #ifdef HAVE_SDL_MIXER
   Mix_Music *menuMusic;
-  Mix_Music *dungeonMusic;
+  Mix_Music *hqMusic;
+  Mix_Music *missionMusic;
   std::map<std::string, Mix_Chunk*> soundMap;
 #endif
 
 public:
   Sound(Preferences *preferences);
   virtual ~Sound();
-  
+
   inline void playMusicMenu() {
 #ifdef HAVE_SDL_MIXER
     playMusic(menuMusic);
 #endif
   }
 
-  inline void stopMusicMenu() {
+  inline void playMusicHQ() {
 #ifdef HAVE_SDL_MIXER
-    stopMusic(menuMusic);
+    playMusic(hqMusic);
 #endif
   }
 
-  inline void playMusicDungeon() {
+  inline void playMusicMission() {
 #ifdef HAVE_SDL_MIXER
-    playMusic(dungeonMusic);
+    playMusic(missionMusic);
 #endif
   }
 
-  inline void stopMusicDungeon() {
 #ifdef HAVE_SDL_MIXER
-    stopMusic(dungeonMusic);
+  void stopMusic();
 #endif
-  }
 
   void loadSounds(Preferences *preferences);
-  void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m, 
+  void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
 						  Preferences *preferences );
   void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );
 
@@ -80,8 +78,8 @@ public:
 protected:
 #ifdef HAVE_SDL_MIXER
   void playMusic(Mix_Music *music);
-  void stopMusic(Mix_Music *music);
 #endif
 };
 
 #endif
+
