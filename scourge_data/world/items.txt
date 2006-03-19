@@ -619,7 +619,7 @@ A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 I:Steel Shield
 I:10,3,0,0,0
 I:ARMOR,8,60,SHIELD,48,0,SHIELD_DEFEND,1
-I:This triangular metal shield would be a boon to adventuring knight, if not for the the countless dents and rust-spots that cover its surface.
+I:This triangular metal shield would be a boon to any adventuring knight, if not for the the countless dents and rust-spots that cover its surface.
 I:A triangular metal shield.
 I:15,8
 A:*-,KN+,RA+,TI+,AS+
