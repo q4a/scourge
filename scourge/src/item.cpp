@@ -544,7 +544,9 @@ void Item::commonInit( bool loading ) {
   } else duration = rpgItem->getDurationRpg();
 
   // assign a spell to the item
-  if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell ) {
+  // the deeper you go, the more likely that items contain spells
+  if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell &&
+      0 == (int)( (float)( MAX_MISSION_DEPTH - ( session->getCurrentMission() ? session->getCurrentMission()->getDepth() : 0 ) ) * rand() / RAND_MAX ) ) {
     this->spell = MagicSchool::getRandomSpell( 1 );
     price += (int)Util::getRandomSum( (float)(basePrice / 2), this->spell->getLevel() );
   }
@@ -563,14 +565,19 @@ void Item::commonInit( bool loading ) {
   stateModSet = false;
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) stateMod[i] = 0;
 
-  if( !rpgItem->isEnchantable() || loading ) return;
+  if( rpgItem->isEnchantable() && !loading ) {
+    // roll for magic
+    int n = (int)( ( 200.0f - ( level * 1.5f ) ) * rand()/RAND_MAX );
+    if( n < 5 ) enchant( Constants::DIVINE_MAGIC_ITEM );
+    else if( n < 15 ) enchant( Constants::CHAMPION_MAGIC_ITEM );
+    else if( n < 30 ) enchant( Constants::GREATER_MAGIC_ITEM );
+    else if( n < 50 ) enchant( Constants::LESSER_MAGIC_ITEM );
+  }
 
-  // roll for magic
-  int n = (int)( ( 200.0f - ( level * 1.5f ) ) * rand()/RAND_MAX );
-  if( n < 5 ) enchant( Constants::DIVINE_MAGIC_ITEM );
-  else if( n < 15 ) enchant( Constants::CHAMPION_MAGIC_ITEM );
-  else if( n < 30 ) enchant( Constants::GREATER_MAGIC_ITEM );
-  else if( n < 50 ) enchant( Constants::LESSER_MAGIC_ITEM );
+  // describe spell-holding items also
+  if( magicLevel < 0 && RpgItem::itemTypes[ rpgItem->getType() ].hasSpell ) {
+    describeMagic( itemName, rpgItem->getName() );
+  }
 }
 
 void Item::enchant( int newMagicLevel ) {
@@ -700,8 +707,16 @@ void Item::describeMagic(char *s, char *itemName) {
   // e.g.: Lesser broadsword + 3 of nature magic
   char tmp[80];
 
+  strcpy( s, "" );
+
+  // Stored spell
+  if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
+    strcat( s, spell->getSymbol() );
+    strcat( s, " " );
+  }
+
   // Lesser, Greater, etc.
-  strcpy( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
+  if( magicLevel > -1 ) strcat( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
 
   // Protective if stateMods are changed
   if( stateModSet ) {
