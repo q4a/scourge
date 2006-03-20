@@ -3,7 +3,7 @@
  * Written by: Mike Hearn <mike@theoretic.com>
  *             Hongli Lai <h.lai@chello.nl>
  * http://autopackage.org/
- * 
+ *
  * This source code is public domain. You can relicense this code
  * under whatever license you want.
  *
@@ -58,7 +58,7 @@ extern "C" {
 #endif /* __GNUC__ */
 
 
-static br_locate_fallback_func fallback_func = NULL;
+static br_locate_fallback_func fallback_func = (br_locate_fallback_func)NULL;
 static void *fallback_data = NULL;
 
 
