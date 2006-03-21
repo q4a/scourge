@@ -65,6 +65,7 @@ private:
 	Button *equipButton, *fixButton, *removeCurseButton, *skillAddButton, *skillSubButton;
 	Button *combineButton, *enchantButton, *identifyButton, *openButton, *levelUpButton;
 	Button *eatDrinkButton, *castScrollButton, *transcribeButton, *infoButton, *poolButton;
+  Button *storeItemButton;
 	ScrollingList *invList;
 	char **pcInvText;
 
@@ -133,11 +134,13 @@ public:
 
   inline bool inStoreSpellMode() { 
     return ( storeSpellButton->isSelected() || 
-             storeSpecialButton->isSelected() ); 
+             storeSpecialButton->isSelected() ||
+             storeItemButton->isSelected() ); 
     }
   inline void setStoreSpellMode( bool b ) { 
     storeSpellButton->setSelected( b ); 
     storeSpecialButton->setSelected( b ); 
+    storeItemButton->setSelected( b );
     if( !b ) storable = NULL;
   }
   inline Storable *getStorable() { return storable; }

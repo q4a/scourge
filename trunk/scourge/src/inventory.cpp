@@ -145,7 +145,7 @@ Inventory::Inventory(Scourge *scourge) {
   yy+=buttonHeight;
   eatDrinkButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Eat/Drink", INVENTORY );
   yy+=buttonHeight;
-  castScrollButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Cast Scroll", INVENTORY );
+  castScrollButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Cast Spell", INVENTORY );
   yy+=buttonHeight;
   transcribeButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Transcribe", INVENTORY );
   yy+=buttonHeight;
@@ -154,6 +154,8 @@ Inventory::Inventory(Scourge *scourge) {
   infoButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Info", INVENTORY );
   yy+=buttonHeight;
   poolButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Pool Money", INVENTORY );
+  yy+=buttonHeight;
+  storeItemButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Store", INVENTORY, true );
   yy+=buttonHeight;
 
   yy+=5;
@@ -612,23 +614,42 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         if(!mainWin->isLocked()) mainWin->setVisible(false);
       }
     }
+  } else if(widget == storeItemButton) {
+    int itemIndex = invList->getSelectedLine();  
+    if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
+      Item *item = creature->getInventory(itemIndex);
+      if( item->getSpell() ) {
+        storable = (Storable*)item;
+      } else {
+        scourge->showMessageDialog("This item is out of charges.");
+      }
+    } else {
+      scourge->showMessageDialog("You may only store items with spells.");
+    }
+    if( !storable ) {
+      storeItemButton->setSelected( false );
+    }
   } else if(widget == castScrollButton) {
     // no MP-s used when casting from scroll, but the scroll is destroyed.
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
       Item *item = creature->getInventory(itemIndex);
-      if(item->getSpell()) {
-        creature->setAction(Constants::ACTION_CAST_SPELL, 
-                            item,
-                            item->getSpell());
-        if(!item->getSpell()->isPartyTargetAllowed()) {
-          scourge->setTargetSelectionFor(creature);
+      if( item->getSpell() ) {
+        if( item->getMaxCharges() == 0 || item->getCurrentCharges() > 0 ) {
+          creature->setAction(Constants::ACTION_CAST_SPELL, 
+                              item,
+                              item->getSpell());
+          if(!item->getSpell()->isPartyTargetAllowed()) {
+            scourge->setTargetSelectionFor(creature);
+          } else {
+            creature->setTargetCreature(creature);
+          }
+          if(!mainWin->isLocked()) mainWin->setVisible(false);
         } else {
-          creature->setTargetCreature(creature);
+          scourge->showMessageDialog("This item is out of charges.");
         }
-        if(!mainWin->isLocked()) mainWin->setVisible(false);
       } else {
-        scourge->showMessageDialog("You can only cast objects of magical nature!");
+        scourge->showMessageDialog("You cannot cast a spell with this item.");
       }
     }
   } else if(widget == transcribeButton) {

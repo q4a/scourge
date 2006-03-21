@@ -249,7 +249,7 @@ Scourge::~Scourge(){
 
 void Scourge::startMission() {
 
-#ifdef DEBUG_SQUIRREL
+#if DEBUG_SQUIRREL
   squirrelWin->setVisible( true );
 #endif
 
@@ -660,7 +660,7 @@ void Scourge::startMission() {
   // delete the party (w/o deleting the party ui)
   party->deleteParty();
 
-#ifdef DEBUG_SQUIRREL
+#if DEBUG_SQUIRREL
   squirrelWin->setVisible( false );
 #endif
   getSession()->getSquirrel()->endGame();
@@ -3046,6 +3046,7 @@ void Scourge::createPartyUI() {
     int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 10;
     quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, 20,
                                 this, NULL, true );
+    quickSpell[i]->setTooltip( "Click to assign a spell, capability or magic item." );
     cards->addWidget( quickSpell[i], 0 );
   }
 
@@ -3127,7 +3128,11 @@ void Scourge::drawWidgetContents(Widget *w) {
             glEnable(GL_TEXTURE_2D);
             glPushMatrix();
             //    glTranslatef( x, y, 0 );
-            glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
+            if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
+              glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->tilesTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
+            } else {
+              glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
+            }            
             glColor4f(1, 1, 1, 1);
 
             glBegin( GL_QUADS );
@@ -3440,6 +3445,8 @@ void Scourge::quickSpellAction( int index ) {
         executeQuickSpell( (Spell*)storable );
       } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
         executeSpecialSkill( (SpecialSkill*)storable );
+      } else if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
+        executeItem( (Item*)storable );
       } else {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
       }
@@ -3465,6 +3472,18 @@ void Scourge::executeSpecialSkill( SpecialSkill *skill ) {
     showMessageDialog( err );
   }
   */
+}
+
+void Scourge::executeItem( Item *item ) {
+  Creature *creature = getParty()->getPlayer();
+  creature->setAction(Constants::ACTION_CAST_SPELL,
+                      item,
+                      item->getSpell());
+  if(!item->getSpell()->isPartyTargetAllowed()) {
+    setTargetSelectionFor(creature);
+  } else {
+    creature->setTargetCreature(creature);
+  }
 }
 
 void Scourge::executeQuickSpell( Spell *spell ) {

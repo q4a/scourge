@@ -547,8 +547,17 @@ void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
         pc[i]->setMoney( 10000 );
 
         if( i == 0 ) {
+          // add all special items
           for( int t = 0; t < RpgItem::getSpecialCount(); t++ ) {
             pc[i]->addInventory( scourge->getSession()->newItem( RpgItem::getSpecial( t ) ), true );
+          }
+          // add some spell-containing items
+          for( int t = 0; t < 5; t++ ) {
+            pc[i]->addInventory( 
+              scourge->getSession()->newItem( 
+                RpgItem::getItemByName( "Dwarven steel ring" ),
+                1, 
+                MagicSchool::getRandomSpell( 1 ) ), true );
           }
         }
       }

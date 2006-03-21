@@ -714,6 +714,7 @@ public:
   void quickSpellAction( int index );
   void executeQuickSpell( Spell *spell );
   void executeSpecialSkill( SpecialSkill *skill );
+  void executeItem( Item *item );
 
   void drawDescriptions(ScrollingList *list);
 

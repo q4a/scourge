@@ -38,7 +38,8 @@ public:
 
   enum {
     SPELL_STORABLE=0,
-    SPECIAL_STORABLE
+    SPECIAL_STORABLE,
+    ITEM_STORABLE
   };
 
   virtual const char *getName() = 0;
