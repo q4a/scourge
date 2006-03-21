@@ -97,6 +97,10 @@ private:
 
   Uint32 forbiddenTimer;
 
+  Color fadeout;
+  Uint32 fadeoutTimer;
+  int fadeoutSteps, fadeoutCurrentStep;
+
 public: 
 
   static bool showDebugInfo;
@@ -105,6 +109,8 @@ public:
 
   SDLHandler( GameAdapter *gameAdapter );
   virtual ~SDLHandler();
+
+  void startFadeout( float r, float g, float b, float a, int steps = 50 );
 
   inline void blockEvent() { willBlockEvent = true; }
 

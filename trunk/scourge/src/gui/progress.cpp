@@ -129,7 +129,11 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   }
   glDisable( GL_TEXTURE_2D );
   /* Draw it to the screen */
-  if(updateScreen) SDL_GL_SwapBuffers( );
+  if(updateScreen) {
+    //if( scourgeGui ) scourgeGui->drawScreen();
+    //else 
+    SDL_GL_SwapBuffers( );
+  }
   status++;
   //sleep(1);
   

@@ -141,11 +141,11 @@ void Scourge::initUI() {
   // create the mission board
   this->board = session->getBoard();
 
-  this->party = session->getParty();
-  createPartyUI();
-  createBoardUI();
+  this->party = session->getParty();  
+  createBoardUI();  
   netPlay = new NetPlay(this);
   createUI();
+  createPartyUI();
 
   // show the main menu
   mainMenu = new MainMenu(this);
@@ -187,8 +187,11 @@ void Scourge::start() {
        value == MULTIPLAYER_START ||
        value == CONTINUE_GAME ||
        value == EDITOR ) {
-      mainMenu->hide();
+
+      // fade away
       getSDLHandler()->getSound()->stopMusic();
+      getSDLHandler()->startFadeout( 0, 0, 0, 1, 20 );
+      mainMenu->hide();      
 
       initMainMenu = true;
       bool failed = false;
@@ -269,9 +272,9 @@ void Scourge::startMission() {
 
     oldStory = currentStory;
 
-    // add gui
-    mainWin->setVisible(true);
+    // add gui    
     messageWin->setVisible(true);
+    mainWin->setVisible(true);
     if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
 
     // create the map
@@ -2414,8 +2417,8 @@ void Scourge::setUILayout() {
   getSDLHandler()->getScreen()->w -
   (PARTY_GUI_WIDTH + (Window::SCREEN_GUTTER * 2));
 
-  mainWin->setVisible( false );
   messageWin->setVisible(false);
+  mainWin->setVisible( false );
   switch(layoutMode) {
   case Constants::GUI_LAYOUT_ORIGINAL:
     messageList->resize(width, PARTY_GUI_HEIGHT - 25);
@@ -2491,6 +2494,7 @@ void Scourge::setUILayout() {
   optionsButton->setSelected( optionsMenu->isVisible() );
 
   messageWin->setVisible(true, false);
+  messageWin->toBottom();
 
   mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
                 getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
