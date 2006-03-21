@@ -21,6 +21,7 @@
 #include "constants.h"
 #include "persist.h"
 #include "render/rendereditem.h"
+#include "storable.h"
 #include <vector>
 
 class RpgItem;
@@ -40,7 +41,7 @@ class ShapePalette;
 
   */
 
-class Item : public RenderedItem {
+class Item : public RenderedItem, Storable {
  private:
   RpgItem *rpgItem;
   int shapeIndex;
@@ -156,6 +157,13 @@ public:
   inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
 
   void debugMagic(char *s);
+
+  // storable interface
+  const char *getName();
+  int getIconTileX();
+  int getIconTileY();
+  int getStorableType();
+  const char *isStorable();
 
  protected:
   void commonInit( bool loading=false );

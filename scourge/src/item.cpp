@@ -810,6 +810,30 @@ void Item::setCurrentCharges( int n ) {
 
 void Item::setSpell( Spell *spell ) { 
   this->spell = spell; 
-  sprintf( this->itemName, "Scroll of %s", spell->getName() ); 
+  if( getRpgItem()->getType() == RpgItem::SCROLL ) {
+    sprintf( this->itemName, "Scroll of %s", spell->getName() ); 
+  } else {
+    describeMagic( itemName, rpgItem->getName() );
+  }
+}
+
+const char *Item::getName() {
+  return getItemName();
+}
+
+int Item::getIconTileX() {
+  return rpgItem->getIconTileX();
+}
+
+int Item::getIconTileY() {
+  return rpgItem->getIconTileY();
+}
+
+int Item::getStorableType() {
+  return Storable::ITEM_STORABLE;
+}
+
+const char *Item::isStorable() {
+  return NULL;
 }
 

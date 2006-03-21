@@ -645,13 +645,20 @@ void Battle::castSpell( bool alwaysSucceeds ) {
     int n = creature->getMp() - creature->getActionSpell()->getMp();
     if(n < 0) n = 0;
     creature->setMp( n );
-  } else {
-    // try to destroy the scroll
+  } else {    
+    // try to destroy the scroll or use up a charge
     int itemIndex = creature->findInInventory(creature->getActionItem());
     if(itemIndex > -1) {
-      creature->removeInventory(itemIndex);
-      sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
-      session->getMap()->addDescription(message);
+      if( creature->getActionItem()->getMaxCharges() > 0 ) {
+        creature->getActionItem()->setCurrentCharges( 
+          creature->getActionItem()->getCurrentCharges() - 1 );
+        sprintf(message, "Your %s feels lighter.", creature->getActionItem()->getItemName() );
+        session->getMap()->addDescription( message );
+      } else {
+        creature->removeInventory(itemIndex);
+        sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
+        session->getMap()->addDescription(message);
+      }
       if(!session->getGameAdapter()->isHeadless()) 
         session->getGameAdapter()->refreshInventoryUI();
     } else {
