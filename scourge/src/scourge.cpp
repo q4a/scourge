@@ -562,6 +562,7 @@ void Scourge::startMission() {
 
       // stop the music
       getSDLHandler()->getSound()->stopMusic();
+      getSDLHandler()->startFadeout( 0, 0, 0, 1, 20 );
     } else {
       showMessageDialog( "Error #666: Failed to create map." );
     }
