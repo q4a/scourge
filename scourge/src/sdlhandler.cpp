@@ -31,6 +31,8 @@ using namespace std;
 
 #define FORBIDDEN_CURSOR_TIME 2000
 
+#define FADEOUT_SPEED 10
+
 //#define DEBUG_MOUSE_FOCUS 1
 
 bool SDLHandler::stencilBufferUsed = false;
@@ -65,6 +67,10 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   willUnlockMouse = false;
   willBlockEvent = false;
   forbiddenTimer = 0;
+  fadeout.r = fadeout.g = fadeout.b = fadeout.a = 0;
+  fadeoutSteps = 16;
+  fadeoutCurrentStep = 0;
+  fadeoutTimer = 0;
 }
 
 SDLHandler::~SDLHandler(){
@@ -605,6 +611,12 @@ void SDLHandler::drawCursor() {
 }
 
 void SDLHandler::drawScreen() {
+
+  if( !eventHandler ) {
+    SDL_GL_SwapBuffers( );
+    return;
+  }
+
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   if(stencilBufferUsed) glClear( GL_STENCIL_BUFFER_BIT );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
@@ -616,6 +628,40 @@ void SDLHandler::drawScreen() {
   Window::drawVisibleWindows();
 
   screenView->drawAfter();
+
+  if( fadeoutTimer > 0 ) {
+    glPushMatrix();
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glDisable( GL_TEXTURE_2D );
+    glDisable( GL_DEPTH_TEST );
+
+    glColor4f( fadeout.r, fadeout.g, fadeout.b, 
+               ( fadeout.a * fadeoutCurrentStep ) / (float)fadeoutSteps );
+    glLoadIdentity();
+    glBegin( GL_QUADS );
+    glVertex2d( 0, screen->h );
+    glVertex2d( screen->w, screen->h );
+    glVertex2d( screen->w, 0 );
+    glVertex2d( 0, 0 );
+    glEnd();
+
+    glEnable( GL_DEPTH_TEST );
+    glDisable( GL_BLEND );
+    glEnable( GL_TEXTURE_2D );
+    glPopMatrix();
+
+
+    Uint32 t = SDL_GetTicks();
+    if( t - fadeoutTimer > FADEOUT_SPEED ) {
+      fadeoutCurrentStep++;
+      if( fadeoutCurrentStep > fadeoutSteps ) {
+        fadeoutTimer = 0;
+      } else {
+        fadeoutTimer = t;
+      }
+    }
+  }
 
   drawCursor();
 
@@ -651,6 +697,19 @@ if( showDebugInfo ) {
       T0 = t;
       Frames = 0;
     }
+  }
+}
+
+void SDLHandler::startFadeout( float r, float g, float b, float a, int steps ) {
+  fadeout.r = r;
+  fadeout.g = g;
+  fadeout.b = b;
+  fadeout.a = a;
+  fadeoutSteps = steps;
+  fadeoutCurrentStep = 0;
+  fadeoutTimer = SDL_GetTicks();
+  while( fadeoutTimer > 0 ) {
+    drawScreen();
   }
 }
 

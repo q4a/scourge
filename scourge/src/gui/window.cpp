@@ -124,7 +124,9 @@ void Window::drawVisibleWindows() {
   //  glDisable(GL_CULL_FACE);
   glDisable(GL_DEPTH_TEST);
   for(int i = 0; i < windowCount; i++) {
-    if(window[i]->isVisible()) window[i]->drawWidget(NULL);
+    if(window[i]->isVisible()) {
+      window[i]->drawWidget(NULL);
+    }
   }
   glEnable(GL_DEPTH_TEST);
 }
