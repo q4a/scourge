@@ -348,8 +348,18 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
       Spell *spell = Spell::getSpellByName( (char*)info->quick_spell[ i ] );
       if( spell ) creature->setQuickSpell( i, spell );
       else {
-        SpecialSkill *special = SpecialSkill::findByName( (char*)info->quick_spell[ i ] );
+        SpecialSkill *special = SpecialSkill::findByName( (char*)info->quick_spell[ i ], false );
         if( special ) creature->setQuickSpell( i, special );
+        else {
+          // it's an item. Find it          
+          for( int t = 0; t < creature->getInventoryCount(); t++ ) {
+            Item *item = creature->getInventory( t );            
+            if( !strcmp( item->getName(), (char*)info->quick_spell[ i ] ) ) {
+              creature->setQuickSpell( i, (Storable*)item );
+              break;
+            }
+          }
+        }
       }
     }
   }

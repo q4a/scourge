@@ -53,10 +53,10 @@ public:
   static std::vector<SpecialSkill*> skills;
   static std::map<std::string,SpecialSkill*> skillsByName;
 
-  inline static SpecialSkill *findByName( const char *name ) {
+  inline static SpecialSkill *findByName( const char *name, bool showError=true ) {
     std::string s = name;
     SpecialSkill *ss = ( skillsByName.find( s ) == skillsByName.end() ? NULL : skillsByName[ s ] );
-    if( !ss ) std::cerr << "*** Error can't find special skill: " << name << std::endl;
+    if( !ss && showError ) std::cerr << "*** Error can't find special skill: " << name << std::endl;
     return ss;
   }
 

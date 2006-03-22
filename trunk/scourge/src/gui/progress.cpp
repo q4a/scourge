@@ -36,7 +36,7 @@ Progress::Progress(ScourgeGui *scourgeGui, GLuint texture, GLuint highlight,
 Progress::~Progress() {
 }
 
-void Progress::updateStatus(const char *message, bool updateScreen, int n, int max, int alt) {
+void Progress::updateStatus(const char *message, bool updateScreen, int n, int max, int alt, bool drawScreen) {
   if(n != -1) status = n;
   if(max != -1) maxStatus = max;
 
@@ -130,9 +130,9 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   glDisable( GL_TEXTURE_2D );
   /* Draw it to the screen */
   if(updateScreen) {
-    //if( scourgeGui ) scourgeGui->drawScreen();
-    //else 
-    SDL_GL_SwapBuffers( );
+    if( drawScreen ) {
+      scourgeGui->processEventsAndRepaint();
+    } else SDL_GL_SwapBuffers( );
   }
   status++;
   //sleep(1);

@@ -63,7 +63,7 @@ TerrainGenerator::~TerrainGenerator() {
 }
 
 void TerrainGenerator::updateStatus(const char *statusMessage) {
-  progress->updateStatus(statusMessage);
+  progress->updateStatus( statusMessage );
   Uint32 now = SDL_GetTicks();
 //  cerr << "+++ " << statusMessage << ". Previous task's time=" << (now - start) << endl;
   start = now;

@@ -67,7 +67,7 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   willUnlockMouse = false;
   willBlockEvent = false;
   forbiddenTimer = 0;
-  fadeout.r = fadeout.g = fadeout.b = fadeout.a = 0;
+  fadeoutStartAlpha = fadeoutEndAlpha = 0;
   fadeoutSteps = 16;
   fadeoutCurrentStep = 0;
   fadeoutTimer = 0;
@@ -420,143 +420,144 @@ void SDLHandler::applyMouseOffset(int x, int y, int *newX, int *newY) {
 } 
 
 void SDLHandler::mainLoop() {
-  /* whether or not the window is active */
-  int isActive = TRUE;  
+  bool isActive = true;
+  while(true) {    
+    if( processEvents( &isActive ) ) return;
+    if( isActive ) drawScreen();
+  }
+}
+
+bool SDLHandler::processEvents( bool *isActive ) {
   SDL_Event event;
   int mx, my;
-  Window::windowWasClosed = false;
-  while(true) {    
-    int eventCount = 0;  
-    Uint32 now = SDL_GetTicks();
-    mouseIsMovingOverMap = false;
-    while(SDL_PollEvent(&event) && (eventCount++) < 10) {
-      isDoubleClick = false;
-      mouseEvent = mouseButton = 0;
-      Widget *widget = NULL;
-      switch( event.type ) {
-      case SDL_MOUSEMOTION:
-        if(invertMouse) event.motion.y = screen->h - event.motion.y;
-        applyMouseOffset(event.motion.x, event.motion.y, &mx, &my);
-        mouseX = mx;
-        mouseY = my;          
-        mouseButton = event.button.button;
-        mouseEvent = SDL_MOUSEMOTION;
-        widget = Window::delegateEvent( &event, mouseX, mouseY );
-        if(!widget) {
-          mouseIsMovingOverMap = true;
-          lastMouseMoveTime = now;
-        }
-        break;
-      case SDL_MOUSEBUTTONUP:
-        if(invertMouse) event.button.y = screen->h - event.button.y;
-        applyMouseOffset(event.button.x, event.button.y, &mx, &my);
-        mouseEvent = SDL_MOUSEBUTTONUP;
-        mouseButton = event.button.button;
-        mouseDragging = false;
-        if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
-          isDoubleClick = (now - lastLeftClick < DOUBLE_CLICK_INTERVAL && 
-                           abs(lastMouseX - event.button.x) < DOUBLE_CLICK_TOLERANCE &&
-                           abs(lastMouseY - event.button.y) < DOUBLE_CLICK_TOLERANCE);
-          lastLeftClick = now;
-          widget = Window::delegateEvent( &event, mx, my );
-        }
-        lastMouseX = event.button.x;
-        lastMouseY = event.button.y;
-        break;
-      case SDL_MOUSEBUTTONDOWN:
-        if(invertMouse) event.button.y = screen->h - event.button.y;
-        applyMouseOffset(event.button.x, event.button.y, &mx, &my);
-        mouseEvent = SDL_MOUSEBUTTONDOWN;
-        mouseButton = event.button.button;
-        mouseDragging = true;
-        if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
-          widget = Window::delegateEvent( &event, mx, my );
-        }
-        break;
-      case SDL_ACTIVEEVENT:
-        /* Something's happend with our focus
-         * If we lost focus or we are iconified, we
-         * shouldn't draw the screen
-         */
-        if( event.active.gain == 0 )
-          isActive = FALSE;
-        else
-          isActive = TRUE;
-        break;
-      case SDL_VIDEORESIZE:
-        /* handle resize event */
-        screen = SDL_SetVideoMode( event.resize.w,
-                                   event.resize.h,
-                                   16, videoFlags );
-        if( !screen ) {
-          fprintf( stderr, "Could not get a surface after resize: %s\n", SDL_GetError( ) );
-          quit( 1 );
-        }
-        resizeWindow( event.resize.w, event.resize.h );
-        break;
-      case SDL_KEYUP:
-      // only process CTRL + F1 once (on keyup)
-      if( event.key.keysym.sym == SDLK_F1 &&
-          event.key.keysym.mod & KMOD_CTRL ) {
-        SDL_WM_ToggleFullScreen(screen);
-        break;
+  
+  int eventCount = 0;  
+  Uint32 now = SDL_GetTicks();
+  mouseIsMovingOverMap = false;
+  while(SDL_PollEvent(&event) && (eventCount++) < 10) {
+    isDoubleClick = false;
+    mouseEvent = mouseButton = 0;
+    Widget *widget = NULL;
+    switch( event.type ) {
+    case SDL_MOUSEMOTION:
+      if(invertMouse) event.motion.y = screen->h - event.motion.y;
+      applyMouseOffset(event.motion.x, event.motion.y, &mx, &my);
+      mouseX = mx;
+      mouseY = my;          
+      mouseButton = event.button.button;
+      mouseEvent = SDL_MOUSEMOTION;
+      widget = Window::delegateEvent( &event, mouseX, mouseY );
+      if(!widget) {
+        mouseIsMovingOverMap = true;
+        lastMouseMoveTime = now;
       }
-      case SDL_KEYDOWN:
-      applyMouseOffset(mouseX, mouseY, &mx, &my);
-      widget = Window::delegateEvent( &event, mx, my );
       break;
-      case SDL_QUIT:
-      quit(0); // handle quit requests
+    case SDL_MOUSEBUTTONUP:
+      if(invertMouse) event.button.y = screen->h - event.button.y;
+      applyMouseOffset(event.button.x, event.button.y, &mx, &my);
+      mouseEvent = SDL_MOUSEBUTTONUP;
+      mouseButton = event.button.button;
+      mouseDragging = false;
+      if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
+        isDoubleClick = (now - lastLeftClick < DOUBLE_CLICK_INTERVAL && 
+                         abs(lastMouseX - event.button.x) < DOUBLE_CLICK_TOLERANCE &&
+                         abs(lastMouseY - event.button.y) < DOUBLE_CLICK_TOLERANCE);
+        lastLeftClick = now;
+        widget = Window::delegateEvent( &event, mx, my );
+      }
+      lastMouseX = event.button.x;
+      lastMouseY = event.button.y;
       break;
-      default:
+    case SDL_MOUSEBUTTONDOWN:
+      if(invertMouse) event.button.y = screen->h - event.button.y;
+      applyMouseOffset(event.button.x, event.button.y, &mx, &my);
+      mouseEvent = SDL_MOUSEBUTTONDOWN;
+      mouseButton = event.button.button;
+      mouseDragging = true;
+      if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
+        widget = Window::delegateEvent( &event, mx, my );
+      }
       break;
+    case SDL_ACTIVEEVENT:
+      /* Something's happend with our focus
+       * If we lost focus or we are iconified, we
+       * shouldn't draw the screen
+       */
+      if( isActive ) {
+        *isActive = ( event.active.gain == 0 ? false : true );
       }
-
-      // Show pointer over widgets unless casting a spell
-      if( getCursorMode() == Constants::CURSOR_FORBIDDEN &&
-          SDL_GetTicks() - forbiddenTimer > FORBIDDEN_CURSOR_TIME ) {
-        setCursorMode( Constants::CURSOR_NORMAL );        
+      break;
+    case SDL_VIDEORESIZE:
+      /* handle resize event */
+      screen = SDL_SetVideoMode( event.resize.w,
+                                 event.resize.h,
+                                 16, videoFlags );
+      if( !screen ) {
+        fprintf( stderr, "Could not get a surface after resize: %s\n", SDL_GetError( ) );
+        quit( 1 );
       }
-
-      if( !mouseIsMovingOverMap &&
-          getCursorMode() != Constants::CURSOR_CROSSHAIR ) 
-        setCursorMode( Constants::CURSOR_NORMAL );
-
-      // swallow this event
-      if( willBlockEvent ) {
-        willBlockEvent = false; 
-        continue;
-      } 
-
-      bool res = false;
-      if(widget) {
-        if( !mouseLock || mouseLock == widget ) {
-          res = eventHandler->handleEvent(widget, &event);
-          // this is so that moving the cursor over a 
-          // window doesn't scroll the map forever
-          if( event.type == SDL_MOUSEMOTION ) {
-            res = eventHandler->handleEvent(&event);
-          }
-        }
-      } else {
-        if( !mouseLock ) res = eventHandler->handleEvent(&event);
-      }
-      if(res) {
-        if(popHandlers()) {
-          return;
-        }
-      }
+      resizeWindow( event.resize.w, event.resize.h );
+      break;
+    case SDL_KEYUP:
+    // only process CTRL + F1 once (on keyup)
+    if( event.key.keysym.sym == SDLK_F1 &&
+        event.key.keysym.mod & KMOD_CTRL ) {
+      SDL_WM_ToggleFullScreen(screen);
+      break;
+    }
+    case SDL_KEYDOWN:
+    applyMouseOffset(mouseX, mouseY, &mx, &my);
+    widget = Window::delegateEvent( &event, mx, my );
+    break;
+    case SDL_QUIT:
+    quit(0); // handle quit requests
+    break;
+    default:
+    break;
     }
 
-    if( willUnlockMouse ) {
-      mouseLock = NULL;
-      willUnlockMouse = false;
+    // Show pointer over widgets unless casting a spell
+    if( getCursorMode() == Constants::CURSOR_FORBIDDEN &&
+        SDL_GetTicks() - forbiddenTimer > FORBIDDEN_CURSOR_TIME ) {
+      setCursorMode( Constants::CURSOR_NORMAL );        
     }
 
-    if(isActive) {
-      drawScreen();
+    if( !mouseIsMovingOverMap &&
+        getCursorMode() != Constants::CURSOR_CROSSHAIR ) 
+      setCursorMode( Constants::CURSOR_NORMAL );
+
+    // swallow this event
+    if( willBlockEvent ) {
+      willBlockEvent = false; 
+      continue;
+    } 
+
+    bool res = false;
+    if(widget) {
+      if( !mouseLock || mouseLock == widget ) {
+        res = eventHandler->handleEvent(widget, &event);
+        // this is so that moving the cursor over a 
+        // window doesn't scroll the map forever
+        if( event.type == SDL_MOUSEMOTION ) {
+          res = eventHandler->handleEvent(&event);
+        }
+      }
+    } else {
+      if( !mouseLock ) res = eventHandler->handleEvent(&event);
+    }
+    if(res) {
+      if(popHandlers()) {
+        return true;
+      }
     }
   }
+
+  if( willUnlockMouse ) {
+    mouseLock = NULL;
+    willUnlockMouse = false;
+  }
+
+  return false;
 }
 
 #define CURSOR_WIDTH 48
@@ -610,6 +611,11 @@ void SDLHandler::drawCursor() {
   glEnable(GL_CULL_FACE);
 }
 
+void SDLHandler::processEventsAndRepaint() {
+  processEvents();
+  drawScreen();
+}
+
 void SDLHandler::drawScreen() {
 
   if( !eventHandler ) {
@@ -636,8 +642,17 @@ void SDLHandler::drawScreen() {
     glDisable( GL_TEXTURE_2D );
     glDisable( GL_DEPTH_TEST );
 
-    glColor4f( fadeout.r, fadeout.g, fadeout.b, 
-               ( fadeout.a * fadeoutCurrentStep ) / (float)fadeoutSteps );
+    if( fadeoutStartAlpha < fadeoutEndAlpha ) {
+      glColor4f( 0, 0, 0, 
+                 ( fadeoutStartAlpha + 
+                   ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) * 
+                       fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
+    } else {
+      glColor4f( 0, 0, 0, 
+                 ( fadeoutStartAlpha -
+                   ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) * 
+                       fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
+    }
     glLoadIdentity();
     glBegin( GL_QUADS );
     glVertex2d( 0, screen->h );
@@ -700,17 +715,16 @@ if( showDebugInfo ) {
   }
 }
 
-void SDLHandler::startFadeout( float r, float g, float b, float a, int steps ) {
-  fadeout.r = r;
-  fadeout.g = g;
-  fadeout.b = b;
-  fadeout.a = a;
+void SDLHandler::fade( float startAlpha, float endAlpha, int steps ) {
+  fadeoutEndAlpha = endAlpha;
+  fadeoutStartAlpha = startAlpha;
   fadeoutSteps = steps;
   fadeoutCurrentStep = 0;
   fadeoutTimer = SDL_GetTicks();
   while( fadeoutTimer > 0 ) {
-    drawScreen();
+    processEventsAndRepaint();
   }
+  setCursorMode( Constants::CURSOR_NORMAL );
 }
 
 const freetype_font_data *SDLHandler::getCurrentFont() {

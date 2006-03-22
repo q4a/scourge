@@ -166,6 +166,7 @@ void Scourge::start() {
       initMainMenu = false;
       mainMenu->show();
       getSDLHandler()->getSound()->playMusicMenu();
+      //getSDLHandler()->fade( 1, 0, 20 );
     }
 
     getSDLHandler()->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
@@ -190,7 +191,7 @@ void Scourge::start() {
 
       // fade away
       getSDLHandler()->getSound()->stopMusic();
-      getSDLHandler()->startFadeout( 0, 0, 0, 1, 20 );
+      getSDLHandler()->fade( 0, 1, 20 );
       mainMenu->hide();      
 
       initMainMenu = true;
@@ -554,6 +555,7 @@ void Scourge::startMission() {
       getSDLHandler()->getSound()->selectMusic( getPreferences() );
       if(inHq) getSDLHandler()->getSound()->playMusicHQ();
       else getSDLHandler()->getSound()->playMusicMission();
+      getSDLHandler()->fade( 1, 0, 20 );
 
       // run mission
       getSDLHandler()->mainLoop();
@@ -562,7 +564,7 @@ void Scourge::startMission() {
 
       // stop the music
       getSDLHandler()->getSound()->stopMusic();
-      getSDLHandler()->startFadeout( 0, 0, 0, 1, 20 );
+      getSDLHandler()->fade( 0, 1, 20 );
     } else {
       showMessageDialog( "Error #666: Failed to create map." );
     }
@@ -3430,14 +3432,14 @@ bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
     }
     for( int t = 0; t < 12; t++ ) {
       if( widget == quickSpell[t] ) {
-        quickSpellAction( t );
+        quickSpellAction( t, event->button.button );
       }
     }
   }
   return false;
 }
 
-void Scourge::quickSpellAction( int index ) {
+void Scourge::quickSpellAction( int index, int button ) {
   if( inventory->inStoreSpellMode() ) {
     getParty()->getPlayer()->setQuickSpell( index, inventory->getStorable() );
     inventory->setStoreSpellMode( false );
@@ -3447,11 +3449,25 @@ void Scourge::quickSpellAction( int index ) {
     Storable *storable = creature->getQuickSpell( index );
     if( storable ) {
       if( storable->getStorableType() == Storable::SPELL_STORABLE ) {
-        executeQuickSpell( (Spell*)storable );
+        if( button == SDL_BUTTON_RIGHT ) {
+          cerr << "*** FIXME: describe spell." << endl;
+        } else {
+          executeQuickSpell( (Spell*)storable );
+        }
       } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
-        executeSpecialSkill( (SpecialSkill*)storable );
+        if( button == SDL_BUTTON_RIGHT ) {
+          cerr << "*** FIXME: describe capability." << endl;
+        } else {
+          executeSpecialSkill( (SpecialSkill*)storable );
+        }
       } else if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
-        executeItem( (Item*)storable );
+        if( button == SDL_BUTTON_RIGHT ) {
+          Item *item = (Item*)storable;
+          infoGui->setItem( item, getParty()->getPlayer()->getSkill(Constants::IDENTIFY_ITEM_SKILL ) );
+          if( !infoGui->getWindow()->isVisible() ) infoGui->getWindow()->setVisible( true );
+        } else {
+          executeItem( (Item*)storable );
+        }
       } else {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
       }
