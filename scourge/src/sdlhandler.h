@@ -97,7 +97,7 @@ private:
 
   Uint32 forbiddenTimer;
 
-  Color fadeout;
+  float fadeoutStartAlpha, fadeoutEndAlpha;
   Uint32 fadeoutTimer;
   int fadeoutSteps, fadeoutCurrentStep;
 
@@ -110,7 +110,7 @@ public:
   SDLHandler( GameAdapter *gameAdapter );
   virtual ~SDLHandler();
 
-  void startFadeout( float r, float g, float b, float a, int steps = 50 );
+  void fade( float startAlpha, float endAlpha, int steps = 50 );
 
   inline void blockEvent() { willBlockEvent = true; }
 
@@ -172,6 +172,8 @@ public:
   char ** getVideoModes(int &nbModes);
   void mainLoop();
   void drawScreen();
+  bool processEvents( bool *isActive=NULL );
+  void processEventsAndRepaint();
   void fireEvent(Widget *widget, SDL_Event *event);
   bool firedEventWaiting();
 

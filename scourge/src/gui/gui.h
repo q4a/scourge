@@ -36,7 +36,7 @@ public:
   virtual ~ScourgeGui() {
   }
 
-  virtual void drawScreen() = 0;
+  virtual void processEventsAndRepaint() = 0;
   virtual void playSound( const char *file ) = 0;
   virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) = 0;
   virtual int textWidth( const char *fmt, ... ) = 0;

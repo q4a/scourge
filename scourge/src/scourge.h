@@ -711,7 +711,7 @@ public:
   void checkForInfo();
   void drawInfos();
 
-  void quickSpellAction( int index );
+  void quickSpellAction( int index, int button=SDL_BUTTON_LEFT );
   void executeQuickSpell( Spell *spell );
   void executeSpecialSkill( SpecialSkill *skill );
   void executeItem( Item *item );
