@@ -256,7 +256,13 @@ CreatureInfo *Persist::loadCreature( File *file ) {
   for(int i = 0; i < (int)info->inventory_count; i++) {
     info->inventory[i] = loadItem( file );
   }
-  file->read( info->equipped, Constants::INVENTORY_COUNT );
+  if( info->version <= 9 ) {
+    // no INVENTORY_GLOVE before v10
+    file->read( info->equipped, 14 );
+    info->equipped[ 14 ] = MAX_INVENTORY_SIZE;
+  } else {
+    file->read( info->equipped, Constants::INVENTORY_COUNT );
+  }
   file->read( &(info->spell_count) );
   for(int i = 0; i < (int)info->spell_count; i++) {
     file->read( info->spell_name[i], 255 );
