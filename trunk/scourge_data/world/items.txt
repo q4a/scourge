@@ -28,6 +28,7 @@
 #  INVENTORY_RING3 = 2048;
 #  INVENTORY_RING4 = 4096;
 #  INVENTORY_WEAPON_RANGED = 8192;
+#  INVENTORY_GLOVE = 16384;
 #
 # twohanded:
 #  NOT_TWO_HANDED=0,
@@ -82,12 +83,33 @@ T:STAFF,1,0,1,0,1,1
 #
 S:SWORD,sound/sword/s1.wav,sound/sword/s2.wav
 
+I:Kitchen Knife
+I:10,1,2,0,0
+I:SWORD,0.05,20,DAGGER,48,0,SWORD_WEAPON
+I:It's an old carving knife. The long dulled blade sports a surprising number of dents.
+I:A rusty carving knife
+I:10,2
+
 I:Dirk
 I:10,1d2,2,0,0
 I:SWORD,0.1,40,DAGGER,48,0,SWORD_WEAPON
 I:A lightweight weapon that is built for speed. A favorite of assassins!
 I:A small dirk
-I:14,1
+I:11,2
+
+I:Curved Dirk
+I:10,1d2+1,2,0,0
+I:SWORD,0.1,50,DAGGER,48,0,SWORD_WEAPON
+I:This dirk sports a menacing extra notch at its end. Monsters are sure to run screaming from this horror!
+I:A dirk with a spike
+I:12,2
+
+I:Throwing Dagger
+I:10,1d2,2,2,0
+I:SWORD,0.1,50,DAGGER,48,0,SWORD_WEAPON
+I:The throwing dagger is a well balanced weapon, favored by the feared assassin-poets of the Order of the Grizzled Pony.
+I:A well-balanced throwing dagger.
+I:13,2
 
 I:Dagger
 I:10,1d3,3,0,0
@@ -96,6 +118,20 @@ I:Many-a-throats were silenced by this here black iron
 I:A curiously shaped dagger
 I:14,2
 
+I:Hunting Knife
+I:10,1d3+1,3,0,0
+I:SWORD,0.2,90,DAGGER,48,0,SWORD_WEAPON
+I:The extra-long serrated edge of this hunting knife is enough to induce nightmares. A nicely carved wooden handle completes this menacing weapon.
+I:A hunting knife with a serrated edge.
+I:15,2
+
+I:Ceremonial Dagger
+I:10,1d3,3,0,0
+I:SWORD,0.2,100,DAGGER,48,0,SWORD_WEAPON
+I:This knife bears the symbol of Unamoin. The god is enthroned on a seat of flame, before him stand a long line of souls, to be sacrificed for the divine feast.
+I:A wide-bladed ceremonial dagger.
+I:16,2
+
 I:Short sword
 I:8,2d2,3,0,0
 I:SWORD,1.5,150,DAGGER,48,0,SWORD_WEAPON
@@ -103,12 +139,26 @@ I:A dwarven shortsword of average workmanship
 I:A stubby short sword
 I:17,2
 
+I:Dwarven sword
+I:7,2d2+1,4,0,0
+I:SWORD,2.2,170,SWORD,48,2,SWORD_WEAPON,1
+I:Longer and wider than a shortsword, the dwarven military brand is sometimes held with two hands. It is designed for close-quarter underground melee fighting.
+I:A sword of dwarven make.
+I:18,2
+
+I:Ornamental officer sword
+I:7,2d2,4,0,0
+I:SWORD,2.2,180,SWORD,48,2,SWORD_WEAPON,1
+I:Officer in the royal guard wear this pointed swords as a sign of rank. They're usually not used in actual combat but are only carried during a ceremony.
+I:A strange pointed sword.
+I:19,2
+
 I:Bastard sword
 I:7,2d3,4,0,0
 I:SWORD,2.0,200,SWORD,48,2,SWORD_WEAPON,1
 I:A bastard sword can be wielded either by one or both hands... (If you still have both hands)
 I:The rusty bastard sword has seen plenty of use
-I:2,3
+I:20,2
 A:*-,RA+,KN+,TI+,AS+,MO+
 
 I:Long sword
@@ -119,28 +169,84 @@ I:A well-balanced, shiny longsword
 I:1,3
 A:*-,RA+,KN+,TI+
 
+I:Twisted sword
+I:8,3d3+2,5,0,0
+I:SWORD,5,300,SWORD,48,0,SWORD_WEAPON,2
+I:The blade of this sword is made from laying many strips of metal upon each other in a twisted "snake" formation. This gives the weapon its exceptional strength.
+I:A blade with a snake-like form
+I:2,3
+A:*-,RA+,KN+,TI+
+
+I:Royal Cutlass
+I:8,3d3+2,5,0,0
+I:SWORD,5,320,SWORD,48,1,SWORD_WEAPON,2
+I:Adopted from an invading force of Southern pirates, these heavy cutlasses can deliver a crushing blow.
+I:A cutlass with a curved, heavy blade
+I:3,3
+A:*-,RA+,KN+,TI+
+
+I:Nederianese Cutlass
+I:7,3d2,5,0,0
+I:SWORD,5,350,SWORD,48,0,SWORD_WEAPON,2
+I:A smaller version of the royal cutlass that can be held in one hand.
+I:A small cutlass
+I:4,3
+A:*-,RA+,KN+,TI+
+
+I:Cavalry sabre
+I:6,3d2+3,5,0,0
+I:SWORD,5,380,SWORD,48,0,SWORD_WEAPON,3
+I:These swords were designed to be used from horseback. As such they tend to be top-heavy and awkward to use in melee.
+I:A strangely-balanced utalitarian sword
+I:5,3
+A:*-,RA+,KN+,TI+,AS+,MO+
+
+I:Rapier
+I:8,3d2+1,5,0,0
+I:SWORD,5,320,SWORD,48,0,SWORD_WEAPON,3
+I:Mostly used by the aristocracy, these weapons were designed to puncture armor rather to strike with the edge. They require extreme finesse when used and are more likely to break.
+I:A long pointed sword with not much of an edge.
+I:6,3
+A:*-,RA+,KN+,TI+,AS+,MO+
+
 I:Great sword
 I:7,3d4,7,0,0
 I:SWORD,6.0,350,SWORD,48,1,SWORD_WEAPON,2
 I:Only persons of exceeding strength can cleave their enemies to bits with this greatsword
 I:A two-handed greatsword
-I:11,1
+I:7,3
 A:*-,RA+,KN+
 
+I:Purple Worm Slayer
+I:6,2d4+1,7,0,0
+I:SWORD,2.5,350,SWORD,48,0,SWORD_WEAPON,3
+I:Wroght by the elvish metal smiths of Allovium, this blade is specially prepared to slay dragons.
+I:A purple curved sword
+I:8,3
+A:*-,RA+,KN+,TI+,AS+,MO+
+
+I:Katana
+I:5,2d4+2,7,0,0
+I:SWORD,3,370,SWORD,48,0,SWORD_WEAPON,4
+I:This graceful, single-edged sword cannot be left out of any rpg!
+I:A single-edge sword of mythic propertions!
+I:9,3
+A:*-,RA+,KN+,TI+,AS+,MO+
+
 I:Goliompur
-I:5,2d4+1,4,0,0
-I:SWORD,3.0,800,SWORD,48,2,SWORD_WEAPON,3
+I:5,2d4+3,4,0,0
+I:SWORD,3.0,800,SWORD,48,2,SWORD_WEAPON,4
 I:The fabled weapon of Goliompur was forged by elven smiths in the deep forests of Alovium aeons ago. It is rumored to speak to those it chooses to be her leader.
 I:A weapon of exceeding craftsmenship. It is marked with stange runes.
-I:1,1
+I:10,3
 A:*-,RA+,KN+,TI+,AS+,MO+
 
 I:Dextran
-I:5,3d4+1,5,0,0
-I:SWORD,4.0,1200,SWORD,48,1,SWORD_WEAPON,4
+I:4,3d4+2,5,0,0
+I:SWORD,4.0,1200,SWORD,48,1,SWORD_WEAPON,5
 I:Legend tells of how king Haomen of the nordic men hew his enemies in the battles at the fjords of Gormoth weilding this blade.
 I:You feel a crispsness in the air and smell oaken notes while near this weapon.
-I:7,1
+I:11,3
 A:*-,RA+,KN+,TI+
 
 ######################
@@ -162,6 +268,14 @@ I:AXE,1.0,100,AXE,48,0,AXE_WEAPON
 I:Weapon of the feared dwarven assassins, the throwing axe returns to its owner after its arc of death!
 I:A short-handled throwing axe
 I:13,3
+A:*-,RA+,KN+,TI+,AS+
+
+I:Gorlish Axe
+I:7,1d5+1,3,0,0
+I:AXE,2.0,200,AXE,48,0,AXE_WEAPON,1
+I:The Gorlish scouts of the Underlake clans carry these axes. The scouts are able to scale the sheerest rock faces of their underground realm, so the axes are used as weapons as well as climbing gear.
+I:A hooked medium axe
+I:14,3
 A:*-,RA+,KN+,TI+,AS+
 
 I:Greataxe
@@ -214,6 +328,22 @@ I:A nicely crafted, strong bow
 I:20,3
 A:*-,RA+,KN+,TI+,AS+,MO+
 
+I:Crossbow
+I:7,1d3+2,5,8,0
+I:BOW,1.5,700,BOW,8192,0,BOW_WEAPON,1
+I:While cumbersome to reload, the crossbow delivers an armor-pierceing greeting to any foe.
+I:A large crossbow
+I:1,4
+A:*-,RA+,KN+,TI+,AS+,MO+
+
+I:Light crossbow
+I:6,1d3+1,3,8,0
+I:BOW,1.5,750,BOW,8192,0,BOW_WEAPON,2
+I:Though faster to reload than its pumped-up cousin, this crossbow has a shorter range and delivers less power.
+I:A crossbow with an orange wood handle
+I:2,4
+A:*-,RA+,KN+,TI+,AS+,MO+
+
 I:Longbow
 I:6,2d2,3,9,0
 I:BOW,2.5,550,BOW,8192,0,BOW_WEAPON,2
@@ -257,8 +387,16 @@ I:The clerical weapon of choice! Dispence holy bashing of heads and denting of a
 I:A metal-headed mace with a plain wooden handle.
 I:17,1
 
-I:Spiked flail
+I:Morning Star
 I:7,2d3+1,4,0,0
+I:MACE,1.4,300,MACE,48,0,MACE_WEAPON,1
+I:The main advantage when using a morning star over its bestudded brother the Spiked Flail, is that the user need not bother with the weapon's business end getting stuck in the target.
+I:A metal ball on a chain
+I:19,1
+A:*-,KN+,AS+,RA+,TI+,AR+,LO+
+
+I:Spiked flail
+I:7,2d3+2,4,0,0
 I:MACE,1.6,320,MACE,48,0,MACE_WEAPON,1
 I:Favorite backup weapon of the knight. Should your sword be lost or irretrievable lodged in an opponent, reach for the flail and wade in the gore with a smile.
 I:Spiked ball dangles at the end of a chain of impressive length.
@@ -548,6 +686,37 @@ I:3,10
 ##################################################################
 ##################################################################
 # Armor
+
+######################
+# Gloves
+#
+I:Leather Work Gloves
+I:8,1,0,0,0
+I:ARMOR,2.0,80,GLOVE,16384,0,ARMOR_DEFEND
+I:Not much warmth reaches your stiff fingers in these homemade gloves. It also appears that either this is not a single pair or the previous owner's left hand was much larger than the right.
+I:A pair of ill-made, ill-fitting leather gloves.
+I:7,9
+
+I:Embriodered Guard Gloves
+I:8,1,0,0,0
+I:ARMOR,2.0,150,GLOVE,16384,0,ARMOR_DEFEND
+I:This embroidered pair of heavy leather gloves bears the symbols of the Horghh city guards. In places it is worn very thin, yet it appears to be exceptionally sturdy.
+I:A comfortable pair of heavy leather gloves.
+I:8,9
+
+I:Link Gauntlet
+I:8,2,0,0,0
+I:ARMOR,5.0,220,GLOVE,16384,0,ARMOR_DEFEND
+I:This chainmail mitten is full of dents and scratches. Despite the occasional rust-spots, it fits admirably and provides good protection in combat.
+I:A pair of sturdy chainmail mittens.
+I:9,9
+
+I:Plaite Gauntlet
+I:8,2,0,0,0
+I:ARMOR,8.0,450,GLOVE,16384,0,ARMOR_DEFEND
+I:A few minutes of cleaning reveals a rare find: a full-plait armored gauntlet still in tact rescued from the depths.
+I:A dirty pair of plait-mail armored gauntlets.
+I:9,9
 
 ######################
 # Helmets
