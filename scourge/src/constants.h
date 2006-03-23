@@ -286,7 +286,8 @@ public:
   static const int INVENTORY_RING3 = 2048;
   static const int INVENTORY_RING4 = 4096;
   static const int INVENTORY_WEAPON_RANGED = 8192;
-  static const int INVENTORY_COUNT = 14;
+  static const int INVENTORY_GLOVE = 16382;
+  static const int INVENTORY_COUNT = 15;
   static char inventory_location[][80];
 
   static const int MAP_GRID_TILE_WIDTH = 6;
