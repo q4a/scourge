@@ -3940,6 +3940,18 @@ void Scourge::unloadMonsterSounds( char *type, map<int, vector<string>*> *soundM
   getSDLHandler()->getSound()->unloadMonsterSounds( type, soundMap );
 }
 
+void Scourge::loadCharacterSounds( char *type ) {
+  getSDLHandler()->getSound()->loadCharacterSounds( type );
+}
+
+void Scourge::unloadCharacterSounds( char *type ) {
+  getSDLHandler()->getSound()->unloadCharacterSounds( type );
+}
+
+void Scourge::playCharacterSound( char *type, int soundType ) {
+  getSDLHandler()->getSound()->playCharacterSound( type, soundType );
+}
+
 ShapePalette *Scourge::getShapePalette() {
   return getSession()->getShapePalette();
 }

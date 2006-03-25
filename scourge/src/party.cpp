@@ -207,8 +207,10 @@ void Party::setPlayer(int n, bool updateui) {
 
     // play selection sound
     if(lastPlayer != player) {
-      if(lastPlayer && !player->getStateMod(Constants::dead))
-        session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
+      if(lastPlayer && !player->getStateMod(Constants::dead)) {
+        //session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
+        player->playCharacterSound( GameAdapter::SELECT_SOUND );
+      }
       lastPlayer = player;          
     }
   }

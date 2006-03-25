@@ -517,7 +517,8 @@ bool Creature::setSelXY(int x, int y, bool cancelIfNotPossible) {
        session->getParty()->getPlayer() == this && 
        0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
        !getStateMod(Constants::dead)) {
-      session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
+      //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
+      playCharacterSound( GameAdapter::COMMAND_SOUND );
     }
   }
   return ret;
@@ -2474,3 +2475,8 @@ bool Creature::isPathToTargetCreature() {
   Location *mapPos = session->getMap()->getLocation( pos.x, pos.y, 0 );
   return( mapPos && mapPos->creature == getTargetCreature() );
 }
+
+void Creature::playCharacterSound( int soundType ) {
+  if( !monster ) session->getGameAdapter()->playCharacterSound( model_name, soundType );
+}
+

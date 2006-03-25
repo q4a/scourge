@@ -190,7 +190,7 @@ const char *Constants::STATE_NAMES[] = {
 };
 const char *Constants::STATE_SYMBOLS[] = {
   "Air", "Earth", "Fire", "Stone", "Water",
-  "Jelly", "Ice", "Planar", "Astral", "Dire", "Cave", "Hidden", 
+  "Jelly", "Ice", "Planar", "Astral", "Dire", "Cave", "Acid", 
   "Spirit", "Mist", "Quiet"
 };
 

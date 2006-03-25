@@ -593,6 +593,9 @@ public:
 
   void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
   void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
+  void loadCharacterSounds( char *type );
+  void unloadCharacterSounds( char *type );
+  void playCharacterSound( char *type, int soundType );
 
   void fightProjectileHitTurn(Projectile *proj, RenderedCreature *creature);
 

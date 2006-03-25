@@ -65,6 +65,8 @@ Preset presets[] = {
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
 std::map<CharacterModelInfo*, GLShape*> shapes;
 
+bool willPlaySound = false;
+
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
   lastTick = 0;
@@ -197,12 +199,14 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
       } else if( widget == info[i].prevModel ) {
         if( info[i].modelIndex > 0 ) {
           info[i].modelIndex--;
-          saveUI( (Creature**)tmp );
-        }
+          saveUI( (Creature**)tmp );          
+          willPlaySound = true;
+        }        
       } else if( widget == info[i].nextModel ) {
         if( info[i].modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
           info[i].modelIndex++;
           saveUI( (Creature**)tmp );
+          willPlaySound = true;
         }
       } else if( widget == info[i].skillRerollButton ) {
         rollSkills( &( info[ i ] ) );
@@ -415,7 +419,12 @@ void PartyEditor::drawWidgetContents( Widget *w ) {
         shape->setCurrentAnimation( MD2_STAND );
       } else {
         shape = shapes[ cmi ];
-      }      
+      }
+      if( willPlaySound ) {
+        scourge->playCharacterSound( cmi->model_name, 
+                                     GameAdapter::SELECT_SOUND );
+        willPlaySound = false;
+      }
       glPushMatrix();
       glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
       glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );

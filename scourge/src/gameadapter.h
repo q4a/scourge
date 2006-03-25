@@ -43,6 +43,9 @@ protected:
   Session *session;
 
 public:
+
+  enum { COMMAND_SOUND=0, HIT_SOUND, SELECT_SOUND };
+
   GameAdapter( Preferences *config );
   virtual ~GameAdapter();
 
@@ -77,6 +80,9 @@ public:
   virtual inline void removeBattle(Battle *battle) {}
   virtual inline void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
   virtual inline void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
+  virtual inline void loadCharacterSounds( char *type ) {}
+  virtual inline void playCharacterSound( char *type, int soundType ) {}
+  virtual inline void unloadCharacterSounds( char *type ) {}
   virtual inline void createParty( Creature **pc, int *partySize ) {}
   virtual inline void teleport( bool toHQ=true ) {}
   virtual inline int getCurrentDepth() { return 0; }

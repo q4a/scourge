@@ -1106,7 +1106,8 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
       if(creature->getTargetCreature()->isMonster()) {
         session->playSound(creature->getTargetCreature()->getMonster()->getRandomSound(Constants::SOUND_TYPE_HIT));
       } else {
-        session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
+        //session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
+        creature->getTargetCreature()->playCharacterSound( GameAdapter::HIT_SOUND );
       }
     }
 

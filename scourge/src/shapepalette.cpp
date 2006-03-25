@@ -190,8 +190,10 @@ GLShape *ShapePalette::getCreatureShape( char *model_name,
 	// load monster sounds
 	if( monster ) {
     session->getGameAdapter()->
-    loadMonsterSounds( model_name, 
-                       monster->getSoundMap( model_name ) );
+      loadMonsterSounds( model_name, 
+                         monster->getSoundMap( model_name ) );
+  } else {
+    session->getGameAdapter()->loadCharacterSounds( model_name );
   }
   return Shapes::getCreatureShape( model_name, skin_name, scale );
 }
@@ -201,9 +203,13 @@ void ShapePalette::decrementSkinRefCount( char *model_name,
                                           Monster *monster ) {
   Shapes::decrementSkinRefCount( model_name, skin_name );
   // unload monster sounds
-  if( monster )
-	session->getGameAdapter()->unloadMonsterSounds( model_name, 
-													monster->getSoundMap( model_name ) );
+  if( monster ) {
+    session->getGameAdapter()->
+      unloadMonsterSounds( model_name, 
+                           monster->getSoundMap( model_name ) );
+  } else {
+    session->getGameAdapter()->unloadCharacterSounds( model_name );
+  }
 }
 
 void ShapePalette::loadNpcPortraits() {
