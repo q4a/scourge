@@ -8,10 +8,6 @@
 #    attack bonus per level, additional attack every n-th level
 #  D:description (can be multiple lines)
 #  S:skill name, min%, max% for last character (* means no limit)
-#  c: command sounds (list)
-#  h: hit sounds (list)
-#  s: select sounds (list)
-#  a: attack sounds (list)
 
 # Skills reference (from constants.h)
 # Attribute skills:
@@ -124,9 +120,6 @@ S:OPEN_LOCK,*,50
 S:FIND_TRAP,*,50
 S:MOVE_UNDETECTED,*,50
 S:STEALING,*,50
-c:sound/knight/command.wav,sound/knight/command2.wav,sound/knight/command3.wav,sound/knight/command4.wav
-h:sound/knight/hit1.wav,sound/knight/hit2.wav
-s:sound/knight/select.wav,sound/knight/select2.wav,sound/knight/select3.wav
 
 
 C:Tinkerer,7,4,6,300,TI,0.7,8
