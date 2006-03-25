@@ -28,7 +28,8 @@ T:none,0.15,0.15,0.15,1,1             # input background
 T:1,1,1,1                      # input text
 T:none,0.3,0.05,0.05,1,1         # selection background
 T:1,1,1,1                      # selection text
-T:none,0.3,0.3,0.3,1,1         selected border
+T:none,0.3,0.3,0.3,1,1         # selected border
+T:none,1,0.69,0.35,1,1         # selected character border
 
 
 
@@ -49,5 +50,6 @@ T:none,0.15,0.15,0.15,1,1             # input background
 T:1,1,1,1                      # input text
 T:none,0.3,0.05,0.05,1,1         # selection background
 T:1,1,1,1                      # selection text
-T:none,0.3,0.3,0.3,1,1         selected border
+T:none,0.3,0.3,0.3,1,1         # selected border
+T:none,1,0.69,0.35,1,1         # selected character border
 

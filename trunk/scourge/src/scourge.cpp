@@ -141,8 +141,8 @@ void Scourge::initUI() {
   // create the mission board
   this->board = session->getBoard();
 
-  this->party = session->getParty();  
-  createBoardUI();  
+  this->party = session->getParty();
+  createBoardUI();
   netPlay = new NetPlay(this);
   createUI();
   createPartyUI();
@@ -192,7 +192,7 @@ void Scourge::start() {
       // fade away
       getSDLHandler()->getSound()->stopMusic();
       getSDLHandler()->fade( 0, 1, 20 );
-      mainMenu->hide();      
+      mainMenu->hide();
 
       initMainMenu = true;
       bool failed = false;
@@ -273,7 +273,7 @@ void Scourge::startMission() {
 
     oldStory = currentStory;
 
-    // add gui    
+    // add gui
     messageWin->setVisible(true);
     mainWin->setVisible(true);
     if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
@@ -3139,7 +3139,7 @@ void Scourge::drawWidgetContents(Widget *w) {
               glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->tilesTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
             } else {
               glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
-            }            
+            }
             glColor4f(1, 1, 1, 1);
 
             glBegin( GL_QUADS );
@@ -3321,10 +3321,10 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
     float lineWidth = 5.0f;
     glLineWidth( 5.0f );
     GuiTheme *theme = mainWin->getTheme();
-    if( theme->getSelectionBackground() ) {
-      glColor4f( theme->getSelectionBackground()->color.r,
-                 theme->getSelectionBackground()->color.g,
-                 theme->getSelectionBackground()->color.b,
+    if( theme->getSelectedCharacterBorder() ) {
+      glColor4f( theme->getSelectedCharacterBorder()->color.r,
+                 theme->getSelectedCharacterBorder()->color.g,
+                 theme->getSelectedCharacterBorder()->color.b,
                  0.5f );
     } else {
       mainWin->applySelectionColor();
