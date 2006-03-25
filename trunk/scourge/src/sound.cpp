@@ -165,6 +165,7 @@ void Sound::loadSounds(Preferences *preferences) {
     storeSound(0, Battle::getSound(i));
   }
 
+  /*
 //  cerr << "Loading character sounds..." << endl;
   for(map<string, Character*>::iterator i = Character::character_class.begin();
        i != Character::character_class.end(); ++i) {
@@ -179,6 +180,7 @@ void Sound::loadSounds(Preferences *preferences) {
       }
     }
   }
+  */
 
 //  cerr << "Loading item sounds..." << endl;
   for(map<int, vector<string>*>::iterator i = Item::soundMap.begin();
@@ -219,30 +221,115 @@ void Sound::loadSounds(Preferences *preferences) {
 
 void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m,
 							   Preferences *preferences ) {
-//  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
+  //  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
   if( m ) {
-	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
-	  vector<string> *v = i2->second;
-	  for(int i = 0; i < (int)v->size(); i++) {
-		string file = (*v)[i];
-		storeSound(0, file.c_str());
-	  }
-	}
+    for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
+      vector<string> *v = i2->second;
+      for(int i = 0; i < (int)v->size(); i++) {
+        string file = (*v)[i];
+        storeSound(0, file.c_str());
+      }
+    }
   }
   setEffectsVolume(preferences->getEffectsVolume());
 }
 
 void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m ) {
-//  cerr << "Unloading monster sounds for " << monsterType << "..." << endl;
+  //  cerr << "Unloading monster sounds for " << monsterType << "..." << endl;
   if( m ) {
-	for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
-	  vector<string> *v = i2->second;
-	  for(int i = 0; i < (int)v->size(); i++) {
-		string file = (*v)[i];
-		unloadSound(0, file.c_str());
-	  }
-	}
+    for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
+      vector<string> *v = i2->second;
+      for(int i = 0; i < (int)v->size(); i++) {
+        string file = (*v)[i];
+        unloadSound(0, file.c_str());
+      }
+    }
   }
+}
+
+void Sound::loadCharacterSounds( char *type ) {
+#ifdef HAVE_SDL_MIXER
+  if( haveSound ) {
+    //std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
+    string typeStr = type;
+    map<int,vector<Mix_Chunk*>*>* charSoundMap;
+    if( characterSounds.find( typeStr ) == characterSounds.end() ) {
+      charSoundMap = new map<int,vector<Mix_Chunk*>*>();
+      characterSounds[ typeStr ] = charSoundMap;
+    } else {
+      charSoundMap = characterSounds[ typeStr ];
+    }
+      
+    // load the sounds
+    storeCharacterSounds( charSoundMap, type, GameAdapter::COMMAND_SOUND, "command" );
+    storeCharacterSounds( charSoundMap, type, GameAdapter::HIT_SOUND, "hit" );
+    storeCharacterSounds( charSoundMap, type, GameAdapter::SELECT_SOUND, "select" );    
+  }
+#endif
+}
+
+#ifdef HAVE_SDL_MIXER
+void Sound::storeCharacterSounds( map<int,vector<Mix_Chunk*>*> *charSoundMap, 
+                                  char *type, int soundType, char *filePrefix ) {  
+  char filename[300];
+  vector<Mix_Chunk*> *v;
+  if( charSoundMap->find( soundType ) == charSoundMap->end() ) {
+    v = new vector<Mix_Chunk*>();
+    (*charSoundMap)[ soundType ] = v;
+  } else {
+    v = (*charSoundMap)[ soundType ];
+  }
+  for( int i = 0; i < 100; i++ ) {
+    sprintf( filename, "%s%s/sound/%s%d.wav", rootDir, type, filePrefix, ( i + 1 ) );
+    //cerr << "Looking for character sound: " << filename << endl;
+    Mix_Chunk *sample = Mix_LoadWAV( filename );
+    if( !sample ) break;
+    //cerr << "Loaded character sound: " << filename << endl;
+    v->push_back( sample );
+  }
+}
+#endif
+
+void Sound::playCharacterSound( char *type, int soundType ) {
+#ifdef HAVE_SDL_MIXER
+  if( haveSound ) {
+    string typeStr = type;
+    if( characterSounds.find( typeStr ) != characterSounds.end() ) {
+      map<int,vector<Mix_Chunk*>*> *charSoundMap = characterSounds[ typeStr ];
+      if( charSoundMap->find( soundType ) != charSoundMap->end() ) {
+        vector<Mix_Chunk*> *v = (*charSoundMap)[ soundType ];
+        if( v->size() > 0 ) {
+          int index = (int)( (float)( v->size() ) * rand() / RAND_MAX );
+          if( Mix_PlayChannel( -1, (*v)[ index ], 0 ) == -1 ) {
+            // commented out; happens too often
+            //cerr << "*** Error playing WAV file: " << fileStr << endl;
+            //cerr << "\t" << Mix_GetError() << endl;
+          }
+        }
+      }
+    }
+  }
+#endif
+}
+
+void Sound::unloadCharacterSounds( char *type ) {
+#ifdef HAVE_SDL_MIXER
+  if( haveSound ) {
+    string typeStr = type;
+    if( characterSounds.find( typeStr ) != characterSounds.end() ) {
+      map<int,vector<Mix_Chunk*>*>* charSoundMap = characterSounds[ typeStr ];
+      for( map<int, vector<Mix_Chunk*>*>::iterator i = charSoundMap->begin(); 
+           i != charSoundMap->end(); ++i) {
+        vector<Mix_Chunk*> *v = i->second;
+        for( vector<Mix_Chunk*>::iterator i2 = v->begin(); i2 != v->end(); ++i2 ) {
+          Mix_Chunk *sample = *i2;
+          Mix_FreeChunk( sample );
+        }
+        v->clear();
+      }
+    }
+  }
+#endif
 }
 
 void Sound::storeSound(int type, const char *file) {

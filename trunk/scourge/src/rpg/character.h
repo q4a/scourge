@@ -39,8 +39,6 @@ private:
   std::map<int, int> minSkill;
 
 public:
-  std::map<int, std::vector<std::string>*> soundMap;
-
   Character( char *name, int startingHp, int startingMp, int skill_bonus, int level_progression, char *shortName, float baseAttackBonus, int extraAttackLevel );
   ~Character();
 
@@ -55,8 +53,6 @@ public:
   inline char *getDescription() { return description; }
   inline int getMaxSkillLevel(int skill) { if(maxSkill.find(skill) == maxSkill.end()) return 100; else return maxSkill[skill]; }
   inline int getMinSkillLevel(int skill) { if(minSkill.find(skill) == minSkill.end()) return 0; else return minSkill[skill]; }
-  void addSound(int type, char *file);
-  const char *getRandomSound(int type);
 
   static std::map<std::string, Character*> character_class;
   static std::map<std::string, Character*> character_class_short;
@@ -70,7 +66,6 @@ public:
 
  protected:
   inline void setMinMaxSkill(int skill, int min, int max) { minSkill[skill] = min; maxSkill[skill] = max; }
-  static void addSounds(int type, char *line, Character *c);
 };
 
 #endif

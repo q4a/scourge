@@ -20,6 +20,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "constants.h"
 #include "gui/window.h"
 #include "userconfiguration.h"
@@ -27,12 +28,13 @@
 class Sound {
 private:
   int missionMusicIndex;
-  bool haveSound;
+  bool haveSound;  
 #ifdef HAVE_SDL_MIXER
   Mix_Music *menuMusic;
   Mix_Music *hqMusic;
   Mix_Music *missionMusic;
-  std::map<std::string, Mix_Chunk*> soundMap;
+  std::map<std::string, Mix_Chunk*> soundMap;  
+  std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
 #endif
 
 public:
@@ -65,6 +67,10 @@ public:
   void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
 						  Preferences *preferences );
   void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );
+  
+  void loadCharacterSounds( char *type );
+  void unloadCharacterSounds( char *type );
+  void playCharacterSound( char *type, int soundType );
 
   void storeSound(int type, const char *file);
   void unloadSound( int type, const char *file );
@@ -78,6 +84,8 @@ public:
 protected:
 #ifdef HAVE_SDL_MIXER
   void playMusic(Mix_Music *music);
+  void storeCharacterSounds( std::map<int,std::vector<Mix_Chunk*>*> *charSoundMap, 
+                             char *type, int soundType, char *filePrefix );
 #endif
 };
 

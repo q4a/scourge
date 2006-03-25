@@ -92,35 +92,11 @@ void Character::initCharacters() {
       } else {    
         last->setMinMaxSkill(skill, min, max);
       }
-    } else if(n == 'c' && last) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      addSounds(Constants::SOUND_TYPE_COMMAND, line, last);
-    } else if(n == 'h' && last) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      addSounds(Constants::SOUND_TYPE_HIT, line, last);
-    } else if(n == 's' && last) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      addSounds(Constants::SOUND_TYPE_SELECT, line, last);
-    } else if(n == 'a' && last) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      addSounds(Constants::SOUND_TYPE_ATTACK, line, last);
     } else {
       n = Constants::readLine(line, fp);
     }
   }
   fclose(fp);
-}
-
-void Character::addSounds(int type, char *line, Character *c) {
-  char *p = strtok(line, ",");
-  while(p) {
-    c->addSound(type, strdup(p));
-    p = strtok(NULL, ",");
-  }
 }
 
 Character::Character(char *name, int startingHp, int startingMp, 
@@ -140,25 +116,4 @@ Character::Character(char *name, int startingHp, int startingMp,
 Character::~Character(){  
 }
 
-void Character::addSound(int type, char *file) {
-  //cerr << "*** Adding sound=" << file << endl;
-  string fileStr = file;
-  vector<string> *sounds;
-  if(soundMap.find(type) == soundMap.end()) {
-    sounds = new vector<string>;
-    soundMap[type] = sounds;
-  } else sounds = soundMap[type];
-  sounds->push_back(fileStr);
-  //cerr << "\t*** Done." << endl;
-}
-
-const char *Character::getRandomSound(int type) {
-  vector<string> *sounds = NULL;
-  if(soundMap.find(type) != soundMap.end()) {
-    sounds = soundMap[type];
-  }
-  if(!sounds || !(sounds->size())) return NULL;
-  string s = (*sounds)[(int)((float)(sounds->size()) * rand()/RAND_MAX)];
-  return s.c_str();
-}
 
