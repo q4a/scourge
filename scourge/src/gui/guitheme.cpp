@@ -44,6 +44,7 @@ GuiTheme::GuiTheme( char *name ) {
   inputText = NULL;
   selectionBackground = NULL;
   selectedBorder = NULL;
+  selectedCharacterBorder = NULL;
 }
 
 GuiTheme::~GuiTheme() {
@@ -64,6 +65,7 @@ GuiTheme::~GuiTheme() {
   if( inputText ) delete inputText;
   if( selectionBackground ) delete selectionBackground;
   if( selectedBorder ) delete selectedBorder;
+  if( selectedCharacterBorder ) delete selectedCharacterBorder;
 }
 
 void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
@@ -71,7 +73,7 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
   char s[200];
   sprintf(s, "%s/world/gui.txt", rootDir);
   FILE *fp = fopen(s, "r");
-  if(!fp) {        
+  if(!fp) {
     sprintf(errMessage, "Unable to find the file: %s!", s);
     cerr << errMessage << endl;
     exit(1);
@@ -87,36 +89,36 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
       fgetc(fp);
       // read the rest of the line
       n = Constants::readLine(name, fp);
-      
+
       GuiTheme *theme = new GuiTheme( strdup( name ) );
       Color *color;
       ThemeElement *element;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setWindowBackground( element );
       else cerr << "Gui theme: " << name << " skipping window background" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setWindowTop( element );
       else cerr << "Gui theme: " << name << " skipping window top/bottom" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setWindowBorder( element );
       else cerr << "Gui theme: " << name << " skipping window border" << endl;
-      
+
       n = Constants::readLine( line, fp );
       color = parseColor( line + 1 );
       if( color ) theme->setWindowTitleText( color );
       else cerr << "Gui theme: " << name << " skipping window title text color" << endl;
-      
+
       n = Constants::readLine( line, fp );
       color = parseColor( line + 1 );
       if( color ) theme->setWindowText( color );
       else cerr << "Gui theme: " << name << " skipping window text color" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setButtonBackground( element );
@@ -126,17 +128,17 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
       element = parseElement( line + 1 );
       if( element ) theme->setButtonSelectionBackground( element );
       else cerr << "Gui theme: " << name << " skipping button selection background" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setButtonHighlight( element );
       else cerr << "Gui theme: " << name << " skipping button highlight" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setButtonBorder( element );
       else cerr << "Gui theme: " << name << " skipping button border" << endl;
-      
+
       n = Constants::readLine( line, fp );
       color = parseColor( line + 1 );
       if( color ) theme->setButtonText( color );
@@ -146,27 +148,27 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
       color = parseColor( line + 1 );
       if( color ) theme->setButtonSelectionText( color );
       else cerr << "Gui theme: " << name << " skipping button selection text" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setListBackground( element );
       else cerr << "Gui theme: " << name << " skipping list background" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setInputBackground( element );
       else cerr << "Gui theme: " << name << " skipping input background" << endl;
-      
+
       n = Constants::readLine( line, fp );
       color = parseColor( line + 1 );
       if( color ) theme->setInputText( color );
       else cerr << "Gui theme: " << name << " skipping input text" << endl;
-      
+
       n = Constants::readLine( line, fp );
       element = parseElement( line + 1 );
       if( element ) theme->setSelectionBackground( element );
       else cerr << "Gui theme: " << name << " skipping selection background" << endl;
-      
+
       n = Constants::readLine( line, fp );
       color = parseColor( line + 1 );
       if( color ) theme->setSelectionText( color );
@@ -177,11 +179,16 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
       if( element ) theme->setSelectedBorder( element );
       else cerr << "Gui theme: " << name << " skipping selected border" << endl;
 
+      n = Constants::readLine( line, fp );
+      element = parseElement( line + 1 );
+      if( element ) theme->setSelectedCharacterBorder( element );
+      else cerr << "Gui theme: " << name << " skipping selected character border" << endl;
+
       theme->loadTextures( scourgeGui );
-      
+
       string s = name;
       themes[name] = theme;
-      
+
     } else {
       n = Constants::readLine(line, fp);
     }
@@ -264,5 +271,5 @@ void ThemeElement::loadTextures( ScourgeGui *scourgeGui ) {
   if( strlen( south ) ) tex_south = scourgeGui->loadSystemTexture( south );
   if( strlen( east ) ) tex_east = scourgeGui->loadSystemTexture( east );
   if( strlen( west ) ) tex_west = scourgeGui->loadSystemTexture( west );
-}   
+}
 

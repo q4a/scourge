@@ -59,22 +59,24 @@ private:
   ThemeElement *selectionBackground;
   Color *selectionText;
   ThemeElement *selectedBorder;
+  ThemeElement *selectedCharacterBorder;
+
 
   static std::map<std::string, GuiTheme*> themes;
 
-public: 
+public:
   GuiTheme( char *name );
   virtual ~GuiTheme();
 
   static const char *DEFAULT_THEME;
 
   static void initThemes( ScourgeGui *scourgeGui );
-  static inline GuiTheme *getThemeByName( const char *name ) { 
-	std::string s = name; 
-	if( themes.find( s ) != themes.end() ) return themes[ s ]; 
+  static inline GuiTheme *getThemeByName( const char *name ) {
+	std::string s = name;
+	if( themes.find( s ) != themes.end() ) return themes[ s ];
 	else {
 	  std::cerr << "*** error: can't find theme: " << s << std::endl;
-	  return NULL; 
+	  return NULL;
 	}
   }
 
@@ -82,7 +84,7 @@ public:
   inline ThemeElement *getWindowTop() { return windowTop; }
   inline ThemeElement *getWindowBorder() { return windowBorder; }
   inline Color *getWindowTitleText() { return windowTitleText; }
-  inline Color *getWindowText() { return windowText; }  
+  inline Color *getWindowText() { return windowText; }
   inline ThemeElement *getButtonBackground() { return buttonBackground; }
   inline ThemeElement *getButtonSelectionBackground() { return buttonSelectionBackground; }
   inline ThemeElement *getButtonHighlight() { return buttonHighlight; }
@@ -95,13 +97,14 @@ public:
   inline ThemeElement *getSelectionBackground() { return selectionBackground; }
   inline Color *getSelectionText() { return selectionText; }
   inline ThemeElement *getSelectedBorder() { return selectedBorder; }
+  inline ThemeElement *getSelectedCharacterBorder() { return selectedCharacterBorder; }
 
  protected:
   static ThemeElement *parseElement( char *line );
   static Color *parseColor( char *line );
 
   void loadTextures( ScourgeGui *scourgeGui );
-  
+
   inline void setWindowBackground( ThemeElement *element ) { this->windowBack = element; }
   inline void setWindowTop( ThemeElement *element ) { this->windowTop = element; }
   inline void setWindowBorder( ThemeElement *element ) { this->windowBorder = element; }
@@ -118,7 +121,8 @@ public:
   inline void setInputText( Color *color ) { this->inputText = color; }
   inline void setSelectionBackground( ThemeElement *element ) { selectionBackground = element; }
   inline void setSelectionText( Color *color ) { this->selectionText = color; }
-  inline void setSelectedBorder( ThemeElement *element ) { selectedBorder = element; }  
+  inline void setSelectedBorder( ThemeElement *element ) { selectedBorder = element; }
+  inline void setSelectedCharacterBorder( ThemeElement *element ) { selectedCharacterBorder = element; }
 };
 
 #endif
