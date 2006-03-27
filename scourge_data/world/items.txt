@@ -193,11 +193,11 @@ I:A small cutlass
 I:4,3
 A:*-,RA+,KN+,TI+
 
-I:Cavalry sabre
+I:Cavalry Sabre
 I:6,3d2+3,5,0,0
 I:SWORD,5,380,SWORD,48,0,SWORD_WEAPON,3
 I:These swords were designed to be used from horseback. As such they tend to be top-heavy and awkward to use in melee.
-I:A strangely-balanced utalitarian sword
+I:A strangely-balanced utilitarian sword
 I:5,3
 A:*-,RA+,KN+,TI+,AS+,MO+
 
@@ -220,7 +220,7 @@ A:*-,RA+,KN+
 I:Purple Worm Slayer
 I:6,2d4+1,7,0,0
 I:SWORD,2.5,350,SWORD,48,0,SWORD_WEAPON,3
-I:Wroght by the elvish metal smiths of Allovium, this blade is specially prepared to slay dragons.
+I:Wrought by the elvish metal smiths of Allovium, this blade is specially prepared to slay dragons.
 I:A purple curved sword
 I:8,3
 A:*-,RA+,KN+,TI+,AS+,MO+
@@ -229,23 +229,23 @@ I:Katana
 I:5,2d4+2,7,0,0
 I:SWORD,3,370,SWORD,48,0,SWORD_WEAPON,4
 I:This graceful, single-edged sword cannot be left out of any rpg!
-I:A single-edge sword of mythic propertions!
+I:A single-edge sword of mythic proportions!
 I:9,3
 A:*-,RA+,KN+,TI+,AS+,MO+
 
 I:Goliompur
 I:5,2d4+3,4,0,0
 I:SWORD,3.0,800,SWORD,48,2,SWORD_WEAPON,4
-I:The fabled weapon of Goliompur was forged by elven smiths in the deep forests of Alovium aeons ago. It is rumored to speak to those it chooses to be her leader.
-I:A weapon of exceeding craftsmenship. It is marked with stange runes.
+I:The fabled weapon of Goliompur was forged by elven smiths in the deep forests of Alovium eons ago. It is rumored to speak to those it chooses to be her leader.
+I:A weapon of exceeding craftsmanship. It is marked with strange runes.
 I:10,3
 A:*-,RA+,KN+,TI+,AS+,MO+
 
 I:Dextran
 I:4,3d4+2,5,0,0
 I:SWORD,4.0,1200,SWORD,48,1,SWORD_WEAPON,5
-I:Legend tells of how king Haomen of the nordic men hew his enemies in the battles at the fjords of Gormoth weilding this blade.
-I:You feel a crispsness in the air and smell oaken notes while near this weapon.
+I:Legend tells of how king Haomen of the Nordic men hew his enemies in the battles at the fjords of Gormoth wielding this blade.
+I:You feel a crispness in the air and smell oaken notes while near this weapon.
 I:11,3
 A:*-,RA+,KN+,TI+
 
@@ -331,7 +331,7 @@ A:*-,RA+,KN+,TI+,AS+,MO+
 I:Crossbow
 I:7,1d3+2,5,8,0
 I:BOW,1.5,700,BOW,8192,0,BOW_WEAPON,1
-I:While cumbersome to reload, the crossbow delivers an armor-pierceing greeting to any foe.
+I:While cumbersome to reload, the crossbow delivers an armor-piercing greeting to any foe.
 I:A large crossbow
 I:1,4
 A:*-,RA+,KN+,TI+,AS+,MO+
@@ -383,7 +383,7 @@ I:16,1
 I:Rounded mace
 I:8,2d3,3,0,0
 I:MACE,1.3,140,MACE,48,0,MACE_WEAPON
-I:The clerical weapon of choice! Dispence holy bashing of heads and denting of armor with this divine instrument of bludgeoning.
+I:The clerical weapon of choice! Dispense holy bashing of heads and denting of armor with this divine instrument of bludgeoning.
 I:A metal-headed mace with a plain wooden handle.
 I:17,1
 
@@ -422,7 +422,7 @@ A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 I:Warmaster
 I:3,3d4+2,6,0,0
 I:MACE,2.2,1600,MACE,48,0,MACE_WEAPON,4
-I:Descendent of Glauis the legendary talking mace of Horom, this agile weapon is also a ferocious combatant.
+I:Descendant of Glauis the legendary talking mace of Horom, this agile weapon is also a ferocious combatant.
 I:This mace is surrounded by a near-visible aura of blood-lust.
 I:3,2
 A:*-,KN+,RA+,AS+
@@ -456,7 +456,7 @@ A:*-,KN+,AS+,RA+,TI+,AR+,LO+
 I:Trident
 I:7,4d3,8,2,0
 I:POLE,2.8,120,POLE,48,1,POLE_WEAPON,2
-I:An ancient long reaching weapon of a gladitorial history. This trident bears the symbol of the sea-lords of Urtap.
+I:An ancient long reaching weapon of a gladiatorial history. This trident bears the symbol of the sea-lords of Urtap.
 I:A long metal pole with three barbed prongs.
 I:10,4
 A:*-,KN+,RA+,TI+,AS+,AR+,LO+
@@ -503,7 +503,7 @@ I:5,17
 I:Golden spiral wand
 I:5,2,0,0,12
 I:WAND,0.2,250,WAND,48,0,COORDINATION
-I:Two wooden threads lackered in gold twine to form the handle of this wand.
+I:Two wooden threads lacquered in gold twine to form the handle of this wand.
 I:A wand covered in gold paint
 I:4,17
 
@@ -581,7 +581,7 @@ I:A blue metal ring with a sparkling stone.
 I:11,12
 
 ######################
-# Amulets: action is amulets's enchantability (higher the better)
+# Amulets: action is amulet's enchantability (higher the better)
 #
 I:Crystal amulet
 I:5,1,0,0,10
@@ -614,8 +614,8 @@ I:5,13
 I:Amulet of Guiding Hand
 I:3,5,0,0,15
 I:AMULET,0.05,2560,AMULET,2,0,PIETY,2
-I:A healing hand faces palm out on the pendant of this hanging talizman.
-I:A talizman with the etching of a hand.
+I:A healing hand faces palm out on the pendant of this hanging talisman.
+I:A talisman with the etching of a hand.
 I:4,13
 
 I:Token of Ragnar
@@ -628,7 +628,7 @@ I:11,13
 I:Amulet of Shielding Aura
 I:1,6,0,0,20
 I:AMULET,0.05,7200,AMULET,2,0,PIETY,4
-I:When near you feel a calming sensation emanate from the stone of this talizman.
+I:When near you feel a calming sensation emanate from the stone of this talisman.
 I:This rare amulet has a calming feel to it.
 I:9,13
 
@@ -657,7 +657,7 @@ I:17,9
 I:Staff of Zordok the Clumsy
 I:4,3,0,0,15
 I:STAFF,1.0,600,POLE,48,1,LEADERSHIP,1
-I:The tale of Zordok is one of caution. It's rumored, the hapless lizzard mage managed to trap himself in a staff such as this one.
+I:The tale of Zordok is one of caution. It's rumored, the hapless lizard mage managed to trap himself in a staff such as this one.
 I:The wooden staff emits quiet whimpering noises when held.
 I:18,9
 
@@ -678,7 +678,7 @@ I:20,9
 I:Horned Staff of the Shade
 I:1,6,0,0,20
 I:STAFF,1.0,7520,POLE,48,1,LEADERSHIP,4
-I:Pure evil eminates from the horned skull head set atop this staff. The ornamental top appears to suggest you rid yourself of your party members.
+I:Pure evil emanates from the horned skull head set atop this staff. The ornamental top appears to suggest you rid yourself of your party members.
 I:A red pole with a horned skull attached to its top.
 I:3,10
 
@@ -697,7 +697,7 @@ I:Not much warmth reaches your stiff fingers in these homemade gloves. It also a
 I:A pair of ill-made, ill-fitting leather gloves.
 I:7,9
 
-I:Embriodered Guard Gloves
+I:Embroidered Guard Gloves
 I:8,1,0,0,0
 I:ARMOR,2.0,150,GLOVE,16384,0,ARMOR_DEFEND
 I:This embroidered pair of heavy leather gloves bears the symbols of the Horghh city guards. In places it is worn very thin, yet it appears to be exceptionally sturdy.
@@ -731,7 +731,7 @@ I:5,9,10
 I:Full face helmet
 I:8,1,0,0,0
 I:ARMOR,20.0,120,HELMET,1,0,ARMOR_DEFEND
-I:Finally a head-gear designed to protect others from viewing the hideous wounds you have aquired over the years.
+I:Finally a head-gear designed to protect others from viewing the hideous wounds you have acquired over the years.
 I:A clunky helmet with narrow slits for the eyes and nose.
 I:4,9,9
 A:*-,KN+,RA+,TI+,AS+,AR+,LO+
@@ -764,7 +764,7 @@ I:Adventuring Hat
 I:9,0,0,0,0
 I:ARMOR,8,2,HELMET,1,0,ARMOR_DEFEND
 I:In early autumn when the nights start to cool and that old feeling returns, to hop over the backyard fence and follow a trail wherever it may lead... this is the hat you'd reach for.
-I:A brown lether hat with a feather.
+I:A brown leather hat with a feather.
 I:1,9
 
 ######################
@@ -773,7 +773,7 @@ I:1,9
 I:Buckler
 I:10,1,0,0,0
 I:ARMOR,2,15,SHIELD,48,0,SHIELD_DEFEND
-I:I'm sure the couple flimsy boards held together by cat-gut will provide tons of life-saving cover in battle. On the positive side, at least it's a small, manuverable shield.
+I:I'm sure the couple flimsy boards held together by cat-gut will provide tons of life-saving cover in battle. On the positive side, at least it's a small, maneuverable shield.
 I:A small home-made wooden shield.
 I:12,8
 
@@ -812,7 +812,7 @@ A:*-,KN+,RA+
 I:Trollhide Shield
 I:10,2,0,0,0
 I:ARMOR,7,30,SHIELD,48,0,SHIELD_DEFEND,2
-I:A shield cleverly constructed from the cured hide of a mountain troll. These were especially popular during the dwarven-troll war when each side used such handiwork to idle away the time between squirmishes.
+I:A shield cleverly constructed from the cured hide of a mountain troll. These were especially popular during the dwarven-troll war when each side used such handiwork to idle away the time between skirmishes.
 I:A gray shield featuring advanced troll-hide technology.
 I:13,8
 A:*-,KN+,RA+,TI+,AS+,AR+,LO+
@@ -842,7 +842,7 @@ I:12,6
 I:Traveling cloak
 I:10,1,0,0,0
 I:ARMOR,2.5,15,ARMOR,4,0,ARMOR_DEFEND
-I:A much worn and slept-in traveling garmet which looks to also have served as an item of personal hygiene.
+I:A much worn and slept-in traveling garment which looks to also have served as an item of personal hygiene.
 I:A worn brownish cloak.
 I:17,8
 
@@ -856,7 +856,7 @@ I:18,8
 I:Robes of the Sorcerer
 I:9,1,0,0,0
 I:ARMOR,4,25,ARMOR,8,0,ARMOR_DEFEND,2
-I:The usual garmet of spellcasters lets the user perform much agitated hand waving as required by the casted spell.
+I:The usual gamete of spellcasters lets the user perform much agitated hand waving as required by the casted spell.
 I:These robes have magic symbols on their sleeves and hood.
 I:13,6,8
 
@@ -871,7 +871,7 @@ A:*-,AR+,LO+,CO+,SU+,NA+,MO+
 I:Leather Armor
 I:9,3,0,0,0
 I:ARMOR,20,250,ARMOR,8,0,ARMOR_DEFEND
-I:Ye olde leather armor is created from the cured and toughened skin of thy foe. On this particlar model the leather pieces are clumsily held together by what appears to be the guts of thy foe.
+I:Ye olde leather armor is created from the cured and toughened skin of thy foe. On this particular model the leather pieces are clumsily held together by what appears to be the guts of thy foe.
 I:Looks to be an old piece of leather armor
 I:18,6,6
 
@@ -879,7 +879,7 @@ I:Studded Leather Armor
 I:7,4,0,0,0
 I:ARMOR,25,320,ARMOR,8,0,ARMOR_DEFEND,1
 I:As a small evolutionary step in leather armor technology, this model sports blunted metal studs, built more to intimidate rather than to cause actual damage. Still, there is a lot to be said for looking cool.
-I:This lether armor piece has embedded metal studs.
+I:This leather armor piece has embedded metal studs.
 I:17,6,6
 
 I:Rusty Chainmail
@@ -909,7 +909,7 @@ A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 I:Banded Mail
 I:8,5,0,0,0
 I:ARMOR,60,950,ARMOR,8,0,ARMOR_DEFEND,2
-I:This type of armor is constructed by attaching strips of metal to chain or leather. This particular model was created by the dwarven smiths under the montains of Mozmoril. Although heavy and uncomfortable it protect you from but the sharpest weapons.
+I:This type of armor is constructed by attaching strips of metal to chain or leather. This particular model was created by the dwarven smiths under the mountains of Mozmoril. Although heavy and uncomfortable it protect you from but the sharpest weapons.
 I:Banded strips of metal compose the main sections of this armor.
 I:7,7,5
 A:*-,KN+,RA+,TI+,AS+
@@ -925,8 +925,8 @@ A:*-,KN+,RA+
 I:Elven platemail
 I:4,7,0,0,0
 I:ARMOR,40,2000,ARMOR,8,0,ARMOR_DEFEND,4
-I:Like other elven works, this plaitmail is a study in perfection. It is lightweight, resilient and quite comfortible to wear for long periods of time.
-I:A well-fitted set of lightweight plaitmail armor.
+I:Like other elven works, this platemail is a study in perfection. It is lightweight, resilient and quite comfortable to wear for long periods of time.
+I:A well-fitted set of lightweight platemail armor.
 I:10,7,5
 A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 
@@ -957,7 +957,7 @@ A:*-,AR+,LO+,CO+,SU+,NA+,MO+
 I:Merzul Goldenfleece
 I:1,8,0,0,0
 I:ARMOR,50,12200,ARMOR,8,0,ARMOR_DEFEND,6
-I:This gold colored armor offers the highest levels of protection. Embued with the magic contained in its yellow strands of fleece it protects the wearer via a mystic aura of repulsion.
+I:This gold colored armor offers the highest levels of protection. Imbued with the magic contained in its yellow strands of fleece it protects the wearer via a mystic aura of repulsion.
 I:Lightweight gold colored armor, made from some kind of wool.
 I:6,8,7
 A:*-,KN+,RA+,TI+,AS+
@@ -969,7 +969,7 @@ I:Workboots
 I:10,1,0,0,0
 I:ARMOR,1.5,25,BOOTS,256,0,ARMOR_DEFEND
 I:Slightly worn workboots. They smell about as good as they look.
-I:Comfortible looking workboots.
+I:Comfortable looking workboots.
 I:11,9
 
 I:Steel-toed Workboots
@@ -979,7 +979,7 @@ I:Workboots of a more complex construction. The toebox is encased in steel makin
 I:Workboots with a steel reinforced toebox.
 I:13,9
 
-I:Lether boots
+I:Leather boots
 I:9,2,0,0,0
 I:ARMOR,5,120,BOOTS,256,0,ARMOR_DEFEND,1
 I:These heavy duty boots are designed to last a lifetime. However long that may be...
@@ -1013,7 +1013,7 @@ I:Bookshelf
 I:10
 I:CONTAINER,120,0,BOOKSHELF
 I:A bookshelf containing tomes of old
-I:A large bookself
+I:A large bookshelf
 I:18,17
 
 I:Chest2
@@ -1027,7 +1027,7 @@ I:Bookshelf2
 I:10
 I:CONTAINER,120,0,BOOKSHELF2
 I:A bookshelf containing tomes of old
-I:A large bookself
+I:A large books-elf
 I:18,17
 
 I:Corpse
@@ -1099,7 +1099,7 @@ I:18,17
 I:Bed
 I:10
 I:OTHER,40,0,BED
-I:A comfortable looking bed albiet somewhat moth-eaten.
+I:A comfortable looking bed albeit somewhat moth-eaten.
 I:A bed for resting
 I:18,17
 
@@ -1396,6 +1396,6 @@ I:Cloak of Hateful Vengeance
 I:3,2,0,0,0
 I:ARMOR,2.5,22320,ARMOR,4,0,ARMOR_DEFEND,2,9
 I:Infused with the hateful spirit of Unamoin, this cloak assists its wearer in combat, but at a price...
-I:These red robes radiate palpaeble dread.
+I:These red robes radiate palpable dread.
 I:20,8
 
