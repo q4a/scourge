@@ -2112,6 +2112,9 @@ bool Scourge::useLever(Location *pos) {
   return false;
 }
 
+// FIXME: check for blocked doors when closing, smooth movement, 
+// fix disapearing post bug 
+// Wall piece: don't blend and draw sides when raised
 bool Scourge::useSecretDoor(Location *pos) {
   bool ret = false;
   if( levelMap->isSecretDoor( pos ) ) {
@@ -2120,20 +2123,23 @@ bool Scourge::useSecretDoor(Location *pos) {
     if( pos->z == 0 ) {
       levelMap->removePosition( pos->x, pos->y, pos->z );      
       levelMap->setPosition( pos->x, pos->y, post->getHeight(), pos->shape );
-      /*
-      levelMap->setPosition( pos->x, pos->y, pos->z, post );
+      
+      levelMap->setPosition( pos->x, pos->y, 0, post );
       if( pos->shape->getWidth() > pos->shape->getDepth() ) {
-        levelMap->setPosition( pos->x + pos->shape->getWidth() - post->getWidth(), 
-                               pos->y, pos->z, post );
+        levelMap->setPosition( pos->x + pos->shape->getWidth() - post->getWidth(), pos->y, 0, post );
       } else {
-        levelMap->setPosition( pos->x,
-                               pos->y + pos->shape->getDepth(), 
-                               pos->z, post );
+        levelMap->setPosition( pos->x, pos->y - pos->shape->getDepth() + post->getDepth(), 0, post );
       }
-      */
     } else {
       levelMap->removePosition( pos->x, pos->y, pos->z );
+      levelMap->removePosition( pos->x, pos->y, 0 );
       levelMap->setPosition( pos->x, pos->y, 0, pos->shape );
+
+      if( pos->shape->getWidth() > pos->shape->getDepth() ) {
+        levelMap->removePosition( pos->x + pos->shape->getWidth() - post->getWidth(), pos->y, 0 );
+      } else {
+        levelMap->removePosition( pos->x, pos->y - pos->shape->getDepth() + post->getDepth(), 0 );
+      }
     }
     levelMap->updateLightMap();
   }
