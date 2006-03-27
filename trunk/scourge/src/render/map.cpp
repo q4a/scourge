@@ -29,6 +29,7 @@
 #include "mapadapter.h"
 #include "../io/zipfile.h"
 #include "maprenderhelper.h"
+#include "../debug.h"
 
 using namespace std;
 
@@ -243,6 +244,7 @@ void Map::reset() {
   floorTexWidth = floorTexHeight = 0;
   floorTex = 0;
   mapCenterCreature = NULL;
+  secretDoors.clear();
   
 //  descriptionCount = 0;
 //  descriptionsChanged = false;
@@ -962,6 +964,9 @@ void Map::draw() {
   if( selectMode ) {
     for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
     for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
+    for(int i = 0; i < stencilCount; i++) 
+      if( isSecretDoor( stencil[i].pos ) )
+          doDrawShape(&stencil[i]);
   } else {  
 
 
@@ -1550,7 +1555,18 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
     glTranslatef( xpos2, ypos2, zpos2);
 
-    if(colorAlreadySet) {
+#ifdef DEBUG_SECRET_DOORS    
+    if( later && later->pos ) {
+      int xp = later->pos->x;
+      int yp = later->pos->y;
+      int index = xp + MAP_WIDTH * yp;
+      if( secretDoors.find( index ) != secretDoors.end() ) {
+        glColor4f(1, 0.3f, 0.3f, 1.0f);
+        colorAlreadySet = true;
+      }
+    }
+#endif
+    if( colorAlreadySet   ) {
       colorAlreadySet = false;
     } else {
       if(later && later->pos && 
@@ -1961,6 +1977,11 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *d
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         for(int zp = 0; zp < shape->getHeight(); zp++) {
+
+          // I _hate_ c++... moving secret doors up causes array roll-over problems.
+          if( x + xp < 0 || y - yp < 0 || z + zp < 0 ||
+              x + xp >= MAP_WIDTH || y - yp >= MAP_DEPTH || z + zp >= MAP_VIEW_HEIGHT ) break;
+
           if( !p ) {
             p = mapMemoryManager->newLocation();
           }
@@ -2014,9 +2035,16 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         for(int zp = 0; zp < shape->getHeight(); zp++) {
+
+          // I _hate_ c++... moving secret doors up causes array roll-over problems.
+          if( x + xp < 0 || y - yp < 0 || z + zp < 0 ||
+              x + xp >= MAP_WIDTH || y - yp >= MAP_DEPTH || z + zp >= MAP_VIEW_HEIGHT ) break;
+
           Location *p = pos[x + xp][y - yp][z + zp];
-          if( deleted.find(p) == deleted.end() ) deleted.insert( p );
-          pos[x + xp][y - yp][z + zp] = NULL;          
+          if( p->x == x && p->y == y && p->z == z ) {
+            if( deleted.find(p) == deleted.end() ) deleted.insert( p );
+            pos[x + xp][y - yp][z + zp] = NULL;          
+          }
         }
       }
     }
@@ -2285,7 +2313,8 @@ bool Map::isWallBetweenShapes(int x1, int y1, int z1,
 	for(int y = y1; y < y1 + shape1->getDepth(); y++) {
 	  for(int xx = x2; xx < x2 + shape2->getWidth(); xx++) {
 		for(int yy = y2; yy < y2 + shape2->getDepth(); yy++) {
-		  if(!isWallBetween(x, y, z1, xx, yy, z2)) return false;
+      Shape *shape = isWallBetween(x, y, z1, xx, yy, z2);
+      if( !shape || shape == shape2 ) return false;
 		}
 	  }
 	}
@@ -2294,28 +2323,30 @@ bool Map::isWallBetweenShapes(int x1, int y1, int z1,
 }
 
 // FIXME: only uses x,y for now
-bool Map::isWallBetween(int x1, int y1, int z1,
-						int x2, int y2, int z2) {
+Shape *Map::isWallBetween(int x1, int y1, int z1,
+                          int x2, int y2, int z2) {
 
   if(x1 == x2 && y1 == y2) return isWall(x1, y1, z1);
   if(x1 == x2) {
 	if(y1 > y2) SWAP(y1, y2);
 	for(int y = y1; y <= y2; y++) {
-	  if(isWall(x1, y, z1)) return true;
+    Shape *shape = isWall(x1, y, z1);
+	  if( shape ) return shape;
 	}
 	return false;
   }
   if(y1 == y2) {
 	if(x1 > x2) SWAP(x1, x2);
 	for(int x = x1; x <= x2; x++) {
-	  if(isWall(x, y1, z1)) return true;
+    Shape *shape = isWall(x, y1, z1);
+	  if( shape ) return shape;
 	}
 	return false;
   }
   
 
   //  fprintf(stderr, "Checking for wall: from: %d,%d to %d,%d\n", x1, y1, x2, y2);
-  bool ret = false;
+  Shape *shape = NULL;
   bool yDiffBigger = (abs(y2 - y1) > abs(x2 - x1));
   float m = (float)(y2 - y1) / (float)(x2 - x1);
   int steps = (yDiffBigger ? abs(y2 - y1) : abs(x2 - x1));
@@ -2323,9 +2354,10 @@ bool Map::isWallBetween(int x1, int y1, int z1,
   float y = y1;
   for(int i = 0; i < steps; i++) {
 	//	fprintf(stderr, "\tat=%f,%f\n", x, y);
-	if(isWall((int)x, (int)y, z1)) {
+    Shape *ss = isWall((int)x, (int)y, z1);
+	if( ss ) {
 	  //fprintf(stderr, "wall at %f, %f\n", x, y);
-	  ret = true;
+	  shape = ss;
 	  break;
 	}
 	if(yDiffBigger) {
@@ -2341,14 +2373,14 @@ bool Map::isWallBetween(int x1, int y1, int z1,
 	}
   }
   //  fprintf(stderr, "wall in between? %s\n", (ret ? "TRUE": "FALSE"));
-  return ret;
+  return shape;
 }
 
-bool Map::isWall(int x, int y, int z) {
+Shape *Map::isWall(int x, int y, int z) {
   Location *loc = getLocation((int)x, (int)y, z);
-  return (loc && 
+  return( loc && 
           (!loc->item || loc->item->getShape() != loc->shape) && 
-          (!loc->creature || loc->creature->getShape() != loc->shape));
+          (!loc->creature || loc->creature->getShape() != loc->shape) ? loc->shape : NULL );
 }                             
 
 // FIXME: only uses x, y for now
@@ -2503,6 +2535,7 @@ bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
 		if(pos == NULL || pos->item || pos->creature) return false;
     if(onlyLockedDoors && isDoor(x, y)) 
       return isLocked(pos->x, pos->y, pos->z);
+    if( pos && isSecretDoor( pos ) && pos->z > 0 ) return false;
     if(!((GLShape*)(pos->shape))->isLightBlocking()) return false;
 	}
 	return true;
@@ -3314,5 +3347,18 @@ void Map::setMapRenderHelper( MapRenderHelper *helper ) {
   this->helper->setMap( this );
   LIGHTMAP_ENABLED = this->helper->isLightMapEnabled();
   //lightMapChanged = true;
+}
+
+void Map::addSecretDoor( int x, int y ) {
+  int index = y * MAP_WIDTH + x;
+  secretDoors.insert( index );
+}
+
+bool Map::isSecretDoor( Location *pos ) {
+  return isSecretDoor( pos->x, pos->y );
+}
+  
+bool Map::isSecretDoor( int x, int y ) {
+  return( secretDoors.find( y * MAP_WIDTH + x ) != secretDoors.end() ? true : false );
 }
 

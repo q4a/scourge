@@ -235,6 +235,7 @@ class Map {
   GLuint floorTex;
 
   RenderedCreature *mapCenterCreature;
+  std::set<int> secretDoors;
 
  public:
   bool useFrustum;
@@ -246,6 +247,10 @@ class Map {
 
   Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
+
+  void addSecretDoor( int x, int y );
+  bool isSecretDoor( Location *pos );
+  bool isSecretDoor( int x, int y );
 
   inline void setMapCenterCreature( RenderedCreature *c ) { mapCenterCreature = c; }
   inline RenderedCreature *getMapCenterCreature() { return mapCenterCreature; }
@@ -418,8 +423,8 @@ class Map {
 						   int x2, int y2, int z2,
 						   Shape *shape2);
   
-  bool isWallBetween(int x1, int y1, int z1,
-					 int x2, int y2, int z2);
+  Shape *isWallBetween(int x1, int y1, int z1,
+                       int x2, int y2, int z2);
   
   bool shapeFits(Shape *shape, int x, int y, int z);
 
@@ -600,7 +605,7 @@ class Map {
   void drawWaterPosition(int posX, int posY,
                          float xpos2, float ypos2,
                          Shape *shape);
-  bool isWall(int x, int y, int z);
+  Shape *isWall(int x, int y, int z);
 
   void configureLightMap();
   void traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors);
