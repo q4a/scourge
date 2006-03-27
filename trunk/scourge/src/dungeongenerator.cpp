@@ -661,28 +661,52 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
             if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              drawDoor(map, shapePal, mapx, mapy, W_DOOR);
+              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+                nodes[x][y] -= W_DOOR;
+                secretDoor = W_DOOR;
+                nodes[x][y] -= W_PASS;
+              } else {
+                drawDoor(map, shapePal, mapx, mapy, W_DOOR);
+              }
             }
           }
           if((nodes[x][y] & E_PASS) &&
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
             if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              drawDoor(map, shapePal, mapx, mapy, E_DOOR);
+              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+                nodes[x][y] -= E_DOOR;
+                secretDoor = E_DOOR;
+                nodes[x][y] -= E_PASS;
+              } else {
+                drawDoor(map, shapePal, mapx, mapy, E_DOOR);
+              }
             }
           }
           if((nodes[x][y] & S_PASS) &&
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
             if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              drawDoor(map, shapePal, mapx, mapy, S_DOOR);
+              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+                nodes[x][y] -= S_DOOR;
+                secretDoor = S_DOOR;
+                nodes[x][y] -= S_PASS;
+              } else {
+                drawDoor(map, shapePal, mapx, mapy, S_DOOR);
+              }
             }
           }
           if((nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
             if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              drawDoor(map, shapePal, mapx, mapy, N_DOOR);
+              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+                nodes[x][y] -= N_DOOR;
+                secretDoor = N_DOOR;
+                nodes[x][y] -= N_PASS;
+              } else {
+                drawDoor(map, shapePal, mapx, mapy, N_DOOR);
+              }
             }
           }
         }
