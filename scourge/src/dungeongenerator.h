@@ -140,7 +140,11 @@ protected:
   int getScore(int x, int y, int rw, int rh);                        
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
-      Sint16 mapx, Sint16 mapy, int doorType);
+      Sint16 mapx, Sint16 mapy, int doorType, bool secret=false);
+  void drawEastDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret );
+  void drawWestDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret );
+  void drawSouthDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret );
+  void drawNorthDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret );
 
   virtual void addFurniture(Map *map, ShapePalette *shapePal);
 

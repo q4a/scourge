@@ -1902,6 +1902,8 @@ bool Scourge::useItem(int x, int y, int z) {
         return true;
       } else if (useDoor(pos)) {
         return true;
+      } else if (useSecretDoor(pos)) {
+        return true;
       } else if (useGate(pos)) {
         return true;
       } else if (useBoard(pos)) {
@@ -2110,72 +2112,100 @@ bool Scourge::useLever(Location *pos) {
   return false;
 }
 
+bool Scourge::useSecretDoor(Location *pos) {
+  bool ret = false;
+  if( levelMap->isSecretDoor( pos ) ) {
+    Shape *post = getShapePalette()->findShapeByName( "SECRET_DOOR_POST" );
+    ret = true;
+    if( pos->z == 0 ) {
+      levelMap->removePosition( pos->x, pos->y, pos->z );      
+      levelMap->setPosition( pos->x, pos->y, post->getHeight(), pos->shape );
+      /*
+      levelMap->setPosition( pos->x, pos->y, pos->z, post );
+      if( pos->shape->getWidth() > pos->shape->getDepth() ) {
+        levelMap->setPosition( pos->x + pos->shape->getWidth() - post->getWidth(), 
+                               pos->y, pos->z, post );
+      } else {
+        levelMap->setPosition( pos->x,
+                               pos->y + pos->shape->getDepth(), 
+                               pos->z, post );
+      }
+      */
+    } else {
+      levelMap->removePosition( pos->x, pos->y, pos->z );
+      levelMap->setPosition( pos->x, pos->y, 0, pos->shape );
+    }
+    levelMap->updateLightMap();
+  }
+  return ret;
+}
+
 bool Scourge::useDoor(Location *pos) {
   Shape *newDoorShape = NULL;
   Shape *oldDoorShape = pos->shape;
-  if(oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
-	newDoorShape = getSession()->getShapePalette()->findShapeByName("NS_DOOR");
-  } else if(oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR")) {
-	newDoorShape = getSession()->getShapePalette()->findShapeByName("EW_DOOR");
+  if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
+    newDoorShape = getSession()->getShapePalette()->findShapeByName("NS_DOOR");
+  } else if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR")) {
+    newDoorShape = getSession()->getShapePalette()->findShapeByName("EW_DOOR");
   }
-  if(newDoorShape) {
-	int doorX = pos->x;
-	int doorY = pos->y;
-	int doorZ = pos->z;
+  if (newDoorShape) {
+    int doorX = pos->x;
+    int doorY = pos->y;
+    int doorZ = pos->z;
 
-	// see if the door is open or closed. This is done by checking the shape above the
-	// door. If there's something there and the orientation (NS vs. EW) matches, the
-	// door is closed. I know it's a hack.
-	Location *above = levelMap->getLocation(doorX,
-											doorY,
-											doorZ + pos->shape->getHeight());
-	//if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
-	//else cerr << "Nothing above!" << endl;
-	bool closed = ((pos->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") &&
-					above && above->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR_TOP")) ||
-				   (pos->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") &&
-					above && above->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR_TOP")) ?
-				   true : false);
-	//cerr << "DOOR is closed? " << closed << endl;
-	if(closed && levelMap->isLocked(doorX, doorY, doorZ)) {
-	  levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
-	  return true;
-	}
+    // see if the door is open or closed. This is done by checking the shape above the
+    // door. If there's something there and the orientation (NS vs. EW) matches, the
+    // door is closed. I know it's a hack.
+    Location *above = levelMap->getLocation(doorX,
+                                            doorY,
+                                            doorZ + pos->shape->getHeight());
+    //if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
+    //else cerr << "Nothing above!" << endl;
+    bool closed = ((pos->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") &&
+                    above && above->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR_TOP")) ||
+                   (pos->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") &&
+                    above && above->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR_TOP")) ?
+                   true : false);
+    //cerr << "DOOR is closed? " << closed << endl;
+    if (closed && levelMap->isLocked(doorX, doorY, doorZ)) {
+      levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+      return true;
+    }
 
-	// switch door
-	Sint16 ox = pos->x;
-	Sint16 oy = pos->y;
-	Sint16 nx = pos->x;
-	Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
+    // switch door
+    Sint16 ox = pos->x;
+    Sint16 oy = pos->y;
+    Sint16 nx = pos->x;
+    Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
 
-	Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
-	Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
-											ox, oy, toint(party->getPlayer()->getZ()),
-											newDoorShape);
-	if( !blocker ) {
+    Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+    Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
+                                            ox, oy, toint(party->getPlayer()->getZ()),
+                                            newDoorShape);
+    if ( !blocker ) {
 
-	  // there is a chance that the door will be destroyed
-	  if( 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
-		destroyDoor( ox, oy, oldDoorShape );
-		levelMap->updateLightMap();
-	  } else {
-		levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
-		levelMap->updateLightMap();
-		levelMap->updateDoorLocation(doorX, doorY, doorZ,
-									 nx, ny, toint(party->getPlayer()->getZ()));
-	  }
-	  return true;
-	} else if( blocker->creature && !( blocker->creature->isMonster() ) ) {
-	  // rollback if blocked by a player
-	  levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
-	  levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
-	  return true;
-	} else {
-	  // Deeestroy!
-	  destroyDoor( ox, oy, oldDoorShape );
-	  levelMap->updateLightMap();
-	  return true;
-	}
+      // there is a chance that the door will be destroyed
+      if ( 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
+        destroyDoor( ox, oy, oldDoorShape );
+        levelMap->updateLightMap();
+      } else {
+        levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
+        levelMap->updateLightMap();
+        levelMap->updateDoorLocation(doorX, doorY, doorZ,
+                                     nx, ny, toint(party->getPlayer()->getZ()));
+      }
+      return true;
+    } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
+      // rollback if blocked by a player
+      levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
+      levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+      return true;
+    } else {
+      // Deeestroy!
+      destroyDoor( ox, oy, oldDoorShape );
+      levelMap->updateLightMap();
+      return true;
+    }
   }
   return false;
 }
@@ -3970,7 +4000,7 @@ GLuint Scourge::loadSystemTexture( char *line ) {
 
 // check for interactive items.
 Color *Scourge::getOutlineColor( Location *pos ) {
-  return( pos->item || pos->shape->isInteractive() ? outlineColor : NULL );
+  return( pos->item || pos->shape->isInteractive() || levelMap->isSecretDoor( pos ) ? outlineColor : NULL );
 }
 
 bool Scourge::doesSaveGameExist(Session *session) {

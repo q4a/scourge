@@ -250,6 +250,7 @@ protected:
   // returns new z coordinate
   int dropItem(int x, int y);
   bool useLever(Location *pos);
+  bool useSecretDoor(Location *pos);
   bool useDoor(Location *pos);
   void destroyDoor( Sint16 ox, Sint16 oy, Shape *shape );
   bool useBoard(Location *pos);
