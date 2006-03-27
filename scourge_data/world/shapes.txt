@@ -149,6 +149,7 @@ T:darkui.bmp
 #T:floor4.bmp
 T:litewood.bmp
 T:brick.bmp
+T:screw.bmp
 
 # This is "old-school". It's only used for "native" objects: chest, bookcase, etc.
 # Walls, floors and doors now use themes (much more flexible; see below)
@@ -553,6 +554,14 @@ N:ffffffff
 3:/objects/torch.3ds
 3:0.7
 
+# SECRET_DOOR_POST
+N:14
+N:1,1,1
+N:SECRET_DOOR_POST
+N:5
+N:ffffffff
+3:/objects/secret.3ds
+3:1.6
 
 # Constants::EMPTY_SHAPE_INDEX
 N:2
@@ -580,11 +589,6 @@ N:e820ffff
 T:5
 
 # Constants::BRAZIER_BASE_INDEX
-#N:2
-#N:3,3,1
-#N:BRAZIER_BASE
-#N:5
-#N:f0f0ffff
 N:14
 N:1,1,1
 N:BRAZIER_BASE
