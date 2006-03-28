@@ -563,6 +563,52 @@ N:ffffffff
 3:/objects/secret.3ds
 3:1.6
 
+# Secret door in lifted position. 
+# Must be in the same order as the corresponding wall pieces.
+N:theme,wall
+N:2,12,12
+N:SECRET_EW_WALL
+N:0
+N:ac8060ff
+
+# Constants::EW_WALL_EXTRA_INDEX
+N:theme,wall
+N:2,14,12
+N:SECRET_EW_WALL_EXTRA
+N:0
+N:ac8060ff
+
+# Constants::EW_WALL_TWO_EXTRAS_INDEX
+N:theme,wall
+N:2,16,12
+N:SECRET_EW_WALL_TWO_EXTRAS
+N:0
+N:ac8060ff
+
+# Constants::NS_WALL_INDEX
+N:theme,wall
+N:12,2,12
+N:SECRET_NS_WALL
+N:0
+N:ac8060ff
+
+# Constants::NS_WALL_EXTRA_INDEX
+N:theme,wall
+N:14,2,12
+N:SECRET_NS_WALL_EXTRA
+N:0
+N:ac8060ff
+
+# Constants::NS_WALL_TWO_EXTRAS_INDEX
+N:theme,wall
+N:16,2,12
+N:SECRET_NS_WALL_TWO_EXTRAS
+N:0
+N:ac8060ff
+
+
+
+
 # Constants::EMPTY_SHAPE_INDEX
 N:2
 N:1,1,1
