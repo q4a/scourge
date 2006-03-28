@@ -2112,34 +2112,54 @@ bool Scourge::useLever(Location *pos) {
   return false;
 }
 
-// FIXME: check for blocked doors when closing, smooth movement, 
-// fix disapearing post bug 
-// Wall piece: don't blend and draw sides when raised
+// FIXME: smooth movement, 
+// fix disapearing post bug, raise torch also (if any) 
 bool Scourge::useSecretDoor(Location *pos) {
   bool ret = false;
   if( levelMap->isSecretDoor( pos ) ) {
+    GLShape *wall = (GLShape*)(pos->shape);
     Shape *post = getShapePalette()->findShapeByName( "SECRET_DOOR_POST" );
+    int s1 = ((GLShape*)( getShapePalette()->findShapeByName( "EW_WALL" ) ) )->getShapePalIndex();
+    int s2 = ((GLShape*)( getShapePalette()->findShapeByName( "SECRET_EW_WALL" ) ) )->getShapePalIndex();
     ret = true;
     if( pos->z == 0 ) {
       levelMap->removePosition( pos->x, pos->y, pos->z );      
-      levelMap->setPosition( pos->x, pos->y, post->getHeight(), pos->shape );
+      Shape *shape = getShapePalette()->getShape( wall->getShapePalIndex() - s1 + s2 );
+      levelMap->setPosition( pos->x, pos->y, post->getHeight(), shape );
       
       levelMap->setPosition( pos->x, pos->y, 0, post );
-      if( pos->shape->getWidth() > pos->shape->getDepth() ) {
-        levelMap->setPosition( pos->x + pos->shape->getWidth() - post->getWidth(), pos->y, 0, post );
+      if( wall->getWidth() > wall->getDepth() ) {
+        levelMap->setPosition( pos->x + wall->getWidth() - post->getWidth(), pos->y, 0, post );
       } else {
-        levelMap->setPosition( pos->x, pos->y - pos->shape->getDepth() + post->getDepth(), 0, post );
+        levelMap->setPosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0, post );
       }
     } else {
-      levelMap->removePosition( pos->x, pos->y, pos->z );
-      levelMap->removePosition( pos->x, pos->y, 0 );
-      levelMap->setPosition( pos->x, pos->y, 0, pos->shape );
 
-      if( pos->shape->getWidth() > pos->shape->getDepth() ) {
-        levelMap->removePosition( pos->x + pos->shape->getWidth() - post->getWidth(), pos->y, 0 );
+      // remove struts
+      levelMap->removePosition( pos->x, pos->y, 0 );
+      if( wall->getWidth() > wall->getDepth() ) {
+        levelMap->removePosition( pos->x + wall->getWidth() - post->getWidth(), pos->y, 0 );
       } else {
-        levelMap->removePosition( pos->x, pos->y - pos->shape->getDepth() + post->getDepth(), 0 );
+        levelMap->removePosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0 );
       }
+
+      // blocked?
+      if( levelMap->isBlocked( pos->x, pos->y, 0, pos->x, pos->y, pos->z, wall ) ) {
+        // put struts back
+        levelMap->setPosition( pos->x, pos->y, 0, post );
+        if( wall->getWidth() > wall->getDepth() ) {
+          levelMap->setPosition( pos->x + wall->getWidth() - post->getWidth(), pos->y, 0, post );
+        } else {
+          levelMap->setPosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0, post );
+        }
+        levelMap->addDescription( "Something is blocking the door from closing." );
+        return false;
+      }
+
+      // move the door down
+      levelMap->removePosition( pos->x, pos->y, pos->z );
+      Shape *shape = getShapePalette()->getShape( wall->getShapePalIndex() - s2 + s1 );
+      levelMap->setPosition( pos->x, pos->y, 0, shape );
     }
     levelMap->updateLightMap();
   }
