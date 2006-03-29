@@ -26,7 +26,7 @@ P:prereqSuperTough
 T:A,A
 A:actionSuperTough
 I:1,10
-D:Having been borned and raised for the art of combat, you are a
+D:Having been born and raised for the art of combat, you are a
 D:warrior who shakes off pain that would cripple a lesser person.
 D:In battle your natural abilities serve as an extra layer of armor.
 D:The player must be an at least 3rd level assassin, ranger, knight 
@@ -39,8 +39,8 @@ A:actionMissileDefense
 I:2,10
 D:You specialize in missile weapons to the point of being able to
 D:automatically predict the path of high-speed, incoming missiles.
-D:This inate knowledge grants you an extra bonus when defending against
-D:missile weapons. The prerequisites for this capbility is an at least
+D:This innate knowledge grants you an extra bonus when defending against
+D:missile weapons. The prerequisites for this capability is an at least
 D:3rd level player with the bow skill of 20.
 
 S:War-rage
@@ -94,7 +94,7 @@ T:M
 A:actionNaturalHealing
 I:3,10
 D:Your closeness to nature imbues your being with raw energy. You can 
-D:inately transform this into a healing force and cure your minor ailments
+D:innately transform this into a healing force and cure your minor ailments
 D:twice a day. The prerequisite for this capability is having at least 25 
 D:points of nature magic skill.
 

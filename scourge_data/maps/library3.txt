@@ -37,7 +37,7 @@ V:ready;Well, let's start with what you already know. $Mycotharsius had me abduc
 by those $dwarves but thanks to you, I am free again and able to resume my $research\
 in the $library.
 V:dwarves,Grizzled,Pony;The Order of the Grizzled Pony? Alas not much good can be\
-said of them. They maintain their meager existance as both poetic and rogue hacks,\
+said of them. They maintain their meager existence as both poetic and rogue hacks,\
 selling their services to other low-lifes like $Mycotharsius.
 V:Mycotharsius;I hear he met his end again... this has happened before you know. He\
 died in combat once, but was resurrected by a demonic entity named $Karzuul. I think\
@@ -69,7 +69,7 @@ they get along with the $monsters.
 V:monsters;Yeah about that... they only appeared a couple of years ago... Not sure where they came\
 from either.
 V:secrets;It took me years of study to unravel this mystery and I can't say I fully understand it still.\
-However, I do belive it relates to $Mothrazu's $Abyssal travel plans... You see, several hundred years after\
+However, I do believe it relates to $Mothrazu's $Abyssal travel plans... You see, several hundred years after\
 the construction of this $library, when the $Guards of Realm were destroyed and the building stood empty, an\
 order of evil monks took up residence here. They constructed a $planar gate, an unholy device that leads only\
 to one place: to the world below... the $Abyss!
@@ -104,16 +104,16 @@ names, they all mean the same thing: a boundless dimension without hope, mercy a
 N:296,220,Sabien Gartu,15,sage
 
 #pre-revelations
-#1. the party of lowly heroes runs out of work and joins the "Scourge, dungeon janetorial services company"
+#1. the party of lowly heroes runs out of work and joins the "Scourge, dungeon janitorial services company"
 #2. as part of their work, they rescue a wizard named Sabien who's been abducted by a group of terrorist dwarves, called the "order of the grizzled pony"
 #3. the dwarves were hired by an undead mage named "melathor" who's boss is mothrazu, a fay druid
-#4. after several missions, it's decided that the party seek out Sabien who seems indicated by the evidence to know something related to the rumors about "nature's vengence" upon humanity
+#4. after several missions, it's decided that the party seek out Sabien who seems indicated by the evidence to know something related to the rumors about "nature's vengeance" upon humanity
 #
 #revelations:
 #1. mothrazu selected sabien b/c he studies the abyss and has the last working red teleporter
 #2. she needs to travel to the abyss to get Karzul's gift ( the seed); Sabien doesn't know why she wants to travel to the abyss
 #3. she has been becoming more and more mad, falling out the favor of the god of nature (she's obsessed by divine retribution... destroy cities for their destruction of nature)
-#4. but sabien feels there is more to this (and there is: her amulet of shielding is cursed and thru this artifect, Karzul is slowly gaining control of her. (This is how she learned of the seed.) He wants her to activate the teleporter so he can enter the world)
+#4. but sabien feels there is more to this (and there is: her amulet of shielding is cursed and through this artifact, Karzul is slowly gaining control of her. (This is how she learned of the seed.) He wants her to activate the teleporter so he can enter the world)
 #5. Karzul wants her to use the seed (it must be planted by a druid) so the demon-root will act as a conduit of power for him between the two planes (an axis mundi)
 #6. red teleporter to the abyss is behind the door (Sabien needs to research its use)
 #7. red teleporter needs four tokens ( like in poem, which Sabien recites; same as the one from Thuzgol)

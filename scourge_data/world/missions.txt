@@ -35,7 +35,7 @@ D:Should you accept this mission, you would be asked to
 D:teleport into a haunted monastery nearby and neutralize some monsters.
 D:In particular, our client wishes for you to terminate the ${creature1}
 D:which has taken residence on its lowest level underground. Should you...
-D:er, die, while on your mission, your belongings will be transfered to
+D:er, die, while on your mission, your belongings will be transferred to
 D:the Corporation. (In fact your items will be inventoried while you are
 D:away.) Best of luck, and no need to sign the timesheets this time.
 Y:I can't believe you managed to complete this mission... er... I mean
@@ -46,7 +46,7 @@ N:to slay ${creature1}.
 M:D,A vampire's quest: eliminate ${creature1}
 D:A vampiric client delivered and urgent request to exterminate the 
 D:pests in the underground structures of her forest castle. She is 
-D:most interested in acertaining that the ${creature1} is removed and is
+D:most interested in ascertaining that the ${creature1} is removed and is
 D:paying in real gold for this job to be done. She has agreed to not
 D:haunt the premises while this work is underway as long as you are done
 D:by nightfall.
@@ -75,14 +75,14 @@ N:Trust me you won't want to be around him, so get on with killing {$creature1}.
 # ***************************************************************
 # ***************************************************************
 
-T:Chapter 1: Greasy porkchops with turned milk 
+T:Chapter 1: Greasy pork chops with turned milk 
 S:2,3
 D:Early this morning a tall and obviously non-human creature stood waiting for
 D:me at headquarters. It's gaze shifted nervously from side to side as it
 D:recounted the tale of his master's lost wand. It seems, his master working
 D:late one night conjured up a creature he could not control. While 
 D:wrestling with the demon, he managed to entrap himself and the creature
-D:in the dimension of Excrutiating Nausia. Between fits of gurgling 
+D:in the dimension of Excruciating Nausea. Between fits of gurgling 
 D:regurgitation he asks that we retrieve and bring him his Wand of Nausiation.
 D:He believes its power can be reversed and used to extricate himself from
 D:this situation. I believe we can make a powerful friend here if your mission
@@ -97,17 +97,17 @@ I:Wand of Nausiation
 T:Chapter 2: Maw of the Grizzled Beast!
 S:4,4
 D:Perhaps you remember Sabien the wizard whom we rescued from the dimension
-D:of Excrutiating Nausia. It seems he is in trouble again, this time he has
-D:been kidnapped by a maruding group that calls himself the Order of the
+D:of Excruciating Nausea. It seems he is in trouble again, this time he has
+D:been kidnapped by a marauding group that calls himself the Order of the
 D:Grizzled Pony. While it is unclear why a group of aimless highwaymen would
 D:trouble themselves with kidnapping the aged magic user, he asks that we
 D:pay the Order off from his treasure chest and keep the rest of the money as
 D:our payment. Unfortunately for us, the chest is in Sabien's other workshop
 D:and is guarded by hordes of monsters. Good luck!
-Y:The mysterious $Order (which it turns out is composed entirly of dwarven 
+Y:The mysterious $Order (which it turns out is composed entirely of dwarven 
 Y:poets) has accepted the payment and let $Sabien go. I have a feeling 
 Y:this won't be our last dealing with the $Order!
-N:Please hurry and rescure $Sabien! The $Order of the Grizzled Pony is a
+N:Please hurry and rescue $Sabien! The $Order of the Grizzled Pony is a
 N:a group of dwarven poets... they keep sending me threats... their letters
 N:rhyme and the poetry is $awful!
 I:Treasure Chest
@@ -158,7 +158,7 @@ D:called the "the Tower", near the city of Orn. You must journey here and confro
 D:the world of him for good, find out as much as you can about why he hired
 D:the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid however,
 D:that his failures made Mycotharsius quite Mad. Therefore if all he can offer
-D:is giberish, try to look around his lair for clues.
+D:is gibberish, try to look around his lair for clues.
 Y:Good job, defeating $Mycotharsius! Now we know why $Sabien was kidnapped by the $Order!
 Y:I sent Sabien the map of the $Abyss you found earlier and next you must visit him to
 Y:ask how we can find $Mothrazu. I fear the end of all civilization may be bad for business...

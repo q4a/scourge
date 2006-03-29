@@ -117,7 +117,7 @@ $rules.
 V:nature;Not much to worry about I say... the only piece of nature we see here are\
 the roots and rocks under the earth.
 V:monsters;Many a fearsome vermin ye will encounter on your travels! Some use their\
-strength and some their magic to try to annhiliate you. It's best to be prepared with\
+strength and some their magic to try to annihilate you. It's best to be prepared with\
 high level weapons, magic and lots of healing potions! Also, you can always\
 return here to HQ to catch some rest.
 V:Mycotharsius;An astute student of magic he was. Unfortunately he lacked the\
@@ -127,7 +127,7 @@ It's a group of dwarven terrorist poets that has been causing trouble in the\
 underworld.
 V:Sabien;Although I've never met him in person, he appears to be of decent sorts. I\
 usually only interact with (what I assume is) his familiar. A harmless humanoid creature\
-short statued with shifty eyes. I believe Sabien wishes to remain anonymous... if that\
+short statured with shifty eyes. I believe Sabien wishes to remain anonymous... if that\
 is his name at all...
 V:Abyss;The plane of absolute evil... never been there myself, but I've heard it said that\
 those who visit simply cannot leave! Must be a mad party!
@@ -158,7 +158,7 @@ of the world? ...Or would you care to sample my $potions?
 V:_UNKNOWN_;Alas I know not of that to which you refer...
 V:_UNKNOWN_;My time is too short to speak of that.
 V:Melathor;I hail from the wooded lands of $Allovium, kingdom of the $deep elves.\
-I am a practicer of the arts of $magic. My specialty lies in infusing the spirit\
+I am a practitioner of the arts of $magic. My specialty lies in infusing the spirit\
 with the substance of archaic brews. Enlightenment is reached only through thoughtful\
 suffering and my $potions can cause you to negate the very fabric of reality!
 V:Allovium;The rolling hilly forested gardens of Allovium of the elves is indeed a site to behold.\

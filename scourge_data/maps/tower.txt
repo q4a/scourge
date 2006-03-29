@@ -1,4 +1,4 @@
-G:_INTRO_;Be welcome in our humble $monastery wonderer.
+G:_INTRO_;Be welcome in our humble $monastery wanderer.
 G:_UNKNOWN_;I'm afraid I can't help you with that.
 G:_UNKNOWN_;May you find that which you seek.
 

@@ -70,8 +70,8 @@ D:Drawing on the ancient spirits of nature the caster raises the party's ability
 
 P:Cursed ways,Encursing,3,10,85,25,0,10,group,4,EFFECT_GREEN,CLI,3,1,H,cursed
 W:sound/magic/poison.wav
-D:Nature's wraith hampers the target creatures in endavours great and small. Every activity they attempt seems ill fated, ripe with strife. 
-D:The more they stuggle the more net of the curse closes in. The effects of the spell will wear off after a while.
+D:Nature's wraith hampers the target creatures in endeavors great and small. Every activity they attempt seems ill fated, ripe with strife. 
+D:The more they struggle the more net of the curse closes in. The effects of the spell will wear off after a while.
 
 P:Remove curse,Curse Removing,4,15,100,25,0,10,single,4,EFFECT_FLAMES,C,4,1,F,cursed
 W:sound/magic/teleport.wav
@@ -97,7 +97,7 @@ L:Suddenly you loose focus, a reptilian ego rising to overtake your senses.
 L:The room sways momentarily and you struggle to stay upright.
 N:You feel nothing; all is at peace.
 N:Strain as you might, the peace of the void is not within your grasp.
-H:Your movements grow catlike, balanced and easy, yet sinous with power.
+H:Your movements grow catlike, balanced and easy, yet sinuous with power.
 H:A flower blooms in your mind and you soar over an unknown landscape.
 #---------------------------------------------
 
@@ -155,15 +155,15 @@ D:The party's armor is augmented by the caster drawing a ward from nearby rocks,
 
 P:Enthrall fiend,Possessing,5,22,250,35,0,10,single,5,EFFECT_GREEN,C,12,1,H,possessed
 W:sound/magic/poison.wav
-D:The caster attempts to control the target creature's subconcious. This is done by concentrating on
-D:extinguishing the flame of perceved self-control which in the target's mind parts chaos from order.
+D:The caster attempts to control the target creature's subconscious. This is done by concentrating on
+D:extinguishing the flame of perceived self-control which in the target's mind parts chaos from order.
 D:Once this barrier is broken subconscious thought gains equal precedence to life support functions and thought-possession becomes possible.
 
-P:Break from possession,Posession Breaking,6,26,320,25,0,10,single,4,EFFECT_FLAMES,C,13,1,F,possessed
+P:Break from possession,Possession Breaking,6,26,320,25,0,10,single,4,EFFECT_FLAMES,C,13,1,F,possessed
 W:sound/magic/teleport.wav
 D:The caster attempts to break another magic user's thought-control of the target creature. To break the link of possession,
 D:the new caster will have to momentarily subject himself completely to this task and thus proving the selfless valour
-D:the gods require to restore the target's control of the subconcious.
+D:the gods require to restore the target's control of the subconscious.
 
 # spell, level, mana, exp, failure rate, action, distance, single/group target, speed, effect, CLIP, icontileX, icontileY, F|H[ ,pre-requisite ]
 
@@ -180,14 +180,14 @@ D:any dead comrades. This spell is rumored to have a very high failure rate.
 #---------------------------------------------
 S:History and Lore,Xelphate,HISTORY_MAGIC,RESIST_HISTORY_MAGIC,1,0.5,0,Lore
 G:Xelphate broods over the unending cycles of human history. Under her
-G:watchful eye the greates of human triumphs and the sadest of tragedies
+G:watchful eye the greatest of human triumphs and the saddest of tragedies
 G:unfold with undulating regularity. She alone is the keeper of the grandest mystery:
 G:the reason and conclusion for our existence in the world.
 L:The room suddenly grows dark. You feel the very walls edge towards you.
 L:An ominous sound floats up from the dark. Your mind trembles before its might.
 N:You smell... cabbage?!
 N:Beneath your feet, the earth cracks suddenly. Before you could react, the cracks heal and the ground smooths out again.
-H:Trumpets sound. The noise is glorious as if a victory occured.
+H:Trumpets sound. The noise is glorious as if a victory occurred.
 H:Warm air rises all around you. It comforts your tired limbs and seems to aid your recovery.
 #---------------------------------------------
 
@@ -203,7 +203,7 @@ D:Resistance to magic is increased when the caster's lore of magics is explored.
 
 P:Invisibility,Invisible,4,15,210,30,0,3,single,4,EFFECT_SWIRL,C,16,1,F,invisible
 W:sound/magic/blinded.wav
-D:The target's mortal shell is temporarily stripped from the sould, resulting in partial invisibility. The strength of the connection of body and soul is not to be denied however, and soon the effects wear off when the two meld again.
+D:The target's mortal shell is temporarily stripped from the soul, resulting in partial invisibility. The strength of the connection of body and soul is not to be denied however, and soon the effects wear off when the two meld again.
 
 P:Teleportation,Teleporting,5,22,250,20,0,0,single,4,EFFECT_TELEPORT,P,5,2,F
 W:sound/magic/teleport.wav
@@ -254,7 +254,7 @@ G:neighboring tribes. Disguised servants of Unamoin travel among the populace,
 G:inciting riots, poisoning wells and dominating the minds of the weak.
 L:A wall of wind in an angry gust, sweeps you off your feet. You scramble to regain your footing.
 L:A towering giant oppresses your mind. You ego cracks under the weight like an eggshell.
-N:An attempt is made to confort you, yet why does it feel like is delivered with a warhammer?
+N:An attempt is made to comfort you, yet why does it feel like is delivered with a warhammer?
 N:Colors bloom in your field of vision. The hues are mostly reds and purples. They quickly fade to darkness.
 H:You're seized by a rise of warlust. Your hear your heart in your ears like the drumming of a marching army.
 H:Your vision suddenly focuses to a red tunnel. Air whistles in your ears as if you're moving at a high speed.
@@ -272,13 +272,13 @@ D:Arhareim, the hammer of gods in conjured to envelop the party in seething warl
 
 P:Malice Storm,Storming,4,12,220,20,1d3+1,10,group,4,EFFECT_GLOW,CLI,3,2,H
 W:sound/magic/teleport.wav
-D:The castor summons vast energies of the astral plains. These appear as
+D:The caster summons vast energies of the astral plains. These appear as
 D:tendrils of malicious energy penetrating the material plane.
 
 P:Ring of Harm,Harming,5,20,300,20,1d4+2,10,group,4,EFFECT_EXPLOSION,CLI,2,2,H
 W:sound/magic/teleport.wav
-D:Enraged with hatred for his foes, the castor becomes a focus of coduit for
-D:Unamoin's earthly manifestation. Intense waves of malvolent energy spreads
+D:Enraged with hatred for his foes, the caster becomes a focus of conduit for
+D:Unamoin's earthly manifestation. Intense waves of malevolent energy spreads
 D:from the castor's body seeking to eradicate hostile life-forms around him.
 
 P:Unholy Decimator,Decimating,6,24,520,20,2d3+5,10,single,4,EFFECT_TOWER,C,4,2,H
