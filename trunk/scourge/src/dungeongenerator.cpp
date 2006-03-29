@@ -735,13 +735,14 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             map->setPosition( wallX, wallY, 0, wall );
             if( secretDoor == W_DOOR ) {
               map->addSecretDoor( wallX, wallY );
+            } else {
+              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+                map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
+                                 6, shapePal->findShapeByName("LAMP_WEST", true));
+                map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
+                                 4, shapePal->findShapeByName("LAMP_BASE", true));
+              }
             }
-          }
-          if((int) (100.0 * rand()/RAND_MAX) <= torches) {
-            map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-                             6, shapePal->findShapeByName("LAMP_WEST", true));
-            map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-                             4, shapePal->findShapeByName("LAMP_BASE", true));
           }
         }
         if(!(nodes[x][y] & E_PASS)) {
@@ -766,13 +767,14 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             map->setPosition( wallX, wallY, 0, wall );
             if( secretDoor == E_DOOR ) {
               map->addSecretDoor( wallX, wallY );
+            } else {
+              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+                map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
+                                 6, shapePal->findShapeByName("LAMP_EAST", true));
+                map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
+                                 4, shapePal->findShapeByName("LAMP_BASE", true));
+              }
             }
-          }
-          if((int) (100.0 * rand()/RAND_MAX) <= torches) {
-            map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-                             6, shapePal->findShapeByName("LAMP_EAST", true));
-            map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-                             4, shapePal->findShapeByName("LAMP_BASE", true));
           }
         }
         if(!(nodes[x][y] & N_PASS)) {
@@ -797,13 +799,14 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             map->setPosition( wallX, wallY, 0, wall );
             if( secretDoor == N_DOOR ) {
               map->addSecretDoor( wallX, wallY );
+            } else {
+              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+                map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
+                                 shapePal->findShapeByName("LAMP_NORTH", true));
+                map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
+                                 shapePal->findShapeByName("LAMP_BASE", true));
+              }
             }
-          }
-          if((int) (100.0 * rand()/RAND_MAX) <= torches) {
-            map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
-                             shapePal->findShapeByName("LAMP_NORTH", true));
-            map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
-                             shapePal->findShapeByName("LAMP_BASE", true));
           }
         }
         if(!(nodes[x][y] & S_PASS)) {

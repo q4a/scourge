@@ -35,7 +35,7 @@ public:
 		new (newclass) SQClass(ss, base);
 		return newclass;
 	}
-	~SQClass();
+	virtual ~SQClass();
 	bool NewSlot(const SQObjectPtr &key,const SQObjectPtr &val);
 	bool Get(const SQObjectPtr &key,SQObjectPtr &val) {
 		if(_members->Get(key,val)) {
@@ -91,7 +91,7 @@ public:
 		new (newinst) SQInstance(ss, this,size);
 		return newinst;
 	}
-	~SQInstance();
+	virtual ~SQInstance();
 	bool Get(const SQObjectPtr &key,SQObjectPtr &val)  {
 		if(_class->_members->Get(key,val)) {
 			if(_isfield(val)) {

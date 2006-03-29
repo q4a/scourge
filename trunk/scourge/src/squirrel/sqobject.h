@@ -52,7 +52,7 @@ enum SQMetaMethod{
 struct SQRefCounted
 {
 	SQRefCounted() { _uiRef = 0; _weakref = NULL; }
-	~SQRefCounted();
+	virtual ~SQRefCounted();
 	SQWeakRef *GetWeakRef(SQObjectType type);
 	SQUnsignedInteger _uiRef;
 	struct SQWeakRef *_weakref;
@@ -61,6 +61,7 @@ struct SQRefCounted
 
 struct SQWeakRef : SQRefCounted
 {
+	virtual ~SQWeakRef() {}
 	void Release();
 	SQObject _obj;
 };
@@ -292,6 +293,7 @@ struct SQCollectable : public SQRefCounted {
 	SQCollectable *_next;
 	SQCollectable *_prev;
 	SQSharedState *_sharedstate;
+	virtual ~SQCollectable() {}
 	virtual void Release()=0;
 	virtual void Mark(SQCollectable **chain)=0;
 	void UnMark();
@@ -314,6 +316,7 @@ struct SQCollectable : public SQRefCounted {
 #endif
 
 struct SQDelegable : public CHAINABLE_OBJ {
+	virtual ~SQDelegable() {}
 	bool SetDelegate(SQTable *m);
 	virtual bool GetMetaMethod(SQMetaMethod mm,SQObjectPtr &res);
 	SQTable *_delegate;

@@ -14,7 +14,7 @@ inline SQHash _hashstr (const SQChar *s, size_t l)
 struct SQString : public SQRefCounted
 {
 	SQString(){}
-	~SQString(){}
+	virtual ~SQString(){}
 public:
 	static SQString *Create(SQSharedState *ss, const SQChar *, SQInteger len = -1 );
 	SQInteger Next(const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);

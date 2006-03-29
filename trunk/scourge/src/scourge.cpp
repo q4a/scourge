@@ -2113,12 +2113,18 @@ bool Scourge::useLever(Location *pos) {
 }
 
 // FIXME: smooth movement, 
-// fix disapearing post bug, raise torch also (if any) 
+// fix disapearing post bug
 bool Scourge::useSecretDoor(Location *pos) {
   bool ret = false;
   if( levelMap->isSecretDoor( pos ) ) {
-    GLShape *wall = (GLShape*)(pos->shape);
     Shape *post = getShapePalette()->findShapeByName( "SECRET_DOOR_POST" );
+    
+    // Clicked a strut
+    if( pos->z == 0 && pos->shape == post ) {
+      pos = levelMap->getLocation( pos->x, pos->y, pos->shape->getHeight() );
+    }
+
+    GLShape *wall = (GLShape*)(pos->shape);    
     int s1 = ((GLShape*)( getShapePalette()->findShapeByName( "EW_WALL" ) ) )->getShapePalIndex();
     int s2 = ((GLShape*)( getShapePalette()->findShapeByName( "SECRET_EW_WALL" ) ) )->getShapePalIndex();
     ret = true;

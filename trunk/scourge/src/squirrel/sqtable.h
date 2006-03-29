@@ -39,7 +39,7 @@ public:
 	}
 	void Finalize();
 	SQTable *Clone();
-	~SQTable()
+	virtual ~SQTable()
 	{
 		SetDelegate(NULL);
 		REMOVE_FROM_CHAIN(&_sharedstate->_gc_chain, this);
