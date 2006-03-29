@@ -6,7 +6,7 @@
 # to skip a row, enter something w/o commas like "skip".
 # use the default theme as an example.
 #
-# Elements have: texture,r,g,b,a,line_width,north_texture,sourth,east,west
+# Elements have: texture,r,g,b,a,line_width,north_texture,south,east,west
 #
 # Colors have: r,g,b,a
 # darkuitop

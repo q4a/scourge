@@ -83,7 +83,7 @@ S:POWER,Troll,The higher a character's power the more damage his/her attach will
 S:IQ,Boar,A character with higher IQ is better suited to spellcasting.
 S:LEADERSHIP,Bear,Leadership determines bartering power and rallies your troops in battle.
 S:LUCK,Fiend,Luck affects almost all aspects of gameplay from spellcasting to unlocking doors.
-S:PIETY,Tiger,A pieous character follows his/her deity's wishes more closely.
+S:PIETY,Tiger,A pious character follows his/her deity's wishes more closely.
 S:LORE,Hydra,Using lore a character is able identify items more easily and understand new concepts.
 
 S:SWORD_WEAPON,Drake,This skill is used when fighting using a sword-type weapon.
@@ -1131,7 +1131,7 @@ A:music, effects, a, a... a plot! You will encounter, speak, trade with, and occ
 A:dispatch a large number of npc-s and monsters. Blood-curdling combat will unfold in either
 A:frantic real-time or thoughtful turn-based presentation.||So
 A:stay a while... hunker down for adventure in the true underworld. The noxious fumes and 
-A:psychadelic molds from the very walls of the crypts below the city of Horghh await.||
+A:psychedelic molds from the very walls of the crypts below the city of Horghh await.||
 A:Credits and miscellany:|
 A:-----------------------|
 A:Code and artwork by Uzudil|

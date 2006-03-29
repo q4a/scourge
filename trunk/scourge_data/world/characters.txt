@@ -53,7 +53,7 @@
 C:Ranger,10,2,6,400,RA,1,6
 D:You are a ranger, a specialized fighter. You know the outdoors, you can read weather patterns, predict avalanches
 D:and easily find food and water in the outdoors. What a pity that you must serve with your fellow dungeon-vermin 
-D:exterminators within the narrow confines of this subterranian realm. Still some of your ranger skills come in
+D:exterminators within the narrow confines of this subterranean realm. Still some of your ranger skills come in
 D:handy. You're can read monsters' tracks, find traps and able to cast some spells from the house of Nature. The
 D:defining attribute skills of a ranger are Lore, Speed and Power.
 S:SPEED,25,*
@@ -87,7 +87,7 @@ S:STEALING,*,50
 
 C:Knight,12,0,7,350,KN,1,6
 D:Ah, the knight... need we mention what irony it is to see thee in such circumstances? Sure, there were the
-D:few and misguided who used their prowress and position for, uh, "deeds of darkness". However, by and large,
+D:few and misguided who used their prowess and position for, uh, "deeds of darkness". However, by and large,
 D:a knight stands as the paragon of virtue, the upholder of justice, the keeper of the rights of the innocent. As 
 D:such, it makes us very much interested, yes, morbidly fascinated, to know what one could possibly be doing in
 D:dank, shadow-filled, vile places under the earth? Hmmm? The defining attributes of a knight are Power, 
@@ -158,7 +158,7 @@ S:STEALING,*,70
 
 C:Assassin,6,4,5,400,AS,0.9,8
 D:This profession needs little introduction. Most people hope to never become sought by them and those who seek 
-D:them whish to keep their activities hidden from the lawful masses. The assassin works in the shadows of society. 
+D:them wish to keep their activities hidden from the lawful masses. The assassin works in the shadows of society. 
 D:They tend to specialize in ranged weapons and possess the skills needed to kill silently, stay unseen and move 
 D:without making sound. Most important attribute skills for this class are Speed and Coordination.
 S:SPEED,20,*
@@ -294,7 +294,7 @@ S:STEALING,*,70
 C:Summoner,4,7,3,500,SU,0.5,12
 D:A summoner is gains magical abilities by making pacts with paranormal entities. Magical comes
 D:naturally to these beings but they usually lack a foothold in the material realm. A summoner will
-D:perform services to the etherial being in return for the ability to cast spells. All summoners
+D:perform services to the ethereal being in return for the ability to cast spells. All summoners
 D:good or evil serve an unearthly being. Usually they find it a good idea to keep this alignment
 D:hidden until such time that the pact comes to an end.
 S:SPEED,10,*
