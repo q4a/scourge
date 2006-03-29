@@ -56,7 +56,7 @@ typedef sqvector<CallInfo> CallInfoVec;
 public:
 	enum ExecutionType { ET_CALL, ET_RESUME_GENERATOR, ET_RESUME_VM };
 	SQVM(SQSharedState *ss);
-	~SQVM();
+	virtual ~SQVM();
 	bool Init(SQVM *friendvm, SQInteger stacksize);
 	bool Execute(SQObjectPtr &func, SQInteger target, SQInteger nargs, SQInteger stackbase, SQObjectPtr &outres, ExecutionType et = ET_CALL);
 	//start a native call return when the NATIVE closure returns(returns true if the vm has been suspended)

@@ -17,7 +17,7 @@ public:
 	void Release(){
 		sq_delete(this,SQClosure);
 	}
-	~SQClosure()
+	virtual ~SQClosure()
 	{
 		REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this);
 	}
@@ -42,7 +42,7 @@ public:
 		new (nc) SQGenerator(ss,closure);
 		return nc;
 	}
-	~SQGenerator()
+	virtual ~SQGenerator()
 	{
 		REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this);
 	}
@@ -78,7 +78,7 @@ public:
 		new (nc) SQNativeClosure(ss,func);
 		return nc;
 	}
-	~SQNativeClosure()
+	virtual ~SQNativeClosure()
 	{
 		REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this);
 	}
