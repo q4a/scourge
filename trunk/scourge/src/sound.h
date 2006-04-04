@@ -28,11 +28,17 @@
 class Sound {
 private:
   int missionMusicIndex;
+  int fightMusicIndex;
   bool haveSound;  
 #ifdef HAVE_SDL_MIXER
   Mix_Music *menuMusic;
   Mix_Music *hqMusic;
   Mix_Music *missionMusic;
+  Mix_Music *fightMusic;
+  Mix_Music *currentMusic;
+  Mix_Music *currentLevelMusic;
+  Uint32 musicStartTime;
+  double musicPosition;
   std::map<std::string, Mix_Chunk*> soundMap;  
   std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
 #endif
@@ -55,12 +61,12 @@ public:
 
   inline void playMusicMission() {
 #ifdef HAVE_SDL_MIXER
-    playMusic(missionMusic);
+    playMusic( missionMusic );
 #endif
   }
 
 #ifdef HAVE_SDL_MIXER
-  void stopMusic();
+  void stopMusic( int ms=3000 );
 #endif
 
   void loadSounds(Preferences *preferences);
@@ -81,9 +87,11 @@ public:
 
   void selectMusic( Preferences *preferences );
 
+  void checkMusic( bool inCombat );
+
 protected:
 #ifdef HAVE_SDL_MIXER
-  void playMusic(Mix_Music *music);
+  void playMusic( Mix_Music *music, int ms=2000 );
   void storeCharacterSounds( std::map<int,std::vector<Mix_Chunk*>*> *charSoundMap, 
                              char *type, int soundType, char *filePrefix );
 #endif

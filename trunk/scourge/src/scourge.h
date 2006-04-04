@@ -23,8 +23,6 @@
 #include <map>
 #include "constants.h"
 #include "sdlhandler.h"
-#include "sdleventhandler.h"
-#include "sdlscreenview.h"
 #include "calendar.h"
 #include "minimap.h"
 #include "mainmenu.h"
@@ -91,6 +89,8 @@ class DonateDialog;
 class TextEffect;
 class TrainDialog;
 class MagicSchool;
+class ScourgeView;
+class ScourgeHandler;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -98,31 +98,13 @@ class MagicSchool;
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
 
-class InfoMessage {
-public:
-  char message[300];
-  void *obj;
-  int x, y, z;
-
-  InfoMessage( char *s, void *obj, int x, int y, int z ) {
-    strcpy( this->message, s );
-    this->obj = obj;
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
-
-  ~InfoMessage() {
-  }
-};
-
 /** 
   This is the main class of the game. It is a central place to put
   references to other objects, like the party, minimap, etc.
   
   @author Gabor Torok
 */ 
-class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView,DragAndDropHandler,StatusReport {
+class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusReport {
  private:
   Party *party;
   Map *levelMap;
@@ -149,9 +131,7 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   ScrollingList *messageList;
   Button *yesExitConfirm, *noExitConfirm;
   int movingX, movingY, movingZ;
-  //Uint16 cursorMapX, cursorMapY, cursorMapZ;
-  Item *movingItem;
-  bool needToCheckDropLocation;
+  Item *movingItem;  
   GLint lastTick;
   int battleCount;
   Battle *battle[MAX_BATTLE_COUNT];  
@@ -181,8 +161,6 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   int layoutMode;
   NetPlay *netPlay;
 
-  float targetWidth, targetWidthDelta;
-  Uint32 lastTargetTick;
 
   // party ui
   bool lastEffectOn;
@@ -212,24 +190,12 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
   MapWidget *mapWidget;
 
   Progress *progress;
-  bool inBattle;
-  Progress *turnProgress;
-
-  bool willStartDrag;
-  int willStartDragX, willStartDragY;
-  GLUquadric *quadric;
-
-  bool needToCheckInfo;
-  std::map<InfoMessage *, Uint32> infos;
+  bool inBattle;  
   
   TradeDialog *tradeDialog;
   HealDialog *healDialog;
   DonateDialog *donateDialog;
   TrainDialog *trainDialog;
-
-  Color *outlineColor;
-  TextEffect *textEffect;
-  GLint textEffectTimer;
 
   Location *gatepos;
 
@@ -240,12 +206,10 @@ class Scourge : public SDLOpenGLAdapter,SDLEventHandler,SDLScreenView,WidgetView
 
   std::map<Location*, MagicSchool*> deityLocation;
 
+  ScourgeView *view;
+  ScourgeHandler *handler;
+
 protected:
-  void processGameMouseDown(Uint16 x, Uint16 y, Uint8 button);
-  void processGameMouseClick(Uint16 x, Uint16 y, Uint8 button);
-  void describeLocation(int mapx, int mapy, int mapz);
-
-
   bool getItem(Location *pos);
   // returns new z coordinate
   int dropItem(int x, int y);
@@ -280,9 +244,37 @@ public:
   Scourge( UserConfiguration *config );
   ~Scourge();
 
+  inline Button *getYesExitConfirm() { return yesExitConfirm; }
+  inline Button *getNoExitConfirm() { return noExitConfirm; }
+  inline Button *getInventoryButton() { return inventoryButton; }
+  inline Button *getEndTurnButton() { return endTurnButton; }
+  inline Button *getOptionsButton() { return optionsButton; }
+  inline Button *getQuitButton() { return quitButton; }
+  inline Button *getRoundButton() { return roundButton; }
+  inline Button *getPlayer1Button() { return player1Button; }
+  inline Button *getPlayer2Button() { return player2Button; }
+  inline Button *getPlayer3Button() { return player3Button; }
+  inline Button *getPlayer4Button() { return player4Button; }
+  inline Button *getGroupButton() { return groupButton; }
+  inline Canvas *getPlayerInfo( int index ) { return playerInfo[ index ]; }
+  inline Canvas *getPlayerHpMp( int index ) { return playerHpMp[ index ]; }
+  inline Canvas *getPlayerWeapon( int index ) { return playerWeapon[ index ]; }
+  inline Canvas *getQuickSpell( int index ) { return quickSpell[ index ]; }
+
+  void movePartyToGateAndEndMission();
+
+  inline NetPlay *getNetPlay() { return netPlay; }
+
+  inline ScrollingList *getMessageList() { return messageList; }
+
   inline bool isInHQ() { return inHq; }
 
   inline Window *getSquirrelConsole() { return squirrelWin; }
+  void runSquirrelConsole();
+  void clearSquirrelConsole();
+  inline TextField *getSquirrelText() { return squirrelText; }
+  inline Button *getSquirrelRun() { return squirrelRun; }
+  inline Button *getSquirrelClear() { return squirrelClear; }
 
   inline void addDeityLocation( Location *pos, MagicSchool *ms ) { deityLocation[pos] = ms; }
   char *getDeityLocation( Location *pos );
@@ -293,6 +285,11 @@ public:
       return NULL;
     }
   }
+
+  inline bool isInfoDialogShowing() { return info_dialog_showing; }
+  inline void setInfoDialogShowing( bool b ) { info_dialog_showing = b; }
+
+  void evalSpecialSkills();
 
   bool isLevelShaded();
 
@@ -327,7 +324,12 @@ public:
     @return the Board containing the available missions.
   */
   inline Board *getBoard() { return board; }
-  
+  void updateBoard();
+  inline Window *getBoardWin() { return boardWin; }
+  inline ScrollingList *getMissionList() { return missionList; }
+  inline Button *getCloseBoard() { return closeBoard; }
+  inline Button *getPlayMission() { return playMission; }
+
   /**
 	  This method is called by the main loop to play a round. A round may consist of 
     a battle with multiple participants, someone drinking a potion, casting a spell, etc.
@@ -396,43 +398,6 @@ public:
   inline Inventory *getInventory() { return inventory; }
   
   /**
-    The main app loop calls this method to repaint the screen. In this implementation the 
-    following happens: the round is played, the map is drawn, the map overlay (circles around
-    the good guys, names of creatues, etc.) is painted and some extra updates to other components
-    (like the minimap, message ui, etc.) occur.    
-  */
-  void drawView();
-
-  /**
-    The main app loop calls this after the drawView and the UI (windows) have been drawn.
-    In this implementation, the dragged item is drawn over the map.
-  */
-  void drawAfter();
-
-  void drawDraggedItem();
-
-  void drawBorder();
-  
-  void drawOutsideMap();
-
-  void showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode);
-
-  /**
-    Respond to keyboard and mouse events in this method.
-    @param event the actual SDL_Event structure as captured by the main app loop.
-    @return true to exit from the current screen, false otherwise
-  */
-  bool handleEvent(SDL_Event *event);
-  
-  /**
-    Respond to UI (windowing) events in this method.
-    @param widget The widget which fired the event (e.g.: button, list, etc.)
-    @param event the actual SDL_Event structure as captured by the main app loop.
-    @return true to exit from the current screen, false otherwise
-  */
-  bool handleEvent(Widget *widget, SDL_Event *event);
-   
-  /**
     Increase the game speed.
     @param speedFactor add this number to the current game speed.
   */
@@ -483,8 +448,6 @@ public:
   */
   void endMission();
   
-  //void drawTopWindow();
-
   /**
     Open the container UI for the given container item.
     @param container the container item whose contents to show in the window.
@@ -496,10 +459,16 @@ public:
   */
   void closeContainerGui(ContainerGui *gui);
 
+  inline int getContainerGuiCount() { return containerGuiCount; }
+  inline ContainerGui *getContainerGui( int i ) { return containerGui[i]; }
+  inline void closeContainerGui( int index ) { closeContainerGui( containerGui[index] ); }
+
   /**
     Close all open container guis.
   */
   void closeAllContainerGuis();
+
+  void removeClosedContainerGuis();
   
   /**
     A creature has died, mark it dead (via state_mod), and create a "skull and bones"
@@ -525,6 +494,10 @@ public:
     Show the modal yes/no dialog asking the user if the story should be exited.
   */
   void showExitConfirmationDialog();
+
+  void closeExitConfirmationDialog();
+
+  inline Window *getExitConfirmationDialog() { return exitConfirmationDialog; }
 
   /**
     A helper method to create a window with the "wood" look. (e.g. a container ui)
@@ -624,8 +597,6 @@ public:
 
   void updateBoardUI(int count, const char **missionText, Color *missionColor);
 
-  int handleBoardEvent(Widget *widget, SDL_Event *event);
-
   void setMissionDescriptionUI(char *s, int mapx, int mapy);
 
   // move a creature
@@ -682,17 +653,36 @@ public:
 
   virtual void completeCurrentMission();
 
- protected:
+  Battle *getCurrentBattle();
+  void endCurrentBattle();
 
-   void drawPortrait( Widget *w, Creature *p );
+  void updatePartyUI();
 
   void resetBattles();
+
+  bool playSelectedMission();
+
+  void selectDropTarget( Uint16 mapx, Uint16 mapy, Uint16 mapz );
+
+  void executeQuickSpell( Spell *spell );
+  void executeSpecialSkill( SpecialSkill *skill );
+  void executeItem( Item *item );
+
+  void describeLocation(int mapx, int mapy, int mapz);
+
+  void mouseClickWhileExiting();
+
+  bool doesSaveGameExist(Session *session);
+  bool saveGame(Session *session);  
+  bool loadGame(Session *session);
+
+protected:
+
+   void drawPortrait( Widget *w, Creature *p );
 
    int initMultiplayer();
 
   void createUI();
-  // change the player's selX,selY values as specified by keyboard movement
-  void handleKeyboardMovement();  
 
   void decideMonsterAction(Creature *monster);
 
@@ -700,31 +690,12 @@ public:
 
   void createPartyUI();
 
-  bool handlePartyEvent(Widget *widget, SDL_Event *event);
-
-  void updatePartyUI();
-
   void moveProjectiles();
   bool fightCurrentBattleTurn();
   void resetNonParticipantAnimation( Battle *battle );
   bool createBattleTurns();
   void resetUIAfterBattle();
-  void moveCreatures();
-
-  void checkForDropTarget();
-  void checkForInfo();
-  void drawInfos();
-
-  void quickSpellAction( int index, int button=SDL_BUTTON_LEFT );
-  void executeQuickSpell( Spell *spell );
-  void executeSpecialSkill( SpecialSkill *skill );
-  void executeItem( Item *item );
-
-  void drawDescriptions(ScrollingList *list);
-
-  bool doesSaveGameExist(Session *session);
-  bool saveGame(Session *session);  
-  bool loadGame(Session *session);
+  void moveCreatures();  
 };
 
 #endif

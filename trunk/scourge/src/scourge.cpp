@@ -32,7 +32,6 @@
 #include "donatedialog.h"
 #include "traindialog.h"
 #include "io/file.h"
-#include "texteffect.h"
 #include "sqbinding/sqbinding.h"
 #include "storable.h"
 #include "shapepalette.h"
@@ -40,14 +39,12 @@
 #include "cavemaker.h"
 #include "dungeongenerator.h"
 #include "debug.h"
+#include "scourgeview.h"
+#include "scourgehandler.h"
 
 using namespace std;
 
 #define MOUSE_ROT_DELTA 2
-
-#define DRAG_START_TOLERANCE 5
-
-#define INFO_INTERVAL 3000
 
 #define SAVE_FILE "savegame.dat"
 #define VALUES_FILE "values.dat"
@@ -56,11 +53,6 @@ using namespace std;
 #define RANDOM_MAP_NAME "random"
 
 // 2,3  2,6  3,6*  5,1+  6,3   8,3*
-
-Uint32 areaTicks = 0;
-#define AREA_SPEED 50
-GLfloat areaRot = 0.0f;
-#define AREA_ROT_DELTA 0.2f
 
 // good for debugging blending
 int Scourge::blendA = 2;
@@ -85,15 +77,11 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   messageWin = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
-  needToCheckInfo = false;
-  needToCheckDropLocation = true;
   nextMission = -1;
   teleportFailure = false;
-  outlineColor = new Color( 0.3f, 0.3f, 0.5f, 0.5f );
-//  cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
+
   // in HQ map
   inHq = true;
-  //showPath = config->getAlwaysShowPath();
 
   layoutMode = Constants::GUI_LAYOUT_BOTTOM;
 
@@ -108,26 +96,16 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   containerGuiCount = 0;
   changingStory = false;
 
-  targetWidth = 0.0f;
-  targetWidthDelta = 0.05f / DIV;
-  lastTargetTick = SDL_GetTicks();
-
   lastEffectOn = false;
   resetBattles();
 
-  willStartDrag = false;
-  willStartDragX = willStartDragY = 0;
-  textEffect = NULL;
-  textEffectTimer = 0;
   gatepos = NULL;
+
+  view = new ScourgeView( this );
+  handler = new ScourgeHandler( this );
 }
 
 void Scourge::initUI() {
-
-  turnProgress = new Progress(this->getSDLHandler(),
-                              getSession()->getShapePalette()->getProgressTexture(),
-                              getSession()->getShapePalette()->getProgressHighlightTexture(),
-                              10, false, true, false);
 
   // init UI themes
   GuiTheme::initThemes( getSDLHandler() );
@@ -155,10 +133,11 @@ void Scourge::initUI() {
 
   // load character, item sounds
   getSDLHandler()->getSound()->loadSounds( getUserConfiguration() );
+
+  view->initUI();
 }
 
-void Scourge::start() {
-  this->quadric = gluNewQuadric();
+void Scourge::start() {  
   bool initMainMenu = true;
   while(true) {
 
@@ -166,7 +145,6 @@ void Scourge::start() {
       initMainMenu = false;
       mainMenu->show();
       getSDLHandler()->getSound()->playMusicMenu();
-      //getSDLHandler()->fade( 1, 0, 20 );
     }
 
     getSDLHandler()->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
@@ -180,7 +158,6 @@ void Scourge::start() {
         mainMenu->showNewGameConfirmationDialog();
       } else {
         mainMenu->showPartyEditor();
-        //value = NEW_GAME_START;
       }
     }
 
@@ -249,6 +226,8 @@ Scourge::~Scourge(){
   delete healDialog;
   delete donateDialog;
   delete trainDialog;
+  delete view;
+  delete handler;
 }
 
 void Scourge::startMission() {
@@ -510,7 +489,7 @@ void Scourge::startMission() {
                        true);
 
       // set to receive events here
-      getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+      getSDLHandler()->setHandlers( handler, view );
 
       // hack to unfreeze animations, etc.
       party->forceStopRound();
@@ -679,1075 +658,9 @@ void Scourge::endMission() {
   movingItem = NULL;          // stop moving items
 }
 
-void Scourge::drawView() {
-  // move inventory window with party window
-  inventory->positionWindow();
-
-  // make a move (player, monsters, etc.)
-  playRound();
-
-  updatePartyUI();
-
-  checkForDropTarget();
-  checkForInfo();
-
-  // in TB combat, center map when monster's turn
-  levelMap->setMapCenterCreature( NULL );
-  if( inTurnBasedCombat() ) {
-    Creature *c = battleRound[battleTurn]->getCreature();
-    if( c->isMonster() || c->getStateMod( Constants::possessed ) ) {
-      levelMap->setMapCenterCreature( c );
-      levelMap->center( toint( c->getX() ), toint( c->getY() ), true );
-    }
-  }
-
-  levelMap->draw();
-
-  miniMap->drawMap();
-
-  // the boards outside the map
-  drawOutsideMap();
-
-  glDisable( GL_DEPTH_TEST );
-  glDisable( GL_TEXTURE_2D );
-
-  if(isInfoShowing) {
-    levelMap->initMapView();
-
-    // creatures first
-    for(int i = 0; i < session->getCreatureCount(); i++) {
-      //if(!session->getCreature(i)->getStateMod(Constants::dead) &&
-      if( levelMap->isLocationVisible(toint(session->getCreature(i)->getX()),
-                                      toint(session->getCreature(i)->getY())) &&
-          levelMap->isLocationInLight(toint(session->getCreature(i)->getX()),
-                                      toint(session->getCreature(i)->getY()),
-                                      session->getCreature(i)->getShape())) {
-        showCreatureInfo(session->getCreature(i), false, false, false);
-      }
-    }
-    // party next so red target circle shows over gray
-    for(int i = 0; i < party->getPartySize(); i++) {
-      //if(!party->getParty(i)->getStateMod(Constants::dead)) {
-
-        bool player = party->getPlayer() == party->getParty(i);
-        if( getUserConfiguration()->isBattleTurnBased() &&
-           party->isRealTimeMode() &&
-           battleTurn < (int)battleRound.size()) {
-          player = (party->getParty(i) == battleRound[battleTurn]->getCreature());
-        }
-        showCreatureInfo(party->getParty(i),
-                         player,
-                         (levelMap->getSelectedDropTarget() &&
-                          levelMap->getSelectedDropTarget()->creature == party->getParty(i)),
-                         !party->isPlayerOnly());
-    //}
-    }
-
-    drawInfos();
-
-    glDisable( GL_CULL_FACE );
-    glDisable( GL_SCISSOR_TEST );
-  }
-
-  drawDescriptions(messageList);
-
-  glEnable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );
-
-  drawBorder();
-
-  // draw the current text effect
-  if( textEffect ) {
-    if( SDL_GetTicks() - textEffectTimer < 5000 ) {
-      textEffect->draw();
-    } else {
-      delete textEffect;
-      textEffect = NULL;
-    }
-  }
-
-  // Hack: A container window may have been closed by hitting the Esc. button.
-  if(Window::windowWasClosed) {
-    if(containerGuiCount > 0) {
-      for(int i = 0; i < containerGuiCount; i++) {
-        if(!containerGui[i]->getWindow()->isVisible()) {
-          closeContainerGui(containerGui[i]);
-        }
-      }
-    }
-  }
-}
-
-void Scourge::drawDescriptions(ScrollingList *list) {
-  if( levelMap->didDescriptionsChange()) {
-    levelMap->setDescriptionsChanged( false );
-    list->setLines( levelMap->getDescriptionCount(),
-                    levelMap->getDesriptions(),
-                    levelMap->getDesriptionColors() );
-    list->setSelectedLine( levelMap->getDescriptionCount() - 1);
-  }
-}
-
-void Scourge::drawOutsideMap() {
-  // cover the area outside the map
-  if(levelMap->getViewWidth() < getSDLHandler()->getScreen()->w ||
-     levelMap->getViewHeight() < getSDLHandler()->getScreen()->h) {
-    //glPushAttrib( GL_ENABLE_BIT );
-    glDisable( GL_CULL_FACE );
-    glDisable( GL_DEPTH_TEST );
-    glEnable( GL_TEXTURE_2D );
-    glPushMatrix();
-    glColor3f( 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getGuiWoodTexture() );
-
-    //    float TILE_W = 510 / 2.0f;
-    float TILE_H = 270 / 2.0f;
-
-    glLoadIdentity();
-    glTranslatef( levelMap->getViewWidth(), 0, 0 );
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 0, 0 );
-    glTexCoord2f( 0, getSDLHandler()->getScreen()->h / TILE_H );
-    glVertex2i( 0, getSDLHandler()->getScreen()->h );
-    glTexCoord2f( 1, getSDLHandler()->getScreen()->h / TILE_H );
-    glVertex2i( getSDLHandler()->getScreen()->w - levelMap->getViewWidth(), getSDLHandler()->getScreen()->h );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( getSDLHandler()->getScreen()->w - levelMap->getViewWidth(), 0 );
-    glEnd();
-
-    glLoadIdentity();
-    glTranslatef( 0, levelMap->getViewHeight(), 0 );
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 0, 0 );
-    glTexCoord2f( 0, levelMap->getViewHeight() / TILE_H );
-    glVertex2i( 0, levelMap->getViewHeight() );
-    glTexCoord2f( 1, levelMap->getViewHeight() / TILE_H );
-    glVertex2i( levelMap->getViewWidth(), levelMap->getViewHeight() );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( levelMap->getViewWidth(), 0 );
-    glEnd();
-
-    glPopMatrix();
-    //    glPopAttrib();
-    glEnable( GL_CULL_FACE );
-    glEnable( GL_DEPTH_TEST );
-    glDisable( GL_TEXTURE_2D );
-  }
-}
-
 bool Scourge::inTurnBasedCombatPlayerTurn() {
   return (inTurnBasedCombat() &&
           !battleRound[battleTurn]->getCreature()->isMonster());
-}
-
-void Scourge::drawAfter() {
-
-  drawDraggedItem();
-
-  // draw turn info
-  if(inTurnBasedCombat()) {
-    //glPushAttrib(GL_ENABLE_BIT);
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef( 20, 20, 0 );
-    Creature *c = battleRound[battleTurn]->getCreature();
-    char msg[80];
-    if( c->getPath()->size() > 0 ) {
-      sprintf( msg, "%s %d/%d (cost %d)",
-               c->getName(),
-               c->getBattle()->getAP(),
-               c->getBattle()->getStartingAP(),
-               (int)( c->getPath()->size() ) );
-    } else {
-      sprintf( msg, "%s %d/%d",
-               c->getName(),
-               c->getBattle()->getAP(),
-               c->getBattle()->getStartingAP() );
-    }
-    turnProgress->updateStatus( msg, false,
-                                c->getBattle()->getAP(),
-                                c->getBattle()->getStartingAP(),
-                                c->getPath()->size() );
-    glPopMatrix();
-    //glPushAttrib(GL_ENABLE_BIT);
-  }
-}
-
-void Scourge::showCreatureInfo(Creature *creature, bool player, bool selected, bool groupMode) {
-  glPushMatrix();
-  //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
-
-  glEnable( GL_DEPTH_TEST );
-  glDepthMask(GL_FALSE);
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  glDisable( GL_CULL_FACE );
-
-  // draw circle
-  double w = ((double)(creature->getShape()->getWidth()) / 2.0f) / DIV;
-  double d = (((double)(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
-  double s = 0.35f / DIV;
-
-  float xpos2, ypos2, zpos2;
-
-  Uint32 t = SDL_GetTicks();
-  if(t - lastTargetTick > 45) {
-    // initialize target width
-    if(targetWidth == 0.0f) {
-      targetWidth = s;
-      targetWidthDelta *= -1.0f;
-    }
-    // targetwidth oscillation
-    targetWidth += targetWidthDelta;
-    if((targetWidthDelta < 0 && targetWidth < s) ||
-       (targetWidthDelta > 0 && targetWidth >= s + (5 * targetWidthDelta)))
-      targetWidthDelta *= -1.0f;
-
-    lastTargetTick = t;
-  }
-
-  // show path
-  if( !creature->getStateMod( Constants::dead ) &&
-      player &&
-      getUserConfiguration()->isBattleTurnBased() &&
-      battleTurn < (int)battleRound.size() ) {
-    for( int i = creature->getPathIndex();
-         i < (int)creature->getPath()->size(); i++) {
-      Location pos = (*(creature->getPath()))[i];
-
-      glColor4f(1, 0.4f, 0.0f, 0.5f);
-      xpos2 = ((float)(pos.x - levelMap->getX()) / DIV);
-      ypos2 = ((float)(pos.y - levelMap->getY()) / DIV);
-      zpos2 = 0.0f / DIV;
-      glPushMatrix();
-      glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
-      gluDisk(quadric, 0, 4, 12, 1);
-      glPopMatrix();
-    }
-  }
-
-  // Yellow for move creature target
-  if( !creature->getStateMod( Constants::dead ) &&
-      player && creature->getSelX() > -1 &&
-      !creature->getTargetCreature() &&
-      !(creature->getSelX() == toint(creature->getX()) &&
-        creature->getSelY() == toint(creature->getY())) ) {
-    // draw target
-    glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
-    xpos2 = ((float)(creature->getSelX() - levelMap->getX()) / DIV);
-    ypos2 = ((float)(creature->getSelY() - levelMap->getY()) / DIV);
-    zpos2 = 0.0f / DIV;
-    glPushMatrix();
-    //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-    glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
-    gluDisk(quadric, w - targetWidth, w, 12, 1);
-
-    // in TB mode and paused?
-    if( inTurnBasedCombat() &&
-        !( party->isRealTimeMode() ) ) {
-      char cost[40];
-      sprintf( cost, "Move: %d", (int)(creature->getPath()->size()) );
-      getSDLHandler()->drawTooltip( 0, 0, 0,
-                                    -( levelMap->getZRot() ),
-                                    -( levelMap->getYRot() ),
-                                    cost,
-                                    0.5f, 0.2f, 0.0f );
-    }
-    glPopMatrix();
-  }
-
-  // red for attack target
-  if( !creature->getStateMod( Constants::dead ) &&
-      player &&
-      creature->getTargetCreature() &&
-      !creature->getTargetCreature()->getStateMod( Constants::dead ) ) {
-    double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / DIV;
-    double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
-    //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / DIV;
-    glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
-    xpos2 = ((float)(creature->getTargetCreature()->getX() - levelMap->getX()) / DIV);
-    ypos2 = ((float)(creature->getTargetCreature()->getY() - levelMap->getY()) / DIV);
-    zpos2 = 0.0f / DIV;
-    glPushMatrix();
-    //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
-    glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
-    gluDisk(quadric, tw - targetWidth, tw, 12, 1);
-
-    glPopMatrix();
-  }
-
-  xpos2 = (creature->getX() - (float)(levelMap->getX())) / DIV;
-  ypos2 = (creature->getY() - (float)(levelMap->getY())) / DIV;
-  zpos2 = creature->getZ() / DIV;
-
-  if(creature->getAction() != Constants::ACTION_NO_ACTION) {
-    glColor4f(0, 0.7, 1, 0.5f);
-  } else if(selected) {
-    glColor4f(0, 1, 1, 0.5f);
-  } else if(player) {
-    glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-  } else if(creature->getMonster() && creature->getMonster()->isNpc()) {
-    glColor4f(0.75f, 1.0f, 0.0f, 0.5f);
-  } else {
-    glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
-  }
-
-  // draw state mods
-  if( !creature->getStateMod( Constants::dead ) &&
-      ( groupMode || player || creature->isMonster() )) {
-    glEnable(GL_TEXTURE_2D);
-    int n = 16;
-    //float x = 0.0f;
-    //float y = 0.0f;
-    int on = 0;
-    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-      if(creature->getStateMod(i) && i != Constants::dead) {
-        on++;
-      }
-    }
-    int count = 0;
-    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-      if(creature->getStateMod(i) && i != Constants::dead) {
-
-        /* DEBUG
-        glPushMatrix();
-        glTranslatef( xpos2, ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ), zpos2 + 5);
-        glColor4f( 1, 1, 1, 1 );
-        glBegin( GL_LINES );
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( 0, w*2.0f, 0 );
-        glVertex3f( 0, w*2.0f, 0 );
-        glVertex3f( w*2.0f, w*2.0f, 0 );
-        glVertex3f( w*2.0f, w*2.0f, 0 );
-        glVertex3f( w*2.0f, 0, 0 );
-        glVertex3f( w*2.0f, 0, 0 );
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( w*2.0f, w*2.0f, 0 );
-        glVertex3f( 0, w*2.0f, 0 );
-        glVertex3f( w*2.0f, 0, 0 );
-        glEnd();
-        glPopMatrix();
-        */
-
-        glPushMatrix();
-        glTranslatef( xpos2 + w,
-                      ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ) + w,
-                      zpos2 + 5);
-        float angle = -(count * 30) - (levelMap->getZRot() + 180);
-
-        glRotatef( angle, 0, 0, 1 );
-        glTranslatef( w + 15, 0, 0 );
-        glRotatef( (count * 30) + 180, 0, 0, 1 );
-        glTranslatef( -7, -7, 0 );
-
-        GLuint icon = getSession()->getShapePalette()->getStatModIcon(i);
-        if(icon) {
-          glBindTexture( GL_TEXTURE_2D, icon );
-        }
-        glBegin( GL_QUADS );
-        glNormal3f( 0, 0, 1 );
-        if(icon) glTexCoord2f( 0, 0 );
-        glVertex3f( 0, 0, 0 );
-        if(icon) glTexCoord2f( 0, 1 );
-        glVertex3f( 0, n, 0 );
-        if(icon) glTexCoord2f( 1, 1 );
-        glVertex3f( n, n, 0 );
-        if(icon) glTexCoord2f( 1, 0 );
-        glVertex3f( n, 0, 0 );
-        glEnd();
-        glPopMatrix();
-        count++;
-      }
-    }
-    glDisable(GL_TEXTURE_2D);
-  }
-
-  if( !creature->getStateMod( Constants::dead ) ) {
-
-#ifdef BASE_DEBUG
-    // base debug
-    glDisable( GL_DEPTH_TEST );
-    glDisable( GL_CULL_FACE );
-    glPushMatrix();
-    glColor4f( 1, 1, 1, 1 );
-    glTranslatef( xpos2, ypos2, zpos2 + 5 );
-    glBegin( GL_LINE_LOOP );
-    glVertex2f( 0, 0 );
-    glVertex2f( w * 2, w * 2 );
-    glVertex2f( w * 2, 0 );
-    glVertex2f( 0, w * 2 );
-    glEnd();
-    char debugMessage[80];
-    sprintf( debugMessage, "w: %d", creature->getShape()->getWidth() );
-    getSDLHandler()->texPrint( 0, 0, debugMessage );
-    glPopMatrix();
-#endif
-
-    glPushMatrix();
-    //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-    glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
-    if( groupMode || player || creature->isMonster() ) {
-      gluDisk(quadric, w - s, w, 12, 1);
-
-      // in TB mode, player's turn and paused?
-      if( inTurnBasedCombatPlayerTurn() &&
-          !( party->isRealTimeMode() ) ) {
-
-        // draw the range
-        if( player ) {
-          //glDisable( GL_DEPTH_TEST );
-
-          float range = getParty()->getPlayer()->getBattle()->getRange();
-          float n = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f ) / DIV;
-
-          glPushMatrix();
-
-          Uint32 t = SDL_GetTicks();
-          if( areaTicks == 0 || t - areaTicks >= AREA_SPEED ) {
-            areaRot += AREA_ROT_DELTA;
-            if( areaRot >= 360.0f ) areaRot -= 360.0f;
-          }
-          glRotatef( areaRot, 0, 0, 1 );
-          glTranslatef( -( n / 2 ), -( n / 2 ), 0 );
-
-          glEnable( GL_BLEND );
-          //glBlendFunc( GL_DST_COLOR, GL_ZERO );
-          glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-          glEnable( GL_TEXTURE_2D );
-          glBindTexture( GL_TEXTURE_2D, getShapePalette()->getAreaTexture() );
-          glColor4f( 0.85f, 0.25f, 0.15f, 0.4f );
-          glBegin( GL_QUADS );
-          glNormal3f( 0, 0, 1 );
-          glTexCoord2f( 0, 0 );
-          glVertex3f( 0, 0, 0 );
-          glTexCoord2f( 0, 1 );
-          glVertex3f( 0, n, 0 );
-          glTexCoord2f( 1, 1 );
-          glVertex3f( n, n, 0 );
-          glTexCoord2f( 1, 0 );
-          glVertex3f( n, 0, 0 );
-          glEnd();
-          glDisable( GL_TEXTURE_2D );
-          glPopMatrix();
-          //glEnable( GL_DEPTH_TEST );
-        }
-
-        char cost[40];
-        Color color;
-        if( getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, &color, player ) ) {
-          glDisable( GL_DEPTH_TEST );
-          getSDLHandler()->drawTooltip( 0, 0, 0,
-                                        -( levelMap->getZRot() ),
-                                        -( levelMap->getYRot() ),
-                                        cost,
-                                        color.r, color.g, color.b );
-          glEnable( GL_DEPTH_TEST );
-        }
-      }
-    }
-    glPopMatrix();
-  }
-
-  // draw recent damages
-  glEnable(GL_TEXTURE_2D);
-  getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
-
-
-  // show recent damages
-  glDisable(GL_DEPTH_TEST);
-  const float maxPos = 10.0f;
-  const Uint32 posSpeed = 70;
-  const float posDelta = 0.3f;
-  for( int i = 0; i < creature->getRecentDamageCount(); i++ ) {
-    DamagePos *dp = creature->getRecentDamage( i );
-    xpos2 = ((float)( creature->getX() +
-                      creature->getShape()->getWidth() / 2 -
-                      levelMap->getX()) / DIV);
-    ypos2 = ((float)( creature->getY() -
-                      creature->getShape()->getDepth() / 2 -
-                      levelMap->getY()) / DIV);
-    zpos2 = ( (float)(creature->getShape()->getHeight() * 1.25f) + dp->pos ) / DIV;
-    glPushMatrix();
-    //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-    glTranslatef( xpos2, ypos2, zpos2 );
-    // rotate each particle to face viewer
-    glRotatef( -( levelMap->getZRot() ), 0.0f, 0.0f, 1.0f);
-    glRotatef( -levelMap->getYRot(), 1.0f, 0.0f, 0.0f);
-
-    float alpha = (float)( maxPos - dp->pos ) / ( maxPos * 0.75f );
-    if( creature->isMonster() ) {
-      glColor4f(0.75f, 0.75f, 0.75f, alpha );
-    } else {
-      glColor4f(1.0f, 1.0f, 0, alpha );
-    }
-    getSDLHandler()->texPrint( 0, 0, "%d", dp->damage );
-
-    glPopMatrix();
-
-    Uint32 now = SDL_GetTicks();
-    if( now - dp->lastTime >= posSpeed ) {
-      dp->pos += posDelta;
-      dp->lastTime = now;
-      if( dp->pos >= maxPos ) {
-        creature->removeRecentDamage( i );
-        i--;
-      }
-    }
-  }
-  glDisable(GL_TEXTURE_2D);
-  getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-  glEnable(GL_DEPTH_TEST);
-
-
-  glEnable( GL_CULL_FACE );
-  glDisable( GL_BLEND );
-  glDisable( GL_DEPTH_TEST );
-  glDepthMask(GL_TRUE);
-
-  // draw name
-  //glTranslatef( 0, 0, 100);
-  //getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
-
-  glPopMatrix();
-}
-
-void Scourge::drawDraggedItem() {
-  if( getMovingItem() ) {
-    glDisable( GL_DEPTH_TEST );
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef( getSDLHandler()->mouseX - 25, getSDLHandler()->mouseY - 25, 500);
-    drawItemIcon( getMovingItem(), 32 );
-    glPopMatrix();
-    glEnable( GL_DEPTH_TEST );
-
-    /*
-    // draw it's base on the map
-    if( getSDLHandler()->mouseIsMovingOverMap &&
-        levelMap->getCursorFlatMapX() < MAP_WIDTH &&
-        levelMap->getCursorFlatMapY() < MAP_WIDTH ) {
-
-      glEnable( GL_DEPTH_TEST );
-      glDepthMask( GL_FALSE );
-      glEnable( GL_BLEND );
-      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-      glDisable( GL_CULL_FACE );
-      glPushMatrix();
-
-      levelMap->initMapView();
-
-      glColor4f( 0, 0.15f, 0.5f, 0.5f );
-      float xpos2 = ((float)( levelMap->getCursorFlatMapX() - levelMap->getX() ) / DIV );
-      float ypos2 = ((float)( levelMap->getCursorFlatMapY() - levelMap->getY() - 1 ) / DIV );
-      float zpos2 = 0.3 / DIV;
-
-      glTranslatef( xpos2, ypos2, zpos2 );
-
-      float w = getMovingItem()->getShape()->getWidth() / DIV;
-      float d = getMovingItem()->getShape()->getDepth() / DIV;
-
-      glBegin( GL_QUADS );
-      glVertex3f( 0, -d, 0 );
-      glVertex3f( 0, 0, 0 );
-      glVertex3f( w, 0, 0 );
-      glVertex3f( w, -d, 0 );
-      glEnd();
-      glDisable( GL_BLEND );
-      glBegin( GL_LINE_LOOP );
-      glVertex3f( 0, -d, 0 );
-      glVertex3f( 0, 0, 0 );
-      glVertex3f( w, 0, 0 );
-      glVertex3f( w, -d, 0 );
-      glEnd();
-
-      glPopMatrix();
-      glDisable( GL_CULL_FACE );
-      glDisable( GL_SCISSOR_TEST );
-      glDepthMask(GL_TRUE);
-      glDisable( GL_BLEND );
-      glEnable( GL_CULL_FACE );
-    }
-    */
-  }
-}
-
-void Scourge::drawBorder() {
-  if(levelMap->getViewWidth() == getSDLHandler()->getScreen()->w &&
-     levelMap->getViewHeight() == getSDLHandler()->getScreen()->h &&
-     !getUserConfiguration()->getFrameOnFullScreen()) return;
-
-  glPushMatrix();
-  glLoadIdentity();
-
-  // ok change: viewx, viewy always 0
-  //glTranslatef(viewX, viewY, 100);
-  glTranslatef(0, 0, 100);
-
-  //  glDisable(GL_BLEND);
-  glDisable(GL_DEPTH_TEST);
-
-  // draw border
-  glColor4f( 1, 1, 1, 1);
-
-  int w = (getMap()->getViewWidth() == getSDLHandler()->getScreen()->w ?
-           getMap()->getViewWidth() :
-           getMap()->getViewWidth() - Window::SCREEN_GUTTER);
-  int h = (getMap()->getViewHeight() == getSDLHandler()->getScreen()->h ?
-           getMap()->getViewHeight() :
-           getMap()->getViewHeight() - Window::SCREEN_GUTTER);
-  float TILE_W = 20.0f;
-  float TILE_H = 120.0f;
-
-  glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getBorderTexture() );
-  glBegin( GL_QUADS );
-  // left
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, 0);
-  glTexCoord2f (0.0f, h/TILE_H);
-  glVertex2i (0, h);
-  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
-  glVertex2i ((int)TILE_W, h);
-  glTexCoord2f (TILE_W/TILE_W, 0.0f);
-  glVertex2i ((int)TILE_W, 0);
-
-  // right
-  int gutter = 5;
-  glTexCoord2f (TILE_W/TILE_W, 0.0f);
-  glVertex2i (w - (int)TILE_W + gutter, 0);
-  glTexCoord2f (TILE_W/TILE_W, h/TILE_H);
-  glVertex2i (w - (int)TILE_W + gutter, h);
-  glTexCoord2f (0.0f, h/TILE_H);
-  glVertex2i (w + gutter, h);
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (w + gutter, 0);
-  glEnd();
-
-  TILE_W = 120.0f;
-  TILE_H = 20.0f;
-  glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getBorder2Texture() );
-  glBegin( GL_QUADS );
-  // top
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (0, 0);
-  glTexCoord2f (0.0f, TILE_H/TILE_H);
-  glVertex2i (0, (int)TILE_H);
-  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
-  glVertex2i (w, (int)TILE_H);
-  glTexCoord2f (w/TILE_W, 0.0f);
-  glVertex2i (w, 0);
-
-  // bottom
-  glTexCoord2f (w/TILE_W, TILE_H/TILE_H);
-  glVertex2i (0, h - (int)TILE_H + gutter);
-  glTexCoord2f (w/TILE_W, 0.0f);
-  glVertex2i (0, h + gutter);
-  glTexCoord2f (0.0f, 0.0f);
-  glVertex2i (w, h + gutter);
-  glTexCoord2f (0.0f, TILE_H/TILE_H);
-  glVertex2i (w, h - (int)TILE_H + gutter);
-  glEnd();
-
-  int gw = 220;
-  int gh = 64;
-
-  glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_GREATER, 0 );
-  glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getGargoyleTexture() );
-
-  glPushMatrix();
-  glLoadIdentity();
-  //glTranslatef(10, -5, 0);
-  //glRotatef(20, 0, 0, 1);
-  glBegin( GL_QUADS );
-  // top left
-  glTexCoord2f (0, 0);
-  glVertex2i (0, 0);
-  glTexCoord2f (0, 1);
-  glVertex2i (0, gh);
-  glTexCoord2f ((1.0f / gw) * (gw - 1), 1);
-  glVertex2i (gw, gh);
-  glTexCoord2f ((1.0f / gw) * (gw - 1), 0);
-  glVertex2i (gw, 0);
-  glEnd();
-  glPopMatrix();
-
-  // top right
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef(w - gw, 0, 0);
-  //glRotatef(-20, 0, 0, 1);
-  glBegin( GL_QUADS );
-  glTexCoord2f ((1.0f / gw) * (gw - 1), 0);
-  glVertex2i (0, 0);
-  glTexCoord2f ((1.0f / gw) * (gw - 1), 1);
-  glVertex2i (0, gh);
-  glTexCoord2f (0, 1);
-  glVertex2i (gw, gh);
-  glTexCoord2f (0, 0);
-  glVertex2i (gw, 0);
-  glEnd();
-
-  glPopMatrix();
-
-  //glEnable( GL_TEXTURE_2D );
-  glDisable( GL_ALPHA_TEST );
-  glEnable(GL_DEPTH_TEST);
-  glPopMatrix();
-}
-
-bool Scourge::handleEvent(SDL_Event *event) {
-  int ea;
-
-  if(containerGuiCount > 0) {
-    for(int i = 0; i < containerGuiCount; i++) {
-      if(containerGui[i]->handleEvent(event)) {
-        closeContainerGui(containerGui[i]);
-      }
-    }
-  }
-
-  if(inventory->isVisible() && inventory->handleEvent(event) ) {
-    return false;
-  }
-
-  if(optionsMenu->isVisible()) {
-    optionsMenu->handleEvent(event);
-    //    return false;
-  }
-
-  //if(multiplayer->isVisible()) {
-//    multiplayer->handleEvent(event);
-  //return false;
-  //}
-
-  levelMap->handleEvent( event );
-
-  int mx, my;
-  switch(event->type) {
-  case SDL_MOUSEMOTION:
-
-    if( !levelMap->isMouseRotating() ) {
-
-      mx = event->motion.x;
-      my = event->motion.y;
-
-      // start the item drag
-      if(willStartDrag &&
-         (abs(mx - willStartDragX) > DRAG_START_TOLERANCE ||
-          abs(my - willStartDragY) > DRAG_START_TOLERANCE)) {
-        // click on an item
-        Uint16 mapx = levelMap->getCursorMapX();
-        Uint16 mapy = levelMap->getCursorMapY();
-        Uint16 mapz = levelMap->getCursorMapZ();
-        if(mapx > MAP_WIDTH) {
-          levelMap->getMapXYAtScreenXY(willStartDragX, willStartDragY, &mapx, &mapy);
-          mapz = 0;
-        }
-        startItemDrag(mapx, mapy, mapz);
-        willStartDrag = false;
-      }
-    }
-    break;
-  case SDL_MOUSEBUTTONDOWN:
-    if(event->button.button) {
-      processGameMouseDown(getSDLHandler()->mouseX, getSDLHandler()->mouseY, event->button.button);
-    }
-    break;
-  case SDL_MOUSEBUTTONUP:
-    if(event->button.button) {
-      processGameMouseClick(getSDLHandler()->mouseX, getSDLHandler()->mouseY, event->button.button);
-      if(teleporting && !exitConfirmationDialog->isVisible()) {
-        exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
-        party->toggleRound(true);
-        exitConfirmationDialog->setVisible(true);
-      } else if(changingStory && !exitConfirmationDialog->isVisible()) {
-        exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
-        party->toggleRound(true);
-        exitConfirmationDialog->setVisible(true);
-      }
-    }
-    break;
-  }
-  switch(event->type) {
-  case SDL_KEYDOWN:
-
-    // DEBUG ------------------------------------
-
-#ifdef DEBUG_KEYS
-    if(event->key.keysym.sym == SDLK_d) {
-      party->getPlayer()->takeDamage( 1000 );
-      return false;
-    } else if(event->key.keysym.sym == SDLK_l) {
-      //cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
-
-      party->getPlayer()->addExperience( 1000 );
-      //session->creatureDeath( party->getPlayer() );
-
-      return false;
-    } else if(event->key.keysym.sym == SDLK_d) {
-      // add a day
-      getSession()->getParty()->getCalendar()->addADay();
-    } else if(event->key.keysym.sym == SDLK_f) {
-      getMap()->useFrustum = ( getMap()->useFrustum ? false : true );
-      getMap()->refresh();
-    } else if(event->key.keysym.sym == SDLK_r &&
-              getSession()->getCurrentMission() &&
-              !getSession()->getCurrentMission()->isCompleted()) {
-      completeCurrentMission();
-    } else if( event->key.keysym.sym == SDLK_t ) {
-      teleport();
-    } else if( event->key.keysym.sym == SDLK_y ) {
-      getBoard()->setStorylineIndex( getBoard()->getStorylineIndex() + 1 );
-      cerr << "Incremented storyline index to " << getBoard()->getStorylineIndex() << endl;
-    } else if( event->key.keysym.sym == SDLK_u ) {
-      getBoard()->setStorylineIndex( getBoard()->getStorylineIndex() - 1 );
-      cerr << "Decremented storyline index to " << getBoard()->getStorylineIndex() << endl;
-    } else if(event->key.keysym.sym == SDLK_p) {
-      cerr << "EFFECT!" << endl;
-//      party->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
-
-      party->getPlayer()->startEffect( (int)( (float)Constants::EFFECT_COUNT * rand() / RAND_MAX ),
-                                       (Constants::DAMAGE_DURATION * 4) );
-/*                                                                                           */
-/*       levelMap->startEffect( toint(party->getPlayer()->getX()),                           */
-/*                              toint(party->getPlayer()->getY()), 1,                        */
-/*                              (int)( (float)Constants::EFFECT_COUNT * rand() / RAND_MAX ), */
-/*                              (Constants::DAMAGE_DURATION * 4),                            */
-/*                              12, 12 );                                                    */
-
-    } else if(event->key.keysym.sym == SDLK_m) {
-      Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
-      return false;
-    } else if(event->key.keysym.sym == SDLK_b) {
-      Battle::debugBattle = ( Battle::debugBattle ? false : true );
-      return false;
-    } else if(event->key.keysym.sym == SDLK_s) {
-      squirrelWin->setVisible( squirrelWin->isVisible() ? false : true );
-    }
-#endif
-
-    // END OF DEBUG ------------------------------------
-
-  case SDL_KEYUP:
-
-    if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
-      if( inventory->inStoreSpellMode() ) {
-        inventory->setStoreSpellMode( false );
-        return false;
-      } else if( getTargetSelectionFor() ) {
-        // cancel target selection ( cross cursor )
-        getTargetSelectionFor()->cancelTarget();
-        getTargetSelectionFor()->getBattle()->reset();
-        setTargetSelectionFor( NULL );
-        return false;
-      } else if( exitConfirmationDialog->isVisible() ) {
-        gatepos = NULL;
-        teleporting = false;
-        changingStory = false;
-        currentStory = oldStory;
-        exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
-        exitConfirmationDialog->setVisible(false);
-      } else if( !Window::anyFloatingWindowsOpen() ) {
-        party->toggleRound(true);
-        exitConfirmationDialog->setVisible(true);
-      }
-      return false;
-    } else if( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_BACKSPACE ) {
-      SDLHandler::showDebugInfo = ( SDLHandler::showDebugInfo ? 0 : 1 );
-    }
-
-    // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
-    ea = getUserConfiguration()->getEngineAction(event);
-    if(ea == SWITCH_COMBAT) {
-      resetBattles();
-      getUserConfiguration()->setBattleTurnBased( getUserConfiguration()->isBattleTurnBased() ? false : true );
-      char message[80];
-      sprintf( message, "Combat is now %s.", ( getUserConfiguration()->isBattleTurnBased() ?
-                                               "Turn-based" :
-                                               "Real-time" ) );
-      levelMap->addDescription( message, 0, 1, 1 );
-    } else if(ea == SET_PLAYER_0){
-      setPlayer(0);
-    } else if(ea == SET_PLAYER_1){
-      setPlayer(1);
-    } else if(ea == SET_PLAYER_2){
-      setPlayer(2);
-    } else if(ea == SET_PLAYER_3){
-      setPlayer(3);
-    } else if(ea == SET_PLAYER_ONLY && !inTurnBasedCombat()) {
-      party->togglePlayerOnly();
-    }
-    //    else if(ea == BLEND_A){
-    else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_6){
-      blendA++; if(blendA >= 11) blendA = 0;
-      fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
-    }
-    //    else if(ea == BLEND_B){
-    else if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_7){
-      blendB++; if(blendB >= 11) blendB = 0;
-      fprintf(stderr, "blend: a=%d b=%d\n", blendA, blendB);
-    } else if(ea == SHOW_INVENTORY){
-      toggleInventoryWindow();
-    } else if(ea == SHOW_OPTIONS_MENU){
-      toggleOptionsWindow();
-    } else if(ea == SET_NEXT_FORMATION_STOP){
-      if(party->getFormation() < Creature::FORMATION_COUNT - 1) party->setFormation(party->getFormation() + 1);
-      else party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-    } else if(ea == TOGGLE_MINIMAP ){
-      miniMap->setShowMiniMap( miniMap->isMiniMapShown() ? false : true );
-    } else if( ea == NEXT_WEAPON && getParty()->getPlayer() ) {
-      if( getParty()->getPlayer()->nextPreferredWeapon() ) {
-        // reset but don't pause again
-        getParty()->getPlayer()->getBattle()->reset( true );
-      }
-      if( inventory->isVisible() ) inventory->refresh();
-    } else if(ea == TOGGLE_MAP_CENTER){
-      bool mc;
-      mc = getUserConfiguration()->getAlwaysCenterMap();
-      getUserConfiguration()->setAlwaysCenterMap(!mc);
-    } else if(ea == INCREASE_GAME_SPEED){
-      addGameSpeed(-1);
-    } else if(ea == DECREASE_GAME_SPEED){
-      addGameSpeed(1);
-    } else if(ea == START_ROUND) {
-      party->toggleRound();
-    } else if(ea == LAYOUT_1) {
-      setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
-    } else if(ea == LAYOUT_2) {
-      setUILayout(Constants::GUI_LAYOUT_BOTTOM);
-//    } else if(ea == LAYOUT_3) {
-//      setUILayout(Constants::GUI_LAYOUT_SIDE);
-    } else if(ea == LAYOUT_4) {
-      setUILayout(Constants::GUI_LAYOUT_INVENTORY);
-    } else if( ea >= QUICK_SPELL_1 && ea <= QUICK_SPELL_12 ) {
-      quickSpellAction( ea - QUICK_SPELL_1 );
-    }
-    break;
-  default: break;
-  }
-
-  return false;
-}
-
-void Scourge::processGameMouseDown(Uint16 x, Uint16 y, Uint8 button) {
-  if(button == SDL_BUTTON_LEFT) {
-    // will start to drag when the mouse has moved
-    willStartDrag = true;
-    willStartDragX = x;
-    willStartDragY = y;
-  }
-}
-
-void Scourge::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
-  // don't drag if you haven't started yet
-  willStartDrag = false;
-
-  Uint16 mapx, mapy, mapz;
-  //Creature *c = getTargetSelectionFor();
-  if(button == SDL_BUTTON_LEFT) {
-
-    mapx = levelMap->getCursorMapX();
-    mapy = levelMap->getCursorMapY();
-    mapz = levelMap->getCursorMapZ();
-
-    // drop target?
-    Location *dropTarget = NULL;
-    if(movingItem) {
-      if(mapx < MAP_WIDTH) {
-        dropTarget = levelMap->getLocation(mapx, mapy, mapz);
-        if(!(dropTarget &&
-             (dropTarget->creature ||
-              (dropTarget->item &&
-               ((Item*)(dropTarget->item))->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
-          dropTarget = NULL;
-        }
-      }
-    }
-    levelMap->setSelectedDropTarget(dropTarget);
-
-    // clicking on a creature
-    if(!movingItem && mapx < MAP_WIDTH) {
-      Location *loc = levelMap->getLocation(mapx, mapy, mapz);
-      if(loc && loc->creature) {
-        if(getTargetSelectionFor()) {
-          handleTargetSelectionOfCreature( ((Creature*)loc->creature) );
-          return;
-        } else if( loc->creature->isMonster() &&
-                   ((Creature*)(loc->creature))->getMonster()->isNpc() ) {
-          // start a conversation
-          conversationGui->start( ((Creature*)(loc->creature)) );
-          return;
-        } else if( loc->creature->isMonster() ||
-                   loc->creature->getStateMod( Constants::possessed ) ) {
-          // follow this creature
-          party->setTargetCreature( ((Creature*)(loc->creature)) );
-          // show path
-          if( inTurnBasedCombatPlayerTurn() ) {
-            // start round
-            if( getSDLHandler()->isDoubleClick ) {
-              party->toggleRound( false );
-            }
-          }
-          return;
-        } else {
-          // select player
-          for(int i = 0; i < party->getPartySize(); i++) {
-            if(party->getParty(i) == loc->creature) {
-              setPlayer(i);
-              return;
-            }
-          }
-        }
-      }
-    }
-
-    // click on an item
-    if(mapx > MAP_WIDTH) {
-      mapx = levelMap->getCursorFlatMapX();
-      mapy = levelMap->getCursorFlatMapY();
-      mapz = 0;
-    }
-
-    if( getTargetSelectionFor() ) {
-      Location *pos = levelMap->getLocation(mapx, mapy, mapz);
-      if(mapx < MAP_WIDTH && pos && pos->item) {
-        handleTargetSelectionOfItem( ((Item*)(pos->item)), pos->x, pos->y, pos->z );
-        return;
-      }
-    }
-
-    if(useItem(mapx, mapy, mapz)) return;
-
-    // click on the levelMap
-    mapx = levelMap->getCursorFlatMapX();
-    mapy = levelMap->getCursorFlatMapY();
-
-    // make sure the selected action can target a location
-    if( getTargetSelectionFor() ) {
-      handleTargetSelectionOfLocation( mapx, mapy, mapz );
-     return;
-    }
-
-    // Make party move to new location
-    int xx = mapx - ( getParty()->getPlayer()->getShape()->getWidth() / 2);
-    int yy = mapy + 1 + ( getParty()->getPlayer()->getShape()->getHeight() / 2);
-    if( !party->setSelXY( xx, yy ) ) {
-      getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN, true );
-    }
-
-    // start round
-    if( inTurnBasedCombatPlayerTurn() ) {
-      if( getSDLHandler()->isDoubleClick ) {
-        party->toggleRound( false );
-      }
-    }
-
-  } else if(button == SDL_BUTTON_RIGHT) {
-    describeLocation(levelMap->getCursorMapX(), levelMap->getCursorMapY(), levelMap->getCursorMapZ());
-  }
 }
 
 bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
@@ -2275,134 +1188,6 @@ void Scourge::toggleOptionsWindow() {
   optionsButton->setSelected( optionsMenu->isVisible() );
 }
 
-void Scourge::showExitConfirmationDialog() {
-  party->toggleRound(true);
-  exitConfirmationDialog->setVisible(true);
-}
-
-bool Scourge::handleEvent(Widget *widget, SDL_Event *event) {
-
-  if(widget == Window::message_button && info_dialog_showing) {
-    party->toggleRound(false);
-    info_dialog_showing = false;
-    getSession()->getSquirrel()->startLevel();
-    // re-eval the special skills
-    //cerr << "Evaluating special skills at level's start" << endl;
-    //Uint32 t = SDL_GetTicks();
-    for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-      session->getParty()->getParty(i)->evalSpecialSkills();
-    }
-    for( int i = 0; i < session->getCreatureCount(); i++ ) {
-      session->getCreature(i)->evalSpecialSkills();
-    }
-//    cerr << "\tIt took: " <<
-//      ( ((float)( SDL_GetTicks() - t ) / 1000.0f ) ) <<
-//      " seconds." << endl;
-    party->startEffect(Constants::EFFECT_TELEPORT, (Constants::DAMAGE_DURATION * 4));
-  }
-
-  if(containerGuiCount > 0) {
-    for(int i = 0; i < containerGuiCount; i++) {
-      if(containerGui[i]->handleEvent(widget, event)) {
-        closeContainerGui(containerGui[i]);
-      }
-    }
-    //	return false;
-  }
-
-  if(inventory->isVisible()) {
-    inventory->handleEvent(widget, event);
-    //	return false;
-  }
-
-  if(optionsMenu->isVisible()) {
-    optionsMenu->handleEvent(widget, event);
-    //	return false;
-  }
-
-  if(netPlay->getWindow()->isVisible()) {
-    netPlay->handleEvent(widget, event);
-  }
-
-  //if(multiplayer->isVisible()) {
-  //    multiplayer->handleEvent(widget, event);
-  //return false;
-  //}
-
-  if(infoGui->getWindow()->isVisible()) {
-    infoGui->handleEvent(widget, event);
-  }
-
-  if( conversationGui->getWindow()->isVisible() ) {
-    conversationGui->handleEvent( widget, event );
-  }
-
-  if( tradeDialog->getWindow()->isVisible() ) {
-    tradeDialog->handleEvent( widget, event );
-  }
-
-  if( healDialog->getWindow()->isVisible() ) {
-    healDialog->handleEvent( widget, event );
-  }
-
-  if( donateDialog->getWindow()->isVisible() ) {
-    donateDialog->handleEvent( widget, event );
-  }
-
-  if( trainDialog->getWindow()->isVisible() ) {
-    trainDialog->handleEvent( widget, event );
-  }
-
-  // FIXME: this is hacky...
-  if(handlePartyEvent(widget, event)) return true;
-  int n = handleBoardEvent(widget, event);
-  if(n == Board::EVENT_HANDLED) return false;
-  else if(n == Board::EVENT_PLAY_MISSION) {
-    int selected = missionList->getSelectedLine();
-    if(selected != -1 && selected < board->getMissionCount()) {
-      nextMission = selected;
-      oldStory = currentStory = 0;
-      endMission();
-      return true;
-    }
-  }
-
-  if(widget == yesExitConfirm) {
-    exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
-    exitConfirmationDialog->setVisible(false);
-    endMission();
-    // move the creature to the gate so it will be near it on the next level
-    if( gatepos ) {
-      for (int i = 0; i < party->getPartySize(); i++) {
-        if (!party->getParty(i)->getStateMod(Constants::dead)) {
-          party->getParty(i)->moveTo( gatepos->x, gatepos->y, gatepos->z );
-        }
-      }
-      gatepos = NULL;
-    }
-    return true;
-  } else if(widget == noExitConfirm) {
-    gatepos = NULL;
-    teleporting = false;
-    changingStory = false;
-    currentStory = oldStory;
-    exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
-    exitConfirmationDialog->setVisible(false);
-    return false;
-  } else if( widget == squirrelRun ||
-             widget == squirrelText ) {
-    squirrelLabel->appendText( "> " );
-    squirrelLabel->appendText( squirrelText->getText() );
-    squirrelLabel->appendText( "|" );
-    getSession()->getSquirrel()->compileBuffer( squirrelText->getText() );
-    squirrelText->clearText();
-    squirrelLabel->appendText( "|" );
-  } else if( widget == squirrelClear ) {
-    squirrelLabel->setText( "" );
-  }
-  return false;
-}
-
 // create the ui
 void Scourge::createUI() {
 
@@ -2583,16 +1368,16 @@ void Scourge::playRound() {
 
     Projectile::moveProjectiles(getSession());
 
-    // fight battle turns
+    // fight battle turns    
     bool fromBattle = false;
     if(battleRound.size() > 0) {
       fromBattle = fightCurrentBattleTurn();
     }
 
     // create a new battle round
-    if(battleRound.size() == 0 && !createBattleTurns()) {
+    if( battleRound.size() == 0 && !createBattleTurns() ) {
       // not in battle
-      if(fromBattle) {
+      if( fromBattle ) {
         // go back to real-time, group-mode
         resetUIAfterBattle();
       }
@@ -2883,7 +1668,7 @@ void Scourge::moveMonster(Creature *monster) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement
-      monster->move(monster->getDir(), levelMap);
+      monster->move(monster->getDir());
     }
   } else if(monster->getMotion() == Constants::MOTION_STAND) {
     if( (int)(40.0f * rand()/RAND_MAX) == 0) {
@@ -2952,6 +1737,16 @@ void Scourge::refreshContainerGui(Item *container) {
 	if(containerGui[i]->getContainer() == container) {
 	  containerGui[i]->refresh();
 	}
+  }
+}
+
+void Scourge::removeClosedContainerGuis() {
+  if(containerGuiCount > 0) {
+    for(int i = 0; i < containerGuiCount; i++) {
+      if(!containerGui[i]->getWindow()->isVisible()) {
+        closeContainerGui(containerGui[i]);
+      }
+    }
   }
 }
 
@@ -3411,135 +2206,6 @@ void Scourge::resetPartyUI() {
   }
 }
 
-bool Scourge::handlePartyEvent(Widget *widget, SDL_Event *event) {
-  if(widget == inventoryButton) {
-    toggleInventoryWindow();
-  } else if(widget == endTurnButton &&
-            inTurnBasedCombatPlayerTurn()) {
-    battleRound[battleTurn]->endTurn();
-  } else if(widget == optionsButton) {
-    toggleOptionsWindow();
-  } else if(widget == quitButton) {
-    showExitConfirmationDialog();
-    /*
-  } else if(widget == diamondButton) {
-    party->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == staggeredButton) {
-    party->setFormation(Constants::STAGGERED_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == squareButton) {
-    party->setFormation(Constants::SQUARE_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == rowButton) {
-    party->setFormation(Constants::ROW_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == scoutButton) {
-    party->setFormation(Constants::SCOUT_FORMATION - Constants::DIAMOND_FORMATION);
-  } else if(widget == crossButton) {
-    party->setFormation(Constants::CROSS_FORMATION - Constants::DIAMOND_FORMATION);
-    */
-  } else if(widget == playerInfo[0] ) {
-    if( getTargetSelectionFor() ) {
-      handleTargetSelectionOfCreature( getParty()->getParty( 0 ) );
-    } else {
-      setPlayer(Constants::PLAYER_1 - Constants::PLAYER_1);
-    }
-  } else if(widget == playerInfo[1] ) {
-    if( getTargetSelectionFor() ) {
-      handleTargetSelectionOfCreature( getParty()->getParty( 1 ) );
-    } else {
-      setPlayer(Constants::PLAYER_2 - Constants::PLAYER_1);
-    }
-  } else if(widget == playerInfo[2] ) {
-    if( getTargetSelectionFor() ) {
-      handleTargetSelectionOfCreature( getParty()->getParty( 2 ) );
-    } else {
-      setPlayer(Constants::PLAYER_3 - Constants::PLAYER_1);
-    }
-  } else if(widget == playerInfo[3] ) {
-    if( getTargetSelectionFor() ) {
-      handleTargetSelectionOfCreature( getParty()->getParty( 3 ) );
-    } else {
-      setPlayer(Constants::PLAYER_4 - Constants::PLAYER_1);
-    }
-  } else if(widget == groupButton && !inTurnBasedCombat()) {
-    party->togglePlayerOnly();
-  } else if(widget == roundButton) {
-    party->toggleRound();
-  } else {
-    for( int t = 0; t < 4; t++ ) {
-      if( widget == playerHpMp[t] ) {
-        if( !inTurnBasedCombat() ||
-            ( inTurnBasedCombat() &&
-              battleRound[battleTurn]->getCreature() == getParty()->getParty( t ) ) ) {
-          inventory->showSkills();
-          if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
-            getParty()->setPlayer( t );
-            if( !inventory->isVisible() ) toggleInventoryWindow();
-          } else {
-            toggleInventoryWindow();
-          }
-        }
-      } else if( widget == playerWeapon[t] ) {
-        if( !inTurnBasedCombat() ||
-            ( inTurnBasedCombat() &&
-              battleRound[battleTurn]->getCreature() == getParty()->getParty( t ) ) ) {
-          if( getParty()->getPlayer() != getParty()->getParty( t ) ) {
-            getParty()->setPlayer( t );
-          }
-          if( getParty()->getPlayer()->nextPreferredWeapon() ) {
-            // reset but don't pause again
-            getParty()->getPlayer()->getBattle()->reset( true );
-          }
-          if( inventory->isVisible() ) inventory->refresh();
-        }
-      }
-    }
-    for( int t = 0; t < 12; t++ ) {
-      if( widget == quickSpell[t] ) {
-        quickSpellAction( t, event->button.button );
-      }
-    }
-  }
-  return false;
-}
-
-void Scourge::quickSpellAction( int index, int button ) {
-  if( inventory->inStoreSpellMode() ) {
-    getParty()->getPlayer()->setQuickSpell( index, inventory->getStorable() );
-    inventory->setStoreSpellMode( false );
-    if( inventory->isVisible() ) toggleInventoryWindow();
-  } else {
-    Creature *creature = getParty()->getPlayer();
-    Storable *storable = creature->getQuickSpell( index );
-    if( storable ) {
-      if( storable->getStorableType() == Storable::SPELL_STORABLE ) {
-        if( button == SDL_BUTTON_RIGHT ) {
-          cerr << "*** FIXME: describe spell." << endl;
-        } else {
-          executeQuickSpell( (Spell*)storable );
-        }
-      } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
-        if( button == SDL_BUTTON_RIGHT ) {
-          cerr << "*** FIXME: describe capability." << endl;
-        } else {
-          executeSpecialSkill( (SpecialSkill*)storable );
-        }
-      } else if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
-        if( button == SDL_BUTTON_RIGHT ) {
-          Item *item = (Item*)storable;
-          infoGui->setItem( item, getParty()->getPlayer()->getSkill(Constants::IDENTIFY_ITEM_SKILL ) );
-          if( !infoGui->getWindow()->isVisible() ) infoGui->getWindow()->setVisible( true );
-        } else {
-          executeItem( (Item*)storable );
-        }
-      } else {
-        cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
-      }
-    } else {
-      inventory->showSpells();
-      if( !inventory->isVisible() ) toggleInventoryWindow();
-    }
-  }
-}
-
 void Scourge::executeSpecialSkill( SpecialSkill *skill ) {
   Creature *creature = getSession()->getParty()->getPlayer();
   creature->
@@ -3653,28 +2319,6 @@ void Scourge::toggleRoundUI(bool startRound) {
 void Scourge::setFormationUI(int formation, bool playerOnly) {
   groupButton->setSelected(playerOnly);
   roundButton->setSelected(true);
-  /*
-  diamondButton->setSelected(false);
-  staggeredButton->setSelected(false);
-  squareButton->setSelected(false);
-  rowButton->setSelected(false);
-  scoutButton->setSelected(false);
-  crossButton->setSelected(false);
-  switch(formation + Constants::DIAMOND_FORMATION) {
-  case Constants::DIAMOND_FORMATION:
-    diamondButton->setSelected(true); break;
-  case Constants::STAGGERED_FORMATION:
-    staggeredButton->setSelected(true); break;
-  case Constants::SQUARE_FORMATION:
-    squareButton->setSelected(true); break;
-  case Constants::ROW_FORMATION:
-    rowButton->setSelected(true); break;
-  case Constants::SCOUT_FORMATION:
-    scoutButton->setSelected(true); break;
-  case Constants::CROSS_FORMATION:
-    crossButton->setSelected(true); break;
-  }
-  */
 }
 
 void Scourge::togglePlayerOnlyUI(bool playerOnly) {
@@ -3746,29 +2390,6 @@ void Scourge::updateBoardUI(int count, const char **missionText, Color *missionC
   missionList->setLines(count, missionText, missionColor);
 }
 
-int Scourge::handleBoardEvent(Widget *widget, SDL_Event *event) {
-  if(widget == boardWin->closeButton ||
-     widget == closeBoard) {
-    boardWin->setVisible(false);
-    return Board::EVENT_HANDLED;
-  } else if(widget == missionList) {
-    int selected = missionList->getSelectedLine();
-    if(selected != -1 && selected < board->getMissionCount()) {
-      Mission *mission = board->getMission(selected);
-      missionDescriptionLabel->setText((char*)(mission->getDescription()));
-      mapWidget->setSelection( mission->getMapX(), mission->getMapY() );
-    }
-    return Board::EVENT_HANDLED;
-  } else if(widget == playMission) {
-    int selected = missionList->getSelectedLine();
-    if(selected != -1 && selected < board->getMissionCount()) {
-      return Board::EVENT_PLAY_MISSION;
-    }
-    return Board::EVENT_HANDLED;
-  }
-  return -1;
-}
-
 void Scourge::setMissionDescriptionUI(char *s, int mapx, int mapy) {
   missionDescriptionLabel->setText(s);
   mapWidget->setSelection( mapx, mapy );
@@ -3804,167 +2425,9 @@ void Scourge::resetBattles() {
   inBattle = false;
 }
 
-void Scourge::checkForDropTarget() {
-  // find the drop target
-  if(movingItem) {
-
-    // is the mouse moving?
-    if(!getSDLHandler()->mouseIsMovingOverMap) {
-      if(needToCheckDropLocation) {
-        needToCheckDropLocation = false;
-
-        // check location
-        Location *dropTarget = NULL;
-        Uint16 mapx = levelMap->getCursorMapX();
-        Uint16 mapy = levelMap->getCursorMapY();
-        Uint16 mapz = levelMap->getCursorMapZ();
-        if(mapx < MAP_WIDTH) {
-          dropTarget = levelMap->getLocation(mapx, mapy, mapz);
-          if(!(dropTarget &&
-               (dropTarget->creature ||
-                (dropTarget->item &&
-                 ((Item*)(dropTarget->item))->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
-            dropTarget = NULL;
-          }
-        }
-        levelMap->setSelectedDropTarget(dropTarget);
-      }
-    } else {
-      needToCheckDropLocation = true;
-    }
-  }
-}
-
 void Scourge::showItemInfoUI(Item *item, int level) {
   infoGui->setItem( item, level );
   if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
-}
-
-void Scourge::checkForInfo() {
-  Uint16 mapx, mapy, mapz;
-
-  // change cursor when over a hostile creature
-  if( getSDLHandler()->getCursorMode() == Constants::CURSOR_NORMAL ||
-      getSDLHandler()->getCursorMode() == Constants::CURSOR_ATTACK ||
-      getSDLHandler()->getCursorMode() == Constants::CURSOR_RANGED ||
-      getSDLHandler()->getCursorMode() == Constants::CURSOR_MOVE ||
-      getSDLHandler()->getCursorMode() == Constants::CURSOR_TALK ||
-      getSDLHandler()->getCursorMode() == Constants::CURSOR_USE ) {
-    if( getSDLHandler()->mouseIsMovingOverMap ) {
-      bool handled = false;
-      mapx = levelMap->getCursorMapX();
-      mapy = levelMap->getCursorMapY();
-      mapz = levelMap->getCursorMapZ();
-      if( mapx < MAP_WIDTH) {
-        Location *pos = levelMap->getLocation(mapx, mapy, mapz);
-        if( pos ) {
-          int cursor;
-          if( pos->creature &&
-              party->getPlayer()->canAttack( pos->creature, &cursor ) ) {
-            getSDLHandler()->setCursorMode( ((Creature*)(pos->creature))->isMonster() && ((Creature*)(pos->creature))->getMonster()->isNpc() ?
-                                            Constants::CURSOR_TALK :
-                                            cursor );
-                                            //Constants::CURSOR_ATTACK );
-            handled = true;
-          } else if( getOutlineColor( pos ) ) {
-            getSDLHandler()->setCursorMode( Constants::CURSOR_USE );
-            handled = true;
-          }
-        }
-      }
-      if( !handled ) getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
-    }
-  }
-
-  if( getUserConfiguration()->getTooltipEnabled() &&
-      SDL_GetTicks() - getSDLHandler()->lastMouseMoveTime >
-      (Uint32)( getUserConfiguration()->getTooltipInterval() * 10) ) {
-    if(needToCheckInfo) {
-      needToCheckInfo = false;
-
-      // check location
-      Uint16 mapx = levelMap->getCursorMapX();
-      Uint16 mapy = levelMap->getCursorMapY();
-      Uint16 mapz = levelMap->getCursorMapZ();
-      if(mapx < MAP_WIDTH) {
-        Location *pos = levelMap->getLocation(mapx, mapy, mapz);
-        if( pos ) {
-          char s[300];
-          void *obj = NULL;
-          if( pos->creature ) {
-            obj = pos->creature;
-            ((Creature*)(pos->creature))->getDetailedDescription(s);
-          } else if( pos->item ) {
-            obj = pos->item;
-            ((Item*)(pos->item))->getDetailedDescription(s);
-          } else if( pos->shape ) {
-            obj = pos->shape;
-            strcpy( s, session->getShapePalette()->getRandomDescription( pos->shape->getDescriptionGroup() ) );
-          }
-          if( obj ) {
-            bool found = false;
-            // Don't show info about the same object twice
-            // FIXME: use lookup table
-            for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
-              InfoMessage *message = i->first;
-              if( message->obj == obj ||
-                  ( message->x == pos->x &&
-                    message->y == pos->y &&
-                    message->z == pos->z ) ) {
-                found = true;
-                break;
-              }
-            }
-            if( !found ) {
-              InfoMessage *message =
-                new InfoMessage( s, obj,
-                                 pos->x + pos->shape->getWidth() / 2,
-                                 pos->y - 1 - pos->shape->getDepth() / 2,
-                                 pos->z + pos->shape->getHeight() / 2 );
-                                 //pos->z + pos->shape->getHeight() );
-              infos[ message ] = SDL_GetTicks();
-            }
-          }
-        }
-      }
-    } else {
-      needToCheckInfo = true;
-    }
-  }
-  // timeout descriptions
-  Uint32 now = SDL_GetTicks();
-  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
-    InfoMessage *message = i->first;
-    Uint32 time = i->second;
-    if( now - time > INFO_INTERVAL ) {
-      delete message;
-      infos.erase( i );
-    }
-  }
-}
-
-void Scourge::resetInfos() {
-  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
-    InfoMessage *message = i->first;
-    delete message;
-    infos.erase( i );
-  }
-}
-
-void Scourge::drawInfos() {
-  float xpos2, ypos2, zpos2;
-  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
-
-    InfoMessage *message = i->first;
-    xpos2 = ((float)(message->x - levelMap->getX()) / DIV);
-    ypos2 = ((float)(message->y - levelMap->getY()) / DIV);
-    zpos2 = ((float)(message->z) / DIV);
-
-    getSDLHandler()->drawTooltip( xpos2, ypos2, zpos2,
-                                  -( levelMap->getZRot() ),
-                                  -( levelMap->getYRot() ),
-                                  message->message );
-  }
 }
 
 void Scourge::createParty( Creature **pc, int *partySize ) {
@@ -4032,7 +2495,7 @@ GLuint Scourge::loadSystemTexture( char *line ) {
 
 // check for interactive items.
 Color *Scourge::getOutlineColor( Location *pos ) {
-  return( pos->item || pos->shape->isInteractive() || levelMap->isSecretDoor( pos ) ? outlineColor : NULL );
+  return view->getOutlineColor( pos );
 }
 
 bool Scourge::doesSaveGameExist(Session *session) {
@@ -4193,17 +2656,7 @@ bool Scourge::testLoadGame( Session *session ) {
 }
 
 bool Scourge::startTextEffect( char *message ) {
-  if( !textEffect ) {
-    int x = getScreenWidth() / 2 - ( strlen( message ) / 2 * 18 );
-    int y = getScreenHeight() / 2 - 50;
-    //cerr << "x=" << x << " y=" << y << endl;
-    textEffect = new TextEffect( this, x, y, message );
-    textEffect->setActive( true );
-    textEffectTimer = SDL_GetTicks();
-    return true;
-  } else {
-    return false;
-  }
+  return view->startTextEffect( message );
 }
 
 void Scourge::updateStatus( int status, int maxStatus, const char *message ) {
@@ -4245,5 +2698,124 @@ void Scourge::completeCurrentMission() {
   if( getSession()->getCurrentMission()->isStoryLine() )
     board->storylineMissionCompleted( getSession()->getCurrentMission() );
   missionCompleted();
+}
+
+Battle *Scourge::getCurrentBattle() {
+  return battleRound[battleTurn];
+}
+
+void Scourge::endCurrentBattle() {
+  battleRound[battleTurn]->endTurn();
+}
+
+void Scourge::resetInfos() {
+  view->resetInfos();
+}
+
+void Scourge::evalSpecialSkills() {
+  // re-eval the special skills
+  //cerr << "Evaluating special skills at level's start" << endl;
+  //Uint32 t = SDL_GetTicks();
+  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+    session->getParty()->getParty(i)->evalSpecialSkills();
+  }
+  for( int i = 0; i < session->getCreatureCount(); i++ ) {
+    session->getCreature(i)->evalSpecialSkills();
+  }
+  //    cerr << "\tIt took: " <<
+  //      ( ((float)( SDL_GetTicks() - t ) / 1000.0f ) ) <<
+  //      " seconds." << endl;
+}
+
+bool Scourge::playSelectedMission() {
+  int selected = missionList->getSelectedLine();
+  if(selected != -1 && selected < board->getMissionCount()) {
+    nextMission = selected;
+    oldStory = currentStory = 0;
+    endMission();
+    return true;
+  }
+  return false;
+}
+
+void Scourge::movePartyToGateAndEndMission() {
+  exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+  exitConfirmationDialog->setVisible(false);
+  endMission();
+  // move the creature to the gate so it will be near it on the next level
+  if( gatepos ) {
+    for (int i = 0; i < getParty()->getPartySize(); i++) {
+      if (!getParty()->getParty(i)->getStateMod(Constants::dead)) {
+        getParty()->getParty(i)->moveTo( gatepos->x, gatepos->y, gatepos->z );
+      }
+    }
+    gatepos = NULL;
+  }
+}                                   
+
+void Scourge::showExitConfirmationDialog() {
+  party->toggleRound(true);
+  exitConfirmationDialog->setVisible(true);
+}
+
+void Scourge::closeExitConfirmationDialog() {
+  gatepos = NULL;
+  teleporting = false;
+  changingStory = false;
+  currentStory = oldStory;
+  exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+  exitConfirmationDialog->setVisible(false);
+}
+
+void Scourge::runSquirrelConsole() {
+  squirrelLabel->appendText( "> " );
+  squirrelLabel->appendText( squirrelText->getText() );
+  squirrelLabel->appendText( "|" );
+  getSession()->getSquirrel()->compileBuffer( squirrelText->getText() );
+  squirrelText->clearText();
+  squirrelLabel->appendText( "|" );
+}
+
+void Scourge::clearSquirrelConsole() {
+  squirrelLabel->setText( "" );
+}
+
+void Scourge::selectDropTarget( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
+  // drop target?
+  Location *dropTarget = NULL;
+  if(movingItem) {
+    if(mapx < MAP_WIDTH) {
+      dropTarget = getMap()->getLocation(mapx, mapy, mapz);
+      if(!(dropTarget &&
+           (dropTarget->creature ||
+            (dropTarget->item &&
+             ((Item*)(dropTarget->item))->getRpgItem()->getType() == RpgItem::CONTAINER)))) {
+        dropTarget = NULL;
+      }
+    }
+  }
+  getMap()->setSelectedDropTarget(dropTarget);
+}
+
+void Scourge::updateBoard() {
+  int selected = missionList->getSelectedLine();
+  if( selected != -1 && selected < board->getMissionCount()) {
+    Mission *mission = board->getMission(selected);
+    missionDescriptionLabel->setText((char*)(mission->getDescription()));
+    mapWidget->setSelection( mission->getMapX(), mission->getMapY() );
+  }
+}
+
+// I have no recollection about what this is for...
+void Scourge::mouseClickWhileExiting() {
+  if( teleporting && !exitConfirmationDialog->isVisible() ) {
+    exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+    party->toggleRound(true);
+    exitConfirmationDialog->setVisible(true);
+  } else if( changingStory && !exitConfirmationDialog->isVisible() ) {
+    exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
+    party->toggleRound(true);
+    exitConfirmationDialog->setVisible(true);
+  }
 }
 

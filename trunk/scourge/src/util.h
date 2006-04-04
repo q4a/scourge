@@ -73,9 +73,13 @@ public:
     */
   static void rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle);
 
-  static void findPath(Sint16 sx, Sint16 sy, Sint16 sz,
-                Sint16 dx, Sint16 dy, Sint16 dz,
-                std::vector<Location> *pVector, Map *map, Creature *creature );
+  static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
+                        Sint16 dx, Sint16 dy, Sint16 dz,
+                        std::vector<Location> *pVector, 
+                        Map *map, 
+                        Creature *creature, 
+                        bool limitTime=false,
+                        bool ignoreCreatures=false );
 
   // some math functions
   static float dot_product(float v1[3], float v2[3]);
@@ -115,7 +119,7 @@ public:
   static char *toLowerCase( char *s );
 
 protected:
-  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Creature *creature, Map *map );
+  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Creature *creature, Map *map, bool ignoreCreatures=false );
 
 };
 

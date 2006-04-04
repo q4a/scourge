@@ -83,7 +83,6 @@ class Creature : public RenderedCreature {
   Creature *targetCreature;
   int targetX, targetY, targetZ;
   Item *targetItem;
-  Sint16 cornerX, cornerY;
   bool arrived; // true if no particular destination set for this creature
   std::map<int, Event*> stateModEventMap;
   GLfloat angle, wantedAngle, angleStep;
@@ -110,11 +109,9 @@ class Creature : public RenderedCreature {
   int bonusArmor;
   bool armorChanged;
   float lastArmor, lastArmorLevel, lastArmorSkill;
-  int moveRetrycount;
   int availableSkillPoints;
   int usedSkillPoints;
   
-  static const int MAX_MOVE_RETRY = 15;
   int lastTurn;
 
   std::vector<Spell*> spells;
@@ -138,6 +135,10 @@ class Creature : public RenderedCreature {
   NpcInfo *npcInfo;
 
   std::set<SpecialSkill*> specialSkills;
+
+  int whenPossibleX, whenPossibleY;
+  bool mapChanged;
+  bool blockedByCreatures;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -233,10 +234,10 @@ class Creature : public RenderedCreature {
   /**
 	 The movement functions return true if movement has occured, false if it has not.
    */
-  bool move(Uint16 dir, Map *map);
+  bool move(Uint16 dir);
   void switchDirection(bool force);
-  bool follow(Map *map);
-  bool moveToLocator(Map *map);
+  bool follow( int x=-1, int y=-1 );
+  bool moveToLocator();
   void stopMoving();
   
   inline char *getModelName() { return model_name; }
@@ -253,19 +254,18 @@ class Creature : public RenderedCreature {
   void draw();
     
   /**
-	 Used to move away from the player. Find the nearest corner of the map.
-  */
-  void findCorner(Sint16 *px, Sint16 *py, Sint16 *pz);
-  
-  /**
    * Set where to move the creature. 
    * Returns true if the move is possible, false otherwise.
    */
-  bool setSelXY(int x, int y, bool cancelIfNotPossible=true);
+  bool setSelXY( int x, int y, bool cancelIfNotPossible=true, bool limitTime=false );  
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
-  void findPath( int x, int y );
-  
+  inline bool isMovingWhenPossible() { return whenPossibleX > -1; }
+  inline bool isBlockedByCreatures() { return blockedByCreatures; }
+  inline void setWhenPossibleDest( int mapx, int mapy ) { whenPossibleX = mapx; whenPossibleY = mapy; }
+  inline void cancelWhenPossibleDest() { whenPossibleX = whenPossibleY = -1; }  
+  inline void setMapChanged() { mapChanged = true; }
+  void moveWhenPossible();
   bool anyMovesLeft();
   
   // inventory
@@ -459,18 +459,22 @@ class Creature : public RenderedCreature {
 
  protected:
 
+   bool findPath( int x, int y, bool cancelIfNotPossible=true, bool limitTime=false, bool ignoreCreatures=false );
+
   /**
    * Get the position of this creature in the formation.
    * returns -1,-1 if the position cannot be set (if the person followed is not moving)
    */
-  void getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz);
+  void getFormationPosition( Sint16 *px, Sint16 *py, Sint16 *pz, int x=-1, int y=-1 );
 
   void commonInit();
   void calculateExpOfNextLevel();
   void monsterInit();
   void recalcAggregateValues();
 
-  bool gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug);
+  bool gotoPosition( Sint16 px, Sint16 py, Sint16 pz );
+  void computeAngle( GLfloat newX, GLfloat newY );
+  void showWaterEffect( GLfloat newX, GLfloat newY );
 
   /**
    * How big of a step to take.

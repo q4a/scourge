@@ -117,6 +117,7 @@ public:
   virtual void loadMapData( const char *name );
   virtual void saveMapData( const char *name );
   virtual inline Color *getOutlineColor( Location *pos ) { return NULL; }
+  virtual inline bool inTurnBasedCombat() { return false; }
 
   virtual inline void completeCurrentMission() {}
 

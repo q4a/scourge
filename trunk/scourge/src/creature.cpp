@@ -150,8 +150,6 @@ void Creature::commonInit() {
   this->targetX = this->targetY = this->targetZ = 0;
   this->targetItem = NULL;
   this->lastTick = 0;
-  this->moveRetrycount = 0;
-  this->cornerX = this->cornerY = -1;
   this->lastTurn = 0;
   this->facingDirection = Constants::MOVE_UP; // good init ?
   this->availableSkillPoints = this->usedSkillPoints = 0;
@@ -176,6 +174,9 @@ void Creature::commonInit() {
   lastEnchantDate.setDate(-1, -1, -1, -1, -1, -1);
 
   this->npcInfo = NULL;
+  this->whenPossibleX = this->whenPossibleY = -1;
+  this->blockedByCreatures = false;
+  this->mapChanged = false;
 
   evalSpecialSkills();
 }
@@ -393,7 +394,7 @@ void Creature::switchDirection(bool force) {
 }
 
 // moving monsters only
-bool Creature::move(Uint16 dir, Map *map) {
+bool Creature::move(Uint16 dir) {
   if(character) return false;
 
   // is monster (or npc) doing something else?
@@ -430,10 +431,10 @@ bool Creature::move(Uint16 dir, Map *map) {
   setFacingDirection(dir);
   
 
-  if(!map->moveCreature(toint(x), toint(y), toint(z), 
-                        toint(nx), toint(ny), toint(nz), this)) {
+  if(!session->getMap()->moveCreature(toint(x), toint(y), toint(z), 
+                                      toint(nx), toint(ny), toint(nz), this)) {
     ((MD2Shape*)shape)->setDir(dir);
-    if( map->getHasWater() &&
+    if( session->getMap()->getHasWater() &&
         !( toint(x) == toint(nx) &&
            toint(y) == toint(ny) ) ) {
       session->getMap()->startEffect( toint(getX() + getShape()->getWidth() / 2), 
@@ -448,80 +449,6 @@ bool Creature::move(Uint16 dir, Map *map) {
     switchDirection(true);
     return false;
   }
-}
-
-bool Creature::follow(Map *map) {
-  // find out where the creature should be relative to the formation
-  Sint16 px, py, pz;
-  getFormationPosition(&px, &py, &pz);
-  float dist = 
-    Constants::distance( getX(),  getY(), 
-                         getShape()->getWidth(), getShape()->getDepth(),
-                         (float)px, (float)py,
-                         getShape()->getWidth(), getShape()->getDepth() );
-  // only rethink the path if we're far away
-  if( dist > 7 ) {
-    // When following don't cancel impossible moves. Get as close as possible.
-    setSelXY( px, py, false );
-  }
-  return true; 
-}
-
-bool Creature::setSelXY(int x, int y, bool cancelIfNotPossible) { 
-  int oldSelX = selX;
-  int oldSelY = selY;
-  int oldtx = tx;
-  int oldty = ty;
-
-  selX = x; 
-  selY = y; 
-  moveRetrycount = 0; 
-  setMotion(Constants::MOTION_MOVE_TOWARDS);   
-  tx = ty = -1;
-
-  // find the path
-  tx = selX;
-  ty = selY;
-  bestPathPos = 1; // skip 0th position; it's the starting location
-  //cerr << getName() << " findPath" << endl;
-  Util::findPath( toint(getX()), toint(getY()), toint(getZ()), 
-                  selX, selY, 0, 
-                  &bestPath, 
-                  session->getMap(), 
-                  this );
-
-  // Does the path lead to the destination?
-  bool ret = false;
-  if( bestPath.size() > 1 ) {
-    Location last = bestPath[ bestPath.size() - 1 ];
-    ret = ( last.x == selX &&
-            last.y == selY );
-
-    /**
-     * For pc-s cancel the move.
-     */
-    if( !ret && character && cancelIfNotPossible ) {
-      bestPathPos = 1;
-      bestPath.clear();
-
-      selX = oldSelX;
-      selY = oldSelY;
-      tx = oldtx;
-      ty = oldty;
-    }
-  }
-
-  if( ret ) {
-    // play command sound
-    if(x > -1 && 
-       session->getParty()->getPlayer() == this && 
-       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
-       !getStateMod(Constants::dead)) {
-      //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
-      playCharacterSound( GameAdapter::COMMAND_SOUND );
-    }
-  }
-  return ret;
 }
 
 void Creature::setTargetCreature( Creature *c, bool findPath ) { 
@@ -550,27 +477,147 @@ void Creature::setTargetCreature( Creature *c, bool findPath ) {
   }
 }
 
-bool Creature::moveToLocator(Map *map) {
+bool Creature::follow( int x, int y ) {
+  // find out where the creature should be relative to the formation
+  Sint16 px, py, pz;
+  getFormationPosition( &px, &py, &pz, x, y );
+  float dist = 
+    Constants::distance( getX(),  getY(), 
+                         getShape()->getWidth(), getShape()->getDepth(),
+                         (float)px, (float)py,
+                         getShape()->getWidth(), getShape()->getDepth() );
+  // only rethink the path if we're far away
+  if( dist > 7 || ( x > -1 && y > -1 ) ) {
+    // When following don't cancel impossible moves. Get as close as possible.
+    setSelXY( px, py, false );
+  }
+  return true; 
+}
+
+void Creature::moveWhenPossible() {
+  if( whenPossibleX < 0 ) return;
+  //cerr << ".";
+  setSelXY( whenPossibleX, whenPossibleY, true, true );
+}
+
+bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, bool limitTime ) { 
+  blockedByCreatures = false;
+  bool possible = findPath( x, y, cancelIfNotPossible, limitTime, false );
+  if( whenPossibleX < 0 && 
+      session->getParty()->getPlayer() == this &&
+      !session->getGameAdapter()->inTurnBasedCombat() ) {
+    // Player could be blocked. Keep trying.
+    if( !possible ) {
+      // if original move is blocked, try again (quick try), ignoring creatures
+      possible = findPath( x, y, true, true, true );
+      blockedByCreatures = possible;
+    }
+    if( possible ) {
+      //cerr << "*** Starting: when possible move" << endl;
+      setWhenPossibleDest( x, y );
+    }
+  }  
+  return possible;
+}
+
+bool Creature::findPath( int x, int y, bool cancelIfNotPossible, bool limitTime, bool ignoreCreatures ) { 
+  int oldSelX = selX;
+  int oldSelY = selY;
+  int oldtx = tx;
+  int oldty = ty;
+
+  selX = x; 
+  selY = y; 
+  setMotion(Constants::MOTION_MOVE_TOWARDS);   
+  tx = ty = -1;
+
+  // find the path
+  tx = selX;
+  ty = selY;
+  bestPathPos = 1; // skip 0th position; it's the starting location
+  //cerr << getName() << " findPath" << endl;
+  Util::findPath( toint(getX()), toint(getY()), toint(getZ()), 
+                  selX, selY, 0, 
+                  &bestPath, 
+                  session->getMap(), 
+                  this, 
+                  limitTime,
+                  ignoreCreatures );
+
+  // Does the path lead to the destination?
+  bool ret = false;
+  if( bestPath.size() > 1 ) {
+    Location last = bestPath[ bestPath.size() - 1 ];
+    ret = ( last.x == selX &&
+            last.y == selY );
+
+    /**
+     * For pc-s cancel the move.
+     */
+    if( !ret && character && cancelIfNotPossible ) {
+      bestPathPos = 1;
+      bestPath.clear();
+
+      selX = oldSelX;
+      selY = oldSelY;
+      tx = oldtx;
+      ty = oldty;
+    }
+  }
+
+  // FIXME: hack! Should not use limitTime to know when to play a sound.
+  if( ret && !limitTime ) {
+    // play command sound
+    if(x > -1 && 
+       session->getParty()->getPlayer() == this && 
+       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
+       !getStateMod(Constants::dead)) {
+      //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
+      playCharacterSound( GameAdapter::COMMAND_SOUND );
+    }
+  }
+  
+  return ret;
+}
+
+bool Creature::moveToLocator() {
   bool moved = false;
+  
+  if( mapChanged ) {
+    moveWhenPossible();
+    mapChanged = false;
+  }
+
   if(selX > -1) {
     // take a step
-    if(getMotion() == Constants::MOTION_MOVE_AWAY){    
-      moved = gotoPosition(map, cornerX, cornerY, 0, "cornerXY");
-    } else {
-      moved = gotoPosition(map, selX, selY, 0, "selXY");
-    }
+    moved = gotoPosition( selX, selY, 0 );
     // if we've no more steps
-    if((int)bestPath.size() <=  bestPathPos && selX > -1) {    
-      // if this is the player, return to regular movement
-      if(this == session->getParty()->getPlayer()) {
-        session->getParty()->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);
+    if( (int)bestPath.size() <= bestPathPos ) {
+      int lx = -1;
+      int ly = -1;
+      if( bestPath.size() > 0 ) {
+        Location last = bestPath[ bestPath.size() - 1 ];
+        lx = last.x;
+        ly = last.y;
+      }
+      // cancel, move-when-possible
+      if( whenPossibleX > -1 ) {
+        if( lx == whenPossibleX && ly == whenPossibleY ) {
+          //cerr << "*** Ending: when possible move" << endl;
+          whenPossibleX = whenPossibleY = -1;
+        }
+      } else if( selX > -1 ) {
+        // if this is the player, return to regular movement
+        if(this == session->getParty()->getPlayer()) {
+          session->getParty()->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);          
+        }
       }
     }
   }
   return moved;
 }
 
-bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *debug) {
+bool Creature::gotoPosition( Sint16 px, Sint16 py, Sint16 pz ) {
   int a = ((MD2Shape*)getShape())->getCurrentAnimation();
   if((int)bestPath.size() > bestPathPos && a != MD2_TAUNT ) {
 
@@ -590,23 +637,18 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
     // Tolerance is 0.5 because toint will round to nearest int on map from there.
     GLfloat tolerance = 0.5f;
-    if( my > tolerance ) {
-      newY += step;
-    } else if( my < -tolerance ) {
-      newY -= step;
-    }
-    if( mx > tolerance ) {
-      newX += step;
-    } else if( mx < -tolerance ) {
-      newX -= step;
-    }    
+    if( my > tolerance ) newY += step;
+    else if( my < -tolerance ) newY -= step;
+    if( mx > tolerance ) newX += step;
+    else if( mx < -tolerance ) newX -= step;
 
     //if( !strcmp(getName(), "Alamont") ) 
 //      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
 
-    Location *position = map->moveCreature(toint(getX()), toint(getY()), toint(getZ()),
-                                           toint(newX), toint(newY), toint(getZ()),
-                                           this);
+    Location *position = session->getMap()->
+      moveCreature(toint(getX()), toint(getY()), toint(getZ()),
+                   toint(newX), toint(newY), toint(getZ()),
+                   this);
 
 
     /**
@@ -626,15 +668,17 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
      * The path using toint(float-s) would go through the wall.
      */
     if(position && ( newX != getX() && newY != getY() )) {
-      position = map->moveCreature(toint(getX()), toint(getY()), toint(getZ()),
-                                   toint(getX()), toint(newY), toint(getZ()),
-                                   this);
+      position = session->getMap()->
+        moveCreature(toint(getX()), toint(getY()), toint(getZ()),
+                     toint(getX()), toint(newY), toint(getZ()),
+                     this);
       if( !position ) {
         newX = getX();
       } else {
-        position = map->moveCreature(toint(getX()), toint(getY()), toint(getZ()),
-                                     toint(newX), toint(getY()), toint(getZ()),
-                                     this);
+        position = session->getMap()->
+          moveCreature(toint(getX()), toint(getY()), toint(getZ()),
+                       toint(newX), toint(getY()), toint(getZ()),
+                       this);
         if( !position ) {
           newY = getY();
         }
@@ -643,67 +687,59 @@ bool Creature::gotoPosition(Map *map, Sint16 px, Sint16 py, Sint16 pz, char *deb
 
 
     if(!position) {
-      GLfloat a = Util::getAngle( newX, newY, 1, 1,
-                                  getX(), getY(), 1, 1 );
-
-      if( bestPathPos == 1 || a != wantedAngle ) {
-        wantedAngle = a;
-        GLfloat diff = Util::diffAngle( a, angle );
-        angleStep = diff / (float)TURN_STEP_COUNT;
-      }
-
-      if( fabs(angle - wantedAngle) > 2.0f ) {
-        GLfloat diff = Util::diffAngle( wantedAngle, angle );
-        if( fabs( diff ) < angleStep ) {
-          angle = wantedAngle;
-        } else {
-          angle += angleStep;
-        }
-        if( angle < 0.0f ) angle = 360.0f + angle;
-        if( angle >= 360.0f ) angle -= 360.0f;
-      } else {
-        angle = wantedAngle;
-      }
-
-      ((MD2Shape*)shape)->setAngle( angle + 180.0f );
-      
-      if( map->getHasWater() &&
-          !( toint(getX()) == toint(newX) &&
-             toint(getY()) == toint(newY) ) ) {
-        session->getMap()->startEffect( toint(getX() + getShape()->getWidth() / 2), 
-                                        toint(getY() - getShape()->getDepth() / 2), 0, 
-                                        Constants::EFFECT_RIPPLE, 
-                                        (Constants::DAMAGE_DURATION * 4), 
-                                        getShape()->getWidth(), getShape()->getDepth() );
-      }
-
+      computeAngle( newX, newY );
+      showWaterEffect( newX, newY );
       moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         bestPathPos++;
       }
       return true;
     } else {
-      //if( !strcmp(getName(),"Alamont") ) cerr << "blocked" << endl;
-      // if we're not at the destination, but it's possible to stand there
-      // try again
-      if(!(selX == toint(getX()) && selY == toint(getY())) && 
-         map->shapeFits(getShape(), selX, selY, -1) &&
-         moveRetrycount < MAX_MOVE_RETRY) {
-
-        //if( !strcmp(getName(),"Alamont") ) cerr << "retry" << endl;
-
-        // don't keep trying forever
-        moveRetrycount++;
-        tx = ty = -1;
-      } else {
-        // if we can't get to the destination, stop trying
-        // do this so the animation switches to "stand"
-        stopMoving();
-      }
+      // if we can't get to the destination, stop trying
+      // do this so the animation switches to "stand"
+      stopMoving();
     }
   }
   return false;
 }
+
+void Creature::computeAngle( GLfloat newX, GLfloat newY ) {
+  GLfloat a = Util::getAngle( newX, newY, 1, 1,
+                              getX(), getY(), 1, 1 );
+
+  if( bestPathPos == 1 || a != wantedAngle ) {
+    wantedAngle = a;
+    GLfloat diff = Util::diffAngle( a, angle );
+    angleStep = diff / (float)TURN_STEP_COUNT;
+  }
+  
+  if( fabs(angle - wantedAngle) > 2.0f ) {
+    GLfloat diff = Util::diffAngle( wantedAngle, angle );
+    if( fabs( diff ) < angleStep ) {
+      angle = wantedAngle;
+    } else {
+      angle += angleStep;
+    }
+    if( angle < 0.0f ) angle = 360.0f + angle;
+    if( angle >= 360.0f ) angle -= 360.0f;
+  } else {
+    angle = wantedAngle;
+  }
+  
+  ((MD2Shape*)shape)->setAngle( angle + 180.0f );
+}
+
+void Creature::showWaterEffect( GLfloat newX, GLfloat newY ) {
+  if( session->getMap()->getHasWater() &&
+      !( toint(getX()) == toint(newX) &&
+         toint(getY()) == toint(newY) ) ) {
+    session->getMap()->startEffect( toint(getX() + getShape()->getWidth() / 2), 
+                                    toint(getY() - getShape()->getDepth() / 2), 0, 
+                                    Constants::EFFECT_RIPPLE, 
+                                    (Constants::DAMAGE_DURATION * 4), 
+                                    getShape()->getWidth(), getShape()->getDepth() );
+  }
+}                                             
 
 void Creature::stopMoving() {
   bestPathPos = (int)bestPath.size();
@@ -714,7 +750,7 @@ bool Creature::anyMovesLeft() {
   return(selX > -1 && (int)bestPath.size() > bestPathPos); 
 }
 
-void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
+void Creature::getFormationPosition( Sint16 *px, Sint16 *py, Sint16 *pz, int x, int y ) {
   Sint16 dx = layout[formation][index][0];
   Sint16 dy = -layout[formation][index][1];
 
@@ -733,9 +769,10 @@ void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
   }
 
   // translate
-  //	*px = (*(px) * getShape()->getWidth()) + next->getX();
-  //	*py = (-(*(py)) * getShape()->getDepth()) + next->getY();
-  if(next->getSelX() > -1) {
+  if( x > -1 ) {
+    *px = (*(px) * getShape()->getWidth()) + x;
+    *py = (-(*(py)) * getShape()->getDepth()) + y;
+  } else if(next->getSelX() > -1) {
     *px = (*(px) * getShape()->getWidth()) + next->getSelX();
     *py = (-(*(py)) * getShape()->getDepth()) + next->getSelY();
   } else {
@@ -743,36 +780,6 @@ void Creature::getFormationPosition(Sint16 *px, Sint16 *py, Sint16 *pz) {
     *py = (-(*(py)) * getShape()->getDepth()) + toint(next->getY());
   }
   *pz = toint(next->getZ());
-}
-
-/**
-  Used to move away from the player. Find the nearest corner of the map.
-*/
-void Creature::findCorner(Sint16 *px, Sint16 *py, Sint16 *pz) {
-  if(getX() < session->getParty()->getPlayer()->getX() &&
-     getY() < session->getParty()->getPlayer()->getY()) {
-    *px = *py = *pz = 0;
-    return;
-  }
-  if(getX() >= session->getParty()->getPlayer()->getX() &&
-     getY() < session->getParty()->getPlayer()->getY()) {
-    *px = MAP_WIDTH;
-    *py = *pz = 0;
-    return;
-  }
-  if(getX() < session->getParty()->getPlayer()->getX() &&
-     getY() >= session->getParty()->getPlayer()->getY()) {
-    *px = *pz = 0;
-    *py = MAP_DEPTH;
-    return;
-  }
-  if(getX() >= session->getParty()->getPlayer()->getX() &&
-     getY() >= session->getParty()->getPlayer()->getY()) {
-    *px = MAP_WIDTH;
-    *py = MAP_DEPTH;
-    *pz = 0;
-    return;
-  }
 }
 
 void Creature::setNext(Creature *next, int index) { 

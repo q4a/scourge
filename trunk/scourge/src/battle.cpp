@@ -432,7 +432,7 @@ void Battle::stepCloserToTarget() {
 
   GLfloat oldX = creature->getX();
   GLfloat oldY = creature->getY();
-  bool moved = creature->moveToLocator(session->getMap());
+  bool moved = creature->moveToLocator();
   if( !( toint(oldX) == toint(creature->getX()) &&
          toint(oldY) == toint(creature->getY()) ) ) {
     ap--;
@@ -513,7 +513,7 @@ bool Battle::moveCreature() {
     if( !( a == MD2_STAND || a == MD2_RUN )) return false;
 
     if(creature->getSelX() != -1) {
-      bool moved = creature->moveToLocator(session->getMap());
+      bool moved = creature->moveToLocator();
       if( !( toint(oldX) == toint(creature->getX()) &&
              toint(oldY) == toint(creature->getY()) ) ) {
         ap--;
