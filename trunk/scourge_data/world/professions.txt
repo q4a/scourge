@@ -1,0 +1,435 @@
+# Key:
+# G: group name
+# S: skill name, symbol, description
+
+# skill groups
+# ===================================================================
+# Skills: name,symbol,descriptions (symbol is used to name enchanted items)
+G:BASIC_GROUP
+S:SPEED,Dragon,Speed determines how fast the character is able to cast a spell or swing a sword.
+S:COORDINATION,Wolf,More coordinated characters are able to deflect more damage using armor.
+S:POWER,Troll,The higher a character's power the more damage his/her attach will cause.
+S:IQ,Boar,A character with higher IQ is better suited to spellcasting.
+S:LEADERSHIP,Bear,Leadership determines bartering power and rallies your troops in battle.
+S:LUCK,Fiend,Luck affects almost all aspects of gameplay from spellcasting to unlocking doors.
+S:PIETY,Tiger,A pious character follows his/her deity's wishes more closely.
+S:LORE,Hydra,Using lore a character is able identify items more easily and understand new concepts.
+
+G:FIGHT_GROUP
+S:SWORD_WEAPON,Drake,This skill is used when fighting using a sword-type weapon.
+S:AXE_WEAPON,Mage,This skill is used when fighting using an axe-type weapon.
+S:BOW_WEAPON,Ranger,This skill is used when fighting using a bow-type weapon.
+S:MACE_WEAPON,Rogue,This skill is used when fighting using an axe-type weapon.
+S:POLE_WEAPON,King,This skill is used when fighting using an polearm-type weapon.
+S:HAND_TO_HAND_COMBAT,Priest,This skill is used when fighting with bare hands.
+
+G:DEFEND_GROUP
+S:SHIELD_DEFEND,Giant,This skill is used when using a shield to deflect an attack.
+S:ARMOR_DEFEND,Centaur,This skill is used when using armor to deflect an attack.
+S:WEAPON_DEFEND,Ogre,This skill is used when using a weapon to deflect an attack.
+S:HAND_DEFEND,Leviathan,This skill is used when using bare hands to deflect an attack.
+
+G:SORCERY_GROUP
+S:LIFE_AND_DEATH_MAGIC,Sand,This skill describes your proficiency with spells from the school of life and death.
+S:DECEIT_MAGIC,Joker,This skill describes your proficiency with spells from the school of deceit.
+S:CONFRONTATION_MAGIC,Demon,This skill describes your proficiency with spells from the school of confrontation.
+S:RESIST_LIFE_AND_DEATH_MAGIC,Gods,Having this skill helps you resist spells from the school of life and death.
+S:RESIST_DECEIT_MAGIC,Night,Having this skill helps you resist spells from the school of deceit.
+S:RESIST_CONFRONTATION_MAGIC,Angel,Having this skill helps you resist spells from the school of confrontation.
+
+G:SPIRIT_GROUP
+S:NATURE_MAGIC,Pixie,This skill describes your proficiency with spells from the school of nature.
+S:AWARENESS_MAGIC,Void,This skill describes your proficiency with spells from the school of awareness.
+S:RESIST_NATURE_MAGIC,Law,Having this skill helps you resist spells from the school of nature.
+S:RESIST_AWARENESS_MAGIC,Moth,Having this skill helps you resist spells from the school of awareness.
+
+G:LORE_GROUP
+S:HISTORY_MAGIC,Helix,This skill describes your proficiency with spells from the school of history.
+S:RESIST_HISTORY_MAGIC,Brand,Having this skill helps you resist spells from the school of history.
+S:ENCHANT_ITEM,Sorcerer,Your proficiency with this skill determines how well you create enchanted items.
+S:IDENTIFY_ITEM,Sage,This skill measures your ability to identify new items.
+S:IDENTIFY_CREATURE,Loremaster,This skill measures your ability to identify new creatures.
+
+G:STEALTH_GROUP
+S:OPEN_LOCK,Shade,A character with this skill can open locked doors better.
+S:FIND_TRAP,Bard,This skill helps you avoid falling into traps.
+S:FIND_SECRET_DOOR,Scion,This skill lets you find secret doors.
+S:MOVE_UNDETECTED,Silence,With the aid of this skill you can move without your enemies detecting you.
+S:STEALING,Thief,The higher you progress in this still the better you're able to lift items from merchants.
+
+
+# Key:
+# P: name of profession : parent profession (can be a list), min level req
+# D: description
+# G: skill group bonus
+# S: individual skill bonus
+# C: capability earned (modifiers: Minor, (none), Improved, Superior)
+# W: weapon tag control list (+/-, * means all)
+# A: armor tag control list
+#
+# Skills/Capabilities are accumulative
+# Weapon/Armor control list is inherited by child professions
+
+# Fighter types
+# ===================================================================
+# ===================================================================
+# ===================================================================
+P:Man-at-arms,0
+D:description goes here
+G:FIGHT_GROUP,10
+G:DEFEND_GROUP,10
+W:*+
+A:*+
+
+# Warriors
+# ===================================================================
+P:Warrior:Man-at-arms,10
+D:description goes here
+G:FIGHT_GROUP,30
+G:DEFEND_GROUP,25
+
+P:Barbarian:Warrior,20
+D:description goes here
+G:FIGHT_GROUP,50
+G:DEFEND_GROUP,40
+G:SPIRIT_GROUP,10
+C:Killer Blow
+C:Improved War-rage
+
+P:Elite Berserker:Barbarian,30
+D:description goes here
+G:FIGHT_GROUP,70
+G:DEFEND_GROUP,55
+G:SPIRIT_GROUP,20
+C:Superior War-rage
+C:Damaging Aura
+C:Shadow Soul
+
+P:Warmaster:Elite Berserker,40
+D:description goes here
+G:FIGHT_GROUP,100
+G:DEFEND_GROUP,85
+G:SPIRIT_GROUP,30
+C:Superior Damaging Aura
+C:Heal Command Word
+C:Improved Killer Blow
+
+P:Spirit Commander:Elite Berserker,40
+D:description goes here
+G:FIGHT_GROUP,90
+G:DEFEND_GROUP,90
+G:SPIRIT_GROUP,40
+C:Heal Command Word
+C:Superior Killer Blow
+C:Superior Damaging Aura
+
+P:Veteran Warrior:Barbarian,30
+D:description goes here
+G:FIGHT_GROUP,65
+G:DEFEND_GROUP,60
+G:SPIRIT_GROUP,15
+C:Weapon Calling
+C:Healing Aura
+C:Leadership bonus
+
+P:Elite Battle-beast:Veteran Warrior,40
+D:description goes here
+G:FIGHT_GROUP,95
+G:DEFEND_GROUP,90
+G:SPIRIT_GROUP,20
+C:Superior Leadership Bonus
+C:Weapon Level Bonus
+
+P:Prime Dominator:Veteran Warrior,40
+D:description goes here
+G:FIGHT_GROUP,90
+G:DEFEND_GROUP,95
+G:SPIRIT_GROUP,25
+C:Superior Weapon Command
+C:Improved Magic Resistance
+C:Superior War-rage
+
+P:Champion of Justice:Warrior,20
+D:description goes here
+S:FIGHT_GROUP,45
+G:DEFEND_GROUP,45
+G:SPIRIT_GROUP,10
+G:LORE_GROUP,10
+C:Critical hit
+C:Leadership bonus
+
+P:Primus Lictor:Champion of Justice,30
+D:description goes here
+S:FIGHT_GROUP,65
+G:DEFEND_GROUP,60
+G:SPIRIT_GROUP,15
+G:LORE_GROUP,15
+C:Minor Aura of Fear
+C:Strict Moral Code
+
+P:Fighting Guardian of Truth,Primus Lictor,40
+D:description goes here
+S:FIGHT_GROUP,85
+G:DEFEND_GROUP,80
+G:SPIRIT_GROUP,30
+G:LORE_GROUP,30
+C:Aura of Fear
+C:Improved Magic Resistance
+C:Weapon Level Bonus
+
+P:Supreme Executioner,Primus Lictor,40
+D:description goes here
+S:FIGHT_GROUP,80
+G:DEFEND_GROUP,90
+G:SPIRIT_GROUP,25
+G:LORE_GROUP,25
+C:Superior Aura of Fear
+C:Improved Weapon Level Bonus
+C:Improved Weapon Calling
+
+P:Lightbringer Warrior:Champion of Justice,30
+D:description goes here
+S:FIGHT_GROUP,60
+G:DEFEND_GROUP,70
+G:SPIRIT_GROUP,20
+G:LORE_GROUP,20
+C:Healing Aura
+C:Strict Moral Code
+
+P:Learned Battle Master,Lightbringer Warrior,40
+D:description goes here
+S:FIGHT_GROUP,75
+G:DEFEND_GROUP,95
+G:SPIRIT_GROUP,40
+G:LORE_GROUP,40
+C:Exploit Lore
+C:Superior Healing Aura
+C:Superior Weapon Finesse
+
+P:Planar Ally Knight,Lightbringer Warrior,40
+D:description goes here
+S:FIGHT_GROUP,80
+G:DEFEND_GROUP,95
+G:SPIRIT_GROUP,35
+G:LORE_GROUP,35
+C:Minor Displacement
+C:Superior Healign Aura
+C:Superior Leadership Bonus
+
+
+# Rangers & Rouge Fighters
+# ===================================================================
+P:Wandering Hand:Man-at-arms,10
+D:description goes here
+G:FIGHT_GROUP,25
+G:DEFEND_GROUP,25
+G:STEALTH_GROUP,10
+W:TWO_HANDED-
+A:PLATE-
+
+P:Mercenary,Wandering Hand,20
+D:description goes here
+G:FIGHT_GROUP,35
+G:DEFEND_GROUP,40
+G:STEALTH_GROUP,15
+C:Weapon Finesse
+
+P:Veteran Soldier of Fortune,Mercenary,30
+D:description goes here
+G:FIGHT_GROUP,60
+G:DEFEND_GROUP,50
+G:STEALTH_GROUP,20
+C:Weapon Level Bonus
+C:Killer Blow
+
+P:Elite Old Hand,Veteran Soldier of Fortune,40
+D:description goes here
+G:FIGHT_GROUP,90
+G:DEFEND_GROUP,85
+G:STEALTH_GROUP,30
+C:Weapon Level Bonus
+C:Superior Weapon Calling
+C:Heal Command Word
+
+P:Mastermind Commander,Veteran Soldier of Fortune,40
+D:description goes here
+G:FIGHT_GROUP,85
+G:DEFEND_GROUP,85
+G:STEALTH_GROUP,30
+C:Superior Leadership Bonus
+C:Aura of Fear
+C:Superior War-rage
+
+P:Assassin,Mercenary,30
+D:description goes here
+G:FIGHT_GROUP,55
+G:DEFEND_GROUP,55
+G:STEALTH_GROUP,25
+C:Silent Kill
+C:Shadow-walk
+W:LARGE-
+A:METAL-
+
+P:Master Assassin,Assassin,40
+D:description goes here
+G:FIGHT_GROUP,80
+G:DEFEND_GROUP,80
+G:STEALTH_GROUP,40
+C:Superior Silent Kill
+C:Shadow-soul
+C:Unseen servant
+
+P:Spy Mastermind,Assassin,40
+D:description goes here
+G:FIGHT_GROUP,70
+G:DEFEND_GROUP,75
+G:STEALTH_GROUP,50
+C:Weapon Level Bonus
+C:Superior Adaptive Mind
+C:Leadership bonus
+
+P:Outdoorsman,Wandering Hand,20
+D:description goes here
+G:FIGHT_GROUP,35
+G:DEFEND_GROUP,35
+G:STEALTH_GROUP,20
+C:Wilderness survival
+
+P:Master Ranger:Outdoorsman,30
+D:description goes here
+G:FIGHT_GROUP,55
+G:DEFEND_GROUP,55
+G:LORE_GROUP,10
+G:STEALTH_GROUP,25
+C:Superior Wilderness survival
+C:Weapon Level Bonus
+
+P:Elite Wilderness Guard:Master Ranger,40
+D:description goes here
+G:FIGHT_GROUP,75
+G:DEFEND_GROUP,75
+G:LORE_GROUP,20
+G:STEALTH_GROUP,40
+C:Superior Leadership Bonus
+C:Silent Kill
+C:Aura of Fear
+
+P:Elite Arcane Ranger:Master Ranger,40
+D:description goes here
+G:FIGHT_GROUP,80
+G:DEFEND_GROUP,70
+G:LORE_GROUP,25
+G:STEALTH_GROUP,30
+C:Superior Exploit Lore
+C:Damaging Aura
+
+P:War-called Hermit:Outdoorsman,30
+D:description goes here
+G:FIGHT_GROUP,50
+G:DEFEND_GROUP,55
+G:LORE_GROUP,20
+G:STEALTH_GROUP,25
+C:Superior Wilderness survival
+C:Crazy Wisdom Defense
+
+P:Nature's Vengence:Outdoorsman,40
+D:description goes here
+G:FIGHT_GROUP,70
+G:DEFEND_GROUP,75
+G:LORE_GROUP,25
+G:STEALTH_GROUP,30
+C:Superior Weapon Level Bonus
+C:Silent kill
+C:Damaging Aura
+
+P:Insane War-Scholar:Outdoorsman,40
+D:description goes here
+G:FIGHT_GROUP,75
+G:DEFEND_GROUP,70
+G:LORE_GROUP,40
+G:STEALTH_GROUP,20
+C:Silent kill
+C:Heal Command Word
+C:Superior Damaging Aura
+
+# Magical fighter types
+# ===================================================================
+P:War-mage:Man-at-arms,10
+D:description goes here
+G:FIGHT_GROUP,20
+G:DEFEND_GROUP,15
+G:SORCERY_GROUP,10
+W:TWO_HANDED-
+A:METAL-
+
+# Religious fighter types
+# ===================================================================
+P:Military chaplain:Man-at-arms,10
+D:description goes here
+G:FIGHT_GROUP,20
+G:DEFEND_GROUP,20
+G:SPIRIT_GROUP,10
+W:TWO_HANDED-
+
+# Weapons scholar types
+# ===================================================================
+P:Arcane fighter:Man-at-arms,10
+D:description goes here
+G:FIGHT_GROUP,20
+G:DEFEND_GROUP,20
+G:LORE_GROUP,10
+W:TWO_HANDED-
+A:PLATE-
+
+
+
+
+# Sorcerer types
+# ===================================================================
+# ===================================================================
+# ===================================================================
+P:Magician,0
+D:description goes here
+G:FIGHT_GROUP,2
+G:DEFEND_GROUP,2
+G:SORCERY_GROUP,10
+W:*-,SMALL+,SMALL_RANGED+
+A:*-,ROBES+
+
+# Clerical types
+# ===================================================================
+# ===================================================================
+# ===================================================================
+P:Healer,0
+D:description goes here
+G:FIGHT_GROUP,8
+G:DEFEND_GROUP,10
+G:SPIRIT_GROUP,10
+W:*-,MACE+
+A:*+
+
+# Scholar types
+# ===================================================================
+# ===================================================================
+# ===================================================================
+P:Scholar,0
+D:description goes here
+G:FIGHT_GROUP,6
+G:DEFEND_GROUP,6
+G:LORE_GROUP,10
+W:*+
+A:*+
+
+# Rogue types
+# ===================================================================
+# ===================================================================
+# ===================================================================
+P:Cutpurse,0
+D:description goes here
+G:FIGHT_GROUP,8
+G:DEFEND_GROUP,8
+G:STEALTH_GROUP,10
+W:*+,TWO_HANDED-,LARGE-
+A:*+,METAL-
+
+
