@@ -22,6 +22,7 @@
 using namespace std;
 
 #define MAX_CLOSED_NODES 120
+#define FAST_MAX_CLOSED_NODES 50
 
 Util::Util(){
 }
@@ -76,7 +77,9 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
                      Sint16 dx, Sint16 dy, Sint16 dz,
                      vector<Location> *pVector,
                      Map *map,
-                     Creature *creature ) {
+                     Creature *creature,
+                     bool limitTime,
+                     bool ignoreCreatures ) {
   vector<CPathNode> OPEN;                 // STL Vectors chosen because of rapid
   vector<CPathNode> CLOSED;               // insertions/deletions at back,
   vector<CPathNode> PATH;                 // and Direct access to any element.
@@ -112,7 +115,7 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
     }
 
     // Set limit to break if looking too long
-    if ( CLOSED.size() > MAX_CLOSED_NODES )
+    if ( CLOSED.size() > ( limitTime ? FAST_MAX_CLOSED_NODES : MAX_CLOSED_NODES ) )
       break;
 
     // Check adjacent locations (This is done in a clockwise order to lessen jaggies)
@@ -156,7 +159,7 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
           (Node.y >= 0) && (Node.y < MAP_DEPTH)) {
         
         // Determine cost of distance travelled
-        if( isBlocked( Node.x, Node.y, sx, sy, creature, map ) ) {
+        if( isBlocked( Node.x, Node.y, sx, sy, creature, map, ignoreCreatures ) ) {
           Node.gone = 1000;
         } else {
           Node.gone = BestNode.gone + 1;
@@ -270,12 +273,16 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
 // a simpler/quicker 2D version of Map::isBlocked()
 bool Util::isBlocked( Sint16 x, Sint16 y,
                       Sint16 shapeX, Sint16 shapeY, 
-                      Creature *creature, Map *map ) {
+                      Creature *creature, Map *map,
+                      bool ignoreCreatures ) {
   for( int sx = 0; sx < creature->getShape()->getWidth(); sx++ ) {
     for( int sy = 0; sy < creature->getShape()->getDepth(); sy++ ) {
       Location *loc = map->getLocation( x + sx, y - sy, 0 );
+      if( loc && loc->creature && ignoreCreatures ) continue;
       if( loc && 
-          !( ( loc->creature && loc->creature == creature->getTargetCreature() ) ||
+          !( ( loc->creature && 
+               ( loc->creature == creature || 
+                 loc->creature == creature->getTargetCreature() ) ) ||
              ( loc->shape && loc->x == shapeX && loc->y == shapeY ) ) ) {
         return true;
       }

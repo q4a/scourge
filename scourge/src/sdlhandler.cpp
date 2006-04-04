@@ -424,6 +424,7 @@ void SDLHandler::mainLoop() {
   while(true) {    
     if( processEvents( &isActive ) ) return;
     if( isActive ) drawScreen();
+    getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
   }
 }
 
@@ -446,7 +447,8 @@ bool SDLHandler::processEvents( bool *isActive ) {
       mouseY = my;          
       mouseButton = event.button.button;
       mouseEvent = SDL_MOUSEMOTION;
-      widget = Window::delegateEvent( &event, mouseX, mouseY );
+      // don't process events during a fade
+      if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mouseX, mouseY );
       if(!widget) {
         mouseIsMovingOverMap = true;
         lastMouseMoveTime = now;
@@ -463,7 +465,8 @@ bool SDLHandler::processEvents( bool *isActive ) {
                          abs(lastMouseX - event.button.x) < DOUBLE_CLICK_TOLERANCE &&
                          abs(lastMouseY - event.button.y) < DOUBLE_CLICK_TOLERANCE);
         lastLeftClick = now;
-        widget = Window::delegateEvent( &event, mx, my );
+        // don't process events during a fade
+        if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mx, my );
       }
       lastMouseX = event.button.x;
       lastMouseY = event.button.y;
@@ -475,7 +478,8 @@ bool SDLHandler::processEvents( bool *isActive ) {
       mouseButton = event.button.button;
       mouseDragging = true;
       if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
-        widget = Window::delegateEvent( &event, mx, my );
+        // don't process events during a fade
+        if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mx, my );
       }
       break;
     case SDL_ACTIVEEVENT:
@@ -507,7 +511,8 @@ bool SDLHandler::processEvents( bool *isActive ) {
     }
     case SDL_KEYDOWN:
     applyMouseOffset(mouseX, mouseY, &mx, &my);
-    widget = Window::delegateEvent( &event, mx, my );
+    // don't process events during a fade
+    if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mx, my );
     break;
     case SDL_QUIT:
     quit(0); // handle quit requests
@@ -533,21 +538,24 @@ bool SDLHandler::processEvents( bool *isActive ) {
     } 
 
     bool res = false;
-    if(widget) {
-      if( !mouseLock || mouseLock == widget ) {
-        res = eventHandler->handleEvent(widget, &event);
-        // this is so that moving the cursor over a 
-        // window doesn't scroll the map forever
-        if( event.type == SDL_MOUSEMOTION ) {
-          res = eventHandler->handleEvent(&event);
+    // don't process events during a fade
+    if( fadeoutTimer <= 0 ) {
+      if(widget) {
+        if( !mouseLock || mouseLock == widget ) {
+          res = eventHandler->handleEvent(widget, &event);
+          // this is so that moving the cursor over a 
+          // window doesn't scroll the map forever
+          if( event.type == SDL_MOUSEMOTION ) {
+            res = eventHandler->handleEvent(&event);
+          }
         }
+      } else {
+        if( !mouseLock ) res = eventHandler->handleEvent(&event);
       }
-    } else {
-      if( !mouseLock ) res = eventHandler->handleEvent(&event);
-    }
-    if(res) {
-      if(popHandlers()) {
-        return true;
+      if(res) {
+        if(popHandlers()) {
+          return true;
+        }
       }
     }
   }

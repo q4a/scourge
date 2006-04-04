@@ -64,6 +64,10 @@ scourge_SOURCES = \
 	gameadapter.h\
 	scourge.cpp\
 	scourge.h\
+	scourgeview.cpp\
+	scourgeview.h\
+	scourgehandler.cpp\
+	scourgehandler.h\
 	sdleventhandler.cpp\
 	sdleventhandler.h\
 	sdlhandler.cpp\

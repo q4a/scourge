@@ -940,6 +940,7 @@ void Map::draw() {
   if( currentEffectsMap.size() ) removeCurrentEffects();
   // populate the shape arrays
   if( mapChanged ) {
+    if( adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
     int csx, cex, csy, cey;
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;

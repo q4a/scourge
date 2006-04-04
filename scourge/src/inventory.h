@@ -127,6 +127,7 @@ private:
   ScrollingList *formationList;
   Button *layoutButton1, *layoutButton2, *layoutButton4;
   Button *squirrelWindow;
+  Button *saveGameButton;
 
 public:
     Inventory(Scourge *scourge);

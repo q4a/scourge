@@ -269,52 +269,28 @@ void Party::setTargetCreature(Creature *creature) {
  * location, pick someone else from the group who can make the move.
  */
 bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
-  for( int i = -1; i < ( isPlayerOnly() ? 0 : getPartySize() ); i++ ) {
-    Creature *c = ( i == -1 ? getPlayer() : getParty(i) );
-    if( i > -1 && 
-        ( c == getPlayer() ||
-          c->getStateMod( Constants::dead ) ) ) 
-      continue;
+  // Try to move the current player
+  getPlayer()->cancelWhenPossibleDest();
+  bool possible = getPlayer()->setSelXY( mapx, mapy );
+  if( isPlayerOnly() ) {
+    getPlayer()->cancelTarget();
+  } else {
+    for( int i = 0; i < getPartySize(); i++ ) {
+      if( !getParty(i)->getStateMod( Constants::dead ) ) {
+        getParty(i)->cancelTarget();
+        if( getParty(i) != getPlayer() ) {
+          // if already moving, don't stop
+          if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
 
-    bool possible = c->setSelXY(mapx, mapy);
-    if( possible ) {
-
-      // select this player as the new leader temporarily
-      Creature *oldPlayer = getPlayer();
-      if( i > -1 ) {
-        setPlayer( i, false );
-        //cerr << "*** Temporarily setting new leader." << endl;
-      }
-
-      // if player stopping not set, set it
-      if( getPlayerMoved() == 0 ) setPlayerMoved();
-      if( isPlayerOnly() ) {
-        getPlayer()->cancelTarget();
-      } else {
-        for( int i = 0; i < getPartySize(); i++ ) {
-          if( !getParty(i)->getStateMod( Constants::dead ) ) {
-            getParty(i)->cancelTarget();
-            if( getParty(i) != getPlayer() ) {
-              // if already moving, don't stop
-              if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
-              getParty( i )->follow( session->getMap() );
-            }
-          }
-        }
-        // reset the player
-        if( getPlayer() != oldPlayer ) {
-          for( int i = 0; i < getPartySize(); i++ ) {
-            if( getParty(i) == oldPlayer ) {
-              setPlayer( i, false );
-              break;
-            }
-          }
+          // if trying later, move others to the location (to get them out of the way)
+          // Otherwise, follow the leader
+          if( getPlayer()->isBlockedByCreatures() ) getParty( i )->follow( mapx, mapy );
+          else getParty( i )->follow();
         }
       }
-      return true;
     }
   }
-  return false;
+  return possible;
 }
 
 void Party::movePlayers() {   
@@ -322,7 +298,7 @@ void Party::movePlayers() {
     // move everyone
     for (int i = 0; i < getPartySize(); i++) {
       if (!party[i]->getStateMod(Constants::dead)) {
-        party[i]->moveToLocator(session->getMap());
+        party[i]->moveToLocator();
       }
     }
     // center on player
@@ -332,7 +308,7 @@ void Party::movePlayers() {
 
     // move the leader
     if (!player->getStateMod(Constants::dead)) {
-      player->moveToLocator(session->getMap());
+      player->moveToLocator();
       session->getMap()->center(toint(player->getX()), toint(player->getY()));
     }
 
@@ -344,10 +320,10 @@ void Party::movePlayers() {
           // If the non-leader is done moving try to follow again.
           // This will be a no-op in follow() if we're close enough.
           if( !getParty(t)->anyMovesLeft() ) {
-            getParty( t )->follow( session->getMap() );
+            getParty( t )->follow();
           }
           // actually take a step
-          party[t]->moveToLocator(session->getMap());
+          party[t]->moveToLocator();
         }
       }
     }

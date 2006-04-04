@@ -24,6 +24,7 @@
 using namespace std;
 
 #define MISSION_MUSIC_COUNT 4.0f
+#define FIGHT_MUSIC_COUNT 1.0f
 
 Sound::Sound(Preferences *preferences) {
   haveSound = false;
@@ -38,7 +39,9 @@ Sound::Sound(Preferences *preferences) {
     }
 
     missionMusicIndex = -1;
-    menuMusic = hqMusic = missionMusic = NULL;
+    currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = NULL;
+    musicStartTime = 0;
+    musicPosition = 0;
     if(haveSound) {
       selectMusic( preferences );
     }
@@ -58,9 +61,13 @@ Sound::~Sound() {
       Mix_FreeMusic(hqMusic);
       hqMusic = NULL;
     }
-    if(missionMusic) {
-      Mix_FreeMusic(missionMusic);
+    if( missionMusic ) {
+      Mix_FreeMusic( missionMusic );
       missionMusic = NULL;
+    }
+    if( fightMusic ) {
+      Mix_FreeMusic( fightMusic );
+      fightMusic = NULL;
     }
     // delete sounds
     for(map<string, Mix_Chunk*>::iterator i=soundMap.begin(); i != soundMap.end(); ++i) {
@@ -119,37 +126,80 @@ void Sound::selectMusic( Preferences *preferences ) {
     }
   }
 
+  // selects fight music
+  n = (int)( (float)FIGHT_MUSIC_COUNT * rand() / RAND_MAX)+1;
+  if( fightMusicIndex != n ) {
+    fightMusicIndex = n;
+
+    // unload the current one
+    if( fightMusic ) {
+      Mix_FreeMusic( fightMusic );
+      fightMusic = NULL;
+    }
+
+    // load the new one
+    char fn[300];
+    sprintf( fn, "%s/sound/music/fight%02d.ogg", rootDir, fightMusicIndex);
+    fightMusic = Mix_LoadMUS( fn );
+    if( !fightMusic ) {
+      cerr << "*** Error: couldn't load music: " << fn << endl;
+      cerr << "\t" << Mix_GetError() << endl;
+    }
+  }
+
   setMusicVolume( preferences->getMusicVolume() );
 #endif
 }
 
 #ifdef HAVE_SDL_MIXER
-void Sound::playMusic(Mix_Music *music) {
-  if(haveSound && music) {
-    if(Mix_FadeInMusic(music, -1, 2000)) {
-      cerr << "*** Error playing music: " << Mix_GetError() << endl;
+void Sound::playMusic( Mix_Music *music, int ms ) {
+  if( haveSound && music ) {
+    currentMusic = music;
+    if( currentMusic != fightMusic ) {
+      if( currentLevelMusic != currentMusic ) {
+        currentLevelMusic = currentMusic;
+        musicStartTime = SDL_GetTicks();
+        musicPosition = 0;
+      }
+      if( Mix_FadeInMusicPos( music, -1, ms, musicPosition ) ) {
+        cerr << "*** Error playing music: " << Mix_GetError() << endl;
+      }
+    } else {
+      if( Mix_FadeInMusic( music, -1, ms ) ) {
+        cerr << "*** Error playing music: " << Mix_GetError() << endl;
+      }
     }
   }
 }
 
-void Sound::stopMusic() {
+void Sound::stopMusic( int ms ) {
   if(haveSound) {
-    if(!Mix_FadeOutMusic(3000)) {
+
+    // remember where the level music is stopped
+    if( currentMusic != fightMusic ) {
+      musicPosition = (double)( SDL_GetTicks() - musicStartTime );
+    }
+
+    if( !Mix_FadeOutMusic( ms ) ) {
       cerr << "*** Error stopping music: " << Mix_GetError() << endl;
       // force stop music
       Mix_HaltMusic();
-    } else {
-      /*
-      while(Mix_PlayingMusic()) {
-        // wait for any fades to complete
-        SDL_Delay(100);
-      }
-      cerr << "*** Music stopped." << endl;
-      */
     }
   }
 }
 #endif
+
+void Sound::checkMusic( bool inCombat ) {
+#ifdef HAVE_SDL_MIXER
+  if( haveSound ) {
+    Mix_Music *should = ( inCombat ? fightMusic : currentLevelMusic );
+    if( should != currentMusic ) {
+      if( currentMusic ) stopMusic( 500 );
+      playMusic( should, 500 );
+    }
+  }
+#endif
+}
 
 void Sound::loadSounds(Preferences *preferences) {
   if(!haveSound) return;
@@ -164,23 +214,6 @@ void Sound::loadSounds(Preferences *preferences) {
   for(int i = 0; i < Battle::getSoundCount(); i++) {
     storeSound(0, Battle::getSound(i));
   }
-
-  /*
-//  cerr << "Loading character sounds..." << endl;
-  for(map<string, Character*>::iterator i = Character::character_class.begin();
-       i != Character::character_class.end(); ++i) {
-    //Creature *creature = i->first;
-    Character *c = i->second;
-    for(map<int, vector<string>*>::iterator t = c->soundMap.begin(); t != c->soundMap.end(); ++t) {
-      int type = t->first;
-      vector<string>* v = t->second;
-      for(int r = 0; r < (int)v->size(); r++) {
-        string file = (*v)[r];
-        storeSound(type, file.c_str());
-      }
-    }
-  }
-  */
 
 //  cerr << "Loading item sounds..." << endl;
   for(map<int, vector<string>*>::iterator i = Item::soundMap.begin();
@@ -199,22 +232,6 @@ void Sound::loadSounds(Preferences *preferences) {
       storeSound(0, MagicSchool::getMagicSchool(i)->getSpell(t)->getSound());
     }
   }
-
-  /*
-  cerr << "Loading monster sounds..." << endl;
-  for(map<string, map<int, vector<string>*>*>::iterator i = Monster::soundMap.begin();
-      i != Monster::soundMap.end(); ++i) {
-    map<int, vector<string>*> *m = i->second;
-    for(map<int, vector<string>*>::iterator i2 = m->begin();
-        i2 != m->end(); ++i2) {
-      vector<string> *v = i2->second;
-      for(int i = 0; i < (int)v->size(); i++) {
-        string file = (*v)[i];
-        storeSound(0, file.c_str());
-      }
-    }
-  }
-  */
 
   setEffectsVolume(preferences->getEffectsVolume());
 }
