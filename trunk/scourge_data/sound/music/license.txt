@@ -1,7 +1,7 @@
 The music and sounds for S.C.O.U.R.G.E. are the property of their authors.  Any requests to reuse them in your own projects (whether commercial or not) should be directed to them. You can contact them at these adresses:
 * Toofan Hosseinnezhad: <retrix at users.sourceforge.net>
 * Vincent Fiack: <vfiack at gmail.com>
-* Joel Ross: <???>
+* Joel Ross: <joel.binarybrain at gmail.com>
 
 FileName		Music Title		Author
 ---------		------------		-------
