@@ -2487,3 +2487,26 @@ void Creature::playCharacterSound( int soundType ) {
   if( !monster ) session->getGameAdapter()->playCharacterSound( model_name, soundType );
 }
 
+bool Creature::rollSkill( int skill, float luckDiv ) {
+  float f = (float)( getSkill( skill ) );
+  if( luckDiv > 0 ) f += (float)( getSkill( Constants::LUCK ) ) / luckDiv;
+  return( 100.0f * rand() / RAND_MAX <= f ? true : false );
+}             
+
+#define SECRET_DOOR_ATTEMPT_INTERVAL 5000
+bool Creature::rollSecretDoor( Location *pos ) {
+  if( secretDoorAttempts.find( pos ) != secretDoorAttempts.end() ) {
+    Uint32 lastTime = secretDoorAttempts[ pos ];
+    if( SDL_GetTicks() - lastTime < SECRET_DOOR_ATTEMPT_INTERVAL ) return false;
+  }
+  bool ret = rollSkill( Constants::FIND_SECRET_DOOR, 4.0f );
+  if( !ret ) {
+    secretDoorAttempts[ pos ] = SDL_GetTicks();
+  }
+  return ret;
+}
+
+void Creature::resetSecretDoorAttempts() {
+  secretDoorAttempts.clear();
+}
+

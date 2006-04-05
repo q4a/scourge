@@ -1042,6 +1042,14 @@ bool Scourge::useSecretDoor(Location *pos) {
     int s2 = ((GLShape*)( getShapePalette()->findShapeByName( "SECRET_EW_WALL" ) ) )->getShapePalIndex();
     ret = true;
     if( pos->z == 0 ) {
+
+      // try to detect the secret door
+      if( !levelMap->isSecretDoorDetected( pos ) &&
+          !getParty()->getPlayer()->rollSecretDoor( pos ) ) {
+        return false;
+      }
+      levelMap->setSecretDoorDetected( pos );
+      
       levelMap->removePosition( pos->x, pos->y, pos->z );      
       Shape *shape = getShapePalette()->getShape( wall->getShapePalIndex() - s1 + s2 );
       levelMap->setPosition( pos->x, pos->y, post->getHeight(), shape );

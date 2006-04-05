@@ -235,7 +235,7 @@ class Map {
   GLuint floorTex;
 
   RenderedCreature *mapCenterCreature;
-  std::set<int> secretDoors;
+  std::map<int,bool> secretDoors;
 
  public:
   bool useFrustum;
@@ -251,6 +251,10 @@ class Map {
   void addSecretDoor( int x, int y );
   bool isSecretDoor( Location *pos );
   bool isSecretDoor( int x, int y );
+  bool isSecretDoorDetected( Location *pos );
+  bool isSecretDoorDetected( int x, int y );
+  void setSecretDoorDetected( Location *pos );
+  void setSecretDoorDetected( int x, int y );
 
   inline void setMapCenterCreature( RenderedCreature *c ) { mapCenterCreature = c; }
   inline RenderedCreature *getMapCenterCreature() { return mapCenterCreature; }
