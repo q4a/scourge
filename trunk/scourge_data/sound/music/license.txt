@@ -5,8 +5,9 @@ The music and sounds for S.C.O.U.R.G.E. are the property of their authors.  Any 
 FileName		Music Title		Author
 ---------		------------		-------
 menu.ogg		Menu pour Scourge	Vincent Fiack
-headquarter.ogg		Dungeon shadows		Toofan Hosseinnezhad
+headquarter.ogg		Quartier Général	Vincent Fiack
 track01.ogg		Dark Times		Toofan Hosseinnezhad
 track02.ogg		Promenade Lugubre	Vincent Fiack
 track03.ogg		Dans les sous-sols	Vincent Fiack
 track04.ogg		L'excursion		Vincent Fiack
+track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
