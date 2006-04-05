@@ -139,6 +139,8 @@ class Creature : public RenderedCreature {
   int whenPossibleX, whenPossibleY;
   bool mapChanged;
   bool blockedByCreatures;
+
+  std::map<Location*, Uint32> secretDoorAttempts;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -456,6 +458,9 @@ class Creature : public RenderedCreature {
   float rollMagicDamagePercent( Item *item );
   float getMaxAP( bool includeSkillMod = false );
   char *canEquipItem( Item *item, bool interactive = true );  
+  bool rollSkill( int skill, float luckDiv=0.0f );
+  bool rollSecretDoor( Location *pos );
+  void resetSecretDoorAttempts();
 
  protected:
 

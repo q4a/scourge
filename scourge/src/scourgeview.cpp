@@ -519,7 +519,19 @@ void ScourgeView::drawTextEffect() {
 
 // check for interactive items.
 Color *ScourgeView::getOutlineColor( Location *pos ) {
-  return( pos->item || pos->shape->isInteractive() || scourge->getMap()->isSecretDoor( pos ) ? outlineColor : NULL );
+  Color *ret = NULL;
+  if( pos->item || pos->shape->isInteractive() ) {
+    ret = outlineColor;
+  } else if( scourge->getMap()->isSecretDoor( pos ) ) {
+    // try to detect the secret door
+    if( pos->z > 0 || scourge->getMap()->isSecretDoorDetected( pos ) ) {
+      ret = outlineColor;
+    } else if( scourge->getParty()->getPlayer()->rollSecretDoor( pos ) ) {
+      scourge->getMap()->setSecretDoorDetected( pos );
+      ret = outlineColor;
+    }
+  }
+  return ret;
 }
 
 

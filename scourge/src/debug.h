@@ -51,7 +51,7 @@
 #define DEBUG_SQUIRREL 0
 
 // show secret doors
-#define DEBUG_SECRET_DOORS 1
+//#define DEBUG_SECRET_DOORS 1
 
 #endif
 

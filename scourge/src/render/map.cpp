@@ -940,7 +940,7 @@ void Map::draw() {
   if( currentEffectsMap.size() ) removeCurrentEffects();
   // populate the shape arrays
   if( mapChanged ) {
-    if( adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
+    if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
     int csx, cex, csy, cey;
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
@@ -3352,7 +3352,7 @@ void Map::setMapRenderHelper( MapRenderHelper *helper ) {
 
 void Map::addSecretDoor( int x, int y ) {
   int index = y * MAP_WIDTH + x;
-  secretDoors.insert( index );
+  secretDoors[ index ] = false;
 }
 
 bool Map::isSecretDoor( Location *pos ) {
@@ -3361,5 +3361,29 @@ bool Map::isSecretDoor( Location *pos ) {
   
 bool Map::isSecretDoor( int x, int y ) {
   return( secretDoors.find( y * MAP_WIDTH + x ) != secretDoors.end() ? true : false );
+}
+
+bool Map::isSecretDoorDetected( Location *pos ) {
+  return isSecretDoorDetected( pos->x, pos->y );
+}
+
+bool Map::isSecretDoorDetected( int x, int y ) {
+  int index = y * MAP_WIDTH + x;
+  if( secretDoors.find( index ) != secretDoors.end() ) {
+    return secretDoors[ index ];
+  } else {
+    return false;
+  }
+}
+
+void Map::setSecretDoorDetected( Location *pos ) {
+  setSecretDoorDetected( pos->x, pos->y );
+}
+
+void Map::setSecretDoorDetected( int x, int y ) {
+  int index = y * MAP_WIDTH + x;
+  if( secretDoors.find( index ) != secretDoors.end() ) {
+    secretDoors[ index ] = true;
+  }
 }
 

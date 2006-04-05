@@ -137,8 +137,9 @@ void Party::startPartyOnMission() {
   
   // init the rest of the party
   for(int i = 1; i < getPartySize(); i++) {
-	getParty(i)->setNext(getPlayer(), i);
-	getParty(i)->cancelTarget();
+    getParty(i)->setNext(getPlayer(), i);
+    getParty(i)->cancelTarget();
+    getParty(i)->resetSecretDoorAttempts();
   }
 }
 
