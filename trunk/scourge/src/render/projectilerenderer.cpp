@@ -1,10 +1,10 @@
 /***************************************************************************
-                          renderlib.h  -  description
+                          projectilerenderer.cpp  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
     email                : cctorok@yahoo.com
-***************************************************************************/
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -15,32 +15,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef RENDER_LIB_H
-#define RENDER_LIB_H
-
-/**
- * A way for external classes to this dir to get everything in one include file.
- */
-
-//#include "../rpg/rpglib.h"
-#include "map.h"
-#include "mapadapter.h"
-#include "effect.h"
-#include "location.h"
-#include "shape.h"
-#include "glshape.h"
-#include "gltorch.h"
-#include "glcaveshape.h"
-#include "glteleporter.h"
-#include "gllocator.h"
-#include "3dsshape.h"
-#include "md2shape.h"
-#include "Md2.h"
-#include "rendereditem.h"
-#include "renderedcreature.h"
-#include "renderedprojectile.h"
-#include "shapes.h"
-#include "maprenderhelper.h"
 #include "projectilerenderer.h"
 
-#endif
+EffectProjectileRenderer::EffectProjectileRenderer( Effect *effect, int effectType, int timeToLive ) {
+  this->effect = effect;
+  this->effectType = effectType;
+  this->timeToLive = timeToLive;
+}
+
+EffectProjectileRenderer::~EffectProjectileRenderer() {
+  delete effect;
+}
+
+void EffectProjectileRenderer::draw() {
+  effect->draw( effectType, 0 );
+}
+
+void EffectProjectileRenderer::setCameraRot( float x, float y, float z ) {
+}
+
+bool EffectProjectileRenderer::drawLater() {
+  return true;
+}
+
+void EffectProjectileRenderer::setupBlending() {
+  //glEnable( GL_BLEND );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+}
+
+void EffectProjectileRenderer::endBlending() {
+  glDisable( GL_BLEND );
+}
+

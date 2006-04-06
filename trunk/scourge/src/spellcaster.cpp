@@ -62,10 +62,11 @@ void SpellCaster::spellFailed() {
   
   // put code here for spells with something spectacular when they fail...
   // (fouled fireball decimates party, etc.)
-  if(!strcasecmp(spell->getName(), "Burning stare") ||
-     !strcasecmp(spell->getName(), "Silent knives") || 
-     !strcasecmp(spell->getName(), "Stinging light") ||
-     !strcasecmp(spell->getName(), "Unholy Decimator")) {
+  if(!strcasecmp( spell->getName(), "Burning stare" ) ||
+     !strcasecmp( spell->getName(), "Silent knives" ) || 
+     !strcasecmp( spell->getName(), "Stinging light" ) ||
+     !strcasecmp( spell->getName(), "Unholy Decimator" ) || 
+     !strcasecmp( spell->getName(), "Blast of Fury" ) ) {
     
     Creature *tmpTarget;
     if( battle->getCreature()->isMonster() || 
@@ -167,6 +168,20 @@ void SpellCaster::spellSucceeded() {
     circleAttack();
   } else if(!strcasecmp(spell->getName(), "Malice Storm")) {
     hailAttack();
+  } else if( !strcasecmp( spell->getName(), "Blast of Fury" ) ) {
+    if(projectileHit) {
+      //causeDamage();
+    } else {
+      Session *session = battle->getSession();
+      Effect *effect = new Effect( session->getMap(), 
+                                   session->getPreferences(), 
+                                   session->getShapePalette(),
+                                   2, 2 );
+      launchProjectile( 1, true, 
+                        new EffectProjectileRenderer( effect, 
+                                                      spell->getEffect(),
+                                                      ( ( battle->getCreature()->getLevel() / 10 ) + 1 ) * 2000 ) );
+    }
   } else if(!strcasecmp(spell->getName(), "Unholy Decimator")) {
     causeDamage();
   } else if(!strcasecmp(spell->getName(), "Recall to life" )) {
@@ -236,35 +251,47 @@ void SpellCaster::increaseAC() {
 
 }
 
-void SpellCaster::launchProjectile(int count, bool stopOnImpact) {
+Projectile *SpellCaster::launchProjectile( int count, bool stopOnImpact, ProjectileRenderer *renderer ) {
   Creature *creature = battle->getCreature();
 
   // maxcount for spells means number of projectiles
   // (for missiles it means how many can be in the air at once.)
   int n = count;
-  if(n == 0) {
+  if( n <= 0 ) {
     n = creature->getLevel();
     if( n < 1 ) n = 1;
-//    cerr << "launching " << n << " spell projectiles!" << endl;
   }
 
-  // FIXME: projectile shape should be configurable per spell
+  if( !renderer ) {
+    renderer = 
+      new ShapeProjectileRenderer( battle->getSession()->
+                                   getShapePalette()->
+                                   findShapeByName("SPELL_FIREBALL") );
+  }
+
   Projectile *p;
-  if(creature->getTargetCreature()) {
-    p = Projectile::addProjectile(creature, creature->getTargetCreature(), spell, 
-                                  battle->getSession()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
-                                  n, stopOnImpact);
+  if( creature->getTargetCreature() ) {
+    p = Projectile::addProjectile( creature, 
+                                   creature->getTargetCreature(), 
+                                   spell, 
+                                   renderer,
+                                   n, stopOnImpact );
   } else {
     int x, y, z;
-    creature->getTargetLocation(&x, &y, &z);
-    p = Projectile::addProjectile(creature, x, y, 1, 1, spell, 
-                                  battle->getSession()->getShapePalette()->findShapeByName("SPELL_FIREBALL"),
-                                  n, stopOnImpact);
+    creature->getTargetLocation( &x, &y, &z );
+    p = Projectile::addProjectile( creature, 
+                                   x, y, 
+                                   1, 1, 
+                                   spell, 
+                                   renderer,
+                                   n, stopOnImpact );
   }
-  if(!p) {
+  if( !p ) {
     // max number of projectiles in the air
     // FIXME: do something... 
   }
+
+  return p;
 }
 
 void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
@@ -547,4 +574,5 @@ int SpellCaster::getRadius( int spellEffectSize, float *sx, float *sy ) {
 
   return radius;
 }
+
 

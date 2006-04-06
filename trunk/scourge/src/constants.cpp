@@ -213,7 +213,7 @@ const Color *Constants::SPECIAL_ITEM_COLOR = new Color( 1, 1, 0.5, 1 );
 const char *Constants::EFFECT_NAMES[] = {
   "EFFECT_FLAMES", "EFFECT_GLOW", "	EFFECT_TELEPORT", "EFFECT_GREEN", "EFFECT_EXPLOSION", 
   "EFFECT_SWIRL", "EFFECT_CAST_SPELL", "EFFECT_RING", "EFFECT_RIPPLE", "EFFECT_DUST", 
-  "EFFECT_HAIL", "EFFECT_TOWER"
+  "EFFECT_HAIL", "EFFECT_TOWER", "EFFECT_BLAST"
 };
 
 const char *Constants::npcTypeName[] = {

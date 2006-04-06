@@ -189,25 +189,33 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
       } else if( widget == info[i].prevPortrait ) {
         if( info[i].portraitIndex > 0 ) {
           info[i].portraitIndex--;
-          saveUI( (Creature**)tmp );
+        } else {
+          info[i].portraitIndex = scourge->getShapePalette()->getPortraitCount() - 1;
         }
+        saveUI( (Creature**)tmp );
       } else if( widget == info[i].nextPortrait ) {
         if( info[i].portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
           info[i].portraitIndex++;
-          saveUI( (Creature**)tmp );
+        } else {
+          info[i].portraitIndex = 0;
         }
+        saveUI( (Creature**)tmp );
       } else if( widget == info[i].prevModel ) {
         if( info[i].modelIndex > 0 ) {
           info[i].modelIndex--;
-          saveUI( (Creature**)tmp );          
-          willPlaySound = true;
-        }        
+        } else {
+          info[i].modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount()-1;
+        }
+        saveUI( (Creature**)tmp );          
+        willPlaySound = true;
       } else if( widget == info[i].nextModel ) {
         if( info[i].modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
           info[i].modelIndex++;
-          saveUI( (Creature**)tmp );
-          willPlaySound = true;
+        } else {
+          info[i].modelIndex = 0;
         }
+        saveUI( (Creature**)tmp );
+        willPlaySound = true;
       } else if( widget == info[i].skillRerollButton ) {
         rollSkills( &( info[ i ] ) );
 //        updateUI( &( info[ i ] ), i );
@@ -552,6 +560,7 @@ void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
         pc[i]->addSpell(Spell::getSpellByName("Remove curse"));
         pc[i]->addSpell(Spell::getSpellByName("Teleportation"));
         pc[i]->addSpell(Spell::getSpellByName("Recall to life"));
+        pc[i]->addSpell(Spell::getSpellByName("Blast of Fury"));        
         pc[i]->setMp( 5000 );
         pc[i]->setMoney( 10000 );
 

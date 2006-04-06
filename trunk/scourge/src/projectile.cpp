@@ -31,7 +31,7 @@ Uint32 Projectile::lastProjectileTick = 0;
 // Uncomment line below for debug trace
 //#define DEBUG_MOVEMENT 1
 
-Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *shape, float parabolic, bool stopOnImpact, bool seeker) {
+Projectile::Projectile(Creature *creature, Creature *target, Item *item, ProjectileRenderer *renderer, float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
   this->ty = target->getY();
@@ -40,7 +40,7 @@ Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *
   this->target = target;
   this->item = item;
   this->spell = NULL;
-  this->shape = shape;
+  this->renderer = renderer;
   this->parabolic = parabolic;
   this->stopOnImpact = stopOnImpact;
   this->seeker = seeker;
@@ -48,7 +48,7 @@ Projectile::Projectile(Creature *creature, Creature *target, Item *item, Shape *
   commonInit();
 }
 
-Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape *shape, 
+Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, ProjectileRenderer *renderer, 
                        float parabolic, bool stopOnImpact, bool seeker) {
   this->creature = creature;
   this->tx = target->getX();
@@ -58,7 +58,7 @@ Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape
   this->target = target;
   this->item = NULL;
   this->spell = spell;
-  this->shape = shape;
+  this->renderer = renderer;
   this->parabolic = parabolic;
   this->stopOnImpact = stopOnImpact;
   this->seeker = seeker;
@@ -67,7 +67,8 @@ Projectile::Projectile(Creature *creature, Creature *target, Spell *spell, Shape
 }
 
 Projectile::Projectile(Creature *creature, int x, int y, int w, int d, 
-                       Spell *spell, Shape *shape, float parabolic, bool stopOnImpact) {
+                       Spell *spell, ProjectileRenderer *renderer, 
+                       float parabolic, bool stopOnImpact) {
   this->creature = creature;
   this->tx = x;
   this->ty = y;
@@ -76,7 +77,7 @@ Projectile::Projectile(Creature *creature, int x, int y, int w, int d,
   this->target = NULL;
   this->item = NULL;
   this->spell = spell;
-  this->shape = shape;
+  this->renderer = renderer;
   this->parabolic = parabolic;
   this->stopOnImpact = stopOnImpact;
   this->seeker = false;
@@ -85,29 +86,32 @@ Projectile::Projectile(Creature *creature, int x, int y, int w, int d,
 }
 
 void Projectile::commonInit() {
-  this->sx = creature->getX() + (creature->getShape()->getWidth() / 2);
-  this->sy = creature->getY() - (creature->getShape()->getDepth() / 2);
+  this->timeToLive = 0;
+  this->sx.push_back( creature->getX() + (creature->getShape()->getWidth() / 2) );
+  this->sy.push_back( creature->getY() - (creature->getShape()->getDepth() / 2) );
 
-  calculateAngle();
+  calculateAngle( sx.back(), sy.back() );
 
   //  cerr << "NEW PROJECTILE: (" << sx << "," << sy << ")-(" << ex << "," << ey << ") angle=" << angle << " q=" << q << endl;
   cx = cy = 0;
   steps = 0;
 
   maxDist = (spell ? spell->getDistance() : item->getDistance()) + tw;
-  startX = sx;
-  startY = sy;
+  startX = sx.back();
+  startY = sy.back();
   distToTarget = Constants::distance(startX,  startY, 
                                      1, 1,
                                      tx, ty, tw, td);
 }
 
 Projectile::~Projectile() {
+  cerr << "destroying projectile" << endl;
+  delete renderer;
 }
 
 bool Projectile::atTargetLocation() {
-  return ( fabs( ex - sx ) <= 1.0f + DELTA &&
-           fabs( ey - sy ) <= 1.0f + DELTA );
+  return ( fabs( ex - sx.back() ) <= 1.0f + DELTA &&
+           fabs( ey - sy.back() ) <= 1.0f + DELTA );
 /*
   return( toint(ex) == toint(sx) && 
           toint(ey) == toint(sy) );
@@ -120,7 +124,7 @@ bool Projectile::atTargetLocation() {
 }
 
 void Projectile::debug() {
-  cerr << "Projectile at: " << sx << "," << sy << " target: " << ex << "," << ey <<
+  cerr << "Projectile at: " << sx.back() << "," << sy.back() << " target: " << ex << "," << ey <<
     " at target? " << atTargetLocation() << endl;
 }
 
@@ -131,8 +135,8 @@ bool Projectile::move() {
   // return false to let the map class handle the attack.
   if(this->atTargetLocation()) {
     // clamp to target
-    sx = ex;
-    sy = ey;
+    sx.push_back( ex );
+    sy.push_back( ey );
     return false;
   }
 
@@ -140,24 +144,26 @@ bool Projectile::move() {
   // return true to let this class handle the attack
   if( steps++ >= maxDist + 2 ) return true;
 
+  float ssx = sx.back();
+  float ssy = sy.back();
 
   float oldAngle = angle;
   if(parabolic != 0.0f) {
     float a = (179.0f * steps) / distToTarget;
     angle = angle + parabolic * 40 * sin(Constants::toRadians(a));
-    sx += (cos(Constants::toRadians(angle)) * DELTA);
-    sy += (sin(Constants::toRadians(angle)) * DELTA);
+    ssx += ( cos( Constants::toRadians( angle ) ) * DELTA );
+    ssy += ( sin( Constants::toRadians( angle ) ) * DELTA );
     angle = oldAngle;
   } else {
-    // angle-based floating pt. movement
-    if(sx == ex) {
+    // angle-based floating pt. movement    
+    if( ssx == ex ) {
       // vertical movement
-      if(sy < ey) sy+=DELTA;
-      else sy-=DELTA; 
-    } else if(sy == ey) {
+      if( ssy < ey ) ssy+=DELTA;
+      else ssy-=DELTA; 
+    } else if( ssy == ey ) {
       // horizontal movement
-      if(sx < ex) sx+=DELTA;
-      else sx-=DELTA; 
+      if( ssx < ex ) ssx+=DELTA;
+      else ssx-=DELTA; 
     } else {        
       /*
       cerr << "before: " << sx << "," << sy << 
@@ -166,8 +172,8 @@ bool Projectile::move() {
         " cos=" << cos(Constants::toRadians(angle)) <<
         " sin=" << sin(Constants::toRadians(angle)) << endl;
         */
-      sx += (cos(Constants::toRadians(angle)) * DELTA);
-      sy += (sin(Constants::toRadians(angle)) * DELTA);
+      ssx += ( cos( Constants::toRadians( angle ) ) * DELTA );
+      ssy += ( sin( Constants::toRadians( angle ) ) * DELTA );
       //cerr << "after: " << sx << "," << sy << endl;
     }
   }
@@ -178,7 +184,7 @@ bool Projectile::move() {
     this->ty = target->getY();
     this->tw = target->getShape()->getWidth();
     this->td = target->getShape()->getDepth();
-    if(!(sx == ex && sy == ey)) calculateAngle();
+    if(!(ssx == ex && ssy == ey)) calculateAngle( ssx, ssy );
   }
 
   // recalculate the distance
@@ -186,11 +192,15 @@ bool Projectile::move() {
                                      1, 1,
                                      tx, ty, tw, td);
 
+  // store this position
+  sx.push_back( ssx );
+  sy.push_back( ssy );
+
   // we're not at the target yet
   return false;
 }
 
-void Projectile::calculateAngle() {
+void Projectile::calculateAngle( float sx, float sy ) {
   this->ex = tx + (tw / 2);
   this->ey = ty - (td / 2);
 
@@ -214,27 +224,27 @@ void Projectile::calculateAngle() {
 
 // return null if the projectile cannot be launched
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
-                                      Item *item, Shape *shape, 
+                                      Item *item, ProjectileRenderer *renderer, 
                                       int maxProjectiles, bool stopOnImpact) {
-  Projectile *p = new Projectile(creature, target, item, shape, 0.0f, stopOnImpact);
+  Projectile *p = new Projectile(creature, target, item, renderer, 0.0f, stopOnImpact);
   RenderedProjectile::addProjectile( p );
   return p;
 }
 
 Projectile *Projectile::addProjectile(Creature *creature, Creature *target, 
-                                      Spell *spell, Shape *shape, 
+                                      Spell *spell, ProjectileRenderer *renderer, 
                                       int maxProjectiles, bool stopOnImpact) {
-  Projectile *p = new Projectile(creature, target, spell, shape, 0.0f, stopOnImpact, true);
+  Projectile *p = new Projectile(creature, target, spell, renderer, 0.0f, stopOnImpact, true);
   RenderedProjectile::addProjectile( p );
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, shape, r, stopOnImpact, true ) );
+      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, renderer, r, stopOnImpact, true ) );
     }
     if((i + 1) < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, shape, -r, stopOnImpact, true ) );
+      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, renderer, -r, stopOnImpact, true ) );
     }
     r += (r/2.0f);
   }
@@ -243,20 +253,20 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
 }
 
 Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, int d, 
-                                      Spell *spell, Shape *shape, 
+                                      Spell *spell, ProjectileRenderer *renderer, 
                                       int maxProjectiles, bool stopOnImpact) {
   // add a straight-flying projectile
-  Projectile *p = new Projectile(creature, x, y, w, d, spell, shape, 0.0f, stopOnImpact);
+  Projectile *p = new Projectile(creature, x, y, w, d, spell, renderer, 0.0f, stopOnImpact);
   RenderedProjectile::addProjectile( p );
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, shape, r, stopOnImpact ) );
+      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, renderer, r, stopOnImpact ) );
     }
     if((i + 1) < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, shape, -r, stopOnImpact ) );
+      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, renderer, -r, stopOnImpact ) );
     }
     r += (r/2.0f);
   }
@@ -286,7 +296,7 @@ void Projectile::moveProjectiles(Session *session) {
       for(vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
         Projectile *proj = (Projectile*)(*e);
 #ifdef DEBUG_MOVEMENT 
-        cerr << "\t\tprojectile at: (" << proj->getX() << "," << proj->getY() << 
+        cerr << "\t\tprojectile at: (" << proj->getCurrentX() << "," << proj->getCurrentY() << 
           ") target: (" << proj->ex << "," << proj->ey << ")" << 
           " target creature: " << ( proj->target ? proj->target->getName() : "NULL" ) << endl;
 #endif
@@ -308,7 +318,7 @@ void Projectile::moveProjectiles(Session *session) {
 #ifdef DEBUG_MOVEMENT 
             cerr << "PROJ: reached location target, from=" << proj->getCreature()->getName() << endl;                                
 #endif
-            session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getX(), (int)proj->getY());        
+            session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getCurrentX(), (int)proj->getCurrentY());        
             blocked = true;
           } else if( proj->target ) {
 
@@ -343,12 +353,13 @@ void Projectile::moveProjectiles(Session *session) {
         if( !blocked ) {
 
           Location *loc = 
-            session->getMap()->getLocation( toint(proj->getX()), 
-                                            toint(proj->getY()), 
+            session->getMap()->getLocation( toint(proj->getCurrentX()), 
+                                            toint(proj->getCurrentY()), 
                                             0);
           if(loc) {
             if( loc->creature && 
-                proj->getCreature()->canAttack( loc->creature ) ) {
+                proj->getCreature()->canAttack( loc->creature ) &&
+                proj->timeToLive == 0 ) {
 #ifdef DEBUG_MOVEMENT 
               cerr << "PROJ: attacks non-target creature: " << loc->creature->getName() << ", from=" << proj->getCreature()->getName() << endl;
 #endif
@@ -371,7 +382,7 @@ void Projectile::moveProjectiles(Session *session) {
         }
         
         // remove finished projectiles
-        if( blocked || proj->atTargetLocation() ) {
+        if( blocked || proj->atTargetLocation() || proj->timeToLive > 0 ) {
           
 #ifdef DEBUG_MOVEMENT 
           // DEBUG INFO
@@ -396,9 +407,17 @@ void Projectile::moveProjectiles(Session *session) {
     }
 
     // remove projectiles
+    Uint32 now = SDL_GetTicks();
     for(vector<Projectile*>::iterator e=removedProjectiles.begin(); e!=removedProjectiles.end(); ++e) {
       Projectile *proj = *e;
-      Projectile::removeProjectile(proj);
+      if( proj->timeToLive == 0 && proj->getRenderer()->getTimeToLiveAfterImpact() > 0 ) {
+        proj->timeToLive = now;
+      } else if( proj->getRenderer()->getTimeToLiveAfterImpact() < 
+                 (int)( now - proj->timeToLive ) ) {
+        Projectile::removeProjectile(proj);
+        // Is it ok to destroy proj. here?
+        delete proj;
+      }
     }
   }
 }

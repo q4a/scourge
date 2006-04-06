@@ -30,6 +30,7 @@
 #include "../io/zipfile.h"
 #include "maprenderhelper.h"
 #include "../debug.h"
+#include "projectilerenderer.h"
 
 using namespace std;
 
@@ -1488,27 +1489,37 @@ void Map::drawProjectiles() {
       RenderedProjectile *proj = *e;
 
       // draw it
-      dl.xpos = ((proj->getX() - (float)getX()) / DIV);
-      //		dl.ypos = (((float)(proj->getY() - getY() - 1) - (float)((later2.shape)->getDepth())) / DIV);
-      dl.ypos = ((proj->getY() - (float)getY() - 1.0f) / DIV);
-      dl.zpos = (float)(7) / DIV;
-      dl.shape = proj->getShape();
-      dl.creature = NULL;
-      dl.item = NULL;
-      dl.projectile = proj;
-      dl.name = 0;
-      dl.pos = NULL;
-
-      //if( proj->getSpell() ) {
-      if( proj->getShape()->drawLater() ) {
+      if( proj->getRenderer()->drawLater() ) {
         glEnable(GL_BLEND);
         glDepthMask(GL_FALSE);
-        proj->getShape()->setupBlending();
+        proj->getRenderer()->setupBlending();
       }
-      doDrawShape(&dl);
-      //if( proj->getSpell() ) {
-      if( proj->getShape()->drawLater() ) {
-        proj->getShape()->endBlending();
+      int firstStepIndex = proj->getStepCount() - 1;
+      int steps = proj->getRenderer()->getStepsDrawn();
+      if( steps < 0 ) steps = firstStepIndex;
+      int lastStep = ( steps <= 1 ? firstStepIndex : firstStepIndex - steps );
+      for( int i = firstStepIndex; i >= lastStep; i-=proj->getRenderer()->getStepInc() ) {
+
+        float px = proj->getX( i );
+        float py = proj->getY( i );
+        float pz = proj->getZ( i ) + proj->getRenderer()->getZ();
+
+        dl.xpos = ( ( px - (float)getX() ) / DIV );
+        dl.ypos = ( ( py - (float)getY() - 1.0f ) / DIV );
+        dl.zpos = pz / DIV;
+        dl.shape = NULL;
+        dl.creature = NULL;
+        dl.item = NULL;
+        dl.effect = NULL;
+        dl.inFront = false;
+        dl.projectile = proj;
+        dl.name = 0;
+        dl.pos = NULL;
+
+        doDrawShape(&dl);
+      }
+      if( proj->getRenderer()->drawLater() ) {
+        proj->getRenderer()->endBlending();
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
       }
@@ -1611,11 +1622,12 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     glRotatef( f, 0, 0, 1 );
     // for projectiles, set the correct camera angle
     if(later->projectile->getAngle() < 90) {
-      ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
+      later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
     } else if(later->projectile->getAngle() < 180) {
-      ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
+      //((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
+      later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
     }
-    later->projectile->getShape()->draw();
+    later->projectile->getRenderer()->draw();
   } else if( later && later->creature && !useShadow ) {
     if(later->creature->getStateMod(Constants::invisible)) {
       glColor4f(0.3, 0.8f, 1.0f, 1.0f);    

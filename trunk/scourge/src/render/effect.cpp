@@ -109,6 +109,8 @@ void Effect::draw(int effect, int startTime) {
     drawGreen(proceed);
   } else if(effect == Constants::EFFECT_EXPLOSION) {
     drawExplosion(proceed);
+  } else if(effect == Constants::EFFECT_BLAST) {
+    drawBlast(proceed);
   } else if(effect == Constants::EFFECT_SWIRL) {
     drawSwirl(proceed);
   } else if(effect == Constants::EFFECT_CAST_SPELL) {
@@ -271,6 +273,39 @@ void Effect::drawExplosion(bool proceed) {
       glColor4f(c, c / 2.0f, c / 2.0f, 0.5);
 
 	  drawParticle(particle[i]);
+    }
+  }
+}
+
+void Effect::drawBlast(bool proceed) {
+  // manage particles
+  for(int i = 0; i < 10; i++) {
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(&(particle[i]));
+      particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
+      //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+      particle[i]->moveDelta = 0;
+      particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+      particle[i]->maxLife = 5000;
+      particle[i]->trail = 4;
+    } else if(proceed) {
+      particle[i]->rotate = (360.0f * rand()/RAND_MAX);
+      
+      // this causes an explosion!
+      if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
+      moveParticle(&(particle[i]));
+    }
+    
+    // draw it      
+    if(particle[i]) {            
+      
+      //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+      float c = fabs(particle[i]->z - 8) / 8.0f;
+      if(c > 1) c = 1;
+      glColor4f( 0, c / 10.0f, c, 0.5 );
+      
+      drawParticle(particle[i]);
     }
   }
 }
