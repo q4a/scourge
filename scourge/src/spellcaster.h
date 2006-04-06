@@ -31,6 +31,8 @@
 
 class Session;
 class Battle;
+class Projectile;
+class ProjectileRenderer;
 
 class SpellCaster {
  private:
@@ -54,13 +56,12 @@ class SpellCaster {
   void increaseHP();
   void increaseAC();
   // count==0 means that count depends on level
-  void launchProjectile(int count, bool stopOnImpact=true);
+  Projectile *launchProjectile( int count, bool stopOnImpact=true, ProjectileRenderer *renderer=NULL );
   void causeDamage( GLuint delay=0, GLfloat mult=1.0f );
   void setStateMod(int mod, bool setting=true);
   void circleAttack();
   void hailAttack();
   void resurrect();
-
 
   int getRadius( int spellEffectSize, float *sx, float *sy );
 };

@@ -28,7 +28,7 @@
  */
 
 class RenderedCreature;
-class Shape;
+class ProjectileRenderer;
 
 class RenderedProjectile {
 protected:
@@ -38,10 +38,15 @@ protected:
    RenderedProjectile();
    virtual ~RenderedProjectile();
   
-   virtual float getX() = 0;
-   virtual float getY() = 0;
+   virtual int getStepCount() = 0;
+   virtual float getX( int index ) = 0;
+   virtual float getY( int index ) = 0;
+   virtual float getZ( int index ) = 0;
+   virtual float getCurrentX() = 0;
+   virtual float getCurrentY() = 0;
+   virtual float getCurrentZ() = 0;
    virtual float getAngle() = 0;
-   virtual Shape *getShape() = 0;
+   virtual ProjectileRenderer *getRenderer() = 0;
    virtual RenderedCreature *getCreature() = 0;
 
    inline static std::map<RenderedCreature *, std::vector<RenderedProjectile*>*> *getProjectileMap() { return &projectiles; }

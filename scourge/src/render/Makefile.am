@@ -22,6 +22,8 @@ libScourgeRender_a_SOURCES = \
 	frustum.h\
 	renderedprojectile.cpp\
 	renderedprojectile.h\
+	projectilerenderer.cpp\
+	projectilerenderer.h\
 	location.cpp\
 	location.h\
 	effect.cpp\

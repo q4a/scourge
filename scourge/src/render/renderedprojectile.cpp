@@ -17,7 +17,6 @@
 
 #include "renderedprojectile.h"
 #include "renderedcreature.h"
-#include "shape.h"
 
 using namespace std;
 

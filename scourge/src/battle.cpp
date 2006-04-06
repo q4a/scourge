@@ -764,7 +764,7 @@ void Battle::launchProjectile() {
   sprintf(message, "...%s shoots a projectile", creature->getName());
   session->getMap()->addDescription(message); 
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
-                                session->getShapePalette()->findShapeByName("ARROW"),
+                                new ShapeProjectileRenderer( session->getShapePalette()->findShapeByName("ARROW") ),
                                 creature->getMaxProjectileCount(item))) {
     // max number of projectiles in the air
     // FIXME: do something... 

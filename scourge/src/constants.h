@@ -570,6 +570,7 @@ public:
     EFFECT_DUST,
     EFFECT_HAIL,
     EFFECT_TOWER,
+    EFFECT_BLAST,
     
     // must be last
     EFFECT_COUNT
