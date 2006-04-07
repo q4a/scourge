@@ -280,14 +280,15 @@ void Effect::drawExplosion(bool proceed) {
 void Effect::drawBlast(bool proceed) {
 
   // manage particles
-  for(int i = 0; i < PARTICLE_COUNT; i++) {
+  for(int i = 0; i < 15; i++) {
     if(!particle[i]) {
       createParticle(&(particle[i]));
-      particle[i]->z = (int)(2.0 * rand()/RAND_MAX) + 1.0f;
+      particle[i]->z = (int)(2.0 * rand()/RAND_MAX) + 0.5f;
       particle[i]->moveDelta = 0.05f + (0.05f * rand()/RAND_MAX);
-      particle[i]->maxLife = (int)( 10.0f * rand() / RAND_MAX ) + 40;
+      particle[i]->maxLife = (int)( 10.0f * rand() / RAND_MAX ) + 5;
       particle[i]->zoom = 3;
       particle[i]->tail = true;
+      particle[i]->trail = 2;
     } else if(proceed) {
       moveParticle(&(particle[i]));
     }
@@ -296,10 +297,10 @@ void Effect::drawBlast(bool proceed) {
     if(particle[i]) {            
       
       float p = particle[i]->life / ( particle[i]->maxLife / 100.0f );
-      float a = ( p < 80.0f ? 0.5f : ( ( 0.5f / 20.0f ) * ( 100.0f - p ) ) );
-      float gg = 1.0f * rand() / RAND_MAX;      
+      float a = ( 0.5f / 100.0f ) * ( 100.0f - p );
+      float gg = ( 0.2f * rand() / RAND_MAX ) + 0.8f;
 
-      particle[i]->tailColor.r = gg / ( particle[i]->life / 5.0f );
+      particle[i]->tailColor.r = gg / ( particle[i]->life );
       particle[i]->tailColor.g = gg / ( particle[i]->life / 10.0f );
       particle[i]->tailColor.b = gg;
       particle[i]->tailColor.a = a;

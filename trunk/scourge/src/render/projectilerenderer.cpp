@@ -53,7 +53,7 @@ float EffectProjectileRenderer::getZ() {
 }
 
 int EffectProjectileRenderer::getStepsDrawn() { 
-  return -1; 
+  return 3; 
 }
 
 int EffectProjectileRenderer::getTimeToLiveAfterImpact() { 
