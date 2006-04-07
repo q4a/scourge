@@ -35,11 +35,12 @@ public:
   virtual void setupBlending() = 0;
   virtual void endBlending() = 0;
 
-  virtual float getZ() { return 7.0f; }
-  virtual int getStepsDrawn() { return 1; }
-  virtual int getTimeToLiveAfterImpact() { return 0; }
-  virtual bool engulfTarget() { return false; }
-  virtual int getStepInc() { return 1; }
+  virtual inline float getZ() { return 7.0f; }
+  virtual inline int getStepsDrawn() { return 1; }
+  virtual inline int getTimeToLiveAfterImpact() { return 0; }
+  virtual inline bool engulfTarget() { return false; }
+  virtual inline int getStepInc() { return 1; }
+  virtual inline bool needsRotation() { return true; }
 };
 
 class ShapeProjectileRenderer : public ProjectileRenderer {
@@ -75,11 +76,12 @@ public:
   virtual void setupBlending();
   virtual void endBlending();
 
-  virtual inline float getZ() { return 0.25f; }
-  virtual inline int getStepsDrawn() { return -1; }
-  virtual inline int getTimeToLiveAfterImpact() { return timeToLive; }
-  virtual inline bool engulfTarget() { return true; }
-  virtual inline int getStepInc() { return 3; }
+  virtual float getZ();
+  virtual int getStepsDrawn();
+  virtual int getTimeToLiveAfterImpact();
+  virtual bool engulfTarget();
+  virtual int getStepInc();
+  virtual bool needsRotation();
 };
 
 #endif

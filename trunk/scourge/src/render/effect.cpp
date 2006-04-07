@@ -278,32 +278,36 @@ void Effect::drawExplosion(bool proceed) {
 }
 
 void Effect::drawBlast(bool proceed) {
+
   // manage particles
-  for(int i = 0; i < 10; i++) {
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i]) {
-      // create a new particle
       createParticle(&(particle[i]));
-      particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
-      //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
-      particle[i]->moveDelta = 0;
-      particle[i]->rotate = (180.0f * rand()/RAND_MAX);
-      particle[i]->maxLife = 5000;
-      particle[i]->trail = 4;
+      particle[i]->z = (int)(2.0 * rand()/RAND_MAX) + 1.0f;
+      particle[i]->moveDelta = 0.05f + (0.05f * rand()/RAND_MAX);
+      particle[i]->maxLife = (int)( 10.0f * rand() / RAND_MAX ) + 40;
+      particle[i]->zoom = 3;
+      particle[i]->tail = true;
     } else if(proceed) {
-      particle[i]->rotate = (360.0f * rand()/RAND_MAX);
-      
-      // this causes an explosion!
-      if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
       moveParticle(&(particle[i]));
     }
     
     // draw it      
     if(particle[i]) {            
       
-      //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
-      float c = fabs(particle[i]->z - 8) / 8.0f;
-      if(c > 1) c = 1;
-      glColor4f( 0, c / 10.0f, c, 0.5 );
+      float p = particle[i]->life / ( particle[i]->maxLife / 100.0f );
+      float a = ( p < 80.0f ? 0.5f : ( ( 0.5f / 20.0f ) * ( 100.0f - p ) ) );
+      float gg = 1.0f * rand() / RAND_MAX;      
+
+      particle[i]->tailColor.r = gg / ( particle[i]->life / 5.0f );
+      particle[i]->tailColor.g = gg / ( particle[i]->life / 10.0f );
+      particle[i]->tailColor.b = gg;
+      particle[i]->tailColor.a = a;
+
+      glColor4f( particle[i]->tailColor.r, 
+                 particle[i]->tailColor.g, 
+                 particle[i]->tailColor.b, 
+                 particle[i]->tailColor.a );
       
       drawParticle(particle[i]);
     }
@@ -604,7 +608,8 @@ void Effect::drawParticle(ParticleStruct *particle) {
   sh = ( fabs( particle->z - particle->startZ ) / DIV) / 3.0f;
   if(h == 0) h = 0.25 / DIV;
 
-
+  glDisable( GL_CULL_FACE );
+  glEnable( GL_TEXTURE_2D );
   for(int i = 0; i < particle->trail; i++) {
     glPushMatrix();
     
@@ -614,10 +619,8 @@ void Effect::drawParticle(ParticleStruct *particle) {
     glTranslatef( particle->x, particle->y, z );  
     
     // rotate each particle to face viewer
-    //glRotatef(-shape->getZRot(), 0.0f, 0.0f, 1.0f);
-    //glRotatef(-( 90 + shape->getYRot() ), 1.0f, 0.0f, 0.0f);      
     glRotatef(-levelMap->getZRot(), 0.0f, 0.0f, 1.0f);
-    glRotatef(-levelMap->getYRot(), 1.0f, 0.0f, 0.0f);      
+    glRotatef(-levelMap->getYRot(), 1.0f, 0.0f, 0.0f);
     
     if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
     
@@ -629,22 +632,9 @@ void Effect::drawParticle(ParticleStruct *particle) {
     
     if( particle->tail ) {
       glColor4f( particle->tailColor.r, particle->tailColor.g, particle->tailColor.b, particle->tailColor.a );
-      //glDisable( GL_TEXTURE_2D );
       glBegin( GL_QUADS );
-      // front
-      /*
-      glNormal3f(0.0f, 1.0f, 0.0f);
-      if(flameTex) glTexCoord2f( 1.0f, 1.0f );
-      glVertex3f(w/2.0f, 0, -sh);
-      if(flameTex) glTexCoord2f( 0.0f, 1.0f );
-      glVertex3f(-w/2.0f, 0, -sh);
-      if(flameTex) glTexCoord2f( 0.0f, 0.0f );
-      glVertex3f(-w/2.0f, 0, 0);
-      if(flameTex) glTexCoord2f( 1.0f, 0.0f );
-      glVertex3f(w/2.0f, 0, 0);  
-      */
-
-      glNormal3f(0.0f, 1.0f, 0.0f);
+      //glNormal3f(0.0f, 1.0f, 0.0f);
+      glNormal3f( 0, 0, 1 );
       if(flameTex) glTexCoord2f( 1.0f, 1.0f );
       glVertex2f(w/2.0f, -sh );
       if(flameTex) glTexCoord2f( 0.0f, 1.0f );
@@ -653,29 +643,11 @@ void Effect::drawParticle(ParticleStruct *particle) {
       glVertex2f(-w/2.0f, 0 );
       if(flameTex) glTexCoord2f( 1.0f, 0.0f );
       glVertex2f(w/2.0f, 0 );  
-
       glEnd();    
-      //glEnable( GL_TEXTURE_2D );
     }
-      
-    /*
     glBegin( GL_QUADS );
-    // front
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
-    glVertex3f(w/2.0f, 0, -h/2.0f);
-    if(flameTex) glTexCoord2f( 0.0f, 1.0f );
-    glVertex3f(-w/2.0f, 0, -h/2.0f);
-    if(flameTex) glTexCoord2f( 0.0f, 0.0f );
-    glVertex3f(-w/2.0f, 0, h/2.0f);
-    if(flameTex) glTexCoord2f( 1.0f, 0.0f );
-    glVertex3f(w/2.0f, 0, h/2.0f);  
-    glEnd();
-    */
-
-
-    glBegin( GL_QUADS );
-    glNormal3f(0.0f, 1.0f, 0.0f);
+    //glNormal3f(0.0f, 1.0f, 0.0f);
+    glNormal3f( 0, 0, 1 );
     if(flameTex) glTexCoord2f( 1.0f, 1.0f );
     glVertex2f(w/2.0f, -h/2.0f);
     if(flameTex) glTexCoord2f( 0.0f, 1.0f );
@@ -689,4 +661,5 @@ void Effect::drawParticle(ParticleStruct *particle) {
     // reset the model_view matrix
     glPopMatrix();
   }
+
 }
