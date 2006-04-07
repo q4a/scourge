@@ -48,3 +48,27 @@ void EffectProjectileRenderer::endBlending() {
   glDisable( GL_BLEND );
 }
 
+float EffectProjectileRenderer::getZ() { 
+  return 0; 
+}
+
+int EffectProjectileRenderer::getStepsDrawn() { 
+  return -1; 
+}
+
+int EffectProjectileRenderer::getTimeToLiveAfterImpact() { 
+  return timeToLive; 
+}
+
+bool EffectProjectileRenderer::engulfTarget() { 
+  return true; 
+}
+
+int EffectProjectileRenderer::getStepInc() { 
+  return 2; 
+}
+
+bool EffectProjectileRenderer::needsRotation() {
+  return false;
+}
+

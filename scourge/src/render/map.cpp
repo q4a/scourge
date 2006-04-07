@@ -1615,17 +1615,20 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
                                        later->effect->getDamageEffect());
     }
   } else if( later && later->projectile ) {
-    // orient and draw the projectile
-    float f = later->projectile->getAngle() + 90;
-    if(f < 0) f += 360;
-    if(f >= 360) f -= 360;
-    glRotatef( f, 0, 0, 1 );
-    // for projectiles, set the correct camera angle
-    if(later->projectile->getAngle() < 90) {
-      later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
-    } else if(later->projectile->getAngle() < 180) {
-      //((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
-      later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
+    if( later->projectile->getRenderer()->needsRotation() ) { 
+      // orient and draw the projectile
+      float f = later->projectile->getAngle() + 90;
+      if(f < 0) f += 360;
+      if(f >= 360) f -= 360;
+      glRotatef( f, 0, 0, 1 );
+  
+      // for projectiles, set the correct camera angle
+      if(later->projectile->getAngle() < 90) {
+        later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
+      } else if(later->projectile->getAngle() < 180) {
+        //((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
+        later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
+      }
     }
     later->projectile->getRenderer()->draw();
   } else if( later && later->creature && !useShadow ) {
