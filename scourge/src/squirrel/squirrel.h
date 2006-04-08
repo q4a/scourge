@@ -44,7 +44,7 @@ typedef int SQInteger;
 typedef int SQInt32; //must be 32 bits(also on 64bits processors)
 typedef void* SQUserPointer;
 typedef unsigned int SQUnsignedInteger;
-typedef unsigned int SQHash; //should be the same size of a pointer
+typedef unsigned long int SQHash; //should be the same size of a pointer
 typedef SQUnsignedInteger SQBool;
 typedef SQInteger SQRESULT;
 
