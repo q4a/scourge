@@ -21,6 +21,12 @@
 #include "render.h"
 #include "glshape.h"
 #include "effect.h"
+#include <vector>
+
+class Map;
+class RenderedProjectile;
+class Preferences;
+class Shapes;
 
 class ProjectileRenderer {
 public:
@@ -28,6 +34,8 @@ public:
   }
   virtual ~ProjectileRenderer() {
   }
+
+	virtual void drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path ) = 0;
 
   virtual void draw() = 0;
   virtual void setCameraRot( float x, float y, float z ) = 0;
@@ -54,6 +62,8 @@ public:
   virtual ~ShapeProjectileRenderer() {
   }
 
+	virtual void drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path );
+
   virtual inline void draw() { shape->draw(); }
   virtual inline void setCameraRot( float x, float y, float z ) { ((GLShape*)shape)->setCameraRot( x, y, z ); }
   virtual inline bool drawLater() { return shape->drawLater(); }
@@ -61,14 +71,18 @@ public:
   virtual inline void endBlending() { shape->endBlending(); }
 };
 
+#define MAX_EFFECT_COUNT 100
+
 class EffectProjectileRenderer : public ProjectileRenderer {
 private:
-  Effect *effect;
+	Effect** effects;
   int effectType;
   int timeToLive;
 public:
-  EffectProjectileRenderer( Effect *effect, int effectType, int timeToLive );
+  EffectProjectileRenderer( Map *map, Preferences *prefs, Shapes *shapes, int effectType, int timeToLive );
   virtual ~EffectProjectileRenderer();
+
+	virtual void drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path );
 
   virtual void draw();
   virtual void setCameraRot( float x, float y, float z );

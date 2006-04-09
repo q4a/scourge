@@ -178,9 +178,8 @@ void SpellCaster::spellSucceeded() {
                                    session->getShapePalette(),
                                    2, 2 );
       launchProjectile( 1, true, 
-                        new EffectProjectileRenderer( effect, 
-                                                      spell->getEffect(),
-                                                      ( ( battle->getCreature()->getLevel() / 10 ) + 1 ) * 2000 ) );
+                        new EffectProjectileRenderer( session->getMap(), session->getPreferences(), session->getShapePalette(), 
+                                                      spell->getEffect(), 3000 ) );
     }
   } else if(!strcasecmp(spell->getName(), "Unholy Decimator")) {
     causeDamage();
