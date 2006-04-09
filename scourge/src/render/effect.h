@@ -59,7 +59,7 @@ public:
   void setDisplayInfo( DisplayInfo *di );
   
   void deleteParticles();
-  void draw(int effect, int startTime);
+  void draw(int effect, int startTime, float percent=100.0f );
 
   inline GLShape *getShape() { return shape; }
    
@@ -77,7 +77,7 @@ protected:
   void drawDust(bool proceed);
   void drawHail(bool proceed);
   void drawTower(bool proceed);
-  void drawBlast(bool proceed);
+  void drawBlast(bool proceed, float percent);
   
   // particle management
   void createParticle(ParticleStruct **particle);

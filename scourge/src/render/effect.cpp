@@ -94,7 +94,7 @@ void Effect::deleteParticles() {
   }
 }
 
-void Effect::draw(int effect, int startTime) {
+void Effect::draw(int effect, int startTime, float percent) {
   GLint t = SDL_GetTicks();
 
   bool proceed = (lastTimeStamp == 0 || 
@@ -110,7 +110,7 @@ void Effect::draw(int effect, int startTime) {
   } else if(effect == Constants::EFFECT_EXPLOSION) {
     drawExplosion(proceed);
   } else if(effect == Constants::EFFECT_BLAST) {
-    drawBlast(proceed);
+    drawBlast(proceed, percent);
   } else if(effect == Constants::EFFECT_SWIRL) {
     drawSwirl(proceed);
   } else if(effect == Constants::EFFECT_CAST_SPELL) {
@@ -277,15 +277,15 @@ void Effect::drawExplosion(bool proceed) {
   }
 }
 
-void Effect::drawBlast(bool proceed) {
+void Effect::drawBlast(bool proceed, float percent ) {
 
   // manage particles
   for(int i = 0; i < 15; i++) {
     if(!particle[i]) {
       createParticle(&(particle[i]));
-      particle[i]->z = (int)(2.0 * rand()/RAND_MAX) + 0.5f;
+      particle[i]->z = (int)( ( (2.0 * rand()/RAND_MAX) + 0.5f ) * percent );
       particle[i]->moveDelta = 0.05f + (0.05f * rand()/RAND_MAX);
-      particle[i]->maxLife = (int)( 10.0f * rand() / RAND_MAX ) + 5;
+      particle[i]->maxLife = (int)( ( ( 10.0f * rand() / RAND_MAX ) + 5.0f ) * percent );
       particle[i]->zoom = 3;
       particle[i]->tail = true;
       particle[i]->trail = 2;

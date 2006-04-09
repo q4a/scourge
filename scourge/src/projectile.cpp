@@ -111,15 +111,6 @@ Projectile::~Projectile() {
 bool Projectile::atTargetLocation() {
   return ( fabs( ex - sx.back() ) <= 1.0f + DELTA &&
            fabs( ey - sy.back() ) <= 1.0f + DELTA );
-/*
-  return( toint(ex) == toint(sx) && 
-          toint(ey) == toint(sy) );
-*/
-  /*
-  int dx = abs(toint(ex - sx));
-  int dy = abs(toint(ey - sy));
-  return (dx < DELTA && dy < DELTA);
-  */
 }
 
 void Projectile::debug() {
