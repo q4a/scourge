@@ -170,7 +170,7 @@ void SpellCaster::spellSucceeded() {
     hailAttack();
   } else if( !strcasecmp( spell->getName(), "Blast of Fury" ) ) {
     if(projectileHit) {
-      //causeDamage();
+      causeDamage();
     } else {
       Session *session = battle->getSession();
       Effect *effect = new Effect( session->getMap(), 
