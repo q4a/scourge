@@ -1485,9 +1485,9 @@ void Map::drawProjectiles() {
       vector<CVector3> path;
 			for( int i = 0; i < proj->getStepCount(); i++ ) {
 				CVector3 v;
-				v.x = ( ( proj->getX( i ) - (float)getX() ) / DIV );
-				v.y = ( ( proj->getY( i ) - (float)getY() - 1.0f ) / DIV );
-				v.z = proj->getZ( i ) / DIV;
+				v.x = ( ( proj->getX( i ) + proj->getRenderer()->getOffsetX() - (float)getX() ) / DIV );
+				v.y = ( ( proj->getY( i ) - proj->getRenderer()->getOffsetY() - (float)getY() - 1.0f ) / DIV );
+				v.z = ( proj->getZ( i ) + proj->getRenderer()->getOffsetZ() ) / DIV;
 				path.push_back( v );
 			}
 			proj->getRenderer()->drawPath( this, proj, &path );

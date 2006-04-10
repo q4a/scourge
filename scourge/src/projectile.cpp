@@ -86,6 +86,7 @@ Projectile::Projectile(Creature *creature, int x, int y, int w, int d,
 }
 
 void Projectile::commonInit() {
+	this->reachedTarget = false;
   this->timeToLive = 0;
   this->sx.push_back( creature->getX() + (creature->getShape()->getWidth() / 2) );
   this->sy.push_back( creature->getY() - (creature->getShape()->getDepth() / 2) );
@@ -109,8 +110,10 @@ Projectile::~Projectile() {
 }
 
 bool Projectile::atTargetLocation() {
-  return ( fabs( ex - sx.back() ) <= 1.0f + DELTA &&
-           fabs( ey - sy.back() ) <= 1.0f + DELTA );
+	if( reachedTarget ) return true;
+  reachedTarget = ( fabs( ex - sx.back() ) <= 1.0f + DELTA &&
+										fabs( ey - sy.back() ) <= 1.0f + DELTA );
+	return reachedTarget;
 }
 
 void Projectile::debug() {
@@ -121,16 +124,15 @@ void Projectile::debug() {
 bool Projectile::move() {
   // are we at the target location?
   // return false to let the map class handle the attack.
-  if(this->atTargetLocation()) {
+  if( this->atTargetLocation() ) {
     // clamp to target
     sx.push_back( ex );
     sy.push_back( ey );
     return false;
   }
 
-    
   // return true to let this class handle the attack
-  if( steps++ >= maxDist + 2 ) return true;
+  if( !reachedTarget && steps++ >= maxDist + 2 ) return true;
 
   float ssx = sx.back();
   float ssy = sy.back();
@@ -264,15 +266,14 @@ Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, i
 
 void Projectile::moveProjectiles(Session *session) {
   Uint32 t = SDL_GetTicks();
-  if(lastProjectileTick == 0 || 
-     t - lastProjectileTick > (Uint32)(session->getPreferences()->getGameSpeedTicks() / 50)) {
-    lastProjectileTick = t;
+  if( lastProjectileTick == 0 || 
+			t - lastProjectileTick > (Uint32)( session->getPreferences()->getGameSpeedTicks() / 50 ) ) {
+		lastProjectileTick = t;
 
     if( getProjectileMap()->size() == 0 ) return;
 
     map<Projectile*, Creature*> battleProjectiles;
 
-    // draw the projectiles
     vector<Projectile*> removedProjectiles;
 #ifdef DEBUG_MOVEMENT 
     cerr << "Projectiles:" << endl;
@@ -281,8 +282,8 @@ void Projectile::moveProjectiles(Session *session) {
          i != getProjectileMap()->end(); 
          ++i ) {
       vector<RenderedProjectile*> *p = i->second;
-      for(vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
-        Projectile *proj = (Projectile*)(*e);
+      for( vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e ) {
+				Projectile *proj = (Projectile*)(*e);
 
 
         if( proj->timeToLive > 0 ) {
@@ -294,7 +295,7 @@ void Projectile::moveProjectiles(Session *session) {
             ") target: (" << proj->ex << "," << proj->ey << ")" << 
             " target creature: " << ( proj->target ? proj->target->getName() : "NULL" ) << endl;
 #endif
-          if(proj->move()) {
+          if( proj->move() ) {
 #ifdef DEBUG_MOVEMENT 
             cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
 #endif
@@ -306,41 +307,41 @@ void Projectile::moveProjectiles(Session *session) {
           bool blocked = false;
           
           // proj reached the target
-          if( proj->atTargetLocation() ) {
+          if( proj->reachedTarget ) {
             if( proj->getSpell() &&
                 proj->getSpell()->isLocationTargetAllowed()) {
 #ifdef DEBUG_MOVEMENT 
               cerr << "PROJ: reached location target, from=" << proj->getCreature()->getName() << endl;                                
 #endif
-              session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getCurrentX(), (int)proj->getCurrentY());        
-              blocked = true;
+							session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getCurrentX(), (int)proj->getCurrentY());
+							blocked = true;
             } else if( proj->target ) {
   
-              bool b = SDLHandler::intersects( toint( proj->ex ), toint( proj->ey ), 
-                                               toint( 1 + DELTA ), toint( 1 + DELTA ),
-                                               toint( proj->target->getX() ), toint( proj->target->getY() ),
-                                               proj->target->getShape()->getWidth(),
-                                               proj->target->getShape()->getHeight() );
+							bool b = SDLHandler::intersects( toint( proj->ex ), toint( proj->ey ), 
+																							 toint( 1 + DELTA ), toint( 1 + DELTA ),
+																							 toint( proj->target->getX() ), toint( proj->target->getY() ),
+																							 proj->target->getShape()->getWidth(),
+																							 proj->target->getShape()->getHeight() );
 #ifdef DEBUG_MOVEMENT             
-              cerr << "PROJ: checking intersection of " << 
-                "proj: (" << toint( proj->ex ) << "," << toint( proj->ey ) << "," << 
-                toint( 1 + DELTA ) << "," << toint( 1 + DELTA ) << 
-                " and creature: " << toint( proj->target->getX() ) << "," << toint( proj->target->getY() ) << 
-                "," << proj->target->getShape()->getWidth() << "," << proj->target->getShape()->getHeight() <<
-                " intersects? " << b << endl;
-#endif            
-              if( b ) {
-#ifdef DEBUG_MOVEMENT 
-                cerr << "PROJ: attacks target creature, from=" << proj->getCreature()->getName() << endl;
-#endif
-                battleProjectiles[ proj ] = proj->target;
-                blocked = true;
-#ifdef DEBUG_MOVEMENT 
-              } else {
-                cerr << "PROJ: target creature moved?" << endl;
-#endif
-              }
-            }
+							cerr << "PROJ: checking intersection of " << 
+								"proj: (" << toint( proj->ex ) << "," << toint( proj->ey ) << "," << 
+								toint( 1 + DELTA ) << "," << toint( 1 + DELTA ) << 
+								" and creature: " << toint( proj->target->getX() ) << "," << toint( proj->target->getY() ) << 
+								"," << proj->target->getShape()->getWidth() << "," << proj->target->getShape()->getHeight() <<
+								" intersects? " << b << endl;
+#endif            								 	
+							if( b ) {
+#ifdef DEBUG_MOVEMENT 	 						
+								cerr << "PROJ: attacks target creature, from=" << proj->getCreature()->getName() << endl;
+#endif															
+								battleProjectiles[ proj ] = proj->target;
+							}
+							blocked = true;
+#ifdef DEBUG_MOVEMENT 			 	
+						} else {
+							cerr << "PROJ: target creature moved?" << endl;
+#endif													
+						}
           } 
   
           // proj stopped, due to something else
@@ -376,7 +377,7 @@ void Projectile::moveProjectiles(Session *session) {
           }
           
           // remove finished projectiles
-          if( blocked || proj->atTargetLocation() || proj->timeToLive > 0 ) {
+          if( blocked || proj->reachedTarget || proj->timeToLive > 0 ) {
             
 #ifdef DEBUG_MOVEMENT 
             // DEBUG INFO

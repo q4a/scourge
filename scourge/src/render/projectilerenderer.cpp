@@ -30,7 +30,7 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 
 	glPushMatrix();
 	shape->setupToDraw();
-	glTranslatef( last.x, last.y, last.z + ( 7.0f / DIV ) );
+	glTranslatef( last.x, last.y, last.z );
 	glColor4f(1, 1, 1, 0.9f);
 	glDisable( GL_CULL_FACE );
 	((GLShape*)shape)->setCameraPos( map->getXPos(), 
@@ -97,7 +97,7 @@ void EffectProjectileRenderer::drawPath( Map *map,
 	for( int i = 0; i < maxSteps; i++ ) {
 		CVector3 v = (*path)[i];
 		glPushMatrix();
-		glTranslatef( v.x, v.y, v.z + ( 1.0f / DIV ) );
+		glTranslatef( v.x, v.y, v.z );
 		glColor4f( 1, 1, 1, 0.9f );
 		glDisable( GL_CULL_FACE );
 		glEnable( GL_BLEND );
@@ -113,6 +113,6 @@ void EffectProjectileRenderer::drawPath( Map *map,
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);
 		glPopMatrix();
-	}
+	}	
 }
 
