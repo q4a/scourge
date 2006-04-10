@@ -88,7 +88,6 @@ typedef struct _DrawLater {
   Shape *shape;
   RenderedCreature *creature;
   RenderedItem *item;
-  RenderedProjectile *projectile;
   EffectLocation *effect;
   GLuint name;  
   Location *pos;

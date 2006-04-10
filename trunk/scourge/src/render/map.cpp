@@ -829,7 +829,6 @@ void Map::setupPosition(int posX, int posY, int posZ,
     damage[damageCount].item = item;
     damage[damageCount].creature = creature;
     damage[damageCount].effect = effect;
-    damage[damageCount].projectile = NULL;
     damage[damageCount].name = name;
     damage[damageCount].pos = getLocation(posX, posY, posZ);
     damage[damageCount].inFront = false;
@@ -846,7 +845,6 @@ void Map::setupPosition(int posX, int posY, int posZ,
     stencil[stencilCount].shape = shape;
     stencil[stencilCount].item = item;
     stencil[stencilCount].creature = creature;
-    stencil[stencilCount].projectile = NULL;
     stencil[stencilCount].effect = NULL;
     stencil[stencilCount].name = name;
     stencil[stencilCount].pos = getLocation(posX, posY, posZ);
@@ -861,7 +859,6 @@ void Map::setupPosition(int posX, int posY, int posZ,
       other[otherCount].shape = shape;
       other[otherCount].item = item;
       other[otherCount].creature = creature;
-      other[otherCount].projectile = NULL;
       other[otherCount].effect = NULL;
       other[otherCount].name = name;
       other[otherCount].pos = getLocation(posX, posY, posZ);
@@ -875,7 +872,6 @@ void Map::setupPosition(int posX, int posY, int posZ,
       later[laterCount].shape = shape;
       later[laterCount].item = item;
       later[laterCount].creature = creature;
-      later[laterCount].projectile = NULL;
       later[laterCount].effect = NULL;
       later[laterCount].name = name;
       later[laterCount].pos = getLocation(posX, posY, posZ);
@@ -982,7 +978,6 @@ void Map::draw() {
     later2.zpos = (float)(0) / DIV;
     later2.item = NULL;
     later2.creature = NULL;
-    later2.projectile = NULL;
     later2.name = 0;
     later2.pos = NULL;
     later2.effect = NULL;
@@ -1478,8 +1473,6 @@ void Map::sortShapes( DrawLater *playerDrawLater,
 }
 
 void Map::drawProjectiles() {
-  // draw the projectiles
-  DrawLater dl;
   for( map<RenderedCreature*, vector<RenderedProjectile*>*>::iterator i = RenderedProjectile::getProjectileMap()->begin(); 
        i != RenderedProjectile::getProjectileMap()->end(); 
        ++i ) {
@@ -1498,44 +1491,6 @@ void Map::drawProjectiles() {
 				path.push_back( v );
 			}
 			proj->getRenderer()->drawPath( this, proj, &path );
-
-			/*
-      // draw it
-      if( proj->getRenderer()->drawLater() ) {
-        glEnable(GL_BLEND);
-        glDepthMask(GL_FALSE);
-        proj->getRenderer()->setupBlending();
-      }
-      int firstStepIndex = proj->getStepCount() - 1;
-      int steps = proj->getRenderer()->getStepsDrawn();
-      if( steps < 0 ) steps = firstStepIndex;
-      int lastStep = ( steps <= 1 ? firstStepIndex : firstStepIndex - steps );
-      for( int i = firstStepIndex; i >= lastStep; i-=proj->getRenderer()->getStepInc() ) {
-
-        float px = proj->getX( i );
-        float py = proj->getY( i );
-        float pz = proj->getZ( i ) + proj->getRenderer()->getZ();
-
-        dl.xpos = ( ( px - (float)getX() ) / DIV );
-        dl.ypos = ( ( py - (float)getY() - 1.0f ) / DIV );
-        dl.zpos = pz / DIV;
-        dl.shape = NULL;
-        dl.creature = NULL;
-        dl.item = NULL;
-        dl.effect = NULL;
-        dl.inFront = false;
-        dl.projectile = proj;
-        dl.name = 0;
-        dl.pos = NULL;
-
-        doDrawShape(&dl);
-      }
-      if( proj->getRenderer()->drawLater() ) {
-        proj->getRenderer()->endBlending();
-        glDisable(GL_BLEND);
-        glDepthMask(GL_TRUE);
-      }
-			*/
     }
   }
 }
@@ -1627,23 +1582,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
     }
-  } else if( later && later->projectile ) {
-    if( later->projectile->getRenderer()->needsRotation() ) { 
-      // orient and draw the projectile
-      float f = later->projectile->getAngle() + 90;
-      if(f < 0) f += 360;
-      if(f >= 360) f -= 360;
-      glRotatef( f, 0, 0, 1 );
-  
-      // for projectiles, set the correct camera angle
-      if(later->projectile->getAngle() < 90) {
-        later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot + later->projectile->getAngle() + 90);
-      } else if(later->projectile->getAngle() < 180) {
-        //((GLShape*)shape)->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
-        later->projectile->getRenderer()->setCameraRot(xrot, yrot, zrot - later->projectile->getAngle());
-      }
-    }
-    later->projectile->getRenderer()->draw();
   } else if( later && later->creature && !useShadow ) {
     if(later->creature->getStateMod(Constants::invisible)) {
       glColor4f(0.3, 0.8f, 1.0f, 1.0f);    
