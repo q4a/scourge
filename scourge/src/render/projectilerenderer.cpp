@@ -33,9 +33,6 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 	glTranslatef( last.x, last.y, last.z + ( 7.0f / DIV ) );
 	glColor4f(1, 1, 1, 0.9f);
 	glDisable( GL_CULL_FACE );
-	((GLShape*)shape)->setCameraRot( map->getXRot(), 
-																	 map->getYRot(),
-																	 map->getZRot() );
 	((GLShape*)shape)->setCameraPos( map->getXPos(), 
 																	 map->getYPos(), 
 																	 map->getZPos(), 
@@ -56,6 +53,10 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 		((GLShape*)shape)->setCameraRot( map->getXRot(), 
 																		 map->getYRot(),
 																		 map->getZRot() - proj->getAngle() );		
+	} else {
+		((GLShape*)shape)->setCameraRot( map->getXRot(), 
+																		 map->getYRot(),
+																		 map->getZRot() );
 	}
 
 	if( shape->drawLater() ) {
@@ -88,54 +89,12 @@ EffectProjectileRenderer::~EffectProjectileRenderer() {
 	free( effects );
 }
 
-void EffectProjectileRenderer::draw() {
-}
-
-void EffectProjectileRenderer::setCameraRot( float x, float y, float z ) {
-}
-
-bool EffectProjectileRenderer::drawLater() {
-  return true;
-}
-
-void EffectProjectileRenderer::setupBlending() {
-  //glEnable( GL_BLEND );
-  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-}
-
-void EffectProjectileRenderer::endBlending() {
-  glDisable( GL_BLEND );
-}
-
-float EffectProjectileRenderer::getZ() { 
-  return 0; 
-}
-
-int EffectProjectileRenderer::getStepsDrawn() { 
-  return 3; 
-}
-
-int EffectProjectileRenderer::getTimeToLiveAfterImpact() { 
-  return timeToLive; 
-}
-
-bool EffectProjectileRenderer::engulfTarget() { 
-  return true; 
-}
-
-int EffectProjectileRenderer::getStepInc() { 
-  return 2; 
-}
-
-bool EffectProjectileRenderer::needsRotation() {
-  return false;
-}
-
 void EffectProjectileRenderer::drawPath( Map *map, 
 																				 RenderedProjectile *proj, 
 																				 std::vector<CVector3> *path ) {
-	for( int i = 0; i < (int)path->size() && i < MAX_EFFECT_COUNT; i++ ) {
+	int maxSteps = (int)path->size();
+	if( maxSteps > MAX_EFFECT_COUNT ) maxSteps = MAX_EFFECT_COUNT;
+	for( int i = 0; i < maxSteps; i++ ) {
 		CVector3 v = (*path)[i];
 		glPushMatrix();
 		glTranslatef( v.x, v.y, v.z + ( 1.0f / DIV ) );
@@ -145,10 +104,15 @@ void EffectProjectileRenderer::drawPath( Map *map,
 		glDepthMask( GL_FALSE );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
-		effects[i]->draw( effectType, 0, ( (float)i / (float)( path->size() ) ) );
+		float percent = (float)i / (float)maxSteps;
+		if( percent > 0.5f ) {
+			percent += ( percent - 0.5f );
+		}
+		effects[i]->draw( effectType, 0, percent );
 		
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);
 		glPopMatrix();
 	}
 }
+
