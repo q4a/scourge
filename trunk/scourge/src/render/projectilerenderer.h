@@ -37,6 +37,9 @@ public:
 
 	virtual void drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path ) = 0;
 	virtual int getTimeToLiveAfterImpact() = 0;
+	virtual float getOffsetX() = 0;
+	virtual float getOffsetY() = 0;
+	virtual float getOffsetZ() = 0;
 };
 
 class ShapeProjectileRenderer : public ProjectileRenderer {
@@ -52,6 +55,9 @@ public:
 
 	virtual void drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path );
 	virtual inline int getTimeToLiveAfterImpact() { return 0; }
+	virtual inline float getOffsetX() { return 0; }
+	virtual inline float getOffsetY() { return 0; }
+	virtual inline float getOffsetZ() { return 7; }
 };
 
 #define MAX_EFFECT_COUNT 100
@@ -67,6 +73,9 @@ public:
 
 	virtual void drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path );
 	virtual inline int getTimeToLiveAfterImpact() { return timeToLive; }
+	virtual inline float getOffsetX() { return -1; }
+	virtual inline float getOffsetY() { return 0; }
+	virtual inline float getOffsetZ() { return 1; }
 };
 
 #endif

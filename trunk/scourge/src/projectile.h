@@ -52,6 +52,7 @@ class Projectile : public RenderedProjectile {
   bool stopOnImpact;
   bool seeker;
   Uint32 timeToLive;
+	bool reachedTarget;
 
   static Uint32 lastProjectileTick;
   
