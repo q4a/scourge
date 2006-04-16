@@ -5,6 +5,8 @@
 # skill groups
 # ===================================================================
 # Skills: name,symbol,descriptions (symbol is used to name enchanted items)
+# Note: the group and skill names cannot be changed (referenced in code)
+#
 G:BASIC_GROUP
 S:SPEED,Dragon,Speed determines how fast the character is able to cast a spell or swing a sword.
 S:COORDINATION,Wolf,More coordinated characters are able to deflect more damage using armor.
@@ -58,8 +60,30 @@ S:MOVE_UNDETECTED,Silence,With the aid of this skill you can move without your e
 S:STEALING,Thief,The higher you progress in this still the better you're able to lift items from merchants.
 
 
+
+
+
+# ===================================================================
+# Item tag descriptions. This is optional, 
+# it is used to display a profession's item-use limitations.
+#
+# Key: T:tag-name,tag-description
+#
+T:TWO_HANDED,two-handed weapons
+T:LARGE,large weapons or armor
+T:METAL,weapons or armor made of metal
+T:MACE,bludgeoning weapons
+T:SMALL,small weapons or armor
+T:SMALL_RANGED,small ranged weapons
+T:ROBES,robes
+T:PLATE,plate-mail
+
+
+
+
+# ===================================================================
 # Key:
-# P: name of profession : parent profession (can be a list), min level req
+# P: name of profession : parent profession (can be a list), min level req, starting hp, starting mp, level progression
 # D: description
 # G: skill group bonus
 # S: individual skill bonus
@@ -74,7 +98,7 @@ S:STEALING,Thief,The higher you progress in this still the better you're able to
 # ===================================================================
 # ===================================================================
 # ===================================================================
-P:Man-at-arms,0
+P:Man-at-arms,0,10,0,400
 D:description goes here
 G:FIGHT_GROUP,10
 G:DEFEND_GROUP,10
@@ -167,7 +191,7 @@ G:LORE_GROUP,15
 C:Minor Aura of Fear
 C:Strict Moral Code
 
-P:Fighting Guardian of Truth,Primus Lictor,40
+P:Fighting Guardian of Truth:Primus Lictor,40
 D:description goes here
 S:FIGHT_GROUP,85
 G:DEFEND_GROUP,80
@@ -177,7 +201,7 @@ C:Aura of Fear
 C:Improved Magic Resistance
 C:Weapon Level Bonus
 
-P:Supreme Executioner,Primus Lictor,40
+P:Supreme Executioner:Primus Lictor,40
 D:description goes here
 S:FIGHT_GROUP,80
 G:DEFEND_GROUP,90
@@ -196,7 +220,7 @@ G:LORE_GROUP,20
 C:Healing Aura
 C:Strict Moral Code
 
-P:Learned Battle Master,Lightbringer Warrior,40
+P:Learned Battle Master:Lightbringer Warrior,40
 D:description goes here
 S:FIGHT_GROUP,75
 G:DEFEND_GROUP,95
@@ -206,7 +230,7 @@ C:Exploit Lore
 C:Superior Healing Aura
 C:Superior Weapon Finesse
 
-P:Planar Ally Knight,Lightbringer Warrior,40
+P:Planar Ally Knight:Lightbringer Warrior,40
 D:description goes here
 S:FIGHT_GROUP,80
 G:DEFEND_GROUP,95
@@ -227,14 +251,14 @@ G:STEALTH_GROUP,10
 W:TWO_HANDED-
 A:PLATE-
 
-P:Mercenary,Wandering Hand,20
+P:Mercenary:Wandering Hand,20
 D:description goes here
 G:FIGHT_GROUP,35
 G:DEFEND_GROUP,40
 G:STEALTH_GROUP,15
 C:Weapon Finesse
 
-P:Veteran Soldier of Fortune,Mercenary,30
+P:Veteran Soldier of Fortune:Mercenary,30
 D:description goes here
 G:FIGHT_GROUP,60
 G:DEFEND_GROUP,50
@@ -242,7 +266,7 @@ G:STEALTH_GROUP,20
 C:Weapon Level Bonus
 C:Killer Blow
 
-P:Elite Old Hand,Veteran Soldier of Fortune,40
+P:Elite Old Hand:Veteran Soldier of Fortune,40
 D:description goes here
 G:FIGHT_GROUP,90
 G:DEFEND_GROUP,85
@@ -251,7 +275,7 @@ C:Weapon Level Bonus
 C:Superior Weapon Calling
 C:Heal Command Word
 
-P:Mastermind Commander,Veteran Soldier of Fortune,40
+P:Mastermind Commander:Veteran Soldier of Fortune,40
 D:description goes here
 G:FIGHT_GROUP,85
 G:DEFEND_GROUP,85
@@ -260,7 +284,7 @@ C:Superior Leadership Bonus
 C:Aura of Fear
 C:Superior War-rage
 
-P:Assassin,Mercenary,30
+P:Assassin:Mercenary,30
 D:description goes here
 G:FIGHT_GROUP,55
 G:DEFEND_GROUP,55
@@ -270,7 +294,7 @@ C:Shadow-walk
 W:LARGE-
 A:METAL-
 
-P:Master Assassin,Assassin,40
+P:Master Assassin:Assassin,40
 D:description goes here
 G:FIGHT_GROUP,80
 G:DEFEND_GROUP,80
@@ -279,7 +303,7 @@ C:Superior Silent Kill
 C:Shadow-soul
 C:Unseen servant
 
-P:Spy Mastermind,Assassin,40
+P:Spy Mastermind:Assassin,40
 D:description goes here
 G:FIGHT_GROUP,70
 G:DEFEND_GROUP,75
@@ -288,7 +312,7 @@ C:Weapon Level Bonus
 C:Superior Adaptive Mind
 C:Leadership bonus
 
-P:Outdoorsman,Wandering Hand,20
+P:Outdoorsman:Wandering Hand,20
 D:description goes here
 G:FIGHT_GROUP,35
 G:DEFEND_GROUP,35
@@ -388,7 +412,7 @@ A:PLATE-
 # ===================================================================
 # ===================================================================
 # ===================================================================
-P:Magician,0
+P:Magician,0,2,8,600
 D:description goes here
 G:FIGHT_GROUP,2
 G:DEFEND_GROUP,2
@@ -400,7 +424,7 @@ A:*-,ROBES+
 # ===================================================================
 # ===================================================================
 # ===================================================================
-P:Healer,0
+P:Healer,0,4,6,550
 D:description goes here
 G:FIGHT_GROUP,8
 G:DEFEND_GROUP,10
@@ -412,7 +436,7 @@ A:*+
 # ===================================================================
 # ===================================================================
 # ===================================================================
-P:Scholar,0
+P:Scholar,0,5,5,500
 D:description goes here
 G:FIGHT_GROUP,6
 G:DEFEND_GROUP,6
@@ -424,12 +448,13 @@ A:*+
 # ===================================================================
 # ===================================================================
 # ===================================================================
-P:Cutpurse,0
+P:Cutpurse,0,8,2,450
 D:description goes here
 G:FIGHT_GROUP,8
 G:DEFEND_GROUP,8
 G:STEALTH_GROUP,10
 W:*+,TWO_HANDED-,LARGE-
 A:*+,METAL-
+
 
 
