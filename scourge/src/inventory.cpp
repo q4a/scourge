@@ -493,8 +493,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     if( scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
         scourge->getParty()->getParty(selected)->getUsedSkillPoints() == 0 ) {
       error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-    } else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 
-              scourge->getParty()->getParty(selected)->getCharacter()->getSkillBonus()) {
+//    } else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 
+//              scourge->getParty()->getParty(selected)->getCharacter()->getSkillBonus()) {
       //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
     } else {
       int itemIndex = skillList->getSelectedLine();  
@@ -855,23 +855,17 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       }
 
 
-      int adj = selectedP->getLevelAdjustedSkill( t, true );
-      bool isMax = adj == selectedP->getCharacter()->getMaxSkillLevel( t );
-      bool isMin = adj == selectedP->getCharacter()->getMinSkillLevel( t );
-      sprintf(skillLine[t], "%d(%d)(%d %% %s) - %s", 
+      int maxSkill = selectedP->getCharacter()->getSkill( t );
+      bool isMax = ( maxSkill >= 0 && selectedP->getSkill(t) == maxSkill );
+      sprintf(skillLine[t], "%d(%d)%s - %s", 
               selectedP->getSkill(t), 
               selectedP->getSkillMod(t), 
-              adj,
-              ( isMax ? " MAX" : ( isMin ? " MIN" : "" ) ),
+              ( isMax ? " (MAX)" : "" ),
               Constants::SKILL_NAMES[t]);
       if( isMax ) {
         skillColor[t].r = 0;
         skillColor[t].g = 0.75f;
         skillColor[t].b = 1;
-      } else if( isMin ) {
-        skillColor[t].r = 0;
-        skillColor[t].g = 1;
-        skillColor[t].b = 0.75f;
       }
     }
     skillList->setLines( Constants::SKILL_COUNT, 

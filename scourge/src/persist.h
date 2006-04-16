@@ -22,9 +22,9 @@
 
 class File;
 
-#define PERSIST_VERSION 10
+#define PERSIST_VERSION 11
 
-#define OLDEST_HANDLED_VERSION 7
+#define OLDEST_HANDLED_VERSION 11
 
 typedef struct _DiceInfo {
   Uint32 version;

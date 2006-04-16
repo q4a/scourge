@@ -349,7 +349,9 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   // the end of startMission would have to be modified to not delete the party
   // also in scourge, where-ever creatureCount is used to mean all monsters would have
   // to change (maybe that's a good thing too... same logic for party and monsters)
-  pc[0] = new Creature(session, Character::getCharacterByName("Assassin"), strdup("Alamont"), 0, false);
+  pc[0] = new Creature(session, 
+                       Character::getRandomCharacter(), 
+                       strdup("Alamont"), 0, false);
   pc[0]->setLevel(level); 
   pc[0]->setExp();
   pc[0]->setHp();
@@ -358,7 +360,9 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[0]->setThirst(7); 
   pc[0]->setStateMod(Constants::blessed, true);
 
-  pc[1] = new Creature(session, Character::getCharacterByName("Knight"), strdup("Barlett"), 0, false);
+  pc[1] = new Creature(session, 
+                       Character::getRandomCharacter(), 
+                       strdup("Barlett"), 0, false);
   pc[1]->setLevel(level); 
   pc[1]->setExp();
   pc[1]->setHp();
@@ -368,7 +372,9 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[1]->setStateMod(Constants::drunk, true);
   pc[1]->setStateMod(Constants::cursed, true);      
 
-  pc[2] = new Creature(session, Character::getCharacterByName("Summoner"), strdup("Corinus"), 0, false);
+  pc[2] = new Creature(session, 
+                       Character::getRandomCharacter(), 
+                       strdup("Corinus"), 0, false);
   pc[2]->setLevel(level); 
   pc[2]->setExp();
   pc[2]->setHp();
@@ -381,7 +387,9 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   //  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
   //  	if(i != Constants::dead) pc[2]->setStateMod(i, true);
 
-  pc[3] = new Creature(session, Character::getCharacterByName("Naturalist"), strdup("Dialante"), 0, false);
+  pc[3] = new Creature(session, 
+                       Character::getRandomCharacter(), 
+                       strdup("Dialante"), 0, false);
   pc[3]->setLevel(level); 
   pc[3]->setExp();
   pc[3]->setHp();
@@ -393,10 +401,10 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   // compute starting skill levels
   for(int i = 0; i < pcCount; i++) {
     for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
-      int n = pc[i]->getCharacter()->getMinSkillLevel(skill) + level * (int)(10.0 * rand()/RAND_MAX);
+      int n = level * (int)(10.0 * rand()/RAND_MAX);
       if(n > 99) n = 99;
-      if(n > pc[i]->getCharacter()->getMaxSkillLevel(skill)) 
-        n = pc[i]->getCharacter()->getMaxSkillLevel(skill);
+      int maxSkill = pc[i]->getCharacter()->getSkill( skill );
+      if( maxSkill >= 0 && n > maxSkill ) n = maxSkill;
       pc[i]->setSkill(skill, n);
     }
   }

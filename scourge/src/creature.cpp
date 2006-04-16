@@ -30,8 +30,6 @@
 
 using namespace std;
 
-#define MIN_SKILL_LEVEL 20
-
 //#define DEBUG_CAPABILITIES
 
 #define MOVE_DELAY 7
@@ -58,16 +56,15 @@ static const Sint16 layout[][4][2] = {
 // Describes monster toughness in general
 typedef struct _MonsterToughness {
   float minSkillBase, maxSkillBase;
-  float minSkillF, maxSkillF;
   float minHpMpBase, maxHpMpBase;
   float armorMisfuction;
 } MonsterToughness;
 
 // goes from not very tough to tough 
 MonsterToughness monsterToughness[] = {
-  {  .5f,  1,    0,  .5f,   .7f,      1,  .33f },
-  { .75f,  1, .25f, .75f,  .75f,      1,  .15f },
-  { .75f,  1,  .5f,    1,  .75f,  1.25f,   .5f }
+  {  .5f,  1,     .7f,      1,  .33f },
+  { .75f,  1,    .75f,      1,  .15f },
+  { .75f,  1,    .75f,  1.25f,   .5f }
 };
 
 #define roll(min, max) ( ( ( max - min ) * rand() / RAND_MAX ) + min )
@@ -1410,7 +1407,7 @@ int Creature::addExperience(int delta) {
     hp += character->getStartingHp();
     mp += character->getStartingMp();
     calculateExpOfNextLevel();
-    availableSkillPoints += character->getSkillBonus();
+    // availableSkillPoints += character->getSkillBonus();
     char message[255];
     sprintf( message, "  %s levels up!", getName() );
     session->getGameAdapter()->startTextEffect( message );
@@ -1467,12 +1464,7 @@ void Creature::monsterInit() {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
     if( n > 0 ) {
-      // assume n is given in %. Convert to point value.
-      float value = (float)MIN_SKILL_LEVEL + 
-        ( (float)(getLevel()) * 
-          ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL );
-      value *= ( (float)n / 100.0f );
-      setSkill( i, toint( value ) );
+      setSkill( i, n );
     } else {
       setSkill( i, rollStartingSkill( session, getLevel(), true ) );
     }
@@ -1526,8 +1518,9 @@ void Creature::monsterInit() {
 
 // only for characters: leveling up
 bool Creature::incSkillMod(int index) {
-  if(!availableSkillPoints || 
-     getSkill(index) + skillMod[index] >= character->getMaxSkillLevel(index)) return false;
+  int maxSkill = character->getSkill( index );
+  if( !availableSkillPoints || 
+      ( maxSkill >= 0 && getSkill(index) + skillMod[index] >= maxSkill ) ) return false;
   availableSkillPoints--;
   skillMod[index]++;
   usedSkillPoints++;
@@ -2141,7 +2134,7 @@ void Creature::calcArmor( float *armorP,
                    ( getSkill( Constants::getSkillByName( "COORDINATION" ) ) +
                      getSkill( Constants::getSkillByName( "SPEED" ) ) ) / 25.0f );
     int armorLevel=0, armorCount=0;
-    int armorSkill = getLevelAdjustedSkill( Constants::getSkillByName( "COORDINATION" ), includeSkillMod );
+    int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ), includeSkillMod );
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
@@ -2156,7 +2149,7 @@ void Creature::calcArmor( float *armorP,
           armorLevel += 
             ( item->getLevel() + 
               ( item->isMagicItem() ? item->getBonus() : 0 ) );
-          armorSkill += getLevelAdjustedSkill( item->getRpgItem()->getSkill() > -1 ? 
+          armorSkill += getSkill( item->getRpgItem()->getSkill() > -1 ? 
                                                item->getRpgItem()->getSkill() :
                                                Constants::getSkillByName( "HAND_DEFEND" ), 
                                                includeSkillMod );
@@ -2175,7 +2168,7 @@ void Creature::calcArmor( float *armorP,
                         (float)armorSkill / (float)armorCount :
                         (float)armorSkill );
     (*avgArmorSkillP) += 
-      ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
+      ( getSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
 
     lastArmor = *armorP;
     lastArmorLevel = *avgArmorLevelP;
@@ -2193,15 +2186,15 @@ float Creature::getAttackPercent( Item *weapon,
                                   float *itemLevelP,
                                   bool includeSkillMod ) {
   float skill = 
-    getLevelAdjustedSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
+    getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
                            Constants::getSkillByName( "COORDINATION" ) :
                            Constants::getSkillByName( "POWER" ), includeSkillMod ) +
-    getLevelAdjustedSkill( weapon ? 
+    getSkill( weapon ? 
                            weapon->getRpgItem()->getSkill() :
                            Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ), includeSkillMod );
   skill /= 2.0f;
 
-  skill += ( getLevelAdjustedSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
+  skill += ( getSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
   if( skillP ) *skillP = skill;
 
   float itemLevel = 
@@ -2246,46 +2239,22 @@ float Creature::getAttackPercent( Item *weapon,
   return total;
 }
 
-/**
- * @return a % of skill level, taking into account the creature's level.
- */
-int Creature::getLevelAdjustedSkill( int skill, bool includeSkillMod ) {
-  float total = (float)MIN_SKILL_LEVEL + ( ((float)getLevel()) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL );
-  float one = total / 100.0f;
-  int value = (int)( (float)( getSkill( skill, includeSkillMod ) ) / one ); 
-
-  if( character ) {
-    int min = character->getMinSkillLevel( skill );
-    if( value < min ) return min;
-    int max = character->getMaxSkillLevel( skill );
-    if( value > max ) return max;
-  }
-  return value;
-}
-
 /** 
  * Roll a reasonable stating skill level.
  * Monsters are made less powerful than PC-s. 
  * This can be changed by specifying monster skill values in creatures.txt.
  */
-int Creature::rollStartingSkill( Session *session, int level, bool isMonster ) {
-  float f = ((float)level) * ( 100.0f - (float)MIN_SKILL_LEVEL ) / (float)MAX_LEVEL;
-  if( isMonster ) {
-    // 50-100 ofmin and 0-50 of f
-    return (int)
-    ( ( (float)MIN_SKILL_LEVEL * 
-        roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minSkillBase,
-              monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxSkillBase ) ) +
-      ( f * roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minSkillF,
-                  monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxSkillF ) ) );
-//    return (int)( (float)MIN_SKILL_LEVEL - 
-//                  ( MIN_SKILL_LEVEL * ( 0.5f * rand() / RAND_MAX ) ) + 
-//                  ( f * 0.5f * rand() / RAND_MAX ) );
-  } else {
-    // 100 ofmin and 50-100 of f
-    return (int)( (float)MIN_SKILL_LEVEL + 
-                  f * 0.5 + ( f * 0.5f * rand() / RAND_MAX ) );
-  }
+int Creature::rollStartingSkill( Session *session, int level, int skill, bool isMonster ) {
+	if( Constants::getGroupForSkill( skill ) == Constants::BASIC_GROUP ) {
+		return 50 + (int)( 25.0f * rand() / RAND_MAX );
+	} else {
+		if( isMonster ) {
+			MonsterToughness *mt = &(monsterToughness[ session->getPreferences()->getMonsterToughness() ]);
+			return (int)( ( level / (float)MAX_LEVEL ) * 100.0f * roll( mt->minSkillBase, mt->maxSkillBase ) );
+		} else {
+			return (int)( ( level / (float)MAX_LEVEL ) * ( ( 50.0f * rand() / RAND_MAX ) + 50.0f ) );
+		}
+	}
 }
 
 /**
@@ -2437,16 +2406,15 @@ cerr << "RA=" << Character::getCharacterIndexByShortName("RA") <<
   " all acl=" << item->getRpgItem()->getAllAcl() << endl;
 */
 
+    cerr << "FIXME: Creature::canEquipItem()" << endl;
+    /*
     if(!item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName()))) {
-      //scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_ACL_VIOLATION));
-      //scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
       return Constants::getMessage(Constants::ITEM_ACL_VIOLATION);
     }
     if( item->getLevel() > getLevel() ) {
-      //scourge->showMessageDialog(Constants::getMessage(Constants::ITEM_LEVEL_VIOLATION));
-      //scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
       return Constants::getMessage(Constants::ITEM_LEVEL_VIOLATION);
     }
+    */
   }
 
   // two handed weapon violations

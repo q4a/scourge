@@ -24,7 +24,6 @@ using namespace std;
 
 ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
   this->session = session;
-  skillCount = 0;
   strcpy( aboutText, "" );
 }
 
@@ -147,26 +146,7 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
   if( super != -1 ) return super;
 
   char line[255];
-  if(n == 'S') {
-    // skip ':'
-    fgetc(fp);
-    n = Constants::readLine(line, fp);
-    
-    char *p = strtok( line, "," );
-    Constants::SKILL_NAMES[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
-    strcpy( Constants::SKILL_NAMES[ skillCount ], p );
-
-    p = strtok( NULL, "," );
-    Constants::SKILL_SYMBOL[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
-    strcpy( Constants::SKILL_SYMBOL[ skillCount ], p );
-    
-    p = strtok( NULL, "," );
-    Constants::SKILL_DESCRIPTION[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
-    strcpy( Constants::SKILL_DESCRIPTION[ skillCount ], p );
-    
-    skillCount++;
-    return n;
-  } else if( n == 'A' ) {
+	if( n == 'A' ) {
     fgetc(fp);
     n = Constants::readLine(line, fp);
     if( strlen( aboutText ) ) strcat( aboutText, " " );

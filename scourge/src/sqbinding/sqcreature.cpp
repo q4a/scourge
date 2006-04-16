@@ -190,14 +190,14 @@ int SqCreature::_getSkillByName( HSQUIRRELVM vm ) {
 int SqCreature::_getSkillPercent( HSQUIRRELVM vm ) {
   GET_INT( index )
   GET_OBJECT( Creature* )
-  sq_pushinteger( vm, _SC( object->getLevelAdjustedSkill( index ) ) );
+  sq_pushinteger( vm, _SC( object->getSkill( index ) ) );
   return 1;
 }
 
 int SqCreature::_getSkillByNamePercent( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 )
   GET_OBJECT( Creature* )
-  sq_pushinteger( vm, _SC( object->getLevelAdjustedSkill( Constants::getSkillByName( (char*)name ) ) ) );
+  sq_pushinteger( vm, _SC( object->getSkill( Constants::getSkillByName( (char*)name ) ) ) );
   return 1;
 }
 

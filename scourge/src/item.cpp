@@ -426,6 +426,7 @@ void Item::initItems(ShapePalette *shapePal) {
                           tileX - 1, tileY - 1, maxBonusSkill );
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   
+      /*
     } else if(n == 'A' && last) {
       // skip ':'
       fgetc(fp);
@@ -446,6 +447,7 @@ void Item::initItems(ShapePalette *shapePal) {
         }
         p = strtok(NULL, ",");
       }
+      */
     } else if(n == 'S') {
       fgetc(fp);
       n = Constants::readLine(line, fp);
