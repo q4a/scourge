@@ -90,7 +90,7 @@ bool CombatTest::executeTests( Session *session, char *path ) {
   weapon = equipItem( session, attacker, "Long sword", 1 );
   items.push_back( weapon );
   for( int i = 0; i < (int)Character::character_list.size(); i++ ) {
-    Creature *c = createCharacter( session, Character::character_list[i]->getShortName(), "Defender", 1 );
+    Creature *c = createCharacter( session, Character::character_list[i]->getName(), "Defender", 1 );
     creatures.push_back( c );
     items.push_back( equipItem( session, c, "Horned helmet", 1 ) );
     items.push_back( equipItem( session, c, "Leather Armor", 1 ) );
@@ -265,10 +265,6 @@ void CombatTest::printInventory( FILE *fp, Creature *creature ) {
              <td bgcolor=%s>%d</td>", 
              Constants::SKILL_NAMES[ i ], color, n );    
 
-    fprintf( fp, "<td>%d - %d</td>",
-             creature->getCharacter()->getMinSkillLevel( i ),
-             creature->getCharacter()->getMaxSkillLevel( i ) );
-
     fprintf( fp, "</tr>\n" );
   }
   fprintf( fp, "</table>\n" );
@@ -289,8 +285,7 @@ Creature *CombatTest::createCharacter( Session *session,
                                        char *name,
                                        int level ) {
   Character *character = 
-    Character::
-    getCharacterByShortName( characterShortName );
+    Character::getRandomCharacter();
   Creature *c = 
     new Creature( session, 
                   character, 
@@ -313,15 +308,13 @@ Creature *CombatTest::createCharacter( Session *session,
   return c;
 }
 
+// FIXME: made to compile but is non-sensical
 void CombatTest::setMinSkills( Creature *c ) {
   // starting skills
-  Character *character = c->getCharacter();
+  //Character *character = c->getCharacter();
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    int n = character->getMinSkillLevel(i) + 
-      c->getLevel() * character->getSkillBonus();
+    int n = c->getLevel() * 10;
     if(n > 99) n = 99;
-    if(n > character->getMaxSkillLevel( i )) 
-      n = character->getMaxSkillLevel( i );
     c->setSkill( i, n );
   }
 }

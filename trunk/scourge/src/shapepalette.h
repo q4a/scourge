@@ -43,8 +43,6 @@ typedef struct _MapGridLocation {
 
 class ShapePalette : public Shapes {
 private:
-  int skillCount;
-  //GLuint paper_doll_texture;
   GLuint gui_texture, gui_wood_texture, gui_texture2;
   std::map<int, GLuint> statModIcons;
 

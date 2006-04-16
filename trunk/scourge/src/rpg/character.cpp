@@ -20,14 +20,13 @@
 using namespace std;
 
 map<string, Character*> Character::character_class;
-map<string, Character*> Character::character_class_short;
-map<string, int> Character::character_index_short;
 vector<Character*> Character::character_list;
+vector<Character*> Character::rootCharacters;
 
 void Character::initCharacters() {
   char errMessage[500];
   char s[200];
-  sprintf(s, "%s/world/characters.txt", rootDir);
+  sprintf(s, "%s/world/professions.txt", rootDir);
   FILE *fp = fopen(s, "r");
   if(!fp) {        
     sprintf(errMessage, "Unable to find the file: %s!", s);
@@ -36,84 +35,150 @@ void Character::initCharacters() {
   }
 
   Character *last = NULL;
+	int lastGroup = 0;
+  char compoundName[255];
   char name[255];
-  char line[255], shortName[10];
-  int index = 0;
+  char parent[255];
+  char line[255], dupLine[255];
   int n = fgetc(fp);
   while(n != EOF) {
-    if(n == 'C') {
+    if(n == 'P') {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
       n = Constants::readLine(line, fp);
 
-      strcpy(name, strtok(line, ","));
-      int hp =  atoi(strtok(NULL, ","));
-      int mp =  atoi(strtok(NULL, ","));
-      int skill_bonus =  atoi(strtok(NULL, ","));
-      int level_progression = atoi(strtok(NULL, ","));
-      strcpy(shortName, strtok(NULL, ","));
-      float baseAttackBonus = (float)atof( strtok( NULL, "," ) );
-      int extraAttackLevel = atoi(strtok(NULL, ","));
+      // find the name and the parent
+      strcpy( dupLine, line );
+      strcpy( compoundName, strtok( dupLine, "," ) );      
+      strcpy( name, strtok( compoundName, ":" ) );
+      char *p = strtok( NULL, ":" );
+      if( p ) {
+        strcpy( parent, p );
+      } else {
+        strcpy( parent, "" );
+      }      
+      
+      int minLevelReq, hp, mp, levelProgression;
+      minLevelReq = hp = mp = levelProgression = 0;
+      p = strtok( line, "," );
+      if( p ) {
+        // ignore the first token
+        p = strtok( NULL, "," );
+        if( p ) {
+          minLevelReq = atoi( p );
+          p = strtok( NULL, "," );
+          if( p ) {
+            hp = atoi( p );
+            mp = atoi( strtok( NULL, "," ) );
+            levelProgression = atoi(strtok(NULL, ","));
+          }
+        }
+      }
 
-      /*
       cerr << "adding character class: " << name << 
-      " hp: " << hp << " mp: " << mp << " skill_bonus: " << 
-      skill_bonus << " shortName=" << shortName << endl;
-      */
+        " parent: " << parent <<
+        " hp: " << hp << " mp: " << mp << " min leel: " << 
+        minLevelReq << " levelProg=" << levelProgression << endl;
 
-      last = new Character( strdup(name), hp, mp, skill_bonus, 
-                            level_progression, strdup(shortName),
-                            baseAttackBonus, extraAttackLevel );
+      last = new Character( strdup( name ), 
+                            ( strlen( parent ) ? strdup( parent ) : NULL ), 
+                            hp, mp, 
+                            levelProgression, minLevelReq );
       string s = name;
       character_class[s] = last;
-      string s2 = shortName;
-      character_class_short[s2] = last;
-      character_index_short[s2] = index++;
       character_list.push_back(last);
-    } else if(n == 'D' && last) {
+    } else if( n == 'D' && last ) {
+      fgetc( fp );
+      n = Constants::readLine( line, fp );
+      if( strlen( last->description ) ) strcat( last->description, " " );
+      strcat( last->description, strdup( line ) );
+    } else if( n == 'S' ) {
+			fgetc( fp );
+			n = Constants::readLine( line, fp );
+			if( last ) {
+				char *p = strtok( line, "," );
+				strcpy( name, p );
+				last->skills[ Constants::getSkillByName( name ) ] = atoi( strtok( NULL, "," ) );
+			} else {
+				char *p = strtok( line, "," );
+				// skill_name is already set in constants.cpp (it has to be in the same order as the values)
+				//Constants::SKILL_NAMES[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
+				//strcpy( Constants::SKILL_NAMES[ skillCount ], p );
+								
+				int skill = Constants::getSkillByName( p );
+				if( skill < 0 ) {
+					cerr << "*** Error: Can't find skill by name: " << p << endl;
+				}
+
+				p = strtok( NULL, "," );
+				Constants::SKILL_SYMBOL[ skill ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
+				strcpy( Constants::SKILL_SYMBOL[ skill ], p );
+				
+				p = strtok( NULL, "," );
+				Constants::SKILL_DESCRIPTION[ skill ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
+				strcpy( Constants::SKILL_DESCRIPTION[ skill ], p );
+
+				Constants::skillGroups[ lastGroup ]->push_back( skill );
+				Constants::groupSkillMap[ skill ] = lastGroup;
+			}
+    } else if( n == 'G' ) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
-      if(strlen(last->description)) strcat(last->description, " ");
-      strcat(last->description, strdup(line));
-    } else if(n == 'S' && last) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      strcpy(name, strtok(line, ","));
-      char *p = strtok(NULL, ",");
-      int min = 0;
-      if(strcmp(p, "*")) min = atoi(p);
-      p = strtok(NULL, ",");
-      int max = 1000;
-      if(strcmp(p, "*")) max = atoi(p);
-      int skill = Constants::getSkillByName(name);
-      if(skill < 0) {
-        cerr << "*** WARNING: cannot find skill: " << name << endl;   
-      } else {    
-        last->setMinMaxSkill(skill, min, max);
-      }
+			if( last ) {
+				char *p = strtok( line, "," );
+				strcpy( name, p );				
+				int value = atoi( strtok( NULL, "," ) );
+				int group = Constants::getSkillGroupByName( name );
+				for( int i = 0; i < Constants::getSkillGroupCount( group ); i++ ) {
+					last->skills[ Constants::getSkillGroupSkill( group, i ) ] = value;
+				}
+			}	else {
+				lastGroup = Constants::getSkillGroupByName( line );
+				Constants::skillGroups[ lastGroup ] = new vector<int>();
+			}
+		/*
+    } else if( n == 'C' && last ) {
+    } else if( n == 'W' && last ) {
+    } else if( n == 'A' && last ) {
+    */
     } else {
-      n = Constants::readLine(line, fp);
+      n = Constants::readLine( line, fp );
     }
   }
   fclose(fp);
+
+  buildTree();
 }
 
-Character::Character(char *name, int startingHp, int startingMp, 
-                     int skill_bonus, int level_progression, char *shortName,
-                     float baseAttackBonus, int extraAttackLevel ) {  
+Character::Character( char *name, char *parentName, 
+                      int startingHp, int startingMp, 
+                      int level_progression, int minLevelReq ) {
   this->name = name;
+  this->parentName = parentName;
   this->startingHp = startingHp;
   this->startingMp = startingMp;
-  this->skill_bonus = skill_bonus;
   this->level_progression = level_progression;
-  this->shortName = shortName;
-  this->baseAttackBonus = baseAttackBonus;
-  this->extraAttackLevel = extraAttackLevel;
-  strcpy(description, "");
+  this->parent = NULL;
+  strcpy( description, "" );
 }
 
 Character::~Character(){  
 }
 
-
+void Character::buildTree() {
+  for( int i = 0; i < (int)character_list.size(); i++ ) {
+    Character *c = character_list[i];
+    if( c->getParentName() ) {
+      c->parent = getCharacterByName( c->getParentName() );
+      if( !c->parent ) {
+        cerr << "Error: Can't find parent: " << c->getParentName() << 
+          " for character " << c->getName() << endl;
+        exit( 1 );
+      }
+      c->parent->children.push_back( c );
+    } else {
+      rootCharacters.push_back( c );
+    }
+  }
+}

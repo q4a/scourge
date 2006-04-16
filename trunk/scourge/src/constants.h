@@ -497,12 +497,32 @@ public:
     
     SKILL_COUNT
   };
-  static char *SKILL_NAMES[];
+
+	enum {
+		BASIC_GROUP,
+		FIGHT_GROUP,
+		DEFEND_GROUP,
+		SORCERY_GROUP,
+		SPIRIT_GROUP,
+		LORE_GROUP,
+		STEALTH_GROUP,
+		SKILL_GROUP_COUNT
+	};
+
+	static char *SKILL_GROUP_NAMES[80];
+  static char *SKILL_NAMES[80];
   static char *SKILL_SYMBOL[];
   static char *SKILL_DESCRIPTION[];
   static std::map<std::string,int> skillNameMap;
+	static std::map<int,std::vector<int>*> skillGroups;
+	static std::map<int,int> groupSkillMap;
   static int getSkillByName(char *p);
+	static int getSkillGroupByName(char *p);
   static int getRandomBasicSkill();
+	static int getSkillGroupCount( int group );
+	static int getSkillGroupSkill( int group, int index );
+	static int getGroupForSkill( int skill );
+	
 
   // other things potions can act on:
   enum {

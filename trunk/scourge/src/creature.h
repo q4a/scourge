@@ -451,8 +451,7 @@ class Creature : public RenderedCreature {
                           float *skillP=NULL,
                           float *itemLevelP=NULL,
                           bool includeSkillMod=false );
-  int getLevelAdjustedSkill( int skill, bool includeSkillMod=false );
-  static int rollStartingSkill( Session *session, int level, bool isMonster=false );
+  static int rollStartingSkill( Session *session, int level, int skill, bool isMonster=false );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );

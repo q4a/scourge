@@ -303,7 +303,7 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
   damage *= mult;
 
   // check for resistance
-  int resistance = creature->getTargetCreature()->getLevelAdjustedSkill( spell->getSchool()->getResistSkill() );
+  int resistance = creature->getTargetCreature()->getSkill( spell->getSchool()->getResistSkill() );
   damage -= (((float)damage / 150.0f) * resistance);
 
   char msg[200];

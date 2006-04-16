@@ -30,42 +30,46 @@
 class Character  {
 private:
   char *name;
-  int startingHp, startingMp, skill_bonus, level_progression;
-  float baseAttackBonus;
-  int extraAttackLevel;
+  char *parentName;
+  int startingHp, startingMp, level_progression;
+  int minLevelReq;
   char description[3000];
-  char *shortName;
-  std::map<int, int> maxSkill;
-  std::map<int, int> minSkill;
+  Character *parent;
+  std::vector<Character*> children;
+  std::map<int,int> skills;
+  std::vector<std::string> capabilities;
 
 public:
-  Character( char *name, int startingHp, int startingMp, int skill_bonus, int level_progression, char *shortName, float baseAttackBonus, int extraAttackLevel );
+  Character( char *name, char *parentName, 
+             int startingHp, int startingMp, 
+             int level_progression, int minLevelReq );
   ~Character();
 
   inline char *getName() { return name; };
-  inline char *getShortName() { return shortName; };
   inline int getStartingHp() { return startingHp; }  
   inline int getStartingMp() { return startingMp; }  
-  inline int getSkillBonus() { return skill_bonus; }  
   inline int getLevelProgression() { return level_progression; }  
-  inline float getBaseAttackBonus() { return baseAttackBonus; }
-  inline int getExtraAttackLevel() { return extraAttackLevel; }
   inline char *getDescription() { return description; }
-  inline int getMaxSkillLevel(int skill) { if(maxSkill.find(skill) == maxSkill.end()) return 100; else return maxSkill[skill]; }
-  inline int getMinSkillLevel(int skill) { if(minSkill.find(skill) == minSkill.end()) return 0; else return minSkill[skill]; }
+  inline int getMinLevelReq() { return minLevelReq; }
+  inline char *getParentName() { return parentName; }
+  inline Character *getParent() { return parent; }
+  inline int getChildCount() { return children.size(); }
+  inline Character *getChild( int index ) { return children[index]; }
+  inline int getCapabilityCount() { return capabilities.size(); }
+  inline const char *getCapability( int index ) { return capabilities[index].c_str(); }
+  inline int getSkill( int skillIndex ) {
+    return( skills.find( skillIndex ) == skills.end() ? -1 : skills[skillIndex] );
+  }
 
-  static std::map<std::string, Character*> character_class;
-  static std::map<std::string, Character*> character_class_short;
-  static std::map<std::string, int> character_index_short;
-  static std::vector<Character*> character_list;
-  static void initCharacters();
+  static std::map<std::string, Character*> character_class;  
+  static std::vector<Character*> character_list;  
+  static std::vector<Character*> rootCharacters;
   static Character *getCharacterByName(char *p) { std::string s = p; return character_class[s]; }
-  static Character *getCharacterByShortName(char *p) { std::string s = p; return character_class_short[s]; }
-  static int getCharacterIndexByShortName(char *p) {  std::string s = p; return character_index_short[s]; }
-  inline static Character *getRandomCharacter() { return character_list[(int)((float)character_list.size()*rand()/RAND_MAX)]; }
+  inline static Character *getRandomCharacter() { return rootCharacters[(int)((float)rootCharacters.size()*rand()/RAND_MAX)]; }
 
- protected:
-  inline void setMinMaxSkill(int skill, int min, int max) { minSkill[skill] = min; maxSkill[skill] = max; }
+  static void initCharacters();
+  static void buildTree();
 };
 
 #endif
+

@@ -174,10 +174,68 @@ PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB = NULL;
 PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
-char *Constants::SKILL_NAMES[ Constants::SKILL_COUNT ];
+char *Constants::SKILL_GROUP_NAMES[80] = {
+	"BASIC_GROUP",
+	"FIGHT_GROUP",
+	"DEFEND_GROUP",
+	"SORCERY_GROUP",
+	"SPIRIT_GROUP",
+	"LORE_GROUP",
+	"STEALTH_GROUP",
+};
+
+// must be the same order as the values
+char *Constants::SKILL_NAMES[80] = {
+	"SPEED",
+	"COORDINATION",
+	"POWER",
+	"IQ",
+	"LEADERSHIP",
+	"LUCK",
+	"PIETY",
+	"LORE",
+
+	"SWORD_WEAPON",
+	"AXE_WEAPON",
+	"BOW_WEAPON",
+	"MACE_WEAPON",
+	"POLE_WEAPON",
+	"HAND_TO_HAND_COMBAT",
+
+	"SHIELD_DEFEND",
+	"ARMOR_DEFEND",
+	"WEAPON_DEFEND",
+	"HAND_DEFEND",
+	
+	"NATURE_MAGIC",
+	"AWARENESS_MAGIC",
+	"LIFE_AND_DEATH_MAGIC",
+	"HISTORY_MAGIC",
+	"DECEIT_MAGIC",
+	"CONFRONTATION_MAGIC",	
+	
+	"RESIST_NATURE_MAGIC",
+	"RESIST_AWARENESS_MAGIC",
+	"RESIST_LIFE_AND_DEATH_MAGIC",
+	"RESIST_HISTORY_MAGIC",
+	"RESIST_DECEIT_MAGIC",
+	"RESIST_CONFRONTATION_MAGIC",	
+	
+	"OPEN_LOCK",
+	"FIND_TRAP",
+	"FIND_SECRET_DOOR",
+	"MOVE_UNDETECTED",
+	"STEALING",
+	
+	"ENCHANT_ITEM",
+	"IDENTIFY_ITEM",
+	"IDENTIFY_CREATURE"	
+};
 char *Constants::SKILL_SYMBOL[ Constants::SKILL_COUNT ];
 char *Constants::SKILL_DESCRIPTION[ Constants::SKILL_COUNT ];
 map<string,int> Constants::skillNameMap;
+map<int,vector<int>*> Constants::skillGroups;
+map<int,int> Constants::groupSkillMap;
 
 const char *Constants::POTION_SKILL_NAMES[] = {
   "HP", "MP", "AC" 
@@ -267,7 +325,39 @@ int Constants::getSkillByName(char *p) {
 }
 
 int Constants::getRandomBasicSkill() {
-  return(int)( (float)Constants::SWORD_WEAPON * rand()/RAND_MAX );
+	if( skillGroups.find( BASIC_GROUP ) == skillGroups.end() ) {
+		cerr << "*** Error: can't find BASIC_GROUP skill group." << endl;
+		exit( 1 );
+	} else {
+		vector<int> *skills = skillGroups[ BASIC_GROUP ];
+		return( (int)( (float)( skills->size() ) * rand() / RAND_MAX ) );
+	}
+}
+
+int Constants::getSkillGroupCount( int group ) {
+	return skillGroups[ group ]->size();
+}
+
+int Constants::getSkillGroupSkill( int group, int index ) {
+	vector<int> *v = skillGroups[ group ];
+	return (*v)[ index ];		
+}
+
+int Constants::getGroupForSkill( int skill ) {
+	if( groupSkillMap.find( skill ) == groupSkillMap.end() ) {
+		cerr << "*** Error: can't find group for skill: " << skill << endl;
+		return 0;
+	} else {
+		return groupSkillMap[ skill ];
+	}
+}
+
+int Constants::getSkillGroupByName( char *name ) {
+	for( int i = 0; i < SKILL_GROUP_COUNT; i++ ) {
+		if( !strcasecmp( name, SKILL_GROUP_NAMES[ i ] ) ) return i;
+	}
+	cerr << "*** Error: can't find skill group: " << name << endl;
+	return 0;
 }
 
 // return -1 on failure, or (-2 - i) on success
