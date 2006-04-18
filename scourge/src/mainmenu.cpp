@@ -194,6 +194,9 @@ MainMenu::~MainMenu(){
 
 void MainMenu::drawView() {
   if( !partyEditor->isVisible() ) {
+
+		// HACK: needed on my X2 dual core system... life is hard...
+		SDL_Delay( 20 );
     
     drawMenu();
 

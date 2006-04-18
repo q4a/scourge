@@ -28,7 +28,18 @@ class Session;
 class Creature;
 class Item;
 
-class Party {
+class CreatureGroupInfo {
+public:
+  CreatureGroupInfo() {
+  }
+  
+  virtual ~CreatureGroupInfo() {
+  }
+
+  virtual Creature *getHighestSkillPC( int skill ) = 0;
+};
+
+class Party : public CreatureGroupInfo {
  private:
     
   Session *session;
@@ -49,11 +60,15 @@ class Party {
 
   Creature *loadedParty[MAX_PARTY_SIZE];
   int loadedCount;
+  std::map<int,Creature*> maxSkills;
 
  public:
 
   Party(Session *session);
   virtual ~Party();
+
+  inline Creature *getHighestSkillPC( int skill ) { return ( maxSkills.find( skill ) != maxSkills.end() ? maxSkills[ skill ] : NULL ); }
+  void recomputeMaxSkills();
 
   void regainMp();
 
@@ -128,7 +143,7 @@ class Party {
   bool isEquipped( Item *item );
 
 protected:
-  void resetPartyUI();
+  void resetPartyUI();  
 };
 
 #endif

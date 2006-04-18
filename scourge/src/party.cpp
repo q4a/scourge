@@ -61,6 +61,7 @@ void Party::deleteParty() {
 }
 
 void Party::reset() {
+  maxSkills.clear();
   deleteParty();
   if(loadedCount) {
     for(int i = 0; i < loadedCount; i++) {
@@ -86,11 +87,13 @@ void Party::reset() {
   if( partySize > 3 && party[3] ) party[3]->setStateMod( Constants::possessed, true );
 #endif 
 
+  recomputeMaxSkills();
   if(!session->getGameAdapter()->isHeadless()) 
     session->getGameAdapter()->resetPartyUI();
 }
 
 void Party::resetMultiplayer(Creature *c) {
+  maxSkills.clear();
   deleteParty();
   party[0] = player = c;
   party[1] = party[2] = party[3] = NULL;
@@ -99,6 +102,7 @@ void Party::resetMultiplayer(Creature *c) {
   // upload your character to the server
   session->getClient()->sendCharacter(player->save());
 #endif
+  session->getParty()->recomputeMaxSkills();
   if(!session->getGameAdapter()->isHeadless()) 
     session->getGameAdapter()->resetPartyUI();
 }
@@ -604,5 +608,21 @@ void Party::regainMp() {
         getParty( i )->getMp() < getParty( i )->getMaxMp() ) {
       getParty( i )->setMp( getParty( i )->getMp() + 1 );
     }
+  }
+}
+
+void Party::recomputeMaxSkills() {
+  maxSkills.clear();
+  for( int skill = 0; skill < Constants::SKILL_COUNT; skill++ ) {
+    int maxValue = 0;
+    Creature *maxPC = NULL;
+    for( int i = 0; i < getPartySize(); i++ ) {
+      int value = getParty( i )->getSkill( skill );
+      if( value > 0 && ( !maxPC || maxValue < value ) ) {
+        maxPC = getParty( i );
+        maxValue = value;
+      }
+    }
+    maxSkills[ skill ] = maxPC;
   }
 }

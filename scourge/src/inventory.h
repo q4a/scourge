@@ -40,6 +40,7 @@ class Scourge;
 class SpecialSkill;
 class Storable;
 class CharacterInfoUI;
+class SkillsView;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:
@@ -62,9 +63,9 @@ private:
 	Label *inventoryWeightLabel, *coinsLabel;
 	char inventoryWeightStr[80], coinsStr[80];
 
-	Button *equipButton, *fixButton, *removeCurseButton, *skillAddButton, *skillSubButton;
-	Button *combineButton, *enchantButton, *identifyButton, *openButton, *levelUpButton;
-	Button *eatDrinkButton, *castScrollButton, *transcribeButton, *infoButton, *poolButton;
+	Button *equipButton, *fixButton, *removeCurseButton, *poolButton;
+	Button *combineButton, *enchantButton, *identifyButton, *openButton;
+	Button *eatDrinkButton, *castScrollButton, *transcribeButton, *infoButton;
   Button *storeItemButton;
 	ScrollingList *invList;
 	char **pcInvText;
@@ -93,12 +94,12 @@ private:
 	Label *nameAndClassLabel, *levelLabel, *hpLabel, *mpLabel;
 	Label *thirstLabel, *hungerLabel, *skillLabel, *armorLabel;	
 	//int stateCount;
-	char **stateLine, **skillLine;
-  Color *skillColor;
+	char **stateLine;  
 	GLuint *icons;
   char **protStateLine;
 	GLuint *protIcons;
-	ScrollingList *stateList, *skillList, *protStateList;
+	ScrollingList *stateList, *protStateList;
+  SkillsView *skillList;
 	char nameAndClassStr[80];
 	char levelStr[80];
 	char expStr[80];

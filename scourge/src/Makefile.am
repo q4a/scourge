@@ -115,5 +115,7 @@ scourge_SOURCES = \
 	traindialog.cpp\
 	traindialog.h\
 	characterinfo.cpp\
-	characterinfo.h
+	characterinfo.h\
+	skillsview.cpp\
+	skillsview.h
 

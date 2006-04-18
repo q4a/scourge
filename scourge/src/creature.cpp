@@ -1524,6 +1524,7 @@ bool Creature::incSkillMod(int index) {
   availableSkillPoints--;
   skillMod[index]++;
   usedSkillPoints++;
+  session->getParty()->recomputeMaxSkills();
   return true;
 }
 
@@ -1532,6 +1533,7 @@ bool Creature::decSkillMod(int index) {
   availableSkillPoints++;
   skillMod[index]--;
   usedSkillPoints--;
+  session->getParty()->recomputeMaxSkills();
   return true;
 }
 
@@ -1541,6 +1543,7 @@ void Creature::applySkillMod() {
     skillMod[i] = 0;
   }
   usedSkillPoints = 0;
+  session->getParty()->recomputeMaxSkills();
 }
 
 int Creature::getMaxHp() {
@@ -1976,6 +1979,12 @@ void Creature::evalSpecialSkills() {
 void Creature::setSkill(int index, int value) { 
   skills[index] = value; 
   evalSpecialSkills();
+  session->getParty()->recomputeMaxSkills();
+}
+
+void Creature::setSkillBonus( int index, int value ) { 
+  skillBonus[index] = value;
+  session->getParty()->recomputeMaxSkills();
 }
 
 void Creature::setStateMod(int mod, bool setting) { 

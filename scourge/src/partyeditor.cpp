@@ -35,6 +35,7 @@
 #include "gui/scrollinglabel.h"
 #include "shapepalette.h"
 #include "debug.h"
+#include "skillsview.h"
 
 using namespace std;
 
@@ -238,7 +239,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
           info[ i ].skillMod[ n ]--;
           saveUI( (Creature**)tmp );
         }
-      } else if( widget == info[i].skills ) {
+      } else if( widget == info[i].skills->getWidget() ) {
         info[i].skillDescription->setText( Constants::SKILL_DESCRIPTION[ info[i].skills->getSelectedLine() ] );
       }
     }
@@ -353,23 +354,20 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
   // skills
   int buttonWidth =  skillColWidth / 3;
   info->skillLabel = cards->createLabel( col2X, 30 + detailsHeight, "Remaining skill points:", n, Constants::RED_COLOR );
-  info->skills = new ScrollingList( col2X, 30 + detailsHeight + 5, 
-                                    skillColWidth, 310 - ( 30 + detailsHeight + 5 + 10 ),
-                                    scourge->getShapePalette()->getHighlightTexture() );
-  cards->addWidget( info->skills, n );
-  info->skillAddButton = cards->createButton( col2X, 310, col2X + buttonWidth - 5, 330, " + ", n );
-  info->skillRerollButton = cards->createButton( col2X + buttonWidth, 310, col2X + buttonWidth * 2 - 5, 330, " Reroll ", n );
-  info->skillSubButton = cards->createButton( col2X + buttonWidth * 2, 310, col2X + buttonWidth * 3 - 5, 330, " - ", n );
-  info->skillDescription = new ScrollingLabel( col2X, 340, skillColWidth, 100, "" );
+  info->skills = new SkillsView( scourge, 
+                                 col2X, 30 + detailsHeight + 5, 
+                                 skillColWidth, 
+																 320 - ( 30 + detailsHeight + 5 + 10 ) );
+  info->skills->addSkillGroupFilter( Constants::BASIC_GROUP );
+  cards->addWidget( info->skills->getWidget(), n );
+  info->skillAddButton = cards->createButton( col2X, 320, col2X + buttonWidth - 5, 340, " + ", n );
+  info->skillRerollButton = cards->createButton( col2X + buttonWidth, 320, col2X + buttonWidth * 2 - 5, 340, " Reroll ", n );
+  info->skillSubButton = cards->createButton( col2X + buttonWidth * 2, 320, col2X + buttonWidth * 3 - 5, 340, " - ", n );
+  info->skillDescription = new ScrollingLabel( col2X, 350, skillColWidth, 100, "" );
   cards->addWidget( info->skillDescription, n );
 
   rollSkills( info );
 
-  info->skillColor = (Color*)malloc( Constants::SKILL_COUNT * sizeof( Color ) );
-  info->skillLine = (char**)malloc( Constants::SKILL_COUNT * sizeof( char* ) );
-  for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
-    info->skillLine[i] = (char*)malloc(120 * sizeof(char));
-  }
   updateUI( info, n - 1 );
   info->skills->setSelectedLine( 0 );
   info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
@@ -609,7 +607,12 @@ void PartyEditor::saveUI( Creature **pc ) {
       pc[i]->setSkill( t, info[i].skill[ t ] + info[i].skillMod[ t ] );
     }
 
-    updateUI( &( info[i] ), i );
+	}
+
+  recomputeMaxSkills();
+
+	for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
+		updateUI( &( info[i] ), i );
   }
 }
 
@@ -618,64 +621,26 @@ void PartyEditor::rollSkills( CharacterInfo *info ) {
   Character *c = Character::rootCharacters[ info->charType->getSelectedLine() ];
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
 
-    int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
-
-		// give max starting skill
-    int maxSkill = c->getSkill( i );
-    if( maxSkill > 0 ) n = maxSkill;
-    info->skill[ i ] = n;
+    //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
+		int n;
+		if( Constants::getGroupForSkill( i ) == Constants::BASIC_GROUP ) {
+			int minValue = c->getSkill( i );
+			n = minValue + (int)( 20.0f * rand() / RAND_MAX );
+		} else {
+			// give max starting skill
+			int maxSkill = c->getSkill( i );
+			n = ( maxSkill > 0 ? maxSkill : 0 );
+		}
+    info->skill[ i ] = ( n > 100 ? 100 : n );
     info->skillMod[ i ] = 0;
   }  
 }
 
 void PartyEditor::updateUI( CharacterInfo *info, int index ) {
-  for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
-
-    if( info->skillMod[i] ) {
-      info->skillColor[i].r = 0;
-      info->skillColor[i].g = 1;
-      info->skillColor[i].b = 0;
-    } else {
-      if( mainWin->getTheme()->getWindowText() ) {
-        info->skillColor[i].r = mainWin->getTheme()->getWindowText()->r;
-        info->skillColor[i].g = mainWin->getTheme()->getWindowText()->g;
-        info->skillColor[i].b = mainWin->getTheme()->getWindowText()->b;
-      } else {
-        info->skillColor[i].r = 0;
-        info->skillColor[i].g = 0;
-        info->skillColor[i].b = 0;
-      }
-    }
-
-    if( tmp[ index ] ) {
-      int skill = tmp[ index ]->getSkill( i );
-      int maxSkill = tmp[ index ]->getCharacter()->getSkill( i );
-      bool isMax = ( maxSkill >= 0 && skill == maxSkill );
-      sprintf(info->skillLine[i], "%d(%d)%s - %s", 
-              info->skill[ i ], 
-              info->skillMod[ i ], 
-              ( isMax ? "(MAX)" : "" ),
-              Constants::SKILL_NAMES[i] );
-      if( isMax ) {
-        info->skillColor[i].r = 0;
-        info->skillColor[i].g = 0.75f;
-        info->skillColor[i].b = 1;
-      }
-    } else {
-      sprintf(info->skillLine[i], "%d(%d)(%%0) - %s", 
-              info->skill[ i ], 
-              info->skillMod[ i ], 
-              Constants::SKILL_NAMES[i] );
-    }
+  if( tmp[ index ] ) {
+    info->skills->setCreature( tmp[ index ], this );
+		info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
   }
-  int line = info->skills->getSelectedLine();
-  //info->skills->setLines( Constants::SKILL_COUNT, 
-                          //(const char**)info->skillLine, 
-                          //info->skillColor );
-	info->skills->setLines( Constants::getSkillGroupCount( Constants::BASIC_GROUP ),
-                          (const char**)info->skillLine, 
-                          info->skillColor );
-  info->skills->setSelectedLine( line );
 
   char msg[80];
   sprintf( msg, "Remaining skill points: %d", info->availableSkillMod );
@@ -688,4 +653,25 @@ bool PartyEditor::isVisible() {
 
 void PartyEditor::setVisible( bool b ) { 
   mainWin->setVisible( b ); 
+}
+
+Creature *PartyEditor::getHighestSkillPC( int skill ) {
+  return( maxSkills.find( skill ) == maxSkills.end() ? NULL : maxSkills[ skill ] );
+}
+
+void PartyEditor::recomputeMaxSkills() {
+  maxSkills.clear();
+  if( !tmp[0] ) return;
+  for( int skill = 0; skill < Constants::SKILL_COUNT; skill++ ) {
+    int maxValue = 0;
+    Creature *maxPC = NULL;
+    for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
+      int value = tmp[i]->getSkill( skill );
+      if( value > 0 && ( !maxPC || maxValue < value ) ) {
+        maxPC = tmp[i];
+        maxValue = value;
+      }
+    }
+    maxSkills[ skill ] = maxPC;
+  }
 }
