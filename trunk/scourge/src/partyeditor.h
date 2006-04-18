@@ -19,8 +19,10 @@
 #define PARTY_EDITOR_H
 
 #include <string.h>
+#include <map>
 #include "constants.h"
 #include "gui/widgetview.h"
+#include "party.h"
                          
 /**
   *@author Gabor Torok
@@ -38,6 +40,7 @@ class ScrollingLabel;
 class CardContainer;
 class TextField;
 class Label;
+class SkillsView;
 
 typedef struct _CharacterInfo {
   TextField *name;
@@ -64,11 +67,9 @@ typedef struct _CharacterInfo {
   int modelIndex;
 
   Label *skillLabel;
-  ScrollingList *skills;
+  SkillsView *skills;
   Button *skillAddButton, *skillRerollButton, *skillSubButton;
   int availableSkillMod;
-  char **skillLine;
-  Color *skillColor;
   int skill[ Constants::SKILL_COUNT ], skillMod[ Constants::SKILL_COUNT ];
   ScrollingLabel *skillDescription;
 
@@ -76,7 +77,7 @@ typedef struct _CharacterInfo {
   
 } CharacterInfo;
 
-class PartyEditor : public WidgetView {
+class PartyEditor : public WidgetView, CreatureGroupInfo {
 private:
 
   enum {
@@ -99,6 +100,7 @@ private:
   Uint32 lastTick;
   float zrot;  
   Creature *tmp[4];
+  std::map<int,Creature*> maxSkills;
   
 public:
   PartyEditor(Scourge *scourge);
@@ -106,6 +108,9 @@ public:
 
   void drawWidgetContents(Widget *w);
   void drawAfter();
+
+  Creature *getHighestSkillPC( int skill );
+  void recomputeMaxSkills();
 
   bool isVisible();
   void setVisible( bool b );

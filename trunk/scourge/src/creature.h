@@ -355,7 +355,7 @@ class Creature : public RenderedCreature {
   void applySkillMod();
   inline int getSkillMod(int index) { return skillMod[index]; }
   void setSkill(int index, int value);
-  inline void setSkillBonus(int index, int value) { skillBonus[index] = value; }
+  void setSkillBonus( int index, int value );
   inline int getSkillBonus(int index) { return skillBonus[index]; }
   void setStateMod(int mod, bool setting);
   void setProtectedStateMod(int mod, bool setting);

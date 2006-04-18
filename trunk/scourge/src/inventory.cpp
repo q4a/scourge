@@ -29,6 +29,7 @@
 #include "sqbinding/sqbinding.h"
 #include "characterinfo.h"
 #include "shapepalette.h"
+#include "skillsview.h"
 
 using namespace std;
 
@@ -53,11 +54,6 @@ Inventory::Inventory(Scourge *scourge) {
   this->itemIcon = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
-  }
-  this->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
-  this->skillColor = (Color*)malloc( Constants::SKILL_COUNT * sizeof( Color ) );
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    this->skillLine[i] = (char*)malloc(120 * sizeof(char));
   }
   this->stateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
   this->icons = (GLuint*)malloc(Constants::STATE_MOD_COUNT * sizeof(GLuint));
@@ -200,21 +196,9 @@ Inventory::Inventory(Scourge *scourge) {
   skillY += 85;
   strcpy(skillsStr, "Skills:");
   skillLabel = cards->createLabel(115, skillY, skillsStr, CHARACTER, Constants::RED_COLOR);
-  skillList = new ScrollingList(115, skillY + 5, 290, 405 - ( skillY + 5 ), scourge->getShapePalette()->getHighlightTexture());
-  cards->addWidget(skillList, CHARACTER);
-
-  yy = START_OF_SECOND_BUTTON_SET;
-  skillAddButton = cards->createButton( 0, yy, 105, yy + buttonHeight, " + ", CHARACTER);
-  yy+=buttonHeight;
-  skillSubButton = cards->createButton( 0, yy, 105, yy + buttonHeight, " - ", CHARACTER);
-  yy+=buttonHeight;
-  levelUpButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Apply Points", CHARACTER);
-  yy+=buttonHeight;
-
-  //skillAddButton = cards->createButton( 115, 410, 200, 410 + buttonHeight, " + ", CHARACTER);
-  //skillSubButton = cards->createButton( 320, 410, 405, 410 + buttonHeight, " - ", CHARACTER);
-  //levelUpButton = cards->createButton( 205, 410, 315, 410 + buttonHeight, "Apply Points", CHARACTER);
-
+  //skillList = new ScrollingList(115, skillY + 5, 290, 405 - ( skillY + 5 ), scourge->getShapePalette()->getHighlightTexture());
+  skillList = new SkillsView( scourge, 115, skillY + 5, 290, 405 - ( skillY + 5 ) );
+  cards->addWidget( skillList->getWidget(), CHARACTER );
 
   // -------------------------------------------
   // spellbook
@@ -469,57 +453,6 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
         // refresh screen
         //setSelectedPlayerAndMode(selected, INVENTORY);
       }
-    }
-  } else if(widget == skillAddButton) {
-    if( scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
-        scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 0 ) {
-      error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-    } else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() <= 0) {
-      //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
-    } else {
-      int itemIndex = skillList->getSelectedLine();  
-      if(itemIndex <= -1) {
-        error = Constants::getMessage(Constants::NO_SKILL_ERROR);
-      } else {
-        scourge->getParty()->getParty(selected)->incSkillMod(itemIndex);
-        refresh();
-      }
-    }
-    if(error) {
-      cerr << error << endl;
-      scourge->showMessageDialog(error);
-    }
-  } else if(widget == skillSubButton) {
-    if( scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
-        scourge->getParty()->getParty(selected)->getUsedSkillPoints() == 0 ) {
-      error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-//    } else if(scourge->getParty()->getParty(selected)->getAvailableSkillPoints() == 
-//              scourge->getParty()->getParty(selected)->getCharacter()->getSkillBonus()) {
-      //	  error = Constants::getMessage(Constants::OUT_OF_POINTS_ERROR);
-    } else {
-      int itemIndex = skillList->getSelectedLine();  
-      if(itemIndex <= -1) {
-        error = Constants::getMessage(Constants::NO_SKILL_ERROR);
-      } else {
-        scourge->getParty()->getParty(selected)->decSkillMod(itemIndex);
-        refresh();
-      }
-    }
-    if(error) {
-      cerr << error << endl;
-      scourge->showMessageDialog(error);
-    }
-  } else if(widget == levelUpButton) {
-    if( scourge->getParty()->getParty(selected)->getStateMod(Constants::dead) || 
-        scourge->getParty()->getParty(selected)->getUsedSkillPoints() == 0 ) {
-      error = Constants::getMessage(Constants::LEVEL_UP_ERROR);
-    } else {
-      scourge->getParty()->getParty(selected)->applySkillMod();
-      refresh();
-    }
-    if(error) {
-      cerr << error << endl;
-      scourge->showMessageDialog(error);
     }
   } else if(widget == schoolList) {
     int n = schoolList->getSelectedLine();
@@ -812,12 +745,8 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   mainWin->setTitle( nameAndClassStr );
 
   charInfoUI->setCreature( mainWin, selectedP );
-
   switch(selectedMode) {
   case CHARACTER:         
-
-    sprintf(skillsStr, "Skills: (Available points: %d)", selectedP->getAvailableSkillPoints());
-    skillLabel->setText( skillsStr );
 
     stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
@@ -840,37 +769,8 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     }
     protStateList->setLines(stateCount, (const char**)protStateLine, 
                             (const Color *)NULL, (stateCount ? (const GLuint*)protIcons : NULL));
-
-
-    for(int t = 0; t < Constants::SKILL_COUNT; t++) {
-
-      if( selectedP->getSkillMod( t ) > 0 ) {
-        skillColor[t].r = 0;
-        skillColor[t].g = 1;
-        skillColor[t].b = 0;
-      } else {
-        skillColor[t].r = 1;
-        skillColor[t].g = 1;
-        skillColor[t].b = 1;
-      }
-
-
-      int maxSkill = selectedP->getCharacter()->getSkill( t );
-      bool isMax = ( maxSkill >= 0 && selectedP->getSkill(t) == maxSkill );
-      sprintf(skillLine[t], "%d(%d)%s - %s", 
-              selectedP->getSkill(t), 
-              selectedP->getSkillMod(t), 
-              ( isMax ? " (MAX)" : "" ),
-              Constants::SKILL_NAMES[t]);
-      if( isMax ) {
-        skillColor[t].r = 0;
-        skillColor[t].g = 0.75f;
-        skillColor[t].b = 1;
-      }
-    }
-    skillList->setLines( Constants::SKILL_COUNT, 
-                         (const char**)skillLine, 
-                         (const Color*)skillColor );
+		
+    skillList->setCreature( selectedP, scourge->getParty() );
     break;
 
   case INVENTORY:
