@@ -102,6 +102,14 @@ P:Man-at-arms,0,10,0,400
 D:description goes here
 G:FIGHT_GROUP,10
 G:DEFEND_GROUP,10
+S:SPEED,50
+S:COORDINATION,70
+S:POWER,80
+S:IQ,20
+S:LEADERSHIP,70
+S:LUCK,50
+S:PIETY,20
+S:LORE,20
 W:*+
 A:*+
 
@@ -175,7 +183,7 @@ C:Superior War-rage
 
 P:Champion of Justice:Warrior,20
 D:description goes here
-S:FIGHT_GROUP,45
+G:FIGHT_GROUP,45
 G:DEFEND_GROUP,45
 G:SPIRIT_GROUP,10
 G:LORE_GROUP,10
@@ -184,7 +192,7 @@ C:Leadership bonus
 
 P:Primus Lictor:Champion of Justice,30
 D:description goes here
-S:FIGHT_GROUP,65
+G:FIGHT_GROUP,65
 G:DEFEND_GROUP,60
 G:SPIRIT_GROUP,15
 G:LORE_GROUP,15
@@ -193,7 +201,7 @@ C:Strict Moral Code
 
 P:Fighting Guardian of Truth:Primus Lictor,40
 D:description goes here
-S:FIGHT_GROUP,85
+G:FIGHT_GROUP,85
 G:DEFEND_GROUP,80
 G:SPIRIT_GROUP,30
 G:LORE_GROUP,30
@@ -203,7 +211,7 @@ C:Weapon Level Bonus
 
 P:Supreme Executioner:Primus Lictor,40
 D:description goes here
-S:FIGHT_GROUP,80
+G:FIGHT_GROUP,80
 G:DEFEND_GROUP,90
 G:SPIRIT_GROUP,25
 G:LORE_GROUP,25
@@ -213,7 +221,7 @@ C:Improved Weapon Calling
 
 P:Lightbringer Warrior:Champion of Justice,30
 D:description goes here
-S:FIGHT_GROUP,60
+G:FIGHT_GROUP,60
 G:DEFEND_GROUP,70
 G:SPIRIT_GROUP,20
 G:LORE_GROUP,20
@@ -222,7 +230,7 @@ C:Strict Moral Code
 
 P:Learned Battle Master:Lightbringer Warrior,40
 D:description goes here
-S:FIGHT_GROUP,75
+G:FIGHT_GROUP,75
 G:DEFEND_GROUP,95
 G:SPIRIT_GROUP,40
 G:LORE_GROUP,40
@@ -232,7 +240,7 @@ C:Superior Weapon Finesse
 
 P:Planar Ally Knight:Lightbringer Warrior,40
 D:description goes here
-S:FIGHT_GROUP,80
+G:FIGHT_GROUP,80
 G:DEFEND_GROUP,95
 G:SPIRIT_GROUP,35
 G:LORE_GROUP,35
@@ -417,6 +425,14 @@ D:description goes here
 G:FIGHT_GROUP,2
 G:DEFEND_GROUP,2
 G:SORCERY_GROUP,10
+S:SPEED,70
+S:COORDINATION,70
+S:POWER,20
+S:IQ,80
+S:LEADERSHIP,50
+S:LUCK,50
+S:PIETY,20
+S:LORE,40
 W:*-,SMALL+,SMALL_RANGED+
 A:*-,ROBES+
 
@@ -429,6 +445,14 @@ D:description goes here
 G:FIGHT_GROUP,8
 G:DEFEND_GROUP,10
 G:SPIRIT_GROUP,10
+S:SPEED,50
+S:COORDINATION,60
+S:POWER,60
+S:IQ,70
+S:LEADERSHIP,60
+S:LUCK,20
+S:PIETY,80
+S:LORE,50
 W:*-,MACE+
 A:*+
 
@@ -441,6 +465,14 @@ D:description goes here
 G:FIGHT_GROUP,6
 G:DEFEND_GROUP,6
 G:LORE_GROUP,10
+S:SPEED,50
+S:COORDINATION,50
+S:POWER,60
+S:IQ,60
+S:LEADERSHIP,60
+S:LUCK,50
+S:PIETY,20
+S:LORE,80
 W:*+
 A:*+
 
@@ -453,6 +485,14 @@ D:description goes here
 G:FIGHT_GROUP,8
 G:DEFEND_GROUP,8
 G:STEALTH_GROUP,10
+S:SPEED,65
+S:COORDINATION,70
+S:POWER,60
+S:IQ,50
+S:LEADERSHIP,50
+S:LUCK,70
+S:PIETY,20
+S:LORE,20
 W:*+,TWO_HANDED-,LARGE-
 A:*+,METAL-
 
