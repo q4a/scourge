@@ -77,10 +77,10 @@ void Character::initCharacters() {
         }
       }
 
-      cerr << "adding character class: " << name << 
-        " parent: " << parent <<
-        " hp: " << hp << " mp: " << mp << " min leel: " << 
-        minLevelReq << " levelProg=" << levelProgression << endl;
+      //cerr << "adding character class: " << name << 
+//        " parent: " << parent <<
+        //" hp: " << hp << " mp: " << mp << " min leel: " << 
+        //minLevelReq << " levelProg=" << levelProgression << endl;
 
       last = new Character( strdup( name ), 
                             ( strlen( parent ) ? strdup( parent ) : NULL ), 
@@ -145,7 +145,6 @@ void Character::initCharacters() {
 			string name = strdup( p );
 			p = strtok( NULL, "," );
 			string value = strdup( p );
-			cerr << "Adding tag: " << name << " desc.:" << value << endl;
 			RpgItem::tagsDescriptions[ name ] = value;
 		/*
     } else if( n == 'C' && last ) {
@@ -159,6 +158,9 @@ void Character::initCharacters() {
 				bool allowed = ( *lastChar == '+' );				
 				*lastChar = '\0';
 				string s = strdup( p );
+				if( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
+					cerr << "*** Warning: item tag has no description: " << s << endl;
+				}
 				if( allowed ) last->allowedWeaponTags.insert( s );
 				else last->forbiddenWeaponTags.insert( s );
 				p = strtok( NULL, "," );
@@ -172,6 +174,9 @@ void Character::initCharacters() {
 				bool allowed = ( *lastChar == '+' );				
 				*lastChar = '\0';
 				string s = strdup( p );
+				if( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
+					cerr << "*** Warning: item tag has no description: " << s << endl;
+				}
 				if( allowed ) last->allowedArmorTags.insert( s );
 				else last->forbiddenArmorTags.insert( s );
 				p = strtok( NULL, "," );
