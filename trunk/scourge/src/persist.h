@@ -22,9 +22,9 @@
 
 class File;
 
-#define PERSIST_VERSION 11
+#define PERSIST_VERSION 12
 
-#define OLDEST_HANDLED_VERSION 11
+#define OLDEST_HANDLED_VERSION 12
 
 typedef struct _DiceInfo {
   Uint32 version;
@@ -76,6 +76,7 @@ typedef struct _CreatureInfo {
   Uint32 skills[Constants::SKILL_COUNT];
   Uint32 skillMod[Constants::SKILL_COUNT];
   Uint32 skillBonus[Constants::SKILL_COUNT];
+	Uint32 skillsUsed[Constants::SKILL_COUNT];
   Uint32 portraitTextureIndex;
 
   // inventory

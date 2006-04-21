@@ -191,6 +191,7 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
   file->write( info->skills, Constants::SKILL_COUNT );
   file->write( info->skillMod, Constants::SKILL_COUNT );
   file->write( info->skillBonus, Constants::SKILL_COUNT );
+	file->write( info->skillsUsed, Constants::SKILL_COUNT );
   file->write( &info->portraitTextureIndex );
   file->write( &(info->inventory_count) );
   for(int i = 0; i < (int)info->inventory_count; i++) {
@@ -232,37 +233,16 @@ CreatureInfo *Persist::loadCreature( File *file ) {
   file->read( &(info->thirst) );
   file->read( &(info->hunger) );
   file->read( &(info->availableSkillPoints) );
-  if( info->version == 8 ||
-      info->version == 7 ) {
-    // no POLE_WEAPON skill in v8.
-    file->read( info->skills, Constants::SKILL_COUNT - 1 );
-    file->read( info->skillMod, Constants::SKILL_COUNT - 1 );
-    file->read( info->skillBonus, Constants::SKILL_COUNT - 1 );
-    for( int i = Constants::SKILL_COUNT - 1; i > Constants::POLE_WEAPON; i-- ) {
-      info->skills[ i ] = info->skills[ i - 1];
-      info->skillMod[ i ] = info->skillMod[ i - 1];
-      info->skillBonus[ i ] = info->skillBonus[ i - 1];
-    }
-    info->skills[ Constants::POLE_WEAPON ] = MAX_SKILL / 2;
-    info->skillMod[ Constants::POLE_WEAPON ] = 0;
-    info->skillBonus[ Constants::POLE_WEAPON ] = 0;
-  } else {
-    file->read( info->skills, Constants::SKILL_COUNT );
-    file->read( info->skillMod, Constants::SKILL_COUNT );
-    file->read( info->skillBonus, Constants::SKILL_COUNT );
-  }
+	file->read( info->skills, Constants::SKILL_COUNT );
+	file->read( info->skillMod, Constants::SKILL_COUNT );
+	file->read( info->skillBonus, Constants::SKILL_COUNT );
+	file->read( info->skillsUsed, Constants::SKILL_COUNT );
   file->read( &info->portraitTextureIndex );
   file->read( &(info->inventory_count) );
   for(int i = 0; i < (int)info->inventory_count; i++) {
     info->inventory[i] = loadItem( file );
   }
-  if( info->version <= 9 ) {
-    // no INVENTORY_GLOVE before v10
-    file->read( info->equipped, 14 );
-    info->equipped[ 14 ] = MAX_INVENTORY_SIZE;
-  } else {
-    file->read( info->equipped, Constants::INVENTORY_COUNT );
-  }
+	file->read( info->equipped, Constants::INVENTORY_COUNT );
   file->read( &(info->spell_count) );
   for(int i = 0; i < (int)info->spell_count; i++) {
     file->read( info->spell_name[i], 255 );
@@ -319,12 +299,6 @@ ItemInfo *Persist::loadItem( File *file ) {
   file->read( &(info->weight) );
   file->read( &(info->quality) );
   file->read( &(info->price) );
-  if( info->version == 8 ||
-      info->version == 7 ) {
-    // read 'action' value for v8
-    Uint32 tmp;
-    file->read( &tmp );
-  }
   file->read( &(info->speed) );
   file->read( &(info->distance) );
   file->read( &(info->maxCharges) );
@@ -345,22 +319,8 @@ ItemInfo *Persist::loadItem( File *file ) {
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     file->read( &(info->stateMod[i]) );
   }
-  if( info->version == 8 ||
-      info->version == 7 ) {
-    // no POLE_WEAPON in v8.
-    for(int i = 0; i < Constants::SKILL_COUNT - 1; i++) {
-      file->read( &(info->skillBonus[i]) );
-    }
-    for( int i = Constants::SKILL_COUNT - 1; 
-         i > Constants::POLE_WEAPON + 1; 
-         i-- ) {
-      info->skillBonus[i] = info->skillBonus[i - 1];
-    }
-    info->skillBonus[ Constants::POLE_WEAPON ] = 0;
-  } else {
-    for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-      file->read( &(info->skillBonus[i]) );
-    }
+	for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+		file->read( &(info->skillBonus[i]) );
   }
 
   return info;

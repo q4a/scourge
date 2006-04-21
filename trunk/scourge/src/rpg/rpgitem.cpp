@@ -36,6 +36,7 @@ int RpgItem::itemCount = 0;
 std::vector<ItemType> RpgItem::itemTypes;
 int RpgItem::randomTypes[ITEM_TYPE_COUNT];
 int RpgItem::randomTypeCount = 0;
+std::map<std::string,std::string> RpgItem::tagsDescriptions;
 
 RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
                  Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
@@ -64,7 +65,6 @@ RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float
   this->maxCharges = maxCharges;
   this->potionSkill = potionSkill;
   this->potionTime = potionTime;
-  this->acl = (GLuint)0xffff; // all on
   this->isWeaponItem = itemTypes[ type ].isWeapon;
   this->iconTileX = iconTileX;
   this->iconTileY = iconTileY;
@@ -204,3 +204,22 @@ bool RpgItem::isContainer() {
   return( type == CONTAINER ? true : false );
 }
 
+void RpgItem::describeTag( char *buffer, char *prefix, string tag, char *postfix, char *token ) {
+	strcpy( buffer, prefix );
+	if( RpgItem::tagsDescriptions.find( tag ) != RpgItem::tagsDescriptions.end() ) {
+		char tmp[255];
+		strcpy( tmp, tagsDescriptions[ tag ].c_str() );
+		char *p = strtok( tmp, " " );
+		while( p ) {
+			if( !strcmp( p, "$$" ) ) strcat( buffer, token );
+			else strcat( buffer, p );
+			p = strtok( NULL, " " );
+			if( p ) strcat( buffer, " " );
+		}
+	} else {
+		 strcat( buffer, token );
+		 strcat( buffer, " of type " );
+		 strcat( buffer, tag.c_str() );
+	}
+	strcat( buffer, postfix );
+}

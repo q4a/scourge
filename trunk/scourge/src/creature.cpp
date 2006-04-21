@@ -132,7 +132,7 @@ void Creature::commonInit() {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    skillMod[i] = skillBonus[i] = 0;
+    skillMod[i] = skillBonus[i] = skillsUsed[i] = 0;
   }
   this->stateMod = 0;
   this->protStateMod = 0;
@@ -225,6 +225,7 @@ CreatureInfo *Creature::save() {
     info->skills[i] = skills[i];
     info->skillMod[i] = skillMod[i];
     info->skillBonus[i] = skillBonus[i];
+		info->skillsUsed[i] = skillsUsed[i];
   }
   info->portraitTextureIndex = portraitTextureIndex;
 
@@ -305,6 +306,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     creature->setSkill( i, info->skills[i] );
     creature->skillMod[i] = info->skillMod[i];
+		creature->skillsUsed[i] = info->skillsUsed[i];
     used += creature->skillMod[i];
     // info->skillBonus: can't be used until calendar is also persisted
     //creature->setSkillBonus( i, info->skillBonus[i] );

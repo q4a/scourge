@@ -20,6 +20,7 @@
 
 #include "../constants.h"
 #include <map>
+#include <set>
 #include <vector>
 #include <string>
 
@@ -38,6 +39,10 @@ private:
   std::vector<Character*> children;
   std::map<int,int> skills;
   std::vector<std::string> capabilities;
+	std::set<std::string> allowedWeaponTags;
+	std::set<std::string> forbiddenWeaponTags;
+	std::set<std::string> allowedArmorTags;
+	std::set<std::string> forbiddenArmorTags;
 
 public:
   Character( char *name, char *parentName, 
@@ -60,7 +65,7 @@ public:
   inline int getSkill( int skillIndex ) {
     return( skills.find( skillIndex ) == skills.end() ? -1 : skills[skillIndex] );
   }
-
+	
   static std::map<std::string, Character*> character_class;  
   static std::vector<Character*> character_list;  
   static std::vector<Character*> rootCharacters;
@@ -69,6 +74,8 @@ public:
 
   static void initCharacters();
   static void buildTree();
+protected:
+	void describeProfession();
 };
 
 #endif
