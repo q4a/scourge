@@ -374,7 +374,6 @@ void Inventory::drawWidgetContents(Widget *w) {
 
 bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   Creature *creature = scourge->getParty()->getParty(selected);
-  char *error = NULL;
   if( widget == mainWin->closeButton || widget == closeButton ) {
     // mainWin->setVisible(false);
     scourge->toggleInventoryWindow();

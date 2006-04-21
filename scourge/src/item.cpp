@@ -426,28 +426,16 @@ void Item::initItems(ShapePalette *shapePal) {
                           tileX - 1, tileY - 1, maxBonusSkill );
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   
-      /*
     } else if(n == 'A' && last) {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
-      n = Constants::readLine(line, fp);
-      char *p = strtok(line, ",");
-      while(p) {
-        int len = strlen(p);
-        bool value = (p[len - 1] == '+');
-        if(p[0] == '*') {
-          last->setAllAcl(value);
-        } else {
-          char shortName[3];
-          shortName[0] = p[0];
-          shortName[1] = p[1];
-          shortName[2] = 0;
-          last->setAcl(Character::getCharacterIndexByShortName(shortName), value);
-        }
-        p = strtok(NULL, ",");
+      n = Constants::readLine( line, fp );
+      char *p = strtok( line, "," );
+      while( p ) {
+				last->addTag( strdup( p ) );
+        p = strtok( NULL, "," );
       }
-      */
     } else if(n == 'S') {
       fgetc(fp);
       n = Constants::readLine(line, fp);

@@ -79,7 +79,7 @@ class Item : public RenderedItem, Storable {
   int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
   bool stateModSet;
   std::map<int, int> skillBonus;
-  Session *session;
+  Session *session;	
 
 public:
   Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false);

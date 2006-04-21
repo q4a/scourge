@@ -99,6 +99,7 @@ class Creature : public RenderedCreature {
   int level, exp, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
   int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
+	int skillsUsed[Constants::SKILL_COUNT];
   GLuint stateMod, protStateMod;
   Monster *monster;
 

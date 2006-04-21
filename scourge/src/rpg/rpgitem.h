@@ -20,6 +20,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <set>
 #include "../constants.h"
 #include "character.h"
 
@@ -63,10 +64,10 @@ class RpgItem {
   int maxCharges;
   int potionSkill; // which skill does this potion effect?
   int potionTime;
-  GLuint acl; // 1 bit per character class
   bool isWeaponItem;
   int iconTileX, iconTileY;
   int maxSkillBonus; // max coord. bonus applied to armor and shields
+	std::set<std::string> tags;
 
   static std::map<int, std::map<int, std::vector<const RpgItem*>*>*> typesMap;
   static std::map<std::string, const RpgItem *> itemsByName;
@@ -75,7 +76,7 @@ class RpgItem {
 
   // linear for now... if there are too many of these we can organize them 
   // in a type->depth map.
-  static std::vector<RpgItem*> special;
+  static std::vector<RpgItem*> special;	
 
  public:
 
@@ -114,6 +115,9 @@ class RpgItem {
   static RpgItem *items[1000];
   static int itemCount;
 
+	static std::map<std::string,std::string> tagsDescriptions;
+	static void describeTag( char *buffer, char *prefix, std::string tag, char *postfix, char *token );
+
   RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
           Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
           int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int minLevel=0, 
@@ -121,6 +125,15 @@ class RpgItem {
           int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0,
           int maxSkillBonus=-1);
   ~RpgItem();
+
+	inline void addTag( char *tag ) {
+		std::string s = tag;
+		tags.insert( s );
+	}
+	inline bool hasTag( char *tag ) {
+		std::string s = tag;
+		return( tags.find( s ) != tags.end() );
+	}
 
 
   // -Rpg in the name to not accidentally call it instead of item->getXYZ().
@@ -146,10 +159,6 @@ class RpgItem {
   inline bool isSpecial() { return( minLevel > 0 ); }
   inline int getType() { return type; }
   inline int getPotionSkill() { return potionSkill; }
-  inline bool getAcl(int index) { return (acl & (1 << index) ? true : false); }
-  inline void setAcl(int index, bool value) { if(value) acl |= (1 << index); else acl &= ((GLuint)0xffff - (GLuint)(1 << index)); }
-  inline void setAllAcl(bool value) { if(value) acl = (GLuint)0xffff; else acl = (GLuint)0; }
-  inline GLuint getAllAcl() { return acl; }
   inline bool isWeapon() { return this->isWeaponItem; }
   inline int getIconTileX() { return this->iconTileX; }
   inline int getIconTileY() { return this->iconTileY; }
