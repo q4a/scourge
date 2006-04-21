@@ -2399,34 +2399,18 @@ float Creature::getAttacksPerRound( Item *item ) {
 }
 
 char *Creature::canEquipItem( Item *item, bool interactive ) {
-  if( character ) {
-/*
-cerr << "RA=" << Character::getCharacterIndexByShortName("RA") <<
-  " KN=" << Character::getCharacterIndexByShortName("KN") <<
-  " TI=" << Character::getCharacterIndexByShortName("TI") << 
-  " AS=" << Character::getCharacterIndexByShortName("AS") << 
-  " AR=" << Character::getCharacterIndexByShortName("AR") << 
-  " LO=" << Character::getCharacterIndexByShortName("LO") << 
-  " CO=" << Character::getCharacterIndexByShortName("CO") << 
-  " SU=" << Character::getCharacterIndexByShortName("SU") << 
-  " NA=" << Character::getCharacterIndexByShortName("NA") << 
-  " MO=" << Character::getCharacterIndexByShortName("MO") << 
-  " this=" << character->getShortName() << "=" << Character::getCharacterIndexByShortName(character->getShortName()) <<
-  " item=" << item->getRpgItem()->getName() << 
-  " acl=" << item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName())) << 
-  " all acl=" << item->getRpgItem()->getAllAcl() << endl;
-*/
 
-    cerr << "FIXME: Creature::canEquipItem()" << endl;
-    /*
-    if(!item->getRpgItem()->getAcl(Character::getCharacterIndexByShortName(character->getShortName()))) {
-      return Constants::getMessage(Constants::ITEM_ACL_VIOLATION);
-    }
-    if( item->getLevel() > getLevel() ) {
-      return Constants::getMessage(Constants::ITEM_LEVEL_VIOLATION);
-    }
-    */
+	// check item tags to see if this item can be equipped.
+  if( character ) {		
+		if( !character->canEquip( item->getRpgItem() ) ) {
+			return Constants::getMessage( Constants::ITEM_ACL_VIOLATION );
+		}
   }
+
+	// check the level
+	if( getLevel() < item->getLevel() ) {
+		return Constants::getMessage( Constants::ITEM_LEVEL_VIOLATION );
+	}
 
   // two handed weapon violations
   if( item->getRpgItem()->getEquip() & Constants::INVENTORY_LEFT_HAND ||

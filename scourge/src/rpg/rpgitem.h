@@ -131,6 +131,9 @@ class RpgItem {
 	}
 	inline bool hasTag( char *tag ) {
 		std::string s = tag;
+		return hasTag( s );
+	}
+	inline bool hasTag( std::string s ) {
 		return( tags.find( s ) != tags.end() );
 	}
 
@@ -159,6 +162,7 @@ class RpgItem {
   inline int getType() { return type; }
   inline int getPotionSkill() { return potionSkill; }
   inline bool isWeapon() { return this->isWeaponItem; }
+	inline bool isArmor() { return itemTypes[ type ].isArmor; }
   inline int getIconTileX() { return this->iconTileX; }
   inline int getIconTileY() { return this->iconTileY; }
   inline int getMaxSkillBonus() { return this->maxSkillBonus; }

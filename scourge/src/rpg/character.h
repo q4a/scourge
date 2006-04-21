@@ -27,6 +27,8 @@
 /**
   *@author Gabor Torok
   */
+	
+class RpgItem;
   
 class Character  {
 private:
@@ -65,6 +67,7 @@ public:
   inline int getSkill( int skillIndex ) {
     return( skills.find( skillIndex ) == skills.end() ? -1 : skills[skillIndex] );
   }
+	bool canEquip( RpgItem *item );
 	
   static std::map<std::string, Character*> character_class;  
   static std::vector<Character*> character_list;  
@@ -76,6 +79,7 @@ public:
   static void buildTree();
 protected:
 	void describeProfession();
+	bool canEquip( RpgItem *item, std::set<std::string> *allowed, std::set<std::string> *forbidden );
 };
 
 #endif
