@@ -351,3 +351,39 @@ void Character::describeProfession() {
 
 	strcat( description, s );
 }
+
+bool Character::canEquip( RpgItem *item ) {	
+	if( item->isWeapon() ) {
+		return canEquip( item, &allowedWeaponTags, &forbiddenWeaponTags );
+	} else if( item->isArmor() ) {
+		return canEquip( item, &allowedArmorTags, &forbiddenArmorTags );
+	}
+	return true;
+}			
+
+bool Character::canEquip( RpgItem *item, set<string> *allowed, set<string> *forbidden ) {
+	string all = "*";
+	if( allowed->find( all ) != allowed->end() ) {
+		for( set<string>::iterator e = forbidden->begin(); e != forbidden->end(); ++e ) {
+			string tag = *e;
+			if( item->hasTag( tag ) ) return false;
+		}
+		return true;
+	} else if( forbidden->find( all ) != forbidden->end() ) {
+		for( set<string>::iterator e = allowed->begin(); e != allowed->end(); ++e ) {
+			string tag = *e;
+			if( item->hasTag( tag ) ) return true;
+		}
+		return false;
+	} else {
+		for( set<string>::iterator e = forbidden->begin(); e != forbidden->end(); ++e ) {
+			string tag = *e;
+			if( item->hasTag( tag ) ) return false;
+		}
+		for( set<string>::iterator e = allowed->begin(); e != allowed->end(); ++e ) {
+			string tag = *e;
+			if( item->hasTag( tag ) ) return true;
+		}
+		return true;
+	}
+}
