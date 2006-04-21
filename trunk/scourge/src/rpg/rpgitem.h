@@ -126,8 +126,7 @@ class RpgItem {
           int maxSkillBonus=-1);
   ~RpgItem();
 
-	inline void addTag( char *tag ) {
-		std::string s = tag;
+	inline void addTag( std::string s ) {
 		tags.insert( s );
 	}
 	inline bool hasTag( char *tag ) {
