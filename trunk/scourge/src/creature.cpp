@@ -2151,7 +2151,6 @@ void Creature::calcArmor( float *armorP,
   }
 }
 
-#define MAX_SKILL_USED 10
 void Creature::incSkillUsed( int skill ) {
 	if( !character ) return;
 
@@ -2166,12 +2165,15 @@ void Creature::incSkillUsed( int skill ) {
 	}
 	if( skills[ skill ] >= lowest ) return;
 
+//	cerr << "name=" << getName() << " skill: " << Constants::SKILL_NAMES[ skill ] << 
+//		" use=" << skillsUsed[ skill ] << " out of " << Constants::SKILL_USE[ skill ] << endl;
+
 	skillsUsed[ skill ]++;
-	if( skillsUsed[ skill ] >= MAX_SKILL_USED ) {		
+	if( skillsUsed[ skill ] >= Constants::SKILL_USE[ skill ] ) {		
 		skills[ skill ]++;
 		skillsUsed[ skill ] = 0;
 		char message[120];
-		sprintf( message, "%s's %s increased.", getName(), Constants::SKILL_NAMES[ skill ] );
+		sprintf( message, "%s's skill in %s has increased.", getName(), Constants::SKILL_NAMES[ skill ] );
 		cerr << message << endl;
 		session->getMap()->addDescription( message, 0, 1, 1 );
 	}
@@ -2456,6 +2458,7 @@ bool Creature::rollSecretDoor( Location *pos ) {
     if( SDL_GetTicks() - lastTime < SECRET_DOOR_ATTEMPT_INTERVAL ) return false;
   }
   bool ret = rollSkill( Constants::FIND_SECRET_DOOR, 4.0f );
+	incSkillUsed( Constants::FIND_SECRET_DOOR );
   if( !ret ) {
     secretDoorAttempts[ pos ] = SDL_GetTicks();
   }

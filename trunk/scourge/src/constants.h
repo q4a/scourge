@@ -512,6 +512,7 @@ public:
 	static char *SKILL_GROUP_NAMES[80];
   static char *SKILL_NAMES[80];
   static char *SKILL_SYMBOL[];
+	static int SKILL_USE[];
   static char *SKILL_DESCRIPTION[];
 	static char *SKILL_GROUP_DESCRIPTION[];
   static std::map<std::string,int> skillNameMap;
