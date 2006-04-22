@@ -233,6 +233,7 @@ char *Constants::SKILL_NAMES[80] = {
 };
 char *Constants::SKILL_SYMBOL[ Constants::SKILL_COUNT ];
 char *Constants::SKILL_DESCRIPTION[ Constants::SKILL_COUNT ];
+int Constants::SKILL_USE[ Constants::SKILL_COUNT ];
 char *Constants::SKILL_GROUP_DESCRIPTION[ Constants::SKILL_GROUP_COUNT ];
 map<string,int> Constants::skillNameMap;
 map<int,vector<int>*> Constants::skillGroups;

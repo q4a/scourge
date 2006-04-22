@@ -113,6 +113,9 @@ void Character::initCharacters() {
 				}
 
 				p = strtok( NULL, "," );
+				Constants::SKILL_USE[ skill ] = atoi( p );
+
+				p = strtok( NULL, "," );
 				Constants::SKILL_SYMBOL[ skill ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
 				strcpy( Constants::SKILL_SYMBOL[ skill ], p );
 				
