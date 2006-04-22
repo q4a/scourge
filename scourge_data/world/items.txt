@@ -5,7 +5,7 @@
 # I:description
 # I:short description (unidentified)
 # I:tileX,tileY,[maxSkillBonus] ( from data/tiles.bmp, count is 1-based )
-# A:character_short_name(+|-) (item acl: comma sep. list. The default is "*+")
+# A:item tags (see professions.txt for the tags)
 #
 # S:type,sound-list (list)
 #
@@ -89,6 +89,7 @@ I:SWORD,0.05,20,DAGGER,48,0,SWORD_WEAPON
 I:It's an old carving knife. The long dulled blade sports a surprising number of dents.
 I:A rusty carving knife
 I:10,2
+A:SMALL,METAL
 
 I:Dirk
 I:10,1d2,2,0,0
@@ -96,6 +97,7 @@ I:SWORD,0.1,40,DAGGER,48,0,SWORD_WEAPON
 I:A lightweight weapon that is built for speed. A favorite of assassins!
 I:A small dirk
 I:11,2
+A:SMALL,METAL
 
 I:Curved Dirk
 I:10,1d2+1,2,0,0
@@ -103,6 +105,7 @@ I:SWORD,0.1,50,DAGGER,48,0,SWORD_WEAPON
 I:This dirk sports a menacing extra notch at its end. Monsters are sure to run screaming from this horror!
 I:A dirk with a spike
 I:12,2
+A:SMALL,METAL
 
 I:Throwing Dagger
 I:10,1d2,2,2,0
@@ -110,6 +113,7 @@ I:SWORD,0.1,50,DAGGER,48,0,SWORD_WEAPON
 I:The throwing dagger is a well balanced weapon, favored by the feared assassin-poets of the Order of the Grizzled Pony.
 I:A well-balanced throwing dagger.
 I:13,2
+A:SMALL,METAL
 
 I:Dagger
 I:10,1d3,3,0,0
@@ -117,6 +121,7 @@ I:SWORD,0.2,80,DAGGER,48,0,SWORD_WEAPON
 I:Many-a-throats were silenced by this here black iron
 I:A curiously shaped dagger
 I:14,2
+A:SMALL,METAL
 
 I:Hunting Knife
 I:10,1d3+1,3,0,0
@@ -124,6 +129,7 @@ I:SWORD,0.2,90,DAGGER,48,0,SWORD_WEAPON
 I:The extra-long serrated edge of this hunting knife is enough to induce nightmares. A nicely carved wooden handle completes this menacing weapon.
 I:A hunting knife with a serrated edge.
 I:15,2
+A:SMALL,METAL
 
 I:Ceremonial Dagger
 I:10,1d3,3,0,0
@@ -131,6 +137,7 @@ I:SWORD,0.2,100,DAGGER,48,0,SWORD_WEAPON
 I:This knife bears the symbol of Unamoin. The god is enthroned on a seat of flame, before him stand a long line of souls, to be sacrificed for the divine feast.
 I:A wide-bladed ceremonial dagger.
 I:16,2
+A:SMALL,METAL
 
 I:Short sword
 I:8,2d2,3,0,0
@@ -138,6 +145,7 @@ I:SWORD,1.5,150,DAGGER,48,0,SWORD_WEAPON
 I:A dwarven shortsword of average workmanship
 I:A stubby short sword
 I:17,2
+A:SMALL,METAL
 
 I:Dwarven sword
 I:7,2d2+1,4,0,0
@@ -145,6 +153,7 @@ I:SWORD,2.2,170,SWORD,48,2,SWORD_WEAPON,1
 I:Longer and wider than a shortsword, the dwarven military brand is sometimes held with two hands. It is designed for close-quarter underground melee fighting.
 I:A sword of dwarven make.
 I:18,2
+A:METAL,TWO_HANDED
 
 I:Ornamental officer sword
 I:7,2d2,4,0,0
@@ -152,6 +161,7 @@ I:SWORD,2.2,180,SWORD,48,2,SWORD_WEAPON,1
 I:Officer in the royal guard wear this pointed swords as a sign of rank. They're usually not used in actual combat but are only carried during a ceremony.
 I:A strange pointed sword.
 I:19,2
+A:METAL,TWO_HANDED
 
 I:Bastard sword
 I:7,2d3,4,0,0
@@ -159,7 +169,7 @@ I:SWORD,2.0,200,SWORD,48,2,SWORD_WEAPON,1
 I:A bastard sword can be wielded either by one or both hands... (If you still have both hands)
 I:The rusty bastard sword has seen plenty of use
 I:20,2
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:METAL,TWO_HANDED
 
 I:Long sword
 I:10,3d3+1,5,0,0
@@ -167,7 +177,7 @@ I:SWORD,4.5,250,SWORD,48,0,SWORD_WEAPON,2
 I:The longsword is the noble weapon of the knights
 I:A well-balanced, shiny longsword
 I:1,3
-A:*-,RA+,KN+,TI+
+A:METAL,LARGE
 
 I:Twisted sword
 I:8,3d3+2,5,0,0
@@ -175,7 +185,7 @@ I:SWORD,5,300,SWORD,48,0,SWORD_WEAPON,2
 I:The blade of this sword is made from laying many strips of metal upon each other in a twisted "snake" formation. This gives the weapon its exceptional strength.
 I:A blade with a snake-like form
 I:2,3
-A:*-,RA+,KN+,TI+
+A:METAL,LARGE
 
 I:Royal Cutlass
 I:8,3d3+2,5,0,0
@@ -183,7 +193,7 @@ I:SWORD,5,320,SWORD,48,1,SWORD_WEAPON,2
 I:Adopted from an invading force of Southern pirates, these heavy cutlasses can deliver a crushing blow.
 I:A cutlass with a curved, heavy blade
 I:3,3
-A:*-,RA+,KN+,TI+
+A:METAL,LARGE,TWO_HANDED
 
 I:Nederianese Cutlass
 I:7,3d2,5,0,0
@@ -191,7 +201,7 @@ I:SWORD,5,350,SWORD,48,0,SWORD_WEAPON,2
 I:A smaller version of the royal cutlass that can be held in one hand.
 I:A small cutlass
 I:4,3
-A:*-,RA+,KN+,TI+
+A:METAL,LARGE
 
 I:Cavalry Sabre
 I:6,3d2+3,5,0,0
@@ -199,7 +209,7 @@ I:SWORD,5,380,SWORD,48,0,SWORD_WEAPON,3
 I:These swords were designed to be used from horseback. As such they tend to be top-heavy and awkward to use in melee.
 I:A strangely-balanced utilitarian sword
 I:5,3
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:METAL,LARGE
 
 I:Rapier
 I:8,3d2+1,5,0,0
@@ -207,7 +217,7 @@ I:SWORD,5,320,SWORD,48,0,SWORD_WEAPON,3
 I:Mostly used by the aristocracy, these weapons were designed to puncture armor rather to strike with the edge. They require extreme finesse when used and are more likely to break.
 I:A long pointed sword with not much of an edge.
 I:6,3
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:METAL,LARGE
 
 I:Great sword
 I:7,3d4,7,0,0
@@ -215,7 +225,7 @@ I:SWORD,6.0,350,SWORD,48,1,SWORD_WEAPON,2
 I:Only persons of exceeding strength can cleave their enemies to bits with this greatsword
 I:A two-handed greatsword
 I:7,3
-A:*-,RA+,KN+
+A:METAL,LARGE,TWO_HANDED
 
 I:Purple Worm Slayer
 I:6,2d4+1,7,0,0
@@ -223,7 +233,7 @@ I:SWORD,2.5,350,SWORD,48,0,SWORD_WEAPON,3
 I:Wrought by the elvish metal smiths of Allovium, this blade is specially prepared to slay dragons.
 I:A purple curved sword
 I:8,3
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:METAL,LARGE
 
 I:Katana
 I:5,2d4+2,7,0,0
@@ -231,7 +241,7 @@ I:SWORD,3,370,SWORD,48,0,SWORD_WEAPON,4
 I:This graceful, single-edged sword cannot be left out of any rpg!
 I:A single-edge sword of mythic proportions!
 I:9,3
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:METAL,LARGE
 
 I:Goliompur
 I:5,2d4+3,4,0,0
@@ -239,7 +249,7 @@ I:SWORD,3.0,800,SWORD,48,2,SWORD_WEAPON,4
 I:The fabled weapon of Goliompur was forged by elven smiths in the deep forests of Alovium eons ago. It is rumored to speak to those it chooses to be her leader.
 I:A weapon of exceeding craftsmanship. It is marked with strange runes.
 I:10,3
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:METAL,LARGE,TWO_HANDED
 
 I:Dextran
 I:4,3d4+2,5,0,0
@@ -247,7 +257,7 @@ I:SWORD,4.0,1200,SWORD,48,1,SWORD_WEAPON,5
 I:Legend tells of how king Haomen of the Nordic men hew his enemies in the battles at the fjords of Gormoth wielding this blade.
 I:You feel a crispness in the air and smell oaken notes while near this weapon.
 I:11,3
-A:*-,RA+,KN+,TI+
+A:METAL,LARGE,TWO_HANDED
 
 ######################
 # Axes
@@ -260,7 +270,7 @@ I:AXE,2.0,150,AXE,48,0,AXE_WEAPON
 I:A battleaxe forged under the mountain in darkness and silence
 I:The sturdy battleaxe also serves as a walking stick
 I:14,3
-A:*-,RA+,KN+,TI+
+A:METAL,LARGE
 
 I:Throwing axe
 I:6,1d3,3,6,0
@@ -268,7 +278,7 @@ I:AXE,1.0,100,AXE,48,0,AXE_WEAPON
 I:Weapon of the feared dwarven assassins, the throwing axe returns to its owner after its arc of death!
 I:A short-handled throwing axe
 I:13,3
-A:*-,RA+,KN+,TI+,AS+
+A:METAL
 
 I:Gorlish Axe
 I:7,1d5+1,3,0,0
@@ -276,7 +286,7 @@ I:AXE,2.0,200,AXE,48,0,AXE_WEAPON,1
 I:The Gorlish scouts of the Underlake clans carry these axes. The scouts are able to scale the sheerest rock faces of their underground realm, so the axes are used as weapons as well as climbing gear.
 I:A hooked medium axe
 I:14,3
-A:*-,RA+,KN+,TI+,AS+
+A:METAL
 
 I:Greataxe
 I:7,3d4,8,0,0
@@ -284,7 +294,7 @@ I:AXE,8.0,400,AXE,48,1,AXE_WEAPON,1
 I:This giant, two-handed axe is the rough weapon of the wandering executioner.
 I:A crudely-made two-handed axe
 I:16,3
-A:*-,RA+,KN+
+A:METAL,LARGE,TWO_HANDED
 
 I:Chomper
 I:3,2d3+1,8,0,0
@@ -292,7 +302,7 @@ I:AXE,3.0,600,AXE,48,0,AXE_WEAPON,2
 I:This weapon is obviously the work of an orc or ogre smith. It's handle is too wide for most human hands.
 I:A large axe with a serrated blade
 I:17,3
-A:*-,RA+,KN+
+A:METAL,LARGE
 
 I:Persuader
 I:2,3d4+1,6,0,0
@@ -300,7 +310,7 @@ I:AXE,4.5,1000,AXE,48,2,AXE_WEAPON,3
 I:This is the very weapon which, wielded by Thuzgorod the Red slew the goblin king in the dwarven wars of Uzmagil.
 I:A stout axe with strange runes
 I:2,1
-A:*-,RA+,KN+,TI+
+A:METAL,LARGE,TWO_HANDED
 
 I:Golden Axe
 I:1,4d4+2,7,0,0
@@ -308,7 +318,7 @@ I:AXE,6.0,1400,AXE,48,1,AXE_WEAPON,4
 I:This is the Golden Axe once held by the many arms of Thulionix the dwarven god of suffering.
 I:A small axe of pale gold color
 I:5,2
-A:*-,RA+,KN+
+A:METAL,LARGE,TWO_HANDED
 
 ######################
 # Bows
@@ -319,6 +329,7 @@ I:BOW,0.7,200,BOW,8192,0,BOW_WEAPON
 I:This small gnomish bow is made of a light gray wood
 I:A small bow
 I:20,3
+A:RANGED,SMALL
 
 I:Ornatebow
 I:7,1d3,3,8,0
@@ -326,7 +337,7 @@ I:BOW,1.5,500,BOW,8192,0,BOW_WEAPON,1
 I:This bow is made of a strong wood with artistic carvings on its handles
 I:A nicely crafted, strong bow
 I:20,3
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:RANGED,SMALL
 
 I:Crossbow
 I:7,1d3+2,5,8,0
@@ -334,7 +345,7 @@ I:BOW,1.5,700,BOW,8192,0,BOW_WEAPON,1
 I:While cumbersome to reload, the crossbow delivers an armor-piercing greeting to any foe.
 I:A large crossbow
 I:1,4
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:RANGED,LARGE
 
 I:Light crossbow
 I:6,1d3+1,3,8,0
@@ -342,7 +353,7 @@ I:BOW,1.5,750,BOW,8192,0,BOW_WEAPON,2
 I:Though faster to reload than its pumped-up cousin, this crossbow has a shorter range and delivers less power.
 I:A crossbow with an orange wood handle
 I:2,4
-A:*-,RA+,KN+,TI+,AS+,MO+
+A:RANGED
 
 I:Longbow
 I:6,2d2,3,9,0
@@ -350,7 +361,7 @@ I:BOW,2.5,550,BOW,8192,0,BOW_WEAPON,2
 I:This large bow is the most common weapon of Sylvian rangers
 I:A long bow adorned with a leaf symbol
 I:20,3
-A:*-,RA+,KN+,TI+,AS+
+A:RANGED,LARGE
 
 I:Strongbow
 I:6,2d3,4,10,0
@@ -358,7 +369,7 @@ I:BOW,3.0,800,BOW,8192,0,BOW_WEAPON,2
 I:The elven armies under Mondiuvelen the Hale once carried these large bows
 I:A large bow with an ivory sight-piece
 I:20,3
-A:*-,RA+,KN+,TI+
+A:RANGED,LARGE
 
 I:Bolinfupur
 I:3,4d2+1,4,12,0
@@ -366,7 +377,7 @@ I:BOW,4.0,1500,BOW,8192,0,BOW_WEAPON,3
 I:The Sylvian bow of Bolinfupur kills silently. It is made from a single piece of blood stone.
 I:This bow is made from a dull grayish-red substance that resembles stone
 I:20,3
-A:*-,RA+,KN+
+A:RANGED,LARGE
 
 ######################
 # Maces
@@ -379,6 +390,7 @@ I:MACE,1.0,30,MACE,48,0,MACE_WEAPON
 I:This roughly hewn tree-limb barely qualifies as a primitive weapon. The handle is worn by years of head-bashing.
 I:Your basic, non-enchanted, non-spiked wooden club.
 I:16,1
+A:SMALL,MACE
 
 I:Rounded mace
 I:8,2d3,3,0,0
@@ -386,6 +398,7 @@ I:MACE,1.3,140,MACE,48,0,MACE_WEAPON
 I:The clerical weapon of choice! Dispense holy bashing of heads and denting of armor with this divine instrument of bludgeoning.
 I:A metal-headed mace with a plain wooden handle.
 I:17,1
+A:SMALL,MACE
 
 I:Morning Star
 I:7,2d3+1,4,0,0
@@ -393,7 +406,7 @@ I:MACE,1.4,300,MACE,48,0,MACE_WEAPON,1
 I:The main advantage when using a morning star over its bestudded brother the Spiked Flail, is that the user need not bother with the weapon's business end getting stuck in the target.
 I:A metal ball on a chain
 I:19,1
-A:*-,KN+,AS+,RA+,TI+,AR+,LO+
+A:MACE,METAL
 
 I:Spiked flail
 I:7,2d3+2,4,0,0
@@ -401,15 +414,15 @@ I:MACE,1.6,320,MACE,48,0,MACE_WEAPON,1
 I:Favorite backup weapon of the knight. Should your sword be lost or irretrievable lodged in an opponent, reach for the flail and wade in the gore with a smile.
 I:Spiked ball dangles at the end of a chain of impressive length.
 I:1,2
-A:*-,KN+,AS+,RA+,TI+,AR+,LO+
+A:MACE,METAL
 
 I:Double-fisted Maragon
 I:6,3d3+1,7,0,0
-I:MACE,2.2,650,MACE,48,0,MACE_WEAPON,2
+I:MACE,2.2,650,MACE,48,1,MACE_WEAPON,2
 I:Once used by the dead-eater ogre legions of the Crimson Leaf as a weapon for crowd control. This mace is to be held by two large hands.
 I:An enormous two-handed mace.
 I:2,2
-A:*-,KN+,AS+,RA+
+A:MACE,METAL,TWO_HANDED
 
 I:Darkflail
 I:5,2d4+1,4,0,0
@@ -417,7 +430,7 @@ I:MACE,2.0,900,MACE,48,0,MACE_WEAPON,3
 I:Created quite by accident, this black flail was the side-effect of a failed experiment at the school of war-wizardry.
 I:The black flail emits a humming noise.
 I:18,1
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:MACE,METAL,LARGE
 
 I:Warmaster
 I:3,3d4+2,6,0,0
@@ -425,7 +438,7 @@ I:MACE,2.2,1600,MACE,48,0,MACE_WEAPON,4
 I:Descendant of Glauis the legendary talking mace of Horom, this agile weapon is also a ferocious combatant.
 I:This mace is surrounded by a near-visible aura of blood-lust.
 I:3,2
-A:*-,KN+,RA+,AS+
+A:MACE,METAL,LARGE
 
 ######################
 # Pole weapons
@@ -436,6 +449,7 @@ I:POLE,1.0,20,POLE,48,1,POLE_WEAPON
 I:This long wooden pole serves both as a walking stick and fighting staff.
 I:A long wood pole.
 I:15,1
+A:METAL,LARGE,TWO_HANDED
 
 I:Javelin
 I:8,2d4,6,4,0
@@ -443,7 +457,7 @@ I:POLE,1.2,50,POLE,48,2,POLE_WEAPON
 I:A mid-range weapon of precision and finesse, the javelin grew in popularity as a court hunting weapon under Haladil.
 I:A finely crafted, lightweight lance.
 I:6,4
-A:*-,KN+,AS+,RA+,TI+,AR+,LO+
+A:METAL,LARGE,TWO_HANDED
 
 I:Longspear
 I:7,3d3,7,2,0
@@ -451,7 +465,7 @@ I:POLE,2.3,85,POLE,48,1,POLE_WEAPON,1
 I:Forged in the ice-caverns of the ancient troll halls of Gormoril (not a masterpiece of precision) this iron lance is made for a large fighter.
 I:A rough iron pole with a sharpened tip.
 I:7,4
-A:*-,KN+,AS+,RA+,TI+,AR+,LO+
+A:METAL,LARGE,TWO_HANDED
 
 I:Trident
 I:7,4d3,8,2,0
@@ -459,7 +473,7 @@ I:POLE,2.8,120,POLE,48,1,POLE_WEAPON,2
 I:An ancient long reaching weapon of a gladiatorial history. This trident bears the symbol of the sea-lords of Urtap.
 I:A long metal pole with three barbed prongs.
 I:10,4
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:METAL,LARGE,TWO_HANDED
 
 I:Halberd
 I:7,4d3+1,9,2,0
@@ -467,7 +481,7 @@ I:POLE,3.5,150,POLE,48,1,POLE_WEAPON,3
 I:This weapon was once held by the royal guard of the late king Haladil.
 I:A long pole with an axe blade at its top.
 I:8,4
-A:*-,KN+,RA+,AS+
+A:METAL,LARGE,TWO_HANDED
 
 I:War-scythe
 I:7,4d4+2,8,2,0
@@ -475,7 +489,7 @@ I:POLE,4.0,220,POLE,48,1,POLE_WEAPON,4
 I:A reaping scythe strengthened and sharpened for more than just crops.
 I:A wicked curved blade atop a simple wooden pole.
 I:9,4
-A:*-,KN+,RA+
+A:METAL,LARGE,TWO_HANDED
 
 I:Scythe of Milmoril
 I:7,4d4+3,6,2,0
@@ -483,7 +497,7 @@ I:POLE,4.0,220,POLE,48,1,POLE_WEAPON,4
 I:The dryad lich Milmoril needs no introduction. This long black scythe with the saw-blade and bone handle was her choice weapon.
 I:A large black scythe of excellent (if evil) workmanship.
 I:3,1
-A:*-,KN+,RA+,AS+,TI+
+A:METAL,LARGE,TWO_HANDED
 
 
 ##################################################################
@@ -646,6 +660,7 @@ I:STAFF,1.0,50,POLE,48,1,LEADERSHIP
 I:A simple wooden staff, yet tendrils of magic intrigue your senses.
 I:A simple wooden staff.
 I:16,9
+A:LARGE,TWO_HANDED
 
 I:Snake Staff
 I:4,2,0,0,10
@@ -653,6 +668,7 @@ I:STAFF,1.0,250,POLE,48,1,LEADERSHIP
 I:The snake worshipping halfling mages of Orn crafted this steel staff.
 I:A metal staff with the leering head of a cobra.
 I:17,9
+A:LARGE,TWO_HANDED
 
 I:Staff of Zordok the Clumsy
 I:4,3,0,0,15
@@ -660,6 +676,7 @@ I:STAFF,1.0,600,POLE,48,1,LEADERSHIP,1
 I:The tale of Zordok is one of caution. It's rumored, the hapless lizard mage managed to trap himself in a staff such as this one.
 I:The wooden staff emits quiet whimpering noises when held.
 I:18,9
+A:LARGE,TWO_HANDED
 
 I:Staff of Resentful Thoughts
 I:3,4,0,0,15
@@ -667,6 +684,7 @@ I:STAFF,1.0,1500,POLE,48,1,LEADERSHIP,2
 I:Don't pick up this staff. Get Zoran's instead... yes, Zoran's staff is much better made.
 I:A staff made of a gray wood.
 I:19,9
+A:LARGE,TWO_HANDED
 
 I:Staff of the Magus
 I:2,5,0,0,20
@@ -674,6 +692,7 @@ I:STAFF,1.0,3200,POLE,48,1,LEADERSHIP,3
 I:Magical runes run the entire length of this staff. It is unmistakeably to be used for something magical.
 I:A black staff with golden runes.
 I:20,9
+A:LARGE,TWO_HANDED
 
 I:Horned Staff of the Shade
 I:1,6,0,0,20
@@ -681,6 +700,7 @@ I:STAFF,1.0,7520,POLE,48,1,LEADERSHIP,4
 I:Pure evil emanates from the horned skull head set atop this staff. The ornamental top appears to suggest you rid yourself of your party members.
 I:A red pole with a horned skull attached to its top.
 I:3,10
+A:LARGE,TWO_HANDED
 
 ##################################################################
 ##################################################################
@@ -717,6 +737,7 @@ I:ARMOR,8.0,450,GLOVE,16384,0,ARMOR_DEFEND
 I:A few minutes of cleaning reveals a rare find: a full-plait armored gauntlet still in tact rescued from the depths.
 I:A dirty pair of plait-mail armored gauntlets.
 I:9,9
+A:PLATE
 
 ######################
 # Helmets
@@ -734,7 +755,7 @@ I:ARMOR,20.0,120,HELMET,1,0,ARMOR_DEFEND
 I:Finally a head-gear designed to protect others from viewing the hideous wounds you have acquired over the years.
 I:A clunky helmet with narrow slits for the eyes and nose.
 I:4,9,9
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:METAL
 
 I:Helmet with visor
 I:8,2,0,0,0
@@ -742,7 +763,7 @@ I:ARMOR,24.0,150,HELMET,1,0,ARMOR_DEFEND,1
 I:This metallic piece of medieval clothing comes equipped with a visor that you can swoosh open when striking a dramatic pose.
 I:A dented metal helmet with a removable visor.
 I:3,9,9
-A:*-,KN+,RA+,TI+,AS+
+A:METAL
 
 I:Knight's helmet
 I:7,2,0,0,0
@@ -750,7 +771,7 @@ I:ARMOR,25.0,180,HELMET,1,0,ARMOR_DEFEND,2
 I:This large helmet covers your entire face and parts of your neck and shoulders. It is worn mostly by knights.
 I:A giant metal orb of a helmet. The visor is rusted shut.
 I:6,9,9
-A:*-,KN+,RA+
+A:METAL
 
 I:Pointy Hat
 I:7,0,0,0,0
@@ -758,7 +779,6 @@ I:ARMOR,8,2,HELMET,1,0,ARMOR_DEFEND
 I:This is the typical wizard's hat. It's as if the hat is begging others to mock its wearer. (Of course, this is generally when the mocker is engulfed in flames...)
 I:A light blue broad rimmed hat with a weird pointy top.
 I:2,9
-A:*-,AR+,LO+,CO+,SU+,NA+,MO+
 
 I:Adventuring Hat
 I:9,0,0,0,0
@@ -783,7 +803,6 @@ I:ARMOR,5,22,SHIELD,48,0,SHIELD_DEFEND
 I:The shield's hard wood is dried and flame toughened. It is covered in martial colors and someone jokingly painted a bulls-eye on it.
 I:A well-made, sturdy wooden shield.
 I:11,8
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
 
 I:Steel Shield
 I:10,3,0,0,0
@@ -791,7 +810,7 @@ I:ARMOR,8,60,SHIELD,48,0,SHIELD_DEFEND,1
 I:This triangular metal shield would be a boon to any adventuring knight, if not for the the countless dents and rust-spots that cover its surface.
 I:A triangular metal shield.
 I:15,8
-A:*-,KN+,RA+,TI+,AS+
+A:METAL
 
 I:Ornate Dragon Shield
 I:10,2,0,0,0
@@ -799,7 +818,7 @@ I:ARMOR,8,45,SHIELD,48,0,SHIELD_DEFEND,1
 I:A symbolic, painted dragon roars to life on this shield, as if to only remind its wearer of the absolute futility of carrying it against an actual one.
 I:A metal shield covered with the painting of an ornate dragon.
 I:10,8
-A:*-,KN+,RA+,TI+,AS+
+A:METAL
 
 I:Cavalry Shield
 I:10,3,0,0,0
@@ -807,7 +826,7 @@ I:ARMOR,10,60,SHIELD,48,0,SHIELD_DEFEND,2
 I:A heavy duty cavalry shield, designed to withstand an impact by the lance of a horse-mounted rider, charging at full speed. Judging by the gaping whole in its center, it failed to do so last time.
 I:A heavy metal shield.
 I:14,8
-A:*-,KN+,RA+
+A:METAL,LARGE
 
 I:Trollhide Shield
 I:10,2,0,0,0
@@ -815,7 +834,7 @@ I:ARMOR,7,30,SHIELD,48,0,SHIELD_DEFEND,2
 I:A shield cleverly constructed from the cured hide of a mountain troll. These were especially popular during the dwarven-troll war when each side used such handiwork to idle away the time between skirmishes.
 I:A gray shield featuring advanced troll-hide technology.
 I:13,8
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:LARGE
 
 I:Shield of the Golden Lotus
 I:10,3,0,0,0
@@ -823,7 +842,7 @@ I:ARMOR,3.5,230,SHIELD,48,0,SHIELD_DEFEND,3
 I:If one is smitten due to a lack of protective cover, will anyone hear of the tragedy? In order for such paradox to not come to pass, the clerics of Minirmuir created these divine shields.
 I:A shield exhibiting golden harmony and unperturbable peace.
 I:16,8
-A:*-,KN+
+A:METAL,LARGE
 
 ######################
 # Armor
@@ -838,6 +857,7 @@ I:ARMOR,2,10,ARMOR,8,0,ARMOR_DEFEND
 I:The lightweight cloth keeps you warm (and ready to party) but does not protect you from weapon attacks.
 I:A white bedsheet that's been made into robes.
 I:12,6
+A:ROBES
 
 I:Traveling cloak
 I:10,1,0,0,0
@@ -859,6 +879,7 @@ I:ARMOR,4,25,ARMOR,8,0,ARMOR_DEFEND,2
 I:The usual gamete of spellcasters lets the user perform much agitated hand waving as required by the casted spell.
 I:These robes have magic symbols on their sleeves and hood.
 I:13,6,8
+A:ROBES
 
 I:Padded Robes
 I:7,2,0,0,0
@@ -866,7 +887,7 @@ I:ARMOR,8,50,ARMOR,8,0,ARMOR_DEFEND,3
 I:These robes are cleverly padded to protect its frail wearer a little longer in battle.
 I:These robes seem to be padded on the inside.
 I:14,6,7
-A:*-,AR+,LO+,CO+,SU+,NA+,MO+
+A:ROBES
 
 I:Leather Armor
 I:9,3,0,0,0
@@ -888,7 +909,7 @@ I:ARMOR,40,500,ARMOR,8,0,ARMOR_DEFEND
 I:This indeed -is- your parents' armor. It is rusty, ill-fitting with a few links missing here and there. It's also quite heavy, makes a lot of noise and seems to be home for a very nice family of rodents.
 I:The rust is the only thing that holds this chainmail's links together
 I:19,6,5
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:METAL
 
 I:Guard's Chainmail
 I:8,5,0,0,0
@@ -896,7 +917,7 @@ I:ARMOR,50,720,ARMOR,8,0,ARMOR_DEFEND,2
 I:One finds strange things in the deep places of the earth... This city guard's uniform is one such curiosity. What ill fate befell the wearer of this finely crafted chainmail?
 I:It appears to be an official city guard chainmail.
 I:3,7,5
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:METAL
 
 I:Mythril Mail
 I:5,6,0,0,0
@@ -904,7 +925,7 @@ I:ARMOR,20,1200,ARMOR,8,0,ARMOR_DEFEND,3
 I:This is the fabled mythril mail of the elves of Alovium. The metal is lightweight, flexible, never rusts of deforms. It's light blue in color and is known to be easy to enchant.
 I:You feel that in spite of its light weight this armor is well designed to deflect damage.
 I:4,7,6
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:METAL
 
 I:Banded Mail
 I:8,5,0,0,0
@@ -912,7 +933,7 @@ I:ARMOR,60,950,ARMOR,8,0,ARMOR_DEFEND,2
 I:This type of armor is constructed by attaching strips of metal to chain or leather. This particular model was created by the dwarven smiths under the mountains of Mozmoril. Although heavy and uncomfortable it protect you from but the sharpest weapons.
 I:Banded strips of metal compose the main sections of this armor.
 I:7,7,5
-A:*-,KN+,RA+,TI+,AS+
+A:METAL
 
 I:Heavy field plate
 I:7,7,0,0,0
@@ -920,7 +941,7 @@ I:ARMOR,110,1250,ARMOR,8,0,ARMOR_DEFEND,3
 I:Congratulations. Wearing a set of heavy-gage, full plate mail officially qualifies you as a human tank. Though you're virtually untouchable by conventional weapons, you can be heard for miles.
 I:An incredibly heavy set of full plate mail armor.
 I:9,7,3
-A:*-,KN+,RA+
+A:METAL,PLATE
 
 I:Elven platemail
 I:4,7,0,0,0
@@ -928,7 +949,7 @@ I:ARMOR,40,2000,ARMOR,8,0,ARMOR_DEFEND,4
 I:Like other elven works, this platemail is a study in perfection. It is lightweight, resilient and quite comfortable to wear for long periods of time.
 I:A well-fitted set of lightweight platemail armor.
 I:10,7,5
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:METAL,PLATE
 
 I:Enarol's Ogre Skin
 I:3,5,0,0,0
@@ -936,7 +957,7 @@ I:ARMOR,80,2300,ARMOR,8,0,ARMOR_DEFEND,4
 I:The half-ogre wizard, Enarol supposedly created this white armor from the skin of flayed relative.
 I:Stinky white armor that seems rough to the touch.
 I:11,7,4
-A:*-,KN+,RA+,TI+,AS+
+A:METAL
 
 I:Dragonscale armor
 I:2,8,0,0,0
@@ -944,7 +965,7 @@ I:ARMOR,85,4550,ARMOR,8,0,ARMOR_DEFEND,5
 I:This armor is made from the hide of a magical dragon. If that sounds hard to believe, wait until you see how well this armor protects its wearer in battle.
 I:Armor made from the scales of some beast.
 I:16,7,7
-A:*-,KN+,RA+,TI+,AS+,AR+,LO+
+A:METAL,PLATE
 
 I:Smeth's Slimy Defender
 I:1,7,0,0,0
@@ -952,7 +973,7 @@ I:ARMOR,40,8000,ARMOR,8,0,ARMOR_DEFEND,5
 I:This armor is made to protect mages. It's created from a transdimensional goo that protects the user while letting them cast spells.
 I:Armor made from space-goo.
 I:2,8,8
-A:*-,AR+,LO+,CO+,SU+,NA+,MO+
+A:METAL,PLATE
 
 I:Merzul Goldenfleece
 I:1,8,0,0,0
@@ -960,7 +981,7 @@ I:ARMOR,50,12200,ARMOR,8,0,ARMOR_DEFEND,6
 I:This gold colored armor offers the highest levels of protection. Imbued with the magic contained in its yellow strands of fleece it protects the wearer via a mystic aura of repulsion.
 I:Lightweight gold colored armor, made from some kind of wool.
 I:6,8,7
-A:*-,KN+,RA+,TI+,AS+
+A:METAL,PLATE
 
 ######################
 # Boots
@@ -992,6 +1013,7 @@ I:ARMOR,7.5,310,BOOTS,256,0,ARMOR_DEFEND,2
 I:Boots made specifically for walking all over other folks. This pair in particular seems made for battle.
 I:Combat boots with a bad attitude.
 I:12,9
+A:METAL
 
 
 
@@ -1381,7 +1403,7 @@ I:SWORD,0.3,30200,SWORD,48,0,SWORD_WEAPON,2,4
 I:The legend of the dead king Iconoclastus, powers the sword against creatures who cast spells. The late king's hatred of all things magical was well known.
 I:This bastard sword seems to glow with an unhealthy shine.
 I:7,1
-A:*-,RA+,KN+,TI+,AS+
+A:METAL,LARGE
 
 # Named capes
 # ---------------------------
