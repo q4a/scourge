@@ -80,6 +80,7 @@ public:
 protected:
 	void describeProfession();
 	bool canEquip( RpgItem *item, std::set<std::string> *allowed, std::set<std::string> *forbidden );
+	void describeAcl( char *s, std::set<std::string> *allowed, std::set<std::string> *forbidden, char *itemType );
 };
 
 #endif

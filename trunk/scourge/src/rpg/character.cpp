@@ -135,8 +135,13 @@ void Character::initCharacters() {
 					last->skills[ Constants::getSkillGroupSkill( group, i ) ] = value;
 				}
 			}	else {
-				lastGroup = Constants::getSkillGroupByName( line );
+				char *p = strtok( line, "," );
+				lastGroup = Constants::getSkillGroupByName( p );
 				Constants::skillGroups[ lastGroup ] = new vector<int>();
+
+				p = strtok( NULL, "," );
+				Constants::SKILL_GROUP_DESCRIPTION[ lastGroup ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
+				strcpy( Constants::SKILL_GROUP_DESCRIPTION[ lastGroup ], p );
 			}
 		} else if( n == 'T' ) {
 			fgetc(fp);
@@ -256,7 +261,7 @@ void Character::describeProfession() {
 			if( groupCount[group] == -1 ) continue;
 			if( groupCount[group] == Constants::getSkillGroupCount( group ) ) {
 				groupCount[group] = -1;
-				sprintf( tmp, "   %s|", Constants::SKILL_GROUP_NAMES[ group ] );
+				sprintf( tmp, "   %s|", Constants::SKILL_GROUP_DESCRIPTION[ group ] );
 			} else {
 				sprintf( tmp, "   %s|", Constants::SKILL_NAMES[ skill ] );
 			}
@@ -269,87 +274,55 @@ void Character::describeProfession() {
 	// describe capabilities
 	
 	// describe weapons
-	string all = "*";
-	if( allowedWeaponTags.find( all ) != allowedWeaponTags.end() ) {
-		if( forbiddenWeaponTags.size() > 0 ) {
-			strcat( s, "Can use any weapon, except:|" );
-			for( set<string>::iterator i = forbiddenWeaponTags.begin(); i != forbiddenWeaponTags.end(); ++i ) {
-				string tag = *i;
-				if( !strcmp( tag.c_str(), "*" ) ) continue;
-				RpgItem::describeTag( tmp, "   Not allowed to use ", tag, ".|", "weapons" );
-				strcat( s, tmp );
-			}
-		} else {
-			strcat( s, "Can use any weapon.|" );
-		}
-	} else if( forbiddenWeaponTags.find( all ) != forbiddenWeaponTags.end() ) {
-		if( allowedWeaponTags.size() > 0 ) {
-			strcat( s, "Not allowed to use any weapon, except:|" );
-			for( set<string>::iterator i = allowedWeaponTags.begin(); i != allowedWeaponTags.end(); ++i ) {
-				string tag = *i;
-				if( !strcmp( tag.c_str(), "*" ) ) continue;
-				RpgItem::describeTag( tmp, "   Can use ", tag, ".|", "weapons" );
-				strcat( s, tmp );
-			}
-		} else {
-			strcat( s, "Not allowed to use any weapon.|" );
-		}
-	} else {
-		for( set<string>::iterator i = allowedWeaponTags.begin(); i != allowedWeaponTags.end(); ++i ) {
-			string tag = *i;
-			if( !strcmp( tag.c_str(), "*" ) ) continue;
-			RpgItem::describeTag( tmp, "Can use ", tag, ".|", "weapons" );
-			strcat( s, tmp );
-		}
-		for( set<string>::iterator i = forbiddenWeaponTags.begin(); i != forbiddenWeaponTags.end(); ++i ) {
-			string tag = *i;
-			if( !strcmp( tag.c_str(), "*" ) ) continue;
-			RpgItem::describeTag( tmp, "Not allowed to use ", tag, ".|", "weapons" );
-			strcat( s, tmp );
-		}
-	}
+	describeAcl( s, &allowedWeaponTags, &forbiddenWeaponTags, "weapons" );
 
 	// describe armor
-	if( allowedArmorTags.find( all ) != allowedArmorTags.end() ) {
-		if( forbiddenArmorTags.size() > 0 ) {
-			strcat( s, "Can use any armor, except:|" );
-			for( set<string>::iterator i = forbiddenArmorTags.begin(); i != forbiddenArmorTags.end(); ++i ) {
+	describeAcl( s, &allowedArmorTags, &forbiddenArmorTags, "armor" );
+
+	strcat( description, s );
+}
+
+void Character::describeAcl( char *s, set<string> *allowed, set<string> *forbidden, char *itemType ) {
+	char tmp[500];
+	string all = "*";
+	if( allowed->find( all ) != allowed->end() ) {
+		if( forbidden->size() > 0 ) {
+			strcat( s, "Can use any " ); strcat( s, itemType ); strcat( s, ", except:|" );
+			for( set<string>::iterator i = forbidden->begin(); i != forbidden->end(); ++i ) {
 				string tag = *i;
 				if( !strcmp( tag.c_str(), "*" ) ) continue;
-				RpgItem::describeTag( tmp, "   Not allowed to use ", tag, ".|", "armor" );
+				RpgItem::describeTag( tmp, "   Not allowed to use ", tag, ".|", itemType );
 				strcat( s, tmp );
 			}
 		} else {
-			strcat( s, "Can use any armor.|" );
+			strcat( s, "Can use any "); strcat( s, itemType ); strcat( s, ".|" );
 		}
-	} else if( forbiddenArmorTags.find( all ) != forbiddenArmorTags.end() ) {
-		if( allowedArmorTags.size() > 0 ) {
-			strcat( s, "Not allowed to use any armor, except:|" );
-			for( set<string>::iterator i = allowedArmorTags.begin(); i != allowedArmorTags.end(); ++i ) {
+	} else if( forbidden->find( all ) != forbidden->end() ) {
+		if( allowed->size() > 0 ) {
+			strcat( s, "Not allowed to use any "); strcat( s, itemType ); strcat( s, ", except:|" );
+			for( set<string>::iterator i = allowed->begin(); i != allowed->end(); ++i ) {
 				string tag = *i;
 				if( !strcmp( tag.c_str(), "*" ) ) continue;
-				RpgItem::describeTag( tmp, "   Can use ", tag, ".|", "armor" );
+				RpgItem::describeTag( tmp, "   Can use ", tag, ".|", itemType );
 				strcat( s, tmp );
 			}
 		} else {
-			strcat( s, "Not allowed to use any armor.|" );
+			strcat( s, "Not allowed to use any "); strcat( s, itemType ); strcat( s, ".|" );
 		}
 	} else {
-		for( set<string>::iterator i = allowedArmorTags.begin(); i != allowedArmorTags.end(); ++i ) {
+		for( set<string>::iterator i = allowed->begin(); i != allowed->end(); ++i ) {
 			string tag = *i;
 			if( !strcmp( tag.c_str(), "*" ) ) continue;
-			RpgItem::describeTag( tmp, "Can use ", tag, ".|", "armor" );
+			RpgItem::describeTag( tmp, "Can use ", tag, ".|", itemType );
 			strcat( s, tmp );
 		}
-		for( set<string>::iterator i = forbiddenArmorTags.begin(); i != forbiddenArmorTags.end(); ++i ) {
+		for( set<string>::iterator i = forbidden->begin(); i != forbidden->end(); ++i ) {
 			string tag = *i;
 			if( !strcmp( tag.c_str(), "*" ) ) continue;
-			RpgItem::describeTag( tmp, "Not allowed to use ", tag, ".|", "armor" );
+			RpgItem::describeTag( tmp, "Not allowed to use ", tag, ".|", itemType );
 			strcat( s, tmp );
 		}
 	}
-
-	strcat( description, s );
 }
 
 bool Character::canEquip( RpgItem *item ) {	
