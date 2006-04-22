@@ -1,6 +1,6 @@
 # Key:
-# G: group name
-# S: skill name, symbol, description
+# G: group name, descriptive name
+# S: skill name, useCount, symbol, description
 
 # skill groups
 # ===================================================================
@@ -8,56 +8,56 @@
 # Note: the group and skill names cannot be changed (referenced in code)
 #
 G:BASIC_GROUP,Your character's basic statistics.
-S:SPEED,Dragon,Speed determines how fast the character is able to cast a spell or swing a sword.
-S:COORDINATION,Wolf,More coordinated characters are able to deflect more damage using armor.
-S:POWER,Troll,The higher a character's power the more damage his/her attach will cause.
-S:IQ,Boar,A character with higher IQ is better suited to spellcasting.
-S:LEADERSHIP,Bear,Leadership determines bartering power and rallies your troops in battle.
-S:LUCK,Fiend,Luck affects almost all aspects of gameplay from spellcasting to unlocking doors.
-S:PIETY,Tiger,A pious character follows his/her deity's wishes more closely.
-S:LORE,Hydra,Using lore a character is able identify items more easily and understand new concepts.
+S:SPEED,0,Dragon,Speed determines how fast the character is able to cast a spell or swing a sword.
+S:COORDINATION,0,Wolf,More coordinated characters are able to deflect more damage using armor.
+S:POWER,0,Troll,The higher a character's power the more damage his/her attach will cause.
+S:IQ,0,Boar,A character with higher IQ is better suited to spellcasting.
+S:LEADERSHIP,0,Bear,Leadership determines bartering power and rallies your troops in battle.
+S:LUCK,0,Fiend,Luck affects almost all aspects of gameplay from spellcasting to unlocking doors.
+S:PIETY,0,Tiger,A pious character follows his/her deity's wishes more closely.
+S:LORE,0,Hydra,Using lore a character is able identify items more easily and understand new concepts.
 
 G:FIGHT_GROUP,Skills used for fighting.
-S:SWORD_WEAPON,Drake,This skill is used when fighting using a sword-type weapon.
-S:AXE_WEAPON,Mage,This skill is used when fighting using an axe-type weapon.
-S:BOW_WEAPON,Ranger,This skill is used when fighting using a bow-type weapon.
-S:MACE_WEAPON,Rogue,This skill is used when fighting using an axe-type weapon.
-S:POLE_WEAPON,King,This skill is used when fighting using an polearm-type weapon.
-S:HAND_TO_HAND_COMBAT,Priest,This skill is used when fighting with bare hands.
+S:SWORD_WEAPON,10,Drake,This skill is used when fighting using a sword-type weapon.
+S:AXE_WEAPON,10,Mage,This skill is used when fighting using an axe-type weapon.
+S:BOW_WEAPON,10,Ranger,This skill is used when fighting using a bow-type weapon.
+S:MACE_WEAPON,10,Rogue,This skill is used when fighting using an axe-type weapon.
+S:POLE_WEAPON,10,King,This skill is used when fighting using an polearm-type weapon.
+S:HAND_TO_HAND_COMBAT,10,Priest,This skill is used when fighting with bare hands.
 
 G:DEFEND_GROUP,Skills used for defending against an attack.
-S:SHIELD_DEFEND,Giant,This skill is used when using a shield to deflect an attack.
-S:ARMOR_DEFEND,Centaur,This skill is used when using armor to deflect an attack.
-S:WEAPON_DEFEND,Ogre,This skill is used when using a weapon to deflect an attack.
-S:HAND_DEFEND,Leviathan,This skill is used when using bare hands to deflect an attack.
+S:SHIELD_DEFEND,10,Giant,This skill is used when using a shield to deflect an attack.
+S:ARMOR_DEFEND,10,Centaur,This skill is used when using armor to deflect an attack.
+S:WEAPON_DEFEND,10,Ogre,This skill is used when using a weapon to deflect an attack.
+S:HAND_DEFEND,10,Leviathan,This skill is used when using bare hands to deflect an attack.
 
 G:SORCERY_GROUP,Sorceror spell-casting skills.
-S:LIFE_AND_DEATH_MAGIC,Sand,This skill describes your proficiency with spells from the school of life and death.
-S:DECEIT_MAGIC,Joker,This skill describes your proficiency with spells from the school of deceit.
-S:CONFRONTATION_MAGIC,Demon,This skill describes your proficiency with spells from the school of confrontation.
-S:RESIST_LIFE_AND_DEATH_MAGIC,Gods,Having this skill helps you resist spells from the school of life and death.
-S:RESIST_DECEIT_MAGIC,Night,Having this skill helps you resist spells from the school of deceit.
-S:RESIST_CONFRONTATION_MAGIC,Angel,Having this skill helps you resist spells from the school of confrontation.
+S:LIFE_AND_DEATH_MAGIC,10,Sand,This skill describes your proficiency with spells from the school of life and death.
+S:DECEIT_MAGIC,10,Joker,This skill describes your proficiency with spells from the school of deceit.
+S:CONFRONTATION_MAGIC,10,Demon,This skill describes your proficiency with spells from the school of confrontation.
+S:RESIST_LIFE_AND_DEATH_MAGIC,10,Gods,Having this skill helps you resist spells from the school of life and death.
+S:RESIST_DECEIT_MAGIC,10,Night,Having this skill helps you resist spells from the school of deceit.
+S:RESIST_CONFRONTATION_MAGIC,10,Angel,Having this skill helps you resist spells from the school of confrontation.
 
 G:SPIRIT_GROUP,Deity-granted spell-casting skills.
-S:NATURE_MAGIC,Pixie,This skill describes your proficiency with spells from the school of nature.
-S:AWARENESS_MAGIC,Void,This skill describes your proficiency with spells from the school of awareness.
-S:RESIST_NATURE_MAGIC,Law,Having this skill helps you resist spells from the school of nature.
-S:RESIST_AWARENESS_MAGIC,Moth,Having this skill helps you resist spells from the school of awareness.
+S:NATURE_MAGIC,10,Pixie,This skill describes your proficiency with spells from the school of nature.
+S:AWARENESS_MAGIC,10,Void,This skill describes your proficiency with spells from the school of awareness.
+S:RESIST_NATURE_MAGIC,10,Law,Having this skill helps you resist spells from the school of nature.
+S:RESIST_AWARENESS_MAGIC,10,Moth,Having this skill helps you resist spells from the school of awareness.
 
 G:LORE_GROUP,Researching and learning skills.
-S:HISTORY_MAGIC,Helix,This skill describes your proficiency with spells from the school of history.
-S:RESIST_HISTORY_MAGIC,Brand,Having this skill helps you resist spells from the school of history.
-S:ENCHANT_ITEM,Sorcerer,Your proficiency with this skill determines how well you create enchanted items.
-S:IDENTIFY_ITEM,Sage,This skill measures your ability to identify new items.
-S:IDENTIFY_CREATURE,Loremaster,This skill measures your ability to identify new creatures.
+S:HISTORY_MAGIC,10,Helix,This skill describes your proficiency with spells from the school of history.
+S:RESIST_HISTORY_MAGIC,10,Brand,Having this skill helps you resist spells from the school of history.
+S:ENCHANT_ITEM,4,Sorcerer,Your proficiency with this skill determines how well you create enchanted items.
+S:IDENTIFY_ITEM,10,Sage,This skill measures your ability to identify new items.
+S:IDENTIFY_CREATURE,10,Loremaster,This skill measures your ability to identify new creatures.
 
 G:STEALTH_GROUP,Sneaking and breaking in skills.
-S:OPEN_LOCK,Shade,A character with this skill can open locked doors better.
-S:FIND_TRAP,Bard,This skill helps you avoid falling into traps.
-S:FIND_SECRET_DOOR,Scion,This skill lets you find secret doors.
-S:MOVE_UNDETECTED,Silence,With the aid of this skill you can move without your enemies detecting you.
-S:STEALING,Thief,The higher you progress in this still the better you're able to lift items from merchants.
+S:OPEN_LOCK,5,Shade,A character with this skill can open locked doors better.
+S:FIND_TRAP,5,Bard,This skill helps you avoid falling into traps.
+S:FIND_SECRET_DOOR,5,Scion,This skill lets you find secret doors.
+S:MOVE_UNDETECTED,5,Silence,With the aid of this skill you can move without your enemies detecting you.
+S:STEALING,5,Thief,The higher you progress in this still the better you're able to lift items from merchants.
 
 
 
