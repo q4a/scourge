@@ -7,7 +7,7 @@
 # Skills: name,symbol,descriptions (symbol is used to name enchanted items)
 # Note: the group and skill names cannot be changed (referenced in code)
 #
-G:BASIC_GROUP
+G:BASIC_GROUP,Your character's basic statistics.
 S:SPEED,Dragon,Speed determines how fast the character is able to cast a spell or swing a sword.
 S:COORDINATION,Wolf,More coordinated characters are able to deflect more damage using armor.
 S:POWER,Troll,The higher a character's power the more damage his/her attach will cause.
@@ -17,7 +17,7 @@ S:LUCK,Fiend,Luck affects almost all aspects of gameplay from spellcasting to un
 S:PIETY,Tiger,A pious character follows his/her deity's wishes more closely.
 S:LORE,Hydra,Using lore a character is able identify items more easily and understand new concepts.
 
-G:FIGHT_GROUP
+G:FIGHT_GROUP,Skills used for fighting.
 S:SWORD_WEAPON,Drake,This skill is used when fighting using a sword-type weapon.
 S:AXE_WEAPON,Mage,This skill is used when fighting using an axe-type weapon.
 S:BOW_WEAPON,Ranger,This skill is used when fighting using a bow-type weapon.
@@ -25,13 +25,13 @@ S:MACE_WEAPON,Rogue,This skill is used when fighting using an axe-type weapon.
 S:POLE_WEAPON,King,This skill is used when fighting using an polearm-type weapon.
 S:HAND_TO_HAND_COMBAT,Priest,This skill is used when fighting with bare hands.
 
-G:DEFEND_GROUP
+G:DEFEND_GROUP,Skills used for defending against an attack.
 S:SHIELD_DEFEND,Giant,This skill is used when using a shield to deflect an attack.
 S:ARMOR_DEFEND,Centaur,This skill is used when using armor to deflect an attack.
 S:WEAPON_DEFEND,Ogre,This skill is used when using a weapon to deflect an attack.
 S:HAND_DEFEND,Leviathan,This skill is used when using bare hands to deflect an attack.
 
-G:SORCERY_GROUP
+G:SORCERY_GROUP,Sorceror spell-casting skills.
 S:LIFE_AND_DEATH_MAGIC,Sand,This skill describes your proficiency with spells from the school of life and death.
 S:DECEIT_MAGIC,Joker,This skill describes your proficiency with spells from the school of deceit.
 S:CONFRONTATION_MAGIC,Demon,This skill describes your proficiency with spells from the school of confrontation.
@@ -39,20 +39,20 @@ S:RESIST_LIFE_AND_DEATH_MAGIC,Gods,Having this skill helps you resist spells fro
 S:RESIST_DECEIT_MAGIC,Night,Having this skill helps you resist spells from the school of deceit.
 S:RESIST_CONFRONTATION_MAGIC,Angel,Having this skill helps you resist spells from the school of confrontation.
 
-G:SPIRIT_GROUP
+G:SPIRIT_GROUP,Deity-granted spell-casting skills.
 S:NATURE_MAGIC,Pixie,This skill describes your proficiency with spells from the school of nature.
 S:AWARENESS_MAGIC,Void,This skill describes your proficiency with spells from the school of awareness.
 S:RESIST_NATURE_MAGIC,Law,Having this skill helps you resist spells from the school of nature.
 S:RESIST_AWARENESS_MAGIC,Moth,Having this skill helps you resist spells from the school of awareness.
 
-G:LORE_GROUP
+G:LORE_GROUP,Researching and learning skills.
 S:HISTORY_MAGIC,Helix,This skill describes your proficiency with spells from the school of history.
 S:RESIST_HISTORY_MAGIC,Brand,Having this skill helps you resist spells from the school of history.
 S:ENCHANT_ITEM,Sorcerer,Your proficiency with this skill determines how well you create enchanted items.
 S:IDENTIFY_ITEM,Sage,This skill measures your ability to identify new items.
 S:IDENTIFY_CREATURE,Loremaster,This skill measures your ability to identify new creatures.
 
-G:STEALTH_GROUP
+G:STEALTH_GROUP,Sneaking and breaking in skills.
 S:OPEN_LOCK,Shade,A character with this skill can open locked doors better.
 S:FIND_TRAP,Bard,This skill helps you avoid falling into traps.
 S:FIND_SECRET_DOOR,Scion,This skill lets you find secret doors.
@@ -67,17 +67,16 @@ S:STEALING,Thief,The higher you progress in this still the better you're able to
 # Item tag descriptions. This is optional, 
 # it is used to display a profession's item-use limitations.
 #
-# Key: T:tag-name,tag-description
+# Key: T:tag-name,tag-description ($$ will be substituted with 'weapons' or 'armor')
 #
 T:TWO_HANDED,two-handed weapons
-T:LARGE,large weapons or armor
-T:METAL,weapons or armor made of metal
+T:LARGE,large $$
+T:METAL,$$ made of metal
 T:MACE,bludgeoning weapons
-T:SMALL,small weapons or armor
-T:SMALL_RANGED,small ranged weapons
+T:SMALL,small $$
 T:ROBES,robes
 T:PLATE,plate-mail
-
+T:RANGED,ranged weapons
 
 
 
@@ -433,7 +432,7 @@ S:LEADERSHIP,50
 S:LUCK,50
 S:PIETY,20
 S:LORE,40
-W:*-,SMALL+,SMALL_RANGED+
+W:*-,SMALL+,RANGED+
 A:*-,ROBES+
 
 # Clerical types
@@ -473,8 +472,8 @@ S:LEADERSHIP,60
 S:LUCK,50
 S:PIETY,20
 S:LORE,80
-W:*+
-A:*+
+W:*-,SMALL+,RANGED+
+A:*+,METAL-
 
 # Rogue types
 # ===================================================================
