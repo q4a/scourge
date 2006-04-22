@@ -752,6 +752,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
           //item->getDetailedDescription(s, false);
           //description = s;
           infoGui->setItem( item, getParty()->getPlayer()->getSkill(Constants::IDENTIFY_ITEM_SKILL) );
+					getParty()->getPlayer()->incSkillUsed( Constants::IDENTIFY_ITEM_SKILL );
           if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
         } else {
           Shape *shape = loc->shape;
@@ -2132,12 +2133,6 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 
   glColor3f( 1, 1, 1 );
   getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
-
-  // show if has available points
-  if( p->getAvailableSkillPoints() > 0 ) {
-    glColor3f( 1, 1, 0 );
-    getSDLHandler()->texPrint( 5, 22, "PTS" );
-  }
 
   // show stat mods
   glEnable(GL_TEXTURE_2D);

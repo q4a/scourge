@@ -43,6 +43,7 @@ SpellCaster::SpellCaster(Battle *battle, Spell *spell, bool projectileHit) {
   // calculate spell's power
   // power=[0-25]
   power = (float)creature->getSkill(spell->getSchool()->getSkill()) / 4.0f;
+	creature->incSkillUsed( spell->getSchool()->getSkill() );
   // power=[0-45]
   power += (float)creature->getSkill(Constants::IQ) / 5.0f;
   // power=[0-450]
@@ -304,6 +305,7 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
 
   // check for resistance
   int resistance = creature->getTargetCreature()->getSkill( spell->getSchool()->getResistSkill() );
+	creature->getTargetCreature()->incSkillUsed( spell->getSchool()->getResistSkill() );
   damage -= (((float)damage / 150.0f) * resistance);
 
   char msg[200];
@@ -389,6 +391,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       if(!battle->getCreature()->canAttack( creature )) continue;
 
       // roll for resistance
+			creature->incSkillUsed( spell->getSchool()->getResistSkill() );
       char msg[200];
       if((int)(100.0f * rand()/RAND_MAX) < creature->getSkill(spell->getSchool()->getResistSkill())) {    
         sprintf(msg, "%s resists the spell! [%d]", 

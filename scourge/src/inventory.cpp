@@ -395,6 +395,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     if(itemIndex > -1) {
       Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
       scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
+			// exercise the skill
+			scourge->getParty()->getParty(selected)->incSkillUsed( Constants::IDENTIFY_ITEM_SKILL );
       if(!scourge->getInfoGui()->getWindow()->isVisible()) 
         scourge->getInfoGui()->getWindow()->setVisible( true );
     }
@@ -416,6 +418,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory( invLocation );
       if( item ) {
         scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
+				// exercise the skill
+				scourge->getParty()->getParty(selected)->incSkillUsed( Constants::IDENTIFY_ITEM_SKILL );
         if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
           scourge->getInfoGui()->getWindow()->setVisible( true );
       }
@@ -623,7 +627,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       } else {
         Date now = scourge->getParty()->getCalendar()->getCurrentDate();
         if(now.isADayLater(creature->getLastEnchantDate())) {
-          int level = (int)((float)creature->getSkill( Constants::ENCHANT_ITEM_SKILL ) * rand()/RAND_MAX);
+          int level = (int)((float)creature->getSkill( Constants::ENCHANT_ITEM_SKILL ) * rand()/RAND_MAX);					
           if(level > 20) {
             int level = creature->getSkill( Constants::ENCHANT_ITEM_SKILL );
             item->enchant( (level - 20) / 20 );
@@ -638,6 +642,8 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
           } else {
             scourge->showMessageDialog("You failed to enchant the item.");
           }
+					// exercise the skill
+					creature->incSkillUsed( Constants::ENCHANT_ITEM_SKILL );
           creature->setLastEnchantDate(now);
         } else {
           scourge->showMessageDialog("You can only enchant one item per day.");

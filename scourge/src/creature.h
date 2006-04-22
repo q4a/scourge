@@ -98,7 +98,7 @@ class Creature : public RenderedCreature {
   char *name;
   int level, exp, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
-  int skills[Constants::SKILL_COUNT], skillMod[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
+  int skills[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
 	int skillsUsed[Constants::SKILL_COUNT];
   GLuint stateMod, protStateMod;
   Monster *monster;
@@ -110,8 +110,6 @@ class Creature : public RenderedCreature {
   int bonusArmor;
   bool armorChanged;
   float lastArmor, lastArmorLevel, lastArmorSkill;
-  int availableSkillPoints;
-  int usedSkillPoints;
   
   int lastTurn;
 
@@ -333,7 +331,7 @@ class Creature : public RenderedCreature {
   int getMaxMp();
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
-  inline int getSkill(int index, bool includeSkillMod=false) { return ( includeSkillMod ? skillMod[index] : 0 ) + skills[index] + skillBonus[index]; }
+  inline int getSkill(int index) { return skills[index] + skillBonus[index]; }
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
   inline bool getProtectedStateMod(int mod) { return (protStateMod & (1 << mod) ? true : false); }  
 
@@ -351,10 +349,6 @@ class Creature : public RenderedCreature {
   void setHp();
   void setMp();
 
-  bool incSkillMod(int index);
-  bool decSkillMod(int index);
-  void applySkillMod();
-  inline int getSkillMod(int index) { return skillMod[index]; }
   void setSkill(int index, int value);
   void setSkillBonus( int index, int value );
   inline int getSkillBonus(int index) { return skillBonus[index]; }
@@ -362,7 +356,7 @@ class Creature : public RenderedCreature {
   void setProtectedStateMod(int mod, bool setting);
 
   // return the initiative for a battle round, the lower the faster the attack
-  int getInitiative( int *max=NULL, bool includeSkillMod=false );
+  int getInitiative( int *max=NULL );
   
   // take damage
   // return true if the creature dies
@@ -389,11 +383,6 @@ class Creature : public RenderedCreature {
   int addMoney(Creature *creature_killed);
 
   void getDetailedDescription(char *s);
-
-  inline int getAvailableSkillPoints() { return availableSkillPoints; }
-  inline void setAvailableSkillPoints(int n) { availableSkillPoints = n; }
-  inline int getUsedSkillPoints() { return usedSkillPoints; }
-  inline void setUsedSkillPoints( int n ) { usedSkillPoints = n; }
   
   int getMaxProjectileCount(Item *item);
 
@@ -440,23 +429,23 @@ class Creature : public RenderedCreature {
 
 
   // new Christie-style battle system
-  float getACPercent( float *totalP=NULL, float *skillP=NULL, float vsDamage=-1, Item *vsWeapon=NULL, bool includeSkillMod=false );
+	void incSkillUsed( int skill );
+  float getACPercent( float *totalP=NULL, float *skillP=NULL, float vsDamage=-1, Item *vsWeapon=NULL );
   void calcArmor( float *armorP, 
                   float *avgArmorLevelP,
                   float *avgArmorSkillP,
-                  bool includeSkillMod=false,
                   bool callScript=false );
   float getAttackPercent( Item *weapon, 
                           float *maxP=NULL, 
                           float *minP=NULL, 
                           float *skillP=NULL,
                           float *itemLevelP=NULL,
-                          bool includeSkillMod=false );
+													bool callScript=false );
   static int rollStartingSkill( Session *session, int level, int skill, bool isMonster=false );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );
-  float getMaxAP( bool includeSkillMod = false );
+  float getMaxAP();
   char *canEquipItem( Item *item, bool interactive = true );  
   bool rollSkill( int skill, float luckDiv=0.0f );
   bool rollSecretDoor( Location *pos );

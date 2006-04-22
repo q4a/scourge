@@ -42,19 +42,14 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   int y = 15;
   char s[80];
   sprintf(s, "Exp: %u(%u)", p->getExp(), p->getExpOfNextLevel());
-  //if(p->getStateMod(Constants::leveled)) {
-  if( p->getAvailableSkillPoints() > 0 ) {
-    glColor4f( 1.0f, 0.2f, 0.0f, 1.0f );
-  } else {
-    if( theme->getWindowText() ) {
-      glColor4f( theme->getWindowText()->r,
-                 theme->getWindowText()->g,
-                 theme->getWindowText()->b,
-                 theme->getWindowText()->a );
-    } else {
-      w->applyColor();
-    }
-  }
+	if( theme->getWindowText() ) {
+		glColor4f( theme->getWindowText()->r,
+							 theme->getWindowText()->g,
+							 theme->getWindowText()->b,
+							 theme->getWindowText()->a );
+	} else {
+		w->applyColor();
+	}
   scourge->getSDLHandler()->texPrint(5, y, s);
   if( theme->getWindowText() ) {
     glColor4f( theme->getWindowText()->r,
@@ -72,19 +67,19 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint(5, y + 45, s);
   sprintf(s, "Hunger: %d (10)", p->getHunger());
   scourge->getSDLHandler()->texPrint(5, y + 60, s);
-  sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP( true ) ) );
+  sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP() ) );
   scourge->getSDLHandler()->texPrint(5, y + 75, s);
 
 
   glColor4f( 0, 1, 1, 1 );
   int initiative;
-  creature->getInitiative( &initiative, true );
+  creature->getInitiative( &initiative );
   sprintf(s, "Initiative: %d", initiative );
   scourge->getSDLHandler()->texPrint( 5, y + 90, s );
 
   glColor4f( 0, 1, 0.25f, 1 );
   float totalArmor;
-  p->getACPercent( &totalArmor, NULL, -1, NULL, true );
+  p->getACPercent( &totalArmor, NULL, -1, NULL );
   sprintf(s, "DEF: %d", toint( totalArmor ) );
   scourge->getSDLHandler()->texPrint(5, y + 105, s);
 
@@ -100,7 +95,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   int yy = 120;
   bool hasWeapon = false;
   if( left && left->getRpgItem()->isWeapon() ) {
-    p->getAttackPercent( left, &max, &min, NULL, NULL, true );
+    p->getAttackPercent( left, &max, &min, NULL, NULL );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) %s", 
               toint( min ), toint( max ), getAPRDescription(p, left, buff),
@@ -114,7 +109,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     hasWeapon = true;
   } 
   if( right && right->getRpgItem()->isWeapon() ) {
-    p->getAttackPercent( right, &max, &min, NULL, NULL, true );
+    p->getAttackPercent( right, &max, &min, NULL, NULL );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) %s", 
               toint( min ), toint( max ), getAPRDescription(p, right, buff),
@@ -128,7 +123,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     hasWeapon = true;
   }
   if( !hasWeapon ) {
-    p->getAttackPercent( NULL, &max, &min, NULL, NULL, true );
+    p->getAttackPercent( NULL, &max, &min, NULL, NULL );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) Bare Hands", 
               toint( min ), toint( max ), getAPRDescription(p, NULL, buff) );
@@ -139,7 +134,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     yy += 15;
   }
   if( ranged ) {
-    p->getAttackPercent( ranged, &max, &min, NULL, NULL, true );
+    p->getAttackPercent( ranged, &max, &min, NULL, NULL );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) %s", 
               toint( min ), toint( max ), getAPRDescription(p, ranged, buff),

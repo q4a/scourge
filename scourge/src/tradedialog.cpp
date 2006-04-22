@@ -115,12 +115,14 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
     scourge->getInfoGui()->
     setItem( listA->getSelectedItem( 0 ), 
              scourge->getParty()->getPlayer()->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
+		scourge->getParty()->getPlayer()->incSkillUsed(Constants::IDENTIFY_ITEM_SKILL );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == infoButtonB && listB->getSelectedLineCount() ) {
     scourge->getInfoGui()->
     setItem( listB->getSelectedItem( 0 ), 
              scourge->getParty()->getPlayer()->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
+		scourge->getParty()->getPlayer()->incSkillUsed(Constants::IDENTIFY_ITEM_SKILL );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == listA || widget == listB ) {
@@ -260,9 +262,11 @@ void TradeDialog::steal() {
   }
   
   float steal = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::STEALING ) );
+	scourge->getParty()->getPlayer()->incSkillUsed( Constants::STEALING );
   float luck = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::LUCK ) );
 
   float stealB = (float)( creature->getSkill( Constants::STEALING ) );
+	creature->incSkillUsed( Constants::STEALING );
   float coordinationB = (float)( creature->getSkill( Constants::COORDINATION ) );
   float luckB = (float)( creature->getSkill( Constants::LUCK ) );
 

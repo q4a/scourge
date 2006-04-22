@@ -998,6 +998,9 @@ float Battle::applyMagicItemSpellDamage() {
     damage -= (damage / 100.0f) * (float)resistance;
     if( damage < 0 ) damage = 0;
 
+		// exercise the skill
+		creature->incSkillUsed( item->getSchool()->getResistSkill() );
+
     char msg[200];
     sprintf( msg, "...%s attacks %s with %s magic.", 
              creature->getName(), 
@@ -1025,7 +1028,8 @@ void Battle::hitWithItem() {
                                 &max, 
                                 &min,
                                 &skill, 
-                                &itemLevel );
+                                &itemLevel,
+																true );
   float delta = creature->getAttackerStateModPercent();
   float extra = ( attack / 100.0f ) * delta;
   attack += extra;
