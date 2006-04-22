@@ -194,7 +194,7 @@ void InfoGui::describe() {
           canEquipItem( item, false ) );
       if( !err ) {
         scourge->getSession()->getParty()->getParty( i )->
-          getAttackPercent( item, &max, &min, NULL, NULL, true );
+          getAttackPercent( item, &max, &min, NULL, NULL );
         if( toint( max ) > toint( min ) )
           sprintf( tmp, "#%d ^ATK: %d - %d (%.2f APR)|", 
                    ( i + 1 ), toint( min ), toint( max ), 

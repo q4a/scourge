@@ -93,9 +93,10 @@ void TrainDialog::updateUI() {
            creature->getNpcInfo()->level,
            cost );
   creatureLabel->setText( s );
-  sprintf( s, "%s %d", 
-           POINTS_AVAILABLE, 
-           scourge->getParty()->getPlayer()->getAvailableSkillPoints() );
+//  sprintf( s, "%s %d", 
+//           POINTS_AVAILABLE, 
+//           scourge->getParty()->getPlayer()->getAvailableSkillPoints() );
+  strcpy( s, "FIXME" );
   pointsLabel->setText( s );
   sprintf( s, "%s %d", 
            COINS_AVAILABLE, 
@@ -132,6 +133,8 @@ void TrainDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 }
   
 void TrainDialog::train( int skill ) {
+    scourge->showMessageDialog( "FIXME:");
+    /*
   if( scourge->getParty()->getPlayer()->getAvailableSkillPoints() <= 0 ) {
     scourge->showMessageDialog( "Select a player who has skill points." );
     return;
@@ -174,5 +177,6 @@ void TrainDialog::train( int skill ) {
 
   sprintf( s, "After several hours of assisted training you improved %d points in %s.", points, skillName );
   result->setText( s );
+  */
 }
 

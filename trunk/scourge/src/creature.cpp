@@ -132,7 +132,7 @@ void Creature::commonInit() {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    skillMod[i] = skillBonus[i] = skillsUsed[i] = 0;
+    skillBonus[i] = skillsUsed[i] = 0;
   }
   this->stateMod = 0;
   this->protStateMod = 0;
@@ -149,7 +149,6 @@ void Creature::commonInit() {
   this->lastTick = 0;
   this->lastTurn = 0;
   this->facingDirection = Constants::MOVE_UP; // good init ?
-  this->availableSkillPoints = this->usedSkillPoints = 0;
   this->failedToMoveWithinRangeAttemptCount = 0;
   this->action = Constants::ACTION_NO_ACTION;
   this->actionItem = NULL;
@@ -220,12 +219,10 @@ CreatureInfo *Creature::save() {
   //info->bonusArmor = 0;
   info->thirst = thirst;
   info->hunger = hunger;
-  info->availableSkillPoints = availableSkillPoints;
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     info->skills[i] = skills[i];
-    info->skillMod[i] = skillMod[i];
     info->skillBonus[i] = skillBonus[i];
-		info->skillsUsed[i] = skillsUsed[i];
+	info->skillsUsed[i] = skillsUsed[i];
   }
   info->portraitTextureIndex = portraitTextureIndex;
 
@@ -301,17 +298,10 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
   creature->setThirst( info->thirst );
   creature->setHunger( info->hunger );
-  creature->setAvailableSkillPoints( info->availableSkillPoints );
-  int used = 0;
   for(int i = 0; i < Constants::SKILL_COUNT; i++) {
     creature->setSkill( i, info->skills[i] );
-    creature->skillMod[i] = info->skillMod[i];
-		creature->skillsUsed[i] = info->skillsUsed[i];
-    used += creature->skillMod[i];
-    // info->skillBonus: can't be used until calendar is also persisted
-    //creature->setSkillBonus( i, info->skillBonus[i] );
+    creature->skillsUsed[i] = info->skillsUsed[i];
   }
-  creature->setUsedSkillPoints( used );
   
   // stateMod and protStateMod not useful until calendar is also persisted
   //creature->stateMod = info->stateMod;
@@ -1314,12 +1304,12 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 }
 
 // return the initiative for a battle round, the lower the faster the attack
-int Creature::getInitiative( int *max, bool includeSkillMod ) {
+int Creature::getInitiative( int *max ) {
   // use the speed skill
-  float speed = getSkill(Constants::SPEED, includeSkillMod) / 5.0f;
+  float speed = getSkill(Constants::SPEED) / 5.0f;
   if( max ) *max = toint( speed );
   // roll for luck
-  speed += ( ( getSkill(Constants::LUCK, includeSkillMod) / 10.0f ) * rand()/RAND_MAX );
+  speed += ( ( getSkill(Constants::LUCK) / 10.0f ) * rand()/RAND_MAX );
   return toint( speed );
 }
 
@@ -1516,36 +1506,6 @@ void Creature::monsterInit() {
   //startingMp = mp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
   startingMp = mp = (int)( n * roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
                                      monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
-}
-
-// only for characters: leveling up
-bool Creature::incSkillMod(int index) {
-  int maxSkill = character->getSkill( index );
-  if( !availableSkillPoints || 
-      ( maxSkill >= 0 && getSkill(index) + skillMod[index] >= maxSkill ) ) return false;
-  availableSkillPoints--;
-  skillMod[index]++;
-  usedSkillPoints++;
-  session->getParty()->recomputeMaxSkills();
-  return true;
-}
-
-bool Creature::decSkillMod(int index) {
-  if(!skillMod[index]) return false;
-  availableSkillPoints++;
-  skillMod[index]--;
-  usedSkillPoints--;
-  session->getParty()->recomputeMaxSkills();
-  return true;
-}
-
-void Creature::applySkillMod() {
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    setSkill(i, getSkill(i) + skillMod[i]);
-    skillMod[i] = 0;
-  }
-  usedSkillPoints = 0;
-  session->getParty()->recomputeMaxSkills();
 }
 
 int Creature::getMaxHp() {
@@ -2089,9 +2049,9 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 // base weapon damage of an attack with bare hands
 #define HAND_ATTACK_DAMAGE Dice(1,4,0)
 
-float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item *vsWeapon, bool includeSkillMod ) {
+float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item *vsWeapon ) {
   float ac, avgArmorLevel, avgArmorSkill;
-  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill, false, ( vsDamage > 0 ? true : false ) );
+  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill, ( vsDamage > 0 ? true : false ) );
     
   if( skillP ) *skillP = avgArmorSkill;
   
@@ -2134,7 +2094,6 @@ float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item
 void Creature::calcArmor( float *armorP, 
                           float *avgArmorLevelP,
                           float *avgArmorSkillP,
-                          bool includeSkillMod,
                           bool callScript ) {
   if( !armorChanged ) {
     *armorP = lastArmor;
@@ -2145,7 +2104,7 @@ void Creature::calcArmor( float *armorP,
                    ( getSkill( Constants::getSkillByName( "COORDINATION" ) ) +
                      getSkill( Constants::getSkillByName( "SPEED" ) ) ) / 25.0f );
     int armorLevel=0, armorCount=0;
-    int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ), includeSkillMod );
+    int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
@@ -2160,10 +2119,14 @@ void Creature::calcArmor( float *armorP,
           armorLevel += 
             ( item->getLevel() + 
               ( item->isMagicItem() ? item->getBonus() : 0 ) );
-          armorSkill += getSkill( item->getRpgItem()->getSkill() > -1 ? 
-                                               item->getRpgItem()->getSkill() :
-                                               Constants::getSkillByName( "HAND_DEFEND" ), 
-                                               includeSkillMod );
+					int itemSkill = ( item->getRpgItem()->getSkill() > -1 ? 
+														item->getRpgItem()->getSkill() :
+														Constants::getSkillByName( "HAND_DEFEND" ) );
+          armorSkill += getSkill( itemSkill );
+					
+					// mark the fact that the skill was exercised
+					if( callScript ) incSkillUsed( itemSkill );
+
           armorCount++;
         }
       }
@@ -2179,13 +2142,39 @@ void Creature::calcArmor( float *armorP,
                         (float)armorSkill / (float)armorCount :
                         (float)armorSkill );
     (*avgArmorSkillP) += 
-      ( getSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
+      ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
 
     lastArmor = *armorP;
     lastArmorLevel = *avgArmorLevelP;
     lastArmorSkill = *avgArmorSkillP;
     armorChanged = false;
   }
+}
+
+#define MAX_SKILL_USED 10
+void Creature::incSkillUsed( int skill ) {
+	if( !character ) return;
+
+	// find the lowest next skill level in the professions tree
+	int lowest = 20; // you can get to skill=20 w/o training
+	for( int i = 0; i < character->getChildCount(); i++ ) {
+		Character *child = character->getChild( i );
+		if( child->getSkill( skill ) > 0 &&
+				child->getSkill( skill ) < lowest ) {
+			lowest = child->getSkill( skill );
+		}
+	}
+	if( skills[ skill ] >= lowest ) return;
+
+	skillsUsed[ skill ]++;
+	if( skillsUsed[ skill ] >= MAX_SKILL_USED ) {		
+		skills[ skill ]++;
+		skillsUsed[ skill ] = 0;
+		char message[120];
+		sprintf( message, "%s's %s increased.", getName(), Constants::SKILL_NAMES[ skill ] );
+		cerr << message << endl;
+		session->getMap()->addDescription( message, 0, 1, 1 );
+	}
 }
 
 #define MAX_RANDOM_DAMAGE 2.0f
@@ -2195,17 +2184,21 @@ float Creature::getAttackPercent( Item *weapon,
                                   float *minP, 
                                   float *skillP,
                                   float *itemLevelP,
-                                  bool includeSkillMod ) {
+																	bool callScript ) {
+	int itemSkill = ( weapon ? 
+										weapon->getRpgItem()->getSkill() :
+										Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
   float skill = 
     getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
                            Constants::getSkillByName( "COORDINATION" ) :
-                           Constants::getSkillByName( "POWER" ), includeSkillMod ) +
-    getSkill( weapon ? 
-                           weapon->getRpgItem()->getSkill() :
-                           Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ), includeSkillMod );
+                           Constants::getSkillByName( "POWER" ) ) +
+    getSkill( itemSkill );
   skill /= 2.0f;
 
-  skill += ( getSkill( Constants::getSkillByName( "LUCK" ), includeSkillMod ) / 10.0f );
+	// mark the fact that the skill was exercised
+	if( callScript ) incSkillUsed( itemSkill );
+
+  skill += ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
   if( skillP ) *skillP = skill;
 
   float itemLevel = 
@@ -2236,16 +2229,16 @@ float Creature::getAttackPercent( Item *weapon,
   float total = min;
   if( max - min > 0 ) total +=  ( max - min ) * rand() / RAND_MAX;
 
-  if( !includeSkillMod ) {
-    // apply damage enhancing capabilities
-    session->getSquirrel()->setCurrentWeapon( weapon );
-    total = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
-                                         "damage", total );
-    if( weapon && !monster )
-      session->getSquirrel()->setGlobalVariable( "damage", total );
-      session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
-      total = session->getSquirrel()->getGlobalVariable( "damage" );
-  }
+	if( callScript ) {
+		// apply damage enhancing capabilities
+		session->getSquirrel()->setCurrentWeapon( weapon );
+		total = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
+																				 "damage", total );
+		if( weapon && !monster )
+				session->getSquirrel()->setGlobalVariable( "damage", total );
+		session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
+		total = session->getSquirrel()->getGlobalVariable( "damage" );
+	}
   
   return total;
 }
@@ -2390,8 +2383,8 @@ float Creature::rollMagicDamagePercent( Item *item ) {
   return item->rollMagicDamage() + itemLevel;
 }
 
-float Creature::getMaxAP( bool includeSkillMod ) { 
-  return 30.0f + ( (float)( getSkill( Constants::COORDINATION, includeSkillMod ) ) / 5.0f ); 
+float Creature::getMaxAP( ) { 
+  return 30.0f + ( (float)( getSkill( Constants::COORDINATION ) ) / 5.0f ); 
 }
 
 float Creature::getAttacksPerRound( Item *item ) {

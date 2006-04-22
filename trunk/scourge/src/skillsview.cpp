@@ -58,30 +58,17 @@ void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) {
       int group = Constants::getGroupForSkill( t );
       if( filter > 0 && !( filter & ( 1 << group ) ) ) continue;
 
-      if( creature->getSkillMod( t ) > 0 ) {
-        skillColor[ lineCounter ].r = 0;
-        skillColor[ lineCounter ].g = 1;
-        skillColor[ lineCounter ].b = 0;
-      } else {
-        skillColor[ lineCounter ].r = 1;
-        skillColor[ lineCounter ].g = 1;
-        skillColor[ lineCounter ].b = 1;
-      }
-
+			skillColor[ lineCounter ].r = 1;
+			skillColor[ lineCounter ].g = 1;
+			skillColor[ lineCounter ].b = 1;
+			
 			// FIXME: this should be replaced by percentage bars
       //int maxSkill = selectedP->getCharacter()->getSkill( t );
       //bool maxFound = ( maxSkill >= 0 );
 			bool maxFound = ( info && creature == info->getHighestSkillPC( t ) );
 
-			char tmp[10];
-			if( creature->getSkillMod(t) ) {
-				sprintf( tmp, "(%d)", creature->getSkillMod(t) );
-			} else {
-				tmp[0] = '\0';
-			}
-      sprintf( skillLine[ lineCounter ], "%d%s - %s", 
+      sprintf( skillLine[ lineCounter ], "%d - %s", 
                creature->getSkill( t ), 
-               tmp,
                Constants::SKILL_NAMES[ t ] );
       if( maxFound ) {
         skillColor[ lineCounter ].r = 0;
