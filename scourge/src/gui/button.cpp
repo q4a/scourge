@@ -69,7 +69,9 @@ void Button::drawWidget(Widget *parent) {
     } else {
       applyColor();      
     }
+    ((Window*)parent)->getScourgeGui()->setFontType( Constants::SCOURGE_UI_FONT );
     ((Window*)parent)->getScourgeGui()->texPrint(0, 0, label);
+    ((Window*)parent)->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
     glPopMatrix();
   }
 }

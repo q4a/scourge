@@ -635,11 +635,13 @@ void Window::drawWidget(Widget *parent) {
 	} else {
 	  glColor3f( 1, 1, 1 );
 	}
+    scourgeGui->setFontType( Constants::SCOURGE_UI_FONT );
 #ifdef DEBUG_WINDOWS
     scourgeGui->texPrint(10, topY + 13, "%s (%d)", title, getZ());
 #else
     scourgeGui->texPrint(10, topY + 13, "%s", title);
 #endif
+    scourgeGui->setFontType( Constants::SCOURGE_DEFAULT_FONT );
     glPopMatrix();
   }
 
