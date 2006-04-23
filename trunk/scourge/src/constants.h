@@ -630,6 +630,7 @@ public:
 
   enum {
     SCOURGE_DEFAULT_FONT=0,
+    SCOURGE_UI_FONT,
     SCOURGE_MONO_FONT,
     SCOURGE_LARGE_FONT
   };

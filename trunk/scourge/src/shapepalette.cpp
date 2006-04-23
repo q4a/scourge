@@ -146,7 +146,27 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
   if( super != -1 ) return super;
 
   char line[255];
-	if( n == 'A' ) {
+	if( n == 'F' ) {
+		fgetc(fp);
+    n = Constants::readLine(line, fp);
+		char *p = strtok( line, "," );
+		if( SDLHandler::NORMAL_FONT_SIZE == 0 ) {
+			strcpy( SDLHandler::NORMAL_FONT_NAME, p );
+			SDLHandler::NORMAL_FONT_SIZE = atoi( strtok( NULL, "," ) );
+        } else if( SDLHandler::UI_FONT_SIZE == 0 ) {
+			strcpy( SDLHandler::UI_FONT_NAME, p );
+			SDLHandler::UI_FONT_SIZE = atoi( strtok( NULL, "," ) );
+		} else if( SDLHandler::FIXED_FONT_SIZE == 0 ) {
+			strcpy( SDLHandler::FIXED_FONT_NAME, p );
+			SDLHandler::FIXED_FONT_SIZE = atoi( strtok( NULL, "," ) );
+		} else if( SDLHandler::LARGE_FONT_SIZE == 0 ) {
+			strcpy( SDLHandler::LARGE_FONT_NAME, p );
+			SDLHandler::LARGE_FONT_SIZE = atoi( strtok( NULL, "," ) );
+		} else {
+			cerr << "*** Error: extra font lines ignored in shapes.txt" << endl;
+		}
+		return n;
+	} else if( n == 'A' ) {
     fgetc(fp);
     n = Constants::readLine(line, fp);
     if( strlen( aboutText ) ) strcat( aboutText, " " );

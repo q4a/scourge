@@ -78,7 +78,7 @@ private:
   SDL_Event *storedEvent; 
   
   // truetype font  
-  freetype_font_data font, monoFont, largeFont;
+  freetype_font_data font, uiFont, monoFont, largeFont;
   bool font_initialized;
   int fontType;
 
@@ -102,6 +102,15 @@ private:
   int fadeoutSteps, fadeoutCurrentStep;
 
 public: 
+
+	static char NORMAL_FONT_NAME[255];
+    static char UI_FONT_NAME[255];
+	static char FIXED_FONT_NAME[255];
+	static char LARGE_FONT_NAME[255];
+	static int NORMAL_FONT_SIZE;
+    static int UI_FONT_SIZE;
+	static int FIXED_FONT_SIZE;
+	static int LARGE_FONT_SIZE;
 
   static bool showDebugInfo;
 

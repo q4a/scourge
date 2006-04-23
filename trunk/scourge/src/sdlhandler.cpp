@@ -29,6 +29,15 @@
 
 using namespace std;
 
+char SDLHandler::NORMAL_FONT_NAME[255] = "";
+char SDLHandler::UI_FONT_NAME[255] = "";
+char SDLHandler::FIXED_FONT_NAME[255] = "";
+char SDLHandler::LARGE_FONT_NAME[255] = "";
+int SDLHandler::NORMAL_FONT_SIZE = 0;
+int SDLHandler::UI_FONT_SIZE = 0;
+int SDLHandler::FIXED_FONT_SIZE = 0;
+int SDLHandler::LARGE_FONT_SIZE = 0;
+
 #define FORBIDDEN_CURSOR_TIME 2000
 
 #define FADEOUT_SPEED 10
@@ -738,6 +747,8 @@ void SDLHandler::fade( float startAlpha, float endAlpha, int steps ) {
 const freetype_font_data *SDLHandler::getCurrentFont() {
   freetype_font_data *p;
   switch( fontType ) {
+	case Constants::SCOURGE_UI_FONT: 
+		p = &uiFont; break;
   case Constants::SCOURGE_MONO_FONT:
     p = &monoFont; break;
   case Constants::SCOURGE_LARGE_FONT:
@@ -790,12 +801,14 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 void SDLHandler::initFonts() {
   if(!font_initialized) {
     char s[200];
-    sprintf(s, "%s/fonts/Vera.ttf", rootDir);
-    font.init(s, 8);
-    sprintf(s, "%s/fonts/VeraMono.ttf", rootDir);
-    monoFont.init(s, 8);
-    sprintf(s, "%s/fonts/Cas_antn.ttf", rootDir);
-    largeFont.init(s, 18);
+		sprintf( s, "%s/%s", rootDir, NORMAL_FONT_NAME );
+    font.init( s, NORMAL_FONT_SIZE );
+		sprintf( s, "%s/%s", rootDir, UI_FONT_NAME );
+    uiFont.init( s, UI_FONT_SIZE );
+		sprintf( s, "%s/%s", rootDir, FIXED_FONT_NAME );
+    monoFont.init( s, FIXED_FONT_SIZE );
+		sprintf( s, "%s/%s", rootDir, LARGE_FONT_NAME );
+    largeFont.init( s, LARGE_FONT_SIZE );
     font_initialized = true;
   }
 }
