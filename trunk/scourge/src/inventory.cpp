@@ -261,17 +261,17 @@ Inventory::Inventory(Scourge *scourge) {
   formationList->setLines( 6, (const char**)formationText );
 
   cards->createLabel( 115, 145, "Interface Layout:", PARTY );
-  layoutButton1 = cards->createButton( 115, 155, 195, 175, "Floating", PARTY );
+  layoutButton1 = cards->createButton( 115, 155, 205, 175, "Floating", PARTY );
   layoutButton1->setToggle( true );
-  layoutButton2 = cards->createButton( 200, 155, 280, 175, "Bottom", PARTY );
+  layoutButton2 = cards->createButton( 210, 155, 300, 175, "Bottom", PARTY );
   layoutButton2->setToggle( true );
-  layoutButton4 = cards->createButton( 285, 155, 365, 175, "Inventory", PARTY );
+  layoutButton4 = cards->createButton( 305, 155, 395, 175, "Inventory", PARTY );
   layoutButton4->setToggle( true );
 
-  squirrelWindow = cards->createButton( 115, 180, 215, 200, "Show Console", PARTY, true );
+  squirrelWindow = cards->createButton( 115, 180, 245, 200, "Show Console", PARTY, true );
   squirrelWindow->setSelected( scourge->getSquirrelConsole()->isVisible() );
 
-  saveGameButton = cards->createButton( 115, 205, 215, 225, "Save Game", PARTY );
+  saveGameButton = cards->createButton( 115, 205, 245, 225, "Save Game", PARTY );
 
   setSelectedPlayerAndMode(0, INVENTORY);
 }
