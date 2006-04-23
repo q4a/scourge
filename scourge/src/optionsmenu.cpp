@@ -25,8 +25,8 @@ using namespace std;
 #define SPACING 18
 #define MINOR_SPACING 4
 #define YPOS ( SPACING + MINOR_SPACING )
-#define X_SIZE 250
-#define BUTTON_WIDTH 70
+#define X_SIZE 290
+#define BUTTON_WIDTH 80
 
 OptionsMenu::OptionsMenu(Scourge *scourge){    
   this->scourge = scourge;
@@ -40,7 +40,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   ignoreKeyUp = false;
   
   mainWin = new Window( scourge->getSDLHandler(),
-                        100, 170, 280, 320, 
+                        100, 170, 320, 320, 
                         "Options", 
                         scourge->getShapePalette()->getGuiTexture(),
                         true, Window::BASIC_WINDOW,

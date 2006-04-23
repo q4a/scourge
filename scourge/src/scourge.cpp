@@ -1881,8 +1881,8 @@ void Scourge::createPartyUI() {
 
   roundButton = cards->createButton( 5, 0, 90, 20, "Real-Time", 0 );
   endTurnButton = cards->createButton( 5, 20, 90, 40, "End Turn", 0 );
-  groupButton = cards->createButton( 5, 40,  90, 60, "Group Mode", 0 );
-  inventoryButton = cards->createButton( 5, 60, 90, 80, "Party Info", 0 );
+  groupButton = cards->createButton( 5, 40,  90, 60, "Group", 0 );
+  inventoryButton = cards->createButton( 5, 60, 90, 80, "Party", 0 );
   optionsButton = cards->createButton( 5, 80,  90, 100, "Options", 0 );
   quitButton = cards->createButton( 5, 100,  90, 120, "Quit", 0 );
   groupButton->setToggle(true);
