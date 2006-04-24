@@ -170,10 +170,10 @@ N:273,338,Flintforge the Grafter,5,healer,Confrontation
 N:217,331,Thazmagul Firebeard,6,healer,History and Lore
 
 # trainers (level matters, subtype is list of skills)
-N:222,392,Sygil the Wizard,3,trainer,Magician
-N:229,247,Aggorod the Warmaster,3,trainer,Man-at-arms
-N:302,377,Flint a Teacher of Scoundrels,3,trainer,Cutpurse
-N:217,331,Idmaril the Folklorist,3,trainer,Healer
+N:222,392,Sygil the Wizard,20,trainer,Magician
+N:229,247,Aggorod the Warmaster,20,trainer,Man-at-arms
+N:302,377,Flint a Teacher of Scoundrels,20,trainer,Cutpurse
+N:217,331,Idmaril the Folklorist,20,trainer,Healer
 
 # sages (level matters)
 N:287,439,Orhithales Grimwise,7,sage

@@ -248,9 +248,9 @@ N:101,231,Zila the Scribe,1,merchant,SCROLL
 N:209,202,Uzudil the Hand,4,sage
 
 # trainers (subtype is a root profession)
-N:167,257,Melathor of Allovium,1,trainer,Magician
-N:288,218,Pu Master of Arms,1,trainer,Man-at-arms
-N:292,229,Sillione Trainer of Rogues,1,trainer,Cutpurse
+N:167,257,Melathor of Allovium,15,trainer,Magician
+N:288,218,Pu Master of Arms,15,trainer,Man-at-arms
+N:292,229,Sillione Trainer of Rogues,15,trainer,Cutpurse
 
 # healers (subtype is "magicschool" )
 N:282,232,Joalin the Healer,1,healer,Nature
