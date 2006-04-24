@@ -10,8 +10,8 @@ N:103,205,Remor the Golden,4,healer,Divine Awareness
 N:153,207,Marad,5,healer,Life and Death
 
 # trainers (subtype is a root profession)
-N:119,233,Professor Erithol,3,trainer,Scholar
-N:172,222,Almojn of Aladur,3,trainer,Healer
+N:119,233,Professor Erithol,20,trainer,Scholar
+N:172,222,Almojn of Aladur,20,trainer,Healer
 
 # commoners
 N:201,206,Raminor,1,commoner

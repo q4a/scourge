@@ -11,6 +11,6 @@
 # N:201,212,Illadil the Healer,2,healer,Divine Awareness
 
 N:297,276,Zelta the Healer,11,healer,Nature
-N:297,308,Korga the Trainer,11,trainer,Scholar
+N:297,308,Korga the Trainer,30,trainer,Scholar
 N:302,244,Mirtha the Merchant,11,merchant,FOOD,DRINK,POTION
 
