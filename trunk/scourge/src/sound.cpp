@@ -85,6 +85,7 @@ Sound::~Sound() {
 // randomly select mission music, load others if needed
 void Sound::selectMusic( Preferences *preferences ) {
 #ifdef HAVE_SDL_MIXER
+	if( haveSound ) {
    // load fixed musics if needed
    if(!menuMusic) {
      char fn[300];
@@ -148,6 +149,7 @@ void Sound::selectMusic( Preferences *preferences ) {
   }
 
   setMusicVolume( preferences->getMusicVolume() );
+	}
 #endif
 }
 

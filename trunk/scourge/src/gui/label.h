@@ -48,6 +48,7 @@ class Label : public Widget {
      void setText(char *s);
      void drawWidget(Widget *parent);
      inline bool canGetFocus() { return false; }
+		 inline void setSpecialColor() { specialColor = true; }
 };
 
 #endif
