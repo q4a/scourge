@@ -186,6 +186,44 @@ Creature::~Creature(){
   delete shape;
 }
 
+void Creature::changeProfession( Character *c ) {
+	char message[120];
+
+	// boost skills
+	for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+		int maxValue = c->getSkill( i );
+		if( maxValue > 0 ) {
+			int oldValue = character->getSkill( i );
+			int newValue = getSkill( i ) + ( oldValue > 0 ? maxValue - oldValue : maxValue );
+			if( newValue > 99 ) newValue = 99;
+			setSkill( i, newValue );
+			
+			sprintf( message, "%s's skill in %s has increased.", getName(), Constants::SKILL_NAMES[ i ] );
+			session->getMap()->addDescription( message );
+		}
+	}
+
+	// remove forbidden items
+	for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+		if( equipped[i] < MAX_INVENTORY_SIZE ) {
+			Item *item = inventory[ equipped[i] ];
+			if( !c->canEquip( item->getRpgItem() ) ) {
+				doff( equipped[i] );
+				sprintf( message, "%s is not allowed to equip %s.", getName(), item->getName() );
+				session->getMap()->addDescription( message );				 
+			}
+		}
+	}
+
+	// add capabilities?
+
+
+	this->character = c;
+	sprintf( description, "%s the %s", name, c->getName() );
+	setHp();
+	setMp();
+}
+
 CreatureInfo *Creature::save() {
   CreatureInfo *info = (CreatureInfo*)malloc(sizeof(CreatureInfo));
   info->version = PERSIST_VERSION;
@@ -2429,8 +2467,8 @@ char *Creature::canEquipItem( Item *item, bool interactive ) {
 }
 
 void Creature::setCharacter( Character *c ) {
-  assert( !isMonster() );
-  character = c;
+  assert( !isMonster() );  
+	character = c;
 }
 
 // does the path end in the target creature

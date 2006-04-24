@@ -194,6 +194,8 @@ class Creature : public RenderedCreature {
 
   inline Battle *getBattle() { return battle; }
 
+	void changeProfession( Character *character );
+
   CreatureInfo *save();
   static Creature *load(Session *session, CreatureInfo *info);
 

@@ -79,10 +79,7 @@ void Session::initData() {
 
   shapePal->initialize();
 
-  adapter->initUpdate("Loading characters...");
-
-  // init characters first. Items use it for acl
-  Character::initCharacters();
+  adapter->initUpdate("Loading characters...");  
 
   adapter->initUpdate("Loading items...");
 
@@ -92,6 +89,9 @@ void Session::initData() {
   adapter->initUpdate("Loading spells...");
   // initialize magic
   MagicSchool::initMagic();
+
+	// init professions
+  Character::initCharacters();
 
   adapter->initUpdate("Loading monsters...");
 

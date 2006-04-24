@@ -17,6 +17,7 @@
 
 #include "character.h"
 #include "rpgitem.h"
+#include "spell.h"
 
 using namespace std;
 
@@ -62,13 +63,14 @@ void Character::initCharacters() {
       
       int minLevelReq, hp, mp, levelProgression;
       minLevelReq = hp = mp = levelProgression = 0;
-      p = strtok( line, "," );
+      p = strtok( line, "," );			
+			cerr << line << endl;
       if( p ) {
         // ignore the first token
-        p = strtok( NULL, "," );
+        p = strtok( NULL, "," );				
         if( p ) {
           minLevelReq = atoi( p );
-          p = strtok( NULL, "," );
+          p = strtok( NULL, "," );					
           if( p ) {
             hp = atoi( p );
             mp = atoi( strtok( NULL, "," ) );
@@ -206,6 +208,7 @@ Character::Character( char *name, char *parentName,
   this->startingHp = startingHp;
   this->startingMp = startingMp;
   this->level_progression = level_progression;
+	this->minLevelReq = minLevelReq;
   this->parent = NULL;
   strcpy( description, "" );
 }
@@ -213,6 +216,7 @@ Character::Character( char *name, char *parentName,
 Character::~Character(){  
 }
 
+#define MIN_STARTING_MP 2
 void Character::buildTree() {
   for( int i = 0; i < (int)character_list.size(); i++ ) {
     Character *c = character_list[i];
@@ -224,6 +228,23 @@ void Character::buildTree() {
           " for character " << c->getName() << endl;
         exit( 1 );
       }
+			// inherit some stats
+			c->startingHp = c->parent->startingHp;
+			c->startingMp = c->parent->startingMp;			
+			if( c->startingMp <= 0 ) {
+				// sanity check: if skills include a magic skill, add min. amount of MP
+				for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+					if( c->getSkill( MagicSchool::getMagicSchool( i )->getSkill() ) > -1 ) {
+						c->startingMp = MIN_STARTING_MP;
+						break;
+					}
+					if( c->getSkill( MagicSchool::getMagicSchool( i )->getResistSkill() ) > -1 ) {
+						c->startingMp = MIN_STARTING_MP;
+						break;
+					}
+				}
+			}
+			c->level_progression = c->parent->level_progression;
       c->parent->children.push_back( c );
     } else {
       rootCharacters.push_back( c );

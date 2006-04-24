@@ -30,6 +30,7 @@ class ScrollingList;
 class Widget;
 class Button;
 class TextField;
+class Character;
 
 class TrainDialog {
 private:
@@ -37,8 +38,12 @@ private:
   Creature *creature;
   Window *win;
   
-  Label *creatureLabel;
+  Label *creatureLabel, *errorLabel, *errorLabel2;
   Button *closeButton, *applyButton;
+	ScrollingList *list;
+	ScrollingLabel *description;
+	int cost;
+	char **text;
 
 public:
   TrainDialog( Scourge *scourge );
@@ -49,7 +54,7 @@ public:
   void handleEvent( Widget *widget, SDL_Event *event );
   
 protected:
-  void train();
+  void train( Character *newProfession );
 };
 
 #endif
