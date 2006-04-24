@@ -97,6 +97,13 @@ T:RANGED,ranged weapons
 # ===================================================================
 # ===================================================================
 # ===================================================================
+
+
+
+# **************************
+# Warning: this is a root profession. 
+# Changing the name means updating every trainer in the maps/map.txt files.
+# **************************
 P:Man-at-arms,0,10,0,400
 D:description goes here
 G:FIGHT_GROUP,10
@@ -419,6 +426,11 @@ A:PLATE-
 # ===================================================================
 # ===================================================================
 # ===================================================================
+
+# **************************
+# Warning: this is a root profession. 
+# Changing the name means updating every trainer in the maps/map.txt files.
+# **************************
 P:Magician,0,2,8,600
 D:description goes here
 G:FIGHT_GROUP,2
@@ -439,6 +451,11 @@ A:*-,ROBES+
 # ===================================================================
 # ===================================================================
 # ===================================================================
+
+# **************************
+# Warning: this is a root profession. 
+# Changing the name means updating every trainer in the maps/map.txt files.
+# **************************
 P:Healer,0,4,6,550
 D:description goes here
 G:FIGHT_GROUP,8
@@ -459,6 +476,11 @@ A:*+
 # ===================================================================
 # ===================================================================
 # ===================================================================
+
+# **************************
+# Warning: this is a root profession. 
+# Changing the name means updating every trainer in the maps/map.txt files.
+# **************************
 P:Scholar,0,5,5,500
 D:description goes here
 G:FIGHT_GROUP,6
@@ -479,6 +501,11 @@ A:*+,METAL-
 # ===================================================================
 # ===================================================================
 # ===================================================================
+
+# **************************
+# Warning: this is a root profession. 
+# Changing the name means updating every trainer in the maps/map.txt files.
+# **************************
 P:Cutpurse,0,8,2,450
 D:description goes here
 G:FIGHT_GROUP,8

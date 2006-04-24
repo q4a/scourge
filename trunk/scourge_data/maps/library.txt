@@ -42,6 +42,6 @@ us in the $library their gaze comes from much closer...
 
 N:295,314,Zorna the Healer,10,healer,Divine Awareness
 N:297,265,Kazna the Merchant,10,merchant,SWORD;AXE;BOW;MACE;POLE;ARMOR
-N:307,241,Mirna the Magics Trainer,10,trainer,NATURE_MAGIC;AWARENESS_MAGIC;LIFE_AND_DEATH_MAGIC;HISTORY_MAGIC;DECEIT_MAGIC;CONFRONTATION_MAGIC
-N:339,280,Zurna the Defense Trainer,10,trainer,RESIST_NATURE_MAGIC;RESIST_AWARENESS_MAGIC;RESIST_LIFE_AND_DEATH_MAGIC;RESIST_HISTORY_MAGIC;RESIST_DECEIT_MAGIC;RESIST_CONFRONTATION_MAGIC
+N:307,241,Mirna the Magics Trainer,10,trainer,Magician
+N:339,280,Zurna the Defense Trainer,10,trainer,Man-at-arms
 
