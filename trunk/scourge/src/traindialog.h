@@ -37,14 +37,8 @@ private:
   Creature *creature;
   Window *win;
   
-  Label *creatureLabel, *pointsLabel, *coinsLabel;
-  ScrollingLabel *result, *description;
+  Label *creatureLabel;
   Button *closeButton, *applyButton;
-  ScrollingList *skillList;
-
-  int cost;
-  char **skillText;
-  std::vector<int> skills;
 
 public:
   TrainDialog( Scourge *scourge );
@@ -55,7 +49,7 @@ public:
   void handleEvent( Widget *widget, SDL_Event *event );
   
 protected:
-  void train( int skill );
+  void train();
 };
 
 #endif

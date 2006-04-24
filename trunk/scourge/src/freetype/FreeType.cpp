@@ -77,7 +77,7 @@ void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base, in
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
   char msg[80];
-  sprintf(msg, "FreeType::make_dlist char=%d", ch);
+  sprintf(msg, "FreeType::make_dlist char=%d(%c)", ch, (char)ch);
   Constants::checkTexture(msg, width, height);
 
 
