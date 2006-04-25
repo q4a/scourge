@@ -447,6 +447,19 @@ S:LORE,40
 W:*-,SMALL+,RANGED+
 A:*-,ROBES+
 
+P:Apprentice Sorceror:Magician,10
+D:description goes here
+G:FIGHT_GROUP,4
+G:DEFEND_GROUP,4
+G:SORCERY_GROUP,20
+
+P:Wild One:Magician,10
+D:description goes here
+G:FIGHT_GROUP,10
+G:DEFEND_GROUP,10
+G:SORCERY_GROUP,15
+
+
 # Clerical types
 # ===================================================================
 # ===================================================================
@@ -471,6 +484,20 @@ S:PIETY,80
 S:LORE,50
 W:*-,MACE+
 A:*+
+
+P:Clerical Aide:Healer,10
+D:description goes here
+G:FIGHT_GROUP,16
+G:DEFEND_GROUP,20
+G:SPIRIT_GROUP,20
+
+P:Traveling Medic:Healer,10
+D:description goes here
+G:FIGHT_GROUP,18
+G:DEFEND_GROUP,18
+G:SPIRIT_GROUP,16
+G:LORE_GROUP,4
+
 
 # Scholar types
 # ===================================================================
@@ -497,6 +524,20 @@ S:LORE,80
 W:*-,SMALL+,RANGED+
 A:*+,METAL-
 
+P:Adjunct:Scholar,10
+D:description goes here
+G:FIGHT_GROUP,12
+G:DEFEND_GROUP,12
+G:LORE_GROUP,20
+
+P:Field Scientist:Scholar,10
+D:description goes here
+G:FIGHT_GROUP,14
+G:DEFEND_GROUP,14
+G:LORE_GROUP,18
+G:STEALTH_GROUP,4
+
+
 # Rogue types
 # ===================================================================
 # ===================================================================
@@ -521,6 +562,19 @@ S:PIETY,20
 S:LORE,20
 W:*+,TWO_HANDED-,LARGE-
 A:*+,METAL-
+
+P:Thief:Cutpurse,10
+D:description goes here
+G:FIGHT_GROUP,16
+G:DEFEND_GROUP,16
+G:STEALTH_GROUP,20
+
+P:Gutter-sage:Cutpurse,10
+D:description goes here
+G:FIGHT_GROUP,14
+G:DEFEND_GROUP,14
+G:STEALTH_GROUP,18
+G:LORE_GROUP,4
 
 
 
