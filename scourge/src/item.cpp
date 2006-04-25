@@ -434,9 +434,9 @@ void Item::initItems(ShapePalette *shapePal) {
       char *p = strtok( line, "," );
       while( p ) {
 				string s = strdup( p );
-				if( RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
-					cerr << "*** Warning: item tag has no description: " << s << endl;
-				}
+				//if( RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
+					//cerr << "*** Warning: item tag has no description: " << s << endl;
+				//}
 				last->addTag( s );
         p = strtok( NULL, "," );
       }

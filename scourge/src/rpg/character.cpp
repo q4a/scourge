@@ -64,7 +64,6 @@ void Character::initCharacters() {
       int minLevelReq, hp, mp, levelProgression;
       minLevelReq = hp = mp = levelProgression = 0;
       p = strtok( line, "," );			
-			cerr << line << endl;
       if( p ) {
         // ignore the first token
         p = strtok( NULL, "," );				

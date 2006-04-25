@@ -2134,6 +2134,26 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   glColor3f( 1, 1, 1 );
   getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
 
+	// can train?
+	if( p->getCharacter()->getChildCount() > 0 &&
+			p->getCharacter()->getChild( 0 )->getMinLevelReq() <= p->getLevel() ) {
+		glColor4f( 0, 0, 0, 0.4f );
+		glPushMatrix();
+		glTranslatef( 3, 14, 0 );
+		glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glBegin( GL_QUADS );
+		glVertex2i( 0, 0 );
+    glVertex2i( 40, 0 );
+    glVertex2i( 40, 13 );
+    glVertex2i( 0, 13 );
+		glEnd();
+		glDisable( GL_BLEND );
+		glPopMatrix();
+		glColor3f( 1, 0.75f, 0 );
+		getSDLHandler()->texPrint( 5, 24, "TRAIN" );
+	}
+
   // show stat mods
   glEnable(GL_TEXTURE_2D);
   glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
