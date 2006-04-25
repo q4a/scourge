@@ -22,6 +22,7 @@
 #include "glshape.h"
 #include "effect.h"
 #include <vector>
+#include <set>
 
 class Map;
 class RenderedProjectile;
@@ -29,10 +30,13 @@ class Preferences;
 class Shapes;
 
 class ProjectileRenderer {
+private:
+	std::set<RenderedProjectile*> proj;
 public:
   ProjectileRenderer() {
   }
   virtual ~ProjectileRenderer() {
+		proj.clear();
   }
 
 	virtual void drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path ) = 0;
@@ -40,6 +44,16 @@ public:
 	virtual float getOffsetX() = 0;
 	virtual float getOffsetY() = 0;
 	virtual float getOffsetZ() = 0;
+
+	inline void addProjectile( RenderedProjectile *p ) { 
+		proj.insert( p );
+	}
+	inline void removeProjectile( RenderedProjectile *p ) { 
+		if( proj.find( p ) != proj.end() ) proj.erase( p );
+	}
+	inline bool hasProjectiles() {
+		return !( proj.empty() );
+	}
 };
 
 class ShapeProjectileRenderer : public ProjectileRenderer {
