@@ -43,8 +43,6 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "int", "getHunger", SqCreature::_getHunger, 0, 0, "A value between 0-10 indicating how hungry the character is. 0-most, 10-least hungry." },
   { "int", "getSkill", SqCreature::_getSkill, SQ_MATCHTYPEMASKSTRING, "xn", "The point value for the given skill index. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
   { "int", "getSkillByName", SqCreature::_getSkillByName, SQ_MATCHTYPEMASKSTRING, "xs", "Same as getSkill() but instead of an index, the skill is referenced by name. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
-  { "int", "getSkillPercent", SqCreature::_getSkillPercent, SQ_MATCHTYPEMASKSTRING, "xn", "A 0-100 percentage value for the given skill index. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
-  { "int", "getSkillByNamePercent", SqCreature::_getSkillByNamePercent, SQ_MATCHTYPEMASKSTRING, "xs", "Same as getSkill() but instead of an index, the skill is referenced by name. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
   { "int", "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value if the state-mod is in effect for this character. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
   { "int", "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value indicating if the character is protected from the given state mod. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
   { "float", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn modified by skills.)" },  
@@ -64,6 +62,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 
   // character methods
   { "bool", "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs", "Returns a boolean if the character is of the character class given in the argument. This function is slow because it does a string compare on the class's name." },  
+	{ "bool", "isOfRootClass", SqCreature::_isOfRootClass, SQ_MATCHTYPEMASKSTRING, "xs", "Returns a boolean if the character's root class is the argument. This function is slow because it does a string compare on the class's name." },  
   { "string", "getDeity", SqCreature::_getDeity, 0, 0, "Return the character's chosen deity's name." },
   { "Creature", "getTargetCreature", SqCreature::_getTargetCreature, 0, 0, "Return the creature's target creature of NULL if there isn't one." },
   { "Item", "getItemAtLocation", SqCreature::_getItemAtLocation, SQ_MATCHTYPEMASKSTRING, "xn", "Return the item currently equipped at the specified location. (location is left-hand, right-hand, etc.)" },
@@ -187,20 +186,6 @@ int SqCreature::_getSkillByName( HSQUIRRELVM vm ) {
   return 1;
 }
 
-int SqCreature::_getSkillPercent( HSQUIRRELVM vm ) {
-  GET_INT( index )
-  GET_OBJECT( Creature* )
-  sq_pushinteger( vm, _SC( object->getSkill( index ) ) );
-  return 1;
-}
-
-int SqCreature::_getSkillByNamePercent( HSQUIRRELVM vm ) {
-  GET_STRING( name, 80 )
-  GET_OBJECT( Creature* )
-  sq_pushinteger( vm, _SC( object->getSkill( Constants::getSkillByName( (char*)name ) ) ) );
-  return 1;
-}
-
 int SqCreature::_getStateMod( HSQUIRRELVM vm ) {
   GET_INT( index )
   GET_OBJECT(Creature*)
@@ -226,8 +211,19 @@ int SqCreature::_getArmor( HSQUIRRELVM vm ) {
 int SqCreature::_isOfClass( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 )
   GET_OBJECT( Creature* )
-  SQBool b = ( object->getCharacter() && 
-               !strcmp( object->getCharacter()->getName(), name ) );
+	if( !object->getCharacter() ) return sq_throwerror( vm, "Creature is not a PC." );
+  SQBool b = ( !strcmp( object->getCharacter()->getName(), name ) );
+  sq_pushbool( vm, b );
+  return 1;
+}
+
+int SqCreature::_isOfRootClass( HSQUIRRELVM vm ) {
+  GET_STRING( name, 80 )
+  GET_OBJECT( Creature* )
+	Character *c = object->getCharacter();
+	if( !c ) return sq_throwerror( vm, "Creature is not a PC." );
+	while( c->getParent() ) c = c->getParent();
+  SQBool b = ( !strcmp( c->getName(), name ) );
   sq_pushbool( vm, b );
   return 1;
 }

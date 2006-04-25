@@ -106,7 +106,11 @@ void Projectile::commonInit() {
 }
 
 Projectile::~Projectile() {
-  delete renderer;
+	renderer->removeProjectile( this );
+	if( !renderer->hasProjectiles() ) {
+		cerr << "Deleting renderer!" << endl;
+		delete renderer;
+	}
 }
 
 bool Projectile::atTargetLocation() {
@@ -217,6 +221,7 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
                                       Item *item, ProjectileRenderer *renderer, 
                                       int maxProjectiles, bool stopOnImpact) {
   Projectile *p = new Projectile(creature, target, item, renderer, 0.0f, stopOnImpact);
+	renderer->addProjectile( p );
   RenderedProjectile::addProjectile( p );
   return p;
 }
@@ -225,16 +230,21 @@ Projectile *Projectile::addProjectile(Creature *creature, Creature *target,
                                       Spell *spell, ProjectileRenderer *renderer, 
                                       int maxProjectiles, bool stopOnImpact) {
   Projectile *p = new Projectile(creature, target, spell, renderer, 0.0f, stopOnImpact, true);
+	renderer->addProjectile( p );
   RenderedProjectile::addProjectile( p );
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, renderer, r, stopOnImpact, true ) );
+			Projectile *pp = new Projectile( creature, target, spell, renderer, r, stopOnImpact, true );
+			renderer->addProjectile( pp );
+      RenderedProjectile::addProjectile( pp );
     }
     if((i + 1) < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, target, spell, renderer, -r, stopOnImpact, true ) );
+			Projectile *pp = new Projectile( creature, target, spell, renderer, -r, stopOnImpact, true );
+			renderer->addProjectile( pp );
+      RenderedProjectile::addProjectile( pp );
     }
     r += (r/2.0f);
   }
@@ -247,16 +257,21 @@ Projectile *Projectile::addProjectile(Creature *creature, int x, int y, int w, i
                                       int maxProjectiles, bool stopOnImpact) {
   // add a straight-flying projectile
   Projectile *p = new Projectile(creature, x, y, w, d, spell, renderer, 0.0f, stopOnImpact);
+	renderer->addProjectile( p );
   RenderedProjectile::addProjectile( p );
 
   // add extra projectiles w. parabolic curve
   float r = 0.5f;
   for(int i = 0; i < maxProjectiles - 1; i+=2) {
     if(i < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, renderer, r, stopOnImpact ) );
+			Projectile *pp = new Projectile( creature, x, y, w, d, spell, renderer, r, stopOnImpact );
+			renderer->addProjectile( pp );
+      RenderedProjectile::addProjectile( pp );
     }
     if((i + 1) < maxProjectiles - 1) {
-      RenderedProjectile::addProjectile( new Projectile( creature, x, y, w, d, spell, renderer, -r, stopOnImpact ) );
+			Projectile *pp = new Projectile( creature, x, y, w, d, spell, renderer, -r, stopOnImpact );
+			renderer->addProjectile( pp );
+      RenderedProjectile::addProjectile( pp );
     }
     r += (r/2.0f);
   }

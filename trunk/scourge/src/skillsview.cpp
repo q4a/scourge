@@ -58,9 +58,15 @@ void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) {
       int group = Constants::getGroupForSkill( t );
       if( filter > 0 && !( filter & ( 1 << group ) ) ) continue;
 
-			skillColor[ lineCounter ].r = 1;
-			skillColor[ lineCounter ].g = 1;
-			skillColor[ lineCounter ].b = 1;
+			if( Constants::getGroupForSkill( t ) == Constants::BASIC_GROUP ) {
+				skillColor[ lineCounter ].r = 0.7f;
+				skillColor[ lineCounter ].g = 1;
+				skillColor[ lineCounter ].b = 0.7f;
+			} else {
+				skillColor[ lineCounter ].r = 1;
+				skillColor[ lineCounter ].g = 1;
+				skillColor[ lineCounter ].b = 1;
+			}
 			
 			// FIXME: this should be replaced by percentage bars
       //int maxSkill = selectedP->getCharacter()->getSkill( t );
