@@ -9,17 +9,12 @@
 function prereqSuperTough( creature ) {
   // print( "In prereqSuperTough. Creature=" + creature.getName() + ".\n" );
 
-  // prereq for superior toughness is a 3rd level 
-  // assassin, ranger, knight, tinkerer or monk
-
   // FIXME: this is inefficient. Instead, expose Character class
   // bindings so we can say something like: 
   // creature.getClass() == scourgeGame.characterClass
   return( creature.getLevel() >= 3 &&
-          ( creature.isOfClass( "Ranger" ) ||
-            creature.isOfClass( "Knight" ) ||
-            creature.isOfClass( "Assassin" ) ||
-            creature.isOfClass( "Monk" ) ) );
+          ( creature.isOfRootClass( "Man-at-arms" ) ||
+						creature.isOfRootClass( "Cutpurse" ) ) );
 }
 
 function actionSuperTough( creature ) {
@@ -75,11 +70,11 @@ function actionMissileDefense( creature ) {
 // **********************************************
 // War-rage
 function prereqWarrage( creature ) {
-  return( creature.getSkillByNamePercent( "SWORD_WEAPON" ) >= 90 ||
-          creature.getSkillByNamePercent( "AXE_WEAPON" ) >= 90 || 
-          creature.getSkillByNamePercent( "MACE_WEAPON" ) >= 90 ||
-          creature.getSkillByNamePercent( "POLE_WEAPON" ) >= 90 ||
-          creature.getSkillByNamePercent( "HAND_TO_HAND_COMBAT" ) >= 90 );
+  return( creature.getSkillByName( "SWORD_WEAPON" ) >= 30 ||
+          creature.getSkillByName( "AXE_WEAPON" ) >= 30 || 
+          creature.getSkillByName( "MACE_WEAPON" ) >= 30 ||
+          creature.getSkillByName( "POLE_WEAPON" ) >= 30 ||
+          creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 30 );
 }
 
 function actionWarrage( creature ) {
@@ -94,10 +89,10 @@ function actionWarrage( creature ) {
   if( weapon != null ) {
     print( "*** weapon=" + weapon.getName() + "\n" );
     skillCheck = ( !( weapon.isRanged() ) && 
-                   creature.getSkillPercent( weapon.getSkill() ) >= 90 );
+                   creature.getSkill( weapon.getSkill() ) >= 90 );
   } else {
     print( "*** hand-to-hand combat.\n" );
-    skillCheck = ( creature.getSkillByNamePercent( "HAND_TO_HAND_COMBAT" ) >= 90 );
+    skillCheck = ( creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 90 );
   }
 
   print( "*** skillCheck=" + skillCheck.tostring() + "\n" );
@@ -150,9 +145,7 @@ function actionNaturalHealing( creature ) {
 // Vitality Transfer
 function prereqVitality( creature ) {
   return( creature.getSkillByName( "AWARENESS_MAGIC" ) >= 25 &&
-          creature.getLevel() >= 5 &&
-          ( creature.isOfClass( "Naturalist" ) ||
-            creature.isOfClass( "Monk" ) ) );
+          creature.getLevel() >= 5 );
 }
 
 function actionVitality( creature ) {
@@ -179,10 +172,9 @@ function actionVitality( creature ) {
 // **********************************************
 // Terminal Energy
 function prereqTerminal( creature ) {
-  return( creature.isOfClass( "Summoner" ) ||
-          creature.isOfClass( "Conjurer" ) ||
-          creature.isOfClass( "Loremaster" ) ||
-          creature.isOfClass( "Arcanist" ) );
+  return( creature.isOfRootClass( "Magician" ) ||
+          creature.isOfRootClass( "Scholar" ) ||
+          creature.isOfRootClass( "Healer" ) );
 }
 
 function actionTerminal( creature ) {
@@ -200,11 +192,7 @@ function actionTerminal( creature ) {
 // **********************************************
 // Mystic Defense
 function prereqMystic( creature ) {
-  return( creature.getSkillByNamePercent( "HISTORY_MAGIC" ) >= 85 &&
-          ( creature.isOfClass( "Summoner" ) ||
-            creature.isOfClass( "Conjurer" ) ||
-            creature.isOfClass( "Loremaster" ) ||
-            creature.isOfClass( "Arcanist" ) ) );
+  return( creature.getSkillByName( "HISTORY_MAGIC" ) >= 25 );
 }
 
 function actionMystic( creature ) {
