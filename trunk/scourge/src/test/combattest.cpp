@@ -253,7 +253,7 @@ void CombatTest::printInventory( FILE *fp, Creature *creature ) {
   fprintf( fp, "<b>Skills:</b><table><tr><td>Name</td>\
            <td>Value</td><td>MIN-MAX</td></tr>\n" );
   char color[20];
-  for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+  for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 
     int n = creature->getSkill( i );
     if( n < MAX_SKILL / 4.0f ) strcpy( color, "red" );
@@ -263,7 +263,7 @@ void CombatTest::printInventory( FILE *fp, Creature *creature ) {
 
     fprintf( fp, "<tr><td><b>%s</b></td>\
              <td bgcolor=%s>%d</td>", 
-             Constants::SKILL_NAMES[ i ], color, n );    
+             Skill::skills[ i ]->getName(), color, n );    
 
     fprintf( fp, "</tr>\n" );
   }
@@ -312,7 +312,7 @@ Creature *CombatTest::createCharacter( Session *session,
 void CombatTest::setMinSkills( Creature *c ) {
   // starting skills
   //Character *character = c->getCharacter();
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     int n = c->getLevel() * 10;
     if(n > 99) n = 99;
     c->setSkill( i, n );

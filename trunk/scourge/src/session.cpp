@@ -83,6 +83,9 @@ void Session::initData() {
 
   adapter->initUpdate("Loading items...");
 
+	// read the skills, etc.
+	Rpg::initRpg();
+
   // initialize the items
   Item::initItems(getShapePalette());
 

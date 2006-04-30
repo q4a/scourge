@@ -131,7 +131,7 @@ void Creature::commonInit() {
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     skillBonus[i] = skillsUsed[i] = 0;
   }
   this->stateMod = 0;
@@ -190,15 +190,14 @@ void Creature::changeProfession( Character *c ) {
 	char message[120];
 
 	// boost skills
-	for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+	for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 		int maxValue = c->getSkill( i );
 		if( maxValue > 0 ) {
 			int oldValue = character->getSkill( i );
 			int newValue = getSkill( i ) + ( oldValue > 0 ? maxValue - oldValue : maxValue );
-			if( newValue > 99 ) newValue = 99;
 			setSkill( i, newValue );
 			
-			sprintf( message, "%s's skill in %s has increased.", getName(), Constants::SKILL_NAMES[ i ] );
+			sprintf( message, "%s's skill in %s has increased.", getName(), Skill::skills[ i ]->getName() );
 			session->getMap()->addDescription( message );
 		}
 	}
@@ -257,10 +256,10 @@ CreatureInfo *Creature::save() {
   //info->bonusArmor = 0;
   info->thirst = thirst;
   info->hunger = hunger;
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    info->skills[i] = skills[i];
-    info->skillBonus[i] = skillBonus[i];
-	info->skillsUsed[i] = skillsUsed[i];
+	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
+		info->skills[i] = skills[i];
+		info->skillBonus[i] = skillBonus[i];
+		info->skillsUsed[i] = skillsUsed[i];
   }
   info->portraitTextureIndex = portraitTextureIndex;
 
@@ -336,7 +335,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
   creature->setThirst( info->thirst );
   creature->setHunger( info->hunger );
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     creature->setSkill( i, info->skills[i] );
     creature->skillsUsed[i] = info->skillsUsed[i];
   }
@@ -824,7 +823,7 @@ void Creature::setNextDontMove(Creature *next, int index) {
 }
 
 float Creature::getMaxInventoryWeight() { 
-  return (float) getSkill(Constants::POWER) * 2.5f;
+  return (float) getSkill(Skill::POWER) * 2.5f;
 }  
 
 void Creature::pickUpOnMap( RenderedItem *item ) {
@@ -1344,10 +1343,10 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 // return the initiative for a battle round, the lower the faster the attack
 int Creature::getInitiative( int *max ) {
   // use the speed skill
-  float speed = getSkill(Constants::SPEED) / 5.0f;
+  float speed = getSkill(Skill::SPEED) / 5.0f;
   if( max ) *max = toint( speed );
   // roll for luck
-  speed += ( ( getSkill(Constants::LUCK) / 10.0f ) * rand()/RAND_MAX );
+  speed += ( ( getSkill(Skill::LUCK) / 10.0f ) * rand()/RAND_MAX );
   return toint( speed );
 }
 
@@ -1355,7 +1354,7 @@ int Creature::getInitiative( int *max ) {
 // it is a function of speed, level, and weapon skill
 // this method returns a number from 1-10
 int Creature::getMaxProjectileCount(Item *item) {
-  int n = (int)((double)(getSkill(Constants::SPEED) + 
+  int n = (int)((double)(getSkill(Skill::SPEED) + 
                          (getLevel() * 10) + 
                          getSkill(item->getRpgItem()->getSkill())) / 30.0f);
   if(n <= 0) n = 1;
@@ -1491,12 +1490,18 @@ void Creature::monsterInit() {
 
   // set some skills
   //cerr << "monster=" << monster->getType() << " level=" << getLevel() << endl;
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
-    int n = monster->getSkillLevel(Constants::SKILL_NAMES[i]);
+  for(int i = 0; i < (int)Skill::skills.size(); i++) {
+    int n = monster->getSkillLevel( Skill::skills[i]->getName() );
     if( n > 0 ) {
       setSkill( i, n );
     } else {
-      setSkill( i, rollStartingSkill( session, getLevel(), true ) );
+			if( Skill::skills[ i ]->getGroup()->isStat() ) {
+				// stats go from 1-20
+				setSkill( i, (int)( 20.0f * rand() / RAND_MAX ) );
+			} else {
+				MonsterToughness *mt = &(monsterToughness[ session->getPreferences()->getMonsterToughness() ]);
+				setSkill( i, (int)( ( level / (float)MAX_LEVEL ) * 100.0f * roll( mt->minSkillBase, mt->maxSkillBase ) ) );
+			}
     }
     //cerr << "\t" << Constants::SKILL_NAMES[i] << "=" << getSkill(i) << ", " << getLevelAdjustedSkill(i) << endl;
   }
@@ -2139,10 +2144,10 @@ void Creature::calcArmor( float *armorP,
     *avgArmorSkillP = lastArmorSkill;
   } else {
     float armor = (monster ? monster->getBaseArmor() : 
-                   ( getSkill( Constants::getSkillByName( "COORDINATION" ) ) +
-                     getSkill( Constants::getSkillByName( "SPEED" ) ) ) / 25.0f );
+                   ( getSkill( Skill::COORDINATION ) +
+                     getSkill( Skill::SPEED ) ) / 25.0f );
     int armorLevel=0, armorCount=0;
-    int armorSkill = getSkill( Constants::getSkillByName( "COORDINATION" ) );
+    int armorSkill = getSkill( Skill::COORDINATION );
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
@@ -2159,7 +2164,7 @@ void Creature::calcArmor( float *armorP,
               ( item->isMagicItem() ? item->getBonus() : 0 ) );
 					int itemSkill = ( item->getRpgItem()->getSkill() > -1 ? 
 														item->getRpgItem()->getSkill() :
-														Constants::getSkillByName( "HAND_DEFEND" ) );
+														Skill::HAND_DEFEND );
           armorSkill += getSkill( itemSkill );
 					
 					// mark the fact that the skill was exercised
@@ -2180,7 +2185,7 @@ void Creature::calcArmor( float *armorP,
                         (float)armorSkill / (float)armorCount :
                         (float)armorSkill );
     (*avgArmorSkillP) += 
-      ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+      ( getSkill( Skill::LUCK ) / 10.0f );
 
     lastArmor = *armorP;
     lastArmorLevel = *avgArmorLevelP;
@@ -2207,11 +2212,11 @@ void Creature::incSkillUsed( int skill ) {
 //		" use=" << skillsUsed[ skill ] << " out of " << Constants::SKILL_USE[ skill ] << endl;
 
 	skillsUsed[ skill ]++;
-	if( skillsUsed[ skill ] >= Constants::SKILL_USE[ skill ] ) {		
+	if( skillsUsed[ skill ] >= Skill::skills[ skill ]->getUseCount() ) {		
 		skills[ skill ]++;
 		skillsUsed[ skill ] = 0;
 		char message[120];
-		sprintf( message, "%s's skill in %s has increased.", getName(), Constants::SKILL_NAMES[ skill ] );
+		sprintf( message, "%s's skill in %s has increased.", getName(), Skill::skills[ skill ]->getName() );
 		cerr << message << endl;
 		session->getMap()->addDescription( message, 0, 1, 1 );
 	}
@@ -2227,18 +2232,17 @@ float Creature::getAttackPercent( Item *weapon,
 																	bool callScript ) {
 	int itemSkill = ( weapon ? 
 										weapon->getRpgItem()->getSkill() :
-										Constants::getSkillByName( "HAND_TO_HAND_COMBAT" ) );
+										Skill::HAND_TO_HAND_COMBAT );
   float skill = 
     getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
-                           Constants::getSkillByName( "COORDINATION" ) :
-                           Constants::getSkillByName( "POWER" ) ) +
-    getSkill( itemSkill );
-  skill /= 2.0f;
+                           Skill::COORDINATION :
+                           Skill::POWER ) + getSkill( itemSkill );
+	skill /= 2.0f;
 
 	// mark the fact that the skill was exercised
 	if( callScript ) incSkillUsed( itemSkill );
 
-  skill += ( getSkill( Constants::getSkillByName( "LUCK" ) ) / 10.0f );
+  skill += ( getSkill( Skill::LUCK ) / 10.0f );
   if( skillP ) *skillP = skill;
 
   float itemLevel = 
@@ -2281,24 +2285,6 @@ float Creature::getAttackPercent( Item *weapon,
 	}
   
   return total;
-}
-
-/** 
- * Roll a reasonable stating skill level.
- * Monsters are made less powerful than PC-s. 
- * This can be changed by specifying monster skill values in creatures.txt.
- */
-int Creature::rollStartingSkill( Session *session, int level, int skill, bool isMonster ) {
-	if( Constants::getGroupForSkill( skill ) == Constants::BASIC_GROUP ) {
-		return 50 + (int)( 25.0f * rand() / RAND_MAX );
-	} else {
-		if( isMonster ) {
-			MonsterToughness *mt = &(monsterToughness[ session->getPreferences()->getMonsterToughness() ]);
-			return (int)( ( level / (float)MAX_LEVEL ) * 100.0f * roll( mt->minSkillBase, mt->maxSkillBase ) );
-		} else {
-			return (int)( ( level / (float)MAX_LEVEL ) * ( ( 50.0f * rand() / RAND_MAX ) + 50.0f ) );
-		}
-	}
 }
 
 /**
@@ -2424,7 +2410,7 @@ float Creature::rollMagicDamagePercent( Item *item ) {
 }
 
 float Creature::getMaxAP( ) { 
-  return 30.0f + ( (float)( getSkill( Constants::COORDINATION ) ) / 5.0f ); 
+  return 30.0f + ( (float)( getSkill( Skill::COORDINATION ) ) / 5.0f ); 
 }
 
 float Creature::getAttacksPerRound( Item *item ) {
@@ -2485,7 +2471,7 @@ void Creature::playCharacterSound( int soundType ) {
 
 bool Creature::rollSkill( int skill, float luckDiv ) {
   float f = (float)( getSkill( skill ) );
-  if( luckDiv > 0 ) f += (float)( getSkill( Constants::LUCK ) ) / luckDiv;
+  if( luckDiv > 0 ) f += (float)( getSkill( Skill::LUCK ) ) / luckDiv;
   return( 100.0f * rand() / RAND_MAX <= f ? true : false );
 }             
 
@@ -2495,8 +2481,8 @@ bool Creature::rollSecretDoor( Location *pos ) {
     Uint32 lastTime = secretDoorAttempts[ pos ];
     if( SDL_GetTicks() - lastTime < SECRET_DOOR_ATTEMPT_INTERVAL ) return false;
   }
-  bool ret = rollSkill( Constants::FIND_SECRET_DOOR, 4.0f );
-	incSkillUsed( Constants::FIND_SECRET_DOOR );
+  bool ret = rollSkill( Skill::FIND_SECRET_DOOR, 4.0f );
+	incSkillUsed( Skill::FIND_SECRET_DOOR );
   if( !ret ) {
     secretDoorAttempts[ pos ] = SDL_GetTicks();
   }

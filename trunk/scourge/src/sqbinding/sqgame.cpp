@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "sqgame.h"
+#include "../rpg/rpg.h"
 #include "../session.h"
 #include "../creature.h"
 #include "../date.h"
@@ -116,7 +117,7 @@ int SqGame::_getMission( HSQUIRRELVM vm ) {
 }
 
 int SqGame::_getSkillCount( HSQUIRRELVM vm ) {
-  sq_pushinteger( vm, Constants::SKILL_COUNT );
+  sq_pushinteger( vm, Skill::SKILL_COUNT );
   return 1;
 }
 
@@ -125,11 +126,11 @@ int SqGame::_getSkillName( HSQUIRRELVM vm ) {
   if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
     return sq_throwerror( vm, _SC( "Can't get index in getSkillName." ) );
   }
-  if( index < 0 || index >= Constants::SKILL_COUNT  ) {
+  if( index < 0 || index >= Skill::SKILL_COUNT  ) {
     return sq_throwerror( vm, _SC( "Party index is out of range." ) );
   }
 
-  sq_pushstring( vm, _SC( Constants::SKILL_NAMES[ index ] ), -1 );
+  sq_pushstring( vm, _SC( Skill::skills[ index ]->getName() ), -1 );
   return 1;
 }
 

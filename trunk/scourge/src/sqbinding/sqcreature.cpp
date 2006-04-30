@@ -102,94 +102,99 @@ int SqCreature::_getName( HSQUIRRELVM vm ) {
 
 int SqCreature::_getLevel( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getLevel() ) );
+  sq_pushinteger( vm, object->getLevel() );
   return 1;
 }
 
 int SqCreature::_getExpOfNextLevel( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getExpOfNextLevel() ) );
+  sq_pushinteger( vm, object->getExpOfNextLevel() );
   return 1;
 }
 
 int SqCreature::_getExp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getExp() ) );
+  sq_pushinteger( vm, object->getExp() );
   return 1;
 }
 
 int SqCreature::_getMoney( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getMoney() ) );
+  sq_pushinteger( vm, object->getMoney() );
   return 1;
 }
 
 int SqCreature::_getHp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getHp() ) );
+  sq_pushinteger( vm, object->getHp() );
   return 1;
 }
 
 int SqCreature::_getStartingHp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getStartingHp() ) );
+  sq_pushinteger( vm, object->getStartingHp() );
   return 1;
 }
 
 int SqCreature::_getMaxHp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getMaxHp() ) );
+  sq_pushinteger( vm, object->getMaxHp() );
   return 1;
 }
 
 int SqCreature::_getMp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getMp() ) );
+  sq_pushinteger( vm, object->getMp() );
   return 1;
 }
 
 int SqCreature::_getStartingMp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getStartingMp() ) );
+  sq_pushinteger( vm, object->getStartingMp() );
   return 1;
 }
 
 int SqCreature::_getMaxMp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getMaxMp() ) );
+  sq_pushinteger( vm, object->getMaxMp() );
   return 1;
 }
 
 int SqCreature::_getThirst( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getThirst() ) );
+  sq_pushinteger( vm, object->getThirst() );
   return 1;
 }
 
 int SqCreature::_getHunger( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getHunger() ) );
+  sq_pushinteger( vm, object->getHunger() );
   return 1;
 }
 
 int SqCreature::_getSkill( HSQUIRRELVM vm ) {
   GET_INT( index )
   GET_OBJECT( Creature* )
-  sq_pushinteger( vm, _SC( object->getSkill( index ) ) );
+  sq_pushinteger( vm, object->getSkill( index ) );
   return 1;
 }
 
 int SqCreature::_getSkillByName( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 )
   GET_OBJECT( Creature* )
-  sq_pushinteger( vm, _SC( object->getSkill( Constants::getSkillByName( (char*)name ) ) ) );
+
+	Skill *skill = Skill::getSkillByName( (char*)name );
+	if( !skill ) {
+		return sq_throwerror( vm, "Skill by name could not be found." );
+	}
+  sq_pushinteger( vm, object->getSkill( skill->getIndex() ) );
   return 1;
 }
 
 int SqCreature::_getStateMod( HSQUIRRELVM vm ) {
   GET_INT( index )
   GET_OBJECT(Creature*)
-  sq_pushinteger( vm, _SC( object->getStateMod( index ) ) );
+  sq_pushinteger( vm, object->getStateMod( index ) );
   return 1;
 }
 
@@ -197,14 +202,14 @@ int SqCreature::_getProtectedStateMod( HSQUIRRELVM vm ) {
   GET_INT( index )
   GET_OBJECT(Creature*)
     cerr << "FIXME: getProtectedStateMod() need index." << endl;
-  sq_pushinteger( vm, _SC( object->getProtectedStateMod( index ) ) );
+  sq_pushinteger( vm, object->getProtectedStateMod( index ) );
   return 1;
 }
 
 
 int SqCreature::_getArmor( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
-  sq_pushfloat( vm, _SC( object->getACPercent() ) );
+  sq_pushfloat( vm, object->getACPercent() );
   return 1;
 }
 
@@ -303,7 +308,11 @@ int SqCreature::_setSkillByName( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 );
   GET_INT( n );
   GET_OBJECT( Creature* )
-  object->setSkill( Constants::getSkillByName( (char*)name ), n );
+	Skill *skill = Skill::getSkillByName( (char*)name );
+	if( !skill ) {
+		return sq_throwerror( vm, "Skill by name could not be found." );
+	}
+  object->setSkill( skill->getIndex(), n );
   return 0;
 }
 

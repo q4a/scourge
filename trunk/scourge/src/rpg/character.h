@@ -29,6 +29,8 @@
   */
 	
 class RpgItem;
+class Skill;
+class SkillGroup;
   
 class Character  {
 private:

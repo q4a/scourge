@@ -22,6 +22,7 @@
  * A way for external classes to this dir to get everything in one include file.
  */
             
+#include "rpg.h"
 #include "character.h"
 #include "monster.h"
 #include "rpgitem.h"
@@ -29,3 +30,4 @@
 #include "specialskill.h"
 
 #endif
+

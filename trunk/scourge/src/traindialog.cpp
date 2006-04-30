@@ -85,7 +85,7 @@ void TrainDialog::updateUI() {
   int price = base + 
     (int)Util::getRandomSum( (float)(base / 2), creature->getNpcInfo()->level );
   // 25% variance based on leadership skill.
-  float skill = (float)( player->getSkill( Constants::LEADERSHIP ) );
+  float skill = (float)( player->getSkill( Skill::LEADERSHIP ) );
   int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
   cost = price + percentage;
 

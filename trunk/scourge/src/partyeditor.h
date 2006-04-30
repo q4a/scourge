@@ -23,6 +23,7 @@
 #include "constants.h"
 #include "gui/widgetview.h"
 #include "party.h"
+#include "rpg/rpg.h"
                          
 /**
   *@author Gabor Torok
@@ -70,7 +71,7 @@ typedef struct _CharacterInfo {
   SkillsView *skills;
   Button *skillAddButton, *skillRerollButton, *skillSubButton;
   int availableSkillMod;
-  int skill[ Constants::SKILL_COUNT ], skillMod[ Constants::SKILL_COUNT ];
+  int skill[ Skill::SKILL_COUNT ], skillMod[ Skill::SKILL_COUNT ];
   ScrollingLabel *skillDescription;
 
   Button *back, *next;

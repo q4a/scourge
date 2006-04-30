@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "character.h"
+#include "rpg.h"
 #include "rpgitem.h"
 #include "spell.h"
 
@@ -37,7 +38,6 @@ void Character::initCharacters() {
   }
 
   Character *last = NULL;
-	int lastGroup = 0;
   char compoundName[255];
   char name[255];
   char parent[255];
@@ -95,70 +95,25 @@ void Character::initCharacters() {
       n = Constants::readLine( line, fp );
       if( strlen( last->description ) ) strcat( last->description, " " );
       strcat( last->description, strdup( line ) );
-    } else if( n == 'S' ) {
+    } else if( n == 'S' && last ) {
 			fgetc( fp );
 			n = Constants::readLine( line, fp );
-			if( last ) {
-				char *p = strtok( line, "," );
-				strcpy( name, p );
-				last->skills[ Constants::getSkillByName( name ) ] = atoi( strtok( NULL, "," ) );
-			} else {
-				char *p = strtok( line, "," );
-				// skill_name is already set in constants.cpp (it has to be in the same order as the values)
-				//Constants::SKILL_NAMES[ skillCount ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
-				//strcpy( Constants::SKILL_NAMES[ skillCount ], p );
-								
-				int skill = Constants::getSkillByName( p );
-				if( skill < 0 ) {
-					cerr << "*** Error: Can't find skill by name: " << p << endl;
-				}
-
-				p = strtok( NULL, "," );
-				Constants::SKILL_USE[ skill ] = atoi( p );
-
-				p = strtok( NULL, "," );
-				Constants::SKILL_SYMBOL[ skill ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
-				strcpy( Constants::SKILL_SYMBOL[ skill ], p );
-				
-				p = strtok( NULL, "," );
-				Constants::SKILL_DESCRIPTION[ skill ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
-				strcpy( Constants::SKILL_DESCRIPTION[ skill ], p );
-
-				Constants::skillGroups[ lastGroup ]->push_back( skill );
-				Constants::groupSkillMap[ skill ] = lastGroup;
-			}
-    } else if( n == 'G' ) {
+			char *p = strtok( line, "," );
+			last->skills[ Skill::getSkillByName( p )->getIndex() ] = atoi( strtok( NULL, "," ) );
+    } else if( n == 'G' && last ) {
       fgetc(fp);
       n = Constants::readLine(line, fp);
-			if( last ) {
-				char *p = strtok( line, "," );
-				strcpy( name, p );				
-				int value = atoi( strtok( NULL, "," ) );
-				int group = Constants::getSkillGroupByName( name );
-				for( int i = 0; i < Constants::getSkillGroupCount( group ); i++ ) {
-					last->skills[ Constants::getSkillGroupSkill( group, i ) ] = value;
-				}
-			}	else {
-				char *p = strtok( line, "," );
-				lastGroup = Constants::getSkillGroupByName( p );
-				Constants::skillGroups[ lastGroup ] = new vector<int>();
-
-				p = strtok( NULL, "," );
-				Constants::SKILL_GROUP_DESCRIPTION[ lastGroup ] = (char*)malloc( sizeof( char ) * strlen( p ) + 1 );
-				strcpy( Constants::SKILL_GROUP_DESCRIPTION[ lastGroup ], p );
-			}
-		} else if( n == 'T' ) {
-			fgetc(fp);
-      n = Constants::readLine(line, fp);
 			char *p = strtok( line, "," );
-			string name = strdup( p );
-			p = strtok( NULL, "," );
-			string value = strdup( p );
-			RpgItem::tagsDescriptions[ name ] = value;
+			strcpy( name, p );				
+			int value = atoi( strtok( NULL, "," ) );
+			SkillGroup *group = SkillGroup::getGroupByName( name );
+			for( int i = 0; i < group->getSkillCount(); i++ ) {
+				last->skills[ group->getSkill( i )->getIndex() ] = value;
+			}
 		/*
     } else if( n == 'C' && last ) {
 		*/
-    } else if( n == 'W' && last ) {
+		} else if( n == 'W' && last ) {
 			fgetc(fp);
       n = Constants::readLine(line, fp);
 			char *p = strtok( line, "," );
@@ -260,33 +215,31 @@ void Character::describeProfession() {
 	// describe the top few skills
 	// first loop thru to see if skill-groups are supported
 	strcat( s, "Skill bonuses to:|" );
-	map<int,int> groupCount;
+	map<SkillGroup*,int> groupCount;
 	for( map<int, int>::iterator i = skills.begin(); i != skills.end(); ++i ) {
-		int skill = i->first;
+		Skill *skill = Skill::skills[ i->first ];
 		int value = i->second;
-		int group = Constants::getGroupForSkill( skill );
-		if( value >= 5 && group != Constants::BASIC_GROUP ) {
-			if( groupCount.find( group ) != groupCount.end() ) {
-				int n = groupCount[ group ];
-				groupCount[group] = ( n + 1 );
+		if( value >= 5 && !skill->getGroup()->isStat() ) {
+			if( groupCount.find( skill->getGroup() ) != groupCount.end() ) {
+				int n = groupCount[ skill->getGroup() ];
+				groupCount[skill->getGroup()] = ( n + 1 );
 			} else {
-				groupCount[group] = 1;
+				groupCount[skill->getGroup()] = 1;
 			}
 		}
 	}
 	// print group or skill names
 	for( map<int, int>::iterator i = skills.begin(); i != skills.end(); ++i ) {
-		int skill = i->first;
+		Skill *skill = Skill::skills[ i->first ];
 		int value = i->second;
-		int group = Constants::getGroupForSkill( skill );
-		if( value >= 5 && group != Constants::BASIC_GROUP ) {
+		if( value >= 5 && !skill->getGroup()->isStat() ) {
 			// HACK: already seen this group
-			if( groupCount[group] == -1 ) continue;
-			if( groupCount[group] == Constants::getSkillGroupCount( group ) ) {
-				groupCount[group] = -1;
-				sprintf( tmp, "   %s|", Constants::SKILL_GROUP_DESCRIPTION[ group ] );
+			if( groupCount[skill->getGroup()] == -1 ) continue;
+			if( groupCount[skill->getGroup()] == skill->getGroup()->getSkillCount() ) {
+				groupCount[skill->getGroup()] = -1;
+				sprintf( tmp, "   %s|", skill->getGroup()->getDescription() );
 			} else {
-				sprintf( tmp, "   %s|", Constants::SKILL_NAMES[ skill ] );
+				sprintf( tmp, "   %s|", skill->getName() );
 			}
 			strcat( s, tmp );
 		}

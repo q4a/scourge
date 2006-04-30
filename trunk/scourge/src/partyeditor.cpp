@@ -240,7 +240,7 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
           saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].skills->getWidget() ) {
-        info[i].skillDescription->setText( Constants::SKILL_DESCRIPTION[ info[i].skills->getSelectedLine() ] );
+        info[i].skillDescription->setText( Skill::skills[ info[i].skills->getSelectedLine() ]->getDescription() );
       }
     }
   }
@@ -358,7 +358,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
                                  col2X, 30 + detailsHeight + 5, 
                                  skillColWidth, 
 																 320 - ( 30 + detailsHeight + 5 + 10 ) );
-  info->skills->addSkillGroupFilter( Constants::BASIC_GROUP );
+  info->skills->addSkillGroupFilter( SkillGroup::stats );
   cards->addWidget( info->skills->getWidget(), n );
   info->skillAddButton = cards->createButton( col2X, 320, col2X + buttonWidth - 5, 340, " + ", n );
   info->skillRerollButton = cards->createButton( col2X + buttonWidth, 320, col2X + buttonWidth * 2 - 5, 340, " Reroll ", n );
@@ -370,7 +370,7 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
 
   updateUI( info, n - 1 );
   info->skills->setSelectedLine( 0 );
-  info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
+  info->skillDescription->setText( Skill::skills[ 0 ]->getDescription() );
 
   info->back = cards->createButton( w - w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
                                     w - w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
@@ -603,7 +603,7 @@ void PartyEditor::saveUI( Creature **pc ) {
     pc[i]->setPortraitTextureIndex( info[i].portraitIndex );
     
     // compute starting skill levels
-    for(int t = 0; t < Constants::SKILL_COUNT; t++) {
+    for(int t = 0; t < Skill::SKILL_COUNT; t++) {
       pc[i]->setSkill( t, info[i].skill[ t ] + info[i].skillMod[ t ] );
     }
 
@@ -619,19 +619,18 @@ void PartyEditor::saveUI( Creature **pc ) {
 void PartyEditor::rollSkills( CharacterInfo *info ) {
   info->availableSkillMod = AVAILABLE_SKILL_POINTS;
   Character *c = Character::rootCharacters[ info->charType->getSelectedLine() ];
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 
     //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
 		int n;
-		if( Constants::getGroupForSkill( i ) == Constants::BASIC_GROUP ) {
-			int minValue = c->getSkill( i );
-			n = minValue + (int)( 20.0f * rand() / RAND_MAX );
+		if( Skill::skills[i]->getGroup()->isStat() ) {
+			n = c->getSkill( i ) + (int)( 14.0f * rand() / RAND_MAX ) + 1;
 		} else {
 			// give max starting skill
 			int maxSkill = c->getSkill( i );
 			n = ( maxSkill > 0 ? maxSkill : 0 );
 		}
-    info->skill[ i ] = ( n > 100 ? 100 : n );
+    info->skill[ i ] = n;
     info->skillMod[ i ] = 0;
   }  
 }
@@ -639,7 +638,7 @@ void PartyEditor::rollSkills( CharacterInfo *info ) {
 void PartyEditor::updateUI( CharacterInfo *info, int index ) {
   if( tmp[ index ] ) {
     info->skills->setCreature( tmp[ index ], this );
-		info->skillDescription->setText( Constants::SKILL_DESCRIPTION[ info->skills->getSelectedLine() ] );
+		info->skillDescription->setText( Skill::skills[ info->skills->getSelectedLine() ]->getDescription() );
   }
 
   char msg[80];
@@ -662,7 +661,7 @@ Creature *PartyEditor::getHighestSkillPC( int skill ) {
 void PartyEditor::recomputeMaxSkills() {
   maxSkills.clear();
   if( !tmp[0] ) return;
-  for( int skill = 0; skill < Constants::SKILL_COUNT; skill++ ) {
+  for( int skill = 0; skill < Skill::SKILL_COUNT; skill++ ) {
     int maxValue = 0;
     Creature *maxPC = NULL;
     for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
