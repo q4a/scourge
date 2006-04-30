@@ -96,7 +96,10 @@ public:
 	~Skill();
 
 	inline void setPreReqMultiplier( int n ) { preReqStatMultiplier = n; }
+	inline int getPreReqMultiplier() { return preReqStatMultiplier; }
 	inline void addPreReqStat( Skill *stat ) { preReqStats.push_back( stat ); }
+	inline int getPreReqStatCount() { return preReqStats.size(); }
+	inline Skill *getPreReqStat( int index ) { return preReqStats[ index ]; }
 
 	inline char *getName() { return name; }
 	inline char *getDescription() { return description; }

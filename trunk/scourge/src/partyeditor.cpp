@@ -45,7 +45,7 @@ using namespace std;
 
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
-#define AVAILABLE_SKILL_POINTS 30
+#define AVAILABLE_SKILL_POINTS 15
 #define LEVEL STARTING_PARTY_LEVEL
 
 typedef struct _Preset {
@@ -226,11 +226,17 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
         Character *c = Character::rootCharacters[ info->charType->getSelectedLine() ];
         // is it ok?
         int newValue = info[ i ].skill[ n ] + info[ i ].skillMod[ n ] + 1;
-        int maxSkill = c->getSkill( n );
-        if( ( maxSkill >= 0 && newValue <= maxSkill ) || newValue <= 99 ) {
-          info[ i ].availableSkillMod--;
-          info[ i ].skillMod[ n ]++;
-          saveUI( (Creature**)tmp );
+				bool allowed = false;
+				if( Skill::skills[ n ]->getGroup()->isStat() ) {
+					allowed = ( newValue < 20 );
+				} else {
+					int maxSkill = c->getSkill( n );
+					allowed = ( ( maxSkill >= 0 && newValue <= maxSkill ) || newValue <= 99 );
+				}
+				if( allowed ) {
+					info[ i ].availableSkillMod--;
+					info[ i ].skillMod[ n ]++;
+					saveUI( (Creature**)tmp );
         }
       } else if( widget == info[i].skillSubButton && info[i].availableSkillMod < AVAILABLE_SKILL_POINTS ) {
         int n = info[i].skills->getSelectedLine();
@@ -626,9 +632,15 @@ void PartyEditor::rollSkills( CharacterInfo *info ) {
 		if( Skill::skills[i]->getGroup()->isStat() ) {
 			n = c->getSkill( i ) + (int)( 14.0f * rand() / RAND_MAX ) + 1;
 		} else {
-			// give max starting skill
-			int maxSkill = c->getSkill( i );
-			n = ( maxSkill > 0 ? maxSkill : 0 );
+
+			// create the starting value as a function of the stats
+			n = 0;
+			for( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
+				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
+				n += info->skill[ index ] + info->skillMod[ index ];
+			}
+			n = (int)( ( n / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
+								 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
 		}
     info->skill[ i ] = n;
     info->skillMod[ i ] = 0;
