@@ -34,6 +34,7 @@ class Window;
 class ScrollingList;
 class Widget;
 class CreatureGroupInfo;
+class SkillGroup;
 
 class SkillsView {
 private:
@@ -43,7 +44,7 @@ private:
   ScrollingList *skillList;
   char **skillLine;
   Color *skillColor;
-  int filter;
+  std::set<SkillGroup*> filter;
 
 public:
   SkillsView( Scourge *scourge, int x, int y, int w, int h );
@@ -55,8 +56,8 @@ public:
   int getSelectedLine();
   void setSelectedLine( int n );
 
-  inline void clearSkillGroupFilters() { filter = 0; }
-  inline void addSkillGroupFilter( int group ) { filter += ( 1 << group ); }
+  inline void clearSkillGroupFilters() { filter.clear(); }
+  inline void addSkillGroupFilter( SkillGroup *group ) { filter.insert( group ); }
 
   inline Widget *getWidget() { return skillList; }
 

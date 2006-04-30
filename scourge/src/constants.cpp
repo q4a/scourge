@@ -174,6 +174,7 @@ PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB = NULL;
 PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
+/*
 char *Constants::SKILL_GROUP_NAMES[80] = {
 	"BASIC_GROUP",
 	"FIGHT_GROUP",
@@ -238,6 +239,7 @@ char *Constants::SKILL_GROUP_DESCRIPTION[ Constants::SKILL_GROUP_COUNT ];
 map<string,int> Constants::skillNameMap;
 map<int,vector<int>*> Constants::skillGroups;
 map<int,int> Constants::groupSkillMap;
+*/
 
 const char *Constants::POTION_SKILL_NAMES[] = {
   "HP", "MP", "AC" 
@@ -296,70 +298,6 @@ Constants::~Constants(){
 char *Constants::getMessage(int index) {
   int n = (int)((float)messageCount[index] * rand() / RAND_MAX);
   return messages[index][n];
-}
-
-int Constants::getSkillByName(char *p) {
-  if( !p || !strlen(p) ) return -1;
-
-  if( !skillNameMap.size() ) {
-    for(int i = 0; i < SKILL_COUNT; i++) {
-      string s = SKILL_NAMES[i];
-      skillNameMap[ s ] = i;
-    }
-  }
-  string key = p;
-  if( skillNameMap.find( key ) == skillNameMap.end() ) {
-    if( getPotionSkillByName( p ) == -1 ) {
-      cerr << "*** Warning: Can't find skill named: " << p << endl;
-    }
-    return -1;
-  }
-  return skillNameMap[ key ];
-
-  /*
-  if(!p || !strlen(p)) return -1;
-  for(int i = 0; i < SKILL_COUNT; i++) {
-    if(!strcmp(p, SKILL_NAMES[i])) return i;
-  }
-  cerr << "*** Warning: Can't find skill named: " << p << endl;
-  return -1;
-  */
-}
-
-int Constants::getRandomBasicSkill() {
-	if( skillGroups.find( BASIC_GROUP ) == skillGroups.end() ) {
-		cerr << "*** Error: can't find BASIC_GROUP skill group." << endl;
-		exit( 1 );
-	} else {
-		vector<int> *skills = skillGroups[ BASIC_GROUP ];
-		return( (int)( (float)( skills->size() ) * rand() / RAND_MAX ) );
-	}
-}
-
-int Constants::getSkillGroupCount( int group ) {
-	return skillGroups[ group ]->size();
-}
-
-int Constants::getSkillGroupSkill( int group, int index ) {
-	vector<int> *v = skillGroups[ group ];
-	return (*v)[ index ];		
-}
-
-int Constants::getGroupForSkill( int skill ) {
-	if( groupSkillMap.find( skill ) == groupSkillMap.end() ) {
-		cerr << "*** Error: can't find group for skill: " << skill << endl;
-		return 0;
-	} else {
-		return groupSkillMap[ skill ];
-	}
-}
-
-int Constants::getSkillGroupByName( char *name ) {
-	for( int i = 0; i < SKILL_GROUP_COUNT; i++ ) {
-		if( !strcasecmp( name, SKILL_GROUP_NAMES[ i ] ) ) return i;
-	}
-	cerr << "*** Error: can't find skill group: " << name << endl;
-	return 0;
 }
 
 // return -1 on failure, or (-2 - i) on success

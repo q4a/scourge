@@ -19,6 +19,7 @@
 #define PERSIST_H
 
 #include "constants.h"
+#include "rpg/rpg.h"
 
 class File;
 
@@ -52,7 +53,7 @@ typedef struct _ItemInfo {
   Uint8 magic_school_name[255];
   DiceInfo *magicDamage;
   Uint8 stateMod[Constants::STATE_MOD_COUNT];
-  Uint8 skillBonus[Constants::SKILL_COUNT];
+  Uint8 skillBonus[Skill::SKILL_COUNT];
 
 } ItemInfo;
 /*
@@ -73,10 +74,10 @@ typedef struct _CreatureInfo {
   Uint32 hp, mp, exp, level, money, stateMod, protStateMod, x, y, z, dir;
   Uint32 speed, motion, armor, bonusArmor, thirst, hunger;
   Uint32 availableSkillPoints;
-  Uint32 skills[Constants::SKILL_COUNT];
-  Uint32 skillMod[Constants::SKILL_COUNT];
-  Uint32 skillBonus[Constants::SKILL_COUNT];
-	Uint32 skillsUsed[Constants::SKILL_COUNT];
+  Uint32 skills[Skill::SKILL_COUNT];
+  Uint32 skillMod[Skill::SKILL_COUNT];
+  Uint32 skillBonus[Skill::SKILL_COUNT];
+	Uint32 skillsUsed[Skill::SKILL_COUNT];
   Uint32 portraitTextureIndex;
 
   // inventory

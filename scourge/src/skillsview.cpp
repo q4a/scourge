@@ -20,6 +20,7 @@
 #include "shapepalette.h"
 #include "creature.h"
 #include "party.h"
+#include "rpg/rpg.h"
 
 /**
   *@author Gabor Torok
@@ -28,11 +29,10 @@
 SkillsView::SkillsView( Scourge *scourge, int x, int y, int w, int h ) {
   this->scourge = scourge;
   this->creature = NULL;
-  this->filter = 0;
 
-  this->skillLine = (char**)malloc(Constants::SKILL_COUNT * sizeof(char*));
-  this->skillColor = (Color*)malloc( Constants::SKILL_COUNT * sizeof( Color ) );
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  this->skillLine = (char**)malloc(Skill::SKILL_COUNT * sizeof(char*));
+  this->skillColor = (Color*)malloc( Skill::SKILL_COUNT * sizeof( Color ) );
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     this->skillLine[i] = (char*)malloc(120 * sizeof(char));
   }
   skillList = new ScrollingList( x, y, w, h, 
@@ -40,7 +40,7 @@ SkillsView::SkillsView( Scourge *scourge, int x, int y, int w, int h ) {
 }
 
 SkillsView::~SkillsView() {
-  for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+  for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
     free( skillLine[i] );
   }
   free( skillLine );
@@ -51,14 +51,15 @@ SkillsView::~SkillsView() {
 void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) { 
   this->creature = creature;
   int lineCounter = 0;
-  for( int t = 0; t < Constants::SKILL_COUNT; t++ ) {
+  for( int t = 0; t < Skill::SKILL_COUNT; t++ ) {
 			if( creature->getSkill( t ) == 0 ) continue;
 
       // check the filter
-      int group = Constants::getGroupForSkill( t );
-      if( filter > 0 && !( filter & ( 1 << group ) ) ) continue;
+      SkillGroup *group = Skill::skills[t]->getGroup();
+      if( !filter.empty() && 
+					filter.find( group ) == filter.end() ) continue;
 
-			if( Constants::getGroupForSkill( t ) == Constants::BASIC_GROUP ) {
+			if( Skill::skills[ t ]->getGroup()->isStat() ) {
 				skillColor[ lineCounter ].r = 0.7f;
 				skillColor[ lineCounter ].g = 1;
 				skillColor[ lineCounter ].b = 0.7f;
@@ -75,7 +76,7 @@ void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) {
 
       sprintf( skillLine[ lineCounter ], "%d - %s", 
                creature->getSkill( t ), 
-               Constants::SKILL_NAMES[ t ] );
+               Skill::skills[ t ]->getName() );
       if( maxFound ) {
         skillColor[ lineCounter ].r = 0;
         skillColor[ lineCounter ].g = 0.75f;

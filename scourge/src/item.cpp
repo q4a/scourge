@@ -84,7 +84,7 @@ ItemInfo *Item::save() {
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     info->stateMod[i] = this->stateMod[i];
   }
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     info->skillBonus[i] = this->getSkillBonus(i);
   }
 
@@ -170,7 +170,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     item->stateMod[i] = info->stateMod[i];
   }
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     if(info->skillBonus[i]) item->skillBonus[i] = info->skillBonus[i];
   }
 
@@ -396,14 +396,14 @@ void Item::initItems(ShapePalette *shapePal) {
       //cerr << "item: looking for shape: " << shape << endl;
       int shape_index = shapePal->findShapeIndexByName(shape);
       //cerr << "\tindex=" << shape_index << endl;
-      int skill_index = Constants::getSkillByName(skill);
+      int skill_index = Skill::getSkillIndexByName(skill);
       if(skill_index < 0) {
         if(strlen(skill)) cerr << "*** WARNING: cannot find skill: " << skill << endl;
         skill_index = 0;
       }
       int potion_skill = -1;
       if(potionSkill != NULL && strlen(potionSkill)) {
-        potion_skill = Constants::getSkillByName(potionSkill);
+        potion_skill = Skill::getSkillIndexByName(potionSkill);
         if(potion_skill < 0) {
           // try special potion 'skills' like HP, AC boosts
           potion_skill = Constants::getPotionSkillByName(potionSkill);
@@ -604,7 +604,7 @@ void Item::enchant( int newMagicLevel ) {
     }
     n = (int)(3.0f * rand()/RAND_MAX) + 2;
     for(int i = 0; i < n; i++) {
-      int skill = Constants::getRandomBasicSkill();
+      int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
         skillBonus[skill] = (int)(5.0f * rand()/RAND_MAX) + 1;
       }
@@ -623,7 +623,7 @@ void Item::enchant( int newMagicLevel ) {
     }
     n = (int)(3.0f * rand()/RAND_MAX) + 2;
     for(int i = 0; i < n; i++) {
-      int skill = Constants::getRandomBasicSkill();
+      int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
         skillBonus[skill] = (int)(8.0f * rand()/RAND_MAX) + 1;
       }
@@ -647,7 +647,7 @@ void Item::enchant( int newMagicLevel ) {
     }
     n = (int)(3.0f * rand()/RAND_MAX) + 1;
     for(int i = 0; i < n; i++) {
-      int skill = Constants::getRandomBasicSkill();
+      int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
         skillBonus[skill] = (int)(10.0f * rand()/RAND_MAX) + 1;
       }
@@ -676,7 +676,7 @@ void Item::enchant( int newMagicLevel ) {
     }
     n = (int)(3.0f * rand()/RAND_MAX) + 2;
     for(int i = 0; i < n; i++) {
-      int skill = Constants::getRandomBasicSkill();
+      int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
         skillBonus[skill] = (int)(12.0f * rand()/RAND_MAX) + 1;
       }
@@ -758,7 +758,7 @@ void Item::describeMagic(char *s, char *itemName) {
     // use the first skill as the noun
     map<int,int>::iterator i = skillBonus.begin();
     int skill = i->first;
-    sprintf( tmp, "%s", Constants::SKILL_SYMBOL[ skill ] );
+    sprintf( tmp, "%s", Skill::skills[ skill ]->getSymbol() );
     strcat( s, tmp );
   }  
 }
@@ -790,7 +790,7 @@ void Item::debugMagic(char *s) {
   for(map<int, int>::iterator i=skillBonus.begin(); i!=skillBonus.end(); ++i) {
     int skill = i->first;
     int bonus = i->second;
-    cerr << "\t\t" << Constants::SKILL_NAMES[skill] << " +" << bonus << endl;
+    cerr << "\t\t" << Skill::skills[skill]->getName() << " +" << bonus << endl;
   }
   cerr << "-----------" << endl;
 }

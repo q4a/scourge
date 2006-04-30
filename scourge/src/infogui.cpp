@@ -293,7 +293,7 @@ void InfoGui::describe() {
       for(map<int, int>::iterator i=skillBonusMap->begin(); i!=skillBonusMap->end(); ++i) {
         int skill = i->first;
         int bonus = i->second;
-        sprintf(tmp, " %s+%d", Constants::SKILL_NAMES[skill], bonus);
+        sprintf(tmp, " %s+%d", Skill::skills[skill]->getName(), bonus);
         found = true;
       }
       if(found) {

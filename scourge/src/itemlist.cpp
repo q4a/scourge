@@ -132,9 +132,9 @@ bool ItemList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
   if( isInside( x, y ) && getSelectedLineCount() && event->button.button == SDL_BUTTON_RIGHT ) {
     scourge->getInfoGui()->
     setItem( getSelectedItem( 0 ), 
-             scourge->getParty()->getPlayer()->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
+             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
 		// exercise the skill
-		scourge->getParty()->getPlayer()->incSkillUsed( Constants::IDENTIFY_ITEM_SKILL );
+		scourge->getParty()->getPlayer()->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   }

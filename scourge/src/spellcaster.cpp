@@ -45,11 +45,11 @@ SpellCaster::SpellCaster(Battle *battle, Spell *spell, bool projectileHit) {
   power = (float)creature->getSkill(spell->getSchool()->getSkill()) / 4.0f;
 	creature->incSkillUsed( spell->getSchool()->getSkill() );
   // power=[0-45]
-  power += (float)creature->getSkill(Constants::IQ) / 5.0f;
+  power += (float)creature->getSkill(Skill::IQ) / 5.0f;
   // power=[0-450]
   power *= creature->getLevel();
   // power=[0-500]
-  power += ((float)creature->getSkill(Constants::LUCK) / 2.0f);
+  power += ((float)creature->getSkill(Skill::LUCK) / 2.0f);
 }
 
 SpellCaster::~SpellCaster() {
@@ -202,7 +202,7 @@ void SpellCaster::viewInfo() {
   if(item) {
     if(!battle->getSession()->getGameAdapter()->isHeadless()) 
       battle->getSession()->getGameAdapter()->showItemInfoUI( item, 
-                                                              creature->getSkill(Constants::IDENTIFY_ITEM_SKILL) +
+                                                              creature->getSkill(Skill::IDENTIFY_ITEM_SKILL) +
                                                               creature->getSkill(spell->getSchool()->getSkill()) );
   } else {
     cerr << "*** Warning: implement ole' taffy for non-item targets!" << endl;

@@ -7,6 +7,8 @@ noinst_LIBRARIES = libScourgeRpg.a
 libScourgeRpg_a_SOURCES = \
 	character.cpp\
 	character.h\
+	rpg.cpp\
+	rpg.h\
 	rpgitem.cpp\
 	rpgitem.h\
 	monster.cpp\

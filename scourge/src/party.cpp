@@ -404,7 +404,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
 
   // compute starting skill levels
   for(int i = 0; i < pcCount; i++) {
-    for(int skill = 0; skill < Constants::SKILL_COUNT; skill++) {
+    for(int skill = 0; skill < Skill::SKILL_COUNT; skill++) {
       int n = level * (int)(10.0 * rand()/RAND_MAX);
       if(n > 99) n = 99;
       int maxSkill = pc[i]->getCharacter()->getSkill( skill );
@@ -613,7 +613,7 @@ void Party::regainMp() {
 
 void Party::recomputeMaxSkills() {
   maxSkills.clear();
-  for( int skill = 0; skill < Constants::SKILL_COUNT; skill++ ) {
+  for( int skill = 0; skill < Skill::SKILL_COUNT; skill++ ) {
     int maxValue = 0;
     Creature *maxPC = NULL;
     for( int i = 0; i < getPartySize(); i++ ) {

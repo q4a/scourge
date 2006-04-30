@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "spell.h"
+#include "rpg.h"
 
 using namespace std;
 
@@ -189,8 +190,8 @@ void MagicSchool::initMagic() {
 
 	  strcpy(name, strtok(line, ","));
 	  strcpy(notes, strtok(NULL, ","));
-	  int skill = Constants::getSkillByName(strtok(NULL, ","));
-	  int resistSkill = Constants::getSkillByName(strtok(NULL, ","));
+	  int skill = Skill::getSkillIndexByName(strtok(NULL, ","));
+	  int resistSkill = Skill::getSkillIndexByName(strtok(NULL, ","));
     float red = (float)strtod( strtok(NULL, ","), NULL );
     float green = (float)strtod( strtok(NULL, ","), NULL );
     float blue = (float)strtod( strtok(NULL, ","), NULL );

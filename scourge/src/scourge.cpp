@@ -751,8 +751,8 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
         if( item ) {
           //item->getDetailedDescription(s, false);
           //description = s;
-          infoGui->setItem( item, getParty()->getPlayer()->getSkill(Constants::IDENTIFY_ITEM_SKILL) );
-					getParty()->getPlayer()->incSkillUsed( Constants::IDENTIFY_ITEM_SKILL );
+          infoGui->setItem( item, getParty()->getPlayer()->getSkill(Skill::IDENTIFY_ITEM_SKILL) );
+					getParty()->getPlayer()->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
           if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
         } else {
           Shape *shape = loc->shape;

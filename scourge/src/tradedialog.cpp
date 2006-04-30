@@ -114,15 +114,15 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   } else if( widget == infoButtonA &&listA->getSelectedLineCount() ) {
     scourge->getInfoGui()->
     setItem( listA->getSelectedItem( 0 ), 
-             scourge->getParty()->getPlayer()->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
-		scourge->getParty()->getPlayer()->incSkillUsed(Constants::IDENTIFY_ITEM_SKILL );
+             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
+		scourge->getParty()->getPlayer()->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == infoButtonB && listB->getSelectedLineCount() ) {
     scourge->getInfoGui()->
     setItem( listB->getSelectedItem( 0 ), 
-             scourge->getParty()->getPlayer()->getSkill( Constants::IDENTIFY_ITEM_SKILL ) );
-		scourge->getParty()->getPlayer()->incSkillUsed(Constants::IDENTIFY_ITEM_SKILL );
+             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
+		scourge->getParty()->getPlayer()->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == listA || widget == listB ) {
@@ -155,7 +155,7 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 void TradeDialog::render( const Widget *widget, const Item *item, int bufferSize, const char *buffer ) {
   char s[ 120 ];
   ((Item*)item)->getDetailedDescription( s );
-  float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::LEADERSHIP ) );
+  float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
   // level-based mark-up is already included and price is randomized
   int price = ((Item*)item)->getPrice();
   // 25% variance based on leadership skill.
@@ -261,14 +261,14 @@ void TradeDialog::steal() {
     return;
   }
   
-  float steal = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::STEALING ) );
-	scourge->getParty()->getPlayer()->incSkillUsed( Constants::STEALING );
-  float luck = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::LUCK ) );
+  float steal = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::STEALING ) );
+	scourge->getParty()->getPlayer()->incSkillUsed( Skill::STEALING );
+  float luck = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LUCK ) );
 
-  float stealB = (float)( creature->getSkill( Constants::STEALING ) );
-	creature->incSkillUsed( Constants::STEALING );
-  float coordinationB = (float)( creature->getSkill( Constants::COORDINATION ) );
-  float luckB = (float)( creature->getSkill( Constants::LUCK ) );
+  float stealB = (float)( creature->getSkill( Skill::STEALING ) );
+	creature->incSkillUsed( Skill::STEALING );
+  float coordinationB = (float)( creature->getSkill( Skill::COORDINATION ) );
+  float luckB = (float)( creature->getSkill( Skill::LUCK ) );
 
   int price = 0;
   int exp = 0;

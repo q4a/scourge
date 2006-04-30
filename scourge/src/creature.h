@@ -98,8 +98,8 @@ class Creature : public RenderedCreature {
   char *name;
   int level, exp, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
-  int skills[Constants::SKILL_COUNT], skillBonus[Constants::SKILL_COUNT];
-	int skillsUsed[Constants::SKILL_COUNT];
+  int skills[Skill::SKILL_COUNT], skillBonus[Skill::SKILL_COUNT];
+	int skillsUsed[Skill::SKILL_COUNT];
   GLuint stateMod, protStateMod;
   Monster *monster;
 
@@ -443,7 +443,6 @@ class Creature : public RenderedCreature {
                           float *skillP=NULL,
                           float *itemLevelP=NULL,
 													bool callScript=false );
-  static int rollStartingSkill( Session *session, int level, int skill, bool isMonster=false );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );

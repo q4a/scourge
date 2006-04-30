@@ -94,7 +94,7 @@ void HealDialog::updateUI() {
         // HQ is discounted (FIXME: shouldn't be hardcoded)
         if( scourge->isInHQ() ) price = (int)( (float)price / 15.0f );
         // 25% variance based on leadership skill.
-        float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Constants::LEADERSHIP ) );
+        float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
         int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
         prices[ spell ] = price + percentage;
 

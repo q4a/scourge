@@ -188,10 +188,10 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
   file->write( &(info->thirst) );
   file->write( &(info->hunger) );
   file->write( &(info->availableSkillPoints) );
-  file->write( info->skills, Constants::SKILL_COUNT );
-  file->write( info->skillMod, Constants::SKILL_COUNT );
-  file->write( info->skillBonus, Constants::SKILL_COUNT );
-	file->write( info->skillsUsed, Constants::SKILL_COUNT );
+  file->write( info->skills, Skill::SKILL_COUNT );
+  file->write( info->skillMod, Skill::SKILL_COUNT );
+  file->write( info->skillBonus, Skill::SKILL_COUNT );
+	file->write( info->skillsUsed, Skill::SKILL_COUNT );
   file->write( &info->portraitTextureIndex );
   file->write( &(info->inventory_count) );
   for(int i = 0; i < (int)info->inventory_count; i++) {
@@ -236,30 +236,30 @@ CreatureInfo *Persist::loadCreature( File *file ) {
 	if( info->version == 8 ||
       info->version == 7 ) {
     // no POLE_WEAPON skill in v8.
-    file->read( info->skills, Constants::SKILL_COUNT - 1 );
-    file->read( info->skillMod, Constants::SKILL_COUNT - 1 );
-    file->read( info->skillBonus, Constants::SKILL_COUNT - 1 );
-    for( int i = Constants::SKILL_COUNT - 1; i > Constants::POLE_WEAPON; i-- ) {
+    file->read( info->skills, Skill::SKILL_COUNT - 1 );
+    file->read( info->skillMod, Skill::SKILL_COUNT - 1 );
+    file->read( info->skillBonus, Skill::SKILL_COUNT - 1 );
+    for( int i = Skill::SKILL_COUNT - 1; i > Skill::POLE_WEAPON; i-- ) {
       info->skills[ i ] = info->skills[ i - 1];
       info->skillMod[ i ] = info->skillMod[ i - 1];
       info->skillBonus[ i ] = info->skillBonus[ i - 1];			
     }
-    info->skills[ Constants::POLE_WEAPON ] = MAX_SKILL / 2;
-    info->skillMod[ Constants::POLE_WEAPON ] = 0;
-    info->skillBonus[ Constants::POLE_WEAPON ] = 0;
-		for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+    info->skills[ Skill::POLE_WEAPON ] = MAX_SKILL / 2;
+    info->skillMod[ Skill::POLE_WEAPON ] = 0;
+    info->skillBonus[ Skill::POLE_WEAPON ] = 0;
+		for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 			info->skillsUsed[ i ] = 0;		
 		}
   } else {
-    file->read( info->skills, Constants::SKILL_COUNT );
-    file->read( info->skillMod, Constants::SKILL_COUNT );
-    file->read( info->skillBonus, Constants::SKILL_COUNT );
+    file->read( info->skills, Skill::SKILL_COUNT );
+    file->read( info->skillMod, Skill::SKILL_COUNT );
+    file->read( info->skillBonus, Skill::SKILL_COUNT );
 		if( info->version < 12 ) {
-			for( int i = 0; i < Constants::SKILL_COUNT; i++ ) {
+			for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 				info->skillsUsed[ i ] = 0;		
 			}
 		} else {
-			file->read( info->skillsUsed, Constants::SKILL_COUNT );
+			file->read( info->skillsUsed, Skill::SKILL_COUNT );
 		}
   }
   file->read( &info->portraitTextureIndex );
@@ -314,7 +314,7 @@ void Persist::saveItem( File *file, ItemInfo *info ) {
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
     file->write( &(info->stateMod[i]) );
   }
-  for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     file->write( &(info->skillBonus[i]) );
   }
 }
@@ -359,17 +359,17 @@ ItemInfo *Persist::loadItem( File *file ) {
   if( info->version == 8 ||
       info->version == 7 ) {
     // no POLE_WEAPON in v8.
-    for(int i = 0; i < Constants::SKILL_COUNT - 1; i++) {
+    for(int i = 0; i < Skill::SKILL_COUNT - 1; i++) {
       file->read( &(info->skillBonus[i]) );
     }
-    for( int i = Constants::SKILL_COUNT - 1; 
-         i > Constants::POLE_WEAPON + 1; 
+    for( int i = Skill::SKILL_COUNT - 1; 
+         i > Skill::POLE_WEAPON + 1; 
          i-- ) {
       info->skillBonus[i] = info->skillBonus[i - 1];
     }
-    info->skillBonus[ Constants::POLE_WEAPON ] = 0;
+    info->skillBonus[ Skill::POLE_WEAPON ] = 0;
   } else {
-    for(int i = 0; i < Constants::SKILL_COUNT; i++) {
+    for(int i = 0; i < Skill::SKILL_COUNT; i++) {
       file->read( &(info->skillBonus[i]) );
     }
   }
