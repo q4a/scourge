@@ -129,6 +129,8 @@ public:
 
   void enchant(int level);
 
+	char *getType();
+
 
   // level-based attributes
   inline int getLevel() { return level; }

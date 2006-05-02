@@ -155,7 +155,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
      Item *containedItem = Item::load( session, info->containedItems[i] );
      if( containedItem ) item->containedItems[ realCount++ ] = containedItem;
   }
-  info->containedItemCount = realCount;
+  item->containedItemCount = realCount;
     
   item->bonus = info->bonus;
   item->damageMultiplier = info->damageMultiplier;
@@ -831,3 +831,6 @@ const char *Item::isStorable() {
   return NULL;
 }
 
+char *Item::getType() {
+	return getRpgItem()->getName();
+}

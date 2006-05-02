@@ -96,8 +96,8 @@ typedef struct _LocationInfo {
   Uint16 x, y, z;
   Uint8 floor_shape_name[255];
   Uint8 shape_name[255];
-  ItemInfo *item;
-  CreatureInfo *creature;
+  Uint8 item_name[255];
+  Uint8 monster_name[255];
   // door info
   Uint8 locked;
   Uint16 key_x, key_y, key_z;

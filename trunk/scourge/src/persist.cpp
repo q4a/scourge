@@ -27,8 +27,8 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   info->y = y;
   info->z = z;
   
-  info->item = NULL;
-  info->creature = NULL;
+  info->item_name[0] = 0;
+  info->monster_name[0] = 0;
   info->shape_name[0] = 0;
   info->floor_shape_name[0] = 0;
 
@@ -63,13 +63,19 @@ void Persist::saveMap( File *file, MapInfo *info ) {
       file->write( info->pos[i]->shape_name );
     }
     
-    Uint8 hasItem = ( info->pos[i]->item ? 1 : 0 );
+    Uint8 hasItem = ( strlen( (char*)( info->pos[i]->item_name ) ) ? 1 : 0 );
     file->write( &(hasItem) );
-    if( hasItem ) saveItem( file, info->pos[i]->item );
+    if( hasItem ) {
+			//saveItem( file, info->pos[i]->item );
+			file->write( info->pos[i]->item_name, 255 );
+		}
 
-    Uint8 hasCreature = ( info->pos[i]->creature ? 1 : 0 );
+    Uint8 hasCreature = ( strlen( (char*)( info->pos[i]->monster_name ) ) ? 1 : 0 );
     file->write( &(hasCreature) );
-    if( hasCreature ) saveCreature( file, info->pos[i]->creature );
+    if( hasCreature ) {
+			//saveCreature( file, info->pos[i]->creature );
+			file->write( info->pos[i]->monster_name, 255 );
+		}
 
     file->write( &(info->pos[i]->locked) );
     file->write( &(info->pos[i]->key_x) );
@@ -120,13 +126,30 @@ MapInfo *Persist::loadMap( File *file ) {
     
     Uint8 hasItem;
     file->read( &(hasItem) );
-    if( hasItem ) info->pos[i]->item = loadItem( file );
-    else info->pos[i]->item = NULL;
+    if( hasItem ) {
+			/*
+			uncomment this to read older maps.. (if you're lucky..)
+			ItemInfo *ii = loadItem( file );
+			strcpy( (char*)( info->pos[i]->item_name ), (char*)( ii->rpgItem_name ) );
+			delete ii;
+			cerr << "FIXME: persist.cpp" << endl;
+			*/
+			file->read( info->pos[i]->item_name, 255 );
+		} else strcpy( (char*)( info->pos[i]->item_name ), "" );
 
     Uint8 hasCreature;
     file->read( &(hasCreature) );
-    if( hasCreature ) info->pos[i]->creature = loadCreature( file );
-    else info->pos[i]->creature = NULL;
+    if( hasCreature ) {
+			/*
+			uncomment this to read older maps.. (if you're lucky..)
+			CreatureInfo *ci = loadCreature( file );
+			strcpy( (char*)( info->pos[i]->monster_name ), (char*)( ci->monster_name ) );
+			delete ci;
+			// FIXME: this should just load the string
+			cerr << "FIXME: persist.cpp" << endl;
+			*/
+			file->read( info->pos[i]->monster_name, 255 );
+		} else strcpy( (char*)( info->pos[i]->monster_name ), "" );
 
     file->read( &(info->pos[i]->locked) );
     file->read( &(info->pos[i]->key_x) );
@@ -138,8 +161,6 @@ MapInfo *Persist::loadMap( File *file ) {
 
 void Persist::deleteMapInfo( MapInfo *info ) {
   for( int i = 0; i < (int)info->pos_count; i++ ) {
-    if( info->pos[i]->item ) free( info->pos[i]->item );
-    if( info->pos[i]->creature ) free( info->pos[i]->creature );
     free( info->pos[i] );
   }
   free( info );
