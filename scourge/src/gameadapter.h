@@ -129,8 +129,10 @@ public:
   virtual bool isLevelShaded() { return false; }
 
   // project-specific castings
-  virtual RenderedItem *load( ItemInfo *info );
-  virtual RenderedCreature *load( CreatureInfo *info );
+  virtual RenderedItem *createItem( char *item_name, int level, int depth );
+	virtual void fillContainer( Item *container, int level, int depth );
+	virtual Item *createRandomItem( int level, int depth );
+  virtual RenderedCreature *createMonster( char *monster_name );
   virtual RenderedCreature *getPlayer();
   virtual RenderedCreature *getParty( int index );
 
@@ -143,8 +145,10 @@ public:
 
   virtual bool intersects( int x, int y, int w, int h,
                            int x2, int y2, int w2, int h2 ) {
-    return false;
+    return false;							 
   }
+
+	
 };
 
 class SDLOpenGLAdapter : public GameAdapter {

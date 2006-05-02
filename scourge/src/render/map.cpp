@@ -2858,9 +2858,14 @@ void Map::saveMap( char *name, char *result ) {
           info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
 
           if( pos[x][y][z]->item ) {
-            info->pos[ info->pos_count ]->item = pos[x][y][z]->item->save();
+						strncpy( (char*)( info->pos[ info->pos_count ]->item_name ), 
+										 pos[x][y][z]->item->getType(), 
+										 254 );
           } else if( pos[x][y][z]->creature ) {
-            info->pos[ info->pos_count ]->creature = pos[x][y][z]->creature->save();
+            strncpy( (char*)( info->pos[ info->pos_count ]->monster_name ), 
+										 pos[x][y][z]->creature->getType(), 
+										 254 );
+						info->pos[ info->pos_count ]->monster_name[254] = 0;
           } else {
             strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), 
                      pos[x][y][z]->shape->getName(),
@@ -2965,14 +2970,15 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
         " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
     }
 
-    if( info->pos[i]->item ) {
-      RenderedItem *item = adapter->load( info->pos[i]->item );
+    if( strlen( (char*)( info->pos[i]->item_name ) ) ) {
+			cerr << "*** FIXME: map level needed to create items." << endl;
+      RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_name ), 1, depth );
       if( item ) {
         setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
         if( items ) items->push_back(  item );
       } else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
-    } else if( info->pos[i]->creature ) {
-      RenderedCreature *creature = adapter->load( info->pos[i]->creature );
+    } else if( strlen( (char*)( info->pos[i]->monster_name ) ) ) {
+      RenderedCreature *creature = adapter->createMonster( (char*)( info->pos[i]->monster_name ) );
       if( creature ) {
         setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
         creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );

@@ -451,6 +451,7 @@ class Creature : public RenderedCreature {
   bool rollSkill( int skill, float luckDiv=0.0f );
   bool rollSecretDoor( Location *pos );
   void resetSecretDoorAttempts();
+	char *getType();
 
  protected:
 

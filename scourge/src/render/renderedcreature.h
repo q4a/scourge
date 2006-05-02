@@ -74,6 +74,7 @@ public:
   virtual GLShape *getShape() = 0;
   virtual char *getName() = 0;
   virtual bool isMonster() = 0;
+	virtual char *getType() = 0;
   virtual CreatureInfo *save() = 0;
   virtual bool canAttack( RenderedCreature *creature, int *cursor=NULL ) = 0;
   virtual bool setSelXY( int x, int y, bool force=false, bool limitTime=false ) = 0;

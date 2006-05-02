@@ -42,6 +42,7 @@ public:
   virtual bool isBlocking() = 0;
   virtual char *getItemName() = 0;
   virtual ItemInfo *save() = 0;
+	virtual char *getType() = 0;
   virtual int getDistance() = 0;
 };
 

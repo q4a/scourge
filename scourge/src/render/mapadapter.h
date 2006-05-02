@@ -41,8 +41,8 @@ public:
   virtual bool hasParty() = 0;
   virtual int getPartySize() = 0;
   virtual RenderedCreature *getParty( int index ) = 0;
-  virtual RenderedItem *load( ItemInfo *info ) = 0;
-  virtual RenderedCreature *load( CreatureInfo *info ) = 0;
+  virtual RenderedItem *createItem( char *item_name, int level, int depth ) = 0;
+  virtual RenderedCreature *createMonster( char *monster_name ) = 0;
   virtual void loadMapData( const char *name ) = 0;
   virtual void saveMapData( const char *name ) = 0;
 

@@ -22,6 +22,8 @@
 #include "creature.h"
 #include "sound.h"
 #include "render/renderlib.h"
+#include "shapepalette.h"
+#include "rpg/rpglib.h"
 
 using namespace std;
 
@@ -56,12 +58,89 @@ void GameAdapter::saveMapData( const char *name ) {
   Mission::saveMapData( this, name );
 }
 
-RenderedItem *GameAdapter::load( ItemInfo *info ) {
-  return Item::load( session, info );
+RenderedItem *GameAdapter::createItem( char *item_name, int level, int depth ) {
+  RpgItem *rpgItem = RpgItem::getItemByName( item_name );
+	if( !rpgItem ) {
+		cerr << "*** Error: can't find rpg item: " << item_name << endl;
+		return NULL;
+	}
+	if( strcmp( item_name, "SCROLL" ) ) {
+		// FIXME: special case... do we need it? Test it.
+	}
+	Item *item = session->newItem( rpgItem, level );
+
+	if( rpgItem->isContainer() ) {
+		fillContainer( item, level, depth );
+	}
+
+	return item;
 }
 
-RenderedCreature *GameAdapter::load( CreatureInfo *info ) {
-  return Creature::load( session, info );
+void GameAdapter::fillContainer( Item *container, int level, int depth ) {
+	// some items
+	int n = (int)(3.0f * rand() / RAND_MAX);
+	for(int i = 0; i < n; i++) {
+		Item *containedItem = createRandomItem( level, depth );
+		if( containedItem ) {
+			container->addContainedItem(containedItem, true);
+		}
+	}
+	// some spells
+	if(!((int)(25.0f * rand() / RAND_MAX))) {
+		int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+		for(int i = 0; i < n; i++) {
+			Spell *spell = MagicSchool::getRandomSpell(level);
+			if(spell) {
+				Item *scroll = session->newItem(RpgItem::getItemByName("Scroll"), level, spell);
+				container->addContainedItem(scroll, true);
+			}
+		}
+	}
+}
+
+Item *GameAdapter::createRandomItem( int level, int depth ) {
+  // special items
+  for( int i = 0; i < RpgItem::getSpecialCount(); i++ ) {
+    RpgItem *rpgItem = RpgItem::getSpecial( i );
+    if( rpgItem->getMinLevel() <= level &&
+        rpgItem->getMinDepth() <= depth &&
+        !( session->getSpecialItem( rpgItem ) ) &&
+        0 == (int)( (float)rpgItem->getRareness() * rand() / RAND_MAX ) ) {
+      // set loading to true so the level is exact and the item is not enchanted
+      Item *item = session->newItem( rpgItem, level, NULL );
+      return item;
+    }
+  }
+
+  // general items
+  RpgItem *rpgItem = RpgItem::getRandomItem( depth );
+  if(!rpgItem) {
+    cerr << "Warning: no items found." << endl;
+    return NULL;
+  }
+  // Make a random level object
+  return session->newItem(rpgItem, level);
+}
+
+RenderedCreature *GameAdapter::createMonster( char *monster_name ) {
+	Creature *creature = NULL;
+  Monster *monster = Monster::getMonsterByName( monster_name );
+  if( !monster ) {
+    cerr << "*** Error: can't find monster: " << monster_name << endl;
+		return NULL;
+	}
+	GLShape *shape = session->getShapePalette()->
+		getCreatureShape( monster->getModelName(), 
+											monster->getSkinName(), 
+											monster->getScale(),
+											monster );
+	creature = session->newCreature( monster, shape, true );
+
+  //creature->calculateExpOfNextLevel();
+
+  //creature->evalSpecialSkills();
+
+  return creature;
 }
 
 RenderedCreature *GameAdapter::getPlayer() {

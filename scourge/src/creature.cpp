@@ -398,6 +398,10 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   return creature;
 }
 
+char *Creature::getType() {
+	return( monster ? monster->getType() : character->getName() );
+}
+
 void Creature::calculateExpOfNextLevel() {
   if(isMonster()) return;
   expOfNextLevel = 0;
