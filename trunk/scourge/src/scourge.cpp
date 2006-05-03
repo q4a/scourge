@@ -395,7 +395,7 @@ void Scourge::startMission() {
       scriptName = RANDOM_MAP_NAME;
 #else
       dg = NULL;
-      levelMap->loadMap( HQ_MAP_NAME, result, this, currentStory, changingStory );
+      levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory );
       scriptName = HQ_MAP_NAME;
 #endif
 
@@ -419,6 +419,7 @@ void Scourge::startMission() {
           loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(),
                                       result,
                                       this,
+																			getSession()->getCurrentMission()->getLevel(),
                                       currentStory,
                                       changingStory,
                                       fromRandomMap,
@@ -456,6 +457,7 @@ void Scourge::startMission() {
           loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(),
                                       result,
                                       this,
+																			getSession()->getCurrentMission()->getLevel(),
                                       currentStory,
                                       changingStory,
                                       fromRandomMap );
@@ -752,7 +754,6 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
           //item->getDetailedDescription(s, false);
           //description = s;
           infoGui->setItem( item, getParty()->getPlayer()->getSkill(Skill::IDENTIFY_ITEM_SKILL) );
-					getParty()->getPlayer()->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
           if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
         } else {
           Shape *shape = loc->shape;

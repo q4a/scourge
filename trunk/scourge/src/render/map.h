@@ -282,7 +282,8 @@ class Map {
   inline Color *getDesriptionColors() { return descriptionsColor; }
 
   void saveMap( char *name, char *result );
-  bool loadMap( char *name, char *result, StatusReport *report=NULL, int depth=0, 
+  bool loadMap( char *name, char *result, StatusReport *report=NULL, 
+								int level=1, int depth=0, 
                 bool changingStory=false, bool fromRandom=false, 
                 std::vector< RenderedItem* > *items=NULL, 
                 std::vector< RenderedCreature* > *creatures=NULL );

@@ -133,8 +133,6 @@ bool ItemList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
     scourge->getInfoGui()->
     setItem( getSelectedItem( 0 ), 
              scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
-		// exercise the skill
-		scourge->getParty()->getPlayer()->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   }

@@ -395,8 +395,6 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     if(itemIndex > -1) {
       Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
       scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
-			// exercise the skill
-			scourge->getParty()->getParty(selected)->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
       if(!scourge->getInfoGui()->getWindow()->isVisible()) 
         scourge->getInfoGui()->getWindow()->setVisible( true );
     }
@@ -418,8 +416,6 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory( invLocation );
       if( item ) {
         scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
-				// exercise the skill
-				scourge->getParty()->getParty(selected)->incSkillUsed( Skill::IDENTIFY_ITEM_SKILL );
         if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
           scourge->getInfoGui()->getWindow()->setVisible( true );
       }
@@ -642,8 +638,6 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
           } else {
             scourge->showMessageDialog("You failed to enchant the item.");
           }
-					// exercise the skill
-					creature->incSkillUsed( Skill::ENCHANT_ITEM_SKILL );
           creature->setLastEnchantDate(now);
         } else {
           scourge->showMessageDialog("You can only enchant one item per day.");
