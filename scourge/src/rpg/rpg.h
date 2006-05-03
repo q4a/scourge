@@ -36,7 +36,6 @@ private:
 	char symbol[80];
 	std::vector<Skill*> preReqStats;
 	int preReqStatMultiplier;
-	int useCount;
 	int index;
 	SkillGroup *group;
 
@@ -53,17 +52,14 @@ public:
 		PIETY,
 		LORE,
 		
-		SWORD_WEAPON,
-		AXE_WEAPON,
-		BOW_WEAPON,
-    MACE_WEAPON,
-    POLE_WEAPON,
+		MELEE_WEAPON,
+		RANGED_WEAPON,
+		LARGE_WEAPON,
     HAND_TO_HAND_COMBAT,
 
     SHIELD_DEFEND,
     ARMOR_DEFEND,
-    WEAPON_DEFEND,
-    HAND_DEFEND,
+    DODGE_ATTACK,
     
     NATURE_MAGIC,
     AWARENESS_MAGIC,
@@ -92,7 +88,7 @@ public:
     SKILL_COUNT
 	};
 
-	Skill( char *name, char *description, char *symbol, int useCount, SkillGroup *group );
+	Skill( char *name, char *description, char *symbol, SkillGroup *group );
 	~Skill();
 
 	inline void setPreReqMultiplier( int n ) { preReqStatMultiplier = n; }
@@ -104,7 +100,6 @@ public:
 	inline char *getName() { return name; }
 	inline char *getDescription() { return description; }
 	inline char *getSymbol() { return symbol; }
-	inline int getUseCount() { return useCount; }
 	inline SkillGroup *getGroup() { return group; }
 	inline int getIndex() { return index; }
 

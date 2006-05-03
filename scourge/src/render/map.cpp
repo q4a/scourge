@@ -2898,7 +2898,11 @@ void Map::saveMap( char *name, char *result ) {
   sprintf( result, "Map saved: %s", name );
 }
 
-bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bool changingStory, bool fromRandom, vector< RenderedItem* > *items, vector< RenderedCreature* > *creatures ) {
+bool Map::loadMap( char *name, char *result, StatusReport *report, 
+									 int level, int depth, 
+									 bool changingStory, bool fromRandom, 
+									 vector< RenderedItem* > *items, 
+									 vector< RenderedCreature* > *creatures ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
     return false;
@@ -2971,8 +2975,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report, int depth, bo
     }
 
     if( strlen( (char*)( info->pos[i]->item_name ) ) ) {
-			cerr << "*** FIXME: map level needed to create items." << endl;
-      RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_name ), 1, depth );
+      RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_name ), level, depth );
       if( item ) {
         setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
         if( items ) items->push_back(  item );

@@ -2168,12 +2168,9 @@ void Creature::calcArmor( float *armorP,
               ( item->isMagicItem() ? item->getBonus() : 0 ) );
 					int itemSkill = ( item->getRpgItem()->getSkill() > -1 ? 
 														item->getRpgItem()->getSkill() :
-														Skill::HAND_DEFEND );
+														Skill::DODGE_ATTACK );
           armorSkill += getSkill( itemSkill );
 					
-					// mark the fact that the skill was exercised
-					if( callScript ) incSkillUsed( itemSkill );
-
           armorCount++;
         }
       }
@@ -2198,34 +2195,6 @@ void Creature::calcArmor( float *armorP,
   }
 }
 
-void Creature::incSkillUsed( int skill ) {
-	if( !character ) return;
-
-	// find the lowest next skill level in the professions tree
-	int lowest = 20; // you can get to skill=20 w/o training
-	for( int i = 0; i < character->getChildCount(); i++ ) {
-		Character *child = character->getChild( i );
-		if( child->getSkill( skill ) > 0 &&
-				child->getSkill( skill ) < lowest ) {
-			lowest = child->getSkill( skill );
-		}
-	}
-	if( skills[ skill ] >= lowest ) return;
-
-//	cerr << "name=" << getName() << " skill: " << Constants::SKILL_NAMES[ skill ] << 
-//		" use=" << skillsUsed[ skill ] << " out of " << Constants::SKILL_USE[ skill ] << endl;
-
-	skillsUsed[ skill ]++;
-	if( skillsUsed[ skill ] >= Skill::skills[ skill ]->getUseCount() ) {		
-		skills[ skill ]++;
-		skillsUsed[ skill ] = 0;
-		char message[120];
-		sprintf( message, "%s's skill in %s has increased.", getName(), Skill::skills[ skill ]->getName() );
-		cerr << message << endl;
-		session->getMap()->addDescription( message, 0, 1, 1 );
-	}
-}
-
 #define MAX_RANDOM_DAMAGE 2.0f
 
 float Creature::getAttackPercent( Item *weapon, 
@@ -2242,9 +2211,6 @@ float Creature::getAttackPercent( Item *weapon,
                            Skill::COORDINATION :
                            Skill::POWER ) + getSkill( itemSkill );
 	skill /= 2.0f;
-
-	// mark the fact that the skill was exercised
-	if( callScript ) incSkillUsed( itemSkill );
 
   skill += ( getSkill( Skill::LUCK ) / 10.0f );
   if( skillP ) *skillP = skill;
@@ -2486,7 +2452,6 @@ bool Creature::rollSecretDoor( Location *pos ) {
     if( SDL_GetTicks() - lastTime < SECRET_DOOR_ATTEMPT_INTERVAL ) return false;
   }
   bool ret = rollSkill( Skill::FIND_SECRET_DOOR, 4.0f );
-	incSkillUsed( Skill::FIND_SECRET_DOOR );
   if( !ret ) {
     secretDoorAttempts[ pos ] = SDL_GetTicks();
   }

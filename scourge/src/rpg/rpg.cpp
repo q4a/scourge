@@ -48,15 +48,13 @@ void Rpg::initRpg() {
 			fgetc( fp );
 			n = Constants::readLine( line, fp );				
 			strcpy( skillName, strtok( line, "," ) );
-			int skillUseCount = atoi( strtok( NULL, "," ) );
-			strcpy( skillSymbol, strtok( line, "," ) );
-			strcpy( skillDescription, strtok( line, "," ) );
+			strcpy( skillSymbol, strtok( NULL, "," ) );
+			strcpy( skillDescription, strtok( NULL, "," ) );
 
 			lastSkill = 
 				new Skill( skillName, 
 									 skillDescription, 
 									 skillSymbol, 
-									 skillUseCount,
 									 lastGroup );
     } else if( n == 'G' ) {
       fgetc(fp);
@@ -95,11 +93,10 @@ void Rpg::initRpg() {
   fclose(fp);
 }
 
-Skill::Skill( char *name, char *description, char *symbol, int useCount, SkillGroup *group ) {
+Skill::Skill( char *name, char *description, char *symbol, SkillGroup *group ) {
 	strcpy( this->name, name );
 	strcpy( this->description, description );
 	strcpy( this->symbol, symbol );
-	this->useCount = useCount;
 	this->group = group;
 	
 	// store the skill
