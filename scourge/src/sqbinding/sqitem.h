@@ -45,10 +45,7 @@ public:
   static int _getLevel( HSQUIRRELVM vm );
   static int _getWeight( HSQUIRRELVM vm );
   static int _getPrice( HSQUIRRELVM vm );
-  static int _getDamage( HSQUIRRELVM vm );
-  static int _getMaxCharges( HSQUIRRELVM vm );
   static int _getQuality( HSQUIRRELVM vm );
-	static int _getRange( HSQUIRRELVM vm );
   static int _isMagicItem( HSQUIRRELVM vm );
   static int _getSkillBonus( HSQUIRRELVM vm );
   static int _getMagicLevel( HSQUIRRELVM vm );
@@ -62,9 +59,31 @@ public:
   static int _isStateModSet( HSQUIRRELVM vm );
   static int _isStateModProtected( HSQUIRRELVM vm );
   static int _isRanged( HSQUIRRELVM vm );
-  static int _getDamageSkill( HSQUIRRELVM vm );
+	static int _getRange( HSQUIRRELVM vm );
 
-	// TODO: expose rpgItem getters also (not covered in item)
+	// from rpgitem
+
+	// weapon
+  static int _getDamage( HSQUIRRELVM vm );
+  static int _getMaxCharges( HSQUIRRELVM vm );	
+	static int _getDamageSkill( HSQUIRRELVM vm );
+	static int _getDamageType( HSQUIRRELVM vm );
+  static int _getParry( HSQUIRRELVM vm );
+	static int _getAP( HSQUIRRELVM vm );
+  static int _getTwoHanded( HSQUIRRELVM vm );
+
+	// armor
+	static int _getDefense( HSQUIRRELVM vm );
+	static int _getDefenseSkill( HSQUIRRELVM vm );
+	static int _getDodgePenalty( HSQUIRRELVM vm );
+
+	// potion
+	static int _getPotionPower( HSQUIRRELVM vm );
+	static int _getPotionSkill( HSQUIRRELVM vm );
+	static int _getPotionTime( HSQUIRRELVM vm );
+
+	// spell
+	static int _getSpellLevel( HSQUIRRELVM vm );
 };
 
 #endif
