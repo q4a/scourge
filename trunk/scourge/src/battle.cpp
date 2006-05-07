@@ -283,7 +283,7 @@ int Battle::calculateRange( Item *item ) {
     range = creature->getActionSpell()->getDistance();
   } else {
     range = (int)MIN_DISTANCE;
-    if(item) range = item->getDistance();
+    if(item) range = item->getRange();
   }
   return range;
 }
@@ -649,7 +649,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
     // try to destroy the scroll or use up a charge
     int itemIndex = creature->findInInventory(creature->getActionItem());
     if(itemIndex > -1) {
-      if( creature->getActionItem()->getMaxCharges() > 0 ) {
+      if( creature->getActionItem()->getRpgItem()->getMaxCharges() > 0 ) {
         creature->getActionItem()->setCurrentCharges( 
           creature->getActionItem()->getCurrentCharges() - 1 );
         sprintf(message, "Your %s feels lighter.", creature->getActionItem()->getItemName() );
@@ -1204,7 +1204,7 @@ char *Battle::getRandomSound(int start, int count) {
 
 int Battle::getWeaponSpeed( Item *item ) {
   return ( item ? 
-           item->getSpeed() : 
+           item->getRpgItem()->getAP() : 
            Constants::HAND_WEAPON_SPEED ) * 
     WEAPON_WAIT_MUL;
 }
@@ -1272,7 +1272,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
   if( !sameTarget ) creature->setTargetCreature( tmp );
   
   // out of range
-  if( ( !item || item->getDistance() < dist ) && dist > MIN_DISTANCE ) {
+  if( ( !item || item->getRange() < dist ) && dist > MIN_DISTANCE ) {
     if( sameTarget ) {
       color->r = 0.5f;
       color->g = 0.2f;

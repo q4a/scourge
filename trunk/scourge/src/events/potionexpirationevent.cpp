@@ -24,25 +24,30 @@
 
 using namespace std;
 
-PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, 
-											 Creature *c, Item *item, 
-											 Session *session, int nbExecutionsToDo) : 
-  Event(currentDate, timeOut, nbExecutionsToDo) {
-    this->creature = c;
+PotionExpirationEvent::PotionExpirationEvent( Date currentDate, 
+																							Date timeOut, 
+																							Creature *c, 
+																							Item *item, 
+																							Session *session, 
+																							int nbExecutionsToDo ) : Event( currentDate, timeOut, nbExecutionsToDo ) {
+  this->creature = c;
 	this->potionSkill = item->getRpgItem()->getPotionSkill();
-	this->amount = item->getRpgItem()->getAction()->getMod();
-    this->session = session;
-  }
+	this->amount = item->getRpgItem()->getPotionPower();
+	this->session = session;
+}		
 
-PotionExpirationEvent::PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, 
-											 int potionSkill, int amount, 
-											 Session *session, int nbExecutionsToDo) :
-  Event(currentDate, timeOut, nbExecutionsToDo) {
-    this->creature = c;
+PotionExpirationEvent::PotionExpirationEvent( Date currentDate, 
+																							Date timeOut, 
+																							Creature *c, 
+																							int potionSkill, 
+																							int amount, 
+																							Session *session, 
+																							int nbExecutionsToDo ) : Event( currentDate, timeOut, nbExecutionsToDo ) {
+  this->creature = c;
 	this->potionSkill = potionSkill;
 	this->amount = amount;
-    this->session = session;
-  }
+	this->session = session;
+}
 
 PotionExpirationEvent::~PotionExpirationEvent(){
 }

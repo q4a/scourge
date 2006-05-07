@@ -45,12 +45,10 @@ public:
   static int _getLevel( HSQUIRRELVM vm );
   static int _getWeight( HSQUIRRELVM vm );
   static int _getPrice( HSQUIRRELVM vm );
-  static int _getAction( HSQUIRRELVM vm );
-  static int _getSpeed( HSQUIRRELVM vm );
-  static int _getDistance( HSQUIRRELVM vm );
+  static int _getDamage( HSQUIRRELVM vm );
   static int _getMaxCharges( HSQUIRRELVM vm );
-  static int _getDuration( HSQUIRRELVM vm );
   static int _getQuality( HSQUIRRELVM vm );
+	static int _getRange( HSQUIRRELVM vm );
   static int _isMagicItem( HSQUIRRELVM vm );
   static int _getSkillBonus( HSQUIRRELVM vm );
   static int _getMagicLevel( HSQUIRRELVM vm );
@@ -64,7 +62,9 @@ public:
   static int _isStateModSet( HSQUIRRELVM vm );
   static int _isStateModProtected( HSQUIRRELVM vm );
   static int _isRanged( HSQUIRRELVM vm );
-  static int _getSkill( HSQUIRRELVM vm );
+  static int _getDamageSkill( HSQUIRRELVM vm );
+
+	// TODO: expose rpgItem getters also (not covered in item)
 };
 
 #endif

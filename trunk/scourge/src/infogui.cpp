@@ -143,20 +143,20 @@ void InfoGui::describe() {
   strcat( description, tmp );
   sprintf(tmp, "Price: %d|", item->getPrice());
   strcat( description, tmp );
-  if( item->getRpgItem()->getAction() ) {
-    sprintf(tmp, "Action: %s|", item->getRpgItem()->getAction()->toString() );
+  if( item->getRpgItem()->getDamage() ) {
+    sprintf(tmp, "Damage: %d|", item->getRpgItem()->getDamage() );
     strcat( description, tmp );
   }
-  if( item->getSpeed() > 0 ) {
-    sprintf(tmp, "Speed: %d|", item->getSpeed());
+  if( item->getRpgItem()->getAP() > 0 ) {
+    sprintf(tmp, "AP cost: %d|", item->getRpgItem()->getAP() );
     strcat( description, tmp );
   }
-  if( item->getDistance() > MIN_DISTANCE ) {
-    sprintf(tmp, "Distance: %d|", item->getDistance());
+  if( item->getRange() > MIN_DISTANCE ) {
+    sprintf(tmp, "Distance: %d|", item->getRange());
     strcat( description, tmp );
   }
-  if( item->getMaxCharges() > 0 ) {
-    sprintf(tmp, "Charges: %d(%d)|", item->getCurrentCharges(), item->getMaxCharges() );
+  if( item->getRpgItem()->getMaxCharges() > 0 ) {
+    sprintf(tmp, "Charges: %d(%d)|", item->getCurrentCharges(), item->getRpgItem()->getMaxCharges() );
     strcat( description, tmp );
     if( item->getSpell() ) {
       sprintf( tmp, "Spell: %s|", item->getSpell()->getName() );
@@ -165,8 +165,8 @@ void InfoGui::describe() {
       strcat( description, tmp );
     }
   }
-  if( item->getDuration() > 0 ) {
-    sprintf(tmp, "Duration: %d|", item->getDuration());
+  if( item->getRpgItem()->getPotionTime() > 0 ) {
+    sprintf(tmp, "Duration: %d|", item->getRpgItem()->getPotionTime());
     strcat( description, tmp );
   }
   switch( item->getRpgItem()->getTwoHanded() ) {

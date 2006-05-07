@@ -29,12 +29,10 @@ ScriptClassMemberDecl SqItem::members[] = {
   { "int", "getLevel", SqItem::_getLevel, 0, 0, "" },
   { "int", "getWeight", SqItem::_getWeight, 0, 0, "" },
   { "int", "getPrice", SqItem::_getPrice, 0, 0, "" },
-  { "int", "getAction", SqItem::_getAction, 0, 0, "" },
-  { "int", "getSpeed", SqItem::_getSpeed, 0, 0, "" },
-  { "int", "getDistance", SqItem::_getDistance, 0, 0, "" },
+  { "int", "getDamage", SqItem::_getDamage, 0, 0, "" },
   { "int", "getMaxCharges", SqItem::_getMaxCharges, 0, 0, "If the item has charges (eg. wand) return how many it started with." },
-  { "int", "getDuration", SqItem::_getDuration, 0, 0, "" },
   { "int", "getQuality", SqItem::_getQuality, 0, 0, "" },
+	{ "int", "getRange", SqItem::_getRange, 0, 0, "" },
   { "int", "isMagicItem", SqItem::_isMagicItem, 0, 0, "Return a boolean if this is a magic item." },
   { "int", "getSkillBonus", SqItem::_getSkillBonus, 0, 0, "" },
   { "int", "getMagicLevel", SqItem::_getMagicLevel, 0, 0, "Return the item's magic level: 0-not magical, 1-lesser, 2-greater, 3-champion, 4-divine." },
@@ -48,7 +46,7 @@ ScriptClassMemberDecl SqItem::members[] = {
   { "bool", "isStateModSet", SqItem::_isStateModSet, 0, 0, "" },
   { "bool", "isStateModProtected", SqItem::_isStateModProtected, 0, 0, "" },
   { "bool", "isRanged", SqItem::_isRanged, 0, 0, "" },
-  { "int", "getSkill", SqItem::_getSkill, 0, 0, "Get the skill exercised by this weapon. The return value of this function can be passed to Creature.getSkill() as the parameter." },
+  { "int", "getDamageSkill", SqItem::_getDamageSkill, 0, 0, "Get the skill exercised by this weapon. The return value of this function can be passed to Creature.getSkill() as the parameter." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqItem::classDecl = { SqItem::className, 0, members,
@@ -98,41 +96,21 @@ int SqItem::_getPrice( HSQUIRRELVM vm ) {
   return 1;
 }
 
-int SqItem::_getAction( HSQUIRRELVM vm ) {
-  GET_OBJECT(Item*)
-  sq_pushinteger( vm, ( object->getRpgItem()->isWeapon() ? 
-                        object->getRpgItem()->getAction()->roll() :
-                        object->getRpgItem()->getAction()->getMod() ) );
-  return 1;
-}
-
-int SqItem::_getSpeed( HSQUIRRELVM vm ) {
-  GET_OBJECT(Item*)
-  sq_pushinteger( vm, object->getSpeed() );
-  return 1;
-}
-
-int SqItem::_getDistance( HSQUIRRELVM vm ) {
-  GET_OBJECT(Item*)
-  sq_pushinteger( vm, object->getDistance() );
-  return 1;
-}
-
 int SqItem::_getMaxCharges( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
-  sq_pushinteger( vm, object->getMaxCharges() );
-  return 1;
-}
-
-int SqItem::_getDuration( HSQUIRRELVM vm ) {
-  GET_OBJECT(Item*)
-  sq_pushinteger( vm, object->getDuration() );
+  sq_pushinteger( vm, object->getRpgItem()->getMaxCharges() );
   return 1;
 }
 
 int SqItem::_getQuality( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
   sq_pushinteger( vm, object->getQuality() );
+  return 1;
+}
+
+int SqItem::_getRange( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRange() );
   return 1;
 }
 
@@ -215,9 +193,15 @@ int SqItem::_isRanged( HSQUIRRELVM vm ) {
   return 1;
 }
 
-int SqItem::_getSkill( HSQUIRRELVM vm ) {
+int SqItem::_getDamage( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
-  sq_pushinteger( vm, object->getRpgItem()->getSkill() );
+  sq_pushinteger( vm, object->getRpgItem()->getDamage() );
+  return 1;
+}
+
+int SqItem::_getDamageSkill( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getDamageSkill() );
   return 1;
 }
 

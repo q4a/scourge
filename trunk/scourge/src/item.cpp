@@ -45,8 +45,8 @@ Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
 
   commonInit( loading );
 
-  currentCharges = rpgItem->getMaxChargesRpg();
-  weight = rpgItem->getWeightRpg();
+  currentCharges = rpgItem->getMaxCharges();
+  weight = rpgItem->getWeight();
 }
 
 Item::~Item(){
@@ -63,17 +63,18 @@ ItemInfo *Item::save() {
   info->weight = (Uint32)(weight * 100);
   info->quality = quality;
   info->price = price;
-  info->speed = speed;
-  info->distance = distance;
-  info->maxCharges = maxCharges;
-  info->duration = duration;
+
+	// spells
   strcpy((char*)info->spell_name, (spell ? spell->getName() : ""));
+
+	// container
   int realCount = 0;
   for(int i = 0; i < containedItemCount; i++) {
     if( containedItems[i] ) info->containedItems[realCount++] = containedItems[i]->save();
   }
   info->containedItemCount = realCount;
 
+	// magic item
   info->bonus = bonus;
   info->damageMultiplier = damageMultiplier;
   info->cursed = cursed;
@@ -115,18 +116,6 @@ Dice *Item::loadDice( Session *session, DiceInfo *info ) {
 }
 
 
-/*
-ContainedItemInfo Item::saveContainedItems() {
-  ContainedItemInfo info;
-  info->version = PERSIST_VERSION;
-  info->containedItemCount = containedItemCount;
-  for(int i = 0; i < containedItemCount; i++) {
-    info->containedItems[i] = containedItems[i]->save();
-  }
-  return info;
-}
-*/
-
 Item *Item::load(Session *session, ItemInfo *info) {
   if( !strlen( (char*)info->rpgItem_name )) return NULL;
   Spell *spell = NULL;
@@ -145,11 +134,9 @@ Item *Item::load(Session *session, ItemInfo *info) {
   item->weight = (float)(info->weight) / 100.0f;
   item->quality = info->quality;
   item->price = info->price;
-  item->speed = info->speed;
-  item->distance = info->distance;
-  item->maxCharges = info->maxCharges;
-  item->duration = info->duration;  
-  item->containedItemCount = info->containedItemCount;
+  
+	// container
+	item->containedItemCount = info->containedItemCount;
   int realCount = 0;
   for(int i = 0; i < (int)info->containedItemCount; i++) {
      Item *containedItem = Item::load( session, info->containedItems[i] );
@@ -157,6 +144,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
   }
   item->containedItemCount = realCount;
     
+	// magic item
   item->bonus = info->bonus;
   item->damageMultiplier = info->damageMultiplier;
   item->cursed = (info->cursed == 1);
@@ -286,7 +274,7 @@ void Item::getDetailedDescription(char *s, bool precise){
 }
 
 // this should really be in RpgItem but that class can't reference ShapePalette and shapes.
-void Item::initItems(ShapePalette *shapePal) {
+void Item::initItems( ShapePalette *shapePal ) {
   char errMessage[500];
   char s[200];
   sprintf(s, "%s/world/items.txt", rootDir);
@@ -297,8 +285,7 @@ void Item::initItems(ShapePalette *shapePal) {
     exit(1);
   }
 
-  int itemCount = 0, potionTime = 0;
-  char name[255], type[255], shape[255], skill[255], potionSkill[255];
+  char name[255], type[255], shape[255], skill[255];
   char long_description[500], short_description[120];
   char line[255];
   RpgItem *last = NULL;
@@ -329,10 +316,99 @@ void Item::initItems(ShapePalette *shapePal) {
     } else if( n == 'I' ) {
       // skip ':'
       fgetc(fp);
-      // read the rest of the line
-      n = Constants::readLine(name, fp);
+      
+			// read the rest of the line
+      n = Constants::readLine( name, fp );
+
+			// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
+			n = Constants::readLine( line, fp );
+      int rareness = atoi( strtok( line + 1, "," ) );
+			strcpy( type, strtok( NULL, "," ) );
+      float weight = strtod( strtok( NULL, "," ), NULL );
+      int price = atoi( strtok( NULL, "," ) );
+
+      int inventory_location = 0;
+      strcpy( shape, "" );
+      strcpy( skill, "" );
+      int minDepth = 0;
+      int minLevel = 0;
+			int maxCharges = 0;
+      char *p = strtok(NULL, ",");    
+      if( p ) {
+        strcpy( shape, p );
+        p = strtok( NULL, "," );
+        if( p ) {
+          inventory_location = atoi( p );
+					p = strtok( NULL, "," );
+					if( p ) {
+						maxCharges = atoi( p );
+						p = strtok( NULL, "," );
+						if( p ) {
+							minDepth = atoi( p );
+							p = strtok( NULL, "," );
+							if( p ) {
+								minLevel = atoi( p );
+							}
+						}
+					}
+				}
+			}
+
+			
+			// I:description
       n = Constants::readLine(line, fp);
-      int rareness = atoi(strtok(line + 1, ","));
+      strcpy(long_description, line + 1);
+
+			// I:short description (unidentified)
+			n = Constants::readLine(line, fp);
+      strcpy(short_description, line + 1);
+      
+			// I:tileX,tileY,[maxSkillBonus] ( from data/tiles.bmp, count is 1-based )
+      n = Constants::readLine(line, fp);
+      int tileX = atoi( strtok( line + 1, "," ) );
+      int tileY = atoi( strtok( NULL, "," ) );
+
+
+      // resolve strings
+      int type_index = RpgItem::getTypeByName( type );    
+      //cerr << "item: looking for shape: " << shape << endl;
+      int shape_index = shapePal->findShapeIndexByName( shape );
+			//cerr << "\tindex=" << shape_index << endl;
+
+			last = new RpgItem( strdup( name ), rareness, type_index, weight, price,
+													strdup( long_description ), strdup( short_description ),
+													inventory_location, shape_index,
+													minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
+      GLShape *s = shapePal->findShapeByName(shape);
+      RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
+
+			/*
+			
+			int skill_index = Skill::getSkillIndexByName( skill );
+      if( skill_index < 0 ) {
+        if( strlen( skill ) ) cerr << "*** WARNING: cannot find skill: " << skill << endl;
+        skill_index = 0;
+      }
+      int potion_skill = -1;
+      if( potionSkill != NULL && strlen( potionSkill ) ) {
+        potion_skill = Skill::getSkillIndexByName( potionSkill );
+        if( potion_skill < 0 ) {
+          // try special potion 'skills' like HP, AC boosts
+          potion_skill = Constants::getPotionSkillByName( potionSkill );
+          if( potion_skill == -1 ) {
+            cerr << "*** WARNING: cannot find potion_skill: " << potionSkill << endl;
+          }
+        }
+        //cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
+      }
+			
+			// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
+			twohanded = atoi(strtok(NULL, ","));
+			strcpy(skill, strtok(NULL, ","));
+			p = strtok( NULL, "," );
+			if( p ) {
+      n = Constants::readLine( line, fp );
+      int rareness = atoi( strtok( line + 1, "," ) );
       char *p = strtok(NULL, ",");
       char *action = NULL;
       int speed = 0;
@@ -349,84 +425,9 @@ void Item::initItems(ShapePalette *shapePal) {
         p = strtok(NULL, ",");
         potionTime = (p ? atoi(p) : 0);
       }
-      n = Constants::readLine(line, fp);
-      strcpy(type, strtok(line + 1, ","));
-      float weight = strtod(strtok(NULL, ","), NULL);
-      int price = atoi(strtok(NULL, ","));
-
-      int inventory_location = 0;
-      int twohanded = 0;
-      strcpy(shape, "");
-      strcpy(skill, "");
-      int minDepth = 0;
-      int minLevel = 0;
-      p = strtok(NULL, ",");    
-      if(p) {
-        strcpy(shape, p);
-        p = strtok(NULL, ",");
-        if(p) {
-          inventory_location = atoi(p);
-          twohanded = atoi(strtok(NULL, ","));
-          strcpy(skill, strtok(NULL, ","));
-          p = strtok( NULL, "," );
-          if( p ) {
-            minDepth = atoi( p );
-            p = strtok( NULL, "," );
-            if( p ) {
-              minLevel = atoi( p );
-            }
-          }
-        }
-      }
-
-      n = Constants::readLine(line, fp);
-      strcpy(long_description, line + 1);
-
-      n = Constants::readLine(line, fp);
-      strcpy(short_description, line + 1);
-      
-      n = Constants::readLine(line, fp);
-      int tileX = atoi( strtok( line + 1, "," ) );
-      int tileY = atoi( strtok( NULL, "," ) );
-      char *bonusSkillStr = strtok( NULL, "," );
-      int maxBonusSkill = ( bonusSkillStr ? atoi( bonusSkillStr ) : -1 );
-
-      // resolve strings
-      int type_index = RpgItem::getTypeByName(type);    
-      //cerr << "item: looking for shape: " << shape << endl;
-      int shape_index = shapePal->findShapeIndexByName(shape);
-      //cerr << "\tindex=" << shape_index << endl;
-      int skill_index = Skill::getSkillIndexByName(skill);
-      if(skill_index < 0) {
-        if(strlen(skill)) cerr << "*** WARNING: cannot find skill: " << skill << endl;
-        skill_index = 0;
-      }
-      int potion_skill = -1;
-      if(potionSkill != NULL && strlen(potionSkill)) {
-        potion_skill = Skill::getSkillIndexByName(potionSkill);
-        if(potion_skill < 0) {
-          // try special potion 'skills' like HP, AC boosts
-          potion_skill = Constants::getPotionSkillByName(potionSkill);
-          if(potion_skill == -1) {
-            cerr << "*** WARNING: cannot find potion_skill: " << potionSkill << endl;
-          }
-        }
-        //cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
-      }
       if(distance < (int)MIN_DISTANCE) distance = (int)MIN_DISTANCE;
-      last = new RpgItem( itemCount++, strdup(name), 1, rareness, type_index, 
-                          weight, price, 100, 
-                          ( action && strlen( action ) ? new Dice( action ) : NULL ), 
-                          speed, strdup(long_description), 
-                          strdup(short_description), 
-                          inventory_location, shape_index, 
-                          twohanded, distance, 
-                          skill_index, minDepth, minLevel, 
-                          maxCharges, potion_skill, potionTime, 
-                          tileX - 1, tileY - 1, maxBonusSkill );
-      GLShape *s = shapePal->findShapeByName(shape);
-      RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );   
-    } else if(n == 'A' && last) {
+			*/
+    } else if(n == 'G' && last) {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
@@ -491,9 +492,9 @@ bool Item::decrementCharges(){
   // (without increasing error each time)
 
   f1 = getWeight();
-  f1 *= (float) (getMaxCharges());
+  f1 *= (float) ( getRpgItem()->getMaxCharges());
   f1 /= (float) oldCharges;
-  f1 *= (((float)oldCharges - 1.0f) / (float)(getMaxCharges()));            
+  f1 *= (((float)oldCharges - 1.0f) / (float)(getRpgItem()->getMaxCharges()));            
   setWeight(f1);
   return false;      
 }
@@ -506,41 +507,17 @@ void Item::commonInit( bool loading ) {
   // --------------
   // regular attribs
 
-  weight = rpgItem->getWeightRpg();
-  quality = rpgItem->getQualityRpg();
+  weight = rpgItem->getWeight();
+  quality = (int)( 50.0f * rand() / RAND_MAX ) + 50; // starts out mostly healthy
 
-  int basePrice = ( this->spell ? this->spell->getExp() : rpgItem->getPriceRpg() );
+  int basePrice = ( this->spell ? this->spell->getExp() : rpgItem->getPrice() );
   price = basePrice + 
     (int)Util::getRandomSum( (float)(basePrice / 2), level );
 
-  //action = (int)Util::getRandomSum( (float)(rpgItem->getActionRpg()), level / 2 );  
-
-  if( rpgItem->getSpeedRpg() ) {
-    speed = rpgItem->getSpeedRpg() - (int)Util::getRandomSum( 1, level / 7 );
-    if( speed < 3 ) speed = 3;
-  } else {
-    speed = rpgItem->getSpeedRpg();
-  }
-
-  if( rpgItem->isRangedWeapon() ) {
-    distance = rpgItem->getDistanceRpg() + 
-      (int)Util::getRandomSum( 1, level / 4 );
-  } else distance = rpgItem->getDistanceRpg();
-
-  if( rpgItem->getMaxChargesRpg() ) {
-    maxCharges = rpgItem->getMaxChargesRpg() + 
-      (int)Util::getRandomSum( (float)(rpgItem->getMaxChargesRpg() / 2), level / 4 );
-  } else maxCharges = rpgItem->getMaxChargesRpg();
-
-  if( rpgItem->getDurationRpg() ) {
-    duration = rpgItem->getDurationRpg() + 
-      (int)Util::getRandomSum( (float)( rpgItem->getDurationRpg() / 2 ), level / 4 );
-  } else duration = rpgItem->getDurationRpg();
-
   // assign a spell to the item
   // the deeper you go, the more likely that items contain spells
-  if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell &&
-      0 == (int)( (float)( MAX_MISSION_DEPTH - ( session->getCurrentMission() ? session->getCurrentMission()->getDepth() : 0 ) ) * rand() / RAND_MAX ) ) {
+  if( rpgItem->hasSpell() &&
+			0 == (int)( (float)( MAX_MISSION_DEPTH - ( session->getCurrentMission() ? session->getCurrentMission()->getDepth() : 0 ) ) * rand() / RAND_MAX ) ) {
     this->spell = MagicSchool::getRandomSpell( 1 );
     price += (int)Util::getRandomSum( (float)(basePrice / 2), this->spell->getLevel() );
   }
@@ -797,8 +774,8 @@ void Item::debugMagic(char *s) {
 
 void Item::setCurrentCharges( int n ) { 
   if( n < 0 ) n=0; 
-  if( n>rpgItem->getMaxChargesRpg() )
-    n = rpgItem->getMaxChargesRpg(); 
+  if( n>rpgItem->getMaxCharges() )
+    n = rpgItem->getMaxCharges(); 
   currentCharges = n; 
 } 
 
@@ -821,6 +798,10 @@ int Item::getIconTileX() {
 
 int Item::getIconTileY() {
   return rpgItem->getIconTileY();
+}
+
+int Item::getRange() {
+	return getRpgItem()->getRange();
 }
 
 int Item::getStorableType() {

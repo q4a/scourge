@@ -271,10 +271,10 @@ void CombatTest::printInventory( FILE *fp, Creature *creature ) {
 
   fprintf( fp, "<b>Inventory:</b><ul>\n" );
   for( int i = 0; i < creature->getInventoryCount(); i++ ) {
-    fprintf( fp, "<li>%s(%d) A:%s %s<br>\n", 
+    fprintf( fp, "<li>%s(%d) A:%d %s<br>\n", 
              creature->getInventory( i )->getRpgItem()->getName(),
              creature->getInventory( i )->getLevel(),
-             creature->getInventory( i )->getRpgItem()->getAction()->toString(),
+             creature->getInventory( i )->getRpgItem()->getDamage(),
              ( creature->isEquipped( i ) ? "<i>Equipped</i>" : "" ) );
   }
   fprintf( fp, "</ul>\n" );

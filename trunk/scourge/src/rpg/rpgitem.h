@@ -36,6 +36,7 @@ class Dice;
 class MagicSchool;
 class Spell;
 class RpgItem;
+class GameAdapter;
 
 typedef struct _ItemType {
   char name[40];
@@ -43,31 +44,45 @@ typedef struct _ItemType {
 } ItemType;
 
 class RpgItem {
- private:
+private:
 
-  int index;
-  char *name, *desc, *shortDesc;
-  int level;
-  int rareness;
-  int type;
-  float weight; 
-  int price, quality;
-  Dice *action; // damage, defence, potion str.
-  int speed; // 0-100, 100-slowest, 0-fastest
-  int shape_index;
-  int twohanded;
-  int distance; // how far can it reach?
-  int equip; // where can it be worn?
-  int skill; // which skill to check when using the item
-  int minDepth; // 0-based min. depth where the item occurs
-  int minLevel; // if >0 the item is "special" and only one instance exists
-  int maxCharges;
-  int potionSkill; // which skill does this potion effect?
-  int potionTime;
-  bool isWeaponItem;
-  int iconTileX, iconTileY;
-  int maxSkillBonus; // max coord. bonus applied to armor and shields
-	std::set<std::string> tags;
+	// the basics
+	char *name, *desc, *shortDesc;
+	int rareness;
+	int type;
+	float weight; 
+	int price;
+	int shape_index;
+	int equip; // where can it be worn?
+	int minDepth; // 0-based min. depth where the item occurs
+	int minLevel; // if >0 the item is "special" and only one instance exists
+	int maxCharges; // max, how many uses?
+	int iconTileX, iconTileY; // its graphic (1-based)
+	std::set<std::string> tags; // the tags of this object
+  
+	// weapon
+	int damage; // % of strength bonus
+	int damageType; // a damageType value
+	int damageSkill; // which skill to check when using the item	
+	int parry; // what % of the damage skill to use to parry
+	int ap; // ap cost 
+	int range; // weapon range
+	int twohanded; // a twoHandedType value
+  
+	// armor
+	int *defense;
+	int defenseSkill; // the defense skill used
+	int dodgePenalty; // dodge penalty
+  
+	// potion
+	int potionPower; // how strong is the brew?
+	int potionSkill; // which skill does this potion effect?
+  int potionTime; // how long does it last (in minutes)
+
+	// spells
+	int spellLevel;
+
+
 
   static std::map<int, std::map<int, std::vector<const RpgItem*>*>*> typesMap;
   static std::map<std::string, const RpgItem *> itemsByName;
@@ -112,20 +127,29 @@ class RpgItem {
     OPTIONAL_TWO_HANDED
   };
 
+	enum damageType {
+		DAMAGE_TYPE_SLASHING,
+		DAMAGE_TYPE_PIERCING,
+		DAMAGE_TYPE_CRUSHING,
+		DAMAGE_TYPE_COUNT
+	};
+	static char *DAMAGE_TYPE_NAME[];
+	static char DAMAGE_TYPE_LETTER[];
+
   static RpgItem *items[1000];
   static int itemCount;
 
 	static std::map<std::string,std::string> tagsDescriptions;
 	static void describeTag( char *buffer, char *prefix, std::string tag, char *postfix, char *token );
 
-  RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
-          Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-          int twohanded=NOT_TWO_HANDED, int distance=1, int skill=-1, int minDepth=0, int minLevel=0, 
-          int maxCharges=0,
-          int potionSkill=-1, int potionTime=0, int iconTileX=0, int iconTileY=0,
-          int maxSkillBonus=-1);
+	RpgItem( char *name, int rareness, int type, float weight, int price, 
+					 char *desc, char *shortDesc, int equip, int shape_index, 
+					 int minDepth=0, int minLevel=0, 
+					 int maxCharges=0,
+					 int iconTileX=0, int iconTileY=0 );
   ~RpgItem();
 
+	// tags
 	inline void addTag( std::string s ) {
 		tags.insert( s );
 	}
@@ -137,45 +161,79 @@ class RpgItem {
 		return( tags.find( s ) != tags.end() );
 	}
 
-
-  // -Rpg in the name to not accidentally call it instead of item->getXYZ().
-  inline int getLevelRpg()  { return level; }  
-  inline float getWeightRpg() { return weight; }
-  inline int getPriceRpg() { return price; }
-  inline int getSpeedRpg() { return speed; }
-  inline int getDistanceRpg() { return distance; }
-  inline int getMaxChargesRpg() { return maxCharges; }
-  inline int getDurationRpg() { return potionTime; }
-  inline int getQualityRpg() { return quality; }
-
-  inline int getIndex() { return index; }
   inline char *getName() { return name; }
   inline int getRareness()  { return rareness; }
+  inline float getWeight() { return weight; }
+  inline int getPrice() { return price; }
+  inline int getMaxCharges() { return maxCharges; }
   inline int getShapeIndex() { return shape_index; }
   inline char *getShortDesc() { return shortDesc; }  
   inline char *getLongDesc() { return desc; }  
   inline int getEquip() { return equip; }
-  inline int getSkill() { return skill; } 
-  inline int getMinDepth() { return minDepth; }
-  inline int getMinLevel() { return minLevel; }
-  inline bool isSpecial() { return( minLevel > 0 ); }
-  inline int getType() { return type; }
-  inline int getPotionSkill() { return potionSkill; }
-  inline bool isWeapon() { return this->isWeaponItem; }
-	inline bool isArmor() { return itemTypes[ type ].isArmor; }
-  inline int getIconTileX() { return this->iconTileX; }
+	inline int getMinDepth() { return minDepth; }
+	inline int getMinLevel() { return minLevel; }	
+	inline int getType() { return type; }
+	inline int getIconTileX() { return this->iconTileX; }
   inline int getIconTileY() { return this->iconTileY; }
-  inline int getMaxSkillBonus() { return this->maxSkillBonus; }
-  inline int getTwoHanded() { return this->twohanded; }
-  inline Dice *getAction() { return this->action; }
 
+	// weapon
+	inline void setWeapon( int damage, int damageType, int damageSkill, int parry, int ap, int range, int twohanded ) {
+		this->damage = damage;
+		this->damageType = damageType;
+		this->damageSkill = damageSkill;
+		this->parry = parry;
+		this->ap = ap;
+		this->range = range;
+		this->twohanded = twohanded;
+	}
+	inline int getDamage() { return damage; }
+	inline int getDamageType() { return damageType; } 
+  inline int getDamageSkill() { return damageSkill; } 
+  inline int getParry() { return parry; }
+	inline int getAP() { return ap; }
+	inline int getRange() { return range; }
+  inline int getTwoHanded() { return twohanded; }
+
+	// armor
+	inline void setArmor( int *defense, int defenseSkill, int dodgePenalty ) {
+		for( int i = 0; i < DAMAGE_TYPE_COUNT; i++ ) this->defense[ i ] = defense[ i ];
+		this->defenseSkill = defenseSkill;
+		this->dodgePenalty = dodgePenalty;
+	}
+	inline int getDefense( int damageType ) { return defense[ damageType ]; }
+	inline int getDefenseSkill() { return defenseSkill; }
+	inline int getDodgePenalty() { return dodgePenalty; }
+  
+	// potion
+	inline void setPotion( int potionPower, int potionSkill, int potionTime ) {
+		this->potionPower = potionPower;
+		this->potionSkill = potionSkill;
+		this->potionTime = potionTime;
+	}
+	inline int getPotionPower() { return potionPower; }
+	inline int getPotionSkill() { return potionSkill; }
+	inline int getPotionTime() { return potionTime; }
+
+	// spells
+	inline void setSpellLevel( int spellLevel ) {
+		this->spellLevel = spellLevel;
+	}
+	inline int getSpellLevel() { return spellLevel; }
+
+  
+	// query methods
+	inline bool isWeapon() { return itemTypes[ type ].isWeapon; }
+	inline bool isArmor() { return itemTypes[ type ].isArmor; }
+	inline bool isSpecial() { return( minLevel > 0 ); }
   // FIXME: make this more specific to item
   // e.g. multi-attack items, like sword of fireballs
-  inline bool isRangedWeapon() { return type == BOW; }
+  //inline bool isRangedWeapon() { return type == BOW; }
+	inline bool isRangedWeapon() { return( itemTypes[ type ].isRanged ); }
+  inline bool isEnchantable() { return( itemTypes[ type ].isEnchantable ); }
+  inline bool isContainer() { return( type == CONTAINER ? true : false ); }
+	inline bool hasSpell() { return( itemTypes[ type ].hasSpell ); }
 
-  bool isEnchantable();
 
-  bool isContainer();
 
   static RpgItem *getRandomItem(int depth);
   static RpgItem *getRandomItemFromTypes(int level, int types[], int typeCount);
@@ -184,12 +242,11 @@ class RpgItem {
   inline static RpgItem *getItem(int index) { return items[index]; }
 
   static int getTypeByName(char *name);
-  static void addItem(RpgItem *item, int width, int depth, int height);
+  static void addItem( RpgItem *item, int width, int depth, int height );
   static RpgItem *getItemByName(char *name);
   inline static std::map<std::string, const RpgItem *> *getItemMap() { return &itemsByName; }
   inline static int getSpecialCount() { return special.size(); }
-  inline static RpgItem *getSpecial( int index ) { return special[index]; }
-  
+  inline static RpgItem *getSpecial( int index ) { return special[index]; }  
 };
 
 #endif
