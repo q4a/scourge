@@ -285,7 +285,7 @@ void Item::initItems( ShapePalette *shapePal ) {
     exit(1);
   }
 
-  char name[255], type[255], shape[255], skill[255];
+  char name[255], type[255], shape[255];
   char long_description[500], short_description[120];
   char line[255];
   RpgItem *last = NULL;
@@ -329,7 +329,6 @@ void Item::initItems( ShapePalette *shapePal ) {
 
       int inventory_location = 0;
       strcpy( shape, "" );
-      strcpy( skill, "" );
       int minDepth = 0;
       int minLevel = 0;
 			int maxCharges = 0;
@@ -363,7 +362,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 			n = Constants::readLine(line, fp);
       strcpy(short_description, line + 1);
       
-			// I:tileX,tileY,[maxSkillBonus] ( from data/tiles.bmp, count is 1-based )
+			// I:tileX,tileY ( from data/tiles.bmp, count is 1-based )
       n = Constants::readLine(line, fp);
       int tileX = atoi( strtok( line + 1, "," ) );
       int tileY = atoi( strtok( NULL, "," ) );
@@ -381,52 +380,76 @@ void Item::initItems( ShapePalette *shapePal ) {
 													minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
+    } else if( n == 'W' && last ) {
+      // skip ':'
+      fgetc(fp);
+      
+			// read the rest of the line
+      n = Constants::readLine( line, fp );
 
-			/*
+			// W:base_damage,damage_type[S|P|C],skill,parry,ap,range,two_handed
+			int baseDamage = atoi( strtok( line, "," ) );
+			int damageType = RpgItem::getDamageTypeForLetter( *( strtok( NULL, "," ) ) );
+			int skill = Skill::getSkillIndexByName( strtok( NULL, "," ) );
+			int parry = atoi( strtok( NULL, "," ) );
+			int ap = atoi( strtok( NULL, "," ) );
+			int range = atoi( strtok( NULL, "," ) );
+			int twoHanded = atoi( strtok( NULL, "," ) );
+			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
 			
-			int skill_index = Skill::getSkillIndexByName( skill );
-      if( skill_index < 0 ) {
-        if( strlen( skill ) ) cerr << "*** WARNING: cannot find skill: " << skill << endl;
-        skill_index = 0;
-      }
-      int potion_skill = -1;
+    } else if( n == 'A' && last ) {
+      // skip ':'
+      fgetc(fp);
+      
+			// read the rest of the line
+      n = Constants::readLine( line, fp );
+
+			// A:defense_vs_slashing,defense_vs_piercing,defense_vs_crushing,skill,dodge_penalty
+			int defense[ RpgItem::DAMAGE_TYPE_COUNT ];
+			for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
+				defense[i] = atoi( strtok( i ? NULL : line, "," ) );
+			}
+			int skill = Skill::getSkillIndexByName( strtok( NULL, "," ) );
+			int dodgePenalty = atoi( strtok( NULL, "," ) );
+			last->setArmor( defense, skill, dodgePenalty );
+
+    } else if( n == 'P' && last ) {
+      // skip ':'
+      fgetc(fp);
+      
+			// read the rest of the line
+      n = Constants::readLine( line, fp );
+
+			// power,potionSkill,[potionTimeInMinutes]
+			int power = atoi( strtok( line, "," ) );
+			
+			char *potionSkill = strtok( NULL, "," );
+			int skill = -1;
       if( potionSkill != NULL && strlen( potionSkill ) ) {
-        potion_skill = Skill::getSkillIndexByName( potionSkill );
-        if( potion_skill < 0 ) {
+        skill = Skill::getSkillIndexByName( potionSkill );
+        if( skill < 0 ) {
           // try special potion 'skills' like HP, AC boosts
-          potion_skill = Constants::getPotionSkillByName( potionSkill );
-          if( potion_skill == -1 ) {
+          skill = Constants::getPotionSkillByName( potionSkill );
+          if( skill == -1 ) {
             cerr << "*** WARNING: cannot find potion_skill: " << potionSkill << endl;
           }
         }
-        //cerr << "**** potionSkill=" << potionSkill << " potion_skill=" << potion_skill << endl;
       }
-			
-			// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
-			twohanded = atoi(strtok(NULL, ","));
-			strcpy(skill, strtok(NULL, ","));
-			p = strtok( NULL, "," );
-			if( p ) {
+
+			char *p = strtok( NULL, "," );
+			int time = ( p ? atoi( p ) : 0 );
+			last->setPotion( power, skill, time );
+
+    } else if( n == 'E' && last ) {
+      // skip ':'
+      fgetc(fp);
+      
+			// read the rest of the line
       n = Constants::readLine( line, fp );
-      int rareness = atoi( strtok( line + 1, "," ) );
-      char *p = strtok(NULL, ",");
-      char *action = NULL;
-      int speed = 0;
-      int distance = 0;
-      int maxCharges = 0;
-      if(p) {
-        action = strdup(p);
-        speed = atoi(strtok(NULL, ","));
-        distance = atoi(strtok(NULL, ","));
-        maxCharges = atoi(strtok(NULL, ","));
-        p = strtok(NULL, ",");
-        if(p) strcpy(potionSkill, p);
-        else strcpy(potionSkill, "");
-        p = strtok(NULL, ",");
-        potionTime = (p ? atoi(p) : 0);
-      }
-      if(distance < (int)MIN_DISTANCE) distance = (int)MIN_DISTANCE;
-			*/
+			
+			// E:spell-level (for items that can cast spells)
+			last->setSpellLevel( atoi( line ) );
+
     } else if(n == 'G' && last) {
       // skip ':'
       fgetc(fp);
