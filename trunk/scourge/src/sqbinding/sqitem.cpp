@@ -47,6 +47,18 @@ ScriptClassMemberDecl SqItem::members[] = {
   { "bool", "isStateModProtected", SqItem::_isStateModProtected, 0, 0, "" },
   { "bool", "isRanged", SqItem::_isRanged, 0, 0, "" },
   { "int", "getDamageSkill", SqItem::_getDamageSkill, 0, 0, "Get the skill exercised by this weapon. The return value of this function can be passed to Creature.getSkill() as the parameter." },
+  { "int", "getMaxCharges", SqItem::_getMaxCharges, 0, 0, "" },
+	{ "int", "getDamageType", SqItem::_getDamageType, 0, 0, "" },
+	{ "int", "getParry", SqItem::_getParry, 0, 0, "" },
+	{ "int", "getAP", SqItem::_getAP, 0, 0, "" },
+	{ "int", "getTwoHanded", SqItem::_getTwoHanded, 0, 0, "" },
+	{ "int", "getDefense", SqItem::_getDefense, 0, 0, "" },
+	{ "int", "getDefenseSkill", SqItem::_getDefenseSkill, 0, 0, "" },
+	{ "int", "getDodgePenalty", SqItem::_getDodgePenalty, 0, 0, "" },
+	{ "int", "getPotionPower", SqItem::_getPotionPower, 0, 0, "" },
+	{ "int", "getPotionSkill", SqItem::_getPotionSkill, 0, 0, "" },
+	{ "int", "getPotionTime", SqItem::_getPotionTime, 0, 0, "" },
+	{ "int", "getSpellLevel", SqItem::_getSpellLevel, 0, 0, "" },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqItem::classDecl = { SqItem::className, 0, members,
@@ -202,6 +214,73 @@ int SqItem::_getDamage( HSQUIRRELVM vm ) {
 int SqItem::_getDamageSkill( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
   sq_pushinteger( vm, object->getRpgItem()->getDamageSkill() );
+  return 1;
+}
+
+int SqItem::_getDamageType( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getDamageType() );
+  return 1;
+}
+
+int SqItem::_getParry( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getParry() );
+  return 1;
+}
+
+int SqItem::_getAP( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getAP() );
+  return 1;
+}
+
+int SqItem::_getTwoHanded( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getTwoHanded() );
+  return 1;
+}
+
+int SqItem::_getDefense( HSQUIRRELVM vm ) {
+	GET_INT( index );
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getDefense( index ) );
+  return 1;
+}
+
+int SqItem::_getDefenseSkill( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getDefenseSkill() );
+  return 1;
+}
+
+int SqItem::_getDodgePenalty( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getDodgePenalty() );
+  return 1;
+}
+
+int SqItem::_getPotionPower( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getPotionPower() );
+  return 1;
+}
+
+int SqItem::_getPotionSkill( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getPotionSkill() );
+  return 1;
+}
+
+int SqItem::_getPotionTime( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getPotionTime() );
+  return 1;
+}
+
+int SqItem::_getSpellLevel( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushinteger( vm, object->getRpgItem()->getSpellLevel() );
   return 1;
 }
 
