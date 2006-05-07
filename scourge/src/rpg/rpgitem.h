@@ -128,13 +128,20 @@ private:
   };
 
 	enum damageType {
-		DAMAGE_TYPE_SLASHING,
+		DAMAGE_TYPE_SLASHING=0,
 		DAMAGE_TYPE_PIERCING,
 		DAMAGE_TYPE_CRUSHING,
 		DAMAGE_TYPE_COUNT
 	};
 	static char *DAMAGE_TYPE_NAME[];
 	static char DAMAGE_TYPE_LETTER[];
+	static inline int getDamageTypeForLetter( char c ) {
+		for( int i = 0; i < DAMAGE_TYPE_COUNT; i++ ) {
+			if( DAMAGE_TYPE_LETTER[ i ] == c ) return i;
+		}
+		std::cerr << "*** Error can't find damage type for letter: " << c << std::endl;
+		return DAMAGE_TYPE_SLASHING;
+	}
 
   static RpgItem *items[1000];
   static int itemCount;
