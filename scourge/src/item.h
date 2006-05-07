@@ -62,10 +62,6 @@ class Item : public RenderedItem, Storable {
   int level;
   float weight; 
   int price;
-  int speed; // 0-100, 100-slowest, 0-fastest
-  int distance; // how far can it reach?
-  int maxCharges;
-  int duration;
   int quality;
 
   // former magic attrib stuff
@@ -136,10 +132,6 @@ public:
   inline int getLevel() { return level; }
   inline float getWeight() { return weight; }
   inline int getPrice() { return price; }
-  inline int getSpeed() { return speed; }
-  inline int getDistance() { return distance; }
-  inline int getMaxCharges() { return maxCharges; }
-  inline int getDuration() { return duration; }
   inline int getQuality() { return quality; }
 
   inline bool isMagicItem() { return ( magicLevel > -1 ); }
@@ -157,6 +149,7 @@ public:
   inline bool isCursed() { return cursed; }
   inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
   inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
+	int getRange();
 
   void debugMagic(char *s);
 

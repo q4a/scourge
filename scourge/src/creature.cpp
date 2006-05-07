@@ -986,7 +986,7 @@ void Creature::usePotion(Item *item) {
   if(skill < 0) {
     switch(-skill - 2) {
     case Constants::HP:
-      n = item->getRpgItem()->getAction()->getMod();
+      n = item->getRpgItem()->getPotionPower();
       if(n + getHp() > getMaxHp())
         n = getMaxHp() - getHp();
       setHp(getHp() + n);
@@ -995,7 +995,7 @@ void Creature::usePotion(Item *item) {
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::MP:
-      n = item->getRpgItem()->getAction()->getMod();
+      n = item->getRpgItem()->getPotionPower();
       if(n + getMp() > getMaxMp())
         n = getMaxMp() - getMp();
       setMp(getMp() + n);
@@ -1005,7 +1005,7 @@ void Creature::usePotion(Item *item) {
       return;
     case Constants::AC:
       {
-        bonusArmor += item->getRpgItem()->getAction()->getMod();
+        bonusArmor += item->getRpgItem()->getPotionPower();
         recalcAggregateValues();
         sprintf(msg, "%s feels impervious to damage!", getName());
         session->getMap()->addDescription(msg, 0.2f, 1, 1);
@@ -1013,7 +1013,7 @@ void Creature::usePotion(Item *item) {
 
         // add calendar event to remove armor bonus
         // (format : sec, min, hours, days, months, years)
-        Date d(0, item->getDuration(), 0, 0, 0, 0); 
+        Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
         Event *e = 
         new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
                                   d, this, item, session, 1);
@@ -1025,7 +1025,7 @@ void Creature::usePotion(Item *item) {
       return;
     }
   } else {
-    skillBonus[skill] += item->getRpgItem()->getAction()->getMod();
+    skillBonus[skill] += item->getRpgItem()->getPotionPower();
     //	recalcAggregateValues();
     sprintf(msg, "%s feels at peace.", getName());
     session->getMap()->addDescription(msg, 0.2f, 1, 1);
@@ -1033,7 +1033,7 @@ void Creature::usePotion(Item *item) {
 
     // add calendar event to remove armor bonus
     // (format : sec, min, hours, days, months, years)
-    Date d(0, item->getDuration(), 0, 0, 0, 0); 
+    Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
     Event *e = 
     new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
                               d, this, item, session, 1);
@@ -1331,7 +1331,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
       Item *item = getItemAtLocation( location[i] );
       if(item && 
          item->getRpgItem()->isWeapon() && 
-         item->getDistance() >= dist) {
+         item->getRange() >= dist) {
         ret = item;
         break;
       }
@@ -1360,7 +1360,7 @@ int Creature::getInitiative( int *max ) {
 int Creature::getMaxProjectileCount(Item *item) {
   int n = (int)((double)(getSkill(Skill::SPEED) + 
                          (getLevel() * 10) + 
-                         getSkill(item->getRpgItem()->getSkill())) / 30.0f);
+                         getSkill(item->getRpgItem()->getDamageSkill())) / 30.0f);
   if(n <= 0) n = 1;
   return n;
 }
@@ -2162,12 +2162,13 @@ void Creature::calcArmor( float *armorP,
             armor = session->getSquirrel()->getGlobalVariable( "armor" );
 
           }
-          armor += item->getRpgItem()->getAction()->getMod();
+					cerr << "*** FIXME: Creature::calcArmor needs attack's damage type." << endl;
+          armor += item->getRpgItem()->getDefense( 0 );
           armorLevel += 
             ( item->getLevel() + 
               ( item->isMagicItem() ? item->getBonus() : 0 ) );
-					int itemSkill = ( item->getRpgItem()->getSkill() > -1 ? 
-														item->getRpgItem()->getSkill() :
+					int itemSkill = ( item->getRpgItem()->getDefenseSkill() > -1 ? 
+														item->getRpgItem()->getDefenseSkill() :
 														Skill::DODGE_ATTACK );
           armorSkill += getSkill( itemSkill );
 					
@@ -2204,7 +2205,7 @@ float Creature::getAttackPercent( Item *weapon,
                                   float *itemLevelP,
 																	bool callScript ) {
 	int itemSkill = ( weapon ? 
-										weapon->getRpgItem()->getSkill() :
+										weapon->getRpgItem()->getDamageSkill() :
 										Skill::HAND_TO_HAND_COMBAT );
   float skill = 
     getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
@@ -2224,14 +2225,14 @@ float Creature::getAttackPercent( Item *weapon,
 
   float max = 
     ( weapon ? 
-      weapon->getRpgItem()->getAction()->getMax() : 
+      weapon->getRpgItem()->getDamage() : 
       HAND_ATTACK_DAMAGE.getMax() ) +
     itemLevel;
   max = ( ( max / 100.0f ) * skill );
 
   float min = 
     ( weapon ? 
-      weapon->getRpgItem()->getAction()->getMin() : 
+      weapon->getRpgItem()->getDamage() : 
       HAND_ATTACK_DAMAGE.getMin() ) +
     itemLevel;
   min = ( ( min / 100.0f ) * skill );

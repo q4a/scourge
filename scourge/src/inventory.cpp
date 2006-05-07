@@ -569,7 +569,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
       Item *item = creature->getInventory(itemIndex);
       if( item->getSpell() ) {
-        if( item->getMaxCharges() == 0 || item->getCurrentCharges() > 0 ) {
+        if( item->getRpgItem()->getMaxCharges() == 0 || item->getCurrentCharges() > 0 ) {
           creature->setAction(Constants::ACTION_CAST_SPELL, 
                               item,
                               item->getSpell());

@@ -20,11 +20,6 @@
 
 using namespace std;
 
-
-/**
-   These basic objects are enhanced by adding magical capabilities.
- */
-
 RpgItem *RpgItem::items[1000];
 
 map<int, map<int, vector<const RpgItem*>*>*> RpgItem::typesMap;
@@ -37,41 +32,53 @@ std::vector<ItemType> RpgItem::itemTypes;
 int RpgItem::randomTypes[ITEM_TYPE_COUNT];
 int RpgItem::randomTypeCount = 0;
 std::map<std::string,std::string> RpgItem::tagsDescriptions;
+char *RpgItem::DAMAGE_TYPE_NAME[] = { "Slashing", "Piercing", "Cutting" };
+char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
 
-RpgItem::RpgItem(int index, char *name, int level, int rareness, int type, float weight, int price, int quality, 
-                 Dice *action, int speed, char *desc, char *shortDesc, int equip, int shape_index, 
-                 int twohanded, int distance, int skill, int minDepth, int minLevel, 
-                 int maxCharges, int potionSkill,
-                 int potionTime, int iconTileX, int iconTileY, int maxSkillBonus) {
-  this->index = index;
+RpgItem::RpgItem( char *name, int rareness, int type, float weight, int price, 
+									char *desc, char *shortDesc, int equip, int shape_index, 
+									int minDepth, int minLevel, 
+									int maxCharges,
+									int iconTileX, int iconTileY ) {
   this->name = name;
-  this->level = level;
   this->rareness = rareness;
   this->type = type;
   this->weight = weight;
   this->price = price;
-  this->quality = quality;
-  this->action = action;
-  this->speed = speed;
   this->desc = desc;
   this->shortDesc = shortDesc;
   this->shape_index = shape_index;
   this->equip = equip;
-  this->twohanded = twohanded;
-  this->distance = distance;
-  this->skill = skill;
   this->minDepth = minDepth;
   this->minLevel = minLevel;
   this->maxCharges = maxCharges;
-  this->potionSkill = potionSkill;
-  this->potionTime = potionTime;
-  this->isWeaponItem = itemTypes[ type ].isWeapon;
   this->iconTileX = iconTileX;
   this->iconTileY = iconTileY;
-  this->maxSkillBonus = maxSkillBonus;
+  
+	// initialize the rest to default values
+
+	// weapon
+	damage = damageType = damageSkill = parry = ap = range = twohanded = 0;
+  
+	// armor
+	defense = (int*)malloc( sizeof( int ) * DAMAGE_TYPE_COUNT );
+	for( int i = 0; i < DAMAGE_TYPE_COUNT; i++ ) {
+		defense[ i ] = 0;
+	}
+	defenseSkill = dodgePenalty = 0;
+  
+	// potion
+	potionPower = potionSkill = potionTime = 0;
+
+	// spells
+	spellLevel = 0;
 }
 
 RpgItem::~RpgItem() {
+	free( defense );
+	free( name );
+	free( desc );
+	free( shortDesc );
 }
 
 void RpgItem::addItem(RpgItem *item, int width, int depth, int height) {
@@ -140,10 +147,6 @@ int RpgItem::getTypeByName(char *name) {
   exit(1);
 }
 
-bool RpgItem::isEnchantable() {
-  return( itemTypes[ type ].isEnchantable );
-}
-
 RpgItem *RpgItem::getRandomItem(int depth) {
   return getRandomItemFromTypes( depth, randomTypes, randomTypeCount );
 }
@@ -197,11 +200,6 @@ RpgItem *RpgItem::getItemByName(char *name) {
   RpgItem *item = (RpgItem *)itemsByName[s];
   //  cerr << "*** Looking for >" << s << "< found=" << item << endl;
   return item;
-}
-
-// warning: slow method (use in editor only)
-bool RpgItem::isContainer() {
-  return( type == CONTAINER ? true : false );
 }
 
 void RpgItem::describeTag( char *buffer, char *prefix, string tag, char *postfix, char *token ) {

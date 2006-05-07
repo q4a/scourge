@@ -43,7 +43,7 @@ public:
   virtual char *getItemName() = 0;
   virtual ItemInfo *save() = 0;
 	virtual char *getType() = 0;
-  virtual int getDistance() = 0;
+  virtual int getRange() = 0;
 };
 
 
