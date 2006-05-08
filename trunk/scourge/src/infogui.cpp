@@ -143,18 +143,43 @@ void InfoGui::describe() {
   strcat( description, tmp );
   sprintf(tmp, "Price: %d|", item->getPrice());
   strcat( description, tmp );
-  if( item->getRpgItem()->getDamage() ) {
-    sprintf(tmp, "Damage: %d|", item->getRpgItem()->getDamage() );
+  if( item->getRpgItem()->isWeapon() ) {
+    sprintf(tmp, "Damage: %d percent|", item->getRpgItem()->getDamage() );
     strcat( description, tmp );
-  }
-  if( item->getRpgItem()->getAP() > 0 ) {
-    sprintf(tmp, "AP cost: %d|", item->getRpgItem()->getAP() );
+		sprintf(tmp, "Damage Type: %s|", RpgItem::DAMAGE_TYPE_NAME[ item->getRpgItem()->getDamageType() ] );
     strcat( description, tmp );
-  }
-  if( item->getRange() > MIN_DISTANCE ) {
-    sprintf(tmp, "Distance: %d|", item->getRange());
+		sprintf(tmp, "Skill: %s|", Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
+		strcat( description, tmp );
+		if( item->getRpgItem()->getParry() > 0 ) {
+			sprintf(tmp, "Parry: %d percent of %s skill|", item->getRpgItem()->getParry(), 
+							Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
+			strcat( description, tmp );
+		}
+		if( item->getRpgItem()->getAP() > 0 ) {
+			sprintf(tmp, "AP cost: %d|", item->getRpgItem()->getAP() );
+			strcat( description, tmp );
+		}
+		if( item->getRange() > MIN_DISTANCE ) {
+			sprintf(tmp, "Range: %d|", item->getRange());
+			strcat( description, tmp );
+		}
+	}
+	if( item->getRpgItem()->isArmor() ) {
+		for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
+			sprintf(tmp, "Defense vs. %s damage: %d|", 
+							RpgItem::DAMAGE_TYPE_NAME[ i ], 
+							item->getRpgItem()->getDefense( i ) );
+			strcat( description, tmp );
+		}
+		sprintf(tmp, "Skill: %s|", Skill::skills[ item->getRpgItem()->getDefenseSkill() ]->getName() );
+		strcat( description, tmp );
+		sprintf(tmp, "Dodge penalty: %d|", item->getRpgItem()->getDodgePenalty() );
     strcat( description, tmp );
-  }
+	}
+	if( item->getRpgItem()->getPotionPower() ) {
+		sprintf(tmp, "Power: %d|", item->getRpgItem()->getPotionPower() );
+    strcat( description, tmp );
+	}
   if( item->getRpgItem()->getMaxCharges() > 0 ) {
     sprintf(tmp, "Charges: %d(%d)|", item->getCurrentCharges(), item->getRpgItem()->getMaxCharges() );
     strcat( description, tmp );
@@ -183,7 +208,7 @@ void InfoGui::describe() {
   }
   
   if( item->getRpgItem()->isWeapon() ) {
-    sprintf( tmp, "Attack Info for each player:.|" );
+    sprintf( tmp, "|Attack Info for each player:.|" );
     strcat( description, tmp );
     float max, min;
     for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
