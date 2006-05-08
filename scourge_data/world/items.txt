@@ -443,7 +443,7 @@ I:10,POLE,1.0,20,POLE,48
 I:This long wooden pole serves both as a walking stick and fighting staff.
 I:A long wood pole.
 I:15,1
-W:30,P,LARGE_WEAPON,60,7,2,1
+W:30,C,LARGE_WEAPON,60,7,2,1
 G:METAL,LARGE,TWO_HANDED
 
 I:Javelin
