@@ -273,6 +273,15 @@ void Item::getDetailedDescription(char *s, bool precise){
   }
 }
 
+char *trim( char *s ) {
+	for( char *p = s; p; p++ ) {
+		if( !( *p == ' ' || *p == '\t' || *p == '\r' || *p == '\n' ) ) {
+			return p;
+		}
+	}
+	return s;
+}
+
 // this should really be in RpgItem but that class can't reference ShapePalette and shapes.
 void Item::initItems( ShapePalette *shapePal ) {
   char errMessage[500];
@@ -297,17 +306,17 @@ void Item::initItems( ShapePalette *shapePal ) {
       n = Constants::readLine( line, fp );
       ItemType itemType;
       strcpy( itemType.name, strtok( line, "," ) );
-      char *p = strtok( NULL, "," );
+      char *p = trim( strtok( NULL, "," ) );
       itemType.isWeapon = ( p && *p == '1' ? true : false );
-      p = strtok( NULL, "," );
+      p = trim( strtok( NULL, "," ) );
       itemType.isArmor = ( p && *p == '1' ? true : false );
-      p = strtok( NULL, "," );
+      p = trim( strtok( NULL, "," ) );
       itemType.isRandom = ( p && *p == '1' ? true : false );
-      p = strtok( NULL, "," );
+      p = trim( strtok( NULL, "," ) );
       itemType.isRanged = ( p && *p == '1' ? true : false );
-      p = strtok( NULL, "," );
+      p = trim( strtok( NULL, "," ) );
       itemType.hasSpell = ( p && *p == '1' ? true : false );
-      p = strtok( NULL, "," );
+      p = trim( strtok( NULL, "," ) );
       itemType.isEnchantable = ( p && *p == '1' ? true : false );
       RpgItem::itemTypes.push_back( itemType );
       if( itemType.isRandom ) {
