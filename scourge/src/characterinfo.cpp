@@ -95,7 +95,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   int yy = 120;
   bool hasWeapon = false;
   if( left && left->getRpgItem()->isWeapon() ) {
-    p->getAttackPercent( left, &max, &min, NULL, NULL );
+    p->getAttack( left, &max, &min );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) %s", 
               toint( min ), toint( max ), getAPRDescription(p, left, buff),
@@ -109,7 +109,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     hasWeapon = true;
   } 
   if( right && right->getRpgItem()->isWeapon() ) {
-    p->getAttackPercent( right, &max, &min, NULL, NULL );
+    p->getAttack( right, &max, &min );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) %s", 
               toint( min ), toint( max ), getAPRDescription(p, right, buff),
@@ -123,7 +123,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     hasWeapon = true;
   }
   if( !hasWeapon ) {
-    p->getAttackPercent( NULL, &max, &min, NULL, NULL );
+    p->getAttack( NULL, &max, &min );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) Bare Hands", 
               toint( min ), toint( max ), getAPRDescription(p, NULL, buff) );
@@ -134,7 +134,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     yy += 15;
   }
   if( ranged ) {
-    p->getAttackPercent( ranged, &max, &min, NULL, NULL );
+    p->getAttack( ranged, &max, &min );
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK: %d - %d (%s) %s", 
               toint( min ), toint( max ), getAPRDescription(p, ranged, buff),

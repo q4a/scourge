@@ -1344,14 +1344,11 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
   return ret;
 }
 
-// return the initiative for a battle round, the lower the faster the attack
+// return the initiative for a battle round, the higher the faster the attack
 int Creature::getInitiative( int *max ) {
-  // use the speed skill
-  float speed = getSkill(Skill::SPEED) / 5.0f;
-  if( max ) *max = toint( speed );
-  // roll for luck
-  speed += ( ( getSkill(Skill::LUCK) / 10.0f ) * rand()/RAND_MAX );
-  return toint( speed );
+	float n = ( getSkill( Skill::SPEED ) + ( getSkill( Skill::LUCK ) / 5.0f ) );
+	if( max ) *max = toint( n );
+  return toint( n * rand() / RAND_MAX );
 }
 
 // return number of projectiles that can be launched simultaniously
@@ -2198,64 +2195,64 @@ void Creature::calcArmor( float *armorP,
 
 #define MAX_RANDOM_DAMAGE 2.0f
 
-float Creature::getAttackPercent( Item *weapon, 
-                                  float *maxP,
-                                  float *minP, 
-                                  float *skillP,
-                                  float *itemLevelP,
-																	bool callScript ) {
-	int itemSkill = ( weapon ? 
-										weapon->getRpgItem()->getDamageSkill() :
-										Skill::HAND_TO_HAND_COMBAT );
-  float skill = 
-    getSkill( weapon && weapon->getRpgItem()->isRangedWeapon() ?
-                           Skill::COORDINATION :
-                           Skill::POWER ) + getSkill( itemSkill );
-	skill /= 2.0f;
+float Creature::getAttack( Item *weapon, 
+													 float *maxP,
+													 float *minP, 
+													 float *skillP,
+													 bool callScript ) {
 
-  skill += ( getSkill( Skill::LUCK ) / 10.0f );
-  if( skillP ) *skillP = skill;
-
-  float itemLevel = 
-    ( weapon ? weapon->getLevel() + ( weapon->isMagicItem() ? weapon->getBonus() : 0 ) : 
-      getLevel() ) - 1;
-
-  if( itemLevel < 0 ) itemLevel = 0;
-  if( itemLevelP ) *itemLevelP = itemLevel;
-
-  float max = 
-    ( weapon ? 
-      weapon->getRpgItem()->getDamage() : 
-      HAND_ATTACK_DAMAGE.getMax() ) +
-    itemLevel;
-  max = ( ( max / 100.0f ) * skill );
-
-  float min = 
-    ( weapon ? 
-      weapon->getRpgItem()->getDamage() : 
-      HAND_ATTACK_DAMAGE.getMin() ) +
-    itemLevel;
-  min = ( ( min / 100.0f ) * skill );
-  
-  // reporting
-  if( maxP ) *maxP = max;
-  if( minP ) *minP = min;
-                                                                 
-  float total = min;
-  if( max - min > 0 ) total +=  ( max - min ) * rand() / RAND_MAX;
-
-	if( callScript ) {
-		// apply damage enhancing capabilities
-		session->getSquirrel()->setCurrentWeapon( weapon );
-		total = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
-																				 "damage", total );
-		if( weapon && !monster )
-				session->getSquirrel()->setGlobalVariable( "damage", total );
-		session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
-		total = session->getSquirrel()->getGlobalVariable( "damage" );
+	float power;
+	if( weapon && weapon->getRpgItem()->isRangedWeapon() ) {
+		power = getSkill( Skill::POWER ) / 2.0f +
+			getSkill( Skill::COORDINATION ) / 2.0f;
+	} else {
+		power = getSkill( Skill::POWER );
 	}
-  
-  return total;
+
+	// the min/max power value
+	float minPower, maxPower;
+	if( power < 10 ) { 
+		// 1d10
+		minPower = 1; maxPower = 10;
+	} else if( power < 15 ) { 
+		// 2d10
+		minPower = 2; maxPower = 20;
+	} else {
+		// 3d10
+		minPower = 3; maxPower = 30;
+	}
+
+	// What percent of power is given by weapon? 
+	// (For unarmed combat it's a coordination bonus.)
+	int damagePercent = ( weapon ? 
+												weapon->getRpgItem()->getDamage() : 
+												getSkill( Skill::COORDINATION ) * 5 );
+
+	if( minP ) {
+		*minP = ( minPower / 100.0f ) * damagePercent;
+	}
+	if( maxP ) {
+		*maxP = ( maxPower / 100.0f ) * damagePercent;
+	}
+
+	// roll the power
+	float roll = minPower + ( ( maxPower - minPower ) * rand() / RAND_MAX );
+
+	// take the weapon's skill % of the max power
+	roll = ( roll / 100.0f ) * damagePercent;
+
+	// apply damage enhancing capabilities
+	if( callScript ) {
+		session->getSquirrel()->setCurrentWeapon( weapon );
+		roll = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
+																				"damage", roll );
+		if( weapon && !monster )
+				session->getSquirrel()->setGlobalVariable( "damage", roll );
+		session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
+		roll = session->getSquirrel()->getGlobalVariable( "damage" );
+	}
+	
+	return roll;
 }
 
 /**
