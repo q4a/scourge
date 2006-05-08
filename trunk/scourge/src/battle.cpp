@@ -114,7 +114,7 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
     bool handled = false;
     for( vector<Battle*>::iterator e = turns->begin(); e != turns->end(); ++e ) {
       Battle *b = *e;
-      if( b->getCreature()->getInitiative() < battle[i]->getCreature()->getInitiative() ) {
+      if( b->getCreature()->getInitiative() > battle[i]->getCreature()->getInitiative() ) {
         turns->insert( e, battle[i] );
         handled = true;
         break;
@@ -1019,77 +1019,100 @@ float Battle::applyMagicItemSpellDamage() {
 void Battle::hitWithItem() {
   prepareToHitMessage();
 
-  float total, max, min, skill, itemLevel;
-  float attack = 
-    creature->getAttackPercent( item, 
-                                &max, 
-                                &min,
-                                &skill, 
-                                &itemLevel,
-																true );
-  float delta = creature->getAttackerStateModPercent();
-  float extra = ( attack / 100.0f ) * delta;
-  attack += extra;
 
-  sprintf(message, "...%s attacks for %.2f points.", 
-          creature->getName(), attack );
-  session->getMap()->addDescription(message);
-  if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-    sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,IL:%.2f,EX:%.2f)",
-            min, max, skill, itemLevel, extra );
-    session->getMap()->addDescription(message);
-  }
+	// roll chance to hit (CTH)
+	float cth = 100.0f * rand() / RAND_MAX;
 
-  // cursed items
-  if( item && item->isCursed() ) {
-    session->getMap()->addDescription("...Using cursed item!");
-    attack -= ( attack / 3.0f );
-  }
+	// is this greater than the attacker's weapon skill - defender's dodge skill?
+	// FIXME: need to apply modifiers for sneak attacks, etc.
+	if( cth > creature->getSkill( item ? 
+																item->getRpgItem()->getDamageSkill() : 
+																Skill::HAND_TO_HAND_COMBAT ) -
+			creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) ) {
+		// a hit!
+		
 
-  // very low attack rolls
-  if( handleLowAttackRoll( attack, min, max ) ) return;
+		
+		
+		// calculate attack value
+		float max, min, skill;
+		float attack = creature->getAttack( item, &max, &min, &skill, true );
+		float delta = creature->getAttackerStateModPercent();
+		float extra = ( attack / 100.0f ) * delta;
+		attack += extra;
 
+		sprintf(message, "...%s attacks for %.2f points.", 
+						creature->getName(), attack );
+		session->getMap()->addDescription(message);
+		if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+			sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,EX:%.2f)",
+							min, max, skill, extra );
+			session->getMap()->addDescription(message);
+		}
 
-  float ac = creature->getTargetCreature()->
-    getACPercent( &total, &skill, attack, item );
-
-  sprintf(message, "...%s blocks %.2f points", 
-          creature->getTargetCreature()->getName(), ac);
-  session->getMap()->addDescription(message);
-  if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-    sprintf(message, "...(TO:%.2f,SK:%.2f)",
-            total, skill );
-    session->getMap()->addDescription(message);
-  }
+		// Shield weapon parry
 
 
-  float damage = ( ac > attack ? 0 : attack - ac );
-  if( damage > 0 ) {
-    // play item sound
-    if( item ) session->playSound( item->getRandomSound() );
+		/*
+		// cursed items
+		if( item && item->isCursed() ) {
+			session->getMap()->addDescription("...Using cursed item!");
+			attack -= ( attack / 3.0f );
+		}
 
-    applyMagicItemDamage( &damage );
+		// very low attack rolls
+		if( handleLowAttackRoll( attack, min, max ) ) return;
 
-    applyHighAttackRoll( &damage, attack, min, max );
 
-  }
+		float ac = creature->getTargetCreature()->
+			getACPercent( &total, &skill, attack, item );
 
-  // item attack event handler
-  if( item ) {
-    getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
-    getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
-    damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
-  }
+		sprintf(message, "...%s blocks %.2f points", 
+						creature->getTargetCreature()->getName(), ac);
+		session->getMap()->addDescription(message);
+		if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+			sprintf(message, "...(TO:%.2f,SK:%.2f)",
+							total, skill );
+			session->getMap()->addDescription(message);
+		}
 
-  dealDamage( damage );
 
-  if( damage > 0 ) {
-    // apply extra spell-like damage of magic items
-    float spellDamage = applyMagicItemSpellDamage();
-    if( spellDamage > -1 ) {
-      dealDamage( damage, Constants::EFFECT_GREEN, true );
-    }
-  }
+		float damage = ( ac > attack ? 0 : attack - ac );
+		if( damage > 0 ) {
+			// play item sound
+			if( item ) session->playSound( item->getRandomSound() );
+
+			applyMagicItemDamage( &damage );
+
+			applyHighAttackRoll( &damage, attack, min, max );
+
+		}
+
+		// item attack event handler
+		if( item ) {
+			getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
+			getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
+			damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
+		}
+
+		dealDamage( damage );
+
+		if( damage > 0 ) {
+			// apply extra spell-like damage of magic items
+			float spellDamage = applyMagicItemSpellDamage();
+			if( spellDamage > -1 ) {
+				dealDamage( damage, Constants::EFFECT_GREEN, true );
+			}
+		}
+	 */
+
+
+	} else {
+		// a miss
+		sprintf(message, "...%s dodges the attack.", 
+						creature->getTargetCreature()->getName() );
+		session->getMap()->addDescription(message);
+	}
 }
 
 void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {

@@ -437,12 +437,11 @@ class Creature : public RenderedCreature {
                   float *avgArmorLevelP,
                   float *avgArmorSkillP,
                   bool callScript=false );
-  float getAttackPercent( Item *weapon, 
-                          float *maxP=NULL, 
-                          float *minP=NULL, 
-                          float *skillP=NULL,
-                          float *itemLevelP=NULL,
-													bool callScript=false );
+  float getAttack( Item *weapon, 
+									 float *maxP=NULL, 
+									 float *minP=NULL, 
+									 float *skillP=NULL,
+									 bool callScript=false );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );

@@ -184,11 +184,11 @@ bool CombatTest::fight( char *path,
       // -------------------------------------------------
       // Attack roll
       sum = low = high = 0;
-      attacker->getAttackPercent( weapon, &max, &min, &skill, &itemLevel );
-      fprintf( fp, "ATK range:<b>%.2f - %.2f</b> (%% %.2f, IL:%.2f )<br>\n", 
-               min, max, skill, itemLevel );
+      attacker->getAttack( weapon, &max, &min, &skill );
+      fprintf( fp, "ATK range:<b>%.2f - %.2f</b> (%% %.2f )<br>\n", 
+               min, max, skill );
       for( int i = 0; i < count; i++ ) {
-        computeHighLow( attacker->getAttackPercent( weapon ),
+        computeHighLow( attacker->getAttack( weapon ),
                         &sum, &low, &high );
       }
       ATKave = sum / ((double)count);

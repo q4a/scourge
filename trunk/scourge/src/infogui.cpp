@@ -208,7 +208,7 @@ void InfoGui::describe() {
   }
   
   if( item->getRpgItem()->isWeapon() ) {
-    sprintf( tmp, "|Attack Info for each player:.|" );
+    sprintf( tmp, "|Attack Info for each player:|" );
     strcat( description, tmp );
     float max, min;
     for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
@@ -219,7 +219,7 @@ void InfoGui::describe() {
           canEquipItem( item, false ) );
       if( !err ) {
         scourge->getSession()->getParty()->getParty( i )->
-          getAttackPercent( item, &max, &min, NULL, NULL );
+          getAttack( item, &max, &min );
         if( toint( max ) > toint( min ) )
           sprintf( tmp, "#%d ^ATK: %d - %d (%.2f APR)|", 
                    ( i + 1 ), toint( min ), toint( max ), 
