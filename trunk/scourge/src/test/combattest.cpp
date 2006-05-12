@@ -161,7 +161,7 @@ bool CombatTest::fight( char *path,
   int atkOriginalLevel = attacker->getLevel();
   int defOriginalLevel = defender->getLevel();
 
-  float total, skill, itemLevel, max, min;
+  float total, skill, max, min;
   float sum=0, low=0, high=0, ATKave;
   for( int n = 0; n < SHOW_MAX_LEVEL; n++ ) {
 

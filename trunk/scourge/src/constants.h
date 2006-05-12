@@ -609,7 +609,7 @@ public:
   static const char *npcTypeName[];
 
   // the speed when hand fighting is used instead of a weapon
-  static const int HAND_WEAPON_SPEED = 10;
+  static const int HAND_WEAPON_SPEED = 5;
 
   Constants();
   ~Constants();

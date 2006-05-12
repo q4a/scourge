@@ -442,6 +442,7 @@ class Creature : public RenderedCreature {
 									 float *minP=NULL, 
 									 float *skillP=NULL,
 									 bool callScript=false );
+	float getParry( Item *parryItem=NULL );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );
