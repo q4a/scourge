@@ -362,6 +362,9 @@ void Battle::executeAction() {
   }
   creature->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
   ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
+
+	// pause after each hit
+	steps = 0;
 }
 
 void Battle::stepCloserToTarget() {
