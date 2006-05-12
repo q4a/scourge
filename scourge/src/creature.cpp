@@ -2255,6 +2255,41 @@ float Creature::getAttack( Item *weapon,
 	return roll;
 }
 
+float Creature::getParry( Item *parryItem ) {
+	int location[] = {
+		Constants::INVENTORY_RIGHT_HAND,
+		Constants::INVENTORY_LEFT_HAND,
+		Constants::INVENTORY_WEAPON_RANGED,
+		-1
+	};
+	float ret = 0;
+	float maxParry = 0;
+	for( int i = 0; location[i] > -1; i++ ) {
+		Item *item = getItemAtLocation( location[i] );
+		if( !item ) continue;
+		if( item->getRpgItem()->getDefenseSkill() == Skill::SHIELD_DEFEND ) {
+			// parry using a shield: use shield skill to parry
+			maxParry = getSkill( item->getRpgItem()->getDefenseSkill() );
+		} else if( item->getRpgItem()->getParry() > 0 ) {
+			// parry using a weapon: get max parry skill amount (% of weapon skill)
+			maxParry = 
+				( getSkill( item->getRpgItem()->getDamageSkill() ) / 100.0f ) * 
+				item->getRpgItem()->getParry();			
+		} else {
+			// no parry with this hand
+			continue;
+		}
+		// roll to parry
+		float parry = maxParry * rand() / RAND_MAX;
+		// select the highest value
+		if( ret < parry ) {
+			ret = parry;
+			if( parryItem ) parryItem = item;
+		}
+	}
+	return ret;
+}
+
 /**
  * Apply this to the damage caused to the defender.
  */

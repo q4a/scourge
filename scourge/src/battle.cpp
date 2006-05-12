@@ -27,7 +27,7 @@
 
 using namespace std;
 
-#define WEAPON_WAIT_MUL 9
+#define WEAPON_WAIT_MUL 1
 #define MIN_FUMBLE_RANGE 4.0f
 
 #define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) )
@@ -318,9 +318,9 @@ void Battle::initTurnStep( bool callScript ) {
       // How many steps to wait before being able to use the weapon.
       weaponWait = getWeaponSpeed( item );
       // Make turn-based mode a little snappier
-      if( session->getPreferences()->isBattleTurnBased() ) {
-        weaponWait /= 2;
-      }
+      //if( session->getPreferences()->isBattleTurnBased() ) {
+      //  weaponWait /= 2;
+      //}
     }
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
@@ -1029,84 +1029,91 @@ void Battle::hitWithItem() {
 																item->getRpgItem()->getDamageSkill() : 
 																Skill::HAND_TO_HAND_COMBAT ) -
 			creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) ) {
-		// a hit!
+		// a hit?
+
+		// Shield/weapon parry
+		Item *parryItem;
+		float parry = creature->getParry( parryItem );
+		if( parry > cth ) {
+			sprintf( message, "...attack is blocked by %s!", item->getName() );
+			session->getMap()->addDescription( message );
+		} else {
+			// a hit!
 		
+			// calculate attack value
+			float max, min, skill;
+			float attack = creature->getAttack( item, &max, &min, &skill, true );
+			float delta = creature->getAttackerStateModPercent();
+			float extra = ( attack / 100.0f ) * delta;
+			attack += extra;
 
-		
-		
-		// calculate attack value
-		float max, min, skill;
-		float attack = creature->getAttack( item, &max, &min, &skill, true );
-		float delta = creature->getAttackerStateModPercent();
-		float extra = ( attack / 100.0f ) * delta;
-		attack += extra;
-
-		sprintf(message, "...%s attacks for %.2f points.", 
-						creature->getName(), attack );
-		session->getMap()->addDescription(message);
-		if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-			sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,EX:%.2f)",
-							min, max, skill, extra );
-			session->getMap()->addDescription(message);
-		}
-
-		// Shield weapon parry
-
-
-		/*
-		// cursed items
-		if( item && item->isCursed() ) {
-			session->getMap()->addDescription("...Using cursed item!");
-			attack -= ( attack / 3.0f );
-		}
-
-		// very low attack rolls
-		if( handleLowAttackRoll( attack, min, max ) ) return;
-
-
-		float ac = creature->getTargetCreature()->
-			getACPercent( &total, &skill, attack, item );
-
-		sprintf(message, "...%s blocks %.2f points", 
-						creature->getTargetCreature()->getName(), ac);
-		session->getMap()->addDescription(message);
-		if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-			sprintf(message, "...(TO:%.2f,SK:%.2f)",
-							total, skill );
-			session->getMap()->addDescription(message);
-		}
-
-
-		float damage = ( ac > attack ? 0 : attack - ac );
-		if( damage > 0 ) {
-			// play item sound
-			if( item ) session->playSound( item->getRandomSound() );
-
-			applyMagicItemDamage( &damage );
-
-			applyHighAttackRoll( &damage, attack, min, max );
-
-		}
-
-		// item attack event handler
-		if( item ) {
-			getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
-			getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
-			damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
-		}
-
-		dealDamage( damage );
-
-		if( damage > 0 ) {
-			// apply extra spell-like damage of magic items
-			float spellDamage = applyMagicItemSpellDamage();
-			if( spellDamage > -1 ) {
-				dealDamage( damage, Constants::EFFECT_GREEN, true );
+			// cursed items
+			if( item && item->isCursed() ) {
+				session->getMap()->addDescription("...Using cursed item!");
+				attack -= ( attack / 3.0f );
 			}
+
+			sprintf( message, "...%s attacks for %.2f points.", 
+							 creature->getName(), attack );
+			session->getMap()->addDescription( message );
+			if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+				sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,EX:%.2f)",
+								min, max, skill, extra );
+				session->getMap()->addDescription( message );
+			}
+	
+	
+			
+			// FIXME: implement stuff below
+			float ac = 0;
+
+			// very low attack rolls
+			//if( handleLowAttackRoll( damage, min, max ) ) return;
+			
+			//float ac = creature->getTargetCreature()->
+				//getACPercent( &total, &skill, attack, item );
+	
+			//sprintf(message, "...%s blocks %.2f points", 
+							//creature->getTargetCreature()->getName(), ac);
+			//session->getMap()->addDescription(message);
+			//if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+//				sprintf(message, "...(TO:%.2f,SK:%.2f)",
+								//total, skill );
+				//session->getMap()->addDescription(message);
+			//}
+	
+	
+			float damage = ( ac > attack ? 0 : attack - ac );
+			if( damage > 0 ) {
+				// play item sound
+				if( item ) session->playSound( item->getRandomSound() );
+	
+				//applyMagicItemDamage( &damage );
+	
+				//applyHighAttackRoll( &damage, attack, min, max );
+	
+			}
+	
+			// item attack event handler
+			//if( item ) {
+				//getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
+				//getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
+				//damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
+			//}
+	
+			dealDamage( damage );
+	
+			/*
+			if( damage > 0 ) {
+				// apply extra spell-like damage of magic items
+				float spellDamage = applyMagicItemSpellDamage();
+				if( spellDamage > -1 ) {
+					dealDamage( damage, Constants::EFFECT_GREEN, true );
+				}
+			}
+			*/
+
 		}
-	 */
-
-
 	} else {
 		// a miss
 		sprintf(message, "...%s dodges the attack.", 
@@ -1317,9 +1324,9 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
   
   // How many steps to wait before being able to use the weapon.
   int weaponWait = getWeaponSpeed( item );
-  if( session->getPreferences()->isBattleTurnBased() ) {
-    weaponWait /= 2;
-  }
+  //if( session->getPreferences()->isBattleTurnBased() ) {
+//    weaponWait /= 2;
+//  }
   
   sprintf( buff, "%s: %d", 
            ( item ? item->getRpgItem()->getName() : "Bare Hands" ), 

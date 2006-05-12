@@ -403,6 +403,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 			int parry = atoi( strtok( NULL, "," ) );
 			int ap = atoi( strtok( NULL, "," ) );
 			int range = atoi( strtok( NULL, "," ) );
+      if( range < (int)MIN_DISTANCE ) range = (int)MIN_DISTANCE;
 			int twoHanded = atoi( strtok( NULL, "," ) );
 			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
 			
