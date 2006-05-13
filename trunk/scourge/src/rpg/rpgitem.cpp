@@ -32,7 +32,7 @@ std::vector<ItemType> RpgItem::itemTypes;
 int RpgItem::randomTypes[ITEM_TYPE_COUNT];
 int RpgItem::randomTypeCount = 0;
 std::map<std::string,std::string> RpgItem::tagsDescriptions;
-char *RpgItem::DAMAGE_TYPE_NAME[] = { "Slashing", "Piercing", "Cutting" };
+char *RpgItem::DAMAGE_TYPE_NAME[] = { "Slashing", "Piercing", "Crushing" };
 char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
 
 RpgItem::RpgItem( char *name, int rareness, int type, float weight, int price, 
