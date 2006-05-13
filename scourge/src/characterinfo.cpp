@@ -78,10 +78,12 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint( 5, y + 90, s );
 
   glColor4f( 0, 1, 0.25f, 1 );
-  float totalArmor;
-  p->getACPercent( &totalArmor, NULL, -1, NULL );
-  sprintf(s, "DEF: %d", toint( totalArmor ) );
-  scourge->getSDLHandler()->texPrint(5, y + 105, s);
+	float armor, dodgePenalty;
+  sprintf( s, "DEF: S:%d P:%d C:%d", 
+					 toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_SLASHING ) ),
+					 toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_PIERCING ) ),
+					 toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
+	scourge->getSDLHandler()->texPrint( 5, y + 105, s );
 
 
   glColor4f( 1, 0.35f, 0, 1 );
@@ -97,12 +99,16 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   if( left && left->getRpgItem()->isWeapon() ) {
     p->getAttack( left, &max, &min );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d (%s) %s", 
-              toint( min ), toint( max ), getAPRDescription(p, left, buff),
+      sprintf(s, "ATK: %d - %d %s (%s) %s", 
+              toint( min ), toint( max ), 
+							RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ],
+							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK: %d (%s) %s", 
-              toint( min ), getAPRDescription(p, left, buff),
+      sprintf(s, "ATK: %d %s (%s) %s", 
+              toint( min ), 
+							RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ],
+							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
@@ -111,12 +117,16 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   if( right && right->getRpgItem()->isWeapon() ) {
     p->getAttack( right, &max, &min );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d (%s) %s", 
-              toint( min ), toint( max ), getAPRDescription(p, right, buff),
+      sprintf(s, "ATK: %d - %d %s (%s) %s", 
+              toint( min ), toint( max ), 
+							RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ],
+							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK: %d (%s) %s", 
-              toint( min ), getAPRDescription(p, right, buff),
+      sprintf(s, "ATK: %d %s (%s) %s", 
+              toint( min ), 
+							RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ],
+							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
@@ -125,23 +135,31 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   if( !hasWeapon ) {
     p->getAttack( NULL, &max, &min );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d (%s) Bare Hands", 
-              toint( min ), toint( max ), getAPRDescription(p, NULL, buff) );
+      sprintf(s, "ATK: %d - %d %s (%s) Bare Hands", 
+              toint( min ), toint( max ), 
+							RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+							getAPRDescription(p, NULL, buff) );
     else
-      sprintf(s, "ATK: %d (%s) Bare Hands", 
-              toint( min ), getAPRDescription(p, NULL, buff) );
+      sprintf(s, "ATK: %d %s (%s) Bare Hands", 
+              toint( min ), 
+							RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+							getAPRDescription(p, NULL, buff) );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
   }
   if( ranged ) {
     p->getAttack( ranged, &max, &min );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d (%s) %s", 
-              toint( min ), toint( max ), getAPRDescription(p, ranged, buff),
+      sprintf(s, "ATK: %d - %d %s (%s) %s", 
+              toint( min ), toint( max ), 
+							RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ],
+							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK: %d (%s) %s", 
-              toint( min ), getAPRDescription(p, ranged, buff),
+      sprintf(s, "ATK: %d %s (%s) %s", 
+              toint( min ), 
+							RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ],
+							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;

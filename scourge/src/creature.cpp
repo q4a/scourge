@@ -114,7 +114,7 @@ void Creature::commonInit() {
 
   ((MD2Shape*)shape)->setCreatureSpeed( speed );
 
-  lastArmor = lastArmorLevel = lastArmorSkill = 0;
+  lastArmor = lastArmorSkill = lastDodgePenalty = 0;
   for( int i = 0; i < 12; i++ ) quickSpell[ i ] = NULL;
   this->lastMove = 0;
   this->moveCount = 0;
@@ -2093,28 +2093,54 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 // base weapon damage of an attack with bare hands
 #define HAND_ATTACK_DAMAGE Dice(1,4,0)
 
-float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item *vsWeapon ) {
+float Creature::getArmor( float *armorP, float *dodgePenaltyP, 
+													int damageType, Item *vsWeapon ) {
+	float a, avgArmorSkill;
+	calcArmor( damageType, &a, dodgePenaltyP, &avgArmorSkill, 
+						 ( vsWeapon ? true : false ) );
+	armor = a;
+	cerr << getName() << " dodge penalty=" << *dodgePenaltyP << endl;
+
+	// apply any armor enhancing capabilities
+	if( vsWeapon ) {
+		session->getSquirrel()->setCurrentWeapon( vsWeapon );
+		armor = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_ARMOR,
+																				 "armor", armor );
+	}
+	
+	*armorP = armor;
+
+	return armor;
+}
+
+float Creature::getACPercent( float *totalP, 
+															float *skillP, 
+															float vsDamage, 
+															Item *vsWeapon ) {
   float ac, avgArmorLevel, avgArmorSkill;
-  calcArmor( &ac, &avgArmorLevel, &avgArmorSkill, ( vsDamage > 0 ? true : false ) );
+  calcArmor( ( vsWeapon ? vsWeapon->getRpgItem()->getDamageType() : 0 ), 
+						 &ac, &avgArmorLevel, &avgArmorSkill, 
+						 ( vsDamage > 0 ? true : false ) );
     
   if( skillP ) *skillP = avgArmorSkill;
   
-  float itemLevel = avgArmorLevel - 1;
-  if( itemLevel < 0 ) itemLevel = 0;
+  //float itemLevel = avgArmorLevel - 1;
+  //if( itemLevel < 0 ) itemLevel = 0;
   
-  armor = ac + itemLevel;
+  //armor = ac + itemLevel;
+	armor = ac;
   if( totalP ) *totalP = armor;
 
   // roll the armor ( weighted roll: low values are less likely)  
-  float n;
-  if( ( 4.0f * rand() / RAND_MAX ) > 1.0f ) {
-    n = ( ( armor / 2.0f ) * rand() / RAND_MAX ) + ( armor / 2.0f );
-  } else {
-    n = armor * rand() / RAND_MAX;
-  }
+  //float n;
+  //if( ( 4.0f * rand() / RAND_MAX ) > 1.0f ) {
+//    n = ( ( armor / 2.0f ) * rand() / RAND_MAX ) + ( armor / 2.0f );
+//  } else {
+    //n = armor * rand() / RAND_MAX;
+  //}
   
   // apply the skill
-  armor = ( ( armor / 100.0f ) * avgArmorSkill );
+  //armor = ( ( armor / 100.0f ) * avgArmorSkill );
 
   // negative feedback: for monsters only, allow hits now and then
   if( monster && vsDamage > 0 && 
@@ -2123,72 +2149,64 @@ float Creature::getACPercent( float *totalP, float *skillP, float vsDamage, Item
     return ( vsDamage / 2.0f * rand() / RAND_MAX );
   }
 
-  float ret = ( ( n / 100.0f ) * avgArmorSkill );
+  //float ret = ( ( n / 100.0f ) * avgArmorSkill );
 
   // apply any armor enhancing capabilities
-  if( vsDamage > 0 ) {
+  if( vsWeapon ) {
     session->getSquirrel()->setCurrentWeapon( vsWeapon );
-    ret = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_ARMOR,
-                                       "armor", ret );
+    armor = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_ARMOR,
+                                       "armor", armor );
   }
 
-  return ret;
+  return armor;
 }
 
-void Creature::calcArmor( float *armorP, 
-                          float *avgArmorLevelP,
+void Creature::calcArmor( int damageType,
+													float *armorP, 
+                          float *dodgePenalty,
                           float *avgArmorSkillP,
                           bool callScript ) {
   if( !armorChanged ) {
     *armorP = lastArmor;
-    *avgArmorLevelP = lastArmorLevel;
     *avgArmorSkillP = lastArmorSkill;
+		*dodgePenalty = lastDodgePenalty;
   } else {
-    float armor = (monster ? monster->getBaseArmor() : 
-                   ( getSkill( Skill::COORDINATION ) +
-                     getSkill( Skill::SPEED ) ) / 25.0f );
-    int armorLevel=0, armorCount=0;
-    int armorSkill = getSkill( Skill::COORDINATION );
+    float armorValue = ( monster ? monster->getBaseArmor() : 0 );
+    int armorCount = 0;
+    int armorSkill;
+		*dodgePenalty = 0;
     for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
       if( equipped[i] != MAX_INVENTORY_SIZE ) {
         Item *item = inventory[equipped[i]];
         if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
           if( callScript && !monster ) {
-            session->getSquirrel()->setGlobalVariable( "armor", armor );
+            session->getSquirrel()->setGlobalVariable( "armor", armorValue );
             session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
-            armor = session->getSquirrel()->getGlobalVariable( "armor" );
+            armorValue = session->getSquirrel()->getGlobalVariable( "armor" );
+          }					
+          armorValue += item->getRpgItem()->getDefense( damageType );
+					*dodgePenalty += item->getRpgItem()->getDodgePenalty();
 
-          }
-					cerr << "*** FIXME: Creature::calcArmor needs attack's damage type." << endl;
-          armor += item->getRpgItem()->getDefense( 0 );
-          armorLevel += 
-            ( item->getLevel() + 
-              ( item->isMagicItem() ? item->getBonus() : 0 ) );
-					int itemSkill = ( item->getRpgItem()->getDefenseSkill() > -1 ? 
-														item->getRpgItem()->getDefenseSkill() :
-														Skill::DODGE_ATTACK );
-          armorSkill += getSkill( itemSkill );
+					//int itemSkill = ( item->getRpgItem()->getDefenseSkill() > -1 ? 
+														//item->getRpgItem()->getDefenseSkill() :
+														//Skill::DODGE_ATTACK );
+          //armorSkill += getSkill( itemSkill );
 					
           armorCount++;
         }
       }
     }
-    armor += bonusArmor;
+    armorValue += bonusArmor;
     
     // return results
-    *armorP = armor;
-    *avgArmorLevelP = ( armorCount > 0 ? 
-                        (float)armorLevel / (float)armorCount :
-                        0.0f );
-    *avgArmorSkillP = ( armorCount > 0 ? 
-                        (float)armorSkill / (float)armorCount :
-                        (float)armorSkill );
-    (*avgArmorSkillP) += 
-      ( getSkill( Skill::LUCK ) / 10.0f );
+    *armorP = armorValue;
+    *avgArmorSkillP = 0;
+    //(*avgArmorSkillP) += 
+//      ( getSkill( Skill::LUCK ) / 10.0f );
 
     lastArmor = *armorP;
-    lastArmorLevel = *avgArmorLevelP;
     lastArmorSkill = *avgArmorSkillP;
+		lastDodgePenalty = *dodgePenalty;
     armorChanged = false;
   }
 }

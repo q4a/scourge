@@ -108,7 +108,7 @@ void Projectile::commonInit() {
 Projectile::~Projectile() {
 	renderer->removeProjectile( this );
 	if( !renderer->hasProjectiles() ) {
-		cerr << "Deleting renderer!" << endl;
+		//cerr << "Deleting renderer!" << endl;
 		delete renderer;
 	}
 }

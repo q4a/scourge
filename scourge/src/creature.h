@@ -109,7 +109,7 @@ class Creature : public RenderedCreature {
   float armor;
   int bonusArmor;
   bool armorChanged;
-  float lastArmor, lastArmorLevel, lastArmorSkill;
+  float lastArmor, lastArmorSkill, lastDodgePenalty;
   
   int lastTurn;
 
@@ -432,17 +432,22 @@ class Creature : public RenderedCreature {
 
   // new Christie-style battle system
 	void incSkillUsed( int skill );
-  float getACPercent( float *totalP=NULL, float *skillP=NULL, float vsDamage=-1, Item *vsWeapon=NULL );
-  void calcArmor( float *armorP, 
-                  float *avgArmorLevelP,
+  float getACPercent( float *totalP=NULL, 
+											float *skillP=NULL, 
+											float vsDamage=-1, 
+											Item *vsWeapon=NULL );
+  void calcArmor( int damageType,
+									float *armorP, 
+                  float *dodgePenalty,
                   float *avgArmorSkillP,
                   bool callScript=false );
   float getAttack( Item *weapon, 
 									 float *maxP=NULL, 
 									 float *minP=NULL, 
 									 float *skillP=NULL,
-									 bool callScript=false );
+									 bool callScript=false );	
 	float getParry( Item *parryItem=NULL );
+	float getArmor( float *armor, float *dodgePenalty, int damageType, Item *vsWeapon = NULL );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );

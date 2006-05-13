@@ -1028,17 +1028,25 @@ void Battle::hitWithItem() {
 
 	// is this greater than the attacker's weapon skill - defender's dodge skill?
 	// FIXME: need to apply modifiers for sneak attacks, etc.
+	
+	float armor, dodgePenalty;
+	creature->getTargetCreature()->
+		getArmor( &armor, &dodgePenalty, 
+							item ? item->getRpgItem()->getDamageType() : 0,
+							item );
+
 	if( cth > creature->getSkill( item ? 
 																item->getRpgItem()->getDamageSkill() : 
 																Skill::HAND_TO_HAND_COMBAT ) -
-			creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) ) {
+			( creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) + 
+				dodgePenalty ) ) {
 		// a hit?
 
 		// Shield/weapon parry
 		Item *parryItem;
 		float parry = creature->getParry( parryItem );
 		if( parry > cth ) {
-			sprintf( message, "...attack is blocked by %s!", item->getName() );
+			sprintf( message, "...attack is blocked by %s!", parryItem->getName() );
 			session->getMap()->addDescription( message );
 		} else {
 			// a hit!
@@ -1056,57 +1064,43 @@ void Battle::hitWithItem() {
 				attack -= ( attack / 3.0f );
 			}
 
-			sprintf( message, "...%s attacks for %.2f points.", 
-							 creature->getName(), attack );
+			sprintf( message, "...%s attacks for %d points.", 
+							 creature->getName(), toint( attack ) );
 			session->getMap()->addDescription( message );
 			if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
 				sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,EX:%.2f)",
 								min, max, skill, extra );
 				session->getMap()->addDescription( message );
 			}
-	
-	
-			
-			// FIXME: implement stuff below
-			float ac = 0;
 
-			// very low attack rolls
-			//if( handleLowAttackRoll( damage, min, max ) ) return;
+			// very low attack rolls (fumble)
+			if( handleLowAttackRoll( attack, min, max ) ) return;
 			
-			//float ac = creature->getTargetCreature()->
-				//getACPercent( &total, &skill, attack, item );
-	
-			//sprintf(message, "...%s blocks %.2f points", 
-							//creature->getTargetCreature()->getName(), ac);
-			//session->getMap()->addDescription(message);
-			//if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-//				sprintf(message, "...(TO:%.2f,SK:%.2f)",
-								//total, skill );
-				//session->getMap()->addDescription(message);
-			//}
-	
-	
-			float damage = ( ac > attack ? 0 : attack - ac );
+			if( armor > 0 ) {
+				sprintf( message, "...%s's armor blocks %d points", 
+								 creature->getTargetCreature()->getName(), toint( armor ) );
+				session->getMap()->addDescription( message );
+			}
+							
+			float damage = ( armor > attack ? 0 : attack - armor );
 			if( damage > 0 ) {
 				// play item sound
 				if( item ) session->playSound( item->getRandomSound() );
 	
-				//applyMagicItemDamage( &damage );
+				applyMagicItemDamage( &damage );
 	
-				//applyHighAttackRoll( &damage, attack, min, max );
-	
+				applyHighAttackRoll( &damage, attack, min, max );	
 			}
 	
 			// item attack event handler
-			//if( item ) {
-				//getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
-				//getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
-				//damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
-			//}
+			if( item ) {
+				getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
+				getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
+				damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
+			}
 	
 			dealDamage( damage );
 	
-			/*
 			if( damage > 0 ) {
 				// apply extra spell-like damage of magic items
 				float spellDamage = applyMagicItemSpellDamage();
@@ -1114,8 +1108,6 @@ void Battle::hitWithItem() {
 					dealDamage( damage, Constants::EFFECT_GREEN, true );
 				}
 			}
-			*/
-
 		}
 	} else {
 		// a miss
@@ -1131,9 +1123,12 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
     // also affects spell attacks
     float delta = creature->getDefenderStateModPercent(magical);
     float extra = ((float)damage / 100.0f) * delta;
-    sprintf(message, "...and hits for %.2f(%.2f) points of damage", damage, extra );
+		damage += extra;
+
+    sprintf(message, "...%s hits for %d points of damage", 
+						creature->getName(), toint( damage ) );
     session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-    damage += extra;
+    
 
     // play hit sound
     if(damage > 0) {
@@ -1190,7 +1185,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
       }
     }
   } else {
-    sprintf(message, "...and causes no damage");
+    sprintf(message, "...no damaged caused.");
     session->getMap()->addDescription(message);
   }
 }
