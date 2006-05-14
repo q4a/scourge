@@ -178,6 +178,15 @@ bool Battle::fightTurn() {
     return true;
   }
 
+	// wait for projectile to finish
+	if( creature->getProjectiles() &&
+			!creature->getProjectiles()->empty() ) return false;
+
+	// wait for the animation to finish
+	int a = ((MD2Shape*)creature->getShape())->getCurrentAnimation();
+	if( !( a == MD2_STAND || a == MD2_RUN )) return false;
+	
+
   // waiting to cast a spell?
   if( creature->getAction() == Constants::ACTION_CAST_SPELL || 
       creature->getAction() == Constants::ACTION_SPECIAL ) {
@@ -360,7 +369,7 @@ void Battle::executeAction() {
   } else {
     hitWithItem();
   }
-  creature->getShape()->setCurrentAnimation((int)MD2_ATTACK);	  
+  creature->getShape()->setCurrentAnimation( (int)MD2_ATTACK, true );	  
   ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
 
 	// pause after each hit
@@ -878,7 +887,7 @@ void Battle::prepareToHitMessage() {
 bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
   if( max - min >= MIN_FUMBLE_RANGE && 
       creature->getTargetCreature() &&
-      attack - min < ( ( ( max - min ) / 100.0f ) * 10.0f ) ) {
+      attack - min < ( ( ( max - min ) / 100.0f ) * 5.0f ) ) {
     if( 0 == (int)( 3.0f * rand() / RAND_MAX ) ) {
       Creature *tmpTarget;
       if( IS_AUTO_CONTROL( creature ) ) {
@@ -1043,10 +1052,12 @@ void Battle::hitWithItem() {
 		// a hit?
 
 		// Shield/weapon parry
-		Item *parryItem;
-		float parry = creature->getParry( parryItem );
+		Item *parryItem = NULL;
+		float parry = creature->getTargetCreature()->getParry( &parryItem );
 		if( parry > cth ) {
-			sprintf( message, "...attack is blocked by %s!", parryItem->getName() );
+			sprintf( message, "...%s blocks attack with %s!", 
+							 creature->getTargetCreature()->getName(),
+							 parryItem->getName() );
 			session->getMap()->addDescription( message );
 		} else {
 			// a hit!
