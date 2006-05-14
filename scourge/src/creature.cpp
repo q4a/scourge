@@ -1362,6 +1362,12 @@ int Creature::getMaxProjectileCount(Item *item) {
   return n;
 }
 
+vector<RenderedProjectile*> *Creature::getProjectiles() {
+	map<RenderedCreature*, vector<RenderedProjectile*>*> *m =
+		RenderedProjectile::getProjectileMap();
+	return( m->find( this ) == m->end() ? NULL : (*m)[ (RenderedCreature*)this ] );
+}
+
 /**
  take some damage
 */
@@ -2099,7 +2105,6 @@ float Creature::getArmor( float *armorP, float *dodgePenaltyP,
 	calcArmor( damageType, &a, dodgePenaltyP, &avgArmorSkill, 
 						 ( vsWeapon ? true : false ) );
 	armor = a;
-	cerr << getName() << " dodge penalty=" << *dodgePenaltyP << endl;
 
 	// apply any armor enhancing capabilities
 	if( vsWeapon ) {
@@ -2273,7 +2278,7 @@ float Creature::getAttack( Item *weapon,
 	return roll;
 }
 
-float Creature::getParry( Item *parryItem ) {
+float Creature::getParry( Item **parryItem ) {
 	int location[] = {
 		Constants::INVENTORY_RIGHT_HAND,
 		Constants::INVENTORY_LEFT_HAND,
@@ -2300,9 +2305,9 @@ float Creature::getParry( Item *parryItem ) {
 		// roll to parry
 		float parry = maxParry * rand() / RAND_MAX;
 		// select the highest value
-		if( ret < parry ) {
+		if( ret == 0 || ret < parry ) {
 			ret = parry;
-			if( parryItem ) parryItem = item;
+			*parryItem = item;
 		}
 	}
 	return ret;

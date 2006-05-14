@@ -95,7 +95,6 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 
   char buff[80];
   int yy = 120;
-  bool hasWeapon = false;
   if( left && left->getRpgItem()->isWeapon() ) {
     p->getAttack( left, &max, &min );
     if( toint( max ) > toint( min ) ) 
@@ -112,7 +111,6 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
               left->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
-    hasWeapon = true;
   } 
   if( right && right->getRpgItem()->isWeapon() ) {
     p->getAttack( right, &max, &min );
@@ -130,23 +128,20 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
               right->getRpgItem()->getName() );
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
-    hasWeapon = true;
   }
-  if( !hasWeapon ) {
-    p->getAttack( NULL, &max, &min );
-    if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d %s (%s) Bare Hands", 
-              toint( min ), toint( max ), 
-							RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
-							getAPRDescription(p, NULL, buff) );
-    else
-      sprintf(s, "ATK: %d %s (%s) Bare Hands", 
-              toint( min ), 
-							RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
-							getAPRDescription(p, NULL, buff) );
-    scourge->getSDLHandler()->texPrint(5, y + yy, s);
-    yy += 15;
-  }
+	p->getAttack( NULL, &max, &min );
+	if( toint( max ) > toint( min ) ) 
+		sprintf(s, "ATK: %d - %d %s (%s) Bare Hands", 
+						toint( min ), toint( max ), 
+						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						getAPRDescription(p, NULL, buff) );
+	else
+		sprintf(s, "ATK: %d %s (%s) Bare Hands", 
+						toint( min ), 
+						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						getAPRDescription(p, NULL, buff) );
+	scourge->getSDLHandler()->texPrint(5, y + yy, s);
+	yy += 15;
   if( ranged ) {
     p->getAttack( ranged, &max, &min );
     if( toint( max ) > toint( min ) ) 

@@ -50,6 +50,7 @@ class Event;
 class RenderedItem;
 class NpcInfo;
 class SpecialSkill;
+class RenderedProjectile;
 
 /**
   *@author Gabor Torok
@@ -388,6 +389,8 @@ class Creature : public RenderedCreature {
   
   int getMaxProjectileCount(Item *item);
 
+	std::vector<RenderedProjectile*> *getProjectiles();
+
   void usePotion(Item *item);
 
   inline void setBonusArmor(int n) { bonusArmor = n; if(bonusArmor < 0) bonusArmor = 0; recalcAggregateValues(); }
@@ -446,7 +449,7 @@ class Creature : public RenderedCreature {
 									 float *minP=NULL, 
 									 float *skillP=NULL,
 									 bool callScript=false );	
-	float getParry( Item *parryItem=NULL );
+	float getParry( Item **parryItem );
 	float getArmor( float *armor, float *dodgePenalty, int damageType, Item *vsWeapon = NULL );
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
