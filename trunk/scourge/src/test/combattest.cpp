@@ -161,7 +161,7 @@ bool CombatTest::fight( char *path,
   int atkOriginalLevel = attacker->getLevel();
   int defOriginalLevel = defender->getLevel();
 
-  float total, skill, max, min;
+  float skill, max, min;
   float sum=0, low=0, high=0, ATKave;
   for( int n = 0; n < SHOW_MAX_LEVEL; n++ ) {
 
@@ -198,11 +198,18 @@ bool CombatTest::fight( char *path,
       
       // -------------------------------------------------
       // Armor class at level 1
-      float ac = defender->getACPercent( &total, &skill );
-      fprintf( fp , "AC: <span style='background: %s'><b>%.2f</b></span>\
+			float armor, dodgePenalty;
+			defender->getArmor( &armor, &dodgePenalty, 
+													weapon ? weapon->getRpgItem()->getDamageType() : 
+													RpgItem::DAMAGE_TYPE_CRUSHING );
+      fprintf( fp , "Armor: <span style='background: %s'><b>%.2f</b></span><br>\n",
+							 ( ATKave > armor ? "red" : "green" ), armor );
+			/*
+      fprintf( fp , "Armor: <span style='background: %s'><b>%.2f</b></span>\
                (%.2f %% %.2f)<br>\n",
                ( ATKave > ac ? "red" : "green" ),
-               ac, total, skill );
+               armor, total, skill );
+			*/
       // -------------------------------------------------
     }
 

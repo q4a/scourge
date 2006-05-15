@@ -1680,11 +1680,13 @@ bool Creature::isWithPrereq( Spell *spell ) {
       to predict if casting a spell will help.) Otherwise the monster keeps casting
       Body of Stone to no effect.
       Also: 10 should not be hard-coded...
-      */
-      return( getACPercent() < 10 ? 
-              ( (int)( 4.0f * rand() / RAND_MAX ) == 0 ? true : false ) : 
-              false ); 
-    default: return false;
+			*/
+			float armor, dodgePenalty;
+		getArmor( &armor, &dodgePenalty, 0 );
+		return( armor < 10 ? 
+						( (int)( 4.0f * rand() / RAND_MAX ) == 0 ? true : false ) : 
+						false ); 
+		default: return false;
     }
   } else {
     return getStateMod( spell->getStateModPrereq() );
@@ -1897,12 +1899,11 @@ GLfloat Creature::getStep() {
 }
 
 void Creature::getDetailedDescription(char *s) {
-  sprintf(s, "%s (L:%d Hp:%d M:%d A:%.2f)%s", 
+  sprintf(s, "%s (L:%d Hp:%d M:%d)%s", 
           getDescription(), 
           getLevel(),
           getHp(),
-          getMp(),
-          getACPercent(),
+          getMp(),          
           (session->getCurrentMission() && 
            session->getCurrentMission()->isMissionCreature( this ) ? 
            " *Mission*" : "" ) );
@@ -2106,64 +2107,25 @@ float Creature::getArmor( float *armorP, float *dodgePenaltyP,
 						 ( vsWeapon ? true : false ) );
 	armor = a;
 
-	// apply any armor enhancing capabilities
-	if( vsWeapon ) {
-		session->getSquirrel()->setCurrentWeapon( vsWeapon );
-		armor = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_ARMOR,
-																				 "armor", armor );
+  // negative feedback: for monsters only, allow hits now and then
+  if( monster && 
+      ( rand() / RAND_MAX < 
+				monsterToughness[ session->getPreferences()->getMonsterToughness() ].
+				armorMisfuction ) ) {
+      // 3.0f * rand() / RAND_MAX < 1.0f ) {
+    armor = ( armor / 2.0f * rand() / RAND_MAX );
+  } else {
+		// apply any armor enhancing capabilities
+		if( vsWeapon ) {
+			session->getSquirrel()->setCurrentWeapon( vsWeapon );
+			armor = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_ARMOR,
+																					 "armor", armor );
+		}
 	}
 	
 	*armorP = armor;
 
 	return armor;
-}
-
-float Creature::getACPercent( float *totalP, 
-															float *skillP, 
-															float vsDamage, 
-															Item *vsWeapon ) {
-  float ac, avgArmorLevel, avgArmorSkill;
-  calcArmor( ( vsWeapon ? vsWeapon->getRpgItem()->getDamageType() : 0 ), 
-						 &ac, &avgArmorLevel, &avgArmorSkill, 
-						 ( vsDamage > 0 ? true : false ) );
-    
-  if( skillP ) *skillP = avgArmorSkill;
-  
-  //float itemLevel = avgArmorLevel - 1;
-  //if( itemLevel < 0 ) itemLevel = 0;
-  
-  //armor = ac + itemLevel;
-	armor = ac;
-  if( totalP ) *totalP = armor;
-
-  // roll the armor ( weighted roll: low values are less likely)  
-  //float n;
-  //if( ( 4.0f * rand() / RAND_MAX ) > 1.0f ) {
-//    n = ( ( armor / 2.0f ) * rand() / RAND_MAX ) + ( armor / 2.0f );
-//  } else {
-    //n = armor * rand() / RAND_MAX;
-  //}
-  
-  // apply the skill
-  //armor = ( ( armor / 100.0f ) * avgArmorSkill );
-
-  // negative feedback: for monsters only, allow hits now and then
-  if( monster && vsDamage > 0 && 
-      ( rand() / RAND_MAX < monsterToughness[ session->getPreferences()->getMonsterToughness() ].armorMisfuction ) ) {
-      // 3.0f * rand() / RAND_MAX < 1.0f ) {
-    return ( vsDamage / 2.0f * rand() / RAND_MAX );
-  }
-
-  //float ret = ( ( n / 100.0f ) * avgArmorSkill );
-
-  // apply any armor enhancing capabilities
-  if( vsWeapon ) {
-    session->getSquirrel()->setCurrentWeapon( vsWeapon );
-    armor = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_ARMOR,
-                                       "armor", armor );
-  }
-
-  return armor;
 }
 
 void Creature::calcArmor( int damageType,

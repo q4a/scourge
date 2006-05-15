@@ -435,10 +435,6 @@ class Creature : public RenderedCreature {
 
   // new Christie-style battle system
 	void incSkillUsed( int skill );
-  float getACPercent( float *totalP=NULL, 
-											float *skillP=NULL, 
-											float vsDamage=-1, 
-											Item *vsWeapon=NULL );
   void calcArmor( int damageType,
 									float *armorP, 
                   float *dodgePenalty,

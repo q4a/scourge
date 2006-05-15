@@ -208,8 +208,10 @@ int SqCreature::_getProtectedStateMod( HSQUIRRELVM vm ) {
 
 
 int SqCreature::_getArmor( HSQUIRRELVM vm ) {
+	GET_INT( damageType )
   GET_OBJECT(Creature*)
-  sq_pushfloat( vm, object->getACPercent() );
+	float armor, dodgePenalty;
+  sq_pushfloat( vm, object->getArmor( &armor, &dodgePenalty, damageType ) );
   return 1;
 }
 
