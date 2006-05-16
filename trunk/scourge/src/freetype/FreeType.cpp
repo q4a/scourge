@@ -22,6 +22,9 @@ inline int next_p2 ( int a )
 ///Create a display list coresponding to the give character.
 void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base, int *charWidth ) {
 
+  // Workaround for problem in font file.
+  if( ch == '_' ) ch = ' ';
+
 	//The first thing we do is get FreeType to render our character
 	//into a bitmap.  This actually requires a couple of FreeType commands:
 
@@ -50,7 +53,7 @@ void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base, in
 	//our texture.
 	int width = next_p2( bitmap.width );
 	int height = next_p2( bitmap.rows );
-
+	
 	//Allocate memory for the texture data.
 	GLubyte* expanded_data = new GLubyte[ 2 * width * height];
 
