@@ -37,7 +37,7 @@ void Rpg::initRpg() {
     exit(1);
   }
 
-	Skill *lastSkill;
+	Skill *lastSkill = NULL;
 	SkillGroup *lastGroup = NULL;
   char line[255];
 	char skillName[80], skillSymbol[80], skillDescription[255];
