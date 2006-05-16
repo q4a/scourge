@@ -39,7 +39,7 @@ Sound::Sound(Preferences *preferences) {
     }
 
     missionMusicIndex = -1;
-    currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = NULL;
+    currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = NULL;
     musicStartTime = 0;
     musicPosition = 0;
     if(haveSound) {
