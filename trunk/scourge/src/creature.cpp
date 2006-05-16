@@ -17,7 +17,6 @@
 
 #include "creature.h"
 #include "item.h"
-#include "rpg/rpglib.h"
 #include "render/renderlib.h"
 #include "session.h"
 #include "shapepalette.h"
@@ -114,7 +113,9 @@ void Creature::commonInit() {
 
   ((MD2Shape*)shape)->setCreatureSpeed( speed );
 
-  lastArmor = lastArmorSkill = lastDodgePenalty = 0;
+	for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
+		lastArmor[i] = lastArmorSkill[i] = lastDodgePenalty[i] = 0;
+	}
   for( int i = 0; i < 12; i++ ) quickSpell[ i ] = NULL;
   this->lastMove = 0;
   this->moveCount = 0;
@@ -2102,10 +2103,7 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 
 float Creature::getArmor( float *armorP, float *dodgePenaltyP, 
 													int damageType, Item *vsWeapon ) {
-	float a, avgArmorSkill;
-	calcArmor( damageType, &a, dodgePenaltyP, &avgArmorSkill, 
-						 ( vsWeapon ? true : false ) );
-	armor = a;
+	calcArmor( damageType, &armor, dodgePenaltyP, ( vsWeapon ? true : false ) );
 
   // negative feedback: for monsters only, allow hits now and then
   if( monster && 
@@ -2130,52 +2128,35 @@ float Creature::getArmor( float *armorP, float *dodgePenaltyP,
 
 void Creature::calcArmor( int damageType,
 													float *armorP, 
-                          float *dodgePenalty,
-                          float *avgArmorSkillP,
+                          float *dodgePenaltyP,
                           bool callScript ) {
-  if( !armorChanged ) {
-    *armorP = lastArmor;
-    *avgArmorSkillP = lastArmorSkill;
-		*dodgePenalty = lastDodgePenalty;
-  } else {
-    float armorValue = ( monster ? monster->getBaseArmor() : 0 );
-    int armorCount = 0;
-    int armorSkill;
-		*dodgePenalty = 0;
-    for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-      if( equipped[i] != MAX_INVENTORY_SIZE ) {
-        Item *item = inventory[equipped[i]];
-        if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
-          if( callScript && !monster ) {
-            session->getSquirrel()->setGlobalVariable( "armor", armorValue );
-            session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
-            armorValue = session->getSquirrel()->getGlobalVariable( "armor" );
-          }					
-          armorValue += item->getRpgItem()->getDefense( damageType );
-					*dodgePenalty += item->getRpgItem()->getDodgePenalty();
+  if( armorChanged ) {
+		for( int t = 0; t < RpgItem::DAMAGE_TYPE_COUNT; t++ ) {
+			lastArmor[ t ] = ( monster ? monster->getBaseArmor() : 0 );
+			lastDodgePenalty[ t ] = 0;
+			int armorCount = 0;
+			for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+				if( equipped[i] != MAX_INVENTORY_SIZE ) {
+					Item *item = inventory[equipped[i]];
+					if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
+						if( callScript && !monster ) {
+							session->getSquirrel()->setGlobalVariable( "armor", lastArmor[ t ] );
+							session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
+							lastArmor[ t ] = session->getSquirrel()->getGlobalVariable( "armor" );
+						}					
+						lastArmor[ t ] += item->getRpgItem()->getDefense( t );
+						lastDodgePenalty[ t ] += item->getRpgItem()->getDodgePenalty();
+						armorCount++;
+					}
+				}
+			}
+			lastArmor[ t ] += bonusArmor;		
+		}
+		armorChanged = false;
+	}
 
-					//int itemSkill = ( item->getRpgItem()->getDefenseSkill() > -1 ? 
-														//item->getRpgItem()->getDefenseSkill() :
-														//Skill::DODGE_ATTACK );
-          //armorSkill += getSkill( itemSkill );
-					
-          armorCount++;
-        }
-      }
-    }
-    armorValue += bonusArmor;
-    
-    // return results
-    *armorP = armorValue;
-    *avgArmorSkillP = 0;
-    //(*avgArmorSkillP) += 
-//      ( getSkill( Skill::LUCK ) / 10.0f );
-
-    lastArmor = *armorP;
-    lastArmorSkill = *avgArmorSkillP;
-		lastDodgePenalty = *dodgePenalty;
-    armorChanged = false;
-  }
+	*armorP = lastArmor[ damageType ];
+	*dodgePenaltyP = lastDodgePenalty[ damageType ];
 }
 
 #define MAX_RANDOM_DAMAGE 2.0f

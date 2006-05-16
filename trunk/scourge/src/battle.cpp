@@ -1087,7 +1087,7 @@ void Battle::hitWithItem() {
 			// very low attack rolls (fumble)
 			if( handleLowAttackRoll( attack, min, max ) ) return;
 			
-			if( armor > 0 ) {
+			if( toint( armor ) > 0 ) {
 				sprintf( message, "...%s's armor blocks %d points", 
 								 creature->getTargetCreature()->getName(), toint( armor ) );
 				session->getMap()->addDescription( message );

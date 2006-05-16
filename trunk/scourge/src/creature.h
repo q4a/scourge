@@ -33,23 +33,18 @@
 #include "date.h"
 #include "render/renderedcreature.h"
 #include "storable.h"
+#include "rpg/rpglib.h"
 
 class Map;
 class Session;
 class Effect;
 class Location;
 class Battle;
-class Monster;
-class Character;
-class RpgItem;
-class Spell;
-class SpecialSkill;
 class GLShape;
 class Item;
 class Event;
 class RenderedItem;
 class NpcInfo;
-class SpecialSkill;
 class RenderedProjectile;
 
 /**
@@ -110,7 +105,9 @@ class Creature : public RenderedCreature {
   float armor;
   int bonusArmor;
   bool armorChanged;
-  float lastArmor, lastArmorSkill, lastDodgePenalty;
+  float lastArmor[ RpgItem::DAMAGE_TYPE_COUNT ];
+	float lastArmorSkill[ RpgItem::DAMAGE_TYPE_COUNT ];
+	float lastDodgePenalty[ RpgItem::DAMAGE_TYPE_COUNT ];
   
   int lastTurn;
 
@@ -438,7 +435,6 @@ class Creature : public RenderedCreature {
   void calcArmor( int damageType,
 									float *armorP, 
                   float *dodgePenalty,
-                  float *avgArmorSkillP,
                   bool callScript=false );
   float getAttack( Item *weapon, 
 									 float *maxP=NULL, 
