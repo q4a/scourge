@@ -61,9 +61,9 @@ typedef struct _MonsterToughness {
 
 // goes from not very tough to tough 
 MonsterToughness monsterToughness[] = {
-  {  .5f,  1,     .7f,      1,  .33f },
-  { .75f,  1,    .75f,      1,  .15f },
-  { .75f,  1,    .75f,  1.25f,   .5f }
+  {  .5f,  0.8f,     .7f,      1,  .33f },
+  { .75f,  0.9f,    .75f,      1,  .15f },
+  {  .8f,     1,    .75f,  1.25f,   .5f }
 };
 
 #define roll(min, max) ( ( ( max - min ) * rand() / RAND_MAX ) + min )
@@ -1496,22 +1496,32 @@ void Creature::monsterInit() {
 
   this->level = monster->getLevel();
 
-  // set some skills
-  //cerr << "monster=" << monster->getType() << " level=" << getLevel() << endl;
-  for(int i = 0; i < (int)Skill::skills.size(); i++) {
-    int n = monster->getSkillLevel( Skill::skills[i]->getName() );
-    if( n > 0 ) {
-      setSkill( i, n );
-    } else {
-			if( Skill::skills[ i ]->getGroup()->isStat() ) {
-				// stats go from 1-20
-				setSkill( i, (int)( 20.0f * rand() / RAND_MAX ) );
-			} else {
-				MonsterToughness *mt = &(monsterToughness[ session->getPreferences()->getMonsterToughness() ]);
-				setSkill( i, (int)( ( level / (float)MAX_LEVEL ) * 100.0f * roll( mt->minSkillBase, mt->maxSkillBase ) ) );
+
+	//cerr << "Creature: " << monster->getType() << endl;
+  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
+
+    //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
+		int n;
+		if( Skill::skills[i]->getGroup()->isStat() ) {
+			//n = (int)( 19.0f * rand() / RAND_MAX ) + 1;
+			MonsterToughness *mt = &(monsterToughness[ session->getPreferences()->getMonsterToughness() ]);
+			n = (int)( 20.0f * roll( mt->minSkillBase, mt->maxSkillBase ) );
+		} else {
+
+			// create the starting value as a function of the stats
+			n = 0;
+			for( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
+				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
+				n += getSkill( index );
 			}
-    }
-    //cerr << "\t" << Constants::SKILL_NAMES[i] << "=" << getSkill(i) << ", " << getLevelAdjustedSkill(i) << endl;
+			n = (int)( ( n / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
+								 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
+		}
+		int minSkill = monster->getSkillLevel( Skill::skills[i]->getName() );
+		if( minSkill > n ) n = minSkill;
+
+		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << n << endl;
+    setSkill( i, n );
   }
 
   // equip starting inventory
