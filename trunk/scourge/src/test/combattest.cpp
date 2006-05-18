@@ -148,10 +148,9 @@ bool CombatTest::fight( char *path,
   fprintf( fp, HTML_PREFIX, "Combat Test" );
 
   fprintf( fp, "<h1>Combat test with %d iterations</h1>", count );
-  fprintf( fp, "<b>%s</b> with %s(%d) vs. ",
+  fprintf( fp, "<b>%s</b> with %s vs. ",
            attacker->getCharacter()->getName(),
-           weapon->getRpgItem()->getName(),
-           weapon->getLevel() );
+           weapon->getRpgItem()->getName() );
   fprintf( fp, "<b>%s</b><br>\n",
            defender->getCharacter()->getName() );
   fprintf( fp, "<a href=\"#details\">Character details...</a><br><br>");
@@ -227,10 +226,9 @@ bool CombatTest::fight( char *path,
   
   fprintf( fp, "<br><a name=\"details\"></a><b>Character details:</b>" );
   fprintf( fp, "<table><tr><td style='border: none;' valign=top>" );
-  fprintf( fp, "Attacker: <b>%s</b> with %s(%d)<br>Level: %d<br>\n",
+  fprintf( fp, "Attacker: <b>%s</b> with %s<br>Level: %d<br>\n",
            attacker->getCharacter()->getName(),
            weapon->getRpgItem()->getName(),
-           weapon->getLevel(),
            attacker->getLevel() );
   printInventory( fp, attacker );
   
@@ -278,9 +276,8 @@ void CombatTest::printInventory( FILE *fp, Creature *creature ) {
 
   fprintf( fp, "<b>Inventory:</b><ul>\n" );
   for( int i = 0; i < creature->getInventoryCount(); i++ ) {
-    fprintf( fp, "<li>%s(%d) A:%d %s<br>\n", 
+    fprintf( fp, "<li>%s A:%d %s<br>\n", 
              creature->getInventory( i )->getRpgItem()->getName(),
-             creature->getInventory( i )->getLevel(),
              creature->getInventory( i )->getRpgItem()->getDamage(),
              ( creature->isEquipped( i ) ? "<i>Equipped</i>" : "" ) );
   }
