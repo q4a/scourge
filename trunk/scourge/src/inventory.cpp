@@ -200,6 +200,15 @@ Inventory::Inventory(Scourge *scourge) {
   skillList = new SkillsView( scourge, 115, skillY + 5, 290, 405 - ( skillY + 5 ) );
   cards->addWidget( skillList->getWidget(), CHARACTER );
 
+	yy = START_OF_SECOND_BUTTON_SET;
+  skillModLabel = cards->createLabel( 5, yy + 10, "Skill: 0", CHARACTER );
+  yy+=buttonHeight;
+	addModButton = cards->createButton( 0, yy, 52, yy + buttonHeight, "Add", CHARACTER );
+	delModButton = cards->createButton( 53, yy, 105, yy + buttonHeight, "Del", CHARACTER );
+  yy+=buttonHeight;
+	acceptModButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Accept", CHARACTER );
+  yy+=buttonHeight;
+
   // -------------------------------------------
   // spellbook
   cards->createLabel(115, 10, "School of magic: (with provider deity)", SPELL, Constants::RED_COLOR);
@@ -744,6 +753,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   mainWin->setTitle( nameAndClassStr );
 
   charInfoUI->setCreature( mainWin, selectedP );
+	char tmp[80];
   switch(selectedMode) {
   case CHARACTER:         
 
@@ -770,6 +780,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
                             (const Color *)NULL, (stateCount ? (const GLuint*)protIcons : NULL));
 		
     skillList->setCreature( selectedP, scourge->getParty() );
+
+		sprintf( tmp, "Skill: %d", selectedP->getAvailableSkillMod() );
+		skillModLabel->setText( tmp );
     break;
 
   case INVENTORY:

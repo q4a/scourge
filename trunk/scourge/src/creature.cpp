@@ -133,7 +133,7 @@ void Creature::commonInit() {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
-    skillBonus[i] = skillsUsed[i] = 0;
+    skillBonus[i] = skillsUsed[i] = skillMod[i]= 0;
   }
   this->stateMod = 0;
   this->protStateMod = 0;
@@ -159,6 +159,7 @@ void Creature::commonInit() {
   this->angle = this->wantedAngle = this->angleStep = 0;
   this->portraitTextureIndex = 0;
   this->deityIndex = -1;
+	this->availableSkillMod = 0;
 
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -257,10 +258,12 @@ CreatureInfo *Creature::save() {
   //info->bonusArmor = 0;
   info->thirst = thirst;
   info->hunger = hunger;
+	info->availableSkillPoints = availableSkillMod;
 	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 		info->skills[i] = skills[i];
 		info->skillBonus[i] = skillBonus[i];
 		info->skillsUsed[i] = skillsUsed[i];
+		info->skillMod[i] = skillMod[i];
   }
   info->portraitTextureIndex = portraitTextureIndex;
 
@@ -336,9 +339,11 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
   creature->setThirst( info->thirst );
   creature->setHunger( info->hunger );
+	creature->setAvailableSkillMod( info->availableSkillPoints );
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     creature->setSkill( i, info->skills[i] );
     creature->skillsUsed[i] = info->skillsUsed[i];
+		creature->skillMod[i] = info->skillMod[i];
   }
   
   // stateMod and protStateMod not useful until calendar is also persisted
@@ -1444,10 +1449,11 @@ int Creature::addExperience(int delta) {
     hp += character->getStartingHp();
     mp += character->getStartingMp();
     calculateExpOfNextLevel();
-    // availableSkillPoints += character->getSkillBonus();
+    availableSkillMod += character->getSkillBonus();
     char message[255];
     sprintf( message, "  %s levels up!", getName() );
     session->getGameAdapter()->startTextEffect( message );
+		session->getGameAdapter()->refreshInventoryUI();
   }
 
   evalSpecialSkills();
@@ -2009,6 +2015,11 @@ void Creature::setSkill(int index, int value) {
 void Creature::setSkillBonus( int index, int value ) { 
   skillBonus[index] = value;
   session->getParty()->recomputeMaxSkills();
+}
+
+void Creature::setSkillMod( int index, int value ) {
+	skillMod[ index ] = value;
+	session->getParty()->recomputeMaxSkills();
 }
 
 void Creature::setStateMod(int mod, bool setting) { 

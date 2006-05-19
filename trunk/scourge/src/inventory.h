@@ -100,6 +100,8 @@ private:
 	GLuint *protIcons;
 	ScrollingList *stateList, *protStateList;
   SkillsView *skillList;
+	Label *skillModLabel;
+	Button *addModButton, *delModButton, *acceptModButton;
 	char nameAndClassStr[80];
 	char levelStr[80];
 	char expStr[80];

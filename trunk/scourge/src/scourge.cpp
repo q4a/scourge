@@ -191,8 +191,9 @@ void Scourge::start() {
 #endif
 
         if(value == CONTINUE_GAME) {
-          if(!loadGame( session )) {
-            showMessageDialog( "Error loading game!" );
+					char error[255];
+          if(!loadGame( session, error )) {
+            showMessageDialog( error );
             failed = true;
           }
         }
@@ -2576,58 +2577,58 @@ bool Scourge::saveGame(Session *session) {
   return true;
 }
 
-bool Scourge::loadGame(Session *session) {
-  {
-    char path[300];
-    get_file_name( path, 300, SAVE_FILE );
-    FILE *fp = fopen( path, "rb" );
-    if(!fp) {
-      return false;
-    }
-    File *file = new File( fp );
-    Uint32 n = PERSIST_VERSION;
-    file->read( &n );
-    if( n < OLDEST_HANDLED_VERSION ) {
-      cerr << "*** Error: Savegame file is too old (v" << n <<
-        " vs. current v" << PERSIST_VERSION <<
-        ", vs. last handled v" << OLDEST_HANDLED_VERSION <<
-        "): ignoring data in file." << endl;
-      delete file;
-      return false;
-    } else {
-      if( n < PERSIST_VERSION ) {
-        cerr << "*** Warning: loading older savegame file: v" << n <<
-          " vs. v" << PERSIST_VERSION << ". Will try to convert it." << endl;
-      }
-      Uint32 storylineIndex;
-      file->read( &storylineIndex );
-      file->read( &n );
-      Creature *pc[MAX_PARTY_SIZE];
-      for(int i = 0; i < (int)n; i++) {
-        CreatureInfo *info = Persist::loadCreature( file );
-        pc[i] = session->getParty()->getParty(i)->load( session, info );
-        Persist::deleteCreatureInfo( info );
-      }
+bool Scourge::loadGame( Session *session, char *error ) {
+	char path[300];
+	strcpy( error, "" );
+	get_file_name( path, 300, SAVE_FILE );
+	FILE *fp = fopen( path, "rb" );
+	if(!fp) {
+		return false;
+	}
+	File *file = new File( fp );
+	Uint32 n = PERSIST_VERSION;
+	file->read( &n );
+	if( n < OLDEST_HANDLED_VERSION ) {
+		cerr << "*** Error: Savegame file is too old (v" << n <<
+			" vs. current v" << PERSIST_VERSION <<
+			", vs. last handled v" << OLDEST_HANDLED_VERSION <<
+			"): ignoring data in file." << endl;
+		delete file;
+		strcpy( error, "Error: Saved game version is too old." );
+		return false;
+	} else {
+		if( n < PERSIST_VERSION ) {
+			cerr << "*** Warning: loading older savegame file: v" << n <<
+				" vs. v" << PERSIST_VERSION << ". Will try to convert it." << endl;
+		}
+		Uint32 storylineIndex;
+		file->read( &storylineIndex );
+		file->read( &n );
+		Creature *pc[MAX_PARTY_SIZE];
+		for(int i = 0; i < (int)n; i++) {
+			CreatureInfo *info = Persist::loadCreature( file );
+			pc[i] = session->getParty()->getParty(i)->load( session, info );
+			Persist::deleteCreatureInfo( info );
+		}
 
-      // set the new party
-      session->getParty()->setParty( n, pc, storylineIndex );
+		// set the new party
+		session->getParty()->setParty( n, pc, storylineIndex );
 
-      delete file;
-    }
+		delete file;
+	}
 
-    {
-      char path[300];
-      get_file_name( path, 300, VALUES_FILE );
-      FILE *fp = fopen( path, "rb" );
-      if( fp ) {
-        File *file = new File( fp );
-        getSession()->getSquirrel()->loadValues( file );
-        delete file;
-      } else {
-        cerr << "*** Warning: can't find values file." << endl;
-      }
-    }
-  }
+	{
+		char path[300];
+		get_file_name( path, 300, VALUES_FILE );
+		FILE *fp = fopen( path, "rb" );
+		if( fp ) {
+			File *file = new File( fp );
+			getSession()->getSquirrel()->loadValues( file );
+			delete file;
+		} else {
+			cerr << "*** Warning: can't find values file." << endl;
+		}
+	}
   return true;
 }
 
