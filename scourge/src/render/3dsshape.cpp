@@ -395,6 +395,8 @@ void C3DSShape::outline( float r, float g, float b ) {
   glGetBooleanv( GL_BLEND, &blend );
   glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
+  glDisable( GL_TEXTURE_2D );
   glPolygonMode( GL_FRONT, GL_LINE );
   glLineWidth( 4 );
   glEnable( GL_CULL_FACE );
@@ -411,6 +413,7 @@ void C3DSShape::outline( float r, float g, float b ) {
   glDisable( GL_CULL_FACE );
   glPolygonMode( GL_FRONT, GL_FILL );
   if( !blend ) glDisable( GL_BLEND );
+	if( texture ) glEnable( GL_TEXTURE_2D );
   useShadow = false;
   glColor4f(1, 1, 1, 0.9f);
 }

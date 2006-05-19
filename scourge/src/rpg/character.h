@@ -70,6 +70,8 @@ public:
     return( skills.find( skillIndex ) == skills.end() ? -1 : skills[skillIndex] );
   }
 	bool canEquip( RpgItem *item );
+	// FIXME: hard-coded for now
+	inline int getSkillBonus() { return 10; }
 	
   static std::map<std::string, Character*> character_class;  
   static std::vector<Character*> character_list;  

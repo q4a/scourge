@@ -94,7 +94,8 @@ class Creature : public RenderedCreature {
   char *name;
   int level, exp, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
-  int skills[Skill::SKILL_COUNT], skillBonus[Skill::SKILL_COUNT];
+  int skills[Skill::SKILL_COUNT], skillBonus[Skill::SKILL_COUNT], skillMod[Skill::SKILL_COUNT];
+	int availableSkillMod;
 	int skillsUsed[Skill::SKILL_COUNT];
   GLuint stateMod, protStateMod;
   Monster *monster;
@@ -331,7 +332,7 @@ class Creature : public RenderedCreature {
   int getMaxMp();
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
-  inline int getSkill(int index) { return skills[index] + skillBonus[index]; }
+  inline int getSkill(int index) { return skills[index] + skillBonus[index] + skillMod[index]; }
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
   inline bool getProtectedStateMod(int mod) { return (protStateMod & (1 << mod) ? true : false); }  
 
@@ -350,8 +351,12 @@ class Creature : public RenderedCreature {
   void setMp();
 
   void setSkill(int index, int value);
-  void setSkillBonus( int index, int value );
+  void setSkillBonus( int index, int value );	
   inline int getSkillBonus(int index) { return skillBonus[index]; }
+	void setSkillMod( int index, int value );
+	inline int getSkillMod( int index ) { return skillMod[index];}
+	inline int getAvailableSkillMod() { return availableSkillMod; }
+	inline void setAvailableSkillMod( int n ) { availableSkillMod = n; }
   void setStateMod(int mod, bool setting);
   void setProtectedStateMod(int mod, bool setting);
 
