@@ -218,8 +218,12 @@ int SqCreature::_getArmor( HSQUIRRELVM vm ) {
 int SqCreature::_isOfClass( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 )
   GET_OBJECT( Creature* )
-	if( !object->getCharacter() ) return sq_throwerror( vm, "Creature is not a PC." );
-  SQBool b = ( !strcmp( object->getCharacter()->getName(), name ) );
+	SQBool b = false;
+	if( !object->getCharacter() ) {
+		//return sq_throwerror( vm, "Creature is not a PC." );
+	} else {
+		b = ( !strcmp( object->getCharacter()->getName(), name ) );
+	}
   sq_pushbool( vm, b );
   return 1;
 }
@@ -228,9 +232,13 @@ int SqCreature::_isOfRootClass( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 )
   GET_OBJECT( Creature* )
 	Character *c = object->getCharacter();
-	if( !c ) return sq_throwerror( vm, "Creature is not a PC." );
-	while( c->getParent() ) c = c->getParent();
-  SQBool b = ( !strcmp( c->getName(), name ) );
+	SQBool b = false;
+	if( !c ) {
+		//return sq_throwerror( vm, "Creature is not a PC." );
+	} else {
+		while( c->getParent() ) c = c->getParent();
+		b = ( !strcmp( c->getName(), name ) );
+	}
   sq_pushbool( vm, b );
   return 1;
 }
