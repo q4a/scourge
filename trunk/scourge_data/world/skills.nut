@@ -36,7 +36,7 @@ function actionSuperTough( creature ) {
 // Missile defense
 function prereqMissileDefense( creature ) {
   return( creature.getLevel() >= 3 &&
-          creature.getSkillByName( "BOW_WEAPON" ) >= 20 );
+          creature.getSkillByName( "RANGED_WEAPON" ) >= 20 );
 }
 
 function actionMissileDefense( creature ) {
@@ -70,10 +70,7 @@ function actionMissileDefense( creature ) {
 // **********************************************
 // War-rage
 function prereqWarrage( creature ) {
-  return( creature.getSkillByName( "SWORD_WEAPON" ) >= 30 ||
-          creature.getSkillByName( "AXE_WEAPON" ) >= 30 || 
-          creature.getSkillByName( "MACE_WEAPON" ) >= 30 ||
-          creature.getSkillByName( "POLE_WEAPON" ) >= 30 ||
+  return( creature.getSkillByName( "MELEE_WEAPON" ) >= 30 ||
           creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 30 );
 }
 
@@ -89,7 +86,7 @@ function actionWarrage( creature ) {
   if( weapon != null ) {
     print( "*** weapon=" + weapon.getName() + "\n" );
     skillCheck = ( !( weapon.isRanged() ) && 
-                   creature.getSkill( weapon.getSkill() ) >= 90 );
+                   creature.getSkill( weapon.getDamageSkill() ) >= 90 );
   } else {
     print( "*** hand-to-hand combat.\n" );
     skillCheck = ( creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 90 );
