@@ -45,7 +45,9 @@ public:
   virtual void setCursorMode( int n, bool useTimer=false ) = 0;
   virtual int getCursorMode() = 0;
   virtual GLuint getHighlightTexture() = 0;
-  virtual Uint16 getMouseX() = 0;
+	virtual GLuint getGuiTexture() = 0;
+	virtual GLuint getGuiTexture2() = 0;
+	virtual Uint16 getMouseX() = 0;
   virtual Uint16 getMouseY() = 0;
   virtual void drawTooltip( float xpos2, float ypos2, float zpos2, 
                             float zrot, float yrot, 

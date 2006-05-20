@@ -2136,9 +2136,17 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   glColor3f( 1, 1, 1 );
   getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
 
+	char *message = NULL;
+
 	// can train?
 	if( p->getCharacter()->getChildCount() > 0 &&
 			p->getCharacter()->getChild( 0 )->getMinLevelReq() <= p->getLevel() ) {
+		message = Constants::getMessage( Constants::TRAINING_AVAILABLE );
+	} else if( p->getAvailableSkillMod() > 0 ) {
+		message = Constants::getMessage( Constants::SKILL_POINTS_AVAILABLE );
+	}
+
+	if( message ) {
 		glColor4f( 0, 0, 0, 0.4f );
 		glPushMatrix();
 		glTranslatef( 3, 14, 0 );
@@ -2153,7 +2161,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 		glDisable( GL_BLEND );
 		glPopMatrix();
 		glColor3f( 1, 0.75f, 0 );
-		getSDLHandler()->texPrint( 5, 24, "TRAIN" );
+		getSDLHandler()->texPrint( 5, 24, message );
 	}
 
   // show stat mods
@@ -2512,6 +2520,14 @@ GLuint Scourge::getCursorTexture( int cursorMode ) {
 
 GLuint Scourge::getHighlightTexture() {
   return getShapePalette()->getHighlightTexture();
+}
+
+GLuint Scourge::getGuiTexture() { 
+	return getShapePalette()->getGuiTexture(); 
+}
+
+GLuint Scourge::getGuiTexture2() { 
+	return getShapePalette()->getGuiTexture2(); 
 }
 
 GLuint Scourge::loadSystemTexture( char *line ) {

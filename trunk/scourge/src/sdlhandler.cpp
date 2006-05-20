@@ -1035,6 +1035,14 @@ GLuint SDLHandler::getHighlightTexture() {
   return gameAdapter->getHighlightTexture(); 
 }
 
+GLuint SDLHandler::getGuiTexture() {
+	return gameAdapter->getGuiTexture();
+}
+
+GLuint SDLHandler::getGuiTexture2() {
+	return gameAdapter->getGuiTexture2();
+}
+
 GLuint SDLHandler::loadSystemTexture( char *line ) { 
   return gameAdapter->loadSystemTexture( line ); 
 }

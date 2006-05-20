@@ -72,19 +72,16 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 
 
   glColor4f( 0, 1, 1, 1 );
+  //glColor4f( 0, 1, 0.25f, 1 );
   int initiative;
-  creature->getInitiative( &initiative );
-  sprintf(s, "Initiative: %d", initiative );
-  scourge->getSDLHandler()->texPrint( 5, y + 90, s );
-
-  glColor4f( 0, 1, 0.25f, 1 );
 	float armor, dodgePenalty;
-  sprintf( s, "DEF: S:%d P:%d C:%d", 
-					 toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_SLASHING ) ),
-					 toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_PIERCING ) ),
-					 toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
-	scourge->getSDLHandler()->texPrint( 5, y + 105, s );
-
+  creature->getInitiative( &initiative );
+  sprintf(s, "Initiative: %d DEF: S:%d P:%d C:%d", 
+					initiative,
+					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_SLASHING ) ),
+					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_PIERCING ) ),
+					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
+  scourge->getSDLHandler()->texPrint( 5, y + 90, s );
 
   glColor4f( 1, 0.35f, 0, 1 );
   float max, min;
@@ -94,7 +91,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   Item *ranged = p->getItemAtLocation( Constants::INVENTORY_WEAPON_RANGED );
 
   char buff[80];
-  int yy = 120;
+  int yy = 105;
   if( left && left->getRpgItem()->isWeapon() ) {
     p->getAttack( left, &max, &min );
     if( toint( max ) > toint( min ) ) 
@@ -109,6 +106,11 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ],
 							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
+		if( Constants::INVENTORY_LEFT_HAND == p->getPreferredWeapon() ) {
+			glColor4f( 1, 0.35f, 0, 1 );
+		} else {
+			glColor4f( 0.7f, 0.7f, 0.7f, 1 );
+		}
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
   } 
@@ -126,22 +128,14 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ],
 							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
+		if( Constants::INVENTORY_RIGHT_HAND == p->getPreferredWeapon() ) {
+			glColor4f( 1, 0.35f, 0, 1 );
+		} else {
+			glColor4f( 0.7f, 0.7f, 0.7f, 1 );
+		}
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
-  }
-	p->getAttack( NULL, &max, &min );
-	if( toint( max ) > toint( min ) ) 
-		sprintf(s, "ATK: %d - %d %s (%s) Bare Hands", 
-						toint( min ), toint( max ), 
-						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
-						getAPRDescription(p, NULL, buff) );
-	else
-		sprintf(s, "ATK: %d %s (%s) Bare Hands", 
-						toint( min ), 
-						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
-						getAPRDescription(p, NULL, buff) );
-	scourge->getSDLHandler()->texPrint(5, y + yy, s);
-	yy += 15;
+  }	
   if( ranged ) {
     p->getAttack( ranged, &max, &min );
     if( toint( max ) > toint( min ) ) 
@@ -156,9 +150,32 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ],
 							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
+		if( Constants::INVENTORY_WEAPON_RANGED == p->getPreferredWeapon() ) {
+			glColor4f( 1, 0.35f, 0, 1 );
+		} else {
+			glColor4f( 0.7f, 0.7f, 0.7f, 1 );
+		}
     scourge->getSDLHandler()->texPrint(5, y + yy, s);
     yy += 15;
   }
+	p->getAttack( NULL, &max, &min );
+	if( toint( max ) > toint( min ) ) 
+		sprintf(s, "ATK: %d - %d %s (%s) Bare Hands", 
+						toint( min ), toint( max ), 
+						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						getAPRDescription(p, NULL, buff) );
+	else
+		sprintf(s, "ATK: %d %s (%s) Bare Hands", 
+						toint( min ), 
+						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						getAPRDescription(p, NULL, buff) );
+	if( -1 == p->getPreferredWeapon() ) {
+		glColor4f( 1, 0.35f, 0, 1 );
+	} else {
+		glColor4f( 0.7f, 0.7f, 0.7f, 1 );
+	}
+	scourge->getSDLHandler()->texPrint(5, y + yy, s);
+	yy += 15;
   
   Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false, theme );
   Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp(), -1, -1, -1, true, theme );

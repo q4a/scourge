@@ -30,6 +30,7 @@
 #include "characterinfo.h"
 #include "shapepalette.h"
 #include "skillsview.h"
+#include "gui/confirmdialog.h"
 
 using namespace std;
 
@@ -40,8 +41,12 @@ using namespace std;
 
 #define START_OF_SECOND_BUTTON_SET 140
 
+#define APPLY_SKILL_MODS 1
+
 Inventory::Inventory(Scourge *scourge) {
   this->scourge = scourge;
+
+
 
   // allocate strings for list
   this->formationText = (char**)malloc(10 * sizeof(char*));
@@ -86,6 +91,8 @@ Inventory::Inventory(Scourge *scourge) {
     this->specialText[i] = (char*)malloc(120 * sizeof(char));
   }
   selected = selectedMode = 0;
+
+	confirmDialog = new ConfirmDialog( scourge->getSDLHandler() );
 
   // construct UI
   mainWin = new Window( scourge->getSDLHandler(),
@@ -200,7 +207,8 @@ Inventory::Inventory(Scourge *scourge) {
   skillList = new SkillsView( scourge, 115, skillY + 5, 290, 405 - ( skillY + 5 ) );
   cards->addWidget( skillList->getWidget(), CHARACTER );
 
-	yy = START_OF_SECOND_BUTTON_SET;
+	//yy = START_OF_SECOND_BUTTON_SET;
+	yy = skillY - 10;
   skillModLabel = cards->createLabel( 5, yy + 10, "Skill: 0", CHARACTER );
   yy+=buttonHeight;
 	addModButton = cards->createButton( 0, yy, 52, yy + buttonHeight, "Add", CHARACTER );
@@ -692,7 +700,55 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     preferredWeaponButton[0]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_LEFT_HAND );
     preferredWeaponButton[1]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_RIGHT_HAND );
     preferredWeaponButton[2]->setSelected( creature->getPreferredWeapon() == Constants::INVENTORY_WEAPON_RANGED );
-  } 
+  } else if( widget == addModButton ) {
+		int skill = skillList->getSelectedLine();
+		if( skill > -1 && creature->getAvailableSkillMod() > 0 ) {
+			if( Skill::skills[ skill ]->getGroup()->isStat() ) {
+				scourge->showMessageDialog( "Stats cannot be improved this way." );
+			}	else {
+				creature->setSkillMod( skill, creature->getSkillMod( skill ) + 1 );
+				creature->setAvailableSkillMod( creature->getAvailableSkillMod() - 1 );
+				refresh();
+			}
+		}
+	} else if( widget == delModButton ) {
+		int skill = skillList->getSelectedLine();
+		if( skill > -1 && creature->getSkillMod( skill ) > 0 ) {
+			creature->setSkillMod( skill, creature->getSkillMod( skill ) - 1 );
+			creature->setAvailableSkillMod( creature->getAvailableSkillMod() + 1 );
+			refresh();
+		}
+	} else if( widget == acceptModButton ) {
+		bool hasMods = false;
+		for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+			if( creature->getSkillMod( i ) > 0 ) {
+				hasMods = true;
+				break;
+			}
+		}
+		if( hasMods ) {
+			if( creature->getAvailableSkillMod() > 0 ) {
+				scourge->showMessageDialog( "You still have skill points to distribute." );
+			} else {
+				assert( !confirmDialog->isVisible() );
+				confirmDialog->setMode( APPLY_SKILL_MODS );
+				confirmDialog->setText( "Are you sure you want to apply the selected skill points?" );
+				confirmDialog->setVisible( true );
+			}
+		} else {
+			scourge->showMessageDialog( "This character has no skill points to apply." );
+		}
+	} else if( widget == confirmDialog->okButton ) {
+		confirmDialog->setVisible( false );
+		if( confirmDialog->getMode() == APPLY_SKILL_MODS ) {
+			creature->applySkillMods();
+		} else {
+			cerr << "*** Error: unknown confirm dialog mode: " << confirmDialog->getMode() << endl;
+		}
+		refresh();
+	}	else if( widget == confirmDialog->cancelButton ) {
+		confirmDialog->setVisible( false );
+	}
   return false;
 }
 

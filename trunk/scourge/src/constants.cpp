@@ -161,12 +161,14 @@ char *Constants::messages[][80] = {
   { "Donate to Temple" },
   { "You don't meet the prerequisites for this capability." },
   { "You need cannot activate an automatic capability." },
-  { "A two handed item requires two free hands." }
+  { "A two handed item requires two free hands." },
+	{ "TRAIN" },
+	{ "SKILL" },
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
 
 // opengl extension routines

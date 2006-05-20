@@ -109,6 +109,8 @@ public:
   virtual inline void showItemInfoUI(Item *item, int level) {}
   virtual inline GLuint getCursorTexture( int cursorMode ) { return 0; }
   virtual inline GLuint getHighlightTexture() { return 0; }
+	virtual inline GLuint getGuiTexture() { return 0; }
+	virtual inline GLuint getGuiTexture2() { return 0; }
   virtual inline GLuint loadSystemTexture( char *line ) { return 0; }
 
   virtual bool isMissionCreature( RenderedCreature *creature );

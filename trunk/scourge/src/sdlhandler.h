@@ -149,6 +149,8 @@ public:
   inline int getScreenWidth() { return getScreen()->w; }
   inline int getScreenHeight() { return getScreen()->h; }
   GLuint getHighlightTexture();
+	GLuint getGuiTexture();
+	GLuint getGuiTexture2();
   GLuint loadSystemTexture( char *line );
   void allWindowsClosed();
 

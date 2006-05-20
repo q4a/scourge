@@ -332,7 +332,7 @@ class Creature : public RenderedCreature {
   int getMaxMp();
   inline int getThirst() { return thirst; }
   inline int getHunger() { return hunger; }
-  inline int getSkill(int index) { return skills[index] + skillBonus[index] + skillMod[index]; }
+  inline int getSkill(int index, bool includeMod=true) { return skills[index] + skillBonus[index] + ( includeMod ? skillMod[index] : 0 ); }
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
   inline bool getProtectedStateMod(int mod) { return (protStateMod & (1 << mod) ? true : false); }  
 
@@ -355,6 +355,7 @@ class Creature : public RenderedCreature {
   inline int getSkillBonus(int index) { return skillBonus[index]; }
 	void setSkillMod( int index, int value );
 	inline int getSkillMod( int index ) { return skillMod[index];}
+	void applySkillMods();		
 	inline int getAvailableSkillMod() { return availableSkillMod; }
 	inline void setAvailableSkillMod( int n ) { availableSkillMod = n; }
   void setStateMod(int mod, bool setting);
