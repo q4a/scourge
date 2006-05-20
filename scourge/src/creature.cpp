@@ -2022,6 +2022,16 @@ void Creature::setSkillMod( int index, int value ) {
 	session->getParty()->recomputeMaxSkills();
 }
 
+void Creature::applySkillMods() {
+	for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+		if( skillMod[ i ] > 0 ) {
+			setSkill( i, skills[ i ] + skillMod[ i ] );
+			skillMod[ i ] = 0;
+		}
+	}
+	availableSkillMod = 0;
+}
+
 void Creature::setStateMod(int mod, bool setting) { 
   if(setting) stateMod |= (1 << mod);  
   else stateMod &= ((GLuint)0xffff - (GLuint)(1 << mod)); 

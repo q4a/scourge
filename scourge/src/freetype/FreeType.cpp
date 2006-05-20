@@ -23,7 +23,7 @@ inline int next_p2 ( int a )
 void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base, int *charWidth ) {
 
   // Workaround for problem in font file.
-  if( ch == '_' ) ch = ' ';
+  if( ch == '_' ) ch = '-';
 
 	//The first thing we do is get FreeType to render our character
 	//into a bitmap.  This actually requires a couple of FreeType commands:

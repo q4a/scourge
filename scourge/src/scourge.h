@@ -635,6 +635,8 @@ public:
   virtual void lockMouse( Widget *widget ) { getSDLHandler()->lockMouse( widget ); }
 
   GLuint getHighlightTexture();
+	GLuint getGuiTexture();
+	GLuint getGuiTexture2();
 
   GLuint loadSystemTexture( char *line );
 

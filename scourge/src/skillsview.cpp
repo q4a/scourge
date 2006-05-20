@@ -51,6 +51,7 @@ SkillsView::~SkillsView() {
 void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) { 
   this->creature = creature;
   int lineCounter = 0;
+	char mod[10];
   for( int t = 0; t < Skill::SKILL_COUNT; t++ ) {
 			if( creature->getSkill( t ) == 0 ) continue;
 
@@ -74,14 +75,24 @@ void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) {
       //bool maxFound = ( maxSkill >= 0 );
 			bool maxFound = ( info && creature == info->getHighestSkillPC( t ) );
 
-      sprintf( skillLine[ lineCounter ], "%d - %s", 
-               creature->getSkill( t ), 
+			if( creature->getSkillMod( t ) > 0 ) {
+				sprintf( mod, "(%d)", creature->getSkillMod( t ) );
+			} else {
+				strcpy( mod, "" );
+			}			
+      sprintf( skillLine[ lineCounter ], "%d%s - %s", 
+               creature->getSkill( t, false ), 
+							 mod,
                Skill::skills[ t ]->getName() );
-      if( maxFound ) {
-        skillColor[ lineCounter ].r = 0;
-        skillColor[ lineCounter ].g = 0.75f;
-        skillColor[ lineCounter ].b = 1;
-      }
+			if( creature->getSkillMod( t ) > 0 ) {
+				skillColor[ lineCounter ].r = 0;
+				skillColor[ lineCounter ].g = 1;
+				skillColor[ lineCounter ].b = 0;
+			} else if( maxFound ) {
+				skillColor[ lineCounter ].r = 0;
+				skillColor[ lineCounter ].g = 0.75f;
+				skillColor[ lineCounter ].b = 1;
+			}
 			lineCounter++;
     }
 

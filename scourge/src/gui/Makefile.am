@@ -35,5 +35,7 @@ libScourgeGui_a_SOURCES = \
 	scrollinglabel.h\
 	window.cpp\
 	window.h\
+	confirmdialog.cpp\
+	confirmdialog.h\
 	progress.cpp\
 	progress.h

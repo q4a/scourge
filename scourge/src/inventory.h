@@ -41,6 +41,7 @@ class SpecialSkill;
 class Storable;
 class CharacterInfoUI;
 class SkillsView;
+class ConfirmDialog;
 
 class Inventory : public DragAndDropHandler, WidgetView {
 private:
@@ -114,6 +115,7 @@ private:
 	char armorStr[80];
 	Canvas *attrCanvas;
   CharacterInfoUI *charInfoUI;
+	ConfirmDialog *confirmDialog;
 
 	// mission
 	char missionText[3000];
