@@ -1028,6 +1028,38 @@ float Battle::applyMagicItemSpellDamage() {
   return -1.0f;
 }
 
+void Battle::applyCoordinationInfluence( float *result ) {
+	int minValue = ( item ? item->getRpgItem()->
+									 getWeaponInfluence( COORDINATION_INFLUENCE, 
+																			 MIN_INFLUENCE ) :
+									 -1 );
+	int maxValue = ( item ? item->getRpgItem()->
+									 getWeaponInfluence( COORDINATION_INFLUENCE, 
+																			 MAX_INFLUENCE ) :
+									 -1 );
+	int value = creature->getSkill( Skill::COORDINATION );
+	cerr << creature->getName() << " coord=" << value << " vs. " << minValue << "-" << maxValue << endl;
+	float bonus = 0;
+	if( minValue > value ) {
+		// exponential malus
+		bonus =  1 - exp( minValue - value );		
+	} else if( maxValue > -1 && maxValue < value ) {
+		// linear bonus
+		bonus = ( value - maxValue ) * 2.71828f;
+	}
+	cerr << "\t" << bonus << endl;
+
+	if( bonus != 0 ) {
+		char message[120];
+		if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+			sprintf( message, "...CTH bonus=%.2f", bonus );
+			session->getMap()->addDescription( message );
+		}
+	}
+
+	*result = ( *result + bonus );
+}
+
 void Battle::hitWithItem() {
   prepareToHitMessage();
 
@@ -1035,95 +1067,110 @@ void Battle::hitWithItem() {
 	// roll chance to hit (CTH)
 	float cth = 100.0f * rand() / RAND_MAX;
 
-	// is this greater than the attacker's weapon skill - defender's dodge skill?
+	// apply COORDINATION influence
+	applyCoordinationInfluence( &cth );
+
+		// is this greater than the attacker's weapon skill - defender's dodge skill?
 	// FIXME: need to apply modifiers for sneak attacks, etc.
-	
-	float armor, dodgePenalty;
-	creature->getTargetCreature()->
-		getArmor( &armor, &dodgePenalty, 
-							item ? item->getRpgItem()->getDamageType() : 0,
-							item );
 
-	if( cth > creature->getSkill( item ? 
-																item->getRpgItem()->getDamageSkill() : 
-																Skill::HAND_TO_HAND_COMBAT ) -
-			( creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) + 
-				dodgePenalty ) ) {
-		// a hit?
-
-		// Shield/weapon parry
-		Item *parryItem = NULL;
-		float parry = creature->getTargetCreature()->getParry( &parryItem );
-		if( parry > cth ) {
-			sprintf( message, "...%s blocks attack with %s!", 
-							 creature->getTargetCreature()->getName(),
-							 parryItem->getName() );
-			session->getMap()->addDescription( message );
-		} else {
-			// a hit!
+	// the attacker's skill
+	int skill = creature->getSkill( item ? 
+																	item->getRpgItem()->getDamageSkill() : 
+																	Skill::HAND_TO_HAND_COMBAT );
+	if( cth <= skill ) {
 		
-			// calculate attack value
-			float max, min, skill;
-			float attack = creature->getAttack( item, &max, &min, &skill, true );
-			float delta = creature->getAttackerStateModPercent();
-			float extra = ( attack / 100.0f ) * delta;
-			attack += extra;
+		// the target's dodge
+		float armor, dodgePenalty;
+		creature->getTargetCreature()->
+			getArmor( &armor, &dodgePenalty, 
+								item ? item->getRpgItem()->getDamageType() : 0,
+								item );
+		float dodge = 
+			creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) - 
+			dodgePenalty;
 
-			// cursed items
-			if( item && item->isCursed() ) {
-				session->getMap()->addDescription("...Using cursed item!");
-				attack -= ( attack / 3.0f );
-			}
-
-			sprintf( message, "...%s attacks for %d points.", 
-							 creature->getName(), toint( attack ) );
-			session->getMap()->addDescription( message );
-			if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-				sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,EX:%.2f)",
-								min, max, skill, extra );
+		if( cth <= skill - dodge ) {
+			// a hit?
+	
+			// Shield/weapon parry
+			Item *parryItem = NULL;
+			float parry = creature->getTargetCreature()->getParry( &parryItem );
+			if( parry > cth ) {
+				sprintf( message, "...%s blocks attack with %s!", 
+								 creature->getTargetCreature()->getName(),
+								 parryItem->getName() );
 				session->getMap()->addDescription( message );
-			}
-
-			// very low attack rolls (fumble)
-			if( handleLowAttackRoll( attack, min, max ) ) return;
+			} else {
+				// a hit!
 			
-			if( toint( armor ) > 0 ) {
-				sprintf( message, "...%s's armor blocks %d points", 
-								 creature->getTargetCreature()->getName(), toint( armor ) );
+				// calculate attack value
+				float max, min, skill;
+				float attack = creature->getAttack( item, &max, &min, &skill, true );
+				float delta = creature->getAttackerStateModPercent();
+				float extra = ( attack / 100.0f ) * delta;
+				attack += extra;
+	
+				// cursed items
+				if( item && item->isCursed() ) {
+					session->getMap()->addDescription("...Using cursed item!");
+					attack -= ( attack / 3.0f );
+				}
+	
+				sprintf( message, "...%s attacks for %d points.", 
+								 creature->getName(), toint( attack ) );
 				session->getMap()->addDescription( message );
-			}
-							
-			float damage = ( armor > attack ? 0 : attack - armor );
-			if( damage > 0 ) {
-				// play item sound
-				if( item ) session->playSound( item->getRandomSound() );
+				if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+					sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,EX:%.2f)",
+									min, max, skill, extra );
+					session->getMap()->addDescription( message );
+				}
 	
-				applyMagicItemDamage( &damage );
-	
-				applyHighAttackRoll( &damage, attack, min, max );	
-			}
-	
-			// item attack event handler
-			if( item ) {
-				getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
-				getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
-				damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
-			}
-	
-			dealDamage( damage );
-	
-			if( damage > 0 ) {
-				// apply extra spell-like damage of magic items
-				float spellDamage = applyMagicItemSpellDamage();
-				if( spellDamage > -1 ) {
-					dealDamage( damage, Constants::EFFECT_GREEN, true );
+				// very low attack rolls (fumble)
+				if( handleLowAttackRoll( attack, min, max ) ) return;
+				
+				if( toint( armor ) > 0 ) {
+					sprintf( message, "...%s's armor blocks %d points", 
+									 creature->getTargetCreature()->getName(), toint( armor ) );
+					session->getMap()->addDescription( message );
+				}
+								
+				float damage = ( armor > attack ? 0 : attack - armor );
+				if( damage > 0 ) {
+					// play item sound
+					if( item ) session->playSound( item->getRandomSound() );
+		
+					applyMagicItemDamage( &damage );
+		
+					applyHighAttackRoll( &damage, attack, min, max );	
+				}
+		
+				// item attack event handler
+				if( item ) {
+					getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
+					getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
+					damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
+				}
+		
+				dealDamage( damage );
+		
+				if( damage > 0 ) {
+					// apply extra spell-like damage of magic items
+					float spellDamage = applyMagicItemSpellDamage();
+					if( spellDamage > -1 ) {
+						dealDamage( damage, Constants::EFFECT_GREEN, true );
+					}
 				}
 			}
+		} else {
+			// a miss
+			sprintf(message, "...%s dodges the attack.", 
+							creature->getTargetCreature()->getName() );
+			session->getMap()->addDescription(message);
 		}
 	} else {
 		// a miss
-		sprintf(message, "...%s dodges the attack.", 
-						creature->getTargetCreature()->getName() );
+		sprintf(message, "...%s misses the target.", 
+						creature->getName() );
 		session->getMap()->addDescription(message);
 	}
 }

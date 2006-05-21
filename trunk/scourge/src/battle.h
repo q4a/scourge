@@ -149,6 +149,8 @@ class Battle {
   bool moveCreature();
 
   static char *getRandomSound(int start, int count);
+
+	void applyCoordinationInfluence( float *value );
 };
 
 #endif

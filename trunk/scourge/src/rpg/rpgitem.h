@@ -43,6 +43,13 @@ typedef struct _ItemType {
   bool isWeapon, isArmor, isRandom, isRanged, hasSpell, isEnchantable;
 } ItemType;
 
+#define MIN_INFLUENCE 0
+#define MAX_INFLUENCE 1
+
+#define COORDINATION_INFLUENCE 0
+#define POWER_INFLUENCE 1
+#define SKILL_INFLUENCE 2
+
 class RpgItem {
 private:
 
@@ -68,6 +75,7 @@ private:
 	int ap; // ap cost 
 	int range; // weapon range
 	int twohanded; // a twoHandedType value
+	int weaponInfluence[3][2]; // influence values
   
 	// armor
 	int *defense;
@@ -117,9 +125,9 @@ private:
      ITEM_TYPE_COUNT
    };
 
-  static std::vector<ItemType> itemTypes;
-  static int randomTypes[ITEM_TYPE_COUNT];
-  static int randomTypeCount;
+	 static std::vector<ItemType> itemTypes;
+	 static int randomTypes[ITEM_TYPE_COUNT];
+	 static int randomTypeCount;
 
   enum twoHandedType {
     NOT_TWO_HANDED=0,
@@ -200,6 +208,12 @@ private:
 	inline int getAP() { return ap; }
 	inline int getRange() { return range; }
   inline int getTwoHanded() { return twohanded; }
+	inline void setWeaponInfluence( int n[3][2] ) {
+		weaponInfluence[0][0] = n[0][0]; weaponInfluence[0][1] = n[0][1];
+		weaponInfluence[1][0] = n[1][0]; weaponInfluence[1][1] = n[1][1];
+		weaponInfluence[2][0] = n[2][0]; weaponInfluence[2][1] = n[2][1];
+	}
+	inline int getWeaponInfluence( int index, int sub ) { return weaponInfluence[index][sub]; }
 
 	// armor
 	inline void setArmor( int *defense, int defenseSkill, int dodgePenalty ) {
