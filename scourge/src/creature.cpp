@@ -138,7 +138,7 @@ void Creature::commonInit() {
   this->stateMod = 0;
   this->protStateMod = 0;
   this->level = 1;
-  this->exp = 0;
+  this->experience = 0;
   this->hp = 0;
   this->mp = 0;
   this->startingHp = 0;
@@ -242,7 +242,7 @@ CreatureInfo *Creature::save() {
   info->deityIndex = deityIndex;
   info->hp = hp;
   info->mp = mp;
-  info->exp = exp;
+  info->exp = experience;
   info->level = level;
   info->money = money;
   info->stateMod = stateMod;
@@ -1437,14 +1437,14 @@ int Creature::addExperience(Creature *creature_killed) {
  */
 int Creature::addExperience(int delta) {
   int n = delta;
-  exp += n;
+  experience += n;
   if( exp < 0 ) {
-    n = exp;
-    exp = 0;
+    n = experience;
+    experience = 0;
   }
 
   // level up?
-  if(exp >= expOfNextLevel) {
+  if(experience >= expOfNextLevel) {
     level++;
     hp += character->getStartingHp();
     mp += character->getStartingMp();
@@ -2192,6 +2192,61 @@ void Creature::calcArmor( int damageType,
 
 #define MAX_RANDOM_DAMAGE 2.0f
 
+void Creature::applyInfluence( Item *weapon, float *result, 
+															 int influenceType, int skill,
+															 char *debugMessage ) {
+	int minValue = ( weapon ? weapon->getRpgItem()->
+									 getWeaponInfluence( influenceType, 
+																			 MIN_INFLUENCE ) :
+									 -1 );
+	int maxValue = ( weapon ? weapon->getRpgItem()->
+									 getWeaponInfluence( influenceType, 
+																			 MAX_INFLUENCE ) :
+									 -1 );
+	int value = getSkill( skill );
+	cerr << getName() << " " << debugMessage << 
+		"=" << value << " vs. " << minValue << "-" << maxValue << endl;
+	float bonus = 0;
+	if( minValue > value ) {
+		// exponential malus
+		bonus =  1 - exp( minValue - value );		
+	} else if( maxValue > -1 && maxValue < value ) {
+		// linear bonus
+		bonus = ( value - maxValue ) * 2.71828f;
+	}
+	cerr << "\t" << bonus << endl;
+
+	if( bonus != 0 ) {
+		char message[120];
+		if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
+			sprintf( message, "...%s bonus=%.2f", debugMessage, bonus );
+			session->getMap()->addDescription( message );
+		}
+	}
+
+	*result = ( *result + bonus );
+}
+
+void Creature::getCth( Item *weapon, float *cth, float *skill ) {
+	// the attacker's skill
+	*skill = getSkill( weapon ? 
+										 weapon->getRpgItem()->getDamageSkill() : 
+										 Skill::HAND_TO_HAND_COMBAT );
+	
+	// The max cth is closer to the skill to avoid a lot of misses
+	// This is ok, since dodge is subtracted from it anyway.
+	float maxCth = *skill * 1.5f;
+	if( maxCth > 100 ) maxCth = 100;	
+
+	// roll chance to hit (CTH)
+	*cth = maxCth * rand() / RAND_MAX;
+
+	// apply COORDINATION influence to cth
+	applyInfluence( weapon, cth, 
+									COORDINATION_INFLUENCE, Skill::COORDINATION, 
+									"CTH" );
+}
+
 float Creature::getAttack( Item *weapon, 
 													 float *maxP,
 													 float *minP, 
@@ -2221,9 +2276,15 @@ float Creature::getAttack( Item *weapon,
 
 	// What percent of power is given by weapon? 
 	// (For unarmed combat it's a coordination bonus.)
-	int damagePercent = ( weapon ? 
-												weapon->getRpgItem()->getDamage() : 
-												getSkill( Skill::COORDINATION ) * 5 );
+	float damagePercent = ( weapon ? 
+													weapon->getRpgItem()->getDamage() : 
+													getSkill( Skill::COORDINATION ) + 
+													getSkill( Skill::POWER ) );
+
+	// apply POWER influence
+	applyInfluence( weapon, &damagePercent, 
+									POWER_INFLUENCE, Skill::POWER, 
+									"DAM" );
 
 	if( minP ) {
 		*minP = ( minPower / 100.0f ) * damagePercent;
@@ -2236,7 +2297,7 @@ float Creature::getAttack( Item *weapon,
 	float roll = minPower + ( ( maxPower - minPower ) * rand() / RAND_MAX );
 
 	// take the weapon's skill % of the max power
-	roll = ( roll / 100.0f ) * damagePercent;
+	roll = ( roll / 100.0f ) * damagePercent;	
 
 	// apply damage enhancing capabilities
 	if( callScript ) {

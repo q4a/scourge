@@ -92,7 +92,7 @@ class Creature : public RenderedCreature {
 
   // character information
   char *name;
-  int level, exp, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
+  int level, experience, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   Character *character;
   int skills[Skill::SKILL_COUNT], skillBonus[Skill::SKILL_COUNT], skillMod[Skill::SKILL_COUNT];
 	int availableSkillMod;
@@ -322,7 +322,7 @@ class Creature : public RenderedCreature {
   inline Monster *getMonster() { return monster; }  
   inline int getLevel() { return level; }
   inline int getExpOfNextLevel() { return expOfNextLevel; }
-  inline int getExp() { return exp; }
+  inline int getExp() { return experience; }
   inline int getMoney() { return money; }
   inline int getHp() { return hp; }
   inline int getStartingHp() { return hp; }
@@ -341,7 +341,7 @@ class Creature : public RenderedCreature {
   void setCharacter(Character *c);
   inline void setLevel(int n) { level = n; }
   void setExp();
-  inline void setExp(int n) { exp = n; }
+  inline void setExp(int n) { experience = n; }
   inline void setMoney(int n) { money = n; evalSpecialSkills(); }
   inline void setHp(int n) { hp = n; evalSpecialSkills(); }
   inline void setMp(int n) { mp = n; evalSpecialSkills(); }
@@ -436,19 +436,20 @@ class Creature : public RenderedCreature {
   inline Event *getStateModEvent(int mod) { return(stateModEventMap.find(mod) == stateModEventMap.end() ? NULL : stateModEventMap[mod]); }
 
 
-  // new Christie-style battle system
-	void incSkillUsed( int skill );
-  void calcArmor( int damageType,
-									float *armorP, 
-                  float *dodgePenalty,
-                  bool callScript=false );
-  float getAttack( Item *weapon, 
+	// ======================================
+	// Combat methods
+	void getCth( Item *weapon, float *cth, float *skill );
+  
+	float getAttack( Item *weapon, 
 									 float *maxP=NULL, 
 									 float *minP=NULL, 
 									 float *skillP=NULL,
-									 bool callScript=false );	
+									 bool callScript=false );
+	
 	float getParry( Item **parryItem );
-	float getArmor( float *armor, float *dodgePenalty, int damageType, Item *vsWeapon = NULL );
+	
+	float getArmor( float *armor, float *dodgePenalty, int damageType, Item *vsWeapon = NULL );	
+
   float getAttackerStateModPercent();
   float getDefenderStateModPercent( bool magical );
   float rollMagicDamagePercent( Item *item );
@@ -460,6 +461,11 @@ class Creature : public RenderedCreature {
 	char *getType();
 
  protected:
+
+	 void calcArmor( int damageType,
+									float *armorP, 
+                  float *dodgePenalty,
+                  bool callScript=false );
 
    bool findPath( int x, int y, bool cancelIfNotPossible=true, bool limitTime=false, bool ignoreCreatures=false );
 
@@ -483,6 +489,18 @@ class Creature : public RenderedCreature {
    * Use fps, speed and gamespeed to figure this out.
    */
   GLfloat getStep();
+
+	/**
+	 * Apply an influence modifier.
+	 * @param weapon the item used or null for unarmed attack
+	 * @param result the value to modify
+	 * @param influenceType an influence type from RpgItem
+	 * @param skill the corresponding skill
+	 * @param debugMessage a message to print
+	 */
+	void applyInfluence( Item *weapon, float *result, 
+											 int influenceType, int skill,
+											 char *debugMessage );
 };
 
 
