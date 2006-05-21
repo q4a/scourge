@@ -1064,19 +1064,23 @@ void Battle::hitWithItem() {
   prepareToHitMessage();
 
 
-	// roll chance to hit (CTH)
-	float cth = 100.0f * rand() / RAND_MAX;
-
-	// apply COORDINATION influence
-	applyCoordinationInfluence( &cth );
-
-		// is this greater than the attacker's weapon skill - defender's dodge skill?
-	// FIXME: need to apply modifiers for sneak attacks, etc.
-
 	// the attacker's skill
 	int skill = creature->getSkill( item ? 
 																	item->getRpgItem()->getDamageSkill() : 
 																	Skill::HAND_TO_HAND_COMBAT );
+	
+	// The max cth is closer to the skill to avoid a lot of misses
+	// This is ok, since dodge is subtracted from it anyway.
+	float maxCth = skill * 1.5f;
+	if( maxCth > 100 ) maxCth = 100;	
+
+	// roll chance to hit (CTH)
+	float cth = maxCth * rand() / RAND_MAX;
+	//cerr << creature->getName() << " max cth=" << maxCth << " cth=" << cth << endl;
+
+	// apply COORDINATION influence
+	applyCoordinationInfluence( &cth );
+
 	if( cth <= skill ) {
 		
 		// the target's dodge
