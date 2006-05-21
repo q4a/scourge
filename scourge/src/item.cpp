@@ -406,7 +406,21 @@ void Item::initItems( ShapePalette *shapePal ) {
       if( range < (int)MIN_DISTANCE ) range = (int)MIN_DISTANCE;
 			int twoHanded = atoi( strtok( NULL, "," ) );
 			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
-			
+		} else if( n == 'R' && last && last->isWeapon() ) {
+			// skip ':'
+      fgetc(fp);
+      
+			// read the rest of the line
+      n = Constants::readLine( line, fp );
+
+			int influence[3][2];
+			influence[0][0] = atoi( strtok( line, "," ) );
+			influence[0][1] = atoi( strtok( NULL, "," ) );
+			influence[1][0] = atoi( strtok( NULL, "," ) );
+			influence[1][1] = atoi( strtok( NULL, "," ) );
+			influence[2][0] = atoi( strtok( NULL, "," ) );
+			influence[2][1] = atoi( strtok( NULL, "," ) );
+			last->setWeaponInfluence( influence );
     } else if( n == 'A' && last ) {
       // skip ':'
       fgetc(fp);

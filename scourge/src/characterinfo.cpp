@@ -95,15 +95,17 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   if( left && left->getRpgItem()->isWeapon() ) {
     p->getAttack( left, &max, &min );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d %s (%s) %s", 
+      sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
               toint( min ), toint( max ), 
 							RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ],
+							p->getSkill( left->getRpgItem()->getDamageSkill() ),
 							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK: %d %s (%s) %s", 
+      sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
               toint( min ), 
 							RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ],
+							p->getSkill( left->getRpgItem()->getDamageSkill() ),
 							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
 		if( Constants::INVENTORY_LEFT_HAND == p->getPreferredWeapon() ) {
@@ -117,15 +119,17 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   if( right && right->getRpgItem()->isWeapon() ) {
     p->getAttack( right, &max, &min );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d %s (%s) %s", 
+      sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
               toint( min ), toint( max ), 
 							RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ],
+							p->getSkill( right->getRpgItem()->getDamageSkill() ),
 							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK: %d %s (%s) %s", 
+      sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
               toint( min ), 
 							RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ],
+							p->getSkill( right->getRpgItem()->getDamageSkill() ),
 							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
 		if( Constants::INVENTORY_RIGHT_HAND == p->getPreferredWeapon() ) {
@@ -139,15 +143,17 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   if( ranged ) {
     p->getAttack( ranged, &max, &min );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK: %d - %d %s (%s) %s", 
+      sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
               toint( min ), toint( max ), 
 							RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ],
+							p->getSkill( ranged->getRpgItem()->getDamageSkill() ),
 							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK: %d %s (%s) %s", 
+      sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
               toint( min ), 
 							RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ],
+							p->getSkill( ranged->getRpgItem()->getDamageSkill() ),
 							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
 		if( Constants::INVENTORY_WEAPON_RANGED == p->getPreferredWeapon() ) {
@@ -160,14 +166,16 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   }
 	p->getAttack( NULL, &max, &min );
 	if( toint( max ) > toint( min ) ) 
-		sprintf(s, "ATK: %d - %d %s (%s) Bare Hands", 
+		sprintf(s, "ATK:%d-%d %s CTH:%d (%s) Bare Hands", 
 						toint( min ), toint( max ), 
 						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						p->getSkill( Skill::HAND_TO_HAND_COMBAT ),
 						getAPRDescription(p, NULL, buff) );
 	else
-		sprintf(s, "ATK: %d %s (%s) Bare Hands", 
+		sprintf(s, "ATK:%d %s CTH:%d (%s) Bare Hands", 
 						toint( min ), 
 						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						p->getSkill( Skill::HAND_TO_HAND_COMBAT ),
 						getAPRDescription(p, NULL, buff) );
 	if( -1 == p->getPreferredWeapon() ) {
 		glColor4f( 1, 0.35f, 0, 1 );

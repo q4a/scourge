@@ -163,6 +163,33 @@ void InfoGui::describe() {
 			sprintf(tmp, "Range: %d|", item->getRange());
 			strcat( description, tmp );
 		}
+		int minValue = item->getRpgItem()->getWeaponInfluence( COORDINATION_INFLUENCE,
+																													 MIN_INFLUENCE );
+		int maxValue = item->getRpgItem()->getWeaponInfluence( COORDINATION_INFLUENCE,
+																													 MAX_INFLUENCE );
+		if( minValue > -1 ) {
+			sprintf( tmp, "Coordination Req: %d-%d|", 
+							minValue, maxValue );
+			strcat( description, tmp );
+		}
+		minValue = item->getRpgItem()->getWeaponInfluence( POWER_INFLUENCE,
+																											 MIN_INFLUENCE );
+		maxValue = item->getRpgItem()->getWeaponInfluence( POWER_INFLUENCE,
+																											 MAX_INFLUENCE );
+		if( minValue > -1 ) {
+			sprintf( tmp, "Power Req: %d-%d|", 
+							minValue, maxValue );
+			strcat( description, tmp );
+		}
+		minValue = item->getRpgItem()->getWeaponInfluence( SKILL_INFLUENCE,
+																											 MIN_INFLUENCE );
+		maxValue = item->getRpgItem()->getWeaponInfluence( SKILL_INFLUENCE,
+																											 MAX_INFLUENCE );
+		if( minValue > -1 ) {
+			sprintf( tmp, "Skill Req: %d-%d|", 
+							minValue, maxValue );
+			strcat( description, tmp );
+		}
 	}
 	if( item->getRpgItem()->isArmor() ) {
 		for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {

@@ -59,6 +59,9 @@ RpgItem::RpgItem( char *name, int rareness, int type, float weight, int price,
 
 	// weapon
 	damage = damageType = damageSkill = parry = ap = range = twohanded = 0;
+	weaponInfluence[0][0] = weaponInfluence[0][1] = 
+		weaponInfluence[1][0] = weaponInfluence[1][1] = 
+		weaponInfluence[2][0] = weaponInfluence[2][1] = -1;
   
 	// armor
 	defense = (int*)malloc( sizeof( int ) * DAMAGE_TYPE_COUNT );
