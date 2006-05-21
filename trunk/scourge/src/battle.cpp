@@ -1028,58 +1028,11 @@ float Battle::applyMagicItemSpellDamage() {
   return -1.0f;
 }
 
-void Battle::applyCoordinationInfluence( float *result ) {
-	int minValue = ( item ? item->getRpgItem()->
-									 getWeaponInfluence( COORDINATION_INFLUENCE, 
-																			 MIN_INFLUENCE ) :
-									 -1 );
-	int maxValue = ( item ? item->getRpgItem()->
-									 getWeaponInfluence( COORDINATION_INFLUENCE, 
-																			 MAX_INFLUENCE ) :
-									 -1 );
-	int value = creature->getSkill( Skill::COORDINATION );
-	cerr << creature->getName() << " coord=" << value << " vs. " << minValue << "-" << maxValue << endl;
-	float bonus = 0;
-	if( minValue > value ) {
-		// exponential malus
-		bonus =  1 - exp( minValue - value );		
-	} else if( maxValue > -1 && maxValue < value ) {
-		// linear bonus
-		bonus = ( value - maxValue ) * 2.71828f;
-	}
-	cerr << "\t" << bonus << endl;
-
-	if( bonus != 0 ) {
-		char message[120];
-		if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-			sprintf( message, "...CTH bonus=%.2f", bonus );
-			session->getMap()->addDescription( message );
-		}
-	}
-
-	*result = ( *result + bonus );
-}
-
 void Battle::hitWithItem() {
   prepareToHitMessage();
 
-
-	// the attacker's skill
-	int skill = creature->getSkill( item ? 
-																	item->getRpgItem()->getDamageSkill() : 
-																	Skill::HAND_TO_HAND_COMBAT );
-	
-	// The max cth is closer to the skill to avoid a lot of misses
-	// This is ok, since dodge is subtracted from it anyway.
-	float maxCth = skill * 1.5f;
-	if( maxCth > 100 ) maxCth = 100;	
-
-	// roll chance to hit (CTH)
-	float cth = maxCth * rand() / RAND_MAX;
-	//cerr << creature->getName() << " max cth=" << maxCth << " cth=" << cth << endl;
-
-	// apply COORDINATION influence
-	applyCoordinationInfluence( &cth );
+	float cth, skill;
+	creature->getCth( item, &cth, &skill );
 
 	if( cth <= skill ) {
 		
