@@ -160,7 +160,7 @@ bool CombatTest::fight( char *path,
   int atkOriginalLevel = attacker->getLevel();
   int defOriginalLevel = defender->getLevel();
 
-  float skill, max, min;
+  float max, min;
   float sum=0, low=0, high=0, ATKave;
   for( int n = 0; n < SHOW_MAX_LEVEL; n++ ) {
 
@@ -183,9 +183,9 @@ bool CombatTest::fight( char *path,
       // -------------------------------------------------
       // Attack roll
       sum = low = high = 0;
-      attacker->getAttack( weapon, &max, &min, &skill );
-      fprintf( fp, "ATK range:<b>%.2f - %.2f</b> (%% %.2f )<br>\n", 
-               min, max, skill );
+      attacker->getAttack( weapon, &max, &min );
+      fprintf( fp, "ATK range:<b>%.2f - %.2f</b><br>\n", 
+               min, max );
       for( int i = 0; i < count; i++ ) {
         computeHighLow( attacker->getAttack( weapon ),
                         &sum, &low, &high );

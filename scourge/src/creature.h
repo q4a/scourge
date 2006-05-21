@@ -312,6 +312,7 @@ class Creature : public RenderedCreature {
   Item *getBestWeapon( float dist, bool callScript=false );  
 
   float getAttacksPerRound( Item *item = NULL );
+	float getWeaponAPCost( Item *item, bool showDebug=true );
 
   void setNpcInfo( NpcInfo *npcInfo );
   inline NpcInfo *getNpcInfo() { return npcInfo; }
@@ -438,12 +439,11 @@ class Creature : public RenderedCreature {
 
 	// ======================================
 	// Combat methods
-	void getCth( Item *weapon, float *cth, float *skill );
+	void getCth( Item *weapon, float *cth, float *skill, bool showDebug=true );
   
 	float getAttack( Item *weapon, 
 									 float *maxP=NULL, 
 									 float *minP=NULL, 
-									 float *skillP=NULL,
 									 bool callScript=false );
 	
 	float getParry( Item **parryItem );
@@ -491,16 +491,32 @@ class Creature : public RenderedCreature {
   GLfloat getStep();
 
 	/**
-	 * Apply an influence modifier.
+	 * Apply a weapon influence modifier.
+	 * 
 	 * @param weapon the item used or null for unarmed attack
-	 * @param result the value to modify
 	 * @param influenceType an influence type from RpgItem
 	 * @param skill the corresponding skill
 	 * @param debugMessage a message to print
+	 * @return the bonus (malus if negative)
 	 */
-	void applyInfluence( Item *weapon, float *result, 
-											 int influenceType, int skill,
-											 char *debugMessage );
+	float getInfluenceBonus( Item *weapon, 
+													 int influenceType, int skill,
+													 char *debugMessage );
+
+	/**
+	 * Apply a weapon influence modifier, always linearly.
+	 * 
+	 * @param weapon the item used or null for unarmed attack
+	 * @param influenceType an influence type from RpgItem
+	 * @param skill the corresponding skill
+	 * @param debugMessage a message to print
+	 * @param maxDelta the max amount of change
+	 * @return the bonus (malus if negative)
+	 */
+	float getFlatInfluenceBonus( Item *weapon, 
+															 int influenceType, int skill,
+															 char *debugMessage, 
+															 float maxDelta );
 };
 
 

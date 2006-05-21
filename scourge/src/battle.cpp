@@ -27,7 +27,6 @@
 
 using namespace std;
 
-#define WEAPON_WAIT_MUL 1
 #define MIN_FUMBLE_RANGE 4.0f
 
 #define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) )
@@ -307,13 +306,13 @@ void Battle::initTurnStep( bool callScript ) {
     if( creature->getActionSkill() ) {
       range = calculateRange();
       if(nextTurn > 0) weaponWait = nextTurn;
-      else weaponWait = creature->getActionSkill()->getSpeed() * WEAPON_WAIT_MUL;
+      else weaponWait = creature->getActionSkill()->getSpeed();
       nextTurn = 0;
       if(debugBattle) cerr << "\tUsing capability: " << creature->getActionSkill()->getName() << endl;
     } else if(creature->getActionSpell()) {
       range = calculateRange();
       if(nextTurn > 0) weaponWait = nextTurn;
-      else weaponWait = creature->getActionSpell()->getSpeed() * WEAPON_WAIT_MUL;
+      else weaponWait = creature->getActionSpell()->getSpeed();
       nextTurn = 0;
       if(debugBattle) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
@@ -325,7 +324,7 @@ void Battle::initTurnStep( bool callScript ) {
         if(debugBattle) cerr << "\tUsing bare hands." << endl;
       }
       // How many steps to wait before being able to use the weapon.
-      weaponWait = getWeaponSpeed( item );
+      weaponWait = toint( creature->getWeaponAPCost( item ) );
       // Make turn-based mode a little snappier
       //if( session->getPreferences()->isBattleTurnBased() ) {
       //  weaponWait /= 2;
@@ -1061,8 +1060,8 @@ void Battle::hitWithItem() {
 				// a hit!
 			
 				// calculate attack value
-				float max, min, skill;
-				float attack = creature->getAttack( item, &max, &min, &skill, true );
+				float max, min;
+				float attack = creature->getAttack( item, &max, &min, true );
 				float delta = creature->getAttackerStateModPercent();
 				float extra = ( attack / 100.0f ) * delta;
 				attack += extra;
@@ -1077,8 +1076,8 @@ void Battle::hitWithItem() {
 								 creature->getName(), toint( attack ) );
 				session->getMap()->addDescription( message );
 				if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-					sprintf(message, "...(MI:%.2f,MA:%.2f,SK:%.2f,EX:%.2f)",
-									min, max, skill, extra );
+					sprintf(message, "...DAM:%.2f-%.2f extra:%.2f",
+									min, max, extra );
 					session->getMap()->addDescription( message );
 				}
 	
@@ -1245,13 +1244,6 @@ char *Battle::getRandomSound(int start, int count) {
   else return NULL;
 }
 
-int Battle::getWeaponSpeed( Item *item ) {
-  return ( item ? 
-           item->getRpgItem()->getAP() : 
-           Constants::HAND_WEAPON_SPEED ) * 
-    WEAPON_WAIT_MUL;
-}
-
 bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool includeActions ) {
 
   initTurnStep();
@@ -1336,7 +1328,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
   }
   
   // How many steps to wait before being able to use the weapon.
-  int weaponWait = getWeaponSpeed( item );
+  int weaponWait = toint( creature->getWeaponAPCost( item ) );
   //if( session->getPreferences()->isBattleTurnBased() ) {
 //    weaponWait /= 2;
 //  }

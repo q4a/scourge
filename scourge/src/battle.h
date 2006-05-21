@@ -120,8 +120,6 @@ class Battle {
 
   void useSkill();
 
-  static int getWeaponSpeed( Item *item );
-
   int calculateRange( Item *item=NULL );
 
   bool describeAttack( Creature *target, char *buff, Color *color, bool includeActions );
