@@ -1,16 +1,16 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
-LDADD = $(srcdir)/freetype/libScourgeFreeType.a \
-	$(srcdir)/gui/libScourgeGui.a \
-	$(srcdir)/rpg/libScourgeRpg.a \
-	$(srcdir)/net/libScourgeNet.a \
-	$(srcdir)/render/libScourgeRender.a \
-	$(srcdir)/io/libScourgeIo.a \
-	$(srcdir)/sqbinding/libSqbinding.a \
-	$(srcdir)/sqstdlib/libSqstdlib.a \
-	$(srcdir)/squirrel/libSquirrel.a \
-	$(srcdir)/events/libScourgeEvents.a \
-	$(srcdir)/test/libScourgeTest.a
-	
+LDADD = $(top_builddir)/src/freetype/libScourgeFreeType.a \
+	$(top_builddir)/src/gui/libScourgeGui.a \
+	$(top_builddir)/src/rpg/libScourgeRpg.a \
+	$(top_builddir)/src/net/libScourgeNet.a \
+	$(top_builddir)/src/render/libScourgeRender.a \
+	$(top_builddir)/src/io/libScourgeIo.a \
+	$(top_builddir)/src/sqbinding/libSqbinding.a \
+	$(top_builddir)/src/sqstdlib/libSqstdlib.a \
+	$(top_builddir)/src/squirrel/libSquirrel.a \
+	$(top_builddir)/src/events/libScourgeEvents.a \
+	$(top_builddir)/src/test/libScourgeTest.a
+
 
 AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
 
