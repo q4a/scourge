@@ -296,7 +296,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 
   char name[255], type[255], shape[255];
   char long_description[500], short_description[120];
-  char line[255];
+  char line[255], temp[10];
   RpgItem *last = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
@@ -413,14 +413,36 @@ void Item::initItems( ShapePalette *shapePal ) {
 			// read the rest of the line
       n = Constants::readLine( line, fp );
 
-			int influence[3][2];
-			influence[0][0] = atoi( strtok( line, "," ) );
-			influence[0][1] = atoi( strtok( NULL, "," ) );
-			influence[1][0] = atoi( strtok( NULL, "," ) );
-			influence[1][1] = atoi( strtok( NULL, "," ) );
-			influence[2][0] = atoi( strtok( NULL, "," ) );
-			influence[2][1] = atoi( strtok( NULL, "," ) );
-			last->setWeaponInfluence( influence );
+			char *p = strtok( line, "," );			
+			if( p ) {
+				int skill = Skill::getSkillByName( p )->getIndex();
+				for( int i = 0; i < INFLUENCE_TYPE_COUNT; i++ ) {
+					p = strtok( NULL, "," );
+					if( p && *p != 'N' ) {
+						for( int t = 0; t < INFLUENCE_LIMIT_COUNT; t++ ) {
+							WeaponInfluence wi;
+							wi.limit = atoi( t == MIN_INFLUENCE ? p + 1 : p ); // ignore (
+							p = strtok( NULL, "," );
+							wi.type = *p;
+							p = strtok( NULL, "," );
+							strcpy( temp, p );
+							// ignore )
+							if( t == MAX_INFLUENCE ) *( temp + strlen( temp ) - 1 ) = 0;
+							wi.base = atof( temp );							
+							cerr << last->getName() << 
+								" skill: " << Skill::skills[ skill ]->getName() <<
+								" type: " << i <<
+								" limit type: " << t << 
+								" LIM=" << wi.limit << 
+								" TYPE=" << wi.type << 
+								" BASE=" << wi.base << 
+								endl;
+							last->setWeaponInfluence( skill, i, t, wi );
+							if( t == MIN_INFLUENCE ) p = strtok( NULL, "," );
+						}
+					}
+				}
+			}
     } else if( n == 'A' && last ) {
       // skip ':'
       fgetc(fp);

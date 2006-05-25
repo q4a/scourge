@@ -163,32 +163,45 @@ void InfoGui::describe() {
 			sprintf(tmp, "Range: %d|", item->getRange());
 			strcat( description, tmp );
 		}
-		int minValue = item->getRpgItem()->getWeaponInfluence( COORDINATION_INFLUENCE,
-																													 MIN_INFLUENCE );
-		int maxValue = item->getRpgItem()->getWeaponInfluence( COORDINATION_INFLUENCE,
-																													 MAX_INFLUENCE );
-		if( minValue > -1 ) {
-			sprintf( tmp, "Coordination Req: %d-%d|", 
-							minValue, maxValue );
-			strcat( description, tmp );
-		}
-		minValue = item->getRpgItem()->getWeaponInfluence( POWER_INFLUENCE,
-																											 MIN_INFLUENCE );
-		maxValue = item->getRpgItem()->getWeaponInfluence( POWER_INFLUENCE,
-																											 MAX_INFLUENCE );
-		if( minValue > -1 ) {
-			sprintf( tmp, "Power Req: %d-%d|", 
-							minValue, maxValue );
-			strcat( description, tmp );
-		}
-		minValue = item->getRpgItem()->getWeaponInfluence( SKILL_INFLUENCE,
-																											 MIN_INFLUENCE );
-		maxValue = item->getRpgItem()->getWeaponInfluence( SKILL_INFLUENCE,
-																											 MAX_INFLUENCE );
-		if( minValue > -1 ) {
-			sprintf( tmp, "Skill Req: %d-%d|", 
-							minValue, maxValue );
-			strcat( description, tmp );
+
+		bool first = true;
+		for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+			WeaponInfluence *minValue = item->getRpgItem()->getWeaponInfluence( i, CTH_INFLUENCE, MIN_INFLUENCE );
+			WeaponInfluence *maxValue = item->getRpgItem()->getWeaponInfluence( i, CTH_INFLUENCE, MAX_INFLUENCE );
+			if( minValue->base > 0 || maxValue->base > 0 ) {
+				if( first ) {
+					strcat( description, "|Requirements:|" );
+					first = false;
+				}
+				sprintf( tmp, "CTH:%s %d-%d|", 
+								 Skill::skills[i]->getName(),
+								 minValue->limit, maxValue->limit );
+				strcat( description, tmp );
+			}
+			minValue = item->getRpgItem()->getWeaponInfluence( i, DAM_INFLUENCE, MIN_INFLUENCE );
+			maxValue = item->getRpgItem()->getWeaponInfluence( i, DAM_INFLUENCE, MAX_INFLUENCE );
+			if( minValue->base > 0 || maxValue->base > 0 ) {
+				if( first ) {
+					strcat( description, "|Requirements:|" );
+					first = false;
+				}
+				sprintf( tmp, "DAM:%s %d-%d|", 
+								 Skill::skills[i]->getName(),
+								 minValue->limit, maxValue->limit );
+				strcat( description, tmp );
+			}
+			minValue = item->getRpgItem()->getWeaponInfluence( i, AP_INFLUENCE, MIN_INFLUENCE );
+			maxValue = item->getRpgItem()->getWeaponInfluence( i, AP_INFLUENCE, MAX_INFLUENCE );
+			if( minValue->base > 0 || maxValue->base > 0 ) {
+				if( first ) {
+					strcat( description, "|Requirements:|" );
+					first = false;
+				}
+				sprintf( tmp, "AP:%s %d-%d|", 
+								 Skill::skills[i]->getName(),
+								 minValue->limit, maxValue->limit );
+				strcat( description, tmp );
+			}
 		}
 	}
 	if( item->getRpgItem()->isArmor() ) {

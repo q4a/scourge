@@ -495,28 +495,12 @@ class Creature : public RenderedCreature {
 	 * 
 	 * @param weapon the item used or null for unarmed attack
 	 * @param influenceType an influence type from RpgItem
-	 * @param skill the corresponding skill
 	 * @param debugMessage a message to print
 	 * @return the bonus (malus if negative)
 	 */
 	float getInfluenceBonus( Item *weapon, 
-													 int influenceType, int skill,
+													 int influenceType, 
 													 char *debugMessage );
-
-	/**
-	 * Apply a weapon influence modifier, always linearly.
-	 * 
-	 * @param weapon the item used or null for unarmed attack
-	 * @param influenceType an influence type from RpgItem
-	 * @param skill the corresponding skill
-	 * @param debugMessage a message to print
-	 * @param maxDelta the max amount of change
-	 * @return the bonus (malus if negative)
-	 */
-	float getFlatInfluenceBonus( Item *weapon, 
-															 int influenceType, int skill,
-															 char *debugMessage, 
-															 float maxDelta );
 };
 
 
