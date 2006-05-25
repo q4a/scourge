@@ -2192,65 +2192,69 @@ void Creature::calcArmor( int damageType,
 
 #define MAX_RANDOM_DAMAGE 2.0f
 
-float Creature::getInfluenceBonus( Item *weapon,
-																	 int influenceType, int skill,
-																	 char *debugMessage ) {
-	int minValue = ( weapon ? weapon->getRpgItem()->
-									 getWeaponInfluence( influenceType, 
-																			 MIN_INFLUENCE ) :
-									 -1 );
-	int maxValue = ( weapon ? weapon->getRpgItem()->
-									 getWeaponInfluence( influenceType, 
-																			 MAX_INFLUENCE ) :
-									 -1 );
-	int value = getSkill( skill );
-	float bonus = 0;
-	if( minValue > value ) {
-		// exponential malus
-		bonus =  1 - exp( minValue - value );		
-	} else if( maxValue > -1 && maxValue < value ) {
-		// linear bonus
-		bonus = ( value - maxValue ) * 2.71828f;
+float power( float base, int e ) {
+	float n = 1;
+	for( int i = 0; i < e; i++ ) {
+		n *= base;
 	}
-
-	if( bonus != 0 && debugMessage && 
-			session->getPreferences()->getCombatInfoDetail() > 0 ) {
-		char message[120];
-		sprintf( message, "...%s %d-%d vs. %d, bonus=%.2f", 
-						 debugMessage, minValue, maxValue, value, bonus );
-		session->getMap()->addDescription( message );
-	}
-	return bonus;
+	return n;
 }
 
-float Creature::getFlatInfluenceBonus( Item *weapon, 
-																			 int influenceType, int skill,
-																			 char *debugMessage, 
-																			 float maxDelta ) {
-	int minValue = ( weapon ? weapon->getRpgItem()->
-									 getWeaponInfluence( influenceType, 
-																			 MIN_INFLUENCE ) :
-									 -1 );
-	int maxValue = ( weapon ? weapon->getRpgItem()->
-									 getWeaponInfluence( influenceType, 
-																			 MAX_INFLUENCE ) :
-									 -1 );
-	int value = getSkill( skill );
-	float bonus = 0;
-	if( minValue > value ) {
-		// linear malus
-		bonus = maxDelta * ( minValue - value ) / (float)minValue;
-	} else if( maxValue > -1 && maxValue < value ) {
-		bonus = ( value >= 20 ? maxDelta : 
-							maxDelta * ( value - maxValue ) / (float)( 20 - maxValue ) );
-	}
+float Creature::getInfluenceBonus( Item *weapon,
+																	 int influenceType, 
+																	 char *debugMessage ) {
 
-	if( bonus != 0 && debugMessage && 
-			session->getPreferences()->getCombatInfoDetail() > 0 ) {
-		char message[120];
-		sprintf( message, "...%s %d-%d vs. %d, bonus=%.2f", 
-						 debugMessage, minValue, maxValue, value, bonus );
-		session->getMap()->addDescription( message );
+	if( !weapon ) return 0;
+
+	float bonus = 0;
+	for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+		WeaponInfluence *minInfluence = weapon->getRpgItem()->getWeaponInfluence( i, influenceType, MIN_INFLUENCE );
+		WeaponInfluence *maxInfluence = weapon->getRpgItem()->getWeaponInfluence( i, influenceType, MAX_INFLUENCE );
+		
+		float n = 0;
+		int value = getSkill( i );
+		if( minInfluence->limit > -1 && minInfluence->limit > value ) {
+			switch( minInfluence->type ) {
+			case 'E' :
+				// exponential malus
+				n = -power( minInfluence->base, minInfluence->limit - value );
+				break;
+			case 'L' :
+				// linear
+				n = -( minInfluence->limit - value ) * minInfluence->base;
+				break;
+			default:
+				cerr << "*** Error: unknown influence type for item: " << weapon->getRpgItem()->getName() << endl;
+			}
+		} else if( maxInfluence->limit > -1 && maxInfluence->limit < value ) {
+			switch( maxInfluence->type ) {
+			case 'E' :
+				// exponential bonus
+				n = power( maxInfluence->base, value - maxInfluence->limit );
+			break;																										
+			case 'L' :
+				// linear bonus
+				n = ( value - maxInfluence->limit ) * maxInfluence->base;
+				break;
+			default:
+				cerr << "*** Error: unknown influence type for item: " << weapon->getRpgItem()->getName() << endl;
+			}
+		}
+		
+		if( n != 0 && debugMessage && 
+				session->getPreferences()->getCombatInfoDetail() > 0 ) {
+			char message[120];
+			sprintf( message, "...%s skill:%s %d-%d vs. %d, bonus=%.2f", 
+							 debugMessage, 
+							 Skill::skills[i]->getName(), 
+							 minInfluence->limit, 
+							 maxInfluence->limit, 
+							 value, 
+							 n );
+			session->getMap()->addDescription( message );
+		}
+		
+		bonus += n;
 	}
 	return bonus;
 }
@@ -2272,8 +2276,7 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 	// Apply COORDINATION influence to skill 
 	// (As opposed to subtracting it from cth. This is b/c 
 	// skill is shown in the characterInfo as the cth.)
-	*skill += getInfluenceBonus( weapon, 
-															 COORDINATION_INFLUENCE, Skill::COORDINATION, 
+	*skill += getInfluenceBonus( weapon, CTH_INFLUENCE, 
 															 ( showDebug ? (char*)"CTH" : NULL ) );
 
 	if( showDebug && session->getPreferences()->getCombatInfoDetail() > 0 ) {
@@ -2318,8 +2321,7 @@ float Creature::getAttack( Item *weapon,
 													getSkill( Skill::POWER ) );
 
 	// apply POWER influence
-	damagePercent += getInfluenceBonus( weapon, 
-																			POWER_INFLUENCE, Skill::POWER, 
+	damagePercent += getInfluenceBonus( weapon, DAM_INFLUENCE, 
 																			( callScript ? (char*)"DAM" : NULL ) );
 
 	if( minP ) {
@@ -2521,11 +2523,7 @@ float Creature::getWeaponAPCost( Item *item, bool showDebug ) {
 								 Constants::HAND_WEAPON_SPEED );
 	// never show debug (called a lot)
 	// Apply a max 3pt influence to weapon AP
-	baseAP -= getFlatInfluenceBonus( item, 
-																	 COORDINATION_INFLUENCE, 
-																	 Skill::COORDINATION, 
-																	 NULL, 
-																	 3.0f );
+	baseAP -= getInfluenceBonus( item, AP_INFLUENCE, NULL );
 	// can't be free..
 	if( baseAP < 1 ) baseAP = 1;
 	return baseAP;

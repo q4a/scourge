@@ -59,9 +59,15 @@ RpgItem::RpgItem( char *name, int rareness, int type, float weight, int price,
 
 	// weapon
 	damage = damageType = damageSkill = parry = ap = range = twohanded = 0;
-	weaponInfluence[0][0] = weaponInfluence[0][1] = 
-		weaponInfluence[1][0] = weaponInfluence[1][1] = 
-		weaponInfluence[2][0] = weaponInfluence[2][1] = -1;
+	for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+		for( int t = 0; t < INFLUENCE_TYPE_COUNT; t++ ) {
+			for( int r = 0; r < INFLUENCE_LIMIT_COUNT; r++ ) {
+				this->weaponInfluence[i][t][r].limit = -1;
+				this->weaponInfluence[i][t][r].type = 'L';
+				this->weaponInfluence[i][t][r].base = -1;
+			}
+		}
+	}
   
 	// armor
 	defense = (int*)malloc( sizeof( int ) * DAMAGE_TYPE_COUNT );
@@ -223,4 +229,14 @@ void RpgItem::describeTag( char *buffer, char *prefix, string tag, char *postfix
 		 strcat( buffer, tag.c_str() );
 	}
 	strcat( buffer, postfix );
+}
+
+void RpgItem::setWeaponInfluence( int skill, int type, int limit, WeaponInfluence influence ) {
+	weaponInfluence[skill][type][limit].limit = influence.limit;
+	weaponInfluence[skill][type][limit].type = influence.type;
+	weaponInfluence[skill][type][limit].base = influence.base;
+}
+
+WeaponInfluence *RpgItem::getWeaponInfluence( int skill, int type, int limit ) {
+	return &(weaponInfluence[skill][type][limit]);
 }

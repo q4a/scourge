@@ -23,6 +23,7 @@
 #include <set>
 #include "../constants.h"
 #include "character.h"
+#include "rpg.h"
 
 /*
  * Remember to change isWeaponItem=, getRandomEnchantableItem, 
@@ -43,12 +44,24 @@ typedef struct _ItemType {
   bool isWeapon, isArmor, isRandom, isRanged, hasSpell, isEnchantable;
 } ItemType;
 
-#define MIN_INFLUENCE 0
-#define MAX_INFLUENCE 1
+enum {
+	AP_INFLUENCE=0,
+	CTH_INFLUENCE,
+	DAM_INFLUENCE,
+	INFLUENCE_TYPE_COUNT
+};
 
-#define COORDINATION_INFLUENCE 0
-#define POWER_INFLUENCE 1
-#define SKILL_INFLUENCE 2
+enum {
+	MIN_INFLUENCE=0,
+	MAX_INFLUENCE,
+	INFLUENCE_LIMIT_COUNT
+};
+
+typedef struct _WeaponInfluence {
+	int limit;
+	char type;
+	float base;
+} WeaponInfluence;
 
 class RpgItem {
 private:
@@ -75,7 +88,7 @@ private:
 	int ap; // ap cost 
 	int range; // weapon range
 	int twohanded; // a twoHandedType value
-	int weaponInfluence[3][2]; // influence values
+	WeaponInfluence weaponInfluence[200][3][2]; // influence values
   
 	// armor
 	int *defense;
@@ -208,12 +221,8 @@ private:
 	inline int getAP() { return ap; }
 	inline int getRange() { return range; }
   inline int getTwoHanded() { return twohanded; }
-	inline void setWeaponInfluence( int n[3][2] ) {
-		weaponInfluence[0][0] = n[0][0]; weaponInfluence[0][1] = n[0][1];
-		weaponInfluence[1][0] = n[1][0]; weaponInfluence[1][1] = n[1][1];
-		weaponInfluence[2][0] = n[2][0]; weaponInfluence[2][1] = n[2][1];
-	}
-	inline int getWeaponInfluence( int index, int sub ) { return weaponInfluence[index][sub]; }
+	void setWeaponInfluence( int skill, int type, int limit, WeaponInfluence influence );
+	WeaponInfluence *getWeaponInfluence( int skill, int type, int limit );
 
 	// armor
 	inline void setArmor( int *defense, int defenseSkill, int dodgePenalty ) {
