@@ -34,6 +34,7 @@ int RpgItem::randomTypeCount = 0;
 std::map<std::string,std::string> RpgItem::tagsDescriptions;
 char *RpgItem::DAMAGE_TYPE_NAME[] = { "Slashing", "Piercing", "Crushing" };
 char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
+char *RpgItem::influenceTypeName[] = { "AP", "CTH", "DAM" };
 
 RpgItem::RpgItem( char *name, int rareness, int type, float weight, int price, 
 									char *desc, char *shortDesc, int equip, int shape_index, 

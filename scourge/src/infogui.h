@@ -62,6 +62,7 @@ class InfoGui : public WidgetView {
 
 protected:
   void describe();
+  void describeRequirements( char *description, int influenceTypeCount );
 };
 
 #endif

@@ -170,6 +170,8 @@ private:
 	static std::map<std::string,std::string> tagsDescriptions;
 	static void describeTag( char *buffer, char *prefix, std::string tag, char *postfix, char *token );
 
+  static char *influenceTypeName[ INFLUENCE_TYPE_COUNT ];
+
 	RpgItem( char *name, int rareness, int type, float weight, int price, 
 					 char *desc, char *shortDesc, int equip, int shape_index, 
 					 int minDepth=0, int minLevel=0, 

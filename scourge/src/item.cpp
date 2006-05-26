@@ -406,7 +406,7 @@ void Item::initItems( ShapePalette *shapePal ) {
       if( range < (int)MIN_DISTANCE ) range = (int)MIN_DISTANCE;
 			int twoHanded = atoi( strtok( NULL, "," ) );
 			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
-		} else if( n == 'R' && last && last->isWeapon() ) {
+		} else if( n == 'R' && last ) {
 			// skip ':'
       fgetc(fp);
       
@@ -416,7 +416,8 @@ void Item::initItems( ShapePalette *shapePal ) {
 			char *p = strtok( line, "," );			
 			if( p ) {
 				int skill = Skill::getSkillByName( p )->getIndex();
-				for( int i = 0; i < INFLUENCE_TYPE_COUNT; i++ ) {
+        // armor has only 1 type of influence
+				for( int i = 0; i < ( last->isWeapon() ? INFLUENCE_TYPE_COUNT : 1 ); i++ ) {
 					p = strtok( NULL, "," );
 					if( p && *p != 'N' ) {
 						for( int t = 0; t < INFLUENCE_LIMIT_COUNT; t++ ) {

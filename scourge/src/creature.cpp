@@ -2177,6 +2177,13 @@ void Creature::calcArmor( int damageType,
 						}					
 						lastArmor[ t ] += item->getRpgItem()->getDefense( t );
 						lastDodgePenalty[ t ] += item->getRpgItem()->getDodgePenalty();
+
+            // apply the armor influence... it uses the first
+            // influence slot (AP_INFLUENCE)
+						lastArmor[ t ] += 
+              getInfluenceBonus( item, AP_INFLUENCE, 
+                                 ( callScript ? (char*)"CTH" : NULL ) );
+
 						armorCount++;
 					}
 				}
@@ -2370,7 +2377,11 @@ float Creature::getParry( Item **parryItem ) {
 			// parry using a weapon: get max parry skill amount (% of weapon skill)
 			maxParry = 
 				( getSkill( item->getRpgItem()->getDamageSkill() ) / 100.0f ) * 
-				item->getRpgItem()->getParry();			
+				item->getRpgItem()->getParry();
+			
+			// use the item's CTH skill to modify parry also
+			maxParry += getInfluenceBonus( item, CTH_INFLUENCE, "PARRY" );
+
 		} else {
 			// no parry with this hand
 			continue;
