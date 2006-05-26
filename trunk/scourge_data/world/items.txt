@@ -20,6 +20,9 @@
 #     max is the maximum optimal value
 #
 # A:defense_vs_slashing,defense_vs_piercing,defense_vs_crushing,skill,dodge_penalty
+# R:skill,defense-bonus: same syntax as weapons above but only 1 section 
+#   affecting all forms of defense
+#
 # P:power,potionSkill,[potionTimeInMinutes]
 # E:spell-level (for items that can cast spells)
 #
@@ -957,6 +960,8 @@ I:This chainmail mitten is full of dents and scratches. Despite the occasional r
 I:A pair of sturdy chainmail mittens.
 I:9,9
 A:2,1,1,ARMOR_DEFEND,0
+G:METAL
+R:POWER,(12,E,2,18,L,1)
 
 I:Plaite Gauntlet
 I:8,ARMOR,8.0,450,GLOVE,16384
@@ -964,7 +969,9 @@ I:A few minutes of cleaning reveals a rare find: a full-plait armored gauntlet s
 I:A dirty pair of plait-mail armored gauntlets.
 I:9,9
 A:2,2,2,ARMOR_DEFEND,0
+G:METAL
 G:PLATE
+R:POWER,(14,E,2,18,L,1)
 
 ######################
 # Helmets
@@ -984,6 +991,7 @@ I:A clunky helmet with narrow slits for the eyes and nose.
 I:4,9
 A:1,1,2,ARMOR_DEFEND,0
 G:METAL
+R:POWER,(10,E,2,18,L,1)
 
 I:Helmet with visor
 I:8,ARMOR,24.0,150,HELMET,1,0,1
@@ -992,6 +1000,7 @@ I:A dented metal helmet with a removable visor.
 I:3,9
 A:1,1,2,ARMOR_DEFEND,0
 G:METAL
+R:POWER,(10,E,2,18,L,1)
 
 I:Knight's helmet
 I:7,ARMOR,25.0,180,HELMET,1,0,2
@@ -1000,6 +1009,7 @@ I:A giant metal orb of a helmet. The visor is rusted shut.
 I:6,9
 A:2,1,2,ARMOR_DEFEND,0
 G:METAL
+R:POWER,(12,E,2,18,L,1)
 
 I:Pointy Hat
 I:7,ARMOR,8,2,HELMET,1
@@ -1039,6 +1049,8 @@ I:A triangular metal shield.
 I:15,8
 A:2,2,2,SHIELD_DEFEND,1
 G:METAL
+R:POWER,(10,E,2,18,L,1)
+R:COORDINATION,(10,E,2,18,L,1)
 
 I:Ornate Dragon Shield
 I:10,ARMOR,8,45,SHIELD,48,0,1
@@ -1047,6 +1059,8 @@ I:A metal shield covered with the painting of an ornate dragon.
 I:10,8
 A:2,2,2,SHIELD_DEFEND,1
 G:METAL
+R:POWER,(10,E,2,18,L,1)
+R:COORDINATION,(10,E,2,18,L,1)
 
 I:Cavalry Shield
 I:10,ARMOR,10,60,SHIELD,48,0,2
@@ -1055,6 +1069,8 @@ I:A heavy metal shield.
 I:14,8
 A:2,2,3,SHIELD_DEFEND,2
 G:METAL,LARGE
+R:POWER,(12,E,2,18,L,1)
+R:COORDINATION,(12,E,2,18,L,1)
 
 I:Trollhide Shield
 I:10,ARMOR,7,30,SHIELD,48,0,2
@@ -1063,6 +1079,8 @@ I:A gray shield featuring advanced troll-hide technology.
 I:13,8
 A:3,2,3,SHIELD_DEFEND,2
 G:LARGE
+R:POWER,(15,E,2,18,L,1)
+R:COORDINATION,(4,E,2,18,L,1)
 
 I:Shield of the Golden Lotus
 I:10,ARMOR,3.5,230,SHIELD,48,0,3
@@ -1071,6 +1089,8 @@ I:A shield exhibiting golden harmony and unperturbable peace.
 I:16,8
 A:3,3,3,SHIELD_DEFEND,2
 G:METAL,LARGE
+R:POWER,(15,E,2,18,L,1)
+R:COORDINATION,(12,E,2,18,L,1)
 
 ######################
 # Armor
@@ -1119,6 +1139,7 @@ I:Ye olde leather armor is created from the cured and toughened skin of thy foe.
 I:Looks to be an old piece of leather armor
 I:18,6
 A:2,2,2,ARMOR_DEFEND,0
+R:COORDINATION,(10,E,2,18,L,1)
 
 I:Studded Leather Armor
 I:7,ARMOR,25,320,ARMOR,8,0,1
@@ -1126,6 +1147,7 @@ I:As a small evolutionary step in leather armor technology, this model sports bl
 I:This leather armor piece has embedded metal studs.
 I:17,6
 A:3,3,3,ARMOR_DEFEND,1
+R:COORDINATION,(10,E,2,18,L,1)
 
 I:Rusty Chainmail
 I:9,ARMOR,40,500,ARMOR,8
@@ -1134,7 +1156,8 @@ I:The rust is the only thing that holds this chainmail's links together
 I:19,6
 G:METAL
 A:4,3,4,ARMOR_DEFEND,2
-
+R:COORDINATION,(10,E,2,18,L,1)
+R:POWER,(10,E,2,18,L,1)
 
 I:Guard's Chainmail
 I:8,ARMOR,50,720,ARMOR,8,0,2
@@ -1143,6 +1166,8 @@ I:It appears to be an official city guard chainmail.
 I:3,7
 G:METAL
 A:5,4,5,ARMOR_DEFEND,3
+R:COORDINATION,(10,E,2,18,L,1)
+R:POWER,(12,E,2,18,L,1)
 
 I:Mythril Mail
 I:5,ARMOR,20,1200,ARMOR,8,0,3
@@ -1151,6 +1176,8 @@ I:You feel that in spite of its light weight this armor is well designed to defl
 I:4,7
 G:METAL
 A:6,6,5,ARMOR_DEFEND,1
+R:COORDINATION,(14,E,2,18,L,1)
+R:POWER,(10,E,2,18,L,1)
 
 I:Banded Mail
 I:8,ARMOR,60,950,ARMOR,8,0,2
@@ -1159,6 +1186,8 @@ I:Banded strips of metal compose the main sections of this armor.
 I:7,7
 G:METAL
 A:6,6,6,ARMOR_DEFEND,4
+R:COORDINATION,(12,E,2,18,L,1)
+R:POWER,(13,E,2,18,L,1)
 
 I:Heavy field plate
 I:7,ARMOR,110,1250,ARMOR,8,0,3
@@ -1167,6 +1196,8 @@ I:An incredibly heavy set of full plate mail armor.
 I:9,7
 G:METAL,PLATE
 A:8,8,8,ARMOR_DEFEND,5
+R:COORDINATION,(12,E,2,18,L,1)
+R:POWER,(15,E,2,18,L,1)
 
 I:Elven platemail
 I:4,ARMOR,40,2000,ARMOR,8,0,4
@@ -1175,6 +1206,8 @@ I:A well-fitted set of lightweight platemail armor.
 I:10,7
 G:METAL,PLATE
 A:8,8,6,ARMOR_DEFEND,3
+R:COORDINATION,(15,E,2,18,L,1)
+R:POWER,(12,E,2,18,L,1)
 
 I:Enarol's Ogre Skin
 I:3,ARMOR,80,2300,ARMOR,8,0,4
@@ -1183,6 +1216,8 @@ I:Stinky white armor that seems rough to the touch.
 I:11,7
 G:METAL
 A:9,8,8,ARMOR_DEFEND,5
+R:COORDINATION,(10,E,2,18,L,1)
+R:POWER,(15,E,2,18,L,1)
 
 I:Dragonscale armor
 I:2,ARMOR,85,4550,ARMOR,8,0,5
@@ -1191,6 +1226,9 @@ I:Armor made from the scales of some beast.
 I:16,7
 G:METAL,PLATE
 A:9,9,9,ARMOR_DEFEND,6
+R:COORDINATION,(14,E,2,18,L,1)
+R:POWER,(15,E,2,18,L,1)
+R:IQ,(12,E,2,18,L,1)
 
 I:Smeth's Slimy Defender
 I:1,ARMOR,40,8000,ARMOR,8,0,5
@@ -1199,6 +1237,8 @@ I:Armor made from space-goo.
 I:2,8
 G:METAL,PLATE
 A:9,10,10,ARMOR_DEFEND,5
+R:COORDINATION,(14,E,2,18,L,1)
+R:POWER,(15,E,2,18,L,1)
 
 I:Merzul Goldenfleece
 I:1,ARMOR,50,12200,ARMOR,8,0,6
@@ -1207,6 +1247,8 @@ I:Lightweight gold colored armor, made from some kind of wool.
 I:6,8
 G:METAL,PLATE
 A:10,10,10,ARMOR_DEFEND,5
+R:COORDINATION,(15,E,2,18,L,1)
+R:POWER,(15,E,2,18,L,1)
 
 ######################
 # Boots
@@ -1239,11 +1281,7 @@ I:Combat boots with a bad attitude.
 I:12,9
 G:METAL
 A:1,1,1,ARMOR_DEFEND,0
-
-
-
-
-
+R:POWER,(14,E,2,18,L,1)
 
 
 ######################
