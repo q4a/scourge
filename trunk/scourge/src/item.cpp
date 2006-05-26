@@ -429,6 +429,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 							// ignore )
 							if( t == MAX_INFLUENCE ) *( temp + strlen( temp ) - 1 ) = 0;
 							wi.base = atof( temp );							
+							/*
 							cerr << last->getName() << 
 								" skill: " << Skill::skills[ skill ]->getName() <<
 								" type: " << i <<
@@ -437,6 +438,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 								" TYPE=" << wi.type << 
 								" BASE=" << wi.base << 
 								endl;
+							*/
 							last->setWeaponInfluence( skill, i, t, wi );
 							if( t == MIN_INFLUENCE ) p = strtok( NULL, "," );
 						}
