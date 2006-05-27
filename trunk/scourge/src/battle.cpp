@@ -846,13 +846,10 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
 void Battle::prepareToHitMessage() {
   if(item) {
     if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-      sprintf(message, "%s(%d) attacks %s(%d) with %s(%d)!", 
+      sprintf(message, "%s attacks %s with %s!", 
               creature->getName(), 
-              creature->getLevel(),
               creature->getTargetCreature()->getName(),
-              creature->getTargetCreature()->getLevel(),
-              item->getItemName(),
-              item->getLevel() );
+              item->getItemName() );
     } else {
       sprintf( message, "%s attacks %s with %s!", 
                creature->getName(), 
@@ -1033,6 +1030,22 @@ void Battle::hitWithItem() {
 	float cth, skill;
 	creature->getCth( item, &cth, &skill );
 
+	// the target's dodge if affected by angle of attack
+	bool backstab = false;
+	/*
+	
+	FIXME: not so simple to do LOS.
+	When fixed, move this code to just before the dodge calculation.
+	Also, some creatures should avoid this penalty. (good hearing, etc.)
+	
+	float angle = creature->getAngle();
+	float targetAngle = creature->getTargetCreature()->getAngle();
+	float diff = fabs( Util::diffAngle( angle, targetAngle ) );
+	if( diff > 70 && diff < 180 ) {
+		backstab = true;	
+	}
+	*/
+
 	if( cth <= skill ) {
 		
 		// the target's dodge
@@ -1044,6 +1057,10 @@ void Battle::hitWithItem() {
 		float dodge = 
 			creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) - 
 			dodgePenalty;
+		if( backstab ) {
+			dodge /= 2.0f;
+			session->getMap()->addDescription("...Attack from blind-spot!");
+		}
 
 		if( cth <= skill - dodge ) {
 			// a hit?
