@@ -2178,6 +2178,9 @@ void Creature::calcArmor( int damageType,
 						lastArmor[ t ] += item->getRpgItem()->getDefense( t );
 						lastDodgePenalty[ t ] += item->getRpgItem()->getDodgePenalty();
 
+						// item's level has a small influence.
+						lastArmor[ t ] += item->getLevel() / 8;
+
             // apply the armor influence... it uses the first
             // influence slot (AP_INFLUENCE)
 						lastArmor[ t ] += 
@@ -2281,6 +2284,9 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 	// roll chance to hit (CTH)
 	*cth = maxCth * rand() / RAND_MAX;
 
+	// item's level has a small influence
+	if( weapon ) *skill += weapon->getLevel() / 2;
+
 	// Apply COORDINATION influence to skill 
 	// (As opposed to subtracting it from cth. This is b/c 
 	// skill is shown in the characterInfo as the cth.)
@@ -2328,6 +2334,9 @@ float Creature::getAttack( Item *weapon,
 													weapon->getRpgItem()->getDamage() : 
 													getSkill( Skill::COORDINATION ) + 
 													getSkill( Skill::POWER ) );
+
+	// item's level has a small influence
+	if( weapon ) damagePercent += weapon->getLevel() / 2;
 
 	// apply POWER influence
 	damagePercent += getInfluenceBonus( weapon, DAM_INFLUENCE, 

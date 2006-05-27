@@ -294,7 +294,7 @@ void InfoGui::describe() {
           sprintf( tmp, "|Double damage");
           strcat( description, tmp );
         } else if( item->getDamageMultiplier() == 3 ) {
-          sprintf( tmp, "|Tripple damage");
+          sprintf( tmp, "|Triple damage");
           strcat( description, tmp );
         } else if( item->getDamageMultiplier() == 4 ) {
           sprintf( tmp, "|Quad damage");

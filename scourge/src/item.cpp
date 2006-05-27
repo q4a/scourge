@@ -646,7 +646,7 @@ void Item::enchant( int newMagicLevel ) {
   Spell *spell;
   switch(magicLevel) {
   case Constants::LESSER_MAGIC_ITEM:
-    bonus = (int)(1.0f * rand()/RAND_MAX) + 1;
+    bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(2.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType( level );
@@ -655,12 +655,12 @@ void Item::enchant( int newMagicLevel ) {
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(5.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = (int)(2.0f * rand()/RAND_MAX) + 1;
       }
     }    
     break;
   case Constants::GREATER_MAGIC_ITEM:
-    bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
+    bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType( level );
@@ -674,12 +674,12 @@ void Item::enchant( int newMagicLevel ) {
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(8.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = (int)(3.0f * rand()/RAND_MAX) + 1;
       }
     }
     break;
   case Constants::CHAMPION_MAGIC_ITEM:
-    bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
+    bonus = (int)(4.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType( level );
@@ -698,12 +698,12 @@ void Item::enchant( int newMagicLevel ) {
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(10.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = (int)(4.0f * rand()/RAND_MAX) + 1;
       }
     }
     break;
   case Constants::DIVINE_MAGIC_ITEM:
-    bonus = (int)(3.0f * rand()/RAND_MAX) + 2;
+    bonus = (int)(5.0f * rand()/RAND_MAX) + 1;
     if(rpgItem->isWeapon()) {
       damageMultiplier = (int)(4.0f * rand()/RAND_MAX) + 2;
       monsterType = (char*)Monster::getRandomMonsterType( level );
@@ -727,7 +727,7 @@ void Item::enchant( int newMagicLevel ) {
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(12.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = (int)(5.0f * rand()/RAND_MAX) + 1;
       }
     }
     break;
