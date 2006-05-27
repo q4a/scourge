@@ -430,6 +430,21 @@ float Util::getAngle(float fx, float fy, float fw, float fd,
   return angle;
 }
 
+#define FOV_ANGLE 60
+
+/**
+ * Is px,py in the field of vision defined by x,y,angle?
+ */
+bool Util::isInFOV( float x, float y, float angle, float px, float py ) {
+	float angleToP = getAngle( x, y, 1, 1, 
+														 px, py, 1, 1 );
+	//cerr << "fov: angle=" << angle << " toP=" << angleToP << endl;
+	float diff = fabs( diffAngle( angle, angleToP ) );
+	bool b = ( diff < FOV_ANGLE );
+	//cerr << "\tb=" << b << " diff=" << diff << endl;
+	return b;
+}
+
 float Util::diffAngle(float a, float b) {
 //  a -= (((int)a / 360) * 360);
 //  b -= (((int)b / 360) * 360);

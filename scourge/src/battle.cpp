@@ -1030,23 +1030,15 @@ void Battle::hitWithItem() {
 	float cth, skill;
 	creature->getCth( item, &cth, &skill );
 
-	// the target's dodge if affected by angle of attack
-	bool backstab = false;
-	/*
-	
-	FIXME: not so simple to do LOS.
-	When fixed, move this code to just before the dodge calculation.
-	Also, some creatures should avoid this penalty. (good hearing, etc.)
-	
-	float angle = creature->getAngle();
-	float targetAngle = creature->getTargetCreature()->getAngle();
-	float diff = fabs( Util::diffAngle( angle, targetAngle ) );
-	if( diff > 70 && diff < 180 ) {
-		backstab = true;	
-	}
-	*/
-
 	if( cth <= skill ) {
+
+		// the target's dodge if affected by angle of attack
+		bool inFOV = 
+			Util::isInFOV( creature->getTargetCreature()->getX(),
+										 creature->getTargetCreature()->getY(),
+										 creature->getTargetCreature()->getTargetAngle(),
+										 creature->getX(), 
+										 creature->getY() );
 		
 		// the target's dodge
 		float armor, dodgePenalty;
@@ -1057,7 +1049,7 @@ void Battle::hitWithItem() {
 		float dodge = 
 			creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) - 
 			dodgePenalty;
-		if( backstab ) {
+		if( !inFOV ) {
 			dodge /= 2.0f;
 			session->getMap()->addDescription("...Attack from blind-spot!");
 		}

@@ -118,6 +118,11 @@ public:
 
   static char *toLowerCase( char *s );
 
+	/**
+	 * Is px,py in the field of vision defined by x,y,angle?
+	 */
+	static bool isInFOV( float x, float y, float angle, float px, float py );
+
 protected:
   static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Creature *creature, Map *map, bool ignoreCreatures=false );
 
