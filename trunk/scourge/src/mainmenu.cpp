@@ -78,7 +78,7 @@ MainMenu::MainMenu(Scourge *scourge){
   lastTickMenu = 0;
   initTextures = false;
 
-  starCount = 70;
+  starCount = 200;
   for(int i = 0; i < starCount; i++) {
     star[i].x = (int)( (float)scourge->getSDLHandler()->getScreen()->w * rand()/RAND_MAX );
     star[i].y = top + (int)( ((float)scourge->getSDLHandler()->getScreen()->h - (top * 2 + WATER_HEIGHT)) * rand()/RAND_MAX );
@@ -197,7 +197,7 @@ void MainMenu::drawView() {
 
 		// HACK: needed on my X2 dual core system... life is hard...
 		SDL_Delay( 20 );
-    
+
     drawMenu();
 
     // create a stencil for the water
@@ -872,9 +872,9 @@ void MainMenu::drawStars() {
     glPushMatrix();
     glLoadIdentity();
     glTranslatef( star[i].x, star[i].y, 0 );
-    glColor3f( 0.6 + (0.39f * rand()/RAND_MAX), 
-               0.6 + (0.39f * rand()/RAND_MAX), 
-               0.6 + (0.39f * rand()/RAND_MAX) );
+    glColor3f( 0.2 + (0.79f * rand()/RAND_MAX), 
+               0.2 + (0.79f * rand()/RAND_MAX), 
+               0.2 + (0.79f * rand()/RAND_MAX) );
     //int n = (int)(2.0f * rand()/RAND_MAX) + 1;
     int n = 1;
     glBegin( GL_QUADS );
