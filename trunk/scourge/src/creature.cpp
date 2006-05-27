@@ -2189,6 +2189,7 @@ void Creature::calcArmor( int damageType,
 				}
 			}
 			lastArmor[ t ] += bonusArmor;		
+			if( lastArmor[ t ] < 0 ) lastArmor[ t ] = 0;
 		}
 		armorChanged = false;
 	}
@@ -2285,6 +2286,7 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 	// skill is shown in the characterInfo as the cth.)
 	*skill += getInfluenceBonus( weapon, CTH_INFLUENCE, 
 															 ( showDebug ? (char*)"CTH" : NULL ) );
+	if( *skill < 0 ) *skill = 0;
 
 	if( showDebug && session->getPreferences()->getCombatInfoDetail() > 0 ) {
 		char message[120];
@@ -2330,6 +2332,7 @@ float Creature::getAttack( Item *weapon,
 	// apply POWER influence
 	damagePercent += getInfluenceBonus( weapon, DAM_INFLUENCE, 
 																			( callScript ? (char*)"DAM" : NULL ) );
+	if( damagePercent < 0 ) damagePercent = 0;
 
 	if( minP ) {
 		*minP = ( minPower / 100.0f ) * damagePercent;
@@ -2381,6 +2384,7 @@ float Creature::getParry( Item **parryItem ) {
 			
 			// use the item's CTH skill to modify parry also
 			maxParry += getInfluenceBonus( item, CTH_INFLUENCE, "PARRY" );
+			if( maxParry < 0 ) maxParry = 0;
 
 		} else {
 			// no parry with this hand
