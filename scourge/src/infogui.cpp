@@ -197,8 +197,7 @@ void InfoGui::describe() {
 		if( item->getRange() > MIN_DISTANCE ) {
 			sprintf(tmp, "Range: %d|", item->getRange());
 			strcat( description, tmp );
-		}
-    describeRequirements( description, INFLUENCE_TYPE_COUNT );
+		}    
 	}
 	if( item->getRpgItem()->isArmor() ) {
 		for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
@@ -211,8 +210,6 @@ void InfoGui::describe() {
 		strcat( description, tmp );
 		sprintf(tmp, "Dodge penalty: %d|", item->getRpgItem()->getDodgePenalty() );
     strcat( description, tmp );
-
-    describeRequirements( description, 1 );
 	}
 	if( item->getRpgItem()->getPotionPower() ) {
 		sprintf(tmp, "Power: %d|", item->getRpgItem()->getPotionPower() );
@@ -273,7 +270,11 @@ void InfoGui::describe() {
       }
       strcat( description, tmp );
     }
-  }
+
+		describeRequirements( description, INFLUENCE_TYPE_COUNT );
+  } else if( item->getRpgItem()->isArmor() ) {
+		describeRequirements( description, 1 );
+	}
 
 
   // DEBUG
