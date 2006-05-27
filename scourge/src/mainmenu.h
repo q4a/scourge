@@ -88,7 +88,7 @@ private:
   typedef struct _Star {
     int x, y;
   } Star;
-  Star star[100];
+  Star star[500];
 
   Window *mainWin;
   Button *newGameButton;
