@@ -2322,6 +2322,7 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 	// This is ok, since dodge is subtracted from it anyway.
 	float maxCth = *skill * 1.5f;
 	if( maxCth > 100 ) maxCth = 100;	
+	if( maxCth < 40 ) maxCth = 40;
 
 	// roll chance to hit (CTH)
 	*cth = maxCth * rand() / RAND_MAX;
