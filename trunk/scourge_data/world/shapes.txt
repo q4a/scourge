@@ -1090,10 +1090,13 @@ A:stay a while... hunker down for adventure in the true underworld. The noxious 
 A:psychedelic molds from the very walls of the crypts below the city of Horghh await.||
 A:Credits and miscellany:|
 A:-----------------------|
-A:Code and artwork by Uzudil|
+A:Code and bad artwork by Uzudil|
+A:Amazing portraits by Ben|
 A:Music by Toofan and Vincent|
-A:More coding by daroth-u|
-A:Web/cvs and other services by sourceforge.net|
+A:Rpg expertese by Michi, Elscouta, Nolendil|
+A:Forums and web administration by Charlie|
+A:More coding by daroth-u and Callahan|
+A:Web/cvs/svn and other services by sourceforge.net|
 A:Additional 3d objects by |
 A:Enforcement of the law by Mormuth the Hairy|
 A:Dwarven poetry by the Order of the Grizzled Pony|
@@ -1102,7 +1105,7 @@ A:Textures by the wadfather|
 A:(see README file for details on contributions.)|
 A:Playtesting and mostly civil encouragement by many at happypenguin.org|
 A:Additional testing and general hazing from the very helpful members of rpgcodex.com|
-A:Many happy interruptions in bugfixing by Abe|
+A:Many happy interruptions in bugfixing by Abe & Asha|
 
 # Fonts (normal, ui, fixed_width, large)
 F:fonts/Vera.ttf,8
