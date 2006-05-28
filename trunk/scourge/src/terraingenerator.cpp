@@ -215,10 +215,11 @@ void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
   }
 
   // add some scrolls with spells
+	int spellLevel = level / 5;
   for(int i = 0; i < objectCount / 4; i++) {
-    Spell *spell = MagicSchool::getRandomSpell(level);
+    Spell *spell = MagicSchool::getRandomSpell(spellLevel);
     if(!spell) {
-      cerr << "Warning: no spells defined for level: " << level << endl;
+      cerr << "Warning: no spells defined for level: " << spellLevel << endl;
       break;
     }
     Item *item = scourge->getSession()->

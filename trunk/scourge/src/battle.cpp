@@ -737,10 +737,25 @@ void Battle::castSpell( bool alwaysSucceeds ) {
     delta += (5.0f * rand()/RAND_MAX) + 5;
   }
 
+	// Like with max cth, max skill is closer to the skill to avoid a lot of misses
+	int skill = creature->getSkill( creature->getActionSpell()->getSchool()->getSkill() );
+	int maxSkill = skill * 2;
+	if( maxSkill > 100 ) maxSkill = 100;
+	if( maxSkill < 40 ) maxSkill = 40;
 
-  if( !alwaysSucceeds &&
-      !projectileHit && 
-      (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate() ) {
+	bool failed = false;
+  if( !alwaysSucceeds && !projectileHit ) {
+		if( (int)( maxSkill * rand() / RAND_MAX ) > skill + delta ) {
+			sprintf( message, "...%s needs more practice.", creature->getName() );
+			session->getMap()->addDescription( message, 1, 0.15f, 1 );
+			failed = true;
+		} else if( (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate() ) {
+			session->getMap()->addDescription( "...the magic fails inexplicably!", 1, 0.15f, 1 );
+			failed = true;
+		}
+	}
+
+	if( failed ) {
     sc->spellFailed();
   } else {
 

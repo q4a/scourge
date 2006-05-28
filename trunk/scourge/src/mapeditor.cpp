@@ -464,8 +464,9 @@ bool MapEditor::getShape( GLShape **shape,
         // some spells
         if(!((int)(25.0f * rand() / RAND_MAX))) {
           int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+					int spellLevel = level / 5;
           for(int i = 0; i < n; i++) {
-            Spell *spell = MagicSchool::getRandomSpell( level );
+            Spell *spell = MagicSchool::getRandomSpell( spellLevel );
             if( spell ) {
               Item *scroll = scourge->getSession()->
                 newItem(RpgItem::getItemByName("Scroll"), level, spell);

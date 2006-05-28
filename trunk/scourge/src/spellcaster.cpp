@@ -40,15 +40,12 @@ SpellCaster::SpellCaster(Battle *battle, Spell *spell, bool projectileHit) {
   this->projectileHit = projectileHit;
 
   Creature *creature = battle->getCreature();
-  // calculate spell's power
-  // power=[0-25]
-  power = (float)creature->getSkill(spell->getSchool()->getSkill()) / 4.0f;
-  // power=[0-45]
-  power += (float)creature->getSkill(Skill::IQ) / 5.0f;
-  // power=[0-450]
-  power *= creature->getLevel();
-  // power=[0-500]
-  power += ((float)creature->getSkill(Skill::LUCK) / 2.0f);
+  
+	// calculate spell's power (0-100)
+	// Used only for HP/AC restore spells
+  power = creature->getLevel() + 
+		creature->getSkill( Skill::LUCK ) + 
+		( 30.0f * rand() / RAND_MAX );
 }
 
 SpellCaster::~SpellCaster() {
@@ -298,7 +295,7 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
   // roll for the spell damage
   float damage = 0;
   for(int i = 0; i < creature->getLevel(); i++) {
-    damage += ((float)spell->getAction() * rand()/RAND_MAX);
+    damage += spell->getAction();
   }
   damage *= mult;
 
