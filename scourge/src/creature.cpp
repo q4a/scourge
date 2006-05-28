@@ -2168,6 +2168,25 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 // base weapon damage of an attack with bare hands
 #define HAND_ATTACK_DAMAGE Dice(1,4,0)
 
+float Creature::getDodge( Creature *attacker, Item *weapon ) {
+	// the target's dodge if affected by angle of attack
+	bool inFOV = 
+		Util::isInFOV( getX(), getY(), getTargetAngle(),
+									 attacker->getX(), attacker->getY() );
+
+	// the target's dodge
+	float armor, dodgePenalty;
+	getArmor( &armor, &dodgePenalty, 
+						weapon ? weapon->getRpgItem()->getDamageType() : 0,
+						weapon );
+	float dodge = getSkill( Skill::DODGE_ATTACK ) - dodgePenalty;
+	if( !inFOV ) {
+		dodge /= 2.0f;
+		session->getMap()->addDescription("...Attack from blind-spot!");
+	}
+	return dodge;
+}
+
 float Creature::getArmor( float *armorP, float *dodgePenaltyP, 
 													int damageType, Item *vsWeapon ) {
 	calcArmor( damageType, &armor, dodgePenaltyP, ( vsWeapon ? true : false ) );

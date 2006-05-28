@@ -440,14 +440,16 @@ class Creature : public RenderedCreature {
 	// ======================================
 	// Combat methods
 	void getCth( Item *weapon, float *cth, float *skill, bool showDebug=true );
+
+	float getDodge( Creature *attacker, Item *weapon=NULL );
   
 	float getAttack( Item *weapon, 
 									 float *maxP=NULL, 
 									 float *minP=NULL, 
 									 bool callScript=false );
 	
-	float getParry( Item **parryItem );
-	
+	float getParry( Item **parryItem );	
+
 	float getArmor( float *armor, float *dodgePenalty, int damageType, Item *vsWeapon = NULL );	
 
   float getAttackerStateModPercent();
