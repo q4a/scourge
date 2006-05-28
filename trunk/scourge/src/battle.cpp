@@ -1046,29 +1046,7 @@ void Battle::hitWithItem() {
 	creature->getCth( item, &cth, &skill );
 
 	if( cth <= skill ) {
-
-		// the target's dodge if affected by angle of attack
-		bool inFOV = 
-			Util::isInFOV( creature->getTargetCreature()->getX(),
-										 creature->getTargetCreature()->getY(),
-										 creature->getTargetCreature()->getTargetAngle(),
-										 creature->getX(), 
-										 creature->getY() );
-		
-		// the target's dodge
-		float armor, dodgePenalty;
-		creature->getTargetCreature()->
-			getArmor( &armor, &dodgePenalty, 
-								item ? item->getRpgItem()->getDamageType() : 0,
-								item );
-		float dodge = 
-			creature->getTargetCreature()->getSkill( Skill::DODGE_ATTACK ) - 
-			dodgePenalty;
-		if( !inFOV ) {
-			dodge /= 2.0f;
-			session->getMap()->addDescription("...Attack from blind-spot!");
-		}
-
+		float dodge = creature->getTargetCreature()->getDodge( creature, item );
 		if( cth <= skill - dodge ) {
 			// a hit?
 	
@@ -1108,6 +1086,12 @@ void Battle::hitWithItem() {
 				// very low attack rolls (fumble)
 				if( handleLowAttackRoll( attack, min, max ) ) return;
 				
+				// get the armor
+				float armor, dodgePenalty;
+				creature->getTargetCreature()->
+					getArmor( &armor, &dodgePenalty, 
+										item ? item->getRpgItem()->getDamageType() : 0,
+										item );
 				if( toint( armor ) > 0 ) {
 					sprintf( message, "...%s's armor blocks %d points", 
 									 creature->getTargetCreature()->getName(), toint( armor ) );

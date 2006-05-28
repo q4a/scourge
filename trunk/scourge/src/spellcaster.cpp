@@ -294,16 +294,26 @@ void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
 
   // roll for the spell damage
   float damage = 0;
-  for(int i = 0; i < creature->getLevel(); i++) {
+  for(int i = 0; i < ( creature->getLevel() / 2 ); i++) {
     damage += spell->getAction();
   }
   damage *= mult;
+
+	// dodge saves for half damage
+	char msg[200];
+	float skill = ( (float)(creature->getSkill( spell->getSchool()->getSkill() )) * rand() / RAND_MAX );
+	float dodge = ( creature->getTargetCreature()->getDodge( creature ) * rand() / RAND_MAX );
+	if( skill < dodge ) {
+		damage /= 2.0f;
+		sprintf( msg, "%s dodges some of the damage.", 
+						 creature->getTargetCreature()->getName() );
+		battle->getSession()->getMap()->addDescription( msg, 1, 0.15f, 1 );
+	}
 
   // check for resistance
   int resistance = creature->getTargetCreature()->getSkill( spell->getSchool()->getResistSkill() );
   damage -= (((float)damage / 150.0f) * resistance);
 
-  char msg[200];
   sprintf(msg, "%s attacks %s with %s.", 
           creature->getName(), 
           creature->getTargetCreature()->getName(),
