@@ -2007,19 +2007,55 @@ void Creature::evalSpecialSkills() {
 }
 
 void Creature::setSkill(int index, int value) { 
-  skills[index] = value; 
+	int oldValue = getSkill( index );
+  skills[index] = value;
+	skillChanged( index, oldValue, getSkill( index ) );
   evalSpecialSkills();
   session->getParty()->recomputeMaxSkills();
 }
 
 void Creature::setSkillBonus( int index, int value ) { 
+	int oldValue = getSkill( index );
   skillBonus[index] = value;
+	skillChanged( index, oldValue, getSkill( index ) );
   session->getParty()->recomputeMaxSkills();
 }
 
 void Creature::setSkillMod( int index, int value ) {
+	int oldValue = getSkill( index );
 	skillMod[ index ] = value;
+	skillChanged( index, oldValue, getSkill( index ) );
 	session->getParty()->recomputeMaxSkills();
+}
+
+/**
+ * Recalculate skills when stats change.
+ */
+void Creature::skillChanged( int index, int oldValue, int newValue ) {
+	if( Skill::skills[ index ]->getGroup()->isStat() && character ) {
+		for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+			int oldPrereq = 0;
+			int newPrereq = 0;
+			for( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
+				int statIndex = Skill::skills[i]->getPreReqStat( t )->getIndex();
+				if( statIndex == index ) {
+					oldPrereq += oldValue;
+					newPrereq += newValue;
+				} else {
+					oldPrereq += getSkill( statIndex );
+					newPrereq += getSkill( statIndex );
+				}
+			}
+			oldPrereq = (int)( ( oldPrereq / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
+												 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
+			newPrereq = (int)( ( newPrereq / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
+												 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
+			if( oldPrereq != newPrereq ) {
+				setSkill( i, getSkill( i ) + ( newPrereq - oldPrereq ) );
+				armorChanged = true;
+			}
+		}
+	}
 }
 
 void Creature::applySkillMods() {
@@ -2169,13 +2205,19 @@ void Creature::calcArmor( int damageType,
 			for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
 				if( equipped[i] != MAX_INVENTORY_SIZE ) {
 					Item *item = inventory[equipped[i]];
-					if( item->getRpgItem()->getType() == RpgItem::ARMOR ) {
+					if( item->getRpgItem()->getType() == RpgItem::ARMOR ||
+							( item->isMagicItem() && item->getBonus() > 0 && !item->getRpgItem()->isWeapon() ) ) {
+
+						int n = ( item->getRpgItem()->getType() == RpgItem::ARMOR ?
+											item->getRpgItem()->getDefense( t ) :
+											item->getBonus() );
+
 						if( callScript && !monster ) {
 							session->getSquirrel()->setGlobalVariable( "armor", lastArmor[ t ] );
 							session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
 							lastArmor[ t ] = session->getSquirrel()->getGlobalVariable( "armor" );
 						}					
-						lastArmor[ t ] += item->getRpgItem()->getDefense( t );
+						lastArmor[ t ] += n;
 						lastDodgePenalty[ t ] += item->getRpgItem()->getDodgePenalty();
 
 						// item's level has a small influence.
