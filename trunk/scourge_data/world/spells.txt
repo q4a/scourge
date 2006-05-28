@@ -60,11 +60,11 @@ H:There is a floral scent to the air: fragrant and delicate.
 H:The air warms around you and you feel elated and strong.
 #---------------------------------------------
 
-P:Lesser healing touch,Healing,1,2,5,20,1d8+2,0,single,2,EFFECT_SWIRL,C,1,1,F,HP
+P:Lesser healing touch,Healing,1,2,5,20,1d8+2,0,single,4,EFFECT_SWIRL,C,1,1,F,HP
 W:sound/magic/healing.wav
 D:Increases the target's HP by a minimal amount. The spell's power increases with the caster's level.
 
-P:Bless group,Blessing,2,4,20,25,0,10,group,12,EFFECT_SWIRL,P,2,1,F,HP
+P:Bless group,Blessing,2,4,20,25,0,10,group,5,EFFECT_SWIRL,P,2,1,F,HP
 W:sound/magic/blinded.wav
 D:Drawing on the ancient spirits of nature the caster raises the party's ability to succeed in vanquishing their foes.
 
@@ -110,13 +110,13 @@ P:Empower friend,Empowering,2,4,20,25,0,10,single,2,EFFECT_SWIRL,C,8,1,F,empower
 W:sound/magic/blinded.wav
 D:A party member is empowered for a period of time after the caster embarks to spiritually understand the divine nature of the target being.
 
-P:Burning stare,Burning,3,8,80,20,1d3+8,10,single,8,EFFECT_EXPLOSION,C,7,1,H
+P:Burning stare,Burning,3,8,80,20,1d3+8,10,single,6,EFFECT_EXPLOSION,C,7,1,H
 W:sound/magic/poison.wav
 D:Simply by looking at the target the caster charges the surrounding air with spiritual energy
 D:which delivers a hot blast of burning matter and thus damaging the target. With practice the
 D:damage caused by this spell is increased.
 
-P:Divine healing touch,Healing,4,20,50,25,8d8+2,0,single,2,EFFECT_SWIRL,C,6,1,F,HP
+P:Divine healing touch,Healing,4,20,50,25,8d8+2,0,single,3,EFFECT_SWIRL,C,6,1,F,HP
 W:sound/magic/healing.wav
 D:Heals a large amount of damaged hit points. The spell's power increases with the caster's level.
 
@@ -141,7 +141,7 @@ H:Small animals scurry off at the edges of your vision.
 H:The smell of fresh air fills your mind with hope and perseverance.
 #---------------------------------------------
 
-P:Flame of Azun,Flaming,1,2,10,25,0,10,group,6,EFFECT_GREEN,CLI,9,1,H,blinded
+P:Flame of Azun,Flaming,1,2,10,25,0,10,group,4,EFFECT_GREEN,CLI,9,1,H,blinded
 W:sound/magic/blinded.wav
 D:Temporarily blind a group of enemies contained within a 5' cube.
 
@@ -167,7 +167,7 @@ D:the gods require to restore the target's control of the subconscious.
 
 # spell, level, mana, exp, failure rate, action, distance, single/group target, speed, effect, CLIP, icontileX, icontileY, F|H[ ,pre-requisite ]
 
-P:Recall to life,Resurrecting,8,40,620,30,0,0,single,6,EFFECT_TOWER,P,6,2,F,dead
+P:Recall to life,Resurrecting,8,40,620,30,0,0,single,7,EFFECT_TOWER,P,6,2,F,dead
 W:sound/magic/blinded.wav
 D:Reaching across the very fabric of the realm of shadows the caster attempts to resurrect
 D:any dead comrades. This spell is rumored to have a very high failure rate.
@@ -191,7 +191,7 @@ H:Trumpets sound. The noise is glorious as if a victory occurred.
 H:Warm air rises all around you. It comforts your tired limbs and seems to aid your recovery.
 #---------------------------------------------
 
-P:Ole Taffy's purty colors,Identifying,1,3,2,15,0,10,single,2,EFFECT_SWIRL,CLI,14,1,F
+P:Ole Taffy's purty colors,Identifying,1,3,2,15,0,10,single,3,EFFECT_SWIRL,CLI,14,1,F
 W:sound/magic/teleport.wav
 D:Ole Taffy's parting gift to the world of magic was this spell which he used 
 D:to briefly glimpse information about his surroundings. When used with sufficient skill,
@@ -241,7 +241,7 @@ P:Transmute poison,Poison Neutralizing,4,15,100,25,0,10,single,3,EFFECT_FLAMES,C
 W:sound/magic/teleport.wav
 D:Drawing upon the strength of the soul the caster fools the target creature's body into processing poison as if it were a harmless substance. 
 
-P:Blast of Fury,Blasting,5,22,350,20,1d4+1,10,group,4,EFFECT_BLAST,C,19,1,H
+P:Blast of Fury,Blasting,5,22,350,20,1d4+1,10,group,7,EFFECT_BLAST,C,19,1,H
 W:sound/magic/blinded.wav
 D:After some time spent in meditation upon pain and carnage, the caster unleashes
 D:her thought's physical manifestation as a wide cone of anti-matter fury.
@@ -264,7 +264,7 @@ H:You're seized by a rise of warlust. Your hear your heart in your ears like the
 H:Your vision suddenly focuses to a red tunnel. Air whistles in your ears as if you're moving at a high speed.
 #---------------------------------------------
 
-P:Stinging light,Stinging,1,2,5,20,1d2+1,10,single,3,EFFECT_GREEN,C,20,1,H
+P:Stinging light,Stinging,1,2,5,20,1d2+1,10,single,4,EFFECT_GREEN,C,20,1,H
 W:sound/magic/poison.wav
 D:The caster hurls a number of projectiles of light at the target. 
 D:Upon contact with a creature the projectiles cause searing damage.
@@ -274,18 +274,18 @@ P:Divine Aggressor,Aggressive,3,8,120,25,0,10,group,2,EFFECT_SWIRL,P,1,2,F,enrag
 W:sound/magic/blinded.wav
 D:Arhareim, the hammer of gods in conjured to envelop the party in seething warlust for a period of time.
 
-P:Malice Storm,Storming,4,12,220,20,1d3+1,10,group,4,EFFECT_GLOW,CLI,3,2,H
+P:Malice Storm,Storming,4,12,220,20,1d3+1,10,group,7,EFFECT_GLOW,CLI,3,2,H
 W:sound/magic/teleport.wav
 D:The caster summons vast energies of the astral plains. These appear as
 D:tendrils of malicious energy penetrating the material plane.
 
-P:Ring of Harm,Harming,5,20,300,20,1d4+2,10,group,4,EFFECT_EXPLOSION,CLI,2,2,H
+P:Ring of Harm,Harming,5,20,300,20,1d4+2,10,group,8,EFFECT_EXPLOSION,CLI,2,2,H
 W:sound/magic/teleport.wav
 D:Enraged with hatred for his foes, the caster becomes a focus of conduit for
 D:Unamoin's earthly manifestation. Intense waves of malevolent energy spreads
 D:from the castor's body seeking to eradicate hostile life-forms around him.
 
-P:Unholy Decimator,Decimating,6,24,520,20,2d3+5,10,single,4,EFFECT_TOWER,C,4,2,H
+P:Unholy Decimator,Decimating,6,24,520,20,1d6+1,10,single,9,EFFECT_TOWER,C,4,2,H
 W:sound/magic/blinded.wav
 D:Spoken of only in hushed tones, the Unholy Decimator is the creation of
 D:the undead baul wizard, Shamoul the Morbid. A vortex of unholy energy 
