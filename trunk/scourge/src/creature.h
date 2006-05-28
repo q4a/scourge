@@ -462,6 +462,12 @@ class Creature : public RenderedCreature {
 
  protected:
 
+	/**
+	 * Recalculate skills when stats change.
+	 */
+	void skillChanged( int index, int oldValue, int newValue );
+
+
 	 void calcArmor( int damageType,
 									float *armorP, 
                   float *dodgePenalty,
