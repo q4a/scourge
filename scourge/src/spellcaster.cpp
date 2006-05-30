@@ -87,7 +87,7 @@ void SpellCaster::spellFailed() {
       Creature *oldTarget = battle->getCreature()->getTargetCreature();
       battle->getCreature()->setTargetCreature( tmpTarget );
       
-      causeDamage( 0, 0.5 );
+      causeDamage( true, 0, 0.5 );
       
       battle->getCreature()->setTargetCreature( oldTarget );
     }
@@ -117,7 +117,7 @@ void SpellCaster::spellSucceeded() {
     }
   } else if(!strcasecmp(spell->getName(), "Stinging light")) {
     if(projectileHit) {
-      causeDamage();
+      causeDamage( false );
     } else {
       launchProjectile(0);
     }
@@ -289,13 +289,14 @@ Projectile *SpellCaster::launchProjectile( int count, bool stopOnImpact, Project
   return p;
 }
 
-void SpellCaster::causeDamage( GLuint delay, GLfloat mult ) {
+void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult ) {
   Creature *creature = battle->getCreature();
 
   // roll for the spell damage
   float damage = 0;
   for(int i = 0; i < ( creature->getLevel() / 2 ); i++) {
     damage += spell->getAction();
+		if( !multiplyByLevel ) break;
   }
   damage *= mult;
 
