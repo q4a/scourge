@@ -1038,6 +1038,24 @@ N:ffffffff
 3:/objects/map.3ds
 3:0.4
 
+# token
+N:14
+N:1,1,1
+N:TOKEN
+N:9
+N:ffffffff
+3:/objects/map.3ds
+3:0.4
+
+# ring
+N:14
+N:1,1,1
+N:RING
+N:9
+N:ffffffff
+3:/objects/map.3ds
+3:0.4
+
 # md2 models
 # old-style declarations. See creatures.txt for new way.
 2:BUGGERLING

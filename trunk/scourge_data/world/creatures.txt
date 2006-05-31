@@ -962,3 +962,73 @@ P:RESIST_HISTORY_MAGIC,20
 P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,50
 
+# Creatures
+# 
+# Key: (the old-way)
+# M:monster
+#   name[,(descriptive type for monsters | portrait for npcs)]
+#   md2 model, skin, level,hp,mp,natural armor,rareness,speed[,scale(overrides shapes.txt's scale),npc[,startX,startY]]
+# I:inventory (1 line per item ref. by name from items.txt)
+# S:spell
+# P:skill_name,percentage (skill level; used mainly for magic resistance)
+#
+# Notes: 
+#       hp,mp are multiplied by the level when the monster is created (natural armor isn't)
+# 	rareness=1-10 where 1 is most and 10 is least rare (for given level)
+#	speed=1-10 where 1 is the fastest and 10 is the slowest
+#       descriptiveType is only needed once per model
+
+
+#############################
+# level 12
+M:Lesser Guargloo
+M:/models/nightcrawler,NightCrawler.bmp,12,10,0,15,10,5,1.6
+I:Trident
+P:RESIST_NATURE_MAGIC,30
+P:RESIST_AWARENESS_MAGIC,35
+P:RESIST_LIFE_AND_DEATH_MAGIC,30
+P:RESIST_HISTORY_MAGIC,35
+P:RESIST_DECEIT_MAGIC,30
+P:RESIST_CONFRONTATION_MAGIC,35
+
+M:Fiendish Raptor
+M:RAPTOR,/models/m113.bmp,12,8,5,8,9,5,3.0
+I:Darkflail
+P:RESIST_NATURE_MAGIC,25
+P:RESIST_AWARENESS_MAGIC,35
+P:RESIST_LIFE_AND_DEATH_MAGIC,45
+P:RESIST_HISTORY_MAGIC,35
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,35
+
+M:Minor Undead Gatekeeper,Gatekeeper
+M:/models/purgator,purgatori.bmp,12,6,8,7,8,8,2.0
+I:Spiked flail
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Blast of Fury
+S:Flame of Azun
+P:RESIST_NATURE_MAGIC,20
+P:RESIST_AWARENESS_MAGIC,30
+P:RESIST_LIFE_AND_DEATH_MAGIC,40
+P:RESIST_HISTORY_MAGIC,30
+P:RESIST_DECEIT_MAGIC,40
+P:RESIST_CONFRONTATION_MAGIC,30
+
+M:Ogre Cleric of Unamoin
+M:/models/ogro,slaanesh.bmp,12,8,10,7,6,6,1.6
+I:Morning Star
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,40
+P:RESIST_AWARENESS_MAGIC,45
+P:RESIST_LIFE_AND_DEATH_MAGIC,30
+P:RESIST_HISTORY_MAGIC,35
+P:RESIST_DECEIT_MAGIC,30
+P:RESIST_CONFRONTATION_MAGIC,45
+
