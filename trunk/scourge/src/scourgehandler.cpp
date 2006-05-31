@@ -144,9 +144,13 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     } else if( event->key.keysym.sym == SDLK_y ) {
       scourge->getBoard()->setStorylineIndex( scourge->getBoard()->getStorylineIndex() + 1 );
       cerr << "Incremented storyline index to " << scourge->getBoard()->getStorylineIndex() << endl;
+			// init the missions board (this deletes completed missions)
+      scourge->getBoard()->initMissions();
     } else if( event->key.keysym.sym == SDLK_u ) {
       scourge->getBoard()->setStorylineIndex( scourge->getBoard()->getStorylineIndex() - 1 );
       cerr << "Decremented storyline index to " << scourge->getBoard()->getStorylineIndex() << endl;
+			// init the missions board (this deletes completed missions)
+      scourge->getBoard()->initMissions();
     } else if(event->key.keysym.sym == SDLK_p) {
       cerr << "EFFECT!" << endl;
 //      scourge->getParty()->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
