@@ -147,7 +147,7 @@ V:Thuzgol;The great dwarven city of Thuzgol is home to the Groez-Duil: the mount
 V:Mothrazu;Sorry, I haven't a clue... Ask $Melathor, she sounds to be his kind... or better yet,\
 ask $Sabien about her. After all, he was directly involved in her plans. I marked his location on\
 map on the $board.
-V:token;According to $Sabien, four such token items are what $Mothrazu seeks in order to activate\
+V:token,tokens;According to $Sabien, four such token items are what $Mothrazu seeks in order to activate\
 a gate to the $Abyss. Be sure to find them before she does! Look on $board now and then to see if I marked\
 a location where we suspect the item can be found.
 
@@ -232,6 +232,9 @@ V:Orhithales;The ancient sage Orhithales lives in $Thuzgol.
 V:Thuzgol;The great dwarven city of Thuzgol is home to the Groez-Duil: the mountain dwarves.
 V:Mothrazu;Well from what you tell me about her, she sounds like some kind of insane, cult-leader\
 for the god of Nature? We have hacks like her by the dozens back in $Allovium...
+V:token,tokens;What, tokens you say? Yes, yes, you must find them! Uzudil is looking into it. Look\
+on the board now and then to see if he's posted anything yet. He may want you to become more powerful\
+before sending you out on such an important mission.
 
 # Npc-s:
 # Key:

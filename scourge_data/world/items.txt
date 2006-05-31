@@ -755,42 +755,42 @@ E:6
 #
 
 I:Dwarven steel ring
-I:5,RING,0.05,50,POTION,7680,10
+I:5,RING,0.05,50,RING,7680,10
 I:This grayish-blue steel ring is favored by the dwarven miners of Thuzgol.
 I:An unadorned gray steel ring
 I:12,11
 E:1
 
 I:Elven leaf ring
-I:4,RING,0.05,75,POTION,7680,10
+I:4,RING,0.05,75,RING,7680,10
 I:A green ring adorned by a leaf motif that runs around both its inner and outer sides.
 I:A green ring with leaves etched on its surface.
 I:16,11
 E:2
 
 I:Orc war-ring
-I:3,RING,0.05,170,POTION,7680,15,1
+I:3,RING,0.05,170,RING,7680,15,1
 I:This red ring has clearly seen its share of action. Its surface is marred by countless chips and dings.
 I:A red ring that looks like it was used in place of a knife.
 I:16,11
 E:3
 
 I:Ceremonial ring of Count Uluf
-I:3,RING,0.05,500,POTION,7680,15,2
+I:3,RING,0.05,500,RING,7680,15,2
 I:This gold ring with bright green stone was worn by Count Uluf the late Court Astronomer.
 I:A small gold ring with a green gem.
 I:9,12
 E:4
 
 I:Zarnan's Sealer
-I:2,RING,0.05,1200,POTION,7680,15,3
+I:2,RING,0.05,1200,RING,7680,15,3
 I:A strange sygil is etched into the precious gem embedded in the mouth of a dragon on top of this ring.
 I:This ring is clearly a seal of some sort.
 I:10,12
 E:5
 
 I:Ring of Arthel's Pride
-I:1,RING,0.05,2500,POTION,7680,20,4
+I:1,RING,0.05,2500,RING,7680,20,4
 I:This powerful ring was one of the few crafted by the elven jewelers of Arthel.
 I:A blue metal ring with a sparkling stone.
 I:11,12
@@ -1616,6 +1616,18 @@ I:10,MISSION,1.0,50,MAP
 I:It's a simple map and yet... strange suggestions arise in your mind: worship Karzuul and you'll be spared!
 I:A map that seems to radiate evil.
 I:10,11
+
+I:The myriagonal token of Unamoin
+I:10,MISSION,1.0,50,TOKEN
+I:It seems like this star-shaped flat piece of metal is emitting a sweet smell.
+I:A flat piece of metal with many sides.
+I:6,17
+
+I:The nonagonal token of Soroughoz
+I:10,MISSION,1.0,50,TOKEN
+I:This vaguely oval-shaped piece of material makes you laugh every time you look at it.
+I:An oval-shaped piece of cloth that seems laughably important.
+I:20,17
 
 # Special items (only one exists in the world)
 # Special items are special b/c of the min_level on the second row.
