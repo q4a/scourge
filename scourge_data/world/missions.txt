@@ -180,17 +180,18 @@ S:Talk to Sabien
 
 T:Chapter 7: Tokens of the Gods
 S:12,5
-D:Browsing through Sabien's notes about the four tokens, it seems two are to be found quite
+D:Browsing through Sabien's notes about the four tokens, it seems they are to be found quite
 D:close to here in an underground complex. The building is similar to the library of Sabien,
-D:because in fact, it's also build by the Guardians of the Realm. I expect since it stood 
+D:because in fact, it was also built by the Guardians of the Realm. I expect since it stood 
 D:empty for many centuries, several powerful monsters set up lair in its abandoned halls. But
 D:surely such trivialities do not concern heroes of your magnitude. And do hurry; I believe
 D:we're past earning a living and got ourselves into a saving the world type situation in
 D:earnest...
-Y:You must now take these tokens to $Sabien in his library. Hurry, only he knows where the last
-Y:$token he needs to unlock the wards that protect the door to the planar $device lie.
+Y:You must now take these $tokens to $Sabien in his library. Hurry, for only he knows how to
+Y:employ them to unlock the wards that protect the door to the planar $device.
 N:By the gods! While you amble about, the fate of the world hangs by a thread! Hurry and find
-N:the next two $tokens $Sabien needs!
+N:the $tokens $Sabien needs!
 I:The myriagonal token of Unamoin
 I:The nonagonal token of Soroughoz
+I:The hendecagonal token of Garzul-Meg-Aonrod
 
