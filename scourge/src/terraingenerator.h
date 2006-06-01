@@ -78,6 +78,7 @@ protected:
   Scourge *scourge;
   int level;
   int depth;
+	int maxDepth;
   bool stairsDown, stairsUp;
   Mission *mission;
   Progress *progress;
@@ -103,6 +104,7 @@ public:
   TerrainGenerator( Scourge *scourge, 
                     int level, 
                     int depth, 
+										int maxDepth,
                     bool stairsDown, 
                     bool stairsUp, 
                     Mission *mission, 

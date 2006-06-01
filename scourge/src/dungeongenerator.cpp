@@ -63,9 +63,9 @@ const int DungeonGenerator::levels[][9] = {
   { 31, 31,   3, 5, 25,    6,  7,  7,     35 }
 };
 
-DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth, 
+DungeonGenerator::DungeonGenerator(Scourge *scourge, int level, int depth, int maxDepth,
                                    bool stairsDown, bool stairsUp, Mission *mission) : 
-TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 17 ) {
+TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 17 ) {
 
 
   initByLevel();  
