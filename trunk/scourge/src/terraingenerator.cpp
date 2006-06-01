@@ -29,6 +29,7 @@ using namespace std;
 TerrainGenerator::TerrainGenerator( Scourge *scourge, 
                                     int level, 
                                     int depth, 
+																		int maxDepth,
                                     bool stairsDown, 
                                     bool stairsUp, 
                                     Mission *mission, 
@@ -36,6 +37,7 @@ TerrainGenerator::TerrainGenerator( Scourge *scourge,
   this->scourge = scourge;
   this->level = level;
   this->depth = depth;
+	this->maxDepth = maxDepth;
   this->stairsUp = stairsUp;
   this->stairsDown = stairsDown;
   this->mission = mission;
@@ -245,42 +247,62 @@ void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
 
 
 void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
-  if(mission && !mission->isCompleted() && !stairsDown) {
+  if( mission && !mission->isCompleted() ) {
+		int startIndex, endIndex;
+		if( maxDepth > mission->getItemCount() ) {
+			startIndex = depth - ( maxDepth - mission->getItemCount() );
+			endIndex = startIndex + 1;
+		} else {
+			startIndex = depth;
+			endIndex = ( depth < maxDepth - 1 ? startIndex + 1 : mission->getItemCount() );
+		}
+		if( startIndex >= 0 ) {
+			//cerr << "*** Added mission items: from " << startIndex << " to " << endIndex << endl;
+			// mission objects are on a pedestal
+			// and they are blocking so creatures can't get them
+			for(int i = startIndex; i < endIndex; i++) {
+				RpgItem *rpgItem = mission->getItem( i );
+				Item *item = scourge->getSession()->newItem( rpgItem, mission->getLevel() );
+				mission->addItemInstance( item, rpgItem );
+				item->setBlocking(true); // don't let monsters pick this up
+				Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
+				int x, y;
+				getRandomLocation(map, pedestal->getShape(), &x, &y);
+				addItem(map, NULL, pedestal, NULL, x, y);
+				addItem(map, NULL, item, NULL, 
+								x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
+								y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
+								pedestal->getShape()->getHeight());
+				//cerr << "*** Added mission item: " << item->getItemName() << " at: " << x << "," << y << endl;
+			}
+		}
 
-    // mission objects are on a pedestal
-    // and they are blocking so creatures can't get them
-    for(int i = 0; i < mission->getItemCount(); i++) {
-      RpgItem *rpgItem = mission->getItem( i );
-      Item *item = scourge->getSession()->newItem( rpgItem, mission->getLevel() );
-      mission->addItemInstance( item, rpgItem );
-      item->setBlocking(true); // don't let monsters pick this up
-      Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
-      int x, y;
-      getRandomLocation(map, pedestal->getShape(), &x, &y);
-      addItem(map, NULL, pedestal, NULL, x, y);
-      addItem(map, NULL, item, NULL, 
-              x + (pedestal->getShape()->getWidth()/2) - (item->getShape()->getWidth()/2), 
-              y - (pedestal->getShape()->getDepth()/2) + (item->getShape()->getDepth()/2), 
-              pedestal->getShape()->getHeight());
-//      cerr << "*** Added mission item: " << item->getItemName() << " at: " << x << "," << y << endl;
-    }
-
-    // add mission creatures
-    for(int i = 0; i < mission->getCreatureCount(); i++) {
-      int x, y;
-      Monster *monster = mission->getCreature( i );
-      GLShape *shape = scourge->getSession()->getShapePalette()->
-        getCreatureShape(monster->getModelName(), 
-                         monster->getSkinName(), 
-                         monster->getScale(),
-						 monster);
-      Creature *creature = scourge->getSession()->newCreature( monster, shape );
-      mission->addCreatureInstanceMap( creature, monster );
-      getRandomLocation(map, creature->getShape(), &x, &y);    
-      addItem(map, creature, NULL, NULL, x, y);
-      creature->moveTo(x, y, 0);
-//      cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
-    }
+		if( maxDepth > mission->getCreatureCount() ) {
+			startIndex = depth - ( maxDepth - mission->getCreatureCount() );
+			endIndex = startIndex + 1;
+		} else {
+			startIndex = depth;
+			endIndex = ( depth < maxDepth - 1 ? startIndex + 1 : mission->getCreatureCount() );
+		}		
+		if( startIndex >= 0 ) {
+			//cerr << "*** Added mission creatures: from " << startIndex << " to " << endIndex << endl;
+			// add mission creatures
+			for(int i = startIndex; i < endIndex; i++) {
+				int x, y;
+				Monster *monster = mission->getCreature( i );
+				GLShape *shape = scourge->getSession()->getShapePalette()->
+					getCreatureShape(monster->getModelName(), 
+													 monster->getSkinName(), 
+													 monster->getScale(),
+							 monster);
+				Creature *creature = scourge->getSession()->newCreature( monster, shape );
+				mission->addCreatureInstanceMap( creature, monster );
+				getRandomLocation(map, creature->getShape(), &x, &y);    
+				addItem(map, creature, NULL, NULL, x, y);
+				creature->moveTo(x, y, 0);
+	      //cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
+			}
+		}
   }
 }
 

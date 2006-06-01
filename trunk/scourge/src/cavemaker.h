@@ -66,7 +66,7 @@ private:
 
 public:
 
-  CaveMaker( Scourge *scourge, int level, int depth, 
+  CaveMaker( Scourge *scourge, int level, int depth, int maxDepth, 
              bool stairsDown, bool stairsUp, 
              Mission *mission);
   virtual ~CaveMaker();

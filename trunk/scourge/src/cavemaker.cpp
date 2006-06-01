@@ -26,10 +26,10 @@
 
 using namespace std;
   
-CaveMaker::CaveMaker( Scourge *scourge, int level, int depth, 
+CaveMaker::CaveMaker( Scourge *scourge, int level, int depth, int maxDepth,
                       bool stairsDown, bool stairsUp, 
                       Mission *mission) :
-TerrainGenerator( scourge, level, depth, stairsDown, stairsUp, mission, 12 ) {
+TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 12 ) {
   int dungeonLevel = level / 8;
   this->w = 25 + dungeonLevel * 4;
   this->h = 25 + dungeonLevel * 4;

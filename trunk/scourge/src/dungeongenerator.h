@@ -98,7 +98,7 @@ private:
   
 public: 
 
-  DungeonGenerator(Scourge *scourge, int level, int depth, bool stairsDown, bool stairsUp, Mission *mission = NULL);
+  DungeonGenerator(Scourge *scourge, int level, int depth, int maxDepth, bool stairsDown, bool stairsUp, Mission *mission = NULL);
   virtual ~DungeonGenerator();
 
   virtual void generate( Map *map, ShapePalette *shapePal );
