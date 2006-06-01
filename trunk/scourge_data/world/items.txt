@@ -1629,6 +1629,12 @@ I:This vaguely oval-shaped piece of material makes you laugh every time you look
 I:An oval-shaped piece of cloth that seems laughably important.
 I:20,17
 
+I:The hendecagonal token of Garzul-Meg-Aonrod
+I:10,MISSION,1.0,50,TOKEN
+I:A faint touch of electricity strokes your skin when nearing this many-sided metal piece.
+I:The piece of metal displays a feel of electricity.
+I:11,17
+
 # Special items (only one exists in the world)
 # Special items are special b/c of the min_level on the second row.
 # For special items, rareness is reversed (ie. the bigger the number the more rare)
