@@ -23,7 +23,7 @@
 
 using namespace std;
 
-#define MISSION_MUSIC_COUNT 5.0f
+#define MISSION_MUSIC_COUNT 6.0f
 #define FIGHT_MUSIC_COUNT 1.0f
 
 Sound::Sound(Preferences *preferences) {
