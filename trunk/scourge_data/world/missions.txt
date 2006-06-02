@@ -54,6 +54,27 @@ Y:Finished just in time! Good job! ${creature1} must have been hard to defeat.
 N:The time draws near when our vampiric client must return to his domain.
 N:Trust me you won't want to be around him, so get on with killing {$creature1}.
 
+M:D,Removing a heretical ${creature1}
+D:The local holy order of Soroughoz requested that we send a cleanup
+D:crew to the ruins of one of its abandoned temples. They view it as a
+D:stain on their reputation if places of (former) glory become infested
+D:with monsters. In particular, they wish for a certain ${creature1} and
+D:a ${creature2} to be neutralized.
+Y:Very good, the local order of Soroughoz will be pleased. And in turn, it's
+Y:always good for us to keep them happy.
+N:Just a reminder to finish cleaning the abandoned temple of Soroughoz.
+
+M:C,Retrieving a lost ${item1}
+D:A lesser noble family's steward contacted us this morning regarding the
+D:recovery of a coveted family heirloom. The ${item1} was lost stolen by
+D:a raiding party hired by one of the family's enemies. Fortunatelly, the
+D:thieves never made it home with their loot. They were ambushed by a small
+D:force of trolls on a forest road. The item seemed useless to the trolls
+D:who discarded it during their stay at an abandoned ruin.
+Y:Excellent work as always! The noble family will be eternally thankful to
+Y:us for recovering their heirloom object.
+N:The noble family's steward contacted us again last night asking about
+N:the heirloom object. Any luck in finding it? Don't give up!
 
 ##########################################################
 # Storyline missions
