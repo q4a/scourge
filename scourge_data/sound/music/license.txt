@@ -12,4 +12,5 @@ track02.ogg		Promenade Lugubre	Vincent Fiack
 track03.ogg		Dans les sous-sols	Vincent Fiack
 track04.ogg		L'excursion		Vincent Fiack
 track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
+track06.ogg		Sur un theme de ...	Vincent Fiack
 fight01.ogg		Demo Mix		Joel Ross
