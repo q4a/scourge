@@ -103,6 +103,7 @@ void Monster::initMonsters() {
       fgetc(fp);
       // read the rest of the line
       n = Constants::readLine(line, fp);
+
       strcpy( name, strtok( line, "," ) );
       char *p = strtok( NULL, "," );
       if( p ) {
