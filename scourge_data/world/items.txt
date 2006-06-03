@@ -1531,7 +1531,7 @@ I:5,POTION,0.2,5,POTION,1
 I:This bottle contains some exotic, green oil
 I:A small vial of green oil
 I:19,14
-P:6,SPEED,15
+P:2,SPEED,15
 
 I:Potion of Coordination
 I:5,POTION,0.2,5,POTION,1
