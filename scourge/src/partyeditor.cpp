@@ -97,12 +97,12 @@ PartyEditor::PartyEditor(Scourge *scourge) {
                      Constants::SCOURGE_LARGE_FONT, 24 );
   cards->addWidget( intro, INTRO_TEXT );
   
-
-  cancel = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+	int bw = 200;
+  cancel = cards->createButton( w / 2 - ( bw + 10 ), h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
                                 w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                 "I will not join", INTRO_TEXT );
   toChar0 = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
-                                 w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
+                                 w / 2 + ( bw + 10 ), h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                  "Ready to exterminate", INTRO_TEXT );
 
   for( int i = 0; i < MAX_PARTY_SIZE; i++ ) {
@@ -123,11 +123,11 @@ PartyEditor::PartyEditor(Scourge *scourge) {
   }
   saveUI( (Creature**)tmp );
 
-  toLastChar = cards->createButton( w / 2 - 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
+  toLastChar = cards->createButton( w / 2 - ( bw + 10 ), h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
                                     w / 2 - 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                                     "Back", OUTRO_TEXT );
   done = cards->createButton( w / 2 + 10, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 80, 
-                              w / 2 + 160, h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
+                              w / 2 + ( bw + 10 ), h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 50, 
                               "Enter Head Quarters", OUTRO_TEXT );
 
   Label *outro = new Label( 30, 100, 

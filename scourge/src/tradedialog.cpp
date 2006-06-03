@@ -59,10 +59,10 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   
   coinAvailA = win->createLabel( 5, 260, AVAILABLE_COINS );
   coinTradeA = win->createLabel( 5, 280, "$0" );
-  coinReset = win->createButton( 180, 270, 210, 290, "Clr" );
-  coinPlusA = win->createButton( 215, 270, 245, 290, "+1" );
-  coinMinusA = win->createButton( 250, 270, 280, 290, "-1" );
-  coinRest = win->createButton( 285, 270, 315, 290, "Diff" );
+  coinReset = win->createButton( 180, 270, 220, 290, "Clr" );
+  coinPlusA = win->createButton( 225, 270, 265, 290, "+1" );
+  coinMinusA = win->createButton( 270, 270, 310, 290, "-1" );
+  coinRest = win->createButton( 315, 270, 355, 290, "Diff" );
 
   win->createLabel( 5, 305, "Shift+click to select multiple items, right click to get info." );
 }

@@ -300,6 +300,9 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
   }
   damage *= mult;
 
+	// give early-game spells a chance
+	bool lowDamage = damage < 5;
+
 	// dodge saves for half damage
 	char msg[200];
 	float skill = ( (float)(creature->getSkill( spell->getSchool()->getSkill() )) * rand() / RAND_MAX );
@@ -313,7 +316,9 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 
   // check for resistance
   int resistance = creature->getTargetCreature()->getSkill( spell->getSchool()->getResistSkill() );
-  damage -= (((float)damage / 150.0f) * resistance);
+	if( resistance > 0 && !lowDamage ) {
+		damage -= (((float)damage / 150.0f) * resistance);
+	}
 
   sprintf(msg, "%s attacks %s with %s.", 
           creature->getName(), 
