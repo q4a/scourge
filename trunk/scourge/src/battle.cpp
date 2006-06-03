@@ -761,19 +761,8 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 
     // get exp for casting the spell
     if( !IS_AUTO_CONTROL( creature ) ) {
-      int level = creature->getLevel();
-      if(!creature->getStateMod(Constants::dead)) {
-        int n = creature->addExperience(creature->getActionSpell()->getExp());
-        if(n > 0) {
-          sprintf(message, "%s gains %d experience points.", creature->getName(), n);
-          session->getMap()->addDescription(message);
-          if( level != creature->getLevel() ) {
-            sprintf(message, "%s gains a level!", creature->getName());
-            session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-          }
-        }
-      }
-    }
+			creature->addExperienceWithMessage( creature->getActionSpell()->getExp() );
+		}
 
     sc->spellSucceeded();
   }
@@ -1177,19 +1166,11 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 
         // FIXME: try to move to party.cpp
         for(int i = 0; i < session->getParty()->getPartySize(); i++) {
-          int level = session->getParty()->getParty(i)->getLevel();
-          if(!session->getParty()->getParty(i)->getStateMod(Constants::dead)) {
-            int n = session->getParty()->getParty(i)->addExperience(creature->getTargetCreature());
-            if(n > 0) {
-              sprintf(message, "%s gains %d experience points.", session->getParty()->getParty(i)->getName(), n);
-              session->getMap()->addDescription(message);
-              if( level != session->getParty()->getParty(i)->getLevel() ) {
-                sprintf(message, "%s gains a level!", session->getParty()->getParty(i)->getName());
-                session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-              }
-            }
+					// Add the exp for the killed creature
+					session->getParty()->getParty( i )->addExperience( creature->getTargetCreature() );
 
-            n = session->getParty()->getParty(i)->addMoney(creature->getTargetCreature());
+					if(!session->getParty()->getParty(i)->getStateMod(Constants::dead)) {
+            int n = session->getParty()->getParty(i)->addMoney(creature->getTargetCreature());
             if(n > 0) {
               sprintf(message, "%s finds %d coins!", session->getParty()->getParty(i)->getName(), n);
               session->getMap()->addDescription(message);

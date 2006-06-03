@@ -992,7 +992,7 @@ void Creature::usePotion(Item *item) {
   if(skill < 0) {
     switch(-skill - 2) {
     case Constants::HP:
-      n = item->getRpgItem()->getPotionPower();
+      n = item->getRpgItem()->getPotionPower() + item->getLevel();
       if(n + getHp() > getMaxHp())
         n = getMaxHp() - getHp();
       setHp(getHp() + n);
@@ -1001,7 +1001,7 @@ void Creature::usePotion(Item *item) {
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::MP:
-      n = item->getRpgItem()->getPotionPower();
+      n = item->getRpgItem()->getPotionPower() + item->getLevel();
       if(n + getMp() > getMaxMp())
         n = getMaxMp() - getMp();
       setMp(getMp() + n);
@@ -1019,7 +1019,7 @@ void Creature::usePotion(Item *item) {
 
         // add calendar event to remove armor bonus
         // (format : sec, min, hours, days, months, years)
-        Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
+        Date d(0, item->getRpgItem()->getPotionTime() + item->getLevel(), 0, 0, 0, 0); 
         Event *e = 
         new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
                                   d, this, item, session, 1);
@@ -1039,7 +1039,7 @@ void Creature::usePotion(Item *item) {
 
     // add calendar event to remove armor bonus
     // (format : sec, min, hours, days, months, years)
-    Date d(0, item->getRpgItem()->getPotionTime(), 0, 0, 0, 0); 
+    Date d(0, item->getRpgItem()->getPotionTime() + item->getLevel(), 0, 0, 0, 0); 
     Event *e = 
     new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
                               d, this, item, session, 1);
@@ -1419,16 +1419,11 @@ void Creature::resurrect( int rx, int ry ) {
 // add exp after killing a creature
 // only called for characters
 int Creature::addExperience(Creature *creature_killed) {
-  int n = creature_killed->level - getLevel();
-  if( n < 1 ) n = 1;
-  float m;
-  if(creature_killed->isMonster()) {
-    m = (float)(creature_killed->getMonster()->getHp()) / 2.0f;
-  } else {
-    m = (float)(creature_killed->getLevel() * 10) / 2.0f;
-  }
-  int delta = n * 10 * (int)((m * rand()/RAND_MAX) + m);
-  return addExperience(delta);
+	int n = ( creature_killed->level + 1 ) * 25;
+	// extra for killing higher level creatures
+	int bonus = ( creature_killed->level - getLevel() );
+	if( bonus > 0 ) n += bonus * 10;
+  return addExperienceWithMessage( n );
 }
 
 /**
