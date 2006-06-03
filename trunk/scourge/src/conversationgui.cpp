@@ -86,9 +86,9 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   // sage
   cards->createLabel( x, y + 13, "Sage:", Constants::NPC_TYPE_SAGE );  
-  identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, "Identify Item", Constants::NPC_TYPE_SAGE );
-  uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, "Remove Curse", Constants::NPC_TYPE_SAGE );
-  rechargeButton = cards->createButton( x + 280, y, x + 380, y + 20, "Recharge Item", Constants::NPC_TYPE_SAGE );
+  identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, "Id Item", Constants::NPC_TYPE_SAGE );
+  uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, "UnCurse", Constants::NPC_TYPE_SAGE );
+  rechargeButton = cards->createButton( x + 280, y, x + 380, y + 20, "Recharge", Constants::NPC_TYPE_SAGE );
 
   // healer
   cards->createLabel( x, y + 13, "Healer:", Constants::NPC_TYPE_HEALER );  

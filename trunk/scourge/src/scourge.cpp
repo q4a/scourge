@@ -2406,9 +2406,9 @@ void Scourge::createBoardUI() {
                                                 BOARD_GUI_WIDTH - 260,
                                                 BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 210 - 10, "" );
   boardWin->addWidget(missionDescriptionLabel);
-  playMission = new Button(5, 5, 105, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+  playMission = new Button(5, 5, 125, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);
-  closeBoard = new Button(110, 5, 210, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::CLOSE_LABEL));
+  closeBoard = new Button(130, 5, 250, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::CLOSE_LABEL));
   boardWin->addWidget(closeBoard);
 }
 
