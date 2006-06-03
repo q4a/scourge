@@ -114,13 +114,13 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   } else if( widget == infoButtonA &&listA->getSelectedLineCount() ) {
     scourge->getInfoGui()->
     setItem( listA->getSelectedItem( 0 ), 
-             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
+             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM ) );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == infoButtonB && listB->getSelectedLineCount() ) {
     scourge->getInfoGui()->
     setItem( listB->getSelectedItem( 0 ), 
-             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM_SKILL ) );
+             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM ) );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == listA || widget == listB ) {

@@ -198,7 +198,7 @@ void SpellCaster::viewInfo() {
   if(item) {
     if(!battle->getSession()->getGameAdapter()->isHeadless()) 
       battle->getSession()->getGameAdapter()->showItemInfoUI( item, 
-                                                              creature->getSkill(Skill::IDENTIFY_ITEM_SKILL) +
+                                                              creature->getSkill(Skill::IDENTIFY_ITEM) +
                                                               creature->getSkill(spell->getSchool()->getSkill()) );
   } else {
     cerr << "*** Warning: implement ole' taffy for non-item targets!" << endl;
