@@ -45,7 +45,7 @@ using namespace std;
 
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
-#define AVAILABLE_SKILL_POINTS 15
+#define AVAILABLE_SKILL_POINTS 5
 #define LEVEL STARTING_PARTY_LEVEL
 
 typedef struct _Preset {
@@ -366,9 +366,9 @@ void PartyEditor::createCharUI( int n, CharacterInfo *info ) {
 																 320 - ( 30 + detailsHeight + 5 + 10 ) );
   info->skills->addSkillGroupFilter( SkillGroup::stats );
   cards->addWidget( info->skills->getWidget(), n );
-  info->skillAddButton = cards->createButton( col2X, 320, col2X + buttonWidth - 5, 340, " + ", n );
+  info->skillAddButton = cards->createButton( col2X, 320, col2X + buttonWidth - 5, 340, "Add", n );
   info->skillRerollButton = cards->createButton( col2X + buttonWidth, 320, col2X + buttonWidth * 2 - 5, 340, " Reroll ", n );
-  info->skillSubButton = cards->createButton( col2X + buttonWidth * 2, 320, col2X + buttonWidth * 3 - 5, 340, " - ", n );
+  info->skillSubButton = cards->createButton( col2X + buttonWidth * 2, 320, col2X + buttonWidth * 3 - 5, 340, "Del", n );
   info->skillDescription = new ScrollingLabel( col2X, 350, skillColWidth, 100, "" );
   cards->addWidget( info->skillDescription, n );
 
@@ -489,22 +489,22 @@ void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
     // add a weapon anyone can wield
     int n = (int)(5.0f * rand()/RAND_MAX);
     switch(n) {
-    case 0: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Smallbow"), LEVEL ), true); break;
-    case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"), LEVEL ), true); break;
-    case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"), LEVEL ), true); break;
-    case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"), LEVEL )); break;
-    case 4: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff"), LEVEL ), true); break;
+    case 0: pc[i]->addInventory(scourge->getSession()->newItem( RpgItem::getItemByName("Smallbow"), LEVEL, NULL, true ), true); break;
+    case 1: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"), LEVEL, NULL, true ), true); break;
+    case 2: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"), LEVEL, NULL, true ), true ); break;
+    case 3: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"), LEVEL, NULL, true ), true ); break;
+    case 4: pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff"), LEVEL, NULL, true ), true ); break;
     }
     int invIndex = 0;
     pc[i]->equipInventory( invIndex++ );
   
     // add some armor
     if(0 == (int)(4.0f * rand()/RAND_MAX)) {
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet"), LEVEL ), true);
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet"), LEVEL, NULL, true ), true);
       pc[i]->equipInventory( invIndex++ );
     }
     if(0 == (int)(3.0f * rand()/RAND_MAX)) {
-      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler"), LEVEL ), true);
+      pc[i]->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler"), LEVEL, NULL, true ), true);
       pc[i]->equipInventory( invIndex++ );
     }
     
