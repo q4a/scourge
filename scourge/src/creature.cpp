@@ -1498,7 +1498,7 @@ void Creature::monsterInit() {
   this->level = monster->getLevel();
 
 
-	//cerr << "Creature: " << monster->getType() << endl;
+	//cerr << "------------------------------------" << endl << "Creature: " << monster->getType() << endl;
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 
     //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
@@ -1518,11 +1518,23 @@ void Creature::monsterInit() {
 			n = (int)( ( n / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
 								 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
 		}
+
+		// special: adjust magic resistance... makes game too hard otherwise
+		if( i == Skill::RESIST_AWARENESS_MAGIC ||
+				i == Skill::RESIST_CONFRONTATION_MAGIC ||
+				i == Skill::RESIST_DECEIT_MAGIC ||
+				i == Skill::RESIST_HISTORY_MAGIC ||
+				i == Skill::RESIST_LIFE_AND_DEATH_MAGIC ||
+				i == Skill::RESIST_NATURE_MAGIC ) {
+			n /= 2;
+		}
+
+		// apply monster settings
 		int minSkill = monster->getSkillLevel( Skill::skills[i]->getName() );
 		if( minSkill > n ) n = minSkill;
-
-		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << n << endl;
+		
     setSkill( i, n );
+		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
   }
 
   // equip starting inventory

@@ -126,7 +126,7 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
       int itemIndex = list->getSelectedLine();  
       if(itemIndex > -1) {
         Item *item = container->getContainedItem(itemIndex);
-        scourge->getInfoGui()->setItem( item, scourge->getParty()->getPlayer()->getSkill(Skill::IDENTIFY_ITEM_SKILL) );
+        scourge->getInfoGui()->setItem( item, scourge->getParty()->getPlayer()->getSkill(Skill::IDENTIFY_ITEM) );
         if(!scourge->getInfoGui()->getWindow()->isVisible()) 
           scourge->getInfoGui()->getWindow()->setVisible( true );
       }
