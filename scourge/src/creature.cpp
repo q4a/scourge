@@ -1433,7 +1433,7 @@ int Creature::addExperience(Creature *creature_killed) {
 int Creature::addExperience(int delta) {
   int n = delta;
   experience += n;
-  if( exp < 0 ) {
+  if( experience < 0 ) {
     n = experience;
     experience = 0;
   }

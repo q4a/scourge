@@ -32,6 +32,9 @@
 class Session;
 class Creature;
 class Window;
+class Creature;
+class Item;
+class Scourge;
 
 class CharacterInfoUI : public WidgetView {
 private:
