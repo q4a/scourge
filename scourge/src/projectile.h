@@ -53,6 +53,7 @@ class Projectile : public RenderedProjectile {
   bool seeker;
   Uint32 timeToLive;
 	bool reachedTarget;
+  int casterLevel;
 
   static Uint32 lastProjectileTick;
   
@@ -66,6 +67,9 @@ class Projectile : public RenderedProjectile {
 
   // return true when out of moves
   bool move();
+  
+  inline void setCasterLevel( int n ) { casterLevel = n; }
+  inline int getCasterLevel() { return casterLevel; }
 
   inline int getStepCount() { return sx.size(); }
   inline float getX( int index ) { return( index < 0 ? sx[0] : sx[ index ] ); }

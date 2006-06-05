@@ -34,16 +34,17 @@ using namespace std;
   In the future we can employ something more sophisticated than these if structures...
  */
 
-SpellCaster::SpellCaster(Battle *battle, Spell *spell, bool projectileHit) {
+SpellCaster::SpellCaster( Battle *battle, Spell *spell, bool projectileHit, int level ) {
   this->battle = battle;
   this->spell = spell;
   this->projectileHit = projectileHit;
+  this->level = level;
 
   Creature *creature = battle->getCreature();
   
 	// calculate spell's power (0-100)
 	// Used only for HP/AC restore spells
-  power = creature->getLevel() + 
+  power = level + 
 		creature->getSkill( Skill::LUCK ) + 
 		( 30.0f * rand() / RAND_MAX );
 }
@@ -225,7 +226,7 @@ void SpellCaster::increaseAC() {
   int n = spell->getAction();
   n += (int)((((float)n / 100.0f) * power) * rand()/RAND_MAX);
 
-  int timeInMin = 15 + ( creature->getLevel() / 2 );
+  int timeInMin = 15 + ( level / 2 );
 
   //  cerr << "increaseAC: points=" << n << " time=" << timeInMin << " min-s." << endl;
 
@@ -253,7 +254,7 @@ Projectile *SpellCaster::launchProjectile( int count, bool stopOnImpact, Project
   // (for missiles it means how many can be in the air at once.)
   int n = count;
   if( n <= 0 ) {
-    n = creature->getLevel();
+    n = level;
     if( n < 1 ) n = 1;
   }
 
@@ -284,8 +285,9 @@ Projectile *SpellCaster::launchProjectile( int count, bool stopOnImpact, Project
   if( !p ) {
     // max number of projectiles in the air
     // FIXME: do something... 
+  } else {
+    p->setCasterLevel( level );
   }
-
   return p;
 }
 
@@ -294,7 +296,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 
   // roll for the spell damage
   float damage = 0;
-  for(int i = 0; i < ( creature->getLevel() / 2 ); i++) {
+  for(int i = 0; i < ( level / 2 ); i++) {
     damage += spell->getAction();
 		if( !multiplyByLevel ) break;
   }
@@ -325,7 +327,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
           creature->getTargetCreature()->getName(),
           spell->getName());
   battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
-  if(resistance > 0) {
+  if( resistance > 0 && !lowDamage ) {
     sprintf(msg, "%s resists the spell with %d.", 
             creature->getTargetCreature()->getName(),
             resistance);
@@ -339,7 +341,6 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage( damage, 
-                      //spell->getAction() * creature->getLevel(), 
                       spell->getEffect(),
                       true, delay );
 }
@@ -365,7 +366,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       }
     }
   } else if(spell->getTargetType() == GROUP_TARGET) {
-    int radius = battle->getCreature()->getLevel() * 2;
+    int radius = level * 2;
     if(radius > 15) radius = 15;
     if(radius < 2) radius = 2;
 //    cerr << "radius=" << radius << endl;
@@ -428,7 +429,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       }
     }
 
-    int timeInMin = 5 * battle->getCreature()->getLevel();
+    int timeInMin = 5 * level;
     if(protectiveItem) timeInMin /= 2;
     creature->startEffect(spell->getEffect(), (Constants::DAMAGE_DURATION * 4));  
 
@@ -567,7 +568,7 @@ int SpellCaster::getRadius( int spellEffectSize, float *sx, float *sy ) {
   selectedRadius += toint( battle->getCreature()->getShape()->getWidth() / 2.0f + tw / 2.0f + spellEffectSize );
 
   // cap the selected radius
-  int radius = battle->getCreature()->getLevel() * 2;
+  int radius = level * 2;
   if(radius > 15) radius = 15;
   if(radius < 2) radius = 2;
   

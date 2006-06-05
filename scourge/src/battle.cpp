@@ -651,12 +651,15 @@ void Battle::useSkill() {
 }
 
 void Battle::castSpell( bool alwaysSucceeds ) {
+  int casterLevel;
   // use up some MP (not when using a scroll)
   if(!creature->getActionItem()) {
     int n = creature->getMp() - creature->getActionSpell()->getMp();
     if(n < 0) n = 0;
     creature->setMp( n );
+    casterLevel = creature->getLevel();
   } else {    
+    casterLevel = creature->getActionItem()->getLevel();
     // try to destroy the scroll or use up a charge
     int itemIndex = creature->findInInventory(creature->getActionItem());
     if(itemIndex > -1) {
@@ -691,7 +694,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 
   // spell succeeds?
   // FIXME: use stats like IQ here to modify spell success rate...
-  SpellCaster *sc = new SpellCaster(this, creature->getActionSpell(), false);
+  SpellCaster *sc = new SpellCaster( this, creature->getActionSpell(), false, casterLevel );
 
   /* 
     apply state_mods:
@@ -805,7 +808,12 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *tar
   } else if(proj->getSpell()) {
 //    battle->spell = proj->getSpell();
 //    battle->castSpell();
-    SpellCaster *sc = new SpellCaster(battle, proj->getSpell(), true); 
+        
+    SpellCaster *sc = new SpellCaster( battle, 
+                                       proj->getSpell(), 
+                                       true, 
+                                       proj->getCasterLevel() );
+    
     sc->spellSucceeded();
     delete sc;
   }
@@ -830,7 +838,12 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
     battle->hitWithItem();
   } else if(proj->getSpell() && 
             proj->getSpell()->isLocationTargetAllowed()) {
-    SpellCaster *sc = new SpellCaster(battle, proj->getSpell(), true); 
+    
+    SpellCaster *sc = new SpellCaster( battle, 
+                                       proj->getSpell(), 
+                                       true, 
+                                       proj->getCasterLevel() ); 
+    
     sc->spellSucceeded();
     delete sc;
   }
