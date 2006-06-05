@@ -45,14 +45,15 @@ void SpecialSkill::initSkills() {
     if( n == 'S' ) {
       // skip ':'
       fgetc( fp );
-      n = Constants::readLine( name, fp );
       n = Constants::readLine( line, fp );
-      strcpy( prereq, line + 1 );
+      strcpy( name, strtok( line, "," ) );
+      char *p = strtok( NULL, "," );
+      sprintf( prereq, "prereq%s", p );
+      sprintf( action, "action%s", p );
 
+	  p = strtok( NULL, "," );
       type = SpecialSkill::SKILL_TYPE_AUTOMATIC;
       event = SpecialSkill::SKILL_EVENT_ARMOR;
-      n = Constants::readLine( line, fp );
-      char *p = strtok( line + 1, "," );
       if( p ) {
         switch(*p) {
         case 'A': type = SpecialSkill::SKILL_TYPE_AUTOMATIC; break;
@@ -60,23 +61,21 @@ void SpecialSkill::initSkills() {
         default: cerr << "Unknown special skill type: " << (*p) << endl;
                 type = SpecialSkill::SKILL_TYPE_MANUAL;
         }
-        p = strtok( NULL, "," );
-        if( p ) {
-          switch(*p) {
-          case 'A': event = SpecialSkill::SKILL_EVENT_ARMOR; break;
-          case 'D': event = SpecialSkill::SKILL_EVENT_DAMAGE; break;
-          default: cerr << "Unknown special skill event: " << (*p) << endl;
-          event = SpecialSkill::SKILL_EVENT_ARMOR;
-          }
+        if( type == SpecialSkill::SKILL_TYPE_AUTOMATIC ) {
+	        p = strtok( NULL, "," );
+    	    if( p ) {
+        	  switch(*p) {
+	          case 'A': event = SpecialSkill::SKILL_EVENT_ARMOR; break;
+	          case 'D': event = SpecialSkill::SKILL_EVENT_DAMAGE; break;
+	          default: cerr << "Unknown special skill event: " << (*p) << endl;
+	          event = SpecialSkill::SKILL_EVENT_ARMOR;
+	          }
+	        }
         }
       }
 
-      n = Constants::readLine( line, fp );
-      strcpy( action, line + 1 );
-
       iconTileX = iconTileY = 0;
-      n = Constants::readLine( line, fp );      
-      p = strtok( line + 1, "," );
+      p = strtok( NULL, "," );
       if( p ) {
         iconTileX = atoi( p ) - 1;
         if( iconTileX < 0 ) iconTileX = 0;

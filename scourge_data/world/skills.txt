@@ -21,37 +21,42 @@
 # Fighter capabilities
 #######################################################
 
-S:Superior toughness
-P:prereqSuperTough
-T:A,A
-A:actionSuperTough
-I:1,10
+S:Superior toughness,SuperTough,A,A,1,10
 D:Having been born and raised for the art of combat, you are a
 D:warrior who shakes off pain that would cripple a lesser person.
 D:In battle your natural abilities serve as an extra layer of armor.
 D:The player must be an at least 3rd level fighter 
 D:or rogue type in order to use this capability.
 
-S:Missile Defense
-P:prereqMissileDefense
-T:A,A
-A:actionMissileDefense
-I:2,10
+S:Missile Defense,MissileDefense,A,A,2,10
 D:You specialize in missile weapons to the point of being able to
 D:automatically predict the path of high-speed, incoming missiles.
 D:This innate knowledge grants you an extra bonus when defending against
 D:missile weapons. The prerequisites for this capability is an at least
 D:3rd level player with the bow skill of 20.
 
-S:War-rage
-P:prereqWarrage
-T:A,D
-A:actionWarrage
-I:4,10
+S:War-rage,Warrage,A,D,4,10
 D:You rejoice in destruction of all who stand in your way. For every attack
 D:when using melee weapons, you cause extra damage resulting from your battle-
 D:lust. The prerequisites for this capability are having more than 30% melee
 D:skill.
+
+# P:Barbarian:Warrior,20
+S:Killer Blow,Killerblow,A,D,8,10
+D:Being a barbarian is hard work. Not only are you not allowed to read, bathe,
+D:or act in any way trans-gender, you also subsist on an unhealthy diet lacking in
+D:vitamins and fiber. Fortunately you may freely partake in many fittingly, barbaric
+D:activities such as the contest of killing an opponent with a single blow. This 
+D:training is useful on the battlefield where you may take a bonus to your attacks.
+D:Only barbarians are allowed to use this special capability.
+
+# C:Improved War-rage
+
+# P:Elite Berserker:Barbarian,30
+# C:Superior War-rage
+# C:Damaging Aura
+# C:Shadow Soul
+
 
 
 #######################################################
@@ -64,21 +69,13 @@ D:skill.
 # Sorcerer capabilities
 #######################################################
 
-S:Terminal Energy
-P:prereqTerminal
-T:A,A
-A:actionTerminal
-I:5,10
+S:Terminal Energy,Terminal,A,A,5,10
 D:A mage when caught in battle and reduced to very few hit points will
 D:gain back magic points in a final desperate act of survival. The prerequisite 
 D:to this capability is to be a magic user or student of lore teetering
 D:on the verge of death.
 
-S:Mystic Defense
-P:prereqMystic
-T:A,A
-A:actionMystic
-I:6,10
+S:Mystic Defense,Mystic,A,A,6,10
 D:Using this capability, a mage or student of lore
 D:can extend the effectiveness of the armor worn by connecting with the 
 D:mystic energies of the deity Xelphate. The prerequisite to this capability
@@ -88,21 +85,13 @@ D:is being a magic user and having at least 25% skill in History magic.
 # Healer capabilities
 #######################################################
 
-S:Natural Healing
-P:prereqNaturalHealing
-T:M
-A:actionNaturalHealing
-I:3,10
+S:Natural Healing,NaturalHealing,M,3,10
 D:Your closeness to nature imbues your being with raw energy. You can 
 D:innately transform this into a healing force and cure your minor ailments
 D:twice a day. The prerequisite for this capability is having at least 25 
 D:points of nature magic skill.
 
-S:Vitality Transfer
-P:prereqVitality
-T:M
-A:actionVitality
-I:7,10
+S:Vitality Transfer,Vitality,M,7,10
 D:When invoked, this capability attempts to balance everyone's health scores
 D:in your party. The healer temporarily joins everyone's fate and shares hit
 D:points from healthy party members with those who need it. It is rumored that

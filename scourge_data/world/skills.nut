@@ -50,7 +50,7 @@ function actionMissileDefense( creature ) {
 
   // is it a ranged weapon?
   if( weapon != null ) {
-    //print( "*** weapon=" + weapon.getName() + " ranged=" + weapon.isRanged().tostring() + "\n" );
+  	print( "*** weapon=" + weapon.getName() + " ranged=" + weapon.isRanged().tostring() + "\n" );
 
     if( weapon.isRanged() ) {
 
@@ -71,6 +71,7 @@ function actionMissileDefense( creature ) {
 // War-rage
 function prereqWarrage( creature ) {
   return( creature.getSkillByName( "MELEE_WEAPON" ) >= 30 ||
+  		  creature.getSkillByName( "LARGE_WEAPON" ) >= 30 ||
           creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 30 );
 }
 
@@ -86,10 +87,10 @@ function actionWarrage( creature ) {
   if( weapon != null ) {
     print( "*** weapon=" + weapon.getName() + "\n" );
     skillCheck = ( !( weapon.isRanged() ) && 
-                   creature.getSkill( weapon.getDamageSkill() ) >= 90 );
+                   creature.getSkill( weapon.getDamageSkill() ) >= 30 );
   } else {
     print( "*** hand-to-hand combat.\n" );
-    skillCheck = ( creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 90 );
+    skillCheck = ( creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 30 );
   }
 
   print( "*** skillCheck=" + skillCheck.tostring() + "\n" );
@@ -102,6 +103,17 @@ function actionWarrage( creature ) {
                                 "pts! (War-rage)" );
     }
   }
+}
+
+
+// **********************************************
+// Killer Blow
+function prereqKillerblow( creature ) {
+	return( creature.isOfRootClass( "Barbarian" ) );
+}
+
+function actionKillerblow( creature ) {
+	print( "In actionKillerblow\n" );
 }
 
 
