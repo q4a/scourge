@@ -86,6 +86,7 @@ Projectile::Projectile(Creature *creature, int x, int y, int w, int d,
 }
 
 void Projectile::commonInit() {
+  this->casterLevel = creature->getLevel();
 	this->reachedTarget = false;
   this->timeToLive = 0;
   this->sx.push_back( creature->getX() + (creature->getShape()->getWidth() / 2) );

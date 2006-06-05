@@ -40,10 +40,11 @@ class SpellCaster {
   Spell *spell;
   bool projectileHit;
   float power;
+  int level;
 
  public:
 
-  SpellCaster(Battle *battle, Spell *spell, bool projectileHit);
+  SpellCaster( Battle *battle, Spell *spell, bool projectileHit, int level );
   virtual ~SpellCaster();
   
   void spellFailed();
@@ -51,6 +52,7 @@ class SpellCaster {
   void spellSucceeded();
 
  protected:
+  inline int getLevel() { return level; }
   float getPower();
   void viewInfo();
   void increaseHP();
