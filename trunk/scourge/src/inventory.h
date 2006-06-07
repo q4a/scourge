@@ -19,6 +19,7 @@
 #define INVENTORY_H
 
 #include <iostream>
+#include <vector>
 #include "constants.h"
 #include "gui/window.h"
 #include "gui/button.h"
@@ -84,6 +85,7 @@ private:
 	GLuint *spellIcons;
 
 	// special skills ui
+	std::vector<SpecialSkill*> knownSpecialSkills;
 	Button *useSpecialButton, *storeSpecialButton;
 	ScrollingList *specialList;
 	ScrollingLabel *specialDescriptionLabel;
