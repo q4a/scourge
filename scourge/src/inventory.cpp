@@ -483,8 +483,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     //Spell *spell = getSelectedSpell();
     //if(spell) creature->setQuickSpell( 0, spell );
   } else if(widget == specialList) {
-    SpecialSkill *special = getSelectedSpecial();
-    if(special) showSpecialDescription(special);
+    showSpecialDescription( getSelectedSpecial() );
   } else if(widget == storeSpecialButton) {
     if( storeSpecialButton->isSelected() ) {
       storable = getSelectedSpecial();
@@ -916,27 +915,32 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
                          (const char**)schoolText, 
                          schoolColors);
     break;
-  case SPECIAL:
+	case SPECIAL:
+		knownSpecialSkills.clear();
     for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
       SpecialSkill *ss = SpecialSkill::getSpecialSkill(t);   
-      sprintf(specialText[t], "%s (%s)", 
-              ss->getName(), 
-              (ss->getType() == SpecialSkill::SKILL_TYPE_AUTOMATIC ? "A" : "M"));
-      specialIcons[t] = scourge->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ];
-      if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {
-        specialColor[t].r = 1;
-        specialColor[t].g = 1;
-        specialColor[t].b = 1;
-      } else {
-        specialColor[t].r = 0.5f;
-        specialColor[t].g = 0.5f;
-        specialColor[t].b = 0.5f;
-      }
+			if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {
+				sprintf(specialText[knownSpecialSkills.size()], "%s (%s)", 
+								ss->getName(), 
+								(ss->getType() == SpecialSkill::SKILL_TYPE_AUTOMATIC ? "A" : "M"));
+				specialIcons[knownSpecialSkills.size()] = scourge->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ];
+				if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {
+					specialColor[knownSpecialSkills.size()].r = 1;
+					specialColor[knownSpecialSkills.size()].g = 1;
+					specialColor[knownSpecialSkills.size()].b = 1;
+				} else {
+					specialColor[knownSpecialSkills.size()].r = 0.5f;
+					specialColor[knownSpecialSkills.size()].g = 0.5f;
+					specialColor[knownSpecialSkills.size()].b = 0.5f;
+				}
+				knownSpecialSkills.push_back( ss );
+			}
     }
-    specialList->setLines(SpecialSkill::getSpecialSkillCount(), 
+    specialList->setLines(knownSpecialSkills.size(), 
                           (const char**)specialText,
                           specialColor,
                           specialIcons);
+		showSpecialDescription( getSelectedSpecial() );
     break;
   case LOG:
     break;
@@ -1219,13 +1223,13 @@ SpecialSkill *Inventory::getSelectedSpecial() {
   //Creature *creature = scourge->getParty()->getParty(selected);
   SpecialSkill *ss = NULL;
   int n = specialList->getSelectedLine();
-  if(n != -1 && n < SpecialSkill::getSpecialSkillCount()) {
-    ss = SpecialSkill::getSpecialSkill(n);
+  if(n != -1 && n < (int)knownSpecialSkills.size() ) {
+    ss = knownSpecialSkills[ n ];
   }
   return ss;
 }
 
 void Inventory::showSpecialDescription(SpecialSkill *ss) {
-  specialDescriptionLabel->setText((char*)(ss->getDescription() ? ss->getDescription() : ""));
+	if( ss ) specialDescriptionLabel->setText((char*)(ss->getDescription() ? ss->getDescription() : ""));
 }
 
