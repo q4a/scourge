@@ -113,7 +113,7 @@ function prereqKillerblow( creature ) {
 }
 
 function actionKillerblow( creature ) {
-	print( "In actionKillerblow\n" );
+	print( "IMPLEMENT ME: In actionKillerblow\n" );
 }
 
 
