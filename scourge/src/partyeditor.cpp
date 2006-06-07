@@ -468,7 +468,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
     Character *c = Character::rootCharacters[ index ];
     pc[i] = new Creature( scourge->getSession(), c, 
                           strdup( s ), 
-                          info[i].modelIndex, false );
+                          info[i].modelIndex );
     pc[i]->setLevel( LEVEL ); 
     pc[i]->setExp(0);
     pc[i]->setHp();

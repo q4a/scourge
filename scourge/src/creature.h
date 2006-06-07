@@ -128,7 +128,6 @@ class Creature : public RenderedCreature {
   int deityIndex;
 
   Storable *quickSpell[12];
-  bool loaded;
 
   NpcInfo *npcInfo;
 
@@ -149,8 +148,8 @@ class Creature : public RenderedCreature {
   static const int CROSS_FORMATION = 5;
   static const int FORMATION_COUNT = 6;
   
-  Creature(Session *session, Character *character, char *name, int character_model_info_index, bool loaded);
-  Creature(Session *session, Monster *monster, GLShape *shape, bool loaded);
+  Creature(Session *session, Character *character, char *name, int character_model_info_index);
+  Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
 
   bool isPathToTargetCreature();
