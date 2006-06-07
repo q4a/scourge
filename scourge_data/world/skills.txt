@@ -1,10 +1,11 @@
 # Special skills
 # Key:
-# S:Name of special skill
-# P:name of Squirrel function called for prerequisite it should return a true/false value
-# T:type, event
-# A:name of Squirrel function called for activating the skill
-# I:icon tile x,y (from spells.bmp)
+# S:name,squirrel name,type[,event],icon_x,icon_y
+# where:
+# squirrel name is the postfix part of a two Squirrel functions:
+# prereq<squirrel name> is called for the prerequisite it should return a true/false value
+# action<squirrel name> is called to performt the action,when activating the skill
+# icon tile x,y are from spells.bmp
 # D:Description of skill (multiple lines)
 #
 # type is: (M-manual,A-automatic)

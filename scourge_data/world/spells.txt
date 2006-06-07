@@ -241,7 +241,7 @@ P:Transmute poison,Poison Neutralizing,4,15,100,25,0,10,single,3,EFFECT_FLAMES,C
 W:sound/magic/teleport.wav
 D:Drawing upon the strength of the soul the caster fools the target creature's body into processing poison as if it were a harmless substance. 
 
-P:Blast of Fury,Blasting,5,22,350,20,1d4+1,10,group,7,EFFECT_BLAST,C,19,1,H
+P:Blast of Fury,Blasting,5,22,350,20,1d4+1,10,group,7,EFFECT_BLAST,C,7,2,H
 W:sound/magic/blinded.wav
 D:After some time spent in meditation upon pain and carnage, the caster unleashes
 D:her thought's physical manifestation as a wide cone of anti-matter fury.
