@@ -78,7 +78,7 @@ class Item : public RenderedItem, Storable {
   Session *session;	
 
 public:
-  Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false);
+  Item(Session *session, RpgItem *rpgItem, int level=1);
   ~Item();
 
   ItemInfo *save();
@@ -161,7 +161,7 @@ public:
   const char *isStorable();
 
  protected:
-  void commonInit( bool loading=false );
+  void commonInit();
   void describeMagic(char *s, char *itemName);
   
   DiceInfo *saveDice( Dice *dice );

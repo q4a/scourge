@@ -68,7 +68,7 @@ MonsterToughness monsterToughness[] = {
 
 #define roll(min, max) ( ( ( max - min ) * rand() / RAND_MAX ) + min )
 
-Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index, bool loaded) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
+Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = character;
   this->monster = NULL;
@@ -84,13 +84,12 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
-  this->loaded = loaded;
   this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->scale);
 //  if( !strcmp( name, "Alamont" ) ) ((MD2Shape*)shape)->setDebug( true );
   commonInit();  
 }
 
-Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool loaded) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
+Creature::Creature(Session *session, Monster *monster, GLShape *shape) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = NULL;
   this->monster = monster;
@@ -104,7 +103,6 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool load
   this->armorChanged = true;
   this->bonusArmor=0;
   this->shape = shape;
-  this->loaded = loaded;
   commonInit();
   monsterInit();
 }
@@ -318,8 +316,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
     creature = new Creature( session, 
                              Character::getCharacterByName((char*)info->character_name), 
                              strdup((char*)info->name),
-                             info->character_model_info_index,
-                             true );
+                             info->character_model_info_index );
   }
 //  cerr << "*** LOAD: creature=" << info->name << endl;
   creature->setDeityIndex( info->deityIndex );
@@ -1489,16 +1486,10 @@ int Creature::addMoney(Creature *creature_killed) {
 
 void Creature::monsterInit() {
 
-  // edited maps saved all this stuff already
-  if( loaded ) {
-    //cerr << "Skipping monsterInit(): creature was loaded" << endl;
-    return;
-  }
-
   this->level = monster->getLevel();
 
 
-	//cerr << "------------------------------------" << endl << "Creature: " << monster->getType() << endl;
+	cerr << "------------------------------------" << endl << "Creature: " << monster->getType() << endl;
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 
     //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
@@ -1534,7 +1525,7 @@ void Creature::monsterInit() {
 		if( minSkill > n ) n = minSkill;
 		
     setSkill( i, n );
-		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
+		cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
   }
 
   // equip starting inventory

@@ -294,8 +294,7 @@ Creature *CombatTest::createCharacter( Session *session,
     new Creature( session, 
                   character, 
                   strdup( name ), 
-                  0, 
-                  false );
+                  0 );
   //c->setDeityIndex( info[i].deityType->getSelectedLine() );
   c->setLevel( level ); 
   c->setExp( 0 );

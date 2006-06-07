@@ -355,7 +355,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   // to change (maybe that's a good thing too... same logic for party and monsters)
   pc[0] = new Creature(session, 
                        Character::getRandomCharacter(), 
-                       strdup("Alamont"), 0, false);
+                       strdup("Alamont"), 0);
   pc[0]->setLevel(level); 
   pc[0]->setExp();
   pc[0]->setHp();
@@ -366,7 +366,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
 
   pc[1] = new Creature(session, 
                        Character::getRandomCharacter(), 
-                       strdup("Barlett"), 0, false);
+                       strdup("Barlett"), 0);
   pc[1]->setLevel(level); 
   pc[1]->setExp();
   pc[1]->setHp();
@@ -378,7 +378,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
 
   pc[2] = new Creature(session, 
                        Character::getRandomCharacter(), 
-                       strdup("Corinus"), 0, false);
+                       strdup("Corinus"), 0);
   pc[2]->setLevel(level); 
   pc[2]->setExp();
   pc[2]->setHp();
@@ -393,7 +393,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
 
   pc[3] = new Creature(session, 
                        Character::getRandomCharacter(), 
-                       strdup("Dialante"), 0, false);
+                       strdup("Dialante"), 0);
   pc[3]->setLevel(level); 
   pc[3]->setExp();
   pc[3]->setHp();

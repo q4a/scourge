@@ -218,7 +218,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
     itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
   }
   if( itemLevel < 1 ) itemLevel = 1;
-  Item *item = new Item(this, rpgItem, itemLevel, loading);
+  Item *item = new Item(this, rpgItem, itemLevel);
   if(spell) item->setSpell(spell);
   newItems.push_back( item );
   if( rpgItem->isSpecial() ) setSpecialItem( rpgItem, item );
@@ -227,7 +227,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
 
 // creatures created for the mission
 Creature *Session::newCreature(Monster *monster, GLShape *shape, bool loaded) {
-  Creature *c = new Creature(this, monster, shape, loaded);
+  Creature *c = new Creature(this, monster, shape);
   creatures.push_back( c );
   return c;
 }
