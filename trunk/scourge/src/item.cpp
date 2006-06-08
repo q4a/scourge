@@ -25,7 +25,7 @@ using namespace std;
 
 map<int, vector<string> *> Item::soundMap;
 
-Item::Item(Session *session, RpgItem *rpgItem, int level) {
+Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
   this->session = session;
   this->rpgItem = rpgItem;
   this->level = level;
@@ -43,7 +43,7 @@ Item::Item(Session *session, RpgItem *rpgItem, int level) {
   this->showCursed = false;
   sprintf(this->itemName, "%s", rpgItem->getName());
 
-  commonInit();
+  commonInit( loading );
 
   currentCharges = rpgItem->getMaxCharges();
   weight = rpgItem->getWeight();
@@ -574,7 +574,7 @@ bool Item::decrementCharges(){
 
 
 
-void Item::commonInit() {
+void Item::commonInit( bool loading ) {
 
   // --------------
   // regular attribs
@@ -608,7 +608,7 @@ void Item::commonInit() {
   stateModSet = false;
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) stateMod[i] = 0;
 
-  if( rpgItem->isEnchantable() ) {
+  if( rpgItem->isEnchantable() && !loading ) {
     // roll for magic
     int n = (int)( ( 200.0f - ( level * 1.5f ) ) * rand()/RAND_MAX );
     if( n < 5 ) enchant( Constants::DIVINE_MAGIC_ITEM );

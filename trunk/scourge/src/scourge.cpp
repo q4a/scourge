@@ -411,9 +411,11 @@ void Scourge::startMission() {
       missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
       bool loaded = false;
       if( getSession()->getCurrentMission()->isEdited() ) {
+				//cerr << "EDITED" << endl;
         // try to load the edited map
         dg = NULL;
         bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
+				//cerr << "lastLevel=" << lastLevel << " currentStory=" << currentStory << " depth=" << getSession()->getCurrentMission()->getDepth() << endl;
         if( lastLevel ) {
           vector< RenderedItem* > items;
           vector< RenderedCreature* > creatures;
@@ -432,8 +434,10 @@ void Scourge::startMission() {
           for( int i = 0; i < (int)items.size(); i++ ) {
             Item *item = (Item*)( items[i] );
             for( int t = 0; t < (int)getSession()->getCurrentMission()->getItemCount(); t++ ) {
+							//cerr << "\tLooking for item: " << getSession()->getCurrentMission()->getItem( t )->getName() << endl;
               if( getSession()->getCurrentMission()->getItem( t ) == item->getRpgItem() &&
                   used.find( t ) == used.end() ) {
+								//cerr << "\t\tAdding item " << item->getName() << endl;
                 getSession()->getCurrentMission()->
                   addItemInstance( item, item->getRpgItem() );
                 used.insert( t );
@@ -445,8 +449,10 @@ void Scourge::startMission() {
             Creature *creature = (Creature*)( creatures[i] );
             if( creature->getMonster() ) {
               for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
+								//cerr << "\tLooking for creature: " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
                 if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
                     used.find( t ) == used.end() ) {
+									//cerr << "\t\tAdding creature " << creature->getName() << endl;
                   getSession()->getCurrentMission()->
                     addCreatureInstanceMap( creature, creature->getMonster() );
                   used.insert( t );
