@@ -173,7 +173,7 @@ N:Remember to journey to $Thuzgol and talk to $Orhithales.
 I:Dragonscale armor
 
 T:Chapter 5: A brief visit with Mycotharsius
-S:8,4,tower
+S:8,2,tower
 D:Our agents have located Mycotharsius in the cellars of a peaceful monastery
 D:called the "the Tower", near the city of Orn. You must journey here and confront him. Before ridding
 D:the world of him for good, find out as much as you can about why he hired
@@ -185,7 +185,7 @@ Y:I sent Sabien the map of the $Abyss you found earlier and next you must visit 
 Y:ask how we can find $Mothrazu. I fear the end of all civilization may be bad for business...
 Y:I marked Sabien's lair on the map posted on the mission board.
 N:You still have to journey to the monastery of the Tower and defeat $Mycotharsius.
-C:Mycotharsius the Mad
+S:Kill Mycotharsius the Mad
 
 T:Chapter 6: Sabien's Revelations
 S:10,3,library

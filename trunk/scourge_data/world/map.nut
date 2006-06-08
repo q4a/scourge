@@ -28,6 +28,7 @@ function testMyco() {
 function creatureDeath( creature ) {
   if( creature.getName() == "Mycotharsius the Mad" ) {
     // Myco. starts a conversation before he dies, revealing much...
+		scourgeGame.getMission().setCompleted( true );
     creature.startConversation( creature );
   }
   return true;
