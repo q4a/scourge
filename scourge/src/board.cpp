@@ -549,7 +549,7 @@ bool Mission::itemFound(Item *item) {
 bool Mission::creatureSlain(Creature *creature) {
   if( !completed ) {
     if( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() ) {
-      Monster *monster = monsterInstanceMap[ creature ];
+      Monster *monster = monsterInstanceMap[ creature ];			
       if( creatures.find( monster ) != creatures.end() ) {
         creatures[ monster ] = true;
         checkMissionCompleted();

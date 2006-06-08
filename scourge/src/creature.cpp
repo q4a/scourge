@@ -1489,7 +1489,7 @@ void Creature::monsterInit() {
   this->level = monster->getLevel();
 
 
-	cerr << "------------------------------------" << endl << "Creature: " << monster->getType() << endl;
+	//cerr << "------------------------------------" << endl << "Creature: " << monster->getType() << endl;
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 
     //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
@@ -1525,7 +1525,7 @@ void Creature::monsterInit() {
 		if( minSkill > n ) n = minSkill;
 		
     setSkill( i, n );
-		cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
+		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
   }
 
   // equip starting inventory
