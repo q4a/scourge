@@ -989,6 +989,21 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
         strcpy(objectiveText[t], "");
       }
+      if( !objectiveCount ) {
+        objectiveCount = 1;
+        sprintf( objectiveText[0], "Special. %s", 
+                 ( scourge->getSession()->getCurrentMission()->isCompleted() ?
+                   "(completed)" : "(not yet done)" ) );
+        if( scourge->getSession()->getCurrentMission()->isCompleted() ) {
+          missionColor[0].r = 0.2f;
+          missionColor[0].g = 0.7f;
+          missionColor[0].b = 0.2f;
+        } else {
+          missionColor[0].r = 0.7f;
+          missionColor[0].g = 0.2f;
+          missionColor[0].b = 0.2f;
+        }
+      }
     } else {
       strcpy(missionText, "");
       for(int t = 0; t < MAX_INVENTORY_SIZE; t++) {

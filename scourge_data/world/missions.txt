@@ -175,7 +175,7 @@ I:Dragonscale armor
 T:Chapter 5: A brief visit with Mycotharsius
 S:8,2,tower
 D:Our agents have located Mycotharsius in the cellars of a peaceful monastery
-D:called the "the Tower", near the city of Orn. You must journey here and confront him. Before ridding
+D:called "the Tower", near the city of Orn. You must journey here and confront him. Before ridding
 D:the world of him for good, find out as much as you can about why he hired
 D:the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid however,
 D:that his failures made Mycotharsius quite Mad. Therefore if all he can offer
@@ -195,7 +195,7 @@ D:him to explain its connection to Mothrazu. Additionally, try to get whatever i
 D:you can about the Guards of the Realm. Remember that Sabien was abducted by agents
 D:of Mothrazu before, so he is a key figure in solving this mystery whether he knows it or not.
 Y:Interesting... so $Sabien claims $Mothrazu is trying to enter the $Abyss? I have
-Y:read the notes he sent me and marked the location of the next $token on the $board.
+Y:read the notes he sent me and marked the location of the $tokens on the $board.
 N:Have you traveled to see $Sabien yet? I marked his library on the $board.
 S:Talk to Sabien
 
