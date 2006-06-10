@@ -136,12 +136,12 @@ of a threatening letter they sent, in order to stop us from snooping after the $
 reads: "Stay out of the business of the Order,\
 unless you want us to murder, those close to you and then, send poems of the same pen." Aaagh! I\
 don't think I can take much more of this!
-V:Guards,Realm;The Guards of the Realm was the peace-keeping force of the land a long time ago.\
+V:Guardians,Realm;The Guardians of the Realm was the peace-keeping force of the land a long time ago.\
 Unfortunately, they no longer exist: they were all $killed in the final battle against the forces\
 of darkness eons ago.
-V:end,killed;The $Guards of the Realm fought and died valiantly at the fords of the great river\
+V:end,killed;The $Guardians of the Realm fought and died valiantly at the fords of the great river\
 Manar in a cataclysmic final battle against the forces of darkness. I don't know much about this\
-great conflict, save that none of the $Guards survived.
+great conflict, save that none of the $Guardians survived.
 V:Orhithales;The ancient sage Orhithales lives in $Thuzgol.
 V:Thuzgol;The great dwarven city of Thuzgol is home to the Groez-Duil: the mountain dwarves.
 V:Mothrazu;Sorry, I haven't a clue... Ask $Melathor, she sounds to be his kind... or better yet,\

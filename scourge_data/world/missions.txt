@@ -165,7 +165,7 @@ D:the Groez-Duil, as among them the Order is thought of as mystic heroes,
 D:legends from the golden age of the dwarves. Orhithales you can trust. He understands
 D:the true nature of the Order and he might be able to shed light on their connection
 D:to Mycotharsius.
-Y:Dragonscale armor?! I have not see one of these since the $end of the $Guards of the
+Y:Dragonscale armor?! I have not see one of these since the $end of the $Guardians of the
 Y:Realm. I'll have to think about what to make of this... Good work nevertheless! It's
 Y:good to hear from $Orhithales again! We were quite close for a long time, perhaps he
 Y:told you.
@@ -192,7 +192,7 @@ S:10,3,library
 D:You must call upon our old friend Sabien. He already knows the purpose of your visit,
 D:because I sent him the map fragment of the Abyss you found earlier. Be sure to ask
 D:him to explain its connection to Mothrazu. Additionally, try to get whatever information
-D:you can about the Guards of the Realm. Remember that Sabien was abducted by agents
+D:you can about the Guardians of the Realm. Remember that Sabien was abducted by agents
 D:of Mothrazu before, so he is a key figure in solving this mystery whether he knows it or not.
 Y:Interesting... so $Sabien claims $Mothrazu is trying to enter the $Abyss? I have
 Y:read the notes he sent me and marked the location of the $tokens on the $board.

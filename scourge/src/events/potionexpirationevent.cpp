@@ -87,3 +87,7 @@ void PotionExpirationEvent::execute() {
   }
 }
 
+bool PotionExpirationEvent::doesReferenceCreature( Creature *creature ) {
+	return( this->creature == creature ? true : false );
+}
+

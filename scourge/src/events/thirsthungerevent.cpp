@@ -104,3 +104,8 @@ void ThirstHungerEvent::execute(){
 
 ThirstHungerEvent::~ThirstHungerEvent(){
 }
+
+bool ThirstHungerEvent::doesReferenceCreature( Creature *creature ) {
+	return( this->creature == creature ? true : false );
+}
+

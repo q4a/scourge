@@ -44,6 +44,8 @@ public:
   ThirstHungerEvent();
   virtual ~ThirstHungerEvent();  
 
+	virtual bool doesReferenceCreature( Creature *creature );
+
   inline const char *getName() { return "ThirstHungerEvent"; }
   
 };

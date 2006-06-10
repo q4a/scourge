@@ -46,6 +46,8 @@ public:
   StateModExpirationEvent();
   virtual ~StateModExpirationEvent();  
 
+	virtual bool doesReferenceCreature( Creature *creature );
+
   inline const char *getName() { return "StateModExpirationEvent"; }
   
 };

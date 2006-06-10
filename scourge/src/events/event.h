@@ -26,7 +26,8 @@
   *@author Daroth-U
   */
  
-class Date;  
+class Date;
+class Creature;
     
 class Event  {
 
@@ -75,6 +76,11 @@ public:
   Date getTimeOut()   { return timeOut;   }
   void setEventDate(Date d) { eventDate = d; }   
   void scheduleDeleteEvent();
+
+	// does this event reference this creature?
+	virtual inline bool doesReferenceCreature( Creature *creature ) {
+		return false;
+	};
 
   virtual inline const char *getName() = 0;
   
