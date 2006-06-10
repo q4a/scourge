@@ -178,6 +178,10 @@ void Creature::commonInit() {
 }
 
 Creature::~Creature(){
+	// cancel this creature's events
+	session->getParty()->getCalendar()->cancelEventsForCreature( this );
+
+	// now delete the creature
   if(this->character) free( name );
   session->getGameAdapter()->removeBattle(battle);
   delete battle;

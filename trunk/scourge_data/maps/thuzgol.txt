@@ -139,12 +139,12 @@ misplaced my maps of the city and don't know where they stairs leading to the $c
 Good luck finding them!
 V:dragonscale,armor;Very interesting! How very, very fascinating. No, this is not the armor of\
 $Mycotharsius, make no mistake. This dragonscale armor was not made in these parts for oh...\
-1200 years now. It was once the mark of the $Guards of the Realm. The fact that you found one\
+1200 years now. It was once the mark of the $Guardians of the Realm. The fact that you found one\
 below the city of $Thuzgol means either that it's a portions of its $history I have not come\
 upon so far, but more likely that the armor was brought here from $someplace else.
-V:guards,realm;I only vaguely know of the Guards of the Realm. I believe a long time ago\
+V:Guardians,realm;I only vaguely know of the Guardians of the Realm. I believe a long time ago\
 they were a military organization assembled to protect peace in the land. It was rumored that\
-the head of the Guards was a supreme entity, perhaps even of divine nature...
+the head of the Guardians was a supreme entity, perhaps even of divine nature...
 V:someplace;I don't know from where this armor came to rest in the $catacombs. You should ask this\
 of $Uzudil when you see him next. I suspect if he doesn't know what to make of it, he'd know who\
 does.

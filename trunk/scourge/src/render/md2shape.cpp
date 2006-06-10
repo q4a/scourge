@@ -221,6 +221,7 @@ float MD2Shape::ReturnCurrentTime(int nextFrame)
     //float speed = ANIMATION_SPEED;
     
     float speed = (7.0f - (7.0f * (creatureSpeed / 10.0f))) + 3.0f;
+		//float speed = ( 10.0f - creatureSpeed );
     if( speed < 2.0f ) speed = 2.0f;
     if( speed > 10.0f ) speed = 10.0f;
 

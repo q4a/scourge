@@ -55,6 +55,7 @@ class Calendar {
   void scheduleEvent(Event *e);
   void reset(bool resetTime=true);
   void cancelEvent(Event *e);
+	void cancelEventsForCreature( Creature *creature );
 
   // return date by value to avoid modification by other classes
   inline Date getCurrentDate() { return currentDate; }

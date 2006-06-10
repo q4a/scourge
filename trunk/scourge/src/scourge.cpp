@@ -416,7 +416,20 @@ void Scourge::startMission() {
         dg = NULL;
         bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
 				//cerr << "lastLevel=" << lastLevel << " currentStory=" << currentStory << " depth=" << getSession()->getCurrentMission()->getDepth() << endl;
-        if( lastLevel ) {
+        
+				
+				if( lastLevel ) {
+
+					/**
+					 * If it's the last edited level, add mission items and monsters.
+					 * 
+					 * FIXME: this is very easy to break code. Relying on the last level
+					 * is bad because:
+					 * 1. the algorithm might change (it has for random-levels)
+					 * 2. if edited level 2 contains the mission monster, but missions.txt claims
+					 *    there are 5 levels, the creature won't be marked as such. (e.g. Myco.)
+					 */
+
           vector< RenderedItem* > items;
           vector< RenderedCreature* > creatures;
           loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(),

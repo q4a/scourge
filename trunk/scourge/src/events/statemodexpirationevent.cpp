@@ -68,3 +68,7 @@ void StateModExpirationEvent::executeBeforeDelete() {
   creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
 }
 
+bool StateModExpirationEvent::doesReferenceCreature( Creature *creature ) {
+	return( this->creature == creature ? true : false );
+}
+

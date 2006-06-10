@@ -46,6 +46,7 @@ public:
   PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Session *session, int nbExecutionsToDo);
   PotionExpirationEvent();
   virtual ~PotionExpirationEvent();  
+	virtual bool doesReferenceCreature( Creature *creature );
 
   inline const char *getName() { return "PotionExpirationEvent"; }
   

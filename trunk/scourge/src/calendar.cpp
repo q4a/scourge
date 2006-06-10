@@ -17,6 +17,7 @@
 
 #include "calendar.h"
 #include "debug.h"
+#include "creature.h"
 
 using namespace std;
 
@@ -66,6 +67,17 @@ void Calendar::cancelEvent(Event *e) {
   for(int i = 0; i < (int)scheduledEvents.size(); i++) {
     if(scheduledEvents[i] == e) {
       e->scheduleDeleteEvent();
+      break;
+    }
+  }
+}
+
+// FIXME: O(n)
+void Calendar::cancelEventsForCreature( Creature *creature ) {
+	for( int i = 0; i < (int)scheduledEvents.size(); i++ ) {
+    if( scheduledEvents[i]->doesReferenceCreature( creature ) ) {
+			//cerr << "\t+++ Canceling event " << scheduledEvents[i]->getName() << " for " << creature->getName() << endl;
+      scheduledEvents[i]->scheduleDeleteEvent();
       break;
     }
   }
