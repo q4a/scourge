@@ -57,10 +57,10 @@ typedef struct _Preset {
 } Preset;
 
 Preset presets[] = {
-  { "Lezidor",     4, 4, 3, 0 }, // rogue
-  { "Kaz-Mokh",    1, 0, 1, 1 }, // fighter
-  { "Arcoraxe",    2, 1, 8, 15 }, // mage
-  { "Deiligiliam", 0, 2, 6, 7 }, // healer
+  { "Lezidor",     4, 4, 7, 0 }, // rogue
+  { "Kaz-Mokh",    1, 0, 8, 1 }, // fighter
+  { "Arcoraxe",    2, 1, 6, 15 }, // mage
+  { "Deiligiliam", 0, 2, 10, 7 }, // healer
 };
 
 // this is here to compile faster (otherwise shapepalette needs to be incl.)
