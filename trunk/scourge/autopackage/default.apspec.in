@@ -35,7 +35,6 @@ unprepareBuild
 [Imports]
 import <<EOF
 $source_dir/src/scourge
-$source_dir/../scourge_data
 $source_dir/assets/scourge.desktop
 $source_dir/assets/scourge.png
 EOF
@@ -50,8 +49,6 @@ require @freetype.org/freetype2 2.0
 [Install]
 # Put your installation script here
 installExe scourge
-installData scourge_data
-# chmod -R 755 $PREFIX/share/scourge_data
 installDesktop "Game/RolePlaying" scourge.desktop
 installIcon scourge.png
 
