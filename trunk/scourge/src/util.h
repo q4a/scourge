@@ -74,12 +74,13 @@ public:
   static void rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle);
 
   static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
-                        Sint16 dx, Sint16 dy, Sint16 dz,
-                        std::vector<Location> *pVector, 
-                        Map *map, 
-                        Creature *creature, 
-                        bool limitTime=false,
-                        bool ignoreCreatures=false );
+												Sint16 dx, Sint16 dy, Sint16 dz,
+												std::vector<Location> *pVector,
+												Map *map,
+												Creature *creature,
+												Creature *player,
+												int maxNodes,
+												bool ignoreParty );
 
   // some math functions
   static float dot_product(float v1[3], float v2[3]);
@@ -123,8 +124,13 @@ public:
 	 */
 	static bool isInFOV( float x, float y, float angle, float px, float py );
 
+	static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
+														 Creature *b, std::vector<Location> *bPath, int bStart );
+
 protected:
-  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Creature *creature, Map *map, bool ignoreCreatures=false );
+  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, 
+												 Creature *creature, Creature *player, Map *map, 
+												 bool ignoreCreatures=false );
 
 };
 

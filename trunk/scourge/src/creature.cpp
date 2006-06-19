@@ -31,6 +31,8 @@ using namespace std;
 
 //#define DEBUG_CAPABILITIES
 
+#define FAST_SPEED 1
+
 #define MOVE_DELAY 7
 
 // at this fps, the players step 1 square                     
@@ -77,7 +79,7 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->model_name = session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->model_name;
   this->skin_name = session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->skin_name;
   sprintf(description, "%s the %s", name, character->getName());
-  this->speed = 5; // start neutral speed
+  this->originalSpeed = this->speed = 5; // start neutral speed
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
   this->armor=0;
   this->armorChanged = true;
@@ -97,7 +99,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->model_name = monster->getModelName();
   this->skin_name = monster->getSkinName();
   sprintf(description, "You see %s", monster->getType());
-  this->speed = monster->getSpeed();
+  this->originalSpeed = this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();
   this->armorChanged = true;
@@ -124,6 +126,7 @@ void Creature::commonInit() {
   this->index = 0;
   this->tx = this->ty = -1;  
   this->selX = this->selY = -1;
+	this->cantMoveCounter = 0;
   this->bestPathPos = 0;
   this->inventory_count = 0;
   this->preferredWeapon = -1;
@@ -170,8 +173,6 @@ void Creature::commonInit() {
   lastEnchantDate.setDate(-1, -1, -1, -1, -1, -1);
 
   this->npcInfo = NULL;
-  this->whenPossibleX = this->whenPossibleY = -1;
-  this->blockedByCreatures = false;
   this->mapChanged = false;
 
   evalSpecialSkills();
@@ -253,7 +254,7 @@ CreatureInfo *Creature::save() {
   info->y = toint(y);
   info->z = toint(z);
   info->dir = dir;
-  info->speed = speed;
+  info->speed = originalSpeed;
   info->motion = motion;
   info->armor = 0;
   info->bonusArmor = bonusArmor;
@@ -514,50 +515,121 @@ void Creature::setTargetCreature( Creature *c, bool findPath ) {
   }
 }
 
-bool Creature::follow( int x, int y ) {
-  // find out where the creature should be relative to the formation
-  Sint16 px, py, pz;
-  getFormationPosition( &px, &py, &pz, x, y );
-  float dist = 
-    Constants::distance( getX(),  getY(), 
-                         getShape()->getWidth(), getShape()->getDepth(),
-                         (float)px, (float)py,
-                         getShape()->getWidth(), getShape()->getDepth() );
-  // only rethink the path if we're far away
-  if( dist > 7 || ( x > -1 && y > -1 ) ) {
-    // When following don't cancel impossible moves. Get as close as possible.
-    setSelXY( px, py, false );
-  }
-  return true; 
+bool Creature::isNpc() {
+	return( monster ? monster->isNpc() : false );
 }
 
-void Creature::moveWhenPossible() {
-  if( whenPossibleX < 0 ) return;
-  //cerr << ".";
-  setSelXY( whenPossibleX, whenPossibleY, true, true );
+#define AWAY_DISTANCE 8
+void Creature::moveAway( Creature *other ) {
+	// already moving away
+	if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
+		if( cantMoveCounter > 5 ) {
+			cantMoveCounter = 0;
+			// pick a diff. path
+		} else {
+			return;
+		}
+	}
+
+	setMotion( Constants::MOTION_MOVE_AWAY );
+	
+	// find the farthest possible location and move there.
+	bestPathPos = 1;
+	vector<Location> path;
+	bool pathSelected = false;
+	bool pathFound = false;
+	int minIntersect = 0;
+	Creature *player = session->getParty()->getPlayer();
+	cerr << "+++ " << getName() << " trying to move away: " << endl;
+	for( int x = 0; !pathSelected && x < AWAY_DISTANCE; x++ ) {
+		for( int y = 0; !pathSelected && y < AWAY_DISTANCE; y++ ) {
+			int destX = toint( getX() ) - AWAY_DISTANCE / 2 + x;
+			int destY = toint( getY() ) - AWAY_DISTANCE / 2 - y;
+			Util::findPath( toint( getX() ), toint( getY() ), toint( getZ() ), 
+											destX, destY, toint( getZ() ), 
+											&path, 
+											session->getMap(), 
+											this, 
+											player,
+											AWAY_DISTANCE * 2,
+											false ); // true );
+			if( !path.empty() && 
+					!Util::isOutOfTheWay( this, &path, 0, 
+																player, 
+																player->getPath(), 
+																player->getPathIndex() + 1 ) ) {
+				int intersectCount = 0;
+				for( int i = 0; i < session->getCreatureCount(); i++ ) {
+					Creature *c = session->getCreature( i ); 
+					if( c != this && 
+							c->isNpc() && 
+							Util::isOutOfTheWay( this, &path, 0, 
+																	 c, 
+																	 c->getPath(), 
+																	 c->getPathIndex() + 1 ) ) {
+						intersectCount++;
+					}
+				}
+				for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+					Creature *c = session->getParty()->getParty( i );
+					if( c != this && 
+							Util::isOutOfTheWay( this, &path, 0, 
+																	 c, 
+																	 c->getPath(), 
+																	 c->getPathIndex() + 1 ) ) {
+						intersectCount++;
+					}
+				}
+				if( minIntersect == 0 || intersectCount < minIntersect ) {
+					speed = FAST_SPEED;
+					selX = path[ path.size() - 1 ].x;
+					selY = path[ path.size() - 1 ].y;
+					bestPath.clear();
+					for( int i = 0; i < (int)path.size(); i++ ) bestPath.push_back( path[ i ] );
+					//pathSelected = true;
+					minIntersect = intersectCount;
+					if( minIntersect == 0 ) pathSelected = true;
+					pathFound = true;
+				}
+			}
+		}
+	}
+
+	if( !pathFound ) {
+		stopMoving();
+		setMotion( Constants::MOTION_MOVE_TOWARDS );
+		other->stopMoving();
+		other->setMotion( Constants::MOTION_MOVE_TOWARDS );
+	}
 }
 
-bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, bool limitTime ) { 
-  blockedByCreatures = false;
-  bool possible = findPath( x, y, cancelIfNotPossible, limitTime, false );
-  if( whenPossibleX < 0 && 
-      session->getParty()->getPlayer() == this &&
-      !session->getGameAdapter()->inTurnBasedCombat() ) {
-    // Player could be blocked. Keep trying.
-    if( !possible ) {
-      // if original move is blocked, try again (quick try), ignoring creatures
-      possible = findPath( x, y, true, true, true );
-      blockedByCreatures = possible;
-    }
-    if( possible ) {
-      //cerr << "*** Starting: when possible move" << endl;
-      setWhenPossibleDest( x, y );
-    }
-  }  
-  return possible;
+void Creature::cancelMoveAway() {
+	if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
+		stopMoving();
+		setMotion( Constants::MOTION_MOVE_TOWARDS );
+	}
 }
 
-bool Creature::findPath( int x, int y, bool cancelIfNotPossible, bool limitTime, bool ignoreCreatures ) { 
+#define CLOSE_DISTANCE 8
+bool Creature::follow( Creature *leader ) {
+	float dist = getDistance( leader );
+	if( dist < CLOSE_DISTANCE ) {
+		if( cantMoveCounter > 5 ) {
+			cantMoveCounter = 0;
+		} else {
+			return true;
+		}
+	}
+	speed = FAST_SPEED;
+	return findPath( toint( leader->getX() ), toint( leader->getY() ), false, 50, true );
+}
+
+bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) { 
+  return findPath( x, y, cancelIfNotPossible, maxNodes,
+									 ( session->getParty()->getPlayer() == this ) );
+}
+
+bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty ) { 
   int oldSelX = selX;
   int oldSelY = selY;
   int oldtx = tx;
@@ -578,8 +650,9 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, bool limitTime,
                   &bestPath, 
                   session->getMap(), 
                   this, 
-                  limitTime,
-                  ignoreCreatures );
+									session->getParty()->getPlayer(),
+                  maxNodes,
+                  ignoreParty );
 
   // Does the path lead to the destination?
   bool ret = false;
@@ -602,11 +675,10 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, bool limitTime,
     }
   }
 
-  // FIXME: hack! Should not use limitTime to know when to play a sound.
-  if( ret && !limitTime ) {
+  // FIXME: when to play sound?
+  if( ret && session->getParty()->getPlayer() == this ) {
     // play command sound
     if(x > -1 && 
-       session->getParty()->getPlayer() == this && 
        0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
        !getStateMod(Constants::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
@@ -617,44 +689,48 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, bool limitTime,
   return ret;
 }
 
-bool Creature::moveToLocator() {
-  bool moved = false;
-  
-  if( mapChanged ) {
-    moveWhenPossible();
-    mapChanged = false;
-  }
-
+Location *Creature::moveToLocator() {
+  Location *pos = NULL;
   if(selX > -1) {
     // take a step
-    moved = gotoPosition( selX, selY, 0 );
+    pos = takeAStepOnPath();
+
     // if we've no more steps
     if( (int)bestPath.size() <= bestPathPos ) {
-      int lx = -1;
-      int ly = -1;
-      if( bestPath.size() > 0 ) {
-        Location last = bestPath[ bestPath.size() - 1 ];
-        lx = last.x;
-        ly = last.y;
-      }
-      // cancel, move-when-possible
-      if( whenPossibleX > -1 ) {
-        if( lx == whenPossibleX && ly == whenPossibleY ) {
-          //cerr << "*** Ending: when possible move" << endl;
-          whenPossibleX = whenPossibleY = -1;
-        }
-      } else if( selX > -1 ) {
-        // if this is the player, return to regular movement
-        if(this == session->getParty()->getPlayer()) {
-          session->getParty()->setPartyMotion(Constants::MOTION_MOVE_TOWARDS);          
-        }
-      }
-    }
+			stopMoving();
+			setMotion( Constants::MOTION_MOVE_TOWARDS );
+			
+			// stop move-away-s
+			if( this == session->getParty()->getPlayer() ) {
+				for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+					session->getParty()->getParty( i )->cancelMoveAway();
+				}
+				for( int i = 0; i < session->getCreatureCount(); i++ ) {
+					if( session->getCreature( i )->isNpc() ) {
+						session->getCreature( i )->cancelMoveAway();
+					}
+				}
+			}
+    } else if( pos ) {
+			// if blocked by a creature (non-monster), tell them to move out of the way
+			if( pos && pos->creature &&
+					pos->creature != session->getParty()->getPlayer() &&
+					( !pos->creature->isMonster() || pos->creature->isNpc() ) ) {				
+				((Creature*)pos->creature)->moveAway( this );
+			}
+			cantMoveCounter++;
+		} else if( !pos ) {
+			cantMoveCounter = 0;
+		}
   }
-  return moved;
+  return pos;
 }
 
-bool Creature::gotoPosition( Sint16 px, Sint16 py, Sint16 pz ) {
+/**
+ * Returns the blocking shape or NULL if move is possible.
+ */
+Location *Creature::takeAStepOnPath() {
+	Location *position = NULL;
   int a = ((MD2Shape*)getShape())->getCurrentAnimation();
   if((int)bestPath.size() > bestPathPos && a != MD2_TAUNT ) {
 
@@ -682,7 +758,7 @@ bool Creature::gotoPosition( Sint16 px, Sint16 py, Sint16 pz ) {
     //if( !strcmp(getName(), "Alamont") ) 
 //      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
 
-    Location *position = session->getMap()->
+    position = session->getMap()->
       moveCreature(toint(getX()), toint(getY()), toint(getZ()),
                    toint(newX), toint(newY), toint(getZ()),
                    this);
@@ -723,21 +799,20 @@ bool Creature::gotoPosition( Sint16 px, Sint16 py, Sint16 pz ) {
     }
 
 
-    if(!position) {
+    if( !position ) {
       computeAngle( newX, newY );
       showWaterEffect( newX, newY );
       moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         bestPathPos++;
       }
-      return true;
     } else {
       // if we can't get to the destination, stop trying
       // do this so the animation switches to "stand"
-      stopMoving();
+      //stopMoving();
     }
   }
-  return false;
+  return position;
 }
 
 void Creature::computeAngle( GLfloat newX, GLfloat newY ) {
@@ -779,8 +854,10 @@ void Creature::showWaterEffect( GLfloat newX, GLfloat newY ) {
 }                                             
 
 void Creature::stopMoving() {
+	cantMoveCounter = 0;
   bestPathPos = (int)bestPath.size();
   selX = selY = -1;
+	speed = originalSpeed;
 }
 
 bool Creature::anyMovesLeft() {
@@ -1803,6 +1880,7 @@ void Creature::decideMonsterAction() {
     setMotion(Constants::MOTION_MOVE_TOWARDS);
     setTargetCreature(p);
   } else if( monster->isNpc() ) {
+		if( getMotion() == Constants::MOTION_MOVE_AWAY ) return;
     int n = (int)( 10.0f * rand()/RAND_MAX );
     switch( n ) {
     case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;
@@ -1861,21 +1939,32 @@ void Creature::decideMonsterAction() {
   }
 }
 
+float Creature::getDistanceToSel() {
+	if( selX > -1 && selY > -1 ) {
+		return Constants::distance( getX(),  getY(), 
+																getShape()->getWidth(), getShape()->getDepth(),
+																selX, selY,
+																getShape()->getWidth(), getShape()->getDepth());
+	} else {
+		return 0;
+	}
+}
+
+float Creature::getDistance( RenderedCreature *other ) {
+	return Constants::distance( getX(),  getY(), 
+															getShape()->getWidth(), getShape()->getDepth(),
+															other->getX(), 
+															other->getY(),
+															other->getShape()->getWidth(), 
+															other->getShape()->getDepth());
+}
+
 float Creature::getDistanceToTarget( RenderedCreature *creature ) {
-  if( creature ) {
-    return Constants::distance(getX(),  getY(), 
-                               getShape()->getWidth(), getShape()->getDepth(),
-                               creature->getX(), creature->getY(),
-                               creature->getShape()->getWidth(), 
-                               creature->getShape()->getDepth());
-  }
+  if( creature ) return getDistance( creature );
+  
   if(!hasTarget()) return 0.0f;
   if(getTargetCreature()) {
-    return Constants::distance(getX(),  getY(), 
-                               getShape()->getWidth(), getShape()->getDepth(),
-                               getTargetCreature()->getX(), getTargetCreature()->getY(),
-                               getTargetCreature()->getShape()->getWidth(), 
-                               getTargetCreature()->getShape()->getDepth());
+		return getDistance( getTargetCreature() );
   } else if( getTargetX() || getTargetY() ) {
     if(getTargetItem()) {
       return Constants::distance(getX(),  getY(), 

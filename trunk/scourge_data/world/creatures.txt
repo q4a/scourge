@@ -45,7 +45,7 @@ h:sound/imp/hit1.wav,sound/imp/hit2.wav
 # NPC types
 #
 M:Male Vagrant
-M:/models/npc/sfod8,Tengu.bmp,3,10,4,15,10,8,2.0,npc
+M:/models/npc/sfod8,Tengu.bmp,3,10,4,15,10,8,1.7,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -54,7 +54,7 @@ P:RESIST_NATURE_MAGIC,20
 P:RESIST_HISTORY_MAGIC,20
 
 M:Male Traveling Wizard
-M:/models/npc/sfod8,abarlith.bmp,3,6,15,5,10,8,2.2,npc
+M:/models/npc/sfod8,abarlith.bmp,3,6,15,5,10,8,1.8,npc
 I:Dirk
 I:Robes of the Sorcerer
 S:Flame of Azun
@@ -68,7 +68,7 @@ P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,20
 
 M:Male Knight
-M:/models/npc/sfod8,Rieger.bmp,3,12,2,15,10,8,2.4,npc
+M:/models/npc/sfod8,Rieger.bmp,3,12,2,15,10,8,1.9,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -77,7 +77,7 @@ P:RESIST_NATURE_MAGIC,10
 P:RESIST_HISTORY_MAGIC,40
 
 M:Male Rogue
-M:/models/npc/sfod8,skin01cs.bmp,3,8,3,5,10,8,2.6,npc
+M:/models/npc/sfod8,skin01cs.bmp,3,8,3,5,10,8,2.0,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -88,7 +88,7 @@ P:RESIST_HISTORY_MAGIC,40
 
 
 M:Female Hobo
-M:/models/npc/alita,alita.bmp,3,7,4,5,10,8,2.0,npc
+M:/models/npc/alita,alita.bmp,3,7,4,5,10,8,1.5,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -97,7 +97,7 @@ P:RESIST_NATURE_MAGIC,20
 P:RESIST_HISTORY_MAGIC,20
 
 M:Female Bard
-M:/models/npc/alita,alita2.bmp,3,12,8,10,10,8,2.2,npc
+M:/models/npc/alita,alita2.bmp,3,12,8,10,10,8,1.6,npc
 I:Dirk
 I:Robes of the Sorcerer
 S:Flame of Azun
@@ -111,7 +111,7 @@ P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,20
 
 M:Female Ranger
-M:/models/npc/alita,alita3.bmp,3,12,5,8,10,8,2.4,npc_special
+M:/models/npc/alita,alita3.bmp,3,12,5,8,10,8,1.7,npc_special
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -120,7 +120,7 @@ P:RESIST_NATURE_MAGIC,10
 P:RESIST_HISTORY_MAGIC,40
 
 M:Female Priestess
-M:/models/npc/alita,alita4.bmp,3,6,12,5,10,8,2.6,npc
+M:/models/npc/alita,alita4.bmp,3,6,12,5,10,8,1.8,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor

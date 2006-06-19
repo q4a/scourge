@@ -69,6 +69,7 @@ public:
   virtual bool addRecentDamage( int damage );
   virtual void removeRecentDamage( int i );
 
+	virtual bool isNpc() = 0;
   virtual bool getStateMod(int mod) = 0;
   virtual void pickUpOnMap( RenderedItem *item ) = 0;
   virtual GLShape *getShape() = 0;
@@ -77,7 +78,7 @@ public:
 	virtual char *getType() = 0;
   virtual CreatureInfo *save() = 0;
   virtual bool canAttack( RenderedCreature *creature, int *cursor=NULL ) = 0;
-  virtual bool setSelXY( int x, int y, bool force=false, bool limitTime=false ) = 0;
+	virtual bool setSelXY( int x, int y, bool cancelIfNotPossible=true, int maxNodes=120 ) = 0;
   virtual void setMapChanged() = 0;
 
   // effects

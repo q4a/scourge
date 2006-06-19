@@ -132,7 +132,6 @@ void Party::startPartyOnMission() {
   calendar->reset(false);
 
   player_only = false;
-  playerMoved = 0;
   partyDead = false;
   
   setFirstLivePlayer();
@@ -150,18 +149,6 @@ void Party::startPartyOnMission() {
 void Party::setPartyMotion(int motion) {
   for(int i = 0; i < getPartySize(); i++) {
 	if(party[i] != player) party[i]->setMotion(motion);
-  }
-}
-
-void Party::followTargets() {
-  for(int i = 0; i < getPartySize(); i++) {
-	if(!party[i]->getStateMod(Constants::dead) && 
-	   party[i]->getTargetCreature()) {
-	  party[i]->setSelXY(toint( party[i]->getTargetCreature()->getX() +
-                              (float)party[i]->getTargetCreature()->getShape()->getWidth() / 2.0f ),
-                       toint( party[i]->getTargetCreature()->getY() -
-                              (float)party[i]->getTargetCreature()->getShape()->getDepth() / 2.0f ));
-  }
   }
 }
 
@@ -192,7 +179,6 @@ bool Party::switchToNextLivePartyMember() {
 void Party::setPlayer(int n, bool updateui) {
   player = party[n];
   player->setNextDontMove(NULL, 0);
-  //  player->setSelXY(-1, -1); // don't move
   // init the rest of the party
   int count = 1;
   for(int i = 0; i < getPartySize(); i++) {
@@ -251,9 +237,6 @@ void Party::toggleRound() {
     session->getCreature(i)->getShape()->setPauseAnimation(!startRound);
   } 
 
-  // restart player stopping on un-pause
-  if( startRound && playerMoved > 0 ) setPlayerMoved();
-
   if(!session->getGameAdapter()->isHeadless()) 
     session->getGameAdapter()->toggleRoundUI(startRound);  
 }
@@ -275,22 +258,21 @@ void Party::setTargetCreature(Creature *creature) {
  */
 bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
   // Try to move the current player
-  getPlayer()->cancelWhenPossibleDest();
   bool possible = getPlayer()->setSelXY( mapx, mapy );
   if( isPlayerOnly() ) {
     getPlayer()->cancelTarget();
   } else {
     for( int i = 0; i < getPartySize(); i++ ) {
       if( !getParty(i)->getStateMod( Constants::dead ) ) {
-        getParty(i)->cancelTarget();
-        if( getParty(i) != getPlayer() ) {
-          // if already moving, don't stop
-          if ( getParty(i)->anyMovesLeft() ) clearPlayerMoved();
-
-          // if trying later, move others to the location (to get them out of the way)
+        getParty(i)->cancelTarget();        
+				if( getParty(i) != getPlayer() ) {
+          
+					/*
+					// if trying later, move others to the location (to get them out of the way)
           // Otherwise, follow the leader
           if( getPlayer()->isBlockedByCreatures() ) getParty( i )->follow( mapx, mapy );
           else getParty( i )->follow();
+					*/
         }
       }
     }
@@ -298,8 +280,23 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
   return possible;
 }
 
+bool Party::isPartyInRange() {
+	bool canMove = true;
+	for( int t = 0; t < getPartySize(); t++ ) {
+		if( !party[t]->getStateMod( Constants::dead ) && 
+				party[t] != player ) {
+			if( party[t]->getDistanceToSel() > player->getDistanceToSel() &&
+					party[t]->getDistance( player ) > 7 ) {
+				canMove = false;
+				break;
+			}
+		}
+	}
+	return canMove;
+}
+
 void Party::movePlayers() {   
-  if (player_only) {
+  if( player_only ) {
     // move everyone
     for (int i = 0; i < getPartySize(); i++) {
       if (!party[i]->getStateMod(Constants::dead)) {
@@ -308,30 +305,27 @@ void Party::movePlayers() {
     }
     // center on player
     session->getMap()->center(toint(player->getX()), toint(player->getY()));
-  } else {
-    // In group mode:
+  } else { // In group mode:
 
     // move the leader
-    if (!player->getStateMod(Constants::dead)) {
-      player->moveToLocator();
-      session->getMap()->center(toint(player->getX()), toint(player->getY()));
+    if( !player->getStateMod(Constants::dead) ) {
+			//if( isPartyInRange() ) {
+				Location *pos = player->moveToLocator();
+				session->getMap()->center(toint(player->getX()), toint(player->getY()));				
     }
 
     // others follow the player
-    if ( playerMoved == 0 || SDL_GetTicks() - playerMoved > PARTY_FOLLOW_INTERVAL ) {
-      playerMoved = 0;
-      for (int t = 0; t < getPartySize(); t++) {
-        if (!party[t]->getStateMod(Constants::dead) && party[t] != player) {
-          // If the non-leader is done moving try to follow again.
-          // This will be a no-op in follow() if we're close enough.
-          if( !getParty(t)->anyMovesLeft() ) {
-            getParty( t )->follow();
-          }
-          // actually take a step
-          party[t]->moveToLocator();
-        }
-      }
-    }
+		for (int t = 0; t < getPartySize(); t++) {
+			if (!party[t]->getStateMod(Constants::dead) && party[t] != player) {
+				// If the non-leader is done moving try to follow again.
+				// This will be a no-op in follow() if we're close enough.
+				if( !getParty(t)->anyMovesLeft() ) {
+					getParty( t )->follow( player );
+				}
+				// actually take a step
+				party[t]->moveToLocator();
+			}
+		}
   }
 }
 
@@ -553,7 +547,6 @@ void Party::setFormation(int formation) {
     getParty(i)->setFormation(formation);
   }
   player_only = false;
-  playerMoved = 0;
   startRound = true;
   if(!session->getGameAdapter()->isHeadless()) 
     session->getGameAdapter()->setFormationUI(formation, !isPlayerOnly());
@@ -561,7 +554,6 @@ void Party::setFormation(int formation) {
 
 void Party::togglePlayerOnly(bool keepTargets) {
   player_only = (player_only ? false : true);
-  if( !player_only ) playerMoved = 0;
   // in group mode everyone hunts the same creature
   if(!player_only && !keepTargets) {
     for(int i = 0; i < getPartySize(); i++) {

@@ -1652,8 +1652,7 @@ void Scourge::moveCreatures() {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);
       ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
     } else if( party->getParty(i)->anyMovesLeft() &&
-               ( !party->getPlayerMoved() ||
-                 party->getParty(i) == party->getPlayer() ) ) {
+               party->getParty(i) == party->getPlayer() ) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
     } else {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
@@ -1695,14 +1694,16 @@ void Scourge::moveMonster(Creature *monster) {
                                               (int)MD2_STAND );
   }
 
-  if(monster->getMotion() == Constants::MOTION_LOITER) {
+	if( monster->getMotion() == Constants::MOTION_MOVE_AWAY ) {
+		monster->moveToLocator();
+	} else if(monster->getMotion() == Constants::MOTION_LOITER) {
     // attack the closest player
     if( BATTLES_ENABLED &&
         (int)(20.0f * rand()/RAND_MAX) == 0) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement
-      monster->move(monster->getDir());
+			monster->move(monster->getDir());
     }
   } else if(monster->getMotion() == Constants::MOTION_STAND) {
     if( (int)(40.0f * rand()/RAND_MAX) == 0) {

@@ -42,7 +42,7 @@
 // scourge.cpp                     
 //#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
-#define BATTLES_ENABLED 1
+#define BATTLES_ENABLED 0
 //#define DEBUG_KEYS 1
 #define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
@@ -52,6 +52,9 @@
 
 // show secret doors
 //#define DEBUG_SECRET_DOORS 1
+
+// show every PC's path
+#define PATH_DEBUG 1
 
 #endif
 

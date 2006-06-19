@@ -75,6 +75,7 @@ class Creature : public RenderedCreature {
   int tx, ty;
   int selX, selY;
   int bestPathPos;
+	int cantMoveCounter;
   std::vector<Location> bestPath;
   Creature *targetCreature;
   int targetX, targetY, targetZ;
@@ -102,7 +103,7 @@ class Creature : public RenderedCreature {
 
   char description[300];
   GLint lastTick;
-  int speed;
+  int speed, originalSpeed;
   float armor;
   int bonusArmor;
   bool armorChanged;
@@ -133,9 +134,7 @@ class Creature : public RenderedCreature {
 
   std::set<SpecialSkill*> specialSkills;
 
-  int whenPossibleX, whenPossibleY;
   bool mapChanged;
-  bool blockedByCreatures;
 
   std::map<Location*, Uint32> secretDoorAttempts;
   
@@ -152,6 +151,7 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
 
+	bool isNpc();
   bool isPathToTargetCreature();
 
   inline GLfloat getAngle() { return angle; }
@@ -237,8 +237,8 @@ class Creature : public RenderedCreature {
    */
   bool move(Uint16 dir);
   void switchDirection(bool force);
-  bool follow( int x=-1, int y=-1 );
-  bool moveToLocator();
+  bool follow( Creature *leader );
+  Location *moveToLocator();
   void stopMoving();
   
   inline char *getModelName() { return model_name; }
@@ -258,16 +258,13 @@ class Creature : public RenderedCreature {
    * Set where to move the creature. 
    * Returns true if the move is possible, false otherwise.
    */
-  bool setSelXY( int x, int y, bool cancelIfNotPossible=true, bool limitTime=false );  
+  bool setSelXY( int x, int y, bool cancelIfNotPossible=true, int maxNodes=120 );  
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
-  inline bool isMovingWhenPossible() { return whenPossibleX > -1; }
-  inline bool isBlockedByCreatures() { return blockedByCreatures; }
-  inline void setWhenPossibleDest( int mapx, int mapy ) { whenPossibleX = mapx; whenPossibleY = mapy; }
-  inline void cancelWhenPossibleDest() { whenPossibleX = whenPossibleY = -1; }  
   inline void setMapChanged() { mapChanged = true; }
-  void moveWhenPossible();
   bool anyMovesLeft();
+	void moveAway( Creature *other );
+	void cancelMoveAway();
   
   // inventory
   // get the item at the given equip-index (inventory location)
@@ -429,6 +426,9 @@ class Creature : public RenderedCreature {
   bool castHealingSpell();
 
   float getDistanceToTarget( RenderedCreature *creature=NULL );
+	float getDistance( RenderedCreature *other );
+	float getDistanceToSel();
+
   bool isWithPrereq( Spell *spell );
   Creature *findClosestTargetWithPrereq( Spell *spell );
 
@@ -474,7 +474,7 @@ class Creature : public RenderedCreature {
                   float *dodgePenalty,
                   bool callScript=false );
 
-   bool findPath( int x, int y, bool cancelIfNotPossible=true, bool limitTime=false, bool ignoreCreatures=false );
+   bool findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty );
 
   /**
    * Get the position of this creature in the formation.
@@ -487,7 +487,7 @@ class Creature : public RenderedCreature {
   void monsterInit();
   void recalcAggregateValues();
 
-  bool gotoPosition( Sint16 px, Sint16 py, Sint16 pz );
+  Location *takeAStepOnPath();
   void computeAngle( GLfloat newX, GLfloat newY );
   void showWaterEffect( GLfloat newX, GLfloat newY );
 
