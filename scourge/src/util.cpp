@@ -18,6 +18,7 @@
 #include "util.h"
 #include "render/renderlib.h"
 #include "creature.h"
+#include "sdlhandler.h"
 
 using namespace std;
 
@@ -78,8 +79,12 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
                      vector<Location> *pVector,
                      Map *map,
                      Creature *creature,
-                     bool limitTime,
-                     bool ignoreCreatures ) {
+										 Creature *player,
+                     int maxNodes,
+                     bool ignoreParty ) {
+
+	cerr << "Util::findPath for " << creature->getName() << " maxNodes=" << maxNodes << " ignoreParty=" << ignoreParty << endl;
+
   vector<CPathNode> OPEN;                 // STL Vectors chosen because of rapid
   vector<CPathNode> CLOSED;               // insertions/deletions at back,
   vector<CPathNode> PATH;                 // and Direct access to any element.
@@ -115,7 +120,7 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
     }
 
     // Set limit to break if looking too long
-    if ( CLOSED.size() > ( limitTime ? FAST_MAX_CLOSED_NODES : MAX_CLOSED_NODES ) )
+    if ( (int)CLOSED.size() > maxNodes )
       break;
 
     // Check adjacent locations (This is done in a clockwise order to lessen jaggies)
@@ -159,7 +164,7 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
           (Node.y >= 0) && (Node.y < MAP_DEPTH)) {
         
         // Determine cost of distance travelled
-        if( isBlocked( Node.x, Node.y, sx, sy, creature, map, ignoreCreatures ) ) {
+        if( isBlocked( Node.x, Node.y, sx, sy, creature, player, map, ignoreParty ) ) {
           Node.gone = 1000;
         } else {
           Node.gone = BestNode.gone + 1;
@@ -273,22 +278,47 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
 // a simpler/quicker 2D version of Map::isBlocked()
 bool Util::isBlocked( Sint16 x, Sint16 y,
                       Sint16 shapeX, Sint16 shapeY, 
-                      Creature *creature, Map *map,
-                      bool ignoreCreatures ) {
+                      Creature *creature, 
+											Creature *player,
+											Map *map,
+                      bool ignoreParty ) {
   for( int sx = 0; sx < creature->getShape()->getWidth(); sx++ ) {
     for( int sy = 0; sy < creature->getShape()->getDepth(); sy++ ) {
       Location *loc = map->getLocation( x + sx, y - sy, 0 );
-      if( loc && loc->creature && ignoreCreatures ) continue;
-      if( loc && 
-          !( ( loc->creature && 
-               ( loc->creature == creature || 
-                 loc->creature == creature->getTargetCreature() ) ) ||
-             ( loc->shape && loc->x == shapeX && loc->y == shapeY ) ) ) {
-        return true;
-      }
+			if( loc ) {
+				if( ignoreParty && 
+						loc->creature && 
+						loc->creature != player &&
+						( !loc->creature->isMonster() ||
+							loc->creature->isNpc() ) ) continue;
+				if( !( ( loc->creature && 
+								 ( loc->creature == creature || 
+									 loc->creature == creature->getTargetCreature() ) ) ||
+							 ( loc->shape && loc->x == shapeX && loc->y == shapeY ) ) ) {
+					return true;
+				}
+			}
     }
   }
   return false;
+}
+
+// is the a's final position out of the way of b's current location?
+bool Util::isOutOfTheWay( Creature *a, vector<Location> *aPath, int aStart,
+														 Creature *b, vector<Location> *bPath, int bStart ) {
+	if( !( aPath && aPath->size() ) ||
+			!( bPath && bPath->size() ) ) return false;
+	Location aLast = (*aPath)[ aPath->size() - 1 ];
+	Location bCurrent = (*bPath)[ bStart ];
+	return 
+		SDLHandler::intersects( aLast.x - a->getShape()->getWidth() / 2, 
+														aLast.y - a->getShape()->getDepth() / 2, 
+														a->getShape()->getWidth(), 
+														a->getShape()->getDepth(),
+														bCurrent.x - b->getShape()->getWidth() / 2, 
+														bCurrent.y - b->getShape()->getDepth() / 2, 
+														b->getShape()->getWidth(), 
+														b->getShape()->getDepth() );
 }
 
 ///////////////////////////////////////////////////////////

@@ -47,7 +47,6 @@ class Party : public CreatureGroupInfo {
   Creature *party[MAX_PARTY_SIZE];
   bool partyDead;
   bool player_only;
-  Uint32 playerMoved;
   int formation;
   Calendar * calendar;
   bool startRound;
@@ -71,10 +70,6 @@ class Party : public CreatureGroupInfo {
   void recomputeMaxSkills();
 
   void regainMp();
-
-  inline Uint32 getPlayerMoved() { return playerMoved; }
-  inline void setPlayerMoved() { playerMoved = SDL_GetTicks(); }
-  inline void clearPlayerMoved() { playerMoved = 0; }
 
   inline int getStorylineIndex() { return storylineIndex; }
 
@@ -117,8 +112,6 @@ class Party : public CreatureGroupInfo {
   void setFirstLivePlayer();
   int getFirstLivePlayer();
 
-  void followTargets();
-
   void setTargetCreature(Creature *creature);
   inline bool isPartyDead() { return partyDead; }
   inline bool isPlayerOnly() { return player_only; }
@@ -144,6 +137,7 @@ class Party : public CreatureGroupInfo {
 
 protected:
   void resetPartyUI();  
+	bool isPartyInRange();
 };
 
 #endif

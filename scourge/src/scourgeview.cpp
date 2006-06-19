@@ -28,6 +28,7 @@
 #include "sdlhandler.h"
 #include "gui/progress.h"
 #include "gui/scrollinglist.h"
+#include "debug.h"
 
 using namespace std;  
 
@@ -570,13 +571,17 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
   // show path
   if( !creature->getStateMod( Constants::dead ) &&
-      player &&
-      scourge->inTurnBasedCombat() ) {
+			( ( PATH_DEBUG && !creature->isMonster() ) ||
+				( player && scourge->inTurnBasedCombat() ) ) ) {
     for( int i = creature->getPathIndex();
          i < (int)creature->getPath()->size(); i++) {
       Location pos = (*(creature->getPath()))[i];
 
-      glColor4f(1, 0.4f, 0.0f, 0.5f);
+			if( player ) {
+				glColor4f(1, 0.4f, 0.0f, 0.5f);
+			} else {
+				glColor4f(0, 0.4f, 1, 0.5f);
+			}
       xpos2 = ((float)(pos.x - scourge->getMap()->getX()) / DIV);
       ypos2 = ((float)(pos.y - scourge->getMap()->getY()) / DIV);
       zpos2 = 0.0f / DIV;
