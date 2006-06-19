@@ -306,8 +306,8 @@ bool Util::isBlocked( Sint16 x, Sint16 y,
 // is the a's final position out of the way of b's current location?
 bool Util::isOutOfTheWay( Creature *a, vector<Location> *aPath, int aStart,
 														 Creature *b, vector<Location> *bPath, int bStart ) {
-	if( !( aPath && aPath->size() ) ||
-			!( bPath && bPath->size() ) ) return false;
+	if( !( aPath && aStart < aPath->size() ) ||
+			!( bPath && bStart < bPath->size() ) ) return false;
 	Location aLast = (*aPath)[ aPath->size() - 1 ];
 	Location bCurrent = (*bPath)[ bStart ];
 	return 
