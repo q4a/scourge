@@ -38,6 +38,7 @@
 #include "terraingenerator.h"
 #include "cavemaker.h"
 #include "dungeongenerator.h"
+#include "mondrian.h"
 #include "debug.h"
 #include "scourgeview.h"
 #include "scourgehandler.h"
@@ -495,12 +496,21 @@ void Scourge::startMission() {
                              (currentStory > 0),
                              getSession()->getCurrentMission());
         } else {
-          dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), 
-																		currentStory,
-																		getSession()->getCurrentMission()->getDepth(),
-                                    (currentStory < getSession()->getCurrentMission()->getDepth() - 1),
-                                    (currentStory > 0),
-                                    getSession()->getCurrentMission());
+					if( ( 1.0f * rand() / RAND_MAX ) >= 0.5f ) {
+						dg = new MondrianGenerator(this, getSession()->getCurrentMission()->getLevel(), 
+																			 currentStory,
+																			 getSession()->getCurrentMission()->getDepth(),
+																			 (currentStory < getSession()->getCurrentMission()->getDepth() - 1),
+																			 (currentStory > 0),
+																			 getSession()->getCurrentMission());
+					} else {
+						dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), 
+																			currentStory,
+																			getSession()->getCurrentMission()->getDepth(),
+																			(currentStory < getSession()->getCurrentMission()->getDepth() - 1),
+																			(currentStory > 0),
+																			getSession()->getCurrentMission());
+					}
         }
         mapCreated = dg->toMap(levelMap, getSession()->getShapePalette());
         scriptName = RANDOM_MAP_NAME;

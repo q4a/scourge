@@ -40,6 +40,8 @@ scourge_SOURCES = \
 	cavemaker.h\
 	dungeongenerator.cpp\
 	dungeongenerator.h\
+	mondrian.cpp\
+	mondrian.h\
 	main.cpp\
 	main.h\
 	mainmenu.cpp\
