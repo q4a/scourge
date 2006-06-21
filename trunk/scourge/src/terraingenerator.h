@@ -101,6 +101,8 @@ protected:
   int monsters;
 
 public:
+	static TerrainGenerator *getGenerator( Scourge *scourge, int depth );
+
   TerrainGenerator( Scourge *scourge, 
                     int level, 
                     int depth, 

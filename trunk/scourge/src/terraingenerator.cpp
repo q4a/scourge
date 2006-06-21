@@ -23,8 +23,45 @@
 #include "gui/progress.h"
 #include "item.h"
 #include "creature.h"
+#include "cavemaker.h"
+#include "dungeongenerator.h"
+#include "mondrian.h"
 
 using namespace std;
+
+// factory method
+TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) {
+	Mission *mission = scourge->getSession()->getCurrentMission();
+	TerrainGenerator *dg;
+	if( strstr( mission->getMapName(), "caves" ) ) {
+		dg = new CaveMaker( scourge, 
+												mission->getLevel(), 
+												depth,
+												mission->getDepth(),
+												( depth < mission->getDepth() - 1 ),
+												( depth > 0 ),
+												mission );
+	} else {
+		if( ( 1.0f * rand() / RAND_MAX ) >= 0.5f ) {
+			dg = new MondrianGenerator( scourge, 
+																	mission->getLevel(), 
+																	depth,
+																	mission->getDepth(),
+																	( depth < mission->getDepth() - 1 ),
+																	( depth > 0 ),
+																	mission );
+		} else {
+			dg = new DungeonGenerator( scourge, 
+																 mission->getLevel(), 
+																 depth,
+																 mission->getDepth(),
+																 ( depth < mission->getDepth() - 1 ),
+																 ( depth > 0 ),
+																 mission );
+		}
+	}
+	return dg;
+}											
 
 TerrainGenerator::TerrainGenerator( Scourge *scourge, 
                                     int level, 

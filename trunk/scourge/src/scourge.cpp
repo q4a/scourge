@@ -488,30 +488,7 @@ void Scourge::startMission() {
 
       // if no edited map is found, make a random map
       if( !loaded ) {
-        if( strstr( getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
-          dg = new CaveMaker(this, getSession()->getCurrentMission()->getLevel(), 
-														 currentStory,
-														 getSession()->getCurrentMission()->getDepth(),
-                             (currentStory < getSession()->getCurrentMission()->getDepth() - 1),
-                             (currentStory > 0),
-                             getSession()->getCurrentMission());
-        } else {
-					if( ( 1.0f * rand() / RAND_MAX ) >= 0.5f ) {
-						dg = new MondrianGenerator(this, getSession()->getCurrentMission()->getLevel(), 
-																			 currentStory,
-																			 getSession()->getCurrentMission()->getDepth(),
-																			 (currentStory < getSession()->getCurrentMission()->getDepth() - 1),
-																			 (currentStory > 0),
-																			 getSession()->getCurrentMission());
-					} else {
-						dg = new DungeonGenerator(this, getSession()->getCurrentMission()->getLevel(), 
-																			currentStory,
-																			getSession()->getCurrentMission()->getDepth(),
-																			(currentStory < getSession()->getCurrentMission()->getDepth() - 1),
-																			(currentStory > 0),
-																			getSession()->getCurrentMission());
-					}
-        }
+				dg = TerrainGenerator::getGenerator( this, currentStory );
         mapCreated = dg->toMap(levelMap, getSession()->getShapePalette());
         scriptName = RANDOM_MAP_NAME;
       }
