@@ -41,6 +41,12 @@ using namespace std;
 // how fast to turn                        
 #define TURN_STEP_COUNT 5
 
+// how far to move away when in the player's way
+#define AWAY_DISTANCE 8
+
+// how close to stay to the player
+#define CLOSE_DISTANCE 8
+
 /**
  * Formations are defined by 4 set of coordinates in 2d space.
  * These starting positions assume dir=Constants::MOVE_UP
@@ -519,7 +525,6 @@ bool Creature::isNpc() {
 	return( monster ? monster->isNpc() : false );
 }
 
-#define AWAY_DISTANCE 8
 void Creature::moveAway( Creature *other ) {
 	// already moving away
 	if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
@@ -580,6 +585,15 @@ void Creature::moveAway( Creature *other ) {
 						intersectCount++;
 					}
 				}
+
+				// if this puts a pc out of range; that's bad
+				if( !this->isMonster() ) {
+					float dist = getDistance( session->getParty()->getPlayer() );
+					if( dist >= CLOSE_DISTANCE ) {
+						intersectCount += 2;
+					}
+				}
+
 				if( minIntersect == 0 || intersectCount < minIntersect ) {
 					speed = FAST_SPEED;
 					selX = path[ path.size() - 1 ].x;
@@ -610,7 +624,6 @@ void Creature::cancelMoveAway() {
 	}
 }
 
-#define CLOSE_DISTANCE 8
 bool Creature::follow( Creature *leader ) {
 	float dist = getDistance( leader );
 	if( dist < CLOSE_DISTANCE ) {
