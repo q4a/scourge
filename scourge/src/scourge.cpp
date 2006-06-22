@@ -1639,7 +1639,7 @@ void Scourge::moveCreatures() {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);
       ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
     } else if( party->getParty(i)->anyMovesLeft() &&
-               party->getParty(i) == party->getPlayer() ) {
+							 ( !inTurnBasedCombat() || party->getParty(i) == party->getPlayer() ) ) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
     } else {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
