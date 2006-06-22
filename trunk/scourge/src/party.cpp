@@ -265,15 +265,6 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
     for( int i = 0; i < getPartySize(); i++ ) {
       if( !getParty(i)->getStateMod( Constants::dead ) ) {
         getParty(i)->cancelTarget();        
-				if( getParty(i) != getPlayer() ) {
-          
-					/*
-					// if trying later, move others to the location (to get them out of the way)
-          // Otherwise, follow the leader
-          if( getPlayer()->isBlockedByCreatures() ) getParty( i )->follow( mapx, mapy );
-          else getParty( i )->follow();
-					*/
-        }
       }
     }
   }
@@ -310,7 +301,7 @@ void Party::movePlayers() {
     // move the leader
     if( !player->getStateMod(Constants::dead) ) {
 			//if( isPartyInRange() ) {
-				Location *pos = player->moveToLocator();
+				player->moveToLocator();
 				session->getMap()->center(toint(player->getX()), toint(player->getY()));				
     }
 

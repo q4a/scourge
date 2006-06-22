@@ -19,6 +19,7 @@
 #include "render/renderlib.h"
 #include "creature.h"
 #include "sdlhandler.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -83,7 +84,10 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
                      int maxNodes,
                      bool ignoreParty ) {
 
-	cerr << "Util::findPath for " << creature->getName() << " maxNodes=" << maxNodes << " ignoreParty=" << ignoreParty << endl;
+	if( PATH_DEBUG ) 
+		cerr << "Util::findPath for " << creature->getName() << 
+		" maxNodes=" << maxNodes << " ignoreParty=" << ignoreParty << 
+		endl;
 
   vector<CPathNode> OPEN;                 // STL Vectors chosen because of rapid
   vector<CPathNode> CLOSED;               // insertions/deletions at back,
@@ -306,8 +310,8 @@ bool Util::isBlocked( Sint16 x, Sint16 y,
 // is the a's final position out of the way of b's current location?
 bool Util::isOutOfTheWay( Creature *a, vector<Location> *aPath, int aStart,
 														 Creature *b, vector<Location> *bPath, int bStart ) {
-	if( !( aPath && aStart < aPath->size() ) ||
-			!( bPath && bStart < bPath->size() ) ) return false;
+	if( !( aPath && aStart < (int)aPath->size() ) ||
+			!( bPath && bStart < (int)bPath->size() ) ) return false;
 	Location aLast = (*aPath)[ aPath->size() - 1 ];
 	Location bCurrent = (*bPath)[ bStart ];
 	return 

@@ -540,7 +540,7 @@ void Creature::moveAway( Creature *other ) {
 	bool pathFound = false;
 	int minIntersect = 0;
 	Creature *player = session->getParty()->getPlayer();
-	cerr << "+++ " << getName() << " trying to move away: " << endl;
+	//cerr << "+++ " << getName() << " trying to move away: " << endl;
 	for( int x = 0; !pathSelected && x < AWAY_DISTANCE; x++ ) {
 		for( int y = 0; !pathSelected && y < AWAY_DISTANCE; y++ ) {
 			int destX = toint( getX() ) - AWAY_DISTANCE / 2 + x;
@@ -626,7 +626,8 @@ bool Creature::follow( Creature *leader ) {
 
 bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) { 
   return findPath( x, y, cancelIfNotPossible, maxNodes,
-									 ( session->getParty()->getPlayer() == this ) );
+									 ( session->getParty()->getPlayer() == this &&
+										 !session->getGameAdapter()->inTurnBasedCombat() ) );
 }
 
 bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty ) { 
