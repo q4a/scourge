@@ -258,7 +258,7 @@ void Party::setTargetCreature(Creature *creature) {
  */
 bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
   // Try to move the current player
-  bool possible = getPlayer()->setSelXY( mapx, mapy );
+  bool possible = getPlayer()->setSelXY( mapx, mapy, true, 500 );
   if( isPlayerOnly() ) {
     getPlayer()->cancelTarget();
   } else {
