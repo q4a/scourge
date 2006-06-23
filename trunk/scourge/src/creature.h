@@ -137,6 +137,7 @@ class Creature : public RenderedCreature {
   bool mapChanged;
 
   std::map<Location*, Uint32> secretDoorAttempts;
+	bool moving;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -150,6 +151,9 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Character *character, char *name, int character_model_info_index);
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
+
+	inline bool isMoving() { return moving; }
+	inline void setMoving( bool b ) { moving = b; }
 
 	bool isNpc();
   bool isPathToTargetCreature();

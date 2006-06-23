@@ -180,6 +180,7 @@ void Creature::commonInit() {
 
   this->npcInfo = NULL;
   this->mapChanged = false;
+	this->moving = false;
 
   evalSpecialSkills();
 }
@@ -735,6 +736,7 @@ Location *Creature::moveToLocator() {
 			cantMoveCounter++;
 		} else if( !pos ) {
 			cantMoveCounter = 0;
+			setMoving( true );
 		}
   }
   return pos;
