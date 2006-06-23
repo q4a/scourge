@@ -116,7 +116,57 @@ MondrianGenerator::~MondrianGenerator(){
 
   this->monsters = true;
   this->roomCount = 0;
-  
+}
+
+/* Nice unicode maze printer. Doesn't work with all fonts, through */
+void MondrianGenerator::printMazeUC() {
+  printf("---------------------------------------\n");
+  for(int y = 0; y < height; y++) {    
+      for(int x = 0; x < width; x++) {
+			Uint16 node = nodes[x][y];
+
+			if(node & ROOM && node & N_PASS && node & W_PASS && node & S_PASS && node & E_PASS){
+				printf("\u253c");
+			} else if (node & ROOM && node & N_PASS && node & W_PASS && node & S_PASS){
+				printf("\u2524");
+			} else if (node & ROOM && node & N_PASS && node & S_PASS && node & E_PASS){
+				printf("\u251c");
+			} else if (node & ROOM && node & S_PASS && node & E_PASS && node & W_PASS){
+				printf("\u252c");
+			} else if (node & ROOM && node & N_PASS && node & E_PASS && node & W_PASS){
+				printf("\u2534");
+			} else if (node & ROOM && node & S_PASS && node & N_PASS){
+				printf("\u2503");
+			} else if (node & ROOM && node & S_PASS && node & E_PASS){
+				printf("\u250c");
+			} else if (node & ROOM && node & S_PASS && node & W_PASS){
+				printf("\u2510");
+			} else if (node & ROOM && node & N_PASS && node & E_PASS){
+				printf("\u2514");
+			} else if (node & ROOM && node & N_PASS && node & W_PASS){
+				printf("\u2518");
+			} else if (node & ROOM && node & E_PASS && node & W_PASS){
+				printf("\u2501");
+			} else if (node & ROOM && node & E_PASS){
+				printf("\u257a");
+			} else if (node & ROOM && node & W_PASS){
+				printf("\u2578");
+			} else if (node & ROOM && node & S_PASS){
+				printf("\u257b");
+			} else if (node & ROOM && node & N_PASS){
+				printf("\u2579");
+			} else if (node & ROOM){
+				printf("*");
+			} else if (node & ROOM2){
+				printf("#");
+			}
+			else {
+				printf(" ");
+			}
+    	}
+	printf("\n");
+	}
+	printf("---------------------------------------\n");
 }
 
 void MondrianGenerator::printMaze() {
@@ -169,6 +219,8 @@ void MondrianGenerator::printMaze() {
   printf("---------------------------------------\n");
 }
 
+
+
 int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 width, Sint16 height, bool init)
 {
 		
@@ -182,21 +234,19 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	int horizontal = 0;		
 	int div = 0;
 	
-	bool isDoor;
+	bool passageHasDoor;
 	
 	Room roomA, roomB;
-	int doorA_x;
-	int doorA_y;
-	Uint16 passA = ROOM;
+	int passage_x;
+	int passage_y;
+	Uint16 passage = ROOM;
 	
-	int doorB_x;
-	int doorB_y;
-	Uint16 passB = ROOM;
+	
 	
 	/* Try some sane defaults */
-	int roomMinWidth = this->roomMinWidth;
-	int roomMinHeight = this->roomMinHeight;
-	float roomMulFac = 2.50;
+	int roomMinWidth = 2;// this->roomMinWidth;
+	int roomMinHeight = 2; //this->roomMinHeight;
+	float roomMulFac = 2.15;
 	
 	// NOTE:
 	//   Horizontal subdivision: divide width 
@@ -231,17 +281,24 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 
 
 	// Is it a door or a passage?
-	if(0 == rand()%2)
-		isDoor = false;
+	
+	
+	// FIXME!
+	// The "make-sure-that-there-is-no-clutter-in-front-of-the-door"-algorithm notices _DOORs only, thus
+	// simple pathways are always cluttered. Improve Map::isDoor and enable the rand() again.
+
+	//if(0 == rand()%2) 
+		passageHasDoor = true;
 	
 	// Now that we know that there's space left for another two rooms, lets make them. 
 	
 	// make two rooms alongside 
 	if(horizontal){
 		while (( div < roomMinWidth ) || (width - div < roomMinWidth)){
-			div = rand()%width;			
+			div = (float)rand()/RAND_MAX * width;			
 		}
 
+//		printf("horizontal, div %d, w2 %d, h %d\n", div, width - div, height  );
 		roomA.x = x_start;
 		roomA.y = y_start;
 		roomA.w = div;
@@ -251,27 +308,20 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		roomB.y = y_start;
 		roomB.w = width - div;
 		roomB.h = height;
-		
-		doorA_x = x_start + div;
-		doorA_y = y_start + (height / 2);
 
-		
-		doorB_x = x_start + div - 1;
-		doorB_y = y_start + (height / 2);
-
-		if(isDoor){
-			passA |= W_DOOR;
-			passB |= E_DOOR;
-		} else {		
-			passA |= W_PASS;		
-			passB |= E_PASS;
-		}
+		passage_x = x_start + ( div - 1 );
+		passage_y = y_start + ( height / 2 );		
+	
+		passage = E_PASS;
+		if(passageHasDoor)
+			passage |= E_DOOR;
 	
 	} else {
 		// make two rooms, on on top of the other
 		while ((div < roomMinHeight) || (height - div < roomMinHeight)){
-			div = rand()%height;
+			div = (float)rand() / RAND_MAX * height;
 		}
+		
 		
 		roomA.x = x_start;
 		roomA.y = y_start;
@@ -283,22 +333,16 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		roomB.w = width;
 		roomB.h = height - div;
 
-		doorA_x = x_start + (width / 2);
-		doorA_y = y_start + div;
+		passage_x = x_start + ( width / 2 );
+		passage_y = y_start + ( div - 1 );
 
-		
-		doorB_x = x_start + (width / 2);
-		doorB_y = y_start + div - 1;
-		if(isDoor){
-			passA |= N_DOOR;
-			passB |= S_DOOR;
-		} else {
-			passA |= N_PASS; 		
-			passB |= S_PASS;
-		}
+		passage = S_PASS;
+		if(passageHasDoor)
+			passage |= S_DOOR;  
 	}
 	
-	int r = this->roomCount;
+	int r = roomCount; //this->roomCount;
+	
 	
 	if(!subdivideMaze(roomA.x, roomA.y, roomA.w, roomA.h, 0)){
 	// if we cannot divide the space once more, make a room
@@ -307,12 +351,12 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		room[r].w = roomA.w;		
 		room[r].h = roomA.h;
 	
-		initRoom(r);		
-		this->roomCount++;
-
+		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomA.x, roomA.y, roomA.w, roomA.h);
+	
+		roomCount++;//this->roomCount++;
 		
 	}
-	r = this->roomCount;
+	r = roomCount;//this->roomCount;
 	if(!subdivideMaze(roomB.x, roomB.y, roomB.w, roomB.h, 0)){
 	//if we cannot divice the space once more, make a room
 		room[r].x = roomB.x;
@@ -320,72 +364,78 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		room[r].w = roomB.w;	
 		room[r].h = roomB.h;
 		
-		initRoom(r);
-		this->roomCount++;
+		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomB.x, roomB.y, roomB.w, roomB.h);		
+		
+		roomCount ++;//this->roomCount++;
+	}
+	
+	if(horizontal){
+		for(int y = 0; y < height; y++){
+			nodes[x_start + div - 1][y_start + y ] -= E_PASS;
+		}
+	} else {
+		for(int x = 0; x < width; x++){
+			nodes[x_start + x][y_start + div - 1] -= S_PASS;
+		}
 	}
 		
 	//connect the rooms
-	nodes[doorA_x][doorA_y] |= passA;
-	nodes[doorB_x][doorB_y] |= passB;
+	nodes[passage_x][passage_y] |= passage;
 	
-	
-	// the space has successfully subdivided
+	// the space has been subdivided successfully
 	return 1;	
 }
 
-void MondrianGenerator::initRoom( int nr ){
-	for(int x = 0; x < room[nr].w; x++){
-		for(int y = 0; y < room[nr].h; y++){
+void MondrianGenerator::initRoom( Room room ){
+	for(int x = 0; x < room.w; x++){
+		for(int y = 0; y < room.h; y++){
 			int pass = 0;
 			if(x > 0)
 				pass |= W_PASS;
-			if(x < room[nr].w - 1)
+			if(x < room.w - 1)
 				pass |= E_PASS;
 			if(y > 0)
 				pass |= N_PASS;
-			if(y < room[nr].h - 1)
+			if(y < room.h - 1)
 				pass |= S_PASS;
 		
-			nodes[x + room[nr].x][y + room[nr].y] = ROOM | pass;
+			nodes[x + room.x][y + room.y] = ROOM | pass;
 		}
 	}
 
 }
 
+
 void MondrianGenerator::generate( Map *map, ShapePalette *shapePal ) {
-  updateStatus(MESSAGE);
-  //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
-  
+	updateStatus(MESSAGE);
+	scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
+
   //Sint16 mapx, mapy;
-  for(Sint16 x = 1; x < width - 1; x++) {    
-    for(Sint16 y = 1; y < height - 1; y++) { 
-		//nodes[x][y] = ROOM; 
-    }
-  } 
+	for(Sint16 x = 0; x < width; x++) {    
+		for(Sint16 y = 0; y < height; y++) { 
+			int pass = 0;
+			if(x > 0)
+				pass |= W_PASS;
+			if(x < width - 1)
+				pass |= E_PASS;
+			if(y > 0)
+				pass |= N_PASS;
+			if(y < height - 1)
+				pass |= S_PASS;
+						
+			nodes[x][y] = ROOM | pass;
+		}
+	} 
   
-/*  for(Sint16 x = 1; x < width -1; x++) {
-  	nodes[x][3] = S_PASS;
-  }*/
 
   this->roomCount = 0;
   
-  subdivideMaze(0, 0, height, width, 1);
+  subdivideMaze(0, 0, width, height, 1);
 
-
-  printMaze();  
-  
- // generateMaze();
-  //  printMaze();  
-  
-  //makeSparse();
-  //  printMaze();
-    
-  //makeLoops();
-  //  printMaze();
-    
-//  makeRooms();
+  //printMaze();
   
 }
+
 
 bool MondrianGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
   // flooded map?
@@ -403,6 +453,8 @@ bool MondrianGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
 
   return true;
 }
+
+
 
 void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
   // add shapes to map
@@ -796,6 +848,7 @@ void MondrianGenerator::drawDoor( Map *map, ShapePalette *shapePal,
 }
 
 void MondrianGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
+
   // add tables, chairs, etc.
   addItemsInEveryRoom(RpgItem::getItemByName("Table"), 1);
   addItemsInEveryRoom(RpgItem::getItemByName("Chair"), 2);  
@@ -818,6 +871,7 @@ void MondrianGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
 }
 
 void MondrianGenerator::addContainers(Map *map, ShapePalette *shapePal) {
+	
   int x = 0;
   int y = 0;
   RpgItem *rpgItem;

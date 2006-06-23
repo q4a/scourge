@@ -1653,7 +1653,7 @@ void Scourge::moveCreatures() {
   for(int i = 0; i < session->getCreatureCount(); i++) {
     if(!session->getCreature(i)->getStateMod(Constants::dead) &&
        levelMap->isLocationVisible(toint(session->getCreature(i)->getX()),
-                                   toint(session->getCreature(i)->getY()))) {
+																	 toint(session->getCreature(i)->getY()))) {
       moveMonster(session->getCreature(i));
     }
   }
@@ -2859,4 +2859,3 @@ void Scourge::mouseClickWhileExiting() {
     exitConfirmationDialog->setVisible(true);
   }
 }
-
