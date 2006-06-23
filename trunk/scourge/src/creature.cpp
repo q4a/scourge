@@ -515,7 +515,7 @@ void Creature::setTargetCreature( Creature *c, bool findPath ) {
         }
         //cerr << "...no path was found." << endl;
         session->getMap()->addDescription( "Can't find path to target. Sorry!" );
-        session->getGameAdapter()->setCursorMode( Constants::CURSOR_FORBIDDEN );
+				session->getGameAdapter()->setCursorMode( Constants::CURSOR_FORBIDDEN );
       }
     }
   }
@@ -2794,4 +2794,3 @@ bool Creature::rollSecretDoor( Location *pos ) {
 void Creature::resetSecretDoorAttempts() {
   secretDoorAttempts.clear();
 }
-

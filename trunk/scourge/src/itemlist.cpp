@@ -116,7 +116,7 @@ void ItemList::commonInit() {
 }
 
 char *ItemList::getName() {
-  return( creature ? creature->getName() : container->getRpgItem()->getName() );
+  return( creature ? creature->getName() : container->getRpgItem()->getName() );	
 }
 
 int ItemList::getItemCount() {
@@ -138,4 +138,3 @@ bool ItemList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
   }
   return ret;
 }
-

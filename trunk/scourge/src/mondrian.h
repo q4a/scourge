@@ -115,6 +115,8 @@ protected:
   bool drawNodes(Map *map, ShapePalette *shapePal);
 
   void printMaze();
+  
+  void printMazeUC();
 
   void drawDoor(Map *map, ShapePalette *shapePal, 
       Sint16 mapx, Sint16 mapy, int doorType, bool secret=false);
@@ -131,7 +133,7 @@ protected:
 
   virtual MapRenderHelper *getMapRenderHelper();
   
-  void initRoom( int roomNr );
+  void initRoom( Room room );
 
 };
 
