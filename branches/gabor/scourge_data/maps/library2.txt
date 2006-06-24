@@ -1,6 +1,0 @@
-# General text is inherited from library.txt
-
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
