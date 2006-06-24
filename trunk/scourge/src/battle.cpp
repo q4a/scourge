@@ -1142,6 +1142,16 @@ void Battle::hitWithItem() {
 }
 
 void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {
+
+	// monsters fight back
+	if( creature->getTargetCreature() &&
+			IS_AUTO_CONTROL( creature->getTargetCreature() ) &&
+			!creature->getTargetCreature()->hasTarget() ) {
+		if(debugBattle) cerr << creature->getTargetCreature()->getName() << 
+			" fights back!" << endl;
+		creature->getTargetCreature()->setTargetCreature( creature );
+	}
+
   if( toint( damage ) > 0 ) {
 
     // also affects spell attacks
