@@ -888,7 +888,7 @@ void ScourgeView::drawAfter() {
     glTranslatef( 20, 20, 0 );
     Creature *c = scourge->getCurrentBattle()->getCreature();
     char msg[80];
-    if( c->getPath()->size() > 0 ) {
+    if( c->getPath()->size() > 0 && !c->getBattle()->isInRangeOfTarget() ) {
       sprintf( msg, "%s %d/%d (cost %d)",
                c->getName(),
                c->getBattle()->getAP(),
