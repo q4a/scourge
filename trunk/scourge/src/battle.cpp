@@ -136,7 +136,6 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
 }                 
 
 bool Battle::fightTurn() {
-
   if(debugBattle) cerr << "TURN: creature=" << creature->getName() << 
     " ap=" << ap << 
     " wait=" << weaponWait << 
@@ -1346,11 +1345,19 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
 //  }
   
   sprintf( buff, "%s: %d", 
-           ( item ? item->getRpgItem()->getName() : "Bare Hands" ), 
-           ( sameTarget && nextTurn > 0 ? nextTurn : weaponWait ) );
-   color->r = 0.6f;
-   color->g = 0;
-   color->b = 0;
+					 ( item ? item->getRpgItem()->getName() : "Bare Hands" ), 
+					 ( sameTarget && nextTurn > 0 ? nextTurn : weaponWait ) );
+	color->r = 0.6f;
+	color->g = 0;
+	color->b = 0;
   return true;
 }
 
+bool Battle::isInRangeOfTarget() {
+	// FIXME: should also work with target item, location
+	if( !creature->getTargetCreature() ) return false;
+	float dist = creature->getDistanceToTarget();
+	Item *item = creature->getBestWeapon( dist );
+	return( ( !item && dist <= MIN_DISTANCE ) ||
+					( item && item->getRange() >= dist ) );
+}

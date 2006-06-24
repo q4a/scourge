@@ -126,6 +126,8 @@ class Battle {
 
   inline float getRange() { return range; }
 
+	bool isInRangeOfTarget();
+
  protected:
   void launchProjectile();
   //void initTurn();
