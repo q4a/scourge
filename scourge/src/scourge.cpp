@@ -1549,7 +1549,8 @@ bool Scourge::createBattleTurns() {
   }
 
   // if somebody is attacking (or casting a spell), enter battle mode
-  // and add everyone present to the battle round.
+  // and add party to the battle round. (Monsters are added when attacked,
+	// they fight back, see Battle::dealDamage())
   if (battleCount > 0) {
 
     // add other movement
@@ -1565,29 +1566,6 @@ bool Scourge::createBattleTurns() {
           }
         }
         if( !found ) battle[battleCount++] = party->getParty(i)->getBattle();
-      }
-    }
-    for (int i = 0; i < session->getCreatureCount(); i++) {
-      if (!session->getCreature(i)->getStateMod(Constants::dead) &&
-          session->getCreature(i)->getMonster() &&
-          !session->getCreature(i)->getMonster()->isNpc() &&
-          levelMap->isLocationVisible(toint(session->getCreature(i)->getX()),
-                                 toint(session->getCreature(i)->getY())) &&
-          levelMap->isLocationInLight(toint(session->getCreature(i)->getX()),
-                                      toint(session->getCreature(i)->getY()),
-                                      session->getCreature(i)->getShape())) {
-        bool hasTarget = (session->getCreature(i)->getTargetCreature() ||
-                          session->getCreature(i)->getAction() > -1);
-        if (!hasTarget || (hasTarget && !session->getCreature(i)->isTargetValid())) {
-          bool found = false;
-          for( int t = 0; t < battleCount; t++ ) {
-            if( battle[t] == session->getCreature(i)->getBattle() ) {
-              found = true;
-              break;
-            }
-          }
-          if( !found ) battle[battleCount++] = session->getCreature(i)->getBattle();
-        }
       }
     }
 
