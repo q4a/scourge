@@ -225,22 +225,22 @@ ThemeElement *GuiTheme::parseElement( char *line ) {
     element->color.a = atof( strtok( NULL, "," ) );
     element->width = atoi( strtok( NULL, "," ) );
     p = strtok( NULL, "," );
-    if( p ) {
+    if( p && strcmp(p,"none") ) {
       strcpy( element->north, p );
       strcat( element->north, ".bmp" );
     } else strcpy( element->north, "" );
     p = strtok( NULL, "," );
-    if( p ) {
+    if( p && strcmp(p,"none") ) {
       strcpy( element->south, p );
       strcat( element->south, ".bmp" );
     } else strcpy( element->south, "" );
     p = strtok( NULL, "," );
-    if( p ) {
+    if( p && strcmp(p,"none") ) {
       strcpy( element->east, p );
       strcat( element->east, ".bmp" );
     } else strcpy( element->east, "" );
     p = strtok( NULL, "," );
-    if( p ) {
+    if( p && strcmp(p,"none") ) {
       strcpy( element->west, p );
       strcat( element->west, ".bmp" );
     } else strcpy( element->west, "" );

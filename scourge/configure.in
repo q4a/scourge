@@ -192,7 +192,6 @@ if test "x$enable_sdl" != "xno" ; then
 
 fi
 
-
 dnl --------------------------------------------------------------------------
 dnl Check for GL library
 dnl --------------------------------------------------------------------------
@@ -324,6 +323,38 @@ fi
 LIBS="$saved_LIBS"
 TR_LIBS="$TR_LIBS -l$GLU_LIB_NAME"
 
+
+dnl --------------------------------------------------------------------------
+dnl Check for wxWidget library
+dnl --------------------------------------------------------------------------
+AC_ARG_ENABLE(sdl,[  --disable-editor           Disable detection and building of the editor])
+
+if test "x$enable_editor" != "xno" ; then
+
+	saved_LIBS="$LIBS"
+	saved_CPPFLAGS="$CPPFLAGS"
+	
+	AC_MSG_CHECKING([for wx-config library])
+	
+	AC_PATH_PROG(WXWIDGET, wx-config, no)
+	
+	if test "$WXWIDGET" = "no"; then
+	  AC_MSG_ERROR(Cannot find wxwidget: Will not build editor)
+	  have_WXWIDGET=no
+	else
+	  WXWIDGET_CFLAGS=`wx-config --cflags`
+	  WXWIDGET_LIBS=`wx-config --libs`
+	  have_WXWIDGET=yes
+	fi
+	
+	LIBS="$saved_LIBS"
+	TR_LIBS="$TR_LIBS $WXWIDGET_LIBS"
+	CPPFLAGS="$saved_CPPFLAGS" 
+	TR_CPPFLAGS="$TR_CPPFLAGS $WXWIDGET_CFLAGS"	
+else
+	have_WXWIDGET=no
+fi
+AM_CONDITIONAL(HAVE_WXWIDGET_LIB, test x$have_WXWIDGET = xyes)
 
 dnl --------------------------------------------------------------------------
 dnl Check for freetype library
@@ -490,4 +521,8 @@ src/squirrel/Makefile \
 src/sqstdlib/Makefile \
 src/sqbinding/Makefile \
 autopackage/default.apspec )
+
+if test "$have_WXWIDGET" = "yes"; then
+  AC_OUTPUT(src/tools/Makefile)
+fi
 
