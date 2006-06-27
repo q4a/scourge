@@ -16,6 +16,10 @@ AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
 
 SUBDIRS = freetype gui test rpg events net render io squirrel sqstdlib sqbinding
 
+if HAVE_WXWIDGET_LIB
+  SUBDIRS += tools	
+endif
+
 bin_PROGRAMS = scourge
 
 scourge_SOURCES = \
