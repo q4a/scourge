@@ -1,5 +1,6 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
-LDADD = $(top_builddir)/src/freetype/libScourgeFreeType.a \
+LDADD = $(top_builddir)/src/common/libScourgeCommon.a \
+	$(top_builddir)/src/freetype/libScourgeFreeType.a \
 	$(top_builddir)/src/gui/libScourgeGui.a \
 	$(top_builddir)/src/rpg/libScourgeRpg.a \
 	$(top_builddir)/src/net/libScourgeNet.a \
@@ -14,7 +15,7 @@ LDADD = $(top_builddir)/src/freetype/libScourgeFreeType.a \
 
 AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
 
-SUBDIRS = freetype gui test rpg events net render io squirrel sqstdlib sqbinding
+SUBDIRS = common freetype gui test rpg events net render io squirrel sqstdlib sqbinding
 
 if HAVE_WXWIDGET_LIB
   SUBDIRS += tools	
@@ -23,21 +24,17 @@ endif
 bin_PROGRAMS = scourge
 
 scourge_SOURCES = \
-	prefix.c\
-	prefix.h\
 	preferences.h\
-	constants.cpp\
-	constants.h\
 	persist.cpp\
 	persist.h\
-        creature.cpp\
-        creature.h\
+	creature.cpp\
+	creature.h\
 	calendar.cpp\
 	calendar.h\
 	date.cpp\
 	date.h\
-        item.cpp\
-        item.h\
+	item.cpp\
+	item.h\
 	terraingenerator.cpp\
 	terraingenerator.h\
 	cavemaker.cpp\

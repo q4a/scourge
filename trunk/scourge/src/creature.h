@@ -28,7 +28,7 @@
 #include <set>
 #include <algorithm> // STL for Heap
 
-#include "constants.h"
+#include "common/constants.h"
 #include "persist.h"
 #include "date.h"
 #include "render/renderedcreature.h"

@@ -21,7 +21,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../constants.h"
+#include "../common/constants.h"
 #include "../squirrel/squirrel.h"
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"

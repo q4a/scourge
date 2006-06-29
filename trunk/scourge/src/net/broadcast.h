@@ -2,7 +2,7 @@
 #ifndef BROADCAST_H
 #define BROADCAST_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 
 // since broadcasting doesn't appear to work in SDL_net, this is disabled
 #define ENABLE_BROADCASTING 0

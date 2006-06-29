@@ -20,7 +20,7 @@
 
 #include <iostream>
 #include <vector>
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/cardcontainer.h"

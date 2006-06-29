@@ -18,7 +18,7 @@ itemlist.h  -  description
 #ifndef ITEM_LIST_H
 #define ITEM_LIST_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/scrollinglist.h"
 #include <set>
 

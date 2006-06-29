@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "../constants.h"
+#include "../common/constants.h"
 #include "character.h"
 #include "rpg.h"
 

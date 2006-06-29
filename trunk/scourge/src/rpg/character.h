@@ -18,7 +18,7 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include <map>
 #include <set>
 #include <vector>

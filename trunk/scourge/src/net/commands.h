@@ -1,7 +1,7 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include "../persist.h"
 
 class CommandInterpreter {

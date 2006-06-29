@@ -24,7 +24,7 @@
 #include <vector>    // STL for Vector
 #include <algorithm> // STL for Heap
 #include <string>
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/guitheme.h"
 
 class Map;

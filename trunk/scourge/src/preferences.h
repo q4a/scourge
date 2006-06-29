@@ -19,7 +19,7 @@
 #define PREFERENCES_H
 
 
-#include "constants.h"
+#include "common/constants.h"
 
 // All engine action that can be binded
 // If you change this, ALSO change ENGINE_ACTION_NAMES in userconfiguration.cpp

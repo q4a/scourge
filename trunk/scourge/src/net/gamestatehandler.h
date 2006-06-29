@@ -1,7 +1,7 @@
 #ifndef GAME_STATE_HANDLER_H
 #define GAME_STATE_HANDLER_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 
 class GameStateHandler {
  public:

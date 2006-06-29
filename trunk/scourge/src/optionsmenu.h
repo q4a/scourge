@@ -19,7 +19,7 @@
 #define OPTIONSMENU_H
 
 #include <string.h>
-#include "constants.h"
+#include "common/constants.h"
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"

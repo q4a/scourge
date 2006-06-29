@@ -1,5 +1,5 @@
 /***************************************************************************
-                          constants.h  -  description
+                          common/constants.h  -  description
                              -------------------
     begin                : Sun Oct 12 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -213,8 +213,7 @@ class Color {
  public:
   float r, g, b, a;
 
-  Color() {
-  }
+  Color(): r(0), g(0), b(0), a(0) {}
 
   Color( float r, float g, float b, float a=1.0f ) {
 	this->set( r, g, b, a );
@@ -229,6 +228,8 @@ class Color {
 	this->b = b;
 	this->a = a;
   }
+
+	void Clear() { *this = Color(); }
 };
 
 /**
@@ -629,12 +630,19 @@ public:
   static int readLine(char *line, FILE *fp);
 
   inline static float toRadians(float angle) {
-	return 3.14159 * (angle / 180.0f);
+		return 3.14159 * (angle / 180.0f);
   }
 
   inline static float toAngle(float rad) {
-	return (180.0f * rad) / 3.14159;
+		return (180.0f * rad) / 3.14159;
   }
+
+	static int initRootDir( int argc, char *argv[] );
+
+private:
+  static bool checkFile(const char *dir, const char *file);
+  // used to run scourge with local resources
+  static void findLocalResources(const char *appPath, char *dir);
 };
 
 class CVector5

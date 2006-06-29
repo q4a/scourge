@@ -26,7 +26,7 @@
 #define MINI_MAP_WIDTH MAP_WIDTH/MINI_MAP_X_SCALE
 #define MINI_MAP_DEPTH MAP_DEPTH/MINI_MAP_Y_SCALE
 
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/widgetview.h"
 #include "gui/window.h"
 

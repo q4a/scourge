@@ -18,7 +18,7 @@ tradedialog.h  -  description
 #ifndef TRADE_DIALOG_H
 #define TRADE_DIALOG_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "itemlist.h"
 #include <map>
 

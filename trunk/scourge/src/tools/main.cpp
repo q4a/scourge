@@ -13,6 +13,7 @@
 #include "pagemissions.h"
 #include "pagegui.h"
 #include "common.h"
+#include "../common/constants.h"
 
 std::map <std::string,DF*> g_DFList;
 DF *g_DFCurrent;
@@ -36,6 +37,7 @@ class MyApp : public wxApp
 		}
 	}
 	virtual bool OnInit();
+	virtual bool Initialize(int& argc, wxChar **argv);
 };
 
 IMPLEMENT_APP(MyApp)
@@ -67,14 +69,25 @@ public:
 
 };
 
+bool MyApp::Initialize( int& argc, wxChar **argv ) {
+	// initialize scourge rootDir
+	Constants::initRootDir( (int)argc, (char**)argv );
+	// continue initializing our app
+	wxApp::Initialize( argc, argv );
+}
+
 bool MyApp::OnInit()
 {
 	g_DFBooks = new DFBooks;
-	g_DFBooks->Load("/home/gabor/scourge/trunk/scourge_data/world/books.txt", "B");
+	char path[300];
+	sprintf( path, "%s/world/books.txt", rootDir );
+	g_DFBooks->Load( path, "B");
 	g_DFMissions = new DFMissions;
-	g_DFMissions->Load("/home/gabor/scourge/trunk/scourge_data/world/missions.txt","MT");
+	sprintf( path, "%s/world/missions.txt", rootDir );
+	g_DFMissions->Load( path,"MT");
 	g_DFGui = new DFGui;
-	g_DFGui->Load("/home/gabor/scourge/trunk/scourge_data/world/gui.txt", "T");
+	sprintf( path, "%s/world/gui.txt", rootDir );
+	g_DFGui->Load( path, "T");
 	g_DFCurrent = g_DFBooks;
 
 	g_DFList["Books"] = g_DFBooks;

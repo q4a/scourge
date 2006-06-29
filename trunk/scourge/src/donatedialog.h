@@ -18,7 +18,7 @@
 #ifndef DONATE_DIALOG_H
 #define DONATE_DIALOG_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include <map>
 
 class Scourge;

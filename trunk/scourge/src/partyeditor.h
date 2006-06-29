@@ -20,7 +20,7 @@
 
 #include <string.h>
 #include <map>
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/widgetview.h"
 #include "party.h"
 #include "rpg/rpg.h"

@@ -18,7 +18,7 @@
 #ifndef MAINMENU_H
 #define MAINMENU_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include <vector>

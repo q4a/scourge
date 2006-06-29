@@ -19,7 +19,7 @@
 #define SESSION_H
 
 #include <vector>
-#include "constants.h"
+#include "common/constants.h"
 #include "preferences.h"
 //#include "board.h"
 #include "party.h"
@@ -164,11 +164,6 @@ public:
 
 protected:
   virtual void initData();
-
-private:
-  static bool checkFile(const char *dir, const char *file);
-  // used to run scourge with local resources
-  static void findLocalResources(const char *appPath, char *dir);
 
 };
 

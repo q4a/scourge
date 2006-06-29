@@ -17,7 +17,7 @@
 
 #ifndef MAP_EDITOR_H
 #define MAP_EDITOR_H
-#include "constants.h"
+#include "common/constants.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include "text.h"

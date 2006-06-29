@@ -18,7 +18,7 @@
 #ifndef SDLSCREENVIEW_H
 #define SDLSCREENVIEW_H
 
-#include "constants.h"
+#include "common/constants.h"
 
 /**
   *@author Gabor Torok

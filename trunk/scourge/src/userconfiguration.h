@@ -22,7 +22,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "constants.h"
+#include "common/constants.h"
 #include "preferences.h"
 
 // set to non-zero for debugging

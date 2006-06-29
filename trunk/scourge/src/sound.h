@@ -21,7 +21,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/window.h"
 #include "userconfiguration.h"
 

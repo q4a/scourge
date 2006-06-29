@@ -3,7 +3,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include "../persist.h"
 #include "tcputil.h"
 #include "gamestatehandler.h"

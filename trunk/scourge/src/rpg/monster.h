@@ -21,7 +21,7 @@
 #include <vector>
 #include <map>
 #include <stdio.h>
-#include "../constants.h"
+#include "../common/constants.h"
 #include "rpgitem.h"
 #include "spell.h"
 

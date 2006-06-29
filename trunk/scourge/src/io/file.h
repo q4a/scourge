@@ -18,7 +18,7 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include <SDL_endian.h>
 #include <SDL_rwops.h>
 

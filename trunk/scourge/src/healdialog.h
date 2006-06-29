@@ -18,7 +18,7 @@
 #ifndef HEAL_DIALOG_H
 #define HEAL_DIALOG_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include <map>
 
 class Scourge;
