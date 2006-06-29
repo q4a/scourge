@@ -350,7 +350,8 @@ void Session::creatureDeath(Creature *creature) {
 
 int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 
-	Constants::initRootDir( argc, argv );
+	int err = Constants::initRootDir( argc, argv );
+	if( err ) return err;
 
   Session *session = new Session( adapter );
   session->initialize();

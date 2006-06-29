@@ -850,12 +850,19 @@ bool Constants::checkFile(const char *dir, const char *file) {
 // this function is used to be able to run scourge while developing
 void Constants::findLocalResources(const char *appPath, char *dir) {
 
-  //cerr << "appPath=" << appPath << endl;
+  //cerr << "&^&^&^&^ appPath=" << appPath << endl;
 
   char testFile[80];
   sprintf( testFile, "%s/textures/cursor.bmp", DATA_DIR_NAME );
   // Where are we running from?
-  strcpy(dir, appPath);	 
+  strcpy(dir, appPath);
+
+	// append an ending / so the current dir is also considered
+	int n = strlen( dir );
+	if( !( dir[ n - 1 ] == '/' || dir[ n - 1 ] == SEPARATOR ) ) {
+		strcat( dir, "/" );
+	}
+
   // Look in this and the parent dir for a 'data' folder
   // ('i' has to count to at least 4 for OS X)
   for(int i = 0; i < 10; i++) {
