@@ -18,7 +18,7 @@
 #ifndef GAME_ADAPTER_H
 #define GAME_ADAPTER_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "persist.h"
 #include "sdlhandler.h"
 #include "render/mapadapter.h"

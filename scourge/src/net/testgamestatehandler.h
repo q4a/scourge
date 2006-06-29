@@ -1,7 +1,7 @@
 #ifndef TEST_GAME_STATE_HANDLER_H
 #define TEST_GAME_STATE_HANDLER_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include "gamestatehandler.h"
 
 class TestGameStateHandler : public GameStateHandler {

@@ -18,7 +18,7 @@
 #ifndef RPG_H
 #define RPG_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include <vector>
 #include <map>
 

@@ -1,15 +1,10 @@
 #ifndef DFGUI_H
 #define DFGUI_H
 
+#include "../common/constants.h"
 #include "datafile.h"
 #include <map>
 
-struct Color
-{
-	float r,g,b,a;
-	Color(): r(0), g(0), b(0), a(0) {}
-	void Clear() { *this = Color(); }
-};
 struct Element
 {
 	std::string texture, north, south, east, west;

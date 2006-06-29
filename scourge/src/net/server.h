@@ -3,7 +3,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include "tcputil.h"
 #include "clientinfo.h"
 #include "gamestatehandler.h"

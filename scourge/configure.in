@@ -509,6 +509,7 @@ CXXFLAGS="$TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
 AC_OUTPUT(Makefile src/Makefile \
+src/common/Makefile \
 src/gui/Makefile \
 src/test/Makefile \
 src/rpg/Makefile \

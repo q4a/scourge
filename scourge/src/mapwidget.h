@@ -18,7 +18,7 @@
 #ifndef MAP_WIDGET_H
 #define MAP_WIDGET_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/widgetview.h"
 //#include "gui/draganddrop.h"
 #include "gui/canvas.h"

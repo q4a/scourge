@@ -18,7 +18,7 @@
 #ifndef RELOAD_EVENT_H
 #define RELOAD_EVENT_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include "event.h"
 
 /** 

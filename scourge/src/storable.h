@@ -18,7 +18,7 @@
 #ifndef STORABLE_H
 #define STORABLE_H
 
-#include "constants.h"
+#include "common/constants.h"
 
 /**
  * @author Gabor Torok

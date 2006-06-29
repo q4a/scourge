@@ -18,7 +18,7 @@
 #ifndef COMBAT_TEST_H
 #define COMBAT_TEST_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 
 /**
   *@author Gabor Torok

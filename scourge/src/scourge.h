@@ -21,7 +21,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "constants.h"
+#include "common/constants.h"
 #include "sdlhandler.h"
 #include "calendar.h"
 #include "minimap.h"

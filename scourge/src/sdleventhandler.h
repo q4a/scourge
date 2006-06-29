@@ -18,7 +18,7 @@
 #ifndef SDLEVENTHANDLER_H
 #define SDLEVENTHANDLER_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "gui/widget.h"
 
 /**

@@ -22,7 +22,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "constants.h"
+#include "common/constants.h"
 #include "scourge.h"
 #include "gui/window.h"
 #include "gui/widget.h"

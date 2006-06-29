@@ -18,7 +18,7 @@
 #ifndef SCOURGE_HANDLER_H
 #define SCOURGE_HANDLER_H
 
-#include "constants.h"                            
+#include "common/constants.h"                            
 #include "sdleventhandler.h"
 
 class Scourge;

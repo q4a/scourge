@@ -3,7 +3,7 @@
 #ifndef TCP_UTIL_H
 #define TCP_UTIL_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 
 class TCPUtil {
 

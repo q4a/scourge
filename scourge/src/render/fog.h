@@ -18,7 +18,7 @@
 #ifndef FOG_H
 #define FOG_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include <set>
 
 class CFrustum;                

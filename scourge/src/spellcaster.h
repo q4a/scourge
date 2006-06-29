@@ -21,7 +21,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "constants.h"
+#include "common/constants.h"
 #include "session.h"
 #include "battle.h"
 

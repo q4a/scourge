@@ -18,7 +18,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include "../date.h"
 
 

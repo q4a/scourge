@@ -18,7 +18,7 @@
 #ifndef TEXT_EFFECT_H
 #define TEXT_EFFECT_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include <vector>
 
 /**

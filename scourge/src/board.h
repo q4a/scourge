@@ -18,7 +18,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include <map>
 #include <vector>
 #include <string>

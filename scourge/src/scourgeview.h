@@ -18,7 +18,7 @@
 #ifndef SCOURGE_VIEW_H
 #define SCOURGE_VIEW_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "sdlscreenview.h"
 #include <map>
 

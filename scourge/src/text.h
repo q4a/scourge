@@ -24,7 +24,7 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include "constants.h"
+#include "common/constants.h"
 
 /**
   *@author Gabor Torok

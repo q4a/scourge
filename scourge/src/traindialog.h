@@ -18,7 +18,7 @@
 #ifndef TRAIN_DIALOG_H
 #define TRAIN_DIALOG_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include <vector>
 
 class Scourge;

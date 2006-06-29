@@ -1,16 +1,5 @@
 INCLUDES = -I$(srcdir)
-LDADD = $(top_builddir)/src/freetype/libScourgeFreeType.a \
-	$(top_builddir)/src/gui/libScourgeGui.a \
-	$(top_builddir)/src/rpg/libScourgeRpg.a \
-	$(top_builddir)/src/net/libScourgeNet.a \
-	$(top_builddir)/src/render/libScourgeRender.a \
-	$(top_builddir)/src/io/libScourgeIo.a \
-	$(top_builddir)/src/sqbinding/libSqbinding.a \
-	$(top_builddir)/src/sqstdlib/libSqstdlib.a \
-	$(top_builddir)/src/squirrel/libSquirrel.a \
-	$(top_builddir)/src/events/libScourgeEvents.a \
-	$(top_builddir)/src/test/libScourgeTest.a
-
+LDADD = $(top_builddir)/src/common/libScourgeCommon.a
 
 bin_PROGRAMS = tools
 

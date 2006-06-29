@@ -9,7 +9,7 @@
 #include <freetype/fttrigon.h>
 
 //OpenGL Headers 
-#include "../constants.h"
+#include "../common/constants.h"
 
 //Some STL headers
 #include <vector>

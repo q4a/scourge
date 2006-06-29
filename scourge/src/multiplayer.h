@@ -19,7 +19,7 @@
 #ifndef MULTIPLAYER_H
 #define MULTIPLAYER_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "scourge.h"
 #include "gui/window.h"
 #include "gui/label.h"

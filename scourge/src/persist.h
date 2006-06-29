@@ -18,7 +18,7 @@
 #ifndef PERSIST_H
 #define PERSIST_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "rpg/rpg.h"
 
 class File;

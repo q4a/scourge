@@ -18,7 +18,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "constants.h"
+#include "common/constants.h"
 #include "persist.h"
 #include "render/rendereditem.h"
 #include "storable.h"

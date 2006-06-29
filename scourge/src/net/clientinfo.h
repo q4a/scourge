@@ -3,7 +3,7 @@
 #ifndef CLIENT_INFO_H
 #define CLIENT_INFO_H
 
-#include "../constants.h"
+#include "../common/constants.h"
 #include "../persist.h"
 #include "server.h"
 #include "tcputil.h"

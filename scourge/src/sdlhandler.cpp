@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 #include "sdlhandler.h"
-#include "constants.h"
+#include "common/constants.h"
 #include "gameadapter.h"
 #include "gui/window.h"
 #include "preferences.h"

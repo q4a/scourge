@@ -19,7 +19,7 @@
 #define RENDER_H
 
 // definitely outside of dir                    
-#include "../constants.h"
+#include "../common/constants.h"
 #include "../persist.h"
 #include "../preferences.h"
 
