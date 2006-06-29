@@ -9,17 +9,25 @@
 #include "dfbooks.h"
 #include "dfmissions.h"
 #include "dfgui.h"
+#include "dfclasses.h"
+#include "dfskills.h"
+#include "dfspells.h"
 #include "pagebooks.h"
 #include "pagemissions.h"
 #include "pagegui.h"
+#include "pageclasses.h"
+#include "pageskills.h"
 #include "common.h"
 #include "../common/constants.h"
 
 std::map <std::string,DF*> g_DFList;
 DF *g_DFCurrent;
-DataFile<Book> *g_DFBooks;
+DataFile<Book> *g_DFBooks;			// TODO - change these to just use g_DFList
 DataFile<Mission> *g_DFMissions;
 DataFile<Theme> *g_DFGui;
+DataFile<Class> *g_DFClasses;
+DataFile<SpecialSkill> *g_DFSkills;
+DataFile<School> *g_DFSpells;
 
 std::map <std::string,Page*> g_PageList;
 Page *g_currentPage;
@@ -28,8 +36,12 @@ class MyApp : public wxApp
 {
 	~MyApp()
 	{
-		delete g_DFBooks;
+		delete g_DFBooks;		// TODO - change this to just use g_DFList
 		delete g_DFMissions;
+		delete g_DFGui;
+		delete g_DFClasses;
+		delete g_DFSkills;
+		delete g_DFSpells;
 
 		for ( std::map<std::string,Page*>::iterator itr = g_PageList.begin(); itr != g_PageList.end(); itr++ )
 		{
@@ -80,8 +92,8 @@ bool MyApp::Initialize( int& argc, wxChar **argv ) {
 
 bool MyApp::OnInit()
 {
-	g_DFBooks = new DFBooks;
 	char path[300];
+	g_DFBooks = new DFBooks;
 	sprintf( path, "%s/world/books.txt", rootDir );
 	g_DFBooks->Load( path, "B");
 	g_DFMissions = new DFMissions;
@@ -90,15 +102,29 @@ bool MyApp::OnInit()
 	g_DFGui = new DFGui;
 	sprintf( path, "%s/world/gui.txt", rootDir );
 	g_DFGui->Load( path, "T");
+/**/g_DFClasses = new DFClasses;
+	sprintf( path, "%s/world/characters.txt", rootDir );
+	g_DFClasses->Load( path, "C");
+/**/g_DFSkills = new DFSkills;
+	sprintf( path, "%s/world/skills.txt", rootDir );
+	g_DFSkills->Load( path, "S");
+/**/g_DFSpells = new DFSpells;
+	sprintf( path, "%s/world/Spells.txt", rootDir );
+	g_DFSpells->Load( path, "S");
+
 	g_DFCurrent = g_DFBooks;
 
 	g_DFList["Books"] = g_DFBooks;
 	g_DFList["Missions"] = g_DFMissions;
 	g_DFList["GUI"] = g_DFGui;
+	g_DFList["Classes"] = g_DFClasses;
+	g_DFList["Skills"] = g_DFSkills;
 
 	g_PageList["Books"] = new PageBooks;
 	g_PageList["Missions"] = new PageMissions;
 	g_PageList["GUI"] = new PageGui;
+	g_PageList["Classes"] = new PageClasses;
+	g_PageList["Skills"] = new PageSkills;
 
 	MyFrame *frame = new MyFrame(_("Scourge Data Editor"), wxPoint(50,50),
                 wxSize(840,480));
@@ -145,10 +171,22 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &PageGui::OnColorChange );
 	frame->Connect( ID_GuiLineWidthScroll, wxEVT_SCROLL_THUMBTRACK,
 			(wxObjectEventFunction) &PageGui::OnLineWidthChange );
-	frame->Connect( ID_GuiElementSlider, wxEVT_SCROLL_THUMBTRACK,/*CHANGED,*/
+	frame->Connect( ID_GuiElementSlider, wxEVT_SCROLL_THUMBTRACK,
 			(wxObjectEventFunction) &PageGui::OnElementSliderChange );
-	frame->Connect( ID_GuiColorSlider, wxEVT_SCROLL_THUMBTRACK,/*CHANGED,*/
+	frame->Connect( ID_GuiColorSlider, wxEVT_SCROLL_THUMBTRACK,
 			(wxObjectEventFunction) &PageGui::OnColorSliderChange );
+
+	// Classes page events
+	frame->Connect( ID_ClassesSkillList, wxEVT_COMMAND_LISTBOX_SELECTED,
+			(wxObjectEventFunction) &PageClasses::OnSkillChange );
+
+	// Skills page events
+	frame->Connect( ID_SkillsTypeCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
+			(wxObjectEventFunction) &PageSkills::OnTypeChange );
+	frame->Connect( ID_SkillsIconXScroll, wxEVT_SCROLL_THUMBTRACK,
+			(wxObjectEventFunction) &PageSkills::OnIconXChange );
+	frame->Connect( ID_SkillsIconYScroll, wxEVT_SCROLL_THUMBTRACK,
+			(wxObjectEventFunction) &PageSkills::OnIconYChange );
 
 	frame->Show(TRUE);
 	SetTopWindow(frame);
@@ -184,6 +222,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	g_PageList["Books"]->Init(notebook,g_DFBooks);
 	g_PageList["Missions"]->Init(notebook,g_DFList["Missions"]);
 	g_PageList["GUI"]->Init(notebook,g_DFList["GUI"]);
+	g_PageList["Classes"]->Init(notebook,g_DFList["Classes"]);
+	g_PageList["Skills"]->Init(notebook,g_DFList["Skills"]);
 
 	// prev
 	wxButton *prev = new wxButton(panel, ID_Prev,_("<"),wxPoint(10,5),wxSize(20,30));

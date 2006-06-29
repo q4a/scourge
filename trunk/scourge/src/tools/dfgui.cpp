@@ -17,32 +17,32 @@ bool DFGui::LoadSingle(std::ifstream *fin, Theme *theme)
 	fin->getline(buffer, 256, '\n');
 	theme->name = &(buffer[2]);		// Skip the "T:"
 
-	if ( !ParseElement(fin,	theme->elements["windowBack"]					) ) return false;
-	if ( !ParseElement(fin,	theme->elements["windowTop"]					) ) return false;
-	if ( !ParseElement(fin,	theme->elements["windowBorder"]				) ) return false;
+	ParseElement(fin,	theme->elements["windowBack"]);
+	ParseElement(fin,	theme->elements["windowTop"]);
+	ParseElement(fin,	theme->elements["windowBorder"]);
 
-	if ( !ParseColor(fin,	theme->colors["windowTitleText"]				) ) return false;
-	if ( !ParseColor(fin,	theme->colors["windowText"]					) ) return false;
+	ParseColor(fin,	theme->colors["windowTitleText"]);
+	ParseColor(fin,	theme->colors["windowText"]);
 
-	if ( !ParseElement(fin,	theme->elements["buttonBackground"]			) ) return false;
-	if ( !ParseElement(fin,	theme->elements["buttonSelectionBackground"]	) ) return false;
-	if ( !ParseElement(fin,	theme->elements["buttonHighlight"]				) ) return false;
-	if ( !ParseElement(fin,	theme->elements["buttonBorder"]				) ) return false;
+	ParseElement(fin,	theme->elements["buttonBackground"]);
+	ParseElement(fin,	theme->elements["buttonSelectionBackground"]);
+	ParseElement(fin,	theme->elements["buttonHighlight"]);
+	ParseElement(fin,	theme->elements["buttonBorder"]);
 
-	if ( !ParseColor(fin,	theme->colors["buttonText"]					) ) return false;
-	if ( !ParseColor(fin,	theme->colors["buttonSelectionText"]			) ) return false;
+	ParseColor(fin,	theme->colors["buttonText"]);
+	ParseColor(fin,	theme->colors["buttonSelectionText"]);
 
-	if ( !ParseElement(fin,	theme->elements["listBackground"]				) ) return false;
-	if ( !ParseElement(fin,	theme->elements["inputBackground"]				) ) return false;
+	ParseElement(fin,	theme->elements["listBackground"]);
+	ParseElement(fin,	theme->elements["inputBackground"]);
 
-	if ( !ParseColor(fin,	theme->colors["inputText"]						) ) return false;
+	ParseColor(fin,	theme->colors["inputText"]);
 
-	if ( !ParseElement(fin,	theme->elements["selectionBackground"]			) ) return false;
+	ParseElement(fin,	theme->elements["selectionBackground"]);
 
-	if ( !ParseColor(fin,	theme->colors["selectionText"]					) ) return false;
+	ParseColor(fin,	theme->colors["selectionText"]);
 
-	if ( !ParseElement(fin,	theme->elements["selectedBorder"]				) ) return false;
-	if ( !ParseElement(fin,	theme->elements["selectedCharacterBorder"]		) ) return false;
+	ParseElement(fin,	theme->elements["selectedBorder"]);
+	ParseElement(fin,	theme->elements["selectedCharacterBorder"]);
 
 	return true;
 }
