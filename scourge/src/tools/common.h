@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <string>
+#include <vector>
 
 /** Forward Declarations **/
 class wxString;
@@ -18,5 +19,11 @@ std::string wx2std(wxString s);
 	Returns false if nothing is entered, or cancel is pressed
 */
 bool GetTextDialog(wxString,wxString,wxString&);
+
+/*
+	Splits a string into strings of up to length lineSize (cutting off at nearest space)
+	and stores the resulting strings in lines
+*/
+void SplitLine(std::string &line, std::vector<std::string> &lines, int lineSize = 70);
 
 #endif // COMMON_H
