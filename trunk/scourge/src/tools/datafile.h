@@ -38,6 +38,7 @@ protected:
 
 public:
 	DataFile();
+	DataFile(std::string, std::string);
 	virtual ~DataFile();
 
 	bool Load(std::string, std::string);
@@ -60,6 +61,11 @@ DataFile<T>::DataFile()
 {
 	currentNum = 1;
 	total = 0;
+}
+template <class T>
+DataFile<T>::DataFile(std::string fileName, std::string dataStart)
+{
+	Load(fileName, dataStart);
 }
 
 template <class T>

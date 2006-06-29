@@ -21,13 +21,13 @@
 #include "../common/constants.h"
 
 std::map <std::string,DF*> g_DFList;
-DF *g_DFCurrent;
-DataFile<Book> *g_DFBooks;			// TODO - change these to just use g_DFList
+//DF *g_DFCurrent;		-- not needed?
+/*DataFile<Book> *g_DFBooks;			// TODO - change these to just use g_DFList
 DataFile<Mission> *g_DFMissions;
 DataFile<Theme> *g_DFGui;
 DataFile<Class> *g_DFClasses;
 DataFile<SpecialSkill> *g_DFSkills;
-DataFile<School> *g_DFSpells;
+DataFile<School> *g_DFSpells;*/
 
 std::map <std::string,Page*> g_PageList;
 Page *g_currentPage;
@@ -36,12 +36,16 @@ class MyApp : public wxApp
 {
 	~MyApp()
 	{
-		delete g_DFBooks;		// TODO - change this to just use g_DFList
+		/*delete g_DFBooks;		// TODO - change this to just use g_DFList
 		delete g_DFMissions;
 		delete g_DFGui;
 		delete g_DFClasses;
 		delete g_DFSkills;
-		delete g_DFSpells;
+		delete g_DFSpells;*/
+		for ( std::map<std::string,DF*>::iterator itr = g_DFList.begin(); itr != g_DFList.end(); itr++ )
+		{
+			delete itr->second;
+		}
 
 		for ( std::map<std::string,Page*>::iterator itr = g_PageList.begin(); itr != g_PageList.end(); itr++ )
 		{
@@ -93,32 +97,39 @@ bool MyApp::Initialize( int& argc, wxChar **argv ) {
 bool MyApp::OnInit()
 {
 	char path[300];
-	g_DFBooks = new DFBooks;
+//	g_DFBooks = new DFBooks;
 	sprintf( path, "%s/world/books.txt", rootDir );
-	g_DFBooks->Load( path, "B");
-	g_DFMissions = new DFMissions;
+	g_DFList["Books"] = new DFBooks(path, "B");
+//	g_DFBooks->Load( path, "B");
+//	g_DFMissions = new DFMissions;
 	sprintf( path, "%s/world/missions.txt", rootDir );
-	g_DFMissions->Load( path,"MT");
-	g_DFGui = new DFGui;
+	g_DFList["Missions"] = new DFMissions(path, "MT");
+//	g_DFMissions->Load( path,"MT");
+//	g_DFGui = new DFGui;
 	sprintf( path, "%s/world/gui.txt", rootDir );
-	g_DFGui->Load( path, "T");
-/**/g_DFClasses = new DFClasses;
+	g_DFList["GUI"] = new DFGui(path, "T");
+//	g_DFGui->Load( path, "T");
+//	g_DFClasses = new DFClasses;
 	sprintf( path, "%s/world/characters.txt", rootDir );
-	g_DFClasses->Load( path, "C");
-/**/g_DFSkills = new DFSkills;
+	g_DFList["Classes"] = new DFClasses(path, "C");
+//	g_DFClasses->Load( path, "C");
+//	g_DFSkills = new DFSkills;
 	sprintf( path, "%s/world/skills.txt", rootDir );
-	g_DFSkills->Load( path, "S");
-/**/g_DFSpells = new DFSpells;
+	g_DFList["Spells"] = new DFSpells(path, "S");
+//	g_DFSkills->Load( path, "S");
+//	g_DFSpells = new DFSpells;
 	sprintf( path, "%s/world/Spells.txt", rootDir );
-	g_DFSpells->Load( path, "S");
+	g_DFList["Skills"] = new DFSkills(path, "S");
+//	g_DFSpells->Load( path, "S");
 
-	g_DFCurrent = g_DFBooks;
+//	g_DFCurrent = g_DFBooks;	-- not needed?
 
-	g_DFList["Books"] = g_DFBooks;
+/*	g_DFList["Books"] = g_DFBooks;
 	g_DFList["Missions"] = g_DFMissions;
 	g_DFList["GUI"] = g_DFGui;
 	g_DFList["Classes"] = g_DFClasses;
 	g_DFList["Skills"] = g_DFSkills;
+	g_DFList["Spells"] = g_DFSpells;*/
 
 	g_PageList["Books"] = new PageBooks;
 	g_PageList["Missions"] = new PageMissions;
@@ -324,7 +335,7 @@ void MyFrame::OnPageChange(wxCommandEvent& WXUNUSED(event))
 {
 	currentPage = notebook->GetCurrentPage();
 	wxString str = notebook->GetPageText( notebook->GetSelection() );
-	g_DFCurrent = g_DFList[ wx2std(str) ];
+//	g_DFCurrent = g_DFList[ wx2std(str) ];		-- not needed?
 	g_currentPage = g_PageList[ wx2std(str) ]->SetAsCurrent();
 
 	UpdatePageNumber();
