@@ -38,7 +38,7 @@ char Constants::inventory_location[][80] = {
 
 const char *Constants::localhost = "localhost";
 const char *Constants::adminUserName = "admin";
- 
+
 // assign the data dir
 //char rootDir[300] = DATA_DIR;
 char *rootDir = NULL;
@@ -81,26 +81,26 @@ int get_file_name( char *buff, int len, char *fileName ) {
   if ( (int)(strlen( buff ) + strlen( fileName ) +2) > len ) {
     return 1;
   }
-  
+
 #if defined( WIN32 )
   strcat( buff, "\\" );
 #else
   strcat( buff, "/" );
 #endif /* defined( WIN32 ) */
-  
+
   strcat( buff, fileName );
   return 0;
 }
 
 //sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
 char *Constants::messages[][80] = {
-  { 
-	"Infamy awaits in the dungeons of Scourge!", 
-	"Another day, another sewer! Welcome to Scourge!", 
+  {
+	"Infamy awaits in the dungeons of Scourge!",
+	"Another day, another sewer! Welcome to Scourge!",
 	"Happy hunting; welcome to Scourge!" },
-  { "That item is out of your reach", 
-	"You can't touch that", 
-	"You have to be closer to get that", 
+  { "That item is out of your reach",
+	"You can't touch that",
+	"You have to be closer to get that",
 	"You are too far to reach it" },
   { "The door is blocked",
 	"Something is blocking that door",
@@ -128,7 +128,7 @@ char *Constants::messages[][80] = {
   { "A dead character cannot perform this action." },
   { "hp:" },
   { "ac:" },
-  { "Your magic fizzles and dies.", 
+  { "Your magic fizzles and dies.",
 	"Only the roaches are impressed by your mumbled words.",
 	"The silence is broken only by some crickets nearby.",
 	"Bazzoomm! A small cloud of smoke rises to the ceiling." },
@@ -209,30 +209,30 @@ char *Constants::SKILL_NAMES[80] = {
 	"ARMOR_DEFEND",
 	"WEAPON_DEFEND",
 	"HAND_DEFEND",
-	
+
 	"NATURE_MAGIC",
 	"AWARENESS_MAGIC",
 	"LIFE_AND_DEATH_MAGIC",
 	"HISTORY_MAGIC",
 	"DECEIT_MAGIC",
-	"CONFRONTATION_MAGIC",	
-	
+	"CONFRONTATION_MAGIC",
+
 	"RESIST_NATURE_MAGIC",
 	"RESIST_AWARENESS_MAGIC",
 	"RESIST_LIFE_AND_DEATH_MAGIC",
 	"RESIST_HISTORY_MAGIC",
 	"RESIST_DECEIT_MAGIC",
-	"RESIST_CONFRONTATION_MAGIC",	
-	
+	"RESIST_CONFRONTATION_MAGIC",
+
 	"OPEN_LOCK",
 	"FIND_TRAP",
 	"FIND_SECRET_DOOR",
 	"MOVE_UNDETECTED",
 	"STEALING",
-	
+
 	"ENCHANT_ITEM",
 	"IDENTIFY_ITEM",
-	"IDENTIFY_CREATURE"	
+	"IDENTIFY_CREATURE"
 };
 char *Constants::SKILL_SYMBOL[ Constants::SKILL_COUNT ];
 char *Constants::SKILL_DESCRIPTION[ Constants::SKILL_COUNT ];
@@ -244,17 +244,17 @@ map<int,int> Constants::groupSkillMap;
 */
 
 const char *Constants::POTION_SKILL_NAMES[] = {
-  "HP", "MP", "AC" 
+  "HP", "MP", "AC"
 };
 
 const char *Constants::STATE_NAMES[] = {
   "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
-  "drunk", "poisoned", "cursed", "possessed", "blinded", "paralysed", "invisible", 
+  "drunk", "poisoned", "cursed", "possessed", "blinded", "paralysed", "invisible",
   "overloaded", "dead", "asleep"
 };
 const char *Constants::STATE_SYMBOLS[] = {
   "Air", "Earth", "Fire", "Stone", "Water",
-  "Jelly", "Ice", "Planar", "Astral", "Dire", "Cave", "Acid", 
+  "Jelly", "Ice", "Planar", "Astral", "Dire", "Cave", "Acid",
   "Spirit", "Mist", "Quiet"
 };
 
@@ -275,8 +275,8 @@ const Color *Constants::MAGIC_ITEM_COLOR[] = {
 const Color *Constants::SPECIAL_ITEM_COLOR = new Color( 1, 1, 0.5, 1 );
 
 const char *Constants::EFFECT_NAMES[] = {
-  "EFFECT_FLAMES", "EFFECT_GLOW", "	EFFECT_TELEPORT", "EFFECT_GREEN", "EFFECT_EXPLOSION", 
-  "EFFECT_SWIRL", "EFFECT_CAST_SPELL", "EFFECT_RING", "EFFECT_RIPPLE", "EFFECT_DUST", 
+  "EFFECT_FLAMES", "EFFECT_GLOW", "	EFFECT_TELEPORT", "EFFECT_GREEN", "EFFECT_EXPLOSION",
+  "EFFECT_SWIRL", "EFFECT_CAST_SPELL", "EFFECT_RING", "EFFECT_RIPPLE", "EFFECT_DUST",
   "EFFECT_HAIL", "EFFECT_TOWER", "EFFECT_BLAST"
 };
 
@@ -289,7 +289,7 @@ float Constants::textColor[][4]={{0.8f, 0.2f, 0.0f, 0.0f},
                            {0.0f, 0.2f, 0.0f, 0.0f}
                            };*/
 
-bool Constants::multitexture = true;	
+bool Constants::multitexture = true;
 
 Constants::Constants(){
 }
@@ -355,7 +355,7 @@ int Constants::readLine(char *line, FILE *fp) {
   return ret;
 }
 
-// *Note* 
+// *Note*
 //
 // Below are some math functions for calculating vertex normals.  We want vertex normals
 // because it makes the lighting look really smooth and life like.  You probably already
@@ -383,7 +383,7 @@ CVector3 Vector(CVector3 vPoint1, CVector3 vPoint2)
 CVector3 AddVector(CVector3 vVector1, CVector3 vVector2)
 {
     CVector3 vResult;                           // The variable to hold the resultant vector
-    
+
     vResult.x = vVector2.x + vVector1.x;        // Add Vector1 and Vector2 x's
     vResult.y = vVector2.y + vVector1.y;        // Add Vector1 and Vector2 y's
     vResult.z = vVector2.z + vVector1.z;        // Add Vector1 and Vector2 z's
@@ -395,7 +395,7 @@ CVector3 AddVector(CVector3 vVector1, CVector3 vVector2)
 CVector3 DivideVectorByScaler(CVector3 vVector1, float Scaler)
 {
     CVector3 vResult;                           // The variable to hold the resultant vector
-    
+
     vResult.x = vVector1.x / Scaler;            // Divide Vector1's x value by the scaler
     vResult.y = vVector1.y / Scaler;            // Divide Vector1's y value by the scaler
     vResult.z = vVector1.z / Scaler;            // Divide Vector1's z value by the scaler
@@ -420,7 +420,7 @@ CVector3 Cross(CVector3 vVector1, CVector3 vVector2)
 // This returns the normal of a vector
 CVector3 Normalize(CVector3 vNormal)
 {
-    double Magnitude;                           // This holds the magitude          
+    double Magnitude;                           // This holds the magitude
 
     Magnitude = Mag(vNormal);                   // Get the magnitude
 
@@ -439,16 +439,16 @@ CVector3 Normalize(CVector3 vNormal)
 
 void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal ) {
   CVector3 vVector1, vVector2, vNormal;
-  
+
   // Now let's calculate the face normals (Get 2 vectors and find the cross product of those 2)
-  
+
   vVector1 = Vector( *p1, *p3 );      // Get the vector of the polygon (we just need 2 sides for the normal)
   vVector2 = Vector( *p3, *p2 );      // Get a second vector of the polygon
-  
+
   vNormal  = Cross( vVector1, vVector2 );       // Return the cross product of the 2 vectors (normalize vector, but not a unit vector)
   //pTempNormals[i] = vNormal;                  // Save the un-normalized normal for the vertex normals
   vNormal  = Normalize(vNormal);              // Normalize the cross product to give us the polygons normal
-  
+
   normal->x = vNormal.x;
   normal->y = vNormal.y;
   normal->z = vNormal.z;
@@ -485,7 +485,7 @@ void ComputeNormals(t3DModel *pModel)
 
         // Go though all of the faces of this object
         for(int i=0; i < pObject->numOfFaces; i++)
-        {                                               
+        {
             // To cut down LARGE code, we extract the 3 points of this face
             vPoly[0] = pObject->pVerts[pObject->pFaces[i].vertIndex[0]];
             vPoly[1] = pObject->pVerts[pObject->pFaces[i].vertIndex[1]];
@@ -513,25 +513,25 @@ void ComputeNormals(t3DModel *pModel)
         {
             for (int j = 0; j < pObject->numOfFaces; j++)   // Go through all of the triangles
             {                                               // Check if the vertex is shared by another face
-                if (pObject->pFaces[j].vertIndex[0] == i || 
-                    pObject->pFaces[j].vertIndex[1] == i || 
+                if (pObject->pFaces[j].vertIndex[0] == i ||
+                    pObject->pFaces[j].vertIndex[1] == i ||
                     pObject->pFaces[j].vertIndex[2] == i)
                 {
                     vSum = AddVector(vSum, pTempNormals[j]);// Add the un-normalized normal of the shared face
                     shared++;                               // Increase the number of shared triangles
                 }
-            }      
-            
+            }
+
             // Get the normal by dividing the sum by the shared.  We negate the shared so it has the normals pointing out.
             pObject->pNormals[i] = DivideVectorByScaler(vSum, float(-shared));
 
             // Normalize the normal for the final vertex normal
-            pObject->pNormals[i] = Normalize(pObject->pNormals[i]); 
+            pObject->pNormals[i] = Normalize(pObject->pNormals[i]);
 
             vSum = vZero;                                   // Reset the sum
             shared = 0;                                     // Reset the shared
         }
-    
+
         // Free our memory and start over on the next object
         delete [] pTempNormals;
         delete [] pNormals;
@@ -572,13 +572,13 @@ void CreateTexture(GLuint textureArray[],char *strFileName,int textureID) {
 
     if(pBitmap[0] == NULL)                                // If we can't load the file, quit!
     {
-	  textureArray[textureID] = 0;	  
+	  textureArray[textureID] = 0;
 	  cerr << " Failed loading " << strFileName << " : " << SDL_GetError() << endl;
 	  //exit(0);
 	  return;
     }
 
-    Constants::checkTexture("Constants::CreateTexture", 
+    Constants::checkTexture("Constants::CreateTexture",
                             pBitmap[0]->w, pBitmap[0]->h);
 
     // Generate a texture with the associative texture ID stored in the array
@@ -676,7 +676,7 @@ void CreateTexture(GLuint textureArray[],char *strFileName,int textureID) {
     SDL_FreeSurface(pBitmap[0]);                        // Free the texture data we dont need it anymore
 }
 
-float Constants::distance(float x1, float y1, float w1, float h1, 
+float Constants::distance(float x1, float y1, float w1, float h1,
 					 float x2, float y2, float w2, float h2) {
   // the distance between their centers
   float rx1 = x1 + (w1 / 2.0f);
@@ -684,15 +684,15 @@ float Constants::distance(float x1, float y1, float w1, float h1,
   float ry1 = y1 - (h1 / 2.0f);
   float ry2 = y2 - (h2 / 2.0f);
 
-  float d = sqrt(((rx2 - rx1) * (rx2 - rx1)) + 
+  float d = sqrt(((rx2 - rx1) * (rx2 - rx1)) +
 				 ((ry2 - ry1) * (ry2 - ry1)));
 
   // remove the shapes' radius from the distance
-  float d1 = sqrt(((w1 / 2.0f) * (w1 / 2.0f)) + 
+  float d1 = sqrt(((w1 / 2.0f) * (w1 / 2.0f)) +
 				  ((h1 / 2.0f) * (h1 / 2.0f)));
-  float d2 = sqrt(((w2 / 2.0f) * (w2 / 2.0f)) + 
+  float d2 = sqrt(((w2 / 2.0f) * (w2 / 2.0f)) +
 				  ((h2 / 2.0f) * (h2 / 2.0f)));
-  
+
   float ret = d - (d1 + d2);
   return (ret < 0 ? 0 : ret);
 }
@@ -703,12 +703,12 @@ void Constants::checkTexture(char *message, int w, int h) {
   if( w > maxTextureSize || h > maxTextureSize) {
     cerr << "*****************************" << endl;
     cerr << "*****************************" << endl;
-    cerr << "***&&&*** " << message << 
-          " size=" << w << "x" << h << 
-          " max texture size=" << maxTextureSize << endl;    
+    cerr << "***&&&*** " << message <<
+          " size=" << w << "x" << h <<
+          " max texture size=" << maxTextureSize << endl;
     cerr << "Error: texture too big." << endl;
     cerr << "*****************************" << endl;
-    cerr << "*****************************" << endl;    
+    cerr << "*****************************" << endl;
   }
 }
 
@@ -748,7 +748,7 @@ void Constants::initConstants() {
   Constants::goodStateMod.push_back( Constants::ac_protected );
   Constants::goodStateMod.push_back( Constants::magic_protected );
   Constants::goodStateMod.push_back( Constants::invisible );
-  
+
   Constants::badStateMod.push_back( Constants::poisoned );
   Constants::badStateMod.push_back( Constants::cursed );
   Constants::badStateMod.push_back( Constants::possessed );
@@ -765,7 +765,7 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 #ifdef WIN32
   cerr << "\tWindows detected..." << endl;
   // for windows (binreloc doesn't compile in windows)
-  strcpy( rootDir, DATA_DIR_NAME ); 
+  strcpy( rootDir, DATA_DIR_NAME );
 #else
 #ifdef ENABLE_BINRELOC
   cerr << "\tusing binreloc..." << endl;
@@ -778,7 +778,7 @@ int Constants::initRootDir( int argc, char *argv[] ) {
   cerr << "\tnot using binreloc..." << endl;
   strcpy( rootDir, DATA_DIR );
 #endif
-#endif  
+#endif
 
   cerr << "\ttemp rootDir=" << rootDir << endl;
 
@@ -789,24 +789,24 @@ int Constants::initRootDir( int argc, char *argv[] ) {
   // (ie. we're running in the build folder and not in a distribution)
   char dir[300];
   dir[0] = '\0';
-  
+
 #ifdef WIN32
   findLocalResources(argv[0], dir);
 #else
   char cwd[300];
   if( !getcwd( cwd, 300 ) ) {
     cerr << "Can't determine current working directory." << endl;
-    exit( 1 );    
+    exit( 1 );
   }
   findLocalResources( cwd, dir );
 #endif
-  
+
   if(strlen(dir)) {
     cerr << "*** Using local data dir. Not running a distribution. dir=" << dir << endl;
     sprintf( rootDir, "%s%s", dir, DATA_DIR_NAME );
     cerr << "\trootDir=" << rootDir << endl;
   }
-  
+
   // config check
   if(argc >= 2 && !strcmp(argv[1], "--test-config")) {
     cerr << "Configuration:" << endl;
@@ -815,21 +815,21 @@ int Constants::initRootDir( int argc, char *argv[] ) {
     int dir_res = get_config_dir_name( dir, 300 );
     int file_res = get_config_file_name( file, 500 );
     cerr << "starting app: " << argv[0] << endl;
-    cerr << "rootDir=" << rootDir << 
-      "\nconfigDir=" << configDir << 
-      "\nconfigFile=" << CONFIG_FILE << 
+    cerr << "rootDir=" << rootDir <<
+      "\nconfigDir=" << configDir <<
+      "\nconfigFile=" << CONFIG_FILE <<
       "\ndir=" << dir << " dir_res=" << dir_res <<
       "\nfile=" << file << " file_res=" << file_res <<	endl;
     return 0;
   }
-  
+
   // do a final sanity check before running the game
   if( !checkFile(rootDir, "/textures/cursor.bmp") ) {
     cerr << "ERROR: check for files failed in data dir: " << rootDir << endl;
     cerr << "Either install the data files at the above location, or rebuild with ./configure --with-data-dir=<new location> or run the game from the source distribution's main directory (the one that contains src,data,etc.)" << endl;
     return 1;
   }
-  
+
   cerr << "Starting session. Final rootDir=" << rootDir << endl;
 
 	return 0;
@@ -883,5 +883,12 @@ void Constants::findLocalResources(const char *appPath, char *dir) {
     *(p) = 0;
   }
   dir[0] = '\0';
+}
+
+char* GetDataPath(char *file)
+{
+	static char path[300];
+	sprintf(path, file, rootDir);
+	return path;
 }
 
