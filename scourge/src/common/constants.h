@@ -165,9 +165,9 @@ union NetValue
 };
 typedef union NetValue NetValue;
 
-/* 
+/*
  * We define macros as mSWAPn where m is one of B=Byte, W=word and L=long
- * and n is one of B=byte, W=word, L=long, F=single float, 
+ * and n is one of B=byte, W=word, L=long, F=single float,
  * and G=double float. We are swapping n in chunks of m. So WSWAPL is
  * a word-swap of a longword (i.e. we swap the first and second words).
  * and BSWAPG is a byte-swap of a double (i.e. total reversal of byte order
@@ -306,10 +306,10 @@ public:
 
 // This stores the speed of the animation between each key frame for md2 models
 // A higher value means a *faster* animation and NOT a *smoother* animation.
-// The smoothing of the animation is only determined by fps. 
+// The smoothing of the animation is only determined by fps.
 // So this value should not be modified. Maybe later there will be an
 // animation_speed for each creature, to give the feeling some are faster than others ?
-#define ANIMATION_SPEED         5.0f  
+#define ANIMATION_SPEED         5.0f
 
 #define DEFAULT_SERVER_PORT 6543
 
@@ -333,7 +333,7 @@ public:
 // cave chunk size
 #define CAVE_CHUNK_SIZE 8
 
-// The max value of a skill under normal circumstances. 
+// The max value of a skill under normal circumstances.
 #define MAX_SKILL 100
 
 // define some active region labels
@@ -346,7 +346,7 @@ public:
 	INV_MODE_PROPERTIES,
 	INV_MODE_SPELLS,
 	INV_MODE_LOG,
-	MENU_0, 
+	MENU_0,
 	MENU_1,
 	MENU_2,
 	MENU_3,
@@ -405,9 +405,9 @@ public:
     PLAY_MISSION_LABEL,
     EXIT_MISSION_LABEL,
     TELEPORT_TO_BASE_LABEL,
-    OK_LABEL, 
-    CANCEL_LABEL, 
-    YES_LABEL, 
+    OK_LABEL,
+    CANCEL_LABEL,
+    YES_LABEL,
     NO_LABEL,
     LEVEL_UP_ERROR,
     OUT_OF_POINTS_ERROR,
@@ -456,30 +456,30 @@ public:
 	HP=0,
 	MP,
 	AC,
-	
+
 	POTION_SKILL_COUNT
   };
   static const char *POTION_SKILL_NAMES[];
   // return -1 on failure, or (-2 - i) on success
   static int getPotionSkillByName(char *p);
 
-  enum { 
-	blessed=0, 
-	empowered, 
-	enraged, 
-	ac_protected, 
-	magic_protected, 
-	drunk, 
-	poisoned, 
-	cursed, 
-	possessed, 
-	blinded, 
-	paralysed, 
+  enum {
+	blessed=0,
+	empowered,
+	enraged,
+	ac_protected,
+	magic_protected,
+	drunk,
+	poisoned,
+	cursed,
+	possessed,
+	blinded,
+	paralysed,
 	invisible,
 	overloaded,
 	dead,
 	asleep,
-	
+
 	// must be last
 	STATE_MOD_COUNT
   };
@@ -518,29 +518,29 @@ public:
     EFFECT_HAIL,
     EFFECT_TOWER,
     EFFECT_BLAST,
-    
+
     // must be last
     EFFECT_COUNT
-  };    
+  };
   static const int DAMAGE_DURATION = 500;
 
   static const char *EFFECT_NAMES[];
-  inline static int getEffectByName(char *s) { 
-	for(int i = 0; i < EFFECT_COUNT; i++) 
-	  if(!strcmp(s, EFFECT_NAMES[i])) return i; 
-	return EFFECT_FLAMES; 
+  inline static int getEffectByName(char *s) {
+	for(int i = 0; i < EFFECT_COUNT; i++)
+	  if(!strcmp(s, EFFECT_NAMES[i])) return i;
+	return EFFECT_FLAMES;
   }
-  
+
   // glColor for texts
   enum {
     RED_COLOR=0,
     BLUE_COLOR,
     YELLOW_COLOR,
     DEFAULT_COLOR // must be last for textColor[][]
-  };  
-  //static float textColor[][4]; 
-  
-  static bool multitexture;	
+  };
+  //static float textColor[][4];
+
+  static bool multitexture;
 
   enum {
     CURSOR_NORMAL=0,
@@ -571,7 +571,7 @@ public:
     ACTION_EAT_DRINK=0,
     ACTION_CAST_SPELL,
     ACTION_SPECIAL,
-    
+
     // this must be the last one
     ACTION_COUNT
   };
@@ -581,7 +581,7 @@ public:
     GUI_LAYOUT_BOTTOM,
     GUI_LAYOUT_SIDE,
     GUI_LAYOUT_INVENTORY,
-    
+
     // must be last one
     GUI_LAYOUT_COUNT
   };
@@ -620,7 +620,7 @@ public:
   static char *getMessage(int index);
 
   // shortest distance between two rectangles
-  static float distance(float x1, float y1, float w1, float h1, 
+  static float distance(float x1, float y1, float w1, float h1,
 						float x2, float y2, float w2, float h2);
 
   static void checkTexture(char *message, int w, int h);
@@ -645,6 +645,8 @@ private:
   static void findLocalResources(const char *appPath, char *dir);
 };
 
+char* GetDataPath(char *file);
+
 class CVector5
 {
 public:
@@ -653,14 +655,14 @@ public:
 
 
 // This is our 3D point class.  This will be used to store the vertices of our model.
-class CVector3 
+class CVector3
 {
 public:
     float x, y, z;
 };
 
 // This is our 2D point class.  This will be used to store the UV coordinates.
-class CVector2 
+class CVector2
 {
 public:
     float x, y;
@@ -730,7 +732,7 @@ struct t3DObject
 	CVector3  *pNormals;		// The object's normals
   float *shadingColorDelta;     // 1 per normal
 	CVector2  *pTexVerts;		// The texture's UV coordinates
-	tFace *pFaces;				// The faces information of the object	
+	tFace *pFaces;				// The faces information of the object
 };
 
 
@@ -748,16 +750,16 @@ typedef float vect3d[3];
 // We added 4 new variables to our model structure.  These will help us handle
 // the current animation.  As of now, the current animation will continue to loop
 // from it's start from to it's end frame until we right click and change animations.
-struct t3DModel 
+struct t3DModel
 {
     int numOfObjects;                   // The number of objects in the model
     int numOfMaterials;                 // The number of materials for the model
-    int numOfAnimations;                // The number of animations in this model     
+    int numOfAnimations;                // The number of animations in this model
     float movex;                        // Needed to draw the model
     float movey;
     float movez;
-    std::vector<tAnimationInfo> pAnimations; // The list of animations 
-    std::vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)    
+    std::vector<tAnimationInfo> pAnimations; // The list of animations
+    std::vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)
     std::vector<t3DObject> pObject;          // The object list for our model (frames)
     vect3d *vertices;                   // All vertices for every frame of the model
     int numVertices;                    // The number of vertices (constant for each frame)
