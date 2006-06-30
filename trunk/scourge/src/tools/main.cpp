@@ -45,8 +45,6 @@ class MyApp : public wxApp
 	virtual bool Initialize(int& argc, wxChar **argv);
 };
 
-IMPLEMENT_APP(MyApp)
-
 
 class MyFrame : public wxFrame
 {
@@ -81,6 +79,8 @@ bool MyApp::Initialize( int& argc, wxChar **argv ) {
 
 	// continue initializing our app
 	wxApp::Initialize( argc, argv );
+
+	return true;
 }
 
 bool MyApp::OnInit()
@@ -324,3 +324,5 @@ void MyFrame::OnPageChange(wxCommandEvent& WXUNUSED(event))
 
 	UpdatePageNumber();
 }
+
+IMPLEMENT_APP(MyApp)
