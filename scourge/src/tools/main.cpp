@@ -17,17 +17,12 @@
 #include "pagegui.h"
 #include "pageclasses.h"
 #include "pageskills.h"
+#include "pagespells.h"
 #include "common.h"
 #include "../common/constants.h"
 
 std::map <std::string,DF*> g_DFList;
 //DF *g_DFCurrent;		-- not needed?
-/*DataFile<Book> *g_DFBooks;			// TODO - change these to just use g_DFList
-DataFile<Mission> *g_DFMissions;
-DataFile<Theme> *g_DFGui;
-DataFile<Class> *g_DFClasses;
-DataFile<SpecialSkill> *g_DFSkills;
-DataFile<School> *g_DFSpells;*/
 
 std::map <std::string,Page*> g_PageList;
 Page *g_currentPage;
@@ -36,12 +31,6 @@ class MyApp : public wxApp
 {
 	~MyApp()
 	{
-		/*delete g_DFBooks;		// TODO - change this to just use g_DFList
-		delete g_DFMissions;
-		delete g_DFGui;
-		delete g_DFClasses;
-		delete g_DFSkills;
-		delete g_DFSpells;*/
 		for ( std::map<std::string,DF*>::iterator itr = g_DFList.begin(); itr != g_DFList.end(); itr++ )
 		{
 			delete itr->second;
@@ -95,47 +84,41 @@ bool MyApp::Initialize( int& argc, wxChar **argv ) {
 }
 
 bool MyApp::OnInit()
-{
-	char path[300];
-//	g_DFBooks = new DFBooks;
-	sprintf( path, "%s/world/books.txt", rootDir );
-	g_DFList["Books"] = new DFBooks(path, "B");
-//	g_DFBooks->Load( path, "B");
-//	g_DFMissions = new DFMissions;
-	sprintf( path, "%s/world/missions.txt", rootDir );
-	g_DFList["Missions"] = new DFMissions(path, "MT");
-//	g_DFMissions->Load( path,"MT");
-//	g_DFGui = new DFGui;
-	sprintf( path, "%s/world/gui.txt", rootDir );
-	g_DFList["GUI"] = new DFGui(path, "T");
-//	g_DFGui->Load( path, "T");
-//	g_DFClasses = new DFClasses;
-	sprintf( path, "%s/world/characters.txt", rootDir );
-	g_DFList["Classes"] = new DFClasses(path, "C");
-//	g_DFClasses->Load( path, "C");
-//	g_DFSkills = new DFSkills;
-	sprintf( path, "%s/world/skills.txt", rootDir );
-	g_DFList["Spells"] = new DFSpells(path, "S");
-//	g_DFSkills->Load( path, "S");
-//	g_DFSpells = new DFSpells;
-	sprintf( path, "%s/world/Spells.txt", rootDir );
-	g_DFList["Skills"] = new DFSkills(path, "S");
-//	g_DFSpells->Load( path, "S");
+{char path[300];
 
-//	g_DFCurrent = g_DFBooks;	-- not needed?
+	DFBooks *dfBooks = new DFBooks;
+	dfBooks->Load( GetDataPath("%s/world/books.txt"), "B");
 
-/*	g_DFList["Books"] = g_DFBooks;
-	g_DFList["Missions"] = g_DFMissions;
-	g_DFList["GUI"] = g_DFGui;
-	g_DFList["Classes"] = g_DFClasses;
-	g_DFList["Skills"] = g_DFSkills;
-	g_DFList["Spells"] = g_DFSpells;*/
+	DFMissions *dfMissions = new DFMissions;
+	dfMissions->Load( GetDataPath("%s/world/missions.txt"), "MT");
+
+	DFGui *dfGui = new DFGui;
+	dfGui->Load( GetDataPath("%s/world/gui.txt"), "T");
+
+//	DFClasses *dfClasses = new DFClasses;
+//	dfClasses->Load( GetDataPath("%s/world/characters.txt"), "C");
+
+	DFSkills *dfSkills = new DFSkills;
+	dfSkills->Load( GetDataPath("%s/world/skills.txt"), "S");
+
+	DFSpells *dfSpells = new DFSpells;
+	dfSpells->Load( GetDataPath("%s/world/spells.txt"), "S");
+
+//	g_DFCurrent = dfBooks;	-- not needed?
+
+	g_DFList["Books"] = dfBooks;
+	g_DFList["Missions"] = dfMissions;
+	g_DFList["GUI"] = dfGui;
+//	g_DFList["Classes"] = dfClasses;
+	g_DFList["Skills"] = dfSkills;
+	g_DFList["Spells"] = dfSpells;
 
 	g_PageList["Books"] = new PageBooks;
 	g_PageList["Missions"] = new PageMissions;
 	g_PageList["GUI"] = new PageGui;
-	g_PageList["Classes"] = new PageClasses;
+//	g_PageList["Classes"] = new PageClasses;
 	g_PageList["Skills"] = new PageSkills;
+	g_PageList["Spells"] = new PageSpells;
 
 	MyFrame *frame = new MyFrame(_("Scourge Data Editor"), wxPoint(50,50),
                 wxSize(840,480));
@@ -188,9 +171,9 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &PageGui::OnColorSliderChange );
 
 	// Classes page events
-	frame->Connect( ID_ClassesSkillList, wxEVT_COMMAND_LISTBOX_SELECTED,
+/*	frame->Connect( ID_ClassesSkillList, wxEVT_COMMAND_LISTBOX_SELECTED,
 			(wxObjectEventFunction) &PageClasses::OnSkillChange );
-
+*/
 	// Skills page events
 	frame->Connect( ID_SkillsTypeCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
 			(wxObjectEventFunction) &PageSkills::OnTypeChange );
@@ -230,17 +213,18 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	wxPanel *panel = new wxPanel(this, -1, wxPoint(0,385), wxSize(840,200));
 
 	// Pages
-	g_PageList["Books"]->Init(notebook,g_DFBooks);
+	g_PageList["Books"]->Init(notebook,g_DFList["Books"]);
 	g_PageList["Missions"]->Init(notebook,g_DFList["Missions"]);
 	g_PageList["GUI"]->Init(notebook,g_DFList["GUI"]);
-	g_PageList["Classes"]->Init(notebook,g_DFList["Classes"]);
+//	g_PageList["Classes"]->Init(notebook,g_DFList["Classes"]);
 	g_PageList["Skills"]->Init(notebook,g_DFList["Skills"]);
+	g_PageList["Spells"]->Init(notebook,g_DFList["Spells"]);
 
 	// prev
 	wxButton *prev = new wxButton(panel, ID_Prev,_("<"),wxPoint(10,5),wxSize(20,30));
 	// page number
 	char buffer[64];
-	sprintf(buffer, "Page %i/%i", g_DFBooks->GetCurrentNum(), g_DFBooks->GetTotal());
+	sprintf(buffer, "Page %i/%i", g_DFList["Books"]->GetCurrentNum(), g_DFList["Books"]->GetTotal());
 	wxStaticText *bookPageNumText = new wxStaticText(panel, ID_PageNum, std2wx( buffer ), wxPoint(35,15));
 	// next
 	wxButton *next = new wxButton(panel, ID_Next,_(">"),wxPoint(100,5),wxSize(20,30));
