@@ -2,6 +2,7 @@
 #include "dfskills.h"
 #include <wx/wx.h>
 #include "common.h"
+#include "../common/constants.h"
 
 PageSkills::PageSkills()
 {
@@ -135,7 +136,9 @@ void PageSkills::OnIconYChange()
 }
 void PageSkills::UpdateIcon()
 {
-/*	wxImage image(L"../../share/scourge_data/textures/spells.bmp");
+	char path[300];
+	sprintf( path, "%s/textures/spells.bmp", rootDir );
+	wxImage image(std2wx(std::string(path)));
 	wxBitmap bitmap(image);
 
 	int icon_x = iconXScroll->GetThumbPosition();
@@ -143,5 +146,5 @@ void PageSkills::UpdateIcon()
 	wxBitmap icon = bitmap.GetSubBitmap( wxRect(32*(icon_x-1),32*(icon_y-1),32,32) );
 
 	wxClientDC dc(page);
-	dc.DrawBitmap(icon, 110,75, false);*/
+	dc.DrawBitmap(icon, 110,75, false);
 }

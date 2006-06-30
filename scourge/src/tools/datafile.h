@@ -38,7 +38,6 @@ protected:
 
 public:
 	DataFile();
-	DataFile(std::string, std::string);
 	virtual ~DataFile();
 
 	bool Load(std::string, std::string);
@@ -62,11 +61,6 @@ DataFile<T>::DataFile()
 	currentNum = 1;
 	total = 0;
 }
-template <class T>
-DataFile<T>::DataFile(std::string fileName, std::string dataStart)
-{
-	Load(fileName, dataStart);
-}
 
 template <class T>
 DataFile<T>::~DataFile()
@@ -82,6 +76,11 @@ template <class T>
 bool DataFile<T>::Load(std::string fileName, std::string dataStart)
 {
 	std::ifstream fin(fileName.c_str(), std::ios::binary);
+	if ( !fin )
+	{
+		std::cerr << "\n --- Error loading a data file ---\nfileName: " << fileName << "\n\n";
+		return false;
+	}
 	std::string line;
 	char buffer[512];
 	T *t;

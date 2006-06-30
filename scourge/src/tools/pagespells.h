@@ -14,7 +14,7 @@ class PageSpells : public Page
 protected:
 
 public:
-	DFSpells *DFSpells;
+	DFSpells *dfSpells;
 
 public:
 	PageSpells();
