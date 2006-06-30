@@ -13,7 +13,13 @@ tools_SOURCES = \
 	dfgui.cpp\
 	dfgui.h\
 	dfmissions.cpp\
-	dfmission.h\
+	dfmissions.h\
+	dfskills.cpp\
+	dfskills.h\
+	dfspells.cpp\
+	dfspells.h\
+	dfclasses.cpp\
+	dfclasses.h\
 	main.cpp\
 	pagebook.cpp\
 	pagebooks.cpp\
@@ -21,7 +27,14 @@ tools_SOURCES = \
 	page.cpp\
 	page.h\
 	pagegui.cpp\
+	pagegui.h\
 	pagemissions.cpp\
-	pagemissions.h
+	pagemissions.h\
+	pageskills.cpp\
+	pageskills.h\
+	pagespells.cpp\
+	pagespells.h\
+	pageclasses.cpp\
+	pageclasses.h
 	
 	
