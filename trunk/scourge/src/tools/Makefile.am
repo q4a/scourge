@@ -19,9 +19,8 @@ tools_SOURCES = \
 	dfspells.cpp\
 	dfspells.h\
 	dfclasses.cpp\
-	dfclasses.h\
+	dfclasses.h
 	main.cpp\
-	pagebook.cpp\
 	pagebooks.cpp\
 	pagebooks.h\
 	page.cpp\
