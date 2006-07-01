@@ -35,10 +35,12 @@ public:
 	wxWindow* GetPage() { return page; }
 	DF *GetDataFile() { return dataFile; }
 
-	void Prev();
-	void Next();
-	void New();
-	void Del();
+	virtual void Prev();
+	virtual void Next();
+	virtual void New();
+	virtual void Del();
+
+	virtual void UpdatePageNumber();
 
 };
 
@@ -79,6 +81,10 @@ enum
 		ID_SkillsIconXScroll,
 		ID_SkillsIconYScroll,
 	ID_SpellsPage,
+		ID_SpellsColorSlider,
+		ID_SpellsSubNotebook,
+		ID_Schools_subPage,
+		ID_Spells_subPage,
 	ID_Page,
 		ID_Prev,
 		ID_Next,

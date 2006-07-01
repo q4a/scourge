@@ -21,10 +21,10 @@ tools_SOURCES = \
 	dfclasses.cpp\
 	dfclasses.h\
 	main.cpp\
-	pagebooks.cpp\
-	pagebooks.h\
 	page.cpp\
 	page.h\
+	pagebooks.cpp\
+	pagebooks.h\
 	pagegui.cpp\
 	pagegui.h\
 	pagemissions.cpp\
@@ -33,6 +33,10 @@ tools_SOURCES = \
 	pageskills.h\
 	pagespells.cpp\
 	pagespells.h\
+	subpageschool.cpp\
+	subpageschools.h\
+	subpagespells.cpp\
+	subpagespells.h\
 	pageclasses.cpp\
 	pageclasses.h
 	

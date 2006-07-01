@@ -25,6 +25,7 @@ std::map <std::string,DF*> g_DFList;
 //DF *g_DFCurrent;		-- not needed?
 
 std::map <std::string,Page*> g_PageList;
+wxStaticText *g_pageNumText;
 Page *g_currentPage;
 
 class MyApp : public wxApp
@@ -44,6 +45,8 @@ class MyApp : public wxApp
 	virtual bool OnInit();
 	virtual bool Initialize(int& argc, wxChar **argv);
 };
+
+IMPLEMENT_APP(MyApp)
 
 
 class MyFrame : public wxFrame
@@ -79,8 +82,6 @@ bool MyApp::Initialize( int& argc, wxChar **argv ) {
 
 	// continue initializing our app
 	wxApp::Initialize( argc, argv );
-
-	return true;
 }
 
 bool MyApp::OnInit()
@@ -182,6 +183,10 @@ bool MyApp::OnInit()
 	frame->Connect( ID_SkillsIconYScroll, wxEVT_SCROLL_THUMBTRACK,
 			(wxObjectEventFunction) &PageSkills::OnIconYChange );
 
+	// Spells page events
+	frame->Connect( ID_SpellsSubNotebook, wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,
+			(wxObjectEventFunction) &PageSpells::OnSubPageChange );
+
 	frame->Show(TRUE);
 	SetTopWindow(frame);
 
@@ -225,7 +230,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	// page number
 	char buffer[64];
 	sprintf(buffer, "Page %i/%i", g_DFList["Books"]->GetCurrentNum(), g_DFList["Books"]->GetTotal());
-	wxStaticText *bookPageNumText = new wxStaticText(panel, ID_PageNum, std2wx( buffer ), wxPoint(35,15));
+	/*wxStaticText **/g_pageNumText = new wxStaticText(panel, ID_PageNum, std2wx( buffer ), wxPoint(35,15));
 	// next
 	wxButton *next = new wxButton(panel, ID_Next,_(">"),wxPoint(100,5),wxSize(20,30));
 	// new
@@ -291,7 +296,7 @@ void MyFrame::UpdatePageNumber()
 {
 	char buffer[64];
 	sprintf(buffer, "Page %i/%i", g_currentPage->GetDataFile()->GetCurrentNum(), g_currentPage->GetDataFile()->GetTotal());
-	wxWindow *w = FindWindow(ID_PageNum);		((wxStaticText*)w)->SetLabel(std2wx(buffer));
+	g_pageNumText->SetLabel(std2wx(buffer));
 }
 
 void MyFrame::OnPrev(wxCommandEvent& WXUNUSED(event))
@@ -302,17 +307,20 @@ void MyFrame::OnPrev(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnNext(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Next();
-	UpdatePageNumber();
+//	UpdatePageNumber();
+g_currentPage->UpdatePageNumber();
 }
 void MyFrame::OnNew(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->New();
-	UpdatePageNumber();
+//	UpdatePageNumber();
+g_currentPage->UpdatePageNumber();
 }
 void MyFrame::OnDel(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Del();
-	UpdatePageNumber();
+//	UpdatePageNumber();
+g_currentPage->UpdatePageNumber();
 }
 
 void MyFrame::OnPageChange(wxCommandEvent& WXUNUSED(event))
@@ -322,7 +330,6 @@ void MyFrame::OnPageChange(wxCommandEvent& WXUNUSED(event))
 //	g_DFCurrent = g_DFList[ wx2std(str) ];		-- not needed?
 	g_currentPage = g_PageList[ wx2std(str) ]->SetAsCurrent();
 
-	UpdatePageNumber();
+//	UpdatePageNumber();
+g_currentPage->UpdatePageNumber();
 }
-
-IMPLEMENT_APP(MyApp)

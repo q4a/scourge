@@ -15,7 +15,8 @@ class wxListBox;
 class wxString;
 class wxArrayString;
 class wxSlider;
-		class wxScrollEvent;
+class wxPanel;
+
 class PageGui : public Page
 {
 protected:
@@ -52,7 +53,7 @@ public:
 	void OnElementSliderChange();
 	void OnColorSliderChange();
 
-	void OnLineWidthChange(wxScrollEvent&);
+	void OnLineWidthChange();
 
 protected:
 	Element *currentElement;
@@ -87,6 +88,7 @@ protected:
 		wxStaticText *gElementText;
 		wxStaticText *bElementText;
 		wxStaticText *aElementText;
+	wxPanel *elementColorPanel;
 
 	wxSlider *rColorSlider;
 	wxSlider *gColorSlider;
@@ -96,6 +98,7 @@ protected:
 		wxStaticText *gColorText;
 		wxStaticText *bColorText;
 		wxStaticText *aColorText;
+	wxPanel *colorPanel;
 
 };
 

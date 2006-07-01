@@ -101,6 +101,8 @@ void PageSkills::SetCurrent()
 
 	skill->icon_x = wx2std( iconXEdit->GetValue() );
 	skill->icon_y = wx2std( iconYEdit->GetValue() );
+	if ( skill->icon_x == "0" )		skill->icon_x = "1";
+	if ( skill->icon_y == "0" )		skill->icon_y = "1";
 
 	skill->description = wx2std( descriptionEdit->GetValue() );
 }
