@@ -6,6 +6,11 @@
 
 /** Forward Declarations **/
 class wxString;
+class wxStaticText;
+class Page;
+
+extern wxStaticText *g_pageNumText;
+extern Page *g_currentPage;
 
 /*
 	This code obtained from

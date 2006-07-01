@@ -8,6 +8,11 @@ class DFSpells;
 class wxTextCtrl;
 class wxScrollBar;
 class wxComboBox;
+class wxSlider;
+class wxWindow;
+class subPageSchools;
+class subPageSpells;
+class wxCommandEvent;
 
 class PageSpells : public Page
 {
@@ -24,6 +29,12 @@ public:
 
 	void UpdatePage();
 
+
+	void Prev();
+	void Next();
+
+	void UpdatePageNumber();
+
 /*	void LoadAll();*/
 /*	void SaveAll();*/
 	void GetCurrent();
@@ -31,22 +42,16 @@ public:
 	void ClearCurrent();
 
 
+	void OnSubPageChange(wxCommandEvent& event);
 	void OnIconXChange();
 	void OnIconYChange();
 	void UpdateIcon();
 
 protected:
-	// List of editable controls
-	wxTextCtrl *nameEdit;
-
-	wxComboBox *typeCombo;
-	wxComboBox *eventCombo;
-
-	wxScrollBar *iconXScroll;
-	wxScrollBar *iconYScroll;
-	wxTextCtrl *iconXEdit;
-	wxTextCtrl *iconYEdit;
-	wxTextCtrl *descriptionEdit;
+	wxNotebook *subNotebook;
+	subPageSchools *pageSchools;
+	subPageSpells *pageSpells;
+	Page *currentSubPage;
 };
 
 #endif // PAGESPELLS_H
