@@ -80,6 +80,7 @@ std::cerr<<"4) key = "<<key<<"\n";
 			spell->distance = strtok(0, ",");
 			spell->area = strtok(0, ",");
 			spell->speed = strtok(0, ",");
+			spell->effect = strtok(0, ",");
 			spell->target = strtok(0, ",");
 			spell->icon_x = strtok(0, ",");
 			spell->icon_y = strtok(0, ",");
@@ -88,7 +89,6 @@ std::cerr<<"4) key = "<<key<<"\n";
 			if ( p )
 				spell->prerequisite = p;
 
-//			school->spells[spell->name] = spell;
 			school->spells.push_back(spell);
 		}
 		else if ( buffer[0] == 'W' )

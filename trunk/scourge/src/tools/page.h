@@ -87,6 +87,8 @@ enum
 		ID_Spells_subPage,
 		ID_subSchoolsColorSlider,
 		ID_subSpellsSchoolList,
+		ID_SpellsIconXScroll,
+		ID_SpellsIconYScroll,
 	ID_Page,
 		ID_Prev,
 		ID_Next,

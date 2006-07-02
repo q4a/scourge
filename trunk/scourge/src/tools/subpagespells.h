@@ -11,12 +11,14 @@ class DFSpells;
 struct School;
 struct Spell;
 class wxTextCtrl;
+class wxStaticText;
 class wxScrollBar;
 class wxComboBox;
 class wxSlider;
 class wxWindow;
 class wxListBox;
 class wxArrayString;
+class wxCheckListBox;
 class PageSpells;
 
 class subPageSpells : public Page
@@ -62,6 +64,7 @@ protected:
 	// List of editable controls
 	wxListBox *schoolList;
 		wxArrayString *schoolStrArray;
+	wxStaticText *schoolNameText;
 
 	wxTextCtrl *nameEdit;
 	wxTextCtrl *symbolEdit;
@@ -72,6 +75,19 @@ protected:
 	wxTextCtrl *actionEdit;
 	wxTextCtrl *distanceEdit;
 	wxComboBox *areaCombo;
+	wxCheckListBox *clipCheckList;
+	wxTextCtrl *speedEdit;
+	wxTextCtrl *effectEdit;
+
+	wxScrollBar *iconXScroll;
+	wxScrollBar *iconYScroll;
+	wxTextCtrl *iconXEdit;
+	wxTextCtrl *iconYEdit;
+
+	wxComboBox *dispositionCombo;
+	wxComboBox *prereqCombo;
+	wxTextCtrl *soundEdit;
+	wxTextCtrl *notesEdit;
 };
 
 
