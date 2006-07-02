@@ -2295,15 +2295,16 @@ Shape *Map::isWall(int x, int y, int z) {
           (!loc->creature || loc->creature->getShape() != loc->shape) ? loc->shape : NULL );
 }                             
 
-// FIXME: only uses x, y for now
 bool Map::shapeFits(Shape *shape, int x, int y, int z) {
-  for(int tx = 0; tx < shape->getWidth(); tx++) {
-	for(int ty = 0; ty < shape->getDepth(); ty++) {
-	  if(getLocation(x + tx, y - ty, 0)) {
-		return false;
-	  }
+  for( int tx = 0; tx < shape->getWidth(); tx++ ) {
+		for( int ty = 0; ty < shape->getDepth(); ty++ ) {
+			for( int tz = 0; tz < shape->getHeight(); tz++ ) {
+				if( getLocation( x + tx, y - ty, z + tz ) ) {
+					return false;
+				}
+			}
+		}
 	}
-  }
   return true;
 }
 

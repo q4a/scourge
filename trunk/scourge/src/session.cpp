@@ -232,6 +232,12 @@ Creature *Session::newCreature(Monster *monster, GLShape *shape, bool loaded) {
   return c;
 }
 
+Creature *Session::newCreature( Character *character, char *name, int model ) {
+	Creature *c = new Creature( this, character, name, model );
+  creatures.push_back( c );
+  return c;
+}
+
 void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   // delete the items and creatures created for this mission
   // (except items in inventory) 

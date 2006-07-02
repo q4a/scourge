@@ -678,6 +678,8 @@ public:
   bool saveGame(Session *session);  
   bool loadGame( Session *session, char *error );
 
+	RenderedCreature *createWanderingHero( int level );
+
 protected:
 
    void drawPortrait( Widget *w, Creature *p );

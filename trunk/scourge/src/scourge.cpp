@@ -2010,7 +2010,7 @@ void Scourge::drawWidgetContents(Widget *w) {
     }
   }
 
-  cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
+  //cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
   return;
 }
 
@@ -2837,3 +2837,8 @@ void Scourge::mouseClickWhileExiting() {
     exitConfirmationDialog->setVisible(true);
   }
 }
+
+RenderedCreature *Scourge::createWanderingHero( int level ) {
+	return mainMenu->createWanderingHero( level );
+}
+

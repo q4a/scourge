@@ -177,6 +177,7 @@ bool Party::switchToNextLivePartyMember() {
 }
 
 void Party::setPlayer(int n, bool updateui) {
+	if( n >= getPartySize() ) return;
   player = party[n];
   player->setNextDontMove(NULL, 0);
   // init the rest of the party
@@ -608,4 +609,12 @@ void Party::recomputeMaxSkills() {
     }
     maxSkills[ skill ] = maxPC;
   }
+}
+
+int Party::getAverageLevel() {
+	int sum = 0;
+	for( int i = 0; i < getPartySize(); i++ ) {
+		sum += getParty( i )->getLevel();
+	}
+	return( sum ? (int)( sum / (float)getPartySize() ) : 0 );
 }

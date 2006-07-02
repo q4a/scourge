@@ -465,7 +465,7 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == scourge->getRoundButton() ) {
     scourge->getParty()->toggleRound();
   } else {
-    for( int t = 0; t < 4; t++ ) {
+    for( int t = 0; t < scourge->getParty()->getPartySize(); t++ ) {
       if( widget == scourge->getPlayerInfo( t ) ) {
         if( scourge->getTargetSelectionFor() ) {
           scourge->handleTargetSelectionOfCreature( scourge->getParty()->getParty( t ) );
