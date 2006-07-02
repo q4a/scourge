@@ -701,6 +701,28 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
 
   // read the level's data
   loadMapDataFile( adapter, filename );
+
+	// if there are npc-s add some wondering heroes
+	if( !npcInfos.empty() ) {
+		addWanderingHeroes( adapter );
+	}
+}
+
+void Mission::addWanderingHeroes( GameAdapter *adapter ) {
+
+	if( !adapter->hasParty() ) return;
+
+	int level = adapter->getSession()->getParty()->getAverageLevel();
+	int count = (int)( 5.0f * rand() / RAND_MAX ) + 5;
+	for( int i = 0; i < count; i++ ) {
+		RenderedCreature *creature = adapter->createWanderingHero( level );
+		
+		cerr << "*** Placing wandering hero: " << creature->getName() << 
+			" class: " << ((Creature*)creature)->getCharacter()->getName() << endl;
+
+		// find a place for the here
+
+	}
 }
 
 void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly ) {

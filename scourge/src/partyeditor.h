@@ -29,6 +29,7 @@
   *@author Gabor Torok
   */
 
+class RenderedCreature;
 class Creature;
 class Scourge;
 class UserConfiguration;
@@ -120,6 +121,9 @@ public:
   void reset();
   void handleEvent( Widget *widget, SDL_Event *event );
   void createParty( Creature **pc, int *partySize=NULL, bool addRandomInventory=true );
+	RenderedCreature *createWanderingHero( int level );
+
+	char *createName();
 
  protected:
   void createCharUI( int step, CharacterInfo *info );
@@ -128,6 +132,7 @@ public:
   void updateUI( CharacterInfo *info, int index );
   void saveUI( Creature **pc );
   void addStartingInventory( Creature **pc, int partySize );
+	void addStartingInventory( Creature *pc );
   void setCharType( int pcIndex, int charIndex );
   void setDeityType( int pcIndex, int deityIndex );
 

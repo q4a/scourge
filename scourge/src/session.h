@@ -43,6 +43,7 @@ class GameAdapter;
 class Preferences;
 class RpgItem;
 class Spell;
+class Character;
 class Monster;
 class GLShape;
 class SqBinding;
@@ -137,6 +138,7 @@ public:
     @return the creature created.
   */
   virtual Creature *newCreature( Monster *monster, GLShape *shape, bool loaded=false );
+	virtual Creature *newCreature( Character *character, char *name, int model );
   inline int getCreatureCount() { return creatures.size(); }
   inline Creature *getCreature(int index) { return creatures[index]; }
   inline int getItemCount() { return newItems.size(); }

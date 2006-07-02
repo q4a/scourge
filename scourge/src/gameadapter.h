@@ -150,6 +150,7 @@ public:
     return false;							 
   }
 
+	virtual RenderedCreature *createWanderingHero( int level ) { return NULL; }
 	
 };
 

@@ -27,6 +27,7 @@
   *@author Gabor Torok
   */
 
+class RenderedCreature;
 class Creature;
 class Scourge;
 class PartyEditor;
@@ -131,6 +132,7 @@ public:
   bool isVisible();
   void showPartyEditor();
   void createParty( Creature **pc, int *partySize );
+	RenderedCreature *createWanderingHero( int level );
 
  protected:
   void drawClouds(bool moveClouds, bool flipped);

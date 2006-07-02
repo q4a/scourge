@@ -135,6 +135,8 @@ class Party : public CreatureGroupInfo {
 
   bool isEquipped( Item *item );
 
+	int getAverageLevel();
+
 protected:
   void resetPartyUI();  
 	bool isPartyInRange();

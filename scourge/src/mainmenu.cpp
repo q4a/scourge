@@ -1146,3 +1146,7 @@ bool MainMenu::isVisible() {
   return mainWin->isVisible(); 
 }
 
+RenderedCreature *MainMenu::createWanderingHero( int level ) {
+	return partyEditor->createWanderingHero( level );
+}
+
