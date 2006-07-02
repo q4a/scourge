@@ -33,7 +33,7 @@ tools_SOURCES = \
 	pageskills.h\
 	pagespells.cpp\
 	pagespells.h\
-	subpageschool.cpp\
+	subpageschools.cpp\
 	subpageschools.h\
 	subpagespells.cpp\
 	subpagespells.h\
