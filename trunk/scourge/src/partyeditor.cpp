@@ -529,9 +529,24 @@ RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 	pc->setHp();
 	pc->setMp();
 	pc->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
-	pc->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
+	pc->setThirst((int)(5.0f * rand()/RAND_MAX) + 5);
 
+	// deity
+	pc->setDeityIndex( MagicSchool::getRandomSchoolIndex() );
+	
+	// assign portraits
+	pc->setPortraitTextureIndex( (int)( (float)(scourge->getShapePalette()->getPortraitCount()) * rand() / RAND_MAX ) );
+	
+	// compute starting skill levels
+	CharacterInfo info;
+	rollSkills( &info, pc->getCharacter() );
+	for(int t = 0; t < Skill::SKILL_COUNT; t++) {
+		pc->setSkill( t, info.skill[ t ] + info.skillMod[ t ] );
+	}
+	
 	addStartingInventory( pc );
+
+	pc->setMotion( Constants::MOTION_LOITER );
 
 	return pc;
 }
@@ -682,9 +697,9 @@ void PartyEditor::saveUI( Creature **pc ) {
   }
 }
 
-void PartyEditor::rollSkills( CharacterInfo *info ) {
+void PartyEditor::rollSkills( CharacterInfo *info, Character *c ) {
   info->availableSkillMod = AVAILABLE_SKILL_POINTS;
-  Character *c = Character::rootCharacters[ info->charType->getSelectedLine() ];
+	if( !c ) c = Character::rootCharacters[ info->charType->getSelectedLine() ];
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 
     //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );

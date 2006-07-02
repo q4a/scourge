@@ -1647,21 +1647,24 @@ void Scourge::addGameSpeed(int speedFactor){
 //#define MONSTER_FLEE_IF_LOW_HP
 
 void Scourge::moveMonster(Creature *monster) {
+
   // set running animation (currently move or attack)
   if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
+		if( monster->getCharacter() ) cerr << "111" << endl;
     //monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
     //((MD2Shape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
     // don't move when attacking
     return;
   } else {
-    monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER ?
+    monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER ||
+																							monster->getMotion() == Constants::MOTION_MOVE_TOWARDS ?
                                               (int)MD2_RUN :
                                               (int)MD2_STAND );
   }
 
 	if( monster->getMotion() == Constants::MOTION_MOVE_AWAY ) {
 		monster->moveToLocator();
-	} else if(monster->getMotion() == Constants::MOTION_LOITER) {
+	} else if( monster->getCharacter() || monster->getMotion() == Constants::MOTION_LOITER ) {
     // attack the closest player
     if( BATTLES_ENABLED &&
         (int)(20.0f * rand()/RAND_MAX) == 0) {

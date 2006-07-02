@@ -716,12 +716,13 @@ void Mission::addWanderingHeroes( GameAdapter *adapter ) {
 	int count = (int)( 5.0f * rand() / RAND_MAX ) + 5;
 	for( int i = 0; i < count; i++ ) {
 		RenderedCreature *creature = adapter->createWanderingHero( level );
-		
-		cerr << "*** Placing wandering hero: " << creature->getName() << 
-			" class: " << ((Creature*)creature)->getCharacter()->getName() << endl;
 
 		// find a place for the here
-
+		RenderedCreature *c = 
+			adapter->getSession()->
+			getCreature( (int)( (float)(adapter->getSession()->getCreatureCount()) * 
+													rand() / RAND_MAX ) );
+		creature->findPlace( toint( c->getX() ), toint( c->getY() ) );
 	}
 }
 
