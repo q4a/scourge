@@ -294,7 +294,8 @@ void ScourgeView::drawCreatureInfos() {
         scourge->getMap()->isLocationInLight(toint(scourge->getSession()->getCreature(i)->getX()),
                                              toint(scourge->getSession()->getCreature(i)->getY()),
                                              scourge->getSession()->getCreature(i)->getShape())) {
-      showCreatureInfo(scourge->getSession()->getCreature(i), false, false, false);
+			showCreatureInfo( scourge->getSession()->getCreature(i), false, false, false, 
+												( scourge->getSession()->getCreature(i)->getCharacter() ? true : false ) );
     }
   }
   // party next so red target circle shows over gray
@@ -307,7 +308,8 @@ void ScourgeView::drawCreatureInfos() {
                       player,
                       ( scourge->getMap()->getSelectedDropTarget() &&
                         scourge->getMap()->getSelectedDropTarget()->creature == scourge->getParty()->getParty(i) ),
-                      !scourge->getParty()->isPlayerOnly() );
+                      !scourge->getParty()->isPlayerOnly(),
+											false );
   }
 }
 
@@ -536,7 +538,7 @@ Color *ScourgeView::getOutlineColor( Location *pos ) {
 }
 
 
-void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode ) {
+void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero ) {
   glPushMatrix();
   //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
 
@@ -653,13 +655,15 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
   } else if(creature->getMonster() && creature->getMonster()->isNpc()) {
     glColor4f(0.75f, 1.0f, 0.0f, 0.5f);
+	} else if( wanderingHero ) {
+		glColor4f( 0, 1.0f, 0.75f, 0.5f);
   } else {
     glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
   }
 
   // draw state mods
   if( !creature->getStateMod( Constants::dead ) &&
-      ( groupMode || player || creature->isMonster() )) {
+      ( groupMode || player || creature->isMonster() || wanderingHero )) {
     glEnable(GL_TEXTURE_2D);
     int n = 16;
     //float x = 0.0f;
@@ -752,7 +756,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
-    if( groupMode || player || creature->isMonster() ) {
+    if( groupMode || player || creature->isMonster() || wanderingHero ) {
       gluDisk(quadric, w - s, w, 12, 1);
 
       // in TB mode, player's turn and paused?

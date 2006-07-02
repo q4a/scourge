@@ -128,7 +128,7 @@ public:
  protected:
   void createCharUI( int step, CharacterInfo *info );
   void deleteLoadedShapes();
-  void rollSkills( CharacterInfo *info );
+  void rollSkills( CharacterInfo *info, Character *c=NULL );
   void updateUI( CharacterInfo *info, int index );
   void saveUI( Creature **pc );
   void addStartingInventory( Creature **pc, int partySize );

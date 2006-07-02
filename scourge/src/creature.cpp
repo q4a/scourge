@@ -440,7 +440,7 @@ void Creature::switchDirection(bool force) {
 
 // moving monsters only
 bool Creature::move(Uint16 dir) {
-  if(character) return false;
+  //if(character) return false;
 
   // is monster (or npc) doing something else?
   if( ((MD2Shape*)getShape())->getCurrentAnimation() != MD2_RUN ) return false;
@@ -475,7 +475,6 @@ bool Creature::move(Uint16 dir) {
   }
   setFacingDirection(dir);
   
-
   if(!session->getMap()->moveCreature(toint(x), toint(y), toint(z), 
                                       toint(nx), toint(ny), toint(nz), this)) {
     ((MD2Shape*)shape)->setDir(dir);
@@ -1884,7 +1883,7 @@ bool Creature::castHealingSpell() {
 }
 
 void Creature::decideMonsterAction() {
-  if( !( isMonster() || getStateMod( Constants::possessed ) ) ) return;
+  //if( !( isMonster() || getStateMod( Constants::possessed ) ) ) return;
 
   if( !isMonster() && getStateMod( Constants::possessed ) ) {
     Creature *p = 
@@ -1895,7 +1894,7 @@ void Creature::decideMonsterAction() {
     // attack with item
     setMotion(Constants::MOTION_MOVE_TOWARDS);
     setTargetCreature(p);
-  } else if( monster->isNpc() ) {
+  } else if( !monster || monster->isNpc() ) {
 		if( getMotion() == Constants::MOTION_MOVE_AWAY ) return;
     int n = (int)( 10.0f * rand()/RAND_MAX );
     switch( n ) {
