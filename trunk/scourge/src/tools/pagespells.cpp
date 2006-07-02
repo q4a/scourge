@@ -26,7 +26,7 @@ void PageSpells::Init(wxNotebook *notebook, DF* dataFile)
 	page = new wxNotebookPage(notebook, ID_SpellsPage);
 
 	School *school = dfSpells->GetCurrent();
-	Spell *spell = school->spells.begin()->second;
+	Spell *spell = *(school->spells.begin());
 
 // Notebook
 	subNotebook = new wxNotebook(page, ID_SpellsSubNotebook, wxDefaultPosition, wxSize(800,350));
@@ -50,13 +50,18 @@ void PageSpells::Next()
 {
 	currentSubPage->Next();
 }
+void PageSpells::New()
+{
+	currentSubPage->New();
+}
+void PageSpells::Del()
+{
+	currentSubPage->Del();
+}
 
 void PageSpells::UpdatePageNumber()
 {
-//	char buffer[64];
-//	sprintf(buffer, "Page %i/%i", dfSpells->GetCurrent()->spells.size(), 5);
-//	g_pageNumText->SetLabel(std2wx(buffer));
-currentSubPage->UpdatePageNumber();
+	currentSubPage->UpdatePageNumber();
 }
 
 void PageSpells::GetCurrent()
@@ -81,4 +86,7 @@ void PageSpells::OnSubPageChange(wxCommandEvent& WXUNUSED(event))
 		pPage->currentSubPage = pPage->pageSchools;//->SetAsCurrent();
 	else
 		pPage->currentSubPage = pPage->pageSpells;
+
+	pPage->currentSubPage->UpdatePage();
+	pPage->currentSubPage->UpdatePageNumber();
 }

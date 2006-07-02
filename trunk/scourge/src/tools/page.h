@@ -85,6 +85,8 @@ enum
 		ID_SpellsSubNotebook,
 		ID_Schools_subPage,
 		ID_Spells_subPage,
+		ID_subSchoolsColorSlider,
+		ID_subSpellsSchoolList,
 	ID_Page,
 		ID_Prev,
 		ID_Next,

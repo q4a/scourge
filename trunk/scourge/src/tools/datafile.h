@@ -29,8 +29,9 @@ public:
 template <class T>
 class DataFile : public DF
 {
-protected:
+public:
 	std::vector <T*> data;
+protected:
 	typename std::vector <T*>::iterator current;
 	unsigned int currentNum, total;
 

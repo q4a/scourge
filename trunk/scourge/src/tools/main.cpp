@@ -18,6 +18,8 @@
 #include "pageclasses.h"
 #include "pageskills.h"
 #include "pagespells.h"
+#include "subpagespells.h"
+#include "subpageschools.h"
 #include "common.h"
 #include "../common/constants.h"
 
@@ -186,6 +188,10 @@ bool MyApp::OnInit()
 	// Spells page events
 	frame->Connect( ID_SpellsSubNotebook, wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,
 			(wxObjectEventFunction) &PageSpells::OnSubPageChange );
+	frame->Connect( ID_subSchoolsColorSlider, wxEVT_SCROLL_THUMBTRACK,
+			(wxObjectEventFunction) &subPageSchools::OnColorSliderChange );
+	frame->Connect( ID_subSpellsSchoolList, wxEVT_COMMAND_LISTBOX_SELECTED,
+			(wxObjectEventFunction) &subPageSpells::OnSchoolChange );
 
 	frame->Show(TRUE);
 	SetTopWindow(frame);
@@ -302,7 +308,8 @@ void MyFrame::UpdatePageNumber()
 void MyFrame::OnPrev(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Prev();
-	UpdatePageNumber();
+//	UpdatePageNumber();
+g_currentPage->UpdatePageNumber();
 }
 void MyFrame::OnNext(wxCommandEvent& WXUNUSED(event))
 {

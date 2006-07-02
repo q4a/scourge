@@ -88,7 +88,8 @@ std::cerr<<"4) key = "<<key<<"\n";
 			if ( p )
 				spell->prerequisite = p;
 
-			school->spells[spell->name] = spell;
+//			school->spells[spell->name] = spell;
+			school->spells.push_back(spell);
 		}
 		else if ( buffer[0] == 'W' )
 		{
