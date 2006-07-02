@@ -37,6 +37,9 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 		schoolStrArray->Add( std2wx( (*itr)->name ) );
 	schoolList = new wxListBox(page, ID_subSpellsSchoolList, wxPoint(10,30), wxSize(200,90), *schoolStrArray);
 
+	schoolNameText = new wxStaticText(page, -1, L"No School Selected", wxPoint(220,40));
+		schoolNameText->SetFont( wxFont(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD) );
+
 
 	// name
 	wxStaticText *nameText = new wxStaticText(page, -1, _("Name"), wxPoint(220,60));
@@ -75,6 +78,67 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 	wxString choices[2] = { L"single", L"group" };
 	areaCombo = new wxComboBox(page, -1, std2wx(spell->area), wxPoint(330,150),wxSize(80,25),
 			2,choices, wxCB_READONLY);
+
+	// CLIP
+	wxStaticText *clipText = new wxStaticText(page, -1, _("Targets"), wxPoint(420,130));
+	wxString clipStr[] = { L"Creature", L"Location", L"Item", L"Party" };
+	clipCheckList = new wxCheckListBox(page, -1, wxPoint(420,150), wxSize(85,90), 4,clipStr);
+	clipCheckList->Check(0, spell->target.find("C") != std::string::npos );
+	clipCheckList->Check(1, spell->target.find("L") != std::string::npos );
+	clipCheckList->Check(2, spell->target.find("I") != std::string::npos );
+	clipCheckList->Check(3, spell->target.find("P") != std::string::npos );
+
+	// speed
+	wxStaticText *speedText = new wxStaticText(page, -1, _("Speed"), wxPoint(515,130));
+	speedEdit = new wxTextCtrl(page, -1, std2wx(spell->speed), wxPoint(515,150), wxSize(50,25));
+
+	// effect
+	wxStaticText *effectText = new wxStaticText(page, -1, _("Effect"), wxPoint(575,130));
+	effectEdit = new wxTextCtrl(page, -1, std2wx(spell->effect), wxPoint(575,150), wxSize(150,25));
+
+/**
+	Icon
+**/
+	wxStaticText *iconText = new wxStaticText(page, -1, _("Icon (x,y)"), wxPoint(25,180));
+	// icon_x
+	int x = atoi( spell->icon_x.c_str() );
+	iconXEdit = new wxTextCtrl(page, -1, std2wx(spell->icon_x), wxPoint(10,200), wxSize(30,25));
+	iconXScroll = new wxScrollBar(page, ID_SpellsIconXScroll, wxPoint(40,200), wxSize(-1,25), wxSB_VERTICAL);
+		iconXScroll->SetScrollbar(x,1,20,1);
+	// icon_y
+	int y = atoi( spell->icon_y.c_str() );
+	iconYEdit = new wxTextCtrl(page, -1, std2wx(spell->icon_y), wxPoint(55,200), wxSize(30,25));
+	iconYScroll = new wxScrollBar(page, ID_SpellsIconYScroll, wxPoint(85,200), wxSize(-1,25), wxSB_VERTICAL);
+		iconYScroll->SetScrollbar(y,1,17,1);
+
+
+	// disposition
+	wxStaticText *dispositionText = new wxStaticText(page, -1, _("Disposition"), wxPoint(160,180));
+	wxString dispositionChoices[2] = { L"Friendly", L"Hostile" };
+	wxString disposition = L"Friendly";
+	if ( spell->disposition == "Hostile" )	disposition = L"Hostile";
+	dispositionCombo = new wxComboBox(page, -1, disposition, wxPoint(160,200),wxSize(80,25),
+			2,dispositionChoices, wxCB_READONLY);
+
+	// prerequisite
+	wxStaticText *prereqText = new wxStaticText(page, -1, _("Prerequisite"), wxPoint(250,180));
+	wxString prereqChoices[] = { L"-none-", L"HP", L"AC",
+			L"blessed", L"empowered", L"enraged", L"ac_protected", L"magic_protected", L"invisible",	// good
+			L"drunk", L"poisoned", L"cursed", L"possessed", L"blinded", L"charmed", L"dead",			// bad
+			L"overloaded", L"leveled" };																// neutral
+	wxString prereq = std2wx(spell->prerequisite);
+	if ( prereq == L"" )	prereq = L"-none-";
+	prereqCombo = new wxComboBox(page, -1, std2wx(spell->prerequisite), wxPoint(250,200),wxSize(130,25),
+			17,prereqChoices, wxCB_READONLY);
+
+	// sound
+	wxStaticText *soundText = new wxStaticText(page, -1, _("Sound"), wxPoint(160,230));
+	soundEdit = new wxTextCtrl(page, -1, std2wx(spell->sound), wxPoint(160,250), wxSize(200,25));
+
+	// notes
+	wxStaticText *notesText = new wxStaticText(page, -1, _("Notes"), wxPoint(515,180));
+	notesEdit = new wxTextCtrl(page, -1, std2wx(spell->notes), wxPoint(515,200), wxSize(230,90), wxTE_MULTILINE);
+
 
 	notebook->AddPage(page, _("Spells"));
 }
@@ -148,6 +212,25 @@ void subPageSpells::GetCurrent()
 	actionEdit->SetValue(std2wx(spell->action));
 	distanceEdit->SetValue(std2wx(spell->distance));
 	areaCombo->SetValue(std2wx(spell->area));
+
+	// CLIP
+	clipCheckList->Check(0, spell->target.find("C") != std::string::npos );
+	clipCheckList->Check(1, spell->target.find("L") != std::string::npos );
+	clipCheckList->Check(2, spell->target.find("I") != std::string::npos );
+	clipCheckList->Check(3, spell->target.find("P") != std::string::npos );
+
+
+	speedEdit->SetValue(std2wx(spell->speed));
+	effectEdit->SetValue(std2wx(spell->effect));
+// icon
+	dispositionCombo->SetValue(std2wx(spell->disposition));
+
+	wxString prereq = std2wx(spell->prerequisite);
+	if ( prereq == L"" )	prereq = L"-none-";
+	prereqCombo->SetValue(prereq);
+
+	soundEdit->SetValue(std2wx(spell->sound));
+	notesEdit->SetValue(std2wx(spell->notes));
 }
 
 void subPageSpells::SetCurrent()
@@ -178,12 +261,10 @@ School* subPageSpells::GetSelectedSchool()
 			currentSchool = dfSpells->data[i];
 
 	spellItr = currentSchool->spells.begin();
-	if ( !(*spellItr) )
-	{
-		wxMessageBox(L"",L"");
-	}
 	currentSpell = *spellItr;
 	spellNumber = 1;
+
+	schoolNameText->SetLabel( *schoolName );
 
 	return currentSchool;
 }
