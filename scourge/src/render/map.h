@@ -542,6 +542,11 @@ class Map {
 
  protected:
 
+	 void setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
+													Shape *shape, 
+													RenderedItem *item, 
+													RenderedCreature *creature );
+
      /**
     Set which direction to move in.
     @param n is a bitfield. See constants for direction values.

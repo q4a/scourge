@@ -1942,35 +1942,52 @@ void Map::removeAllEffects() {
   currentEffectsMap.clear();
 }
 
-void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di) {
+void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
+														Shape *shape, 
+														RenderedItem *item, 
+														RenderedCreature *creature ) {
+	
+	resortShapes = mapChanged = true;
+	//cerr << "FIXME: Map::setPosition" << endl;
+
+	Location *p = pos[ x ][ y ][ z ];
+	if( !p ) p = mapMemoryManager->newLocation();
+	p->shape = shape;
+	p->item = item;
+	p->creature = creature;
+	p->x = x;
+	p->y = y;
+	p->z = z;
+	p->outlineColor = NULL;
+	
+	for(int xp = 0; xp < shape->getWidth(); xp++) {
+		for(int yp = 0; yp < shape->getDepth(); yp++) {
+			for(int zp = 0; zp < shape->getHeight(); zp++) {
+				
+				// I _hate_ c++... moving secret doors up causes array roll-over problems.
+				if( x + xp < 0 || 
+						y - yp < 0 || 
+						z + zp < 0 ||
+						x + xp >= MAP_WIDTH || 
+						y - yp >= MAP_DEPTH || 
+						z + zp >= MAP_VIEW_HEIGHT ) break;
+
+				// Either the same old pos reused or nothing there.
+				// If these are not true, we're leaking memory.
+				assert( pos[x + xp][y - yp][z + zp] == p ||
+								!( pos[x + xp][y - yp][z + zp] ) );
+				
+				pos[x + xp][y - yp][z + zp] = p;
+			}
+		}
+	}
+}
+
+void Map::setPosition( Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di ) {
   if(shape) {
-    resortShapes = mapChanged = true;
-    //cerr << "FIXME: Map::setPosition" << endl;
-    Location *p = NULL;
-    for(int xp = 0; xp < shape->getWidth(); xp++) {
-      for(int yp = 0; yp < shape->getDepth(); yp++) {
-        for(int zp = 0; zp < shape->getHeight(); zp++) {
+		
+		setPositionInner( x, y, z, shape, NULL, NULL );
 
-          // I _hate_ c++... moving secret doors up causes array roll-over problems.
-          if( x + xp < 0 || y - yp < 0 || z + zp < 0 ||
-              x + xp >= MAP_WIDTH || y - yp >= MAP_DEPTH || z + zp >= MAP_VIEW_HEIGHT ) break;
-
-          if( !p ) {
-            p = mapMemoryManager->newLocation();
-          }
-          if(!pos[x + xp][y - yp][z + zp]) {
-            pos[x + xp][y - yp][z + zp] = p;
-          }
-          pos[x + xp][y - yp][z + zp]->shape = shape;
-          pos[x + xp][y - yp][z + zp]->item = NULL;
-          pos[x + xp][y - yp][z + zp]->creature = NULL;
-          pos[x + xp][y - yp][z + zp]->x = x;
-          pos[x + xp][y - yp][z + zp]->y = y;
-          pos[x + xp][y - yp][z + zp]->z = z;
-          pos[x + xp][y - yp][z + zp]->outlineColor = NULL;
-        }
-      }
-    }
     if( ((GLShape*)shape)->getEffectType() > -1 ) {
 
       int ex = x + ((GLShape*)shape)->getEffectX();
@@ -1990,48 +2007,52 @@ void Map::setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *d
 }
 
 Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
-  Shape *shape = NULL;
-  if(pos[x][y][z] &&
-     pos[x][y][z]->shape &&
-     pos[x][y][z]->x == x &&
-     pos[x][y][z]->y == y &&
-     pos[x][y][z]->z == z) {
-	resortShapes = mapChanged = true;
-    shape = pos[x][y][z]->shape;
-    if( ((GLShape*)shape)->getEffectType() > -1 ) {
-      int ex = x + ((GLShape*)shape)->getEffectX();
-      int ey = y - shape->getDepth() - ((GLShape*)shape)->getEffectY();
-      int ez = z + ((GLShape*)shape)->getEffectZ();
-      removeEffect( ex, ey, ez );
-    }
-    set<Location*> deleted;
+	Shape *shape = NULL;
+	if(pos[x][y][z] &&
+		 pos[x][y][z]->shape &&
+		 pos[x][y][z]->x == x &&
+		 pos[x][y][z]->y == y &&
+		 pos[x][y][z]->z == z) {
+		resortShapes = mapChanged = true;
+		shape = pos[x][y][z]->shape;
+		if( ((GLShape*)shape)->getEffectType() > -1 ) {
+			int ex = x + ((GLShape*)shape)->getEffectX();
+			int ey = y - shape->getDepth() - ((GLShape*)shape)->getEffectY();
+			int ez = z + ((GLShape*)shape)->getEffectZ();
+			removeEffect( ex, ey, ez );
+		}
+
+		Location *p = pos[ x ][ y ][ z ];
+
     for(int xp = 0; xp < shape->getWidth(); xp++) {
       for(int yp = 0; yp < shape->getDepth(); yp++) {
         for(int zp = 0; zp < shape->getHeight(); zp++) {
 
           // I _hate_ c++... moving secret doors up causes array roll-over problems.
-          if( x + xp < 0 || y - yp < 0 || z + zp < 0 ||
-              x + xp >= MAP_WIDTH || y - yp >= MAP_DEPTH || z + zp >= MAP_VIEW_HEIGHT ) break;
+          if( x + xp < 0 || 
+							y - yp < 0 || 
+							z + zp < 0 ||
+              x + xp >= MAP_WIDTH || 
+							y - yp >= MAP_DEPTH || 
+							z + zp >= MAP_VIEW_HEIGHT ) break;
 
-          Location *p = pos[x + xp][y - yp][z + zp];
-          if( p->x == x && p->y == y && p->z == z ) {
-            if( deleted.find(p) == deleted.end() ) deleted.insert( p );
-            pos[x + xp][y - yp][z + zp] = NULL;          
-          }
+					// Assert we're dealing with the right shape
+					assert( pos[ x + xp ][ y - yp ][ z + zp ] == p );
+
+					pos[ x + xp ][ y - yp ][ z + zp ] = NULL;          
         }
       }
     }
-    for( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
-      Location *p = *i;
-      mapMemoryManager->deleteLocation( p );
-    }  
+
+		// Actually free the shape
+		mapMemoryManager->deleteLocation( p );
   }
   return shape;
 }
 
 // like getLocation, you can specify any position in the shape to remove it.
 Shape *Map::removeLocation(Sint16 x, Sint16 y, Sint16 z) {
-  if(pos[x][y][z] && pos[x][y][z]->shape ) 
+  if( pos[x][y][z] && pos[x][y][z]->shape ) 
     return removePosition( pos[x][y][z]->x,
                            pos[x][y][z]->y,
                            pos[x][y][z]->z );
@@ -2039,241 +2060,159 @@ Shape *Map::removeLocation(Sint16 x, Sint16 y, Sint16 z) {
 }
   
 void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item) {
-  if(item) {
-    if(item->getShape()) {
-	  resortShapes = mapChanged = true;
-	  Location *p = NULL;
-      for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
-        for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {          
-          for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
-            if( !p ) {
-              p = mapMemoryManager->newLocation();
-            }  
-            if(!pos[x + xp][y - yp][z + zp]) {
-              pos[x + xp][y - yp][z + zp] = p;
-            }
-
-            pos[x + xp][y - yp][z + zp]->item = item;
-            pos[x + xp][y - yp][z + zp]->shape = item->getShape();
-            pos[x + xp][y - yp][z + zp]->creature = NULL;
-            pos[x + xp][y - yp][z + zp]->x = x;
-            pos[x + xp][y - yp][z + zp]->y = y;
-            pos[x + xp][y - yp][z + zp]->z = z;
-            pos[x + xp][y - yp][z + zp]->outlineColor = NULL;
-          }
-        }
-      }
-  	}
-  }
+  if( item && item->getShape() ) {
+		setPositionInner( x, y, z, item->getShape(), item, NULL );
+	}
 }
 
 RenderedItem *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
-  RenderedItem *item = NULL;
-  if(pos[x][y][z] &&
-     pos[x][y][z]->item &&
-     pos[x][y][z]->x == x &&
-     pos[x][y][z]->y == y &&
-     pos[x][y][z]->z == z) {
-	resortShapes = mapChanged = true;
-	item = pos[x][y][z]->item;
-	set<Location *> deleted;
-    for(int xp = 0; xp < item->getShape()->getWidth(); xp++) {
-      for(int yp = 0; yp < item->getShape()->getDepth(); yp++) {       
-        for(int zp = 0; zp < item->getShape()->getHeight(); zp++) {
-          Location *p = pos[x + xp][y - yp][z + zp];
-          if( deleted.find( p ) == deleted.end() ) deleted.insert( p );
-          pos[x + xp][y - yp][z + zp] = NULL;		
-        }
-      }
-    }
-     for( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
-      Location *p = *i;
-      mapMemoryManager->deleteLocation( p );
-    }  
-  }
-  return item;
+	RenderedItem *item = ( pos[x][y][z] ? pos[x][y][z]->item : NULL );
+	removePosition( x, y, z );
+	return item;
 }
 
 // drop items above this one
 void Map::dropItemsAbove(int x, int y, int z, RenderedItem *item) {
-  int count = 0;
-  Location drop[100];
-  for(int tx = 0; tx < item->getShape()->getWidth(); tx++) {
-	for(int ty = 0; ty < item->getShape()->getDepth(); ty++) {
-	  for(int tz = z + item->getShape()->getHeight(); tz < MAP_VIEW_HEIGHT; tz++) {
-		Location *loc2 = pos[x + tx][y - ty][tz];
-		if(loc2 && loc2->item) {
-		  drop[count].x = loc2->x;
-		  drop[count].y = loc2->y;
-		  drop[count].z = loc2->z - item->getShape()->getHeight();
-		  drop[count].item = loc2->item;
-		  count++;
-		  removeItem(loc2->x, loc2->y, loc2->z);
-		  tz += drop[count - 1].item->getShape()->getHeight() - 1;
+	int count = 0;
+	Location drop[100];
+	for (int tx = 0; tx < item->getShape()->getWidth(); tx++) {
+		for (int ty = 0; ty < item->getShape()->getDepth(); ty++) {
+			for (int tz = z + item->getShape()->getHeight(); tz < MAP_VIEW_HEIGHT; tz++) {
+				Location *loc2 = pos[x + tx][y - ty][tz];
+				if (loc2 && loc2->item) {
+					drop[count].x = loc2->x;
+					drop[count].y = loc2->y;
+					drop[count].z = loc2->z - item->getShape()->getHeight();
+					drop[count].item = loc2->item;
+					count++;
+					removeItem(loc2->x, loc2->y, loc2->z);
+					tz += drop[count - 1].item->getShape()->getHeight() - 1;
+				}
+			}
 		}
-	  }
 	}
-  }
-  for(int i = 0; i < count; i++) {
-	//cerr << "item " << drop[i].item->getItemName() << " new z=" << drop[i].z << endl;
-	setItem(drop[i].x, drop[i].y, drop[i].z, drop[i].item);
-  }
+	for (int i = 0; i < count; i++) {
+		//cerr << "item " << drop[i].item->getItemName() << " new z=" << drop[i].z << endl;
+		setItem(drop[i].x, drop[i].y, drop[i].z, drop[i].item);
+	}
 }
 
 void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) {
-  char message[120];  
-  if(creature) {
-    if(creature->getShape()) {
-	  resortShapes = mapChanged = true;
-    
-    if( helper && !creature->isMonster() ) helper->visit( creature );
-	  while(true) {
-    Location *p = NULL;
-		for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
-		  for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
-			for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-			  //			  cerr <<"adding pos " << x + xp << "," << y - yp << "," << z + zp;
-			  if( !p ) p = mapMemoryManager->newLocation();
-        if(!pos[x + xp][y - yp][z + zp]) {
-          pos[x + xp][y - yp][z + zp] = p;
-        } else if(pos[x + xp][y - yp][z + zp]->item) {
-          // creature picks up non-blocking item (this is the only way to handle 
-          // non-blocking items. It's also very 'roguelike'.
-          RenderedItem *item = pos[x + xp][y - yp][z + zp]->item;
-          removeItem(pos[x + xp][y - yp][z + zp]->x,
-                     pos[x + xp][y - yp][z + zp]->y,
-                     pos[x + xp][y - yp][z + zp]->z);
-          creature->pickUpOnMap(item);
-          sprintf(message, "%s picks up %s.", 
-                  creature->getName(), 
-                  item->getItemName());
-          addDescription(message);				
-          // since the above will have removed some locations, try adding the creature again
-          continue;
-        }
-        pos[x + xp][y - yp][z + zp]->item = NULL;
-        pos[x + xp][y - yp][z + zp]->shape = creature->getShape();
-        pos[x + xp][y - yp][z + zp]->creature = creature;
-        pos[x + xp][y - yp][z + zp]->x = x;
-        pos[x + xp][y - yp][z + zp]->y = y;
-        pos[x + xp][y - yp][z + zp]->z = z;
-        pos[x + xp][y - yp][z + zp]->outlineColor = NULL;
-        //creature->moveTo(x, y, z);
+	char message[120];  
+	if( creature && creature->getShape() ) {
+		if ( helper && !creature->isMonster() )	helper->visit( creature );
+
+		// pick up any objects in the way
+		for( int xp = 0; xp < creature->getShape()->getWidth(); xp++ ) {
+			for( int yp = 0; yp < creature->getShape()->getDepth(); yp++ ) {
+				for( int zp = 0; zp < creature->getShape()->getHeight(); zp++ ) {
+					if( pos[x + xp][y - yp][z + zp] && 
+							pos[x + xp][y - yp][z + zp]->item ) {
+						// creature picks up non-blocking item (this is the only way to handle 
+						// non-blocking items. It's also very 'roguelike'.
+						RenderedItem *item = pos[x + xp][y - yp][z + zp]->item;
+						removeItem( pos[x + xp][y - yp][z + zp]->x,
+												pos[x + xp][y - yp][z + zp]->y,
+												pos[x + xp][y - yp][z + zp]->z );
+						creature->pickUpOnMap( item );
+						sprintf( message, "%s picks up %s.", 
+										 creature->getName(), 
+										 item->getItemName() );
+						addDescription( message );        
+					}
+				}
 			}
-		  }
 		}
-		break;
-	  }
+
+		setPositionInner( x, y, z, creature->getShape(), NULL, creature );
 	}
-  }
 }
 
 void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
-                          Sint16 ox, Sint16 oy, Sint16 oz,
-                          RenderedCreature *creature) {
-  Location *p = pos[ox][oy][oz];
-  if(creature && creature->getShape() &&
-     p && p->creature &&
-     p->x == ox && p->y == oy && p->z == oz) {
-    resortShapes = mapChanged = true;
-    
-    // remove the old pos
-    Location *tmp[MAP_UNIT][MAP_UNIT][MAP_UNIT];
-    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
-      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
-        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-          int oldX = ox + xp;
-          int oldY = oy - yp;
-          int oldZ = oz + zp;
-          tmp[xp][yp][zp] = pos[oldX][oldY][oldZ];
-          tmp[xp][yp][zp]->outlineColor = NULL;
-          pos[oldX][oldY][oldZ] = NULL;
-          if(!(tmp[xp][yp][zp])) cerr << "*** tmp is null!" << endl;
-        }
-      }
-    }
+													Sint16 ox, Sint16 oy, Sint16 oz,
+													RenderedCreature *creature) {
+	Location *p = pos[ox][oy][oz];
+	if( creature && creature->getShape() &&
+			p && p->creature &&
+			p->x == ox && p->y == oy && p->z == oz ) {
+		resortShapes = mapChanged = true;
 
-    if( helper && !creature->isMonster() ) helper->visit( creature );
+		// remove the old pos
+		Location *tmp[MAP_UNIT][MAP_UNIT][MAP_UNIT];
+		for (int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+			for (int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+				for (int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+					int oldX = ox + xp;
+					int oldY = oy - yp;
+					int oldZ = oz + zp;
+					tmp[xp][yp][zp] = pos[oldX][oldY][oldZ];
+					tmp[xp][yp][zp]->outlineColor = NULL;
+					pos[oldX][oldY][oldZ] = NULL;
+					if (!(tmp[xp][yp][zp]))	cerr << "*** tmp is null!" << endl;
+				}
+			}
+		}
 
-    // pick up any items in the way
-    char message[120];
-    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
-      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
-        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-          int newX = nx + xp;
-          int newY = ny - yp;
-          int newZ = nz + zp;            
-            
-          if(pos[newX][newY][newZ]) {
-            if(pos[newX][newY][newZ]->item) {
-              // creature picks up non-blocking item (this is the only way to handle 
-              // non-blocking items. It's also very 'roguelike'.)
-              RenderedItem *item = pos[newX][newY][newZ]->item;
-              removeItem(pos[newX][newY][newZ]->x,
-                         pos[newX][newY][newZ]->y,
-                         pos[newX][newY][newZ]->z);
-              creature->pickUpOnMap(item);
-              sprintf(message, "%s picks up %s.", 
-                      creature->getName(), 
-                      item->getItemName());
-              addDescription(message);
-            } else {
-              cerr << "*** Error: when moving " << creature->getName() << " path contained a non-item position." << endl;
-            }
-          }
-        }    
-      }
-    }
-            
-    // insert the new pos
-    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
-      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
-        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-          int newX = nx + xp;
-          int newY = ny - yp;
-          int newZ = nz + zp;            
-          
-          // copy
-          pos[newX][newY][newZ] = tmp[xp][yp][zp];              
-          pos[newX][newY][newZ]->item = NULL;
-          pos[newX][newY][newZ]->shape = creature->getShape();
-          pos[newX][newY][newZ]->creature = creature;
-          pos[newX][newY][newZ]->x = nx;
-          pos[newX][newY][newZ]->y = ny;
-          pos[newX][newY][newZ]->z = nz;
-          pos[newX][newY][newZ]->outlineColor = NULL;
-        }
-      }
-    }
+		if( helper && !creature->isMonster() ) helper->visit( creature );
 
-  }
+		// pick up any items in the way
+		char message[120];
+		for (int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+			for (int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+				for (int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+					int newX = nx + xp;
+					int newY = ny - yp;
+					int newZ = nz + zp;            
+
+					if (pos[newX][newY][newZ]) {
+						if (pos[newX][newY][newZ]->item) {
+							// creature picks up non-blocking item (this is the only way to handle 
+							// non-blocking items. It's also very 'roguelike'.)
+							RenderedItem *item = pos[newX][newY][newZ]->item;
+							removeItem(pos[newX][newY][newZ]->x,
+												 pos[newX][newY][newZ]->y,
+												 pos[newX][newY][newZ]->z);
+							creature->pickUpOnMap(item);
+							sprintf(message, "%s picks up %s.", 
+											creature->getName(), 
+											item->getItemName());
+							addDescription(message);
+						} else {
+							cerr << "*** Error: when moving " << creature->getName() << " path contained a non-item position." << endl;
+						}
+					}
+				}    
+			}
+		}
+
+		// insert the new pos
+		for (int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
+			for (int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
+				for (int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
+					int newX = nx + xp;
+					int newY = ny - yp;
+					int newZ = nz + zp;            
+
+					// copy
+					pos[newX][newY][newZ] = tmp[xp][yp][zp];              
+					pos[newX][newY][newZ]->item = NULL;
+					pos[newX][newY][newZ]->shape = creature->getShape();
+					pos[newX][newY][newZ]->creature = creature;
+					pos[newX][newY][newZ]->x = nx;
+					pos[newX][newY][newZ]->y = ny;
+					pos[newX][newY][newZ]->z = nz;
+					pos[newX][newY][newZ]->outlineColor = NULL;
+				}
+			}
+		}
+
+	}
 }
 
 RenderedCreature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
-  RenderedCreature *creature = NULL;
-  if(pos[x][y][z] &&
-     pos[x][y][z]->creature &&
-     pos[x][y][z]->x == x &&
-     pos[x][y][z]->y == y &&
-     pos[x][y][z]->z == z) {
-	resortShapes = mapChanged = true;
-    creature = pos[x][y][z]->creature;
-	  set<Location *> deleted;
-    for(int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
-      for(int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
-        for(int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
-          Location *p = pos[x + xp][y - yp][z + zp];
-          if( deleted.find( p ) == deleted.end() ) deleted.insert( p );
-          pos[x + xp][y - yp][z + zp] = NULL;
-        }
-      }
-    }
-    for( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
-      Location *p = *i;
-      mapMemoryManager->deleteLocation( p );
-    }  
-  }
-  return creature;
+  RenderedCreature *creature = ( pos[x][y][z] ? pos[x][y][z]->creature : NULL );
+	removePosition( x, y, z );
+	return creature;
 }
 
 // FIXME: only uses x,y for now
