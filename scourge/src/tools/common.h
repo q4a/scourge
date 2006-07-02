@@ -12,6 +12,11 @@ class Page;
 extern wxStaticText *g_pageNumText;
 extern Page *g_currentPage;
 
+
+/** Typedefs **/
+typedef unsigned char uchar;
+
+
 /*
 	This code obtained from
 	machard <at> gmail.com <machard <at> gmail.com>

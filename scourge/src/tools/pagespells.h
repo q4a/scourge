@@ -20,6 +20,8 @@ protected:
 
 public:
 	DFSpells *dfSpells;
+	subPageSchools *pageSchools;
+	subPageSpells *pageSpells;
 
 public:
 	PageSpells();
@@ -32,6 +34,8 @@ public:
 
 	void Prev();
 	void Next();
+	void New();
+	void Del();
 
 	void UpdatePageNumber();
 
@@ -49,8 +53,6 @@ public:
 
 protected:
 	wxNotebook *subNotebook;
-	subPageSchools *pageSchools;
-	subPageSpells *pageSpells;
 	Page *currentSubPage;
 };
 

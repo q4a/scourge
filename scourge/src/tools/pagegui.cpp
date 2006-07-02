@@ -168,7 +168,7 @@ void PageGui::GetElement()
 		aElementText->SetLabel( std2wx( std::string(buffer) ) );
 
 //		elementNameText->SetForegroundColour(wxColor(color->r*255,color->g*255,color->b*255));
-		elementColorPanel->SetBackgroundColour(wxColor(color->r*255,color->g*255,color->b*255));
+		elementColorPanel->SetBackgroundColour( wxColor((uchar)(color->r*255),(uchar)(color->g*255),(uchar)(color->b*255)) );
 	}
 }
 void PageGui::SetElement()
@@ -216,7 +216,7 @@ void PageGui::GetColor()
 		aColorText->SetLabel( std2wx( std::string(buffer) ) );
 
 //		colorNameText->SetForegroundColour(wxColor(color->r*255,color->g*255,color->b*255));
-		colorPanel->SetBackgroundColour(wxColor(color->r*255,color->g*255,color->b*255));
+		colorPanel->SetBackgroundColour( wxColor((uchar)(color->r*255),(uchar)(color->g*255),(uchar)(color->b*255)) );
 	}
 }
 void PageGui::SetColor()
@@ -312,7 +312,7 @@ void PageGui::OnElementSliderChange()
 	pPage->aElementText->SetLabel( std2wx( std::string(buffer) ) );
 
 //	pPage->elementNameText->SetForegroundColour(wxColor(r*255,g*255,b*255));
-	pPage->elementColorPanel->SetBackgroundColour(wxColour(r*255,g*255,b*255));
+	pPage->elementColorPanel->SetBackgroundColour( wxColour((uchar)(r*255),(uchar)(g*255),(uchar)(b*255)) );
 }
 void PageGui::OnColorSliderChange()
 {
@@ -334,7 +334,7 @@ void PageGui::OnColorSliderChange()
 	pPage->aColorText->SetLabel( std2wx( std::string(buffer) ) );
 
 //	pPage->colorNameText->SetForegroundColour(wxColor(r*255,g*255,b*255));
-	pPage->colorPanel->SetBackgroundColour(wxColour(r*255,g*255,b*255));
+	pPage->colorPanel->SetBackgroundColour( wxColour((uchar)(r*255),(uchar)(g*255),(uchar)(b*255)) );
 }
 
 void PageGui::OnLineWidthChange()
