@@ -1,19 +1,27 @@
 #include "pagegui.h"
 #include "dfgui.h"
 #include <wx/wx.h>
-#include "common.h"
+#include <wx/colordlg.h>
+#include "colorselector.h"
 #include "../common/constants.h"
 
 PageGui::PageGui()
 {
+	pageHelp = "Use the list boxes to select the theme element/color to edit.\nTo edit colors you can use the sliders, or can click on the color panel. ";
+	pageHelp += "This will bring up the color selection dialog.";
+
 	currentElement = 0;
 	currentColor = 0;
+	elementColorSelector = new ColorSelector;
+	colorSelector = new ColorSelector;
 }
 
 PageGui::~PageGui()
 {
 	delete elementStrArray;
 	delete colorStrArray;
+	delete elementColorSelector;
+	delete colorSelector;
 }
 
 void PageGui::Init(wxNotebook *notebook, DF *dataFile)
@@ -56,18 +64,7 @@ void PageGui::Init(wxNotebook *notebook, DF *dataFile)
 	eastEdit = new wxTextCtrl(page, -1, L"east", wxPoint(270,225), wxSize(100,25));
 	westEdit = new wxTextCtrl(page, -1, L"west", wxPoint(50,225), wxSize(100,25));
 
-
-	rElementText = new wxStaticText(page, -1, _("Red: "), wxPoint(50,295));    rElementText->SetForegroundColour(wxColor(255,0,0));
-	gElementText = new wxStaticText(page, -1, _("Green: "), wxPoint(140,295)); gElementText->SetForegroundColour(wxColor(0,255,0));
-	bElementText = new wxStaticText(page, -1, _("Blue: "), wxPoint(230,295));  bElementText->SetForegroundColour(wxColor(0,0,255));
-	aElementText = new wxStaticText(page, -1, _("Alpha: "), wxPoint(320,295));
-
-	rElementSlider = new wxSlider(page, ID_GuiElementSlider, 0,0,1000, wxPoint(30 ,315),wxSize(90,-1));
-	gElementSlider = new wxSlider(page, ID_GuiElementSlider, 0,0,1000, wxPoint(120,315),wxSize(90,-1));
-	bElementSlider = new wxSlider(page, ID_GuiElementSlider, 0,0,1000, wxPoint(210,315),wxSize(90,-1));
-	aElementSlider = new wxSlider(page, ID_GuiElementSlider, 0,0,1000, wxPoint(300,315),wxSize(90,-1));
-
-	elementColorPanel = new wxPanel(page, -1, wxPoint(260,140),wxSize(130,25));
+	elementColorSelector->Init(page, 30,295, 260,140);
 
 /**
 	Colors
@@ -80,17 +77,7 @@ void PageGui::Init(wxNotebook *notebook, DF *dataFile)
 	colorNameText = new wxStaticText(page, -1, L"No Color Selected", wxPoint(670,45));
 		colorNameText->SetFont( wxFont(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD) );
 
-	rColorText = new wxStaticText(page, -1, _("Red: "), wxPoint(450,140));   rColorText->SetForegroundColour(wxColor(255,0,0));
-	gColorText = new wxStaticText(page, -1, _("Green: "), wxPoint(540,140)); gColorText->SetForegroundColour(wxColor(0,255,0));
-	bColorText = new wxStaticText(page, -1, _("Blue: "), wxPoint(630,140));  bColorText->SetForegroundColour(wxColor(0,0,255));
-	aColorText = new wxStaticText(page, -1, _("Alpha: "), wxPoint(720,140));
-
-	rColorSlider = new wxSlider(page, ID_GuiColorSlider, 0,0,1000, wxPoint(430,160),wxSize(90,-1));
-	gColorSlider = new wxSlider(page, ID_GuiColorSlider, 0,0,1000, wxPoint(520,160),wxSize(90,-1));
-	bColorSlider = new wxSlider(page, ID_GuiColorSlider, 0,0,1000, wxPoint(610,160),wxSize(90,-1));
-	aColorSlider = new wxSlider(page, ID_GuiColorSlider, 0,0,1000, wxPoint(700,160),wxSize(90,-1));
-
-	colorPanel = new wxPanel(page, -1, wxPoint(670,90),wxSize(130,25));
+	colorSelector->Init(page, 430,140, 670,90);
 
 	notebook->AddPage(page, _("GUI"));
 
@@ -153,22 +140,7 @@ void PageGui::GetElement()
 
 		// colors
 		Color *color = &element->color;
-		rElementSlider->SetValue((int)(color->r*1000));
-		gElementSlider->SetValue((int)(color->g*1000));
-		bElementSlider->SetValue((int)(color->b*1000));
-		aElementSlider->SetValue((int)(color->a*1000));
-
-		sprintf(buffer, "%.3f", color->r);
-		rElementText->SetLabel( std2wx( std::string(buffer) ) );
-		sprintf(buffer, "%.3f", color->g);
-		gElementText->SetLabel( std2wx( std::string(buffer) ) );
-		sprintf(buffer, "%.3f", color->b);
-		bElementText->SetLabel( std2wx( std::string(buffer) ) );
-		sprintf(buffer, "%.3f", color->a);
-		aElementText->SetLabel( std2wx( std::string(buffer) ) );
-
-//		elementNameText->SetForegroundColour(wxColor(color->r*255,color->g*255,color->b*255));
-		elementColorPanel->SetBackgroundColour( wxColor((uchar)(color->r*255),(uchar)(color->g*255),(uchar)(color->b*255)) );
+		elementColorSelector->SetColor(color);
 	}
 }
 void PageGui::SetElement()
@@ -188,10 +160,7 @@ void PageGui::SetElement()
 
 		// colors
 		Color *color = &element->color;
-		color->r = rElementSlider->GetValue() / 1000.0f;
-		color->g = gElementSlider->GetValue() / 1000.0f;
-		color->b = bElementSlider->GetValue() / 1000.0f;
-		color->a = aElementSlider->GetValue() / 1000.0f;
+		*color = elementColorSelector->GetColor();
 	}
 }
 
@@ -200,23 +169,7 @@ void PageGui::GetColor()
 	Color *color = GetSelectedColor();
 	if ( color )
 	{
-		rColorSlider->SetValue((int)(color->r*1000));
-		gColorSlider->SetValue((int)(color->g*1000));
-		bColorSlider->SetValue((int)(color->b*1000));
-		aColorSlider->SetValue((int)(color->a*1000));
-
-		char buffer[64];
-		sprintf(buffer, "%.3f", color->r);
-		rColorText->SetLabel( std2wx( std::string(buffer) ) );
-		sprintf(buffer, "%.3f", color->g);
-		gColorText->SetLabel( std2wx( std::string(buffer) ) );
-		sprintf(buffer, "%.3f", color->b);
-		bColorText->SetLabel( std2wx( std::string(buffer) ) );
-		sprintf(buffer, "%.3f", color->a);
-		aColorText->SetLabel( std2wx( std::string(buffer) ) );
-
-//		colorNameText->SetForegroundColour(wxColor(color->r*255,color->g*255,color->b*255));
-		colorPanel->SetBackgroundColour( wxColor((uchar)(color->r*255),(uchar)(color->g*255),(uchar)(color->b*255)) );
+		colorSelector->SetColor(color);
 	}
 }
 void PageGui::SetColor()
@@ -224,10 +177,7 @@ void PageGui::SetColor()
 	Color *color = currentColor;
 	if ( color )
 	{
-		color->r = rColorSlider->GetValue() / 1000.0f;
-		color->g = gColorSlider->GetValue() / 1000.0f;
-		color->b = bColorSlider->GetValue() / 1000.0f;
-		color->a = aColorSlider->GetValue() / 1000.0f;
+		*color = colorSelector->GetColor();
 	}
 }
 
@@ -290,51 +240,6 @@ void PageGui::OnColorChange()
 	PageGui *pPage = ((PageGui*)currentPage);
 	pPage->SetColor();		// Set color last selected
 	pPage->GetColor();		// Set color now selected
-}
-
-void PageGui::OnElementSliderChange()
-{
-	PageGui *pPage = ((PageGui*)currentPage);
-
-	float r = pPage->rElementSlider->GetValue() / 1000.0f;
-	float g = pPage->gElementSlider->GetValue() / 1000.0f;
-	float b = pPage->bElementSlider->GetValue() / 1000.0f;
-	float a = pPage->aElementSlider->GetValue() / 1000.0f;
-
-	char buffer[64];
-	sprintf(buffer, "%.3f", r);
-	pPage->rElementText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", g);
-	pPage->gElementText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", b);
-	pPage->bElementText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", a);
-	pPage->aElementText->SetLabel( std2wx( std::string(buffer) ) );
-
-//	pPage->elementNameText->SetForegroundColour(wxColor(r*255,g*255,b*255));
-	pPage->elementColorPanel->SetBackgroundColour( wxColour((uchar)(r*255),(uchar)(g*255),(uchar)(b*255)) );
-}
-void PageGui::OnColorSliderChange()
-{
-	PageGui *pPage = ((PageGui*)currentPage);
-
-	float r = pPage->rColorSlider->GetValue() / 1000.0f;
-	float g = pPage->gColorSlider->GetValue() / 1000.0f;
-	float b = pPage->bColorSlider->GetValue() / 1000.0f;
-	float a = pPage->aColorSlider->GetValue() / 1000.0f;
-
-	char buffer[64];
-	sprintf(buffer, "%.3f", r);
-	pPage->rColorText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", g);
-	pPage->gColorText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", b);
-	pPage->bColorText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", a);
-	pPage->aColorText->SetLabel( std2wx( std::string(buffer) ) );
-
-//	pPage->colorNameText->SetForegroundColour(wxColor(r*255,g*255,b*255));
-	pPage->colorPanel->SetBackgroundColour( wxColour((uchar)(r*255),(uchar)(g*255),(uchar)(b*255)) );
 }
 
 void PageGui::OnLineWidthChange()

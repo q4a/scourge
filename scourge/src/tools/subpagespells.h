@@ -59,6 +59,9 @@ public:
 	void SetSchool();*/
 
 	void OnSchoolChange();
+	void OnIconXChange();
+	void OnIconYChange();
+	void UpdateIcon();
 
 protected:
 	// List of editable controls

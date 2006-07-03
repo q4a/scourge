@@ -5,6 +5,7 @@
 
 PageBooks::PageBooks()
 {
+	pageHelp = "Add books to the Scourge data files.";
 }
 
 PageBooks::~PageBooks()

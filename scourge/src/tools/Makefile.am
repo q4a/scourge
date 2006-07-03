@@ -6,6 +6,8 @@ bin_PROGRAMS = tools
 tools_SOURCES = \
 	common.cpp\
 	common.h\
+	colorselector.cpp\
+	colorselector.h\
 	datafile.cpp\
 	datafile.h\
 	dfbooks.cpp\
