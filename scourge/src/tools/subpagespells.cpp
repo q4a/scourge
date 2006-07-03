@@ -111,6 +111,8 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 	iconYEdit = new wxTextCtrl(page, -1, std2wx(spell->icon_y), wxPoint(55,200), wxSize(30,25));
 	iconYScroll = new wxScrollBar(page, ID_subSpellsIconYScroll, wxPoint(85,200), wxSize(-1,25), wxSB_VERTICAL);
 		iconYScroll->SetScrollbar(y,1,17,1);
+	// Make sure the icon is painted when tabs are changed
+	page->Connect( wxEVT_PAINT, (wxObjectEventFunction)&subPageSpells::OnPaint, NULL, (wxEvtHandler*)this);
 
 
 	// disposition
@@ -266,10 +268,10 @@ void subPageSpells::SetCurrent()
 
 	// CLIP
 	spell->target = "";
-	if ( spell->target.find("C") != std::string::npos ) spell->target += "C";
-	if ( spell->target.find("L") != std::string::npos ) spell->target += "L";
-	if ( spell->target.find("I") != std::string::npos ) spell->target += "I";
-	if ( spell->target.find("P") != std::string::npos ) spell->target += "P";
+	if ( clipCheckList->IsChecked(0) ) spell->target += "C";
+	if ( clipCheckList->IsChecked(1) ) spell->target += "L";
+	if ( clipCheckList->IsChecked(2) ) spell->target += "I";
+	if ( clipCheckList->IsChecked(3) ) spell->target += "P";
 
 	spell->speed = wx2std( speedEdit->GetValue() );
 	spell->effect = wx2std( effectEdit->GetValue() );
@@ -348,6 +350,7 @@ void subPageSpells::OnIconYChange()
 	pPage->iconYEdit->SetValue( std2wx( std::string(buffer) ) );
 
 	pPage->UpdateIcon();
+
 }
 void subPageSpells::UpdateIcon()
 {
@@ -360,4 +363,9 @@ void subPageSpells::UpdateIcon()
 
 	wxClientDC dc(page);
 	dc.DrawBitmap(icon, 35,230, false);
+}
+
+void subPageSpells::OnPaint()
+{
+	UpdateIcon();
 }

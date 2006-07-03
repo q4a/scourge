@@ -1,4 +1,5 @@
 #include "dfmissions.h"
+#include "../common/constants.h"
 
 /*DFMissions::DFMissions()
 {
@@ -12,37 +13,6 @@ DFMissions::~DFMissions()
 		delete (*itr);
 	}
 	missions.clear();
-}
-
-bool DFMissions::Load()
-{
-	std::ifstream fin("../../share/scourge_data/world/missions.txt", std::ios::binary);
-	std::string line;
-	char buffer[512];
-	Mission *mission;
-	char c;
-
-	while ( !fin.eof() )
-	{
-		fin.get(c);
-
-		if ( c == 'M' )
-		{
-			mission = new Mission;
-			LoadMission(&fin, mission);
-			if ( mission->description == "" )
-			{
-				delete mission;
-				continue;
-			}
-
-			missions.push_back(mission);
-		}
-		else
-			fin.getline(buffer, 512, '\n');
-	}
-
-	fin.close();
 }*/
 
 bool DFMissions::LoadSingle(std::ifstream *fin, Mission *mission)
@@ -154,7 +124,7 @@ void DFMissions::Save()
 		else
 			generalMissions.push_back( *itr );
 	}
-	std::ofstream fout("../../share/scourge_data/world/missionsTEST", std::ios::binary);
+	std::ofstream fout( GetDataPath("%s/world/missionsTEST"), std::ios::binary);
 
 	fout << "##########################################################\n"
 		 << "# Templated missions\n# Key:\n# M:type,mission template name\n"

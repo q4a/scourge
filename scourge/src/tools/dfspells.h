@@ -21,9 +21,7 @@ struct School
 	std::vector<std::string> neutralDonation;
 	std::vector<std::string> highDonation;
 
-//	std::map <std::string,Spell*> spells;
 	std::vector <Spell*> spells;
-
 
 	~School()
 	{
@@ -45,6 +43,9 @@ protected:
 	bool LoadSingle(std::ifstream*, School*);
 public:
 	void Save();
+
+	void SaveSchool(std::ofstream&, School*);
+	void SaveSpell(std::ofstream&, Spell*);
 };
 
 #endif // DFSPELLS_H

@@ -1,4 +1,5 @@
 #include "dfbooks.h"
+#include "../common/constants.h"
 
 bool DFBooks::LoadSingle(std::ifstream *fin, Book *book)
 {
@@ -49,7 +50,7 @@ void DFBooks::Save()
 			generalBooks.push_back(data[i]);
 	}
 
-	std::ofstream fout("../../share/scourge_data/world/booksTEST", std::ios::binary);
+	std::ofstream fout( GetDataPath("%s/world/booksTEST"), std::ios::binary);
 
 	fout << "# Random texts found in books and notes.\n#\n# Key:\n# B: Book Name, rareness"
 		 << "# M: Mission name (optional: from missions.txt)\n# T: multi-line text\n# \n\n"

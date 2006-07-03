@@ -1,4 +1,5 @@
 #include "dfgui.h"
+#include "../common/constants.h"
 
 /*DFGui::DFGui()
 {
@@ -114,7 +115,7 @@ bool DFGui::ParseColor(std::ifstream *fin, Color *color)
 
 void DFGui::Save()
 {
-	std::ofstream fout("../../share/scourge_data/world/guiTEST", std::ios::binary);
+	std::ofstream fout( GetDataPath("%s/world/guiTEST"), std::ios::binary);
 
 	fout << "# gui themes key:\n# (non-existing textures will appear as pure color)"
 		 << "\n#\n# T:theme name\n# each row is either an \"element\" (like window background) or a \"color\" like a text color."

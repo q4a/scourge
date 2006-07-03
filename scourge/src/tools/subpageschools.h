@@ -5,6 +5,7 @@
 
 /** Forward Declarations **/
 class DFSpells;
+class ColorSelector;
 class wxTextCtrl;
 class wxStaticText;
 class wxScrollBar;
@@ -41,6 +42,8 @@ public:
 	void OnColorSliderChange();
 
 protected:
+	ColorSelector *colorSelector;
+
 	// List of editable controls
 	wxTextCtrl *nameEdit;
 	wxTextCtrl *deityEdit;

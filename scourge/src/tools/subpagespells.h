@@ -63,6 +63,8 @@ public:
 	void OnIconYChange();
 	void UpdateIcon();
 
+	void OnPaint();
+
 protected:
 	// List of editable controls
 	wxListBox *schoolList;
