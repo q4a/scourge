@@ -42,6 +42,7 @@
 #include "debug.h"
 #include "scourgeview.h"
 #include "scourgehandler.h"
+#include "gui/confirmdialog.h"
 
 using namespace std;
 
@@ -131,6 +132,9 @@ void Scourge::initUI() {
   mapEditor = new MapEditor( this );
   optionsMenu = new OptionsMenu(this);
   multiplayer = new MultiplayerDialog(this);
+
+	hireHeroDialog = new ConfirmDialog( getSDLHandler() );
+	dismissHeroDialog = new ConfirmDialog( getSDLHandler() );
 
   // load character, item sounds
   getSDLHandler()->getSound()->loadSounds( getUserConfiguration() );
@@ -564,6 +568,8 @@ void Scourge::startMission() {
     resetInfos();
 
     // remove gui
+		hireHeroDialog->setVisible( false );
+		dismissHeroDialog->setVisible( false );
     mainWin->setVisible(false);
     messageWin->setVisible(false);
     closeAllContainerGuis();
@@ -1888,12 +1894,27 @@ void Scourge::createPartyUI() {
                                 offsetX + playerButtonWidth * (i + 1) - 25, 20 + playerInfoHeight,
                                 this, this );
     cards->addWidget( playerInfo[i], 0 );
-    playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,
-                                offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight - 25,
-                                this, NULL, true );
-    cards->addWidget( playerHpMp[i], 0 );
-    playerWeapon[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20 + playerInfoHeight - 25,
-                                  offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight,
+		if( i == 0 ) {
+			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,
+																	offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight - 25,
+																	this, NULL, true );
+			cards->addWidget( playerHpMp[i], 0 );
+		} else {
+			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,
+																	offsetX + playerButtonWidth * (i + 1), 
+																	20 + playerInfoHeight - 50,
+																	this, NULL, true );
+			cards->addWidget( playerHpMp[i], 0 );
+			dismissButton[i] = cards->createButton( offsetX + playerButtonWidth * (i + 1) - 25, 
+																							20 + playerInfoHeight - 50,
+																							offsetX + playerButtonWidth * (i + 1), 
+																							20 + playerInfoHeight - 25,
+																							"D", 0 );
+		}
+    playerWeapon[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 
+																	20 + playerInfoHeight - 25,
+                                  offsetX + playerButtonWidth * (i + 1), 
+																	20 + playerInfoHeight,
                                   this, NULL, true );
     cards->addWidget( playerWeapon[i], 0 );
   }
@@ -2843,5 +2864,29 @@ void Scourge::mouseClickWhileExiting() {
 
 RenderedCreature *Scourge::createWanderingHero( int level ) {
 	return mainMenu->createWanderingHero( level );
+}
+
+void Scourge::handleWanderingHeroClick( Creature *creature ) {
+	if( getSession()->getParty()->getPartySize() == MAX_PARTY_SIZE ) {
+		showMessageDialog( "You cannot hire more party members." );
+	} else {
+		char msg[300];
+		sprintf( msg, "Would you like %s the %s to join your party?", 
+						 creature->getName(),
+						 creature->getCharacter()->getName() );
+		hireHeroDialog->setText( msg );
+		hireHeroDialog->setObject( creature );
+		hireHeroDialog->setVisible( true );
+	}
+}
+
+void Scourge::handleDismiss( int index ) {
+	char msg[300];
+	sprintf( msg, "Would you like to dismiss %s the %s?", 
+					 getParty()->getParty( index )->getName(),
+					 getParty()->getParty( index )->getCharacter()->getName() );
+	dismissHeroDialog->setText( msg );
+	dismissHeroDialog->setMode( index );
+	dismissHeroDialog->setVisible( true );
 }
 

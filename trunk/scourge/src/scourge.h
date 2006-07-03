@@ -91,6 +91,7 @@ class TrainDialog;
 class MagicSchool;
 class ScourgeView;
 class ScourgeHandler;
+class ConfirmDialog;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -181,6 +182,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   Canvas *minPartyInfo;
   Canvas *playerInfo[MAX_PARTY_SIZE], *playerHpMp[MAX_PARTY_SIZE], *playerWeapon[MAX_PARTY_SIZE];
   Canvas *quickSpell[12];
+	Button *dismissButton[MAX_PARTY_SIZE];
 
   // board gui
   ScrollingList *missionList;
@@ -208,6 +210,9 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 
   ScourgeView *view;
   ScourgeHandler *handler;
+
+	ConfirmDialog *hireHeroDialog;
+	ConfirmDialog *dismissHeroDialog;
 
 protected:
   bool getItem(Location *pos);
@@ -260,6 +265,7 @@ public:
   inline Canvas *getPlayerHpMp( int index ) { return playerHpMp[ index ]; }
   inline Canvas *getPlayerWeapon( int index ) { return playerWeapon[ index ]; }
   inline Canvas *getQuickSpell( int index ) { return quickSpell[ index ]; }
+	inline Button *getDismissButton( int index ) { return dismissButton[ index ]; }
 
   void movePartyToGateAndEndMission();
 
@@ -679,6 +685,12 @@ public:
   bool loadGame( Session *session, char *error );
 
 	RenderedCreature *createWanderingHero( int level );
+
+	ConfirmDialog *getHireHeroDialog() { return hireHeroDialog; }
+	ConfirmDialog *getDismissHeroDialog() { return dismissHeroDialog; }
+
+	void handleWanderingHeroClick( Creature *creature );
+	void handleDismiss( int index );
 
 protected:
 

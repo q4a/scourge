@@ -618,3 +618,20 @@ int Party::getAverageLevel() {
 	}
 	return( sum ? (int)( sum / (float)getPartySize() ) : 0 );
 }
+
+void Party::hire( Creature *creature ) {
+	// Remove from the session list
+	assert( session->removeCreatureRef( creature ) );
+
+	// add to party
+	party[ partySize++ ] = creature;
+}
+
+void Party::dismiss( int index ) {
+	session->addCreatureRef( party[ index ] );
+	for( int i = index; i < partySize - 1; i++ ) {
+		party[ i ] = party[ i + 1 ];
+	}
+	party[ --partySize ] = NULL;
+}
+

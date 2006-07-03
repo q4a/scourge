@@ -139,6 +139,9 @@ public:
   */
   virtual Creature *newCreature( Monster *monster, GLShape *shape, bool loaded=false );
 	virtual Creature *newCreature( Character *character, char *name, int model );
+	virtual bool removeCreatureRef( Creature *creature );
+	virtual void addCreatureRef( Creature *creature );
+
   inline int getCreatureCount() { return creatures.size(); }
   inline Creature *getCreature(int index) { return creatures[index]; }
   inline int getItemCount() { return newItems.size(); }
