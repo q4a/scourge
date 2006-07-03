@@ -24,7 +24,6 @@
 #include "../common/constants.h"
 
 std::map <std::string,DF*> g_DFList;
-//DF *g_DFCurrent;		-- not needed?
 
 std::map <std::string,Page*> g_PageList;
 wxStaticText *g_pageNumText;
@@ -103,7 +102,6 @@ bool MyApp::OnInit()
 	DFSpells *dfSpells = new DFSpells;
 	dfSpells->Load( GetDataPath("%s/world/spells.txt"), "S");
 
-//	g_DFCurrent = dfBooks;	-- not needed?
 
 	g_DFList["Books"] = dfBooks;
 	g_DFList["Missions"] = dfMissions;
@@ -316,7 +314,6 @@ void MyFrame::OnPageChange(wxCommandEvent& WXUNUSED(event))
 {
 	currentPage = notebook->GetCurrentPage();
 	wxString str = notebook->GetPageText( notebook->GetSelection() );
-//	g_DFCurrent = g_DFList[ wx2std(str) ];		-- not needed?
 	g_currentPage = g_PageList[ wx2std(str) ]->SetAsCurrent();
 
 	g_currentPage->UpdatePageNumber();

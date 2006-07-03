@@ -56,6 +56,8 @@ void PageSkills::Init(wxNotebook *notebook, DF *dataFile)
 	iconYScroll = new wxScrollBar(page, ID_SkillsIconYScroll, wxPoint(85,80), wxSize(-1,25), wxSB_VERTICAL);
 		iconYScroll->SetScrollbar(y,1,17,1);
 
+	page->Connect( wxEVT_PAINT, (wxObjectEventFunction)&PageSkills::OnPaint, NULL, (wxEvtHandler*)this);
+
 	// description
 	wxStaticText *descriptionText = new wxStaticText(page, -1, _("Description"), wxPoint(450,10));
 	descriptionEdit = new wxTextCtrl(page, -1, std2wx(skill->description), wxPoint(450,30), wxSize(350,150), wxTE_MULTILINE);
@@ -149,4 +151,9 @@ void PageSkills::UpdateIcon()
 
 	wxClientDC dc(page);
 	dc.DrawBitmap(icon, 110,75, false);
+}
+
+void PageSkills::OnPaint()
+{
+	UpdateIcon();
 }

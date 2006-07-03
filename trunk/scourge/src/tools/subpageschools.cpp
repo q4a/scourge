@@ -1,17 +1,19 @@
 #include "subpageschools.h"
 #include "pagespells.h"
 #include "dfspells.h"
+#include "colorselector.h"
 #include <wx/wx.h>
 #include "common.h"
+#include "../common/constants.h"
 
 subPageSchools::subPageSchools()
 {
-	//ctor
+	colorSelector = new ColorSelector;
 }
 
 subPageSchools::~subPageSchools()
 {
-	//dtor
+	delete colorSelector;
 }
 
 void subPageSchools::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
@@ -41,13 +43,7 @@ void subPageSchools::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent
 	resistSkillEdit = new wxTextCtrl(page, -1, std2wx(school->resistSkill), wxPoint(380,80), wxSize(200,25));
 
 /* Color */
-	rColorText = new wxStaticText(page, -1, _("Red: "), wxPoint(30,70));   rColorText->SetForegroundColour(wxColor(255,0,0));
-	gColorText = new wxStaticText(page, -1, _("Green: "), wxPoint(120,70)); gColorText->SetForegroundColour(wxColor(0,255,0));
-	bColorText = new wxStaticText(page, -1, _("Blue: "), wxPoint(210,70));  bColorText->SetForegroundColour(wxColor(0,0,255));
-
-	rColorSlider = new wxSlider(page, ID_subSchoolsColorSlider, 0,0,1000, wxPoint(10,90),wxSize(90,-1));
-	gColorSlider = new wxSlider(page, ID_subSchoolsColorSlider, 0,0,1000, wxPoint(100,90),wxSize(90,-1));
-	bColorSlider = new wxSlider(page, ID_subSchoolsColorSlider, 0,0,1000, wxPoint(190,90),wxSize(90,-1));
+	colorSelector->Init(page, 10,110 );
 
 	// symbol
 	wxStaticText *symbolText = new wxStaticText(page, -1, _("Symbol"), wxPoint(590,10));
@@ -88,17 +84,7 @@ void subPageSchools::GetCurrent()
 	float r = atof(school->r.c_str());
 	float g = atof(school->g.c_str());
 	float b = atof(school->b.c_str());
-	rColorSlider->SetValue((int)( r*1000 ));
-	gColorSlider->SetValue((int)( g*1000 ));
-	bColorSlider->SetValue((int)( b*1000 ));
-
-	char buffer[16];
-	sprintf(buffer, "%.3f", r);
-	rColorText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", g);
-	gColorText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", b);
-	bColorText->SetLabel( std2wx( std::string(buffer) ) );
+	colorSelector->SetColor( &Color(r,g,b) );
 
 	symbolEdit->SetValue(std2wx(school->symbol));
 }
@@ -113,17 +99,15 @@ void subPageSchools::SetCurrent()
 	school->resistSkill = wx2std( resistSkillEdit->GetValue());
 
 	// color
-	float r = rColorSlider->GetValue() / 1000.0f;
-	float g = gColorSlider->GetValue() / 1000.0f;
-	float b = bColorSlider->GetValue() / 1000.0f;
-
+	Color color = colorSelector->GetColor();
 	char buffer[16];
-	sprintf(buffer, "%.3f", r);
+	sprintf(buffer, "%.3f", color.r);
 	school->r = buffer;
-	sprintf(buffer, "%.3f", g);
+	sprintf(buffer, "%.3f", color.g);
 	school->g = buffer;
-	sprintf(buffer, "%.3f", b);
+	sprintf(buffer, "%.3f", color.b);
 	school->b = buffer;
+
 
 	school->symbol = wx2std( symbolEdit->GetValue());
 }
@@ -147,6 +131,4 @@ void subPageSchools::OnColorSliderChange()
 	pPage->gColorText->SetLabel( std2wx( std::string(buffer) ) );
 	sprintf(buffer, "%.3f", b);
 	pPage->bColorText->SetLabel( std2wx( std::string(buffer) ) );
-
-//	pPage->colorPanel->SetBackgroundColour( wxColour((uchar)(r*255),(uchar)(g*255),(uchar)(b*255)) );
 }

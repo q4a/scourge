@@ -1,5 +1,6 @@
 #include "dfskills.h"
 #include "common.h"
+#include "../common/constants.h"
 
 /*DFSkills::DFSkills()
 {
@@ -43,7 +44,7 @@ bool DFSkills::LoadSingle(std::ifstream *fin, SpecialSkill *skill)
 
 void DFSkills::Save()
 {
-	std::ofstream fout("../../share/scourge_data/world/skillsTEST", std::ios::binary);
+	std::ofstream fout( GetDataPath("%s/world/skillsTEST"), std::ios::binary);
 
 	/**
 	  * Possible improvement: set out skills in class sections as already done in skills.txt

@@ -15,8 +15,8 @@ ColorSelector::~ColorSelector()
 
 void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY)
 {
-	if ( panelX == -1 )		panelX = x+135;
-	if ( panelY == -1 )		panelY = y-50;
+	if ( panelX == -1 )		panelX = x+100;
+	if ( panelY == -1 )		panelY = y-30;
 
 	rText = new wxStaticText(parent, -1, L"Red: ",	wxPoint(x+20,	y));  rText->SetForegroundColour(wxColor(255,0,0));
 	gText = new wxStaticText(parent, -1, L"Green: ",	wxPoint(x+110,	y));  gText->SetForegroundColour(wxColor(0,255,0));
