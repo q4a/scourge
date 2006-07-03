@@ -1,6 +1,8 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+#include <string>
+
 /** Forward Declarations **/
 class wxNotebook;
 class wxWindow;
@@ -11,6 +13,7 @@ class Page
 protected:
 	wxWindow *page;
 	DF *dataFile;
+	std::string pageHelp;
 
 public:
 	static Page *currentPage;
@@ -23,6 +26,7 @@ public:
 
 public:
 	virtual void Init(wxNotebook*, DF*) = 0;
+	void OnPageHelp();
 
 	virtual void UpdatePage() = 0;
 
@@ -50,6 +54,7 @@ enum
 	ID_MenuSave,
 	ID_MenuSaveCurrent,
 	ID_MenuAbout,
+	ID_MenuPageHelp,
 	ID_Button,
 	ID_Notebook,
 	ID_BooksPage,
@@ -74,6 +79,7 @@ enum
 		ID_GuiLineWidthScroll,
 		ID_GuiElementSlider,
 		ID_GuiColorSlider,
+		ID_GuiColorPanel,
 	ID_ClassesPage,
 		ID_ClassesSkillList,
 	ID_SkillsPage,
@@ -87,8 +93,8 @@ enum
 		ID_Spells_subPage,
 		ID_subSchoolsColorSlider,
 		ID_subSpellsSchoolList,
-		ID_SpellsIconXScroll,
-		ID_SpellsIconYScroll,
+		ID_subSpellsIconXScroll,
+		ID_subSpellsIconYScroll,
 	ID_Page,
 		ID_Prev,
 		ID_Next,

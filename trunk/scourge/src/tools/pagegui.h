@@ -2,11 +2,13 @@
 #define PAGEGUI_H
 
 #include "page.h"
+#include "common.h"
 
 /** Forward Declarations **/
 class DFGui;
 class Element;
 class Color;
+class ColorSelector;
 class wxWindow;
 class wxStaticText;
 class wxTextCtrl;
@@ -16,6 +18,7 @@ class wxString;
 class wxArrayString;
 class wxSlider;
 class wxPanel;
+class wxMouseEvent;
 
 class PageGui : public Page
 {
@@ -50,8 +53,10 @@ public:
 
 	void OnElementChange();
 	void OnColorChange();
-	void OnElementSliderChange();
+	/*void OnElementSliderChange();
 	void OnColorSliderChange();
+	void OnElementColorPanelClick();
+	void OnColorPanelClick(wxMouseEvent&);*/
 
 	void OnLineWidthChange();
 
@@ -80,7 +85,7 @@ protected:
 	wxTextCtrl *eastEdit;
 	wxTextCtrl *westEdit;
 
-	wxSlider *rElementSlider;
+	/*wxSlider *rElementSlider;
 	wxSlider *gElementSlider;
 	wxSlider *bElementSlider;
 	wxSlider *aElementSlider;
@@ -88,9 +93,10 @@ protected:
 		wxStaticText *gElementText;
 		wxStaticText *bElementText;
 		wxStaticText *aElementText;
-	wxPanel *elementColorPanel;
+	wxPanel *elementColorPanel;*/
+	ColorSelector *elementColorSelector;
 
-	wxSlider *rColorSlider;
+	/*wxSlider *rColorSlider;
 	wxSlider *gColorSlider;
 	wxSlider *bColorSlider;
 	wxSlider *aColorSlider;
@@ -98,7 +104,8 @@ protected:
 		wxStaticText *gColorText;
 		wxStaticText *bColorText;
 		wxStaticText *aColorText;
-	wxPanel *colorPanel;
+	wxPanel *colorPanel;*/
+	ColorSelector *colorSelector;
 
 };
 

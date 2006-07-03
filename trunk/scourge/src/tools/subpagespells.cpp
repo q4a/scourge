@@ -3,6 +3,7 @@
 #include "dfspells.h"
 #include <wx/wx.h>
 #include "common.h"
+#include "../common/constants.h"
 
 subPageSpells::subPageSpells()
 {
@@ -37,7 +38,7 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 		schoolStrArray->Add( std2wx( (*itr)->name ) );
 	schoolList = new wxListBox(page, ID_subSpellsSchoolList, wxPoint(10,30), wxSize(200,90), *schoolStrArray);
 
-	schoolNameText = new wxStaticText(page, -1, L"No School Selected", wxPoint(220,40));
+	schoolNameText = new wxStaticText(page, -1, std2wx(school->name), wxPoint(220,40));
 		schoolNameText->SetFont( wxFont(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD) );
 
 
@@ -103,12 +104,12 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 	// icon_x
 	int x = atoi( spell->icon_x.c_str() );
 	iconXEdit = new wxTextCtrl(page, -1, std2wx(spell->icon_x), wxPoint(10,200), wxSize(30,25));
-	iconXScroll = new wxScrollBar(page, ID_SpellsIconXScroll, wxPoint(40,200), wxSize(-1,25), wxSB_VERTICAL);
+	iconXScroll = new wxScrollBar(page, ID_subSpellsIconXScroll, wxPoint(40,200), wxSize(-1,25), wxSB_VERTICAL);
 		iconXScroll->SetScrollbar(x,1,20,1);
 	// icon_y
 	int y = atoi( spell->icon_y.c_str() );
 	iconYEdit = new wxTextCtrl(page, -1, std2wx(spell->icon_y), wxPoint(55,200), wxSize(30,25));
-	iconYScroll = new wxScrollBar(page, ID_SpellsIconYScroll, wxPoint(85,200), wxSize(-1,25), wxSB_VERTICAL);
+	iconYScroll = new wxScrollBar(page, ID_subSpellsIconYScroll, wxPoint(85,200), wxSize(-1,25), wxSB_VERTICAL);
 		iconYScroll->SetScrollbar(y,1,17,1);
 
 
@@ -116,7 +117,7 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 	wxStaticText *dispositionText = new wxStaticText(page, -1, _("Disposition"), wxPoint(160,180));
 	wxString dispositionChoices[2] = { L"Friendly", L"Hostile" };
 	wxString disposition = L"Friendly";
-	if ( spell->disposition == "Hostile" )	disposition = L"Hostile";
+	if ( spell->disposition == "H" )	disposition = L"Hostile";
 	dispositionCombo = new wxComboBox(page, -1, disposition, wxPoint(160,200),wxSize(80,25),
 			2,dispositionChoices, wxCB_READONLY);
 
@@ -157,6 +158,8 @@ void subPageSpells::UpdatePage()
 
 void subPageSpells::Prev()
 {
+	SetCurrent();
+
 	std::vector<Spell*> *pSpells = &currentSchool->spells;
 	spellNumber--;
 
@@ -172,6 +175,8 @@ void subPageSpells::Prev()
 }
 void subPageSpells::Next()
 {
+	SetCurrent();
+
 	std::vector<Spell*> *pSpells = &currentSchool->spells;
 
 	spellItr++;
@@ -222,8 +227,20 @@ void subPageSpells::GetCurrent()
 
 	speedEdit->SetValue(std2wx(spell->speed));
 	effectEdit->SetValue(std2wx(spell->effect));
-// icon
-	dispositionCombo->SetValue(std2wx(spell->disposition));
+
+	// icon
+	int x = atoi( spell->icon_x.c_str() );
+	iconXEdit->SetValue( std2wx(spell->icon_x) );
+		iconXScroll->SetScrollbar(x,1,20,1);
+	int y = atoi( spell->icon_y.c_str() );
+	iconYEdit->SetValue( std2wx(spell->icon_y) );
+		iconYScroll->SetScrollbar(y,1,17,1);
+	UpdateIcon();
+
+	// disposition
+	wxString disposition = L"Friendly";
+	if ( spell->disposition == "H" )	disposition = L"Hostile";
+	dispositionCombo->SetValue(disposition);
 
 	wxString prereq = std2wx(spell->prerequisite);
 	if ( prereq == L"" )	prereq = L"-none-";
@@ -241,6 +258,38 @@ void subPageSpells::SetCurrent()
 	spell->symbol = wx2std( symbolEdit->GetValue() );
 	spell->level = wx2std( levelEdit->GetValue() );
 	spell->mana = wx2std( manaEdit->GetValue() );
+	spell->exp = wx2std( expEdit->GetValue() );
+	spell->failureRate = wx2std( failureRateEdit->GetValue() );
+	spell->action = wx2std( actionEdit->GetValue() );
+	spell->distance = wx2std( distanceEdit->GetValue() );
+	spell->area = wx2std( areaCombo->GetValue() );
+
+	// CLIP
+	spell->target = "";
+	if ( spell->target.find("C") != std::string::npos ) spell->target += "C";
+	if ( spell->target.find("L") != std::string::npos ) spell->target += "L";
+	if ( spell->target.find("I") != std::string::npos ) spell->target += "I";
+	if ( spell->target.find("P") != std::string::npos ) spell->target += "P";
+
+	spell->speed = wx2std( speedEdit->GetValue() );
+	spell->effect = wx2std( effectEdit->GetValue() );
+
+	// icon
+	spell->icon_x = wx2std( iconXEdit->GetValue() );
+	spell->icon_y = wx2std( iconYEdit->GetValue() );
+	if ( spell->icon_x == "0" )		spell->icon_x = "1";
+	if ( spell->icon_y == "0" )		spell->icon_y = "1";
+
+	// disposition
+	spell->disposition = "F";
+	if ( dispositionCombo->GetValue() == L"Hostile" )	spell->disposition = "H";
+
+	spell->prerequisite = wx2std( prereqCombo->GetValue() );
+	if ( spell->prerequisite == "-none-" )
+		spell->prerequisite = "";
+
+	spell->sound = wx2std( soundEdit->GetValue() );
+	spell->notes = wx2std( notesEdit->GetValue() );
 }
 
 void subPageSpells::ClearCurrent()
@@ -278,4 +327,37 @@ void subPageSpells::OnSchoolChange()
 	pPage->GetCurrent();
 
 	pPage->UpdatePageNumber();
+}
+
+void subPageSpells::OnIconXChange()
+{
+	subPageSpells *pPage = ((PageSpells*)currentPage)->pageSpells;
+	int newPos = pPage->iconXScroll->GetThumbPosition();
+
+	char buffer[16]; sprintf(buffer, "%i", newPos);
+	pPage->iconXEdit->SetValue( std2wx( std::string(buffer) ) );
+
+	pPage->UpdateIcon();
+}
+void subPageSpells::OnIconYChange()
+{
+	subPageSpells *pPage = ((PageSpells*)currentPage)->pageSpells;
+	int newPos = pPage->iconYScroll->GetThumbPosition();
+
+	char buffer[16]; sprintf(buffer, "%i", newPos);
+	pPage->iconYEdit->SetValue( std2wx( std::string(buffer) ) );
+
+	pPage->UpdateIcon();
+}
+void subPageSpells::UpdateIcon()
+{
+	wxImage image(std2wx(std::string(GetDataPath("%s/textures/spells.bmp"))));
+	wxBitmap bitmap(image);
+
+	int icon_x = iconXScroll->GetThumbPosition();
+	int icon_y = iconYScroll->GetThumbPosition();
+	wxBitmap icon = bitmap.GetSubBitmap( wxRect(32*(icon_x-1),32*(icon_y-1),32,32) );
+
+	wxClientDC dc(page);
+	dc.DrawBitmap(icon, 35,230, false);
 }

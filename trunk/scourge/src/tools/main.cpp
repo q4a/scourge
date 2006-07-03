@@ -73,7 +73,6 @@ public:
 
 		void SaveCurrent();
 		void LoadCurrent();
-	void UpdatePageNumber();
 
 };
 
@@ -98,9 +97,6 @@ bool MyApp::OnInit()
 	DFGui *dfGui = new DFGui;
 	dfGui->Load( GetDataPath("%s/world/gui.txt"), "T");
 
-//	DFClasses *dfClasses = new DFClasses;
-//	dfClasses->Load( GetDataPath("%s/world/characters.txt"), "C");
-
 	DFSkills *dfSkills = new DFSkills;
 	dfSkills->Load( GetDataPath("%s/world/skills.txt"), "S");
 
@@ -112,14 +108,12 @@ bool MyApp::OnInit()
 	g_DFList["Books"] = dfBooks;
 	g_DFList["Missions"] = dfMissions;
 	g_DFList["GUI"] = dfGui;
-//	g_DFList["Classes"] = dfClasses;
 	g_DFList["Skills"] = dfSkills;
 	g_DFList["Spells"] = dfSpells;
 
 	g_PageList["Books"] = new PageBooks;
 	g_PageList["Missions"] = new PageMissions;
 	g_PageList["GUI"] = new PageGui;
-//	g_PageList["Classes"] = new PageClasses;
 	g_PageList["Skills"] = new PageSkills;
 	g_PageList["Spells"] = new PageSpells;
 
@@ -134,6 +128,8 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &MyFrame::OnSaveCurrent );
 	frame->Connect( ID_MenuAbout, wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) &MyFrame::OnAbout );
+	frame->Connect( ID_MenuPageHelp, wxEVT_COMMAND_MENU_SELECTED,
+			(wxObjectEventFunction) &Page::OnPageHelp );
 
 	frame->Connect( ID_Prev, wxEVT_COMMAND_BUTTON_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnPrev );
@@ -168,15 +164,7 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &PageGui::OnColorChange );
 	frame->Connect( ID_GuiLineWidthScroll, wxEVT_SCROLL_THUMBTRACK,
 			(wxObjectEventFunction) &PageGui::OnLineWidthChange );
-	frame->Connect( ID_GuiElementSlider, wxEVT_SCROLL_THUMBTRACK,
-			(wxObjectEventFunction) &PageGui::OnElementSliderChange );
-	frame->Connect( ID_GuiColorSlider, wxEVT_SCROLL_THUMBTRACK,
-			(wxObjectEventFunction) &PageGui::OnColorSliderChange );
 
-	// Classes page events
-/*	frame->Connect( ID_ClassesSkillList, wxEVT_COMMAND_LISTBOX_SELECTED,
-			(wxObjectEventFunction) &PageClasses::OnSkillChange );
-*/
 	// Skills page events
 	frame->Connect( ID_SkillsTypeCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
 			(wxObjectEventFunction) &PageSkills::OnTypeChange );
@@ -192,6 +180,10 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &subPageSchools::OnColorSliderChange );
 	frame->Connect( ID_subSpellsSchoolList, wxEVT_COMMAND_LISTBOX_SELECTED,
 			(wxObjectEventFunction) &subPageSpells::OnSchoolChange );
+	frame->Connect( ID_subSpellsIconXScroll, wxEVT_SCROLL_THUMBTRACK,
+			(wxObjectEventFunction) &subPageSpells::OnIconXChange );
+	frame->Connect( ID_subSpellsIconYScroll, wxEVT_SCROLL_THUMBTRACK,
+			(wxObjectEventFunction) &subPageSpells::OnIconYChange );
 
 	frame->Show(TRUE);
 	SetTopWindow(frame);
@@ -213,6 +205,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuFile->AppendSeparator();
 	menuFile->Append(ID_MenuQuit,_("E&xit"));
 	menuHelp->Append(ID_MenuAbout,_("&About"));
+	menuHelp->Append(ID_MenuPageHelp, L"&Page Help");
 	// Append menus to menubar
 	menuBar->Append(menuFile,_("&File"));
 	menuBar->Append(menuHelp,_("&Help"));
@@ -227,7 +220,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	g_PageList["Books"]->Init(notebook,g_DFList["Books"]);
 	g_PageList["Missions"]->Init(notebook,g_DFList["Missions"]);
 	g_PageList["GUI"]->Init(notebook,g_DFList["GUI"]);
-//	g_PageList["Classes"]->Init(notebook,g_DFList["Classes"]);
 	g_PageList["Skills"]->Init(notebook,g_DFList["Skills"]);
 	g_PageList["Spells"]->Init(notebook,g_DFList["Spells"]);
 
@@ -236,7 +228,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	// page number
 	char buffer[64];
 	sprintf(buffer, "Page %i/%i", g_DFList["Books"]->GetCurrentNum(), g_DFList["Books"]->GetTotal());
-	/*wxStaticText **/g_pageNumText = new wxStaticText(panel, ID_PageNum, std2wx( buffer ), wxPoint(35,15));
+	g_pageNumText = new wxStaticText(panel, ID_PageNum, std2wx( buffer ), wxPoint(35,15));
 	// next
 	wxButton *next = new wxButton(panel, ID_Next,_(">"),wxPoint(100,5),wxSize(20,30));
 	// new
@@ -264,16 +256,17 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnSave(wxCommandEvent& WXUNUSED(event))
 {
-	/*for ( std::map<std::string,Page*>::iterator itr = g_PageList.begin(); itr != g_PageList.end(); itr++ )
-	{
-		itr->second->SaveAll();
-	}
+	/*
+	wxMessageDialog dialog(this, L"This will save all data files. Do you want to continue?", L"Save all data files?",
+			wxYES_NO|wxNO_DEFAULT|wxICON_EXCLAMATION);
+		for ( std::map<std::string,Page*>::iterator itr = g_PageList.begin(); itr != g_PageList.end(); itr++ )
+			itr->second->SaveAll();
 
 	wxMessageBox(_("All data files saved."),_("Save complete."),
 			wxOK|wxICON_EXCLAMATION, this);*//*
 	wxMessageBox(_("Not complete yet."),_("To be done."),
 			wxOK|wxICON_EXCLAMATION, this);*/
-	wxMessageDialog dialog(this, L"This will save all data files. Do you want to continue?", L"Save all data files?",
+	wxMessageDialog dialog(this, L"This will save: Books, Missions, GUI. Do you want to continue?", L"Save data files?",
 			wxYES_NO|wxNO_DEFAULT|wxICON_EXCLAMATION);
 	if ( dialog.ShowModal() == wxID_YES )
 	{
@@ -298,36 +291,25 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
                 wxOK|wxICON_INFORMATION, this);
 }
 
-void MyFrame::UpdatePageNumber()
-{
-	char buffer[64];
-	sprintf(buffer, "Page %i/%i", g_currentPage->GetDataFile()->GetCurrentNum(), g_currentPage->GetDataFile()->GetTotal());
-	g_pageNumText->SetLabel(std2wx(buffer));
-}
-
 void MyFrame::OnPrev(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Prev();
-//	UpdatePageNumber();
-g_currentPage->UpdatePageNumber();
+	g_currentPage->UpdatePageNumber();
 }
 void MyFrame::OnNext(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Next();
-//	UpdatePageNumber();
-g_currentPage->UpdatePageNumber();
+	g_currentPage->UpdatePageNumber();
 }
 void MyFrame::OnNew(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->New();
-//	UpdatePageNumber();
-g_currentPage->UpdatePageNumber();
+	g_currentPage->UpdatePageNumber();
 }
 void MyFrame::OnDel(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Del();
-//	UpdatePageNumber();
-g_currentPage->UpdatePageNumber();
+	g_currentPage->UpdatePageNumber();
 }
 
 void MyFrame::OnPageChange(wxCommandEvent& WXUNUSED(event))
@@ -337,6 +319,5 @@ void MyFrame::OnPageChange(wxCommandEvent& WXUNUSED(event))
 //	g_DFCurrent = g_DFList[ wx2std(str) ];		-- not needed?
 	g_currentPage = g_PageList[ wx2std(str) ]->SetAsCurrent();
 
-//	UpdatePageNumber();
-g_currentPage->UpdatePageNumber();
+	g_currentPage->UpdatePageNumber();
 }

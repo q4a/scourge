@@ -8,6 +8,12 @@ Page *Page::currentPage;
 {
 }*/
 
+void Page::OnPageHelp()
+{
+	wxMessageBox(std2wx(currentPage->pageHelp), L"Page help",
+                wxOK|wxICON_INFORMATION, 0);
+}
+
 void Page::SaveAll()
 {
 	SetCurrent();
