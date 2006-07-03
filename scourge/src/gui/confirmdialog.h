@@ -38,6 +38,7 @@ class ConfirmDialog {
 private:
 	int mode;
 	Label *label;
+	void *object;
 
 public:
 	Window *win;
@@ -52,6 +53,8 @@ public:
 	bool isVisible();
 	inline void setMode( int n ) { mode = n; }
 	inline int getMode() { return mode; }
+	inline void setObject( void *p ) { object = p; }
+	inline void *getObject() { return object; }
 
 };
 

@@ -41,6 +41,7 @@ ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui ) {
   win->addWidget( (Widget*)label );
 
 	mode = 0;
+	object = NULL;
 }
 
 ConfirmDialog::~ConfirmDialog() {

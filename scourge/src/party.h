@@ -137,6 +137,8 @@ class Party : public CreatureGroupInfo {
 
 	int getAverageLevel();
 
+	void hire( Creature *creature );
+	void dismiss( int index );
 protected:
   void resetPartyUI();  
 	bool isPartyInRange();

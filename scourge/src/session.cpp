@@ -238,6 +238,21 @@ Creature *Session::newCreature( Character *character, char *name, int model ) {
   return c;
 }
 
+bool Session::removeCreatureRef( Creature *creature ) {
+	for( vector<Creature*>::iterator i = creatures.begin(); i != creatures.end(); ++i ) {
+		Creature *c = *i;
+		if( c == creature ) {
+			creatures.erase( i );
+			return true;
+		}
+	}
+	return false;
+}
+
+void Session::addCreatureRef( Creature *creature ) {
+	creatures.push_back( creature );
+}
+
 void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   // delete the items and creatures created for this mission
   // (except items in inventory) 

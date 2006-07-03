@@ -22,13 +22,13 @@
 #include "sdleventhandler.h"
 
 class Scourge;
+class Creature;
 
 class ScourgeHandler : public SDLEventHandler {
 private:
   Scourge *scourge;
   bool willStartDrag;
   int willStartDragX, willStartDragY;  
-
 
 public:
   ScourgeHandler( Scourge *scourge );
@@ -55,7 +55,6 @@ protected:
   bool handlePartyEvent( Widget *widget, SDL_Event *event );
   void quickSpellAction( int index, int button=SDL_BUTTON_LEFT );
   int handleBoardEvent(Widget *widget, SDL_Event *event);
-
 };
 
 #endif

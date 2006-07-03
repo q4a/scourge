@@ -33,6 +33,7 @@
 #include "storable.h"
 #include "shapepalette.h"
 #include "debug.h"
+#include "gui/confirmdialog.h"
 
 
 #define DRAG_START_TOLERANCE 5
@@ -343,7 +344,22 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->runSquirrelConsole();
   } else if( widget == scourge->getSquirrelClear() ) {
     scourge->clearSquirrelConsole();
-  }
+  } else if( widget == scourge->getHireHeroDialog()->win->closeButton ||
+						 widget == scourge->getHireHeroDialog()->cancelButton ) {
+		scourge->getHireHeroDialog()->setVisible( false );
+	} else if( widget == scourge->getHireHeroDialog()->okButton ) {
+		scourge->getSession()->getParty()->
+			hire( (Creature*)scourge->getHireHeroDialog()->getObject() );
+		scourge->getHireHeroDialog()->setVisible( false );
+	} else if( widget == scourge->getDismissHeroDialog()->win->closeButton ||
+						 widget == scourge->getDismissHeroDialog()->cancelButton ) {
+		scourge->getDismissHeroDialog()->setVisible( false );
+	} else if( widget == scourge->getDismissHeroDialog()->okButton ) {
+		scourge->getSession()->getParty()->
+			dismiss( scourge->getDismissHeroDialog()->getMode() );
+		scourge->getDismissHeroDialog()->setVisible( false );
+	}
+
   return false;
 }
 
@@ -444,6 +460,9 @@ bool ScourgeHandler::handleCreatureClick( Uint16 mapx, Uint16 mapy, Uint16 mapz 
             return true;
           }
         }
+				// otherwise it's a wandering hero
+				scourge->handleWanderingHeroClick( (Creature*)(loc->creature) );
+				return true;
       }
     }
   }
@@ -497,7 +516,9 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
           }
           if( scourge->getInventory()->isVisible() ) scourge->getInventory()->refresh();
         }
-      }
+      } else if( widget == scourge->getDismissButton( t ) ) {
+				scourge->handleDismiss( t );
+			}
     }
     for( int t = 0; t < 12; t++ ) {
       if( widget == scourge->getQuickSpell( t ) ) {
