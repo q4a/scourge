@@ -133,8 +133,8 @@ void Scourge::initUI() {
   optionsMenu = new OptionsMenu(this);
   multiplayer = new MultiplayerDialog(this);
 
-	hireHeroDialog = new ConfirmDialog( getSDLHandler() );
-	dismissHeroDialog = new ConfirmDialog( getSDLHandler() );
+	hireHeroDialog = new ConfirmDialog( getSDLHandler(), "Hire a Wandering Hero" );
+	dismissHeroDialog = new ConfirmDialog( getSDLHandler(), "Dismiss Party Member" );
 
   // load character, item sounds
   getSDLHandler()->getSound()->loadSounds( getUserConfiguration() );
