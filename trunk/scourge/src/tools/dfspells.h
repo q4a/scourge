@@ -11,7 +11,13 @@ struct Spell
 	std::string sound;
 	std::string notes;
 
-	Spell(): name("spell"), area("single"), icon_x("1"),icon_y("1") {}
+	Spell(): name("spell"), area("single"), target(""), icon_x("1"),icon_y("1"), disposition("F") {}
+
+	void Clear()
+	{
+		*this = Spell();
+		symbol=level=mana=exp=failureRate=action=distance=speed=effect=prerequisite="";
+	}
 };
 struct School
 {

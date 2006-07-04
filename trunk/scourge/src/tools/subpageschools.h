@@ -12,6 +12,8 @@ class wxScrollBar;
 class wxComboBox;
 class wxSlider;
 class wxWindow;
+class wxListBox;
+class wxArrayString;
 class PageSpells;
 
 class subPageSchools : public Page
@@ -39,7 +41,8 @@ public:
 	void SetCurrent();
 	void ClearCurrent();
 
-	void OnColorSliderChange();
+	void OnAddMessage();
+	void OnDelMessage();
 
 protected:
 	ColorSelector *colorSelector;
@@ -56,6 +59,8 @@ protected:
 		wxStaticText *gColorText;
 		wxStaticText *bColorText;
 	wxTextCtrl *symbolEdit;
+	wxTextCtrl *descEdit;
+	wxListBox *donationList;
 };
 
 #endif // SUBPAGESCHOOLS_H

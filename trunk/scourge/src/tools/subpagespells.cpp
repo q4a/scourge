@@ -5,6 +5,8 @@
 #include "common.h"
 #include "../common/constants.h"
 
+// TODO (rhys#1#): New and del spells.
+
 subPageSpells::subPageSpells()
 {
 	schoolStrArray = new wxArrayString;
@@ -194,9 +196,34 @@ void subPageSpells::Next()
 }
 void subPageSpells::New()
 {
+	SetCurrent();
+
+	School *school = dfSpells->GetCurrent();
+	Spell *spell = new Spell;
+
+	school->spells.push_back( spell );
+
+	spellItr = school->spells.end();	spellItr--;
+	currentSpell = *spellItr;
+	spellNumber = school->spells.size();
+
+	GetCurrent();
 }
 void subPageSpells::Del()
 {
+	School *school = dfSpells->GetCurrent();
+
+	if ( school->spells.size() == 1 )
+	{
+		currentSpell->Clear();
+		GetCurrent();
+		return;
+	}
+	spellItr = school->spells.erase(spellItr);
+	delete currentSpell;
+	currentSpell = *spellItr;
+
+	GetCurrent();
 }
 
 void subPageSpells::UpdatePageNumber()
@@ -223,8 +250,7 @@ void subPageSpells::GetCurrent()
 	// CLIP
 	clipCheckList->Check(0, spell->target.find("C") != std::string::npos );
 	clipCheckList->Check(1, spell->target.find("L") != std::string::npos );
-	clipCheckList->Check(2, spell->target.find("I") != std::string::npos );
-	clipCheckList->Check(3, spell->target.find("P") != std::string::npos );
+	clipCheckList->Check(2, spell->target.find("I") != std::string::npos );	clipCheckList->Check(3, spell->target.find("P") != std::string::npos );
 
 
 	speedEdit->SetValue(std2wx(spell->speed));
@@ -251,7 +277,6 @@ void subPageSpells::GetCurrent()
 	soundEdit->SetValue(std2wx(spell->sound));
 	notesEdit->SetValue(std2wx(spell->notes));
 }
-
 void subPageSpells::SetCurrent()
 {
 	Spell *spell = currentSpell;
@@ -293,9 +318,11 @@ void subPageSpells::SetCurrent()
 	spell->sound = wx2std( soundEdit->GetValue() );
 	spell->notes = wx2std( notesEdit->GetValue() );
 }
-
 void subPageSpells::ClearCurrent()
 {
+	Spell *spell = currentSpell;
+
+	spell->Clear();
 }
 
 School* subPageSpells::GetSelectedSchool()
@@ -359,6 +386,8 @@ void subPageSpells::UpdateIcon()
 
 	int icon_x = iconXScroll->GetThumbPosition();
 	int icon_y = iconYScroll->GetThumbPosition();
+	if ( icon_x == 0 ) icon_x = 1;
+	if ( icon_y == 0 ) icon_y = 1;
 	wxBitmap icon = bitmap.GetSubBitmap( wxRect(32*(icon_x-1),32*(icon_y-1),32,32) );
 
 	wxClientDC dc(page);

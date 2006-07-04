@@ -23,17 +23,20 @@ void PageSpells::Init(wxNotebook *notebook, DF* dataFile)
 {
 	dfSpells = (DFSpells*)dataFile;
 	this->dataFile = dataFile;
-	page = new wxNotebookPage(notebook, ID_SpellsPage);
+	page = new wxPanel(notebook, ID_SpellsPage);
 
 	School *school = dfSpells->GetCurrent();
 	Spell *spell = *(school->spells.begin());
 
 // Notebook
-	subNotebook = new wxNotebook(page, ID_SpellsSubNotebook, wxDefaultPosition, wxSize(800,350));
+	subNotebook = new wxNotebook(page, ID_SpellsSubNotebook);
 
 	pageSchools->Init(subNotebook, dfSpells, this);
 	pageSpells->Init(subNotebook, dfSpells, this);
 
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	sizer->Add(subNotebook, 1,wxEXPAND|wxALIGN_CENTER);
+	page->SetSizerAndFit(sizer);
 
 	notebook->AddPage(page, _("Spells"));
 }
@@ -80,10 +83,13 @@ void PageSpells::ClearCurrent()
 void PageSpells::OnSubPageChange(wxCommandEvent& WXUNUSED(event))
 {
 	PageSpells *pPage = ((PageSpells*)currentPage);
+
+	pPage->currentSubPage->SetCurrent();	// Store current data item held
+
 	wxString str = pPage->subNotebook->GetPageText( pPage->subNotebook->GetSelection() );
 
 	if ( str == L"Schools" )
-		pPage->currentSubPage = pPage->pageSchools;//->SetAsCurrent();
+		pPage->currentSubPage = pPage->pageSchools;
 	else
 		pPage->currentSubPage = pPage->pageSpells;
 

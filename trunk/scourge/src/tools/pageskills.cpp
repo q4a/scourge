@@ -147,6 +147,8 @@ void PageSkills::UpdateIcon()
 
 	int icon_x = iconXScroll->GetThumbPosition();
 	int icon_y = iconYScroll->GetThumbPosition();
+	if ( icon_x == 0 ) icon_x = 1;
+	if ( icon_y == 0 ) icon_y = 1;
 	wxBitmap icon = bitmap.GetSubBitmap( wxRect(32*(icon_x-1),32*(icon_y-1),32,32) );
 
 	wxClientDC dc(page);
