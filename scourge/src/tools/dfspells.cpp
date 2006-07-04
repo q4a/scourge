@@ -43,21 +43,21 @@ bool DFSpells::LoadSingle(std::ifstream *fin, School *school)
 	while ( key == 'L' )
 	{
 		fin->getline(buffer, 256, '\n');
-		school->lowDonation.push_back(buffer);
+		school->lowDonation.push_back(buffer+2);
 
 		key = fin->peek();
 	}
 	while ( key == 'N' )
 	{
 		fin->getline(buffer, 256, '\n');
-		school->neutralDonation.push_back(buffer);
+		school->neutralDonation.push_back(buffer+2);
 
 		key = fin->peek();
 	}
 	while ( key == 'H' )
 	{
 		fin->getline(buffer, 256, '\n');
-		school->highDonation.push_back(buffer);
+		school->highDonation.push_back(buffer+2);
 
 		key = fin->peek();
 	}
@@ -185,6 +185,12 @@ void DFSpells::SaveSchool(std::ofstream &fout, School *school)
 		fout << "\nG:" << lines[i];
 
 	// donations
+	for ( int i = 0; i < school->lowDonation.size(); i++ )
+		fout << "\nL:" << school->lowDonation[i];
+	for ( int i = 0; i < school->neutralDonation.size(); i++ )
+		fout << "\nN:" << school->neutralDonation[i];
+	for ( int i = 0; i < school->highDonation.size(); i++ )
+		fout << "\nH:" << school->highDonation[i];
 
 	fout << "\n#---------------------------------------------\n\n";
 

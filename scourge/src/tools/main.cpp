@@ -129,13 +129,13 @@ bool MyApp::OnInit()
 	frame->Connect( ID_MenuPageHelp, wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) &Page::OnPageHelp );
 
-	frame->Connect( ID_Prev, wxEVT_COMMAND_BUTTON_CLICKED,
+	frame->Connect( ID_Prev, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnPrev );
-	frame->Connect( ID_Next, wxEVT_COMMAND_BUTTON_CLICKED,
+	frame->Connect( ID_Next, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnNext );
-	frame->Connect( ID_New, wxEVT_COMMAND_BUTTON_CLICKED,
+	frame->Connect( ID_New, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnNew );
-	frame->Connect( ID_Del, wxEVT_COMMAND_BUTTON_CLICKED,
+	frame->Connect( ID_Del, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnDel );
 	frame->Connect( wxID_EXIT, wxEVT_COMMAND_BUTTON_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnQuit );
@@ -174,8 +174,6 @@ bool MyApp::OnInit()
 	// Spells page events
 	frame->Connect( ID_SpellsSubNotebook, wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,
 			(wxObjectEventFunction) &PageSpells::OnSubPageChange );
-	frame->Connect( ID_subSchoolsColorSlider, wxEVT_SCROLL_THUMBTRACK,
-			(wxObjectEventFunction) &subPageSchools::OnColorSliderChange );
 	frame->Connect( ID_subSpellsSchoolList, wxEVT_COMMAND_LISTBOX_SELECTED,
 			(wxObjectEventFunction) &subPageSpells::OnSchoolChange );
 	frame->Connect( ID_subSpellsIconXScroll, wxEVT_SCROLL_THUMBTRACK,
@@ -210,9 +208,30 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	// Set frame menubar
 	SetMenuBar(menuBar);
 
+	/* TOOLBAR */
+	wxToolBar *toolbar = this->CreateToolBar();
+	wxBitmap bitmap(std2wx(std::string(GetDataPath("%s/tools/prev.bmp"))), wxBITMAP_TYPE_BMP);
+	toolbar->AddTool(ID_Prev, L"prev", bitmap);
+
+	char buffer[64];
+	sprintf(buffer, "Page %i/%i", g_DFList["Books"]->GetCurrentNum(), g_DFList["Books"]->GetTotal());
+	g_pageNumText = new wxStaticText(toolbar, ID_PageNum, std2wx(buffer));
+	toolbar->AddControl(g_pageNumText);
+
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/next.bmp"))), wxBITMAP_TYPE_BMP);
+	toolbar->AddTool(ID_Next,L"next", bitmap);
+	toolbar->AddSeparator();
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/new.bmp"))), wxBITMAP_TYPE_BMP);
+	toolbar->AddTool(ID_New,L"new", bitmap);
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/del.bmp"))), wxBITMAP_TYPE_BMP);
+	toolbar->AddTool(ID_Del,L"del", bitmap);
+
+	toolbar->AddSeparator();
+	wxButton *button = new wxButton(toolbar, wxID_EXIT,_(""));
+	toolbar->AddControl(button);
+
 /* Notebook */
-	notebook = new wxNotebook(this, ID_Notebook, wxDefaultPosition, wxSize(840,385));
-	wxPanel *panel = new wxPanel(this, -1, wxPoint(0,385), wxSize(840,200));
+	notebook = new wxNotebook(this, ID_Notebook);
 
 	// Pages
 	g_PageList["Books"]->Init(notebook,g_DFList["Books"]);
@@ -220,22 +239,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	g_PageList["GUI"]->Init(notebook,g_DFList["GUI"]);
 	g_PageList["Skills"]->Init(notebook,g_DFList["Skills"]);
 	g_PageList["Spells"]->Init(notebook,g_DFList["Spells"]);
-
-	// prev
-	wxButton *prev = new wxButton(panel, ID_Prev,_("<"),wxPoint(10,5),wxSize(20,30));
-	// page number
-	char buffer[64];
-	sprintf(buffer, "Page %i/%i", g_DFList["Books"]->GetCurrentNum(), g_DFList["Books"]->GetTotal());
-	g_pageNumText = new wxStaticText(panel, ID_PageNum, std2wx( buffer ), wxPoint(35,15));
-	// next
-	wxButton *next = new wxButton(panel, ID_Next,_(">"),wxPoint(100,5),wxSize(20,30));
-	// new
-	wxButton *newBook = new wxButton(panel, ID_New,_("New"),wxPoint(200,5),wxSize(50,30));
-	// del
-	wxButton *delBook = new wxButton(panel, ID_Del,_("Delete"),wxPoint(260,5),wxSize(50,30));
-	// exit
-	wxButton *button = new wxButton(panel, wxID_EXIT,_(""),wxPoint(320,5));
-
 
 	g_currentPage = g_PageList["Books"];
 	Page::currentPage = g_currentPage;
