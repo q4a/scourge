@@ -20,18 +20,18 @@ void Page::SaveAll()
 	dataFile->Save();
 }
 
-void Page::Prev()
+void Page::Prev(int n)
 {
 	SetCurrent();
-		dataFile->Prev();
+		dataFile->Prev(n);
 	GetCurrent();
 	UpdatePage();
 }
 
-void Page::Next()
+void Page::Next(int n)
 {
 	SetCurrent();
-		dataFile->Next();
+		dataFile->Next(n);
 	GetCurrent();
 	UpdatePage();
 }
@@ -50,6 +50,14 @@ void Page::Del()
 		ClearCurrent();
 	else
 		dataFile->Del();
+	GetCurrent();
+	UpdatePage();
+}
+
+void Page::JumpTo(int n)
+{
+	SetCurrent();
+		dataFile->JumpTo(n);
 	GetCurrent();
 	UpdatePage();
 }

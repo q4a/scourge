@@ -77,7 +77,7 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 
 	notebook->AddPage(page, _("Missions"));
 
-	if ( !mission->storyline )		// Cheap and nasty fix, as UpdatePage doesn't work for unknown reasons
+	if ( !mission->storyline )		// Cheap and nasty fix, as UpdatePage doesn't work here for unknown reasons
 	{
 		itemList->Disable();
 		creatureList->Disable();
@@ -143,7 +143,6 @@ void PageMissions::GetCurrent()
 void PageMissions::SetCurrent()
 {
 	Mission *mission = dfMissions->GetCurrent();
-	wxWindow *w, *parent = page->GetParent();
 
 	mission->name = wx2std( nameEdit->GetValue() );
 

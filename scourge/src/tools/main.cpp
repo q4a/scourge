@@ -12,6 +12,7 @@
 #include "dfclasses.h"
 #include "dfskills.h"
 #include "dfspells.h"
+#include "dfcreatures.h"
 #include "pagebooks.h"
 #include "pagemissions.h"
 #include "pagegui.h"
@@ -20,6 +21,7 @@
 #include "pagespells.h"
 #include "subpagespells.h"
 #include "subpageschools.h"
+#include "pagecreatures.h"
 #include "common.h"
 #include "../common/constants.h"
 
@@ -63,9 +65,12 @@ public:
 	void OnSaveCurrent(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
 		void OnPrev(wxCommandEvent& event);
+		void OnPrevFast(wxCommandEvent& event);
 		void OnNext(wxCommandEvent& event);
+		void OnNextFast(wxCommandEvent& event);
 		void OnNew(wxCommandEvent& event);
 		void OnDel(wxCommandEvent& event);
+		void OnJumpTo(wxCommandEvent& event);
 	void OnButton(wxCommandEvent& event);
 
 	void OnPageChange(wxCommandEvent& event);
@@ -102,18 +107,23 @@ bool MyApp::OnInit()
 	DFSpells *dfSpells = new DFSpells;
 	dfSpells->Load( GetDataPath("%s/world/spells.txt"), "S");
 
+	DFCreatures *dfCreatures = new DFCreatures;
+	dfCreatures->Load( GetDataPath("%s/world/creatures.txt"), "M");
+
 
 	g_DFList["Books"] = dfBooks;
 	g_DFList["Missions"] = dfMissions;
 	g_DFList["GUI"] = dfGui;
 	g_DFList["Skills"] = dfSkills;
 	g_DFList["Spells"] = dfSpells;
+	g_DFList["Creatures"] = dfCreatures;
 
 	g_PageList["Books"] = new PageBooks;
 	g_PageList["Missions"] = new PageMissions;
 	g_PageList["GUI"] = new PageGui;
 	g_PageList["Skills"] = new PageSkills;
 	g_PageList["Spells"] = new PageSpells;
+	g_PageList["Creatures"] = new PageCreatures;
 
 	MyFrame *frame = new MyFrame(_("Scourge Data Editor"), wxPoint(50,50),
                 wxSize(840,480));
@@ -131,12 +141,18 @@ bool MyApp::OnInit()
 
 	frame->Connect( ID_Prev, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnPrev );
+	frame->Connect( ID_PrevFast, wxEVT_COMMAND_TOOL_CLICKED,
+			(wxObjectEventFunction) &MyFrame::OnPrevFast );
 	frame->Connect( ID_Next, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnNext );
+	frame->Connect( ID_NextFast, wxEVT_COMMAND_TOOL_CLICKED,
+			(wxObjectEventFunction) &MyFrame::OnNextFast );
 	frame->Connect( ID_New, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnNew );
 	frame->Connect( ID_Del, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnDel );
+	frame->Connect( ID_JumpTo, wxEVT_COMMAND_TOOL_CLICKED,
+			(wxObjectEventFunction) &MyFrame::OnJumpTo );
 	frame->Connect( wxID_EXIT, wxEVT_COMMAND_BUTTON_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnQuit );
 
@@ -208,9 +224,11 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	// Set frame menubar
 	SetMenuBar(menuBar);
 
-	/* TOOLBAR */
+/* TOOLBAR */
 	wxToolBar *toolbar = this->CreateToolBar();
-	wxBitmap bitmap(std2wx(std::string(GetDataPath("%s/tools/prev.bmp"))), wxBITMAP_TYPE_BMP);
+	wxBitmap bitmap(std2wx(std::string(GetDataPath("%s/tools/prevfast.xpm"))), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_PrevFast, L"prevfast", bitmap);
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/prev.xpm"))), wxBITMAP_TYPE_XPM);
 	toolbar->AddTool(ID_Prev, L"prev", bitmap);
 
 	char buffer[64];
@@ -218,12 +236,16 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	g_pageNumText = new wxStaticText(toolbar, ID_PageNum, std2wx(buffer));
 	toolbar->AddControl(g_pageNumText);
 
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/next.bmp"))), wxBITMAP_TYPE_BMP);
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/next.xpm"))), wxBITMAP_TYPE_XPM);
 	toolbar->AddTool(ID_Next,L"next", bitmap);
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/nextfast.xpm"))), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_NextFast,L"nextfast", bitmap);
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/go-jump.xpm"))), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_JumpTo,L"jumpto", bitmap);
 	toolbar->AddSeparator();
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/new.bmp"))), wxBITMAP_TYPE_BMP);
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/new.xpm"))), wxBITMAP_TYPE_XPM);
 	toolbar->AddTool(ID_New,L"new", bitmap);
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/del.bmp"))), wxBITMAP_TYPE_BMP);
+	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/del.xpm"))), wxBITMAP_TYPE_XPM);
 	toolbar->AddTool(ID_Del,L"del", bitmap);
 
 	toolbar->AddSeparator();
@@ -239,6 +261,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	g_PageList["GUI"]->Init(notebook,g_DFList["GUI"]);
 	g_PageList["Skills"]->Init(notebook,g_DFList["Skills"]);
 	g_PageList["Spells"]->Init(notebook,g_DFList["Spells"]);
+	g_PageList["Creatures"]->Init(notebook,g_DFList["Creatures"]);
 
 	g_currentPage = g_PageList["Books"];
 	Page::currentPage = g_currentPage;
@@ -261,19 +284,16 @@ void MyFrame::OnSave(wxCommandEvent& WXUNUSED(event))
 	wxMessageDialog dialog(this, L"This will save all data files. Do you want to continue?", L"Save all data files?",
 			wxYES_NO|wxNO_DEFAULT|wxICON_EXCLAMATION);
 		for ( std::map<std::string,Page*>::iterator itr = g_PageList.begin(); itr != g_PageList.end(); itr++ )
-			itr->second->SaveAll();
+			itr->second->SaveAll();*/
 
-	wxMessageBox(_("All data files saved."),_("Save complete."),
-			wxOK|wxICON_EXCLAMATION, this);*//*
-	wxMessageBox(_("Not complete yet."),_("To be done."),
-			wxOK|wxICON_EXCLAMATION, this);*/
-	wxMessageDialog dialog(this, L"This will save: Books, Missions, GUI. Do you want to continue?", L"Save data files?",
-			wxYES_NO|wxNO_DEFAULT|wxICON_EXCLAMATION);
+	wxMessageDialog dialog(this, L"This feature is not yet complete. Files to be saved: Books, Missions, GUI, Spells.\nDo you want to continue?",
+			L"Save data files?", wxYES_NO|wxNO_DEFAULT|wxICON_EXCLAMATION);
 	if ( dialog.ShowModal() == wxID_YES )
 	{
 		g_PageList["Books"]->SaveAll();
 		g_PageList["Missions"]->SaveAll();
 		g_PageList["GUI"]->SaveAll();
+		g_PageList["Spells"]->SaveAll();
 	}
 }
 void MyFrame::OnSaveCurrent(wxCommandEvent& WXUNUSED(event))
@@ -282,8 +302,6 @@ void MyFrame::OnSaveCurrent(wxCommandEvent& WXUNUSED(event))
 			wxYES_NO|wxNO_DEFAULT|wxICON_EXCLAMATION);
 	if ( dialog.ShowModal() == wxID_YES )
 		g_currentPage->SaveAll();
-//	wxMessageBox(_("Not complete yet."),_("To be done."),
-//			wxOK|wxICON_EXCLAMATION, this);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -297,9 +315,19 @@ void MyFrame::OnPrev(wxCommandEvent& WXUNUSED(event))
 	g_currentPage->Prev();
 	g_currentPage->UpdatePageNumber();
 }
+void MyFrame::OnPrevFast(wxCommandEvent& WXUNUSED(event))
+{
+	g_currentPage->Prev(10);
+	g_currentPage->UpdatePageNumber();
+}
 void MyFrame::OnNext(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Next();
+	g_currentPage->UpdatePageNumber();
+}
+void MyFrame::OnNextFast(wxCommandEvent& WXUNUSED(event))
+{
+	g_currentPage->Next(10);
 	g_currentPage->UpdatePageNumber();
 }
 void MyFrame::OnNew(wxCommandEvent& WXUNUSED(event))
@@ -310,6 +338,18 @@ void MyFrame::OnNew(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnDel(wxCommandEvent& WXUNUSED(event))
 {
 	g_currentPage->Del();
+	g_currentPage->UpdatePageNumber();
+}
+void MyFrame::OnJumpTo(wxCommandEvent& WXUNUSED(event))
+{
+	wxString str;
+	long n;
+
+	GetTextDialog(L"Enter data item to jump to.",L"Jump To",str);
+	if ( !str.ToLong(&n) )
+		return;
+
+	g_currentPage->JumpTo(n);
 	g_currentPage->UpdatePageNumber();
 }
 

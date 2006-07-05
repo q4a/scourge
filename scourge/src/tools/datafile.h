@@ -17,10 +17,13 @@ public:
 	virtual bool Load(std::string, std::string) = 0;
 	virtual void Save() = 0;
 
-	virtual void Prev() = 0;
+/*	virtual void Prev() = 0;
 	virtual void Next() = 0;
+*/	virtual void Prev(int) = 0;
+	virtual void Next(int) = 0;
 	virtual void New() = 0;
 	virtual void Del() = 0;
+	virtual void JumpTo(int) = 0;
 
 	virtual unsigned int GetCurrentNum() = 0;
 	virtual unsigned int GetTotal() = 0;
@@ -45,10 +48,13 @@ public:
 	virtual void Save() = 0;
 
 	T* GetCurrent();
-	void Prev();
-	void Next();
+	/*void Prev();
+	void Next();*/
+	void Prev(int);
+	void Next(int);
 	void New();
 	void Del();
+	void JumpTo(int);
 
 	unsigned int GetCurrentNum() { return currentNum; }
 	unsigned int GetTotal() { return total; }
@@ -124,7 +130,7 @@ T* DataFile<T>::GetCurrent()
 	return (*current);
 }
 
-template <class T>
+/*template <class T>
 void DataFile<T>::Prev()
 {
 	currentNum--;
@@ -143,6 +149,48 @@ void DataFile<T>::Next()
 	{
 		current = data.begin();
 		currentNum = 1;
+	}
+}*/
+template <class T>
+void DataFile<T>::Prev(int n)
+{
+	if ( n > currentNum )
+	{
+		current = data.begin();
+		currentNum = 1;
+		return;
+	}
+
+	for ( ; n > 0; n-- )
+	{
+		currentNum--;
+		if ( current == data.begin() )
+		{
+			current = data.end();		currentNum = total;
+		}
+		current--;
+	}
+}
+
+template <class T>
+void DataFile<T>::Next(int n)
+{
+	if ( n > (total-currentNum) && n!=1 )
+	{
+		current = data.end();
+		current--;
+		currentNum = total;
+		return;
+	}
+
+	for ( ; n > 0; n-- )
+	{
+		current++;		currentNum++;
+		if ( current == data.end() )
+		{
+			current = data.begin();
+			currentNum = 1;
+		}
 	}
 }
 
@@ -169,6 +217,17 @@ void DataFile<T>::Del()
 		current--;
 		currentNum--;
 	}
+}
+
+template <class T>
+void DataFile<T>::JumpTo(int n)
+{
+	if ( n > data.size() )
+		return;
+	currentNum = n;
+	current = data.begin();
+	for ( ; n > 1; n-- )		// Is there a method for this?
+		current++;
 }
 
 #endif // DATAFILE_H

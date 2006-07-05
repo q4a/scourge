@@ -38,6 +38,8 @@ public:
 	void OnAddCreature();
 	void OnDelCreature();
 
+	void OnPaint();
+
 protected:
 	// List of editable controls
 	wxTextCtrl *nameEdit;

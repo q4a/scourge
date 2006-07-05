@@ -39,10 +39,11 @@ public:
 	wxWindow* GetPage() { return page; }
 	DF *GetDataFile() { return dataFile; }
 
-	virtual void Prev();
-	virtual void Next();
+	virtual void Prev(int=1);
+	virtual void Next(int=1);
 	virtual void New();
 	virtual void Del();
+	virtual void JumpTo(int);
 
 	virtual void UpdatePageNumber();
 
@@ -94,9 +95,13 @@ enum
 		ID_subSpellsSchoolList,
 		ID_subSpellsIconXScroll,
 		ID_subSpellsIconYScroll,
+	ID_CreaturesPage,
 	ID_Page,
 		ID_Prev,
+		ID_PrevFast,
 		ID_Next,
+		ID_NextFast,
+		ID_JumpTo,
 		ID_New,
 		ID_Del,
 		ID_PageNum,
