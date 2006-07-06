@@ -240,6 +240,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	toolbar->AddTool(ID_Next,L"next", bitmap);
 	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/nextfast.xpm"))), wxBITMAP_TYPE_XPM);
 	toolbar->AddTool(ID_NextFast,L"nextfast", bitmap);
+
 	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/go-jump.xpm"))), wxBITMAP_TYPE_XPM);
 	toolbar->AddTool(ID_JumpTo,L"jumpto", bitmap);
 	toolbar->AddSeparator();
