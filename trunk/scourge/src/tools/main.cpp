@@ -162,14 +162,6 @@ bool MyApp::OnInit()
 	// Missions page events
 	frame->Connect( ID_MissionStorylineCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
 			(wxObjectEventFunction) &PageMissions::OnStorylineChange );
-	frame->Connect( ID_MissionAddItem, wxEVT_COMMAND_BUTTON_CLICKED,
-			(wxObjectEventFunction) &PageMissions::OnAddItem );
-	frame->Connect( ID_MissionDelItem, wxEVT_COMMAND_BUTTON_CLICKED,
-			(wxObjectEventFunction) &PageMissions::OnDelItem );
-	frame->Connect( ID_MissionAddCreature, wxEVT_COMMAND_BUTTON_CLICKED,
-			(wxObjectEventFunction) &PageMissions::OnAddCreature );
-	frame->Connect( ID_MissionDelCreature, wxEVT_COMMAND_BUTTON_CLICKED,
-			(wxObjectEventFunction) &PageMissions::OnDelCreature );
 
 	// Gui page events
 	frame->Connect( ID_GuiElementList, wxEVT_COMMAND_LISTBOX_SELECTED,
@@ -180,12 +172,8 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &PageGui::OnLineWidthChange );
 
 	// Skills page events
-	frame->Connect( ID_SkillsTypeCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
-			(wxObjectEventFunction) &PageSkills::OnTypeChange );
-	frame->Connect( ID_SkillsIconXScroll, wxEVT_SCROLL_THUMBTRACK,
-			(wxObjectEventFunction) &PageSkills::OnIconXChange );
-	frame->Connect( ID_SkillsIconYScroll, wxEVT_SCROLL_THUMBTRACK,
-			(wxObjectEventFunction) &PageSkills::OnIconYChange );
+//	frame->Connect( ID_SkillsTypeCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
+//			(wxObjectEventFunction) &PageSkills::OnTypeChange );
 
 	// Spells page events
 	frame->Connect( ID_SpellsSubNotebook, wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,

@@ -1,16 +1,22 @@
 #include "pagecreatures.h"
 #include "dfcreatures.h"
 #include <wx/wx.h>
+#include <wx/listbook.h>
+#include "listadddel.h"
 #include "common.h"
 
 PageCreatures::PageCreatures()
 {
 	//ctor
+	invList = new ListAddDel;
+	spellList = new ListAddDel;
 }
 
 PageCreatures::~PageCreatures()
 {
 	//dtor
+	delete invList;
+	delete spellList;
 }
 
 void PageCreatures::Init(wxNotebook *notebook, DF *dataFile)
@@ -74,6 +80,31 @@ void PageCreatures::Init(wxNotebook *notebook, DF *dataFile)
 	npcStartXEdit = new wxTextCtrl(page, -1, std2wx(creature->npcStartX), wxPoint(490,90), wxSize(50,25));
 	npcStartYEdit = new wxTextCtrl(page, -1, std2wx(creature->npcStartY), wxPoint(550,90), wxSize(50,25));
 
+	// inventory
+	invList->Init(page, L"Inventory", creature->inventory, 10,120, 150);
+	// spells
+	spellList->Init(page, L"Spells", creature->spells, 170,120, 170);
+
+	// skills
+	skillList = new wxListView(page, -1, wxPoint(350,140),wxSize(250,100), wxLC_REPORT|wxLC_EDIT_LABELS);
+		skillList->InsertColumn(0,L"Skill");
+		skillList->InsertColumn(1,L"");
+
+	std::map<std::string,std::string>::iterator itr = creature->skills.begin();
+	for ( int i = 0; itr != creature->skills.end(); itr++, i++ )
+	{
+		skillList->InsertItem(i,L"");
+		skillList->SetItem(i,0, std2wx(itr->first));
+		skillList->SetItem(i,1, std2wx(itr->second));
+	}
+	skillList->SetColumnWidth(0,-1);
+	skillList->SetColumnWidth(1,-1);
+
+	wxButton *addSkill = new wxButton(page, -1, L"Add", wxPoint(350,245), wxSize(50,-1));
+	addSkill->Connect( wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&PageCreatures::OnAddSkill, NULL, (wxEvtHandler*)this);
+	wxButton *delSkill = new wxButton(page, -1, L"Del", wxPoint(405,245), wxSize(50,-1));
+	delSkill->Connect( wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&PageCreatures::OnDelSkill, NULL, (wxEvtHandler*)this);
+
 	notebook->AddPage(page, _("Creatures"));
 }
 
@@ -99,14 +130,73 @@ void PageCreatures::GetCurrent()
 	npcEdit->SetValue(std2wx(creature->npc));
 	npcStartXEdit->SetValue(std2wx(creature->npcStartX));
 	npcStartYEdit->SetValue(std2wx(creature->npcStartY));
+
+	invList->Get( creature->inventory );
+	spellList->Get( creature->spells );
+
+	skillList->DeleteAllItems();
+	std::map<std::string,std::string>::iterator itr = creature->skills.begin();
+	for ( int i = 0; itr != creature->skills.end(); itr++, i++ )
+	{
+		skillList->InsertItem(i,L"");
+		skillList->SetItem(i,0, std2wx(itr->first));
+		skillList->SetItem(i,1, std2wx(itr->second));
+	}
 }
 void PageCreatures::SetCurrent()
 {
 	Creature *creature = dfCreatures->GetCurrent();
 
 	creature->name = wx2std( nameEdit->GetValue() );
+	creature->portrait = wx2std( portraitEdit->GetValue() );
+	creature->md2 = wx2std( md2Edit->GetValue() );
+	creature->skin = wx2std( skinEdit->GetValue() );
+	creature->level = wx2std( levelEdit->GetValue() );
+	creature->hp = wx2std( hpEdit->GetValue() );
+	creature->mp = wx2std( mpEdit->GetValue() );
+	creature->armor = wx2std( armorEdit->GetValue() );
+	creature->rareness = wx2std( rarenessEdit->GetValue() );
+	creature->speed = wx2std( speedEdit->GetValue() );
+	creature->scale = wx2std( scaleEdit->GetValue() );
+	creature->npc = wx2std( npcEdit->GetValue() );
+	creature->npcStartX = wx2std( npcStartXEdit->GetValue() );
+	creature->npcStartY = wx2std( npcStartYEdit->GetValue() );
+
+	invList->Set( creature->inventory );
+	spellList->Set( creature->spells );
+
+	creature->skills.clear();
+	wxListItem l;
+	for ( int i = 0; i < skillList->GetItemCount(); i++ )
+	{
+		l.SetId(i);
+
+		l.SetColumn(0);
+		skillList->GetItem(l);
+		std::string str = wx2std( l.GetText() );
+
+		l.SetColumn(1);
+		skillList->GetItem(l);
+		creature->skills[ str ] = wx2std( l.GetText() );
+	}
 }
 void PageCreatures::ClearCurrent()
 {
 	Creature *creature = dfCreatures->GetCurrent();
+}
+
+void PageCreatures::OnAddSkill()
+{
+	skillList->InsertItem( skillList->GetItemCount(), L"blank" );
+}
+void PageCreatures::OnDelSkill()
+{
+	long selected = skillList->GetFirstSelected();
+
+	while ( selected != -1 )
+	{
+		skillList->DeleteItem( selected );
+
+		selected = skillList->GetFirstSelected();
+	}
 }

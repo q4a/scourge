@@ -1,16 +1,19 @@
 #include "colorselector.h"
 #include <wx/wx.h>
 #include <wx/colordlg.h>
+#include <wx/spinctrl.h>
 #include "../common/constants.h"
 
 ColorSelector::ColorSelector()
 {
 	//ctor
+	color = new Color;
 }
 
 ColorSelector::~ColorSelector()
 {
 	//dtor
+	delete color;
 }
 
 void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY)
@@ -18,20 +21,11 @@ void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY)
 	if ( panelX == -1 )		panelX = x+100;
 	if ( panelY == -1 )		panelY = y-30;
 
-	rText = new wxStaticText(parent, -1, L"Red: ",	wxPoint(x+20,	y));  rText->SetForegroundColour(wxColor(255,0,0));
-	gText = new wxStaticText(parent, -1, L"Green: ",	wxPoint(x+110,	y));  gText->SetForegroundColour(wxColor(0,255,0));
-	bText = new wxStaticText(parent, -1, L"Blue: ",	wxPoint(x+200,	y));  bText->SetForegroundColour(wxColor(0,0,255));
-	aText = new wxStaticText(parent, -1, L"Alpha: ",	wxPoint(x+290,	y));
+	aText = new wxStaticText(parent, -1, L"Alpha: ",	wxPoint(x+20,	y));
 
 	// Sliders
-	rSlider = new wxSlider(parent, -1, 0,0,1000, wxPoint(x	,y+20),wxSize(90,-1));
-	gSlider = new wxSlider(parent, -1, 0,0,1000, wxPoint(x+90 ,y+20),wxSize(90,-1));
-	bSlider = new wxSlider(parent, -1, 0,0,1000, wxPoint(x+180,y+20),wxSize(90,-1));
-	aSlider = new wxSlider(parent, -1, 0,0,1000, wxPoint(x+270,y+20),wxSize(90,-1));
+	aSlider = new wxSlider(parent, -1, 0,0,1000, wxPoint(x,y+20),wxSize(90,-1));
 	// Events
-	rSlider->Connect( wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&ColorSelector::OnSliderChange, NULL, (wxEvtHandler*)this);
-	gSlider->Connect( wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&ColorSelector::OnSliderChange, NULL, (wxEvtHandler*)this);
-	bSlider->Connect( wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&ColorSelector::OnSliderChange, NULL, (wxEvtHandler*)this);
 	aSlider->Connect( wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&ColorSelector::OnSliderChange, NULL, (wxEvtHandler*)this);
 
 	panel = new wxPanel(parent, -1, wxPoint(panelX,panelY),wxSize(130,25));
@@ -40,35 +34,23 @@ void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY)
 
 void ColorSelector::GetColor(uchar *r, uchar *g, uchar *b, uchar *a)
 {
-	*r = (uchar)( (rSlider->GetValue() / 1000.0f) * 255 );
-	*g = (uchar)( (gSlider->GetValue() / 1000.0f) * 255 );
-	*b = (uchar)( (bSlider->GetValue() / 1000.0f) * 255 );
+	*r = (uchar)( color->r * 255 );
+	*g = (uchar)( color->g * 255 );
+	*b = (uchar)( color->b * 255 );
 	*a = (uchar)( (aSlider->GetValue() / 1000.0f) * 255 );
 }
 Color ColorSelector::GetColor()
 {
-	float r = rSlider->GetValue() / 1000.0f;
-	float g = gSlider->GetValue() / 1000.0f;
-	float b = bSlider->GetValue() / 1000.0f;
 	float a = aSlider->GetValue() / 1000.0f;
 
-	return Color( r,g,b,a );
+	return Color( color->r,color->g,color->b,a );
 }
 
 void ColorSelector::SetColor(uchar r, uchar g, uchar b, uchar a)
 {
-	rSlider->SetValue( (int)(((float)r/255.0f)*1000.0f) );
-	gSlider->SetValue( (int)(((float)g/255.0f)*1000.0f) );
-	bSlider->SetValue( (int)(((float)b/255.0f)*1000.0f) );
 	aSlider->SetValue( (int)(((float)a/255.0f)*1000.0f) );
 
 	char buffer[64];
-	sprintf(buffer, "%.3f", r);
-	rText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", g);
-	gText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", b);
-	bText->SetLabel( std2wx( std::string(buffer) ) );
 	sprintf(buffer, "%.3f", a);
 	aText->SetLabel( std2wx( std::string(buffer) ) );
 
@@ -76,18 +58,12 @@ void ColorSelector::SetColor(uchar r, uchar g, uchar b, uchar a)
 }
 void ColorSelector::SetColor(Color *c)
 {
-	rSlider->SetValue( (int)((c->r)*1000.0f) );
-	gSlider->SetValue( (int)((c->g)*1000.0f) );
-	bSlider->SetValue( (int)((c->b)*1000.0f) );
+	color->r = c->r;
+	color->g = c->g;
+	color->b = c->b;
 	aSlider->SetValue( (int)((c->a)*1000.0f) );
 
 	char buffer[64];
-	sprintf(buffer, "%.3f", c->r);
-	rText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", c->g);
-	gText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", c->b);
-	bText->SetLabel( std2wx( std::string(buffer) ) );
 	sprintf(buffer, "%.3f", c->a);
 	aText->SetLabel( std2wx( std::string(buffer) ) );
 
@@ -96,49 +72,36 @@ void ColorSelector::SetColor(Color *c)
 
 void ColorSelector::OnSliderChange()
 {
-	float r = rSlider->GetValue() / 1000.0f;
-	float g = gSlider->GetValue() / 1000.0f;
-	float b = bSlider->GetValue() / 1000.0f;
 	float a = aSlider->GetValue() / 1000.0f;
 
 	char buffer[64];
-	sprintf(buffer, "%.3f", r);
-	rText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", g);
-	gText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", b);
-	bText->SetLabel( std2wx( std::string(buffer) ) );
 	sprintf(buffer, "%.3f", a);
 	aText->SetLabel( std2wx( std::string(buffer) ) );
-
-	panel->SetBackgroundColour( wxColour((uchar)(r*255),(uchar)(g*255),(uchar)(b*255)) );
 }
+
+class ColorDialog : public wxColourDialog
+{
+public:
+	uchar a;
+
+	ColorDialog(): wxColourDialog(0)
+	{
+//		wxSpinCtrl *s = new wxSpinCtrl(this, -1, L"", wxPoint(100,100));
+	}
+
+protected:
+
+};
 void ColorSelector::OnPanelClick()
 {
-	float r = ((float)rSlider->GetValue())/1000.0f;
-	float g = ((float)gSlider->GetValue())/1000.0f;
-	float b = ((float)bSlider->GetValue())/1000.0f;
-
-	wxColourData colorData;
-	colorData.SetColour( wxColour( (uchar)(r*255),(uchar)(g*255),(uchar)(b*255) ) );
-	wxColourDialog colorDialog(0, &colorData);
+//	wxColourData colorData;
+//	colorData.SetColour( wxColour( (uchar)(color->r*255),(uchar)(color->g*255),(uchar)(color->b*255) ) );
+	/*wxColourDialog*/ColorDialog colorDialog;//0, &colorData);
 	colorDialog.ShowModal();
-	wxColour color = colorDialog.GetColourData().GetColour();
+	wxColour c = colorDialog.GetColourData().GetColour();
+	panel->SetBackgroundColour( wxColour(c.Red(),c.Green(),c.Blue()) );
 
-	panel->SetBackgroundColour( wxColour(color.Red(),color.Green(),color.Blue()) );
-
-	r = ((float)color.Red())/255.0f;
-	g = ((float)color.Green())/255;
-	b = ((float)color.Blue())/255;
-	rSlider->SetValue((int)(r*1000));
-	gSlider->SetValue((int)(g*1000));
-	bSlider->SetValue((int)(b*1000));
-
-	char buffer[16];
-	sprintf(buffer, "%.3f", r);
-	rText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", g);
-	gText->SetLabel( std2wx( std::string(buffer) ) );
-	sprintf(buffer, "%.3f", b);
-	bText->SetLabel( std2wx( std::string(buffer) ) );
+	color->r = ((float)c.Red())/255.0f;
+	color->g = ((float)c.Blue())/255.0f;
+	color->b = ((float)c.Green())/255.0f;
 }

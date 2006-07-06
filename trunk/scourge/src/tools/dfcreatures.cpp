@@ -56,7 +56,7 @@ bool DFCreatures::LoadSingle(std::ifstream *fin, Creature *creature)
 	{
 		fin->getline(buffer, 256, '\n');
 		strtok(buffer,",");		// skip skill name
-		creature->skills[ buffer+2 ] = atoi( strtok(buffer,"\n\t ") );
+		creature->skills[ buffer+2 ] = strtok(0,"\n\t ");
 
 		key = fin->peek();
 	}
