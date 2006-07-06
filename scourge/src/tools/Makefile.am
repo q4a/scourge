@@ -12,6 +12,8 @@ tools_SOURCES = \
 	datafile.h\
 	dfbooks.cpp\
 	dfbooks.h\
+	dfcreatures.cpp\
+	dfcreatures.h\
 	dfgui.cpp\
 	dfgui.h\
 	dfmissions.cpp\
@@ -27,6 +29,8 @@ tools_SOURCES = \
 	page.h\
 	pagebooks.cpp\
 	pagebooks.h\
+	pagecreatures.cpp\
+	pagecreatures.h\
 	pagegui.cpp\
 	pagegui.h\
 	pagemissions.cpp\
