@@ -26,6 +26,8 @@ tools_SOURCES = \
 	dfclasses.h\
 	dfcreatures.cpp\
 	dfcreatures.h\
+	listadddel.cpp\
+	listadddel.h\
 	main.cpp\
 	page.cpp\
 	page.h\

@@ -14,6 +14,7 @@ class wxMouseEvent;
 class ColorSelector
 {
 protected:
+	Color *color;
 
 public:
 	ColorSelector();

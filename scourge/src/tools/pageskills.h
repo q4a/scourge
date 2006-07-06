@@ -6,8 +6,9 @@
 /** Forward Declarations **/
 class DFSkills;
 class wxTextCtrl;
-class wxScrollBar;
 class wxComboBox;
+class wxSpinCtrl;
+class wxBitmap;
 
 class PageSkills : public Page
 {
@@ -32,8 +33,6 @@ public:
 
 
 	void OnTypeChange();
-	void OnIconXChange();
-	void OnIconYChange();
 	void UpdateIcon();
 
 	void OnPaint();
@@ -46,10 +45,9 @@ protected:
 	wxComboBox *typeCombo;
 	wxComboBox *eventCombo;
 
-	wxScrollBar *iconXScroll;
-	wxScrollBar *iconYScroll;
-	wxTextCtrl *iconXEdit;
-	wxTextCtrl *iconYEdit;
+	wxSpinCtrl *iconXSpin;
+	wxSpinCtrl *iconYSpin;
+		wxBitmap *bitmap;
 	wxTextCtrl *descriptionEdit;
 };
 

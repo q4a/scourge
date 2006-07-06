@@ -10,6 +10,8 @@ class wxTextCtrl;
 class wxComboBox;
 class wxListBox;
 class wxArrayString;
+class wxListView;
+class ListAddDel;
 
 class PageCreatures : public Page
 {
@@ -32,8 +34,8 @@ public:
 	void SetCurrent();
 	void ClearCurrent();
 
-/*	void OnAddItem();
-	void OnDelItem();*/
+	void OnAddSkill();
+	void OnDelSkill();
 
 protected:
 	// List of editable controls
@@ -51,12 +53,10 @@ protected:
 	wxTextCtrl *npcEdit;
 	wxTextCtrl *npcStartXEdit;
 	wxTextCtrl *npcStartYEdit;
-	/*wxComboBox *typeCombo;
-	wxComboBox *storylineCombo;
-	wxTextCtrl *descEdit;
-	wxListBox *itemList;
-		wxArrayString *itemStrArray;
-	wxTextCtrl *succEdit;*/
+	ListAddDel *invList;
+	ListAddDel *spellList;
+
+	wxListView *skillList;
 };
 
 #endif // PAGECREATURES_H

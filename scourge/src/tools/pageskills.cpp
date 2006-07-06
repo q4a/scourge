@@ -1,17 +1,20 @@
 #include "pageskills.h"
 #include "dfskills.h"
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 #include "common.h"
 #include "../common/constants.h"
 
 PageSkills::PageSkills()
 {
 	//ctor
+	bitmap = new wxBitmap(std2wx(GetDataPath("%s/textures/spells.bmp")) );
 }
 
 PageSkills::~PageSkills()
 {
 	//dtor
+	delete bitmap;
 }
 
 void PageSkills::Init(wxNotebook *notebook, DF *dataFile)
@@ -47,14 +50,12 @@ void PageSkills::Init(wxNotebook *notebook, DF *dataFile)
 	wxStaticText *iconText = new wxStaticText(page, -1, _("Icon (x,y)"), wxPoint(25,60));
 	// icon_x
 	int x = atoi( skill->icon_x.c_str() );
-	iconXEdit = new wxTextCtrl(page, -1, std2wx(skill->icon_x), wxPoint(10,80), wxSize(30,25));
-	iconXScroll = new wxScrollBar(page, ID_SkillsIconXScroll, wxPoint(40,80), wxSize(-1,25), wxSB_VERTICAL);
-		iconXScroll->SetScrollbar(x,1,20,1);
+	iconXSpin = new wxSpinCtrl(page, ID_SkillsIconXSpin, L"", wxPoint(10,80),wxSize(40,-1), wxSP_ARROW_KEYS, 1,19,x);
+	iconXSpin->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, (wxObjectEventFunction)&PageSkills::UpdateIcon, NULL, (wxEvtHandler*)this);
 	// icon_y
 	int y = atoi( skill->icon_y.c_str() );
-	iconYEdit = new wxTextCtrl(page, -1, std2wx(skill->icon_y), wxPoint(55,80), wxSize(30,25));
-	iconYScroll = new wxScrollBar(page, ID_SkillsIconYScroll, wxPoint(85,80), wxSize(-1,25), wxSB_VERTICAL);
-		iconYScroll->SetScrollbar(y,1,17,1);
+	iconYSpin = new wxSpinCtrl(page, -1, L"", wxPoint(50,80),wxSize(40,-1), wxSP_ARROW_KEYS, 1,19,y);
+	iconYSpin->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, (wxObjectEventFunction)&PageSkills::UpdateIcon, NULL, (wxEvtHandler*)this);
 
 	page->Connect( wxEVT_PAINT, (wxObjectEventFunction)&PageSkills::OnPaint, NULL, (wxEvtHandler*)this);
 
@@ -81,11 +82,9 @@ void PageSkills::GetCurrent()
 	eventCombo->SetValue(std2wx(skill->event));
 
 	int x = atoi( skill->icon_x.c_str() );
-	iconXEdit->SetValue( std2wx(skill->icon_x) );
-		iconXScroll->SetScrollbar(x,1,20,1);
+	iconXSpin->SetValue( x );
 	int y = atoi( skill->icon_y.c_str() );
-	iconYEdit->SetValue( std2wx(skill->icon_y) );
-		iconYScroll->SetScrollbar(y,1,17,1);
+	iconYSpin->SetValue( y );
 	UpdateIcon();
 
 	descriptionEdit->SetValue(std2wx(skill->description));
@@ -101,10 +100,11 @@ void PageSkills::SetCurrent()
 	skill->type = wx2std( typeCombo->GetValue() );
 	skill->event = wx2std( eventCombo->GetValue() );
 
-	skill->icon_x = wx2std( iconXEdit->GetValue() );
-	skill->icon_y = wx2std( iconYEdit->GetValue() );
-	if ( skill->icon_x == "0" )		skill->icon_x = "1";
-	if ( skill->icon_y == "0" )		skill->icon_y = "1";
+	char buffer[16];
+	sprintf(buffer, "%i", iconXSpin->GetValue());
+	skill->icon_x = buffer;
+	sprintf(buffer, "%i", iconYSpin->GetValue());
+	skill->icon_y = buffer;
 
 	skill->description = wx2std( descriptionEdit->GetValue() );
 }
@@ -118,38 +118,12 @@ void PageSkills::OnTypeChange()
 {
 	((PageSkills*)currentPage)->UpdatePage();
 }
-void PageSkills::OnIconXChange()
-{
-	PageSkills *pPage = ((PageSkills*)currentPage);
-	int newPos = pPage->iconXScroll->GetThumbPosition();
 
-	char buffer[16]; sprintf(buffer, "%i", newPos);
-	pPage->iconXEdit->SetValue( std2wx( std::string(buffer) ) );
-
-	pPage->UpdateIcon();
-}
-void PageSkills::OnIconYChange()
-{
-	PageSkills *pPage = ((PageSkills*)currentPage);
-	int newPos = pPage->iconYScroll->GetThumbPosition();
-
-	char buffer[16]; sprintf(buffer, "%i", newPos);
-	pPage->iconYEdit->SetValue( std2wx( std::string(buffer) ) );
-
-	pPage->UpdateIcon();
-}
 void PageSkills::UpdateIcon()
 {
-	char path[300];
-	sprintf( path, "%s/textures/spells.bmp", rootDir );
-	wxImage image(std2wx(std::string(path)));
-	wxBitmap bitmap(image);
-
-	int icon_x = iconXScroll->GetThumbPosition();
-	int icon_y = iconYScroll->GetThumbPosition();
-	if ( icon_x == 0 ) icon_x = 1;
-	if ( icon_y == 0 ) icon_y = 1;
-	wxBitmap icon = bitmap.GetSubBitmap( wxRect(32*(icon_x-1),32*(icon_y-1),32,32) );
+	int icon_x = iconXSpin->GetValue();
+	int icon_y = iconYSpin->GetValue();
+	wxBitmap icon = bitmap->GetSubBitmap( wxRect(32*(icon_x-1),32*(icon_y-1),32,32) );
 
 	wxClientDC dc(page);
 	dc.DrawBitmap(icon, 110,75, false);

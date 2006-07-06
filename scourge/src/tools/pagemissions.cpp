@@ -1,18 +1,18 @@
 #include "pagemissions.h"
 #include "dfmissions.h"
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 #include "common.h"
+#include "listadddel.h"
 
 PageMissions::PageMissions()
 {
-	itemStrArray = new wxArrayString;
-	creatureStrArray = new wxArrayString;
 }
 
 PageMissions::~PageMissions()
 {
-	delete itemStrArray;
-	delete creatureStrArray;
+	delete itemList;
+	delete creatureList;
 }
 
 void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
@@ -40,63 +40,56 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	wxString startChoice=L"No"; if ( mission->storyline ) startChoice=L"Yes";
 	storylineCombo = new wxComboBox(page, ID_MissionStorylineCombo, startChoice, wxPoint(280,30),wxSize(60,25),
 			2,choicesYesNo, wxCB_READONLY);
+	storylineCombo->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, (wxObjectEventFunction)&PageMissions::OnStorylineChange, NULL, (wxEvtHandler*)this);
+
+	// level
+	levelText = new wxStaticText(page, -1, _("Min-level"), wxPoint(10,60));
+	int n = atoi( mission->level.c_str() );
+	levelSpin = new wxSpinCtrl(page, -1, L"", wxPoint(15,80),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100,n);
+	// stories
+	storiesText = new wxStaticText(page, -1, _("Floors"), wxPoint(70,60));
+	n = atoi( mission->stories.c_str() );
+	storiesSpin = new wxSpinCtrl(page, -1, L"", wxPoint(70,80),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100,n);
+	// map
+	mapText = new wxStaticText(page, -1, _("Map Name"), wxPoint(120,60));
+	mapEdit = new wxTextCtrl(page, -1, std2wx(mission->mapname), wxPoint(120,80), wxSize(100,-1));
+
+	ShowStoryControls( mission->storyline );
 
 	// description
 	wxStaticText *descText = new wxStaticText(page, -1, _("Description"), wxPoint(450,10));
 	descEdit = new wxTextCtrl(page, ID_MissionDescEdit, std2wx(mission->description), wxPoint(450,30), wxSize(350,150), wxTE_MULTILINE);
 
 	// items
-	wxStaticText *itemsText = new wxStaticText(page, -1, L"Items", wxPoint(400,185));
-	for ( int i = 0; i < mission->items.size(); i++ )
-		itemStrArray->Add( std2wx(mission->items[i]) );
-	itemList = new wxListBox(page, -1, wxPoint(400,205), wxSize(230,100), *itemStrArray);
-
-		// Add item
-		wxButton *addItem = new wxButton(page, ID_MissionAddItem,L"Add",wxPoint(400,310),wxSize(50,30));
-		// Delete item
-		wxButton *delItem = new wxButton(page, ID_MissionDelItem,L"Delete",wxPoint(455,310),wxSize(55,30));
-
+	itemList = new ListAddDel;
+	itemList->Init(page, L"Items", mission->items, 400,185);
 	// creatures
-	wxStaticText *creaturesText = new wxStaticText(page, -1, L"Creatures", wxPoint(650,185));
-	for ( int i = 0; i < mission->creatures.size(); i++ )
-		creatureStrArray->Add( std2wx(mission->creatures[i]) );
-	creatureList = new wxListBox(page, -1, wxPoint(650,205), wxSize(-1,100), *creatureStrArray);
+	creatureList = new ListAddDel;
+	creatureList->Init(page, L"Creatures", mission->creatures, 650,185, 180);
 
-		// Add creature
-		wxButton *addCreature = new wxButton(page, ID_MissionAddCreature,L"Add",wxPoint(650,310),wxSize(50,30));
-		// Delete creature
-		wxButton *delCreature = new wxButton(page, ID_MissionDelCreature,L"Delete",wxPoint(705,310),wxSize(55,30));
+	itemList->Show( mission->storyline );
+	creatureList->Show( mission->storyline );
 
-	// completed
-	wxStaticText *succText = new wxStaticText(page, -1, _("Success"), wxPoint(10,60));
-	succEdit = new wxTextCtrl(page, ID_MissionSuccEdit, std2wx(mission->success), wxPoint(10,80), wxSize(300,60), wxTE_MULTILINE);
+	// success
+	wxStaticText *succText = new wxStaticText(page, -1, _("Success"), wxPoint(10,160));
+	succEdit = new wxTextCtrl(page, ID_MissionSuccEdit, std2wx(mission->success), wxPoint(10,180), wxSize(300,60), wxTE_MULTILINE);
 
-	// not completed
-	wxStaticText *failText = new wxStaticText(page, -1, _("Faliure"), wxPoint(10,150));
-	failEdit = new wxTextCtrl(page, ID_MissionFailEdit, std2wx(mission->failure), wxPoint(10,170), wxSize(300,60), wxTE_MULTILINE);
+	// failure
+	wxStaticText *failText = new wxStaticText(page, -1, _("Faliure"), wxPoint(10,250));
+	failEdit = new wxTextCtrl(page, ID_MissionFailEdit, std2wx(mission->failure), wxPoint(10,270), wxSize(300,60), wxTE_MULTILINE);
+
+	// special
+	wxStaticText *specialText = new wxStaticText(page, -1, _("Special"), wxPoint(230,60));
+	specialEdit = new wxTextCtrl(page, -1, std2wx(mission->special), wxPoint(230,80), wxSize(200,-1));
 
 	notebook->AddPage(page, _("Missions"));
-
-	if ( !mission->storyline )		// Cheap and nasty fix, as UpdatePage doesn't work here for unknown reasons
-	{
-		itemList->Disable();
-		creatureList->Disable();
-	}
 }
 
 void PageMissions::UpdatePage()
 {
-	wxColour c(255,255,255);
-	bool enabled = true;
-	if ( storylineCombo->GetValue() == L"No" )
-	{
-		c.Set(240,240,240);
-		enabled = false;
-	}
-	itemList->SetOwnBackgroundColour(c);
-	itemList->Enable(enabled);
-	creatureList->SetOwnBackgroundColour(c);
-	creatureList->Enable(enabled);
+//	bool lock = ( storylineCombo->GetValue() == L"No" );
+//	itemList->Lock(lock);
+//	creatureList->Lock(lock);
 }
 
 /*void PageMissions::LoadAll()
@@ -122,22 +115,30 @@ void PageMissions::GetCurrent()
 	wxString startChoice=L"No"; if ( mission->storyline ) startChoice=L"Yes";
 	storylineCombo->SetValue(startChoice);
 
+	int n = atoi( mission->level.c_str() );
+	levelSpin->SetValue(n);
+	n = atoi( mission->stories.c_str() );
+	storiesSpin->SetValue(n);
+	mapEdit->SetValue(std2wx(mission->mapname));
+
+	ShowStoryControls( mission->storyline );
+
+
 	descEdit->SetValue(std2wx(mission->description));
 
 	// items
-	itemStrArray->Clear();
-	for ( int i = 0; i < mission->items.size(); i++ )
-		itemStrArray->Add( std2wx(mission->items[i]) );
-	itemList->Set(*itemStrArray);
-
+	itemList->Get( mission->items );
 	// creatures
-	creatureStrArray->Clear();
-	for ( int i = 0; i < mission->creatures.size(); i++ )
-		creatureStrArray->Add( std2wx(mission->creatures[i]) );
-	creatureList->Set(*creatureStrArray);
+	creatureList->Get( mission->creatures );
+
+	itemList->Show( mission->storyline );
+	creatureList->Show( mission->storyline );
+
 
 	succEdit->SetValue(std2wx(mission->success));
 	failEdit->SetValue(std2wx(mission->failure));
+
+	specialEdit->SetValue(std2wx(mission->special));
 }
 
 void PageMissions::SetCurrent()
@@ -154,14 +155,9 @@ void PageMissions::SetCurrent()
 	mission->description = wx2std( descEdit->GetValue() );
 
 	// items
-	mission->items.clear();
-	for ( int i = 0; i < itemStrArray->GetCount(); i++ )
-		mission->items.push_back( wx2std( (*itemStrArray)[i] ) );
-
+	itemList->Set( mission->items );
 	// creatures
-	mission->creatures.clear();
-	for ( int i = 0; i < creatureStrArray->GetCount(); i++ )
-		mission->creatures.push_back( wx2std( (*creatureStrArray)[i] ) );
+	creatureList->Set( mission->creatures );
 
 	mission->success = wx2std( succEdit->GetValue() );
 
@@ -177,73 +173,25 @@ void PageMissions::ClearCurrent()
 	mission->creatures.clear();
 }
 
+void PageMissions::ShowStoryControls(bool show)
+{
+	// Show/hide labels
+	levelText->Show( show );
+	storiesText->Show( show );
+	mapText->Show( show );
+	// Show/hide edits
+	levelSpin->Show( show );
+	storiesSpin->Show( show );
+	mapEdit->Show( show );
+}
+
 void PageMissions::OnStorylineChange()
 {
-	/*wxColor c(255,255,255);
-	bool enabled = true;
-	PageMissions *pPage = ((PageMissions*)currentPage);
-	if ( pPage->storylineCombo->GetValue() == L"No" )
-	{
-		c.Set(240,240,240);
-		enabled = false;
-	}
-	pPage->itemList->Enable(enabled);
-	pPage->itemList->SetOwnBackgroundColour(c);
-	pPage->creatureList->Enable(enabled);
-	pPage->creatureList->SetOwnBackgroundColour(c);*/
-	((PageMissions*)currentPage)->UpdatePage();
-}
+	bool show = (storylineCombo->GetValue() == L"Yes");
+	this->ShowStoryControls( show );
+	UpdatePage();
 
-void PageMissions::OnAddItem()
-{
-	PageMissions *pPage = ((PageMissions*)currentPage);
-	if ( !pPage->itemList->IsEnabled() )
-		return;
-
-	wxString str;
-	if ( GetTextDialog(L"Insert text to add", L"Add item", str ) )
-	{
-		wxArrayString *pItemStrArray = pPage->itemStrArray;
-		pItemStrArray->Add(str);
-		pPage->itemList->Set(*pItemStrArray);
-	}
-}
-
-void PageMissions::OnDelItem()
-{
-	PageMissions *pPage = ((PageMissions*)currentPage);
-
-	wxArrayInt selected;
-	if ( pPage->itemList->GetSelections(selected) == 0 )
-		return;
-	wxArrayString *pItemStrArray = pPage->itemStrArray;
-	pItemStrArray->RemoveAt(selected[0]);
-	pPage->itemList->Set(*pItemStrArray);
-}
-
-void PageMissions::OnAddCreature()
-{
-	PageMissions *pPage = ((PageMissions*)currentPage);
-	if ( !pPage->creatureList->IsEnabled() )
-		return;
-
-	wxString str;
-	if ( GetTextDialog(L"Insert text to add", L"Add item", str) )
-	{
-		wxArrayString *pCreatureStrArray = pPage->creatureStrArray;
-		pCreatureStrArray->Add(str);
-		pPage->creatureList->Set(*pCreatureStrArray);
-	}
-}
-
-void PageMissions::OnDelCreature()
-{
-	PageMissions *pPage = ((PageMissions*)currentPage);
-
-	wxArrayInt selected;
-	if ( pPage->creatureList->GetSelections(selected) == 0 )
-		return;
-	wxArrayString *pCreatureStrArray = pPage->creatureStrArray;
-	pCreatureStrArray->RemoveAt(selected[0]);
-	pPage->creatureList->Set(*pCreatureStrArray);
+	// Show/hide lists
+	itemList->Show( show );			// These will only work here, Segfaults if done in ShowStoryControls.... no idea!
+	creatureList->Show( show );
 }

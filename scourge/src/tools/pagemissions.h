@@ -10,6 +10,9 @@ class wxTextCtrl;
 class wxComboBox;
 class wxListBox;
 class wxArrayString;
+class wxStaticText;
+class wxSpinCtrl;
+class ListAddDel;
 
 class PageMissions : public Page
 {
@@ -32,12 +35,9 @@ public:
 	void SetCurrent();
 	void ClearCurrent();
 
-	void OnStorylineChange();
-	void OnAddItem();
-	void OnDelItem();
-	void OnAddCreature();
-	void OnDelCreature();
+	void ShowStoryControls(bool);
 
+	void OnStorylineChange();
 	void OnPaint();
 
 protected:
@@ -45,13 +45,19 @@ protected:
 	wxTextCtrl *nameEdit;
 	wxComboBox *typeCombo;
 	wxComboBox *storylineCombo;
+	wxStaticText *levelText;
+	wxStaticText *storiesText;
+	wxStaticText *mapText;
+	wxSpinCtrl *levelSpin;
+	wxSpinCtrl *storiesSpin;
+	wxTextCtrl *mapEdit;
 	wxTextCtrl *descEdit;
-	wxListBox *itemList;
-		wxArrayString *itemStrArray;
-		wxArrayString *creatureStrArray;
-	wxListBox *creatureList;
 	wxTextCtrl *succEdit;
 	wxTextCtrl *failEdit;
+	wxTextCtrl *specialEdit;
+
+	ListAddDel *itemList;
+	ListAddDel *creatureList;
 
 };
 
