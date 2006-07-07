@@ -24,8 +24,6 @@ tools_SOURCES = \
 	dfspells.h\
 	dfclasses.cpp\
 	dfclasses.h\
-	dfcreatures.cpp\
-	dfcreatures.h\
 	listadddel.cpp\
 	listadddel.h\
 	main.cpp\
@@ -48,8 +46,6 @@ tools_SOURCES = \
 	subpagespells.cpp\
 	subpagespells.h\
 	pageclasses.cpp\
-	pageclasses.h\
-	pagecreatures.cpp\
-	pagecreatures.h
+	pageclasses.h
 	
 	
