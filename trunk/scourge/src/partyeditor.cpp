@@ -115,7 +115,7 @@ PartyEditor::PartyEditor(Scourge *scourge) {
     info[i].detailsInfo->setCreature( mainWin, tmp[i] );    
     // set to preset
     //info[i].name->setText( presets[i].name );
-		char *name = createName();
+		char *name = Rpg::createName();
 		info[i].name->setText( name );
 		free( name );
     info[i].deityType->setSelectedLine( presets[i].deity );
@@ -472,7 +472,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
 		bool deleteS = false;
     if( !s || !strlen( s ) ) {
 			//s = presets[i].name;
-			s = createName();
+			s = Rpg::createName();
 			deleteS = true;
 		}
     int index = info[i].charType->getSelectedLine();  
@@ -485,7 +485,7 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
     pc[i]->setExp(0);
     pc[i]->setHp();
     pc[i]->setMp();
-    pc[i]->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
+		pc[i]->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
     pc[i]->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
   }
 
@@ -496,33 +496,10 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
   if( partySize ) *partySize = pcCount;
 }
 
-// Create a random, cheeseball, fantasy name
-char vowels[] = { 'a', 'e', 'i', 'o', 'u', 'y' };
-char consonants[] = { 
-	'b','c','d','f','g','h','j','k','l','m',
-	'n','p','q','r','s','t','v','w','x','z' 
-};
-char *PartyEditor::createName() {
-	int len = (int)( 5.0f * rand() / RAND_MAX ) + 5;
-	char *name = (char*)malloc( len * sizeof( char ) );
-	for( int i = 0; i < len; i++ ) {
-		float n = 100.0f * rand() / RAND_MAX;
-		bool vowel = ( i % 2 == 0 ? ( n < 95 ) : ( n >= 80 ) );
-		if( vowel ) {
-			name[ i ] = vowels[ (int)( 6.0f * rand() / RAND_MAX ) ];
-		} else {
-			name[ i ] = consonants[ (int)( 20.0f * rand() / RAND_MAX ) ];
-		}
-	}
-	name[ len - 1 ] = 0;
-	name[0] = toupper( name[0] );
-	return name;
-}
-
 RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 	Creature *pc = scourge->getSession()->
-		newCreature( Character::getRandomCharacter(),
-								 createName(), 
+		newCreature( Character::getRandomCharacter( level ),
+								 Rpg::createName(), 
 								 (int)( (float)(scourge->getShapePalette()->getCharacterModelInfoCount()) * rand() / RAND_MAX ) );
 	pc->setLevel( LEVEL ); 
 	pc->setExp(0);
@@ -659,7 +636,7 @@ void PartyEditor::saveUI( Creature **pc ) {
 		bool deleteS = false;
     if( !s || !strlen( s ) ) {
 			//s = presets[i].name;
-			s = createName();
+			s = Rpg::createName();
 			deleteS = true;
 		}
     pc[i]->replaceName( strdup( s ) );
