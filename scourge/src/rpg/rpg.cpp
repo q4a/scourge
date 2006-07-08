@@ -125,11 +125,13 @@ void Rpg::initRpg() {
 char *Rpg::createName() {
 	char tmp[200];
 	strcpy( tmp, firstSyl[ (int)( (float)(firstSyl.size()) * rand() / RAND_MAX ) ] );
-	int sylCount = (int)( 3.0f * rand() / RAND_MAX ) + 1;
+	int sylCount = (int)( 3.0f * rand() / RAND_MAX );
 	for( int i = 0; i < sylCount; i++ ) {
 		strcat( tmp, midSyl[ (int)( (float)(midSyl.size()) * rand() / RAND_MAX ) ] );
 	}
-	strcat( tmp, endSyl[ (int)( (float)(endSyl.size()) * rand() / RAND_MAX ) ] );
+	if( 0 == (int)( 2.0f * rand() / RAND_MAX ) ) {
+		strcat( tmp, endSyl[ (int)( (float)(endSyl.size()) * rand() / RAND_MAX ) ] );
+	}
 	return strdup( tmp );
 }
 

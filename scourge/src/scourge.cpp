@@ -1962,13 +1962,13 @@ void Scourge::drawWidgetContents(Widget *w) {
                p->getHp(), p->getMaxHp(),
                p->getMp(), p->getMaxMp() );
       w->setTooltip( msg );
-      Util::drawBar( 10, 5, 65,
+      Util::drawBar( 10, 5, ( i == 0 ? 65 : 40 ),
                      (float)p->getHp(), (float)p->getMaxHp(),
                      -1, -1, -1, true,
                      NULL,
                      //mainWin->getTheme(),
                      Util::VERTICAL_LAYOUT );
-      Util::drawBar( 17, 5, 65,
+      Util::drawBar( 17, 5, ( i == 0 ? 65 : 40 ),
                      (float)p->getMp(), (float)p->getMaxMp(),
                      0, 0, 1, false,
                      NULL,
