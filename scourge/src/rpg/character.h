@@ -78,6 +78,7 @@ public:
   static std::vector<Character*> rootCharacters;
   static Character *getCharacterByName(char *p) { std::string s = p; return character_class[s]; }
   inline static Character *getRandomCharacter() { return rootCharacters[(int)((float)rootCharacters.size()*rand()/RAND_MAX)]; }
+	static Character *getRandomCharacter( int level );
 	inline static int getRootCharacterIndexByName( char *p ) {
 		for( int i = 0; i < (int)rootCharacters.size(); i++ ) {
 			if( !strcmp( rootCharacters[i]->getName(), p ) ) return i;

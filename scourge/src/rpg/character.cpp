@@ -336,3 +336,14 @@ bool Character::canEquip( RpgItem *item, set<string> *allowed, set<string> *forb
 		return true;
 	}
 }
+
+Character *Character::getRandomCharacter( int level ) {
+	Character *c = getRandomCharacter();
+	while( c && c->getChildCount() && 
+				 c->getChild( 0 )->getMinLevelReq() <= level ) {
+		int index = (int)( (float)(c->getChildCount()) * rand() / RAND_MAX );
+		c = c->getChild( index );
+	}
+	return c;
+}
+

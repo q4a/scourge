@@ -26,6 +26,10 @@ SkillGroup *SkillGroup::stats;
 map<string, SkillGroup *> SkillGroup::groupsByName;
 vector<SkillGroup*> SkillGroup::groups;
 
+vector<char*> Rpg::firstSyl;
+vector<char*> Rpg::midSyl;
+vector<char*> Rpg::endSyl;
+
 void Rpg::initRpg() {
   char errMessage[500];
   char s[200];
@@ -86,12 +90,49 @@ void Rpg::initRpg() {
 			p = strtok( NULL, "," );
 			string value = strdup( p );
 			RpgItem::tagsDescriptions[ name ] = value;
+		} else if( n == 'F' ) {
+			fgetc( fp );
+			n = Constants::readLine( line, fp );
+			char *p = strtok( line, "," );
+			while( p != NULL ) {
+				firstSyl.push_back( strdup( p ) );
+				p = strtok( NULL, "," );
+			}
+		} else if( n == 'M' ) {
+			fgetc( fp );
+			n = Constants::readLine( line, fp );
+			char *p = strtok( line, "," );
+			while( p != NULL ) {
+				midSyl.push_back( strdup( p ) );
+				p = strtok( NULL, "," );
+			}
+		} else if( n == 'E' ) {
+			fgetc( fp );
+			n = Constants::readLine( line, fp );
+			char *p = strtok( line, "," );
+			while( p != NULL ) {
+				endSyl.push_back( strdup( p ) );
+				p = strtok( NULL, "," );
+			}
     } else {
       n = Constants::readLine( line, fp );
     }
   }
   fclose(fp);
 }
+
+// Create a random, cheeseball, fantasy name
+char *Rpg::createName() {
+	char tmp[200];
+	strcpy( tmp, firstSyl[ (int)( (float)(firstSyl.size()) * rand() / RAND_MAX ) ] );
+	int sylCount = (int)( 3.0f * rand() / RAND_MAX ) + 1;
+	for( int i = 0; i < sylCount; i++ ) {
+		strcat( tmp, midSyl[ (int)( (float)(midSyl.size()) * rand() / RAND_MAX ) ] );
+	}
+	strcat( tmp, endSyl[ (int)( (float)(endSyl.size()) * rand() / RAND_MAX ) ] );
+	return strdup( tmp );
+}
+
 
 Skill::Skill( char *name, char *description, char *symbol, SkillGroup *group ) {
 	strcpy( this->name, name );

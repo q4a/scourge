@@ -25,8 +25,14 @@
 class SkillGroup;
 
 class Rpg {
-public:
+private:
+	static std::vector<char*> firstSyl;
+	static std::vector<char*> midSyl;
+	static std::vector<char*> endSyl;
+
+public:	
 	static void initRpg();
+	static char *createName();
 };
 
 class Skill {

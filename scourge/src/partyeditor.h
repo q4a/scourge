@@ -123,8 +123,6 @@ public:
   void createParty( Creature **pc, int *partySize=NULL, bool addRandomInventory=true );
 	RenderedCreature *createWanderingHero( int level );
 
-	char *createName();
-
  protected:
   void createCharUI( int step, CharacterInfo *info );
   void deleteLoadedShapes();

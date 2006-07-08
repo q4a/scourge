@@ -108,3 +108,31 @@ T:SMALL,small $$
 T:ROBES,robes
 T:PLATE,plate-mail
 T:RANGED,ranged weapons
+
+
+
+# ===================================================================
+# Syllables used for NPC name generation.
+#
+# F:first-syl
+# M:mid-syl
+# E:end-syl
+#
+F:Mar,Nar,Dar,Tar,Got,For,Tog,Rom,Ner,Nuir,Run,Hor
+M:mi,ni,gi,di,ri,ti,ki,ci,bi,gi,li
+M:me,ne,ge,de,re,te,ke,ce,be,ge,le
+M:mo,no,go,do,ro,to,ko,co,bo,go,lo
+M:ma,na,ga,da,ra,ta,ka,ca,ba,ga,la
+M:mi,ni,gi,di,ri,ti,ki,ci,bi,gi,li
+M:mes,nes,ges,dez,ser,ber,ter,mer,kat,rat,gat
+M:gor,mor,dor,for,tor,kul,tul,dul,dur,sur,zur
+M:ret,net,met,meot,leot,feot,deot,geot
+M:raul,saul,maul,daul,gaul,zaul,baul,laun
+M:noer,moer,doer,riol,biol,diol,guir,duir,luin,luin
+E:nil,gil,sil,dil,bil,ril
+E:goth,moth,soth,roth,foth
+E:duin,ruin,muin,suin,xuin
+E:rein,fein,gein,dein,sein
+E:da,ra,ga,ro,go,do,mo,so,xo,to
+
+
