@@ -13,6 +13,8 @@ struct Creature
 	std::map <std::string, std::string> skills;
 	// portrait is optional
 	// scale, npc, npcStartX, npcStartY are optional
+
+	Creature(): npcStartX("-1"), npcStartY("-1") {}
 };
 
 class DFCreatures : public DataFile<Creature>

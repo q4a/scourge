@@ -9,19 +9,21 @@
 #include "dfbooks.h"
 #include "dfmissions.h"
 #include "dfgui.h"
-#include "dfclasses.h"
 #include "dfskills.h"
 #include "dfspells.h"
 #include "dfcreatures.h"
+#include "dflocations.h"
+#include "dfrpg.h"
 #include "pagebooks.h"
 #include "pagemissions.h"
 #include "pagegui.h"
-#include "pageclasses.h"
 #include "pageskills.h"
 #include "pagespells.h"
 #include "subpagespells.h"
 #include "subpageschools.h"
 #include "pagecreatures.h"
+#include "pagelocations.h"
+#include "pagerpg.h"
 #include "common.h"
 #include "../common/constants.h"
 
@@ -110,6 +112,12 @@ bool MyApp::OnInit()
 	DFCreatures *dfCreatures = new DFCreatures;
 	dfCreatures->Load( GetDataPath("%s/world/creatures.txt"), "M");
 
+	DFLocations *dfLocations = new DFLocations;
+	dfLocations->Load( GetDataPath("%s/world/locations.txt"), "L");
+
+	DFRpg *dfRpg = new DFRpg;
+	dfRpg->Load( GetDataPath("%s/world/rpg.txt"), "G");
+
 
 	g_DFList["Books"] = dfBooks;
 	g_DFList["Missions"] = dfMissions;
@@ -117,6 +125,8 @@ bool MyApp::OnInit()
 	g_DFList["Skills"] = dfSkills;
 	g_DFList["Spells"] = dfSpells;
 	g_DFList["Creatures"] = dfCreatures;
+	g_DFList["Locations"] = dfLocations;
+	g_DFList["RPG"] = dfRpg;
 
 	g_PageList["Books"] = new PageBooks;
 	g_PageList["Missions"] = new PageMissions;
@@ -124,6 +134,8 @@ bool MyApp::OnInit()
 	g_PageList["Skills"] = new PageSkills;
 	g_PageList["Spells"] = new PageSpells;
 	g_PageList["Creatures"] = new PageCreatures;
+	g_PageList["Locations"] = new PageLocations;
+	g_PageList["RPG"] = new PageRpg;
 
 	MyFrame *frame = new MyFrame(_("Scourge Data Editor"), wxPoint(50,50),
                 wxSize(840,480));
@@ -172,8 +184,8 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &PageGui::OnLineWidthChange );
 
 	// Skills page events
-//	frame->Connect( ID_SkillsTypeCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
-//			(wxObjectEventFunction) &PageSkills::OnTypeChange );
+	frame->Connect( ID_SkillsTypeCombo, wxEVT_COMMAND_COMBOBOX_SELECTED,
+			(wxObjectEventFunction) &PageSkills::OnTypeChange );
 
 	// Spells page events
 	frame->Connect( ID_SpellsSubNotebook, wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,
@@ -214,28 +226,28 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 /* TOOLBAR */
 	wxToolBar *toolbar = this->CreateToolBar();
-	wxBitmap bitmap(std2wx(std::string(GetDataPath("%s/tools/prevfast.xpm"))), wxBITMAP_TYPE_XPM);
-	toolbar->AddTool(ID_PrevFast, L"prevfast", bitmap);
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/prev.xpm"))), wxBITMAP_TYPE_XPM);
-	toolbar->AddTool(ID_Prev, L"prev", bitmap);
+	wxBitmap bitmap(std2wx(GetDataPath("%s/tools/prevfast.xpm")), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_PrevFast, L"prevfast", bitmap, wxNullBitmap,wxITEM_NORMAL, L"Back", L"Go back ten data items.");
+	bitmap.LoadFile(std2wx(GetDataPath("%s/tools/prev.xpm")), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_Prev, L"prev", bitmap, wxNullBitmap,wxITEM_NORMAL, L"Previous", L"Go to previous data item.");
 
 	char buffer[64];
 	sprintf(buffer, "Page %i/%i", g_DFList["Books"]->GetCurrentNum(), g_DFList["Books"]->GetTotal());
 	g_pageNumText = new wxStaticText(toolbar, ID_PageNum, std2wx(buffer));
 	toolbar->AddControl(g_pageNumText);
 
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/next.xpm"))), wxBITMAP_TYPE_XPM);
-	toolbar->AddTool(ID_Next,L"next", bitmap);
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/nextfast.xpm"))), wxBITMAP_TYPE_XPM);
-	toolbar->AddTool(ID_NextFast,L"nextfast", bitmap);
+	bitmap.LoadFile(std2wx(GetDataPath("%s/tools/next.xpm")), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_Next,L"next", bitmap, wxNullBitmap,wxITEM_NORMAL, L"Next", L"Go to next data item.");
+	bitmap.LoadFile(std2wx(GetDataPath("%s/tools/nextfast.xpm")), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_NextFast,L"nextfast", bitmap, wxNullBitmap,wxITEM_NORMAL, L"Forward", L"Go forward ten data items.");
 
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/go-jump.xpm"))), wxBITMAP_TYPE_XPM);
-	toolbar->AddTool(ID_JumpTo,L"jumpto", bitmap);
+	bitmap.LoadFile(std2wx(GetDataPath("%s/tools/go-jump.xpm")), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_JumpTo,L"jumpto", bitmap, wxNullBitmap,wxITEM_NORMAL, L"Jump To", L"Jump to specified data item.");
 	toolbar->AddSeparator();
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/new.xpm"))), wxBITMAP_TYPE_XPM);
-	toolbar->AddTool(ID_New,L"new", bitmap);
-	bitmap.LoadFile(std2wx(std::string(GetDataPath("%s/tools/del.xpm"))), wxBITMAP_TYPE_XPM);
-	toolbar->AddTool(ID_Del,L"del", bitmap);
+	bitmap.LoadFile(std2wx(GetDataPath("%s/tools/new.xpm")), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_New,L"new", bitmap, wxNullBitmap,wxITEM_NORMAL, L"New", L"Create new data item.");
+	bitmap.LoadFile(std2wx(GetDataPath("%s/tools/del.xpm")), wxBITMAP_TYPE_XPM);
+	toolbar->AddTool(ID_Del,L"del", bitmap, wxNullBitmap,wxITEM_NORMAL, L"Delete", L"Delete current data item.");
 
 	toolbar->AddSeparator();
 	wxButton *button = new wxButton(toolbar, wxID_EXIT,_(""));
@@ -251,6 +263,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	g_PageList["Skills"]->Init(notebook,g_DFList["Skills"]);
 	g_PageList["Spells"]->Init(notebook,g_DFList["Spells"]);
 	g_PageList["Creatures"]->Init(notebook,g_DFList["Creatures"]);
+	g_PageList["Locations"]->Init(notebook,g_DFList["Locations"]);
+	g_PageList["RPG"]->Init(notebook,g_DFList["RPG"]);
 
 	g_currentPage = g_PageList["Books"];
 	Page::currentPage = g_currentPage;

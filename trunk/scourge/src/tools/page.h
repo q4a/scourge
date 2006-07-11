@@ -93,6 +93,8 @@ enum
 		ID_subSpellsIconXScroll,
 		ID_subSpellsIconYScroll,
 	ID_CreaturesPage,
+	ID_LocationsPage,
+	ID_RpgPage,
 	ID_Page,
 		ID_Prev,
 		ID_PrevFast,

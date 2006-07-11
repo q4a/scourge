@@ -160,37 +160,60 @@ void subPageSpells::UpdatePage()
 	schoolList->Set(*schoolStrArray);
 }
 
-void subPageSpells::Prev()
+void subPageSpells::Prev(int n)
 {
 	SetCurrent();
 
 	std::vector<Spell*> *pSpells = &currentSchool->spells;
-	spellNumber--;
 
-	if ( spellItr == pSpells->begin() )
+	if ( n > spellNumber )
 	{
-		spellItr = pSpells->end();
-		spellNumber = currentSchool->spells.size();
+		spellItr = pSpells->begin();
+		currentSpell = *spellItr;
+		spellNumber = 1;
+		return;
 	}
-	spellItr--;
-	currentSpell = *spellItr;
+
+	for ( ; n > 0; n-- )
+	{
+		spellNumber--;
+		if ( spellItr == pSpells->begin() )
+		{
+			spellItr = pSpells->end();
+			spellNumber = currentSchool->spells.size();
+		}
+		spellItr--;
+		currentSpell = *spellItr;
+	}
 
 	GetCurrent();
 }
-void subPageSpells::Next()
+void subPageSpells::Next(int n)
 {
 	SetCurrent();
 
 	std::vector<Spell*> *pSpells = &currentSchool->spells;
 
-	spellItr++;
-	spellNumber++;
-	if ( spellItr == pSpells->end() )
+	if ( n > (pSpells->size()-spellNumber) && n!=1 )
 	{
-		spellItr = pSpells->begin();
-		spellNumber = 1;
+		spellItr = pSpells->end();
+		spellItr--;
+		currentSpell = *spellItr;
+		spellNumber = pSpells->size();
+		return;
 	}
-	currentSpell = *spellItr;
+
+	for ( ; n > 0; n-- )
+	{
+		spellItr++;
+		spellNumber++;
+		if ( spellItr == pSpells->end() )
+		{
+			spellItr = pSpells->begin();
+			spellNumber = 1;
+		}
+		currentSpell = *spellItr;
+	}
 
 	GetCurrent();
 }
@@ -364,7 +387,7 @@ void subPageSpells::OnIconXChange()
 	int newPos = pPage->iconXScroll->GetThumbPosition();
 
 	char buffer[16]; sprintf(buffer, "%i", newPos);
-	pPage->iconXEdit->SetValue( std2wx( std::string(buffer) ) );
+	pPage->iconXEdit->SetValue( std2wx( buffer ) );
 
 	pPage->UpdateIcon();
 }
@@ -374,14 +397,14 @@ void subPageSpells::OnIconYChange()
 	int newPos = pPage->iconYScroll->GetThumbPosition();
 
 	char buffer[16]; sprintf(buffer, "%i", newPos);
-	pPage->iconYEdit->SetValue( std2wx( std::string(buffer) ) );
+	pPage->iconYEdit->SetValue( std2wx( buffer ) );
 
 	pPage->UpdateIcon();
 
 }
 void subPageSpells::UpdateIcon()
 {
-	wxImage image(std2wx(std::string(GetDataPath("%s/textures/spells.bmp"))));
+	wxImage image(std2wx(GetDataPath("%s/textures/spells.bmp")));
 	wxBitmap bitmap(image);
 
 	int icon_x = iconXScroll->GetThumbPosition();

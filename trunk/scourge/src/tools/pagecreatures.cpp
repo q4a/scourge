@@ -2,12 +2,14 @@
 #include "dfcreatures.h"
 #include <wx/wx.h>
 #include <wx/listbook.h>
+#include <wx/spinctrl.h>
 #include "listadddel.h"
 #include "common.h"
 
 PageCreatures::PageCreatures()
 {
 	//ctor
+	pageHelp = "If you want an npc to have a random start point (as in most cases) set NPC Start to (-1,-1)";
 	invList = new ListAddDel;
 	spellList = new ListAddDel;
 }
@@ -45,27 +47,27 @@ void PageCreatures::Init(wxNotebook *notebook, DF *dataFile)
 
 	// level
 	wxStaticText *levelText = new wxStaticText(page, -1, _("Level"), wxPoint(10,70));
-	levelEdit = new wxTextCtrl(page, -1, std2wx(creature->level), wxPoint(10,90), wxSize(50,25));
+	levelSpin = new wxSpinCtrl(page, -1, L"", wxPoint(10,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->level.c_str()));
 
 	// hp
 	wxStaticText *hpText = new wxStaticText(page, -1, _("HP"), wxPoint(70,70));
-	hpEdit = new wxTextCtrl(page, -1, std2wx(creature->hp), wxPoint(70,90), wxSize(50,25));
+	hpSpin = new wxSpinCtrl(page, -1, L"", wxPoint(70,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->hp.c_str()));
 
 	// mp
 	wxStaticText *mpText = new wxStaticText(page, -1, _("MP"), wxPoint(130,70));
-	mpEdit = new wxTextCtrl(page, -1, std2wx(creature->mp), wxPoint(130,90), wxSize(50,25));
+	mpSpin = new wxSpinCtrl(page, -1, L"", wxPoint(130,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->mp.c_str()));
 
 	// armor
 	wxStaticText *armorText = new wxStaticText(page, -1, _("Armor"), wxPoint(190,70));
-	armorEdit = new wxTextCtrl(page, -1, std2wx(creature->armor), wxPoint(190,90), wxSize(50,25));
+	armorSpin = new wxSpinCtrl(page, -1, L"", wxPoint(190,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->armor.c_str()));
 
 	// rareness
 	wxStaticText *rarenessText = new wxStaticText(page, -1, _("Rareness"), wxPoint(250,70));
-	rarenessEdit = new wxTextCtrl(page, -1, std2wx(creature->rareness), wxPoint(250,90), wxSize(50,25));
+	rarenessSpin = new wxSpinCtrl(page, -1, L"", wxPoint(250,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,10, atoi(creature->rareness.c_str()));
 
 	// speed
 	wxStaticText *speedText = new wxStaticText(page, -1, _("Speed"), wxPoint(310,70));
-	speedEdit = new wxTextCtrl(page, -1, std2wx(creature->speed), wxPoint(310,90), wxSize(50,25));
+	speedSpin = new wxSpinCtrl(page, -1, L"", wxPoint(310,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,10, atoi(creature->speed.c_str()));
 
 	// scale
 	wxStaticText *scaleText = new wxStaticText(page, -1, _("Scale"), wxPoint(370,70));
@@ -77,8 +79,8 @@ void PageCreatures::Init(wxNotebook *notebook, DF *dataFile)
 
 	// npcStartX
 	wxStaticText *npcStartText = new wxStaticText(page, -1, _("NPC Start (X,Y)"), wxPoint(495,70));
-	npcStartXEdit = new wxTextCtrl(page, -1, std2wx(creature->npcStartX), wxPoint(490,90), wxSize(50,25));
-	npcStartYEdit = new wxTextCtrl(page, -1, std2wx(creature->npcStartY), wxPoint(550,90), wxSize(50,25));
+	npcStartXSpin = new wxSpinCtrl(page, -1, L"", wxPoint(500,90),wxSize(45,-1), wxSP_ARROW_KEYS, -1,500, atoi(creature->npcStartX.c_str()));
+	npcStartYSpin = new wxSpinCtrl(page, -1, L"", wxPoint(550,90),wxSize(45,-1), wxSP_ARROW_KEYS, -1,500, atoi(creature->npcStartY.c_str()));
 
 	// inventory
 	invList->Init(page, L"Inventory", creature->inventory, 10,120, 150);
@@ -100,9 +102,9 @@ void PageCreatures::Init(wxNotebook *notebook, DF *dataFile)
 	skillList->SetColumnWidth(0,-1);
 	skillList->SetColumnWidth(1,-1);
 
-	wxButton *addSkill = new wxButton(page, -1, L"Add", wxPoint(350,245), wxSize(50,-1));
+	wxButton *addSkill = new wxButton(page, -1, L"Add/Edit", wxPoint(350,245), wxSize(70,-1));
 	addSkill->Connect( wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&PageCreatures::OnAddSkill, NULL, (wxEvtHandler*)this);
-	wxButton *delSkill = new wxButton(page, -1, L"Del", wxPoint(405,245), wxSize(50,-1));
+	wxButton *delSkill = new wxButton(page, -1, L"Del", wxPoint(425,245), wxSize(50,-1));
 	delSkill->Connect( wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&PageCreatures::OnDelSkill, NULL, (wxEvtHandler*)this);
 
 	notebook->AddPage(page, _("Creatures"));
@@ -120,16 +122,16 @@ void PageCreatures::GetCurrent()
 	portraitEdit->SetValue(std2wx(creature->portrait));
 	md2Edit->SetValue(std2wx(creature->md2));
 	skinEdit->SetValue(std2wx(creature->skin));
-	levelEdit->SetValue(std2wx(creature->level));
-	hpEdit->SetValue(std2wx(creature->hp));
-	mpEdit->SetValue(std2wx(creature->mp));
-	armorEdit->SetValue(std2wx(creature->armor));
-	rarenessEdit->SetValue(std2wx(creature->rareness));
-	speedEdit->SetValue(std2wx(creature->speed));
+	levelSpin->SetValue( atoi(creature->level.c_str()) );
+	hpSpin->SetValue( atoi(creature->hp.c_str()) );
+	mpSpin->SetValue( atoi(creature->mp.c_str()) );
+	armorSpin->SetValue( atoi(creature->armor.c_str()) );
+	rarenessSpin->SetValue( atoi(creature->rareness.c_str()) );
+	speedSpin->SetValue( atoi(creature->speed.c_str()) );
 	scaleEdit->SetValue(std2wx(creature->scale));
 	npcEdit->SetValue(std2wx(creature->npc));
-	npcStartXEdit->SetValue(std2wx(creature->npcStartX));
-	npcStartYEdit->SetValue(std2wx(creature->npcStartY));
+	npcStartXSpin->SetValue( atoi(creature->npcStartX.c_str()) );
+	npcStartYSpin->SetValue( atoi(creature->npcStartY.c_str()) );
 
 	invList->Get( creature->inventory );
 	spellList->Get( creature->spells );
@@ -146,21 +148,33 @@ void PageCreatures::GetCurrent()
 void PageCreatures::SetCurrent()
 {
 	Creature *creature = dfCreatures->GetCurrent();
+	char buffer[16];
 
 	creature->name = wx2std( nameEdit->GetValue() );
 	creature->portrait = wx2std( portraitEdit->GetValue() );
 	creature->md2 = wx2std( md2Edit->GetValue() );
 	creature->skin = wx2std( skinEdit->GetValue() );
-	creature->level = wx2std( levelEdit->GetValue() );
-	creature->hp = wx2std( hpEdit->GetValue() );
-	creature->mp = wx2std( mpEdit->GetValue() );
-	creature->armor = wx2std( armorEdit->GetValue() );
-	creature->rareness = wx2std( rarenessEdit->GetValue() );
-	creature->speed = wx2std( speedEdit->GetValue() );
+
+	sprintf(buffer, "%i", levelSpin->GetValue());
+	creature->level = buffer;
+	sprintf(buffer, "%i", hpSpin->GetValue());
+	creature->hp = buffer;
+	sprintf(buffer, "%i", mpSpin->GetValue());
+	creature->mp = buffer;
+	sprintf(buffer, "%i", armorSpin->GetValue());
+	creature->armor = buffer;
+	sprintf(buffer, "%i", rarenessSpin->GetValue());
+	creature->rareness = buffer;
+	sprintf(buffer, "%i", speedSpin->GetValue());
+	creature->speed = buffer;
+
 	creature->scale = wx2std( scaleEdit->GetValue() );
 	creature->npc = wx2std( npcEdit->GetValue() );
-	creature->npcStartX = wx2std( npcStartXEdit->GetValue() );
-	creature->npcStartY = wx2std( npcStartYEdit->GetValue() );
+
+	sprintf(buffer, "%i", npcStartXSpin->GetValue());
+	creature->npcStartX = buffer;
+	sprintf(buffer, "%i", npcStartYSpin->GetValue());
+	creature->npcStartY = buffer;
 
 	invList->Set( creature->inventory );
 	spellList->Set( creature->spells );
@@ -183,11 +197,65 @@ void PageCreatures::SetCurrent()
 void PageCreatures::ClearCurrent()
 {
 	Creature *creature = dfCreatures->GetCurrent();
+
+	creature->name = "";
+	creature->portrait = "";
+	creature->md2 = "";
+	creature->skin = "";
+	creature->level = "";
+	creature->hp = "";
+	creature->mp = "";
+	creature->armor = "";
+	creature->rareness = "";
+	creature->speed = "";
+	creature->scale = "";
+	creature->npc = "";
+	creature->npcStartX = "";
+	creature->npcStartY = "";
+
+	creature->inventory.clear();
+	creature->spells.clear();
+	creature->skills.clear();
 }
 
+class CreatureSkillEntryDialog : public wxTextEntryDialog
+{
+public:
+	CreatureSkillEntryDialog(wxListView *skillList) : wxTextEntryDialog(0,L"Enter skill",L"Skill Entry")
+	{
+		skillSpin = new wxSpinCtrl(this, -1, L"", wxPoint(235,10),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100,1);
+
+		wxString skill;
+		if ( skillList->GetSelectedItemCount() == 1 )
+			skill = skillList->GetItemText ( skillList->GetFirstSelected() );
+		this->SetValue(skill);
+
+		if ( wxTextEntryDialog::ShowModal() == wxID_CANCEL )
+			return;
+
+
+		skill = wxTextEntryDialog::GetValue();
+		if ( skill == L"" )
+			return;
+
+		char buffer[16];
+		sprintf( buffer, "%i", skillSpin->GetValue() );
+
+		long itemPos;
+		if ( itemPos = skillList->FindItem(-1, skill) == -1)
+		{
+			skillList->InsertItem( skillList->GetItemCount(), skill );
+			skillList->SetItem( itemPos+1, 1, std2wx(buffer));
+		}
+		else
+			skillList->SetItem( skillList->GetItemCount()-1, 1, std2wx(buffer));
+	}
+protected:
+	wxSpinCtrl *skillSpin;
+};
 void PageCreatures::OnAddSkill()
 {
-	skillList->InsertItem( skillList->GetItemCount(), L"blank" );
+	CreatureSkillEntryDialog skillDialog( skillList );
 }
 void PageCreatures::OnDelSkill()
 {

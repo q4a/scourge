@@ -16,6 +16,11 @@ extern Page *g_currentPage;
 /** Typedefs **/
 typedef unsigned char uchar;
 
+struct Named
+{
+	std::string name;
+};
+
 
 /*
 	This code obtained from

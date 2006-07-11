@@ -7,6 +7,7 @@
 class DFBooks;
 class wxWindow;
 class wxTextCtrl;
+class wxSpinCtrl;
 
 class PageBooks : public Page
 {
@@ -32,7 +33,7 @@ public:
 protected:
 	// List of editable controls
 	wxTextCtrl *nameEdit;
-	wxTextCtrl *rarenessEdit;
+	wxSpinCtrl *rarenessSpin;
 	wxTextCtrl *missionEdit;
 	wxTextCtrl *textEdit;
 

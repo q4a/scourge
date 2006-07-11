@@ -31,7 +31,7 @@ void PageSkills::Init(wxNotebook *notebook, DF *dataFile)
 
 	// squirrel name
 	wxStaticText *squirrelNameText = new wxStaticText(page, -1, _("Squirrel Name"), wxPoint(220,10));
-	squirrelNameEdit = new wxTextCtrl(page, ID_BookRarenessEdit, std2wx(std::string(skill->squirrelName)), wxPoint(220,30), wxSize(100,-1));
+	squirrelNameEdit = new wxTextCtrl(page, ID_BookRarenessEdit, std2wx(skill->squirrelName), wxPoint(220,30), wxSize(100,-1));
 
 	// type
 	wxStaticText *typeText = new wxStaticText(page, -1, _("Type"), wxPoint(330,10));

@@ -43,7 +43,10 @@ void subPageSchools::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent
 	resistSkillEdit = new wxTextCtrl(page, -1, std2wx(school->resistSkill), wxPoint(380,80), wxSize(200,25));
 
 /* Color */
-	colorSelector->Init(page, 10,100 );
+	float r = atof(school->r.c_str());
+	float g = atof(school->g.c_str());
+	float b = atof(school->b.c_str());
+	colorSelector->Init(page, 10,100, -1,-1, &Color(r,g,b) );
 
 	// symbol
 	wxStaticText *symbolText = new wxStaticText(page, -1, _("Symbol"), wxPoint(590,10));
@@ -173,7 +176,7 @@ void subPageSchools::ClearCurrent()
 }
 
 // TODO Whole donation message handling is horrible! Think of a better way to do it.
-
+//		Look at PageCreatures skills list box
 class MessageEntryDialog : public wxTextEntryDialog
 {
 public:

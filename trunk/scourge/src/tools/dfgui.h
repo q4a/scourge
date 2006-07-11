@@ -15,16 +15,6 @@ struct Element
 struct Theme
 {
 	std::string name;
-/*	Element windowBack, windowTop, windowBorder;
-	Color windowTitleText, windowText;
-	Element buttonBackground, buttonSelectionBackground, buttonHighlight, buttonBorder;
-	Color buttonText, buttonSelectionText;
-	Element listBackground, inputBackground;
-	Color inputText;
-	Element selectionBackground;
-	Color selectionText;
-	Element selectedBorder, selectedCharacterBorder;
-*/
 	std::map <std::string,Element*> elements;
 	std::map <std::string,Color*> colors;
 

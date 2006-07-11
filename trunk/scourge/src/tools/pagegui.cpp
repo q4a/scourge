@@ -7,8 +7,8 @@
 
 PageGui::PageGui()
 {
-	pageHelp = "Use the list boxes to select the theme element/color to edit.\nTo edit colors you can use the sliders, or can click on the color panel. ";
-	pageHelp += "This will bring up the color selection dialog.";
+	pageHelp = "Use the list boxes to select the theme element/color to edit.\nTo edit colors click on the color panel to open the color selection dialog, ";
+	pageHelp += "and use the slider to change the alpha value.";
 
 	currentElement = 0;
 	currentColor = 0;
@@ -33,7 +33,7 @@ void PageGui::Init(wxNotebook *notebook, DF *dataFile)
 	Theme *theme = dfGui->GetCurrent();
 
 	wxStaticText *nameText = new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
-	nameEdit = new wxTextCtrl(page, -1, /*L""*/std2wx(theme->name), wxPoint(10,30), wxSize(-1,25));
+	nameEdit = new wxTextCtrl(page, -1, std2wx(theme->name), wxPoint(10,30), wxSize(-1,25));
 
 	wxStaticBox *elementsBox = new wxStaticBox(page, -1, L"Elements", wxPoint(10,65),wxSize(400,280));
 	wxStaticBox *colorsBox = new wxStaticBox(page, -1, L"Colors", wxPoint(420,10),wxSize(400,180));
@@ -77,7 +77,7 @@ void PageGui::Init(wxNotebook *notebook, DF *dataFile)
 	colorNameText = new wxStaticText(page, -1, L"No Color Selected", wxPoint(670,45));
 		colorNameText->SetFont( wxFont(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD) );
 
-	colorSelector->Init(page, 430,140, 670,90);
+	colorSelector->Init(page, 690,120, 670,90);
 
 	notebook->AddPage(page, _("GUI"));
 
@@ -248,5 +248,5 @@ void PageGui::OnLineWidthChange()
 
 	int pos = pPage->lineWidthScroll->GetThumbPosition();
 	char buffer[16]; sprintf(buffer, "%i", pos);
-	pPage->lineWidthEdit->SetValue( std2wx( std::string(buffer) ) );
+	pPage->lineWidthEdit->SetValue( std2wx( buffer ) );
 }
