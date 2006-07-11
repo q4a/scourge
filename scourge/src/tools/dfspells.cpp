@@ -181,15 +181,15 @@ void DFSpells::SaveSchool(std::ofstream &fout, School *school)
 	fout << buffer;
 
 	SplitLine( school->deityDescription, lines);
-	for ( int i = 0; i < lines.size(); i++ )
+	for ( unsigned int i = 0; i < lines.size(); i++ )
 		fout << "\nG:" << lines[i];
 
 	// donations
-	for ( int i = 0; i < school->lowDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->lowDonation.size(); i++ )
 		fout << "\nL:" << school->lowDonation[i];
-	for ( int i = 0; i < school->neutralDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->neutralDonation.size(); i++ )
 		fout << "\nN:" << school->neutralDonation[i];
-	for ( int i = 0; i < school->highDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->highDonation.size(); i++ )
 		fout << "\nH:" << school->highDonation[i];
 
 	fout << "\n#---------------------------------------------\n\n";
@@ -215,7 +215,7 @@ void DFSpells::SaveSpell(std::ofstream &fout, Spell *spell)
 	fout << "\nW:" << spell->sound;
 
 	SplitLine(spell->notes, lines);
-	for ( int i = 0; i < lines.size(); i++ )
+	for ( unsigned int i = 0; i < lines.size(); i++ )
 		fout << "\nD:" << lines[i];
 
 	fout << "\n\n";

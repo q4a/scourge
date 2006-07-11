@@ -25,9 +25,6 @@ void PageSpells::Init(wxNotebook *notebook, DF* dataFile)
 	this->dataFile = dataFile;
 	page = new wxPanel(notebook, ID_SpellsPage);
 
-	School *school = dfSpells->GetCurrent();
-	Spell *spell = *(school->spells.begin());
-
 // Notebook
 	subNotebook = new wxNotebook(page, ID_SpellsSubNotebook);
 
@@ -69,7 +66,7 @@ void PageSpells::UpdatePageNumber()
 
 void PageSpells::GetCurrent()
 {
-	School *school = dfSpells->GetCurrent();
+//	School *school = dfSpells->GetCurrent();
 }
 
 void PageSpells::SetCurrent()

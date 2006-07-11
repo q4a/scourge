@@ -17,7 +17,7 @@ bool DFCreatures::LoadSingle(std::ifstream *fin, Creature *creature)
 	fin->getline(buffer, 256, '\n');
 
 	creature->name = strtok(buffer+2, ",");
-	if ( p = strtok(0, ",") )
+	if ( (p = strtok(0, ",")) )
 		creature->portrait = p;
 
 	fin->getline(buffer, 256, '\n');
@@ -29,13 +29,13 @@ bool DFCreatures::LoadSingle(std::ifstream *fin, Creature *creature)
 	creature->armor = strtok(0,",");
 	creature->rareness = strtok(0,",");
 	creature->speed = strtok(0,",");
-	if ( p = strtok(0, ",") )
+	if ( (p = strtok(0, ",")) )
 		creature->scale = p;
-	if ( p = strtok(0, ",") )
+	if ( (p = strtok(0, ",")) )
 		creature->npc = p;
-	if ( p = strtok(0, ",") )
+	if ( (p = strtok(0, ",")) )
 		creature->npcStartX = p;
-	if ( p = strtok(0, ",") )
+	if ( (p = strtok(0, ",")) )
 		creature->npcStartY = p;
 
 	char key = fin->peek();

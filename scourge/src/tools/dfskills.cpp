@@ -81,7 +81,7 @@ void DFSkills::Save()
 		fout << (*itr)->icon_x << ',' << (*itr)->icon_y;
 
 		SplitLine((*itr)->description,lines);
-		for ( int i = 0; i < lines.size(); i++ )
+		for ( unsigned int i = 0; i < lines.size(); i++ )
 			fout << "\nD:" << lines[i];
 
 		fout << "\n\n";

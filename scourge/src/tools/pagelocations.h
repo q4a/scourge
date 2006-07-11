@@ -12,6 +12,7 @@ class wxSpinCtrl;
 class wxComboBox;
 class wxCheckBox;
 class wxString;
+class wxMouseEvent;
 
 class PageLocations : public Page
 {
@@ -36,6 +37,11 @@ public:
 	void ClearCurrent();
 
 	wxString GetType(Location*);
+
+	void UpdateMap(int=-1,int=-1);
+
+	void OnPaint();
+	void OnClick(wxMouseEvent& event);
 
 protected:
 	// List of editable controls

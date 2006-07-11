@@ -18,7 +18,7 @@ void ListAddDel::Init(wxWindow* parent, wxString title, std::vector<std::string>
 	// list
 	text = new wxStaticText(parent, -1, title, wxPoint(x,y));
 	wxArrayString strArray;
-	for ( int i = 0; i < strVec.size(); i++ )
+	for ( unsigned int i = 0; i < strVec.size(); i++ )
 		strArray.Add( std2wx(strVec[i]) );
 	list = new wxListBox(parent, -1, wxPoint(x,y+20), wxSize(width,height), strArray);
 		// Add item
@@ -34,10 +34,10 @@ void ListAddDel::Init(wxWindow* parent, wxString title, std::vector<Named*>& vec
 	// list
 	text = new wxStaticText(parent, -1, title, wxPoint(x,y));
 	wxArrayString strArray;
-	for ( int i = 0; i < vec.size(); i++ )
+	for ( unsigned int i = 0; i < vec.size(); i++ )
 		strArray.Add( std2wx(vec[i]->name) );
 	list = new wxListBox(parent, -1, wxPoint(x,y+20), wxSize(width,height), strArray);
-	for ( int i = 0; i < vec.size(); i++ )
+	for ( unsigned int i = 0; i < vec.size(); i++ )
 		list->SetClientData( i, vec[i] );
 
 		// Add item
@@ -84,7 +84,7 @@ void ListAddDel::Show(bool show)
 void ListAddDel::Get( std::vector<std::string>& strVec )
 {
 	list->Clear();
-	for ( int i = 0; i < strVec.size(); i++ )
+	for ( unsigned int i = 0; i < strVec.size(); i++ )
 		list->Insert( std2wx(strVec[i]), i );
 }
 void ListAddDel::Set( std::vector<std::string>& strVec )
@@ -96,7 +96,7 @@ void ListAddDel::Set( std::vector<std::string>& strVec )
 void ListAddDel::Get( std::vector<Named*>& vec )
 {
 	list->Clear();
-	for ( int i = 0; i < vec.size(); i++ )
+	for ( unsigned int i = 0; i < vec.size(); i++ )
 	{
 		list->Insert( std2wx( vec[i]->name ), i );
 		list->SetClientData( i, vec[i] );

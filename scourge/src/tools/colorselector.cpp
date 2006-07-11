@@ -21,7 +21,7 @@ void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY, C
 	if ( panelX == -1 )		panelX = x+100;
 	if ( panelY == -1 )		panelY = y-30;
 
-	aText = new wxStaticText(parent, -1, L"Alpha: ",	wxPoint(x+20,	y));
+	aText = new wxStaticText(parent, -1, L"Alpha: ", wxPoint(x+20,y));
 
 	// Sliders
 	aSlider = new wxSlider(parent, -1, 0,0,1000, wxPoint(x,y+20),wxSize(90,-1));
@@ -54,7 +54,7 @@ void ColorSelector::SetColor(uchar r, uchar g, uchar b, uchar a)
 	aSlider->SetValue( (int)(((float)a/255.0f)*1000.0f) );
 
 	char buffer[64];
-	sprintf(buffer, "%.3f", a);
+	sprintf(buffer, "%.3f", (float)a);
 	aText->SetLabel( std2wx( buffer ) );
 
 	panel->SetBackgroundColour( wxColour(r,g,b) );

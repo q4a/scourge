@@ -15,6 +15,7 @@ extern Page *g_currentPage;
 
 /** Typedefs **/
 typedef unsigned char uchar;
+typedef unsigned int uint;
 
 struct Named
 {
@@ -39,6 +40,6 @@ bool GetTextDialog(wxString,wxString,wxString&);
 	Splits a string into strings of up to length lineSize (cutting off at nearest space)
 	and stores the resulting strings in lines
 */
-void SplitLine(std::string &line, std::vector<std::string> &lines, int lineSize = 70);
+void SplitLine(std::string &line, std::vector<std::string> &lines, unsigned int lineSize = 70);
 
 #endif // COMMON_H

@@ -96,7 +96,7 @@ void SplitLine(std::string &line, std::vector<std::string> &lines)
 	std::string str;
 	while ( true )
 	{
-		int i = 70;
+		unsigned int i = 70;
 		if ( line.size() <= i )
 		{
 			lines.push_back(line);
@@ -134,15 +134,15 @@ void DFMissions::Save()
 		fout << "M:" << (*itr)->type << ',' << (*itr)->name;
 
 		SplitLine((*itr)->description,lines);
-		for ( int i = 0; i < lines.size(); i++ )
+		for ( unsigned int i = 0; i < lines.size(); i++ )
 			fout << "\nD:" << lines[i];
 
 		SplitLine((*itr)->success,lines);
-		for ( int i = 0; i < lines.size(); i++ )
+		for ( unsigned int i = 0; i < lines.size(); i++ )
 			fout << "\nY:" << lines[i];
 
 		SplitLine((*itr)->failure,lines);
-		for ( int i = 0; i < lines.size(); i++ )
+		for ( unsigned int i = 0; i < lines.size(); i++ )
 			fout << "\nN:" << lines[i];
 
 		fout << "\n\n";
@@ -167,20 +167,20 @@ void DFMissions::Save()
 			fout << "," << (*itr)->mapname;
 
 		SplitLine((*itr)->description,lines);
-		for ( int i = 0; i < lines.size(); i++ )
+		for ( unsigned int i = 0; i < lines.size(); i++ )
 			fout << "\nD:" << lines[i];
 
 		SplitLine((*itr)->success,lines);
-		for ( int i = 0; i < lines.size(); i++ )
+		for ( unsigned int i = 0; i < lines.size(); i++ )
 			fout << "\nY:" << lines[i];
 
 		SplitLine((*itr)->failure,lines);
-		for ( int i = 0; i < lines.size(); i++ )
+		for ( unsigned int i = 0; i < lines.size(); i++ )
 			fout << "\nN:" << lines[i];
 
-		for ( int i = 0; i < (*itr)->items.size(); i++ )
+		for ( unsigned int i = 0; i < (*itr)->items.size(); i++ )
 			fout << "\nI:" << (*itr)->items[i];
-		for ( int i = 0; i << (*itr)->creatures.size(); i++ )
+		for ( unsigned int i = 0; i << (*itr)->creatures.size(); i++ )
 			fout << "\nC:" << (*itr)->creatures[i];
 
 		if ( (*itr)->special != "" )

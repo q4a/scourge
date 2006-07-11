@@ -24,18 +24,18 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	Mission *mission = dfMissions->GetCurrent();
 
 	// name
-	wxStaticText *nameText = new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
+	/*wxStaticText *nameText =*/ new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
 	nameEdit = new wxTextCtrl(page, ID_MissionNameEdit, std2wx(mission->name), wxPoint(10,30), wxSize(200,25));
 
 	// type
-	wxStaticText *typeText = new wxStaticText(page, -1, _("Type"), wxPoint(220,10));
+	/*wxStaticText *typeText =*/ new wxStaticText(page, -1, _("Type"), wxPoint(220,10));
 	char buffer[2]; buffer[0] = mission->type; buffer[1] = 0;
 	wxString choices[2] = { L"D", L"C" };
 	typeCombo = new wxComboBox(page, ID_MissionTypeCombo, std2wx(buffer), wxPoint(220,30),wxSize(50,25),
 			2,choices, wxCB_READONLY);
 
 	// storyline
-	wxStaticText *storylineText = new wxStaticText(page, -1, _("Storyline"), wxPoint(280,10));
+	/*wxStaticText *storylineText =*/ new wxStaticText(page, -1, _("Storyline"), wxPoint(280,10));
 	wxString choicesYesNo[2] = { L"Yes", L"No" };
 	wxString startChoice=L"No"; if ( mission->storyline ) startChoice=L"Yes";
 	storylineCombo = new wxComboBox(page, ID_MissionStorylineCombo, startChoice, wxPoint(280,30),wxSize(60,25),
@@ -55,7 +55,7 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	mapEdit = new wxTextCtrl(page, -1, std2wx(mission->mapname), wxPoint(120,80), wxSize(100,-1));
 
 	// description
-	wxStaticText *descText = new wxStaticText(page, -1, _("Description"), wxPoint(450,10));
+	/*wxStaticText *descText =*/ new wxStaticText(page, -1, _("Description"), wxPoint(450,10));
 	descEdit = new wxTextCtrl(page, ID_MissionDescEdit, std2wx(mission->description), wxPoint(450,30), wxSize(350,150), wxTE_MULTILINE);
 
 	// items
@@ -66,11 +66,11 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	creatureList->Init(page, L"Creatures", mission->creatures, 650,185, 180);
 
 	// success
-	wxStaticText *succText = new wxStaticText(page, -1, _("Success"), wxPoint(10,160));
+	/*wxStaticText *succText =*/ new wxStaticText(page, -1, _("Success"), wxPoint(10,160));
 	succEdit = new wxTextCtrl(page, ID_MissionSuccEdit, std2wx(mission->success), wxPoint(10,180), wxSize(300,60), wxTE_MULTILINE);
 
 	// failure
-	wxStaticText *failText = new wxStaticText(page, -1, _("Faliure"), wxPoint(10,250));
+	/*wxStaticText *failText =*/ new wxStaticText(page, -1, _("Faliure"), wxPoint(10,250));
 	failEdit = new wxTextCtrl(page, ID_MissionFailEdit, std2wx(mission->failure), wxPoint(10,270), wxSize(300,60), wxTE_MULTILINE);
 
 	// special

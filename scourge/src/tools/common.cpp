@@ -36,7 +36,7 @@ bool GetTextDialog(wxString message, wxString title, wxString &text)
 	return ( text != L"" );
 }
 
-void SplitLine(std::string &line, std::vector<std::string> &lines, int lineSize)
+void SplitLine(std::string &line, std::vector<std::string> &lines, uint lineSize)
 {
 	// Make sure the vector is clear
 	lines.clear();

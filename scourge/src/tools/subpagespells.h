@@ -31,7 +31,7 @@ public:
 	School *currentSchool;
 	std::vector<Spell*>::iterator spellItr;
 	Spell *currentSpell;
-	int spellNumber;
+	unsigned int spellNumber;
 
 public:
 	subPageSpells();
@@ -42,8 +42,8 @@ public:
 
 	void UpdatePage();
 
-	void Prev(int=1);
-	void Next(int=1);
+	void Prev(unsigned int=1);
+	void Next(unsigned int=1);
 	void New();
 	void Del();
 

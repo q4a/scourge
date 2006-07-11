@@ -83,7 +83,7 @@ void DFRpg::Save()
 	for ( itr = data.begin(); itr != data.end(); itr++ )
 	{
 		fout << "G:" << (*itr)->name << "," << (*itr)->description;
-		for ( int i = 0; i < (*itr)->skills.size(); i++ )
+		for ( unsigned int i = 0; i < (*itr)->skills.size(); i++ )
 			SaveSkill( fout, (Skill*)(*itr)->skills[i] );
 
 		fout << "\n\n";
@@ -98,7 +98,7 @@ void DFRpg::SaveSkill(std::ofstream &fout, Skill *skill)
 	if ( skill->multiplier != "" && skill->statNames.size() > 0 )
 	{
 		fout << "\nP:" << skill->multiplier;
-		for ( int i = 0; i < skill->statNames.size(); i++ )
+		for ( unsigned int i = 0; i < skill->statNames.size(); i++ )
 			fout << "," << skill->statNames[i];
 	}
 }

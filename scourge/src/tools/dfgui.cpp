@@ -67,13 +67,13 @@ bool DFGui::ParseElement(std::ifstream *fin, Element *element)
 	c->a = atof( strtok(0, ",") );
 	element->lineWidth = atoi( strtok(0, ",") );
 
-	if ( p = strtok(0, ",") ){
+	if ( (p = strtok(0, ",")) ){
 		element->north = p;std::cerr<<"\n\nnorth: p="<<p<<'\n';}
-	if ( p = strtok(0, ",") ){
+	if ( (p = strtok(0, ",")) ){
 		element->south = p;std::cerr<<"\n\nsouth: p="<<p<<'\n';}
-	if ( p = strtok(0, ",") ){
+	if ( (p = strtok(0, ",")) ){
 		element->east = p;std::cerr<<"\n\neast: p="<<p<<'\n';}
-	if ( p = strtok(0, ", #\t") ){
+	if ( (p = strtok(0, ", #\t")) ){
 		element->west = p;std::cerr<<"\n\nwest: p="<<p<<'\n';}
 
 	std::cerr << "\ntexture = " << element->texture;
@@ -127,9 +127,6 @@ void DFGui::Save()
 	for ( itr = data.begin(); itr != data.end(); itr++ )
 	{
 		Theme *theme = *itr;
-		Element *e;
-		Color *c;
-		char buffer[256];
 
 		fout << "T:" << theme->name;
 
