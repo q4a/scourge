@@ -31,7 +31,7 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	wxStaticText *typeText = new wxStaticText(page, -1, _("Type"), wxPoint(220,10));
 	char buffer[2]; buffer[0] = mission->type; buffer[1] = 0;
 	wxString choices[2] = { L"D", L"C" };
-	typeCombo = new wxComboBox(page, ID_MissionTypeCombo, std2wx(std::string(buffer)), wxPoint(220,30),wxSize(50,25),
+	typeCombo = new wxComboBox(page, ID_MissionTypeCombo, std2wx(buffer), wxPoint(220,30),wxSize(50,25),
 			2,choices, wxCB_READONLY);
 
 	// storyline
@@ -54,8 +54,6 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	mapText = new wxStaticText(page, -1, _("Map Name"), wxPoint(120,60));
 	mapEdit = new wxTextCtrl(page, -1, std2wx(mission->mapname), wxPoint(120,80), wxSize(100,-1));
 
-	ShowStoryControls( mission->storyline );
-
 	// description
 	wxStaticText *descText = new wxStaticText(page, -1, _("Description"), wxPoint(450,10));
 	descEdit = new wxTextCtrl(page, ID_MissionDescEdit, std2wx(mission->description), wxPoint(450,30), wxSize(350,150), wxTE_MULTILINE);
@@ -67,9 +65,6 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	creatureList = new ListAddDel;
 	creatureList->Init(page, L"Creatures", mission->creatures, 650,185, 180);
 
-	itemList->Show( mission->storyline );
-	creatureList->Show( mission->storyline );
-
 	// success
 	wxStaticText *succText = new wxStaticText(page, -1, _("Success"), wxPoint(10,160));
 	succEdit = new wxTextCtrl(page, ID_MissionSuccEdit, std2wx(mission->success), wxPoint(10,180), wxSize(300,60), wxTE_MULTILINE);
@@ -79,8 +74,10 @@ void PageMissions::Init(wxNotebook *notebook, DF *dataFile)
 	failEdit = new wxTextCtrl(page, ID_MissionFailEdit, std2wx(mission->failure), wxPoint(10,270), wxSize(300,60), wxTE_MULTILINE);
 
 	// special
-	wxStaticText *specialText = new wxStaticText(page, -1, _("Special"), wxPoint(230,60));
+	specialText = new wxStaticText(page, -1, _("Special"), wxPoint(230,60));
 	specialEdit = new wxTextCtrl(page, -1, std2wx(mission->special), wxPoint(230,80), wxSize(200,-1));
+
+	ShowStoryControls( mission->storyline );
 
 	notebook->AddPage(page, _("Missions"));
 }
@@ -105,7 +102,7 @@ void PageMissions::GetCurrent()
 	nameEdit->SetValue(std2wx(mission->name));
 
 	char buffer[2]; buffer[0] = mission->type; buffer[1] = 0;
-	typeCombo->SetValue(std2wx( std::string(buffer) ));
+	typeCombo->SetValue(std2wx( buffer ));
 
 	if ( mission->storyline )
 		storylineCombo->SetValue(L"Yes");
@@ -179,10 +176,15 @@ void PageMissions::ShowStoryControls(bool show)
 	levelText->Show( show );
 	storiesText->Show( show );
 	mapText->Show( show );
+	specialText->Show( show );
 	// Show/hide edits
 	levelSpin->Show( show );
 	storiesSpin->Show( show );
 	mapEdit->Show( show );
+	specialEdit->Show( show );
+
+	itemList->Show( show );
+	creatureList->Show( show );
 }
 
 void PageMissions::OnStorylineChange()
@@ -190,8 +192,4 @@ void PageMissions::OnStorylineChange()
 	bool show = (storylineCombo->GetValue() == L"Yes");
 	this->ShowStoryControls( show );
 	UpdatePage();
-
-	// Show/hide lists
-	itemList->Show( show );			// These will only work here, Segfaults if done in ShowStoryControls.... no idea!
-	creatureList->Show( show );
 }

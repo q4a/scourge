@@ -48,6 +48,7 @@ protected:
 	wxStaticText *levelText;
 	wxStaticText *storiesText;
 	wxStaticText *mapText;
+	wxStaticText *specialText;
 	wxSpinCtrl *levelSpin;
 	wxSpinCtrl *storiesSpin;
 	wxTextCtrl *mapEdit;

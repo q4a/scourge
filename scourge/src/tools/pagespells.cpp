@@ -45,13 +45,13 @@ void PageSpells::UpdatePage()
 {
 }
 
-void PageSpells::Prev()
+void PageSpells::Prev(int n)
 {
-	currentSubPage->Prev();
+	currentSubPage->Prev(n);
 }
-void PageSpells::Next()
+void PageSpells::Next(int n)
 {
-	currentSubPage->Next();
+	currentSubPage->Next(n);
 }
 void PageSpells::New()
 {

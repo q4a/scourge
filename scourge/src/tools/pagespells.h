@@ -32,8 +32,8 @@ public:
 	void UpdatePage();
 
 
-	void Prev();
-	void Next();
+	void Prev(int=1);
+	void Next(int=1);
 	void New();
 	void Del();
 

@@ -20,7 +20,7 @@ public:
 	ColorSelector();
 	virtual ~ColorSelector();
 
-	void Init(wxWindow*,int x,int y, int panelX=-1,int panelY=-1);
+	void Init(wxWindow*,int x,int y, int panelX=-1,int panelY=-1, Color* = 0);
 
 	void GetColor(uchar*,uchar*,uchar*,uchar*);
 	Color GetColor();

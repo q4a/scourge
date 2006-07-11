@@ -16,7 +16,7 @@ ColorSelector::~ColorSelector()
 	delete color;
 }
 
-void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY)
+void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY, Color *color)
 {
 	if ( panelX == -1 )		panelX = x+100;
 	if ( panelY == -1 )		panelY = y-30;
@@ -30,6 +30,9 @@ void ColorSelector::Init(wxWindow *parent, int x,int y, int panelX,int panelY)
 
 	panel = new wxPanel(parent, -1, wxPoint(panelX,panelY),wxSize(130,25));
 	panel->Connect( wxEVT_LEFT_DOWN, (wxObjectEventFunction)&ColorSelector::OnPanelClick, NULL, (wxEvtHandler*)this);
+
+	if ( color )
+		SetColor(color);
 }
 
 void ColorSelector::GetColor(uchar *r, uchar *g, uchar *b, uchar *a)
@@ -52,7 +55,7 @@ void ColorSelector::SetColor(uchar r, uchar g, uchar b, uchar a)
 
 	char buffer[64];
 	sprintf(buffer, "%.3f", a);
-	aText->SetLabel( std2wx( std::string(buffer) ) );
+	aText->SetLabel( std2wx( buffer ) );
 
 	panel->SetBackgroundColour( wxColour(r,g,b) );
 }
@@ -65,7 +68,7 @@ void ColorSelector::SetColor(Color *c)
 
 	char buffer[64];
 	sprintf(buffer, "%.3f", c->a);
-	aText->SetLabel( std2wx( std::string(buffer) ) );
+	aText->SetLabel( std2wx( buffer ) );
 
 	panel->SetBackgroundColour( wxColour((uchar)(c->r*255),(uchar)(c->g*255),(uchar)(c->b*255)) );
 }
@@ -76,7 +79,7 @@ void ColorSelector::OnSliderChange()
 
 	char buffer[64];
 	sprintf(buffer, "%.3f", a);
-	aText->SetLabel( std2wx( std::string(buffer) ) );
+	aText->SetLabel( std2wx( buffer ) );
 }
 
 class ColorDialog : public wxColourDialog
@@ -94,14 +97,15 @@ protected:
 };
 void ColorSelector::OnPanelClick()
 {
-//	wxColourData colorData;
-//	colorData.SetColour( wxColour( (uchar)(color->r*255),(uchar)(color->g*255),(uchar)(color->b*255) ) );
-	/*wxColourDialog*/ColorDialog colorDialog;//0, &colorData);
-	colorDialog.ShowModal();
+	wxColourData colorData;
+	colorData.SetColour( wxColour( (uchar)(color->r*255),(uchar)(color->g*255),(uchar)(color->b*255) ) );
+	wxColourDialog colorDialog(0, &colorData);
+	if ( colorDialog.ShowModal() == wxID_CANCEL )
+		return;
 	wxColour c = colorDialog.GetColourData().GetColour();
 	panel->SetBackgroundColour( wxColour(c.Red(),c.Green(),c.Blue()) );
 
 	color->r = ((float)c.Red())/255.0f;
-	color->g = ((float)c.Blue())/255.0f;
-	color->b = ((float)c.Green())/255.0f;
+	color->g = ((float)c.Green())/255.0f;
+	color->b = ((float)c.Blue())/255.0f;
 }
