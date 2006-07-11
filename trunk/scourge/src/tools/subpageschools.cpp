@@ -27,19 +27,19 @@ void subPageSchools::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent
 
 
 	// name
-	wxStaticText *nameText = new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
+/*	wxStaticText *nameText =*/ new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
 	nameEdit = new wxTextCtrl(page, -1, std2wx(school->name), wxPoint(10,30), wxSize(200,25));
 
 	// deity
-	wxStaticText *deityText = new wxStaticText(page, -1, _("Deity"), wxPoint(220,10));
+/*	wxStaticText *deityText =*/ new wxStaticText(page, -1, _("Deity"), wxPoint(220,10));
 	deityEdit = new wxTextCtrl(page, -1, std2wx(school->deity), wxPoint(220,30), wxSize(150,25));
 
 	// skill
-	wxStaticText *skillText = new wxStaticText(page, -1, _("Skill"), wxPoint(380,10));
+/*	wxStaticText *skillText = */new wxStaticText(page, -1, _("Skill"), wxPoint(380,10));
 	skillEdit = new wxTextCtrl(page, -1, std2wx(school->skill), wxPoint(380,30), wxSize(200,25));
 
 	// resist skill
-	wxStaticText *resistSkillText = new wxStaticText(page, -1, _("Resist Skill"), wxPoint(380,60));
+/*	wxStaticText *resistSkillText =*/ new wxStaticText(page, -1, _("Resist Skill"), wxPoint(380,60));
 	resistSkillEdit = new wxTextCtrl(page, -1, std2wx(school->resistSkill), wxPoint(380,80), wxSize(200,25));
 
 /* Color */
@@ -49,25 +49,25 @@ void subPageSchools::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent
 	colorSelector->Init(page, 10,100, -1,-1, &Color(r,g,b) );
 
 	// symbol
-	wxStaticText *symbolText = new wxStaticText(page, -1, _("Symbol"), wxPoint(590,10));
+/*	wxStaticText *symbolText =*/ new wxStaticText(page, -1, _("Symbol"), wxPoint(590,10));
 	symbolEdit = new wxTextCtrl(page, -1, std2wx(school->symbol), wxPoint(590,30), wxSize(-1,25));
 
 	// deity description
-	wxStaticText *descText = new wxStaticText(page, -1, _("Deity Description"), wxPoint(400,120));
+/*	wxStaticText *descText =*/ new wxStaticText(page, -1, _("Deity Description"), wxPoint(400,120));
 	descEdit = new wxTextCtrl(page, -1, std2wx(school->deityDescription), wxPoint(400,140), wxSize(350,150), wxTE_MULTILINE);
 
 /**
 	donation messages
 **/
-	wxStaticBox *donationsBox = new wxStaticBox(page, -1, L"Donation Messages", wxPoint(10,140),wxSize(360,170));
+/*	wxStaticBox *donationsBox =*/ new wxStaticBox(page, -1, L"Donation Messages", wxPoint(10,140),wxSize(360,170));
 
 	// list
 	wxArrayString donationStrArray;
-	for ( int i = 0; i < school->lowDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->lowDonation.size(); i++ )
 		donationStrArray.Add( L"Low: " + std2wx(school->lowDonation[i]) );
-	for ( int i = 0; i < school->neutralDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->neutralDonation.size(); i++ )
 		donationStrArray.Add( L"Neutral:" + std2wx(school->neutralDonation[i]) );
-	for ( int i = 0; i < school->highDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->highDonation.size(); i++ )
 		donationStrArray.Add( L"High: " + std2wx(school->highDonation[i]) );
 	donationList = new wxListBox(page, -1, wxPoint(20,170), wxSize(340,100), donationStrArray);
 		// Add message
@@ -120,11 +120,11 @@ void subPageSchools::GetCurrent()
 
 	// donation messages
 	wxArrayString donationStrArray;
-	for ( int i = 0; i < school->lowDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->lowDonation.size(); i++ )
 		donationStrArray.Add( L"Low: " + std2wx(school->lowDonation[i]) );
-	for ( int i = 0; i < school->neutralDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->neutralDonation.size(); i++ )
 		donationStrArray.Add( L"Neutral:" + std2wx(school->neutralDonation[i]) );
-	for ( int i = 0; i < school->highDonation.size(); i++ )
+	for ( unsigned int i = 0; i < school->highDonation.size(); i++ )
 		donationStrArray.Add( L"High: " + std2wx(school->highDonation[i]) );
 	donationList->Set(donationStrArray);
 }

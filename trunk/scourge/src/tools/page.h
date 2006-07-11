@@ -25,6 +25,7 @@ public:
 	}
 
 public:
+	virtual ~Page() {}
 	virtual void Init(wxNotebook*, DF*) = 0;
 	void OnPageHelp();
 
@@ -95,6 +96,8 @@ enum
 	ID_CreaturesPage,
 	ID_LocationsPage,
 	ID_RpgPage,
+		ID_RpgSubNotebook,
+		ID_Skills_subPage,
 	ID_Page,
 		ID_Prev,
 		ID_PrevFast,

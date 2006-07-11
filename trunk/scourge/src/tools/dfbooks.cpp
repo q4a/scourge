@@ -5,7 +5,6 @@ bool DFBooks::LoadSingle(std::ifstream *fin, Book *book)
 {
 	std::string line ="blank";
 	char buffer[512];
-	bool readyForSpecial = false;
 
 	while ( line[0] != 0 )
 	{
@@ -42,7 +41,7 @@ void DFBooks::Save()
 	std::vector<Book*> generalBooks;
 	std::vector<Book*> missionBooks;
 
-	for ( int i = 0; i < data.size(); i++ )
+	for ( unsigned int i = 0; i < data.size(); i++ )
 	{
 		if ( data[i]->missionSpecific )
 			missionBooks.push_back(data[i]);
@@ -55,7 +54,7 @@ void DFBooks::Save()
 	fout << "# Random texts found in books and notes.\n#\n# Key:\n# B: Book Name, rareness"
 		 << "# M: Mission name (optional: from missions.txt)\n# T: multi-line text\n# \n\n"
 		 << "#################################\n# General texts\n#\n";
-	for ( int i = 0; i < generalBooks.size(); i++ )
+	for ( unsigned int i = 0; i < generalBooks.size(); i++ )
 	{
 		fout << "B:" << generalBooks[i]->name << ',' << generalBooks[i]->rareness;
 		fout << "\nT:" << generalBooks[i]->text;
@@ -63,7 +62,7 @@ void DFBooks::Save()
 	}
 
 	fout << "#################################\n# Mission-specific texts\n#\n";
-	for ( int i = 0; i < missionBooks.size(); i++ )
+	for ( unsigned int i = 0; i < missionBooks.size(); i++ )
 	{
 		fout << "B:" << missionBooks[i]->name << ',' << missionBooks[i]->rareness;
 		fout << "\nM:" << missionBooks[i]->missionName;

@@ -37,7 +37,7 @@ struct School
 		}
 		spells.clear();
 	}
-	Spell* NewSpell()
+	/*Spell**/void NewSpell()
 	{
 		spells.push_back(new Spell);
 	}

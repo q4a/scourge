@@ -15,6 +15,7 @@ class wxStaticText;
 class wxSpinCtrl;
 class wxString;
 class ListAddDel;
+class subPageSkills;
 
 class PageRpg : public Page
 {
@@ -22,8 +23,9 @@ protected:
 
 public:
 	DFRpg *dfRpg;
-	Skill *currentSkill;
-	wxString *currentSkillName;
+//	Skill *currentSkill;
+//	wxString *currentSkillName;
+	subPageSkills *pageSkills;
 
 public:
 	PageRpg();
@@ -33,28 +35,20 @@ public:
 
 	void UpdatePage();
 
+	void Prev(int=1);
+	void Next(int=1);
+	void New();
+	void Del();
+
 	void GetCurrent();
 	void SetCurrent();
-	void GetSkill();
-	void SetSkill();
 	void ClearCurrent();
 
-	Skill* GetSelectedSkill();
-
-	void OnSkillChange();
+	void OnSubPageChange();
 
 protected:
-	// List of editable controls
-	wxTextCtrl *nameEdit;
-	wxTextCtrl *descEdit;
-	wxTextCtrl *symbolEdit;
-	wxTextCtrl *skillDescEdit;
-	wxSpinCtrl *multiplierSpin;
-	wxStaticText *multiplierText;
-
-	ListAddDel *skillList;
-		wxStaticText *skillNameText;
-	ListAddDel *statList;
+	wxNotebook *subNotebook;
+	Page *currentSubPage;
 
 };
 

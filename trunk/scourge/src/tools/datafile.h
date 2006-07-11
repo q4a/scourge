@@ -14,16 +14,15 @@ struct Data
 class DF
 {
 public:
+	virtual ~DF() {}
 	virtual bool Load(std::string, std::string) = 0;
 	virtual void Save() = 0;
 
-/*	virtual void Prev() = 0;
-	virtual void Next() = 0;
-*/	virtual void Prev(int) = 0;
-	virtual void Next(int) = 0;
+	virtual void Prev(unsigned int) = 0;
+	virtual void Next(unsigned int) = 0;
 	virtual void New() = 0;
 	virtual void Del() = 0;
-	virtual void JumpTo(int) = 0;
+	virtual void JumpTo(unsigned int) = 0;
 
 	virtual unsigned int GetCurrentNum() = 0;
 	virtual unsigned int GetTotal() = 0;
@@ -48,13 +47,12 @@ public:
 	virtual void Save() = 0;
 
 	T* GetCurrent();
-	/*void Prev();
-	void Next();*/
-	void Prev(int);
-	void Next(int);
+
+	void Prev(unsigned int);
+	void Next(unsigned int);
 	void New();
 	void Del();
-	void JumpTo(int);
+	void JumpTo(unsigned int);
 
 	unsigned int GetCurrentNum() { return currentNum; }
 	unsigned int GetTotal() { return total; }
@@ -130,29 +128,8 @@ T* DataFile<T>::GetCurrent()
 	return (*current);
 }
 
-/*template <class T>
-void DataFile<T>::Prev()
-{
-	currentNum--;
-	if ( current == data.begin() )
-	{
-		current = data.end();		currentNum = total;
-	}
-	current--;
-}
-
 template <class T>
-void DataFile<T>::Next()
-{
-	current++;		currentNum++;
-	if ( current == data.end() )
-	{
-		current = data.begin();
-		currentNum = 1;
-	}
-}*/
-template <class T>
-void DataFile<T>::Prev(int n)
+void DataFile<T>::Prev(unsigned int n)
 {
 	if ( n > currentNum )
 	{
@@ -173,7 +150,7 @@ void DataFile<T>::Prev(int n)
 }
 
 template <class T>
-void DataFile<T>::Next(int n)
+void DataFile<T>::Next(unsigned int n)
 {
 	if ( n > (total-currentNum) && n!=1 )
 	{
@@ -220,7 +197,7 @@ void DataFile<T>::Del()
 }
 
 template <class T>
-void DataFile<T>::JumpTo(int n)
+void DataFile<T>::JumpTo(unsigned int n)
 {
 	if ( n > data.size() )
 		return;

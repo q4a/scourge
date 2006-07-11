@@ -32,11 +32,11 @@ void PageGui::Init(wxNotebook *notebook, DF *dataFile)
 
 	Theme *theme = dfGui->GetCurrent();
 
-	wxStaticText *nameText = new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
+	/*wxStaticText *nameText =*/ new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
 	nameEdit = new wxTextCtrl(page, -1, std2wx(theme->name), wxPoint(10,30), wxSize(-1,25));
 
-	wxStaticBox *elementsBox = new wxStaticBox(page, -1, L"Elements", wxPoint(10,65),wxSize(400,280));
-	wxStaticBox *colorsBox = new wxStaticBox(page, -1, L"Colors", wxPoint(420,10),wxSize(400,180));
+	/*wxStaticBox *elementsBox =*/ new wxStaticBox(page, -1, L"Elements", wxPoint(10,65),wxSize(400,280));
+	/*wxStaticBox *colorsBox =*/ new wxStaticBox(page, -1, L"Colors", wxPoint(420,10),wxSize(400,180));
 
 /**
 	Elements
@@ -50,7 +50,7 @@ void PageGui::Init(wxNotebook *notebook, DF *dataFile)
 	elementNameText = new wxStaticText(page, -1, L"No Element Selected", wxPoint(260,100));
 		elementNameText->SetFont( wxFont(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD) );
 
-	wxStaticText *lineWidthText = new wxStaticText(page, -1, _("Line width"), wxPoint(310,175));
+	/*wxStaticText *lineWidthText =*/ new wxStaticText(page, -1, _("Line width"), wxPoint(310,175));
 	lineWidthEdit = new wxTextCtrl(page, -1, L"", wxPoint(325,195), wxSize(30,25));
 	lineWidthScroll = new wxScrollBar(page, ID_GuiLineWidthScroll, wxPoint(355,195), wxSize(-1,25), wxSB_VERTICAL);
 		lineWidthScroll->SetScrollbar(0,1,10,1);

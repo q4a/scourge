@@ -89,11 +89,11 @@ bool MyApp::Initialize( int& argc, wxChar **argv ) {
 
 	// continue initializing our app
 	wxApp::Initialize( argc, argv );
+	return true;
 }
 
 bool MyApp::OnInit()
-{char path[300];
-
+{
 	DFBooks *dfBooks = new DFBooks;
 	dfBooks->Load( GetDataPath("%s/world/books.txt"), "B");
 

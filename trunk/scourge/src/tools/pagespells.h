@@ -47,9 +47,6 @@ public:
 
 
 	void OnSubPageChange(wxCommandEvent& event);
-	void OnIconXChange();
-	void OnIconYChange();
-	void UpdateIcon();
 
 protected:
 	wxNotebook *subNotebook;

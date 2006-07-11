@@ -47,6 +47,8 @@ tools_SOURCES = \
 	subpageschools.h\
 	subpagespells.cpp\
 	subpagespells.h\
+	subpageskills.cpp\
+	subpageskills.h\
 	pagelocations.cpp\
 	pagelocations.h\
 	pagerpg.cpp\
