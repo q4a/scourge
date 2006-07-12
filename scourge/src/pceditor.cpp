@@ -21,8 +21,10 @@
 #include "gui/textfield.h"
 #include "gui/scrollinglabel.h"
 #include "gui/scrollinglist.h"
+#include "gui/canvas.h"
 #include "scourge.h"
 #include "shapepalette.h"
+#include "characterinfo.h"
 #include "rpg/character.h"
 
 using namespace std;
@@ -76,6 +78,8 @@ PcEditor::PcEditor( Scourge *scourge ) {
 	cards = new CardContainer( win );  
 
 
+	// ----------------------------------------------
+	// name
 	Label *p = cards->createLabel( secondColStart, 30, "Name:", NAME_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 	nameField = new TextField( secondColStart, 50, 32 );
@@ -86,13 +90,14 @@ PcEditor::PcEditor( Scourge *scourge ) {
 										NAME_TAB );
 
 
-
+	// ----------------------------------------------
+	// class
 	p = cards->createLabel( secondColStart, 30, "Profession:", CLASS_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 
   charType = new ScrollingList( secondColStart, 50, 
-																secondColWidth, 150, 
+																secondColWidth, 80, 
 																scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( charType, CLASS_TAB );
   charTypeStr = (char**)malloc( Character::rootCharacters.size() * sizeof(char*));
@@ -103,19 +108,60 @@ PcEditor::PcEditor( Scourge *scourge ) {
   charType->setLines( (int)Character::rootCharacters.size(), (const char**)charTypeStr );
   int charIndex = (int)( (float)( Character::rootCharacters.size() ) * rand()/RAND_MAX );
   charType->setSelectedLine( charIndex );
-  charTypeDescription = new ScrollingLabel( secondColStart, 220, 
-																						secondColWidth, 100, 
+  charTypeDescription = new ScrollingLabel( secondColStart, 140, 
+																						secondColWidth, 150, 
 																						Character::rootCharacters[charIndex]->getDescription() );
 	cards->addWidget( charTypeDescription, CLASS_TAB );
 
 
+	// ----------------------------------------------
+	// stats
 	p = cards->createLabel( secondColStart, 30, "Statistics:", STAT_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
+	int n = 0;
+	for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+		Skill *skill = Skill::skills[i];
+		if( skill->getGroup()->isStat() ) {
+			y = 60 + n * buttonHeight;
+			cards->createLabel( secondColStart, y, skill->getName(), STAT_TAB );
+			skillValue[n] = cards->createLabel( secondColStart + 120, y, 
+																					"0", 
+																					STAT_TAB );
+			skillPlus[n] = cards->createButton( secondColStart + 150, y - 10,
+																					secondColStart + 150 + 25, y - 10 + buttonHeight,
+																					"+", 
+																					STAT_TAB );
+			skillPlus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+			skillMinus[n] = cards->createButton( secondColStart + 180, y - 10,
+																					 secondColStart + 180 + 25, y - 10 + buttonHeight,
+																					 "-", 
+																					 STAT_TAB );
+			skillMinus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 
+			n++;
+		}
+	}
+	cards->createLabel( secondColStart + 180 + 25 + 15, 60, "Points Remaining:", STAT_TAB );
+	remainingLabel = cards->createLabel( secondColStart + 180 + 25 + 15, 80, "0", STAT_TAB );
+
+	int detailsHeight = 145;
+  detailsInfo = new CharacterInfoUI( scourge );
+  detailsCanvas = new Canvas( secondColStart, 200, 
+															secondColStart + secondColWidth, 200 + detailsHeight, 
+															detailsInfo );
+  cards->addWidget( detailsCanvas, STAT_TAB );
+
+
+
+	// ----------------------------------------------
+	// deity
 	p = cards->createLabel( secondColStart, 30, "Patron Deity:", DEITY_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
+
+	// ----------------------------------------------
+	// appearence
 	p = cards->createLabel( secondColStart, 30, "Appearance:", IMAGE_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 }
