@@ -93,6 +93,8 @@ scourge_SOURCES = \
 	optionsmenu.h\
 	partyeditor.cpp\
 	partyeditor.h\
+	pceditor.cpp\
+	pceditor.h\
 	multiplayer.cpp\
 	multiplayer.h\
 	userconfiguration.cpp\

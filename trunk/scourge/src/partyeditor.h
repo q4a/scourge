@@ -44,6 +44,8 @@ class TextField;
 class Label;
 class SkillsView;
 
+class PcEditor;
+
 typedef struct _CharacterInfo {
   TextField *name;
 
@@ -103,6 +105,7 @@ private:
   float zrot;  
   Creature *tmp[4];
   std::map<int,Creature*> maxSkills;
+	PcEditor *pcEditor;
   
 public:
   PartyEditor(Scourge *scourge);

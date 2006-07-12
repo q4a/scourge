@@ -2890,3 +2890,4 @@ void Scourge::handleDismiss( int index ) {
 	dismissHeroDialog->setVisible( true );
 }
 
+
