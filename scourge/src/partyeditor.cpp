@@ -36,6 +36,7 @@
 #include "shapepalette.h"
 #include "debug.h"
 #include "skillsview.h"
+#include "pceditor.h"
 
 using namespace std;
 
@@ -141,6 +142,8 @@ PartyEditor::PartyEditor(Scourge *scourge) {
                             Constants::SCOURGE_LARGE_FONT, 24 );
   cards->addWidget( outro, OUTRO_TEXT );
 
+	pcEditor = new PcEditor( scourge );
+
 }
 
 PartyEditor::~PartyEditor() {
@@ -173,6 +176,8 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
   //
   // cancel and done are handled in mainmenu.cpp
   //
+
+	if( pcEditor->getWindow()->isVisible() ) pcEditor->handleEvent( widget,event );
 
   int oldStep = step;
   if( widget == toChar0 ) {
@@ -716,6 +721,11 @@ bool PartyEditor::isVisible() {
 
 void PartyEditor::setVisible( bool b ) { 
   mainWin->setVisible( b ); 
+	if( b ) {
+		pcEditor->setCreature( tmp[0] );
+	} else {
+		pcEditor->getWindow()->setVisible( false );
+	}
 }
 
 Creature *PartyEditor::getHighestSkillPC( int skill ) {
