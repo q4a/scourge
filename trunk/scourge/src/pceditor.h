@@ -29,6 +29,9 @@ class Widget;
 class TextField;
 class ScrollingList;
 class ScrollingLabel;
+class Label;
+class Canvas;
+class CharacterInfoUI;
 
 class PcEditor {
 private:
@@ -41,6 +44,11 @@ private:
 	TextField *nameField;
 	ScrollingList *charType;
 	ScrollingLabel *charTypeDescription;
+	Label *skillValue[10];
+	Button *skillPlus[10], *skillMinus[10];
+	Label *remainingLabel;
+	CharacterInfoUI *detailsInfo;
+  Canvas *detailsCanvas;
 	char **charTypeStr;
 
 	enum {

@@ -38,6 +38,7 @@ class Button : public Widget {
   GLuint highlight;
   bool glowing;
   bool inverse;
+	int fontType;
 
  public: 
 
@@ -71,6 +72,9 @@ class Button : public Widget {
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void removeEffects(Widget *parent);
   void drawWidget(Widget *parent);
+
+	inline int getFontType() { return fontType; }
+	inline void setFontType( int n ) { fontType = n; }
 
 };
 

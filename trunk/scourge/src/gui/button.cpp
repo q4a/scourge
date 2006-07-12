@@ -36,6 +36,7 @@ Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) :
   this->highlight = highlight;
   this->glowing = false;
   this->inverse = false;
+	this->fontType = 0;
 }
 
 Button::~Button() {
@@ -69,7 +70,7 @@ void Button::drawWidget(Widget *parent) {
     } else {
       applyColor();      
     }
-    ((Window*)parent)->getScourgeGui()->setFontType( Constants::SCOURGE_UI_FONT );
+    ((Window*)parent)->getScourgeGui()->setFontType( fontType );
     ((Window*)parent)->getScourgeGui()->texPrint(0, 0, label);
     ((Window*)parent)->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
     glPopMatrix();
