@@ -19,6 +19,7 @@
 #define PC_EDITOR_H
 
 #include "common/constants.h"
+#include "gui/widgetview.h"
 
 class Window;
 class Scourge;
@@ -33,7 +34,7 @@ class Label;
 class Canvas;
 class CharacterInfoUI;
 
-class PcEditor {
+class PcEditor : public WidgetView {
 private:
 	Window *win;
 	Scourge *scourge;
@@ -49,7 +50,16 @@ private:
 	Label *remainingLabel;
 	CharacterInfoUI *detailsInfo;
   Canvas *detailsCanvas;
+  ScrollingLabel *deityTypeDescription;
+  ScrollingList *deityType;
+  Canvas *portrait;
+  Button *prevPortrait, *nextPortrait;
+  Canvas *model;
+  Button *prevModel, *nextModel;
 	char **charTypeStr;
+  char **deityTypeStr;
+  int portraitIndex;
+  int modelIndex;
 
 	enum {
 		NAME_TAB=0,
@@ -67,6 +77,11 @@ public:
 	inline Window *getWindow() { return win; }
 
 	void handleEvent( Widget *widget, SDL_Event *event );
+
+  virtual void drawWidgetContents( Widget *w );
+
+protected:
+  void saveUI();
 };
 
 #endif

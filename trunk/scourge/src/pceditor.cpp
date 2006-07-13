@@ -26,8 +26,19 @@
 #include "shapepalette.h"
 #include "characterinfo.h"
 #include "rpg/character.h"
+#include "rpg/spell.h"
+#include "render/glshape.h"
+#include "render/Md2.h"
 
 using namespace std;
+
+#define PORTRAIT_SIZE 150
+#define MODEL_SIZE 210
+
+bool willModelPlaySound = false;
+
+// this is here to compile faster (otherwise shapepalette needs to be incl.)
+std::map<CharacterModelInfo*, GLShape*> shapesMap;
 
 PcEditor::PcEditor( Scourge *scourge ) {
 	this->scourge = scourge;
@@ -159,11 +170,55 @@ PcEditor::PcEditor( Scourge *scourge ) {
 	p = cards->createLabel( secondColStart, 30, "Patron Deity:", DEITY_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
+  int deityHeight = 100;
+  deityType = new ScrollingList( secondColStart, 50, 
+                                 secondColWidth, deityHeight, 
+                                 scourge->getShapePalette()->getHighlightTexture() );
+  cards->addWidget( deityType, DEITY_TAB );
+  deityTypeStr = (char**)malloc( MagicSchool::getMagicSchoolCount() * sizeof(char*) );
+  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+    deityTypeStr[i] = (char*)malloc( 120 * sizeof( char ) );
+    strcpy( deityTypeStr[i], MagicSchool::getMagicSchool( i )->getDeity() );
+  }
+  deityType->setLines( MagicSchool::getMagicSchoolCount(), (const char**)deityTypeStr );
+  int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
+  deityType->setSelectedLine( deityIndex );
+
+  deityTypeDescription = new ScrollingLabel( secondColStart, 50 + 10 + deityHeight, 
+                                             secondColWidth, 170, 
+                                             MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
+  cards->addWidget( deityTypeDescription, DEITY_TAB );
+
 
 	// ----------------------------------------------
 	// appearence
 	p = cards->createLabel( secondColStart, 30, "Appearance:", IMAGE_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
+
+  // portrait
+  int imageWidth = PORTRAIT_SIZE;
+  portrait = new Canvas( secondColStart, 50, 
+                         secondColStart + imageWidth, 50 + PORTRAIT_SIZE, this );
+  cards->addWidget( portrait, IMAGE_TAB );
+  portraitIndex = (int)( (float)( scourge->getShapePalette()->getPortraitCount() ) * rand()/RAND_MAX );
+  prevPortrait = cards->createButton( secondColStart, 50 + PORTRAIT_SIZE + 10,
+                                      secondColStart + imageWidth / 2 - 5, 50 + PORTRAIT_SIZE + 10 + buttonHeight, 
+                                      "<<", IMAGE_TAB );
+  nextPortrait = cards->createButton( secondColStart + imageWidth / 2 + 5, 50 + PORTRAIT_SIZE + 10,
+                                      secondColStart + imageWidth, 50 + PORTRAIT_SIZE + 10 + buttonHeight, 
+                                      "    >>", IMAGE_TAB );
+  // model
+  int modelStart = secondColStart + imageWidth + 5;
+  int modelWidth = w - 10 - modelStart;
+  model = new Canvas( modelStart, 50, w - 10, 50 + MODEL_SIZE, this );
+  cards->addWidget( model, IMAGE_TAB );
+  modelIndex = (int)( (float)( scourge->getShapePalette()->getCharacterModelInfoCount() ) * rand()/RAND_MAX );
+  prevModel = cards->createButton( modelStart, 50 + MODEL_SIZE + 10,
+                                   w - 10 - modelWidth / 2 - 5, 50 + MODEL_SIZE + 10 + buttonHeight, 
+                                   "<<", IMAGE_TAB );
+  nextModel = cards->createButton( w - 10 - modelWidth / 2, 50 + MODEL_SIZE + 10,
+                                   w - 10, 50 + MODEL_SIZE + 10 + buttonHeight,
+                                   "    >>", n );
 }
 
 PcEditor::~PcEditor() {
@@ -221,5 +276,103 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		statsButton->setSelected( false );
 		deityButton->setSelected( false );
 		imageButton->setSelected( true );
-	}
+  } else if( widget == prevPortrait ) {
+    if( portraitIndex > 0 ) {
+      portraitIndex--;
+    } else {
+      portraitIndex = scourge->getShapePalette()->getPortraitCount() - 1;
+    }
+    saveUI();
+  } else if( widget == nextPortrait ) {
+    if( portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
+      portraitIndex++;
+    } else {
+      portraitIndex = 0;
+    }
+    saveUI();
+  } else if( widget == prevModel ) {
+    if( modelIndex > 0 ) {
+      modelIndex--;
+    } else {
+      modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount() - 1;
+    }
+    saveUI();
+    willModelPlaySound = true;
+  } else if( widget == nextModel ) {
+    if( modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
+      modelIndex++;
+    } else {
+      modelIndex = 0;
+    }
+    saveUI();
+    willModelPlaySound = true;
+  }
+}
+
+void PcEditor::drawWidgetContents( Widget *w ) {
+  if( w == portrait ) {
+    glPushMatrix();
+    glEnable( GL_TEXTURE_2D );
+    glDisable( GL_CULL_FACE );
+    glColor4f( 1, 1, 1, 1 );
+    glBindTexture( GL_TEXTURE_2D, 
+                   scourge->getShapePalette()->getPortraitTexture( portraitIndex ) );
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( PORTRAIT_SIZE, 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex2i( PORTRAIT_SIZE, PORTRAIT_SIZE );
+    glTexCoord2f( 0, 1 );
+    glVertex2i( 0, PORTRAIT_SIZE );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+    glPopMatrix();
+  } else if( w == model ) {
+    // draw model
+    CharacterModelInfo *cmi = scourge->getShapePalette()->
+      getCharacterModelInfo( modelIndex );
+    GLShape *shape;
+    if( shapesMap.find( cmi ) == shapesMap.end() ) {
+      shape = 
+        scourge->getShapePalette()->getCreatureShape( cmi->model_name, 
+                                                      cmi->skin_name, 
+                                                      cmi->scale );
+      shapesMap[ cmi ] = shape;
+      shape->setCurrentAnimation( MD2_STAND );
+    } else {
+      shape = shapesMap[ cmi ];
+    }
+    if( willModelPlaySound ) {
+      scourge->playCharacterSound( cmi->model_name, 
+                                   GameAdapter::SELECT_SOUND );
+      willModelPlaySound = false;
+    }
+    glPushMatrix();
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
+    glClearDepth( 1.0f );
+    glEnable(GL_DEPTH_TEST);
+    glDisable( GL_BLEND );
+    glDepthMask(GL_TRUE);
+    glEnable( GL_TEXTURE_2D );
+    glTranslatef( 130, MODEL_SIZE + 10, 500 );
+    glRotatef( 90, 1, 0, 0 );
+    glRotatef( 180, 0, 0, 1 );
+    glScalef( 2, 2, 2 );
+    glColor4f( 1, 1, 1, 1 );
+    //glDisable( GL_SCISSOR_TEST );
+    shape->draw();
+    glDisable( GL_TEXTURE_2D );
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+    glDisable( GL_BLEND );
+    glPopMatrix();
+  }
+}
+
+void PcEditor::saveUI() {
+
 }
