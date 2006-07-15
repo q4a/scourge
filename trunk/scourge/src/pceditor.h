@@ -20,6 +20,7 @@
 
 #include "common/constants.h"
 #include "gui/widgetview.h"
+#include "rpg/rpg.h"
 
 class Window;
 class Scourge;
@@ -33,6 +34,7 @@ class ScrollingLabel;
 class Label;
 class Canvas;
 class CharacterInfoUI;
+class Character;
 
 class PcEditor : public WidgetView {
 private:
@@ -60,6 +62,7 @@ private:
   char **deityTypeStr;
   int portraitIndex;
   int modelIndex;
+	int availableSkillMod;
 
 	enum {
 		NAME_TAB=0,
@@ -73,16 +76,26 @@ public:
 	PcEditor( Scourge *scourge );
 	~PcEditor();
 
-	void setCreature( Creature *creature );
 	inline Window *getWindow() { return win; }
 
 	void handleEvent( Widget *widget, SDL_Event *event );
 
   virtual void drawWidgetContents( Widget *w );
 
-protected:
-  void saveUI();
+	inline Button *getOkButton() { return okButton; }
+	inline Button *getCancelButton() { return cancelButton; }
+
+	void saveUI();
+	void rollSkills();
+	void rollSkillsForCreature( Creature *c );
+	Creature *createPartyMember();
+
+protected:  
 	void deleteLoadedShapes();
+	void loadUI();
+	void setCharType( int charIndex );
+	void setDeityType( int deityIndex );
+	void createUI();
 };
 
 #endif

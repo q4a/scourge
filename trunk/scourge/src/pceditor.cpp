@@ -23,8 +23,10 @@
 #include "gui/scrollinglist.h"
 #include "gui/canvas.h"
 #include "scourge.h"
+#include "creature.h"
 #include "shapepalette.h"
 #include "characterinfo.h"
+#include "debug.h"
 #include "rpg/character.h"
 #include "rpg/spell.h"
 #include "render/glshape.h"
@@ -32,6 +34,7 @@
 
 using namespace std;
 
+#define AVAILABLE_SKILL_POINTS 5
 #define PORTRAIT_SIZE 150
 #define MODEL_SIZE 210
 
@@ -42,7 +45,293 @@ std::map<CharacterModelInfo*, GLShape*> shapesMap;
 
 PcEditor::PcEditor( Scourge *scourge ) {
 	this->scourge = scourge;
+	creature = NULL;
 
+	availableSkillMod = AVAILABLE_SKILL_POINTS;
+
+	createUI();
+
+	deleteLoadedShapes();
+
+	// create a tmp creature to use for the ui	
+	createPartyMember();
+
+	availableSkillMod = AVAILABLE_SKILL_POINTS;
+
+	detailsInfo->setCreature( win, creature );
+
+	loadUI();
+
+	cards->setActiveCard( NAME_TAB );
+	nameButton->setSelected( true );
+	profButton->setSelected( false );
+	statsButton->setSelected( false );
+	deityButton->setSelected( false );
+	imageButton->setSelected( false );
+//	win->setVisible( true );
+
+}
+
+PcEditor::~PcEditor() {
+	delete win;
+	delete creature;
+  for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
+		free( charTypeStr[i] );
+	}
+	free( charTypeStr );
+  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+		free( deityTypeStr[i] );
+	}
+	free( deityTypeStr );
+	deleteLoadedShapes();
+}
+
+void PcEditor::deleteLoadedShapes() {
+  for( map<CharacterModelInfo*, GLShape*>::iterator i=shapesMap.begin(); i!=shapesMap.end(); ++i ) {
+    CharacterModelInfo *cmi = i->first;
+    GLShape *shape = i->second;  
+    scourge->getShapePalette()->decrementSkinRefCount( cmi->model_name, cmi->skin_name );
+    delete shape;
+  }
+  shapesMap.clear();
+}
+
+/**
+ * Save the moving parts into the creature.
+ */
+void PcEditor::saveUI() {
+	// name
+	char *s = nameField->getText();
+	bool deleteS = false;
+	if( !s || !strlen( s ) ) {
+		//s = presets[i].name;
+		s = Rpg::createName();
+		deleteS = true;
+	}
+	creature->replaceName( strdup( s ) );
+	if( deleteS ) free( s );
+	// character type
+	int index = charType->getSelectedLine();  
+	Character *c = Character::rootCharacters[ index ];
+	creature->setCharacter( c );
+	creature->setLevel( STARTING_PARTY_LEVEL ); 
+	creature->setExp(0);
+	creature->setHp();
+	creature->setMp();
+
+	// deity
+	creature->setDeityIndex( deityType->getSelectedLine() );
+	
+	// assign portraits
+	creature->setPortraitTextureIndex( portraitIndex );
+}
+
+void PcEditor::loadUI() {
+	if( creature ) {
+		nameField->setText( creature->getName() );
+
+		for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
+			if( Character::rootCharacters[i] == creature->getCharacter() ) {
+				charType->setSelectedLine( i );
+				break;
+			}
+		}
+
+		if( charType->getSelectedLine() > -1 ) 
+			charTypeDescription->setText( Character::rootCharacters[charType->getSelectedLine()]->getDescription() );
+
+		char message[300];
+		int n = 0;
+		for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+			Skill *sk = Skill::skills[i];
+			if( sk->getGroup()->isStat() ) {
+				sprintf( message, "%d (%d)", creature->getSkill( i ), creature->getSkillMod( i ) );
+				skillValue[n++]->setText( message );
+			}
+		}
+		sprintf( message, "%d", availableSkillMod );
+		remainingLabel->setText( message );
+
+		int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
+		deityType->setSelectedLine( deityIndex );
+		deityTypeDescription->setText( MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
+
+		for( int i = 0; i < scourge->getShapePalette()->getPortraitCount(); i++ ) {
+			if( creature->getPortraitTextureIndex() == i ) {
+				portraitIndex = i;
+				break;
+			}
+		}
+
+		for( int i = 0; i < scourge->getShapePalette()->getCharacterModelInfoCount(); i++ ) {
+			if( !strcmp( creature->getModelName(), scourge->getShapePalette()->getCharacterModelInfo( i )->model_name ) &&
+					!strcmp( creature->getSkinName(), scourge->getShapePalette()->getCharacterModelInfo( i )->skin_name ) ) {
+				modelIndex = i;
+				break;
+			}
+		}
+
+	} else {
+		nameField->setText( "" );
+		int n = 0;
+		for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+			Skill *sk = Skill::skills[i];
+			if( sk->getGroup()->isStat() ) {
+				skillValue[n++]->setText( "" );
+			}
+		}
+	}
+}
+
+void PcEditor::rollSkills() {
+	availableSkillMod = AVAILABLE_SKILL_POINTS;
+	rollSkillsForCreature( creature );  		
+	loadUI();
+}
+
+void PcEditor::rollSkillsForCreature( Creature *c ) {
+	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
+		int n;
+		if( Skill::skills[i]->getGroup()->isStat() ) {
+			n = c->getCharacter()->getSkill( i ) + (int)( 14.0f * rand() / RAND_MAX ) + 1;
+		} else {
+			
+			// create the starting value as a function of the stats
+			n = 0;
+			for( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
+				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
+				n += c->getSkill( index );
+			}
+			n = (int)( ( n / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
+								 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
+		}
+		c->setSkill( i, n );
+		c->setSkillMod( i, 0 );
+	}
+}
+
+Creature *PcEditor::createPartyMember() {
+
+	Creature *old = creature;
+
+	creature = new Creature( scourge->getSession(), 
+													 Character::rootCharacters[ charType->getSelectedLine() ], 
+													 strdup( nameField->getText() ), 
+													 modelIndex );
+	creature->setLevel( STARTING_PARTY_LEVEL ); 
+	creature->setExp(0);
+	creature->setHp();
+	creature->setMp();
+	creature->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
+	creature->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
+
+	rollSkills();
+	saveUI();
+
+	Creature *made = creature;
+
+	if( old ) creature = old;
+
+	return made;
+}
+
+void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
+	if( widget == cancelButton ) {
+		win->setVisible( false );
+	} else if( widget == okButton ) {
+		win->setVisible( false );
+	} else if( widget == nameButton ) {
+		cards->setActiveCard( NAME_TAB );
+		nameButton->setSelected( true );
+		profButton->setSelected( false );
+		statsButton->setSelected( false );
+		deityButton->setSelected( false );
+		imageButton->setSelected( false );
+	} else if( widget == profButton ) {
+		cards->setActiveCard( CLASS_TAB );
+		nameButton->setSelected( false );
+		profButton->setSelected( true );
+		statsButton->setSelected( false );
+		deityButton->setSelected( false );
+		imageButton->setSelected( false );
+	} else if( widget == statsButton ) {
+		cards->setActiveCard( STAT_TAB );
+		nameButton->setSelected( false );
+		profButton->setSelected( false );
+		statsButton->setSelected( true );
+		deityButton->setSelected( false );
+		imageButton->setSelected( false );
+	} else if( widget == deityButton ) {
+		cards->setActiveCard( DEITY_TAB );
+		nameButton->setSelected( false );
+		profButton->setSelected( false );
+		statsButton->setSelected( false );
+		deityButton->setSelected( true );
+		imageButton->setSelected( false );
+	} else if( widget == imageButton ) {
+		cards->setActiveCard( IMAGE_TAB );
+		nameButton->setSelected( false );
+		profButton->setSelected( false );
+		statsButton->setSelected( false );
+		deityButton->setSelected( false );
+		imageButton->setSelected( true );
+  } else if( widget == prevPortrait ) {
+    if( portraitIndex > 0 ) {
+      portraitIndex--;
+    } else {
+      portraitIndex = scourge->getShapePalette()->getPortraitCount() - 1;
+    }
+    saveUI();
+  } else if( widget == nextPortrait ) {
+    if( portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
+      portraitIndex++;
+    } else {
+      portraitIndex = 0;
+    }
+    saveUI();
+  } else if( widget == prevModel ) {
+    if( modelIndex > 0 ) {
+      modelIndex--;
+    } else {
+      modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount() - 1;
+    }
+    saveUI();
+    willModelPlaySound = true;
+  } else if( widget == nextModel ) {
+    if( modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
+      modelIndex++;
+    } else {
+      modelIndex = 0;
+    }
+    saveUI();
+    willModelPlaySound = true;
+	} else if( widget == charType ) {
+		setCharType( charType->getSelectedLine() );
+	} else if( widget == deityType ) {
+		setDeityType( deityType->getSelectedLine() );
+  }
+}
+
+void PcEditor::setCharType( int charIndex ) {
+  if( charIndex > -1 ) {     
+    Character *character = Character::rootCharacters[ charIndex ];
+    if( character ) {
+      charTypeDescription->setText( character->getDescription() );
+			saveUI();
+      rollSkills();      
+    }
+  }
+}
+
+void PcEditor::setDeityType( int deityIndex ) {
+  if( deityIndex > -1 ) {
+    MagicSchool *school = MagicSchool::getMagicSchool( deityIndex );
+    if( school ) deityTypeDescription->setText( school->getDeityDescription() );
+    saveUI();
+  }
+}
+
+void PcEditor::createUI() {
 	int x = 50;
 	int y = 30;
 	int w = 500;
@@ -136,8 +425,8 @@ PcEditor::PcEditor( Scourge *scourge ) {
 		if( skill->getGroup()->isStat() ) {
 			y = 60 + n * buttonHeight;
 			cards->createLabel( secondColStart, y, skill->getName(), STAT_TAB );
-			skillValue[n] = cards->createLabel( secondColStart + 120, y, 
-																					"0", 
+			skillValue[n] = cards->createLabel( secondColStart + 105, y, 
+																					"", 
 																					STAT_TAB );
 			skillPlus[n] = cards->createButton( secondColStart + 150, y - 10,
 																					secondColStart + 150 + 25, y - 10 + buttonHeight,
@@ -222,106 +511,6 @@ PcEditor::PcEditor( Scourge *scourge ) {
                                    "    >>", IMAGE_TAB );
 }
 
-PcEditor::~PcEditor() {
-	delete win;
-	deleteLoadedShapes();
-}
-
-void PcEditor::deleteLoadedShapes() {
-  for( map<CharacterModelInfo*, GLShape*>::iterator i=shapesMap.begin(); i!=shapesMap.end(); ++i ) {
-    CharacterModelInfo *cmi = i->first;
-    GLShape *shape = i->second;  
-    scourge->getShapePalette()->decrementSkinRefCount( cmi->model_name, cmi->skin_name );
-    delete shape;
-  }
-  shapesMap.clear();
-}
-
-void PcEditor::setCreature( Creature *creature ) {
-	deleteLoadedShapes();
-	this->creature = creature;
-	cards->setActiveCard( NAME_TAB );
-	nameButton->setSelected( true );
-	profButton->setSelected( false );
-	statsButton->setSelected( false );
-	deityButton->setSelected( false );
-	imageButton->setSelected( false );
-	win->setVisible( true );
-}
-
-void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
-	if( widget == cancelButton ) {
-		win->setVisible( false );
-	} else if( widget == okButton ) {
-		win->setVisible( false );
-	} else if( widget == nameButton ) {
-		cards->setActiveCard( NAME_TAB );
-		nameButton->setSelected( true );
-		profButton->setSelected( false );
-		statsButton->setSelected( false );
-		deityButton->setSelected( false );
-		imageButton->setSelected( false );
-	} else if( widget == profButton ) {
-		cards->setActiveCard( CLASS_TAB );
-		nameButton->setSelected( false );
-		profButton->setSelected( true );
-		statsButton->setSelected( false );
-		deityButton->setSelected( false );
-		imageButton->setSelected( false );
-	} else if( widget == statsButton ) {
-		cards->setActiveCard( STAT_TAB );
-		nameButton->setSelected( false );
-		profButton->setSelected( false );
-		statsButton->setSelected( true );
-		deityButton->setSelected( false );
-		imageButton->setSelected( false );
-	} else if( widget == deityButton ) {
-		cards->setActiveCard( DEITY_TAB );
-		nameButton->setSelected( false );
-		profButton->setSelected( false );
-		statsButton->setSelected( false );
-		deityButton->setSelected( true );
-		imageButton->setSelected( false );
-	} else if( widget == imageButton ) {
-		cards->setActiveCard( IMAGE_TAB );
-		nameButton->setSelected( false );
-		profButton->setSelected( false );
-		statsButton->setSelected( false );
-		deityButton->setSelected( false );
-		imageButton->setSelected( true );
-  } else if( widget == prevPortrait ) {
-    if( portraitIndex > 0 ) {
-      portraitIndex--;
-    } else {
-      portraitIndex = scourge->getShapePalette()->getPortraitCount() - 1;
-    }
-    saveUI();
-  } else if( widget == nextPortrait ) {
-    if( portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
-      portraitIndex++;
-    } else {
-      portraitIndex = 0;
-    }
-    saveUI();
-  } else if( widget == prevModel ) {
-    if( modelIndex > 0 ) {
-      modelIndex--;
-    } else {
-      modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount() - 1;
-    }
-    saveUI();
-    willModelPlaySound = true;
-  } else if( widget == nextModel ) {
-    if( modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
-      modelIndex++;
-    } else {
-      modelIndex = 0;
-    }
-    saveUI();
-    willModelPlaySound = true;
-  }
-}
-
 void PcEditor::drawWidgetContents( Widget *w ) {
   if( w == portrait ) {
     glPushMatrix();
@@ -386,6 +575,3 @@ void PcEditor::drawWidgetContents( Widget *w ) {
   }
 }
 
-void PcEditor::saveUI() {
-
-}
