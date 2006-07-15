@@ -193,7 +193,7 @@ MainMenu::~MainMenu(){
 }
 
 void MainMenu::drawView() {
-  if( !partyEditor->isVisible() ) {
+  //if( !partyEditor->isVisible() ) {
 
 		// HACK: needed on my X2 dual core system... life is hard...
 		SDL_Delay( 20 );
@@ -221,7 +221,7 @@ void MainMenu::drawView() {
     }
     drawClouds(false, true);
     glDisable(GL_STENCIL_TEST);
-  }
+  //}
       
   // draw the blended water
   glEnable(GL_BLEND);  
@@ -236,9 +236,9 @@ void MainMenu::drawView() {
   drawStars();
 
   glDisable(GL_DEPTH_TEST);
-  if( !partyEditor->isVisible() ) {
+  //if( !partyEditor->isVisible() ) {
     drawClouds(true, false);
-  }
+  //}
   
   
 
@@ -285,8 +285,6 @@ void MainMenu::drawView() {
 //}
 
 //void MainMenu::drawAfter() {
-
-  if( partyEditor->isVisible() ) partyEditor->drawAfter();
 
   // draw the boards
   if(openingTop > 0) {
@@ -364,7 +362,8 @@ void MainMenu::drawView() {
     }
   }
 
-  if( !partyEditor->isVisible() && openingTop <= top ) {
+  //if( !partyEditor->isVisible() && openingTop <= top ) {
+	if( openingTop <= top ) {
     drawLogo();
   }
 }
@@ -373,9 +372,8 @@ void MainMenu::drawAfter() {
 }
 
 void MainMenu::show() { 
-  //mainWin->setVisible(true); 
+//  mainWin->setVisible(true); 
   logoRot = -scourge->getShapePalette()->logo->h;
-  partyEditor->reset();
 }
 
 void MainMenu::hide() { 
@@ -1001,7 +999,6 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
   }
 
   if( widget == partyEditor->getCancelButton() ) {
-    partyEditor->reset();
     partyEditor->setVisible( false );
     //mainWin->setVisible( true );
     return false;
