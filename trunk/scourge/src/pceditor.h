@@ -82,6 +82,7 @@ public:
 
 protected:
   void saveUI();
+	void deleteLoadedShapes();
 };
 
 #endif

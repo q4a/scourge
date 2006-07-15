@@ -209,23 +209,36 @@ PcEditor::PcEditor( Scourge *scourge ) {
                                       "    >>", IMAGE_TAB );
   // model
   int modelStart = secondColStart + imageWidth + 5;
-  int modelWidth = w - 10 - modelStart;
-  model = new Canvas( modelStart, 50, w - 10, 50 + MODEL_SIZE, this );
+  //int modelWidth = w - 10 - modelStart;
+	int modelWidth = PORTRAIT_SIZE;
+  model = new Canvas( modelStart, 50, modelStart + modelWidth, 50 + MODEL_SIZE, this );
   cards->addWidget( model, IMAGE_TAB );
   modelIndex = (int)( (float)( scourge->getShapePalette()->getCharacterModelInfoCount() ) * rand()/RAND_MAX );
   prevModel = cards->createButton( modelStart, 50 + MODEL_SIZE + 10,
-                                   w - 10 - modelWidth / 2 - 5, 50 + MODEL_SIZE + 10 + buttonHeight, 
+                                   modelStart + modelWidth / 2 - 5, 50 + MODEL_SIZE + 10 + buttonHeight, 
                                    "<<", IMAGE_TAB );
-  nextModel = cards->createButton( w - 10 - modelWidth / 2, 50 + MODEL_SIZE + 10,
-                                   w - 10, 50 + MODEL_SIZE + 10 + buttonHeight,
-                                   "    >>", n );
+  nextModel = cards->createButton( modelStart + modelWidth / 2 + 5, 50 + MODEL_SIZE + 10,
+                                   modelStart + modelWidth, 50 + MODEL_SIZE + 10 + buttonHeight,
+                                   "    >>", IMAGE_TAB );
 }
 
 PcEditor::~PcEditor() {
 	delete win;
+	deleteLoadedShapes();
+}
+
+void PcEditor::deleteLoadedShapes() {
+  for( map<CharacterModelInfo*, GLShape*>::iterator i=shapesMap.begin(); i!=shapesMap.end(); ++i ) {
+    CharacterModelInfo *cmi = i->first;
+    GLShape *shape = i->second;  
+    scourge->getShapePalette()->decrementSkinRefCount( cmi->model_name, cmi->skin_name );
+    delete shape;
+  }
+  shapesMap.clear();
 }
 
 void PcEditor::setCreature( Creature *creature ) {
+	deleteLoadedShapes();
 	this->creature = creature;
 	cards->setActiveCard( NAME_TAB );
 	nameButton->setSelected( true );
