@@ -92,6 +92,7 @@ class MagicSchool;
 class ScourgeView;
 class ScourgeHandler;
 class ConfirmDialog;
+class PcEditor;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -213,6 +214,8 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 
 	ConfirmDialog *hireHeroDialog;
 	ConfirmDialog *dismissHeroDialog;
+
+  PcEditor *pcEditor;
 
 protected:
   bool getItem(Location *pos);
@@ -688,6 +691,7 @@ public:
 
 	ConfirmDialog *getHireHeroDialog() { return hireHeroDialog; }
 	ConfirmDialog *getDismissHeroDialog() { return dismissHeroDialog; }
+  PcEditor *getPcEditor() { return pcEditor; }
 
 	void handleWanderingHeroClick( Creature *creature );
 	void handleDismiss( int index );

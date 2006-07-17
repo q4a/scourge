@@ -67,6 +67,7 @@ Preset presets[] = {
 PartyEditor::PartyEditor(Scourge *scourge) {
   this->scourge = scourge;
 	pcEditor = new PcEditor( scourge );
+  pcEditor->setCreature(); // use a temp. creature
 }
 
 PartyEditor::~PartyEditor() {

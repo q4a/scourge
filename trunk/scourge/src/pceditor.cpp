@@ -45,18 +45,43 @@ std::map<CharacterModelInfo*, GLShape*> shapesMap;
 
 PcEditor::PcEditor( Scourge *scourge ) {
 	this->scourge = scourge;
-	creature = NULL;
+	this->creature = NULL;
+  this->deleteCreature = false;
 
 	availableSkillMod = AVAILABLE_SKILL_POINTS;
 
 	createUI();
 
 	deleteLoadedShapes();
+}
 
-	// create a tmp creature to use for the ui	
-	creature = createPartyMember();
+PcEditor::~PcEditor() {
+	delete win;
+	if( deleteCreature ) delete creature;
+  for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
+		free( charTypeStr[i] );
+	}
+	free( charTypeStr );
+  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+		free( deityTypeStr[i] );
+	}
+	free( deityTypeStr );
+	deleteLoadedShapes();
+}
 
-	availableSkillMod = AVAILABLE_SKILL_POINTS;
+void PcEditor::setCreature( Creature *c ) {
+  if( deleteCreature ) delete creature;
+
+  if( c ) {
+    this->creature = c;
+    deleteCreature = false;
+  } else {
+    // create a tmp creature to use for the ui	
+    this->creature = createPartyMember();
+    deleteCreature = true;
+  }
+
+  availableSkillMod = AVAILABLE_SKILL_POINTS;
 
 	detailsInfo->setCreature( win, creature );
 
@@ -68,22 +93,7 @@ PcEditor::PcEditor( Scourge *scourge ) {
 	statsButton->setSelected( false );
 	deityButton->setSelected( false );
 	imageButton->setSelected( false );
-//	win->setVisible( true );
 
-}
-
-PcEditor::~PcEditor() {
-	delete win;
-	delete creature;
-  for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
-		free( charTypeStr[i] );
-	}
-	free( charTypeStr );
-  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
-		free( deityTypeStr[i] );
-	}
-	free( deityTypeStr );
-	deleteLoadedShapes();
 }
 
 void PcEditor::deleteLoadedShapes() {
@@ -372,7 +382,7 @@ void PcEditor::createUI() {
 
 	win = new Window( scourge->getSDLHandler(),
 										x, y, w, h,
-										"Character Editor", 
+										"Character Details", 
 										false, 
 										Window::BASIC_WINDOW, 
 										"default" );
@@ -401,12 +411,12 @@ void PcEditor::createUI() {
 																h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - buttonHeight, 
 																firstColWidth, 
 																h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT, 
-																"Ok" );
+																"Accept" );
 	cancelButton = win->createButton( x + firstColWidth + buttonSpace, 
 																		h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - buttonHeight, 
 																		firstColWidth + buttonSpace + firstColWidth, 
 																		h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT, 
-																		"Cancel" );
+																		"Dismiss" );
 
 	cards = new CardContainer( win );  
 
