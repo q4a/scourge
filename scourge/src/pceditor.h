@@ -58,6 +58,7 @@ private:
   Button *prevPortrait, *nextPortrait;
   Canvas *model;
   Button *prevModel, *nextModel;
+  Button *reroll;
 	char **charTypeStr;
   char **deityTypeStr;
   int portraitIndex;
