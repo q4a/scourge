@@ -54,7 +54,7 @@ PcEditor::PcEditor( Scourge *scourge ) {
 	deleteLoadedShapes();
 
 	// create a tmp creature to use for the ui	
-	createPartyMember();
+	creature = createPartyMember();
 
 	availableSkillMod = AVAILABLE_SKILL_POINTS;
 
@@ -211,28 +211,36 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 }
 
 Creature *PcEditor::createPartyMember() {
+	Creature *c = new Creature( scourge->getSession(), 
+                              Character::rootCharacters[ charType->getSelectedLine() ], 
+                              strdup( nameField->getText() ), 
+                              modelIndex );
+	c->setLevel( STARTING_PARTY_LEVEL ); 
+	c->setExp(0);
+	c->setHp();
+	c->setMp();
+	c->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
+	c->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
 
-	Creature *old = creature;
+  // stats
+  if( creature ) {
+    // copy skills from prototype creature
+    for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+      c->setSkill( i, creature->getSkill( i, true ) );
+      c->setSkillMod( i, 0 );
+    }
+  } else {
+    // roll the skills
+    rollSkillsForCreature( c );
+  }
 
-	creature = new Creature( scourge->getSession(), 
-													 Character::rootCharacters[ charType->getSelectedLine() ], 
-													 strdup( nameField->getText() ), 
-													 modelIndex );
-	creature->setLevel( STARTING_PARTY_LEVEL ); 
-	creature->setExp(0);
-	creature->setHp();
-	creature->setMp();
-	creature->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
-	creature->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
+	// deity
+	c->setDeityIndex( deityType->getSelectedLine() );
+	
+	// assign portraits
+	c->setPortraitTextureIndex( portraitIndex );
 
-	rollSkills();
-	saveUI();
-
-	Creature *made = creature;
-
-	if( old ) creature = old;
-
-	return made;
+	return c;
 }
 
 void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
@@ -309,6 +317,31 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		setCharType( charType->getSelectedLine() );
 	} else if( widget == deityType ) {
 		setDeityType( deityType->getSelectedLine() );
+  } else if( widget == reroll ) {
+    rollSkills();
+  } else {
+    int n = 0;
+    for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+      Skill *sk = Skill::skills[i];
+      if( sk->getGroup()->isStat() ) {
+        if( widget == skillMinus[n] ) {
+          if( creature->getSkillMod( n ) > 0 && 
+              availableSkillMod < AVAILABLE_SKILL_POINTS ) {
+            creature->setSkillMod( n, creature->getSkillMod( n ) - 1 );
+            availableSkillMod++;
+          }
+          loadUI();
+        } else if( widget == skillPlus[n] ) {
+          if( creature->getSkill( n, true ) < 20 && 
+              availableSkillMod > 0 ) {
+            creature->setSkillMod( n, creature->getSkillMod( n ) + 1 );
+            availableSkillMod--;
+          }
+          loadUI();
+        }
+        n++;
+      }
+    }
   }
 }
 
@@ -383,6 +416,9 @@ void PcEditor::createUI() {
 	Label *p = cards->createLabel( secondColStart, 30, "Name:", NAME_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 	nameField = new TextField( secondColStart, 50, 32 );
+  char *s = Rpg::createName();
+  nameField->setText( s );
+  free( s );
 	cards->addWidget( nameField, NAME_TAB );
 	cards->addWidget( new ScrollingLabel( secondColStart, 80, 
 																				secondColWidth, 50, 
@@ -444,6 +480,7 @@ void PcEditor::createUI() {
 	}
 	cards->createLabel( secondColStart + 180 + 25 + 15, 60, "Points Remaining:", STAT_TAB );
 	remainingLabel = cards->createLabel( secondColStart + 180 + 25 + 15, 80, "0", STAT_TAB );
+  reroll = cards->createButton( secondColStart + 180 + 25 + 15, 100, w - 10, 120, "Reroll", STAT_TAB );
 
 	int detailsHeight = 145;
   detailsInfo = new CharacterInfoUI( scourge );
