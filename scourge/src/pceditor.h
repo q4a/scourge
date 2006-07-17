@@ -41,6 +41,7 @@ private:
 	Window *win;
 	Scourge *scourge;
 	Creature *creature;
+  bool deleteCreature;
 	CardContainer *cards;
 	Button *nameButton, *profButton, *statsButton, *deityButton;
 	Button *imageButton, *okButton, *cancelButton;
@@ -90,6 +91,9 @@ public:
 	void rollSkills();
 	void rollSkillsForCreature( Creature *c );
 	Creature *createPartyMember();
+
+  void setCreature( Creature *creature=NULL );
+  inline Creature *getCreature() { return creature; }
 
 protected:  
 	void deleteLoadedShapes();

@@ -43,6 +43,7 @@
 #include "scourgeview.h"
 #include "scourgehandler.h"
 #include "gui/confirmdialog.h"
+#include "pceditor.h"
 
 using namespace std;
 
@@ -232,6 +233,7 @@ Scourge::~Scourge(){
   delete healDialog;
   delete donateDialog;
   delete trainDialog;
+  delete pcEditor;
   delete view;
   delete handler;
 }
@@ -589,6 +591,7 @@ void Scourge::startMission() {
     healDialog->getWindow()->setVisible( false );
     donateDialog->getWindow()->setVisible( false );
     trainDialog->getWindow()->setVisible( false );
+    pcEditor->getWindow()->setVisible( false );
 
     resetBattles();
 
@@ -1225,6 +1228,7 @@ void Scourge::createUI() {
   healDialog = new HealDialog( this );
   donateDialog = new DonateDialog( this );
   trainDialog = new TrainDialog( this );
+  pcEditor = new PcEditor( this );
 
   int width =
     getSDLHandler()->getScreen()->w -
@@ -2870,6 +2874,11 @@ void Scourge::handleWanderingHeroClick( Creature *creature ) {
 	if( getSession()->getParty()->getPartySize() == MAX_PARTY_SIZE ) {
 		showMessageDialog( "You cannot hire more party members." );
 	} else {
+
+    pcEditor->setCreature( creature );
+    pcEditor->getWindow()->setVisible( true );
+
+    /*
 		char msg[300];
 		sprintf( msg, "Would you like %s the %s to join your party?", 
 						 creature->getName(),
@@ -2877,6 +2886,7 @@ void Scourge::handleWanderingHeroClick( Creature *creature ) {
 		hireHeroDialog->setText( msg );
 		hireHeroDialog->setObject( creature );
 		hireHeroDialog->setVisible( true );
+    */
 	}
 }
 

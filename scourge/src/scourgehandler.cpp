@@ -34,6 +34,7 @@
 #include "shapepalette.h"
 #include "debug.h"
 #include "gui/confirmdialog.h"
+#include "pceditor.h"
 
 
 #define DRAG_START_TOLERANCE 5
@@ -325,6 +326,10 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getTrainDialog()->handleEvent( widget, event );
   }
 
+  if( scourge->getPcEditor()->getWindow()->isVisible() ) {
+    scourge->getPcEditor()->handleEvent( widget,event );
+  }
+
   // FIXME: this is hacky...
   if( handlePartyEvent( widget, event ) ) return true;
   int n = handleBoardEvent( widget, event );
@@ -358,7 +363,13 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 		scourge->getSession()->getParty()->
 			dismiss( scourge->getDismissHeroDialog()->getMode() );
 		scourge->getDismissHeroDialog()->setVisible( false );
-	}
+	} else if( widget == scourge->getPcEditor()->getOkButton() ) {
+    scourge->getSession()->getParty()->
+      hire( scourge->getPcEditor()->getCreature() );
+		scourge->getPcEditor()->getWindow()->setVisible( false );
+  } else if( widget == scourge->getPcEditor()->getCancelButton() ) {
+		scourge->getPcEditor()->getWindow()->setVisible( false );
+  }
 
   return false;
 }
