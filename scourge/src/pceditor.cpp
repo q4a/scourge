@@ -374,11 +374,13 @@ void PcEditor::setDeityType( int deityIndex ) {
   }
 }
 
-void PcEditor::createUI() {
-	int x = 50;
-	int y = 30;
+#define TEXT_WIDTH 55
+
+void PcEditor::createUI() {	
 	int w = 500;
 	int h = 420;
+	int x = scourge->getScreenWidth() / 2 - ( w / 2 );
+	int y = scourge->getScreenHeight() / 2 - ( h / 2 );
 
 	win = new Window( scourge->getSDLHandler(),
 										x, y, w, h,
@@ -430,9 +432,9 @@ void PcEditor::createUI() {
   nameField->setText( s );
   free( s );
 	cards->addWidget( nameField, NAME_TAB );
-	cards->addWidget( new ScrollingLabel( secondColStart, 80, 
-																				secondColWidth, 50, 
-																				"Enter a name for this character." ), 
+	cards->addWidget( new Label( secondColStart, 90, 
+															 "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again.",
+															 TEXT_WIDTH ), 
 										NAME_TAB );
 
 
@@ -441,8 +443,16 @@ void PcEditor::createUI() {
 	p = cards->createLabel( secondColStart, 30, "Profession:", CLASS_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
+	cards->addWidget( new Label( secondColStart, 50, 
+															 "Which starting profession most closely resembles your hero? \
+Your character will evolve into a more powerful and refined practicer \
+of the chosen art. Below is a brief description of the strengths and \
+weaknesses of each profession.",
+															 TEXT_WIDTH ), 
+										CLASS_TAB );
 
-  charType = new ScrollingList( secondColStart, 50, 
+
+  charType = new ScrollingList( secondColStart, 130, 
 																secondColWidth, 80, 
 																scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( charType, CLASS_TAB );
@@ -454,8 +464,8 @@ void PcEditor::createUI() {
   charType->setLines( (int)Character::rootCharacters.size(), (const char**)charTypeStr );
   int charIndex = (int)( (float)( Character::rootCharacters.size() ) * rand()/RAND_MAX );
   charType->setSelectedLine( charIndex );
-  charTypeDescription = new ScrollingLabel( secondColStart, 140, 
-																						secondColWidth, 150, 
+  charTypeDescription = new ScrollingLabel( secondColStart, 230, 
+																						secondColWidth, 130, 
 																						Character::rootCharacters[charIndex]->getDescription() );
 	cards->addWidget( charTypeDescription, CLASS_TAB );
 
@@ -506,8 +516,15 @@ void PcEditor::createUI() {
 	p = cards->createLabel( secondColStart, 30, "Patron Deity:", DEITY_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
+	cards->addWidget( new Label( secondColStart, 50, 
+															 "At times on your journey you may be reduced to nothing but a prayer. \
+Therefore it is important to keep in mind to whom such requests are directed. Given below is a list \
+of known deities of the land with a brief description for each.",
+															 TEXT_WIDTH ), 
+										DEITY_TAB );
+
   int deityHeight = 100;
-  deityType = new ScrollingList( secondColStart, 50, 
+  deityType = new ScrollingList( secondColStart, 130, 
                                  secondColWidth, deityHeight, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( deityType, DEITY_TAB );
@@ -520,8 +537,8 @@ void PcEditor::createUI() {
   int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
   deityType->setSelectedLine( deityIndex );
 
-  deityTypeDescription = new ScrollingLabel( secondColStart, 50 + 10 + deityHeight, 
-                                             secondColWidth, 170, 
+  deityTypeDescription = new ScrollingLabel( secondColStart, 130 + 10 + deityHeight, 
+                                             secondColWidth, 120, 
                                              MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
   cards->addWidget( deityTypeDescription, DEITY_TAB );
 
@@ -531,30 +548,39 @@ void PcEditor::createUI() {
 	p = cards->createLabel( secondColStart, 30, "Appearance:", IMAGE_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
+	cards->addWidget( new Label( secondColStart, 50, 
+															 "You may now choose a portrait and a character model \
+to represent your hero. Your appearance is only a matter of personal choice, it will \
+not affect the game in any way.",
+															 TEXT_WIDTH ), 
+										IMAGE_TAB );
+
   // portrait
+	int yy = 110;
   int imageWidth = PORTRAIT_SIZE;
-  portrait = new Canvas( secondColStart, 50, 
-                         secondColStart + imageWidth, 50 + PORTRAIT_SIZE, this );
+  portrait = new Canvas( secondColStart, yy, 
+                         secondColStart + imageWidth, yy + PORTRAIT_SIZE, this );
   cards->addWidget( portrait, IMAGE_TAB );
   portraitIndex = (int)( (float)( scourge->getShapePalette()->getPortraitCount() ) * rand()/RAND_MAX );
-  prevPortrait = cards->createButton( secondColStart, 50 + PORTRAIT_SIZE + 10,
-                                      secondColStart + imageWidth / 2 - 5, 50 + PORTRAIT_SIZE + 10 + buttonHeight, 
+  prevPortrait = cards->createButton( secondColStart, yy + PORTRAIT_SIZE + 10,
+                                      secondColStart + imageWidth / 2 - 5, yy + PORTRAIT_SIZE + 10 + buttonHeight, 
                                       "<<", IMAGE_TAB );
-  nextPortrait = cards->createButton( secondColStart + imageWidth / 2 + 5, 50 + PORTRAIT_SIZE + 10,
-                                      secondColStart + imageWidth, 50 + PORTRAIT_SIZE + 10 + buttonHeight, 
+  nextPortrait = cards->createButton( secondColStart + imageWidth / 2 + 5, yy + PORTRAIT_SIZE + 10,
+                                      secondColStart + imageWidth, yy + PORTRAIT_SIZE + 10 + buttonHeight, 
                                       "    >>", IMAGE_TAB );
   // model
-  int modelStart = secondColStart + imageWidth + 5;
+  int modelStart = secondColStart + imageWidth + 25;
   //int modelWidth = w - 10 - modelStart;
 	int modelWidth = PORTRAIT_SIZE;
-  model = new Canvas( modelStart, 50, modelStart + modelWidth, 50 + MODEL_SIZE, this );
+  model = new Canvas( modelStart, yy, 
+											modelStart + modelWidth, yy + MODEL_SIZE, this );
   cards->addWidget( model, IMAGE_TAB );
   modelIndex = (int)( (float)( scourge->getShapePalette()->getCharacterModelInfoCount() ) * rand()/RAND_MAX );
-  prevModel = cards->createButton( modelStart, 50 + MODEL_SIZE + 10,
-                                   modelStart + modelWidth / 2 - 5, 50 + MODEL_SIZE + 10 + buttonHeight, 
+  prevModel = cards->createButton( modelStart, yy + MODEL_SIZE + 10,
+                                   modelStart + modelWidth / 2 - 5, yy + MODEL_SIZE + 10 + buttonHeight, 
                                    "<<", IMAGE_TAB );
-  nextModel = cards->createButton( modelStart + modelWidth / 2 + 5, 50 + MODEL_SIZE + 10,
-                                   modelStart + modelWidth, 50 + MODEL_SIZE + 10 + buttonHeight,
+  nextModel = cards->createButton( modelStart + modelWidth / 2 + 5, yy + MODEL_SIZE + 10,
+                                   modelStart + modelWidth, yy + MODEL_SIZE + 10 + buttonHeight,
                                    "    >>", IMAGE_TAB );
 }
 
@@ -603,6 +629,16 @@ void PcEditor::drawWidgetContents( Widget *w ) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
     glClearDepth( 1.0f );
+		glBegin( GL_QUADS );
+		glColor3f( 0, 0.1f, 0.25f );
+		glVertex2f( 0, 0 );
+		glColor3f( 0, 0, 0 );
+		glVertex2f( 0, model->getHeight() );
+		glColor3f( 0, 0.1f, 0.25f );
+		glVertex2f( model->getWidth(), model->getHeight() );
+		glColor3f( 0, 0, 0 );
+		glVertex2f( model->getWidth(), 0 );
+		glEnd();
     glEnable(GL_DEPTH_TEST);
     glDisable( GL_BLEND );
     glDepthMask(GL_TRUE);
