@@ -189,6 +189,11 @@ class Window : public Widget {
 protected:
   void commonInit(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type);
 	void drawBorder( int topY, int openHeight );
+	void drawLineBorder( int topY, int openHeight );
+	void drawTitle( int topY, int openHeight );
+	void drawCloseButton( int topY, int openHeight );
+	void drawDropShadow( int topY, int openHeight );
+	void drawBackground( int topY, int openHeight );
 };
 
 #endif
