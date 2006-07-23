@@ -463,40 +463,6 @@ void Window::drawWidget(Widget *parent) {
 
   glTranslated(x, y, z);
   
-  /*
-  if(type == BASIC_WINDOW) {
-    if( theme->getWindowTop() && theme->getWindowTop()->texture ) 
-      glBindTexture( GL_TEXTURE_2D, theme->getWindowTop()->texture );
-
-    glBegin (GL_QUADS);
-    glTexCoord2f (0.0f, 0.0f);
-    glVertex2i (0, topY);
-    //glTexCoord2f (0.0f, TOP_HEIGHT/(float)tileHeight);
-    glTexCoord2f (0.0f, 1);
-    glVertex2i (0, topY + TOP_HEIGHT);
-    //glTexCoord2f (w/(float)tileWidth, TOP_HEIGHT/(float)tileHeight);
-    glTexCoord2f (1, 1);
-    glVertex2i (w, topY + TOP_HEIGHT);
-    //glTexCoord2f (w/(float)tileWidth, 0.0f);      
-    glTexCoord2f (1, 0.0f);      
-    glVertex2i (w, topY);
-    glEnd ();
-
-    glBegin (GL_QUADS);
-    glTexCoord2f (0.0f, 0.0f);
-    glVertex2i (0, topY + TOP_HEIGHT + openHeight);
-    //glTexCoord2f (0.0f, BOTTOM_HEIGHT/(float)tileHeight);
-    glTexCoord2f (0.0f, 1);
-    glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    //glTexCoord2f (w/(float)tileWidth, BOTTOM_HEIGHT/(float)tileHeight);
-    glTexCoord2f (1, 1);
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    //glTexCoord2f (w/(float)tileWidth, 0.0f);      
-    glTexCoord2f (1, 0.0f);      
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight);
-    glEnd ();
-  } 
-  */
   // HACK: blend window if top color's a < 1.0f
   if(!isModal()) {
     if( theme->getWindowTop() && 
@@ -506,81 +472,15 @@ void Window::drawWidget(Widget *parent) {
     }
   } 
 
-  if(type == SIMPLE_WINDOW) {
-    if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
-      glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
-    }
-    glBegin (GL_QUADS);
-    glTexCoord2f (0.0f, 0.0f);
-    glVertex2i (0, topY);
-    glTexCoord2f (0, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
-    glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glTexCoord2f (1, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glTexCoord2f (1, 0);      
-    glVertex2i (w, topY);
-    glEnd ();
-  }
-
-  if(type == BASIC_WINDOW) {
-    /*
-    if(!isModal()) {
-      glEnable( GL_BLEND );
-      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    }
-    */
-    if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
-      glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
-    } else {
-      glDisable( GL_TEXTURE_2D );
-    }
-
-    //applyBackgroundColor();
-    if( theme->getWindowBackground() ) {
-      glColor4f( theme->getWindowBackground()->color.r,
-                 theme->getWindowBackground()->color.g,
-                 theme->getWindowBackground()->color.b,
-                 theme->getWindowBackground()->color.a );
-    }
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2i(0, topY + TOP_HEIGHT);
-    glTexCoord2f(0.0f, ( openHeight )/(float)tileHeight);
-    glVertex2i(0, topY + TOP_HEIGHT + openHeight);
-    //glTexCoord2f( w/(float)tileWidth, ( openHeight ) /(float)tileHeight );
-    glTexCoord2f( 1, ( openHeight ) /(float)tileHeight);
-    glVertex2i(w, topY + TOP_HEIGHT + openHeight);
-    glTexCoord2f( 1, 0.0f);      
-    //glTexCoord2d( w/(float)tileWidth, 0 );
-    glVertex2i(w, topY + TOP_HEIGHT);
-    glEnd();
-  }
+	drawBackground( topY, openHeight );
 
   glDisable( GL_BLEND );
   glDisable( GL_TEXTURE_2D );
 
   // draw drop-shadow
-  if(!isLocked()) {
-    glEnable( GL_BLEND );
-    //  glBlendFunc( GL_SRC_ALPHA, GL_DST_COLOR );
-    glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
-    int n = 10;
-    glColor4f( 0.15f, 0.15f, 0.15f, 0.25f );
-    glBegin(GL_QUADS);
-    glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
-    glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
-    glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    
-    glVertex2i (w, topY + n);
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glVertex2i (w + n, topY + n);
-    glEnd();
-    glDisable( GL_BLEND );
-  }
+  if(!isLocked()) drawDropShadow( topY, openHeight );
 
+	// top bar
 	if( title || ( closeButton && !isLocked() ) ) {		
 		glColor4f( 0, 0, 0, 0.5f );
 		glEnable( GL_BLEND );
@@ -598,108 +498,14 @@ void Window::drawWidget(Widget *parent) {
 			theme->getWindowBorderTexture() ) {
     drawBorder( topY, openHeight );
 	} else {
-
-    // add a border
-    if(currentWin == this) {
-      if( theme->getSelectedBorder() ) {
-        glColor4f( theme->getSelectedBorder()->color.r,
-                   theme->getSelectedBorder()->color.g,
-                   theme->getSelectedBorder()->color.b,
-                   theme->getSelectedBorder()->color.a );
-      } else {
-        applyHighlightedBorderColor();
-      }
-    } else {
-  //  } else if(isLocked()) {
-  //    glColor3f(0.5f, 0.3f, 0.2f);
-  //  } else 
-      if( theme->getWindowBorder() ) {
-      glColor4f( theme->getWindowBorder()->color.r, 
-                 theme->getWindowBorder()->color.g,
-                 theme->getWindowBorder()->color.b,
-                 theme->getWindowBorder()->color.a );
-      } else {
-        applyBorderColor();
-      }
-    }
-    
-    if( this == currentWin || isLocked() || isModal() ) {
-      glLineWidth( 3.0f );
-    } else if( theme->getWindowBorder() ) {
-      glLineWidth( theme->getWindowBorder()->width );
-    } else {
-      glLineWidth( 2.0f );
-    }
-    glBegin(GL_LINES);
-    glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glVertex2d(0, topY);
-    glVertex2d(w, topY);
-    glVertex2d(0, topY);
-    glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glVertex2d(w, topY);
-    glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glEnd();
-    glLineWidth( 1.0f );
-
+		drawLineBorder( topY, openHeight );
   }
-
-  /*
-  if(type == BASIC_WINDOW) {
-    glBegin(GL_LINES);
-    glVertex2i (0, topY + TOP_HEIGHT);
-    glVertex2i (w, topY + TOP_HEIGHT);
-    glVertex2i (0, topY + TOP_HEIGHT + openHeight);
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight);
-    glEnd();
-  }
-  */
 
   // print title
-  if(title) {
-    glPushMatrix();
-    glTranslated( 0, 0, 5 );
-	if( theme->getWindowTitleText() ) {
-	  glColor4f( theme->getWindowTitleText()->r, 
-				 theme->getWindowTitleText()->g,
-				 theme->getWindowTitleText()->b,
-				 theme->getWindowTitleText()->a );
-	} else {
-	  glColor3f( 1, 1, 1 );
-	}
-    scourgeGui->setFontType( Constants::SCOURGE_UI_FONT );
-#ifdef DEBUG_WINDOWS
-    scourgeGui->texPrint(8, topY + TITLE_HEIGHT - 5, "%s (%d)", title, getZ());
-#else
-    scourgeGui->texPrint(8, topY + TITLE_HEIGHT - 5, "%s", title);
-#endif
-    scourgeGui->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-    glPopMatrix();
-  }
+  if(title) drawTitle( topY, openHeight );
 
   // draw the close button
-  if(closeButton && !isLocked()) {
-
-    // apply the window's color scheme
-	/*
-    closeButton->setColor( getColor() );
-    closeButton->setBackground( getBackgroundColor() );
-    closeButton->setSelectionColor( getSelectionColor() );
-    closeButton->setBorderColor( getBorderColor() );
-	*/
-
-    if( theme->getButtonText() ) closeButton->setColor( theme->getButtonText() );
-    if( theme->getButtonBackground() ) closeButton->setBackground( &(theme->getButtonBackground()->color) );
-    if( theme->getButtonHighlight() ) closeButton->setSelectionColor( &(theme->getButtonHighlight()->color) );
-    if( theme->getButtonBorder() ) closeButton->setBorderColor( &(theme->getButtonBorder()->color) );
-
-
-    glPushMatrix(); 
-    //glLoadIdentity();
-    glTranslated( w - ( closeButton->getWidth() + gutter ), topY + 3, z + 5 );
-    closeButton->draw(this);
-    glPopMatrix();
-  }
+  if(closeButton && !isLocked()) drawCloseButton( topY, openHeight );
 
   glDisable( GL_SCISSOR_TEST );
 
@@ -737,6 +543,165 @@ void Window::drawWidget(Widget *parent) {
   glPopMatrix();
 
   //glEnable( GL_DEPTH_TEST );
+}
+
+void Window::drawBackground( int topY, int openHeight ) {
+  if(type == SIMPLE_WINDOW) {
+    if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
+      glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
+    }
+    glBegin (GL_QUADS);
+    glTexCoord2f (0.0f, 0.0f);
+    glVertex2i (0, topY);
+    glTexCoord2f (0, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
+    glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glTexCoord2f (1, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
+    glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glTexCoord2f (1, 0);      
+    glVertex2i (w, topY);
+    glEnd ();
+  } else if(type == BASIC_WINDOW) {
+    /*
+    if(!isModal()) {
+      glEnable( GL_BLEND );
+      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    }
+    */
+    if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
+      glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
+    } else {
+      glDisable( GL_TEXTURE_2D );
+    }
+
+    //applyBackgroundColor();
+    if( theme->getWindowBackground() ) {
+      glColor4f( theme->getWindowBackground()->color.r,
+                 theme->getWindowBackground()->color.g,
+                 theme->getWindowBackground()->color.b,
+                 theme->getWindowBackground()->color.a );
+    }
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2i(0, topY + TOP_HEIGHT);
+    glTexCoord2f(0.0f, ( openHeight )/(float)tileHeight);
+    glVertex2i(0, topY + TOP_HEIGHT + openHeight);
+    //glTexCoord2f( w/(float)tileWidth, ( openHeight ) /(float)tileHeight );
+    glTexCoord2f( 1, ( openHeight ) /(float)tileHeight);
+    glVertex2i(w, topY + TOP_HEIGHT + openHeight);
+    glTexCoord2f( 1, 0.0f);      
+    //glTexCoord2d( w/(float)tileWidth, 0 );
+    glVertex2i(w, topY + TOP_HEIGHT);
+    glEnd();
+  }
+}
+
+void Window::drawDropShadow( int topY, int openHeight ) {
+	glEnable( GL_BLEND );
+	//  glBlendFunc( GL_SRC_ALPHA, GL_DST_COLOR );
+	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+	int n = 10;
+	glColor4f( 0.15f, 0.15f, 0.15f, 0.25f );
+	glBegin(GL_QUADS);
+	glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
+	glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
+	glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	
+	glVertex2i (w, topY + n);
+	glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2i (w + n, topY + n);
+	glEnd();
+	glDisable( GL_BLEND );
+}
+
+void Window::drawCloseButton( int topY, int openHeight ) {
+	// apply the window's color scheme
+	/*
+    closeButton->setColor( getColor() );
+    closeButton->setBackground( getBackgroundColor() );
+    closeButton->setSelectionColor( getSelectionColor() );
+    closeButton->setBorderColor( getBorderColor() );
+	*/
+
+	if( theme->getButtonText() ) closeButton->setColor( theme->getButtonText() );
+	if( theme->getButtonBackground() ) closeButton->setBackground( &(theme->getButtonBackground()->color) );
+	if( theme->getButtonHighlight() ) closeButton->setSelectionColor( &(theme->getButtonHighlight()->color) );
+	if( theme->getButtonBorder() ) closeButton->setBorderColor( &(theme->getButtonBorder()->color) );
+	
+	
+	glPushMatrix(); 
+	//glLoadIdentity();
+	glTranslated( w - ( closeButton->getWidth() + gutter ), topY + 3, z + 5 );
+	closeButton->draw(this);
+	glPopMatrix();
+}
+
+void Window::drawTitle( int topY, int openHeight ) {
+	glPushMatrix();
+	glTranslated( 0, 0, 5 );
+	if( theme->getWindowTitleText() ) {
+		glColor4f( theme->getWindowTitleText()->r, 
+							 theme->getWindowTitleText()->g,
+							 theme->getWindowTitleText()->b,
+							 theme->getWindowTitleText()->a );
+	} else {
+		glColor3f( 1, 1, 1 );
+	}
+	scourgeGui->setFontType( Constants::SCOURGE_UI_FONT );
+#ifdef DEBUG_WINDOWS																
+	scourgeGui->texPrint(8, topY + TITLE_HEIGHT - 5, "%s (%d)", title, getZ());
+#else																									
+	scourgeGui->texPrint(8, topY + TITLE_HEIGHT - 5, "%s", title);
+#endif																									
+	scourgeGui->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+	glPopMatrix();
+}
+
+void Window::drawLineBorder( int topY, int openHeight ) {
+	// add a border
+	if(currentWin == this) {
+		if( theme->getSelectedBorder() ) {
+			glColor4f( theme->getSelectedBorder()->color.r,
+								 theme->getSelectedBorder()->color.g,
+								 theme->getSelectedBorder()->color.b,
+								 theme->getSelectedBorder()->color.a );
+		} else {
+			applyHighlightedBorderColor();
+		}
+	} else {
+//  } else if(isLocked()) {
+//    glColor3f(0.5f, 0.3f, 0.2f);
+//  } else 
+		if( theme->getWindowBorder() ) {
+		glColor4f( theme->getWindowBorder()->color.r, 
+							 theme->getWindowBorder()->color.g,
+							 theme->getWindowBorder()->color.b,
+							 theme->getWindowBorder()->color.a );
+		} else {
+			applyBorderColor();
+		}
+	}
+
+	if( this == currentWin || isLocked() || isModal() ) {
+		glLineWidth( 3.0f );
+	} else if( theme->getWindowBorder() ) {
+		glLineWidth( theme->getWindowBorder()->width );
+	} else {
+		glLineWidth( 2.0f );
+	}
+	glBegin(GL_LINES);
+	glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2d(0, topY);
+	glVertex2d(w, topY);
+	glVertex2d(0, topY);
+	glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2d(w, topY);
+	glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glEnd();
+	glLineWidth( 1.0f );
 }
 
 void Window::drawBorder( int topY, int openHeight ) {
