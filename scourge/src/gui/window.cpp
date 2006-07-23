@@ -38,6 +38,8 @@ Widget *Window::mouseLockWidget = NULL;
 
 #define CLOSE_BUTTON_SIZE 10
 
+#define TITLE_HEIGHT 21
+
 Window *Window::message_dialog = NULL;
 Label *Window::message_label = NULL;
 Button *Window::message_button = NULL;
@@ -83,11 +85,20 @@ void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, cha
   openHeight = 0;
   this->type = type;
   this->locked = false;
-  setBackgroundTileWidth(TILE_W);
-  setBackgroundTileHeight(TILE_H);
+
+  // FIXME: should come from gui.txt
+  if( type == SIMPLE_WINDOW ) {
+    setBackgroundTileWidth(TILE_W);
+    setBackgroundTileHeight(TILE_H);
+  } else {
+    setBackgroundTileWidth(256);
+    setBackgroundTileHeight(256);
+  }
+
   // make windows stay on screen
   this->move(x, y);
   currentY = y;
+	gutter = 16 + ( theme->getWindowBorderTexture() ? theme->getWindowBorderTexture()->width : 0 );
   addWindow(this);
 }
 
@@ -397,8 +408,8 @@ void Window::removeWidget(Widget *widget) {
   }
 }
 
-#define TOP_HEIGHT 20
-#define BOTTOM_HEIGHT 5
+#define TOP_HEIGHT 0
+#define BOTTOM_HEIGHT 0
 
 void Window::drawWidget(Widget *parent) {
   GLint t = SDL_GetTicks();
@@ -451,10 +462,8 @@ void Window::drawWidget(Widget *parent) {
   }
 
   glTranslated(x, y, z);
+  
   /*
-  if(texture)
-    glBindTexture( GL_TEXTURE_2D, texture );
-  */
   if(type == BASIC_WINDOW) {
     if( theme->getWindowTop() && theme->getWindowTop()->texture ) 
       glBindTexture( GL_TEXTURE_2D, theme->getWindowTop()->texture );
@@ -486,8 +495,8 @@ void Window::drawWidget(Widget *parent) {
     glTexCoord2f (1, 0.0f);      
     glVertex2i (w, topY + TOP_HEIGHT + openHeight);
     glEnd ();
-
   } 
+  */
   // HACK: blend window if top color's a < 1.0f
   if(!isModal()) {
     if( theme->getWindowTop() && 
@@ -539,10 +548,11 @@ void Window::drawWidget(Widget *parent) {
     glVertex2i(0, topY + TOP_HEIGHT);
     glTexCoord2f(0.0f, ( openHeight )/(float)tileHeight);
     glVertex2i(0, topY + TOP_HEIGHT + openHeight);
-    //    glTexCoord2f (w/(float)tileWidth, ( openHeight ) /(float)tileHeight);
+    //glTexCoord2f( w/(float)tileWidth, ( openHeight ) /(float)tileHeight );
     glTexCoord2f( 1, ( openHeight ) /(float)tileHeight);
     glVertex2i(w, topY + TOP_HEIGHT + openHeight);
     glTexCoord2f( 1, 0.0f);      
+    //glTexCoord2d( w/(float)tileWidth, 0 );
     glVertex2i(w, topY + TOP_HEIGHT);
     glEnd();
   }
@@ -571,49 +581,70 @@ void Window::drawWidget(Widget *parent) {
     glDisable( GL_BLEND );
   }
 
-  // add a border
-  if(currentWin == this) {
-    if( theme->getSelectedBorder() ) {
-      glColor4f( theme->getSelectedBorder()->color.r,
-                 theme->getSelectedBorder()->color.g,
-                 theme->getSelectedBorder()->color.b,
-                 theme->getSelectedBorder()->color.a );
-    } else {
-      applyHighlightedBorderColor();
-    }
-  } else {
-//  } else if(isLocked()) {
-//    glColor3f(0.5f, 0.3f, 0.2f);
-//  } else 
-    if( theme->getWindowBorder() ) {
-    glColor4f( theme->getWindowBorder()->color.r, 
-               theme->getWindowBorder()->color.g,
-               theme->getWindowBorder()->color.b,
-               theme->getWindowBorder()->color.a );
-    } else {
-      applyBorderColor();
-    }
-  }
-  
-  if( this == currentWin || isLocked() || isModal() ) {
-    glLineWidth( 3.0f );
-  } else if( theme->getWindowBorder() ) {
-    glLineWidth( theme->getWindowBorder()->width );
-  } else {
-    glLineWidth( 2.0f );
-  }
-  glBegin(GL_LINES);
-  glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glVertex2d(0, topY);
-  glVertex2d(w, topY);
-  glVertex2d(0, topY);
-  glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glVertex2d(w, topY);
-  glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-  glEnd();
-  glLineWidth( 1.0f );
+	if( title || ( closeButton && !isLocked() ) ) {		
+		glColor4f( 0, 0, 0, 0.5f );
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glBegin( GL_QUADS );
+		glVertex2f( 0, topY );
+		glVertex2f( getWidth(), topY );
+		glVertex2f( getWidth(), topY + TITLE_HEIGHT );
+		glVertex2f( 0, topY + TITLE_HEIGHT );
+		glEnd();
+		glDisable( GL_BLEND );
+	}
 
+  if( type == BASIC_WINDOW &&
+			theme->getWindowBorderTexture() ) {
+    drawBorder( topY, openHeight );
+	} else {
+
+    // add a border
+    if(currentWin == this) {
+      if( theme->getSelectedBorder() ) {
+        glColor4f( theme->getSelectedBorder()->color.r,
+                   theme->getSelectedBorder()->color.g,
+                   theme->getSelectedBorder()->color.b,
+                   theme->getSelectedBorder()->color.a );
+      } else {
+        applyHighlightedBorderColor();
+      }
+    } else {
+  //  } else if(isLocked()) {
+  //    glColor3f(0.5f, 0.3f, 0.2f);
+  //  } else 
+      if( theme->getWindowBorder() ) {
+      glColor4f( theme->getWindowBorder()->color.r, 
+                 theme->getWindowBorder()->color.g,
+                 theme->getWindowBorder()->color.b,
+                 theme->getWindowBorder()->color.a );
+      } else {
+        applyBorderColor();
+      }
+    }
+    
+    if( this == currentWin || isLocked() || isModal() ) {
+      glLineWidth( 3.0f );
+    } else if( theme->getWindowBorder() ) {
+      glLineWidth( theme->getWindowBorder()->width );
+    } else {
+      glLineWidth( 2.0f );
+    }
+    glBegin(GL_LINES);
+    glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glVertex2d(0, topY);
+    glVertex2d(w, topY);
+    glVertex2d(0, topY);
+    glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glVertex2d(w, topY);
+    glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glEnd();
+    glLineWidth( 1.0f );
+
+  }
+
+  /*
   if(type == BASIC_WINDOW) {
     glBegin(GL_LINES);
     glVertex2i (0, topY + TOP_HEIGHT);
@@ -622,6 +653,7 @@ void Window::drawWidget(Widget *parent) {
     glVertex2i (w, topY + TOP_HEIGHT + openHeight);
     glEnd();
   }
+  */
 
   // print title
   if(title) {
@@ -637,9 +669,9 @@ void Window::drawWidget(Widget *parent) {
 	}
     scourgeGui->setFontType( Constants::SCOURGE_UI_FONT );
 #ifdef DEBUG_WINDOWS
-    scourgeGui->texPrint(10, topY + 13, "%s (%d)", title, getZ());
+    scourgeGui->texPrint(8, topY + TITLE_HEIGHT - 5, "%s (%d)", title, getZ());
 #else
-    scourgeGui->texPrint(10, topY + 13, "%s", title);
+    scourgeGui->texPrint(8, topY + TITLE_HEIGHT - 5, "%s", title);
 #endif
     scourgeGui->setFontType( Constants::SCOURGE_DEFAULT_FONT );
     glPopMatrix();
@@ -664,7 +696,7 @@ void Window::drawWidget(Widget *parent) {
 
     glPushMatrix(); 
     //glLoadIdentity();
-    glTranslated(w - (closeButton->getWidth() + 3), topY + 3, z + 5);
+    glTranslated( w - ( closeButton->getWidth() + gutter ), topY + 3, z + 5 );
     closeButton->draw(this);
     glPopMatrix();
   }
@@ -684,7 +716,8 @@ void Window::drawWidget(Widget *parent) {
 
 
       // if this is modified, also change handleWindowEvent
-      glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
+      //glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
+			glTranslated( x + gutter, y + topY + gutter, z + 5);
 
       widget[i]->draw(this);
       glPopMatrix();
@@ -704,6 +737,158 @@ void Window::drawWidget(Widget *parent) {
   glPopMatrix();
 
   //glEnable( GL_DEPTH_TEST );
+}
+
+void Window::drawBorder( int topY, int openHeight ) {
+	int n = 16; // FIXME: compute when loading textures
+	glEnable( GL_TEXTURE_2D );
+	glEnable( GL_ALPHA_TEST );
+	glAlphaFunc( GL_NOTEQUAL, 0x00 );
+
+	glColor4f( theme->getWindowBorderTexture()->color.r,
+						 theme->getWindowBorderTexture()->color.g,
+						 theme->getWindowBorderTexture()->color.b,
+						 theme->getWindowBorderTexture()->color.a );
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_nw );
+	glTranslatef( theme->getWindowBorderTexture()->width,
+								topY + theme->getWindowBorderTexture()->width,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, n );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( n, n );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
+	glEnd();
+	glPopMatrix();
+
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_ne );
+	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
+								topY + theme->getWindowBorderTexture()->width,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, n );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( n, n );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
+	glEnd();
+	glPopMatrix();
+
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_se );
+	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
+								topY + openHeight - n - theme->getWindowBorderTexture()->width,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, n );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( n, n );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
+	glEnd();
+	glPopMatrix();
+
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_sw );
+	glTranslatef( theme->getWindowBorderTexture()->width,
+								topY + openHeight - n - theme->getWindowBorderTexture()->width,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, n );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( n, n );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
+	glEnd();
+	glPopMatrix();
+
+	int h = openHeight - 2 * ( n + theme->getWindowBorderTexture()->width );
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_west );
+	glTranslatef( theme->getWindowBorderTexture()->width,
+								topY + theme->getWindowBorderTexture()->width + n,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( n, h );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
+	glEnd();
+	glPopMatrix();
+
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_east );
+	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
+								topY + theme->getWindowBorderTexture()->width + n,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( n, h );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
+	glEnd();
+	glPopMatrix();
+
+	int w = getWidth() - 2 * ( n + theme->getWindowBorderTexture()->width );
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_north );
+	glTranslatef( n + theme->getWindowBorderTexture()->width,
+								topY + theme->getWindowBorderTexture()->width,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, n );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( w, n );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( w, 0 );
+	glEnd();
+	glPopMatrix();
+
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_south );
+	glTranslatef( n + theme->getWindowBorderTexture()->width,
+								topY + openHeight - n - theme->getWindowBorderTexture()->width,
+								0 );
+	glBegin( GL_QUADS );
+	glTexCoord2f( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex2i( 0, n );
+	glTexCoord2f( 1, 1 );
+	glVertex2i( w, n );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( w, 0 );
+	glEnd();
+	glPopMatrix();
+
+	glDisable( GL_TEXTURE_2D );
+	glDisable( GL_ALPHA_TEST );
 }
 
 

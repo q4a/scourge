@@ -45,6 +45,7 @@ GuiTheme::GuiTheme( char *name ) {
   selectionBackground = NULL;
   selectedBorder = NULL;
   selectedCharacterBorder = NULL;
+  windowBorderTexture = NULL;
 }
 
 GuiTheme::~GuiTheme() {
@@ -66,6 +67,7 @@ GuiTheme::~GuiTheme() {
   if( selectionBackground ) delete selectionBackground;
   if( selectedBorder ) delete selectedBorder;
   if( selectedCharacterBorder ) delete selectedCharacterBorder;
+  if( windowBorderTexture ) delete windowBorderTexture;
 }
 
 void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
@@ -184,6 +186,11 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
       if( element ) theme->setSelectedCharacterBorder( element );
       else cerr << "Gui theme: " << name << " skipping selected character border" << endl;
 
+      n = Constants::readLine( line, fp );
+      element = parseElement( line + 1 );
+      if( element ) theme->setWindowBorderTexture( element );
+      else cerr << "Gui theme: " << name << " skipping window border texture" << endl;
+
       theme->loadTextures( scourgeGui );
 
       string s = name;
@@ -208,6 +215,7 @@ void GuiTheme::loadTextures( ScourgeGui *scourgeGui ) {
   if( buttonBorder ) buttonBorder->loadTextures( scourgeGui );
   if( listBackground ) listBackground->loadTextures( scourgeGui );
   if( inputBackground ) inputBackground->loadTextures( scourgeGui );
+  if( windowBorderTexture ) windowBorderTexture->loadTextures( scourgeGui );
 //  cerr << "Done loading gui theme: " << name << endl;
 //  cerr << "----------------------------------------" << endl;
 }
@@ -238,12 +246,32 @@ ThemeElement *GuiTheme::parseElement( char *line ) {
     if( p && strcmp(p,"none") ) {
       strcpy( element->east, p );
       strcat( element->east, ".bmp" );
-    } else strcpy( element->east, "" );
+    } else strcpy( element->east, "" );    
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->west, p );
       strcat( element->west, ".bmp" );
     } else strcpy( element->west, "" );
+    p = strtok( NULL, "," );
+    if( p && strcmp(p,"none") ) {
+      strcpy( element->nw, p );
+      strcat( element->nw, ".bmp" );
+    } else strcpy( element->nw, "" );
+    p = strtok( NULL, "," );
+    if( p && strcmp(p,"none") ) {
+      strcpy( element->ne, p );
+      strcat( element->ne, ".bmp" );
+    } else strcpy( element->ne, "" );
+        p = strtok( NULL, "," );
+    if( p && strcmp(p,"none") ) {
+      strcpy( element->sw, p );
+      strcat( element->sw, ".bmp" );
+    } else strcpy( element->sw, "" );
+    p = strtok( NULL, "," );
+    if( p && strcmp(p,"none") ) {
+      strcpy( element->se, p );
+      strcat( element->se, ".bmp" );
+    } else strcpy( element->se, "" );
     return element;
   } else {
     return NULL;
@@ -271,5 +299,9 @@ void ThemeElement::loadTextures( ScourgeGui *scourgeGui ) {
   if( strlen( south ) ) tex_south = scourgeGui->loadSystemTexture( south );
   if( strlen( east ) ) tex_east = scourgeGui->loadSystemTexture( east );
   if( strlen( west ) ) tex_west = scourgeGui->loadSystemTexture( west );
+  if( strlen( nw ) ) tex_nw = scourgeGui->loadSystemTexture( nw );
+  if( strlen( ne ) ) tex_ne = scourgeGui->loadSystemTexture( ne );
+  if( strlen( sw ) ) tex_sw = scourgeGui->loadSystemTexture( sw );
+  if( strlen( se ) ) tex_se = scourgeGui->loadSystemTexture( se );
 }
 

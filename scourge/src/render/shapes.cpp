@@ -1086,7 +1086,7 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
 
   if( headless ) return;
 
-//  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
+  //cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
 
   GLubyte *p = NULL;
   char fn[300];
@@ -1094,6 +1094,8 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
   strcpy(fn, rootDir);
   strcat(fn, filename);
   if(((*surface) = SDL_LoadBMP( fn ))) {
+
+		//cerr << "...loaded!" << endl;
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
@@ -1128,7 +1130,9 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
       //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
       p[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
     }
-  }
+  //} else {
+		//cerr << "...not found!" << endl;
+	}
 
   (*image) = p;
 }
@@ -1227,8 +1231,23 @@ GLuint Shapes::loadSystemTexture( char *line ) {
     strcpy( textures[texture_count].filename, line );
     sprintf( path, "/textures/%s", textures[texture_count].filename );
     // load the texture
+		/*
     id = textures[ texture_count ].id = loadGLTextures( path );
     texture_count++;
+		*/
+
+		SDL_Surface *tmpSurface;
+		GLubyte *tmpImage;
+		setupAlphaBlendedBMP( path, &tmpSurface, &tmpImage );
+		if( tmpSurface ) {
+			id = textures[ texture_count ].id = 
+				loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );			
+			SDL_FreeSurface( tmpSurface );
+			free( tmpImage );
+		} else {
+			id = textures[ texture_count ].id = 0;
+		}
+		texture_count++;
   }
   return id;
 }
