@@ -61,6 +61,7 @@ class Window : public Widget {
   bool locked;
   GuiTheme *theme;
   bool opening;
+	int gutter;
 
   static Window *window[];
   static int windowCount;  
@@ -96,9 +97,9 @@ class Window : public Widget {
      SIMPLE_WINDOW
    };
 
-  static const int TOP_HEIGHT = 20;
-  static const int BOTTOM_HEIGHT = 5;
-  static const int SCREEN_GUTTER = 5;
+  static const int TOP_HEIGHT = 0;
+  static const int BOTTOM_HEIGHT = 0;
+  static const int SCREEN_GUTTER = 0;
 
   Window(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title=NULL, 
          GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW, 
@@ -182,8 +183,12 @@ class Window : public Widget {
   void move(int x, int y);
 
   void setLastWidget(Widget *w);
- protected:
+
+	inline int getGutter() { return gutter; }
+
+protected:
   void commonInit(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type);
+	void drawBorder( int topY, int openHeight );
 };
 
 #endif

@@ -29,7 +29,9 @@
 class ThemeElement {
  public:
   char textureFileName[40], north[40], south[40], east[40], west[40];
+  char ne[40], nw[40], se[40], sw[40];
   GLuint texture, tex_north, tex_south, tex_east, tex_west;
+  GLuint tex_nw, tex_ne, tex_sw, tex_se;
   Color color;
   int width;
 
@@ -60,6 +62,7 @@ private:
   Color *selectionText;
   ThemeElement *selectedBorder;
   ThemeElement *selectedCharacterBorder;
+  ThemeElement *windowBorderTexture;
 
 
   static std::map<std::string, GuiTheme*> themes;
@@ -98,6 +101,7 @@ public:
   inline Color *getSelectionText() { return selectionText; }
   inline ThemeElement *getSelectedBorder() { return selectedBorder; }
   inline ThemeElement *getSelectedCharacterBorder() { return selectedCharacterBorder; }
+  inline ThemeElement *getWindowBorderTexture() { return windowBorderTexture; }
 
  protected:
   static ThemeElement *parseElement( char *line );
@@ -123,6 +127,7 @@ public:
   inline void setSelectionText( Color *color ) { this->selectionText = color; }
   inline void setSelectedBorder( ThemeElement *element ) { selectedBorder = element; }
   inline void setSelectedCharacterBorder( ThemeElement *element ) { selectedCharacterBorder = element; }
+  inline void setWindowBorderTexture( ThemeElement *element ) { windowBorderTexture = element; }
 };
 
 #endif
