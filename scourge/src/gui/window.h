@@ -97,8 +97,6 @@ class Window : public Widget {
      SIMPLE_WINDOW
    };
 
-  static const int TOP_HEIGHT = 0;
-  static const int BOTTOM_HEIGHT = 0;
   static const int SCREEN_GUTTER = 0;
 
   Window(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title=NULL, 

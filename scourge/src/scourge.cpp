@@ -2411,13 +2411,13 @@ void Scourge::createBoardUI() {
   boardWin->createLabel( BOARD_GUI_WIDTH - 250, 35, "Drag map to look around." );
   mapWidget = new MapWidget( this, boardWin, BOARD_GUI_WIDTH - 250, 40,
                              BOARD_GUI_WIDTH - 10,
-                             BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 10,
+                             BOARD_GUI_HEIGHT - 10,
                              false );
   boardWin->addWidget( mapWidget );
   //missionDescriptionLabel = new Label(5, 210, "", 67);
   missionDescriptionLabel = new ScrollingLabel( 5, 210,
                                                 BOARD_GUI_WIDTH - 260,
-                                                BOARD_GUI_HEIGHT - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 210 - 10, "" );
+                                                BOARD_GUI_HEIGHT - 210 - 10, "" );
   boardWin->addWidget(missionDescriptionLabel);
   playMission = new Button(5, 5, 125, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);

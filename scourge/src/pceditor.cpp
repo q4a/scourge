@@ -410,14 +410,14 @@ void PcEditor::createUI() {
 	imageButton = win->createButton( x, y, firstColWidth, y + buttonHeight, "Image", true );
 	y += buttonHeight + buttonSpace;
 	okButton = win->createButton( x, 
-																h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - buttonHeight, 
+																h - x - buttonHeight, 
 																firstColWidth, 
-																h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT, 
+																h - x, 
 																"Accept" );
 	cancelButton = win->createButton( x + firstColWidth + buttonSpace, 
-																		h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - buttonHeight, 
+																		h - x - buttonHeight, 
 																		firstColWidth + buttonSpace + firstColWidth, 
-																		h - x - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT, 
+																		h - x, 
 																		"Dismiss" );
 
 	cards = new CardContainer( win );  

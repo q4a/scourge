@@ -103,7 +103,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
-              (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
+              (((Window*)parent)->getY() + y + getHeight()), 
               w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
    
@@ -230,7 +230,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
 
       // Is the mouse over this word?
       int tx = ((Window*)parent)->getScourgeGui()->getMouseX() - getX() - parent->getX();
-      int ty = ((Window*)parent)->getScourgeGui()->getMouseY() - getY() - parent->getY() - Window::TOP_HEIGHT;
+      int ty = ((Window*)parent)->getScourgeGui()->getMouseY() - getY() - parent->getY();
       if( interactive &&
           wordPos[ wordPosCount ].x <= tx && 
           wordPos[ wordPosCount ].x + wordPos[ wordPosCount ].w > tx &&

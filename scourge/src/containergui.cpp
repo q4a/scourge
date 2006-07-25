@@ -40,7 +40,7 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   closeButton = new Button( 215, 5, 315, 25, scourge->getShapePalette()->getHighlightTexture(), "Close" );
   win->addWidget((Widget*)closeButton);
 
-  list = new ScrollingList( 10, 35, 300, 245 - (Window::TOP_HEIGHT + Window::BOTTOM_HEIGHT + 10), 
+  list = new ScrollingList( 10, 35, 300, 245 - 10, 
                             scourge->getShapePalette()->getHighlightTexture(), this, 30 );
   win->addWidget((Widget*)list);
   label = new Label(5, 270, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP));

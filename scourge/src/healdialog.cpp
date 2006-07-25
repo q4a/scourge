@@ -46,7 +46,7 @@ HealDialog::HealDialog( Scourge *scourge ) {
   win->addWidget( spellDescription );
 
   h = 20;
-  int y = win->getHeight() - Window::BOTTOM_HEIGHT - Window::TOP_HEIGHT - h - 10;
+  int y = win->getHeight() - h - 10;
   applyButton = win->createButton( w - 160, y, w - 90, y + h, "Buy" );
   closeButton = win->createButton( w - 80, y, w - 10, y + h, "Close" );
 
