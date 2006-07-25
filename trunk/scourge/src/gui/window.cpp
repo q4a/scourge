@@ -198,7 +198,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
   if( mouseLockWidget ) {
     mouseLockWidget->
       handleEvent( mouseLockWindow, event, 
-                   x - getX() - gutter, 
+                   x - getX(), 
                    y - getY() - gutter );
     return mouseLockWidget;
   }
@@ -238,7 +238,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     for(int t = 0; t < widgetCount; t++) {
       if(this->widget[t]->isVisible()) {
         if(!insideWidget) {
-          if(insideWidget = this->widget[t]->isInside(x - getX() - gutter, y - getY() - gutter)) {
+          if(insideWidget = this->widget[t]->isInside(x - getX(), y - getY() - gutter)) {
             if(event->type == SDL_MOUSEBUTTONUP || 
                event->type == SDL_MOUSEBUTTONDOWN) {
               currentWin = this;
@@ -246,7 +246,10 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
             }
           }
         } 
-        if( this->widget[t]->handleEvent( this, event, x - getX(), y - getY() - gutter ) )
+        if( this->widget[t]->handleEvent( this, 
+																					event, 
+																					x - getX(), 
+																					y - getY() - gutter ) )
           w = this->widget[t];
       }
     }
@@ -268,7 +271,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       }
       if(closeButton->handleEvent(this, event, 
                                   x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
-                                  y - (getY() + 3))) {
+                                  y - (getY() + gutter + 3))) {
         scourgeGui->playSound(Window::ACTION_SOUND);
         return closeButton;
       }
@@ -520,7 +523,7 @@ void Window::drawWidget(Widget *parent) {
 
       // if this is modified, also change handleWindowEvent
       //glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
-			glTranslated( x + gutter, y + topY + gutter, z + 5);
+			glTranslated( x, y + topY + gutter, z + 5);
 
       widget[i]->draw(this);
       glPopMatrix();
@@ -630,7 +633,7 @@ void Window::drawCloseButton( int topY, int openHeight ) {
 	
 	glPushMatrix(); 
 	//glLoadIdentity();
-	glTranslated( w - ( closeButton->getWidth() + gutter ), topY + 3, z + 5 );
+	glTranslated( w - ( closeButton->getWidth() ), topY + 3, z + 5 );
 	closeButton->draw(this);
 	glPopMatrix();
 }
