@@ -49,7 +49,7 @@ void Canvas::drawWidget(Widget *parent) {
   if(view && !((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
-              (((Window*)parent)->getY() + Window::TOP_HEIGHT + y + getHeight()), 
+              (((Window*)parent)->getY() + y + getHeight()), 
               w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
     

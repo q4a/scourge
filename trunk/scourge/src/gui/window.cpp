@@ -74,12 +74,13 @@ void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, cha
   this->widgetCount = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
+  this->gutter = 16 + ( theme->getWindowBorderTexture() ? theme->getWindowBorderTexture()->width : 0 );
   if(hasCloseButton) {
     if( theme->getButtonHighlight() ) {
-      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 
+      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, gutter - 6, 
                                      theme->getButtonHighlight()->texture);
     } else {
-      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, TOP_HEIGHT - 6, 0 );
+      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, gutter - 6, 0 );
     }
   } else closeButton = NULL;
   openHeight = 0;
@@ -97,8 +98,7 @@ void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, cha
 
   // make windows stay on screen
   this->move(x, y);
-  currentY = y;
-	gutter = 16 + ( theme->getWindowBorderTexture() ? theme->getWindowBorderTexture()->width : 0 );
+  currentY = y;	
   addWindow(this);
 }
 
@@ -198,8 +198,8 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
   if( mouseLockWidget ) {
     mouseLockWidget->
       handleEvent( mouseLockWindow, event, 
-                   x - getX(), 
-                   y - ( getY() + TOP_HEIGHT ) );
+                   x - getX() - gutter, 
+                   y - getY() - gutter );
     return mouseLockWidget;
   }
 
@@ -238,7 +238,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     for(int t = 0; t < widgetCount; t++) {
       if(this->widget[t]->isVisible()) {
         if(!insideWidget) {
-          if(insideWidget = this->widget[t]->isInside(x - getX(), y - (getY() + TOP_HEIGHT))) {
+          if(insideWidget = this->widget[t]->isInside(x - getX() - gutter, y - getY() - gutter)) {
             if(event->type == SDL_MOUSEBUTTONUP || 
                event->type == SDL_MOUSEBUTTONDOWN) {
               currentWin = this;
@@ -246,7 +246,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
             }
           }
         } 
-        if(this->widget[t]->handleEvent(this, event, x - getX(), y - (getY() + TOP_HEIGHT)))
+        if( this->widget[t]->handleEvent( this, event, x - getX(), y - getY() - gutter ) )
           w = this->widget[t];
       }
     }
@@ -408,9 +408,6 @@ void Window::removeWidget(Widget *widget) {
   }
 }
 
-#define TOP_HEIGHT 0
-#define BOTTOM_HEIGHT 0
-
 void Window::drawWidget(Widget *parent) {
   GLint t = SDL_GetTicks();
 
@@ -425,23 +422,23 @@ void Window::drawWidget(Widget *parent) {
     }
     opening = ( y > currentY );
     topY = y - currentY;
-    openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+    openHeight = h;
 
     // slide-up scissor
     //    glScissor(x, sdlHandler->getScreen()->h - (currentY + h), w, h);  
     //    glEnable( GL_SCISSOR_TEST );
     scissorToWindow( false );
   } else {
-    if(openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT))) {
+    if(openHeight < h) {
       if( t - lastTick > 10 ) {
         lastTick = t;
         openHeight += ( h / OPEN_STEPS ); // always open in the same number of steps
-        if(openHeight >= (h - (TOP_HEIGHT + BOTTOM_HEIGHT)))
-          openHeight = (h - (TOP_HEIGHT + BOTTOM_HEIGHT));
+        if(openHeight >= h)
+          openHeight = h;
       }
     }
-    topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
-    opening = ( openHeight < (h - (TOP_HEIGHT + BOTTOM_HEIGHT)) );
+    topY = (h / 2) - (openHeight / 2);
+    opening = ( openHeight < h );
   }
 
   glPushMatrix();
@@ -553,10 +550,10 @@ void Window::drawBackground( int topY, int openHeight ) {
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
-    glTexCoord2f (0, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
-    glVertex2i (0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-    glTexCoord2f (1, (TOP_HEIGHT + BOTTOM_HEIGHT + openHeight) / (float)tileHeight);
-    glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+    glTexCoord2f (0, openHeight / (float)tileHeight);
+    glVertex2i (0, topY + openHeight);
+    glTexCoord2f (1, openHeight / (float)tileHeight);
+    glVertex2i (w, topY + openHeight);
     glTexCoord2f (1, 0);      
     glVertex2i (w, topY);
     glEnd ();
@@ -583,15 +580,15 @@ void Window::drawBackground( int topY, int openHeight ) {
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
-    glVertex2i(0, topY + TOP_HEIGHT);
+    glVertex2i(0, topY);
     glTexCoord2f(0.0f, ( openHeight )/(float)tileHeight);
-    glVertex2i(0, topY + TOP_HEIGHT + openHeight);
+    glVertex2i(0, topY + openHeight);
     //glTexCoord2f( w/(float)tileWidth, ( openHeight ) /(float)tileHeight );
     glTexCoord2f( 1, ( openHeight ) /(float)tileHeight);
-    glVertex2i(w, topY + TOP_HEIGHT + openHeight);
+    glVertex2i(w, topY + openHeight);
     glTexCoord2f( 1, 0.0f);      
     //glTexCoord2d( w/(float)tileWidth, 0 );
-    glVertex2i(w, topY + TOP_HEIGHT);
+    glVertex2i(w, topY);
     glEnd();
   }
 }
@@ -603,14 +600,14 @@ void Window::drawDropShadow( int topY, int openHeight ) {
 	int n = 10;
 	glColor4f( 0.15f, 0.15f, 0.15f, 0.25f );
 	glBegin(GL_QUADS);
-	glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-	glVertex2i (n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
-	glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT + n);
-	glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2i (n, topY + openHeight);
+	glVertex2i (n, topY + openHeight + n);
+	glVertex2i (w + n, topY + openHeight + n);
+	glVertex2i (w + n, topY + openHeight);
 	
 	glVertex2i (w, topY + n);
-	glVertex2i (w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-	glVertex2i (w + n, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2i (w, topY + openHeight);
+	glVertex2i (w + n, topY + openHeight);
 	glVertex2i (w + n, topY + n);
 	glEnd();
 	glDisable( GL_BLEND );
@@ -692,14 +689,14 @@ void Window::drawLineBorder( int topY, int openHeight ) {
 		glLineWidth( 2.0f );
 	}
 	glBegin(GL_LINES);
-	glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
-	glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2d(w, topY + openHeight);
+	glVertex2d(0, topY + openHeight);
 	glVertex2d(0, topY);
 	glVertex2d(w, topY);
 	glVertex2d(0, topY);
-	glVertex2d(0, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2d(0, topY + openHeight);
 	glVertex2d(w, topY);
-	glVertex2d(w, topY + TOP_HEIGHT + openHeight + BOTTOM_HEIGHT);
+	glVertex2d(w, topY + openHeight);
 	glEnd();
 	glLineWidth( 1.0f );
 }
@@ -918,14 +915,13 @@ TextField *Window::createTextField(int x, int y, int numChars) {
 // scissor test: y screen coordinate is reversed, rectangle is 
 // specified by lower-left corner. sheesh!
 void Window::scissorToWindow( bool insideOnly ) {
-  GLint topY = ((h - (TOP_HEIGHT + BOTTOM_HEIGHT)) / 2) - (openHeight / 2);
+  GLint topY = (h / 2) - (openHeight / 2);
   if( insideOnly ) {
-    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight + TOP_HEIGHT), 
+    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight), 
               w, openHeight);  
   } else {
-    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight + 
-                                               TOP_HEIGHT + BOTTOM_HEIGHT), 
-              w, openHeight + (TOP_HEIGHT + BOTTOM_HEIGHT));  
+    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight), 
+              w, openHeight);  
   }
   glEnable( GL_SCISSOR_TEST );
 }
@@ -945,7 +941,7 @@ void Window::setVisible(bool b, bool animate) {
         openHeight = 0;
       }
     } else {
-      openHeight = getHeight() - (TOP_HEIGHT + BOTTOM_HEIGHT);
+      openHeight = getHeight();
     }
   } else {
     y = currentY;
@@ -1051,8 +1047,8 @@ void Window::showMessageDialog(ScourgeGui *scourgeGui,
                                  title, 
                                  texture, false );
     message_label = message_dialog->createLabel(10, 30, message);
-    message_button = message_dialog->createButton((w / 2) - 50, h - (40 + TOP_HEIGHT), 
-                                                  (w / 2) + 50, h - (10 + TOP_HEIGHT), buttonLabel);
+    message_button = message_dialog->createButton((w / 2) - 50, h - 40, 
+                                                  (w / 2) + 50, h - 10, buttonLabel);
     message_dialog->setModal(true);
   } else {
     message_dialog->move(x, y);

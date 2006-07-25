@@ -46,7 +46,7 @@ InfoGui::InfoGui(Scourge *scourge) {
 
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::INFO_GUI_TITLE) );
   int bx = width / 2 - 52;
-  int by = height - (30 + Window::BOTTOM_HEIGHT + Window::TOP_HEIGHT);
+  int by = height - 30;
   openButton = new Button( bx, by, bx + 105, by + 25, 
                            scourge->getShapePalette()->getHighlightTexture(), 
                            Constants::getMessage(Constants::CLOSE_LABEL) );

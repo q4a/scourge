@@ -177,13 +177,13 @@ MainMenu::MainMenu(Scourge *scourge){
                             scourge->getShapePalette()->getGuiTexture(), false);
   aboutText = new ScrollingLabel( 10, 10, 
                                   w - 20, 
-                                  h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 20 - 30, 
+                                  h - 20 - 30, 
                                   scourge->getShapePalette()->getAboutText() );
   aboutDialog->addWidget( aboutText );
   aboutOK = aboutDialog->createButton( (w/2) - 40, 
-                                       ( h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 30 ),
+                                       ( h - 30 ),
                                        (w/2) + 40, 
-                                       ( h - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 10 ), 
+                                       ( h - 10 ), 
                                        Constants::getMessage( Constants::OK_LABEL ) );
   aboutDialog->setVisible( false );
 

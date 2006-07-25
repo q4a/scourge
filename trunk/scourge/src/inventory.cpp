@@ -120,7 +120,7 @@ Inventory::Inventory(Scourge *scourge) {
   partyButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Party", true);
   yy += buttonHeight;
 
-  yy = mainWin->getHeight() - Window::TOP_HEIGHT - Window::BOTTOM_HEIGHT - 10 - 20;
+  yy = mainWin->getHeight() - 10 - 20;
   closeButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Hide" );
 
   cards = new CardContainer(mainWin);
