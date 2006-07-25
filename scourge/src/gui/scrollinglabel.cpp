@@ -103,7 +103,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
-              (((Window*)parent)->getY() + y + getHeight()), 
+              (((Window*)parent)->getY() + ((Window*)parent)->getGutter() + y + getHeight()), 
               w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
    

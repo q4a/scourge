@@ -97,11 +97,11 @@ void ScrollingList::drawWidget(Widget *parent) {
     }
     cerr << "**********************************************" << endl;
   }
-  int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
+  int textPos = -(int)(((listHeight - ((Window*)parent)->getGutter() - getHeight()) / 100.0f) * (float)value);
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
-              (((Window*)parent)->getY() + y + getHeight()), 
+              (((Window*)parent)->getY() + ((Window*)parent)->getGutter() + y + getHeight()), 
               w, getHeight());  
     glEnable( GL_SCISSOR_TEST );
 
