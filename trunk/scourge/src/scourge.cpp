@@ -1617,7 +1617,8 @@ void Scourge::resetUIAfterBattle() {
   // animate monsters again after TB combat (see resetNonParticipantAnimation() )
   for(int i = 0; i < session->getCreatureCount(); i++) {
     if( !session->getCreature(i)->getStateMod( Constants::dead ) &&
-        !session->getCreature(i)->getMonster()->isNpc() ) {
+        !( session->getCreature(i)->getMonster() &&
+					 session->getCreature(i)->getMonster()->isNpc() ) ) {
       session->getCreature(i)->setMotion( Constants::MOTION_LOITER );
       ((MD2Shape*)session->getCreature(i)->getShape())->setPauseAnimation( false );
     }

@@ -856,7 +856,8 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
   vector< Creature* > newNpcs;
   for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
     Creature *creature = adapter->getSession()->getCreature( i );
-    if( creature->getMonster()->isNpc() ) {
+    if( creature->getMonster() && 
+				creature->getMonster()->isNpc() ) {
       total++;
       if( toint( creature->getX() ) && toint( creature->getY() ) &&
           !getNpcInfo( toint( creature->getX() ), toint( creature->getY() ) ) ) {

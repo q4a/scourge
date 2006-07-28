@@ -75,16 +75,16 @@ void Widget::draw(Widget *parent) {
     glLineWidth( 2.0f );
     glBegin(GL_LINES);
     glVertex2f( -1, -1 );
-    glVertex2f( -1, getHeight() + 2 );
+    glVertex2f( -1, getHeight() + 1 );
     
     glVertex2f( -1, -1 );
     glVertex2f( getWidth() + 2, -1 );
     
-    glVertex2f( -1, getHeight() + 2 );
-    glVertex2f( getWidth() + 2, getHeight() + 2 );
+    glVertex2f( -1, getHeight() + 1 );
+    glVertex2f( getWidth() + 2, getHeight() + 1 );
     
     glVertex2f( getWidth() + 2, -1 );
-    glVertex2f( getWidth() + 2, getHeight() + 2 );
+    glVertex2f( getWidth() + 2, getHeight() + 1 );
     glEnd();
     glLineWidth( 1.0f );
   }
