@@ -26,8 +26,8 @@ using namespace std;
 #define MINOR_SPACING 4
 #define YPOS ( SPACING + MINOR_SPACING )
 #define WIN_WIDTH 340
-#define X_SIZE WIN_WIDTH - 30
-#define BUTTON_WIDTH WIN_WIDTH / 4
+#define X_SIZE WIN_WIDTH - 40
+#define BUTTON_WIDTH ( WIN_WIDTH - 16 ) / 4
 
 OptionsMenu::OptionsMenu(Scourge *scourge){    
   this->scourge = scourge;
@@ -47,7 +47,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
                         true, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2());
     
-  int x = 0;
+  int x = 8;
   gameSettingsButton = mainWin->createButton(x, 0, x + BUTTON_WIDTH, SPACING, "Gameplay", true);
   x += BUTTON_WIDTH;
   videoButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Video", true);
@@ -57,9 +57,9 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Controls", true);           
 
   x = 10;
-  saveButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, "Save", false);      
+  saveButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, "Save", false);      
   x += BUTTON_WIDTH + MINOR_SPACING;
-  closeButton = mainWin->createButton(x, 272, x + BUTTON_WIDTH, 272 + SPACING, "Close", false);      
+  closeButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, "Close", false);      
   
   cards = new CardContainer(mainWin);
   
@@ -67,9 +67,9 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   int y = YPOS;
   keyBindingsLabel = cards->createLabel(XPOS, y + 10, "Key bindings", CONTROLS, Constants::RED_COLOR);
   y += SPACING + MINOR_SPACING;
-  controlBindingsList = new ScrollingList(XPOS, y, X_SIZE, 200, scourge->getShapePalette()->getHighlightTexture());
+  controlBindingsList = new ScrollingList(XPOS, y, X_SIZE, 190, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(controlBindingsList, CONTROLS);
-  y += 200 + MINOR_SPACING;
+  y += 190 + MINOR_SPACING;
   changeControlButton = cards->createButton(XPOS, y, XPOS + X_SIZE, y + SPACING, 
 											Constants::getMessage( Constants::CHANGE_KEY ), 
 											CONTROLS, false);

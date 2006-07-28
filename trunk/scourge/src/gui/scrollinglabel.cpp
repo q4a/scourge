@@ -24,7 +24,7 @@ using namespace std;
 ScrollingLabel::ScrollingLabel(int x, int y, int w, int h, char *text) : Widget(x, y, w, h) {
   value = 0;
   //  count = 0;
-  scrollerWidth = 20;
+  scrollerWidth = 15;
   listHeight = 0;
   alpha = 0.5f;
   alphaInc = 0.05f;

@@ -1240,7 +1240,10 @@ void Scourge::createUI() {
                            Window::BASIC_WINDOW,
                            getSession()->getShapePalette()->getGuiTexture2() );
   messageWin->setBackground(0, 0, 0);
-  messageList = new ScrollingList(0, 0, width, PARTY_GUI_HEIGHT - 25, getSession()->getShapePalette()->getHighlightTexture());
+  messageList = new ScrollingList(8, 0, 
+																	width - 100, 
+																	PARTY_GUI_HEIGHT - 100, 
+																	getSession()->getShapePalette()->getHighlightTexture());
   messageList->setSelectionColor( 0.15f, 0.15f, 0.3f );
   messageList->setCanGetFocus( false );
   messageWin->addWidget(messageList);
@@ -1261,11 +1264,11 @@ void Scourge::createUI() {
                                       Window::BASIC_WINDOW,
                                       getSession()->getShapePalette()->getGuiTexture2());
   int mx = w / 2;
-  yesExitConfirm = new Button( mx - 80, 50, mx - 10, 80, getSession()->getShapePalette()->getHighlightTexture(), "Yes" );
+  yesExitConfirm = new Button( mx - 80, 55, mx - 10, 75, getSession()->getShapePalette()->getHighlightTexture(), "Yes" );
   exitConfirmationDialog->addWidget((Widget*)yesExitConfirm);
-  noExitConfirm = new Button( mx + 10, 50, mx + 80, 80, getSession()->getShapePalette()->getHighlightTexture(), "No" );
+  noExitConfirm = new Button( mx + 10, 55, mx + 80, 75, getSession()->getShapePalette()->getHighlightTexture(), "No" );
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
-  exitLabel = new Label(20, 20, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+  exitLabel = new Label(20, 25, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
 
   squirrelWin = new Window( getSDLHandler(), 5, 0, getSDLHandler()->getScreen()->w - 10, 200, "Squirrel Console",
@@ -1302,7 +1305,7 @@ void Scourge::setUILayout() {
   mainWin->setVisible( false );
   switch(layoutMode) {
   case Constants::GUI_LAYOUT_ORIGINAL:
-    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+    messageList->resize( width - 18, PARTY_GUI_HEIGHT - 30 );
     messageWin->resize(width, PARTY_GUI_HEIGHT);
     messageWin->move(getSDLHandler()->getScreen()->w - width, 0);
     messageWin->setLocked(false);
@@ -1316,7 +1319,7 @@ void Scourge::setUILayout() {
     break;
 
   case Constants::GUI_LAYOUT_BOTTOM:
-    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+    messageList->resize( width - 18, PARTY_GUI_HEIGHT - 30 );
     messageWin->resize(width, PARTY_GUI_HEIGHT);
     messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
     mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;
@@ -1332,7 +1335,8 @@ void Scourge::setUILayout() {
     break;
 
   case Constants::GUI_LAYOUT_SIDE:
-    messageList->resize(PARTY_GUI_WIDTH, getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT + 25));
+    messageList->resize( PARTY_GUI_WIDTH - 18, 
+												 getSDLHandler()->getScreen()->h - ( PARTY_GUI_HEIGHT + 30 ) );
     messageWin->resize(PARTY_GUI_WIDTH,
                        getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + Window::SCREEN_GUTTER * 2 + MINIMAP_WINDOW_HEIGHT));
     messageWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,  MINIMAP_WINDOW_HEIGHT + Window::SCREEN_GUTTER);
@@ -1351,7 +1355,7 @@ void Scourge::setUILayout() {
     break;
 
   case Constants::GUI_LAYOUT_INVENTORY:
-    messageList->resize(width, PARTY_GUI_HEIGHT - 25);
+    messageList->resize( width - 18, PARTY_GUI_HEIGHT - 30 );
     messageWin->resize(width, PARTY_GUI_HEIGHT);
     messageWin->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
     mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;

@@ -36,6 +36,8 @@ class Label;
 class Checkbox;
 class TextField;
 
+#define TITLE_HEIGHT 21
+
 class Window : public Widget {
  private:
   // the image is 510x270

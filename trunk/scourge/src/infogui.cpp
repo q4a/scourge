@@ -46,14 +46,14 @@ InfoGui::InfoGui(Scourge *scourge) {
 
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::INFO_GUI_TITLE) );
   int bx = width / 2 - 52;
-  int by = height - 30;
-  openButton = new Button( bx, by, bx + 105, by + 25, 
+  int by = height - 55;
+  openButton = new Button( bx, by, bx + 105, by + 20, 
                            scourge->getShapePalette()->getHighlightTexture(), 
                            Constants::getMessage(Constants::CLOSE_LABEL) );
   win->addWidget((Widget*)openButton);
   
   int n = 48;
-  image = new Canvas( width - n - 10, 15, width - 10, 15 + n, this );
+  image = new Canvas( width - n - 10, 15, width - 10, 15 + 50, this );
   win->addWidget( image );
 
   win->createLabel(10, 10, "Name:", Constants::RED_COLOR);
