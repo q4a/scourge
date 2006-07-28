@@ -146,8 +146,8 @@ MainMenu::MainMenu(Scourge *scourge){
                               w, h,
                               "New Game Confirmation",
                               scourge->getShapePalette()->getGuiTexture(), false);
-  newGameConfirmOK = newGameConfirm->createButton( 40, 50, 110, 80, Constants::getMessage( Constants::OK_LABEL ) );
-  newGameConfirmCancel = newGameConfirm->createButton( 140, 50, 210, 80, Constants::getMessage( Constants::CANCEL_LABEL ));
+  newGameConfirmOK = newGameConfirm->createButton( 40, 55, 110, 75, Constants::getMessage( Constants::OK_LABEL ) );
+  newGameConfirmCancel = newGameConfirm->createButton( 140, 55, 210, 75, Constants::getMessage( Constants::CANCEL_LABEL ));
   newGameConfirm->createLabel( 20, 20, Constants::getMessage( Constants::DELETE_OLD_SAVED_GAME ));
   newGameConfirm->setVisible( false );
   newGameConfirm->setModal( true );
@@ -175,15 +175,15 @@ MainMenu::MainMenu(Scourge *scourge){
                             w, h,
                             "About S.c.o.u.r.g.e.",
                             scourge->getShapePalette()->getGuiTexture(), false);
-  aboutText = new ScrollingLabel( 10, 10, 
-                                  w - 20, 
-                                  h - 20 - 30, 
+  aboutText = new ScrollingLabel( 8, 0, 
+                                  w - 18, 
+                                  h - 65, 
                                   scourge->getShapePalette()->getAboutText() );
   aboutDialog->addWidget( aboutText );
   aboutOK = aboutDialog->createButton( (w/2) - 40, 
-                                       ( h - 30 ),
+                                       ( h - 55 ),
                                        (w/2) + 40, 
-                                       ( h - 10 ), 
+                                       ( h - 35 ), 
                                        Constants::getMessage( Constants::OK_LABEL ) );
   aboutDialog->setVisible( false );
 

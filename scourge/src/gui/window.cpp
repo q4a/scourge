@@ -38,8 +38,6 @@ Widget *Window::mouseLockWidget = NULL;
 
 #define CLOSE_BUTTON_SIZE 10
 
-#define TITLE_HEIGHT 21
-
 Window *Window::message_dialog = NULL;
 Label *Window::message_label = NULL;
 Button *Window::message_button = NULL;
@@ -74,13 +72,16 @@ void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, cha
   this->widgetCount = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
-  this->gutter = 16 + ( theme->getWindowBorderTexture() ? theme->getWindowBorderTexture()->width : 0 );
+  this->gutter = 21 + 
+		( theme->getWindowBorderTexture() ? 
+			theme->getWindowBorderTexture()->width : 
+			0 );
   if(hasCloseButton) {
     if( theme->getButtonHighlight() ) {
-      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, gutter - 6, 
+      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE, 
                                      theme->getButtonHighlight()->texture);
     } else {
-      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, gutter - 6, 0 );
+      this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE, 0 );
     }
   } else closeButton = NULL;
   openHeight = 0;
@@ -266,12 +267,16 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     // handled by closebutton
     if(closeButton) {
       if(!insideWidget) {
-        insideWidget = closeButton->isInside(x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
-                                             y - (getY() + 3));
+
+				// w - 10 - ( closeButton->getWidth() ), topY + 8
+
+        insideWidget = 
+					closeButton->isInside( x - ( getX() + ( getWidth() - 10 - closeButton->getWidth())), 
+																 y - ( getY() + 8 ) );
       }
       if(closeButton->handleEvent(this, event, 
-                                  x - (getX() + (getWidth() - (closeButton->getWidth() + 3))), 
-                                  y - (getY() + gutter + 3))) {
+                                  x - ( getX() + ( getWidth() - 10 - closeButton->getWidth())), 
+																 y - ( getY() + 8 ) ) ) {
         scourgeGui->playSound(Window::ACTION_SOUND);
         return closeButton;
       }
@@ -633,7 +638,7 @@ void Window::drawCloseButton( int topY, int openHeight ) {
 	
 	glPushMatrix(); 
 	//glLoadIdentity();
-	glTranslated( w - ( closeButton->getWidth() ), topY + 3, z + 5 );
+	glTranslated( w - 10 - ( closeButton->getWidth() ), topY + 8, z + 5 );
 	closeButton->draw(this);
 	glPopMatrix();
 }
@@ -996,7 +1001,7 @@ void Window::toBottom(Window *win) {
   if(win->isLocked()) return;
   for(int i = 0; i < windowCount; i++) {
     if(window[i] == win) {
-      for(int t = i - 1; t >= 0; t--) {
+      for(int t = i; t > 0; t--) {
         window[t] = window[t - 1];    
         window[t]->setZ(window[t]->getZ() + 10);
       }
@@ -1050,8 +1055,11 @@ void Window::showMessageDialog(ScourgeGui *scourgeGui,
                                  title, 
                                  texture, false );
     message_label = message_dialog->createLabel(10, 30, message);
-    message_button = message_dialog->createButton((w / 2) - 50, h - 40, 
-                                                  (w / 2) + 50, h - 10, buttonLabel);
+    message_button = message_dialog->createButton((w / 2) - 50, 
+																									h - 30 - message_dialog->getGutter() - 5, 
+                                                  (w / 2) + 50, 
+																									h - 10 - message_dialog->getGutter() - 5, 
+																									buttonLabel);
     message_dialog->setModal(true);
   } else {
     message_dialog->move(x, y);

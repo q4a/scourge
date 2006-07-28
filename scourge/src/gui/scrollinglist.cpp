@@ -27,7 +27,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
                              int lineHeight ) : Widget(x, y, w, h) {
   value = 0;
   count = 0;
-  scrollerWidth = 20;
+  scrollerWidth = 15;
   listHeight = 0;
   alpha = 0.5f;
   alphaInc = 0.05f;
