@@ -1877,12 +1877,21 @@ void Scourge::createPartyUI() {
                         "default" );
   cards = new CardContainer(mainWin);
 
-  roundButton = cards->createButton( 5, 0, 90, 20, "Real-Time", 0 );
-  endTurnButton = cards->createButton( 5, 20, 90, 40, "End Turn", 0 );
-  groupButton = cards->createButton( 5, 40,  90, 60, "Group", 0 );
-  inventoryButton = cards->createButton( 5, 60, 90, 80, "Party", 0 );
-  optionsButton = cards->createButton( 5, 80,  90, 100, "Options", 0 );
-  quitButton = cards->createButton( 5, 100,  90, 120, "Quit", 0 );
+	int xstart = 8;
+	int buttonHeight = 19;
+	int ystart = 0;
+  roundButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "Real-Time", 0 );
+	ystart += buttonHeight;
+  endTurnButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "End Turn", 0 );
+	ystart += buttonHeight;
+  groupButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Group", 0 );
+	ystart += buttonHeight;
+  inventoryButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "Party", 0 );
+	ystart += buttonHeight;
+  optionsButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Options", 0 );
+	ystart += buttonHeight;
+  quitButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Quit", 0 );
+	ystart += buttonHeight;
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   roundButton->setToggle(true);
@@ -1893,9 +1902,9 @@ void Scourge::createPartyUI() {
   optionsButton->setSelected(false);
 
   int offsetX = 90;
-  int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - offsetX) / 4;
+  int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - 8 - offsetX) / 4;
   //int playerButtonHeight = 20;
-  int playerInfoHeight = 100;
+  int playerInfoHeight = 95;
   //int playerButtonY = playerInfoHeight;
 
   for(int i = 0; i < 4; i++) {
@@ -1929,7 +1938,7 @@ void Scourge::createPartyUI() {
   }
   int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);
   for( int i = 0; i < 12; i++ ) {
-    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 10;
+    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 8;
     quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, 20,
                                 this, NULL, true );
     quickSpell[i]->setTooltip( "Click to assign a spell, capability or magic item." );
