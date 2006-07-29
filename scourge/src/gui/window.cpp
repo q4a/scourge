@@ -20,6 +20,11 @@ using namespace std;
 
 #define OPEN_STEPS 10
 
+// should come from theme
+#define INSET 8
+
+// #define DEBUG_SCISSOR 1
+
 const char Window::ROLL_OVER_SOUND[80] = "sound/ui/roll.wav";
 const char Window::ACTION_SOUND[80] = "sound/ui/press.wav";
 const char Window::DROP_SUCCESS[80] = "sound/equip/equip1.wav";
@@ -84,7 +89,7 @@ void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, cha
       this->closeButton = new Button(0, 0, CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE, 0 );
     }
   } else closeButton = NULL;
-  openHeight = 0;
+  openHeight = INSET * 2;
   this->type = type;
   this->locked = false;
 
@@ -506,43 +511,43 @@ void Window::drawWidget(Widget *parent) {
 		drawLineBorder( topY, openHeight );
   }
 
-  // print title
-  if(title) drawTitle( topY, openHeight );
+	// print title
+	if(title) drawTitle( topY, openHeight );
+	
+	// draw the close button
+	if(closeButton && !isLocked()) drawCloseButton( topY, openHeight );
+	
+	glDisable( GL_SCISSOR_TEST );
 
-  // draw the close button
-  if(closeButton && !isLocked()) drawCloseButton( topY, openHeight );
+	// draw widgets
+	bool tmp = isOpening();
+	if(tmp) {  
+		scissorToWindow();
+	}
+	for(int i = 0; i < widgetCount; i++) {                  
+		if(widget[i]->isVisible()) {
 
-  glDisable( GL_SCISSOR_TEST );
-
-  // draw widgets
-  bool tmp = isOpening();
-  if(tmp) {  
-    scissorToWindow();
-  }
-  for(int i = 0; i < widgetCount; i++) {                  
-    if(widget[i]->isVisible()) {
-
-      glPushMatrix();
-      glLoadIdentity();
+			glPushMatrix();
+			glLoadIdentity();
 
 
-      // if this is modified, also change handleWindowEvent
-      //glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
+			// if this is modified, also change handleWindowEvent
+			//glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
 			glTranslated( x, y + topY + gutter, z + 5);
 
-      widget[i]->draw(this);
-      glPopMatrix();
-    }
-  }  
-  if(tmp) {  
-    glDisable( GL_SCISSOR_TEST );
-  }
+			widget[i]->draw(this);
+			glPopMatrix();
+		}
+	}  
+	if(tmp) {  
+		glDisable( GL_SCISSOR_TEST );
+	}
 
-  for(int i = 0; i < widgetCount; i++) {                  
-    if(widget[i]->isVisible()) {
-      widget[i]->drawTooltip( this );
-    }
-  }
+	for(int i = 0; i < widgetCount; i++) {                  
+		if(widget[i]->isVisible()) {
+			widget[i]->drawTooltip( this );
+		}
+	}
 
   glEnable( GL_TEXTURE_2D );
   glPopMatrix();
@@ -924,13 +929,43 @@ TextField *Window::createTextField(int x, int y, int numChars) {
 // specified by lower-left corner. sheesh!
 void Window::scissorToWindow( bool insideOnly ) {
   GLint topY = (h / 2) - (openHeight / 2);
+
+	int n = 8;
+	int sx, sy, sw, sh;
+
   if( insideOnly ) {
-    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight), 
-              w, openHeight);  
+		sx = x + n;
+		sy = currentY + topY + openHeight - n;
+		sw = w - n * 2;
+		sh = openHeight - n * 2;
   } else {
-    glScissor(x, scourgeGui->getScreenHeight() - (currentY + topY + openHeight), 
-              w, openHeight);  
+		sx = x;
+		sy = currentY + topY + openHeight;
+		sw = w;
+		sh = openHeight;
   }
+
+#ifdef DEBUG_SCISSOR
+	glPushMatrix();
+	glTranslatef( -x, -y, 0 );
+	glDisable( GL_TEXTURE_2D );
+	if( insideOnly ) {
+		glColor4f( 1, 1, 1, 1 );
+	} else {
+		glColor4f( 1, 0, 0, 1 );
+	}
+	glBegin( GL_LINE_LOOP );
+	glVertex2f( sx, sy - sh );
+	glVertex2f( sx + sw, sy - sh );
+	glVertex2f( sx + sw, sy  );
+	glVertex2f( sx, sy  );
+	glEnd();
+	glEnable( GL_TEXTURE_2D );
+	glPopMatrix();
+#endif
+
+	glScissor( sx, scourgeGui->getScreenHeight() - sy, sw, sh );  
+
   glEnable( GL_SCISSOR_TEST );
 }
 
@@ -946,7 +981,7 @@ void Window::setVisible(bool b, bool animate) {
         openHeight = getHeight();
         y = getHeight();
       } else {
-        openHeight = 0;
+        openHeight = INSET * 2;
       }
     } else {
       openHeight = getHeight();

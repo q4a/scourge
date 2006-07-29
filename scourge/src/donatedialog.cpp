@@ -48,7 +48,7 @@ DonateDialog::DonateDialog( Scourge *scourge ) {
   win->addWidget( result );
 
   h = 20;
-  int y = win->getHeight() - h - 10;
+  int y = win->getHeight() - h - 30;
   closeButton = win->createButton( w - 80, y, w - 10, y + h, "Close" );
 }
 

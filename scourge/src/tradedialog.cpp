@@ -39,32 +39,33 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
                            605, 340, 
                            Constants::getMessage( Constants::TRADE_DIALOG_TITLE ) );
   //win->setModal( true );
-  labelA = win->createLabel( 5, 15, "" );
-  totalA = win->createLabel( 5, 28, TOTAL );
-  listA = new ItemList( scourge, win, 75, 35, 225, 210, this );
+	int xStart = 8;
+  labelA = win->createLabel( xStart, 15, "" );
+  totalA = win->createLabel( xStart, 28, TOTAL );
+  listA = new ItemList( scourge, win, 75, 35, 220, 210, this );
   win->addWidget( listA );
-  sellButton = win->createButton( 5, 35, 70, 55, "Sell" );
-  infoButtonA = win->createButton( 5, 60, 70, 80, "Info" );
+  sellButton = win->createButton( xStart, 35, 70, 55, "Sell" );
+  infoButtonA = win->createButton( xStart, 60, 70, 80, "Info" );
 
   
   labelB = win->createLabel( 305, 15, "" );
   totalB = win->createLabel( 305, 28, TOTAL );
-  listB = new ItemList( scourge, win, 305, 35, 225, 210, this );
+  listB = new ItemList( scourge, win, 300, 35, 220, 210, this );
   win->addWidget( listB );
-  tradeButton = win->createButton( 535, 35, 600, 55, "Buy" );
-  stealButton = win->createButton( 535, 60, 600, 80, "Steal" );  
-  infoButtonB = win->createButton( 535, 85, 600, 105, "Info" );
+  tradeButton = win->createButton( 530, 35, 595, 55, "Buy" );
+  stealButton = win->createButton( 530, 60, 595, 80, "Steal" );  
+  infoButtonB = win->createButton( 530, 85, 595, 105, "Info" );
 
-  closeButton = win->createButton( 535, 290, 600, 310, "Close" );
+  closeButton = win->createButton( 530, 290, 595, 310, "Close" );
   
-  coinAvailA = win->createLabel( 5, 260, AVAILABLE_COINS );
-  coinTradeA = win->createLabel( 5, 280, "$0" );
+  coinAvailA = win->createLabel( xStart, 260, AVAILABLE_COINS );
+  coinTradeA = win->createLabel( xStart, 280, "$0" );
   coinReset = win->createButton( 180, 270, 220, 290, "Clr" );
   coinPlusA = win->createButton( 225, 270, 265, 290, "+1" );
   coinMinusA = win->createButton( 270, 270, 310, 290, "-1" );
   coinRest = win->createButton( 315, 270, 355, 290, "Diff" );
 
-  win->createLabel( 5, 305, "Shift+click to select multiple items, right click to get info." );
+  win->createLabel( xStart, 305, "Shift+click to select multiple items, right click to get info." );
 }
 
 TradeDialog::~TradeDialog() {
