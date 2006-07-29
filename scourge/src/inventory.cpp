@@ -120,7 +120,7 @@ Inventory::Inventory(Scourge *scourge) {
   partyButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Party", true);
   yy += buttonHeight;
 
-  yy = mainWin->getHeight() - 10 - 20;
+  yy = mainWin->getHeight() - 50;
   closeButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Hide" );
 
   cards = new CardContainer(mainWin);
@@ -132,13 +132,13 @@ Inventory::Inventory(Scourge *scourge) {
   inventoryWeightLabel = cards->createLabel(190, 10, NULL, INVENTORY);
 
   coinsLabel = cards->createLabel(300, 170, NULL, INVENTORY);
-  cards->createLabel(115, 170, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
+  cards->createLabel(115, 155, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
 
-  invList = new ScrollingList(115, 15, 295, 140, scourge->getShapePalette()->getHighlightTexture(), this, 30);
+  invList = new ScrollingList(115, 15, 295, 125, scourge->getShapePalette()->getHighlightTexture(), this, 30);
   cards->addWidget(invList, INVENTORY);
   cards->createLabel(115, 430, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP), INVENTORY);
 
-  paperDoll = new Canvas(115, 175, 411, 206 + (Constants::INVENTORY_COUNT * 15), this, this);
+  paperDoll = new Canvas(115, 160, 411, 191 + (Constants::INVENTORY_COUNT * 15), this, this);
   cards->addWidget(paperDoll, INVENTORY);
 
   yy = START_OF_SECOND_BUTTON_SET;

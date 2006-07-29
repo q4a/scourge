@@ -106,7 +106,7 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
   #define assert(x) x;
 #endif
 
-#define SCOURGE_VERSION "0.14"
+#define SCOURGE_VERSION "0.15"
 #define MAX_PARTY_SIZE 4
 
 // Max level depth per mission
