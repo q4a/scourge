@@ -33,11 +33,11 @@ ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char *title ) {
 										Window::BASIC_WINDOW,
 										scourgeGui->getGuiTexture2() );
   int mx = CONFIRM_WIDTH / 2;
-  okButton = new Button( mx - 80, 50, mx - 10, 80, scourgeGui->getHighlightTexture(), "Ok" );
+  okButton = new Button( mx - 80, 60, mx - 10, 80, scourgeGui->getHighlightTexture(), "Ok" );
   win->addWidget( (Widget*)okButton );
-  cancelButton = new Button( mx + 10, 50, mx + 80, 80, scourgeGui->getHighlightTexture(), "No" );
+  cancelButton = new Button( mx + 10, 60, mx + 80, 80, scourgeGui->getHighlightTexture(), "No" );
   win->addWidget( (Widget*)cancelButton );
-  label = new Label( 20, 20, "" );
+  label = new Label( 20, 30, "" );
   win->addWidget( (Widget*)label );
 
 	mode = 0;
