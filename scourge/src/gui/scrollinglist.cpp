@@ -186,6 +186,20 @@ void ScrollingList::drawWidget(Widget *parent) {
 
     glDisable( GL_SCISSOR_TEST );
   }
+
+	glDisable( GL_TEXTURE_2D );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glColor4f( 0, 0, 0, 0.4f );
+	glBegin( GL_QUADS );
+  glVertex2d(0, 0);
+  glVertex2d(0, h);
+  glVertex2d(scrollerWidth, h);
+  glVertex2d(scrollerWidth, 0);  
+  glEnd();
+	glDisable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
+
   drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
               false, false, false, false, inside );
 

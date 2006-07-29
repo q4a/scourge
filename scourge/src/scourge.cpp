@@ -1274,13 +1274,13 @@ void Scourge::createUI() {
   squirrelWin = new Window( getSDLHandler(), 5, 0, getSDLHandler()->getScreen()->w - 10, 200, "Squirrel Console",
                             getSession()->getShapePalette()->getGuiTexture(), true,
                             Window::BASIC_WINDOW, getSession()->getShapePalette()->getGuiTexture2() );
-  squirrelLabel = new ScrollingLabel( 5, 0, getSDLHandler()->getScreen()->w - 20, 145, "" );
+  squirrelLabel = new ScrollingLabel( 5, 0, getSDLHandler()->getScreen()->w - 30, 145, "" );
   squirrelLabel->setCanGetFocus( false );
   squirrelWin->addWidget( squirrelLabel );
-  squirrelText = new TextField( 5, 150, 100 );
+  squirrelText = new TextField( 8, 150, 100 );
   squirrelWin->addWidget( squirrelText );
-  squirrelRun = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 100, 150, getSDLHandler()->getScreen()->w - 10, 170, "Run" );
-  squirrelClear = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 200, 150, getSDLHandler()->getScreen()->w - 110, 170, "Clear" );
+  squirrelRun = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 110, 150, getSDLHandler()->getScreen()->w - 30, 170, "Run" );
+  squirrelClear = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 200, 150, getSDLHandler()->getScreen()->w - 120, 170, "Clear" );
 }
 
 void Scourge::setUILayout(int mode) {
@@ -2406,6 +2406,9 @@ void Scourge::initEnd() {
                           20, false, true);
 }
 
+#define BOARD_GUI_WIDTH 600
+#define BOARD_GUI_HEIGHT 300
+
 void Scourge::createBoardUI() {
   // init gui
   /*
@@ -2420,22 +2423,25 @@ void Scourge::createBoardUI() {
                         BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT,
                         "Available Missions", true, Window::SIMPLE_WINDOW,
                         "wood" );
-  missionList = new ScrollingList(5, 40, BOARD_GUI_WIDTH - 260, 150, getSession()->getShapePalette()->getHighlightTexture());
+	int colWidth = (int)( BOARD_GUI_WIDTH * 0.6f );
+	int colHeight = BOARD_GUI_HEIGHT / 2 - 30;
+  missionList = new ScrollingList(5, 30, colWidth, colHeight, getSession()->getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
-  boardWin->createLabel( BOARD_GUI_WIDTH - 250, 35, "Drag map to look around." );
-  mapWidget = new MapWidget( this, boardWin, BOARD_GUI_WIDTH - 250, 40,
+  boardWin->createLabel( colWidth + 5, 25, "Drag map to look around." );
+  mapWidget = new MapWidget( this, boardWin, 
+														 colWidth + 10, 30,
                              BOARD_GUI_WIDTH - 10,
-                             BOARD_GUI_HEIGHT - 10,
+                             BOARD_GUI_HEIGHT - 30,
                              false );
   boardWin->addWidget( mapWidget );
   //missionDescriptionLabel = new Label(5, 210, "", 67);
-  missionDescriptionLabel = new ScrollingLabel( 5, 210,
-                                                BOARD_GUI_WIDTH - 260,
-                                                BOARD_GUI_HEIGHT - 210 - 10, "" );
+  missionDescriptionLabel = new ScrollingLabel( 5, 30 + colHeight + 5,
+                                                colWidth,
+                                                colHeight - 5, "" );
   boardWin->addWidget(missionDescriptionLabel);
-  playMission = new Button(5, 5, 125, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
+  playMission = new Button(5, 5, 125, 25, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::PLAY_MISSION_LABEL));
   boardWin->addWidget(playMission);
-  closeBoard = new Button(130, 5, 250, 35, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::CLOSE_LABEL));
+  closeBoard = new Button(130, 5, 250, 25, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::CLOSE_LABEL));
   boardWin->addWidget(closeBoard);
 }
 
