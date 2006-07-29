@@ -37,9 +37,6 @@ class GameAdapter;
   *@author Gabor Torok
   */
 	
-#define BOARD_GUI_WIDTH 600
-#define BOARD_GUI_HEIGHT 400
-
 class NpcConversation {
   public:
 

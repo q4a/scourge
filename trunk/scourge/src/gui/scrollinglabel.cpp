@@ -151,6 +151,20 @@ void ScrollingLabel::drawWidget(Widget *parent) {
         
     glDisable( GL_SCISSOR_TEST );
   }
+
+	glDisable( GL_TEXTURE_2D );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glColor4f( 0, 0, 0, 0.4f );
+	glBegin( GL_QUADS );
+  glVertex2d(0, 0);
+  glVertex2d(0, h);
+  glVertex2d(scrollerWidth, h);
+  glVertex2d(scrollerWidth, 0);  
+  glEnd();
+	glDisable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
+
   drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
               false, false, false, false, inside );
 
@@ -230,7 +244,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
 
       // Is the mouse over this word?
       int tx = ((Window*)parent)->getScourgeGui()->getMouseX() - getX() - parent->getX();
-      int ty = ((Window*)parent)->getScourgeGui()->getMouseY() - getY() - parent->getY();
+      int ty = ((Window*)parent)->getScourgeGui()->getMouseY() - getY() - parent->getY() - ((Window*)parent)->getGutter();
       if( interactive &&
           wordPos[ wordPosCount ].x <= tx && 
           wordPos[ wordPosCount ].x + wordPos[ wordPosCount ].w > tx &&
