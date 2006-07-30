@@ -716,6 +716,8 @@ protected:
   bool createBattleTurns();
   void resetUIAfterBattle();
   void moveCreatures();  
+
+	void addWanderingHeroes();
 };
 
 #endif

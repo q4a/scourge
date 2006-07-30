@@ -190,7 +190,7 @@ public:
   bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
 
 private:
-	static void addWanderingHeroes( GameAdapter *adapter );
+	//static void addWanderingHeroes( GameAdapter *adapter );
   static void loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly=false );
   static FILE *openMapDataFile( const char *filename, const char *mode );
   static NpcInfo *getNpcInfo( int x, int y );

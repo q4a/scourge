@@ -68,27 +68,30 @@ MapEditor::MapEditor( Scourge *scourge ) {
                         GuiTheme::DEFAULT_THEME );
   mainWin->setVisible( false );
   mainWin->setLocked( true );
-  
-  doneButton = mainWin->createButton( 5, 5, w - 10, 20, "Done" );
 
-  wallButton = mainWin->createButton( 5, 25, w - 10, 45, "Wall", true );
+	int startx = 8;
+	w -= 2;
+  
+  doneButton = mainWin->createButton( startx, 5, w - 10, 20, "Done" );
+
+  wallButton = mainWin->createButton( startx, 25, w - 10, 45, "Wall", true );
   toggleButtonList.push_back( wallButton );
   wallButton->setSelected( true );
-  doorButton = mainWin->createButton( 5, 50, w - 10, 70, "Door", true );
+  doorButton = mainWin->createButton( startx, 50, w - 10, 70, "Door", true );
   toggleButtonList.push_back( doorButton );
 
   mainWin->createLabel( 5, 87, "Name:" );
   nameText = mainWin->createTextField( 60, 75, 10 );
-  loadButton = mainWin->createButton( 5, 100, ( w - 10 ) / 2, 120, "Load" );
+  loadButton = mainWin->createButton( startx, 100, ( w - 10 ) / 2, 120, "Load" );
   saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, 100, w - 5, 120, "Save" );
 
-  newButton = mainWin->createButton( 5, 125, w - 10, 145, "Map Properties" );
-  floorType = mainWin->createButton( 5, 150, w - 10, 170, floorTypeName[ 1 ], true );
+  newButton = mainWin->createButton( startx, 125, w - 10, 145, "Map Properties" );
+  floorType = mainWin->createButton( startx, 150, w - 10, 170, floorTypeName[ 1 ], true );
 
-  startPosButton = mainWin->createButton( 5, 175, w - 10, 195, "Starting Position", true );
+  startPosButton = mainWin->createButton( startx, 175, w - 10, 195, "Starting Position", true );
   toggleButtonList.push_back( startPosButton );
 
-  mapButton = mainWin->createButton( 5, 200, w - 10, 220, "Map Location" );
+  mapButton = mainWin->createButton( startx, 200, w - 10, 220, "Map Location" );
 
   // new map ui
   int nw = 450;
@@ -101,11 +104,12 @@ MapEditor::MapEditor( Scourge *scourge ) {
                           GuiTheme::DEFAULT_THEME );
   newMapWin->setVisible( false );
   newMapWin->setModal( true );
-  newMapWin->createLabel( 5, 20, "Map level (0-50):" );
+  newMapWin->createLabel( startx, 20, "Map level (0-50):" );
   levelText = newMapWin->createTextField( 150, 10, 20 );
-  newMapWin->createLabel( 5, 40, "Map depth (0-10):" );
+  newMapWin->createLabel( startx, 40, "Map depth (0-10):" );
   depthText = newMapWin->createTextField( 150, 30, 20 );
-  newMapWin->createLabel( 5, 60, "Map theme:" );
+  newMapWin->createLabel( startx, 60, "Map theme:" );
+	nw -= 12;
 
 
   themeList = new ScrollingList( 150, 50, 220, 60, 
@@ -123,8 +127,8 @@ MapEditor::MapEditor( Scourge *scourge ) {
   themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), 
                        (const char**)themeNames );
 
-  newMapWin->createLabel( 5, 130, "Select map location: (click on map, drag to move)" );
-  mapWidget = new MapWidget( scourge, newMapWin, 5, 140, nw - 5, 335 );
+  newMapWin->createLabel( startx, 130, "Select map location: (click on map, drag to move)" );
+  mapWidget = new MapWidget( scourge, newMapWin, startx, 140, nw - startx, 335 );
   newMapWin->addWidget( mapWidget->getCanvas() );
 
   int bw = nw / 6;
@@ -138,9 +142,9 @@ MapEditor::MapEditor( Scourge *scourge ) {
   int d = 150;
 
   // items
-  itemButton = mainWin->createButton( 5, h, w - 10, h + 20, "Item", true );
+  itemButton = mainWin->createButton( startx, h, w - 10, h + 20, "Item", true );
   toggleButtonList.push_back( itemButton );
-  itemList = new ScrollingList( 5, h + 30, w - 10, 100, 
+  itemList = new ScrollingList( startx, h + 30, w - 16, 100, 
                                 scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( itemList );
   map<string, const RpgItem *> *itemMap = RpgItem::getItemMap();
@@ -161,9 +165,9 @@ MapEditor::MapEditor( Scourge *scourge ) {
   h += d;
   
   // creatures
-  creatureButton = mainWin->createButton( 5, h, w - 10, h + 20, "Creature", true );
+  creatureButton = mainWin->createButton( startx, h, w - 10, h + 20, "Creature", true );
   toggleButtonList.push_back( creatureButton );
-  creatureList = new ScrollingList( 5, h + 30, w - 10, 100, 
+  creatureList = new ScrollingList( startx, h + 30, w - 16, 100, 
                                     scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( creatureList );
   map<string, Monster*> *creatureMap = &(Monster::monstersByName);
@@ -190,9 +194,9 @@ MapEditor::MapEditor( Scourge *scourge ) {
   h += d;
 
   // shapes
-  shapeButton = mainWin->createButton( 5, h, w - 10, h + 20, "Shape", true );
+  shapeButton = mainWin->createButton( startx, h, w - 10, h + 20, "Shape", true );
   toggleButtonList.push_back( shapeButton );
-  shapeList = new ScrollingList( 5, h + 30, w - 10, 100, 
+  shapeList = new ScrollingList( startx, h + 30, w - 16, 100, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
