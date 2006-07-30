@@ -502,6 +502,8 @@ void Scourge::startMission() {
     if( mapCreated ) {
       changingStory = false;
 
+			if( inHq ) addWanderingHeroes();
+
       // center map on the player
       levelMap->center(toint(party->getPlayer()->getX()),
                        toint(party->getPlayer()->getY()),
@@ -671,6 +673,24 @@ void Scourge::startMission() {
   squirrelWin->setVisible( false );
 #endif
   getSession()->getSquirrel()->endGame();
+}
+
+void Scourge::addWanderingHeroes() {
+
+	if( !hasParty() ) return;
+
+	int level = getSession()->getParty()->getAverageLevel();
+	int count = (int)( 5.0f * rand() / RAND_MAX ) + 5;
+	for( int i = 0; i < count; i++ ) {
+		RenderedCreature *creature = createWanderingHero( level );
+
+		// find a place for the here
+		RenderedCreature *c = 
+			getSession()->
+			getCreature( (int)( (float)(getSession()->getCreatureCount()) * 
+													rand() / RAND_MAX ) );
+		creature->findPlace( toint( c->getX() ), toint( c->getY() ) );
+	}
 }
 
 void Scourge::endMission() {

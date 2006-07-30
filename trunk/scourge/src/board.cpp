@@ -703,11 +703,12 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
   loadMapDataFile( adapter, filename );
 
 	// if there are npc-s add some wondering heroes
-	if( !npcInfos.empty() ) {
-		addWanderingHeroes( adapter );
-	}
+	//if( !npcInfos.empty() ) {
+		//addWanderingHeroes( adapter );
+	//}
 }
 
+/*
 void Mission::addWanderingHeroes( GameAdapter *adapter ) {
 
 	if( !adapter->hasParty() ) return;
@@ -725,7 +726,7 @@ void Mission::addWanderingHeroes( GameAdapter *adapter ) {
 		creature->findPlace( toint( c->getX() ), toint( c->getY() ) );
 	}
 }
-
+*/
 void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly ) {
   FILE *fp = openMapDataFile( filename, "r" );
   if( !fp ) return;
