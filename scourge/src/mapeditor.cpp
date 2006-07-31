@@ -299,15 +299,17 @@ bool MapEditor::handleEvent(SDL_Event *event) {
         if( scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX() + gx,
                                             scourge->getMap()->getCursorFlatMapY() - gy, 
                                             i ) &&
-            maxz < i ) {
-          maxz = i;
+            maxz < i + 1 ) {
+          maxz = i + 1;
         }
       }
     }
   }
-  scourge->getMap()->cursorZ = ( maxz >= MAP_VIEW_HEIGHT - 1 ? 0 : maxz + 1 );
-  int editorZ = scourge->getMap()->cursorZ;
-  if( !maxz ) editorZ = 0;
+  //scourge->getMap()->cursorZ = ( maxz >= MAP_VIEW_HEIGHT - 1 ? 0 : maxz + 1 );
+  //int editorZ = scourge->getMap()->cursorZ;
+  //if( !maxz ) editorZ = 0;
+
+  int editorZ = scourge->getMap()->cursorZ = maxz;
   
 
   scourge->getMap()->handleEvent( event );
@@ -528,6 +530,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
         } else if( creature ) {
           scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
         } else if( shape ) {
+					cerr << "editorZ=" << editorZ << endl;
           scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
         }
         return;
