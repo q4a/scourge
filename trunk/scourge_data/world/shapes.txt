@@ -335,6 +335,11 @@ D:2
 D:It's a calm pool of liquid radiating energy.
 D:It appears to be a shallow pool of liquid.
 
+D:3
+D:This teleporter smells faintly of sulphur.
+D:It is the fabled red teleporter!
+D:Where does this teleporter lead?
+
 # unitside=16
 # unitoffset=2
 # wallheight=12
@@ -662,6 +667,14 @@ N:TELEPORTER
 N:7
 N:0020ffff
 L:1
+
+# the Abyssal teleporter
+N:2
+N:3,3,14
+N:RED_TELEPORTER
+N:11
+N:ff2000ff
+L:2
 
 # Constants::TELEPORTER_BASE_INDEX
 N:3

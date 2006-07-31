@@ -37,16 +37,25 @@ class GLTeleporter : public GLShape  {
   float ring[MAX_RINGS];
   float delta[MAX_RINGS];
   GLuint flameTex;
+
+	int teleporterType;
   
  public:
+
+	 enum {
+		 BASIC_TELEPORTER = 0,
+		 ABYSSAL_TELEPORTER
+	 };
+
   /**
 	 Passing 0 for texture disables the creation of
 	 shapes. (eg. torch, md2 shape)
   */
-  GLTeleporter(GLuint texture[], GLuint flameTex,
-			   int width, int depth, int height,
-			   char *name, int descriptionGroup,
-			   Uint32 color, Uint8 shapePalIndex=0);
+	 GLTeleporter( GLuint texture[], GLuint flameTex,
+								 int width, int depth, int height,
+								 char *name, int descriptionGroup,
+								 Uint32 color, Uint8 shapePalIndex=0,
+								 int teleporterType=BASIC_TELEPORTER );
   
   ~GLTeleporter();
   
@@ -55,6 +64,7 @@ class GLTeleporter : public GLShape  {
   inline bool drawFirst() { return false; }
   inline bool drawLater() { return true; }
   inline void setupBlending() { glBlendFunc(GL_SRC_ALPHA, GL_ONE); }
+	inline int getTeleporterType() { return teleporterType; }
 
  protected:
   void commonInit(GLuint flameTex);

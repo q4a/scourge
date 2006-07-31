@@ -21,12 +21,14 @@
   *@author Gabor Torok
   */
 
-GLTeleporter::GLTeleporter(GLuint texture[], GLuint flameTex,
-						   int width, int depth, int height,
-						   char *name, int descriptionGroup,
-						   Uint32 color, Uint8 shapePalIndex) :
+GLTeleporter::GLTeleporter(	GLuint texture[], GLuint flameTex,
+														int width, int depth, int height,
+														char *name, int descriptionGroup,
+														Uint32 color, Uint8 shapePalIndex,
+														int teleporterType ) :
   GLShape(texture, width, depth, height, name, descriptionGroup, color, shapePalIndex) {
   commonInit(flameTex);
+	this->teleporterType = teleporterType;
 }
 
 void GLTeleporter::commonInit(GLuint flameTex) {

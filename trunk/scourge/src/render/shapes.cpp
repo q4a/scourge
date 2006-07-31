@@ -213,12 +213,13 @@ void Shapes::initialize() {
 
     if(sv->teleporter) {
       shapes[(i + 1)] =
-      new GLTeleporter(texture, textures[9].id,
-                       sv->width, sv->depth, sv->height,
-                       strdup(sv->name), 
-                       sv->descriptionIndex,
-                       sv->color,
-                       (i + 1));
+				new GLTeleporter( texture, textures[9].id,
+													sv->width, sv->depth, sv->height,
+													strdup(sv->name), 
+													sv->descriptionIndex,
+													sv->color,
+													(i + 1),
+													sv->teleporter );
     } else if(strlen(sv->m3ds_name)) {
       shapes[(i + 1)] =
       new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
@@ -432,7 +433,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
       sv->m3ds_scale = strtod(line + 1, NULL);
     } else if(n == 'L') {
       n = Constants::readLine(line, fp);
-      sv->teleporter = 1;
+      sv->teleporter = atoi( line + 1 );
     } 
 
     // icon rotation
