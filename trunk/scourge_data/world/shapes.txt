@@ -107,6 +107,9 @@ T:darkui.bmp
 T:litewood.bmp
 T:brick.bmp
 T:screw.bmp
+T:rock.bmp
+T:skulls.bmp
+T:floor7.bmp
 
 # This is "old-school". It's only used for "native" objects: chest, bookcase, etc.
 # Walls, floors and doors now use themes (much more flexible; see below)
@@ -1069,6 +1072,30 @@ N:9
 N:ffffffff
 3:/objects/ring.3ds
 3:0.25
+
+N:14
+N:1,1,1
+N:STALAGMITE
+N:0
+N:ffffffff
+3:/objects/stalagmite.3ds
+3:2.0
+
+N:14
+N:1,1,1
+N:STALAGMITE2
+N:0
+N:ffffffff
+3:/objects/stalagmite2.3ds
+3:1.5
+
+N:14
+N:1,1,1
+N:PILE
+N:0
+N:ffffffff
+3:/objects/pile.3ds
+3:1.3
 
 # md2 models
 # old-style declarations. See creatures.txt for new way.
