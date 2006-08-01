@@ -63,14 +63,12 @@ public:
 protected:
 	Element *currentElement;
 	Color *currentColor;
-	wxString *currentElementName;
-	wxString *currentColorName;
+//	wxString *currentElementName;
+//	wxString *currentColorName;
 
 	// List of editable controls
 	wxTextCtrl *nameEdit;
 	wxListBox *elementList;
-		wxArrayString *elementStrArray;
-		wxArrayString *colorStrArray;
 	wxListBox *colorList;
 	wxStaticText *elementNameText;
 	wxStaticText *colorNameText;
@@ -84,6 +82,11 @@ protected:
 	wxTextCtrl *southEdit;
 	wxTextCtrl *eastEdit;
 	wxTextCtrl *westEdit;
+
+	wxTextCtrl *northWestEdit;
+	wxTextCtrl *northEastEdit;
+	wxTextCtrl *southWestEdit;
+	wxTextCtrl *southEastEdit;
 
 	/*wxSlider *rElementSlider;
 	wxSlider *gElementSlider;
