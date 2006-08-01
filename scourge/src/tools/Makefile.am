@@ -52,6 +52,10 @@ tools_SOURCES = \
 	pagelocations.cpp\
 	pagelocations.h\
 	pagerpg.cpp\
-	pagerpg.h
+	pagerpg.h\
+	subpageitemtags.cpp\
+	subpageitemtags.h\
+	subpagenames.cpp\
+	subpagenames.h
 	
 	

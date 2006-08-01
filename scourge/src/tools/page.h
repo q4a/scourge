@@ -27,7 +27,7 @@ public:
 public:
 	virtual ~Page() {}
 	virtual void Init(wxNotebook*, DF*) = 0;
-	void OnPageHelp();
+	virtual void OnPageHelp();
 
 	virtual void UpdatePage() = 0;
 

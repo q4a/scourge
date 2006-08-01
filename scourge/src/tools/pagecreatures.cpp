@@ -30,55 +30,55 @@ void PageCreatures::Init(wxNotebook *notebook, DF *dataFile)
 	Creature *creature = dfCreatures->GetCurrent();
 
 	// name
-	/*wxStaticText *nameText =*/ new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
+	new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
 	nameEdit = new wxTextCtrl(page, -1, std2wx(creature->name), wxPoint(10,30), wxSize(200,25));
 
 	// portrait
-	/*wxStaticText *portraitText =*/ new wxStaticText(page, -1, _("Portrait"), wxPoint(220,10));
+	new wxStaticText(page, -1, _("Portrait"), wxPoint(220,10));
 	portraitEdit = new wxTextCtrl(page, -1, std2wx(creature->portrait), wxPoint(220,30), wxSize(200,25));
 
 	// md2
-	/*wxStaticText *md2Text =*/ new wxStaticText(page, -1, _("MD2 Dir"), wxPoint(430,10));
+	new wxStaticText(page, -1, _("MD2 Dir"), wxPoint(430,10));
 	md2Edit = new wxTextCtrl(page, -1, std2wx(creature->md2), wxPoint(430,30), wxSize(200,25));
 
 	// skin
-	/*wxStaticText *skinText =*/ new wxStaticText(page, -1, _("Skin"), wxPoint(640,10));
+	new wxStaticText(page, -1, _("Skin"), wxPoint(640,10));
 	skinEdit = new wxTextCtrl(page, -1, std2wx(creature->skin), wxPoint(640,30), wxSize(150,25));
 
 	// level
-	/*wxStaticText *levelText =*/ new wxStaticText(page, -1, _("Level"), wxPoint(10,70));
+	new wxStaticText(page, -1, _("Level"), wxPoint(10,70));
 	levelSpin = new wxSpinCtrl(page, -1, L"", wxPoint(10,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->level.c_str()));
 
 	// hp
-	/*wxStaticText *hpText =*/ new wxStaticText(page, -1, _("HP"), wxPoint(70,70));
+	new wxStaticText(page, -1, _("HP"), wxPoint(70,70));
 	hpSpin = new wxSpinCtrl(page, -1, L"", wxPoint(70,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->hp.c_str()));
 
 	// mp
-	/*wxStaticText *mpText =*/ new wxStaticText(page, -1, _("MP"), wxPoint(130,70));
+	new wxStaticText(page, -1, _("MP"), wxPoint(130,70));
 	mpSpin = new wxSpinCtrl(page, -1, L"", wxPoint(130,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->mp.c_str()));
 
 	// armor
-	/*wxStaticText *armorText =*/ new wxStaticText(page, -1, _("Armor"), wxPoint(190,70));
+	new wxStaticText(page, -1, _("Armor"), wxPoint(190,70));
 	armorSpin = new wxSpinCtrl(page, -1, L"", wxPoint(190,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,100, atoi(creature->armor.c_str()));
 
 	// rareness
-	/*wxStaticText *rarenessText =*/ new wxStaticText(page, -1, _("Rareness"), wxPoint(250,70));
+	new wxStaticText(page, -1, _("Rareness"), wxPoint(250,70));
 	rarenessSpin = new wxSpinCtrl(page, -1, L"", wxPoint(250,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,10, atoi(creature->rareness.c_str()));
 
 	// speed
-	/*wxStaticText *speedText =*/ new wxStaticText(page, -1, _("Speed"), wxPoint(310,70));
+	new wxStaticText(page, -1, _("Speed"), wxPoint(310,70));
 	speedSpin = new wxSpinCtrl(page, -1, L"", wxPoint(310,90),wxSize(45,-1), wxSP_ARROW_KEYS, 1,10, atoi(creature->speed.c_str()));
 
 	// scale
-	/*wxStaticText *scaleText =*/ new wxStaticText(page, -1, _("Scale"), wxPoint(370,70));
+	new wxStaticText(page, -1, _("Scale"), wxPoint(370,70));
 	scaleEdit = new wxTextCtrl(page, -1, std2wx(creature->scale), wxPoint(370,90), wxSize(50,25));
 
 	// npc
-	/*wxStaticText *npcText =*/ new wxStaticText(page, -1, _("NPC"), wxPoint(430,70));
+	new wxStaticText(page, -1, _("NPC"), wxPoint(430,70));
 	npcEdit = new wxTextCtrl(page, -1, std2wx(creature->npc), wxPoint(430,90), wxSize(50,25));
 
 	// npcStartX
-	/*wxStaticText *npcStartText =*/ new wxStaticText(page, -1, _("NPC Start (X,Y)"), wxPoint(495,70));
+	new wxStaticText(page, -1, _("NPC Start (X,Y)"), wxPoint(495,70));
 	npcStartXSpin = new wxSpinCtrl(page, -1, L"", wxPoint(500,90),wxSize(45,-1), wxSP_ARROW_KEYS, -1,500, atoi(creature->npcStartX.c_str()));
 	npcStartYSpin = new wxSpinCtrl(page, -1, L"", wxPoint(550,90),wxSize(45,-1), wxSP_ARROW_KEYS, -1,500, atoi(creature->npcStartY.c_str()));
 
@@ -241,14 +241,14 @@ public:
 		char buffer[16];
 		sprintf( buffer, "%i", skillSpin->GetValue() );
 
-		long itemPos;
-		if ( (itemPos = skillList->FindItem(-1, skill)) == -1)
+		long itemPos = skillList->FindItem(-1, skill);
+		if ( itemPos == -1)
 		{
-			skillList->InsertItem( skillList->GetItemCount(), skill );
-			skillList->SetItem( itemPos+1, 1, std2wx(buffer));
+			itemPos = skillList->InsertItem( skillList->GetItemCount(), skill );
+			skillList->SetItem( itemPos, 1, std2wx(buffer));
 		}
 		else
-			skillList->SetItem( skillList->GetItemCount()-1, 1, std2wx(buffer));
+			skillList->SetItem( itemPos, 1, std2wx(buffer));
 	}
 protected:
 	wxSpinCtrl *skillSpin;

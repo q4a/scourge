@@ -1,5 +1,7 @@
 #include "pagerpg.h"
 #include "subpageskills.h"
+#include "subpageitemtags.h"
+#include "subpagenames.h"
 #include "dfrpg.h"
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
@@ -9,8 +11,9 @@
 PageRpg::PageRpg()
 {
 	//ctor
-//	currentSkillName = new wxString;
 	pageSkills = new subPageSkills;
+	pageItemTags = new subPageItemTags;
+	pageNames = new subPageNames;
 
 	currentSubPage = pageSkills;
 }
@@ -18,8 +21,9 @@ PageRpg::PageRpg()
 PageRpg::~PageRpg()
 {
 	//dtor
-//	delete currentSkillName;
 	delete pageSkills;
+	delete pageItemTags;
+	delete pageNames;
 }
 
 void PageRpg::Init(wxNotebook *notebook, DF *dataFile)
@@ -35,6 +39,8 @@ void PageRpg::Init(wxNotebook *notebook, DF *dataFile)
 	subNotebook->Connect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, (wxObjectEventFunction)&PageRpg::OnSubPageChange, NULL, (wxEvtHandler*)this);
 
 	pageSkills->Init(subNotebook, dfRpg, this);
+	pageItemTags->Init(subNotebook, dfRpg, this);
+	pageNames->Init(subNotebook, dfRpg, this);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(subNotebook, 1,wxEXPAND|wxALIGN_CENTER);
@@ -49,19 +55,23 @@ void PageRpg::UpdatePage()
 
 void PageRpg::Prev(int n)
 {
-	currentSubPage->Prev(n);
+//	currentSubPage->Prev(n);
+	pageSkills->Prev(n);
 }
 void PageRpg::Next(int n)
 {
-	currentSubPage->Next(n);
+//	currentSubPage->Next(n);
+	pageSkills->Next(n);
 }
 void PageRpg::New()
 {
-	currentSubPage->New();
+//	currentSubPage->New();
+	pageSkills->New();
 }
 void PageRpg::Del()
 {
-	currentSubPage->Del();
+//	currentSubPage->Del();
+	pageSkills->Del();
 }
 
 void PageRpg::GetCurrent()
@@ -83,7 +93,16 @@ void PageRpg::OnSubPageChange()
 
 	if ( str == L"Skills" )
 		currentSubPage = pageSkills;
+	else if ( str == L"Item Tags" )
+		currentSubPage = pageItemTags;
+	else
+		;
 
 	currentSubPage->UpdatePage();
 	currentSubPage->UpdatePageNumber();
+}
+
+void PageRpg::OnPageHelp()
+{
+	currentSubPage->OnPageHelp();
 }

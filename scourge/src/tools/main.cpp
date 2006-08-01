@@ -66,6 +66,7 @@ public:
 	void OnSave(wxCommandEvent& event);
 	void OnSaveCurrent(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
+	void OnPageHelp(wxCommandEvent& event);
 		void OnPrev(wxCommandEvent& event);
 		void OnPrevFast(wxCommandEvent& event);
 		void OnNext(wxCommandEvent& event);
@@ -116,7 +117,7 @@ bool MyApp::OnInit()
 	dfLocations->Load( GetDataPath("%s/world/locations.txt"), "L");
 
 	DFRpg *dfRpg = new DFRpg;
-	dfRpg->Load( GetDataPath("%s/world/rpg.txt"), "G");
+	dfRpg->Load( GetDataPath("%s/world/rpg.txt"), "GTF");
 
 
 	g_DFList["Books"] = dfBooks;
@@ -149,7 +150,7 @@ bool MyApp::OnInit()
 	frame->Connect( ID_MenuAbout, wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) &MyFrame::OnAbout );
 	frame->Connect( ID_MenuPageHelp, wxEVT_COMMAND_MENU_SELECTED,
-			(wxObjectEventFunction) &Page::OnPageHelp );
+			(wxObjectEventFunction) &MyFrame::OnPageHelp );
 
 	frame->Connect( ID_Prev, wxEVT_COMMAND_TOOL_CLICKED,
 			(wxObjectEventFunction) &MyFrame::OnPrev );
@@ -311,6 +312,11 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	wxMessageBox(_("Edit the Scourge data files."),_("About Scourge Data Editor"),
                 wxOK|wxICON_INFORMATION, this);
+}
+
+void MyFrame::OnPageHelp(wxCommandEvent& WXUNUSED(event))
+{
+	g_currentPage->OnPageHelp();
 }
 
 void MyFrame::OnPrev(wxCommandEvent& WXUNUSED(event))
