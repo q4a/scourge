@@ -1027,3 +1027,21 @@ P:RESIST_HISTORY_MAGIC,35
 P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,45
 
+
+#############################
+# level 13
+M:Lesser Aspect of Thazmord
+M:PHANTOM,/models/m102.bmp,13,9,12,9,4,8,2.3
+I:Morning Star
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,40
+P:RESIST_AWARENESS_MAGIC,45
+P:RESIST_LIFE_AND_DEATH_MAGIC,30
+P:RESIST_HISTORY_MAGIC,35
+P:RESIST_DECEIT_MAGIC,30
+P:RESIST_CONFRONTATION_MAGIC,45

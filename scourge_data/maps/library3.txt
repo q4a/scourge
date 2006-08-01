@@ -95,6 +95,12 @@ most demons are relatively weak in this dimension. Without some sort of anchor o
 they have no power in the material realm.
 V:Abyss,Abyssal;It's the plane of sorrow. The home of the bringers of darkness. Though it has many\
 names, they all mean the same thing: a boundless dimension without hope, mercy and grace.
+#
+# chapter 8, the text below replaces the intro text via squirrel
+#
+V:_chapter8_;She was here! I don't know by what magic, but Mothrazu passed thru the\
+door without activiting with tokens.
+
 
 
 # Unknown npc-s found:
