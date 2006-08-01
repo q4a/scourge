@@ -29,15 +29,15 @@ void subPageSkills::Init(wxNotebook *notebook, DF *dataFile, PageRpg *parent)
 	Group *group = dfRpg->GetCurrent();
 
 	// name
-/*	wxStaticText *nameText =*/ new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
+	new wxStaticText(page, -1, _("Name"), wxPoint(10,10));
 	nameEdit = new wxTextCtrl(page, -1, std2wx(group->name), wxPoint(10,30), wxSize(200,25));
 
 	// group description
-/*	wxStaticText *descText =*/ new wxStaticText(page, -1, _("Description"), wxPoint(10,60));
+	new wxStaticText(page, -1, _("Description"), wxPoint(10,60));
 	descEdit = new wxTextCtrl(page, -1, std2wx(group->description), wxPoint(10,80), wxSize(260,80), wxTE_MULTILINE);
 
 /** Skills **/
-/*	wxStaticBox *skillsBox =*/ new wxStaticBox(page, -1, L"Skills", wxPoint(290,10),wxSize(540,280));
+	new wxStaticBox(page, -1, L"Skills", wxPoint(290,10),wxSize(540,280));
 
 	// skills
 	skillList = new ListAddDel;
@@ -49,11 +49,11 @@ void subPageSkills::Init(wxNotebook *notebook, DF *dataFile, PageRpg *parent)
 		skillNameText->SetFont( wxFont(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD) );
 
 	// symbol
-/*	wxStaticText *symbolText =*/ new wxStaticText(page, -1, _("Symbol"), wxPoint(300,185));
+	new wxStaticText(page, -1, _("Symbol"), wxPoint(300,185));
 	symbolEdit = new wxTextCtrl(page, -1, std2wx( currentSkill->symbol ), wxPoint(300,205), wxSize(100,25));
 
 	// skill description
-/*	wxStaticText *skillDescText =*/ new wxStaticText(page, -1, _("Description"), wxPoint(410,185));
+	new wxStaticText(page, -1, _("Description"), wxPoint(410,185));
 	skillDescEdit = new wxTextCtrl(page, -1, std2wx(currentSkill->description), wxPoint(410,205), wxSize(350,60), wxTE_MULTILINE);
 
 	// multiplier

@@ -16,6 +16,8 @@ class wxSpinCtrl;
 class wxString;
 class ListAddDel;
 class subPageSkills;
+class subPageItemTags;
+class subPageNames;
 
 class PageRpg : public Page
 {
@@ -23,9 +25,9 @@ protected:
 
 public:
 	DFRpg *dfRpg;
-//	Skill *currentSkill;
-//	wxString *currentSkillName;
 	subPageSkills *pageSkills;
+	subPageItemTags *pageItemTags;
+	subPageNames *pageNames;
 
 public:
 	PageRpg();
@@ -45,6 +47,7 @@ public:
 	void ClearCurrent();
 
 	void OnSubPageChange();
+	void OnPageHelp();
 
 protected:
 	wxNotebook *subNotebook;
