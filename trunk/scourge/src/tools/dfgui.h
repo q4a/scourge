@@ -12,11 +12,17 @@ struct Element
 	int lineWidth;
 	void Clear() { texture = north = south = east = west = ""; color.Clear(); lineWidth = 1; }
 };
+struct TexturedBorder : public Element
+{
+	std::string nw,ne,sw,se;
+	void Clear() { texture = north=south=east=west = nw=ne=sw=se = ""; color.Clear(); lineWidth = 1; }
+};
 struct Theme
 {
 	std::string name;
 	std::map <std::string,Element*> elements;
 	std::map <std::string,Color*> colors;
+	TexturedBorder *texturedBorder;
 
 	Theme()
 	{
@@ -38,6 +44,7 @@ struct Theme
 		colors["selectionText"] = new Color;
 		elements["selectedBorder"] = new Element;
 		elements["selectedCharacterBorder"] = new Element;
+		texturedBorder = new TexturedBorder;
 	}
 	~Theme()
 	{
@@ -48,6 +55,8 @@ struct Theme
 		for ( std::map<std::string,Color*>::iterator itr = colors.begin(); itr != colors.end(); itr++ )
 			delete itr->second;
 		colors.clear();
+
+		delete texturedBorder;
 	}
 };
 
@@ -58,9 +67,11 @@ protected:
 
 	bool ParseElement(std::ifstream*,Element*);
 	bool ParseColor(std::ifstream*,Color*);
+	bool ParseTexturedBorder(std::ifstream*,TexturedBorder*);
 
 	void SaveElement(std::ofstream&,Theme*,char*);
 	void SaveColor(std::ofstream&,Theme*,char*);
+	void SaveTexturedBorder(std::ofstream&,TexturedBorder*);
 
 public:
 	void Save();

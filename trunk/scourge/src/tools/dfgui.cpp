@@ -45,6 +45,8 @@ bool DFGui::LoadSingle(std::ifstream *fin, Theme *theme)
 	ParseElement(fin,	theme->elements["selectedBorder"]);
 	ParseElement(fin,	theme->elements["selectedCharacterBorder"]);
 
+	ParseTexturedBorder(fin, theme->texturedBorder);
+
 	return true;
 }
 
@@ -68,13 +70,13 @@ bool DFGui::ParseElement(std::ifstream *fin, Element *element)
 	element->lineWidth = atoi( strtok(0, ",") );
 
 	if ( (p = strtok(0, ",")) ){
-		element->north = p;std::cerr<<"\n\nnorth: p="<<p<<'\n';}
+		element->north = p;std::cerr<<"\nnorth: p="<<p<<'\n';}
 	if ( (p = strtok(0, ",")) ){
-		element->south = p;std::cerr<<"\n\nsouth: p="<<p<<'\n';}
+		element->south = p;std::cerr<<"\nsouth: p="<<p<<'\n';}
 	if ( (p = strtok(0, ",")) ){
-		element->east = p;std::cerr<<"\n\neast: p="<<p<<'\n';}
+		element->east = p;std::cerr<<"\neast: p="<<p<<'\n';}
 	if ( (p = strtok(0, ", #\t")) ){
-		element->west = p;std::cerr<<"\n\nwest: p="<<p<<'\n';}
+		element->west = p;std::cerr<<"\nwest: p="<<p<<'\n';}
 
 	std::cerr << "\ntexture = " << element->texture;
 	std::cerr << "\nred = " << c->r;
@@ -109,6 +111,56 @@ bool DFGui::ParseColor(std::ifstream *fin, Color *color)
 	std::cerr << "\ngreen = " << color->g;
 	std::cerr << "\nblue = " << color->b;
 	std::cerr << "\nalpha = " << color->a;
+
+	return true;
+}
+
+bool DFGui::ParseTexturedBorder(std::ifstream *fin, TexturedBorder *texturedBorder)
+{
+	char buffer[256]; char *p = buffer+2;	// skip the "T:"
+	fin->getline(buffer, 256, '\n');
+
+	std::cerr << "\nELEMENT";
+	std::cerr << "\nbuffer = " << buffer;
+
+	if ( strtok(p, ",") == 0 ) return true;		// Blank row
+
+	Color *c = &texturedBorder->color;
+
+	texturedBorder->texture = p;
+	c->r = atof( strtok(0, ",") );
+	c->g = atof( strtok(0, ",") );
+	c->b = atof( strtok(0, ",") );
+	c->a = atof( strtok(0, ",") );
+	texturedBorder->lineWidth = atoi( strtok(0, ",") );
+
+	if ( (p = strtok(0, ",")) ){
+		texturedBorder->north = p;std::cerr<<"\nnorth: p="<<p;}
+	if ( (p = strtok(0, ",")) ){
+		texturedBorder->south = p;std::cerr<<"\nsouth: p="<<p;}
+	if ( (p = strtok(0, ",")) ){
+		texturedBorder->east = p;std::cerr<<"\neast: p="<<p;}
+	if ( (p = strtok(0, ", #\t")) ){
+		texturedBorder->west = p;std::cerr<<"\nwest: p="<<p;}
+	if ( (p = strtok(0, ",")) ){
+		texturedBorder->nw = p;std::cerr<<"\nnorth west: p="<<p;}
+	if ( (p = strtok(0, ",")) ){
+		texturedBorder->ne = p;std::cerr<<"\nnorth east: p="<<p;}
+	if ( (p = strtok(0, ", #\t")) ){
+		texturedBorder->sw = p;std::cerr<<"\nsouth west: p="<<p;}
+	if ( (p = strtok(0, ", #\t")) ){
+		texturedBorder->se = p;std::cerr<<"\nsouth east: p="<<p;}
+
+	std::cerr << "\ntexture = " << texturedBorder->texture;
+	std::cerr << "\nred = " << c->r;
+	std::cerr << "\ngreen = " << c->g;
+	std::cerr << "\nblue = " << c->b;
+	std::cerr << "\nalpha = " << c->a;
+	std::cerr << "\nwidth = " << texturedBorder->lineWidth;
+	std::cerr << "\nnorth = " << texturedBorder->north;
+	std::cerr << "\nsouth = " << texturedBorder->south;
+	std::cerr << "\neast = " << texturedBorder->east;
+	std::cerr << "\nwest = " << texturedBorder->west << "\n\n";
 
 	return true;
 }
@@ -149,6 +201,8 @@ void DFGui::Save()
 		SaveElement(fout, theme, "selectedBorder");
 		SaveElement(fout, theme, "selectedCharacterBorder");
 
+		SaveTexturedBorder(fout ,theme->texturedBorder);
+
 		fout << "\n\n";
 	}
 
@@ -177,5 +231,25 @@ void DFGui::SaveColor(std::ofstream &fout, Theme *theme, char *colorName)
 	Color *c = theme->colors[colorName];
 		sprintf(buffer, "T:,%.3f,%.3f,%.3f,%.3f", c->r,c->g,c->b,c->a);
 		fout << "\n" << buffer;
+std::cerr << "\n" << buffer << "\n";
+}
+void DFGui::SaveTexturedBorder(std::ofstream &fout ,TexturedBorder *texturedBorder)
+{
+	char buffer[256];
+	TexturedBorder *t = texturedBorder;		Color *c = &t->color;
+
+	if ( t->texture == "" )		t->texture = "none";
+	if ( t->north == "" )		t->north = "none";
+	if ( t->south == "" )		t->south = "none";
+	if ( t->east == "" )		t->east = "none";
+	if ( t->west == "" )		t->west = "none";
+	if ( t->nw == "" )		t->nw = "none";
+	if ( t->ne == "" )		t->ne = "none";
+	if ( t->sw == "" )		t->sw = "none";
+	if ( t->se == "" )		t->se = "none";
+
+	sprintf(buffer, "T:%s,%.3f,%.3f,%.3f,%.3f,%i,%s,%s,%s,%s,%s,%s,%s,%s\t\t# textured border", t->texture.c_str(), c->r,c->g,c->b,c->a,t->lineWidth,
+			t->north.c_str(),t->south.c_str(),t->east.c_str(),t->west.c_str(), t->nw.c_str(),t->ne.c_str(),t->sw.c_str(),t->se.c_str());
+	fout << "\n" << buffer;
 std::cerr << "\n" << buffer << "\n";
 }
