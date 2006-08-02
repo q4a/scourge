@@ -68,6 +68,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "Item", "getItemAtLocation", SqCreature::_getItemAtLocation, SQ_MATCHTYPEMASKSTRING, "xn", "Return the item currently equipped at the specified location. (location is left-hand, right-hand, etc.)" },
 
   { "void", "startConversation", SqCreature::_startConversation, 0, 0, "Start a conversation with this creature." },
+	{ "void", "setIntro", SqCreature::_setIntro, 0, 0, "Set this NPC's intro text to the text referenced by this keyphrase in the <map>.txt file." },
 
   { 0,0,0,0,0 } // terminator
 };
@@ -450,3 +451,11 @@ int SqCreature::_getItemAtLocation( HSQUIRRELVM vm ) {
   return 1;
 }
 
+int SqCreature::_setIntro( HSQUIRRELVM vm ) {
+	GET_STRING( keyphrase, 80 )
+  GET_OBJECT( Creature* )
+	if( !Mission::setIntro( object->getMonster(), keyphrase ) ) {
+		return sq_throwerror( vm, "Error trying to set intro text." );
+	}
+	return 0;
+}

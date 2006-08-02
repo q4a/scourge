@@ -148,7 +148,7 @@ V:Mothrazu;Sorry, I haven't a clue... Ask $Melathor, she sounds to be his kind..
 ask $Sabien about her. After all, he was directly involved in her plans. I marked his location on\
 map on the $board.
 V:token,tokens;According to $Sabien, four such token items are what $Mothrazu seeks in order to activate\
-a gate to the $Abyss. Be sure to find them before she does! Look on $board now and then to see if I marked\
+a gate to the $Abyss. Be sure to find them before she does! Look on the $board now and then to see if I marked\
 a location where we suspect the item can be found.
 
 ##########################################################

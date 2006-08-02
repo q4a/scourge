@@ -638,6 +638,24 @@ char *Mission::getIntro( Monster *npc ) {
   return (char*)(nc->npc_intros[ (int)( (float)( nc->npc_intros.size() ) * rand()/RAND_MAX ) ].c_str());
 }
 
+bool Mission::setIntro( Monster *npc, char *keyphrase ) {
+	if( npcConversations.find( npc ) == npcConversations.end() ) {
+    cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
+    return false;
+  }
+  NpcConversation *nc = npcConversations[ npc ];
+
+	string ks = keyphrase;
+	if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
+		nc->npc_intros.clear();
+    nc->npc_intros.push_back( nc->npc_answers[ nc->npc_conversations[ ks ] ] );
+	} else {
+		cerr << "Can't find " << keyphrase << " in npc conversation for creature: " << npc->getType() << endl;
+		return false;
+	}
+	return true;
+}
+
 char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
   if( npcConversations.find( npc ) == npcConversations.end() ) {
     cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;

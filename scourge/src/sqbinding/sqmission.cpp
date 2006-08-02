@@ -20,6 +20,9 @@
 #include "../item.h"
 #include "../board.h"
 
+// is this ok? maybe we want to go thru the GameAdapter.
+#include "../render/map.h"
+
 using namespace std;
 
 const char *SqMission::className = "Mission";
@@ -33,6 +36,8 @@ ScriptClassMemberDecl SqMission::members[] = {
   { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
   { "Item", "getItem", SqMission::_getItem, 0, 0, "Returns a reference to an item on this level. These references are only valid while on this map." },
   { "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
+	{ "int", "getChapter", SqMission::_getChapter, 0, 0, "Get the current storyline chapter." },
+	{ "void", "removeMapPosition", SqMission::_removeMapPosition, 0, 0, "Remove the shape at this map position." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -110,5 +115,18 @@ int SqMission::_isCompleted( HSQUIRRELVM vm ) {
 int SqMission::_setCompleted( HSQUIRRELVM vm ) {
   SqBinding::sessionRef->getGameAdapter()->completeCurrentMission();
   return 1;
+}
+
+int SqMission::_getChapter( HSQUIRRELVM vm ) {
+	sq_pushinteger( vm, SqBinding::sessionRef->getBoard()->getStorylineIndex() );
+  return 1;
+}
+
+int SqMission::_removeMapPosition( HSQUIRRELVM vm ) {
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getMap()->removeLocation( x, y, z );
+	return 0;
 }
 

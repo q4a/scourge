@@ -106,6 +106,7 @@ public:
   static char *getIntro();
   static char *getAnswer( char *keyphrase );
   static char *getIntro( Monster *npc );
+	static bool setIntro( Monster *npc, char *keyphrase );
   static char *getAnswer( Monster *npc, char *keyphrase );
   /**
    * Load extra data from text file alongside an edited map.
