@@ -7,6 +7,11 @@ function enterMap( mapName ) {
   print( "Welcome to S.C.O.U.R.G.E.: Heroes of Lesser Renown\n" );
   print( "v" + scourgeGame.getVersion() + "\n" );
   print( "You are on the " + mapName + " map.\n" );
+	print( "Chapter=" + scourgeGame.getMission().getChapter() + "\n" );
+
+	if( mapName == "library3" && scourgeGame.getMission().getChapter() == 7 ) {
+		initChapter8();
+	}
 }
 
 // Called when exiting map
@@ -214,15 +219,22 @@ function converse( creature, question ) {
       ( question == "dragonscale" ||
         question == "armor" ) ) {
     return "Yes, yes... quite so... carry on!";
-  } else if( creature.getName() == "Sabien Gartu" &&
-             !( scourgeGame.getMission().isCompleted() ) &&
-             ( question == "door" ||
-               question == "seal" ||
-               question == "sealed" ||
-               question == "lock" ||
-               question == "locked" ) ) {
-    scourgeGame.getMission().setCompleted();
-  }
+  } else if( creature.getName() == "Sabien Gartu" ) {
+		if( !( scourgeGame.getMission().isCompleted() ) &&
+				scourgeGame.getMission().getChapter() != 7 &&
+				( question == "door" ||
+					question == "seal" ||
+					question == "sealed" ||
+					question == "lock" ||
+					question == "locked" ) ) {
+			scourgeGame.getMission().setCompleted();
+		} else if( scourgeGame.getMission().getChapter() == 7 &&
+							 ( question == "after" ||
+								 question == "stop" ) ) {
+			// remove map block at 294,223 to make door accessible
+			scourgeGame.getMission().removeMapPosition( 294, 223, 0 );
+		}
+  } 
 
   return null;
 }
@@ -280,5 +292,16 @@ function damageHandlerCloakSafePass( attacker, item ) {
                                 "pts! (Cloak of Safe Passage)" );
     }
   }
+}
+
+function initChapter8() {
+	// modify sabien's intro text
+	i <- 0;
+	for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+		if( scourgeGame.getMission().getCreature( i ).getName() == "Sabien Gartu" ) {
+			scourgeGame.getMission().getCreature( i ).setIntro( "_chapter8_" );
+			break;
+		}
+	}
 }
 

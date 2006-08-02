@@ -98,8 +98,17 @@ names, they all mean the same thing: a boundless dimension without hope, mercy a
 #
 # chapter 8, the text below replaces the intro text via squirrel
 #
-V:_chapter8_;She was here! I don't know by what magic, but Mothrazu passed thru the\
-door without activiting with tokens.
+V:_chapter8_;She was here! I don't know by what foul magic, but $Mothrazu passed through\
+the $door without activiting it with tokens. I have tried to stop her, I... I... used\
+all my arcane art, yet she proved too $powerful for me. Hurry and try to $stop her! I see you brought\
+the tokens. With them the door will open!
+V:powerful;It took but a flick of her hand and I stood petrified as though rooted to the\
+spot. Tendrils of a fibrous material clouded my brain and kept me motionless... I am\
+sorry I cannot be more help. You must go $after her now... I am afraid...
+V:stop,after;Hurry! She is inside this warded gate! She must not travel through the $planar device!\
+Yet she may already have done so... I still have not been able to find out what it is she seeks in\
+the $Abyss. If you do not find her beyond this $gate the only thing left is to $travel to the Abyss\
+and hunt her down there.
 
 
 

@@ -59,6 +59,9 @@ public:
   static int _isCompleted( HSQUIRRELVM vm );
   static int _setCompleted( HSQUIRRELVM vm );
 
+	static int _getChapter( HSQUIRRELVM vm );
+
+	static int _removeMapPosition( HSQUIRRELVM vm );
 };
 
 #endif

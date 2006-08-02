@@ -1027,7 +1027,6 @@ P:RESIST_HISTORY_MAGIC,35
 P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,45
 
-
 #############################
 # level 13
 M:Lesser Aspect of Thazmord
@@ -1039,9 +1038,163 @@ I:Rusty Chainmail
 S:Malice Storm
 S:Invisibility
 S:Enthrall fiend
-P:RESIST_NATURE_MAGIC,40
+P:RESIST_NATURE_MAGIC,45
 P:RESIST_AWARENESS_MAGIC,45
+P:RESIST_LIFE_AND_DEATH_MAGIC,40
+P:RESIST_HISTORY_MAGIC,35
+P:RESIST_DECEIT_MAGIC,35
+P:RESIST_CONFRONTATION_MAGIC,40
+
+M:Guargloo Skirmisher,Guargloo
+M:/models/nightcrawler,Ctf_g.bmp,13,10,0,15,10,5,1.6
+I:Trident
+P:RESIST_NATURE_MAGIC,30
+P:RESIST_AWARENESS_MAGIC,35
 P:RESIST_LIFE_AND_DEATH_MAGIC,30
 P:RESIST_HISTORY_MAGIC,35
 P:RESIST_DECEIT_MAGIC,30
+P:RESIST_CONFRONTATION_MAGIC,35
+
+M:Fiendish Raptor Avenger,Raptor
+M:RAPTOR,/models/m111.bmp,13,8,5,8,9,5,3.0
+I:Darkflail
+P:RESIST_NATURE_MAGIC,30
+P:RESIST_AWARENESS_MAGIC,30
+P:RESIST_LIFE_AND_DEATH_MAGIC,50
+P:RESIST_HISTORY_MAGIC,40
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,30
+
+M:Undead Gatekeeper Warrior,Gatekeeper
+M:/models/purgator,ctf_b.bmp,13,6,8,7,8,8,2.2
+I:Spiked flail
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Blast of Fury
+S:Flame of Azun
+P:RESIST_NATURE_MAGIC,25
+P:RESIST_AWARENESS_MAGIC,35
+P:RESIST_LIFE_AND_DEATH_MAGIC,40
+P:RESIST_HISTORY_MAGIC,35
+P:RESIST_DECEIT_MAGIC,40
+P:RESIST_CONFRONTATION_MAGIC,35
+
+M:Ogre Priest of Unamoin
+M:/models/ogro,arboshak.bmp,13,8,10,7,6,6,1.8
+I:Morning Star
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,45
+P:RESIST_AWARENESS_MAGIC,45
+P:RESIST_LIFE_AND_DEATH_MAGIC,35
+P:RESIST_HISTORY_MAGIC,35
+P:RESIST_DECEIT_MAGIC,35
+P:RESIST_CONFRONTATION_MAGIC,50
+
+#############################
+# level 14
+M:Aspect of Thazmord
+M:PHANTOM,/models/m102.bmp,14,10,12,9,4,8,2.8
+I:Darkflail
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,50
+P:RESIST_AWARENESS_MAGIC,50
+P:RESIST_LIFE_AND_DEATH_MAGIC,45
+P:RESIST_HISTORY_MAGIC,40
+P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,45
+
+M:Greater Guargloo Chieften,Guargloo
+M:/models/nightcrawler,Ctf_b.bmp,14,11,0,15,10,5,2.5
+I:Trident
+P:RESIST_NATURE_MAGIC,35
+P:RESIST_AWARENESS_MAGIC,40
+P:RESIST_LIFE_AND_DEATH_MAGIC,35
+P:RESIST_HISTORY_MAGIC,40
+P:RESIST_DECEIT_MAGIC,35
+P:RESIST_CONFRONTATION_MAGIC,40
+
+M:Fiendish Raptor Master,Raptor
+M:RAPTOR,/models/m111.bmp,14,8,5,8,9,5,3.2
+I:Darkflail
+P:RESIST_NATURE_MAGIC,35
+P:RESIST_AWARENESS_MAGIC,35
+P:RESIST_LIFE_AND_DEATH_MAGIC,55
+P:RESIST_HISTORY_MAGIC,45
+P:RESIST_DECEIT_MAGIC,50
+P:RESIST_CONFRONTATION_MAGIC,40
+
+M:Gatekeeper Wraith,Gatekeeper
+M:/models/purgator,ctf_r.bmp,14,6,8,7,8,8,2.0
+I:Spiked flail
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Blast of Fury
+S:Flame of Azun
+P:RESIST_NATURE_MAGIC,30
+P:RESIST_AWARENESS_MAGIC,35
+P:RESIST_LIFE_AND_DEATH_MAGIC,45
+P:RESIST_HISTORY_MAGIC,40
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,40
+
+M:Warogre Fanatic of Unamoin
+M:/models/ogro,gordogh.bmp,14,10,11,7,6,6,1.8
+I:Morning Star
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,45
+P:RESIST_AWARENESS_MAGIC,50
+P:RESIST_LIFE_AND_DEATH_MAGIC,40
+P:RESIST_HISTORY_MAGIC,40
+P:RESIST_DECEIT_MAGIC,40
+P:RESIST_CONFRONTATION_MAGIC,55
+
+#############################
+# level 15
+M:Greater Aspect of Thazmord
+M:PHANTOM,/models/m101.bmp,15,11,12,9,4,8,2.8
+I:Darkflail
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,55
+P:RESIST_AWARENESS_MAGIC,55
+P:RESIST_LIFE_AND_DEATH_MAGIC,50
+P:RESIST_HISTORY_MAGIC,45
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,45
+
+M:Warogre Beserker of Unamoin
+M:/models/ogro,freedom.bmp,15,10,11,7,6,6,1.8
+I:Morning Star
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,50
+P:RESIST_AWARENESS_MAGIC,55
+P:RESIST_LIFE_AND_DEATH_MAGIC,45
+P:RESIST_HISTORY_MAGIC,45
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,55

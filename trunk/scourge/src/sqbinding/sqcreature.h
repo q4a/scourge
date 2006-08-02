@@ -86,6 +86,9 @@ public:
   static int _setSkillByName( HSQUIRRELVM vm );
   static int _setStateMod( HSQUIRRELVM vm );
   static int _setProtectedStateMod( HSQUIRRELVM vm );
+
+	// npc
+	static int _setIntro( HSQUIRRELVM vm );
 };
 #endif
 
