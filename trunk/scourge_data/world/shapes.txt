@@ -285,6 +285,17 @@ H:themes/wb-dragoon/suelo07b,themes/egypt3/lig_b064-01c,themes/wb-dragoon/suelo0
 H:0.7,0.55,0.9,0.7,1
 H:0.7,0.8,0.9,0.8,1
 
+H:Infernum,S
+H:themes/gurrea1/wall,themes/gurrea1/headboard,themes/gurrea1/wall,themes/gurrea1/wall1,themes/gurrea1/wall2,themes/gurrea1/wall3
+H:themes/gurrea1/corner,themes/gurrea1/cornertop,themes/gurrea1/corner
+H:metal,metal,themes/gurrea1/door
+H:themes/gurrea1/door,metal,metal
+H:themes/gurrea1/passage,themes/gurrea1/passage,themes/gurrea1/passage,themes/gurrea1/passage2
+H:themes/gurrea1/floor,themes/gurrea1/floor,themes/gurrea1/floor,themes/gurrea1/floor1,themes/gurrea1/floor2
+H:themes/gurrea1/headboard,themes/gurrea1/headboard,themes/gurrea1/headboard
+H:0.7,0.55,0.9,0.7,1
+H:0.7,0.8,0.9,0.8,1
+
 
 # Descriptions
 D:3

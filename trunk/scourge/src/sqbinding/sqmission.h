@@ -62,6 +62,11 @@ public:
 	static int _getChapter( HSQUIRRELVM vm );
 
 	static int _removeMapPosition( HSQUIRRELVM vm );
+	static int _getShape( HSQUIRRELVM vm );
+
+	static int _getDungeonDepth( HSQUIRRELVM vm );
+	static int _descendDungeon( HSQUIRRELVM vm );
+	static int _ascendDungeon( HSQUIRRELVM vm );
 };
 
 #endif

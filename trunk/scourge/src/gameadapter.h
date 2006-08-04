@@ -86,6 +86,8 @@ public:
   virtual inline void createParty( Creature **pc, int *partySize ) {}
   virtual inline void teleport( bool toHQ=true ) {}
   virtual inline int getCurrentDepth() { return 0; }
+	virtual inline void descendDungeon( Location *pos ) {}
+	virtual inline void ascendDungeon( Location *pos ) {}
 
   // initialization status events
   virtual inline void initStart(int statusCount, char *message) { std::cerr << message << std::endl; }

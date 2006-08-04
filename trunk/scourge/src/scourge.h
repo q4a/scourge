@@ -326,6 +326,8 @@ public:
   Color *getOutlineColor( Location *pos );
 
   inline int getCurrentDepth() { return currentStory; }
+	void descendDungeon( Location *pos );
+	void ascendDungeon( Location *pos );
 
   //inline Session *getSession() { return session; }
 
