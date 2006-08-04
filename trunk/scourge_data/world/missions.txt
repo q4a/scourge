@@ -216,16 +216,16 @@ I:The myriagonal token of Unamoin
 I:The nonagonal token of Soroughoz
 I:The hendecagonal token of Garzul-Meg-Aonrod
 
-T:Chapter 8: Secrets of Guards
+T:Chapter 8: The Descent
 S:15,3,library3
 D:You must now return to Sabien's library and with the help of the tokens unlock the warded
 D:door. What lies beyond this portal is surely one of the secrets of the ancient world.
 D:Report back to me on anything unusal you witness. Let me know if you're able to uncover 
-D:any information about the Guards of the Realm or Mothrazu. As always be careful and
+D:any information about the Guardians of the Realm or Mothrazu. As always be careful and
 D:please behave! Remember, you're representing the best (and only) dungeon janitorial service in
 D:town.
 Y:Fixme
 N:Have you been able to unlock the door in Sabien's library and learn what lies beyond? 
-N:Remember to bring back anything important that is connected to the $Guards of the Realm or
-N:$Mothrazu.
+N:Remember to bring back anything important that is connected to the $Guardians of the Realm or
+N:the creature called $Mothrazu.
 S:fixme

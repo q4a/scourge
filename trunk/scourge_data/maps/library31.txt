@@ -1,11 +1,3 @@
 # Unknown npc-s found:
 # Key:
 #   N:x,y,name,level,type[,subtype]
-
-N:296,220,Sabien Gartu,1,commoner
-N:301,272,hellogirl,1,commoner
-N:318,273,hellogirl-002,1,commoner
-N:333,269,hellogirl,1,commoner
-N:340,315,hellogirl,1,commoner
-N:359,278,hellogirl-002,1,commoner
-N:373,312,hellogirl,1,commoner
