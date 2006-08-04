@@ -29,7 +29,7 @@ class RenderedCreature;
 class Fog {
 private:
   int fog[MAP_WIDTH][MAP_DEPTH];
-  std::set<RenderedCreature *> players[MAP_WIDTH][MAP_DEPTH];
+  std::set<RenderedCreature *> *players;
   Map *map;
 
 #define OVERLAY_SIZE 16

@@ -104,10 +104,10 @@ all my arcane art, yet she proved too $powerful for me. Hurry and try to $stop h
 the tokens. With them the door will open!
 V:powerful;It took but a flick of her hand and I stood petrified as though rooted to the\
 spot. Tendrils of a fibrous material clouded my brain and kept me motionless... I am\
-sorry I cannot be more help. You must go $after her now... I am afraid...
+sorry I cannot be more help. You must go $after her now... I am... afraid...
 V:stop,after;Hurry! She is inside this warded gate! She must not travel through the $planar device!\
 Yet she may already have done so... I still have not been able to find out what it is she seeks in\
-the $Abyss. If you do not find her beyond this $gate the only thing left is to $travel to the Abyss\
+the $Abyss. If you do not find her beyond this $gate the only thing left is to travel to the Abyss\
 and hunt her down there.
 
 
@@ -142,7 +142,7 @@ N:296,220,Sabien Gartu,15,sage
 #15. before the root's destruction, Karzul arrives (to protect his power-source): in the final giant battle, the demon is trapped in a special object (a pocket dimension) from where he curses the party forever
 #
 #Other stuff: 
-#1. the Guardians of the Realm? Maybe they help in the final battle... 
+#1. the Guardians of the Realm? Maybe they help in the final battle... (unlock their spirit essence?)
 # or maybe the heroes become the new Guardians of the Realm at the end!
 
 

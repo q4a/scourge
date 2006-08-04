@@ -61,6 +61,7 @@ using namespace std;
 #define LAMP_RADIUS_SQUARED 36.0f
 
 Fog::Fog( Map *map ) {
+  players = new std::set<RenderedCreature *> [MAP_WIDTH * MAP_DEPTH];        
   this->map = map;
   createOverlayTexture();
   createShadeTexture();
@@ -70,13 +71,15 @@ Fog::Fog( Map *map ) {
 Fog::~Fog() {
   glDeleteTextures(1, (GLuint*)&overlay_tex);
   glDeleteTextures(1, (GLuint*)&shade_tex);
+  if (players)
+     delete players;
 }
 
 void Fog::reset() {
   for( int x = 0; x < FOG_WIDTH; x++ ) {
     for( int y = 0; y < FOG_DEPTH; y++ ) {
       fog[x][y] = FOG_UNVISITED;
-      players[x][y].clear();
+      players[x + (y * MAP_WIDTH)].clear();
     }
   }
 }
@@ -96,10 +99,10 @@ void Fog::visit( RenderedCreature *player ) {
         (double)( ( fy - y ) * ( fy - y ) );
       if( d <= LAMP_RADIUS_SQUARED ) {
         fog[x][y] = FOG_CLEAR;
-        players[x][y].insert( player );
+        players[x + (y * MAP_WIDTH)].insert( player );
       } else if( fog[x][y] == FOG_CLEAR ) {
-        players[x][y].erase( player );
-        if( !( players[x][y].size() ) ) {
+        players[x + (y * MAP_WIDTH)].erase( player );
+        if( !( players[x + (y * MAP_WIDTH)].size() ) ) {
           fog[x][y] = FOG_VISITED;
         }
       }
@@ -113,8 +116,8 @@ void Fog::hideDeadParty() {
       for( int x = 0; x < FOG_WIDTH; x++ ) {
         for( int y = 0; y < FOG_DEPTH; y++ ) {
           if( fog[x][y] == FOG_CLEAR ) {
-            players[x][y].erase( map->getAdapter()->getParty(i) );
-            if( !( players[x][y].size() ) ) {
+            players[x + (y * MAP_WIDTH)].erase( map->getAdapter()->getParty(i) );
+            if( !( players[x + (y * MAP_WIDTH)].size() ) ) {
               fog[x][y] = FOG_VISITED;
             }
           }
@@ -207,7 +210,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
         // only show light area for current player
         if( v == FOG_CLEAR &&
-            players[ fx + x ][ fy + y ].find( map->getAdapter()->getPlayer() ) != players[ fx + x ][ fy + y ].end() ) {
+            players[x + fx + ((y + fy) * MAP_WIDTH)].find( map->getAdapter()->getPlayer() ) != players[x + fx + ((y + fy) * MAP_WIDTH)].end() ) {
           if( scx < minLightX ) minLightX = (GLfloat)scx;
           if( scx > maxLightX ) maxLightX = (GLfloat)scx;
           if( scy < minLightY ) minLightY = (GLfloat)scy;
