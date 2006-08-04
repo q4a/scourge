@@ -22,6 +22,8 @@
 
 // is this ok? maybe we want to go thru the GameAdapter.
 #include "../render/map.h"
+#include "../render/shape.h"
+#include "../render/location.h"
 
 using namespace std;
 
@@ -38,6 +40,10 @@ ScriptClassMemberDecl SqMission::members[] = {
   { "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
 	{ "int", "getChapter", SqMission::_getChapter, 0, 0, "Get the current storyline chapter." },
 	{ "void", "removeMapPosition", SqMission::_removeMapPosition, 0, 0, "Remove the shape at this map position." },
+	{ "String", "getShape", SqMission::_getShape, 0, 0, "Get the name of a shape at this position." },
+	{ "int", "getDungeonDepth", SqMission::_getDungeonDepth, 0, 0, "Get the current depth." },
+	{ "void", "descendDungeon", SqMission::_descendDungeon, 0, 0, "Travel one dungeon level lower." },
+	{ "void", "ascendDungeon", SqMission::_ascendDungeon, 0, 0, "Travel one dungeon level higher." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -114,7 +120,7 @@ int SqMission::_isCompleted( HSQUIRRELVM vm ) {
 
 int SqMission::_setCompleted( HSQUIRRELVM vm ) {
   SqBinding::sessionRef->getGameAdapter()->completeCurrentMission();
-  return 1;
+  return 0;
 }
 
 int SqMission::_getChapter( HSQUIRRELVM vm ) {
@@ -130,3 +136,38 @@ int SqMission::_removeMapPosition( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+int SqMission::_getShape( HSQUIRRELVM vm ) {
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
+	if( pos && pos->shape ) {
+		sq_pushstring( vm, pos->shape->getName(), -1 );
+	} else {
+		sq_pushnull( vm );
+	}
+	return 1;
+}
+
+int SqMission::_getDungeonDepth( HSQUIRRELVM vm ) {
+	sq_pushinteger( vm, SqBinding::sessionRef->getGameAdapter()->getCurrentDepth() );
+	return 1;
+}
+
+int SqMission::_descendDungeon( HSQUIRRELVM vm ) {
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getGameAdapter()->descendDungeon( 
+		SqBinding::sessionRef->getMap()->getLocation( x, y, z ) );
+	return 0;
+}
+
+int SqMission::_ascendDungeon( HSQUIRRELVM vm ) {
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getGameAdapter()->ascendDungeon( 
+		SqBinding::sessionRef->getMap()->getLocation( x, y, z ) );
+	return 0;
+}

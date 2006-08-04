@@ -870,7 +870,13 @@ bool Scourge::useItem(int x, int y, int z) {
       } else if(pos && pos->item && ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER) {
         openContainerGui(((Item*)(pos->item)));
         return true;
-      }
+      } else if( session->getSquirrel()->
+								 callMapPosMethod( "useShape", 
+																	 pos->x, 
+																	 pos->y, 
+																	 pos->z ) ) {
+				return true;
+			}
     }
   }
   return false;
@@ -983,16 +989,10 @@ bool Scourge::useGate(Location *pos) {
   for (int i = 0; i < party->getPartySize(); i++) {
     if (!party->getParty(i)->getStateMod(Constants::dead)) {
       if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_UP")) {
-        oldStory = currentStory;
-        currentStory--;
-        changingStory = true;
-        gatepos = pos;
+        ascendDungeon( pos );
         return true;
       } else if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_DOWN")) {
-        oldStory = currentStory;
-        currentStory++;
-        changingStory = true;
-        gatepos = pos;
+				descendDungeon( pos );
         return true;
       }
     }
@@ -1017,8 +1017,9 @@ bool Scourge::usePool( Location *pos ) {
 }
 
 bool Scourge::useTeleporter(Location *pos) {
-  if(pos->shape == getSession()->getShapePalette()->findShapeByName("TELEPORTER") ||
-     pos->shape == getSession()->getShapePalette()->findShapeByName("TELEPORTER_BASE")) {
+	Location *p = getMap()->getLocation( pos->x, pos->y, 6 );
+  if( p && p->shape && 
+			p->shape == getSession()->getShapePalette()->findShapeByName("TELEPORTER") ) {
     if(levelMap->isLocked(pos->x, pos->y, pos->z)) {
       levelMap->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
       return true;
@@ -2940,4 +2941,16 @@ void Scourge::handleDismiss( int index ) {
 	dismissHeroDialog->setVisible( true );
 }
 
+void Scourge::descendDungeon( Location *pos ) {
+	oldStory = currentStory;
+	currentStory++;
+	changingStory = true;
+	gatepos = pos;
+}
 
+void Scourge::ascendDungeon( Location *pos ) {
+	oldStory = currentStory;
+	currentStory--;
+	changingStory = true;
+	gatepos = pos;
+}

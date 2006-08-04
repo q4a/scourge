@@ -221,8 +221,10 @@ public:
 
   bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
+	bool callOneArgMethod( const char *name, HSQOBJECT *param1 );
   bool callTwoArgMethod( const char *name, HSQOBJECT *param1, HSQOBJECT *param2 );
   bool callItemEvent( Creature *creature, Item *item, const char *function );
+	bool callItemEvent( Item *item, const char *function );
   bool callSpellEvent( Creature *creature, Spell *spell, const char *function );
   bool callMapPosMethod( const char *name, int x, int y, int z );
   bool callMapMethod( const char *name, const char *mapName );

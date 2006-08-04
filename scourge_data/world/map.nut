@@ -39,6 +39,22 @@ function creatureDeath( creature ) {
   return true;
 }
 
+// return true if the click was handled from squirrel
+function useShape( x, y, z ) {
+	print( "Shape used: " + scourgeGame.getMission().getShape( x, y, z ) + "\n" );
+	print( "Depth: " + scourgeGame.getMission().getDungeonDepth() + "\n" );
+	if( scourgeGame.getMission().getShape( x, y, 6 ) == "RED_TELEPORTER" ) {
+		if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+			print( "...going down..." );
+			scourgeGame.getMission().descendDungeon( x, y, z );
+		} else {
+			print( "...going up..." );
+			scourgeGame.getMission().ascendDungeon( x, y, z );
+		}
+	}
+	return true;
+}
+
 // deities from spells.txt
 deities <- [ 
   "Unamoin",    // Confrontation
@@ -76,7 +92,7 @@ function usePool( x, y, z ) {
   if( deityIndex == -1 ) {
     // ERROR: something changed in spells.txt
     print( "*** Error: unknonw deity: " + deity + " did something change in data/world/spells.txt?" );
-    return;
+    return false;
   }
 
   print( "Opposite deity=" + oppositeDeity );
@@ -146,6 +162,7 @@ function usePool( x, y, z ) {
 
   // FIXME: sacrifizing money and items
 
+	return true;
 }
 
 // =============================================================
